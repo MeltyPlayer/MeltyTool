@@ -45,19 +45,22 @@ namespace fin.ui {
 
     // TODO: These negative signs and flipped cos/sin don't look right but they
     // work???
-    public void Move(float forwardVector, float rightVector, float speed) {
-      this.Z += speed * this.VerticalNormal * forwardVector;
-
+    public void Move(float forwardVector, float rightVector, float upwardVector, float speed) {
       var forwardYawRads = this.Yaw / 180 * MathF.PI;
       var rightYawRads = (this.Yaw - 90) / 180 * MathF.PI;
 
+      this.Z += speed * 
+                //this.VerticalNormal * 
+                //forwardVector *
+                upwardVector;
+
       this.X += speed *
-                this.HorizontalNormal *
+                //this.HorizontalNormal *
                 (forwardVector * FinTrig.Cos(forwardYawRads) +
                  rightVector * FinTrig.Cos(rightYawRads));
 
       this.Y += speed *
-                this.HorizontalNormal *
+               // this.HorizontalNormal *
                 (forwardVector * FinTrig.Sin(forwardYawRads) +
                  rightVector * FinTrig.Sin(rightYawRads));
     }

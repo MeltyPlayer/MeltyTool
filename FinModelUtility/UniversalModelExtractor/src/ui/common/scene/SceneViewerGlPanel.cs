@@ -76,6 +76,8 @@ namespace uni.ui.common.scene {
     private bool isBackwardDown_ = false;
     private bool isLeftwardDown_ = false;
     private bool isRightwardDown_ = false;
+    private bool isRaiseDown_ = false;
+    private bool isLowerDown_ = false;
     private bool isSpeedupActive_ = false;
 
     public SceneViewerGlPanel() {
@@ -137,6 +139,14 @@ namespace uni.ui.common.scene {
               this.isRightwardDown_ = true;
               break;
             }
+          case Keys.Q: {
+              this.isLowerDown_ = true;
+              break;
+            }
+          case Keys.E: {
+              this.isRaiseDown_ = true;
+              break;
+            }
           case Keys.ShiftKey: {
               this.isSpeedupActive_ = true;
               break;
@@ -160,6 +170,14 @@ namespace uni.ui.common.scene {
             }
           case Keys.D: {
               this.isRightwardDown_ = false;
+              break;
+            }
+            case Keys.Q: {
+              this.isLowerDown_ = false;
+              break;
+            }
+          case Keys.E: {
+              this.isRaiseDown_ = false;
               break;
             }
           case Keys.ShiftKey: {
@@ -207,7 +225,9 @@ namespace uni.ui.common.scene {
           (this.isForwardDown_ ? 1 : 0) - (this.isBackwardDown_ ? 1 : 0);
       var rightwardVector =
           (this.isRightwardDown_ ? 1 : 0) - (this.isLeftwardDown_ ? 1 : 0);
-      this.camera_.Move(forwardVector, rightwardVector,
+      var upwardVector =
+          (this.isRaiseDown_ ? 1 : 0) - (this.isLowerDown_ ? 1 : 0);
+      this.camera_.Move(forwardVector, rightwardVector, upwardVector,
                         DebugFlags.GLOBAL_SCALE *
                         (this.isSpeedupActive_ ? 30 : 15));
 
