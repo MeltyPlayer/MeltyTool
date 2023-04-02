@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 using fin.color;
 using fin.math;
 
-using SixLabors.ImageSharp.PixelFormats;
-
 
 namespace fin.util.color {
   public static class ColorUtil {

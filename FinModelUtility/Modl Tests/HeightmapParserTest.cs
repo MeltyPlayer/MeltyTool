@@ -1,4 +1,4 @@
-using fin.util.asserts;
+using asserts;
 
 namespace modl.schema.terrain {
   public class HeightmapParserTest {

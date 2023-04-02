@@ -28,6 +28,7 @@ namespace j3d.exporter {
   using GxPrimitiveType = BMD.SHP1Section.Batch.Packet.Primitive.GXPrimitive;
 
   public class BmdModelFileBundle : IModelFileBundle {
+    public required string GameName { get; init; }
     public IFileHierarchyFile MainFile => this.BmdFile;
 
     public IEnumerable<IGenericFile> Files

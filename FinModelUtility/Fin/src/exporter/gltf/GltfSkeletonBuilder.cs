@@ -15,6 +15,7 @@ namespace fin.exporter.gltf {
     public (GltfNode, IBone)[] BuildAndBindSkeleton(
         GltfNode rootNode,
         GltfSkin skin,
+        float scale,
         ISkeleton skeleton) {
       var rootBone = skeleton.Root;
 
@@ -24,7 +25,7 @@ namespace fin.exporter.gltf {
       while (boneQueue.Count > 0) {
         var (node, bone) = boneQueue.Dequeue();
 
-        this.ApplyBoneOrientationToNode_(node, bone);
+        this.ApplyBoneOrientationToNode_(node, bone, scale);
 
         if (bone != rootBone) {
           skinNodesAndBones.Add((node, bone));
@@ -47,8 +48,14 @@ namespace fin.exporter.gltf {
       return skinNodesAndBones.ToArray();
     }
 
-    private void ApplyBoneOrientationToNode_(GltfNode node, IBone bone) {
-      node.LocalMatrix = MatrixTransformUtil.FromTrs(bone.LocalPosition,
+    private void ApplyBoneOrientationToNode_(GltfNode node,
+                                             IBone bone,
+                                             float scale) {
+      var bonePosition = bone.LocalPosition;
+      var scaledPosition = new Position(bonePosition.X * scale,
+                                        bonePosition.Y * scale,
+                                        bonePosition.Z * scale);
+      node.LocalMatrix = MatrixTransformUtil.FromTrs(scaledPosition,
                                       bone.LocalRotation,
                                       bone.LocalScale).Impl;
     }

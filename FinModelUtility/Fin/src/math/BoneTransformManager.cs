@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using fin.data;
 using fin.math.matrix;
 using fin.model;
-using fin.model.impl;
 using fin.ui;
 
 namespace fin.math {
@@ -69,9 +68,16 @@ namespace fin.math {
         verticesToWorldMatrices_ = new();
 
     public (IBoneTransformManager, IBone)? Parent { get; }
+    public IReadOnlyFinMatrix4x4 ManagerMatrix { get; }
 
-    public BoneTransformManager((IBoneTransformManager, IBone)? parent = null) {
+    public BoneTransformManager() {
+      this.ManagerMatrix = FinMatrix4x4.IDENTITY;
+    }
+
+    public BoneTransformManager((IBoneTransformManager, IBone) parent) {
       this.Parent = parent;
+      var (parentManager, parentBone) = this.Parent.Value;
+      this.ManagerMatrix = parentManager.GetWorldMatrix(parentBone);
     }
 
     public void Clear() {
@@ -108,20 +114,12 @@ namespace fin.math {
       var animation = animationAndFrame?.Item1;
       var frame = animationAndFrame?.Item2;
 
-      IReadOnlyFinMatrix4x4 managerMatrix;
-      if (this.Parent == null) {
-        managerMatrix = FinMatrix4x4.IDENTITY;
-      } else {
-        var (parentManager, parentBone) = this.Parent.Value;
-        managerMatrix = parentManager.GetWorldMatrix(parentBone);
-      }
-
       // TODO: Cache this directly on the bone itself instead.
       var bonesToIndex = new Dictionary<IBone, int>();
       var boneIndex = -1;
 
       var boneQueue = new Queue<(IBone, IReadOnlyFinMatrix4x4)>();
-      boneQueue.Enqueue((rootBone, managerMatrix));
+      boneQueue.Enqueue((rootBone, this.ManagerMatrix));
       while (boneQueue.Count > 0) {
         var (bone, parentMatrix) = boneQueue.Dequeue();
 

@@ -1,4 +1,5 @@
-﻿using fin.schema.vector;
+﻿using fin.math;
+using fin.schema.vector;
 using schema.binary;
 using schema.binary.attributes.ignore;
 
@@ -20,7 +21,7 @@ namespace cmb.schema.cmb {
     // these flags below:
     // IsSegmentScaleCompensate, IsCompressible, IsNeededRendering, HasSkinningMatrix
     [Ignore]
-    public bool hasSkinningMatrix => ((this.flags >> 4) & 1) != 0;
+    public bool hasSkinningMatrix => this.flags.GetBit(4);
 
     public short parentId;
 

@@ -248,6 +248,7 @@ namespace uni.games.wind_waker {
 
       foreach (var bmdFile in bmdFiles) {
         yield return new BmdModelFileBundle {
+            GameName = "wind_waker",
             BmdFile = bmdFile,
             BcxFiles = bcxFiles,
             BtiFiles = btiFiles,

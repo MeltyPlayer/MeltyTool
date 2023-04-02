@@ -24,12 +24,14 @@ using Endianness = mod.util.Endianness;
 
 namespace mod.cli {
   public class ModModelFileBundle : IModelFileBundle {
+    public required string GameName { get; init; }
+
     public IFileHierarchyFile MainFile => this.ModFile;
     public IEnumerable<IGenericFile> Files
       => this.ModFile.Yield().ConcatIfNonnull(this.AnmFile);
 
-    public IFileHierarchyFile ModFile { get; set; }
-    public IFileHierarchyFile? AnmFile { get; set; }
+    public required IFileHierarchyFile ModFile { get; init; }
+    public required IFileHierarchyFile? AnmFile { get; init; }
   }
 
   public class ModModelLoader : IModelLoader<ModModelFileBundle> {

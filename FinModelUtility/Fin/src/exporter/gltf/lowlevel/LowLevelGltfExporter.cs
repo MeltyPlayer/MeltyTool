@@ -28,7 +28,7 @@ namespace fin.exporter.gltf.lowlevel {
     public bool UvIndices { get; set; }
     public bool Embedded { get; set; }
 
-    public ModelRoot CreateModelRoot(IModel model) {
+    public ModelRoot CreateModelRoot(IModel model, float scale) {
       var modelRoot = ModelRoot.CreateModel();
 
       var scene = modelRoot.UseScene("default");
@@ -51,12 +51,14 @@ namespace fin.exporter.gltf.lowlevel {
       var skinNodeAndBones = new GltfSkeletonBuilder().BuildAndBindSkeleton(
           rootNode,
           skin,
+          scale,
           model.Skeleton);
 
       // Builds animations.
       new GltfAnimationBuilder().BuildAnimations(
           modelRoot,
           skinNodeAndBones,
+          scale,
           model.AnimationManager.Animations);
 
       // Builds materials.
@@ -140,6 +142,7 @@ namespace fin.exporter.gltf.lowlevel {
       var gltfMeshes = meshBuilder.BuildAndBindMesh(
           modelRoot,
           model,
+          scale,
           finToTexCoordAndGltfMaterial);
 
       /*var joints = skinNodeAndBones
@@ -157,7 +160,11 @@ namespace fin.exporter.gltf.lowlevel {
       return modelRoot;
     }
 
-    public void Export(IFile outputFile, IModel model) {
+    public void Export(IExporterParams exporterParams) {
+      var outputFile = exporterParams.OutputFile;
+      var model = exporterParams.Model;
+      var scale = exporterParams.Scale;
+
       Asserts.True(
           outputFile.Extension.EndsWith(".gltf") ||
           outputFile.Extension.EndsWith(".glb"),
@@ -165,7 +172,7 @@ namespace fin.exporter.gltf.lowlevel {
 
       this.logger_.BeginScope("Export");
 
-      var modelRoot = this.CreateModelRoot(model);
+      var modelRoot = this.CreateModelRoot(model, scale);
 
       var writeSettings = new WriteSettings {
           ImageWriting = this.Embedded

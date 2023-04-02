@@ -1,4 +1,5 @@
-﻿using fin.schema.matrix;
+﻿using fin.math;
+using fin.schema.matrix;
 using fin.schema.vector;
 
 using schema.binary;
@@ -143,7 +144,7 @@ namespace visceral.schema.geo {
 
       var value = er.ReadUInt32();
       for (var i = 0; i < 3; ++i) {
-        var axisValue = ReadBits_(value, bitsPerAxis * i, bitsPerAxis);
+        var axisValue = value.ExtractFromRight(bitsPerAxis * i, bitsPerAxis);
         var signedAxisValue = SignValue_(axisValue, bitsPerAxis);
         vec[i] = signedAxisValue / divisor;
       }
@@ -159,7 +160,7 @@ namespace visceral.schema.geo {
 
       var value = er.ReadUInt32();
       for (var i = 0; i < 4; ++i) {
-        var axisValue = ReadBits_(value, bitsPerAxis * i, bitsPerAxis);
+        var axisValue = value.ExtractFromRight(bitsPerAxis * i, bitsPerAxis);
         var signedAxisValue = SignValue_(axisValue, bitsPerAxis);
         vec[i] = signedAxisValue / divisor;
       }
@@ -167,17 +168,12 @@ namespace visceral.schema.geo {
       return vec;
     }
 
-    private uint ReadBits_(uint value, int position, int bitsPerAxis) {
-      var mask = (uint) ((1 << (bitsPerAxis)) - 1);
-      var axisValue = (value >> position) & mask;
-      return axisValue;
-    }
-
     private int SignValue_(uint x, int bitsPerAxis) {
+      var isSigned = x.GetBit(bitsPerAxis - 1);
       var signedX = (int) x;
 
-      if (((x >> (bitsPerAxis - 1)) & 1) == 1) {
-        var mask = (uint) ((1 << (bitsPerAxis - 1)) - 1);
+      if (isSigned) {
+        var mask = BitLogic.GetMask(bitsPerAxis - 1);
         signedX = (int) (signedX ^ mask);
         signedX++; // Because of 2's complement
         signedX *= -1;

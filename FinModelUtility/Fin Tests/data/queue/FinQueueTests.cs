@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Linq;
 
-using fin.util.asserts;
+using asserts;
 
 using NUnit.Framework;
 

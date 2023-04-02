@@ -10,6 +10,7 @@ using PrimitiveType = xmod.schema.xmod.PrimitiveType;
 
 namespace xmod.api {
   public class XmodModelFileBundle : IModelFileBundle {
+    public required string GameName { get; init; }
     public IFileHierarchyFile MainFile => this.XmodFile;
     public required IFileHierarchyFile XmodFile { get; init; }
   }

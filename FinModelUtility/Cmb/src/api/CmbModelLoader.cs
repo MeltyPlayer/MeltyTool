@@ -31,15 +31,19 @@ using FinTextureMagFilter = fin.model.TextureMagFilter;
 
 namespace cmb.api {
   public class CmbModelFileBundle : IModelFileBundle {
-    public CmbModelFileBundle(IFileHierarchyFile cmbFile,
+    public CmbModelFileBundle(string gameName,
+                              IFileHierarchyFile cmbFile,
                               IReadOnlyList<IFileHierarchyFile>? csabFiles,
                               IReadOnlyList<IFileHierarchyFile>? ctxbFiles,
                               IReadOnlyList<IFileHierarchyFile>? shpaFiles) {
+      this.GameName = gameName;
       this.CmbFile = cmbFile;
       this.CsabFiles = csabFiles;
       this.CtxbFiles = ctxbFiles;
       this.ShpaFiles = shpaFiles;
     }
+
+    public string GameName { get; }
 
     public IFileHierarchyFile MainFile => this.CmbFile;
     public IEnumerable<IGenericFile> Files
@@ -358,18 +362,18 @@ namespace cmb.api {
 
         // Gets flags
         var inc = 1;
-        var hasNrm = BitLogic.GetFlag(shape.vertFlags, inc++);
+        var hasNrm = shape.vertFlags.GetBit(inc++);
         if (cmb.header.version > CmbVersion.OCARINA_OF_TIME_3D) {
           // Skip "HasTangents" for now
           inc++;
         }
 
-        var hasClr = BitLogic.GetFlag(shape.vertFlags, inc++);
-        var hasUv0 = BitLogic.GetFlag(shape.vertFlags, inc++);
-        var hasUv1 = BitLogic.GetFlag(shape.vertFlags, inc++);
-        var hasUv2 = BitLogic.GetFlag(shape.vertFlags, inc++);
-        var hasBi = BitLogic.GetFlag(shape.vertFlags, inc++);
-        var hasBw = BitLogic.GetFlag(shape.vertFlags, inc++);
+        var hasClr = shape.vertFlags.GetBit(inc++);
+        var hasUv0 = shape.vertFlags.GetBit(inc++);
+        var hasUv1 = shape.vertFlags.GetBit(inc++);
+        var hasUv2 = shape.vertFlags.GetBit(inc++);
+        var hasBi = shape.vertFlags.GetBit(inc++);
+        var hasBw = shape.vertFlags.GetBit(inc++);
 
         // Gets bone indices
         var boneCount = shape.boneDimensions;

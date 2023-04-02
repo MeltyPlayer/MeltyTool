@@ -64,6 +64,7 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
             var bundles = new List<XcModelFileBundle>();
             foreach (var xcBundle in xcBundles) {
               bundles.Add(new XcModelFileBundle {
+                  GameName = "professor_layton_vs_phoenix_wright",
                   BetterName = xcBundle.Name,
                   ModelXcFile = xcBundle.ModelFile,
                   AnimationXcFiles = xcBundle.AnimationFiles,
@@ -91,7 +92,9 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
               }
 
               bundles.Add(new XcModelFileBundle {
-                  ModelXcFile = xcFile, AnimationXcFiles = new[] { xcFile },
+                  GameName = "professor_layton_vs_phoenix_wright",
+                  ModelXcFile = xcFile,
+                  AnimationXcFiles = new[] { xcFile },
               });
             }
 

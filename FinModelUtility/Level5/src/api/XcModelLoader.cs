@@ -16,6 +16,7 @@ using fin.util.enumerables;
 namespace level5.api {
   public class XcModelFileBundle : IModelFileBundle {
     public string? BetterName { get; set; }
+    public required string GameName { get; init; }
     public IFileHierarchyFile MainFile => this.ModelXcFile;
     public IEnumerable<IGenericFile> Files
       => this.ModelXcFile.Yield()

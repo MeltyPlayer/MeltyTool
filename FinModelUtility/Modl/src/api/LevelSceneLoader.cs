@@ -5,10 +5,11 @@ using modl.schema.xml;
 
 namespace modl.api {
   public class BwSceneFileBundle : IBattalionWarsFileBundle, ISceneFileBundle {
+    public required string GameName { get; init; }
     public IFileHierarchyFile MainFile => this.MainXmlFile;
 
-    public GameVersion GameVersion { get; set; }
-    public IFileHierarchyFile MainXmlFile { get; set; }
+    public required GameVersion GameVersion { get; init; }
+    public required IFileHierarchyFile MainXmlFile { get; init; }
   }
 
   public class BwSceneLoader : ISceneLoader<BwSceneFileBundle> {

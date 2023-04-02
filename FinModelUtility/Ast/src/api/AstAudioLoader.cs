@@ -5,13 +5,11 @@ using fin.io;
 
 namespace ast.api {
   public class AstAudioFileBundle : IAudioFileBundle {
-    public AstAudioFileBundle(IFileHierarchyFile astFile) {
-      this.AstFile = astFile;
-    }
+    public required string GameName { get; init; }
 
     public IFileHierarchyFile MainFile => this.AstFile;
 
-    public IFileHierarchyFile AstFile { get; }
+    public required IFileHierarchyFile AstFile { get; init; }
   }
 
   public class AstAudioLoader : IAudioLoader<AstAudioFileBundle> {

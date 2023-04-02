@@ -1,4 +1,5 @@
-﻿using fin.io;
+﻿using fin.exporter;
+using fin.io;
 using fin.model;
 
 using Microsoft.Scripting.Hosting;
@@ -197,7 +198,11 @@ import {name}
       }
 
       foreach (var model in models) {
-        new AssimpIndirectExporter().Export(new FinFile("C:\\Users\\Ryan\\Documents\\CSharpWorkspace\\FinModelUtility\\FinModelUtility\\ModelPluginWrappers\\test.fbx"), (model as IModel)!);
+        new AssimpIndirectExporter().Export(
+            new ExporterParams {
+              OutputFile = new FinFile("C:\\Users\\Ryan\\Documents\\CSharpWorkspace\\FinModelUtility\\FinModelUtility\\ModelPluginWrappers\\test.fbx"),
+              Model = model as IModel,
+            });
       }
     }
 

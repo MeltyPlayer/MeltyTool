@@ -298,6 +298,7 @@ namespace uni.games.super_mario_sunshine {
         IReadOnlyList<IFileHierarchyFile>? btiFiles = null
     )
       => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
+          GameName = "super_mario_sunshine",
           BmdFile = bmdFile,
           BcxFiles = bcxFiles,
           BtiFiles = btiFiles,

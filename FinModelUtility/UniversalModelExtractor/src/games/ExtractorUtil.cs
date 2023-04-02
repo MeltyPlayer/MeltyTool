@@ -1,4 +1,5 @@
-﻿using fin.exporter.assimp.indirect;
+﻿using fin.exporter;
+using fin.exporter.assimp.indirect;
 using fin.io;
 using fin.io.bundles;
 using fin.log;
@@ -6,6 +7,7 @@ using fin.model;
 using fin.util.asserts;
 
 using uni.config;
+using uni.model;
 using uni.msg;
 using uni.thirdparty;
 
@@ -98,13 +100,19 @@ namespace uni.games {
         new AssimpIndirectExporter {
             LowLevel = modelFileBundle.UseLowLevelExporter,
             ForceGarbageCollection = modelFileBundle.ForceGarbageCollection,
-        }.Export(
-            new FinFile(Path.Join(outputDirectory.FullName,
-                                  mainFile.NameWithoutExtension + ".foo")),
-            !modelFileBundle.UseLowLevelExporter
-                ? Config.Instance.ExportedFormats
-                : new[] {".gltf"},
-            model);
+        }.Export(new ExporterParams {
+                     OutputFile = new FinFile(
+                         Path.Join(outputDirectory.FullName,
+                                   mainFile.NameWithoutExtension + ".foo")),
+                     Model = model,
+                     Scale = new ScaleSource(
+                         Config.Instance.ExportedModelScaleSource).GetScale(
+                         model,
+                         modelFileBundle)
+                 },
+                 !modelFileBundle.UseLowLevelExporter
+                     ? Config.Instance.ExportedFormats
+                     : new[] { ".gltf" });
 
         if (Config.Instance.ThirdParty.ExportBoneScaleAnimationsSeparately) {
           new BoneScaleAnimationExporter().Export(
@@ -116,6 +124,7 @@ namespace uni.games {
       } catch (Exception e) {
         ExtractorUtil.logger_.LogError(e.ToString());
       }
+
       ExtractorUtil.logger_.LogInformation(" ");
     }
   }

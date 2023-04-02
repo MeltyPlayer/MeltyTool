@@ -40,8 +40,12 @@ namespace uni.platforms {
     public static IDirectory CLI_DIRECTORY =
         DirectoryConstants.BASE_DIRECTORY.GetSubdir("cli");
 
+
+    public static IDirectory GAME_CONFIG_DIRECTORY { get; } =
+      CLI_DIRECTORY.GetSubdir("config");
+
     public static IFile CONFIG_FILE { get; } =
-      CLI_DIRECTORY.GetExistingFile("config.json");
+      DirectoryConstants.CLI_DIRECTORY.GetExistingFile("config.json");
 
 
     public static IDirectory ROMS_DIRECTORY =

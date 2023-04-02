@@ -1,28 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using fin.model.impl;
 using fin.scene;
 
 using System.Numerics;
 
 namespace fin.model.util {
-  public static class SceneScaleCalculator {
-    public record Bounds(float MinX,
-                         float MinY,
-                         float MinZ,
-                         float MaxX,
-                         float MaxY,
-                         float MaxZ);
-
-    public static float CalculateScale(IScene scene) {
-      var bounds = CalculateBounds(scene);
-      return MathF.Sqrt(MathF.Pow(bounds.MaxX - bounds.MinX, 2) +
-                        MathF.Pow(bounds.MaxY - bounds.MinY, 2) +
-                        MathF.Pow(bounds.MaxZ - bounds.MinZ, 2));
-    }
-
-    public static Bounds CalculateBounds(IScene scene) {
+  public class SceneMinMaxBoundsScaleCalculator
+      : BMinMaxBoundsScaleCalculator<IScene> {
+    public override Bounds CalculateBounds(IScene scene) {
       var minX = float.MaxValue;
       var minY = float.MaxValue;
       var minZ = float.MaxValue;

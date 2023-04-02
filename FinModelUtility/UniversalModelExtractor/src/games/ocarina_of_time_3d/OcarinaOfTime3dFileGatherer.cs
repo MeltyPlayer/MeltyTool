@@ -164,6 +164,7 @@ namespace uni.games.ocarina_of_time_3d {
                   this.separator_.Separate(subdir, cmbFiles, csabFiles);
 
               return bundles.Select(bundle => new CmbModelFileBundle(
+                                        "ocarina_of_time_3d",
                                         bundle.ModelFile,
                                         bundle.AnimationFiles.ToArray(),
                                         ctxbFiles,
@@ -186,7 +187,12 @@ namespace uni.games.ocarina_of_time_3d {
 
         if (models.Length == 1 || animations.Length == 0) {
           foreach (var model in models) {
-            yield return new CmbModelFileBundle(model, animations, null, null);
+            yield return new CmbModelFileBundle(
+                "ocarina_of_time_3d",
+                model,
+                animations,
+                null,
+                null);
           }
         }
       }
@@ -198,6 +204,7 @@ namespace uni.games.ocarina_of_time_3d {
 
       var childDir = actorsDir.GetExistingSubdir("zelda_link_child_new/child");
       yield return new CmbModelFileBundle(
+          "ocarina_of_time_3d",
           childDir.GetExistingFile("model/childlink_v2.cmb"),
           childDir.GetExistingSubdir("anim")
                   .FilesWithExtension(".csab")
@@ -207,6 +214,7 @@ namespace uni.games.ocarina_of_time_3d {
 
       var adultDir = actorsDir.GetExistingSubdir("zelda_link_boy_new/boy");
       yield return new CmbModelFileBundle(
+          "ocarina_of_time_3d",
           adultDir.GetExistingFile("model/link_v2.cmb"),
           adultDir.GetExistingSubdir("anim")
                   .FilesWithExtension(".csab")
@@ -229,11 +237,13 @@ namespace uni.games.ocarina_of_time_3d {
           allAnimations.Where(file => !capeAnimations.Contains(file));
 
       yield return new CmbModelFileBundle(
+          "ocarina_of_time_3d",
           modelDir.GetExistingFile("ganondorf.cmb"),
           ganondorfAnimations.ToArray(),
           null,
           null);
       yield return new CmbModelFileBundle(
+          "ocarina_of_time_3d",
           modelDir.GetExistingFile("ganon_mant_model.cmb"),
           capeAnimations.ToArray(),
           null,
@@ -243,6 +253,7 @@ namespace uni.games.ocarina_of_time_3d {
                    file => file.Name is not "ganondorf.cmb"
                                         or "ganon_mant_model.cmb")) {
         yield return new CmbModelFileBundle(
+            "ocarina_of_time_3d",
             otherModel,
             null,
             null,
@@ -256,6 +267,7 @@ namespace uni.games.ocarina_of_time_3d {
 
       // Waiting
       yield return new CmbModelFileBundle(
+          "ocarina_of_time_3d",
           owlDir.GetExistingFile("Model/kaeporagaebora1.cmb"),
           owlDir.GetExistingSubdir("Anim")
                 .FilesWithExtension(".csab")
@@ -267,6 +279,7 @@ namespace uni.games.ocarina_of_time_3d {
 
       // Flying
       yield return new CmbModelFileBundle(
+          "ocarina_of_time_3d",
           owlDir.GetExistingFile("Model/kaeporagaebora2.cmb"),
           owlDir.GetExistingSubdir("Anim")
                 .FilesWithExtension(".csab")

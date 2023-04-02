@@ -25,6 +25,7 @@ namespace uni.games.midnight_club_2 {
           fileHierarchy,
           subdir => subdir.FilesWithExtension(".xmod")
                           .Select(file => new XmodModelFileBundle {
+                              GameName = "midnight_club_2",
                               XmodFile = file,
                           })
                           .Concat<IModelFileBundle>(

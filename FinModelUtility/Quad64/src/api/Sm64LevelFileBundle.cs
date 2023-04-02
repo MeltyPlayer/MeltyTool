@@ -1,9 +1,8 @@
 ﻿using fin.io;
-using fin.io.bundles;
 
 
 namespace sm64.api {
-  public class Sm64LevelFileBundle : IFileBundle {
+  public class Sm64LevelFileBundle : BSm64FileBundle, IUiFile {
     public Sm64LevelFileBundle(
         IFileHierarchyDirectory directory,
         IFile sm64Rom,
@@ -13,7 +12,7 @@ namespace sm64.api {
       this.LevelId = levelId;
     }
 
-    public IFileHierarchyFile? MainFile => null;
+    public override IFileHierarchyFile? MainFile => null;
     public IFileHierarchyDirectory Directory { get; }
 
     public IFile Sm64Rom { get; }

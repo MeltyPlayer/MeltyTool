@@ -1,5 +1,6 @@
-﻿using fin.math.matrix;
-using fin.util.asserts;
+﻿using asserts;
+
+using fin.math.matrix;
 
 using NUnit.Framework;
 

@@ -1,9 +1,18 @@
-﻿using fin.decompression;
+﻿using System.Runtime.CompilerServices;
 
 
 namespace level5.decompression {
-  public class LzssDecompressor : BDecompressor {
-    public override unsafe bool TryDecompress(byte[] src, out byte[] dst) {
+  public class LzssDecompressor {
+    public byte[] Decompress(ReadOnlySpan<byte> src) {
+      if (TryDecompress(src, out byte[] dst)) {
+        return dst;
+      }
+
+      throw new Exception("Failed to decompress bytes.");
+    }
+
+    public bool TryDecompress(ReadOnlySpan<byte> src,
+                              out byte[] dst) {
       var size = 0;
       {
         int srcIndex = 4;
@@ -76,8 +85,9 @@ namespace level5.decompression {
       return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void Copy_(
-        byte[] dst,
+        Span<byte> dst,
         ref int dstIndex,
         int dat,
         ref int op,

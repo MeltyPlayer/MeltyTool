@@ -1,7 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
 
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
-using AssertionException = fin.util.asserts.AssertionException;
+using NUnit.Framework;
 
 
 namespace fin.data {
@@ -62,9 +61,14 @@ namespace fin.data {
     [TestCase(0, 4)]
     public void TestFailsOutside(int x, int y) {
       var impl = new Grid<string>(3, 3);
-      Assert.ThrowsException<AssertionException>(
-          () => { impl[x, y] = "value"; },
-          $"\"Expected ({x}, {y}) to be a valid index in grid of size (3, 3).\"");
+      try {
+        impl[x, y] = "value";
+        Assert.Fail("Expected to throw exception");
+      } catch (Exception e) {
+        Assert.AreEqual(
+            $"Expected ({x}, {y}) to be a valid index in grid of size (3, 3).",
+            e.Message);
+      }
     }
   }
 }

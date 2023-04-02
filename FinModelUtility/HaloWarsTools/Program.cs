@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 
 using fin.data.queue;
+using fin.exporter;
 using fin.exporter.assimp.indirect;
 using fin.io;
 using fin.util.gc;
@@ -76,7 +77,10 @@ namespace HaloWarsTools {
           LowLevel = true,
           ForceGarbageCollection = true,
         };
-        exporter.Export(gltfFile.CloneWithExtension(".fbx"), finModel);
+        exporter.Export(new ExporterParams {
+            OutputFile = gltfFile.CloneWithExtension(".fbx"),
+            Model = finModel,
+        });
 
         // Cleans up any remaining .bin files.
         var binFiles = dstMapDirectory.GetExistingFiles()
@@ -115,7 +119,10 @@ namespace HaloWarsTools {
           }
 
           var exporter = new AssimpIndirectExporter();
-          exporter.Export(outFile, finModel);
+          exporter.Export(new ExporterParams {
+              OutputFile = outFile,
+              Model = finModel
+          });
           Console.WriteLine($"Processed {visFile.FullName}");
         }
 

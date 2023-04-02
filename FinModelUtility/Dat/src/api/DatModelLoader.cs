@@ -7,12 +7,10 @@ using fin.model.impl;
 
 namespace dat.api {
   public class DatModelFileBundle : IModelFileBundle {
-    public DatModelFileBundle(IFileHierarchyFile datFile) {
-      this.DatFile = datFile;
-    }
+    public required string GameName { get; init; }
 
     public IFileHierarchyFile MainFile => this.DatFile;
-    public IFileHierarchyFile DatFile { get; }
+    public required IFileHierarchyFile DatFile { get; init; }
   }
 
   public class DatModelLoader : IModelLoader<DatModelFileBundle> {

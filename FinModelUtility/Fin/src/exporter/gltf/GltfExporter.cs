@@ -21,7 +21,7 @@ namespace fin.exporter.gltf {
     bool UvIndices { get; set; }
     bool Embedded { get; set; }
 
-    ModelRoot CreateModelRoot(IModel model);
+    ModelRoot CreateModelRoot(IModel model, float scale);
   }
 
   public class GltfExporter : IGltfExporter {
@@ -30,7 +30,7 @@ namespace fin.exporter.gltf {
     public bool UvIndices { get; set; }
     public bool Embedded { get; set; }
 
-    public ModelRoot CreateModelRoot(IModel model) {
+    public ModelRoot CreateModelRoot(IModel model, float scale) {
       var modelRoot = ModelRoot.CreateModel();
 
       var scene = modelRoot.UseScene("default");
@@ -53,12 +53,14 @@ namespace fin.exporter.gltf {
       var skinNodeAndBones = new GltfSkeletonBuilder().BuildAndBindSkeleton(
           rootNode,
           skin,
+          scale,
           model.Skeleton);
 
       // Builds animations.
       new GltfAnimationBuilder().BuildAnimations(
           modelRoot,
           skinNodeAndBones,
+          scale,
           model.AnimationManager.Animations);
 
       // Builds materials.
@@ -146,6 +148,7 @@ namespace fin.exporter.gltf {
       var gltfMeshes = meshBuilder.BuildAndBindMesh(
           modelRoot,
           model,
+          scale,
           finToTexCoordAndGltfMaterial);
 
       var joints = skinNodeAndBones
@@ -167,7 +170,11 @@ namespace fin.exporter.gltf {
       return modelRoot;
     }
 
-    public void Export(IFile outputFile, IModel model) {
+    public void Export(IExporterParams exporterParams) {
+      var outputFile = exporterParams.OutputFile;
+      var model = exporterParams.Model;
+      var scale = exporterParams.Scale;
+
       Asserts.True(
           outputFile.Extension.EndsWith(".gltf") ||
           outputFile.Extension.EndsWith(".glb"),
@@ -175,7 +182,7 @@ namespace fin.exporter.gltf {
 
       this.logger_.BeginScope("Export");
 
-      var modelRoot = this.CreateModelRoot(model);
+      var modelRoot = this.CreateModelRoot(model, scale);
 
       var writeSettings = new WriteSettings {
           ImageWriting = this.Embedded

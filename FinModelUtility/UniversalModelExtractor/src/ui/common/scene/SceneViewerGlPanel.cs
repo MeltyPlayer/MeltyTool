@@ -4,17 +4,18 @@ using fin.gl.material;
 using fin.gl.model;
 using fin.io.bundles;
 using fin.model;
-using fin.model.util;
 using fin.scene;
 using fin.ui;
 using OpenTK.Graphics.OpenGL;
 using uni.config;
+using uni.model;
 using uni.ui.gl;
 
 
 namespace uni.ui.common.scene {
   public class SceneViewerGlPanel : BGlPanel, ISceneViewerPanel {
-    private readonly Camera camera_ = new();
+    private readonly Camera camera_ = Camera.NewLookingAt(0, 0, 0, 45, -10, 1.5f);
+
     private float fovY_ = 30;
 
     private readonly Color backgroundColor_ = Color.FromArgb(51, 128, 179);
@@ -33,14 +34,17 @@ namespace uni.ui.common.scene {
         return scene != null ? (this.fileBundle_!, scene) : null;
       }
       set {
-        this.fileBundle_ = value?.Item1;
-        var scene = this.scene_ = value?.Item2;
-
-        if (scene != null) {
-          this.viewerScale_ = scene.ViewerScale =
-                            1000 / SceneScaleCalculator.CalculateScale(scene);
-        } else {
+        if (value == null) {
+          this.fileBundle_ = null;
+          this.scene_ = null;
           this.viewerScale_ = 1;
+        } else {
+          this.fileBundle_ = value.Value.Item1;
+          this.scene_ = value.Value.Item2;
+          this.viewerScale_ = this.scene_.ViewerScale =
+              new ScaleSource(Config.Instance.ViewerModelScaleSource).GetScale(
+                  this.scene_,
+                  this.fileBundle_);
         }
       }
     }

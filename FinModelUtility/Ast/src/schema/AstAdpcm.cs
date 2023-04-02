@@ -1,5 +1,9 @@
-﻿using schema.binary.util;
+using System;
+using System.Runtime.CompilerServices;
 
+using fin.math;
+
+using schema.binary.util;
 
 namespace ast.schema {
   /// <summary>
@@ -8,13 +12,17 @@ namespace ast.schema {
   /// </summary>
   public partial class Ast {
     private void ReadAdpcm_(IEndianBinaryReader er) {
-      var channelCount = this.StrmHeader.ChannelCount;
+      var channelCount = 2;
+      Asserts.Equal(channelCount, this.StrmHeader.ChannelCount);
       var sampleCount = this.StrmHeader.SampleCount;
 
-      this.ChannelData = new List<short>[channelCount];
-      for (var i = 0; i < channelCount; ++i) {
-        this.ChannelData[i] = new List<short>();
-      }
+      var leftChannel = new short[sampleCount];
+      var leftChannelSampleIndex = 0;
+
+      var rightChannel = new short[sampleCount];
+      var rightChannelSampleIndex = 0;
+
+      this.ChannelData = new[] { leftChannel, rightChannel };
 
       Asserts.Equal(2, channelCount);
 
@@ -26,6 +34,8 @@ namespace ast.schema {
       var histR1 = 0;
       var histR2 = 0;
 
+      var blocks =
+          new LinkedList<(byte[] left, byte[] right)>();
       while (!er.Eof) {
         if (er.Eof) {
           break;
@@ -38,41 +48,61 @@ namespace ast.schema {
         var leftChannelAdpcm = er.ReadBytes(blockSize);
         var rightChannelAdpcm = er.ReadBytes(blockSize);
 
-        this.decode_ngc_afc(leftChannelAdpcm, 0, sampleCount, ref histL1,
+        blocks.AddLast((leftChannelAdpcm, rightChannelAdpcm));
+      }
+
+      foreach (var (leftChannelAdpcm, rightChannelAdpcm) in
+               blocks) {
+        this.decode_ngc_afc(leftChannelAdpcm,
+                            leftChannel,
+                            sampleCount,
+                            ref leftChannelSampleIndex,
+                            ref histL1,
                             ref histL2);
-        this.decode_ngc_afc(rightChannelAdpcm, 1, sampleCount, ref histR1,
+        this.decode_ngc_afc(rightChannelAdpcm,
+                            rightChannel,
+                            sampleCount,
+                            ref rightChannelSampleIndex,
+                            ref histR1,
                             ref histR2);
       }
     }
 
     private static (short, short)[] afc_coefs = {
-        (0, 0), (2048, 0), (0, 2048), (1024, 1024), (4096, -2048),
-        (3584, -1536), (3072, -1024), (4608, -2560), (4200, -2248),
-        (4800, -2300), (5120, -3072), (2048, -2048), (1024, -1024),
-        (-1024, 1024), (-1024, 0), (-2048, 0),
+        (0, 0),
+        (2048, 0),
+        (0, 2048),
+        (1024, 1024),
+        (4096, -2048),
+        (3584, -1536),
+        (3072, -1024),
+        (4608, -2560),
+        (4200, -2248),
+        (4800, -2300),
+        (5120, -3072),
+        (2048, -2048),
+        (1024, -1024),
+        (-1024, 1024),
+        (-1024, 0),
+        (-2048, 0),
     };
 
-    void decode_ngc_afc(IList<byte> adpcmData,
-                        int channel,
-                        uint sampleCount,
-                        ref int hist1,
-                        ref int hist2) {
+    private void decode_ngc_afc(ReadOnlySpan<byte> adpcmData,
+                                Span<short> channelData,
+                                uint sampleCount,
+                                ref int sampleIndex,
+                                ref int hist1,
+                                ref int hist2) {
       var bytesPerFrame = 0x09;
       var samplesPerFrame = 16; // (bytesPerFrame - 1) * 2
 
-      var frameCount = Math.Min(adpcmData.Count / bytesPerFrame,
+      var frameCount = Math.Min(adpcmData.Length / bytesPerFrame,
                                 sampleCount / samplesPerFrame);
-
-      var channelData = this.ChannelData[channel] as List<short>;
 
       for (var frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
         /* parse frame header */
         var frameOffset = frameIndex * bytesPerFrame;
-
-        var frame = new byte[bytesPerFrame];
-        for (var i = 0; i < bytesPerFrame; ++i) {
-          frame[i] = adpcmData[frameOffset + i];
-        }
+        var frame = adpcmData.Slice(frameOffset, bytesPerFrame);
 
         var scale = 1 << ((frame[0] >> 4) & 0xf);
         var index = (frame[0] & 0xf);
@@ -80,22 +110,23 @@ namespace ast.schema {
         var coef2 = afc_coefs[index].Item2;
 
         /* decode nibbles */
-        for (var sampleIndex = 0;
-             sampleIndex < samplesPerFrame;
-             sampleIndex++) {
-          var nibbles = frame[0x01 + sampleIndex / 2];
+        for (var sI = 0; sI < samplesPerFrame; sI++, sampleIndex++) {
+          if (sampleIndex >= sampleCount) {
+            return;
+          }
+          var nibbles = frame[0x01 + sI / 2];
 
-          var isLeftChannel = (sampleIndex & 1) != 0;
+          var isLeftChannel = sampleIndex.GetBit(0);
           var sample = isLeftChannel
-                           ? /* high nibble first */
-                           GetLowNibbleSigned_(nibbles)
-                           : GetHighNibbleSigned_(nibbles);
+              ? /* high nibble first */
+              GetLowNibbleSigned_(nibbles)
+              : GetHighNibbleSigned_(nibbles);
           sample = ((sample * scale) << 11);
           sample = (sample + coef1 * hist1 + coef2 * hist2) >> 11;
 
           sample = Clamp16_(sample);
 
-          channelData.Add((short)sample);
+          channelData[sampleIndex] = (short) sample;
 
           hist2 = hist1;
           hist1 = sample;
@@ -107,14 +138,13 @@ namespace ast.schema {
         0, 1, 2, 3, 4, 5, 6, 7, -8, -7, -6, -5, -4, -3, -2, -1
     };
 
-    private static int GetHighNibbleSigned_(byte n) {
-      return nibbleToInt_[n >> 4];
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int GetHighNibbleSigned_(byte n) => nibbleToInt_[n >> 4];
 
-    private static int GetLowNibbleSigned_(byte n) {
-      return nibbleToInt_[n & 0xf];
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int GetLowNibbleSigned_(byte n) => nibbleToInt_[n & 0xf];
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int Clamp16_(int val) {
       if (val > 32767) return 32767;
       else if (val < -32768) return -32768;

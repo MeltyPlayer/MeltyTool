@@ -3,8 +3,6 @@ using System.Linq;
 using Assimp;
 using fin.exporter.gltf;
 using fin.exporter.gltf.lowlevel;
-using fin.io;
-using fin.model;
 using fin.util.asserts;
 using fin.util.gc;
 using SharpGLTF.Schema2;
@@ -18,14 +16,16 @@ namespace fin.exporter.assimp.indirect {
     public bool LowLevel { get; set; }
     public bool ForceGarbageCollection { get; set; }
 
-    public void Export(IFile outputFile, IModel model)
-      => Export(outputFile,
-                !LowLevel ? new[] { ".fbx", ".glb" } : new[] { ".gltf" },
-                model);
+    public void Export(IExporterParams exporterParams)
+      => Export(exporterParams,
+                !LowLevel ? new[] { ".fbx", ".glb" } : new[] { ".gltf" });
 
-    public void Export(IFile outputFile,
-                       string[] exportedFormats,
-                       IModel model) {
+    public void Export(IExporterParams exporterParams,
+                       string[] exportedFormats) {
+      var outputFile = exporterParams.OutputFile;
+      var model = exporterParams.Model;
+      var scale = exporterParams.Scale;
+
       if (exportedFormats.Length == 0) {
         return;
       }
@@ -51,7 +51,7 @@ namespace fin.exporter.assimp.indirect {
         gltfExporter.UvIndices = false;
         gltfExporter.Embedded = false;
 
-        var gltfModelRoot = gltfExporter.CreateModelRoot(model);
+        var gltfModelRoot = gltfExporter.CreateModelRoot(model, scale);
         if (ForceGarbageCollection) {
           GcUtil.ForceCollectEverything();
         }
@@ -92,7 +92,11 @@ namespace fin.exporter.assimp.indirect {
 
         var inputFile = outputFile.CloneWithExtension(".tmp.glb");
         var inputPath = inputFile.FullName;
-        gltfExporter.Export(inputFile, model);
+        gltfExporter.Export(new ExporterParams {
+            OutputFile = inputFile,
+            Model = model,
+            Scale = scale * 100,
+        });
         if (ForceGarbageCollection) {
           GcUtil.ForceCollectEverything();
         }

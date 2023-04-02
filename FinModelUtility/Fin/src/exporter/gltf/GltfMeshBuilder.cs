@@ -27,6 +27,7 @@ namespace fin.exporter.gltf {
     public IList<Mesh> BuildAndBindMesh(
         ModelRoot gltfModel,
         IModel model,
+        float scale,
         Dictionary<IMaterial, (IList<byte>, MaterialBuilder)>
             finToTexCoordAndGltfMaterial) {
       var skin = model.Skin;
@@ -69,7 +70,9 @@ namespace fin.exporter.gltf {
             boneTransformManager.ProjectVertexPositionNormal(point, out var outPosition, out var outNormal);
 
             var position =
-                new Vector3(outPosition.X, outPosition.Y, outPosition.Z);
+                new Vector3(outPosition.X * scale,
+                            outPosition.Y * scale,
+                            outPosition.Z * scale);
             // TODO: Don't regenerate the skinning for each vertex, cache this somehow!
             var vertexBuilder = VERTEX.Create(position);
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Numerics;
-using System.Runtime.InteropServices;
-
-using Dxt;
+﻿using Dxt;
 
 using fin.image;
 

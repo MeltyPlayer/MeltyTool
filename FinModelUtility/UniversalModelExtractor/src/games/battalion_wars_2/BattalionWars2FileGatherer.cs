@@ -91,6 +91,7 @@ namespace uni.games.battalion_wars_2 {
                                 .Item1
                                 .Select(
                                     modlFile => new ModlModelFileBundle {
+                                        GameName = "battalion_wars_2",
                                         ModlFile = modlFile,
                                         GameVersion = GameVersion.BW2,
                                         AnimFiles = modlsAndAnims.Item2
@@ -99,7 +100,9 @@ namespace uni.games.battalion_wars_2 {
                 directory.Files
                          .Where(file => file.Name.EndsWith(".out.gz"))
                          .Select(outFile => new OutModelFileBundle {
-                             OutFile = outFile, GameVersion = GameVersion.BW2,
+                             GameName = "battalion_wars_2",
+                             OutFile = outFile, 
+                             GameVersion = GameVersion.BW2,
                          });
             var sceneBundles =
                 directory.Name == "CompoundFiles"
@@ -110,7 +113,9 @@ namespace uni.games.battalion_wars_2 {
                       .Where(file =>
                                  !file.NameWithoutExtension.EndsWith("_preload"))
                       .Select(file => new BwSceneFileBundle {
-                          MainXmlFile = file, GameVersion = GameVersion.BW2,
+                          GameName = "battalion_wars_2",
+                          MainXmlFile = file,
+                          GameVersion = GameVersion.BW2,
                       })
                     : new List<BwSceneFileBundle>();
 

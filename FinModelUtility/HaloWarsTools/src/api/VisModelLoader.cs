@@ -11,6 +11,7 @@ namespace hw.api {
       this.Context = context;
     }
 
+    public string GameName => "halo_wars";
     public IFileHierarchyFile MainFile => this.VisFile;
     public IFileHierarchyFile VisFile { get; }
 

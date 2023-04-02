@@ -6,6 +6,8 @@
     ".glb"
   ],
   "ShowSkeleton": true,
+  "ViewerModelScaleSource": "MIN_MAX_BOUNDS",
+  "ExportedModelScaleSource": "GAME_CONFIG",
   "ShowGrid": true,
   "ThirdParty": {
     "ExportBoneScaleAnimationsSeparately": false

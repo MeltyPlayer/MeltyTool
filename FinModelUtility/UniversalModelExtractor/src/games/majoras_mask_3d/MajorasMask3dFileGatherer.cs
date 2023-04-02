@@ -55,7 +55,12 @@ namespace uni.games.majoras_mask_3d {
 
         if (models.Length == 1 || animations.Length == 0) {
           foreach (var model in models) {
-            yield return new CmbModelFileBundle(model, animations, null, null);
+            yield return new CmbModelFileBundle(
+                "majoras_mask_3d",
+                model,
+                animations,
+                null,
+                null);
           }
         }
       }
@@ -86,6 +91,7 @@ namespace uni.games.majoras_mask_3d {
               var bundles =
                   this.separator_.Separate(subdir, cmbFiles, csabFiles);
               return bundles.Select(bundle => new CmbModelFileBundle(
+                                        "majoras_mask_3d",
                                         bundle.ModelFile,
                                         bundle.AnimationFiles.ToArray(),
                                         ctxbFiles,
@@ -116,6 +122,7 @@ namespace uni.games.majoras_mask_3d {
                       .ToArray();
 
       return cmbFiles.Select(cmbFile => new CmbModelFileBundle(
+                                 "majoras_mask_3d",
                                  cmbFile,
                                  csabFiles,
                                  null,

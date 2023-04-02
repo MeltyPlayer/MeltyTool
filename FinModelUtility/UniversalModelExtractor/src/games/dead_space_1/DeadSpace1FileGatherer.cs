@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using fin.io;
+﻿using fin.io;
 using fin.io.bundles;
 
 using visceral.api;
@@ -67,9 +65,10 @@ namespace uni.games.dead_space_1 {
 
         if (geoFiles.Length > 0 || rcbFile != null) {
           yield return new GeoModelFileBundle {
-            GeoFiles = geoFiles,
-            RcbFile = rcbFile,
-            Tg4ImageFileBundles = textureFiles
+              GameName = "dead_space_1",
+              GeoFiles = geoFiles,
+              RcbFile = rcbFile,
+              Tg4ImageFileBundles = textureFiles
           };
         } else {
           ;

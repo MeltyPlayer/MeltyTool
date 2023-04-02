@@ -3,10 +3,23 @@ using fin.math;
 
 
 namespace fin.ui {
-  public class Camera {
+  public class Camera : ICamera {
     // TODO: Add x/y/z locking.
 
-    public static Camera Instance { get; private set; }
+    public static Camera NewLookingAt(float x,
+                                      float y,
+                                      float z,
+                                      float yaw,
+                                      float pitch,
+                                      float distance) {
+      var camera = new Camera { Yaw = yaw, Pitch = pitch };
+      camera.X = x - camera.XNormal * distance;
+      camera.Y = y - camera.YNormal * distance;
+      camera.Z = z - camera.ZNormal * distance;
+      return camera;
+    }
+
+    public static ICamera Instance { get; private set; }
 
     public Camera() {
       Camera.Instance = this;
@@ -40,8 +53,6 @@ namespace fin.ui {
 
     public float ZNormal => this.VerticalNormal;
 
-
-    public void Reset() => this.X = this.Y = this.Z = this.Yaw = this.Pitch = 0;
 
     // TODO: These negative signs and flipped cos/sin don't look right but they
     // work???

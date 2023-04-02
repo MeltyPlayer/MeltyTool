@@ -231,7 +231,10 @@ namespace uni.games.mario_kart_double_dash {
     private IEnumerable<IFileBundle> ExtractAudio_(IFileHierarchy fileHierarchy)
       => fileHierarchy.Root.GetExistingSubdir(@"AudioRes\Stream")
                       .FilesWithExtension(".ast")
-                      .Select(astFile => new AstAudioFileBundle(astFile));
+                      .Select(astFile => new AstAudioFileBundle {
+                          GameName = "mario_kart_double_dash",
+                          AstFile = astFile,
+                      });
 
     private IEnumerable<IFileBundle> ExtractModelsAndAnimationsFromSceneObject_(
         IFileHierarchyDirectory directory) {
@@ -302,6 +305,7 @@ namespace uni.games.mario_kart_double_dash {
         IReadOnlyList<IFileHierarchyFile>? btiFiles = null
     )
       => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
+          GameName = "mario_kart_double_dash",
           BmdFile = bmdFile,
           BcxFiles = bcxFiles,
           BtiFiles = btiFiles,

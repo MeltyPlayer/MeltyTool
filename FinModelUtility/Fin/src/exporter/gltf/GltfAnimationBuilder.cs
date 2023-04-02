@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 using fin.model;
-using fin.util.optional;
 
 using SharpGLTF.Schema2;
-using SharpGLTF.Transforms;
 
 namespace fin.exporter.gltf {
   using GltfNode = Node;
@@ -15,6 +12,7 @@ namespace fin.exporter.gltf {
     public void BuildAnimations(
         ModelRoot gltfModel,
         (GltfNode, IBone)[] skinNodesAndBones,
+        float modelScale,
         IReadOnlyList<IAnimation> animations) {
       foreach (var animation in animations) {
         var gltfAnimation = gltfModel.UseAnimation(animation.Name);
@@ -65,7 +63,9 @@ namespace fin.exporter.gltf {
                       i,
                       defaultPosition);
               translationKeyframes[time] =
-                  new Vector3(position.X, position.Y, position.Z);
+                  new Vector3(position.X * modelScale,
+                              position.Y * modelScale,
+                              position.Z * modelScale);
             }
 
             if (rotationDefined) {

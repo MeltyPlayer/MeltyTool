@@ -21,6 +21,7 @@ namespace fin.exporter.gltf.lowlevel {
     public IList<Mesh> BuildAndBindMesh(
         ModelRoot gltfModel,
         IModel model,
+        float scale,
         Dictionary<IMaterial, (IList<byte>, Material)>
             finToTexCoordAndGltfMaterial) {
       var skin = model.Skin;
@@ -66,9 +67,9 @@ namespace fin.exporter.gltf.lowlevel {
 
         boneTransformManager.ProjectVertexPositionNormal(point, out var outPosition, out var outNormal);
         var pos = positionArray[p];
-        pos.X = outPosition.X;
-        pos.Y = outPosition.Y;
-        pos.Z = outPosition.Z;
+        pos.X = outPosition.X * scale;
+        pos.Y = outPosition.Y * scale;
+        pos.Z = outPosition.Z * scale;
         positionArray[p] = pos;
 
         if (point.LocalNormal != null) {

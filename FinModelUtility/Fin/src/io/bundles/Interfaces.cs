@@ -8,6 +8,7 @@ using fin.util.linq;
 
 namespace fin.io.bundles {
   public interface IFileBundle : IUiFile {
+    string? GameName { get; }
     IFileHierarchyFile? MainFile { get; }
 
     IEnumerable<IGenericFile> Files {

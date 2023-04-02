@@ -20,14 +20,16 @@ using modl.schema.modl.bw2;
 
 namespace modl.api {
   public class ModlModelFileBundle : IBattalionWarsModelFileBundle {
+    public required string GameName { get; init; }
+
     public IFileHierarchyFile MainFile => this.ModlFile;
     public IEnumerable<IGenericFile> Files
       => this.ModlFile.Yield().ConcatIfNonnull(this.AnimFiles);
 
-    public GameVersion GameVersion { get; set; }
-    public IFileHierarchyFile ModlFile { get; set; }
+    public required GameVersion GameVersion { get; init; }
+    public required IFileHierarchyFile ModlFile { get; init; }
 
-    public IList<IFileHierarchyFile>? AnimFiles { get; set; }
+    public required IList<IFileHierarchyFile>? AnimFiles { get; init; }
   }
 
   public class ModlModelLoader : IAsyncModelLoader<ModlModelFileBundle> {

@@ -48,7 +48,10 @@ namespace uni.games.super_smash_bros_melee {
         // TODO: Look into the other files
 
         if (isValidModel) {
-          yield return new DatModelFileBundle(datFile);
+          yield return new DatModelFileBundle {
+              GameName = "super_smash_bros_melee",
+              DatFile = datFile,
+          };
         }
       }
     }

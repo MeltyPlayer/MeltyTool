@@ -1,8 +1,5 @@
-﻿using System;
-
-using fin.io;
+﻿using fin.io;
 using fin.model;
-using fin.util.gc;
 using HaloWarsTools;
 
 
@@ -16,6 +13,7 @@ namespace hw.api {
       this.Context = context;
     }
 
+    public string GameName => "halo_wars";
     public IFileHierarchyFile MainFile => this.XtdFile;
     public IFileHierarchyFile XttFile { get; }
     public IFileHierarchyFile XtdFile { get; }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Numerics;
 
 using Dxt;
@@ -10,7 +9,6 @@ using fin.model;
 using fin.model.impl;
 
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 using Microsoft.Toolkit.HighPerformance.Helpers;
 

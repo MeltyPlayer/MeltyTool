@@ -19,6 +19,7 @@ namespace glo.api {
       this.TextureDirectories = textureDirectories;
     }
 
+    public string GameName => "glover";
     public IFileHierarchyFile MainFile => this.GloFile;
 
     public IFileHierarchyFile GloFile { get; }

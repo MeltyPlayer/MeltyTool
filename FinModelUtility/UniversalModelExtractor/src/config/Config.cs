@@ -1,8 +1,18 @@
 ﻿using fin.config;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 using uni.platforms;
 
 
 namespace uni.config {
+  public enum ScaleSourceType {
+    NONE,
+    MIN_MAX_BOUNDS,
+    GAME_CONFIG,
+  }
+
   public class Config {
     public static Config Instance { get; } =
       DirectoryConstants.CONFIG_FILE.Deserialize<Config>();
@@ -15,6 +25,15 @@ namespace uni.config {
       get => FinConfig.ShowSkeleton;
       set => FinConfig.ShowSkeleton = value;
     }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public ScaleSourceType ViewerModelScaleSource { get; set; } =
+      ScaleSourceType.MIN_MAX_BOUNDS;
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public ScaleSourceType ExportedModelScaleSource { get; set; } =
+      ScaleSourceType.NONE;
+
 
     public bool ShowGrid { get; set; }
 

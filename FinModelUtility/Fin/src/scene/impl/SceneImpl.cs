@@ -1,5 +1,4 @@
-﻿using Assimp;
-using fin.animation.playback;
+﻿using fin.animation.playback;
 using fin.config;
 using fin.gl;
 using fin.gl.material;
@@ -8,8 +7,6 @@ using fin.math;
 using fin.math.matrix;
 using fin.model;
 using fin.model.impl;
-using fin.util.optional;
-using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;

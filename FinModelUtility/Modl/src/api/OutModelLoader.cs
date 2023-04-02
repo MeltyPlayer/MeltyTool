@@ -16,10 +16,12 @@ using modl.schema.terrain.bw1;
 
 namespace modl.api {
   public class OutModelFileBundle : IBattalionWarsModelFileBundle {
+    public required string GameName { get; init; }
+
     public IFileHierarchyFile MainFile => this.OutFile;
 
-    public GameVersion GameVersion { get; set; }
-    public IFileHierarchyFile OutFile { get; set; }
+    public required GameVersion GameVersion { get; init; }
+    public required IFileHierarchyFile OutFile { get; init; }
   }
 
   public class OutModelLoader : IModelLoader<OutModelFileBundle> {

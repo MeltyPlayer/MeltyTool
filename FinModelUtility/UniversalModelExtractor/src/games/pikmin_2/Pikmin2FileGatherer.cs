@@ -50,7 +50,8 @@ namespace uni.games.pikmin_2 {
 
         if (modelSubdir != null && animSubdir != null) {
           var bmdFiles = modelSubdir.FilesWithExtension(".bmd").ToArray();
-          var bcxFiles = animSubdir.FilesWithExtensions(".bca", ".bck").ToArray();
+          var bcxFiles =
+              animSubdir.FilesWithExtensions(".bca", ".bck").ToArray();
           var btiFiles = subdir.FilesWithExtensionRecursive(".bti").ToArray();
 
           foreach (var bundle in this.ExtractModels_(bmdFiles,
@@ -127,7 +128,11 @@ namespace uni.games.pikmin_2 {
         IFileHierarchy fileHierarchy)
       => fileHierarchy.Root.GetExistingSubdir(@"AudioRes\Stream")
                       .FilesWithExtension(".ast")
-                      .Select(astFile => new AstAudioFileBundle(astFile));
+                      .Select(
+                          astFile => new AstAudioFileBundle {
+                                  GameName = "pikmin_2",
+                                  AstFile = astFile
+                              });
 
     private IEnumerable<IFileBundle> ExtractLeafBudFlower_(
         IFileHierarchy fileHierarchy)
@@ -149,7 +154,10 @@ namespace uni.games.pikmin_2 {
         IReadOnlyList<IFileHierarchyFile>? btiFiles = null
     )
       => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
-          BmdFile = bmdFile, BcxFiles = bcxFiles, BtiFiles = btiFiles,
+          GameName = "pikmin_2",
+          BmdFile = bmdFile,
+          BcxFiles = bcxFiles,
+          BtiFiles = btiFiles,
       });
   }
 }

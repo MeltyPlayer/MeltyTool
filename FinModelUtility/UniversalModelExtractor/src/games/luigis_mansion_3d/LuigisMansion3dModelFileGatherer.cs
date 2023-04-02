@@ -52,6 +52,7 @@ namespace uni.games.luigis_mansion_3d {
       try {
         return this.separator_.Separate(subdir, cmbFiles, csabFiles)
                    .Select(bundle => new CmbModelFileBundle(
+                               "luigis_mansion_3d",
                                bundle.ModelFile,
                                bundle.AnimationFiles.ToArray(),
                                ctxbFiles,

@@ -1,13 +1,17 @@
-﻿namespace ast.schema {
+﻿using schema.binary.util;
+
+namespace ast.schema {
   public partial class Ast {
     private void ReadPcm16_(IEndianBinaryReader er) {
-      var channelCount = this.StrmHeader.ChannelCount;
+      var channelCount = 2;
+      Asserts.Equal(channelCount, this.StrmHeader.ChannelCount);
       var sampleCount = this.StrmHeader.SampleCount;
 
-      this.ChannelData = new short[channelCount][];
+      var channelData = new short[channelCount][];
       for (var i = 0; i < channelCount; ++i) {
-        this.ChannelData[i] = new short[sampleCount];
+        channelData[i] = new short[sampleCount];
       }
+      this.ChannelData = channelData;
 
       for (var i = 0; i < channelCount; i += 2) {
         // TODO: This doesn't look right???
@@ -41,7 +45,7 @@
 
               for (var s = 0; s < shorts.Length; ++s) {
                 if (currentSample + s < sampleCount) {
-                  this.ChannelData[chan][currentSample + s] = shorts[s];
+                  channelData[chan][currentSample + s] = shorts[s];
                 }
               }
             } else {

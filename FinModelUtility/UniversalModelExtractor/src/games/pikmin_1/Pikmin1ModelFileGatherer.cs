@@ -36,7 +36,9 @@ namespace uni.games.pikmin_1 {
                          anmFile => anmFile.NameWithoutExtension ==
                                     modFile.NameWithoutExtension);
                  return new ModModelFileBundle {
-                     ModFile = modFile, AnmFile = anmFile,
+                     GameName = "pikmin_1",
+                     ModFile = modFile,
+                     AnmFile = anmFile,
                  };
                });
       });
