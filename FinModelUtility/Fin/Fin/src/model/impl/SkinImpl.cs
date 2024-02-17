@@ -7,6 +7,7 @@ using System.Numerics;
 
 using fin.data;
 using fin.data.indexable;
+using fin.data.sets;
 using fin.math.matrix.four;
 using fin.math.xyz;
 using fin.util.enumerables;
@@ -21,6 +22,8 @@ namespace fin.model.impl {
       private readonly IList<TVertex> vertices_;
       private readonly IList<IMesh> meshes_ = new List<IMesh>();
 
+      private readonly FinSortedSet<IBone> bonesUsedByVertices_
+          = new((lhs, rhs) => lhs.Index.CompareTo(rhs.Index));
       private readonly BoneWeightsDictionary boneWeightsDictionary_ = new();
 
       private readonly IndexableDictionary<IBone, IBoneWeights>
@@ -77,6 +80,9 @@ namespace fin.model.impl {
 
       public bool AllowMaterialRendererMerging { get; set; } = true;
 
+      public IReadOnlyFinSet<IBone> BonesUsedByVertices
+        => this.bonesUsedByVertices_;
+
       public IReadOnlyList<IBoneWeights> BoneWeights
         => this.boneWeightsDictionary_.List;
 
@@ -88,14 +94,27 @@ namespace fin.model.impl {
               vertexSpace,
               new BoneWeight(bone, FinMatrix4x4.IDENTITY, 1));
           this.boneWeightsByBone_[bone] = boneWeights;
+          this.bonesUsedByVertices_.Add(bone);
         }
 
         return boneWeights;
       }
 
       public IBoneWeights GetOrCreateBoneWeights(VertexSpace vertexSpace,
-                                                 params IBoneWeight[] weights)
-        => boneWeightsDictionary_.GetOrCreate(vertexSpace, weights);
+                                                 params IBoneWeight[] weights) {
+        var boneWeights
+            = this.boneWeightsDictionary_.GetOrCreate(
+                vertexSpace,
+                out var newlyCreated,
+                weights);
+        if (newlyCreated) {
+          foreach (var boneWeight in weights) {
+            this.bonesUsedByVertices_.Add(boneWeight.Bone);
+          }
+        }
+
+        return boneWeights;
+      }
 
       public IBoneWeights CreateBoneWeights(VertexSpace vertexSpace,
                                             params IBoneWeight[] weights)

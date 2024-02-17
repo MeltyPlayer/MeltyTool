@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 
 using fin.data.indexable;
+using fin.data.sets;
 using fin.math.matrix.four;
 using fin.math.xyz;
 
@@ -14,6 +15,7 @@ namespace fin.model {
     IMesh AddMesh();
     bool AllowMaterialRendererMerging { get; set; }
 
+    IReadOnlyFinSet<IBone> BonesUsedByVertices { get; }
     IReadOnlyList<IBoneWeights> BoneWeights { get; }
 
     IBoneWeights GetOrCreateBoneWeights(

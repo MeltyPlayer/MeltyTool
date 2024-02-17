@@ -113,6 +113,12 @@ namespace fin.ui.rendering.gl {
         var boneTransformManager = new BoneTransformManager();
         boneTransformManager.CalculateStaticMatricesForRendering(model);
 
+        var usedBoneIndexMap = model.Skin.BonesUsedByVertices
+                                    .Select((bone, index) => (index, bone))
+                                    .ToDictionary(
+                                        pair => pair.bone,
+                                        pair => pair.index);
+
         for (var i = 0; i < this.vertices_.Count; ++i) {
           this.vertexAccessor_.Target(this.vertices_[i]);
           var vertex = this.vertexAccessor_;
@@ -137,9 +143,20 @@ namespace fin.ui.rendering.gl {
           } else {
             var boneWeights = vertex.BoneWeights!.Weights;
             for (var b = 0; b < 4; ++b) {
-              var boneWeight = b < boneWeights.Count ? boneWeights[b] : null;
-              this.boneIdsData_[4 * i + b] = 1 + (boneWeight?.Bone.Index ?? -1);
-              this.boneWeightsData_[4 * i + b] = boneWeight?.Weight ?? 0;
+              int boneIndex;
+              float weight;
+
+              if (b < boneWeights.Count) {
+                var boneWeight = boneWeights[b];
+                boneIndex = 1 + usedBoneIndexMap[boneWeight.Bone];
+                weight = boneWeight.Weight;
+              } else {
+                boneIndex = 0;
+                weight = 0;
+              }
+
+              this.boneIdsData_[4 * i + b] = boneIndex;
+              this.boneWeightsData_[4 * i + b] = weight;
             }
           }
 

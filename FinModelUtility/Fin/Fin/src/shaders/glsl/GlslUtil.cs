@@ -64,7 +64,7 @@ namespace fin.shaders.glsl {
       if (useBoneMatrices) {
         vertexSrc.Append($"""
 
-                          uniform mat4 {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[{1 + model.Skeleton.Bones.Count}];
+                          uniform mat4 {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[{1 + model.Skin.BonesUsedByVertices.Count}];
                           """);
       }
 

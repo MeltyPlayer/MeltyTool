@@ -54,7 +54,7 @@ namespace fin.ui.rendering.gl.material {
 
       this.matricesUniform_ = this.impl_.GetUniformMat4s(
           GlslConstants.UNIFORM_BONE_MATRICES_NAME,
-          1 + model.Skeleton.Bones.Count);
+          1 + model.Skin.BonesUsedByVertices.Count);
       this.matricesUniform_.SetAndMarkDirty(0, Matrix4x4.Identity);
 
       this.shininessUniform_ = this.impl_.GetUniformFloat(
@@ -136,7 +136,8 @@ namespace fin.ui.rendering.gl.material {
       this.cameraPositionUniform_.SetAndMaybeMarkDirty(
           new Vector3(scCamX, scCamY, scCamZ));
 
-      foreach (var bone in this.model_.Skeleton.Bones) {
+      var boneIndex = 1;
+      foreach (var bone in this.model_.Skin.BonesUsedByVertices) {
         var localToWorldMatrix =
             this.boneTransformManager_?.GetLocalToWorldMatrix(bone).Impl ??
             Matrix4x4.Identity;
@@ -145,7 +146,7 @@ namespace fin.ui.rendering.gl.material {
             Matrix4x4.Identity;
 
         this.matricesUniform_.SetAndMarkDirty(
-            1 + bone.Index,
+            boneIndex++,
             inverseMatrix * localToWorldMatrix);
       }
 

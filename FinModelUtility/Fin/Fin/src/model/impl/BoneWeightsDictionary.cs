@@ -14,6 +14,7 @@ namespace fin.model.impl {
 
     public IBoneWeights GetOrCreate(
       VertexSpace vertexSpace,
+      out bool newlyCreated,
       params IBoneWeight[] weights
     ) {
       var error = .0001;
@@ -32,9 +33,11 @@ namespace fin.model.impl {
           new BoneWeightsSet();
       }
 
+      newlyCreated = false;
       if (!allBoneWeightsWithCount.TryGetExisting(vertexSpace, weights,
-            out var boneWeights)) {
-        allBoneWeightsWithCount.Add(boneWeights = CreateInstance_(vertexSpace, weights));
+                                                  out var boneWeights)) {
+        newlyCreated = true;
+        allBoneWeightsWithCount.Add(boneWeights = this.CreateInstance_(vertexSpace, weights));
       }
 
       return boneWeights;
