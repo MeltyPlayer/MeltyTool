@@ -32,6 +32,8 @@ namespace fin.model.io.exporters.gltf {
       var boneTransformManager = new BoneTransformManager();
       boneTransformManager.CalculateStaticMatricesForManualProjection(model);
 
+      var boneToIndex = model.Skeleton.Skip(1).ToIndexByValueIndexableDictionary();
+
       var nullMaterialBuilder =
           new MaterialBuilder("null").WithDoubleSide(false)
                                      .WithSpecularGlossiness();
@@ -80,7 +82,7 @@ namespace fin.model.io.exporters.gltf {
                 skinningByBoneWeights[boneWeights] = skinning = boneWeights
                     .Weights.Select(
                         boneWeight
-                            => (boneWeight.Bone.Index,
+                            => (boneToIndex[boneWeight.Bone],
                                 boneWeight.Weight))
                     .ToArray();
               }

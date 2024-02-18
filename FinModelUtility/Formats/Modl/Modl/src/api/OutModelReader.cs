@@ -11,7 +11,6 @@ using fin.io;
 using fin.math;
 using fin.model;
 using fin.model.impl;
-using fin.model.io;
 using fin.model.io.importers;
 using fin.util.asserts;
 using fin.util.enumerables;
