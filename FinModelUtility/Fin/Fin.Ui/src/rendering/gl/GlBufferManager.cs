@@ -1,7 +1,7 @@
 ﻿using fin.data;
 using fin.math;
-using fin.math.matrix.four;
 using fin.model;
+using fin.model.accessor;
 using fin.ui.rendering.gl.model;
 using fin.util.enumerables;
 using fin.util.linq;

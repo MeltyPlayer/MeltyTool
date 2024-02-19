@@ -4,6 +4,7 @@ using System.Linq;
 using Assimp;
 
 using fin.color;
+using fin.model.accessor;
 
 namespace fin.model.io.exporters.assimp.indirect {
   public class AssimpIndirectUvFixer {

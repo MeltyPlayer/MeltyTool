@@ -7,6 +7,7 @@ using fin.data.indexable;
 using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model;
+using fin.model.accessor;
 using fin.ui;
 
 namespace fin.math {

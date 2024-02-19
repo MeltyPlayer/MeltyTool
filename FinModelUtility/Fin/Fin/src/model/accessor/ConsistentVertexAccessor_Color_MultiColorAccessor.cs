@@ -2,7 +2,7 @@
 
 using fin.color;
 
-namespace fin.model {
+namespace fin.model.accessor {
   public partial class ConsistentVertexAccessor {
     private sealed class MultiColorAccessor : BAccessor, IVertexColorAccessor {
       private IReadOnlyMultiColorVertex colorVertex_;

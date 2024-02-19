@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace fin.model {
+namespace fin.model.accessor {
   public partial class ConsistentVertexAccessor {
     private sealed class TangentAccessor : BAccessor, IVertexTangentAccessor {
       private IReadOnlyTangentVertex tangentVertex_;

@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace fin.model {
-  public partial class ConsistentVertexAccessor : IVertexAccessor {
+namespace fin.model.accessor {
+  public partial class ConsistentVertexAccessor {
     private sealed class NullUvAccessor
         : BAccessor, IVertexUvAccessor {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]

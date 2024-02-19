@@ -3,32 +3,7 @@ using System.Runtime.CompilerServices;
 
 using fin.color;
 
-namespace fin.model {
-  public interface IVertexTargeter {
-    void Target(IReadOnlyVertex vertex);
-  }
-
-  public interface IVertexAccessor
-      : IVertexNormalAccessor,
-        IVertexTangentAccessor,
-        IVertexColorAccessor,
-        IVertexUvAccessor { }
-
-  public interface IVertexNormalAccessor : IVertexTargeter,
-                                           IReadOnlyNormalVertex { }
-
-  public interface IVertexTangentAccessor : IVertexTargeter,
-                                            IReadOnlyTangentVertex { }
-
-  public interface IVertexColorAccessor : IVertexTargeter,
-                                          IReadOnlySingleColorVertex,
-                                          IReadOnlyMultiColorVertex { }
-
-  public interface IVertexUvAccessor : IVertexTargeter,
-                                       IReadOnlySingleUvVertex,
-                                       IReadOnlyMultiUvVertex { }
-
-
+namespace fin.model.accessor {
   /// <summary>
   ///   Assumes all vertices are the same, consistent type.
   /// </summary>

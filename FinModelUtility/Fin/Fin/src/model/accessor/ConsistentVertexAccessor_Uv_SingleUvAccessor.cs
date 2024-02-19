@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace fin.model {
+namespace fin.model.accessor {
   public partial class ConsistentVertexAccessor {
     private sealed class SingleUvAccessor : BAccessor, IVertexUvAccessor {
       private IReadOnlySingleUvVertex uvVertex_;

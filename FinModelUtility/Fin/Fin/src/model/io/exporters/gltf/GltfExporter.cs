@@ -57,8 +57,8 @@ namespace fin.model.io.exporters.gltf {
           new GltfMaterialBuilder().GetMaterialBuilders(model.MaterialManager);
 
       // Builds meshes.
-      var meshBuilder = new GltfMeshBuilder { UvIndices = this.UvIndices };
-      var gltfMeshes = meshBuilder.BuildAndBindMesh(
+      var meshBuilder = new GltfSkinBuilder { UvIndices = this.UvIndices };
+      var gltfMeshes = meshBuilder.AddSkin(
           modelRoot,
           model,
           scale,
@@ -68,16 +68,20 @@ namespace fin.model.io.exporters.gltf {
                    .Select(
                        skinNodeAndBone => skinNodeAndBone.Item1)
                    .ToArray();
-      foreach (var gltfMesh in gltfMeshes) {
+      foreach (var (gltfMesh, hasJoints) in gltfMeshes) {
         // TODO: What causes this to happen???
         if (gltfMesh == null) {
           continue;
         }
 
-        scene.CreateNode()
-             .WithSkinnedMesh(gltfMesh,
-                              rootNode.WorldMatrix,
-                              joints);
+        var sceneNode = scene.CreateNode();
+        if (hasJoints) {
+          sceneNode.WithSkinnedMesh(gltfMesh,
+                                    rootNode.WorldMatrix,
+                                    joints);
+        } else {
+          sceneNode.WithMesh(gltfMesh);
+        }
       }
 
       return modelRoot;
