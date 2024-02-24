@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 
+using fin.language.equations.fixedFunction;
 using CommunityToolkit.HighPerformance.Helpers;
 
 using fin.image;
@@ -78,12 +79,13 @@ namespace fin.model.io.exporters.gltf {
                   // Darn, guess we can't support this either.
                   CullingMode.SHOW_NEITHER => false,
                   _ => throw new ArgumentOutOfRangeException()
-              })
-              .WithSpecularGlossinessShader()
-              .WithSpecularGlossiness(new Vector3(0), 0);
+              });
 
         switch (finMaterial) {
           case IStandardMaterial standardMaterial: {
+            gltfMaterialBuilder.WithSpecularGlossinessShader()
+                               .WithSpecularGlossiness(new Vector3(0), 0);
+
             var diffuseTexture = standardMaterial.DiffuseTexture;
             if (diffuseTexture != null) {
               gltfMaterialBuilder.UseChannel(KnownChannel.Diffuse)
@@ -127,6 +129,67 @@ namespace fin.model.io.exporters.gltf {
 
             break;
           }
+          case IFixedFunctionMaterial fixedFunctionMaterial: {
+            var equations = fixedFunctionMaterial.Equations;
+            var usesSpecular = equations.DoOutputsDependOn(
+                Enumerable
+                    .Range(0, MaterialConstants.MAX_LIGHTS)
+                    .SelectMany<int, FixedFunctionSource>(i => [
+                        FixedFunctionSource.LIGHT_SPECULAR_COLOR_0 + i,
+                        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0 + i
+                    ])
+                    .Concat([
+                        FixedFunctionSource.LIGHT_SPECULAR_COLOR_MERGED,
+                        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED
+                    ])
+                    .ToArray());
+            var usesDiffuse = equations.DoOutputsDependOn(
+                Enumerable
+                    .Range(0, MaterialConstants.MAX_LIGHTS)
+                    .SelectMany<int, FixedFunctionSource>(i => [
+                        FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0 + i,
+                        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0 + i
+                    ])
+                    .Concat([
+                        FixedFunctionSource.LIGHT_DIFFUSE_COLOR_MERGED,
+                        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_MERGED
+                    ])
+                    .ToArray());
+
+            KnownChannel mainTextureChannel;
+            if (usesSpecular) {
+              // TODO: Get specular color
+              gltfMaterialBuilder
+                  .WithSpecularGlossinessShader()
+                  .WithSpecularGlossiness(null,
+                                          fixedFunctionMaterial.Shininess);
+              mainTextureChannel = KnownChannel.Diffuse;
+            } else if (usesDiffuse) {
+              // TODO: Get diffuse color
+              gltfMaterialBuilder.WithMetallicRoughnessShader();
+              mainTextureChannel = KnownChannel.BaseColor;
+            } else {
+              gltfMaterialBuilder.WithUnlitShader();
+              mainTextureChannel = KnownChannel.BaseColor;
+            }
+
+            var texture = PrimaryTextureFinder.GetFor(finMaterial);
+            if (texture != null) {
+              var alphaMode = texture.TransparencyType switch {
+                  ImageTransparencyType.OPAQUE => AlphaMode.OPAQUE,
+                  ImageTransparencyType.MASK => AlphaMode.MASK,
+                  ImageTransparencyType.TRANSPARENT => AlphaMode.BLEND,
+                  _ => throw new ArgumentOutOfRangeException()
+              };
+              gltfMaterialBuilder.WithAlpha(alphaMode);
+
+              gltfMaterialBuilder
+                  .UseChannel(mainTextureChannel)
+                  .UseTexture(texture, gltfImageByFinImage[texture.Image]);
+            }
+
+            break;
+          }
           default: {
             var texture = PrimaryTextureFinder.GetFor(finMaterial);
             if (texture != null) {
@@ -139,6 +202,8 @@ namespace fin.model.io.exporters.gltf {
               gltfMaterialBuilder.WithAlpha(alphaMode);
 
               gltfMaterialBuilder
+                  .WithSpecularGlossinessShader()
+                  .WithSpecularGlossiness(null, 0)
                   .UseChannel(KnownChannel.Diffuse)
                   .UseTexture(texture, gltfImageByFinImage[texture.Image]);
             }
