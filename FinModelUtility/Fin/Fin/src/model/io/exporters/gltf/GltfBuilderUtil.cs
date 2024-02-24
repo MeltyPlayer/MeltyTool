@@ -26,9 +26,19 @@ namespace fin.model.io.exporters.gltf {
             : typeof(VertexTexture2);
       }
 
-      return colorCount == 1 && uvCount == 1
-          ? typeof(VertexColor1Texture1)
-          : typeof(VertexEmpty);
+      if (colorCount == 1 && uvCount == 1) {
+        return typeof(VertexColor1Texture1);
+      }
+
+      if (colorCount == 1) {
+        return typeof(VertexColor1);
+      }
+
+      if (uvCount == 1) {
+        return typeof(VertexTexture1);
+      }
+
+      return typeof(VertexEmpty);
     }
 
     public static Type GetSkinningType(int weightCount)

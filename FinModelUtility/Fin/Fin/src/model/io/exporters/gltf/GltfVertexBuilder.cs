@@ -134,9 +134,19 @@ namespace fin.model.io.exporters.gltf {
             : new VertexTexture2(uv0, uv1);
       }
 
-      return colorCount == 1 && uvCount == 1
-          ? new VertexColor1Texture1(color0, uv0)
-          : new VertexEmpty();
+      if (colorCount == 1 && uvCount == 1) {
+        return new VertexColor1Texture1(color0, uv0);
+      }
+
+      if (colorCount == 1) {
+        return new VertexColor1(color0);
+      }
+
+      if (uvCount == 1) {
+        return new VertexTexture1(uv0);
+      }
+
+      return new VertexEmpty();
     }
 
     private static Vector4 FinToGltfColor_(IColor? color)
