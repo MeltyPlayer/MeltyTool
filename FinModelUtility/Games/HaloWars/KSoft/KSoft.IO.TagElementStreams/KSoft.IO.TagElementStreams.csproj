@@ -1,66 +1,34 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{18F32228-8351-4F99-992F-78E9D1CE83D9}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>KSoft.IO</RootNamespace>
-    <AssemblyName>KSoft.IO.TagElementStreams</AssemblyName>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\..\KSoft.BCL.props" />
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DefaultSerializers\Collections.cs" />
-    <Compile Include="DefaultSerializers\GroupTags.cs" />
-    <Compile Include="ITagElementStreamable.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TagElementStream.cs" />
-    <Compile Include="TagElementStream.Read.cs" />
-    <Compile Include="TagElementStream.Serialize.cs" />
-    <Compile Include="TagElementStream.Write.cs" />
-    <Compile Include="TagElementStreamBookmark.cs" />
-    <Compile Include="TagElementStreamFactory.cs" />
-    <Compile Include="TagElementStreamFormat.cs" />
-    <Compile Include="TypeExtensions.cs" />
-    <Compile Include="Xml\XmlElementStream.cs" />
-    <Compile Include="Xml\XmlElementStream.Read.cs" />
-    <Compile Include="Xml\XmlElementStream.Write.cs" />
-    <Compile Include="DefaultSerializers\Shell.cs" />
-    <Compile Include="_DetailsText\TagElementTextStream.cs" />
-    <Compile Include="_DetailsText\TagElementTextStream.Read.cs" />
-    <Compile Include="_Details\TagElementTextStream.ReadT4.cs">
+    <Compile Update="_Details\TagElementTextStream.ReadT4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TagElementTextStream.ReadT4.tt</DependentUpon>
     </Compile>
-    <Compile Include="_DetailsText\TagElementTextStream.Write.cs" />
-    <Compile Include="_Details\TagElementTextStream.WriteT4.cs">
+    <Compile Update="_Details\TagElementTextStream.WriteT4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TagElementTextStream.WriteT4.tt</DependentUpon>
     </Compile>
-    <Compile Include="_Details\TagElementStream.ReadT4.cs">
+    <Compile Update="_Details\TagElementStream.ReadT4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TagElementStream.ReadT4.tt</DependentUpon>
     </Compile>
-    <Compile Include="_Details\TagElementStream.SerializeT4.cs">
+    <Compile Update="_Details\TagElementStream.SerializeT4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TagElementStream.SerializeT4.tt</DependentUpon>
     </Compile>
-    <Compile Include="_Details\TagElementStream.WriteT4.cs">
+    <Compile Update="_Details\TagElementStream.WriteT4.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TagElementStream.WriteT4.tt</DependentUpon>
@@ -70,30 +38,26 @@
     <Folder Include="Json\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj">
-      <Project>{eb07f515-e27c-4768-8bd8-2829f657807e}</Project>
-      <Name>KSoft</Name>
-      <Private>False</Private>
-    </ProjectReference>
+    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="_Details\TagElementTextStream.ReadT4.tt">
+    <None Update="_Details\TagElementTextStream.ReadT4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TagElementTextStream.ReadT4.cs</LastGenOutput>
     </None>
-    <None Include="_Details\TagElementTextStream.WriteT4.tt">
+    <None Update="_Details\TagElementTextStream.WriteT4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TagElementTextStream.WriteT4.cs</LastGenOutput>
     </None>
-    <None Include="_Details\TagElementStream.ReadT4.tt">
+    <None Update="_Details\TagElementStream.ReadT4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TagElementStream.ReadT4.cs</LastGenOutput>
     </None>
-    <None Include="_Details\TagElementStream.SerializeT4.tt">
+    <None Update="_Details\TagElementStream.SerializeT4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TagElementStream.SerializeT4.cs</LastGenOutput>
     </None>
-    <None Include="_Details\TagElementStream.WriteT4.tt">
+    <None Update="_Details\TagElementStream.WriteT4.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>TagElementStream.WriteT4.cs</LastGenOutput>
     </None>
@@ -101,13 +65,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating\Microsoft.TextTemplating.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
 </Project>
