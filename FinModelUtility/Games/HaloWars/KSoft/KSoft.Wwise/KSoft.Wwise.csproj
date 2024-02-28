@@ -1,73 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BDDEC955-6D39-4058-92E5-F1BF170F860F}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KSoft.Wwise</RootNamespace>
-    <AssemblyName>KSoft.Wwise</AssemblyName>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\KSoft.Wwise.props" />
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AkSubchunkHeader.cs" />
-    <Compile Include="AkVersion.cs" />
-    <Compile Include="Debug\Trace.cs" />
-    <Compile Include="FilePackage\AkFileLookupTable.cs" />
-    <Compile Include="FilePackage\AkFileLookupTableEntry.cs" />
-    <Compile Include="FilePackage\AkFilePackage.cs" />
-    <Compile Include="FilePackage\AkFilePackageExtractor.cs" />
-    <Compile Include="FilePackage\AkFilePackageHeader.cs" />
-    <Compile Include="FilePackage\AkFilePackageSettings.cs" />
-    <Compile Include="FilePackage\AkLanguageMap.cs" />
-    <Compile Include="FilePackage\AkLanguageMapEntry.cs" />
-    <Compile Include="FilePackage\FNVHash64.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SoundBank\AkActionType.cs" />
-    <Compile Include="SoundBank\AkBankHeader.cs" />
-    <Compile Include="SoundBank\Hierarchy\AkPlaylistItem.cs" />
-    <Compile Include="SoundBank\Media\AkBankSourceData.cs" />
-    <Compile Include="SoundBank\AkMediaInformation.cs" />
-    <Compile Include="SoundBank\AkSoundBank.cs" />
-    <Compile Include="SoundBank\Media\AkSoundBankData.cs" />
-    <Compile Include="SoundBank\Hierarchy\AkSoundBankHierarchy.cs" />
-    <Compile Include="SoundBank\Hierarchy\AkSoundBankHierarchyAction.cs" />
-    <Compile Include="SoundBank\Hierarchy\AkSoundBankHierarchyEvent.cs" />
-    <Compile Include="SoundBank\Hierarchy\AkSoundBankHierarchyObjectBase.cs" />
-    <Compile Include="SoundBank\Hierarchy\AkSoundBankHierarchyRanSeqCntr.cs" />
-    <Compile Include="SoundBank\Hierarchy\AkSoundBankHierarchySound.cs" />
-    <Compile Include="SoundBank\AkSoundBankObjectBase.cs" />
-    <Compile Include="SoundBank\Hierarchy\CAkParameterNodeBase.cs" />
-    <Compile Include="SoundBank\Hierarchy\HircType.cs" />
-    <Compile Include="SoundBank\Media\AkMediaHeader.cs" />
-    <Compile Include="SoundBank\Media\AkSoundBankDataIndex.cs" />
-    <Compile Include="SoundBank\Media\MediaReference.cs" />
-    <Compile Include="SoundBank\Strings\AkSoundBankStringMapping.cs" />
-    <Compile Include="SoundBank\Strings\AkSoundBankStringMapping2007.cs" />
-    <Compile Include="SoundBank\Strings\AkSoundBankStringMappingBase.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj">
-      <Project>{eb07f515-e27c-4768-8bd8-2829f657807e}</Project>
-      <Name>KSoft</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

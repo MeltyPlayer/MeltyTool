@@ -1,64 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0632A00B-DE9E-4350-A3F8-3A82F9C780AF}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KSoft.Security</RootNamespace>
-    <AssemblyName>KSoft.Security</AssemblyName>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\..\KSoft.BCL.props" />
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cryptography\Adler32.BitComputer.cs" />
-    <Compile Include="Cryptography\Adler32.cs" />
-    <Compile Include="Cryptography\Crc16.BitComputer.cs" />
-    <Compile Include="Cryptography\Crc16.cs" />
-    <Compile Include="Cryptography\Crc16.Definition.cs" />
-    <Compile Include="Cryptography\Crc32.BitComputer.cs" />
-    <Compile Include="Cryptography\Crc32.cs" />
-    <Compile Include="Cryptography\Crc32.Definition.cs" />
-    <Compile Include="Cryptography\JenkinsHash\JenkinsHash.cs" />
-    <Compile Include="Cryptography\JenkinsHash\JenkinsHashLookup.cs" />
-    <Compile Include="Cryptography\JenkinsHash\JenkinsHashLookup2.cs" />
-    <Compile Include="Cryptography\JenkinsHash\JenkinsHashLookup3.cs" />
-    <Compile Include="Cryptography\StreamBlockHashComputer.cs" />
-    <Compile Include="Cryptography\StreamHashComputer.cs" />
-    <Compile Include="Cryptography\TigerHash.cs" />
-    <Compile Include="Cryptography\TinyEncryptionAlgorithm\TinyEncryptionAlgorithm.cs" />
-    <Compile Include="Cryptography\TinyEncryptionAlgorithm\XTEA.Base.cs" />
-    <Compile Include="Cryptography\TinyEncryptionAlgorithm\XTEA.cs" />
-    <Compile Include="Cryptography\TinyEncryptionAlgorithm\XTEA256.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeExtensions.cs" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VersionCheckAnalyzer" Version="2.9.9" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.9" />
+    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.9.9" />
+    <PackageReference Include="Microsoft.NetFramework.Analyzers" Version="2.9.9" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj">
-      <Project>{eb07f515-e27c-4768-8bd8-2829f657807e}</Project>
-      <Name>KSoft</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -1,17 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7D302DFD-9307-441C-94EB-665BFF833C40}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KSoft.Terminal</RootNamespace>
-    <AssemblyName>KSoft.Terminal</AssemblyName>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\..\KSoft.BCL.props" />
   <Import Project="$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.9\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props" Condition="Exists('$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.9\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" />
@@ -20,23 +12,7 @@
   <Import Project="$(VitaNugetPackagesDir)\Microsoft.CodeQuality.Analyzers.2.9.9\build\Microsoft.CodeQuality.Analyzers.props" Condition="Exists('$(VitaNugetPackagesDir)\Microsoft.CodeQuality.Analyzers.2.9.9\build\Microsoft.CodeQuality.Analyzers.props')" />
   <Import Project="$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.9\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props" Condition="Exists('$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.9\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" />
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj">
-      <Project>{eb07f515-e27c-4768-8bd8-2829f657807e}</Project>
-      <Name>KSoft</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.9\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />
@@ -49,24 +25,13 @@
     <Analyzer Include="$(VitaNugetPackagesDir)\Microsoft.NetFramework.Analyzers.2.9.9\analyzers\dotnet\cs\Microsoft.NetFramework.Analyzers.dll" />
     <Analyzer Include="$(VitaNugetPackagesDir)\Microsoft.NetFramework.Analyzers.2.9.9\analyzers\dotnet\cs\Microsoft.NetFramework.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.9\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props')" Text="$([System.String]::Format('$(ErrorText)', '$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.9\build\Microsoft.CodeAnalysis.VersionCheckAnalyzer.props'))" />
-    <Error Condition="!Exists('$(VitaNugetPackagesDir)\Microsoft.CodeQuality.Analyzers.2.9.9\build\Microsoft.CodeQuality.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '$(VitaNugetPackagesDir)\Microsoft.CodeQuality.Analyzers.2.9.9\build\Microsoft.CodeQuality.Analyzers.props'))" />
-    <Error Condition="!Exists('$(VitaNugetPackagesDir)\Microsoft.NetCore.Analyzers.2.9.9\build\Microsoft.NetCore.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '$(VitaNugetPackagesDir)\Microsoft.NetCore.Analyzers.2.9.9\build\Microsoft.NetCore.Analyzers.props'))" />
-    <Error Condition="!Exists('$(VitaNugetPackagesDir)\Microsoft.NetFramework.Analyzers.2.9.9\build\Microsoft.NetFramework.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '$(VitaNugetPackagesDir)\Microsoft.NetFramework.Analyzers.2.9.9\build\Microsoft.NetFramework.Analyzers.props'))" />
-    <Error Condition="!Exists('$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.9\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '$(VitaNugetPackagesDir)\Microsoft.CodeAnalysis.FxCopAnalyzers.2.9.9\build\Microsoft.CodeAnalysis.FxCopAnalyzers.props'))" />
-    <Error Condition="!Exists('$(VitaNugetPackagesDir)\Microsoft.DotNet.Analyzers.Compatibility.0.2.12-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(VitaNugetPackagesDir)\Microsoft.DotNet.Analyzers.Compatibility.0.2.12-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets'))" />
-  </Target>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.9" />
+    <PackageReference Include="Microsoft.CodeAnalysis.VersionCheckAnalyzer" Version="2.9.9" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.9" />
+    <PackageReference Include="Microsoft.DotNet.Analyzers.Compatibility" Version="0.2.12-alpha" />
+    <PackageReference Include="Microsoft.NetCore.Analyzers" Version="2.9.9" />
+    <PackageReference Include="Microsoft.NetFramework.Analyzers" Version="2.9.9" />
+  </ItemGroup>
   <Import Project="$(VitaNugetPackagesDir)\Microsoft.DotNet.Analyzers.Compatibility.0.2.12-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets" Condition="Exists('$(VitaNugetPackagesDir)\Microsoft.DotNet.Analyzers.Compatibility.0.2.12-alpha\build\Microsoft.DotNet.Analyzers.Compatibility.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

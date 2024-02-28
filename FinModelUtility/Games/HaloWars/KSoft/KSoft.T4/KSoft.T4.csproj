@@ -1,46 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="Current" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{17AB134C-9C71-4CCF-84D9-D90F6DD58A0A}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>KSoft.T4</RootNamespace>
-    <AssemblyName>KSoft.T4</AssemblyName>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\..\KSoft.BCL.props" />
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="Microsoft.VisualStudio.TextTemplating, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Bitwise\BitwiseT4.cs" />
-    <Compile Include="Bitwise\BitFondlingT4.cs" />
-    <Compile Include="Bitwise\ByteSwapT4.cs" />
-    <Compile Include="Collections\CollectionsT4.cs" />
-    <Compile Include="IO\EndianStreamsT4.cs" />
-    <Compile Include="IO\TagElementStreamsT4.cs" />
-    <Compile Include="Math\MathT4.cs" />
-    <Compile Include="PrimitiveDefinitions\NumberCodeDefinition.cs" />
-    <Compile Include="PrimitiveDefinitions\PrimitiveCodeDefinition.cs" />
-    <Compile Include="PrimitiveDefinitions\PrimitiveDefinitions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TextTransformationCodeBlockBookmark.cs" />
-    <Compile Include="Text\NumbersT4.cs" />
-    <Compile Include="Text\TextT4.cs" />
-    <Compile Include="Utilities.cs" />
-    <Compile Include="Values\BittableHandleGenerator.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
