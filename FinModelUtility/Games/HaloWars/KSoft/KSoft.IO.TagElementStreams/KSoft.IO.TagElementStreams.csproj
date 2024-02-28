@@ -4,7 +4,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>KSoft.IO</RootNamespace>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\..\KSoft.BCL.props" />
   <ItemGroup>
