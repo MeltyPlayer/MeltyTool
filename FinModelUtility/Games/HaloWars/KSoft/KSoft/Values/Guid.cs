@@ -430,7 +430,7 @@ namespace KSoft.Values
 			return false;
 		}
 		internal static bool TryParseExactNoStyle(string input, out KGuid result) => TryParseExact(input, kFormatNoStyle, out result);
-		internal static bool TryParseExactHyphenated(string input, out KGuid result) => TryParseExact(input, kFormatHyphenated, out result);
+		public static bool TryParseExactHyphenated(string input, out KGuid result) => TryParseExact(input, kFormatHyphenated, out result);
 		#endregion
 
 		#region Byte Utils

@@ -104,10 +104,4 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Include="$(VitaRootDir)KSoft\shared\source\KSoftAssemblyInfo.cs">
-      <Link>Properties\KSoftAssemblyInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ using Reflect = System.Reflection;
 
 namespace KSoft.Reflection
 {
-	partial class Util
+	public partial class Util
 	{
 		const string kThisName = "this";
 		const string kValueName = "value";

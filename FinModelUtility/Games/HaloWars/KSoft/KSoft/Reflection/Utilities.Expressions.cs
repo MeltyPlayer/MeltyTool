@@ -10,9 +10,10 @@ using Reflect = System.Reflection;
 
 namespace KSoft.Reflection
 {
-	partial class Util
+	public partial class Util
 	{
 		public const int kGenerateDynamicDelegateMaximumParameters = 16;
+		const string kDelegateInvokeMethodName = "Invoke";
 
 		// Reference:
 		// http://www.codeproject.com/KB/cs/FastMethodInvoker.aspx

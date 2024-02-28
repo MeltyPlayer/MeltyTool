@@ -12,7 +12,7 @@ namespace KSoft.IO
 		void ThrowReadExeception(Exception detailsException);
 	};
 
-	internal sealed class TextStreamReadErrorState
+	public sealed class TextStreamReadErrorState
 		: Text.IHandleTextParseError
 		, ICanThrowReadExceptionsWithExtraDetails
 	{
