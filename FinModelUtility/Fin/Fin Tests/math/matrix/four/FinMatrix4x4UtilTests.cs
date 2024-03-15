@@ -1,4 +1,6 @@
-﻿using fin.math.rotations;
+﻿using System;
+
+using fin.math.rotations;
 using fin.model;
 using fin.util.asserts;
 
@@ -69,6 +71,37 @@ namespace fin.math.matrix.four {
       Asserts.IsRoughly(expectedRotation.Y, actualRotation.Y);
       Asserts.IsRoughly(expectedRotation.Z, actualRotation.Z);
       Asserts.IsRoughly(expectedRotation.W, actualRotation.W);
+    }
+
+    [Test]
+    public void TestDecompose() {
+      var expectedMatrix = new FinMatrix4x4(new[] {
+          -0.690858f,
+          0.000000f,
+          0.722991f,
+          0.000000f,
+          0.000000f,
+          1.000000f,
+          0.000000f,
+          0.000000f,
+          -0.722991f,
+          0.000000f,
+          -0.690858f,
+          0.000000f,
+          -189.294998f,
+          -2.000000f,
+          -265.059998f,
+          1.000000f
+      }.AsSpan());
+
+      expectedMatrix.Decompose(out var translation,
+                               out var rotation,
+                               out var scale);
+      Assert.AreEqual(new Position(-189.294998f, -2.000000f, -265.059998f),
+                      translation);
+
+      var actualMatrix = FinMatrix4x4Util.FromTrs(translation, rotation, scale);
+      Assert.AreEqual(expectedMatrix, actualMatrix);
     }
   }
 }

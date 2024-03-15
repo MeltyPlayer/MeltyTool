@@ -108,12 +108,15 @@ namespace fin.util.asserts {
         string? message = null)
       => Asserts.Equal<string>(expected, actual, message);
 
-    public static bool IsRoughly(float expected, float actual, string? message = null) {
+    public static bool IsRoughly(float expected,
+                                 float actual,
+                                 string? message = null) {
       if (expected.IsRoughly(actual)) {
         return true;
       }
 
-      Asserts.Fail(message ?? $"Expected {actual} to roughly equal {expected}.");
+      Asserts.Fail(message ??
+                   $"Expected {actual} to roughly equal {expected}.");
       return false;
     }
 
@@ -148,12 +151,25 @@ namespace fin.util.asserts {
       => Asserts.Nonnull(instance, message) &&
          Asserts.Equal(instance!.GetType(), expected, message);
 
-    public static TExpected AsA<TExpected>(
-        object? instance,
-        string? message = null) where TExpected : notnull {
+    public static TExpected AsA<TExpected>(object? instance,
+                                           string? message = null) {
       var cast = (TExpected) instance;
       Asserts.Nonnull(cast, message);
       return cast!;
+    }
+
+    public static TSub AsSubType<TBase, TSub>(
+        TBase instance,
+        string? message = null)
+        where TSub : TBase {
+      var cast = (TSub) instance;
+
+      if (instance == null &&
+          Nullable.GetUnderlyingType(typeof(TSub)) != null) {
+        return cast!;
+      }
+
+      return Asserts.CastNonnull(cast, message);
     }
   }
 }

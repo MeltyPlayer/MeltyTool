@@ -9,8 +9,6 @@ using fin.io;
 using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model;
-using fin.model.impl;
-using fin.model.io;
 using fin.scene;
 using fin.schema.vector;
 
@@ -460,10 +458,8 @@ namespace modl.schema.xml {
                                    translation.X,
                                    translation.Z),
                       translation.Z);
-                } else if (
-                    nextLinkId != null &&
-                    levelObjMap.TryGetValue(nextLinkId,
-                                            out var positionObj)) {
+                } else if (nextLinkId != null) {
+                  var positionObj = levelObjMap[nextLinkId];
                   sceneObject.SetPosition(
                       translation.X,
                       positionObj.Position.Y,
@@ -475,25 +471,14 @@ namespace modl.schema.xml {
                       translation.Z);
                 }
 
+                if (child.ModelName.Contains("WA20H")) {
+                  ;
+                }
+
                 levelObjMap[levelObj.Id] = sceneObject;
 
-                if (nextLinkId != null &&
-                    levelObjMap.TryGetValue(nextLinkId,
-                                            out var rotationAndLinkObj)) {
-                  var nextLinkRotation = rotationAndLinkObj.Rotation;
-                  sceneObject.Rotation.SetDegrees(
-                      nextLinkRotation.XDegrees,
-                      nextLinkRotation.YDegrees,
-                      nextLinkRotation.ZDegrees);
-
-                  var nextLinkScale = rotationAndLinkObj.Scale;
-                  sceneObject.SetScale(nextLinkScale.X,
-                                       nextLinkScale.Y,
-                                       nextLinkScale.Z);
-                } else {
-                  sceneObject.Rotation.SetQuaternion(rotation);
-                  sceneObject.SetScale(scale.X, scale.Y, scale.Z);
-                }
+                sceneObject.Rotation.SetQuaternion(rotation);
+                sceneObject.SetScale(scale.X, scale.Y, scale.Z);
 
                 sceneObject.AddSceneModel(modelMap[child.ModelName]);
               }
