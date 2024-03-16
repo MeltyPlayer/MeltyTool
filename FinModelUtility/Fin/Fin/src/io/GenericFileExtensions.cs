@@ -87,5 +87,21 @@ namespace fin.io {
       using var sw = file.OpenWriteAsText();
       sw.Write(text);
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write<T>(this IGenericFile file)
+        where T : IBinaryDeserializable, new() {
+      using var fs = file.OpenWrite();
+      using var bw = new SchemaBinaryWriter();
+      bw.CompleteAndCopyTo(fs);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Write<T>(this IGenericFile file, Endianness endianness)
+        where T : IBinaryDeserializable, new() {
+      using var fs = file.OpenWrite();
+      using var bw = new SchemaBinaryWriter(endianness);
+      bw.CompleteAndCopyTo(fs);
+    }
   }
 }

@@ -153,7 +153,7 @@ namespace uni.games.wind_waker {
       public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
           IFileHierarchyFile bmdFile,
           IReadOnlyList<IFileHierarchyFile> bckFiles) {
-        var prefix = StringUtil.SubstringUpTo(bmdFile.NameWithoutExtension, "_");
+        var prefix = bmdFile.NameWithoutExtension.SubstringUpTo("_");
         return bckFiles.Where(file => file.Name.StartsWith(prefix)).ToArray();
       }
     }
@@ -201,9 +201,9 @@ namespace uni.games.wind_waker {
         IOrganizeMethod organizeMethod) {
       if (organizeMethod is PrefixOrganizeMethod) {
         bmdFiles.OrderByDescending(
-            file => StringUtil
-                    .SubstringUpTo(file.NameWithoutExtension, "_")
-                    .Length);
+            file => file.NameWithoutExtension
+                        .SubstringUpTo("_")
+                        .Length);
       }
 
       var unclaimedBckFiles = new HashSet<IFileHierarchyFile>(bckFiles);

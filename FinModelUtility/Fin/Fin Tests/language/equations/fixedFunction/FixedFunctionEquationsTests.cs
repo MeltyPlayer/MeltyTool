@@ -172,7 +172,7 @@ namespace fin.language.equations.fixedFunction {
           new FixedFunctionEquationsPrettyPrinter<TIdentifier>().Print(
               equations);
 
-      var actualLines = StringUtil.SplitNewlines(actualText);
+      var actualLines = actualText.SplitNewlines();
       actualLines = actualLines.Take(actualLines.Length - 1).ToArray();
 
       var expectedText = string.Join('\n', expectedLines);

@@ -88,7 +88,7 @@ namespace uni.platforms.gcn {
                               file.FileType == ".rarc")
                   .ToArray();
         foreach (var relFile in relFiles) {
-          var prefix = StringUtil.SubstringUpTo(relFile.Name, ".rel");
+          var prefix = relFile.Name.SubstringUpTo(".rel");
           var mapFile =
               subdir.GetExistingFiles()
                     .Single(

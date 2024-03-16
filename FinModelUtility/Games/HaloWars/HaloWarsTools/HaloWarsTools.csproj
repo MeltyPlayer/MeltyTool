@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="schema" Version="0.3.11" />
+    <PackageReference Include="schema" Version="0.3.12" />
   </ItemGroup>
 
   <ItemGroup>

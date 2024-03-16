@@ -24,6 +24,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" />
     <PackageReference Include="System.Memory" Version="4.5.5" Condition="'$(TargetFramework)'=='netstandard2.0'" />
-    <PackageReference Include="schema" Version="0.3.11" />
+    <PackageReference Include="schema" Version="0.3.12" />
   </ItemGroup>
 </Project>
