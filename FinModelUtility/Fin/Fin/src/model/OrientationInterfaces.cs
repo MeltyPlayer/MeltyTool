@@ -3,6 +3,8 @@ using System.Numerics;
 
 using fin.math.interpolation;
 
+using schema.readOnly;
+
 namespace fin.model {
   public readonly struct Position : ILerpable<Position> {
     public Position() : this(0, 0, 0) {
@@ -134,41 +136,18 @@ namespace fin.model {
     }
   }
 
-
-  public interface IReadOnlyVector2 {
-    float X { get; }
-    float Y { get; }
+  [GenerateReadOnly]
+  public partial interface IVector2 {
+    float X { get; set; }
+    float Y { get; set; }
   }
 
-  public interface IVector2 : IReadOnlyVector2 {
-    float IReadOnlyVector2.X => this.X;
-    new float X { get; set; }
-
-    float IReadOnlyVector2.Y => this.Y;
-    new float Y { get; set; }
-  }
-
-
-  public interface IReadOnlyVector4 {
-    float X { get; }
-    float Y { get; }
-    float Z { get; }
-    float W { get; }
-  }
-
-
-  public interface IVector4 : IReadOnlyVector4 {
-    float IReadOnlyVector4.X => this.X;
-    new float X { get; set; }
-
-    float IReadOnlyVector4.Y => this.Y;
-    new float Y { get; set; }
-    
-    float IReadOnlyVector4.Z => this.Z;
-    new float Z { get; set; }
-    
-    float IReadOnlyVector4.W => this.W;
-    new float W { get; set; }
+  [GenerateReadOnly]
+  public partial interface IVector4 {
+    float X { get; set; }
+    float Y { get; set; }
+    float Z { get; set; }
+    float W { get; set; }
   }
 
 

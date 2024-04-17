@@ -21,52 +21,38 @@ namespace fin.model {
     void SetLocalPosition(float x, float y, float z);
   }
 
-
-  public interface IReadOnlyNormalVertex : IReadOnlyVertex {
+  [GenerateReadOnly]
+  public partial interface INormalVertex : IVertex {
     Normal? LocalNormal { get; }
-  }
-
-  public interface INormalVertex : IReadOnlyNormalVertex, IVertex {
     void SetLocalNormal(Normal? localNormal);
     void SetLocalNormal(Vector3? localNormal);
     void SetLocalNormal(IReadOnlyXyz? localNormal);
     void SetLocalNormal(float x, float y, float z);
   }
 
-
-  public interface IReadOnlyTangentVertex : IReadOnlyVertex {
+  [GenerateReadOnly]
+  public partial interface ITangentVertex : IVertex {
     Tangent? LocalTangent { get; }
-  }
-
-  public interface ITangentVertex : IReadOnlyTangentVertex, IVertex {
     void SetLocalTangent(Tangent? localTangent);
     void SetLocalTangent(Vector4? localTangent);
     void SetLocalTangent(IReadOnlyVector4? localTangent);
     void SetLocalTangent(float x, float y, float z, float w);
   }
 
+  [GenerateReadOnly]
+  public partial interface INormalTangentVertex : INormalVertex, ITangentVertex;
 
-  public interface IReadOnlyNormalTangentVertex
-      : IReadOnlyNormalVertex,
-        IReadOnlyTangentVertex { }
-
-  public interface INormalTangentVertex
-      : IReadOnlyNormalTangentVertex,
-        INormalVertex, ITangentVertex { }
-
-
-  public interface IReadOnlySingleColorVertex : IReadOnlyVertex {
+  [GenerateReadOnly]
+  public partial interface ISingleColorVertex : IVertex {
+    [Const]
     IColor? GetColor();
-  }
 
-  public interface ISingleColorVertex : IReadOnlySingleColorVertex, IVertex {
     void SetColor(Color? color);
     void SetColor(IColor? color);
     void SetColor(Vector4? color);
     void SetColor(IReadOnlyVector4? color);
     void SetColorBytes(byte r, byte g, byte b, byte a);
   }
-
 
   [GenerateReadOnly]
   public partial interface IMultiColorVertex : IVertex {
@@ -84,25 +70,24 @@ namespace fin.model {
                        byte a);
   }
 
-
-  public interface IReadOnlySingleUvVertex : IReadOnlyVertex {
+  [GenerateReadOnly]
+  public partial interface ISingleUvVertex : IVertex {
+    [Const]
     TexCoord? GetUv();
-  }
 
-  public interface ISingleUvVertex : IReadOnlySingleUvVertex, IVertex {
     void SetUv(TexCoord? uv);
     void SetUv(Vector2? uv);
     void SetUv(IReadOnlyVector2? uv);
     void SetUv(float u, float v);
   }
 
-
-  public interface IReadOnlyMultiUvVertex : IReadOnlyVertex {
+  [GenerateReadOnly]
+  public partial interface IMultiUvVertex : IVertex {
     int UvCount { get; }
-    TexCoord? GetUv(int uvIndex);
-  }
 
-  public interface IMultiUvVertex : IReadOnlyMultiUvVertex, IVertex {
+    [Const]
+    TexCoord? GetUv(int uvIndex);
+
     void SetUv(int uvIndex, TexCoord? uv);
     void SetUv(int uvIndex, float u, float v);
   }
