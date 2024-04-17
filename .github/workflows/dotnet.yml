@@ -36,7 +36,7 @@ jobs:
     - name: Install 'lcov-result-merger'
       run: npm i -g lcov-result-merger
     - name: Merge Test Coverage
-      run: lcov-result-merger "**/coverage.info" "lcov.info"
+      run: lcov-result-merger "**/coverage.info" "lcov.info" --legacy-temp-file
 
     - name: Upload to Coveralls
       uses: coverallsapp/github-action@master
