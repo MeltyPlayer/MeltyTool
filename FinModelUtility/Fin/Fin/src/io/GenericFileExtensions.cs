@@ -89,18 +89,22 @@ namespace fin.io {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write<T>(this IGenericFile file)
-        where T : IBinaryDeserializable, new() {
+    public static void Write<T>(this IGenericFile file, T data)
+        where T : IBinarySerializable, new() {
       using var fs = file.OpenWrite();
       using var bw = new SchemaBinaryWriter();
+      data.Write(bw);
       bw.CompleteAndCopyTo(fs);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Write<T>(this IGenericFile file, Endianness endianness)
-        where T : IBinaryDeserializable, new() {
+    public static void Write<T>(this IGenericFile file,
+                                T data,
+                                Endianness endianness)
+        where T : IBinarySerializable, new() {
       using var fs = file.OpenWrite();
       using var bw = new SchemaBinaryWriter(endianness);
+      data.Write(bw);
       bw.CompleteAndCopyTo(fs);
     }
   }

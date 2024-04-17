@@ -164,7 +164,7 @@ namespace mod.schema {
 
       var outData = new byte[dataLen];
       using var outStream = new MemoryStream(outData);
-      await writer.CompleteAndCopyToDelayed(outStream);
+      await writer.CompleteAndCopyToAsync(outStream);
 
       Assert.AreEqual(reader.Position,
                       outStream.Position,
@@ -184,7 +184,7 @@ namespace mod.schema {
 
       var firstOutData = new byte[dataLen];
       using var firstOutStream = new MemoryStream(firstOutData);
-      await firstWriter.CompleteAndCopyToDelayed(firstOutStream);
+      await firstWriter.CompleteAndCopyToAsync(firstOutStream);
 
       using var reader =
           new SchemaBinaryReader(firstOutData, Endianness.BigEndian);
@@ -196,7 +196,7 @@ namespace mod.schema {
 
       var secondOutData = new byte[dataLen];
       using var secondOutStream = new MemoryStream(secondOutData);
-      await secondWriter.CompleteAndCopyToDelayed(secondOutStream);
+      await secondWriter.CompleteAndCopyToAsync(secondOutStream);
 
       Assert.IsTrue(firstOutStream.Position == reader.Position &&
                     reader.Position == secondOutStream.Position,

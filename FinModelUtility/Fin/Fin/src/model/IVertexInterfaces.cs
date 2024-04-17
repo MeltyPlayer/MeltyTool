@@ -5,13 +5,14 @@ using fin.color;
 using fin.data.indexable;
 using fin.math.xyz;
 
+using schema.readOnly;
+
 namespace fin.model {
-  public interface IReadOnlyVertex : IIndexable {
+  [GenerateReadOnly]
+  public partial interface IVertex : IIndexable {
     IBoneWeights? BoneWeights { get; }
     Position LocalPosition { get; }
-  }
 
-  public interface IVertex : IReadOnlyVertex {
     void SetBoneWeights(IBoneWeights boneWeights);
 
     void SetLocalPosition(Position localPosition);

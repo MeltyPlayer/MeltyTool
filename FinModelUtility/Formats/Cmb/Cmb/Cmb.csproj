@@ -8,24 +8,6 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
-  <!--
-  <PropertyGroup>
-    <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>gen</CompilerGeneratedFilesOutputPath>
-  </PropertyGroup>
-  <Target Name="AddSourceGeneratedFiles" AfterTargets="CoreCompile">
-    <ItemGroup>
-      <Compile Include="gen\**" />
-    </ItemGroup>
-  </Target>
-  <Target Name="RemoveSourceGeneratedFiles" BeforeTargets="CoreCompile">
-    <ItemGroup>
-      <Compile Remove="gen\**" />
-    </ItemGroup>
-  </Target>
-  -->
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -41,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.3.12" />
+    <PackageReference Include="schema" Version="0.4.0" />
   </ItemGroup>
 
   <ItemGroup>
