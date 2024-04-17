@@ -46,11 +46,13 @@ namespace fin.model {
   }
 
 
-  public interface IReadOnlyNormalTangentVertex : IReadOnlyNormalVertex,
-                                                  IReadOnlyTangentVertex { }
+  public interface IReadOnlyNormalTangentVertex
+      : IReadOnlyNormalVertex,
+        IReadOnlyTangentVertex { }
 
-  public interface INormalTangentVertex : IReadOnlyNormalTangentVertex,
-                                          INormalVertex, ITangentVertex { }
+  public interface INormalTangentVertex
+      : IReadOnlyNormalTangentVertex,
+        INormalVertex, ITangentVertex { }
 
 
   public interface IReadOnlySingleColorVertex : IReadOnlyVertex {
@@ -66,12 +68,13 @@ namespace fin.model {
   }
 
 
-  public interface IReadOnlyMultiColorVertex : IReadOnlyVertex {
+  [GenerateReadOnly]
+  public partial interface IMultiColorVertex : IVertex {
     int ColorCount { get; }
-    IColor? GetColor(int colorIndex);
-  }
 
-  public interface IMultiColorVertex : IReadOnlyMultiColorVertex, IVertex {
+    [Const]
+    IColor? GetColor(int colorIndex);
+
     void SetColor(int colorIndex, IColor? color);
 
     void SetColorBytes(int colorIndex,

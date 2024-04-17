@@ -5,16 +5,14 @@ using System.Runtime.CompilerServices;
 
 using fin.util.asserts;
 
+using schema.readOnly;
+
 namespace fin.data {
-  public interface IReadOnlyGrid<out T> : IEnumerable<T> {
+  [GenerateReadOnly]
+  public partial interface IGrid<T> : IEnumerable<T> {
     int Width { get; }
     int Height { get; }
-
-    T this[int x, int y] { get; }
-  }
-
-  public interface IGrid<T> : IReadOnlyGrid<T> {
-    new T this[int x, int y] { get; set; }
+    T this[int x, int y] { get; set; }
   }
 
   public class Grid<T> : IGrid<T> {
@@ -23,7 +21,7 @@ namespace fin.data {
     public Grid(int width, int height, T defaultValue = default!) {
       this.Width = width;
       this.Height = height;
-      
+
       this.impl_ = new T[width * height];
       for (var i = 0; i < this.impl_.Count; ++i) {
         this.impl_[i] = defaultValue;
@@ -56,11 +54,13 @@ namespace fin.data {
         Asserts.Fail(
             $"Expected ({x}, {y}) to be a valid index in grid of size ({this.Width}, {this.Height}).");
       }
+
       return y * this.Width + x;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public IEnumerator<T> GetEnumerator() => this.impl_.GetEnumerator();
   }

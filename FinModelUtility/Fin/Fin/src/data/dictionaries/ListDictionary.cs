@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using schema.readOnly;
+
 namespace fin.data.dictionaries {
-  public interface IReadOnlyListDictionary<TKey, TValue>
-      : IReadOnlyFinCollection<(TKey Key, IList<TValue> Value)> {
+  [GenerateReadOnly]
+  public partial interface IListDictionary<TKey, TValue>
+      : IFinCollection<(TKey Key, IList<TValue> Value)> {
+    [Const]
     bool HasList(TKey key);
 
     IList<TValue> this[TKey key] { get; }
-    bool TryGetList(TKey key, out IList<TValue>? list);
-  }
 
-  public interface IListDictionary<TKey, TValue>
-      : IReadOnlyListDictionary<TKey, TValue>,
-        IFinCollection<(TKey Key, IList<TValue> Value)> {
+    [Const]
+    bool TryGetList(TKey key, out IList<TValue>? list);
+
     void ClearList(TKey key);
     void Add(TKey key, TValue value);
   }

@@ -1,18 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using fin.data.sets;
 
-using fin.data.sets;
+using schema.readOnly;
 
 namespace fin.data.indexable {
-  public interface IReadOnlyIndexableSet<TIndexable> : IFinSet<TIndexable>
+  [GenerateReadOnly]
+  public partial interface IIndexableSet<TIndexable> : IFinSet<TIndexable>
       where TIndexable : IIndexable {
+    [Const]
     bool Contains(int index);
+
     TIndexable this[int index] { get; }
+
+    [Const]
     bool TryGetValue(int index, out TIndexable value);
   }
-
-  public interface IIndexableSet<TIndexable> :
-      IReadOnlyIndexableSet<TIndexable>,
-      IFinSet<TIndexable>
-      where TIndexable : IIndexable { }
 }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 using fin.util.asserts;
 
-namespace fin.data.dictionaries {
-  public interface IReadOnlySubTypeDictionary<TKey, TValue>
-      : IReadOnlyFinCollection<(TKey Key, TValue Value)> {
-    TValueSub Get<TValueSub>(TKey key) where TValueSub : TValue;
-  }
+using schema.readOnly;
 
-  public interface ISubTypeDictionary<TKey, TValue>
-      : IReadOnlySubTypeDictionary<TKey, TValue>,
-        IFinCollection<(TKey Key, TValue Value)> {
+namespace fin.data.dictionaries {
+  [GenerateReadOnly]
+  public partial interface ISubTypeDictionary<TKey, TValue>
+      : IFinCollection<(TKey Key, TValue Value)> {
+    [Const]
+    TValueSub Get<TValueSub>(TKey key) where TValueSub : TValue;
+
     void Set<TValueSub>(TKey key, TValueSub value) where TValueSub : TValue;
   }
 

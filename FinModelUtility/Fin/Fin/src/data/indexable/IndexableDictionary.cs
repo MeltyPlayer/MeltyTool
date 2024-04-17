@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using schema.readOnly;
+
 namespace fin.data.indexable {
-  public interface IReadOnlyIndexableDictionary<TIndexable, TValue>
+  [GenerateReadOnly]
+  public partial interface IIndexableDictionary<TIndexable, TValue>
       : IEnumerable<TValue>
       where TIndexable : IIndexable {
-    TValue this[int index] { get; }
-    TValue this[TIndexable key] { get; }
-
+    [Const]
     bool TryGetValue(int index, out TValue value);
-    bool TryGetValue(TIndexable key, out TValue value);
-  }
 
-  public interface IIndexableDictionary<TIndexable, TValue>
-      : IReadOnlyIndexableDictionary<TIndexable, TValue>
-      where TIndexable : IIndexable {
+    [Const]
+    bool TryGetValue(TIndexable key, out TValue value);
+
+
     void Clear();
-    new TValue this[int index] { get; set; }
-    new TValue this[TIndexable key] { get; set; }
+    TValue this[int index] { get; set; }
+    TValue this[TIndexable key] { get; set; }
   }
 
   public class IndexableDictionary<TIndexable, TValue>(int capacity)
