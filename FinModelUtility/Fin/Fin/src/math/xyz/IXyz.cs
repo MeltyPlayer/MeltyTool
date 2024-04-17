@@ -1,18 +1,10 @@
-﻿namespace fin.math.xyz {
-  public interface IReadOnlyXyz {
-    float X { get; }
-    float Y { get; }
-    float Z { get; }
-  }
+﻿using schema.readOnly;
 
-  public interface IXyz : IReadOnlyXyz {
-    float IReadOnlyXyz.X => this.X;
-    new float X { get; set; }
-
-    float IReadOnlyXyz.Y => this.Y;
-    new float Y { get; set; }
-
-    float IReadOnlyXyz.Z => this.Z;
-    new float Z { get; set; }
+namespace fin.math.xyz {
+  [GenerateReadOnly]
+  public partial interface IXyz {
+    float X { get; set; }
+    float Y { get; set; }
+    float Z { get; set; }
   }
 }

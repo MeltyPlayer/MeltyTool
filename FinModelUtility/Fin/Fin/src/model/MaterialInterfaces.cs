@@ -8,6 +8,8 @@ using fin.language.equations.fixedFunction;
 using fin.math.xyz;
 using fin.util.image;
 
+using schema.readOnly;
+
 namespace fin.model {
   public interface IMaterialManager {
     IReadOnlyList<IMaterial> All { get; }
@@ -56,30 +58,19 @@ namespace fin.model {
   }
 
 
-  public interface IReadOnlyMaterial {
-    string? Name { get; }
+  [GenerateReadOnly]
+  public partial interface IMaterial {
+    string? Name { get; set; }
 
     IEnumerable<ITexture> Textures { get; }
 
-    CullingMode CullingMode { get; }
+    CullingMode CullingMode { get; set; }
 
-    DepthMode DepthMode { get; }
-    DepthCompareType DepthCompareType { get; }
+    DepthMode DepthMode { get; set; }
+    DepthCompareType DepthCompareType { get; set; }
 
-    bool IgnoreLights { get; }
-    float Shininess { get; }
-  }
-
-  public interface IMaterial : IReadOnlyMaterial {
-    new string? Name { get; set; }
-
-    new CullingMode CullingMode { get; set; }
-
-    new DepthMode DepthMode { get; set; }
-    new DepthCompareType DepthCompareType { get; set; }
-
-    new bool IgnoreLights { get; set; }
-    new float Shininess { get; set; }
+    bool IgnoreLights { get; set; }
+    float Shininess { get; set; }
   }
 
 

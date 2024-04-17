@@ -1,9 +1,8 @@
-﻿namespace fin.data.lists {
-  public interface IReadOnlyFinList<out T> : IReadOnlyFinCollection<T> {
-    T this[int index] { get; }
-  }
+﻿using schema.readOnly;
 
-  public interface IFinList<T> : IReadOnlyFinList<T>, IFinCollection<T> {
-    new T this[int index] { get; set; }
+namespace fin.data.lists {
+  [GenerateReadOnly]
+  public partial interface IFinList<T> : IFinCollection<T> {
+    T this[int index] { get; set; }
   }
 }

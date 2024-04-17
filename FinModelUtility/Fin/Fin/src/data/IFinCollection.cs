@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 
-namespace fin.data {
-  public interface IReadOnlyFinCollection<out T> : IEnumerable<T> {
-    int Count { get; }
-  }
+using schema.readOnly;
 
-  public interface IFinCollection<out T> : IReadOnlyFinCollection<T> {
+namespace fin.data {
+  [GenerateReadOnly]
+  public partial interface IFinCollection<T> : IEnumerable<T> {
+    int Count { get; }
     void Clear();
   }
 }

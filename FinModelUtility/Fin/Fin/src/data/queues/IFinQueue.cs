@@ -1,19 +1,23 @@
 ﻿using System.Collections.Generic;
 
-namespace fin.data.queues {
-  public interface IReadOnlyFinQueue<out T> : IReadOnlyFinCollection<T> { }
+using schema.readOnly;
 
+namespace fin.data.queues {
   /// <summary>
   ///   Simpler interface for queues that is easier to implement.
   /// </summary>
-  public interface IFinQueue<T> : IReadOnlyFinQueue<T>, IFinCollection<T> {
+  [GenerateReadOnly]
+  public partial interface IFinQueue<T> : IFinCollection<T> {
     void Enqueue(T first, params T[] rest);
     void Enqueue(IEnumerable<T> values);
 
     T Dequeue();
     bool TryDequeue(out T value);
 
+    [Const]
     T Peek();
+
+    [Const]
     bool TryPeek(out T value);
   }
 }

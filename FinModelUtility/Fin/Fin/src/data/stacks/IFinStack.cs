@@ -1,13 +1,12 @@
-﻿namespace fin.data.stacks {
-  public interface IReadOnlyFinStack<out T> : IReadOnlyFinCollection<T> {
-    T Top { get; }
-  }
+﻿using schema.readOnly;
 
+namespace fin.data.stacks {
   /// <summary>
   ///   Simpler interface for stacks that is easier to implement.
   /// </summary>
-  public interface IFinStack<T> : IReadOnlyFinStack<T>, IFinCollection<T> {
-    new T Top { get; set; }
+  [GenerateReadOnly]
+  public partial interface IFinStack<T> : IFinCollection<T> {
+    T Top { get; set; }
 
     bool TryPop(out T item);
     T Pop();
