@@ -1,12 +1,15 @@
 ﻿using System.IO.Abstractions;
 
-namespace fin.io {
-  public interface IReadOnlyGenericFile {
-    string DisplayFullPath { get; }
-    FileSystemStream OpenRead();
-  }
+using schema.readOnly;
 
-  public interface IGenericFile : IReadOnlyGenericFile {
+namespace fin.io {
+  [GenerateReadOnly]
+  public partial interface IGenericFile {
+    string DisplayFullPath { get; }
+
+    [Const]
+    FileSystemStream OpenRead();
+
     FileSystemStream OpenWrite();
   }
 }

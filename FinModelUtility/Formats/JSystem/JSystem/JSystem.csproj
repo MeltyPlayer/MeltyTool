@@ -60,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.4.7" />
+    <PackageReference Include="schema" Version="0.4.11" />
   </ItemGroup>
 
   <ItemGroup>

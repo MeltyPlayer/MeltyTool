@@ -86,7 +86,7 @@ namespace fin.io {
     // File methods
     public bool Exists => FinFileStatic.Exists(this.FullPath);
 
-    string IReadOnlyGenericFile.DisplayFullPath => this.FullPath;
+    public string DisplayFullPath => this.FullPath;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Delete() => FinFileStatic.Delete(this.FullPath);

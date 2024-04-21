@@ -3,6 +3,8 @@
 using fin.color;
 using fin.math.xyz;
 
+using schema.readOnly;
+
 namespace fin.model {
   // Read only
   public interface IReadOnlyLighting {
@@ -31,25 +33,6 @@ namespace fin.model {
     CLAMP,
   }
 
-  public interface IReadOnlyLight {
-    string Name { get; }
-    bool Enabled { get; }
-
-    LightSourceType SourceType { get; }
-
-    IReadOnlyXyz? Position { get; }
-    IReadOnlyXyz? Normal { get; }
-
-    float Strength { get; }
-    IColor Color { get; }
-
-    IReadOnlyXyz? CosineAttenuation { get; }
-    IReadOnlyXyz? DistanceAttenuation { get; }
-
-    AttenuationFunction AttenuationFunction { get; }
-    DiffuseFunction DiffuseFunction { get; }
-  }
-
   // Mutable
   public interface ILighting : IReadOnlyLighting {
     IReadOnlyList<IReadOnlyLight> IReadOnlyLighting.Lights => this.Lights;
@@ -63,23 +46,34 @@ namespace fin.model {
     new float AmbientLightStrength { get; set; }
   }
 
-  public interface ILight : IReadOnlyLight {
+  [GenerateReadOnly]
+  public partial interface ILight {
+    string Name { get; }
     ILight SetName(string name);
 
-    bool IReadOnlyLight.Enabled => this.Enabled;
-    new bool Enabled { get; set; }
+    bool Enabled { get; set; }
 
+    LightSourceType SourceType { get; }
+
+    IReadOnlyXyz? Position { get; }
     ILight SetPosition(IReadOnlyXyz position);
+
+    IReadOnlyXyz? Normal { get; }
     ILight SetNormal(IReadOnlyXyz normal);
 
-    float IReadOnlyLight.Strength => this.Strength;
-    new float Strength { get; set; }
+    float Strength { get; set; }
+
+    IColor Color { get; }
     ILight SetColor(IColor color);
 
+    IReadOnlyXyz? CosineAttenuation { get; }
     ILight SetCosineAttenuation(IReadOnlyXyz cosineAttenuation);
+    IReadOnlyXyz? DistanceAttenuation { get; }
     ILight SetDistanceAttenuation(IReadOnlyXyz distanceAttenuation);
 
+    AttenuationFunction AttenuationFunction { get; }
     ILight SetAttenuationFunction(AttenuationFunction attenuationFunction);
+    DiffuseFunction DiffuseFunction { get; }
     ILight SetDiffuseFunction(DiffuseFunction diffuseFunction);
   }
 }
