@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace fin.data.dictionaries {
-  public interface IReadOnlySetDictionary<TKey, TValue>
-      : IReadOnlyFinCollection<(TKey Key, ISet<TValue> Value)> {
-    ISet<TValue> this[TKey key] { get; }
-    bool TryGetSet(TKey key, out ISet<TValue>? list);
-  }
+using schema.readOnly;
 
-  public interface ISetDictionary<TKey, TValue>
-      : IReadOnlySetDictionary<TKey, TValue>,
-        IFinCollection<(TKey Key, ISet<TValue> Value)> {
+namespace fin.data.dictionaries {
+  [GenerateReadOnly]
+  public partial interface ISetDictionary<TKey, TValue>
+      : IFinCollection<(TKey Key, ISet<TValue> Value)> {
+    ISet<TValue> this[TKey key] { get; }
+
+    [Const]
+    bool TryGetSet(TKey key, out ISet<TValue>? list);
+
     void Add(TKey key, TValue value);
   }
 
