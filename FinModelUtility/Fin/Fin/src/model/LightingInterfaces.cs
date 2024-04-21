@@ -6,14 +6,6 @@ using fin.math.xyz;
 using schema.readOnly;
 
 namespace fin.model {
-  // Read only
-  public interface IReadOnlyLighting {
-    IReadOnlyList<IReadOnlyLight> Lights { get; }
-
-    IColor AmbientLightColor { get; }
-    float AmbientLightStrength { get; }
-  }
-
   public enum LightSourceType {
     UNDEFINED,
     POSITION,
@@ -33,17 +25,14 @@ namespace fin.model {
     CLAMP,
   }
 
-  // Mutable
-  public interface ILighting : IReadOnlyLighting {
-    IReadOnlyList<IReadOnlyLight> IReadOnlyLighting.Lights => this.Lights;
-    new IReadOnlyList<ILight> Lights { get; }
+  [GenerateReadOnly]
+  public partial interface ILighting {
+    IReadOnlyList<ILight> Lights { get; }
 
     ILight CreateLight();
 
-    IColor IReadOnlyLighting.AmbientLightColor => this.AmbientLightColor;
-    new IColor AmbientLightColor { get; set; }
-    float IReadOnlyLighting.AmbientLightStrength => this.AmbientLightStrength;
-    new float AmbientLightStrength { get; set; }
+    IColor AmbientLightColor { get; set; }
+    float AmbientLightStrength { get; set; }
   }
 
   [GenerateReadOnly]

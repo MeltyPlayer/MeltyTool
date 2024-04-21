@@ -6,20 +6,21 @@ using fin.model;
 
 
 namespace fin.ui.rendering.gl.material {
-  public class GlFixedFunctionMaterialShader
-      : BGlMaterialShader<IReadOnlyFixedFunctionMaterial> {
+  public class GlFixedFunctionMaterialShader(
+      IModel model,
+      IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
+      IBoneTransformManager? boneTransformManager,
+      IReadOnlyLighting? lighting)
+      : BGlMaterialShader<IReadOnlyFixedFunctionMaterial>(
+          model,
+          fixedFunctionMaterial,
+          boneTransformManager,
+          lighting) {
     private readonly Dictionary<IColorRegister, IShaderUniform<Vector3>>
         colorRegistersAndUniforms_ = new();
 
     private readonly Dictionary<IScalarRegister, IShaderUniform<float>>
         scalarRegistersAndUniforms_ = new();
-
-    public GlFixedFunctionMaterialShader(
-        IModel model,
-        IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
-        IBoneTransformManager? boneTransformManager,
-        ILighting? lighting)
-        : base(model, fixedFunctionMaterial, boneTransformManager, lighting) { }
 
     protected override void DisposeInternal() { }
 
@@ -33,7 +34,7 @@ namespace fin.ui.rendering.gl.material {
         if (!equations.DoOutputsDependOn(
             [
                 FixedFunctionSource.TEXTURE_COLOR_0 + i,
-                    FixedFunctionSource.TEXTURE_ALPHA_0 + i
+                FixedFunctionSource.TEXTURE_ALPHA_0 + i
             ])) {
           continue;
         }

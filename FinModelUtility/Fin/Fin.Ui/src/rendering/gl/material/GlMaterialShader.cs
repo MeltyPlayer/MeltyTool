@@ -9,26 +9,29 @@ namespace fin.ui.rendering.gl.material {
         IModel model,
         IMaterial? material,
         IBoneTransformManager? boneTransformManager = null,
-        ILighting? lighting = null)
+        IReadOnlyLighting? lighting = null)
       => material.GetShaderType() switch {
-        FinShaderType.FIXED_FUNCTION => new GlFixedFunctionMaterialShader(
-            model,
-            Asserts.AsA<IFixedFunctionMaterial>(material),
+          FinShaderType.FIXED_FUNCTION => new GlFixedFunctionMaterialShader(
+              model,
+              Asserts.AsA<IFixedFunctionMaterial>(material),
+              boneTransformManager,
+              lighting),
+          FinShaderType.TEXTURE => new GlTextureMaterialShader(model,
+            Asserts.AsA<ITextureMaterial>(material),
             boneTransformManager,
             lighting),
-        FinShaderType.TEXTURE => new GlTextureMaterialShader(model,
-                                                             Asserts.AsA<ITextureMaterial>(material),
-                                                             boneTransformManager,
-                                                             lighting),
-        FinShaderType.COLOR => new GlColorMaterialShader(model,
-                                                         Asserts.AsA<IColorMaterial>(material),
-                                                         boneTransformManager,
-                                                         lighting),
-        FinShaderType.STANDARD => new GlStandardMaterialShader(model,
-                                                               Asserts.AsA<IStandardMaterial>(material),
-                                                               boneTransformManager,
-                                                               lighting),
-        FinShaderType.NULL => new GlNullMaterialShader(model, boneTransformManager, lighting),
+          FinShaderType.COLOR => new GlColorMaterialShader(model,
+            Asserts.AsA<IColorMaterial>(material),
+            boneTransformManager,
+            lighting),
+          FinShaderType.STANDARD => new GlStandardMaterialShader(model,
+            Asserts.AsA<IStandardMaterial>(material),
+            boneTransformManager,
+            lighting),
+          FinShaderType.NULL => new GlNullMaterialShader(
+              model,
+              boneTransformManager,
+              lighting),
       };
   }
 }

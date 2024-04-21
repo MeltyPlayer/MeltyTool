@@ -3,22 +3,19 @@
 using fin.math;
 using fin.model;
 
-using OpenTK.Graphics.OpenGL;
-
 
 namespace fin.ui.rendering.gl.material {
-  public class GlColorMaterialShader : BGlMaterialShader<IColorMaterial> {
-    private readonly IColorMaterial material_;
+  public class GlColorMaterialShader(
+      IModel model,
+      IColorMaterial colorMaterial,
+      IBoneTransformManager? boneTransformManager,
+      IReadOnlyLighting? lighting)
+      : BGlMaterialShader<IColorMaterial>(model,
+                                          colorMaterial,
+                                          boneTransformManager,
+                                          lighting) {
+    private readonly IColorMaterial material_ = colorMaterial;
     private IShaderUniform<Vector4> diffuseLightColorUniform_;
-
-    public GlColorMaterialShader(
-        IModel model,
-        IColorMaterial colorMaterial,
-        IBoneTransformManager? boneTransformManager,
-        ILighting? lighting) :
-        base(model, colorMaterial, boneTransformManager, lighting) {
-      this.material_ = colorMaterial;
-    }
 
     protected override void DisposeInternal() { }
 

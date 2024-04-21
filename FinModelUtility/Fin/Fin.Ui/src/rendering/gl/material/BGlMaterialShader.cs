@@ -14,7 +14,7 @@ namespace fin.ui.rendering.gl.material {
     private LinkedList<CachedLightUniformData> cachedLightUniformDatas_ = [];
 
     private readonly IModel model_;
-    private readonly ILighting? lighting_;
+    private readonly IReadOnlyLighting? lighting_;
     private readonly IBoneTransformManager? boneTransformManager_;
     private readonly GlShaderProgram impl_;
 
@@ -34,7 +34,7 @@ namespace fin.ui.rendering.gl.material {
         IModel model,
         TMaterial material,
         IBoneTransformManager? boneTransformManager,
-        ILighting? lighting) {
+        IReadOnlyLighting? lighting) {
       this.model_ = model;
       this.Material = material;
       this.boneTransformManager_ = boneTransformManager;
@@ -165,7 +165,7 @@ namespace fin.ui.rendering.gl.material {
       this.impl_.Use();
     }
 
-    private void PassInLightUniforms_(ILighting? lighting) {
+    private void PassInLightUniforms_(IReadOnlyLighting? lighting) {
       var useLighting = this.UseLighting && this.lighting_ != null;
       this.useLightingUniform_.SetAndMaybeMarkDirty(useLighting);
 

@@ -3,13 +3,14 @@ using fin.model;
 using fin.shaders.glsl;
 
 namespace fin.ui.rendering.gl.material {
-  public class GlNullMaterialShader : BGlMaterialShader<IReadOnlyMaterial?> {
-    public GlNullMaterialShader(
-        IModel model,
-        IBoneTransformManager? boneTransformManager,
-        ILighting? lighting) :
-        base(model, null, boneTransformManager, lighting) { }
-
+  public class GlNullMaterialShader(
+      IModel model,
+      IBoneTransformManager? boneTransformManager,
+      IReadOnlyLighting? lighting)
+      : BGlMaterialShader<IReadOnlyMaterial?>(model,
+                                              null,
+                                              boneTransformManager,
+                                              lighting) {
     protected override void DisposeInternal() { }
 
     protected override IShaderSourceGlsl GenerateShaderSource(

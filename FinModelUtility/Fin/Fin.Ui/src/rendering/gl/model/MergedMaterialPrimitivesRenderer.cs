@@ -15,7 +15,7 @@ namespace fin.ui.rendering.gl.model {
         GlBufferManager bufferManager,
         IModel model,
         IMaterial? material,
-        ILighting? lighting,
+        IReadOnlyLighting? lighting,
         MergedPrimitive mergedPrimitive) {
       this.material_ = material;
 

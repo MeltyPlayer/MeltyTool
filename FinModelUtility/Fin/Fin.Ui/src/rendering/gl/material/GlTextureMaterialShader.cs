@@ -3,14 +3,15 @@ using fin.model;
 using fin.model.util;
 
 namespace fin.ui.rendering.gl.material {
-  public class GlTextureMaterialShader : BGlMaterialShader<IReadOnlyMaterial> {
-    public GlTextureMaterialShader(
-        IModel model,
-        IReadOnlyMaterial material,
-        IBoneTransformManager? boneTransformManager,
-        ILighting? lighting) :
-        base(model, material, boneTransformManager, lighting) { }
-
+  public class GlTextureMaterialShader(
+      IModel model,
+      IReadOnlyMaterial material,
+      IBoneTransformManager? boneTransformManager,
+      IReadOnlyLighting? lighting)
+      : BGlMaterialShader<IReadOnlyMaterial>(model,
+                                             material,
+                                             boneTransformManager,
+                                             lighting) {
     protected override void DisposeInternal() { }
 
     protected override void Setup(
