@@ -3,13 +3,16 @@ using System.Numerics;
 
 using fin.data.indexable;
 
+using schema.readOnly;
+
 namespace fin.model {
   public interface ISkeleton : IEnumerable<IBone> {
     IBone Root { get; }
     IReadOnlyList<IBone> Bones { get; }
   }
 
-  public interface ILeafBone : IIndexable {
+  [GenerateReadOnly]
+  public partial interface ILeafBone : IIndexable {
     string Name { get; set; }
 
     IBone Root { get; }
@@ -31,7 +34,8 @@ namespace fin.model {
     Quaternion FaceTowardsCameraAdjustment { get; }
   }
 
-  public interface IBone : ILeafBone {
+  [GenerateReadOnly]
+  public partial interface IBone : ILeafBone {
     IReadOnlyList<IBone> Children { get; }
     IBone AddRoot(float x, float y, float z);
     IBone AddChild(float x, float y, float z);

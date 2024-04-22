@@ -7,60 +7,65 @@ using fin.util.asserts;
 namespace fin.model.impl {
   public class BoneWeightsDictionary {
     private readonly List<IBoneWeights> boneWeights_ = [];
+
     private readonly Dictionary<int, BoneWeightsSet> boneWeightsByCount_ =
-      new();
+        new();
 
     public IReadOnlyList<IBoneWeights> List => boneWeights_;
 
     public IBoneWeights GetOrCreate(
-      VertexSpace vertexSpace,
-      out bool newlyCreated,
-      params IBoneWeight[] weights
+        VertexSpace vertexSpace,
+        out bool newlyCreated,
+        params IBoneWeight[] weights
     ) {
       var error = .0001;
       if (weights.Length > 1) {
         weights = weights.Where(boneWeight => boneWeight.Weight > error)
-          .ToArray();
+                         .ToArray();
       }
 
       var totalWeight = weights.Select(weight => weight.Weight).Sum();
       Asserts.True(Math.Abs(totalWeight - 1) < error);
 
       if (!this.boneWeightsByCount_.TryGetValue(
-            weights.Length,
-            out var allBoneWeightsWithCount)) {
+              weights.Length,
+              out var allBoneWeightsWithCount)) {
         allBoneWeightsWithCount = this.boneWeightsByCount_[weights.Length] =
-          new BoneWeightsSet();
+            new BoneWeightsSet();
       }
 
       newlyCreated = false;
-      if (!allBoneWeightsWithCount.TryGetExisting(vertexSpace, weights,
+      if (!allBoneWeightsWithCount.TryGetExisting(vertexSpace,
+                                                  weights,
                                                   out var boneWeights)) {
         newlyCreated = true;
-        allBoneWeightsWithCount.Add(boneWeights = this.CreateInstance_(vertexSpace, weights));
+        allBoneWeightsWithCount.Add(boneWeights
+                                        = this.CreateInstance_(
+                                            vertexSpace,
+                                            weights));
       }
 
       return boneWeights;
     }
 
     public IBoneWeights Create(
-      VertexSpace vertexSpace,
-      params IBoneWeight[] weights
+        VertexSpace vertexSpace,
+        params IBoneWeight[] weights
     ) {
       var error = .0001;
       if (weights.Length > 1) {
         weights = weights.Where(boneWeight => boneWeight.Weight > error)
-          .ToArray();
+                         .ToArray();
       }
 
       var totalWeight = weights.Select(weight => weight.Weight).Sum();
       Asserts.True(Math.Abs(totalWeight - 1) < error);
 
       if (!this.boneWeightsByCount_.TryGetValue(
-            weights.Length,
-            out var allBoneWeightsWithCount)) {
+              weights.Length,
+              out var allBoneWeightsWithCount)) {
         allBoneWeightsWithCount = this.boneWeightsByCount_[weights.Length] =
-          new BoneWeightsSet();
+            new BoneWeightsSet();
       }
 
       var boneWeights = CreateInstance_(vertexSpace, weights);
@@ -70,21 +75,21 @@ namespace fin.model.impl {
     }
 
     private IBoneWeights CreateInstance_(
-      VertexSpace vertexSpace,
-      params IBoneWeight[] weights) {
+        VertexSpace vertexSpace,
+        params IBoneWeight[] weights) {
       var error = .0001;
       if (weights.Length > 1) {
         weights = weights.Where(boneWeight => boneWeight.Weight > error)
-          .ToArray();
+                         .ToArray();
       }
 
       var totalWeight = weights.Select(weight => weight.Weight).Sum();
       Asserts.True(Math.Abs(totalWeight - 1) < error);
 
       var boneWeights = new BoneWeightsImpl {
-        Index = boneWeights_.Count,
-        VertexSpace = vertexSpace,
-        Weights = weights,
+          Index = boneWeights_.Count,
+          VertexSpace = vertexSpace,
+          Weights = weights,
       };
 
       this.boneWeights_.Add(boneWeights);
@@ -92,13 +97,15 @@ namespace fin.model.impl {
       return boneWeights;
     }
 
-    public static int GetHashCode(VertexSpace vertexSpace, IReadOnlyList<IBoneWeight> weights) {
+    public static int GetHashCode(VertexSpace vertexSpace,
+                                  IReadOnlyList<IBoneWeight> weights) {
       int hash = 216613626;
       var sub = 16780669;
       hash = hash * sub ^ vertexSpace.GetHashCode();
       foreach (var weight in weights) {
         hash = hash * sub ^ weight.GetHashCode();
       }
+
       return hash;
     }
 
@@ -118,10 +125,11 @@ namespace fin.model.impl {
         return Equals(other);
       }
 
-      public bool Equals(IBoneWeights? weights)
+      public bool Equals(IReadOnlyBoneWeights? weights)
         => weights != null && this.Equals(weights.VertexSpace, weights.Weights);
 
-      public bool Equals(VertexSpace vertexSpace, IReadOnlyList<IBoneWeight> weights) {
+      public bool Equals(VertexSpace vertexSpace,
+                         IReadOnlyList<IReadOnlyBoneWeight> weights) {
         if (vertexSpace != this.VertexSpace) {
           return false;
         }
@@ -145,7 +153,8 @@ namespace fin.model.impl {
 
           if (!(weight.InverseBindMatrix == null &&
                 existingWeight.InverseBindMatrix == null) ||
-              !(weight.InverseBindMatrix?.Equals(existingWeight.InverseBindMatrix) ??
+              !(weight.InverseBindMatrix?.Equals(
+                    existingWeight.InverseBindMatrix) ??
                 false)) {
             return false;
           }

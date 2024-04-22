@@ -15,11 +15,11 @@ namespace fin.model.io.exporters.gltf {
   public class GltfVertexBuilder {
     private static readonly (int, float)[] defaultSkinning_ = [(0, 1)];
 
-    private readonly IndexableDictionary<IBoneWeights, (int, float)[]>
+    private readonly IndexableDictionary<IReadOnlyBoneWeights, (int, float)[]>
         skinningByBoneWeights_ = new();
 
     public GltfVertexBuilder(IModel model,
-                             IIndexableDictionary<IBone, int> boneToIndex) {
+                             IIndexableDictionary<IReadOnlyBone, int> boneToIndex) {
       foreach (var boneWeights in model.Skin.BoneWeights) {
         this.skinningByBoneWeights_[boneWeights] =
             boneWeights.Weights.Select(boneWeight => (

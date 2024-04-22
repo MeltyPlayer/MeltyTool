@@ -116,7 +116,7 @@ namespace fin.ui.rendering.gl {
         var usedBoneIndexMap = model.Skin.BonesUsedByVertices
                                     .Select((bone, index) => (index, bone))
                                     .ToDictionary(
-                                        pair => pair.bone,
+                                        pair => (IReadOnlyBone) pair.bone,
                                         pair => pair.index);
 
         for (var i = 0; i < this.vertices_.Count; ++i) {

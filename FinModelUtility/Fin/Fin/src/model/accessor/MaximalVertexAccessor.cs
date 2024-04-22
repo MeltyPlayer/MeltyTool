@@ -18,7 +18,7 @@ namespace fin.model.accessor {
 
     public int Index => this.currentVertex_.Index;
 
-    public IBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
+    public IReadOnlyBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
     public Position LocalPosition => this.currentVertex_.LocalPosition;
 
     public Normal? LocalNormal

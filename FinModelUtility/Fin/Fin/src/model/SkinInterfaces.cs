@@ -7,6 +7,8 @@ using fin.data.sets;
 using fin.math.matrix.four;
 using fin.math.xyz;
 
+using schema.readOnly;
+
 namespace fin.model {
   public interface ISkin {
     IReadOnlyList<IReadOnlyVertex> Vertices { get; }
@@ -45,8 +47,13 @@ namespace fin.model {
 
     IReadOnlyList<IPrimitive> Primitives { get; }
 
-    IPrimitive AddTriangles(IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)> vertices);
-    IPrimitive AddTriangles(params (IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)[] triangles);
+    IPrimitive AddTriangles(
+        IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)>
+            vertices);
+
+    IPrimitive AddTriangles(
+        params (IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)[] triangles);
+
     IPrimitive AddTriangles(IReadOnlyList<IReadOnlyVertex> vertices);
     IPrimitive AddTriangles(params IReadOnlyVertex[] vertices);
 
@@ -55,12 +62,20 @@ namespace fin.model {
     IPrimitive AddTriangleFan(IReadOnlyList<IReadOnlyVertex> vertices);
     IPrimitive AddTriangleFan(params IReadOnlyVertex[] vertices);
 
-    IPrimitive AddQuads(IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)> vertices);
-    IPrimitive AddQuads(params (IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)[] quads);
+    IPrimitive AddQuads(
+        IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex,
+            IReadOnlyVertex)> vertices);
+
+    IPrimitive AddQuads(
+        params (IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex,
+            IReadOnlyVertex)[] quads);
+
     IPrimitive AddQuads(IReadOnlyList<IReadOnlyVertex> vertices);
     IPrimitive AddQuads(params IReadOnlyVertex[] vertices);
 
-    ILinesPrimitive AddLines(IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex)> lines);
+    ILinesPrimitive AddLines(
+        IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex)> lines);
+
     ILinesPrimitive AddLines(params (IReadOnlyVertex, IReadOnlyVertex)[] lines);
     ILinesPrimitive AddLines(IReadOnlyList<IReadOnlyVertex> lines);
     ILinesPrimitive AddLines(params IReadOnlyVertex[] lines);
@@ -69,15 +84,19 @@ namespace fin.model {
     IPointsPrimitive AddPoints(params IReadOnlyVertex[] points);
   }
 
-
-  public interface IBoneWeights : IIndexable, IEquatable<IBoneWeights> {
+  [GenerateReadOnly]
+  public partial interface IBoneWeights
+      : IIndexable, IEquatable<IReadOnlyBoneWeights> {
     VertexSpace VertexSpace { get; }
     IReadOnlyList<IBoneWeight> Weights { get; }
 
-    bool Equals(VertexSpace vertexSpace, IReadOnlyList<IBoneWeight> weights);
+    [Const]
+    bool Equals(VertexSpace vertexSpace,
+                IReadOnlyList<IReadOnlyBoneWeight> weights);
   }
 
-  public interface IBoneWeight {
+  [GenerateReadOnly]
+  public partial interface IBoneWeight {
     IBone Bone { get; }
     IReadOnlyFinMatrix4x4? InverseBindMatrix { get; }
     float Weight { get; }

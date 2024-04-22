@@ -39,12 +39,12 @@ namespace fin.math {
   }
 
   public interface IReadOnlyBoneTransformManager : IVertexProjector {
-    (IReadOnlyBoneTransformManager, IBone)? Parent { get; }
+    (IReadOnlyBoneTransformManager, IReadOnlyBone)? Parent { get; }
 
-    IReadOnlyFinMatrix4x4 GetWorldMatrix(IBone bone);
+    IReadOnlyFinMatrix4x4 GetWorldMatrix(IReadOnlyBone bone);
 
-    IReadOnlyFinMatrix4x4 GetLocalToWorldMatrix(IBone bone);
-    IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IBone bone);
+    IReadOnlyFinMatrix4x4 GetLocalToWorldMatrix(IReadOnlyBone bone);
+    IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IReadOnlyBone bone);
   }
 
   public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
@@ -54,6 +54,7 @@ namespace fin.math {
     void CalculateStaticMatricesForManualProjection(
         IModel model,
         bool forcePreproject = false);
+
     void CalculateStaticMatricesForRendering(IModel model);
 
     void CalculateMatrices(
@@ -67,29 +68,30 @@ namespace fin.math {
 
   public class BoneTransformManager : IBoneTransformManager {
     // TODO: This is going to be slow, can we put this somewhere else for O(1) access?
-    private readonly IndexableDictionary<IBone, IFinMatrix4x4>
+    private readonly IndexableDictionary<IReadOnlyBone, IFinMatrix4x4>
         bonesToWorldMatrices_ = new();
 
-    private readonly IndexableDictionary<IBone, IReadOnlyFinMatrix4x4>
+    private readonly IndexableDictionary<IReadOnlyBone, IReadOnlyFinMatrix4x4>
         bonesToInverseWorldMatrices_ = new();
 
-    private readonly IndexableDictionary<IBoneWeights, IFinMatrix4x4>
+    private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
         boneWeightsToWorldMatrices_ = new();
 
-    private readonly IndexableDictionary<IBoneWeights, IFinMatrix4x4>
+    private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
         boneWeightsInverseMatrices_ = new();
 
     private IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>
         verticesToWorldMatrices_ = new();
 
-    public (IReadOnlyBoneTransformManager, IBone)? Parent { get; }
+    public (IReadOnlyBoneTransformManager, IReadOnlyBone)? Parent { get; }
     public IReadOnlyFinMatrix4x4 ManagerMatrix { get; }
 
     public BoneTransformManager() {
       this.ManagerMatrix = FinMatrix4x4.IDENTITY;
     }
 
-    public BoneTransformManager((IReadOnlyBoneTransformManager, IBone) parent) {
+    public BoneTransformManager(
+        (IReadOnlyBoneTransformManager, IReadOnlyBone) parent) {
       this.Parent = parent;
       var (parentManager, parentBone) = this.Parent.Value;
       this.ManagerMatrix = parentManager.GetWorldMatrix(parentBone);
@@ -103,7 +105,8 @@ namespace fin.math {
       this.verticesToWorldMatrices_.Clear();
     }
 
-    private void InitModelVertices_(IModel model, bool forcePreproject = false) {
+    private void
+        InitModelVertices_(IModel model, bool forcePreproject = false) {
       var vertices = model.Skin.Vertices;
       this.verticesToWorldMatrices_ =
           new IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>(
@@ -114,20 +117,26 @@ namespace fin.math {
       }
     }
 
-    private readonly MagFilterInterpolationTrack<Position> positionMagFilterInterpolationTrack_ =
-        new(null, Position.Lerp) {
-          AnimationInterpolationMagFilter = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
-        };
+    private readonly MagFilterInterpolationTrack<Position>
+        positionMagFilterInterpolationTrack_ =
+            new(null, Position.Lerp) {
+                AnimationInterpolationMagFilter
+                    = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
+            };
 
-    private readonly MagFilterInterpolationTrack<Quaternion> rotationMagFilterInterpolationTrack_ =
-        new(null, Quaternion.Slerp) {
-          AnimationInterpolationMagFilter = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
-        };
+    private readonly MagFilterInterpolationTrack<Quaternion>
+        rotationMagFilterInterpolationTrack_ =
+            new(null, Quaternion.Slerp) {
+                AnimationInterpolationMagFilter
+                    = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
+            };
 
-    private readonly MagFilterInterpolationTrack<Scale> scaleMagFilterInterpolationTrack_ =
-        new(null, Scale.Lerp) {
-          AnimationInterpolationMagFilter = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
-        };
+    private readonly MagFilterInterpolationTrack<Scale>
+        scaleMagFilterInterpolationTrack_ =
+            new(null, Scale.Lerp) {
+                AnimationInterpolationMagFilter
+                    = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
+            };
 
     public void CalculateStaticMatricesForManualProjection(
         IModel model,
@@ -166,9 +175,13 @@ namespace fin.math {
       while (boneQueue.Count > 0) {
         var (bone, parentBoneToWorldMatrix) = boneQueue.Dequeue();
 
-        if (!this.bonesToWorldMatrices_.TryGetValue(bone, out var boneToWorldMatrix)) {
-          this.bonesToWorldMatrices_[bone] = boneToWorldMatrix = new FinMatrix4x4();
+        if (!this.bonesToWorldMatrices_.TryGetValue(
+                bone,
+                out var boneToWorldMatrix)) {
+          this.bonesToWorldMatrices_[bone]
+              = boneToWorldMatrix = new FinMatrix4x4();
         }
+
         boneToWorldMatrix.CopyFrom(parentBoneToWorldMatrix);
 
         Position? animationLocalPosition = null;
@@ -181,21 +194,25 @@ namespace fin.math {
         if (boneTracks != null) {
           // Only gets the values from the animation if the frame is at least partially defined.
           if (boneTracks.Positions?.HasAtLeastOneKeyframe ?? false) {
-            this.positionMagFilterInterpolationTrack_.Impl = boneTracks.Positions;
-            if (this.positionMagFilterInterpolationTrack_.TryGetInterpolatedFrame(
-                    (float) frame,
-                    out var outAnimationLocalPosition,
-                    config)) {
+            this.positionMagFilterInterpolationTrack_.Impl
+                = boneTracks.Positions;
+            if (this.positionMagFilterInterpolationTrack_
+                    .TryGetInterpolatedFrame(
+                        (float) frame,
+                        out var outAnimationLocalPosition,
+                        config)) {
               animationLocalPosition = outAnimationLocalPosition;
             }
           }
 
           if (boneTracks.Rotations?.HasAtLeastOneKeyframe ?? false) {
-            this.rotationMagFilterInterpolationTrack_.Impl = boneTracks.Rotations;
-            if (this.rotationMagFilterInterpolationTrack_.TryGetInterpolatedFrame(
-                    (float) frame,
-                    out var outAnimationLocalRotation,
-                    config)) {
+            this.rotationMagFilterInterpolationTrack_.Impl
+                = boneTracks.Rotations;
+            if (this.rotationMagFilterInterpolationTrack_
+                    .TryGetInterpolatedFrame(
+                        (float) frame,
+                        out var outAnimationLocalRotation,
+                        config)) {
               animationLocalRotation = outAnimationLocalRotation;
             }
           }
@@ -221,18 +238,19 @@ namespace fin.math {
 
         if (bone is { IgnoreParentScale: false, FaceTowardsCamera: false }) {
           var localMatrix = SystemMatrix4x4Util.FromTrs(localPosition,
-                                                        localRotation,
-                                                        localScale);
+            localRotation,
+            localScale);
           boneToWorldMatrix.MultiplyInPlace(localMatrix);
         } else {
           boneToWorldMatrix.ApplyTrsWithFancyBoneEffects(bone,
-                                                         localPosition,
-                                                         localRotation,
-                                                         localScale);
+            localPosition,
+            localRotation,
+            localScale);
         }
 
         if (isFirstPass) {
-          this.bonesToInverseWorldMatrices_[bone] = boneToWorldMatrix.CloneAndInvert();
+          this.bonesToInverseWorldMatrices_[bone]
+              = boneToWorldMatrix.CloneAndInvert();
         }
 
         foreach (var child in bone.Children) {
@@ -254,13 +272,16 @@ namespace fin.math {
             var bone = boneWeight.Bone;
             var weight = boneWeight.Weight;
 
-            var inverseMatrix = boneWeight.InverseBindMatrix ?? this.bonesToInverseWorldMatrices_[bone];
+            var inverseMatrix = boneWeight.InverseBindMatrix ??
+                                this.bonesToInverseWorldMatrices_[bone];
             boneWeightInverseMatrix.AddInPlace(inverseMatrix.Impl * weight);
           }
         }
       }
 
-      if (boneWeightTransformType == BoneWeightTransformType.FOR_EXPORT_OR_CPU_PROJECTION || isFirstPass) {
+      if (boneWeightTransformType ==
+          BoneWeightTransformType.FOR_EXPORT_OR_CPU_PROJECTION ||
+          isFirstPass) {
         foreach (var boneWeights in boneWeightsList) {
           if (!this.boneWeightsToWorldMatrices_.TryGetValue(
                   boneWeights,
@@ -274,31 +295,33 @@ namespace fin.math {
             var bone = boneWeight.Bone;
             var weight = boneWeight.Weight;
 
-            var inverseMatrix = boneWeight.InverseBindMatrix ?? this.bonesToInverseWorldMatrices_[bone];
+            var inverseMatrix = boneWeight.InverseBindMatrix ??
+                                this.bonesToInverseWorldMatrices_[bone];
             boneWeightMatrix.AddInPlace(
-            (inverseMatrix.Impl * this.bonesToWorldMatrices_[bone].Impl) * weight);
+                (inverseMatrix.Impl * this.bonesToWorldMatrices_[bone].Impl) *
+                weight);
           }
         }
       }
     }
 
-    public IReadOnlyFinMatrix4x4 GetWorldMatrix(IBone bone)
+    public IReadOnlyFinMatrix4x4 GetWorldMatrix(IReadOnlyBone bone)
       => this.bonesToWorldMatrices_[bone];
 
     public IReadOnlyFinMatrix4x4? GetTransformMatrix(IReadOnlyVertex vertex)
       => this.verticesToWorldMatrices_[vertex];
 
-    public IReadOnlyFinMatrix4x4 GetTransformMatrix(IBoneWeights boneWeights)
+    public IReadOnlyFinMatrix4x4 GetTransformMatrix(IReadOnlyBoneWeights boneWeights)
       => this.boneWeightsToWorldMatrices_[boneWeights];
 
-    public IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IBone bone)
+    public IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IReadOnlyBone bone)
       => this.bonesToInverseWorldMatrices_[bone];
 
-    public IReadOnlyFinMatrix4x4 GetLocalToWorldMatrix(IBone bone)
+    public IReadOnlyFinMatrix4x4 GetLocalToWorldMatrix(IReadOnlyBone bone)
       => this.bonesToWorldMatrices_[bone];
 
     private IReadOnlyFinMatrix4x4? DetermineTransformMatrix_(
-        IBoneWeights? boneWeights,
+        IReadOnlyBoneWeights? boneWeights,
         bool forcePreproject = false) {
       var weights = boneWeights?.Weights;
       var preproject =
@@ -374,11 +397,13 @@ namespace fin.math {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ProjectPosition(IBone bone, ref Position xyz)
-      => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl, ref xyz);
+      => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl,
+                                        ref xyz);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ProjectPosition(IBone bone, ref Vector3 xyz)
-      => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl, ref xyz);
+      => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl,
+                                        ref xyz);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ProjectNormal(IBone bone, ref Normal xyz)
@@ -435,8 +460,8 @@ namespace fin.math {
           matrix);
       matrix.MultiplyInPlace(
           SystemMatrix4x4Util.FromTrs(null,
-                                            localRotation,
-                                            localScale));
+                                      localRotation,
+                                      localScale));
     }
   }
 }

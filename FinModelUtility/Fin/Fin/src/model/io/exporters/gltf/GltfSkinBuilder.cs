@@ -6,6 +6,7 @@ using fin.data.indexable;
 using fin.math;
 using fin.model.accessor;
 using fin.util.enumerables;
+using fin.util.linq;
 
 using SharpGLTF.Geometry;
 using SharpGLTF.Materials;
@@ -29,7 +30,9 @@ namespace fin.model.io.exporters.gltf {
       boneTransformManager.CalculateStaticMatricesForManualProjection(model);
 
       var boneToIndex
-          = model.Skeleton.Skip(1).ToIndexByValueIndexableDictionary();
+          = model.Skeleton.Skip(1)
+                 .CastTo<IBone, IReadOnlyBone>()
+                 .ToIndexByValueIndexableDictionary();
 
       var nullMaterialBuilder =
           new MaterialBuilder("null").WithDoubleSide(false)

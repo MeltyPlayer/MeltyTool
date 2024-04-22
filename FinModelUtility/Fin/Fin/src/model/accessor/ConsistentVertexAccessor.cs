@@ -50,7 +50,7 @@ namespace fin.model.accessor {
 
     public int Index => this.currentVertex_.Index;
 
-    public IBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
+    public IReadOnlyBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
     public Position LocalPosition => this.currentVertex_.LocalPosition;
 
     public Normal? LocalNormal => this.normalAccessor_.LocalNormal;
@@ -76,7 +76,10 @@ namespace fin.model.accessor {
 
     private abstract class BAccessor : IReadOnlyVertex {
       public int Index => throw new NotImplementedException();
-      public IBoneWeights? BoneWeights => throw new NotImplementedException();
+
+      public IReadOnlyBoneWeights? BoneWeights
+        => throw new NotImplementedException();
+
       public Position LocalPosition => throw new NotImplementedException();
     }
   }
