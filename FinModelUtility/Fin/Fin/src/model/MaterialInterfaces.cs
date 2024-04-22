@@ -73,18 +73,21 @@ namespace fin.model {
     float Shininess { get; set; }
   }
 
+  [GenerateReadOnly]
+  public partial interface INullMaterial : IMaterial;
 
-  public interface INullMaterial : IMaterial { }
-
-  public interface ITextureMaterial : IMaterial {
+  [GenerateReadOnly]
+  public partial interface ITextureMaterial : IMaterial {
     ITexture Texture { get; }
   }
 
-  public interface IColorMaterial : IMaterial {
+  [GenerateReadOnly]
+  public partial interface IColorMaterial : IMaterial {
     Color Color { get; set; }
   }
 
-  public interface IStandardMaterial : IMaterial {
+  [GenerateReadOnly]
+  public partial interface IStandardMaterial : IMaterial {
     ITexture? DiffuseTexture { get; set; }
     ITexture? AmbientOcclusionTexture { get; set; }
     ITexture? NormalTexture { get; set; }
@@ -282,8 +285,9 @@ namespace fin.model {
     float AlphaReference1 { get; }
   }
 
-  public interface IFixedFunctionMaterial : IReadOnlyFixedFunctionMaterial,
-                                            IMaterial {
+  public interface IFixedFunctionMaterial
+      : IReadOnlyFixedFunctionMaterial,
+        IMaterial {
     IFixedFunctionMaterial SetTextureSource(int textureIndex, ITexture texture);
 
     new ITexture? CompiledTexture { get; set; }
@@ -346,7 +350,8 @@ namespace fin.model {
     LINEAR_MIPMAP_LINEAR,
   }
 
-  public interface ITexture {
+  [GenerateReadOnly]
+  public partial interface ITexture {
     string Name { get; set; }
 
     LocalImageFormat BestImageFormat { get; }
@@ -358,7 +363,10 @@ namespace fin.model {
 
     IImage Image { get; }
     Bitmap ImageData { get; }
+
+    [Const]
     ISystemFile SaveInDirectory(ISystemDirectory directory);
+
     ImageTransparencyType TransparencyType { get; }
 
     WrapMode WrapModeU { get; set; }

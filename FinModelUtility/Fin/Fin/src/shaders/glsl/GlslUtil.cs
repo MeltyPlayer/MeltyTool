@@ -312,20 +312,20 @@ out vec4 vertexColor{i};");
           """;
     }
 
-    public static string GetTypeOfTexture(ITexture? finTexture)
+    public static string GetTypeOfTexture(IReadOnlyTexture? finTexture)
       => RequiresFancyTextureData(finTexture) ? "Texture" : "sampler2D";
 
     public static string ReadColorFromTexture(
         string textureName,
         string rawUvName,
-        ITexture? finTexture)
+        IReadOnlyTexture? finTexture)
       => ReadColorFromTexture(textureName, rawUvName, t => t, finTexture);
 
     public static string ReadColorFromTexture(
         string textureName,
         string rawUvName,
         Func<string, string> uvConverter,
-        ITexture? finTexture) {
+        IReadOnlyTexture? finTexture) {
       if (!RequiresFancyTextureData(finTexture)) {
         return $"texture({textureName}, {uvConverter(rawUvName)})";
       }
@@ -349,7 +349,7 @@ out vec4 vertexColor{i};");
           ")";  // texture
     }
 
-    public static bool RequiresFancyTextureData(ITexture? finTexture) {
+    public static bool RequiresFancyTextureData(IReadOnlyTexture? finTexture) {
       if (finTexture == null) {
         return false;
       }

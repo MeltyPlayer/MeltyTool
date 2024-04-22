@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.4.12" />
+    <PackageReference Include="schema" Version="0.4.13" />
   </ItemGroup>
 
   <ItemGroup>
