@@ -12,7 +12,7 @@ namespace fin.model.io.exporters.assimp.indirect {
   public class AssimpIndirectTextureFixer {
     public void Fix(IReadOnlyModel model, Scene sc) {
       // Imports the textures
-      var finTextures = new HashSet<ITexture>();
+      var finTextures = new HashSet<IReadOnlyTexture>();
       foreach (var finMaterial in model.MaterialManager.All) {
         foreach (var finTexture in finMaterial.Textures) {
           finTextures.Add(finTexture);

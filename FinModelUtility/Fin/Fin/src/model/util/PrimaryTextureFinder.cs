@@ -5,27 +5,27 @@ using fin.util.image;
 
 namespace fin.model.util {
   public static class PrimaryTextureFinder {
-    public static ITexture? GetFor(IReadOnlyMaterial material) {
-      if (material is INullMaterial) {
+    public static IReadOnlyTexture? GetFor(IReadOnlyMaterial material) {
+      if (material is IReadOnlyNullMaterial) {
         return null;
       }
-      if (material is IFixedFunctionMaterial fixedFunctionMaterial) {
+      if (material is IReadOnlyFixedFunctionMaterial fixedFunctionMaterial) {
         return PrimaryTextureFinder.GetFor(fixedFunctionMaterial);
       }
-      if (material is ITextureMaterial textureMaterial) {
+      if (material is IReadOnlyTextureMaterial textureMaterial) {
         return PrimaryTextureFinder.GetFor(textureMaterial);
       }
-      if (material is IStandardMaterial standardMaterial) {
+      if (material is IReadOnlyStandardMaterial standardMaterial) {
         return PrimaryTextureFinder.GetFor(standardMaterial);
       }
 
       throw new NotImplementedException();
     }
 
-    public static ITexture? GetFor(ITextureMaterial material)
+    public static IReadOnlyTexture? GetFor(IReadOnlyTextureMaterial material)
       => material.Texture;
 
-    public static ITexture? GetFor(IFixedFunctionMaterial material) {
+    public static IReadOnlyTexture? GetFor(IReadOnlyFixedFunctionMaterial material) {
       var equations = material.Equations;
 
       var textures = material.Textures;
@@ -54,13 +54,13 @@ namespace fin.model.util {
         return prioritizedTextures[0];
       }
 
-      return material.Textures.LastOrDefault((ITexture?) null);
+      return material.Textures.LastOrDefault((IReadOnlyTexture?) null);
 
       // TODO: Prioritize textures w/ color rather than intensity
       // TODO: Prioritize textures w/ standard texture sets
     }
 
-    public static ITexture? GetFor(IStandardMaterial material)
+    public static IReadOnlyTexture? GetFor(IReadOnlyStandardMaterial material)
       => material.DiffuseTexture ?? material.AmbientOcclusionTexture;
   }
 }

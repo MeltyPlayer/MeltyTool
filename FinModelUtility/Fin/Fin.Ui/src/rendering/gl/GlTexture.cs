@@ -20,14 +20,15 @@ using TextureMinFilter = OpenTK.Graphics.OpenGL.TextureMinFilter;
 
 namespace fin.ui.rendering.gl {
   public class GlTexture : IFinDisposable {
-    private static readonly Dictionary<ITexture, GlTexture> cache_ = new();
+    private static readonly Dictionary<IReadOnlyTexture, GlTexture> cache_
+        = new();
 
 
     private const int UNDEFINED_ID = -1;
     private int id_ = UNDEFINED_ID;
-    private readonly ITexture texture_;
+    private readonly IReadOnlyTexture texture_;
 
-    public static GlTexture FromTexture(ITexture texture) {
+    public static GlTexture FromTexture(IReadOnlyTexture texture) {
       if (!cache_.TryGetValue(texture, out var glTexture)) {
         glTexture = new GlTexture(texture);
         cache_[texture] = glTexture;
@@ -48,7 +49,7 @@ namespace fin.ui.rendering.gl {
       GL.BindTexture(target, UNDEFINED_ID);
     }
 
-    private GlTexture(ITexture texture) {
+    private GlTexture(IReadOnlyTexture texture) {
       this.texture_ = texture;
 
       GL.GenTextures(1, out int id);
@@ -170,18 +171,23 @@ namespace fin.ui.rendering.gl {
           pixelInternalFormat = PixelInternalFormat.Rgba;
           pixelFormat = PixelFormat.Rgba;
           image.Access(getHandler => {
-            for (var y = 0; y < imageHeight; y++) {
-              for (var x = 0; x < imageWidth; x++) {
-                getHandler(x, y, out var r, out var g, out var b, out var a);
+                         for (var y = 0; y < imageHeight; y++) {
+                           for (var x = 0; x < imageWidth; x++) {
+                             getHandler(x,
+                                        y,
+                                        out var r,
+                                        out var g,
+                                        out var b,
+                                        out var a);
 
-                var outI = 4 * (y * imageWidth + x);
-                pixelBytes[outI] = r;
-                pixelBytes[outI + 1] = g;
-                pixelBytes[outI + 2] = b;
-                pixelBytes[outI + 3] = a;
-              }
-            }
-          });
+                             var outI = 4 * (y * imageWidth + x);
+                             pixelBytes[outI] = r;
+                             pixelBytes[outI + 1] = g;
+                             pixelBytes[outI + 2] = b;
+                             pixelBytes[outI + 3] = a;
+                           }
+                         }
+                       });
           break;
         }
       }

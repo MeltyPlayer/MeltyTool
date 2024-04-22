@@ -6,15 +6,15 @@ using fin.model;
 namespace fin.ui.rendering.gl.model {
   public class MergedMaterialMeshesRenderer : IModelRenderer {
     private GlBufferManager? bufferManager_;
-    private readonly ILighting? lighting_;
+    private readonly IReadOnlyLighting? lighting_;
     private readonly IBoneTransformManager? boneTransformManager_;
 
-    private (IMesh, MergedMaterialPrimitivesRenderer[])[]
+    private (IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])[]
         materialMeshRenderers_;
 
     public MergedMaterialMeshesRenderer(
         IReadOnlyModel model,
-        ILighting? lighting,
+        IReadOnlyLighting? lighting,
         IBoneTransformManager? boneTransformManager = null) {
       this.Model = model;
       this.lighting_ = lighting;
@@ -30,7 +30,7 @@ namespace fin.ui.rendering.gl.model {
       this.bufferManager_ = new GlBufferManager(this.Model);
 
       var allMaterialMeshRenderers =
-          new List<(IMesh, MergedMaterialPrimitivesRenderer[])>();
+          new List<(IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])>();
 
       var primitiveMerger = new PrimitiveMerger();
       foreach (var mesh in this.Model.Skin.Meshes) {
@@ -49,7 +49,7 @@ namespace fin.ui.rendering.gl.model {
                                 .ToArray();
 
         var materialMeshRenderers =
-            new ListDictionary<IMesh, MergedMaterialPrimitivesRenderer>();
+            new ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesRenderer>();
         foreach (var material in orderedMaterials) {
           var primitives = primitivesByMaterial[material];
           if (!primitiveMerger.TryToMergePrimitives(
@@ -98,7 +98,7 @@ namespace fin.ui.rendering.gl.model {
     }
 
     public IReadOnlyModel Model { get; }
-    public ISet<IMesh> HiddenMeshes { get; } = new HashSet<IMesh>();
+    public ISet<IReadOnlyMesh> HiddenMeshes { get; } = new HashSet<IReadOnlyMesh>();
 
     private bool useLighting_ = false;
 

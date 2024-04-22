@@ -189,7 +189,7 @@ namespace fin.ui.rendering.gl.material {
     protected void SetUpTexture(
         string textureName,
         int textureIndex,
-        ITexture? finTexture,
+        IReadOnlyTexture? finTexture,
         GlTexture glTexture)
       => this.cachedTextureUniformDatas_.AddLast(
           new CachedTextureUniformData(textureName,

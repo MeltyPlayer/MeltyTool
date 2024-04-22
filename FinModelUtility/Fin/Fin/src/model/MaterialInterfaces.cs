@@ -11,7 +11,8 @@ using fin.util.image;
 using schema.readOnly;
 
 namespace fin.model {
-  public interface IMaterialManager {
+  [GenerateReadOnly]
+  public partial interface IMaterialManager {
     IReadOnlyList<IMaterial> All { get; }
     IFixedFunctionRegisters? Registers { get; }
 

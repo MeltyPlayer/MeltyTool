@@ -42,20 +42,20 @@ namespace fin.model.io.exporters.gltf {
       }
     }
 
-    public IDictionary<IMaterial, Material> GetMaterials(
+    public IDictionary<IReadOnlyMaterial, Material> GetMaterials(
         ModelRoot gltfModelRoot,
-        IMaterialManager finMaterialManager)
+        IReadOnlyMaterialManager finMaterialManager)
       => this.ConvertMaterials_(finMaterialManager)
              .ToDictionary(tuple => tuple.Item1,
                            tuple => gltfModelRoot.CreateMaterial(tuple.Item2));
 
-    public IDictionary<IMaterial, MaterialBuilder> GetMaterialBuilders(
-        IMaterialManager finMaterialManager)
+    public IDictionary<IReadOnlyMaterial, MaterialBuilder> GetMaterialBuilders(
+        IReadOnlyMaterialManager finMaterialManager)
       => this.ConvertMaterials_(finMaterialManager)
              .ToDictionary(tuple => tuple.Item1, tuple => tuple.Item2);
 
-    private IEnumerable<(IMaterial, MaterialBuilder)> ConvertMaterials_(
-        IMaterialManager finMaterialManager) {
+    private IEnumerable<(IReadOnlyMaterial, MaterialBuilder)> ConvertMaterials_(
+        IReadOnlyMaterialManager finMaterialManager) {
       var finImages = finMaterialManager.Textures
                                         .Select(texture => texture.Image)
                                         .Distinct()

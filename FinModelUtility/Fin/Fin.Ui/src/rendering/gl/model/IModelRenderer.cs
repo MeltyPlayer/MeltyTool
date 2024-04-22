@@ -3,7 +3,7 @@
 namespace fin.ui.rendering.gl.model {
   public interface IModelRenderer : IRenderable, IDisposable {
     IReadOnlyModel Model { get; }
-    ISet<IMesh> HiddenMeshes { get; }
+    ISet<IReadOnlyMesh> HiddenMeshes { get; }
 
     bool UseLighting { get; set; }
   }

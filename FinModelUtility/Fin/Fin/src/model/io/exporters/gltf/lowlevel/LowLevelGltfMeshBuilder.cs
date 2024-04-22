@@ -24,7 +24,7 @@ namespace fin.model.io.exporters.gltf.lowlevel {
         ModelRoot gltfModel,
         IReadOnlyModel model,
         float scale,
-        IDictionary<IMaterial, Material> finToTexCoordAndGltfMaterial) {
+        IDictionary<IReadOnlyMaterial, Material> finToTexCoordAndGltfMaterial) {
       var skin = model.Skin;
       var vertexAccessor = ConsistentVertexAccessor.GetAccessorForModel(model);
 

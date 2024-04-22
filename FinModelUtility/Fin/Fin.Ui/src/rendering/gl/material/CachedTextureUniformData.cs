@@ -10,7 +10,7 @@ using fin.shaders.glsl;
 namespace fin.ui.rendering.gl.material {
   public class CachedTextureUniformData {
     public int TextureIndex { get; }
-    public ITexture? FinTexture { get; }
+    public IReadOnlyTexture? FinTexture { get; }
     public GlTexture GlTexture { get; }
 
     public IReadOnlyFinMatrix3x2? Transform2d { get; }
@@ -26,7 +26,7 @@ namespace fin.ui.rendering.gl.material {
     public CachedTextureUniformData(
         string textureName,
         int textureIndex,
-        ITexture? finTexture,
+        IReadOnlyTexture? finTexture,
         GlTexture glTexture,
         GlShaderProgram shaderProgram) {
       this.TextureIndex = textureIndex;
@@ -101,7 +101,7 @@ namespace fin.ui.rendering.gl.material {
     }
 
     private static IReadOnlyFinMatrix3x2 CalculateTextureTransform2d_(
-        ITexture? texture) {
+        IReadOnlyTexture? texture) {
       if (texture == null) {
         return FinMatrix3x2.IDENTITY;
       }
@@ -133,7 +133,7 @@ namespace fin.ui.rendering.gl.material {
     }
 
     private static IReadOnlyFinMatrix4x4 CalculateTextureTransform3d_(
-        ITexture? texture) {
+        IReadOnlyTexture? texture) {
       if (texture == null) {
         return FinMatrix4x4.IDENTITY;
       }

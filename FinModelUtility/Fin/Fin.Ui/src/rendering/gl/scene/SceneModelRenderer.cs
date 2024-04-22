@@ -15,7 +15,8 @@ namespace fin.ui.rendering.gl.scene {
     private readonly IModelRenderer modelRenderer_;
     private readonly ListDictionary<IBone, SceneModelRenderer> children_ = [];
 
-    public SceneModelRenderer(ISceneModel sceneModel, ILighting? lighting) {
+    public SceneModelRenderer(ISceneModel sceneModel,
+                              IReadOnlyLighting? lighting) {
       this.sceneModel_ = sceneModel;
 
       var model = sceneModel.Model;

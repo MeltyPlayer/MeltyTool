@@ -23,7 +23,7 @@ namespace fin.model.io.exporters.gltf {
         ModelRoot gltfModel,
         IReadOnlyModel model,
         float scale,
-        IDictionary<IMaterial, MaterialBuilder> finToTexCoordAndGltfMaterial) {
+        IDictionary<IReadOnlyMaterial, MaterialBuilder> finToTexCoordAndGltfMaterial) {
       var skin = model.Skin;
 
       var boneTransformManager = new BoneTransformManager();

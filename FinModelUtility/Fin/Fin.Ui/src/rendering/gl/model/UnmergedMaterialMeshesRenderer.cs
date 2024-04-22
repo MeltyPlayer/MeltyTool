@@ -5,15 +5,16 @@ using fin.model;
 namespace fin.ui.rendering.gl.model {
   public class UnmergedMaterialMeshesRenderer : IModelRenderer {
     private GlBufferManager? bufferManager_;
-    private readonly ILighting? lighting_;
+    private readonly IReadOnlyLighting? lighting_;
     private readonly IBoneTransformManager? boneTransformManager_;
 
-    private readonly ListDictionary<IMesh, MergedMaterialPrimitivesRenderer>
+    private readonly
+        ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesRenderer>
         materialMeshRenderers_ = new();
 
     public UnmergedMaterialMeshesRenderer(
         IReadOnlyModel model,
-        ILighting? lighting,
+        IReadOnlyLighting? lighting,
         IBoneTransformManager? boneTransformManager = null) {
       this.Model = model;
       this.lighting_ = lighting;
@@ -29,7 +30,7 @@ namespace fin.ui.rendering.gl.model {
       this.bufferManager_ = new GlBufferManager(this.Model);
 
       var primitiveMerger = new PrimitiveMerger();
-      Action<IMesh, IMaterial?, IEnumerable<IReadOnlyPrimitive>>
+      Action<IReadOnlyMesh, IReadOnlyMaterial?, IEnumerable<IReadOnlyPrimitive>>
           addPrimitivesRenderer =
               (mesh, material, primitives) => {
                 if (primitiveMerger.TryToMergePrimitives(
@@ -52,8 +53,8 @@ namespace fin.ui.rendering.gl.model {
               };
 
       foreach (var mesh in this.Model.Skin.Meshes) {
-        IMaterial? currentMaterial = null;
-        var currentPrimitives = new LinkedList<IPrimitive>();
+        IReadOnlyMaterial? currentMaterial = null;
+        var currentPrimitives = new LinkedList<IReadOnlyPrimitive>();
 
         foreach (var primitive in mesh.Primitives) {
           var material = primitive.Material;
@@ -95,7 +96,7 @@ namespace fin.ui.rendering.gl.model {
     }
 
     public IReadOnlyModel Model { get; }
-    public ISet<IMesh> HiddenMeshes { get; } = new HashSet<IMesh>();
+    public ISet<IReadOnlyMesh> HiddenMeshes { get; } = new HashSet<IReadOnlyMesh>();
 
     private bool useLighting_ = false;
 
