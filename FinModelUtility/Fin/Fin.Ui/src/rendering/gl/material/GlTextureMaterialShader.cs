@@ -4,7 +4,7 @@ using fin.model.util;
 
 namespace fin.ui.rendering.gl.material {
   public class GlTextureMaterialShader(
-      IModel model,
+      IReadOnlyModel model,
       IReadOnlyMaterial material,
       IBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)

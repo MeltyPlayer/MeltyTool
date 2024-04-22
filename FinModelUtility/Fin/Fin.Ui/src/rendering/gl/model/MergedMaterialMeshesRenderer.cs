@@ -13,7 +13,7 @@ namespace fin.ui.rendering.gl.model {
         materialMeshRenderers_;
 
     public MergedMaterialMeshesRenderer(
-        IModel model,
+        IReadOnlyModel model,
         ILighting? lighting,
         IBoneTransformManager? boneTransformManager = null) {
       this.Model = model;
@@ -34,8 +34,9 @@ namespace fin.ui.rendering.gl.model {
 
       var primitiveMerger = new PrimitiveMerger();
       foreach (var mesh in this.Model.Skin.Meshes) {
-        var primitivesByMaterial = new ListDictionary<IMaterial, IPrimitive>();
-        var prioritiesByMaterial = new SetDictionary<IMaterial, uint>();
+        var primitivesByMaterial
+            = new ListDictionary<IReadOnlyMaterial, IReadOnlyPrimitive>();
+        var prioritiesByMaterial = new SetDictionary<IReadOnlyMaterial, uint>();
         foreach (var primitive in mesh.Primitives) {
           primitivesByMaterial.Add(primitive.Material, primitive);
           prioritiesByMaterial.Add(primitive.Material,
@@ -96,7 +97,7 @@ namespace fin.ui.rendering.gl.model {
       this.bufferManager_?.Dispose();
     }
 
-    public IModel Model { get; }
+    public IReadOnlyModel Model { get; }
     public ISet<IMesh> HiddenMeshes { get; } = new HashSet<IMesh>();
 
     private bool useLighting_ = false;

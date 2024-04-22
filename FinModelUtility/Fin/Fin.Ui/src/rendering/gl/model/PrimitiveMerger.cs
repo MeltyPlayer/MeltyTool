@@ -14,7 +14,7 @@ namespace fin.ui.rendering.gl.model {
 
   public class PrimitiveMerger {
     public bool TryToMergePrimitives(
-        IList<IPrimitive> primitives,
+        IList<IReadOnlyPrimitive> primitives,
         out MergedPrimitive mergedPrimitive) {
       mergedPrimitive = default;
       if (primitives.Count == 0) {

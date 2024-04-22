@@ -14,7 +14,7 @@ namespace fin.ui.rendering.gl.model {
     private readonly IModelRenderer impl_;
 
     public ModelRendererV2(
-        IModel model,
+        IReadOnlyModel model,
         ILighting? lighting,
         IBoneTransformManager? boneTransformManager = null) {
       this.impl_ = (model.Skin.AllowMaterialRendererMerging)
@@ -36,7 +36,7 @@ namespace fin.ui.rendering.gl.model {
 
     private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
-    public IModel Model => this.impl_.Model;
+    public IReadOnlyModel Model => this.impl_.Model;
     public ISet<IMesh> HiddenMeshes => this.impl_.HiddenMeshes;
 
     public bool UseLighting {

@@ -6,7 +6,7 @@ using fin.model;
 
 namespace fin.ui.rendering.gl.material {
   public class GlColorMaterialShader(
-      IModel model,
+      IReadOnlyModel model,
       IColorMaterial colorMaterial,
       IBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)

@@ -3,7 +3,7 @@ using fin.model;
 
 namespace fin.ui.rendering.gl.material {
   public class GlStandardMaterialShader(
-      IModel model,
+      IReadOnlyModel model,
       IStandardMaterial standardMaterial,
       IBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)

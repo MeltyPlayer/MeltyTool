@@ -12,7 +12,7 @@ namespace fin.ui.rendering.gl.model {
         materialMeshRenderers_ = new();
 
     public UnmergedMaterialMeshesRenderer(
-        IModel model,
+        IReadOnlyModel model,
         ILighting? lighting,
         IBoneTransformManager? boneTransformManager = null) {
       this.Model = model;
@@ -29,7 +29,7 @@ namespace fin.ui.rendering.gl.model {
       this.bufferManager_ = new GlBufferManager(this.Model);
 
       var primitiveMerger = new PrimitiveMerger();
-      Action<IMesh, IMaterial?, IEnumerable<IPrimitive>>
+      Action<IMesh, IMaterial?, IEnumerable<IReadOnlyPrimitive>>
           addPrimitivesRenderer =
               (mesh, material, primitives) => {
                 if (primitiveMerger.TryToMergePrimitives(
@@ -94,7 +94,7 @@ namespace fin.ui.rendering.gl.model {
       this.bufferManager_?.Dispose();
     }
 
-    public IModel Model { get; }
+    public IReadOnlyModel Model { get; }
     public ISet<IMesh> HiddenMeshes { get; } = new HashSet<IMesh>();
 
     private bool useLighting_ = false;

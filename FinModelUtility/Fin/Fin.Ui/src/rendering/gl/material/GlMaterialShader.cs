@@ -6,8 +6,8 @@ using fin.util.asserts;
 namespace fin.ui.rendering.gl.material {
   public static class GlMaterialShader {
     public static IGlMaterialShader FromMaterial(
-        IModel model,
-        IMaterial? material,
+        IReadOnlyModel model,
+        IReadOnlyMaterial? material,
         IBoneTransformManager? boneTransformManager = null,
         IReadOnlyLighting? lighting = null)
       => material.GetShaderType() switch {

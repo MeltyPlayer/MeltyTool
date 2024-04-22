@@ -4,7 +4,7 @@ using fin.shaders.glsl;
 
 namespace fin.ui.rendering.gl.material {
   public class GlNullMaterialShader(
-      IModel model,
+      IReadOnlyModel model,
       IBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
       : BGlMaterialShader<IReadOnlyMaterial?>(model,
@@ -14,7 +14,7 @@ namespace fin.ui.rendering.gl.material {
     protected override void DisposeInternal() { }
 
     protected override IShaderSourceGlsl GenerateShaderSource(
-        IModel model,
+        IReadOnlyModel model,
         IReadOnlyMaterial? material)
       => new NullShaderSourceGlsl(model, true);
 

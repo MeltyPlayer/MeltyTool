@@ -6,15 +6,15 @@ namespace fin.ui.rendering.gl.model {
   public class MergedMaterialPrimitivesRenderer : IDisposable {
     private readonly GlBufferManager.GlBufferRenderer bufferRenderer_;
 
-    private readonly IMaterial? material_;
+    private readonly IReadOnlyMaterial? material_;
 
     private readonly IGlMaterialShader? materialShader_;
 
     public MergedMaterialPrimitivesRenderer(
         IBoneTransformManager? boneTransformManager,
         GlBufferManager bufferManager,
-        IModel model,
-        IMaterial? material,
+        IReadOnlyModel model,
+        IReadOnlyMaterial? material,
         IReadOnlyLighting? lighting,
         MergedPrimitive mergedPrimitive) {
       this.material_ = material;

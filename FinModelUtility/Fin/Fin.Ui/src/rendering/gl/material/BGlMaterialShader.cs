@@ -13,7 +13,7 @@ namespace fin.ui.rendering.gl.material {
 
     private LinkedList<CachedLightUniformData> cachedLightUniformDatas_ = [];
 
-    private readonly IModel model_;
+    private readonly IReadOnlyModel model_;
     private readonly IReadOnlyLighting? lighting_;
     private readonly IBoneTransformManager? boneTransformManager_;
     private readonly GlShaderProgram impl_;
@@ -31,7 +31,7 @@ namespace fin.ui.rendering.gl.material {
     private readonly IShaderUniform<Vector4> ambientLightColorUniform_;
 
     protected BGlMaterialShader(
-        IModel model,
+        IReadOnlyModel model,
         TMaterial material,
         IBoneTransformManager? boneTransformManager,
         IReadOnlyLighting? lighting) {
@@ -105,7 +105,7 @@ namespace fin.ui.rendering.gl.material {
     protected abstract void DisposeInternal();
 
     protected virtual IShaderSourceGlsl GenerateShaderSource(
-        IModel model,
+        IReadOnlyModel model,
         TMaterial material) => material.ToShaderSource(model, true);
 
     protected abstract void Setup(TMaterial material,

@@ -64,7 +64,7 @@ namespace fin.ui.rendering.gl {
       private readonly float[][] uvData_;
       private readonly float[][] colorData_;
 
-      public VertexArrayObject(IModel model) {
+      public VertexArrayObject(IReadOnlyModel model) {
         this.vertices_ = model.Skin.Vertices;
         this.vertexAccessor_ =
             ConsistentVertexAccessor.GetAccessorForModel(model);
@@ -109,7 +109,7 @@ namespace fin.ui.rendering.gl {
 
       public int VaoId => this.vaoId_;
 
-      private void InitializeStatic_(IModel model) {
+      private void InitializeStatic_(IReadOnlyModel model) {
         var boneTransformManager = new BoneTransformManager();
         boneTransformManager.CalculateStaticMatricesForRendering(model);
 
@@ -322,15 +322,15 @@ namespace fin.ui.rendering.gl {
       }
     }
 
-    private static ReferenceCountCacheDictionary<IModel, VertexArrayObject>
+    private static ReferenceCountCacheDictionary<IReadOnlyModel, VertexArrayObject>
         vaoCache_ = new(model => new VertexArrayObject(model),
                         (_, vao) => vao.Dispose());
 
 
-    private readonly IModel model_;
+    private readonly IReadOnlyModel model_;
     private readonly VertexArrayObject vao_;
 
-    public GlBufferManager(IModel model) {
+    public GlBufferManager(IReadOnlyModel model) {
       this.model_ = model;
       this.vao_ = GlBufferManager.vaoCache_.GetAndIncrement(model);
     }

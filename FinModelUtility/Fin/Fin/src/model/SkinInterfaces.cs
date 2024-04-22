@@ -42,7 +42,8 @@ namespace fin.model {
     TVertex AddVertex(float x, float y, float z);
   }
 
-  public interface IMesh {
+  [GenerateReadOnly]
+  public partial interface IMesh {
     string Name { get; set; }
 
     IReadOnlyList<IPrimitive> Primitives { get; }
@@ -150,22 +151,30 @@ namespace fin.model {
     FLIP,
   }
 
-  public interface ILinesPrimitive : IPrimitive {
+  [GenerateReadOnly]
+  public partial interface ILinesPrimitive : IPrimitive {
     float LineWidth { get; }
     ILinesPrimitive SetLineWidth(float width);
   }
 
-  public interface IPointsPrimitive : IPrimitive {
+  [GenerateReadOnly]
+  public partial interface IPointsPrimitive : IPrimitive {
     float Radius { get; }
     IPointsPrimitive SetRadius(float radius);
   }
 
-  public interface IPrimitive {
+  [GenerateReadOnly]
+  public partial interface IPrimitive {
     PrimitiveType Type { get; }
     IReadOnlyList<IReadOnlyVertex> Vertices { get; }
 
+    [Const]
     IEnumerable<int> GetOrderedTriangleVertexIndices();
+
+    [Const]
     IEnumerable<(int, int, int)> GetOrderedTriangleVertexIndexTriplets();
+
+    [Const]
     IEnumerable<IReadOnlyVertex> GetOrderedTriangleVertices();
 
     IMaterial Material { get; }

@@ -7,7 +7,7 @@ using fin.model;
 
 namespace fin.ui.rendering.gl.material {
   public class GlFixedFunctionMaterialShader(
-      IModel model,
+      IReadOnlyModel model,
       IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
       IBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
