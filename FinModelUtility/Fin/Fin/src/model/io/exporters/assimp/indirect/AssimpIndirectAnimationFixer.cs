@@ -4,7 +4,7 @@ using Assimp;
 
 namespace fin.model.io.exporters.assimp.indirect {
   public class AssimpIndirectAnimationFixer {
-    public void Fix(IModel model, Scene sc) {
+    public void Fix(IReadOnlyModel model, Scene sc) {
       var finAnimations = model.AnimationManager.Animations;
       var assAnimations = sc.Animations;
       for (var a = 0; a < assAnimations.Count; ++a) {

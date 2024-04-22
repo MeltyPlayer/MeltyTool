@@ -13,14 +13,14 @@ namespace fin.model.impl {
   public partial class ModelImpl<TVertex> {
     public class EulerRadiansRotationTrack3dImpl
         : IEulerRadiansRotationTrack3d {
-      private readonly IBone bone_;
+      private readonly IReadOnlyBone bone_;
 
       private readonly IInputOutputTrack<float, RadianInterpolator>[]
           axisTracks_;
 
       public EulerRadiansRotationTrack3dImpl(
           IAnimation animation,
-          IBone bone,
+          IReadOnlyBone bone,
           ReadOnlySpan<int> initialCapacityPerAxis) {
         this.Animation = animation;
         this.bone_ = bone;

@@ -30,8 +30,8 @@ namespace fin.model {
   }
 
   public interface IModelAnimation : IAnimation {
-    IReadOnlyIndexableDictionary<IBone, IBoneTracks> BoneTracks { get; }
-    IBoneTracks AddBoneTracks(IBone bone);
+    IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks { get; }
+    IBoneTracks AddBoneTracks(IReadOnlyBone bone);
 
     IReadOnlyDictionary<IMesh, IMeshTracks> MeshTracks { get; }
     IMeshTracks AddMeshTracks(IMesh mesh);
@@ -49,7 +49,7 @@ namespace fin.model {
   }
 
   public interface IBoneTracks : IAnimationData {
-    IBone Bone { get; }
+    IReadOnlyBone Bone { get; }
 
     IPositionTrack3d? Positions { get; }
     IRotationTrack3d? Rotations { get; }

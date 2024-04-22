@@ -41,12 +41,12 @@ namespace fin.model.impl {
         => this.animations_.Remove(animation);
 
       private class ModelAnimationImpl : IModelAnimation {
-        private readonly IndexableDictionary<IBone, IBoneTracks> boneTracks_;
+        private readonly IndexableDictionary<IReadOnlyBone, IBoneTracks> boneTracks_;
         private readonly Dictionary<IMesh, IMeshTracks> meshTracks_ = new();
 
         public ModelAnimationImpl(int boneCount) {
           this.boneTracks_ =
-              new IndexableDictionary<IBone, IBoneTracks>(boneCount);
+              new IndexableDictionary<IReadOnlyBone, IBoneTracks>(boneCount);
         }
 
         public string Name { get; set; }
@@ -55,10 +55,10 @@ namespace fin.model.impl {
         public float FrameRate { get; set; }
         public AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
 
-        public IReadOnlyIndexableDictionary<IBone, IBoneTracks> BoneTracks
+        public IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks
           => this.boneTracks_;
 
-        public IBoneTracks AddBoneTracks(IBone bone)
+        public IBoneTracks AddBoneTracks(IReadOnlyBone bone)
           => this.boneTracks_[bone] = new BoneTracksImpl(this, bone);
 
         public IReadOnlyDictionary<IMesh, IMeshTracks> MeshTracks
@@ -107,7 +107,7 @@ namespace fin.model.impl {
     }
 
     public class BoneTracksImpl : IBoneTracks {
-      public BoneTracksImpl(IAnimation animation, IBone bone) {
+      public BoneTracksImpl(IAnimation animation, IReadOnlyBone bone) {
         this.Animation = animation;
         this.Bone = bone;
       }
@@ -115,7 +115,7 @@ namespace fin.model.impl {
       public override string ToString() => $"BoneTracks[{Bone}]";
 
       public IAnimation Animation { get; }
-      public IBone Bone { get; }
+      public IReadOnlyBone Bone { get; }
 
       public IPositionTrack3d? Positions { get; private set; }
       public IRotationTrack3d? Rotations { get; private set; }

@@ -6,7 +6,7 @@ namespace fin.model.accessor {
   public class MaximalVertexAccessor : IVertexAccessor {
     private IReadOnlyVertex currentVertex_;
 
-    public static IVertexAccessor GetAccessorForModel(IModel model)
+    public static IVertexAccessor GetAccessorForModel(IReadOnlyModel model)
       => new MaximalVertexAccessor();
 
     private MaximalVertexAccessor() { }

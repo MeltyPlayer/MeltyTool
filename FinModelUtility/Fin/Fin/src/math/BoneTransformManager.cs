@@ -33,9 +33,9 @@ namespace fin.math {
         out Tangent outTangent);
 
 
-    void ProjectPosition(IBone bone, ref Vector3 xyz);
+    void ProjectPosition(IReadOnlyBone bone, ref Vector3 xyz);
 
-    void ProjectNormal(IBone bone, ref Vector3 xyz);
+    void ProjectNormal(IReadOnlyBone bone, ref Vector3 xyz);
   }
 
   public interface IReadOnlyBoneTransformManager : IVertexProjector {
@@ -52,14 +52,14 @@ namespace fin.math {
 
     // TODO: Switch this to a thing that returns a projector instance
     void CalculateStaticMatricesForManualProjection(
-        IModel model,
+        IReadOnlyModel model,
         bool forcePreproject = false);
 
-    void CalculateStaticMatricesForRendering(IModel model);
+    void CalculateStaticMatricesForRendering(IReadOnlyModel model);
 
     void CalculateMatrices(
-        IBone rootBone,
-        IReadOnlyList<IBoneWeights> boneWeightsList,
+        IReadOnlyBone rootBone,
+        IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
         (IModelAnimation, float)? animationAndFrame,
         BoneWeightTransformType boneWeightTransformType,
         AnimationInterpolationConfig? config = null
@@ -106,7 +106,7 @@ namespace fin.math {
     }
 
     private void
-        InitModelVertices_(IModel model, bool forcePreproject = false) {
+        InitModelVertices_(IReadOnlyModel model, bool forcePreproject = false) {
       var vertices = model.Skin.Vertices;
       this.verticesToWorldMatrices_ =
           new IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>(
@@ -139,7 +139,7 @@ namespace fin.math {
             };
 
     public void CalculateStaticMatricesForManualProjection(
-        IModel model,
+        IReadOnlyModel model,
         bool forcePreproject = false) {
       this.CalculateMatrices(
           model.Skeleton.Root,
@@ -149,7 +149,7 @@ namespace fin.math {
       this.InitModelVertices_(model, forcePreproject);
     }
 
-    public void CalculateStaticMatricesForRendering(IModel model) {
+    public void CalculateStaticMatricesForRendering(IReadOnlyModel model) {
       this.CalculateMatrices(
           model.Skeleton.Root,
           model.Skin.BoneWeights,
@@ -159,8 +159,8 @@ namespace fin.math {
     }
 
     public void CalculateMatrices(
-        IBone rootBone,
-        IReadOnlyList<IBoneWeights> boneWeightsList,
+        IReadOnlyBone rootBone,
+        IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
         (IModelAnimation, float)? animationAndFrame,
         BoneWeightTransformType boneWeightTransformType,
         AnimationInterpolationConfig? config = null
@@ -170,7 +170,7 @@ namespace fin.math {
       var animation = animationAndFrame?.Item1;
       var frame = animationAndFrame?.Item2;
 
-      var boneQueue = new Queue<(IBone, Matrix4x4)>();
+      var boneQueue = new Queue<(IReadOnlyBone, Matrix4x4)>();
       boneQueue.Enqueue((rootBone, this.ManagerMatrix.Impl));
       while (boneQueue.Count > 0) {
         var (bone, parentBoneToWorldMatrix) = boneQueue.Dequeue();
@@ -311,7 +311,8 @@ namespace fin.math {
     public IReadOnlyFinMatrix4x4? GetTransformMatrix(IReadOnlyVertex vertex)
       => this.verticesToWorldMatrices_[vertex];
 
-    public IReadOnlyFinMatrix4x4 GetTransformMatrix(IReadOnlyBoneWeights boneWeights)
+    public IReadOnlyFinMatrix4x4 GetTransformMatrix(
+        IReadOnlyBoneWeights boneWeights)
       => this.boneWeightsToWorldMatrices_[boneWeights];
 
     public IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IReadOnlyBone bone)
@@ -396,28 +397,28 @@ namespace fin.math {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ProjectPosition(IBone bone, ref Position xyz)
+    public void ProjectPosition(IReadOnlyBone bone, ref Position xyz)
       => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl,
                                         ref xyz);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ProjectPosition(IBone bone, ref Vector3 xyz)
+    public void ProjectPosition(IReadOnlyBone bone, ref Vector3 xyz)
       => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl,
                                         ref xyz);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ProjectNormal(IBone bone, ref Normal xyz)
+    public void ProjectNormal(IReadOnlyBone bone, ref Normal xyz)
       => ProjectionUtil.ProjectNormal(this.GetWorldMatrix(bone).Impl, ref xyz);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ProjectNormal(IBone bone, ref Vector3 xyz)
+    public void ProjectNormal(IReadOnlyBone bone, ref Vector3 xyz)
       => ProjectionUtil.ProjectNormal(this.GetWorldMatrix(bone).Impl, ref xyz);
   }
 
   public static class BoneTransformManagerExtensions {
     public static void ApplyTrsWithFancyBoneEffects(
         this IFinMatrix4x4? matrix,
-        IBone bone,
+        IReadOnlyBone bone,
         in Position localPosition,
         in Quaternion? localRotation,
         in Scale? localScale) {

@@ -11,16 +11,17 @@ namespace fin.model.io.exporters.gltf {
   using GltfSkin = Skin;
 
   public class GltfSkeletonBuilder {
-    public (GltfNode, IBone)[] BuildAndBindSkeleton(
+    public (GltfNode, IReadOnlyBone)[] BuildAndBindSkeleton(
         GltfNode rootNode,
         GltfSkin skin,
         float scale,
         ISkeleton skeleton) {
       var rootBone = skeleton.Root;
 
-      var boneQueue = new FinQueue<(GltfNode, IBone)>((rootNode, rootBone));
+      var boneQueue
+          = new FinQueue<(GltfNode, IReadOnlyBone)>((rootNode, rootBone));
 
-      var skinNodesAndBones = new List<(GltfNode, IBone)>();
+      var skinNodesAndBones = new List<(GltfNode, IReadOnlyBone)>();
       while (boneQueue.Count > 0) {
         var (node, bone) = boneQueue.Dequeue();
 
@@ -30,7 +31,9 @@ namespace fin.model.io.exporters.gltf {
           skinNodesAndBones.Add((node, bone));
         }
 
-        boneQueue.Enqueue(bone.Children.Select(child => (node.CreateNode(child.Name), child)));
+        boneQueue.Enqueue(
+            bone.Children.Select(child => (
+                                     node.CreateNode(child.Name), child)));
       }
 
       var skinNodes = skinNodesAndBones
@@ -48,15 +51,15 @@ namespace fin.model.io.exporters.gltf {
     }
 
     private void ApplyBoneOrientationToNode_(GltfNode node,
-                                             IBone bone,
+                                             IReadOnlyBone bone,
                                              float scale) {
       var bonePosition = bone.LocalPosition;
       var scaledPosition = new Position(bonePosition.X * scale,
                                         bonePosition.Y * scale,
                                         bonePosition.Z * scale);
       node.LocalMatrix = SystemMatrix4x4Util.FromTrs(scaledPosition,
-                                                  bone.LocalRotation,
-                                                  bone.LocalScale);
+        bone.LocalRotation,
+        bone.LocalScale);
     }
   }
 }

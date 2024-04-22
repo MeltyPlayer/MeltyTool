@@ -1,7 +1,7 @@
 ﻿using fin.model;
 
 namespace fin.shaders.glsl {
-  public class NullShaderSourceGlsl(IModel model, bool useBoneMatrices)
+  public class NullShaderSourceGlsl(IReadOnlyModel model, bool useBoneMatrices)
       : IShaderSourceGlsl {
     public string VertexShaderSource { get; } =
       GlslUtil.GetVertexSrc(model, useBoneMatrices);

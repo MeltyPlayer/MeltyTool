@@ -10,9 +10,9 @@ namespace fin.model.impl {
     public class QuaternionAxesRotationTrack3dImpl
         : BScalarAxesTrack<Quaternion, float, FloatInterpolator>,
           IQuaternionAxesRotationTrack3d {
-      private readonly IBone bone_;
+      private readonly IReadOnlyBone bone_;
 
-      public QuaternionAxesRotationTrack3dImpl(IAnimation animation, IBone bone)
+      public QuaternionAxesRotationTrack3dImpl(IAnimation animation, IReadOnlyBone bone)
           : base(
               animation,
               4,

@@ -9,7 +9,7 @@ namespace fin.model.io.exporters.gltf {
   public class GltfAnimationBuilder {
     public void BuildAnimations(
         ModelRoot gltfModel,
-        (GltfNode, IBone)[] skinNodesAndBones,
+        (GltfNode, IReadOnlyBone)[] skinNodesAndBones,
         float modelScale,
         IReadOnlyList<IModelAnimation> animations) {
       foreach (var animation in animations) {

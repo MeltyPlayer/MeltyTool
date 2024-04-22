@@ -11,7 +11,7 @@ namespace fin.model.io.exporters.gltf.lowlevel {
     public bool UvIndices { get; set; }
     public bool Embedded { get; set; }
 
-    public ModelRoot CreateModelRoot(IModel model, float scale) {
+    public ModelRoot CreateModelRoot(IReadOnlyModel model, float scale) {
       var modelRoot = ModelRoot.CreateModel();
 
       var scene = modelRoot.UseScene("default");

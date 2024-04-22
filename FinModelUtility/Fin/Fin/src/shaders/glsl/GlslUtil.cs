@@ -46,7 +46,7 @@ namespace fin.shaders.glsl {
     }
 
     // TODO: Only include uvs/colors as needed
-    public static string GetVertexSrc(IModel model, bool useBoneMatrices) {
+    public static string GetVertexSrc(IReadOnlyModel model, bool useBoneMatrices) {
       var location = 0;
 
       var vertexSrc = new StringBuilder();

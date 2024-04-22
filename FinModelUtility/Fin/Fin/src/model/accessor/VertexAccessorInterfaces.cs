@@ -8,7 +8,7 @@
         IVertexTangentAccessor,
         IVertexColorAccessor,
         IVertexUvAccessor {
-    static abstract IVertexAccessor GetAccessorForModel(IModel model);
+    static abstract IVertexAccessor GetAccessorForModel(IReadOnlyModel model);
   }
 
   public interface IVertexNormalAccessor : IVertexTargeter,

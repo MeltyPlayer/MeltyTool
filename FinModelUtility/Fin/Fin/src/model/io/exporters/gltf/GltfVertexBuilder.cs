@@ -18,7 +18,7 @@ namespace fin.model.io.exporters.gltf {
     private readonly IndexableDictionary<IReadOnlyBoneWeights, (int, float)[]>
         skinningByBoneWeights_ = new();
 
-    public GltfVertexBuilder(IModel model,
+    public GltfVertexBuilder(IReadOnlyModel model,
                              IIndexableDictionary<IReadOnlyBone, int> boneToIndex) {
       foreach (var boneWeights in model.Skin.BoneWeights) {
         this.skinningByBoneWeights_[boneWeights] =

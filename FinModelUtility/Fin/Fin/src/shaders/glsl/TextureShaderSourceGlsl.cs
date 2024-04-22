@@ -6,7 +6,7 @@ using fin.model.extensions;
 
 namespace fin.shaders.glsl {
   public class TextureShaderSourceGlsl : IShaderSourceGlsl {
-    public TextureShaderSourceGlsl(IModel model,
+    public TextureShaderSourceGlsl(IReadOnlyModel model,
                                    IReadOnlyMaterial material,
                                    bool useBoneMatrices) {
       this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);

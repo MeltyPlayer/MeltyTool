@@ -9,10 +9,10 @@ namespace fin.model.impl {
     public class ScaleTrackImpl
         : BScalarAxesTrack<Scale, float, FloatInterpolator>,
           IScale3dTrack {
-      private readonly IBone bone_;
+      private readonly IReadOnlyBone bone_;
 
       public ScaleTrackImpl(IAnimation animation,
-                            IBone bone,
+                            IReadOnlyBone bone,
                             ReadOnlySpan<int> initialCapacityPerAxis) :
           base(animation, 3, initialCapacityPerAxis, new FloatInterpolator()) {
         this.bone_ = bone;

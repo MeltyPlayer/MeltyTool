@@ -21,7 +21,7 @@ namespace fin.model.io.exporters.gltf {
 
     public IList<(Mesh gltfMesh, bool hasJoints)> AddSkin(
         ModelRoot gltfModel,
-        IModel model,
+        IReadOnlyModel model,
         float scale,
         IDictionary<IMaterial, MaterialBuilder> finToTexCoordAndGltfMaterial) {
       var skin = model.Skin;

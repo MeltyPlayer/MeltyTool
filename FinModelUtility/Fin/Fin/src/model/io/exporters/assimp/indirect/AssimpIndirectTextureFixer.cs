@@ -10,7 +10,7 @@ using fin.model.util;
 
 namespace fin.model.io.exporters.assimp.indirect {
   public class AssimpIndirectTextureFixer {
-    public void Fix(IModel model, Scene sc) {
+    public void Fix(IReadOnlyModel model, Scene sc) {
       // Imports the textures
       var finTextures = new HashSet<ITexture>();
       foreach (var finMaterial in model.MaterialManager.All) {

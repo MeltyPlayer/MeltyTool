@@ -9,10 +9,10 @@ namespace fin.model.impl {
     public class SeparatePositionAxesTrack3dImpl
         : BScalarAxesTrack<Position, float, FloatInterpolator>,
           ISeparatePositionAxesTrack3d {
-      private readonly IBone bone_;
+      private readonly IReadOnlyBone bone_;
 
       public SeparatePositionAxesTrack3dImpl(IAnimation animation,
-                                             IBone bone,
+                                             IReadOnlyBone bone,
                                              ReadOnlySpan<int>
                                                  initialCapacityPerAxis) :
           base(animation, 3, initialCapacityPerAxis, new FloatInterpolator()) {

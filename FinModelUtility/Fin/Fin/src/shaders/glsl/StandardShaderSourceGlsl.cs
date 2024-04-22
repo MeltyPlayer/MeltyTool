@@ -7,8 +7,8 @@ using fin.model.extensions;
 namespace fin.shaders.glsl {
   public class StandardShaderSourceGlsl : IShaderSourceGlsl {
     public StandardShaderSourceGlsl(
-        IModel model,
-        IStandardMaterial material,
+        IReadOnlyModel model,
+        IReadOnlyStandardMaterial material,
         bool useBoneMatrices) {
       this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);
 

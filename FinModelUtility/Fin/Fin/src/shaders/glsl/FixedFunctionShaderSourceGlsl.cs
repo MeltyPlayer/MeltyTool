@@ -2,7 +2,7 @@
 using fin.model;
 
 namespace fin.shaders.glsl {
-  public class FixedFunctionShaderSourceGlsl(IModel model,
+  public class FixedFunctionShaderSourceGlsl(IReadOnlyModel model,
                                              IFixedFunctionMaterial material,
                                              bool useBoneMatrices)
       : IShaderSourceGlsl {

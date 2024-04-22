@@ -14,10 +14,10 @@ namespace fin.model.accessor {
     private readonly IVertexColorAccessor colorAccessor_;
     private readonly IVertexUvAccessor uvAccessor_;
 
-    public static IVertexAccessor GetAccessorForModel(IModel model)
+    public static IVertexAccessor GetAccessorForModel(IReadOnlyModel model)
       => new ConsistentVertexAccessor(model);
 
-    private ConsistentVertexAccessor(IModel model) {
+    private ConsistentVertexAccessor(IReadOnlyModel model) {
       var skin = model.Skin;
       var firstVertex = skin.Vertices.Count > 0 ? skin.Vertices[0] : null;
 

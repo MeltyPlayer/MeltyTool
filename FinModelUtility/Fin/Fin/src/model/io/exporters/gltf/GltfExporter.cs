@@ -10,7 +10,7 @@ namespace fin.model.io.exporters.gltf {
     bool UvIndices { get; set; }
     bool Embedded { get; set; }
 
-    ModelRoot CreateModelRoot(IModel model, float scale);
+    ModelRoot CreateModelRoot(IReadOnlyModel model, float scale);
   }
 
   public class GltfModelExporter : IGltfModelExporter {
@@ -19,7 +19,7 @@ namespace fin.model.io.exporters.gltf {
     public bool UvIndices { get; set; }
     public bool Embedded { get; set; }
 
-    public ModelRoot CreateModelRoot(IModel model, float scale) {
+    public ModelRoot CreateModelRoot(IReadOnlyModel model, float scale) {
       var modelRoot = ModelRoot.CreateModel();
 
       var scene = modelRoot.UseScene("default");

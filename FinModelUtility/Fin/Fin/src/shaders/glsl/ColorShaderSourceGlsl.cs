@@ -5,7 +5,7 @@ using fin.model.extensions;
 
 namespace fin.shaders.glsl {
   public class ColorShaderSourceGlsl : IShaderSourceGlsl {
-    public ColorShaderSourceGlsl(IModel model,
+    public ColorShaderSourceGlsl(IReadOnlyModel model,
                                  IReadOnlyMaterial material,
                                  bool useBoneMatrices) {
       this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);

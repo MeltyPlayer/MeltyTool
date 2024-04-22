@@ -1,5 +1,8 @@
-﻿namespace fin.model {
-  public interface IModel {
+﻿using schema.readOnly;
+
+namespace fin.model {
+  [GenerateReadOnly]
+  public partial interface IModel {
     ISkeleton Skeleton { get; }
     ISkin Skin { get; }
     IMaterialManager MaterialManager { get; }

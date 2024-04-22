@@ -22,7 +22,7 @@ namespace fin.model.io.exporters.gltf.lowlevel {
 
     public IList<Mesh> BuildAndBindMesh(
         ModelRoot gltfModel,
-        IModel model,
+        IReadOnlyModel model,
         float scale,
         IDictionary<IMaterial, Material> finToTexCoordAndGltfMaterial) {
       var skin = model.Skin;
