@@ -3,7 +3,7 @@
 namespace fin.model.impl {
   // TODO: Add logic for optimizing the model.
   public partial class ModelImpl<TVertex>
-      : IModel<ISkin<TVertex>> where TVertex : IReadOnlyVertex {
+      : IModel<ISkin<TVertex>> where TVertex : IVertex {
     public ModelImpl(Func<int, Position, TVertex> vertexCreator) {
       this.Skin = new SkinImpl(vertexCreator);
       this.AnimationManager = new AnimationManagerImpl(this);

@@ -39,7 +39,7 @@ namespace fin.model.impl {
         this.vertices_ = new List<TVertex>();
         this.TypedVertices = new ReadOnlyCollection<TVertex>(this.vertices_);
         this.Vertices =
-            new CastListView<TVertex, IReadOnlyVertex>(this.TypedVertices);
+            new CastListView<TVertex, IVertex>(this.TypedVertices);
 
         // TODO: Possible to speed this up?
         for (var i = 0; i < vertexCount; ++i) {
@@ -49,7 +49,7 @@ namespace fin.model.impl {
         this.Meshes = new ReadOnlyCollection<IMesh>(this.meshes_);
       }
 
-      public IReadOnlyList<IReadOnlyVertex> Vertices { get; }
+      public IReadOnlyList<IVertex> Vertices { get; }
       public IReadOnlyList<TVertex> TypedVertices { get; }
 
       public TVertex AddVertex(Position position) {

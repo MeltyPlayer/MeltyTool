@@ -34,6 +34,6 @@ namespace fin.model.io {
   }
 
   public interface IModelExporterPlugin : IModelPlugin {
-    void ExportModel(IModel model);
+    void ExportModel(IReadOnlyModel model);
   }
 }

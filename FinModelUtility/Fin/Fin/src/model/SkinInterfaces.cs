@@ -10,8 +10,9 @@ using fin.math.xyz;
 using schema.readOnly;
 
 namespace fin.model {
-  public interface ISkin {
-    IReadOnlyList<IReadOnlyVertex> Vertices { get; }
+  [GenerateReadOnly]
+  public partial interface ISkin {
+    IReadOnlyList<IVertex> Vertices { get; }
 
     IReadOnlyList<IMesh> Meshes { get; }
     IMesh AddMesh();
