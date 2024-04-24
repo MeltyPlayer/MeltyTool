@@ -8,7 +8,7 @@ using schema.readOnly;
 
 namespace fin.data.indexable {
   [GenerateReadOnly]
-  public partial interface IIndexableDictionary<TIndexable, TValue>
+  public partial interface IIndexableDictionary<in TIndexable, TValue>
       : IEnumerable<TValue>
       where TIndexable : IIndexable {
     [Const]
