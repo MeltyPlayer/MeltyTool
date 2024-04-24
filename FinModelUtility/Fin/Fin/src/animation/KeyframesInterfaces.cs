@@ -1,24 +1,29 @@
 ﻿using System.Collections.Generic;
 
+using schema.readOnly;
+
 namespace fin.animation {
-  public interface IReadOnlyKeyframes<T> {
+  [GenerateReadOnly]
+  public partial interface IKeyframes<T> {
+    void SetKeyframe(int frame, T value, string frameType = "");
+    void SetAllKeyframes(IEnumerable<T> value);
+
     bool HasAtLeastOneKeyframe { get; }
     int MaxKeyframe { get; }
 
     IReadOnlyList<Keyframe<T>> Definitions { get; }
 
+    [Const]
     Keyframe<T> GetKeyframeAtIndex(int index);
+    [Const]
     Keyframe<T>? GetKeyframeAtFrame(int frame);
 
+    [Const]
     bool FindIndexOfKeyframe(
         int frame,
         out int keyframeIndex,
         out Keyframe<T> keyframe,
         out bool isLastKeyframe);
-  }
 
-  public interface IKeyframes<T> : IReadOnlyKeyframes<T> {
-    void SetKeyframe(int frame, T value, string frameType = "");
-    void SetAllKeyframes(IEnumerable<T> value);
   }
 }

@@ -60,7 +60,7 @@ namespace fin.math {
     void CalculateMatrices(
         IReadOnlyBone rootBone,
         IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
-        (IModelAnimation, float)? animationAndFrame,
+        (IReadOnlyModelAnimation, float)? animationAndFrame,
         BoneWeightTransformType boneWeightTransformType,
         AnimationInterpolationConfig? config = null
     );
@@ -161,7 +161,7 @@ namespace fin.math {
     public void CalculateMatrices(
         IReadOnlyBone rootBone,
         IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
-        (IModelAnimation, float)? animationAndFrame,
+        (IReadOnlyModelAnimation, float)? animationAndFrame,
         BoneWeightTransformType boneWeightTransformType,
         AnimationInterpolationConfig? config = null
     ) {
@@ -189,7 +189,7 @@ namespace fin.math {
         Scale? animationLocalScale = null;
 
         // The pose of the animation, if available.
-        IBoneTracks? boneTracks = null;
+        IReadOnlyBoneTracks? boneTracks = null;
         animation?.BoneTracks.TryGetValue(bone, out boneTracks);
         if (boneTracks != null) {
           // Only gets the values from the animation if the frame is at least partially defined.

@@ -4,6 +4,8 @@ using fin.animation;
 using fin.data.indexable;
 using fin.math.interpolation;
 
+using schema.readOnly;
+
 namespace fin.model {
   public interface IAnimationManager {
     IReadOnlyList<IModelAnimation> Animations { get; }
@@ -21,7 +23,8 @@ namespace fin.model {
     IMorphTarget MoveTo(IVertex vertex, Position position);
   }
 
-  public interface IAnimation {
+  [GenerateReadOnly]
+  public partial interface IAnimation {
     string Name { get; set; }
 
     int FrameCount { get; set; }
@@ -29,7 +32,8 @@ namespace fin.model {
     AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
   }
 
-  public interface IModelAnimation : IAnimation {
+  [GenerateReadOnly]
+  public partial interface IModelAnimation : IAnimation {
     IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks { get; }
     IBoneTracks AddBoneTracks(IReadOnlyBone bone);
 
@@ -44,11 +48,13 @@ namespace fin.model {
 
 
 
-  public interface IAnimationData {
+  [GenerateReadOnly]
+  public partial interface IAnimationData {
     IAnimation Animation { get; }
   }
 
-  public interface IBoneTracks : IAnimationData {
+  [GenerateReadOnly]
+  public partial interface IBoneTracks : IAnimationData {
     IReadOnlyBone Bone { get; }
 
     IPositionTrack3d? Positions { get; }

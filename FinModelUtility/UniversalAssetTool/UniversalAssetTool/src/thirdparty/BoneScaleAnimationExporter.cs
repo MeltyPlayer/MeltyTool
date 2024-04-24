@@ -4,7 +4,7 @@ using fin.model;
 
 namespace uni.thirdparty {
   public class BoneScaleAnimationExporter {
-    public void Export(IGenericFile luaFile, IModel model) {
+    public void Export(IGenericFile luaFile, IReadOnlyModel model) {
       var animations = model.AnimationManager.Animations;
       if (animations.Count == 0) {
         return;
@@ -21,7 +21,7 @@ namespace uni.thirdparty {
       };
 
       foreach (var animation in animations) {
-        var definedBones = new Dictionary<IBone, IBoneTracks>();
+        var definedBones = new Dictionary<IReadOnlyBone, IReadOnlyBoneTracks>();
         foreach (var bone in model.Skeleton) {
           if (!animation.BoneTracks.TryGetValue(bone, out var boneTracks)) {
             continue;
