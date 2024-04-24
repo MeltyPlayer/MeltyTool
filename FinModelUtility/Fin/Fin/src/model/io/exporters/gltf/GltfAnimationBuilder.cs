@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 
+using fin.data.indexable;
+
 using SharpGLTF.Schema2;
 
 namespace fin.model.io.exporters.gltf {
@@ -11,7 +13,7 @@ namespace fin.model.io.exporters.gltf {
         ModelRoot gltfModel,
         (GltfNode, IReadOnlyBone)[] skinNodesAndBones,
         float modelScale,
-        IReadOnlyList<IModelAnimation> animations) {
+        IReadOnlyList<IReadOnlyModelAnimation> animations) {
       foreach (var animation in animations) {
         var gltfAnimation = gltfModel.UseAnimation(animation.Name);
 

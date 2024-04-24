@@ -22,11 +22,11 @@ namespace fin.model.impl {
       private readonly IList<TVertex> vertices_;
       private readonly IList<IMesh> meshes_ = new List<IMesh>();
 
-      private readonly FinSortedSet<IBone> bonesUsedByVertices_
+      private readonly FinSortedSet<IReadOnlyBone> bonesUsedByVertices_
           = new((lhs, rhs) => lhs.Index.CompareTo(rhs.Index));
       private readonly BoneWeightsDictionary boneWeightsDictionary_ = new();
 
-      private readonly IndexableDictionary<IBone, IBoneWeights>
+      private readonly IndexableDictionary<IReadOnlyBone, IBoneWeights>
           boneWeightsByBone_ = new();
 
       public SkinImpl(Func<int, Position, TVertex> vertexCreator)
@@ -80,7 +80,7 @@ namespace fin.model.impl {
 
       public bool AllowMaterialRendererMerging { get; set; } = true;
 
-      public IReadOnlyFinSet<IBone> BonesUsedByVertices
+      public IReadOnlyFinSet<IReadOnlyBone> BonesUsedByVertices
         => this.bonesUsedByVertices_;
 
       public IReadOnlyList<IBoneWeights> BoneWeights
@@ -88,7 +88,7 @@ namespace fin.model.impl {
 
       public IBoneWeights GetOrCreateBoneWeights(
           VertexSpace vertexSpace,
-          IBone bone) {
+          IReadOnlyBone bone) {
         if (!this.boneWeightsByBone_.TryGetValue(bone, out var boneWeights)) {
           boneWeights = this.CreateBoneWeights(
               vertexSpace,

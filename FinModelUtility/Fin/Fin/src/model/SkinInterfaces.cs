@@ -18,12 +18,12 @@ namespace fin.model {
     IMesh AddMesh();
     bool AllowMaterialRendererMerging { get; set; }
 
-    IReadOnlyFinSet<IBone> BonesUsedByVertices { get; }
+    IReadOnlyFinSet<IReadOnlyBone> BonesUsedByVertices { get; }
     IReadOnlyList<IBoneWeights> BoneWeights { get; }
 
     IBoneWeights GetOrCreateBoneWeights(
         VertexSpace vertexSpace,
-        IBone bone);
+        IReadOnlyBone bone);
 
     IBoneWeights GetOrCreateBoneWeights(
         VertexSpace vertexSpace,
@@ -99,13 +99,13 @@ namespace fin.model {
 
   [GenerateReadOnly]
   public partial interface IBoneWeight {
-    IBone Bone { get; }
+    IReadOnlyBone Bone { get; }
     IReadOnlyFinMatrix4x4? InverseBindMatrix { get; }
     float Weight { get; }
   }
 
   public record BoneWeight(
-      IBone Bone,
+      IReadOnlyBone Bone,
       // TODO: This should be moved to the bone interface instead.
       IReadOnlyFinMatrix4x4? InverseBindMatrix,
       float Weight) : IBoneWeight {

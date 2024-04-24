@@ -60,26 +60,17 @@ namespace fin.data.dictionaries {
 
     public TValue this[TKey key] {
       get {
-        if (!this.TryGetValue(key, out var value)) {
+        if (!this.ContainsKey(key)) {
           Asserts.Fail($"Expected to find key {key} in dictionary!");
         }
-        return value!;
+
+        if (key == null) {
+          return this.nullValue_;
+        }
+
+        return this.impl_[key];
       }
       set => this.Add(key, value);
-    }
-
-    public bool TryGetValue(TKey key, out TValue value) {
-      if (key == null) {
-        if (this.hasNull_) {
-          value = this.nullValue_;
-          return true;
-        } else {
-          value = default;
-          return false;
-        }
-      }
-
-      return this.impl_.TryGetValue(key, out value);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

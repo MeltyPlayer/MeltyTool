@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using fin.data.indexable;
+
 using schema.readOnly;
 
 namespace fin.data.dictionaries {
@@ -9,13 +11,28 @@ namespace fin.data.dictionaries {
     IEnumerable<TKey> Keys { get; }
     IEnumerable<TValue> Values { get; }
 
+    // Have to specify only contains key because "out" method parameters
+    // aren't allowed to be covariant:
+    // https://github.com/dotnet/csharplang/discussions/5623
     [Const]
     bool ContainsKey(TKey key);
 
-    [Const]
-    bool TryGetValue(TKey key, out TValue value);
-
     TValue this[TKey key] { get; set; }
     bool Remove(TKey key);
+  }
+
+  public static class FinDictionaryExtensions {
+    public static bool TryGetValue<TKey, TValue>(
+        this IReadOnlyFinDictionary<TKey, TValue> impl,
+        TKey key,
+        out TValue value) {
+      if (impl.ContainsKey(key)) {
+        value = impl[key];
+        return true;
+      }
+
+      value = default;
+      return false;
+    }
   }
 }

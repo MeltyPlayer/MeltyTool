@@ -30,16 +30,6 @@ namespace fin.data.lazy {
     public bool ContainsKey(int key)
       => this.populated_.Count > key && this.populated_[key];
 
-    public bool TryGetValue(int key, out T value) {
-      if (this.ContainsKey(key)) {
-        value = this.impl_[key];
-        return true;
-      }
-
-      value = default;
-      return false;
-    }
-
     public bool Remove(int key) => this.Remove(key, out _);
 
     public bool Remove(int key, out T value) {

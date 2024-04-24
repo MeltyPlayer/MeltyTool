@@ -7,7 +7,8 @@ using fin.math.interpolation;
 using schema.readOnly;
 
 namespace fin.model {
-  public interface IAnimationManager {
+  [GenerateReadOnly]
+  public partial interface IAnimationManager {
     IReadOnlyList<IModelAnimation> Animations { get; }
     IModelAnimation AddAnimation();
     void RemoveAnimation(IModelAnimation animation);

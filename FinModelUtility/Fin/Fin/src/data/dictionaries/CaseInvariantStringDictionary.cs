@@ -14,8 +14,6 @@ namespace fin.data.dictionaries {
     public IEnumerable<T> Values => this.impl_.Values;
     public bool ContainsKey(string key) => this.impl_.ContainsKey(key);
 
-    public bool TryGetValue(string key, out T value) => this.impl_.TryGetValue(key, out value);
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Remove(string key) => this.impl_.Remove(key);
 

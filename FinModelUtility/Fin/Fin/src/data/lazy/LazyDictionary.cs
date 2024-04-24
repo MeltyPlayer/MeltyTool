@@ -28,9 +28,6 @@ namespace fin.data.lazy {
     public void Clear() => this.impl_.Clear();
     public bool ContainsKey(TKey key) => this.impl_.ContainsKey(key);
 
-    public bool TryGetValue(TKey key, out TValue value)
-      => this.impl_.TryGetValue(key, out value);
-
     public bool Remove(TKey key) => this.impl_.Remove(key);
 
     public TValue this[TKey key] {

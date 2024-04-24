@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,22 +10,39 @@ namespace fin.data.indexable {
   public partial interface IIndexableDictionary<in TIndexable, TValue>
       : IEnumerable<TValue>
       where TIndexable : IIndexable {
+    // Have to specify only contains key because "out" method parameters
+    // aren't allowed to be covariant:
+    // https://github.com/dotnet/csharplang/discussions/5623
     [Const]
-    bool TryGetValue(int index, out TValue value);
+    bool ContainsKey(int index);
 
     [Const]
-    bool TryGetValue(TIndexable key, out TValue value);
-
+    bool ContainsKey(TIndexable key);
 
     void Clear();
     TValue this[int index] { get; set; }
     TValue this[TIndexable key] { get; set; }
   }
 
+  public static class IndexableDictionaryExtensions {
+    public static bool TryGetValue<TKey, TValue>(
+        this IReadOnlyIndexableDictionary<TKey, TValue> impl,
+        TKey key,
+        out TValue value) where TKey : IIndexable {
+      if (impl.ContainsKey(key)) {
+        value = impl[key];
+        return true;
+      }
+
+      value = default;
+      return false;
+    }
+  }
+
   public class IndexableDictionary<TIndexable, TValue>(int capacity)
       : IIndexableDictionary<TIndexable, TValue>
       where TIndexable : IIndexable {
-    private readonly List<(bool, TValue)> impl_ = new(capacity);
+    private readonly List<(bool hasValue, TValue value)> impl_ = new(capacity);
 
     public IndexableDictionary() : this(0) { }
 
@@ -54,25 +70,22 @@ namespace fin.data.indexable {
       set => this[key.Index] = value;
     }
 
-    public bool TryGetValue(int index, out TValue value) {
+    public bool ContainsKey(TIndexable key) => this.ContainsKey(key.Index);
+
+    public bool ContainsKey(int index) {
       if (index >= this.impl_.Count) {
-        value = default!;
         return false;
       }
 
-      (var hasValue, value) = this.impl_[index];
-      return hasValue;
+      return this.impl_[index].hasValue;
     }
-
-    public bool TryGetValue(TIndexable key, out TValue value)
-      => this.TryGetValue(key.Index, out value);
 
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     public IEnumerator<TValue> GetEnumerator()
-      => this.impl_.Where(pair => pair.Item1)
-             .Select(pair => pair.Item2)
+      => this.impl_.Where(pair => pair.hasValue)
+             .Select(pair => pair.value)
              .GetEnumerator();
   }
 }

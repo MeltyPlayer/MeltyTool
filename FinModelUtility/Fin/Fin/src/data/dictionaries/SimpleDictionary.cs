@@ -15,9 +15,6 @@ namespace fin.data.dictionaries {
     public IEnumerable<TValue> Values => impl.Values;
     public bool ContainsKey(TKey key) => impl.ContainsKey(key);
 
-    public bool TryGetValue(TKey key, out TValue value)
-      => impl.TryGetValue(key, out value);
-
     public TValue this[TKey key] {
       get => impl[key];
       set => impl[key] = value;

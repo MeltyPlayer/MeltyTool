@@ -31,7 +31,6 @@ namespace fin.data.lazy {
     public IEnumerable<TValue> Values => this.impl_.Values;
 
     public bool ContainsKey(string key) => this.impl_.ContainsKey(key);
-    public bool TryGetValue(string key, out TValue value) => this.impl_.TryGetValue(key, out value);
 
     public bool Remove(string key) => this.impl_.Remove(key);
 
