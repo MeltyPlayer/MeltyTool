@@ -17,7 +17,7 @@ namespace fin.data.fuzzy {
         float minMatchPercentage) {
       var filterTokens = filterText.ToLower().Split(' ');
 
-      var dataChangeDistancesAndSimilarities = this.dataToKeywords_.Select(
+      var dataChangeDistancesAndSimilarities = this.dataToKeywords_.GetPairs().Select(
           pair => {
             var (data, keywords) = pair;
             var tokenChangeDistancesAndSimilarities = filterTokens.Select(

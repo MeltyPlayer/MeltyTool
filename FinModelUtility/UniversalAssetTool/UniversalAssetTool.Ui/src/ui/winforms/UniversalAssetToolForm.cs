@@ -209,7 +209,7 @@ public partial class UniversalAssetToolForm : Form {
         scene.Areas.SelectMany(
             area => area.Objects.SelectMany(obj => obj.Models)));
     while (sceneModelQueue.TryDequeue(out var sceneModel)) {
-      sceneModelQueue.Enqueue(sceneModel.Children.SelectMany(pair => pair.Value));
+      sceneModelQueue.Enqueue(sceneModel.Children.Values);
 
       var finModel = sceneModel.Model;
 

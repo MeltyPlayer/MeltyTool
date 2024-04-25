@@ -89,7 +89,7 @@ namespace fin.data {
       impl.Add(null, "z");
       Assert.AreEqual(9, impl.Count);
 
-      var actualValues = impl.ToArray();
+      var actualValues = impl.GetPairs().ToArray();
 
       Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
       Assert.AreEqual(true, impl.TryGetList("bar", out var barList));
@@ -101,44 +101,6 @@ namespace fin.data {
         (null, nullList!),
       ],
                     actualValues);
-    }
-
-    [Test]
-    public void TestEnumeratorManually() {
-      var impl = new ListDictionary<string?, string>();
-      Assert.AreEqual(0, impl.Count);
-
-      impl.Add("foo", "a");
-      impl.Add("foo", "b");
-      impl.Add("foo", "c");
-      Assert.AreEqual(3, impl.Count);
-
-      impl.Add("bar", "1");
-      impl.Add("bar", "2");
-      impl.Add("bar", "3");
-      Assert.AreEqual(6, impl.Count);
-
-      impl.Add(null, "x");
-      impl.Add(null, "y");
-      impl.Add(null, "z");
-      Assert.AreEqual(9, impl.Count);
-
-      var enumerator = ((IEnumerable) impl).GetEnumerator();
-
-      Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
-      Assert.AreEqual(true, impl.TryGetList("bar", out var barList));
-      Assert.AreEqual(true, impl.TryGetList(null, out var nullList));
-
-      Assert.AreEqual(true, enumerator.MoveNext());
-      Assert.AreEqual(("bar", barList!), enumerator.Current);
-
-      Assert.AreEqual(true, enumerator.MoveNext());
-      Assert.AreEqual(("foo", fooList!), enumerator.Current);
-
-      Assert.AreEqual(true, enumerator.MoveNext());
-      Assert.AreEqual(((string?) null, nullList!), enumerator.Current);
-
-      Assert.AreEqual(false, enumerator.MoveNext());
     }
   }
 }

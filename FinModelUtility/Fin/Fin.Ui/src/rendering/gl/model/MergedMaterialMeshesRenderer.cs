@@ -49,7 +49,8 @@ namespace fin.ui.rendering.gl.model {
                                 .ToArray();
 
         var materialMeshRenderers =
-            new ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesRenderer>();
+            new ListDictionary<IReadOnlyMesh,
+                MergedMaterialPrimitivesRenderer>();
         foreach (var material in orderedMaterials) {
           var primitives = primitivesByMaterial[material];
           if (!primitiveMerger.TryToMergePrimitives(
@@ -72,8 +73,9 @@ namespace fin.ui.rendering.gl.model {
         }
 
         allMaterialMeshRenderers.AddRange(
-            materialMeshRenderers.Select(
-                tuple => (tuple.Key, tuple.Value.ToArray())));
+            materialMeshRenderers
+                .GetPairs()
+                .Select(tuple => (tuple.key, tuple.value.ToArray())));
       }
 
       this.materialMeshRenderers_ = allMaterialMeshRenderers.ToArray();
@@ -98,7 +100,9 @@ namespace fin.ui.rendering.gl.model {
     }
 
     public IReadOnlyModel Model { get; }
-    public ISet<IReadOnlyMesh> HiddenMeshes { get; } = new HashSet<IReadOnlyMesh>();
+
+    public ISet<IReadOnlyMesh> HiddenMeshes { get; }
+      = new HashSet<IReadOnlyMesh>();
 
     private bool useLighting_ = false;
 

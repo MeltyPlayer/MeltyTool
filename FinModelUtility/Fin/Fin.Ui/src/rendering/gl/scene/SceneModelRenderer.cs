@@ -13,7 +13,9 @@ namespace fin.ui.rendering.gl.scene {
   public class SceneModelRenderer : IRenderable, IDisposable {
     private readonly ISceneModel sceneModel_;
     private readonly IModelRenderer modelRenderer_;
-    private readonly ListDictionary<IBone, SceneModelRenderer> children_ = [];
+
+    private readonly ListDictionary<IBone, SceneModelRenderer>
+        children_ = new();
 
     public SceneModelRenderer(ISceneModel sceneModel,
                               IReadOnlyLighting? lighting) {
@@ -34,7 +36,7 @@ namespace fin.ui.rendering.gl.scene {
               Scale = this.sceneModel_.ViewerScale
           };
 
-      foreach (var (bone, boneChildren) in sceneModel.Children) {
+      foreach (var (bone, boneChildren) in sceneModel.Children.GetPairs()) {
         foreach (var child in boneChildren) {
           this.children_.Add(bone, new SceneModelRenderer(child, lighting));
         }
@@ -50,7 +52,7 @@ namespace fin.ui.rendering.gl.scene {
 
     private void ReleaseUnmanagedResources_() {
       this.modelRenderer_.Dispose();
-      foreach (var child in this.children_.SelectMany(pair => pair.Value)) {
+      foreach (var child in this.children_.Values) {
         child.Dispose();
       }
     }
@@ -112,7 +114,7 @@ namespace fin.ui.rendering.gl.scene {
         this.SkeletonRenderer.Render();
       }
 
-      foreach (var (bone, boneChildren) in this.children_) {
+      foreach (var (bone, boneChildren) in this.children_.GetPairs()) {
         GlTransform.PushMatrix();
 
         GlTransform.MultMatrix(

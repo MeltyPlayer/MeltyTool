@@ -9,7 +9,7 @@ using fin.model;
 namespace fin.scene {
   public partial class SceneImpl {
     private class SceneModelImpl : ISceneModel {
-      private readonly ListDictionary<IBone, ISceneModel> children_ = [];
+      private readonly ListDictionary<IBone, ISceneModel> children_ = new();
       private IModelAnimation? animation_;
 
       public SceneModelImpl(IModel model) {
@@ -29,9 +29,13 @@ namespace fin.scene {
 
       private void Init_() {
         this.BoneTransformManager.CalculateStaticMatricesForManualProjection(
-            this.Model, true);
+            this.Model,
+            true);
 
-        this.AnimationPlaybackManager = new FrameAdvancer { Config = new AnimationInterpolationConfig { UseLoopingInterpolation = true } };
+        this.AnimationPlaybackManager = new FrameAdvancer {
+            Config = new AnimationInterpolationConfig
+                { UseLoopingInterpolation = true }
+        };
         this.Animation =
             this.Model.AnimationManager.Animations.FirstOrDefault();
         this.AnimationPlaybackManager.IsPlaying = true;
@@ -45,12 +49,13 @@ namespace fin.scene {
       }
 
       private void ReleaseUnmanagedResources_() {
-        foreach (var child in this.children_.SelectMany(pair => pair.Value)) {
+        foreach (var child in this.children_.Values) {
           child.Dispose();
         }
       }
 
-      public IReadOnlyListDictionary<IBone, ISceneModel> Children => this.children_;
+      public IReadOnlyListDictionary<IBone, ISceneModel> Children
+        => this.children_;
 
       public ISceneModel AddModelOntoBone(IModel model, IBone bone) {
         var child = new SceneModelImpl(model, this, bone);

@@ -1,4 +1,5 @@
-﻿using fin.data.lazy;
+﻿using fin.data.dictionaries;
+using fin.data.lazy;
 using fin.data.nodes;
 using fin.data.queues;
 using fin.io;
@@ -218,7 +219,7 @@ namespace level5.api {
               finAnimation.FrameCount = anim.FrameCount;
 
               foreach (var (animationReferenceHash, framesAndValues) in mtn2
-                           .Somethings) {
+                           .Somethings.GetPairs()) {
                 if (!prmsByAnimationReferenceHash.TryGetValue(
                         animationReferenceHash,
                         out var prmAndMesh)) {

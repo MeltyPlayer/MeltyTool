@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace fin.data {
-  public interface IReferenceCountCacheDictionary<TKey, TValue> {
+  public interface IReferenceCountCacheDictionary<in TKey, out TValue> {
     public TValue GetAndIncrement(TKey key);
     public void DecrementAndMaybeDispose(TKey key);
   }

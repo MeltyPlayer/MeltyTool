@@ -1,5 +1,6 @@
 ﻿using System.IO.Compression;
 
+using fin.data.dictionaries;
 using fin.io;
 using fin.log;
 using fin.util.asserts;
@@ -50,7 +51,7 @@ namespace uni.games.battalion_wars_1 {
         var bwArchive = br.ReadNew<BwArchive>();
 
         directory.Create();
-        foreach (var (bwFileExtension, bwFiles) in bwArchive.Files) {
+        foreach (var (bwFileExtension, bwFiles) in bwArchive.Files.GetPairs()) {
           foreach (var bwFile in bwFiles) {
             var fileName = $"{bwFile.FileName}.{bwFileExtension.ToLower()}";
             var file = new FinFile(Path.Join(directory.FullPath, fileName));

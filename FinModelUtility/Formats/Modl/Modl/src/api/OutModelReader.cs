@@ -345,7 +345,7 @@ namespace modl.api {
         }
       }
 
-      foreach (var (material, triangles) in trianglesByMaterial) {
+      foreach (var (material, triangles) in trianglesByMaterial.GetPairs()) {
         finMesh.AddTriangles(triangles.ToArray()).SetMaterial(material);
       }
 

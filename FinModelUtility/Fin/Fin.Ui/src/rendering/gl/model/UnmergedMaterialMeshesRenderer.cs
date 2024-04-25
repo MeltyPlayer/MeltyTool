@@ -85,7 +85,7 @@ namespace fin.ui.rendering.gl.model {
     }
 
     private void ReleaseUnmanagedResources_() {
-      foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_) {
+      foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_.GetPairs()) {
         foreach (var materialMeshRenderer in materialMeshRenderers) {
           materialMeshRenderer.Dispose();
         }
@@ -96,7 +96,9 @@ namespace fin.ui.rendering.gl.model {
     }
 
     public IReadOnlyModel Model { get; }
-    public ISet<IReadOnlyMesh> HiddenMeshes { get; } = new HashSet<IReadOnlyMesh>();
+
+    public ISet<IReadOnlyMesh> HiddenMeshes { get; }
+      = new HashSet<IReadOnlyMesh>();
 
     private bool useLighting_ = false;
 
@@ -104,8 +106,8 @@ namespace fin.ui.rendering.gl.model {
       get => this.useLighting_;
       set {
         this.useLighting_ = value;
-        foreach (var (_, materialMeshRenderers) in
-                 this.materialMeshRenderers_) {
+        foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_
+                     .GetPairs()) {
           foreach (var materialMeshRenderer in materialMeshRenderers) {
             materialMeshRenderer.UseLighting = value;
           }
@@ -117,7 +119,7 @@ namespace fin.ui.rendering.gl.model {
       this.GenerateModelIfNull_();
 
       foreach (var (mesh, materialMeshRenderers) in
-               this.materialMeshRenderers_) {
+               this.materialMeshRenderers_.GetPairs()) {
         if (this.HiddenMeshes?.Contains(mesh) ?? false) {
           continue;
         }

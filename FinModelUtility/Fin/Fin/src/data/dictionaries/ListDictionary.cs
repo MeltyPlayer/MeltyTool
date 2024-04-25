@@ -1,23 +1,57 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using schema.readOnly;
 
 namespace fin.data.dictionaries {
   [GenerateReadOnly]
-  public partial interface IListDictionary<TKey, TValue>
-      : IFinCollection<(TKey Key, IList<TValue> Value)> {
+  public partial interface IListDictionary<TKey, TValue> {
     [Const]
     bool HasList(TKey key);
 
     IList<TValue> this[TKey key] { get; }
 
-    [Const]
-    bool TryGetList(TKey key, out IList<TValue>? list);
-
     void ClearList(TKey key);
     void Add(TKey key, TValue value);
+
+    IEnumerable<TKey> Keys { get; }
+    IEnumerable<TValue> Values { get; }
+  }
+
+  public static class ListDictionaryExtensions {
+    public static bool TryGetList<TKey, TValue>(
+        this IListDictionary<TKey, TValue> impl,
+        TKey key,
+        out IList<TValue> list) {
+      if (impl.HasList(key)) {
+        list = impl[key];
+        return true;
+      }
+
+      list = default;
+      return false;
+    }
+
+    public static bool TryGetList<TKey, TValue>(
+        this IReadOnlyListDictionary<TKey, TValue> impl,
+        TKey key,
+        out IReadOnlyList<TValue> list) {
+      if (impl.HasList(key)) {
+        list = impl[key];
+        return true;
+      }
+
+      list = default;
+      return false;
+    }
+
+    public static IEnumerable<(TKey key, IList<TValue> value)> GetPairs<
+        TKey, TValue>(this IListDictionary<TKey, TValue> impl)
+      => impl.Keys.Select(key => (key, impl[key]));
+
+    public static IEnumerable<(TKey key, IReadOnlyList<TValue> value)> GetPairs<
+        TKey, TValue>(this IReadOnlyListDictionary<TKey, TValue> impl)
+      => impl.Keys.Select(key => (key, impl[key]));
   }
 
 
@@ -49,12 +83,7 @@ namespace fin.data.dictionaries {
 
     public IList<TValue> this[TKey key] => impl[key];
 
-    public bool TryGetList(TKey key, out IList<TValue>? list)
-      => impl.TryGetValue(key, out list);
-
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
-
-    public IEnumerator<(TKey Key, IList<TValue> Value)> GetEnumerator()
-      => impl.GetEnumerator();
+    public IEnumerable<TKey> Keys => impl.Keys;
+    public IEnumerable<TValue> Values => impl.Values.SelectMany(v => v);
   }
 }
