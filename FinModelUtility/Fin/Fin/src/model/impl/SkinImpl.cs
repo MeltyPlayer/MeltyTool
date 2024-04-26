@@ -117,8 +117,13 @@ namespace fin.model.impl {
       }
 
       public IBoneWeights CreateBoneWeights(VertexSpace vertexSpace,
-                                            params IBoneWeight[] weights)
-        => this.boneWeightsDictionary_.Create(vertexSpace, weights);
+                                            params IBoneWeight[] weights) {
+        foreach (var boneWeight in weights) {
+          this.bonesUsedByVertices_.Add(boneWeight.Bone);
+        }
+
+        return this.boneWeightsDictionary_.Create(vertexSpace, weights);
+      }
 
 
       private class MeshImpl : IMesh {
