@@ -35,7 +35,7 @@ namespace uni.ui.winforms.common.scene {
 
     public ISkeletonRenderer? SkeletonRenderer => this.impl_.SkeletonRenderer;
 
-    public IModelAnimation? Animation {
+    public IReadOnlyModelAnimation? Animation {
       get => this.impl_.Animation;
       set => this.impl_.Animation = value;
     }

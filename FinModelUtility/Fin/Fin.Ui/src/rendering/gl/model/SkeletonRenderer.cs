@@ -11,7 +11,7 @@ using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 namespace fin.ui.rendering.gl.model {
   public interface ISkeletonRenderer : IRenderable {
     ISkeleton Skeleton { get; }
-    IBone? SelectedBone { get; set; }
+    IReadOnlyBone? SelectedBone { get; set; }
     float Scale { get; set; }
   }
 
@@ -28,7 +28,7 @@ namespace fin.ui.rendering.gl.model {
     }
 
     public ISkeleton Skeleton { get; }
-    public IBone? SelectedBone { get; set; }
+    public IReadOnlyBone? SelectedBone { get; set; }
     public float Scale { get; set; } = 1;
 
     public void Render() {

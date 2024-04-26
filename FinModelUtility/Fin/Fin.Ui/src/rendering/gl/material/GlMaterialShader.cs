@@ -13,19 +13,19 @@ namespace fin.ui.rendering.gl.material {
       => material.GetShaderType() switch {
           FinShaderType.FIXED_FUNCTION => new GlFixedFunctionMaterialShader(
               model,
-              Asserts.AsA<IFixedFunctionMaterial>(material),
+              Asserts.AsA<IReadOnlyFixedFunctionMaterial>(material),
               boneTransformManager,
               lighting),
           FinShaderType.TEXTURE => new GlTextureMaterialShader(model,
-            Asserts.AsA<ITextureMaterial>(material),
+            Asserts.AsA<IReadOnlyTextureMaterial>(material),
             boneTransformManager,
             lighting),
           FinShaderType.COLOR => new GlColorMaterialShader(model,
-            Asserts.AsA<IColorMaterial>(material),
+            Asserts.AsA<IReadOnlyColorMaterial>(material),
             boneTransformManager,
             lighting),
           FinShaderType.STANDARD => new GlStandardMaterialShader(model,
-            Asserts.AsA<IStandardMaterial>(material),
+            Asserts.AsA<IReadOnlyStandardMaterial>(material),
             boneTransformManager,
             lighting),
           FinShaderType.NULL => new GlNullMaterialShader(

@@ -6,7 +6,7 @@ using fin.model;
 
 namespace uni.ui.winforms.right_panel {
   public partial class AnimationsTab : UserControl {
-    private IModelAnimation[]? animations_;
+    private IReadOnlyModelAnimation[]? animations_;
 
     public AnimationsTab() {
       InitializeComponent();
@@ -22,7 +22,7 @@ namespace uni.ui.winforms.right_panel {
       };
     }
 
-    public IModel? Model {
+    public IReadOnlyModel? Model {
       set {
         this.listView_.SelectedIndices.Clear();
         this.listView_.Items.Clear();
@@ -51,7 +51,7 @@ namespace uni.ui.winforms.right_panel {
       set => this.animationPlaybackPanel_.Impl = value;
     }
 
-    public delegate void AnimationSelected(IModelAnimation? animation);
+    public delegate void AnimationSelected(IReadOnlyModelAnimation? animation);
 
     public event AnimationSelected OnAnimationSelected;
   }

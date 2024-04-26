@@ -99,7 +99,7 @@ namespace uni.ui.winforms.common.scene {
              ?.ModelRenderers.FirstOrDefault()
              ?.SkeletonRenderer;
 
-    public IModelAnimation? Animation {
+    public IReadOnlyModelAnimation? Animation {
       get => this.FirstSceneModel?.Animation;
       set {
         if (this.FirstSceneModel == null) {

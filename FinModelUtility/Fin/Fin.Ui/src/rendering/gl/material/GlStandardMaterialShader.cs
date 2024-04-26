@@ -4,16 +4,16 @@ using fin.model;
 namespace fin.ui.rendering.gl.material {
   public class GlStandardMaterialShader(
       IReadOnlyModel model,
-      IStandardMaterial standardMaterial,
+      IReadOnlyStandardMaterial standardMaterial,
       IBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
-      : BGlMaterialShader<IStandardMaterial>(model,
-                                             standardMaterial,
-                                             boneTransformManager,
-                                             lighting) {
+      : BGlMaterialShader<IReadOnlyStandardMaterial>(model,
+        standardMaterial,
+        boneTransformManager,
+        lighting) {
     protected override void DisposeInternal() { }
 
-    protected override void Setup(IStandardMaterial material,
+    protected override void Setup(IReadOnlyStandardMaterial material,
                                   GlShaderProgram shaderProgram) {
       var diffuseFinTexture = material.DiffuseTexture;
       var diffuseGlTexture =

@@ -13,11 +13,11 @@ namespace uni.ui.winforms.right_panel.skeleton {
           this.OnBoneSelected?.Invoke(boneNode.Bone);
     }
 
-    public IModel? Model {
+    public IReadOnlyModel? Model {
       set => this.skeletonTreeView_.Populate(value?.Skeleton);
     }
 
-    public delegate void BoneSelected(IBone? bone);
+    public delegate void BoneSelected(IReadOnlyBone? bone);
 
     public event BoneSelected OnBoneSelected;
   }

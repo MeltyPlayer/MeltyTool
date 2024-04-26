@@ -12,7 +12,7 @@ namespace uni.ui {
 
     ISceneModel? FirstSceneModel { get; }
     IAnimationPlaybackManager? AnimationPlaybackManager { get; }
-    IModelAnimation? Animation { get; set; }
+    IReadOnlyModelAnimation? Animation { get; set; }
     ISkeletonRenderer? SkeletonRenderer { get; }
 
     TimeSpan FrameTime { get; }

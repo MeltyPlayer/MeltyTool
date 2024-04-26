@@ -9,7 +9,8 @@ namespace fin.model {
     IAnimationManager AnimationManager { get; }
   }
 
-  public interface IModel<out TSkin> : IModel where TSkin : ISkin {
+  [GenerateReadOnly]
+  public partial interface IModel<out TSkin> : IModel where TSkin : ISkin {
     new TSkin Skin { get; }
   }
 }

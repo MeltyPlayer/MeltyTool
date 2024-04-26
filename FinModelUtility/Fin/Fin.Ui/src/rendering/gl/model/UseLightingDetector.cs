@@ -3,7 +3,7 @@ using fin.model;
 
 namespace fin.ui.rendering.gl.model {
   public class UseLightingDetector {
-    public bool ShouldUseLightingFor(IModel model) {
+    public bool ShouldUseLightingFor(IReadOnlyModel model) {
       var useLighting = false;
       foreach (var vertex in model.Skin.Vertices) {
         if (vertex is IReadOnlyNormalVertex { LocalNormal: { } }) {

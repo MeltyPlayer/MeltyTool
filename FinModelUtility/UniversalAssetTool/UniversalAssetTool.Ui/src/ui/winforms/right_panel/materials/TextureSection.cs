@@ -14,11 +14,12 @@ namespace uni.ui.winforms.right_panel.materials {
           += texture => this.texturePanel_.Texture = texture;
     }
 
-    public IMaterial? Material {
+    public IReadOnlyMaterial? Material {
       set => this.textureSelectorBox_.Textures =
           ((value is IReadOnlyFixedFunctionMaterial fixedFunctionMaterial)
               ? fixedFunctionMaterial.TextureSources.Nonnull()
-              : value?.Textures)?.ToArray() ?? Array.Empty<ITexture>();
+              : value?.Textures)?.ToArray() ??
+          Array.Empty<IReadOnlyTexture>();
     }
   }
 }

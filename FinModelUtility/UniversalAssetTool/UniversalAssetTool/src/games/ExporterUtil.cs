@@ -283,7 +283,7 @@ namespace uni.games {
     }
 
     public static void Export<T>(T threeDFileBundle,
-                                 Func<IModel> loaderHandler,
+                                 Func<IReadOnlyModel> loaderHandler,
                                  ISystemDirectory outputDirectory,
                                  IReadOnlyList<string> extensions,
                                  bool overwriteExistingFile,
@@ -299,7 +299,7 @@ namespace uni.games {
 
     public static void Export<T>(
         T threeDFileBundle,
-        Func<IModel> loaderHandler,
+        Func<IReadOnlyModel> loaderHandler,
         ISystemDirectory outputDirectory,
         IReadOnlyList<ExportFormatDescription> formats,
         bool overwriteExistingFile,

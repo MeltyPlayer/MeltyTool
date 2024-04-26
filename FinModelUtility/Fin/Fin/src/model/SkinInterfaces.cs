@@ -34,7 +34,9 @@ namespace fin.model {
         params IBoneWeight[] weights);
   }
 
-  public interface ISkin<out TVertex> : ISkin where TVertex : IReadOnlyVertex {
+  [GenerateReadOnly]
+  public partial interface ISkin<out TVertex> : ISkin
+      where TVertex : IReadOnlyVertex {
     IReadOnlyList<TVertex> TypedVertices { get; }
 
     TVertex AddVertex(Position position);

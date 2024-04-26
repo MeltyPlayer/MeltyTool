@@ -5,7 +5,7 @@ using fin.model;
 
 namespace uni.ui.winforms.right_panel.materials {
   public partial class MaterialsTab : UserControl {
-    private IModel? model_;
+    private IReadOnlyModel? model_;
 
     public MaterialsTab() {
       InitializeComponent();
@@ -17,7 +17,7 @@ namespace uni.ui.winforms.right_panel.materials {
       };
     }
 
-    public (IModel, IReadOnlyList<IMaterial>)? ModelAndMaterials {
+    public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial>)? ModelAndMaterials {
       set {
         this.model_ = value?.Item1;
         this.materialSelector_.Materials = value?.Item2;

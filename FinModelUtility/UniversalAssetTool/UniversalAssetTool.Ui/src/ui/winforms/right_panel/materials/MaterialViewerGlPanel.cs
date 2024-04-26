@@ -13,10 +13,10 @@ using PrimitiveType = fin.model.PrimitiveType;
 
 namespace uni.ui.winforms.right_panel.materials {
   public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
-    private IMaterial? material_;
+    private IReadOnlyMaterial? material_;
     private IGlMaterialShader? materialShader_;
 
-    public IMaterial? Material {
+    public IReadOnlyMaterial? Material {
       get => this.material_;
       set {
         this.material_ = value;

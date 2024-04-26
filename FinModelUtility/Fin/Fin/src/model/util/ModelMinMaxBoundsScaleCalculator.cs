@@ -7,10 +7,10 @@ using fin.math;
 
 namespace fin.model.util {
   public class ModelMinMaxBoundsScaleCalculator
-      : BMinMaxBoundsScaleCalculator<IModel> {
+      : BMinMaxBoundsScaleCalculator<IReadOnlyModel> {
     private readonly BoneTransformManager boneTransformManager_ = new();
 
-    public override Bounds CalculateBounds(IModel model) {
+    public override Bounds CalculateBounds(IReadOnlyModel model) {
       var minX = float.MaxValue;
       var minY = float.MaxValue;
       var minZ = float.MaxValue;
@@ -29,7 +29,7 @@ namespace fin.model.util {
       return new Bounds(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public Bounds CalculateBounds(IEnumerable<IModel> models) {
+    public Bounds CalculateBounds(IEnumerable<IReadOnlyModel> models) {
       var minX = float.MaxValue;
       var minY = float.MaxValue;
       var minZ = float.MaxValue;
@@ -50,7 +50,7 @@ namespace fin.model.util {
       return new Bounds(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    private void FactorModelIntoBounds_(IModel model,
+    private void FactorModelIntoBounds_(IReadOnlyModel model,
                                         ref float minX,
                                         ref float minY,
                                         ref float minZ,

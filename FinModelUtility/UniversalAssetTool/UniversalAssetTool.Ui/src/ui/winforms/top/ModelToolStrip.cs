@@ -21,7 +21,7 @@ using static uni.games.ExporterUtil;
 namespace uni.ui.winforms.top {
   public partial class ModelToolStrip : UserControl {
     private IFileTreeParentNode? directoryNode_;
-    private (IFileTreeLeafNode, IModel)? fileNodeAndModel_;
+    private (IFileTreeLeafNode, IReadOnlyModel)? fileNodeAndModel_;
 
     private bool hasModelsInDirectory_;
     private bool isModelSelected_;
@@ -94,7 +94,7 @@ namespace uni.ui.winforms.top {
       }
     }
 
-    public (IFileTreeLeafNode?, IModel?) FileNodeAndModel {
+    public (IFileTreeLeafNode?, IReadOnlyModel?) FileNodeAndModel {
       set {
         var (fileNode, model) = value;
 

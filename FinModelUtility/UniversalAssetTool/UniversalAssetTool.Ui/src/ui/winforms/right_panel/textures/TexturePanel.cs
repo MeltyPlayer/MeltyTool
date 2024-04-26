@@ -17,7 +17,7 @@ namespace uni.ui.winforms.right_panel.textures {
           this.GenerateContextMenuItems_);
     }
 
-    public ITexture? Texture {
+    public IReadOnlyTexture? Texture {
       set {
         this.groupBox_.Text = value?.Name ?? "(Select a texture)";
         this.pictureBox_.Image = value?.ImageData;

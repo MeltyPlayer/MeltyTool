@@ -9,17 +9,19 @@ using fin.model;
 namespace fin.scene {
   public partial class SceneImpl {
     private class SceneModelImpl : ISceneModel {
-      private readonly ListDictionary<IBone, ISceneModel> children_ = new();
-      private IModelAnimation? animation_;
+      private readonly ListDictionary<IReadOnlyBone, ISceneModel> children_ = new();
+      private IReadOnlyModelAnimation? animation_;
 
-      public SceneModelImpl(IModel model) {
+      public SceneModelImpl(IReadOnlyModel model) {
         this.Model = model;
         this.BoneTransformManager = new BoneTransformManager();
 
         this.Init_();
       }
 
-      private SceneModelImpl(IModel model, SceneModelImpl parent, IBone bone) {
+      private SceneModelImpl(IReadOnlyModel model,
+                             SceneModelImpl parent,
+                             IReadOnlyBone bone) {
         this.Model = model;
         this.BoneTransformManager =
             new BoneTransformManager((parent.BoneTransformManager, bone));
@@ -54,20 +56,21 @@ namespace fin.scene {
         }
       }
 
-      public IReadOnlyListDictionary<IBone, ISceneModel> Children
+      public IReadOnlyListDictionary<IReadOnlyBone, ISceneModel> Children
         => this.children_;
 
-      public ISceneModel AddModelOntoBone(IModel model, IBone bone) {
+      public ISceneModel AddModelOntoBone(IReadOnlyModel model,
+                                          IReadOnlyBone bone) {
         var child = new SceneModelImpl(model, this, bone);
         this.children_.Add(bone, child);
         return child;
       }
 
-      public IModel Model { get; }
+      public IReadOnlyModel Model { get; }
 
       public IBoneTransformManager BoneTransformManager { get; }
 
-      public IModelAnimation? Animation {
+      public IReadOnlyModelAnimation? Animation {
         get => this.animation_;
         set {
           if (this.animation_ == value) {

@@ -12,7 +12,7 @@ namespace uni.ui.winforms.right_panel.textures {
               this.textureInfoSection_.SelectedTexture = texture;
     }
 
-    public IModel? Model {
+    public IReadOnlyModel? Model {
       set => this.textureSelectorBox_.Textures =
                  value?.MaterialManager.Textures;
     }

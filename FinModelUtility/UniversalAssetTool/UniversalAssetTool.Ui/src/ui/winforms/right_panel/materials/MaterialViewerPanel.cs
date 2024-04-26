@@ -8,7 +8,7 @@ namespace uni.ui.winforms.right_panel.materials {
       this.InitializeComponent();
     }
 
-    public IMaterial? Material {
+    public IReadOnlyMaterial? Material {
       get => this.impl_.Material;
       set {
         this.groupBox_.Text = value == null

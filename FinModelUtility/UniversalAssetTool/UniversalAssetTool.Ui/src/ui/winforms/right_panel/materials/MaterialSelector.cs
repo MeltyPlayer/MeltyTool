@@ -6,8 +6,8 @@ using fin.util.lists;
 
 namespace uni.ui.winforms.right_panel.materials {
   public partial class MaterialSelector : UserControl {
-    private IReadOnlyList<IMaterial>? materials_;
-    private IMaterial? selectedMaterial_ = null;
+    private IReadOnlyList<IReadOnlyMaterial>? materials_;
+    private IReadOnlyMaterial? selectedMaterial_ = null;
 
     public MaterialSelector() {
       InitializeComponent();
@@ -20,7 +20,7 @@ namespace uni.ui.winforms.right_panel.materials {
       };
     }
 
-    public IReadOnlyList<IMaterial>? Materials {
+    public IReadOnlyList<IReadOnlyMaterial>? Materials {
       get => this.materials_;
       set {
         this.materials_ = value;
@@ -41,7 +41,7 @@ namespace uni.ui.winforms.right_panel.materials {
       }
     }
 
-    public IMaterial? SelectedMaterial {
+    public IReadOnlyMaterial? SelectedMaterial {
       get => this.selectedMaterial_;
       set {
         if (this.selectedMaterial_ == value || this.materials_ == null) {
@@ -58,7 +58,7 @@ namespace uni.ui.winforms.right_panel.materials {
       }
     }
 
-    public delegate void OnMaterialSelectedHandler(IMaterial? material);
+    public delegate void OnMaterialSelectedHandler(IReadOnlyMaterial? material);
 
     public event OnMaterialSelectedHandler OnMaterialSelected = delegate { };
   }

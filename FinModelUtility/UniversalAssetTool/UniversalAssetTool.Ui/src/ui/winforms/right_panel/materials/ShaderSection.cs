@@ -9,7 +9,7 @@ namespace uni.ui.winforms.right_panel.materials {
       InitializeComponent();
     }
 
-    public (IModel, IMaterial?)? ModelAndMaterial {
+    public (IReadOnlyModel, IReadOnlyMaterial?)? ModelAndMaterial {
       set {
         if (value == null) {
           this.richTextBox_.Text = "(n/a)";

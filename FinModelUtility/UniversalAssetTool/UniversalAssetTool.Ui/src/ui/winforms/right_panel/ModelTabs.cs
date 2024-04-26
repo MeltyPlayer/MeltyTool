@@ -12,7 +12,7 @@ namespace uni.ui.winforms.right_panel {
       InitializeComponent();
     }
 
-    public (IFileBundle, IModel)? Model {
+    public (IFileBundle, IReadOnlyModel)? Model {
       set {
         var modelFileBundle = value?.Item1;
         var model = value?.Item2;

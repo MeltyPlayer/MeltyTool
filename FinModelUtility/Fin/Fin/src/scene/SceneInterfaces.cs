@@ -87,14 +87,14 @@ namespace fin.scene {
   ///   onto bones.
   /// </summary>
   public interface ISceneModel : IDisposable {
-    IReadOnlyListDictionary<IBone, ISceneModel> Children { get; }
-    ISceneModel AddModelOntoBone(IModel model, IBone bone);
+    IReadOnlyListDictionary<IReadOnlyBone, ISceneModel> Children { get; }
+    ISceneModel AddModelOntoBone(IReadOnlyModel model, IReadOnlyBone bone);
 
-    IModel Model { get; }
+    IReadOnlyModel Model { get; }
 
     IBoneTransformManager BoneTransformManager { get; }
 
-    IModelAnimation? Animation { get; set; }
+    IReadOnlyModelAnimation? Animation { get; set; }
     IAnimationPlaybackManager AnimationPlaybackManager { get; }
 
     float ViewerScale { get; set; }

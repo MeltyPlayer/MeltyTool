@@ -14,15 +14,15 @@ namespace uni.ui.winforms.right_panel.textures {
       this.SelectedTexture = null;
     }
 
-    public ITexture? SelectedTexture {
+    public IReadOnlyTexture? SelectedTexture {
       set => this.propertyGrid_.SelectedObject =
           new PropertyGridTexture(value);
     }
 
     private class PropertyGridTexture {
-      private ITexture? impl_;
+      private IReadOnlyTexture? impl_;
 
-      public PropertyGridTexture(ITexture? impl) {
+      public PropertyGridTexture(IReadOnlyTexture? impl) {
         this.impl_ = impl;
       }
 

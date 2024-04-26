@@ -17,7 +17,7 @@ namespace uni.ui.winforms.right_panel.registers {
       InitializeComponent();
     }
 
-    public IModel? Model {
+    public IReadOnlyModel? Model {
       set {
         this.SuspendLayout();
 
@@ -68,7 +68,7 @@ namespace uni.ui.winforms.right_panel.registers {
         var allEquations =
             materialManager
                 .All
-                .WhereIs<IMaterial, IFixedFunctionMaterial>()
+                .WhereIs<IReadOnlyMaterial, IReadOnlyFixedFunctionMaterial>()
                 .Select(mat => mat.Equations)
                 .ToArray();
 

@@ -7,18 +7,17 @@ using fin.util.lists;
 
 namespace uni.ui.winforms.right_panel.textures {
   public partial class TextureSelectorBox : UserControl {
-    private IReadOnlyList<ITexture>? textures_;
-    private ITexture? selectedTexture_;
+    private IReadOnlyList<IReadOnlyTexture>? textures_;
+    private IReadOnlyTexture? selectedTexture_;
 
     public TextureSelectorBox() {
       InitializeComponent();
 
-      this.listView_.ItemSelectionChanged += (_, e) => {
-        this.SelectedTexture = this.textures_?[e.ItemIndex];
-      };
+      this.listView_.ItemSelectionChanged
+          += (_, e) => { this.SelectedTexture = this.textures_?[e.ItemIndex]; };
     }
 
-    public IReadOnlyList<ITexture>? Textures {
+    public IReadOnlyList<IReadOnlyTexture>? Textures {
       set {
         this.listView_.Clear();
 
@@ -43,7 +42,7 @@ namespace uni.ui.winforms.right_panel.textures {
       }
     }
 
-    public ITexture? SelectedTexture {
+    public IReadOnlyTexture? SelectedTexture {
       get => this.selectedTexture_;
       set {
         if (this.selectedTexture_ == value) {
@@ -61,12 +60,13 @@ namespace uni.ui.winforms.right_panel.textures {
       }
     }
 
-    public delegate void OnTextureSelectedHandler(ITexture? texture);
+    public delegate void OnTextureSelectedHandler(IReadOnlyTexture? texture);
 
     public event OnTextureSelectedHandler OnTextureSelected = delegate { };
 
-    private class TextureEqualityComparer : IEqualityComparer<ITexture> {
-      public bool Equals(ITexture x, ITexture y) {
+    private class TextureEqualityComparer
+        : IEqualityComparer<IReadOnlyTexture> {
+      public bool Equals(IReadOnlyTexture x, IReadOnlyTexture y) {
         if (ReferenceEquals(x, y)) return true;
         if (ReferenceEquals(x, null)) return false;
         if (ReferenceEquals(y, null)) return false;
@@ -74,7 +74,7 @@ namespace uni.ui.winforms.right_panel.textures {
         return x.Image.Equals(y.Image);
       }
 
-      public int GetHashCode(ITexture obj) {
+      public int GetHashCode(IReadOnlyTexture obj) {
         return obj.Image.GetHashCode();
       }
     }
