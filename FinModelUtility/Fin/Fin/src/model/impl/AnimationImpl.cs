@@ -42,7 +42,7 @@ namespace fin.model.impl {
 
       private class ModelAnimationImpl : IModelAnimation {
         private readonly IndexableDictionary<IReadOnlyBone, IBoneTracks> boneTracks_;
-        private readonly Dictionary<IMesh, IMeshTracks> meshTracks_ = new();
+        private readonly Dictionary<IReadOnlyMesh, IMeshTracks> meshTracks_ = new();
 
         public ModelAnimationImpl(int boneCount) {
           this.boneTracks_ =
@@ -61,17 +61,17 @@ namespace fin.model.impl {
         public IBoneTracks AddBoneTracks(IReadOnlyBone bone)
           => this.boneTracks_[bone] = new BoneTracksImpl(this, bone);
 
-        public IReadOnlyDictionary<IMesh, IMeshTracks> MeshTracks
+        public IReadOnlyDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks
           => this.meshTracks_;
 
-        public IMeshTracks AddMeshTracks(IMesh mesh)
+        public IMeshTracks AddMeshTracks(IReadOnlyMesh mesh)
           => this.meshTracks_[mesh] = new MeshTracksImpl(this);
 
 
-        public IReadOnlyDictionary<ITexture, ITextureTracks> TextureTracks
+        public IReadOnlyDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks
           => throw new NotImplementedException();
 
-        public ITextureTracks AddTextureTracks(ITexture texture) {
+        public ITextureTracks AddTextureTracks(IReadOnlyTexture texture) {
           throw new NotImplementedException();
         }
 

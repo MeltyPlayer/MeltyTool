@@ -38,11 +38,11 @@ namespace fin.model {
     IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks { get; }
     IBoneTracks AddBoneTracks(IReadOnlyBone bone);
 
-    IReadOnlyDictionary<IMesh, IMeshTracks> MeshTracks { get; }
-    IMeshTracks AddMeshTracks(IMesh mesh);
+    IReadOnlyDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
+    IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
 
-    IReadOnlyDictionary<ITexture, ITextureTracks> TextureTracks { get; }
-    ITextureTracks AddTextureTracks(ITexture texture);
+    IReadOnlyDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks { get; }
+    ITextureTracks AddTextureTracks(IReadOnlyTexture texture);
 
     // TODO: Allow setting looping behavior (once, back and forth, etc.)
   }
