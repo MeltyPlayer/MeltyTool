@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using schema.readOnly;
+
 namespace fin.io {
   // TODO: Come up with a better name for these "tree" interfaces?
   // The idea is that:
@@ -11,60 +13,80 @@ namespace fin.io {
   // - system files refer to real files that exist within the file system
   //   - these can be readonly or mutable
 
-  public interface IReadOnlyTreeIoObject<TIoObject, TDirectory, TFile,
+  [GenerateReadOnly]
+  public partial interface ITreeIoObject<TIoObject, TDirectory, TFile,
                                          TFileType>
       : IEquatable<TIoObject>
       where TIoObject :
-      IReadOnlyTreeIoObject<TIoObject, TDirectory, TFile, TFileType>
+      ITreeIoObject<TIoObject, TDirectory, TFile, TFileType>
       where TDirectory :
-      IReadOnlyTreeDirectory<TIoObject, TDirectory, TFile, TFileType>
-      where TFile : IReadOnlyTreeFile<TIoObject, TDirectory, TFile, TFileType> {
+      ITreeDirectory<TIoObject, TDirectory, TFile, TFileType>
+      where TFile : ITreeFile<TIoObject, TDirectory, TFile, TFileType> {
     string FullPath { get; }
     string Name { get; }
 
+    [Const]
     TDirectory AssertGetParent();
+
+    [Const]
     bool TryGetParent(out TDirectory parent);
+
+    [Const]
     IEnumerable<TDirectory> GetAncestry();
   }
 
-  public interface IReadOnlyTreeDirectory<TIoObject, TDirectory, TFile,
+  [GenerateReadOnly]
+  public partial interface ITreeDirectory<TIoObject, TDirectory, TFile,
                                           TFileType>
-      : IReadOnlyTreeIoObject<TIoObject, TDirectory, TFile, TFileType>
+      : ITreeIoObject<TIoObject, TDirectory, TFile, TFileType>
       where TIoObject :
-      IReadOnlyTreeIoObject<TIoObject, TDirectory, TFile, TFileType>
+      ITreeIoObject<TIoObject, TDirectory, TFile, TFileType>
       where TDirectory :
-      IReadOnlyTreeDirectory<TIoObject, TDirectory, TFile, TFileType>
-      where TFile : IReadOnlyTreeFile<TIoObject, TDirectory, TFile, TFileType> {
+      ITreeDirectory<TIoObject, TDirectory, TFile, TFileType>
+      where TFile : ITreeFile<TIoObject, TDirectory, TFile, TFileType> {
     bool IsEmpty { get; }
 
+    [Const]
     IEnumerable<TDirectory> GetExistingSubdirs();
+
+    [Const]
     TDirectory AssertGetExistingSubdir(string path);
 
+    [Const]
     bool TryToGetExistingSubdir(string path, out TDirectory outDirectory);
 
+    [Const]
     IEnumerable<TFile> GetExistingFiles();
+
+    [Const]
     TFile AssertGetExistingFile(string path);
 
+    [Const]
     bool TryToGetExistingFile(string path, out TFile outFile);
 
+    [Const]
     bool TryToGetExistingFileWithFileType(string pathWithoutExtension,
                                           out TFile outFile,
                                           params TFileType[] fileTypes);
 
+    [Const]
     IEnumerable<TFile> GetFilesWithNameRecursive(string name);
+
+    [Const]
     IEnumerable<TFile> GetFilesWithFileType(
         TFileType fileType,
         bool includeSubdirs = false);
   }
 
-  public interface IReadOnlyTreeFile<TIoObject, TDirectory, TFile, TFileType>
-      : IReadOnlyTreeIoObject<TIoObject, TDirectory, TFile, TFileType>,
-        IReadOnlyGenericFile
+  [GenerateReadOnly]
+  public partial interface ITreeFile<TIoObject, TDirectory, TFile, TFileType>
+      : ITreeIoObject<TIoObject, TDirectory, TFile, TFileType>,
+        IGenericFile
       where TIoObject :
-      IReadOnlyTreeIoObject<TIoObject, TDirectory, TFile, TFileType>
+      ITreeIoObject<TIoObject, TDirectory, TFile, TFileType>
       where TDirectory :
-      IReadOnlyTreeDirectory<TIoObject, TDirectory, TFile, TFileType>
-      where TFile : IReadOnlyTreeFile<TIoObject, TDirectory, TFile, TFileType> {
+      ITreeDirectory<TIoObject, TDirectory, TFile, TFileType>
+      where TFile : ITreeFile<TIoObject, TDirectory, TFile, TFileType> {
     TFileType FileType { get; }
 
     string FullNameWithoutExtension { get; }
@@ -72,17 +94,17 @@ namespace fin.io {
   }
 
 
-  public interface IReadOnlyTreeIoObject
-      : IReadOnlyTreeIoObject<IReadOnlyTreeIoObject, IReadOnlyTreeDirectory,
-          IReadOnlyTreeFile, string> { }
+  [GenerateReadOnly]
+  public partial interface ITreeIoObject
+      : ITreeIoObject<ITreeIoObject, ITreeDirectory, ITreeFile, string>;
 
-  public interface IReadOnlyTreeDirectory
-      : IReadOnlyTreeIoObject,
-        IReadOnlyTreeDirectory<IReadOnlyTreeIoObject, IReadOnlyTreeDirectory,
-            IReadOnlyTreeFile, string> { }
+  [GenerateReadOnly]
+  public partial interface ITreeDirectory
+      : ITreeIoObject,
+        ITreeDirectory<ITreeIoObject, ITreeDirectory, ITreeFile, string>;
 
-  public interface IReadOnlyTreeFile
-      : IReadOnlyTreeIoObject,
-        IReadOnlyTreeFile<IReadOnlyTreeIoObject, IReadOnlyTreeDirectory,
-            IReadOnlyTreeFile, string> { }
+  [GenerateReadOnly]
+  public partial interface ITreeFile
+      : ITreeIoObject,
+        ITreeFile<ITreeIoObject, ITreeDirectory, ITreeFile, string>;
 }
