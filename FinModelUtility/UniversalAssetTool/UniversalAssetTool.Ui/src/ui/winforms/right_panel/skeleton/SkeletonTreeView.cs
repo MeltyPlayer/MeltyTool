@@ -19,7 +19,7 @@ namespace uni.ui.winforms.right_panel.skeleton {
 
   public interface ISkeletonTreeNode {
     string Text { get; }
-    IBone Bone { get; }
+    IReadOnlyBone Bone { get; }
 
     ISkeletonTreeNode? Parent { get; }
   }
@@ -35,14 +35,14 @@ namespace uni.ui.winforms.right_panel.skeleton {
     protected class SkeletonNode : ISkeletonTreeNode {
       private readonly common.IBetterTreeNode<SkeletonNode> treeNode_;
 
-      public SkeletonNode(SkeletonTreeView treeView, IBone bone) {
+      public SkeletonNode(SkeletonTreeView treeView, IReadOnlyBone bone) {
         this.Bone = bone;
 
         this.treeNode_ = treeView.betterTreeView_.Root;
         this.treeNode_.Data = this;
       }
 
-      private SkeletonNode(SkeletonNode parent, IBone bone) {
+      private SkeletonNode(SkeletonNode parent, IReadOnlyBone bone) {
         this.Bone = bone;
 
         this.treeNode_ = parent.treeNode_.Add(bone.Name);
@@ -50,11 +50,11 @@ namespace uni.ui.winforms.right_panel.skeleton {
       }
 
       public string Text => this.treeNode_.Text ?? "n/a";
-      public IBone Bone { get; set; }
+      public IReadOnlyBone Bone { get; set; }
 
       public ISkeletonTreeNode? Parent => this.treeNode_.Parent?.Data;
 
-      public SkeletonNode AddChild(IBone bone) => new(this, bone);
+      public SkeletonNode AddChild(IReadOnlyBone bone) => new(this, bone);
     }
 
     public SkeletonTreeView() {
@@ -72,13 +72,13 @@ namespace uni.ui.winforms.right_panel.skeleton {
       };
     }
 
-    public void Populate(ISkeleton? skeleton) {
+    public void Populate(IReadOnlySkeleton? skeleton) {
       this.betterTreeView_.BeginUpdate();
       this.betterTreeView_.Clear();
 
       if (skeleton != null) {
         var boneQueue =
-            new FinTuple2Queue<IBone, SkeletonNode>(
+            new FinTuple2Queue<IReadOnlyBone, SkeletonNode>(
                 (skeleton.Root, new SkeletonNode(this, skeleton.Root)));
         while (boneQueue.TryDequeue(out var bone, out var node)) {
           boneQueue.Enqueue(

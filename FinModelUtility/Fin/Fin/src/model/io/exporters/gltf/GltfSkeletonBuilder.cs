@@ -15,7 +15,7 @@ namespace fin.model.io.exporters.gltf {
         GltfNode rootNode,
         GltfSkin skin,
         float scale,
-        ISkeleton skeleton) {
+        IReadOnlySkeleton skeleton) {
       var rootBone = skeleton.Root;
 
       var boneQueue

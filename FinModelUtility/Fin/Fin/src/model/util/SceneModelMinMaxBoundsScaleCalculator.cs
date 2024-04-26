@@ -85,7 +85,7 @@ namespace fin.model.util {
       }
 
       if (!anyVertices) {
-        var boneQueue = new Queue<IBone>();
+        var boneQueue = new Queue<IReadOnlyBone>();
         boneQueue.Enqueue(model.Skeleton.Root);
 
         while (boneQueue.Count > 0) {

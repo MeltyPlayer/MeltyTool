@@ -10,7 +10,7 @@ using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 
 namespace fin.ui.rendering.gl.model {
   public interface ISkeletonRenderer : IRenderable {
-    ISkeleton Skeleton { get; }
+    IReadOnlySkeleton Skeleton { get; }
     IReadOnlyBone? SelectedBone { get; set; }
     float Scale { get; set; }
   }
@@ -21,13 +21,13 @@ namespace fin.ui.rendering.gl.model {
   public class SkeletonRenderer : ISkeletonRenderer {
     private readonly IBoneTransformManager boneTransformManager_;
 
-    public SkeletonRenderer(ISkeleton skeleton,
+    public SkeletonRenderer(IReadOnlySkeleton skeleton,
                             IBoneTransformManager boneTransformManager) {
       this.Skeleton = skeleton;
       this.boneTransformManager_ = boneTransformManager;
     }
 
-    public ISkeleton Skeleton { get; }
+    public IReadOnlySkeleton Skeleton { get; }
     public IReadOnlyBone? SelectedBone { get; set; }
     public float Scale { get; set; } = 1;
 
@@ -45,7 +45,7 @@ namespace fin.ui.rendering.gl.model {
 
         GL.Color4(0, 0, 1f, 1);
 
-        var boneQueue = new Queue<(IBone, Vector3?)>();
+        var boneQueue = new Queue<(IReadOnlyBone, Vector3?)>();
         boneQueue.Enqueue((this.Skeleton.Root, null));
         while (boneQueue.Any()) {
           var (bone, parentLocation) = boneQueue.Dequeue();

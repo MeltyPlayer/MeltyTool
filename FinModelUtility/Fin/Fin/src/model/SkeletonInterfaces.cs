@@ -6,7 +6,8 @@ using fin.data.indexable;
 using schema.readOnly;
 
 namespace fin.model {
-  public interface ISkeleton : IEnumerable<IBone> {
+  [GenerateReadOnly]
+  public partial interface ISkeleton : IEnumerable<IReadOnlyBone> {
     IBone Root { get; }
     IReadOnlyList<IBone> Bones { get; }
   }

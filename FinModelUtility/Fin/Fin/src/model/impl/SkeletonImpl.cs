@@ -128,8 +128,8 @@ namespace fin.model.impl {
 
       IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-      public IEnumerator<IBone> GetEnumerator() {
-        var queue = new Queue<IBone>();
+      public IEnumerator<IReadOnlyBone> GetEnumerator() {
+        var queue = new Queue<IReadOnlyBone>();
         queue.Enqueue(this.Root);
         while (queue.Count > 0) {
           var bone = queue.Dequeue();

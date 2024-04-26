@@ -31,7 +31,6 @@ namespace fin.model.io.exporters.gltf {
 
       var boneToIndex
           = model.Skeleton.Skip(1)
-                 .CastTo<IBone, IReadOnlyBone>()
                  .ToIndexByValueIndexableDictionary();
 
       var nullMaterialBuilder =

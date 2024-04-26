@@ -109,7 +109,7 @@ namespace HaloWarsTools {
       var modelQueue = new Queue<(VisModel, VisSubModelRef?, bool)>();
       modelQueue.Enqueue((firstModel, null, true));
 
-      var attachmentPointMap = new NullFriendlyDictionary<string, (ISceneModel, IBone)>();
+      var attachmentPointMap = new NullFriendlyDictionary<string, (ISceneModel, IReadOnlyBone)>();
 
       while (modelQueue.Count > 0) {
         var (visModel, subModelRef, flipFaces) = modelQueue.Dequeue();
