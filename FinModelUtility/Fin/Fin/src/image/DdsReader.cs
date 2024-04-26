@@ -28,7 +28,7 @@ namespace fin.image {
                            
                            var image = new Rgba32Image(PixelFormat.RGBA8888, mmWidth, mmHeight);
                            using var imageLock = image.Lock();
-                           var dstPtr = imageLock.pixelScan0;
+                           var dstPtr = imageLock.Pixels;
 
                            for (var y = 0; y < mmHeight; ++y) {
                              for (var x = 0; x < mmWidth; ++x) {
@@ -43,7 +43,7 @@ namespace fin.image {
                          case ImageFormat.Rgb24: {
                            var image = new Rgb24Image(PixelFormat.RGB888, mmWidth, mmHeight);
                            using var imageLock = image.Lock();
-                           var ptr = imageLock.pixelScan0;
+                           var ptr = imageLock.Pixels;
                            for (var y = 0; y < mmHeight; ++y) {
                              for (var x = 0; x < mmWidth; ++x) {
                                var i = y * mmWidth + x;

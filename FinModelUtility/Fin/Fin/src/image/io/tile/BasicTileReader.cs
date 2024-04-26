@@ -1,4 +1,6 @@
-﻿using schema.binary;
+﻿using System;
+
+using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -25,21 +27,29 @@ namespace fin.image.io.tile {
     public int TileWidth { get; }
     public int TileHeight { get; }
 
-    public unsafe void Decode(IBinaryReader br,
-                              TPixel* scan0,
-                              int tileX,
-                              int tileY,
-                              int imageWidth,
-                              int imageHeight) {
+    public void Decode(IBinaryReader br,
+                       Span<TPixel> scan0,
+                       int tileX,
+                       int tileY,
+                       int imageWidth,
+                       int imageHeight) {
       var xx = tileX * this.TileWidth;
       var yy = tileY * this.TileHeight;
+
+      Span<TPixel> junk = stackalloc TPixel[this.pixelReader_.PixelsPerRead];
 
       for (var i = 0;
            i < this.TileWidth * this.TileHeight;
            i += this.pixelReader_.PixelsPerRead) {
         this.pixelIndexer_.GetPixelCoordinates(i, out var x, out var y);
-        var dstOffs = (yy + y) * imageWidth + xx + x;
-        this.pixelReader_.Decode(br, scan0, dstOffs);
+        var outOfBounds = xx + x >= imageWidth || yy + y >= imageHeight;
+
+        if (outOfBounds) {
+          this.pixelReader_.Decode(br, junk, 0);
+        } else {
+          var dstOffs = (yy + y) * imageWidth + xx + x;
+          this.pixelReader_.Decode(br, scan0, dstOffs);
+        }
       }
     }
   }

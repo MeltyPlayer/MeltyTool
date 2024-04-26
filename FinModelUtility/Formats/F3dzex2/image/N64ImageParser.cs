@@ -87,11 +87,11 @@ namespace f3dzex2.image {
                    height);
     }
 
-    public unsafe IImage Parse(N64ColorFormat colorFormat,
-                               BitsPerTexel bitsPerTexel,
-                               byte[] data,
-                               int width,
-                               int height) {
+    public IImage Parse(N64ColorFormat colorFormat,
+                        BitsPerTexel bitsPerTexel,
+                        byte[] data,
+                        int width,
+                        int height) {
       switch (colorFormat) {
         case N64ColorFormat.RGBA: {
           switch (bitsPerTexel) {
@@ -162,7 +162,7 @@ namespace f3dzex2.image {
           uint maxIndex = 0;
           {
             using var imgLock = indexedImage.Lock();
-            var ptr = imgLock.pixelScan0;
+            var ptr = imgLock.Pixels;
             for (var i = 0; i < width * height; ++i) {
               maxIndex = Math.Max(maxIndex, ptr[i].PackedValue);
             }
@@ -174,19 +174,22 @@ namespace f3dzex2.image {
           var palette = paletteEr
                         .ReadUInt16s(maxIndex + 1)
                         .Select(value => {
-                          ColorUtil.SplitArgb1555(
-                              value,
-                              out var r,
-                              out var g,
-                              out var b,
-                              out var a);
-                          return FinColor.FromRgbaBytes(r, g, b, a);
-                        }).ToArray();
+                                  ColorUtil.SplitArgb1555(
+                                      value,
+                                      out var r,
+                                      out var g,
+                                      out var b,
+                                      out var a);
+                                  return FinColor.FromRgbaBytes(r, g, b, a);
+                                })
+                        .ToArray();
 
           return new IndexedImage8(bitsPerTexel switch {
-              BitsPerTexel._4BPT => PixelFormat.P4,
-              BitsPerTexel._8BPT => PixelFormat.P8,
-          }, indexedImage, palette);
+                                       BitsPerTexel._4BPT => PixelFormat.P4,
+                                       BitsPerTexel._8BPT => PixelFormat.P8,
+                                   },
+                                   indexedImage,
+                                   palette);
         }
         default:
           throw new ArgumentOutOfRangeException(nameof(colorFormat),

@@ -17,7 +17,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace jsystem.exporter {
   public class BmdGxTexture : IGxTexture {
-    public unsafe BmdGxTexture(
+    public BmdGxTexture(
         string name,
         Bti header,
         IList<(string, Bti)>? pathsAndBtis = null) {
@@ -196,7 +196,7 @@ namespace jsystem.exporter {
           switch (image) {
             case La16Image la16Image: {
               using var fastLock = la16Image.Lock();
-              var ptr = fastLock.pixelScan0;
+              var ptr = fastLock.Pixels;
               for (var i = 0; i < pixelCount; ++i) {
                 var pixel = ptr[i];
                 ptr[i] = new La16(pixel.A, pixel.L);

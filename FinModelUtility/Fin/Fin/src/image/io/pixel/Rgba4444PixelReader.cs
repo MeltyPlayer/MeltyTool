@@ -1,4 +1,6 @@
-﻿using fin.image.formats;
+﻿using System;
+
+using fin.image.formats;
 using fin.util.color;
 
 using schema.binary;
@@ -14,9 +16,7 @@ namespace fin.image.io.pixel {
     public IImage<Rgba32> CreateImage(int width, int height)
       => new Rgba32Image(PixelFormat.RGBA4444, width, height);
 
-    public unsafe void Decode(IBinaryReader br,
-                                          Rgba32* scan0,
-                                          int offset) {
+    public void Decode(IBinaryReader br, Span<Rgba32> scan0, int offset) {
       var value = br.ReadUInt16();
       ColorUtil.SplitRgba4444(value,
                               out var r,

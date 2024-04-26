@@ -72,13 +72,15 @@ namespace fin.image.io {
       return this.ReadImage(br);
     }
 
-    public unsafe IImage<TPixel> ReadImage(IBinaryReader br) {
+    public IImage<TPixel> ReadImage(IBinaryReader br) {
       var image = this.tileReader_.CreateImage(this.width_, this.height_);
       using var imageLock = image.Lock();
-      var scan0 = imageLock.pixelScan0;
+      var scan0 = imageLock.Pixels;
 
-      var tileXCount = (int) Math.Ceiling(1f * this.width_ / this.tileReader_.TileWidth);
-      var tileYCount = (int) Math.Ceiling(1f * this.height_ / this.tileReader_.TileHeight);
+      var tileXCount
+          = (int) Math.Ceiling(1f * this.width_ / this.tileReader_.TileWidth);
+      var tileYCount
+          = (int) Math.Ceiling(1f * this.height_ / this.tileReader_.TileHeight);
 
       for (var tileY = 0; tileY < tileYCount; ++tileY) {
         for (var tileX = 0; tileX < tileXCount; ++tileX) {

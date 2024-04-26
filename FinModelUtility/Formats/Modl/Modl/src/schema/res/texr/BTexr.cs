@@ -17,7 +17,7 @@ namespace modl.schema.res.texr {
   }
 
   public abstract class BTexr {
-    protected unsafe IImage ReadA8R8G8B8_(IBinaryReader br,
+    protected IImage ReadA8R8G8B8_(IBinaryReader br,
                                           uint width,
                                           uint height) {
       SectionHeaderUtil.AssertNameAndSize(
@@ -28,7 +28,7 @@ namespace modl.schema.res.texr {
       var image =
           new Rgba32Image(PixelFormat.RGBA8888, (int) width, (int) height);
       using var imageLock = image.Lock();
-      var scan0 = imageLock.pixelScan0;
+      var scan0 = imageLock.Pixels;
 
       var blockWidth = 4;
       var blockHeight = 4;
@@ -61,7 +61,7 @@ namespace modl.schema.res.texr {
               var g = br.ReadByte();
               var b = br.ReadByte();
 
-              scan0[imgY * width + imgX] = new Rgba32(r, g, b, a);
+              scan0[(int) (imgY * width + imgX)] = new Rgba32(r, g, b, a);
             }
           }
         }

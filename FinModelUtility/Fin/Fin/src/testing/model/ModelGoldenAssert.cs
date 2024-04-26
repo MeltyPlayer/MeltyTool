@@ -152,7 +152,11 @@ namespace fin.testing.model {
 
       foreach (var (name, lhsFile) in lhsFiles) {
         var rhsFile = rhsFiles[name];
-        AssertFilesAreIdentical_(lhsFile, rhsFile);
+        try {
+          AssertFilesAreIdentical_(lhsFile, rhsFile);
+        } catch (Exception ex) {
+          throw new Exception($"Found a change in file {name}: ", ex);
+        }
       }
     }
 

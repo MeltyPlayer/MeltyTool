@@ -17,14 +17,14 @@ namespace fin.image.io.image {
       this.height_ = height;
     }
 
-    public unsafe IImage<Rgba32> ReadImage(IBinaryReader br) {
+    public IImage<Rgba32> ReadImage(IBinaryReader br) {
       Span<ushort> shortBuffer = stackalloc ushort[2];
       Span<Rgba32> paletteBuffer = stackalloc Rgba32[4];
       Span<byte> indicesBuffer = stackalloc byte[4];
 
       var image = this.tileReader_.CreateImage(this.width_, this.height_);
       using var imageLock = image.Lock();
-      var scan0 = imageLock.pixelScan0;
+      var scan0 = imageLock.Pixels;
 
       var tileXCount = (int) Math.Ceiling(1f * this.width_ / this.tileReader_.TileWidth);
       var tileYCount = this.height_ / this.tileReader_.TileHeight;

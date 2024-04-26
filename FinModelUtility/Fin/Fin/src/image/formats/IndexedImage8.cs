@@ -16,7 +16,7 @@ namespace fin.image.formats {
     }
 
     public override unsafe void Access(IImage.AccessHandler accessHandler) {
-      using var bytes = this.impl_.Lock();
+      using var bytes = this.impl_.UnsafeLock();
       var ptr = bytes.pixelScan0;
 
       void InternalGetHandler(

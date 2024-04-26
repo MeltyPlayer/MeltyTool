@@ -1,4 +1,6 @@
-﻿using fin.image.formats;
+﻿using System;
+
+using fin.image.formats;
 
 using schema.binary;
 
@@ -12,9 +14,7 @@ namespace fin.image.io.pixel {
     public IImage<La16> CreateImage(int width, int height)
       => new La16Image(PixelFormat.LA88, width, height);
 
-    public unsafe void Decode(IBinaryReader br,
-                              La16* scan0,
-                              int offset) {
+    public void Decode(IBinaryReader br, Span<La16> scan0, int offset) {
       var la = br.ReadUInt16();
       var l = (byte) (la & 0xFF);
       var a = (byte) (la >> 8);

@@ -31,11 +31,12 @@ namespace fin.model.io.importers.assimp {
       var assScene = ctx.ImportFile(mainFile.FullPath);
 
       // Adds materials
-      var lazyFinSatelliteImages = new LazyCaseInvariantStringDictionary<IImage>(
-          path => mainFile.AssertGetParent()
-                          .TryToGetExistingFile(path, out var imageFile)
-              ? FinImage.FromFile(imageFile)
-              : FinImage.Create1x1FromColor(Color.Magenta));
+      var lazyFinSatelliteImages
+          = new LazyCaseInvariantStringDictionary<IImage>(
+              path => mainFile.AssertGetParent()
+                              .TryToGetExistingFile(path, out var imageFile)
+                  ? FinImage.FromFile(imageFile)
+                  : FinImage.Create1x1FromColor(Color.Magenta));
       var lazyFinEmbeddedImages = new LazyDictionary<EmbeddedTexture, IImage>(
           assEmbeddedImage => {
             if (assEmbeddedImage.IsCompressed) {
@@ -49,11 +50,12 @@ namespace fin.model.io.importers.assimp {
                                            assEmbeddedImage.Height);
 
             using var imgLock = finImage.Lock();
+            var pixels = imgLock.Pixels;
             for (var y = 0; y < finImage.Height; ++y) {
               for (var x = 0; x < finImage.Width; ++x) {
                 var texel =
                     assEmbeddedImage.NonCompressedData[y * finImage.Width + x];
-                imgLock.pixelScan0[y * finImage.Width + x] =
+                pixels[y * finImage.Width + x] =
                     new Rgba32(texel.R, texel.G, texel.B, texel.A);
               }
             }
@@ -184,11 +186,11 @@ namespace fin.model.io.importers.assimp {
                 var frame = (int) Math.Round(assRotationKey.Time / frameRate);
                 var assQuaternion = assRotationKey.Value;
                 rotationTrack.SetKeyframe(frame,
-                                  new System.Numerics.Quaternion(
-                                      assQuaternion.X,
-                                      assQuaternion.Y,
-                                      assQuaternion.Z,
-                                      assQuaternion.W));
+                                          new System.Numerics.Quaternion(
+                                              assQuaternion.X,
+                                              assQuaternion.Y,
+                                              assQuaternion.Z,
+                                              assQuaternion.W));
               }
             }
 

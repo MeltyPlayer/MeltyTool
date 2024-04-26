@@ -274,7 +274,7 @@ namespace benchmarks {
     [Benchmark]
     public void ReadingFinImageWithLock() {
       using var imageLock = this.finImage_.Lock();
-      var ptr = imageLock.pixelScan0;
+      var ptr = imageLock.Pixels;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
           var i = y * EditingBitmaps.SIZE + x;

@@ -45,12 +45,12 @@ namespace fin.image.io.tile {
     public int TileWidth => 8;
     public int TileHeight => 8;
 
-    public unsafe void Decode(IBinaryReader br,
-                              Rgba32* scan0,
-                              int tileX,
-                              int tileY,
-                              int imageWidth,
-                              int imageHeight) {
+    public void Decode(IBinaryReader br,
+                       Span<Rgba32> scan0,
+                       int tileX,
+                       int tileY,
+                       int imageWidth,
+                       int imageHeight) {
       var x = tileX * this.TileWidth;
       var y = tileY * this.TileHeight;
 

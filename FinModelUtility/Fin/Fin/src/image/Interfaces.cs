@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Buffers;
 using System.Drawing;
 using System.IO;
 
-using SixLabors.ImageSharp;
+using schema.readOnly;
+
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.image {
@@ -30,7 +30,8 @@ namespace fin.image {
   }
 
 
-  public interface IImage : IDisposable {
+  [GenerateReadOnly]
+  public partial interface IImage : IDisposable {
     PixelFormat PixelFormat { get; }
     int Width { get; }
     int Height { get; }
@@ -44,46 +45,31 @@ namespace fin.image {
 
     delegate void AccessHandler(Rgba32GetHandler getHandler);
 
+    [Const]
     void Access(AccessHandler accessHandler);
 
     bool HasAlphaChannel { get; }
 
+    [Const]
     Bitmap AsBitmap();
 
+    [Const]
     void ExportToStream(Stream stream, LocalImageFormat imageFormat);
   }
 
-  public interface IImage<TPixel> : IImage
+  [GenerateReadOnly]
+  public partial interface IImage<TPixel> : IImage
       where TPixel : unmanaged, IPixel<TPixel> {
-    FinImageLock<TPixel> Lock();
+    [Const]
+    IImageLock<TPixel> Lock();
+
+    FinUnsafeImageLock<TPixel> UnsafeLock();
   }
 
-  /// <summary>
-  ///   Based on how FastBitmap performs locking:
-  ///   https://github.com/LuizZak/FastBitmap
-  /// </summary>
-  public unsafe struct FinImageLock<TPixel> : IDisposable
+  [GenerateReadOnly]
+  public partial interface IImageLock<TPixel> : IDisposable
       where TPixel : unmanaged, IPixel<TPixel> {
-    private bool isDisposed_ = false;
-    private readonly MemoryHandle memoryHandle_;
-
-    public FinImageLock(Image<TPixel> image) {
-      var frame = image.Frames[0];
-      frame.DangerousTryGetSinglePixelMemory(out var memory);
-
-      this.memoryHandle_ = memory.Pin();
-      this.byteScan0 = (byte*) this.memoryHandle_.Pointer;
-      this.pixelScan0 = (TPixel*) this.byteScan0;
-    }
-
-    public void Dispose() {
-      if (!this.isDisposed_) {
-        this.isDisposed_ = true;
-        this.memoryHandle_.Dispose();
-      }
-    }
-
-    public readonly byte* byteScan0;
-    public readonly TPixel* pixelScan0;
+    Span<byte> Bytes { get; }
+    Span<TPixel> Pixels { get; }
   }
 }

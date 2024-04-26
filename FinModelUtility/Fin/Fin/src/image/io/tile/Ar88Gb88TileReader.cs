@@ -1,4 +1,6 @@
-﻿using fin.image.formats;
+﻿using System;
+
+using fin.image.formats;
 
 using schema.binary;
 
@@ -12,12 +14,12 @@ namespace fin.image.io.tile {
     public int TileWidth => 4;
     public int TileHeight => 4;
 
-    public unsafe void Decode(IBinaryReader br,
-                              Rgba32* scan0,
-                              int tileX,
-                              int tileY,
-                              int imageWidth,
-                              int imageHeight) {
+    public void Decode(IBinaryReader br,
+                       Span<Rgba32> scan0,
+                       int tileX,
+                       int tileY,
+                       int imageWidth,
+                       int imageHeight) {
       var x = tileX * this.TileWidth;
       var y = tileY * this.TileHeight;
 
@@ -27,7 +29,7 @@ namespace fin.image.io.tile {
             var offset = y1 * imageWidth + x1;
 
             var pixel = br.ReadUInt16();
-            
+
             if (x1 >= imageWidth || y1 >= imageHeight) {
               continue;
             }
@@ -40,6 +42,7 @@ namespace fin.image.io.tile {
               rgba.G = (byte) (pixel >> 8);
               rgba.B = (byte) (pixel & 0xff);
             }
+
             scan0[offset] = rgba;
           }
         }

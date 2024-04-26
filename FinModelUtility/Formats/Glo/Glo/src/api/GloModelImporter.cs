@@ -395,7 +395,7 @@ namespace glo.api {
 
       var textureImageWithAlpha =
           new Rgba32Image(rawImage.PixelFormat, width, height);
-      using var alphaLock = textureImageWithAlpha.Lock();
+      using var alphaLock = textureImageWithAlpha.UnsafeLock();
       var alphaScan0 = alphaLock.pixelScan0;
 
       rawImage.Access(getHandler => {

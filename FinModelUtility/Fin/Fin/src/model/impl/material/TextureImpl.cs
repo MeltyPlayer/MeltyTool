@@ -15,7 +15,7 @@ namespace fin.model.impl {
     private partial class MaterialManagerImpl {
       public IReadOnlyList<ITexture> Textures { get; }
 
-      public ITexture CreateTexture(IImage imageData) {
+      public ITexture CreateTexture(IReadOnlyImage imageData) {
         var texture = new TextureImpl(imageData);
         this.textures_.Add(texture);
         return texture;
@@ -26,7 +26,7 @@ namespace fin.model.impl {
       private ImageTransparencyType? transparencyType_;
       private Bitmap? imageData_;
 
-      public TextureImpl(IImage image) {
+      public TextureImpl(IReadOnlyImage image) {
         this.Image = image;
       }
 
@@ -44,7 +44,7 @@ namespace fin.model.impl {
 
       public ColorType ColorType { get; set; }
 
-      public IImage Image { get; }
+      public IReadOnlyImage Image { get; }
       public Bitmap ImageData => this.imageData_ ??= Image.AsBitmap();
 
       public ISystemFile SaveInDirectory(ISystemDirectory directory) {

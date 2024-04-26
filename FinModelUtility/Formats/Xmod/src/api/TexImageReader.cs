@@ -71,19 +71,17 @@ namespace xmod.api {
           throw new NotImplementedException();
       }
 
-      unsafe {
-        var rgbaImage = new Rgba32Image(pixelFormat, width, height);
-        image = rgbaImage;
-        using var imageLock = rgbaImage.Lock();
-        var ptr = imageLock.pixelScan0;
+      var rgbaImage = new Rgba32Image(pixelFormat, width, height);
+      image = rgbaImage;
+      using var imageLock = rgbaImage.Lock();
+      var ptr = imageLock.Pixels;
 
-        for (var y = 0; y < height; y++) {
-          for (var x = 0; x < width; ++x) {
-            var i = y * width + x;
+      for (var y = 0; y < height; y++) {
+        for (var x = 0; x < width; ++x) {
+          var i = y * width + x;
 
-            var src = loadedDxt[i];
-            ptr[i] = new Rgba32(src.r, src.g, src.b, src.a);
-          }
+          var src = loadedDxt[i];
+          ptr[i] = new Rgba32(src.r, src.g, src.b, src.a);
         }
       }
 

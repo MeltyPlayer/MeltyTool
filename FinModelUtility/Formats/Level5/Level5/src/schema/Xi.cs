@@ -146,7 +146,7 @@ namespace level5.schema {
       var inputPtr = (byte*) inputBmpData.Scan0;
 
       using var dstImgLock = img.Lock();
-      var dstPtr = dstImgLock.pixelScan0;
+      var dstPtr = dstImgLock.Pixels;
 
       int y = 0;
       int x = 0;

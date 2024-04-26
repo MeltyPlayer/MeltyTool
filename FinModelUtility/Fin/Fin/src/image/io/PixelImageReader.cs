@@ -52,10 +52,10 @@ namespace fin.image.io {
       return this.ReadImage(br);
     }
 
-    public unsafe IImage<TPixel> ReadImage(IBinaryReader br) {
+    public IImage<TPixel> ReadImage(IBinaryReader br) {
       var image = this.pixelReader_.CreateImage(this.width_, this.height_);
       using var imageLock = image.Lock();
-      var scan0 = imageLock.pixelScan0;
+      var scan0 = imageLock.Pixels;
 
       for (var i = 0;
            i < this.width_ * this.height_;

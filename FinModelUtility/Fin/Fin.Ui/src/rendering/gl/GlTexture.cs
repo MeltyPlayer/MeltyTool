@@ -37,7 +37,7 @@ namespace fin.ui.rendering.gl {
       return glTexture;
     }
 
-    public GlTexture(IImage image) {
+    public GlTexture(IReadOnlyImage image) {
       GL.GenTextures(1, out int id);
       this.id_ = id;
 
@@ -129,7 +129,7 @@ namespace fin.ui.rendering.gl {
 
     private static readonly ArrayPool<byte> pool_ = ArrayPool<byte>.Shared;
 
-    private void LoadImageIntoTexture_(IImage image) {
+    private void LoadImageIntoTexture_(IReadOnlyImage image) {
       var imageWidth = image.Width;
       var imageHeight = image.Height;
 

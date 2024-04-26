@@ -52,7 +52,7 @@ namespace modl.schema.res.texr {
 
         var normalImage =
             new Rgb24Image(PixelFormat.RGB888, image.Width, image.Height);
-        using var normalImageLock = normalImage.Lock();
+        using var normalImageLock = normalImage.UnsafeLock();
         var normalImageScan0 = normalImageLock.pixelScan0;
 
         image.Access(bumpGetHandler => {

@@ -1,4 +1,6 @@
-﻿using fin.image.formats;
+﻿using System;
+
+using fin.image.formats;
 
 using schema.binary;
 
@@ -12,9 +14,7 @@ namespace fin.image.io.pixel {
     public IImage<L8> CreateImage(int width, int height)
       => new L8Image(PixelFormat.L4, width, height);
 
-    public unsafe void Decode(IBinaryReader br,
-                              L8* scan0,
-                              int offset) {
+    public void Decode(IBinaryReader br, Span<L8> scan0, int offset) {
       var value = br.ReadByte();
 
       var upper = (byte) ((value >> 4) * 17);

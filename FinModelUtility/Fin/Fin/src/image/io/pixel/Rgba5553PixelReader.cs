@@ -1,4 +1,6 @@
-﻿using fin.image.formats;
+﻿using System;
+
+using fin.image.formats;
 using fin.math;
 using fin.util.color;
 
@@ -11,9 +13,7 @@ namespace fin.image.io.pixel {
     public IImage<Rgba32> CreateImage(int width, int height)
       => new Rgba32Image(PixelFormat.RGBA5553, width, height);
 
-    public unsafe void Decode(IBinaryReader br,
-                              Rgba32* scan0,
-                              int offset) {
+    public void Decode(IBinaryReader br, Span<Rgba32> scan0, int offset) {
       var pix = br.ReadUInt16();
 
       // Alpha flag

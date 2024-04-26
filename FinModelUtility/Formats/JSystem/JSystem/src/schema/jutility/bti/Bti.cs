@@ -124,7 +124,7 @@ namespace jsystem.schema.jutility.bti {
       br.Position = position;
     }
 
-    public unsafe IImage ToBitmap() {
+    public IImage ToBitmap() {
       try {
         return new J3dImageReader(this.Width, this.Height, this.Format).ReadImage(
             this.Data,
@@ -142,7 +142,7 @@ namespace jsystem.schema.jutility.bti {
                                  width,
                                  height);
         using var imageLock = bitmap.Lock();
-        var ptr = imageLock.pixelScan0;
+        var ptr = imageLock.Pixels;
 
         var indices = new byte[width * height];
         if (isIndex4) {

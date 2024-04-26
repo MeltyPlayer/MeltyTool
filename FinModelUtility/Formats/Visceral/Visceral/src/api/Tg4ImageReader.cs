@@ -16,7 +16,7 @@ namespace visceral.api {
   }
 
   public class Tg4ImageReader {
-    public unsafe IImage ReadImage(Tg4ImageFileBundle bundle) {
+    public IImage ReadImage(Tg4ImageFileBundle bundle) {
       var headerFile = bundle.Tg4hFile;
       using var headerEr =
           new SchemaBinaryReader(headerFile.OpenRead(),
@@ -51,7 +51,7 @@ namespace visceral.api {
 
       var rgbaImage = new Rgba32Image(imageFormat, width, height);
       using var imageLock = rgbaImage.Lock();
-      var ptr = imageLock.pixelScan0;
+      var ptr = imageLock.Pixels;
 
       for (var y = 0; y < height; y++) {
         for (var x = 0; x < width; ++x) {

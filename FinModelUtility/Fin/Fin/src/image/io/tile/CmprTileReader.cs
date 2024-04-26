@@ -29,7 +29,7 @@ namespace fin.image.io.tile {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe void Decode(IBinaryReader br,
-                              Rgba32* scan0,
+                              Span<Rgba32> scan0,
                               int tileX,
                               int tileY,
                               int imageWidth,
@@ -49,8 +49,8 @@ namespace fin.image.io.tile {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe void Decode(IBinaryReader br,
-                              Rgba32* scan0,
+    public void Decode(IBinaryReader br,
+                              Span<Rgba32> scan0,
                               int tileX,
                               int tileY,
                               int imageWidth,
@@ -75,10 +75,10 @@ namespace fin.image.io.tile {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe void DecodeCmprSubblock_(
+    private static void DecodeCmprSubblock_(
         IBinaryReader br,
         Span<ushort> shortBuffer,
-        Rgba32* scan0,
+        Span<Rgba32> scan0,
         Span<Rgba32> paletteBuffer,
         Span<byte> indicesBuffer,
         int imageX,

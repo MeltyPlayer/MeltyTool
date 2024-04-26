@@ -97,8 +97,7 @@ namespace fin.image {
       var bmp = new Rgba32Image(PixelFormat.RGBA8888, width, height);
 
       using var imageLock = bmp.Lock();
-      new Span<Rgba32>(imageLock.pixelScan0, width * height).Fill(
-          new Rgba32(color.R, color.G, color.B, color.A));
+      imageLock.Pixels.Fill(new Rgba32(color.R, color.G, color.B, color.A));
 
       return bmp;
     }
@@ -109,13 +108,13 @@ namespace fin.image {
           LocalImageFormat.BMP => new BmpEncoder(),
           LocalImageFormat.PNG => new PngEncoder {
               SkipMetadata = true,
-            TransparentColorMode = PngTransparentColorMode.Clear,
+              TransparentColorMode = PngTransparentColorMode.Clear,
           },
           LocalImageFormat.JPEG => new JpegEncoder() {
               SkipMetadata = true,
           },
-          LocalImageFormat.GIF  => new GifEncoder(),
-          LocalImageFormat.TGA  => new TgaEncoder(),
+          LocalImageFormat.GIF => new GifEncoder(),
+          LocalImageFormat.TGA => new TgaEncoder(),
           LocalImageFormat.WEBP => new WebpEncoder {
               SkipMetadata = true,
               FileFormat = WebpFileFormatType.Lossless,
@@ -140,7 +139,7 @@ namespace fin.image {
       switch (image) {
         case Rgba32Image rgba32Image: {
           using var imageLock = rgba32Image.Lock();
-          var srcPtr = imageLock.pixelScan0;
+          var srcPtr = imageLock.Pixels;
           for (var y = 0; y < height; ++y) {
             for (var x = 0; x < width; ++x) {
               var index = y * width + x;
@@ -154,7 +153,7 @@ namespace fin.image {
         }
         case Rgb24Image rgb24Image: {
           using var imageLock = rgb24Image.Lock();
-          var srcPtr = imageLock.pixelScan0;
+          var srcPtr = imageLock.Pixels;
           for (var y = 0; y < height; ++y) {
             for (var x = 0; x < width; ++x) {
               var index = y * width + x;
@@ -167,7 +166,7 @@ namespace fin.image {
         }
         case L8Image i8Image: {
           using var imageLock = i8Image.Lock();
-          var srcPtr = imageLock.pixelScan0;
+          var srcPtr = imageLock.Pixels;
           for (var y = 0; y < height; ++y) {
             for (var x = 0; x < width; ++x) {
               var index = y * width + x;
@@ -180,21 +179,21 @@ namespace fin.image {
         }
         default: {
           image.Access(getHandler => {
-            for (var y = 0; y < height; ++y) {
-              for (var x = 0; x < width; ++x) {
-                getHandler(
-                    x,
-                    y,
-                    out var r,
-                    out var g,
-                    out var b,
-                    out var a);
+                         for (var y = 0; y < height; ++y) {
+                           for (var x = 0; x < width; ++x) {
+                             getHandler(
+                                 x,
+                                 y,
+                                 out var r,
+                                 out var g,
+                                 out var b,
+                                 out var a);
 
-                var index = y * width + x;
-                dstPtr[index] = FinColor.MergeBgra(r, g, b, a);
-              }
-            }
-          });
+                             var index = y * width + x;
+                             dstPtr[index] = FinColor.MergeBgra(r, g, b, a);
+                           }
+                         }
+                       });
           break;
         }
       }

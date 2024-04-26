@@ -9,12 +9,15 @@ namespace fin.model.util {
       if (material is IReadOnlyNullMaterial) {
         return null;
       }
+
       if (material is IReadOnlyFixedFunctionMaterial fixedFunctionMaterial) {
         return PrimaryTextureFinder.GetFor(fixedFunctionMaterial);
       }
+
       if (material is IReadOnlyTextureMaterial textureMaterial) {
         return PrimaryTextureFinder.GetFor(textureMaterial);
       }
+
       if (material is IReadOnlyStandardMaterial standardMaterial) {
         return PrimaryTextureFinder.GetFor(standardMaterial);
       }
@@ -25,7 +28,8 @@ namespace fin.model.util {
     public static IReadOnlyTexture? GetFor(IReadOnlyTextureMaterial material)
       => material.Texture;
 
-    public static IReadOnlyTexture? GetFor(IReadOnlyFixedFunctionMaterial material) {
+    public static IReadOnlyTexture? GetFor(
+        IReadOnlyFixedFunctionMaterial material) {
       var equations = material.Equations;
 
       var textures = material.Textures;
@@ -37,17 +41,15 @@ namespace fin.model.util {
         return compiledTexture;
       }
 
-      var prioritizedTextures = textures
-                                // Sort by UV type, "normal" first
-                                .OrderByDescending(
-                                    texture =>
-                                        texture.ColorType == ColorType.COLOR)
-                                .ThenByDescending(
-                                    texture =>
-                                        ImageUtil.GetTransparencyType(
-                                            texture.Image) ==
-                                        ImageTransparencyType.OPAQUE)
-                                .ToArray();
+      var prioritizedTextures =
+          textures
+              // Sort by UV type, "normal" first
+              .OrderByDescending(
+                  texture => texture.ColorType == ColorType.COLOR)
+              .ThenByDescending(
+                  texture => ImageUtil.GetTransparencyType(texture.Image) ==
+                             ImageTransparencyType.OPAQUE)
+              .ToArray();
 
       if (prioritizedTextures.Length > 0) {
         // TODO: First or last?

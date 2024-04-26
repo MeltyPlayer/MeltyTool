@@ -1,4 +1,6 @@
-﻿using schema.binary;
+﻿using System;
+
+using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -7,9 +9,7 @@ namespace fin.image.io {
       where TPixel : unmanaged, IPixel<TPixel> {
     IImage<TPixel> CreateImage(int width, int height);
 
-    unsafe void Decode(IBinaryReader br,
-                       TPixel* scan0,
-                       int offset);
+    void Decode(IBinaryReader br, Span<TPixel> scan0, int offset);
 
     int PixelsPerRead => 1;
   }
@@ -25,12 +25,12 @@ namespace fin.image.io {
     int TileWidth { get; }
     int TileHeight { get; }
 
-    unsafe void Decode(IBinaryReader br,
-                       TPixel* scan0,
-                       int tileX,
-                       int tileY,
-                       int imageWidth,
-                       int imageHeight);
+    void Decode(IBinaryReader br,
+                Span<TPixel> scan0,
+                int tileX,
+                int tileY,
+                int imageWidth,
+                int imageHeight);
   }
 
   public interface IImageReader {

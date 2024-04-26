@@ -26,7 +26,7 @@ namespace cmb.material {
     private const bool USE_FIXED_FUNCTION = true;
     private const bool USE_JANKY_TRANSPARENCY = false;
 
-    public unsafe CmbFixedFunctionMaterial(
+    public CmbFixedFunctionMaterial(
         IModel finModel,
         Cmb cmb,
         int materialIndex,
@@ -63,7 +63,7 @@ namespace cmb.material {
 
                     rawTextureImage.Access(srcGetHandler => {
                       using var dstLock = processedImage.Lock();
-                      var dstPtr = dstLock.pixelScan0;
+                      var dstPtr = dstLock.Pixels;
                       for (var y = 0; y < rawTextureImage.Height; y++) {
                         for (var x = 0; x < rawTextureImage.Width; x++) {
                           srcGetHandler(x,

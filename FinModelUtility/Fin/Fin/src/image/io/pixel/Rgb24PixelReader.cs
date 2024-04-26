@@ -1,4 +1,6 @@
-﻿using fin.color;
+﻿using System;
+
+using fin.color;
 using fin.image.formats;
 
 using schema.binary;
@@ -13,9 +15,7 @@ namespace fin.image.io.pixel {
     public IImage<Rgb24> CreateImage(int width, int height)
       => new Rgb24Image(PixelFormat.RGB888, width, height);
 
-    public unsafe void Decode(IBinaryReader br,
-                              Rgb24* scan0,
-                              int offset) {
+    public void Decode(IBinaryReader br, Span<Rgb24> scan0, int offset) {
       FinColor.SplitRgb(br.ReadInt24(), out var r, out var g, out var b);
       scan0[offset] = new Rgb24(r, g, b);
     }

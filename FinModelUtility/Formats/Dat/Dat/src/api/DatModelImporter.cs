@@ -192,7 +192,7 @@ namespace dat.api {
                   new Rgba32Image(image.PixelFormat, width, height);
               image.Access(getHandler => {
                 using var flippedImageLock = flippedImage.Lock();
-                var flippedImageScan0 = flippedImageLock.pixelScan0;
+                var flippedImageScan0 = flippedImageLock.Pixels;
                 for (var y = 0; y < height; ++y) {
                   for (var x = 0; x < width; ++x) {
                     getHandler(x,

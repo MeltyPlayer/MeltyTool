@@ -23,7 +23,7 @@ namespace fin.model {
     IStandardMaterial AddStandardMaterial();
     IFixedFunctionMaterial AddFixedFunctionMaterial();
 
-    ITexture CreateTexture(IImage imageData);
+    ITexture CreateTexture(IReadOnlyImage imageData);
     IReadOnlyList<ITexture> Textures { get; }
   }
 
@@ -362,7 +362,7 @@ namespace fin.model {
     UvType UvType { get; set; }
     ColorType ColorType { get; set; }
 
-    IImage Image { get; }
+    IReadOnlyImage Image { get; }
     Bitmap ImageData { get; }
 
     [Const]

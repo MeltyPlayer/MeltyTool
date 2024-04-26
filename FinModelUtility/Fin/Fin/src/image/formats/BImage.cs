@@ -41,10 +41,10 @@ namespace fin.image.formats {
           stream,
           FinImage.ConvertFinImageFormatToImageSharpEncoder(imageFormat));
 
-    public FinImageLock<TPixel> Lock() => new(Impl);
+    public IImageLock<TPixel> Lock() => new FinImageLock<TPixel>(Impl);
+    public FinUnsafeImageLock<TPixel> UnsafeLock() => new(Impl);
 
-
-    public override unsafe bool Equals(object? obj) {
+    public override bool Equals(object? obj) {
       if (Object.ReferenceEquals(this, obj)) {
         return true;
       }
@@ -56,54 +56,46 @@ namespace fin.image.formats {
         }
 
         if (obj is IImage<TPixel> otherSame) {
-          var pixelCount = this.Width * this.Height;
-
           using var fastLock = this.Lock();
-          var ptr = fastLock.pixelScan0;
-          var span = new Span<TPixel>(ptr, pixelCount).AsBytes();
+          var span = fastLock.Bytes;
 
           using var otherFastLock = otherSame.Lock();
-          var otherPtr = otherFastLock.pixelScan0;
-          var otherSpan = new Span<TPixel>(otherPtr, pixelCount).AsBytes();
+          var otherSpan = otherFastLock.Bytes;
 
-          for (var i = 0; i < span.Length; ++i) {
-            if (span[i] != otherSpan[i]) {
-              return false;
-            }
-          }
-
-          return true;
+          return span.SequenceEqual(otherSpan);
         }
 
         bool match = true;
-        this.Access(thisAccessor => {
-          otherGeneric.Access(otherAccessor => {
-            for (var y = 0; y < this.Height; ++y) {
-              for (var x = 0; x < this.Width; ++x) {
-                thisAccessor(x,
-                             y,
-                             out var thisR,
-                             out var thisG,
-                             out var thisB,
-                             out var thisA);
-                otherAccessor(x,
-                              y,
-                              out var otherR,
-                              out var otherG,
-                              out var otherB,
-                              out var otherA);
+        this.Access(
+            thisAccessor => {
+              otherGeneric.Access(
+                  otherAccessor => {
+                    for (var y = 0; y < this.Height; ++y) {
+                      for (var x = 0; x < this.Width; ++x) {
+                        thisAccessor(x,
+                                     y,
+                                     out var thisR,
+                                     out var thisG,
+                                     out var thisB,
+                                     out var thisA);
+                        otherAccessor(x,
+                                      y,
+                                      out var otherR,
+                                      out var otherG,
+                                      out var otherB,
+                                      out var otherA);
 
-                if (thisR != otherR ||
-                    thisG != otherG ||
-                    thisB != otherG ||
-                    thisA != otherA) {
-                  match = false;
-                  return;
-                }
-              }
-            }
-          });
-        });
+                        if (thisR != otherR ||
+                            thisG != otherG ||
+                            thisB != otherB ||
+                            thisA != otherA) {
+                          match = false;
+                          return;
+                        }
+                      }
+                    }
+                  });
+            });
 
         return match;
       }
@@ -118,11 +110,8 @@ namespace fin.image.formats {
         return this.cachedHash_.Value;
       }
 
-      var pixelCount = this.Width * this.Height;
-
       using var fastLock = this.Lock();
-      var ptr = fastLock.pixelScan0;
-      var span = new Span<TPixel>(ptr, pixelCount).AsBytes();
+      var span = fastLock.Bytes;
 
       var hash = FluentHash.Start();
       hash.With(span);

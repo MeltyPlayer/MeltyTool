@@ -289,14 +289,14 @@ namespace Dxt {
                        })
                    .ToList());
 
-    private static unsafe IImage ConvertHdrToBitmap(
+    private static IImage ConvertHdrToBitmap(
         IList<float> hdr,
         int width,
         int height,
         float max) {
       var bitmap = new Rgba32Image(PixelFormat.RGBA16161616, width, height);
       using var imageLock = bitmap.Lock();
-      var scan0 = imageLock.pixelScan0;
+      var scan0 = imageLock.Pixels;
 
       var offset = 0;
       for (var y = 0; y < height; ++y) {
@@ -320,7 +320,7 @@ namespace Dxt {
     private static float GammaToLinear(float gamma)
       => MathF.Pow(gamma, 1 / 2.2f);
 
-    public static unsafe IImage DecompressDXT1(
+    public static IImage DecompressDXT1(
         byte[] src,
         int srcOffset,
         int width,
@@ -335,7 +335,7 @@ namespace Dxt {
 
       var bitmap = new Rgb24Image(PixelFormat.DXT1, width, height);
       using var imageLock = bitmap.Lock();
-      var ptr = imageLock.pixelScan0;
+      var ptr = imageLock.Pixels;
 
       for (int t = 0; t < bch; t++) {
         for (int s = 0; s < bcw; s++, offset += 8) {
@@ -376,13 +376,13 @@ namespace Dxt {
     }
 
 
-    public static unsafe IImage DecompressDXT3(
+    public static IImage DecompressDXT3(
         byte[] input,
         int width,
         int height) {
       var image = new Rgba32Image(PixelFormat.DXT3, width, height);
       using var imageLock = image.Lock();
-      var dstPtr = imageLock.pixelScan0;
+      var dstPtr = imageLock.Pixels;
 
       try {
         int bcw = width / 4;
@@ -509,7 +509,7 @@ namespace Dxt {
       Asserts.Equal(128 + imageSize, ew.Position);
     }*/
 
-    public static unsafe IImage DecompressDxt5a(
+    public static IImage DecompressDxt5a(
         byte[] src,
         int srcOffset,
         int width,
@@ -525,7 +525,7 @@ namespace Dxt {
 
       var bitmap = new L8Image(PixelFormat.DXT5A, width, height);
       using var imageLock = bitmap.Lock();
-      var ptr = imageLock.pixelScan0;
+      var ptr = imageLock.Pixels;
 
       for (var i = 0; i < imageSize; i += 8) {
         var iOff = srcOffset + i;
