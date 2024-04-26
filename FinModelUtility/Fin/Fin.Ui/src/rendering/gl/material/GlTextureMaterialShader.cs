@@ -6,7 +6,7 @@ namespace fin.ui.rendering.gl.material {
   public class GlTextureMaterialShader(
       IReadOnlyModel model,
       IReadOnlyMaterial material,
-      IBoneTransformManager? boneTransformManager,
+      IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
       : BGlMaterialShader<IReadOnlyMaterial>(model,
                                              material,

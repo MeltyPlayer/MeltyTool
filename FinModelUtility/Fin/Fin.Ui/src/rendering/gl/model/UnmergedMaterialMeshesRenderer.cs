@@ -6,7 +6,7 @@ namespace fin.ui.rendering.gl.model {
   public class UnmergedMaterialMeshesRenderer : IModelRenderer {
     private GlBufferManager? bufferManager_;
     private readonly IReadOnlyLighting? lighting_;
-    private readonly IBoneTransformManager? boneTransformManager_;
+    private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
 
     private readonly
         ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesRenderer>
@@ -15,7 +15,7 @@ namespace fin.ui.rendering.gl.model {
     public UnmergedMaterialMeshesRenderer(
         IReadOnlyModel model,
         IReadOnlyLighting? lighting,
-        IBoneTransformManager? boneTransformManager = null) {
+        IReadOnlyBoneTransformManager? boneTransformManager = null) {
       this.Model = model;
       this.lighting_ = lighting;
       this.boneTransformManager_ = boneTransformManager;

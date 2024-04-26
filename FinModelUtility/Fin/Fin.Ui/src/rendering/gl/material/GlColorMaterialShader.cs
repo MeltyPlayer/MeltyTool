@@ -8,7 +8,7 @@ namespace fin.ui.rendering.gl.material {
   public class GlColorMaterialShader(
       IReadOnlyModel model,
       IReadOnlyColorMaterial colorMaterial,
-      IBoneTransformManager? boneTransformManager,
+      IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
       : BGlMaterialShader<IReadOnlyColorMaterial>(model,
                                           colorMaterial,

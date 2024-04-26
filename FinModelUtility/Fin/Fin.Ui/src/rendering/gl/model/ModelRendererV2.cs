@@ -16,7 +16,7 @@ namespace fin.ui.rendering.gl.model {
     public ModelRendererV2(
         IReadOnlyModel model,
         IReadOnlyLighting? lighting,
-        IBoneTransformManager? boneTransformManager = null) {
+        IReadOnlyBoneTransformManager? boneTransformManager = null) {
       this.impl_ = (model.Skin.AllowMaterialRendererMerging)
           ? new MergedMaterialMeshesRenderer(
               model,

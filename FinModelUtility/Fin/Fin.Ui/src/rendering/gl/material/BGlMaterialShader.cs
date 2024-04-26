@@ -15,7 +15,7 @@ namespace fin.ui.rendering.gl.material {
 
     private readonly IReadOnlyModel model_;
     private readonly IReadOnlyLighting? lighting_;
-    private readonly IBoneTransformManager? boneTransformManager_;
+    private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
     private readonly GlShaderProgram impl_;
 
     private readonly IShaderUniform<Matrix4x4> modelMatrixUniform_;
@@ -33,7 +33,7 @@ namespace fin.ui.rendering.gl.material {
     protected BGlMaterialShader(
         IReadOnlyModel model,
         TMaterial material,
-        IBoneTransformManager? boneTransformManager,
+        IReadOnlyBoneTransformManager? boneTransformManager,
         IReadOnlyLighting? lighting) {
       this.model_ = model;
       this.Material = material;

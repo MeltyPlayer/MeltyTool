@@ -9,7 +9,7 @@ namespace fin.ui.rendering.gl.material {
   public class GlFixedFunctionMaterialShader(
       IReadOnlyModel model,
       IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
-      IBoneTransformManager? boneTransformManager,
+      IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
       : BGlMaterialShader<IReadOnlyFixedFunctionMaterial>(
           model,

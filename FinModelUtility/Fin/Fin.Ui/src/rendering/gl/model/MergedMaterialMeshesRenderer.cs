@@ -7,7 +7,7 @@ namespace fin.ui.rendering.gl.model {
   public class MergedMaterialMeshesRenderer : IModelRenderer {
     private GlBufferManager? bufferManager_;
     private readonly IReadOnlyLighting? lighting_;
-    private readonly IBoneTransformManager? boneTransformManager_;
+    private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
 
     private (IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])[]
         materialMeshRenderers_;
@@ -15,7 +15,7 @@ namespace fin.ui.rendering.gl.model {
     public MergedMaterialMeshesRenderer(
         IReadOnlyModel model,
         IReadOnlyLighting? lighting,
-        IBoneTransformManager? boneTransformManager = null) {
+        IReadOnlyBoneTransformManager? boneTransformManager = null) {
       this.Model = model;
       this.lighting_ = lighting;
       this.boneTransformManager_ = boneTransformManager;

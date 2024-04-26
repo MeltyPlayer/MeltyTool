@@ -5,7 +5,7 @@ namespace fin.ui.rendering.gl.material {
   public class GlStandardMaterialShader(
       IReadOnlyModel model,
       IReadOnlyStandardMaterial standardMaterial,
-      IBoneTransformManager? boneTransformManager,
+      IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
       : BGlMaterialShader<IReadOnlyStandardMaterial>(model,
         standardMaterial,

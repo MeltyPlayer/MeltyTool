@@ -2,8 +2,6 @@
 using System.Drawing;
 using System.IO;
 
-using CommunityToolkit.HighPerformance;
-
 using fin.util.hash;
 
 using SixLabors.ImageSharp;

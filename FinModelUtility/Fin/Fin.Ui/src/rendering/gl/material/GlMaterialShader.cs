@@ -8,7 +8,7 @@ namespace fin.ui.rendering.gl.material {
     public static IGlMaterialShader FromMaterial(
         IReadOnlyModel model,
         IReadOnlyMaterial? material,
-        IBoneTransformManager? boneTransformManager = null,
+        IReadOnlyBoneTransformManager? boneTransformManager = null,
         IReadOnlyLighting? lighting = null)
       => material.GetShaderType() switch {
           FinShaderType.FIXED_FUNCTION => new GlFixedFunctionMaterialShader(

@@ -5,7 +5,7 @@ using fin.shaders.glsl;
 namespace fin.ui.rendering.gl.material {
   public class GlNullMaterialShader(
       IReadOnlyModel model,
-      IBoneTransformManager? boneTransformManager,
+      IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting)
       : BGlMaterialShader<IReadOnlyMaterial?>(model,
                                               null,

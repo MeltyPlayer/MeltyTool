@@ -11,7 +11,7 @@ namespace fin.ui.rendering.gl.model {
     private readonly IGlMaterialShader? materialShader_;
 
     public MergedMaterialPrimitivesRenderer(
-        IBoneTransformManager? boneTransformManager,
+        IReadOnlyBoneTransformManager? boneTransformManager,
         GlBufferManager bufferManager,
         IReadOnlyModel model,
         IReadOnlyMaterial? material,

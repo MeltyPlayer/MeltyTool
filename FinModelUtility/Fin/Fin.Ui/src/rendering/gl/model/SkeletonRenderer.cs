@@ -19,10 +19,10 @@ namespace fin.ui.rendering.gl.model {
   ///   A renderer for a Fin model's skeleton.
   /// </summary>
   public class SkeletonRenderer : ISkeletonRenderer {
-    private readonly IBoneTransformManager boneTransformManager_;
+    private readonly IReadOnlyBoneTransformManager boneTransformManager_;
 
     public SkeletonRenderer(IReadOnlySkeleton skeleton,
-                            IBoneTransformManager boneTransformManager) {
+                            IReadOnlyBoneTransformManager boneTransformManager) {
       this.Skeleton = skeleton;
       this.boneTransformManager_ = boneTransformManager;
     }
