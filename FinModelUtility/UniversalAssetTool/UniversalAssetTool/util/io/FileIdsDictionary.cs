@@ -67,7 +67,8 @@ namespace uni.util.io {
       public NullableString[] FilePaths { get; set; }
     }
 
-    private partial class NullableString {
+    [BinarySchema]
+    private partial class NullableString : IBinaryConvertible {
       [NullTerminatedString]
       public string FilePath { get; set; }
     }
