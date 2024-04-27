@@ -2,15 +2,15 @@
 
 using schema.binary;
 using schema.binary.attributes;
+using schema.readOnly;
 
 namespace uni.util.io {
-  public interface IReadOnlyFileIdDictionary {
-    IReadOnlyTreeFile this[uint id] { get; }
-    void Save(IGenericFile file);
-  }
-
-  public interface IFileIdDictionary : IReadOnlyFileIdDictionary {
+  [GenerateReadOnly]
+  public partial interface IFileIdDictionary {
     IReadOnlyTreeFile this[uint id] { get; set; }
+
+    [Const]
+    void Save(IGenericFile file);
   }
 
   public partial class FileIdDictionary : IFileIdDictionary {
