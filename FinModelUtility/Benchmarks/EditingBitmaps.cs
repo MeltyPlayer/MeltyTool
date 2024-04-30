@@ -8,6 +8,9 @@ using FastBitmapLib;
 
 using fin.image.formats;
 
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+
 using Color = System.Drawing.Color;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -22,15 +25,15 @@ namespace benchmarks {
 
     public static readonly Configuration ImageSharpConfig;
 
-    private Rgba32Image finImage_ = new(fin.image.PixelFormat.RGBA8888, SIZE, SIZE);
+    private Rgba32Image finImage_
+        = new(fin.image.PixelFormat.RGBA8888, SIZE, SIZE);
 
     static EditingBitmaps() {
       ImageSharpConfig = Configuration.Default.Clone();
       ImageSharpConfig.PreferContiguousImageBuffers = true;
     }
 
-    private Image<Rgba32> image_ =
-        new Image<Rgba32>(ImageSharpConfig, SIZE, SIZE);
+    private Image<Rgba32> image_ = new(ImageSharpConfig, SIZE, SIZE);
 
     private MemoryHandle memoryHandle_;
     private Rgba32* imagePtr_;
@@ -201,13 +204,13 @@ namespace benchmarks {
                      out byte g,
                      out byte b,
                      out byte a)
-          => {
-        var value = ptr[y * EditingBitmaps.SIZE + x];
-        r = (byte) (value & 0xff);
-        g = (byte) ((value >> 8) & 0xff);
-        b = (byte) ((value >> 16) & 0xff);
-        a = (byte) (value >> 24);
-      };
+                        => {
+                      var value = ptr[y * EditingBitmaps.SIZE + x];
+                      r = (byte) (value & 0xff);
+                      g = (byte) ((value >> 8) & 0xff);
+                      b = (byte) ((value >> 16) & 0xff);
+                      a = (byte) (value >> 24);
+                    };
 
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
@@ -251,24 +254,29 @@ namespace benchmarks {
     [Benchmark]
     public void ReadingFinImageWithNewValues() {
       finImage_.Access(get => {
-        for (var y = 0; y < SIZE; ++y) {
-          for (var x = 0; x < SIZE; ++x) {
-            get(x, y, out var r, out var g, out var b, out var a);
-          }
-        }
-      });
+                         for (var y = 0; y < SIZE; ++y) {
+                           for (var x = 0; x < SIZE; ++x) {
+                             get(x,
+                                 y,
+                                 out var r,
+                                 out var g,
+                                 out var b,
+                                 out var a);
+                           }
+                         }
+                       });
     }
 
     [Benchmark]
     public void ReadingFinImageWithSameValues() {
       finImage_.Access(get => {
-        byte r, g, b, a;
-        for (var y = 0; y < SIZE; ++y) {
-          for (var x = 0; x < SIZE; ++x) {
-            get(x, y, out r, out g, out b, out a);
-          }
-        }
-      });
+                         byte r, g, b, a;
+                         for (var y = 0; y < SIZE; ++y) {
+                           for (var x = 0; x < SIZE; ++x) {
+                             get(x, y, out r, out g, out b, out a);
+                           }
+                         }
+                       });
     }
 
     [Benchmark]

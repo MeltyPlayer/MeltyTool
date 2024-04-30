@@ -2,6 +2,8 @@
 
 using CommunityToolkit.HighPerformance;
 
+using SixLabors.ImageSharp.PixelFormats;
+
 namespace benchmarks {
   public class CopyingValue {
     private static int size_ = 10;
