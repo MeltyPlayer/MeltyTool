@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-using Microsoft.Toolkit.HighPerformance;
+using CommunityToolkit.HighPerformance;
 
 namespace benchmarks {
   public class CopyingValue {

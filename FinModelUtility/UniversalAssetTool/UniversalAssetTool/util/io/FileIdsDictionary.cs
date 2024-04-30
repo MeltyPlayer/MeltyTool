@@ -63,7 +63,7 @@ namespace uni.util.io {
     private partial class FileIdsPair : IBinaryConvertible {
       public uint Id { get; set; }
 
-      [IntegerFormat(SchemaIntegerType.BYTE)]
+      [SequenceLengthSource(SchemaIntegerType.BYTE)]
       public NullableString[] FilePaths { get; set; }
     }
 

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.HighPerformance.Helpers;
+
 using Dxt;
 
 using fin.image;
 using fin.model;
 using fin.model.impl;
-
-using Microsoft.Toolkit.HighPerformance.Helpers;
 
 
 namespace HaloWarsTools {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-using fin.util.enumerables;
+using CommunityToolkit.HighPerformance;
 
-using Microsoft.Toolkit.HighPerformance;
+using fin.util.enumerables;
 
 
 namespace fin.animation {

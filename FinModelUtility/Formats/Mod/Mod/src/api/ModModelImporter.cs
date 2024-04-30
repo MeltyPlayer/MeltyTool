@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.HighPerformance.Helpers;
+
 using fin.color;
 using fin.image;
 using fin.io;
@@ -12,8 +14,6 @@ using fin.util.asserts;
 using fin.util.lists;
 
 using gx;
-
-using Microsoft.Toolkit.HighPerformance.Helpers;
 
 using mod.schema;
 using mod.schema.animation;

@@ -11,6 +11,8 @@ using cmb.schema.csab;
 using cmb.schema.ctxb;
 using cmb.schema.shpa;
 
+using CommunityToolkit.HighPerformance.Helpers;
+
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
@@ -21,8 +23,6 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.util.asserts;
-
-using Microsoft.Toolkit.HighPerformance.Helpers;
 
 using schema.binary;
 

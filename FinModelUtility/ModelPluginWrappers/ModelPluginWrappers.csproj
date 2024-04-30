@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="IronPython" Version="3.4.1" />
-    <PackageReference Include="schema" Version="0.4.20" />
+    <PackageReference Include="schema" Version="0.5.0" />
   </ItemGroup>
 
   <ItemGroup>

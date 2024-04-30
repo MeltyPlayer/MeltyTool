@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 
-using fin.language.equations.fixedFunction;
-
 using CommunityToolkit.HighPerformance.Helpers;
+
+using fin.language.equations.fixedFunction;
 
 using fin.image;
 using fin.model.util;
