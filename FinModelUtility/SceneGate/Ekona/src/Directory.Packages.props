@@ -15,7 +15,7 @@
     <PackageVersion Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.7.0.75501" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.5.0" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="9.24.0.89429" />
+    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.2" />
   </ItemGroup>
 </Project>
