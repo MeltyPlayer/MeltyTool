@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 
-using fin.io;
+using fin.data.queues;
 
 using static fin.io.sharpfilelister.Interop;
 
-namespace fins.io.sharpDirLister {
+namespace fin.io.sharpDirLister {
   public class DirectoryInformation : ISubdirPaths {
     public string AbsoluteSubdirPath { get; set; }
 
-    public IReadOnlyCollection<string> AbsoluteFilePaths => AbsoluteFilePathsImpl;
+    public IReadOnlyCollection<string> AbsoluteFilePaths
+      => AbsoluteFilePathsImpl;
+
     public IReadOnlyCollection<ISubdirPaths> Subdirs => SubdirsImpl;
 
     public LinkedList<string> AbsoluteFilePathsImpl { get; } = [];
@@ -18,54 +20,55 @@ namespace fins.io.sharpDirLister {
   }
 
   public interface IFileLister {
-    DirectoryInformation FindNextFilePInvokeRecursiveParalleled(
-        string path);
+    DirectoryInformation FindNextFilePInvoke(string path);
   }
 
   public class SharpFileLister : IFileLister {
     public const IntPtr INVALID_HANDLE_VALUE = -1;
 
-    public DirectoryInformation FindNextFilePInvokeRecursiveParalleled(
-        string path) {
-      var directoryInfo = new DirectoryInformation { AbsoluteSubdirPath = path };
-      this.FindNextFilePInvokeRecursive_(directoryInfo);
-      return directoryInfo;
-    }
-
     //Code based heavily on https://stackoverflow.com/q/47471744
-    private void FindNextFilePInvokeRecursive_(
-        DirectoryInformation directoryInfo) {
-      var path = directoryInfo.AbsoluteSubdirPath;
-      var fileList = directoryInfo.AbsoluteFilePathsImpl;
-      var directoryList = directoryInfo.SubdirsImpl;
+    public DirectoryInformation FindNextFilePInvoke(string rootPath) {
+      var rootDirectoryInfo = new DirectoryInformation
+          { AbsoluteSubdirPath = rootPath };
 
-      IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
+      var queue = new FinQueue<DirectoryInformation>(rootDirectoryInfo);
+      while (queue.TryDequeue(out var directoryInfo)) {
+        var path = directoryInfo.AbsoluteSubdirPath;
+        var fileList = directoryInfo.AbsoluteFilePathsImpl;
+        var directoryList = directoryInfo.SubdirsImpl;
 
-      try {
-        fileSearchHandle =
-            FindFirstFileW(path + @"\*", out WIN32_FIND_DATAW findData);
+        IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
+        try {
+          fileSearchHandle
+              = FindFirstFileW(@$"{path}\*", out WIN32_FIND_DATAW findData);
 
-        if (fileSearchHandle != INVALID_HANDLE_VALUE) {
-          do {
-            if (findData.cFileName != "." && findData.cFileName != "..") {
-              string fullPath = path + @"\" + findData.cFileName;
+          if (fileSearchHandle != INVALID_HANDLE_VALUE) {
+            do {
+              if (findData.cFileName is "." or "..") {
+                continue;
+              }
 
-              if (!findData.dwFileAttributes.HasFlag(FileAttributes.Directory)) {
+              var fullPath = @$"{path}\{findData.cFileName}";
+              if (!findData.dwFileAttributes.HasFlag(
+                      FileAttributes.Directory)) {
                 fileList.AddLast(fullPath);
-              } else if (!findData.dwFileAttributes.HasFlag(FileAttributes.ReparsePoint)) {
-                var dirdata =
-                    new DirectoryInformation { AbsoluteSubdirPath = fullPath, };
-                directoryList.AddLast(dirdata);
-                this.FindNextFilePInvokeRecursive_(dirdata);
-              } 
-            }
-          } while (FindNextFile(fileSearchHandle, out findData));
-        }
-      } finally {
-        if (fileSearchHandle != INVALID_HANDLE_VALUE) {
-          FindClose(fileSearchHandle);
+              } else if (!findData.dwFileAttributes.HasFlag(
+                             FileAttributes.ReparsePoint)) {
+                var childDirInfo = new DirectoryInformation
+                    { AbsoluteSubdirPath = fullPath };
+                directoryList.AddLast(childDirInfo);
+                queue.Enqueue((childDirInfo));
+              }
+            } while (FindNextFile(fileSearchHandle, out findData));
+          }
+        } finally {
+          if (fileSearchHandle != INVALID_HANDLE_VALUE) {
+            FindClose(fileSearchHandle);
+          }
         }
       }
+
+      return rootDirectoryInfo;
     }
   }
 }

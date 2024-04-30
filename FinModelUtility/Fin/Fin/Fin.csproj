@@ -42,5 +42,6 @@
     <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.2" />
     <PackageReference Include="schema" Version="0.5.0" />
+    <PackageReference Include="ZString" Version="2.6.0" />
   </ItemGroup>
 </Project>

@@ -5,10 +5,9 @@ using System.IO.Abstractions;
 using System.Linq;
 
 using fin.data.stacks;
+using fin.io.sharpDirLister;
 using fin.util.asserts;
 using fin.util.lists;
-
-using fins.io.sharpDirLister;
 
 namespace fin.io {
   public class FileHierarchy : IFileHierarchy {
@@ -18,9 +17,8 @@ namespace fin.io {
 
     public FileHierarchy(string name, ISystemDirectory directory) {
       this.Name = name;
-      var populatedSubdirs =
-          new SharpFileLister().FindNextFilePInvokeRecursiveParalleled(
-              directory.FullPath);
+      var populatedSubdirs
+          = new SharpFileLister().FindNextFilePInvoke(directory.FullPath);
       this.Root = new FileHierarchyDirectory(this,
                                              directory,
                                              populatedSubdirs);
@@ -77,8 +75,9 @@ namespace fin.io {
     }
 
 
-    private class FileHierarchyDirectory : BFileHierarchyIoObject,
-                                           IFileHierarchyDirectory {
+    private class FileHierarchyDirectory
+        : BFileHierarchyIoObject,
+          IFileHierarchyDirectory {
       private readonly List<IFileHierarchyDirectory> subdirs_ = [];
       private readonly List<IFileHierarchyFile> files_ = [];
 
@@ -290,7 +289,10 @@ namespace fin.io {
         var stack = new FinStack<IFileHierarchyDirectory>(this);
         while (stack.TryPop(out var next)) {
           var match = next.GetExistingFiles()
-                          .FirstOrDefault(file => file.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+                          .FirstOrDefault(
+                              file => file.Name.Equals(
+                                  name,
+                                  StringComparison.OrdinalIgnoreCase));
           if (match != null) {
             yield return match;
           }
@@ -355,10 +357,11 @@ namespace fin.io {
                                    .FilesWithExtensionsRecursive(first, rest)));
     }
 
-    private class FileHierarchyFile(IFileHierarchy hierarchy,
-                                    IFileHierarchyDirectory root,
-                                    IFileHierarchyDirectory parent,
-                                    ISystemFile file)
+    private class FileHierarchyFile(
+        IFileHierarchy hierarchy,
+        IFileHierarchyDirectory root,
+        IFileHierarchyDirectory parent,
+        ISystemFile file)
         : BFileHierarchyIoObject(hierarchy, root, parent, file),
           IFileHierarchyFile {
       protected override ISystemIoObject Instance => this.Impl;
