@@ -24,9 +24,9 @@ namespace uni.games.timesplitters_2 {
                                   .ToArray();
       if (pakFiles.Length > 0) {
         foreach (var pakFile in pakFiles) {
-          extractor.ExtractRelativeToRoot<P8ckArchiveReader>(
+          /*extractor.ExtractRelativeToRoot<P8ckArchiveReader>(
               pakFile,
-              fileHierarchy.Root);
+              fileHierarchy.Root);*/
           //pakFile.Impl.Delete();
         }
       }
