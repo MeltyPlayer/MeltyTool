@@ -52,7 +52,7 @@ namespace uni.platforms.gcn {
         throw new Exception();
       }
 
-      var fileHierarchy = new FileHierarchy(romFile.NameWithoutExtension, directory);
+      var fileHierarchy = FileHierarchy.From(romFile.NameWithoutExtension, directory);
       var hasChanged = false;
 
       // Decompresses all of the archives,

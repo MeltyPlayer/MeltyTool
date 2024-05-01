@@ -18,7 +18,7 @@ namespace fin.io {
       : IFileHierarchyIoObject, IReadOnlyTreeDirectory {
     ISystemDirectory Impl { get; }
 
-    bool Refresh(bool recursive = false);
+    void Refresh(bool recursive = false);
 
     IEnumerable<IFileHierarchyFile> FilesWithExtension(string extension);
 

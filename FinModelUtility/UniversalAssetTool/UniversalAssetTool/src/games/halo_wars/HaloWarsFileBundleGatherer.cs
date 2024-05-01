@@ -31,7 +31,7 @@ namespace uni.games.halo_wars {
       // Expand all compressed/encrypted game files. This also handles the .xmb -> .xml conversion
       context.ExpandAllEraFiles();
 
-      var fileHierarchy = new FileHierarchy("halo_wars", scratchDirectory);
+      var fileHierarchy = FileHierarchy.From("halo_wars", scratchDirectory);
 
       var mapDirectories =
           fileHierarchy.Root

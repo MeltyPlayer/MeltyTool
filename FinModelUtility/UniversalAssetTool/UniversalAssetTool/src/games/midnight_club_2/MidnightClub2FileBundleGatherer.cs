@@ -17,7 +17,7 @@ namespace uni.games.midnight_club_2 {
       }
 
       var fileHierarchy =
-          new FileHierarchy("midnight_club_2", midnightClub2Directory);
+          FileHierarchy.From("midnight_club_2", midnightClub2Directory);
 
       var textureDirectory =
           fileHierarchy.Root.AssertGetExistingSubdir("texture_x");

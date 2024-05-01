@@ -24,7 +24,7 @@ namespace uni.platforms.ds {
         }
       }
 
-      return new FileHierarchy(romFile.NameWithoutExtension, outDir);
+      return FileHierarchy.From(romFile.NameWithoutExtension, outDir);
     }
   }
 }

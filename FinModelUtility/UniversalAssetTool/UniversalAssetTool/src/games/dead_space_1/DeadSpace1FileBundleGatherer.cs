@@ -22,8 +22,8 @@ namespace uni.games.dead_space_1 {
         }
       }
 
-      var assetFileHierarchy =
-          new FileHierarchy("dead_space_1", baseOutputDirectory);
+      var assetFileHierarchy
+          = FileHierarchy.From("dead_space_1", baseOutputDirectory);
       foreach (var charSubdir in
                new[] { "animated_props", "chars", "weapons" }
                    .Select(assetFileHierarchy.Root.AssertGetExistingSubdir)

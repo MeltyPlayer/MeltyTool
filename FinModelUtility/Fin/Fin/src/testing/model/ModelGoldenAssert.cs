@@ -43,7 +43,7 @@ namespace fin.testing.model {
 
     public static IEnumerable<IFileHierarchyDirectory> GetGoldenDirectories(
         ISystemDirectory rootGoldenDirectory) {
-      var hierarchy = new FileHierarchy(rootGoldenDirectory);
+      var hierarchy = FileHierarchy.From(rootGoldenDirectory);
       return hierarchy.Root.GetExistingSubdirs()
                       .Where(
                           subdir => subdir.Name != TMP_NAME);

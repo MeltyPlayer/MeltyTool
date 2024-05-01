@@ -18,13 +18,13 @@
     IEnumerable<IReadOnlyTreeDirectory> GROTreeDir.GetExistingSubdirs()
       => this.GetExistingSubdirs();
 
-    new IReadOnlyList<IFileHierarchyDirectory> GetExistingSubdirs();
+    new IEnumerable<IFileHierarchyDirectory> GetExistingSubdirs();
 
     // GetExistingFiles
     IEnumerable<IReadOnlyTreeFile> GROTreeDir.GetExistingFiles()
       => this.GetExistingFiles();
 
-    new IReadOnlyList<IFileHierarchyFile> GetExistingFiles();
+    new IEnumerable<IFileHierarchyFile> GetExistingFiles();
 
     // AssertGetExistingFile
     IReadOnlyTreeFile GROTreeDir.AssertGetExistingFile(string localPath)

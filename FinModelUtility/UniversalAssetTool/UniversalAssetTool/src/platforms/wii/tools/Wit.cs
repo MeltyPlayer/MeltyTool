@@ -26,8 +26,7 @@ namespace uni.platforms.wii.tools {
                      $"Directory was not created: {finalDirectory}");
       }
 
-      hierarchy =
-          new FileHierarchy(romFile.NameWithoutExtension, finalDirectory);
+      hierarchy = FileHierarchy.From(romFile.NameWithoutExtension, finalDirectory);
       return didChange;
     }
 

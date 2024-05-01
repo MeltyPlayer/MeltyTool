@@ -23,7 +23,7 @@ namespace uni.games.super_mario_64 {
       ExtractorUtil.GetOrCreateRomDirectories("super_mario_64",
                                               out var prereqsDir,
                                               out var extractedDir);
-      var fileHierarchy = new FileHierarchy("super_mario_64", extractedDir);
+      var fileHierarchy = FileHierarchy.From("super_mario_64", extractedDir);
       var root = fileHierarchy.Root;
 
       var rootSysDir = root.Impl;

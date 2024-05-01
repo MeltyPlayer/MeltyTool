@@ -112,7 +112,8 @@ namespace uni.games.pikmin_2 {
 
       var bcxFiles =
           pikminAndCaptainBaseDirectory.AssertGetExistingSubdir("motion")
-                                       .GetExistingFiles();
+                                       .GetExistingFiles()
+                                       .ToArray();
 
       var captainSubdir =
           pikminAndCaptainBaseDirectory.AssertGetExistingSubdir("orima_model");

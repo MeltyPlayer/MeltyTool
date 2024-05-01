@@ -18,8 +18,8 @@ namespace uni.games.paper_mario_directors_cut {
         yield break;
       }
 
-      var fileHierarchy =
-          new FileHierarchy("paper_mario_directors_cut", pmdcDir);
+      var fileHierarchy
+          = FileHierarchy.From("paper_mario_directors_cut", pmdcDir);
 
       var omdFiles = fileHierarchy.Root.GetFilesWithFileType(".omd", true);
       foreach (var omdFile in omdFiles) {

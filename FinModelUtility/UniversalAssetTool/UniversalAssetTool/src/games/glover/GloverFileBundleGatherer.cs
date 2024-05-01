@@ -14,7 +14,7 @@ namespace uni.games.glover {
         yield break;
       }
 
-      var gloverFileHierarchy = new FileHierarchy("glover", gloverSteamDirectory);
+      var gloverFileHierarchy = FileHierarchy.From("glover", gloverSteamDirectory);
 
       var dataDirectory =
           gloverFileHierarchy.Root.AssertGetExistingSubdir("data");

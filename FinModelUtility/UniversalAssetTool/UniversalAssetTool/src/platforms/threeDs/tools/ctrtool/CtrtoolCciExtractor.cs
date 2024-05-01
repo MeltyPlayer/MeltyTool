@@ -24,7 +24,7 @@ namespace uni.platforms.threeDs.tools.ctrtool {
                         $"Failed to extract contents from the ROM: {romFile.FullPath}");
         }
 
-        hierarchy = new FileHierarchy(romFile.NameWithoutExtension, directory);
+        hierarchy = FileHierarchy.From(romFile.NameWithoutExtension, directory);
         return didChange;
       }
 
