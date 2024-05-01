@@ -1,0 +1,58 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+typedef struct (uint offset) {
+  local uint tempOffset = FTell();
+  FSeek(offset);
+
+  string value;
+
+  FSeek(tempOffset);
+} StringAtOffset;
+
+typedef struct {
+    string value;
+} StringNt;
+
+FSeek(0x4);
+
+uint count;
+uint mtlbId1;
+uint mtlbId2;
+
+FSeek(0x40);
+ushort someCount1;
+ushort someCount2;
+uint someOffset;
+uint stringOffset;
+
+FSeek(0x50);
+typedef struct {
+    uint id;
+    uint unk1;
+    
+    uint typeOffset;
+    StringAtOffset type(stringOffset + typeOffset);
+    
+    uint unk2[2];
+    
+    uint someOffset;
+    StringAtOffset something(stringOffset + someOffset);
+    
+    uint pathOffset;
+    StringAtOffset path(stringOffset + pathOffset);
+} SomeStruct;
+SomeStruct someStructs1[someCount1] <optimize=false>;
+SomeStruct someStructs2[someCount2] <optimize=false>;
