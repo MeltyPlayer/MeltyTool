@@ -42,7 +42,7 @@ namespace uni.games {
     public static ISystemDirectory GetOrCreateExtractedDirectory(
         string romName)
       => GetOrCreateRomDirectory(romName).GetOrCreateSubdir(EXTRACTED);
-
+    
 
     public static bool HasNotBeenExtractedYet(
         IReadOnlyTreeFile romFile,

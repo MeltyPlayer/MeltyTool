@@ -12,18 +12,24 @@ namespace uni.games.dead_space_1 {
         yield break;
       }
 
-      var baseOutputDirectory = ExtractorUtil.GetOrCreateExtractedDirectory(
-          "dead_space_1");
-      if (baseOutputDirectory.IsEmpty) {
+      ExtractorUtil.GetOrCreateRomDirectories(
+          "dead_space_1",
+          out var prereqsDir,
+          out var extractedDir);
+      if (extractedDir.IsEmpty) {
         var strExtractor = new StrExtractor();
         foreach (var strFile in
                  deadSpaceDir.GetFilesWithFileType(".str", true)) {
-          strExtractor.Extract(strFile, baseOutputDirectory);
+          strExtractor.Extract(strFile, extractedDir);
         }
       }
 
       var assetFileHierarchy
-          = FileHierarchy.From("dead_space_1", baseOutputDirectory);
+          = FileHierarchy.From("dead_space_1", extractedDir);
+      var mtlbFileIdsDictionary = new MtlbFileIdsDictionary(
+          extractedDir,
+          new FinFile(Path.Join(prereqsDir.FullPath, "mtlbs.ids")));
+
       foreach (var charSubdir in
                new[] { "animated_props", "chars", "weapons" }
                    .Select(assetFileHierarchy.Root.AssertGetExistingSubdir)
@@ -74,6 +80,7 @@ namespace uni.games.dead_space_1 {
               GeoFiles = geoFiles,
               BnkFiles = bnkFiles,
               RcbFile = rcbFile,
+              MtlbFileIdsDictionary = mtlbFileIdsDictionary,
               Tg4ImageFileBundles = textureFiles
           }.Annotate(geoFiles.FirstOrDefault() ?? rcbFile!);
         } else {

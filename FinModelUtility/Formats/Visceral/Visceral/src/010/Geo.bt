@@ -113,20 +113,24 @@ typedef struct {
   uint meshNameOffset;
   StringAtOffset name(meshNameOffset);
 
-  byte unk0[0x1c];
+  byte unk9[0x8];
+  
+  uint mtlbId;
+
   byte unk1[0x10];
+  byte unk2[0x10];
 
   uint polyInfoOffset;
 
-  byte unk2[0x4];
+  byte unk3[0x4];
 
   uint vertOffset;
     
-  byte unk3[0x4];
+  byte unk4[0x4];
   
   uint faceOffset;
 
-  byte unk4[0x4];
+  byte unk5[0x4];
 
 
   typedef struct {

@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 
 using fin.data.dictionaries;
+using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
 using fin.math.matrix.four;
@@ -11,6 +12,7 @@ using fin.model.io.importers;
 using fin.schema.matrix;
 
 using visceral.schema.geo;
+using visceral.schema.mtlb;
 using visceral.schema.rcb;
 
 namespace visceral.api {
@@ -19,6 +21,17 @@ namespace visceral.api {
 
     public IModel Import(GeoModelFileBundle modelFileBundle) {
       var finModel = new ModelImpl();
+
+      // Builds skeletons
+      IBone[] finBones = Array.Empty<IBone>();
+      var rcbFile = modelFileBundle.RcbFile;
+      if (rcbFile != null) {
+        this.AddRcbFileToModel_(finModel, rcbFile, out finBones);
+      }
+
+      foreach (var bnkFile in modelFileBundle.BnkFiles) {
+        new BnkReader().ReadBnk(finModel, bnkFile, rcbFile, finBones);
+      }
 
       // Builds textures
       var textureBundles = modelFileBundle.Tg4ImageFileBundles;
@@ -35,16 +48,17 @@ namespace visceral.api {
         }
       }
 
-      // Builds skeletons
-      IBone[] finBones = Array.Empty<IBone>();
-      var rcbFile = modelFileBundle.RcbFile;
-      if (rcbFile != null) {
-        this.AddRcbFileToModel_(finModel, rcbFile, out finBones);
-      }
-
-      foreach (var bnkFile in modelFileBundle.BnkFiles) {
-        new BnkReader().ReadBnk(finModel, bnkFile, rcbFile, finBones);
-      }
+      // Gets materials
+      var lazyMtlbDictionary = new LazyDictionary<uint, IReadOnlyList<Mtlb>>(
+          mtlbId =>
+              modelFileBundle.MtlbFileIdsDictionary[mtlbId]
+                             .Select(mtlbFile => mtlbFile.ReadNew<Mtlb>())
+                             .ToArray());
+      var lazyMaterialDictionary = new LazyDictionary<uint, IMaterial>(
+          mtlbId => {
+            var mtlb = lazyMtlbDictionary[mtlbId].First();
+            return null!;
+          });
 
       // Builds meshes
       var geoFiles = modelFileBundle.GeoFiles;
@@ -155,44 +169,49 @@ namespace visceral.api {
         var finVertices =
             geoMesh.Vertices
                    .Select(geoVertex => {
-                     var vertex = finSkin.AddVertex(geoVertex.Position);
+                             var vertex = finSkin.AddVertex(geoVertex.Position);
 
-                     var boneWeights =
-                         geoVertex.Weights
-                                  .Select((weight, i)
-                                              => (geoVertex.Bones[i], weight))
-                                  .Where(boneWeight => boneWeight.weight > 0)
-                                  .Select(boneWeight
-                                              => new BoneWeight(
-                                                  finBones[
-                                                      geo.Bones[
-                                                          boneWeight.Item1].Id],
-                                                  null,
-                                                  boneWeight.Item2))
-                                  .ToArray();
+                             var boneWeights =
+                                 geoVertex.Weights
+                                          .Select((weight, i)
+                                                      => (geoVertex.Bones[i],
+                                                        weight))
+                                          .Where(boneWeight
+                                                     => boneWeight.weight > 0)
+                                          .Select(boneWeight
+                                                      => new BoneWeight(
+                                                          finBones[
+                                                              geo.Bones[
+                                                                      boneWeight
+                                                                          .Item1]
+                                                                  .Id],
+                                                          null,
+                                                          boneWeight.Item2))
+                                          .ToArray();
 
-                     vertex.SetBoneWeights(
-                         finSkin.GetOrCreateBoneWeights(
-                             VertexSpace.RELATIVE_TO_WORLD,
-                             boneWeights));
+                             vertex.SetBoneWeights(
+                                 finSkin.GetOrCreateBoneWeights(
+                                     VertexSpace.RELATIVE_TO_WORLD,
+                                     boneWeights));
 
-                     vertex.SetLocalNormal(geoVertex.Normal);
-                     vertex.SetLocalTangent(geoVertex.Tangent);
-                     vertex.SetUv(geoVertex.Uv);
-                     return vertex as IReadOnlyVertex;
-                   })
+                             vertex.SetLocalNormal(geoVertex.Normal);
+                             vertex.SetLocalTangent(geoVertex.Tangent);
+                             vertex.SetUv(geoVertex.Uv);
+                             return vertex as IReadOnlyVertex;
+                           })
                    .ToArray();
 
         var triangles = geoMesh.Faces.Select(geoFace => {
-                                 var indices = geoFace.Indices
-                                     .Select(
-                                         index => index -
-                                                  geoMesh.BaseVertexIndex)
-                                     .ToArray();
-                                 return (finVertices[indices[0]],
-                                         finVertices[indices[1]],
-                                         finVertices[indices[2]]);
-                               })
+                                               var indices = geoFace.Indices
+                                                   .Select(
+                                                       index => index -
+                                                           geoMesh
+                                                               .BaseVertexIndex)
+                                                   .ToArray();
+                                               return (finVertices[indices[0]],
+                                                 finVertices[indices[1]],
+                                                 finVertices[indices[2]]);
+                                             })
                                .ToArray();
 
         finMesh.AddTriangles(triangles)

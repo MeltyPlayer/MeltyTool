@@ -27,9 +27,19 @@ namespace fin.io {
       => new(file.OpenRead());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IBinaryReader OpenReadAsBinary(this IReadOnlyGenericFile file)
+      => new SchemaBinaryReader(file.OpenRead());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IBinaryReader OpenReadAsBinary(
+        this IReadOnlyGenericFile file,
+        Endianness endianness)
+      => new SchemaBinaryReader(file.OpenRead(), endianness);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T ReadNew<T>(this IReadOnlyGenericFile file)
         where T : IBinaryDeserializable, new() {
-      using var br = new SchemaBinaryReader(file.OpenRead());
+      using var br = file.OpenReadAsBinary();
       return br.ReadNew<T>();
     }
 
@@ -37,7 +47,7 @@ namespace fin.io {
     public static T ReadNew<T>(this IReadOnlyGenericFile file,
                                Endianness endianness)
         where T : IBinaryDeserializable, new() {
-      using var br = new SchemaBinaryReader(file.OpenRead(), endianness);
+      using var br = file.OpenReadAsBinary(endianness);
       return br.ReadNew<T>();
     }
 

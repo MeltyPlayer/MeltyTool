@@ -23,6 +23,8 @@ namespace visceral.api {
     public required IReadOnlyList<IReadOnlyTreeFile> BnkFiles { get; init; }
     public required IReadOnlyTreeFile? RcbFile { get; init; }
 
+    public required MtlbFileIdsDictionary MtlbFileIdsDictionary { get; init; }
+    
     public IReadOnlyList<Tg4ImageFileBundle>? Tg4ImageFileBundles { get; init; }
   }
 }

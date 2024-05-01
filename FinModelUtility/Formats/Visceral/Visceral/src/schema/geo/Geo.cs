@@ -74,7 +74,11 @@ namespace visceral.schema.geo {
 
         var meshName = br.SubreadAt(br.ReadUInt32(), ser => ser.ReadStringNT());
 
-        br.Position += 0x1c;
+        br.Position += 8;
+
+        var mtlbId = br.ReadUInt32();
+
+        br.Position += 0x10;
         br.Position += 0x10;
 
         var polyInfoOffset = br.ReadUInt32();
@@ -134,6 +138,7 @@ namespace visceral.schema.geo {
 
         meshes.Add(new Mesh {
             Name = meshName,
+            MtlbId = mtlbId,
             BaseVertexIndex = baseVertexIndex,
             Vertices = vertices,
             Faces = faces,
@@ -197,6 +202,7 @@ namespace visceral.schema.geo {
 
     public class Mesh {
       public required string Name { get; init; }
+      public required uint MtlbId { get; init; }
       public required ushort BaseVertexIndex { get; init; }
       public required IReadOnlyList<Vertex> Vertices { get; init; }
       public required IReadOnlyList<Face> Faces { get; init; }
