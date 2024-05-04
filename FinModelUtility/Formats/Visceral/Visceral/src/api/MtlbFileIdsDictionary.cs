@@ -8,8 +8,7 @@ namespace visceral.api {
 
     public MtlbFileIdsDictionary(IReadOnlyTreeDirectory baseDirectory,
                                  ISystemFile fileIdsFile) {
-
-
+      this.BaseDirectory = baseDirectory;
       if (fileIdsFile.Exists) {
         this.impl_ = new FileIdsDictionary(baseDirectory, fileIdsFile);
       } else {
@@ -27,6 +26,8 @@ namespace visceral.api {
         this.Save(fileIdsFile);
       }
     }
+
+    public IReadOnlyTreeDirectory BaseDirectory { get; }
 
     public IEnumerable<IReadOnlyTreeFile> this[uint id] => this.impl_[id];
 

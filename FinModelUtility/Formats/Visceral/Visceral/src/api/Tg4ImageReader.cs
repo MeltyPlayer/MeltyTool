@@ -10,7 +10,7 @@ using schema.binary;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace visceral.api {
-  public class Tg4ImageFileBundle {
+  public record Tg4ImageFileBundle {
     public required IReadOnlyTreeFile Tg4hFile { get; init; }
     public required IReadOnlyTreeFile Tg4dFile { get; init; }
   }

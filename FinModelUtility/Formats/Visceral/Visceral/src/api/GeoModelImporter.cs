@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-using fin.data.dictionaries;
+﻿using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
@@ -10,6 +8,7 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.schema.matrix;
+using fin.util.hash;
 
 using visceral.schema.geo;
 using visceral.schema.mtlb;
@@ -33,37 +32,108 @@ namespace visceral.api {
         new BnkReader().ReadBnk(finModel, bnkFile, rcbFile, finBones);
       }
 
-      // Builds textures
-      var textureBundles = modelFileBundle.Tg4ImageFileBundles;
-      var textures = new List<ITexture>();
-      if (textureBundles != null) {
-        var tg4ImageReader = new Tg4ImageReader();
-
-        foreach (var textureBundle in textureBundles) {
-          var image = tg4ImageReader.ReadImage(textureBundle);
-          var finTexture = finModel.MaterialManager.CreateTexture(image);
-          finTexture.Name = textureBundle.Tg4hFile.NameWithoutExtension;
-
-          textures.Add(finTexture);
-        }
-      }
-
       // Gets materials
+      var mtlbFileIdsDictionary = modelFileBundle.MtlbFileIdsDictionary;
+      var tg4hFileIdDictionary = modelFileBundle.Tg4hFileIdDictionary;
+
+      var tg4ImageReader = new Tg4ImageReader();
+      var lazyTextureByBundleDictionary
+          = new LazyDictionary<Tg4ImageFileBundle, ITexture>(
+              bundle => {
+                var image = tg4ImageReader.ReadImage(bundle);
+                var finTexture = finModel.MaterialManager.CreateTexture(image);
+                finTexture.Name = bundle.Tg4hFile.NameWithoutExtension;
+
+                return finTexture;
+              });
+      var lazyTextureByPathDictionary = new LazyDictionary<string, ITexture>(
+          path => {
+            var fixedBasePath
+                = path.Replace("s:/assets/",
+                               mtlbFileIdsDictionary.BaseDirectory.FullPath +
+                               "/")
+                      .Replace("_tdf.xml", "");
+
+            return lazyTextureByBundleDictionary[new Tg4ImageFileBundle {
+                Tg4hFile = new FinFile(fixedBasePath + ".tg4h"),
+                Tg4dFile = new FinFile(fixedBasePath + ".tg4d"),
+            }];
+          });
+      var lazyTextureByIdDictionary = new LazyDictionary<uint, ITexture>(
+          id => {
+            var tg4hFile = tg4hFileIdDictionary[id];
+            var tg4dFile
+                = new FinFile(tg4hFile.FullNameWithoutExtension + ".tg4d");
+
+            return lazyTextureByBundleDictionary[new Tg4ImageFileBundle {
+                Tg4hFile = tg4hFile,
+                Tg4dFile = tg4dFile,
+            }];
+          });
+      var lazyTextureByChannelDictionary
+          = new LazyDictionary<MtlbChannel?, ITexture?>(
+              channel => {
+                if (channel == null) {
+                  return null;
+                }
+
+                return lazyTextureByIdDictionary[(uint) channel.IdValues![1]];
+                //return lazyTextureByPathDictionary[channel.Path];
+              });
       var lazyMtlbDictionary = new LazyDictionary<uint, IReadOnlyList<Mtlb>>(
           mtlbId =>
-              modelFileBundle.MtlbFileIdsDictionary[mtlbId]
-                             .Select(mtlbFile => mtlbFile.ReadNew<Mtlb>())
-                             .ToArray());
+              mtlbFileIdsDictionary[mtlbId]
+                  .Select(mtlbFile => mtlbFile.ReadNew<Mtlb>())
+                  .ToArray());
       var lazyMaterialDictionary = new LazyDictionary<uint, IMaterial>(
           mtlbId => {
             var mtlb = lazyMtlbDictionary[mtlbId].First();
-            return null!;
+
+            var samplerChannels =
+                mtlb.HighLodMaterialChannels
+                    .Where(c => c.MtlbChannelCategory ==
+                                MtlbChannelCategory.Sampler)
+                    .Where(c => c.Path != "(null)" && c.Path.Contains('.'))
+                    .DistinctBy(c => FluentHash.Start()
+                                               .With(c.Type)
+                                               .With(c.Path))
+                    .ToArray();
+
+            var material
+                = finModel.MaterialManager.AddStandardMaterial();
+            material.DiffuseTexture = lazyTextureByChannelDictionary[
+                samplerChannels.SingleOrDefault(
+                    channel => channel.Type ==
+                               MtlbChannelType.colorTexSampler)];
+            material.NormalTexture = lazyTextureByChannelDictionary[
+                samplerChannels.SingleOrDefault(
+                    channel => channel.Type ==
+                               MtlbChannelType.normalSampler)];
+            material.AmbientOcclusionTexture = lazyTextureByChannelDictionary[
+                samplerChannels.SingleOrDefault(
+                    channel => channel.Type ==
+                               MtlbChannelType.OcclusionTexSampler)];
+            material.SpecularTexture = lazyTextureByChannelDictionary[
+                samplerChannels.SingleOrDefault(
+                    channel => channel.Type ==
+                               MtlbChannelType.SpecularTexSampler)];
+            material.EmissiveTexture = lazyTextureByChannelDictionary[
+                samplerChannels.SingleOrDefault(
+                    channel => channel.Type ==
+                               MtlbChannelType.SelfIllumTexSampler)];
+
+            material.Name = mtlb.Name;
+
+            return material;
           });
 
       // Builds meshes
       var geoFiles = modelFileBundle.GeoFiles;
       foreach (var geoFile in geoFiles) {
-        this.AddGeoFileToModel_(finModel, geoFile, finBones, textures);
+        this.AddGeoFileToModel_(finModel,
+                                geoFile,
+                                finBones,
+                                lazyMaterialDictionary);
       }
 
       return finModel;
@@ -135,26 +205,7 @@ namespace visceral.api {
         ModelImpl finModel,
         IReadOnlyTreeFile geoFile,
         IBone[] finBones,
-        IList<ITexture> textures) {
-      var colorTextures = textures.Where(texture => texture.Name.EndsWith("_c"))
-                                  .ToArray();
-      IMaterial material;
-      if (colorTextures.Length == 1) {
-        var colorTexture = colorTextures[0];
-        var baseTextureName = colorTexture.Name[..^2];
-        var normalTexture =
-            textures.SingleOrDefault(
-                texture => texture.Name == $"{baseTextureName}_n");
-
-        var standardMaterial = finModel.MaterialManager.AddStandardMaterial();
-        standardMaterial.DiffuseTexture = colorTexture;
-        standardMaterial.NormalTexture = normalTexture;
-        material = standardMaterial;
-        material.Name = baseTextureName;
-      } else {
-        material = finModel.MaterialManager.AddColorMaterial(Color.Magenta);
-      }
-
+        IReadOnlyFinDictionary<uint, IMaterial> materialDictionary) {
       var geo = geoFile.ReadNew<Geo>();
 
       foreach (var geoBone in geo.Bones) {
@@ -166,40 +217,42 @@ namespace visceral.api {
         var finMesh = finSkin.AddMesh();
         finMesh.Name = geoMesh.Name;
 
+        var finMaterial = materialDictionary[geoMesh.MtlbId];
+
         var finVertices =
-            geoMesh.Vertices
-                   .Select(geoVertex => {
-                             var vertex = finSkin.AddVertex(geoVertex.Position);
+            geoMesh
+                .Vertices
+                .Select(
+                    geoVertex => {
+                      var vertex = finSkin.AddVertex(geoVertex.Position);
 
-                             var boneWeights =
-                                 geoVertex.Weights
-                                          .Select((weight, i)
-                                                      => (geoVertex.Bones[i],
-                                                        weight))
-                                          .Where(boneWeight
-                                                     => boneWeight.weight > 0)
-                                          .Select(boneWeight
-                                                      => new BoneWeight(
-                                                          finBones[
-                                                              geo.Bones[
-                                                                      boneWeight
-                                                                          .Item1]
-                                                                  .Id],
-                                                          null,
-                                                          boneWeight.Item2))
-                                          .ToArray();
+                      var boneWeights =
+                          geoVertex.Weights
+                                   .Select((weight, i)
+                                               => (geoVertex.Bones[i], weight))
+                                   .Where(boneWeight => boneWeight.weight > 0)
+                                   .Select(boneWeight
+                                               => new BoneWeight(
+                                                   finBones[
+                                                       geo.Bones[
+                                                               boneWeight
+                                                                   .Item1]
+                                                           .Id],
+                                                   null,
+                                                   boneWeight.Item2))
+                                   .ToArray();
 
-                             vertex.SetBoneWeights(
-                                 finSkin.GetOrCreateBoneWeights(
-                                     VertexSpace.RELATIVE_TO_WORLD,
-                                     boneWeights));
+                      vertex.SetBoneWeights(
+                          finSkin.GetOrCreateBoneWeights(
+                              VertexSpace.RELATIVE_TO_WORLD,
+                              boneWeights));
 
-                             vertex.SetLocalNormal(geoVertex.Normal);
-                             vertex.SetLocalTangent(geoVertex.Tangent);
-                             vertex.SetUv(geoVertex.Uv);
-                             return vertex as IReadOnlyVertex;
-                           })
-                   .ToArray();
+                      vertex.SetLocalNormal(geoVertex.Normal);
+                      vertex.SetLocalTangent(geoVertex.Tangent);
+                      vertex.SetUv(geoVertex.Uv);
+                      return vertex as IReadOnlyVertex;
+                    })
+                .ToArray();
 
         var triangles = geoMesh.Faces.Select(geoFace => {
                                                var indices = geoFace.Indices
@@ -215,7 +268,7 @@ namespace visceral.api {
                                .ToArray();
 
         finMesh.AddTriangles(triangles)
-               .SetMaterial(material)
+               .SetMaterial(finMaterial)
                .SetVertexOrder(VertexOrder.NORMAL);
       }
     }

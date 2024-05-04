@@ -29,6 +29,9 @@ namespace uni.games.dead_space_1 {
       var mtlbFileIdsDictionary = new MtlbFileIdsDictionary(
           extractedDir,
           new FinFile(Path.Join(prereqsDir.FullPath, "mtlbs.ids")));
+      var tg4hFileIdDictionary = new Tg4hFileIdDictionary(
+          extractedDir,
+          new FinFile(Path.Join(prereqsDir.FullPath, "tg4hs.ids")));
 
       foreach (var charSubdir in
                new[] { "animated_props", "chars", "weapons" }
@@ -56,24 +59,6 @@ namespace uni.games.dead_space_1 {
                        .ToArray();
         }
 
-        Tg4ImageFileBundle[]? textureFiles = null;
-        if (charSubdir.TryToGetExistingSubdir("rigged/textures",
-                                              out var textureDir)) {
-          var textureDirFiles = textureDir.GetExistingFiles().ToArray();
-          var tg4hFiles =
-              textureDirFiles.Where(file => file.FileType == ".tg4h")
-                             .ToDictionary(file => file.NameWithoutExtension);
-          textureFiles =
-              textureDirFiles.Where(file => file.FileType == ".tg4d")
-                             .Select(tg4dFile => new Tg4ImageFileBundle {
-                                 Tg4dFile = tg4dFile,
-                                 Tg4hFile =
-                                     tg4hFiles[
-                                         tg4dFile.NameWithoutExtension]
-                             })
-                             .ToArray();
-        }
-
         if (geoFiles.Length > 0 || rcbFile != null) {
           yield return new GeoModelFileBundle {
               GameName = "dead_space_1",
@@ -81,7 +66,7 @@ namespace uni.games.dead_space_1 {
               BnkFiles = bnkFiles,
               RcbFile = rcbFile,
               MtlbFileIdsDictionary = mtlbFileIdsDictionary,
-              Tg4ImageFileBundles = textureFiles
+              Tg4hFileIdDictionary = tg4hFileIdDictionary
           }.Annotate(geoFiles.FirstOrDefault() ?? rcbFile!);
         } else {
           ;
