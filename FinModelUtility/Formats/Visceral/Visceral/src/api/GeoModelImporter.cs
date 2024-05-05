@@ -44,6 +44,10 @@ namespace visceral.api {
                 var finTexture = finModel.MaterialManager.CreateTexture(image);
                 finTexture.Name = bundle.Tg4hFile.NameWithoutExtension;
 
+                // TODO: How is this set??
+                finTexture.WrapModeU = WrapMode.REPEAT;
+                finTexture.WrapModeV = WrapMode.REPEAT;
+
                 return finTexture;
               });
       var lazyTextureByPathDictionary = new LazyDictionary<string, ITexture>(
@@ -104,15 +108,15 @@ namespace visceral.api {
             material.DiffuseTexture = lazyTextureByChannelDictionary[
                 samplerChannels.SingleOrDefault(
                     channel => channel.Type ==
-                               MtlbChannelType.colorTexSampler)];
+                               MtlbChannelType.DiffuseSampler)];
             material.NormalTexture = lazyTextureByChannelDictionary[
                 samplerChannels.SingleOrDefault(
                     channel => channel.Type ==
-                               MtlbChannelType.normalSampler)];
+                               MtlbChannelType.NormalSampler)];
             material.AmbientOcclusionTexture = lazyTextureByChannelDictionary[
                 samplerChannels.SingleOrDefault(
                     channel => channel.Type ==
-                               MtlbChannelType.OcclusionTexSampler)];
+                               MtlbChannelType.OcclusionSampler)];
             material.SpecularTexture = lazyTextureByChannelDictionary[
                 samplerChannels.SingleOrDefault(
                     channel => channel.Type ==
@@ -120,7 +124,7 @@ namespace visceral.api {
             material.EmissiveTexture = lazyTextureByChannelDictionary[
                 samplerChannels.SingleOrDefault(
                     channel => channel.Type ==
-                               MtlbChannelType.SelfIllumTexSampler)];
+                               MtlbChannelType.EmissiveSampler)];
 
             material.Name = mtlb.Name;
 
@@ -250,6 +254,7 @@ namespace visceral.api {
                       vertex.SetLocalNormal(geoVertex.Normal);
                       vertex.SetLocalTangent(geoVertex.Tangent);
                       vertex.SetUv(geoVertex.Uv);
+
                       return vertex as IReadOnlyVertex;
                     })
                 .ToArray();

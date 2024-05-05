@@ -32,11 +32,6 @@ typedef struct {
 } Vec3f;
 
 typedef struct {
-  float x;
-  float y;
-} Vec2f;
-
-typedef struct {
   float values[16];
 } Mat4x4;
 
@@ -104,7 +99,7 @@ typedef struct {
 } Bone;
 
 FSeek(fileHeader.boneDataOffset);
-Bone bones[fileHeader.boneCount];
+Bone bones[fileHeader.boneCount] <optimize=false>;
 
 
 typedef struct {
@@ -119,32 +114,29 @@ typedef struct {
 
   byte unk1[0x10];
   byte unk2[0x10];
-
-  uint polyInfoOffset;
-
-  byte unk3[0x4];
-
-  uint vertOffset;
-    
-  byte unk4[0x4];
   
-  uint faceOffset;
-
-  byte unk5[0x4];
-
-
   typedef struct {
+    uint _offset;
+    local uint tmp = FTell();
+    FSeek(_offset);
+      
     uint faceCount;
     uint faceOffset;
     ushort baseVertexIndex;
     ushort vertCount;
     uint unk;
-  } PolyInfo;  
-  FSeek(polyInfoOffset);
-  PolyInfo polyInfo;
+    
+    FSeek(tmp);
+  } PolyInfoAtOffset;  
+  PolyInfoAtOffset polyInfo;
 
+  byte unk3[0x4];
 
-  typedef struct {
+  uint vertOffset;  
+  local uint tmp = FTell();
+  FSeek(vertOffset);
+
+  typedef struct {      
     Vec3f Position;
 
     uint normal;
@@ -153,11 +145,39 @@ typedef struct {
     byte bones[4];
     ushort weights[4];
   } Vertex;
-  FSeek(vertOffset);
-  Vertex vertices[polyInfo.vertCount] <optimize=false>;
+  Vertex vertices[polyInfo.vertCount] <optimize=false, bgcolor=0x0000ff>;
+  FSeek(tmp);
+
+  byte unk4[0x4];
+  
+  uint faceOffset;
+
+  byte unk5[0x4];
+
+
+  typedef struct {
+    float x;
+    float y;
+  } Uv8;
+  
+  typedef struct {
+    float x;
+    float y;
+    float unk0;
+    float unk1;
+    ubyte r;
+    ubyte g;
+    ubyte b;
+    ubyte a;
+  } Uv20;
 
   FSeek(fileHeader.uvBufferOffset + polyInfo.baseVertexIndex * fileHeader.uvSize);
-  Vec2f uvs[polyInfo.vertCount] <optimize=false>;
+  if (fileHeader.uvSize == 8) {
+    Uv8 uvs[polyInfo.vertCount];
+  }
+  if (fileHeader.uvSize == 20) {
+    Uv20 uvs[polyInfo.vertCount];
+  }
 
   typedef struct {
     ushort vertexIndices[3];

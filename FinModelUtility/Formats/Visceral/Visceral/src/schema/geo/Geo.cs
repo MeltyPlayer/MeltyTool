@@ -1,4 +1,5 @@
-﻿using fin.math;
+﻿using fin.color;
+using fin.math;
 using fin.schema;
 using fin.schema.matrix;
 using fin.schema.vector;
@@ -44,11 +45,11 @@ namespace visceral.schema.geo {
 
 
       br.Position = uvBufferInfoOffset;
-      br.Position += 0x10;
+      var unkUvStuff1 = br.ReadBytes(0x10);
       var uvBufferLength = br.ReadUInt32();
       var totalUvBufferCount = br.ReadUInt32();
       var uvSize = br.ReadUInt16();
-      br.Position += 2;
+      var unkUvStuff2 = br.ReadBytes(2);
       var uvBufferOffset = br.ReadUInt32();
 
 
@@ -124,9 +125,18 @@ namespace visceral.schema.geo {
           });
         }
 
-        br.Position = uvBufferOffset + baseVertexIndex * uvSize;
         for (var u = 0; u < vertexCount; ++u) {
-          vertices[u].Uv = br.ReadNew<Vector2f>();
+          br.Position = uvBufferOffset + (baseVertexIndex + u) * uvSize;
+
+          var vertex = vertices[u];
+          vertex.Uv = br.ReadNew<Vector2f>();
+
+          if (uvSize == 20) {
+            // TODO: Figure out what this is
+            br.Position += 2 * 4;
+
+            vertex.Color = br.ReadInt32();
+          }
         }
 
         br.Position = faceOffset;
@@ -213,6 +223,7 @@ namespace visceral.schema.geo {
       public required Vector3f Normal { get; init; }
       public required Vector4f Tangent { get; init; }
       public Vector2f Uv { get; set; }
+      public int? Color { get; set; }
       public required IReadOnlyList<byte> Bones { get; init; }
       public required IReadOnlyList<float> Weights { get; init; }
     }

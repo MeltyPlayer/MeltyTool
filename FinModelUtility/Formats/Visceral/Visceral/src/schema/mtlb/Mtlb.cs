@@ -90,22 +90,18 @@ namespace visceral.schema.mtlb {
 
   public enum MtlbChannelType {
     NotSupported,
-
-    // Samplers
-    OcclusionTexSampler,
-    colorTexSampler,
-    normalSampler,
-    SelfIllumTexSampler,
+    OcclusionSampler,
+    DiffuseSampler,
+    NormalSampler,
+    EmissiveSampler,
     SpecEnvMapSampler,
     SpecularTexSampler,
-
-    // Values
     AmbLightAmbOcclIntensityFacingRatio,
     bumpDiffLgtSpecModShinnyness,
     g_blinkParams,
     g_materialNormalMapScale,
     g_skinPSParams,
-    Shinnyness,
+    Shininess,
   }
 
   internal static class MtlbChannelTypeExtensions {
@@ -115,25 +111,32 @@ namespace visceral.schema.mtlb {
               .AmbLightAmbOcclIntensityFacingRatio,
           "bumpDiffLgtSpecModShinnyness" => MtlbChannelType
               .bumpDiffLgtSpecModShinnyness,
-          "colorTexSampler" => MtlbChannelType.colorTexSampler,
-          "g_blinkParams"   => MtlbChannelType.g_blinkParams,
+          "colorTexSampler"
+              or "g_Sampler" => MtlbChannelType.DiffuseSampler,
+          "g_blinkParams" => MtlbChannelType.g_blinkParams,
           "g_materialNormalMapScale" => MtlbChannelType
               .g_materialNormalMapScale,
-          "g_skinPSParams"      => MtlbChannelType.g_skinPSParams,
-          "normalSampler"       => MtlbChannelType.normalSampler,
-          "OcclusionTexSampler" => MtlbChannelType.OcclusionTexSampler,
-          "SelfIllumTexSampler" => MtlbChannelType.SelfIllumTexSampler,
-          "Shinnyness"          => MtlbChannelType.Shinnyness,
-          "SpecEnvMapSampler"   => MtlbChannelType.SpecEnvMapSampler,
-          "SpecularTexSampler"  => MtlbChannelType.SpecularTexSampler,
+          "g_skinPSParams" => MtlbChannelType.g_skinPSParams,
+          "normalSampler"
+              or "g_materialNormalMap" => MtlbChannelType.NormalSampler,
+          "OcclusionTexSampler"
+              or "AoMapSampler" => MtlbChannelType.OcclusionSampler,
+          "SelfIllumTexSampler"
+              or "LightMapSampler" => MtlbChannelType.EmissiveSampler,
+          "Shinnyness"
+              or "g_SpecularExponent" => MtlbChannelType.Shininess,
+          "SpecEnvMapSampler"
+              or "g_materialSpecMap" => MtlbChannelType.SpecEnvMapSampler,
+          "SpecularTexSampler"
+              or "g_GlossMapSampler" => MtlbChannelType.SpecularTexSampler,
           _ => MtlbChannelType.NotSupported
       };
 
     public static bool IsSampler(this MtlbChannelType type)
-      => type is MtlbChannelType.colorTexSampler
-                 or MtlbChannelType.normalSampler
-                 or MtlbChannelType.OcclusionTexSampler
-                 or MtlbChannelType.SelfIllumTexSampler
+      => type is MtlbChannelType.DiffuseSampler
+                 or MtlbChannelType.NormalSampler
+                 or MtlbChannelType.OcclusionSampler
+                 or MtlbChannelType.EmissiveSampler
                  or MtlbChannelType.SpecularTexSampler;
   }
 
