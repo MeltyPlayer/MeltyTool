@@ -62,7 +62,7 @@ namespace mod.image {
               4,
               4,
               new Rgba32PixelReader()),
-          Texture.TextureFormat.CMPR => new CmprImageReader(width, height),
+          Texture.TextureFormat.CMPR => new Dxt1aImageReader(width, height),
       };
     }
 

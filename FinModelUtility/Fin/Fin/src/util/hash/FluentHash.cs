@@ -27,10 +27,21 @@ namespace fin.util.hash {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FluentHash With(ReadOnlySpan<byte> other) {
+    public FluentHash With<T>(ReadOnlySpan<T> other) where T : notnull {
       var hash = this.Hash;
       for (var i = 0; i < other.Length; ++i) {
-        hash = hash * this.primeCoefficient_ + other[i];
+        hash = hash * this.primeCoefficient_ + other[i].GetHashCode();
+      }
+
+      this.Hash = hash;
+      return this;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public FluentHash With(ReadOnlySpan<byte> other) {
+      var hash = this.Hash;
+      foreach (var b in other) {
+        hash = hash * this.primeCoefficient_ + b;
       }
 
       this.Hash = hash;

@@ -78,7 +78,7 @@ namespace modl.schema.res.texr {
       var mipSize = width * height >> 1;
       SectionHeaderUtil.AssertNameAndSize(br, "MIP ", mipSize);
 
-      return new CmprImageReader((int) width, (int) height).ReadImage(br);
+      return new Dxt1aImageReader((int) width, (int) height).ReadImage(br);
     }
 
     protected IImage ReadP8_(IBinaryReader br, uint width, uint height) {

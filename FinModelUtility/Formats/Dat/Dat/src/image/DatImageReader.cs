@@ -60,7 +60,7 @@ namespace dat.image {
               width,
               height,
               new Ar88Gb88TileReader()),
-          GxTextureFormat.S3TC1 => new CmprImageReader(width, height),
+          GxTextureFormat.S3TC1 => new Dxt1aImageReader(width, height),
       };
     }
 

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-
-using fin.util.hash;
+using System.IO.Hashing;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -111,9 +110,7 @@ namespace fin.image.formats {
       using var fastLock = this.Lock();
       var span = fastLock.Bytes;
 
-      var hash = FluentHash.Start();
-      hash.With(span);
-
+      var hash = (int) Crc32.HashToUInt32(span);
       this.cachedHash_ = hash;
       return hash;
     }

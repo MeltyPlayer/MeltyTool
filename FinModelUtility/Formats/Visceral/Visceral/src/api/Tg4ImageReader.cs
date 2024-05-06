@@ -1,8 +1,12 @@
-﻿using BCnEncoder.Decoder;
+﻿using System.Runtime.CompilerServices;
+
+using BCnEncoder.Decoder;
 using BCnEncoder.Shared;
 
 using fin.image;
 using fin.image.formats;
+using fin.image.io;
+using fin.image.io.image;
 using fin.io;
 
 using schema.binary;
@@ -26,9 +30,6 @@ namespace visceral.api {
       var height = headerEr.ReadUInt16();
       var format = headerEr.SubreadAt(0x4b, ser => ser.ReadStringNT());
 
-      var dataFile = bundle.Tg4dFile;
-      var bytes = dataFile.ReadAllBytes();
-
       var compressionFormat = format switch {
           "DXT1c"   => CompressionFormat.Bc1,
           "DXT1a"   => CompressionFormat.Bc1WithAlpha,
@@ -44,10 +45,24 @@ namespace visceral.api {
           CompressionFormat.Bc3          => PixelFormat.DXT5,
       };
 
-      var loadedDxt = new BcDecoder().DecodeRaw(bytes,
-                                                width,
-                                                height,
-                                                compressionFormat);
+      var dataFile = bundle.Tg4dFile;
+      if (compressionFormat != CompressionFormat.Bc3) {
+        using var br = dataFile.OpenReadAsBinary();
+
+        return compressionFormat switch {
+            CompressionFormat.Bc1
+                => new Dxt1ImageReader(width, height, 1, 4, false)
+                    .ReadImage(br),
+            CompressionFormat.Bc1WithAlpha
+                => new Dxt1aImageReader(width, height, 1, 4, false)
+                    .ReadImage(br),
+        };
+      }
+
+      using var dataS = dataFile.OpenRead();
+      var loadedDxt = new BcDecoder()
+                      .DecodeRaw(dataS, width, height, compressionFormat)
+                      .AsSpan();
 
       var rgbaImage = new Rgba32Image(imageFormat, width, height);
       using var imageLock = rgbaImage.Lock();
@@ -60,9 +75,9 @@ namespace visceral.api {
           var src = loadedDxt[i];
 
           if (!isNormal) {
-            ptr[i] = new Rgba32(src.r, src.g, src.b, src.a);
+            ptr[i] = Unsafe.As<ColorRgba32, Rgba32>(ref src);
           } else {
-            ptr[i] = new Rgba32(src.a, src.g,  (byte) (255 - src.b), 255);
+            ptr[i] = new Rgba32(src.a, src.g, (byte) (255 - src.b), 255);
           }
         }
       }

@@ -61,7 +61,7 @@ namespace jsystem.image {
               4,
               4,
               new Rgba32PixelReader()),
-          GxTextureFormat.S3TC1 => new CmprImageReader(width, height),
+          GxTextureFormat.S3TC1 => new Dxt1aImageReader(width, height),
       };
     }
 

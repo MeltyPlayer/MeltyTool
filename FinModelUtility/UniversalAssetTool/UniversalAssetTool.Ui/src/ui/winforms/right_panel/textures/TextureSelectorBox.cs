@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using fin.model;
@@ -23,22 +24,25 @@ namespace uni.ui.winforms.right_panel.textures {
 
         var imageList = this.listView_.SmallImageList = new ImageList();
 
-        this.textures_ =
-            value?.ToHashSet(new TextureEqualityComparer())
-                 .OrderBy(texture => texture.Name)
-                 .ToList();
+        Task.Run(
+            () => {
+              this.textures_ =
+                  value?.ToHashSet(new TextureEqualityComparer())
+                       .OrderBy(texture => texture.Name)
+                       .ToList();
 
-        if (this.textures_ == null) {
-          return;
-        }
+              if (this.textures_ == null) {
+                return;
+              }
 
-        foreach (var texture in this.textures_) {
-          this.listView_.Items.Add(texture.Name, imageList.Images.Count);
-          imageList.Images.Add(texture.ImageData);
-        }
+              foreach (var texture in this.textures_) {
+                this.listView_.Items.Add(texture.Name, imageList.Images.Count);
+                imageList.Images.Add(texture.ImageData);
+              }
 
-        this.SelectedTexture =
-            this.textures_.Count > 0 ? this.textures_[0] : null;
+              this.SelectedTexture =
+                  this.textures_.Count > 0 ? this.textures_[0] : null;
+            });
       }
     }
 

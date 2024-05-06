@@ -1,4 +1,6 @@
-﻿using fin.color;
+﻿using System.Numerics;
+
+using fin.color;
 using fin.math;
 using fin.schema;
 using fin.schema.matrix;
@@ -22,7 +24,7 @@ namespace visceral.schema.geo {
 
       br.Position += 0x10;
 
-      this.ModelName = br.SubreadAt(br.ReadUInt32(), ser => ser.ReadStringNT());
+      this.ModelName = br.SubreadStringNTAt(br.ReadUInt32());
 
       br.Position += 0x10;
       var meshCount = br.ReadUInt32();
@@ -56,7 +58,7 @@ namespace visceral.schema.geo {
       br.Position = boneDataOffset;
       var bones = new List<Bone>();
       for (var i = 0; i < boneCount; ++i) {
-        var boneName = br.SubreadAt(br.ReadUInt32(), ser => ser.ReadStringNT());
+        var boneName = br.SubreadStringNTAt(br.ReadUInt32());
         br.Position += 8;
         var someId = br.ReadUInt32();
 
@@ -73,7 +75,7 @@ namespace visceral.schema.geo {
       for (var i = 0; i < meshCount; i++) {
         br.Position = tableOffset + 0xA0 * i;
 
-        var meshName = br.SubreadAt(br.ReadUInt32(), ser => ser.ReadStringNT());
+        var meshName = br.SubreadStringNTAt(br.ReadUInt32());
 
         br.Position += 8;
 
@@ -100,20 +102,26 @@ namespace visceral.schema.geo {
         var baseVertexIndex = br.ReadUInt16();
         var vertexCount = br.ReadUInt16();
 
+        var allBoneIds
+            = br.SubreadAt(boneIdMappingOffset,
+                           sbr => sbr.ReadBytes(2 * boneCount));
 
         br.Position = vertOffset;
         var vertices = new List<Vertex>();
         for (var v = 0; v < vertexCount; v++) {
-          var position = br.ReadNew<Vector3f>();
+          var position = new Vector3 {
+              X = br.ReadSingle(),
+              Y = br.ReadSingle(),
+              Z = br.ReadSingle()
+          };
 
           var normal = this.Read32BitNormal_(br);
           var tangent = this.Read32BitTangent_(br);
 
           var boneIds = br.ReadBytes(4)
-                          .Select(id => br.SubreadAt(
-                                      boneIdMappingOffset + 2 * id,
-                                      ser => ser.ReadByte()))
+                          .Select(id => allBoneIds[2 * id])
                           .ToArray();
+
           var weights = br.ReadUn16s(4);
 
           vertices.Add(new Vertex {
@@ -129,7 +137,10 @@ namespace visceral.schema.geo {
           br.Position = uvBufferOffset + (baseVertexIndex + u) * uvSize;
 
           var vertex = vertices[u];
-          vertex.Uv = br.ReadNew<Vector2f>();
+          vertex.Uv = new Vector2 {
+              X = br.ReadSingle(), 
+              Y = br.ReadSingle()
+          };
 
           if (uvSize == 20) {
             // TODO: Figure out what this is
@@ -158,8 +169,8 @@ namespace visceral.schema.geo {
       this.Meshes = meshes;
     }
 
-    private Vector3f Read32BitNormal_(IBinaryReader br) {
-      var vec = new Vector3f();
+    private Vector3 Read32BitNormal_(IBinaryReader br) {
+      var vec = new Vector3();
 
       var bitsPerAxis = 10;
       var divisor = 512f;
@@ -167,15 +178,14 @@ namespace visceral.schema.geo {
       var value = br.ReadUInt32();
       for (var i = 0; i < 3; ++i) {
         var axisValue = value.ExtractFromRight(bitsPerAxis * i, bitsPerAxis);
-        var signedAxisValue = SignValue_(axisValue, bitsPerAxis);
-        vec[i] = signedAxisValue / divisor;
+        vec[i] = SignValue_(axisValue, bitsPerAxis);
       }
 
-      return vec;
+      return vec / divisor;
     }
 
-    private Vector4f Read32BitTangent_(IBinaryReader br) {
-      var vec = new Vector4f();
+    private Vector4 Read32BitTangent_(IBinaryReader br) {
+      var vec = new Vector4();
 
       var bitsPerAxis = 8;
       var divisor = 127f;
@@ -183,11 +193,10 @@ namespace visceral.schema.geo {
       var value = br.ReadUInt32();
       for (var i = 0; i < 4; ++i) {
         var axisValue = value.ExtractFromRight(bitsPerAxis * i, bitsPerAxis);
-        var signedAxisValue = SignValue_(axisValue, bitsPerAxis);
-        vec[i] = signedAxisValue / divisor;
+        vec[i] = SignValue_(axisValue, bitsPerAxis);
       }
 
-      return vec;
+      return vec / divisor;
     }
 
     private int SignValue_(uint x, int bitsPerAxis) {
@@ -219,10 +228,10 @@ namespace visceral.schema.geo {
     }
 
     public class Vertex {
-      public required Vector3f Position { get; init; }
-      public required Vector3f Normal { get; init; }
-      public required Vector4f Tangent { get; init; }
-      public Vector2f Uv { get; set; }
+      public required Vector3 Position { get; init; }
+      public required Vector3 Normal { get; init; }
+      public required Vector4 Tangent { get; init; }
+      public Vector2 Uv { get; set; }
       public int? Color { get; set; }
       public required IReadOnlyList<byte> Bones { get; init; }
       public required IReadOnlyList<float> Weights { get; init; }
