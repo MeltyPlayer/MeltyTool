@@ -53,11 +53,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ast", "Formats\Ast\Ast\Ast.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ast Tests", "Formats\Ast\Ast Tests\Ast Tests.csproj", "{DE4EC779-18FF-44DB-94AE-1A38CD497EC5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cmb", "Cmb", "{7E95704D-43F3-4187-97B6-8FA621F8230E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Grezzo", "Grezzo", "{7E95704D-43F3-4187-97B6-8FA621F8230E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cmb", "Formats\Cmb\Cmb\Cmb.csproj", "{7F57B864-05CB-4488-A798-0FC08D9F62B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grezzo", "Formats\Grezzo\Grezzo\Grezzo.csproj", "{7F57B864-05CB-4488-A798-0FC08D9F62B2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cmb Tests", "Formats\Cmb\Cmb Tests\Cmb Tests.csproj", "{288E57B9-4D50-42D9-89C7-51A730B0C46A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grezzo Tests", "Formats\Grezzo\Grezzo Tests\Grezzo Tests.csproj", "{288E57B9-4D50-42D9-89C7-51A730B0C46A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dat", "Dat", "{B2A94E52-625B-4AB1-96C8-DA04C0816168}"
 EndProject

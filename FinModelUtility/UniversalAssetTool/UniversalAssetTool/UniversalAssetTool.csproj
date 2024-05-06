@@ -34,7 +34,7 @@
     <ProjectReference Include="..\..\Fin\Fin.Ui\Fin.Ui.csproj" />
 
     <ProjectReference Include="..\..\Formats\Ast\Ast\Ast.csproj" />
-    <ProjectReference Include="..\..\Formats\Cmb\Cmb\Cmb.csproj" />
+    <ProjectReference Include="..\..\Formats\Grezzo\Grezzo\Grezzo.csproj" />
     <ProjectReference Include="..\..\Formats\Dat\Dat\Dat.csproj" />
     <ProjectReference Include="..\..\Formats\F3dzex2\F3dzex2.csproj" />
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
