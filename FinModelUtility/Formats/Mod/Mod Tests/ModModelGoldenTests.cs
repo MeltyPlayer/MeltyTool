@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 
 using fin.io;
+using fin.testing;
 using fin.testing.model;
 
 using mod.api;
@@ -27,10 +28,10 @@ namespace mod {
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
       var rootGoldenDirectory
-          = ModelGoldenAssert
+          = GoldenAssert
               .GetRootGoldensDirectory(Assembly.GetExecutingAssembly());
-      return ModelGoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
-                              .ToArray();
+      return GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
+                         .ToArray();
     }
   }
 }

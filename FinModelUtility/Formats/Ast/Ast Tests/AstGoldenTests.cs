@@ -1,26 +1,25 @@
 ﻿using System.Reflection;
 
+using ast.api;
+
 using fin.io;
-using fin.testing.model;
-
-using dat.api;
-
 using fin.testing;
+using fin.testing.audio;
 
-namespace dat {
-  public class DatModelGoldenTests
-      : BModelGoldenTests<DatModelFileBundle, DatModelImporter> {
+namespace ast {
+  public class AstGoldenTests
+      : BAudioGoldenTests<AstAudioFileBundle, AstAudioReader> {
     [Test]
     [TestCaseSource(nameof(GetGoldenDirectories_))]
     public void TestExportsGoldenAsExpected(
         IFileHierarchyDirectory goldenDirectory)
       => this.AssertGolden(goldenDirectory);
 
-    public override DatModelFileBundle GetFileBundleFromDirectory(
+    public override AstAudioFileBundle GetFileBundleFromDirectory(
         IFileHierarchyDirectory directory)
       => new() {
           GameName = directory.Parent.Parent.Name,
-          PrimaryDatFile = directory.FilesWithExtension(".dat").Single(),
+          AstFile = directory.FilesWithExtension(".ast").Single(),
       };
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_()
@@ -28,7 +27,6 @@ namespace dat {
          .GetGoldenDirectories(
              GoldenAssert
                  .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
-         .SelectMany(dir => dir.GetExistingSubdirs())
          .ToArray();
   }
 }

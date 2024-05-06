@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 
 using fin.io;
+using fin.testing;
 using fin.testing.model;
 
 using modl.api;
@@ -27,9 +28,9 @@ namespace modl {
       };
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_()
-      => ModelGoldenAssert
+      => GoldenAssert
          .GetGoldenDirectories(
-             ModelGoldenAssert
+             GoldenAssert
                  .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
                  .AssertGetExistingSubdir("modl"))
          .SelectMany(dir => dir.GetExistingSubdirs())

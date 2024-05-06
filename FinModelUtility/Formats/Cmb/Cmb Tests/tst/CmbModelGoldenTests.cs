@@ -3,6 +3,7 @@
 using cmb.api;
 
 using fin.io;
+using fin.testing;
 using fin.testing.model;
 
 namespace cmb {
@@ -10,7 +11,8 @@ namespace cmb {
       : BModelGoldenTests<CmbModelFileBundle, CmbModelImporter> {
     [Test]
     [TestCaseSource(nameof(GetGoldenDirectories_))]
-    public void TestExportsGoldenAsExpected(IFileHierarchyDirectory goldenDirectory)
+    public void TestExportsGoldenAsExpected(
+        IFileHierarchyDirectory goldenDirectory)
       => this.AssertGolden(goldenDirectory);
 
     public override CmbModelFileBundle GetFileBundleFromDirectory(
@@ -26,12 +28,12 @@ namespace cmb {
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
       var rootGoldenDirectory
-          = ModelGoldenAssert
+          = GoldenAssert
             .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
             .AssertGetExistingSubdir("cmb");
-      return ModelGoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
-                              .SelectMany(dir => dir.GetExistingSubdirs())
-                              .ToArray();
+      return GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
+                         .SelectMany(dir => dir.GetExistingSubdirs())
+                         .ToArray();
     }
   }
 }

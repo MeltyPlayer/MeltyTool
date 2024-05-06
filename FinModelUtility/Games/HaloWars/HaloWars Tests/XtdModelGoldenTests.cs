@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 
 using fin.io;
+using fin.testing;
 using fin.testing.model;
 
 using hw.api;
@@ -20,9 +21,9 @@ namespace hw {
              directory.FilesWithExtension(".xtt").Single());
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_()
-      => ModelGoldenAssert
+      => GoldenAssert
          .GetGoldenDirectories(
-             ModelGoldenAssert
+             GoldenAssert
                  .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
                  .AssertGetExistingSubdir("xtd"))
          .ToArray();

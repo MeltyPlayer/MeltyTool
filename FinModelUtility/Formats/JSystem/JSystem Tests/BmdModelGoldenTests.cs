@@ -50,10 +50,10 @@ namespace jsystem {
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
       var rootGoldenDirectory
-          = ModelGoldenAssert
+          = GoldenAssert
               .GetRootGoldensDirectory(Assembly.GetExecutingAssembly());
-      return ModelGoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
-                              .ToArray();
+      return GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
+                         .ToArray();
     }
   }
 }

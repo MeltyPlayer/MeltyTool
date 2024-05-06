@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 
 using fin.io;
+using fin.testing;
 using fin.testing.model;
 
 using glo.api;
@@ -13,7 +14,8 @@ using schema.binary.testing;
 
 namespace glo {
   public class
-      GloModelGoldenTests : BModelGoldenTests<GloModelFileBundle,
+      GloModelGoldenTests
+      : BModelGoldenTests<GloModelFileBundle,
           GloModelImporter> {
     [Test]
     [TestCaseSource(nameof(GetGoldenDirectories_))]
@@ -29,7 +31,8 @@ namespace glo {
 
     [Test]
     [TestCaseSource(nameof(GetGoldenDirectories_))]
-    public void TestExportsGoldenAsExpected(IFileHierarchyDirectory goldenDirectory)
+    public void TestExportsGoldenAsExpected(
+        IFileHierarchyDirectory goldenDirectory)
       => this.AssertGolden(goldenDirectory);
 
     public override GloModelFileBundle GetFileBundleFromDirectory(
@@ -38,10 +41,10 @@ namespace glo {
              new[] { directory });
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
-      var rootGoldenDirectory = ModelGoldenAssert.GetRootGoldensDirectory(
+      var rootGoldenDirectory = GoldenAssert.GetRootGoldensDirectory(
           Assembly.GetExecutingAssembly());
-      return ModelGoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
-                              .ToArray();
+      return GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
+                         .ToArray();
     }
   }
 }

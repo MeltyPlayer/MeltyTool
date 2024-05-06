@@ -15,7 +15,8 @@ namespace cmb {
   public class ShpaGoldenTests {
     [Test]
     [TestCaseSource(nameof(GetGoldenFiles_))]
-    public async Task TestExportsGoldenAsExpected(IReadOnlySystemFile goldenFile) {
+    public async Task TestExportsGoldenAsExpected(
+        IReadOnlySystemFile goldenFile) {
       var goldenGameDir = goldenFile.AssertGetParent();
 
       CmbHeader.Version = goldenGameDir.Name switch {
@@ -30,7 +31,7 @@ namespace cmb {
 
     private static IReadOnlySystemFile[] GetGoldenFiles_() {
       var rootGoldenDirectory
-          = ModelGoldenAssert
+          = GoldenAssert
             .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
             .AssertGetExistingSubdir("shpa");
       return rootGoldenDirectory.GetExistingSubdirs()

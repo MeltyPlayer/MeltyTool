@@ -4,6 +4,7 @@ using cmb.schema.cmb;
 using cmb.schema.ctxb;
 
 using fin.io;
+using fin.testing;
 using fin.testing.model;
 
 using schema.binary;
@@ -15,7 +16,8 @@ namespace cmb {
   public class CtxbGoldenTests {
     [Test]
     [TestCaseSource(nameof(GetGoldenFiles_))]
-    public async Task TestExportsGoldenAsExpected(IReadOnlySystemFile goldenFile) {
+    public async Task TestExportsGoldenAsExpected(
+        IReadOnlySystemFile goldenFile) {
       var goldenGameDir = goldenFile.AssertGetParent();
 
       CmbHeader.Version = goldenGameDir.Name switch {
@@ -30,7 +32,7 @@ namespace cmb {
 
     private static IReadOnlySystemFile[] GetGoldenFiles_() {
       var rootGoldenDirectory
-          = ModelGoldenAssert
+          = GoldenAssert
             .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
             .AssertGetExistingSubdir("ctxb");
       return rootGoldenDirectory.GetExistingSubdirs()
