@@ -1,6 +1,4 @@
 ﻿using fin.io;
-using fin.model;
-using fin.model.io;
 using fin.scene;
 
 using modl.schema.xml;

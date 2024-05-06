@@ -18,31 +18,40 @@ namespace uni.ui.winforms.right_panel.textures {
           += (_, e) => { this.SelectedTexture = this.textures_?[e.ItemIndex]; };
     }
 
+    private object listViewLock_ = new();
+
     public IReadOnlyList<IReadOnlyTexture>? Textures {
       set {
-        this.listView_.Clear();
+        lock (listViewLock_) {
+          lock (this.listViewLock_) {
+            this.listView_.Clear();
+          }
 
-        var imageList = this.listView_.SmallImageList = new ImageList();
+          var imageList = this.listView_.SmallImageList = new ImageList();
 
-        Task.Run(
-            () => {
-              this.textures_ =
-                  value?.ToHashSet(new TextureEqualityComparer())
-                       .OrderBy(texture => texture.Name)
-                       .ToList();
+          Task.Run(
+              () => {
+                lock (this.listViewLock_) {
+                  this.textures_ =
+                      value?.ToHashSet(new TextureEqualityComparer())
+                           .OrderBy(texture => texture.Name)
+                           .ToList();
 
-              if (this.textures_ == null) {
-                return;
-              }
+                  if (this.textures_ == null) {
+                    return;
+                  }
 
-              foreach (var texture in this.textures_) {
-                this.listView_.Items.Add(texture.Name, imageList.Images.Count);
-                imageList.Images.Add(texture.ImageData);
-              }
+                  foreach (var texture in this.textures_) {
+                    this.listView_.Items.Add(texture.Name,
+                                             imageList.Images.Count);
+                    imageList.Images.Add(texture.ImageData);
+                  }
 
-              this.SelectedTexture =
-                  this.textures_.Count > 0 ? this.textures_[0] : null;
-            });
+                  this.SelectedTexture =
+                      this.textures_.Count > 0 ? this.textures_[0] : null;
+                }
+              });
+        }
       }
     }
 
