@@ -24,7 +24,11 @@ namespace fin.model.impl {
                          .ToArray();
       }
 
-      var totalWeight = weights.Select(weight => weight.Weight).Sum();
+      var totalWeight = 0f;
+      foreach (var weight in weights) {
+        totalWeight += weight.Weight;
+      }
+
       Asserts.True(Math.Abs(totalWeight - 1) < error);
 
       if (!this.boneWeightsByCount_.TryGetValue(
@@ -39,10 +43,9 @@ namespace fin.model.impl {
                                                   weights,
                                                   out var boneWeights)) {
         newlyCreated = true;
-        allBoneWeightsWithCount.Add(boneWeights
-                                        = this.CreateInstance_(
-                                            vertexSpace,
-                                            weights));
+        allBoneWeightsWithCount.Add(
+            boneWeights = this.CreateInstance_(vertexSpace,
+                                               weights));
       }
 
       return boneWeights;
@@ -58,7 +61,11 @@ namespace fin.model.impl {
                          .ToArray();
       }
 
-      var totalWeight = weights.Select(weight => weight.Weight).Sum();
+      var totalWeight = 0f;
+      foreach (var weight in weights) {
+        totalWeight += weight.Weight;
+      }
+
       Asserts.True(Math.Abs(totalWeight - 1) < error);
 
       if (!this.boneWeightsByCount_.TryGetValue(

@@ -1,12 +1,10 @@
-﻿using System.Runtime.CompilerServices;
-
-using BCnEncoder.Decoder;
+﻿using BCnEncoder.Decoder;
 using BCnEncoder.Shared;
+
+using CommunityToolkit.HighPerformance;
 
 using fin.image;
 using fin.image.formats;
-using fin.image.io;
-using fin.image.io.image;
 using fin.io;
 
 using schema.binary;
@@ -28,7 +26,7 @@ namespace visceral.api {
       headerEr.Position = 0x20;
       var width = headerEr.ReadUInt16();
       var height = headerEr.ReadUInt16();
-      var format = headerEr.SubreadAt(0x4b, ser => ser.ReadStringNT());
+      var format = headerEr.SubreadStringNTAt(0x4b);
 
       var compressionFormat = format switch {
           "DXT1c"   => CompressionFormat.Bc1,
@@ -46,7 +44,8 @@ namespace visceral.api {
       };
 
       var dataFile = bundle.Tg4dFile;
-      if (compressionFormat != CompressionFormat.Bc3) {
+
+      /*if (compressionFormat != CompressionFormat.Bc3) {
         using var br = dataFile.OpenReadAsBinary();
 
         return compressionFormat switch {
@@ -57,27 +56,29 @@ namespace visceral.api {
                 => new Dxt1aImageReader(width, height, 1, 4, false)
                     .ReadImage(br),
         };
-      }
+      }*/
+
+      var bcDecoder = new BcDecoder();
+      bcDecoder.Options.IsParallel = true;
 
       using var dataS = dataFile.OpenRead();
-      var loadedDxt = new BcDecoder()
+      var loadedDxt = bcDecoder
                       .DecodeRaw(dataS, width, height, compressionFormat)
                       .AsSpan();
 
       var rgbaImage = new Rgba32Image(imageFormat, width, height);
-      using var imageLock = rgbaImage.Lock();
-      var ptr = imageLock.Pixels;
+      using var dstLock = rgbaImage.Lock();
 
-      for (var y = 0; y < height; y++) {
-        for (var x = 0; x < width; ++x) {
-          var i = y * width + x;
+      if (!isNormal) {
+        loadedDxt.AsBytes().CopyTo(dstLock.Bytes);
+      } else {
+        var dst = dstLock.Pixels;
+        for (var y = 0; y < height; y++) {
+          for (var x = 0; x < width; ++x) {
+            var i = y * width + x;
 
-          var src = loadedDxt[i];
-
-          if (!isNormal) {
-            ptr[i] = Unsafe.As<ColorRgba32, Rgba32>(ref src);
-          } else {
-            ptr[i] = new Rgba32(src.a, src.g, (byte) (255 - src.b), 255);
+            var src = loadedDxt[i];
+            dst[i] = new Rgba32(src.a, src.g, (byte) (255 - src.b), 255);
           }
         }
       }
