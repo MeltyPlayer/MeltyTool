@@ -4,6 +4,7 @@ using System.IO;
 using CommunityToolkit.HighPerformance;
 
 using fin.io;
+using fin.math;
 using fin.util.asserts;
 using fin.util.hash;
 
@@ -44,7 +45,8 @@ namespace fin.audio.io.exporters.ogg {
 
         for (var i = 0; i < lengthInSamples; ++i) {
           var shortSample = audioBuffer.GetPcm(channel, i);
-          channelSamples[i] = (shortSample / (1f * short.MaxValue));
+          var floatSample = (((float) shortSample) / 32768).Clamp(-1, 1);
+          channelSamples[i] = floatSample;
         }
 
         hash.With(channelSamples.AsSpan().AsBytes());
@@ -61,7 +63,7 @@ namespace fin.audio.io.exporters.ogg {
       // third header holds the bitstream codebook.
       var info = VorbisInfo.InitVariableBitRate(channelCount,
                                                 audioBuffer.Frequency,
-                                                1f);
+                           .5f);
       var infoPacket = HeaderPacketBuilder.BuildInfoPacket(info);
       var commentsPacket
           = HeaderPacketBuilder.BuildCommentsPacket(new Comments());
