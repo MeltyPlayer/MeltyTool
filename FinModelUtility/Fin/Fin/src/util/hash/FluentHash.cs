@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 
 namespace fin.util.hash {
@@ -21,41 +22,34 @@ namespace fin.util.hash {
       => new(startingPrimeHash, primeCoefficient);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FluentHash With<T>(T other) where T : notnull {
-      this.Hash = this.Hash * this.primeCoefficient_ + other.GetHashCode();
+    public FluentHash With(int otherHashCode) {
+      this.Hash = this.Hash * this.primeCoefficient_ + otherHashCode;
       return this;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FluentHash With<T>(ReadOnlySpan<T> other) where T : notnull {
-      var hash = this.Hash;
-      for (var i = 0; i < other.Length; ++i) {
-        hash = hash * this.primeCoefficient_ + other[i].GetHashCode();
+    public FluentHash With<T>(T other) where T : notnull
+      => this.With(other.GetHashCode());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public FluentHash With<T>(ReadOnlySpan<T> others) where T : notnull {
+      foreach (var other in others) {
+        this.With(other);
       }
 
-      this.Hash = hash;
       return this;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public FluentHash With(ReadOnlySpan<byte> other) {
-      var hash = this.Hash;
-      foreach (var b in other) {
-        hash = hash * this.primeCoefficient_ + b;
-      }
-
-      this.Hash = hash;
-      return this;
-    }
+    public FluentHash With(ReadOnlySpan<byte> other)
+      => this.With(Crc32.HashToUInt32(other));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FluentHash With<T>(IEnumerable<T> others) where T : notnull {
-      var hash = this.Hash;
       foreach (var other in others) {
-        hash = hash * this.primeCoefficient_ + other.GetHashCode();
+        this.With(other);
       }
 
-      this.Hash = hash;
       return this;
     }
 

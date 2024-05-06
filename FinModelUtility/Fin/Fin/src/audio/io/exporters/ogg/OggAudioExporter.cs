@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
 
+using CommunityToolkit.HighPerformance;
+
 using fin.io;
 using fin.util.asserts;
+using fin.util.hash;
 
 using OggVorbisEncoder;
 
@@ -25,7 +28,29 @@ namespace fin.audio.io.exporters.ogg {
           AudioChannelsType.STEREO => 2,
       };
 
-      var oggStream = new OggStream(new Random().Next());
+      var hash = new FluentHash();
+      var lengthInSamples = audioBuffer.LengthInSamples;
+      var floatSamples = new float[channelCount][];
+      for (var c = 0; c < channelCount; ++c) {
+        var channelSamples = floatSamples[c] = new float[lengthInSamples];
+
+        var channel = channelCount switch {
+            1 => AudioChannelType.MONO,
+            2 => c switch {
+                0 => AudioChannelType.STEREO_LEFT,
+                1 => AudioChannelType.STEREO_RIGHT
+            }
+        };
+
+        for (var i = 0; i < lengthInSamples; ++i) {
+          var shortSample = audioBuffer.GetPcm(channel, i);
+          channelSamples[i] = (shortSample / (1f * short.MaxValue));
+        }
+
+        hash.With(channelSamples.AsSpan().AsBytes());
+      }
+
+      var oggStream = new OggStream(hash);
 
       // =========================================================
       // HEADER
@@ -53,26 +78,6 @@ namespace fin.audio.io.exporters.ogg {
       // BODY (Audio Data)
       // =========================================================
       var processingState = ProcessingState.Create(info);
-
-      var lengthInSamples = audioBuffer.LengthInSamples;
-
-      var floatSamples = new float[channelCount][];
-      for (var c = 0; c < channelCount; ++c) {
-        var channelSamples = floatSamples[c] = new float[lengthInSamples];
-
-        var channel = channelCount switch {
-            1 => AudioChannelType.MONO,
-            2 => c switch {
-                0 => AudioChannelType.STEREO_LEFT,
-                1 => AudioChannelType.STEREO_RIGHT
-            }
-        };
-
-        for (var i = 0; i < lengthInSamples; ++i) {
-          var shortSample = audioBuffer.GetPcm(channel, i);
-          channelSamples[i] = (shortSample / (1f * short.MaxValue));
-        }
-      }
 
       for (int readIndex = 0;
            readIndex <= lengthInSamples;
