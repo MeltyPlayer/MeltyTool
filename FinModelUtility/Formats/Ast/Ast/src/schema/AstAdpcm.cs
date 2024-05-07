@@ -37,10 +37,6 @@ namespace ast.schema {
       var blocks =
           new LinkedList<(byte[] left, byte[] right)>();
       while (!br.Eof) {
-        if (br.Eof) {
-          break;
-        }
-
         var blckHeader = br.ReadNew<BlckHeader>();
 
         // TODO: Does this need to be split up as left/right channels??
