@@ -7,6 +7,7 @@ using fin.util.linq;
 
 using uni.ui.common;
 
+
 namespace uni.ui.winforms.common.fileTreeView {
   public abstract partial class FileTreeView<TFiles> {
     protected class ParentFileNode : BFileNode, IFileTreeParentNode {
@@ -33,8 +34,9 @@ namespace uni.ui.winforms.common.fileTreeView {
 
       public ParentFileNode AddChild(string text) => new(this, text);
 
-      public LeafFileNode AddChild(IAnnotatedFileBundle file)
-        => new(this, file);
+      public LeafFileNode AddChild(IAnnotatedFileBundle file,
+                                   string? text = null)
+        => new(this, file, text);
 
       public IEnumerable<IFileTreeNode> ChildNodes
         => this.filterNode.Children.Select(fuzzyNode => fuzzyNode.Data);

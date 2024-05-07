@@ -1,12 +1,19 @@
-﻿using System.Drawing;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 
 using fin.audio.io;
 using fin.io.bundles;
 using fin.model.io;
 using fin.scene;
+using fin.util.enumerables;
 
 using uni.ui.common;
 using uni.ui.winforms.common.fileTreeView;
+
 
 namespace uni.ui.winforms.common {
   public class FileBundleTreeView : FileTreeView<IFileBundleDirectory> {
@@ -18,21 +25,57 @@ namespace uni.ui.winforms.common {
     }
 
     private void AddDirectoryToNode_(IFileBundleDirectory directory,
-                                     ParentFileNode parentNode) {
-      var uiNode = parentNode.AddChild(directory.Name);
-      uiNode.Directory = directory.Directory;
+                                     ParentFileNode parentNode,
+                                     IList<string>? parts = null) {
+      var subdirs = directory.Subdirs;
+      var fileBundles = directory.FileBundles;
 
-      foreach (var subdirectory in directory.Subdirs) {
-        this.AddDirectoryToNode_(subdirectory, uiNode);
+      var subdirCount = subdirs.Count;
+      var fileBundlesCount = fileBundles.Count;
+
+      if (subdirCount + fileBundlesCount == 1) {
+        parts ??= new List<string>();
+        parts.Add(directory.Name);
+
+        if (subdirCount == 1) {
+          AddDirectoryToNode_(subdirs[0], parentNode, parts);
+        } else {
+          AddFileToNode_(fileBundles[0], parentNode, parts);
+        }
+      } else {
+        string text = directory.Name;
+        if (parts != null) {
+          parts.Add(text);
+          text = Path.Join(parts.ToArray());
+        }
+
+        var uiNode = parentNode.AddChild(text);
+        uiNode.Directory = directory.Directory;
+
+        foreach (var subdirectory in directory.Subdirs) {
+          this.AddDirectoryToNode_(subdirectory, uiNode);
+        }
+
+        foreach (var fileBundle in directory.FileBundles) {
+          AddFileToNode_(fileBundle, uiNode);
+        }
+
+        if (DebugFlags.OPEN_DIRECTORIES_BY_DEFAULT) {
+          uiNode.Expand();
+        }
+      }
+    }
+
+    private void AddFileToNode_(IAnnotatedFileBundle fileBundle,
+                                ParentFileNode parentNode,
+                                IList<string>? parts = null) {
+      string? text = null;
+      if (parts != null) {
+        parts.Add(fileBundle.FileBundle.DisplayName);
+        text = Path.Join(parts.ToArray());
       }
 
-      foreach (var fileBundle in directory.FileBundles) {
-        uiNode.AddChild(fileBundle);
-      }
-
-      if (DebugFlags.OPEN_DIRECTORIES_BY_DEFAULT) {
-        uiNode.Expand();
-      }
+      parentNode.AddChild(fileBundle, text);
     }
 
     public override Image GetImageForFile(IFileBundle file)
