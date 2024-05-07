@@ -195,7 +195,7 @@ namespace modl.api {
       var chunkFinVertices = new Grid<IVertex?>(heightmapSizeX, heightmapSizeY);
 
       var trianglesByMaterial =
-          new ListDictionary<IMaterial, (IReadOnlyVertex, IReadOnlyVertex,
+          new ListDictionary<uint, (IReadOnlyVertex, IReadOnlyVertex,
               IReadOnlyVertex)>();
 
       Span<(float, float)> surfaceTextureUvsInRow =
@@ -323,7 +323,6 @@ namespace modl.api {
                 }
               }
 
-              var material = materialDictionary[(int) tile.MatlIndex];
               for (var pointY = 0; pointY < points.Height - 1; ++pointY) {
                 for (var pointX = 0; pointX < points.Width - 1; ++pointX) {
                   var vX = 16 * chunkX + 4 * tileX + pointX;
@@ -335,8 +334,8 @@ namespace modl.api {
                   var d = chunkFinVertices[vX + 1, vY + 1];
 
                   if (a != null && b != null && c != null && d != null) {
-                    trianglesByMaterial.Add(material, (a, b, c));
-                    trianglesByMaterial.Add(material, (d, c, b));
+                    trianglesByMaterial.Add(tile.MatlIndex, (a, b, c));
+                    trianglesByMaterial.Add(tile.MatlIndex, (d, c, b));
                   }
                 }
               }
@@ -345,7 +344,9 @@ namespace modl.api {
         }
       }
 
-      foreach (var (material, triangles) in trianglesByMaterial.GetPairs()) {
+      foreach (var materialIndex in trianglesByMaterial.Keys.OrderBy(k => k)) {
+        var material = materialDictionary[(int) materialIndex];
+        var triangles = trianglesByMaterial[materialIndex];
         finMesh.AddTriangles(triangles.ToArray()).SetMaterial(material);
       }
 
@@ -363,8 +364,6 @@ namespace modl.api {
       => from + (to - from) * frac;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static float LoadUOrV_(float value) {
-      return value / 4096;
-    }
+    private static float LoadUOrV_(float value) => value / 4096;
   }
 }
