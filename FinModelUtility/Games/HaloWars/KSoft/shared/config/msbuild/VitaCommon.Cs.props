@@ -60,16 +60,13 @@
 
   <PropertyGroup Condition=" '$(Configuration.Contains(Debug))' ">
     <Optimize>false</Optimize>
-    <DebugType>full</DebugType>
     <DefineConstants Condition=" $(MicrosoftCodeContractsInstalled)==false ">CONTRACTS_FULL_SHIM;$(DefineConstants)</DefineConstants>
     <DefineConstants>DEBUG;$(DefineConstants)</DefineConstants>
-    <DebugSymbols>true</DebugSymbols>
 
     <CodeContractsRuntimeCheckingLevel Condition=" $(MicrosoftCodeContractsInstalled) ">Full</CodeContractsRuntimeCheckingLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration.Contains(Release))' ">
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
     <DefineConstants Condition=" $(MicrosoftCodeContractsInstalled)==false ">CONTRACTS_FULL_SHIM;$(DefineConstants)</DefineConstants>
 
     <CodeContractsRuntimeCheckingLevel Condition=" $(MicrosoftCodeContractsInstalled) ">ReleaseRequires</CodeContractsRuntimeCheckingLevel>
