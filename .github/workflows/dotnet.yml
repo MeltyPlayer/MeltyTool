@@ -26,7 +26,7 @@ jobs:
       run: dotnet build --no-restore
       working-directory: FinModelUtility
     - name: Test
-      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile="**/KSoft/**/*.cs,**/SceneGate/**/*.cs"
+      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile="**/KSoft/**/*.cs" /p:ExcludeByFile="**/SceneGate/**/*.cs"
       working-directory: FinModelUtility
       
     - name: Set Up NPM
