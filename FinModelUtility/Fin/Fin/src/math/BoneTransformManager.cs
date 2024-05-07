@@ -397,18 +397,9 @@ namespace fin.math {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ProjectPosition(IReadOnlyBone bone, ref Position xyz)
-      => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl,
-                                        ref xyz);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ProjectPosition(IReadOnlyBone bone, ref Vector3 xyz)
       => ProjectionUtil.ProjectPosition(this.GetWorldMatrix(bone).Impl,
                                         ref xyz);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void ProjectNormal(IReadOnlyBone bone, ref Normal xyz)
-      => ProjectionUtil.ProjectNormal(this.GetWorldMatrix(bone).Impl, ref xyz);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ProjectNormal(IReadOnlyBone bone, ref Vector3 xyz)
