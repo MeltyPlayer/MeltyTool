@@ -4,7 +4,13 @@ using schema.binary;
 
 namespace visceral.api {
   public class MtlbFileIdsDictionary : IReadOnlyFileIdsDictionary {
-    private readonly IReadOnlyFileIdsDictionary impl_;
+    private readonly IFileIdsDictionary impl_;
+
+    public MtlbFileIdsDictionary(IReadOnlyTreeDirectory baseDirectory) {
+      this.BaseDirectory = baseDirectory;
+      this.impl_ = new FileIdsDictionary(baseDirectory);
+      this.PopulateFromBaseDirectory_(baseDirectory);
+    }
 
     public MtlbFileIdsDictionary(IReadOnlyTreeDirectory baseDirectory,
                                  ISystemFile fileIdsFile) {
@@ -12,25 +18,26 @@ namespace visceral.api {
       if (fileIdsFile.Exists) {
         this.impl_ = new FileIdsDictionary(baseDirectory, fileIdsFile);
       } else {
-        var impl = new FileIdsDictionary(baseDirectory);
-        this.impl_ = impl;
-        foreach (var mtlbFile in baseDirectory.GetFilesWithFileType(
-                     ".mtlb",
-                     true)) {
-          using var br = mtlbFile.OpenReadAsBinary(Endianness.LittleEndian);
-          br.Position = 8;
-          var id = br.ReadUInt32();
-          impl.AddFile(id, mtlbFile);
-        }
-
+        this.impl_ = new FileIdsDictionary(baseDirectory);
+        this.PopulateFromBaseDirectory_(baseDirectory);
         this.Save(fileIdsFile);
       }
     }
 
+    private void PopulateFromBaseDirectory_(
+        IReadOnlyTreeDirectory baseDirectory) {
+      foreach (var mtlbFile in baseDirectory.GetFilesWithFileType(
+                   ".mtlb",
+                   true)) {
+        using var br = mtlbFile.OpenReadAsBinary(Endianness.LittleEndian);
+        br.Position = 8;
+        var id = br.ReadUInt32();
+        this.impl_.AddFile(id, mtlbFile);
+      }
+    }
+
     public IReadOnlyTreeDirectory BaseDirectory { get; }
-
     public IEnumerable<IReadOnlyTreeFile> this[uint id] => this.impl_[id];
-
     public void Save(IGenericFile fileIdsFile) => this.impl_.Save(fileIdsFile);
   }
 }
