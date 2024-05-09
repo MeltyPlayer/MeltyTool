@@ -15,6 +15,8 @@
 
 LittleEndian();
 
+local uint C_POINTER = 0x888888;
+
 typedef struct (uint offset) {
   local uint tempOffset = FTell();
   FSeek(offset);
@@ -43,7 +45,7 @@ typedef struct {
   uint fileSize;
   uint unk1[4];
   
-  uint modelNameOffset;
+  uint modelNameOffset <bgcolor=C_POINTER>;
   StringAtOffset name(modelNameOffset);
 
   uint unk2[4];
@@ -54,16 +56,16 @@ typedef struct {
   ushort unk3[6];
 
   uint refCount;
-  uint refTableOffset;
+  uint refTableOffset <bgcolor=C_POINTER>;
 
-  uint tableOffset;
-  uint unkOffset;
+  uint tableOffset <bgcolor=C_POINTER>;
+  uint unkOffset <bgcolor=C_POINTER>;
 
   uint unk4[2];
-  uint boneDataOffset;
-  uint boneOffset;
-  uint uvBufferInfoOffset;
-  uint faceBufferInfoOffset;
+  uint boneDataOffset <bgcolor=C_POINTER>;
+  uint boneOffset <bgcolor=C_POINTER>;
+  uint uvBufferInfoOffset <bgcolor=C_POINTER>;
+  uint faceBufferInfoOffset <bgcolor=C_POINTER>;
 
 
   FSeek(uvBufferInfoOffset);
@@ -72,14 +74,14 @@ typedef struct {
   uint totalUvBufferCount;
   ushort uvSize;
   ushort unk6;
-  uint uvBufferOffset;
+  uint uvBufferOffset <bgcolor=C_POINTER>;
 } FileHeader;
 
 FileHeader fileHeader;
 
 
 typedef struct {
-  uint boneNameOffset;
+  uint boneNameOffset <bgcolor=C_POINTER>;
   StringAtOffset name(boneNameOffset);
 
   ushort unk0;
@@ -99,13 +101,13 @@ typedef struct {
 } Bone;
 
 FSeek(fileHeader.boneDataOffset);
-Bone bones[fileHeader.boneCount] <optimize=false>;
+Bone bones[fileHeader.boneCount] <optimize=false,bgcolor=0xff00ff>;
 
 
 typedef struct {
   local uint baseOffset = FTell();
 
-  uint meshNameOffset;
+  uint meshNameOffset <bgcolor=C_POINTER>;
   StringAtOffset name(meshNameOffset);
 
   byte unk9[0x8];
@@ -116,7 +118,7 @@ typedef struct {
   byte unk2[0x10];
   
   typedef struct {
-    uint _offset;
+    uint _offset <bgcolor=C_POINTER>;
     local uint tmp = FTell();
     FSeek(_offset);
       
@@ -124,15 +126,16 @@ typedef struct {
     uint faceOffset;
     ushort baseVertexIndex;
     ushort vertCount;
-    uint unk;
+    ushort something0;
+    ushort something1;
     
     FSeek(tmp);
-  } PolyInfoAtOffset;  
+  } PolyInfoAtOffset <bgcolor=0x00A5FF>;  
   PolyInfoAtOffset polyInfo;
 
   byte unk3[0x4];
 
-  uint vertOffset;  
+  uint vertOffset <bgcolor=C_POINTER>;  
   local uint tmp = FTell();
   FSeek(vertOffset);
 
@@ -145,12 +148,12 @@ typedef struct {
     byte bones[4];
     ushort weights[4];
   } Vertex;
-  Vertex vertices[polyInfo.vertCount] <optimize=false, bgcolor=0x0000ff>;
+  Vertex vertices[polyInfo.vertCount] <optimize=false, bgcolor=0xffff00>;
   FSeek(tmp);
 
   byte unk4[0x4];
   
-  uint faceOffset;
+  uint faceOffset <bgcolor=C_POINTER>;
 
   byte unk5[0x4];
 
@@ -173,17 +176,17 @@ typedef struct {
 
   FSeek(fileHeader.uvBufferOffset + polyInfo.baseVertexIndex * fileHeader.uvSize);
   if (fileHeader.uvSize == 8) {
-    Uv8 uvs[polyInfo.vertCount];
+    Uv8 uvs[polyInfo.vertCount] <bgcolor=0x000088>;
   }
   if (fileHeader.uvSize == 20) {
-    Uv20 uvs[polyInfo.vertCount];
+    Uv20 uvs[polyInfo.vertCount] <bgcolor=0x0000ff>;
   }
 
   typedef struct {
     ushort vertexIndices[3];
   } Face;
   FSeek(faceOffset);
-  Face faces[polyInfo.faceCount / 3] <optimize=false>;
+  Face faces[polyInfo.faceCount / 3] <optimize=false,bgcolor=0x00ffff>;
 
   FSeek(baseOffset + 0xA0); 
 } Mesh;

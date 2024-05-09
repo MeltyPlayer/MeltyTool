@@ -30,7 +30,10 @@ namespace visceral.schema.geo {
       var meshCount = br.ReadUInt32();
       var boneCount = br.ReadUInt32();
 
-      br.Position += 0xc;
+      var uvBufferInfoCount = br.ReadUInt16();
+      var faceBufferInfoCount = br.ReadUInt16();
+
+      br.Position += 0x8;
 
       var refCount = br.ReadUInt32();
       var refTableOffset = br.ReadUInt32();
@@ -47,12 +50,16 @@ namespace visceral.schema.geo {
 
 
       br.Position = uvBufferInfoOffset;
-      var unkUvStuff1 = br.ReadBytes(0x10);
-      var uvBufferLength = br.ReadUInt32();
-      var totalUvBufferCount = br.ReadUInt32();
-      var uvSize = br.ReadUInt16();
-      var unkUvStuff2 = br.ReadBytes(2);
-      var uvBufferOffset = br.ReadUInt32();
+      var uvBufferOffsets = new uint[uvBufferInfoCount / 2];
+      var uvSizes = new ushort[uvBufferInfoCount / 2];
+      for (var i = 0; i < uvBufferOffsets.Length; ++i) {
+        var unkUvStuff1 = br.ReadBytes(0x10);
+        var uvBufferLength = br.ReadUInt32();
+        var totalUvBufferCount = br.ReadUInt32();
+        uvSizes[i] = br.ReadUInt16();
+        var unkUvStuff2 = br.ReadBytes(2);
+        uvBufferOffsets[i] = br.ReadUInt32();
+      }
 
 
       br.Position = boneDataOffset;
@@ -95,6 +102,11 @@ namespace visceral.schema.geo {
 
         var boneIdMappingOffset = br.ReadUInt32();
 
+        br.Position += 0x4;
+        br.Position += 0x10;
+        br.Position += 0x4;
+
+        var uvIndex = br.ReadUInt32();
 
         br.Position = polyInfoOffset;
         var faceCount = br.ReadUInt32();
@@ -133,8 +145,9 @@ namespace visceral.schema.geo {
           });
         }
 
+        var uvSize = uvSizes[uvIndex];
         for (var u = 0; u < vertexCount; ++u) {
-          br.Position = uvBufferOffset + (baseVertexIndex + u) * uvSize;
+          br.Position = uvBufferOffsets[uvIndex] + (baseVertexIndex + u) * uvSize;
 
           var vertex = vertices[u];
           vertex.Uv = new Vector2 {
