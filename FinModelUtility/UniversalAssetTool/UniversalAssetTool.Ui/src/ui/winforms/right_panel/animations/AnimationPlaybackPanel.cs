@@ -17,9 +17,7 @@ namespace uni.ui.winforms.right_panel {
       this.playButton_.Click += (sender, args) => { this.IsPlaying = true; };
       this.pauseButton_.Click += (sender, args) => { this.IsPlaying = false; };
       this.loopCheckBox_.Click += (sender, args) => {
-        this.Config = new AnimationInterpolationConfig {
-          UseLoopingInterpolation = !(this.Config?.UseLoopingInterpolation ?? false)
-        };
+        this.LoopPlayback = !this.LoopPlayback;
       };
 
       this.frameTrackBar_.Scroll += (sender, args) => {
@@ -121,12 +119,22 @@ namespace uni.ui.winforms.right_panel {
       }
     }
 
+    public bool LoopPlayback {
+      get => this.Impl?.LoopPlayback ?? false;
+      set {
+        if (this.Impl != null) {
+          this.Impl.LoopPlayback = value;
+        }
+
+        this.loopCheckBox_.Checked = value;
+      }
+    }
 
     private void Update_() {
       if (this.Impl != null) {
         this.frameTrackBar_.Maximum = this.Impl.TotalFrames;
         this.frameRateSelector_.Value = this.Impl.FrameRate;
-        this.loopCheckBox_.Checked = this.Impl.Config?.UseLoopingInterpolation ?? false;
+        this.loopCheckBox_.Checked = this.Impl.LoopPlayback;
       }
 
       var elapsedSecondsText = "0.0s";

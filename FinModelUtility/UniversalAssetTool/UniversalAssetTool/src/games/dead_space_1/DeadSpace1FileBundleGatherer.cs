@@ -33,8 +33,6 @@ namespace uni.games.dead_space_1 {
           extractedDir,
           new FinFile(Path.Join(prereqsDir.FullPath, "tg4hs.ids")));
 
-      var mtl = mtlbFileIdsDictionary[2556745589];
-
       foreach (var charSubdir in
                new[] { "animated_props", "chars", "weapons" }
                    .Select(assetFileHierarchy.Root.AssertGetExistingSubdir)

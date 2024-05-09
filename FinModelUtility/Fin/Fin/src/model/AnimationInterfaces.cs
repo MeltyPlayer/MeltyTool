@@ -30,6 +30,7 @@ namespace fin.model {
 
     int FrameCount { get; set; }
     float FrameRate { get; set; }
+    bool UseLoopingInterpolation { get; set; }
     AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
   }
 

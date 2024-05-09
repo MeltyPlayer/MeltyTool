@@ -53,6 +53,7 @@ namespace fin.model.impl {
 
         public int FrameCount { get; set; }
         public float FrameRate { get; set; }
+        public bool UseLoopingInterpolation { get; set; } = true;
         public AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
 
         public IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks

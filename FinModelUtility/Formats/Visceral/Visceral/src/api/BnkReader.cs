@@ -52,7 +52,8 @@ namespace visceral.api {
 
       foreach (var headerOffset in headerOffsets) {
         var finAnimation = model.AnimationManager.AddAnimation();
-        finAnimation.FrameRate = 60;
+        finAnimation.FrameRate = 30;
+        finAnimation.UseLoopingInterpolation = false;
 
         bnkBr.Position = headerOffset;
 

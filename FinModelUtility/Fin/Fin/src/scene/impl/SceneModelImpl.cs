@@ -35,8 +35,7 @@ namespace fin.scene {
             true);
 
         this.AnimationPlaybackManager = new FrameAdvancer {
-            Config = new AnimationInterpolationConfig
-                { UseLoopingInterpolation = true }
+            LoopPlayback = true,
         };
         this.Animation =
             this.Model.AnimationManager.Animations.FirstOrDefault();
@@ -79,11 +78,13 @@ namespace fin.scene {
 
           this.animation_ = value;
 
-          this.AnimationPlaybackManager.Frame = 0;
-          this.AnimationPlaybackManager.FrameRate =
-              (int) (value?.FrameRate ?? 20);
-          this.AnimationPlaybackManager.TotalFrames =
-              value?.FrameCount ?? 0;
+          var apm = this.AnimationPlaybackManager;
+          apm.Frame = 0;
+          apm.FrameRate = (int) (value?.FrameRate ?? 20);
+          apm.TotalFrames = value?.FrameCount ?? 0;
+          apm.Config = new AnimationInterpolationConfig {
+              UseLoopingInterpolation = value?.UseLoopingInterpolation ?? false
+          };
         }
       }
 
