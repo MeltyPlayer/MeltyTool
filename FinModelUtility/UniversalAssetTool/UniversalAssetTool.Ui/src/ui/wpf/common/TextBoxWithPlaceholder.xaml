@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="uni.src.ui.wpf.common.TextBoxWithPlaceholder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:uni.src.ui.wpf.common"
+             mc:Ignorable="d"
+             d:DesignHeight="24"
+             d:DesignWidth="200">
+  <UserControl.DataContext>
+    <local:TextBoxWithPlaceholderViewModel />
+  </UserControl.DataContext>
+
+  <Grid>
+    <TextBox x:Name="impl_"
+             TextChanged="TextChanged_" />
+    <Label x:Name="placeholderLabel_"
+           Content="{Binding Placeholder }"
+           Background="Transparent"
+           Opacity="0.5"
+           IsHitTestVisible="False" />
+  </Grid>
+</UserControl>
