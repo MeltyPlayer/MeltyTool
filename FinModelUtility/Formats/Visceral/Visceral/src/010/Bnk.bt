@@ -13,24 +13,29 @@
 
 LittleEndian();
 
+local int C_POINTER = 0x888888;
+local int C_ANIMATION_HEADER = 0x00ffff;
+local int C_ANIMATION_DATA = 0xffff00;
+local int C_EVENT_DATA = 0x0000ff;
+
 local uint i, ii;
 
 
 typedef struct {
-  uint pointersOffset;
+  uint pointersOffset <bgcolor=C_POINTER>;
   uint maybeVersion;
   uint unk1;
   uint skeletonId; // Matches a value from the associated RCB file
   uint unk2[5];
 
   uint animationHeaderCount;
-  uint animationHeaderOffsetTableOffset;
+  uint animationHeaderOffsetTableOffset <bgcolor=C_POINTER>;
 
   uint animationDataCount;
-  uint animationDataOffsetTableOffset;
+  uint animationDataOffsetTableOffset <bgcolor=C_POINTER>;
 
   uint textCount;
-  uint textOffset;
+  uint textOffset <bgcolor=C_POINTER>;
 } FileHeader;
 
 FileHeader fileHeader;
@@ -50,7 +55,7 @@ typedef struct {
   local uint tmp = FTell();
   FSeek(ptr);
 
-  uint nameOffset;
+  uint nameOffset <bgcolor=C_POINTER>;
 
   typedef struct {
     uint ptr;
@@ -68,7 +73,7 @@ typedef struct {
     byte maybeId;
     byte unk1;
 
-    uint someOffset;
+    uint someOffset <bgcolor=C_POINTER>;
     {
       local uint tmp2 = FTell();
       FSeek(someOffset);
@@ -116,7 +121,7 @@ typedef struct {
   string name;
 
   FSeek(tmp);
-} AnimationHeader;
+} AnimationHeader <bgcolor=C_ANIMATION_HEADER>;
 
 FSeek(fileHeader.animationHeaderOffsetTableOffset);
 AnimationHeader animationHeaders[fileHeader.animationHeaderCount] <optimize=false>;
@@ -146,24 +151,24 @@ typedef struct {
   uint unk6;
   uint unk7;
   uint someCount;
-  uint someOffset;
+  uint someOffset <bgcolor=C_POINTER>;
 
 
   typedef struct {
     ushort maybePadding;
     ushort maybeOffsetToData;
-    uint commandOffset;
+    uint commandOffset <bgcolor=C_POINTER>;
     uint someFlags;
-    uint paramsOffset;
+    uint paramsOffset <bgcolor=C_POINTER>;
     
     FSeek(commandOffset);
     string command;
-  } SomeData;
+  } SomeData <bgcolor=C_EVENT_DATA>;
 
   typedef struct {
     uint someEnum;
     uint someValue;
-  } Params;
+  } Params <bgcolor=C_EVENT_DATA>;
 
 
   for(ii = 0; ii < someCount; ii++) {
@@ -181,4 +186,4 @@ typedef struct {
 
 
 FSeek(fileHeader.animationDataOffsetTableOffset);
-AnimationData animationDatas[fileHeader.animationDataCount] <optimize=false>;
+AnimationData animationDatas[fileHeader.animationDataCount] <optimize=false, bgcolor=C_ANIMATION_DATA>;
