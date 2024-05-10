@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="uni.src.ui.wpf.common.TextBoxWithPlaceholder"
+﻿<UserControl x:Class="uni.ui.wpf.common.textbox.TextBoxWithPlaceholder"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:uni.src.ui.wpf.common"
+             xmlns:local="clr-namespace:uni.ui.wpf.common.textbox"
              mc:Ignorable="d"
              d:DesignHeight="24"
              d:DesignWidth="200">

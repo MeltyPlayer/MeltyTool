@@ -2,16 +2,46 @@
 using System.Windows.Controls;
 using System.Windows;
 
-namespace uni.src.ui.wpf.common {
+namespace uni.ui.wpf.common.textbox {
   /// <summary>
   /// Interaction logic for WatermarkTextBox.xaml
   /// </summary>
-  public partial class TextBoxWithPlaceholder : UserControl {
+  public partial class TextBoxWithPlaceholder : UserControl, ITextBox {
     private readonly TextBoxWithPlaceholderViewModel viewModel_;
 
     public TextBoxWithPlaceholder(TextBoxWithPlaceholderViewModel viewModel) {
       InitializeComponent();
       this.viewModel_ = viewModel;
+    }
+
+    public string Text {
+      get => this.impl_.Text;
+      set => this.impl_.Text = value;
+    }
+
+    public event TextChangedEventHandler TextChanged {
+      add => this.impl_.TextChanged += value;
+      remove => this.impl_.TextChanged -= value;
+    }
+
+    public int CaretIndex {
+      get => this.impl_.CaretIndex;
+      set => this.impl_.CaretIndex = value;
+    }
+
+    public int MaxLength {
+      get => this.impl_.MaxLines;
+      set => this.impl_.MaxLines = value;
+    }
+
+    public int MaxLines {
+      get => this.impl_.MaxLines;
+      set => this.impl_.MaxLines = value;
+    }
+
+    public CharacterCasing CharacterCasing {
+      get => this.impl_.CharacterCasing;
+      set => this.impl_.CharacterCasing = value;
     }
 
     public string Placeholder {
@@ -36,7 +66,7 @@ namespace uni.src.ui.wpf.common {
         this.placeholder_ = value;
         this.PropertyChanged?.Invoke(
             this,
-            new PropertyChangedEventArgs(nameof(Placeholder)));
+            new PropertyChangedEventArgs(nameof(this.Placeholder)));
       }
     }
   }
