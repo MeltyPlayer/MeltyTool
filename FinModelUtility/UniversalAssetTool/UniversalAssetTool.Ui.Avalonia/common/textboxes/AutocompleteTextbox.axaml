@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="24"
+             x:Class="uni.ui.avalonia.common.textboxes.AutocompleteTextbox">
+  <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}">
+    <AutoCompleteBox x:Name="impl_"
+                     FilterMode="{Binding FilterMode}"
+                     TextChanged="OnTextChanged_" />
+    <Label x:Name="placeholderLabel_"
+           Content="{Binding Placeholder}"
+           Background="Transparent"
+           Opacity="0.5"
+           IsHitTestVisible="False" />
+  </Grid>
+</UserControl>

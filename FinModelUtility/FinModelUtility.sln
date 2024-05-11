@@ -175,6 +175,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSplitters2", "TimeSplit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeSplitters2", "Games\TimeSplitters2\TimeSplitters2\TimeSplitters2.csproj", "{88809E1C-ECE6-4480-BD63-2E6835870312}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversalAssetTool.Ui.Avalonia", "UniversalAssetTool\UniversalAssetTool.Ui.Avalonia\UniversalAssetTool.Ui.Avalonia.csproj", "{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversalAssetTool.Ui.Avalonia.Desktop", "UniversalAssetTool\UniversalAssetTool.Ui.Avalonia.Desktop\UniversalAssetTool.Ui.Avalonia.Desktop.csproj", "{839F0CF0-2994-408C-9168-2B9501EF0EC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -821,6 +825,30 @@ Global
 		{88809E1C-ECE6-4480-BD63-2E6835870312}.Release|x64.Build.0 = Release|Any CPU
 		{88809E1C-ECE6-4480-BD63-2E6835870312}.Release|x86.ActiveCfg = Release|Any CPU
 		{88809E1C-ECE6-4480-BD63-2E6835870312}.Release|x86.Build.0 = Release|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Debug|x64.Build.0 = Debug|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Debug|x86.Build.0 = Debug|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Release|x64.ActiveCfg = Release|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Release|x64.Build.0 = Release|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Release|x86.ActiveCfg = Release|Any CPU
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A}.Release|x86.Build.0 = Release|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Debug|x64.Build.0 = Debug|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Debug|x86.Build.0 = Debug|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Release|x64.ActiveCfg = Release|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Release|x64.Build.0 = Release|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Release|x86.ActiveCfg = Release|Any CPU
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -894,6 +922,8 @@ Global
 		{BDDEC955-6D39-4058-92E5-F1BF170F860F} = {76CBBE5D-17AD-4C54-A2C4-C6A715C4677B}
 		{815EAFB8-AD7E-44F9-B1A1-2D7BB75A3882} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{88809E1C-ECE6-4480-BD63-2E6835870312} = {815EAFB8-AD7E-44F9-B1A1-2D7BB75A3882}
+		{CA9A5ACF-1E46-45D8-9FE6-FE259658B92A} = {2490FB17-BB03-4B06-95A2-56BD49921D53}
+		{839F0CF0-2994-408C-9168-2B9501EF0EC6} = {2490FB17-BB03-4B06-95A2-56BD49921D53}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}
