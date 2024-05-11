@@ -1,17 +1,18 @@
-﻿using System.ComponentModel;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace uni.ui.wpf.common.textbox {
   /// <summary>
-  /// Interaction logic for WatermarkTextBox.xaml
+  /// Interaction logic for TextBoxWithPlaceholder.xaml
   /// </summary>
   public partial class TextBoxWithPlaceholder : UserControl, ITextBox {
-    private readonly TextBoxWithPlaceholderViewModel viewModel_;
+    private readonly TextBoxWithPlaceholderViewModel viewModel_ = new();
 
-    public TextBoxWithPlaceholder(TextBoxWithPlaceholderViewModel viewModel) {
+    public TextBoxWithPlaceholder() {
       InitializeComponent();
-      this.viewModel_ = viewModel;
+      this.DataContext = this.viewModel_;
     }
 
     public string Text {
@@ -49,25 +50,15 @@ namespace uni.ui.wpf.common.textbox {
       set => this.viewModel_.Placeholder = value;
     }
 
-    private void TextChanged_(object sender, TextChangedEventArgs args)
+    private void OnTextChanged_(object sender, TextChangedEventArgs args)
       => this.placeholderLabel_.Visibility
           = this.impl_.Text != ""
               ? Visibility.Hidden
               : Visibility.Visible;
   }
 
-  public class TextBoxWithPlaceholderViewModel : INotifyPropertyChanged {
-    private string placeholder_ = "Search...";
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public string Placeholder {
-      get => this.placeholder_;
-      set {
-        this.placeholder_ = value;
-        this.PropertyChanged?.Invoke(
-            this,
-            new PropertyChangedEventArgs(nameof(this.Placeholder)));
-      }
-    }
+  public partial class TextBoxWithPlaceholderViewModel : ObservableObject {
+    [ObservableProperty]
+    protected string placeholder = "Search...";
   }
 }

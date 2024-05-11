@@ -3,19 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:uni.ui.wpf.common.textbox"
+             xmlns:textbox="clr-namespace:uni.ui.wpf.common.textbox"
              mc:Ignorable="d"
              d:DesignHeight="24"
              d:DesignWidth="200">
-  <UserControl.DataContext>
-    <local:TextBoxWithPlaceholderViewModel />
-  </UserControl.DataContext>
+  <!--
+    Why in the everloving fuck does it work like this. WPF is a terrible 
+    framework.
+    https://badecho.com/index.php/2021/07/26/usable-design-time-data/
+  -->
+  <d:DesignProperties.DataContext>
+    <textbox:TextBoxWithPlaceholderViewModel />
+  </d:DesignProperties.DataContext>
 
   <Grid>
     <TextBox x:Name="impl_"
-             TextChanged="TextChanged_" />
+             TextChanged="OnTextChanged_" />
     <Label x:Name="placeholderLabel_"
-           Content="{Binding Placeholder }"
+           Content="{Binding Placeholder}"
            Background="Transparent"
            Opacity="0.5"
            IsHitTestVisible="False" />
