@@ -13,7 +13,11 @@
       <RowDefinition />
     </Grid.RowDefinitions>
 
-    <textbox:TextBoxWithPlaceholder Placeholder="Search for..." />
-    <TreeView Grid.Row="1" />
+    <textbox:TextBoxWithPlaceholder
+        x:Name="filterTextbox_"
+        Placeholder="Search for..." />
+    <TreeView 
+        x:Name="treeView_"
+        Grid.Row="1" />
   </Grid>
 </UserControl>
