@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
+             xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -12,5 +13,12 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+  <SplitView IsPaneOpen="True"
+             DisplayMode="Inline"
+             OpenPaneLength="300">
+    <SplitView.Pane>
+      <treeViews:FilterTreeView />
+    </SplitView.Pane>
+
+  </SplitView>
 </UserControl>

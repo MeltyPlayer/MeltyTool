@@ -2,6 +2,9 @@
 
 namespace uni.ui.avalonia.ViewModels;
 
-public class ViewModelBase : ReactiveObject
-{
-}
+public interface IViewModelBase
+    : IReactiveNotifyPropertyChanged<IReactiveObject>,
+      IHandleObservableErrors,
+      IReactiveObject;
+
+public class ViewModelBase : ReactiveObject, IViewModelBase;

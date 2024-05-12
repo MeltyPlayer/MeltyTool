@@ -13,10 +13,13 @@
 
   <StackPanel>
     <textboxes:AutocompleteTextbox Placeholder="Search for..." />
-    <TreeView ItemsSource="{Binding Nodes}">
+    <TreeView ItemsSource="{Binding  Nodes}">
       <TreeView.ItemTemplate>
         <TreeDataTemplate ItemsSource="{Binding SubNodes}">
-          <TextBlock Text="{Binding Title}" />
+          <StackPanel Orientation="Horizontal">
+            <Image Width="16" Height="16" Margin="-4 0 4 0" Source="{Binding Icon}" />
+            <TextBlock Text="{Binding Label}" />
+          </StackPanel>
         </TreeDataTemplate>
       </TreeView.ItemTemplate>
     </TreeView>
