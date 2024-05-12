@@ -15,7 +15,7 @@
 
   <SplitView IsPaneOpen="True"
              DisplayMode="Inline"
-             OpenPaneLength="300">
+             OpenPaneLength="250">
     <SplitView.Pane>
       <treeViews:FilterTreeView />
     </SplitView.Pane>

@@ -35,6 +35,7 @@ namespace uni.ui.avalonia.common.treeViews {
   }
 
   public interface INode<T> : IViewModelBase {
+    bool IsExpanded { get; set; }
     ObservableCollection<INode<T>>? SubNodes { get; }
     IImage Icon { get; }
     string Label { get; }
@@ -46,8 +47,17 @@ namespace uni.ui.avalonia.common.treeViews {
       : ViewModelBase, INode<T> {
     public ObservableCollection<INode<T>>? SubNodes { get; } = subNodes;
 
-    public IImage Icon { get; }
-      = EmbeddedResourceUtil.LoadAvaloniaImage("folder_open");
+    public static readonly IImage FOLDER_OPEN_ICON
+        = EmbeddedResourceUtil.LoadAvaloniaImage("folder_open");
+
+    public static readonly IImage FOLDER_CLOSED_ICON
+        = EmbeddedResourceUtil.LoadAvaloniaImage("folder_closed");
+
+    public bool IsExpanded { get; set; }
+
+    public IImage Icon
+      => this.IsExpanded ? FOLDER_OPEN_ICON : FOLDER_CLOSED_ICON;
+
     public string Label { get; } = label;
   }
 }
