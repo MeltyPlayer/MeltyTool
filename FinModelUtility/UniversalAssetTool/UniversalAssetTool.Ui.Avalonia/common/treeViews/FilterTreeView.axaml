@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:textboxes="clr-namespace:uni.ui.avalonia.common.textboxes"
+             xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+             x:Class="uni.ui.avalonia.common.treeViews.FilterTreeView"
+             x:DataType="treeViews:FilterTreeViewViewModel">
+  <Design.DataContext>
+    <treeViews:FilterTreeViewViewModel />
+  </Design.DataContext>
+
+  <StackPanel>
+    <textboxes:AutocompleteTextbox Placeholder="Search for..." />
+    <TreeView ItemsSource="{Binding Nodes}">
+      <TreeView.ItemTemplate>
+        <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+          <TextBlock Text="{Binding Title}" />
+        </TreeDataTemplate>
+      </TreeView.ItemTemplate>
+    </TreeView>
+  </StackPanel>
+</UserControl>
