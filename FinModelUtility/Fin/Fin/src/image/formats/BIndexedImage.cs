@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
@@ -37,6 +38,14 @@ namespace fin.image.formats {
     public Bitmap AsBitmap() => FinImage.ConvertToBitmap(this);
 
     public void ExportToStream(Stream stream, LocalImageFormat imageFormat)
-      => throw new NotImplementedException();
+      => this.AsBitmap()
+             .Save(stream,
+                   imageFormat switch {
+                       LocalImageFormat.BMP  => ImageFormat.Bmp,
+                       LocalImageFormat.PNG  => ImageFormat.Png,
+                       LocalImageFormat.JPEG => ImageFormat.Jpeg,
+                       LocalImageFormat.GIF  => ImageFormat.Gif,
+                       LocalImageFormat.WEBP => ImageFormat.Webp,
+                   });
   }
 }
