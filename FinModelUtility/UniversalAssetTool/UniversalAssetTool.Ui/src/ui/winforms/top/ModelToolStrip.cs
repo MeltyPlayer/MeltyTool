@@ -153,7 +153,7 @@ namespace uni.ui.winforms.top {
         IReadOnlyList<IAnnotatedFileBundle<IModelFileBundle>>
             modelFileBundles) {
       var extractorPromptChoice =
-          ExporterUtil.PromptIfModelFileBundlesAlreadyExported(
+          PromptIfModelFileBundlesAlreadyExported_(
               modelFileBundles,
               Config.Instance.ExporterSettings.ExportedFormats);
       if (extractorPromptChoice != ExporterPromptChoice.CANCEL) {
@@ -190,6 +190,47 @@ namespace uni.ui.winforms.top {
       }
 
       return totalText;
+    }
+
+    private static ExporterPromptChoice
+        PromptIfModelFileBundlesAlreadyExported_(
+            IReadOnlyList<IAnnotatedFileBundle> modelFileBundles,
+            IReadOnlyList<string> extensions) {
+      if (ExporterUtil.CheckIfModelFileBundlesAlreadyExported(
+              modelFileBundles,
+              extensions,
+              out var existingOutputFiles)) {
+        var totalCount = modelFileBundles.Count;
+        if (totalCount == 1) {
+          var result =
+              MessageBox.Show(
+                  $"Model defined in \"{existingOutputFiles.First().FileBundle.DisplayFullPath}\" has already been exported. Would you like to overwrite it?",
+                  "Model has already been exported!",
+                  MessageBoxButtons.YesNo,
+                  MessageBoxIcon.Warning,
+                  MessageBoxDefaultButton.Button1);
+          return result switch {
+              DialogResult.Yes => ExporterPromptChoice.OVERWRITE_EXISTING,
+              DialogResult.No  => ExporterPromptChoice.CANCEL,
+          };
+        } else {
+          var existingCount = existingOutputFiles.Count();
+          var result =
+              MessageBox.Show(
+                  $"{existingCount} model{(existingCount != 1 ? "s have" : " has")} already been exported. Select 'Yes' to overwrite them, 'No' to skip them, or 'Cancel' to abort this operation.",
+                  $"{existingCount}/{totalCount} models have already been exported!",
+                  MessageBoxButtons.YesNoCancel,
+                  MessageBoxIcon.Warning,
+                  MessageBoxDefaultButton.Button1);
+          return result switch {
+              DialogResult.Yes    => ExporterPromptChoice.OVERWRITE_EXISTING,
+              DialogResult.No     => ExporterPromptChoice.SKIP_EXISTING,
+              DialogResult.Cancel => ExporterPromptChoice.CANCEL,
+          };
+        }
+      }
+
+      return ExporterPromptChoice.SKIP_EXISTING;
     }
   }
 }

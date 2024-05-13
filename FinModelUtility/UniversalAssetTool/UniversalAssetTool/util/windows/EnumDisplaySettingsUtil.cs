@@ -30,6 +30,21 @@ namespace uni.util.windows {
 
     const int ENUM_REGISTRY_SETTINGS = -2;
 
+    /// <summary>Specifies the angle of the screen.</summary>
+    public enum ScreenOrientation {
+      /// <summary>The screen is oriented at 0 degrees.</summary>
+      Angle0,
+
+      /// <summary>The screen is oriented at 90 degrees.</summary>
+      Angle90,
+
+      /// <summary>The screen is oriented at 180 degrees.</summary>
+      Angle180,
+
+      /// <summary>The screen is oriented at 270 degrees.</summary>
+      Angle270,
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct DisplaySettings {
       private const int CCHDEVICENAME = 0x20;
