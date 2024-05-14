@@ -13,12 +13,21 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
+  <UserControl.Styles>
+    <Style Selector="treeViews|FilterTreeView">
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+  </UserControl.Styles>
+
   <SplitView IsPaneOpen="True"
+             PaneBackground="White"
              DisplayMode="Inline"
              OpenPaneLength="250">
     <SplitView.Pane>
       <treeViews:FilterTreeView />
     </SplitView.Pane>
 
+    <Panel Background="Magenta">
+    </Panel>
   </SplitView>
 </UserControl>

@@ -27,7 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Fin\Fin.Ui\Fin.Ui.csproj" />
     <ProjectReference Include="..\..\Fin\Fin\Fin.csproj" />
+    <ProjectReference Include="..\..\Formats\Grezzo\Grezzo\Grezzo.csproj" />
+    <ProjectReference Include="..\UniversalAssetTool\UniversalAssetTool.csproj" />
   </ItemGroup>
 
   <ItemGroup>
