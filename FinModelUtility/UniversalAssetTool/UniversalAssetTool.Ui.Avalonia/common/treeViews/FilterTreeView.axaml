@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:textboxes="clr-namespace:uni.ui.avalonia.common.textboxes"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
-             xmlns:global="clr-namespace:"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.common.treeViews.FilterTreeView"
