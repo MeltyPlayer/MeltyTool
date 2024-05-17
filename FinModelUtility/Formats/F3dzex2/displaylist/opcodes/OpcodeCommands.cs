@@ -189,6 +189,7 @@ namespace f3dzex2.displaylist.opcodes {
   public class SetTimgOpcodeCommand : IOpcodeCommand {
     public N64ColorFormat ColorFormat { get; set; }
     public BitsPerTexel BitsPerTexel { get; set; }
+    public ushort Width { get; set; }
     public uint TextureSegmentedAddress { get; set; }
   }
 
@@ -290,6 +291,8 @@ namespace f3dzex2.displaylist.opcodes {
 
   public class SetTileSizeOpcodeCommand : IOpcodeCommand {
     public TileDescriptorIndex TileDescriptorIndex { get; set; }
+    public ushort Uls { get; set; }
+    public ushort Ult { get; set; }
     public ushort Width { get; set; }
     public ushort Height { get; set; }
 

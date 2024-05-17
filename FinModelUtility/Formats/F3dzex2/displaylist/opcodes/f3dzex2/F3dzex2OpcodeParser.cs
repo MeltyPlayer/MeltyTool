@@ -166,10 +166,14 @@ namespace f3dzex2.displaylist.opcodes.f3dzex2 {
           N64ImageParser.SplitN64ImageFormat(br.ReadByte(),
                                              out var colorFormat,
                                              out var bitSize);
-          var width = br.ReadUInt16();
+
+          var args = br.ReadUInt24();
+          var width = (ushort) ((args >> 12) + 1);
+
           return new SetTimgOpcodeCommand {
               ColorFormat = colorFormat,
               BitsPerTexel = bitSize,
+              Width = width,
               TextureSegmentedAddress = br.ReadUInt32(),
           };
         }
@@ -216,17 +220,22 @@ namespace f3dzex2.displaylist.opcodes.f3dzex2 {
           br.Position += 3;
 
           var tileDescriptor = (TileDescriptorIndex) br.ReadByte();
+          var lr = br.ReadUInt24();
+          var lrs = (ushort) (lr >> 12);
+          var lrt = (ushort) (lr & 0xFFF);
 
-          var widthAndHeight = br.ReadUInt24();
-          var width =
-              (ushort) (widthAndHeight >>
-                        12); // (ushort) (((widthAndHeight >> 12) >> 2) + 1);
-          var height =
-              (ushort) (widthAndHeight &
-                        0xFFF); // (ushort) (((widthAndHeight & 0xFFF) >> 2) + 1);
+          br.ReadByte();
+          var ul = br.ReadUInt24();
+          var uls = (ushort) (ul >> 12);
+          var ult = (ushort) (ul & 0xFFF);
+
+          var width = (ushort) (lrs - uls + 1);
+          var height = (ushort) (lrt - ult + 1);
 
           return new SetTileSizeOpcodeCommand {
               TileDescriptorIndex = tileDescriptor,
+              Uls = uls,
+              Ult = ult,
               Width = width,
               Height = height,
           };

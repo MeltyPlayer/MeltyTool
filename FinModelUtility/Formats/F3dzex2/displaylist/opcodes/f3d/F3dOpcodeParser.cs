@@ -196,6 +196,8 @@ namespace f3dzex2.displaylist.opcodes.f3d {
 
           return new SetTileSizeOpcodeCommand {
               TileDescriptorIndex = tileDescriptor,
+              Ult = 0,
+              Uls = 0,
               Width = width,
               Height = height,
           };

@@ -50,6 +50,7 @@ namespace f3dzex2.image {
       public uint SegmentedAddress { get; set; }
       public N64ColorFormat ColorFormat { get; set; }
       public BitsPerTexel BitsPerTexel { get; set; }
+      public ushort Width { get; set; }
       public uint TileNumber { get; set; }
     }
 
@@ -134,13 +135,13 @@ namespace f3dzex2.image {
     public void GsDpSetTileSize(ushort uls,
                                 ushort ult,
                                 TileDescriptorIndex tileDescriptor,
-                                ushort lrs,
-                                ushort lrt) {
+                                ushort width,
+                                ushort height) {
       if (tileDescriptor == TileDescriptorIndex.TX_RENDERTILE) {
         this.textureTile_.Uls = uls;
         this.textureTile_.Ult = ult;
-        this.textureTile_.Lrs = lrs;
-        this.textureTile_.Lrt = lrt;
+        this.textureTile_.Lrs = (ushort) (uls + width);
+        this.textureTile_.Lrt = (ushort) (ult + height);
 
         this.texturesChanged_[0] = true;
         this.texturesChanged_[1] = true;
@@ -162,6 +163,7 @@ namespace f3dzex2.image {
                                     uint imageSegmentedAddress) {
       this.setTextureImageParams_.ColorFormat = colorFormat;
       this.setTextureImageParams_.SegmentedAddress = imageSegmentedAddress;
+      this.setTextureImageParams_.Width = width;
       this.setTextureImageParams_.BitsPerTexel = bitsPerTexel;
     }
 

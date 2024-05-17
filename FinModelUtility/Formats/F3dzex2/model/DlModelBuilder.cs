@@ -369,8 +369,9 @@ namespace f3dzex2.model {
             break;
           }
           case SetTileSizeOpcodeCommand setTileSizeOpcodeCommand: {
-            this.n64Hardware_.Rdp.Tmem.GsDpSetTileSize(0,
-              0,
+            this.n64Hardware_.Rdp.Tmem.GsDpSetTileSize(
+                setTileSizeOpcodeCommand.Uls,
+              setTileSizeOpcodeCommand.Ult,
               setTileSizeOpcodeCommand
                   .TileDescriptorIndex,
               setTileSizeOpcodeCommand.Width,
@@ -381,7 +382,7 @@ namespace f3dzex2.model {
             this.n64Hardware_.Rdp.Tmem.GsDpSetTextureImage(
                 setTimgOpcodeCommand.ColorFormat,
                 setTimgOpcodeCommand.BitsPerTexel,
-                0,
+                setTimgOpcodeCommand.Width,
                 setTimgOpcodeCommand
                     .TextureSegmentedAddress);
             break;
