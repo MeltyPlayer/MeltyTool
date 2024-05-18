@@ -44,10 +44,11 @@ namespace uni.games.ocarina_of_time {
 
         foreach (var (zObject, path) in zObjectsAndPaths) {
           var zObjectFile = new FinFile(Path.Join(rootSysDir.FullPath, path));
-          using var fw = zObjectFile.OpenWrite();
-
-          using var br = n64Memory.OpenSegment(zObject.Segment);
-          br.CopyTo(fw);
+          if (!zObjectFile.Exists) {
+            using var fw = zObjectFile.OpenWrite();
+            using var br = n64Memory.OpenSegment(zObject.Segment);
+            br.CopyTo(fw);
+          }
         }
       }
 

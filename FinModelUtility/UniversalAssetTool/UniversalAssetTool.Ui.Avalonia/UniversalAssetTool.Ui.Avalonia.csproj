@@ -19,6 +19,7 @@
   <ItemGroup>
     <PackageReference Include="Aura.UI" Version="0.1.4.2" />
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+    <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.6" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
@@ -26,8 +27,11 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
     <PackageReference Include="AvaloniaColorPicker" Version="1.4.0" />
     <PackageReference Include="AvaloniaControlsToolBar" Version="0.0.1" />
+    <PackageReference Include="AvaloniaEdit.TextMate" Version="11.0.6" />
     <PackageReference Include="AvaloniaUIRibbon" Version="1.1.0-beta" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
+    <PackageReference Include="TextMateSharp" Version="1.0.56" />
+    <PackageReference Include="TextMateSharp.Grammars" Version="1.0.56" />
     <PackageReference Include="UVtools.AvaloniaControls" Version="3.0.3" />
   </ItemGroup>
 

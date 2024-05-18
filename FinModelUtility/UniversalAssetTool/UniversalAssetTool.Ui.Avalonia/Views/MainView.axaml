@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
+             xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -27,7 +28,16 @@
       <treeViews:FilterTreeView />
     </SplitView.Pane>
 
-    <Panel Background="Magenta">
-    </Panel>
+    <SplitView IsPaneOpen="True"
+               PaneBackground="White"
+               DisplayMode="Inline"
+               OpenPaneLength="250">
+      <SplitView.Pane>
+        <materials:MaterialPanel />
+      </SplitView.Pane>
+
+      <Panel Background="Magenta">
+      </Panel>
+    </SplitView>
   </SplitView>
 </UserControl>
