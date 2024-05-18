@@ -4,6 +4,7 @@ using System.Linq;
 
 using fin.data.dictionaries;
 using fin.decompression;
+using fin.io;
 using fin.util.asserts;
 using fin.util.hex;
 
@@ -41,16 +42,16 @@ namespace f3dzex2.io {
     void AddSegment(uint segmentIndex, Segment segment);
   }
 
-  public class N64Memory : IN64Memory {
-    private readonly byte[] bytes_;
+  public class N64Memory(
+      byte[] data,
+      Endianness endianness = Endianness.BigEndian) : IN64Memory {
     private readonly ListDictionary<uint, Segment> segments_ = new();
 
-    public N64Memory(byte[] data, Endianness endianness) {
-      this.bytes_ = data;
-      this.Endianness = endianness;
-    }
+    public N64Memory(IReadOnlyGenericFile file,
+                     Endianness endianness = Endianness.BigEndian) :
+        this(file.ReadAllBytes(), endianness) { }
 
-    public Endianness Endianness { get; }
+    public Endianness Endianness { get; } = endianness;
 
     public SchemaBinaryReader OpenAtSegmentedAddress(uint segmentedAddress)
       => this.OpenPossibilitiesAtSegmentedAddress(segmentedAddress).Single();
@@ -85,9 +86,9 @@ namespace f3dzex2.io {
       => this.OpenPossibilitiesForSegment(segmentIndex).Single();
 
     public SchemaBinaryReader OpenSegment(Segment segment,
-                                           uint? offset = null) {
+                                          uint? offset = null) {
       var br = new SchemaBinaryReader(
-          new MemoryStream(this.bytes_,
+          new MemoryStream(data,
                            (int) segment.Offset,
                            (int) segment.Length),
           this.Endianness);

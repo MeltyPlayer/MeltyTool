@@ -1,7 +1,12 @@
 ﻿using System.IO;
 
+using f3dzex2.io;
+
 using fin.io;
 using fin.io.bundles;
+
+using schema.binary;
+using schema.util.streams;
 
 using uni.platforms;
 
@@ -21,7 +26,8 @@ namespace uni.games.ocarina_of_time {
 
       var ocarinaOfTimeDirectory =
           ExtractorUtil.GetOrCreateExtractedDirectory("ocarina_of_time");
-      var fileHierarchy = FileHierarchy.From("ocarina_of_time", ocarinaOfTimeDirectory);
+      var fileHierarchy
+          = FileHierarchy.From("ocarina_of_time", ocarinaOfTimeDirectory);
       var root = fileHierarchy.Root;
 
       var rootSysDir = root.Impl;
@@ -29,15 +35,20 @@ namespace uni.games.ocarina_of_time {
 
       var zSegments = ZSegments.InitializeFromFile(ocarinaOfTimeRom);
       var zObjectsAndPaths = zSegments.Objects.Select(zObject => {
-        var path = Path.Join(zObjectsDir.Name, $"{zObject.FileName}.zobj");
-        return (zObject, path);
-      });
+            var path = Path.Join(zObjectsDir.Name, $"{zObject.FileName}.zobj");
+            return (zObject, path);
+          });
 
-      foreach (var (_, path) in zObjectsAndPaths) {
-        var zObjectFile = new FinFile(Path.Join(rootSysDir.FullPath, path));
+      {
+        var n64Memory = new N64Memory(ocarinaOfTimeRom);
 
-        // TODO: Write the actual data here
-        FinFileSystem.File.Create(zObjectFile.FullPath);
+        foreach (var (zObject, path) in zObjectsAndPaths) {
+          var zObjectFile = new FinFile(Path.Join(rootSysDir.FullPath, path));
+          using var fw = zObjectFile.OpenWrite();
+
+          using var br = n64Memory.OpenSegment(zObject.Segment);
+          br.CopyTo(fw);
+        }
       }
 
       root.Refresh(true);

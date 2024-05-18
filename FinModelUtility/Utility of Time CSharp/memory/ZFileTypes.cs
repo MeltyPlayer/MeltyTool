@@ -23,56 +23,43 @@ namespace UoT.memory {
   }
 
 
-  public abstract class BZFile : IZFile {
-    protected BZFile(Segment segment) {
-      this.Segment = segment;
-    }
-
+  public abstract class BZFile(Segment segment) : IZFile {
     public abstract ZFileType Type { get; }
-
     public string FileName { get; set; }
-
-    public Segment Segment { get; }
-
+    public Segment Segment { get; } = segment;
     public override string ToString() => this.FileName;
   }
 
 
-  public class ZObject : BZFile {
-    public ZObject(Segment segment) : base(segment) { }
+  public class ZObject(Segment segment) : BZFile(segment) {
     public override ZFileType Type => ZFileType.OBJECT;
   }
 
 
-  public class ZCodeFiles : BZFile {
-    public ZCodeFiles(Segment segment) : base(segment) { }
+  public class ZCodeFiles(Segment segment) : BZFile(segment) {
     public override ZFileType Type => ZFileType.CODE;
   }
 
 
-  public class ZScene : BZFile {
-    public ZScene(Segment segment) : base(segment) { }
+  public class ZScene(Segment segment) : BZFile(segment) {
     public override ZFileType Type => ZFileType.SCENE;
 
     // TODO: Make nonnull via init, C#9.
     public ZMap[]? Maps;
   }
 
-  public class ZMap : BZFile {
-    public ZMap(Segment segment) : base(segment) { }
+  public class ZMap(Segment segment) : BZFile(segment) {
     public override ZFileType Type => ZFileType.MAP;
 
     // TODO: Make nonnull via init, C#9.
     public ZScene? Scene { get; set; }
   }
 
-  public class ZObjectSet : BZFile {
-    public ZObjectSet(Segment segment) : base(segment) { }
+  public class ZObjectSet(Segment segment) : BZFile(segment) {
     public override ZFileType Type => ZFileType.OBJECT_SET;
   }
 
-  public class ZOtherData : BZFile {
-    public ZOtherData(Segment segment) : base(segment) { }
+  public class ZOtherData(Segment segment) : BZFile(segment) {
     public override ZFileType Type => ZFileType.OTHER;
   }
 }

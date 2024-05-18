@@ -36,9 +36,7 @@ namespace UoT.api {
                                      or "object_link_child"
                                      or "object_torch2";
 
-      var n64Memory = new N64Memory(modelFileBundle.OotRom.ReadAllBytes(),
-                                    Endianness.BigEndian);
-
+      var n64Memory = new N64Memory(modelFileBundle.OotRom);
 
       var n64Hardware = new N64Hardware<N64Memory>();
       n64Hardware.Memory = n64Memory;
