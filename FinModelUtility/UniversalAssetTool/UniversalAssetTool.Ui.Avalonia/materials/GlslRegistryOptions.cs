@@ -26,6 +26,10 @@ namespace uni.ui.avalonia.materials {
                    "fileTypes": [".glsl"],
                    "patterns": [
                      {
+                       "name": "comment.line.version.glsl",
+                       "match": "#version[ \t]+[0-9]+"
+                     },
+                     {
                        "name": "keyword.control.glsl",
                        "match": "\\b(break|case|continue|default|discard|do|else|for|if|return|switch|while)\\b"
                      },
