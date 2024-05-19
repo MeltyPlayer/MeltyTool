@@ -46,5 +46,8 @@
     <Compile Update="common\textboxes\AutocompleteTextbox.axaml.cs">
       <DependentUpon>AutocompleteTextbox.axaml</DependentUpon>
     </Compile>
+    <Compile Update="materials\MaterialShaderTabs.axaml.cs">
+      <DependentUpon>MaterialShaderTabs.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

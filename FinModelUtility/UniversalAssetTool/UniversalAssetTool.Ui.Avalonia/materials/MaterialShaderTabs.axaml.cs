@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-
 using Avalonia.Controls;
 
 using AvaloniaEdit;
@@ -12,18 +8,11 @@ using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
 
-using TextMateSharp.Grammars;
-using TextMateSharp.Internal.Grammars.Reader;
-using TextMateSharp.Internal.Themes.Reader;
-using TextMateSharp.Internal.Types;
-using TextMateSharp.Registry;
-using TextMateSharp.Themes;
-
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.materials {
-  public class MaterialPanelViewModel : ViewModelBase {
-    public MaterialPanelViewModel(
+  public class MaterialShaderTabsViewModel : ViewModelBase {
+    public MaterialShaderTabsViewModel(
         IReadOnlyModel model,
         IReadOnlyMaterial? material = null) {
       this.Material = material;
@@ -41,13 +30,13 @@ namespace uni.ui.avalonia.materials {
     public TextDocument FragmentShaderSource { get; }
   }
 
-  public class MaterialPanelViewModelForDesigner()
-      : MaterialPanelViewModel(new ModelImpl());
+  public class MaterialShaderTabsViewModelForDesigner()
+      : MaterialShaderTabsViewModel(new ModelImpl());
 
-  public partial class MaterialPanel : UserControl {
-    public MaterialPanel() {
+  public partial class MaterialShaderTabs : UserControl {
+    public MaterialShaderTabs() {
       InitializeComponent();
-      this.DataContext = new MaterialPanelViewModelForDesigner();
+      this.DataContext = new MaterialShaderTabsViewModelForDesigner();
 
       this.InitViewer_(this.vertexShaderViewer_);
       this.InitViewer_(this.fragmentShaderViewer_);
