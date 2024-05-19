@@ -5,6 +5,8 @@ using System.Text;
 using fin.model;
 using fin.math.xyz;
 
+using Microsoft.Extensions.Primitives;
+
 namespace fin.shaders.glsl {
   public enum FinShaderType {
     FIXED_FUNCTION,
@@ -46,13 +48,13 @@ namespace fin.shaders.glsl {
     }
 
     // TODO: Only include uvs/colors as needed
-    public static string GetVertexSrc(IReadOnlyModel model, bool useBoneMatrices) {
+    public static string GetVertexSrc(IReadOnlyModel model,
+                                      bool useBoneMatrices) {
       var location = 0;
 
       var vertexSrc = new StringBuilder();
 
       vertexSrc.Append($"""
-
                         #version 330
 
                         uniform mat4 {GlslConstants.UNIFORM_MODEL_MATRIX_NAME};
@@ -68,17 +70,26 @@ namespace fin.shaders.glsl {
                           """);
       }
 
-      vertexSrc.Append(@$"
+      vertexSrc.Append(
+          $"""
 
-layout(location = {location++}) in vec3 in_Position;
-layout(location = {location++}) in vec3 in_Normal;
-layout(location = {location++}) in vec4 in_Tangent;");
+
+           layout(location = {location++}) in vec3 in_Position;
+           layout(location = {location++}) in vec3 in_Normal;
+           layout(location = {location++}) in vec4 in_Tangent;
+           """);
 
       if (useBoneMatrices) {
         vertexSrc.Append(
-            $"layout(location = {location++}) in ivec4 in_BoneIds;");
+            $"""
+
+             layout(location = {location++}) in ivec4 in_BoneIds;
+             """);
         vertexSrc.Append(
-            $"layout(location = {location++}) in vec4 in_BoneWeights;");
+            $"""
+
+             layout(location = {location++}) in vec4 in_BoneWeights;
+             """);
       }
 
       vertexSrc.Append(@$"

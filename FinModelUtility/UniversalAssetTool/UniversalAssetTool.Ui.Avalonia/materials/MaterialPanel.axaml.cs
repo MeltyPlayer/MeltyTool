@@ -63,10 +63,7 @@ namespace uni.ui.avalonia.materials {
     ///   Copied from https://github.com/nesrak1/UABEA/blob/5adb448deeefa1b88881f1fa44243009b352db3a/UABEAvalonia/TextHighlighting/UABEDumpRegistryOptions.cs#L18
     /// </summary>
     private class GlslRegistryOptions : IRegistryOptions {
-      const string GrammarPrefix = "TextMateSharp.Grammars.Resources.Grammars.";
-      const string ThemesPrefix = "TextMateSharp.Grammars.Resources.Themes.";
-
-      private const ThemeName defaultTheme_ = ThemeName.DarkPlus;
+      private readonly RegistryOptions impl_ = new(ThemeName.DarkPlus);
 
       public IRawGrammar GetGrammar(string _) {
         var ms = new MemoryStream();
@@ -83,7 +80,7 @@ namespace uni.ui.avalonia.materials {
                      },
                      {
                        "name": "storage.type.glsl",
-                       "match": "\\b(void|bool|int|uint|float|vec2|vec3|vec4|bvec2|bvec3|bvec4|ivec2|ivec2|ivec3|uvec2|uvec2|uvec3|mat2|mat3|mat4|mat2x2|mat2x3|mat2x4|mat3x2|mat3x3|mat3x4|mat4x2|mat4x3|mat4x4|sampler[1|2|3]D|samplerCube|sampler2DRect|sampler[1|2]DShadow|sampler2DRectShadow|sampler[1|2]DArray|sampler[1|2]DArrayShadow|samplerBuffer|sampler2DMS|sampler2DMSArray|struct|isampler[1|2|3]D|isamplerCube|isampler2DRect|isampler[1|2]DArray|isamplerBuffer|isampler2DMS|isampler2DMSArray|usampler[1|2|3]D|usamplerCube|usampler2DRect|usampler[1|2]DArray|usamplerBuffer|usampler2DMS|usampler2DMSArray)\\b"
+                       "match": "\\b(void|bool|u?int|float|[biu]?vec[2-4]|mat[2-4]|mat2x2|mat2x3|mat2x4|mat3x2|mat3x3|mat3x4|mat4x2|mat4x3|mat4x4|sampler[1-3]D|samplerCube|sampler2DRect|sampler[12]DShadow|sampler2DRectShadow|sampler[12]DArray|sampler[12]DArrayShadow|samplerBuffer|sampler2DMS|sampler2DMSArray|struct|isampler[1|2|3]D|isamplerCube|isampler2DRect|isampler[1|2]DArray|isamplerBuffer|isampler2DMS|isampler2DMSArray|usampler[1|2|3]D|usamplerCube|usampler2DRect|usampler[1|2]DArray|usamplerBuffer|usampler2DMS|usampler2DMSArray)\\b"
                      },
                      {
                        "name": "storage.modifier.glsl",
@@ -116,45 +113,14 @@ namespace uni.ui.avalonia.materials {
         return GrammarReader.ReadGrammarSync(sr);
       }
 
-      
-      public IRawTheme? GetDefaultTheme() => this.LoadTheme_(defaultTheme_);
-      
-      public ICollection<string>? GetInjections(string scopeName) => null;
 
-      public IRawTheme? GetTheme(string scopeName) {
-        Assembly assembly = typeof(RegistryOptions).Assembly;
-        using Stream? stream = assembly.GetManifestResourceStream(ThemesPrefix + scopeName.Replace("./", string.Empty));
-        if (stream == null) {
-          return null;
-        }
+      public IRawTheme GetDefaultTheme() => this.impl_.GetDefaultTheme();
 
-        using StreamReader reader = new StreamReader(stream);
-        return ThemeReader.ReadThemeSync(reader);
-      }
+      public ICollection<string> GetInjections(string scopeName)
+        => this.impl_.GetInjections(scopeName);
 
-      private IRawTheme? LoadTheme_(ThemeName name)
-        => this.GetTheme(GetThemeFile_(name));  
-
-      private static string GetThemeFile_(ThemeName name)
-        => name switch {
-            ThemeName.Abbys          => "abyss-color-theme.json",
-            ThemeName.Dark           => "dark_vs.json",
-            ThemeName.DarkPlus       => "dark_plus.json",
-            ThemeName.DimmedMonokai  => "dimmed-monokai-color-theme.json",
-            ThemeName.KimbieDark     => "kimbie-dark-color-theme.json",
-            ThemeName.Light          => "light_vs.json",
-            ThemeName.LightPlus      => "light_plus.json",
-            ThemeName.Monokai        => "monokai-color-theme.json",
-            ThemeName.QuietLight     => "quietlight-color-theme.json",
-            ThemeName.Red            => "Red-color-theme.json",
-            ThemeName.SolarizedDark  => "solarized-dark-color-theme.json",
-            ThemeName.SolarizedLight => "solarized-light-color-theme.json",
-            ThemeName.TomorrowNightBlue =>
-                "tomorrow-night-blue-color-theme.json",
-            ThemeName.HighContrastLight => "hc_light.json",
-            ThemeName.HighContrastDark => "hc_black.json",
-            _ => throw new KeyNotFoundException("Not a valid theme!"),
-        };
+      public IRawTheme? GetTheme(string scopeName)
+        => this.impl_.GetTheme(scopeName);
     }
   }
 }
