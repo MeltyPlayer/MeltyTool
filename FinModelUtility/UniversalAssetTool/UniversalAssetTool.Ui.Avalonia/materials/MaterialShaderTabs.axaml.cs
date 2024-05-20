@@ -8,36 +8,53 @@ using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
 
+using ReactiveUI;
+
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.materials {
-  public class MaterialShaderTabsViewModel : ViewModelBase {
-    public MaterialShaderTabsViewModel(
-        IReadOnlyModel model,
-        IReadOnlyMaterial? material = null) {
-      this.Material = material;
-
-      var shaderSource = material.ToShaderSource(model, true);
-      this.VertexShaderSource
-          = new TextDocument(shaderSource.VertexShaderSource);
-      this.FragmentShaderSource
-          = new TextDocument(shaderSource.FragmentShaderSource);
+  public class MaterialShaderTabsViewModelForDesigner
+      : MaterialShaderTabsViewModel {
+    public MaterialShaderTabsViewModelForDesigner() {
+      this.ModelAndMaterial = (new ModelImpl(), null);
     }
-
-    public IReadOnlyMaterial? Material { get; }
-
-    public TextDocument VertexShaderSource { get; }
-    public TextDocument FragmentShaderSource { get; }
   }
 
-  public class MaterialShaderTabsViewModelForDesigner()
-      : MaterialShaderTabsViewModel(new ModelImpl());
+  public class MaterialShaderTabsViewModel : ViewModelBase {
+    private (IModel, IReadOnlyMaterial) modelAndMaterial_;
+    private TextDocument vertexShaderSource_;
+    private TextDocument fragmentShaderSource_;
+
+    public required (IModel, IReadOnlyMaterial?) ModelAndMaterial {
+      get => this.modelAndMaterial_;
+      set {
+        this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
+
+        var (model, material) = this.modelAndMaterial_;
+        var shaderSource = material.ToShaderSource(model, true);
+        this.VertexShaderSource
+            = new TextDocument(shaderSource.VertexShaderSource);
+        this.FragmentShaderSource
+            = new TextDocument(shaderSource.FragmentShaderSource);
+      }
+    }
+
+    public TextDocument VertexShaderSource {
+      get => this.vertexShaderSource_;
+      private set
+        => this.RaiseAndSetIfChanged(ref this.vertexShaderSource_, value);
+    }
+
+    public TextDocument FragmentShaderSource {
+      get => this.fragmentShaderSource_;
+      private set
+        => this.RaiseAndSetIfChanged(ref this.fragmentShaderSource_, value);
+    }
+  }
 
   public partial class MaterialShaderTabs : UserControl {
     public MaterialShaderTabs() {
       InitializeComponent();
-      this.DataContext = new MaterialShaderTabsViewModelForDesigner();
-
       this.InitViewer_(this.vertexShaderViewer_);
       this.InitViewer_(this.fragmentShaderViewer_);
     }
