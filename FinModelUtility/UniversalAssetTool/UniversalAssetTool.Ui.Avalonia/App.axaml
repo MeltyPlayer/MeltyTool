@@ -7,5 +7,10 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+
+        <Style Selector="TextBlock.h1">
+          <Setter Property="FontSize" Value="24"/>
+          <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
     </Application.Styles>
 </Application>
