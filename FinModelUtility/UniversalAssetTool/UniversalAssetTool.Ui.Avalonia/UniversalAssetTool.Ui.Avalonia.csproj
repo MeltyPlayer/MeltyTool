@@ -51,8 +51,11 @@
     <Compile Update="materials\MaterialPanel.axaml.cs">
       <DependentUpon>MaterialPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="materials\MaterialShaderTabs.axaml.cs">
-      <DependentUpon>MaterialShaderTabs.axaml</DependentUpon>
+    <Compile Update="materials\MaterialTexturesPanel.axaml.cs">
+      <DependentUpon>MaterialTexturesPanel.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="materials\MaterialShadersPanel.axaml.cs">
+      <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

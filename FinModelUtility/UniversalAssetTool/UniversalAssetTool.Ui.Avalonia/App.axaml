@@ -15,11 +15,11 @@
               TextBlock.h1, 
               TabControl.h1 TabItem ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h1 TextBlock#GBHeaderText">
-      <Setter Property="TextBlock.FontSize" Value="24" />
+      <Setter Property="TextBlock.FontSize" Value="28" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
     </Style>
     <Style Selector="TabControl.h1 TabItem">
-      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="MinHeight" Value="36" />
     </Style>
 
     <!-- h2 -->
@@ -27,11 +27,11 @@
               TextBlock.h2, 
               TabControl.h2 TabItem ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h2 TextBlock#GBHeaderText">
-      <Setter Property="TextBlock.FontSize" Value="20" />
+      <Setter Property="TextBlock.FontSize" Value="24" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
     </Style>
     <Style Selector="TabControl.h2 TabItem">
-      <Setter Property="MinHeight" Value="28" />
+      <Setter Property="MinHeight" Value="32" />
     </Style>
 
     <!-- h3 -->
@@ -39,10 +39,22 @@
               TextBlock.h3,
               TabControl.h3 TabItem ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h3 TextBlock#GBHeaderText">
-      <Setter Property="TextBlock.FontSize" Value="16" />
+      <Setter Property="TextBlock.FontSize" Value="20" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
     </Style>
     <Style Selector="TabControl.h3 TabItem">
+      <Setter Property="MinHeight" Value="28" />
+    </Style>
+
+    <!-- h4 -->
+    <Style Selector="
+              TextBlock.h4,
+              TabControl.h4 TabItem ContentPresenter#PART_ContentPresenter,
+              gb|GroupBox.h4 TextBlock#GBHeaderText">
+      <Setter Property="TextBlock.FontSize" Value="16" />
+      <Setter Property="TextBlock.FontWeight" Value="Medium" />
+    </Style>
+    <Style Selector="TabControl.h4 TabItem">
       <Setter Property="MinHeight" Value="24" />
     </Style>
   </Application.Styles>

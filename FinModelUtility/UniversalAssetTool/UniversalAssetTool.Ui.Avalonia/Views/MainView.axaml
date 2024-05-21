@@ -33,7 +33,7 @@
                DisplayMode="Inline"
                OpenPaneLength="250">
       <SplitView.Pane>
-        <materials:MaterialShaderTabs />
+        <materials:MaterialShadersPanel />
       </SplitView.Pane>
 
       <Panel Background="Magenta">

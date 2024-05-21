@@ -13,14 +13,14 @@ using ReactiveUI;
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.materials {
-  public class MaterialShaderTabsViewModelForDesigner
-      : MaterialShaderTabsViewModel {
-    public MaterialShaderTabsViewModelForDesigner() {
+  public class MaterialShadersPanelViewModelForDesigner
+      : MaterialShadersPanelViewModel {
+    public MaterialShadersPanelViewModelForDesigner() {
       this.ModelAndMaterial = (new ModelImpl(), null);
     }
   }
 
-  public class MaterialShaderTabsViewModel : ViewModelBase {
+  public class MaterialShadersPanelViewModel : ViewModelBase {
     private (IModel, IReadOnlyMaterial) modelAndMaterial_;
     private TextDocument vertexShaderSource_;
     private TextDocument fragmentShaderSource_;
@@ -52,8 +52,8 @@ namespace uni.ui.avalonia.materials {
     }
   }
 
-  public partial class MaterialShaderTabs : UserControl {
-    public MaterialShaderTabs() {
+  public partial class MaterialShadersPanel : UserControl {
+    public MaterialShadersPanel() {
       InitializeComponent();
       this.InitViewer_(this.vertexShaderViewer_);
       this.InitViewer_(this.fragmentShaderViewer_);

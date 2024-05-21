@@ -4,19 +4,15 @@
              xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
-             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
-             x:Class="uni.ui.avalonia.materials.MaterialPanel"
-             x:DataType="materials:MaterialPanelViewModel">
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="uni.ui.avalonia.materials.MaterialTexturesPanel"
+             x:DataType="materials:MaterialTexturesPanelViewModel">
   <Design.DataContext>
-    <materials:MaterialPanelViewModelForDesigner />
+    <materials:MaterialTexturesPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <gb:GroupBox Classes="h2"
-               Header="{Binding MaterialLabel}"
+  <gb:GroupBox Classes="h3" 
+               Header="Textures"
                Theme="{StaticResource GroupBoxClassic}">
-    <StackPanel>
-      <materials:MaterialTexturesPanel DataContext="{Binding MaterialTexturesPanel}" />
-      <materials:MaterialShadersPanel DataContext="{Binding MaterialShadersPanel}" />
-    </StackPanel>
   </gb:GroupBox>
 </UserControl>
