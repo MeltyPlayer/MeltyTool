@@ -63,16 +63,16 @@ namespace uni.ui.avalonia.common.treeViews {
     public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes => null;
 
     public static readonly IImage MUSIC_ICON
-        = EmbeddedResourceUtil.LoadAvaloniaImage("music");
+        = AvaloniaImageUtil.Load("music");
 
     public static readonly IImage PICTURE_ICON
-        = EmbeddedResourceUtil.LoadAvaloniaImage("picture");
+        = AvaloniaImageUtil.Load("picture");
 
     public static readonly IImage MODEL_ICON
-        = EmbeddedResourceUtil.LoadAvaloniaImage("model");
+        = AvaloniaImageUtil.Load("model");
 
     public static readonly IImage SCENE_ICON
-        = EmbeddedResourceUtil.LoadAvaloniaImage("scene");
+        = AvaloniaImageUtil.Load("scene");
 
     public IImage Icon => data.FileBundle switch {
       IAudioFileBundle => MUSIC_ICON,

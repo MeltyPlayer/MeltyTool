@@ -1,5 +1,8 @@
+using System.Drawing;
+
 using Avalonia.Controls;
 
+using fin.image;
 using fin.model;
 using fin.model.impl;
 
@@ -11,7 +14,21 @@ namespace uni.ui.avalonia.materials {
   public class MaterialPanelViewModelForDesigner
       : MaterialPanelViewModel {
     public MaterialPanelViewModelForDesigner() {
-      this.ModelAndMaterial = (new ModelImpl(), null);
+      var model = new ModelImpl();
+      var materialManager = model.MaterialManager;
+      var material = materialManager.AddStandardMaterial();
+
+      var diffuseTexture = materialManager.CreateTexture(
+          FinImage.Create1x1FromColor(Color.Cyan));
+      diffuseTexture.Name = "Diffuse (Cyan)";
+      material.DiffuseTexture = diffuseTexture;
+
+      var normalTexture = materialManager.CreateTexture(
+          FinImage.Create1x1FromColor(Color.Yellow));
+      normalTexture.Name = "Normal (Yellow)";
+      material.NormalTexture = normalTexture;
+
+      this.ModelAndMaterial = (model, material);
     }
   }
 
@@ -25,16 +42,19 @@ namespace uni.ui.avalonia.materials {
       get => this.modelAndMaterial_;
       set {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
-        this.MaterialLabel = $"Material \"{value.Item2?.Name ?? "(null)"}\"";
+
+        var (_, material) = value;
+
+        this.MaterialLabel = $"Material \"{material?.Name ?? "(null)"}\"";
         if (this.materialShadersPanelViewModel_ == null) {
           this.MaterialTexturesPanel = new() {
-              ModelAndMaterial = value,
+              Material = material,
           };
           this.MaterialShadersPanel = new() {
               ModelAndMaterial = value,
           };
         } else {
-          this.MaterialTexturesPanel.ModelAndMaterial = value;
+          this.MaterialTexturesPanel.Material = material;
           this.MaterialShadersPanel.ModelAndMaterial = value;
         }
       }

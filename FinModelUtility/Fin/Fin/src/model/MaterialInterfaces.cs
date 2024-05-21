@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 using fin.color;
 using fin.image;
@@ -364,6 +365,10 @@ namespace fin.model {
 
     IReadOnlyImage Image { get; }
     Bitmap ImageData { get; }
+
+
+    [Const]
+    void WriteToStream(Stream stream);
 
     [Const]
     ISystemFile SaveInDirectory(ISystemDirectory directory);

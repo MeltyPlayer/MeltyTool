@@ -47,11 +47,14 @@ namespace fin.model.impl {
       public IReadOnlyImage Image { get; }
       public Bitmap ImageData => this.imageData_ ??= Image.AsBitmap();
 
+      public void WriteToStream(Stream stream)
+        => this.Image.ExportToStream(stream, this.BestImageFormat);
+
       public ISystemFile SaveInDirectory(ISystemDirectory directory) {
         ISystemFile outFile =
             new FinFile(Path.Combine(directory.FullPath, this.ValidFileName));
         using var writer = outFile.OpenWrite();
-        this.Image.ExportToStream(writer, BestImageFormat);
+        this.WriteToStream(writer);
         return outFile;
       }
 

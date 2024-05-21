@@ -1,14 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.IO;
-
-using fin.color;
-using fin.image;
-using fin.io;
-using fin.language.equations.fixedFunction;
-using fin.schema.vector;
-using fin.util.image;
 
 namespace fin.model.impl {
   public partial class ModelImpl<TVertex> {

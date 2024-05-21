@@ -11,8 +11,21 @@
     <materials:MaterialTexturesPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <gb:GroupBox Classes="h3" 
+  <gb:GroupBox Classes="h3"
                Header="Textures"
                Theme="{StaticResource GroupBoxClassic}">
+    <ListBox ItemsSource="{Binding Textures}"
+             Background="Transparent">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel Orientation="Horizontal">
+            <Image Width="24" Height="24" Source="{Binding Image}" />
+            <TextBlock Text="{Binding Texture.Name}"
+                       Padding="8 0 0 0"
+                       VerticalAlignment="Center" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
   </gb:GroupBox>
 </UserControl>
