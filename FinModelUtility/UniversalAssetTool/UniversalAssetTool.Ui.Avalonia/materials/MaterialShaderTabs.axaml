@@ -11,7 +11,7 @@
     <materials:MaterialShaderTabsViewModelForDesigner />
   </Design.DataContext>
 
-  <TabControl>
+  <TabControl Classes="h3">
     <TabItem Header="Vertex Shader">
       <avaloniaEdit:TextEditor
         Name="vertexShaderViewer_"
