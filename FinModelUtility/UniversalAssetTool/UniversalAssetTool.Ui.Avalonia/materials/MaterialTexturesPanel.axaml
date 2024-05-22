@@ -22,12 +22,15 @@
         <StackPanel>
           <textures:TexturePreview
             DataContext="{Binding SelectedTexturePreview}"
-            Width="150"
-            Height="150" />
+            Width="130"
+            Height="130" />
           <TextBlock Classes="h4"
                      Text="{Binding SelectedTexturePreview.Texture.Name}"
                      HorizontalAlignment="Center"
                      TextTrimming="CharacterEllipsis" />
+          <TextBlock Classes="caption"
+                     Text="{Binding SelectedTextureCaption}"
+                     HorizontalAlignment="Center" />
         </StackPanel>
       </controls:If>
 

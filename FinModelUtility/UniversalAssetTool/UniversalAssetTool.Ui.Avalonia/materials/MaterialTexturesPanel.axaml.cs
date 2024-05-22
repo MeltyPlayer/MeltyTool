@@ -12,8 +12,6 @@ using uni.ui.avalonia.resources;
 using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
 
-using Bitmap = Avalonia.Media.Imaging.Bitmap;
-
 namespace uni.ui.avalonia.materials {
   public class MaterialTexturesPanelViewModelForDesigner
       : MaterialTexturesPanelViewModel {
@@ -26,10 +24,8 @@ namespace uni.ui.avalonia.materials {
     private IReadOnlyMaterial? material_;
     private TextureViewModel selectedTextureViewModel_;
     private TexturePreviewViewModel selectedTexturePreviewViewModel_;
+    private string? selectedTextureCaption_;
     private ObservableCollection<TextureViewModel> textureViewModels_;
-
-    public Bitmap TransparentBackgroundImage { get; }
-      = AvaloniaImageUtil.Load("checkerboard");
 
     public required IReadOnlyMaterial? Material {
       get => this.material_;
@@ -60,9 +56,10 @@ namespace uni.ui.avalonia.materials {
         this.SelectedTexturePreview = value != null
             ? new TexturePreviewViewModel {
                 Texture = value.Texture,
-                ImageMargin = new Thickness(10),
+                ImageMargin = new Thickness(5),
             }
             : null;
+        this.SelectedTextureCaption = value?.Caption;
       }
     }
 
@@ -71,6 +68,12 @@ namespace uni.ui.avalonia.materials {
       private set => this.RaiseAndSetIfChanged(
           ref this.selectedTexturePreviewViewModel_,
           value);
+    }
+
+    public string? SelectedTextureCaption {
+      get => this.selectedTextureCaption_;
+      private set
+        => this.RaiseAndSetIfChanged(ref this.selectedTextureCaption_, value);
     }
   }
 
