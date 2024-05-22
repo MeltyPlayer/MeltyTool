@@ -1,10 +1,6 @@
-using System.Drawing;
-
 using Avalonia.Controls;
 
-using fin.image;
 using fin.model;
-using fin.model.impl;
 
 using ReactiveUI;
 
@@ -14,56 +10,17 @@ namespace uni.ui.avalonia.materials {
   public class MaterialPanelViewModelForDesigner
       : MaterialPanelViewModel {
     public MaterialPanelViewModelForDesigner() {
-      var model = new ModelImpl();
-      var materialManager = model.MaterialManager;
-      var material = materialManager.AddStandardMaterial();
-
-      {
-        var diffuseTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Cyan));
-        diffuseTexture.Name = "Diffuse (Cyan)";
-        material.DiffuseTexture = diffuseTexture;
-      }
-
-      {
-        var normalTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Yellow));
-        normalTexture.Name = "Normal (Yellow)";
-        material.NormalTexture = normalTexture;
-      }
-
-      {
-        var aoTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Magenta));
-        aoTexture.Name = "Ambient occlusion (Magenta)";
-        material.AmbientOcclusionTexture = aoTexture;
-      }
-
-      {
-        var emissiveTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Orange));
-        emissiveTexture.Name = "Emissive (Orange)";
-        material.EmissiveTexture = emissiveTexture;
-      }
-
-      {
-        var specularTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Red));
-        specularTexture.Name = "Specular (Red)";
-        material.SpecularTexture = specularTexture;
-      }
-
-      this.ModelAndMaterial = (model, material);
+      this.ModelAndMaterial = MaterialDesignerUtil.CreateStubModelAndMaterial();
     }
   }
 
   public class MaterialPanelViewModel : ViewModelBase {
-    private (IModel, IReadOnlyMaterial) modelAndMaterial_;
+    private (IReadOnlyModel, IReadOnlyMaterial) modelAndMaterial_;
     private string materialLabel_;
     private MaterialTexturesPanelViewModel materialTexturesPanelViewModel_;
     private MaterialShadersPanelViewModel materialShadersPanelViewModel_;
 
-    public required (IModel, IReadOnlyMaterial?) ModelAndMaterial {
+    public required (IReadOnlyModel, IReadOnlyMaterial?) ModelAndMaterial {
       get => this.modelAndMaterial_;
       set {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);

@@ -21,11 +21,11 @@ namespace uni.ui.avalonia.materials {
   }
 
   public class MaterialShadersPanelViewModel : ViewModelBase {
-    private (IModel, IReadOnlyMaterial) modelAndMaterial_;
+    private (IReadOnlyModel, IReadOnlyMaterial) modelAndMaterial_;
     private TextDocument vertexShaderSource_;
     private TextDocument fragmentShaderSource_;
 
-    public required (IModel, IReadOnlyMaterial?) ModelAndMaterial {
+    public required (IReadOnlyModel, IReadOnlyMaterial?) ModelAndMaterial {
       get => this.modelAndMaterial_;
       set {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);

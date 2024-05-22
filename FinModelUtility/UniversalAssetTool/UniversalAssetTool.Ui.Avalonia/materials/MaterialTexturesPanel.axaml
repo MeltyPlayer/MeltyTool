@@ -19,10 +19,29 @@
       <!-- Texture viewer -->
       <controls:If Condition="{Binding SelectedTexture, Converter={x:Static ObjectConverters.IsNotNull}}">
         <StackPanel>
-          <Image Width="150" Source="{Binding SelectedTexture.Image}" />
-          <TextBlock Text="{Binding SelectedTexture.Texture.Name}"
-                     FontWeight="Medium"
-                     FontSize="16"
+          <Grid Width="{Binding SelectedTextureViewerSize}"
+                Height="{Binding SelectedTextureViewerSize}">
+            <Border HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+              <Border.Background>
+                <ImageBrush
+                  AlignmentX="Left"
+                  AlignmentY="Top"
+                  Source="{Binding TransparentBackgroundImage}"
+                  Stretch="None"
+                  DestinationRect="0 0 24 24"
+                  TileMode="Tile" />
+              </Border.Background>
+            </Border>
+
+            <Image VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Width="{Binding SelectedTextureImageSize}"
+                   Height="{Binding SelectedTextureImageSize}"
+                   Source="{Binding SelectedTexture.Image}" />
+          </Grid>
+          <TextBlock Classes="h4"
+                     Text="{Binding SelectedTexture.Texture.Name}"
                      HorizontalAlignment="Center"
                      TextTrimming="CharacterEllipsis" />
         </StackPanel>
@@ -42,12 +61,21 @@
 
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <StackPanel Orientation="Horizontal">
-              <Image Width="32" Height="32" Source="{Binding Image}" />
-              <TextBlock Text="{Binding Texture.Name}"
-                         Padding="8 0 0 0"
-                         VerticalAlignment="Center" />
-            </StackPanel>
+            <DockPanel>
+              <Image DockPanel.Dock="Left"
+                     Width="32"
+                     Height="32"
+                     Source="{Binding Image}" />
+              <TextBlock DockPanel.Dock="Top"
+                         Text="{Binding Texture.Name}"
+                         Height="24"
+                         Margin="8 0 0 0" />
+              <TextBlock DockPanel.Dock="Bottom"
+                         Classes="caption"
+                         Text="{Binding Caption}"
+                         Height="12"
+                         Margin="8 0 0 0" />
+            </DockPanel>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>

@@ -10,6 +10,11 @@
     <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
 
+    <Style Selector="TextBlock.caption">
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="Light" />
+    </Style>
+
     <!-- h1 -->
     <Style Selector="
               TextBlock.h1, 

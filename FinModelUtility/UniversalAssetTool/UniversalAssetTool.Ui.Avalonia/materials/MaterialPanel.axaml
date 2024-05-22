@@ -14,12 +14,7 @@
   <gb:GroupBox Classes="h2"
                Header="{Binding MaterialLabel}"
                Theme="{StaticResource GroupBoxClassic}">
-    <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-      </Grid.RowDefinitions>
-
+    <Grid RowDefinitions="Auto Auto">
       <materials:MaterialTexturesPanel
         DataContext="{Binding MaterialTexturesPanel}"
         MaxHeight="200"/>

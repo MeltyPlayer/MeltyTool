@@ -1,12 +1,15 @@
+using System;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Avalonia.Controls;
+using Avalonia.Media;
 
-using fin.image;
 using fin.model;
-using fin.model.impl;
+
+using KSoft.Wwise;
 
 using ReactiveUI;
 
@@ -19,45 +22,7 @@ namespace uni.ui.avalonia.materials {
   public class MaterialTexturesPanelViewModelForDesigner
       : MaterialTexturesPanelViewModel {
     public MaterialTexturesPanelViewModelForDesigner() {
-      var model = new ModelImpl();
-      var materialManager = model.MaterialManager;
-      var material = materialManager.AddStandardMaterial();
-
-      {
-        var diffuseTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Cyan));
-        diffuseTexture.Name = "Diffuse (Cyan)";
-        material.DiffuseTexture = diffuseTexture;
-      }
-
-      {
-        var normalTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Yellow));
-        normalTexture.Name = "Normal (Yellow)";
-        material.NormalTexture = normalTexture;
-      }
-
-      {
-        var aoTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Magenta));
-        aoTexture.Name = "Ambient occlusion (Magenta)";
-        material.AmbientOcclusionTexture = aoTexture;
-      }
-
-      {
-        var emissiveTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Orange));
-        emissiveTexture.Name = "Emissive (Orange)";
-        material.EmissiveTexture = emissiveTexture;
-      }
-
-      {
-        var specularTexture = materialManager.CreateTexture(
-            FinImage.Create1x1FromColor(Color.Red));
-        specularTexture.Name = "Specular (Red)";
-        material.SpecularTexture = specularTexture;
-      }
-      this.Material = material;
+      this.Material = MaterialDesignerUtil.CreateStubMaterial();
     }
   }
 
@@ -65,6 +30,12 @@ namespace uni.ui.avalonia.materials {
     private IReadOnlyMaterial? material_;
     private TextureViewModel? selectedTextureViewModel_;
     private ObservableCollection<TextureViewModel> textureViewModels_;
+
+    public Bitmap TransparentBackgroundImage { get; }
+      = AvaloniaImageUtil.Load("checkerboard");
+
+    public int SelectedTextureViewerSize => 150;
+    public int SelectedTextureImageSize => this.SelectedTextureViewerSize - 10;
 
     public required IReadOnlyMaterial? Material {
       get => this.material_;
@@ -82,7 +53,8 @@ namespace uni.ui.avalonia.materials {
 
     public TextureViewModel? SelectedTexture {
       get => this.selectedTextureViewModel_;
-      set => this.RaiseAndSetIfChanged(ref this.selectedTextureViewModel_, value);
+      set => this.RaiseAndSetIfChanged(ref this.selectedTextureViewModel_,
+                                       value);
     }
 
     public ObservableCollection<TextureViewModel> Textures {
@@ -95,18 +67,27 @@ namespace uni.ui.avalonia.materials {
   public class TextureViewModel : ViewModelBase {
     private IReadOnlyTexture texture_;
     private Bitmap image_;
+    private string caption_;
 
     public required IReadOnlyTexture Texture {
       get => this.texture_;
       set {
         this.RaiseAndSetIfChanged(ref this.texture_, value);
-        this.Image = this.texture_.AsAvaloniaImage();
+        this.Image = value.AsAvaloniaImage();
+
+        var image = value.Image;
+        this.Caption = $"{image.PixelFormat}, {image.Width}x{image.Height}";
       }
     }
 
     public Bitmap Image {
       get => this.image_;
       private set => this.RaiseAndSetIfChanged(ref this.image_, value);
+    }
+
+    public string Caption {
+      get => this.caption_;
+      set => this.RaiseAndSetIfChanged(ref this.caption_, value);
     }
   }
 
