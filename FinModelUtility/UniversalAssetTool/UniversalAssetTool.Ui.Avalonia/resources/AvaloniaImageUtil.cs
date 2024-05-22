@@ -4,6 +4,7 @@ using System.IO;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
+using fin.image;
 using fin.model;
 
 namespace uni.ui.avalonia.resources;
@@ -14,6 +15,14 @@ public static class AvaloniaImageUtil {
 
   public static Bitmap Load(string imageName)
     => new(AssetLoader.Open(new Uri(GetUri(imageName))));
+
+  public static Bitmap AsAvaloniaImage(this IReadOnlyImage image) {
+    using var ms = new MemoryStream();
+    image.ExportToStream(ms, LocalImageFormat.PNG);
+    ms.Flush();
+    ms.Position = 0;
+    return new Bitmap(ms);
+  }
 
   public static Bitmap AsAvaloniaImage(this IReadOnlyTexture texture) {
     using var ms = new MemoryStream();

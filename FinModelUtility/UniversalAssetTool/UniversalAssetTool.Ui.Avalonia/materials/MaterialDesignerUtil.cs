@@ -57,6 +57,13 @@ public static class MaterialDesignerUtil {
     return (model, material);
   }
 
+
+  public static IReadOnlyTexture CreateStubTexture(int width, int height) {
+    var model = new ModelImpl();
+    var materialManager = model.MaterialManager;
+    return materialManager.CreateTexture(CreateStubImage(width, height));
+  }
+
   public static IReadOnlyImage CreateStubImage(int width, int height) {
     var image = new Rgba32Image(PixelFormat.ETC1, width, height);
     using var imgLock = image.Lock();

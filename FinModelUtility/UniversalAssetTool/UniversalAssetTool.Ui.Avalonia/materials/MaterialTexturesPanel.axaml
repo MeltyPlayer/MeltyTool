@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
              x:Class="uni.ui.avalonia.materials.MaterialTexturesPanel"
              x:DataType="materials:MaterialTexturesPanelViewModel">
@@ -17,30 +18,14 @@
                Theme="{StaticResource GroupBoxClassic}">
     <Grid ColumnDefinitions="200 * ">
       <!-- Texture viewer -->
-      <controls:If Condition="{Binding SelectedTexture, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <controls:If Condition="{Binding SelectedTexturePreview, Converter={x:Static ObjectConverters.IsNotNull}}">
         <StackPanel>
-          <Grid Width="{Binding SelectedTextureViewerSize}"
-                Height="{Binding SelectedTextureViewerSize}">
-            <Border HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
-              <Border.Background>
-                <ImageBrush
-                  AlignmentX="Left"
-                  AlignmentY="Top"
-                  Source="{Binding TransparentBackgroundImage}"
-                  TileMode="Tile"
-                  DestinationRect="0 0 32 32" />
-              </Border.Background>
-            </Border>
-
-            <Image VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Width="{Binding SelectedTextureImageSize}"
-                   Height="{Binding SelectedTextureImageSize}"
-                   Source="{Binding SelectedTexture.Image}" />
-          </Grid>
+          <textures:TexturePreview
+            DataContext="{Binding SelectedTexturePreview}"
+            Width="150"
+            Height="150" />
           <TextBlock Classes="h4"
-                     Text="{Binding SelectedTexture.Texture.Name}"
+                     Text="{Binding SelectedTexturePreview.Texture.Name}"
                      HorizontalAlignment="Center"
                      TextTrimming="CharacterEllipsis" />
         </StackPanel>
@@ -61,10 +46,11 @@
         <ListBox.ItemTemplate>
           <DataTemplate>
             <DockPanel>
-              <Image DockPanel.Dock="Left"
-                     Width="32"
-                     Height="32"
-                     Source="{Binding Image}" />
+              <textures:TexturePreview
+                DockPanel.Dock="Left"
+                DataContext="{Binding TexturePreview}"
+                Width="32"
+                Height="32" />
               <TextBlock DockPanel.Dock="Top"
                          Text="{Binding Texture.Name}"
                          Height="24"
@@ -72,7 +58,7 @@
               <TextBlock DockPanel.Dock="Bottom"
                          Classes="caption"
                          Text="{Binding Caption}"
-                         Height="12"
+                         Height="16"
                          Margin="8 0 0 0" />
             </DockPanel>
           </DataTemplate>

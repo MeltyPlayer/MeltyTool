@@ -57,5 +57,8 @@
     <Compile Update="materials\MaterialShadersPanel.axaml.cs">
       <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
     </Compile>
+    <Compile Update="textures\TexturePreview.axaml.cs">
+      <DependentUpon>TexturePreview.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
