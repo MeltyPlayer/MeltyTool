@@ -1,15 +1,9 @@
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Avalonia.Controls;
-using Avalonia.Media;
 
 using fin.model;
-
-using KSoft.Wwise;
 
 using ReactiveUI;
 

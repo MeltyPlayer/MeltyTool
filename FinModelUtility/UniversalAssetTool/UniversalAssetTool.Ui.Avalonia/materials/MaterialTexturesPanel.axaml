@@ -28,9 +28,8 @@
                   AlignmentX="Left"
                   AlignmentY="Top"
                   Source="{Binding TransparentBackgroundImage}"
-                  Stretch="None"
-                  DestinationRect="0 0 24 24"
-                  TileMode="Tile" />
+                  TileMode="Tile"
+                  DestinationRect="0 0 32 32" />
               </Border.Background>
             </Border>
 
