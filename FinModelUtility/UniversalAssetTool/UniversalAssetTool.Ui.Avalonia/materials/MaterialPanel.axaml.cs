@@ -18,15 +18,40 @@ namespace uni.ui.avalonia.materials {
       var materialManager = model.MaterialManager;
       var material = materialManager.AddStandardMaterial();
 
-      var diffuseTexture = materialManager.CreateTexture(
-          FinImage.Create1x1FromColor(Color.Cyan));
-      diffuseTexture.Name = "Diffuse (Cyan)";
-      material.DiffuseTexture = diffuseTexture;
+      {
+        var diffuseTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Cyan));
+        diffuseTexture.Name = "Diffuse (Cyan)";
+        material.DiffuseTexture = diffuseTexture;
+      }
 
-      var normalTexture = materialManager.CreateTexture(
-          FinImage.Create1x1FromColor(Color.Yellow));
-      normalTexture.Name = "Normal (Yellow)";
-      material.NormalTexture = normalTexture;
+      {
+        var normalTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Yellow));
+        normalTexture.Name = "Normal (Yellow)";
+        material.NormalTexture = normalTexture;
+      }
+
+      {
+        var aoTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Magenta));
+        aoTexture.Name = "Ambient occlusion (Magenta)";
+        material.AmbientOcclusionTexture = aoTexture;
+      }
+
+      {
+        var emissiveTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Orange));
+        emissiveTexture.Name = "Emissive (Orange)";
+        material.EmissiveTexture = emissiveTexture;
+      }
+
+      {
+        var specularTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Red));
+        specularTexture.Name = "Specular (Red)";
+        material.SpecularTexture = specularTexture;
+      }
 
       this.ModelAndMaterial = (model, material);
     }

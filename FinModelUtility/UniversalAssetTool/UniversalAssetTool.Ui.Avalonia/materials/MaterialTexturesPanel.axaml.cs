@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 
 using Avalonia.Controls;
-
-using DynamicData;
-using DynamicData.Binding;
 
 using fin.image;
 using fin.model;
@@ -28,22 +23,47 @@ namespace uni.ui.avalonia.materials {
       var materialManager = model.MaterialManager;
       var material = materialManager.AddStandardMaterial();
 
-      var diffuseTexture = materialManager.CreateTexture(
-          FinImage.Create1x1FromColor(Color.Cyan));
-      diffuseTexture.Name = "Diffuse (Cyan)";
-      material.DiffuseTexture = diffuseTexture;
+      {
+        var diffuseTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Cyan));
+        diffuseTexture.Name = "Diffuse (Cyan)";
+        material.DiffuseTexture = diffuseTexture;
+      }
 
-      var normalTexture = materialManager.CreateTexture(
-          FinImage.Create1x1FromColor(Color.Yellow));
-      normalTexture.Name = "Normal (Yellow)";
-      material.NormalTexture = normalTexture;
+      {
+        var normalTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Yellow));
+        normalTexture.Name = "Normal (Yellow)";
+        material.NormalTexture = normalTexture;
+      }
 
+      {
+        var aoTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Magenta));
+        aoTexture.Name = "Ambient occlusion (Magenta)";
+        material.AmbientOcclusionTexture = aoTexture;
+      }
+
+      {
+        var emissiveTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Orange));
+        emissiveTexture.Name = "Emissive (Orange)";
+        material.EmissiveTexture = emissiveTexture;
+      }
+
+      {
+        var specularTexture = materialManager.CreateTexture(
+            FinImage.Create1x1FromColor(Color.Red));
+        specularTexture.Name = "Specular (Red)";
+        material.SpecularTexture = specularTexture;
+      }
       this.Material = material;
     }
   }
 
   public class MaterialTexturesPanelViewModel : ViewModelBase {
     private IReadOnlyMaterial? material_;
+    private TextureViewModel? selectedTextureViewModel_;
     private ObservableCollection<TextureViewModel> textureViewModels_;
 
     public required IReadOnlyMaterial? Material {
@@ -55,10 +75,17 @@ namespace uni.ui.avalonia.materials {
                 .Select(texture => new TextureViewModel()
                             { Texture = texture }) ??
             Enumerable.Empty<TextureViewModel>());
+
+        this.SelectedTexture = this.Textures.FirstOrDefault();
       }
     }
 
-    public ObservableCollection<TextureViewModel>? Textures {
+    public TextureViewModel? SelectedTexture {
+      get => this.selectedTextureViewModel_;
+      set => this.RaiseAndSetIfChanged(ref this.selectedTextureViewModel_, value);
+    }
+
+    public ObservableCollection<TextureViewModel> Textures {
       get => this.textureViewModels_;
       private set
         => this.RaiseAndSetIfChanged(ref this.textureViewModels_, value);

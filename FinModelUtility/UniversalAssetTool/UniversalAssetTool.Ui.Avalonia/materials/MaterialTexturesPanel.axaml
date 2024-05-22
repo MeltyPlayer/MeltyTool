@@ -4,7 +4,8 @@
              xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
              x:Class="uni.ui.avalonia.materials.MaterialTexturesPanel"
              x:DataType="materials:MaterialTexturesPanelViewModel">
   <Design.DataContext>
@@ -14,18 +15,42 @@
   <gb:GroupBox Classes="h3"
                Header="Textures"
                Theme="{StaticResource GroupBoxClassic}">
-    <ListBox ItemsSource="{Binding Textures}"
-             Background="Transparent">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <StackPanel Orientation="Horizontal">
-            <Image Width="24" Height="24" Source="{Binding Image}" />
-            <TextBlock Text="{Binding Texture.Name}"
-                       Padding="8 0 0 0"
-                       VerticalAlignment="Center" />
-          </StackPanel>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
+    <Grid ColumnDefinitions="200 * ">
+      <!-- Texture viewer -->
+      <controls:If Condition="{Binding SelectedTexture, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel>
+          <Image Width="150" Source="{Binding SelectedTexture.Image}" />
+          <TextBlock Text="{Binding SelectedTexture.Texture.Name}"
+                     FontWeight="Medium"
+                     FontSize="16"
+                     HorizontalAlignment="Center"
+                     TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+      </controls:If>
+
+      <!-- Textures list -->
+      <ListBox Grid.Column="1"
+               ItemsSource="{Binding Textures}"
+               Background="Transparent"
+               SelectionMode="AlwaysSelected"
+               SelectedItem="{Binding SelectedTexture}">
+        <ListBox.Styles>
+          <Style Selector="ListBoxItem">
+            <Setter Property="Height" Value="36" />
+          </Style>
+        </ListBox.Styles>
+
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <Image Width="32" Height="32" Source="{Binding Image}" />
+              <TextBlock Text="{Binding Texture.Name}"
+                         Padding="8 0 0 0"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
   </gb:GroupBox>
 </UserControl>

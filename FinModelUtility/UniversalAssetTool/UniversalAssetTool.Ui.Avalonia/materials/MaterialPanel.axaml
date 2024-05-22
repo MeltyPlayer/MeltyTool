@@ -14,9 +14,18 @@
   <gb:GroupBox Classes="h2"
                Header="{Binding MaterialLabel}"
                Theme="{StaticResource GroupBoxClassic}">
-    <StackPanel>
-      <materials:MaterialTexturesPanel DataContext="{Binding MaterialTexturesPanel}" />
-      <materials:MaterialShadersPanel DataContext="{Binding MaterialShadersPanel}" />
-    </StackPanel>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <materials:MaterialTexturesPanel
+        DataContext="{Binding MaterialTexturesPanel}"
+        MaxHeight="200"/>
+      <materials:MaterialShadersPanel
+        Grid.Row="1"
+        DataContext="{Binding MaterialShadersPanel}" />
+    </Grid>
   </gb:GroupBox>
 </UserControl>
