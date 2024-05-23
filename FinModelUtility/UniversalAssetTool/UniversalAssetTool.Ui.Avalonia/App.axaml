@@ -15,8 +15,9 @@
     </Style>
 
     <Style Selector="TextBlock.caption">
-      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontSize" Value="11" />
       <Setter Property="FontWeight" Value="Light" />
+      <Setter Property="Foreground" Value="#555555" />
     </Style>
 
     <!-- h1 -->
