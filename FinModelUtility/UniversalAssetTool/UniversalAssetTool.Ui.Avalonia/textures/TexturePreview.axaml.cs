@@ -1,7 +1,9 @@
+using System;
 using System.Drawing;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 
 using fin.image;
 using fin.model;

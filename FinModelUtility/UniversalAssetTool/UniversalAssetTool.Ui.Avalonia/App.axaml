@@ -11,6 +11,10 @@
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
 
     <Style Selector="TextBlock.caption">
+      <Setter Property="FontFamily" Value="Tahoma" />
+    </Style>
+
+    <Style Selector="TextBlock.caption">
       <Setter Property="FontSize" Value="12" />
       <Setter Property="FontWeight" Value="Light" />
     </Style>

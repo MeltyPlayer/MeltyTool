@@ -19,11 +19,13 @@
     <Grid ColumnDefinitions="200 * ">
       <!-- Texture viewer -->
       <controls:If Condition="{Binding SelectedTexturePreview, Converter={x:Static ObjectConverters.IsNotNull}}">
-        <StackPanel>
-          <textures:TexturePreview
-            DataContext="{Binding SelectedTexturePreview}"
-            Width="130"
-            Height="130" />
+        <StackPanel Margin="8 0">
+          <Border BorderThickness="1" BorderBrush="LightGray">
+            <textures:TexturePreview
+              DataContext="{Binding SelectedTexturePreview}"
+              HorizontalAlignment="Stretch"
+              Height="130" />
+          </Border>
           <TextBlock Classes="h4"
                      Text="{Binding SelectedTexturePreview.Texture.Name}"
                      HorizontalAlignment="Center"
@@ -49,20 +51,23 @@
         <ListBox.ItemTemplate>
           <DataTemplate>
             <DockPanel>
-              <textures:TexturePreview
-                DockPanel.Dock="Left"
-                DataContext="{Binding TexturePreview}"
-                Width="32"
-                Height="32" />
+              <Border DockPanel.Dock="Left"
+                      BorderThickness="1" 
+                      BorderBrush="LightGray"
+                      Width="32"
+                      Height="32">
+                <textures:TexturePreview
+                  DataContext="{Binding TexturePreview}" />
+              </Border>
               <TextBlock DockPanel.Dock="Top"
                          Text="{Binding Texture.Name}"
                          Height="24"
-                         Margin="8 0 0 0" />
+                         Margin="8 -2 0 0" />
               <TextBlock DockPanel.Dock="Bottom"
                          Classes="caption"
                          Text="{Binding Caption}"
                          Height="16"
-                         Margin="8 0 0 0" />
+                         Margin="8 4 0 0" />
             </DockPanel>
           </DataTemplate>
         </ListBox.ItemTemplate>
