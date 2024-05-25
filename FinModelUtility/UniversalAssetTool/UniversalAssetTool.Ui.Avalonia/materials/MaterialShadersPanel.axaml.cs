@@ -21,7 +21,7 @@ namespace uni.ui.avalonia.materials {
   }
 
   public class MaterialShadersPanelViewModel : ViewModelBase {
-    private (IReadOnlyModel, IReadOnlyMaterial) modelAndMaterial_;
+    private (IReadOnlyModel, IReadOnlyMaterial?) modelAndMaterial_;
     private TextDocument vertexShaderSource_;
     private TextDocument fragmentShaderSource_;
 

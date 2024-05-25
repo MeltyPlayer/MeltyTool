@@ -1,7 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
@@ -11,16 +10,12 @@
     <materials:MaterialPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <gb:GroupBox Classes="h2"
-               Header="{Binding MaterialLabel}"
-               Theme="{StaticResource GroupBoxClassic}">
-    <Grid RowDefinitions="Auto Auto">
-      <materials:MaterialTexturesPanel
-        DataContext="{Binding MaterialTexturesPanel}"
-        MaxHeight="200"/>
-      <materials:MaterialShadersPanel
-        Grid.Row="1"
-        DataContext="{Binding MaterialShadersPanel}" />
-    </Grid>
-  </gb:GroupBox>
+  <Grid RowDefinitions="Auto Auto">
+    <materials:MaterialTexturesPanel
+      DataContext="{Binding MaterialTexturesPanel}"
+      MaxHeight="200"/>
+    <materials:MaterialShadersPanel
+      Grid.Row="1"
+      DataContext="{Binding MaterialShadersPanel}" />
+  </Grid>
 </UserControl>

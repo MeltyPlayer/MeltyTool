@@ -20,24 +20,11 @@
     </Style>
   </UserControl.Styles>
 
-  <SplitView IsPaneOpen="True"
-             PaneBackground="White"
-             DisplayMode="Inline"
-             OpenPaneLength="250">
-    <SplitView.Pane>
-      <treeViews:FilterTreeView />
-    </SplitView.Pane>
+  <DockPanel>
+    <treeViews:FilterTreeView DockPanel.Dock="Left" />
+    <materials:MaterialPanel DockPanel.Dock="Right" />
 
-    <SplitView IsPaneOpen="True"
-               PaneBackground="White"
-               DisplayMode="Inline"
-               OpenPaneLength="250">
-      <SplitView.Pane>
-        <materials:MaterialShadersPanel />
-      </SplitView.Pane>
-
-      <Panel Background="Magenta">
-      </Panel>
-    </SplitView>
-  </SplitView>
+    <Panel Background="Magenta">
+    </Panel>
+  </DockPanel>
 </UserControl>

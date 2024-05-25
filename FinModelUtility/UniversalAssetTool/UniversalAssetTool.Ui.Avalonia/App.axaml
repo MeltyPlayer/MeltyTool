@@ -25,11 +25,11 @@
               TextBlock.h1, 
               TabControl.h1 TabItem ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h1 TextBlock#GBHeaderText">
-      <Setter Property="TextBlock.FontSize" Value="28" />
+      <Setter Property="TextBlock.FontSize" Value="22" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
     </Style>
     <Style Selector="TabControl.h1 TabItem">
-      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="MinHeight" Value="30" />
     </Style>
 
     <!-- h2 -->
@@ -37,11 +37,11 @@
               TextBlock.h2, 
               TabControl.h2 TabItem ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h2 TextBlock#GBHeaderText">
-      <Setter Property="TextBlock.FontSize" Value="24" />
+      <Setter Property="TextBlock.FontSize" Value="20" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
     </Style>
     <Style Selector="TabControl.h2 TabItem">
-      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="MinHeight" Value="28" />
     </Style>
 
     <!-- h3 -->
@@ -49,11 +49,11 @@
               TextBlock.h3,
               TabControl.h3 TabItem ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h3 TextBlock#GBHeaderText">
-      <Setter Property="TextBlock.FontSize" Value="20" />
+      <Setter Property="TextBlock.FontSize" Value="18" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
     </Style>
     <Style Selector="TabControl.h3 TabItem">
-      <Setter Property="MinHeight" Value="28" />
+      <Setter Property="MinHeight" Value="26" />
     </Style>
 
     <!-- h4 -->

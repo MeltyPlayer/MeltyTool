@@ -15,8 +15,7 @@ namespace uni.ui.avalonia.materials {
   }
 
   public class MaterialPanelViewModel : ViewModelBase {
-    private (IReadOnlyModel, IReadOnlyMaterial) modelAndMaterial_;
-    private string materialLabel_;
+    private (IReadOnlyModel, IReadOnlyMaterial?) modelAndMaterial_;
     private MaterialTexturesPanelViewModel materialTexturesPanelViewModel_;
     private MaterialShadersPanelViewModel materialShadersPanelViewModel_;
 
@@ -26,8 +25,6 @@ namespace uni.ui.avalonia.materials {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
 
         var (_, material) = value;
-
-        this.MaterialLabel = $"Material \"{material?.Name ?? "(null)"}\"";
         if (this.materialShadersPanelViewModel_ == null) {
           this.MaterialTexturesPanel = new() {
               Material = material,
@@ -40,11 +37,6 @@ namespace uni.ui.avalonia.materials {
           this.MaterialShadersPanel.ModelAndMaterial = value;
         }
       }
-    }
-
-    public string MaterialLabel {
-      get => this.materialLabel_;
-      set => this.RaiseAndSetIfChanged(ref this.materialLabel_, value);
     }
 
     public MaterialTexturesPanelViewModel MaterialTexturesPanel {
