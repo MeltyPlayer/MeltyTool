@@ -47,8 +47,8 @@ namespace fin.model.util {
               .OrderByDescending(
                   texture => texture.ColorType == ColorType.COLOR)
               .ThenByDescending(
-                  texture => ImageUtil.GetTransparencyType(texture.Image) ==
-                             ImageTransparencyType.OPAQUE)
+                  texture => TransparencyTypeUtil.GetTransparencyType(texture.Image) ==
+                             TransparencyType.OPAQUE)
               .ToArray();
 
       if (prioritizedTextures.Length > 0) {

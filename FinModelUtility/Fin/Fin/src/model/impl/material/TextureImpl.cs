@@ -23,7 +23,7 @@ namespace fin.model.impl {
     }
 
     private class TextureImpl : ITexture {
-      private ImageTransparencyType? transparencyType_;
+      private TransparencyType? transparencyType_;
       private Bitmap? imageData_;
 
       public TextureImpl(IReadOnlyImage image) {
@@ -58,8 +58,8 @@ namespace fin.model.impl {
         return outFile;
       }
 
-      public ImageTransparencyType TransparencyType
-        => this.transparencyType_ ??= ImageUtil.GetTransparencyType(this.Image);
+      public TransparencyType TransparencyType
+        => this.transparencyType_ ??= TransparencyTypeUtil.GetTransparencyType(this.Image);
 
       public WrapMode WrapModeU { get; set; }
       public WrapMode WrapModeV { get; set; }

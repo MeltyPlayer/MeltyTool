@@ -1,6 +1,8 @@
 ﻿using fin.data.dictionaries;
 using fin.math;
 using fin.model;
+using fin.model.util;
+using fin.util.image;
 
 
 namespace fin.ui.rendering.gl.model {
@@ -32,26 +34,35 @@ namespace fin.ui.rendering.gl.model {
       var allMaterialMeshRenderers =
           new List<(IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])>();
 
-      var primitiveMerger = new PrimitiveMerger();
+      // TODO: Optimize this with something like a "MinMap"?
+      var meshQueue = new RenderPriorityOrderedSet<IReadOnlyMesh>();
       foreach (var mesh in this.Model.Skin.Meshes) {
+        foreach (var primitive in mesh.Primitives) {
+          meshQueue.Add(mesh,
+                        primitive.InversePriority,
+                        primitive.Material.TransparencyType ==
+                        TransparencyType.TRANSPARENT);
+        }
+      }
+
+      var primitiveMerger = new PrimitiveMerger();
+      foreach (var mesh in meshQueue) {
+        var materialQueue = new RenderPriorityOrderedSet<IReadOnlyMaterial>();
         var primitivesByMaterial
             = new ListDictionary<IReadOnlyMaterial, IReadOnlyPrimitive>();
-        var prioritiesByMaterial = new SetDictionary<IReadOnlyMaterial, uint>();
         foreach (var primitive in mesh.Primitives) {
           primitivesByMaterial.Add(primitive.Material, primitive);
-          prioritiesByMaterial.Add(primitive.Material,
-                                   primitive.InversePriority);
+          materialQueue.Add(
+              primitive.Material,
+              primitive.InversePriority,
+              primitive.Material.TransparencyType ==
+              TransparencyType.TRANSPARENT);
         }
-
-        var orderedMaterials =
-            prioritiesByMaterial.OrderBy(pair => pair.Value.Order().First())
-                                .Select(pair => pair.Key)
-                                .ToArray();
 
         var materialMeshRenderers =
             new ListDictionary<IReadOnlyMesh,
                 MergedMaterialPrimitivesRenderer>();
-        foreach (var material in orderedMaterials) {
+        foreach (var material in materialQueue) {
           var primitives = primitivesByMaterial[material];
           if (!primitiveMerger.TryToMergePrimitives(
                   primitives,

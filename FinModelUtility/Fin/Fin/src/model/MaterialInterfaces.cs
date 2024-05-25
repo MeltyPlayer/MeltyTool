@@ -19,7 +19,7 @@ namespace fin.model {
 
     // TODO: Name is actually required, should be required in the creation scripts?
     INullMaterial AddNullMaterial();
-    ITextureMaterial AddTextureMaterial(ITexture texture);
+    ITextureMaterial AddTextureMaterial(IReadOnlyTexture texture);
     IColorMaterial AddColorMaterial(Color color);
     IStandardMaterial AddStandardMaterial();
     IFixedFunctionMaterial AddFixedFunctionMaterial();
@@ -64,7 +64,7 @@ namespace fin.model {
   public partial interface IMaterial {
     string? Name { get; set; }
 
-    IEnumerable<ITexture> Textures { get; }
+    IEnumerable<IReadOnlyTexture> Textures { get; }
 
     CullingMode CullingMode { get; set; }
 
@@ -73,6 +73,8 @@ namespace fin.model {
 
     bool IgnoreLights { get; set; }
     float Shininess { get; set; }
+
+    TransparencyType TransparencyType { get; set; }
   }
 
   [GenerateReadOnly]
@@ -80,7 +82,7 @@ namespace fin.model {
 
   [GenerateReadOnly]
   public partial interface ITextureMaterial : IMaterial {
-    ITexture Texture { get; }
+    IReadOnlyTexture Texture { get; }
   }
 
   [GenerateReadOnly]
@@ -90,11 +92,11 @@ namespace fin.model {
 
   [GenerateReadOnly]
   public partial interface IStandardMaterial : IMaterial {
-    ITexture? DiffuseTexture { get; set; }
-    ITexture? AmbientOcclusionTexture { get; set; }
-    ITexture? NormalTexture { get; set; }
-    ITexture? EmissiveTexture { get; set; }
-    ITexture? SpecularTexture { get; set; }
+    IReadOnlyTexture? DiffuseTexture { get; set; }
+    IReadOnlyTexture? AmbientOcclusionTexture { get; set; }
+    IReadOnlyTexture? NormalTexture { get; set; }
+    IReadOnlyTexture? EmissiveTexture { get; set; }
+    IReadOnlyTexture? SpecularTexture { get; set; }
   }
 
 
@@ -373,7 +375,7 @@ namespace fin.model {
     [Const]
     ISystemFile SaveInDirectory(ISystemDirectory directory);
 
-    ImageTransparencyType TransparencyType { get; }
+    TransparencyType TransparencyType { get; }
 
     WrapMode WrapModeU { get; set; }
     WrapMode WrapModeV { get; set; }

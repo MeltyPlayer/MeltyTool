@@ -2,6 +2,7 @@
 
 using fin.model;
 using fin.model.extensions;
+using fin.util.image;
 
 namespace fin.shaders.glsl {
   public class ColorShaderSourceGlsl : IShaderSourceGlsl {
@@ -48,9 +49,9 @@ namespace fin.shaders.glsl {
             $"""
 
              {GlslUtil.GetGetIndividualLightColorsFunction()}
-             
+
              {GlslUtil.GetGetMergedLightColorsFunction()}
-             
+
              {GlslUtil.GetApplyMergedLightColorsFunction(false)}
              """
         );
@@ -68,21 +69,23 @@ namespace fin.shaders.glsl {
             $"""
              
                // Have to renormalize because the vertex normals can become distorted when interpolated.
-               vec3 fragNormal = normalize(vertexNormal); 
+               vec3 fragNormal = normalize(vertexNormal);
                fragColor.rgb =
                    mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
              """);
       }
 
-      fragmentSrc.Append(
-          $$"""
-            
-            
-              if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
-                discard;
+      if (material.TransparencyType == TransparencyType.MASK) {
+        fragmentSrc.Append(
+            $$"""
+              
+              
+                if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
+                  discard;
+                }
               }
-            }
-            """);
+              """);
+      }
 
       this.FragmentShaderSource = fragmentSrc.ToString();
     }

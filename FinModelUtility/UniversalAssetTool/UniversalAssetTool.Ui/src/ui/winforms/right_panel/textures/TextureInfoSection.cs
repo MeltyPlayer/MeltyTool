@@ -36,9 +36,9 @@ namespace uni.ui.winforms.right_panel.textures {
 
       [Display(Order = 2)]
       [Category("Metadata")]
-      public ImageTransparencyType? TransparencyType
+      public TransparencyType? TransparencyType
         => this.impl_ != null
-            ? ImageUtil.GetTransparencyType(this.impl_.Image)
+            ? TransparencyTypeUtil.GetTransparencyType(this.impl_.Image)
             : null;
 
       [Display(Order = 3)]

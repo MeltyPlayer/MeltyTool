@@ -11,6 +11,7 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.util.asserts;
+using fin.util.image;
 
 using glo.schema;
 
@@ -29,7 +30,8 @@ namespace glo.api {
 
       var glo = gloFile.ReadNew<Glo>();
 
-      var textureFilesByName = new CaseInvariantStringDictionary<IReadOnlyTreeFile>();
+      var textureFilesByName
+          = new CaseInvariantStringDictionary<IReadOnlyTreeFile>();
       foreach (var textureDirectory in textureDirectories) {
         foreach (var textureFile in textureDirectory.GetExistingFiles()) {
           if (FinImage.IsSupportedFileType(textureFile)) {
@@ -78,27 +80,30 @@ namespace glo.api {
 
             return finTexture;
           });
-      var withCullingMap =
-          new LazyCaseInvariantStringDictionary<IMaterial>(textureFilename => {
-            var finTexture = finTextureMap[textureFilename];
-            if (finTexture == null) {
-              return finModel.MaterialManager.AddStandardMaterial();
-            }
+      var finMaterialMap
+          = new LazyDictionary<(IReadOnlyTexture? finTexture,
+              TransparencyType meshTransparencyType, bool withCulling),
+              IMaterial>(
+              tuple => {
+                var (finTexture, meshTransparencyType, withCulling) = tuple;
 
-            return finModel.MaterialManager.AddTextureMaterial(finTexture);
-          });
-      var withoutCullingMap = new LazyCaseInvariantStringDictionary<IMaterial>(
-          textureFilename => {
-            var finTexture = finTextureMap[textureFilename];
-            IMaterial finMaterial = finTexture == null
-                ? finModel.MaterialManager
-                          .AddStandardMaterial()
-                : finModel.MaterialManager
-                          .AddTextureMaterial(
-                              finTexture);
-            finMaterial.CullingMode = CullingMode.SHOW_BOTH;
-            return finMaterial;
-          });
+                IMaterial finMaterial;
+                if (finTexture == null) {
+                  finMaterial = finModel.MaterialManager.AddStandardMaterial();
+                } else {
+                  finMaterial
+                      = finModel.MaterialManager.AddTextureMaterial(finTexture);
+                }
+
+                if (withCulling) {
+                  finMaterial.CullingMode = CullingMode.SHOW_BOTH;
+                }
+
+                finMaterial.TransparencyType = meshTransparencyType.Merge(
+                    finTexture?.TransparencyType ?? TransparencyType.OPAQUE);
+
+                return finMaterial;
+              });
 
       var firstMeshMap = new CaseInvariantStringDictionary<GloMesh>();
 
@@ -132,6 +137,10 @@ namespace glo.api {
           if (!firstMeshMap.TryGetValue(name, out idealMesh)) {
             firstMeshMap[name] = idealMesh = gloMesh;
           }
+
+          var meshTransparencyType
+              = TransparencyTypeUtil.GetTransparencyType(
+                  idealMesh.MeshTranslucency);
 
           var position = gloMesh.MoveKeys[0].Xyz;
 
@@ -288,14 +297,18 @@ namespace glo.api {
 
             var enableBackfaceCulling = (gloFace.Flags & 1 << 2) == 0;
 
+            finFaceColor
+                = FinColor.FromRgbaFloats(1, 1, 1, gloMesh.MeshTranslucency);
+
             IMaterial? finMaterial;
             if (textureFilename == previousTextureName) {
               finMaterial = previousMaterial;
             } else {
               previousTextureName = textureFilename;
-              finMaterial = enableBackfaceCulling
-                  ? withCullingMap[textureFilename]
-                  : withoutCullingMap[textureFilename];
+              finMaterial = finMaterialMap[
+                  (finTextureMap[textureFilename],
+                   meshTransparencyType,
+                   enableBackfaceCulling)];
               previousMaterial = finMaterial;
             }
 
@@ -311,10 +324,9 @@ namespace glo.api {
               var gloVertexRef = gloFace.VertexRefs[v];
               var gloVertex = gloVertices[gloVertexRef.Index];
 
-              var finVertex =
-                  finSkin.AddVertex(gloVertex.X, gloVertex.Y, gloVertex.Z);
+              var finVertex = finSkin.AddVertex(gloVertex);
               finVertex.SetUv(gloVertexRef.U, gloVertexRef.V);
-              //.SetColor(color);
+              finVertex.SetColor(finFaceColor);
               finVertex.SetBoneWeights(finSkin.GetOrCreateBoneWeights(
                                            VertexSpace.RELATIVE_TO_BONE,
                                            finBone));
@@ -350,12 +362,18 @@ namespace glo.api {
                 gloFaceColor.Bb,
                 gloFaceColor.Ab);
 
+            finFaceColor
+                = FinColor.FromRgbaFloats(1, 1, 1, gloMesh.MeshTranslucency);
+
             IMaterial? finMaterial;
             if (textureFilename == previousTextureName) {
               finMaterial = previousMaterial;
             } else {
               previousTextureName = textureFilename;
-              finMaterial = withCullingMap[textureFilename];
+              finMaterial = finMaterialMap[
+                  (finTextureMap[textureFilename],
+                   meshTransparencyType,
+                   true)];
               previousMaterial = finMaterial;
             }
 
@@ -364,18 +382,22 @@ namespace glo.api {
 
             var v1 = finSkin.AddVertex(0, -h / 2, -w / 2);
             v1.SetUv(0, 0);
+            v1.SetColor(finFaceColor);
             v1.SetBoneWeights(finSpriteBoneWeights);
 
             var v2 = finSkin.AddVertex(0, -h / 2, w / 2);
             v2.SetUv(1, 0);
+            v1.SetColor(finFaceColor);
             v2.SetBoneWeights(finSpriteBoneWeights);
 
             var v3 = finSkin.AddVertex(0, h / 2, -w / 2);
             v3.SetUv(0, 1);
+            v1.SetColor(finFaceColor);
             v3.SetBoneWeights(finSpriteBoneWeights);
 
             var v4 = finSkin.AddVertex(0, h / 2, w / 2);
             v4.SetUv(1, 1);
+            v1.SetColor(finFaceColor);
             v4.SetBoneWeights(finSpriteBoneWeights);
 
             finMesh.AddTriangles((v1, v3, v2), (v4, v2, v3))
@@ -399,18 +421,23 @@ namespace glo.api {
       var alphaScan0 = alphaLock.pixelScan0;
 
       rawImage.Access(getHandler => {
-        for (var y = 0; y < height; ++y) {
-          for (var x = 0; x < width; ++x) {
-            getHandler(x, y, out var r, out var g, out var b, out var a);
+                        for (var y = 0; y < height; ++y) {
+                          for (var x = 0; x < width; ++x) {
+                            getHandler(x,
+                                       y,
+                                       out var r,
+                                       out var g,
+                                       out var b,
+                                       out var a);
 
-            if (r == 255 && g == 0 && b == 255) {
-              a = 0;
-            }
+                            if (r == 255 && g == 0 && b == 255) {
+                              a = 0;
+                            }
 
-            alphaScan0[y * width + x] = new Rgba32(r, g, b, a);
-          }
-        }
-      });
+                            alphaScan0[y * width + x] = new Rgba32(r, g, b, a);
+                          }
+                        }
+                      });
 
       return textureImageWithAlpha;
     }

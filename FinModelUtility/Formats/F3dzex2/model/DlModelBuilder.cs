@@ -249,8 +249,8 @@ namespace f3dzex2.model {
 
                 if (finMaterial.Textures.Any(
                         texture
-                            => ImageUtil.GetTransparencyType(texture.Image) ==
-                               ImageTransparencyType.TRANSPARENT)) {
+                            => TransparencyTypeUtil.GetTransparencyType(texture.Image) ==
+                               TransparencyType.TRANSPARENT)) {
                   finMaterial.SetAlphaCompare(AlphaOp.Or,
                                               AlphaCompareType.Always,
                                               .5f,
@@ -525,9 +525,9 @@ namespace f3dzex2.model {
         this.cachedMaterialParams_ = newMaterialParams;
         this.cachedMaterial_ = this.lazyMaterialDictionary_[newMaterialParams];
         this.isMaterialTransparent_ =
-            ImageUtil.GetTransparencyType(
+            TransparencyTypeUtil.GetTransparencyType(
                 this.cachedMaterial_.Textures.First().Image) ==
-            ImageTransparencyType.TRANSPARENT;
+            TransparencyType.TRANSPARENT;
       }
 
       return this.cachedMaterial_;

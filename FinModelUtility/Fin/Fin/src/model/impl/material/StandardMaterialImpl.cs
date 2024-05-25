@@ -11,7 +11,7 @@ namespace fin.model.impl {
     }
 
     private class StandardMaterialImpl : BMaterialImpl, IStandardMaterial {
-      public override IEnumerable<ITexture> Textures {
+      public override IEnumerable<IReadOnlyTexture> Textures {
         get {
           if (this.DiffuseTexture != null) {
             yield return this.DiffuseTexture;
@@ -39,12 +39,12 @@ namespace fin.model.impl {
         }
       }
 
-      public ITexture? DiffuseTexture { get; set; }
-      public ITexture? MaskTexture { get; set; }
-      public ITexture? AmbientOcclusionTexture { get; set; }
-      public ITexture? NormalTexture { get; set; }
-      public ITexture? EmissiveTexture { get; set; }
-      public ITexture? SpecularTexture { get; set; }
+      public IReadOnlyTexture? DiffuseTexture { get; set; }
+      public IReadOnlyTexture? MaskTexture { get; set; }
+      public IReadOnlyTexture? AmbientOcclusionTexture { get; set; }
+      public IReadOnlyTexture? NormalTexture { get; set; }
+      public IReadOnlyTexture? EmissiveTexture { get; set; }
+      public IReadOnlyTexture? SpecularTexture { get; set; }
     }
   }
 }

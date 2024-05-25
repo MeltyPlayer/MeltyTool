@@ -51,7 +51,7 @@ namespace jsystem.exporter {
                 // TODO: Share texture definitions between materials?
                 var texture =
                     model.MaterialManager.CreateTexture(bmdTexture.Image);
-                var type = ImageUtil.GetTransparencyType(bmdTexture.Image);
+                var type = TransparencyTypeUtil.GetTransparencyType(bmdTexture.Image);
 
                 texture.Name = bmdTexture.Name;
                 texture.WrapModeU = bmdTexture.WrapModeS.ToFinWrapMode();

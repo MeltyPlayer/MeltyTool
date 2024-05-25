@@ -207,7 +207,7 @@ namespace jsystem.exporter {
           }
         }
 
-        var type = ImageUtil.GetTransparencyType(this.Image);
+        var type = TransparencyTypeUtil.GetTransparencyType(this.Image);
       }
 
       this.ColorType = BmdGxTexture.GetColorType_(this.Header.Format);

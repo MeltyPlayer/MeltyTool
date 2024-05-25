@@ -53,8 +53,8 @@ namespace grezzo.material {
 
                   // TODO: Is this logic possibly right????
                   IImage textureImage;
-                  if (ImageUtil.GetTransparencyType(rawTextureImage) !=
-                      ImageTransparencyType.OPAQUE || !USE_JANKY_TRANSPARENCY) {
+                  if (TransparencyTypeUtil.GetTransparencyType(rawTextureImage) !=
+                      TransparencyType.OPAQUE || !USE_JANKY_TRANSPARENCY) {
                     textureImage = rawTextureImage;
                   } else {
                     var backgroundColor = texMapper.BorderColor;

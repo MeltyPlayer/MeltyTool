@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace fin.model.impl {
   public partial class ModelImpl<TVertex> {
     private partial class MaterialManagerImpl {
-      public ITextureMaterial AddTextureMaterial(ITexture texture) {
+      public ITextureMaterial AddTextureMaterial(IReadOnlyTexture texture) {
         var material = new TextureMaterialImpl(texture);
         this.materials_.Add(material);
         return material;
@@ -12,13 +12,14 @@ namespace fin.model.impl {
     }
 
     private class TextureMaterialImpl : BMaterialImpl, ITextureMaterial {
-      public TextureMaterialImpl(ITexture texture) {
+      public TextureMaterialImpl(IReadOnlyTexture texture) {
         this.Texture = texture;
-        this.Textures = new ReadOnlyCollection<ITexture>(new[] { texture });
+        this.Textures
+            = new ReadOnlyCollection<IReadOnlyTexture>(new[] { texture });
       }
 
-      public ITexture Texture { get; }
-      public override IEnumerable<ITexture> Textures { get; }
+      public IReadOnlyTexture Texture { get; }
+      public override IEnumerable<IReadOnlyTexture> Textures { get; }
     }
   }
 }

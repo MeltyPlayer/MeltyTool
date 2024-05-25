@@ -3,6 +3,7 @@ using System.Text;
 
 using fin.model;
 using fin.model.extensions;
+using fin.util.image;
 
 namespace fin.shaders.glsl {
   public class StandardShaderSourceGlsl : IShaderSourceGlsl {
@@ -106,7 +107,7 @@ namespace fin.shaders.glsl {
              {GlslUtil.GetGetIndividualLightColorsFunction()}
 
              {GlslUtil.GetGetMergedLightColorsFunction()}
-             
+
              {GlslUtil.GetApplyMergedLightColorsFunction(true)}
              """);
       }
@@ -153,16 +154,30 @@ namespace fin.shaders.glsl {
 
       // TODO: Is this right?
       fragmentShaderSrc.Append(
-          $$"""
-            
-              fragColor.rgb += emissiveColor.rgb;
-              fragColor.rgb = min(fragColor.rgb, 1);
-            
-              if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
-                discard;
-              }
-            }
-            """);
+          """
+          
+            fragColor.rgb += emissiveColor.rgb;
+            fragColor.rgb = min(fragColor.rgb, 1);
+          """);
+
+      if (material.TransparencyType == TransparencyType.MASK) {
+        fragmentShaderSrc.Append(
+            $$"""
+              
+
+                if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
+                  discard;
+                }
+              """);
+      }
+
+      fragmentShaderSrc.Append(
+          """
+
+          }
+          
+          """);
+
 
       this.FragmentShaderSource = fragmentShaderSrc.ToString();
     }

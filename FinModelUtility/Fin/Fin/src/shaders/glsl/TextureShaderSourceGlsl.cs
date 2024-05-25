@@ -3,6 +3,7 @@ using System.Text;
 
 using fin.model;
 using fin.model.extensions;
+using fin.util.image;
 
 namespace fin.shaders.glsl {
   public class TextureShaderSourceGlsl : IShaderSourceGlsl {
@@ -68,9 +69,9 @@ namespace fin.shaders.glsl {
             $"""
 
              {GlslUtil.GetGetIndividualLightColorsFunction()}
-             
+
              {GlslUtil.GetGetMergedLightColorsFunction()}
-             
+
              {GlslUtil.GetApplyMergedLightColorsFunction(false)}
              """
         );
@@ -89,7 +90,7 @@ namespace fin.shaders.glsl {
       if (hasNormals) {
         fragmentSrc.Append(
             $"""
-
+             
                // Have to renormalize because the vertex normals can become distorted when interpolated.
                vec3 fragNormal = normalize(vertexNormal);
                fragColor.rgb =
@@ -97,15 +98,22 @@ namespace fin.shaders.glsl {
              """);
       }
 
+      if (material.TransparencyType == TransparencyType.MASK) {
+        fragmentSrc.Append(
+            $$"""
+              
+              
+                if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
+                  discard;
+                }
+              """);
+      }
+
       fragmentSrc.Append(
-          $$"""
-            
-            
-              if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
-                discard;
-              }
-            }
-            """);
+          """
+
+          }
+          """);
 
       this.FragmentShaderSource = fragmentSrc.ToString();
     }

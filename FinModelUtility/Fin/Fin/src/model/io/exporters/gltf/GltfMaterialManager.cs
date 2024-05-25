@@ -209,9 +209,9 @@ namespace fin.model.io.exporters.gltf {
                 if (texture != null) {
                   var alphaMode = texture.TransparencyType
                       switch {
-                          ImageTransparencyType.OPAQUE => AlphaMode.OPAQUE,
-                          ImageTransparencyType.MASK => AlphaMode.MASK,
-                          ImageTransparencyType.TRANSPARENT => AlphaMode.BLEND,
+                          TransparencyType.OPAQUE => AlphaMode.OPAQUE,
+                          TransparencyType.MASK => AlphaMode.MASK,
+                          TransparencyType.TRANSPARENT => AlphaMode.BLEND,
                           _ => throw new ArgumentOutOfRangeException()
                       };
                   gltfMaterialBuilder.WithAlpha(alphaMode);
@@ -228,9 +228,9 @@ namespace fin.model.io.exporters.gltf {
                 if (texture != null) {
                   var alphaMode = texture.TransparencyType
                       switch {
-                          ImageTransparencyType.OPAQUE => AlphaMode.OPAQUE,
-                          ImageTransparencyType.MASK => AlphaMode.MASK,
-                          ImageTransparencyType.TRANSPARENT => AlphaMode.BLEND,
+                          TransparencyType.OPAQUE => AlphaMode.OPAQUE,
+                          TransparencyType.MASK => AlphaMode.MASK,
+                          TransparencyType.TRANSPARENT => AlphaMode.BLEND,
                           _ => throw new ArgumentOutOfRangeException()
                       };
                   gltfMaterialBuilder.WithAlpha(alphaMode);

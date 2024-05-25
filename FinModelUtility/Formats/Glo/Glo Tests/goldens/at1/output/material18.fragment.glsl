@@ -19,8 +19,4 @@ void main() {
   fragColor = diffuseColor * vertexColor0;
   fragColor.rgb += emissiveColor.rgb;
   fragColor.rgb = min(fragColor.rgb, 1);
-
-  if (fragColor.a < .95) {
-    discard;
-  }
 }
