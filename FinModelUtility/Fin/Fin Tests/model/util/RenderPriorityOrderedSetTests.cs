@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-using fin.model.io.exporters.gltf;
 using fin.util.asserts;
 
 using NUnit.Framework;
-
-using SharpGLTF.Geometry.VertexTypes;
 
 namespace fin.model.util {
   public class RenderPriorityOrderedSetTests {

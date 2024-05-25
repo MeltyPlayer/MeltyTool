@@ -39,29 +39,34 @@ namespace fin.color {
       => FromRgbaFloats(rf, gf, bf, 1);
 
     public static IColor FromRgbaFloats(float rf, float gf, float bf, float af)
-      => FromRgbaBytes((byte)(rf * 255),
-                       (byte)(gf * 255),
-                       (byte)(bf * 255),
-                       (byte)(af * 255));
+      => FromRgbaBytes((byte) (rf * 255),
+                       (byte) (gf * 255),
+                       (byte) (bf * 255),
+                       (byte) (af * 255));
 
 
     public static IColor FromIntensityByte(byte ib)
       => FromRgbBytes(ib, ib, ib);
 
     public static IColor FromIntensityFloat(float iF)
-      => FromIntensityByte((byte)(iF * 255));
+      => FromIntensityByte((byte) (iF * 255));
+
+
+    public static IColor FromAlphaFloat(float af)
+      => FromRgbaFloats(1, 1, 1, af);
 
 
     public static IColor FromSystemColor(Color color)
       => FromRgbaBytes(color.R, color.G, color.B, color.A);
 
-    public static Color ToSystemColor<TColor>(TColor color) where TColor : IColor
+    public static Color ToSystemColor<TColor>(TColor color)
+        where TColor : IColor
       => Color.FromArgb(color.Ab, color.Rb, color.Gb, color.Bb);
 
     public static IColor Lerp(IColor from, IColor to, float frac) {
-      var r = (byte)Math.Sqrt(Lerp_(from.Rb * from.Rb, to.Rb * to.Rb, frac));
-      var g = (byte)Math.Sqrt(Lerp_(from.Gb * from.Gb, to.Gb * to.Gb, frac));
-      var b = (byte)Math.Sqrt(Lerp_(from.Bb * from.Bb, to.Bb * to.Bb, frac));
+      var r = (byte) Math.Sqrt(Lerp_(from.Rb * from.Rb, to.Rb * to.Rb, frac));
+      var g = (byte) Math.Sqrt(Lerp_(from.Gb * from.Gb, to.Gb * to.Gb, frac));
+      var b = (byte) Math.Sqrt(Lerp_(from.Bb * from.Bb, to.Bb * to.Bb, frac));
 
       return FinColor.FromRgbBytes(r, g, b);
     }
@@ -80,7 +85,11 @@ namespace fin.color {
     public byte Ab { get; }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SplitBgra(int bgra, out byte r, out byte g, out byte b, out byte a) {
+    public static void SplitBgra(int bgra,
+                                 out byte r,
+                                 out byte g,
+                                 out byte b,
+                                 out byte a) {
       b = (byte) bgra;
       g = (byte) (bgra >> 8);
       r = (byte) (bgra >> 16);
@@ -88,7 +97,11 @@ namespace fin.color {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SplitRgba(int rgba, out byte r, out byte g, out byte b, out byte a) {
+    public static void SplitRgba(int rgba,
+                                 out byte r,
+                                 out byte g,
+                                 out byte b,
+                                 out byte a) {
       r = (byte) rgba;
       g = (byte) (rgba >> 8);
       b = (byte) (rgba >> 16);

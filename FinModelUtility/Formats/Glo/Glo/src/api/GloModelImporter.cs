@@ -41,13 +41,6 @@ namespace glo.api {
         }
       }
 
-      /*new MeshCsvWriter().WriteToFile(
-          glo, new FinFile(Path.Join(outputDirectory.FullName, "mesh.csv")));
-      new FaceCsvWriter().WriteToFile(
-          glo, new FinFile(Path.Join(outputDirectory.FullName, "face.csv")));
-      new VertexCsvWriter().WriteToFile(
-          glo, new FinFile(Path.Join(outputDirectory.FullName, "vertex.csv")));*/
-
       var finModel = new ModelImpl<Normal1Color1UvVertexImpl>(
           (index, position) => new Normal1Color1UvVertexImpl(index, position));
       var finSkin = finModel.Skin;
@@ -141,6 +134,7 @@ namespace glo.api {
           var meshTransparencyType
               = TransparencyTypeUtil.GetTransparencyType(
                   idealMesh.MeshTranslucency);
+          var meshColor = FinColor.FromAlphaFloat(idealMesh.MeshTranslucency);
 
           var position = gloMesh.MoveKeys[0].Xyz;
 
@@ -269,10 +263,6 @@ namespace glo.api {
 
           // Anything with these names are debug objects and can be ignored.
           if (this.hiddenNames_.Contains(name)) {
-            if (idealMesh.Sprites.Length > 0) {
-              ;
-            }
-
             continue;
           }
 
@@ -287,18 +277,7 @@ namespace glo.api {
           foreach (var gloFace in idealMesh.Faces) {
             // TODO: What can we do if texture filename is empty?
             var textureFilename = gloFace.TextureFilename;
-
-            var gloFaceColor = gloFace.Color;
-            var finFaceColor = FinColor.FromRgbaBytes(
-                gloFaceColor.Rb,
-                gloFaceColor.Gb,
-                gloFaceColor.Bb,
-                gloFaceColor.Ab);
-
             var enableBackfaceCulling = (gloFace.Flags & 1 << 2) == 0;
-
-            finFaceColor
-                = FinColor.FromRgbaFloats(1, 1, 1, gloMesh.MeshTranslucency);
 
             IMaterial? finMaterial;
             if (textureFilename == previousTextureName) {
@@ -315,10 +294,6 @@ namespace glo.api {
             // Face flag:
             // 0: potentially some kind of repeat mode??
 
-            var color = (gloFace.Flags & 1 << 6) != 0
-                ? FinColor.FromRgbaBytes(255, 0, 0, 255)
-                : FinColor.FromRgbaBytes(0, 255, 0, 255);
-
             var finFaceVertices = new IReadOnlyVertex[3];
             for (var v = 0; v < 3; ++v) {
               var gloVertexRef = gloFace.VertexRefs[v];
@@ -326,7 +301,7 @@ namespace glo.api {
 
               var finVertex = finSkin.AddVertex(gloVertex);
               finVertex.SetUv(gloVertexRef.U, gloVertexRef.V);
-              finVertex.SetColor(finFaceColor);
+              finVertex.SetColor(meshColor);
               finVertex.SetBoneWeights(finSkin.GetOrCreateBoneWeights(
                                            VertexSpace.RELATIVE_TO_BONE,
                                            finBone));
@@ -355,16 +330,6 @@ namespace glo.api {
 
             var textureFilename = gloSprite.TextureFilename;
 
-            var gloFaceColor = gloSprite.Color;
-            var finFaceColor = FinColor.FromRgbaBytes(
-                gloFaceColor.Rb,
-                gloFaceColor.Gb,
-                gloFaceColor.Bb,
-                gloFaceColor.Ab);
-
-            finFaceColor
-                = FinColor.FromRgbaFloats(1, 1, 1, gloMesh.MeshTranslucency);
-
             IMaterial? finMaterial;
             if (textureFilename == previousTextureName) {
               finMaterial = previousMaterial;
@@ -382,22 +347,22 @@ namespace glo.api {
 
             var v1 = finSkin.AddVertex(0, -h / 2, -w / 2);
             v1.SetUv(0, 0);
-            v1.SetColor(finFaceColor);
+            v1.SetColor(meshColor);
             v1.SetBoneWeights(finSpriteBoneWeights);
 
             var v2 = finSkin.AddVertex(0, -h / 2, w / 2);
             v2.SetUv(1, 0);
-            v1.SetColor(finFaceColor);
+            v1.SetColor(meshColor);
             v2.SetBoneWeights(finSpriteBoneWeights);
 
             var v3 = finSkin.AddVertex(0, h / 2, -w / 2);
             v3.SetUv(0, 1);
-            v1.SetColor(finFaceColor);
+            v1.SetColor(meshColor);
             v3.SetBoneWeights(finSpriteBoneWeights);
 
             var v4 = finSkin.AddVertex(0, h / 2, w / 2);
             v4.SetUv(1, 1);
-            v1.SetColor(finFaceColor);
+            v1.SetColor(meshColor);
             v4.SetBoneWeights(finSpriteBoneWeights);
 
             finMesh.AddTriangles((v1, v3, v2), (v4, v2, v3))
