@@ -22,6 +22,7 @@ using uni.games.nintendogs_labrador_and_friends;
 using uni.games.ocarina_of_time;
 using uni.games.ocarina_of_time_3d;
 using uni.games.paper_mario_directors_cut;
+using uni.games.paper_mario_the_thousand_year_door;
 using uni.games.pikmin_1;
 using uni.games.pikmin_2;
 using uni.games.professor_layton_vs_phoenix_wright;
@@ -63,6 +64,7 @@ namespace uni.games {
           new OcarinaOfTimeFileBundleGatherer(),
           new OcarinaOfTime3dFileBundleGatherer(),
           new PaperMarioDirectorsCutFileBundleGatherer(),
+          new PaperMarioTheThousandYearDoorFileBundleGatherer(),
           new Pikmin1FileBundleGatherer(),
           new Pikmin2FileBundleGatherer(),
           new ProfessorLaytonVsPhoenixWrightFileBundleGatherer(),

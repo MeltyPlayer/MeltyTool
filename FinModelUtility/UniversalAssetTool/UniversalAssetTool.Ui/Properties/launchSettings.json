@@ -52,10 +52,6 @@
       "commandName": "Project",
       "commandLineArgs": "ocarina_of_time_3d"
     },
-    "Paper Mario: The Thousand Year Door": {
-      "commandName": "Project",
-      "commandLineArgs": "paper_mario_the_thousand_year_door"
-    },
     "Pikmin 1": {
       "commandName": "Project",
       "commandLineArgs": "pikmin_1"
