@@ -47,8 +47,12 @@ namespace uni.games.glover {
                                .GetExistingSubdirs()
                                .ToList();
 
-      textureDirectories.Add(
-          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/hub"));
+      textureDirectories.AddRange([
+          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/hub"),
+          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/ootw"),
+          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/ootw/chars"),
+          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/ootw/notused"),
+      ]);
 
       try {
         var levelTextureDirectory =
