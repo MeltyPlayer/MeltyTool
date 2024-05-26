@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Numerics;
+﻿using System.Numerics;
 
 using fin.color;
 using fin.data.dictionaries;
@@ -13,7 +12,6 @@ using fin.model.impl;
 using fin.model.io.importers;
 using fin.util.asserts;
 using fin.util.enums;
-using fin.util.hash;
 using fin.util.image;
 
 using glo.schema;
@@ -174,6 +172,9 @@ namespace glo.api {
 
       var firstMeshMap = new CaseInvariantStringDictionary<GloMesh>();
 
+      // Builds skeleton in first pass
+      var meshesAndBones = new List<(GloMesh, IBone)>();
+
       // TODO: Consider separating these out as separate models
       foreach (var gloObject in glo.Objects) {
         var finObjectRootBone = finRootBone.AddRoot(0, 0, 0);
@@ -200,15 +201,9 @@ namespace glo.api {
         while (meshQueue.TryDequeue(out var gloMesh, out var parentFinBone)) {
           var name = gloMesh.Name;
 
-          GloMesh idealMesh;
-          if (!firstMeshMap.TryGetValue(name, out idealMesh)) {
-            firstMeshMap[name] = idealMesh = gloMesh;
+          if (!firstMeshMap.ContainsKey(name)) {
+            firstMeshMap[name] = gloMesh;
           }
-
-          var meshTransparencyType
-              = TransparencyTypeUtil.GetTransparencyType(
-                  idealMesh.MeshTranslucency);
-          var meshColor = FinColor.FromAlphaFloat(idealMesh.MeshTranslucency);
 
           var position = gloMesh.MoveKeys[0].Xyz;
 
@@ -225,6 +220,7 @@ namespace glo.api {
                         .SetLocalScale(scale.Y, scale.X, scale.Z);
           finBone.Name = name + "_bone";
           finBone.IgnoreParentScale = true;
+          meshesAndBones.Add((gloMesh, finBone));
 
           var child = gloMesh.Pointers.Child;
           if (child != null) {
@@ -334,115 +330,134 @@ namespace glo.api {
               }
             }
           }
-
-          // Anything with these names are debug objects and can be ignored.
-          if (this.hiddenNames_.Contains(name)) {
-            continue;
-          }
-
-          var finMesh = finSkin.AddMesh();
-          finMesh.Name = name;
-
-          var gloVertices = idealMesh.Vertices;
-
-          string previousTextureName = null;
-          IMaterial? previousMaterial = null;
-
-          foreach (var gloFace in idealMesh.Faces) {
-            // TODO: What can we do if texture filename is empty?
-            var textureFilename = gloFace.TextureFilename;
-            var enableBackfaceCulling
-                = gloFace.Flags.CheckFlag(GloObjectFlags.TRANSPARENT);
-
-            IMaterial? finMaterial;
-            if (textureFilename == previousTextureName) {
-              finMaterial = previousMaterial;
-            } else {
-              previousTextureName = textureFilename;
-              finMaterial = finMaterialMap[
-                  (finTextureMap[(gloMesh, textureFilename)],
-                   meshTransparencyType,
-                   enableBackfaceCulling)];
-              previousMaterial = finMaterial;
-            }
-
-            var finFaceVertices = new IReadOnlyVertex[3];
-            for (var v = 0; v < 3; ++v) {
-              var gloVertexRef = gloFace.VertexRefs[v];
-              var gloVertex = gloVertices[gloVertexRef.Index];
-
-              var finVertex = finSkin.AddVertex(gloVertex);
-              finVertex.SetUv(gloVertexRef.U, gloVertexRef.V);
-              finVertex.SetColor(meshColor);
-              finVertex.SetBoneWeights(finSkin.GetOrCreateBoneWeights(
-                                           VertexSpace.RELATIVE_TO_BONE,
-                                           finBone));
-              finFaceVertices[v] = finVertex;
-            }
-
-            // TODO: Merge triangles together
-            var finTriangles =
-                new (IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)[1];
-            finTriangles[0] = (finFaceVertices[0], finFaceVertices[2],
-                               finFaceVertices[1]);
-            finMesh.AddTriangles(finTriangles).SetMaterial(finMaterial!);
-          }
-
-          foreach (var gloSprite in idealMesh.Sprites) {
-            var gloSpritePosition = gloSprite.SpritePosition;
-
-            var finSpriteBone = finBone.AddChild(
-                gloSpritePosition.X,
-                gloSpritePosition.Y,
-                gloSpritePosition.Z);
-            finSpriteBone.AlwaysFaceTowardsCamera(Quaternion.Identity);
-            var finSpriteBoneWeights =
-                finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
-                                               finSpriteBone);
-
-            var textureFilename = gloSprite.TextureFilename;
-
-            IMaterial? finMaterial;
-            if (textureFilename == previousTextureName) {
-              finMaterial = previousMaterial;
-            } else {
-              previousTextureName = textureFilename;
-              finMaterial = finMaterialMap[
-                  (finTextureMap[(gloMesh, textureFilename)],
-                   meshTransparencyType,
-                   true)];
-              previousMaterial = finMaterial;
-            }
-
-            var w = gloSprite.SpriteSize.X / 4;
-            var h = gloSprite.SpriteSize.Y / 4;
-
-            var v1 = finSkin.AddVertex(0, -h / 2, -w / 2);
-            v1.SetUv(0, 0);
-            v1.SetColor(meshColor);
-            v1.SetBoneWeights(finSpriteBoneWeights);
-
-            var v2 = finSkin.AddVertex(0, -h / 2, w / 2);
-            v2.SetUv(1, 0);
-            v1.SetColor(meshColor);
-            v2.SetBoneWeights(finSpriteBoneWeights);
-
-            var v3 = finSkin.AddVertex(0, h / 2, -w / 2);
-            v3.SetUv(0, 1);
-            v1.SetColor(meshColor);
-            v3.SetBoneWeights(finSpriteBoneWeights);
-
-            var v4 = finSkin.AddVertex(0, h / 2, w / 2);
-            v4.SetUv(1, 1);
-            v1.SetColor(meshColor);
-            v4.SetBoneWeights(finSpriteBoneWeights);
-
-            finMesh.AddTriangles((v1, v3, v2), (v4, v2, v3))
-                   .SetMaterial(finMaterial!);
-          }
         }
 
         // TODO: Split out animations
+      }
+
+      var knownDarkVerticesHack = new KnownDarkVerticesHack();
+      knownDarkVerticesHack.IdentifyDarkVertices(finModel, meshesAndBones);
+
+      foreach (var (gloMesh, finBone) in meshesAndBones) {
+        var name = gloMesh.Name;
+        var idealMesh = firstMeshMap[name];
+
+        var meshTransparencyType
+            = TransparencyTypeUtil.GetTransparencyType(
+                idealMesh.MeshTranslucency);
+        var meshColor = FinColor.FromAlphaFloat(idealMesh.MeshTranslucency);
+
+        // Anything with these names are debug objects and can be ignored.
+        if (this.hiddenNames_.Contains(name)) {
+          continue;
+        }
+
+        var finMesh = finSkin.AddMesh();
+        finMesh.Name = name;
+
+        var gloVertices = idealMesh.Vertices;
+
+        string previousTextureName = null;
+        IMaterial? previousMaterial = null;
+
+        foreach (var gloFace in idealMesh.Faces) {
+          // TODO: What can we do if texture filename is empty?
+          var textureFilename = gloFace.TextureFilename;
+          var enableBackfaceCulling
+              = gloFace.Flags.CheckFlag(GloObjectFlags.TRANSPARENT);
+
+          IMaterial? finMaterial;
+          if (textureFilename == previousTextureName) {
+            finMaterial = previousMaterial;
+          } else {
+            previousTextureName = textureFilename;
+            finMaterial = finMaterialMap[
+                (finTextureMap[(gloMesh, textureFilename)],
+                 meshTransparencyType,
+                 enableBackfaceCulling)];
+            previousMaterial = finMaterial;
+          }
+
+          var finFaceVertices = new IReadOnlyVertex[3];
+          for (var v = 0; v < 3; ++v) {
+            var gloVertexRef = gloFace.VertexRefs[v];
+            var gloVertex = (Vector3) gloVertices[gloVertexRef.Index];
+
+            IColor vertexColor = meshColor;
+            if (knownDarkVerticesHack.IsDarkVertex(gloVertexRef, out var actualPosition)) {
+              vertexColor = FinColor.FromRgbaFloats(0, 0, 0, meshColor.Af);
+              gloVertex = actualPosition;
+            }
+
+            var finVertex = finSkin.AddVertex(gloVertex);
+            finVertex.SetUv(gloVertexRef.U, gloVertexRef.V);
+            finVertex.SetColor(vertexColor);
+            finVertex.SetBoneWeights(finSkin.GetOrCreateBoneWeights(
+                                         VertexSpace.RELATIVE_TO_BONE,
+                                         finBone));
+            finFaceVertices[v] = finVertex;
+          }
+
+          // TODO: Merge triangles together
+          var finTriangles =
+              new (IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)[1];
+          finTriangles[0] = (finFaceVertices[0], finFaceVertices[2],
+                             finFaceVertices[1]);
+          finMesh.AddTriangles(finTriangles).SetMaterial(finMaterial!);
+        }
+
+        foreach (var gloSprite in idealMesh.Sprites) {
+          var gloSpritePosition = gloSprite.SpritePosition;
+
+          var finSpriteBone = finBone.AddChild(
+              gloSpritePosition.X,
+              gloSpritePosition.Y,
+              gloSpritePosition.Z);
+          finSpriteBone.AlwaysFaceTowardsCamera(Quaternion.Identity);
+          var finSpriteBoneWeights =
+              finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
+                                             finSpriteBone);
+
+          var textureFilename = gloSprite.TextureFilename;
+
+          IMaterial? finMaterial;
+          if (textureFilename == previousTextureName) {
+            finMaterial = previousMaterial;
+          } else {
+            previousTextureName = textureFilename;
+            finMaterial = finMaterialMap[
+                (finTextureMap[(gloMesh, textureFilename)],
+                 meshTransparencyType,
+                 true)];
+            previousMaterial = finMaterial;
+          }
+
+          var w = gloSprite.SpriteSize.X / 4;
+          var h = gloSprite.SpriteSize.Y / 4;
+
+          var v1 = finSkin.AddVertex(0, -h / 2, -w / 2);
+          v1.SetUv(0, 0);
+          v1.SetColor(meshColor);
+          v1.SetBoneWeights(finSpriteBoneWeights);
+
+          var v2 = finSkin.AddVertex(0, -h / 2, w / 2);
+          v2.SetUv(1, 0);
+          v1.SetColor(meshColor);
+          v2.SetBoneWeights(finSpriteBoneWeights);
+
+          var v3 = finSkin.AddVertex(0, h / 2, -w / 2);
+          v3.SetUv(0, 1);
+          v1.SetColor(meshColor);
+          v3.SetBoneWeights(finSpriteBoneWeights);
+
+          var v4 = finSkin.AddVertex(0, h / 2, w / 2);
+          v4.SetUv(1, 1);
+          v1.SetColor(meshColor);
+          v4.SetBoneWeights(finSpriteBoneWeights);
+
+          finMesh.AddTriangles((v1, v3, v2), (v4, v2, v3))
+                 .SetMaterial(finMaterial!);
+        }
       }
 
       return finModel;

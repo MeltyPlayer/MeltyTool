@@ -1,5 +1,4 @@
 ﻿using fin.math.floats;
-using fin.math.matrix.three;
 
 namespace fin.math.xyz {
   public static class XyzExtensions {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 using fin.math.xyz;
 using fin.util.hash;
@@ -46,13 +47,14 @@ namespace fin.schema.vector {
   }
 
   [BinarySchema]
-  public sealed partial class Vector3f : BVector3<float>,
-                                         IXyz,
-                                         IBinaryConvertible {
-    public static bool operator ==(Vector3f? lhs, Vector3f? rhs)
+  public sealed partial class Vector3f
+      : BVector3<float>,
+        IXyz,
+        IBinaryConvertible {
+    public static bool operator==(Vector3f? lhs, Vector3f? rhs)
       => lhs?.Equals(rhs) ?? (rhs == null);
 
-    public static bool operator !=(Vector3f? lhs, Vector3f? rhs)
+    public static bool operator!=(Vector3f? lhs, Vector3f? rhs)
       => (!lhs?.Equals(rhs)) ?? (rhs != null);
 
     public override bool Equals(object? obj) {
@@ -69,6 +71,9 @@ namespace fin.schema.vector {
       return false;
     }
 
+    public static explicit operator Vector3(Vector3f value)
+      => new(value.X, value.Y, value.Z);
+
     public override int GetHashCode()
       => FluentHash.Start().With(X).With(Y).With(Z).Hash;
   }
@@ -80,5 +85,6 @@ namespace fin.schema.vector {
   public sealed partial class Vector3s : BVector3<short>, IBinaryConvertible { }
 
   [BinarySchema]
-  public sealed partial class Vector3d : BVector3<double>, IBinaryConvertible { }
+  public sealed partial class
+      Vector3d : BVector3<double>, IBinaryConvertible { }
 }

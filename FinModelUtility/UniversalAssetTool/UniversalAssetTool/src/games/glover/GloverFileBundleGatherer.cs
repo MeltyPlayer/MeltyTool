@@ -14,7 +14,8 @@ namespace uni.games.glover {
         yield break;
       }
 
-      var gloverFileHierarchy = FileHierarchy.From("glover", gloverSteamDirectory);
+      var gloverFileHierarchy
+          = FileHierarchy.From("glover", gloverSteamDirectory);
 
       var dataDirectory =
           gloverFileHierarchy.Root.AssertGetExistingSubdir("data");
@@ -45,6 +46,9 @@ namespace uni.games.glover {
                                .AssertGetExistingSubdir("data/textures/generic")
                                .GetExistingSubdirs()
                                .ToList();
+
+      textureDirectories.Add(
+          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/hub"));
 
       try {
         var levelTextureDirectory =

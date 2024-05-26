@@ -402,6 +402,13 @@ namespace fin.math {
                                         ref xyz);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void UnprojectPosition(IReadOnlyBone bone, ref Vector3 xyz) {
+      Matrix4x4.Invert(this.GetWorldMatrix(bone).Impl, out var inverted);
+      ProjectionUtil.ProjectPosition(inverted, ref xyz);
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void ProjectNormal(IReadOnlyBone bone, ref Vector3 xyz)
       => ProjectionUtil.ProjectNormal(this.GetWorldMatrix(bone).Impl, ref xyz);
   }

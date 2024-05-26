@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace fin.data.dictionaries {
   public class CaseInvariantStringDictionary<T> : IFinDictionary<string, T> {
-    private readonly Dictionary<string, T> impl_ = new(StringComparer.InvariantCultureIgnoreCase);
+    private readonly Dictionary<string, T> impl_ = new(StringComparer.OrdinalIgnoreCase);
 
     public void Clear() => this.impl_.Clear();
 
