@@ -25,6 +25,11 @@ namespace fin.model {
     IFixedFunctionMaterial AddFixedFunctionMaterial();
 
     ITexture CreateTexture(IReadOnlyImage imageData);
+
+    IScrollingTexture CreateScrollingTexture(IReadOnlyImage imageData,
+                                             float scrollSpeedX,
+                                             float scrollSpeedY);
+
     IReadOnlyList<ITexture> Textures { get; }
   }
 
@@ -410,5 +415,10 @@ namespace fin.model {
     // TODO: Support fixed # of repeats
     // TODO: Support animated textures
     // TODO: Support animated texture index param
+  }
+
+  public interface IScrollingTexture : ITexture {
+    float ScrollSpeedX { get; }
+    float ScrollSpeedY { get; }
   }
 }

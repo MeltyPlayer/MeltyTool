@@ -8,6 +8,9 @@ namespace fin.data.dictionaries {
     public SimpleDictionary() :
         this(new ConcurrentDictionary<TKey, TValue>()) { }
 
+    public SimpleDictionary(IEqualityComparer<TKey> comparer) :
+        this(new ConcurrentDictionary<TKey, TValue>(comparer)) { }
+
     public void Clear() => impl.Clear();
 
     public int Count => impl.Count;

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Concurrent;
+using System.Numerics;
 
 using fin.color;
 using fin.data.dictionaries;
@@ -11,6 +12,8 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.util.asserts;
+using fin.util.enums;
+using fin.util.hash;
 using fin.util.image;
 
 using glo.schema;
@@ -23,7 +26,7 @@ namespace glo.api {
 
     private readonly string[] mirrorTextures_ = ["Badg2.bmp"];
 
-    public IModel Import(GloModelFileBundle gloModelFileBundle) {
+    public unsafe IModel Import(GloModelFileBundle gloModelFileBundle) {
       var gloFile = gloModelFileBundle.GloFile;
       var textureDirectories = gloModelFileBundle.TextureDirectories;
       var fps = 20;
@@ -47,8 +50,10 @@ namespace glo.api {
 
       var finRootBone = finModel.Skeleton.Root;
 
-      var finTextureMap = new LazyCaseInvariantStringDictionary<ITexture?>(
-          textureFilename => {
+      var finImageMap = new LazyDictionary<(GloMesh gloMesh, string
+          textureFilename), IImage?>(
+          tuple => {
+            var (gloMesh, textureFilename) = tuple;
             if (!textureFilesByName.TryGetValue(
                     Path.GetFileNameWithoutExtension(textureFilename),
                     out var textureFile)) {
@@ -56,11 +61,70 @@ namespace glo.api {
             }
 
             using var rawTextureImage = FinImage.FromFile(textureFile);
-            var textureImageWithAlpha =
-                GloModelImporter.AddTransparencyToGloImage_(rawTextureImage);
+            if (!gloMesh.Faces.Any(
+                    f => f.Flags.CheckFlag(GloObjectFlags.ALPHA_TEXTURE))) {
+              return GloModelImporter.AddTransparencyToGloImage_(
+                  rawTextureImage);
+            } else {
+              var width = rawTextureImage.Width;
+              var height = rawTextureImage.Height;
+              var alphaImage = new La16Image(PixelFormat.A8, width, height);
 
-            var finTexture = finModel.MaterialManager.CreateTexture(
-                textureImageWithAlpha);
+              var fastLock = alphaImage.UnsafeLock();
+              var dst = fastLock.pixelScan0;
+
+              rawTextureImage.Access(
+                  getHandler => {
+                    for (var y = 0; y < height; ++y) {
+                      for (var x = 0; x < width; ++x) {
+                        getHandler(x,
+                                   y,
+                                   out var r,
+                                   out var _,
+                                   out var _,
+                                   out var _);
+
+                        dst[y * width + x] = new La16(255, r);
+                      }
+                    }
+                  });
+
+              return alphaImage;
+            }
+          },
+          new SimpleDictionary<(GloMesh gloMesh, string textureFilename),
+              IImage?>(
+              EqualityComparer<(GloMesh, string)>.Create(
+                  (lhs, rhs) =>
+                      StringComparer.OrdinalIgnoreCase.Equals(
+                          lhs.Item2,
+                          rhs.Item2),
+                  tuple =>
+                      StringComparer.OrdinalIgnoreCase.GetHashCode(tuple.Item2)
+              )));
+
+      // TODO: Set this up in a non-hardcoded way
+      var finTextureMap = new LazyDictionary<(GloMesh gloMesh, string
+          textureFilename), ITexture?>(
+          tuple => {
+            var (gloMesh, textureFilename) = tuple;
+            var textureImageWithAlpha = finImageMap[(gloMesh, textureFilename)];
+            if (textureImageWithAlpha == null) {
+              return null;
+            }
+
+            ITexture finTexture;
+            // TODO: Set this up in a non-hardcoded way
+            if (textureFilename.Contains("wfall1")) {
+              finTexture = finModel.MaterialManager.CreateScrollingTexture(
+                  textureImageWithAlpha,
+                  0,
+                  -1.5f);
+            } else {
+              finTexture = finModel.MaterialManager.CreateTexture(
+                  textureImageWithAlpha);
+            }
+
             finTexture.Name = textureFilename;
 
             if (this.mirrorTextures_.Contains(textureFilename)) {
@@ -72,7 +136,17 @@ namespace glo.api {
             }
 
             return finTexture;
-          });
+          },
+          new SimpleDictionary<(GloMesh gloMesh, string textureFilename),
+              ITexture?>(
+              EqualityComparer<(GloMesh, string)>.Create(
+                  (lhs, rhs) =>
+                      StringComparer.OrdinalIgnoreCase.Equals(
+                          lhs.Item2,
+                          rhs.Item2),
+                  tuple =>
+                      StringComparer.OrdinalIgnoreCase.GetHashCode(tuple.Item2)
+              )));
       var finMaterialMap
           = new LazyDictionary<(IReadOnlyTexture? finTexture,
               TransparencyType meshTransparencyType, bool withCulling),
@@ -277,7 +351,8 @@ namespace glo.api {
           foreach (var gloFace in idealMesh.Faces) {
             // TODO: What can we do if texture filename is empty?
             var textureFilename = gloFace.TextureFilename;
-            var enableBackfaceCulling = (gloFace.Flags & 1 << 2) == 0;
+            var enableBackfaceCulling
+                = gloFace.Flags.CheckFlag(GloObjectFlags.TRANSPARENT);
 
             IMaterial? finMaterial;
             if (textureFilename == previousTextureName) {
@@ -285,14 +360,11 @@ namespace glo.api {
             } else {
               previousTextureName = textureFilename;
               finMaterial = finMaterialMap[
-                  (finTextureMap[textureFilename],
+                  (finTextureMap[(gloMesh, textureFilename)],
                    meshTransparencyType,
                    enableBackfaceCulling)];
               previousMaterial = finMaterial;
             }
-
-            // Face flag:
-            // 0: potentially some kind of repeat mode??
 
             var finFaceVertices = new IReadOnlyVertex[3];
             for (var v = 0; v < 3; ++v) {
@@ -336,7 +408,7 @@ namespace glo.api {
             } else {
               previousTextureName = textureFilename;
               finMaterial = finMaterialMap[
-                  (finTextureMap[textureFilename],
+                  (finTextureMap[(gloMesh, textureFilename)],
                    meshTransparencyType,
                    true)];
               previousMaterial = finMaterial;
@@ -376,7 +448,8 @@ namespace glo.api {
       return finModel;
     }
 
-    private static unsafe IImage AddTransparencyToGloImage_(IImage rawImage) {
+    private static unsafe Rgba32Image AddTransparencyToGloImage_(
+        IImage rawImage) {
       var width = rawImage.Width;
       var height = rawImage.Height;
 
@@ -385,24 +458,25 @@ namespace glo.api {
       using var alphaLock = textureImageWithAlpha.UnsafeLock();
       var alphaScan0 = alphaLock.pixelScan0;
 
-      rawImage.Access(getHandler => {
-                        for (var y = 0; y < height; ++y) {
-                          for (var x = 0; x < width; ++x) {
-                            getHandler(x,
-                                       y,
-                                       out var r,
-                                       out var g,
-                                       out var b,
-                                       out var a);
+      rawImage.Access(
+          getHandler => {
+            for (var y = 0; y < height; ++y) {
+              for (var x = 0; x < width; ++x) {
+                getHandler(x,
+                           y,
+                           out var r,
+                           out var g,
+                           out var b,
+                           out var a);
 
-                            if (r == 255 && g == 0 && b == 255) {
-                              a = 0;
-                            }
+                if (r == 255 && g == 0 && b == 255) {
+                  a = 0;
+                }
 
-                            alphaScan0[y * width + x] = new Rgba32(r, g, b, a);
-                          }
-                        }
-                      });
+                alphaScan0[y * width + x] = new Rgba32(r, g, b, a);
+              }
+            }
+          });
 
       return textureImageWithAlpha;
     }

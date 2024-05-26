@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
-using fin.math.matrix.three;
 using fin.util.asserts;
 
 using OpenTK.Graphics.OpenGL;
@@ -42,7 +42,7 @@ namespace fin.ui.rendering.gl {
 
       protected override unsafe void PassValueToProgram() {
         fixed (float* ptr = &this.value_.M11) {
-          GL.UniformMatrix2x3(this.location_, 1, true, ptr);
+          GL.UniformMatrix3x2(this.location_, 1, false, ptr);
         }
       }
     }

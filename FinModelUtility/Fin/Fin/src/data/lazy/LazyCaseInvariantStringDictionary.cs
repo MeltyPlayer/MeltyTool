@@ -6,25 +6,32 @@ using System.Collections.Generic;
 using fin.data.dictionaries;
 
 namespace fin.data.lazy {
-  public class LazyCaseInvariantStringDictionary<TValue> : ILazyDictionary<string, TValue> {
+  public class LazyCaseInvariantStringDictionary<TValue>
+      : ILazyDictionary<string, TValue> {
     private readonly ILazyDictionary<string, TValue> impl_;
 
     public LazyCaseInvariantStringDictionary(Func<string, TValue> handler) {
       this.impl_ = new LazyDictionary<string, TValue>(
           handler,
-          new SimpleDictionary<string, TValue>(new ConcurrentDictionary<string, TValue>(StringComparer.OrdinalIgnoreCase)));
+          new SimpleDictionary<string, TValue>(
+              StringComparer.OrdinalIgnoreCase));
     }
 
-    public LazyCaseInvariantStringDictionary(Func<LazyDictionary<string, TValue>, string, TValue> handler) {
+    public LazyCaseInvariantStringDictionary(
+        Func<LazyDictionary<string, TValue>, string, TValue> handler) {
       this.impl_ = new LazyDictionary<string, TValue>(
           handler,
-          new SimpleDictionary<string, TValue>(new ConcurrentDictionary<string, TValue>(StringComparer.OrdinalIgnoreCase)));
+          new SimpleDictionary<string, TValue>(
+              new ConcurrentDictionary<string, TValue>(
+                  StringComparer.OrdinalIgnoreCase)));
     }
 
     public void Clear() => this.impl_.Clear();
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
-    public IEnumerator<(string Key, TValue Value)> GetEnumerator() => this.impl_.GetEnumerator();
+
+    public IEnumerator<(string Key, TValue Value)> GetEnumerator()
+      => this.impl_.GetEnumerator();
 
     public int Count => this.impl_.Count;
     public IEnumerable<string> Keys => this.impl_.Keys;

@@ -309,7 +309,7 @@ out vec4 vertexColor{i};");
             sampler2D sampler;
             vec2 clampMin;
             vec2 clampMax;
-            mat2x3 transform2d;
+            mat3x2 transform2d;
             mat4 transform3d;
           };
 
@@ -344,7 +344,7 @@ out vec4 vertexColor{i};");
       string transformedUv;
       if (!(finTexture?.IsTransform3d ?? false)) {
         transformedUv
-            = $"({textureName}.transform2d * {uvConverter(rawUvName)}).xy";
+            = $"{textureName}.transform2d * vec3({uvConverter(rawUvName)}.x, {uvConverter(rawUvName)}.y, 1)";
       } else {
         transformedUv =
             $"transformUv3d({textureName}.transform3d, {uvConverter(rawUvName)})";
@@ -363,6 +363,10 @@ out vec4 vertexColor{i};");
     public static bool RequiresFancyTextureData(IReadOnlyTexture? finTexture) {
       if (finTexture == null) {
         return false;
+      }
+
+      if (finTexture is IScrollingTexture) {
+        return true;
       }
 
       if (finTexture.WrapModeU == WrapMode.MIRROR_CLAMP ||

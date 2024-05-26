@@ -10,8 +10,11 @@ namespace glo.schema {
     public string TextureFilename { get; set; }
 
     public Rgba32 Color { get; private set; } = new();
-    public ushort Flags { get; set; }
+    public GloObjectFlags Flags { get; set; }
 
     public GloVertexRef[] VertexRefs { get; } = [new(), new(), new()];
+
+    public override string ToString()
+      => $"{this.TextureFilename} - {this.Flags}";
   }
 }

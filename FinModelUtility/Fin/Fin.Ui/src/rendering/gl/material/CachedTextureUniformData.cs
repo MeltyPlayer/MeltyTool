@@ -1,10 +1,13 @@
 ﻿using System.Numerics;
 
+using Assimp.Unmanaged;
+
 using fin.math.matrix.four;
 using fin.math.matrix.three;
 using fin.math.rotations;
 using fin.model;
 using fin.shaders.glsl;
+using fin.util.time;
 
 
 namespace fin.ui.rendering.gl.material {
@@ -13,8 +16,8 @@ namespace fin.ui.rendering.gl.material {
     public IReadOnlyTexture? FinTexture { get; }
     public GlTexture GlTexture { get; }
 
-    public IReadOnlyFinMatrix3x2? Transform2d { get; }
-    public IReadOnlyFinMatrix4x4? Transform3d { get; }
+    public IReadOnlyFinMatrix3x2? Transform2d { get; private set; }
+    public IReadOnlyFinMatrix4x4? Transform3d { get; private set; }
 
     public bool HasFancyData { get; }
     public IShaderUniform<int> SamplerUniform { get; }
@@ -47,13 +50,6 @@ namespace fin.ui.rendering.gl.material {
             shaderProgram.GetUniformMat3x2($"{textureName}.transform2d");
         this.Transform3dUniform =
             shaderProgram.GetUniformMat4($"{textureName}.transform3d");
-      }
-
-      var isTransform3d = finTexture?.IsTransform3d ?? false;
-      if (isTransform3d) {
-        this.Transform3d = CalculateTextureTransform3d_(finTexture);
-      } else {
-        this.Transform2d = CalculateTextureTransform2d_(finTexture);
       }
     }
 
@@ -91,6 +87,11 @@ namespace fin.ui.rendering.gl.material {
         this.ClampMinUniform.SetAndMaybeMarkDirty(clampMin);
         this.ClampMaxUniform.SetAndMaybeMarkDirty(clampMax);
 
+        if (this.FinTexture is IScrollingTexture) {
+          ;
+        }
+
+        this.MaybeCalculateTextureTransform_();
         if (!(this.FinTexture?.IsTransform3d ?? false)) {
           this.Transform2dUniform.SetAndMaybeMarkDirty(this.Transform2d!.Impl);
         } else {
@@ -100,25 +101,45 @@ namespace fin.ui.rendering.gl.material {
       }
     }
 
+    private void MaybeCalculateTextureTransform_() {
+      var finTexture = this.FinTexture;
+      var isTransform3d = finTexture?.IsTransform3d ?? false;
+      var cannotCache = finTexture is IScrollingTexture;
+
+      if (isTransform3d && (this.Transform3d == null || cannotCache)) {
+        this.Transform3d = CalculateTextureTransform3d_(finTexture);
+      } else if (!isTransform3d && (this.Transform2d == null || cannotCache)) {
+        this.Transform2d = CalculateTextureTransform2d_(finTexture);
+      }
+    }
+
     private static IReadOnlyFinMatrix3x2 CalculateTextureTransform2d_(
         IReadOnlyTexture? texture) {
       if (texture == null) {
         return FinMatrix3x2.IDENTITY;
       }
 
+      var scrollingTexture = texture as IScrollingTexture;
       var textureOffset = texture.Offset;
       var textureScale = texture.Scale;
       var textureRotationRadians = texture.RotationRadians;
 
-      if (textureOffset == null &&
+      if ((textureOffset == null && scrollingTexture == null) &&
           textureScale == null &&
           textureRotationRadians == null) {
         return FinMatrix3x2.IDENTITY;
       }
 
+      var secondsSinceStart = (float) FrameTime.ElapsedTime.TotalSeconds;
+
       Vector2? offset = null;
-      if (textureOffset != null) {
-        offset = new Vector2(textureOffset.X, textureOffset.Y);
+      if (textureOffset != null || scrollingTexture != null) {
+        offset = new Vector2((textureOffset?.X ?? 0) +
+                             secondsSinceStart *
+                             (scrollingTexture?.ScrollSpeedX ?? 0),
+                             (textureOffset?.Y ?? 0) +
+                             secondsSinceStart *
+                             (scrollingTexture?.ScrollSpeedY ?? 0));
       }
 
       Vector2? scale = null;
@@ -138,20 +159,29 @@ namespace fin.ui.rendering.gl.material {
         return FinMatrix4x4.IDENTITY;
       }
 
+      var scrollingTexture = texture as IScrollingTexture;
       var textureOffset = texture.Offset;
       var textureScale = texture.Scale;
       var textureRotationRadians = texture.RotationRadians;
 
-      if (textureOffset == null &&
+      if ((textureOffset == null && scrollingTexture == null) &&
           textureScale == null &&
           textureRotationRadians == null) {
         return FinMatrix4x4.IDENTITY;
       }
 
+      var secondsSinceStart = (float) FrameTime.ElapsedTime.TotalSeconds;
+
       Position? offset = null;
-      if (textureOffset != null) {
+      if (textureOffset != null || scrollingTexture != null) {
         offset =
-            new Position(textureOffset.X, textureOffset.Y, textureOffset.Z);
+            new Position((textureOffset?.X ?? 0) +
+                         secondsSinceStart *
+                         (scrollingTexture?.ScrollSpeedX ?? 0),
+                         (textureOffset?.Y ?? 0) +
+                         secondsSinceStart *
+                         (scrollingTexture?.ScrollSpeedY ?? 0),
+                         textureOffset?.Z ?? 0);
       }
 
       Quaternion? rotation = null;

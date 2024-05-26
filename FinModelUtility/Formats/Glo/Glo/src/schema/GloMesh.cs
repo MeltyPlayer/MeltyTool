@@ -32,7 +32,7 @@ namespace glo.schema {
 
     private readonly byte padding_ = 0;
 
-    public GloMeshFlags MeshFlags { get; set; }
+    public GloObjectFlags MeshFlags { get; set; }
 
     public GloMeshPointers Pointers { get; } = new();
   }
