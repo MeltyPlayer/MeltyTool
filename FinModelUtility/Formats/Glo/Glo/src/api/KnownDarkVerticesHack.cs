@@ -7,10 +7,26 @@ using fin.schema.vector;
 using glo.schema;
 
 namespace glo.api {
+  /// <summary>
+  ///   Stupid hack to fix doors not having vertex colors like they did in the
+  ///   N64 game. This is because the PC version's models (.glo) are losslessly
+  ///   generated from the original's models (.obe), and some details (like
+  ///   vertex colors) are lost.
+  ///
+  ///   Vertices that are in roughly the same position as the door's vertices
+  ///   will be set to black and will be aligned to remove gaps.
+  /// </summary>
   public class KnownDarkVerticesHack {
+    /// <summary>
+    ///   Known surfaces in the game that represent the doors you can walk
+    ///   through--these are all assumed to have black vertex colors.
+    ///
+    ///   Defined in the format:
+    ///     [mesh name].[texture name]
+    /// </summary>
     private static HashSet<string> knownDarkVertexMeshAndTextureNames_
         = [
-            // hub1
+            // hub
             "atlport.newbit3.bmp",
             "caveback.darkrk.bmp",
             "pirpot.newbit3.bmp",
