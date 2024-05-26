@@ -1,30 +1,34 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 using fin.data.dictionaries;
+using fin.data.sets;
 
 namespace fin.model.util {
-  public class RenderPriorityOrderedSet<T> : IEnumerable<T> {
-    // TODO: Optimize this with something like a minmap?
-    private readonly SetDictionary<T, (int addOrder, uint inversePriority, bool
-        isTransparent)> impl_ = new();
+  public class RenderPriorityOrderedSet<T> : IEnumerable<T> where T : notnull {
+    // TODO: Optimize this somehow?
+    private readonly OrderedHashSet<T> elements_ = new();
 
-    public void Add(T item, uint inversePriority, bool isTransparent)
-      => this.impl_.Add(item,
-                        (this.impl_.Count, inversePriority, isTransparent));
+    private readonly AggregatedDictionary<T, uint> inversePriorityByElement_
+        = new(Math.Min);
+
+    private readonly AggregatedDictionary<T, bool> isTransparentByElement_
+        = new((existingValue, newValue) => existingValue || newValue);
+
+    public void Add(T item, uint inversePriority, bool isTransparent) {
+      this.elements_.Add(item);
+      this.inversePriorityByElement_[item] = inversePriority;
+      this.isTransparentByElement_[item] = isTransparent;
+    }
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     public IEnumerator<T> GetEnumerator()
-      => this.impl_
-             .OrderBy(pair => pair.Value.Select(t => t.inversePriority)
-                                  .Order()
-                                  .First())
-             .ThenBy(pair => pair.Value.Select(t => t.isTransparent)
-                                 .Order()
-                                 .First())
-             .Select(pair => pair.Key)
+      => this.elements_
+             .OrderBy(value => this.inversePriorityByElement_[value])
+             .ThenBy(value => this.isTransparentByElement_[value])
              .GetEnumerator();
   }
 }
