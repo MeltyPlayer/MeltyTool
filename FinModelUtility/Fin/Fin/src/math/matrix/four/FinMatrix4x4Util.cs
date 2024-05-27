@@ -35,7 +35,6 @@ namespace fin.math.matrix.four {
       => new FinMatrix4x4(SystemMatrix4x4Util.FromRotation(rotation));
 
 
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFinMatrix4x4 FromScale(Scale scale)
       => FromScale(scale.X, scale.Y, scale.Z);
@@ -48,10 +47,10 @@ namespace fin.math.matrix.four {
     public static IFinMatrix4x4 FromScale(float scaleX,
                                           float scaleY,
                                           float scaleZ)
-      => new FinMatrix4x4(SystemMatrix4x4Util.FromScale(scaleX, scaleY, scaleZ));
+      => new FinMatrix4x4(
+          SystemMatrix4x4Util.FromScale(scaleX, scaleY, scaleZ));
 
 
-    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFinMatrix4x4 FromTrs(
         Position? translation,
@@ -64,19 +63,27 @@ namespace fin.math.matrix.four {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFinMatrix4x4 FromTrs(
-      Position? translation,
-      Quaternion? rotation,
-      Scale? scale)
+        Position? translation,
+        Quaternion? rotation,
+        Scale? scale)
       => FromTrs(translation, rotation, scale, new FinMatrix4x4());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFinMatrix4x4 FromTrs(
-      Position? translation,
-      Quaternion? rotation,
-      Scale? scale,
-      IFinMatrix4x4 dst) {
+        Position? translation,
+        Quaternion? rotation,
+        Scale? scale,
+        IFinMatrix4x4 dst) {
       dst.CopyFrom(SystemMatrix4x4Util.FromTrs(translation, rotation, scale));
       return dst;
     }
+
+    public static Vector3 TransformPosition(this IReadOnlyFinMatrix4x4 matrix,
+                                            Vector3 position)
+      => Vector3.Transform(position, matrix.Impl);
+
+    public static Vector2 TransformPosition(this IReadOnlyFinMatrix4x4 matrix,
+                                            Vector2 position)
+      => Vector2.Transform(position, matrix.Impl);
   }
 }

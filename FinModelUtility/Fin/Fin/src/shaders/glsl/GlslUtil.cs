@@ -344,7 +344,7 @@ out vec4 vertexColor{i};");
       string transformedUv;
       if (!(finTexture?.IsTransform3d ?? false)) {
         transformedUv
-            = $"{textureName}.transform2d * vec3({uvConverter(rawUvName)}.x, {uvConverter(rawUvName)}.y, 1)";
+            = $"{textureName}.transform2d * vec3(({uvConverter(rawUvName)}).x, ({uvConverter(rawUvName)}).y, 1)";
       } else {
         transformedUv =
             $"transformUv3d({textureName}.transform3d, {uvConverter(rawUvName)})";

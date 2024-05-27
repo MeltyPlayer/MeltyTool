@@ -1,4 +1,6 @@
-﻿using dat.schema;
+﻿using System.Numerics;
+
+using dat.schema;
 using dat.schema.animation;
 using dat.schema.material;
 using dat.schema.melee;
@@ -236,53 +238,40 @@ namespace dat.api {
                 _                => UvType.STANDARD
             };
 
-            // Why tf does Melee have 3D texture transforms......
-            // https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRawViewer/Converters/ModelExporter.cs#L526
-
-            var tObjTranslation = tObj.Translation;
-            var tObjRotationRadians = tObj.RotationRadians;
-            var tObjScale = tObj.Scale;
-
-            var rawTranslation = new Position(
-                tObjTranslation.X,
-                tObjTranslation.Y,
-                tObjTranslation.Z);
-            var rawQuaternion = QuaternionUtil.CreateZyx(
-                tObjRotationRadians.X,
-                tObjRotationRadians.Y,
-                tObjRotationRadians.Z);
-            var rawScale =
-                new Scale(tObjScale.X, tObjScale.Y, tObjScale.Z);
-
-            // This is an absolute nightmare, but it works.
-            FinMatrix4x4Util.FromTrs(rawTranslation,
-                                     rawQuaternion,
-                                     rawScale)
-                            .InvertInPlace()
-                            .Decompose(out var outTranslation,
-                                       out var outQuaternion,
-                                       out var outScale);
-
-            var outRotationRadians =
-                QuaternionUtil.ToEulerRadians(outQuaternion);
-
-            finTexture.SetOffset3d(
-                outTranslation.X,
-                outTranslation.Y,
-                outTranslation.Z);
-            finTexture.SetRotationRadians3d(
-                outRotationRadians.X,
-                outRotationRadians.Y,
-                outRotationRadians.Z);
-            finTexture.SetScale3d(
-                tObj.RepeatS * outScale.X,
-                tObj.RepeatT * outScale.Y,
-                outScale.Z);
-
             return finTexture;
           });
-      var finMaterialsByMObjOffset =
-          new LazyDictionary<(uint, CullingMode), IMaterial?>(
+      var finTextureScalerByTObjOffset
+          = new LazyDictionary<uint, Func<Vector2, Vector2>>(
+              tObjOffset => {
+                var tObj = tObjByOffset[tObjOffset];
+
+                // Why tf does Melee have 3D texture transforms......
+                // https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRawViewer/Converters/ModelExporter.cs#L526
+                var tObjTranslation = tObj.Translation;
+                var tObjRotationRadians = tObj.RotationRadians;
+                var tObjScale = tObj.Scale;
+
+                var rawTranslation = new Position(
+                    tObjTranslation.X,
+                    tObjTranslation.Y,
+                    tObjTranslation.Z);
+                var rawQuaternion = QuaternionUtil.CreateZyx(
+                    tObjRotationRadians.X,
+                    tObjRotationRadians.Y,
+                    tObjRotationRadians.Z);
+                var rawScale =
+                    new Scale(tObjScale.X, tObjScale.Y, tObjScale.Z);
+
+                // This is an absolute nightmare, but it works.
+                var uvMatrix = FinMatrix4x4Util
+                               .FromTrs(rawTranslation, rawQuaternion, rawScale)
+                               .InvertInPlace();
+
+                return uv => uvMatrix.TransformPosition(uv) *
+                             new Vector2(tObj.RepeatS, tObj.RepeatT);
+              });
+      var finMaterialsAndTextureMatricesByMObjOffset =
+          new LazyDictionary<(uint, CullingMode), (IMaterial, Func<Vector2, Vector2>[])?>(
               (mObjOffsetAndCullingMode => {
                 var (mObjOffset, cullingMode) = mObjOffsetAndCullingMode;
                 if (mObjOffset == 0) {
@@ -294,12 +283,12 @@ namespace dat.api {
 
                 var tObjsAndFinTextures =
                     new (TObj, ITexture)[tObjsAndOffsets.Length];
-                if (tObjsAndOffsets.Length > 0) {
-                  for (var i = 0; i < tObjsAndOffsets.Length; i++) {
-                    var (tObjOffset, tObj) = tObjsAndOffsets[i];
-                    tObjsAndFinTextures[i] = (
-                        tObj, finTexturesByTObjOffset[tObjOffset]);
-                  }
+                var textureScalers = new Func<Vector2, Vector2>[tObjsAndFinTextures.Length];
+                for (var i = 0; i < tObjsAndOffsets.Length; i++) {
+                  var (tObjOffset, tObj) = tObjsAndOffsets[i];
+                  tObjsAndFinTextures[i] = (
+                      tObj, finTexturesByTObjOffset[tObjOffset]);
+                  textureScalers[i] = finTextureScalerByTObjOffset[tObjOffset];
                 }
 
                 var fixedFunctionMaterial =
@@ -345,7 +334,7 @@ namespace dat.api {
                 }
 
                 fixedFunctionMaterial.Name = mObj.Name ?? mObjOffset.ToHex();
-                return fixedFunctionMaterial;
+                return (fixedFunctionMaterial, textureScalers);
               }));
 
       // Sorts all dObjs so that the opaque ones are rendered first, and then the translucent (XLU) ones
@@ -405,8 +394,10 @@ namespace dat.api {
                   _             => CullingMode.SHOW_BOTH
               };
 
-          var finMaterial =
-              finMaterialsByMObjOffset[(mObjOffset, cullingMode)];
+          var tuple = 
+              finMaterialsAndTextureMatricesByMObjOffset[(mObjOffset, cullingMode)];
+          var finMaterial = tuple?.Item1;
+          var textureScalers = tuple?.Item2;
 
           var vertexSpace = pObj.VertexSpace;
           var finWeights =
@@ -440,12 +431,12 @@ namespace dat.api {
                       finVertex.SetColor(datVertex.Color);
 
                       if (datVertex.Uv0 != null) {
-                        var uv0 = datVertex.Uv0.Value;
+                        var uv0 = textureScalers[0](datVertex.Uv0.Value);
                         finVertex.SetUv(0, uv0.X, uv0.Y);
                       }
 
                       if (datVertex.Uv1 != null) {
-                        var uv1 = datVertex.Uv1.Value;
+                        var uv1 = textureScalers[1](datVertex.Uv1.Value);
                         finVertex.SetUv(1, uv1.X, uv1.Y);
                       }
 
