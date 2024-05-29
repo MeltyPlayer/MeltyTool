@@ -5,7 +5,7 @@ struct Texture {
   sampler2D sampler;
   vec2 clampMin;
   vec2 clampMax;
-  mat2x3 transform2d;
+  mat3x2 transform2d;
   mat4 transform3d;
 };
 
@@ -25,9 +25,9 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = clamp(texture(texture0.sampler, clamp((texture0.transform2d * uv0).xy, texture0.clampMin, texture0.clampMax)).rgb*color_GxMaterialColor0, 0, 1);
+  vec3 colorComponent = clamp(texture(texture0.sampler, clamp(texture0.transform2d * vec3((uv0).x, (uv0).y, 1), texture0.clampMin, texture0.clampMax)).rgb*color_GxMaterialColor0, 0, 1);
 
-  float alphaComponent = texture(texture0.sampler, clamp((texture0.transform2d * uv0).xy, texture0.clampMin, texture0.clampMax)).a*scalar_GxMaterialAlpha0;
+  float alphaComponent = texture(texture0.sampler, clamp(texture0.transform2d * vec3((uv0).x, (uv0).y, 1), texture0.clampMin, texture0.clampMax)).a*scalar_GxMaterialAlpha0;
 
   fragColor = vec4(colorComponent, alphaComponent);
 }

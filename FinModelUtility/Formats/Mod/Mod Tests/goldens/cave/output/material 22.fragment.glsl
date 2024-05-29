@@ -22,7 +22,7 @@ uniform vec3 cameraPosition;
 
 uniform sampler2D diffuseTexture;
 uniform float shininess;
-uniform float useLighting;
+uniform int useLighting;
 
 out vec4 fragColor;
 

@@ -25,7 +25,7 @@ struct Texture {
   sampler2D sampler;
   vec2 clampMin;
   vec2 clampMax;
-  mat2x3 transform2d;
+  mat3x2 transform2d;
   mat4 transform3d;
 };
 
@@ -139,7 +139,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp((color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1) + texture(texture2.sampler, clamp((texture2.transform2d * uv0).xy, texture2.clampMin, texture2.clampMax)).rgb*color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1)*(vec3(1) + vec3(-1)*texture(texture1.sampler, clamp((texture1.transform2d * uv0).xy, texture1.clampMin, texture1.clampMax)).rgb) + color_GxMaterialColor1*clamp((individualLightDiffuseColors[7].rgb + clamp(color_GxAmbientColor1, 0, 1)), 0, 1)*texture(texture0.sampler, clamp((texture0.transform2d * acos(normalUv) / 3.14159).xy, texture0.clampMin, texture0.clampMax)).rgb*vec3(4)*texture(texture1.sampler, clamp((texture1.transform2d * uv0).xy, texture1.clampMin, texture1.clampMax)).rgb)*vec3(2), 0, 1);
+  vec3 colorComponent = clamp((color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1) + texture(texture2.sampler, clamp(texture2.transform2d * vec3((uv0).x, (uv0).y, 1), texture2.clampMin, texture2.clampMax)).rgb*color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1)*(vec3(1) + vec3(-1)*texture(texture1.sampler, clamp(texture1.transform2d * vec3((uv0).x, (uv0).y, 1), texture1.clampMin, texture1.clampMax)).rgb) + color_GxMaterialColor1*clamp((individualLightDiffuseColors[7].rgb + clamp(color_GxAmbientColor1, 0, 1)), 0, 1)*texture(texture0.sampler, clamp(texture0.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1), texture0.clampMin, texture0.clampMax)).rgb*vec3(4)*texture(texture1.sampler, clamp(texture1.transform2d * vec3((uv0).x, (uv0).y, 1), texture1.clampMin, texture1.clampMax)).rgb)*vec3(2), 0, 1);
 
   float alphaComponent = scalar_GxMaterialAlpha0;
 

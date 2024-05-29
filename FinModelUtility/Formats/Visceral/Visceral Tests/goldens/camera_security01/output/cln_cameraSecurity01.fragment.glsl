@@ -26,7 +26,7 @@ uniform sampler2D specularTexture;
 uniform sampler2D ambientOcclusionTexture;
 uniform sampler2D emissiveTexture;
 uniform float shininess;
-uniform float useLighting;
+uniform int useLighting;
 
 out vec4 fragColor;
 
