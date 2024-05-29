@@ -95,6 +95,11 @@ namespace fin.language.equations.fixedFunction.impl {
                                           IScalarValue? mixAmount);
   }
 
+  public static class ColorWrapperExtensions {
+    public static ColorWrapper? Wrap(this IScalarValue? scalarValue)
+      => scalarValue != null ? new ColorWrapper(scalarValue) : null;
+  }
+
   public class ColorFixedFunctionOps
       : BFixedFunctionOps<IColorValue, IColorConstant, IColorTerm,
           IColorExpression> {
@@ -119,11 +124,34 @@ namespace fin.language.equations.fixedFunction.impl {
     public override IColorConstant Half { get; }
     public override IColorConstant One { get; }
 
+    public bool IsSingleScalarValue(
+        IColorValue? value,
+        out IScalarValue scalarValue) {
+      if (value is IColorConstant {
+              Intensity: IScalarConstant scalarConstant
+          }) {
+        scalarValue = scalarConstant;
+        return true;
+      }
+
+      if (value is ColorWrapper { Intensity: IScalarConstant wrappedScalar }) {
+        scalarValue = wrappedScalar;
+        return true;
+      }
+
+      scalarValue = default;
+      return false;
+    }
+
     public override IColorValue? Add(IColorValue? lhs, IColorValue? rhs) {
       if (!FixedFunctionOpsConstants.SIMPLIFY) {
         lhs ??= this.Zero;
         rhs ??= this.Zero;
       } else {
+        if (this.IsSingleScalarValue(rhs, out var rhsScalar)) {
+          return this.AddWithScalar(lhs, rhsScalar);
+        }
+
         var lhsIsZero = this.IsZero(lhs);
         var rhsIsZero = this.IsZero(rhs);
 
@@ -163,6 +191,10 @@ namespace fin.language.equations.fixedFunction.impl {
         if (rhsIsZero) {
           return lhs;
         }
+
+        if (this.IsSingleScalarValue(lhs, out var lhsScalar)) {
+          return this.scalarOps_.Add(lhsScalar, rhs).Wrap();
+        }
       }
 
       return lhs!.Add(rhs!);
@@ -197,6 +229,10 @@ namespace fin.language.equations.fixedFunction.impl {
         lhs ??= this.Zero;
         rhs ??= this.Zero;
       } else {
+        if (this.IsSingleScalarValue(rhs, out var rhsScalar)) {
+          return this.MultiplyWithScalar(lhs, rhsScalar);
+        }
+
         if (this.IsZero(lhs) || this.IsZero(rhs)) {
           return null;
         }
@@ -244,6 +280,10 @@ namespace fin.language.equations.fixedFunction.impl {
 
         if (rhsIsOne) {
           return lhs;
+        }
+
+        if (this.IsSingleScalarValue(lhs, out var lhsScalar)) {
+          return this.scalarOps_.Multiply(lhsScalar, rhs).Wrap();
         }
       }
 
@@ -306,6 +346,16 @@ namespace fin.language.equations.fixedFunction.impl {
     public override IScalarConstant Half { get; }
     public override IScalarConstant One { get; }
 
+    public bool IsConstant(IScalarValue? value, out double constantValue) {
+      if (value is IScalarConstant scalarConstant) {
+        constantValue = scalarConstant.Value;
+        return true;
+      }
+
+      constantValue = default;
+      return false;
+    }
+
     public override IScalarValue? AddWithScalar(
         IScalarValue? lhs,
         IScalarValue? rhs)
@@ -329,6 +379,11 @@ namespace fin.language.equations.fixedFunction.impl {
 
         if (rhsIsZero) {
           return lhs;
+        }
+
+        if (this.IsConstant(lhs, out var lhsConstant) &&
+            this.IsConstant(rhs, out var rhsConstant)) {
+          return new ScalarConstant(lhsConstant + rhsConstant);
         }
       }
 
@@ -354,6 +409,11 @@ namespace fin.language.equations.fixedFunction.impl {
 
         if (rhsIsZero) {
           return lhs;
+        }
+
+        if (this.IsConstant(lhs, out var lhsConstant) &&
+            this.IsConstant(rhs, out var rhsConstant)) {
+          return new ScalarConstant(lhsConstant - rhsConstant);
         }
       }
 
@@ -388,6 +448,11 @@ namespace fin.language.equations.fixedFunction.impl {
 
         if (rhsIsOne) {
           return lhs;
+        }
+
+        if (this.IsConstant(lhs, out var lhsConstant) &&
+            this.IsConstant(rhs, out var rhsConstant)) {
+          return new ScalarConstant(lhsConstant * rhsConstant);
         }
       }
 

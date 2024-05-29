@@ -423,27 +423,19 @@ namespace fin.language.equations.fixedFunction {
     }
   }
 
-  public class ColorWrapper : BColorValue, IColorFactor {
-    public ColorWrapper(
-        IScalarValue r,
-        IScalarValue g,
-        IScalarValue b) {
-      this.R = r;
-      this.G = g;
-      this.B = b;
-    }
-
-    public ColorWrapper(IScalarValue intensity) {
+  public class ColorWrapper(
+      IScalarValue r,
+      IScalarValue g,
+      IScalarValue b)
+      : BColorValue, IColorFactor {
+    public ColorWrapper(IScalarValue intensity) : this(intensity, intensity, intensity) {
       this.Intensity = intensity;
-      this.R = intensity;
-      this.G = intensity;
-      this.B = intensity;
     }
 
     public override IScalarValue? Intensity { get; }
-    public override IScalarValue R { get; }
-    public override IScalarValue G { get; }
-    public override IScalarValue B { get; }
+    public override IScalarValue R { get; } = r;
+    public override IScalarValue G { get; } = g;
+    public override IScalarValue B { get; } = b;
 
     public override string ToString()
       => this.Intensity != null ? $"{this.Intensity}" : $"<{R}, {G}, {B}>";

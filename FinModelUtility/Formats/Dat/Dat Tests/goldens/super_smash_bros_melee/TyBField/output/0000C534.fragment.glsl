@@ -4,7 +4,7 @@
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(2)*vec3(0.250980406999588);
+  vec3 colorComponent = vec3(0.501960813999176);
 
   float alphaComponent = 0.75;
 
