@@ -2,7 +2,6 @@
 
 using fin.math;
 using fin.model;
-using fin.schema.vector;
 
 using glo.schema;
 
@@ -26,6 +25,10 @@ namespace glo.api {
     /// </summary>
     private static HashSet<string> knownDarkVertexMeshAndTextureNames_
         = [
+            // Cave
+            "caveent.caveflr.bmp",
+            "caveent.cracks1b.bmp",
+            "caveent.grebrck3.bmp",
             // hub
             "atlport.newbit3.bmp",
             "caveback.darkrk.bmp",
