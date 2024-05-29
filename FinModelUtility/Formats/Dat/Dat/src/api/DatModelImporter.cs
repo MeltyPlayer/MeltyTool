@@ -122,25 +122,6 @@ namespace dat.api {
             }
           }
         }
-
-        /*foreach (var (jObj, matAnimJoint) in primaryDat.JObjs.Zip(
-                     primaryDat.MatAnimJoints)) {
-          int i = 0;
-          foreach (var matAnim in matAnimJoint.MatAnims) {
-            var aObj = matAnim.AObj;
-            if (aObj != null) {
-              var finAnimation = lazyFinAnimations[i];
-              finAnimation.FrameCount =
-                  Math.Max(finAnimation.FrameCount, (int) aObj.EndFrame);
-
-              var finBone = finBoneByJObj[jObj];
-              var boneTracks = finAnimation.AddBoneTracks(finBone);
-
-            }
-
-            i++;
-          }
-        }*/
       }
 
       // Adds mesh and materials
