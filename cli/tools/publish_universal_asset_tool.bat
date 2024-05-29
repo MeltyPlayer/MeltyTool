@@ -17,6 +17,6 @@ cd "FinModelUtility\UniversalAssetTool\UniversalAssetTool.Ui\"
 dotnet publish -c Release
 
 echo Copying new universal asset tool...
-move "bin\Release\net8.0-windows\win-x86\publish\*" "!universalAssetToolBasePath!"
+move "bin\Release\net8.0-windows\win-x64\publish\*" "!universalAssetToolBasePath!"
 
 pause
