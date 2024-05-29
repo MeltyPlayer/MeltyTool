@@ -42,7 +42,7 @@ namespace fin.shaders.glsl {
 
            uniform {GlslUtil.GetTypeOfTexture(diffuseTexture)} diffuseTexture;
            uniform float {GlslConstants.UNIFORM_SHININESS_NAME};
-           uniform float {GlslConstants.UNIFORM_USE_LIGHTING_NAME};
+           uniform int {GlslConstants.UNIFORM_USE_LIGHTING_NAME};
 
            out vec4 fragColor;
 

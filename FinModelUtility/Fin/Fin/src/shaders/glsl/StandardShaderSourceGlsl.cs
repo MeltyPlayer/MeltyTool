@@ -75,7 +75,7 @@ namespace fin.shaders.glsl {
            uniform {GlslUtil.GetTypeOfTexture(ambientOcclusionTexture)} ambientOcclusionTexture;
            uniform {GlslUtil.GetTypeOfTexture(emissiveTexture)} emissiveTexture;
            uniform float {GlslConstants.UNIFORM_SHININESS_NAME};
-           uniform float {GlslConstants.UNIFORM_USE_LIGHTING_NAME};
+           uniform int {GlslConstants.UNIFORM_USE_LIGHTING_NAME};
 
            out vec4 fragColor;
 

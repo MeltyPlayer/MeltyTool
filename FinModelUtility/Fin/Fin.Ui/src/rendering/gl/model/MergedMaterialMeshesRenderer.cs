@@ -12,7 +12,7 @@ namespace fin.ui.rendering.gl.model {
     private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
 
     private (IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])[]
-        materialMeshRenderers_;
+        materialMeshRenderers_ = [];
 
     public MergedMaterialMeshesRenderer(
         IReadOnlyModel model,
@@ -79,7 +79,7 @@ namespace fin.ui.rendering.gl.model {
                   material,
                   this.lighting_,
                   mergedPrimitives) {
-                  UseLighting = UseLighting
+                  UseLighting = this.UseLighting
               });
         }
 
@@ -100,9 +100,8 @@ namespace fin.ui.rendering.gl.model {
     }
 
     private void ReleaseUnmanagedResources_() {
-      foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_
-                   .AsSpan()) {
-        foreach (var materialMeshRenderer in materialMeshRenderers.AsSpan()) {
+      foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_) {
+        foreach (var materialMeshRenderer in materialMeshRenderers) {
           materialMeshRenderer.Dispose();
         }
       }
@@ -122,8 +121,8 @@ namespace fin.ui.rendering.gl.model {
       set {
         this.useLighting_ = value;
         foreach (var (_, materialMeshRenderers) in
-                 this.materialMeshRenderers_.AsSpan()) {
-          foreach (var materialMeshRenderer in materialMeshRenderers.AsSpan()) {
+                 this.materialMeshRenderers_) {
+          foreach (var materialMeshRenderer in materialMeshRenderers) {
             materialMeshRenderer.UseLighting = value;
           }
         }
@@ -134,12 +133,12 @@ namespace fin.ui.rendering.gl.model {
       this.GenerateModelIfNull_();
 
       foreach (var (mesh, materialMeshRenderers) in
-               this.materialMeshRenderers_.AsSpan()) {
+               this.materialMeshRenderers_) {
         if (this.HiddenMeshes?.Contains(mesh) ?? false) {
           continue;
         }
 
-        foreach (var materialMeshRenderer in materialMeshRenderers.AsSpan()) {
+        foreach (var materialMeshRenderer in materialMeshRenderers) {
           materialMeshRenderer.Render();
         }
       }
