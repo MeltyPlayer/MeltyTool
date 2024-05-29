@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 
+using fin.math;
 using fin.model;
 using fin.math.xyz;
-
-using Microsoft.Extensions.Primitives;
+using fin.util.enums;
 
 namespace fin.shaders.glsl {
   public enum FinShaderType {
@@ -14,6 +16,19 @@ namespace fin.shaders.glsl {
     COLOR,
     STANDARD,
     NULL
+  }
+
+  [Flags]
+  public enum TextureTransformType {
+    NONE = 0,
+    TWO_D = 1 << 0,
+    THREE_D = 1 << 1,
+  }
+
+  public static class TextureTransformTypeExtensions {
+    public static TextureTransformType Merge(this TextureTransformType lhs,
+                                             TextureTransformType rhs)
+      => lhs | rhs;
   }
 
   public static class GlslUtil {
@@ -301,30 +316,80 @@ out vec4 vertexColor{i};");
     }
 
 
-    public static string GetTextureStruct() {
-      return
+    public static void AppendTextureStructIfNeeded(
+        this StringBuilder sb,
+        IEnumerable<IReadOnlyTexture?> textures
+    ) {
+      var usesClamping = false;
+      var textureTransformType = TextureTransformType.NONE;
+      foreach (var texture in textures) {
+        usesClamping = usesClamping || texture.UsesShaderClamping();
+        textureTransformType
+            = textureTransformType.Merge(texture.GetTextureTransformType());
+      }
+
+      if (!usesClamping && textureTransformType == TextureTransformType.NONE) {
+        return;
+      }
+
+      sb.Append(
           """
 
           struct Texture {
             sampler2D sampler;
-            vec2 clampMin;
-            vec2 clampMax;
-            mat3x2 transform2d;
-            mat4 transform3d;
+
+          """);
+
+
+      if (usesClamping) {
+        sb.Append(
+            """
+              vec2 clampMin;
+              vec2 clampMax;
+
+            """);
+      }
+
+      if (textureTransformType.CheckFlag(TextureTransformType.TWO_D)) {
+        sb.Append(
+            """
+              mat3x2 transform2d;
+
+            """);
+      }
+
+      if (textureTransformType.CheckFlag(TextureTransformType.THREE_D)) {
+        sb.Append(
+            """
+              mat4 transform3d;
+
+            """);
+      }
+
+      sb.Append(
+          """
           };
-
-          vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
-            vec4 rawTransformedUv = (transform3d * vec4(inUv, 0, 1));
           
-            // We need to manually divide by w for perspective correction!
-            return rawTransformedUv.xy / rawTransformedUv.w;
-          }
+          
+          """);
 
-          """;
+      if (textureTransformType.CheckFlag(TextureTransformType.THREE_D)) {
+        sb.Append(
+            """
+            vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
+              vec4 rawTransformedUv = (transform3d * vec4(inUv, 0, 1));
+            
+              // We need to manually divide by w for perspective correction!
+              return rawTransformedUv.xy / rawTransformedUv.w;
+            }
+
+            
+            """);
+      }
     }
 
     public static string GetTypeOfTexture(IReadOnlyTexture? finTexture)
-      => RequiresFancyTextureData(finTexture) ? "Texture" : "sampler2D";
+      => finTexture.NeedsTextureShaderStruct() ? "Texture" : "sampler2D";
 
     public static string ReadColorFromTexture(
         string textureName,
@@ -337,36 +402,43 @@ out vec4 vertexColor{i};");
         string rawUvName,
         Func<string, string> uvConverter,
         IReadOnlyTexture? finTexture) {
-      if (!RequiresFancyTextureData(finTexture)) {
+      var needsClamp = finTexture.UsesShaderClamping();
+      var textureTransformType = finTexture.GetTextureTransformType();
+
+      if (!needsClamp && textureTransformType == TextureTransformType.NONE) {
         return $"texture({textureName}, {uvConverter(rawUvName)})";
       }
 
-      string transformedUv;
-      if (!(finTexture?.IsTransform3d ?? false)) {
-        transformedUv
-            = $"{textureName}.transform2d * vec3(({uvConverter(rawUvName)}).x, ({uvConverter(rawUvName)}).y, 1)";
-      } else {
-        transformedUv =
-            $"transformUv3d({textureName}.transform3d, {uvConverter(rawUvName)})";
-      }
+      var transformedUv = textureTransformType switch {
+          TextureTransformType.TWO_D =>
+              $"{textureName}.transform2d * vec3(({uvConverter(rawUvName)}).x, ({uvConverter(rawUvName)}).y, 1)",
+          TextureTransformType.THREE_D =>
+              $"transformUv3d({textureName}.transform3d, {uvConverter(rawUvName)})",
+          _ => uvConverter(rawUvName)
+      };
 
-      return
-          $"texture({textureName}.sampler, " +
-          "clamp(" +
-          $"{transformedUv}, " +
-          $"{textureName}.clampMin, " +
-          $"{textureName}.clampMax" +
-          ")" + // clamp
-          ")";  // texture
+      if (needsClamp) {
+        return
+            $"texture({textureName}.sampler, " +
+            "clamp(" +
+            $"{transformedUv}, " +
+            $"{textureName}.clampMin, " +
+            $"{textureName}.clampMax" +
+            ")" + // clamp
+            ")";  // texture
+      } else {
+        return $"texture({textureName}.sampler, {transformedUv})";
+      }
     }
 
-    public static bool RequiresFancyTextureData(IReadOnlyTexture? finTexture) {
+    public static bool NeedsTextureShaderStruct(
+        this IReadOnlyTexture? finTexture)
+      => finTexture.UsesShaderClamping() ||
+         finTexture.GetTextureTransformType() != TextureTransformType.NONE;
+
+    public static bool UsesShaderClamping(this IReadOnlyTexture? finTexture) {
       if (finTexture == null) {
         return false;
-      }
-
-      if (finTexture is IScrollingTexture) {
-        return true;
       }
 
       if (finTexture.WrapModeU == WrapMode.MIRROR_CLAMP ||
@@ -374,28 +446,27 @@ out vec4 vertexColor{i};");
         return true;
       }
 
-      if (finTexture.Offset != null) {
-        var offset = finTexture.Offset;
-        if (!offset.IsRoughly0()) {
-          return true;
-        }
+      return (finTexture.ClampS != null && !finTexture.ClampS.IsRoughly01()) ||
+             (finTexture.ClampT != null && !finTexture.ClampT.IsRoughly01());
+    }
+
+    public static TextureTransformType GetTextureTransformType(
+        this IReadOnlyTexture? finTexture) {
+      if (finTexture == null) {
+        return TextureTransformType.NONE;
       }
 
-      if (finTexture.RotationRadians != null) {
-        var radians = finTexture.RotationRadians;
-        if (!radians.IsRoughly0()) {
-          return true;
-        }
+      if ((finTexture.Offset is { } offset && !offset.IsRoughly0()) ||
+          (finTexture.RotationRadians is { } radians &&
+           !radians.IsRoughly0()) ||
+          (finTexture.Scale is { } scale && !scale.IsRoughly1()) ||
+          finTexture is IScrollingTexture) {
+        return finTexture.IsTransform3d
+            ? TextureTransformType.THREE_D
+            : TextureTransformType.TWO_D;
       }
 
-      if (finTexture.Scale != null) {
-        var scale = finTexture.Scale;
-        if (!scale.IsRoughly1()) {
-          return true;
-        }
-      }
-
-      return finTexture.ClampS != null || finTexture.ClampT != null;
+      return TextureTransformType.NONE;
     }
   }
 }

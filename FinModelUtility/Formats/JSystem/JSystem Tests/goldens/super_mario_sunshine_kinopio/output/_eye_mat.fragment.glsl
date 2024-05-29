@@ -23,18 +23,8 @@ uniform float shininess;
 
 struct Texture {
   sampler2D sampler;
-  vec2 clampMin;
-  vec2 clampMax;
   mat3x2 transform2d;
-  mat4 transform3d;
 };
-
-vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
-  vec4 rawTransformedUv = (transform3d * vec4(inUv, 0, 1));
-
-  // We need to manually divide by w for perspective correction!
-  return rawTransformedUv.xy / rawTransformedUv.w;
-}
 
 uniform Texture texture0;
 uniform sampler2D texture1;
@@ -136,9 +126,9 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(texture(texture0.sampler, clamp(texture0.transform2d * vec3((uv0).x, (uv0).y, 1), texture0.clampMin, texture0.clampMax)).rgb*clamp((color_GxColor0 + texture(texture1, uv0).rgb*(vec3(1) + vec3(-1)*vec3(0.625)) + color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*vec3(0.625)), 0, 1), 0, 1);
+  vec3 colorComponent = clamp(texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*clamp((color_GxColor0 + texture(texture1, uv0).rgb*(vec3(1) + vec3(-1)*vec3(0.625)) + color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*vec3(0.625)), 0, 1), 0, 1);
 
-  float alphaComponent = scalar_GxAlpha0*texture(texture0.sampler, clamp(texture0.transform2d * vec3((uv0).x, (uv0).y, 1), texture0.clampMin, texture0.clampMax)).a;
+  float alphaComponent = scalar_GxAlpha0*texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).a;
 
   fragColor = vec4(colorComponent, alphaComponent);
 }

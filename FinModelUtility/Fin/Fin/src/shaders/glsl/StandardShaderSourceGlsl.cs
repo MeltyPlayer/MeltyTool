@@ -37,14 +37,7 @@ namespace fin.shaders.glsl {
              """);
       }
 
-      if (material.Textures.Any(GlslUtil.RequiresFancyTextureData)) {
-        fragmentShaderSrc.Append(
-            $"""
-
-
-             {GlslUtil.GetTextureStruct()}
-             """);
-      }
+      fragmentShaderSrc.AppendTextureStructIfNeeded(material.Textures);
 
       fragmentShaderSrc.Append(
           $"""

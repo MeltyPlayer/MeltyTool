@@ -27,14 +27,7 @@ namespace fin.shaders.glsl {
              """);
       }
 
-      if (GlslUtil.RequiresFancyTextureData(diffuseTexture)) {
-        fragmentSrc.Append(
-            $"""
-
-
-             {GlslUtil.GetTextureStruct()}
-             """);
-      }
+      fragmentSrc.AppendTextureStructIfNeeded(material.Textures);
 
       fragmentSrc.Append(
           $"""

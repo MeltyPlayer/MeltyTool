@@ -4,7 +4,7 @@ using System.Numerics;
 
 using fin.util.hash;
 
-namespace fin.schema.vector {
+namespace fin.math {
   public class Vector3EqualityComparer(float precision)
       : IEqualityComparer<Vector3> {
     public bool Equals(Vector3 lhs, Vector3 rhs)

@@ -79,11 +79,11 @@ namespace fin.math.matrix.four {
     }
 
     public static Vector3 TransformPosition(this IReadOnlyFinMatrix4x4 matrix,
-                                            Vector3 position)
+                                            in Vector3 position)
       => Vector3.Transform(position, matrix.Impl);
 
     public static Vector2 TransformPosition(this IReadOnlyFinMatrix4x4 matrix,
-                                            Vector2 position)
+                                            in Vector2 position)
       => Vector2.Transform(position, matrix.Impl);
   }
 }

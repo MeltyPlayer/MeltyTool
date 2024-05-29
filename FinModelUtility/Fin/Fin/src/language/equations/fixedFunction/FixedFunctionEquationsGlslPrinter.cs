@@ -12,22 +12,19 @@ namespace fin.language.equations.fixedFunction {
   public class FixedFunctionEquationsGlslPrinter {
     public string Print(IReadOnlyFixedFunctionMaterial material) {
       var sb = new StringBuilder();
-
-      using var os = new StringWriter(sb);
-      this.Print(os, material);
-
+      this.Print(sb, material);
       return sb.ToString();
     }
 
     public void Print(
-        StringWriter os,
+        StringBuilder sb,
         IReadOnlyFixedFunctionMaterial material) {
       var equations = material.Equations;
       var registers = material.Registers;
       var textures = material.TextureSources;
 
-      os.WriteLine("#version 400");
-      os.WriteLine();
+      sb.AppendLine("#version 400");
+      sb.AppendLine();
 
       var hasIndividualLights =
           Enumerable
@@ -61,8 +58,8 @@ namespace fin.language.equations.fixedFunction {
 
       // TODO: Optimize this if we only need ambient
       if (dependsOnLights || dependsOnAmbientLight) {
-        os.WriteLine(GlslUtil.GetLightHeader(dependsOnAmbientLight));
-        os.WriteLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
+        sb.AppendLine(GlslUtil.GetLightHeader(dependsOnAmbientLight));
+        sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
       }
 
       var dependsOnIndividualTextures =
@@ -79,19 +76,17 @@ namespace fin.language.equations.fixedFunction {
       var dependsOnAnyTextures =
           dependsOnIndividualTextures.Any(value => value);
 
-      if (dependsOnIndividualTextures
-          .Select((dependsOnTexture, i) => (i, dependsOnTexture))
-          .Where(tuple => tuple.dependsOnTexture)
-          .Any(tuple => GlslUtil.RequiresFancyTextureData(
-                   textures[tuple.i]))) {
-        os.WriteLine(GlslUtil.GetTextureStruct());
-      }
+      sb.AppendTextureStructIfNeeded(
+          dependsOnIndividualTextures
+              .Select((dependsOnTexture, i) => (i, dependsOnTexture))
+              .Where(tuple => tuple.dependsOnTexture)
+              .Select(tuple => textures[tuple.i]));
 
       var hadUniform = false;
       for (var t = 0; t < MaterialConstants.MAX_TEXTURES; ++t) {
         if (dependsOnIndividualTextures[t]) {
           hadUniform = true;
-          os.WriteLine(
+          sb.AppendLine(
               $"uniform {GlslUtil.GetTypeOfTexture(textures[t])} texture{t};");
         }
       }
@@ -99,37 +94,37 @@ namespace fin.language.equations.fixedFunction {
       foreach (var colorRegister in registers.ColorRegisters) {
         if (equations.DoOutputsDependOn(colorRegister)) {
           hadUniform = true;
-          os.WriteLine($"uniform vec3 color_{colorRegister.Name};");
+          sb.AppendLine($"uniform vec3 color_{colorRegister.Name};");
         }
       }
 
       foreach (var scalarRegister in registers.ScalarRegisters) {
         if (equations.DoOutputsDependOn(scalarRegister)) {
           hadUniform = true;
-          os.WriteLine($"uniform float scalar_{scalarRegister.Name};");
+          sb.AppendLine($"uniform float scalar_{scalarRegister.Name};");
         }
       }
 
       var hasWrittenLineBetweenUniformsAndIns = false;
 
-      Action writeLineBetweenUniformsAndIns = () => {
+      Action AppendLineBetweenUniformsAndIns = () => {
         if (hadUniform && !hasWrittenLineBetweenUniformsAndIns) {
           hasWrittenLineBetweenUniformsAndIns = true;
-          os.WriteLine();
+          sb.AppendLine();
         }
       };
 
       if (dependsOnAnyTextures && textures.Any(
               texture => texture?.UvType is UvType.SPHERICAL
                                             or UvType.LINEAR)) {
-        writeLineBetweenUniformsAndIns();
-        os.WriteLine("in vec2 normalUv;");
+        AppendLineBetweenUniformsAndIns();
+        sb.AppendLine("in vec2 normalUv;");
       }
 
       if (dependsOnLights) {
-        writeLineBetweenUniformsAndIns();
-        os.WriteLine("in vec3 vertexPosition;");
-        os.WriteLine("in vec3 vertexNormal;");
+        AppendLineBetweenUniformsAndIns();
+        sb.AppendLine("in vec3 vertexPosition;");
+        sb.AppendLine("in vec3 vertexNormal;");
       }
 
       for (var i = 0; i < MaterialConstants.MAX_COLORS; ++i) {
@@ -137,24 +132,24 @@ namespace fin.language.equations.fixedFunction {
                 FixedFunctionSource.VERTEX_COLOR_0 + i,
                 FixedFunctionSource.VERTEX_ALPHA_0 + i
             ])) {
-          writeLineBetweenUniformsAndIns();
-          os.WriteLine($"in vec4 vertexColor{i};");
+          AppendLineBetweenUniformsAndIns();
+          sb.AppendLine($"in vec4 vertexColor{i};");
         }
       }
 
       for (var i = 0; i < MaterialConstants.MAX_UVS; ++i) {
         if (textures.Any(texture => texture?.UvIndex == i)) {
-          writeLineBetweenUniformsAndIns();
-          os.WriteLine($"in vec2 uv{i};");
+          AppendLineBetweenUniformsAndIns();
+          sb.AppendLine($"in vec2 uv{i};");
         }
       }
 
-      os.WriteLine();
-      os.WriteLine("out vec4 fragColor;");
-      os.WriteLine();
+      sb.AppendLine();
+      sb.AppendLine("out vec4 fragColor;");
+      sb.AppendLine();
 
       if (dependsOnLights) {
-        os.WriteLine(
+        sb.AppendLine(
             $"""
 
              {GlslUtil.GetGetIndividualLightColorsFunction()}
@@ -162,7 +157,7 @@ namespace fin.language.equations.fixedFunction {
              """);
 
         if (dependsOnMergedLights) {
-          os.WriteLine($"""
+          sb.AppendLine($"""
 
                         {GlslUtil.GetGetMergedLightColorsFunction()}
 
@@ -170,11 +165,11 @@ namespace fin.language.equations.fixedFunction {
         }
       }
 
-      os.WriteLine("void main() {");
+      sb.AppendLine("void main() {");
 
       // Calculate lighting
       if (dependsOnLights) {
-        os.WriteLine(
+        sb.AppendLine(
             $"""
                // Have to renormalize because the vertex normals can become distorted when interpolated.
                vec3 fragNormal = normalize(vertexNormal);
@@ -182,7 +177,7 @@ namespace fin.language.equations.fixedFunction {
              """);
         // TODO: Optimize this if the shader depends on merged lighting as well as individual lights for some reason.
         if (dependsOnAnIndividualLight) {
-          os.WriteLine(
+          sb.AppendLine(
               $$"""
                  vec4 individualLightDiffuseColors[{{MaterialConstants.MAX_LIGHTS}}];
                  vec4 individualLightSpecularColors[{{MaterialConstants.MAX_LIGHTS}}];
@@ -200,7 +195,7 @@ namespace fin.language.equations.fixedFunction {
                """);
         }
         if (dependsOnMergedLights) {
-          os.WriteLine(
+          sb.AppendLine(
               $"""
                 vec4 mergedLightDiffuseColor = vec4(0);
                 vec4 mergedLightSpecularColor = vec4(0);
@@ -214,20 +209,20 @@ namespace fin.language.equations.fixedFunction {
       var outputColor =
           equations.ColorOutputs[FixedFunctionSource.OUTPUT_COLOR];
 
-      os.Write("  vec3 colorComponent = ");
-      this.PrintColorValue_(os, outputColor.ColorValue, textures);
-      os.WriteLine(";");
-      os.WriteLine();
+      sb.Append("  vec3 colorComponent = ");
+      this.PrintColorValue_(sb, outputColor.ColorValue, textures);
+      sb.AppendLine(";");
+      sb.AppendLine();
 
       var outputAlpha =
           equations.ScalarOutputs[FixedFunctionSource.OUTPUT_ALPHA];
 
-      os.Write("  float alphaComponent = ");
-      this.PrintScalarValue_(os, outputAlpha.ScalarValue, textures);
-      os.WriteLine(";");
-      os.WriteLine();
+      sb.Append("  float alphaComponent = ");
+      this.PrintScalarValue_(sb, outputAlpha.ScalarValue, textures);
+      sb.AppendLine(";");
+      sb.AppendLine();
 
-      os.WriteLine("  fragColor = vec4(colorComponent, alphaComponent);");
+      sb.AppendLine("  fragColor = vec4(colorComponent, alphaComponent);");
 
       var alphaOpValue =
           this.DetermineAlphaOpValue_(
@@ -240,7 +235,7 @@ namespace fin.language.equations.fixedFunction {
                   material.AlphaReference1));
 
       if (alphaOpValue != AlphaOpValue.ALWAYS_TRUE) {
-        os.WriteLine();
+        sb.AppendLine();
 
         var alphaCompareText0 =
             GetAlphaCompareText_(material.AlphaCompareType0,
@@ -251,13 +246,13 @@ namespace fin.language.equations.fixedFunction {
 
         switch (alphaOpValue) {
           case AlphaOpValue.ONLY_0_REQUIRED: {
-            os.WriteLine($@"  if (!({alphaCompareText0})) {{
+            sb.AppendLine($@"  if (!({alphaCompareText0})) {{
     discard;
   }}");
             break;
           }
           case AlphaOpValue.ONLY_1_REQUIRED: {
-            os.WriteLine($@"  if (!({alphaCompareText1})) {{
+            sb.AppendLine($@"  if (!({alphaCompareText1})) {{
     discard;
   }}");
             break;
@@ -265,46 +260,46 @@ namespace fin.language.equations.fixedFunction {
           case AlphaOpValue.BOTH_REQUIRED: {
             switch (material.AlphaOp) {
               case AlphaOp.And: {
-                os.Write(
+                sb.Append(
                     $"  if (!({alphaCompareText0} && {alphaCompareText1})");
                 break;
               }
               case AlphaOp.Or: {
-                os.Write(
+                sb.Append(
                     $"  if (!({alphaCompareText0} || {alphaCompareText1})");
                 break;
               }
               case AlphaOp.XOR: {
-                os.WriteLine($"  bool a = {alphaCompareText0};");
-                os.WriteLine($"  bool b = {alphaCompareText1};");
-                os.Write(
+                sb.AppendLine($"  bool a = {alphaCompareText0};");
+                sb.AppendLine($"  bool b = {alphaCompareText1};");
+                sb.Append(
                     $"  if (!(any(bvec2(all(bvec2(!a, b)), all(bvec2(a, !b)))))");
                 break;
               }
               case AlphaOp.XNOR: {
-                os.WriteLine($"  bool a = {alphaCompareText0};");
-                os.WriteLine($"  bool b = {alphaCompareText1};");
-                os.Write(
+                sb.AppendLine($"  bool a = {alphaCompareText0};");
+                sb.AppendLine($"  bool b = {alphaCompareText1};");
+                sb.Append(
                     "  if (!(any(bvec2(all(bvec2(!a, !b)), all(bvec2(a, b)))))");
                 break;
               }
               default: throw new ArgumentOutOfRangeException();
             }
 
-            os.WriteLine(@") {
+            sb.AppendLine(@") {
     discard;
   }");
             break;
           }
           case AlphaOpValue.ALWAYS_FALSE: {
-            os.WriteLine("  discard;");
+            sb.AppendLine("  discard;");
             break;
           }
           default: throw new ArgumentOutOfRangeException();
         }
       }
 
-      os.WriteLine("}");
+      sb.AppendLine("}");
     }
 
     private string GetAlphaCompareText_(
@@ -413,30 +408,30 @@ namespace fin.language.equations.fixedFunction {
     }
 
     private void PrintScalarValue_(
-        StringWriter os,
+        StringBuilder sb,
         IScalarValue value,
         IReadOnlyList<ITexture> textures,
         bool wrapExpressions = false) {
       if (value is IScalarExpression expression) {
         if (wrapExpressions) {
-          os.Write("(");
+          sb.Append("(");
         }
 
-        this.PrintScalarExpression_(os, expression, textures);
+        this.PrintScalarExpression_(sb, expression, textures);
         if (wrapExpressions) {
-          os.Write(")");
+          sb.Append(")");
         }
       } else if (value is IScalarTerm term) {
-        this.PrintScalarTerm_(os, term, textures);
+        this.PrintScalarTerm_(sb, term, textures);
       } else if (value is IScalarFactor factor) {
-        this.PrintScalarFactor_(os, factor, textures);
+        this.PrintScalarFactor_(sb, factor, textures);
       } else {
         Asserts.Fail("Unsupported value type!");
       }
     }
 
     private void PrintScalarExpression_(
-        StringWriter os,
+        StringBuilder sb,
         IScalarExpression expression,
         IReadOnlyList<ITexture> textures) {
       var terms = expression.Terms;
@@ -445,15 +440,15 @@ namespace fin.language.equations.fixedFunction {
         var term = terms[i];
 
         if (i > 0) {
-          os.Write(" + ");
+          sb.Append(" + ");
         }
 
-        this.PrintScalarValue_(os, term, textures);
+        this.PrintScalarValue_(sb, term, textures);
       }
     }
 
     private void PrintScalarTerm_(
-        StringWriter os,
+        StringBuilder sb,
         IScalarTerm scalarTerm,
         IReadOnlyList<ITexture> textures) {
       var numerators = scalarTerm.NumeratorFactors;
@@ -464,58 +459,58 @@ namespace fin.language.equations.fixedFunction {
           var numerator = numerators[i];
 
           if (i > 0) {
-            os.Write("*");
+            sb.Append("*");
           }
 
-          this.PrintScalarValue_(os, numerator, textures, true);
+          this.PrintScalarValue_(sb, numerator, textures, true);
         }
       } else {
-        os.Write(1);
+        sb.Append(1);
       }
 
       if (denominators != null) {
         for (var i = 0; i < denominators.Count; ++i) {
           var denominator = denominators[i];
 
-          os.Write("/");
+          sb.Append("/");
 
-          this.PrintScalarValue_(os, denominator, textures, true);
+          this.PrintScalarValue_(sb, denominator, textures, true);
         }
       }
     }
 
     private void PrintScalarFactor_(
-        StringWriter os,
+        StringBuilder sb,
         IScalarFactor factor,
         IReadOnlyList<ITexture> textures) {
       if (factor is IScalarIdentifiedValue<FixedFunctionSource>
           identifiedValue) {
-        this.PrintScalarIdentifiedValue_(os, identifiedValue, textures);
+        this.PrintScalarIdentifiedValue_(sb, identifiedValue, textures);
       } else if (factor is IScalarNamedValue namedValue) {
-        this.PrintScalarNamedValue_(os, namedValue);
+        this.PrintScalarNamedValue_(sb, namedValue);
       } else if (factor is IScalarConstant constant) {
-        this.PrintScalarConstant_(os, constant);
+        this.PrintScalarConstant_(sb, constant);
       } else if
           (factor is IColorNamedValueSwizzle<FixedFunctionSource>
            namedSwizzle) {
-        this.PrintColorNamedValueSwizzle_(os, namedSwizzle, textures);
+        this.PrintColorNamedValueSwizzle_(sb, namedSwizzle, textures);
       } else if (factor is IColorValueSwizzle swizzle) {
-        this.PrintColorValueSwizzle_(os, swizzle, textures);
+        this.PrintColorValueSwizzle_(sb, swizzle, textures);
       } else {
         Asserts.Fail("Unsupported factor type!");
       }
     }
 
     private void PrintScalarNamedValue_(
-        StringWriter os,
+        StringBuilder sb,
         IScalarNamedValue namedValue)
-      => os.Write($"scalar_{namedValue.Name}");
+      => sb.Append($"scalar_{namedValue.Name}");
 
     private void PrintScalarIdentifiedValue_(
-        StringWriter os,
+        StringBuilder sb,
         IScalarIdentifiedValue<FixedFunctionSource> identifiedValue,
         IReadOnlyList<ITexture> textures)
-      => os.Write(this.GetScalarIdentifiedValue_(identifiedValue, textures));
+      => sb.Append(this.GetScalarIdentifiedValue_(identifiedValue, textures));
 
     private string GetScalarIdentifiedValue_(
         IScalarIdentifiedValue<FixedFunctionSource> identifiedValue,
@@ -563,9 +558,9 @@ namespace fin.language.equations.fixedFunction {
     }
 
     private void PrintScalarConstant_(
-        StringWriter os,
+        StringBuilder sb,
         IScalarConstant constant)
-      => os.Write(constant.Value);
+      => sb.Append(constant.Value);
 
     private enum WrapType {
       NEVER,
@@ -574,60 +569,60 @@ namespace fin.language.equations.fixedFunction {
     }
 
     private void PrintColorValue_(
-        StringWriter os,
+        StringBuilder sb,
         IColorValue value,
         IReadOnlyList<ITexture> textures,
         WrapType wrapType = WrapType.NEVER) {
       var clamp = value.Clamp;
 
       if (clamp) {
-        os.Write("clamp(");
+        sb.Append("clamp(");
       }
 
       if (value is IColorExpression expression) {
         var wrapExpressions =
             wrapType is WrapType.EXPRESSIONS or WrapType.ALWAYS;
         if (wrapExpressions) {
-          os.Write("(");
+          sb.Append("(");
         }
 
-        this.PrintColorExpression_(os, expression, textures);
+        this.PrintColorExpression_(sb, expression, textures);
         if (wrapExpressions) {
-          os.Write(")");
+          sb.Append(")");
         }
       } else if (value is IColorTerm term) {
         var wrapTerms = wrapType == WrapType.ALWAYS;
         if (wrapTerms) {
-          os.Write("(");
+          sb.Append("(");
         }
 
-        this.PrintColorTerm_(os, term, textures);
+        this.PrintColorTerm_(sb, term, textures);
         if (wrapTerms) {
-          os.Write(")");
+          sb.Append(")");
         }
       } else if (value is IColorFactor factor) {
         var wrapFactors = wrapType == WrapType.ALWAYS;
         if (wrapFactors) {
-          os.Write("(");
+          sb.Append("(");
         }
 
-        this.PrintColorFactor_(os, factor, textures);
+        this.PrintColorFactor_(sb, factor, textures);
         if (wrapFactors) {
-          os.Write(")");
+          sb.Append(")");
         }
       } else if (value is IColorValueTernaryOperator ternaryOperator) {
-        this.PrintColorTernaryOperator_(os, ternaryOperator, textures);
+        this.PrintColorTernaryOperator_(sb, ternaryOperator, textures);
       } else {
         Asserts.Fail("Unsupported value type!");
       }
 
       if (clamp) {
-        os.Write(", 0, 1)");
+        sb.Append(", 0, 1)");
       }
     }
 
     private void PrintColorExpression_(
-        StringWriter os,
+        StringBuilder sb,
         IColorExpression expression,
         IReadOnlyList<ITexture> textures) {
       var terms = expression.Terms;
@@ -636,15 +631,15 @@ namespace fin.language.equations.fixedFunction {
         var term = terms[i];
 
         if (i > 0) {
-          os.Write(" + ");
+          sb.Append(" + ");
         }
 
-        this.PrintColorValue_(os, term, textures);
+        this.PrintColorValue_(sb, term, textures);
       }
     }
 
     private void PrintColorTerm_(
-        StringWriter os,
+        StringBuilder sb,
         IColorTerm scalarTerm,
         IReadOnlyList<ITexture> textures) {
       var numerators = scalarTerm.NumeratorFactors;
@@ -655,22 +650,22 @@ namespace fin.language.equations.fixedFunction {
           var numerator = numerators[i];
 
           if (i > 0) {
-            os.Write("*");
+            sb.Append("*");
           }
 
-          this.PrintColorValue_(os, numerator, textures, WrapType.EXPRESSIONS);
+          this.PrintColorValue_(sb, numerator, textures, WrapType.EXPRESSIONS);
         }
       } else {
-        os.Write(1);
+        sb.Append(1);
       }
 
       if (denominators != null) {
         for (var i = 0; i < denominators.Count; ++i) {
           var denominator = denominators[i];
 
-          os.Write("/");
+          sb.Append("/");
 
-          this.PrintColorValue_(os,
+          this.PrintColorValue_(sb,
                                 denominator,
                                 textures,
                                 WrapType.EXPRESSIONS);
@@ -679,14 +674,14 @@ namespace fin.language.equations.fixedFunction {
     }
 
     private void PrintColorFactor_(
-        StringWriter os,
+        StringBuilder sb,
         IColorFactor factor,
         IReadOnlyList<ITexture> textures) {
       if (factor is IColorIdentifiedValue<FixedFunctionSource>
           identifiedValue) {
-        this.PrintColorIdentifiedValue_(os, identifiedValue, textures);
+        this.PrintColorIdentifiedValue_(sb, identifiedValue, textures);
       } else if (factor is IColorNamedValue namedValue) {
-        this.PrintColorNamedValue_(os, namedValue);
+        this.PrintColorNamedValue_(sb, namedValue);
       } else {
         var useIntensity = factor.Intensity != null;
 
@@ -695,31 +690,31 @@ namespace fin.language.equations.fixedFunction {
           var g = factor.G;
           var b = factor.B;
 
-          os.Write("vec3(");
-          this.PrintScalarValue_(os, r, textures);
-          os.Write(",");
-          this.PrintScalarValue_(os, g, textures);
-          os.Write(",");
-          this.PrintScalarValue_(os, b, textures);
-          os.Write(")");
+          sb.Append("vec3(");
+          this.PrintScalarValue_(sb, r, textures);
+          sb.Append(",");
+          this.PrintScalarValue_(sb, g, textures);
+          sb.Append(",");
+          this.PrintScalarValue_(sb, b, textures);
+          sb.Append(")");
         } else {
-          os.Write("vec3(");
-          this.PrintScalarValue_(os, factor.Intensity!, textures);
-          os.Write(")");
+          sb.Append("vec3(");
+          this.PrintScalarValue_(sb, factor.Intensity!, textures);
+          sb.Append(")");
         }
       }
     }
 
     private void PrintColorIdentifiedValue_(
-        StringWriter os,
+        StringBuilder sb,
         IColorIdentifiedValue<FixedFunctionSource> identifiedValue,
         IReadOnlyList<ITexture> textures)
-      => os.Write(this.GetColorNamedValue_(identifiedValue, textures));
+      => sb.Append(this.GetColorNamedValue_(identifiedValue, textures));
 
     private void PrintColorNamedValue_(
-        StringWriter os,
+        StringBuilder sb,
         IColorNamedValue namedValue)
-      => os.Write($"color_{namedValue.Name}");
+      => sb.Append($"color_{namedValue.Name}");
 
     private string GetColorNamedValue_(
         IColorIdentifiedValue<FixedFunctionSource> identifiedValue,
@@ -825,25 +820,25 @@ namespace fin.language.equations.fixedFunction {
     }
 
     private void PrintColorTernaryOperator_(
-        StringWriter os,
+        StringBuilder sb,
         IColorValueTernaryOperator ternaryOperator,
         IReadOnlyList<ITexture> textures) {
-      os.Write('(');
+      sb.Append('(');
       switch (ternaryOperator.ComparisonType) {
         case BoolComparisonType.EQUAL_TO: {
-          os.Write("abs(");
-          this.PrintScalarValue_(os, ternaryOperator.Lhs, textures);
-          os.Write(" - ");
-          this.PrintScalarValue_(os, ternaryOperator.Rhs, textures);
-          os.Write(")");
-          os.Write(" < ");
-          os.Write("(1.0 / 255)");
+          sb.Append("abs(");
+          this.PrintScalarValue_(sb, ternaryOperator.Lhs, textures);
+          sb.Append(" - ");
+          this.PrintScalarValue_(sb, ternaryOperator.Rhs, textures);
+          sb.Append(")");
+          sb.Append(" < ");
+          sb.Append("(1.0 / 255)");
           break;
         }
         case BoolComparisonType.GREATER_THAN: {
-          this.PrintScalarValue_(os, ternaryOperator.Lhs, textures);
-          os.Write(" > ");
-          this.PrintScalarValue_(os, ternaryOperator.Rhs, textures);
+          this.PrintScalarValue_(sb, ternaryOperator.Lhs, textures);
+          sb.Append(" > ");
+          this.PrintScalarValue_(sb, ternaryOperator.Rhs, textures);
           break;
         }
         default:
@@ -851,20 +846,20 @@ namespace fin.language.equations.fixedFunction {
               nameof(ternaryOperator.ComparisonType));
       }
 
-      os.Write(" ? ");
-      this.PrintColorValue_(os, ternaryOperator.TrueValue, textures);
-      os.Write(" : ");
-      this.PrintColorValue_(os, ternaryOperator.FalseValue, textures);
-      os.Write(')');
+      sb.Append(" ? ");
+      this.PrintColorValue_(sb, ternaryOperator.TrueValue, textures);
+      sb.Append(" : ");
+      this.PrintColorValue_(sb, ternaryOperator.FalseValue, textures);
+      sb.Append(')');
     }
 
     private void PrintColorNamedValueSwizzle_(
-        StringWriter os,
+        StringBuilder sb,
         IColorNamedValueSwizzle<FixedFunctionSource> swizzle,
         IReadOnlyList<ITexture> textures) {
-      this.PrintColorIdentifiedValue_(os, swizzle.Source, textures);
-      os.Write(".");
-      os.Write(swizzle.SwizzleType switch {
+      this.PrintColorIdentifiedValue_(sb, swizzle.Source, textures);
+      sb.Append(".");
+      sb.Append(swizzle.SwizzleType switch {
           ColorSwizzle.R => 'r',
           ColorSwizzle.G => 'g',
           ColorSwizzle.B => 'b',
@@ -872,12 +867,12 @@ namespace fin.language.equations.fixedFunction {
     }
 
     private void PrintColorValueSwizzle_(
-        StringWriter os,
+        StringBuilder sb,
         IColorValueSwizzle swizzle,
         IReadOnlyList<ITexture> textures) {
-      this.PrintColorValue_(os, swizzle.Source, textures, WrapType.ALWAYS);
-      os.Write(".");
-      os.Write(swizzle.SwizzleType);
+      this.PrintColorValue_(sb, swizzle.Source, textures, WrapType.ALWAYS);
+      sb.Append(".");
+      sb.Append(swizzle.SwizzleType);
     }
   }
 }

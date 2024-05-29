@@ -12,6 +12,8 @@ using fin.util.time;
 
 namespace fin.ui.rendering.gl.material {
   public class CachedTextureUniformData {
+    private readonly bool needsStruct_;
+
     public int TextureIndex { get; }
     public IReadOnlyTexture? FinTexture { get; }
     public GlTexture GlTexture { get; }
@@ -19,7 +21,6 @@ namespace fin.ui.rendering.gl.material {
     public IReadOnlyFinMatrix3x2? Transform2d { get; private set; }
     public IReadOnlyFinMatrix4x4? Transform3d { get; private set; }
 
-    public bool HasFancyData { get; }
     public IShaderUniform<int> SamplerUniform { get; }
     public IShaderUniform<Vector2> ClampMinUniform { get; }
     public IShaderUniform<Vector2> ClampMaxUniform { get; }
@@ -36,8 +37,8 @@ namespace fin.ui.rendering.gl.material {
       this.FinTexture = finTexture;
       this.GlTexture = glTexture;
 
-      this.HasFancyData = GlslUtil.RequiresFancyTextureData(finTexture);
-      if (!this.HasFancyData) {
+      this.needsStruct_ = finTexture.NeedsTextureShaderStruct();
+      if (!this.needsStruct_) {
         this.SamplerUniform = shaderProgram.GetUniformInt($"{textureName}");
       } else {
         this.SamplerUniform =
@@ -57,7 +58,7 @@ namespace fin.ui.rendering.gl.material {
       this.GlTexture.Bind(this.TextureIndex);
       this.SamplerUniform.SetAndMaybeMarkDirty(this.TextureIndex);
 
-      if (this.HasFancyData) {
+      if (this.needsStruct_) {
         Vector2 clampMin = new(-10000);
         Vector2 clampMax = new(10000);
 
@@ -86,10 +87,6 @@ namespace fin.ui.rendering.gl.material {
 
         this.ClampMinUniform.SetAndMaybeMarkDirty(clampMin);
         this.ClampMaxUniform.SetAndMaybeMarkDirty(clampMax);
-
-        if (this.FinTexture is IScrollingTexture) {
-          ;
-        }
 
         this.MaybeCalculateTextureTransform_();
         if (!(this.FinTexture?.IsTransform3d ?? false)) {
