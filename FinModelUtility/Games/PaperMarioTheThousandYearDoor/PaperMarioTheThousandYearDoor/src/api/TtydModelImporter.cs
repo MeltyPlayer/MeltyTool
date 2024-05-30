@@ -93,18 +93,17 @@ namespace ttyd.api {
       matrix.MultiplyInPlace(
           FinMatrix4x4Util
               .FromTranslation(
-                  sceneGraphObjectTransforms[21],
-                  sceneGraphObjectTransforms[22],
-                  sceneGraphObjectTransforms[23])
-              .MultiplyInPlace(-1));
+                  -sceneGraphObjectTransforms[21],
+                  -sceneGraphObjectTransforms[22],
+                  -sceneGraphObjectTransforms[23]));
 
       // Rotate by v4
       matrix.MultiplyInPlace(
           FinMatrix4x4Util.FromRotation(
               QuaternionUtil.CreateZyx(
-                  sceneGraphObjectTransforms[9],
-                  sceneGraphObjectTransforms[10],
-                  sceneGraphObjectTransforms[11])));
+                  float.DegreesToRadians(sceneGraphObjectTransforms[9]),
+                  float.DegreesToRadians(sceneGraphObjectTransforms[10]),
+                  float.DegreesToRadians(sceneGraphObjectTransforms[11]))));
 
       // Translate by v5
       matrix.MultiplyInPlace(
@@ -117,18 +116,17 @@ namespace ttyd.api {
       matrix.MultiplyInPlace(
           FinMatrix4x4Util.FromRotation(
               QuaternionUtil.CreateZyx(
-                  2 * sceneGraphObjectTransforms[6],
-                  2 * sceneGraphObjectTransforms[7],
-                  2 * sceneGraphObjectTransforms[8])));
+                  float.DegreesToRadians(2 * sceneGraphObjectTransforms[6]),
+                  float.DegreesToRadians(2 * sceneGraphObjectTransforms[7]),
+                  float.DegreesToRadians(2 * sceneGraphObjectTransforms[8]))));
 
       // Translate by -v6
       matrix.MultiplyInPlace(
           FinMatrix4x4Util
               .FromTranslation(
-                  sceneGraphObjectTransforms[15],
-                  sceneGraphObjectTransforms[16],
-                  sceneGraphObjectTransforms[17])
-              .MultiplyInPlace(-1));
+                  -sceneGraphObjectTransforms[15],
+                  -sceneGraphObjectTransforms[16],
+                  -sceneGraphObjectTransforms[17]));
 
       return matrix;
     }
