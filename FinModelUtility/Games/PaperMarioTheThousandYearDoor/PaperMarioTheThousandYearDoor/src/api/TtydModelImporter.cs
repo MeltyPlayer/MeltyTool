@@ -1,4 +1,5 @@
-﻿using fin.data.queues;
+﻿using fin.data.lazy;
+using fin.data.queues;
 using fin.io;
 using fin.math.matrix.four;
 using fin.math.rotations;
@@ -36,9 +37,37 @@ namespace ttyd.api {
       var finModel = new ModelImpl();
 
       // Sets up materials
-      foreach (var tplTexture in tpl.Textures) {
-        finModel.MaterialManager.CreateTexture(tplTexture.Image);
-      }
+      var finTextureMap = new LazyDictionary<int, ITexture?>(
+          texMapIndex => {
+            if (texMapIndex == -1) {
+              return null;
+            }
+
+            var ttydTextureIndex
+                = ttydModel.TextureMaps[texMapIndex].TextureIndex;
+            var ttydTexture = ttydModel.Textures[ttydTextureIndex];
+
+            var tplTextureIndex = ttydTexture.TplTextureIndex;
+            var tplTexture = tpl.Textures[tplTextureIndex];
+
+            var finTexture
+                = finModel.MaterialManager.CreateTexture(tplTexture.Image);
+            finTexture.Name = ttydTexture.Name;
+
+            return finTexture;
+          });
+      var finMaterialMap = new LazyDictionary<int, IMaterial?>(
+          texMapIndex => {
+            var finTexture = finTextureMap[texMapIndex];
+            if (finTexture == null) {
+              return null;
+            }
+
+            var finMaterial = finModel.MaterialManager.AddTextureMaterial(finTexture);
+            finMaterial.CullingMode = CullingMode.SHOW_BOTH;
+
+            return finMaterial;
+          });
 
       // Adds bones/meshes
       var sceneGraphQueue = new FinTuple2Queue<int, IBone>(
@@ -61,6 +90,77 @@ namespace ttyd.api {
               .SetLocalRotationRadians(rotation.X, rotation.Y, rotation.Z)
               .SetLocalScale(scale.X, scale.Y, scale.Z);
         finBone.Name = ttydSceneGraph.Name;
+
+        if (ttydSceneGraph.SceneGraphObjectIndex != -1) {
+          var ttydSceneGraphObject
+              = ttydModel.SceneGraphObjects[
+                  ttydSceneGraph.SceneGraphObjectIndex];
+          var ttydSceneGraphObjectVisibility
+              = ttydModel.SceneGraphObjectVisibilities[
+                  ttydSceneGraph.SceneGraphObjectVisibilityIndex];
+
+          var objectPositions = ttydModel.Vertices.AsSpan(
+              ttydSceneGraphObject.VertexIndex);
+          var objectNormals = ttydModel.Normals.AsSpan(
+              ttydSceneGraphObject.NormalIndex);
+          var objectColors = ttydModel.Colors.AsSpan(
+              ttydSceneGraphObject.ColorIndex);
+          var objectTexCoords = ttydModel.TexCoords.AsSpan(
+              ttydSceneGraphObject.TexCoordIndex);
+
+          var ttydMeshes = ttydModel.Meshes.AsSpan(
+              ttydSceneGraphObject.MeshIndex,
+              ttydSceneGraphObject.MeshCount);
+          foreach (var ttydMesh in ttydMeshes) {
+            if (ttydMesh.PolygonIndex == -1) {
+              continue;
+            }
+
+            var finMesh = finModel.Skin.AddMesh();
+            var finMaterial = finMaterialMap[ttydMesh.TexMapIndex];
+
+            var ttydPolygons
+                = ttydModel.Polygons.AsSpan(ttydMesh.PolygonIndex,
+                                            ttydMesh.PolygonCount);
+            foreach (var ttydPolygon in ttydPolygons) {
+              var finVertices = new IVertex[ttydPolygon.VertexCount];
+              for (var i = 0; i < ttydPolygon.VertexCount; i++) {
+                var vertexPosition = objectPositions[
+                    ttydModel.VertexIndices[
+                        ttydMesh.PolyVertexIndex +
+                        ttydPolygon.VertexIndex +
+                        i]];
+                var vertexNormal = objectNormals[
+                    ttydModel.NormalIndices[
+                        ttydMesh.PolyNormalIndex +
+                        ttydPolygon.VertexIndex +
+                        i]];
+                var vertexColor = objectColors[
+                    ttydModel.ColorIndices[
+                        ttydMesh.PolyColorIndex +
+                        ttydPolygon.VertexIndex +
+                        i]];
+                var vertexTexCoord = objectTexCoords[
+                    ttydModel.TexCoordIndices[
+                        ttydMesh.PolyTexCoordIndex +
+                        ttydPolygon.VertexIndex +
+                        i]];
+
+                var finVertex = finModel.Skin.AddVertex(vertexPosition);
+                finVertex.SetLocalNormal(vertexNormal);
+                finVertex.SetColor(vertexColor);
+                finVertex.SetUv(vertexTexCoord);
+
+                finVertices[i] = finVertex;
+              }
+
+              var finPrimitive = finMesh.AddTriangleFan(finVertices);
+              if (finMaterial != null) {
+                finPrimitive.SetMaterial(finMaterial);
+              }
+            }
+          }
+        }
 
         if (ttydSceneGraph.NextRecord != -1) {
           sceneGraphQueue.Enqueue((ttydSceneGraph.NextRecord, parentFinBone));
