@@ -11,6 +11,10 @@ namespace ttyd.schema {
 
     public SceneGraph[] SceneGraphs { get; private set; }
     public SceneGraphObject[] SceneGraphObjects { get; private set; }
+    public byte[] SceneGraphObjectVisibilities { get; private set; }
+    public float[] SceneGraphObjectTransforms { get; private set; }
+
+    public Mesh[] Meshes { get; private set; }
 
     public Vector3f[] Vertices { get; private set; }
     public uint[] VertexIndices { get; private set; }
@@ -30,6 +34,14 @@ namespace ttyd.schema {
       this.SceneGraphs = this.ReadNews_<SceneGraph>(br, BlockType.SCENE_GRAPH);
       this.SceneGraphObjects
           = this.ReadNews_<SceneGraphObject>(br, BlockType.SCENE_GRAPH_OBJECT);
+      this.SceneGraphObjectVisibilities = this.ReadNews_(br,
+        BlockType.SCENE_GRAPH_OBJECT_VISIBILITY,
+        br.ReadBytes);
+      this.SceneGraphObjectTransforms = this.ReadNews_(br,
+        BlockType.SCENE_GRAPH_OBJECT_TRANSFORM,
+        br.ReadSingles);
+
+      this.Meshes = this.ReadNews_<Mesh>(br, BlockType.MESH);
 
       this.Vertices
           = this.ReadNews_<Vector3f>(br, BlockType.VERTEX);

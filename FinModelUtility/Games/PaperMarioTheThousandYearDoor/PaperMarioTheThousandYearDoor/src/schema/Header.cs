@@ -3,6 +3,8 @@
 using schema.binary;
 using schema.binary.attributes;
 
+using ttyd.schema.blocks;
+
 namespace ttyd.schema {
   [BinarySchema]
   public partial class Header : IBinaryDeserializable {
@@ -20,8 +22,8 @@ namespace ttyd.schema {
     [SequenceLengthSource(3)]
     public uint[] Unk1 { get; set; }
 
-    public Vector3f BoundingBoxMin { get; set; }
-    public Vector3f BoundingBoxMax { get; set; }
+    public Vector3f BoundingBoxMin { get; } = new();
+    public Vector3f BoundingBoxMax { get; } = new();
 
     [SequenceLengthSource(25)]
     public int[] BlockTypeCounts { get; set; }

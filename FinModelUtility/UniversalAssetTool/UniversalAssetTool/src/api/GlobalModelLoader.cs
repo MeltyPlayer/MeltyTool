@@ -20,6 +20,8 @@ using modl.api;
 
 using pmdc.api;
 
+using ttyd.api;
+
 using UoT.api;
 
 using visceral.api;
@@ -53,6 +55,8 @@ namespace uni.api {
               => new OotModelImporter().Import(ootModelFileBundle),
           PedModelFileBundle pedModelFileBundle
               => new PedModelImporter().Import(pedModelFileBundle),
+          TtydModelFileBundle ttydModelFileBundle
+              => new TtydModelImporter().Import(ttydModelFileBundle),
           XcModelFileBundle xcModelFileBundle
               => new XcModelImporter().Import(xcModelFileBundle),
           XmodModelFileBundle xmodModelFileBundle
