@@ -1,4 +1,4 @@
-﻿namespace ttyd.schema.blocks {
+﻿namespace ttyd.schema.model.blocks {
   public enum BlockType {
     SCENE_GRAPH_OBJECT,
     POLYGON,

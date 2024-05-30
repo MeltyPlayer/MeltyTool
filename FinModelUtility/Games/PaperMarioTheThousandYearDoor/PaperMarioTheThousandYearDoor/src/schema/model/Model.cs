@@ -3,9 +3,9 @@ using fin.schema.vector;
 
 using schema.binary;
 
-using ttyd.schema.blocks;
+using ttyd.schema.model.blocks;
 
-namespace ttyd.schema {
+namespace ttyd.schema.model {
   public class Model : IBinaryDeserializable {
     public Header Header { get; } = new();
 

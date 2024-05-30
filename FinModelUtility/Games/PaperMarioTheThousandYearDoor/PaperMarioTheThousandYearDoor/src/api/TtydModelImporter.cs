@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-using fin.data.queues;
+﻿using fin.data.queues;
 using fin.io;
 using fin.math.matrix.four;
 using fin.math.rotations;
@@ -11,29 +9,38 @@ using fin.model.io.importers;
 
 using schema.binary;
 
-using ttyd.schema;
-using ttyd.schema.blocks;
+using ttyd.schema.model;
+using ttyd.schema.tpl;
 
 namespace ttyd.api {
   public class TtydModelFileBundle : IModelFileBundle {
     public string GameName => "paper_mario_the_thousand_year_door";
 
     public required IReadOnlyTreeFile ModelFile { get; init; }
-    public required IReadOnlyTreeFile? TextureFile { get; init; }
     public IReadOnlyTreeFile MainFile => this.ModelFile;
   }
 
   public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
     public IModel Import(TtydModelFileBundle fileBundle) {
       var modelFile = fileBundle.ModelFile;
-      var textureFile = fileBundle.TextureFile;
-
       var ttydModel = modelFile.ReadNew<Model>(Endianness.BigEndian);
+
+      var textureFile = modelFile.AssertGetParent()
+                                 .AssertGetExistingFile(
+                                     $"{ttydModel.Header.TextureFileName}-");
+      var tpl = textureFile.ReadNew<Tpl>(Endianness.BigEndian);
+
       var ttydSceneGraphs = ttydModel.SceneGraphs;
       var ttydSceneGraphObjectTransforms = ttydModel.SceneGraphObjectTransforms;
 
       var finModel = new ModelImpl();
 
+      // Sets up materials
+      foreach (var tplTexture in tpl.Textures) {
+        finModel.MaterialManager.CreateTexture(tplTexture.Image);
+      }
+
+      // Adds bones/meshes
       var sceneGraphQueue = new FinTuple2Queue<int, IBone>(
           (ttydSceneGraphs.Length - 1, finModel.Skeleton.Root));
       while (sceneGraphQueue.TryDequeue(

@@ -3,9 +3,9 @@
 using schema.binary;
 using schema.binary.attributes;
 
-using ttyd.schema.blocks;
+using ttyd.schema.model.blocks;
 
-namespace ttyd.schema {
+namespace ttyd.schema.model {
   [BinarySchema]
   public partial class Header : IBinaryDeserializable {
     public uint AnimationOffset { get; set; }

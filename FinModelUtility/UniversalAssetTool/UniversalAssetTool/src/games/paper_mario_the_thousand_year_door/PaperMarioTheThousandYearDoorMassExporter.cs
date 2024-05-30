@@ -16,27 +16,16 @@ namespace uni.games.paper_mario_the_thousand_year_door {
         yield break;
       }
 
-      var modelDirectoryFiles
+      var modelFiles
           = fileHierarchy
             .Root
             .AssertGetExistingSubdir("a")
             .GetExistingFiles()
-            .Where(f => !f.Name.Contains('.'))
-            .ToArray();
+            .Where(f => !f.Name.Contains('.') && !f.Name.EndsWith('-'));
 
-      var textureFileMap
-          = modelDirectoryFiles
-              .Where(f => f.Name.EndsWith('-'))
-              .ToDictionary(f => f.Name[..^1]);
-
-      foreach (var modelFile in modelDirectoryFiles.Where(
-                   f => !f.Name.EndsWith('-'))) {
-        textureFileMap.TryGetValue(modelFile.Name, out var textureFile);
-
-        yield return new TtydModelFileBundle {
-            ModelFile = modelFile,
-            TextureFile = textureFile,
-        }.Annotate(modelFile);
+      foreach (var modelFile in modelFiles) {
+        yield return new TtydModelFileBundle { ModelFile = modelFile }
+            .Annotate(modelFile);
       }
     }
   }

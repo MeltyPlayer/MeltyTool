@@ -1,7 +1,7 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace ttyd.schema.blocks {
+namespace ttyd.schema.model.blocks {
   [BinarySchema]
   public partial class Mesh : IBinaryDeserializable {
     [SequenceLengthSource(4)]
