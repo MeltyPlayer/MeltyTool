@@ -3,7 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace ttyd.schema {
+namespace ttyd.schema.blocks {
   [BinarySchema]
   public partial class SceneGraph : IBinaryDeserializable {
     [StringLengthSource(64)]

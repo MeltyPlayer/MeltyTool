@@ -2,6 +2,8 @@
 
 using schema.binary;
 
+using ttyd.schema.blocks;
+
 namespace ttyd.schema {
   public class Model : IBinaryDeserializable {
     public Header Header { get; } = new();
