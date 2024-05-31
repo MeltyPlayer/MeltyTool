@@ -126,6 +126,8 @@ namespace fin.model {
     ONE_MINUS_SRC_COLOR,
     SRC_ALPHA,
     ONE_MINUS_SRC_ALPHA,
+    DST_COLOR,
+    ONE_MINUS_DST_COLOR,
     DST_ALPHA,
     ONE_MINUS_DST_ALPHA,
     CONST_COLOR,

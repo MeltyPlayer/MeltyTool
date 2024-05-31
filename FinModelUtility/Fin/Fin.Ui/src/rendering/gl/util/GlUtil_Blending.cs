@@ -137,6 +137,9 @@ namespace fin.ui.rendering.gl {
           FinBlendFactor.SRC_ALPHA => GlBlendFactorSrc.SrcAlpha,
           FinBlendFactor.ONE_MINUS_SRC_ALPHA => GlBlendFactorSrc
               .OneMinusSrcAlpha,
+          FinBlendFactor.DST_COLOR => GlBlendFactorSrc.DstColor,
+          FinBlendFactor.ONE_MINUS_DST_COLOR => GlBlendFactorSrc
+              .OneMinusDstColor,
           FinBlendFactor.DST_ALPHA => GlBlendFactorSrc.DstAlpha,
           FinBlendFactor.ONE_MINUS_DST_ALPHA => GlBlendFactorSrc
               .OneMinusDstAlpha,

@@ -329,9 +329,13 @@ namespace grezzo.material {
           BlendFactor.SourceAlpha => FinBlendFactor.SRC_ALPHA,
           BlendFactor.OneMinusSourceAlpha => FinBlendFactor
               .ONE_MINUS_SRC_ALPHA,
+          BlendFactor.DestinationColor => FinBlendFactor.DST_COLOR,
+          BlendFactor.OneMinusDestinationColor => FinBlendFactor
+              .ONE_MINUS_DST_COLOR,
           BlendFactor.DestinationAlpha => FinBlendFactor.DST_ALPHA,
           BlendFactor.OneMinusDestinationAlpha => FinBlendFactor
               .ONE_MINUS_DST_ALPHA,
+          _ => throw new NotSupportedException(),
       };
   }
 }

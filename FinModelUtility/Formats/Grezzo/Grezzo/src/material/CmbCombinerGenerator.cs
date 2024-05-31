@@ -32,12 +32,15 @@ namespace grezzo.material {
     private IScalarValue? previousAlpha_;
     private IScalarValue? previousAlphaBuffer_;
 
+    private IColorValue? primaryColor_;
+    private IScalarValue? primaryAlpha_;
+
     private IColorValue? ambientAndDiffuseLightColor_;
     private IScalarValue? ambientAndDiffuseLightAlpha_;
 
     private IColorValue? specularLightColor_;
     private IScalarValue? specularLightAlpha_;
-
+    
     public CmbCombinerGenerator(mats_Material cmbMaterial,
                                 IFixedFunctionMaterial finMaterial) {
       this.cmbMaterial_ = cmbMaterial;
@@ -56,19 +59,23 @@ namespace grezzo.material {
     // based lighting. 
     public void AddCombiners(IReadOnlyList<Combiner?> cmbCombiners) {
       var dependsOnLights =
-          this.cmbMaterial_.isHemiSphereLightingEnabled &&
+          this.cmbMaterial_.isVertexLightingEnabled ||
+          (this.cmbMaterial_.isHemiSphereLightingEnabled &&
           cmbCombiners
               .Nonnull()
               .SelectMany(combiner
                               => combiner.colorSources.Concat(
                                   combiner.alphaSources))
-              .Any(source => source is TexCombinerSource.FragmentPrimaryColor
-                                       or TexCombinerSource
-                                           .FragmentSecondaryColor);
-
+              .Any(source
+                       => source is TexCombinerSource.FragmentPrimaryColor
+                                    or TexCombinerSource
+                                        .FragmentSecondaryColor));
+      
       if (!dependsOnLights) {
-        this.ambientAndDiffuseLightColor_ = this.equations_.CreateColorConstant(1);
-        this.ambientAndDiffuseLightAlpha_ = this.equations_.CreateScalarConstant(1);
+        this.ambientAndDiffuseLightColor_
+            = this.equations_.CreateColorConstant(1);
+        this.ambientAndDiffuseLightAlpha_
+            = this.equations_.CreateScalarConstant(1);
         this.specularLightColor_ = this.equations_.CreateColorConstant(1);
         this.specularLightAlpha_ = this.equations_.CreateScalarConstant(1);
       } else {
@@ -124,6 +131,18 @@ namespace grezzo.material {
             this.sOps_.Multiply(
                 this.equations_.GetMergedLightSpecularAlpha(),
                 this.sOps_.Add(specularAlpha0, specularAlpha1));
+      }
+
+      this.primaryColor_ = this.equations_.CreateOrGetColorInput(
+          FixedFunctionSource.VERTEX_COLOR_0);
+      this.primaryAlpha_ = this.equations_.CreateOrGetScalarInput(
+          FixedFunctionSource.VERTEX_ALPHA_0);
+
+      if (this.cmbMaterial_.isVertexLightingEnabled) {
+        this.primaryColor_ = this.cOps_.Multiply(
+            this.primaryColor_,
+            this.cOps_.Add(this.ambientAndDiffuseLightColor_,
+                           this.specularLightColor_));
       }
 
       foreach (var cmbCombiner in cmbCombiners) {
@@ -230,12 +249,11 @@ namespace grezzo.material {
                       this.constColor_.Rf,
                       this.constColor_.Gf,
                       this.constColor_.Bf)),
-          TexCombinerSource.PrimaryColor
-              => this.equations_.CreateOrGetColorInput(
-                  FixedFunctionSource.VERTEX_COLOR_0),
-          TexCombinerSource.Previous               => this.previousColor_,
-          TexCombinerSource.PreviousBuffer         => this.previousColorBuffer_,
-          TexCombinerSource.FragmentPrimaryColor   => this.ambientAndDiffuseLightColor_,
+          TexCombinerSource.PrimaryColor   => this.primaryColor_,
+          TexCombinerSource.Previous       => this.previousColor_,
+          TexCombinerSource.PreviousBuffer => this.previousColorBuffer_,
+          TexCombinerSource.FragmentPrimaryColor => this
+              .ambientAndDiffuseLightColor_,
           TexCombinerSource.FragmentSecondaryColor => this.specularLightColor_,
       };
 
@@ -271,13 +289,13 @@ namespace grezzo.material {
                     $"3dsAlpha{this.constColorIndex_}",
                     this.equations_.CreateScalarConstant(
                         this.constColor_.Af)),
-            TexCombinerSource.PrimaryColor
-                => this.equations_.CreateOrGetScalarInput(
-                    FixedFunctionSource.VERTEX_ALPHA_0),
-            TexCombinerSource.Previous => this.previousAlpha_,
+            TexCombinerSource.PrimaryColor   => this.primaryAlpha_,
+            TexCombinerSource.Previous       => this.previousAlpha_,
             TexCombinerSource.PreviousBuffer => this.previousAlphaBuffer_,
-            TexCombinerSource.FragmentPrimaryColor => this.ambientAndDiffuseLightAlpha_,
-            TexCombinerSource.FragmentSecondaryColor => this.specularLightAlpha_,
+            TexCombinerSource.FragmentPrimaryColor => this
+                .ambientAndDiffuseLightAlpha_,
+            TexCombinerSource.FragmentSecondaryColor =>
+                this.specularLightAlpha_,
         };
       }
 
