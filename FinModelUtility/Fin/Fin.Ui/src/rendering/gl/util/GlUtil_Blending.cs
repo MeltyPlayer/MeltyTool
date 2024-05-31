@@ -143,7 +143,7 @@ namespace fin.ui.rendering.gl {
           FinBlendFactor.CONST_COLOR => GlBlendFactorSrc.ConstantColor,
           FinBlendFactor.ONE_MINUS_CONST_COLOR => GlBlendFactorSrc
               .OneMinusConstantColor,
-          FinBlendFactor.CONST_ALPHA => GlBlendFactorSrc.ConstantColor,
+          FinBlendFactor.CONST_ALPHA => GlBlendFactorSrc.ConstantAlpha,
           FinBlendFactor.ONE_MINUS_CONST_ALPHA => GlBlendFactorSrc
               .OneMinusConstantAlpha,
           _ => throw new ArgumentOutOfRangeException(

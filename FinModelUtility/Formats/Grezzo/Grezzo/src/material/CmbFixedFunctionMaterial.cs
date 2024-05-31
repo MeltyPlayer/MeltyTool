@@ -15,11 +15,6 @@ using BlendEquation = grezzo.schema.cmb.BlendEquation;
 using BlendFactor = grezzo.schema.cmb.BlendFactor;
 using FinBlendEquation = fin.model.BlendEquation;
 using FinBlendFactor = fin.model.BlendFactor;
-using CmbBlendMode = grezzo.schema.cmb.BlendMode;
-using CmbBlendEquation = grezzo.schema.cmb.BlendEquation;
-using CmbBlendFactor = grezzo.schema.cmb.BlendFactor;
-using CmbTextureMinFilter = grezzo.schema.cmb.TextureMinFilter;
-using CmbTextureMagFilter = grezzo.schema.cmb.TextureMagFilter;
 using FinTextureMinFilter = fin.model.TextureMinFilter;
 using FinTextureMagFilter = fin.model.TextureMagFilter;
 using TextureMagFilter = grezzo.schema.cmb.TextureMagFilter;
@@ -267,7 +262,8 @@ namespace grezzo.material {
                 LogicOp.UNDEFINED);
             break;
           }
-          case BlendMode.LogicalOp: break;
+          case BlendMode.LogicalOp: 
+            throw new NotImplementedException();
           default:                     throw new ArgumentOutOfRangeException();
         }
 

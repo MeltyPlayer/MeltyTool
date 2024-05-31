@@ -7,8 +7,6 @@ using fin.language.equations.fixedFunction.impl;
 using fin.model;
 using fin.util.asserts;
 
-using FinAlphaOp = fin.model.AlphaOp;
-
 namespace gx {
   /// <summary>
   ///   BMD material, one of the common formats for the GameCube.

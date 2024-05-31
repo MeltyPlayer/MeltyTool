@@ -64,6 +64,9 @@ namespace grezzo.schema.cmb.mats {
     public TestFunc depthTestFunction;
     public BlendMode blendMode;
 
+    public bool LogicOpEnabled { get; set; }
+    public ushort LogicOp { get; set; }
+
     public BlendFactor alphaSrcFunc;
     public BlendFactor alphaDstFunc;
     public BlendEquation alphaEquation;
@@ -160,7 +163,9 @@ namespace grezzo.schema.cmb.mats {
       this.depthWriteEnabled = br.ReadByte() != 0;
       this.depthTestFunction = (TestFunc) br.ReadUInt16();
       this.blendMode = (BlendMode) (br.ReadByte());
-      br.Align(4);
+
+      this.LogicOpEnabled = br.ReadByte() != 0;
+      this.LogicOp = br.ReadUInt16();
 
       this.alphaSrcFunc = (BlendFactor) (br.ReadUInt16());
       this.alphaDstFunc = (BlendFactor) (br.ReadUInt16());

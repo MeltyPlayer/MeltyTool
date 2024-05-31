@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,37 +23,38 @@ namespace uni.ui.winforms.right_panel.textures {
     private object listViewLock_ = new();
 
     public IReadOnlyList<IReadOnlyTexture>? Textures {
-      set {
-        lock (listViewLock_) {
-          lock (this.listViewLock_) {
-            this.listView_.Clear();
-          }
+      set => this.listView_.Invoke(() => this.UpdateTextureListView_(value));
+    }
 
-          var imageList = this.listView_.SmallImageList = new ImageList();
+    private void UpdateTextureListView_(
+        IReadOnlyList<IReadOnlyTexture>? value) {
+      lock (this.listViewLock_) {
+        this.listView_.BeginUpdate();
 
-          Task.Run(
-              () => {
-                lock (this.listViewLock_) {
-                  this.textures_ =
-                      value?.ToHashSet(new TextureEqualityComparer())
-                           .OrderBy(texture => texture.Name)
-                           .ToList();
+        var imageList = this.listView_.SmallImageList
+            ??= new ImageList();
 
-                  if (this.textures_ == null) {
-                    return;
-                  }
+        this.listView_.Clear();
+        imageList.Images.Clear();
 
-                  foreach (var texture in this.textures_) {
-                    this.listView_.Items.Add(texture.Name,
-                                             imageList.Images.Count);
-                    imageList.Images.Add(texture.ImageData);
-                  }
-
-                  this.SelectedTexture =
-                      this.textures_.Count > 0 ? this.textures_[0] : null;
-                }
-              });
+        this.textures_ =
+            value?.ToHashSet(new TextureEqualityComparer())
+                 .OrderBy(texture => texture.Name)
+                 .ToList();
+        if (this.textures_ == null) {
+          this.textures_ = Array.Empty<IReadOnlyTexture>();
         }
+
+        foreach (var texture in this.textures_) {
+          this.listView_.Items.Add(texture.Name,
+                                   imageList.Images.Count);
+          imageList.Images.Add(texture.ImageData);
+        }
+
+        this.SelectedTexture =
+            this.textures_.Count > 0 ? this.textures_[0] : null;
+
+        this.listView_.EndUpdate();
       }
     }
 

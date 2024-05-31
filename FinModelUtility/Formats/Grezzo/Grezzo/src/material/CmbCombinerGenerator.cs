@@ -11,7 +11,6 @@ using fin.util.enumerables;
 using grezzo.schema.cmb;
 using grezzo.schema.cmb.mats;
 
-using Material = grezzo.schema.cmb.mats.Material;
 using mats_Material = grezzo.schema.cmb.mats.Material;
 
 namespace grezzo.material {
@@ -33,8 +32,11 @@ namespace grezzo.material {
     private IScalarValue? previousAlpha_;
     private IScalarValue? previousAlphaBuffer_;
 
-    private IColorValue? lightColor_;
-    private IScalarValue? lightAlpha_;
+    private IColorValue? ambientAndDiffuseLightColor_;
+    private IScalarValue? ambientAndDiffuseLightAlpha_;
+
+    private IColorValue? specularLightColor_;
+    private IScalarValue? specularLightAlpha_;
 
     public CmbCombinerGenerator(mats_Material cmbMaterial,
                                 IFixedFunctionMaterial finMaterial) {
@@ -47,9 +49,11 @@ namespace grezzo.material {
       var bufferColor = cmbMaterial.bufferColor;
       this.previousColorBuffer_ =
           new ColorConstant(bufferColor[0], bufferColor[1], bufferColor[2]);
-      this.previousAlpha_ = new ScalarConstant(bufferColor[3]);
+      this.previousAlphaBuffer_ = new ScalarConstant(bufferColor[3]);
     }
 
+    // TODO: Color is way too bright in OoT, looks like it expects vertex color
+    // based lighting. 
     public void AddCombiners(IReadOnlyList<Combiner?> cmbCombiners) {
       var dependsOnLights =
           this.cmbMaterial_.isHemiSphereLightingEnabled &&
@@ -63,8 +67,10 @@ namespace grezzo.material {
                                            .FragmentSecondaryColor);
 
       if (!dependsOnLights) {
-        this.lightColor_ = this.equations_.CreateColorConstant(1);
-        this.lightAlpha_ = this.equations_.CreateScalarConstant(1);
+        this.ambientAndDiffuseLightColor_ = this.equations_.CreateColorConstant(1);
+        this.ambientAndDiffuseLightAlpha_ = this.equations_.CreateScalarConstant(1);
+        this.specularLightColor_ = this.equations_.CreateColorConstant(1);
+        this.specularLightAlpha_ = this.equations_.CreateScalarConstant(1);
       } else {
         // TODO: Is this lighting calculation right??
         var ambientRgba = this.cmbMaterial_.ambientColor;
@@ -77,39 +83,47 @@ namespace grezzo.material {
             new ColorConstant(diffuseRgba.Rf, diffuseRgba.Gf, diffuseRgba.Bf);
         var diffuseAlpha = new ScalarConstant(diffuseRgba.Af);
 
-        var specularRgba = this.cmbMaterial_.specular0Color;
-        var specularColor =
-            new ColorConstant(specularRgba.Rf,
-                              specularRgba.Gf,
-                              specularRgba.Bf);
-        var specularAlpha = new ScalarConstant(specularRgba.Af);
+        var specularRgba0 = this.cmbMaterial_.specular0Color;
+        var specularColor0 =
+            new ColorConstant(specularRgba0.Rf,
+                              specularRgba0.Gf,
+                              specularRgba0.Bf);
+        var specularAlpha0 = new ScalarConstant(specularRgba0.Af);
 
-        this.lightColor_ =
+        var specularRgba1 = this.cmbMaterial_.specular1Color;
+        var specularColor1 =
+            new ColorConstant(specularRgba1.Rf,
+                              specularRgba1.Gf,
+                              specularRgba1.Bf);
+        var specularAlpha1 = new ScalarConstant(specularRgba1.Af);
+
+        this.ambientAndDiffuseLightColor_ =
             this.cOps_.Add(
-                this.cOps_.Add(
-                    this.cOps_.Multiply(
-                        this.equations_.CreateOrGetColorInput(
-                            FixedFunctionSource.LIGHT_AMBIENT_COLOR),
-                        ambientColor),
-                    this.cOps_.Multiply(
-                        this.equations_.GetMergedLightDiffuseColor(),
-                        diffuseColor)),
                 this.cOps_.Multiply(
-                    this.equations_.GetMergedLightSpecularColor(),
-                    specularColor));
-        this.lightAlpha_ =
+                    this.equations_.CreateOrGetColorInput(
+                        FixedFunctionSource.LIGHT_AMBIENT_COLOR),
+                    ambientColor),
+                this.cOps_.Multiply(
+                    this.equations_.GetMergedLightDiffuseColor(),
+                    diffuseColor));
+        this.ambientAndDiffuseLightAlpha_ =
             this.sOps_.Add(
-                this.sOps_.Add(
-                    this.sOps_.Multiply(
-                        this.equations_.CreateOrGetScalarInput(
-                            FixedFunctionSource.LIGHT_AMBIENT_ALPHA),
-                        ambientAlpha),
-                    this.sOps_.Multiply(
-                        this.equations_.GetMergedLightDiffuseAlpha(),
-                        diffuseAlpha)),
                 this.sOps_.Multiply(
-                    this.equations_.GetMergedLightSpecularAlpha(),
-                    specularAlpha));
+                    this.equations_.CreateOrGetScalarInput(
+                        FixedFunctionSource.LIGHT_AMBIENT_ALPHA),
+                    ambientAlpha),
+                this.sOps_.Multiply(
+                    this.equations_.GetMergedLightDiffuseAlpha(),
+                    diffuseAlpha));
+
+        this.specularLightColor_ =
+            this.cOps_.Multiply(
+                this.equations_.GetMergedLightSpecularColor(),
+                this.cOps_.Add(specularColor0, specularColor1));
+        this.specularLightAlpha_ =
+            this.sOps_.Multiply(
+                this.equations_.GetMergedLightSpecularAlpha(),
+                this.sOps_.Add(specularAlpha0, specularAlpha1));
       }
 
       foreach (var cmbCombiner in cmbCombiners) {
@@ -118,21 +132,6 @@ namespace grezzo.material {
         }
 
         this.AddCombiner_(cmbCombiner);
-      }
-
-      // TODO: This doesn't seem right, it seems like this should be light attributes instead??
-      // Applies diffuse to the final color to fix weird issue where things are
-      // twice as bright as they should be.
-      {
-        var diffuseRgba = this.cmbMaterial_.diffuseRgba;
-        var diffuseColor =
-            new ColorConstant(diffuseRgba.Rf, diffuseRgba.Gf, diffuseRgba.Bf);
-        var diffuseAlpha = new ScalarConstant(diffuseRgba.Af);
-
-        this.previousColor_ =
-            this.cOps_.Multiply(this.previousColor_, diffuseColor);
-        this.previousAlpha_ =
-            this.sOps_.Multiply(this.previousAlpha_, diffuseAlpha);
       }
 
       this.equations_.CreateColorOutput(
@@ -216,7 +215,6 @@ namespace grezzo.material {
 
     private IColorValue? GetColorValue_(TexCombinerSource combinerSource)
       => combinerSource switch {
-          // TODO: This doesn't appear to be correct based on noclip's implementation
           TexCombinerSource.Texture0 => this.equations_.CreateOrGetColorInput(
               FixedFunctionSource.TEXTURE_COLOR_0),
           TexCombinerSource.Texture1 => this.equations_.CreateOrGetColorInput(
@@ -237,8 +235,8 @@ namespace grezzo.material {
                   FixedFunctionSource.VERTEX_COLOR_0),
           TexCombinerSource.Previous               => this.previousColor_,
           TexCombinerSource.PreviousBuffer         => this.previousColorBuffer_,
-          TexCombinerSource.FragmentPrimaryColor   => this.lightColor_,
-          TexCombinerSource.FragmentSecondaryColor => this.lightColor_,
+          TexCombinerSource.FragmentPrimaryColor   => this.ambientAndDiffuseLightColor_,
+          TexCombinerSource.FragmentSecondaryColor => this.specularLightColor_,
       };
 
     private IScalarValue? GetScalarValue_(
@@ -256,7 +254,6 @@ namespace grezzo.material {
         };
       } else {
         channelValue = combinerSource switch {
-            // TODO: This doesn't appear to be correct based on noclip's implementation
             TexCombinerSource.Texture0 =>
                 this.equations_.CreateOrGetScalarInput(
                     FixedFunctionSource.TEXTURE_ALPHA_0),
@@ -279,8 +276,8 @@ namespace grezzo.material {
                     FixedFunctionSource.VERTEX_ALPHA_0),
             TexCombinerSource.Previous => this.previousAlpha_,
             TexCombinerSource.PreviousBuffer => this.previousAlphaBuffer_,
-            TexCombinerSource.FragmentPrimaryColor => this.lightAlpha_,
-            TexCombinerSource.FragmentSecondaryColor => this.lightAlpha_,
+            TexCombinerSource.FragmentPrimaryColor => this.ambientAndDiffuseLightAlpha_,
+            TexCombinerSource.FragmentSecondaryColor => this.specularLightAlpha_,
         };
       }
 
