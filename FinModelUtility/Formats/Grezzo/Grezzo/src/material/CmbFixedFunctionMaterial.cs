@@ -85,12 +85,6 @@ namespace grezzo.material {
                     });
                   }
 
-                  /**
-                  var cmbBorderColor =
-                      texMapper.BorderColor;
-                  finTexture.BorderColor = cmbBorderColor;
-                   */
-
                   var cmbTexCoord = cmbMaterial.texCoords[i];
 
                   finTexture =
@@ -131,12 +125,24 @@ namespace grezzo.material {
                   finTexture.LodBias = texMapper.lodBias;
                   finTexture.MinLod = texMapper.minLodBias;
                   finTexture.UvIndex = cmbTexCoord.coordinateIndex;
+                  finTexture.BorderColor = texMapper.BorderColor;
 
                   finTexture.UvType =
                       cmbTexCoord.mappingMethod ==
                       TextureMappingType.UvCoordinateMap
                           ? UvType.STANDARD
                           : UvType.SPHERICAL;
+
+                  if (cmbTexCoord.scale.Y == 2 &&
+                      texMapper.wrapT == TextureWrapMode.Mirror) {
+                    cmbTexCoord.translation.Y -= 1;
+                  }
+
+                  finTexture.SetOffset2d(cmbTexCoord.translation.X,
+                                        cmbTexCoord.translation.Y);
+                  finTexture.SetRotationRadians2d(cmbTexCoord.rotation);
+                  finTexture.SetScale2d(cmbTexCoord.scale.X,
+                                        cmbTexCoord.scale.Y);
                 }
 
                 return finTexture;
@@ -233,38 +239,35 @@ namespace grezzo.material {
               0);
         }
 
-        // TODO: not right
+        // TODO: How is color used?????
         switch (cmbMaterial.blendMode) {
           case BlendMode.BlendNone: {
             finMaterial.SetBlending(
                 FinBlendEquation.ADD,
-                FinBlendFactor.ONE,
-                FinBlendFactor.ZERO,
+                FinBlendFactor.SRC_ALPHA,
+                FinBlendFactor.ONE_MINUS_SRC_ALPHA,
                 LogicOp.UNDEFINED);
             break;
           }
           case BlendMode.Blend: {
             finMaterial.SetBlending(
-                CmbBlendEquationToFin(cmbMaterial.colorEquation),
-                CmbBlendFactorToFin(cmbMaterial.colorSrcFunc),
-                CmbBlendFactorToFin(cmbMaterial.colorDstFunc),
-                LogicOp.UNDEFINED);
-            break;
-          }
-          case BlendMode.BlendSeparate: {
-            finMaterial.SetBlendingSeparate(
-                CmbBlendEquationToFin(cmbMaterial.colorEquation),
-                CmbBlendFactorToFin(cmbMaterial.colorSrcFunc),
-                CmbBlendFactorToFin(cmbMaterial.colorDstFunc),
                 CmbBlendEquationToFin(cmbMaterial.alphaEquation),
                 CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
                 CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
                 LogicOp.UNDEFINED);
             break;
           }
-          case BlendMode.LogicalOp: 
+          case BlendMode.BlendSeparate: {
+            finMaterial.SetBlending(
+                CmbBlendEquationToFin(cmbMaterial.alphaEquation),
+                CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
+                CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
+                LogicOp.UNDEFINED);
+            break;
+          }
+          case BlendMode.LogicalOp:
             throw new NotImplementedException();
-          default:                     throw new ArgumentOutOfRangeException();
+          default: throw new ArgumentOutOfRangeException();
         }
 
         finMaterial.DepthCompareType = cmbMaterial.depthTestFunction switch {

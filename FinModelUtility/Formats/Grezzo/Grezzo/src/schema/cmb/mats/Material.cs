@@ -162,6 +162,7 @@ namespace grezzo.schema.cmb.mats {
       this.depthTestEnabled = br.ReadByte() != 0;
       this.depthWriteEnabled = br.ReadByte() != 0;
       this.depthTestFunction = (TestFunc) br.ReadUInt16();
+
       this.blendMode = (BlendMode) (br.ReadByte());
 
       this.LogicOpEnabled = br.ReadByte() != 0;
