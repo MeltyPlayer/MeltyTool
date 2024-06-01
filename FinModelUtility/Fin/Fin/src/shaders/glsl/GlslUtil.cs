@@ -369,8 +369,8 @@ out vec4 vertexColor{i};");
       sb.Append(
           """
           };
-          
-          
+
+
           """);
 
       if (textureTransformType.CheckFlag(TextureTransformType.THREE_D)) {
@@ -383,7 +383,7 @@ out vec4 vertexColor{i};");
               return rawTransformedUv.xy / rawTransformedUv.w;
             }
 
-            
+
             """);
       }
     }
@@ -456,17 +456,22 @@ out vec4 vertexColor{i};");
         return TextureTransformType.NONE;
       }
 
-      if ((finTexture.Offset is { } offset && !offset.IsRoughly0()) ||
-          (finTexture.RotationRadians is { } radians &&
-           !radians.IsRoughly0()) ||
-          (finTexture.Scale is { } scale && !scale.IsRoughly1()) ||
-          finTexture is IScrollingTexture) {
-        return finTexture.IsTransform3d
-            ? TextureTransformType.THREE_D
-            : TextureTransformType.TWO_D;
+      var hasTransform
+          = (finTexture.Offset is { } offset && !offset.IsRoughly0() ||
+             (finTexture.RotationRadians is { } radians &&
+              !radians.IsRoughly0()) ||
+             finTexture is IScrollingTexture);
+      if (!hasTransform && finTexture.Scale is { } scale) {
+        hasTransform = finTexture.IsTransform3d
+            ? !scale.IsRoughly1()
+            : !scale.Xy().IsRoughly1();
       }
 
-      return TextureTransformType.NONE;
+      return hasTransform
+          ? (finTexture.IsTransform3d
+              ? TextureTransformType.THREE_D
+              : TextureTransformType.TWO_D)
+          : TextureTransformType.NONE;
     }
   }
 }

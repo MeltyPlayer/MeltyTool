@@ -212,6 +212,10 @@
     Constant = 1,
   }
 
+  public enum RenderLayer {
+    Opaque, Translucent, Subtractive, Additive
+  }
+
   public enum SkinningMode : ushort {
     Single = 0,
     Rigid = 1,

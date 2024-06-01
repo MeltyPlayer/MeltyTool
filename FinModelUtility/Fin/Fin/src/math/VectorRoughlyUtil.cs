@@ -5,7 +5,7 @@ using fin.math.xyz;
 using fin.model;
 
 namespace fin.math {
-  public static class VectorUtil {
+  public static class VectorRoughlyUtil {
     public static bool IsRoughly0(this in Vector2 vector)
       => vector.X.IsRoughly0() &&
          vector.Y.IsRoughly0();

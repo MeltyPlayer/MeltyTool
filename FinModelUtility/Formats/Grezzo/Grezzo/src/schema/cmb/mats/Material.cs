@@ -9,8 +9,8 @@ namespace grezzo.schema.cmb.mats {
   public class Material : IBinaryConvertible {
     public bool isFragmentLightingEnabled;
     public bool isVertexLightingEnabled;
-    public bool isHemiSphereLightingEnabled;
-    public bool isHemiSphereOcclusionEnabled;
+    public bool IsFogEnabled { get; set; }
+    public RenderLayer RenderLayer { get; set; }
     public CullMode faceCulling;
     public bool isPolygonOffsetEnabled;
     public float polygonOffset;
@@ -90,8 +90,8 @@ namespace grezzo.schema.cmb.mats {
     public void Read(IBinaryReader br) {
       this.isFragmentLightingEnabled = br.ReadByte() != 0;
       this.isVertexLightingEnabled = br.ReadByte() != 0;
-      this.isHemiSphereLightingEnabled = br.ReadByte() != 0;
-      this.isHemiSphereOcclusionEnabled = br.ReadByte() != 0;
+      this.IsFogEnabled = br.ReadByte() != 0;
+      this.RenderLayer = (RenderLayer) br.ReadByte();
 
       this.faceCulling = (CullMode) br.ReadByte();
 

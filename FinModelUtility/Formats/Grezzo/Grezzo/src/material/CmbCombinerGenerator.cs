@@ -40,7 +40,7 @@ namespace grezzo.material {
 
     private IColorValue? specularLightColor_;
     private IScalarValue? specularLightAlpha_;
-    
+
     public CmbCombinerGenerator(mats_Material cmbMaterial,
                                 IFixedFunctionMaterial finMaterial) {
       this.cmbMaterial_ = cmbMaterial;
@@ -58,9 +58,8 @@ namespace grezzo.material {
     // TODO: Color is way too bright in OoT, looks like it expects vertex color
     // based lighting. 
     public void AddCombiners(IReadOnlyList<Combiner?> cmbCombiners) {
-      var dependsOnLights =
-          this.cmbMaterial_.isVertexLightingEnabled ||
-          (this.cmbMaterial_.isHemiSphereLightingEnabled &&
+      var usesShaderLighting =
+          this.cmbMaterial_.isFragmentLightingEnabled &&
           cmbCombiners
               .Nonnull()
               .SelectMany(combiner
@@ -69,8 +68,12 @@ namespace grezzo.material {
               .Any(source
                        => source is TexCombinerSource.FragmentPrimaryColor
                                     or TexCombinerSource
-                                        .FragmentSecondaryColor));
-      
+                                        .FragmentSecondaryColor);
+      var dependsOnLights =
+          this.cmbMaterial_.isVertexLightingEnabled || usesShaderLighting;
+      var needsToAddLightingToVertexColor =
+          !usesShaderLighting && this.cmbMaterial_.isVertexLightingEnabled;
+
       if (!dependsOnLights) {
         this.ambientAndDiffuseLightColor_
             = this.equations_.CreateColorConstant(1);
@@ -138,7 +141,7 @@ namespace grezzo.material {
       this.primaryAlpha_ = this.equations_.CreateOrGetScalarInput(
           FixedFunctionSource.VERTEX_ALPHA_0);
 
-      if (this.cmbMaterial_.isVertexLightingEnabled) {
+      if (needsToAddLightingToVertexColor) {
         this.primaryColor_ = this.cOps_.Multiply(
             this.primaryColor_,
             this.cOps_.Add(this.ambientAndDiffuseLightColor_,

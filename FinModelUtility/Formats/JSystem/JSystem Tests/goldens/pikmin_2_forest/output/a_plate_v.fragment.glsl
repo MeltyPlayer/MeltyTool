@@ -28,7 +28,7 @@ struct Texture {
 
 uniform sampler2D texture0;
 uniform Texture texture1;
-uniform Texture texture2;
+uniform sampler2D texture2;
 uniform vec3 color_GxAmbientColor0;
 
 in vec2 normalUv;
@@ -127,7 +127,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(vertexColor0.rgb*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*clamp((texture(texture2.sampler, texture2.transform2d * vec3((uv1).x, (uv1).y, 1)).rgb + texture(texture1.sampler, texture1.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb*texture(texture0, uv0).rgb*vertexColor0.rgb*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*vec3(0.5)*vec3(2)), 0, 1)*vec3(2), 0, 1);
+  vec3 colorComponent = clamp(vertexColor0.rgb*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*clamp((texture(texture2, uv1).rgb + texture(texture1.sampler, texture1.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb*texture(texture0, uv0).rgb*vertexColor0.rgb*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*vec3(0.5)*vec3(2)), 0, 1)*vec3(2), 0, 1);
 
   float alphaComponent = vertexColor0.a;
 

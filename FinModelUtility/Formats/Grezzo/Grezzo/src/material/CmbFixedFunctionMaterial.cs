@@ -133,6 +133,7 @@ namespace grezzo.material {
                           ? UvType.STANDARD
                           : UvType.SPHERICAL;
 
+                  // TODO: Better way to specify this??
                   if (cmbTexCoord.scale.Y == 2 &&
                       texMapper.wrapT == TextureWrapMode.Mirror) {
                     cmbTexCoord.translation.Y -= 1;
@@ -239,35 +240,19 @@ namespace grezzo.material {
               0);
         }
 
-        // TODO: How is color used?????
-        switch (cmbMaterial.blendMode) {
-          case BlendMode.BlendNone: {
-            finMaterial.SetBlending(
-                FinBlendEquation.ADD,
-                FinBlendFactor.SRC_ALPHA,
-                FinBlendFactor.ONE_MINUS_SRC_ALPHA,
-                LogicOp.UNDEFINED);
-            break;
-          }
-          case BlendMode.Blend: {
-            finMaterial.SetBlending(
-                CmbBlendEquationToFin(cmbMaterial.alphaEquation),
-                CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
-                CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
-                LogicOp.UNDEFINED);
-            break;
-          }
-          case BlendMode.BlendSeparate: {
-            finMaterial.SetBlending(
-                CmbBlendEquationToFin(cmbMaterial.alphaEquation),
-                CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
-                CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
-                LogicOp.UNDEFINED);
-            break;
-          }
-          case BlendMode.LogicalOp:
-            throw new NotImplementedException();
-          default: throw new ArgumentOutOfRangeException();
+        // TODO: How is color blend mode used??? It almost always looks wrong
+        if (cmbMaterial.blendMode == 0) {
+          finMaterial.SetBlending(
+              FinBlendEquation.ADD,
+              FinBlendFactor.ONE,
+              FinBlendFactor.ZERO,
+              LogicOp.UNDEFINED);
+        } else {
+          finMaterial.SetBlending(
+              CmbBlendEquationToFin(cmbMaterial.alphaEquation),
+              CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
+              CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
+              LogicOp.UNDEFINED);
         }
 
         finMaterial.DepthCompareType = cmbMaterial.depthTestFunction switch {

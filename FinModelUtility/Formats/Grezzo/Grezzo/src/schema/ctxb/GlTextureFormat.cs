@@ -27,14 +27,12 @@
                    or GlTextureFormat.RGBA4444
                    or GlTextureFormat.RGBA5551;
 
-    public static bool IsIntensity(this GlTextureFormat format)
+    public static bool IsIntensityAlpha(this GlTextureFormat format)
       => format is GlTextureFormat.L4
                    or GlTextureFormat.L8
                    or GlTextureFormat.Gas
-                   or GlTextureFormat.Shadow;
-
-    public static bool IsIntensityAlpha(this GlTextureFormat format)
-      => format is GlTextureFormat.LA4
+                   or GlTextureFormat.Shadow
+                   or GlTextureFormat.LA4
                    or GlTextureFormat.LA8;
 
     public static bool IsAlpha(this GlTextureFormat format)

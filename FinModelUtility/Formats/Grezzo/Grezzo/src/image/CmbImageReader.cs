@@ -65,25 +65,14 @@ namespace grezzo.image {
                                     pixelReader);
       }
 
-      if (format.IsIntensity()) {
-        IPixelReader<L8> pixelReader = format switch {
-            GlTextureFormat.L4     => new L4PixelReader(),
-            GlTextureFormat.L8     => new L8PixelReader(),
-            GlTextureFormat.Gas    => new L8PixelReader(),
-            GlTextureFormat.Shadow => new L8PixelReader(),
-        };
-
-        return TiledImageReader.New(width,
-                                    height,
-                                    blockWidth,
-                                    blockHeight,
-                                    tilePixelIndexer,
-                                    pixelReader);
-      }
-
       if (format.IsIntensityAlpha()) {
         IPixelReader<La16> pixelReader = format switch {
-            GlTextureFormat.LA8 => new La16PixelReader(),
+            GlTextureFormat.L4     => new L2a4PixelReader(),
+            GlTextureFormat.L8     => new L2a8PixelReader(),
+            GlTextureFormat.Gas    => new L2a8PixelReader(),
+            GlTextureFormat.Shadow => new L2a8PixelReader(),
+            GlTextureFormat.LA4    => new La8PixelReader(),
+            GlTextureFormat.LA8    => new La16PixelReader(),
         };
 
         return TiledImageReader.New(width,
