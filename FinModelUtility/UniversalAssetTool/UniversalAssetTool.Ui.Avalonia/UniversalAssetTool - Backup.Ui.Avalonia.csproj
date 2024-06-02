@@ -48,23 +48,27 @@
     <Compile Update="common\textboxes\AutocompleteTextbox.axaml.cs">
       <DependentUpon>AutocompleteTextbox.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\ModelPanel.axaml.cs">
+    <Compile Update="ModelPanel.axaml.cs">
       <DependentUpon>ModelPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialsPanel.axaml.cs">
+    <Compile Update="materials\MaterialsPanel.axaml.cs">
       <DependentUpon>MaterialsPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialPanel.axaml.cs">
+    <Compile Update="materials\MaterialPanel.axaml.cs">
       <DependentUpon>MaterialPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialTexturesPanel.axaml.cs">
+    <Compile Update="materials\MaterialTexturesPanel.axaml.cs">
       <DependentUpon>MaterialTexturesPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialShadersPanel.axaml.cs">
+    <Compile Update="materials\MaterialShadersPanel.axaml.cs">
       <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
     </Compile>
     <Compile Update="textures\TexturePreview.axaml.cs">
       <DependentUpon>TexturePreview.axaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
   </ItemGroup>
 </Project>

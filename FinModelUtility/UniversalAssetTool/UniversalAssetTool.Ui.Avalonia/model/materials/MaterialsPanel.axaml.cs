@@ -11,7 +11,7 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.materials {
+namespace uni.ui.avalonia.model.materials {
   public class MaterialsPanelViewModelForDesigner
       : MaterialsPanelViewModel {
     public MaterialsPanelViewModelForDesigner() {
@@ -28,7 +28,7 @@ namespace uni.ui.avalonia.materials {
     private (int, IReadOnlyMaterial?)? selectedMaterial_;
     private MaterialPanelViewModel? selectedMaterialPanelViewModel_;
 
-    public required (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
+    public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
         ModelAndMaterials {
       get => this.modelAndMaterials_;
       set {

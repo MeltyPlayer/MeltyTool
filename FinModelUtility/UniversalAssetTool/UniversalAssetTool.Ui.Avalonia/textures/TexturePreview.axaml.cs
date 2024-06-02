@@ -10,7 +10,7 @@ using fin.model;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.materials;
+using uni.ui.avalonia.model.materials;
 using uni.ui.avalonia.resources;
 using uni.ui.avalonia.ViewModels;
 

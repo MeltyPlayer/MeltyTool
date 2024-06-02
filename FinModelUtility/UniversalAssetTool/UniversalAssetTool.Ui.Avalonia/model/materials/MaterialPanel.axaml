@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
+             xmlns:materials="clr-namespace:uni.ui.avalonia.model.materials"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
-             x:Class="uni.ui.avalonia.materials.MaterialPanel"
+             x:Class="uni.ui.avalonia.model.materials.MaterialPanel"
              x:DataType="materials:MaterialPanelViewModel">
   <Design.DataContext>
     <materials:MaterialPanelViewModelForDesigner />

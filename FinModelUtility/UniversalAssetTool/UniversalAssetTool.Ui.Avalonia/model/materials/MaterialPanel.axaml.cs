@@ -6,7 +6,7 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.materials {
+namespace uni.ui.avalonia.model.materials {
   public class MaterialPanelViewModelForDesigner
       : MaterialPanelViewModel {
     public MaterialPanelViewModelForDesigner() {

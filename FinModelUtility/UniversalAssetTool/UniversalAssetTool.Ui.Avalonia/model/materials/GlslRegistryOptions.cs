@@ -7,7 +7,7 @@ using TextMateSharp.Registry;
 
 using TextMateSharp.Themes;
 
-namespace uni.ui.avalonia.materials {
+namespace uni.ui.avalonia.model.materials {
   /// <summary>
   ///   Shamelessly stolen from:
   ///   - https://github.com/nesrak1/UABEA/blob/5adb448deeefa1b88881f1fa44243009b352db3a/UABEAvalonia/TextHighlighting/UABEDumpRegistryOptions.cs#L18

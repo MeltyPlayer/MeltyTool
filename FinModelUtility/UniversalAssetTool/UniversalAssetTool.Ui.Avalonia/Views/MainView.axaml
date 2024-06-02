@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
-             xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
+             xmlns:model="clr-namespace:uni.ui.avalonia.model"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -22,7 +22,9 @@
 
   <DockPanel>
     <treeViews:FilterTreeView DockPanel.Dock="Left" />
-    <materials:MaterialPanel DockPanel.Dock="Right" />
+    <model:ModelPanel
+      Width="400"
+      DockPanel.Dock="Right" DataContext="{Binding ModelPanel}" />
 
     <Panel Background="Magenta">
     </Panel>

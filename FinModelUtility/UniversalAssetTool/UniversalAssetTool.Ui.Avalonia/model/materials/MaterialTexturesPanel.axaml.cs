@@ -12,7 +12,7 @@ using uni.ui.avalonia.resources;
 using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.materials {
+namespace uni.ui.avalonia.model.materials {
   public class MaterialTexturesPanelViewModelForDesigner
       : MaterialTexturesPanelViewModel {
     public MaterialTexturesPanelViewModelForDesigner() {

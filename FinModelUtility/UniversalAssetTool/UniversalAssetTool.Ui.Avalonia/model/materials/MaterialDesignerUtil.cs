@@ -8,7 +8,7 @@ using fin.model.impl;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace uni.ui.avalonia.materials;
+namespace uni.ui.avalonia.model.materials;
 
 public static class MaterialDesignerUtil {
   public static IReadOnlyMaterial? CreateStubMaterial()

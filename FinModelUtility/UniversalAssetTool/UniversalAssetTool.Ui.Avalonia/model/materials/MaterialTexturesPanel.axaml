@@ -3,11 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:materials="clr-namespace:uni.ui.avalonia.materials"
+             xmlns:materials="clr-namespace:uni.ui.avalonia.model.materials"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="200"
-             x:Class="uni.ui.avalonia.materials.MaterialTexturesPanel"
+             x:Class="uni.ui.avalonia.model.materials.MaterialTexturesPanel"
              x:DataType="materials:MaterialTexturesPanelViewModel">
   <Design.DataContext>
     <materials:MaterialTexturesPanelViewModelForDesigner />

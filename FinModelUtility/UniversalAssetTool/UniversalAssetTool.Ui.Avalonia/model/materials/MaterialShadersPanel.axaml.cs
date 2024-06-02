@@ -12,7 +12,7 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.materials {
+namespace uni.ui.avalonia.model.materials {
   public class MaterialShadersPanelViewModelForDesigner
       : MaterialShadersPanelViewModel {
     public MaterialShadersPanelViewModelForDesigner() {

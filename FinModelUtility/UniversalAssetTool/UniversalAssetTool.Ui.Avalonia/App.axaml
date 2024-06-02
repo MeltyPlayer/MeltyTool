@@ -10,7 +10,7 @@
     <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
 
-    <Style Selector="TextBlock.caption">
+    <Style Selector="TextBlock">
       <Setter Property="FontFamily" Value="Tahoma" />
     </Style>
 
@@ -23,7 +23,7 @@
     <!-- h1 -->
     <Style Selector="
               TextBlock.h1, 
-              TabControl.h1 TabItem ContentPresenter#PART_ContentPresenter,
+              TabControl.h1 TabItem /template/ ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h1 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="22" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
@@ -36,7 +36,7 @@
     <!-- h2 -->
     <Style Selector="
               TextBlock.h2, 
-              TabControl.h2 TabItem ContentPresenter#PART_ContentPresenter,
+              TabControl.h2 TabItem /template/ ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h2 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="20" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
@@ -49,7 +49,7 @@
     <!-- h3 -->
     <Style Selector="
               TextBlock.h3,
-              TabControl.h3 TabItem ContentPresenter#PART_ContentPresenter,
+              TabControl.h3 TabItem /template/ ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h3 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="18" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
@@ -62,7 +62,7 @@
     <!-- h4 -->
     <Style Selector="
               TextBlock.h4,
-              TabControl.h4 TabItem ContentPresenter#PART_ContentPresenter,
+              TabControl.h4 TabItem /template/ ContentPresenter#PART_ContentPresenter,
               gb|GroupBox.h4 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="16" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
