@@ -275,10 +275,10 @@ namespace grezzo.material {
 
       this.Material.Name = $"material{materialIndex}";
       this.Material.CullingMode = cmbMaterial.faceCulling switch {
-          CullMode.FrontAndBack => CullingMode.SHOW_BOTH,
-          CullMode.Front        => CullingMode.SHOW_FRONT_ONLY,
-          CullMode.BackFace     => CullingMode.SHOW_BACK_ONLY,
-          CullMode.Never        => CullingMode.SHOW_NEITHER,
+          CullMode.FrontAndBack => CullingMode.SHOW_NEITHER,
+          CullMode.Front        => CullingMode.SHOW_BACK_ONLY,
+          CullMode.BackFace     => CullingMode.SHOW_FRONT_ONLY,
+          CullMode.Never        => CullingMode.SHOW_BOTH,
       };
     }
 

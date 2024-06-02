@@ -458,8 +458,7 @@ namespace grezzo.api {
                                .Select(meshIndex => finVertices[meshIndex])
                                .ToArray();
         finMesh.AddTriangles(triangleVertices)
-               .SetMaterial(finMaterials[cmbMesh.materialIndex])
-               .SetVertexOrder(VertexOrder.NORMAL);
+               .SetMaterial(finMaterials[cmbMesh.materialIndex]);
       }
 
       // Adds morph targets
