@@ -66,5 +66,8 @@
     <Compile Update="textures\TexturePreview.axaml.cs">
       <DependentUpon>TexturePreview.axaml</DependentUpon>
     </Compile>
+    <Compile Update="textures\TextureList.axaml.cs">
+      <DependentUpon>TextureList.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

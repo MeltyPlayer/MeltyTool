@@ -1,14 +1,14 @@
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
 
 using fin.model;
+using fin.util.asserts;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.resources;
 using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
 
@@ -16,36 +16,30 @@ namespace uni.ui.avalonia.model.materials {
   public class MaterialTexturesPanelViewModelForDesigner
       : MaterialTexturesPanelViewModel {
     public MaterialTexturesPanelViewModelForDesigner() {
-      this.Material = MaterialDesignerUtil.CreateStubMaterial();
+      this.Textures
+          = MaterialDesignerUtil.CreateStubMaterial().Textures.ToArray();
     }
   }
 
   public class MaterialTexturesPanelViewModel : ViewModelBase {
-    private IReadOnlyMaterial? material_;
-    private TextureViewModel selectedTextureViewModel_;
-    private TexturePreviewViewModel selectedTexturePreviewViewModel_;
+    private IReadOnlyList<IReadOnlyTexture>? textures_;
+    private TextureListViewModel textureListViewModel_;
+    private TextureViewModel? selectedTextureViewModel_;
+    private TexturePreviewViewModel? selectedTexturePreviewViewModel_;
     private string? selectedTextureCaption_;
-    private ObservableCollection<TextureViewModel> textureViewModels_;
 
-    public required IReadOnlyMaterial? Material {
-      get => this.material_;
+    public IReadOnlyList<IReadOnlyTexture>? Textures {
+      get => this.textures_;
       set {
-        this.RaiseAndSetIfChanged(ref this.material_, value);
-
-        var textures = this.material_?.Textures;
-        this.Textures = new ObservableCollection<TextureViewModel>(
-            textures?.Select(texture => new TextureViewModel
-                                 { Texture = texture }) ??
-            Enumerable.Empty<TextureViewModel>());
-
-        this.SelectedTexture = this.Textures.FirstOrDefault();
+        this.RaiseAndSetIfChanged(ref this.textures_, value);
+        this.TextureList = new TextureListViewModel { Textures = value };
       }
     }
 
-    public ObservableCollection<TextureViewModel> Textures {
-      get => this.textureViewModels_;
+    public TextureListViewModel TextureList {
+      get => this.textureListViewModel_;
       private set
-        => this.RaiseAndSetIfChanged(ref this.textureViewModels_, value);
+        => this.RaiseAndSetIfChanged(ref this.textureListViewModel_, value);
     }
 
     public TextureViewModel? SelectedTexture {
@@ -77,39 +71,18 @@ namespace uni.ui.avalonia.model.materials {
     }
   }
 
-  public class TextureViewModel : ViewModelBase {
-    private IReadOnlyTexture texture_;
-    private string caption_;
-    public TexturePreviewViewModel texturePreviewViewModel_;
-
-    public required IReadOnlyTexture Texture {
-      get => this.texture_;
-      set {
-        this.RaiseAndSetIfChanged(ref this.texture_, value);
-
-        this.TexturePreview = new TexturePreviewViewModel { Texture = value };
-
-        var image = value.Image;
-        this.Caption = $"{image.PixelFormat}, {image.Width}x{image.Height}";
-      }
-    }
-
-    public TexturePreviewViewModel TexturePreview {
-      get => this.texturePreviewViewModel_;
-      private set => this.RaiseAndSetIfChanged(
-          ref this.texturePreviewViewModel_,
-          value);
-    }
-
-    public string Caption {
-      get => this.caption_;
-      private set => this.RaiseAndSetIfChanged(ref this.caption_, value);
-    }
-  }
-
   public partial class MaterialTexturesPanel : UserControl {
     public MaterialTexturesPanel() {
       InitializeComponent();
+    }
+
+    protected MaterialTexturesPanelViewModel ViewModel
+      => Asserts.AsA<MaterialTexturesPanelViewModel>(this.DataContext);
+
+    protected void TextureList_OnTextureSelected(
+        object? sender,
+        TextureSelectedEventArgs e) {
+      this.ViewModel.SelectedTexture = e.Texture;
     }
   }
 }

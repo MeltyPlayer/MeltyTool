@@ -11,10 +11,10 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace uni.ui.avalonia.model.materials;
 
 public static class MaterialDesignerUtil {
-  public static IReadOnlyMaterial? CreateStubMaterial()
+  public static IReadOnlyMaterial CreateStubMaterial()
     => CreateStubModelAndMaterial().Item2;
 
-  public static (IReadOnlyModel, IReadOnlyMaterial?)
+  public static (IReadOnlyModel, IReadOnlyMaterial)
       CreateStubModelAndMaterial() {
     var model = new ModelImpl();
     var materialManager = model.MaterialManager;

@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="uni.ui.avalonia.textures.TextureList"
+             x:DataType="textures:TextureListViewModel">
+  <Design.DataContext>
+    <textures:TextureListViewModelForDesigner />
+  </Design.DataContext>
+
+  <ListBox ItemsSource="{Binding TextureViewModels}"
+           Background="Transparent"
+           SelectionMode="AlwaysSelected"
+           SelectedItem="{Binding SelectedTextureViewModel, Mode=TwoWay}"
+           SelectionChanged="SelectingItemsControl_OnSelectionChanged"
+           BorderBrush="LightGray"
+           BorderThickness="1">
+    <ListBox.Styles>
+      <Style Selector="ListBoxItem">
+        <Setter Property="Height" Value="36" />
+      </Style>
+    </ListBox.Styles>
+
+    <ListBox.ItemTemplate>
+      <DataTemplate>
+        <DockPanel>
+          <Border DockPanel.Dock="Left"
+                  BorderThickness="1"
+                  BorderBrush="LightGray"
+                  Width="32"
+                  Height="32">
+            <textures:TexturePreview
+              DataContext="{Binding TexturePreview}" />
+          </Border>
+          <TextBlock DockPanel.Dock="Top"
+                     Text="{Binding Texture.Name}"
+                     Height="24"
+                     Margin="8 -2 0 0" />
+          <TextBlock DockPanel.Dock="Bottom"
+                     Classes="caption"
+                     Text="{Binding Caption}"
+                     Height="16"
+                     Margin="8 4 0 0" />
+        </DockPanel>
+      </DataTemplate>
+    </ListBox.ItemTemplate>
+  </ListBox>
+</UserControl>

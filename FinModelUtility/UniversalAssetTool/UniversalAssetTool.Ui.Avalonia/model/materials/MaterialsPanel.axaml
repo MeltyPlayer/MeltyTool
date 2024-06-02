@@ -14,11 +14,10 @@
   <StackPanel>
     <ComboBox HorizontalAlignment="Stretch"
               ItemsSource="{Binding Materials}"
-              SelectedItem="{Binding SelectedMaterial}" >
+              SelectedItem="{Binding SelectedMaterial}">
       <ComboBox.ItemTemplate>
         <DataTemplate>
-          <TextBlock Classes="h2"
-                     Text="{Binding Converter={x:Static materials:MaterialsPanel.GetMaterialLabel}}" />
+          <TextBlock Text="{Binding Converter={x:Static materials:MaterialsPanel.GetMaterialLabel}}" />
         </DataTemplate>
       </ComboBox.ItemTemplate>
     </ComboBox>

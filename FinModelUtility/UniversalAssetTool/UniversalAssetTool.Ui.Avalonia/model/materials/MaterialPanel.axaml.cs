@@ -1,3 +1,5 @@
+using System.Linq;
+
 using Avalonia.Controls;
 
 using fin.model;
@@ -25,17 +27,12 @@ namespace uni.ui.avalonia.model.materials {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
 
         var (_, material) = value;
-        if (this.materialShadersPanelViewModel_ == null) {
-          this.MaterialTexturesPanel = new() {
-              Material = material,
-          };
-          this.MaterialShadersPanel = new() {
-              ModelAndMaterial = value,
-          };
-        } else {
-          this.MaterialTexturesPanel.Material = material;
-          this.MaterialShadersPanel.ModelAndMaterial = value;
-        }
+        this.MaterialTexturesPanel = new() {
+            Textures = material?.Textures.ToArray(),
+        };
+        this.MaterialShadersPanel = new() {
+            ModelAndMaterial = value,
+        };
       }
     }
 
