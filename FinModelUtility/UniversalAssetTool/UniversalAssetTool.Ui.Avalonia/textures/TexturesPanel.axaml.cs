@@ -10,6 +10,7 @@ using fin.util.asserts;
 
 using ReactiveUI;
 
+using uni.ui.avalonia.common;
 using uni.ui.avalonia.model.materials;
 using uni.ui.avalonia.ViewModels;
 
@@ -38,8 +39,7 @@ namespace uni.ui.avalonia.textures {
     private TextureViewModel? selectedTextureViewModel_;
     private TexturePreviewViewModel? selectedTexturePreviewViewModel_;
 
-    private ObservableCollection<KeyValuePairViewModel>
-        selectedTextureKeyValuePairs_ = [];
+    private KeyValueGridViewModel selectedTextureKeyValueGrid_;
 
     public IReadOnlyList<IReadOnlyTexture>? Textures {
       get => this.textures_;
@@ -68,17 +68,19 @@ namespace uni.ui.avalonia.textures {
             : null;
 
         var texture = value?.Texture;
-        this.SelectedTextureKeyValuePairs = [
-            ("Name", texture?.Name),
-            ("Pixel Format", texture?.Image.PixelFormat),
-            ("Transparency Type", texture?.TransparencyType),
-            ("Width", texture?.Image.Width),
-            ("Height", texture?.Image.Height),
-            ("Horizontal Wrap Mode", texture?.WrapModeU),
-            ("Vertical Wrap Mode", texture?.WrapModeV),
-            ("UV Index", texture?.UvIndex),
-            ("UV Type", texture?.UvType),
-        ];
+        this.SelectedTextureKeyValueGrid = new KeyValueGridViewModel {
+            KeyValuePairs = [
+                ("Name", texture?.Name),
+                ("Pixel Format", texture?.Image.PixelFormat),
+                ("Transparency Type", texture?.TransparencyType),
+                ("Width", texture?.Image.Width),
+                ("Height", texture?.Image.Height),
+                ("Horizontal Wrap Mode", texture?.WrapModeU),
+                ("Vertical Wrap Mode", texture?.WrapModeV),
+                ("UV Index", texture?.UvIndex),
+                ("UV Type", texture?.UvType),
+            ]
+        };
       }
     }
 
@@ -89,11 +91,10 @@ namespace uni.ui.avalonia.textures {
           value);
     }
 
-    public ObservableCollection<KeyValuePairViewModel>
-        SelectedTextureKeyValuePairs {
-      get => this.selectedTextureKeyValuePairs_;
+    public KeyValueGridViewModel SelectedTextureKeyValueGrid {
+      get => this.selectedTextureKeyValueGrid_;
       private set
-        => this.RaiseAndSetIfChanged(ref this.selectedTextureKeyValuePairs_,
+        => this.RaiseAndSetIfChanged(ref this.selectedTextureKeyValueGrid_,
                                      value);
     }
   }

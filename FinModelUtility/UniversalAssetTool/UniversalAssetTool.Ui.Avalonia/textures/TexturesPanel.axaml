@@ -4,6 +4,7 @@
              xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
+             xmlns:common="clr-namespace:uni.ui.avalonia.common"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
              x:Class="uni.ui.avalonia.textures.TexturesPanel"
              x:DataType="textures:TexturesPanelViewModel">
@@ -20,18 +21,8 @@
       <Grid RowDefinitions="100 *">
         <textures:TexturePreview
               DataContext="{Binding SelectedTexturePreview}" />
-        <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding SelectedTextureKeyValuePairs}"
-                  IsReadOnly="True"
-                  GridLinesVisibility="Horizontal"
-                  HeadersVisibility="None"
-                  BorderBrush="LightGray"
-                  BorderThickness="1">
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="Key" Binding="{Binding Key}"/>
-            <DataGridTextColumn Header="Value" Binding="{Binding Value}" />
-          </DataGrid.Columns>
-        </DataGrid>
+        <common:KeyValueGrid Grid.Row="1"
+                             DataContext="{Binding SelectedTextureKeyValueGrid}" />
       </Grid>
     </gb:GroupBox>
   </Grid>
