@@ -5,6 +5,7 @@ using fin.model;
 using ReactiveUI;
 
 using uni.ui.avalonia.model.materials;
+using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.model {
@@ -18,6 +19,7 @@ namespace uni.ui.avalonia.model {
   public class ModelPanelViewModel : ViewModelBase {
     private IReadOnlyModel model_;
     private MaterialsPanelViewModel materialsPanel_;
+    private TexturesPanelViewModel texturesPanel_;
 
     public IReadOnlyModel Model {
       get => this.model_;
@@ -26,12 +28,20 @@ namespace uni.ui.avalonia.model {
         this.MaterialsPanel = new MaterialsPanelViewModel {
             ModelAndMaterials = (value, value.MaterialManager.All)
         };
+        this.TexturesPanel = new TexturesPanelViewModel {
+            Textures = value.MaterialManager.Textures,
+        };
       }
     }
 
     public MaterialsPanelViewModel? MaterialsPanel {
       get => this.materialsPanel_;
       private set => this.RaiseAndSetIfChanged(ref this.materialsPanel_, value);
+    }
+
+    public TexturesPanelViewModel? TexturesPanel {
+      get => this.texturesPanel_;
+      private set => this.RaiseAndSetIfChanged(ref this.texturesPanel_, value);
     }
   }
 

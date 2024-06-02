@@ -9,6 +9,7 @@
     <FluentTheme />
     <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
+    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
     <Style Selector="TextBlock">
       <Setter Property="FontFamily" Value="Tahoma" />

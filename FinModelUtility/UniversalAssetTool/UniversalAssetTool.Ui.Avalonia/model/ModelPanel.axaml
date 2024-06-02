@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:model="clr-namespace:uni.ui.avalonia.model"
              xmlns:materials="clr-namespace:uni.ui.avalonia.model.materials"
+             xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
              x:Class="uni.ui.avalonia.model.ModelPanel"
              x:DataType="model:ModelPanelViewModel">
@@ -19,7 +20,9 @@
     <TabItem Header="Materials" >
       <materials:MaterialsPanel DataContext="{Binding MaterialsPanel}" />
     </TabItem>
-    <TabItem Header="Textures" />
+    <TabItem Header="Textures">
+      <textures:TexturesPanel DataContext="{Binding TexturesPanel}" />
+    </TabItem>
     <TabItem Header="Registers" />
   </TabControl>
 </UserControl>

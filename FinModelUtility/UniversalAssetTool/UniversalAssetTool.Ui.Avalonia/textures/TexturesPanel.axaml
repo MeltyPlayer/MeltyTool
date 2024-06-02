@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
+             x:Class="uni.ui.avalonia.textures.TexturesPanel"
+             x:DataType="textures:TexturesPanelViewModel">
+  <Design.DataContext>
+    <textures:TexturesPanelViewModelForDesigner />
+  </Design.DataContext>
+
+  <Grid RowDefinitions="* 450">
+    <textures:TextureList DataContext="{Binding TextureList}"
+                          TextureSelected="TextureList_OnTextureSelected" />
+    <gb:GroupBox Grid.Row="1"
+                 Classes="h2"
+                 Header="Texture">
+      <Grid RowDefinitions="100 *">
+        <textures:TexturePreview
+              DataContext="{Binding SelectedTexturePreview}" />
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding SelectedTextureKeyValuePairs}"
+                  IsReadOnly="True"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="None"
+                  BorderBrush="LightGray"
+                  BorderThickness="1">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Key" Binding="{Binding Key}"/>
+            <DataGridTextColumn Header="Value" Binding="{Binding Value}" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </Grid>
+    </gb:GroupBox>
+  </Grid>
+</UserControl>

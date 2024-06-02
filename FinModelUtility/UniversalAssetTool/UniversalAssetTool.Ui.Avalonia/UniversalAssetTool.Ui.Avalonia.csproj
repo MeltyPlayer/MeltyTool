@@ -20,6 +20,7 @@
     <PackageReference Include="Aura.UI" Version="0.1.4.2" />
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.0.6" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
@@ -62,6 +63,9 @@
     </Compile>
     <Compile Update="model\materials\MaterialShadersPanel.axaml.cs">
       <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="textures\TexturesPanel.axaml.cs">
+      <DependentUpon>TexturesPanel.axaml</DependentUpon>
     </Compile>
     <Compile Update="textures\TexturePreview.axaml.cs">
       <DependentUpon>TexturePreview.axaml</DependentUpon>

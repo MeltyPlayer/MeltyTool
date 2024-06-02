@@ -31,7 +31,9 @@
           Document="{Binding FragmentShaderSource}"
           ShowLineNumbers="True"
           FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-          IsReadOnly="True" />
+          IsReadOnly="True"
+          BorderBrush="LightGray"
+          BorderThickness="1" />
       </TabItem>
     </TabControl>
   </gb:GroupBox>
