@@ -12,9 +12,7 @@
     <materials:MaterialShadersPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <gb:GroupBox Classes="h3" 
-               Header="Shaders"
-               Theme="{StaticResource GroupBoxClassic}">
+  <gb:GroupBox Classes="h3" Header="Shaders">
     <TabControl Classes="h4">
       <TabItem Header="Vertex">
         <avaloniaEdit:TextEditor

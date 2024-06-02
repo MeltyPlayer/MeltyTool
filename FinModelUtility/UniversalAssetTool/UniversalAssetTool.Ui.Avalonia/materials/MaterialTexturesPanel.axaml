@@ -13,10 +13,8 @@
     <materials:MaterialTexturesPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <gb:GroupBox Classes="h3"
-               Header="Textures"
-               Theme="{StaticResource GroupBoxClassic}">
-    <Grid ColumnDefinitions="200 * ">
+  <gb:GroupBox Classes="h3" Header="Textures">
+    <Grid ColumnDefinitions="150 * ">
       <!-- Texture viewer -->
       <controls:If Condition="{Binding SelectedTexturePreview, Converter={x:Static ObjectConverters.IsNotNull}}">
         <StackPanel Margin="8 0">
@@ -24,7 +22,7 @@
             <textures:TexturePreview
               DataContext="{Binding SelectedTexturePreview}"
               HorizontalAlignment="Stretch"
-              Height="130" />
+              Height="120" />
           </Border>
           <TextBlock Classes="h4"
                      Text="{Binding SelectedTexturePreview.Texture.Name}"
@@ -41,7 +39,10 @@
                ItemsSource="{Binding Textures}"
                Background="Transparent"
                SelectionMode="AlwaysSelected"
-               SelectedItem="{Binding SelectedTexture}">
+               SelectedItem="{Binding SelectedTexture}"
+               BorderBrush="LightGray"
+               BorderThickness="1
+               ">
         <ListBox.Styles>
           <Style Selector="ListBoxItem">
             <Setter Property="Height" Value="36" />

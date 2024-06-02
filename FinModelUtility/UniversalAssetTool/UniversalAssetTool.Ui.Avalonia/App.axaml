@@ -24,48 +24,52 @@
     <Style Selector="
               TextBlock.h1, 
               TabControl.h1 TabItem ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h1 TextBlock#GBHeaderText">
+              gb|GroupBox.h1 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="22" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
+      <Setter Property="TextBlock.Padding" Value="0 5 0 0" />
     </Style>
     <Style Selector="TabControl.h1 TabItem">
-      <Setter Property="MinHeight" Value="30" />
+      <Setter Property="MinHeight" Value="26" />
     </Style>
 
     <!-- h2 -->
     <Style Selector="
               TextBlock.h2, 
               TabControl.h2 TabItem ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h2 TextBlock#GBHeaderText">
+              gb|GroupBox.h2 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="20" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
+      <Setter Property="TextBlock.Padding" Value="0 5 0 0" />
     </Style>
     <Style Selector="TabControl.h2 TabItem">
-      <Setter Property="MinHeight" Value="28" />
+      <Setter Property="MinHeight" Value="24" />
     </Style>
 
     <!-- h3 -->
     <Style Selector="
               TextBlock.h3,
               TabControl.h3 TabItem ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h3 TextBlock#GBHeaderText">
+              gb|GroupBox.h3 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="18" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
+      <Setter Property="TextBlock.Padding" Value="0 4 0 0" />
     </Style>
     <Style Selector="TabControl.h3 TabItem">
-      <Setter Property="MinHeight" Value="26" />
+      <Setter Property="MinHeight" Value="22" />
     </Style>
 
     <!-- h4 -->
     <Style Selector="
               TextBlock.h4,
               TabControl.h4 TabItem ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h4 TextBlock#GBHeaderText">
+              gb|GroupBox.h4 ContentPresenter#PART_HeaderPresenter">
       <Setter Property="TextBlock.FontSize" Value="16" />
       <Setter Property="TextBlock.FontWeight" Value="Medium" />
+      <Setter Property="TextBlock.Padding" Value="0 4 0 0" />
     </Style>
     <Style Selector="TabControl.h4 TabItem">
-      <Setter Property="MinHeight" Value="24" />
+      <Setter Property="MinHeight" Value="20" />
     </Style>
   </Application.Styles>
 </Application>
