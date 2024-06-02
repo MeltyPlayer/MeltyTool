@@ -203,6 +203,10 @@ namespace grezzo.material {
       };
 
       this.previousColor_ = newPreviousColor;
+      if (newPreviousColor != null) {
+        newPreviousColor.Clamp = true;
+      }
+
       this.previousColorBuffer_ = newPreviousColorBuffer;
       this.previousAlpha_ = newPreviousAlpha;
       this.previousAlphaBuffer_ = newPreviousAlphaBuffer;
@@ -357,9 +361,7 @@ namespace grezzo.material {
           TexCombineMode.MultAdd => fixedFunctionOps.Add(
               fixedFunctionOps.Multiply(sources[0], sources[1]),
               sources[2]),
-          TexCombineMode.AddMult => fixedFunctionOps.Multiply(
-              fixedFunctionOps.Add(sources[0], sources[1]),
-              sources[2]),
+          TexCombineMode.AddMult => this.AddMult_(fixedFunctionOps, sources),
           TexCombineMode.Interpolate => fixedFunctionOps.Add(
               fixedFunctionOps.Multiply(sources[0],
                                         fixedFunctionOps.Subtract(
@@ -378,6 +380,26 @@ namespace grezzo.material {
               combinedValue,
               4),
       };
+    }
+
+    private TValue? AddMult_<TValue, TConstant, TTerm, TExpression>(
+        IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
+            fixedFunctionOps,
+        IReadOnlyList<TValue?> sources
+    ) where TValue : IValue<TValue, TConstant, TTerm, TExpression>
+      where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>,
+      TValue
+      where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
+      where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
+      TValue {
+      var addedValue = fixedFunctionOps.Add(sources[0], sources[1]);
+      if (addedValue is IColorValue colorValue) {
+        colorValue.Clamp = true;
+      }
+
+      var value = fixedFunctionOps.Multiply(addedValue, sources[2]);
+
+      return value;
     }
   }
 }
