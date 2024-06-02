@@ -144,11 +144,11 @@ namespace grezzo.schema.cmb.mats {
       this.isGeometricFactor1Enabled = br.ReadByte() != 0;
       this.isReflectionEnabled = br.ReadByte() != 0;
 
+      this.distibution0Sampler.Read(br);
+      this.distibution1Sampler.Read(br);
       this.reflectanceRSampler.Read(br);
       this.reflectanceGSampler.Read(br);
       this.reflectanceBSampler.Read(br);
-      this.distibution0Sampler.Read(br);
-      this.distibution1Sampler.Read(br);
       this.fresnelSampler.Read(br);
 
       this.texEnvStageCount = br.ReadUInt32();

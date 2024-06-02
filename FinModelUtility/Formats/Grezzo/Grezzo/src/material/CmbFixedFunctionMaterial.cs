@@ -144,6 +144,8 @@ namespace grezzo.material {
                   finTexture.SetRotationRadians2d(cmbTexCoord.rotation);
                   finTexture.SetScale2d(cmbTexCoord.scale.X,
                                         cmbTexCoord.scale.Y);
+
+                  // TODO: Use LUTs/Distribution in specular calculation
                 }
 
                 return finTexture;
