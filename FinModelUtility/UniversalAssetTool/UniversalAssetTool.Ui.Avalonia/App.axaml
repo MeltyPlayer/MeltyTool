@@ -11,7 +11,7 @@
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
-    <Style Selector="TextBlock">
+    <Style Selector="TextBlock, SelectableTextBlock">
       <Setter Property="FontFamily" Value="Tahoma" />
     </Style>
 
@@ -19,6 +19,10 @@
       <Setter Property="FontSize" Value="11" />
       <Setter Property="FontWeight" Value="Light" />
       <Setter Property="Foreground" Value="#555555" />
+    </Style>
+
+    <Style Selector="gb|GroupBox">
+      <Setter Property="Padding" Value="0" />
     </Style>
 
     <!-- h1 -->

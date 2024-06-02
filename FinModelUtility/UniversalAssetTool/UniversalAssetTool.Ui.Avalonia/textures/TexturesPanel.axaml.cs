@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
 
+using fin.math;
 using fin.model;
 using fin.util.asserts;
 
@@ -71,14 +71,30 @@ namespace uni.ui.avalonia.textures {
         this.SelectedTextureKeyValueGrid = new KeyValueGridViewModel {
             KeyValuePairs = [
                 ("Name", texture?.Name),
-                ("Pixel Format", texture?.Image.PixelFormat),
-                ("Transparency Type", texture?.TransparencyType),
+                ("Pixel format", texture?.Image.PixelFormat),
+                ("Transparency type", texture?.TransparencyType),
                 ("Width", texture?.Image.Width),
                 ("Height", texture?.Image.Height),
-                ("Horizontal Wrap Mode", texture?.WrapModeU),
-                ("Vertical Wrap Mode", texture?.WrapModeV),
-                ("UV Index", texture?.UvIndex),
-                ("UV Type", texture?.UvType),
+                ("Horizontal wrapping", texture?.WrapModeU),
+                ("Vertical wrapping", texture?.WrapModeV),
+                ("Horizontal clamp range", texture?.ClampS),
+                ("Vertical clamp range", texture?.ClampT),
+                ("Min filter", texture?.MinFilter),
+                ("Mag filter", texture?.MagFilter),
+                ("UV index", texture?.UvIndex),
+                ("UV type", texture?.UvType),
+                ("UV translation",
+                 texture?.IsTransform3d ?? false
+                     ? texture.Offset
+                     : texture?.Offset?.Xy()),
+                ("UV rotation (radians)",
+                 texture?.IsTransform3d ?? false
+                     ? texture.RotationRadians
+                     : texture?.RotationRadians?.X),
+                ("UV scale",
+                 texture?.IsTransform3d ?? false
+                     ? texture.Scale
+                     : texture?.Scale?.Xy()),
             ]
         };
       }

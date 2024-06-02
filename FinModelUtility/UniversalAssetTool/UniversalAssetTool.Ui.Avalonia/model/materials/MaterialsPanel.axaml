@@ -11,7 +11,7 @@
     <materials:MaterialsPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <StackPanel>
+  <Grid RowDefinitions="Auto *">
     <ComboBox HorizontalAlignment="Stretch"
               ItemsSource="{Binding Materials}"
               SelectedItem="{Binding SelectedMaterial}">
@@ -22,8 +22,9 @@
       </ComboBox.ItemTemplate>
     </ComboBox>
 
-    <controls:If Condition="{Binding SelectedMaterial, Converter={x:Static ObjectConverters.IsNotNull}}">
+    <controls:If Grid.Row="1"
+                 Condition="{Binding SelectedMaterial, Converter={x:Static ObjectConverters.IsNotNull}}">
       <materials:MaterialPanel DataContext="{Binding SelectedMaterialPanel}" />
     </controls:If>
-  </StackPanel>
+  </Grid>
 </UserControl>

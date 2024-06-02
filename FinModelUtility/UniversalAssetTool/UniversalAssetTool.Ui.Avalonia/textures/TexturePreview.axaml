@@ -12,7 +12,9 @@
 
   <Grid>
     <Border HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
+            VerticalAlignment="Stretch"
+            BorderThickness="1"
+            BorderBrush="LightGray">
       <Border.Background>
         <ImageBrush
           AlignmentX="Left"

@@ -3,22 +3,58 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:common="clr-namespace:uni.ui.avalonia.common"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.common.KeyValueGrid"
              x:DataType="common:KeyValueGridViewModel">
   <Design.DataContext>
     <common:KeyValueGridViewModelForDesigner />
   </Design.DataContext>
 
-  <DataGrid ItemsSource="{Binding KeyValuePairs}"
-            IsReadOnly="True"
-            GridLinesVisibility="Horizontal"
-            HeadersVisibility="None"
-            BorderBrush="LightGray"
-            BorderThickness="1">
-    <DataGrid.Columns>
-      <DataGridTextColumn Header="Key" Binding="{Binding Key}"/>
-      <DataGridTextColumn Header="Value" Binding="{Binding Value}" />
-    </DataGrid.Columns>
-  </DataGrid>
+  <Border BorderThickness="1"
+          BorderBrush="Yellow">
+    <Panel Margin="0 2 0 0" 
+           ClipToBounds="True">
+      <DataGrid ItemsSource="{Binding KeyValuePairs}"
+                IsReadOnly="True"
+                GridLinesVisibility="Horizontal"
+                Margin="0 -2, 0 0"
+                HeadersVisibility="None">
+        <DataGrid.Styles>
+          <Style Selector="DataGridRow /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="IsVisible" Value="false"/>
+          </Style>
+          <Style Selector="DataGridCell:current /template/ Grid#FocusVisual">
+            <Setter Property="IsVisible" Value="false" />
+          </Style>
+        </DataGrid.Styles>
+
+        <DataGrid.Columns>
+          <DataGridTemplateColumn Width="Auto">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock
+                    Margin="2 4"
+                    Text="{Binding Key}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+
+          <DataGridTemplateColumn Width="*">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <SelectableTextBlock
+                    Margin="0 -4"
+                    Padding="2 9"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="Wrap"
+                    FontSize="13"
+                    Cursor="{Binding Cursor}"
+                    Text="{Binding Value}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+    </Panel>
+  </Border>
 </UserControl>

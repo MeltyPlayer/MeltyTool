@@ -27,8 +27,6 @@
       <DataTemplate>
         <DockPanel>
           <Border DockPanel.Dock="Left"
-                  BorderThickness="1"
-                  BorderBrush="LightGray"
                   Width="32"
                   Height="32">
             <textures:TexturePreview

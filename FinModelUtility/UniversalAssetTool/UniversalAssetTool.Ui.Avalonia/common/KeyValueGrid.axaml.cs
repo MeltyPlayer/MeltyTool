@@ -2,6 +2,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Styling;
 
 using ReactiveUI;
 
@@ -16,6 +18,12 @@ namespace uni.ui.avalonia.common {
           ("Foo", "Bar"),
           ("Number", 123),
           ("Null", null),
+          ("Long wrappable text",
+           "This is very long text that could theoretically wrap at any of the spaces."),
+          ("Long unwrappable text",
+           "Thisisverylongtextthatcannotwrapbecausetherearenospaces."),
+          ("Newline text",
+           "This text\nhas some newlines\nthat should be shown."),
       ];
     }
   }
@@ -31,12 +39,16 @@ namespace uni.ui.avalonia.common {
 
   public class KeyValuePairViewModel(string key, string? value)
       : ViewModelBase {
+    private static Cursor copyCursor_ = new(StandardCursorType.DragCopy);
+
     public string Key => key;
     public string? Value => value;
 
     public static implicit operator KeyValuePairViewModel(
         (string key, object? value) tuple)
       => new(tuple.key, tuple.value?.ToString());
+
+    public Cursor Cursor => copyCursor_;
   }
 
   public partial class KeyValueGrid : UserControl {

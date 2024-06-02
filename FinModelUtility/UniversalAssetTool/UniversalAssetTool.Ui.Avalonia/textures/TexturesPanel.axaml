@@ -5,24 +5,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
              xmlns:common="clr-namespace:uni.ui.avalonia.common"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.textures.TexturesPanel"
              x:DataType="textures:TexturesPanelViewModel">
   <Design.DataContext>
     <textures:TexturesPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <Grid RowDefinitions="* 450">
+  <Grid RowDefinitions="200 *">
     <textures:TextureList DataContext="{Binding TextureList}"
                           TextureSelected="TextureList_OnTextureSelected" />
     <gb:GroupBox Grid.Row="1"
                  Classes="h2"
                  Header="Texture">
-      <Grid RowDefinitions="100 *">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="100" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
         <textures:TexturePreview
-              DataContext="{Binding SelectedTexturePreview}" />
-        <common:KeyValueGrid Grid.Row="1"
-                             DataContext="{Binding SelectedTextureKeyValueGrid}" />
+            Height="100"
+            DockPanel.Dock="Top"
+            DataContext="{Binding SelectedTexturePreview}" />
+        <common:KeyValueGrid 
+            Grid.Row="1"
+            Padding="0 4 0 0"
+            DataContext="{Binding SelectedTextureKeyValueGrid}" />
       </Grid>
     </gb:GroupBox>
   </Grid>

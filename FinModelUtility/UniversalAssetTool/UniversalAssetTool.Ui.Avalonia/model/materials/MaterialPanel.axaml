@@ -10,10 +10,9 @@
     <materials:MaterialPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto Auto">
+  <Grid RowDefinitions="200 *">
     <materials:MaterialTexturesPanel
-      DataContext="{Binding MaterialTexturesPanel}"
-      MaxHeight="200"/>
+      DataContext="{Binding MaterialTexturesPanel}" />
     <materials:MaterialShadersPanel
       Grid.Row="1"
       DataContext="{Binding MaterialShadersPanel}" />
