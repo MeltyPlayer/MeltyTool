@@ -181,7 +181,6 @@ namespace uni.games.ocarina_of_time_3d {
     private IEnumerable<IAnnotatedCmbBundle> GetAutomaticModels_(
         IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actor");
-
       foreach (var actorDir in actorsDir.GetExistingSubdirs()) {
         var animations =
             actorDir.FilesWithExtensionRecursive(".csab").ToArray();
@@ -195,6 +194,12 @@ namespace uni.games.ocarina_of_time_3d {
                 animations).Annotate(model);
           }
         }
+      }
+
+      var sceneDir = fileHierarchy.Root.AssertGetExistingSubdir("scene");
+      foreach (var zsiFile in sceneDir.GetFilesWithFileType(".zsi")) {
+        yield return new CmbModelFileBundle("ocarina_of_time_3d", zsiFile)
+            .Annotate(zsiFile);
       }
     }
 

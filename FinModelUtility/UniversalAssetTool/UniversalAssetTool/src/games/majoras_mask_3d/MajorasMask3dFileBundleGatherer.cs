@@ -41,7 +41,6 @@ namespace uni.games.majoras_mask_3d {
     private IEnumerable<IAnnotatedCmbBundle> GetAutomaticModels_(
         IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
-
       foreach (var actorDir in actorsDir.GetExistingSubdirs()) {
         if (actorDir.Name.StartsWith("zelda2_link_")) {
           continue;
@@ -61,6 +60,12 @@ namespace uni.games.majoras_mask_3d {
                 null).Annotate(model);
           }
         }
+      }
+
+      var sceneDir = fileHierarchy.Root.AssertGetExistingSubdir("scenes");
+      foreach (var zsiFile in sceneDir.GetFilesWithFileType(".zsi")) {
+        yield return new CmbModelFileBundle("majoras_mask_3d", zsiFile)
+            .Annotate(zsiFile);
       }
     }
 
@@ -114,22 +119,25 @@ namespace uni.games.majoras_mask_3d {
       };
 
       return modelsAndAnimations.Select(modelPathAndAnimationDir => {
-        var (modelPath, animationDir) = modelPathAndAnimationDir;
+                                          var (modelPath, animationDir)
+                                              = modelPathAndAnimationDir;
 
-        var cmbFile = actorsDir.AssertGetExistingFile(modelPath);
-        var csabFiles = fileHierarchy
-                        .Root.AssertGetExistingSubdir(
-                            $"actors/zelda2_link_new/{animationDir}/anim")
-                        .FilesWithExtension(".csab")
-                        .ToArray();
+                                          var cmbFile
+                                              = actorsDir.AssertGetExistingFile(
+                                                  modelPath);
+                                          var csabFiles = fileHierarchy
+                                              .Root.AssertGetExistingSubdir(
+                                                  $"actors/zelda2_link_new/{animationDir}/anim")
+                                              .FilesWithExtension(".csab")
+                                              .ToArray();
 
-        return new CmbModelFileBundle(
-            "majoras_mask_3d",
-            cmbFile,
-            csabFiles,
-            null,
-            null).Annotate(cmbFile);
-      });
+                                          return new CmbModelFileBundle(
+                                              "majoras_mask_3d",
+                                              cmbFile,
+                                              csabFiles,
+                                              null,
+                                              null).Annotate(cmbFile);
+                                        });
     }
   }
 }

@@ -53,7 +53,10 @@ namespace grezzo.schema.cmb {
     public void Read(IBinaryReader br) {
       long startOff = 0;
 
-      if (br.ReadString(4) == "ZSI" + AsciiUtil.GetChar(1)) {
+      var magic = br.ReadString(4);
+      // TODO: Not super reliable, make this more robust
+      if (magic == "ZSI" + AsciiUtil.GetChar(1) ||
+          magic == "ZSI" + AsciiUtil.GetChar(9)) {
         br.Position = 16;
 
         while (true) {
