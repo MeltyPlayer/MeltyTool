@@ -6,22 +6,25 @@
              xmlns:materials="clr-namespace:uni.ui.avalonia.model.materials"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
-             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
+             mc:Ignorable="d" d:DesignWidth="500"
+             MaxHeight="150"
+             Height="150"
              x:Class="uni.ui.avalonia.model.materials.MaterialTexturesPanel"
              x:DataType="materials:MaterialTexturesPanelViewModel">
   <Design.DataContext>
     <materials:MaterialTexturesPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <gb:GroupBox Classes="h3" Header="Textures">
-    <Grid ColumnDefinitions="150 *">
+  <gb:GroupBox Classes="h3" 
+               Header="Textures">
+    <Grid ColumnDefinitions="140 *">
       <!-- Texture viewer -->
       <controls:If Condition="{Binding SelectedTexturePreview, Converter={x:Static ObjectConverters.IsNotNull}}">
-        <StackPanel Margin="8 0">
+        <StackPanel Margin="0 0 8 0">
           <textures:TexturePreview
               DataContext="{Binding SelectedTexturePreview}"
               HorizontalAlignment="Stretch"
-              Height="120" />
+              Height="88" />
           <TextBlock Classes="h4"
                      Text="{Binding SelectedTexturePreview.Texture.Name}"
                      HorizontalAlignment="Center"

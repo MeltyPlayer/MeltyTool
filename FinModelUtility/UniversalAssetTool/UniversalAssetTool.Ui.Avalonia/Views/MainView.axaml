@@ -5,7 +5,7 @@
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
              xmlns:model="clr-namespace:uni.ui.avalonia.model"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
   <Design.DataContext>
@@ -21,10 +21,13 @@
   </UserControl.Styles>
 
   <DockPanel>
-    <treeViews:FilterTreeView DockPanel.Dock="Left" />
+    <treeViews:FilterTreeView
+        DockPanel.Dock="Left"
+        Width="300" />
     <model:ModelPanel
-      Width="400"
-      DockPanel.Dock="Right" DataContext="{Binding ModelPanel}" />
+        DockPanel.Dock="Right" 
+        Width="350"
+        DataContext="{Binding ModelPanel}" />
 
     <Panel Background="Magenta">
     </Panel>

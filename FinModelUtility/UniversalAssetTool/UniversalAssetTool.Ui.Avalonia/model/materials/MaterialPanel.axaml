@@ -10,7 +10,7 @@
     <materials:MaterialPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <Grid RowDefinitions="200 *">
+  <Grid RowDefinitions="Auto *">
     <materials:MaterialTexturesPanel
       DataContext="{Binding MaterialTexturesPanel}" />
     <materials:MaterialShadersPanel

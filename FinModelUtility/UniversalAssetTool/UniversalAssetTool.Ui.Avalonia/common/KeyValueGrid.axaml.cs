@@ -1,13 +1,9 @@
 using System.Collections.ObjectModel;
-using System.Linq;
 
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Styling;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.model.materials;
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.common {
@@ -39,16 +35,12 @@ namespace uni.ui.avalonia.common {
 
   public class KeyValuePairViewModel(string key, string? value)
       : ViewModelBase {
-    private static Cursor copyCursor_ = new(StandardCursorType.DragCopy);
-
     public string Key => key;
     public string? Value => value;
 
     public static implicit operator KeyValuePairViewModel(
         (string key, object? value) tuple)
       => new(tuple.key, tuple.value?.ToString());
-
-    public Cursor Cursor => copyCursor_;
   }
 
   public partial class KeyValueGrid : UserControl {

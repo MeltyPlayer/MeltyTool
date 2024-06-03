@@ -11,7 +11,7 @@
   </Design.DataContext>
 
   <Border BorderThickness="1"
-          BorderBrush="Yellow">
+          BorderBrush="LightGray">
     <Panel Margin="0 2 0 0" 
            ClipToBounds="True">
       <DataGrid ItemsSource="{Binding KeyValuePairs}"
@@ -45,10 +45,8 @@
                 <SelectableTextBlock
                     Margin="0 -4"
                     Padding="2 9"
-                    TextTrimming="CharacterEllipsis"
                     TextWrapping="Wrap"
                     FontSize="13"
-                    Cursor="{Binding Cursor}"
                     Text="{Binding Value}" />
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>

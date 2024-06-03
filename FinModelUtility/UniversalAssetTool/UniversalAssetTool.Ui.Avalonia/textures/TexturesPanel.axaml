@@ -12,26 +12,27 @@
     <textures:TexturesPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <Grid RowDefinitions="200 *">
+  <Grid RowDefinitions="150 *">
     <textures:TextureList DataContext="{Binding TextureList}"
                           TextureSelected="TextureList_OnTextureSelected" />
     <gb:GroupBox Grid.Row="1"
                  Classes="h2"
-                 Header="Texture">
+                 Header="{Binding SelectedTexturePreview.Texture.Name}">
       <Grid>
         <Grid.RowDefinitions>
-          <RowDefinition Height="100" />
+          <RowDefinition Height="150" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <textures:TexturePreview
-            Height="100"
             DockPanel.Dock="Top"
             DataContext="{Binding SelectedTexturePreview}" />
-        <common:KeyValueGrid 
-            Grid.Row="1"
-            Padding="0 4 0 0"
-            DataContext="{Binding SelectedTextureKeyValueGrid}" />
+        <gb:GroupBox Grid.Row="1"
+                     Classes="h3"
+                     Header="Metadata">
+          <common:KeyValueGrid
+              DataContext="{Binding SelectedTextureKeyValueGrid}" />
+        </gb:GroupBox>
       </Grid>
     </gb:GroupBox>
   </Grid>

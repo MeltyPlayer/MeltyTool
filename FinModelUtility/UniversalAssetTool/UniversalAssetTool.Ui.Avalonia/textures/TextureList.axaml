@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="300"
              x:Class="uni.ui.avalonia.textures.TextureList"
              x:DataType="textures:TextureListViewModel">
   <Design.DataContext>
@@ -34,6 +34,7 @@
           </Border>
           <TextBlock DockPanel.Dock="Top"
                      Text="{Binding Texture.Name}"
+                     TextTrimming="CharacterEllipsis"
                      Height="24"
                      Margin="8 -2 0 0" />
           <TextBlock DockPanel.Dock="Bottom"

@@ -61,7 +61,8 @@ namespace uni.ui.avalonia.model.materials {
 
     private void InitViewer_(TextEditor textEditor) {
       var registryOptions = new GlslRegistryOptions();
-      var textMateInstallation = textEditor.InstallTextMate(registryOptions);
+      var textMateInstallation
+          = textEditor.InstallTextMate(registryOptions, false);
       textMateInstallation.SetGrammar("source.glsl");
     }
   }
