@@ -1,0 +1,52 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia">
+  <Design.PreviewWith>
+    <StackPanel Width="300" Height="900">
+      <TextBlock Classes="h2">Header</TextBlock>
+      <TextBlock>Simple text block</TextBlock>
+
+      <TabControl Classes="h2">
+        <TabItem Header="Tab 1">
+          <TextBlock>Simple text block</TextBlock>
+        </TabItem>
+        <TabItem Header="Tab 2" />
+      </TabControl>
+
+      <TabControl Classes="h2 indented">
+        <TabItem Header="Padded Tab 1">
+          <TextBlock>Simple text block</TextBlock>
+        </TabItem>
+        <TabItem Header="Padded Tab 2" />
+      </TabControl>
+
+      <gb:GroupBox Classes="h2" Header="GroupBox">
+        <TextBlock>Simple text block</TextBlock>
+      </gb:GroupBox>
+    </StackPanel>
+  </Design.PreviewWith>
+
+  <Style Selector="TextBlock, SelectableTextBlock">
+    <Setter Property="FontFamily" Value="Tahoma" />
+  </Style>
+
+  <Style Selector="TextBlock.caption">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontWeight" Value="Light" />
+    <Setter Property="Foreground" Value="#555555" />
+  </Style>
+
+  <Style Selector="gb|GroupBox">
+    <Setter Property="Padding" Value="0" />
+  </Style>
+
+  <Style Selector="TabControl:not(.indented)">
+    <Setter Property="Padding" Value="0" />
+  </Style>
+  <Style Selector="TabControl:not(.indented) > TabItem:nth-child(1)">
+    <Setter Property="Padding" Value="0 0 12 0" />
+  </Style>
+  <Style Selector="TabControl.indented">
+    <Setter Property="Padding" Value="12 0"></Setter>
+  </Style>
+</Styles>

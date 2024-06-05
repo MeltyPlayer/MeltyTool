@@ -12,8 +12,7 @@
     <model:ModelPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <TabControl Classes="h2"
-              Padding="16 8">
+  <TabControl Classes="h2 spaceFirst indented">
     <TabItem Header="Info" />
     <TabItem Header="Skeleton" />
     <TabItem Header="Animations" />

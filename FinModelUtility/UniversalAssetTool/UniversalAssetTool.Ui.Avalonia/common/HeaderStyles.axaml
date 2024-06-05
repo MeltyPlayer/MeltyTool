@@ -1,0 +1,59 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia">
+  <Design.PreviewWith>
+    <StackPanel Width="300" Height="900">
+      <TextBlock>Standard text</TextBlock>
+      <TextBlock Classes="h1">h1 text</TextBlock>
+      <TextBlock>Simple text block</TextBlock>
+      <TextBlock Classes="h2">h2 text</TextBlock>
+      <TextBlock>Simple text block</TextBlock>
+      <TextBlock Classes="h3">h3 text</TextBlock>
+      <TextBlock>Simple text block</TextBlock>
+      <TextBlock Classes="h4">h4 text</TextBlock>
+      <TextBlock>Simple text block</TextBlock>
+
+      <TabControl Classes="h1">
+        <TabItem Header="h1">
+          <TextBlock>Simple text block</TextBlock>
+        </TabItem>
+        <TabItem Header="Foo" />
+        <TabItem Header="Bar" />
+      </TabControl>
+      <TabControl Classes="h2">
+        <TabItem Header="h2">
+          <TextBlock>Simple text block</TextBlock>
+        </TabItem>
+        <TabItem Header="Foo" />
+        <TabItem Header="Bar" />
+      </TabControl>
+      <TabControl Classes="h3">
+        <TabItem Header="h3">
+          <TextBlock>Simple text block</TextBlock>
+        </TabItem>
+        <TabItem Header="Foo" />
+        <TabItem Header="Bar" />
+      </TabControl>
+      <TabControl Classes="h4">
+        <TabItem Header="h4">
+          <TextBlock>Simple text block</TextBlock>
+        </TabItem>
+        <TabItem Header="Foo" />
+        <TabItem Header="Bar" />
+      </TabControl>
+
+      <gb:GroupBox Classes="h1" Header="h1 GroupBox">
+        <TextBlock>Simple text block</TextBlock>
+      </gb:GroupBox>
+      <gb:GroupBox Classes="h2" Header="h2 GroupBox">
+        <TextBlock>Simple text block</TextBlock>
+      </gb:GroupBox>
+      <gb:GroupBox Classes="h3" Header="h3 GroupBox">
+        <TextBlock>Simple text block</TextBlock>
+      </gb:GroupBox>
+      <gb:GroupBox Classes="h4" Header="h4 GroupBox">
+        <TextBlock>Simple text block</TextBlock>
+      </gb:GroupBox>
+    </StackPanel>
+  </Design.PreviewWith>
+</Styles>

@@ -1,6 +1,5 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              x:Class="uni.ui.avalonia.App"
              RequestedThemeVariant="Default">
   <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
@@ -11,70 +10,6 @@
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
-    <Style Selector="TextBlock, SelectableTextBlock">
-      <Setter Property="FontFamily" Value="Tahoma" />
-    </Style>
-
-    <Style Selector="TextBlock.caption">
-      <Setter Property="FontSize" Value="11" />
-      <Setter Property="FontWeight" Value="Light" />
-      <Setter Property="Foreground" Value="#555555" />
-    </Style>
-
-    <Style Selector="gb|GroupBox">
-      <Setter Property="Padding" Value="0" />
-    </Style>
-
-    <!-- h1 -->
-    <Style Selector="
-              TextBlock.h1, 
-              TabControl.h1 TabItem /template/ ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h1 ContentPresenter#PART_HeaderPresenter">
-      <Setter Property="TextBlock.FontSize" Value="22" />
-      <Setter Property="TextBlock.FontWeight" Value="Medium" />
-      <Setter Property="TextBlock.Padding" Value="0 5 0 0" />
-    </Style>
-    <Style Selector="TabControl.h1 TabItem">
-      <Setter Property="MinHeight" Value="26" />
-    </Style>
-
-    <!-- h2 -->
-    <Style Selector="
-              TextBlock.h2, 
-              TabControl.h2 TabItem /template/ ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h2 ContentPresenter#PART_HeaderPresenter">
-      <Setter Property="TextBlock.FontSize" Value="20" />
-      <Setter Property="TextBlock.FontWeight" Value="Medium" />
-      <Setter Property="TextBlock.Padding" Value="0 5 0 0" />
-    </Style>
-    <Style Selector="TabControl.h2 TabItem">
-      <Setter Property="MinHeight" Value="24" />
-    </Style>
-
-    <!-- h3 -->
-    <Style Selector="
-              TextBlock.h3,
-              TabControl.h3 TabItem /template/ ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h3 ContentPresenter#PART_HeaderPresenter">
-      <Setter Property="TextBlock.FontSize" Value="18" />
-      <Setter Property="TextBlock.FontWeight" Value="Medium" />
-      <Setter Property="TextBlock.Padding" Value="0 4 0 0" />
-    </Style>
-    <Style Selector="TabControl.h3 TabItem">
-      <Setter Property="MinHeight" Value="22" />
-    </Style>
-
-    <!-- h4 -->
-    <Style Selector="
-              TextBlock.h4,
-              TabControl.h4 TabItem /template/ ContentPresenter#PART_ContentPresenter,
-              gb|GroupBox.h4 ContentPresenter#PART_HeaderPresenter">
-      <Setter Property="TextBlock.FontSize" Value="16" />
-      <Setter Property="TextBlock.FontWeight" Value="Medium" />
-      <Setter Property="TextBlock.Padding" Value="0 4 0 0" />
-    </Style>
-    <Style Selector="TabControl.h4 TabItem">
-      <Setter Property="MinHeight" Value="20" />
-    </Style>
+    <StyleInclude Source="common/CommonStyles.axaml"/>
   </Application.Styles>
 </Application>

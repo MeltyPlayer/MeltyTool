@@ -2,6 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
+using uni.ui.avalonia.common;
 using uni.ui.avalonia.ViewModels;
 using uni.ui.avalonia.Views;
 
@@ -12,6 +13,7 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        this.Styles.AddRange(new HeaderStyles());
     }
 
     public override void OnFrameworkInitializationCompleted()
