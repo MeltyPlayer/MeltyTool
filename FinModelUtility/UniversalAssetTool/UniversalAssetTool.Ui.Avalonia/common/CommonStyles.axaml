@@ -5,6 +5,7 @@
     <StackPanel Width="300" Height="900">
       <TextBlock Classes="h2">Header</TextBlock>
       <TextBlock>Simple text block</TextBlock>
+      <TextBlock Classes="caption">Simple caption</TextBlock>
 
       <TabControl Classes="h2">
         <TabItem Header="Tab 1">
@@ -33,7 +34,7 @@
   <Style Selector="TextBlock.caption">
     <Setter Property="FontSize" Value="11" />
     <Setter Property="FontWeight" Value="Light" />
-    <Setter Property="Foreground" Value="#555555" />
+    <Setter Property="Foreground" Value="{StaticResource ForegroundMediumBrush}" />
   </Style>
 
   <Style Selector="gb|GroupBox">
@@ -49,4 +50,12 @@
   <Style Selector="TabControl.indented">
     <Setter Property="Padding" Value="12 0"></Setter>
   </Style>
+
+  <Styles.Resources>
+    <ResourceDictionary>
+      <SolidColorBrush x:Key="ForegroundHighBrush" Color="{DynamicResource SystemBaseHighColor}" />
+      <SolidColorBrush x:Key="ForegroundMediumBrush" Color="{DynamicResource SystemBaseMediumColor}" />
+      <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource SystemChromeHighColor}" />
+    </ResourceDictionary>
+  </Styles.Resources>
 </Styles>

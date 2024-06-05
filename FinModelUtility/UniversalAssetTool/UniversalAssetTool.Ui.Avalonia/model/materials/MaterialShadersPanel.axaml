@@ -2,7 +2,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
              xmlns:materials="clr-namespace:uni.ui.avalonia.model.materials"
@@ -13,28 +12,36 @@
     <materials:MaterialShadersPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <gb:GroupBox Classes="h3" Header="Shaders">
-    <TabControl Classes="h4">
-      <TabItem Header="Vertex">
-        <avaloniaEdit:TextEditor
-          Name="vertexShaderViewer_"
-          Document="{Binding VertexShaderSource}"
-          ShowLineNumbers="True"
-          FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-          IsReadOnly="True"
-          BorderBrush="LightGray"
-          BorderThickness="1" />
-      </TabItem>
-      <TabItem Header="Fragment">
-        <avaloniaEdit:TextEditor
-          Name="fragmentShaderViewer_"
-          Document="{Binding FragmentShaderSource}"
-          ShowLineNumbers="True"
-          FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-          IsReadOnly="True"
-          BorderBrush="LightGray"
-          BorderThickness="1" />
-      </TabItem>
-    </TabControl>
-  </gb:GroupBox>
+  <TabControl Classes="h4" SelectedIndex="1">
+    <TabItem IsEnabled="False">
+      <TabItem.Header>
+        <TextBlock Classes="h3" 
+                   VerticalAlignment="Center"
+                   Padding="0 0 0 0"
+                   Foreground="{StaticResource ForegroundHighBrush}">
+          Shaders
+        </TextBlock>
+      </TabItem.Header>
+    </TabItem>
+    <TabItem Header="Vertex">
+      <avaloniaEdit:TextEditor
+        Name="vertexShaderViewer_"
+        Document="{Binding VertexShaderSource}"
+        ShowLineNumbers="True"
+        FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+        IsReadOnly="True"
+        BorderThickness="1"
+        BorderBrush="{StaticResource BorderBrush}" />
+    </TabItem>
+    <TabItem Header="Fragment">
+      <avaloniaEdit:TextEditor
+        Name="fragmentShaderViewer_"
+        Document="{Binding FragmentShaderSource}"
+        ShowLineNumbers="True"
+        FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+        IsReadOnly="True"
+        BorderThickness="1"
+        BorderBrush="{StaticResource BorderBrush}" />
+    </TabItem>
+  </TabControl>
 </UserControl>

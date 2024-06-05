@@ -14,15 +14,8 @@
     <Border HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             BorderThickness="1"
-            BorderBrush="LightGray">
-      <Border.Background>
-        <ImageBrush
-          AlignmentX="Left"
-          AlignmentY="Top"
-          Source="{Binding TransparentBackgroundImage}"
-          TileMode="Tile"
-          DestinationRect="0 0 32 32" />
-      </Border.Background>
+            BorderBrush="{StaticResource BorderBrush}"
+            Background="{StaticResource ColorControlCheckeredBackgroundBrush}">
     </Border>
 
     <Image x:Name="image_"

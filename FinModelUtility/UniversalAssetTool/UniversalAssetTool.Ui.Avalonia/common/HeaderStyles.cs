@@ -51,7 +51,8 @@ namespace uni.ui.avalonia.common {
 
           this.AddStyle(targetSelector)
               .AddSetter(TextBlock.FontSizeProperty, fontSize)
-              .AddSetter(TextBlock.FontWeightProperty, FontWeight.Medium);
+              .AddSetter(TextBlock.FontWeightProperty, FontWeight.Medium)
+              .AddSetter(TextBlock.PaddingProperty, new Thickness(0));
 
           this.AddStyle(targetWithoutSpaceFirstSelector)
               .AddSetter(TextBlock.PaddingProperty,

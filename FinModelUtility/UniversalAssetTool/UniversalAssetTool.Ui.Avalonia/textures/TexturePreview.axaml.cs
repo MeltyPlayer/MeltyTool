@@ -26,17 +26,12 @@ public class TexturePreviewViewModelForDesigner : TexturePreviewViewModel {
 }
 
 public class TexturePreviewViewModel : ViewModelBase {
-  private static readonly Bitmap transparentBackgroundImage_
-      = AvaloniaImageUtil.Load("checkerboard");
-
   private static readonly Bitmap missingImage_
       = FinImage.Create1x1FromColor(Color.Magenta).AsAvaloniaImage();
 
   private IReadOnlyTexture? texture_;
   private Bitmap image_;
   private Thickness imageMargin_;
-
-  public Bitmap TransparentBackgroundImage => transparentBackgroundImage_;
 
   public required IReadOnlyTexture? Texture {
     get => this.texture_;

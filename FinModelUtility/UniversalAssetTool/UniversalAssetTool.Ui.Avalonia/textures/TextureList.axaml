@@ -15,8 +15,8 @@
            SelectionMode="AlwaysSelected"
            SelectedItem="{Binding SelectedTextureViewModel, Mode=TwoWay}"
            SelectionChanged="SelectingItemsControl_OnSelectionChanged"
-           BorderBrush="LightGray"
-           BorderThickness="1">
+           BorderThickness="1"
+           BorderBrush="{StaticResource BorderBrush}" >
     <ListBox.Styles>
       <Style Selector="ListBoxItem">
         <Setter Property="Height" Value="36" />

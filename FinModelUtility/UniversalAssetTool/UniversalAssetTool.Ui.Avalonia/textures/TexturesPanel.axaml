@@ -27,12 +27,9 @@
         <textures:TexturePreview
             DockPanel.Dock="Top"
             DataContext="{Binding SelectedTexturePreview}" />
-        <gb:GroupBox Grid.Row="1"
-                     Classes="h3"
-                     Header="Metadata">
-          <common:KeyValueGrid
-              DataContext="{Binding SelectedTextureKeyValueGrid}" />
-        </gb:GroupBox>
+        <common:KeyValueGrid
+            Grid.Row="1"
+            DataContext="{Binding SelectedTextureKeyValueGrid}" />
       </Grid>
     </gb:GroupBox>
   </Grid>

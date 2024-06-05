@@ -70,7 +70,6 @@ namespace uni.ui.avalonia.textures {
         var texture = value?.Texture;
         this.SelectedTextureKeyValueGrid = new KeyValueGridViewModel {
             KeyValuePairs = [
-                ("Name", texture?.Name),
                 ("Pixel format", texture?.Image.PixelFormat),
                 ("Transparency type", texture?.TransparencyType),
                 ("Width", texture?.Image.Width),
