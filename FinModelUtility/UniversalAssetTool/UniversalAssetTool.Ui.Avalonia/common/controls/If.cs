@@ -7,12 +7,14 @@ using Avalonia.Metadata;
 namespace uni.ui.avalonia.common.controls;
 
 public class If : Control {
-  private object deferredContent_;
-  private Control control_;
+  private object contentWhenTrue_;
+  private object? contentWhenFalse_;
+  private bool? renderedValue_;
+  
+  private Control? control_;
 
   public static readonly StyledProperty<bool> ConditionProperty
-      = AvaloniaProperty.Register<If, bool>(
-          "Condition");
+      = AvaloniaProperty.Register<If, bool>(nameof(Condition));
 
   public bool Condition {
     get => this.GetValue(ConditionProperty);
@@ -20,23 +22,34 @@ public class If : Control {
   }
 
   [Content, TemplateContent]
-  public object DeferredContent {
-    get => this.deferredContent_;
+  public object ContentWhenTrue {
+    get => this.contentWhenTrue_;
     set {
-      this.deferredContent_ = value;
+      this.contentWhenTrue_ = value;
       if (this.Condition) {
-        this.DoLoad_(true);
+        this.DoLoad_(true, true);
       }
     }
   }
 
-  public Control Control => this.control_;
+  [TemplateContent]
+  public object? ContentWhenFalse {
+    get => this.contentWhenFalse_;
+    set {
+      this.contentWhenFalse_ = value;
+      if (!this.Condition) {
+        this.DoLoad_(false, true);
+      }
+    }
+  }
+
+  public Control? Control => this.control_;
 
   static If() {
     ConditionProperty.Changed.AddClassHandler<If>(
         (c, e) => {
           if (e.NewValue is bool v) {
-            c.DoLoad_(v);
+            c.DoLoad_(v, false);
           }
         });
   }
@@ -48,20 +61,29 @@ public class If : Control {
     => LayoutHelper.ArrangeChild(this.control_, finalSize, default);
 
 
-  private void DoLoad_(bool load) {
-    if ((this.control_ != null) == load)
+  private void DoLoad_(bool value, bool force) {
+    if (this.renderedValue_ == value && !force) {
       return;
+    }
 
-    if (load) {
-      this.control_ = TemplateContent.Load(this.DeferredContent).Result;
-      ((ISetLogicalParent) this.control_).SetParent(this);
-      this.VisualChildren.Add(this.control_);
-      this.LogicalChildren.Add(this.control_);
-    } else {
+    this.renderedValue_ = value;
+
+    if (this.control_ != null) {
       ((ISetLogicalParent) this.control_).SetParent(null);
       this.LogicalChildren.Clear();
       this.VisualChildren.Remove(this.control_);
       this.control_ = null;
+    }
+
+    object? newContent = value ? this.contentWhenTrue_ : this.contentWhenFalse_;
+    if (newContent != null) {
+      this.control_ = TemplateContent.Load(newContent)?.Result;
+    }
+
+    if (this.control_ != null) {
+      ((ISetLogicalParent) this.control_).SetParent(this);
+      this.VisualChildren.Add(this.control_);
+      this.LogicalChildren.Add(this.control_);
     }
 
     this.InvalidateMeasure();

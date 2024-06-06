@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:common="clr-namespace:uni.ui.avalonia.common"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.common.KeyValueGrid"
              x:DataType="common:KeyValueGridViewModel">
@@ -42,12 +43,25 @@
           <DataGridTemplateColumn Width="*">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate>
-                <SelectableTextBlock
-                    Margin="7 0 0 0"
-                    VerticalAlignment="Center"
-                    TextWrapping="Wrap"
-                    FontSize="13"
-                    Text="{Binding Value}" />
+                <controls:If Condition="{Binding Value, Converter={x:Static ObjectConverters.IsNotNull}}">
+                  <controls:If.ContentWhenTrue>
+                    <SelectableTextBlock
+                        Margin="7 0 0 0"
+                        VerticalAlignment="Center"
+                        TextWrapping="Wrap"
+                        FontSize="13"
+                        Text="{Binding Value}" />
+                  </controls:If.ContentWhenTrue>
+                  <controls:If.ContentWhenFalse>
+                    <TextBlock
+                        Margin="7 0 0 0"
+                        VerticalAlignment="Center"
+                        TextWrapping="Wrap"
+                        FontSize="13">
+                      —
+                    </TextBlock>
+                  </controls:If.ContentWhenFalse>
+                </controls:If>
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
