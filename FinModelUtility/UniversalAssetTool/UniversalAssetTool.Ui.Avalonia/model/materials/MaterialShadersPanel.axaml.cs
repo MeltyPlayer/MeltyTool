@@ -64,6 +64,10 @@ namespace uni.ui.avalonia.model.materials {
       var textMateInstallation
           = textEditor.InstallTextMate(registryOptions, false);
       textMateInstallation.SetGrammar("source.glsl");
+
+      textEditor.Options = new() {
+          AllowScrollBelowDocument = false,
+      };
     }
   }
 }
