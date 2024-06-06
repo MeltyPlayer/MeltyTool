@@ -26,14 +26,15 @@ namespace uni.ui.avalonia.common {
                     [] {
                         (Selectors.OfType<TextBlock>, x => x),
                         (Selectors.OfType<TabControl>,
-                         x => x.Child()
-                               .OfType<TabItem>()
+                         x => x.ChildOfType<TabItem>()
                                .Template()
-                               .OfType<ContentPresenter>()
+                               .OfType<Border>()
+                               .ChildOfType<Panel>()
+                               .ChildOfType<ContentPresenter>()
                                .Name("PART_ContentPresenter")),
                         (Selectors.OfType<gbGroupBox>,
-                         x => x.Descendant()
-                               .OfType<ContentPresenter>()
+                         x => x.ChildOfType<Grid>()
+                               .ChildOfType<ContentPresenter>()
                                .Name("PART_HeaderPresenter")),
                     }
                 .Select(tuple => this.GetTargetSelectorDelegates_(
@@ -86,7 +87,17 @@ namespace uni.ui.avalonia.common {
       SelectorDelegate TargetSelector,
       SelectorDelegate TargetWithoutSpaceFirstSelector);
 
-  public static class StyleDelegateExtensions {
+  public static class SelectorExtensions {
+    public static Selector ChildOfType<T>(this Selector s)
+        where T : StyledElement
+      => s.Child().OfType<T>();
+
+    public static Selector DescendantOfType<T>(this Selector s)
+        where T : StyledElement
+      => s.Descendant().OfType<T>();
+  }
+
+  public static class SelectorDelegateExtensions {
     public static SelectorDelegate Then(this SelectorDelegate d,
                                         SelectorDelegate next)
       => x => next(d(x));

@@ -68,6 +68,9 @@ public static class MaterialDesignerUtil {
     var image = new Rgba32Image(PixelFormat.ETC1, width, height);
     using var imgLock = image.Lock();
     var dst = imgLock.Pixels;
+
+    var alphaPerPixel = 255 / MathF.Sqrt(width * width + height * height);
+
     for (var y = 0; y < height; ++y) {
       var yF = 1f * y / height;
       var nYF = 1 - yF;
@@ -79,8 +82,9 @@ public static class MaterialDesignerUtil {
         var r = (byte) (255 * xF * yF);
         var g = (byte) (255 * nXF * yF);
         var b = (byte) (255 * nXF * nYF);
-        var a = (byte) (255 * MathF.Pow(nXF * yF, .25f));
+        var a = (byte) (alphaPerPixel + (255 - alphaPerPixel) * MathF.Pow(nXF * yF, .25f));
 
+        
         dst[y * width + x] = new Rgba32(r, g, b, a);
       }
     }

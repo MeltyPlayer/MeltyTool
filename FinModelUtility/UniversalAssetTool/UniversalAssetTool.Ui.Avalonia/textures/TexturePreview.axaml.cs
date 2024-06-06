@@ -1,12 +1,16 @@
 using System;
 using System.Drawing;
+using System.IO;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 
 using fin.image;
 using fin.model;
+using fin.util.asserts;
 
 using ReactiveUI;
 
@@ -55,5 +59,30 @@ public class TexturePreviewViewModel : ViewModelBase {
 public partial class TexturePreview : UserControl {
   public TexturePreview() {
     InitializeComponent();
+  }
+
+  private TexturePreviewViewModel ViewModel_
+    => Asserts.AsA<TexturePreviewViewModel>(this.DataContext);
+
+  private async void CopyToClipboard_(object? sender, RoutedEventArgs e) {
+    var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+    if (clipboard == null) {
+      return;
+    }
+
+    var texture = this.ViewModel_.Texture;
+    if (texture == null) {
+      return;
+    }
+
+    var formatName = "image/png";
+
+    using var ms = new MemoryStream();
+    texture.WriteToStream(ms);
+
+    var dataObject = new DataObject();
+    dataObject.Set(formatName, ms.ToArray());
+
+    await clipboard.SetDataObjectAsync(dataObject);
   }
 }
