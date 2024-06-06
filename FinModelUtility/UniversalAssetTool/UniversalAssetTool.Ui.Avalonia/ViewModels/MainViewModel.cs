@@ -1,4 +1,6 @@
-﻿using ReactiveUI;
+﻿using DynamicData.Binding;
+
+using ReactiveUI;
 
 using uni.ui.avalonia.model;
 
@@ -8,7 +10,7 @@ public class MainViewModel : ViewModelBase {
   private ModelPanelViewModel modelPanel_;
 
   public MainViewModel() {
-    this.ModelPanel = new ModelPanelViewModelForDesigner();
+    this.ModelPanel = new ModelPanelViewModel();
   }
 
   public ModelPanelViewModel ModelPanel {
