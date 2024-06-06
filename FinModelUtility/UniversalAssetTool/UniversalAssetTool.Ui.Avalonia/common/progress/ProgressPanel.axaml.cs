@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using Avalonia.Metadata;
 
 using fin.util.asserts;
 
@@ -43,11 +42,23 @@ namespace uni.ui.avalonia.common.progress {
 
   public class ProgressPanelViewModel : ViewModelBase {
     private ValueFractionProgress progress_;
+    private ProgressSpinnerViewModel progressSpinner_;
     private IDataTemplate dataTemplate_;
 
     public ValueFractionProgress Progress {
       get => this.progress_;
-      set => this.RaiseAndSetIfChanged(ref this.progress_, value);
+      set {
+        this.RaiseAndSetIfChanged(ref this.progress_, value);
+        this.ProgressSpinner = new ProgressSpinnerViewModel {
+            Progress = value
+        };
+      }
+    }
+
+    public ProgressSpinnerViewModel ProgressSpinner {
+      get => this.progressSpinner_;
+      private set
+        => this.RaiseAndSetIfChanged(ref this.progressSpinner_, value);
     }
 
     public IDataTemplate DataTemplate {
