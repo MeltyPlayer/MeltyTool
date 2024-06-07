@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
+             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="300"
              x:Class="uni.ui.avalonia.common.progress.ProgressSpinner"
              x:DataType="progress:ProgressSpinnerViewModel">
@@ -10,6 +11,17 @@
     <progress:ProgressSpinnerViewModelForDesigner />
   </Design.DataContext>
 
-  <ProgressBar ShowProgressText="True"
-               Value="{Binding Progress.Progress}" />
+  <ProgressBar
+    Width="64"
+    Height="64"
+    Classes="circular"
+    ShowProgressText="True"
+    Value="{Binding Progress.Progress}">
+    <ProgressBar.Styles>
+      <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Lime" />
+    </ProgressBar.Styles>
+    <ProgressBar.Resources>
+      <SolidColorBrush x:Key="MaterialPrimaryMidBrush" Color="{StaticResource SystemAccentColor}" />
+    </ProgressBar.Resources>
+  </ProgressBar>
 </UserControl>

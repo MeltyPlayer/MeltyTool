@@ -28,7 +28,8 @@
 
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
-      <progress:ProgressSpinner DataContext="{Binding ProgressSpinner}" />
+      <progress:ProgressSpinner
+          DataContext="{Binding ProgressSpinner}" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>
