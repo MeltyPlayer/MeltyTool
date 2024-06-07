@@ -1,0 +1,28 @@
+﻿namespace grezzo.schema.zsi {
+  public enum ZsiSectionType : byte {
+    LINK,
+    ACTORS,
+    CUTSCENE_CAMERA,
+    COLLISION,
+    ROOMS,
+    WIND_SETTINGS,
+    ENTRANCES,
+    SPECIAL_OBJECTS,
+    ROOM_BEHAVIOR,
+    MESH_HEADER,
+    OBJECTS,
+    PATHS,
+    TRANSITION_ACTOR,
+    LIGHTS,
+    TIME_SETTINGS,
+    SKYBOX_SETTINGS,
+    SKYBOX_MODIFIER,
+    EXITS,
+    END,
+    SOUND_SETTINGS,
+    ECHO_SETTINGS,
+    CUTSCENE_DATA,
+    MULTI_SETUPS,
+    MISC_SETTINGS,
+  }
+}

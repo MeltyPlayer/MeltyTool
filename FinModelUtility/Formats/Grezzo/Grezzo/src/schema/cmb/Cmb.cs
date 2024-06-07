@@ -48,6 +48,7 @@ namespace grezzo.schema.cmb {
 
     public readonly Vatr vatr = new();
 
+    public Cmb() { }
     public Cmb(IBinaryReader br) => this.Read(br);
 
     public void Read(IBinaryReader br) {
@@ -118,8 +119,8 @@ namespace grezzo.schema.cmb {
           var primitive = pset.primitive;
           // # Always * 2 even if ubyte is used...
           br.Position = startOff +
-                       this.header.faceIndicesOffset +
-                       2 * primitive.offset;
+                        this.header.faceIndicesOffset +
+                        2 * primitive.offset;
 
           primitive.indices = new uint[primitive.indicesCount];
           for (var i = 0; i < primitive.indicesCount; ++i) {
@@ -144,6 +145,6 @@ namespace grezzo.schema.cmb {
 }
 
 
-/*pset.primitive.indices = 
+/*pset.primitive.indices =
 [int(readDataType(f, pset.primitive.dataType)) for _ in
 range(pset.primitive.indicesCount)]*/
