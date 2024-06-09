@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 using fin.data.indexable;
-using fin.util.asserts;
 
 namespace fin.util.enumerables {
   public static class EnumerableDictionaryExtensions {
