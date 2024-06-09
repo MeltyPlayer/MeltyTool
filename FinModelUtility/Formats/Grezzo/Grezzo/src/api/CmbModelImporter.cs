@@ -283,48 +283,37 @@ namespace grezzo.api {
 
         var finMesh = finSkin.AddMesh();
 
-        // TODO: Encapsulate these reads somewhere else
         // Get vertices
         var finVertices = new IVertex[vertexCount];
 
-        var positions =
+        var positionEnumerator =
             DataTypeUtil.Read(cmb.vatr.position, shape.position, 3)
-                        .SeparateTriplets();
-        var normals =
+                        .SeparateTriplets()
+                        .ToMemoryEnumerator();
+        var normalEnumerator =
             DataTypeUtil.Read(cmb.vatr.normal, shape.normal, 3)
-                        .SeparateTriplets();
-        var colors =
+                        .SeparateTriplets()
+                        .ToMemoryEnumerator();
+        var colorEnumerator =
             DataTypeUtil.Read(cmb.vatr.color, shape.color, 4)
                         .Select(v => (byte) (255 * v))
-                        .SeparateQuadruplets();
-        var uv0s =
+                        .SeparateQuadruplets()
+                        .ToMemoryEnumerator();
+        var uv0Enumerator =
             DataTypeUtil.Read(cmb.vatr.uv0, shape.uv0, 2)
-                        .SeparatePairs();
-        var uv1s =
+                        .SeparatePairs()
+                        .ToMemoryEnumerator();
+        var uv1Enumerator =
             DataTypeUtil.Read(cmb.vatr.uv1, shape.uv1, 2)
-                        .SeparatePairs();
-        var uv2s =
+                        .SeparatePairs()
+                        .ToMemoryEnumerator();
+        var uv2Enumerator =
             DataTypeUtil.Read(cmb.vatr.uv2, shape.uv2, 2)
-                        .SeparatePairs();
-
-        (float X, float Y, float Z) position = default;
-        (float X, float Y, float Z)? normal = default;
-        (byte X, byte Y, byte Z, byte W)? color = default;
-        (float X, float Y)? uv0 = default;
-        (float X, float Y)? uv1 = default;
-        (float X, float Y)? uv2 = default;
-
-        var positionEnumerator = positions.ToEnumerator();
-        var normalEnumerator = normals.ToEnumerator();
-        var colorEnumerator = colors.ToEnumerator();
-        var uv0Enumerator = uv0s.ToEnumerator();
-        var uv1Enumerator = uv1s.ToEnumerator();
-        var uv2Enumerator = uv2s.ToEnumerator();
+                        .SeparatePairs()
+                        .ToMemoryEnumerator();
 
         for (var i = 0; i < vertexCount; ++i) {
-          if (positionEnumerator.TryMoveNext(out var nextPosition)) {
-            position = nextPosition;
-          }
+          var position = positionEnumerator.TryMoveNextAndGetCurrent();
 
           var finVertex = finSkin.AddVertex(position.X, position.Y, position.Z);
           finVertices[i] = finVertex;
@@ -333,48 +322,28 @@ namespace grezzo.api {
           verticesByIndex.Add(index, finVertex);
 
           if (hasNrm) {
-            if (normalEnumerator.TryMoveNext(out var nextNormal)) {
-              normal = nextNormal;
-            }
-
-            finVertex.SetLocalNormal(normal.Value.X,
-                                     normal.Value.Y,
-                                     normal.Value.Z);
+            var normal = normalEnumerator.TryMoveNextAndGetCurrent();
+            finVertex.SetLocalNormal(normal.X, normal.Y, normal.Z);
           }
 
           if (hasClr) {
-            if (colorEnumerator.TryMoveNext(out var nextColor)) {
-              color = nextColor;
-            }
-
-            finVertex.SetColorBytes(color.Value.X,
-                                    color.Value.Y,
-                                    color.Value.Z,
-                                    color.Value.W);
+            var color = colorEnumerator.TryMoveNextAndGetCurrent();
+            finVertex.SetColorBytes(color.X, color.Y, color.Z, color.W);
           }
 
           if (hasUv0) {
-            if (uv0Enumerator.TryMoveNext(out var nextUv0)) {
-              uv0 = nextUv0;
-            }
-
-            finVertex.SetUv(0, uv0.Value.X, 1 - uv0.Value.Y);
+            var uv0 = uv0Enumerator.TryMoveNextAndGetCurrent();
+            finVertex.SetUv(0, uv0.X, 1 - uv0.Y);
           }
 
           if (hasUv1) {
-            if (uv1Enumerator.TryMoveNext(out var nextUv1)) {
-              uv1 = nextUv1;
-            }
-
-            finVertex.SetUv(1, uv1.Value.X, 1 - uv1.Value.Y);
+            var uv1 = uv1Enumerator.TryMoveNextAndGetCurrent();
+            finVertex.SetUv(1, uv1.X, 1 - uv1.Y);
           }
 
           if (hasUv2) {
-            if (uv2Enumerator.TryMoveNext(out var nextUv2)) {
-              uv2 = nextUv2;
-            }
-
-            finVertex.SetUv(2, uv2.Value.X, 1 - uv2.Value.Y);
+            var uv2 = uv2Enumerator.TryMoveNextAndGetCurrent();
+            finVertex.SetUv(2, uv2.X, 1 - uv2.Y);
           }
 
           var preprojectMode = preproject[i].Value
