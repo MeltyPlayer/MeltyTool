@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 
+using fin.image;
 using fin.schema.data;
 using fin.util.strings;
 
@@ -40,6 +42,8 @@ namespace grezzo.schema.cmb {
     public readonly AutoStringMagicUInt32SizedSection<Tex> tex
         = new("tex" + AsciiUtil.GetChar(0x20));
 
+    public IImage[]? TextureImages { get; set; }
+
     public readonly AutoStringMagicUInt32SizedSection<Sklm> sklm =
         new("sklm");
 
@@ -48,68 +52,40 @@ namespace grezzo.schema.cmb {
 
     public readonly Vatr vatr = new();
 
-    public Cmb() { }
-    public Cmb(IBinaryReader br) => this.Read(br);
-
     public void Read(IBinaryReader br) {
-      long startOff = 0;
-
-      var magic = br.ReadString(4);
-      // TODO: Not super reliable, make this more robust
-      if (magic == "ZSI" + AsciiUtil.GetChar(1) ||
-          magic == "ZSI" + AsciiUtil.GetChar(9)) {
-        br.Position = 16;
-
-        while (true) {
-          var cmd0 = br.ReadUInt32();
-          var cmd1 = br.ReadUInt32();
-
-          var cmdType = cmd0 & 0xFF;
-
-          if (cmdType == 0x14) {
-            break;
-          }
-
-          if (cmdType == 0x0A) {
-            br.Position = cmd1 + 20;
-
-            var entryOfs = br.ReadUInt32();
-            br.Position = entryOfs + 24;
-
-            var cmbOfs = br.ReadUInt32();
-            br.Position = cmbOfs + 16;
-
-            startOff = br.Position;
-            break;
-          }
-        }
-      }
-
-      this.startOffset = br.Position = startOff;
-
       this.header.Read(br);
 
-      br.Position = startOff + this.header.sklOffset;
+      br.Position = this.header.sklOffset;
       this.skl.Read(br);
 
       if (CmbHeader.Version > Version.OCARINA_OF_TIME_3D) {
-        br.Position = startOff + this.header.qtrsOffset;
+        br.Position = this.header.qtrsOffset;
         this.qtrs.Read(br);
       }
 
-      br.Position = startOff + this.header.matsOffset;
+      br.Position = this.header.matsOffset;
       this.mats.Read(br);
 
-      br.Position = startOff + this.header.texOffset;
+      br.Position = this.header.texOffset;
       this.tex.Read(br);
 
-      br.Position = startOff + this.header.sklmOffset;
+      // TODO: Read this more accurately
+      this.TextureImages
+          = this.header.textureDataOffset == 0
+              ? null
+              : this.tex.Data.textures
+                    .Select(t => br.SubreadAt(
+                                this.header.textureDataOffset + t.DataOffset,
+                                sbr => t.GetImageReader().ReadImage(sbr)))
+                    .ToArray();
+
+      br.Position = this.header.sklmOffset;
       this.sklm.Read(br);
 
-      br.Position = startOff + this.header.lutsOffset;
+      br.Position = this.header.lutsOffset;
       this.luts.Read(br);
 
-      br.Position = startOff + this.header.vatrOffset;
+      br.Position = this.header.vatrOffset;
       this.vatr.Read(br);
 
       // Add face indices to primitive sets
@@ -118,8 +94,7 @@ namespace grezzo.schema.cmb {
         foreach (var pset in shape.primitiveSets) {
           var primitive = pset.primitive;
           // # Always * 2 even if ubyte is used...
-          br.Position = startOff +
-                        this.header.faceIndicesOffset +
+          br.Position = this.header.faceIndicesOffset +
                         2 * primitive.offset;
 
           primitive.indices = new uint[primitive.indicesCount];

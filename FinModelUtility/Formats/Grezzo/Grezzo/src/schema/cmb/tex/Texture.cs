@@ -1,4 +1,7 @@
-﻿using grezzo.schema.ctxb;
+﻿using fin.image.io;
+
+using grezzo.image;
+using grezzo.schema.ctxb;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -20,9 +23,26 @@ namespace grezzo.schema.cmb.tex {
 
     public GlTextureFormat imageFormat { get; private set; }
 
-    public uint dataOffset { get; private set; }
+    public uint DataOffset { get; private set; }
 
     [StringLengthSource(0x10)]
     public string name { get; private set; }
+
+    public IImageReader GetImageReader()
+      => new CmbImageReader(this.width,
+                            this.height,
+                            CollapseFormat_(this.imageFormat));
+
+    private GlTextureFormat CollapseFormat_(GlTextureFormat format) {
+      var lowerFormat = (GlTextureFormat) ((int) format & 0xFFFF);
+
+      if (lowerFormat == GlTextureFormat.ETC1) {
+        format = GlTextureFormat.ETC1;
+      } else if (lowerFormat == GlTextureFormat.ETC1a4) {
+        format = GlTextureFormat.ETC1a4;
+      }
+
+      return format;
+    }
   }
 }
