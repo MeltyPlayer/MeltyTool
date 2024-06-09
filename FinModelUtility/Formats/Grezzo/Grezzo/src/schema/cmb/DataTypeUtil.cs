@@ -1,4 +1,10 @@
 ﻿using System;
+using System.Buffers.Binary;
+using System.Collections.Generic;
+using System.Linq;
+
+using grezzo.schema.cmb.sklm;
+using grezzo.schema.cmb.vatr;
 
 using schema.binary;
 
@@ -17,10 +23,28 @@ namespace grezzo.schema.cmb {
           DataType.UInt   => br.ReadUInt32(),
           DataType.Float  => br.ReadSingle(),
           _ => throw new ArgumentOutOfRangeException(
-                   nameof(dataType),
-                   dataType,
-                   null)
+              nameof(dataType),
+              dataType,
+              null)
       };
+
+    public static float Read(
+        ReadOnlyMemory<byte> data,
+        DataType dataType)
+      => dataType switch {
+          DataType.Byte   => (sbyte) data.Span[0],
+          DataType.UByte  => data.Span[0],
+          DataType.Short  => BinaryPrimitives.ReadInt16LittleEndian(data.Span),
+          DataType.UShort => BinaryPrimitives.ReadUInt16LittleEndian(data.Span),
+          DataType.Int    => BinaryPrimitives.ReadInt32LittleEndian(data.Span),
+          DataType.UInt   => BinaryPrimitives.ReadUInt32LittleEndian(data.Span),
+          DataType.Float  => BinaryPrimitives.ReadSingleLittleEndian(data.Span),
+          _ => throw new ArgumentOutOfRangeException(
+              nameof(dataType),
+              dataType,
+              null)
+      };
+
 
     public static float[] Read(
         IBinaryReader br,
@@ -35,7 +59,30 @@ namespace grezzo.schema.cmb {
       return values;
     }
 
-    public static int GetSize(DataType dataType)
+    public static IEnumerable<float> Read(
+        AttributeSlice slice,
+        VertexAttribute attribute,
+        int itemsPerTuple) {
+      if (attribute.Mode == VertexAttributeMode.Constant) {
+        foreach (var constant in attribute.Constants.Take(itemsPerTuple)) {
+          yield return constant;
+        }
+
+        yield break;
+      }
+
+      var span = slice.Bytes.AsMemory((int) attribute.Start);
+
+      var dataType = attribute.DataType;
+      var size = dataType.GetSize();
+      var scale = attribute.Scale;
+
+      for (var i = 0; i < slice.Size / size; ++i) {
+        yield return scale * DataTypeUtil.Read(span.Slice(size * i, size), dataType);
+      }
+    }
+
+    public static int GetSize(this DataType dataType)
       => dataType switch {
           DataType.Byte   => 1,
           DataType.UByte  => 1,
@@ -45,9 +92,9 @@ namespace grezzo.schema.cmb {
           DataType.UInt   => 4,
           DataType.Float  => 4,
           _ => throw new ArgumentOutOfRangeException(
-                   nameof(dataType),
-                   dataType,
-                   null)
+              nameof(dataType),
+              dataType,
+              null)
       };
   }
 }

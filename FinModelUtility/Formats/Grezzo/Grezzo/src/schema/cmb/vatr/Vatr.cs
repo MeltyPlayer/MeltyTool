@@ -3,6 +3,7 @@ using schema.binary.attributes;
 
 namespace grezzo.schema.cmb.vatr {
   [BinarySchema]
+  [LocalPositions]
   public partial class Vatr : IBinaryConvertible {
     private readonly string magic_ = "vatr";
 

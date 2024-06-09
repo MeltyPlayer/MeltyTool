@@ -15,6 +15,7 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.util.asserts;
+using fin.util.enumerables;
 
 using grezzo.material;
 using grezzo.schema.cmb;
@@ -40,12 +41,11 @@ namespace grezzo.api {
 
       var fps = 30;
 
+      var cmb = cmbFile.ReadNew<Cmb>();
+
       using var r =
           new SchemaBinaryReader(cmbFile.OpenRead(),
                                  Endianness.LittleEndian);
-
-      var cmb = cmbFile.ReadNew<Cmb>();
-      r.Position = 0;
 
       (IReadOnlyTreeFile, Csab)[] filesAndCsabs;
       if (csabFiles == null) {
@@ -68,13 +68,14 @@ namespace grezzo.api {
       var filesAndShpas =
           shpaFiles?.Select(shpaFile => {
             var shpa =
-                shpaFile.ReadNew<Shpa>(Endianness.LittleEndian);
+                shpaFile.ReadNew<Shpa>(
+                    Endianness.LittleEndian);
             return (shpaFile, shpa);
           })
                    .ToList() ??
           [];
 
-      var finModel = new ModelImpl();
+      var finModel = new ModelImpl((int) cmb.vatr.maxIndex);
       var finSkin = finModel.Skin;
 
       // Adds bones
@@ -256,18 +257,20 @@ namespace grezzo.api {
               if (shape.bIndices.Mode == VertexAttributeMode.Constant) {
                 readBIndices = shape.bIndices.Constants;
               } else {
-                r.Position = cmb.startOffset +
-                             cmb.header.vatrOffset +
+                r.Position = cmb.header.vatrOffset +
                              cmb.vatr.bIndices.StartOffset +
                              shape.bIndices.Start +
                              i *
                              DataTypeUtil.GetSize(shape.bIndices.DataType) *
                              shape.boneDimensions;
                 readBIndices =
-                    DataTypeUtil.Read(r, shape.boneDimensions, shape.bIndices.DataType)
+                    DataTypeUtil.Read(r,
+                                      shape.boneDimensions,
+                                      shape.bIndices.DataType)
                                 .Select(value => value * shape.bIndices.Scale)
                                 .ToArray();
               }
+
               for (var bi = 0; bi < shape.boneDimensions; ++bi) {
                 bIndices[i * boneCount + bi] =
                     pset.boneTable[(int) readBIndices[bi]];
@@ -283,119 +286,95 @@ namespace grezzo.api {
         // TODO: Encapsulate these reads somewhere else
         // Get vertices
         var finVertices = new IVertex[vertexCount];
-        for (var i = 0; i < vertexCount; ++i) {
-          // Position
-          r.Position = cmb.startOffset +
-                       cmb.header.vatrOffset +
-                       cmb.vatr.position.StartOffset +
-                       shape.position.Start +
-                       3 * DataTypeUtil.GetSize(shape.position.DataType) * i;
-          var positionValues =
-              DataTypeUtil.Read(r, 3, shape.position.DataType)
-                          .Select(value => value * shape.position.Scale)
-                          .ToArray();
 
-          var finVertex = finSkin.AddVertex(positionValues[0],
-                                            positionValues[1],
-                                            positionValues[2]);
+        var positions =
+            DataTypeUtil.Read(cmb.vatr.position, shape.position, 3)
+                        .SeparateTriplets();
+        var normals =
+            DataTypeUtil.Read(cmb.vatr.normal, shape.normal, 3)
+                        .SeparateTriplets();
+        var colors =
+            DataTypeUtil.Read(cmb.vatr.color, shape.color, 4)
+                        .Select(v => (byte) (255 * v))
+                        .SeparateQuadruplets();
+        var uv0s =
+            DataTypeUtil.Read(cmb.vatr.uv0, shape.uv0, 2)
+                        .SeparatePairs();
+        var uv1s =
+            DataTypeUtil.Read(cmb.vatr.uv1, shape.uv1, 2)
+                        .SeparatePairs();
+        var uv2s =
+            DataTypeUtil.Read(cmb.vatr.uv2, shape.uv2, 2)
+                        .SeparatePairs();
+
+        (float X, float Y, float Z) position = default;
+        (float X, float Y, float Z)? normal = default;
+        (byte X, byte Y, byte Z, byte W)? color = default;
+        (float X, float Y)? uv0 = default;
+        (float X, float Y)? uv1 = default;
+        (float X, float Y)? uv2 = default;
+
+        var positionEnumerator = positions.ToEnumerator();
+        var normalEnumerator = normals.ToEnumerator();
+        var colorEnumerator = colors.ToEnumerator();
+        var uv0Enumerator = uv0s.ToEnumerator();
+        var uv1Enumerator = uv1s.ToEnumerator();
+        var uv2Enumerator = uv2s.ToEnumerator();
+
+        for (var i = 0; i < vertexCount; ++i) {
+          if (positionEnumerator.TryMoveNext(out var nextPosition)) {
+            position = nextPosition;
+          }
+
+          var finVertex = finSkin.AddVertex(position.X, position.Y, position.Z);
           finVertices[i] = finVertex;
 
           var index = (ushort) (shape.position.Start / 3 + i);
           verticesByIndex.Add(index, finVertex);
 
           if (hasNrm) {
-            float[] normalValues;
-            if (shape.normal.Mode == VertexAttributeMode.Constant) {
-              normalValues = shape.normal.Constants;
-            } else {
-              r.Position = cmb.startOffset +
-                           cmb.header.vatrOffset +
-                           cmb.vatr.normal.StartOffset +
-                           shape.normal.Start +
-                           3 * DataTypeUtil.GetSize(shape.normal.DataType) * i;
-              normalValues =
-                  DataTypeUtil.Read(r, 3, shape.normal.DataType)
-                              .Select(value => value * shape.normal.Scale)
-                              .ToArray();
+            if (normalEnumerator.TryMoveNext(out var nextNormal)) {
+              normal = nextNormal;
             }
 
-            finVertex.SetLocalNormal(normalValues[0],
-                                     normalValues[1],
-                                     normalValues[2]);
+            finVertex.SetLocalNormal(normal.Value.X,
+                                     normal.Value.Y,
+                                     normal.Value.Z);
           }
 
           if (hasClr) {
-            float[] colorValues;
-            if (shape.color.Mode == VertexAttributeMode.Constant) {
-              colorValues = shape.color.Constants;
-            } else {
-              r.Position = cmb.startOffset +
-                           cmb.header.vatrOffset +
-                           cmb.vatr.color.StartOffset +
-                           shape.color.Start +
-                           4 * DataTypeUtil.GetSize(shape.color.DataType) * i;
-              colorValues =
-                  DataTypeUtil.Read(r, 4, shape.color.DataType)
-                              .Select(value => value * shape.color.Scale)
-                              .ToArray();
+            if (colorEnumerator.TryMoveNext(out var nextColor)) {
+              color = nextColor;
             }
 
-            finVertex.SetColorBytes((byte) (colorValues[0] * 255),
-                                    (byte) (colorValues[1] * 255),
-                                    (byte) (colorValues[2] * 255),
-                                    (byte) (colorValues[3] * 255));
+            finVertex.SetColorBytes(color.Value.X,
+                                    color.Value.Y,
+                                    color.Value.Z,
+                                    color.Value.W);
           }
 
           if (hasUv0) {
-            float[] uv0Values;
-            if (shape.uv0.Mode == VertexAttributeMode.Constant) {
-              uv0Values = shape.color.Constants;
-            } else {
-              r.Position = cmb.startOffset +
-                           cmb.header.vatrOffset +
-                           cmb.vatr.uv0.StartOffset +
-                           shape.uv0.Start +
-                           2 * DataTypeUtil.GetSize(shape.uv0.DataType) * i;
-              uv0Values =
-                  DataTypeUtil.Read(r, 2, shape.uv0.DataType)
-                              .Select(value => value * shape.uv0.Scale)
-                              .ToArray();
+            if (uv0Enumerator.TryMoveNext(out var nextUv0)) {
+              uv0 = nextUv0;
             }
 
-            finVertex.SetUv(0, uv0Values[0], 1 - uv0Values[1]);
+            finVertex.SetUv(0, uv0.Value.X, 1 - uv0.Value.Y);
           }
 
           if (hasUv1) {
-            float[] uv1Values;
-            if (shape.uv1.Mode == VertexAttributeMode.Constant) {
-              uv1Values = shape.color.Constants;
-            } else {
-              r.Position = cmb.startOffset +
-                           cmb.header.vatrOffset +
-                           cmb.vatr.uv1.StartOffset +
-                           shape.uv1.Start +
-                           2 * DataTypeUtil.GetSize(shape.uv1.DataType) * i;
-              uv1Values =
-                  DataTypeUtil.Read(r, 2, shape.uv1.DataType)
-                              .Select(value => value * shape.uv1.Scale)
-                              .ToArray();
-
+            if (uv1Enumerator.TryMoveNext(out var nextUv1)) {
+              uv1 = nextUv1;
             }
-            finVertex.SetUv(1, uv1Values[0], 1 - uv1Values[1]);
+
+            finVertex.SetUv(1, uv1.Value.X, 1 - uv1.Value.Y);
           }
 
           if (hasUv2) {
-            r.Position = cmb.startOffset +
-                         cmb.header.vatrOffset +
-                         cmb.vatr.uv2.StartOffset +
-                         shape.uv2.Start +
-                         2 * DataTypeUtil.GetSize(shape.uv2.DataType) * i;
-            var uv2Values =
-                DataTypeUtil.Read(r, 2, shape.uv2.DataType)
-                            .Select(value => value * shape.uv2.Scale)
-                            .ToArray();
+            if (uv2Enumerator.TryMoveNext(out var nextUv2)) {
+              uv2 = nextUv2;
+            }
 
-            finVertex.SetUv(2, uv2Values[0], 1 - uv2Values[1]);
+            finVertex.SetUv(2, uv2.Value.X, 1 - uv2.Value.Y);
           }
 
           var preprojectMode = preproject[i].Value
@@ -412,8 +391,7 @@ namespace grezzo.api {
                                   .Select(value => value / 100)
                                   .ToArray();
             } else {
-              r.Position = cmb.startOffset +
-                           cmb.header.vatrOffset +
+              r.Position = cmb.header.vatrOffset +
                            cmb.vatr.bWeights.StartOffset +
                            shape.bWeights.Start +
                            i *
