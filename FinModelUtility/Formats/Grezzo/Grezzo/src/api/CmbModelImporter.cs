@@ -44,7 +44,7 @@ namespace grezzo.api {
           new SchemaBinaryReader(cmbFile.OpenRead(),
                                  Endianness.LittleEndian);
 
-      var cmb = new Cmb(r);
+      var cmb = cmbFile.ReadNew<Cmb>();
       r.Position = 0;
 
       (IReadOnlyTreeFile, Csab)[] filesAndCsabs;
@@ -168,26 +168,26 @@ namespace grezzo.api {
 
       // TODO: Move these reads into the model reading logic
       var cmbTextures = cmb.tex.Data.textures;
-      var ctrTexture = new CtrTexture();
 
       var textureImages = new LazyArray<IImage>(
           cmbTextures.Length,
           imageIndex => {
             var cmbTexture = cmbTextures[imageIndex];
-            var position = cmb.startOffset +
-                           cmb.header.textureDataOffset +
-                           cmbTexture.dataOffset;
+            var textureImage = cmb.TextureImages?[imageIndex];
+
             IImage image;
-            if (position != 0) {
-              r.Position = position;
-              image = ctrTexture.DecodeImage(cmbTexture).ReadImage(r);
+            if (textureImage != null) {
+              image = textureImage;
             } else {
               var ctxb =
                   filesAndCtxbs
                       .Select(fileAndCtxb => fileAndCtxb.Item2)
-                      .FirstOrDefault(ctxb => ctxb.Chunk.Entry.Name == cmbTexture.name);
-              image = ctxb != null ? ctrTexture.DecodeImage(cmbTexture)
-                                    .ReadImage(ctxb.Chunk.Entry.Data) : FinImage.Create1x1FromColor(Color.Magenta);
+                      .FirstOrDefault(
+                          ctxb => ctxb.Chunk.Entry.Name == cmbTexture.name);
+              image = ctxb != null
+                  ? cmbTexture.GetImageReader()
+                              .ReadImage(ctxb.Chunk.Entry.Data)
+                  : FinImage.Create1x1FromColor(Color.Magenta);
             }
 
             return image;
