@@ -247,6 +247,13 @@ namespace grezzo.api {
         var hasBi = shape.vertFlags.GetBit(inc++);
         var hasBw = shape.vertFlags.GetBit(inc++);
 
+        var boneWeightEnumerator
+            = new BoneWeightMemoryEnumerator(cmb,
+                                             shape,
+                                             hasBi,
+                                             hasBw,
+                                             finBones);
+
         // Gets bone indices
         var boneCount = shape.boneDimensions;
         var bIndices = new short[vertexCount * boneCount];
@@ -354,25 +361,7 @@ namespace grezzo.api {
             var totalWeight = 0f;
             var boneWeights = new List<BoneWeight>();
 
-            float[] weightValues;
-            if (shape.bWeights.Mode == VertexAttributeMode.Constant) {
-              weightValues = shape.bWeights.Constants
-                                  .Select(value => value / 100)
-                                  .ToArray();
-            } else {
-              r.Position = cmb.header.vatrOffset +
-                           cmb.vatr.bWeights.StartOffset +
-                           shape.bWeights.Start +
-                           i *
-                           DataTypeUtil.GetSize(shape.bWeights.DataType) *
-                           boneCount;
-
-              // TODO: Looks like this is rounded to the nearest 2 in the original??
-              weightValues =
-                  DataTypeUtil.Read(r, boneCount, shape.bWeights.DataType)
-                              .Select(value => value * shape.bWeights.Scale)
-                              .ToArray();
-            }
+            boneWeightEnumerator.TryMoveNextWeights(out var weightValues);
 
             for (var j = 0; j < boneCount; ++j) {
               var weight = weightValues[j];
