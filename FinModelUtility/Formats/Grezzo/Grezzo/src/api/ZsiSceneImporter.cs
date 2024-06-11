@@ -1,8 +1,10 @@
 ﻿using System.Drawing;
+using System.IO;
 using System.Linq;
 
 using fin.color;
 using fin.io;
+using fin.model;
 using fin.scene;
 using fin.schema.vector;
 
@@ -12,6 +14,8 @@ using schema.binary;
 
 namespace grezzo.api {
   public class ZsiSceneImporter : ISceneImporter<ZsiSceneFileBundle> {
+    private readonly CmbModelBuilder cmbModelBuilder_ = new();
+
     public IScene Import(ZsiSceneFileBundle sceneFileBundle) {
       var zsiFile = sceneFileBundle.ZsiFile;
 
@@ -19,40 +23,20 @@ namespace grezzo.api {
 
       var finScene = new SceneImpl();
 
-      var cmbModelBuilder = new CmbModelBuilder();
-      foreach (var meshHeader in zsi.MeshHeaders) {
-        var finArea = finScene.AddArea();
-
-        foreach (var meshEntry in meshHeader.MeshEntries) {
-          var finObject = finArea.AddObject();
-
-          var opaqueMesh = meshEntry.OpaqueMesh;
-          if (opaqueMesh != null) {
-            finObject.AddSceneModel(cmbModelBuilder.BuildModel(opaqueMesh));
-          }
-
-          var translucentMesh = meshEntry.TranslucentMesh;
-          if (translucentMesh != null) {
-            finObject.AddSceneModel(
-                cmbModelBuilder.BuildModel(translucentMesh));
-          }
-        }
-      }
-
       var finLighting = finScene.CreateLighting();
       if (zsi.EnvironmentSettings.Any()) {
-        foreach (var zsiLightSettings in zsi.EnvironmentSettings) {
-          finLighting.AmbientLightColor = zsiLightSettings.SceneAmbientColor;
-          finLighting.AmbientLightStrength = 1;
+        var zsiLightSettings = zsi.EnvironmentSettings.First();
 
-          var light0 = finLighting.CreateLight();
-          light0.SetColor(zsiLightSettings.LightColor0);
-          light0.SetNormal(zsiLightSettings.LightNormal0);
+        finLighting.AmbientLightColor = zsiLightSettings.SceneAmbientColor;
+        finLighting.AmbientLightStrength = 1;
 
-          var light1 = finLighting.CreateLight();
-          light1.SetColor(zsiLightSettings.LightColor1);
-          light1.SetNormal(zsiLightSettings.LightNormal1);
-        }
+        var light0 = finLighting.CreateLight();
+        light0.SetColor(zsiLightSettings.LightColor0);
+        light0.SetNormal(zsiLightSettings.LightNormal0);
+
+        var light1 = finLighting.CreateLight();
+        light1.SetColor(zsiLightSettings.LightColor1);
+        light1.SetNormal(zsiLightSettings.LightNormal1);
       } else {
         var colorWhite = FinColor.FromSystemColor(Color.White);
 
@@ -63,7 +47,7 @@ namespace grezzo.api {
         light0.SetColor(colorWhite);
         light0.SetNormal(new Vector3f() {
             X = 0.57715f,
-            Y = 0.57715f, 
+            Y = 0.57715f,
             Z = 0.57715f
         });
 
@@ -76,7 +60,38 @@ namespace grezzo.api {
         });
       }
 
+      this.AddZsiMeshAsNewArea_(finScene, zsi);
+
+      foreach (var roomFileName in zsi.RoomFileNames) {
+        var roomZsiFile = zsiFile.AssertGetParent()
+                                 .AssertGetExistingFile(
+                                     Path.GetFileName(roomFileName));
+        var roomZsi = roomZsiFile.ReadNew<Zsi>(Endianness.LittleEndian);
+        this.AddZsiMeshAsNewArea_(finScene, roomZsi);
+      }
+
       return finScene;
+    }
+
+    private void AddZsiMeshAsNewArea_(IScene finScene, Zsi zsi) {
+      var finArea = finScene.AddArea();
+      foreach (var meshHeader in zsi.MeshHeaders) {
+        foreach (var meshEntry in meshHeader.MeshEntries) {
+          var finObject = finArea.AddObject();
+
+          var opaqueMesh = meshEntry.OpaqueMesh;
+          if (opaqueMesh != null) {
+            finObject.AddSceneModel(
+                this.cmbModelBuilder_.BuildModel(opaqueMesh));
+          }
+
+          var translucentMesh = meshEntry.TranslucentMesh;
+          if (translucentMesh != null) {
+            finObject.AddSceneModel(
+                this.cmbModelBuilder_.BuildModel(translucentMesh));
+          }
+        }
+      }
     }
   }
 }

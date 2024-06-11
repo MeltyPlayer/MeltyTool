@@ -11,8 +11,8 @@ namespace grezzo.schema.zsi {
     public string Name { get; set; }
 
     public List<MeshHeader> MeshHeaders { get; set; }
-
     public List<IEnvironmentSettings> EnvironmentSettings { get; set; }
+    public List<string> RoomFileNames { get; set; }
 
     public void Read(IBinaryReader br) {
       var isCompressed =
@@ -47,6 +47,7 @@ namespace grezzo.schema.zsi {
 
         this.MeshHeaders = new List<MeshHeader>();
         this.EnvironmentSettings = new List<IEnvironmentSettings>();
+        this.RoomFileNames = new List<string>();
         foreach (var (cmdType, cmd0, cmd1) in commands) {
           switch (cmdType) {
             case ZsiSectionType.MESH_HEADER: {
@@ -65,6 +66,18 @@ namespace grezzo.schema.zsi {
                     br.ReadNew<EnvironmentSettingsMm3d>()
                     : br.ReadNew<EnvironmentSettingsOot3d>();
                 this.EnvironmentSettings.Add(environmentSettings);
+              }
+
+              break;
+            }
+            case ZsiSectionType.ROOMS: {
+              var count = (cmd0 >> 8) & 0xFF;
+
+              var roomStringLength = isMm3d ? 0x34 : 0x44;
+
+              br.Position = cmd1;
+              for (var i = 0; i < count; ++i) {
+                this.RoomFileNames.Add(br.ReadString(roomStringLength));
               }
 
               break;
