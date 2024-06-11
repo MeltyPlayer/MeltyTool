@@ -6,17 +6,23 @@ namespace grezzo.schema.zsi {
   public class Zsi : IBinaryDeserializable {
     public byte Version { get; set; }
     public string Name { get; set; }
+
     public List<MeshHeader> MeshHeaders { get; set; }
+
+    public List<IEnvironmentSettings> EnvironmentSettings { get; set; }
 
     public void Read(IBinaryReader br) {
       br.AssertString("ZSI");
       this.Version = br.ReadByte();
 
+      var isMm3d = this.Version > 1;
+
       this.Name = br.ReadString(12);
 
       br.PushLocalSpace();
       {
-        var commands = new List<(ZsiSectionType cmdType, uint cmd0, uint cmd1)>();
+        var commands
+            = new List<(ZsiSectionType cmdType, uint cmd0, uint cmd1)>();
         while (true) {
           var cmd0 = br.ReadUInt32();
           var cmd1 = br.ReadUInt32();
@@ -30,12 +36,29 @@ namespace grezzo.schema.zsi {
         }
 
         this.MeshHeaders = new List<MeshHeader>();
+        this.EnvironmentSettings = new List<IEnvironmentSettings>();
         foreach (var (cmdType, cmd0, cmd1) in commands) {
-          if (cmdType == ZsiSectionType.MESH_HEADER) {
-            var meshHeader = new MeshHeader(cmd1);
-            meshHeader.Read(br);
+          switch (cmdType) {
+            case ZsiSectionType.MESH_HEADER: {
+              br.Position = cmd1;
+              var meshHeader = br.ReadNew<MeshHeader>();
+              this.MeshHeaders.Add(meshHeader);
+              break;
+            }
+            case ZsiSectionType.ENVIRONMENT_SETTINGS: {
+              var count = (cmd0 >> 8) & 0xFF;
 
-            this.MeshHeaders.Add(meshHeader);
+              br.Position = cmd1;
+              for (var i = 0; i < count; ++i) {
+                var environmentSettings = isMm3d
+                    ? (IEnvironmentSettings)
+                    br.ReadNew<EnvironmentSettingsMm3d>()
+                    : br.ReadNew<EnvironmentSettingsOot3d>();
+                this.EnvironmentSettings.Add(environmentSettings);
+              }
+
+              break;
+            }
           }
         }
       }

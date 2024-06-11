@@ -1,7 +1,7 @@
 ﻿using schema.binary;
 
 namespace grezzo.schema.zsi {
-  public class MeshHeader(uint pos) : IBinaryDeserializable {
+  public class MeshHeader : IBinaryDeserializable {
     public byte Type { get; set; }
     public byte EntryCount { get; set; }
     public short Unk { get; set; }
@@ -13,8 +13,6 @@ namespace grezzo.schema.zsi {
     public ushort UnkValue { get; set; }
 
     public void Read(IBinaryReader br) {
-      br.Position = pos;
-
       this.Type = br.ReadByte();
       this.EntryCount = br.ReadByte();
       this.Unk = br.ReadInt16();

@@ -15,7 +15,7 @@
     LIGHTS,
     PATHS,
     TRANSITION_ACTOR,
-    LIGHT_SETTINGS,
+    ENVIRONMENT_SETTINGS,
     TIME_SETTINGS,
     SKYBOX_SETTINGS,
     SKYBOX_MODIFIER,
@@ -27,4 +27,6 @@
     ALTERNATE_HEADERS,
     MISC_SETTINGS,
   }
+
+  public interface IZsiSection { }
 }
