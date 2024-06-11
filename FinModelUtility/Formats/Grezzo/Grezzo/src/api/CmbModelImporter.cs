@@ -43,10 +43,6 @@ namespace grezzo.api {
 
       var cmb = cmbFile.ReadNew<Cmb>();
 
-      using var r =
-          new SchemaBinaryReader(cmbFile.OpenRead(),
-                                 Endianness.LittleEndian);
-
       (IReadOnlyTreeFile, Csab)[] filesAndCsabs;
       if (csabFiles == null) {
         filesAndCsabs = Array.Empty<(IReadOnlyTreeFile, Csab)>();
@@ -254,40 +250,6 @@ namespace grezzo.api {
                                              hasBw,
                                              finBones);
 
-        // Gets bone indices
-        var boneCount = shape.boneDimensions;
-        var bIndices = new short[vertexCount * boneCount];
-        foreach (var pset in shape.primitiveSets) {
-          foreach (var i in pset.primitive.indices) {
-            if (hasBi && pset.skinningMode != SkinningMode.Single) {
-              float[] readBIndices;
-              if (shape.bIndices.Mode == VertexAttributeMode.Constant) {
-                readBIndices = shape.bIndices.Constants;
-              } else {
-                r.Position = cmb.header.vatrOffset +
-                             cmb.vatr.bIndices.StartOffset +
-                             shape.bIndices.Start +
-                             i *
-                             DataTypeUtil.GetSize(shape.bIndices.DataType) *
-                             shape.boneDimensions;
-                readBIndices =
-                    DataTypeUtil.Read(r,
-                                      shape.boneDimensions,
-                                      shape.bIndices.DataType)
-                                .Select(value => value * shape.bIndices.Scale)
-                                .ToArray();
-              }
-
-              for (var bi = 0; bi < shape.boneDimensions; ++bi) {
-                bIndices[i * boneCount + bi] =
-                    pset.boneTable[(int) readBIndices[bi]];
-              }
-            } else {
-              bIndices[i] = shape.primitiveSets[0].boneTable[0];
-            }
-          }
-        }
-
         var finMesh = finSkin.AddMesh();
 
         // Get vertices
@@ -357,6 +319,12 @@ namespace grezzo.api {
               ? VertexSpace.RELATIVE_TO_BONE
               : VertexSpace.RELATIVE_TO_WORLD;
 
+          boneWeightEnumerator.TryMoveNextBones(
+              out var bones,
+              out var single);
+
+          var boneCount = single ? 1 : shape.boneDimensions;
+
           if (hasBw) {
             var totalWeight = 0f;
             var boneWeights = new List<BoneWeight>();
@@ -368,8 +336,7 @@ namespace grezzo.api {
               totalWeight += weight;
 
               if (weight > 0) {
-                var bone =
-                    finBones[bIndices[i * boneCount + j]];
+                var bone = bones[j];
                 var boneWeight = new BoneWeight(bone, null, weight);
 
                 boneWeights.Add(boneWeight);
@@ -382,10 +349,8 @@ namespace grezzo.api {
                 finSkin.GetOrCreateBoneWeights(preprojectMode,
                                                boneWeights.ToArray()));
           } else {
-            var boneIndex = bIndices[i];
             finVertex.SetBoneWeights(
-                finSkin.GetOrCreateBoneWeights(preprojectMode,
-                                               finBones[boneIndex]));
+                finSkin.GetOrCreateBoneWeights(preprojectMode, bones[0]));
           }
         }
 
