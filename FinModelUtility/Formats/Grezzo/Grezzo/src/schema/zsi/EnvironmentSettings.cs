@@ -49,7 +49,7 @@ namespace grezzo.schema.zsi {
     [Skip]
     public float BlendRate => (this.Flags >> 10) * 4;
 
-    public Rgb24 AmbientColor { get; set; }
+    public Rgb24 AmbientColor { get; } = new();
 
     [Skip]
     public Rgb24 SceneAmbientColor => this.AmbientColor;
@@ -57,27 +57,27 @@ namespace grezzo.schema.zsi {
     [Skip]
     public Rgb24 ActorAmbientColor => this.AmbientColor;
 
-    public Rgb24 LightColor0 { get; set; }
-    public LightNormal LightNormal0 { get; set; }
+    public Rgb24 LightColor0 { get; } = new();
+    public LightNormal LightNormal0 { get; } = new();
 
-    public Rgb24 LightColor1 { get; set; }
-    public LightNormal LightNormal1 { get; set; }
+    public Rgb24 LightColor1 { get; } = new();
+    public LightNormal LightNormal1 { get; } = new();
 
-    public Rgb24 FogColor { get; set; }
+    public Rgb24 FogColor { get; } = new();
   }
 
   [BinarySchema]
   public partial class EnvironmentSettingsMm3d : IEnvironmentSettings, IBinaryConvertible {
-    public Rgb24 ActorAmbientColor { get; set; }
-    public Rgb24 SceneAmbientColor { get; set; }
+    public Rgb24 ActorAmbientColor { get; } = new();
+    public Rgb24 SceneAmbientColor { get; } = new();
 
-    public LightNormal LightNormal0 { get; set; }
-    public Rgb24 LightColor0 { get; set; }
+    public LightNormal LightNormal0 { get; } = new();
+    public Rgb24 LightColor0 { get; } = new();
 
-    public LightNormal LightNormal1 { get; set; }
-    public Rgb24 LightColor1 { get; set; }
+    public LightNormal LightNormal1 { get; } = new();
+    public Rgb24 LightColor1 { get; } = new();
 
-    public Rgb24 FogColor { get; set; }
+    public Rgb24 FogColor { get; } = new();
 
     private byte unk_;
 

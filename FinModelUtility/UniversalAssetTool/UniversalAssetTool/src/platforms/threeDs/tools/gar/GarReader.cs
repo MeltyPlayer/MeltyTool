@@ -1,4 +1,5 @@
-﻿using fin.io;
+﻿using fin.decompression;
+using fin.io;
 using fin.io.archive;
 using fin.util.strings;
 
@@ -15,9 +16,9 @@ namespace uni.platforms.threeDs.tools.gar {
         return new SubArchiveStream(archive);
       }
 
-      var er = new SchemaBinaryReader(archive);
+      var br = new SchemaBinaryReader(archive);
       var isCompressed =
-          new LzssDecompressor().TryToDecompress(er, out var decompressedGar);
+          new LzssDecompressor().TryToDecompress(br, out var decompressedGar);
 
       archive.Position = 0;
 

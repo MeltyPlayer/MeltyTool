@@ -1,10 +1,11 @@
-﻿using fin.data;
-using fin.data.dictionaries;
+﻿using fin.data.dictionaries;
 using fin.decompression;
 
 using level5.decompression;
 
 using schema.binary;
+
+using LzssDecompressor = level5.decompression.LzssDecompressor;
 
 namespace level5.schema {
   public record XcFile(string Name, byte[] Data);

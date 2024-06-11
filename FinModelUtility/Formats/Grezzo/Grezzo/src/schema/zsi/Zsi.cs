@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+
+using fin.decompression;
 
 using schema.binary;
 
@@ -12,6 +15,13 @@ namespace grezzo.schema.zsi {
     public List<IEnvironmentSettings> EnvironmentSettings { get; set; }
 
     public void Read(IBinaryReader br) {
+      var isCompressed =
+          new LzssDecompressor().TryToDecompress(br, out var decompressed);
+      if (isCompressed) {
+        br = new SchemaBinaryReader(new MemoryStream(decompressed!),
+                                    br.Endianness);
+      }
+
       br.AssertString("ZSI");
       this.Version = br.ReadByte();
 

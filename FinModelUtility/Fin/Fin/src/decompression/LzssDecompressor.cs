@@ -1,3 +1,5 @@
+using System;
+
 using fin.math;
 using fin.schema;
 using fin.util.asserts;
@@ -5,7 +7,7 @@ using fin.util.strings;
 
 using schema.binary;
 
-namespace uni.platforms.threeDs.tools {
+namespace fin.decompression {
   public class LzssDecompressor {
     public bool TryToDecompress(IBinaryReader br, out byte[]? data) {
       if (br.TryReadNew(out LzssHeader? header)) {
