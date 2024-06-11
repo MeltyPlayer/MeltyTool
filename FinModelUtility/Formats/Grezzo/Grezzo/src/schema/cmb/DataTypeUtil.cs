@@ -77,7 +77,7 @@ namespace grezzo.schema.cmb {
       var size = dataType.GetSize();
       var scale = attribute.Scale;
 
-      for (var i = 0; i < slice.Size / size; ++i) {
+      for (var i = 0; i < span.Length / size; ++i) {
         yield return scale * DataTypeUtil.Read(span.Slice(size * i, size), dataType);
       }
     }
