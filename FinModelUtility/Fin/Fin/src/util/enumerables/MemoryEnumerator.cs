@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace fin.util.enumerables {
   public interface IMemoryEnumerator<TValue> {
@@ -11,28 +12,39 @@ namespace fin.util.enumerables {
       this.TryMoveNext();
       return this.Current;
     }
+
+    bool TryReadInto(Span<TValue> dst) {
+      var didRead = false;
+      for (var i = 0; i < dst.Length; ++i) {
+        if (this.TryMoveNext()) {
+          didRead = didRead || true;
+        }
+
+        dst[i] = this.Current;
+      }
+
+      return didRead;
+    }
   }
 
-  public class MemoryEnumerator<TEnumerated, TValue>
-      : IMemoryEnumerator<TValue> {
-    private readonly IEnumerator<TEnumerated> impl_;
-    private readonly TryMoveNextDelegate tryMoveNextHandler_;
+  public class MemoryEnumerator<T>(
+      IEnumerator<T> impl,
+      MemoryEnumerator<T, T>.TryMoveNextDelegate tryMoveNextHandler)
+      : MemoryEnumerator<T, T>(impl, tryMoveNextHandler);
 
+  public class MemoryEnumerator<TEnumerated, TValue>(
+      IEnumerator<TEnumerated> impl,
+      MemoryEnumerator<TEnumerated, TValue>.TryMoveNextDelegate
+          tryMoveNextHandler)
+      : IMemoryEnumerator<TValue> {
     public delegate bool TryMoveNextDelegate(
         IEnumerator<TEnumerated> enumerator,
         out TValue value);
 
-    public MemoryEnumerator(
-        IEnumerator<TEnumerated> impl,
-        TryMoveNextDelegate tryMoveNextHandler) {
-      this.impl_ = impl;
-      this.tryMoveNextHandler_ = tryMoveNextHandler;
-    }
-
     public TValue Current { get; private set; } = default;
 
     public bool TryMoveNext(out TValue nextValue) {
-      if (!this.tryMoveNextHandler_(this.impl_, out nextValue)) {
+      if (!tryMoveNextHandler(impl, out nextValue)) {
         return false;
       }
 
@@ -53,7 +65,7 @@ namespace fin.util.enumerables {
 
     public static IMemoryEnumerator<T> ToMemoryEnumerator<T>(
         this IEnumerable<T> enumerable)
-      => new MemoryEnumerator<T, T>(
+      => new MemoryEnumerator<T>(
           enumerable.GetEnumerator(),
           EnumeratorExtensions.TryMoveNext);
   }
