@@ -51,6 +51,7 @@ namespace grezzo.schema.cmb {
     public readonly Vatr vatr = new();
 
     public void Read(IBinaryReader br) {
+      br.PushLocalSpace();
       this.header.Read(br);
 
       br.Position = this.header.sklOffset;
@@ -113,6 +114,8 @@ namespace grezzo.schema.cmb {
           }
         }
       }
+
+      br.PopLocalSpace();
     }
   }
 }

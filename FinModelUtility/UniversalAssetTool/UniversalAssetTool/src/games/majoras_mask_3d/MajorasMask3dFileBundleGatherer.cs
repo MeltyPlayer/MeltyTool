@@ -8,10 +8,10 @@ using uni.util.bundles;
 using uni.util.io;
 
 namespace uni.games.majoras_mask_3d {
-  using IAnnotatedCmbBundle = IAnnotatedFileBundle<CmbModelFileBundle>;
+  using IAnnotatedBundle = IAnnotatedFileBundle<IFileBundle>;
 
   public class MajorasMask3dFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<CmbModelFileBundle> {
+      : IAnnotatedFileBundleGatherer<IFileBundle> {
     private readonly IModelSeparator separator_
         = new ModelSeparator(directory => directory.Name)
           .Register(new AllAnimationsModelSeparatorMethod(),
@@ -22,15 +22,14 @@ namespace uni.games.majoras_mask_3d {
                     "zelda2_eg");
 
 
-    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedBundle> GatherFileBundles() {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "majoras_mask_3d",
               out var fileHierarchy)) {
-        return Enumerable.Empty<IAnnotatedCmbBundle>();
+        return Enumerable.Empty<IAnnotatedBundle>();
       }
 
-      return new AnnotatedFileBundleGathererAccumulatorWithInput<
-                 CmbModelFileBundle,
+      return new AnnotatedFileBundleGathererAccumulatorWithInput<IFileBundle,
                  IFileHierarchy>(fileHierarchy)
              .Add(this.GetAutomaticModels_)
              .Add(this.GetModelsViaSeparator_)
@@ -38,7 +37,7 @@ namespace uni.games.majoras_mask_3d {
              .GatherFileBundles();
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetAutomaticModels_(
+    private IEnumerable<IAnnotatedBundle> GetAutomaticModels_(
         IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
       foreach (var actorDir in actorsDir.GetExistingSubdirs()) {
@@ -64,25 +63,25 @@ namespace uni.games.majoras_mask_3d {
 
       var sceneDir = fileHierarchy.Root.AssertGetExistingSubdir("scenes");
       foreach (var zsiFile in sceneDir.GetFilesWithFileType(".zsi")) {
-        yield return new CmbModelFileBundle("majoras_mask_3d", zsiFile)
+        yield return new ZsiSceneFileBundle("majoras_mask_3d", zsiFile)
             .Annotate(zsiFile);
       }
     }
 
 
-    private IEnumerable<IAnnotatedCmbBundle> GetModelsViaSeparator_(
+    private IEnumerable<IAnnotatedBundle> GetModelsViaSeparator_(
         IFileHierarchy fileHierarchy)
-      => new FileHierarchyAssetBundleSeparator<CmbModelFileBundle>(
+      => new FileHierarchyAssetBundleSeparator<IFileBundle>(
           fileHierarchy,
           subdir => {
             if (!separator_.Contains(subdir)) {
-              return Enumerable.Empty<IAnnotatedCmbBundle>();
+              return Enumerable.Empty<IAnnotatedBundle>();
             }
 
             var cmbFiles =
                 subdir.FilesWithExtensionsRecursive(".cmb").ToArray();
             if (cmbFiles.Length == 0) {
-              return Enumerable.Empty<IAnnotatedCmbBundle>();
+              return Enumerable.Empty<IAnnotatedBundle>();
             }
 
             var csabFiles =
@@ -101,12 +100,12 @@ namespace uni.games.majoras_mask_3d {
                                         null
                                     ).Annotate(bundle.ModelFile));
             } catch {
-              return Enumerable.Empty<IAnnotatedCmbBundle>();
+              return Enumerable.Empty<IAnnotatedBundle>();
             }
           }
       ).GatherFileBundles();
 
-    private IEnumerable<IAnnotatedCmbBundle> GetLinkModels_(
+    private IEnumerable<IAnnotatedBundle> GetLinkModels_(
         IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
 

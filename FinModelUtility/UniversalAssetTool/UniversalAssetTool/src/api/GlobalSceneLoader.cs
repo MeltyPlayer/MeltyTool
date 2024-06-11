@@ -1,7 +1,8 @@
-﻿using fin.model;
-using fin.scene;
+﻿using fin.scene;
 
 using games.pikmin2.api;
+
+using grezzo.api;
 
 using hw.api;
 
@@ -22,7 +23,9 @@ namespace uni.api {
                   sm64LevelSceneFileBundle),
           VisSceneFileBundle visSceneFileBundle
               => new VisSceneImporter().Import(visSceneFileBundle),
-          _ => throw new ArgumentOutOfRangeException(nameof(sceneFileBundle))
+          ZsiSceneFileBundle zsiSceneFileBundle
+              => new ZsiSceneImporter().Import(zsiSceneFileBundle),
+        _ => throw new ArgumentOutOfRangeException(nameof(sceneFileBundle))
       };
   }
 }

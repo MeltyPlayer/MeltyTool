@@ -9,10 +9,10 @@ using uni.util.bundles;
 using uni.util.io;
 
 namespace uni.games.ocarina_of_time_3d {
-  using IAnnotatedCmbBundle = IAnnotatedFileBundle<CmbModelFileBundle>;
+  using IAnnotatedBundle = IAnnotatedFileBundle<IFileBundle>;
 
   public class OcarinaOfTime3dFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<CmbModelFileBundle> {
+      : IAnnotatedFileBundleGatherer<IFileBundle> {
     // TODO: Add support for Link
     // TODO: Add support for faceb
     // TODO: Add support for cmab
@@ -119,15 +119,15 @@ namespace uni.games.ocarina_of_time_3d {
           .Register("zelda_wm2", new NoAnimationsModelSeparatorMethod())
           .Register("zelda_xc", new NoAnimationsModelSeparatorMethod());
 
-    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedBundle> GatherFileBundles() {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "ocarina_of_time_3d",
               out var fileHierarchy)) {
-        return Enumerable.Empty<IAnnotatedCmbBundle>();
+        return Enumerable.Empty<IAnnotatedBundle>();
       }
 
       return new AnnotatedFileBundleGathererAccumulatorWithInput<
-                 CmbModelFileBundle,
+                 IFileBundle,
                  IFileHierarchy>(
                  fileHierarchy)
              .Add(this.GetAutomaticModels_)
@@ -141,19 +141,19 @@ namespace uni.games.ocarina_of_time_3d {
              .GatherFileBundles();
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetModelsViaSeparator_(
+    private IEnumerable<IAnnotatedBundle> GetModelsViaSeparator_(
         IFileHierarchy fileHierarchy)
-      => new FileHierarchyAssetBundleSeparator<CmbModelFileBundle>(
+      => new FileHierarchyAssetBundleSeparator<IFileBundle>(
           fileHierarchy,
           subdir => {
             if (!separator_.Contains(subdir)) {
-              return Enumerable.Empty<IAnnotatedCmbBundle>();
+              return Enumerable.Empty<IAnnotatedBundle>();
             }
 
             var cmbFiles =
                 subdir.FilesWithExtensionsRecursive(".cmb").ToArray();
             if (cmbFiles.Length == 0) {
-              return Enumerable.Empty<IAnnotatedCmbBundle>();
+              return Enumerable.Empty<IAnnotatedBundle>();
             }
 
             var csabFiles =
@@ -173,12 +173,12 @@ namespace uni.games.ocarina_of_time_3d {
                                         null
                                     ).Annotate(bundle.ModelFile));
             } catch {
-              return Enumerable.Empty<IAnnotatedCmbBundle>();
+              return Enumerable.Empty<IAnnotatedBundle>();
             }
           }
       ).GatherFileBundles();
 
-    private IEnumerable<IAnnotatedCmbBundle> GetAutomaticModels_(
+    private IEnumerable<IAnnotatedBundle> GetAutomaticModels_(
         IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actor");
       foreach (var actorDir in actorsDir.GetExistingSubdirs()) {
@@ -198,12 +198,12 @@ namespace uni.games.ocarina_of_time_3d {
 
       var sceneDir = fileHierarchy.Root.AssertGetExistingSubdir("scene");
       foreach (var zsiFile in sceneDir.GetFilesWithFileType(".zsi")) {
-        yield return new CmbModelFileBundle("ocarina_of_time_3d", zsiFile)
+        yield return new ZsiSceneFileBundle("ocarina_of_time_3d", zsiFile)
             .Annotate(zsiFile);
       }
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetLinkModels_(
+    private IEnumerable<IAnnotatedBundle> GetLinkModels_(
         IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actor");
 
@@ -229,7 +229,7 @@ namespace uni.games.ocarina_of_time_3d {
                   .ToArray()).Annotate(adultModel);
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetGanondorfModels_(
+    private IEnumerable<IAnnotatedBundle> GetGanondorfModels_(
         IFileHierarchy fileHierarchy) {
       var baseDir =
           fileHierarchy.Root.AssertGetExistingSubdir("actor/zelda_ganon");
@@ -265,7 +265,7 @@ namespace uni.games.ocarina_of_time_3d {
       }
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetOwlModels_(
+    private IEnumerable<IAnnotatedBundle> GetOwlModels_(
         IFileHierarchy fileHierarchy) {
       var owlDir =
           fileHierarchy.Root.AssertGetExistingSubdir("actor/zelda_owl");
@@ -291,7 +291,7 @@ namespace uni.games.ocarina_of_time_3d {
                 .ToArray()).Annotate(flyingModel);
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetVolvagiaModels_(
+    private IEnumerable<IAnnotatedBundle> GetVolvagiaModels_(
         IFileHierarchy fileHierarchy) {
       var baseDir =
           fileHierarchy.Root.AssertGetExistingSubdir("actor/zelda_fd");
@@ -317,7 +317,7 @@ namespace uni.games.ocarina_of_time_3d {
       // TODO: What does vb_FWDtest.csab belong to?
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetMoblinModels_(
+    private IEnumerable<IAnnotatedBundle> GetMoblinModels_(
         IFileHierarchy fileHierarchy) {
       var baseDir =
           fileHierarchy.Root.AssertGetExistingSubdir("actor/zelda_mb");
@@ -341,7 +341,7 @@ namespace uni.games.ocarina_of_time_3d {
                  .ToList()).Annotate(bossMoblinModel);
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetBongoBongoModels_(
+    private IEnumerable<IAnnotatedBundle> GetBongoBongoModels_(
         IFileHierarchy fileHierarchy) {
       var baseDir =
           fileHierarchy.Root.AssertGetExistingSubdir("actor/zelda_sst");

@@ -22,9 +22,12 @@ namespace grezzo.schema.zsi {
       this.EntryOffset = br.ReadUInt32();
       this.UnkOffset = br.ReadUInt32();
 
-      this.MeshEntries = br.SubreadAt(
-          pos + this.EntryOffset,
-          sbr => sbr.ReadNews<MeshEntry>(this.EntryCount));
+      var tmp = br.Position;
+      {
+        br.Position = this.EntryOffset;
+        this.MeshEntries = br.ReadNews<MeshEntry>(this.EntryCount);
+      }
+      br.Position = tmp;
 
       this.UnkValue = br.SubreadUInt16At(this.UnkOffset + 16);
     }

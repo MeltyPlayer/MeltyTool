@@ -14,28 +14,32 @@ namespace grezzo.schema.zsi {
 
       this.Name = br.ReadString(12);
 
-      var commands = new List<(ZsiSectionType cmdType, uint cmd0, uint cmd1)>();
-      while (true) {
-        var cmd0 = br.ReadUInt32();
-        var cmd1 = br.ReadUInt32();
-        var cmdType = (ZsiSectionType) (cmd0 >> 24);
+      br.PushLocalSpace();
+      {
+        var commands = new List<(ZsiSectionType cmdType, uint cmd0, uint cmd1)>();
+        while (true) {
+          var cmd0 = br.ReadUInt32();
+          var cmd1 = br.ReadUInt32();
+          var cmdType = (ZsiSectionType) (cmd0 & 0xFF);
 
-        commands.Add((cmdType, cmd0, cmd1));
+          commands.Add((cmdType, cmd0, cmd1));
 
-        if (cmdType == ZsiSectionType.END) {
-          break;
+          if (cmdType == ZsiSectionType.END) {
+            break;
+          }
+        }
+
+        this.MeshHeaders = new List<MeshHeader>();
+        foreach (var (cmdType, cmd0, cmd1) in commands) {
+          if (cmdType == ZsiSectionType.MESH_HEADER) {
+            var meshHeader = new MeshHeader(cmd1);
+            meshHeader.Read(br);
+
+            this.MeshHeaders.Add(meshHeader);
+          }
         }
       }
-
-      this.MeshHeaders = new List<MeshHeader>();
-      foreach (var (cmdType, cmd0, cmd1) in commands) {
-        if (cmdType == ZsiSectionType.MESH_HEADER) {
-          var meshHeader = new MeshHeader(cmd1);
-          meshHeader.Read(br);
-
-          this.MeshHeaders.Add(meshHeader);
-        }
-      }
+      br.PopLocalSpace();
     }
   }
 }
