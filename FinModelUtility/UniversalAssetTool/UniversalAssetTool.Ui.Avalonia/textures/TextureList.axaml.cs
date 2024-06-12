@@ -11,16 +11,16 @@ using fin.util.asserts;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.model.materials;
+using uni.ui.avalonia.model;
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.textures {
   public class TextureListViewModelForDesigner
       : TextureListViewModel {
     public TextureListViewModelForDesigner() {
-      this.Textures = MaterialDesignerUtil.CreateStubMaterial()
-                                          .Textures
-                                          .ToArray();
+      this.Textures = ModelDesignerUtil.CreateStubMaterial()
+                                       .Textures
+                                       .ToArray();
     }
   }
 

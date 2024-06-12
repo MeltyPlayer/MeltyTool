@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace fin.util.time {
-  public class TimedCallback {
+  public class TimedCallback : IDisposable {
     private readonly Timer impl_;
     private float periodSeconds_;
+
+    ~TimedCallback() => this.Dispose();
+    public void Dispose() => this.impl_.Dispose();
 
     public static TimedCallback WithFrequency(Action callback, float hertz)
       => WithPeriod(callback, 1 / hertz);
 
     public static TimedCallback WithPeriod(Action callback,
                                            float periodSeconds)
-      => new TimedCallback(callback, periodSeconds);
+      => new(callback, periodSeconds);
 
     public TimedCallback(Action callback, float periodSeconds) {
-      this.impl_ = new Timer(_ => callback(), null, 0,
+      this.impl_ = new Timer(_ => callback(),
+                             null,
+                             0,
                              (long) (periodSeconds * 1000));
       this.periodSeconds_ = periodSeconds;
     }

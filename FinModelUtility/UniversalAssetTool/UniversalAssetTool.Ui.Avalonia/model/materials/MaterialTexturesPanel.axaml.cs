@@ -17,7 +17,7 @@ namespace uni.ui.avalonia.model.materials {
       : MaterialTexturesPanelViewModel {
     public MaterialTexturesPanelViewModelForDesigner() {
       this.Textures
-          = MaterialDesignerUtil.CreateStubMaterial().Textures.ToArray();
+          = ModelDesignerUtil.CreateStubMaterial().Textures.ToArray();
     }
   }
 

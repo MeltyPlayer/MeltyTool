@@ -13,7 +13,7 @@
   </Design.DataContext>
 
   <TabControl Classes="h2 spaceFirst indented">
-    <TabItem Header="Info" />
+    <!--<TabItem Header="Info" />-->
     <TabItem Header="Skeleton" />
     <TabItem Header="Animations" />
     <TabItem Header="Materials" >

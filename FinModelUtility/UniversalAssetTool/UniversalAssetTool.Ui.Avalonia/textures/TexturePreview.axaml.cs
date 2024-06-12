@@ -14,7 +14,7 @@ using fin.util.asserts;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.model.materials;
+using uni.ui.avalonia.model;
 using uni.ui.avalonia.resources;
 using uni.ui.avalonia.ViewModels;
 
@@ -24,7 +24,7 @@ namespace uni.ui.avalonia.textures;
 
 public class TexturePreviewViewModelForDesigner : TexturePreviewViewModel {
   public TexturePreviewViewModelForDesigner() {
-    this.Texture = MaterialDesignerUtil.CreateStubTexture(32, 48);
+    this.Texture = ModelDesignerUtil.CreateStubTexture(32, 48);
     this.ImageMargin = new Thickness(10);
   }
 }

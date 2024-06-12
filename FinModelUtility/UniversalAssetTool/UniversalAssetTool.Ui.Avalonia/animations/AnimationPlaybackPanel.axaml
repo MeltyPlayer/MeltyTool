@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:animations="clr-namespace:uni.ui.avalonia.animations"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="130"
+             x:Class="uni.ui.avalonia.animations.AnimationPlaybackPanel"
+             x:DataType="animations:AnimationPlaybackPanelViewModel">
+  <Design.DataContext>
+    <animations:AnimationPlaybackPanelViewModelForDesigner />
+  </Design.DataContext>
+
+  <StackPanel>
+    <Grid ColumnDefinitions="Auto *">
+      <TextBlock Classes="h2">Playback</TextBlock>
+      <TextBlock Grid.Column="1"
+                 HorizontalAlignment="Right"
+                 Margin="0 21 0 0">
+        <TextBlock.Text>
+          <MultiBinding StringFormat="{}{0:0.0} / {1}">
+            <Binding Path="Frame" />
+            <Binding Path="FrameCount" />
+          </MultiBinding>
+        </TextBlock.Text>
+      </TextBlock>
+    </Grid>
+
+    <Slider Minimum="0"
+            Maximum="{Binding LastFrame}"
+            Value="{Binding Frame, Mode=TwoWay}"
+            IsEnabled="{Binding IsPlaying, Converter={x:Static BoolConverters.Not}}"/>
+
+    <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center">
+      <Button ToolTip.Tip="First frame"
+              Click="JumpToFirstFrame_">
+        <avalonia:MaterialIcon Kind="SkipBackward" />
+      </Button>
+      <Button ToolTip.Tip="Previous frame"
+              Click="JumpToPreviousFrame_">
+        <avalonia:MaterialIcon Kind="StepBackward" />
+      </Button>
+
+      <ToggleButton
+          IsChecked="{Binding IsPlaying, Mode=TwoWay}"
+          ToolTip.Tip="{Binding PlayButtonTooltip}">
+        <controls:If Condition="{Binding IsPlaying}">
+          <controls:If.ContentWhenTrue>
+            <avalonia:MaterialIcon Kind="Play" />
+          </controls:If.ContentWhenTrue>
+          <controls:If.ContentWhenFalse>
+            <avalonia:MaterialIcon Kind="Pause" />
+          </controls:If.ContentWhenFalse>
+        </controls:If>
+      </ToggleButton>
+
+      <Button ToolTip.Tip="Next frame"
+              Click="JumpToNextFrame_">
+        <avalonia:MaterialIcon Kind="StepForward" />
+      </Button>
+
+      <Button ToolTip.Tip="Last frame"
+              Click="JumpToLastFrame_">
+        <avalonia:MaterialIcon Kind="SkipForward" />
+      </Button>
+
+      <ToggleButton
+        IsChecked="{Binding LoopPlayback, Mode=TwoWay}"
+        Margin="16 0 0 0"
+        ToolTip.Tip="{Binding LoopButtonTooltip}">
+        <avalonia:MaterialIcon Kind="Restore" />
+      </ToggleButton>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

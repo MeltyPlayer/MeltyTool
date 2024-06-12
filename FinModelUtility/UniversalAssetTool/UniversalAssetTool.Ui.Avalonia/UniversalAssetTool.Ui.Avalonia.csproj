@@ -32,6 +32,7 @@
     <PackageReference Include="BinToss.GroupBox.Avalonia" Version="1.0.0" />
     <PackageReference Include="LoadingIndicators.Avalonia" Version="11.0.10" />
     <PackageReference Include="Material.Avalonia" Version="3.6.0" />
+    <PackageReference Include="Material.Icons.Avalonia" Version="2.1.9" />
     <PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
     <PackageReference Include="TextMateSharp" Version="1.0.56" />

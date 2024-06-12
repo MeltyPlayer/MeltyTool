@@ -15,7 +15,7 @@ namespace uni.ui.avalonia.model.materials {
   public class MaterialsPanelViewModelForDesigner
       : MaterialsPanelViewModel {
     public MaterialsPanelViewModelForDesigner() {
-      var (model, material) = MaterialDesignerUtil.CreateStubModelAndMaterial();
+      var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
       this.ModelAndMaterials = (model, new[] { material, material, material });
     }
   }

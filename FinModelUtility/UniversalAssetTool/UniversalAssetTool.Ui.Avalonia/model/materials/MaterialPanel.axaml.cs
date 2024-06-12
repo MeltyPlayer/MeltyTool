@@ -12,7 +12,7 @@ namespace uni.ui.avalonia.model.materials {
   public class MaterialPanelViewModelForDesigner
       : MaterialPanelViewModel {
     public MaterialPanelViewModelForDesigner() {
-      this.ModelAndMaterial = MaterialDesignerUtil.CreateStubModelAndMaterial();
+      this.ModelAndMaterial = ModelDesignerUtil.CreateStubModelAndMaterial();
     }
   }
 
