@@ -55,10 +55,21 @@ public static class ModelDesignerUtil {
 
     {
       var animationManager = model.AnimationManager;
-      var animation = animationManager.AddAnimation();
-      animation.Name = "sample animation";
-      animation.FrameRate = 24;
-      animation.FrameCount = 125;
+
+      var multiFrameAnimation = animationManager.AddAnimation();
+      multiFrameAnimation.Name = "multi frame animation";
+      multiFrameAnimation.FrameRate = 24;
+      multiFrameAnimation.FrameCount = 125;
+
+      var singleFrameAnimation = animationManager.AddAnimation();
+      singleFrameAnimation.Name = "single frame animation";
+      singleFrameAnimation.FrameRate = 30;
+      singleFrameAnimation.FrameCount = 1;
+
+      var emptyAnimation = animationManager.AddAnimation();
+      emptyAnimation.Name = "empty animation";
+      emptyAnimation.FrameRate = 60;
+      emptyAnimation.FrameCount = 0;
     }
 
     return model;

@@ -11,8 +11,7 @@ using uni.ui.avalonia.ViewModels;
 namespace uni.ui.avalonia.model {
   public class ModelPanelViewModelForDesigner : ModelPanelViewModel {
     public ModelPanelViewModelForDesigner() {
-      var (model, _) = ModelDesignerUtil.CreateStubModelAndMaterial();
-      this.Model = model;
+      this.Model = ModelDesignerUtil.CreateStubModel();
     }
   }
 
