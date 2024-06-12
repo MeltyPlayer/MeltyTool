@@ -14,10 +14,10 @@
 
   <StackPanel>
     <Grid ColumnDefinitions="Auto *">
-      <TextBlock Classes="h2">Playback</TextBlock>
+      <TextBlock Classes="h3">Playback</TextBlock>
       <TextBlock Grid.Column="1"
                  HorizontalAlignment="Right"
-                 Margin="0 21 0 0">
+                 Margin="0 18 0 0">
         <TextBlock.Text>
           <MultiBinding StringFormat="{}{0:0.0} / {1}">
             <Binding Path="Frame" />
@@ -67,9 +67,9 @@
       </Button>
 
       <ToggleButton
-        IsChecked="{Binding LoopPlayback, Mode=TwoWay}"
-        Margin="16 0 0 0"
-        ToolTip.Tip="{Binding LoopButtonTooltip}">
+          IsChecked="{Binding LoopPlayback, Mode=TwoWay}"
+          Margin="16 0 0 0"
+          ToolTip.Tip="{Binding LoopButtonTooltip}">
         <avalonia:MaterialIcon Kind="Restore" />
       </ToggleButton>
     </StackPanel>

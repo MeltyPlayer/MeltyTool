@@ -1,5 +1,7 @@
 ﻿using System;
 
+using fin.model;
+
 namespace fin.animation {
   /// <summary>
   ///   Helper interface for managing the dirty details of playing back an
@@ -24,5 +26,7 @@ namespace fin.animation {
     event Action OnUpdate;
 
     void Reset();
+
+    void SetAnimation(IReadOnlyAnimation animation);
   }
 }

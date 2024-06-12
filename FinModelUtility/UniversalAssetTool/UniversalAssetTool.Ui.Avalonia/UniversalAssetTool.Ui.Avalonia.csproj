@@ -51,6 +51,9 @@
     <Compile Update="animations\AnimationList.axaml.cs">
       <DependentUpon>AnimationList.axaml</DependentUpon>
     </Compile>
+    <Compile Update="animations\AnimationsPanel.axaml.cs">
+      <DependentUpon>AnimationsPanel.axaml</DependentUpon>
+    </Compile>
     <Compile Update="common\progress\ProgressSpinner.axaml.cs">
       <DependentUpon>ProgressSpinner.axaml</DependentUpon>
     </Compile>

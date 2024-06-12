@@ -4,8 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using fin.animation;
+using fin.math;
 using fin.util.asserts;
-using fin.util.time;
 
 using ReactiveUI;
 
@@ -14,27 +14,15 @@ using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.animations {
   public class AnimationPlaybackPanelViewModelForDesigner
-      : AnimationPlaybackPanelViewModel, IDisposable {
-    private readonly TimedCallback timedCallback_;
-
+      : AnimationPlaybackPanelViewModel {
     public AnimationPlaybackPanelViewModelForDesigner() {
       var animation = ModelDesignerUtil.CreateStubAnimation();
-
-      this.AnimationPlaybackManager = new FrameAdvancer() {
+      this.AnimationPlaybackManager = new FrameAdvancer {
           FrameRate = (int) animation.FrameRate,
           LoopPlayback = true,
           TotalFrames = animation.FrameCount,
       };
-
-      this.timedCallback_
-          = TimedCallback.WithFrequency(this.AnimationPlaybackManager.Tick,
-                                        120);
     }
-
-    ~AnimationPlaybackPanelViewModelForDesigner()
-      => this.Dispose();
-
-    public void Dispose() => this.timedCallback_.Dispose();
   }
 
   public class AnimationPlaybackPanelViewModel : ViewModelBase {
@@ -61,6 +49,7 @@ namespace uni.ui.avalonia.animations {
         this.RaiseAndSetIfChanged(
             ref this.animationPlaybackManager_,
             value);
+        this.Update_();
 
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.OnUpdate += this.Update_;
@@ -157,24 +146,24 @@ namespace uni.ui.avalonia.animations {
     private AnimationPlaybackPanelViewModel ViewModel
       => this.DataContext.AssertAsA<AnimationPlaybackPanelViewModel>();
 
-    private void JumpToFirstFrame_(object? sender, RoutedEventArgs e) {
-      this.ViewModel.IsPlaying = false;
-      this.ViewModel.Frame = 0;
-    }
+    private void JumpToFirstFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(0);
 
-    private void JumpToPreviousFrame_(object? sender, RoutedEventArgs e) {
-      this.ViewModel.IsPlaying = false;
-      this.ViewModel.Frame--;
-    }
+    private void JumpToPreviousFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(this.ViewModel.Frame - 1);
 
-    private void JumpToNextFrame_(object? sender, RoutedEventArgs e) {
-      this.ViewModel.IsPlaying = false;
-      this.ViewModel.Frame++;
-    }
+    private void JumpToNextFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(this.ViewModel.Frame + 1);
 
-    private void JumpToLastFrame_(object? sender, RoutedEventArgs e) {
-      this.ViewModel.IsPlaying = false;
-      this.ViewModel.Frame = this.ViewModel.LastFrame;
+    private void JumpToLastFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(this.ViewModel.LastFrame);
+
+    private void SetFrame_(float frame) {
+      var viewModel = this.ViewModel;
+      viewModel.IsPlaying = false;
+      viewModel.Frame = viewModel.LoopPlayback
+          ? frame.Wrap(0, viewModel.LastFrame)
+          : frame.Clamp(0, viewModel.LastFrame);
     }
   }
 }

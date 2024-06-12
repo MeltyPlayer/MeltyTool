@@ -41,5 +41,25 @@ namespace fin.math {
                                          TNumber max)
         where TNumber : INumber<TNumber>
       => TNumber.Max(min, TNumber.Min(value, max));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TNumber Wrap<TNumber>(this TNumber value,
+                                        TNumber min,
+                                        TNumber max)
+        where TNumber : INumber<TNumber> {
+      if (min == max) {
+        return min;
+      }
+
+      if (value < min) {
+        return max - ((min - value) % (max - min));
+      }
+
+      if (value > max) {
+        return min + ((value - min) % (max - min));
+      }
+
+      return value;
+    }
   }
 }

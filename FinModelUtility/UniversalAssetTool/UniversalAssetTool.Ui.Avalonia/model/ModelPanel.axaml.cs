@@ -1,9 +1,11 @@
 using Avalonia.Controls;
 
+using fin.animation;
 using fin.model;
 
 using ReactiveUI;
 
+using uni.ui.avalonia.animations;
 using uni.ui.avalonia.model.materials;
 using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
@@ -17,6 +19,7 @@ namespace uni.ui.avalonia.model {
 
   public class ModelPanelViewModel : ViewModelBase {
     private IReadOnlyModel model_;
+    private AnimationsPanelViewModel animationsPanel_;
     private MaterialsPanelViewModel materialsPanel_;
     private TexturesPanelViewModel texturesPanel_;
 
@@ -24,6 +27,12 @@ namespace uni.ui.avalonia.model {
       get => this.model_;
       set {
         this.RaiseAndSetIfChanged(ref this.model_, value);
+        this.AnimationsPanel = new AnimationsPanelViewModel {
+            Animations = value.AnimationManager.Animations,
+            AnimationPlaybackManager = new FrameAdvancer {
+                LoopPlayback = true,
+            }
+        };
         this.MaterialsPanel = new MaterialsPanelViewModel {
             ModelAndMaterials = (value, value.MaterialManager.All)
         };
@@ -31,6 +40,12 @@ namespace uni.ui.avalonia.model {
             Textures = value.MaterialManager.Textures,
         };
       }
+    }
+
+    public AnimationsPanelViewModel? AnimationsPanel {
+      get => this.animationsPanel_;
+      private set
+        => this.RaiseAndSetIfChanged(ref this.animationsPanel_, value);
     }
 
     public MaterialsPanelViewModel? MaterialsPanel {

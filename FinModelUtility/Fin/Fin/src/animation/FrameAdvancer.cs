@@ -1,5 +1,6 @@
 ﻿using System;
 
+using fin.model;
 using fin.util.time;
 
 namespace fin.animation {
@@ -29,6 +30,7 @@ namespace fin.animation {
     public AnimationInterpolationConfig? Config { get; set; }
     public bool LoopPlayback { get; set; }
 
+
     public void Tick() {
       this.IncrementTowardsNextFrame_();
       this.WrapAround_();
@@ -38,13 +40,19 @@ namespace fin.animation {
     public event Action OnUpdate = delegate { };
 
 
-
     public void Reset() {
       this.Frame = 0;
       this.TotalFrames = 0;
 
       this.isPlaying_ = false;
       this.impl_.Reset();
+      this.OnUpdate.Invoke();
+    }
+
+    public void SetAnimation(IReadOnlyAnimation animation) {
+      this.Frame = 0;
+      this.FrameRate = (int) animation.FrameRate;
+      this.TotalFrames = animation.FrameCount;
       this.OnUpdate.Invoke();
     }
 
