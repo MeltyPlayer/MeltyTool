@@ -2,7 +2,7 @@
 
 using schema.binary;
 
-namespace mod.schema {
+namespace mod.schema.mod {
   [BinarySchema]
   public partial class Nbt : IBinaryConvertible {
     public Vector3f Normal { get; }= new();

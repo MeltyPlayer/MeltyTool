@@ -5,7 +5,7 @@ using fin.color;
 
 using gx;
 
-using mod.schema;
+using mod.schema.mod;
 
 namespace mod.util {
   internal class ModPopulatedMaterial : IPopulatedMaterial {

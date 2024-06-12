@@ -3,7 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema.animation {
+namespace mod.schema.anm {
   [BinarySchema]
   public partial class Dck : IDcx {
     [WSizeOfMemberInBytes(nameof(AnimationData))]

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema {
+namespace mod.schema.mod {
   public enum ChunkId {
     HEADER = 0x00,
     VERTICES = 0x10,

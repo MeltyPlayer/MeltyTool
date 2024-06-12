@@ -6,7 +6,7 @@ using mod.image;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema {
+namespace mod.schema.mod {
   [BinarySchema]
   public partial class Texture : IBinaryConvertible {
     public enum TextureFormat : uint {

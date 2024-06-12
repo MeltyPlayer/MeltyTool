@@ -2,9 +2,8 @@
 using fin.image.io;
 using fin.image.io.image;
 using fin.image.io.pixel;
-using fin.image.io.tile;
 
-using mod.schema;
+using mod.schema.mod;
 
 using schema.binary;
 

@@ -10,7 +10,7 @@ using gx;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema {
+namespace mod.schema.mod {
   ////////////////////////////////////////////////////////////////////
   // NOTE: the names of the classes are taken directly from sysCore //
   // with the exception of unknowns (_Unk)                          //

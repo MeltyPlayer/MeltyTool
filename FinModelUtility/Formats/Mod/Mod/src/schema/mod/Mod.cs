@@ -6,11 +6,11 @@ using fin.schema.color;
 using fin.schema.vector;
 using fin.util.asserts;
 
-using mod.schema.collision;
+using mod.schema.mod.collision;
 
 using schema.binary;
 
-namespace mod.schema {
+namespace mod.schema.mod {
   [BinarySchema]
   public partial class DateTime : IBinaryConvertible {
     public ushort year { get; set; } = 2021;

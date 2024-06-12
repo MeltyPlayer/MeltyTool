@@ -7,7 +7,7 @@ using fin.schema.vector;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema.collision {
+namespace mod.schema.mod.collision {
   [BinarySchema]
   public partial class BaseRoomInfo : IBinaryConvertible {
     public uint index = 0;

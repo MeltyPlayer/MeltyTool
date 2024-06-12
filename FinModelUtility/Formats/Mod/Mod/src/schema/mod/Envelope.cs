@@ -1,7 +1,7 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema {
+namespace mod.schema.mod {
   [BinarySchema]
   public partial class IndexAndWeight : IBinaryConvertible {
     public ushort index;

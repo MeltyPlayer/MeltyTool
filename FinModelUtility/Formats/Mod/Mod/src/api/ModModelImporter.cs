@@ -15,8 +15,8 @@ using fin.util.lists;
 
 using gx;
 
-using mod.schema;
-using mod.schema.animation;
+using mod.schema.anm;
+using mod.schema.mod;
 
 using schema.binary;
 

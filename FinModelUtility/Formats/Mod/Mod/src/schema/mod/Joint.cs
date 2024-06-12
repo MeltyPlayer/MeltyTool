@@ -3,7 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema {
+namespace mod.schema.mod {
   [BinarySchema]
   public partial class JointMatPoly : IBinaryConvertible {
     public ushort matIdx = 0;

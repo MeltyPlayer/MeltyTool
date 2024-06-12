@@ -3,7 +3,7 @@
 using fin.animation;
 using fin.model;
 
-namespace mod.schema.animation {
+namespace mod.schema.anm {
   public static class DcxHelpers {
     public static IModelAnimation AddAnimation(
         IReadOnlyList<IBone> bones,
