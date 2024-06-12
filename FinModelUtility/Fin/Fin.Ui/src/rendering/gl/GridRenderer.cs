@@ -1,8 +1,6 @@
-﻿using fin.ui.rendering.gl;
+﻿using OpenTK.Graphics.OpenGL;
 
-using OpenTK.Graphics.OpenGL;
-
-namespace uni.ui.common {
+namespace fin.ui.rendering.gl {
   public class GridRenderer {
     public float Spacing { get; } = 32;
     public float Size = 1024;

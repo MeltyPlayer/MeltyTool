@@ -308,12 +308,6 @@ namespace uni.ui.winforms.common.scene {
                            this.camera_.XUp,
                            this.camera_.YUp,
                            this.camera_.ZUp);
-
-        GlTransform.MatrixMode(TransformMatrixMode.VIEW);
-        GlTransform.LoadIdentity();
-
-        GlTransform.MatrixMode(TransformMatrixMode.MODEL);
-        GlTransform.LoadIdentity();
       }
 
       {
@@ -324,35 +318,40 @@ namespace uni.ui.winforms.common.scene {
                               this.camera_.Z * .995f);
 
         GlTransform.MatrixMode(TransformMatrixMode.MODEL);
+        GlTransform.Scale(DebugFlags.GLOBAL_SCALE,
+                          DebugFlags.GLOBAL_SCALE,
+                          DebugFlags.GLOBAL_SCALE);
 
         var skyboxRenderer =
             (IRenderable?) this.singleAreaRenderer_?.CustomSkyboxRenderer ??
             this.backgroundRenderer_;
         skyboxRenderer.Render();
-
-        GlTransform.MatrixMode(TransformMatrixMode.VIEW);
-        GlTransform.LoadIdentity();
-        
-        GlTransform.MatrixMode(TransformMatrixMode.MODEL);
-      }
-
-      GlTransform.Scale(DebugFlags.GLOBAL_SCALE,
-                        DebugFlags.GLOBAL_SCALE,
-                        DebugFlags.GLOBAL_SCALE);
-
-      if (Config.Instance.ViewerSettings.ShowGrid) {
-        CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
-        this.gridRenderer_.Render();
       }
 
       {
-        GlTransform.Rotate(90, 1, 0, 0);
-        GlTransform.Scale(this.viewerScale_,
-                          this.viewerScale_,
-                          this.viewerScale_);
-      }
+        GlTransform.MatrixMode(TransformMatrixMode.VIEW);
+        GlTransform.LoadIdentity();
 
-      this.sceneRenderer_?.Render();
+        GlTransform.MatrixMode(TransformMatrixMode.MODEL);
+        GlTransform.LoadIdentity();
+        GlTransform.Scale(DebugFlags.GLOBAL_SCALE,
+                          DebugFlags.GLOBAL_SCALE,
+                          DebugFlags.GLOBAL_SCALE);
+
+        if (Config.Instance.ViewerSettings.ShowGrid) {
+          CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
+          this.gridRenderer_.Render();
+        }
+
+        {
+          GlTransform.Rotate(90, 1, 0, 0);
+          GlTransform.Scale(this.viewerScale_,
+                            this.viewerScale_,
+                            this.viewerScale_);
+        }
+
+        this.sceneRenderer_?.Render();
+      }
     }
   }
 }

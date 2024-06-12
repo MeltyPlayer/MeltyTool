@@ -1,9 +1,8 @@
 ﻿using fin.audio;
-using fin.ui.rendering.gl;
 
 using OpenTK.Graphics.OpenGL;
 
-namespace uni.ui.common {
+namespace fin.ui.rendering.gl {
   public class AotWaveformRenderer {
     public IAotAudioPlayback<short>? ActiveSound { get; set; }
 

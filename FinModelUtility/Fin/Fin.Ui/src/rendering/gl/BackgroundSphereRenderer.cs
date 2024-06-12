@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 using fin.color;
 using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
-using fin.ui.rendering;
 using fin.ui.rendering.gl.model;
 
-namespace uni.ui.common {
-  internal class BackgroundSphereRenderer : IRenderable {
+namespace fin.ui.rendering.gl {
+  public class BackgroundSphereRenderer : IRenderable {
     private IModelRenderer? impl_;
 
     public void Render() {
@@ -35,7 +32,7 @@ namespace uni.ui.common {
       var material = model.MaterialManager.AddNullMaterial();
       material.DepthMode = DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER;
 
-      var scale = DebugFlags.GLOBAL_SCALE * 100;
+      var scale = 100;
 
       var n = 300;
       for (var pitchThetaI = 0; pitchThetaI < n / 2; ++pitchThetaI) {
