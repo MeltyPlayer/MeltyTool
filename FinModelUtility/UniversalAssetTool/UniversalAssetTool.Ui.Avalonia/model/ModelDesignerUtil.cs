@@ -54,6 +54,29 @@ public static class ModelDesignerUtil {
     }
 
     {
+      var skeleton = model.Skeleton;
+      
+      var rootBone = skeleton.Root;
+
+      var center = rootBone.AddChild(0, 0, 0);
+      center.Name = "center";
+
+      var leg = center.AddChild(0, 0, 0);
+      leg.Name = "leg";
+
+      var foot = leg.AddChild(0, 0, 0);
+      foot.Name = "foot";
+
+      var arm = center.AddChild(0, 0, 0);
+      arm.Name = "arm";
+
+      var hand = arm.AddChild(0, 0, 0);
+      hand.Name = "hand";
+
+      var unnamed = center.AddChild(0, 0, 0);
+    }
+
+    {
       var animationManager = model.AnimationManager;
 
       var multiFrameAnimation = animationManager.AddAnimation();

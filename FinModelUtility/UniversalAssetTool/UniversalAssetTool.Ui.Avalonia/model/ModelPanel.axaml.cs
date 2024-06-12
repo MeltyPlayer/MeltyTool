@@ -7,6 +7,7 @@ using ReactiveUI;
 
 using uni.ui.avalonia.animations;
 using uni.ui.avalonia.model.materials;
+using uni.ui.avalonia.model.skeleton;
 using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
 
@@ -21,6 +22,7 @@ namespace uni.ui.avalonia.model {
     private IReadOnlyModel model_;
     private AnimationsPanelViewModel animationsPanel_;
     private MaterialsPanelViewModel materialsPanel_;
+    private SkeletonTreeViewModel skeletonTree_;
     private TexturesPanelViewModel texturesPanel_;
 
     public IReadOnlyModel Model {
@@ -36,24 +38,32 @@ namespace uni.ui.avalonia.model {
         this.MaterialsPanel = new MaterialsPanelViewModel {
             ModelAndMaterials = (value, value.MaterialManager.All)
         };
+        this.SkeletonTree = new SkeletonTreeViewModel {
+            Skeleton = value.Skeleton,
+        };
         this.TexturesPanel = new TexturesPanelViewModel {
             Textures = value.MaterialManager.Textures,
         };
       }
     }
 
-    public AnimationsPanelViewModel? AnimationsPanel {
+    public AnimationsPanelViewModel AnimationsPanel {
       get => this.animationsPanel_;
       private set
         => this.RaiseAndSetIfChanged(ref this.animationsPanel_, value);
     }
 
-    public MaterialsPanelViewModel? MaterialsPanel {
+    public MaterialsPanelViewModel MaterialsPanel {
       get => this.materialsPanel_;
       private set => this.RaiseAndSetIfChanged(ref this.materialsPanel_, value);
     }
 
-    public TexturesPanelViewModel? TexturesPanel {
+    public SkeletonTreeViewModel SkeletonTree {
+      get => this.skeletonTree_;
+      private set => this.RaiseAndSetIfChanged(ref this.skeletonTree_, value);
+    }
+
+    public TexturesPanelViewModel TexturesPanel {
       get => this.texturesPanel_;
       private set => this.RaiseAndSetIfChanged(ref this.texturesPanel_, value);
     }

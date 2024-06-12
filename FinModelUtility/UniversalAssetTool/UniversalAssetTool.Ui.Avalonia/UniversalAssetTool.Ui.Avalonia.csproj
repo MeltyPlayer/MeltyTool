@@ -75,6 +75,9 @@
     <Compile Update="model\materials\MaterialShadersPanel.axaml.cs">
       <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
     </Compile>
+    <Compile Update="model\skeleton\SkeletonTree.axaml.cs">
+      <DependentUpon>SkeletonTree.axaml</DependentUpon>
+    </Compile>
     <Compile Update="textures\TexturesPanel.axaml.cs">
       <DependentUpon>TexturesPanel.axaml</DependentUpon>
     </Compile>
