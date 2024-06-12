@@ -1,6 +1,7 @@
 using fin.schema.vector;
 
-using mod.schema.collision;
+using mod.schema.mod;
+using mod.schema.mod.collision;
 
 using NUnit.Framework;
 
