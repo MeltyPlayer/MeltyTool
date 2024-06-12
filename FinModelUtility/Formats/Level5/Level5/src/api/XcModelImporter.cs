@@ -231,6 +231,11 @@ namespace level5.api {
                 var displayStates = meshTracks.DisplayStates;
 
                 foreach (var frameAndValue in framesAndValues) {
+                  // TODO: This value seems to encode mesh visibility, but
+                  // probably also encodes which frame/texture offset to use
+                  // for textures on faces. My guess is that there's some
+                  // array of data in the PRM or material, and this value is
+                  // used to index into that array.
                   var (frame, value) = frameAndValue;
 
                   // TODO: Various values may be used to encode texture info?
