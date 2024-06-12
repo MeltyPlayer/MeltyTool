@@ -29,7 +29,7 @@ namespace uni.config {
 
   public class ViewerSettings {
     public bool AutomaticallyPlayGameAudioForModel { get; set; }
-    
+
     public bool ShowGrid { get; set; }
 
     public bool ShowSkeleton {
@@ -40,7 +40,7 @@ namespace uni.config {
     [JsonConverter(typeof(StringEnumConverter))]
     public ScaleSourceType ViewerModelScaleSource { get; set; } =
       ScaleSourceType.MIN_MAX_BOUNDS;
-    }
+  }
 
   public class ExtractorSettings {
     public bool UseMultithreadingToExtractRoms { get; set; }

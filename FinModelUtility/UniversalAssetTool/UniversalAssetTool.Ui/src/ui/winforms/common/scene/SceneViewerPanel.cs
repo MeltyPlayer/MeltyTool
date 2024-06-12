@@ -6,10 +6,11 @@ using fin.importers;
 using fin.io.bundles;
 using fin.model;
 using fin.scene;
+using fin.ui.rendering;
 using fin.ui.rendering.gl.model;
 
 namespace uni.ui.winforms.common.scene {
-  public partial class SceneViewerPanel : UserControl, ISceneViewerPanel {
+  public partial class SceneViewerPanel : UserControl, ISceneViewer {
     public SceneViewerPanel() {
       this.InitializeComponent();
     }

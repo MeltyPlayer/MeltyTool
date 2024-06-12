@@ -1,13 +1,11 @@
-﻿using System;
-
-using fin.animation;
+﻿using fin.animation;
 using fin.importers;
 using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.model;
 
-namespace uni.ui {
-  public interface ISceneViewerPanel {
+namespace fin.ui.rendering {
+  public interface ISceneViewer {
     (I3dFileBundle, IScene)? FileBundleAndScene { get; set; }
 
     ISceneModel? FirstSceneModel { get; }
