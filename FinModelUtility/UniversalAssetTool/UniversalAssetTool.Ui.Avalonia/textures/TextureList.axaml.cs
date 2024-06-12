@@ -58,7 +58,6 @@ namespace uni.ui.avalonia.textures {
 
   public class TextureViewModel : ViewModelBase {
     private IReadOnlyTexture texture_;
-    private string caption_;
     public TexturePreviewViewModel texturePreviewViewModel_;
 
     public required IReadOnlyTexture Texture {
@@ -69,7 +68,6 @@ namespace uni.ui.avalonia.textures {
         this.TexturePreview = new TexturePreviewViewModel { Texture = value };
 
         var image = value.Image;
-        this.Caption = $"{image.PixelFormat}, {image.Width}x{image.Height}";
       }
     }
 
@@ -79,20 +77,12 @@ namespace uni.ui.avalonia.textures {
           ref this.texturePreviewViewModel_,
           value);
     }
-
-    public string Caption {
-      get => this.caption_;
-      private set => this.RaiseAndSetIfChanged(ref this.caption_, value);
-    }
   }
 
   public partial class TextureList : UserControl {
     public TextureList() {
       InitializeComponent();
     }
-
-    protected TextureListViewModel ViewModel
-      => Asserts.AsA<TextureListViewModel>(this.DataContext);
 
     public static readonly RoutedEvent<TextureSelectedEventArgs>
         TextureSelectedEvent =

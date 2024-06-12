@@ -88,9 +88,6 @@ namespace uni.ui.avalonia.animations {
       InitializeComponent();
     }
 
-    protected AnimationListViewModel ViewModel
-      => Asserts.AsA<AnimationListViewModel>(this.DataContext);
-
     public static readonly RoutedEvent<AnimationSelectedEventArgs>
         AnimationSelectedEvent =
             RoutedEvent.Register<AnimationList, AnimationSelectedEventArgs>(

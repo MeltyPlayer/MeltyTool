@@ -26,7 +26,6 @@ namespace uni.ui.avalonia.model.materials {
     private TextureListViewModel textureListViewModel_;
     private TextureViewModel? selectedTextureViewModel_;
     private TexturePreviewViewModel? selectedTexturePreviewViewModel_;
-    private string? selectedTextureCaption_;
 
     public IReadOnlyList<IReadOnlyTexture>? Textures {
       get => this.textures_;
@@ -53,7 +52,6 @@ namespace uni.ui.avalonia.model.materials {
                 ImageMargin = new Thickness(5),
             }
             : null;
-        this.SelectedTextureCaption = value?.Caption;
       }
     }
 
@@ -62,12 +60,6 @@ namespace uni.ui.avalonia.model.materials {
       private set => this.RaiseAndSetIfChanged(
           ref this.selectedTexturePreviewViewModel_,
           value);
-    }
-
-    public string? SelectedTextureCaption {
-      get => this.selectedTextureCaption_;
-      private set
-        => this.RaiseAndSetIfChanged(ref this.selectedTextureCaption_, value);
     }
   }
 

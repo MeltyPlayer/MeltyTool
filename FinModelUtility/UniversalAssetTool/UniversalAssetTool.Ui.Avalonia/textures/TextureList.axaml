@@ -39,9 +39,16 @@
                      Margin="8 -2 0 0" />
           <TextBlock DockPanel.Dock="Bottom"
                      Classes="caption"
-                     Text="{Binding Caption}"
                      Height="16"
-                     Margin="8 4 0 0" />
+                     Margin="8 4 0 0">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="{}{0}, {1}x{2}">
+                <Binding Path="Texture.Image.PixelFormat" />
+                <Binding Path="Texture.Image.Width" />
+                <Binding Path="Texture.Image.Height" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
         </DockPanel>
       </DataTemplate>
     </ListBox.ItemTemplate>

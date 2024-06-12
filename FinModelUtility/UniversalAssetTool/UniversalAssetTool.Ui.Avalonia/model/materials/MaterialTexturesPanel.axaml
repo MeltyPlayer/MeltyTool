@@ -30,8 +30,15 @@
                      HorizontalAlignment="Center"
                      TextTrimming="CharacterEllipsis" />
           <TextBlock Classes="caption"
-                     Text="{Binding SelectedTextureCaption}"
-                     HorizontalAlignment="Center" />
+                     HorizontalAlignment="Center">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="{}{0}, {1}x{2}">
+                <Binding Path="SelectedTexture.Texture.Image.PixelFormat" />
+                <Binding Path="SelectedTexture.Texture.Image.Width" />
+                <Binding Path="SelectedTexture.Texture.Image.Height" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
         </StackPanel>
       </controls:If>
 
