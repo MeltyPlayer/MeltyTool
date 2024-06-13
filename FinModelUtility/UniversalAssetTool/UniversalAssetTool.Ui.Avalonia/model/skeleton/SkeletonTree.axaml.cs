@@ -1,17 +1,15 @@
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-using fin.io.bundles;
 using fin.model;
 using fin.util.asserts;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.model.skeleton {
@@ -24,10 +22,33 @@ namespace uni.ui.avalonia.model.skeleton {
 
   public class SkeletonTreeViewModel : ViewModelBase {
     private IReadOnlySkeleton? skeleton_;
+    private SkeletonNode? rootNode_;
 
     public required IReadOnlySkeleton? Skeleton {
       get => this.skeleton_;
-      set => this.RaiseAndSetIfChanged(ref this.skeleton_, value);
+      set {
+        this.RaiseAndSetIfChanged(ref this.skeleton_, value);
+        this.RootNode = value != null ? new SkeletonNode(value.Root) : null;
+      }
+    }
+
+    public SkeletonNode? RootNode {
+      get => this.rootNode_;
+      private set => this.RaiseAndSetIfChanged(ref this.rootNode_, value);
+    }
+  }
+
+  public class SkeletonNode(IReadOnlyBone bone) : ViewModelBase {
+    private bool isExpanded_ = true;
+
+    public IReadOnlyBone Bone => bone;
+
+    public IReadOnlyList<SkeletonNode> Children { get; }
+      = bone.Children.Select(b => new SkeletonNode(b)).ToArray();
+
+    public bool IsExpanded {
+      get => this.isExpanded_;
+      set => this.RaiseAndSetIfChanged(ref this.isExpanded_, value);
     }
   }
 
@@ -36,13 +57,13 @@ namespace uni.ui.avalonia.model.skeleton {
       InitializeComponent();
     }
 
-    public static readonly RoutedEvent<TextureSelectedEventArgs>
+    public static readonly RoutedEvent<BoneSelectedEventArgs>
         BoneSelectedEvent =
-            RoutedEvent.Register<SkeletonTree, TextureSelectedEventArgs>(
+            RoutedEvent.Register<SkeletonTree, BoneSelectedEventArgs>(
                 nameof(BoneSelected),
                 RoutingStrategies.Direct);
 
-    public event EventHandler<TextureSelectedEventArgs> BoneSelected {
+    public event EventHandler<BoneSelectedEventArgs> BoneSelected {
       add => this.AddHandler(BoneSelectedEvent, value);
       remove => this.RemoveHandler(BoneSelectedEvent, value);
     }
@@ -55,10 +76,10 @@ namespace uni.ui.avalonia.model.skeleton {
       }
 
       var selectedBone
-          = Asserts.AsA<IReadOnlyBone>(e.AddedItems[0]);
+          = Asserts.AsA<SkeletonNode>(e.AddedItems[0]);
       this.RaiseEvent(new BoneSelectedEventArgs {
           RoutedEvent = BoneSelectedEvent,
-          Bone = selectedBone
+          Bone = selectedBone.Bone
       });
     }
   }
