@@ -70,9 +70,9 @@ namespace uni.ui.avalonia.animations {
 
         var frameCount = value.FrameCount;
         this.Icon = frameCount switch {
-            > 1 => MaterialIconKind.Animation,
-            1   => MaterialIconKind.Numeric1Box,
-            0   => MaterialIconKind.Numeric0Box,
+            > 1 => MaterialIconKind.AnimationOutline,
+            1   => MaterialIconKind.Numeric1BoxOutline,
+            0   => MaterialIconKind.Numeric0BoxOutline,
         };
       }
     }

@@ -8,7 +8,7 @@ public class MainViewModel : ViewModelBase {
   private ModelPanelViewModel modelPanel_;
 
   public MainViewModel() {
-    this.ModelPanel = new ModelPanelViewModelForDesigner();
+    this.ModelPanel = new ModelPanelViewModel();
   }
 
   public ModelPanelViewModel ModelPanel {

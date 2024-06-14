@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,9 +16,19 @@ using uni.ui.avalonia.model;
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.textures {
-  public class TexturesPanelViewModelForDesigner
+  public class NullTexturesPanelViewModelForDesigner
+      : TexturesPanelViewModel;
+
+  public class EmptyTexturesPanelViewModelForDesigner
       : TexturesPanelViewModel {
-    public TexturesPanelViewModelForDesigner() {
+    public EmptyTexturesPanelViewModelForDesigner() {
+      this.Textures = Array.Empty<IReadOnlyTexture>();
+    }
+  }
+
+  public class PopulatedTexturesPanelViewModelForDesigner
+      : TexturesPanelViewModel {
+    public PopulatedTexturesPanelViewModelForDesigner() {
       this.Textures = ModelDesignerUtil.CreateStubMaterial().Textures.ToArray();
     }
   }
