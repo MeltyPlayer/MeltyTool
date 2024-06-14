@@ -5,7 +5,8 @@
              xmlns:animations="clr-namespace:uni.ui.avalonia.animations"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="130"
+             mc:Ignorable="d" d:DesignWidth="400" 
+             Height="130"
              x:Class="uni.ui.avalonia.animations.AnimationPlaybackPanel"
              x:DataType="animations:AnimationPlaybackPanelViewModel">
   <Design.DataContext>
