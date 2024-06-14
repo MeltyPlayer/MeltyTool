@@ -81,6 +81,15 @@
     <Compile Update="model\skeleton\SkeletonTree.axaml.cs">
       <DependentUpon>SkeletonTree.axaml</DependentUpon>
     </Compile>
+    <Compile Update="registers\RegistersPanel.axaml.cs">
+      <DependentUpon>RegistersPanel.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="registers\ScalarRegisterPicker.axaml.cs">
+      <DependentUpon>ScalarRegisterPicker.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="registers\ColorRegisterPicker.axaml.cs">
+      <DependentUpon>ColorRegisterPicker.axaml</DependentUpon>
+    </Compile>
     <Compile Update="textures\TexturesPanel.axaml.cs">
       <DependentUpon>TexturesPanel.axaml</DependentUpon>
     </Compile>

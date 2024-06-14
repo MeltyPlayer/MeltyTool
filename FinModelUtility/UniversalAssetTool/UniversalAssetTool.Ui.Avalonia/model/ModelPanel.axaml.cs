@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 
 using fin.animation;
+using fin.language.equations.fixedFunction;
 using fin.model;
 
 using ReactiveUI;
@@ -8,6 +9,7 @@ using ReactiveUI;
 using uni.ui.avalonia.animations;
 using uni.ui.avalonia.model.materials;
 using uni.ui.avalonia.model.skeleton;
+using uni.ui.avalonia.registers;
 using uni.ui.avalonia.textures;
 using uni.ui.avalonia.ViewModels;
 
@@ -15,13 +17,17 @@ namespace uni.ui.avalonia.model {
   public class ModelPanelViewModelForDesigner : ModelPanelViewModel {
     public ModelPanelViewModelForDesigner() {
       this.Model = ModelDesignerUtil.CreateStubModel();
+      this.Registers = RegistersDesignerUtil.CreateStubRegisters();
     }
   }
 
   public class ModelPanelViewModel : ViewModelBase {
     private IReadOnlyModel model_;
+    private IFixedFunctionRegisters registers_;
+
     private AnimationsPanelViewModel animationsPanel_;
     private MaterialsPanelViewModel materialsPanel_;
+    private RegistersPanelViewModel registersPanel_;
     private SkeletonTreeViewModel skeletonTree_;
     private TexturesPanelViewModel texturesPanel_;
 
@@ -47,6 +53,16 @@ namespace uni.ui.avalonia.model {
       }
     }
 
+    public IFixedFunctionRegisters Registers {
+      get => this.registers_;
+      set {
+        this.RaiseAndSetIfChanged(ref this.registers_, value);
+        this.RegistersPanel = new RegistersPanelViewModel {
+            Registers = value,
+        };
+      }
+    }
+
     public AnimationsPanelViewModel AnimationsPanel {
       get => this.animationsPanel_;
       private set
@@ -56,6 +72,11 @@ namespace uni.ui.avalonia.model {
     public MaterialsPanelViewModel MaterialsPanel {
       get => this.materialsPanel_;
       private set => this.RaiseAndSetIfChanged(ref this.materialsPanel_, value);
+    }
+
+    public RegistersPanelViewModel RegistersPanel {
+      get => this.registersPanel_;
+      private set => this.RaiseAndSetIfChanged(ref this.registersPanel_, value);
     }
 
     public SkeletonTreeViewModel SkeletonTree {

@@ -7,6 +7,7 @@
              xmlns:materials="clr-namespace:uni.ui.avalonia.model.materials"
              xmlns:skeleton="clr-namespace:uni.ui.avalonia.model.skeleton"
              xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
+             xmlns:registers="clr-namespace:uni.ui.avalonia.registers"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="700"
              x:Class="uni.ui.avalonia.model.ModelPanel"
              x:DataType="model:ModelPanelViewModel">
@@ -28,6 +29,8 @@
     <TabItem Header="Textures">
       <textures:TexturesPanel DataContext="{Binding TexturesPanel}" />
     </TabItem>
-    <TabItem Header="Registers" />
+    <TabItem Header="Registers">
+      <registers:RegistersPanel DataContext="{Binding RegistersPanel}" />
+    </TabItem>
   </TabControl>
 </UserControl>

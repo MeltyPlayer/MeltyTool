@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.IO;
 
@@ -6,7 +5,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media.Imaging;
 
 using fin.image;
 using fin.model;
