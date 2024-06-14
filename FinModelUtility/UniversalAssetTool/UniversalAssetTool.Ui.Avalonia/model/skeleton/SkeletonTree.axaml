@@ -18,6 +18,7 @@
       <Border BorderBrush="{StaticResource BorderBrush}"
               BorderThickness="1">
         <TreeView ItemsSource="{Binding RootNode.Children}"
+                  SelectedItem="{Binding SelectedNode, Mode=TwoWay}"
                   SelectionChanged="SelectingItemsControl_OnSelectionChanged">
           <TreeView.Styles>
             <Style Selector="TreeViewItem" x:DataType="skeleton:SkeletonNode">

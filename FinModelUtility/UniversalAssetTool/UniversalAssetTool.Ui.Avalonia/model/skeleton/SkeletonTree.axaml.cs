@@ -23,6 +23,7 @@ namespace uni.ui.avalonia.model.skeleton {
   public class SkeletonTreeViewModel : ViewModelBase {
     private IReadOnlySkeleton? skeleton_;
     private SkeletonNode? rootNode_;
+    private SkeletonNode? selectedNode_;
 
     public required IReadOnlySkeleton? Skeleton {
       get => this.skeleton_;
@@ -35,6 +36,11 @@ namespace uni.ui.avalonia.model.skeleton {
     public SkeletonNode? RootNode {
       get => this.rootNode_;
       private set => this.RaiseAndSetIfChanged(ref this.rootNode_, value);
+    }
+
+    public SkeletonNode? SelectedNode {
+      get => this.selectedNode_;
+      private set => this.RaiseAndSetIfChanged(ref this.selectedNode_, value);
     }
   }
 
