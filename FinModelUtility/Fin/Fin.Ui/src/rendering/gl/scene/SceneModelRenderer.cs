@@ -11,13 +11,13 @@ using fin.ui.rendering.gl.model;
 
 namespace fin.ui.rendering.gl.scene {
   public class SceneModelRenderer : IRenderable, IDisposable {
-    private readonly ISceneModel sceneModel_;
+    private readonly ISceneModelInstance sceneModel_;
     private readonly IModelRenderer modelRenderer_;
 
     private readonly ListDictionary<IReadOnlyBone, SceneModelRenderer>
         children_ = new();
 
-    public SceneModelRenderer(ISceneModel sceneModel,
+    public SceneModelRenderer(ISceneModelInstance sceneModel,
                               IReadOnlyLighting? lighting) {
       this.sceneModel_ = sceneModel;
 

@@ -3,7 +3,8 @@ using fin.scene;
 
 namespace fin.ui.rendering.gl.scene {
   public class SceneAreaRenderer : IRenderable, IDisposable {
-    public SceneAreaRenderer(ISceneArea sceneArea, ILighting? lighting) {
+    public SceneAreaRenderer(ISceneAreaInstance sceneArea,
+                             IReadOnlyLighting? lighting) {
       var customSkybox = sceneArea.CustomSkyboxObject;
       this.CustomSkyboxRenderer = customSkybox != null
           ? new SceneObjectRenderer(customSkybox, lighting)

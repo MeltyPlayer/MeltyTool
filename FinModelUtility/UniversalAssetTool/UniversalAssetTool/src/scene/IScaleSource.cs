@@ -10,7 +10,7 @@ using uni.platforms;
 
 namespace uni.model {
   public interface IScaleSource {
-    float GetScale(IScene scene, IFileBundle fileBundle);
+    float GetScale(ISceneInstance scene, IFileBundle fileBundle);
     float GetScale(IReadOnlyModel model, IFileBundle fileBundle);
   }
 
@@ -26,7 +26,7 @@ namespace uni.model {
       };
     }
 
-    public float GetScale(IScene scene, IFileBundle fileBundle)
+    public float GetScale(ISceneInstance scene, IFileBundle fileBundle)
       => this.impl_.GetScale(scene, fileBundle);
 
     public float GetScale(IReadOnlyModel model, IFileBundle fileBundle)
@@ -34,12 +34,12 @@ namespace uni.model {
   }
 
   public class NullScaleSource : IScaleSource {
-    public float GetScale(IScene _1, IFileBundle _2) => 1;
+    public float GetScale(ISceneInstance _1, IFileBundle _2) => 1;
     public float GetScale(IReadOnlyModel _1, IFileBundle _2) => 1;
   }
 
   public class MinMaxBoundsScaleSource : IScaleSource {
-    public float GetScale(IScene scene, IFileBundle _)
+    public float GetScale(ISceneInstance scene, IFileBundle _)
       => new SceneMinMaxBoundsScaleCalculator().CalculateScale(scene);
 
     public float GetScale(IReadOnlyModel model, IFileBundle _)
@@ -47,7 +47,7 @@ namespace uni.model {
   }
 
   public class GameConfigScaleSource : IScaleSource {
-    public float GetScale(IScene scene, IFileBundle fileBundle)
+    public float GetScale(ISceneInstance scene, IFileBundle fileBundle)
       => this.TryToGetScaleFromGameConfig_(fileBundle, out float scale)
           ? scale
           : 1;

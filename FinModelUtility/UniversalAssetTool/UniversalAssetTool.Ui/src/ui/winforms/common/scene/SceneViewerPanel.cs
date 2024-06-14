@@ -15,7 +15,7 @@ namespace uni.ui.winforms.common.scene {
       this.InitializeComponent();
     }
 
-    public (I3dFileBundle, IScene)? FileBundleAndScene {
+    public (I3dFileBundle, ISceneInstance)? FileBundleAndScene {
       get => this.impl_.FileBundleAndScene;
       set {
         var fileBundle = value?.Item1;
@@ -29,7 +29,7 @@ namespace uni.ui.winforms.common.scene {
       }
     }
 
-    public ISceneModel? FirstSceneModel => this.impl_.FirstSceneModel;
+    public ISceneModelInstance? FirstSceneModel => this.impl_.FirstSceneModel;
 
     public IAnimationPlaybackManager? AnimationPlaybackManager 
       => this.impl_.AnimationPlaybackManager;

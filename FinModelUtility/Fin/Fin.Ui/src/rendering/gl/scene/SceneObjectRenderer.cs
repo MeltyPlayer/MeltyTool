@@ -4,9 +4,10 @@ using fin.scene;
 
 namespace fin.ui.rendering.gl.scene {
   public class SceneObjectRenderer : IRenderable, IDisposable {
-    private readonly ISceneObject sceneObject_;
+    private readonly ISceneObjectInstance sceneObject_;
 
-    public SceneObjectRenderer(ISceneObject sceneObject, ILighting? lighting) {
+    public SceneObjectRenderer(ISceneObjectInstance sceneObject,
+                               IReadOnlyLighting? lighting) {
       this.sceneObject_ = sceneObject;
       this.ModelRenderers
           = sceneObject
@@ -35,8 +36,8 @@ namespace fin.ui.rendering.gl.scene {
 
       GlTransform.MultMatrix(
           SystemMatrix4x4Util.FromTrs(this.sceneObject_.Position,
-                                   this.sceneObject_.Rotation,
-                                   this.sceneObject_.Scale));
+                                      this.sceneObject_.Rotation,
+                                      this.sceneObject_.Scale));
 
       foreach (var model in this.ModelRenderers) {
         model.Render();

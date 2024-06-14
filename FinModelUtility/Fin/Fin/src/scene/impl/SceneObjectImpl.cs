@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using fin.model;
 using fin.model.impl;
@@ -8,24 +7,8 @@ namespace fin.scene {
   public partial class SceneImpl {
     private class SceneObjectImpl : ISceneObject {
       private readonly List<ISceneModel> models_ = [];
-      private ISceneObject.OnTick? tickHandler_;
-
-      ~SceneObjectImpl() => ReleaseUnmanagedResources_();
-
-      public void Dispose() {
-        ReleaseUnmanagedResources_();
-        GC.SuppressFinalize(this);
-      }
-
-      private void ReleaseUnmanagedResources_() {
-        foreach (var model in this.models_) {
-          model.Dispose();
-        }
-      }
-
       public Position Position { get; private set; }
       public IRotation Rotation { get; } = new RotationImpl();
-
       public Scale Scale { get; private set; } = new Scale(1, 1, 1);
 
       public ISceneObject SetPosition(float x, float y, float z) {
@@ -66,30 +49,16 @@ namespace fin.scene {
         => this.AddSceneModel(new ModelImpl());
 
       public ISceneModel AddSceneModel(IModel model) {
-        var sceneModel =
-            new SceneModelImpl(model) { ViewerScale = this.ViewerScale };
+        var sceneModel = new SceneModelImpl(model);
         this.models_.Add(sceneModel);
         return sceneModel;
       }
 
+      public ISceneObject.OnTick? TickHandler { get; private set; }
+
       public ISceneObject SetOnTickHandler(ISceneObject.OnTick handler) {
-        this.tickHandler_ = handler;
+        this.TickHandler = handler;
         return this;
-      }
-
-      public void Tick() => this.tickHandler_?.Invoke(this);
-
-
-      private float viewerScale_ = 1;
-
-      public float ViewerScale {
-        get => this.viewerScale_;
-        set {
-          this.viewerScale_ = value;
-          foreach (var model in this.models_) {
-            model.ViewerScale = this.viewerScale_;
-          }
-        }
       }
     }
   }

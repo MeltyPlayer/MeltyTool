@@ -6,8 +6,8 @@ using fin.scene;
 
 namespace fin.model.util {
   public class SceneMinMaxBoundsScaleCalculator
-      : BMinMaxBoundsScaleCalculator<IScene> {
-    public override Bounds CalculateBounds(IScene scene) {
+      : BMinMaxBoundsScaleCalculator<ISceneInstance> {
+    public override Bounds CalculateBounds(ISceneInstance scene) {
       var minX = float.MaxValue;
       var minY = float.MaxValue;
       var minZ = float.MaxValue;

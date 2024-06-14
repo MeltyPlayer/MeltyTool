@@ -15,17 +15,17 @@ namespace fin.ui.rendering.gl {
     private BackgroundSphereRenderer backgroundRenderer_ = new();
     private GridRenderer gridRenderer_ = new();
 
-    private IScene? scene_;
+    private ISceneInstance? scene_;
     private SceneRenderer? sceneRenderer_;
 
-    private ISceneArea? singleArea_;
+    private ISceneAreaInstance? singleArea_;
     private SceneAreaRenderer? singleAreaRenderer_;
 
     private I3dFileBundle? fileBundle_;
 
     public TimeSpan FrameTime { get; private set; }
 
-    public (I3dFileBundle, IScene)? FileBundleAndScene {
+    public (I3dFileBundle, ISceneInstance)? FileBundleAndScene {
       get {
         var scene = this.scene_;
         return scene != null
@@ -58,9 +58,9 @@ namespace fin.ui.rendering.gl {
       }
     }
 
-    private IScene? Scene => this.scene_;
+    private ISceneInstance? Scene => this.scene_;
 
-    public ISceneModel? FirstSceneModel
+    public ISceneModelInstance? FirstSceneModel
       => this.Scene
              ?.Areas.FirstOrDefault()
              ?.Objects.FirstOrDefault()

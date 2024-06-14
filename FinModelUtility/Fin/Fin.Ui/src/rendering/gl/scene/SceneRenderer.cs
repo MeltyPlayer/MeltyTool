@@ -2,7 +2,7 @@
 
 namespace fin.ui.rendering.gl.scene {
   public class SceneRenderer : IRenderable, IDisposable {
-    public SceneRenderer(IScene scene) {
+    public SceneRenderer(ISceneInstance scene) {
       this.AreaRenderers
       = scene.Areas
                  .Select(area => new SceneAreaRenderer(area, scene.Lighting))

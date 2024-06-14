@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Forms;
 
 using fin.animation;
 using fin.importers;
-using fin.io.bundles;
 using fin.model;
 using fin.scene;
 using fin.ui;
 using fin.ui.rendering;
 using fin.ui.rendering.gl;
-using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
-using fin.ui.rendering.gl.scene;
-
-using OpenTK.Graphics.OpenGL;
 
 using uni.config;
 using uni.model;
@@ -194,7 +188,7 @@ namespace uni.ui.winforms.common.scene {
       this.viewerImpl_.Render();
     }
 
-    public (I3dFileBundle, IScene)? FileBundleAndScene {
+    public (I3dFileBundle, ISceneInstance)? FileBundleAndScene {
       get => this.viewerImpl_.FileBundleAndScene;
       set {
         this.viewerImpl_.FileBundleAndScene = value;
@@ -212,7 +206,7 @@ namespace uni.ui.winforms.common.scene {
       }
     }
 
-    public ISceneModel? FirstSceneModel => this.viewerImpl_.FirstSceneModel;
+    public ISceneModelInstance? FirstSceneModel => this.viewerImpl_.FirstSceneModel;
 
     public IAnimationPlaybackManager? AnimationPlaybackManager
       => this.viewerImpl_.AnimationPlaybackManager;

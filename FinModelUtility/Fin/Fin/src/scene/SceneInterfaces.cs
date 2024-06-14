@@ -8,6 +8,8 @@ using fin.importers;
 using fin.math;
 using fin.model;
 
+using schema.readOnly;
+
 namespace fin.scene {
   public interface ISceneFileBundle : I3dFileBundle;
 
@@ -21,15 +23,13 @@ namespace fin.scene {
   ///   A single scene from a game. These can be thought of as the parts of the
   ///   game that are each separated by a loading screen.
   /// </summary>
-  // TODO: The scene itself shouldn't be tickable, that should be some kind of wrapper over this data
-  public interface IScene : ITickable, IDisposable {
+  [GenerateReadOnly]
+  public partial interface IScene {
     IReadOnlyList<ISceneArea> Areas { get; }
     ISceneArea AddArea();
 
     ILighting? Lighting { get; }
     ILighting CreateLighting();
-
-    float ViewerScale { get; set; }
   }
 
   /// <summary>
@@ -38,11 +38,10 @@ namespace fin.scene {
   ///   example, in Ocarina of Time, this is used to represent a single room in
   ///   a dungeon.
   /// </summary>
-  public interface ISceneArea : ITickable, IDisposable {
+  [GenerateReadOnly]
+  public partial interface ISceneArea {
     IReadOnlyList<ISceneObject> Objects { get; }
     ISceneObject AddObject();
-
-    float ViewerScale { get; set; }
 
     Color? BackgroundColor { get; set; }
     ISceneObject? CustomSkyboxObject { get; set; }
@@ -54,7 +53,8 @@ namespace fin.scene {
   ///   appears in the scene, such as the level geometry, scenery, or
   ///   characters.
   /// </summary>
-  public interface ISceneObject : ITickable, IDisposable {
+  [GenerateReadOnly]
+  public partial interface ISceneObject {
     Position Position { get; }
     IRotation Rotation { get; }
     Scale Scale { get; }
@@ -71,14 +71,13 @@ namespace fin.scene {
 
     ISceneObject SetScale(float x, float y, float z);
 
-    public delegate void OnTick(ISceneObject self);
+    public delegate void OnTick(ISceneObjectInstance self);
 
     ISceneObject SetOnTickHandler(OnTick handler);
+    public OnTick TickHandler { get; }
 
     IReadOnlyList<ISceneModel> Models { get; }
     ISceneModel AddSceneModel(IModel model);
-
-    float ViewerScale { get; set; }
   }
 
   /// <summary>
@@ -86,21 +85,11 @@ namespace fin.scene {
   ///   take care of rendering animations, and also supports adding sub-models
   ///   onto bones.
   /// </summary>
-  public interface ISceneModel : IDisposable {
-    IReadOnlyListDictionary<IReadOnlyBone, ISceneModel> Children { get; }
+  [GenerateReadOnly]
+  public partial interface ISceneModel {
+    IReadOnlyListDictionary<IReadOnlyBone, IReadOnlySceneModel> Children { get; }
     ISceneModel AddModelOntoBone(IReadOnlyModel model, IReadOnlyBone bone);
 
     IReadOnlyModel Model { get; }
-
-    IBoneTransformManager BoneTransformManager { get; }
-
-    IReadOnlyModelAnimation? Animation { get; set; }
-    IAnimationPlaybackManager AnimationPlaybackManager { get; }
-
-    float ViewerScale { get; set; }
-  }
-
-  public interface ITickable {
-    void Tick();
   }
 }

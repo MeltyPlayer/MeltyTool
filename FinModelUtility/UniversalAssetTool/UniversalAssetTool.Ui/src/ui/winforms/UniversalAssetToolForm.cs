@@ -17,6 +17,7 @@ using fin.math.floats;
 using fin.model;
 using fin.model.io;
 using fin.scene;
+using fin.scene.instance;
 using fin.schema.vector;
 using fin.util.enumerables;
 using fin.util.time;
@@ -136,7 +137,7 @@ public partial class UniversalAssetToolForm : Form {
   private void SelectScene_(IFileTreeLeafNode fileNode,
                             ISceneFileBundle sceneFileBundle) {
     var scene = new GlobalSceneImporter().Import(sceneFileBundle);
-    this.UpdateScene_(fileNode, sceneFileBundle, scene);
+    this.UpdateScene_(fileNode, sceneFileBundle, new SceneInstanceImpl(scene));
   }
 
   private void SelectModel_(IFileTreeLeafNode fileNode,
@@ -156,12 +157,14 @@ public partial class UniversalAssetToolForm : Form {
 
     this.InjectDefaultLightingForScene_(scene, obj);
 
-    this.UpdateScene_(fileNode, modelFileBundle, scene);
+    var sceneInstance = new SceneInstanceImpl(scene);
+
+    this.UpdateScene_(fileNode, modelFileBundle, sceneInstance);
   }
 
   private void UpdateScene_(IFileTreeLeafNode? fileNode,
                             I3dFileBundle fileBundle,
-                            IScene scene) {
+                            ISceneInstance scene) {
     this.sceneViewerPanel_.FileBundleAndScene?.Item2.Dispose();
     this.sceneViewerPanel_.FileBundleAndScene = (fileBundle, scene);
 
@@ -202,7 +205,7 @@ public partial class UniversalAssetToolForm : Form {
     var needsLights = false;
     var neededLightIndices = new HashSet<int>();
 
-    var sceneModelQueue = new FinQueue<ISceneModel>(
+    var sceneModelQueue = new FinQueue<IReadOnlySceneModel>(
         scene.Areas.SelectMany(
             area => area.Objects.SelectMany(obj => obj.Models)));
     while (sceneModelQueue.TryDequeue(out var sceneModel)) {
