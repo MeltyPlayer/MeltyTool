@@ -20,16 +20,46 @@
     </Style>
   </UserControl.Styles>
 
-  <DockPanel>
-    <treeViews:FilterTreeView
-        DockPanel.Dock="Left"
-        Width="300" />
-    <model:ModelPanel
-        DockPanel.Dock="Right" 
-        Width="350"
-        DataContext="{Binding ModelPanel}" />
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition 
+          Width="300"
+          MinWidth="300" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition 
+          Width="300"
+          MinWidth="300" />
+    </Grid.ColumnDefinitions>
 
-    <Panel Background="Magenta">
-    </Panel>
-  </DockPanel>
+    <Border
+        Grid.Column="0"
+        BoxShadow="0 0 10 0 Black">
+      <treeViews:FilterTreeView />
+    </Border>
+
+    <GridSplitter 
+      Grid.Column="1"
+      Background="Transparent"
+      ResizeDirection="Columns" />
+
+    <Panel
+        Grid.Column="2"
+        Background="Magenta"
+        Margin="-6 0"
+        ZIndex="-5" />
+
+    <GridSplitter 
+        Grid.Column="3"
+        Background="Transparent"
+        ResizeDirection="Columns" />
+
+    <Border
+        Grid.Column="4"
+        BoxShadow="0 0 10 0 Black">
+      <model:ModelPanel
+          DataContext="{Binding ModelPanel}" />
+    </Border>
+  </Grid>
 </UserControl>
