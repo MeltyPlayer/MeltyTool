@@ -8,6 +8,7 @@ using CommunityToolkit.HighPerformance.Helpers;
 using Dxt;
 
 using fin.image;
+using fin.io;
 using fin.model;
 using fin.model.impl;
 
@@ -90,7 +91,10 @@ namespace HaloWarsTools {
 
       var finModel = new ModelImpl<NormalUvVertexImpl>(
           gridSize * gridSize,
-          (index, position) => new NormalUvVertexImpl(index, position));
+          (index, position) => new NormalUvVertexImpl(index, position)) {
+          // TODO: Fix this
+          Files = new HashSet<IReadOnlyGenericFile>(),
+      };
       var finMesh = finModel.Skin.AddMesh();
 
       var finVertices = finModel.Skin.TypedVertices;

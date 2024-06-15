@@ -34,7 +34,9 @@ namespace ttyd.api {
       var ttydSceneGraphs = ttydModel.SceneGraphs;
       var ttydSceneGraphObjectTransforms = ttydModel.SceneGraphObjectTransforms;
 
-      var finModel = new ModelImpl();
+      var finModel = new ModelImpl {
+          Files = new HashSet<IReadOnlyGenericFile>([modelFile, textureFile])
+      };
 
       // Sets up materials
       var finTextureMap = new LazyDictionary<int, ITexture?>(

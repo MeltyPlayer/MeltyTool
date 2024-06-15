@@ -1,14 +1,17 @@
 ﻿using System.Drawing;
 
-using fin.data.nodes;
+using fin.io;
 using fin.model;
 using fin.model.impl;
+using fin.util.sets;
 
 namespace games.pikmin2.route {
-  public class RouteModelBuilder {
-    public IModel BuildModel(
-        IReadOnlyList<IGraphNode<IRouteGraphNodeData>> route) {
-      var model = new ModelImpl();
+  public class RouteModelImporter {
+    public IModel Import(IReadOnlyGenericFile routeTxt) {
+      using var routeReader = routeTxt.OpenReadAsText();
+      var route = new RouteParser().Parse(routeReader);
+
+      var model = new ModelImpl { Files = routeTxt.AsSet() };
       var skin = model.Skin;
       var mesh = skin.AddMesh();
 
@@ -19,7 +22,7 @@ namespace games.pikmin2.route {
       var linkSet = new HashSet<(int, int)>();
 
       // TODO: Consider making each waypoint a bone in the skeleton and weighing vertices based on them
-      for (var nodeI = 0; nodeI < route.Count; ++nodeI) {
+      for (var nodeI = 0; nodeI < route.Length; ++nodeI) {
         var node = route[nodeI];
 
         // Adds link to set

@@ -11,6 +11,7 @@ using fin.math.rotations;
 using fin.model;
 using fin.scene;
 using fin.schema.vector;
+using fin.util.sets;
 
 using modl.api;
 using modl.schema.terrain;
@@ -51,7 +52,8 @@ namespace modl.schema.xml {
       var mainXmlFile = bwSceneFileBundle.MainXmlFile;
       var gameVersion = bwSceneFileBundle.GameVersion;
 
-      var scene = new SceneImpl();
+      var files = mainXmlFile.AsFileSet();
+      var scene = new SceneImpl { Files = files };
       var sceneArea = scene.AddArea();
 
       var mainXml = new XmlDocument();
@@ -64,6 +66,7 @@ namespace modl.schema.xml {
       var levelFilename =
           levelfilesTag["level"]["objectfiles"]["file"].GetAttribute("name");
       var levelXmlFile = mainXmlDirectory.AssertGetExistingFile(levelFilename);
+      files.Add(levelXmlFile);
 
       var objectTags = this.ReadLevelXmlObjectTags_(levelXmlFile, gameVersion);
 
@@ -74,12 +77,12 @@ namespace modl.schema.xml {
 
       var objectMap = this.ParseObjectMap_(objectTags);
 
-
       IBwTerrain bwTerrain;
       {
         var terrainFilename =
             levelfilesTag["terrain"]["file"].GetAttribute("name");
         var outFile = mainXmlDirectory.AssertGetExistingFile(terrainFilename);
+        files.Add(outFile);
         this.AddTerrain_(sceneArea,
                          outFile,
                          gameVersion,
@@ -88,7 +91,12 @@ namespace modl.schema.xml {
       }
 
       {
-        AddObjects_(sceneArea, levelXmlFile, gameVersion, bwTerrain, objectMap);
+        AddObjects_(files,
+                    sceneArea,
+                    levelXmlFile,
+                    gameVersion,
+                    bwTerrain,
+                    objectMap);
       }
 
       return scene;
@@ -317,11 +325,13 @@ namespace modl.schema.xml {
                        terrainLightScale));
     }
 
-    private void AddObjects_(ISceneArea sceneArea,
-                             IReadOnlyTreeFile levelXmlFile,
-                             GameVersion gameVersion,
-                             IBwTerrain bwTerrain,
-                             IDictionary<string, IBwObject> objectMap) {
+    private void AddObjects_(
+        ISet<IReadOnlyGenericFile> files,
+        ISceneArea sceneArea,
+        IReadOnlyTreeFile levelXmlFile,
+        GameVersion gameVersion,
+        IBwTerrain bwTerrain,
+        IDictionary<string, IBwObject> objectMap) {
       var parentDir = levelXmlFile.AssertGetParent();
       var levelDirectory =
           parentDir.GetExistingSubdirs()
@@ -375,14 +385,15 @@ namespace modl.schema.xml {
               }
             }
 
-            modelMap[modelId] =
-                await modlReader.ImportModelAsync(
-                    modelFile,
-                    animFiles,
-                    gameVersion);
+            modelMap[modelId] = await modlReader.ImportModelAsync(
+                modelFile,
+                animFiles,
+                gameVersion);
           });
       task.ConfigureAwait(false);
       task.Wait();
+
+      files.Add(modelMap.Values.SelectMany(m => m.Files));
 
       var levelObjMap = new Dictionary<string, ISceneObject>();
 

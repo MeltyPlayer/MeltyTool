@@ -13,6 +13,7 @@ using fin.model.io.importers;
 using fin.util.asserts;
 using fin.util.enums;
 using fin.util.image;
+using fin.util.sets;
 
 using glo.schema;
 
@@ -42,8 +43,11 @@ namespace glo.api {
         }
       }
 
+      var files = gloFile.AsFileSet();
       var finModel = new ModelImpl<Normal1Color1UvVertexImpl>(
-          (index, position) => new Normal1Color1UvVertexImpl(index, position));
+          (index, position) => new Normal1Color1UvVertexImpl(index, position)) {
+          Files = files
+      };
       var finSkin = finModel.Skin;
 
       var finRootBone = finModel.Skeleton.Root;
@@ -58,6 +62,7 @@ namespace glo.api {
               return null;
             }
 
+            files.Add(textureFile);
             using var rawTextureImage = FinImage.FromFile(textureFile);
             if (!gloMesh.Faces.Any(
                     f => f.Flags.CheckFlag(GloObjectFlags.ALPHA_TEXTURE))) {

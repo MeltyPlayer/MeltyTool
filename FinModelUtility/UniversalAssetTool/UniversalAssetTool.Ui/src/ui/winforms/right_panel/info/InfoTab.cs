@@ -1,7 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
-using fin.io.bundles;
+using fin.importers;
+using fin.io;
+using fin.util.linq;
+using fin.util.strings;
 
 namespace uni.ui.winforms.right_panel.info {
   public partial class InfoTab : UserControl {
@@ -9,7 +13,7 @@ namespace uni.ui.winforms.right_panel.info {
       InitializeComponent();
     }
 
-    public IFileBundle? FileBundle {
+    public IResource? Resource {
       set {
         var items = this.filesListBox_.Items;
         items.Clear();
@@ -18,12 +22,33 @@ namespace uni.ui.winforms.right_panel.info {
           return;
         }
 
-        var files = value.Files.Select(file => file.DisplayFullPath)
-                         .Distinct()
-                         .Order();
+        IEnumerable<string> paths;
+        if (value.Files.WhereIs<IReadOnlyGenericFile, IFileHierarchyFile>()
+                 .TryGetFirst(out var fileHierarchyFile)) {
+          var hierarchy = fileHierarchyFile.Hierarchy;
 
-        foreach (var file in files) {
-          items.Add(file);
+          paths
+              = value
+                .Files
+                .Select(file => {
+                          if (file.DisplayFullPath.TryRemoveStart(
+                                  hierarchy.Root.FullPath,
+                                  out var trimmed)) {
+                            return $"//{hierarchy.Name}{trimmed.Replace('\\', '/')}";
+                          } else {
+                            return file.DisplayFullPath;
+                          }
+                        })
+                .Distinct()
+                .Order();
+        } else {
+          paths = value.Files.Select(file => file.DisplayFullPath)
+                       .Distinct()
+                       .Order();
+        }
+
+        foreach (var path in paths) {
+          items.Add(path);
         }
       }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -9,6 +10,7 @@ using f3dzex2.image;
 
 using fin.data.lazy;
 using fin.image;
+using fin.io;
 using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.math.matrix.four;
@@ -45,7 +47,10 @@ namespace f3dzex2.model {
     /// </summary>
     public DlModelBuilder(IN64Hardware n64Hardware) {
       this.n64Hardware_ = n64Hardware;
-      this.Model = new ModelImpl();
+      this.Model = new ModelImpl {
+          // TODO: Fix this
+          Files = new HashSet<IReadOnlyGenericFile>(),
+      };
 
       this.currentMesh_ = this.Model.Skin.AddMesh();
       this.vertices_ = new F3dVertices(n64Hardware, this.Model);

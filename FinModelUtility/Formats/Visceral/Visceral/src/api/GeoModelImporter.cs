@@ -19,7 +19,8 @@ namespace visceral.api {
     public const bool STRICT_DAT = false;
 
     public IModel Import(GeoModelFileBundle modelFileBundle) {
-      var finModel = new ModelImpl();
+      var files = modelFileBundle.Files.ToHashSet();
+      var finModel = new ModelImpl { Files = files, };
 
       // Builds skeletons
       IBone[] finBones = Array.Empty<IBone>();
@@ -50,24 +51,13 @@ namespace visceral.api {
 
                 return finTexture;
               });
-      var lazyTextureByPathDictionary = new LazyDictionary<string, ITexture>(
-          path => {
-            var fixedBasePath
-                = path.Replace("s:/assets/",
-                               mtlbFileIdsDictionary.BaseDirectory.FullPath +
-                               "/")
-                      .Replace("_tdf.xml", "");
-
-            return lazyTextureByBundleDictionary[new Tg4ImageFileBundle {
-                Tg4hFile = new FinFile(fixedBasePath + ".tg4h"),
-                Tg4dFile = new FinFile(fixedBasePath + ".tg4d"),
-            }];
-          });
       var lazyTextureByIdDictionary = new LazyDictionary<uint, ITexture>(
           id => {
             var tg4hFile = tg4hFileIdDictionary[id];
             var tg4dFile
                 = new FinFile(tg4hFile.FullNameWithoutExtension + ".tg4d");
+            files.Add(tg4hFile);
+            files.Add(tg4dFile);
 
             return lazyTextureByBundleDictionary[new Tg4ImageFileBundle {
                 Tg4hFile = tg4hFile,

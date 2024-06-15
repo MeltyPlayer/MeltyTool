@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using fin.io;
 using fin.model;
 using fin.model.impl;
 
@@ -16,5 +17,7 @@ namespace fin.scene {
 
     public ILighting? Lighting { get; private set; }
     public ILighting CreateLighting() => this.Lighting = new LightingImpl();
+
+    public required IReadOnlySet<IReadOnlyGenericFile> Files { get; init; }
   }
 }

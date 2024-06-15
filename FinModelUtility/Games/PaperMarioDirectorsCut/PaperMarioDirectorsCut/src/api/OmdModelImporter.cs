@@ -6,6 +6,7 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
+using fin.util.sets;
 
 using pmdc.schema.omd;
 
@@ -20,10 +21,13 @@ namespace pmdc.api {
   public class OmdModelImporter : IModelImporter<OmdModelFileBundle> {
     public IModel Import(OmdModelFileBundle modelFileBundle) {
       var omdFile = modelFileBundle.OmdFile;
-
       var omdModel = omdFile.ReadNewFromText<Omd>();
+
+      var files = omdFile.AsFileSet();
       var finModel = new ModelImpl<NormalUvVertexImpl>(
-          (index, position) => new NormalUvVertexImpl(index, position));
+          (index, position) => new NormalUvVertexImpl(index, position)) {
+          Files = files
+      };
 
       var finSkeleton = finModel.Skeleton;
       var finRoot = finSkeleton.Root;
@@ -43,6 +47,7 @@ namespace pmdc.api {
                   finMaterial = finMaterialManager.AddNullMaterial();
                 } else {
                   var image = FinImage.FromFile(imageFile);
+                  files.Add(imageFile);
 
                   var finTexture = finMaterialManager.CreateTexture(image);
                   finTexture.WrapModeU = WrapMode.REPEAT;

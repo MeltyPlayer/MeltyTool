@@ -4,6 +4,7 @@ using fin.data.lazy;
 using fin.io;
 using fin.model;
 using fin.scene;
+using fin.util.sets;
 
 using sm64.LevelInfo;
 using sm64.Scripts;
@@ -22,7 +23,9 @@ namespace sm64.api {
     public IScene Import(Sm64LevelSceneFileBundle levelModelFileBundle) {
       var sm64Level = Sm64LevelImporter.LoadLevel(levelModelFileBundle);
 
-      var finScene = new SceneImpl();
+      var finScene = new SceneImpl {
+          Files = levelModelFileBundle.Sm64Rom.AsFileSet()
+      };
 
       var lazyModelDictionary = new LazyDictionary<ushort, IModel?>(
           sm64ModelId => {

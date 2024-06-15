@@ -150,7 +150,7 @@ public partial class UniversalAssetToolForm : Form {
   private void UpdateModel_(IFileTreeLeafNode? fileNode,
                             IModelFileBundle modelFileBundle,
                             IModel model) {
-    var scene = new SceneImpl();
+    var scene = new SceneImpl { Files = model.Files };
     var area = scene.AddArea();
     var obj = area.AddObject();
     obj.AddSceneModel(model);
@@ -169,7 +169,7 @@ public partial class UniversalAssetToolForm : Form {
     this.sceneViewerPanel_.FileBundleAndScene = (fileBundle, scene);
 
     var model = this.sceneViewerPanel_.FirstSceneModel?.Model;
-    this.modelTabs_.Model = (fileBundle, model);
+    this.modelTabs_.Model = model;
     this.modelTabs_.AnimationPlaybackManager =
         this.sceneViewerPanel_.AnimationPlaybackManager;
 

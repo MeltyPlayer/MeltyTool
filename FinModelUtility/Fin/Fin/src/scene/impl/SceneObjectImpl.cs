@@ -45,9 +45,6 @@ namespace fin.scene {
 
       public IReadOnlyList<ISceneModel> Models => this.models_;
 
-      public ISceneModel AddSceneModel()
-        => this.AddSceneModel(new ModelImpl());
-
       public ISceneModel AddSceneModel(IModel model) {
         var sceneModel = new SceneModelImpl(model);
         this.models_.Add(sceneModel);

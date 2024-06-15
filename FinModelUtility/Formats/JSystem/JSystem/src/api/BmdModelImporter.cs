@@ -72,7 +72,9 @@ namespace jsystem.api {
         throw;
       }
 
-      var model = new ModelImpl();
+      var model = new ModelImpl {
+          Files = modelFileBundle.Files.ToHashSet()
+      };
 
       var materialManager =
           new BmdMaterialManager(model, bmd, pathsAndBtis);

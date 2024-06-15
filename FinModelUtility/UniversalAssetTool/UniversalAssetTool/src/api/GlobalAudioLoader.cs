@@ -7,8 +7,9 @@ using fin.audio.io.importers.ogg;
 
 namespace uni.api {
   public class GlobalAudioReader : IAudioImporter<IAudioFileBundle> {
-    public IAudioBuffer<short> ImportAudio(IAudioManager<short> audioManager,
-                                           IAudioFileBundle audioFileBundle)
+    public ILoadedAudioBuffer<short> ImportAudio(
+        IAudioManager<short> audioManager,
+        IAudioFileBundle audioFileBundle)
       => audioFileBundle switch {
           AstAudioFileBundle astAudioFileBundle
               => new AstAudioReader().ImportAudio(

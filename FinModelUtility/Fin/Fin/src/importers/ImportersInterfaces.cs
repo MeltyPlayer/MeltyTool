@@ -1,9 +1,17 @@
-﻿using fin.io.bundles;
+﻿using System.Collections.Generic;
+
+using fin.io;
+using fin.io.bundles;
 
 namespace fin.importers {
-  public interface IImporter<out T, in TFileBundle>
+  public interface IResource {
+    IReadOnlySet<IReadOnlyGenericFile> Files { get; }
+  }
+
+  public interface IImporter<out TResource, in TFileBundle>
+      where TResource : IResource
       where TFileBundle : IFileBundle {
-    T Import(TFileBundle fileBundle);
+    TResource Import(TFileBundle fileBundle);
   }
 
 
@@ -18,7 +26,8 @@ namespace fin.importers {
     bool ForceGarbageCollection => false;
   }
 
-  public interface I3dImporter<out T, in TFileBundle>
-      : IImporter<T, TFileBundle>
+  public interface I3dImporter<out TResource, in TFileBundle>
+      : IImporter<TResource, TFileBundle>
+      where TResource : IResource
       where TFileBundle : I3dFileBundle;
 }

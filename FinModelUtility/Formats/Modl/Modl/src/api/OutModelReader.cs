@@ -14,6 +14,7 @@ using fin.model.impl;
 using fin.model.io.importers;
 using fin.util.asserts;
 using fin.util.enumerables;
+using fin.util.sets;
 
 using modl.schema.res.texr;
 using modl.schema.terrain;
@@ -79,8 +80,11 @@ namespace modl.api {
       var terrain = bwTerrain =
           isBw2 ? br.ReadNew<Bw2Terrain>() : br.ReadNew<Bw1Terrain>();
 
+      var files = outFile.AsSet();
       var finModel = new ModelImpl<OneColor2UvVertexImpl>(
-          (index, position) => new OneColor2UvVertexImpl(index, position));
+          (index, position) => new OneColor2UvVertexImpl(index, position)) {
+          Files = files
+      };
 
       var textureDirectories = textureDirectoriesEnumerable.ToArray();
       var lazyImageDictionary = new LazyDictionary<string, IImage>(
@@ -100,6 +104,7 @@ namespace modl.api {
               return FinImage.Create1x1FromColor(Color.Magenta);
             }
 
+            files.Add(textureFile);
             var texr = isBw2
                 ? (ITexr) textureFile.ReadNew<Gtxd>()
                 : textureFile.ReadNew<Text>();

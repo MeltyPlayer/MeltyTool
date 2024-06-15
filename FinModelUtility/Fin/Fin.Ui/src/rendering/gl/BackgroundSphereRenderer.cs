@@ -25,7 +25,7 @@ namespace fin.ui.rendering.gl {
     ]);
 
     private IModelRenderer GenerateModel_() {
-      var model = new ModelImpl();
+      var model = ModelImpl.CreateForViewer();
 
       var mesh = model.Skin.AddMesh();
 

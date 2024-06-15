@@ -7,6 +7,7 @@ using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
+using fin.io.bundles;
 using fin.math;
 using fin.model;
 using fin.model.impl;
@@ -26,13 +27,16 @@ namespace grezzo.api {
   public class CmbModelBuilder {
     // TODO: Split these out into separate classes
     public IModel BuildModel(
+        IFileBundle fileBundle,
         Cmb cmb,
         IReadOnlyList<Ctxb>? ctxbs = null,
         IReadOnlyList<(string name, Csab csab)>? namesAndCsabs = null,
         IReadOnlyList<(string name, Shpa shpa)>? namesAndShpas = null) {
       var fps = 30;
 
-      var finModel = new ModelImpl((int) cmb.vatr.maxIndex);
+      var finModel = new ModelImpl((int) cmb.vatr.maxIndex) {
+          Files = fileBundle.Files.ToHashSet(),
+      };
       var finSkin = finModel.Skin;
 
       // Adds bones

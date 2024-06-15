@@ -3,18 +3,19 @@
 using fin.audio;
 using fin.audio.io.importers;
 using fin.io;
+using fin.util.sets;
 
 using schema.binary;
 
 namespace ast.api {
   public class AstAudioReader : IAudioImporter<AstAudioFileBundle> {
-    public IAudioBuffer<short> ImportAudio(
+    public ILoadedAudioBuffer<short> ImportAudio(
         IAudioManager<short> audioManager,
         AstAudioFileBundle audioFileBundle) {
       var astFile = audioFileBundle.AstFile;
       var ast = astFile.ReadNew<Ast>(Endianness.BigEndian);
 
-      var mutableBuffer = audioManager.CreateAudioBuffer();
+      var mutableBuffer = audioManager.CreateLoadedAudioBuffer(astFile.AsFileSet());
 
       mutableBuffer.Frequency = (int) ast.StrmHeader.SampleRate;
 

@@ -8,6 +8,7 @@ using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.util.enumerables;
 
 using modl.schema.anim;
 using modl.schema.anim.bw1;
@@ -40,8 +41,13 @@ namespace modl.api {
           GameVersion.BW2 => br.ReadNew<Bw2Modl>(),
       };
 
+      var files = modlFile.Yield()
+                          .ConcatIfNonnull(animFiles)
+                          .ToHashSet<IReadOnlyGenericFile>();
       var model = new ModelImpl<Normal1Color1UvVertexImpl>(
-          (index, position) => new Normal1Color1UvVertexImpl(index, position));
+          (index, position) => new Normal1Color1UvVertexImpl(index, position)) {
+          Files = files,
+      };
       var finMesh = model.Skin.AddMesh();
 
       var finBones = new IBone[bwModel.Nodes.Count];
@@ -121,6 +127,7 @@ namespace modl.api {
                               .First();
               }
 
+              files.Add(textureFile);
               var texr = gameVersion == GameVersion.BW2
                   ? (ITexr) textureFile.ReadNew<Gtxd>()
                   : textureFile.ReadNew<Text>();

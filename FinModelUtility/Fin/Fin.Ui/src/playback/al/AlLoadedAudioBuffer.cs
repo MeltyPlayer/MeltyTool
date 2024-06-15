@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-
-using fin.audio;
+﻿using fin.audio;
 using fin.io;
 using fin.util.asserts;
 
-namespace fin.testing.audio.stubbed {
-  public partial class StubbedAudioManager {
-    public IAudioBuffer<short> CreateAudioBuffer()
-      => new StubbedAudioBuffer(new HashSet<IReadOnlyGenericFile>());
-
+namespace fin.ui.playback.al {
+  public partial class AlAudioManager {
     public ILoadedAudioBuffer<short> CreateLoadedAudioBuffer(
         IReadOnlySet<IReadOnlyGenericFile> files)
-      => new StubbedAudioBuffer(files);
+      => new AlLoadedAudioBuffer(files);
 
-    private class StubbedAudioBuffer(IReadOnlySet<IReadOnlyGenericFile> files)
-        : ILoadedAudioBuffer<short> {
+    private class AlLoadedAudioBuffer(IReadOnlySet<IReadOnlyGenericFile> files)
+        : AlAudioBuffer, ILoadedAudioBuffer<short> {
       private short[][] channels_;
 
       public AudioChannelsType AudioChannelsType { get; private set; }

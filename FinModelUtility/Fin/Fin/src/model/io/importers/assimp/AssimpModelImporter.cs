@@ -17,15 +17,17 @@ using fin.io;
 using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model.impl;
+using fin.util.sets;
 
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.model.io.importers.assimp {
   public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
-    public unsafe IModel Import(AssimpModelFileBundle modelFileBundle) {
+    public IModel Import(AssimpModelFileBundle modelFileBundle) {
       var mainFile = modelFileBundle.MainFile;
 
-      var finModel = new ModelImpl();
+      var files = mainFile.AsFileSet();
+      var finModel = new ModelImpl { Files = files };
 
       using var ctx = new AssimpContext();
       var assScene = ctx.ImportFile(mainFile.FullPath);
@@ -33,10 +35,15 @@ namespace fin.model.io.importers.assimp {
       // Adds materials
       var lazyFinSatelliteImages
           = new LazyCaseInvariantStringDictionary<IImage>(
-              path => mainFile.AssertGetParent()
-                              .TryToGetExistingFile(path, out var imageFile)
-                  ? FinImage.FromFile(imageFile)
-                  : FinImage.Create1x1FromColor(Color.Magenta));
+              path => {
+                if (mainFile.AssertGetParent()
+                            .TryToGetExistingFile(path, out var imageFile)) {
+                  files.Add(imageFile);
+                  return FinImage.FromFile(imageFile);
+                }
+
+                return FinImage.Create1x1FromColor(Color.Magenta);
+              });
       var lazyFinEmbeddedImages = new LazyDictionary<EmbeddedTexture, IImage>(
           assEmbeddedImage => {
             if (assEmbeddedImage.IsCompressed) {

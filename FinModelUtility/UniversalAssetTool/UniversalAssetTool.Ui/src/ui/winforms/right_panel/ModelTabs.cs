@@ -12,18 +12,15 @@ namespace uni.ui.winforms.right_panel {
       InitializeComponent();
     }
 
-    public (IFileBundle, IReadOnlyModel)? Model {
+    public IReadOnlyModel? Model {
       set {
-        var modelFileBundle = value?.Item1;
-        var model = value?.Item2;
-
-        this.infoTab_.FileBundle = modelFileBundle;
-        this.animationsTab_.Model = model;
+        this.infoTab_.Resource = value;
+        this.animationsTab_.Model = value;
         this.materialsTab_.ModelAndMaterials =
-            model != null ? (model, model.MaterialManager.All) : null;
-        this.registersTab_.Model = model;
-        this.skeletonTab_.Model = model;
-        this.texturesTab_.Model = model;
+            value != null ? (value, value.MaterialManager.All) : null;
+        this.registersTab_.Model = value;
+        this.skeletonTab_.Model = value;
+        this.texturesTab_.Model = value;
       }
     }
 

@@ -14,9 +14,22 @@ namespace fin.util.strings {
       return sb.ToString();
     }
 
+    public static bool TryRemoveStart(
+        this string str,
+        string start,
+        out string trimmed) {
+      if (str.StartsWith(start)) {
+        trimmed = str.Substring(start.Length);
+        return true;
+      }
+
+      trimmed = default;
+      return false;
+    }
+
     public static string AssertRemoveStart(this string str, string start) {
-      Asserts.True(str.StartsWith(start));
-      return str.Substring(start.Length);
+      Asserts.True(str.TryRemoveStart(start, out var trimmed));
+      return trimmed;
     }
 
     public static string[] SplitNewlines(this string text)

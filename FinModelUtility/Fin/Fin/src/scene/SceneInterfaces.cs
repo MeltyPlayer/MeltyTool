@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
-using fin.animation;
 using fin.data.dictionaries;
 using fin.importers;
-using fin.math;
 using fin.model;
 
 using schema.readOnly;
@@ -24,7 +21,7 @@ namespace fin.scene {
   ///   game that are each separated by a loading screen.
   /// </summary>
   [GenerateReadOnly]
-  public partial interface IScene {
+  public partial interface IScene : IResource {
     IReadOnlyList<ISceneArea> Areas { get; }
     ISceneArea AddArea();
 

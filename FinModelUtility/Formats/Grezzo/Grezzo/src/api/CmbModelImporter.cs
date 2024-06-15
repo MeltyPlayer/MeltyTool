@@ -44,10 +44,12 @@ namespace grezzo.api {
                       })
               .ToList();
 
-      return new CmbModelBuilder().BuildModel(cmb,
-                                              ctxbs,
-                                              namesAndCsabs,
-                                              namesAndShpas);
+      return new CmbModelBuilder().BuildModel(
+          modelFileBundle,
+          cmb,
+          ctxbs,
+          namesAndCsabs,
+          namesAndShpas);
     }
 
     public readonly struct CsabReader : IAction {

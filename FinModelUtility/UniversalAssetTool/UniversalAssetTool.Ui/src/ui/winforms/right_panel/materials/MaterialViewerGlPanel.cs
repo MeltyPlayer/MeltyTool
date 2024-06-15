@@ -32,7 +32,7 @@ namespace uni.ui.winforms.right_panel.materials {
     protected override void InitGl() {
       this.ResetGl_();
 
-      this.viewerModel_ = new ModelImpl(4);
+      this.viewerModel_ = ModelImpl.CreateForViewer(4);
 
       var ul = this.viewerModel_.Skin.AddVertex(0, 0, 0);
       ul.SetUv(0, 0);

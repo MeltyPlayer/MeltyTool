@@ -8,20 +8,23 @@ using jsystem.api;
 namespace games.pikmin2.api {
   public class Pikmin2SceneImporter : ISceneImporter<Pikmin2SceneFileBundle> {
     public IScene Import(Pikmin2SceneFileBundle sceneFileBundle) {
-      var scene = new SceneImpl();
+      var levelBmd = sceneFileBundle.LevelBmd;
+      var routeTxt = sceneFileBundle.RouteTxt;
+
+      var scene = new SceneImpl {
+          Files = new HashSet<IReadOnlyGenericFile>([levelBmd, routeTxt]),
+      };
       var sceneArea = scene.AddArea();
 
       var mapObj = sceneArea.AddObject();
       mapObj.AddSceneModel(
           new BmdModelImporter().Import(new BmdModelFileBundle {
-              GameName = "pikmin_2", BmdFile = sceneFileBundle.LevelBmd
+              GameName = "pikmin_2", BmdFile = levelBmd
           }));
 
       var routeObj = sceneArea.AddObject();
 
-      using var routeReader = sceneFileBundle.RouteTxt.OpenReadAsText();
-      var route = new RouteParser().Parse(routeReader);
-      routeObj.AddSceneModel(new RouteModelBuilder().BuildModel(route));
+      routeObj.AddSceneModel(new RouteModelImporter().Import(routeTxt));
 
       return scene;
     }

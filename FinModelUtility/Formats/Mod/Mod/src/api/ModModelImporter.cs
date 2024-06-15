@@ -57,7 +57,9 @@ namespace mod.api {
 
       var finModCache = new FinModCache(mod);
 
-      var model = new ModelImpl();
+      var model = new ModelImpl {
+          Files = modelFileBundle.Files.ToHashSet()
+      };
 
       var hasVertices = mod.vertices.Any();
       var hasNormals = mod.vnormals.Any();

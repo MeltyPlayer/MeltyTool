@@ -1,12 +1,13 @@
 ﻿using System;
 
 using fin.util.asserts;
+using fin.util.sets;
 
 using NVorbis;
 
 namespace fin.audio.io.importers.ogg {
   public class OggAudioImporter : IAudioImporter<OggAudioFileBundle> {
-    public IAudioBuffer<short> ImportAudio(
+    public ILoadedAudioBuffer<short> ImportAudio(
         IAudioManager<short> audioManager,
         OggAudioFileBundle audioFileBundle) {
       var oggFile = audioFileBundle.OggFile;
@@ -14,7 +15,7 @@ namespace fin.audio.io.importers.ogg {
 
       using var ogg = new VorbisReader(oggFile.OpenRead());
 
-      var mutableBuffer = audioManager.CreateAudioBuffer();
+      var mutableBuffer = audioManager.CreateLoadedAudioBuffer(oggFile.AsFileSet());
       mutableBuffer.Frequency = ogg.SampleRate;
 
       {

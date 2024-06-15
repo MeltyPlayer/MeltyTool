@@ -1,6 +1,7 @@
 ﻿using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.util.sets;
 
 using schema.text.reader;
 
@@ -16,7 +17,8 @@ namespace xmod.api {
       var xmod = new Xmod();
       xmod.Read(tr);
 
-      var finModel = new ModelImpl();
+      var files = modelFileBundle.XmodFile.AsFileSet();
+      var finModel = new ModelImpl { Files = files };
 
       var finMaterialManager = finModel.MaterialManager;
 
@@ -38,6 +40,7 @@ namespace xmod.api {
               modelFileBundle.TextureDirectory.GetFilesWithNameRecursive(
                                  $"{textureName}.tex")
                              .First();
+          files.Add(texFile);
           var image = new TexImageReader().ReadImage(texFile);
 
           var finTexture = finMaterialManager.CreateTexture(image);

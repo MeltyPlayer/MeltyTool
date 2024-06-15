@@ -21,7 +21,9 @@ namespace grezzo.api {
 
       var zsi = zsiFile.ReadNew<Zsi>(Endianness.LittleEndian);
 
-      var finScene = new SceneImpl();
+      var finScene = new SceneImpl {
+          Files = sceneFileBundle.Files.ToHashSet(),
+      };
 
       var finLighting = finScene.CreateLighting();
       if (zsi.EnvironmentSettings.Any()) {
@@ -60,20 +62,22 @@ namespace grezzo.api {
         });
       }
 
-      this.AddZsiMeshAsNewArea_(finScene, zsi);
+      this.AddZsiMeshAsNewArea_(sceneFileBundle, finScene, zsi);
 
       foreach (var roomFileName in zsi.RoomFileNames) {
         var roomZsiFile = zsiFile.AssertGetParent()
                                  .AssertGetExistingFile(
                                      Path.GetFileName(roomFileName));
         var roomZsi = roomZsiFile.ReadNew<Zsi>(Endianness.LittleEndian);
-        this.AddZsiMeshAsNewArea_(finScene, roomZsi);
+        this.AddZsiMeshAsNewArea_(sceneFileBundle, finScene, roomZsi);
       }
 
       return finScene;
     }
 
-    private void AddZsiMeshAsNewArea_(IScene finScene, Zsi zsi) {
+    private void AddZsiMeshAsNewArea_(ZsiSceneFileBundle fileBundle,
+                                      IScene finScene,
+                                      Zsi zsi) {
       var finArea = finScene.AddArea();
       foreach (var meshHeader in zsi.MeshHeaders) {
         foreach (var meshEntry in meshHeader.MeshEntries) {
@@ -82,13 +86,13 @@ namespace grezzo.api {
           var opaqueMesh = meshEntry.OpaqueMesh;
           if (opaqueMesh != null) {
             finObject.AddSceneModel(
-                this.cmbModelBuilder_.BuildModel(opaqueMesh));
+                this.cmbModelBuilder_.BuildModel(fileBundle, opaqueMesh));
           }
 
           var translucentMesh = meshEntry.TranslucentMesh;
           if (translucentMesh != null) {
             finObject.AddSceneModel(
-                this.cmbModelBuilder_.BuildModel(translucentMesh));
+                this.cmbModelBuilder_.BuildModel(fileBundle, translucentMesh));
           }
         }
       }

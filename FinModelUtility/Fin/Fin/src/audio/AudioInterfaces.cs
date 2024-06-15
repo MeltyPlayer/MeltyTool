@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 using fin.data.disposables;
+using fin.importers;
+using fin.io;
+
+using schema.readOnly;
 
 namespace fin.audio {
   // Playback types
@@ -14,6 +19,9 @@ namespace fin.audio {
     // TODO: Add support for looping a certain section of audio
 
     IAudioBuffer<TPcm> CreateAudioBuffer();
+
+    ILoadedAudioBuffer<TPcm> CreateLoadedAudioBuffer(
+        IReadOnlySet<IReadOnlyGenericFile> files);
 
     IJitAudioDataSource<TPcm> CreateJitAudioDataSource(
         AudioChannelsType audioChannelsType,
@@ -126,16 +134,11 @@ namespace fin.audio {
   }
 
   /// <summary>
-  ///   Type for storing static audio data.
-  /// </summary>
-  public interface IReadOnlyAudioBuffer<out TPcm>
-      : IAotAudioDataSource<TPcm> where TPcm : INumber<TPcm> { }
-
-  /// <summary>
   ///   Type for storing static audio data that can be mutated dynamically.
   /// </summary>
-  public interface IAudioBuffer<TPcm>
-      : IReadOnlyAudioBuffer<TPcm> where TPcm : INumber<TPcm> {
+  [GenerateReadOnly]
+  public partial interface IAudioBuffer<TPcm>
+      : IAotAudioDataSource<TPcm> where TPcm : INumber<TPcm> {
     new int Frequency { get; set; }
 
     void SetPcm(TPcm[][] samples);
@@ -145,6 +148,11 @@ namespace fin.audio {
     void SetStereoPcm(TPcm[] leftChannelSamples,
                       TPcm[] rightChannelSamples);
   }
+
+  [GenerateReadOnly]
+  public partial interface ILoadedAudioBuffer<TPcm>
+      : IAudioBuffer<TPcm>, IResource
+      where TPcm : INumber<TPcm>;
 
   /// <summary>
   ///   An audio data source that represents live data that is received just in

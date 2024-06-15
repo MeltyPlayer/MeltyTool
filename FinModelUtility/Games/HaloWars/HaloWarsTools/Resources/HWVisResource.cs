@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml.Linq;
 
 using fin.data.dictionaries;
+using fin.io;
 using fin.model;
 using fin.model.impl;
 using fin.scene;
@@ -31,7 +32,10 @@ namespace HaloWarsTools {
     private HWModel[] ImportModels_() {
       var models = new List<HWModel>();
 
-      this.Scene = new SceneImpl();
+      this.Scene = new SceneImpl {
+          // TODO: Fix this
+          Files = new HashSet<IReadOnlyGenericFile>(),
+      };
 
       var visModels = new List<VisModel>();
       var visModelMap = new Dictionary<string, VisModel>();

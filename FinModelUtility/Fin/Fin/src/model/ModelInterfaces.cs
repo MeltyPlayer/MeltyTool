@@ -1,8 +1,10 @@
-﻿using schema.readOnly;
+﻿using fin.importers;
+
+using schema.readOnly;
 
 namespace fin.model {
   [GenerateReadOnly]
-  public partial interface IModel {
+  public partial interface IModel : IResource {
     ISkeleton Skeleton { get; }
     ISkin Skin { get; }
     IMaterialManager MaterialManager { get; }
