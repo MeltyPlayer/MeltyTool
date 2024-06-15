@@ -1,9 +1,12 @@
+using System.Collections.Generic;
+
 using Avalonia.Controls;
 
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.TextMate;
 
+using fin.io;
 using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
@@ -16,7 +19,7 @@ namespace uni.ui.avalonia.model.materials {
   public class MaterialShadersPanelViewModelForDesigner
       : MaterialShadersPanelViewModel {
     public MaterialShadersPanelViewModelForDesigner() {
-      this.ModelAndMaterial = (new ModelImpl(), null);
+      this.ModelAndMaterial = (ModelImpl.CreateForViewer(), null);
     }
   }
 

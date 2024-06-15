@@ -8,6 +8,7 @@
              xmlns:skeleton="clr-namespace:uni.ui.avalonia.model.skeleton"
              xmlns:textures="clr-namespace:uni.ui.avalonia.textures"
              xmlns:registers="clr-namespace:uni.ui.avalonia.registers"
+             xmlns:resource="clr-namespace:uni.ui.avalonia.resource"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="700"
              x:Class="uni.ui.avalonia.model.ModelPanel"
              x:DataType="model:ModelPanelViewModel">
@@ -16,7 +17,9 @@
   </Design.DataContext>
 
   <TabControl Classes="h2 spaceFirst indented">
-    <!--<TabItem Header="Info" />-->
+    <TabItem Header="Info">
+      <resource:ResourcePanel DataContext="{Binding ResourcePanel}" />
+    </TabItem>
     <TabItem Header="Skeleton">
       <skeleton:SkeletonTree DataContext="{Binding SkeletonTree}" />
     </TabItem>

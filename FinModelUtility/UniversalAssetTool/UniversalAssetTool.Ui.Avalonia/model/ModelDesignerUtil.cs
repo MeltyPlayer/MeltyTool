@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 using fin.image;
 using fin.image.formats;
+using fin.io;
 using fin.model;
 using fin.model.impl;
 
@@ -12,7 +14,14 @@ namespace uni.ui.avalonia.model;
 
 public static class ModelDesignerUtil {
   public static IReadOnlyModel CreateStubModel() {
-    var model = new ModelImpl();
+    var model = new ModelImpl {
+        Files = new HashSet<IReadOnlyGenericFile>([
+            new FinFile(@"C:\Users\Foo\Documents\Bar\123.txt"),
+            new FinFile(@"C:\Users\Foo\Documents\Bar\123_model.model"),
+            new FinFile(@"C:\Users\Foo\Documents\Bar\123_animation.anim"),
+            new FinFile(@"C:\Users\Foo\Documents\Bar\textures\abc.png"),
+        ])
+    };
 
     {
       var materialManager = model.MaterialManager;
@@ -55,7 +64,7 @@ public static class ModelDesignerUtil {
 
     {
       var skeleton = model.Skeleton;
-      
+
       var rootBone = skeleton.Root;
 
       var center = rootBone.AddChild(0, 0, 0);
@@ -112,7 +121,7 @@ public static class ModelDesignerUtil {
   }
 
   public static IReadOnlyTexture CreateStubTexture(int width, int height) {
-    var model = new ModelImpl();
+    var model = ModelImpl.CreateForViewer();
     var materialManager = model.MaterialManager;
     return materialManager.CreateTexture(CreateStubImage(width, height));
   }
