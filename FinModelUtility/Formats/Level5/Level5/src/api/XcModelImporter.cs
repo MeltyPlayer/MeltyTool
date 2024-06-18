@@ -7,11 +7,10 @@ using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
-using fin.util.sets;
 
 using level5.schema;
 
-using OpenTK;
+using OpenTK.Mathematics;
 
 using schema.binary;
 

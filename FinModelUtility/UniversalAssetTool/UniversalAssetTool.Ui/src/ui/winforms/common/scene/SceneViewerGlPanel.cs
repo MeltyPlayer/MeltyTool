@@ -30,127 +30,130 @@ namespace uni.ui.winforms.common.scene {
     private bool isSlowdownActive_ = false;
 
     public SceneViewerGlPanel() {
-      this.impl_.MouseDown += (_, args) => {
-                                if (args.Button == MouseButtons.Left ||
-                                    args.Button == MouseButtons.Right) {
-                                  isMouseDown_ = true;
-                                  this.prevMousePosition_ = null;
-                                }
-                              };
-      this.impl_.MouseUp += (_, args) => {
-                              if (args.Button == MouseButtons.Left ||
-                                  args.Button == MouseButtons.Right) {
-                                isMouseDown_ = false;
-                              }
-                            };
-      this.impl_.MouseMove += (_, args) => {
-                                if (this.isMouseDown_) {
-                                  var mouseLocation = (args.X, args.Y);
+      var inputTarget = this.impl_;
 
-                                  if (this.prevMousePosition_ != null) {
-                                    var (prevMouseX, prevMouseY)
-                                        = this.prevMousePosition_.Value;
-                                    var (mouseX, mouseY) = mouseLocation;
+      inputTarget.MouseDown += (_, args) => {
+                                 this.impl_.Focus();
+                                 if (args.Button == MouseButtons.Left ||
+                                     args.Button == MouseButtons.Right) {
+                                   isMouseDown_ = true;
+                                   this.prevMousePosition_ = null;
+                                 }
+                               };
+      inputTarget.MouseUp += (_, args) => {
+                               if (args.Button == MouseButtons.Left ||
+                                   args.Button == MouseButtons.Right) {
+                                 isMouseDown_ = false;
+                               }
+                             };
+      inputTarget.MouseMove += (_, args) => {
+                                 if (this.isMouseDown_) {
+                                   var mouseLocation = (args.X, args.Y);
 
-                                    var deltaMouseX = mouseX - prevMouseX;
-                                    var deltaMouseY = mouseY - prevMouseY;
+                                   if (this.prevMousePosition_ != null) {
+                                     var (prevMouseX, prevMouseY)
+                                         = this.prevMousePosition_.Value;
+                                     var (mouseX, mouseY) = mouseLocation;
 
-                                    var fovY = this.viewerImpl_.FovY;
-                                    var fovX = fovY / this.Height * this.Width;
+                                     var deltaMouseX = mouseX - prevMouseX;
+                                     var deltaMouseY = mouseY - prevMouseY;
 
-                                    var deltaXFrac
-                                        = 1f * deltaMouseX / this.Width;
-                                    var deltaYFrac
-                                        = 1f * deltaMouseY / this.Height;
+                                     var fovY = this.viewerImpl_.FovY;
+                                     var fovX = fovY / this.Height * this.Width;
 
-                                    var mouseSpeed = 3;
+                                     var deltaXFrac
+                                         = 1f * deltaMouseX / this.Width;
+                                     var deltaYFrac
+                                         = 1f * deltaMouseY / this.Height;
 
-                                    this.Camera.PitchDegrees = float.Clamp(
-                                        this.Camera.PitchDegrees -
-                                        deltaYFrac * fovY * mouseSpeed,
-                                        -90,
-                                        90);
-                                    this.Camera.YawDegrees
-                                        -= deltaXFrac * fovX * mouseSpeed;
-                                  }
+                                     var mouseSpeed = 3;
 
-                                  this.prevMousePosition_ = mouseLocation;
-                                }
-                              };
+                                     this.Camera.PitchDegrees = float.Clamp(
+                                         this.Camera.PitchDegrees -
+                                         deltaYFrac * fovY * mouseSpeed,
+                                         -90,
+                                         90);
+                                     this.Camera.YawDegrees
+                                         -= deltaXFrac * fovX * mouseSpeed;
+                                   }
 
-      this.impl_.KeyDown += (_, args) => {
-                              switch (args.KeyCode) {
-                                case Keys.W: {
-                                  this.isForwardDown_ = true;
-                                  break;
-                                }
-                                case Keys.S: {
-                                  this.isBackwardDown_ = true;
-                                  break;
-                                }
-                                case Keys.A: {
-                                  this.isLeftwardDown_ = true;
-                                  break;
-                                }
-                                case Keys.D: {
-                                  this.isRightwardDown_ = true;
-                                  break;
-                                }
-                                case Keys.Q: {
-                                  this.isDownwardDown_ = true;
-                                  break;
-                                }
-                                case Keys.E: {
-                                  this.isUpwardDown_ = true;
-                                  break;
-                                }
-                                case Keys.ShiftKey: {
-                                  this.isSpeedupActive_ = true;
-                                  break;
-                                }
-                                case Keys.ControlKey: {
-                                  this.isSlowdownActive_ = true;
-                                  break;
-                                }
-                              }
-                            };
+                                   this.prevMousePosition_ = mouseLocation;
+                                 }
+                               };
 
-      this.impl_.KeyUp += (_, args) => {
-                            switch (args.KeyCode) {
-                              case Keys.W: {
-                                this.isForwardDown_ = false;
-                                break;
-                              }
-                              case Keys.S: {
-                                this.isBackwardDown_ = false;
-                                break;
-                              }
-                              case Keys.A: {
-                                this.isLeftwardDown_ = false;
-                                break;
-                              }
-                              case Keys.D: {
-                                this.isRightwardDown_ = false;
-                                break;
-                              }
-                              case Keys.Q: {
-                                this.isDownwardDown_ = false;
-                                break;
-                              }
-                              case Keys.E: {
-                                this.isUpwardDown_ = false;
-                                break;
-                              }
-                              case Keys.ShiftKey: {
-                                this.isSpeedupActive_ = false;
-                                break;
-                              }
-                              case Keys.ControlKey: {
-                                this.isSlowdownActive_ = false;
-                                break;
-                              }
-                            }
-                          };
+      inputTarget.KeyDown += (_, args) => {
+                               switch (args.KeyCode) {
+                                 case Keys.W: {
+                                   this.isForwardDown_ = true;
+                                   break;
+                                 }
+                                 case Keys.S: {
+                                   this.isBackwardDown_ = true;
+                                   break;
+                                 }
+                                 case Keys.A: {
+                                   this.isLeftwardDown_ = true;
+                                   break;
+                                 }
+                                 case Keys.D: {
+                                   this.isRightwardDown_ = true;
+                                   break;
+                                 }
+                                 case Keys.Q: {
+                                   this.isDownwardDown_ = true;
+                                   break;
+                                 }
+                                 case Keys.E: {
+                                   this.isUpwardDown_ = true;
+                                   break;
+                                 }
+                                 case Keys.ShiftKey: {
+                                   this.isSpeedupActive_ = true;
+                                   break;
+                                 }
+                                 case Keys.ControlKey: {
+                                   this.isSlowdownActive_ = true;
+                                   break;
+                                 }
+                               }
+                             };
+
+      inputTarget.KeyUp += (_, args) => {
+                             switch (args.KeyCode) {
+                               case Keys.W: {
+                                 this.isForwardDown_ = false;
+                                 break;
+                               }
+                               case Keys.S: {
+                                 this.isBackwardDown_ = false;
+                                 break;
+                               }
+                               case Keys.A: {
+                                 this.isLeftwardDown_ = false;
+                                 break;
+                               }
+                               case Keys.D: {
+                                 this.isRightwardDown_ = false;
+                                 break;
+                               }
+                               case Keys.Q: {
+                                 this.isDownwardDown_ = false;
+                                 break;
+                               }
+                               case Keys.E: {
+                                 this.isUpwardDown_ = false;
+                                 break;
+                               }
+                               case Keys.ShiftKey: {
+                                 this.isSpeedupActive_ = false;
+                                 break;
+                               }
+                               case Keys.ControlKey: {
+                                 this.isSlowdownActive_ = false;
+                                 break;
+                               }
+                             }
+                           };
     }
 
     protected override void InitGl() => this.ResetGl_();
@@ -206,7 +209,8 @@ namespace uni.ui.winforms.common.scene {
       }
     }
 
-    public ISceneModelInstance? FirstSceneModel => this.viewerImpl_.FirstSceneModel;
+    public ISceneModelInstance? FirstSceneModel
+      => this.viewerImpl_.FirstSceneModel;
 
     public IAnimationPlaybackManager? AnimationPlaybackManager
       => this.viewerImpl_.AnimationPlaybackManager;

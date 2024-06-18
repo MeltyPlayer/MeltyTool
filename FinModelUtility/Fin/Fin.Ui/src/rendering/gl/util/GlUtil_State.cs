@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics;
+﻿using OpenTK.Windowing.Common;
 
 namespace fin.ui.rendering.gl {
   public partial class GlState { }

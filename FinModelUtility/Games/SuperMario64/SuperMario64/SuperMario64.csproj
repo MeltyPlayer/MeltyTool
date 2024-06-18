@@ -66,7 +66,7 @@
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenTK" Version="3.3.3" />
+    <PackageReference Include="OpenTK" Version="4.8.2" />
     <PackageReference Include="schema" Version="0.5.2" />
   </ItemGroup>
 </Project>

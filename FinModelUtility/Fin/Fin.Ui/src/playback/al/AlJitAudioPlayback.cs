@@ -136,7 +136,6 @@ namespace fin.ui.playback.al {
           AL.BufferData(this.AlBufferId,
                         bufferFormat,
                         byteBufferData,
-                        byteBufferData.Length,
                         this.frequency_);
           AssertNoError_();
 

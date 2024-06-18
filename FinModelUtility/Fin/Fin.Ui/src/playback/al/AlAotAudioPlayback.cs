@@ -58,7 +58,6 @@ namespace fin.ui.playback.al {
         AL.BufferData(this.alBufferId_,
                       bufferFormat,
                       byteBufferData,
-                      byteBufferData.Length,
                       source.Frequency);
 
         AL.Source(this.AlSourceId, ALSourcei.Buffer, this.alBufferId_);

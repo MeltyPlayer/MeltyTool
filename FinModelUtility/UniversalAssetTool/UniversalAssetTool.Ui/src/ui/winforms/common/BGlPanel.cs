@@ -19,7 +19,6 @@ namespace uni.ui.winforms.common {
 
       if (!DesignModeUtil.InDesignMode) {
         GlUtil.Init();
-        this.impl_.Context.ErrorChecking = true;
         this.impl_.CreateGraphics();
         this.impl_.MakeCurrent();
 
@@ -54,7 +53,7 @@ namespace uni.ui.winforms.common {
           GL.Flush();
           this.impl_.SwapBuffers();
 
-          this.impl_.Context.MakeCurrent(null);
+          this.impl_.Context.MakeNoneCurrent();
         });
       }
     }

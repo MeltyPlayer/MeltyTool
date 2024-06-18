@@ -11,8 +11,6 @@ using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
 
-using OpenTK.Graphics;
-
 using uni.ui;
 using uni.ui.winforms;
 
@@ -55,7 +53,6 @@ namespace uni.cli {
                         => extractorOptions.CreateMassExporter().ExportAll())
                 .WithParsed((UiOptions _) => {
                   DesignModeUtil.InDesignMode = false;
-                  GraphicsContext.ShareContexts = true;
                   ApplicationConfiguration.Initialize();
                   Application.Run(new UniversalAssetToolForm());
                   //new UniversalAssetToolForm().ShowDialog();

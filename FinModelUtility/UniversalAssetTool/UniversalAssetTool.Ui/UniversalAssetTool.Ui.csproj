@@ -22,6 +22,7 @@
     <AssemblyName>universal_asset_tool</AssemblyName>
     <StartupObject>uni.cli.Cli</StartupObject>
     <UserSecretsId>7016d56f-b424-467d-8b3a-40e5d0483f29</UserSecretsId>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,6 +46,10 @@
     <EmbeddedResource Include="img\model.png" />
     <EmbeddedResource Include="img\music.png" />
     <EmbeddedResource Include="img\scene.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.7" />
   </ItemGroup>
 
   <ItemGroup>

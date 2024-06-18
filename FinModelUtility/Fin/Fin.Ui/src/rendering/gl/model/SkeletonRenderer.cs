@@ -59,8 +59,8 @@ namespace fin.ui.rendering.gl.model {
 
             if (parentLocation != null) {
               var parentPos = parentLocation.Value;
-              GL.Vertex3(Unsafe.As<Vector3, OpenTK.Vector3>(ref parentPos));
-              GL.Vertex3(Unsafe.As<Vector3, OpenTK.Vector3>(ref xyz));
+              GL.Vertex3(Unsafe.As<Vector3, OpenTK.Mathematics.Vector3>(ref parentPos));
+              GL.Vertex3(Unsafe.As<Vector3, OpenTK.Mathematics.Vector3>(ref xyz));
             }
 
             location = xyz;
@@ -89,7 +89,7 @@ namespace fin.ui.rendering.gl.model {
           var from = new Vector3();
           this.boneTransformManager_.ProjectPosition(bone, ref from);
 
-          GL.Vertex3(Unsafe.As<Vector3, OpenTK.Vector3>(ref from));
+          GL.Vertex3(Unsafe.As<Vector3, OpenTK.Mathematics.Vector3>(ref from));
         }
 
         GL.End();
@@ -103,7 +103,7 @@ namespace fin.ui.rendering.gl.model {
           var from = new Vector3();
           this.boneTransformManager_.ProjectPosition(this.SelectedBone, ref from);
 
-          GL.Vertex3(Unsafe.As<Vector3, OpenTK.Vector3>(ref from));
+          GL.Vertex3(Unsafe.As<Vector3, OpenTK.Mathematics.Vector3>(ref from));
 
           GL.End();
         }

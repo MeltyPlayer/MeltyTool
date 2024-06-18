@@ -1,4 +1,8 @@
-﻿using OpenTK.Graphics;
+﻿using System;
+
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using OpenTK.WinForms;
 
 namespace uni.ui.winforms.common {
   abstract partial class BGlPanel {
@@ -24,8 +28,14 @@ namespace uni.ui.winforms.common {
     /// Required method for Designer support - do not modify 
     /// the contents of this method with the code editor.
     /// </summary>
-    private void InitializeComponent() {
-      this.impl_ = new OpenTK.GLControl(new GraphicsMode(new ColorFormat(8, 8, 8, 8), 32));
+    private unsafe void InitializeComponent() {
+      var glControlSettings = GLControlSettings.Default;
+
+      glControlSettings.Profile = ContextProfile.Compatability;
+      glControlSettings.SharedContext = new GLFWGraphicsContext(null);
+
+      this.impl_ = new GLControl(glControlSettings);
+
       this.SuspendLayout();
       // 
       // impl_
@@ -51,6 +61,6 @@ namespace uni.ui.winforms.common {
 
     #endregion
 
-    protected OpenTK.GLControl impl_;
+    protected GLControl impl_;
   }
 }
