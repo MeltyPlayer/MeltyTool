@@ -5,6 +5,7 @@ using fin.scene;
 using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
 using fin.ui.rendering.gl.scene;
+using fin.util.time;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -22,8 +23,6 @@ namespace fin.ui.rendering.gl {
     private SceneAreaRenderer? singleAreaRenderer_;
 
     private I3dFileBundle? fileBundle_;
-
-    public TimeSpan FrameTime { get; private set; }
 
     public (I3dFileBundle, ISceneInstance)? FileBundleAndScene {
       get {
@@ -111,9 +110,7 @@ namespace fin.ui.rendering.gl {
     public bool ShowGrid { get; set; }
 
     public void Render() {
-      var start = DateTime.Now;
-
-      fin.util.time.FrameTime.MarkStartOfFrame();
+      FrameTime.MarkStartOfFrame();
       this.singleArea_?.CustomSkyboxObject?.Tick();
       this.Scene?.Tick();
 
@@ -129,8 +126,7 @@ namespace fin.ui.rendering.gl {
 
       this.RenderPerspective_();
 
-      var end = DateTime.Now;
-      this.FrameTime = end - start;
+      FrameTime.MarkEndOfFrameForFpsDisplay();
     }
 
     private void RenderPerspective_() {

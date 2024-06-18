@@ -39,7 +39,5 @@ namespace uni.ui.winforms.common.scene {
       get => this.impl_.Animation;
       set => this.impl_.Animation = value;
     }
-
-    public TimeSpan FrameTime => this.impl_.FrameTime;
   }
 }

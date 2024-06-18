@@ -223,8 +223,6 @@ namespace uni.ui.winforms.common.scene {
     public ISkeletonRenderer? SkeletonRenderer
       => this.viewerImpl_.SkeletonRenderer;
 
-    public TimeSpan FrameTime => this.viewerImpl_.FrameTime;
-
     public Camera Camera => this.viewerImpl_.Camera;
   }
 }

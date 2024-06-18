@@ -12,7 +12,5 @@ namespace fin.ui.rendering {
     IAnimationPlaybackManager? AnimationPlaybackManager { get; }
     IReadOnlyModelAnimation? Animation { get; set; }
     ISkeletonRenderer? SkeletonRenderer { get; }
-
-    TimeSpan FrameTime { get; }
   }
 }

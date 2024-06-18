@@ -86,10 +86,7 @@ public partial class UniversalAssetToolForm : Form {
 
               try {
                 this.Invoke(() => {
-                  var frameTime = this.sceneViewerPanel_.FrameTime;
-                  var fps = (frameTime == TimeSpan.Zero)
-                      ? 0
-                      : 1 / frameTime.TotalSeconds;
+                  var fps = FrameTime.SmoothedFps;
                   this.Text = $"Universal Asset Tool ({fps:0.0} fps)";
                 });
               } catch {

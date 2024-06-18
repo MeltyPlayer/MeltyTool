@@ -127,7 +127,7 @@ namespace fin.ui.rendering.gl.material {
         return FinMatrix3x2.IDENTITY;
       }
 
-      var secondsSinceStart = (float) FrameTime.ElapsedTime.TotalSeconds;
+      var secondsSinceStart = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
 
       Vector2? offset = null;
       if (textureOffset != null || scrollingTexture != null) {
@@ -167,7 +167,7 @@ namespace fin.ui.rendering.gl.material {
         return FinMatrix4x4.IDENTITY;
       }
 
-      var secondsSinceStart = (float) FrameTime.ElapsedTime.TotalSeconds;
+      var secondsSinceStart = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
 
       Position? offset = null;
       if (textureOffset != null || scrollingTexture != null) {
