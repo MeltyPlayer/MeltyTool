@@ -46,6 +46,7 @@ namespace glo.api {
       var files = gloFile.AsFileSet();
       var finModel = new ModelImpl<Normal1Color1UvVertexImpl>(
           (index, position) => new Normal1Color1UvVertexImpl(index, position)) {
+          FileBundle = gloModelFileBundle,
           Files = files
       };
       var finSkin = finModel.Skin;

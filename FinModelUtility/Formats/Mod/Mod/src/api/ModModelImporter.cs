@@ -58,6 +58,7 @@ namespace mod.api {
       var finModCache = new FinModCache(mod);
 
       var model = new ModelImpl {
+          FileBundle = modelFileBundle,
           Files = modelFileBundle.Files.ToHashSet()
       };
 

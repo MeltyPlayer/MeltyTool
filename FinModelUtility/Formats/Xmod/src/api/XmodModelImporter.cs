@@ -18,7 +18,10 @@ namespace xmod.api {
       xmod.Read(tr);
 
       var files = modelFileBundle.XmodFile.AsFileSet();
-      var finModel = new ModelImpl { Files = files };
+      var finModel = new ModelImpl {
+          FileBundle = modelFileBundle,
+          Files = files
+      };
 
       var finMaterialManager = finModel.MaterialManager;
 

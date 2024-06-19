@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using fin.io;
+using fin.io.bundles;
 
 namespace fin.model.impl {
   // TODO: Add logic for optimizing the model.
@@ -19,15 +20,22 @@ namespace fin.model.impl {
       this.AnimationManager = new AnimationManagerImpl(this);
     }
 
+    public required IFileBundle FileBundle { get; init; }
     public required IReadOnlySet<IReadOnlyGenericFile> Files { get; init; }
   }
 
   public class ModelImpl : ModelImpl<NormalTangentMultiColorMultiUvVertexImpl> {
     public static ModelImpl CreateForViewer()
-      => new() { Files = new HashSet<IReadOnlyGenericFile>() };
+      => new() {
+          FileBundle = null,
+          Files = new HashSet<IReadOnlyGenericFile>()
+      };
 
     public static ModelImpl CreateForViewer(int vertexCount)
-      => new(vertexCount) { Files = new HashSet<IReadOnlyGenericFile>() };
+      => new(vertexCount) {
+          FileBundle = null,
+          Files = new HashSet<IReadOnlyGenericFile>()
+      };
 
     public ModelImpl() : base(
         (index, position)

@@ -15,7 +15,7 @@ namespace fin.scene.instance {
       private IReadOnlyModelAnimation? animation_;
 
       public SceneModelInstanceImpl(IReadOnlySceneModel model) {
-        this.Model = model.Model;
+        this.Definition = model;
         this.BoneTransformManager = new BoneTransformManager();
 
         this.Init_(model);
@@ -24,7 +24,7 @@ namespace fin.scene.instance {
       private SceneModelInstanceImpl(IReadOnlySceneModel model,
                                      SceneModelInstanceImpl parent,
                                      IReadOnlyBone bone) {
-        this.Model = model.Model;
+        this.Definition = model;
         this.BoneTransformManager =
             new BoneTransformManager((parent.BoneTransformManager, bone));
 
@@ -68,10 +68,13 @@ namespace fin.scene.instance {
         this.AnimationPlaybackManager.Tick();
       }
 
+      public IReadOnlySceneModel Definition { get; }
+
+
       public IReadOnlyListDictionary<IReadOnlyBone, ISceneModelInstance>
           Children => this.children_;
 
-      public IReadOnlyModel Model { get; }
+      public IReadOnlyModel Model => this.Definition.Model;
 
       public IBoneTransformManager BoneTransformManager { get; }
 

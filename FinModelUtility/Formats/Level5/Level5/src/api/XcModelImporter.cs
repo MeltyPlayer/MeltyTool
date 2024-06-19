@@ -26,7 +26,10 @@ namespace level5.api {
       var modelResourceFile =
           new Resource(modelXc.FilesByExtension[".bin"].Single().Data);
 
-      var model = new ModelImpl { Files = modelFileBundle.Files.ToHashSet() };
+      var model = new ModelImpl {
+          FileBundle = modelFileBundle,
+          Files = modelFileBundle.Files.ToHashSet()
+      };
 
       var finBoneByIndex = new Dictionary<uint, IBone>();
       var finBoneByName = new Dictionary<string, IBone>();

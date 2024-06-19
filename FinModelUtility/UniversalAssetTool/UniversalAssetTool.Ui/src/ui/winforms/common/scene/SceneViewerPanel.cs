@@ -1,8 +1,6 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 using fin.animation;
-using fin.importers;
 using fin.model;
 using fin.scene;
 using fin.ui.rendering;
@@ -14,17 +12,17 @@ namespace uni.ui.winforms.common.scene {
       this.InitializeComponent();
     }
 
-    public (I3dFileBundle, ISceneInstance)? FileBundleAndScene {
-      get => this.impl_.FileBundleAndScene;
+    public ISceneInstance? Scene {
+      get => this.impl_.Scene;
       set {
-        var fileBundle = value?.Item1;
+        var fileBundle = value?.Definition.FileBundle;
         if (fileBundle != null) {
           this.groupBox_.Text = fileBundle.DisplayFullPath;
         } else {
           this.groupBox_.Text = "(Select a model)";
         }
 
-        this.impl_.FileBundleAndScene = value;
+        this.impl_.Scene = value;
       }
     }
 

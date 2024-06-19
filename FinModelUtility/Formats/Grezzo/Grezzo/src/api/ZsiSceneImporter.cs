@@ -22,6 +22,7 @@ namespace grezzo.api {
       var zsi = zsiFile.ReadNew<Zsi>(Endianness.LittleEndian);
 
       var finScene = new SceneImpl {
+          FileBundle = sceneFileBundle,
           Files = sceneFileBundle.Files.ToHashSet(),
       };
 

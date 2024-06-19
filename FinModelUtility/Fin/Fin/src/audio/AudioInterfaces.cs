@@ -5,6 +5,7 @@ using System.Numerics;
 using fin.data.disposables;
 using fin.importers;
 using fin.io;
+using fin.io.bundles;
 
 using schema.readOnly;
 
@@ -21,6 +22,7 @@ namespace fin.audio {
     IAudioBuffer<TPcm> CreateAudioBuffer();
 
     ILoadedAudioBuffer<TPcm> CreateLoadedAudioBuffer(
+        IFileBundle fileBundle,
         IReadOnlySet<IReadOnlyGenericFile> files);
 
     IJitAudioDataSource<TPcm> CreateJitAudioDataSource(

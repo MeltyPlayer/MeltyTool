@@ -24,6 +24,7 @@ namespace sm64.api {
       var sm64Level = Sm64LevelImporter.LoadLevel(levelModelFileBundle);
 
       var finScene = new SceneImpl {
+          FileBundle = levelModelFileBundle,
           Files = levelModelFileBundle.Sm64Rom.AsFileSet()
       };
 

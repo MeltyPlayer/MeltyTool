@@ -221,10 +221,10 @@ namespace uni.ui.avalonia.scene {
       this.viewerImpl_.Render();
     }
 
-    public (I3dFileBundle, ISceneInstance)? FileBundleAndScene {
-      get => this.viewerImpl_.FileBundleAndScene;
+    public (I3dFileBundle, ISceneInstance)? Scene {
+      get => this.viewerImpl_.Scene;
       set {
-        this.viewerImpl_.FileBundleAndScene = value;
+        this.viewerImpl_.Scene = value;
 
         if (value == null) {
           this.viewerImpl_.ViewerScale = 1;

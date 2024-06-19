@@ -26,7 +26,10 @@ namespace uni {
 
       ModelService.OnModelOpened
           += model => {
-               var scene = new SceneImpl { Files = model.Files };
+               var scene = new SceneImpl {
+                   FileBundle = model.FileBundle,
+                   Files = model.Files
+               };
                var area = scene.AddArea();
                var obj = area.AddObject();
                obj.AddSceneModel(model);

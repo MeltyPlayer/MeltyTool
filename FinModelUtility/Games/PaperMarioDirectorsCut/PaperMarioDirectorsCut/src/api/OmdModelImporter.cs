@@ -26,6 +26,7 @@ namespace pmdc.api {
       var files = omdFile.AsFileSet();
       var finModel = new ModelImpl<NormalUvVertexImpl>(
           (index, position) => new NormalUvVertexImpl(index, position)) {
+          FileBundle = modelFileBundle,
           Files = files
       };
 

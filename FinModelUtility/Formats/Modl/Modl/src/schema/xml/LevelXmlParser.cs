@@ -53,7 +53,10 @@ namespace modl.schema.xml {
       var gameVersion = bwSceneFileBundle.GameVersion;
 
       var files = mainXmlFile.AsFileSet();
-      var scene = new SceneImpl { Files = files };
+      var scene = new SceneImpl {
+          FileBundle = bwSceneFileBundle,
+          Files = files
+      };
       var sceneArea = scene.AddArea();
 
       var mainXml = new XmlDocument();
@@ -84,8 +87,8 @@ namespace modl.schema.xml {
         var outFile = mainXmlDirectory.AssertGetExistingFile(terrainFilename);
         files.Add(outFile);
         this.AddTerrain_(sceneArea,
+                         bwSceneFileBundle,
                          outFile,
-                         gameVersion,
                          out bwTerrain,
                          terrainLightScale);
       }
@@ -312,15 +315,20 @@ namespace modl.schema.xml {
     }
 
     private void AddTerrain_(ISceneArea sceneArea,
+                             BwSceneFileBundle sceneFileBundle,
                              IReadOnlyTreeFile outFile,
-                             GameVersion gameVersion,
                              out IBwTerrain bwTerrain,
                              float terrainLightScale) {
       sceneArea.AddObject()
                .AddSceneModel(
                    new OutModelImporter().ImportModel(
+                       new OutModelFileBundle {
+                           GameName = sceneFileBundle.GameName,
+                           GameVersion = sceneFileBundle.GameVersion,
+                           OutFile = outFile
+                       },
                        outFile,
-                       gameVersion,
+                       sceneFileBundle.GameVersion,
                        out bwTerrain,
                        terrainLightScale));
     }
@@ -386,6 +394,7 @@ namespace modl.schema.xml {
             }
 
             modelMap[modelId] = await modlReader.ImportModelAsync(
+                null,
                 modelFile,
                 animFiles,
                 gameVersion);

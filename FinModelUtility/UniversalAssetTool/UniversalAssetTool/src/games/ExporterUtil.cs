@@ -260,8 +260,7 @@ namespace uni.games {
                                                 name + ".foo")),
           Model = model,
           Scale = new ScaleSource(Config.Instance.ExporterSettings.ExportedModelScaleSource)
-                                      .GetScale(model,
-                                                threeDFileBundle)
+                                      .GetScale(model)
         },
                               formats,
                               Config.Instance.ExporterSettings.ExportAllTextures);

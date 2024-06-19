@@ -134,7 +134,7 @@ public partial class UniversalAssetToolForm : Form {
   private void SelectScene_(IFileTreeLeafNode fileNode,
                             ISceneFileBundle sceneFileBundle) {
     var scene = new GlobalSceneImporter().Import(sceneFileBundle);
-    this.UpdateScene_(fileNode, sceneFileBundle, new SceneInstanceImpl(scene));
+    this.UpdateScene_(fileNode, new SceneInstanceImpl(scene));
   }
 
   private void SelectModel_(IFileTreeLeafNode fileNode,
@@ -147,7 +147,10 @@ public partial class UniversalAssetToolForm : Form {
   private void UpdateModel_(IFileTreeLeafNode? fileNode,
                             IModelFileBundle modelFileBundle,
                             IModel model) {
-    var scene = new SceneImpl { Files = model.Files };
+    var scene = new SceneImpl {
+        FileBundle = modelFileBundle,
+        Files = model.Files
+    };
     var area = scene.AddArea();
     var obj = area.AddObject();
     obj.AddSceneModel(model);
@@ -156,14 +159,13 @@ public partial class UniversalAssetToolForm : Form {
 
     var sceneInstance = new SceneInstanceImpl(scene);
 
-    this.UpdateScene_(fileNode, modelFileBundle, sceneInstance);
+    this.UpdateScene_(fileNode, sceneInstance);
   }
 
   private void UpdateScene_(IFileTreeLeafNode? fileNode,
-                            I3dFileBundle fileBundle,
                             ISceneInstance scene) {
-    this.sceneViewerPanel_.FileBundleAndScene?.Item2.Dispose();
-    this.sceneViewerPanel_.FileBundleAndScene = (fileBundle, scene);
+    this.sceneViewerPanel_.Scene?.Dispose();
+    this.sceneViewerPanel_.Scene = scene;
 
     var model = this.sceneViewerPanel_.FirstSceneModel?.Model;
     this.modelTabs_.Model = model;
@@ -172,7 +174,7 @@ public partial class UniversalAssetToolForm : Form {
 
     this.modelToolStrip_.DirectoryNode = fileNode?.Parent;
     this.modelToolStrip_.FileNodeAndModel = (fileNode, model);
-    this.exportAsToolStripMenuItem.Enabled = fileBundle is IModelFileBundle;
+    this.exportAsToolStripMenuItem.Enabled = model?.FileBundle is IModelFileBundle;
 
     if (Config.Instance.ViewerSettings.AutomaticallyPlayGameAudioForModel) {
       var gameDirectory = fileNode.Parent;
@@ -358,13 +360,8 @@ public partial class UniversalAssetToolForm : Form {
   }
 
   private void exportAsToolStripMenuItem_Click(object sender, EventArgs e) {
-    var fileBundleAndScene =
-        this.sceneViewerPanel_.FileBundleAndScene;
-    if (fileBundleAndScene == null) {
-      return;
-    }
-
-    var (fileBundle, _) = fileBundleAndScene.Value;
+    var scene = this.sceneViewerPanel_.Scene;
+    var fileBundle = scene?.Definition.FileBundle;
     if (fileBundle is not I3dFileBundle threeDFileBundle) {
       return;
     }

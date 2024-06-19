@@ -1,5 +1,4 @@
 ﻿using fin.animation;
-using fin.importers;
 using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.material;
@@ -8,7 +7,6 @@ using fin.ui.rendering.gl.scene;
 using fin.util.time;
 
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace fin.ui.rendering.gl {
   public class SceneViewerGl : ISceneViewer, IRenderable {
@@ -23,27 +21,19 @@ namespace fin.ui.rendering.gl {
     private ISceneAreaInstance? singleArea_;
     private SceneAreaRenderer? singleAreaRenderer_;
 
-    private I3dFileBundle? fileBundle_;
-
-    public (I3dFileBundle, ISceneInstance)? FileBundleAndScene {
-      get {
-        var scene = this.scene_;
-        return scene != null
-            ? (this.fileBundle_!, scene)
-            : null;
-      }
+    public ISceneInstance? Scene {
+      get => this.scene_;
       set {
         this.sceneRenderer_?.Dispose();
 
         if (value == null) {
-          this.fileBundle_ = null;
           this.scene_ = null;
           this.sceneRenderer_ = null;
           this.singleArea_ = null;
           this.singleAreaRenderer_ = null;
           this.ViewerScale = 1;
         } else {
-          (this.fileBundle_, this.scene_) = value.Value;
+          this.scene_ = value;
 
           this.sceneRenderer_ = new SceneRenderer(this.scene_);
 
@@ -57,8 +47,6 @@ namespace fin.ui.rendering.gl {
         }
       }
     }
-
-    private ISceneInstance? Scene => this.scene_;
 
     public ISceneModelInstance? FirstSceneModel
       => this.Scene

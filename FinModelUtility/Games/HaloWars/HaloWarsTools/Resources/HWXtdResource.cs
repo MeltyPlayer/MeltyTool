@@ -93,6 +93,7 @@ namespace HaloWarsTools {
           gridSize * gridSize,
           (index, position) => new NormalUvVertexImpl(index, position)) {
           // TODO: Fix this
+          FileBundle = null,
           Files = new HashSet<IReadOnlyGenericFile>(),
       };
       var finMesh = finModel.Skin.AddMesh();

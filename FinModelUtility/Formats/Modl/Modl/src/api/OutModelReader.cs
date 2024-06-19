@@ -26,19 +26,23 @@ namespace modl.api {
   public class OutModelImporter : IModelImporter<OutModelFileBundle> {
     public IModel Import(OutModelFileBundle modelFileBundle)
       => modelFileBundle.TextureDirectories != null
-          ? this.ImportModel(modelFileBundle.OutFile,
+          ? this.ImportModel(modelFileBundle,
+                             modelFileBundle.OutFile,
                              modelFileBundle.TextureDirectories
                                             .Select(dir => dir),
                              modelFileBundle.GameVersion,
                              out _)
-          : this.ImportModel(modelFileBundle.OutFile,
+          : this.ImportModel(modelFileBundle,
+                             modelFileBundle.OutFile,
                              modelFileBundle.GameVersion,
                              out _);
 
-    public IModel ImportModel(IReadOnlyTreeFile outFile,
-                              GameVersion gameVersion,
-                              out IBwTerrain bwTerrain,
-                              float terrainLightScale = 1) {
+    public IModel ImportModel(
+        OutModelFileBundle modelFileBundle,
+        IReadOnlyTreeFile outFile,
+        GameVersion gameVersion,
+        out IBwTerrain bwTerrain,
+        float terrainLightScale = 1) {
       var outName = outFile.Name.Replace(".out.gz", "")
                            .Replace(".out", "");
       var outDirectory =
@@ -47,19 +51,22 @@ namespace modl.api {
                  .Single(dir => dir.Name.StartsWith(outName + "_L"));
       var allMapsDirectory = outDirectory.AssertGetParent();
 
-      return this.ImportModel(outFile,
-                              outDirectory.Yield().Concat(allMapsDirectory),
-                              gameVersion,
-                              out bwTerrain,
-                              terrainLightScale);
+      return this.ImportModel(
+          modelFileBundle,
+          outFile,
+          outDirectory.Yield().Concat(allMapsDirectory),
+          gameVersion,
+          out bwTerrain,
+          terrainLightScale);
     }
 
-    public IModel ImportModel(IReadOnlyGenericFile outFile,
-                              IEnumerable<IReadOnlyTreeDirectory>
-                                  textureDirectoriesEnumerable,
-                              GameVersion gameVersion,
-                              out IBwTerrain bwTerrain,
-                              float terrainLightScale = 1) {
+    public IModel ImportModel(
+        OutModelFileBundle modelFileBundle,
+        IReadOnlyGenericFile outFile,
+        IEnumerable<IReadOnlyTreeDirectory> textureDirectoriesEnumerable,
+        GameVersion gameVersion,
+        out IBwTerrain bwTerrain,
+        float terrainLightScale = 1) {
       var isBw2 = gameVersion == GameVersion.BW2;
 
       Stream stream;
@@ -83,6 +90,7 @@ namespace modl.api {
       var files = outFile.AsSet();
       var finModel = new ModelImpl<OneColor2UvVertexImpl>(
           (index, position) => new OneColor2UvVertexImpl(index, position)) {
+          FileBundle = modelFileBundle,
           Files = files
       };
 
@@ -165,7 +173,8 @@ namespace modl.api {
                 FixedFunctionSource.TEXTURE_COLOR_1);
 
             var vertexAlpha0 =
-                equations.CreateOrGetScalarInput(FixedFunctionSource.VERTEX_ALPHA_0);
+                equations.CreateOrGetScalarInput(
+                    FixedFunctionSource.VERTEX_ALPHA_0);
             var inverseVertexAlpha0 = scalar1.Subtract(vertexAlpha0);
 
             var blendedTextureColor =
@@ -220,10 +229,10 @@ namespace modl.api {
               var surfaceTextureUvsFromFirstRow = tile.Schema
                   .SurfaceTextureUvsFromFirstRow
                   .Select(weirdUv => {
-                    var u = LoadUOrV_(weirdUv.U);
-                    var v = LoadUOrV_(weirdUv.V);
-                    return (u, v);
-                  })
+                            var u = LoadUOrV_(weirdUv.U);
+                            var v = LoadUOrV_(weirdUv.V);
+                            return (u, v);
+                          })
                   .ToArray();
 
               var points = tile.Points;

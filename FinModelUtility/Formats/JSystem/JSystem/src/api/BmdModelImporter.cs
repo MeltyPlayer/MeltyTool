@@ -73,6 +73,7 @@ namespace jsystem.api {
       }
 
       var model = new ModelImpl {
+          FileBundle = modelFileBundle,
           Files = modelFileBundle.Files.ToHashSet()
       };
 

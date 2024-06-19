@@ -20,7 +20,10 @@ namespace visceral.api {
 
     public IModel Import(GeoModelFileBundle modelFileBundle) {
       var files = modelFileBundle.Files.ToHashSet();
-      var finModel = new ModelImpl { Files = files, };
+      var finModel = new ModelImpl {
+          FileBundle = modelFileBundle,
+          Files = files,
+      };
 
       // Builds skeletons
       IBone[] finBones = Array.Empty<IBone>();

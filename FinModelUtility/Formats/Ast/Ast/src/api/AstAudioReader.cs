@@ -15,7 +15,10 @@ namespace ast.api {
       var astFile = audioFileBundle.AstFile;
       var ast = astFile.ReadNew<Ast>(Endianness.BigEndian);
 
-      var mutableBuffer = audioManager.CreateLoadedAudioBuffer(astFile.AsFileSet());
+      var mutableBuffer
+          = audioManager.CreateLoadedAudioBuffer(
+              audioFileBundle,
+              astFile.AsFileSet());
 
       mutableBuffer.Frequency = (int) ast.StrmHeader.SampleRate;
 

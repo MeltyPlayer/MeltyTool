@@ -45,6 +45,7 @@ namespace HaloWarsTools {
       var resource = (HWUgxResource) CreateResource(context, filename);
       resource.Mesh = new ModelImpl {
           // TODO: Fix this
+          FileBundle = null,
           Files = new HashSet<IReadOnlyGenericFile>(),
       };
       resource.FlipFaces_ = flipFaces;

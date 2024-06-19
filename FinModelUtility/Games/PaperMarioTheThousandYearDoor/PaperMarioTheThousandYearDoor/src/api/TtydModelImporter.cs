@@ -35,6 +35,7 @@ namespace ttyd.api {
       var ttydSceneGraphObjectTransforms = ttydModel.SceneGraphObjectTransforms;
 
       var finModel = new ModelImpl {
+          FileBundle = fileBundle,
           Files = new HashSet<IReadOnlyGenericFile>([modelFile, textureFile])
       };
 

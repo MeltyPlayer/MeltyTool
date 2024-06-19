@@ -20,6 +20,8 @@ namespace fin.scene.instance {
       }
     }
 
+    public IReadOnlyScene Definition => scene;
+
     public IReadOnlyList<ISceneAreaInstance> Areas { get; }
       = scene.Areas
              .Select(a => new SceneAreaInstanceImpl(a))

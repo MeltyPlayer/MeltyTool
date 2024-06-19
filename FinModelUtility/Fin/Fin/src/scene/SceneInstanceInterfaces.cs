@@ -16,6 +16,8 @@ namespace fin.scene {
 
   [GenerateReadOnly]
   public partial interface ISceneInstance : ITickable, IDisposable {
+    IReadOnlyScene Definition { get; }
+
     IReadOnlyList<ISceneAreaInstance> Areas { get; }
 
     IReadOnlyLighting? Lighting { get; }
@@ -31,6 +33,8 @@ namespace fin.scene {
   /// </summary>
   [GenerateReadOnly]
   public partial interface ISceneAreaInstance : ITickable, IDisposable {
+    IReadOnlySceneArea Definition { get; }
+
     IReadOnlyList<ISceneObjectInstance> Objects { get; }
 
     float ViewerScale { get; set; }
@@ -46,6 +50,8 @@ namespace fin.scene {
   /// </summary>
   [GenerateReadOnly]
   public partial interface ISceneObjectInstance : ITickable, IDisposable {
+    IReadOnlySceneObject Definition { get; }
+
     Position Position { get; }
     IRotation Rotation { get; }
     Scale Scale { get; }
@@ -72,6 +78,8 @@ namespace fin.scene {
   /// </summary>
   [GenerateReadOnly]
   public partial interface ISceneModelInstance : ITickable, IDisposable {
+    IReadOnlySceneModel Definition { get; }
+
     IReadOnlyListDictionary<IReadOnlyBone, ISceneModelInstance> Children {
       get;
     }

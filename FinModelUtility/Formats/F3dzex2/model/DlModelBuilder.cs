@@ -49,6 +49,7 @@ namespace f3dzex2.model {
       this.n64Hardware_ = n64Hardware;
       this.Model = new ModelImpl {
           // TODO: Fix this
+          FileBundle = null,
           Files = new HashSet<IReadOnlyGenericFile>(),
       };
 

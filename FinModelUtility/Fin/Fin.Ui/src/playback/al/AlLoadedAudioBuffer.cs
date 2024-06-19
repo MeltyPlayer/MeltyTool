@@ -1,14 +1,18 @@
 ﻿using fin.audio;
 using fin.io;
+using fin.io.bundles;
 using fin.util.asserts;
 
 namespace fin.ui.playback.al {
   public partial class AlAudioManager {
     public ILoadedAudioBuffer<short> CreateLoadedAudioBuffer(
+        IFileBundle fileBundle,
         IReadOnlySet<IReadOnlyGenericFile> files)
-      => new AlLoadedAudioBuffer(files);
+      => new AlLoadedAudioBuffer(fileBundle, files);
 
-    private class AlLoadedAudioBuffer(IReadOnlySet<IReadOnlyGenericFile> files)
+    private class AlLoadedAudioBuffer(
+        IFileBundle fileBundle,
+        IReadOnlySet<IReadOnlyGenericFile> files)
         : AlAudioBuffer, ILoadedAudioBuffer<short> {
       private short[][] channels_;
 
@@ -57,6 +61,7 @@ namespace fin.ui.playback.al {
             AudioChannelType.STEREO_RIGHT => 1
         }][sampleOffset];
 
+      public IFileBundle FileBundle => fileBundle;
       public IReadOnlySet<IReadOnlyGenericFile> Files => files;
     }
   }

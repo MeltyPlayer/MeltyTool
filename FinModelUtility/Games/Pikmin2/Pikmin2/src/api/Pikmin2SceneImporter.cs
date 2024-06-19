@@ -12,6 +12,7 @@ namespace games.pikmin2.api {
       var routeTxt = sceneFileBundle.RouteTxt;
 
       var scene = new SceneImpl {
+          FileBundle = sceneFileBundle,
           Files = new HashSet<IReadOnlyGenericFile>([levelBmd, routeTxt]),
       };
       var sceneArea = scene.AddArea();

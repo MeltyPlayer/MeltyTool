@@ -21,6 +21,8 @@ namespace fin.scene.instance {
         }
       }
 
+      public IReadOnlySceneObject Definition => sceneObject;
+
       public Position Position { get; private set; } = sceneObject.Position;
       public IRotation Rotation { get; } = sceneObject.Rotation;
       public Scale Scale { get; private set; } = sceneObject.Scale;

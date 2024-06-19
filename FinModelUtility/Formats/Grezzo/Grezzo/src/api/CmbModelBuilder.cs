@@ -35,6 +35,7 @@ namespace grezzo.api {
       var fps = 30;
 
       var finModel = new ModelImpl((int) cmb.vatr.maxIndex) {
+          FileBundle = fileBundle,
           Files = fileBundle.Files.ToHashSet(),
       };
       var finSkin = finModel.Skin;

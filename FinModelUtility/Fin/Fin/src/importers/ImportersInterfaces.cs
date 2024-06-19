@@ -5,6 +5,7 @@ using fin.io.bundles;
 
 namespace fin.importers {
   public interface IResource {
+    IFileBundle FileBundle { get; }
     IReadOnlySet<IReadOnlyGenericFile> Files { get; }
   }
 

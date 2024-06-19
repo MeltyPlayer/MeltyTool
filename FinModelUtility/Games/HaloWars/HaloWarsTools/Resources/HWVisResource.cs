@@ -34,6 +34,7 @@ namespace HaloWarsTools {
 
       this.Scene = new SceneImpl {
           // TODO: Fix this
+          FileBundle = null,
           Files = new HashSet<IReadOnlyGenericFile>(),
       };
 

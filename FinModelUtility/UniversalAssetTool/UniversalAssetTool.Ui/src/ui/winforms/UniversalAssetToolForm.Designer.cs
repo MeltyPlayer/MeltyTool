@@ -154,7 +154,7 @@ namespace uni.ui.winforms {
       this.sceneViewerPanel_.Animation = null;
       this.sceneViewerPanel_.BackColor = System.Drawing.Color.Transparent;
       this.sceneViewerPanel_.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.sceneViewerPanel_.FileBundleAndScene = null;
+      this.sceneViewerPanel_.Scene = null;
       this.sceneViewerPanel_.Location = new System.Drawing.Point(0, 0);
       this.sceneViewerPanel_.Margin = new System.Windows.Forms.Padding(3, 7, 3, 7);
       this.sceneViewerPanel_.Name = "sceneViewerPanel_";

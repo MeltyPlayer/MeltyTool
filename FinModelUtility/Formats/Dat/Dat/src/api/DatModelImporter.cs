@@ -45,7 +45,10 @@ namespace dat.api {
               .Subfiles
               .Single();
 
-      var finModel = new ModelImpl { Files = modelFileBundle.Files.ToHashSet() };
+      var finModel = new ModelImpl {
+          FileBundle = modelFileBundle,
+          Files = modelFileBundle.Files.ToHashSet()
+      };
       var finSkin = finModel.Skin;
 
       // Adds skeleton

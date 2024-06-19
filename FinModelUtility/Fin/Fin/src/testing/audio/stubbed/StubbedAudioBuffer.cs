@@ -3,18 +3,22 @@ using System.Collections.Generic;
 
 using fin.audio;
 using fin.io;
+using fin.io.bundles;
 using fin.util.asserts;
 
 namespace fin.testing.audio.stubbed {
   public partial class StubbedAudioManager {
     public IAudioBuffer<short> CreateAudioBuffer()
-      => new StubbedAudioBuffer(new HashSet<IReadOnlyGenericFile>());
+      => new StubbedAudioBuffer(null, new HashSet<IReadOnlyGenericFile>());
 
     public ILoadedAudioBuffer<short> CreateLoadedAudioBuffer(
+        IFileBundle fileBundle,
         IReadOnlySet<IReadOnlyGenericFile> files)
-      => new StubbedAudioBuffer(files);
+      => new StubbedAudioBuffer(fileBundle, files);
 
-    private class StubbedAudioBuffer(IReadOnlySet<IReadOnlyGenericFile> files)
+    private class StubbedAudioBuffer(
+        IFileBundle fileBundle,
+        IReadOnlySet<IReadOnlyGenericFile> files)
         : ILoadedAudioBuffer<short> {
       private short[][] channels_;
 
@@ -63,6 +67,7 @@ namespace fin.testing.audio.stubbed {
             AudioChannelType.STEREO_RIGHT => 1
         }][sampleOffset];
 
+      public IFileBundle FileBundle => fileBundle;
       public IReadOnlySet<IReadOnlyGenericFile> Files => files;
     }
   }

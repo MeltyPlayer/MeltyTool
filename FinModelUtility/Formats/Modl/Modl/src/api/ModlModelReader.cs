@@ -24,11 +24,13 @@ using schema.binary;
 namespace modl.api {
   public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
     public Task<IModel> ImportAsync(ModlModelFileBundle modelFileBundle)
-      => this.ImportModelAsync(modelFileBundle.ModlFile,
+      => this.ImportModelAsync(modelFileBundle,
+                               modelFileBundle.ModlFile,
                                modelFileBundle.AnimFiles?.ToArray(),
                                modelFileBundle.GameVersion);
 
     public async Task<IModel> ImportModelAsync(
+        ModlModelFileBundle modelFileBundle,
         IReadOnlyTreeFile modlFile,
         IList<IReadOnlyTreeFile>? animFiles,
         GameVersion gameVersion) {
@@ -46,6 +48,7 @@ namespace modl.api {
                           .ToHashSet<IReadOnlyGenericFile>();
       var model = new ModelImpl<Normal1Color1UvVertexImpl>(
           (index, position) => new Normal1Color1UvVertexImpl(index, position)) {
+          FileBundle = modelFileBundle,
           Files = files,
       };
       var finMesh = model.Skin.AddMesh();

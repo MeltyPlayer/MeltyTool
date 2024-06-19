@@ -11,7 +11,10 @@ namespace games.pikmin2.route {
       using var routeReader = routeTxt.OpenReadAsText();
       var route = new RouteParser().Parse(routeReader);
 
-      var model = new ModelImpl { Files = routeTxt.AsSet() };
+      var model = new ModelImpl {
+          FileBundle = null,
+          Files = routeTxt.AsSet()
+      };
       var skin = model.Skin;
       var mesh = skin.AddMesh();
 

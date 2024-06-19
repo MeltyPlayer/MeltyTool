@@ -27,7 +27,10 @@ namespace fin.model.io.importers.assimp {
       var mainFile = modelFileBundle.MainFile;
 
       var files = mainFile.AsFileSet();
-      var finModel = new ModelImpl { Files = files };
+      var finModel = new ModelImpl {
+          FileBundle = modelFileBundle,
+          Files = files
+      };
 
       using var ctx = new AssimpContext();
       var assScene = ctx.ImportFile(mainFile.FullPath);
