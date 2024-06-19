@@ -21,22 +21,24 @@ public class RegistersPanelViewModel : ViewModelBase {
   private IFixedFunctionRegisters registers_;
 
   private int registerCount_;
-  private IReadOnlyList<ColorRegisterPickerViewModel> colorRegisterPickers_;
-  private IReadOnlyList<ScalarRegisterPickerViewModel> scalarRegisterPickers_;
+  private IReadOnlyList<ColorRegisterPickerViewModel>? colorRegisterPickers_;
+  private IReadOnlyList<ScalarRegisterPickerViewModel>? scalarRegisterPickers_;
 
-  public required IFixedFunctionRegisters Registers {
+  public required IFixedFunctionRegisters? Registers {
     get => this.registers_;
     set {
       this.RaiseAndSetIfChanged(ref this.registers_, value);
-      this.RegisterCount = this.registers_.ColorRegisters.Count +
-                           this.registers_.ScalarRegisters.Count;
+      this.RegisterCount = this.registers_ != null
+          ? this.registers_.ColorRegisters.Count +
+            this.registers_.ScalarRegisters.Count
+          : 0;
       this.ColorRegisterPickers
-          = value.ColorRegisters
+          = value?.ColorRegisters
                  .Select(r => new ColorRegisterPickerViewModel
                              { ColorRegister = r })
                  .ToArray();
       this.ScalarRegisterPickers
-          = value.ScalarRegisters
+          = value?.ScalarRegisters
                  .Select(r => new ScalarRegisterPickerViewModel
                              { ScalarRegister = r })
                  .ToArray();
@@ -48,12 +50,12 @@ public class RegistersPanelViewModel : ViewModelBase {
     set => this.RaiseAndSetIfChanged(ref this.registerCount_, value);
   }
 
-  public IReadOnlyList<ColorRegisterPickerViewModel> ColorRegisterPickers {
+  public IReadOnlyList<ColorRegisterPickerViewModel>? ColorRegisterPickers {
     get => this.colorRegisterPickers_;
     set => this.RaiseAndSetIfChanged(ref this.colorRegisterPickers_, value);
   }
 
-  public IReadOnlyList<ScalarRegisterPickerViewModel> ScalarRegisterPickers {
+  public IReadOnlyList<ScalarRegisterPickerViewModel>? ScalarRegisterPickers {
     get => this.scalarRegisterPickers_;
     set => this.RaiseAndSetIfChanged(ref this.scalarRegisterPickers_, value);
   }
