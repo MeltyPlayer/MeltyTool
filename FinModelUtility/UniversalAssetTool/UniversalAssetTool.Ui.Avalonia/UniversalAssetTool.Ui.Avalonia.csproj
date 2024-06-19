@@ -48,6 +48,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Update="common\IconStyles.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="resources\animation\AnimationList.axaml.cs">
       <DependentUpon>AnimationList.axaml</DependentUpon>
     </Compile>
@@ -90,8 +96,8 @@
     <Compile Update="resources\registers\ColorRegisterPicker.axaml.cs">
       <DependentUpon>ColorRegisterPicker.axaml</DependentUpon>
     </Compile>
-    <Compile Update="resources\InfoPanel.axaml.cs">
-      <DependentUpon>InfoPanel.axaml</DependentUpon>
+    <Compile Update="resources\FilesPanel.axaml.cs">
+      <DependentUpon>FilesPanel.axaml</DependentUpon>
     </Compile>
     <Compile Update="resources\texture\TexturesPanel.axaml.cs">
       <DependentUpon>TexturesPanel.axaml</DependentUpon>

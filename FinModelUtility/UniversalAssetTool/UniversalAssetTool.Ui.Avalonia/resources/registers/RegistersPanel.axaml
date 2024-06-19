@@ -44,7 +44,7 @@
     <controls:If.ContentWhenFalse>
       <controls:EmptyState
           Text="No registers to display."
-          Icon="TuneVariant" />
+          Icon="{StaticResource RegisterIcon}" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>

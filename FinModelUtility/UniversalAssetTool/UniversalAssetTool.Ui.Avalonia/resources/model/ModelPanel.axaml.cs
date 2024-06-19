@@ -29,7 +29,7 @@ namespace uni.ui.avalonia.resources.model {
     private AnimationsPanelViewModel animationsPanel_;
     private MaterialsPanelViewModel materialsPanel_;
     private RegistersPanelViewModel registersPanel_;
-    private InfoPanelViewModel infoPanel_;
+    private FilesPanelViewModel filesPanel_;
     private SkeletonTreeViewModel skeletonTree_;
     private TexturesPanelViewModel texturesPanel_;
 
@@ -46,7 +46,7 @@ namespace uni.ui.avalonia.resources.model {
         this.MaterialsPanel = new MaterialsPanelViewModel {
             ModelAndMaterials = (value, value.MaterialManager.All)
         };
-        this.InfoPanel = new InfoPanelViewModel(value);
+        this.FilesPanel = new FilesPanelViewModel(value);
         this.SkeletonTree = new SkeletonTreeViewModel {
             Skeleton = value.Skeleton,
         };
@@ -82,9 +82,9 @@ namespace uni.ui.avalonia.resources.model {
       private set => this.RaiseAndSetIfChanged(ref this.registersPanel_, value);
     }
 
-    public InfoPanelViewModel InfoPanel {
-      get => this.infoPanel_;
-      private set => this.RaiseAndSetIfChanged(ref this.infoPanel_, value);
+    public FilesPanelViewModel FilesPanel {
+      get => this.filesPanel_;
+      private set => this.RaiseAndSetIfChanged(ref this.filesPanel_, value);
     }
 
     public SkeletonTreeViewModel SkeletonTree {

@@ -18,8 +18,17 @@ public partial class MainView : UserControl {
 
     this.FileSelectorPanel.PointerExited
         += (_, _) => this.SetFileSelectorHoverPseudoclass_(false);
+
+    this.InfoPanel.PointerEntered
+        += (_, _) => this.SetInfoPanelHoverPseudoclass_(true);
+
+    this.InfoPanel.PointerExited
+        += (_, _) => this.SetInfoPanelHoverPseudoclass_(false);
   }
 
   private void SetFileSelectorHoverPseudoclass_(bool value)
     => this.PseudoClasses.Set(":fileSelectorHover", value);
+
+  private void SetInfoPanelHoverPseudoclass_(bool value)
+    => this.PseudoClasses.Set(":infoPanelHover", value);
 }

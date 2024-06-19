@@ -41,7 +41,7 @@
     <controls:If.ContentWhenFalse>
       <controls:EmptyState
           Text="No textures to display."
-          Icon="TextureBox" />
+          Icon="{StaticResource TextureIcon}" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>

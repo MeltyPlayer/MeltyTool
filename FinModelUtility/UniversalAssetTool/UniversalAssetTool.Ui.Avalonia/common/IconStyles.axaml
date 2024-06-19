@@ -1,0 +1,26 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:icons="clr-namespace:Material.Icons;assembly=Material.Icons">
+  <Design.PreviewWith>
+    <StackPanel Width="32" Height="300">
+      <avalonia:MaterialIcon Kind="{StaticResource FileIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource BoneIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource AnimationIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource MaterialIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource TextureIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource RegisterIcon}" />
+    </StackPanel>
+  </Design.PreviewWith>
+
+  <Styles.Resources>
+    <ResourceDictionary>
+      <icons:MaterialIconKind x:Key="FileIcon">FileOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="BoneIcon">CardsDiamondOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="AnimationIcon">AnimationOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="MaterialIcon">Sphere</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="TextureIcon">TextureBox</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="RegisterIcon">TuneVariant</icons:MaterialIconKind>
+    </ResourceDictionary>
+  </Styles.Resources>
+</Styles>

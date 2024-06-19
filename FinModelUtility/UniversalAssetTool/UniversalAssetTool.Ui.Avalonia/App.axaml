@@ -15,5 +15,6 @@
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
 
     <StyleInclude Source="common/CommonStyles.axaml" />
+    <StyleInclude Source="common/IconStyles.axaml" />
   </Application.Styles>
 </Application>

@@ -29,7 +29,7 @@
     <controls:If.ContentWhenFalse>
       <controls:EmptyState
         Text="No animations to display."
-        Icon="AnimationOutline" />
+        Icon="{StaticResource AnimationIcon}" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>

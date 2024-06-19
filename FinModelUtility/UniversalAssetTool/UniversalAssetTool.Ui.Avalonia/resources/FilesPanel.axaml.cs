@@ -12,11 +12,11 @@ using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.resources;
 
-public class InfoPanelViewModelForDesigner()
-    : InfoPanelViewModel(ModelDesignerUtil.CreateStubModel());
+public class FilesPanelViewModelForDesigner()
+    : FilesPanelViewModel(ModelDesignerUtil.CreateStubModel());
 
-public class InfoPanelViewModel {
-  public InfoPanelViewModel(IResource? resource) {
+public class FilesPanelViewModel {
+  public FilesPanelViewModel(IResource? resource) {
     var files = resource?.Files;
     if (files == null) {
       return;
@@ -48,8 +48,8 @@ public class InfoPanelViewModel {
   public IReadOnlyList<string> Paths { get; }
 }
 
-public partial class InfoPanel : UserControl {
-  public InfoPanel() {
+public partial class FilesPanel : UserControl {
+  public FilesPanel() {
     InitializeComponent();
   }
 }

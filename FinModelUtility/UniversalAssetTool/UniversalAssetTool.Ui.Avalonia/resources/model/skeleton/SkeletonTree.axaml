@@ -35,7 +35,7 @@
                 <avalonia:MaterialIcon
                     Height="{StaticResource RegularFontSize}"
                     Margin="0 0 0 0"
-                    Kind="CardsDiamondOutline" />
+                    Kind="{StaticResource BoneIcon}" />
 
                 <controls:If
                     Margin="3 0 0 0"
@@ -68,7 +68,7 @@
     <controls:If.ContentWhenFalse>
       <controls:EmptyState
           Text="No bones to display."
-          Icon="CardsDiamondOutline" />
+          Icon="{StaticResource BoneIcon}" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>

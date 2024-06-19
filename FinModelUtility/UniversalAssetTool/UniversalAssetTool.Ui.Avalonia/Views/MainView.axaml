@@ -7,7 +7,7 @@
              xmlns:model="clr-namespace:uni.ui.avalonia.resources.model"
              xmlns:scene="clr-namespace:uni.ui.avalonia.resources.scene"
              xmlns:views="clr-namespace:uni.ui.avalonia.Views"
-             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
   <Design.DataContext>
@@ -18,29 +18,44 @@
     <Style Selector="treeViews|FilterTreeView">
       <Setter Property="Background" Value="Transparent" />
     </Style>
+
+    <Style Selector="views|MainView:fileSelectorHover > SplitView">
+      <Setter Property="IsPaneOpen" Value="True" />
+    </Style>
+
+    <Style Selector="views|MainView:not(:fileSelectorHover) Panel#PART_PaneRoot,
+                     views|MainView:fileSelectorHover Panel#PART_PaneRoot">
+      <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+
+    <Style Selector="views|MainView:not(:fileSelectorHover)
+                     > SplitView
+                     > Grid 
+                     > Panel#PART_PaneRoot">
+      <Setter Property="Opacity" Value=".25" />
+    </Style>
+
+    <Style Selector="views|MainView:infoPanelHover SplitView SplitView">
+      <Setter Property="IsPaneOpen" Value="True" />
+    </Style>
+
+    <Style Selector="views|MainView:not(:infoPanelHover) SplitView SplitView Panel#PART_PaneRoot,
+                     views|MainView:infoPanelHover SplitView SplitView Panel#PART_PaneRoot">
+      <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+
+    <Style Selector="views|MainView:not(:infoPanelHover)
+                     SplitView
+                     > SplitView
+                     > Grid 
+                     > Panel#PART_PaneRoot">
+      <Setter Property="Opacity" Value=".25" />
+    </Style>
   </UserControl.Styles>
 
   <SplitView DisplayMode="CompactOverlay"
              OpenPaneLength="300"
              CompactPaneLength="32">
-    <SplitView.Styles>
-      <Style Selector="views|MainView:fileSelectorHover SplitView">
-        <Setter Property="IsPaneOpen" Value="True" />
-      </Style>
-
-      <Style Selector="views|MainView:not(:fileSelectorHover) Panel#PART_PaneRoot,
-                       views|MainView:fileSelectorHover Panel#PART_PaneRoot">
-        <Setter Property="ClipToBounds" Value="False" />
-      </Style>
-
-      <Style Selector="views|MainView:not(:fileSelectorHover)
-                       > SplitView
-                       > Grid 
-                       > Panel#PART_PaneRoot">
-        <Setter Property="Opacity" Value=".25" />
-      </Style>
-    </SplitView.Styles>
-
     <SplitView.Pane>
       <Border x:Name="FileSelectorPanel" BoxShadow="0 0 10 0 Black">
         <treeViews:FilterTreeView DataContext="{Binding FileBundleTreeViewModel}" />
@@ -48,11 +63,12 @@
     </SplitView.Pane>
 
     <SplitView DisplayMode="CompactOverlay"
-               IsPaneOpen="True"
                PanePlacement="Right"
-               OpenPaneLength="300"
+               OpenPaneLength="400"
+               CompactPaneLength="32"
                Margin="-32 0 0 0">
       <DockPanel
+          Margin="0 0 -32 0"
           ZIndex="-5"
           Background="Magenta">
         <scene:SceneViewerGlPanel
@@ -63,7 +79,7 @@
       </DockPanel>
 
       <SplitView.Pane>
-        <Border BoxShadow="0 0 10 0 Black">
+        <Border x:Name="InfoPanel" BoxShadow="0 0 10 0 Black">
           <model:ModelPanel
             DataContext="{Binding ModelPanel}" />
         </Border>

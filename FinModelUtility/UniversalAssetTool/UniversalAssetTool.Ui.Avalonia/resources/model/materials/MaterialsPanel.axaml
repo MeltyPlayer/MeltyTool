@@ -56,7 +56,7 @@
     <controls:If.ContentWhenFalse>
       <controls:EmptyState
           Text="No materials to display."
-          Icon="Sphere" />
+          Icon="{StaticResource MaterialIcon}" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>
