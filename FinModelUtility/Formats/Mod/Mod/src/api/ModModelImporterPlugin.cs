@@ -24,7 +24,6 @@ namespace mod.api {
 
     public IModel Import(
         IEnumerable<IReadOnlySystemFile> files,
-        out IModelFileBundle outModelFileBundle,
         float frameRate = 30) {
       var filesArray = files.ToArray();
       var anmFile = filesArray.WithFileType(".anm").SingleOrDefault();
@@ -33,7 +32,6 @@ namespace mod.api {
       var modBundle = new ModModelFileBundle {
           GameName = "", AnmFile = anmFile, ModFile = modFile,
       };
-      outModelFileBundle = modBundle;
 
       var modImporter = new ModModelImporter();
       return modImporter.Import(modBundle);

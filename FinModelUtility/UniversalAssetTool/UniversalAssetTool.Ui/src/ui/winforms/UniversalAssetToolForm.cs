@@ -70,6 +70,11 @@ public partial class UniversalAssetToolForm : Form {
         };
     this.cancellableProgressBar_.Clicked += (sender, args)
         => this.modelToolStrip_.CancellationToken?.Cancel();
+
+    SceneService.OnSceneOpened
+        += (fileTreeLeafNode, scene) => {
+             this.UpdateScene_(fileTreeLeafNode, new SceneInstanceImpl(scene));
+           };
   }
 
   private void UniversalAssetToolForm_Load(object sender, EventArgs e) {
@@ -103,63 +108,14 @@ public partial class UniversalAssetToolForm : Form {
     => this.modelToolStrip_.DirectoryNode = directoryNode;
 
   private void OnFileBundleSelect_(IFileTreeLeafNode fileNode) {
+    FileTreeLeafNodeService.OpenFileTreeLeafNode(fileNode);
+
     switch (fileNode.File.FileBundle) {
-      case I3dFileBundle threeDFileBundle: {
-        this.Select3d_(fileNode, threeDFileBundle);
-        break;
-      }
       case IAudioFileBundle audioFileBundle: {
         this.SelectAudio_(audioFileBundle);
         break;
       }
-      default:
-        throw new NotImplementedException();
     }
-  }
-
-  private void Select3d_(IFileTreeLeafNode fileNode,
-                         I3dFileBundle threeDFileBundle) {
-    switch (threeDFileBundle) {
-      case IModelFileBundle modelFileBundle: {
-        this.SelectModel_(fileNode, modelFileBundle);
-        break;
-      }
-      case ISceneFileBundle sceneFileBundle: {
-        this.SelectScene_(fileNode, sceneFileBundle);
-        break;
-      }
-    }
-  }
-
-  private void SelectScene_(IFileTreeLeafNode fileNode,
-                            ISceneFileBundle sceneFileBundle) {
-    var scene = new GlobalSceneImporter().Import(sceneFileBundle);
-    this.UpdateScene_(fileNode, new SceneInstanceImpl(scene));
-  }
-
-  private void SelectModel_(IFileTreeLeafNode fileNode,
-                            IModelFileBundle modelFileBundle)
-    => this.UpdateModel_(
-        fileNode,
-        modelFileBundle,
-        new GlobalModelImporter().Import(modelFileBundle));
-
-  private void UpdateModel_(IFileTreeLeafNode? fileNode,
-                            IModelFileBundle modelFileBundle,
-                            IModel model) {
-    var scene = new SceneImpl {
-        FileBundle = modelFileBundle,
-        Files = model.Files
-    };
-    var area = scene.AddArea();
-    var obj = area.AddObject();
-    obj.AddSceneModel(model);
-
-    this.InjectDefaultLightingForScene_(scene, obj);
-
-    var sceneInstance = new SceneInstanceImpl(scene);
-
-    this.UpdateScene_(fileNode, sceneInstance);
   }
 
   private void UpdateScene_(IFileTreeLeafNode? fileNode,
@@ -194,135 +150,6 @@ public partial class UniversalAssetToolForm : Form {
     }
   }
 
-  private void InjectDefaultLightingForScene_(
-      IScene scene,
-      ISceneObject lightingOwner) {
-    if (scene.Lighting != null) {
-      return;
-    }
-    
-    var needsLights = false;
-    var neededLightIndices = new HashSet<int>();
-
-    var sceneModelQueue = new FinQueue<IReadOnlySceneModel>(
-        scene.Areas.SelectMany(
-            area => area.Objects.SelectMany(obj => obj.Models)));
-    while (sceneModelQueue.TryDequeue(out var sceneModel)) {
-      sceneModelQueue.Enqueue(sceneModel.Children.Values);
-
-      var finModel = sceneModel.Model;
-
-      var useLighting =
-          new UseLightingDetector().ShouldUseLightingFor(finModel);
-      if (!useLighting) {
-        continue;
-      }
-
-      foreach (var finMaterial in finModel.MaterialManager.All) {
-        if (finMaterial.IgnoreLights) {
-          continue;
-        }
-
-        needsLights = true;
-
-        if (finMaterial is not IFixedFunctionMaterial
-            finFixedFunctionMaterial) {
-          continue;
-        }
-
-        var equations = finFixedFunctionMaterial.Equations;
-        for (var i = 0; i < 8; ++i) {
-          if (equations.DoOutputsDependOn([
-                  FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0 + i,
-                  FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0 + i,
-                  FixedFunctionSource.LIGHT_SPECULAR_COLOR_0 + i,
-                  FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0 + i
-              ])) {
-            neededLightIndices.Add(i);
-          }
-        }
-      }
-    }
-
-    if (!needsLights) {
-      return;
-    }
-
-    bool attachFirstLightToCamera = false;
-    float individualStrength = .8f / neededLightIndices.Count;
-    if (neededLightIndices.Count == 0) {
-      attachFirstLightToCamera = true;
-      individualStrength = .4f;
-      for (var i = 0; i < 3; ++i) {
-        neededLightIndices.Add(i);
-      }
-    }
-
-    var enabledCount = neededLightIndices.Count;
-    var lightColors = enabledCount == 1
-        ? [Color.White]
-        : new[] {
-            Color.White,
-            Color.Pink,
-            Color.LightBlue,
-            Color.DarkSeaGreen,
-            Color.PaleGoldenrod,
-            Color.Lavender,
-            Color.Bisque,
-            Color.Blue,
-            Color.Red
-        };
-
-    var maxLightIndex = neededLightIndices.Max();
-    var currentIndex = 0;
-    var lighting = scene.CreateLighting();
-    for (var i = 0; i <= maxLightIndex; ++i) {
-      var light = lighting.CreateLight();
-      if (!(light.Enabled = neededLightIndices.Contains(i))) {
-        continue;
-      }
-
-      light.SetColor(FinColor.FromSystemColor(lightColors[currentIndex]));
-      light.Strength = individualStrength;
-
-      var angleInRadians = 2 * MathF.PI *
-          (1f * currentIndex) / (enabledCount + 1);
-
-      var lightNormal = Vector3.Normalize(new Vector3 {
-          X = (float) (.5f * Math.Cos(angleInRadians)),
-          Y = (float) (.5f * Math.Sin(angleInRadians)),
-          Z = -.6f,
-      });
-      light.SetNormal(new Vector3f {
-          X = lightNormal.X,
-          Y = lightNormal.Y,
-          Z = lightNormal.Z
-      });
-
-      currentIndex++;
-    }
-
-    if (attachFirstLightToCamera) {
-      var camera = Camera.Instance;
-      var firstLight = lighting.Lights[0];
-
-      var position = new Vector3f();
-      var normal = new Vector3f();
-
-      lightingOwner.SetOnTickHandler(_ => {
-        position.X = camera.X;
-        position.Y = camera.Y;
-        position.Z = camera.Z;
-        firstLight.SetPosition(position);
-
-        normal.X = camera.XNormal;
-        normal.Y = camera.YNormal;
-        normal.Z = camera.ZNormal;
-        firstLight.SetNormal(normal);
-      });
-    }
-  }
-
   private void SelectAudio_(IAudioFileBundle audioFileBundle)
     => this.audioPlayerPanel_.AudioFileBundles = new[] { audioFileBundle };
 
@@ -351,9 +178,8 @@ public partial class UniversalAssetToolForm : Form {
         return;
       }
 
-      var finModel =
-          bestMatch.Import(inputFiles, out var modelFileBundle);
-      this.UpdateModel_(null, modelFileBundle, finModel);
+      var finModel = bestMatch.Import(inputFiles);
+      ModelService.OpenModel(null, finModel);
     };
 
     dialog.ShowDialog();

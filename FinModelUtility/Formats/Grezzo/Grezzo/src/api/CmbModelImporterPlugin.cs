@@ -28,8 +28,7 @@ namespace grezzo.api {
       new[] { ".cmb", ".csab", ".ctxb", ".shpa" };
 
     public IModel Import(IEnumerable<IReadOnlySystemFile> files,
-                              out IModelFileBundle outModelFileBundle,
-                              float frameRate = 30) {
+                         float frameRate = 30) {
       var filesArray = files.ToArray();
       var csabFiles = filesArray.WithFileType(".csab").ToArray();
       var cmbFile = filesArray.WithFileType(".cmb").Single();
@@ -42,7 +41,6 @@ namespace grezzo.api {
           csabFiles,
           ctxbFiles,
           shpaFiles);
-      outModelFileBundle = cmbBundle;
 
       var cmbImporter = new CmbModelImporter();
       return cmbImporter.Import(cmbBundle);

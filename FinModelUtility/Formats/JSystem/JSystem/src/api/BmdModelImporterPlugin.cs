@@ -26,7 +26,6 @@ namespace jsystem.api {
 
     public IModel Import(
         IEnumerable<IReadOnlySystemFile> files,
-        out IModelFileBundle outModelFileBundle,
         float frameRate = 30) {
       var filesArray = files.ToArray();
 
@@ -41,7 +40,6 @@ namespace jsystem.api {
           BtiFiles = btiFiles,
           FrameRate = frameRate,
       };
-      outModelFileBundle = bmdBundle;
 
       var bmdImporter = new BmdModelImporter();
       return bmdImporter.Import(bmdBundle);

@@ -28,9 +28,7 @@ namespace fin.model.io {
       return fileTypes.Where(this.MainFileExtensions.Contains).Count() == 1;
     }
 
-    IModel Import(IEnumerable<IReadOnlySystemFile> files,
-                  out IModelFileBundle outModelFileBundle,
-                  float frameRate = 30);
+    IModel Import(IEnumerable<IReadOnlySystemFile> files, float frameRate = 30);
   }
 
   public interface IModelExporterPlugin : IModelPlugin {

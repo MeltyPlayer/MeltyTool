@@ -141,7 +141,6 @@ namespace uni.cli {
                   PrintPluginInfo_(bestMatch!);
                   var model = bestMatch!.Import(
                       inputFiles,
-                      out _,
                       frameRate);
 
                   Console.WriteLine("Writing the output file...");

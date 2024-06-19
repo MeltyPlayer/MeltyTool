@@ -12,20 +12,22 @@ using fin.ui;
 using fin.ui.rendering.gl.model;
 
 using uni.api;
+using uni.ui.winforms.common.fileTreeView;
 
 namespace uni {
   public static class SceneService {
     static SceneService() {
-      FileBundleService.OnFileBundleOpened
-          += fileBundle => {
+      FileTreeLeafNodeService.OnFileTreeLeafNodeOpened
+          += fileTreeLeafNode => {
+               var fileBundle = fileTreeLeafNode.File.FileBundle;
                if (fileBundle is ISceneFileBundle sceneFileBundle) {
                  var scene = new GlobalSceneImporter().Import(sceneFileBundle);
-                 OpenScene(scene);
+                 OpenScene(fileTreeLeafNode, scene);
                }
              };
 
       ModelService.OnModelOpened
-          += model => {
+          += (fileTreeLeafNode, model) => {
                var scene = new SceneImpl {
                    FileBundle = model.FileBundle,
                    Files = model.Files
@@ -36,14 +38,15 @@ namespace uni {
 
                InjectDefaultLightingForScene_(scene, obj);
 
-               OpenScene(scene);
+               OpenScene(fileTreeLeafNode, scene);
              };
     }
 
-    public static event Action<IScene> OnSceneOpened;
+    public static event Action<IFileTreeLeafNode?, IScene> OnSceneOpened;
 
-    public static void OpenScene(IScene scene)
-      => OnSceneOpened?.Invoke(scene);
+    public static void OpenScene(IFileTreeLeafNode? fileTreeLeafNode,
+                                 IScene scene)
+      => OnSceneOpened?.Invoke(fileTreeLeafNode, scene);
 
     private static void InjectDefaultLightingForScene_(
         IScene scene,

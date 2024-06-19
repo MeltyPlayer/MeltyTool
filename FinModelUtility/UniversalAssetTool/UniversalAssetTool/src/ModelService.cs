@@ -3,22 +3,25 @@ using fin.model.io;
 using fin.scene;
 
 using uni.api;
+using uni.ui.winforms.common.fileTreeView;
 
 namespace uni {
   public static class ModelService {
     static ModelService() {
-      FileBundleService.OnFileBundleOpened
-          += fileBundle => {
+      FileTreeLeafNodeService.OnFileTreeLeafNodeOpened
+          += fileTreeLeafNode => {
+               var fileBundle = fileTreeLeafNode.File.FileBundle;
                if (fileBundle is IModelFileBundle modelFileBundle) {
                  var model = new GlobalModelImporter().Import(modelFileBundle);
-                 OpenModel(model);
+                 OpenModel(fileTreeLeafNode, model);
                }
              };
     }
 
-    public static event Action<IModel> OnModelOpened;
+    public static event Action<IFileTreeLeafNode?, IModel> OnModelOpened;
 
-    public static void OpenModel(IModel model)
-      => OnModelOpened?.Invoke(model);
+    public static void OpenModel(IFileTreeLeafNode? fileTreeLeafNode,
+                                 IModel model)
+      => OnModelOpened?.Invoke(fileTreeLeafNode, model);
   }
 }

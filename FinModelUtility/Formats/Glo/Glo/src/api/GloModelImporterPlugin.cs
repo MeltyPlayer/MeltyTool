@@ -15,8 +15,7 @@ namespace glo.api {
     public IReadOnlyList<string> FileExtensions => this.MainFileExtensions;
 
     public IModel Import(IEnumerable<IReadOnlySystemFile> files,
-                              out IModelFileBundle outModelFileBundle,
-                              float frameRate = 30) {
+                         float frameRate = 30) {
       var gloFile = files.WithFileType(".glo").Single();
 
       // TODO: Support passing in texture directory
@@ -24,7 +23,6 @@ namespace glo.api {
 
       var gloBundle =
           new GloModelFileBundle(gloFile, new[] { textureDirectory });
-      outModelFileBundle = gloBundle;
 
       return new GloModelImporter().Import(gloBundle);
     }
