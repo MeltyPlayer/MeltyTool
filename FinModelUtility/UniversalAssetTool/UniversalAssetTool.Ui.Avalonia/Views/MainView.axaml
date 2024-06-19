@@ -51,6 +51,7 @@
         ZIndex="-5"
         Background="Magenta">
       <scene:SceneViewerGlPanel
+          x:Name="SceneViewerGlPanel"
           IsTabStop="True"
           TabIndex="0"
           Focusable="True" />

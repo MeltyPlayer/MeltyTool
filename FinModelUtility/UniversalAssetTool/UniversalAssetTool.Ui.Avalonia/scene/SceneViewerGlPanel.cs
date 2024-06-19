@@ -221,7 +221,7 @@ namespace uni.ui.avalonia.scene {
       this.viewerImpl_.Render();
     }
 
-    public (I3dFileBundle, ISceneInstance)? Scene {
+    public ISceneInstance? Scene {
       get => this.viewerImpl_.Scene;
       set {
         this.viewerImpl_.Scene = value;
@@ -229,12 +229,10 @@ namespace uni.ui.avalonia.scene {
         if (value == null) {
           this.viewerImpl_.ViewerScale = 1;
         } else {
-          var (fileBundle, scene) = value.Value;
           this.viewerImpl_.ViewerScale =
               new ScaleSource(Config.Instance.ViewerSettings
                                     .ViewerModelScaleSource).GetScale(
-                  scene,
-                  fileBundle);
+                  value);
         }
       }
     }

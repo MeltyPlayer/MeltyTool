@@ -9,6 +9,10 @@ public class MainViewModel : ViewModelBase {
 
   public MainViewModel() {
     this.ModelPanel = new ModelPanelViewModel();
+    ModelService.OnModelOpened
+        += (_, model) => {
+             this.ModelPanel = new ModelPanelViewModel { Model = model };
+           };
   }
 
   public ModelPanelViewModel ModelPanel {

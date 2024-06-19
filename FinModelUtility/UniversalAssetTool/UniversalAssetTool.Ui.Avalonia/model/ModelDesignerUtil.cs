@@ -15,6 +15,7 @@ namespace uni.ui.avalonia.model;
 public static class ModelDesignerUtil {
   public static IReadOnlyModel CreateStubModel() {
     var model = new ModelImpl {
+        FileBundle = null,
         Files = new HashSet<IReadOnlyGenericFile>([
             new FinFile(@"C:\Users\Foo\Documents\Bar\123.txt"),
             new FinFile(@"C:\Users\Foo\Documents\Bar\123_model.model"),

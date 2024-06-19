@@ -6,7 +6,13 @@ namespace fin.util.time {
     private static readonly DateTime firstFrameStart_ = DateTime.Now;
     private static DateTime previousFrameStart_;
 
-    private static readonly float[] frameTimesForSmoothedFps_ = new float[60];
+    private const int SMOOTH_COUNT = 60;
+
+    private static readonly float[] frameTimesForSmoothedActualFps_
+        = new float[SMOOTH_COUNT];
+
+    private static readonly float[] frameTimesForSmoothedTheoreticalFps_
+        = new float[SMOOTH_COUNT];
 
     public static void MarkStartOfFrame() {
       FrameTime.previousFrameStart_ = FrameTime.StartOfFrame;
@@ -19,21 +25,36 @@ namespace fin.util.time {
           (float) (FrameTime.StartOfFrame - FrameTime.previousFrameStart_)
           .TotalSeconds;
       FrameTime.DeltaTime = elapsedSeconds;
+
+      for (var i = frameTimesForSmoothedActualFps_.Length - 1; i >= 1; --i) {
+        frameTimesForSmoothedActualFps_[i]
+            = frameTimesForSmoothedActualFps_[i - 1];
+      }
+
+      frameTimesForSmoothedActualFps_[0] = elapsedSeconds;
+
+      var smoothedFrameTime = frameTimesForSmoothedActualFps_.Average();
+
+      SmoothedActualFps = smoothedFrameTime == 0 ? 0 : 1 / smoothedFrameTime;
     }
 
     public static void MarkEndOfFrameForFpsDisplay() {
       var elapsedSeconds
           = (float) (DateTime.Now - FrameTime.StartOfFrame).TotalSeconds;
 
-      for (var i = frameTimesForSmoothedFps_.Length - 1; i >= 1; --i) {
-        frameTimesForSmoothedFps_[i] = frameTimesForSmoothedFps_[i - 1];
+      for (var i = frameTimesForSmoothedTheoreticalFps_.Length - 1;
+           i >= 1;
+           --i) {
+        frameTimesForSmoothedTheoreticalFps_[i]
+            = frameTimesForSmoothedTheoreticalFps_[i - 1];
       }
 
-      frameTimesForSmoothedFps_[0] = elapsedSeconds;
+      frameTimesForSmoothedTheoreticalFps_[0] = elapsedSeconds;
 
-      var smoothedFrameTime = frameTimesForSmoothedFps_.Average();
+      var smoothedFrameTime = frameTimesForSmoothedTheoreticalFps_.Average();
 
-      SmoothedFps = smoothedFrameTime == 0 ? 0 : 1 / smoothedFrameTime;
+      SmoothedTheoreticalFps
+          = smoothedFrameTime == 0 ? 0 : 1 / smoothedFrameTime;
     }
 
     public static DateTime StartOfFrame { get; private set; }
@@ -44,6 +65,11 @@ namespace fin.util.time {
     }
 
     public static float DeltaTime { get; private set; }
-    public static float SmoothedFps { get; private set; }
+
+    public static float SmoothedActualFps { get; private set; }
+    public static float SmoothedTheoreticalFps { get; private set; }
+
+    public static string FpsString
+      => $"Universal Asset Tool ({SmoothedActualFps:0.0} / {SmoothedTheoreticalFps:0.0} fps)";
   }
 }

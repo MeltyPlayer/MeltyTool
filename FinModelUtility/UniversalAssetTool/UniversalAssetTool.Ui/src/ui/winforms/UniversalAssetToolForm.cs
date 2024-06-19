@@ -78,10 +78,7 @@ public partial class UniversalAssetToolForm : Form {
               }
 
               try {
-                this.Invoke(() => {
-                  var fps = FrameTime.SmoothedFps;
-                  this.Text = $"Universal Asset Tool ({fps:0.0} fps)";
-                });
+                this.Invoke(() => this.Text = FrameTime.FpsString);
               } catch {
                 // ignored, throws after window is closed
               }

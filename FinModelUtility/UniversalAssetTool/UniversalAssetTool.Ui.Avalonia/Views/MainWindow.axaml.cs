@@ -16,10 +16,7 @@ public partial class MainWindow : Window {
     this.fpsCallback_ = TimedCallback.WithPeriod(
         () => {
           Dispatcher.UIThread.Invoke(
-              () => {
-                var fps = FrameTime.SmoothedFps;
-                this.Title = $"Universal Asset Tool ({fps:0.0} fps)";
-              });
+              () => this.Title = FrameTime.FpsString);
         },
         .25f);
   }
