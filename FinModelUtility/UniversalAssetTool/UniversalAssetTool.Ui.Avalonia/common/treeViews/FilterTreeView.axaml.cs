@@ -1,24 +1,6 @@
-using System;
-using System.Collections.ObjectModel;
-
 using Avalonia.Controls;
 
-using fin.audio.io;
-using fin.audio.io.importers.ogg;
-using fin.image;
-using fin.importers;
-using fin.io;
-using fin.io.bundles;
-using fin.model.io;
-using fin.scene;
 using fin.util.asserts;
-
-using grezzo.api;
-
-using uni.ui.avalonia.resources;
-using uni.ui.avalonia.ViewModels;
-
-using IImage = Avalonia.Media.IImage;
 
 namespace uni.ui.avalonia.common.treeViews {
   public partial class FilterTreeView : UserControl {

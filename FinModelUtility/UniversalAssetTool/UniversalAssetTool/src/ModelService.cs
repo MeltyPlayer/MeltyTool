@@ -1,6 +1,5 @@
 ﻿using fin.model;
 using fin.model.io;
-using fin.scene;
 
 using uni.api;
 using uni.ui.winforms.common.fileTreeView;
@@ -8,9 +7,8 @@ using uni.ui.winforms.common.fileTreeView;
 namespace uni {
   public static class ModelService {
     static ModelService() {
-      FileTreeLeafNodeService.OnFileTreeLeafNodeOpened
-          += fileTreeLeafNode => {
-               var fileBundle = fileTreeLeafNode.File.FileBundle;
+      FileBundleService.OnFileBundleOpened
+          += (fileTreeLeafNode, fileBundle) => {
                if (fileBundle is IModelFileBundle modelFileBundle) {
                  var model = new GlobalModelImporter().Import(modelFileBundle);
                  OpenModel(fileTreeLeafNode, model);

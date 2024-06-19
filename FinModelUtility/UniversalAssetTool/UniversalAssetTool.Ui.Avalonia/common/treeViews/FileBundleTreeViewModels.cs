@@ -22,7 +22,7 @@ namespace uni.ui.avalonia.common.treeViews {
   // Top-level view model types
   public class FileBundleTreeViewModel<T>
       : ViewModelBase, IFilterTreeViewViewModel<T> {
-    public ObservableCollection<INode<T>> Nodes { get; protected set; }
+    public ObservableCollection<INode<T>> Nodes { get; init; }
 
     public event EventHandler<INode<T>>? NodeSelected;
 
@@ -82,5 +82,7 @@ namespace uni.ui.avalonia.common.treeViews {
     };
 
     public string Label { get; } = label;
+
+    public IAnnotatedFileBundle Data => data;
   }
 }

@@ -6,7 +6,6 @@ using fin.data.queues;
 using fin.language.equations.fixedFunction;
 using fin.model;
 using fin.scene;
-using fin.scene.instance;
 using fin.schema.vector;
 using fin.ui;
 using fin.ui.rendering.gl.model;
@@ -17,9 +16,8 @@ using uni.ui.winforms.common.fileTreeView;
 namespace uni {
   public static class SceneService {
     static SceneService() {
-      FileTreeLeafNodeService.OnFileTreeLeafNodeOpened
-          += fileTreeLeafNode => {
-               var fileBundle = fileTreeLeafNode.File.FileBundle;
+      FileBundleService.OnFileBundleOpened
+          += (fileTreeLeafNode, fileBundle) => {
                if (fileBundle is ISceneFileBundle sceneFileBundle) {
                  var scene = new GlobalSceneImporter().Import(sceneFileBundle);
                  OpenScene(fileTreeLeafNode, scene);

@@ -37,7 +37,7 @@
     <Border
         Grid.Column="0"
         BoxShadow="0 0 10 0 Black">
-      <treeViews:FilterTreeView />
+      <treeViews:FilterTreeView DataContext="{Binding FileBundleTreeViewModel}" />
     </Border>
 
     <GridSplitter 
