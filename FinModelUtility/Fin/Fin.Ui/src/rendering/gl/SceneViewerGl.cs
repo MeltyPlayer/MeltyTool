@@ -8,6 +8,7 @@ using fin.ui.rendering.gl.scene;
 using fin.util.time;
 
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace fin.ui.rendering.gl {
   public class SceneViewerGl : ISceneViewer, IRenderable {
@@ -109,7 +110,7 @@ namespace fin.ui.rendering.gl {
     public float FarPlane { get; set; }
     public bool ShowGrid { get; set; }
 
-    public void Render() {
+    public unsafe void Render() {
       FrameTime.MarkStartOfFrame();
       this.singleArea_?.CustomSkyboxObject?.Tick();
       this.Scene?.Tick();

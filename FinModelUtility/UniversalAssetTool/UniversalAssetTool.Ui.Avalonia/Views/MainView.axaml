@@ -5,6 +5,7 @@
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
              xmlns:model="clr-namespace:uni.ui.avalonia.model"
+             xmlns:scene="clr-namespace:uni.ui.avalonia.scene"
              mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -44,11 +45,16 @@
       Background="Transparent"
       ResizeDirection="Columns" />
 
-    <Panel
+    <DockPanel
         Grid.Column="2"
-        Background="Magenta"
         Margin="-6 0"
-        ZIndex="-5" />
+        ZIndex="-5"
+        Background="Magenta">
+      <scene:SceneViewerGlPanel
+          IsTabStop="True"
+          TabIndex="0"
+          Focusable="True" />
+    </DockPanel>
 
     <GridSplitter 
         Grid.Column="3"
