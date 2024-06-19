@@ -30,8 +30,8 @@ namespace uni.ui.avalonia.common.treeViews {
       => this.NodeSelected?.Invoke(this, Asserts.AsA<INode<T>>(node));
   }
 
-  public class FileBundleTreeViewModel : FileBundleTreeViewModel<IAnnotatedFileBundle> {
-    public FileBundleTreeViewModel() {
+  public class FileBundleTreeViewModelForDesigner : FileBundleTreeViewModel<IAnnotatedFileBundle> {
+    public FileBundleTreeViewModelForDesigner() {
       this.Nodes = [
           new FileBundleDirectoryNode("Animals",
           [

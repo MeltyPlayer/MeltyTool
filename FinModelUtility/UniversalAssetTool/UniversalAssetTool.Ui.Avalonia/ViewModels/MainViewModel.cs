@@ -13,6 +13,14 @@ using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.ViewModels;
 
+public class MainViewModelForDesigner {
+  public FileBundleTreeViewModelForDesigner FileBundleTreeViewModelForDesigner { get; }
+    = new();
+
+  public ModelPanelViewModel ModelPanel { get; }
+    = new ModelPanelViewModelForDesigner();
+}
+
 public class MainViewModel : ViewModelBase {
   private FileBundleTreeViewModel<IAnnotatedFileBundle> fileTree_;
   private ModelPanelViewModel modelPanel_;

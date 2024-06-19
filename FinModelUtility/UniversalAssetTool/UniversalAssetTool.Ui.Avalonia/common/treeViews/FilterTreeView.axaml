@@ -7,9 +7,9 @@
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.common.treeViews.FilterTreeView"
-             x:DataType="treeViews:FileBundleTreeViewModel">
+             x:DataType="treeViews:FileBundleTreeViewModelForDesigner">
   <Design.DataContext>
-    <treeViews:FileBundleTreeViewModel />
+    <treeViews:FileBundleTreeViewModelForDesigner />
   </Design.DataContext>
 
   <!-- Overrides expander styles in tree view. -->

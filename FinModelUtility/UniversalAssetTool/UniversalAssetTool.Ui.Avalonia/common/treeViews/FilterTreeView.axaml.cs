@@ -6,7 +6,7 @@ namespace uni.ui.avalonia.common.treeViews {
   public partial class FilterTreeView : UserControl {
     public FilterTreeView() {
       this.InitializeComponent();
-      this.DataContext = new FileBundleTreeViewModel();
+      this.DataContext = new FileBundleTreeViewModelForDesigner();
     }
 
     private void TreeView_OnSelectionChanged_(
