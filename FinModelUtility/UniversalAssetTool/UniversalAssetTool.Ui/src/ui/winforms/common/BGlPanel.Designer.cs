@@ -34,6 +34,13 @@ namespace uni.ui.winforms.common {
       glControlSettings.Profile = ContextProfile.Compatability;
       glControlSettings.SharedContext = new GLFWGraphicsContext(null);
 
+      glControlSettings.RedBits = 8;
+      glControlSettings.GreenBits = 8;
+      glControlSettings.BlueBits = 8;
+      glControlSettings.AlphaBits = 8;
+      glControlSettings.DepthBits = 32;
+      glControlSettings.APIVersion = Version.Parse("4.0.0.0");
+
       this.impl_ = new GLControl(glControlSettings);
 
       this.SuspendLayout();

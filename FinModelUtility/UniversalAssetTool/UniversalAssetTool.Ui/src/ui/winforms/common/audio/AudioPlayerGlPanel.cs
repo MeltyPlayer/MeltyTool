@@ -6,12 +6,12 @@ using fin.audio.io;
 using fin.data;
 using fin.ui.playback.al;
 using fin.ui.rendering.gl;
+using fin.ui.rendering.gl.material;
 using fin.util.time;
 
 using OpenTK.Graphics.OpenGL;
 
 using uni.api;
-using uni.ui.common;
 
 namespace uni.ui.winforms.common.audio {
   public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
@@ -23,8 +23,6 @@ namespace uni.ui.winforms.common.audio {
     private readonly AotWaveformRenderer waveformRenderer_ = new();
 
     private readonly TimedCallback playNextCallback_;
-
-    private GlShaderProgram texturelessShaderProgram_;
 
     public AudioPlayerGlPanel() {
       this.Disposed += (_, _) => this.audioManager_.Dispose();
@@ -88,30 +86,7 @@ namespace uni.ui.winforms.common.audio {
 
     public event Action<IAudioFileBundle?> OnChange = delegate { };
 
-    protected override void InitGl() {
-      this.texturelessShaderProgram_ =
-          GlShaderProgram.FromShaders(@"
-#version 120
-
-varying vec4 vertexColor;
-
-void main() {
-    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex; 
-    vertexColor = gl_Color;
-}", @"
-#version 130 
-
-out vec4 fragColor;
-
-in vec4 vertexColor;
-
-void main() {
-    fragColor = vertexColor;
-}");
-
-      this.ResetGl_();
-    }
-
+    protected override void InitGl() => this.ResetGl_();
     private void ResetGl_() => GlUtil.ResetGl();
 
     protected override void RenderGl() {
@@ -121,7 +96,7 @@ void main() {
 
       GlUtil.ClearColorAndDepth();
 
-      this.texturelessShaderProgram_.Use();
+      CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
       this.RenderOrtho_();
     }
 
