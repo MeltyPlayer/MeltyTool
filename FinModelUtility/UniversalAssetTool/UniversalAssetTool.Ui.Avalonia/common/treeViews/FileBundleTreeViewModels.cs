@@ -12,7 +12,7 @@ using fin.util.asserts;
 
 using grezzo.api;
 
-using uni.ui.avalonia.resources;
+using uni.ui.avalonia.icons;
 using uni.ui.avalonia.ViewModels;
 
 using IImage = Avalonia.Media.IImage;
@@ -63,16 +63,16 @@ namespace uni.ui.avalonia.common.treeViews {
     public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes => null;
 
     public static readonly IImage MUSIC_ICON
-        = AvaloniaImageUtil.Load("music");
+        = AvaloniaIconUtil.Load("music");
 
     public static readonly IImage PICTURE_ICON
-        = AvaloniaImageUtil.Load("picture");
+        = AvaloniaIconUtil.Load("picture");
 
     public static readonly IImage MODEL_ICON
-        = AvaloniaImageUtil.Load("model");
+        = AvaloniaIconUtil.Load("model");
 
     public static readonly IImage SCENE_ICON
-        = AvaloniaImageUtil.Load("scene");
+        = AvaloniaIconUtil.Load("scene");
 
     public IImage Icon => data.FileBundle switch {
       IAudioFileBundle => MUSIC_ICON,

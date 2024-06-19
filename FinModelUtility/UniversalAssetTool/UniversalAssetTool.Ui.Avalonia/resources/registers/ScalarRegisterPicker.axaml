@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:registers="clr-namespace:uni.ui.avalonia.resources.registers"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="300"
+             x:Class="uni.ui.avalonia.resources.registers.ScalarRegisterPicker"
+             x:DataType="registers:ScalarRegisterPickerViewModel">
+  <Design.DataContext>
+    <registers:ScalarRegisterPickerViewModelForDesigner />
+  </Design.DataContext>
+
+  <StackPanel>
+    <TextBlock Classes="h3" Text="{Binding ScalarRegister.Name}" />
+    <Slider Margin="0 -16"
+            Value="{Binding Value, Mode=TwoWay}" />
+  </StackPanel>
+</UserControl>

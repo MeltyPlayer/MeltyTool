@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materials="clr-namespace:uni.ui.avalonia.resources.model.materials"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:textures="clr-namespace:uni.ui.avalonia.resources.texture"
+             mc:Ignorable="d" d:DesignWidth="500"
+             MaxHeight="155"
+             Height="155"
+             x:Class="uni.ui.avalonia.resources.model.materials.MaterialTexturesPanel"
+             x:DataType="materials:MaterialTexturesPanelViewModel">
+  <Design.DataContext>
+    <materials:MaterialTexturesPanelViewModelForDesigner />
+  </Design.DataContext>
+
+  <gb:GroupBox Classes="h3" 
+               Header="Textures">
+    <Grid ColumnDefinitions="140 *">
+      <!-- Texture viewer -->
+      <controls:If Condition="{Binding SelectedTexturePreview, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel Margin="0 0 8 0">
+          <textures:TexturePreview
+              DataContext="{Binding SelectedTexturePreview}"
+              HorizontalAlignment="Stretch"
+              Height="88" />
+          <TextBlock Classes="h4 spaceFirst"
+                     Text="{Binding SelectedTexturePreview.Texture.Name}"
+                     HorizontalAlignment="Center"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Classes="caption"
+                     HorizontalAlignment="Center">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="{}{0}, {1}x{2}">
+                <Binding Path="SelectedTexture.Texture.Image.PixelFormat" />
+                <Binding Path="SelectedTexture.Texture.Image.Width" />
+                <Binding Path="SelectedTexture.Texture.Image.Height" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+        </StackPanel>
+      </controls:If>
+
+      <!-- Textures list -->
+      <textures:TextureList
+          Grid.Column="1"
+          DataContext="{Binding TextureList}"
+          TextureSelected="TextureList_OnTextureSelected" />
+    </Grid>
+  </gb:GroupBox>
+</UserControl>

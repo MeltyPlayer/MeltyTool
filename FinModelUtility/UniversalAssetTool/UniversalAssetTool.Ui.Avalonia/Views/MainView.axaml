@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
-             xmlns:model="clr-namespace:uni.ui.avalonia.model"
-             xmlns:scene="clr-namespace:uni.ui.avalonia.scene"
+             xmlns:model="clr-namespace:uni.ui.avalonia.resources.model"
+             xmlns:scene="clr-namespace:uni.ui.avalonia.resources.scene"
              mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">

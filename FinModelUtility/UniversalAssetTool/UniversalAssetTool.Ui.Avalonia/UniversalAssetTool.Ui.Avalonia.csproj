@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaResource Include="resources\images\**" />
-    <AvaloniaResource Update="resources\images\**">
+    <AvaloniaResource Include="icons\**" />
+    <AvaloniaResource Update="icons\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
   </ItemGroup>
@@ -48,10 +48,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="animations\AnimationList.axaml.cs">
+    <Compile Update="resources\animation\AnimationList.axaml.cs">
       <DependentUpon>AnimationList.axaml</DependentUpon>
     </Compile>
-    <Compile Update="animations\AnimationsPanel.axaml.cs">
+    <Compile Update="resources\animation\AnimationsPanel.axaml.cs">
       <DependentUpon>AnimationsPanel.axaml</DependentUpon>
     </Compile>
     <Compile Update="common\controls\EmptyState.axaml.cs">
@@ -63,40 +63,43 @@
     <Compile Update="common\textboxes\AutocompleteTextbox.axaml.cs">
       <DependentUpon>AutocompleteTextbox.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\ModelPanel.axaml.cs">
+    <Compile Update="resources\model\ModelPanel.axaml.cs">
       <DependentUpon>ModelPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialsPanel.axaml.cs">
+    <Compile Update="resources\model\materials\MaterialsPanel.axaml.cs">
       <DependentUpon>MaterialsPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialPanel.axaml.cs">
+    <Compile Update="resources\model\materials\MaterialPanel.axaml.cs">
       <DependentUpon>MaterialPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialTexturesPanel.axaml.cs">
+    <Compile Update="resources\model\materials\MaterialTexturesPanel.axaml.cs">
       <DependentUpon>MaterialTexturesPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\materials\MaterialShadersPanel.axaml.cs">
+    <Compile Update="resources\model\materials\MaterialShadersPanel.axaml.cs">
       <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="model\skeleton\SkeletonTree.axaml.cs">
+    <Compile Update="resources\model\skeleton\SkeletonTree.axaml.cs">
       <DependentUpon>SkeletonTree.axaml</DependentUpon>
     </Compile>
-    <Compile Update="registers\RegistersPanel.axaml.cs">
+    <Compile Update="resources\registers\RegistersPanel.axaml.cs">
       <DependentUpon>RegistersPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="registers\ScalarRegisterPicker.axaml.cs">
+    <Compile Update="resources\registers\ScalarRegisterPicker.axaml.cs">
       <DependentUpon>ScalarRegisterPicker.axaml</DependentUpon>
     </Compile>
-    <Compile Update="registers\ColorRegisterPicker.axaml.cs">
+    <Compile Update="resources\registers\ColorRegisterPicker.axaml.cs">
       <DependentUpon>ColorRegisterPicker.axaml</DependentUpon>
     </Compile>
-    <Compile Update="textures\TexturesPanel.axaml.cs">
+    <Compile Update="resources\InfoPanel.axaml.cs">
+      <DependentUpon>InfoPanel.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="resources\texture\TexturesPanel.axaml.cs">
       <DependentUpon>TexturesPanel.axaml</DependentUpon>
     </Compile>
-    <Compile Update="textures\TexturePreview.axaml.cs">
+    <Compile Update="resources\texture\TexturePreview.axaml.cs">
       <DependentUpon>TexturePreview.axaml</DependentUpon>
     </Compile>
-    <Compile Update="textures\TextureList.axaml.cs">
+    <Compile Update="resources\texture\TextureList.axaml.cs">
       <DependentUpon>TextureList.axaml</DependentUpon>
     </Compile>
   </ItemGroup>

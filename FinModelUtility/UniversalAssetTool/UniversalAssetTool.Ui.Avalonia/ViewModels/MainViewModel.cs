@@ -9,7 +9,7 @@ using ReactiveUI;
 
 using uni.games;
 using uni.ui.avalonia.common.treeViews;
-using uni.ui.avalonia.model;
+using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.ViewModels;
 

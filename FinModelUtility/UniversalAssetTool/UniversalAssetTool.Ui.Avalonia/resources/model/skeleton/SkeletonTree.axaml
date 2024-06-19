@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:skeleton="clr-namespace:uni.ui.avalonia.resources.model.skeleton"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+             x:Class="uni.ui.avalonia.resources.model.skeleton.SkeletonTree"
+             x:DataType="skeleton:SkeletonTreeViewModel">
+  <Design.DataContext>
+    <skeleton:SkeletonTreeViewModelForDesigner />
+  </Design.DataContext>
+
+  <controls:If Condition="{Binding RootNode.Children, Converter={x:Static converters:ListConverters.HasAnyItems}}">
+    <controls:If.ContentWhenTrue>
+      <Border BorderBrush="{StaticResource BorderBrush}"
+              BorderThickness="1">
+        <TreeView ItemsSource="{Binding RootNode.Children}"
+                  SelectedItem="{Binding SelectedNode, Mode=TwoWay}"
+                  SelectionChanged="SelectingItemsControl_OnSelectionChanged">
+          <TreeView.Styles>
+            <Style Selector="TreeViewItem" x:DataType="skeleton:SkeletonNode">
+              <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            </Style>
+          </TreeView.Styles>
+
+          <TreeView.ItemTemplate>
+            <TreeDataTemplate ItemsSource="{Binding Children}">
+              <StackPanel Orientation="Horizontal">
+                <avalonia:MaterialIcon
+                    Margin="0 2 0 0"
+                    Kind="CardsDiamondOutline" />
+
+                <controls:If
+                    Margin="8 0 0 0"
+                    Condition="{Binding Bone.Name, Converter={x:Static ObjectConverters.IsNotNull}}">
+                  <controls:If.ContentWhenTrue>
+                    <TextBlock Text="{Binding Bone.Name}"
+                               TextTrimming="CharacterEllipsis" />
+                  </controls:If.ContentWhenTrue>
+                  <controls:If.ContentWhenFalse>
+                    <TextBlock Text="{Binding Bone.Index, StringFormat='Bone {0}'}" />
+                  </controls:If.ContentWhenFalse>
+                </controls:If>
+
+                <TextBlock DockPanel.Dock="Bottom"
+                           Classes="caption"
+                           Margin="4 2.5 0 0">
+                  <TextBlock.Text>
+                    <MultiBinding StringFormat="{} ({0})">
+                      <Binding Path="Bone.Children.Count" />
+                    </MultiBinding>
+                  </TextBlock.Text>
+                </TextBlock>
+              </StackPanel>
+            </TreeDataTemplate>
+          </TreeView.ItemTemplate>
+        </TreeView>
+      </Border>
+    </controls:If.ContentWhenTrue>
+    <controls:If.ContentWhenFalse>
+      <controls:EmptyState
+          Text="No bones to display."
+          Icon="CardsDiamondOutline" />
+    </controls:If.ContentWhenFalse>
+  </controls:If>
+</UserControl>

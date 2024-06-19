@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:animations="clr-namespace:uni.ui.avalonia.resources.animation"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="300"
+             x:Class="uni.ui.avalonia.resources.animation.AnimationList"
+             x:DataType="animations:AnimationListViewModel">
+  <Design.DataContext>
+    <animations:AnimationListViewModelForDesigner />
+  </Design.DataContext>
+
+  <ListBox ItemsSource="{Binding AnimationViewModels}"
+           Background="Transparent"
+           SelectionMode="AlwaysSelected"
+           SelectedItem="{Binding SelectedAnimationViewModel, Mode=TwoWay}"
+           SelectionChanged="SelectingItemsControl_OnSelectionChanged"
+           BorderThickness="1"
+           BorderBrush="{StaticResource BorderBrush}" >
+    <ListBox.Styles>
+      <Style Selector="ListBoxItem">
+        <Setter Property="Height" Value="36" />
+      </Style>
+    </ListBox.Styles>
+
+    <ListBox.ItemTemplate>
+      <DataTemplate>
+        <DockPanel>
+          <avalonia:MaterialIcon DockPanel.Dock="Left"
+                                 Margin="0 4 0 0"
+                                 Kind="{Binding Icon}" />
+          <TextBlock DockPanel.Dock="Top"
+                     Text="{Binding Animation.Name}"
+                     TextTrimming="CharacterEllipsis"
+                     Height="24"
+                     Margin="8 -2 0 0" />
+          <TextBlock DockPanel.Dock="Bottom"
+                     Classes="caption"
+                     Margin="8 4 0 0"
+                     Height="16">
+            <TextBlock.Text>
+              <MultiBinding StringFormat="{}{0} frames @ {1} fps">
+                <Binding Path="Animation.FrameCount" />
+                <Binding Path="Animation.FrameRate" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+        </DockPanel>
+      </DataTemplate>
+    </ListBox.ItemTemplate>
+  </ListBox>
+</UserControl>

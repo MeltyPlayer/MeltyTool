@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
+             xmlns:registers="clr-namespace:uni.ui.avalonia.resources.registers"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="300"
+             x:Class="uni.ui.avalonia.resources.registers.RegistersPanel"
+             x:DataType="registers:RegistersPanelViewModel">
+  <Design.DataContext>
+    <registers:RegistersPanelViewModelForDesigner />
+  </Design.DataContext>
+
+  <controls:If Condition="{Binding RegisterCount, Converter={x:Static converters:IntConverters.IsNot0}}">
+    <controls:If.ContentWhenTrue>
+      <StackPanel>
+        <gb:GroupBox
+            Classes="h2 spaceFirst"
+            Header="Color registers">
+          <ItemsControl ItemsSource="{Binding ColorRegisterPickers}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <registers:ColorRegisterPicker />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </gb:GroupBox>
+
+        <gb:GroupBox
+            Classes="h2"
+            Header="Scalar registers">
+          <ItemsControl ItemsSource="{Binding ScalarRegisterPickers}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <registers:ScalarRegisterPicker />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </gb:GroupBox>
+      </StackPanel>
+    </controls:If.ContentWhenTrue>
+    <controls:If.ContentWhenFalse>
+      <controls:EmptyState
+          Text="No registers to display."
+          Icon="TuneVariant" />
+    </controls:If.ContentWhenFalse>
+  </controls:If>
+</UserControl>

@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="clr-namespace:uni.ui.avalonia.resources.model"
+             xmlns:animations="clr-namespace:uni.ui.avalonia.resources.animation"
+             xmlns:materials="clr-namespace:uni.ui.avalonia.resources.model.materials"
+             xmlns:skeleton="clr-namespace:uni.ui.avalonia.resources.model.skeleton"
+             xmlns:textures="clr-namespace:uni.ui.avalonia.resources.texture"
+             xmlns:registers="clr-namespace:uni.ui.avalonia.resources.registers"
+             xmlns:resource="clr-namespace:uni.ui.avalonia.resources"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="700"
+             x:Class="uni.ui.avalonia.resources.model.ModelPanel"
+             x:DataType="model:ModelPanelViewModel">
+  <Design.DataContext>
+    <model:ModelPanelViewModelForDesigner />
+  </Design.DataContext>
+
+  <TabControl Classes="h2 spaceFirst indented">
+    <TabItem Header="Info">
+      <resource:InfoPanel DataContext="{Binding InfoPanel}" />
+    </TabItem>
+    <TabItem Header="Skeleton">
+      <skeleton:SkeletonTree DataContext="{Binding SkeletonTree}" />
+    </TabItem>
+    <TabItem Header="Animations">
+      <animations:AnimationsPanel DataContext="{Binding AnimationsPanel}" />
+    </TabItem>
+    <TabItem Header="Materials" >
+      <materials:MaterialsPanel DataContext="{Binding MaterialsPanel}" />
+    </TabItem>
+    <TabItem Header="Textures">
+      <textures:TexturesPanel DataContext="{Binding TexturesPanel}" />
+    </TabItem>
+    <TabItem Header="Registers">
+      <registers:RegistersPanel DataContext="{Binding RegistersPanel}" />
+    </TabItem>
+  </TabControl>
+</UserControl>

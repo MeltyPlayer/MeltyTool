@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:textures="clr-namespace:uni.ui.avalonia.resources.texture"
+             mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="100"
+             x:Class="uni.ui.avalonia.resources.texture.TexturePreview"
+             x:DataType="textures:TexturePreviewViewModel">
+  <Design.DataContext>
+    <textures:TexturePreviewViewModelForDesigner />
+  </Design.DataContext>
+
+  <Grid>
+    <Grid.ContextMenu>
+      <ContextMenu>
+        <MenuItem Header="Copy" Click="CopyToClipboard_" />
+      </ContextMenu>
+    </Grid.ContextMenu>
+
+    <Border HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            BorderThickness="1"
+            BorderBrush="{StaticResource BorderBrush}"
+            Background="{StaticResource ColorControlCheckeredBackgroundBrush}" />
+
+    <Image x:Name="image_"
+           Margin="{Binding ImageMargin}"
+           VerticalAlignment="Stretch"
+           HorizontalAlignment="Stretch"
+           Source="{Binding Image}"
+           RenderOptions.BitmapInterpolationMode="None" />
+  </Grid>
+</UserControl>
