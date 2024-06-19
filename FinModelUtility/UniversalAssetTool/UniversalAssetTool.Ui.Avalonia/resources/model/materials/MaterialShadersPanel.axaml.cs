@@ -1,12 +1,9 @@
-using System.Collections.Generic;
-
 using Avalonia.Controls;
 
 using AvaloniaEdit;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.TextMate;
 
-using fin.io;
 using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;

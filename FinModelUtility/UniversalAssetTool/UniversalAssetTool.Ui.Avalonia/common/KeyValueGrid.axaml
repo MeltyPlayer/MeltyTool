@@ -34,7 +34,8 @@
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate>
                 <TextBlock
-                    Margin="7 7"
+                    Classes="regular"
+                    Margin="7 9"
                     Text="{Binding Key}" />
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
@@ -46,18 +47,18 @@
                 <controls:If Condition="{Binding Value, Converter={x:Static ObjectConverters.IsNotNull}}">
                   <controls:If.ContentWhenTrue>
                     <SelectableTextBlock
+                        Classes="regular"
                         Margin="7 0 0 0"
                         VerticalAlignment="Center"
                         TextWrapping="Wrap"
-                        FontSize="13"
                         Text="{Binding Value}" />
                   </controls:If.ContentWhenTrue>
                   <controls:If.ContentWhenFalse>
                     <TextBlock
+                        Classes="regular"
                         Margin="7 0 0 0"
                         VerticalAlignment="Center"
-                        TextWrapping="Wrap"
-                        FontSize="13">
+                        TextWrapping="Wrap">
                       —
                     </TextBlock>
                   </controls:If.ContentWhenFalse>

@@ -54,7 +54,9 @@
                      Height="16"
                      Width="16" />
             </controls:If>
-            <TextBlock Text="{Binding Label}" />
+            <TextBlock 
+                Classes="regular"
+                Text="{Binding Label}" />
           </StackPanel>
         </TreeDataTemplate>
       </TreeView.ItemTemplate>
