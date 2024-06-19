@@ -1,7 +1,5 @@
-﻿using Avalonia;
-using Avalonia.Input;
+﻿using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 using fin.animation;
 using fin.importers;
