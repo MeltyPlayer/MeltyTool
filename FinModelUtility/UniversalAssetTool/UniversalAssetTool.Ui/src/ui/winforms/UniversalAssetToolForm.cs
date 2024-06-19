@@ -1,35 +1,23 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Numerics;
 using System.Windows.Forms;
 
 using fin.audio.io;
-using fin.color;
-using fin.data.queues;
 using fin.importers;
 using fin.model.io.exporters.assimp;
 using fin.io;
-using fin.language.equations.fixedFunction;
 using fin.math.floats;
-using fin.model;
 using fin.model.io;
 using fin.scene;
 using fin.scene.instance;
-using fin.schema.vector;
 using fin.util.enumerables;
+using fin.util.io;
 using fin.util.time;
 
 using uni.cli;
 using uni.config;
 using uni.games;
 
-using fin.ui;
-using fin.ui.rendering.gl.model;
-
-using uni.api;
 using uni.ui.winforms.common.fileTreeView;
 
 namespace uni.ui.winforms;
@@ -231,12 +219,10 @@ public partial class UniversalAssetToolForm : Form {
     => this.Close();
 
   private void gitHubToolStripMenuItem_Click(object sender, EventArgs e)
-    => Process.Start("explorer",
-                     "https://github.com/MeltyPlayer/FinModelUtility");
+    => WebBrowserUtil.OpenGithub();
 
   private void reportAnIssueToolStripMenuItem_Click(
       object sender,
       EventArgs e)
-    => Process.Start("explorer",
-                     "https://github.com/MeltyPlayer/FinModelUtility/issues/new");
+    => WebBrowserUtil.OpenGithubNewIssue();
 }
