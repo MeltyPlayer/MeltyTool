@@ -31,9 +31,10 @@
                                  Margin="0 4 0 0"
                                  Kind="{Binding Icon}" />
           <TextBlock DockPanel.Dock="Top"
+                     Classes="regular"
                      Text="{Binding Animation.Name}"
                      TextTrimming="CharacterEllipsis"
-                     Height="24"
+                     Height="{StaticResource RegularHeight}"
                      Margin="8 -2 0 0" />
           <TextBlock DockPanel.Dock="Bottom"
                      Classes="caption"

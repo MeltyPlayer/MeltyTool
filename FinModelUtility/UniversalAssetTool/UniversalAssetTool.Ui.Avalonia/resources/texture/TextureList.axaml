@@ -33,9 +33,10 @@
               DataContext="{Binding TexturePreview}" />
           </Border>
           <TextBlock DockPanel.Dock="Top"
+                     Classes="regular"
                      Text="{Binding Texture.Name}"
                      TextTrimming="CharacterEllipsis"
-                     Height="24"
+                     Height="{StaticResource RegularHeight}"
                      Margin="8 -2 0 0" />
           <TextBlock DockPanel.Dock="Bottom"
                      Classes="caption"

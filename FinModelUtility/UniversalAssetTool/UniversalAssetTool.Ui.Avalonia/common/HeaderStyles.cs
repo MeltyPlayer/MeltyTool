@@ -42,8 +42,8 @@ namespace uni.ui.avalonia.common {
                             tuple.topLevelSelector,
                             tuple.childSelector));
 
-        var fontSize = 16 + (minSizeIndex - maxSizeIndex - i) * 2;
-        var topPadding = fontSize;
+        var fontSize = 13 + (minSizeIndex - maxSizeIndex - i) * 2;
+        var topPadding = fontSize * .5;
 
         foreach (var tuple in targetSelectorTuples) {
           var (topLevelSelector,

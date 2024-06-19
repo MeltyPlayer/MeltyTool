@@ -24,30 +24,35 @@
             <Style Selector="TreeViewItem" x:DataType="skeleton:SkeletonNode">
               <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
             </Style>
+            <Style Selector="TreeViewItem">
+              <Setter Property="MinHeight" Value="{StaticResource RegularHeight}" />
+            </Style>
           </TreeView.Styles>
 
           <TreeView.ItemTemplate>
             <TreeDataTemplate ItemsSource="{Binding Children}">
               <StackPanel Orientation="Horizontal">
                 <avalonia:MaterialIcon
-                    Margin="0 2 0 0"
+                    Height="{StaticResource RegularFontSize}"
+                    Margin="0 0 0 0"
                     Kind="CardsDiamondOutline" />
 
                 <controls:If
-                    Margin="8 0 0 0"
+                    Margin="3 0 0 0"
                     Condition="{Binding Bone.Name, Converter={x:Static ObjectConverters.IsNotNull}}">
                   <controls:If.ContentWhenTrue>
-                    <TextBlock Text="{Binding Bone.Name}"
+                    <TextBlock Classes="regular"
+                               Text="{Binding Bone.Name}"
                                TextTrimming="CharacterEllipsis" />
                   </controls:If.ContentWhenTrue>
                   <controls:If.ContentWhenFalse>
-                    <TextBlock Text="{Binding Bone.Index, StringFormat='Bone {0}'}" />
+                    <TextBlock Classes="regular"
+                               Text="{Binding Bone.Index, StringFormat='Bone {0}'}" />
                   </controls:If.ContentWhenFalse>
                 </controls:If>
 
-                <TextBlock DockPanel.Dock="Bottom"
-                           Classes="caption"
-                           Margin="4 2.5 0 0">
+                <TextBlock Classes="caption"
+                           Margin="4 1 0 0">
                   <TextBlock.Text>
                     <MultiBinding StringFormat="{} ({0})">
                       <Binding Path="Bone.Children.Count" />

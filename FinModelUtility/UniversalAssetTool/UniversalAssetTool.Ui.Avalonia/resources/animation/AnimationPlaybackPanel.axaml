@@ -17,8 +17,9 @@
     <Grid ColumnDefinitions="Auto *">
       <TextBlock Classes="h3">Playback</TextBlock>
       <TextBlock Grid.Column="1"
+                 Classes="regular"
                  HorizontalAlignment="Right"
-                 Margin="0 18 0 0">
+                 Margin="0 21 0 0">
         <TextBlock.Text>
           <MultiBinding StringFormat="{}{0:0.0} / {1}">
             <Binding Path="Frame" />

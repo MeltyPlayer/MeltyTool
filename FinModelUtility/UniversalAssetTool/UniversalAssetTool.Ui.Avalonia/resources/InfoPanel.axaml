@@ -22,6 +22,7 @@
                     IsReadOnly="True"
                     GridLinesVisibility="Horizontal"
                     Margin="0 -2, 0 0"
+                    RowHeight="{StaticResource RegularHeight}"
                     HeadersVisibility="None">
             <DataGrid.Styles>
               <Style Selector="DataGridRow /template/ Rectangle#BackgroundRectangle">

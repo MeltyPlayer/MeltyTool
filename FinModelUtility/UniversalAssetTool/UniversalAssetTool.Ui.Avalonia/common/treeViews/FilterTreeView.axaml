@@ -35,6 +35,10 @@
         </ControlTemplate>
       </Setter>
     </Style>
+
+    <Style Selector="TreeViewItem">
+      <Setter Property="MinHeight" Value="{StaticResource RegularHeight}" />
+    </Style>
   </UserControl.Styles>
 
   <!-- Renders tree view. -->

@@ -27,6 +27,9 @@
           <Style Selector="DataGridCell:current /template/ Grid#FocusVisual">
             <Setter Property="IsVisible" Value="false" />
           </Style>
+          <Style Selector="DataGridCell">
+            <Setter Property="MinHeight" Value="{StaticResource RegularHeight}" />
+          </Style>
         </DataGrid.Styles>
 
         <DataGrid.Columns>
@@ -35,7 +38,7 @@
               <DataTemplate>
                 <TextBlock
                     Classes="regular"
-                    Margin="7 9"
+                    Margin="7 3"
                     Text="{Binding Key}" />
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>

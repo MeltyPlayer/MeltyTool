@@ -24,8 +24,8 @@
           <textures:TexturePreview
               DataContext="{Binding SelectedTexturePreview}"
               HorizontalAlignment="Stretch"
-              Height="88" />
-          <TextBlock Classes="h4 spaceFirst"
+              Height="101" />
+          <TextBlock Classes="regular spaceFirst"
                      Text="{Binding SelectedTexturePreview.Texture.Name}"
                      HorizontalAlignment="Center"
                      TextTrimming="CharacterEllipsis" />
