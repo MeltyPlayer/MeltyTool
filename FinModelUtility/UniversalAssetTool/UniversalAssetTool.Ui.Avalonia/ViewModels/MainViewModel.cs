@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 
 using fin.io.bundles;
+using fin.model;
 
 using ReactiveUI;
 
@@ -29,10 +30,35 @@ public class MainViewModel : ViewModelBase {
     var rootDirectory = new RootFileBundleGatherer().GatherAllFiles();
     this.FileBundleTreeViewModel = this.GetFileTreeViewModel_(rootDirectory);
 
+
     this.ModelPanel = new ModelPanelViewModel();
-    ModelService.OnModelOpened
-        += (_, model) => {
-             this.ModelPanel = new ModelPanelViewModel { Model = model };
+    SceneInstanceService.OnSceneInstanceOpened
+        += (_, sceneInstance) => {
+             var sceneModelInstances
+                 = sceneInstance
+                   .Areas
+                   .SelectMany(a => a.Objects)
+                   .SelectMany(o => o.Models)
+                   .ToArray();
+
+             if (sceneModelInstances.Length == 1) {
+               var sceneModelInstance = sceneModelInstances.Single();
+               var model = sceneModelInstance.Model;
+               var animationPlaybackManager
+                   = sceneModelInstance.AnimationPlaybackManager;
+
+               this.ModelPanel = new ModelPanelViewModel { Model = model };
+
+               var animationsPanel = this.ModelPanel.AnimationsPanel;
+               animationsPanel.AnimationPlaybackManager
+                   = animationPlaybackManager;
+               animationsPanel.OnAnimationSelected
+                   += (_, animation)
+                          => sceneModelInstance.Animation
+                              = animation as IReadOnlyModelAnimation;
+             } else {
+               this.ModelPanel = null;
+             }
            };
   }
 

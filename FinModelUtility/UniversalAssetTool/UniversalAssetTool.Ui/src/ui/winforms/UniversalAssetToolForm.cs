@@ -59,10 +59,7 @@ public partial class UniversalAssetToolForm : Form {
     this.cancellableProgressBar_.Clicked += (sender, args)
         => this.modelToolStrip_.CancellationToken?.Cancel();
 
-    SceneService.OnSceneOpened
-        += (fileTreeLeafNode, scene) => {
-             this.UpdateScene_(fileTreeLeafNode, new SceneInstanceImpl(scene));
-           };
+    SceneInstanceService.OnSceneInstanceOpened += this.UpdateScene_;
   }
 
   private void UniversalAssetToolForm_Load(object sender, EventArgs e) {

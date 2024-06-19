@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Avalonia.Controls;
@@ -65,8 +66,12 @@ namespace uni.ui.avalonia.resources.animation {
         }
 
         animationPlaybackManager.SetAnimation(animation);
+
+        this.OnAnimationSelected?.Invoke(this, animation);
       }
     }
+
+    public event EventHandler<IReadOnlyAnimation> OnAnimationSelected;
 
     public AnimationPlaybackPanelViewModel AnimationPlaybackPanel { get; }
       = new();

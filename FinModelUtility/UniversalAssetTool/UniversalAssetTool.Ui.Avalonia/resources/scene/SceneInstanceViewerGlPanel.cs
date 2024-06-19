@@ -15,7 +15,7 @@ using uni.model;
 using uni.ui.avalonia.common.gl;
 
 namespace uni.ui.avalonia.resources.scene {
-  public class SceneViewerGlPanel : BaseTkOpenGlControl, ISceneViewer {
+  public class SceneInstanceViewerGlPanel : BaseTkOpenGlControl, ISceneViewer {
     private readonly SceneViewerGl viewerImpl_ = new();
 
     private bool isMouseDown_ = false;
@@ -30,7 +30,7 @@ namespace uni.ui.avalonia.resources.scene {
     private bool isSpeedupActive_ = false;
     private bool isSlowdownActive_ = false;
 
-    public SceneViewerGlPanel() {
+    public SceneInstanceViewerGlPanel() {
       this.AddHandler(
           PointerPressedEvent,
           (_, args) => {

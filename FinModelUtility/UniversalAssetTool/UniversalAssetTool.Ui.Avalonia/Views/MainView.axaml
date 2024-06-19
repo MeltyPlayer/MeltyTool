@@ -71,7 +71,7 @@
           Margin="0 0 -32 0"
           ZIndex="-5"
           Background="Magenta">
-        <scene:SceneViewerGlPanel
+        <scene:SceneInstanceViewerGlPanel
           x:Name="SceneViewerGlPanel"
           IsTabStop="True"
           TabIndex="0"

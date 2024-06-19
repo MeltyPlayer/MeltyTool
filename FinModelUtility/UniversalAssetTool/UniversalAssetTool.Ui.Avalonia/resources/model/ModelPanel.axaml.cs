@@ -8,7 +8,6 @@ using ReactiveUI;
 
 using uni.ui.avalonia.resources.animation;
 using uni.ui.avalonia.resources.registers;
-using uni.ui.avalonia.resources;
 using uni.ui.avalonia.resources.model.materials;
 using uni.ui.avalonia.resources.model.skeleton;
 using uni.ui.avalonia.resources.texture;
@@ -18,7 +17,6 @@ namespace uni.ui.avalonia.resources.model {
   public class ModelPanelViewModelForDesigner : ModelPanelViewModel {
     public ModelPanelViewModelForDesigner() {
       this.Model = ModelDesignerUtil.CreateStubModel();
-      this.Registers = RegistersDesignerUtil.CreateStubRegisters();
     }
   }
 
@@ -47,21 +45,14 @@ namespace uni.ui.avalonia.resources.model {
             ModelAndMaterials = (value, value.MaterialManager.All)
         };
         this.FilesPanel = new FilesPanelViewModel(value);
+        this.RegistersPanel = new RegistersPanelViewModel() {
+            Registers = value.MaterialManager.Registers,
+        };
         this.SkeletonTree = new SkeletonTreeViewModel {
             Skeleton = value.Skeleton,
         };
         this.TexturesPanel = new TexturesPanelViewModel {
             Textures = value.MaterialManager.Textures,
-        };
-      }
-    }
-
-    public IFixedFunctionRegisters Registers {
-      get => this.registers_;
-      set {
-        this.RaiseAndSetIfChanged(ref this.registers_, value);
-        this.RegistersPanel = new RegistersPanelViewModel {
-            Registers = value,
         };
       }
     }
