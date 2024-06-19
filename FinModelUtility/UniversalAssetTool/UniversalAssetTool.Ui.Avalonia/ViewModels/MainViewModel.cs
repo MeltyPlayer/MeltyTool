@@ -14,7 +14,7 @@ using uni.ui.avalonia.resources.model;
 namespace uni.ui.avalonia.ViewModels;
 
 public class MainViewModelForDesigner {
-  public FileBundleTreeViewModelForDesigner FileBundleTreeViewModelForDesigner { get; }
+  public FileBundleTreeViewModelForDesigner FileBundleTreeViewModel { get; }
     = new();
 
   public ModelPanelViewModel ModelPanel { get; }

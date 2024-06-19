@@ -12,5 +12,14 @@ public partial class MainView : UserControl {
         += (fileTreeLeafNode, scene) => {
              this.SceneViewerGlPanel.Scene = new SceneInstanceImpl(scene);
            };
+
+    this.FileSelectorPanel.PointerEntered
+        += (_, _) => this.SetFileSelectorHoverPseudoclass_(true);
+
+    this.FileSelectorPanel.PointerExited
+        += (_, _) => this.SetFileSelectorHoverPseudoclass_(false);
   }
+
+  private void SetFileSelectorHoverPseudoclass_(bool value)
+    => this.PseudoClasses.Set(":fileSelectorHover", value);
 }

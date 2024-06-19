@@ -3,6 +3,8 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 
+using Material.Icons;
+
 namespace uni.ui.avalonia.common.textboxes {
   public partial class AutocompleteTextbox : UserControl, ITextBox {
     public AutocompleteTextbox() {
@@ -17,6 +19,19 @@ namespace uni.ui.avalonia.common.textboxes {
     public event EventHandler<TextChangedEventArgs> TextChanged {
       add => this.impl_.TextChanged += value;
       remove => this.impl_.TextChanged -= value;
+    }
+
+    public static readonly StyledProperty<MaterialIconKind?> IconProperty =
+        AvaloniaProperty.Register<AutocompleteTextbox, MaterialIconKind?>(
+            nameof(Icon),
+            MaterialIconKind.Search);
+
+    public MaterialIconKind? Icon {
+      get => this.GetValue(IconProperty);
+      set {
+        this.SetValue(IconProperty, value);
+        this.PseudoClasses.Set("withoutIcon", value != null);
+      }
     }
 
     public static readonly StyledProperty<string> PlaceholderProperty =
@@ -40,8 +55,5 @@ namespace uni.ui.avalonia.common.textboxes {
       get => this.GetValue(FilterModeProperty);
       set => this.SetValue(FilterModeProperty, value);
     }
-
-    private void OnTextChanged_(object sender, TextChangedEventArgs args)
-      => this.placeholderLabel_.IsVisible = this.Text == "";
   }
 }

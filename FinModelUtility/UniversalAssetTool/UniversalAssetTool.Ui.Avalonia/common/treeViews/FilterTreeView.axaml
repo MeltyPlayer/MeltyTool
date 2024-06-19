@@ -5,7 +5,7 @@
              xmlns:textboxes="clr-namespace:uni.ui.avalonia.common.textboxes"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
-             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="200"
              x:Class="uni.ui.avalonia.common.treeViews.FilterTreeView"
              x:DataType="treeViews:FileBundleTreeViewModelForDesigner">
   <Design.DataContext>
@@ -45,10 +45,12 @@
   <DockPanel>
     <textboxes:AutocompleteTextbox
         DockPanel.Dock="Top"
+        Icon="Search"
         Placeholder="Search file bundles..." />
 
     <TreeView ItemsSource="{Binding  Nodes}"
-              SelectionChanged="TreeView_OnSelectionChanged_">
+              SelectionChanged="TreeView_OnSelectionChanged_"
+              Margin="-4 0">
       <TreeView.ItemTemplate>
         <TreeDataTemplate ItemsSource="{Binding SubNodes}">
           <StackPanel Orientation="Horizontal">

@@ -2,18 +2,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:textboxes="clr-namespace:uni.ui.avalonia.common.textboxes"
              mc:Ignorable="d" d:DesignWidth="200"
              x:Class="uni.ui.avalonia.common.textboxes.AutocompleteTextbox">
-  <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}">
-    <AutoCompleteBox x:Name="impl_"
-                     FilterMode="{Binding FilterMode}"
-                     TextChanged="OnTextChanged_" />
-    <Label x:Name="placeholderLabel_"
-           Content="{Binding Placeholder}"
-           Background="Transparent"
-           Opacity="0.5"
-           IsHitTestVisible="False"
-           Margin="8 0"
-           VerticalAlignment="Center" />
-  </Grid>
+  <UserControl.Styles>
+    <Style Selector="textboxes|AutocompleteTextbox:not(:withoutIcon) TextBox#PART_TextBox">
+      <Setter Property="MinWidth" Value="32" />
+      <Setter Property="InnerLeftContent">
+        <Template>
+          <avalonia:MaterialIcon
+              DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}"
+              Width="24"
+              Height="24"
+              Margin="4 0 -4 0"
+              Kind="{Binding Icon}" />
+        </Template>
+      </Setter>
+    </Style>
+  </UserControl.Styles>
+
+  <AutoCompleteBox
+      x:Name="impl_"
+      DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}"
+      FilterMode="{Binding FilterMode}"
+      Watermark="{Binding Placeholder}" />
 </UserControl>
