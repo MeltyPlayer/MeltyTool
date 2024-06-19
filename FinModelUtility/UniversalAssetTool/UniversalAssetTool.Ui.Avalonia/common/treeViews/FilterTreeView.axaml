@@ -23,7 +23,7 @@
     <Style Selector="TreeViewItem /template/ ToggleButton[IsChecked=false]">
       <Setter Property="Template">
         <ControlTemplate>
-          <Image Source="/resources/images/folder_closed.png" />
+          <Image Source="/icons/folder_closed.png" />
         </ControlTemplate>
       </Setter>
     </Style>
@@ -31,7 +31,7 @@
     <Style Selector="TreeViewItem /template/ ToggleButton[IsChecked=true]">
       <Setter Property="Template">
         <ControlTemplate>
-          <Image Source="/resources/images/folder_open.png" />
+          <Image Source="/icons/folder_open.png" />
         </ControlTemplate>
       </Setter>
     </Style>
