@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-using Avalonia.Media;
+using Material.Icons;
 
 using uni.ui.avalonia.ViewModels;
 
@@ -18,7 +18,7 @@ namespace uni.ui.avalonia.common.treeViews {
 
   // Node types
   public interface INode : IViewModelBase {
-    IImage? Icon { get; }
+    MaterialIconKind? Icon { get; }
     string Label { get; }
   }
 

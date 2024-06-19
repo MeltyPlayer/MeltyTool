@@ -12,10 +12,9 @@ using fin.util.asserts;
 
 using grezzo.api;
 
-using uni.ui.avalonia.icons;
-using uni.ui.avalonia.ViewModels;
+using Material.Icons;
 
-using IImage = Avalonia.Media.IImage;
+using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.common.treeViews {
 
@@ -53,7 +52,7 @@ namespace uni.ui.avalonia.common.treeViews {
     public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes { get; }
       = subNodes;
 
-    public IImage? Icon => null;
+    public MaterialIconKind? Icon => null;
 
     public string Label { get; } = label;
   }
@@ -62,23 +61,11 @@ namespace uni.ui.avalonia.common.treeViews {
       : ViewModelBase, INode<IAnnotatedFileBundle> {
     public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes => null;
 
-    public static readonly IImage MUSIC_ICON
-        = AvaloniaIconUtil.Load("music");
-
-    public static readonly IImage PICTURE_ICON
-        = AvaloniaIconUtil.Load("picture");
-
-    public static readonly IImage MODEL_ICON
-        = AvaloniaIconUtil.Load("model");
-
-    public static readonly IImage SCENE_ICON
-        = AvaloniaIconUtil.Load("scene");
-
-    public IImage Icon => data.FileBundle switch {
-      IAudioFileBundle => MUSIC_ICON,
-      IImageFileBundle => PICTURE_ICON,
-      IModelFileBundle => MODEL_ICON,
-      ISceneFileBundle => SCENE_ICON,
+    public MaterialIconKind? Icon => data.FileBundle switch {
+      IAudioFileBundle => MaterialIconKind.VolumeHigh,
+      IImageFileBundle => MaterialIconKind.ImageOutline,
+      IModelFileBundle => MaterialIconKind.CubeOutline,
+      ISceneFileBundle => MaterialIconKind.Web,
     };
 
     public string Label { get; } = label;

@@ -5,6 +5,7 @@
              xmlns:textboxes="clr-namespace:uni.ui.avalonia.common.textboxes"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="200"
              x:Class="uni.ui.avalonia.common.treeViews.FilterTreeView"
              x:DataType="treeViews:FileBundleTreeViewModelForDesigner">
@@ -23,7 +24,7 @@
     <Style Selector="TreeViewItem /template/ ToggleButton[IsChecked=false]">
       <Setter Property="Template">
         <ControlTemplate>
-          <Image Source="/icons/folder_closed.png" />
+          <avalonia:MaterialIcon Kind="Folder" />
         </ControlTemplate>
       </Setter>
     </Style>
@@ -31,7 +32,7 @@
     <Style Selector="TreeViewItem /template/ ToggleButton[IsChecked=true]">
       <Setter Property="Template">
         <ControlTemplate>
-          <Image Source="/icons/folder_open.png" />
+          <avalonia:MaterialIcon Kind="FolderOpen" />
         </ControlTemplate>
       </Setter>
     </Style>
@@ -55,10 +56,11 @@
         <TreeDataTemplate ItemsSource="{Binding SubNodes}">
           <StackPanel Orientation="Horizontal">
             <controls:If Condition="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}">
-              <Image Source="{Binding Icon}"
-                     Margin="-24 0 4 0"
-                     Height="16"
-                     Width="16" />
+              <avalonia:MaterialIcon
+                  Kind="{Binding Icon}"
+                  Margin="-24 0 4 0"
+                  Height="16"
+                  Width="16" />
             </controls:If>
             <TextBlock 
                 Classes="regular"
