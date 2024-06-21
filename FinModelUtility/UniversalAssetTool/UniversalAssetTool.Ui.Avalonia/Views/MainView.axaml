@@ -19,13 +19,16 @@
       <Setter Property="Background" Value="Transparent" />
     </Style>
 
+    <Style Selector="views|MainView:not(:infoPanelHover) Panel#PART_PaneRoot,
+                     views|MainView:infoPanelHover Panel#PART_PaneRoot">
+      <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+
     <Style Selector="views|MainView:fileSelectorHover > SplitView">
       <Setter Property="IsPaneOpen" Value="True" />
     </Style>
-
-    <Style Selector="views|MainView:not(:fileSelectorHover) Panel#PART_PaneRoot,
-                     views|MainView:fileSelectorHover Panel#PART_PaneRoot">
-      <Setter Property="ClipToBounds" Value="False" />
+    <Style Selector="views|MainView:not(:fileSelectorHover) > SplitView">
+      <Setter Property="IsPaneOpen" Value="False" />
     </Style>
 
     <Style Selector="views|MainView:not(:fileSelectorHover)
@@ -35,17 +38,19 @@
       <Setter Property="Opacity" Value=".25" />
     </Style>
 
-    <Style Selector="views|MainView:infoPanelHover SplitView SplitView">
-      <Setter Property="IsPaneOpen" Value="True" />
+    <Style Selector="Rectangle#LightDismissLayer">
+      <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
-    <Style Selector="views|MainView:not(:infoPanelHover) SplitView SplitView Panel#PART_PaneRoot,
-                     views|MainView:infoPanelHover SplitView SplitView Panel#PART_PaneRoot">
-      <Setter Property="ClipToBounds" Value="False" />
+    <Style Selector="views|MainView:infoPanelHover > SplitView > SplitView">
+      <Setter Property="IsPaneOpen" Value="True" />
+    </Style>
+    <Style Selector="views|MainView:not(:infoPanelHover) > SplitView > SplitView">
+      <Setter Property="IsPaneOpen" Value="False" />
     </Style>
 
     <Style Selector="views|MainView:not(:infoPanelHover)
-                     SplitView
+                     > SplitView
                      > SplitView
                      > Grid 
                      > Panel#PART_PaneRoot">
