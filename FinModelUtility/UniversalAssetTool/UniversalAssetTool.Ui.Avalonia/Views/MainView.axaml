@@ -24,71 +24,54 @@
       <Setter Property="ClipToBounds" Value="False" />
     </Style>
 
-    <Style Selector="views|MainView:fileSelectorHover > SplitView">
-      <Setter Property="IsPaneOpen" Value="True" />
-    </Style>
-    <Style Selector="views|MainView:not(:fileSelectorHover) > SplitView">
-      <Setter Property="IsPaneOpen" Value="False" />
-    </Style>
-
-    <Style Selector="views|MainView:not(:fileSelectorHover)
-                     > SplitView
-                     > Grid 
-                     > Panel#PART_PaneRoot">
-      <Setter Property="Opacity" Value=".25" />
-    </Style>
-
     <Style Selector="Rectangle#LightDismissLayer">
       <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
-    <Style Selector="views|MainView:infoPanelHover > SplitView > SplitView">
-      <Setter Property="IsPaneOpen" Value="True" />
-    </Style>
-    <Style Selector="views|MainView:not(:infoPanelHover) > SplitView > SplitView">
-      <Setter Property="IsPaneOpen" Value="False" />
-    </Style>
-
-    <Style Selector="views|MainView:not(:infoPanelHover)
-                     > SplitView
-                     > SplitView
+    <Style Selector="SplitView:not(:open)
                      > Grid 
                      > Panel#PART_PaneRoot">
       <Setter Property="Opacity" Value=".25" />
     </Style>
+
+    <Style Selector="views|MainView:fileSelectorHover > Grid > SplitView">
+      <Setter Property="IsPaneOpen" Value="True" />
+    </Style>
+
+    <Style Selector="views|MainView:infoPanelHover > Grid > SplitView > SplitView">
+      <Setter Property="IsPaneOpen" Value="True" />
+    </Style>
   </UserControl.Styles>
 
-  <SplitView DisplayMode="CompactOverlay"
-             OpenPaneLength="300"
-             CompactPaneLength="32">
-    <SplitView.Pane>
-      <Border x:Name="FileSelectorPanel" BoxShadow="0 0 10 0 Black">
-        <treeViews:FilterTreeView DataContext="{Binding FileBundleTreeViewModel}" />
-      </Border>
-    </SplitView.Pane>
-
-    <SplitView DisplayMode="CompactOverlay"
-               PanePlacement="Right"
-               OpenPaneLength="400"
-               CompactPaneLength="32"
-               Margin="-32 0 0 0">
-      <DockPanel
-          Margin="0 0 -32 0"
-          ZIndex="-5"
-          Background="Magenta">
-        <scene:SceneInstanceViewerGlPanel
-          x:Name="SceneViewerGlPanel"
-          IsTabStop="True"
-          TabIndex="0"
-          Focusable="True" />
-      </DockPanel>
-
+  <Grid Background="Magenta">
+    <SplitView DisplayMode="CompactInline"
+               OpenPaneLength="300"
+               CompactPaneLength="32">
       <SplitView.Pane>
-        <Border x:Name="InfoPanel" BoxShadow="0 0 10 0 Black">
-          <model:ModelPanel
-            DataContext="{Binding ModelPanel}" />
+        <Border x:Name="FileSelectorPanel" BoxShadow="0 0 10 0 Black">
+          <treeViews:FilterTreeView DataContext="{Binding FileBundleTreeViewModel}" />
         </Border>
       </SplitView.Pane>
+
+      <SplitView DisplayMode="CompactInline"
+                 PanePlacement="Right"
+                 OpenPaneLength="400"
+                 CompactPaneLength="32"
+                 Margin="-32 0 0 0">
+        <SplitView.Pane>
+          <Border x:Name="InfoPanel" BoxShadow="0 0 10 0 Black">
+            <model:ModelPanel
+                DataContext="{Binding ModelPanel}" />
+          </Border>
+        </SplitView.Pane>
+      </SplitView>
     </SplitView>
-  </SplitView>
+
+    <scene:SceneInstanceViewerGlPanel
+        x:Name="SceneViewerGlPanel"
+        IsTabStop="True"
+        TabIndex="0"
+        ZIndex="-5"
+        Focusable="True" />
+  </Grid>
 </UserControl>
