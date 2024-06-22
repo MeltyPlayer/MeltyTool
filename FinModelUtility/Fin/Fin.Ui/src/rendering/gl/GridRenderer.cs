@@ -23,12 +23,12 @@ namespace fin.ui.rendering.gl {
         } else {
           GL.Color3(1f, 1, 1);
 
-          GL.Vertex3(-size / 2, -y, 0);
-          GL.Vertex3(size / 2, -y, 0);
+          GL.Vertex2(-size / 2, -y);
+          GL.Vertex2(size / 2, -y);
         }
 
-        GL.Vertex3(-size / 2, y, 0);
-        GL.Vertex3(size / 2, y, 0);
+        GL.Vertex2(-size / 2, y);
+        GL.Vertex2(size / 2, y);
       }
 
       for (var x = 0f; x <= size / 2; x += spacing) {
@@ -37,12 +37,12 @@ namespace fin.ui.rendering.gl {
         } else {
           GL.Color3(1f, 1, 1);
           
-          GL.Vertex3(-x, -size / 2, 0);
-          GL.Vertex3(-x, size / 2, 0);
+          GL.Vertex2(-x, -size / 2);
+          GL.Vertex2(-x, size / 2);
         }
 
-        GL.Vertex3(x, -size / 2, 0);
-        GL.Vertex3(x, size / 2, 0);
+        GL.Vertex2(x, -size / 2);
+        GL.Vertex2(x, size / 2);
       }
 
       GL.End();

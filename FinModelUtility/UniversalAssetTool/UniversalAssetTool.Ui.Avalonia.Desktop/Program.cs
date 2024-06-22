@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 
 using Avalonia;
+using Avalonia.OpenGL;
 using Avalonia.ReactiveUI;
 
 namespace uni.ui.avalonia.desktop;
@@ -20,8 +20,9 @@ class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .With(new Win32PlatformOptions {
-                RenderingMode = new Collection<Win32RenderingMode>
-                    { Win32RenderingMode.Wgl }
+                RenderingMode = [ Win32RenderingMode.Wgl ],
+                WglProfiles
+                    = [new GlVersion(GlProfileType.OpenGL, 4, 0)],
             })
             .WithInterFont()
             .LogToTrace()

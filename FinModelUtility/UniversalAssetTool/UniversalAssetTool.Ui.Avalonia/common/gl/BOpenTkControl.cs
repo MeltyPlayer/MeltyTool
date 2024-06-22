@@ -9,29 +9,40 @@ using fin.ui.rendering.gl;
 using OpenTK.Graphics.OpenGL;
 
 namespace uni.ui.avalonia.common.gl {
-  public abstract class BaseTkOpenGlControl
+  public abstract class BOpenTkControl
       : OpenGlControlBase, ICustomHitTest {
-    private AvaloniaTkContext? avaloniaTkContext_;
+    private AvaloniaOpenTkContext? avaloniaTkContext_;
 
     protected abstract void InitGl();
     protected abstract void RenderGl();
     protected abstract void TeardownGl();
 
+    private static bool isLoaded_ = false;
 
     protected sealed override void OnOpenGlInit(GlInterface gl) {
-      //Initialize the OpenTK<->Avalonia Bridge
-      this.avaloniaTkContext_ = new AvaloniaTkContext(gl);
-      GL.LoadBindings(this.avaloniaTkContext_);
+      GlUtil.RunLockedGl(
+          () => {
+            if (!isLoaded_) {
+              //Initialize the OpenTK<->Avalonia Bridge
+              this.avaloniaTkContext_ = new AvaloniaOpenTkContext(gl);
 
-      GlUtil.SwitchContext(null);
+              GL.LoadBindings(this.avaloniaTkContext_);
+              isLoaded_ = true;
+            }
 
-      this.InitGl();
+            GlUtil.SwitchContext(this);
+            this.InitGl();
+          });
     }
 
     protected override void OnOpenGlRender(GlInterface gl, int fb) {
       Dispatcher.UIThread.Post(this.RequestNextFrameRendering,
-                               DispatcherPriority.Render);
-      this.RenderGl();
+                               DispatcherPriority.Background);
+      GlUtil.RunLockedGl(
+          () => {
+            GlUtil.SwitchContext(this);
+            this.RenderGl();
+          });
     }
 
     protected sealed override void OnOpenGlDeinit(GlInterface gl)

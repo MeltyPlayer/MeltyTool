@@ -5,10 +5,10 @@ using Avalonia.OpenGL;
 using OpenTK;
 
 namespace uni.ui.avalonia.common.gl {
-  public class AvaloniaTkContext : IBindingsContext {
+  public class AvaloniaOpenTkContext : IBindingsContext {
     private readonly GlInterface glInterface_;
 
-    public AvaloniaTkContext(GlInterface glInterface) {
+    public AvaloniaOpenTkContext(GlInterface glInterface) {
       this.glInterface_ = glInterface;
     }
 

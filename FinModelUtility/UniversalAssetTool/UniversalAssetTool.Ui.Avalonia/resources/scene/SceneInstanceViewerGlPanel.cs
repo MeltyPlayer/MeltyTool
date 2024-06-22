@@ -14,7 +14,7 @@ using uni.model;
 using uni.ui.avalonia.common.gl;
 
 namespace uni.ui.avalonia.resources.scene {
-  public class SceneInstanceViewerGlPanel : BaseTkOpenGlControl, ISceneViewer {
+  public class SceneInstanceViewerGlPanel : BOpenTkControl, ISceneViewer {
     private readonly SceneViewerGl viewerImpl_ = new();
 
     private bool isMouseDown_ = false;

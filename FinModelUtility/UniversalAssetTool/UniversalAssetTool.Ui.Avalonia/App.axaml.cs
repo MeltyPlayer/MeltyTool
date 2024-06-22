@@ -2,7 +2,6 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-using uni.games;
 using uni.ui.avalonia.common;
 using uni.ui.avalonia.ViewModels;
 using uni.ui.avalonia.Views;
