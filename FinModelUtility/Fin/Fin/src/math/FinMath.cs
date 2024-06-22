@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 
@@ -61,5 +62,8 @@ namespace fin.math {
 
       return value;
     }
+
+    public static int Base10DigitCount(this int value)
+      => (int) Math.Ceiling(value / 10f);
   }
 }

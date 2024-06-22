@@ -38,6 +38,7 @@ namespace uni.ui.avalonia.resources.animation {
     private float frame_;
     private int frameCount_;
     private float lastFrame_;
+    private int frameTextWidth_;
 
     public IAnimationPlaybackManager? AnimationPlaybackManager {
       get => this.animationPlaybackManager_;
@@ -116,12 +117,20 @@ namespace uni.ui.avalonia.resources.animation {
       private set {
         this.RaiseAndSetIfChanged(ref this.frameCount_, value);
         this.LastFrame = Math.Max(0, value - .0001f);
+
+        var digitsInFrameCount = this.frameCount_.Base10DigitCount();
+        this.FrameTextWidth = 45 + 10 * digitsInFrameCount;
       }
     }
 
     public float LastFrame {
       get => this.lastFrame_;
       private set => this.RaiseAndSetIfChanged(ref this.lastFrame_, value);
+    }
+
+    public int FrameTextWidth {
+      get => this.frameTextWidth_;
+      private set => this.RaiseAndSetIfChanged(ref this.frameTextWidth_, value);
     }
 
     private void Update_() {

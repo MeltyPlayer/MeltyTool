@@ -20,9 +20,10 @@
             IsEnabled="{Binding IsPlaying, Converter={x:Static BoolConverters.Not}}"/>
 
     <StackPanel HorizontalAlignment="Center"
-                Width="70"
+                Width="{Binding FrameTextWidth}"
                 Margin="0 -12 0 8">
       <TextBlock Classes="regular"
+                 FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
                  HorizontalAlignment="Right">
         <TextBlock.Text>
           <MultiBinding StringFormat="{}{0:0.0} / {1}">
