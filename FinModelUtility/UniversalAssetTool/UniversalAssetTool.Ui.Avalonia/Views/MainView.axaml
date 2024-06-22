@@ -43,7 +43,7 @@
     </Style>
   </UserControl.Styles>
 
-  <Grid Background="Magenta">
+  <Grid>
     <SplitView DisplayMode="CompactInline"
                OpenPaneLength="300"
                CompactPaneLength="32">
@@ -67,11 +67,28 @@
       </SplitView>
     </SplitView>
 
-    <scene:SceneInstanceViewerGlPanel
-        x:Name="SceneViewerGlPanel"
-        IsTabStop="True"
-        TabIndex="0"
-        ZIndex="-5"
-        Focusable="True" />
+    <Grid ZIndex="-5">
+      <TextBlock
+          Classes="h1 spaceFirst"
+          Foreground="White"
+          Text="{Binding FileName}"
+          Margin="40 8">
+        <TextBlock.Effect>
+          <DropShadowEffect
+              OffsetX="1"
+              OffsetY="1"
+              BlurRadius="5" />
+        </TextBlock.Effect>
+      </TextBlock>
+
+      <Grid ZIndex="-5"
+            Background="Magenta">
+        <scene:SceneInstanceViewerGlPanel
+            x:Name="SceneViewerGlPanel"
+            IsTabStop="True"
+            TabIndex="0"
+            Focusable="True" />
+      </Grid>
+    </Grid>
   </Grid>
 </UserControl>

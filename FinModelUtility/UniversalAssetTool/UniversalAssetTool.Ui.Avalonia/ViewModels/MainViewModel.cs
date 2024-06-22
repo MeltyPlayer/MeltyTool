@@ -20,10 +20,13 @@ public class MainViewModelForDesigner {
 
   public ModelPanelViewModel ModelPanel { get; }
     = new ModelPanelViewModelForDesigner();
+
+  public string FileName => "//foo/bar.mod";
 }
 
 public class MainViewModel : ViewModelBase {
   private FileBundleTreeViewModel<IAnnotatedFileBundle> fileTree_;
+  private string fileName_;
   private ModelPanelViewModel modelPanel_;
 
   public MainViewModel() {
@@ -34,6 +37,9 @@ public class MainViewModel : ViewModelBase {
     this.ModelPanel = new ModelPanelViewModel();
     SceneInstanceService.OnSceneInstanceOpened
         += (_, sceneInstance) => {
+             this.FileName
+                 = sceneInstance.Definition.FileBundle?.DisplayFullPath;
+
              var sceneModelInstances
                  = sceneInstance
                    .Areas
@@ -65,6 +71,11 @@ public class MainViewModel : ViewModelBase {
   public FileBundleTreeViewModel<IAnnotatedFileBundle> FileBundleTreeViewModel {
     get => this.fileTree_;
     private set => this.RaiseAndSetIfChanged(ref this.fileTree_, value);
+  }
+
+  public string FileName {
+    get => this.fileName_;
+    set => this.RaiseAndSetIfChanged(ref this.fileName_, value);
   }
 
   public ModelPanelViewModel ModelPanel {

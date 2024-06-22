@@ -9,7 +9,6 @@ using fin.io;
 using fin.math.floats;
 using fin.model.io;
 using fin.scene;
-using fin.scene.instance;
 using fin.util.enumerables;
 using fin.util.io;
 using fin.util.time;
