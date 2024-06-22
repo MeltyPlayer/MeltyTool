@@ -14,7 +14,6 @@ using fin.util.io;
 using fin.util.time;
 
 using uni.cli;
-using uni.config;
 using uni.games;
 
 using uni.ui.winforms.common.fileTreeView;
@@ -59,6 +58,8 @@ public partial class UniversalAssetToolForm : Form {
         => this.modelToolStrip_.CancellationToken?.Cancel();
 
     SceneInstanceService.OnSceneInstanceOpened += this.UpdateScene_;
+    AudioPlaylistService.OnPlaylistUpdated
+        += playlist => this.audioPlayerPanel_.AudioFileBundles = playlist;
   }
 
   private void UniversalAssetToolForm_Load(object sender, EventArgs e) {
@@ -90,13 +91,6 @@ public partial class UniversalAssetToolForm : Form {
 
   private void OnFileBundleSelect_(IFileTreeLeafNode fileNode) {
     FileTreeLeafNodeService.OpenFileTreeLeafNode(fileNode);
-
-    switch (fileNode.File.FileBundle) {
-      case IAudioFileBundle audioFileBundle: {
-        this.SelectAudio_(audioFileBundle);
-        break;
-      }
-    }
   }
 
   private void UpdateScene_(IFileTreeLeafNode? fileNode,
@@ -112,27 +106,7 @@ public partial class UniversalAssetToolForm : Form {
     this.modelToolStrip_.DirectoryNode = fileNode?.Parent;
     this.modelToolStrip_.FileNodeAndModel = (fileNode, model);
     this.exportAsToolStripMenuItem.Enabled = model?.FileBundle is IModelFileBundle;
-
-    if (Config.Instance.ViewerSettings.AutomaticallyPlayGameAudioForModel) {
-      var gameDirectory = fileNode.Parent;
-      while (gameDirectory?.Parent?.Parent != null) {
-        gameDirectory = gameDirectory.Parent;
-      }
-
-      if (this.gameDirectory_ != gameDirectory) {
-        this.audioPlayerPanel_.AudioFileBundles =
-            gameDirectory
-                .GetFilesOfType<IAudioFileBundle>(true)
-                .Select(bundle => bundle.TypedFileBundle)
-                .ToArray();
-      }
-
-      this.gameDirectory_ = gameDirectory;
-    }
   }
-
-  private void SelectAudio_(IAudioFileBundle audioFileBundle)
-    => this.audioPlayerPanel_.AudioFileBundles = new[] { audioFileBundle };
 
   private void importToolstripMenuItem_Click(object sender, EventArgs e) {
     var plugins = PluginUtil.Plugins;
