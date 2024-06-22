@@ -64,6 +64,6 @@ namespace fin.math {
     }
 
     public static int Base10DigitCount(this int value)
-      => (int) Math.Ceiling(value / 10f);
+      => (int) Math.Max(1, 1 + Math.Log10(value));
   }
 }

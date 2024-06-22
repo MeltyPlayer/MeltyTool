@@ -30,7 +30,19 @@ namespace fin.math {
     [TestCase(5, 1, 5, 5)]
     [TestCase(5, 1, 5, 5)]
     [TestCase(5.1f, 1, 5, 1.1f)]
-    public void TestWrapFloat(float value, float min, float max, float expectedResult)
+    public void TestWrapFloat(float value,
+                              float min,
+                              float max,
+                              float expectedResult)
       => Assert.AreEqual(expectedResult, value.Wrap(min, max), .001f);
+
+    [Test]
+    [TestCase(0, ExpectedResult = 1)]
+    [TestCase(2, ExpectedResult = 1)]
+    [TestCase(10, ExpectedResult = 2)]
+    [TestCase(99, ExpectedResult = 2)]
+    [TestCase(100, ExpectedResult = 3)]
+    [TestCase(1000, ExpectedResult = 4)]
+    public int TestBase10DigitCount(int value) => value.Base10DigitCount();
   }
 }
