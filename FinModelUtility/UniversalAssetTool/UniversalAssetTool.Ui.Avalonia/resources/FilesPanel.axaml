@@ -37,14 +37,34 @@
               <DataGridTemplateColumn Width="*">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
-                    <SelectableTextBlock
-                        Classes="regular"
+                    <Grid
                         Margin="7 0"
                         VerticalAlignment="Center"
-                        TextTrimming="CharacterEllipsis"
-                        FlowDirection="RightToLeft"
-                        HorizontalAlignment="Left"
-                        Text="{Binding}" />
+                        HorizontalAlignment="Left">
+                      <controls:If
+                          Condition="{Binding Converter={x:Static converters:StringConverters.StartsWithSlashes}}">
+                        <controls:If.ContentWhenTrue>
+                          <DockPanel>
+                            <TextBlock
+                                Classes="regular"
+                                Text="//" />
+                            <TextBlock
+                                Margin="-3 0 0 0"
+                                Classes="regular"
+                                TextTrimming="CharacterEllipsis"
+                                FlowDirection="RightToLeft"
+                                Text="{Binding Converter={x:Static converters:StringConverters.SubstringAfterSlashes}}" />
+                          </DockPanel>
+                        </controls:If.ContentWhenTrue>
+                        <controls:If.ContentWhenFalse>
+                          <TextBlock
+                              Classes="regular"
+                              TextTrimming="CharacterEllipsis"
+                              FlowDirection="RightToLeft"
+                              Text="{Binding}" />
+                        </controls:If.ContentWhenFalse>
+                      </controls:If>
+                    </Grid>
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>

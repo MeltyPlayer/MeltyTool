@@ -12,8 +12,14 @@ using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.resources;
 
-public class FilesPanelViewModelForDesigner()
-    : FilesPanelViewModel(ModelDesignerUtil.CreateStubModel());
+public class FilesPanelViewModelForDesigner() {
+  public IReadOnlyList<string> Paths { get; } = [
+      "//foo/bar/file.mod",
+      "//foo/bar/some-very-long-path-that-cannot-be-fully-shown.mod",
+      "C:/foo/bar/file.mod",
+      "C:/foo/bar/some-very-long-path-that-cannot-be-fully-shown.mod",
+  ];
+}
 
 public class FilesPanelViewModel {
   public FilesPanelViewModel(IResource? resource) {
