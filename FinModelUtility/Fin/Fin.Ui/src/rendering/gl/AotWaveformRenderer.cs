@@ -19,6 +19,8 @@ namespace fin.ui.rendering.gl {
 
       GlTransform.PassMatricesIntoGl();
 
+      var baseSampleOffset = this.ActiveSound.SampleOffset;
+
       var samplesPerPoint = 25;
       var xPerPoint = 1;
       var pointCount = Width / xPerPoint;
@@ -26,8 +28,7 @@ namespace fin.ui.rendering.gl {
       for (var i = 0; i <= pointCount; ++i) {
         float totalSample = 0;
         for (var s = 0; s < samplesPerPoint; ++s) {
-          var sampleOffset =
-              this.ActiveSound.SampleOffset + i * samplesPerPoint + s;
+          var sampleOffset = baseSampleOffset + i * samplesPerPoint + s;
           sampleOffset %= source.LengthInSamples;
 
           var sample = source.GetPcm(AudioChannelType.MONO, sampleOffset);
