@@ -1,0 +1,488 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+//------------------------------------------------
+//--- 010 Editor v9.0.1 Binary Template
+//
+//      File: MarioSt_AnimGroupBase.bt
+//   Authors: Linus S. (PistonMiner)
+//   Version: 3
+//   Purpose: Template for Paper Mario: The Thousand Year Door /a animation files
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+// Internal name for this format is likely "anim group" (see e.g. animGroupBaseAsync)
+
+BigEndian();
+
+typedef struct
+{
+    float x, y, z;
+} vec3<read=vec3_Read>;
+
+string vec3_Read(const vec3 &val)
+{
+    local string out;
+    SPrintf(out, "%.2f / %.2f /  %.2f", val.x, val.y, val.z);
+    return out;
+}
+
+typedef struct
+{
+    float x, y;
+} vec2<read=vec2_Read>;
+
+string vec2_Read(const vec2 &val)
+{
+    local string out;
+    SPrintf(out, "%.2f / %.2f", val.x, val.y);
+    return out;
+}
+
+typedef struct
+{
+    unsigned byte r, g, b, a;
+} color4<read=color4_Read>;
+
+string color4_Read(const color4 &val)
+{
+    local string out;
+    SPrintf(out, "R%d/G%d/B%d/A%d", val.r, val.g, val.b, val.a);
+    return out;
+}
+
+struct AnimationModelFileHeader
+{
+    // Size of all of these first-level entries;
+    // this is effectively the offset of the first
+    // animation data entry.
+    uint32 wHeaderSize;
+    char modelName[64];
+    char textureName[64];
+    char buildTime[64];
+    uint32 wFlags;
+    uint32 radius;
+    uint32 height;
+    float wBboxMin[3];
+    float wBboxMax[3];
+    uint32 shapeCount;
+    uint32 polygonCount; // size 8
+    uint32 vertexPositionCount;
+    uint32 vertexPositionIndexCount; // vertex position indices
+    uint32 vertexNormalCount;
+    uint32 vertexNormalIndexCount; // vertex normal indices
+    uint32 vertexColorCount; // vertex colors
+    uint32 vertexColorIndexCount; // vertex color indices
+    uint32 vertexTextureCoordinate0IndexCount; // texture coordinate 0 indices
+    uint32 vertexTextureCoordinate1IndexCount;
+    uint32 vertexTextureCoordinate2IndexCount;
+    uint32 vertexTextureCoordinate3IndexCount;
+    uint32 vertexTextureCoordinate4IndexCount;
+    uint32 vertexTextureCoordinate5IndexCount;
+    uint32 vertexTextureCoordinate6IndexCount;
+    uint32 vertexTextureCoordinate7IndexCount; // texture coordinate 7 indices
+    uint32 vertexTextureCoordinateCount; // vertex texture coordinate data
+    uint32 textureCoordinateTransformCount;
+    uint32 samplerCount;
+    uint32 textureCount;
+    uint32 subshapeCount;
+    uint32 visibilityGroupCount;
+    uint32 groupTransformDataCount;
+    uint32 groupCount;
+    uint32 animCount;
+    uint32 pShapes;
+    uint32 pPolygons;
+    uint32 pVertexPositions;
+    uint32 pVertexPositionIndices;
+    uint32 pVertexNormals;
+    uint32 pVertexNormalIndices;
+    uint32 pVertexColors;
+    uint32 pVertexColorIndices;
+    uint32 pVertexTextureCoordinate0Indices; // vertex texture coordinate 0 indices
+    uint32 pVertexTextureCoordinate1Indices;
+    uint32 pVertexTextureCoordinate2Indices;
+    uint32 pVertexTextureCoordinate3Indices;
+    uint32 pVertexTextureCoordinate4Indices;
+    uint32 pVertexTextureCoordinate5Indices;
+    uint32 pVertexTextureCoordinate6Indices;
+    uint32 pVertexTextureCoordinate7Indices;
+    uint32 pVertexTextureCoordinates; // size 8
+    uint32 pTextureCoordinateTransforms;
+    uint32 pSamplers; // size 8
+    uint32 pTextures; // size 0x40
+    uint32 pSubshapes; // Subshape with one material
+    uint32 pVisibilityGroups;
+    uint32 pGroupTransformData;
+    uint32 pGroups;
+    uint32 pAnims;
+}; // size 0x1B0
+
+typedef struct
+{
+    char name[64];
+    // Base indices and sizes into the data arrays; passed into GXSetArray
+    uint32 vertexPositionDataBaseIndex;
+    uint32 vertexPositionDataCount;
+    uint32 vertexNormalDataBaseIndex;
+    uint32 vertexNormalDataCount;
+    uint32 vertexColorDataBaseIndex;
+    uint32 vertexColorDataCount;
+    uint32 vertexTextureCoordinate0DataBaseIndex;
+    uint32 vertexTextureCoordinate0DataCount;
+    uint32 vertexTextureCoordinate1DataBaseIndex;
+    uint32 vertexTextureCoordinate1DataCount;
+    uint32 vertexTextureCoordinate2DataBaseIndex;
+    uint32 vertexTextureCoordinate2DataCount;
+    uint32 vertexTextureCoordinate3DataBaseIndex;
+    uint32 vertexTextureCoordinate3DataCount;
+    uint32 vertexTextureCoordinate4DataBaseIndex;
+    uint32 vertexTextureCoordinate4DataCount;
+    uint32 vertexTextureCoordinate5DataBaseIndex;
+    uint32 vertexTextureCoordinate5DataCount;
+    uint32 vertexTextureCoordinate6DataBaseIndex;
+    uint32 vertexTextureCoordinate6DataCount;
+    uint32 vertexTextureCoordinate7DataBaseIndex;
+    uint32 vertexTextureCoordinate7DataCount;
+    uint32 subshapeBaseIndex;
+    uint32 subshapeCount;
+    uint32 wDrawMode;
+    uint32 cullMode;
+} AnimationModelFileShape<read=AnimationModelFileShape_Read>;
+
+string AnimationModelFileShape_Read(const AnimationModelFileShape &val)
+{
+    local string out;
+    SPrintf(out, "%s", val.name);
+    return out;
+}
+
+typedef struct
+{
+    // Uniform offset from subshape indices base indices
+    // (first polygon of a subshape will always have base index 0)
+    uint32 vertexBaseIndex;
+    uint32 vertexCount;
+} AnimationModelFilePolygon;
+
+typedef struct
+{
+    // internal name "frameExt" short for frame extension based on debug text, can be animated
+    unsigned byte textureFrameOffset; // offset sampler texture ID
+    unsigned byte pad_1[3];
+    float translationX; // can be animated
+    float translationY; // can be animated
+    float scaleX;
+    float scaleY;
+    float rotation;
+} AnimationModelFileTextureCoordinateTransform;
+
+// Texture coordinate transforms are associated with samplers by index;
+// the pair shares the same respective indices, this is not just coincidence.
+
+typedef struct
+{
+    uint32 textureBaseId; // index into type 20 data
+    uint32 wrapFlags;
+    // 0x80000000 (less than zero): use TPL wrap flags
+    // 0x8: wrap T high bit (mirror) (overrides low)
+    // 0x4: wrap S high bit (mirror) (overrides low)
+    // 0x2: wrap T low bit (clamp/repeat)
+    // 0x1: wrap S low bit (clamp/repeat)
+} AnimationModelFileSampler<read=AnimationModelFileSampler_Read>; // samplers
+
+string AnimationModelFileSampler_Read(const AnimationModelFileSampler &val)
+{
+    local string out;
+    SPrintf(out, "base %d / wrap %d", val.textureBaseId, val.wrapFlags);
+    return out;
+}
+
+typedef struct
+{
+    uint32 unk_0;
+    uint32 tplIndex; // Index of texture in associated TPL
+    uint32 wbUnused;
+    char unk_c[44];
+    uint32 unk_38[2];
+} AnimationModelFileTexture<read=AnimationModelFileTexture_Read>; // textures
+
+string AnimationModelFileTexture_Read(const AnimationModelFileTexture &val)
+{
+    local string out;
+    SPrintf(out, "%d: %s", val.wbUnused, val.unk_c);
+    return out;
+}
+
+typedef struct
+{
+    uint32 samplerCount;
+    uint32 unk_04;
+    uint32 tevMode;
+    uint32 unk_0c;
+    int32 samplerIndices[8];
+    char samplerSourceTextureCoordinateIndices[8]; // 0..7
+    uint32 polygonBaseIndex;
+    uint32 polygonCount;
+
+    // Absolute base index of indices
+    uint32 vertexPositionIndicesBaseIndex;
+    uint32 vertexNormalBaseIndicesBaseIndex;
+    uint32 vertexColorBaseIndicesBaseIndex;
+    uint32 vertexTextureCoordinateIndicesBaseIndex[8];
+} AnimationModelFileSubshape;
+
+typedef struct
+{
+    unsigned byte visibilityGroupId;
+    unsigned byte bVisible;
+} AnimationModelFileAnimationVisibilityGroupStatus;
+
+typedef struct
+{
+    vec3 translation;
+    vec3 scale;
+    vec3 rotationIn2Deg;
+    vec3 jointPostRotationInDeg;
+    vec3 transformRotationPivot;
+    vec3 transformScalePivot;
+    vec3 transformRotationOffset;
+    vec3 transformScaleOffset;
+} AnimationModelFileGroupTransform;
+
+typedef struct
+{
+    char name[64];
+    int32 nextGroupId;
+    int32 childGroupId;
+    int32 shapeId;
+    uint32 visibilityGroupId;
+    uint32 transformBaseIndex;
+    uint32 bIsJoint; // if not transform, joint
+} AnimationModelFileGroup<read=AnimationModelFileGroup_Read>;
+
+string AnimationModelFileGroup_Read(const AnimationModelFileGroup &val)
+{
+    local string out;
+    SPrintf(out, "%s%s%s", val.name, val.bIsJoint ? " (Joint)" : "", val.shapeId != 0xFFFFFFFF ? " (Shape: " + shapes[val.shapeId].name + ")" : "");
+    return out;
+}
+
+typedef struct
+{
+    uint32 bLoop;
+    float animStart;
+    float animEnd;
+} AnimationModelFileAnimationBaseInfo;
+
+typedef struct
+{
+    float time;
+    uint32 vertexPositionDeltaBaseIndex;
+    uint32 vertexPositionDeltaCount;
+    uint32 vertexNormalDeltaBaseIndex;
+    uint32 vertexNormalDeltaCount;
+    uint32 textureCoordinateTransformDeltaBaseIndex;
+    uint32 textureCoordinateTransformDeltaCount;
+    uint32 visibilityGroupDeltaBaseIndex;
+    uint32 visibilityGroupDeltaCount;
+    uint32 groupTransformDataDeltaBaseIndex;
+    uint32 groupTransformDataDeltaCount;
+} AnimationModelFileAnimationKeyframe;
+
+typedef struct
+{
+    unsigned byte indexDelta;
+    signed byte coordinateDeltas[3]; // * 1.f/16.f
+} AnimationModelFileAnimationVectorDelta;
+
+typedef struct
+{
+    unsigned byte indexDelta;
+    signed byte wFrameExtDelta;
+    unsigned byte pad_2[2];
+    float translateXDelta;
+    float translateYDelta;
+} AnimationModelFileAnimationTextureCoordinateTransformDelta;
+
+typedef struct
+{
+    unsigned byte indexDelta;
+    byte valueDelta;
+    byte tangentInDeg;
+    byte tangentOutDeg;
+} AnimationModelFileAnimationGroupTransformDataDelta;
+
+typedef struct
+{
+    local uint basePos = FTell();
+    uint32 dataSize;
+
+    uint32 baseInfoCount; // element size 0xc
+    uint32 keyframeCount; // 0x2c
+    uint32 vertexPositionDeltaCount; // 0x4
+    uint32 vertexNormalDeltaCount; // 0x4
+    uint32 textureCoordinateTransformDeltaCount;
+    uint32 visibilityGroupDeltaCount;
+    uint32 groupTransformDataDeltaCount; // 0x4
+    uint32 wAnimDataType8Count; // if animation data is tightly packed, 0x8
+
+    uint32 pBaseInfo;
+    uint32 pKeyframes;
+    uint32 pVertexPositionDeltas;
+    uint32 pVertexNormalDeltas;
+    uint32 pTextureCoordinateTransformDeltas; // texture coordinate animations
+    uint32 pVisibilityGroupDeltas;
+    uint32 pGroupTransformDataDeltas; // group transform animations
+    uint32 wpAnimDataType8Data;
+
+    float unk_44[6];
+
+    local uint oldPos = FTell();
+    if (baseInfoCount)
+    {
+        FSeek(basePos + pBaseInfo);
+        AnimationModelFileAnimationBaseInfo baseInfo[baseInfoCount];
+    }
+    if (keyframeCount)
+    {
+        FSeek(basePos + pKeyframes);
+        AnimationModelFileAnimationKeyframe keyframes[keyframeCount];
+    }
+    if (vertexPositionDeltaCount)
+    {
+        FSeek(basePos + pVertexPositionDeltas);
+        AnimationModelFileAnimationVectorDelta vertexPositionDeltas[vertexPositionDeltaCount];
+    }
+    if (vertexNormalDeltaCount)
+    {
+        FSeek(basePos + pVertexNormalDeltas);
+        AnimationModelFileAnimationVectorDelta vertexNormalDeltas[vertexNormalDeltaCount];
+    }
+    if (textureCoordinateTransformDeltaCount)
+    {
+        FSeek(basePos + pTextureCoordinateTransformDeltas);
+        AnimationModelFileAnimationTextureCoordinateTransformDelta textureCoordinateTransformDeltas[textureCoordinateTransformDeltaCount];
+    }
+    if (visibilityGroupDeltaCount)
+    {
+        FSeek(basePos + pVisibilityGroupDeltas);
+        AnimationModelFileAnimationVisibilityGroupStatus visibilityGroupDeltas[visibilityGroupDeltaCount];
+    }
+    if (groupTransformDataDeltaCount)
+    {
+        FSeek(basePos + pGroupTransformDataDeltas);
+        AnimationModelFileAnimationGroupTransformDataDelta groupTransformDataDeltas[groupTransformDataDeltaCount];
+    }
+    FSeek(oldPos);
+} AnimationModelFileAnimationData; // size 0x5c
+
+typedef struct
+{
+    char name[16];
+    // unknown how long the preceding char array is.
+    // I haven't seen any other usage of data in this area,
+    // so it may very well just span 60 characters.
+    byte padding[0x40 - 16 - 4];
+    uint32 dataOffset;
+
+    if (dataOffset)
+    {
+        local uint oldPos = FTell();
+        FSeek(dataOffset);
+        AnimationModelFileAnimationData data;
+        FSeek(oldPos);
+    }
+} AnimationModelFileAnimation<optimize=false>;
+
+AnimationModelFileHeader header;
+
+FSeek(header.pShapes);
+AnimationModelFileShape shapes[header.shapeCount];
+
+FSeek(header.pPolygons);
+AnimationModelFilePolygon polygons[header.polygonCount];
+
+FSeek(header.pVertexPositions);
+vec3 vertexPositions[header.vertexPositionCount];
+
+FSeek(header.pVertexPositionIndices);
+uint32 vertexPositionIndices[header.vertexPositionIndexCount];
+
+FSeek(header.pVertexNormals);
+vec3 vertexNormals[header.vertexNormalCount];
+
+FSeek(header.pVertexNormalIndices);
+uint32 vertexNormalIndices[header.vertexNormalIndexCount];
+
+FSeek(header.pVertexColors);
+color4 vertexColors[header.vertexColorCount];
+
+FSeek(header.pVertexColorIndices);
+uint32 vertexColorIndices[header.vertexColorIndexCount];
+
+FSeek(header.pVertexTextureCoordinate0Indices);
+uint32 vertexTextureCoordinate0Indices[header.vertexTextureCoordinate0IndexCount];
+
+FSeek(header.pVertexTextureCoordinate1Indices);
+uint32 vertexTextureCoordinate1Indices[header.vertexTextureCoordinate1IndexCount];
+
+FSeek(header.pVertexTextureCoordinate2Indices);
+uint32 vertexTextureCoordinate2Indices[header.vertexTextureCoordinate2IndexCount];
+
+FSeek(header.pVertexTextureCoordinate3Indices);
+uint32 vertexTextureCoordinate3Indices[header.vertexTextureCoordinate3IndexCount];
+
+FSeek(header.pVertexTextureCoordinate4Indices);
+uint32 vertexTextureCoordinate4Indices[header.vertexTextureCoordinate4IndexCount];
+
+FSeek(header.pVertexTextureCoordinate5Indices);
+uint32 vertexTextureCoordinate5Indices[header.vertexTextureCoordinate5IndexCount];
+
+FSeek(header.pVertexTextureCoordinate6Indices);
+uint32 vertexTextureCoordinate6Indices[header.vertexTextureCoordinate6IndexCount];
+
+FSeek(header.pVertexTextureCoordinate7Indices);
+uint32 vertexTextureCoordinate7Indices[header.vertexTextureCoordinate7IndexCount];
+
+FSeek(header.pVertexTextureCoordinates);
+vec2 vertexTextureCoordinates[header.vertexTextureCoordinateCount];
+
+FSeek(header.pTextureCoordinateTransforms);
+AnimationModelFileTextureCoordinateTransform textureCoordinateTransforms[header.textureCoordinateTransformCount];
+
+FSeek(header.pSamplers);
+AnimationModelFileSampler samplers[header.samplerCount];
+
+FSeek(header.pTextures);
+AnimationModelFileTexture textures[header.textureCount];
+
+FSeek(header.pSubshapes);
+AnimationModelFileSubshape subshapes[header.subshapeCount];
+
+FSeek(header.pVisibilityGroups);
+unsigned byte visibilityGroups[header.visibilityGroupCount];
+
+FSeek(header.pGroupTransformData);
+AnimationModelFileGroupTransform groupTransformData[header.groupTransformDataCount * sizeof(float) / sizeof(AnimationModelFileGroupTransform)];
+
+FSeek(header.pGroups);
+AnimationModelFileGroup groups[header.groupCount];
+
+FSeek(header.pAnims);
+struct
+{
+    AnimationModelFileAnimation anims[header.animCount];
+} anims;

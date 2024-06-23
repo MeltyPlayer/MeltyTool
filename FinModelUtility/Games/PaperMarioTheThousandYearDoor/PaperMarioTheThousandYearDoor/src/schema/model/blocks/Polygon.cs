@@ -3,7 +3,7 @@
 namespace ttyd.schema.model.blocks {
   [BinarySchema]
   public partial class Polygon : IBinaryDeserializable {
-    public int VertexIndex { get; set; }
+    public int VertexBaseIndex { get; set; }
     public uint VertexCount { get; set; }
   }
 }

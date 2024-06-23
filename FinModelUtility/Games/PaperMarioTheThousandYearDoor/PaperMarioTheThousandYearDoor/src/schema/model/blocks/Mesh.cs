@@ -7,18 +7,18 @@ namespace ttyd.schema.model.blocks {
     [SequenceLengthSource(4)]
     public int[] Unks1 { get; set; }
 
-    public int TexMapIndex { get; set; }
+    public int SamplerIndex { get; set; }
 
     [SequenceLengthSource(9)]
     public int[] Unks2 { get; set; }
 
-    public int PolygonIndex { get; set; }
+    public int PolygonBaseIndex { get; set; }
     public int PolygonCount { get; set; }
 
-    public int PolyVertexIndex { get; set; }
-    public int PolyNormalIndex { get; set; }
-    public int PolyColorIndex { get; set; }
-    public int PolyTexCoordIndex { get; set; }
+    public int VertexPositionBaseIndex { get; set; }
+    public int VertexNormalBaseIndex { get; set; }
+    public int VertexColorBaseIndex { get; set; }
+    public int VertexTexCoordBaseIndex { get; set; }
 
     [SequenceLengthSource(7)]
     public int[] Unks3 { get; set; }

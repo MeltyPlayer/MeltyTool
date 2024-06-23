@@ -9,15 +9,14 @@ namespace ttyd.schema.model {
   public class Model : IBinaryDeserializable {
     public Header Header { get; } = new();
 
-    public SceneGraph[] SceneGraphs { get; private set; }
+    public Group[] SceneGraphs { get; private set; }
     public SceneGraphObject[] SceneGraphObjects { get; private set; }
-    public byte[] SceneGraphObjectVisibilities { get; private set; }
     public float[] SceneGraphObjectTransforms { get; private set; }
 
     public Mesh[] Meshes { get; private set; }
     public Polygon[] Polygons { get; private set; }
     public Texture[] Textures { get; private set; }
-    public TextureMap[] TextureMaps { get; private set; }
+    public Sampler[] TextureMaps { get; private set; }
 
     public Vector3f[] Vertices { get; private set; }
     public int[] VertexIndices { get; private set; }
@@ -31,15 +30,16 @@ namespace ttyd.schema.model {
     public Vector2f[] TexCoords { get; private set; }
     public int[] TexCoordIndices { get; private set; }
 
+    public bool[] GroupVisibilities { get; set; }
+
+    public Animation[] Animations { get; private set; }
+
     public void Read(IBinaryReader br) {
       this.Header.Read(br);
 
-      this.SceneGraphs = this.ReadNews_<SceneGraph>(br, BlockType.SCENE_GRAPH);
+      this.SceneGraphs = this.ReadNews_<Group>(br, BlockType.SCENE_GRAPH);
       this.SceneGraphObjects
           = this.ReadNews_<SceneGraphObject>(br, BlockType.SCENE_GRAPH_OBJECT);
-      this.SceneGraphObjectVisibilities = this.ReadNews_(br,
-        BlockType.SCENE_GRAPH_OBJECT_VISIBILITY,
-        br.ReadBytes);
       this.SceneGraphObjectTransforms = this.ReadNews_(br,
         BlockType.SCENE_GRAPH_OBJECT_TRANSFORM,
         br.ReadSingles);
@@ -47,13 +47,13 @@ namespace ttyd.schema.model {
       this.Meshes = this.ReadNews_<Mesh>(br, BlockType.MESH);
       this.Polygons = this.ReadNews_<Polygon>(br, BlockType.POLYGON);
       this.Textures = this.ReadNews_<Texture>(br, BlockType.TEXTURE);
-      this.TextureMaps = this.ReadNews_<TextureMap>(br, BlockType.TEXTURE_MAP);
+      this.TextureMaps = this.ReadNews_<Sampler>(br, BlockType.SAMPLER);
 
       this.Vertices
-          = this.ReadNews_<Vector3f>(br, BlockType.VERTEX);
+          = this.ReadNews_<Vector3f>(br, BlockType.VERTEX_POSITION);
       this.VertexIndices = this.ReadNews_(
           br,
-          BlockType.POLYGON_VERTEX_MAP,
+          BlockType.VERTEX_POSITION_INDEX,
           br.ReadInt32s);
 
       this.Normals
@@ -74,8 +74,19 @@ namespace ttyd.schema.model {
           = this.ReadNews_<Vector2f>(br, BlockType.TEX_COORD);
       this.TexCoordIndices = this.ReadNews_(
           br,
-          BlockType.POLYGON_TEX_COORD_MAP,
+          BlockType.POLYGON_TEX_COORD_0_MAP,
           br.ReadInt32s);
+
+      this.GroupVisibilities
+          = this.ReadNews_(br,
+                           BlockType.SCENE_GRAPH_OBJECT_VISIBILITY,
+                           br.ReadBytes)
+                .Select(b => b != 0)
+                .ToArray();
+
+      this.Animations = this.ReadNews_<Animation>(
+          br,
+          BlockType.ANIMATION);
     }
 
     private T[] ReadNews_<T>(IBinaryReader br, BlockType blockType)

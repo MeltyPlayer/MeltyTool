@@ -7,22 +7,22 @@ namespace ttyd.schema.model.blocks {
     [StringLengthSource(64)]
     public string Name { get; set; }
 
-    public int VertexIndex { get; set; }
-    public int VertexCount { get; set; }
+    public int VertexPositionBaseIndex { get; set; }
+    public int VertexPositionCount { get; set; }
 
-    public int NormalIndex { get; set; }
-    public int NormalCount { get; set; }
+    public int VertexNormalBaseIndex { get; set; }
+    public int VertexNormalCount { get; set; }
 
-    public int ColorIndex { get; set; }
-    public int ColorCount { get; set; }
+    public int VertexColorBaseIndex { get; set; }
+    public int VertexColorCount { get; set; }
 
-    public int TexCoordIndex { get; set; }
-    public int TexCoordCount { get; set; }
+    public int VertexTexCoordBaseIndex { get; set; }
+    public int VertexTexCoordCount { get; set; }
 
     [SequenceLengthSource(14)]
     public int[] Unk1 { get; set; }
 
-    public int MeshIndex { get; set; }
+    public int MeshBaseIndex { get; set; }
     public int MeshCount { get; set; }
 
     public int Blending { get; set; }
