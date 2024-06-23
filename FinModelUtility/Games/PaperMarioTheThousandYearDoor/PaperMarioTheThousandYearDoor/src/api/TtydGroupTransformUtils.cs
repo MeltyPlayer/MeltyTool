@@ -6,68 +6,49 @@ using fin.math.rotations;
 namespace ttyd.api {
   public static class TtydGroupTransformUtils {
     public static Matrix4x4 GetTransformMatrix(
-        ReadOnlySpan<float> sceneGraphObjectTransforms) {
-      // Translate by v1
-      var matrix = SystemMatrix4x4Util.FromTranslation(
-          sceneGraphObjectTransforms[0],
-          sceneGraphObjectTransforms[1],
-          sceneGraphObjectTransforms[2]);
+        ReadOnlySpan<float> sceneGraphObjectTransforms,
+        bool isJoint) {
+      var translation = new Vector3(sceneGraphObjectTransforms.Slice(0, 3));
+      var scale = new Vector3(sceneGraphObjectTransforms.Slice(3, 3));
+      var rotationIn2Degrees
+          = new Vector3(sceneGraphObjectTransforms.Slice(6, 3));
+      var jointPostRotationInDegrees
+          = new Vector3(sceneGraphObjectTransforms.Slice(9, 3));
+      var transformRotationPivot
+          = new Vector3(sceneGraphObjectTransforms.Slice(12, 3));
+      var transformScalePivot
+          = new Vector3(sceneGraphObjectTransforms.Slice(15, 3));
+      var transformRotationOffset
+          = new Vector3(sceneGraphObjectTransforms.Slice(18, 3));
+      var transformScaleOffset
+          = new Vector3(sceneGraphObjectTransforms.Slice(21, 3));
 
-      // Translate by v7
-      matrix = SystemMatrix4x4Util.FromTranslation(
-                   sceneGraphObjectTransforms[18],
-                   sceneGraphObjectTransforms[19],
-                   sceneGraphObjectTransforms[20]) *
-               matrix;
+      var matrix = Matrix4x4.Identity;
 
-      // Scale by v2
-      matrix = SystemMatrix4x4Util.FromScale(
-                   sceneGraphObjectTransforms[3],
-                   sceneGraphObjectTransforms[4],
-                   sceneGraphObjectTransforms[5]) *
-               matrix;
+      var deg2Rad = MathF.PI / 180;
 
-      // Translate by -v8
-      matrix = SystemMatrix4x4Util.FromTranslation(
-                   -sceneGraphObjectTransforms[21],
-                   -sceneGraphObjectTransforms[22],
-                   -sceneGraphObjectTransforms[23]) *
-               matrix;
+      if (isJoint) {
+        matrix = Matrix4x4.CreateTranslation(translation) * matrix;
+        matrix = Matrix4x4.CreateScale(scale) * matrix;
+        matrix = SystemMatrix4x4Util.FromRotation(
+            QuaternionUtil.CreateZyxRadians(
+                rotationIn2Degrees * 2 * deg2Rad)) * matrix;
+        matrix = SystemMatrix4x4Util.FromRotation(
+            QuaternionUtil.CreateZyxRadians(
+                jointPostRotationInDegrees * deg2Rad)) * matrix;
+      } else {
+        matrix = Matrix4x4.CreateTranslation(translation) * matrix;
+        
+        matrix = Matrix4x4.CreateTranslation(transformRotationOffset) * matrix;
+        matrix = Matrix4x4.CreateScale(scale) * matrix;
+        matrix = Matrix4x4.CreateTranslation(-transformScaleOffset) * matrix;
 
-      // Rotate by v4
-      matrix = SystemMatrix4x4Util.FromRotation(
-                   QuaternionUtil.CreateZyx(
-                       float.DegreesToRadians(sceneGraphObjectTransforms[9]),
-                       float.DegreesToRadians(sceneGraphObjectTransforms[10]),
-                       float.DegreesToRadians(
-                           sceneGraphObjectTransforms[11]))) *
-               matrix;
-
-      // Translate by v5
-      matrix = SystemMatrix4x4Util.FromTranslation(
-                   sceneGraphObjectTransforms[12],
-                   sceneGraphObjectTransforms[13],
-                   sceneGraphObjectTransforms[14]) *
-               matrix;
-
-      // Rotate by 2 * v3
-      matrix = SystemMatrix4x4Util.FromRotation(
-                   QuaternionUtil.CreateZyx(
-                       float.DegreesToRadians(
-                           2 * sceneGraphObjectTransforms[6]),
-                       float.DegreesToRadians(
-                           2 * sceneGraphObjectTransforms[7]),
-                       float.DegreesToRadians(
-                           2 * sceneGraphObjectTransforms[8]))) *
-               matrix;
-
-      // Translate by -v6
-      matrix = SystemMatrix4x4Util
-                   .FromTranslation(
-                       -sceneGraphObjectTransforms[15],
-                       -sceneGraphObjectTransforms[16],
-                       -sceneGraphObjectTransforms[17]) *
-               matrix;
+        matrix = Matrix4x4.CreateTranslation(transformRotationPivot) * matrix;
+        matrix = SystemMatrix4x4Util.FromRotation(
+            QuaternionUtil.CreateZyxRadians(
+                rotationIn2Degrees * 2 * deg2Rad)) * matrix;
+        matrix = Matrix4x4.CreateTranslation(-transformScalePivot) * matrix;
+      }
 
       return matrix;
     }

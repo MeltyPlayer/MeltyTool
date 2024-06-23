@@ -43,6 +43,10 @@ namespace fin.math.rotations {
           cr * cp * cy + sr * sp * sy);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Quaternion CreateZyxRadians(in Vector3 xyzRadians)
+      => CreateZyx(xyzRadians.X, xyzRadians.Y, xyzRadians.Z);
+
     // TODO: Slow! Figure out how to populate animations with raw quaternions instead
     public static Vector3 ToEulerRadians(Quaternion q) {
       if (q.IsIdentity) {

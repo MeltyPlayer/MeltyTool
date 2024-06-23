@@ -96,7 +96,8 @@ namespace ttyd.api {
         var matrix = TtydGroupTransformUtils.GetTransformMatrix(
             ttydGroupTransforms.AsSpan(
                 ttydGroup.TransformBaseIndex,
-                24));
+                24),
+            ttydGroup.IsJoint);
         Matrix4x4.Decompose(matrix,
                             out var scale,
                             out var quaternion,
@@ -302,7 +303,8 @@ namespace ttyd.api {
               var matrix = TtydGroupTransformUtils.GetTransformMatrix(
                   animatedGroupTransformValues.AsSpan(
                       ttydGroup.TransformBaseIndex,
-                      24));
+                      24),
+                  ttydGroup.IsJoint);
               Matrix4x4.Decompose(matrix,
                                   out var scale,
                                   out var quaternion,
