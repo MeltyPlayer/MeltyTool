@@ -133,8 +133,8 @@ namespace ttyd.schema.model.blocks {
   public partial class AnimationModelFileAnimationGroupTransformDataDelta
       : IBinaryConvertible {
     public byte IndexDelta { get; set; }
-    public byte ValueDelta { get; set; }
-    public byte InTangentDegrees { get; set; }
-    public byte OutTangentDegrees { get; set; }
+    public sbyte ValueDelta { get; set; }
+    public sbyte InTangentDegrees { get; set; }
+    public sbyte OutTangentDegrees { get; set; }
   }
 }

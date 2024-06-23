@@ -1,4 +1,7 @@
-﻿using fin.data.lazy;
+﻿using System.Numerics;
+
+using fin.data.indexable;
+using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
 using fin.math.matrix.four;
@@ -11,6 +14,7 @@ using fin.model.io.importers;
 using schema.binary;
 
 using ttyd.schema.model;
+using ttyd.schema.model.blocks;
 using ttyd.schema.tpl;
 
 namespace ttyd.api {
@@ -31,8 +35,8 @@ namespace ttyd.api {
                                      $"{ttydModel.Header.TextureFileName}-");
       var tpl = textureFile.ReadNew<Tpl>(Endianness.BigEndian);
 
-      var ttydSceneGraphs = ttydModel.SceneGraphs;
-      var ttydSceneGraphObjectTransforms = ttydModel.SceneGraphObjectTransforms;
+      var ttydGroups = ttydModel.Groups;
+      var ttydGroupTransforms = ttydModel.GroupTransforms;
 
       var finModel = new ModelImpl {
           FileBundle = fileBundle,
@@ -80,18 +84,23 @@ namespace ttyd.api {
                      .ToArray();
 
       // Adds bones/meshes
-      var sceneGraphQueue = new FinTuple2Queue<int, IBone>(
-          (ttydSceneGraphs.Length - 1, finModel.Skeleton.Root));
-      while (sceneGraphQueue.TryDequeue(
-                 out var ttydSceneGraphIndex,
-                 out var parentFinBone)) {
-        var ttydSceneGraph = ttydSceneGraphs[ttydSceneGraphIndex];
+      var groupsAndBones = new (Group, IReadOnlyBone)[ttydGroups.Length];
 
-        var matrix = this.GetSceneGraphObjectTransformMatrix_(
-            ttydSceneGraphObjectTransforms.AsSpan(
-                ttydSceneGraph.TransformBaseIndex,
+      var groupAndBoneQueue = new FinTuple2Queue<int, IBone>(
+          (ttydGroups.Length - 1, finModel.Skeleton.Root));
+      while (groupAndBoneQueue.TryDequeue(
+                 out var ttydGroupIndex,
+                 out var parentFinBone)) {
+        var ttydGroup = ttydGroups[ttydGroupIndex];
+
+        var matrix = TtydGroupTransformUtils.GetTransformMatrix(
+            ttydGroupTransforms.AsSpan(
+                ttydGroup.TransformBaseIndex,
                 24));
-        matrix.Decompose(out var position, out var quaternion, out var scale);
+        Matrix4x4.Decompose(matrix,
+                            out var scale,
+                            out var quaternion,
+                            out var position);
         var rotation = QuaternionUtil.ToEulerRadians(quaternion);
 
         var finBone
@@ -99,15 +108,20 @@ namespace ttyd.api {
               .AddChild(position.X, position.Y, position.Z)
               .SetLocalRotationRadians(rotation.X, rotation.Y, rotation.Z)
               .SetLocalScale(scale.X, scale.Y, scale.Z);
-        finBone.Name = ttydSceneGraph.Name;
+        finBone.Name = ttydGroup.Name;
+        groupsAndBones[ttydGroupIndex] = (ttydGroup, finBone);
 
-        if (ttydSceneGraph.SceneGraphObjectIndex != -1) {
+        var boneWeights = finModel.Skin.GetOrCreateBoneWeights(
+            VertexSpace.RELATIVE_TO_BONE,
+            finBone);
+
+        if (ttydGroup.SceneGraphObjectIndex != -1) {
           var ttydSceneGraphObject
               = ttydModel.SceneGraphObjects[
-                  ttydSceneGraph.SceneGraphObjectIndex];
+                  ttydGroup.SceneGraphObjectIndex];
           var finMesh
               = finGroupVisibilityMeshesAndDefaultVisibility[
-                  ttydSceneGraph.VisibilityGroupIndex].Item1;
+                  ttydGroup.VisibilityGroupIndex].Item1;
 
           var objectPositions = ttydModel.Vertices.AsSpan(
               ttydSceneGraphObject.VertexPositionBaseIndex);
@@ -159,6 +173,7 @@ namespace ttyd.api {
                 finVertex.SetLocalNormal(vertexNormal);
                 finVertex.SetColor(vertexColor);
                 finVertex.SetUv(vertexTexCoord);
+                finVertex.SetBoneWeights(boneWeights);
 
                 finVertices[i] = finVertex;
               }
@@ -171,13 +186,13 @@ namespace ttyd.api {
           }
         }
 
-        if (ttydSceneGraph.NextGroupIndex != -1) {
-          sceneGraphQueue.Enqueue(
-              (ttydSceneGraph.NextGroupIndex, parentFinBone));
+        if (ttydGroup.NextGroupIndex != -1) {
+          groupAndBoneQueue.Enqueue(
+              (ttydGroup.NextGroupIndex, parentFinBone));
         }
 
-        if (ttydSceneGraph.ChildGroupIndex != -1) {
-          sceneGraphQueue.Enqueue((ttydSceneGraph.ChildGroupIndex, finBone));
+        if (ttydGroup.ChildGroupIndex != -1) {
+          groupAndBoneQueue.Enqueue((ttydGroup.ChildGroupIndex, finBone));
         }
       }
 
@@ -190,6 +205,28 @@ namespace ttyd.api {
 
         var finAnimation = finModel.AnimationManager.AddAnimation();
         finAnimation.Name = ttydAnimation.Name;
+
+        // TODO: is this right?
+        var length = ttydAnimationData.BaseInfos.SingleOrDefault()?.End ??
+                     ttydAnimationData.Keyframes.Max(k => k.Time);
+        finAnimation.FrameCount = (int) length;
+        finAnimation.FrameRate = 60;
+
+        var finBoneTracksByBone
+            = new IndexableDictionary<IReadOnlyBone, (
+                ICombinedPositionAxesTrack3d, IQuaternionRotationTrack3d,
+                IScale3dTrack)>();
+        foreach (var (_, finBone) in groupsAndBones) {
+          var finBoneTracks = finAnimation.AddBoneTracks(finBone);
+
+          var positionsTrack = finBoneTracks.UseCombinedPositionAxesTrack();
+          var rotationsTrack
+              = finBoneTracks.UseQuaternionRotationTrack();
+          var scalesTrack = finBoneTracks.UseScaleTrack();
+
+          finBoneTracksByBone[finBone]
+              = (positionsTrack, rotationsTrack, scalesTrack);
+        }
 
         var allFinMeshTracks
             = finGroupVisibilityMeshesAndDefaultVisibility
@@ -210,17 +247,83 @@ namespace ttyd.api {
                       })
               .ToArray();
 
-        // TODO: is this right?
-        var length = ttydAnimationData.BaseInfos.SingleOrDefault()?.End ??
-                     ttydAnimationData.Keyframes.Max(k => k.Time);
-        finAnimation.FrameCount = (int) length;
-        finAnimation.FrameRate = 60;
+        var animatedGroupTransformValues
+            = ttydModel.GroupTransforms.ToArray();
 
         foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
           // TODO: Usually ints, but some fractions... how to handle these?
           var keyframe = (int) ttydKeyframe.Time;
 
-          var visibilityGroupDeltaCount = ttydKeyframe.VisibilityGroupDeltaCount;
+          // Sets up transform animations
+          // TODO: Hopefully this works????
+          var groupTransformDataDeltaCount
+              = ttydKeyframe.GroupTransformDataDeltaCount;
+          if (groupTransformDataDeltaCount > 0) {
+            var groupTransformDataDeltas =
+                ttydAnimationData.GroupTransformDataDeltas.AsSpan(
+                    (int) ttydKeyframe.GroupTransformDataDeltaBaseIndex,
+                    (int) groupTransformDataDeltaCount);
+
+            var affectedSetThisFrame = new HashSet<(Group, IReadOnlyBone)>();
+            var groupTransformIndexAccumulator = 0;
+
+            foreach (var groupTransformDataDelta in groupTransformDataDeltas) {
+              groupTransformIndexAccumulator
+                  += groupTransformDataDelta.IndexDelta;
+
+              // TODO: Handle tangents
+              // TODO: Pull this out into a separate class
+
+              var deltaValue = groupTransformDataDelta.ValueDelta / 16f;
+              var before
+                  = animatedGroupTransformValues[
+                      groupTransformIndexAccumulator];
+
+              animatedGroupTransformValues[groupTransformIndexAccumulator]
+                  += deltaValue;
+
+              var after = animatedGroupTransformValues[
+                  groupTransformIndexAccumulator];
+
+              // TODO: This is the stupidest way to do this, do this better
+              foreach (var (ttydGroup, finBone) in groupsAndBones) {
+                var transformBaseIndex = ttydGroup.TransformBaseIndex;
+                var transformCount = 24;
+
+                if (transformBaseIndex >= groupTransformIndexAccumulator &&
+                    groupTransformIndexAccumulator <
+                    transformBaseIndex + transformCount) {
+                  affectedSetThisFrame.Add((ttydGroup, finBone));
+                }
+              }
+            }
+
+            foreach (var (ttydGroup, finBone) in affectedSetThisFrame) {
+              var matrix = TtydGroupTransformUtils.GetTransformMatrix(
+                  animatedGroupTransformValues.AsSpan(
+                      ttydGroup.TransformBaseIndex,
+                      24));
+              Matrix4x4.Decompose(matrix,
+                                  out var scale,
+                                  out var quaternion,
+                                  out var position);
+
+              var (positionsTrack, rotationsTrack, scalesTrack)
+                  = finBoneTracksByBone[finBone];
+
+              positionsTrack.SetKeyframe(
+                  keyframe,
+                  new Position(position.X, position.Y, position.Z));
+              rotationsTrack.SetKeyframe(keyframe, quaternion);
+              scalesTrack.Set(keyframe, scale);
+            }
+          }
+
+          // Sets up visibility animations
+          var visibilityIndexAccumulator = 0;
+
+          var visibilityGroupDeltaCount
+              = ttydKeyframe.VisibilityGroupDeltaCount;
           if (visibilityGroupDeltaCount > 0) {
             var visibilityGroupDeltas
                 = ttydAnimationData.VisibilityGroupDeltas.AsSpan(
@@ -228,8 +331,11 @@ namespace ttyd.api {
                     (int) visibilityGroupDeltaCount);
 
             foreach (var visibilityGroupDelta in visibilityGroupDeltas) {
+              visibilityIndexAccumulator
+                  += visibilityGroupDelta.VisibilityGroupId;
+
               var finMeshTracks
-                  = allFinMeshTracks[visibilityGroupDelta.VisibilityGroupId];
+                  = allFinMeshTracks[visibilityIndexAccumulator];
               finMeshTracks.DisplayStates.SetKeyframe(
                   keyframe,
                   visibilityGroupDelta.Visible
@@ -241,70 +347,6 @@ namespace ttyd.api {
       }
 
       return finModel;
-    }
-
-    private IReadOnlyFinMatrix4x4 GetSceneGraphObjectTransformMatrix_(
-        ReadOnlySpan<float> sceneGraphObjectTransforms) {
-      // Translate by v1
-      var matrix = FinMatrix4x4Util.FromTranslation(
-          sceneGraphObjectTransforms[0],
-          sceneGraphObjectTransforms[1],
-          sceneGraphObjectTransforms[2]);
-
-      // Translate by v7
-      matrix.MultiplyInPlace(
-          FinMatrix4x4Util.FromTranslation(
-              sceneGraphObjectTransforms[18],
-              sceneGraphObjectTransforms[19],
-              sceneGraphObjectTransforms[20]));
-
-      // Scale by v2
-      matrix.MultiplyInPlace(
-          FinMatrix4x4Util.FromScale(
-              sceneGraphObjectTransforms[3],
-              sceneGraphObjectTransforms[4],
-              sceneGraphObjectTransforms[5]));
-
-      // Translate by -v8
-      matrix.MultiplyInPlace(
-          FinMatrix4x4Util
-              .FromTranslation(
-                  -sceneGraphObjectTransforms[21],
-                  -sceneGraphObjectTransforms[22],
-                  -sceneGraphObjectTransforms[23]));
-
-      // Rotate by v4
-      matrix.MultiplyInPlace(
-          FinMatrix4x4Util.FromRotation(
-              QuaternionUtil.CreateZyx(
-                  float.DegreesToRadians(sceneGraphObjectTransforms[9]),
-                  float.DegreesToRadians(sceneGraphObjectTransforms[10]),
-                  float.DegreesToRadians(sceneGraphObjectTransforms[11]))));
-
-      // Translate by v5
-      matrix.MultiplyInPlace(
-          FinMatrix4x4Util.FromTranslation(
-              sceneGraphObjectTransforms[12],
-              sceneGraphObjectTransforms[13],
-              sceneGraphObjectTransforms[14]));
-
-      // Rotate by 2 * v3
-      matrix.MultiplyInPlace(
-          FinMatrix4x4Util.FromRotation(
-              QuaternionUtil.CreateZyx(
-                  float.DegreesToRadians(2 * sceneGraphObjectTransforms[6]),
-                  float.DegreesToRadians(2 * sceneGraphObjectTransforms[7]),
-                  float.DegreesToRadians(2 * sceneGraphObjectTransforms[8]))));
-
-      // Translate by -v6
-      matrix.MultiplyInPlace(
-          FinMatrix4x4Util
-              .FromTranslation(
-                  -sceneGraphObjectTransforms[15],
-                  -sceneGraphObjectTransforms[16],
-                  -sceneGraphObjectTransforms[17]));
-
-      return matrix;
     }
   }
 }

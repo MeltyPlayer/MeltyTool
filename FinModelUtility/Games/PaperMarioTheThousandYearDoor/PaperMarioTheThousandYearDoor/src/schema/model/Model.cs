@@ -9,9 +9,9 @@ namespace ttyd.schema.model {
   public class Model : IBinaryDeserializable {
     public Header Header { get; } = new();
 
-    public Group[] SceneGraphs { get; private set; }
+    public Group[] Groups { get; private set; }
     public SceneGraphObject[] SceneGraphObjects { get; private set; }
-    public float[] SceneGraphObjectTransforms { get; private set; }
+    public float[] GroupTransforms { get; private set; }
 
     public Mesh[] Meshes { get; private set; }
     public Polygon[] Polygons { get; private set; }
@@ -37,12 +37,12 @@ namespace ttyd.schema.model {
     public void Read(IBinaryReader br) {
       this.Header.Read(br);
 
-      this.SceneGraphs = this.ReadNews_<Group>(br, BlockType.SCENE_GRAPH);
+      this.Groups = this.ReadNews_<Group>(br, BlockType.GROUP);
       this.SceneGraphObjects
           = this.ReadNews_<SceneGraphObject>(br, BlockType.SCENE_GRAPH_OBJECT);
-      this.SceneGraphObjectTransforms = this.ReadNews_(br,
-        BlockType.SCENE_GRAPH_OBJECT_TRANSFORM,
-        br.ReadSingles);
+      this.GroupTransforms = this.ReadNews_(br,
+                                            BlockType.GROUP_TRANSFORM,
+                                            br.ReadSingles);
 
       this.Meshes = this.ReadNews_<Mesh>(br, BlockType.MESH);
       this.Polygons = this.ReadNews_<Polygon>(br, BlockType.POLYGON);
@@ -79,7 +79,7 @@ namespace ttyd.schema.model {
 
       this.GroupVisibilities
           = this.ReadNews_(br,
-                           BlockType.SCENE_GRAPH_OBJECT_VISIBILITY,
+                           BlockType.GROUP_VISIBILITY,
                            br.ReadBytes)
                 .Select(b => b != 0)
                 .ToArray();
