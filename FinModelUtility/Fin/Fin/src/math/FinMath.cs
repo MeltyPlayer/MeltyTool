@@ -63,6 +63,18 @@ namespace fin.math {
       return value;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TNumber ModRange<TNumber>(this TNumber value,
+                                            TNumber min,
+                                            TNumber max)
+        where TNumber : INumber<TNumber> {
+      if (value < min) {
+        return max - ((min - value) % (max - min));
+      }
+
+      return min + ((value - min) % (max - min));
+    }
+
     public static int Base10DigitCount(this int value)
       => (int) Math.Max(1, 1 + Math.Log10(value));
   }

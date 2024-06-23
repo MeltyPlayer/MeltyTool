@@ -1,9 +1,12 @@
 ﻿using fin.audio;
+using fin.math;
 
 using OpenTK.Graphics.OpenGL;
 
 namespace fin.ui.rendering.gl {
   public class AotWaveformRenderer {
+    private readonly float[] points_ = new float[1000];
+
     public IAotAudioPlayback<short>? ActiveSound { get; set; }
 
     public int Width { get; set; }
@@ -19,22 +22,35 @@ namespace fin.ui.rendering.gl {
 
       GlTransform.PassMatricesIntoGl();
 
-      var baseSampleOffset = this.ActiveSound.SampleOffset;
-
-      var samplesPerPoint = 25;
+      var samplesPerPoint = 10;
       var xPerPoint = 1;
       var pointCount = Width / xPerPoint;
-      var points = new float[pointCount + 1];
+      var points = this.points_.AsSpan(0, pointCount + 1);
+
+      var samplesAcrossWidth = samplesPerPoint * pointCount;
+      var baseSampleOffset
+          = this.ActiveSound.SampleOffset - samplesAcrossWidth / 2;
+
+      var channelCount = source.AudioChannelsType == AudioChannelsType.STEREO
+          ? 2
+          : 1;
+
       for (var i = 0; i <= pointCount; ++i) {
+        var fraction = MathF.Sin(MathF.PI * (1f * i / pointCount));
+
         float totalSample = 0;
         for (var s = 0; s < samplesPerPoint; ++s) {
           var sampleOffset = baseSampleOffset + i * samplesPerPoint + s;
-          sampleOffset %= source.LengthInSamples;
+          sampleOffset = sampleOffset.ModRange(0, source.LengthInSamples);
 
-          var sample = source.GetPcm(AudioChannelType.MONO, sampleOffset);
-          totalSample += sample;
+          for (var c = 0; c < channelCount; ++c) {
+            var sample = source.GetPcm(AudioChannelType.STEREO_LEFT + c,
+                                       sampleOffset);
+            totalSample += sample;
+          }
         }
-        var meanSample = totalSample / samplesPerPoint;
+
+        var meanSample = totalSample / (samplesPerPoint * channelCount);
 
         float shortMin = short.MinValue;
         float shortMax = short.MaxValue;
@@ -48,7 +64,9 @@ namespace fin.ui.rendering.gl {
         var floatSample =
             floatMin + normalizedShortSample * (floatMax - floatMin);
 
-        points[i] = floatSample;
+        points[i] = fraction *
+                    MathF.Sign(floatSample) *
+                    MathF.Pow(MathF.Abs(floatSample), .8f);
       }
 
       GL.Color3(1f, 0, 0);
@@ -60,6 +78,7 @@ namespace fin.ui.rendering.gl {
         var y = this.MiddleY + this.Amplitude * points[i];
         GL.Vertex2(x, y);
       }
+
       GL.End();
     }
   }

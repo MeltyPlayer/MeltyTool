@@ -20,29 +20,23 @@ namespace uni.ui.avalonia.common.gl {
     private static bool isLoaded_ = false;
 
     protected sealed override void OnOpenGlInit(GlInterface gl) {
-      GlUtil.RunLockedGl(
-          () => {
-            if (!isLoaded_) {
-              //Initialize the OpenTK<->Avalonia Bridge
-              this.avaloniaTkContext_ = new AvaloniaOpenTkContext(gl);
+      if (!isLoaded_) {
+        //Initialize the OpenTK<->Avalonia Bridge
+        this.avaloniaTkContext_ = new AvaloniaOpenTkContext(gl);
 
-              GL.LoadBindings(this.avaloniaTkContext_);
-              isLoaded_ = true;
-            }
+        GL.LoadBindings(this.avaloniaTkContext_);
+        isLoaded_ = true;
+      }
 
-            GlUtil.SwitchContext(this);
-            this.InitGl();
-          });
+      GlUtil.SwitchContext(this);
+      this.InitGl();
     }
 
     protected override void OnOpenGlRender(GlInterface gl, int fb) {
       Dispatcher.UIThread.Post(this.RequestNextFrameRendering,
                                DispatcherPriority.Background);
-      GlUtil.RunLockedGl(
-          () => {
-            GlUtil.SwitchContext(this);
-            this.RenderGl();
-          });
+      GlUtil.SwitchContext(this);
+      this.RenderGl();
     }
 
     protected sealed override void OnOpenGlDeinit(GlInterface gl)

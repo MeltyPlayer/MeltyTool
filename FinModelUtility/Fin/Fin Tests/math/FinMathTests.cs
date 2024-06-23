@@ -37,6 +37,15 @@ namespace fin.math {
       => Assert.AreEqual(expectedResult, value.Wrap(min, max), .001f);
 
     [Test]
+    [TestCase(1, 1, 5, ExpectedResult = 1)]
+    [TestCase(2, 1, 5, ExpectedResult = 2)]
+    [TestCase(0, 1, 5, ExpectedResult = 4)]
+    [TestCase(5, 1, 5, ExpectedResult = 1)]
+    [TestCase(6, 1, 5, ExpectedResult = 2)]
+    public int TestModRange(int value, int min, int max)
+      => value.ModRange(min, max);
+
+    [Test]
     [TestCase(0, ExpectedResult = 1)]
     [TestCase(2, ExpectedResult = 1)]
     [TestCase(10, ExpectedResult = 2)]
