@@ -37,6 +37,7 @@ namespace ttyd.api {
 
       var ttydGroups = ttydModel.Groups;
       var ttydGroupTransforms = ttydModel.GroupTransforms;
+      var ttydGroupToParent = new Dictionary<Group, Group>();
 
       var finModel = new ModelImpl {
           FileBundle = fileBundle,
@@ -86,18 +87,21 @@ namespace ttyd.api {
       // Adds bones/meshes
       var groupsAndBones = new (Group, IReadOnlyBone)[ttydGroups.Length];
 
-      var groupAndBoneQueue = new FinTuple2Queue<int, IBone>(
-          (ttydGroups.Length - 1, finModel.Skeleton.Root));
+      var groupAndBoneQueue = new FinTuple3Queue<int, Group?, IBone>(
+          (ttydGroups.Length - 1, null, finModel.Skeleton.Root));
       while (groupAndBoneQueue.TryDequeue(
                  out var ttydGroupIndex,
+                 out var ttydParentGroup,
                  out var parentFinBone)) {
         var ttydGroup = ttydGroups[ttydGroupIndex];
+        if (ttydParentGroup != null) {
+          ttydGroupToParent[ttydGroup] = ttydParentGroup;
+        }
 
         var matrix = TtydGroupTransformUtils.GetTransformMatrix(
-            ttydGroupTransforms.AsSpan(
-                ttydGroup.TransformBaseIndex,
-                24),
-            ttydGroup.IsJoint);
+            ttydGroup,
+            ttydGroupToParent,
+            ttydGroupTransforms);
         Matrix4x4.Decompose(matrix,
                             out var scale,
                             out var quaternion,
@@ -189,11 +193,12 @@ namespace ttyd.api {
 
         if (ttydGroup.NextGroupIndex != -1) {
           groupAndBoneQueue.Enqueue(
-              (ttydGroup.NextGroupIndex, parentFinBone));
+              (ttydGroup.NextGroupIndex, ttydParentGroup, parentFinBone));
         }
 
         if (ttydGroup.ChildGroupIndex != -1) {
-          groupAndBoneQueue.Enqueue((ttydGroup.ChildGroupIndex, finBone));
+          groupAndBoneQueue.Enqueue((ttydGroup.ChildGroupIndex, ttydGroup,
+                                     finBone));
         }
       }
 
@@ -301,10 +306,9 @@ namespace ttyd.api {
 
             foreach (var (ttydGroup, finBone) in affectedSetThisFrame) {
               var matrix = TtydGroupTransformUtils.GetTransformMatrix(
-                  animatedGroupTransformValues.AsSpan(
-                      ttydGroup.TransformBaseIndex,
-                      24),
-                  ttydGroup.IsJoint);
+                  ttydGroup,
+                  ttydGroupToParent,
+                  animatedGroupTransformValues);
               Matrix4x4.Decompose(matrix,
                                   out var scale,
                                   out var quaternion,
