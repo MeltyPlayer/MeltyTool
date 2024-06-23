@@ -210,10 +210,33 @@ namespace ttyd.api {
                       })
               .ToArray();
 
-        foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
-          var frame = ttydKeyframe.Time;
+        // TODO: is this right?
+        var length = ttydAnimationData.BaseInfos.SingleOrDefault()?.End ??
+                     ttydAnimationData.Keyframes.Max(k => k.Time);
+        finAnimation.FrameCount = (int) length;
+        finAnimation.FrameRate = 60;
 
-          ;
+        foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
+          // TODO: Usually ints, but some fractions... how to handle these?
+          var keyframe = (int) ttydKeyframe.Time;
+
+          var visibilityGroupDeltaCount = ttydKeyframe.VisibilityGroupDeltaCount;
+          if (visibilityGroupDeltaCount > 0) {
+            var visibilityGroupDeltas
+                = ttydAnimationData.VisibilityGroupDeltas.AsSpan(
+                    (int) ttydKeyframe.VisibilityGroupDeltaBaseIndex,
+                    (int) visibilityGroupDeltaCount);
+
+            foreach (var visibilityGroupDelta in visibilityGroupDeltas) {
+              var finMeshTracks
+                  = allFinMeshTracks[visibilityGroupDelta.VisibilityGroupId];
+              finMeshTracks.DisplayStates.SetKeyframe(
+                  keyframe,
+                  visibilityGroupDelta.Visible
+                      ? MeshDisplayState.VISIBLE
+                      : MeshDisplayState.HIDDEN);
+            }
+          }
         }
       }
 
