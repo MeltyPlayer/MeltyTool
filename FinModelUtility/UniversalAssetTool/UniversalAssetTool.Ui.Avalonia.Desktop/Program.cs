@@ -21,8 +21,10 @@ class Program
             .UsePlatformDetect()
             .With(new Win32PlatformOptions {
                 RenderingMode = [ Win32RenderingMode.Wgl ],
+                // TODO: Allows GL.Begin to work
                 WglProfiles
-                    = [new GlVersion(GlProfileType.OpenGL, 4, 0)],
+                    = [new GlVersion(GlProfileType.OpenGL, 3, 1)],
+
             })
             .WithInterFont()
             .LogToTrace()

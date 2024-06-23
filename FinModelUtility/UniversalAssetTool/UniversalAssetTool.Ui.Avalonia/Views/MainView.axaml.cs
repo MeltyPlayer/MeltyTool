@@ -23,6 +23,11 @@ public partial class MainView : UserControl {
              this.SceneViewerGlPanel.Scene = sceneInstance;
            };
 
+    AudioPlaylistService.OnPlaylistUpdated
+        += playlist => {
+             this.AudioPlayerGlPanel.AudioFileBundles = playlist;
+           };
+
     this.RegisterPanel_(this.SceneViewerGlPanel, PanelType.NEITHER);
     this.RegisterPanel_(this.FileSelectorPanel, PanelType.FILE_SELECTOR);
     this.RegisterPanel_(this.InfoPanel, PanelType.INFO_PANEL);

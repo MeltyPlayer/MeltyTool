@@ -7,6 +7,7 @@
              xmlns:model="clr-namespace:uni.ui.avalonia.resources.model"
              xmlns:scene="clr-namespace:uni.ui.avalonia.resources.scene"
              xmlns:views="clr-namespace:uni.ui.avalonia.Views"
+             xmlns:audio="clr-namespace:uni.ui.avalonia.resources.audio"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -81,13 +82,22 @@
         </TextBlock.Effect>
       </TextBlock>
 
-      <Grid ZIndex="-5"
-            Background="Magenta">
-        <scene:SceneInstanceViewerGlPanel
-            x:Name="SceneViewerGlPanel"
-            IsTabStop="True"
-            TabIndex="0"
-            Focusable="True" />
+      <Grid ZIndex="-5">
+        <Grid Background="Magenta">
+          <scene:SceneInstanceViewerGlPanel
+              x:Name="SceneViewerGlPanel"
+              IsTabStop="True"
+              TabIndex="0"
+              Focusable="True" />
+        </Grid>
+
+        <Grid MaxWidth="500"
+              Height="32"
+              VerticalAlignment="Bottom"
+              Margin="0 32">
+          <audio:AudioPlayerGlPanel x:Name="AudioPlayerGlPanel" />
+        </Grid>
+
       </Grid>
     </Grid>
   </Grid>

@@ -5,6 +5,7 @@ using System.Drawing;
 using fin.audio;
 using fin.audio.io;
 using fin.data;
+using fin.model;
 using fin.ui.playback.al;
 using fin.ui.rendering.gl;
 using fin.ui.rendering.gl.material;
@@ -14,6 +15,8 @@ using OpenTK.Graphics.OpenGL;
 
 using uni.api;
 using uni.ui.avalonia.common.gl;
+
+using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 
 namespace uni.ui.avalonia.resources.audio;
 
@@ -98,7 +101,8 @@ public class AudioPlayerGlPanel : BOpenTkControl {
     var height = (int) (this.Bounds.Height * 1.25);
     GL.Viewport(0, 0, width, height);
 
-    GlUtil.ClearColorAndDepth();
+    GL.ClearColor(0, 0, 0, 0);
+    GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
     {
       GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
@@ -113,27 +117,11 @@ public class AudioPlayerGlPanel : BOpenTkControl {
     }
 
     CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
-    GlTransform.PassMatricesIntoGl();
-
-    GL.LineWidth(1f);
 
     var amplitude = height * .45f;
     this.waveformRenderer_.Width = width;
     this.waveformRenderer_.Amplitude = amplitude;
     this.waveformRenderer_.MiddleY = height / 2f;
     this.waveformRenderer_.Render();
-
-    GL.Color3(1f, 1f, 1f);
-    GL.Begin(PrimitiveType.Triangles);
-
-    GL.Vertex2(0, 0);
-    GL.Vertex2(0, height);
-    GL.Vertex2(width, 0);
-
-    GL.Vertex2(0, 0);
-    GL.Vertex2(width, 0);
-    GL.Vertex2(0, height);
-
-    GL.End();
   }
 }
