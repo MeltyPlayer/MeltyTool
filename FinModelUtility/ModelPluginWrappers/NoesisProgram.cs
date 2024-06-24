@@ -3,6 +3,7 @@ using fin.model.io.exporters.assimp.indirect;
 using fin.io;
 using fin.model;
 using fin.model.impl;
+using fin.model.util;
 
 using IronPython.Hosting;
 using IronPython.Runtime;
@@ -30,7 +31,7 @@ namespace ModelPluginWrappers {
     }
 
     public class Rpg {
-      private readonly ModelImpl model_ = new();
+      private readonly ModelImpl model_ = ModelImpl.CreateForViewer();
 
       private string name_;
 

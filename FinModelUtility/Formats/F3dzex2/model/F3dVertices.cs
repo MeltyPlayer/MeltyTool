@@ -8,6 +8,7 @@ using f3dzex2.image;
 using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
+using fin.model.util;
 using fin.util.enums;
 
 namespace f3dzex2.model {

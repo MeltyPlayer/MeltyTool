@@ -10,6 +10,7 @@ using fin.io;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.util.asserts;
 using fin.util.enums;
 using fin.util.image;
@@ -217,13 +218,13 @@ namespace glo.api {
           var scale = gloMesh.ScaleKeys[0].Scale;
 
           var finBone = parentFinBone
-                        .AddChild(position.X, position.Y, position.Z)
+                        .AddChild(position)
                         .SetLocalRotationRadians(
                             rotation.X,
                             rotation.Y,
                             rotation.Z)
                         // This is weird, but seems to be right for levels.
-                        .SetLocalScale(scale.Y, scale.X, scale.Z);
+                        .SetLocalScale(scale);
           finBone.Name = name + "_bone";
           finBone.IgnoreParentScale = true;
           meshesAndBones.Add((gloMesh, finBone));

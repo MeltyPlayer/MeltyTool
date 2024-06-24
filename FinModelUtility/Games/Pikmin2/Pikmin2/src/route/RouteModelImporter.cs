@@ -3,6 +3,7 @@
 using fin.io;
 using fin.model;
 using fin.model.impl;
+using fin.model.util;
 using fin.util.sets;
 
 namespace games.pikmin2.route {

@@ -18,6 +18,7 @@ using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.util.enums;
 using fin.util.hex;
 using fin.util.strings;
@@ -67,17 +68,9 @@ namespace dat.api {
         var (finParentBone, jObj) = boneQueue.Dequeue();
 
         var finBone =
-            finParentBone.AddChild(jObj.Position.X,
-                                   jObj.Position.Y,
-                                   jObj.Position.Z)
-                         .SetLocalRotationRadians(
-                             jObj.RotationRadians.X,
-                             jObj.RotationRadians.Y,
-                             jObj.RotationRadians.Z)
-                         .SetLocalScale(
-                             jObj.Scale.X,
-                             jObj.Scale.Y,
-                             jObj.Scale.Z);
+            finParentBone.AddChild(jObj.Position)
+                         .SetLocalRotationRadians(jObj.RotationRadians)
+                         .SetLocalScale(jObj.Scale);
         finBone.Name = jObj.Name;
 
         finBoneByJObj[jObj] = finBone;

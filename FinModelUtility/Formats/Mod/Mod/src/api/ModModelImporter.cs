@@ -10,6 +10,7 @@ using fin.io;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.util.asserts;
 using fin.util.lists;
 
@@ -172,14 +173,9 @@ namespace mod.api {
 
         var joint = mod.joints[jointIndex];
 
-        var bone = (parent ?? model.Skeleton.Root).AddChild(
-            joint.position.X,
-            joint.position.Y,
-            joint.position.Z);
-        bone.SetLocalRotationRadians(joint.rotation.X,
-                                     joint.rotation.Y,
-                                     joint.rotation.Z);
-        bone.SetLocalScale(joint.scale.X, joint.scale.Y, joint.scale.Z);
+        var bone = (parent ?? model.Skeleton.Root).AddChild(joint.position);
+        bone.SetLocalRotationRadians(joint.rotation);
+        bone.SetLocalScale(joint.scale);
 
         if (mod.jointNames.Count > 0) {
           var jointName = mod.jointNames[jointIndex];

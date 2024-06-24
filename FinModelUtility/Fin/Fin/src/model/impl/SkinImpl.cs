@@ -60,16 +60,6 @@ namespace fin.model.impl {
         }
       }
 
-      public TVertex AddVertex(Vector3 position)
-        => this.AddVertex(new Position(position.X, position.Y, position.Z));
-
-      public TVertex AddVertex(IReadOnlyXyz position)
-        => this.AddVertex(new Position(position.X, position.Y, position.Z));
-
-      public TVertex AddVertex(float x, float y, float z)
-        => this.AddVertex(new Position(x, y, z));
-
-
       public IReadOnlyList<IMesh> Meshes { get; }
 
       public IMesh AddMesh() {

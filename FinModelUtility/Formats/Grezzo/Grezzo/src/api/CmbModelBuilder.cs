@@ -11,6 +11,7 @@ using fin.io.bundles;
 using fin.math;
 using fin.model;
 using fin.model.impl;
+using fin.model.util;
 using fin.util.asserts;
 using fin.util.enumerables;
 
@@ -60,9 +61,9 @@ namespace grezzo.api {
 
         var finBone =
             (finBoneParent ?? finModel.Skeleton.Root)
-            .AddChild(translation.X, translation.Y, translation.Z)
-            .SetLocalRotationRadians(radians.X, radians.Y, radians.Z)
-            .SetLocalScale(scale.X, scale.Y, scale.Z);
+            .AddChild(translation)
+            .SetLocalRotationRadians(radians)
+            .SetLocalScale(scale);
         finBones[cmbBone.id] = finBone;
 
         if (boneChildren.TryGetList(cmbBone, out var children)) {

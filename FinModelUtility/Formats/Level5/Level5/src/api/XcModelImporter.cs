@@ -7,6 +7,7 @@ using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.model.util;
 
 using level5.schema;
 

@@ -4,6 +4,7 @@ using fin.color;
 using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
+using fin.model.util;
 using fin.ui.rendering.gl.model;
 
 namespace fin.ui.rendering.gl {

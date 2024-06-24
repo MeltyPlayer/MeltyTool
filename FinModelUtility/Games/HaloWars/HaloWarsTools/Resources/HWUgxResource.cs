@@ -15,6 +15,7 @@ using fin.io;
 using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
+using fin.model.util;
 using fin.scene;
 using fin.util.asserts;
 
@@ -543,9 +544,8 @@ namespace HaloWarsTools {
                 continue;
             }
 
-            var finVertex =
-                finSkin.AddVertex(position.X, position.Y, position.Z);
-            finVertex.SetLocalNormal(normal.X, normal.Y, normal.Z);
+            var finVertex = finSkin.AddVertex(position);
+            finVertex.SetLocalNormal(normal);
             finVertex.SetUv(texcoord.X, texcoord.Y);
 
             if (hasBones) {

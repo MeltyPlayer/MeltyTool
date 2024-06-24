@@ -17,6 +17,7 @@ using fin.io;
 using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model.impl;
+using fin.model.util;
 using fin.util.sets;
 
 using SixLabors.ImageSharp.PixelFormats;
@@ -142,18 +143,8 @@ namespace fin.model.io.importers.assimp {
         finBone.Name = name;
         finBoneByName[name] = finBone;
 
-        var finMatrix =
-            Matrix4x4ConversionUtil.ConvertAssimpToFin(assNode.Transform);
-        finMatrix.Decompose(out var translation,
-                            out var rotation,
-                            out var scale);
-        var eulerRadians = QuaternionUtil.ToEulerRadians(rotation);
-
-        finBone.SetLocalPosition(translation.X, translation.Y, translation.Z)
-               .SetLocalRotationRadians(eulerRadians.X,
-                                        eulerRadians.Y,
-                                        eulerRadians.Z)
-               .SetLocalScale(scale.X, scale.Y, scale.Z);
+        finBone.SetLocalMatrix(
+            Matrix4x4ConversionUtil.ConvertAssimpToFin(assNode.Transform));
 
         nodeAndBoneQueue.Enqueue(
             assNode.Children.Select(childNode

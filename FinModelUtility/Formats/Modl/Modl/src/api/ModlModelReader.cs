@@ -8,6 +8,7 @@ using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.util.enumerables;
 
 using modl.schema.anim;
@@ -82,17 +83,13 @@ namespace modl.api {
               modlRotation.Y,
               modlRotation.Z,
               flipSign * modlRotation.W);
-          var eulerRadians = QuaternionUtil.ToEulerRadians(rotation);
 
           var finBone =
               parentFinBone
                   .AddChild(flipSign * bonePosition.X,
                             bonePosition.Y,
                             bonePosition.Z)
-                  .SetLocalRotationRadians(
-                      eulerRadians.X,
-                      eulerRadians.Y,
-                      eulerRadians.Z);
+                  .SetLocalRotation(rotation);
 
           var identifier = modlNode.GetIdentifier();
           finBone.Name = identifier;

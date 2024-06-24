@@ -11,6 +11,7 @@ using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.schema.matrix;
 using fin.util.asserts;
 
@@ -110,18 +111,12 @@ namespace jsystem.api {
         var rotationFactor = 1f / 32768f * 3.14159f;
         var bone =
             parentBone
-                .AddChild(
-                    joint.Translation.X,
-                    joint.Translation.Y,
-                    joint.Translation.Z)
+                .AddChild(joint.Translation)
                 .SetLocalRotationRadians(
                     joint.Rotation.X * rotationFactor,
                     joint.Rotation.Y * rotationFactor,
                     joint.Rotation.Z * rotationFactor)
-                .SetLocalScale(
-                    joint.Scale.X,
-                    joint.Scale.Y,
-                    joint.Scale.Z);
+                .SetLocalScale(joint.Scale);
         bone.Name = jointName;
 
         bone.IgnoreParentScale = node.Entry.IgnoreParentScale;
