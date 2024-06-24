@@ -224,7 +224,7 @@ namespace glo.api {
                             rotation.Y,
                             rotation.Z)
                         // This is weird, but seems to be right for levels.
-                        .SetLocalScale(scale);
+                        .SetLocalScale(scale.Y, scale.X, scale.Z);
           finBone.Name = name + "_bone";
           finBone.IgnoreParentScale = true;
           meshesAndBones.Add((gloMesh, finBone));
