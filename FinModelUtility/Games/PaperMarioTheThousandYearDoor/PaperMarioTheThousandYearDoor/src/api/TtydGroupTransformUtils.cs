@@ -43,8 +43,6 @@ namespace ttyd.api {
           }
         }
 
-        jointMatrix
-            = combineMatrices(jointMatrix, Matrix4x4.CreateScale(scale));
         jointMatrix = combineMatrices(jointMatrix,
                                       SystemMatrix4x4Util.FromRotation(
                                           QuaternionUtil.CreateZyxRadians(
@@ -56,6 +54,10 @@ namespace ttyd.api {
                                               rotationDegrees1 *
                                               deg2Rad *
                                               2)));
+
+        jointMatrix
+            = combineMatrices(jointMatrix, Matrix4x4.CreateScale(scale));
+
         return jointMatrix;
       }
 
@@ -72,15 +74,6 @@ namespace ttyd.api {
 
       nonJointMatrix = combineMatrices(
           nonJointMatrix,
-          Matrix4x4.CreateTranslation(scaleCenter + scaleTranslation));
-      nonJointMatrix
-          = combineMatrices(nonJointMatrix, Matrix4x4.CreateScale(scale));
-      nonJointMatrix
-          = combineMatrices(nonJointMatrix,
-                            Matrix4x4.CreateTranslation(-scaleCenter));
-
-      nonJointMatrix = combineMatrices(
-          nonJointMatrix,
           Matrix4x4.CreateTranslation(rotationCenter + rotationTranslation));
       nonJointMatrix
           = combineMatrices(nonJointMatrix,
@@ -90,6 +83,15 @@ namespace ttyd.api {
       nonJointMatrix
           = combineMatrices(nonJointMatrix,
                             Matrix4x4.CreateTranslation(-rotationCenter));
+
+      nonJointMatrix = combineMatrices(
+          nonJointMatrix,
+          Matrix4x4.CreateTranslation(scaleCenter + scaleTranslation));
+      nonJointMatrix
+          = combineMatrices(nonJointMatrix, Matrix4x4.CreateScale(scale));
+      nonJointMatrix
+          = combineMatrices(nonJointMatrix,
+                            Matrix4x4.CreateTranslation(-scaleCenter));
 
       return nonJointMatrix;
     }
