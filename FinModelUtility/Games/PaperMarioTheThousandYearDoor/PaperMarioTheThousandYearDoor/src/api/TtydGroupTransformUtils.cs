@@ -30,15 +30,17 @@ namespace ttyd.api {
         var jointMatrix = Matrix4x4.CreateTranslation(translation);
 
         if (ttydGroupToParent.TryGetValue(ttydGroup, out var parentTtydGroup)) {
-          var parentScale
-              = new Vector3(allGroupTransforms.Slice(
-                                parentTtydGroup.TransformBaseIndex + 3,
-                                3));
-          jointMatrix = combineMatrices(
-              jointMatrix,
-              Matrix4x4.CreateScale(new Vector3(1 / parentScale.X,
-                                                1 / parentScale.Y,
-                                                1 / parentScale.Z)));
+          if (parentTtydGroup.IsJoint) {
+            var parentScale
+                = new Vector3(allGroupTransforms.Slice(
+                                  parentTtydGroup.TransformBaseIndex + 3,
+                                  3));
+            jointMatrix = combineMatrices(
+                jointMatrix,
+                Matrix4x4.CreateScale(new Vector3(1 / parentScale.X,
+                                                  1 / parentScale.Y,
+                                                  1 / parentScale.Z)));
+          }
         }
 
         jointMatrix

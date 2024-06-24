@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.data.dictionaries;
 using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.queues;
@@ -38,6 +39,7 @@ namespace ttyd.api {
       var ttydGroups = ttydModel.Groups;
       var ttydGroupTransforms = ttydModel.GroupTransforms;
       var ttydGroupToParent = new Dictionary<Group, Group>();
+      var ttydGroupToChildren = new SetDictionary<Group, (Group, IReadOnlyBone)>();
 
       var finModel = new ModelImpl {
           FileBundle = fileBundle,
@@ -94,9 +96,6 @@ namespace ttyd.api {
                  out var ttydParentGroup,
                  out var parentFinBone)) {
         var ttydGroup = ttydGroups[ttydGroupIndex];
-        if (ttydParentGroup != null) {
-          ttydGroupToParent[ttydGroup] = ttydParentGroup;
-        }
 
         var matrix = TtydGroupTransformUtils.GetTransformMatrix(
             ttydGroup,
@@ -115,6 +114,11 @@ namespace ttyd.api {
               .SetLocalScale(scale.X, scale.Y, scale.Z);
         finBone.Name = ttydGroup.Name;
         groupsAndBones[ttydGroupIndex] = (ttydGroup, finBone);
+
+        if (ttydParentGroup != null) {
+          ttydGroupToParent[ttydGroup] = ttydParentGroup;
+          ttydGroupToChildren.Add(ttydParentGroup, (ttydGroup, finBone));
+        }
 
         var boneWeights = finModel.Skin.GetOrCreateBoneWeights(
             VertexSpace.RELATIVE_TO_BONE,
@@ -281,15 +285,8 @@ namespace ttyd.api {
               // TODO: Pull this out into a separate class
 
               var deltaValue = groupTransformDataDelta.ValueDelta / 16f;
-              var before
-                  = animatedGroupTransformValues[
-                      groupTransformIndexAccumulator];
-
               animatedGroupTransformValues[groupTransformIndexAccumulator]
                   += deltaValue;
-
-              var after = animatedGroupTransformValues[
-                  groupTransformIndexAccumulator];
 
               // TODO: This is the stupidest way to do this, do this better
               foreach (var (ttydGroup, finBone) in groupsAndBones) {
@@ -300,6 +297,12 @@ namespace ttyd.api {
                     groupTransformIndexAccumulator <
                     transformBaseIndex + transformCount) {
                   affectedSetThisFrame.Add((ttydGroup, finBone));
+
+                  if (ttydGroupToChildren.TryGetSet(ttydGroup, out var ttydChildren)) {
+                    foreach (var ttydChild in ttydChildren) {
+                      affectedSetThisFrame.Add(ttydChild);
+                    }
+                  }
                 }
               }
             }
