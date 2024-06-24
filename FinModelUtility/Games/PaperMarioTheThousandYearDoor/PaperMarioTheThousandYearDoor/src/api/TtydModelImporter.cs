@@ -5,12 +5,11 @@ using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
-using fin.math.matrix.four;
-using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.util.sets;
 
 using schema.binary;
@@ -102,17 +101,8 @@ namespace ttyd.api {
             ttydGroup,
             ttydGroupToParent,
             ttydGroupTransforms);
-        Matrix4x4.Decompose(matrix,
-                            out var scale,
-                            out var quaternion,
-                            out var position);
-        var rotation = QuaternionUtil.ToEulerRadians(quaternion);
-
-        var finBone
-            = parentFinBone
-              .AddChild(position.X, position.Y, position.Z)
-              .SetLocalRotationRadians(rotation.X, rotation.Y, rotation.Z)
-              .SetLocalScale(scale.X, scale.Y, scale.Z);
+        
+        var finBone = parentFinBone.AddChild(matrix);
         finBone.Name = ttydGroup.Name;
         groupsAndBones[ttydGroupIndex] = (ttydGroup, finBone);
 

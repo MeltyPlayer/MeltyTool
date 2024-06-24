@@ -7,6 +7,7 @@ using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.schema.matrix;
 using fin.util.hash;
 
@@ -175,19 +176,7 @@ namespace visceral.api {
                                         .CloneAndMultiply(currentMatrix);
           }
 
-          currentMatrix.Decompose(out var translation,
-                                  out var rotation,
-                                  out var scale);
-          var eulerRadians = QuaternionUtil.ToEulerRadians(rotation);
-
-          var finBone =
-              finParentBone
-                  .AddChild(translation.X, translation.Y, translation.Z)
-                  .SetLocalRotationRadians(
-                      eulerRadians.X,
-                      eulerRadians.Y,
-                      eulerRadians.Z)
-                  .SetLocalScale(scale.X, scale.Y, scale.Z);
+          var finBone = finParentBone.AddChild(currentMatrix);
           finBones[id] = finBone;
 
           if (childIndices.TryGetList(id, out var currentChildren)) {
