@@ -36,19 +36,7 @@ namespace ttyd.api {
 
       this.transformKeyframes_
           = initialTransforms
-            .Select(v => {
-                      var keyframes = new Keyframes<ValueAndTangents<float>>();
-                      if (!isLooping) {
-                        keyframes.SetKeyframe(0,
-                                              new ValueAndTangents<float>(
-                                                  v,
-                                                  v,
-                                                  0,
-                                                  0));
-                      }
-
-                      return keyframes;
-                    })
+            .Select(_ => new Keyframes<ValueAndTangents<float>>())
             .ToArray();
     }
 
