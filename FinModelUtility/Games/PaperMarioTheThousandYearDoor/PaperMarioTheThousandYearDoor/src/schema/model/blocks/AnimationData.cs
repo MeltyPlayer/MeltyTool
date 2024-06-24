@@ -123,9 +123,7 @@ namespace ttyd.schema.model.blocks {
   public partial class AnimationModelFileAnimationVisibilityGroupStatus
       : IBinaryConvertible {
     public byte VisibilityGroupId { get; set; }
-
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public bool Visible { get; set; }
+    public sbyte Visible { get; set; }
   }
 
 

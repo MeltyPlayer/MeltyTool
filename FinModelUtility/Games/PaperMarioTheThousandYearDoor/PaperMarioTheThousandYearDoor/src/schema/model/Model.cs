@@ -80,8 +80,8 @@ namespace ttyd.schema.model {
       this.GroupVisibilities
           = this.ReadNews_(br,
                            BlockType.GROUP_VISIBILITY,
-                           br.ReadBytes)
-                .Select(b => b != 0)
+                           br.ReadSBytes)
+                .Select(b => b == 1)
                 .ToArray();
 
       this.Animations = this.ReadNews_<Animation>(

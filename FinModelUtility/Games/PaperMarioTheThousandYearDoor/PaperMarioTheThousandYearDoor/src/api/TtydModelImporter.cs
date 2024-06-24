@@ -261,7 +261,9 @@ namespace ttyd.api {
         finAnimation.UseLoopingInterpolation = isLooping;
 
         var keyframes
-            = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms);
+            = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms,
+                                              finAnimation.FrameCount,
+                                              isLooping);
         foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
           var keyframe = (int) ttydKeyframe.Time;
 
@@ -289,6 +291,7 @@ namespace ttyd.api {
                           groupTransformDataDelta.OutTangentDegrees * deg2Rad);
 
               var deltaValue = groupTransformDataDelta.ValueDelta / 16f;
+              
               keyframes.SetTransformAtFrame(groupTransformIndexAccumulator,
                                             ttydKeyframe.Time,
                                             deltaValue,
@@ -316,7 +319,7 @@ namespace ttyd.api {
                   = allFinMeshTracks[visibilityIndexAccumulator];
               finMeshTracks.DisplayStates.SetKeyframe(
                   keyframe,
-                  visibilityGroupDelta.Visible
+                  visibilityGroupDelta.Visible == 1
                       ? MeshDisplayState.VISIBLE
                       : MeshDisplayState.HIDDEN);
             }

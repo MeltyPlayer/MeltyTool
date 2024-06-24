@@ -1,6 +1,5 @@
 ﻿using fin.animation;
-using fin.math.interpolation;
-using fin.util.linq;
+using fin.math.floats;
 
 using ttyd.schema.model.blocks;
 
@@ -21,25 +20,33 @@ namespace ttyd.api {
 
   public class TtydGroupTransformKeyframes : IGroupTransformKeyframes {
     private readonly float[] transforms_;
+    private readonly int animationLength_;
+    private readonly bool isLooping_;
 
     private readonly IReadOnlyList<Keyframes<ValueAndTangents<float>>>
         transformKeyframes_;
 
-    private readonly FloatInterpolator interpolator_ = new();
-
     public TtydGroupTransformKeyframes(
-        IReadOnlyList<float> initialTransforms) {
+        IReadOnlyList<float> initialTransforms,
+        int animationLength,
+        bool isLooping) {
       this.transforms_ = initialTransforms.ToArray();
+      this.animationLength_ = animationLength;
+      this.isLooping_ = isLooping;
+
       this.transformKeyframes_
           = initialTransforms
             .Select(v => {
                       var keyframes = new Keyframes<ValueAndTangents<float>>();
-                      keyframes.SetKeyframe(0,
-                                            new ValueAndTangents<float>(
-                                                v,
-                                                v,
-                                                0,
-                                                0));
+                      if (!isLooping) {
+                        keyframes.SetKeyframe(0,
+                                              new ValueAndTangents<float>(
+                                                  v,
+                                                  v,
+                                                  0,
+                                                  0));
+                      }
+
                       return keyframes;
                     })
             .ToArray();
@@ -50,13 +57,17 @@ namespace ttyd.api {
                                     float deltaValue,
                                     float inTangent,
                                     float outTangent) {
+      if (deltaValue == 0 && inTangent == 0 && outTangent == 0) {
+        return;
+      }
+
       var value = this.transforms_[transformIndex] += deltaValue;
 
       var keyframes = this.transformKeyframes_[transformIndex];
 
       var intFrame = (int) frame;
       var keyframe = keyframes.GetKeyframeAtExactFrame(intFrame);
-      if (keyframe != null) {
+      if (keyframe != null && frame > 0) {
         var valueAndTangents = keyframe.Value.Value;
         keyframes.SetKeyframe(
             intFrame,
@@ -81,28 +92,87 @@ namespace ttyd.api {
         var transformIndex = group.TransformBaseIndex + start + i;
         var keyframes = this.transformKeyframes_[transformIndex];
 
-        keyframes.FindIndexOfKeyframe(
-            frame,
-            out var keyframeIndex,
-            out var keyframe,
-            out var isLastKeyframe);
-
-        if (isLastKeyframe) {
-          buffer[i] = keyframe.Value.OutgoingValue;
+        if (!keyframes.HasAtLeastOneKeyframe) {
+          buffer[i] = this.transforms_[transformIndex];
           continue;
         }
 
-        var nextKeyframe = keyframes.GetKeyframeAtIndex(keyframeIndex + 1);
-        buffer[i]
-            = this.interpolator_
-                  .Interpolate(keyframe.Frame,
-                               keyframe.Value.OutgoingValue,
-                               keyframe.Value.OutgoingTangent.Value,
-                               nextKeyframe.Frame,
-                               nextKeyframe.Value.IncomingValue,
-                               nextKeyframe.Value.IncomingTangent.Value,
-                               frame);
+        var firstKeyframe = keyframes.Definitions.First();
+        var beforeFirstKeyframe = frame < firstKeyframe.Frame;
+        if (keyframes.Definitions.Count == 1 ||
+            (!this.isLooping_ && beforeFirstKeyframe)) {
+          buffer[i] = beforeFirstKeyframe
+              ? firstKeyframe.Value.IncomingValue
+              : firstKeyframe.Value.OutgoingValue;
+          continue;
+        }
+
+        keyframes.FindIndexOfKeyframe(
+            frame,
+            out var keyframeIndex,
+            out var fromKeyframe,
+            out var isLastKeyframe);
+
+        if (!this.isLooping_ && isLastKeyframe) {
+          buffer[i] = fromKeyframe.Value.OutgoingValue;
+          continue;
+        }
+
+        Keyframe<ValueAndTangents<float>> nextKeyframe;
+        if (beforeFirstKeyframe) {
+          nextKeyframe = firstKeyframe;
+          fromKeyframe = keyframes.Definitions.Last();
+        } else if (!isLastKeyframe) {
+          nextKeyframe = keyframes.GetKeyframeAtIndex(keyframeIndex + 1);
+        } else {
+          nextKeyframe = firstKeyframe;
+        }
+
+        var fromTime = fromKeyframe.Frame;
+        var toTime = nextKeyframe.Frame;
+        if (toTime <= fromTime) {
+          if (frame > fromTime) {
+            toTime += this.animationLength_;
+          } else {
+            fromTime -= this.animationLength_;
+          }
+        }
+
+        buffer[i] = Interpolate_(fromTime,
+                                 fromKeyframe.Value.OutgoingValue,
+                                 fromKeyframe.Value.OutgoingTangent.Value,
+                                 toTime,
+                                 nextKeyframe.Value.IncomingValue,
+                                 nextKeyframe.Value.IncomingTangent.Value,
+                                 frame);
       }
+    }
+
+    private static float Interpolate_(float fromTime,
+                                      float fromValue,
+                                      float fromTangent,
+                                      float toTime,
+                                      float toValue,
+                                      float toTangent,
+                                      float frame) {
+      var delta = toValue - fromValue;
+
+      var duration = toTime - fromTime;
+      var t = (frame - fromTime) / duration;
+
+      if (t.IsRoughly1() || float.IsInfinity(fromTangent)) {
+        return fromValue + delta;
+      }
+
+      var t2 = t * t;
+      var t3 = t2 * t;
+      // Tangents are already converted when parsing the frames, and the 1/16.0 is also applied there.
+      return fromValue +
+             (float) (
+                 (1.0 * t3 + -1.0 * t2 + 0.0 * t) * (duration * fromTangent) +
+                 (-2.0 * t3 + 3.0 * t2 + 0.0 * t) * delta +
+                 (1.0 * t3 + -2.0 * t2 + 1.0 * t) * (duration * toTangent)
+             );
     }
   }
 }
