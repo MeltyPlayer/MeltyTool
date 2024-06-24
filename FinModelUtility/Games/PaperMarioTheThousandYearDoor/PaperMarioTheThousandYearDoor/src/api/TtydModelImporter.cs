@@ -11,6 +11,7 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
+using fin.util.sets;
 
 using schema.binary;
 
@@ -276,6 +277,10 @@ namespace ttyd.api {
 
             var affectedSetThisFrame = new HashSet<(Group, IReadOnlyBone)>();
             var groupTransformIndexAccumulator = 0;
+
+            if (keyframe == 0) {
+              affectedSetThisFrame.Add(groupsAndBones);
+            }
 
             foreach (var groupTransformDataDelta in groupTransformDataDeltas) {
               groupTransformIndexAccumulator

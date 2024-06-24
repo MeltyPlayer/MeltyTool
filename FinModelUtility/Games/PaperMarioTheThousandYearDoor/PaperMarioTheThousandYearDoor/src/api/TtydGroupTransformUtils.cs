@@ -16,16 +16,25 @@ namespace ttyd.api {
 
       var translation = new Vector3(groupTransforms.Slice(0, 3));
       var scale = new Vector3(groupTransforms.Slice(3, 3));
+
+      var deg2Rad = MathF.PI / 180;
       var rotationDegrees1
-          = new Vector3(groupTransforms.Slice(6, 3));
+          = new Vector3(groupTransforms.Slice(6, 3)) * 2 * deg2Rad;
 
       Func<Matrix4x4, Matrix4x4, Matrix4x4> combineMatrices
           = (lhs, rhs) => rhs * lhs;
+      Func<Matrix4x4, Vector3, Matrix4x4> applyRotationMatrixes
+          = (mtx, rotation) => {
+              mtx = combineMatrices(mtx, Matrix4x4.CreateRotationZ(rotation.Z));
+              mtx = combineMatrices(mtx, Matrix4x4.CreateRotationY(rotation.Y));
+              mtx = combineMatrices(mtx, Matrix4x4.CreateRotationX(rotation.X));
 
-      var deg2Rad = MathF.PI / 180;
+              return mtx;
+            };
+
       if (ttydGroup.IsJoint) {
         var rotationDegrees2
-            = new Vector3(groupTransforms.Slice(9, 3));
+            = new Vector3(groupTransforms.Slice(9, 3)) * deg2Rad;
 
         var jointMatrix = Matrix4x4.CreateTranslation(translation);
 
@@ -43,17 +52,8 @@ namespace ttyd.api {
           }
         }
 
-        jointMatrix = combineMatrices(jointMatrix,
-                                      SystemMatrix4x4Util.FromRotation(
-                                          QuaternionUtil.CreateZyxRadians(
-                                              rotationDegrees2 *
-                                              deg2Rad)));
-        jointMatrix = combineMatrices(jointMatrix,
-                                      SystemMatrix4x4Util.FromRotation(
-                                          QuaternionUtil.CreateZyxRadians(
-                                              rotationDegrees1 *
-                                              deg2Rad *
-                                              2)));
+        jointMatrix = applyRotationMatrixes(jointMatrix, rotationDegrees2);
+        jointMatrix = applyRotationMatrixes(jointMatrix, rotationDegrees1);
 
         jointMatrix
             = combineMatrices(jointMatrix, Matrix4x4.CreateScale(scale));
@@ -75,11 +75,7 @@ namespace ttyd.api {
       nonJointMatrix = combineMatrices(
           nonJointMatrix,
           Matrix4x4.CreateTranslation(rotationCenter + rotationTranslation));
-      nonJointMatrix
-          = combineMatrices(nonJointMatrix,
-                            SystemMatrix4x4Util.FromRotation(
-                                QuaternionUtil.CreateZyxRadians(
-                                    rotationDegrees1 * 2 * deg2Rad)));
+      nonJointMatrix = applyRotationMatrixes(nonJointMatrix, rotationDegrees1);
       nonJointMatrix
           = combineMatrices(nonJointMatrix,
                             Matrix4x4.CreateTranslation(-rotationCenter));
