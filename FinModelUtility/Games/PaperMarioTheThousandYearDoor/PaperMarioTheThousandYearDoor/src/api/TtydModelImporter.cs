@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.animation;
 using fin.data.dictionaries;
 using fin.data.indexable;
 using fin.data.lazy;
@@ -10,6 +11,7 @@ using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
 using fin.model.util;
+using fin.util.linq;
 using fin.util.sets;
 
 using schema.binary;
@@ -39,7 +41,8 @@ namespace ttyd.api {
       var ttydGroups = ttydModel.Groups;
       var ttydGroupTransforms = ttydModel.GroupTransforms;
       var ttydGroupToParent = new Dictionary<Group, Group>();
-      var ttydGroupToChildren = new SetDictionary<Group, (Group, IReadOnlyBone)>();
+      var ttydGroupToChildren
+          = new SetDictionary<Group, (Group, IReadOnlyBone)>();
 
       var finModel = new ModelImpl {
           FileBundle = fileBundle,
@@ -101,7 +104,7 @@ namespace ttyd.api {
             ttydGroup,
             ttydGroupToParent,
             ttydGroupTransforms);
-        
+
         var finBone = parentFinBone.AddChild(matrix);
         finBone.Name = ttydGroup.Name;
         groupsAndBones[ttydGroupIndex] = (ttydGroup, finBone);
@@ -198,6 +201,8 @@ namespace ttyd.api {
       }
 
       // Sets up animations
+      Span<float> groupTransformsBuffer = stackalloc float[24];
+      var deg2Rad = MathF.PI / 180;
       foreach (var ttydAnimation in ttydModel.Animations) {
         var ttydAnimationData = ttydAnimation.Data;
         if (ttydAnimationData == null) {
@@ -248,15 +253,18 @@ namespace ttyd.api {
                       })
               .ToArray();
 
-        var animatedGroupTransformValues
-            = ttydModel.GroupTransforms.ToArray();
+        var isLooping = false;
+        if (ttydAnimationData.BaseInfos.TryGetFirst(out var baseInfo)) {
+          isLooping = baseInfo.Loop;
+        }
 
+        finAnimation.UseLoopingInterpolation = isLooping;
+
+        var keyframes
+            = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms);
         foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
-          // TODO: Usually ints, but some fractions... how to handle these?
           var keyframe = (int) ttydKeyframe.Time;
 
-          // Sets up transform animations
-          // TODO: Hopefully this works????
           var groupTransformDataDeltaCount
               = ttydKeyframe.GroupTransformDataDeltaCount;
           if (groupTransformDataDeltaCount > 0) {
@@ -265,61 +273,27 @@ namespace ttyd.api {
                     (int) ttydKeyframe.GroupTransformDataDeltaBaseIndex,
                     (int) groupTransformDataDeltaCount);
 
-            var affectedSetThisFrame = new HashSet<(Group, IReadOnlyBone)>();
             var groupTransformIndexAccumulator = 0;
-
-            if (keyframe == 0) {
-              affectedSetThisFrame.Add(groupsAndBones);
-            }
 
             foreach (var groupTransformDataDelta in groupTransformDataDeltas) {
               groupTransformIndexAccumulator
                   += groupTransformDataDelta.IndexDelta;
-
-              // TODO: Handle tangents
-              // TODO: Pull this out into a separate class
+              
+              var inTangent
+                  = MathF.Tan(
+                      groupTransformDataDelta.InTangentDegrees * deg2Rad);
+              var outTangent
+                  = groupTransformDataDelta.OutTangentDegrees == 90
+                      ? float.PositiveInfinity
+                      : MathF.Tan(
+                          groupTransformDataDelta.OutTangentDegrees * deg2Rad);
 
               var deltaValue = groupTransformDataDelta.ValueDelta / 16f;
-              animatedGroupTransformValues[groupTransformIndexAccumulator]
-                  += deltaValue;
-
-              // TODO: This is the stupidest way to do this, do this better
-              foreach (var (ttydGroup, finBone) in groupsAndBones) {
-                var transformBaseIndex = ttydGroup.TransformBaseIndex;
-                var transformCount = 24;
-
-                if (transformBaseIndex >= groupTransformIndexAccumulator &&
-                    groupTransformIndexAccumulator <
-                    transformBaseIndex + transformCount) {
-                  affectedSetThisFrame.Add((ttydGroup, finBone));
-
-                  if (ttydGroupToChildren.TryGetSet(ttydGroup, out var ttydChildren)) {
-                    foreach (var ttydChild in ttydChildren) {
-                      affectedSetThisFrame.Add(ttydChild);
-                    }
-                  }
-                }
-              }
-            }
-
-            foreach (var (ttydGroup, finBone) in affectedSetThisFrame) {
-              var matrix = TtydGroupTransformUtils.GetTransformMatrix(
-                  ttydGroup,
-                  ttydGroupToParent,
-                  animatedGroupTransformValues);
-              Matrix4x4.Decompose(matrix,
-                                  out var scale,
-                                  out var quaternion,
-                                  out var position);
-
-              var (positionsTrack, rotationsTrack, scalesTrack)
-                  = finBoneTracksByBone[finBone];
-
-              positionsTrack.SetKeyframe(
-                  keyframe,
-                  new Position(position.X, position.Y, position.Z));
-              rotationsTrack.SetKeyframe(keyframe, quaternion);
-              scalesTrack.Set(keyframe, scale);
+              keyframes.SetTransformAtFrame(groupTransformIndexAccumulator,
+                                            ttydKeyframe.Time,
+                                            deltaValue,
+                                            inTangent,
+                                            outTangent);
             }
           }
 
@@ -346,6 +320,30 @@ namespace ttyd.api {
                       ? MeshDisplayState.VISIBLE
                       : MeshDisplayState.HIDDEN);
             }
+          }
+        }
+
+
+        foreach (var (ttydGroup, finBone) in groupsAndBones) {
+          var (positionsTrack, rotationsTrack, scalesTrack)
+              = finBoneTracksByBone[finBone];
+
+          for (var i = 0; i < finAnimation.FrameCount; ++i) {
+            var matrix = TtydGroupTransformUtils.GetTransformMatrix(
+                ttydGroup,
+                ttydGroupToParent,
+                keyframes,
+                i);
+            Matrix4x4.Decompose(matrix,
+                                out var scale,
+                                out var quaternion,
+                                out var position);
+
+            positionsTrack.SetKeyframe(
+                i,
+                new Position(position.X, position.Y, position.Z));
+            rotationsTrack.SetKeyframe(i, quaternion);
+            scalesTrack.Set(i, scale);
           }
         }
       }

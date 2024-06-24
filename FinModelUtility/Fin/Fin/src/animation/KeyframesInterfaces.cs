@@ -15,8 +15,12 @@ namespace fin.animation {
 
     [Const]
     Keyframe<T> GetKeyframeAtIndex(int index);
+
     [Const]
     Keyframe<T>? GetKeyframeAtFrame(int frame);
+
+    [Const]
+    Keyframe<T>? GetKeyframeAtExactFrame(int frame);
 
     [Const]
     bool FindIndexOfKeyframe(
@@ -24,6 +28,5 @@ namespace fin.animation {
         out int keyframeIndex,
         out Keyframe<T> keyframe,
         out bool isLastKeyframe);
-
   }
 }

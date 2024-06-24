@@ -7,9 +7,10 @@ using fin.math;
 
 
 namespace fin.animation {
-  public readonly record struct Keyframe<T>(int Frame,
-                                            T Value,
-                                            string FrameType = "")
+  public readonly record struct Keyframe<T>(
+      int Frame,
+      T Value,
+      string FrameType = "")
       : IComparable<Keyframe<T>>, IEquatable<Keyframe<T>> {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int CompareTo(Keyframe<T> other)
@@ -99,6 +100,16 @@ namespace fin.animation {
                                out var keyframe,
                                out _);
       return keyframe;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Keyframe<T>? GetKeyframeAtExactFrame(int frame) {
+      var keyframe = this.GetKeyframeAtFrame(frame);
+      if (keyframe.HasValue && keyframe.Value.Frame == frame) {
+        return keyframe;
+      }
+
+      return null;
     }
 
 

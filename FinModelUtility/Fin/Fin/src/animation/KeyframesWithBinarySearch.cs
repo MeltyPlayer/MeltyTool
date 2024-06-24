@@ -73,6 +73,19 @@ namespace fin.animation {
       return keyframe;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Keyframe<T>? GetKeyframeAtExactFrame(int frame) {
+      this.FindIndexOfKeyframe(frame,
+                               out _,
+                               out var keyframe,
+                               out _);
+      if (keyframe != null && keyframe.Frame == frame) {
+        return keyframe;
+      }
+
+      return null;
+    }
+
 
     private int lastAccessedKeyframeIndex_ = -1;
 
