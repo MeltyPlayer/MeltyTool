@@ -20,8 +20,8 @@ namespace fin.model {
   public interface IMorphTarget {
     string Name { get; set; }
 
-    IReadOnlyDictionary<IVertex, Position> Morphs { get; }
-    IMorphTarget MoveTo(IVertex vertex, Position position);
+    IReadOnlyDictionary<IReadOnlyVertex, Position> Morphs { get; }
+    IMorphTarget MoveTo(IReadOnlyVertex vertex, Position position);
   }
 
   [GenerateReadOnly]

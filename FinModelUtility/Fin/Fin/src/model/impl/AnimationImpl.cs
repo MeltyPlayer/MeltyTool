@@ -90,17 +90,17 @@ namespace fin.model.impl {
       }
 
       private class MorphTargetImpl : IMorphTarget {
-        private Dictionary<IVertex, Position> morphs_ = new();
+        private Dictionary<IReadOnlyVertex, Position> morphs_ = new();
 
         public MorphTargetImpl() {
           this.Morphs =
-              new ReadOnlyDictionary<IVertex, Position>(this.morphs_);
+              new ReadOnlyDictionary<IReadOnlyVertex, Position>(this.morphs_);
         }
 
         public string Name { get; set; }
-        public IReadOnlyDictionary<IVertex, Position> Morphs { get; }
+        public IReadOnlyDictionary<IReadOnlyVertex, Position> Morphs { get; }
 
-        public IMorphTarget MoveTo(IVertex vertex, Position position) {
+        public IMorphTarget MoveTo(IReadOnlyVertex vertex, Position position) {
           this.morphs_[vertex] = position;
           return this;
         }
