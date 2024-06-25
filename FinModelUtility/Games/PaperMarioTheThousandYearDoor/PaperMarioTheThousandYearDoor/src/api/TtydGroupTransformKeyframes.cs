@@ -21,7 +21,10 @@ namespace ttyd.api {
   public class TtydGroupTransformKeyframes : IGroupTransformKeyframes {
     private readonly float[] transforms_;
     private readonly int animationLength_;
+
     private readonly bool isLooping_;
+    private readonly float loopStart_ = 0;
+    private readonly float loopEnd_ = 0;
 
     private readonly IReadOnlyList<Keyframes<ValueAndTangents<float>>>
         transformKeyframes_;
@@ -29,10 +32,13 @@ namespace ttyd.api {
     public TtydGroupTransformKeyframes(
         IReadOnlyList<float> initialTransforms,
         int animationLength,
-        bool isLooping) {
+        AnimationModelFileAnimationBaseInfo? baseInfo) {
       this.transforms_ = initialTransforms.ToArray();
       this.animationLength_ = animationLength;
-      this.isLooping_ = isLooping;
+
+      this.isLooping_ = baseInfo?.Loop ?? false;
+      this.loopStart_ = baseInfo?.Start ?? 0;
+      this.loopEnd_ = baseInfo?.End ?? animationLength;
 
       this.transformKeyframes_
           = initialTransforms

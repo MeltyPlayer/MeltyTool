@@ -132,5 +132,24 @@ namespace fin.animation {
       isLastKeyframe = frame == maxKeyframe;
       return true;
     }
+
+
+    public override string ToString() {
+      var definitions = this.Definitions;
+      if (definitions.Count == 0) {
+        return "Keyframes[0]";
+      }
+
+      if (definitions.Count == 1) {
+        return $"Keyframes[1] @ {definitions[0].Frame}";
+      }
+
+
+      var firstFrame = definitions.First().Frame;
+      var lastFrame = definitions.Last().Frame;
+
+      return
+          $"Keyframes[{this.Definitions.Count}] @ {firstFrame} to {lastFrame}";
+    }
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Linq;
+using System.Numerics;
 
 using fin.animation;
 using fin.data.dictionaries;
@@ -11,6 +12,7 @@ using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
 using fin.model.util;
+using fin.util.asserts;
 using fin.util.linq;
 using fin.util.sets;
 
@@ -41,8 +43,6 @@ namespace ttyd.api {
       var ttydGroups = ttydModel.Groups;
       var ttydGroupTransforms = ttydModel.GroupTransforms;
       var ttydGroupToParent = new Dictionary<Group, Group>();
-      var ttydGroupToChildren
-          = new SetDictionary<Group, (Group, IReadOnlyBone)>();
 
       var finModel = new ModelImpl {
           FileBundle = fileBundle,
@@ -100,6 +100,10 @@ namespace ttyd.api {
                  out var parentFinBone)) {
         var ttydGroup = ttydGroups[ttydGroupIndex];
 
+        if (ttydParentGroup != null) {
+          ttydGroupToParent[ttydGroup] = ttydParentGroup;
+        }
+
         var matrix = TtydGroupTransformUtils.GetTransformMatrix(
             ttydGroup,
             ttydGroupToParent,
@@ -108,11 +112,6 @@ namespace ttyd.api {
         var finBone = parentFinBone.AddChild(matrix);
         finBone.Name = ttydGroup.Name;
         groupsAndBones[ttydGroupIndex] = (ttydGroup, finBone);
-
-        if (ttydParentGroup != null) {
-          ttydGroupToParent[ttydGroup] = ttydParentGroup;
-          ttydGroupToChildren.Add(ttydParentGroup, (ttydGroup, finBone));
-        }
 
         var boneWeights = finModel.Skin.GetOrCreateBoneWeights(
             VertexSpace.RELATIVE_TO_BONE,
@@ -212,11 +211,13 @@ namespace ttyd.api {
         var finAnimation = finModel.AnimationManager.AddAnimation();
         finAnimation.Name = ttydAnimation.Name;
 
+        var baseInfo = Asserts.CastNonnull(ttydAnimationData.BaseInfos.First());
+
         // TODO: is this right?
-        var length = ttydAnimationData.BaseInfos.SingleOrDefault()?.End ??
-                     ttydAnimationData.Keyframes.Max(k => k.Time);
+        var length = baseInfo.End;
         finAnimation.FrameCount = (int) length;
         finAnimation.FrameRate = 60;
+        finAnimation.UseLoopingInterpolation = baseInfo.Loop;
 
         var finBoneTracksByBone
             = new IndexableDictionary<IReadOnlyBone, (
@@ -242,28 +243,16 @@ namespace ttyd.api {
                         var finMeshTracks
                             = finAnimation.AddMeshTracks(
                                 finMesh);
-                        finMeshTracks.DisplayStates
-                                     .SetKeyframe(
-                                         0,
-                                         visible
-                                             ? MeshDisplayState.VISIBLE
-                                             : MeshDisplayState.HIDDEN);
 
                         return finMeshTracks;
                       })
               .ToArray();
 
-        var isLooping = false;
-        if (ttydAnimationData.BaseInfos.TryGetFirst(out var baseInfo)) {
-          isLooping = baseInfo.Loop;
-        }
-
-        finAnimation.UseLoopingInterpolation = isLooping;
 
         var keyframes
             = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms,
                                               finAnimation.FrameCount,
-                                              isLooping);
+                                              baseInfo);
         foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
           var keyframe = (int) ttydKeyframe.Time;
 
