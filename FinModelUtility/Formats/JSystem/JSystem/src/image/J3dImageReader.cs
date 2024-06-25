@@ -1,9 +1,9 @@
 ﻿using fin.image;
 using fin.image.io;
-using fin.image.io.image;
 using fin.image.io.pixel;
 
 using gx;
+using gx.image;
 
 using schema.binary;
 
@@ -61,7 +61,7 @@ namespace jsystem.image {
               4,
               4,
               new Rgba32PixelReader()),
-          GxTextureFormat.S3TC1 => new Dxt1aImageReader(width, height),
+          GxTextureFormat.S3TC1 => new CmprImageReader(width, height),
       };
     }
 

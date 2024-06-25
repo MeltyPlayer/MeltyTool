@@ -1,10 +1,10 @@
 ﻿using fin.image;
 using fin.image.io;
-using fin.image.io.image;
 using fin.image.io.pixel;
 using fin.image.io.tile;
 
 using gx;
+using gx.image;
 
 using schema.binary;
 
@@ -60,7 +60,7 @@ namespace dat.image {
               width,
               height,
               new Ar88Gb88TileReader()),
-          GxTextureFormat.S3TC1 => new Dxt1aImageReader(width, height),
+          GxTextureFormat.S3TC1 => new CmprImageReader(width, height),
       };
     }
 

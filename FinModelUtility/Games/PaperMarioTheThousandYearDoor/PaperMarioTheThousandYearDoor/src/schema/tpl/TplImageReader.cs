@@ -1,7 +1,8 @@
 ﻿using fin.image;
 using fin.image.io;
-using fin.image.io.image;
 using fin.image.io.pixel;
+
+using gx.image;
 
 using schema.binary;
 
@@ -61,7 +62,9 @@ namespace ttyd.schema.tpl {
               4,
               4,
               new Rgba32PixelReader()),
-          TplImageFormat.CMPR => new Dxt1aImageReader(width, height),
+          TplImageFormat.CMPR => new CmprImageReader(
+              width,
+              height),
       };
     }
   }
