@@ -23,7 +23,6 @@ public partial class ModelImpl<TVertex> {
       => this.impl.Definitions;
 
     public bool HasAtLeastOneKeyframe => this.impl.HasAtLeastOneKeyframe;
-    public int MaxKeyframe => this.impl.MaxKeyframe;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetKeyframe(

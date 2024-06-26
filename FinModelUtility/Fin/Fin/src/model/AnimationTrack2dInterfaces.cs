@@ -6,7 +6,8 @@ using fin.math.interpolation;
 
 namespace fin.model;
 
-public interface IAxes2fTrack<TInterpolated> : IAxesTrack<float, TInterpolated> {
+public interface IAxes2fTrack<TInterpolated>
+    : IAxesTrack<float, TInterpolated> {
   void Set<TVector2>(int frame, float x, float y) {
     Set(frame, 0, x);
     Set(frame, 1, y);

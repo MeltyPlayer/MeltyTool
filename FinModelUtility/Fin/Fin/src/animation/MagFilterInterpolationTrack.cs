@@ -19,7 +19,6 @@ namespace fin.animation {
 
     public IAnimation Animation => this.Impl.Animation;
     public bool HasAtLeastOneKeyframe => this.Impl.HasAtLeastOneKeyframe;
-    public int MaxKeyframe => this.Impl.MaxKeyframe;
 
     public bool TryGetInterpolatedFrame(float frame, out T interpolatedValue, AnimationInterpolationConfig? config = null) {
       var intFrame = (int) frame;

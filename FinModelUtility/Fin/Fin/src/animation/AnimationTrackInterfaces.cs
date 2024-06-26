@@ -8,7 +8,6 @@ namespace fin.animation;
 
 public interface ITrack : IAnimationData {
   bool HasAtLeastOneKeyframe { get; }
-  int MaxKeyframe { get; }
 }
 
 public readonly record struct AnimationInterpolationConfig {

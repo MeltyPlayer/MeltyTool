@@ -9,7 +9,6 @@ namespace fin.animation {
     void SetAllKeyframes(IEnumerable<T> value);
 
     bool HasAtLeastOneKeyframe { get; }
-    int MaxKeyframe { get; }
 
     IReadOnlyList<Keyframe<T>> Definitions { get; }
 

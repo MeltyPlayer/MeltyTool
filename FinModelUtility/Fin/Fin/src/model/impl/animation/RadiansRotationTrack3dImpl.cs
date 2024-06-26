@@ -37,7 +37,6 @@ namespace fin.model.impl {
 
       public IAnimation Animation { get; }
       public bool HasAtLeastOneKeyframe => this.axisTracks_.Any(axis => axis.HasAtLeastOneKeyframe);
-      public int MaxKeyframe => this.axisTracks_.Max(axisTrack => axisTrack.MaxKeyframe);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public void Set(

@@ -36,7 +36,6 @@ namespace fin.animation {
     public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
 
     public bool HasAtLeastOneKeyframe => this.impl_.Count > 0;
-    public int MaxKeyframe => Math.Max(this.frameToKeyframe_.Count - 1, 0);
 
     public void SetKeyframe(int frame, T value, string frameType = "") {
       var keyframeExists = this.FindIndexOfKeyframe(frame,
@@ -60,7 +59,7 @@ namespace fin.animation {
         this.frameToKeyframe_.Add(0);
       }
 
-      var currentFrame = this.MaxKeyframe;
+      var currentFrame = this.impl_.Last().Frame;
       for (var k = this.impl_.Count - 1; k >= 0; --k) {
         var keyframe = this.impl_[k];
 
@@ -80,7 +79,7 @@ namespace fin.animation {
         this.frameToKeyframe_.Add(0);
       }
 
-      var currentFrame = this.MaxKeyframe;
+      var currentFrame = lastFrame;
       for (var k = this.impl_.Count - 1; k >= 0; --k) {
         var keyframe = this.impl_[k];
 
@@ -125,7 +124,7 @@ namespace fin.animation {
         return false;
       }
 
-      var maxKeyframe = this.MaxKeyframe;
+      var maxKeyframe = this.impl_.LastOrDefault().Frame;
       frame = frame.Clamp(0, maxKeyframe);
       keyframeIndex = this.frameToKeyframe_[frame];
       keyframe = this.impl_[keyframeIndex];
