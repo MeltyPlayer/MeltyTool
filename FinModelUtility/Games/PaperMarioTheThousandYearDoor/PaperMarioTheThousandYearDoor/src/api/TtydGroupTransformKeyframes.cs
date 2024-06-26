@@ -1,172 +1,139 @@
-﻿using fin.animation;
-using fin.math.floats;
-
-using ttyd.schema.model.blocks;
+﻿using ttyd.schema.model.blocks;
 
 namespace ttyd.api {
   // TODO: Optimize this
-  public interface IGroupTransformKeyframes {
-    void GetTransformsAtFrame(Group group,
-                              int frame,
-                              Span<float> buffer)
-      => this.GetTransformsAtFrame(group, frame, 0, buffer.Length, buffer);
-
-    void GetTransformsAtFrame(Group group,
-                              int frame,
-                              int start,
-                              int count,
-                              Span<float> buffer);
-  }
-
-  public class TtydGroupTransformKeyframes : IGroupTransformKeyframes {
-    private readonly float[] transforms_;
+  public class TtydGroupTransformKeyframes {
+    private readonly float[] initialTransforms_;
     private readonly int animationLength_;
 
-    private readonly bool isLooping_;
-    private readonly float loopStart_ = 0;
-    private readonly float loopEnd_ = 0;
-
-    private readonly IReadOnlyList<Keyframes<ValueAndTangents<float>>>
-        transformKeyframes_;
+    private readonly
+        List<(float keyframe, IReadOnlyList<GroupTransformDelta> deltas)>
+        keyframeTimesAndDeltas_ = new();
 
     public TtydGroupTransformKeyframes(
-        IReadOnlyList<float> initialTransforms,
-        int animationLength,
-        AnimationModelFileAnimationBaseInfo? baseInfo) {
-      this.transforms_ = initialTransforms.ToArray();
+        float[] initialTransforms,
+        int animationLength) {
+      this.initialTransforms_ = initialTransforms;
       this.animationLength_ = animationLength;
-
-      this.isLooping_ = baseInfo?.Loop ?? false;
-      this.loopStart_ = baseInfo?.Start ?? 0;
-      this.loopEnd_ = baseInfo?.End ?? animationLength;
-
-      this.transformKeyframes_
-          = initialTransforms
-            .Select(_ => new Keyframes<ValueAndTangents<float>>())
-            .ToArray();
     }
 
-    public void SetTransformAtFrame(int transformIndex,
-                                    float frame,
-                                    float deltaValue,
-                                    float inTangent,
-                                    float outTangent) {
-      if (deltaValue == 0 && inTangent == 0 && outTangent == 0) {
+    public void AddDeltasForKeyframe(
+        float keyframe,
+        ReadOnlySpan<GroupTransformDelta> deltas) {
+      this.keyframeTimesAndDeltas_.Add((keyframe, deltas.ToArray()));
+    }
+
+    public IGroupTransformBakedFrames BakeTransformsAtFrames() {
+      var allTransformFrames
+          = new float[this.initialTransforms_.Length * this.animationLength_];
+
+      for (var i = 0; i < this.animationLength_; ++i) {
+        this.AnimationUpdate_(i, allTransformFrames);
+      }
+
+      return new TtydGroupTransformBakedFrames(this.initialTransforms_.Length,
+                                               allTransformFrames);
+    }
+
+    /// <summary>
+    ///   Shamelessly stolen from:
+    ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L903
+    /// </summary>
+    // TODO: Optimize this
+    private void AnimationUpdate_(
+        int frame,
+        Span<float> allTransformFrames) {
+      var allTransformsAtFrame = allTransformFrames.Slice(
+          this.initialTransforms_.Length * frame,
+          this.initialTransforms_.Length);
+
+      this.initialTransforms_.CopyTo(allTransformsAtFrame);
+
+      if (this.keyframeTimesAndDeltas_.Count == 1) {
+        AnimationUpdateFrameImmediate_(this.keyframeTimesAndDeltas_[0].deltas,
+                                       allTransformsAtFrame);
         return;
       }
 
-      var value = this.transforms_[transformIndex] += deltaValue;
+      var i1 = this.FindKeyframeIndex_(frame);
+      var i0 = Math.Max(0, i1 - 1);
 
-      var keyframes = this.transformKeyframes_[transformIndex];
+      for (var i = 0; i < i1; ++i) {
+        AnimationUpdateFrameImmediate_(this.keyframeTimesAndDeltas_[i].deltas,
+                                       allTransformsAtFrame);
+      }
 
-      var intFrame = (int) frame;
-      var keyframe = keyframes.GetKeyframeAtExactFrame(intFrame);
-      if (keyframe != null && frame > 0) {
-        var valueAndTangents = keyframe.Value.Value;
-        keyframes.SetKeyframe(
-            intFrame,
-            valueAndTangents with {
-                OutgoingValue = value,
-                OutgoingTangent = outTangent
-            });
-      } else {
-        keyframes.SetKeyframe(
-            intFrame,
-            new ValueAndTangents<float>(value, inTangent, outTangent));
+      if (i1 > i0) {
+        var (time0, _) = this.keyframeTimesAndDeltas_[i0];
+        var (time1, deltas1) = this.keyframeTimesAndDeltas_[i1];
+
+        var duration = time1 - time0;
+        var t = (frame - time0) / duration;
+
+        AnimationUpdateFrame_(deltas1, allTransformsAtFrame, t, duration);
       }
     }
 
-    public void GetTransformsAtFrame(
-        Group group,
-        int frame,
-        int start,
-        int length,
-        Span<float> buffer) {
-      for (var i = 0; i < length; ++i) {
-        var transformIndex = group.TransformBaseIndex + start + i;
-        var keyframes = this.transformKeyframes_[transformIndex];
-
-        if (!keyframes.HasAtLeastOneKeyframe) {
-          buffer[i] = this.transforms_[transformIndex];
-          continue;
+    /// <summary>
+    ///   Shamelessly stolen from:
+    ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L783
+    /// </summary>
+    private int FindKeyframeIndex_(int frame) {
+      for (var i = 0; i < this.keyframeTimesAndDeltas_.Count; ++i) {
+        var (keyframeTime, _) = this.keyframeTimesAndDeltas_[i];
+        if (frame < keyframeTime) {
+          return i;
         }
+      }
 
-        var firstKeyframe = keyframes.Definitions.First();
-        var beforeFirstKeyframe = frame < firstKeyframe.Frame;
-        if (keyframes.Definitions.Count == 1 ||
-            (!this.isLooping_ && beforeFirstKeyframe)) {
-          buffer[i] = beforeFirstKeyframe
-              ? firstKeyframe.Value.IncomingValue
-              : firstKeyframe.Value.OutgoingValue;
-          continue;
-        }
+      return -1;
+    }
 
-        keyframes.FindIndexOfKeyframe(
-            frame,
-            out var keyframeIndex,
-            out var fromKeyframe,
-            out var isLastKeyframe);
+    /// <summary>
+    ///   Shamelessly stolen from:
+    ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L840
+    /// </summary>
+    // TODO: Optimize this
+    private static void AnimationUpdateFrameImmediate_(
+        IReadOnlyList<GroupTransformDelta> deltas,
+        Span<float> allTransformsAtFrame) {
+      var transformIndexAccumulator = 0;
 
-        if (!this.isLooping_ && isLastKeyframe) {
-          buffer[i] = fromKeyframe.Value.OutgoingValue;
-          continue;
-        }
-
-        Keyframe<ValueAndTangents<float>> nextKeyframe;
-        if (beforeFirstKeyframe) {
-          nextKeyframe = firstKeyframe;
-          fromKeyframe = keyframes.Definitions.Last();
-        } else if (!isLastKeyframe) {
-          nextKeyframe = keyframes.GetKeyframeAtIndex(keyframeIndex + 1);
-        } else {
-          nextKeyframe = firstKeyframe;
-        }
-
-        var fromTime = fromKeyframe.Frame;
-        var toTime = nextKeyframe.Frame;
-        if (toTime <= fromTime) {
-          if (frame > fromTime) {
-            toTime += this.animationLength_;
-          } else {
-            fromTime -= this.animationLength_;
-          }
-        }
-
-        buffer[i] = Interpolate_(fromTime,
-                                 fromKeyframe.Value.OutgoingValue,
-                                 fromKeyframe.Value.OutgoingTangent.Value,
-                                 toTime,
-                                 nextKeyframe.Value.IncomingValue,
-                                 nextKeyframe.Value.IncomingTangent.Value,
-                                 frame);
+      foreach (var delta in deltas) {
+        transformIndexAccumulator += delta.IndexDelta;
+        var valueDelta = delta.ValueDelta / 16f;
+        allTransformsAtFrame[transformIndexAccumulator] += valueDelta;
       }
     }
 
-    private static float Interpolate_(float fromTime,
-                                      float fromValue,
-                                      float fromTangent,
-                                      float toTime,
-                                      float toValue,
-                                      float toTangent,
-                                      float frame) {
-      var delta = toValue - fromValue;
-
-      var duration = toTime - fromTime;
-      var t = (frame - fromTime) / duration;
-
-      if (t.IsRoughly1() || float.IsInfinity(fromTangent)) {
-        return fromValue + delta;
-      }
+    private static void AnimationUpdateFrame_(
+        IReadOnlyList<GroupTransformDelta> deltas,
+        Span<float> allTransformsAtFrame,
+        float t,
+        float duration) {
+      var transformIndexAccumulator = 0;
 
       var t2 = t * t;
       var t3 = t2 * t;
-      // Tangents are already converted when parsing the frames, and the 1/16.0 is also applied there.
-      return fromValue +
-             (float) (
-                 (1.0 * t3 + -1.0 * t2 + 0.0 * t) * (duration * fromTangent) +
-                 (-2.0 * t3 + 3.0 * t2 + 0.0 * t) * delta +
-                 (1.0 * t3 + -2.0 * t2 + 1.0 * t) * (duration * toTangent)
-             );
+
+      foreach (var delta in deltas) {
+        transformIndexAccumulator += delta.IndexDelta;
+
+        var valueDelta = delta.ValueDelta / 16f;
+        if (delta.OutTangentDegrees == 90) {
+          allTransformsAtFrame[transformIndexAccumulator] += valueDelta;
+          continue;
+        }
+
+        var tangentIn = TtydTangents.GetTangent(delta.InTangentDegrees);
+        var tangentOut = TtydTangents.GetTangent(delta.OutTangentDegrees);
+
+        allTransformsAtFrame[transformIndexAccumulator] += (float) (
+            (1.0 * t3 + -1.0 * t2 + 0.0 * t) * (duration * tangentOut) +
+            (-2.0 * t3 + 3.0 * t2 + 0.0 * t) * valueDelta +
+            (1.0 * t3 + -2.0 * t2 + 1.0 * t) * (duration * tangentIn)
+        );
+      }
     }
   }
 }

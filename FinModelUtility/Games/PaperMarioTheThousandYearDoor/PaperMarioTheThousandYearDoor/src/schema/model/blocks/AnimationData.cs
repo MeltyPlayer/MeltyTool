@@ -29,6 +29,9 @@ namespace ttyd.schema.model.blocks {
     private uint GroupTransformDataDeltaOffset { get; set; }
     private uint wAnimDataType8Offset { get; set; }
 
+    [SequenceLengthSource(6)]
+    private float[] unk_;
+
     [RSequenceLengthSource(nameof(BaseInfoCount))]
     [RAtPositionOrNull(nameof(BaseInfoOffset))]
     public AnimationModelFileAnimationBaseInfo[] BaseInfos { get; set; }
@@ -63,7 +66,7 @@ namespace ttyd.schema.model.blocks {
 
     [RSequenceLengthSource(nameof(GroupTransformDataDeltaCount))]
     [RAtPositionOrNull(nameof(GroupTransformDataDeltaOffset))]
-    public AnimationModelFileAnimationGroupTransformDataDelta[]
+    public GroupTransformDelta[]
         GroupTransformDataDeltas { get; set; }
 
   }
@@ -128,7 +131,7 @@ namespace ttyd.schema.model.blocks {
 
 
   [BinarySchema]
-  public partial class AnimationModelFileAnimationGroupTransformDataDelta
+  public partial class GroupTransformDelta
       : IBinaryConvertible {
     public byte IndexDelta { get; set; }
     public sbyte ValueDelta { get; set; }

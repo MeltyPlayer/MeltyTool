@@ -246,8 +246,7 @@ namespace ttyd.api {
 
         var keyframes
             = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms,
-                                              finAnimation.FrameCount,
-                                              baseInfo);
+                                              finAnimation.FrameCount);
         foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
           var keyframe = (int) ttydKeyframe.Time;
 
@@ -259,29 +258,8 @@ namespace ttyd.api {
                     (int) ttydKeyframe.GroupTransformDataDeltaBaseIndex,
                     (int) groupTransformDataDeltaCount);
 
-            var groupTransformIndexAccumulator = 0;
-
-            foreach (var groupTransformDataDelta in groupTransformDataDeltas) {
-              groupTransformIndexAccumulator
-                  += groupTransformDataDelta.IndexDelta;
-              
-              var inTangent
-                  = TtydTangents.GetTangent(
-                      groupTransformDataDelta.InTangentDegrees);
-              var outTangent
-                  = groupTransformDataDelta.OutTangentDegrees >= 89
-                      ? float.PositiveInfinity
-                      : TtydTangents.GetTangent(
-                          groupTransformDataDelta.OutTangentDegrees);
-
-              var deltaValue = groupTransformDataDelta.ValueDelta / 16f;
-              
-              keyframes.SetTransformAtFrame(groupTransformIndexAccumulator,
-                                            ttydKeyframe.Time,
-                                            deltaValue,
-                                            inTangent,
-                                            outTangent);
-            }
+            keyframes.AddDeltasForKeyframe(ttydKeyframe.Time,
+                                           groupTransformDataDeltas);
           }
 
           // Sets up visibility animations
@@ -310,6 +288,7 @@ namespace ttyd.api {
           }
         }
 
+        var bakedKeyframes = keyframes.BakeTransformsAtFrames();
 
         foreach (var (ttydGroup, finBone) in groupsAndBones) {
           var (positionsTrack, rotationsTrack, scalesTrack)
@@ -319,7 +298,7 @@ namespace ttyd.api {
             var matrix = TtydGroupTransformUtils.GetTransformMatrix(
                 ttydGroup,
                 ttydGroupToParent,
-                keyframes,
+                bakedKeyframes,
                 i);
             Matrix4x4.Decompose(matrix,
                                 out var scale,

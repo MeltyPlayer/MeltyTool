@@ -27,7 +27,7 @@ namespace ttyd.api {
     public static Matrix4x4 GetTransformMatrix(
         Group group,
         IReadOnlyDictionary<Group, Group> groupToParent,
-        IGroupTransformKeyframes keyframes,
+        IGroupTransformBakedFrames keyframes,
         int frame) {
       Span<float> groupBuffer = stackalloc float[24];
       keyframes.GetTransformsAtFrame(group, frame, groupBuffer);
@@ -37,7 +37,7 @@ namespace ttyd.api {
           groupToParent.TryGetValue(group, out var parentGroup)) {
         if (parentGroup.IsJoint) {
           Span<float> parentBuffer = stackalloc float[3];
-          keyframes.GetTransformsAtFrame(parentGroup, frame, 3, 3, parentBuffer);
+          keyframes.GetTransformsAtFrame(parentGroup, frame, 3, parentBuffer);
           parentGroupScale = new Vector3(parentBuffer);
         }
       }
