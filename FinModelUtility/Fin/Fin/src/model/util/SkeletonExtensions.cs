@@ -17,10 +17,12 @@ namespace fin.model.util {
       => parent.AddChild(position.X, position.Y, position.Z);
 
     public static IBone AddChild(this IBone parent, Matrix4x4 matrix) {
-      Matrix4x4.Decompose(matrix,
-                          out var scale,
-                          out var quaternion,
-                          out var position);
+      Asserts.True(Matrix4x4.Decompose(matrix,
+                                       out var scale,
+                                       out var quaternion,
+                                       out var position) ||
+                   !FinMatrix4x4.STRICT_DECOMPOSITION,
+                   "Failed to decompose matrix!");
       return parent.AddChild(position)
                    .SetLocalRotation(quaternion)
                    .SetLocalScale(scale);

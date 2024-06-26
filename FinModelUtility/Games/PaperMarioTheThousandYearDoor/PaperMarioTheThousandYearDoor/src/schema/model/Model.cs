@@ -1,5 +1,6 @@
 ﻿using fin.schema.color;
 using fin.schema.vector;
+using fin.util.asserts;
 
 using schema.binary;
 
@@ -81,7 +82,7 @@ namespace ttyd.schema.model {
           = this.ReadNews_(br,
                            BlockType.GROUP_VISIBILITY,
                            br.ReadSBytes)
-                .Select(b => b == 1)
+                .Select(b => b != 0)
                 .ToArray();
 
       this.Animations = this.ReadNews_<Animation>(
