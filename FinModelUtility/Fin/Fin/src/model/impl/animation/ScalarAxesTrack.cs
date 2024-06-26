@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 using fin.animation;
+using fin.animation.keyframes;
 using fin.math.interpolation;
 
 namespace fin.model.impl {

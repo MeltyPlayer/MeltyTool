@@ -3,10 +3,10 @@
 using NUnit.Framework;
 
 namespace fin.animation {
-  public class KeyframesTests {
+  public class KeyframeDefinitionsTests {
     [Test]
     public void TestAddToEnd() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(0, "0");
       impl.SetKeyframe(1, "1");
@@ -25,7 +25,7 @@ namespace fin.animation {
 
     [Test]
     public void TestReplace() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(1, "first");
       impl.SetKeyframe(1, "second");
@@ -36,7 +36,7 @@ namespace fin.animation {
 
     [Test]
     public void TestInsertAtFront() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(4, "4");
       impl.SetKeyframe(5, "5");
@@ -55,7 +55,7 @@ namespace fin.animation {
 
     [Test]
     public void TestInsertInMiddle() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(0, "0");
       impl.SetKeyframe(9, "9");
@@ -74,7 +74,7 @@ namespace fin.animation {
 
     [Test]
     public void TestHugeRange() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(1000, "1000");
       impl.SetKeyframe(2, "2");
@@ -89,7 +89,7 @@ namespace fin.animation {
 
     [Test]
     public void TestGetIndices() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(0, "first");
       impl.SetKeyframe(2, "second");
@@ -105,7 +105,7 @@ namespace fin.animation {
 
     [Test]
     public void TestGetKeyframes() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(0, "first");
       impl.SetKeyframe(2, "second");
@@ -129,7 +129,7 @@ namespace fin.animation {
 
     [Test]
     public void TestGetKeyframesReversed() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(4, "third");
       impl.SetKeyframe(2, "second");
@@ -153,7 +153,7 @@ namespace fin.animation {
 
     [Test]
     public void TestGetKeyframesWeirdOrder() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(4, "third");
       impl.SetKeyframe(0, "first");
@@ -177,7 +177,7 @@ namespace fin.animation {
 
     [Test]
     public void TestFindIndexOfKeyframe() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.SetKeyframe(0, "0");
       impl.SetKeyframe(1, "1");
@@ -213,7 +213,7 @@ namespace fin.animation {
 
     [Test]
     public void TestFindIndexOfKeyframeWhenEmpty() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       impl.FindIndexOfKeyframe(-1,
                                out var keyframeIndexMinus1,
@@ -232,7 +232,7 @@ namespace fin.animation {
 
     [Test]
     public void TestFindManyIndices() {
-      var impl = new Keyframes<string>();
+      var impl = new KeyframeDefinitions<string>();
 
       var s = 2;
       var n = 25;
@@ -259,7 +259,7 @@ namespace fin.animation {
                                  Keyframe<string>? actual)
       => Assert.AreEqual(expected, actual);
 
-    private void AssertKeyframes_(Keyframes<string> actual,
+    private void AssertKeyframes_(KeyframeDefinitions<string> actual,
                                   params Keyframe<string>[] expected)
       => Asserts.SequenceEqual(expected, actual.Definitions);
   }

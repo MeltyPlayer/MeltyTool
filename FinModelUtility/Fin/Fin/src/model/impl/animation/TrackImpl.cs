@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 using fin.animation;
+using fin.animation.keyframes;
 using fin.animation.tracks;
 using fin.math.interpolation;
 
@@ -10,11 +11,11 @@ namespace fin.model.impl;
 
 public partial class ModelImpl<TVertex> {
   public class ImplTrackImpl<TValue> : IImplTrack<TValue> {
-    protected readonly Keyframes<ValueAndTangents<TValue>> impl;
+    protected readonly KeyframeDefinitions<ValueAndTangents<TValue>> impl;
 
     public ImplTrackImpl(IAnimation animation, int initialCapacity) {
       this.Animation = animation;
-      this.impl = new Keyframes<ValueAndTangents<TValue>>(initialCapacity);
+      this.impl = new KeyframeDefinitions<ValueAndTangents<TValue>>(initialCapacity);
     }
 
     public IAnimation Animation { get; }

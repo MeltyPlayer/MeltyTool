@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.animation;
+using fin.animation.keyframes;
 using fin.animation.tracks;
 using fin.math.floats;
 using fin.math.interpolation;

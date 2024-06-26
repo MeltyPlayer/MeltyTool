@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
+using fin.animation.keyframes;
 using fin.model;
 using fin.util.asserts;
 
