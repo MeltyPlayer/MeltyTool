@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using fin.animation;
+using fin.animation.keyframes;
 using fin.model;
 
 namespace mod.schema.anm {
