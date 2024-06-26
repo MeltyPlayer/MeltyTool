@@ -4,6 +4,10 @@ using fin.math.floats;
 using fin.model;
 
 namespace fin.animation {
+  /// <summary>
+  ///   Helper class for interpolating a track with a variable "mag filter" for
+  ///   higher framerates.
+  /// </summary>
   public class MagFilterInterpolationTrack<T>(
       IReadOnlyInterpolatedTrack<T> impl,
       Func<T, T, float, T> interpolator)

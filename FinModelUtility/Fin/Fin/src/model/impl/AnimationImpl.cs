@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using fin.animation;
+using fin.animation.tracks;
 using fin.data.indexable;
 using fin.math.interpolation;
 

@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.animation;
+using fin.animation.tracks;
 using fin.math.interpolation;
 using fin.math.xyz;
 

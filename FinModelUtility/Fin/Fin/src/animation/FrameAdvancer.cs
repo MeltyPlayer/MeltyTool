@@ -14,6 +14,7 @@ namespace fin.animation {
     public int FrameRate { get; set; }
 
     private bool isPlaying_ = false;
+
     public bool IsPlaying {
       get => this.isPlaying_;
       set {
@@ -62,7 +63,8 @@ namespace fin.animation {
       }
 
       var elapsedSeconds = this.impl_.Elapsed.TotalSeconds;
-      var elapsedFrames = elapsedSeconds * this.FrameRate * this.SpeedMultiplier;
+      var elapsedFrames
+          = elapsedSeconds * this.FrameRate * this.SpeedMultiplier;
 
       this.Frame += elapsedFrames;
 
