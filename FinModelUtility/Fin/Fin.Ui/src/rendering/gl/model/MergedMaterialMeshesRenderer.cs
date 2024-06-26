@@ -50,13 +50,16 @@ namespace fin.ui.rendering.gl.model {
       foreach (var mesh in meshQueue) {
         var materialQueue = new RenderPriorityOrderedSet<IReadOnlyMaterial>();
         var primitivesByMaterial
-            = new ListDictionary<IReadOnlyMaterial, IReadOnlyPrimitive>();
+            = new ListDictionary<IReadOnlyMaterial, IReadOnlyPrimitive>(
+                new NullFriendlyDictionary<IReadOnlyMaterial,
+                    IList<IReadOnlyPrimitive>>());
         foreach (var primitive in mesh.Primitives) {
           primitivesByMaterial.Add(primitive.Material, primitive);
           materialQueue.Add(
               primitive.Material,
               primitive.InversePriority,
-              primitive.Material.TransparencyType ==
+              (primitive.Material?.TransparencyType ??
+               TransparencyType.OPAQUE) ==
               TransparencyType.TRANSPARENT);
         }
 

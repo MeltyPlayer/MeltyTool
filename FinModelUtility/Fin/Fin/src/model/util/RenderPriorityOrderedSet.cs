@@ -12,10 +12,11 @@ namespace fin.model.util {
     private readonly OrderedHashSet<T> elements_ = new();
 
     private readonly AggregatedDictionary<T, uint> inversePriorityByElement_
-        = new(Math.Min);
+        = new(Math.Min, new NullFriendlyDictionary<T, uint>());
 
     private readonly AggregatedDictionary<T, bool> isTransparentByElement_
-        = new((existingValue, newValue) => existingValue || newValue);
+        = new((existingValue, newValue) => existingValue || newValue,
+              new NullFriendlyDictionary<T, bool>());
 
     public void Add(T item, uint inversePriority, bool isTransparent) {
       this.elements_.Add(item);
