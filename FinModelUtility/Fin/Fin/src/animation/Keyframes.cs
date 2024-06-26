@@ -48,7 +48,7 @@ namespace fin.animation {
 
       if (keyframeExists && existingKeyframe.Frame == frame) {
         this.impl_[keyframeIndex] = newKeyframe;
-      } else if (isLastKeyframe) {
+      } else if (keyframeExists && isLastKeyframe) {
         this.impl_.Add(newKeyframe);
       } else if (keyframeExists && existingKeyframe.Frame < frame) {
         this.impl_.Insert(keyframeIndex + 1, newKeyframe);
@@ -129,8 +129,8 @@ namespace fin.animation {
       frame = frame.Clamp(0, maxKeyframe);
       keyframeIndex = this.frameToKeyframe_[frame];
       keyframe = this.impl_[keyframeIndex];
-      isLastKeyframe = frame == maxKeyframe;
-      return true;
+      isLastKeyframe = keyframeIndex == this.impl_.Count - 1;
+      return frame >= keyframe.Frame;
     }
 
 
