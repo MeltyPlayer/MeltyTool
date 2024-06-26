@@ -238,6 +238,12 @@ namespace ttyd.api {
                             = finAnimation.AddMeshTracks(
                                 finMesh);
 
+                        finMeshTracks.DisplayStates.SetKeyframe(
+                            0,
+                            visible
+                                ? MeshDisplayState.VISIBLE
+                                : MeshDisplayState.HIDDEN);
+
                         return finMeshTracks;
                       })
               .ToArray();
@@ -273,6 +279,8 @@ namespace ttyd.api {
                     (int) visibilityGroupDeltaCount);
 
             foreach (var visibilityGroupDelta in visibilityGroupDeltas) {
+              Asserts.True(visibilityGroupDelta.Visible is 1 or -1);
+
               visibilityIndexAccumulator
                   += visibilityGroupDelta.VisibilityGroupId;
 

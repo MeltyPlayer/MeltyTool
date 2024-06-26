@@ -40,7 +40,8 @@ namespace fin.ui.rendering.gl.model {
         foreach (var primitive in mesh.Primitives) {
           meshQueue.Add(mesh,
                         primitive.InversePriority,
-                        primitive.Material.TransparencyType ==
+                        (primitive.Material?.TransparencyType ??
+                         TransparencyType.OPAQUE) ==
                         TransparencyType.TRANSPARENT);
         }
       }
