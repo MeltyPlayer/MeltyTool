@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
 
-using fin.animation;
-using fin.data.dictionaries;
 using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.queues;
@@ -13,8 +10,6 @@ using fin.model.io;
 using fin.model.io.importers;
 using fin.model.util;
 using fin.util.asserts;
-using fin.util.linq;
-using fin.util.sets;
 
 using schema.binary;
 
@@ -103,6 +98,8 @@ namespace ttyd.api {
         if (ttydParentGroup != null) {
           ttydGroupToParent[ttydGroup] = ttydParentGroup;
         }
+
+
 
         var matrix = TtydGroupTransformUtils.GetTransformMatrix(
             ttydGroup,
@@ -200,8 +197,6 @@ namespace ttyd.api {
       }
 
       // Sets up animations
-      Span<float> groupTransformsBuffer = stackalloc float[24];
-      var deg2Rad = MathF.PI / 180;
       foreach (var ttydAnimation in ttydModel.Animations) {
         var ttydAnimationData = ttydAnimation.Data;
         if (ttydAnimationData == null) {
@@ -271,13 +266,13 @@ namespace ttyd.api {
                   += groupTransformDataDelta.IndexDelta;
               
               var inTangent
-                  = MathF.Tan(
-                      groupTransformDataDelta.InTangentDegrees * deg2Rad);
+                  = TtydTangents.GetTangent(
+                      groupTransformDataDelta.InTangentDegrees);
               var outTangent
-                  = groupTransformDataDelta.OutTangentDegrees == 90
+                  = groupTransformDataDelta.OutTangentDegrees >= 89
                       ? float.PositiveInfinity
-                      : MathF.Tan(
-                          groupTransformDataDelta.OutTangentDegrees * deg2Rad);
+                      : TtydTangents.GetTangent(
+                          groupTransformDataDelta.OutTangentDegrees);
 
               var deltaValue = groupTransformDataDelta.ValueDelta / 16f;
               

@@ -3,6 +3,7 @@
 using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.math.xyz;
+using fin.util.asserts;
 
 namespace fin.model.util {
   public static class SkeletonExtensions {
@@ -82,10 +83,13 @@ namespace fin.model.util {
 
     public static IBone SetLocalMatrix(this IBone bone,
                                        Matrix4x4 matrix) {
-      Matrix4x4.Decompose(matrix,
-                          out var scale,
-                          out var quaternion,
-                          out var position);
+      Asserts.True(
+          Matrix4x4.Decompose(matrix,
+                              out var scale,
+                              out var quaternion,
+                              out var position) ||
+          !FinMatrix4x4.STRICT_DECOMPOSITION,
+          "Failed to decompose matrix!");
       return bone.SetLocalPosition(position)
                  .SetLocalRotation(quaternion)
                  .SetLocalScale(scale);

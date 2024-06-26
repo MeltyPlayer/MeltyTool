@@ -189,7 +189,7 @@ namespace fin.math.matrix.four {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void MultiplyIntoBuffer(float other, IFinMatrix4x4 buffer) 
+    public void MultiplyIntoBuffer(float other, IFinMatrix4x4 buffer)
       => buffer.Impl = SystemMatrix.Multiply(impl_, other);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -202,14 +202,20 @@ namespace fin.math.matrix.four {
       return this;
     }
 
+    public const bool STRICT_INVERTING = true;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void InvertIntoBuffer(IFinMatrix4x4 buffer) {
       if (buffer is FinMatrix4x4 bufferImpl) {
-        SystemMatrix.Invert(impl_, out bufferImpl.impl_);
+        Asserts.True(SystemMatrix.Invert(impl_, out bufferImpl.impl_) ||
+                     !STRICT_INVERTING,
+                     "Failed to invert matrix!");
         return;
       }
 
-      SystemMatrix.Invert(impl_, out var invertedSystemMatrix);
+      Asserts.True(SystemMatrix.Invert(impl_, out var invertedSystemMatrix) ||
+                   !STRICT_INVERTING,
+                   "Failed to invert matrix!");
       Matrix4x4ConversionUtil.CopySystemIntoFin(invertedSystemMatrix, buffer);
     }
 
@@ -246,7 +252,7 @@ namespace fin.math.matrix.four {
       => this.Decompose(out _, out _, out dst);
 
 
-    private const bool STRICT_DECOMPOSITION = false;
+    public const bool STRICT_DECOMPOSITION = true;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Decompose(out Position translation,
