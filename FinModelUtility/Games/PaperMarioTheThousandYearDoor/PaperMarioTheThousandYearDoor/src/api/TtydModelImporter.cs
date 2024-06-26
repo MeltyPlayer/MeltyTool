@@ -4,6 +4,7 @@ using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
+using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
 using fin.model.io;
@@ -98,8 +99,6 @@ namespace ttyd.api {
         if (ttydParentGroup != null) {
           ttydGroupToParent[ttydGroup] = ttydParentGroup;
         }
-
-
 
         var matrix = TtydGroupTransformUtils.GetTransformMatrix(
             ttydGroup,
@@ -300,10 +299,12 @@ namespace ttyd.api {
                 ttydGroupToParent,
                 bakedKeyframes,
                 i);
-            Matrix4x4.Decompose(matrix,
-                                out var scale,
-                                out var quaternion,
-                                out var position);
+            Asserts.True(Matrix4x4.Decompose(matrix,
+                                             out var scale,
+                                             out var quaternion,
+                                             out var position) ||
+                         !FinMatrix4x4.STRICT_DECOMPOSITION,
+                         "Failed to decompose matrix!");
 
             positionsTrack.SetKeyframe(
                 i,

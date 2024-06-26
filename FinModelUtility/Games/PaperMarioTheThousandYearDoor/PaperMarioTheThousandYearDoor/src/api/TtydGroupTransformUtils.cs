@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using SharpGLTF.Transforms;
+
 using ttyd.schema.model.blocks;
 
 namespace ttyd.api {
@@ -57,7 +59,16 @@ namespace ttyd.api {
           = new Vector3(groupTransforms.Slice(6, 3)) * 2 * deg2Rad;
 
       Func<Matrix4x4, Matrix4x4, Matrix4x4> combineMatrices
-          = (lhs, rhs) => rhs * lhs;
+          = (lhs, rhs) => {
+              // TODO: This prevents an issue where the final matrix can't be
+              // decomposed, but it doesn't really *fix* the issue--how can we
+              // actually fix this?
+              Matrix4x4Factory.NormalizeMatrix(ref lhs);
+              Matrix4x4Factory.NormalizeMatrix(ref rhs);
+              var product = rhs * lhs;
+              Matrix4x4Factory.NormalizeMatrix(ref product);
+              return product;
+            };
       Func<Matrix4x4, Vector3, Matrix4x4> applyRotationMatrixes
           = (mtx, rotation) => {
               mtx = combineMatrices(mtx, Matrix4x4.CreateRotationZ(rotation.Z));
