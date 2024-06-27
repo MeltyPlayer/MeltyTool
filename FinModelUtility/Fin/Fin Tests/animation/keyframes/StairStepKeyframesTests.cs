@@ -113,12 +113,14 @@ public class StairStepKeyframesTests {
     impl.SetKeyframe(2, "second");
     impl.SetKeyframe(4, "third");
 
-    Assert.False(impl.TryGetAtFrame(-1, out var value0));
+    Assert.False(impl.TryGetAtFrame(-1, out _));
+
     this.AssertFrame_(impl, 0, "first");
     this.AssertFrame_(impl, 1, "first");
     this.AssertFrame_(impl, 2, "second");
     this.AssertFrame_(impl, 3, "second");
     this.AssertFrame_(impl, 4, "third");
+
     this.AssertFrame_(impl, 5, "third");
   }
 
@@ -133,12 +135,14 @@ public class StairStepKeyframesTests {
     impl.SetKeyframe(4, "third");
 
     this.AssertFrame_(impl, -1, "third");
+
     this.AssertFrame_(impl, 0, "first");
     this.AssertFrame_(impl, 1, "first");
     this.AssertFrame_(impl, 2, "second");
     this.AssertFrame_(impl, 3, "second");
     this.AssertFrame_(impl, 4, "third");
     this.AssertFrame_(impl, 5, "third");
+    
     this.AssertFrame_(impl, 6, "first");
   }
 

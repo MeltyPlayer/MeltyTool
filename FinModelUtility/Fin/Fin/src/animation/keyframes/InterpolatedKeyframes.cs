@@ -32,11 +32,12 @@ public class InterpolatedKeyframes<TKeyframe, T>(
                 frame,
                 sharedConfig,
                 out var precedingKeyframe,
-                out var followingKeyframe)) {
+                out var followingKeyframe,
+                out var normalizedFrame)) {
       case KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING:
         value = interpolator.Interpolate(precedingKeyframe,
                                          followingKeyframe,
-                                         frame,
+                                         normalizedFrame,
                                          sharedConfig);
         return true;
 

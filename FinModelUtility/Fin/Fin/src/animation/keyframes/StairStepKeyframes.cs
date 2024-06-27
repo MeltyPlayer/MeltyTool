@@ -22,6 +22,7 @@ public class StairStepKeyframes<T>(
     if (this.impl_.TryGetPrecedingKeyframe(frame,
                                            sharedConfig,
                                            out var keyframe,
+                                           out _,
                                            out _)) {
       value = keyframe.Value;
       return true;

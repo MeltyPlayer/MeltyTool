@@ -31,11 +31,13 @@ public static class KeyframesUtil {
       float frame,
       ISharedInterpolationConfig sharedConfig,
       out TKeyframe keyframe,
-      out int keyframeIndex) where TKeyframe : IKeyframe {
+      out int keyframeIndex,
+      out float normalizedFrame) where TKeyframe : IKeyframe {
     // Short-circuits early if there are no frames.
     if (impl.Count == 0) {
       keyframe = default;
       keyframeIndex = default;
+      normalizedFrame = default;
       return false;
     }
 
@@ -63,6 +65,7 @@ public static class KeyframesUtil {
         if (!looping) {
           keyframe = default;
           keyframeIndex = default;
+          normalizedFrame = default;
           return false;
         }
 
@@ -73,6 +76,7 @@ public static class KeyframesUtil {
 
     keyframe = impl[index];
     keyframeIndex = index;
+    normalizedFrame = frame;
     return true;
   }
 
@@ -98,11 +102,13 @@ public static class KeyframesUtil {
       float frame,
       ISharedInterpolationConfig sharedConfig,
       out TKeyframe precedingKeyframe,
-      out TKeyframe followingKeyframe) where TKeyframe : IKeyframe {
+      out TKeyframe followingKeyframe,
+      out float normalizedFrame) where TKeyframe : IKeyframe {
     if (!impl.TryGetPrecedingKeyframe(frame,
                                       sharedConfig,
                                       out precedingKeyframe,
-                                      out var precedingKeyframeIndex)) {
+                                      out var precedingKeyframeIndex,
+                                      out normalizedFrame)) {
       followingKeyframe = default;
       return InterpolationDataType.NONE;
     }
