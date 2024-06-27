@@ -10,6 +10,7 @@ using fin.animation.keyframes;
 using fin.animation.tracks;
 using fin.data.indexable;
 using fin.math.interpolation;
+using fin.util.optional;
 
 namespace fin.model.impl {
   public partial class ModelImpl<TVertex> {
@@ -91,7 +92,7 @@ namespace fin.model.impl {
 
         public IMeshTracks AddMeshTracks(IReadOnlyMesh mesh)
           => this.meshTracks_[mesh]
-              = new MeshTracksImpl(this.sharedInterpolationConfig_);
+              = new MeshTracksImpl(mesh, this.sharedInterpolationConfig_);
 
 
         public IReadOnlyDictionary<IReadOnlyTexture, ITextureTracks>
@@ -236,10 +237,15 @@ namespace fin.model.impl {
       // TODO: Add pattern for specifying WITH given tracks
     }
 
-    public class MeshTracksImpl(ISharedInterpolationConfig sharedConfig)
+    public class MeshTracksImpl(
+        IReadOnlyMesh mesh,
+        ISharedInterpolationConfig sharedConfig)
         : IMeshTracks {
       public IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
-        = new StairStepKeyframes<MeshDisplayState>(sharedConfig);
+        = new StairStepKeyframes<MeshDisplayState>(
+            sharedConfig,
+            new IndividualInterpolationConfig<MeshDisplayState>
+                { DefaultValue = Optional.Of(() => mesh.DefaultDisplayState) });
     }
   }
 }

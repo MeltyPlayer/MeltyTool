@@ -47,6 +47,8 @@ namespace fin.model {
 
     IReadOnlyList<IPrimitive> Primitives { get; }
 
+    MeshDisplayState DefaultDisplayState { get; set; }
+
     IPrimitive AddTriangles(
         IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)>
             vertices);

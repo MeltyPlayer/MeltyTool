@@ -79,6 +79,10 @@ namespace fin.ui.rendering.gl.scene {
 
       var animation = this.sceneModel_.Animation;
       var animationPlaybackManager = this.sceneModel_.AnimationPlaybackManager;
+
+      var hiddenMeshes = this.modelRenderer_.HiddenMeshes;
+      hiddenMeshes.Clear();
+
       if (animation != null) {
         animationPlaybackManager.Tick();
 
@@ -90,19 +94,20 @@ namespace fin.ui.rendering.gl.scene {
             BoneWeightTransformType.FOR_RENDERING,
             animationPlaybackManager.Config);
 
-        var hiddenMeshes = this.modelRenderer_.HiddenMeshes;
-
-        hiddenMeshes.Clear();
-        // TODO: Make this a property of the mesh
-        var defaultDisplayState = MeshDisplayState.VISIBLE;
         foreach (var (mesh, meshTracks) in animation.MeshTracks) {
           if (!meshTracks.DisplayStates.TryGetAtFrame(
                   frame,
                   out var displayState)) {
-            displayState = defaultDisplayState;
+            continue;
           }
 
           if (displayState == MeshDisplayState.HIDDEN) {
+            hiddenMeshes.Add(mesh);
+          }
+        }
+      } else {
+        foreach (var mesh in model.Skin.Meshes) {
+          if (mesh.DefaultDisplayState == MeshDisplayState.HIDDEN) {
             hiddenMeshes.Add(mesh);
           }
         }

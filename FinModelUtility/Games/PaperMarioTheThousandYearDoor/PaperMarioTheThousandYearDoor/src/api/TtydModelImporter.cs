@@ -82,9 +82,15 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
         });
 
     // Sets up meshes for each group visibility
-    var finGroupVisibilityMeshesAndDefaultVisibility
+    var finGroupVisibilityMeshes
         = ttydModel.GroupVisibilities
-                   .Select(visible => (finModel.Skin.AddMesh(), visible))
+                   .Select(visible => {
+                     var finMesh = finModel.Skin.AddMesh();
+                     finMesh.DefaultDisplayState = visible
+                         ? MeshDisplayState.VISIBLE
+                         : MeshDisplayState.HIDDEN;
+                     return finMesh;
+                   })
                    .ToArray();
 
     // Adds bones/meshes
@@ -119,9 +125,7 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
         var ttydSceneGraphObject
             = ttydModel.SceneGraphObjects[
                 ttydGroup.SceneGraphObjectIndex];
-        var finMesh
-            = finGroupVisibilityMeshesAndDefaultVisibility[
-                ttydGroup.VisibilityGroupIndex].Item1;
+        var finMesh = finGroupVisibilityMeshes[ttydGroup.VisibilityGroupIndex];
 
         var objectPositions = ttydModel.Vertices.AsSpan(
             ttydSceneGraphObject.VertexPositionBaseIndex);
@@ -232,24 +236,9 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
       }
 
       var allFinMeshTracks
-          = finGroupVisibilityMeshesAndDefaultVisibility
-            .Select(tuple => {
-              var (finMesh, visible) = tuple;
-
-              var finMeshTracks
-                  = finAnimation.AddMeshTracks(
-                      finMesh);
-
-              finMeshTracks.DisplayStates.SetKeyframe(
-                  0,
-                  visible
-                      ? MeshDisplayState.VISIBLE
-                      : MeshDisplayState.HIDDEN);
-
-              return finMeshTracks;
-            })
+          = finGroupVisibilityMeshes
+            .Select(finAnimation.AddMeshTracks)
             .ToArray();
-
 
       var keyframes
           = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms,

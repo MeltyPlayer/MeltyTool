@@ -23,6 +23,7 @@ namespace fin.model.impl {
 
       private readonly FinSortedSet<IReadOnlyBone> bonesUsedByVertices_
           = new((lhs, rhs) => lhs.Index.CompareTo(rhs.Index));
+
       private readonly BoneWeightsDictionary boneWeightsDictionary_ = new();
 
       private readonly IndexableDictionary<IReadOnlyBone, IBoneWeights>
@@ -126,6 +127,9 @@ namespace fin.model.impl {
         public string Name { get; set; }
 
         public IReadOnlyList<IPrimitive> Primitives { get; }
+
+        public MeshDisplayState DefaultDisplayState { get; set; }
+          = MeshDisplayState.VISIBLE;
 
         public IPrimitive AddTriangles(
             params (IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)[]
