@@ -18,15 +18,16 @@ using uni.ui.winforms.common.fileTreeView;
 
 using static uni.games.ExporterUtil;
 
-namespace uni.ui.winforms.top {
-  public partial class ModelToolStrip : UserControl {
-    private IFileTreeParentNode? directoryNode_;
-    private (IFileTreeLeafNode, IReadOnlyModel)? fileNodeAndModel_;
+namespace uni.ui.winforms.top;
 
-    private bool hasModelsInDirectory_;
-    private bool isModelSelected_;
+public partial class ModelToolStrip : UserControl {
+  private IFileTreeParentNode? directoryNode_;
+  private (IFileTreeLeafNode, IReadOnlyModel)? fileNodeAndModel_;
 
-    public ModelToolStrip() {
+  private bool hasModelsInDirectory_;
+  private bool isModelSelected_;
+
+  public ModelToolStrip() {
       InitializeComponent();
 
       var config = Config.Instance;
@@ -59,18 +60,18 @@ namespace uni.ui.winforms.top {
       };
     }
 
-    public MemoryProgress<(float, IModelFileBundle?)> Progress { get; } =
-      new((0, null));
+  public MemoryProgress<(float, IModelFileBundle?)> Progress { get; } =
+    new((0, null));
 
-    public CancellationTokenSource? CancellationToken { get; private set; }
+  public CancellationTokenSource? CancellationToken { get; private set; }
 
-    public bool IsStarted => this.CancellationToken != null;
+  public bool IsStarted => this.CancellationToken != null;
 
-    public bool IsInProgress
-      => this.IsStarted && !this.Progress.Current.Item1.IsRoughly1();
+  public bool IsInProgress
+    => this.IsStarted && !this.Progress.Current.Item1.IsRoughly1();
 
-    public IFileTreeParentNode? DirectoryNode {
-      set {
+  public IFileTreeParentNode? DirectoryNode {
+    set {
         var hasDirectory = value != null;
         this.directoryNode_ = value;
 
@@ -92,10 +93,10 @@ namespace uni.ui.winforms.top {
         this.exportAllModelsInSelectedDirectoryButton_.ToolTipText =
             tooltipText;
       }
-    }
+  }
 
-    public (IFileTreeLeafNode?, IReadOnlyModel?) FileNodeAndModel {
-      set {
+  public (IFileTreeLeafNode?, IReadOnlyModel?) FileNodeAndModel {
+    set {
         var (fileNode, model) = value;
 
         this.isModelSelected_ =
@@ -116,29 +117,29 @@ namespace uni.ui.winforms.top {
         this.AttemptToUpdateExportSelectedModelButtonEnabledState_();
         this.exportSelectedModelButton_.ToolTipText = tooltipText;
       }
-    }
+  }
 
-    public void AttemptToUpdateExportSelectedModelButtonEnabledState_() {
+  public void AttemptToUpdateExportSelectedModelButtonEnabledState_() {
       this.exportSelectedModelButton_.Enabled =
           !this.IsInProgress && this.isModelSelected_;
     }
 
-    public void
-        AttemptToUpdateExportAllModelsInSelectedDirectoryButtonEnabledState_() {
+  public void
+      AttemptToUpdateExportAllModelsInSelectedDirectoryButtonEnabledState_() {
       this.exportAllModelsInSelectedDirectoryButton_.Enabled =
           !this.IsInProgress && this.hasModelsInDirectory_;
     }
 
-    private void exportAllModelsInSelectedDirectoryButton__Click(
-        object sender,
-        EventArgs e) {
+  private void exportAllModelsInSelectedDirectoryButton__Click(
+      object sender,
+      EventArgs e) {
       var models =
           this.directoryNode_!.GetFilesOfType<IModelFileBundle>(true)
               .ToArray();
       this.StartExportingModelsInBackground_(models);
     }
 
-    private void exportSelectedModelButton__Click(object sender, EventArgs e) {
+  private void exportSelectedModelButton__Click(object sender, EventArgs e) {
       if (this.fileNodeAndModel_ == null) {
         return;
       }
@@ -149,9 +150,9 @@ namespace uni.ui.winforms.top {
       }
     }
 
-    private void StartExportingModelsInBackground_(
-        IReadOnlyList<IAnnotatedFileBundle<IModelFileBundle>>
-            modelFileBundles) {
+  private void StartExportingModelsInBackground_(
+      IReadOnlyList<IAnnotatedFileBundle<IModelFileBundle>>
+          modelFileBundles) {
       var extractorPromptChoice =
           PromptIfModelFileBundlesAlreadyExported_(
               modelFileBundles,
@@ -173,7 +174,7 @@ namespace uni.ui.winforms.top {
       }
     }
 
-    private string GetTotalNodeText_(IFileTreeNode node) {
+  private string GetTotalNodeText_(IFileTreeNode node) {
       var totalText = "";
       var directory = node;
       while (true) {
@@ -192,10 +193,10 @@ namespace uni.ui.winforms.top {
       return totalText;
     }
 
-    private static ExporterPromptChoice
-        PromptIfModelFileBundlesAlreadyExported_(
-            IReadOnlyList<IAnnotatedFileBundle> modelFileBundles,
-            IReadOnlyList<string> extensions) {
+  private static ExporterPromptChoice
+      PromptIfModelFileBundlesAlreadyExported_(
+          IReadOnlyList<IAnnotatedFileBundle> modelFileBundles,
+          IReadOnlyList<string> extensions) {
       if (ExporterUtil.CheckIfModelFileBundlesAlreadyExported(
               modelFileBundles,
               extensions,
@@ -232,5 +233,4 @@ namespace uni.ui.winforms.top {
 
       return ExporterPromptChoice.SKIP_EXISTING;
     }
-  }
 }

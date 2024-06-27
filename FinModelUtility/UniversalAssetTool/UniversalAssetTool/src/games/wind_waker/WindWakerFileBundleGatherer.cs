@@ -13,12 +13,13 @@ using uni.platforms.gcn.tools;
 #pragma warning disable CS8604
 
 
-namespace uni.games.wind_waker {
-  public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer<BmdModelFileBundle> {
-    private readonly ILogger logger_ =
-        Logging.Create<WindWakerFileBundleGatherer>();
+namespace uni.games.wind_waker;
 
-    public IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> GatherFileBundles() {
+public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer<BmdModelFileBundle> {
+  private readonly ILogger logger_ =
+      Logging.Create<WindWakerFileBundleGatherer>();
+
+  public IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "wind_waker",
               out var fileHierarchy)) {
@@ -52,42 +53,42 @@ namespace uni.games.wind_waker {
 
       return this.ExtractObjects_(objectDirectory);
 
-      /*{
-        var relsDirectory = fileHierarchy.Root.GetExistingSubdir("rels");
-        var mapFiles = fileHierarchy.Root.GetExistingSubdir("maps").Files;
+     /*{
+        ar relsDirectory = fileHierarchy.Root.GetExistingSubdir("rels");
+        ar mapFiles = fileHierarchy.Root.GetExistingSubdir("maps").Files;
 
-        var yaz0Dec = new Yaz0Dec();
-        var didDecompress = false;
-        foreach (var relFile in relsDirectory.FilesWithExtension(".rel")) {
-          didDecompress |= yaz0Dec.Run(relFile, false);
-        }
+        ar yaz0Dec = new Yaz0Dec();
+        ar didDecompress = false;
+        oreach (var relFile in relsDirectory.FilesWithExtension(".rel")) {
+          idDecompress |= yaz0Dec.Run(relFile, false);
+        
 
-        if (didDecompress) {
-          relsDirectory.Refresh();
-        }
+        f (didDecompress) {
+          elsDirectory.Refresh();
+        
 
-        var didDump = false;
-        var relDump = new RelDump();
-        foreach (var rarcFile in relsDirectory.FilesWithExtension(".rarc")) {
-          var mapFile = mapFiles.Single(
-              file => file.NameWithoutExtension ==
-                      rarcFile.NameWithoutExtension);
+        ar didDump = false;
+        ar relDump = new RelDump();
+        oreach (var rarcFile in relsDirectory.FilesWithExtension(".rarc")) {
+          ar mapFile = mapFiles.Single(
+              ile => file.NameWithoutExtension ==
+                      arcFile.NameWithoutExtension);
 
-          didDump |= relDump.Run(rarcFile, mapFile, true);
-        }
+          idDump |= relDump.Run(rarcFile, mapFile, true);
+        
 
-        if (didDump) {
-          relsDirectory.Refresh(true);
-        }
-      }*/
+        f (didDump) {
+          elsDirectory.Refresh(true);
+        
+      *//
     }
 
-    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractObjects_(
-        IFileHierarchyDirectory directory)
-      => directory.GetExistingSubdirs().SelectMany(this.ExtractObject_);
+  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractObjects_(
+      IFileHierarchyDirectory directory)
+    => directory.GetExistingSubdirs().SelectMany(this.ExtractObject_);
 
-    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractObject_(
-        IFileHierarchyDirectory directory) {
+  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractObject_(
+      IFileHierarchyDirectory directory) {
       // TODO: What the heck is the difference between these directories?
       // Is there any besides the model type within?
       var bdlSubdir =
@@ -143,49 +144,49 @@ namespace uni.games.wind_waker {
       return Enumerable.Empty<IAnnotatedFileBundle<BmdModelFileBundle>>();
     }
 
-    public interface IOrganizeMethod {
-      IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
-          IFileHierarchyFile bmdFile,
-          IReadOnlyList<IFileHierarchyFile> bckFiles);
-    }
+  public interface IOrganizeMethod {
+    IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
+        IFileHierarchyFile bmdFile,
+        IReadOnlyList<IFileHierarchyFile> bckFiles);
+  }
 
-    public class PrefixOrganizeMethod : IOrganizeMethod {
-      public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
-          IFileHierarchyFile bmdFile,
-          IReadOnlyList<IFileHierarchyFile> bckFiles) {
+  public class PrefixOrganizeMethod : IOrganizeMethod {
+    public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
+        IFileHierarchyFile bmdFile,
+        IReadOnlyList<IFileHierarchyFile> bckFiles) {
         var prefix = bmdFile.NameWithoutExtension.SubstringUpTo("_");
         return bckFiles.Where(file => file.Name.StartsWith(prefix)).ToArray();
       }
-    }
+  }
 
-    public class NameMatchOrganizeMethod : IOrganizeMethod {
-      private string name_;
+  public class NameMatchOrganizeMethod : IOrganizeMethod {
+    private string name_;
 
-      public NameMatchOrganizeMethod(string name) {
+    public NameMatchOrganizeMethod(string name) {
         this.name_ = name.ToLower();
       }
 
-      public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
-          IFileHierarchyFile bmdFile,
-          IReadOnlyList<IFileHierarchyFile> bckFiles) {
+    public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
+        IFileHierarchyFile bmdFile,
+        IReadOnlyList<IFileHierarchyFile> bckFiles) {
         if (bmdFile.NameWithoutExtension.ToLower().Contains(this.name_)) {
           return bckFiles;
         }
 
         return Array.Empty<IFileHierarchyFile>();
       }
-    }
+  }
 
-    public class SuffixOrganizeMethod : IOrganizeMethod {
-      private readonly int suffixLength_;
+  public class SuffixOrganizeMethod : IOrganizeMethod {
+    private readonly int suffixLength_;
 
-      public SuffixOrganizeMethod(int suffixLength) {
+    public SuffixOrganizeMethod(int suffixLength) {
         this.suffixLength_ = suffixLength;
       }
 
-      public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
-          IFileHierarchyFile bmdFile,
-          IReadOnlyList<IFileHierarchyFile> bckFiles) {
+    public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
+        IFileHierarchyFile bmdFile,
+        IReadOnlyList<IFileHierarchyFile> bckFiles) {
         var suffix =
             bmdFile.NameWithoutExtension.Substring(
                 bmdFile.NameWithoutExtension.Length -
@@ -193,12 +194,12 @@ namespace uni.games.wind_waker {
 
         return bckFiles.Where(file => file.Name.StartsWith(suffix)).ToArray();
       }
-    }
+  }
 
-    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractFilesByOrganizing_(
-        IReadOnlyList<IFileHierarchyFile> bmdFiles,
-        IReadOnlyList<IFileHierarchyFile> bckFiles,
-        IOrganizeMethod organizeMethod) {
+  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractFilesByOrganizing_(
+      IReadOnlyList<IFileHierarchyFile> bmdFiles,
+      IReadOnlyList<IFileHierarchyFile> bckFiles,
+      IOrganizeMethod organizeMethod) {
       if (organizeMethod is PrefixOrganizeMethod) {
         bmdFiles.OrderByDescending(
             file => file.NameWithoutExtension
@@ -230,11 +231,11 @@ namespace uni.games.wind_waker {
       }
     }
 
-    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractModels_(
-        IReadOnlyList<IFileHierarchyFile> bmdFiles,
-        IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
-        IReadOnlyList<IFileHierarchyFile>? btiFiles = null
-    ) {
+  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractModels_(
+      IReadOnlyList<IFileHierarchyFile> bmdFiles,
+      IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
+      IReadOnlyList<IFileHierarchyFile>? btiFiles = null
+  ) {
       bcxFiles ??= new List<IFileHierarchyFile>();
       btiFiles ??= new List<IFileHierarchyFile>();
 
@@ -248,5 +249,4 @@ namespace uni.games.wind_waker {
         }.Annotate(bmdFile);
       }
     }
-  }
 }

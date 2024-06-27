@@ -8,10 +8,11 @@ using jsystem.api;
 
 using uni.platforms.gcn;
 
-namespace uni.games.mario_kart_double_dash {
-  public class MarioKartDoubleDashFileBundleGatherer
-      : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+namespace uni.games.mario_kart_double_dash;
+
+public class MarioKartDoubleDashFileBundleGatherer
+    : IAnnotatedFileBundleGatherer {
+  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "mario_kart_double_dash",
               GcnFileHierarchyExtractor.Options.Standard()
@@ -28,15 +29,15 @@ namespace uni.games.mario_kart_double_dash {
                  .Concat(this.ExtractAudio_(fileHierarchy));
     }
 
-    private IEnumerable<IAnnotatedFileBundle> ExtractKarts_(
-        IFileHierarchy fileHierarchy)
-      => fileHierarchy.Root.AssertGetExistingSubdir(@"MRAM\kart")
-                      .GetExistingSubdirs()
-                      .Select(subdir => subdir.FilesWithExtension(".bmd"))
-                      .SelectMany(bmdFiles => this.ExtractModels_(bmdFiles));
+  private IEnumerable<IAnnotatedFileBundle> ExtractKarts_(
+      IFileHierarchy fileHierarchy)
+    => fileHierarchy.Root.AssertGetExistingSubdir(@"MRAM\kart")
+                    .GetExistingSubdirs()
+                    .Select(subdir => subdir.FilesWithExtension(".bmd"))
+                    .SelectMany(bmdFiles => this.ExtractModels_(bmdFiles));
 
-    private IEnumerable<IAnnotatedFileBundle> ExtractDrivers_(
-        IFileHierarchy fileHierarchy) {
+  private IEnumerable<IAnnotatedFileBundle> ExtractDrivers_(
+      IFileHierarchy fileHierarchy) {
       var mramSubdir =
           fileHierarchy.Root.AssertGetExistingSubdir(@"MRAM\driver");
 
@@ -152,8 +153,8 @@ namespace uni.games.mario_kart_double_dash {
       }
     }
 
-    private IEnumerable<IAnnotatedFileBundle> ExtractFromDriverDirectory_(
-        IFileHierarchyDirectory directory) {
+  private IEnumerable<IAnnotatedFileBundle> ExtractFromDriverDirectory_(
+      IFileHierarchyDirectory directory) {
       var bmdFiles = directory.FilesWithExtension(".bmd")
                               .ToArray();
       var bcxFiles = directory.FilesWithExtensions(".bca", ".bck")
@@ -185,10 +186,10 @@ namespace uni.games.mario_kart_double_dash {
       }
     }
 
-    private IEnumerable<IAnnotatedFileBundle>
-        ExtractFromSeparateDriverDirectories_(
-            IFileHierarchyDirectory directory,
-            IFileHierarchyDirectory common) {
+  private IEnumerable<IAnnotatedFileBundle>
+      ExtractFromSeparateDriverDirectories_(
+          IFileHierarchyDirectory directory,
+          IFileHierarchyDirectory common) {
       Asserts.Nonnull(common);
 
       var bmdFiles = directory.FilesWithExtension(".bmd")
@@ -203,8 +204,8 @@ namespace uni.games.mario_kart_double_dash {
           commonBcxFiles.Concat(localBcxFiles).ToArray());
     }
 
-    private IEnumerable<IAnnotatedFileBundle> ExtractCourses_(
-        IFileHierarchy fileHierarchy) {
+  private IEnumerable<IAnnotatedFileBundle> ExtractCourses_(
+      IFileHierarchy fileHierarchy) {
       var courseSubdir = fileHierarchy.Root.AssertGetExistingSubdir("Course");
       foreach (var subdir in courseSubdir.GetExistingSubdirs()) {
         var bmdFiles = subdir.FilesWithExtension(".bmd")
@@ -228,18 +229,18 @@ namespace uni.games.mario_kart_double_dash {
       }
     }
 
-    private IEnumerable<IAnnotatedFileBundle> ExtractAudio_(
-        IFileHierarchy fileHierarchy)
-      => fileHierarchy.Root.AssertGetExistingSubdir(@"AudioRes\Stream")
-                      .FilesWithExtension(".ast")
-                      .Select(astFile => new AstAudioFileBundle {
-                          GameName = "mario_kart_double_dash",
-                          AstFile = astFile,
-                      }.Annotate(astFile));
+  private IEnumerable<IAnnotatedFileBundle> ExtractAudio_(
+      IFileHierarchy fileHierarchy)
+    => fileHierarchy.Root.AssertGetExistingSubdir(@"AudioRes\Stream")
+                    .FilesWithExtension(".ast")
+                    .Select(astFile => new AstAudioFileBundle {
+                        GameName = "mario_kart_double_dash",
+                        AstFile = astFile,
+                    }.Annotate(astFile));
 
-    private IEnumerable<IAnnotatedFileBundle>
-        ExtractModelsAndAnimationsFromSceneObject_(
-            IFileHierarchyDirectory directory) {
+  private IEnumerable<IAnnotatedFileBundle>
+      ExtractModelsAndAnimationsFromSceneObject_(
+          IFileHierarchyDirectory directory) {
       var bmdFiles = directory.GetExistingFiles()
                               .Where(
                                   file => file.FileType == ".bmd")
@@ -303,17 +304,16 @@ namespace uni.games.mario_kart_double_dash {
       });
     }
 
-    private IEnumerable<IAnnotatedFileBundle> ExtractModels_(
-        IEnumerable<IFileHierarchyFile> bmdFiles,
-        IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
-        IReadOnlyList<IFileHierarchyFile>? btiFiles = null
-    )
-      => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
-          GameName = "mario_kart_double_dash",
-          BmdFile = bmdFile,
-          BcxFiles = bcxFiles,
-          BtiFiles = btiFiles,
-          FrameRate = 60,
-      }.Annotate(bmdFile));
-  }
+  private IEnumerable<IAnnotatedFileBundle> ExtractModels_(
+      IEnumerable<IFileHierarchyFile> bmdFiles,
+      IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
+      IReadOnlyList<IFileHierarchyFile>? btiFiles = null
+  )
+    => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
+        GameName = "mario_kart_double_dash",
+        BmdFile = bmdFile,
+        BcxFiles = bcxFiles,
+        BtiFiles = btiFiles,
+        FrameRate = 60,
+    }.Annotate(bmdFile));
 }

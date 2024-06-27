@@ -1,18 +1,19 @@
 ﻿using schema.binary;
 
-namespace uni.platforms.threeDs.tools.gar.schema {
-  public class Gar5FileType : IGarFileType {
-    public uint FileCount { get; }
-    public int FirstFileIndex { get; }
-    public int TypeNameOffset { get; }
-    public string TypeName { get; }
+namespace uni.platforms.threeDs.tools.gar.schema;
 
-    public IGarSubfile[] Files { get; }
+public class Gar5FileType : IGarFileType {
+  public uint FileCount { get; }
+  public int FirstFileIndex { get; }
+  public int TypeNameOffset { get; }
+  public string TypeName { get; }
 
-    public Gar5FileType(
-        IBinaryReader br,
-        GarHeader header,
-        int fileTypeIndex) {
+  public IGarSubfile[] Files { get; }
+
+  public Gar5FileType(
+      IBinaryReader br,
+      GarHeader header,
+      int fileTypeIndex) {
       br.Position = header.FileTypesOffset + 8 * 4 * fileTypeIndex;
 
       this.FileCount = br.ReadUInt32();
@@ -32,5 +33,4 @@ namespace uni.platforms.threeDs.tools.gar.schema {
         this.Files[i] = new Gar5Subfile(br, header, this, i);
       }
     }
-  }
 }

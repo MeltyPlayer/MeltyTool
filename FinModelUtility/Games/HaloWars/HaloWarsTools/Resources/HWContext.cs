@@ -3,57 +3,58 @@ using System.IO;
 
 using KSoft.Phoenix.Resource;
 
-namespace HaloWarsTools {
-  public class HWContext {
-    public string GameInstallDirectory;
-    public string ScratchDirectory;
+namespace HaloWarsTools;
 
-    /*public Dictionary<string, HWObjectDefinition> ObjectDefinitions => ValueCache.Get(LoadObjectDefinitions);
+public class HWContext {
+  public string GameInstallDirectory;
+  public string ScratchDirectory;
 
-    private Dictionary<string, HWObjectDefinition> LoadObjectDefinitions() {
-      var manifest = new Dictionary<string, HWObjectDefinition>();
+  /*public Dictionary<string, HWObjectDefinition> ObjectDefinitions => ValueCache.Get(LoadObjectDefinitions);
 
-      var source = "data\\objects.xml";
+  private Dictionary<string, HWObjectDefinition> LoadObjectDefinitions() {
+    var manifest = new Dictionary<string, HWObjectDefinition>();
 
-      var objects = XElement.Load(GetAbsoluteScratchPath(source)).Descendants("Object");
-      foreach (var obj in objects) {
-        if (obj.Attribute("name") != null) {
-          var def = new HWObjectDefinition {
-              Name = obj.Attribute("name").Value
-          };
-          var vis = obj.Descendants().FirstOrDefault(xmlElement => xmlElement.Name == "Visual");
-          if (vis != null) {
-            def.Visual = HWVisResource.FromFile(this, Path.Combine("art", vis.Value));
-          }
-          manifest.Add(def.Name, def);
+    var source = "data\\objects.xml";
+
+    var objects = XElement.Load(GetAbsoluteScratchPath(source)).Descendants("Object");
+    foreach (var obj in objects) {
+      if (obj.Attribute("name") != null) {
+        var def = new HWObjectDefinition {
+            Name = obj.Attribute("name").Value
+        };
+        var vis = obj.Descendants().FirstOrDefault(xmlElement => xmlElement.Name == "Visual");
+        if (vis != null) {
+          def.Visual = HWVisResource.FromFile(this, Path.Combine("art", vis.Value));
         }
+        manifest.Add(def.Name, def);
       }
+    }
 
-      return manifest;
-    }*/
+    return manifest;
+  }*/
 
-    public HWContext(string gameInstallDirectory, string scratchDirectory) {
+  public HWContext(string gameInstallDirectory, string scratchDirectory) {
       GameInstallDirectory = gameInstallDirectory;
       ScratchDirectory = scratchDirectory;
     }
 
-    public string GetAbsoluteGamePath(string relativePath) {
+  public string GetAbsoluteGamePath(string relativePath) {
       return Path.Combine(GameInstallDirectory, relativePath);
     }
 
-    public string GetRelativeGamePath(string absolutePath) {
+  public string GetRelativeGamePath(string absolutePath) {
       return Path.GetRelativePath(GameInstallDirectory, absolutePath);
     }
 
-    public string GetAbsoluteScratchPath(string relativePath) {
+  public string GetAbsoluteScratchPath(string relativePath) {
       return Path.Combine(ScratchDirectory, relativePath);
     }
 
-    public string GetRelativeScratchPath(string absolutePath) {
+  public string GetRelativeScratchPath(string absolutePath) {
       return Path.GetRelativePath(ScratchDirectory, absolutePath);
     }
 
-    public bool UnpackEra(string relativeEraPath) {
+  public bool UnpackEra(string relativeEraPath) {
       if (IsEraUnpacked(relativeEraPath)) {
         return false;
       }
@@ -90,18 +91,17 @@ namespace HaloWarsTools {
       return true;
     }
 
-    public bool IsEraUnpacked(string relativeEraPath) {
+  public bool IsEraUnpacked(string relativeEraPath) {
       return File.Exists(Path.Combine(ScratchDirectory,
                                       Path.ChangeExtension(
                                           Path.GetFileName(relativeEraPath),
                                           ".eradef")));
     }
 
-    public void ExpandAllEraFiles() {
+  public void ExpandAllEraFiles() {
       var files = Directory.GetFiles(GameInstallDirectory, "*.era");
       foreach (var eraFile in files) {
         UnpackEra(GetRelativeGamePath(eraFile));
       }
     }
-  }
 }

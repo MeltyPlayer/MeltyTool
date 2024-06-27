@@ -17,18 +17,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileFormat
-{
-    using System.Diagnostics.CodeAnalysis;
+namespace Yarhl.FileFormat;
 
-    /// <summary>
-    /// File format marker.
-    /// </summary>
-    [SuppressMessage(
-        "Microsoft.Design",
-        "CA1040:AvoidEmptyInterfaces",
-        Justification = "We use the interface as a compile time marker.")]
-    public interface IFormat
-    {
-    }
+using System.Diagnostics.CodeAnalysis;
+
+/// <summary>
+/// File format marker.
+/// </summary>
+[SuppressMessage(
+    "Microsoft.Design",
+    "CA1040:AvoidEmptyInterfaces",
+    Justification = "We use the interface as a compile time marker.")]
+public interface IFormat
+{
 }

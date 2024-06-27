@@ -29,40 +29,40 @@ using Yarhl.FileFormat;
 using Yarhl.FileSystem;
 using Yarhl.IO;
 
-namespace SceneGate.Ekona.Containers.Rom
+namespace SceneGate.Ekona.Containers.Rom;
+
+/// <summary>
+/// Converter for binary formats into a NitroRom container.
+/// </summary>
+public class Binary2NitroRom : IConverter<IBinary, NitroRom>, IInitializer<DsiKeyStore>
 {
+    private const int SecureAreaLength = 16 * 1024;
+    private static readonly FileAddressOffsetComparer FileAddressComparer = new FileAddressOffsetComparer();
+
+    private DsiKeyStore keyStore;
+
+    private DataReader reader;
+    private NitroRom rom;
+    private RomHeader header;
+    private FileAddress[] addresses;
+    private List<FileAddress> addressesByOffset;
+
     /// <summary>
-    /// Converter for binary formats into a NitroRom container.
+    /// Initializes the converter with the key store to validate signatures.
     /// </summary>
-    public class Binary2NitroRom : IConverter<IBinary, NitroRom>, IInitializer<DsiKeyStore>
+    /// <param name="parameters">The key store.</param>
+    public void Initialize(DsiKeyStore parameters)
     {
-        private const int SecureAreaLength = 16 * 1024;
-        private static readonly FileAddressOffsetComparer FileAddressComparer = new FileAddressOffsetComparer();
-
-        private DsiKeyStore keyStore;
-
-        private DataReader reader;
-        private NitroRom rom;
-        private RomHeader header;
-        private FileAddress[] addresses;
-        private List<FileAddress> addressesByOffset;
-
-        /// <summary>
-        /// Initializes the converter with the key store to validate signatures.
-        /// </summary>
-        /// <param name="parameters">The key store.</param>
-        public void Initialize(DsiKeyStore parameters)
-        {
             keyStore = parameters;
         }
 
-        /// <summary>
-        /// Read the internal info of a ROM file.
-        /// </summary>
-        /// <param name="source">Source binary format to read from.</param>
-        /// <returns>The new node container.</returns>
-        public NitroRom Convert(IBinary source)
-        {
+    /// <summary>
+    /// Read the internal info of a ROM file.
+    /// </summary>
+    /// <param name="source">Source binary format to read from.</param>
+    /// <returns>The new node container.</returns>
+    public NitroRom Convert(IBinary source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -81,8 +81,8 @@ namespace SceneGate.Ekona.Containers.Rom
             return rom;
         }
 
-        private void ReadHeader()
-        {
+    private void ReadHeader()
+    {
             if (reader.Stream.Length < Binary2RomHeader.HeaderSizeOffset + 4) {
                 throw new EndOfStreamException("Stream is smaller than the ROM header");
             }
@@ -99,8 +99,8 @@ namespace SceneGate.Ekona.Containers.Rom
             rom.System.Children["copyright_logo"].ChangeFormat(binaryLogo);
         }
 
-        private void ReadBanner()
-        {
+    private void ReadBanner()
+    {
             if (header.SectionInfo.BannerOffset == 0) {
                 return;
             }
@@ -112,8 +112,8 @@ namespace SceneGate.Ekona.Containers.Rom
             rom.System.Children["banner"].TransformWith<Binary2Banner>();
         }
 
-        private void ReadFat()
-        {
+    private void ReadFat()
+    {
             int numFiles = (int)(header.SectionInfo.FatSize / 0x08);
             addresses = new FileAddress[numFiles];
 
@@ -132,8 +132,8 @@ namespace SceneGate.Ekona.Containers.Rom
             addressesByOffset.Sort(FileAddressComparer);
         }
 
-        private void ReadPrograms()
-        {
+    private void ReadPrograms()
+    {
             var arm9Stream = GetOrModcrypt(
                 reader.Stream,
                 header.SectionInfo.Arm9Offset,
@@ -178,8 +178,8 @@ namespace SceneGate.Ekona.Containers.Rom
             }
         }
 
-        private DataStream GetOrModcrypt(Stream source, long offset, long length, params ModcryptTargetKind[] kinds)
-        {
+    private DataStream GetOrModcrypt(Stream source, long offset, long length, params ModcryptTargetKind[] kinds)
+    {
             if (header.ProgramInfo.UnitCode == DeviceUnitKind.DS) {
                 return new DataStream(source, offset, length);
             }
@@ -210,8 +210,8 @@ namespace SceneGate.Ekona.Containers.Rom
             return output;
         }
 
-        private void ReadProgramCodeParameters()
-        {
+    private void ReadProgramCodeParameters()
+    {
             var programParams = header.ProgramInfo.ProgramCodeParameters;
             uint paramsOffset = header.ProgramInfo.Arm9ParametersTableOffset;
 
@@ -240,8 +240,8 @@ namespace SceneGate.Ekona.Containers.Rom
             programParams.SdkVersion = new Version(major, minor, build);
         }
 
-        private void ReadOverlayTable(Collection<OverlayInfo> infos, uint offset, int size)
-        {
+    private void ReadOverlayTable(Collection<OverlayInfo> infos, uint offset, int size)
+    {
             reader.Stream.Position = offset;
             int numFiles = size / 0x20;
             for (int i = 0; i < numFiles; i++) {
@@ -268,8 +268,8 @@ namespace SceneGate.Ekona.Containers.Rom
             }
         }
 
-        private void ReadFileSystem()
-        {
+    private void ReadFileSystem()
+    {
             var encoding = Encoding.GetEncoding("shift_jis");
             var directoryQueue = new Queue<(int Id, Node Current)>();
 
@@ -315,8 +315,8 @@ namespace SceneGate.Ekona.Containers.Rom
             }
         }
 
-        private void ValidateSignatures()
-        {
+    private void ValidateSignatures()
+    {
             if (keyStore is null) {
                 return;
             }
@@ -394,23 +394,22 @@ namespace SceneGate.Ekona.Containers.Rom
             }
         }
 
-        private struct FileAddress
+    private struct FileAddress
+    {
+        public uint Offset { get; init; }
+
+        public uint Size { get; init; }
+
+        public int Index { get; init; }
+    }
+
+    private sealed class FileAddressOffsetComparer : IComparer<FileAddress>
+    {
+        public int Compare(FileAddress x, FileAddress y)
         {
-            public uint Offset { get; init; }
-
-            public uint Size { get; init; }
-
-            public int Index { get; init; }
-        }
-
-        private sealed class FileAddressOffsetComparer : IComparer<FileAddress>
-        {
-            public int Compare(FileAddress x, FileAddress y)
-            {
                 int offsetComparison = x.Offset.CompareTo(y.Offset);
                 if (offsetComparison != 0) return offsetComparison;
                 return x.Index.CompareTo(y.Index);
             }
-        }
     }
 }

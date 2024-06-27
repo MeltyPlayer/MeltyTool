@@ -17,33 +17,33 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using System;
+using System.Linq;
+using Images;
+using Palettes;
+using SixLabors.ImageSharp;
+using Yarhl.FileFormat;
+using Yarhl.IO;
+using SixRgb = SixLabors.ImageSharp.PixelFormats.Rgba32;
+
+public class IndexedImage2Bitmap :
+    IInitializer<IndexedImageBitmapParams>,
+    IConverter<IIndexedImage, BinaryFormat>
 {
-    using System;
-    using System.Linq;
-    using Images;
-    using Palettes;
-    using SixLabors.ImageSharp;
-    using Yarhl.FileFormat;
-    using Yarhl.IO;
-    using SixRgb = SixLabors.ImageSharp.PixelFormats.Rgba32;
+    private IndexedImageBitmapParams parameters;
 
-    public class IndexedImage2Bitmap :
-        IInitializer<IndexedImageBitmapParams>,
-        IConverter<IIndexedImage, BinaryFormat>
+    public void Initialize(IndexedImageBitmapParams parameters)
     {
-        private IndexedImageBitmapParams parameters;
-
-        public void Initialize(IndexedImageBitmapParams parameters)
-        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
             this.parameters = parameters;
         }
 
-        public BinaryFormat Convert(IIndexedImage source)
-        {
+    public BinaryFormat Convert(IIndexedImage source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -86,5 +86,4 @@ namespace Texim.Formats
             bitmap.Save(binary.Stream, parameters.Encoder);
             return binary;
         }
-    }
 }

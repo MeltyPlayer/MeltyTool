@@ -10,12 +10,13 @@ using Avalonia.Styling;
 
 using gbGroupBox = GroupBox.Avalonia.Controls.GroupBox;
 
-namespace uni.ui.avalonia.common {
-  using SelectorDelegate = Func<Selector?, Selector>;
-  using NonnullSelectorDelegate = Func<Selector, Selector>;
+namespace uni.ui.avalonia.common;
 
-  public class HeaderStyles : Styles {
-    public HeaderStyles() {
+using SelectorDelegate = Func<Selector?, Selector>;
+using NonnullSelectorDelegate = Func<Selector, Selector>;
+
+public class HeaderStyles : Styles {
+  public HeaderStyles() {
       var maxSizeIndex = 1;
       var minSizeIndex = 4;
 
@@ -65,10 +66,10 @@ namespace uni.ui.avalonia.common {
       }
     }
 
-    private TargetSelectorDelegates GetTargetSelectorDelegates_(
-        int headingIndex,
-        SelectorDelegate topLevelSelector,
-        NonnullSelectorDelegate childSelector) {
+  private TargetSelectorDelegates GetTargetSelectorDelegates_(
+      int headingIndex,
+      SelectorDelegate topLevelSelector,
+      NonnullSelectorDelegate childSelector) {
       var topLevelWithHeadingSelector
           = topLevelSelector.Class($"h{headingIndex}");
       var topLevelWithHeadingWithoutSpacingFirstSelector
@@ -80,65 +81,64 @@ namespace uni.ui.avalonia.common {
           topLevelWithHeadingWithoutSpacingFirstSelector.Then(childSelector)
       );
     }
-  }
+}
 
-  public record TargetSelectorDelegates(
-      SelectorDelegate TopLevelSelector,
-      SelectorDelegate TargetSelector,
-      SelectorDelegate TargetWithoutSpaceFirstSelector);
+public record TargetSelectorDelegates(
+    SelectorDelegate TopLevelSelector,
+    SelectorDelegate TargetSelector,
+    SelectorDelegate TargetWithoutSpaceFirstSelector);
 
-  public static class SelectorExtensions {
-    public static Selector ChildOfType<T>(this Selector s)
-        where T : StyledElement
-      => s.Child().OfType<T>();
+public static class SelectorExtensions {
+  public static Selector ChildOfType<T>(this Selector s)
+      where T : StyledElement
+    => s.Child().OfType<T>();
 
-    public static Selector DescendantOfType<T>(this Selector s)
-        where T : StyledElement
-      => s.Descendant().OfType<T>();
-  }
+  public static Selector DescendantOfType<T>(this Selector s)
+      where T : StyledElement
+    => s.Descendant().OfType<T>();
+}
 
-  public static class SelectorDelegateExtensions {
-    public static SelectorDelegate Then(this SelectorDelegate d,
-                                        SelectorDelegate next)
-      => x => next(d(x));
+public static class SelectorDelegateExtensions {
+  public static SelectorDelegate Then(this SelectorDelegate d,
+                                      SelectorDelegate next)
+    => x => next(d(x));
 
-    public static SelectorDelegate OfType<T>(this SelectorDelegate d)
-        where T : StyledElement
-      => x => d(x).OfType<T>();
+  public static SelectorDelegate OfType<T>(this SelectorDelegate d)
+      where T : StyledElement
+    => x => d(x).OfType<T>();
 
-    public static SelectorDelegate Class(this SelectorDelegate d,
-                                         string className)
-      => x => d(x).Class(className);
+  public static SelectorDelegate Class(this SelectorDelegate d,
+                                       string className)
+    => x => d(x).Class(className);
 
-    public static SelectorDelegate Child(this SelectorDelegate d)
-      => x => d(x).Child();
+  public static SelectorDelegate Child(this SelectorDelegate d)
+    => x => d(x).Child();
 
-    public static SelectorDelegate Not(this SelectorDelegate d,
-                                       SelectorDelegate notHandler)
-      => x => d(x).Not(notHandler);
-  }
+  public static SelectorDelegate Not(this SelectorDelegate d,
+                                     SelectorDelegate notHandler)
+    => x => d(x).Not(notHandler);
+}
 
-  public static class StyleExtensions {
-    public static Style AddStyle(this Styles parent,
-                                 SelectorDelegate childHandler) {
+public static class StyleExtensions {
+  public static Style AddStyle(this Styles parent,
+                               SelectorDelegate childHandler) {
       var child = new Style(childHandler);
       parent.Add(child);
       return child;
     }
 
-    public static Style AddChild(this Style parent,
-                                 SelectorDelegate childHandler) {
+  public static Style AddChild(this Style parent,
+                               SelectorDelegate childHandler) {
       var child = new Style(x => childHandler(x.Nesting()));
       parent.Children.Add(child);
       return child;
     }
 
-    public static Style AddSetter<T>(
-        this Style style,
-        AvaloniaProperty<T> property,
-        T value) {
+  public static Style AddSetter<T>(
+      this Style style,
+      AvaloniaProperty<T> property,
+      T value) {
       style.Setters.Add(new Setter(property, value));
       return style;
     }
-  }
 }

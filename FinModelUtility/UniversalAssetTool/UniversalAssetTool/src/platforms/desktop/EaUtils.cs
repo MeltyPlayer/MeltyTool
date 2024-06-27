@@ -3,12 +3,13 @@
 using fin.io;
 using fin.util.asserts;
 
-namespace uni.platforms.desktop {
-  public static class EaUtils {
-    public static bool TryGetGameDirectory(
-        string name,
-        out ISystemDirectory directory,
-        bool assert = false) {
+namespace uni.platforms.desktop;
+
+public static class EaUtils {
+  public static bool TryGetGameDirectory(
+      string name,
+      out ISystemDirectory directory,
+      bool assert = false) {
       using (var eaGamesKey =
              RegistryExtensions.OpenSoftwareSubkeyEither32Or64Bit("EA Games")) {
         if (eaGamesKey != null) {
@@ -31,5 +32,4 @@ namespace uni.platforms.desktop {
       directory = null;
       return false;
     }
-  }
 }

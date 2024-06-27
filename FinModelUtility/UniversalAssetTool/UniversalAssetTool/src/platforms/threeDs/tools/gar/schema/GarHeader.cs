@@ -2,20 +2,21 @@
 
 using schema.binary;
 
-namespace uni.platforms.threeDs.tools.gar.schema {
-  public class GarHeader {
-    public int Version { get; }
+namespace uni.platforms.threeDs.tools.gar.schema;
 
-    public int Size { get; }
+public class GarHeader {
+  public int Version { get; }
 
-    public short FileTypeCount { get; }
-    public short FileCount { get; }
+  public int Size { get; }
 
-    public int FileTypesOffset { get; }
-    public int FileMetadataOffset { get; }
-    public int DataOffset { get; }
+  public short FileTypeCount { get; }
+  public short FileCount { get; }
 
-    public GarHeader(IBinaryReader br) {
+  public int FileTypesOffset { get; }
+  public int FileMetadataOffset { get; }
+  public int DataOffset { get; }
+
+  public GarHeader(IBinaryReader br) {
       br.AssertString("GAR");
 
       this.Version = br.ReadByte();
@@ -30,5 +31,4 @@ namespace uni.platforms.threeDs.tools.gar.schema {
       this.FileMetadataOffset = br.ReadInt32();
       this.DataOffset = br.ReadInt32();
     }
-  }
 }

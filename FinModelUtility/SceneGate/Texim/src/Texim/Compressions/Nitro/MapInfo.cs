@@ -17,45 +17,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro
+namespace Texim.Compressions.Nitro;
+
+public readonly struct MapInfo
 {
-    public readonly struct MapInfo
+    public MapInfo(byte value)
     {
-        public MapInfo(byte value)
-        {
             TileIndex = value;
             HorizontalFlip = false;
             VerticalFlip = false;
             PaletteIndex = 0;
         }
 
-        public MapInfo(ushort value)
-        {
+    public MapInfo(ushort value)
+    {
             TileIndex = (short)(value & 0x3FF);
             HorizontalFlip = ((value >> 10) & 0x01) == 1;
             VerticalFlip = ((value >> 11) & 0x01) == 1;
             PaletteIndex = (byte)(value >> 12);
         }
 
-        public MapInfo(short value)
-            : this((ushort)value)
-        {
+    public MapInfo(short value)
+        : this((ushort)value)
+    {
         }
 
-        public short TileIndex { get; init; }
+    public short TileIndex { get; init; }
 
-        public bool HorizontalFlip { get; init; }
+    public bool HorizontalFlip { get; init; }
 
-        public bool VerticalFlip { get; init; }
+    public bool VerticalFlip { get; init; }
 
-        public byte PaletteIndex { get; init; }
+    public byte PaletteIndex { get; init; }
 
-        public readonly short ToInt16()
-        {
+    public readonly short ToInt16()
+    {
             return (short)((TileIndex & 0x3FF)
                 | ((HorizontalFlip ? 1 : 0) << 10)
                 | ((VerticalFlip ? 1 : 0) << 11)
                 | ((PaletteIndex & 0x0F) << 12));
         }
-    }
 }

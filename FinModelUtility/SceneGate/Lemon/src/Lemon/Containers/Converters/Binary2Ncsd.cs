@@ -17,28 +17,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using Formats;
-    using Yarhl.FileFormat;
-    using Yarhl.FileSystem;
-    using Yarhl.IO;
+namespace SceneGate.Lemon.Containers.Converters;
 
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Formats;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+using Yarhl.IO;
+
+/// <summary>
+/// Converter for Binary streams into a NCSD instance.
+/// </summary>
+public class Binary2Ncsd : IConverter<BinaryFormat, Ncsd>
+{
     /// <summary>
-    /// Converter for Binary streams into a NCSD instance.
+    /// Gets the name of a partition from its index.
     /// </summary>
-    public class Binary2Ncsd : IConverter<BinaryFormat, Ncsd>
+    /// <param name="index">Index of the partition.</param>
+    /// <returns>The associated partition's name.</returns>
+    public static string GetPartitionName(int index)
     {
-        /// <summary>
-        /// Gets the name of a partition from its index.
-        /// </summary>
-        /// <param name="index">Index of the partition.</param>
-        /// <returns>The associated partition's name.</returns>
-        public static string GetPartitionName(int index)
-        {
             switch (index) {
                 case 0:
                     return "program";
@@ -55,14 +55,14 @@ namespace SceneGate.Lemon.Containers.Converters
             }
         }
 
-        /// <summary>
-        /// Converts a binary stream into a NCSD instance.
-        /// </summary>
-        /// <param name="source">Binary stream to convert.</param>
-        /// <returns>The new NCSD instance.</returns>
-        [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
-        public Ncsd Convert(BinaryFormat source)
-        {
+    /// <summary>
+    /// Converts a binary stream into a NCSD instance.
+    /// </summary>
+    /// <param name="source">Binary stream to convert.</param>
+    /// <returns>The new NCSD instance.</returns>
+    [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
+    public Ncsd Convert(BinaryFormat source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -101,5 +101,4 @@ namespace SceneGate.Lemon.Containers.Converters
             // TODO: Read rest of header
             return ncsd;
         }
-    }
 }

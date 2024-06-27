@@ -2,13 +2,13 @@
 
 using uni.platforms.wii.tools;
 
-namespace uni.platforms.wii {
-  public class WiiFileHierarchyExtractor {
-    private readonly Wit wit_ = new();
+namespace uni.platforms.wii;
 
-    public IFileHierarchy ExtractFromRom(ISystemFile romFile) {
+public class WiiFileHierarchyExtractor {
+  private readonly Wit wit_ = new();
+
+  public IFileHierarchy ExtractFromRom(ISystemFile romFile) {
       this.wit_.Run(romFile, out var fileHierarchy);
       return fileHierarchy;
     }
-  }
 }

@@ -17,27 +17,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using System;
+using Palettes;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Png;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+
+public class PaletteCollection2ContainerBitmap :
+    IInitializer<IImageEncoder>, IConverter<IPaletteCollection, NodeContainerFormat>
 {
-    using System;
-    using Palettes;
-    using SixLabors.ImageSharp.Formats;
-    using SixLabors.ImageSharp.Formats.Png;
-    using Yarhl.FileFormat;
-    using Yarhl.FileSystem;
+    private IImageEncoder encoder = new PngEncoder();
 
-    public class PaletteCollection2ContainerBitmap :
-        IInitializer<IImageEncoder>, IConverter<IPaletteCollection, NodeContainerFormat>
+    public void Initialize(IImageEncoder parameters)
     {
-        private IImageEncoder encoder = new PngEncoder();
-
-        public void Initialize(IImageEncoder parameters)
-        {
             encoder = parameters;
         }
 
-        public NodeContainerFormat Convert(IPaletteCollection source)
-        {
+    public NodeContainerFormat Convert(IPaletteCollection source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -50,5 +50,4 @@ namespace Texim.Formats
 
             return container;
         }
-    }
 }

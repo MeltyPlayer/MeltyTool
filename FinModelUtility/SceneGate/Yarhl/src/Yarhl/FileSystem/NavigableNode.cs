@@ -17,29 +17,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileSystem
+namespace Yarhl.FileSystem;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+/// <summary>
+/// Node with navigation features inside a FileSystem.
+/// </summary>
+/// <typeparam name="T">The implementation of NavigableNodes.</typeparam>
+public abstract class NavigableNode<T> : IDisposable
+    where T : NavigableNode<T>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    readonly List<T> children;
+    readonly DefaultNavigableNodeComparer defaultComparer = new DefaultNavigableNodeComparer();
 
     /// <summary>
-    /// Node with navigation features inside a FileSystem.
+    /// Initializes a new instance of the
+    /// <see cref="NavigableNode{T}"/> class.
     /// </summary>
-    /// <typeparam name="T">The implementation of NavigableNodes.</typeparam>
-    public abstract class NavigableNode<T> : IDisposable
-        where T : NavigableNode<T>
+    /// <param name="name">Node name.</param>
+    protected NavigableNode(string name)
     {
-        readonly List<T> children;
-        readonly DefaultNavigableNodeComparer defaultComparer = new DefaultNavigableNodeComparer();
-
-        /// <summary>
-        /// Initializes a new instance of the
-        /// <see cref="NavigableNode{T}"/> class.
-        /// </summary>
-        /// <param name="name">Node name.</param>
-        protected NavigableNode(string name)
-        {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
@@ -55,63 +55,63 @@ namespace Yarhl.FileSystem
             Children = new NavigableNodeCollection<T>(children);
         }
 
-        /// <summary>
-        /// Gets the node name.
-        /// </summary>
-        public string Name {
-            get;
-        }
+    /// <summary>
+    /// Gets the node name.
+    /// </summary>
+    public string Name {
+        get;
+    }
 
-        /// <summary>
-        /// Gets the path.
-        /// </summary>
-        /// <remarks>
-        /// <para>It includes the names of all the parent nodes and this node.</para>
-        /// </remarks>
-        public string Path => (Parent?.Path ?? string.Empty) + NodeSystem.PathSeparator + Name;
+    /// <summary>
+    /// Gets the path.
+    /// </summary>
+    /// <remarks>
+    /// <para>It includes the names of all the parent nodes and this node.</para>
+    /// </remarks>
+    public string Path => (Parent?.Path ?? string.Empty) + NodeSystem.PathSeparator + Name;
 
-        /// <summary>
-        /// Gets the parent node.
-        /// </summary>
-        /// <returns>
-        /// The reference to the parent node or null if it doesn't have any parent.
-        /// </returns>
-        public T? Parent {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// Gets the parent node.
+    /// </summary>
+    /// <returns>
+    /// The reference to the parent node or null if it doesn't have any parent.
+    /// </returns>
+    public T? Parent {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Gets a read-only list of children nodes.
-        /// </summary>
-        public NavigableNodeCollection<T> Children { get; }
+    /// <summary>
+    /// Gets a read-only list of children nodes.
+    /// </summary>
+    public NavigableNodeCollection<T> Children { get; }
 
-        /// <summary>
-        /// Gets the dictionary of tags.
-        /// </summary>
-        public IDictionary<string, dynamic> Tags {
-            get;
-        }
+    /// <summary>
+    /// Gets the dictionary of tags.
+    /// </summary>
+    public IDictionary<string, dynamic> Tags {
+        get;
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether this node is disposed.
-        /// </summary>
-        public bool Disposed {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// Gets a value indicating whether this node is disposed.
+    /// </summary>
+    public bool Disposed {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Add a node.
-        /// </summary>
-        /// <remarks>
-        /// <para>Updates the parent of the child node to match this instance.
-        /// If the node already contains a child with the same name it will be replaced.
-        /// Otherwise the node is added.</para>
-        /// </remarks>
-        /// <param name="node">Node to add.</param>
-        public void Add(T node)
-        {
+    /// <summary>
+    /// Add a node.
+    /// </summary>
+    /// <remarks>
+    /// <para>Updates the parent of the child node to match this instance.
+    /// If the node already contains a child with the same name it will be replaced.
+    /// Otherwise the node is added.</para>
+    /// </remarks>
+    /// <param name="node">Node to add.</param>
+    public void Add(T node)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
@@ -138,12 +138,12 @@ namespace Yarhl.FileSystem
             }
         }
 
-        /// <summary>
-        /// Add a list of nodes.
-        /// </summary>
-        /// <param name="nodes">List of nodes to add.</param>
-        public void Add(IEnumerable<T> nodes)
-        {
+    /// <summary>
+    /// Add a list of nodes.
+    /// </summary>
+    /// <param name="nodes">List of nodes to add.</param>
+    public void Add(IEnumerable<T> nodes)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
@@ -158,16 +158,16 @@ namespace Yarhl.FileSystem
             }
         }
 
-        /// <summary>
-        /// Remove a node.
-        /// </summary>
-        /// <param name="node">Node reference to remove.</param>
-        /// <remarks>
-        /// <para>This method does NOT dispose the removed node.</para>
-        /// </remarks>
-        /// <returns>Whether the node was found and removed successfully.</returns>
-        public bool Remove(T node)
-        {
+    /// <summary>
+    /// Remove a node.
+    /// </summary>
+    /// <param name="node">Node reference to remove.</param>
+    /// <remarks>
+    /// <para>This method does NOT dispose the removed node.</para>
+    /// </remarks>
+    /// <returns>Whether the node was found and removed successfully.</returns>
+    public bool Remove(T node)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
@@ -182,18 +182,18 @@ namespace Yarhl.FileSystem
             return result;
         }
 
-        /// <summary>
-        /// Remove a node with the specified name.
-        /// </summary>
-        /// <param name="name">The name of the node to remove.</param>
-        /// <remarks>
-        /// <para>This method <strong>does</strong> dispose the removed node.
-        /// If you don't want to dispose it, search the node and call the
-        /// overload with the node argument.</para>
-        /// </remarks>
-        /// <returns>Whether the node was found and removed successfully.</returns>
-        public bool Remove(string name)
-        {
+    /// <summary>
+    /// Remove a node with the specified name.
+    /// </summary>
+    /// <param name="name">The name of the node to remove.</param>
+    /// <remarks>
+    /// <para>This method <strong>does</strong> dispose the removed node.
+    /// If you don't want to dispose it, search the node and call the
+    /// overload with the node argument.</para>
+    /// </remarks>
+    /// <returns>Whether the node was found and removed successfully.</returns>
+    public bool Remove(string name)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
@@ -211,12 +211,12 @@ namespace Yarhl.FileSystem
             return true;
         }
 
-        /// <summary>
-        /// Removes and dispose all the children from the node.
-        /// </summary>
-        /// <param name="dispose">If set to <see langword="true" /> disposes the nodes before remove them.</param>
-        public void RemoveChildren(bool dispose = true)
-        {
+    /// <summary>
+    /// Removes and dispose all the children from the node.
+    /// </summary>
+    /// <param name="dispose">If set to <see langword="true" /> disposes the nodes before remove them.</param>
+    public void RemoveChildren(bool dispose = true)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
@@ -228,35 +228,35 @@ namespace Yarhl.FileSystem
             children.Clear();
         }
 
-        /// <summary>
-        /// Releases all resource used by the <see cref="Node"/>
-        /// object.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);              // Dispose me everything (L)
-            GC.SuppressFinalize(this);  // Don't dispose again!
+    /// <summary>
+    /// Releases all resource used by the <see cref="Node"/>
+    /// object.
+    /// </summary>
+    public void Dispose()
+    {
+            Dispose(true)              // Dispose me everything (L)
+            GC.SuppressFinalize(this)  // Don't dispose again!
         }
 
-        /// <summary>
-        /// Sorts the children nodes using the default comparer.
-        /// </summary>
-        /// <param name="recursive">If set to <see langword="true" /> sorts the children nodes recursively.</param>
-        public void SortChildren(bool recursive = true)
-        {
+    /// <summary>
+    /// Sorts the children nodes using the default comparer.
+    /// </summary>
+    /// <param name="recursive">If set to <see langword="true" /> sorts the children nodes recursively.</param>
+    public void SortChildren(bool recursive = true)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
             SortChildren(defaultComparer, recursive);
         }
 
-        /// <summary>
-        /// Sorts the children nodes using the specified comparer.
-        /// </summary>
-        /// <param name="comparer">The <see cref="System.Collections.Generic.IComparer{T}" /> implementation to use when comparing elements.</param>
-        /// <param name="recursive">If set to <see langword="true" /> sorts the children nodes recursively.</param>
-        public void SortChildren(IComparer<T> comparer, bool recursive = true)
-        {
+    /// <summary>
+    /// Sorts the children nodes using the specified comparer.
+    /// </summary>
+    /// <param name="comparer">The <see cref="System.Collections.Generic.IComparer{T}" /> implementation to use when comparing elements.</param>
+    /// <param name="recursive">If set to <see langword="true" /> sorts the children nodes recursively.</param>
+    public void SortChildren(IComparer<T> comparer, bool recursive = true)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
@@ -269,13 +269,13 @@ namespace Yarhl.FileSystem
             }
         }
 
-        /// <summary>
-        /// Sorts the children nodes using the specified <see cref="System.Comparison{T}" />.
-        /// </summary>
-        /// <param name="comparison">The <see cref="System.Comparison{T}" /> to use when comparing elements.</param>
-        /// <param name="recursive">If set to <see langword="true" /> sorts the children nodes recursively.</param>
-        public void SortChildren(Comparison<T> comparison, bool recursive = true)
-        {
+    /// <summary>
+    /// Sorts the children nodes using the specified <see cref="System.Comparison{T}" />.
+    /// </summary>
+    /// <param name="comparison">The <see cref="System.Comparison{T}" /> to use when comparing elements.</param>
+    /// <param name="recursive">If set to <see langword="true" /> sorts the children nodes recursively.</param>
+    public void SortChildren(Comparison<T> comparison, bool recursive = true)
+    {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NavigableNode<T>));
 
@@ -288,14 +288,14 @@ namespace Yarhl.FileSystem
             }
         }
 
-        /// <summary>
-        /// Releases all resource used by the
-        /// <see cref="Yarhl.FileSystem.NavigableNode{T}"/> object.
-        /// </summary>
-        /// <param name="freeManagedResourcesAlso">If set to
-        /// <see langword="true" /> free managed resources also.</param>
-        protected virtual void Dispose(bool freeManagedResourcesAlso)
-        {
+    /// <summary>
+    /// Releases all resource used by the
+    /// <see cref="Yarhl.FileSystem.NavigableNode{T}"/> object.
+    /// </summary>
+    /// <param name="freeManagedResourcesAlso">If set to
+    /// <see langword="true" /> free managed resources also.</param>
+    protected virtual void Dispose(bool freeManagedResourcesAlso)
+    {
             if (Disposed)
                 return;
 
@@ -305,8 +305,8 @@ namespace Yarhl.FileSystem
             Disposed = true;
         }
 
-        private bool IsDescendantOf(T node)
-        {
+    private bool IsDescendantOf(T node)
+    {
             T? current = this.Parent;
             while (current != null) {
                 if (current == node)
@@ -318,13 +318,12 @@ namespace Yarhl.FileSystem
             return false;
         }
 
-        private sealed class DefaultNavigableNodeComparer : IComparer<T>
+    private sealed class DefaultNavigableNodeComparer : IComparer<T>
+    {
+        public int Compare(T? x, T? y)
         {
-            public int Compare(T? x, T? y)
-            {
                 // x and y cannot be null because Add methods don't allow null parameters.
                 return string.Compare(x!.Name, y!.Name, StringComparison.CurrentCulture);
             }
-        }
     }
 }

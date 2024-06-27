@@ -34,9 +34,10 @@ using uni.games.timesplitters_2;
 using uni.games.wind_waker;
 using uni.util.io;
 
-namespace uni.games {
-  public class RootFileBundleGatherer {
-    public IFileBundleDirectory GatherAllFiles() {
+namespace uni.games;
+
+public class RootFileBundleGatherer {
+  public IFileBundleDirectory GatherAllFiles() {
       IAnnotatedFileBundleGathererAccumulator accumulator =
           Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms
               ? new ParallelAnnotatedFileBundleGathererAccumulator()
@@ -82,5 +83,4 @@ namespace uni.games {
       return new FileBundleHierarchyOrganizer().Organize(
           accumulator.GatherFileBundles());
     }
-  }
 }

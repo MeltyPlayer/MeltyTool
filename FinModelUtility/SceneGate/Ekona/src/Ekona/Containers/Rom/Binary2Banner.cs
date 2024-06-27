@@ -30,40 +30,40 @@ using Yarhl.FileFormat;
 using Yarhl.FileSystem;
 using Yarhl.IO;
 
-namespace SceneGate.Ekona.Containers.Rom
+namespace SceneGate.Ekona.Containers.Rom;
+
+/// <summary>
+/// Convert a binary format into a container with the banner information.
+/// </summary>
+/// <remarks>
+/// <para>Supported versions: 0.1, 0.2, 0.3 and 1.3 (except animated icons).</para>
+/// <para>The new container hierarchy is:</para>
+/// <list type="table">
+/// <item><term>/info</term><description>Program banner content.</description></item>
+/// <item><term>/icon</term><description>Program icon.</description></item>
+/// </list>
+/// </remarks>
+public class Binary2Banner : IConverter<IBinary, NodeContainerFormat>
 {
+    private const int IconWidth = 32;
+    private const int IconHeight = 32;
+
     /// <summary>
-    /// Convert a binary format into a container with the banner information.
+    /// Gets the maximum number of animated images.
     /// </summary>
+    public static int NumAnimatedImages => 8;
+
+    /// <summary>
+    /// Gets the serialized size of the banner including padding.
+    /// </summary>
+    /// <param name="stream">The stream to analyze.</param>
     /// <remarks>
-    /// <para>Supported versions: 0.1, 0.2, 0.3 and 1.3 (except animated icons).</para>
-    /// <para>The new container hierarchy is:</para>
-    /// <list type="table">
-    /// <item><term>/info</term><description>Program banner content.</description></item>
-    /// <item><term>/icon</term><description>Program icon.</description></item>
-    /// </list>
+    /// The stream must be in the start of the banner.
+    /// The position is restored to the start of the banner.
     /// </remarks>
-    public class Binary2Banner : IConverter<IBinary, NodeContainerFormat>
+    /// <returns>The expected size of the binary banner.</returns>
+    public static int GetSize(Stream stream)
     {
-        private const int IconWidth = 32;
-        private const int IconHeight = 32;
-
-        /// <summary>
-        /// Gets the maximum number of animated images.
-        /// </summary>
-        public static int NumAnimatedImages => 8;
-
-        /// <summary>
-        /// Gets the serialized size of the banner including padding.
-        /// </summary>
-        /// <param name="stream">The stream to analyze.</param>
-        /// <remarks>
-        /// The stream must be in the start of the banner.
-        /// The position is restored to the start of the banner.
-        /// </remarks>
-        /// <returns>The expected size of the binary banner.</returns>
-        public static int GetSize(Stream stream)
-        {
             byte minor = (byte)stream.ReadByte();
             byte major = (byte)stream.ReadByte();
             stream.Position -= 2;
@@ -72,27 +72,27 @@ namespace SceneGate.Ekona.Containers.Rom
             return GetSize(version);
         }
 
-        /// <summary>
-        /// Gets the serialized size of the banner including padding.
-        /// </summary>
-        /// <param name="version">Version of the banner.</param>
-        /// <returns>The expected size of the binary banner.</returns>
-        public static int GetSize(Version version) =>
-            version switch {
-                { Major: 0, Minor: 1 } => 0x0840,
-                { Major: 0, Minor: 2 } => 0x0940,
-                { Major: 0, Minor: 3 } => 0x0A40,
-                { Major: 1, Minor: 3 } => 0x23C0,
-                _ => throw new NotSupportedException(),
-            };
+    /// <summary>
+    /// Gets the serialized size of the banner including padding.
+    /// </summary>
+    /// <param name="version">Version of the banner.</param>
+    /// <returns>The expected size of the binary banner.</returns>
+    public static int GetSize(Version version) =>
+        version switch {
+            { Major: 0, Minor: 1 } => 0x0840,
+            { Major: 0, Minor: 2 } => 0x0940,
+            { Major: 0, Minor: 3 } => 0x0A40,
+            { Major: 1, Minor: 3 } => 0x23C0,
+            _                      => throw new NotSupportedException(),
+        };
 
-        /// <summary>
-        /// Read a banner from a binary format.
-        /// </summary>
-        /// <param name="source">Source binary to read from.</param>
-        /// <returns>The new container with the banner.</returns>
-        public NodeContainerFormat Convert(IBinary source)
-        {
+    /// <summary>
+    /// Read a banner from a binary format.
+    /// </summary>
+    /// <param name="source">Source binary to read from.</param>
+    /// <returns>The new container with the banner.</returns>
+    public NodeContainerFormat Convert(IBinary source)
+    {
             source.Stream.Position = 0;
             var reader = new DataReader(source.Stream) {
                 DefaultEncoding = Encoding.Unicode,
@@ -111,8 +111,8 @@ namespace SceneGate.Ekona.Containers.Rom
             return container;
         }
 
-        private static Banner ReadHeader(DataReader reader)
-        {
+    private static Banner ReadHeader(DataReader reader)
+    {
             var banner = new Banner();
             ushort versionData = reader.ReadUInt16();
             banner.Version = new Version(versionData >> 8, versionData & 0xFF);
@@ -146,8 +146,8 @@ namespace SceneGate.Ekona.Containers.Rom
             return banner;
         }
 
-        private static IndexedPaletteImage ReadIcon(DataReader reader)
-        {
+    private static IndexedPaletteImage ReadIcon(DataReader reader)
+    {
             IndexedPixel[] pixels = reader.ReadPixels<Indexed4Bpp>(IconWidth * IconHeight);
             var swizzling = new TileSwizzling<IndexedPixel>(IconWidth);
             pixels = swizzling.Unswizzle(pixels);
@@ -164,8 +164,8 @@ namespace SceneGate.Ekona.Containers.Rom
             return icon;
         }
 
-        private static void ReadTitles(DataReader reader, Banner banner)
-        {
+    private static void ReadTitles(DataReader reader, Banner banner)
+    {
             banner.JapaneseTitle = reader.ReadString(0x100).Replace("\0", string.Empty);
             banner.EnglishTitle = reader.ReadString(0x100).Replace("\0", string.Empty);
             banner.FrenchTitle = reader.ReadString(0x100).Replace("\0", string.Empty);
@@ -182,8 +182,8 @@ namespace SceneGate.Ekona.Containers.Rom
             }
         }
 
-        private static Node ReadAnimatedIcon(DataReader reader, Banner banner)
-        {
+    private static Node ReadAnimatedIcon(DataReader reader, Banner banner)
+    {
             Node container = NodeFactory.CreateContainer("animated");
 
             if (banner.Version is { Major: < 1 } or { Major: 1, Minor: < 3 }) {
@@ -228,5 +228,4 @@ namespace SceneGate.Ekona.Containers.Rom
 
             return container;
         }
-    }
 }

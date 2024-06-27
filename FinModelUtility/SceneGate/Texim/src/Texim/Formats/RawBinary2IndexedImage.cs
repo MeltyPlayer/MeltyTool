@@ -17,30 +17,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using System;
+using System.IO;
+using Images;
+using Pixels;
+using Yarhl.FileFormat;
+using Yarhl.IO;
+
+public class RawBinary2IndexedImage :
+    IInitializer<RawIndexedImageParams>, IConverter<IBinary, IndexedImage>
 {
-    using System;
-    using System.IO;
-    using Images;
-    using Pixels;
-    using Yarhl.FileFormat;
-    using Yarhl.IO;
+    private RawIndexedImageParams parameters = RawIndexedImageParams.Default;
 
-    public class RawBinary2IndexedImage :
-        IInitializer<RawIndexedImageParams>, IConverter<IBinary, IndexedImage>
+    public void Initialize(RawIndexedImageParams parameters)
     {
-        private RawIndexedImageParams parameters = RawIndexedImageParams.Default;
-
-        public void Initialize(RawIndexedImageParams parameters)
-        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
             this.parameters = parameters;
         }
 
-        public IndexedImage Convert(IBinary source)
-        {
+    public IndexedImage Convert(IBinary source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -73,5 +73,4 @@ namespace Texim.Formats
 
             return new IndexedImage(width, height, pixels);
         }
-    }
 }

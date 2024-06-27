@@ -17,25 +17,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro
+namespace Texim.Compressions.Nitro;
+
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using Images;
+using Pixels;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+
+public class MapCompression :
+    IInitializer<MapCompressionParams>, IConverter<IIndexedImage, NodeContainerFormat>
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Linq;
-    using Images;
-    using Pixels;
-    using Yarhl.FileFormat;
-    using Yarhl.FileSystem;
+    private Size tileSize = new Size(8, 8);
+    private IIndexedImage mergeImage;
 
-    public class MapCompression :
-        IInitializer<MapCompressionParams>, IConverter<IIndexedImage, NodeContainerFormat>
+    public void Initialize(MapCompressionParams parameters)
     {
-        private Size tileSize = new Size(8, 8);
-        private IIndexedImage mergeImage;
-
-        public void Initialize(MapCompressionParams parameters)
-        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
@@ -43,8 +43,8 @@ namespace Texim.Compressions.Nitro
             mergeImage = parameters.MergeImage;
         }
 
-        public NodeContainerFormat Convert(IIndexedImage source)
-        {
+    public NodeContainerFormat Convert(IIndexedImage source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -152,5 +152,4 @@ namespace Texim.Compressions.Nitro
 
             return container;
         }
-    }
 }

@@ -17,49 +17,48 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Images
+namespace Texim.Images;
+
+using Palettes;
+using Pixels;
+
+public class IndexedImage : IIndexedImage
 {
-    using Palettes;
-    using Pixels;
+    private static Indexed2FullImage fullImageConverter = new Indexed2FullImage();
 
-    public class IndexedImage : IIndexedImage
+    public IndexedImage()
     {
-        private static Indexed2FullImage fullImageConverter = new Indexed2FullImage();
-
-        public IndexedImage()
-        {
         }
 
-        public IndexedImage(int width, int height)
-        {
+    public IndexedImage(int width, int height)
+    {
             Pixels = new IndexedPixel[width * height];
             Width = width;
             Height = height;
         }
 
-        public IndexedImage(int width, int height, IndexedPixel[] pixels)
-        {
+    public IndexedImage(int width, int height, IndexedPixel[] pixels)
+    {
             Pixels = pixels;
             Width = width;
             Height = height;
         }
 
-        public int Width { get; init; }
+    public int Width { get; init; }
 
-        public int Height { get; init; }
+    public int Height { get; init; }
 
-        public IndexedPixel[] Pixels { get; init; }
+    public IndexedPixel[] Pixels { get; init; }
 
-        public FullImage CreateFullImage(IPalette palette)
-        {
+    public FullImage CreateFullImage(IPalette palette)
+    {
             fullImageConverter.Initialize(palette);
             return fullImageConverter.Convert(this);
         }
 
-        public FullImage CreateFullImage(IPaletteCollection palettes)
-        {
+    public FullImage CreateFullImage(IPaletteCollection palettes)
+    {
             fullImageConverter.Initialize(palettes);
             return fullImageConverter.Convert(this);
         }
-    }
 }

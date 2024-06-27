@@ -17,32 +17,32 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using System;
+using Images;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
+using Yarhl.FileFormat;
+using Yarhl.IO;
+
+public class FullImage2Bitmap :
+    IInitializer<IImageEncoder>, IConverter<IFullImage, BinaryFormat>
 {
-    using System;
-    using Images;
-    using SixLabors.ImageSharp;
-    using SixLabors.ImageSharp.Formats;
-    using SixLabors.ImageSharp.Formats.Png;
-    using SixLabors.ImageSharp.PixelFormats;
-    using Yarhl.FileFormat;
-    using Yarhl.IO;
+    private IImageEncoder encoder = new PngEncoder();
 
-    public class FullImage2Bitmap :
-        IInitializer<IImageEncoder>, IConverter<IFullImage, BinaryFormat>
+    public void Initialize(IImageEncoder parameters)
     {
-        private IImageEncoder encoder = new PngEncoder();
-
-        public void Initialize(IImageEncoder parameters)
-        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
             encoder = parameters;
         }
 
-        public BinaryFormat Convert(IFullImage source)
-        {
+    public BinaryFormat Convert(IFullImage source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -57,5 +57,4 @@ namespace Texim.Formats
             image.Save(binary.Stream, encoder);
             return binary;
         }
-    }
 }

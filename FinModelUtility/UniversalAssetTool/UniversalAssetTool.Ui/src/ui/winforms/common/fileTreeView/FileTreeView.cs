@@ -11,53 +11,54 @@ using fin.util.actions;
 using fin.util.asserts;
 
 
-namespace uni.ui.winforms.common.fileTreeView {
-  public abstract partial class FileTreeView<TFiles>
-      : UserControl, IFileTreeView
-      where TFiles : notnull {
-    // TODO: Add tests.
-    // TODO: Move the fuzzy logic to a separate reusable component.
-    // TODO: Add support for different sorting systems.
-    // TODO: Add support for different hierarchies.
-    // TODO: Clean up the logic here.
+namespace uni.ui.winforms.common.fileTreeView;
 
-    private readonly BetterTreeView<BFileNode> betterTreeView_;
+public abstract partial class FileTreeView<TFiles>
+    : UserControl, IFileTreeView
+    where TFiles : notnull {
+  // TODO: Add tests.
+  // TODO: Move the fuzzy logic to a separate reusable component.
+  // TODO: Add support for different sorting systems.
+  // TODO: Add support for different hierarchies.
+  // TODO: Clean up the logic here.
 
-    private readonly IFuzzyFilterTree<BFileNode> filterImpl_ =
-        new FuzzyFilterTree<BFileNode>(fileNode => {
-          var keywords = new HashSet<string>();
+  private readonly BetterTreeView<BFileNode> betterTreeView_;
 
-          if (fileNode is LeafFileNode leafFileNode) {
-            var file = leafFileNode.File.FileBundle;
-            var fileName = file.RawName;
-            keywords.Add(fileName);
+  private readonly IFuzzyFilterTree<BFileNode> filterImpl_ =
+      new FuzzyFilterTree<BFileNode>(fileNode => {
+        var keywords = new HashSet<string>();
 
-            var betterFileName = file.HumanReadableName;
-            if (!string.IsNullOrEmpty(betterFileName)) {
-              keywords.Add(betterFileName);
-            }
+        if (fileNode is LeafFileNode leafFileNode) {
+          var file = leafFileNode.File.FileBundle;
+          var fileName = file.RawName;
+          keywords.Add(fileName);
 
-            var uiPath = "";
-            IFileTreeNode? current = fileNode;
-            while (current != null) {
-              uiPath = $"{current.Text}/{uiPath}";
-              current = current.Parent;
-            }
-
-            keywords.Add(uiPath);
+          var betterFileName = file.HumanReadableName;
+          if (!string.IsNullOrEmpty(betterFileName)) {
+            keywords.Add(betterFileName);
           }
 
-          return keywords;
-        });
+          var uiPath = "";
+          IFileTreeNode? current = fileNode;
+          while (current != null) {
+            uiPath = $"{current.Text}/{uiPath}";
+            current = current.Parent;
+          }
 
-    public event IFileTreeView.FileSelectedHandler FileSelected =
-        delegate { };
+          keywords.Add(uiPath);
+        }
+
+        return keywords;
+      });
+
+  public event IFileTreeView.FileSelectedHandler FileSelected =
+      delegate { };
 
 
-    public event IFileTreeView.DirectorySelectedHandler
-        DirectorySelected = delegate { };
+  public event IFileTreeView.DirectorySelectedHandler
+      DirectorySelected = delegate { };
 
-    public FileTreeView() {
+  public FileTreeView() {
       this.InitializeComponent();
 
       var callFilterFromMainThread = () => this.Invoke(this.Filter_);
@@ -83,8 +84,8 @@ namespace uni.ui.winforms.common.fileTreeView {
           this.GenerateContextMenuItems_;
     }
 
-    private IEnumerable<(string, Action)> GenerateContextMenuItems_(
-        IBetterTreeNode<BFileNode> betterNode) {
+  private IEnumerable<(string, Action)> GenerateContextMenuItems_(
+      IBetterTreeNode<BFileNode> betterNode) {
       if (betterNode.Data is LeafFileNode leafFileNode) {
         var fullName = leafFileNode.FullName;
         yield return (
@@ -93,7 +94,7 @@ namespace uni.ui.winforms.common.fileTreeView {
       }
     }
 
-    public void Populate(TFiles files) {
+  public void Populate(TFiles files) {
       this.betterTreeView_.BeginUpdate();
 
       this.PopulateImpl(files, new ParentFileNode(this));
@@ -105,12 +106,12 @@ namespace uni.ui.winforms.common.fileTreeView {
       this.betterTreeView_.EndUpdate();
     }
 
-    protected abstract void PopulateImpl(TFiles files, ParentFileNode root);
+  protected abstract void PopulateImpl(TFiles files, ParentFileNode root);
 
-    public abstract Image GetImageForFile(IFileBundle file);
+  public abstract Image GetImageForFile(IFileBundle file);
 
 
-    private void InitializeAutocomplete_() {
+  private void InitializeAutocomplete_() {
       var allAutocompleteKeywords = new AutoCompleteStringCollection();
 
       var queue = new FinQueue<IFuzzyNode<BFileNode>>(this.filterImpl_.Root);
@@ -125,9 +126,9 @@ namespace uni.ui.winforms.common.fileTreeView {
       this.filterTextBox_.AutoCompleteCustomSource = allAutocompleteKeywords;
     }
 
-    private readonly Action filterDebounced_;
+  private readonly Action filterDebounced_;
 
-    private void Filter_() {
+  private void Filter_() {
       var filterText = this.filterTextBox_.Text.ToLower();
 
       if (string.IsNullOrEmpty(filterText) || filterText.Length <= 2) {
@@ -155,5 +156,4 @@ namespace uni.ui.winforms.common.fileTreeView {
         this.betterTreeView_.EndUpdate();
       }
     }
-  }
 }

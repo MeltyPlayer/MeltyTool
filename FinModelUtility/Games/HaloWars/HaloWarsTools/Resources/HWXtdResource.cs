@@ -13,18 +13,19 @@ using fin.model;
 using fin.model.impl;
 
 
-namespace HaloWarsTools {
-  public class HWXtdResource : HWBinaryResource {
-    public IModel Mesh { get; private set; }
+namespace HaloWarsTools;
 
-    public IImage AmbientOcclusionTexture { get; private set; }
-    public IImage OpacityTexture { get; private set; }
+public class HWXtdResource : HWBinaryResource {
+  public IModel Mesh { get; private set; }
 
-    public static new HWXtdResource FromFile(HWContext context, string filename)
-      => GetOrCreateFromFile(context, filename, HWResourceType.Xtd) as
-          HWXtdResource;
+  public IImage AmbientOcclusionTexture { get; private set; }
+  public IImage OpacityTexture { get; private set; }
 
-    protected override void Load(byte[] bytes) {
+  public static new HWXtdResource FromFile(HWContext context, string filename)
+    => GetOrCreateFromFile(context, filename, HWResourceType.Xtd) as
+        HWXtdResource;
+
+  protected override void Load(byte[] bytes) {
       base.Load(bytes);
 
       this.Mesh = this.ImportMesh(bytes);
@@ -37,8 +38,8 @@ namespace HaloWarsTools {
               GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_AlphaChunk));
     }
 
-    private IImage ExtractEmbeddedDXT5A(byte[] bytes,
-                                        HWBinaryResourceChunk chunk) {
+  private IImage ExtractEmbeddedDXT5A(byte[] bytes,
+                                      HWBinaryResourceChunk chunk) {
       // Get raw embedded DXT5 texture from resource file
       var width = (int) Math.Sqrt(chunk.Size * 2);
       var height = width;
@@ -61,7 +62,7 @@ namespace HaloWarsTools {
                                         height);
     }
 
-    private IModel ImportMesh(byte[] bytes) {
+  private IModel ImportMesh(byte[] bytes) {
       MeshNormalExportMode shadingMode = MeshNormalExportMode.Unchanged;
 
       HWBinaryResourceChunk headerChunk =
@@ -132,25 +133,25 @@ namespace HaloWarsTools {
       return finModel;
     }
 
-    private readonly struct GridVertexGenerator : IAction {
-      private readonly byte[] bytes_;
-      private readonly IReadOnlyList<NormalUvVertexImpl> vertices_;
-      private readonly int gridSize_;
-      private readonly float tileScale_;
-      private readonly int positionOffset_;
-      private readonly int normalOffset_;
-      private readonly Vector3 posCompMin_;
-      private readonly Vector3 posCompRange_;
+  private readonly struct GridVertexGenerator : IAction {
+    private readonly byte[] bytes_;
+    private readonly IReadOnlyList<NormalUvVertexImpl> vertices_;
+    private readonly int gridSize_;
+    private readonly float tileScale_;
+    private readonly int positionOffset_;
+    private readonly int normalOffset_;
+    private readonly Vector3 posCompMin_;
+    private readonly Vector3 posCompRange_;
 
-      public GridVertexGenerator(
-          byte[] bytes,
-          IReadOnlyList<NormalUvVertexImpl> vertices,
-          int gridSize,
-          float tileScale,
-          int positionOffset,
-          int normalOffset,
-          Vector3 posCompMin,
-          Vector3 posCompRange) {
+    public GridVertexGenerator(
+        byte[] bytes,
+        IReadOnlyList<NormalUvVertexImpl> vertices,
+        int gridSize,
+        float tileScale,
+        int positionOffset,
+        int normalOffset,
+        Vector3 posCompMin,
+        Vector3 posCompRange) {
         this.bytes_ = bytes;
         this.vertices_ = vertices;
         this.gridSize_ = gridSize;
@@ -161,8 +162,8 @@ namespace HaloWarsTools {
         this.posCompRange_ = posCompRange;
       }
 
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public void Invoke(int index) {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Invoke(int index) {
         var x = index % this.gridSize_;
         var z = (index - x) / this.gridSize_;
 
@@ -195,19 +196,19 @@ namespace HaloWarsTools {
         vertex.SetLocalNormal(normal);
         vertex.SetUv(texCoord);
       }
-    }
+  }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetVertexIndex(int x, int z, int gridSize)
-      => z * gridSize + x;
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static int GetVertexIndex(int x, int z, int gridSize)
+    => z * gridSize + x;
 
-    private const uint K_BIT_MASK_10 = (1 << 10) - 1;
+  private const uint K_BIT_MASK_10 = (1 << 10) - 1;
 
-    private const float INVERSE_K_BIT_MASK_10 =
-        1f / HWXtdResource.K_BIT_MASK_10;
+  private const float INVERSE_K_BIT_MASK_10 =
+      1f / HWXtdResource.K_BIT_MASK_10;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector3 ReadVector3Compressed(ReadOnlySpan<byte> bytes) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static Vector3 ReadVector3Compressed(ReadOnlySpan<byte> bytes) {
       // Inexplicably, position and normal vectors are encoded inside 4 bytes. ~10 bits per component
       // This seems okay for directions, but positions suffer from stairstepping artifacts
       uint v = BitConverter.ToUInt32(bytes);
@@ -217,13 +218,12 @@ namespace HaloWarsTools {
       return new Vector3(x, y, z) * INVERSE_K_BIT_MASK_10;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector3 ConvertPositionVector(Vector3 vector)
-      => new(vector.X, -vector.Z, vector.Y);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static Vector3 ConvertPositionVector(Vector3 vector)
+    => new(vector.X, -vector.Z, vector.Y);
 
-    // TODO: This might not be right
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector3 ConvertDirectionVector(Vector3 vector)
-      => new(vector.Z, vector.X, vector.Y);
-  }
+  // TODO: This might not be right
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static Vector3 ConvertDirectionVector(Vector3 vector)
+    => new(vector.Z, vector.X, vector.Y);
 }

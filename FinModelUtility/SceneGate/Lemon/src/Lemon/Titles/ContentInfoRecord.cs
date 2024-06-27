@@ -22,31 +22,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace SceneGate.Lemon.Titles
+namespace SceneGate.Lemon.Titles;
+
+/// <summary>
+/// Information about a CIA content info record.
+/// </summary>
+public class ContentInfoRecord
 {
     /// <summary>
-    /// Information about a CIA content info record.
+    /// Gets or sets the content index offset.
     /// </summary>
-    public class ContentInfoRecord
-    {
-        /// <summary>
-        /// Gets or sets the content index offset.
-        /// </summary>
-        public short IndexOffset { get; set; }
+    public short IndexOffset { get; set; }
 
-        /// <summary>
-        /// Gets or sets the content command count (number of chunks to hash).
-        /// </summary>
-        public short CommandCount { get; set; }
+    /// <summary>
+    /// Gets or sets the content command count (number of chunks to hash).
+    /// </summary>
+    public short CommandCount { get; set; }
 
-        /// <summary>
-        /// Gets or sets the record hash.
-        /// </summary>
-        public byte[] Hash { get; set; }
+    /// <summary>
+    /// Gets or sets the record hash.
+    /// </summary>
+    public byte[] Hash { get; set; }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether if the info record is empty.
-        /// </summary>
-        public bool IsEmpty { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets a value indicating whether if the info record is empty.
+    /// </summary>
+    public bool IsEmpty { get; set; }
 }

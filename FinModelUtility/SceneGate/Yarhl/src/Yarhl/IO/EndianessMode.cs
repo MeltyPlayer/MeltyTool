@@ -17,21 +17,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO
+namespace Yarhl.IO;
+
+/// <summary>
+/// Endianness mode.
+/// </summary>
+public enum EndiannessMode
 {
     /// <summary>
-    /// Endianness mode.
+    /// Little endian.
     /// </summary>
-    public enum EndiannessMode
-    {
-        /// <summary>
-        /// Little endian.
-        /// </summary>
-        LittleEndian,
+    LittleEndian,
 
-        /// <summary>
-        /// Big endian.
-        /// </summary>
-        BigEndian,
-    }
+    /// <summary>
+    /// Big endian.
+    /// </summary>
+    BigEndian,
 }

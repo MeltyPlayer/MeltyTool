@@ -22,24 +22,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace SceneGate.Lemon.Titles
-{
-    using System;
-    using Yarhl.FileFormat;
-    using Yarhl.IO;
+namespace SceneGate.Lemon.Titles;
 
+using System;
+using Yarhl.FileFormat;
+using Yarhl.IO;
+
+/// <summary>
+/// Convert a TitleMetadata object into binary format.
+/// </summary>
+public class TitleMetadata2Binary : IConverter<TitleMetadata, BinaryFormat>
+{
     /// <summary>
-    /// Convert a TitleMetadata object into binary format.
+    /// Converts a title metadata object into a binary format.
     /// </summary>
-    public class TitleMetadata2Binary : IConverter<TitleMetadata, BinaryFormat>
+    /// <param name="source">The source binary.</param>
+    /// <returns>The deserializer title metadata.</returns>
+    public BinaryFormat Convert(TitleMetadata source)
     {
-        /// <summary>
-        /// Converts a title metadata object into a binary format.
-        /// </summary>
-        /// <param name="source">The source binary.</param>
-        /// <returns>The deserializer title metadata.</returns>
-        public BinaryFormat Convert(TitleMetadata source)
-        {
             var binary = new BinaryFormat();
             var writer = new DataWriter(binary.Stream) {
                 Endianness = EndiannessMode.BigEndian,
@@ -95,5 +95,4 @@ namespace SceneGate.Lemon.Titles
 
             return binary;
         }
-    }
 }

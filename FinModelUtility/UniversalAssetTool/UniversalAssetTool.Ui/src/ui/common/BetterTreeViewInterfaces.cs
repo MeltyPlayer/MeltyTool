@@ -3,49 +3,49 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace uni.ui.common {
-  public interface IBetterTreeView<T> where T : class {
-    void Clear();
+namespace uni.ui.common;
 
-    IBetterTreeNode<T> Root { get; }
+public interface IBetterTreeView<T> where T : class {
+  void Clear();
 
-    delegate void SelectedHandler(IBetterTreeNode<T> betterTreeNode);
-    event SelectedHandler Selected;
-    IBetterTreeNode<T>? SelectedNode { get; }
+  IBetterTreeNode<T> Root { get; }
 
-    Func<IBetterTreeNode<T>, IEnumerable<(string, Action)>>
-        ContextMenuItemsGenerator { get; set; }
-  }
+  delegate void SelectedHandler(IBetterTreeNode<T> betterTreeNode);
+  event SelectedHandler Selected;
+  IBetterTreeNode<T>? SelectedNode { get; }
 
-  public interface IBetterTreeNode<T> where T : class {
-    TreeNode? Impl { get; }
+  Func<IBetterTreeNode<T>, IEnumerable<(string, Action)>>
+      ContextMenuItemsGenerator { get; set; }
+}
 
-    IBetterTreeView<T> Tree { get; }
-    IBetterTreeNode<T>? Parent { get; }
+public interface IBetterTreeNode<T> where T : class {
+  TreeNode? Impl { get; }
 
-    T? Data { get; set; }
-    string? Text { get; }
+  IBetterTreeView<T> Tree { get; }
+  IBetterTreeNode<T>? Parent { get; }
 
-    Image? OpenImage { set; }
-    Image? ClosedImage { set; }
+  T? Data { get; set; }
+  string? Text { get; }
 
-    int OpenImageIndex { get; set; }
-    int ClosedImageIndex { get; set; }
+  Image? OpenImage { set; }
+  Image? ClosedImage { set; }
 
-    IBetterTreeNode<T> Add(string text);
-    void Add(IBetterTreeNode<T> node);
+  int OpenImageIndex { get; set; }
+  int ClosedImageIndex { get; set; }
 
-    void Remove(IBetterTreeNode<T> node);
-    void RemoveChildren();
+  IBetterTreeNode<T> Add(string text);
+  void Add(IBetterTreeNode<T> node);
 
-    void ResetChildrenRecursively(
-        Func<IBetterTreeNode<T>, bool>? filter = null);
+  void Remove(IBetterTreeNode<T> node);
+  void RemoveChildren();
 
-    bool IsExpanded { get; }
-    void Expand();
-    void Collapse();
-    void ExpandRecursively();
+  void ResetChildrenRecursively(
+      Func<IBetterTreeNode<T>, bool>? filter = null);
 
-    void EnsureParentIsExpanded();
-  }
+  bool IsExpanded { get; }
+  void Expand();
+  void Collapse();
+  void ExpandRecursively();
+
+  void EnsureParentIsExpanded();
 }

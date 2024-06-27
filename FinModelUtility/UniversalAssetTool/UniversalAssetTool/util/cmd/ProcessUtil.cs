@@ -4,49 +4,50 @@ using fin.io;
 using fin.log;
 using fin.util.asserts;
 
-namespace uni.util.cmd {
-  public class ProcessUtil {
-    public static Process ExecuteBlocking(
-        IReadOnlySystemFile exeFile,
-        params string[] args) {
+namespace uni.util.cmd;
+
+public class ProcessUtil {
+  public static Process ExecuteBlocking(
+      IReadOnlySystemFile exeFile,
+      params string[] args) {
       var processSetup = new ProcessSetup(exeFile, args) {
           Method = ProcessExecutionMethod.BLOCK,
       };
       return ProcessUtil.Execute(processSetup);
     }
 
-    public static Process ExecuteBlockingSilently(
-        IReadOnlySystemFile exeFile,
-        params string[] args) {
+  public static Process ExecuteBlockingSilently(
+      IReadOnlySystemFile exeFile,
+      params string[] args) {
       var processSetup = new ProcessSetup(exeFile, args) {
           Method = ProcessExecutionMethod.BLOCK, WithLogging = false,
       };
       return ProcessUtil.Execute(processSetup);
     }
 
-    public enum ProcessExecutionMethod {
-      MANUAL,
-      BLOCK,
-      TIMEOUT,
-      ASYNC
-    }
+  public enum ProcessExecutionMethod {
+    MANUAL,
+    BLOCK,
+    TIMEOUT,
+    ASYNC
+  }
 
-    public class ProcessSetup {
-      public IReadOnlySystemFile ExeFile { get; set; }
-      public string[] Args { get; set; }
+  public class ProcessSetup {
+    public IReadOnlySystemFile ExeFile { get; set; }
+    public string[] Args { get; set; }
 
-      public ProcessExecutionMethod Method { get; set; } =
-        ProcessExecutionMethod.BLOCK;
+    public ProcessExecutionMethod Method { get; set; } =
+      ProcessExecutionMethod.BLOCK;
 
-      public bool WithLogging { get; set; } = true;
+    public bool WithLogging { get; set; } = true;
 
-      public ProcessSetup(IReadOnlySystemFile exeFile, params string[] args) {
+    public ProcessSetup(IReadOnlySystemFile exeFile, params string[] args) {
         this.ExeFile = exeFile;
         this.Args = args;
       }
-    }
+  }
 
-    public static Process Execute(ProcessSetup processSetup) {
+  public static Process Execute(ProcessSetup processSetup) {
       var exeFile = processSetup.ExeFile;
       Asserts.True(
           exeFile.Exists,
@@ -112,42 +113,41 @@ namespace uni.util.cmd {
       }
 
       // TODO: https://stackoverflow.com/questions/139593/processstartinfo-hanging-on-waitforexit-why
-      /*
-      using var outputWaitHandle = new AutoResetEvent(false);
-      using var errorWaitHandle = new AutoResetEvent(false);
+     /*
+      sing var outputWaitHandle = new AutoResetEvent(false);
+      sing var errorWaitHandle = new AutoResetEvent(false);
 
-      process.OutputDataReceived += (sender, e) => {
-        if (e.Data == null) {
-          // ReSharper disable once AccessToDisposedClosure
-          outputWaitHandle.Set();
-        } else {
-          logger.LogInformation(e.Data);
-        }
-      };
-      process.ErrorDataReceived += (sender, e) => {
-        if (e.Data == null) {
-          // ReSharper disable once AccessToDisposedClosure
-          errorWaitHandle.Set();
-        } else {
-          logger.LogError(e.Data);
-        }
-      };
+      rocess.OutputDataReceived += (sender, e) => {
+        f (e.Data == null) {
+          / ReSharper disable once AccessToDisposedClosure
+          utputWaitHandle.Set();
+         else {
+          ogger.LogInformation(e.Data);
+        
+      ;
+      rocess.ErrorDataReceived += (sender, e) => {
+        f (e.Data == null) {
+          / ReSharper disable once AccessToDisposedClosure
+          rrorWaitHandle.Set();
+         else {
+          ogger.LogError(e.Data);
+        
+      ;
 
-      process.Start();
+      rocess.Start();
 
-      process.BeginOutputReadLine();
-      process.BeginErrorReadLine();
+      rocess.BeginOutputReadLine();
+      rocess.BeginErrorReadLine();
 
-      // TODO: Allow passing in timeouts
-      if (outputWaitHandle.WaitOne() &&
-          errorWaitHandle.WaitOne()) {
-        process.WaitForExit();
-        // Process completed. Check process.ExitCode here.
-      } else {
-        // Timed out.
-      }*/
+      / TODO: Allow passing in timeouts
+      f (outputWaitHandle.WaitOne() &&
+          rrorWaitHandle.WaitOne()) {
+        rocess.WaitForExit();
+        / Process completed. Check process.ExitCode here.
+       else {
+        / Timed out.
+      *//
 
       return process;
     }
-  }
 }

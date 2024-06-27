@@ -13,23 +13,24 @@ using fin.model;
 using fin.model.impl;
 using fin.scene;
 
-namespace HaloWarsTools {
-  public class HWVisResource : HWXmlResource {
-    public SceneImpl Scene { get; private set; }
-    public HWModel[] Models { get; private set; }
+namespace HaloWarsTools;
 
-    public static new HWVisResource
-        FromFile(HWContext context, string filename) {
+public class HWVisResource : HWXmlResource {
+  public SceneImpl Scene { get; private set; }
+  public HWModel[] Models { get; private set; }
+
+  public static new HWVisResource
+      FromFile(HWContext context, string filename) {
       return (HWVisResource) GetOrCreateFromFile(
           context, filename, HWResourceType.Vis);
     }
 
-    protected override void Load(byte[] bytes) {
+  protected override void Load(byte[] bytes) {
       base.Load(bytes);
       this.Models = this.ImportModels_();
     }
 
-    private HWModel[] ImportModels_() {
+  private HWModel[] ImportModels_() {
       var models = new List<HWModel>();
 
       this.Scene = new SceneImpl {
@@ -154,10 +155,10 @@ namespace HaloWarsTools {
           } catch(Exception e) {
             ;
           }
-          /*if (resource != null) {
-            models.Add(
-                new HWModel(visModel., resource));
-          }*/
+         /*if (resource != null) {
+            odels.Add(
+                ew HWModel(visModel., resource));
+          *//
         }
 
         foreach (var child in visModel.SubModelRefs) {
@@ -171,21 +172,21 @@ namespace HaloWarsTools {
       return models.ToArray();
     }
 
-    internal class VisModel {
-      public string Name { get; set; }
-      public ISet<string> ModelPaths { get; init; } = new HashSet<string>();
-      public ISet<string> AnimationPaths { get; init; } = new HashSet<string>();
+  internal class VisModel {
+    public string Name { get; set; }
+    public ISet<string> ModelPaths { get; init; } = new HashSet<string>();
+    public ISet<string> AnimationPaths { get; init; } = new HashSet<string>();
 
-      public ISet<VisSubModelRef> SubModelRefs { get; init; } =
-        new HashSet<VisSubModelRef>();
-    }
+    public ISet<VisSubModelRef> SubModelRefs { get; init; } =
+      new HashSet<VisSubModelRef>();
+  }
 
-    public class VisSubModelRef {
-      public string ModelName { get; set; }
-      public string? ToBone { get; set; }
-      public string? FromBone { get; set; }
+  public class VisSubModelRef {
+    public string ModelName { get; set; }
+    public string? ToBone { get; set; }
+    public string? FromBone { get; set; }
 
-      public override bool Equals(object other) {
+    public override bool Equals(object other) {
         var subModelOther = other as VisSubModelRef;
         if (subModelOther == null) {
           return false;
@@ -196,9 +197,8 @@ namespace HaloWarsTools {
                this.FromBone == subModelOther.FromBone;
       }
 
-      // TODO: Super naive, will almost certainly be slow.
-      public override int GetHashCode()
-        => (this.ModelName + this.ToBone + this.FromBone).GetHashCode();
-    }
+    // TODO: Super naive, will almost certainly be slow.
+    public override int GetHashCode()
+      => (this.ModelName + this.ToBone + this.FromBone).GetHashCode();
   }
 }

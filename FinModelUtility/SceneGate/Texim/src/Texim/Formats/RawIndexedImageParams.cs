@@ -17,31 +17,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using Pixels;
+
+public class RawIndexedImageParams
 {
-    using Pixels;
+    public static RawIndexedImageParams Default => new RawIndexedImageParams {
+        Offset = 0,
+        Size = -1,
+        Width = -1,
+        Height = -1,
+        PixelEncoding = Indexed8Bpp.Instance,
+        Swizzling = null,
+    };
 
-    public class RawIndexedImageParams
-    {
-        public static RawIndexedImageParams Default => new RawIndexedImageParams {
-            Offset = 0,
-            Size = -1,
-            Width = -1,
-            Height = -1,
-            PixelEncoding = Indexed8Bpp.Instance,
-            Swizzling = null,
-        };
+    public long Offset { get; set; }
 
-        public long Offset { get; set; }
+    public int Size { get; set; }
 
-        public int Size { get; set; }
+    public int Width { get; set; }
 
-        public int Width { get; set; }
+    public int Height { get; set; }
 
-        public int Height { get; set; }
+    public IIndexedPixelEncoding PixelEncoding { get; set; }
 
-        public IIndexedPixelEncoding PixelEncoding { get; set; }
-
-        public ISwizzling<IndexedPixel> Swizzling { get; set; }
-    }
+    public ISwizzling<IndexedPixel> Swizzling { get; set; }
 }

@@ -17,25 +17,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Palettes
-{
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using Colors;
+namespace Texim.Palettes;
 
-    public class Palette : IPalette
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Colors;
+
+public class Palette : IPalette
+{
+    public Palette()
     {
-        public Palette()
-        {
             Colors = [];
         }
 
-        public Palette(IEnumerable<Rgb> initialColors)
-        {
+    public Palette(IEnumerable<Rgb> initialColors)
+    {
             Colors = new Collection<Rgb>(initialColors.ToList());
         }
 
-        public Collection<Rgb> Colors { get; }
-    }
+    public Collection<Rgb> Colors { get; }
 }

@@ -8,26 +8,27 @@ using System.Windows.Forms;
 using fin.model;
 using fin.util.lists;
 
-namespace uni.ui.winforms.right_panel.textures {
-  public partial class TextureSelectorBox : UserControl {
-    private IReadOnlyList<IReadOnlyTexture>? textures_;
-    private IReadOnlyTexture? selectedTexture_;
+namespace uni.ui.winforms.right_panel.textures;
 
-    public TextureSelectorBox() {
+public partial class TextureSelectorBox : UserControl {
+  private IReadOnlyList<IReadOnlyTexture>? textures_;
+  private IReadOnlyTexture? selectedTexture_;
+
+  public TextureSelectorBox() {
       InitializeComponent();
 
       this.listView_.ItemSelectionChanged
           += (_, e) => { this.SelectedTexture = this.textures_?[e.ItemIndex]; };
     }
 
-    private object listViewLock_ = new();
+  private object listViewLock_ = new();
 
-    public IReadOnlyList<IReadOnlyTexture>? Textures {
-      set => this.listView_.Invoke(() => this.UpdateTextureListView_(value));
-    }
+  public IReadOnlyList<IReadOnlyTexture>? Textures {
+    set => this.listView_.Invoke(() => this.UpdateTextureListView_(value));
+  }
 
-    private void UpdateTextureListView_(
-        IReadOnlyList<IReadOnlyTexture>? value) {
+  private void UpdateTextureListView_(
+      IReadOnlyList<IReadOnlyTexture>? value) {
       lock (this.listViewLock_) {
         this.listView_.BeginUpdate();
 
@@ -58,9 +59,9 @@ namespace uni.ui.winforms.right_panel.textures {
       }
     }
 
-    public IReadOnlyTexture? SelectedTexture {
-      get => this.selectedTexture_;
-      set {
+  public IReadOnlyTexture? SelectedTexture {
+    get => this.selectedTexture_;
+    set {
         if (this.selectedTexture_ == value) {
           return;
         }
@@ -74,15 +75,15 @@ namespace uni.ui.winforms.right_panel.textures {
 
         this.OnTextureSelected(value);
       }
-    }
+  }
 
-    public delegate void OnTextureSelectedHandler(IReadOnlyTexture? texture);
+  public delegate void OnTextureSelectedHandler(IReadOnlyTexture? texture);
 
-    public event OnTextureSelectedHandler OnTextureSelected = delegate { };
+  public event OnTextureSelectedHandler OnTextureSelected = delegate { };
 
-    private class TextureEqualityComparer
-        : IEqualityComparer<IReadOnlyTexture> {
-      public bool Equals(IReadOnlyTexture x, IReadOnlyTexture y) {
+  private class TextureEqualityComparer
+      : IEqualityComparer<IReadOnlyTexture> {
+    public bool Equals(IReadOnlyTexture x, IReadOnlyTexture y) {
         if (ReferenceEquals(x, y)) return true;
         if (ReferenceEquals(x, null)) return false;
         if (ReferenceEquals(y, null)) return false;
@@ -90,9 +91,8 @@ namespace uni.ui.winforms.right_panel.textures {
         return x.Image.Equals(y.Image);
       }
 
-      public int GetHashCode(IReadOnlyTexture obj) {
+    public int GetHashCode(IReadOnlyTexture obj) {
         return obj.Image.GetHashCode();
       }
-    }
   }
 }

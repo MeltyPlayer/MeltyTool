@@ -8,15 +8,16 @@ using fin.schema;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace uni.platforms.gcn.tools {
-  /// <summary>
-  ///   Shamelessly ported from version 1.0 (20050213) of gcmdump by thakis.
-  /// </summary>
-  public partial class GcmReader : IArchiveReader<SubArchiveContentFile> {
-    public bool IsValidArchive(Stream archive) => true;
+namespace uni.platforms.gcn.tools;
 
-    public IArchiveStream<SubArchiveContentFile> Decompress(
-        Stream romStream) {
+/// <summary>
+///   Shamelessly ported from version 1.0 (20050213) of gcmdump by thakis.
+/// </summary>
+public partial class GcmReader : IArchiveReader<SubArchiveContentFile> {
+  public bool IsValidArchive(Stream archive) => true;
+
+  public IArchiveStream<SubArchiveContentFile> Decompress(
+      Stream romStream) {
       var isCiso = MagicTextUtil.Verify(romStream, "CISO");
       romStream.Position = 0;
 
@@ -24,8 +25,8 @@ namespace uni.platforms.gcn.tools {
           !isCiso ? romStream : new CisoStream(romStream));
     }
 
-    public IEnumerable<SubArchiveContentFile> GetFiles(
-        IArchiveStream<SubArchiveContentFile> archiveStream) {
+  public IEnumerable<SubArchiveContentFile> GetFiles(
+      IArchiveStream<SubArchiveContentFile> archiveStream) {
       var br = archiveStream.AsBinaryReader(Endianness.BigEndian);
 
       var diskHeader = br.ReadNew<DiskHeader>();
@@ -74,8 +75,8 @@ namespace uni.platforms.gcn.tools {
       }
     }
 
-    private IList<FileEntry> ReadFileSystemTable_(IBinaryReader br,
-                                                  DiskHeader diskHeader) {
+  private IList<FileEntry> ReadFileSystemTable_(IBinaryReader br,
+                                                DiskHeader diskHeader) {
       var entries = new List<FileEntry>();
 
       //read files
@@ -92,64 +93,63 @@ namespace uni.platforms.gcn.tools {
       return entries;
     }
 
-    [BinarySchema]
-    private partial class Ids : IBinaryConvertible {
-      public byte ConsoleId { get; set; }
-      public ushort GameId { get; set; }
-      public byte CountryId { get; set; }
-      public ushort MakerId { get; set; }
-    }
+  [BinarySchema]
+  private partial class Ids : IBinaryConvertible {
+    public byte ConsoleId { get; set; }
+    public ushort GameId { get; set; }
+    public byte CountryId { get; set; }
+    public ushort MakerId { get; set; }
+  }
 
-    [BinarySchema]
-    private partial class DiskHeader : IBinaryConvertible {
-      public Ids Ids { get; } = new();
-      public byte DiskId { get; set; }
-      public byte Version { get; set; }
-      public byte AudioStreaming { get; set; }
-      public byte StreamBufferSize { get; set; }
+  [BinarySchema]
+  private partial class DiskHeader : IBinaryConvertible {
+    public Ids Ids { get; } = new();
+    public byte DiskId { get; set; }
+    public byte Version { get; set; }
+    public byte AudioStreaming { get; set; }
+    public byte StreamBufferSize { get; set; }
 
-      [Unknown]
-      [SequenceLengthSource(0x12)]
-      public byte[] Unused { get; set; }
+    [Unknown]
+    [SequenceLengthSource(0x12)]
+    public byte[] Unused { get; set; }
 
-      [StringLengthSource(4)]
-      public string DvdMagicWord { get; set; }
+    [StringLengthSource(4)]
+    public string DvdMagicWord { get; set; }
 
-      [StringLengthSource(0x3e0)]
-      public string GameName { get; set; }
+    [StringLengthSource(0x3e0)]
+    public string GameName { get; set; }
 
-      public uint DebugMonitorOffset { get; set; }
-      public uint DebugLoadAddress { get; set; }
+    public uint DebugMonitorOffset { get; set; }
+    public uint DebugLoadAddress { get; set; }
 
-      [Unknown]
-      [SequenceLengthSource(0x18)]
-      public byte[] Unused2 { get; set; }
+    [Unknown]
+    [SequenceLengthSource(0x18)]
+    public byte[] Unused2 { get; set; }
 
-      public uint DolOffset { get; set; }
+    public uint DolOffset { get; set; }
 
-      public uint FileSystemTableOffset { get; set; }
-      public uint FileSystemTableSize { get; set; }
-      public uint FileSystemTableMaximumSize { get; set; }
+    public uint FileSystemTableOffset { get; set; }
+    public uint FileSystemTableSize { get; set; }
+    public uint FileSystemTableMaximumSize { get; set; }
 
-      public uint UserPosition { get; set; }
-      public uint UserLength { get; set; }
+    public uint UserPosition { get; set; }
+    public uint UserLength { get; set; }
 
-      [Unknown]
-      public uint Unknown { get; set; }
-      [Unknown]
-      public uint Unused3 { get; set; }
-    }
+    [Unknown]
+    public uint Unknown { get; set; }
+    [Unknown]
+    public uint Unused3 { get; set; }
+  }
 
-    [BinarySchema]
-    private partial class FileEntry : IBinaryConvertible {
-      [IntegerFormat(SchemaIntegerType.BYTE)]
-      public bool IsDirectory { get; set; }
+  [BinarySchema]
+  private partial class FileEntry : IBinaryConvertible {
+    [IntegerFormat(SchemaIntegerType.BYTE)]
+    public bool IsDirectory { get; set; }
 
-      [IntegerFormat(SchemaIntegerType.UINT24)]
-      public uint FileNameOffset { get; set; }
+    [IntegerFormat(SchemaIntegerType.UINT24)]
+    public uint FileNameOffset { get; set; }
 
-      public uint FileOrParentOffset { get; set; }
-      public uint FileLengthOrNextOffset { get; set; }
-    }
+    public uint FileOrParentOffset { get; set; }
+    public uint FileLengthOrNextOffset { get; set; }
   }
 }

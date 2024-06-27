@@ -14,42 +14,43 @@ using SixLabors.ImageSharp.PixelFormats;
 using Color = System.Drawing.Color;
 using Rectangle = System.Drawing.Rectangle;
 
-namespace benchmarks {
-  public unsafe class EditingBitmaps {
-    private const int SIZE = 4000;
+namespace benchmarks;
 
-    private Bitmap bitmap_ =
-        new(SIZE, SIZE, PixelFormat.Format32bppArgb);
+public unsafe class EditingBitmaps {
+  private const int SIZE = 4000;
 
-    private BitmapData bmpData_;
+  private Bitmap bitmap_ =
+      new(SIZE, SIZE, PixelFormat.Format32bppArgb);
 
-    public static readonly Configuration ImageSharpConfig;
+  private BitmapData bmpData_;
 
-    private Rgba32Image finImage_
-        = new(fin.image.PixelFormat.RGBA8888, SIZE, SIZE);
+  public static readonly Configuration ImageSharpConfig;
 
-    static EditingBitmaps() {
+  private Rgba32Image finImage_
+      = new(fin.image.PixelFormat.RGBA8888, SIZE, SIZE);
+
+  static EditingBitmaps() {
       ImageSharpConfig = Configuration.Default.Clone();
       ImageSharpConfig.PreferContiguousImageBuffers = true;
     }
 
-    private Image<Rgba32> image_ = new(ImageSharpConfig, SIZE, SIZE);
+  private Image<Rgba32> image_ = new(ImageSharpConfig, SIZE, SIZE);
 
-    private MemoryHandle memoryHandle_;
-    private Rgba32* imagePtr_;
+  private MemoryHandle memoryHandle_;
+  private Rgba32* imagePtr_;
 
-    public void LockBitmap() {
+  public void LockBitmap() {
       this.bmpData_ = this.bitmap_.LockBits(
           new Rectangle(0, 0, SIZE, SIZE),
           ImageLockMode.ReadWrite,
           PixelFormat.Format32bppArgb);
     }
 
-    public void UnlockBitmap() {
+  public void UnlockBitmap() {
       this.bitmap_.UnlockBits(this.bmpData_);
     }
 
-    public IDisposable LockImage() {
+  public IDisposable LockImage() {
       var frame = this.image_.Frames[0];
       frame.DangerousTryGetSinglePixelMemory(out var memory);
 
@@ -59,8 +60,8 @@ namespace benchmarks {
       return this.memoryHandle_;
     }
 
-    [Benchmark]
-    public void ReadingBitmapBytes() {
+  [Benchmark]
+  public void ReadingBitmapBytes() {
       this.LockBitmap();
       var ptr = (byte*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
@@ -76,8 +77,8 @@ namespace benchmarks {
       this.UnlockBitmap();
     }
 
-    [Benchmark]
-    public void ReadingBitmapUints() {
+  [Benchmark]
+  public void ReadingBitmapUints() {
       this.LockBitmap();
       var ptr = (uint*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
@@ -94,8 +95,8 @@ namespace benchmarks {
       this.UnlockBitmap();
     }
 
-    [Benchmark]
-    public void ReadingBitmapUintsAndCasting() {
+  [Benchmark]
+  public void ReadingBitmapUintsAndCasting() {
       this.LockBitmap();
       var ptr = (uint*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
@@ -113,8 +114,8 @@ namespace benchmarks {
       this.UnlockBitmap();
     }
 
-    [Benchmark]
-    public void ReadingBitmapUintsViaFastBitmapLibGetPixel() {
+  [Benchmark]
+  public void ReadingBitmapUintsViaFastBitmapLibGetPixel() {
       using var fastBitmap = this.bitmap_.FastLock();
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
@@ -127,8 +128,8 @@ namespace benchmarks {
       }
     }
 
-    [Benchmark]
-    public void ReadingBitmapUintsViaFastBitmapLibPtr() {
+  [Benchmark]
+  public void ReadingBitmapUintsViaFastBitmapLibPtr() {
       using var fastBitmap = this.bitmap_.FastLock();
       var ptr = (uint*) fastBitmap.Scan0;
       for (var y = 0; y < SIZE; ++y) {
@@ -144,8 +145,8 @@ namespace benchmarks {
       }
     }
 
-    [Benchmark]
-    public void ReadingBitmapUintsSchenanigans() {
+  [Benchmark]
+  public void ReadingBitmapUintsSchenanigans() {
       this.LockBitmap();
       var ptr = (uint*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
@@ -161,8 +162,8 @@ namespace benchmarks {
       this.UnlockBitmap();
     }
 
-    //[Benchmark]
-    public void ReadingBitmapColors() {
+  //[Benchmark]
+  public void ReadingBitmapColors() {
       this.LockBitmap();
       var ptr = (int*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
@@ -179,8 +180,8 @@ namespace benchmarks {
       this.UnlockBitmap();
     }
 
-    //[Benchmark]
-    public void ReadingImageBytes() {
+  //[Benchmark]
+  public void ReadingImageBytes() {
       using var _ = this.LockImage();
       var ptr = (byte*) this.imagePtr_;
       for (var y = 0; y < SIZE; ++y) {
@@ -194,8 +195,8 @@ namespace benchmarks {
       }
     }
 
-    [Benchmark]
-    public void ReadingImageByteViaHandler() {
+  [Benchmark]
+  public void ReadingImageByteViaHandler() {
       using var _ = this.LockImage();
       var ptr = (byte*) this.imagePtr_;
       var handler = (int x,
@@ -219,8 +220,8 @@ namespace benchmarks {
       }
     }
 
-    [Benchmark]
-    public void ReadingImageUints() {
+  [Benchmark]
+  public void ReadingImageUints() {
       using var _ = this.LockImage();
       var ptr = (uint*) this.imagePtr_;
       for (var y = 0; y < SIZE; ++y) {
@@ -235,8 +236,8 @@ namespace benchmarks {
       }
     }
 
-    //[Benchmark]
-    public void ReadingImageRgba32s() {
+  //[Benchmark]
+  public void ReadingImageRgba32s() {
       using var _ = this.LockImage();
       var ptr = this.imagePtr_;
       for (var y = 0; y < SIZE; ++y) {
@@ -251,8 +252,8 @@ namespace benchmarks {
       }
     }
 
-    [Benchmark]
-    public void ReadingFinImageWithNewValues() {
+  [Benchmark]
+  public void ReadingFinImageWithNewValues() {
       finImage_.Access(get => {
                          for (var y = 0; y < SIZE; ++y) {
                            for (var x = 0; x < SIZE; ++x) {
@@ -267,8 +268,8 @@ namespace benchmarks {
                        });
     }
 
-    [Benchmark]
-    public void ReadingFinImageWithSameValues() {
+  [Benchmark]
+  public void ReadingFinImageWithSameValues() {
       finImage_.Access(get => {
                          byte r, g, b, a;
                          for (var y = 0; y < SIZE; ++y) {
@@ -279,8 +280,8 @@ namespace benchmarks {
                        });
     }
 
-    [Benchmark]
-    public void ReadingFinImageWithLock() {
+  [Benchmark]
+  public void ReadingFinImageWithLock() {
       using var imageLock = this.finImage_.Lock();
       var ptr = imageLock.Pixels;
       for (var y = 0; y < SIZE; ++y) {
@@ -294,5 +295,4 @@ namespace benchmarks {
         }
       }
     }
-  }
 }

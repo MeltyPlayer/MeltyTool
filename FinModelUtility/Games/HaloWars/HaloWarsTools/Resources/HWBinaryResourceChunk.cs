@@ -1,35 +1,35 @@
-﻿namespace HaloWarsTools {
-  public enum HWBinaryResourceChunkType : ulong {
-    Unknown = 0,
+﻿namespace HaloWarsTools;
 
-    XTD_XTDHeader = 0x1111,
-    XTD_TerrainChunk = 0x2222,
-    XTD_AtlasChunk = 0x8888,
-    XTD_TessChunk = 0xAAAA,
-    XTD_LightingChunk = 0xBBBB,
-    XTD_AOChunk = 0xCCCC,
-    XTD_AlphaChunk = 0xDDDD,
+public enum HWBinaryResourceChunkType : ulong {
+  Unknown = 0,
 
-    XTT_TerrainAtlasLinkChunk = 0x2222,
-    XTT_AtlasChunkAlbedo = 0x6666,
-    XTT_RoadChunk = 0x8888,
-    XTT_FoliageHeaderChunk = 0xAAAA,
-    XTT_FoliageQNChunk = 0xBBBB,
+  XTD_XTDHeader = 0x1111,
+  XTD_TerrainChunk = 0x2222,
+  XTD_AtlasChunk = 0x8888,
+  XTD_TessChunk = 0xAAAA,
+  XTD_LightingChunk = 0xBBBB,
+  XTD_AOChunk = 0xCCCC,
+  XTD_AlphaChunk = 0xDDDD,
 
-    UGX_CachedDataChunk = 0x00000700,
-    UGX_IndexBufferChunk = 0x00000701,
-    UGX_VertexBufferChunk = 0x00000702,
-    UGX_GrxChunk = 0x00000703, // granny_file_info
-    UGX_MaterialChunk = 0x00000704,
-    UGX_TreeChunk = 0x00000705,
-    UGX_CachedDataSignatureHW1_BE = 0xC2340004,
-    UGX_CachedDataSignatureHW1_LE = 0x040034C2,
-    UGX_CachedDataSignatureHW2 = 0x060034C2, // 0xC2340006
-  }
+  XTT_TerrainAtlasLinkChunk = 0x2222,
+  XTT_AtlasChunkAlbedo = 0x6666,
+  XTT_RoadChunk = 0x8888,
+  XTT_FoliageHeaderChunk = 0xAAAA,
+  XTT_FoliageQNChunk = 0xBBBB,
 
-  public class HWBinaryResourceChunk {
-    public HWBinaryResourceChunkType Type;
-    public uint Offset;
-    public uint Size;
-  }
+  UGX_CachedDataChunk = 0x00000700,
+  UGX_IndexBufferChunk = 0x00000701,
+  UGX_VertexBufferChunk = 0x00000702,
+  UGX_GrxChunk = 0x00000703, // granny_file_info
+  UGX_MaterialChunk = 0x00000704,
+  UGX_TreeChunk = 0x00000705,
+  UGX_CachedDataSignatureHW1_BE = 0xC2340004,
+  UGX_CachedDataSignatureHW1_LE = 0x040034C2,
+  UGX_CachedDataSignatureHW2 = 0x060034C2, // 0xC2340006
+}
+
+public class HWBinaryResourceChunk {
+  public HWBinaryResourceChunkType Type;
+  public uint Offset;
+  public uint Size;
 }

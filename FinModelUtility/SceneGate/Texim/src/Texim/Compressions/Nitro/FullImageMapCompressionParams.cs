@@ -17,12 +17,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro
-{
-    using Palettes;
+namespace Texim.Compressions.Nitro;
 
-    public class FullImageMapCompressionParams : MapCompressionParams
-    {
-        public IPaletteCollection Palettes { get; set; }
-    }
+using Palettes;
+
+public class FullImageMapCompressionParams : MapCompressionParams
+{
+    public IPaletteCollection Palettes { get; set; }
 }

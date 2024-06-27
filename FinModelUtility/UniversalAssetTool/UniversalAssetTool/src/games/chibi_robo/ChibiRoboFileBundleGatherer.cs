@@ -4,9 +4,10 @@ using fin.io.bundles;
 
 using uni.platforms.gcn;
 
-namespace uni.games.chibi_robo {
-  public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+namespace uni.games.chibi_robo;
+
+public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
+  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "chibi_robo",
               out var fileHierarchy)) {
@@ -27,5 +28,4 @@ namespace uni.games.chibi_robo {
         }.Annotate(datFile);
       }
     }
-  }
 }

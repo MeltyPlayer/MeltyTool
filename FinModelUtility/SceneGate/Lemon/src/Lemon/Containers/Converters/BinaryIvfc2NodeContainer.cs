@@ -1,4 +1,4 @@
-// Copyright (c) 2019 SceneGate
+﻿// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,59 +17,59 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters
+namespace SceneGate.Lemon.Containers.Converters;
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using Logging;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+using Yarhl.IO;
+
+/// <summary>
+/// Converter for Binary streams into a file system following the
+/// IVFC tree format.
+/// </summary>
+/// <remarks>
+/// <para>This converter does not validate the level 0, 1 and 2 hashes
+/// or use the level 3 file and directory tokens.</para>
+/// </remarks>
+public class BinaryIvfc2NodeContainer : IConverter<BinaryFormat, NodeContainerFormat>
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Text;
-    using Logging;
-    using Yarhl.FileFormat;
-    using Yarhl.FileSystem;
-    using Yarhl.IO;
+    const int Level0Padding = 0x1000;
+
+    static readonly ILog Logger = LogProvider.GetCurrentClassLogger();
+    static readonly Encoding Encoding = Encoding.Unicode;
+
+    DataReader levelReader;
+    uint dirInfoOffset;
+    uint fileInfoOffset;
+    uint fileDataOffset;
 
     /// <summary>
-    /// Converter for Binary streams into a file system following the
-    /// IVFC tree format.
+    /// Gets the magic identifier of the format.
     /// </summary>
-    /// <remarks>
-    /// <para>This converter does not validate the level 0, 1 and 2 hashes
-    /// or use the level 3 file and directory tokens.</para>
-    /// </remarks>
-    public class BinaryIvfc2NodeContainer : IConverter<BinaryFormat, NodeContainerFormat>
+    /// <value>The magic ID of the format.</value>
+    public static string MagicId {
+        get { return "IVFC"; }
+    }
+
+    /// <summary>
+    /// Gets the supported format version.
+    /// </summary>
+    /// <value>The supported format version.</value>
+    public static uint SupportedVersion {
+        get { return 0x0001_0000; }
+    }
+
+    /// <summary>
+    /// Converts a binary stream into a file system with the IVFC format.
+    /// </summary>
+    /// <param name="source">The binary stream to convert.</param>
+    /// <returns>The file system from the IVFC stream.</returns>
+    public NodeContainerFormat Convert(BinaryFormat source)
     {
-        const int Level0Padding = 0x1000;
-
-        static readonly ILog Logger = LogProvider.GetCurrentClassLogger();
-        static readonly Encoding Encoding = Encoding.Unicode;
-
-        DataReader levelReader;
-        uint dirInfoOffset;
-        uint fileInfoOffset;
-        uint fileDataOffset;
-
-        /// <summary>
-        /// Gets the magic identifier of the format.
-        /// </summary>
-        /// <value>The magic ID of the format.</value>
-        public static string MagicId {
-            get { return "IVFC"; }
-        }
-
-        /// <summary>
-        /// Gets the supported format version.
-        /// </summary>
-        /// <value>The supported format version.</value>
-        public static uint SupportedVersion {
-            get { return 0x0001_0000; }
-        }
-
-        /// <summary>
-        /// Converts a binary stream into a file system with the IVFC format.
-        /// </summary>
-        /// <param name="source">The binary stream to convert.</param>
-        /// <returns>The file system from the IVFC stream.</returns>
-        public NodeContainerFormat Convert(BinaryFormat source)
-        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -121,9 +121,9 @@ namespace SceneGate.Lemon.Containers.Converters
             return root;
         }
 
-        [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
-        void ReadDirectoryInfo(Node parent)
-        {
+    [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
+    void ReadDirectoryInfo(Node parent)
+    {
             levelReader.Stream.Position += 4; // no need parent directory
             uint nextSiblingDir = levelReader.ReadUInt32();
             uint firstChildDir = levelReader.ReadUInt32();
@@ -164,8 +164,8 @@ namespace SceneGate.Lemon.Containers.Converters
             }
         }
 
-        void ReadFileInfo(Node parent)
-        {
+    void ReadFileInfo(Node parent)
+    {
             levelReader.Stream.Position += 4; // no need parent directory
             uint nextSiblingFile = levelReader.ReadUInt32();
             long offset = levelReader.ReadInt64() + fileDataOffset;
@@ -182,5 +182,4 @@ namespace SceneGate.Lemon.Containers.Converters
                 ReadFileInfo(parent);
             }
         }
-    }
 }

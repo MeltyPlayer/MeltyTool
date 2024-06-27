@@ -17,34 +17,34 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Colors
+namespace Texim.Colors;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+public class Rgba32 : IColorEncoding
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
+    private static Rgba32 instance = new Rgba32();
+    private readonly bool hasAlpha;
 
-    public class Rgba32 : IColorEncoding
+    public Rgba32()
     {
-        private static Rgba32 instance = new Rgba32();
-        private readonly bool hasAlpha;
-
-        public Rgba32()
-        {
             hasAlpha = true;
         }
 
-        internal Rgba32(bool hasAlpha)
-        {
+    internal Rgba32(bool hasAlpha)
+    {
             this.hasAlpha = hasAlpha;
         }
 
-        public static Rgba32 Instance => instance;
+    public static Rgba32 Instance => instance;
 
-        public static int BytesPerColor => 4;
+    public static int BytesPerColor => 4;
 
-        public Rgb Decode(Stream stream)
-        {
+    public Rgb Decode(Stream stream)
+    {
             Span<byte> data = stackalloc byte[4];
             int read = stream.Read(data);
             if (read != 4) {
@@ -55,8 +55,8 @@ namespace Texim.Colors
             return new Rgb(data[0], data[1], data[2], alpha);
         }
 
-        public Rgb[] Decode(Stream stream, int numColors)
-        {
+    public Rgb[] Decode(Stream stream, int numColors)
+    {
             byte[] data = new byte[numColors * BytesPerColor];
             int read = stream.Read(data, 0, data.Length);
             if (read != data.Length) {
@@ -66,8 +66,8 @@ namespace Texim.Colors
             return Decode(data);
         }
 
-        public Rgb[] Decode(Span<byte> data)
-        {
+    public Rgb[] Decode(Span<byte> data)
+    {
             var colors = new Rgb[data.Length / BytesPerColor];
             for (int i = 0; i < colors.Length; i++) {
                 colors[i] = new Rgb(
@@ -80,8 +80,8 @@ namespace Texim.Colors
             return colors;
         }
 
-        public byte[] Encode(Rgb color)
-        {
+    public byte[] Encode(Rgb color)
+    {
             return [
                 color.Red,
                 color.Green,
@@ -90,8 +90,8 @@ namespace Texim.Colors
             ];
         }
 
-        public byte[] Encode(IEnumerable<Rgb> colors)
-        {
+    public byte[] Encode(IEnumerable<Rgb> colors)
+    {
             var colorList = colors.ToArray();
             byte[] data = new byte[colorList.Length];
             for (int i = 0; i < colorList.Length; i++) {
@@ -103,5 +103,4 @@ namespace Texim.Colors
 
             return data;
         }
-    }
 }

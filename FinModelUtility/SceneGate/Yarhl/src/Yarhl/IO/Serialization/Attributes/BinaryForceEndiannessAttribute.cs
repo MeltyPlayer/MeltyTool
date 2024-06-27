@@ -1,4 +1,4 @@
-// Copyright (c) 2020 SceneGate
+﻿// Copyright (c) 2020 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,30 +17,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO.Serialization.Attributes
-{
-    using System;
+namespace Yarhl.IO.Serialization.Attributes;
 
+using System;
+
+/// <summary>
+/// Set to force the endianness in automatic serialization.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class BinaryForceEndiannessAttribute : Attribute
+{
     /// <summary>
-    /// Set to force the endianness in automatic serialization.
+    /// Initializes a new instance of the <see cref="BinaryForceEndiannessAttribute"/> class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class BinaryForceEndiannessAttribute : Attribute
+    /// <param name="mode">Endianness mode for the property.</param>
+    public BinaryForceEndiannessAttribute(EndiannessMode mode)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryForceEndiannessAttribute"/> class.
-        /// </summary>
-        /// <param name="mode">Endianness mode for the property.</param>
-        public BinaryForceEndiannessAttribute(EndiannessMode mode)
-        {
             Mode = mode;
         }
 
-        /// <summary>
-        /// Gets the endianness mode.
-        /// </summary>
-        public EndiannessMode Mode {
-            get;
-        }
+    /// <summary>
+    /// Gets the endianness mode.
+    /// </summary>
+    public EndiannessMode Mode {
+        get;
     }
 }

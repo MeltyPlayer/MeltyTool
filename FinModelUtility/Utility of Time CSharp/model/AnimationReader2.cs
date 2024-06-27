@@ -12,18 +12,19 @@ using UoT.memory;
 #pragma warning disable CS8603
 
 
-namespace UoT.model {
-  public class AnimationReader2 {
-    /// <summary>
-    ///   Parses a set of animations according to the spec at:
-    ///   https://wiki.cloudmodding.com/oot/Animation_Format#Normal_Animations
-    /// </summary>
-    // TODO: Some jank still slips through, is there a proper list of these
-    // addresses somewhere in the file?
-    public IList<IAnimation>? GetCommonAnimations(
-        IN64Memory n64Memory,
-        IReadOnlyList<IZFile> animationFiles,
-        int limbCount) {
+namespace UoT.model;
+
+public class AnimationReader2 {
+  /// <summary>
+  ///   Parses a set of animations according to the spec at:
+  ///   https://wiki.cloudmodding.com/oot/Animation_Format#Normal_Animations
+  /// </summary>
+  // TODO: Some jank still slips through, is there a proper list of these
+  // addresses somewhere in the file?
+  public IList<IAnimation>? GetCommonAnimations(
+      IN64Memory n64Memory,
+      IReadOnlyList<IZFile> animationFiles,
+      int limbCount) {
       uint trackCount = (uint) (limbCount * 3);
       var animations = new List<IAnimation>();
 
@@ -156,16 +157,16 @@ namespace UoT.model {
       return animations.Count > 0 ? animations : null;
     }
 
-    private short ConvertUShortToShort_(ushort value) {
+  private short ConvertUShortToShort_(ushort value) {
       Span<ushort> ptr = stackalloc ushort[1];
       ptr[0] = value;
       return ptr.Cast<ushort, short>()[0];
     }
 
-    private static ushort[] ReadFrames_(
-        ushort tTrack,
-        ushort limit,
-        NormalAnimation animation) {
+  private static ushort[] ReadFrames_(
+      ushort tTrack,
+      ushort limit,
+      NormalAnimation animation) {
       ushort[] frames;
 
       // Constant
@@ -187,15 +188,15 @@ namespace UoT.model {
       return frames;
     }
 
-    /// <summary>
-    ///   Parses a set of animations according to the spec at:
-    ///   https://wiki.cloudmodding.com/oot/Animation_Format#C_code
-    /// </summary>
-    [Unknown]
-    public IList<IAnimation>? GetLinkAnimations(
-        IN64Memory n64Memory,
-        IZFile headerFile,
-        int limbCount) {
+  /// <summary>
+  ///   Parses a set of animations according to the spec at:
+  ///   https://wiki.cloudmodding.com/oot/Animation_Format#C_code
+  /// </summary>
+  [Unknown]
+  public IList<IAnimation>? GetLinkAnimations(
+      IN64Memory n64Memory,
+      IZFile headerFile,
+      int limbCount) {
       var animations = new List<IAnimation>();
 
       using var headerEr = n64Memory.OpenSegment(headerFile.Segment);
@@ -270,5 +271,4 @@ namespace UoT.model {
 
       return animations.Count > 0 ? animations : null;
     }
-  }
 }

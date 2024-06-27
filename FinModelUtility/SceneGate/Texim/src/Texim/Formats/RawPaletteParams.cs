@@ -17,25 +17,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using Colors;
+
+public class RawPaletteParams
 {
-    using Colors;
+    public static RawPaletteParams Default => new RawPaletteParams {
+        Offset = 0,
+        Size = -1,
+        ColorEncoding = Bgr555.Instance,
+        ColorsPerPalette = -1,
+    };
 
-    public class RawPaletteParams
-    {
-        public static RawPaletteParams Default => new RawPaletteParams {
-            Offset = 0,
-            Size = -1,
-            ColorEncoding = Bgr555.Instance,
-            ColorsPerPalette = -1,
-        };
+    public long Offset { get; set; }
 
-        public long Offset { get; set; }
+    public int Size { get; set; }
 
-        public int Size { get; set; }
+    public IColorEncoding ColorEncoding { get; set; }
 
-        public IColorEncoding ColorEncoding { get; set; }
-
-        public int ColorsPerPalette { get; set; }
-    }
+    public int ColorsPerPalette { get; set; }
 }

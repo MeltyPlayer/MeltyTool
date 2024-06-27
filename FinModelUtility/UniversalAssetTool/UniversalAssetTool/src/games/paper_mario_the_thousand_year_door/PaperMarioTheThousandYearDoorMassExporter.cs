@@ -4,12 +4,13 @@ using ttyd.api;
 
 using uni.platforms.gcn;
 
-namespace uni.games.paper_mario_the_thousand_year_door {
-  using IAnnotatedTtydBundle = IAnnotatedFileBundle<TtydModelFileBundle>;
+namespace uni.games.paper_mario_the_thousand_year_door;
 
-  public class PaperMarioTheThousandYearDoorFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<TtydModelFileBundle> {
-    public IEnumerable<IAnnotatedTtydBundle> GatherFileBundles() {
+using IAnnotatedTtydBundle = IAnnotatedFileBundle<TtydModelFileBundle>;
+
+public class PaperMarioTheThousandYearDoorFileBundleGatherer
+    : IAnnotatedFileBundleGatherer<TtydModelFileBundle> {
+  public IEnumerable<IAnnotatedTtydBundle> GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "paper_mario_the_thousand_year_door",
               out var fileHierarchy)) {
@@ -28,5 +29,4 @@ namespace uni.games.paper_mario_the_thousand_year_door {
             .Annotate(modelFile);
       }
     }
-  }
 }

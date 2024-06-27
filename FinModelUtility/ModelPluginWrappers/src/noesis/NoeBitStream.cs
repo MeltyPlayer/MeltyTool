@@ -3,38 +3,38 @@
 #pragma warning disable IDE1006 // Naming Styles
 
 
-namespace ModelPluginWrappers.src.noesis {
-  public enum NoeEndianness {
-    NOE_LITTLEENDIAN = 0,
-    NOE_BIGENDIAN = 1,
-  }
+namespace ModelPluginWrappers.src.noesis;
 
-  public interface INoeBitStream {
-    int getSize();
+public enum NoeEndianness {
+  NOE_LITTLEENDIAN = 0,
+  NOE_BIGENDIAN = 1,
+}
 
-    void setOffset(int ofs);
-    int getOffset();
-  }
+public interface INoeBitStream {
+  int getSize();
 
-  public interface INoeBitStreamReader : INoeBitStream {
-    string readline();
-  }
+  void setOffset(int ofs);
+  int getOffset();
+}
 
-  public class NoeBitStreamReader : INoeBitStreamReader {
-    private readonly SchemaBinaryReader impl_; 
+public interface INoeBitStreamReader : INoeBitStream {
+  string readline();
+}
 
-    public NoeBitStreamReader(byte[] data, NoeEndianness endianness = NoeEndianness.NOE_LITTLEENDIAN) {
+public class NoeBitStreamReader : INoeBitStreamReader {
+  private readonly SchemaBinaryReader impl_; 
+
+  public NoeBitStreamReader(byte[] data, NoeEndianness endianness = NoeEndianness.NOE_LITTLEENDIAN) {
       this.impl_ = new SchemaBinaryReader(data, endianness switch {
         NoeEndianness.NOE_BIGENDIAN => Endianness.BigEndian,
         NoeEndianness.NOE_LITTLEENDIAN => Endianness.LittleEndian,
       });
     }
 
-    public int getSize() => (int) this.impl_.Length;
+  public int getSize() => (int) this.impl_.Length;
 
-    public int getOffset() => (int) this.impl_.Position;
-    public void setOffset(int ofs) => this.impl_.Position = ofs;
+  public int getOffset() => (int) this.impl_.Position;
+  public void setOffset(int ofs) => this.impl_.Position = ofs;
 
-    public string readline() => this.impl_.ReadLine();
-  }
+  public string readline() => this.impl_.ReadLine();
 }

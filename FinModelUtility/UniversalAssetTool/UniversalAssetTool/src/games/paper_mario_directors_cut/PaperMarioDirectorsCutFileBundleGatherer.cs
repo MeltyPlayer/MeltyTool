@@ -7,11 +7,12 @@ using pmdc.api;
 
 using uni.platforms;
 
-namespace uni.games.paper_mario_directors_cut {
-  public class PaperMarioDirectorsCutFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<OmdModelFileBundle> {
-    public IEnumerable<IAnnotatedFileBundle<OmdModelFileBundle>>
-        GatherFileBundles() {
+namespace uni.games.paper_mario_directors_cut;
+
+public class PaperMarioDirectorsCutFileBundleGatherer
+    : IAnnotatedFileBundleGatherer<OmdModelFileBundle> {
+  public IEnumerable<IAnnotatedFileBundle<OmdModelFileBundle>>
+      GatherFileBundles() {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
               Path.Join("paper_mario_directors_cut", ExtractorUtil.PREREQS),
               out var pmdcDir)) {
@@ -28,5 +29,4 @@ namespace uni.games.paper_mario_directors_cut {
             omdFile);
       }
     }
-  }
 }

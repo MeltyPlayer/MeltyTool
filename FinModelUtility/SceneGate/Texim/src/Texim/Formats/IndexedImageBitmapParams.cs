@@ -17,18 +17,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using Palettes;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Png;
+
+public class IndexedImageBitmapParams
 {
-    using Palettes;
-    using SixLabors.ImageSharp.Formats;
-    using SixLabors.ImageSharp.Formats.Png;
+    public IImageEncoder Encoder { get; set; } = new PngEncoder();
 
-    public class IndexedImageBitmapParams
-    {
-        public IImageEncoder Encoder { get; set; } = new PngEncoder();
+    public IPalette Palette { get; set; }
 
-        public IPalette Palette { get; set; }
-
-        public IPaletteCollection Palettes { get; set; }
-    }
+    public IPaletteCollection Palettes { get; set; }
 }

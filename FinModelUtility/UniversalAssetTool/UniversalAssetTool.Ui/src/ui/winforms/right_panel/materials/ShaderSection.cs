@@ -3,14 +3,15 @@
 using fin.model;
 using fin.shaders.glsl;
 
-namespace uni.ui.winforms.right_panel.materials {
-  public partial class ShaderSection : UserControl {
-    public ShaderSection() {
+namespace uni.ui.winforms.right_panel.materials;
+
+public partial class ShaderSection : UserControl {
+  public ShaderSection() {
       InitializeComponent();
     }
 
-    public (IReadOnlyModel, IReadOnlyMaterial?)? ModelAndMaterial {
-      set {
+  public (IReadOnlyModel, IReadOnlyMaterial?)? ModelAndMaterial {
+    set {
         if (value == null) {
           this.richTextBox_.Text = "(n/a)";
         } else {
@@ -19,6 +20,5 @@ namespace uni.ui.winforms.right_panel.materials {
               material.ToShaderSource(model, false).FragmentShaderSource;
         }
       }
-    }
   }
 }

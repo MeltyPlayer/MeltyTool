@@ -17,22 +17,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileFormat
+namespace Yarhl.FileFormat;
+
+/// <summary>
+/// Cloneable format interface.
+/// </summary>
+public interface ICloneableFormat : IFormat
 {
     /// <summary>
-    /// Cloneable format interface.
+    /// Deep clones a format into a new object.
     /// </summary>
-    public interface ICloneableFormat : IFormat
-    {
-        /// <summary>
-        /// Deep clones a format into a new object.
-        /// </summary>
-        /// <returns>The cloned format.</returns>
-        /// <remarks>
-        /// <para>A 'deep copy' must create the necessary copies, in the way that
-        /// any change in the original node (or any of it's member hierarchy) won't affect
-        /// the cloned node.</para>
-        /// </remarks>
-        object DeepClone();
-    }
+    /// <returns>The cloned format.</returns>
+    /// <remarks>
+    /// <para>A 'deep copy' must create the necessary copies, in the way that
+    /// any change in the original node (or any of it's member hierarchy) won't affect
+    /// the cloned node.</para>
+    /// </remarks>
+    object DeepClone();
 }

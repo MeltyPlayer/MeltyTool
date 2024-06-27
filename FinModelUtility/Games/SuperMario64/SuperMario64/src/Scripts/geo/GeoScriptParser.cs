@@ -6,28 +6,29 @@ using schema.binary;
 
 using sm64.schema;
 
-namespace sm64.scripts.geo {
-  public class GeoScriptParser {
-    private class GeoCommandList : IGeoCommandList {
-      private readonly List<IGeoCommand> commands_ = [];
+namespace sm64.scripts.geo;
 
-      public void AddCommand(IGeoCommand command)
-        => this.commands_.Add(command);
+public class GeoScriptParser {
+  private class GeoCommandList : IGeoCommandList {
+    private readonly List<IGeoCommand> commands_ = [];
 
-      public IReadOnlyList<IGeoCommand> Commands => this.commands_;
-    }
+    public void AddCommand(IGeoCommand command)
+      => this.commands_.Add(command);
 
-    public enum ReturnType {
-      UNDEFINED,
-      TERMINATED,
-      RETURNED
-    }
+    public IReadOnlyList<IGeoCommand> Commands => this.commands_;
+  }
 
-    public IGeoCommandList Parse(uint address, byte? areaId)
-      => Asserts.CastNonnull(ParseImpl_(address, areaId).Value).Item1;
+  public enum ReturnType {
+    UNDEFINED,
+    TERMINATED,
+    RETURNED
+  }
 
-    private (IGeoCommandList, ReturnType)?
-        ParseImpl_(uint address, byte? areaId) {
+  public IGeoCommandList Parse(uint address, byte? areaId)
+    => Asserts.CastNonnull(ParseImpl_(address, areaId).Value).Item1;
+
+  private (IGeoCommandList, ReturnType)?
+      ParseImpl_(uint address, byte? areaId) {
       IoUtils.SplitSegmentedAddress(address, out var seg, out var off);
 
       ROM rom = ROM.Instance;
@@ -274,7 +275,7 @@ namespace sm64.scripts.geo {
       return (commands, returnType);
     }
 
-    private static byte GetCmdLength_(byte cmd) {
+  private static byte GetCmdLength_(byte cmd) {
       switch (cmd) {
         case 0x00:
         case 0x02:
@@ -305,5 +306,4 @@ namespace sm64.scripts.geo {
           return 0x04;
       }
     }
-  }
 }

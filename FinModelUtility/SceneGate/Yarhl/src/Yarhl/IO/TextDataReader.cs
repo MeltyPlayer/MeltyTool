@@ -17,55 +17,55 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO
+namespace Yarhl.IO;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+/// <summary>
+/// Text reader for <see cref="Stream" />.
+/// </summary>
+public class TextDataReader
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
+    readonly DataReader reader;
+    string newLine;
 
-    /// <summary>
-    /// Text reader for <see cref="Stream" />.
-    /// </summary>
-    public class TextDataReader
+    static TextDataReader()
     {
-        readonly DataReader reader;
-        string newLine;
-
-        static TextDataReader()
-        {
             // Make sure that the shift-jis encoding is initialized.
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextDataReader"/> class.
-        /// </summary>
-        /// <param name="stream">Stream to read from.</param>
-        /// <remarks><para>The default encoding is UTF-8.</para></remarks>
-        public TextDataReader(Stream stream)
-            : this(stream, Encoding.UTF8)
-        {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextDataReader"/> class.
+    /// </summary>
+    /// <param name="stream">Stream to read from.</param>
+    /// <remarks><para>The default encoding is UTF-8.</para></remarks>
+    public TextDataReader(Stream stream)
+        : this(stream, Encoding.UTF8)
+    {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextDataReader"/> class.
-        /// </summary>
-        /// <param name="stream">Stream to read from.</param>
-        /// <param name="encoding">Encoding to use.</param>
-        public TextDataReader(Stream stream, string encoding)
-            : this(stream, Encoding.GetEncoding(encoding))
-        {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextDataReader"/> class.
+    /// </summary>
+    /// <param name="stream">Stream to read from.</param>
+    /// <param name="encoding">Encoding to use.</param>
+    public TextDataReader(Stream stream, string encoding)
+        : this(stream, Encoding.GetEncoding(encoding))
+    {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TextDataReader"/> class.
-        /// </summary>
-        /// <param name="stream">Stream to read from.</param>
-        /// <param name="encoding">Encoding to use.</param>
-        public TextDataReader(Stream stream, Encoding encoding)
-        {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextDataReader"/> class.
+    /// </summary>
+    /// <param name="stream">Stream to read from.</param>
+    /// <param name="encoding">Encoding to use.</param>
+    public TextDataReader(Stream stream, Encoding encoding)
+    {
             if (stream is null)
                 throw new ArgumentNullException(nameof(stream));
 
@@ -79,68 +79,68 @@ namespace Yarhl.IO
             };
         }
 
-        /// <summary>
-        /// Gets the stream.
-        /// </summary>
-        public DataStream Stream {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// Gets the stream.
+    /// </summary>
+    public DataStream Stream {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Gets the encoding.
-        /// </summary>
-        public Encoding Encoding {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// Gets the encoding.
+    /// </summary>
+    public Encoding Encoding {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Gets or sets the new line and set to false AutoNewLine.
-        /// </summary>
-        /// <value>The new line.</value>
-        /// <remarks><para>The default value is OS-dependant.</para></remarks>
-        public string NewLine {
-            get {
+    /// <summary>
+    /// Gets or sets the new line and set to false AutoNewLine.
+    /// </summary>
+    /// <value>The new line.</value>
+    /// <remarks><para>The default value is OS-dependant.</para></remarks>
+    public string NewLine {
+        get {
                 return newLine;
             }
 
-            set {
+        set {
                 newLine = value;
                 AutoNewLine = false;
             }
-        }
+    }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether reads any kind of
-        /// NewLine format (\r\n or \n). If true, this ignore the
-        /// NewLine field.
-        /// </summary>
-        /// <returns>If true, it will treat new lines any matching of \r\n or
-        /// \n. Otherwise false.
-        /// </returns>
-        public bool AutoNewLine {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets or sets a value indicating whether reads any kind of
+    /// NewLine format (\r\n or \n). If true, this ignore the
+    /// NewLine field.
+    /// </summary>
+    /// <returns>If true, it will treat new lines any matching of \r\n or
+    /// \n. Otherwise false.
+    /// </returns>
+    public bool AutoNewLine {
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Read a char from the stream.
-        /// </summary>
-        /// <returns>The read char.</returns>
-        public char Read()
-        {
+    /// <summary>
+    /// Read a char from the stream.
+    /// </summary>
+    /// <returns>The read char.</returns>
+    public char Read()
+    {
             SkipPreamble();
             return reader.ReadChar();
         }
 
-        /// <summary>
-        /// Read the specified number of chars.
-        /// </summary>
-        /// <returns>The read chars.</returns>
-        /// <param name="count">Chars to read.</param>
-        public char[] Read(int count)
-        {
+    /// <summary>
+    /// Read the specified number of chars.
+    /// </summary>
+    /// <returns>The read chars.</returns>
+    /// <param name="count">Chars to read.</param>
+    public char[] Read(int count)
+    {
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
 
@@ -148,16 +148,16 @@ namespace Yarhl.IO
             return reader.ReadChars(count);
         }
 
-        /// <summary>
-        /// Reads a string until a string / token is found.
-        /// </summary>
-        /// <param name="token">Token to find.</param>
-        /// <returns>The read string or null.</returns>
-        /// <exception cref="EndOfStreamException">
-        /// If the stream position is at the end.
-        /// </exception>
-        public string ReadToToken(string token)
-        {
+    /// <summary>
+    /// Reads a string until a string / token is found.
+    /// </summary>
+    /// <param name="token">Token to find.</param>
+    /// <returns>The read string or null.</returns>
+    /// <exception cref="EndOfStreamException">
+    /// If the stream position is at the end.
+    /// </exception>
+    public string ReadToToken(string token)
+    {
             if (string.IsNullOrEmpty(token))
                 throw new ArgumentNullException(nameof(token));
 
@@ -211,12 +211,12 @@ namespace Yarhl.IO
             return text;
         }
 
-        /// <summary>
-        /// Reads a line.
-        /// </summary>
-        /// <returns>The line.</returns>
-        public string ReadLine()
-        {
+    /// <summary>
+    /// Reads a line.
+    /// </summary>
+    /// <returns>The line.</returns>
+    public string ReadLine()
+    {
             string line;
 
             // We search for \n new lines.
@@ -233,68 +233,68 @@ namespace Yarhl.IO
             return line;
         }
 
-        /// <summary>
-        /// Reads to the end.
-        /// </summary>
-        /// <returns>The string.</returns>
-        public string ReadToEnd()
-        {
+    /// <summary>
+    /// Reads to the end.
+    /// </summary>
+    /// <returns>The string.</returns>
+    public string ReadToEnd()
+    {
             SkipPreamble();
             return reader.ReadString((int)(Stream.Length - Stream.Position));
         }
 
-        /// <summary>
-        /// Read the next char without changing the position.
-        /// </summary>
-        /// <returns>The next char.</returns>
-        public char Peek()
-        {
+    /// <summary>
+    /// Read the next char without changing the position.
+    /// </summary>
+    /// <returns>The next char.</returns>
+    public char Peek()
+    {
             long startPos = Stream.Position;
             char ch = Read();
             Stream.Seek(startPos, SeekOrigin.Begin);
             return ch;
         }
 
-        /// <summary>
-        /// Read the next count of chars without changing the position.
-        /// </summary>
-        /// <returns>The next chars.</returns>
-        /// <param name="count">Number of chars to read.</param>
-        public char[] Peek(int count)
-        {
+    /// <summary>
+    /// Read the next count of chars without changing the position.
+    /// </summary>
+    /// <returns>The next chars.</returns>
+    /// <param name="count">Number of chars to read.</param>
+    public char[] Peek(int count)
+    {
             long startPos = Stream.Position;
             char[] chars = Read(count);
             Stream.Seek(startPos, SeekOrigin.Begin);
             return chars;
         }
 
-        /// <summary>
-        /// Read until a string / token is found without changing the position.
-        /// </summary>
-        /// <returns>The next chars.</returns>
-        /// <param name="token">Token to find.</param>
-        public string PeekToToken(string token)
-        {
+    /// <summary>
+    /// Read until a string / token is found without changing the position.
+    /// </summary>
+    /// <returns>The next chars.</returns>
+    /// <param name="token">Token to find.</param>
+    public string PeekToToken(string token)
+    {
             long startPos = Stream.Position;
             string content = ReadToToken(token);
             Stream.Seek(startPos, SeekOrigin.Begin);
             return content;
         }
 
-        /// <summary>
-        /// Read the next line without changing the position.
-        /// </summary>
-        /// <returns>The next line.</returns>
-        public string PeekLine()
-        {
+    /// <summary>
+    /// Read the next line without changing the position.
+    /// </summary>
+    /// <returns>The next line.</returns>
+    public string PeekLine()
+    {
             long startPos = Stream.Position;
             string line = ReadLine();
             Stream.Seek(startPos, SeekOrigin.Begin);
             return line;
         }
 
-        void SkipPreamble()
-        {
+    void SkipPreamble()
+    {
             // Preambles can only be at the beginning of the stream.
             if (Stream.Position > 0) {
                 return;
@@ -315,5 +315,4 @@ namespace Yarhl.IO
                 Stream.Seek(0, SeekOrigin.Begin);
             }
         }
-    }
 }

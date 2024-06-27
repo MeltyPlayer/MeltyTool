@@ -5,21 +5,22 @@ using System.Text.RegularExpressions;
 using fin.io;
 using fin.util.asserts;
 
-namespace uni.platforms.gcn.tools {
-  /// <summary>
-  ///   Shamelessly stolen from https://github.com/Cuyler36/RELDumper
-  /// </summary>
-  public class RelDump {
-    private const int REL_HEADER_SIZE = 0xA0;
-    private const int DOL_HEADER_SIZE = -0xC0;
-    private int currentHeaderSize_;
+namespace uni.platforms.gcn.tools;
 
-    private Dictionary<string, int> dataSectionMap_;
+/// <summary>
+///   Shamelessly stolen from https://github.com/Cuyler36/RELDumper
+/// </summary>
+public class RelDump {
+  private const int REL_HEADER_SIZE = 0xA0;
+  private const int DOL_HEADER_SIZE = -0xC0;
+  private int currentHeaderSize_;
 
-    public bool Run(
-        IFileHierarchyFile relFile,
-        IFileHierarchyFile mapFile,
-        bool cleanup) {
+  private Dictionary<string, int> dataSectionMap_;
+
+  public bool Run(
+      IFileHierarchyFile relFile,
+      IFileHierarchyFile mapFile,
+      bool cleanup) {
       Asserts.True(relFile.Exists);
       Asserts.True(mapFile.Exists);
 
@@ -104,16 +105,16 @@ namespace uni.platforms.gcn.tools {
                                      @"\s+",
                                      " "); // Turn multiple spaces/tabs to one space
                 string[] Line_Data = Line.Split(' ');
-                /*
-                 * Line_Data contents
-                 * =================
-                 * Starting Address (relative to section start) 0
-                 * Size 1
-                 * Virtual Address (same as Starting Address??) 2
-                 * Type (1 = Object, 4 = Method) 3
-                 * Name 4
-                 * Object 5
-                 */
+               /*
+    Line_Data contents
+    =================
+    Starting Address (relative to section start) 0
+    Size 1
+    Virtual Address (same as Starting Address??) 2
+    Type (1 = Object, 4 = Method) 3
+    Name 4
+    Object 5
+   //
                 int Offset = this.GetRELOffset_(
                     this.dataSectionMap_[Current_Section],
                     int.Parse(
@@ -166,10 +167,9 @@ namespace uni.platforms.gcn.tools {
       return true;
     }
 
-    private int GetRELOffset_(int Section_Offset, int Data_Offset) {
+  private int GetRELOffset_(int Section_Offset, int Data_Offset) {
       return this.currentHeaderSize_ +
              Section_Offset +
              Data_Offset; // Header is 0xA0 bytes
     }
-  }
 }

@@ -12,38 +12,39 @@ using ReactiveUI;
 using uni.ui.avalonia.resources.texture;
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.resources.model.materials {
-  public class MaterialTexturesPanelViewModelForDesigner
-      : MaterialTexturesPanelViewModel {
-    public MaterialTexturesPanelViewModelForDesigner() {
+namespace uni.ui.avalonia.resources.model.materials;
+
+public class MaterialTexturesPanelViewModelForDesigner
+    : MaterialTexturesPanelViewModel {
+  public MaterialTexturesPanelViewModelForDesigner() {
       this.Textures
           = ModelDesignerUtil.CreateStubMaterial().Textures.ToArray();
     }
-  }
+}
 
-  public class MaterialTexturesPanelViewModel : ViewModelBase {
-    private IReadOnlyList<IReadOnlyTexture>? textures_;
-    private TextureListViewModel textureListViewModel_;
-    private TextureViewModel? selectedTextureViewModel_;
-    private TexturePreviewViewModel? selectedTexturePreviewViewModel_;
+public class MaterialTexturesPanelViewModel : ViewModelBase {
+  private IReadOnlyList<IReadOnlyTexture>? textures_;
+  private TextureListViewModel textureListViewModel_;
+  private TextureViewModel? selectedTextureViewModel_;
+  private TexturePreviewViewModel? selectedTexturePreviewViewModel_;
 
-    public IReadOnlyList<IReadOnlyTexture>? Textures {
-      get => this.textures_;
-      set {
+  public IReadOnlyList<IReadOnlyTexture>? Textures {
+    get => this.textures_;
+    set {
         this.RaiseAndSetIfChanged(ref this.textures_, value);
         this.TextureList = new TextureListViewModel { Textures = value };
       }
-    }
+  }
 
-    public TextureListViewModel TextureList {
-      get => this.textureListViewModel_;
-      private set
-        => this.RaiseAndSetIfChanged(ref this.textureListViewModel_, value);
-    }
+  public TextureListViewModel TextureList {
+    get => this.textureListViewModel_;
+    private set
+      => this.RaiseAndSetIfChanged(ref this.textureListViewModel_, value);
+  }
 
-    public TextureViewModel? SelectedTexture {
-      get => this.selectedTextureViewModel_;
-      set {
+  public TextureViewModel? SelectedTexture {
+    get => this.selectedTextureViewModel_;
+    set {
         this.RaiseAndSetIfChanged(ref this.selectedTextureViewModel_,
                                   value);
         this.SelectedTexturePreview = value != null
@@ -53,28 +54,27 @@ namespace uni.ui.avalonia.resources.model.materials {
             }
             : null;
       }
-    }
-
-    public TexturePreviewViewModel? SelectedTexturePreview {
-      get => this.selectedTexturePreviewViewModel_;
-      private set => this.RaiseAndSetIfChanged(
-          ref this.selectedTexturePreviewViewModel_,
-          value);
-    }
   }
 
-  public partial class MaterialTexturesPanel : UserControl {
-    public MaterialTexturesPanel() {
+  public TexturePreviewViewModel? SelectedTexturePreview {
+    get => this.selectedTexturePreviewViewModel_;
+    private set => this.RaiseAndSetIfChanged(
+        ref this.selectedTexturePreviewViewModel_,
+        value);
+  }
+}
+
+public partial class MaterialTexturesPanel : UserControl {
+  public MaterialTexturesPanel() {
       InitializeComponent();
     }
 
-    protected MaterialTexturesPanelViewModel ViewModel
-      => Asserts.AsA<MaterialTexturesPanelViewModel>(this.DataContext);
+  protected MaterialTexturesPanelViewModel ViewModel
+    => Asserts.AsA<MaterialTexturesPanelViewModel>(this.DataContext);
 
-    protected void TextureList_OnTextureSelected(
-        object? sender,
-        TextureSelectedEventArgs e) {
+  protected void TextureList_OnTextureSelected(
+      object? sender,
+      TextureSelectedEventArgs e) {
       this.ViewModel.SelectedTexture = e.Texture;
     }
-  }
 }

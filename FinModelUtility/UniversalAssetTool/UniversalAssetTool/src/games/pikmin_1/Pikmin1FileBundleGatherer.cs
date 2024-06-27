@@ -7,17 +7,18 @@ using uni.platforms.gcn;
 using uni.util.bundles;
 using uni.util.io;
 
-namespace uni.games.pikmin_1 {
-  using IAnnotatedModBundle = IAnnotatedFileBundle<ModModelFileBundle>;
+namespace uni.games.pikmin_1;
 
-  public class Pikmin1FileBundleGatherer
-      : IAnnotatedFileBundleGatherer<ModModelFileBundle> {
-    private readonly IModelSeparator separator_
-        = new ModelSeparator(directory => directory.LocalPath)
-            .Register(new AllAnimationsModelSeparatorMethod(),
-                      @"\dataDir\pikis");
+using IAnnotatedModBundle = IAnnotatedFileBundle<ModModelFileBundle>;
 
-    public IEnumerable<IAnnotatedModBundle> GatherFileBundles() {
+public class Pikmin1FileBundleGatherer
+    : IAnnotatedFileBundleGatherer<ModModelFileBundle> {
+  private readonly IModelSeparator separator_
+      = new ModelSeparator(directory => directory.LocalPath)
+          .Register(new AllAnimationsModelSeparatorMethod(),
+                    @"\dataDir\pikis");
+
+  public IEnumerable<IAnnotatedModBundle> GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "pikmin_1",
               GcnFileHierarchyExtractor.Options.Empty(),
@@ -34,8 +35,8 @@ namespace uni.games.pikmin_1 {
              .GatherFileBundles();
     }
 
-    private IEnumerable<IAnnotatedModBundle> GetAutomaticModels_(
-        IFileHierarchy fileHierarchy) {
+  private IEnumerable<IAnnotatedModBundle> GetAutomaticModels_(
+      IFileHierarchy fileHierarchy) {
       return fileHierarchy.SelectMany(directory => {
         if (this.separator_.Contains(directory)) {
           return Enumerable.Empty<IAnnotatedModBundle>();
@@ -58,37 +59,36 @@ namespace uni.games.pikmin_1 {
       });
     }
 
-    private IEnumerable<IAnnotatedModBundle> GetModelsViaSeparator_(
-        IFileHierarchy fileHierarchy)
-      => new FileHierarchyAssetBundleSeparator<ModModelFileBundle>(
-          fileHierarchy,
-          subdir => {
-            if (!this.separator_.Contains(subdir)) {
-              return Enumerable.Empty<IAnnotatedModBundle>();
-            }
-
-            var modFiles =
-                subdir.FilesWithExtensions(".mod").ToArray();
-            if (modFiles.Length == 0) {
-              return Enumerable.Empty<IAnnotatedModBundle>();
-            }
-
-            var anmFiles =
-                subdir.FilesWithExtensions(".anm").ToArray();
-
-            try {
-              var bundles =
-                  this.separator_.Separate(subdir, modFiles, anmFiles);
-
-              return bundles.Select(bundle => new ModModelFileBundle {
-                  GameName = "pikmin_1",
-                  ModFile = bundle.ModelFile,
-                  AnmFile = bundle.AnimationFiles.SingleOrDefault(),
-              }.Annotate(bundle.ModelFile));
-            } catch {
-              return Enumerable.Empty<IAnnotatedModBundle>();
-            }
+  private IEnumerable<IAnnotatedModBundle> GetModelsViaSeparator_(
+      IFileHierarchy fileHierarchy)
+    => new FileHierarchyAssetBundleSeparator<ModModelFileBundle>(
+        fileHierarchy,
+        subdir => {
+          if (!this.separator_.Contains(subdir)) {
+            return Enumerable.Empty<IAnnotatedModBundle>();
           }
-      ).GatherFileBundles();
-  }
+
+          var modFiles =
+              subdir.FilesWithExtensions(".mod").ToArray();
+          if (modFiles.Length == 0) {
+            return Enumerable.Empty<IAnnotatedModBundle>();
+          }
+
+          var anmFiles =
+              subdir.FilesWithExtensions(".anm").ToArray();
+
+          try {
+            var bundles =
+                this.separator_.Separate(subdir, modFiles, anmFiles);
+
+            return bundles.Select(bundle => new ModModelFileBundle {
+                GameName = "pikmin_1",
+                ModFile = bundle.ModelFile,
+                AnmFile = bundle.AnimationFiles.SingleOrDefault(),
+            }.Annotate(bundle.ModelFile));
+          } catch {
+            return Enumerable.Empty<IAnnotatedModBundle>();
+          }
+        }
+    ).GatherFileBundles();
 }

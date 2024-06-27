@@ -1,24 +1,24 @@
-﻿namespace sm64.JSON {
-  class ModelCombo {
-    byte modelId = 0;
-    uint segmentAddress = 0;
+﻿namespace sm64.JSON;
 
-    public byte ModelID {
-      get { return modelId; }
-    }
+class ModelCombo {
+  byte modelId = 0;
+  uint segmentAddress = 0;
 
-    public uint SegmentAddress {
-      get { return segmentAddress; }
-    }
+  public byte ModelID {
+    get { return modelId; }
+  }
 
-    public ModelCombo(byte modelId, uint segmentAddress) {
+  public uint SegmentAddress {
+    get { return segmentAddress; }
+  }
+
+  public ModelCombo(byte modelId, uint segmentAddress) {
       this.modelId = modelId;
       this.segmentAddress = segmentAddress;
     }
 
-    public override string ToString() {
+  public override string ToString() {
       return "[0x" + modelId.ToString("X2") + ", 0x" +
              segmentAddress.ToString("X8") + "]";
     }
-  }
 }

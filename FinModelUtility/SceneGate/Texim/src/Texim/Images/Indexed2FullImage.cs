@@ -17,21 +17,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Images
+namespace Texim.Images;
+
+using System;
+using Colors;
+using Palettes;
+using Pixels;
+using Yarhl.FileFormat;
+
+public class Indexed2FullImage :
+    IInitializer<IPalette>, IInitializer<IPaletteCollection>, IConverter<IIndexedImage, FullImage>
 {
-    using System;
-    using Colors;
-    using Palettes;
-    using Pixels;
-    using Yarhl.FileFormat;
+    private readonly PaletteCollection palettes = new PaletteCollection();
 
-    public class Indexed2FullImage :
-        IInitializer<IPalette>, IInitializer<IPaletteCollection>, IConverter<IIndexedImage, FullImage>
+    public void Initialize(IPalette parameters)
     {
-        private readonly PaletteCollection palettes = new PaletteCollection();
-
-        public void Initialize(IPalette parameters)
-        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
@@ -39,8 +39,8 @@ namespace Texim.Images
             palettes.Palettes.Add(parameters);
         }
 
-        public void Initialize(IPaletteCollection parameters)
-        {
+    public void Initialize(IPaletteCollection parameters)
+    {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
@@ -48,8 +48,8 @@ namespace Texim.Images
             palettes.Palettes.Add(parameters.Palettes);
         }
 
-        public FullImage Convert(IIndexedImage source)
-        {
+    public FullImage Convert(IIndexedImage source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -66,5 +66,4 @@ namespace Texim.Images
 
             return image;
         }
-    }
 }

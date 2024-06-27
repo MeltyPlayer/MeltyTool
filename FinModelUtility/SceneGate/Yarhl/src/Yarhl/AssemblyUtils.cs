@@ -1,4 +1,4 @@
-// Copyright (c) 2019 SceneGate
+﻿// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,25 +17,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using System.Runtime.Loader;
+namespace Yarhl;
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Loader;
+
+/// <summary>
+/// Utilities to work with Assemblies.
+/// </summary>
+static class AssemblyUtils
+{
     /// <summary>
-    /// Utilities to work with Assemblies.
+    /// Load assemblies.
     /// </summary>
-    static class AssemblyUtils
+    /// <param name="paths">List of assemblies to load.</param>
+    /// <returns>The assemblies.</returns>
+    public static IEnumerable<Assembly> LoadAssemblies(this IEnumerable<string> paths)
     {
-        /// <summary>
-        /// Load assemblies.
-        /// </summary>
-        /// <param name="paths">List of assemblies to load.</param>
-        /// <returns>The assemblies.</returns>
-        public static IEnumerable<Assembly> LoadAssemblies(this IEnumerable<string> paths)
-        {
             List<Assembly> assemblies = [];
             foreach (string path in paths) {
                 try {
@@ -48,5 +48,4 @@ namespace Yarhl
 
             return assemblies;
         }
-    }
 }

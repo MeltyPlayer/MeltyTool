@@ -1,36 +1,36 @@
 ﻿using schema.binary;
 
-namespace mod.schema.anm {
-  public interface IDcx : IBinaryConvertible {
-    string Name { get; set; }
-    IDcxAnimationData AnimationData { get; }
-  }
+namespace mod.schema.anm;
 
-  public interface IDcxAnimationData : IBinaryConvertible {
-    uint FrameCount { get; set; }
+public interface IDcx : IBinaryConvertible {
+  string Name { get; set; }
+  IDcxAnimationData AnimationData { get; }
+}
 
-    float[] ScaleValues { get; set; }
-    float[] RotationValues { get; set; }
-    float[] PositionValues { get; set; }
+public interface IDcxAnimationData : IBinaryConvertible {
+  uint FrameCount { get; set; }
 
-    IDcxJointData[] JointDataList { get; set; }
-  }
+  float[] ScaleValues { get; set; }
+  float[] RotationValues { get; set; }
+  float[] PositionValues { get; set; }
 
-  public interface IDcxJointData : IBinaryConvertible {
-    int JointIndex { get; set; }
-    int ParentIndex { get; set; }
+  IDcxJointData[] JointDataList { get; set; }
+}
 
-    IDcxAxes ScaleAxes { get; }
-    IDcxAxes RotationAxes { get; }
-    IDcxAxes PositionAxes { get; }
-  }
+public interface IDcxJointData : IBinaryConvertible {
+  int JointIndex { get; set; }
+  int ParentIndex { get; set; }
 
-  public interface IDcxAxes : IBinaryConvertible {
-    IDcxAxis[] Axes { get; }
-  }
+  IDcxAxes ScaleAxes { get; }
+  IDcxAxes RotationAxes { get; }
+  IDcxAxes PositionAxes { get; }
+}
 
-  public interface IDcxAxis : IBinaryConvertible {
-    int FrameCount { get; set; }
-    int FrameOffset { get; set; }
-  }
+public interface IDcxAxes : IBinaryConvertible {
+  IDcxAxis[] Axes { get; }
+}
+
+public interface IDcxAxis : IBinaryConvertible {
+  int FrameCount { get; set; }
+  int FrameOffset { get; set; }
 }

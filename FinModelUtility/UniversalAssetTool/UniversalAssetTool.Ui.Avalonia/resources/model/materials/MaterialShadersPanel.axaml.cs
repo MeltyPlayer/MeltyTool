@@ -12,22 +12,23 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.resources.model.materials {
-  public class MaterialShadersPanelViewModelForDesigner
-      : MaterialShadersPanelViewModel {
-    public MaterialShadersPanelViewModelForDesigner() {
+namespace uni.ui.avalonia.resources.model.materials;
+
+public class MaterialShadersPanelViewModelForDesigner
+    : MaterialShadersPanelViewModel {
+  public MaterialShadersPanelViewModelForDesigner() {
       this.ModelAndMaterial = (ModelImpl.CreateForViewer(), null);
     }
-  }
+}
 
-  public class MaterialShadersPanelViewModel : ViewModelBase {
-    private (IReadOnlyModel, IReadOnlyMaterial?) modelAndMaterial_;
-    private TextDocument vertexShaderSource_;
-    private TextDocument fragmentShaderSource_;
+public class MaterialShadersPanelViewModel : ViewModelBase {
+  private (IReadOnlyModel, IReadOnlyMaterial?) modelAndMaterial_;
+  private TextDocument vertexShaderSource_;
+  private TextDocument fragmentShaderSource_;
 
-    public required (IReadOnlyModel, IReadOnlyMaterial?) ModelAndMaterial {
-      get => this.modelAndMaterial_;
-      set {
+  public required (IReadOnlyModel, IReadOnlyMaterial?) ModelAndMaterial {
+    get => this.modelAndMaterial_;
+    set {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
 
         var (model, material) = this.modelAndMaterial_;
@@ -37,29 +38,29 @@ namespace uni.ui.avalonia.resources.model.materials {
         this.FragmentShaderSource
             = new TextDocument(shaderSource.FragmentShaderSource);
       }
-    }
-
-    public TextDocument VertexShaderSource {
-      get => this.vertexShaderSource_;
-      private set
-        => this.RaiseAndSetIfChanged(ref this.vertexShaderSource_, value);
-    }
-
-    public TextDocument FragmentShaderSource {
-      get => this.fragmentShaderSource_;
-      private set
-        => this.RaiseAndSetIfChanged(ref this.fragmentShaderSource_, value);
-    }
   }
 
-  public partial class MaterialShadersPanel : UserControl {
-    public MaterialShadersPanel() {
+  public TextDocument VertexShaderSource {
+    get => this.vertexShaderSource_;
+    private set
+      => this.RaiseAndSetIfChanged(ref this.vertexShaderSource_, value);
+  }
+
+  public TextDocument FragmentShaderSource {
+    get => this.fragmentShaderSource_;
+    private set
+      => this.RaiseAndSetIfChanged(ref this.fragmentShaderSource_, value);
+  }
+}
+
+public partial class MaterialShadersPanel : UserControl {
+  public MaterialShadersPanel() {
       InitializeComponent();
       this.InitViewer_(this.vertexShaderViewer_);
       this.InitViewer_(this.fragmentShaderViewer_);
     }
 
-    private void InitViewer_(TextEditor textEditor) {
+  private void InitViewer_(TextEditor textEditor) {
       var registryOptions = new GlslRegistryOptions();
       var textMateInstallation
           = textEditor.InstallTextMate(registryOptions, false);
@@ -69,5 +70,4 @@ namespace uni.ui.avalonia.resources.model.materials {
           AllowScrollBelowDocument = false
       };
     }
-  }
 }

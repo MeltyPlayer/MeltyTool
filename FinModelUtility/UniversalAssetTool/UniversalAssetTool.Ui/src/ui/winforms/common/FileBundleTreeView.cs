@@ -15,18 +15,19 @@ using uni.ui.common;
 using uni.ui.winforms.common.fileTreeView;
 
 
-namespace uni.ui.winforms.common {
-  public class FileBundleTreeView : FileTreeView<IFileBundleDirectory> {
-    protected override void PopulateImpl(IFileBundleDirectory directoryRoot,
-                                         ParentFileNode uiRoot) {
+namespace uni.ui.winforms.common;
+
+public class FileBundleTreeView : FileTreeView<IFileBundleDirectory> {
+  protected override void PopulateImpl(IFileBundleDirectory directoryRoot,
+                                       ParentFileNode uiRoot) {
       foreach (var subdir in directoryRoot.Subdirs) {
         this.AddDirectoryToNode_(subdir, uiRoot);
       }
     }
 
-    private void AddDirectoryToNode_(IFileBundleDirectory directory,
-                                     ParentFileNode parentNode,
-                                     IList<string>? parts = null) {
+  private void AddDirectoryToNode_(IFileBundleDirectory directory,
+                                   ParentFileNode parentNode,
+                                   IList<string>? parts = null) {
       var subdirs = directory.Subdirs;
       var fileBundles = directory.FileBundles;
 
@@ -66,9 +67,9 @@ namespace uni.ui.winforms.common {
       }
     }
 
-    private void AddFileToNode_(IAnnotatedFileBundle fileBundle,
-                                ParentFileNode parentNode,
-                                IList<string>? parts = null) {
+  private void AddFileToNode_(IAnnotatedFileBundle fileBundle,
+                              ParentFileNode parentNode,
+                              IList<string>? parts = null) {
       string? text = null;
       if (parts != null) {
         parts.Add(fileBundle.FileBundle.DisplayName);
@@ -78,11 +79,10 @@ namespace uni.ui.winforms.common {
       parentNode.AddChild(fileBundle, text);
     }
 
-    public override Image GetImageForFile(IFileBundle file)
-      => file switch {
-          IModelFileBundle => Icons.modelImage,
-          IAudioFileBundle => Icons.musicImage,
-          ISceneFileBundle => Icons.sceneImage,
-      };
-  }
+  public override Image GetImageForFile(IFileBundle file)
+    => file switch {
+        IModelFileBundle => Icons.modelImage,
+        IAudioFileBundle => Icons.musicImage,
+        ISceneFileBundle => Icons.sceneImage,
+    };
 }

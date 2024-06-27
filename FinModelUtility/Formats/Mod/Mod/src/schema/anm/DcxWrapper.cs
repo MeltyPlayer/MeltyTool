@@ -3,34 +3,34 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace mod.schema.anm {
-  public enum AnimationFormat : uint {
-    DCA = 2,
-    DCK = 3,
-  }
+namespace mod.schema.anm;
 
-  [BinarySchema]
-  public partial class DcxWrapper : IBinaryConvertible {
-    public AnimationFormat AnimationFormat { get; set; }
+public enum AnimationFormat : uint {
+  DCA = 2,
+  DCK = 3,
+}
 
-    [Skip]
-    private bool IsDca => this.AnimationFormat == AnimationFormat.DCA;
+[BinarySchema]
+public partial class DcxWrapper : IBinaryConvertible {
+  public AnimationFormat AnimationFormat { get; set; }
 
-    [RIfBoolean(nameof(IsDca))]
-    public Dca? Dca { get; set; }
+  [Skip]
+  private bool IsDca => this.AnimationFormat == AnimationFormat.DCA;
 
-    [Skip]
-    private bool IsDck => this.AnimationFormat == AnimationFormat.DCK;
+  [RIfBoolean(nameof(IsDca))]
+  public Dca? Dca { get; set; }
 
-    [RIfBoolean(nameof(IsDck))]
-    public Dck? Dck { get; set; }
+  [Skip]
+  private bool IsDck => this.AnimationFormat == AnimationFormat.DCK;
 
-    [Skip]
-    public IDcx Dcx
-      => IsDca ? Dca! :
-         IsDck ? Dck! :
-         throw new NotSupportedException();
+  [RIfBoolean(nameof(IsDck))]
+  public Dck? Dck { get; set; }
 
-    public override string ToString() => this.Dcx.ToString()!;
-  }
+  [Skip]
+  public IDcx Dcx
+    => IsDca ? Dca! :
+        IsDck ? Dck! :
+        throw new NotSupportedException();
+
+  public override string ToString() => this.Dcx.ToString()!;
 }

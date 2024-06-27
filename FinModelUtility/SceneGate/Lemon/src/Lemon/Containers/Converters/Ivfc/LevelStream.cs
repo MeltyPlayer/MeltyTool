@@ -17,86 +17,86 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters.Ivfc
+namespace SceneGate.Lemon.Containers.Converters.Ivfc;
+
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using Yarhl.IO;
+using Yarhl.IO.StreamFormat;
+
+/// <summary>
+/// IVFC level stream.
+/// </summary>
+internal class LevelStream : StreamWrapper
 {
-    using System;
-    using System.IO;
-    using System.Security.Cryptography;
-    using Yarhl.IO;
-    using Yarhl.IO.StreamFormat;
+    readonly object lockObj = new object();
+    SHA256 sha;
 
     /// <summary>
-    /// IVFC level stream.
+    /// Initializes a new instance of the <see cref="LevelStream"/> class
+    /// and use a stream in-memory.
     /// </summary>
-    internal class LevelStream : StreamWrapper
+    /// <param name="blockSize">Block size for padding and hash.</param>
+    public LevelStream(int blockSize)
+        : this(blockSize, new RecyclableMemoryStream())
     {
-        readonly object lockObj = new object();
-        SHA256 sha;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LevelStream"/> class
-        /// and use a stream in-memory.
-        /// </summary>
-        /// <param name="blockSize">Block size for padding and hash.</param>
-        public LevelStream(int blockSize)
-            : this(blockSize, new RecyclableMemoryStream())
-        {
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LevelStream" /> class.
-        /// Changes in position in this stream won't affect the base stream.
-         /// </summary>
-        /// <param name="blockSize">Block size for padding and hash.</param>
-        /// <param name="stream">The underlying stream.</param>
-        public LevelStream(int blockSize, Stream stream)
-            : base(new DataStream(stream)) // so the position is independent.
-        {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LevelStream" /> class.
+    /// Changes in position in this stream won't affect the base stream.
+    /// </summary>
+    /// <param name="blockSize">Block size for padding and hash.</param>
+    /// <param name="stream">The underlying stream.</param>
+    public LevelStream(int blockSize, Stream stream)
+        : base(new DataStream(stream)) // so the position is independent.
+    {
             BlockSize = blockSize;
             sha = SHA256.Create();
         }
 
-        /// <summary>
-        /// Raises when a new block of data is generated.
-        /// </summary>
-        public event EventHandler<BlockWrittenEventArgs> BlockWritten;
+    /// <summary>
+    /// Raises when a new block of data is generated.
+    /// </summary>
+    public event EventHandler<BlockWrittenEventArgs> BlockWritten;
 
-        /// <summary>
-        /// Gets the block size for padding and hash.
-        /// </summary>
-        public int BlockSize { get; }
+    /// <summary>
+    /// Gets the block size for padding and hash.
+    /// </summary>
+    public int BlockSize { get; }
 
-        /// <summary>
-        /// Gets the stream lock.
-        /// </summary>
-        public object LockObj => lockObj;
+    /// <summary>
+    /// Gets the stream lock.
+    /// </summary>
+    public object LockObj => lockObj;
 
-        /// <summary>
-        /// Writes a byte.
-        /// </summary>
-        /// <param name="value">Byte value.</param>
-        public override void WriteByte(byte value)
-        {
+    /// <summary>
+    /// Writes a byte.
+    /// </summary>
+    /// <param name="value">Byte value.</param>
+    public override void WriteByte(byte value)
+    {
             WriteAndUpdateHash([value], 0, 1);
         }
 
-        /// <summary>
-        /// Writes the a portion of the buffer to the stream.
-        /// </summary>
-        /// <param name="buffer">Buffer to write.</param>
-        /// <param name="offset">Index in the buffer.</param>
-        /// <param name="count">Bytes to write.</param>
-        public override void Write(byte[] buffer, int offset, int count)
-        {
+    /// <summary>
+    /// Writes the a portion of the buffer to the stream.
+    /// </summary>
+    /// <param name="buffer">Buffer to write.</param>
+    /// <param name="offset">Index in the buffer.</param>
+    /// <param name="count">Bytes to write.</param>
+    public override void Write(byte[] buffer, int offset, int count)
+    {
             WriteAndUpdateHash(buffer, offset, count);
         }
 
-        /// <summary>
-        /// Releases all resources used by the object.
-        /// </summary>
-        /// <param name="disposing">Whether to free the managed resources too.</param>
-        protected override void Dispose(bool disposing)
-        {
+    /// <summary>
+    /// Releases all resources used by the object.
+    /// </summary>
+    /// <param name="disposing">Whether to free the managed resources too.</param>
+    protected override void Dispose(bool disposing)
+    {
             if (Disposed) {
                 return;
             }
@@ -108,8 +108,8 @@ namespace SceneGate.Lemon.Containers.Converters.Ivfc
             base.Dispose(disposing);
         }
 
-        void WriteAndUpdateHash(byte[] data, int offset, int count)
-        {
+    void WriteAndUpdateHash(byte[] data, int offset, int count)
+    {
             while (true) {
                 // Repeat until writing the data does not span into the next block.
                 long writtenBlocks = Position / BlockSize;
@@ -155,9 +155,8 @@ namespace SceneGate.Lemon.Containers.Converters.Ivfc
             }
         }
 
-        void WriteWithoutHash(byte[] data, int index, int count)
-        {
+    void WriteWithoutHash(byte[] data, int index, int count)
+    {
             base.Write(data, index, count);
         }
-    }
 }

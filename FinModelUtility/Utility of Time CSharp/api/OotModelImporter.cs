@@ -21,16 +21,17 @@ using UoT.hacks;
 using UoT.memory;
 using UoT.model;
 
-namespace UoT.api {
-  public enum OotSegmentIndex : uint {
-    GAMEPLAY_KEEP = 4,
-    GAMEPLAY_FIELD_KEEP = 5,
-    ZOBJECT = 6,
-    LINK_ANIMETION = 7,
-  }
+namespace UoT.api;
 
-  public class OotModelImporter : IModelImporter<OotModelFileBundle> {
-    public IModel Import(OotModelFileBundle modelFileBundle) {
+public enum OotSegmentIndex : uint {
+  GAMEPLAY_KEEP = 4,
+  GAMEPLAY_FIELD_KEEP = 5,
+  ZOBJECT = 6,
+  LINK_ANIMETION = 7,
+}
+
+public class OotModelImporter : IModelImporter<OotModelFileBundle> {
+  public IModel Import(OotModelFileBundle modelFileBundle) {
       var zFile = modelFileBundle.ZFile;
       var isLink = zFile.FileName is "object_link_boy"
                                      or "object_link_child"
@@ -189,10 +190,10 @@ namespace UoT.api {
       return finModel;
     }
 
-    private void AddOotAnimationTrackToFin_(IAnimationTrack ootAnimationTrack,
-                                            int axis,
-                                            IEulerRadiansRotationTrack3d
-                                                rotations) {
+  private void AddOotAnimationTrackToFin_(IAnimationTrack ootAnimationTrack,
+                                          int axis,
+                                          IEulerRadiansRotationTrack3d
+                                              rotations) {
       for (var f = 0; f < ootAnimationTrack.Frames.Count; ++f) {
         rotations.Set(f,
                       axis,
@@ -201,10 +202,10 @@ namespace UoT.api {
       }
     }
 
-    private static Quaternion ConvertRadiansToQuaternionOot_(
-        float xRadians,
-        float yRadians,
-        float zRadians) {
+  private static Quaternion ConvertRadiansToQuaternionOot_(
+      float xRadians,
+      float yRadians,
+      float zRadians) {
       var r2d = MathF.PI / 180;
       var xDegrees = xRadians * r2d;
       var yDegrees = yRadians * r2d;
@@ -216,5 +217,4 @@ namespace UoT.api {
 
       return Quaternion.Normalize(qz * qy * qx);
     }
-  }
 }

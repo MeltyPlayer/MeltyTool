@@ -7,14 +7,15 @@ using fin.io;
 using fin.util.linq;
 using fin.util.strings;
 
-namespace uni.ui.winforms.right_panel.info {
-  public partial class InfoTab : UserControl {
-    public InfoTab() {
+namespace uni.ui.winforms.right_panel.info;
+
+public partial class InfoTab : UserControl {
+  public InfoTab() {
       InitializeComponent();
     }
 
-    public IResource? Resource {
-      set {
+  public IResource? Resource {
+    set {
         var items = this.filesListBox_.Items;
         items.Clear();
 
@@ -51,6 +52,5 @@ namespace uni.ui.winforms.right_panel.info {
           items.Add(path);
         }
       }
-    }
   }
 }

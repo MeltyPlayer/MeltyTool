@@ -17,18 +17,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Pixels
+namespace Texim.Pixels;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+public interface IIndexedPixelEncoding
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
+    IndexedPixel[] Decode(Stream stream, int numPixels);
 
-    public interface IIndexedPixelEncoding
-    {
-        IndexedPixel[] Decode(Stream stream, int numPixels);
+    IndexedPixel[] Decode(Span<byte> data);
 
-        IndexedPixel[] Decode(Span<byte> data);
-
-        byte[] Encode(IEnumerable<IndexedPixel> pixels);
-    }
+    byte[] Encode(IEnumerable<IndexedPixel> pixels);
 }

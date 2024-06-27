@@ -12,22 +12,23 @@ using sm64.memory;
 using sm64.scripts;
 using sm64.scripts.geo;
 
-namespace sm64.Scripts {
-  public class GeoScriptsV2 : IGeoScripts {
-    private GeoScriptNode rootNode;
-    private GeoScriptNode nodeCurrent;
+namespace sm64.Scripts;
 
-    public GeoScriptsV2() {
+public class GeoScriptsV2 : IGeoScripts {
+  private GeoScriptNode rootNode;
+  private GeoScriptNode nodeCurrent;
+
+  public GeoScriptsV2() {
       rootNode = new GeoScriptNode(null);
       nodeCurrent = rootNode;
     }
 
-    public void parse(
-        IReadOnlySm64Memory n64Memory,
-        Model3DLods mdlLods,
-        ref Level lvl,
-        byte seg,
-        uint off) {
+  public void parse(
+      IReadOnlySm64Memory n64Memory,
+      Model3DLods mdlLods,
+      ref Level lvl,
+      byte seg,
+      uint off) {
       var commandList =
           new GeoScriptParser().Parse(IoUtils.MergeSegmentedAddress(seg, off),
                                       n64Memory.AreaId);
@@ -40,10 +41,10 @@ namespace sm64.Scripts {
       Add_(mdlLods, lvl, commandList);
     }
 
-    private void Add_(
-        Model3DLods mdlLods,
-        Level lvl,
-        IGeoCommandList commandList) {
+  private void Add_(
+      Model3DLods mdlLods,
+      Level lvl,
+      IGeoCommandList commandList) {
       foreach (var command in commandList.Commands) {
         switch (command) {
           case GeoAnimatedPartCommand geoAnimatedPartCommand: {
@@ -168,34 +169,33 @@ namespace sm64.Scripts {
       }
     }
 
-    public IFinMatrix4x4 CreateTranslationAndRotationMatrix_(
-        Vector3s position,
-        Vector3s rotation)
-      => CreateRotationMatrix_(rotation)
-          .MultiplyInPlace(CreateTranslationMatrix_(position));
+  public IFinMatrix4x4 CreateTranslationAndRotationMatrix_(
+      Vector3s position,
+      Vector3s rotation)
+    => CreateRotationMatrix_(rotation)
+        .MultiplyInPlace(CreateTranslationMatrix_(position));
 
-    public IFinMatrix4x4 CreateTranslationMatrix_(Vector3s position)
-      => FinMatrix4x4Util.FromTranslation(
-          new Vector3(position.X, position.Y, position.Z));
+  public IFinMatrix4x4 CreateTranslationMatrix_(Vector3s position)
+    => FinMatrix4x4Util.FromTranslation(
+        new Vector3(position.X, position.Y, position.Z));
 
-    public IFinMatrix4x4 CreateRotationMatrix_(Vector3s rotation)
-      => FinMatrix4x4Util
-         .FromRotation(
-             new RotationImpl().SetDegrees(0, 0, rotation.Z))
-         .MultiplyInPlace(
-             FinMatrix4x4Util.FromRotation(
-                 new RotationImpl().SetDegrees(rotation.X, 0, 0)))
-         .MultiplyInPlace(
-             FinMatrix4x4Util.FromRotation(
-                 new RotationImpl().SetDegrees(0, rotation.Y, 0)));
+  public IFinMatrix4x4 CreateRotationMatrix_(Vector3s rotation)
+    => FinMatrix4x4Util
+       .FromRotation(
+           new RotationImpl().SetDegrees(0, 0, rotation.Z))
+       .MultiplyInPlace(
+           FinMatrix4x4Util.FromRotation(
+               new RotationImpl().SetDegrees(rotation.X, 0, 0)))
+       .MultiplyInPlace(
+           FinMatrix4x4Util.FromRotation(
+               new RotationImpl().SetDegrees(0, rotation.Y, 0)));
 
-    public void AddDisplayList(
-        Model3DLods mdlLods,
-        Level lvl,
-        uint? displayListAddress) {
+  public void AddDisplayList(
+      Model3DLods mdlLods,
+      Level lvl,
+      uint? displayListAddress) {
       if ((displayListAddress ?? 0) != 0) {
         mdlLods.AddDl(displayListAddress.Value);
       }
     }
-  }
 }

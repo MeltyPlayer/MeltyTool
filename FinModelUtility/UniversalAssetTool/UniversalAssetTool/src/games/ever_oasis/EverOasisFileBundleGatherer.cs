@@ -6,12 +6,13 @@ using fin.io.bundles;
 
 using uni.platforms.threeDs;
 
-namespace uni.games.ever_oasis {
-  using IAnnotatedCmbBundle = IAnnotatedFileBundle<CmbModelFileBundle>;
+namespace uni.games.ever_oasis;
 
-  public class EverOasisFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<CmbModelFileBundle> {
-    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles() {
+using IAnnotatedCmbBundle = IAnnotatedFileBundle<CmbModelFileBundle>;
+
+public class EverOasisFileBundleGatherer
+    : IAnnotatedFileBundleGatherer<CmbModelFileBundle> {
+  public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles() {
       if (true ||
           !new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "ever_oasis",
@@ -27,9 +28,9 @@ namespace uni.games.ever_oasis {
              .GatherFileBundles();
     }
 
-    private void ArchiveFileNameProcessor_(string archiveName,
-                                           ref string relativeName,
-                                           out bool relativeToRoot) {
+  private void ArchiveFileNameProcessor_(string archiveName,
+                                         ref string relativeName,
+                                         out bool relativeToRoot) {
       if (relativeName.StartsWith("C:")) {
         relativeName = relativeName[2..];
         relativeToRoot = true;
@@ -39,8 +40,8 @@ namespace uni.games.ever_oasis {
       relativeToRoot = false;
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetAutomaticModels_(
-        IFileHierarchy fileHierarchy) {
+  private IEnumerable<IAnnotatedCmbBundle> GetAutomaticModels_(
+      IFileHierarchy fileHierarchy) {
       var queue = new FinQueue<IFileHierarchyDirectory>(fileHierarchy.Root);
       while (queue.TryDequeue(out var dir)) {
         if (dir.TryToGetExistingSubdir("model", out var modelDir)) {
@@ -67,5 +68,4 @@ namespace uni.games.ever_oasis {
         }
       }
     }
-  }
 }

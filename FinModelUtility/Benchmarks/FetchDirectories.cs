@@ -1,25 +1,26 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace benchmarks {
-  public class FetchDirectories {
-    [Benchmark]
-    public void FetchDirectoriesSeparately() =>
-        FetchDirectoriesSeparatelyImpl().ToArray();
+namespace benchmarks;
 
-    [Benchmark]
-    public void FetchDirectoriesAllAtOnce() =>
-        FetchDirectoriesAllAtOnceImpl();
+public class FetchDirectories {
+  [Benchmark]
+  public void FetchDirectoriesSeparately() =>
+      FetchDirectoriesSeparatelyImpl().ToArray();
 
-    [Benchmark]
-    public void FetchEntriesAllAtOnce() =>
-        FetchEntriesAllAtOnceImpl();
+  [Benchmark]
+  public void FetchDirectoriesAllAtOnce() =>
+      FetchDirectoriesAllAtOnceImpl();
 
-    public const string DIRECTORY =
-        @"R:\Documents\CSharpWorkspace\Pikmin2Utility\cli\roms";
+  [Benchmark]
+  public void FetchEntriesAllAtOnce() =>
+      FetchEntriesAllAtOnceImpl();
 
-    public const string SEARCH_PATTERN = "*";
+  public const string DIRECTORY =
+      @"R:\Documents\CSharpWorkspace\Pikmin2Utility\cli\roms";
 
-    public IEnumerable<string> FetchDirectoriesSeparatelyImpl() {
+  public const string SEARCH_PATTERN = "*";
+
+  public IEnumerable<string> FetchDirectoriesSeparatelyImpl() {
       var rootFolderPath = DIRECTORY;
       var pending = new Queue<string>();
       pending.Enqueue(rootFolderPath);
@@ -41,7 +42,7 @@ namespace benchmarks {
       }
     }
 
-    public string[] FetchDirectoriesAllAtOnceImpl() {
+  public string[] FetchDirectoriesAllAtOnceImpl() {
       return Directory.GetFiles(DIRECTORY, SEARCH_PATTERN,
                                 new EnumerationOptions {
                                     RecurseSubdirectories =
@@ -49,12 +50,11 @@ namespace benchmarks {
                                 });
     }
 
-    public string[] FetchEntriesAllAtOnceImpl() {
+  public string[] FetchEntriesAllAtOnceImpl() {
       return Directory.GetFileSystemEntries(DIRECTORY, SEARCH_PATTERN,
                                             new EnumerationOptions {
                                                 RecurseSubdirectories =
                                                     true
                                             });
     }
-  }
 }

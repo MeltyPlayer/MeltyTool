@@ -1,4 +1,4 @@
-// Copyright (c) 2019 SceneGate
+﻿// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,20 +17,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters.Ivfc
+namespace SceneGate.Lemon.Containers.Converters.Ivfc;
+
+/// <summary>
+/// Generate hashes for name and directory lookup.
+/// </summary>
+internal static class NameHash
 {
     /// <summary>
-    /// Generate hashes for name and directory lookup.
+    /// Calculates the size of tokens for the hash table.
     /// </summary>
-    internal static class NameHash
+    /// <param name="numEntries">The number of entries to hash.</param>
+    /// <returns>The number of tokens of the hash table.</returns>
+    public static int CalculateTableLength(int numEntries)
     {
-        /// <summary>
-        /// Calculates the size of tokens for the hash table.
-        /// </summary>
-        /// <param name="numEntries">The number of entries to hash.</param>
-        /// <returns>The number of tokens of the hash table.</returns>
-        public static int CalculateTableLength(int numEntries)
-        {
             if (numEntries < 3) {
                 return 3;
             } else if (numEntries < 19) {
@@ -53,14 +53,14 @@ namespace SceneGate.Lemon.Containers.Converters.Ivfc
             return count;
         }
 
-        /// <summary>
-        /// Calculates the hash for an entry.
-        /// </summary>
-        /// <param name="seed">The seed value.</param>
-        /// <param name="name">The name of the entry.</param>
-        /// <returns>The calculated hash.</returns>
-        public static uint CalculateHash(uint seed, byte[] name)
-        {
+    /// <summary>
+    /// Calculates the hash for an entry.
+    /// </summary>
+    /// <param name="seed">The seed value.</param>
+    /// <param name="name">The name of the entry.</param>
+    /// <returns>The calculated hash.</returns>
+    public static uint CalculateHash(uint seed, byte[] name)
+    {
             uint hash = seed ^ 123456789;
             for (int i = 0; i < name.Length; i += 2) {
                 hash = (hash >> 5) | (hash << 27);
@@ -69,5 +69,4 @@ namespace SceneGate.Lemon.Containers.Converters.Ivfc
 
             return hash;
         }
-    }
 }

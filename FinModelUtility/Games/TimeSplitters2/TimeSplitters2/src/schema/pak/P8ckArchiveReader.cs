@@ -3,22 +3,23 @@ using fin.io.archive;
 
 using schema.binary;
 
-namespace ts2 {
-  /// <summary>
-  ///   Shamelessly stolen from:
-  ///   https://github.com/OpenRadical/tspak/blob/main/tspak.c
-  /// </summary>
-  public partial class P8ckArchiveReader : IArchiveReader<SubArchiveContentFile> {
-    private const string MAGIC = "P8CK";
+namespace ts2;
 
-    public bool IsValidArchive(Stream archive)
-      => MagicTextUtil.Verify(archive, MAGIC);
+/// <summary>
+///   Shamelessly stolen from:
+///   https://github.com/OpenRadical/tspak/blob/main/tspak.c
+/// </summary>
+public partial class P8ckArchiveReader : IArchiveReader<SubArchiveContentFile> {
+  private const string MAGIC = "P8CK";
 
-    public IArchiveStream<SubArchiveContentFile> Decompress(Stream archive)
-      => new SubArchiveStream(archive);
+  public bool IsValidArchive(Stream archive)
+    => MagicTextUtil.Verify(archive, MAGIC);
 
-    public IEnumerable<SubArchiveContentFile> GetFiles(
-        IArchiveStream<SubArchiveContentFile> archiveStream) {
+  public IArchiveStream<SubArchiveContentFile> Decompress(Stream archive)
+    => new SubArchiveStream(archive);
+
+  public IEnumerable<SubArchiveContentFile> GetFiles(
+      IArchiveStream<SubArchiveContentFile> archiveStream) {
       var br = archiveStream.AsBinaryReader();
 
       var header = br.ReadNew<Header>();
@@ -42,20 +43,19 @@ namespace ts2 {
       }
     }
 
-    [BinarySchema]
-    private partial class Header : IBinaryConvertible {
-      private readonly string magic_ = MAGIC;
+  [BinarySchema]
+  private partial class Header : IBinaryConvertible {
+    private readonly string magic_ = MAGIC;
 
-      public int FileInfoOffset { get; set; }
-      public int FileInfoCount { get; set; }
-      public int FileNamesOffset { get; set; }
-    }
+    public int FileInfoOffset { get; set; }
+    public int FileInfoCount { get; set; }
+    public int FileNamesOffset { get; set; }
+  }
 
-    [BinarySchema]
-    private partial class FileInfo : IBinaryConvertible {
-      public int FileNameOffset { get; set; }
-      public int DataLength { get; set; }
-      public int DataOffset { get; set; }
-    }
+  [BinarySchema]
+  private partial class FileInfo : IBinaryConvertible {
+    public int FileNameOffset { get; set; }
+    public int DataLength { get; set; }
+    public int DataOffset { get; set; }
   }
 }

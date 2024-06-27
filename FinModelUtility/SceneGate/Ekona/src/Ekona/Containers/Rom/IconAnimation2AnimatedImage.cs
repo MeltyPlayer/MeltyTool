@@ -28,21 +28,21 @@ using Texim.Pixels;
 using Yarhl.FileFormat;
 using Yarhl.FileSystem;
 
-namespace SceneGate.Ekona.Containers.Rom
+namespace SceneGate.Ekona.Containers.Rom;
+
+/// <summary>
+/// Converter for ROM banner animated icons into an animated image.
+/// </summary>
+public class IconAnimation2AnimatedImage : IConverter<NodeContainerFormat, AnimatedFullImage>
 {
     /// <summary>
-    /// Converter for ROM banner animated icons into an animated image.
+    /// Convert the 'animated' node from the ROM banner into an animated image.
     /// </summary>
-    public class IconAnimation2AnimatedImage : IConverter<NodeContainerFormat, AnimatedFullImage>
+    /// <param name="source">The animated node of the ROM banner.</param>
+    /// <returns>A new animated image.</returns>
+    /// <exception cref="ArgumentNullException">The argument is null.</exception>
+    public AnimatedFullImage Convert(NodeContainerFormat source)
     {
-        /// <summary>
-        /// Convert the 'animated' node from the ROM banner into an animated image.
-        /// </summary>
-        /// <param name="source">The animated node of the ROM banner.</param>
-        /// <returns>A new animated image.</returns>
-        /// <exception cref="ArgumentNullException">The argument is null.</exception>
-        public AnimatedFullImage Convert(NodeContainerFormat source)
-        {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -89,5 +89,4 @@ namespace SceneGate.Ekona.Containers.Rom
 
             return animatedImage;
         }
-    }
 }

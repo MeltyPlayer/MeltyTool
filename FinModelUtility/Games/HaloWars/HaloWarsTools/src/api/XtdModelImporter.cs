@@ -3,9 +3,10 @@ using fin.model.io.importers;
 
 using HaloWarsTools;
 
-namespace hw.api {
-  public class XtdModelImporter : IModelImporter<XtdModelFileBundle> {
-    public IModel Import(XtdModelFileBundle modelFileBundle) {
+namespace hw.api;
+
+public class XtdModelImporter : IModelImporter<XtdModelFileBundle> {
+  public IModel Import(XtdModelFileBundle modelFileBundle) {
       var xtdFile = modelFileBundle.XtdFile;
       var xttFile = modelFileBundle.XttFile;
 
@@ -33,5 +34,4 @@ namespace hw.api {
 
       return xtd.Mesh;
     }
-  }
 }

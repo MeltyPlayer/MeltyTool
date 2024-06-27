@@ -3,13 +3,14 @@ using fin.math.matrix.four;
 
 using schema.binary;
 
-namespace granny3d {
-  public class GrannySkeleton : IGrannySkeleton, IBinaryDeserializable {
-    public string Name { get; private set; }
-    public IList<IGrannyBone> Bones { get; } = new List<IGrannyBone>();
-    public int LodType { get; private set; }
+namespace granny3d;
 
-    public void Read(IBinaryReader br) {
+public class GrannySkeleton : IGrannySkeleton, IBinaryDeserializable {
+  public string Name { get; private set; }
+  public IList<IGrannyBone> Bones { get; } = new List<IGrannyBone>();
+  public int LodType { get; private set; }
+
+  public void Read(IBinaryReader br) {
       GrannyUtils.SubreadRef(
           br, ser => { this.Name = ser.ReadStringNT(); });
 
@@ -19,16 +20,16 @@ namespace granny3d {
         }
       });
     }
-  }
+}
 
-  public class GrannyBone : IGrannyBone, IBinaryDeserializable {
-    public string Name { get; private set; }
-    public int ParentIndex { get; private set; }
-    public IGrannyTransform LocalTransform { get; } = new GrannyTransform();
-    public IFinMatrix4x4 InverseWorld4x4 { get; } = new FinMatrix4x4();
-    public float LodError { get; private set; }
+public class GrannyBone : IGrannyBone, IBinaryDeserializable {
+  public string Name { get; private set; }
+  public int ParentIndex { get; private set; }
+  public IGrannyTransform LocalTransform { get; } = new GrannyTransform();
+  public IFinMatrix4x4 InverseWorld4x4 { get; } = new FinMatrix4x4();
+  public float LodError { get; private set; }
 
-    public void Read(IBinaryReader br) {
+  public void Read(IBinaryReader br) {
       GrannyUtils.SubreadRef(
           br, ser => { this.Name = ser.ReadStringNT(); });
 
@@ -49,5 +50,4 @@ namespace granny3d {
       // extended_data
       br.Position += 2 * 8;
     }
-  }
 }

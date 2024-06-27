@@ -1,12 +1,13 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace pmdc.schema.omd {
-  public struct OmdMaterial : ITextDeserializable {
-    public string Name { get; private set; }
-    public string TexturePath { get; private set; }
+namespace pmdc.schema.omd;
 
-    public void Read(ITextReader tr) {
+public struct OmdMaterial : ITextDeserializable {
+  public string Name { get; private set; }
+  public string TexturePath { get; private set; }
+
+  public void Read(ITextReader tr) {
       this.Name = tr.ReadLine();
       this.TexturePath = tr.ReadLine();
 
@@ -14,5 +15,4 @@ namespace pmdc.schema.omd {
         tr.ReadLine();
       }
     }
-  }
 }

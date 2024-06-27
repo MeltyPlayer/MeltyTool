@@ -8,48 +8,49 @@ using schema.binary;
 
 using sm64.schema;
 
-namespace sm64.memory {
-  public interface IReadOnlySm64Memory : IReadOnlyN64Memory {
-    byte? AreaId { get; }
-  }
+namespace sm64.memory;
 
-  public interface ISm64Memory : IN64Memory, IReadOnlySm64Memory {
-    new byte? AreaId { get; set; }
-  }
+public interface IReadOnlySm64Memory : IReadOnlyN64Memory {
+  byte? AreaId { get; }
+}
 
-  public class Sm64Memory : ISm64Memory {
-    public byte? AreaId { get; set; }
+public interface ISm64Memory : IN64Memory, IReadOnlySm64Memory {
+  new byte? AreaId { get; set; }
+}
 
-    public Endianness Endianness => Endianness.BigEndian;
+public class Sm64Memory : ISm64Memory {
+  public byte? AreaId { get; set; }
 
-    public IEnumerable<SchemaBinaryReader> OpenPossibilitiesAtSegmentedAddress(
-        uint address)
-      => this.OpenAtSegmentedAddress(address).Yield();
+  public Endianness Endianness => Endianness.BigEndian;
 
-    public bool TryToOpenPossibilitiesAtSegmentedAddress(uint segmentedAddress,
-      out IEnumerable<SchemaBinaryReader> possibilities) {
+  public IEnumerable<SchemaBinaryReader> OpenPossibilitiesAtSegmentedAddress(
+      uint address)
+    => this.OpenAtSegmentedAddress(address).Yield();
+
+  public bool TryToOpenPossibilitiesAtSegmentedAddress(uint segmentedAddress,
+    out IEnumerable<SchemaBinaryReader> possibilities) {
       possibilities = OpenPossibilitiesAtSegmentedAddress(segmentedAddress);
       return true;
     }
 
-    public SchemaBinaryReader OpenSegment(Segment segment, uint? offset = null) {
+  public SchemaBinaryReader OpenSegment(Segment segment, uint? offset = null) {
       throw new NotImplementedException();
     }
 
-    public IEnumerable<SchemaBinaryReader> OpenPossibilitiesForSegment(
-        uint segmentIndex) {
+  public IEnumerable<SchemaBinaryReader> OpenPossibilitiesForSegment(
+      uint segmentIndex) {
       throw new NotImplementedException();
     }
 
-    public bool IsValidSegment(uint segmentIndex) {
+  public bool IsValidSegment(uint segmentIndex) {
       throw new NotImplementedException();
     }
 
-    public bool IsValidSegmentedAddress(uint segmentedAddress) {
+  public bool IsValidSegmentedAddress(uint segmentedAddress) {
       throw new NotImplementedException();
     }
 
-    public SchemaBinaryReader OpenAtSegmentedAddress(uint segmentedAddress) {
+  public SchemaBinaryReader OpenAtSegmentedAddress(uint segmentedAddress) {
       IoUtils.SplitSegmentedAddress(segmentedAddress,
                                     out var segment,
                                     out var offset);
@@ -60,23 +61,22 @@ namespace sm64.memory {
       return br;
     }
 
-    public SchemaBinaryReader OpenSegment(uint segmentIndex) {
+  public SchemaBinaryReader OpenSegment(uint segmentIndex) {
       throw new NotImplementedException();
     }
 
-    public bool IsSegmentCompressed(uint segmentIndex) {
+  public bool IsSegmentCompressed(uint segmentIndex) {
       throw new NotImplementedException();
     }
 
-    public void AddSegment(uint segmentIndex,
-                           uint offset,
-                           uint length,
-                           IArrayDecompressor? decompressor = null) {
+  public void AddSegment(uint segmentIndex,
+                         uint offset,
+                         uint length,
+                         IArrayDecompressor? decompressor = null) {
       throw new NotImplementedException();
     }
 
-    public void AddSegment(uint segmentIndex, Segment segment) {
+  public void AddSegment(uint segmentIndex, Segment segment) {
       throw new NotImplementedException();
     }
-  }
 }

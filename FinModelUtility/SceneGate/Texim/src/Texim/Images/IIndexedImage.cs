@@ -17,17 +17,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Images
+namespace Texim.Images;
+
+using Pixels;
+using Yarhl.FileFormat;
+
+public interface IIndexedImage : IFormat
 {
-    using Pixels;
-    using Yarhl.FileFormat;
+    int Width { get; }
 
-    public interface IIndexedImage : IFormat
-    {
-        int Width { get; }
+    int Height { get; }
 
-        int Height { get; }
-
-        IndexedPixel[] Pixels { get; }
-    }
+    IndexedPixel[] Pixels { get; }
 }

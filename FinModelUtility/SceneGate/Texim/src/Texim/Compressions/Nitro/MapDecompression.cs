@@ -17,25 +17,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro
+namespace Texim.Compressions.Nitro;
+
+using System;
+using System.Drawing;
+using Images;
+using Pixels;
+using Yarhl.FileFormat;
+
+public class MapDecompression :
+    IInitializer<MapDecompressionParams>,
+    IConverter<IIndexedImage, IndexedImage>,
+    IConverter<IndexedPixel[], IndexedPixel[]>
 {
-    using System;
-    using System.Drawing;
-    using Images;
-    using Pixels;
-    using Yarhl.FileFormat;
+    private Size tileSize;
+    private IScreenMap map;
+    private int outOfBoundsIndex = -1;
 
-    public class MapDecompression :
-        IInitializer<MapDecompressionParams>,
-        IConverter<IIndexedImage, IndexedImage>,
-        IConverter<IndexedPixel[], IndexedPixel[]>
+    public void Initialize(MapDecompressionParams parameters)
     {
-        private Size tileSize;
-        private IScreenMap map;
-        private int outOfBoundsIndex = -1;
-
-        public void Initialize(MapDecompressionParams parameters)
-        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
@@ -44,8 +44,8 @@ namespace Texim.Compressions.Nitro
             outOfBoundsIndex = parameters.OutOfBoundsTileIndex;
         }
 
-        public IndexedImage Convert(IIndexedImage source)
-        {
+    public IndexedImage Convert(IIndexedImage source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (map == null)
@@ -64,8 +64,8 @@ namespace Texim.Compressions.Nitro
             return new IndexedImage(map.Width, map.Height, decompressed);
         }
 
-        public IndexedPixel[] Convert(IndexedPixel[] source)
-        {
+    public IndexedPixel[] Convert(IndexedPixel[] source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (map == null)
@@ -74,8 +74,8 @@ namespace Texim.Compressions.Nitro
             return DecompressTiles(source);
         }
 
-        private IndexedPixel[] DecompressTiles(IndexedPixel[] source)
-        {
+    private IndexedPixel[] DecompressTiles(IndexedPixel[] source)
+    {
             int pixelsPerTile = tileSize.Width * tileSize.Height;
 
             var decompressed = new IndexedPixel[map.Width * map.Height];
@@ -117,5 +117,4 @@ namespace Texim.Compressions.Nitro
 
             return decompressed;
         }
-    }
 }

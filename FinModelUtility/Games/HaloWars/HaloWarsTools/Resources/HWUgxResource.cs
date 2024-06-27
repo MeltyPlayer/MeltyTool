@@ -27,7 +27,7 @@ using KSoft.Shell;
 
 using schema.binary;
 
-namespace HaloWarsTools {
+namespace HaloWarsTools; 
   public class HWUgxResource : HWBinaryResource {
     public ModelImpl Mesh { get; private set; }
     private bool FlipFaces_ { get; set; }
@@ -599,17 +599,17 @@ namespace HaloWarsTools {
                               finVertices[fb]);
             }
 
-            /*if (!materials.ContainsKey(polygonInfo.MaterialId)) {
-              materials.Add(polygonInfo.MaterialId,
-                            new GenericMaterial(
-                                "material_" + (polygonInfo.MaterialId + 1)));
-            }
+           /*if (!materials.ContainsKey(polygonInfo.MaterialId)) {
+              aterials.Add(polygonInfo.MaterialId,
+                            ew GenericMaterial(
+                                material_" + (polygonInfo.MaterialId + 1)));
+            
 
-            if (!sections.ContainsKey(polygonInfo.PolygonId)) {
-              sections.Add(polygonInfo.PolygonId,
-                           new GenericMeshSection(
-                               "object_" + (polygonInfo.PolygonId + 1)));
-            }*/
+            f (!sections.ContainsKey(polygonInfo.PolygonId)) {
+              ections.Add(polygonInfo.PolygonId,
+                           ew GenericMeshSection(
+                               object_" + (polygonInfo.PolygonId + 1)));
+            *//
           }
 
           var finPrimitive = mesh.AddTriangles(triangles);
@@ -624,9 +624,9 @@ namespace HaloWarsTools {
       }
     }
 
-    private void ReadPosition(ref Vector3 position,
-                              byte[] bytes,
-                              ref int offset) {
+  private void ReadPosition(ref Vector3 position,
+                            byte[] bytes,
+                            ref int offset) {
       // Halo Wars coordinates have opposite handedness, so we must flip X
       // depending on how many submodels down we are.
       var xSign = this.FlipFaces_ ? -1 : 1;
@@ -638,9 +638,9 @@ namespace HaloWarsTools {
       offset += 2;
     }
 
-    private void ReadNormal(ref Vector3 normal,
-                            byte[] bytes,
-                            ref int offset) {
+  private void ReadNormal(ref Vector3 normal,
+                          byte[] bytes,
+                          ref int offset) {
       // Halo Wars coordinates have opposite handedness, so we must flip X
       // depending on how many submodels down we are.
       var xSign = this.FlipFaces_ ? -1 : 1;
@@ -652,56 +652,55 @@ namespace HaloWarsTools {
       offset += 4;
     }
 
-    public struct MeshPolygonInfo {
-      public int MaterialId;
-      public int PolygonId;
-      public int BoneId;
-      public int FaceOffset;
-      public int FaceCount;
-      public int VertOffset;
-      public int VertLength;
-      public int VertSize;
-      public int VertCount;
-      public string Name;
-    }
+  public struct MeshPolygonInfo {
+    public int MaterialId;
+    public int PolygonId;
+    public int BoneId;
+    public int FaceOffset;
+    public int FaceCount;
+    public int VertOffset;
+    public int VertLength;
+    public int VertSize;
+    public int VertCount;
+    public string Name;
+  }
 
-    public struct MeshTableData {
-      public MeshDataType Type;
-      public int Offset;
-      public int Length;
+  public struct MeshTableData {
+    public MeshDataType Type;
+    public int Offset;
+    public int Length;
 
-      public MeshTableData(int dataType, int dataOffset, int dataLength) :
-          this() {
+    public MeshTableData(int dataType, int dataOffset, int dataLength) :
+        this() {
         Type = (MeshDataType) dataType;
         Offset = dataOffset;
         Length = dataLength;
       }
-    }
+  }
 
-    public struct MeshTableSubData {
-      public int Offset;
-      public int Count;
+  public struct MeshTableSubData {
+    public int Offset;
+    public int Count;
 
-      public MeshTableSubData(int dataCount, int dataOffset) : this() {
+    public MeshTableSubData(int dataCount, int dataOffset) : this() {
         Offset = dataOffset;
         Count = dataCount;
       }
-    }
+  }
 
-    public enum MeshDataType {
-      MeshInfo = 0x700,
-      IndexData = 0x701,
-      VertexData = 0x702,
-      GrxChunk = 0x703,
-    }
+  public enum MeshDataType {
+    MeshInfo = 0x700,
+    IndexData = 0x701,
+    VertexData = 0x702,
+    GrxChunk = 0x703,
+  }
 
-    public enum MeshSubDataType {
-      MeshData = 1,
-      BoneData = 2,
-      LinkData = 3,
-      MeshId = 4,
-      MinBound = 5,
-      MaxBound = 6
-    }
+  public enum MeshSubDataType {
+    MeshData = 1,
+    BoneData = 2,
+    LinkData = 3,
+    MeshId = 4,
+    MinBound = 5,
+    MaxBound = 6
   }
 }

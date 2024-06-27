@@ -17,56 +17,56 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO
-{
-    using System;
-    using System.IO;
-    using FileFormat;
+namespace Yarhl.IO;
 
+using System;
+using System.IO;
+using FileFormat;
+
+/// <summary>
+/// Binary format.
+/// </summary>
+public class BinaryFormat : IBinary, IDisposable, ICloneableFormat
+{
     /// <summary>
-    /// Binary format.
+    /// Initializes a new instance of the <see cref="BinaryFormat"/> class.
+    /// Creates a stream in memory.
     /// </summary>
-    public class BinaryFormat : IBinary, IDisposable, ICloneableFormat
+    public BinaryFormat()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryFormat"/> class.
-        /// Creates a stream in memory.
-        /// </summary>
-        public BinaryFormat()
-        {
             Stream = new DataStream();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryFormat"/> class.
-        /// </summary>
-        /// <param name="stream">
-        /// Stream to wrap as a format. It takes over the ownership of the stream.
-        /// You must not dispose it.
-        /// </param>
-        public BinaryFormat(Stream stream)
-        {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BinaryFormat"/> class.
+    /// </summary>
+    /// <param name="stream">
+    /// Stream to wrap as a format. It takes over the ownership of the stream.
+    /// You must not dispose it.
+    /// </param>
+    public BinaryFormat(Stream stream)
+    {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
             Stream = stream as DataStream ?? DataStreamFactory.FromStream(stream);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryFormat"/> class.
-        /// </summary>
-        /// <remarks>
-        /// <para>This format creates an internal <see cref="DataStream" /> from the
-        /// provided stream. It will take over the ownership of the stream
-        /// argument, you should not dispose this argument, unless you are
-        /// providing a <see cref="DataStream" /> that we won't take over in case
-        /// you want to create more substreams.</para>
-        /// </remarks>
-        /// <param name="stream">Binary stream.</param>
-        /// <param name="offset">Offset from the DataStream start.</param>
-        /// <param name="length">Length of the substream.</param>
-        public BinaryFormat(Stream stream, long offset, long length)
-        {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BinaryFormat"/> class.
+    /// </summary>
+    /// <remarks>
+    /// <para>This format creates an internal <see cref="DataStream" /> from the
+    /// provided stream. It will take over the ownership of the stream
+    /// argument, you should not dispose this argument, unless you are
+    /// providing a <see cref="DataStream" /> that we won't take over in case
+    /// you want to create more substreams.</para>
+    /// </remarks>
+    /// <param name="stream">Binary stream.</param>
+    /// <param name="offset">Offset from the DataStream start.</param>
+    /// <param name="length">Length of the substream.</param>
+    public BinaryFormat(Stream stream, long offset, long length)
+    {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (offset < 0 || offset > stream.Length)
@@ -77,55 +77,55 @@ namespace Yarhl.IO
             Stream = DataStreamFactory.FromStream(stream, offset, length);
         }
 
-        /// <summary>
-        /// Gets the stream.
-        /// </summary>
-        public DataStream Stream {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// Gets the stream.
+    /// </summary>
+    public DataStream Stream {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Gets a value indicating whether this <see cref="BinaryFormat"/>
-        /// is disposed.
-        /// </summary>
-        public bool Disposed {
-            get;
-            private set;
-        }
+    /// <summary>
+    /// Gets a value indicating whether this <see cref="BinaryFormat"/>
+    /// is disposed.
+    /// </summary>
+    public bool Disposed {
+        get;
+        private set;
+    }
 
-        /// <summary>
-        /// Makes a copy of the format stream <strong>into memory</strong>
-        /// and returns a new <see cref="BinaryFormat"/> object.
-        /// </summary>
-        /// <remarks><para>The stream is copied into memory, so it is limited to 2GB size.</para></remarks>
-        /// <returns>The cloned <see cref="BinaryFormat"/>.</returns>
-        public virtual object DeepClone()
-        {
+    /// <summary>
+    /// Makes a copy of the format stream <strong>into memory</strong>
+    /// and returns a new <see cref="BinaryFormat"/> object.
+    /// </summary>
+    /// <remarks><para>The stream is copied into memory, so it is limited to 2GB size.</para></remarks>
+    /// <returns>The cloned <see cref="BinaryFormat"/>.</returns>
+    public virtual object DeepClone()
+    {
             DataStream newStream = DataStreamFactory.FromMemory();
             Stream.WriteTo(newStream);
 
             return new BinaryFormat(newStream);
         }
 
-        /// <summary>
-        /// Releases all resource used by the <see cref="BinaryFormat"/> object.
-        /// </summary>
-        public void Dispose()
-        {
+    /// <summary>
+    /// Releases all resource used by the <see cref="BinaryFormat"/> object.
+    /// </summary>
+    public void Dispose()
+    {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Releases all resource used by the <see cref="BinaryFormat"/> object.
-        /// </summary>
-        /// <param name="disposing">
-        /// If set to <see langword="true" /> free managed resources also.
-        /// It happens from Dispose() calls.
-        /// </param>
-        protected virtual void Dispose(bool disposing)
-        {
+    /// <summary>
+    /// Releases all resource used by the <see cref="BinaryFormat"/> object.
+    /// </summary>
+    /// <param name="disposing">
+    /// If set to <see langword="true" /> free managed resources also.
+    /// It happens from Dispose() calls.
+    /// </param>
+    protected virtual void Dispose(bool disposing)
+    {
             if (Disposed)
                 return;
 
@@ -134,5 +134,4 @@ namespace Yarhl.IO
                 Stream.Dispose();
             }
         }
-    }
 }

@@ -17,17 +17,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Colors
-{
-    public class Rgb32 : Rgba32
-    {
-        private static Rgb32 instance = new Rgb32();
+namespace Texim.Colors;
 
-        public Rgb32()
-            : base(hasAlpha: false)
-        {
+public class Rgb32 : Rgba32
+{
+    private static Rgb32 instance = new Rgb32();
+
+    public Rgb32()
+        : base(hasAlpha: false)
+    {
         }
 
-        public static new Rgb32 Instance => instance;
-    }
+    public static new Rgb32 Instance => instance;
 }

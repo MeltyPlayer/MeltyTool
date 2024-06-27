@@ -2,32 +2,33 @@
 
 using UoT.hacks.fields;
 
-namespace UoT {
-  /// <summary>
-  ///   Indirect textures for Tektites. This is needed for this object because
-  ///   it chooses between two sets of textures depending on the color.
-  ///
-  ///   These addresses were found by searching the ROM for specific color
-  ///   values.
-  /// </summary>
-  public sealed class TektiteIndirectTextureHack : BIndirectTextureHack {
+namespace UoT;
 
-    public TektiteIndirectTextureHack() {
+/// <summary>
+///   Indirect textures for Tektites. This is needed for this object because
+///   it chooses between two sets of textures depending on the color.
+///
+///   These addresses were found by searching the ROM for specific color
+///   values.
+/// </summary>
+public sealed class TektiteIndirectTextureHack : BIndirectTextureHack {
+
+  public TektiteIndirectTextureHack() {
       var fields = new List<IField>();
       fields.Add(this.color_);
 
       this.Fields = fields.AsReadOnly();
     }
 
-    public override IReadOnlyList<IField> Fields { get; }
+  public override IReadOnlyList<IField> Fields { get; }
 
-    private readonly IDiscreteField<ushort> color_ =
-        new DiscreteField<ushort>.Builder("Color")
-            .AddPossibleValue("Red", 0x1B00)
-            .AddPossibleValue("Blue", 0x1300)
-            .Build();
+  private readonly IDiscreteField<ushort> color_ =
+      new DiscreteField<ushort>.Builder("Color")
+          .AddPossibleValue("Red", 0x1B00)
+          .AddPossibleValue("Blue", 0x1300)
+          .Build();
 
-    public override uint MapTextureAddress(uint originalAddress) {
+  public override uint MapTextureAddress(uint originalAddress) {
       var baseOffset = this.color_.Value;
 
       var topOffset = baseOffset;
@@ -51,5 +52,4 @@ namespace UoT {
 
       return originalAddress;
     }
-  }
 }

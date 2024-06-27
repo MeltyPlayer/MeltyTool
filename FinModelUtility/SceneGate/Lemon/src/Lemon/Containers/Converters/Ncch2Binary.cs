@@ -22,48 +22,48 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters
+namespace SceneGate.Lemon.Containers.Converters;
+
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using Formats;
+using Yarhl.FileFormat;
+using Yarhl.FileSystem;
+using Yarhl.IO;
+
+/// <summary>
+/// Convert a NCCH instance into binary format.
+/// </summary>
+/// <remarks>
+/// <p>This converter expects to have a node with the following binary
+/// children: header_data/partition_id, header_data/maker_code
+/// header_data/version, header_data/program_id, header_data/product_code,
+/// header_data/flag_(0 through 7),
+/// extended_header (optional), access_descriptor (optional), sdk_info.txt (optional),
+/// logo.bin (optional), system (optional), rom (optional).</p>
+/// </remarks>
+public class Ncch2Binary :
+    IConverter<Ncch, BinaryFormat>
 {
-    using System;
-    using System.IO;
-    using System.Security.Cryptography;
-    using Formats;
-    using Yarhl.FileFormat;
-    using Yarhl.FileSystem;
-    using Yarhl.IO;
+    DataStream stream;
 
     /// <summary>
-    /// Convert a NCCH instance into binary format.
+    /// Initialize the converter by providing the stream to write to.
     /// </summary>
-    /// <remarks>
-    /// <p>This converter expects to have a node with the following binary
-    /// children: header_data/partition_id, header_data/maker_code
-    /// header_data/version, header_data/program_id, header_data/product_code,
-    /// header_data/flag_(0 through 7),
-    /// extended_header (optional), access_descriptor (optional), sdk_info.txt (optional),
-    /// logo.bin (optional), system (optional), rom (optional).</p>
-    /// </remarks>
-    public class Ncch2Binary :
-        IConverter<Ncch, BinaryFormat>
+    /// <param name="parameters">Stream to write to.</param>
+    public void Initialize(DataStream parameters)
     {
-        DataStream stream;
-
-        /// <summary>
-        /// Initialize the converter by providing the stream to write to.
-        /// </summary>
-        /// <param name="parameters">Stream to write to.</param>
-        public void Initialize(DataStream parameters)
-        {
             this.stream = parameters;
         }
 
-        /// <summary>
-        /// Converts a NCCH instance into a binary stream.
-        /// </summary>
-        /// <param name="source">Ncch to convert.</param>
-        /// <returns>The new binary container.</returns>
-        public BinaryFormat Convert(Ncch source)
-        {
+    /// <summary>
+    /// Converts a NCCH instance into a binary stream.
+    /// </summary>
+    /// <param name="source">Ncch to convert.</param>
+    /// <returns>The new binary container.</returns>
+    public BinaryFormat Convert(Ncch source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -141,8 +141,8 @@ namespace SceneGate.Lemon.Containers.Converters
             return binary;
         }
 
-        void WriteFile(DataWriter writer, Node file, bool isRequired = true)
-        {
+    void WriteFile(DataWriter writer, Node file, bool isRequired = true)
+    {
             if (file == null && isRequired) {
                 throw new FileNotFoundException("Missing NCCH file");
             } else if (file == null) {
@@ -156,8 +156,8 @@ namespace SceneGate.Lemon.Containers.Converters
             file.Stream.WriteTo(writer.Stream);
         }
 
-        void WriteOffsetSizeAndData(DataWriter writer, Node file, int hashRegion = 0, bool hasHashRegion = false)
-        {
+    void WriteOffsetSizeAndData(DataWriter writer, Node file, int hashRegion = 0, bool hasHashRegion = false)
+    {
             if (file != null) {
                 long position = writer.Stream.Position;
                 int offsetInUnits = (int)writer.Stream.Length / NcchHeader.Unit;
@@ -183,8 +183,8 @@ namespace SceneGate.Lemon.Containers.Converters
             }
         }
 
-        void WriteSHA256(DataWriter writer, Node file, int hashRegion = 0, bool hasHashRegion = false)
-        {
+    void WriteSHA256(DataWriter writer, Node file, int hashRegion = 0, bool hasHashRegion = false)
+    {
             using (SHA256 sha256 = SHA256.Create()) {
                 try {
                     if (file == null) {
@@ -209,5 +209,4 @@ namespace SceneGate.Lemon.Containers.Converters
                 }
             }
         }
-    }
 }

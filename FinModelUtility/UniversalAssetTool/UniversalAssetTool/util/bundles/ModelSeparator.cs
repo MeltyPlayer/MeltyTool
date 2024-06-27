@@ -1,52 +1,53 @@
 ﻿using fin.io;
 using fin.util.asserts;
 
-namespace uni.util.bundles {
-  public interface IModelBundle {
-    IFileHierarchyFile ModelFile { get; }
-    IList<IFileHierarchyFile> AnimationFiles { get; }
-  }
+namespace uni.util.bundles;
 
-  public interface IModelSeparatorMethod {
-    IEnumerable<IModelBundle> Separate(
-        IList<IFileHierarchyFile> modelFiles,
-        IList<IFileHierarchyFile> animationFiles);
-  }
+public interface IModelBundle {
+  IFileHierarchyFile ModelFile { get; }
+  IList<IFileHierarchyFile> AnimationFiles { get; }
+}
 
-  public interface IModelSeparator {
-    IModelSeparator Register(
-        string directoryId,
-        IModelSeparatorMethod method);
+public interface IModelSeparatorMethod {
+  IEnumerable<IModelBundle> Separate(
+      IList<IFileHierarchyFile> modelFiles,
+      IList<IFileHierarchyFile> animationFiles);
+}
 
-    IModelSeparator Register(
-        IModelSeparatorMethod method,
-        params string[] directoryIds);
+public interface IModelSeparator {
+  IModelSeparator Register(
+      string directoryId,
+      IModelSeparatorMethod method);
 
-    bool Contains(IFileHierarchyDirectory directory);
+  IModelSeparator Register(
+      IModelSeparatorMethod method,
+      params string[] directoryIds);
 
-    IEnumerable<IModelBundle> Separate(
-        IFileHierarchyDirectory directory,
-        IList<IFileHierarchyFile> modelFiles,
-        IList<IFileHierarchyFile> animationFiles);
-  }
+  bool Contains(IFileHierarchyDirectory directory);
 
-  public class ModelSeparator : IModelSeparator {
-    private readonly Func<IFileHierarchyDirectory, string> directoryToId_;
-    private readonly Dictionary<string, IModelSeparatorMethod> impl_ = new();
+  IEnumerable<IModelBundle> Separate(
+      IFileHierarchyDirectory directory,
+      IList<IFileHierarchyFile> modelFiles,
+      IList<IFileHierarchyFile> animationFiles);
+}
 
-    public ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
-      => this.directoryToId_ = directoryToId;
+public class ModelSeparator : IModelSeparator {
+  private readonly Func<IFileHierarchyDirectory, string> directoryToId_;
+  private readonly Dictionary<string, IModelSeparatorMethod> impl_ = new();
 
-    public IModelSeparator Register(
-        string directoryId,
-        IModelSeparatorMethod method) {
+  public ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
+    => this.directoryToId_ = directoryToId;
+
+  public IModelSeparator Register(
+      string directoryId,
+      IModelSeparatorMethod method) {
       this.impl_[directoryId] = method;
       return this;
     }
 
-    public IModelSeparator Register(
-        IModelSeparatorMethod method,
-        params string[] directoryIds) {
+  public IModelSeparator Register(
+      IModelSeparatorMethod method,
+      params string[] directoryIds) {
       foreach (var directoryId in directoryIds) {
         this.Register(directoryId, method);
       }
@@ -54,13 +55,13 @@ namespace uni.util.bundles {
       return this;
     }
 
-    public bool Contains(IFileHierarchyDirectory directory)
-      => this.impl_.ContainsKey(this.directoryToId_(directory));
+  public bool Contains(IFileHierarchyDirectory directory)
+    => this.impl_.ContainsKey(this.directoryToId_(directory));
 
-    public IEnumerable<IModelBundle> Separate(
-        IFileHierarchyDirectory directory,
-        IList<IFileHierarchyFile> modelFiles,
-        IList<IFileHierarchyFile> animationFiles) {
+  public IEnumerable<IModelBundle> Separate(
+      IFileHierarchyDirectory directory,
+      IList<IFileHierarchyFile> modelFiles,
+      IList<IFileHierarchyFile> animationFiles) {
       if (modelFiles.Count == 1) {
         return new[] { new ModelBundle(modelFiles[0], animationFiles) };
       }
@@ -74,42 +75,42 @@ namespace uni.util.bundles {
       return this.impl_[this.directoryToId_(directory)]
                  .Separate(modelFiles, animationFiles);
     }
-  }
+}
 
-  public class NoAnimationsModelSeparatorMethod
-      : IModelSeparatorMethod {
-    public IEnumerable<IModelBundle> Separate(
-        IList<IFileHierarchyFile> modelFiles,
-        IList<IFileHierarchyFile> animationFiles)
-      => modelFiles
-          .Select(
-              modelFile => new ModelBundle(
-                  modelFile,
-                  Array.Empty<IFileHierarchyFile>()));
-  }
+public class NoAnimationsModelSeparatorMethod
+    : IModelSeparatorMethod {
+  public IEnumerable<IModelBundle> Separate(
+      IList<IFileHierarchyFile> modelFiles,
+      IList<IFileHierarchyFile> animationFiles)
+    => modelFiles
+        .Select(
+            modelFile => new ModelBundle(
+                modelFile,
+                Array.Empty<IFileHierarchyFile>()));
+}
 
-  public class AllAnimationsModelSeparatorMethod
-      : IModelSeparatorMethod {
-    public IEnumerable<IModelBundle> Separate(
-        IList<IFileHierarchyFile> modelFiles,
-        IList<IFileHierarchyFile> animationFiles)
-      => modelFiles
-          .Select(
-              modelFile => new ModelBundle(
-                  modelFile,
-                  animationFiles));
-  }
+public class AllAnimationsModelSeparatorMethod
+    : IModelSeparatorMethod {
+  public IEnumerable<IModelBundle> Separate(
+      IList<IFileHierarchyFile> modelFiles,
+      IList<IFileHierarchyFile> animationFiles)
+    => modelFiles
+        .Select(
+            modelFile => new ModelBundle(
+                modelFile,
+                animationFiles));
+}
 
-  public class PrimaryModelSeparatorMethod : IModelSeparatorMethod {
-    private readonly string primaryModelName_;
+public class PrimaryModelSeparatorMethod : IModelSeparatorMethod {
+  private readonly string primaryModelName_;
 
-    public PrimaryModelSeparatorMethod(string primaryModelName) {
+  public PrimaryModelSeparatorMethod(string primaryModelName) {
       this.primaryModelName_ = primaryModelName;
     }
 
-    public IEnumerable<IModelBundle> Separate(
-        IList<IFileHierarchyFile> modelFiles,
-        IList<IFileHierarchyFile> animationFiles) {
+  public IEnumerable<IModelBundle> Separate(
+      IList<IFileHierarchyFile> modelFiles,
+      IList<IFileHierarchyFile> animationFiles) {
       return new[] {
           new ModelBundle(
               modelFiles.Single(file => file.Name == this.primaryModelName_),
@@ -120,19 +121,19 @@ namespace uni.util.bundles {
                            => new ModelBundle(modelFile,
                                               new IFileHierarchyFile[] { })));
     }
-  }
+}
 
-  public abstract class BUnclaimedMatchModelSeparatorMethod
-      : IModelSeparatorMethod {
-    public virtual IList<IFileHierarchyFile> PreprocessModelFiles(
-        IList<IFileHierarchyFile> modelFiles) => modelFiles;
+public abstract class BUnclaimedMatchModelSeparatorMethod
+    : IModelSeparatorMethod {
+  public virtual IList<IFileHierarchyFile> PreprocessModelFiles(
+      IList<IFileHierarchyFile> modelFiles) => modelFiles;
 
-    public virtual IList<IFileHierarchyFile> PreprocessAnimationFiles(
-        IList<IFileHierarchyFile> animationFiles) => animationFiles;
+  public virtual IList<IFileHierarchyFile> PreprocessAnimationFiles(
+      IList<IFileHierarchyFile> animationFiles) => animationFiles;
 
-    public IEnumerable<IModelBundle> Separate(
-        IList<IFileHierarchyFile> modelFiles,
-        IList<IFileHierarchyFile> animationFiles) {
+  public IEnumerable<IModelBundle> Separate(
+      IList<IFileHierarchyFile> modelFiles,
+      IList<IFileHierarchyFile> animationFiles) {
       var processedModelFiles = this.PreprocessModelFiles(modelFiles);
       var processedAnimationFiles =
           this.PreprocessAnimationFiles(animationFiles);
@@ -157,24 +158,24 @@ namespace uni.util.bundles {
           .Select(kvp => new ModelBundle(kvp.Key, kvp.Value));
     }
 
-    public abstract IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles);
-  }
+  public abstract IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles);
+}
 
-  public class ExactCasesMethod : BUnclaimedMatchModelSeparatorMethod {
-    private Dictionary<string, ISet<string>> impl_ = new();
+public class ExactCasesMethod : BUnclaimedMatchModelSeparatorMethod {
+  private Dictionary<string, ISet<string>> impl_ = new();
 
-    public ExactCasesMethod Case(
-        string modelFileName,
-        params string[] animationFileNames) {
+  public ExactCasesMethod Case(
+      string modelFileName,
+      params string[] animationFileNames) {
       this.impl_[modelFileName] = animationFileNames.ToHashSet();
       return this;
     }
 
-    public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles) {
+  public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles) {
       if (this.impl_.TryGetValue(modelFile.Name, out var animationFileNames)) {
         return animationFiles
             .Where(file => animationFileNames.Contains(file.Name));
@@ -182,21 +183,21 @@ namespace uni.util.bundles {
 
       return Enumerable.Empty<IFileHierarchyFile>();
     }
-  }
+}
 
-  public class PrefixCasesMethod : BUnclaimedMatchModelSeparatorMethod {
-    private Dictionary<string, IList<string>> impl_ = new();
+public class PrefixCasesMethod : BUnclaimedMatchModelSeparatorMethod {
+  private Dictionary<string, IList<string>> impl_ = new();
 
-    public PrefixCasesMethod Case(
-        string modelFilePrefix,
-        params string[] animationFilePrefixes) {
+  public PrefixCasesMethod Case(
+      string modelFilePrefix,
+      params string[] animationFilePrefixes) {
       this.impl_[modelFilePrefix] = animationFilePrefixes;
       return this;
     }
 
-    public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles) {
+  public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles) {
       foreach (var kvp in this.impl_) {
         var (modelFilePrefix, animationFilePrefixes) = kvp;
         if (modelFile.Name.StartsWith(modelFilePrefix)) {
@@ -208,107 +209,107 @@ namespace uni.util.bundles {
 
       return Enumerable.Empty<IFileHierarchyFile>();
     }
+}
+
+/*public class BoneCountMethod : BUnclaimedMatchModelSeparatorMethod {
+  private readonly Func<IFileHierarchyFile, int> getBoneCountFromModelFile_;
+
+  private readonly Func<IFileHierarchyFile, int>
+      getBoneCountFromAnimationFile_;
+
+  private readonly Dictionary<int, IList<IFileHierarchyFile>>
+      animationsByBoneCount_ = new();
+
+  public BoneCountMethod(
+      Func<IFileHierarchyFile, int> getBoneCountFromModelFile,
+      Func<IFileHierarchyFile, int> getBoneCountFromAnimationFile) {
+    this.getBoneCountFromModelFile_ = getBoneCountFromModelFile;
+    this.getBoneCountFromAnimationFile_ = getBoneCountFromAnimationFile;
   }
 
-  /*public class BoneCountMethod : BUnclaimedMatchModelSeparatorMethod {
-    private readonly Func<IFileHierarchyFile, int> getBoneCountFromModelFile_;
-
-    private readonly Func<IFileHierarchyFile, int>
-        getBoneCountFromAnimationFile_;
-
-    private readonly Dictionary<int, IList<IFileHierarchyFile>>
-        animationsByBoneCount_ = new();
-
-    public BoneCountMethod(
-        Func<IFileHierarchyFile, int> getBoneCountFromModelFile,
-        Func<IFileHierarchyFile, int> getBoneCountFromAnimationFile) {
-      this.getBoneCountFromModelFile_ = getBoneCountFromModelFile;
-      this.getBoneCountFromAnimationFile_ = getBoneCountFromAnimationFile;
-    }
-
-    public virtual IList<IFileHierarchyFile> PreprocessAnimationFiles(
-        IList<IFileHierarchyFile> animationFiles) {
-      foreach (var animationFile in animationFiles) {
-        var boneCount = this.getBoneCountFromAnimationFile_(animationFile);
-        if (!this.animationsByBoneCount_.TryGetValue(
-                out var animationsWithBoneCount)) {
-          this.animationsByBoneCount_
-        }
-        this.animationsByBoneCount_[animationFile] =
+  public virtual IList<IFileHierarchyFile> PreprocessAnimationFiles(
+      IList<IFileHierarchyFile> animationFiles) {
+    foreach (var animationFile in animationFiles) {
+      var boneCount = this.getBoneCountFromAnimationFile_(animationFile);
+      if (!this.animationsByBoneCount_.TryGetValue(
+              out var animationsWithBoneCount)) {
+        this.animationsByBoneCount_
       }
-
-      return animationFiles;
+      this.animationsByBoneCount_[animationFile] =
     }
 
-    public override IList<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles) {
-      foreach (var kvp in this.impl_) {
-        var (modelFilePrefix, animationFilePrefixes) = kvp;
-        if (modelFile.Name.StartsWith(modelFilePrefix)) {
-          return animationFiles
-                 .Where(file => animationFilePrefixes.Any(
-                            prefix => file.Name.StartsWith(prefix)))
-                 .ToArray();
-        }
+    return animationFiles;
+  }
+
+  public override IList<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles) {
+    foreach (var kvp in this.impl_) {
+      var (modelFilePrefix, animationFilePrefixes) = kvp;
+      if (modelFile.Name.StartsWith(modelFilePrefix)) {
+        return animationFiles
+               .Where(file => animationFilePrefixes.Any(
+                          prefix => file.Name.StartsWith(prefix)))
+               .ToArray();
       }
-
-      return Array.Empty<IFileHierarchyFile>();
     }
-  }*/
 
-  public class PrefixModelSeparatorMethod
-      : BUnclaimedMatchModelSeparatorMethod {
-    public override IList<IFileHierarchyFile> PreprocessModelFiles(
-        IList<IFileHierarchyFile> modelFiles)
-      => modelFiles
-         .OrderByDescending(file => file.NameWithoutExtension.Length)
-         .ToArray();
+    return Array.Empty<IFileHierarchyFile>();
+  }
+}*/
 
-    public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles) {
+public class PrefixModelSeparatorMethod
+    : BUnclaimedMatchModelSeparatorMethod {
+  public override IList<IFileHierarchyFile> PreprocessModelFiles(
+      IList<IFileHierarchyFile> modelFiles)
+    => modelFiles
+       .OrderByDescending(file => file.NameWithoutExtension.Length)
+       .ToArray();
+
+  public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles) {
       var prefix = modelFile.NameWithoutExtension;
       return animationFiles.Where(file => file.Name.StartsWith(prefix));
     }
-  }
+}
 
-  public class SameNameSeparatorMethod
-      : BUnclaimedMatchModelSeparatorMethod {
-    public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles) {
+public class SameNameSeparatorMethod
+    : BUnclaimedMatchModelSeparatorMethod {
+  public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles) {
       var prefix = modelFile.NameWithoutExtension;
       return animationFiles
              .Where(file => file.NameWithoutExtension.Equals(prefix));
     }
-  }
+}
 
 
-  public class NameModelSeparatorMethod
-      : BUnclaimedMatchModelSeparatorMethod {
-    private readonly string name_;
+public class NameModelSeparatorMethod
+    : BUnclaimedMatchModelSeparatorMethod {
+  private readonly string name_;
 
-    public NameModelSeparatorMethod(string name) => this.name_ = name.ToLower();
+  public NameModelSeparatorMethod(string name) => this.name_ = name.ToLower();
 
-    public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles)
-      => modelFile.Name.ToLower().Contains(this.name_)
-          ? animationFiles
-          : Enumerable.Empty<IFileHierarchyFile>();
-  }
+  public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles)
+    => modelFile.Name.ToLower().Contains(this.name_)
+        ? animationFiles
+        : Enumerable.Empty<IFileHierarchyFile>();
+}
 
-  public class SuffixModelSeparatorMethod
-      : BUnclaimedMatchModelSeparatorMethod {
-    private readonly int suffixLength_;
+public class SuffixModelSeparatorMethod
+    : BUnclaimedMatchModelSeparatorMethod {
+  private readonly int suffixLength_;
 
-    public SuffixModelSeparatorMethod(int suffixLength)
-      => this.suffixLength_ = suffixLength;
+  public SuffixModelSeparatorMethod(int suffixLength)
+    => this.suffixLength_ = suffixLength;
 
-    public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles) {
+  public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles) {
       var suffix =
           modelFile.NameWithoutExtension.Substring(
               modelFile.NameWithoutExtension.Length -
@@ -316,17 +317,16 @@ namespace uni.util.bundles {
       
       return animationFiles.Where(file => file.Name.StartsWith(suffix));
     }
-  }
+}
 
-  public class ModelBundle : IModelBundle {
-    public ModelBundle(
-        IFileHierarchyFile modelFile,
-        IList<IFileHierarchyFile> animationFiles) {
+public class ModelBundle : IModelBundle {
+  public ModelBundle(
+      IFileHierarchyFile modelFile,
+      IList<IFileHierarchyFile> animationFiles) {
       this.ModelFile = modelFile;
       this.AnimationFiles = animationFiles;
     }
 
-    public IFileHierarchyFile ModelFile { get; }
-    public IList<IFileHierarchyFile> AnimationFiles { get; }
-  }
+  public IFileHierarchyFile ModelFile { get; }
+  public IList<IFileHierarchyFile> AnimationFiles { get; }
 }

@@ -6,9 +6,10 @@ using glo.api;
 
 using uni.platforms.desktop;
 
-namespace uni.games.glover {
-  public class GloverFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+namespace uni.games.glover;
+
+public class GloverFileBundleGatherer : IAnnotatedFileBundleGatherer {
+  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
       if (!SteamUtils.TryGetGameDirectory("Glover",
                                           out var gloverSteamDirectory)) {
         yield break;
@@ -36,9 +37,9 @@ namespace uni.games.glover {
       }
     }
 
-    private IEnumerable<IAnnotatedFileBundle> AddObjectDirectory_(
-        IFileHierarchy gloverFileHierarchy,
-        IFileHierarchyDirectory objectDirectory) {
+  private IEnumerable<IAnnotatedFileBundle> AddObjectDirectory_(
+      IFileHierarchy gloverFileHierarchy,
+      IFileHierarchyDirectory objectDirectory) {
       var objectFiles = objectDirectory.FilesWithExtension(".glo");
 
       var gloverSteamDirectory = gloverFileHierarchy.Root;
@@ -70,5 +71,4 @@ namespace uni.games.glover {
             .Annotate(objectFile);
       }
     }
-  }
 }

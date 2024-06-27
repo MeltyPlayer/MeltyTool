@@ -8,17 +8,18 @@ using mod.schema.mod;
 
 using schema.binary;
 
-namespace mod.image {
-  public class ModImageReader : IImageReader {
-    private readonly IImageReader impl_;
+namespace mod.image;
 
-    public ModImageReader(int width, int height, Texture.TextureFormat format) {
+public class ModImageReader : IImageReader {
+  private readonly IImageReader impl_;
+
+  public ModImageReader(int width, int height, Texture.TextureFormat format) {
       this.impl_ = this.CreateImpl_(width, height, format);
     }
 
-    private IImageReader CreateImpl_(int width,
-                                     int height,
-                                     Texture.TextureFormat format) {
+  private IImageReader CreateImpl_(int width,
+                                   int height,
+                                   Texture.TextureFormat format) {
       return format switch {
           Texture.TextureFormat.I4 => TiledImageReader.New(
               width,
@@ -66,9 +67,8 @@ namespace mod.image {
       };
     }
 
-    public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
+  public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
 
-    public IImage ReadImage(byte[] data, Endianness endianness)
-      => this.impl_.ReadImage(data, endianness);
-  }
+  public IImage ReadImage(byte[] data, Endianness endianness)
+    => this.impl_.ReadImage(data, endianness);
 }

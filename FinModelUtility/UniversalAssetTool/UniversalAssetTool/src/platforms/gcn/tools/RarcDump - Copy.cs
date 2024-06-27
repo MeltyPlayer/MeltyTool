@@ -10,9 +10,10 @@ using schema.binary.attributes;
 
 using uni.util.cmd;
 
-namespace uni.platforms.gcn.tools {
-  public class RarcDump2 {
-    public bool Run(IFileHierarchyFile rarcFile, bool cleanup) {
+namespace uni.platforms.gcn.tools;
+
+public class RarcDump2 {
+  public bool Run(IFileHierarchyFile rarcFile, bool cleanup) {
       Asserts.True(
           rarcFile.Impl.Exists,
           $"Cannot dump RARC because it does not exist: {rarcFile}");
@@ -52,9 +53,9 @@ namespace uni.platforms.gcn.tools {
       return true;
     }
 
-    // Based on version 1 of rarcdump by thakis.
-    // Expanded with information from: http://wiki.tockdom.com/wiki/RARC_(File_Format)
-    private bool Impl_(IFileHierarchyFile rarcFile) {
+  // Based on version 1 of rarcdump by thakis.
+  // Expanded with information from: http://wiki.tockdom.com/wiki/RARC_(File_Format)
+  private bool Impl_(IFileHierarchyFile rarcFile) {
       var directoryPath = rarcFile.FullPath + "_dir";
       if (Directory.Exists(directoryPath)) {
         //return false;
@@ -67,8 +68,8 @@ namespace uni.platforms.gcn.tools {
       return this.ReadFile_(rarcFile);
     }
 
-    [Unknown]
-    private bool ReadFile_(IFileHierarchyFile rarcFile) {
+  [Unknown]
+  private bool ReadFile_(IFileHierarchyFile rarcFile) {
       using var br =
           new SchemaBinaryReader(rarcFile.OpenRead(),
                                  Endianness.BigEndian);
@@ -116,7 +117,7 @@ namespace uni.platforms.gcn.tools {
       return true;
     }
 
-    private RarcNode GetNode_(IBinaryReader br, RarcHeader h, int i) {
+  private RarcNode GetNode_(IBinaryReader br, RarcHeader h, int i) {
       var node = new RarcNode();
 
       node.type = br.ReadString(StringEncodingType.UTF8, 4);
@@ -146,48 +147,48 @@ namespace uni.platforms.gcn.tools {
       return node;
     }
 
-    private void DumpNode_(IBinaryReader br, RarcNode node, RarcHeader h) {
-      /*
-string nodeName = getString(0x20 + n.filenameOffset + h.stringTableOffset, f);
-        _mkdir(nodeName.c_str());
-        _chdir(nodeName.c_str());
+  private void DumpNode_(IBinaryReader br, RarcNode node, RarcHeader h) {
+     /*
+tring nodeName = getString(0x20 + n.filenameOffset + h.stringTableOffset, f);
+        mkdir(nodeName.c_str());
+        chdir(nodeName.c_str());
 
-        for (int i = 0; i < n.numFileEntries; ++i) {
-          RarcDump.FileEntry curr = getFileEntry(n.firstFileEntryOffset + i, h, f);
+        or (int i = 0; i < n.numFileEntries; ++i) {
+          arcDump.FileEntry curr = getFileEntry(n.firstFileEntryOffset + i, h, f);
 
-          if (curr.id == 0xFFFF) //subdirectory
-          {
-            if (curr.filenameOffset != 0 &&
-                curr.filenameOffset != 2) //don't go to "." and ".."
-              dumpNode(getNode(curr.dataOffset, f), h, f);
-          } else //file
-          {
-            string currName =
-                getString(curr.filenameOffset + h.stringTableOffset + 0x20, f);
-            cout << nodeName << "/" << currName << endl;
-            FILE* dest = fopen(currName.c_str(), "wb");
+          f (curr.id == 0xFFFF) //subdirectory
+          
+            f (curr.filenameOffset != 0 &&
+                urr.filenameOffset != 2) //don't go to "." and ".."
+              umpNode(getNode(curr.dataOffset, f), h, f);
+           else //file
+          
+            tring currName =
+                etString(curr.filenameOffset + h.stringTableOffset + 0x20, f);
+            out << nodeName << "/" << currName << endl;
+            ILE* dest = fopen(currName.c_str(), "wb");
 
-            u32 read = 0;
-            u8 buff[1024];
-            fseek(f, curr.dataOffset + h.dataStartOffset + 0x20, SEEK_SET);
-            while (read < curr.dataSize) {
-              int r = fread(buff, 1, min(1024, curr.dataSize - read), f);
-              fwrite(buff, 1, r, dest);
-              read += r;
-            }
-            fclose(dest);
-          }
-        }
+            32 read = 0;
+            8 buff[1024];
+            seek(f, curr.dataOffset + h.dataStartOffset + 0x20, SEEK_SET);
+            hile (read < curr.dataSize) {
+              nt r = fread(buff, 1, min(1024, curr.dataSize - read), f);
+              write(buff, 1, r, dest);
+              ead += r;
+            
+            close(dest);
+          
+        
 
-        _chdir("..");       */
+        chdir("..");       *//
     }
 
-    [Unknown]
-    private FileEntry GetFileEntry_(
-        SchemaBinaryReader br,
-        RarcHeader header,
-        RarcNode node,
-        int i) {
+  [Unknown]
+  private FileEntry GetFileEntry_(
+      SchemaBinaryReader br,
+      RarcHeader header,
+      RarcNode node,
+      int i) {
       br.Position = 0x20 +
                     header.fileEntriesOffset +
                     node.firstFileEntryOffset +
@@ -207,49 +208,48 @@ string nodeName = getString(0x20 + n.filenameOffset + h.stringTableOffset, f);
       return fileEntry;
     }
 
-    public class RarcHeader {
-      public string type; //'RARC'
-      public uint size; //size of the file
-      [Unknown]
-      public uint unknown;
-      public uint dataStartOffset; //where does the actual data start?
-      [Unknown]
-      public uint[] unknown2 = new uint[4];
+  public class RarcHeader {
+    public string type; //'RARC'
+    public uint size;   //size of the file
+    [Unknown]
+    public uint unknown;
+    public uint dataStartOffset; //where does the actual data start?
+    [Unknown]
+    public uint[] unknown2 = new uint[4];
 
-      public uint numNodes;
-      public uint firstNodeOffset;
-      public uint numDirectories;
-      public uint fileEntriesOffset;
-      public uint stringTableLength;
-      public uint stringTableOffset; //where is the string table stored?
-      [Unknown]
-      public uint[] unknown5 = new uint[2];
-    }
-
-    public class RarcNode {
-      public string type;
-      public ushort numFileEntries; //how many files belong to this node?
-      public uint firstFileEntryOffset;
-      public IList<FileEntry> fileEntries;
-
-      public string fileName;
-    }
-
-    public class FileEntry {
-      public ushort
-          id; //file id. If this is 0xFFFF, then this entry is a subdirectory link
-
-      [Unknown]
-      public ushort unknown;
-      [Unknown]
-      public ushort unknown2;
-      public ushort filenameOffset; //file/subdir name, offset into string table
-
-      public uint
-          dataOffset; //offset to file data (for subdirs: index of Node representing the subdir)
-
-      public uint dataSize; //size of data
-      public uint zero; //seems to be always '0'
-    };
+    public uint numNodes;
+    public uint firstNodeOffset;
+    public uint numDirectories;
+    public uint fileEntriesOffset;
+    public uint stringTableLength;
+    public uint stringTableOffset; //where is the string table stored?
+    [Unknown]
+    public uint[] unknown5 = new uint[2];
   }
+
+  public class RarcNode {
+    public string type;
+    public ushort numFileEntries; //how many files belong to this node?
+    public uint firstFileEntryOffset;
+    public IList<FileEntry> fileEntries;
+
+    public string fileName;
+  }
+
+  public class FileEntry {
+    public ushort
+        id; //file id. If this is 0xFFFF, then this entry is a subdirectory link
+
+    [Unknown]
+    public ushort unknown;
+    [Unknown]
+    public ushort unknown2;
+    public ushort filenameOffset; //file/subdir name, offset into string table
+
+    public uint
+        dataOffset; //offset to file data (for subdirs: index of Node representing the subdir)
+
+    public uint dataSize; //size of data
+    public uint zero;     //seems to be always '0'
+  };
 }

@@ -5,37 +5,38 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 
-namespace HaloWarsTools {
-  public enum MeshNormalExportMode {
-    Unchanged,
-    CalculateNormalsSmoothShaded,
-    CalculateNormalsFlatShaded
-  }
+namespace HaloWarsTools;
 
-  public struct MeshExportOptions {
-    public MeshNormalExportMode NormalExportMode;
-    public bool InvertNormals;
-    public bool ReverseFaceWinding;
-    public Matrix4x4 Matrix;
+public enum MeshNormalExportMode {
+  Unchanged,
+  CalculateNormalsSmoothShaded,
+  CalculateNormalsFlatShaded
+}
 
-    public MeshExportOptions(Matrix4x4 matrix,
-                             MeshNormalExportMode normalExportMode = MeshNormalExportMode.Unchanged,
-                             bool invertNormals = false,
-                             bool reverseFaceWinding = false) {
+public struct MeshExportOptions {
+  public MeshNormalExportMode NormalExportMode;
+  public bool InvertNormals;
+  public bool ReverseFaceWinding;
+  public Matrix4x4 Matrix;
+
+  public MeshExportOptions(Matrix4x4 matrix,
+                           MeshNormalExportMode normalExportMode = MeshNormalExportMode.Unchanged,
+                           bool invertNormals = false,
+                           bool reverseFaceWinding = false) {
       Matrix = matrix;
       NormalExportMode = normalExportMode;
       InvertNormals = invertNormals;
       ReverseFaceWinding = reverseFaceWinding;
     }
 
-    public static MeshExportOptions Default =
-        new MeshExportOptions(Matrix4x4.Identity, MeshNormalExportMode.Unchanged, false, false);
-  }
+  public static MeshExportOptions Default =
+      new MeshExportOptions(Matrix4x4.Identity, MeshNormalExportMode.Unchanged, false, false);
+}
 
-  public class GenericMesh {
-    public GenericMesh() : this(MeshExportOptions.Default) { }
+public class GenericMesh {
+  public GenericMesh() : this(MeshExportOptions.Default) { }
 
-    public GenericMesh(MeshExportOptions options) {
+  public GenericMesh(MeshExportOptions options) {
       ExportOptions = options;
       Vertices = [];
       Normals = [];
@@ -43,14 +44,14 @@ namespace HaloWarsTools {
       Faces = [];
     }
 
-    private bool exportOptionsApplied;
-    public MeshExportOptions ExportOptions;
-    public List<Vector3> Vertices;
-    public List<Vector3> Normals;
-    public List<Vector3> TexCoords;
-    public List<GenericFace> Faces;
+  private bool exportOptionsApplied;
+  public MeshExportOptions ExportOptions;
+  public List<Vector3> Vertices;
+  public List<Vector3> Normals;
+  public List<Vector3> TexCoords;
+  public List<GenericFace> Faces;
 
-    public void ApplyExportOptions(MeshExportOptions options) {
+  public void ApplyExportOptions(MeshExportOptions options) {
       if (!exportOptionsApplied || !options.Equals(ExportOptions)) {
         // If these settings haven't already been applied
 
@@ -75,7 +76,7 @@ namespace HaloWarsTools {
       }
     }
 
-    public void AddMesh(GenericMesh other, Matrix4x4 transform) {
+  public void AddMesh(GenericMesh other, Matrix4x4 transform) {
       int offset = Vertices.Count;
 
       var newVerts = other.Vertices.Select(vertex => Vector3.Transform(vertex, transform));
@@ -88,7 +89,7 @@ namespace HaloWarsTools {
       Faces.AddRange(newFaces);
     }
 
-    public bool Export(string filename, GenericMeshExportFormat format) {
+  public bool Export(string filename, GenericMeshExportFormat format) {
       ApplyExportOptions(ExportOptions);
 
       return format switch {
@@ -97,11 +98,11 @@ namespace HaloWarsTools {
       };
     }
 
-    public GenericMeshSection[] GetMeshSections() {
+  public GenericMeshSection[] GetMeshSections() {
       return Faces.GroupBy(face => face.Section).Select(group => group.First().Section).ToArray();
     }
 
-    private bool ExportObj(string filename) {
+  private bool ExportObj(string filename) {
       int bufferSize = 1024 * 1024; // 1 mb
       Directory.CreateDirectory(Path.GetDirectoryName(filename));
       using StreamWriter meshWriter =
@@ -168,7 +169,7 @@ namespace HaloWarsTools {
       return true;
     }
 
-    public void RecalculateNormalsFlatShaded() {
+  public void RecalculateNormalsFlatShaded() {
       var verticesCopy = new List<Vector3>(Vertices);
       var uvsCopy = new List<Vector3>(TexCoords);
       Vertices.Clear();
@@ -195,7 +196,7 @@ namespace HaloWarsTools {
       }
     }
 
-    public void RecalculateNormalsSmoothShaded() {
+  public void RecalculateNormalsSmoothShaded() {
       var vertexMap = CalculateVertexIndexToFaceIndexMap();
       Normals.Clear();
 
@@ -218,15 +219,15 @@ namespace HaloWarsTools {
       }
     }
 
-    private string GetObjVectorString(Vector3 vector) {
+  private string GetObjVectorString(Vector3 vector) {
       return $"{GetObjFloatString(vector.X)} {GetObjFloatString(vector.Y)} {GetObjFloatString(vector.Z)}";
     }
 
-    private string GetObjFloatString(float value) {
+  private string GetObjFloatString(float value) {
       return value.ToString("0.######");
     }
 
-    private string GetObjFaceString(int index) {
+  private string GetObjFaceString(int index) {
       bool hasNormal = index < Normals.Count;
       bool hasTexCoord = index < TexCoords.Count;
       string indexStr = (index + 1).ToString();
@@ -242,7 +243,7 @@ namespace HaloWarsTools {
       return indexStr;
     }
 
-    public Dictionary<int, List<int>> CalculateVertexIndexToFaceIndexMap() {
+  public Dictionary<int, List<int>> CalculateVertexIndexToFaceIndexMap() {
       var map = new Dictionary<int, List<int>>();
       for (int i = 0; i < Faces.Count; i++) {
         AssociateVertexWithFace(Faces[i].A, i, map);
@@ -253,7 +254,7 @@ namespace HaloWarsTools {
       return map;
     }
 
-    private void AssociateVertexWithFace(int vertexIndex, int faceIndex, Dictionary<int, List<int>> map) {
+  private void AssociateVertexWithFace(int vertexIndex, int faceIndex, Dictionary<int, List<int>> map) {
       if (!map.ContainsKey(vertexIndex)) {
         map.Add(vertexIndex, []);
       }
@@ -262,22 +263,22 @@ namespace HaloWarsTools {
         map[vertexIndex].Add(faceIndex);
       }
     }
-  }
+}
 
-  public class GenericMeshSection {
-    public GenericMeshSection(string name) {
+public class GenericMeshSection {
+  public GenericMeshSection(string name) {
       Name = name;
     }
 
-    public string Name;
-  }
+  public string Name;
+}
 
-  public enum GenericMeshExportFormat {
-    Obj
-  }
+public enum GenericMeshExportFormat {
+  Obj
+}
 
-  public struct GenericFace {
-    public GenericFace(int a, int b, int c, GenericMaterial material, GenericMeshSection section) {
+public struct GenericFace {
+  public GenericFace(int a, int b, int c, GenericMaterial material, GenericMeshSection section) {
       A = a;
       B = b;
       C = c;
@@ -285,47 +286,46 @@ namespace HaloWarsTools {
       Section = section;
     }
 
-    public Vector3 CalculateNormal(List<Vector3> vertices) {
+  public Vector3 CalculateNormal(List<Vector3> vertices) {
       return CalculateNormal(vertices[A], vertices[B], vertices[C]);
     }
 
-    public static Vector3 CalculateNormal(Vector3 a, Vector3 b, Vector3 c) {
+  public static Vector3 CalculateNormal(Vector3 a, Vector3 b, Vector3 c) {
       var u = b - a;
       var v = c - a;
       return Vector3.Normalize(Vector3.Cross(u, v));
     }
 
-    public static GenericFace OffsetIndices(GenericFace initialValue, int offset) {
+  public static GenericFace OffsetIndices(GenericFace initialValue, int offset) {
       return new GenericFace(initialValue.A + offset, initialValue.B + offset, initialValue.C + offset,
                              initialValue.Material, initialValue.Section);
     }
 
-    public static GenericFace ReverseWinding(GenericFace initialValue) {
+  public static GenericFace ReverseWinding(GenericFace initialValue) {
       return new GenericFace(initialValue.A, initialValue.C, initialValue.B, initialValue.Material,
                              initialValue.Section);
     }
 
-    public int A;
-    public int B;
-    public int C;
-    public GenericMaterial Material;
-    public GenericMeshSection Section;
-  }
+  public int A;
+  public int B;
+  public int C;
+  public GenericMaterial Material;
+  public GenericMeshSection Section;
+}
 
-  public class GenericMaterial {
-    public GenericMaterial(string name) {
+public class GenericMaterial {
+  public GenericMaterial(string name) {
       Name = name;
       Textures = new Dictionary<GenericMaterialTextureType, string>();
     }
 
-    public string Name;
-    public GenericMaterialTextureType Type;
-    public Dictionary<GenericMaterialTextureType, string> Textures;
-  }
+  public string Name;
+  public GenericMaterialTextureType Type;
+  public Dictionary<GenericMaterialTextureType, string> Textures;
+}
 
-  public enum GenericMaterialTextureType {
-    Albedo,
-    Opacity,
-    AmbientOcclusion
-  }
+public enum GenericMaterialTextureType {
+  Albedo,
+  Opacity,
+  AmbientOcclusion
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2019 SceneGate
+﻿// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,20 +17,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileFormat
-{
-    using System;
+namespace Yarhl.FileFormat;
 
+using System;
+
+/// <summary>
+/// Metadata associated to a IConverter interface.
+/// </summary>
+public class ConverterMetadata : IExportMetadata
+{
     /// <summary>
-    /// Metadata associated to a IConverter interface.
+    /// Initializes a new instance of the <see cref="ConverterMetadata" /> class.
     /// </summary>
-    public class ConverterMetadata : IExportMetadata
+    public ConverterMetadata()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConverterMetadata" /> class.
-        /// </summary>
-        public ConverterMetadata()
-        {
             // MEF should always set these properties, so they won't be null.
             // We set some initial values to ensure later they are not set to null.
             Name = "<invalid>";
@@ -39,38 +39,38 @@ namespace Yarhl.FileFormat
             InternalDestinations = Type.EmptyTypes;
         }
 
-        /// <summary>
-        /// Gets or sets the full name of the type. Shortcut of Type.FullName.
-        /// </summary>
-        /// <value>The full name of the type.</value>
-        public string Name { get; set; }
+    /// <summary>
+    /// Gets or sets the full name of the type. Shortcut of Type.FullName.
+    /// </summary>
+    /// <value>The full name of the type.</value>
+    public string Name { get; set; }
 
-        /// <summary>
-        /// Gets or sets the type of class implementing the converter.
-        /// </summary>
-        /// <value>Type of the converter.</value>
-        public Type Type { get; set; }
+    /// <summary>
+    /// Gets or sets the type of class implementing the converter.
+    /// </summary>
+    /// <value>Type of the converter.</value>
+    public Type Type { get; set; }
 
-        /// <summary>
-        /// Gets or sets a single type or list of types that the converter
-        /// can convert from.
-        /// </summary>
-        /// <value>Single or list of types for conversion.</value>
-        public object InternalSources { get; set; }
+    /// <summary>
+    /// Gets or sets a single type or list of types that the converter
+    /// can convert from.
+    /// </summary>
+    /// <value>Single or list of types for conversion.</value>
+    public object InternalSources { get; set; }
 
-        /// <summary>
-        /// Gets or sets a single type or list of types the converter can
-        /// convert to.
-        /// </summary>
-        /// <value>Single or list of types the converter can convert to.</value>
-        public object InternalDestinations { get; set; }
+    /// <summary>
+    /// Gets or sets a single type or list of types the converter can
+    /// convert to.
+    /// </summary>
+    /// <value>Single or list of types the converter can convert to.</value>
+    public object InternalDestinations { get; set; }
 
-        /// <summary>
-        /// Gets a list of source types that can convert from.
-        /// </summary>
-        /// <returns>List of source types that can convert from.</returns>
-        public Type[] GetSources()
-        {
+    /// <summary>
+    /// Gets a list of source types that can convert from.
+    /// </summary>
+    /// <returns>List of source types that can convert from.</returns>
+    public Type[] GetSources()
+    {
             if (InternalSources is not Type[] sourceList) {
                 sourceList = [(Type)InternalSources];
             }
@@ -78,12 +78,12 @@ namespace Yarhl.FileFormat
             return sourceList;
         }
 
-        /// <summary>
-        /// Gets a list of destination types it can convert to.
-        /// </summary>
-        /// <returns>Destination types it can convert to.</returns>
-        public Type[] GetDestinations()
-        {
+    /// <summary>
+    /// Gets a list of destination types it can convert to.
+    /// </summary>
+    /// <returns>Destination types it can convert to.</returns>
+    public Type[] GetDestinations()
+    {
             if (InternalDestinations is not Type[] destList) {
                 destList = [(Type)InternalDestinations];
             }
@@ -91,14 +91,14 @@ namespace Yarhl.FileFormat
             return destList;
         }
 
-        /// <summary>
-        /// Check if the associated converter can convert from a given type.
-        /// It checks applying covariance rules.
-        /// </summary>
-        /// <param name="source">Source type for conversion.</param>
-        /// <returns>If this converter can realize the operation.</returns>
-        public bool CanConvert(Type source)
-        {
+    /// <summary>
+    /// Check if the associated converter can convert from a given type.
+    /// It checks applying covariance rules.
+    /// </summary>
+    /// <param name="source">Source type for conversion.</param>
+    /// <returns>If this converter can realize the operation.</returns>
+    public bool CanConvert(Type source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -112,16 +112,16 @@ namespace Yarhl.FileFormat
             return false;
         }
 
-        /// <summary>
-        /// Check if the associated converter can convert from a given type
-        /// into another. It checks applying covariance and contravariance
-        /// rules.
-        /// </summary>
-        /// <param name="source">Source type for conversion.</param>
-        /// <param name="dest">Destination type for conversion.</param>
-        /// <returns>If this converter can realize the operation.</returns>
-        public bool CanConvert(Type source, Type dest)
-        {
+    /// <summary>
+    /// Check if the associated converter can convert from a given type
+    /// into another. It checks applying covariance and contravariance
+    /// rules.
+    /// </summary>
+    /// <param name="source">Source type for conversion.</param>
+    /// <param name="dest">Destination type for conversion.</param>
+    /// <returns>If this converter can realize the operation.</returns>
+    public bool CanConvert(Type source, Type dest)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -141,5 +141,4 @@ namespace Yarhl.FileFormat
 
             return false;
         }
-    }
 }

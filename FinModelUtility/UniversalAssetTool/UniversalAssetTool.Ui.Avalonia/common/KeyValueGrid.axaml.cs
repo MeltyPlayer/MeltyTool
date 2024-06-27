@@ -6,10 +6,11 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.common {
-  public class KeyValueGridViewModelForDesigner
-      : KeyValueGridViewModel {
-    public KeyValueGridViewModelForDesigner() {
+namespace uni.ui.avalonia.common;
+
+public class KeyValueGridViewModelForDesigner
+    : KeyValueGridViewModel {
+  public KeyValueGridViewModelForDesigner() {
       this.KeyValuePairs = [
           ("Foo", "Bar"),
           ("Number", 123),
@@ -22,30 +23,29 @@ namespace uni.ui.avalonia.common {
            "This text\nhas some newlines\nthat should be shown."),
       ];
     }
+}
+
+public class KeyValueGridViewModel : ViewModelBase {
+  private ObservableCollection<KeyValuePairViewModel> keyValuePairs_ = [];
+
+  public ObservableCollection<KeyValuePairViewModel> KeyValuePairs {
+    get => this.keyValuePairs_;
+    set => this.RaiseAndSetIfChanged(ref this.keyValuePairs_, value);
   }
+}
 
-  public class KeyValueGridViewModel : ViewModelBase {
-    private ObservableCollection<KeyValuePairViewModel> keyValuePairs_ = [];
+public class KeyValuePairViewModel(string key, string? value)
+    : ViewModelBase {
+  public string Key => key;
+  public string? Value => value;
 
-    public ObservableCollection<KeyValuePairViewModel> KeyValuePairs {
-      get => this.keyValuePairs_;
-      set => this.RaiseAndSetIfChanged(ref this.keyValuePairs_, value);
-    }
-  }
+  public static implicit operator KeyValuePairViewModel(
+      (string key, object? value) tuple)
+    => new(tuple.key, tuple.value?.ToString());
+}
 
-  public class KeyValuePairViewModel(string key, string? value)
-      : ViewModelBase {
-    public string Key => key;
-    public string? Value => value;
-
-    public static implicit operator KeyValuePairViewModel(
-        (string key, object? value) tuple)
-      => new(tuple.key, tuple.value?.ToString());
-  }
-
-  public partial class KeyValueGrid : UserControl {
-    public KeyValueGrid() {
+public partial class KeyValueGrid : UserControl {
+  public KeyValueGrid() {
       InitializeComponent();
     }
-  }
 }

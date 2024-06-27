@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 
-namespace HaloWarsTools {
-  public abstract class HWBinaryResource : HWResource {
-    protected HWBinaryResourceChunk[] Chunks { get; private set; }
+namespace HaloWarsTools;
 
-    protected override void Load(byte[] bytes) {
+public abstract class HWBinaryResource : HWResource {
+  protected HWBinaryResourceChunk[] Chunks { get; private set; }
+
+  protected override void Load(byte[] bytes) {
       uint headerSize = BinaryUtils.ReadUInt32BigEndian(bytes, 4);
       ushort numChunks = BinaryUtils.ReadUInt16BigEndian(bytes, 16);
       int chunkHeaderSize = 24;
@@ -25,7 +26,7 @@ namespace HaloWarsTools {
       this.Chunks = chunks;
     }
 
-    protected static HWBinaryResourceChunkType ParseChunkType(ulong type) {
+  protected static HWBinaryResourceChunkType ParseChunkType(ulong type) {
       if (Enum.TryParse(type.ToString(),
                         out HWBinaryResourceChunkType result)) {
         return result;
@@ -34,12 +35,11 @@ namespace HaloWarsTools {
       return HWBinaryResourceChunkType.Unknown;
     }
 
-    protected HWBinaryResourceChunk[] GetAllChunksOfType(
-        HWBinaryResourceChunkType type)
-      => Chunks.Where(chunk => chunk.Type == type).ToArray();
+  protected HWBinaryResourceChunk[] GetAllChunksOfType(
+      HWBinaryResourceChunkType type)
+    => Chunks.Where(chunk => chunk.Type == type).ToArray();
 
-    protected HWBinaryResourceChunk GetFirstChunkOfType(
-        HWBinaryResourceChunkType type)
-      => Chunks.FirstOrDefault(chunk => chunk.Type == type);
-  }
+  protected HWBinaryResourceChunk GetFirstChunkOfType(
+      HWBinaryResourceChunkType type)
+    => Chunks.FirstOrDefault(chunk => chunk.Type == type);
 }

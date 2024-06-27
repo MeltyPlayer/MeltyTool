@@ -20,41 +20,41 @@
 
 using Yarhl.FileSystem;
 
-namespace SceneGate.Ekona.Containers.Rom
+namespace SceneGate.Ekona.Containers.Rom;
+
+/// <summary>
+/// NDS cartridge file system.
+/// </summary>
+/// <remarks>
+/// <para>The container hierarchy is:</para>
+/// <list type="table">
+/// <listheader><term>Node path</term><description>Description</description></listheader>
+/// <item><term>/system</term><description>ROM information and program files.</description></item>
+/// <item><term>/system/info</term><description>Program information.</description></item>
+/// <item><term>/system/copyright_logo</term><description>Copyright logo.</description></item>
+/// <item><term>/system/banner/</term><description>Program banner.</description></item>
+/// <item><term>/system/banner/info</term><description>Program banner content.</description></item>
+/// <item><term>/system/banner/icon</term><description>Program icon.</description></item>
+/// <item><term>/system/banner/animated</term><description>Animated program icon.</description></item>
+/// <item><term>/system/banner/animated/bitmapX</term><description>Bitmap X (0-7) for the animated icon.</description></item>
+/// <item><term>/system/banner/animated/palettes</term><description>Palettes (0-7) for the animated icon.</description></item>
+/// <item><term>/system/banner/animated/animation</term><description>Animation icon information.</description></item>
+/// <item><term>/system/arm9</term><description>Program executable for ARM9 CPU.</description></item>
+/// <item><term>/system/overlays9</term><description>Overlay libraries for ARM9 CPU.</description></item>
+/// <item><term>/system/overlays9/overlay_X</term><description>Overlay X for ARM9 CPU.</description></item>
+/// <item><term>/system/arm7</term><description>Program executable for ARM7 CPU.</description></item>
+/// <item><term>/system/overlays7</term><description>Overlay libraries for ARM7 CPU.</description></item>
+/// <item><term>/system/overlays7/overlay7_X</term><description>Overlay X for ARM7 CPU.</description></item>
+/// <item><term>/data</term><description>Program data files.</description></item>
+/// </list>
+/// </remarks>
+public class NitroRom : NodeContainerFormat
 {
     /// <summary>
-    /// NDS cartridge file system.
+    /// Initializes a new instance of the <see cref="NitroRom"/> class.
     /// </summary>
-    /// <remarks>
-    /// <para>The container hierarchy is:</para>
-    /// <list type="table">
-    /// <listheader><term>Node path</term><description>Description</description></listheader>
-    /// <item><term>/system</term><description>ROM information and program files.</description></item>
-    /// <item><term>/system/info</term><description>Program information.</description></item>
-    /// <item><term>/system/copyright_logo</term><description>Copyright logo.</description></item>
-    /// <item><term>/system/banner/</term><description>Program banner.</description></item>
-    /// <item><term>/system/banner/info</term><description>Program banner content.</description></item>
-    /// <item><term>/system/banner/icon</term><description>Program icon.</description></item>
-    /// <item><term>/system/banner/animated</term><description>Animated program icon.</description></item>
-    /// <item><term>/system/banner/animated/bitmapX</term><description>Bitmap X (0-7) for the animated icon.</description></item>
-    /// <item><term>/system/banner/animated/palettes</term><description>Palettes (0-7) for the animated icon.</description></item>
-    /// <item><term>/system/banner/animated/animation</term><description>Animation icon information.</description></item>
-    /// <item><term>/system/arm9</term><description>Program executable for ARM9 CPU.</description></item>
-    /// <item><term>/system/overlays9</term><description>Overlay libraries for ARM9 CPU.</description></item>
-    /// <item><term>/system/overlays9/overlay_X</term><description>Overlay X for ARM9 CPU.</description></item>
-    /// <item><term>/system/arm7</term><description>Program executable for ARM7 CPU.</description></item>
-    /// <item><term>/system/overlays7</term><description>Overlay libraries for ARM7 CPU.</description></item>
-    /// <item><term>/system/overlays7/overlay7_X</term><description>Overlay X for ARM7 CPU.</description></item>
-    /// <item><term>/data</term><description>Program data files.</description></item>
-    /// </list>
-    /// </remarks>
-    public class NitroRom : NodeContainerFormat
+    public NitroRom()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NitroRom"/> class.
-        /// </summary>
-        public NitroRom()
-        {
             Node system = NodeFactory.CreateContainer("system");
             system.Add(new Node("info", new ProgramInfo()));
             system.Add(new Node("copyright_logo"));
@@ -69,30 +69,29 @@ namespace SceneGate.Ekona.Containers.Rom
             Root.Add(data);
         }
 
-        /// <summary>
-        /// Gets the Nitro constant in little endian: 2-10-6 (NiToRo in Japanese numbers) + 0xCODE.
-        /// It's a marker for the program code to find constants.
-        /// </summary>
-        public static uint NitroCode => 0xDEC00621;
+    /// <summary>
+    /// Gets the Nitro constant in little endian: 2-10-6 (NiToRo in Japanese numbers) + 0xCODE.
+    /// It's a marker for the program code to find constants.
+    /// </summary>
+    public static uint NitroCode => 0xDEC00621;
 
-        /// <summary>
-        /// Gets the container with the system files of the program.
-        /// </summary>
-        public Node System => Root.Children["system"];
+    /// <summary>
+    /// Gets the container with the system files of the program.
+    /// </summary>
+    public Node System => Root.Children["system"];
 
-        /// <summary>
-        /// Gets the container with the program data files.
-        /// </summary>
-        public Node Data => Root.Children["data"];
+    /// <summary>
+    /// Gets the container with the program data files.
+    /// </summary>
+    public Node Data => Root.Children["data"];
 
-        /// <summary>
-        /// Gets the information of the program.
-        /// </summary>
-        public ProgramInfo Information => System?.Children["info"]?.GetFormatAs<ProgramInfo>();
+    /// <summary>
+    /// Gets the information of the program.
+    /// </summary>
+    public ProgramInfo Information => System?.Children["info"]?.GetFormatAs<ProgramInfo>();
 
-        /// <summary>
-        /// Gets the banner of the program.
-        /// </summary>
-        public Banner Banner => System?.Children["banner"]?.Children["info"]?.GetFormatAs<Banner>();
-    }
+    /// <summary>
+    /// Gets the banner of the program.
+    /// </summary>
+    public Banner Banner => System?.Children["banner"]?.Children["info"]?.GetFormatAs<Banner>();
 }

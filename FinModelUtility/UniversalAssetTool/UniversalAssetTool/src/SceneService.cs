@@ -13,9 +13,10 @@ using fin.ui.rendering.gl.model;
 using uni.api;
 using uni.ui.winforms.common.fileTreeView;
 
-namespace uni {
-  public static class SceneService {
-    static SceneService() {
+namespace uni;
+
+public static class SceneService {
+  static SceneService() {
       FileBundleService.OnFileBundleOpened
           += (fileTreeLeafNode, fileBundle) => {
                if (fileBundle is ISceneFileBundle sceneFileBundle) {
@@ -40,15 +41,15 @@ namespace uni {
              };
     }
 
-    public static event Action<IFileTreeLeafNode?, IScene> OnSceneOpened;
+  public static event Action<IFileTreeLeafNode?, IScene> OnSceneOpened;
 
-    public static void OpenScene(IFileTreeLeafNode? fileTreeLeafNode,
-                                 IScene scene)
-      => OnSceneOpened?.Invoke(fileTreeLeafNode, scene);
+  public static void OpenScene(IFileTreeLeafNode? fileTreeLeafNode,
+                               IScene scene)
+    => OnSceneOpened?.Invoke(fileTreeLeafNode, scene);
 
-    private static void InjectDefaultLightingForScene_(
-        IScene scene,
-        ISceneObject lightingOwner) {
+  private static void InjectDefaultLightingForScene_(
+      IScene scene,
+      ISceneObject lightingOwner) {
       if (scene.Lighting != null) {
         return;
       }
@@ -176,5 +177,4 @@ namespace uni {
                                        });
       }
     }
-  }
 }

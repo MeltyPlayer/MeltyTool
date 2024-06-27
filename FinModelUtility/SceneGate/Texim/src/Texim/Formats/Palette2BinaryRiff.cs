@@ -17,28 +17,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats
+namespace Texim.Formats;
+
+using System;
+using Colors;
+using Palettes;
+using Yarhl.FileFormat;
+using Yarhl.IO;
+
+public class Palette2BinaryRiff :
+    IInitializer<bool>, IConverter<IPalette, BinaryFormat>
 {
-    using System;
-    using Colors;
-    using Palettes;
-    using Yarhl.FileFormat;
-    using Yarhl.IO;
+    public static int Version => 03_00;
 
-    public class Palette2BinaryRiff :
-        IInitializer<bool>, IConverter<IPalette, BinaryFormat>
+    public bool GimpCompatibility { get; set; }
+
+    public void Initialize(bool parameters)
     {
-        public static int Version => 03_00;
-
-        public bool GimpCompatibility { get; set; }
-
-        public void Initialize(bool parameters)
-        {
             GimpCompatibility = parameters;
         }
 
-        public BinaryFormat Convert(IPalette source)
-        {
+    public BinaryFormat Convert(IPalette source)
+    {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -65,5 +65,4 @@ namespace Texim.Formats
 
             return binary;
         }
-    }
 }

@@ -14,10 +14,11 @@ using fin.model.io.exporters.assimp.indirect;
 using uni.ui;
 using uni.ui.winforms;
 
-namespace uni.cli {
-  public class Cli {
-    [STAThread]
-    public static int Main(string[] args) {
+namespace uni.cli;
+
+public class Cli {
+  [STAThread]
+  public static int Main(string[] args) {
       IEnumerable<Error>? errors = null;
 
       var massExporterOptionTypes =
@@ -36,14 +37,14 @@ namespace uni.cli {
                       })
                       .ToArray();
 
-      /*
-                  var helpText = new HelpText {
-                          Heading = HeadingInfo.Default,
-                          Copyright = CopyrightInfo.Default,
-                          AdditionalNewLineAfterOption = true,
-                      }.AddVerbs(verbTypes)
-                       .ToString();
-       */
+     /*
+                  ar helpText = new HelpText {
+                          eading = HeadingInfo.Default,
+                          opyright = CopyrightInfo.Default,
+                          dditionalNewLineAfterOption = true,
+                      .AddVerbs(verbTypes)
+                       ToString();
+       //
 
       ConsoleUtil.ShowConsole();
       var parserResult =
@@ -151,8 +152,8 @@ namespace uni.cli {
                   });
                 })
                 .WithParsed((DebugOptions _) => {
-                  /*var window = new DebugWindow();
-                  window.Run();*/
+                 /*var window = new DebugWindow();
+                  indow.Run();*//
                   //new DebugProgram().Run();
                 })
                 .WithNotParsed(parseErrors => errors = parseErrors);
@@ -167,7 +168,7 @@ namespace uni.cli {
       return 0;
     }
 
-    private static void PrintPluginInfo_(IModelImporterPlugin plugin) {
+  private static void PrintPluginInfo_(IModelImporterPlugin plugin) {
       var width = 80;
 
       {
@@ -239,5 +240,4 @@ namespace uni.cli {
 
       Console.WriteLine();
     }
-  }
 }

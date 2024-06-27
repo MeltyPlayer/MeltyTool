@@ -11,12 +11,13 @@ using schema.binary;
 
 using Version = grezzo.schema.cmb.Version;
 
-namespace grezzo {
-  public class ShpaGoldenTests {
-    [Test]
-    [TestCaseSource(nameof(GetGoldenFiles_))]
-    public async Task TestExportsGoldenAsExpected(
-        IReadOnlySystemFile goldenFile) {
+namespace grezzo;
+
+public class ShpaGoldenTests {
+  [Test]
+  [TestCaseSource(nameof(GetGoldenFiles_))]
+  public async Task TestExportsGoldenAsExpected(
+      IReadOnlySystemFile goldenFile) {
       var goldenGameDir = goldenFile.AssertGetParent();
 
       CmbHeader.Version = goldenGameDir.Name switch {
@@ -29,7 +30,7 @@ namespace grezzo {
           assertExactEndPositions: false);
     }
 
-    private static IReadOnlySystemFile[] GetGoldenFiles_() {
+  private static IReadOnlySystemFile[] GetGoldenFiles_() {
       var rootGoldenDirectory
           = GoldenAssert
             .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
@@ -38,5 +39,4 @@ namespace grezzo {
                                 .SelectMany(dir => dir.GetExistingFiles())
                                 .ToArray();
     }
-  }
 }

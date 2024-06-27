@@ -6,11 +6,12 @@ using uni.games;
 using uni.platforms.gcn.tools;
 using uni.util.cmd;
 
-namespace uni.platforms.threeDs.tools.ctrtool {
-  public static partial class Ctrtool {
-    public class CciExtractor {
-      public bool Run(IReadOnlySystemFile romFile,
-                      out IFileHierarchy hierarchy) {
+namespace uni.platforms.threeDs.tools.ctrtool;
+
+public static partial class Ctrtool {
+  public class CciExtractor {
+    public bool Run(IReadOnlySystemFile romFile,
+                    out IFileHierarchy hierarchy) {
         Asserts.True(
             romFile.Exists,
             $"Cannot dump ROM because it does not exist: {romFile}");
@@ -28,8 +29,8 @@ namespace uni.platforms.threeDs.tools.ctrtool {
         return didChange;
       }
 
-      private void DumpRom_(IReadOnlySystemFile romFile,
-                            ISystemDirectory dstDirectory) {
+    private void DumpRom_(IReadOnlySystemFile romFile,
+                          ISystemDirectory dstDirectory) {
         var logger = Logging.Create<CciExtractor>();
         logger.LogInformation($"Dumping ROM {romFile}...");
 
@@ -43,6 +44,5 @@ namespace uni.platforms.threeDs.tools.ctrtool {
                       $"\"{dstDirectory.FullPath}\"");
             });
       }
-    }
   }
 }

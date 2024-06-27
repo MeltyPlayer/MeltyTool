@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace UoT {
-  public static class BetterFileNames {
-    private static readonly IDictionary<string, string> impl_ =
-        new Dictionary<string, string>();
+namespace UoT;
 
-    // TODO: Add ability to sort into categories too?
-    static BetterFileNames() {
+public static class BetterFileNames {
+  private static readonly IDictionary<string, string> impl_ =
+      new Dictionary<string, string>();
+
+  // TODO: Add ability to sort into categories too?
+  static BetterFileNames() {
       BetterFileNames.Add(
           ("object_am", "Armos"),
           ("object_Bb", "Bubble"),
@@ -141,15 +142,14 @@ namespace UoT {
       );
     }
 
-    public static string Get(string filename) {
+  public static string Get(string filename) {
       BetterFileNames.impl_.TryGetValue(filename, out var betterFilename);
       return betterFilename ?? filename;
     }
 
-    private static void Add(params (string, string)[] pairs) {
+  private static void Add(params (string, string)[] pairs) {
       foreach (var pair in pairs) {
         BetterFileNames.impl_.Add(pair.Item1, pair.Item2);
       }
     }
-  }
 }

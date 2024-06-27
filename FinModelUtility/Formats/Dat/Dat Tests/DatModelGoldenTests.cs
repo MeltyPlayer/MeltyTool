@@ -7,28 +7,28 @@ using dat.api;
 
 using fin.testing;
 
-namespace dat {
-  public class DatModelGoldenTests
-      : BModelGoldenTests<DatModelFileBundle, DatModelImporter> {
-    [Test]
-    [TestCaseSource(nameof(GetGoldenDirectories_))]
-    public void TestExportsGoldenAsExpected(
-        IFileHierarchyDirectory goldenDirectory)
-      => this.AssertGolden(goldenDirectory);
+namespace dat;
 
-    public override DatModelFileBundle GetFileBundleFromDirectory(
-        IFileHierarchyDirectory directory)
-      => new() {
-          GameName = directory.Parent.Parent.Name,
-          PrimaryDatFile = directory.FilesWithExtension(".dat").Single(),
-      };
+public class DatModelGoldenTests
+    : BModelGoldenTests<DatModelFileBundle, DatModelImporter> {
+  [Test]
+  [TestCaseSource(nameof(GetGoldenDirectories_))]
+  public void TestExportsGoldenAsExpected(
+      IFileHierarchyDirectory goldenDirectory)
+    => this.AssertGolden(goldenDirectory);
 
-    private static IFileHierarchyDirectory[] GetGoldenDirectories_()
-      => GoldenAssert
-         .GetGoldenDirectories(
-             GoldenAssert
-                 .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
-         .SelectMany(dir => dir.GetExistingSubdirs())
-         .ToArray();
-  }
+  public override DatModelFileBundle GetFileBundleFromDirectory(
+      IFileHierarchyDirectory directory)
+    => new() {
+        GameName = directory.Parent.Parent.Name,
+        PrimaryDatFile = directory.FilesWithExtension(".dat").Single(),
+    };
+
+  private static IFileHierarchyDirectory[] GetGoldenDirectories_()
+    => GoldenAssert
+       .GetGoldenDirectories(
+           GoldenAssert
+               .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
+       .SelectMany(dir => dir.GetExistingSubdirs())
+       .ToArray();
 }

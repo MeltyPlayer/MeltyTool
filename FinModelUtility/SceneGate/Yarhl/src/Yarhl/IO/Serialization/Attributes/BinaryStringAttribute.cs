@@ -1,4 +1,4 @@
-// Copyright (c) 2020 SceneGate
+﻿// Copyright (c) 2020 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,21 +17,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO.Serialization.Attributes
-{
-    using System;
+namespace Yarhl.IO.Serialization.Attributes;
 
+using System;
+
+/// <summary>
+/// Define how to read and write a string value.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class BinaryStringAttribute : Attribute
+{
     /// <summary>
-    /// Define how to read and write a string value.
+    /// Initializes a new instance of the <see cref="BinaryStringAttribute"/> class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property)]
-    public sealed class BinaryStringAttribute : Attribute
+    public BinaryStringAttribute()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BinaryStringAttribute"/> class.
-        /// </summary>
-        public BinaryStringAttribute()
-        {
             CodePage = -1;
             Terminator = "\0";
             FixedSize = -1;
@@ -39,48 +39,47 @@ namespace Yarhl.IO.Serialization.Attributes
             SizeType = null;
         }
 
-        /// <summary>
-        /// Gets or sets the string code page.
-        /// <remarks>Set to -1 to use the reader/writer encoding.</remarks>
-        /// </summary>
-        public int CodePage {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets or sets the string code page.
+    /// <remarks>Set to -1 to use the reader/writer encoding.</remarks>
+    /// </summary>
+    public int CodePage {
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets or sets the string terminator.
-        /// </summary>
-        public string Terminator {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets or sets the string terminator.
+    /// </summary>
+    public string Terminator {
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets or sets the fixed size (in bytes) of the string.
-        /// <remarks>Set to -1 if the string is length variable.</remarks>
-        /// </summary>
-        public int FixedSize {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets or sets the fixed size (in bytes) of the string.
+    /// <remarks>Set to -1 if the string is length variable.</remarks>
+    /// </summary>
+    public int FixedSize {
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets or sets the max size (in bytes) of the string.
-        /// <remarks>Set to -1 if the string has no max size.</remarks>
-        /// </summary>
-        public int MaxSize {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets or sets the max size (in bytes) of the string.
+    /// <remarks>Set to -1 if the string has no max size.</remarks>
+    /// </summary>
+    public int MaxSize {
+        get;
+        set;
+    }
 
-        /// <summary>
-        /// Gets or sets the size value type.
-        /// <remarks>Set to null if string doesn't have the length serialized.</remarks>
-        /// </summary>
-        public Type? SizeType {
-            get;
-            set;
-        }
+    /// <summary>
+    /// Gets or sets the size value type.
+    /// <remarks>Set to null if string doesn't have the length serialized.</remarks>
+    /// </summary>
+    public Type? SizeType {
+        get;
+        set;
     }
 }

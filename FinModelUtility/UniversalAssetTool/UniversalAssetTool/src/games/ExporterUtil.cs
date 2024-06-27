@@ -20,26 +20,27 @@ using uni.model;
 using uni.msg;
 using uni.thirdparty;
 
-namespace uni.games {
-  public static class ExporterUtil {
-    static ExporterUtil() {
+namespace uni.games;
+
+public static class ExporterUtil {
+  static ExporterUtil() {
       ExporterUtil.logger_ = Logging.Create("exportor");
     }
 
-    private static readonly ILogger logger_;
+  private static readonly ILogger logger_;
 
-    public static bool CheckIfFilesAlreadyExist(
-        IEnumerable<ISystemFile> outputFiles,
-        out IReadOnlyList<ISystemFile> existingOutputFiles) {
+  public static bool CheckIfFilesAlreadyExist(
+      IEnumerable<ISystemFile> outputFiles,
+      out IReadOnlyList<ISystemFile> existingOutputFiles) {
       existingOutputFiles =
           outputFiles.Where(file => file.Exists).ToArray();
       return existingOutputFiles.Count > 0;
     }
 
-    public static bool CheckIfModelFileBundlesAlreadyExported(
-        IEnumerable<IAnnotatedFileBundle> modelFileBundles,
-        IReadOnlyList<string> extensions,
-        out IReadOnlyList<IAnnotatedFileBundle> existingModelFileBundles) {
+  public static bool CheckIfModelFileBundlesAlreadyExported(
+      IEnumerable<IAnnotatedFileBundle> modelFileBundles,
+      IReadOnlyList<string> extensions,
+      out IReadOnlyList<IAnnotatedFileBundle> existingModelFileBundles) {
       existingModelFileBundles =
           modelFileBundles
               .Where(mfb => CheckIfModelFileBundleAlreadyExported(
@@ -49,9 +50,9 @@ namespace uni.games {
       return existingModelFileBundles.Count > 0;
     }
 
-    public static bool CheckIfModelFileBundleAlreadyExported(
-        IAnnotatedFileBundle annotatedModelFileBundle,
-        IEnumerable<string> extensions) {
+  public static bool CheckIfModelFileBundleAlreadyExported(
+      IAnnotatedFileBundle annotatedModelFileBundle,
+      IEnumerable<string> extensions) {
       // TODO: Clean this up!!
       var bundle = annotatedModelFileBundle.FileBundle;
       var mainFile = bundle.MainFile;
@@ -75,63 +76,63 @@ namespace uni.games {
       return false;
     }
 
-    public enum ExporterPromptChoice {
-      CANCEL,
-      SKIP_EXISTING,
-      OVERWRITE_EXISTING,
-    }
+  public enum ExporterPromptChoice {
+    CANCEL,
+    SKIP_EXISTING,
+    OVERWRITE_EXISTING,
+  }
 
-    public static void ExportAllForCli<T>(
-        IAnnotatedFileBundleGatherer<T> gatherer,
-        IModelImporter<T> reader)
-        where T : IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(gatherer.GatherFileBundles(),
-                                       reader,
-                                       Config.Instance.ExporterSettings
-                                             .ExportedFormats,
-                                       false);
+  public static void ExportAllForCli<T>(
+      IAnnotatedFileBundleGatherer<T> gatherer,
+      IModelImporter<T> reader)
+      where T : IModelFileBundle
+    => ExporterUtil.ExportAllForCli_(gatherer.GatherFileBundles(),
+                                     reader,
+                                     Config.Instance.ExporterSettings
+                                           .ExportedFormats,
+                                     false);
 
-    public static void ExportAllForCli<T>(
-        IAnnotatedFileBundleGatherer gatherer,
-        IModelImporter<T> reader)
-        where T : IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(
-          gatherer.GatherFileBundles(),
-          reader,
-          Config.Instance.ExporterSettings.ExportedFormats,
-          false);
+  public static void ExportAllForCli<T>(
+      IAnnotatedFileBundleGatherer gatherer,
+      IModelImporter<T> reader)
+      where T : IModelFileBundle
+    => ExporterUtil.ExportAllForCli_(
+        gatherer.GatherFileBundles(),
+        reader,
+        Config.Instance.ExporterSettings.ExportedFormats,
+        false);
 
-    public static void ExportAllOfTypeForCli<T, TSubType>(
-        IAnnotatedFileBundleGatherer<T> gatherer,
-        IModelImporter<TSubType> reader)
-        where T : IFileBundle
-        where TSubType : T, IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(
-          gatherer.GatherFileBundles()
-                  .Where(f => f is IAnnotatedFileBundle<TSubType>)
-                  .Select(f => (f as IAnnotatedFileBundle<TSubType>)!),
-          reader,
-          Config.Instance.ExporterSettings.ExportedFormats,
-          false);
+  public static void ExportAllOfTypeForCli<T, TSubType>(
+      IAnnotatedFileBundleGatherer<T> gatherer,
+      IModelImporter<TSubType> reader)
+      where T : IFileBundle
+      where TSubType : T, IModelFileBundle
+    => ExporterUtil.ExportAllForCli_(
+        gatherer.GatherFileBundles()
+                .Where(f => f is IAnnotatedFileBundle<TSubType>)
+                .Select(f => (f as IAnnotatedFileBundle<TSubType>)!),
+        reader,
+        Config.Instance.ExporterSettings.ExportedFormats,
+        false);
 
-    private static void ExportAllForCli_<T>(
-        IEnumerable<IAnnotatedFileBundle> fileBundles,
-        IModelImporter<T> reader,
-        IReadOnlyList<string> extensions,
-        bool overwriteExistingFiles)
-        where T : IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(
-          fileBundles.WhereIs<IAnnotatedFileBundle, IAnnotatedFileBundle<T>>(),
-          reader,
-          extensions,
-          overwriteExistingFiles);
+  private static void ExportAllForCli_<T>(
+      IEnumerable<IAnnotatedFileBundle> fileBundles,
+      IModelImporter<T> reader,
+      IReadOnlyList<string> extensions,
+      bool overwriteExistingFiles)
+      where T : IModelFileBundle
+    => ExporterUtil.ExportAllForCli_(
+        fileBundles.WhereIs<IAnnotatedFileBundle, IAnnotatedFileBundle<T>>(),
+        reader,
+        extensions,
+        overwriteExistingFiles);
 
-    private static void ExportAllForCli_<T>(
-        IEnumerable<IAnnotatedFileBundle<T>> modelFileBundles,
-        IModelImporter<T> reader,
-        IReadOnlyList<string> extensions,
-        bool overwriteExistingFiles)
-        where T : IModelFileBundle {
+  private static void ExportAllForCli_<T>(
+      IEnumerable<IAnnotatedFileBundle<T>> modelFileBundles,
+      IModelImporter<T> reader,
+      IReadOnlyList<string> extensions,
+      bool overwriteExistingFiles)
+      where T : IModelFileBundle {
       var bundlesArray = modelFileBundles.ToArray();
       Asserts.True(bundlesArray.Length > 0,
                    "Expected to find bundles for the current ROM. Does the file exist, and was it exported correctly?");
@@ -145,14 +146,14 @@ namespace uni.games {
     }
 
 
-    public static void ExportAll<T>(
-        IEnumerable<IAnnotatedFileBundle> fileBundles,
-        IModelImporter<T> reader,
-        IProgress<(float, T?)> progress,
-        CancellationTokenSource cancellationTokenSource,
-        IReadOnlyList<string> extensions,
-        bool overwriteExistingFiles)
-        where T : IModelFileBundle {
+  public static void ExportAll<T>(
+      IEnumerable<IAnnotatedFileBundle> fileBundles,
+      IModelImporter<T> reader,
+      IProgress<(float, T?)> progress,
+      CancellationTokenSource cancellationTokenSource,
+      IReadOnlyList<string> extensions,
+      bool overwriteExistingFiles)
+      where T : IModelFileBundle {
       var fileBundleArray = fileBundles
                             .WhereIs<IAnnotatedFileBundle,
                                 IAnnotatedFileBundle<T>>()
@@ -174,11 +175,11 @@ namespace uni.games {
       progress.Report((1, default));
     }
 
-    public static void Export<T>(IAnnotatedFileBundle<T> modelFileBundle,
-                                 IModelImporter<T> reader,
-                                 IReadOnlyList<string> extensions,
-                                 bool overwriteExistingFile)
-        where T : IModelFileBundle {
+  public static void Export<T>(IAnnotatedFileBundle<T> modelFileBundle,
+                               IModelImporter<T> reader,
+                               IReadOnlyList<string> extensions,
+                               bool overwriteExistingFile)
+      where T : IModelFileBundle {
       ExporterUtil.Export(modelFileBundle,
                           () => reader.Import(
                               modelFileBundle.TypedFileBundle),
@@ -186,11 +187,11 @@ namespace uni.games {
                           overwriteExistingFile);
     }
 
-    public static void Export<T>(IAnnotatedFileBundle<T> threeDFileBundle,
-                                 Func<IModel> loaderHandler,
-                                 IReadOnlyList<string> extensions,
-                                 bool overwriteExistingFile)
-        where T : I3dFileBundle {
+  public static void Export<T>(IAnnotatedFileBundle<T> threeDFileBundle,
+                               Func<IModel> loaderHandler,
+                               IReadOnlyList<string> extensions,
+                               bool overwriteExistingFile)
+      where T : I3dFileBundle {
       var mainFile = Asserts.CastNonnull(threeDFileBundle.FileBundle.MainFile);
 
       var parentOutputDirectory =
@@ -207,29 +208,29 @@ namespace uni.games {
                 overwriteExistingFile);
     }
 
-    public static void Export<T>(T threeDFileBundle,
-                                 Func<IReadOnlyModel> loaderHandler,
-                                 ISystemDirectory outputDirectory,
-                                 IReadOnlyList<string> extensions,
-                                 bool overwriteExistingFile,
-                                 string? overrideName = null)
-        where T : I3dFileBundle
-      => Export(threeDFileBundle,
-                loaderHandler,
-                outputDirectory,
-                extensions.Select(AssimpUtil.GetExportFormatFromExtension)
-                          .ToArray(),
-                overwriteExistingFile,
-                overrideName);
+  public static void Export<T>(T threeDFileBundle,
+                               Func<IReadOnlyModel> loaderHandler,
+                               ISystemDirectory outputDirectory,
+                               IReadOnlyList<string> extensions,
+                               bool overwriteExistingFile,
+                               string? overrideName = null)
+      where T : I3dFileBundle
+    => Export(threeDFileBundle,
+              loaderHandler,
+              outputDirectory,
+              extensions.Select(AssimpUtil.GetExportFormatFromExtension)
+                        .ToArray(),
+              overwriteExistingFile,
+              overrideName);
 
-    public static void Export<T>(
-        T threeDFileBundle,
-        Func<IReadOnlyModel> loaderHandler,
-        ISystemDirectory outputDirectory,
-        IReadOnlyList<ExportFormatDescription> formats,
-        bool overwriteExistingFile,
-        string? overrideName = null)
-        where T : I3dFileBundle {
+  public static void Export<T>(
+      T threeDFileBundle,
+      Func<IReadOnlyModel> loaderHandler,
+      ISystemDirectory outputDirectory,
+      IReadOnlyList<ExportFormatDescription> formats,
+      bool overwriteExistingFile,
+      string? overrideName = null)
+      where T : I3dFileBundle {
       var mainFile = Asserts.CastNonnull(threeDFileBundle.MainFile);
       var name = overrideName ?? mainFile.NameWithoutExtension;
 
@@ -278,5 +279,4 @@ namespace uni.games {
 
       ExporterUtil.logger_.LogInformation(" ");
     }
-  }
 }

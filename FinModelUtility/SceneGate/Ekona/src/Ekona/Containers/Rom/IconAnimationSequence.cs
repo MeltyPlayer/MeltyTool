@@ -21,16 +21,15 @@
 using System.Collections.ObjectModel;
 using Yarhl.FileFormat;
 
-namespace SceneGate.Ekona.Containers.Rom
+namespace SceneGate.Ekona.Containers.Rom;
+
+/// <summary>
+/// Sequence of definition of frames for the ROM animated icon.
+/// </summary>
+public class IconAnimationSequence : IFormat
 {
     /// <summary>
-    /// Sequence of definition of frames for the ROM animated icon.
+    /// Gets the collection of frames.
     /// </summary>
-    public class IconAnimationSequence : IFormat
-    {
-        /// <summary>
-        /// Gets the collection of frames.
-        /// </summary>
-        public Collection<IconAnimationFrame> Frames { get; init; } = [];
-    }
+    public Collection<IconAnimationFrame> Frames { get; init; } = [];
 }

@@ -17,16 +17,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Pixels
+namespace Texim.Pixels;
+
+public class Indexed8Bpp : BytePixelEncoding
 {
-    public class Indexed8Bpp : BytePixelEncoding
-    {
-        public static Indexed8Bpp Instance { get; } = new Indexed8Bpp();
+    public static Indexed8Bpp Instance { get; } = new Indexed8Bpp();
 
-        public override int BitsPerPixel => 8;
+    public override int BitsPerPixel => 8;
 
-        protected override IndexedPixel BitsToPixel(byte data) => new IndexedPixel(data);
+    protected override IndexedPixel BitsToPixel(byte data) => new IndexedPixel(data);
 
-        protected override byte PixelToBits(IndexedPixel pixel) => (byte)pixel.Index;
-    }
+    protected override byte PixelToBits(IndexedPixel pixel) => (byte)pixel.Index;
 }

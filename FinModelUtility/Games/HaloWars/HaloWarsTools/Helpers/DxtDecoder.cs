@@ -17,18 +17,19 @@ using SixLabors.ImageSharp.PixelFormats;
 // From https://github.com/mafaca/Dxt
 
 
-namespace Dxt {
-  public static class DxtDecoder {
-    public enum CubeMapSide {
-      POSITIVE_X,
-      NEGATIVE_X,
-      POSITIVE_Y,
-      NEGATIVE_Y,
-      POSITIVE_Z,
-      NEGATIVE_Z,
-    }
+namespace Dxt;
 
-    public static (string, IDxt<IImage>) ReadDds(IReadOnlySystemFile ddsFile) {
+public static class DxtDecoder {
+  public enum CubeMapSide {
+    POSITIVE_X,
+    NEGATIVE_X,
+    POSITIVE_Y,
+    NEGATIVE_Y,
+    POSITIVE_Z,
+    NEGATIVE_Z,
+  }
+
+  public static (string, IDxt<IImage>) ReadDds(IReadOnlySystemFile ddsFile) {
       using var ddsStream = ddsFile.OpenRead();
       var br = new SchemaBinaryReader(ddsStream, Endianness.LittleEndian);
       br.AssertString("DDS ");
@@ -172,10 +173,10 @@ namespace Dxt {
       }
     }
 
-    public static unsafe IList<float> DecompressA16B16G16R16F(
-        SchemaBinaryReader br,
-        int width,
-        int height) {
+  public static unsafe IList<float> DecompressA16B16G16R16F(
+      SchemaBinaryReader br,
+      int width,
+      int height) {
       // Reads in the original HDR image. This IS NOT normalized to [0, 1].
       var hdr = new float[width * height * 4];
 
@@ -204,8 +205,8 @@ namespace Dxt {
       return hdr;
     }
 
-    public static IMipMap<IImage> ToneMapAndConvertHdrMipMapsToBitmap(
-        IMipMap<IList<float>> hdrMipMap) {
+  public static IMipMap<IImage> ToneMapAndConvertHdrMipMapsToBitmap(
+      IMipMap<IList<float>> hdrMipMap) {
       var max = -1f;
       foreach (var hdr in hdrMipMap) {
         max = MathF.Max(max, hdr.Impl.Max());
@@ -215,8 +216,8 @@ namespace Dxt {
     }
 
 
-    public static ICubeMap<IImage> ToneMapAndConvertHdrCubemapToBitmap(
-        ICubeMap<IList<float>> hdrCubeMap) {
+  public static ICubeMap<IImage> ToneMapAndConvertHdrCubemapToBitmap(
+      ICubeMap<IList<float>> hdrCubeMap) {
       // Tone-maps the HDR image so that it within [0, 1].
       // TODO: Is there a better algorithm than just the max?
       // TODO: Is this range available somewhere else, i.e. in the UGX file?
@@ -270,30 +271,30 @@ namespace Dxt {
       };
     }
 
-    private static IMipMap<IImage> ConvertHdrMipmapsToBitmap(
-        IMipMap<IList<float>> hdrMipMap,
-        float max)
-      => new MipMap<IImage>(
-          hdrMipMap.Select(
-                       hdr => {
-                         var width = hdr.Width;
-                         var height = hdr.Height;
-                         return (IMipMapLevel<IImage>) new
-                             MipMapLevel<IImage>(
-                                 DxtDecoder.ConvertHdrToBitmap(hdr.Impl,
-                                   width,
-                                   height,
-                                   max),
+  private static IMipMap<IImage> ConvertHdrMipmapsToBitmap(
+      IMipMap<IList<float>> hdrMipMap,
+      float max)
+    => new MipMap<IImage>(
+        hdrMipMap.Select(
+                     hdr => {
+                       var width = hdr.Width;
+                       var height = hdr.Height;
+                       return (IMipMapLevel<IImage>) new
+                           MipMapLevel<IImage>(
+                               DxtDecoder.ConvertHdrToBitmap(hdr.Impl,
                                  width,
-                                 height);
-                       })
-                   .ToList());
+                                 height,
+                                 max),
+                               width,
+                               height);
+                     })
+                 .ToList());
 
-    private static IImage ConvertHdrToBitmap(
-        IList<float> hdr,
-        int width,
-        int height,
-        float max) {
+  private static IImage ConvertHdrToBitmap(
+      IList<float> hdr,
+      int width,
+      int height,
+      float max) {
       var bitmap = new Rgba32Image(PixelFormat.RGBA16161616, width, height);
       using var imageLock = bitmap.Lock();
       var scan0 = imageLock.Pixels;
@@ -317,14 +318,14 @@ namespace Dxt {
       return bitmap;
     }
 
-    private static float GammaToLinear(float gamma)
-      => MathF.Pow(gamma, 1 / 2.2f);
+  private static float GammaToLinear(float gamma)
+    => MathF.Pow(gamma, 1 / 2.2f);
 
-    public static IImage DecompressDXT1(
-        byte[] src,
-        int srcOffset,
-        int width,
-        int height) {
+  public static IImage DecompressDXT1(
+      byte[] src,
+      int srcOffset,
+      int width,
+      int height) {
       int offset = srcOffset;
       int bcw = (width + 3) / 4;
       int bch = (height + 3) / 4;
@@ -376,10 +377,10 @@ namespace Dxt {
     }
 
 
-    public static IImage DecompressDXT3(
-        byte[] input,
-        int width,
-        int height) {
+  public static IImage DecompressDXT3(
+      byte[] input,
+      int width,
+      int height) {
       var image = new Rgba32Image(PixelFormat.DXT3, width, height);
       using var imageLock = image.Lock();
       var dstPtr = imageLock.Pixels;
@@ -399,12 +400,12 @@ namespace Dxt {
             // Shamelessly copied from:
             // https://github.com/nickbabcock/Pfim/blob/master/src/Pfim/dds/Dxt3Dds.cs
 
-            /*
-             * Strategy for decompression:
-             * -We're going to decode both alpha and color at the same time
-             * to save on space and time as we don't have to allocate an array
-             * to store values for later use.
-             */
+           /*
+    Strategy for decompression:
+    -We're going to decode both alpha and color at the same time
+    to save on space and time as we don't have to allocate an array
+    to store values for later use.
+   //
 
             // Jump ahead to the color data
             streamIndex += 8;
@@ -457,63 +458,63 @@ namespace Dxt {
     }
 
 
-    /*public static void WriteToStreamFromRawDxt5a(
-        Stream dst,
-        byte[] src,
-        int srcOffset,
-        int width,
-        int height) {
-      var ew = new SchemaBinaryWriter(dst, Endianness.LittleEndian);
+  /*public static void WriteToStreamFromRawDxt5a(
+      Stream dst,
+      byte[] src,
+      int srcOffset,
+      int width,
+      int height) {
+    var ew = new SchemaBinaryWriter(dst, Endianness.LittleEndian);
 
-      var imageSize = width * height / 2;
+    var imageSize = width * height / 2;
 
-      ew.Write("DDS ", Encoding.ASCII, false);
-      ew.Write(124);
-      ew.Write(0x000A1007);
-      ew.Write(width);
-      ew.Write(height);
-      ew.Write(imageSize);
+    ew.Write("DDS ", Encoding.ASCII, false);
+    ew.Write(124);
+    ew.Write(0x000A1007);
+    ew.Write(width);
+    ew.Write(height);
+    ew.Write(imageSize);
+    ew.Write(0);
+    ew.Write(1);
+
+    for (var i = 0; i < 11; ++i) {
       ew.Write(0);
-      ew.Write(1);
+    }
 
-      for (var i = 0; i < 11; ++i) {
-        ew.Write(0);
-      }
+    ew.Write(0x20);
+    ew.Write(4);
+    ew.Write("ATI1", Encoding.ASCII, false);
+    ew.Write(0);
+    ew.Write(0);
+    ew.Write(0);
+    ew.Write(0);
+    ew.Write(0);
+    ew.Write(0x401008);
 
-      ew.Write(0x20);
-      ew.Write(4);
-      ew.Write("ATI1", Encoding.ASCII, false);
-      ew.Write(0);
-      ew.Write(0);
-      ew.Write(0);
-      ew.Write(0);
-      ew.Write(0);
-      ew.Write(0x401008);
+    var fixedBuffer = new byte[imageSize];
+    for (var i = 0; i < imageSize; i += 8) {
+      fixedBuffer[i + 0] = src[srcOffset + i + 1];
+      fixedBuffer[i + 1] = src[srcOffset + i + 0];
 
-      var fixedBuffer = new byte[imageSize];
-      for (var i = 0; i < imageSize; i += 8) {
-        fixedBuffer[i + 0] = src[srcOffset + i + 1];
-        fixedBuffer[i + 1] = src[srcOffset + i + 0];
+      fixedBuffer[i + 2] = src[srcOffset + i + 3];
+      fixedBuffer[i + 3] = src[srcOffset + i + 2];
+      fixedBuffer[i + 4] = src[srcOffset + i + 5];
 
-        fixedBuffer[i + 2] = src[srcOffset + i + 3];
-        fixedBuffer[i + 3] = src[srcOffset + i + 2];
-        fixedBuffer[i + 4] = src[srcOffset + i + 5];
+      fixedBuffer[i + 5] = src[srcOffset + i + 4];
+      fixedBuffer[i + 6] = src[srcOffset + i + 7];
+      fixedBuffer[i + 7] = src[srcOffset + i + 6];
+    }
 
-        fixedBuffer[i + 5] = src[srcOffset + i + 4];
-        fixedBuffer[i + 6] = src[srcOffset + i + 7];
-        fixedBuffer[i + 7] = src[srcOffset + i + 6];
-      }
+    ew.Position = 128;
+    ew.Write(fixedBuffer, 0, imageSize);
+    Asserts.Equal(128 + imageSize, ew.Position);
+  }*/
 
-      ew.Position = 128;
-      ew.Write(fixedBuffer, 0, imageSize);
-      Asserts.Equal(128 + imageSize, ew.Position);
-    }*/
-
-    public static IImage DecompressDxt5a(
-        byte[] src,
-        int srcOffset,
-        int width,
-        int height) {
+  public static IImage DecompressDxt5a(
+      byte[] src,
+      int srcOffset,
+      int width,
+      int height) {
       const int blockSize = 4;
       var blockCountX = width / blockSize;
       var blockCountY = height / blockSize;
@@ -586,8 +587,8 @@ namespace Dxt {
       return bitmap;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void Rgb565(ushort c, out byte r, out byte g, out byte b) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static void Rgb565(ushort c, out byte r, out byte g, out byte b) {
       var rI = (c & 0xf800) >> 8;
       var gI = (c & 0x07e0) >> 3;
       var bI = (c & 0x001f) << 3;
@@ -596,21 +597,20 @@ namespace Dxt {
       b = (byte) (bI | (bI >> 5));
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int Color(int r, int g, int b, int a) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static int Color(int r, int g, int b, int a) {
       return r << 16 | g << 8 | b | a << 24;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void SplitColor_(int color,
-                                    out byte r,
-                                    out byte g,
-                                    out byte b,
-                                    out byte a) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private static void SplitColor_(int color,
+                                  out byte r,
+                                  out byte g,
+                                  out byte b,
+                                  out byte a) {
       r = (byte) ((color >> 16) & 0xff);
       g = (byte) ((color >> 8) & 0xff);
       b = (byte) (color & 0xff);
       a = (byte) ((color >> 24) & 0xff);
     }
-  }
 }

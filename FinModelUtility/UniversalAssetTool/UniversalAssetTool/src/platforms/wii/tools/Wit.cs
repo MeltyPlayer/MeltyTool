@@ -5,9 +5,10 @@ using fin.util.asserts;
 using uni.games;
 using uni.util.cmd;
 
-namespace uni.platforms.wii.tools {
-  public class Wit {
-    public bool Run(ISystemFile romFile, out IFileHierarchy hierarchy) {
+namespace uni.platforms.wii.tools;
+
+public class Wit {
+  public bool Run(ISystemFile romFile, out IFileHierarchy hierarchy) {
       Asserts.Equal(
           ".iso",
           romFile
@@ -30,7 +31,7 @@ namespace uni.platforms.wii.tools {
       return didChange;
     }
 
-    private void DumpRom_(ISystemFile romFile, ISystemDirectory outDirectory) {
+  private void DumpRom_(ISystemFile romFile, ISystemDirectory outDirectory) {
       var logger = Logging.Create<Wit>();
       logger.LogInformation($"Dumping ROM {romFile}...");
 
@@ -43,5 +44,4 @@ namespace uni.platforms.wii.tools {
                 $"extract \"{romFile.FullPath}\" \"{outDirectory.FullPath}\"");
           });
     }
-  }
 }

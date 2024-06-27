@@ -1,16 +1,17 @@
 ﻿using schema.binary;
 
-namespace uni.platforms.threeDs.tools.gar.schema {
-  /// <summary>
-  ///   Based on the following:
-  ///   - https://github.com/xdanieldzd/Scarlet/blob/master/Scarlet.IO.ContainerFormats/GARv2.cs
-  ///   - https://github.com/xdanieldzd/Scarlet/blob/master/Scarlet.IO.ContainerFormats/GARv5.cs
-  /// </summary>
-  public class Gar {
-    public GarHeader Header { get; }
-    public IGarFileType[] FileTypes { get; }
+namespace uni.platforms.threeDs.tools.gar.schema;
 
-    public Gar(IBinaryReader br) {
+/// <summary>
+///   Based on the following:
+///   - https://github.com/xdanieldzd/Scarlet/blob/master/Scarlet.IO.ContainerFormats/GARv2.cs
+///   - https://github.com/xdanieldzd/Scarlet/blob/master/Scarlet.IO.ContainerFormats/GARv5.cs
+/// </summary>
+public class Gar {
+  public GarHeader Header { get; }
+  public IGarFileType[] FileTypes { get; }
+
+  public Gar(IBinaryReader br) {
       this.Header = new GarHeader(br);
 
       this.FileTypes = new IGarFileType[this.Header.FileTypeCount];
@@ -22,5 +23,4 @@ namespace uni.platforms.threeDs.tools.gar.schema {
         };
       }
     }
-  }
 }

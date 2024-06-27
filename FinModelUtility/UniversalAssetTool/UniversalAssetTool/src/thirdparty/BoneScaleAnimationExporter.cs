@@ -5,9 +5,10 @@ using fin.data.indexable;
 using fin.io;
 using fin.model;
 
-namespace uni.thirdparty {
-  public class BoneScaleAnimationExporter {
-    public void Export(IGenericFile luaFile, IReadOnlyModel model) {
+namespace uni.thirdparty;
+
+public class BoneScaleAnimationExporter {
+  public void Export(IGenericFile luaFile, IReadOnlyModel model) {
       var animations = model.AnimationManager.Animations;
       if (animations.Count == 0) {
         return;
@@ -76,9 +77,8 @@ namespace uni.thirdparty {
       fw.WriteLine("}");
     }
 
-    private static bool IsScaleOne(Vector3 scale)
-      => Math.Abs(scale.X - 1) < .001
-         && Math.Abs(scale.Y - 1) < .001
-         && Math.Abs(scale.Z - 1) < .001;
-  }
+  private static bool IsScaleOne(Vector3 scale)
+    => Math.Abs(scale.X - 1) < .001
+       && Math.Abs(scale.Y - 1) < .001
+       && Math.Abs(scale.Z - 1) < .001;
 }

@@ -17,60 +17,60 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl
+namespace Yarhl;
+
+using System;
+using System.Collections.Generic;
+using System.Composition;
+using System.Composition.Convention;
+using System.Composition.Hosting;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using FileFormat;
+
+/// <summary>
+/// Plugin manager.
+/// </summary>
+/// <remarks>
+/// <para>Plugin assemblies are loaded from the directory with the Yarhl
+/// assembly and the 'Plugins' subfolder with its children.</para>
+/// </remarks>
+public sealed class PluginManager
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Composition;
-    using System.Composition.Convention;
-    using System.Composition.Hosting;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using FileFormat;
+    static readonly string[] IgnoredLibraries = [
+        "System.",
+        "Microsoft.",
+        "netstandard",
+        "nuget",
+        "nunit",
+        "testhost"
+    ];
+
+    static readonly object LockObj = new object();
+    static PluginManager? singleInstance;
+
+    readonly CompositionHost container;
 
     /// <summary>
-    /// Plugin manager.
+    /// Initializes a new instance of the <see cref="PluginManager"/> class.
     /// </summary>
-    /// <remarks>
-    /// <para>Plugin assemblies are loaded from the directory with the Yarhl
-    /// assembly and the 'Plugins' subfolder with its children.</para>
-    /// </remarks>
-    public sealed class PluginManager
+    PluginManager()
     {
-        static readonly string[] IgnoredLibraries = [
-            "System.",
-            "Microsoft.",
-            "netstandard",
-            "nuget",
-            "nunit",
-            "testhost"
-        ];
-
-        static readonly object LockObj = new object();
-        static PluginManager? singleInstance;
-
-        readonly CompositionHost container;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PluginManager"/> class.
-        /// </summary>
-        PluginManager()
-        {
             container = InitializeContainer();
         }
 
-        /// <summary>
-        /// Gets the name of the plugins directory.
-        /// </summary>
-        public static string PluginDirectory => "Plugins";
+    /// <summary>
+    /// Gets the name of the plugins directory.
+    /// </summary>
+    public static string PluginDirectory => "Plugins";
 
-        /// <summary>
-        /// Gets the plugin manager instance.
-        /// </summary>
-        /// <remarks><para>It initializes the manager if needed.</para></remarks>
-        public static PluginManager Instance {
-            get {
+    /// <summary>
+    /// Gets the plugin manager instance.
+    /// </summary>
+    /// <remarks><para>It initializes the manager if needed.</para></remarks>
+    public static PluginManager Instance {
+        get {
                 if (singleInstance == null) {
                     lock (LockObj) {
                         if (singleInstance == null)
@@ -80,50 +80,50 @@ namespace Yarhl
 
                 return singleInstance;
             }
-        }
+    }
 
-        /// <summary>
-        /// Finds all the extensions from the given base type.
-        /// </summary>
-        /// <returns>The extensions.</returns>
-        /// <typeparam name="T">Type of the extension point.</typeparam>
-        public IEnumerable<T> FindExtensions<T>()
-        {
+    /// <summary>
+    /// Finds all the extensions from the given base type.
+    /// </summary>
+    /// <returns>The extensions.</returns>
+    /// <typeparam name="T">Type of the extension point.</typeparam>
+    public IEnumerable<T> FindExtensions<T>()
+    {
             return container.GetExports<T>();
         }
 
-        /// <summary>
-        /// Finds all the extensions from the given base type.
-        /// </summary>
-        /// <returns>The extensions.</returns>
-        /// <param name="extension">Type of the extension point.</param>
-        public IEnumerable<object> FindExtensions(Type extension)
-        {
+    /// <summary>
+    /// Finds all the extensions from the given base type.
+    /// </summary>
+    /// <returns>The extensions.</returns>
+    /// <param name="extension">Type of the extension point.</param>
+    public IEnumerable<object> FindExtensions(Type extension)
+    {
             if (extension == null)
                 throw new ArgumentNullException(nameof(extension));
 
             return container.GetExports(extension);
         }
 
-        /// <summary>
-        /// Finds all the extensions from the given base type and return their
-        /// lazy type for initialization.
-        /// </summary>
-        /// <typeparam name="T">Type of the extension point.</typeparam>
-        /// <returns>The lazy extensions.</returns>
-        public IEnumerable<ExportFactory<T>> FindLazyExtensions<T>()
-        {
+    /// <summary>
+    /// Finds all the extensions from the given base type and return their
+    /// lazy type for initialization.
+    /// </summary>
+    /// <typeparam name="T">Type of the extension point.</typeparam>
+    /// <returns>The lazy extensions.</returns>
+    public IEnumerable<ExportFactory<T>> FindLazyExtensions<T>()
+    {
             return container.GetExports<ExportFactory<T>>();
         }
 
-        /// <summary>
-        /// Finds all the extensions from the given base type and returns
-        /// a factory to initialize the type.
-        /// </summary>
-        /// <param name="extension">Type of the extension point.</param>
-        /// <returns>The extension factory.</returns>
-        public IEnumerable<object> FindLazyExtensions(Type extension)
-        {
+    /// <summary>
+    /// Finds all the extensions from the given base type and returns
+    /// a factory to initialize the type.
+    /// </summary>
+    /// <param name="extension">Type of the extension point.</param>
+    /// <returns>The extension factory.</returns>
+    public IEnumerable<object> FindLazyExtensions(Type extension)
+    {
             if (extension == null) {
                 throw new ArgumentNullException(nameof(extension));
             }
@@ -132,16 +132,16 @@ namespace Yarhl
             return container.GetExports(lazyType);
         }
 
-        /// <summary>
-        /// Finds all the extensions from the given base type and returns
-        /// a factory to initialize the type and its associated metadata.
-        /// </summary>
-        /// <typeparam name="T">Type of the extension point.</typeparam>
-        /// <typeparam name="TMetadata">Type of the metadata.</typeparam>
-        /// <returns>The extension factory.</returns>
-        public IEnumerable<ExportFactory<T, TMetadata>> FindLazyExtensions<T, TMetadata>()
-            where TMetadata : IExportMetadata
-        {
+    /// <summary>
+    /// Finds all the extensions from the given base type and returns
+    /// a factory to initialize the type and its associated metadata.
+    /// </summary>
+    /// <typeparam name="T">Type of the extension point.</typeparam>
+    /// <typeparam name="TMetadata">Type of the metadata.</typeparam>
+    /// <returns>The extension factory.</returns>
+    public IEnumerable<ExportFactory<T, TMetadata>> FindLazyExtensions<T, TMetadata>()
+        where TMetadata : IExportMetadata
+    {
             // Because of technical limitations / bugs there can be upto
             // 3 copies of the same extension. We filter by type.
             return container.GetExports<ExportFactory<T, TMetadata>>()
@@ -149,26 +149,26 @@ namespace Yarhl
                 .Select(f => f.First());
         }
 
-        /// <summary>
-        /// Get a list of format extensions.
-        /// </summary>
-        /// <returns>Enumerable of lazy formats with metadata.</returns>
-        public IEnumerable<ExportFactory<IFormat, FormatMetadata>> GetFormats()
-        {
+    /// <summary>
+    /// Get a list of format extensions.
+    /// </summary>
+    /// <returns>Enumerable of lazy formats with metadata.</returns>
+    public IEnumerable<ExportFactory<IFormat, FormatMetadata>> GetFormats()
+    {
             return FindLazyExtensions<IFormat, FormatMetadata>();
         }
 
-        /// <summary>
-        /// Get a list of converter extensions.
-        /// </summary>
-        /// <returns>Enumerable of lazy converters with metadata.</returns>
-        public IEnumerable<ExportFactory<IConverter, ConverterMetadata>> GetConverters()
-        {
+    /// <summary>
+    /// Get a list of converter extensions.
+    /// </summary>
+    /// <returns>Enumerable of lazy converters with metadata.</returns>
+    public IEnumerable<ExportFactory<IConverter, ConverterMetadata>> GetConverters()
+    {
             return FindLazyExtensions<IConverter, ConverterMetadata>();
         }
 
-        static void DefineFormatConventions(ConventionBuilder conventions)
-        {
+    static void DefineFormatConventions(ConventionBuilder conventions)
+    {
             conventions
                 .ForTypesDerivedFrom<IFormat>()
                 .Export<IFormat>(
@@ -180,8 +180,8 @@ namespace Yarhl
                     .First());
         }
 
-        static void DefineConverterConventions(ConventionBuilder conventions)
-        {
+    static void DefineConverterConventions(ConventionBuilder conventions)
+    {
             bool ConverterInterfaceFilter(Type i) =>
                 i.IsGenericType &&
                 i.GetGenericTypeDefinition().IsEquivalentTo(typeof(IConverter<,>));
@@ -208,8 +208,8 @@ namespace Yarhl
                     .First());
         }
 
-        static IEnumerable<Assembly> LoadAssemblies(IEnumerable<string> paths)
-        {
+    static IEnumerable<Assembly> LoadAssemblies(IEnumerable<string> paths)
+    {
             // Skip libraries that match the ignored libraries because
             // MEF would try to load its dependencies.
             return paths
@@ -220,8 +220,8 @@ namespace Yarhl
                 .LoadAssemblies();
         }
 
-        static CompositionHost InitializeContainer()
-        {
+    static CompositionHost InitializeContainer()
+    {
             var conventions = new ConventionBuilder();
             DefineFormatConventions(conventions);
             DefineConverterConventions(conventions);
@@ -249,5 +249,4 @@ namespace Yarhl
 
             return containerConfig.CreateContainer();
         }
-    }
 }

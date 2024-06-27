@@ -1,7 +1,7 @@
-namespace jsystem {
-  public class PlaceholderTest {
-    [Test]
-    public void Test() {
+namespace jsystem;
+
+public class PlaceholderTest {
+  [Test]
+  public void Test() {
     }
-  }
 }

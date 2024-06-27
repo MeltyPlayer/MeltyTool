@@ -10,49 +10,50 @@ using mod.schema.mod.collision;
 
 using schema.binary;
 
-namespace mod.schema.mod {
-  [BinarySchema]
-  public partial class DateTime : IBinaryConvertible {
-    public ushort year { get; set; } = 2021;
-    public byte month { get; set; } = 9;
-    public byte day { get; set; } = 18;
-  }
+namespace mod.schema.mod;
 
-  [BinarySchema]
-  public partial class ModHeader : IBinaryConvertible {
-    public readonly DateTime dateTime = new();
+[BinarySchema]
+public partial class DateTime : IBinaryConvertible {
+  public ushort year { get; set; } = 2021;
+  public byte month { get; set; } = 9;
+  public byte day { get; set; } = 18;
+}
 
-    public uint flags { get; set; }
-  }
+[BinarySchema]
+public partial class ModHeader : IBinaryConvertible {
+  public readonly DateTime dateTime = new();
 
-  public enum ModFlags {
-    UseNBT = 0x01
-  }
+  public uint flags { get; set; }
+}
 
-  public class Mod : IBinaryConvertible {
-    public readonly ModHeader header = new();
-    public readonly List<Vector3f> vertices = [];
-    public readonly List<Vector3f> vnormals = [];
-    public readonly List<Nbt> vertexnbt = [];
-    public readonly List<Rgba32> vcolours = [];
-    public readonly List<Vector2f>[] texcoords = new List<Vector2f>[8];
-    public readonly List<Texture> textures = [];
-    public readonly List<TextureAttributes> texattrs = [];
-    public readonly MaterialContainer materials = new();
-    public readonly List<VtxMatrix> vtxMatrix = [];
-    public readonly List<Envelope> envelopes = [];
-    public readonly List<Mesh> meshes = [];
-    public readonly List<Joint> joints = [];
-    public readonly List<string> jointNames = [];
-    public readonly CollTriInfo colltris = new();
-    public readonly CollGrid collgrid = new();
-    public readonly List<byte> eofBytes = [];
-    public bool hasNormals = false;
+public enum ModFlags {
+  UseNBT = 0x01
+}
 
-    public Mod() {}
-    public Mod(IBinaryReader reader) => this.Read(reader);
+public class Mod : IBinaryConvertible {
+  public readonly ModHeader header = new();
+  public readonly List<Vector3f> vertices = [];
+  public readonly List<Vector3f> vnormals = [];
+  public readonly List<Nbt> vertexnbt = [];
+  public readonly List<Rgba32> vcolours = [];
+  public readonly List<Vector2f>[] texcoords = new List<Vector2f>[8];
+  public readonly List<Texture> textures = [];
+  public readonly List<TextureAttributes> texattrs = [];
+  public readonly MaterialContainer materials = new();
+  public readonly List<VtxMatrix> vtxMatrix = [];
+  public readonly List<Envelope> envelopes = [];
+  public readonly List<Mesh> meshes = [];
+  public readonly List<Joint> joints = [];
+  public readonly List<string> jointNames = [];
+  public readonly CollTriInfo colltris = new();
+  public readonly CollGrid collgrid = new();
+  public readonly List<byte> eofBytes = [];
+  public bool hasNormals = false;
 
-    public void Read(IBinaryReader br) {
+  public Mod() {}
+  public Mod(IBinaryReader reader) => this.Read(reader);
+
+  public void Read(IBinaryReader br) {
       this.hasNormals = false;
 
       for (var i = 0; i < 8; ++i) {
@@ -77,14 +78,14 @@ namespace mod.schema.mod {
           return;
         }
 
-        /*std::cout <<
-            "Reading 0x" <<
-            std::hex <<
-            opcode <<
-            std::dec <<
-            ", " <<
-            (ocString.has_value() ? ocString.value() : "Unknown chunk") <<
-            std::endl;*/
+       /*std::cout <<
+            Reading 0x" <<
+            td::hex <<
+            pcode <<
+            td::dec <<
+            , " <<
+            ocString.has_value() ? ocString.value() : "Unknown chunk") <<
+            td::endl;*//
 
         var beforePosition = br.Position;
 
@@ -187,17 +188,17 @@ namespace mod.schema.mod {
 
         var afterPosition = br.Position;
 
-        /*Asserts.Equal(beforePosition + length,
-                      afterPosition,
-                      $"Read incorrect number of bytes for opcode: {opcodeName}");*/
+       /*Asserts.Equal(beforePosition + length,
+                      fterPosition,
+                      "Read incorrect number of bytes for opcode: {opcodeName}");*//
       }
 
       ;
     }
 
-    private static void ReadGenericChunk_<T>(
-        IBinaryReader br,
-        List<T> vector) where T : IBinaryDeserializable, new() {
+  private static void ReadGenericChunk_<T>(
+      IBinaryReader br,
+      List<T> vector) where T : IBinaryDeserializable, new() {
       var num = br.ReadUInt32();
       vector.Clear();
 
@@ -208,41 +209,40 @@ namespace mod.schema.mod {
       br.Align(0x20);
     }
 
-    private static T ReadGeneric_<T>(IBinaryReader br)
-        where T : IBinaryDeserializable, new() {
+  private static T ReadGeneric_<T>(IBinaryReader br)
+      where T : IBinaryDeserializable, new() {
       var instance = new T();
       instance.Read(br);
       return instance;
     }
 
-    public void Write(IBinaryWriter bw) {
+  public void Write(IBinaryWriter bw) {
       throw new NotImplementedException();
     }
-  }
 }
 
 
 /*static inline void writeGenericChunk(util::fstream_writer
 &writer, auto & vector,
 u32 chunkIdentifier) {
-  std::cout <<
-      "Writing 0x" <<
-      std::hex <<
-      chunkIdentifier <<
-      std::dec <<
-      ", " <<
-      MOD::getChunkName(chunkIdentifier).value() <<
-      std::endl;
+std::cout <<
+    "Writing 0x" <<
+    std::hex <<
+    chunkIdentifier <<
+    std::dec <<
+    ", " <<
+    MOD::getChunkName(chunkIdentifier).value() <<
+    std::endl;
 
-  u32 subchunkPos = startChunk(writer, chunkIdentifier);
-  writer.writeU32(vector.size());
+u32 subchunkPos = startChunk(writer, chunkIdentifier);
+writer.writeU32(vector.size());
 
-  writer.align(0x20);
-  for (auto & contents : vector)
-  {
-    contents.write(writer);
-  }
-  finishChunk(writer, subchunkPos);
+writer.align(0x20);
+for (auto & contents : vector)
+{
+  contents.write(writer);
+}
+finishChunk(writer, subchunkPos);
 }
 }*/
 

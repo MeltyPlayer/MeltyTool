@@ -4,15 +4,16 @@ using fin.io;
 
 using uni.platforms.gcn.tools;
 
-namespace uni.platforms.threeDs.tools.ctrtool {
-  public static partial class Ctrtool {
-    private static readonly object CTRTOOL_LOCK = new();
+namespace uni.platforms.threeDs.tools.ctrtool;
 
-    private static readonly ImmutableHashSet<string> EXPECTED_FILE_NAMES =
-        new[] { "ctrtool.exe", "extract_cci.bat", "extract_cia.bat", }
-            .ToImmutableHashSet();
+public static partial class Ctrtool {
+  private static readonly object CTRTOOL_LOCK = new();
 
-    private static void RunInCtrDirectoryAndCleanUp_(Action handler) {
+  private static readonly ImmutableHashSet<string> EXPECTED_FILE_NAMES =
+      new[] { "ctrtool.exe", "extract_cci.bat", "extract_cia.bat", }
+          .ToImmutableHashSet();
+
+  private static void RunInCtrDirectoryAndCleanUp_(Action handler) {
       lock (Ctrtool.CTRTOOL_LOCK) {
         Files.RunInDirectory(ThreeDsToolsConstants.CTRTOOL_DIRECTORY, handler);
 
@@ -24,5 +25,4 @@ namespace uni.platforms.threeDs.tools.ctrtool {
         }
       }
     }
-  }
 }

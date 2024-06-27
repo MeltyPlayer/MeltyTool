@@ -2,7 +2,7 @@
 
 using schema.binary;
 
-namespace granny3d {
+namespace granny3d; 
   /// <summary>
   ///   Based on HaloWarsDocs file template:
   ///   https://github.com/HaloMods/HaloWarsDocs/blob/master/010Editor/Granny.bt
@@ -67,11 +67,11 @@ namespace granny3d {
       GrannyUtils.SubreadRefToArray(
           br,
           (ser, trackGroupHeaderCount) => {
-            /*for (var i = 0; i < trackGroupHeaderCount; ++i) {
-              GrannyUtils.SubreadRef(ser, sser => {
-                this.TrackGroupHeaderList.Add(sser.ReadNew<GrannyTrackGroup>());
-              });
-            }*/
+           /*for (var i = 0; i < trackGroupHeaderCount; ++i) {
+              rannyUtils.SubreadRef(ser, sser => {
+                his.TrackGroupHeaderList.Add(sser.ReadNew<GrannyTrackGroup>());
+              );
+            *//
           });
 
       GrannyUtils.SubreadRefToArray(
@@ -86,5 +86,4 @@ namespace granny3d {
             }
           });
     }
-  }
 }

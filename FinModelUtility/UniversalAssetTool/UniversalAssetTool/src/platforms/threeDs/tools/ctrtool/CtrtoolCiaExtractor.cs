@@ -6,11 +6,12 @@ using uni.games;
 using uni.platforms.gcn.tools;
 using uni.util.cmd;
 
-namespace uni.platforms.threeDs.tools.ctrtool {
-  public static partial class Ctrtool {
-    public class CiaExtractor {
-      public bool Run(IReadOnlySystemFile romFile,
-                      out IFileHierarchy hierarchy) {
+namespace uni.platforms.threeDs.tools.ctrtool;
+
+public static partial class Ctrtool {
+  public class CiaExtractor {
+    public bool Run(IReadOnlySystemFile romFile,
+                    out IFileHierarchy hierarchy) {
         Asserts.Equal(
             ".cia",
             romFile.FileType,
@@ -32,8 +33,8 @@ namespace uni.platforms.threeDs.tools.ctrtool {
         return didChange;
       }
 
-      private void DumpRom_(IReadOnlySystemFile romFile,
-                            ISystemDirectory dstDirectory) {
+    private void DumpRom_(IReadOnlySystemFile romFile,
+                          ISystemDirectory dstDirectory) {
         var logger = Logging.Create<CiaExtractor>();
         logger.LogInformation($"Dumping ROM {romFile}...");
 
@@ -46,6 +47,5 @@ namespace uni.platforms.threeDs.tools.ctrtool {
                   $"\"{dstDirectory.FullPath}\"");
         });
       }
-    }
   }
 }

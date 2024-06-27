@@ -1,24 +1,24 @@
-﻿namespace sm64.JSON {
-  public class BehaviorNameEntry {
-    string name = "";
-    uint behavior = 0;
+﻿namespace sm64.JSON;
 
-    public string Name {
-      get { return name; }
-      set { name = value; }
-    }
+public class BehaviorNameEntry {
+  string name = "";
+  uint behavior = 0;
 
-    public uint Behavior {
-      get { return behavior; }
-    }
+  public string Name {
+    get { return name; }
+    set { name = value; }
+  }
 
-    public BehaviorNameEntry(string name, uint behavior) {
+  public uint Behavior {
+    get { return behavior; }
+  }
+
+  public BehaviorNameEntry(string name, uint behavior) {
       this.name = name;
       this.behavior = behavior;
     }
 
-    public override string ToString() {
+  public override string ToString() {
       return name + " = [" + "0x" + behavior.ToString("X8") + "]";
     }
-  }
 }

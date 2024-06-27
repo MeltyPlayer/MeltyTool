@@ -7,11 +7,12 @@ using schema.binary;
 
 using uni.platforms.threeDs.tools.gar.schema;
 
-namespace uni.platforms.threeDs.tools.gar {
-  public class GarReader : IArchiveReader<SubArchiveContentFile> {
-    public bool IsValidArchive(Stream archive) => true;
+namespace uni.platforms.threeDs.tools.gar;
 
-    public IArchiveStream<SubArchiveContentFile> Decompress(Stream archive) {
+public class GarReader : IArchiveReader<SubArchiveContentFile> {
+  public bool IsValidArchive(Stream archive) => true;
+
+  public IArchiveStream<SubArchiveContentFile> Decompress(Stream archive) {
       if (!MagicTextUtil.Verify(archive, "LzS" + AsciiUtil.GetChar(0x1))) {
         return new SubArchiveStream(archive);
       }
@@ -26,8 +27,8 @@ namespace uni.platforms.threeDs.tools.gar {
           isCompressed ? new MemoryStream(decompressedGar!) : archive);
     }
 
-    public IEnumerable<SubArchiveContentFile> GetFiles(
-        IArchiveStream<SubArchiveContentFile> archiveStream) {
+  public IEnumerable<SubArchiveContentFile> GetFiles(
+      IArchiveStream<SubArchiveContentFile> archiveStream) {
       var br = archiveStream.AsBinaryReader(Endianness.LittleEndian);
       var gar = new Gar(br);
 
@@ -47,5 +48,4 @@ namespace uni.platforms.threeDs.tools.gar {
         }
       }
     }
-  }
 }

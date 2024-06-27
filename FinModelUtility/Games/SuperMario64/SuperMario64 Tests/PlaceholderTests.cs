@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 
-namespace mod {
-  public class PlaceholderTests {
-    [Test]
-    public void TestPlaceholder() {
+namespace mod;
+
+public class PlaceholderTests {
+  [Test]
+  public void TestPlaceholder() {
     }
-  }
 }

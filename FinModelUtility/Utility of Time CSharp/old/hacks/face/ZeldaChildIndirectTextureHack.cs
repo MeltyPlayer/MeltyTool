@@ -3,38 +3,39 @@
 using UoT.hacks;
 using UoT.hacks.fields;
 
-namespace UoT {
-  public class ZeldaChildIndirectTextureHack : IIndirectTextureHack {
-    // TODO: Support different eyes/mouths depending on animation frame.
-    // TODO: Where are the rest of the expressions?
-    // TODO: Where are happy eyes/mouth?
+namespace UoT;
 
-    // TODO: Map animation # to eye/mouth states
+public class ZeldaChildIndirectTextureHack : IIndirectTextureHack {
+  // TODO: Support different eyes/mouths depending on animation frame.
+  // TODO: Where are the rest of the expressions?
+  // TODO: Where are happy eyes/mouth?
 
-    public IReadOnlyList<IField> Fields { get; } =
-      new List<IField>().AsReadOnly();
+  // TODO: Map animation # to eye/mouth states
 
-    public enum Eye {
-      OPEN = 0x7208,
-      LOOKING_OUT = 0x7208 + 0x1640,
-      LOOKING_IN = 0x7208 + 0x1a40,
-      MISCHIEVOUS = 0x7208 + 0x2240,
-      HALF_OPEN = 0x7208 + 0x2640,
-      CLOSED = 0x7208 + 0x2a40,
-      SAD = 0x7208 + 0x2e40,
-    }
+  public IReadOnlyList<IField> Fields { get; } =
+    new List<IField>().AsReadOnly();
 
-    public enum Mouth {
-      CLOSED = 0x7208 + 0x400,
-      SAD = 0x7208 + 0x1e40,
-      OPEN = 0x7208 + 0x3240,
-    }
+  public enum Eye {
+    OPEN = 0x7208,
+    LOOKING_OUT = 0x7208 + 0x1640,
+    LOOKING_IN = 0x7208 + 0x1a40,
+    MISCHIEVOUS = 0x7208 + 0x2240,
+    HALF_OPEN = 0x7208 + 0x2640,
+    CLOSED = 0x7208 + 0x2a40,
+    SAD = 0x7208 + 0x2e40,
+  }
 
-    public EyeState EyeState { get => default; set { } }
-    public MouthState MouthState { get => default; set { } }
+  public enum Mouth {
+    CLOSED = 0x7208 + 0x400,
+    SAD = 0x7208 + 0x1e40,
+    OPEN = 0x7208 + 0x3240,
+  }
+
+  public EyeState EyeState { get => default; set { } }
+  public MouthState MouthState { get => default; set { } }
 
 
-    public uint MapTextureAddress(uint originalAddress) {
+  public uint MapTextureAddress(uint originalAddress) {
        var eyeOffset = (uint) BlinkUtil.Get(Eye.OPEN, Eye.HALF_OPEN, Eye.CLOSED);
       
       // Left eye
@@ -54,5 +55,4 @@ namespace UoT {
 
       return originalAddress;
     }
-  }
 }

@@ -7,10 +7,11 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.common.progress {
-  public class ProgressSpinnerViewModelForDesigner
-      : ProgressSpinnerViewModel {
-    public ProgressSpinnerViewModelForDesigner() {
+namespace uni.ui.avalonia.common.progress;
+
+public class ProgressSpinnerViewModelForDesigner
+    : ProgressSpinnerViewModel {
+  public ProgressSpinnerViewModelForDesigner() {
       this.Progress = new ValueFractionProgress();
 
       var secondsToWait = 3;
@@ -33,20 +34,19 @@ namespace uni.ui.avalonia.common.progress {
             this.Progress.ReportCompletion("Hello world!");
           });
     }
+}
+
+public class ProgressSpinnerViewModel : ViewModelBase {
+  private ValueFractionProgress progress_;
+
+  public ValueFractionProgress Progress {
+    get => this.progress_;
+    set => this.RaiseAndSetIfChanged(ref this.progress_, value);
   }
+}
 
-  public class ProgressSpinnerViewModel : ViewModelBase {
-    private ValueFractionProgress progress_;
-
-    public ValueFractionProgress Progress {
-      get => this.progress_;
-      set => this.RaiseAndSetIfChanged(ref this.progress_, value);
-    }
-  }
-
-  public partial class ProgressSpinner : UserControl {
-    public ProgressSpinner() {
+public partial class ProgressSpinner : UserControl {
+  public ProgressSpinner() {
       InitializeComponent();
     }
-  }
 }

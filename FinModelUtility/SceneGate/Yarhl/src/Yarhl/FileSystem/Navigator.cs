@@ -17,33 +17,33 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileSystem
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+namespace Yarhl.FileSystem;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+/// <summary>
+/// Filesystem navigator.
+/// Search for nodes and iterate over them.
+/// </summary>
+public static class Navigator
+{
     /// <summary>
-    /// Filesystem navigator.
-    /// Search for nodes and iterate over them.
+    /// Search a node by path.
     /// </summary>
-    public static class Navigator
+    /// <param name="rootNode">The root node to start the search.</param>
+    /// <param name="path">Path to search.</param>
+    /// <returns>Node or null if not found.</returns>
+    /// <typeparam name="T">NavigableNode type.</typeparam>
+    /// <remarks>
+    /// <para>If the path starts with the path separator '/', it is
+    /// considered to be a full path. Otherwise, it would be a relative
+    /// path starting with the node in the argument.</para>
+    /// </remarks>
+    public static T? SearchNode<T>(T rootNode, string path)
+        where T : NavigableNode<T>
     {
-        /// <summary>
-        /// Search a node by path.
-        /// </summary>
-        /// <param name="rootNode">The root node to start the search.</param>
-        /// <param name="path">Path to search.</param>
-        /// <returns>Node or null if not found.</returns>
-        /// <typeparam name="T">NavigableNode type.</typeparam>
-        /// <remarks>
-        /// <para>If the path starts with the path separator '/', it is
-        /// considered to be a full path. Otherwise, it would be a relative
-        /// path starting with the node in the argument.</para>
-        /// </remarks>
-        public static T? SearchNode<T>(T rootNode, string path)
-            where T : NavigableNode<T>
-        {
             if (rootNode == null)
                 throw new ArgumentNullException(nameof(rootNode));
 
@@ -76,18 +76,18 @@ namespace Yarhl.FileSystem
             return currentNode;
         }
 
-        /// <summary>
-        /// Iterates the nodes recursively.
-        /// </summary>
-        /// <param name="rootNode">The root node to start iterating.</param>
-        /// <param name="mode">The navigation mode.</param>
-        /// <returns>The nodes.</returns>
-        /// <typeparam name="T">NavigableNode type.</typeparam>
-        public static IEnumerable<T> IterateNodes<T>(
-            T rootNode,
-            NavigationMode mode = NavigationMode.BreadthFirst)
-            where T : NavigableNode<T>
-        {
+    /// <summary>
+    /// Iterates the nodes recursively.
+    /// </summary>
+    /// <param name="rootNode">The root node to start iterating.</param>
+    /// <param name="mode">The navigation mode.</param>
+    /// <returns>The nodes.</returns>
+    /// <typeparam name="T">NavigableNode type.</typeparam>
+    public static IEnumerable<T> IterateNodes<T>(
+        T rootNode,
+        NavigationMode mode = NavigationMode.BreadthFirst)
+        where T : NavigableNode<T>
+    {
             if (rootNode == null)
                 throw new ArgumentNullException(nameof(rootNode));
 
@@ -98,9 +98,9 @@ namespace Yarhl.FileSystem
             throw new ArgumentOutOfRangeException(nameof(mode));
         }
 
-        static IEnumerable<T> IterateBreadthFirst<T>(T rootNode)
-            where T : NavigableNode<T>
-        {
+    static IEnumerable<T> IterateBreadthFirst<T>(T rootNode)
+        where T : NavigableNode<T>
+    {
             var queue = new Queue<T>();
             queue.Enqueue(rootNode);
 
@@ -114,9 +114,9 @@ namespace Yarhl.FileSystem
             }
         }
 
-        static IEnumerable<T> IterateDepthFirst<T>(T rootNode)
-            where T : NavigableNode<T>
-        {
+    static IEnumerable<T> IterateDepthFirst<T>(T rootNode)
+        where T : NavigableNode<T>
+    {
             var stack = new Stack<T>(rootNode.Children.Reverse());
 
             while (stack.Count > 0) {
@@ -127,5 +127,4 @@ namespace Yarhl.FileSystem
                     stack.Push(child);
             }
         }
-    }
 }

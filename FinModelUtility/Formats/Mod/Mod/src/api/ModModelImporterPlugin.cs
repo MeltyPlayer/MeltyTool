@@ -5,26 +5,27 @@ using fin.io;
 using fin.model;
 using fin.model.io;
 
-namespace mod.api {
-  public class ModModelImporterPlugin : IModelImporterPlugin {
-    public string DisplayName => "Mod";
+namespace mod.api;
 
-    public string Description => "Pikmin 1 model format.";
+public class ModModelImporterPlugin : IModelImporterPlugin {
+  public string DisplayName => "Mod";
 
-    public IReadOnlyList<string> KnownPlatforms { get; } =
-      new[] { "GameCube" };
+  public string Description => "Pikmin 1 model format.";
 
-    public IReadOnlyList<string> KnownGames { get; } = new[] { "Pikmin 1", };
+  public IReadOnlyList<string> KnownPlatforms { get; } =
+    new[] { "GameCube" };
+
+  public IReadOnlyList<string> KnownGames { get; } = new[] { "Pikmin 1", };
 
 
-    public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".mod" };
+  public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".mod" };
 
-    public IReadOnlyList<string> FileExtensions { get; } =
-      new[] { ".anm", ".mod" };
+  public IReadOnlyList<string> FileExtensions { get; } =
+    new[] { ".anm", ".mod" };
 
-    public IModel Import(
-        IEnumerable<IReadOnlySystemFile> files,
-        float frameRate = 30) {
+  public IModel Import(
+      IEnumerable<IReadOnlySystemFile> files,
+      float frameRate = 30) {
       var filesArray = files.ToArray();
       var anmFile = filesArray.WithFileType(".anm").SingleOrDefault();
       var modFile = filesArray.WithFileType(".mod").Single();
@@ -36,5 +37,4 @@ namespace mod.api {
       var modImporter = new ModModelImporter();
       return modImporter.Import(modBundle);
     }
-  }
 }

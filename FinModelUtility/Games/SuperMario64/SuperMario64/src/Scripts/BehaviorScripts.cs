@@ -1,65 +1,66 @@
-﻿namespace sm64.Scripts {
-  public enum BehaviorCommand : byte {
-    BEGIN = 0x00,
-    DELAY,
-    CALL,
-    RETURN,
-    GOTO,
-    BEGIN_REPEAT,
-    end_repeat,
-    end_repeat_continue,
-    begin_loop,
-    end_loop,
-    BREAK = 0x0A,
-    break_unused,
-    call_native,
-    add_float,
-    set_float,
-    add_int,
-    set_int,
-    or_int,
-    bit_clear,
-    set_int_rand_rshift,
-    set_random_float,
-    set_random_int,
-    add_random_float,
-    add_int_rand_rshift,
-    nop_1,
-    nop_2,
-    nop_3,
-    set_model,
-    spawn_child,
-    deactivate,
-    drop_to_floor,
-    sum_float,
-    sum_int = 0x20,
-    billboard,
-    hide,
-    set_hitbox,
-    nop_4,
-    delay_var,
-    begin_repeat_unused,
-    load_animations,
-    animate,
-    spawn_child_with_param,
-    load_collision_data,
-    set_hitbox_with_offset,
-    spawn_obj,
-    set_home,
-    set_hurtbox,
-    set_interact_type,
-    set_obj_physics,
-    set_interact_subtype,
-    SCALE = 0x32,
-    parent_bit_clear,
-    animate_texture,
-    disable_rendering,
-    set_int_unused,
-    spawn_water_droplet,
-  }
+﻿namespace sm64.Scripts;
 
-  class BehaviorScripts {
-    private static uint bytesToInt(byte[] b, int offset, int length) {
+public enum BehaviorCommand : byte {
+  BEGIN = 0x00,
+  DELAY,
+  CALL,
+  RETURN,
+  GOTO,
+  BEGIN_REPEAT,
+  end_repeat,
+  end_repeat_continue,
+  begin_loop,
+  end_loop,
+  BREAK = 0x0A,
+  break_unused,
+  call_native,
+  add_float,
+  set_float,
+  add_int,
+  set_int,
+  or_int,
+  bit_clear,
+  set_int_rand_rshift,
+  set_random_float,
+  set_random_int,
+  add_random_float,
+  add_int_rand_rshift,
+  nop_1,
+  nop_2,
+  nop_3,
+  set_model,
+  spawn_child,
+  deactivate,
+  drop_to_floor,
+  sum_float,
+  sum_int = 0x20,
+  billboard,
+  hide,
+  set_hitbox,
+  nop_4,
+  delay_var,
+  begin_repeat_unused,
+  load_animations,
+  animate,
+  spawn_child_with_param,
+  load_collision_data,
+  set_hitbox_with_offset,
+  spawn_obj,
+  set_home,
+  set_hurtbox,
+  set_interact_type,
+  set_obj_physics,
+  set_interact_subtype,
+  SCALE = 0x32,
+  parent_bit_clear,
+  animate_texture,
+  disable_rendering,
+  set_int_unused,
+  spawn_water_droplet,
+}
+
+class BehaviorScripts {
+  private static uint bytesToInt(byte[] b, int offset, int length) {
       switch (length) {
         case 1: return b[0 + offset];
         case 2: return (uint) (b[0 + offset] << 8 | b[1 + offset]);
@@ -72,14 +73,14 @@
       }
     }
 
-    public static void parse(ref List<ScriptDumpCommandInfo> dump,
-                             uint segOffset) {
+  public static void parse(ref List<ScriptDumpCommandInfo> dump,
+                           uint segOffset) {
       parse(ref dump, (byte) (segOffset >> 24), segOffset & 0x00FFFFFF);
     }
 
-    public static void parse(ref List<ScriptDumpCommandInfo> dump,
-                             byte seg,
-                             uint off) {
+  public static void parse(ref List<ScriptDumpCommandInfo> dump,
+                           byte seg,
+                           uint off) {
       if (seg == 0) return;
       ROM rom = ROM.Instance;
       byte[] data = rom.getSegment(seg, null);
@@ -339,12 +340,12 @@
       }
     }
 
-    private static void addBehCommandToDump(
-        ref List<ScriptDumpCommandInfo> dump,
-        byte[] cmd,
-        byte seg,
-        uint offset,
-        string description) {
+  private static void addBehCommandToDump(
+      ref List<ScriptDumpCommandInfo> dump,
+      byte[] cmd,
+      byte seg,
+      uint offset,
+      string description) {
       ScriptDumpCommandInfo info = new ScriptDumpCommandInfo();
       info.data = cmd;
       info.description = description;
@@ -354,7 +355,7 @@
       dump.Add(info);
     }
 
-    private static byte getCmdLength(byte cmd) {
+  private static byte getCmdLength(byte cmd) {
       switch (cmd) {
         case 0x02:
         case 0x04:
@@ -381,5 +382,4 @@
           return 0x04;
       }
     }
-  }
 }

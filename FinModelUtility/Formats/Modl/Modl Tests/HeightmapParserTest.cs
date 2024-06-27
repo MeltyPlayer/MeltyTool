@@ -1,7 +1,8 @@
-namespace modl.schema.terrain {
-  public class HeightmapParserTest {
-    [Test]
-    public void Test() {
+namespace modl.schema.terrain;
+
+public class HeightmapParserTest {
+  [Test]
+  public void Test() {
       var chunkCountInAxis = 64;
 
       var expectedChunkX = 12;
@@ -42,5 +43,4 @@ namespace modl.schema.terrain {
       Assert.AreEqual((expectedChunkX, expectedChunkY),
                       (actualChunkX, actualChunkY));
     }
-  }
 }

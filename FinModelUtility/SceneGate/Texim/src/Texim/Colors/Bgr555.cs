@@ -17,21 +17,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Colors
+namespace Texim.Colors;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+public class Bgr555 : IColorEncoding
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
+    public static int BytesPerColor => 2;
 
-    public class Bgr555 : IColorEncoding
+    public static Bgr555 Instance { get; } = new Bgr555();
+
+    public static Rgb FromUInt16(ushort value)
     {
-        public static int BytesPerColor => 2;
-
-        public static Bgr555 Instance { get; } = new Bgr555();
-
-        public static Rgb FromUInt16(ushort value)
-        {
             return new Rgb {
                 Red = (byte)((value & 0x1F) << 3),
                 Green = (byte)(((value >> 5) & 0x1F) << 3),
@@ -40,15 +40,15 @@ namespace Texim.Colors
             };
         }
 
-        public static ushort ToUInt16(Rgb color)
-        {
+    public static ushort ToUInt16(Rgb color)
+    {
             return (ushort)((color.Red >> 3)
                 | ((color.Green >> 3) << 5)
                 | ((color.Blue >> 3) << 10));
         }
 
-        public Rgb Decode(Stream stream)
-        {
+    public Rgb Decode(Stream stream)
+    {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
@@ -56,8 +56,8 @@ namespace Texim.Colors
             return FromUInt16(data);
         }
 
-        public Rgb[] Decode(Stream stream, int numColors)
-        {
+    public Rgb[] Decode(Stream stream, int numColors)
+    {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (numColors < 0)
@@ -72,8 +72,8 @@ namespace Texim.Colors
             return Decode(buffer);
         }
 
-        public Rgb[] Decode(Span<byte> data)
-        {
+    public Rgb[] Decode(Span<byte> data)
+    {
             int numColors = data.Length / BytesPerColor;
             var colors = new Rgb[numColors];
             for (int i = 0; i < numColors; i++) {
@@ -84,14 +84,14 @@ namespace Texim.Colors
             return colors;
         }
 
-        public byte[] Encode(Rgb color)
-        {
+    public byte[] Encode(Rgb color)
+    {
             ushort data = ToUInt16(color);
             return [(byte)(data & 0xFF), (byte)(data >> 8)];
         }
 
-        public byte[] Encode(IEnumerable<Rgb> colors)
-        {
+    public byte[] Encode(IEnumerable<Rgb> colors)
+    {
             if (colors == null)
                 throw new ArgumentNullException(nameof(colors));
 
@@ -106,5 +106,4 @@ namespace Texim.Colors
 
             return buffer;
         }
-    }
 }

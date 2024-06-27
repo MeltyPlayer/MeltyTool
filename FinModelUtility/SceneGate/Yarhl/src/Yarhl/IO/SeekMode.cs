@@ -17,29 +17,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO
+namespace Yarhl.IO;
+
+using System;
+
+/// <summary>
+/// Seek mode for DataStream.
+/// </summary>
+[Obsolete("Use overloads with System.IO.SeekOrigin")]
+public enum SeekMode
 {
-    using System;
+    /// <summary>
+    /// Position from the origin of the DataStream.
+    /// </summary>
+    Start,
 
     /// <summary>
-    /// Seek mode for DataStream.
+    /// Position from the current position.
     /// </summary>
-    [Obsolete("Use overloads with System.IO.SeekOrigin")]
-    public enum SeekMode
-    {
-        /// <summary>
-        /// Position from the origin of the DataStream.
-        /// </summary>
-        Start,
+    Current,
 
-        /// <summary>
-        /// Position from the current position.
-        /// </summary>
-        Current,
-
-        /// <summary>
-        /// Position going back from the end of the DataStream.
-        /// </summary>
-        End,
-    }
+    /// <summary>
+    /// Position going back from the end of the DataStream.
+    /// </summary>
+    End,
 }

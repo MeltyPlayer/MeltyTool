@@ -17,26 +17,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Titles
+namespace SceneGate.Lemon.Titles;
+
+using System;
+using Yarhl.FileFormat;
+using Yarhl.IO;
+
+/// <summary>
+/// Deserializer of binary title metadata.
+/// </summary>
+public class Binary2TitleMetadata : IConverter<BinaryFormat, TitleMetadata>
 {
-    using System;
-    using Yarhl.FileFormat;
-    using Yarhl.IO;
+    const int NumContentInfo = 64;
 
     /// <summary>
-    /// Deserializer of binary title metadata.
+    /// Converts a binary format into a title metadata object.
     /// </summary>
-    public class Binary2TitleMetadata : IConverter<BinaryFormat, TitleMetadata>
+    /// <param name="source">The source binary.</param>
+    /// <returns>The deserializer title metadata.</returns>
+    public TitleMetadata Convert(BinaryFormat source)
     {
-        const int NumContentInfo = 64;
-
-        /// <summary>
-        /// Converts a binary format into a title metadata object.
-        /// </summary>
-        /// <param name="source">The source binary.</param>
-        /// <returns>The deserializer title metadata.</returns>
-        public TitleMetadata Convert(BinaryFormat source)
-        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -68,8 +68,8 @@ namespace SceneGate.Lemon.Titles
             return metadata;
         }
 
-        static TitleMetadata ReadHeader(DataReader reader, out int contentCount, TitleMetadata metadata)
-        {
+    static TitleMetadata ReadHeader(DataReader reader, out int contentCount, TitleMetadata metadata)
+    {
             metadata.SignatureIssuer = reader.ReadString(0x40).Replace("\0", string.Empty);
             metadata.Version = reader.ReadByte();
             metadata.CaCrlVersion = reader.ReadByte();
@@ -99,8 +99,8 @@ namespace SceneGate.Lemon.Titles
             return metadata;
         }
 
-        static ContentChunkRecord ReadChunkRecord(DataReader reader)
-        {
+    static ContentChunkRecord ReadChunkRecord(DataReader reader)
+    {
             var chunk = new ContentChunkRecord {
                 Id = reader.ReadInt32(),
                 Index = reader.ReadInt16(),
@@ -112,8 +112,8 @@ namespace SceneGate.Lemon.Titles
             return chunk;
         }
 
-        static ContentInfoRecord ReadInfoRecord(DataReader reader)
-        {
+    static ContentInfoRecord ReadInfoRecord(DataReader reader)
+    {
             var infoRecord = new ContentInfoRecord {
                 IndexOffset = reader.ReadInt16(),
                 CommandCount = reader.ReadInt16(),
@@ -135,8 +135,8 @@ namespace SceneGate.Lemon.Titles
             return infoRecord;
         }
 
-        static int GetSignatureSize(uint type)
-        {
+    static int GetSignatureSize(uint type)
+    {
             // Including padding
             return type switch {
                 0x010000 => 0x23C,
@@ -148,5 +148,4 @@ namespace SceneGate.Lemon.Titles
                 _ => throw new NotSupportedException(),
             };
         }
-    }
 }

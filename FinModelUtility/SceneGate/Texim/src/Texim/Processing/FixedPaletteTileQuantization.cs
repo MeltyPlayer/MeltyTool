@@ -17,24 +17,24 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Processing
+namespace Texim.Processing;
+
+using System;
+using System.Drawing;
+using System.Linq;
+using Colors;
+using Palettes;
+using Pixels;
+
+public class FixedPaletteTileQuantization : IQuantization
 {
-    using System;
-    using System.Drawing;
-    using System.Linq;
-    using Colors;
-    using Palettes;
-    using Pixels;
+    private readonly IPaletteCollection paletteCollection;
+    private readonly Rgb[][] palettes;
+    private readonly Size tileSize;
+    private readonly int width;
 
-    public class FixedPaletteTileQuantization : IQuantization
+    public FixedPaletteTileQuantization(IPaletteCollection palettes, Size tileSize, int width)
     {
-        private readonly IPaletteCollection paletteCollection;
-        private readonly Rgb[][] palettes;
-        private readonly Size tileSize;
-        private readonly int width;
-
-        public FixedPaletteTileQuantization(IPaletteCollection palettes, Size tileSize, int width)
-        {
             if (palettes == null)
                 throw new ArgumentNullException(nameof(palettes));
 
@@ -44,10 +44,10 @@ namespace Texim.Processing
             this.tileSize = tileSize;
         }
 
-        public bool FirstAsTransparent { get; set; }
+    public bool FirstAsTransparent { get; set; }
 
-        public (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels)
-        {
+    public (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels)
+    {
             // Swizzle to work with tiles
             var colorSwizzling = new TileSwizzling<Rgb>(tileSize, width);
             Rgb[] tiles = colorSwizzling.Swizzle(pixels);
@@ -69,8 +69,8 @@ namespace Texim.Processing
             return (indexSwizzling.Unswizzle(indexed), paletteCollection);
         }
 
-        private void ApproximateTile(ReadOnlySpan<Rgb> tile, int paletteIdx, Span<IndexedPixel> output)
-        {
+    private void ApproximateTile(ReadOnlySpan<Rgb> tile, int paletteIdx, Span<IndexedPixel> output)
+    {
             for (int i = 0; i < tile.Length; i++) {
                 int colorIdx = (FirstAsTransparent && tile[i].Alpha <= 128)
                     ? 0
@@ -79,8 +79,8 @@ namespace Texim.Processing
             }
         }
 
-        private int SearchNearestPalette(ReadOnlySpan<Rgb> tile)
-        {
+    private int SearchNearestPalette(ReadOnlySpan<Rgb> tile)
+    {
             int minDistance = int.MaxValue;
             int nearestPalette = -1;
 
@@ -95,8 +95,8 @@ namespace Texim.Processing
             return nearestPalette;
         }
 
-        private int GetTilePaletteDistance(ReadOnlySpan<Rgb> tile, Rgb[] palette)
-        {
+    private int GetTilePaletteDistance(ReadOnlySpan<Rgb> tile, Rgb[] palette)
+    {
             int totalDistance = 0;
             for (int i = 0; i < tile.Length; i++) {
                 totalDistance += ExhaustiveColorSearch.Search(palette, tile[i]).Distance;
@@ -104,5 +104,4 @@ namespace Texim.Processing
 
             return totalDistance;
         }
-    }
 }

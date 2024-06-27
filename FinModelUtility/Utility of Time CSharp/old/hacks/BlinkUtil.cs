@@ -1,20 +1,21 @@
 ﻿using System;
 
-namespace UoT.hacks {
-  public static class BlinkUtil {
-    // TODO: Get the exact right values for this.
+namespace UoT.hacks;
 
-    public const int OPEN_FRAMES = 48;
-    public const int HALF_OPEN_FRAMES = 1;
-    public const int CLOSED_FRAMES = 1;
+public static class BlinkUtil {
+  // TODO: Get the exact right values for this.
 
-    public const int TOTAL_FRAMES =
-        BlinkUtil.OPEN_FRAMES +
-        BlinkUtil.HALF_OPEN_FRAMES +
-        BlinkUtil.CLOSED_FRAMES +
-        BlinkUtil.HALF_OPEN_FRAMES;
+  public const int OPEN_FRAMES = 48;
+  public const int HALF_OPEN_FRAMES = 1;
+  public const int CLOSED_FRAMES = 1;
 
-    public static T Get<T>(T open, T halfOpen, T closed) {
+  public const int TOTAL_FRAMES =
+      BlinkUtil.OPEN_FRAMES +
+      BlinkUtil.HALF_OPEN_FRAMES +
+      BlinkUtil.CLOSED_FRAMES +
+      BlinkUtil.HALF_OPEN_FRAMES;
+
+  public static T Get<T>(T open, T halfOpen, T closed) {
       var frame = (int) Math.Floor(Time.Frame % BlinkUtil.TOTAL_FRAMES);
 
       if (frame < BlinkUtil.OPEN_FRAMES) {
@@ -34,5 +35,4 @@ namespace UoT.hacks {
 
       return halfOpen;
     }
-  }
 }

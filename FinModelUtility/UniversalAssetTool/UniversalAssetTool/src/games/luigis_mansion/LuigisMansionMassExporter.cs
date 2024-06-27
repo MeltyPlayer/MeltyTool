@@ -1,8 +1,9 @@
 ﻿using uni.platforms.gcn;
 
-namespace uni.games.luigis_mansion {
-  public class LuigisMansionMassExporter : IMassExporter {
-    public void ExportAll() {
+namespace uni.games.luigis_mansion;
+
+public class LuigisMansionMassExporter : IMassExporter {
+  public void ExportAll() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "luigis_mansion",
               GcnFileHierarchyExtractor.Options
@@ -16,5 +17,4 @@ namespace uni.games.luigis_mansion {
 
       // TODO: Use Mdl2Fbx
     }
-  }
 }

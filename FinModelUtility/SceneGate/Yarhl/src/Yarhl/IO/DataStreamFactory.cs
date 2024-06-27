@@ -17,51 +17,51 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO
-{
-    using System;
-    using System.IO;
-    using StreamFormat;
+namespace Yarhl.IO;
 
+using System;
+using System.IO;
+using StreamFormat;
+
+/// <summary>
+/// Factory of DataStream.
+/// </summary>
+public static class DataStreamFactory
+{
     /// <summary>
-    /// Factory of DataStream.
+    /// Creates a new <see cref="DataStream"/> from a <see cref="Stream"/>.
     /// </summary>
-    public static class DataStreamFactory
+    /// <param name="stream">The stream to use as a base.</param>
+    /// <remarks>
+    /// <p>The dispose ownership is transferred to the new DataStream.</p>
+    /// </remarks>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromStream(Stream stream)
     {
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> from a <see cref="Stream"/>.
-        /// </summary>
-        /// <param name="stream">The stream to use as a base.</param>
-        /// <remarks>
-        /// <p>The dispose ownership is transferred to the new DataStream.</p>
-        /// </remarks>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromStream(Stream stream)
-        {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
             return new DataStream(stream);
         }
 
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> from a section of a
-        /// <see cref="Stream"/>.
-        /// </summary>
-        /// <remarks>
-        /// <p>The life-management of the stream is transferred to the
-        /// <see cref="DataStream"/>. This means that disposing the new
-        /// <see cref="DataStream"/> will potentially dispose the underlying
-        /// stream.</p>
-        /// <p>Check <see cref="FromStreamKeepingOwnership" /> if you don't
-        /// want this behavior.</p>
-        /// </remarks>
-        /// <param name="stream">The stream to use as a base.</param>
-        /// <param name="offset">Offset of the base stream.</param>
-        /// <param name="length">Length of the new substream.</param>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromStream(Stream stream, long offset, long length)
-        {
+    /// <summary>
+    /// Creates a new <see cref="DataStream"/> from a section of a
+    /// <see cref="Stream"/>.
+    /// </summary>
+    /// <remarks>
+    /// <p>The life-management of the stream is transferred to the
+    /// <see cref="DataStream"/>. This means that disposing the new
+    /// <see cref="DataStream"/> will potentially dispose the underlying
+    /// stream.</p>
+    /// <p>Check <see cref="FromStreamKeepingOwnership" /> if you don't
+    /// want this behavior.</p>
+    /// </remarks>
+    /// <param name="stream">The stream to use as a base.</param>
+    /// <param name="offset">Offset of the base stream.</param>
+    /// <param name="length">Length of the new substream.</param>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromStream(Stream stream, long offset, long length)
+    {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (offset < 0 || offset > stream.Length)
@@ -72,21 +72,21 @@ namespace Yarhl.IO
             return new DataStream(stream, offset, length, true);
         }
 
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> from a section of a
-        /// <see cref="Stream"/>.
-        /// </summary>
-        /// <remarks>
-        /// <p>The dispose ownership is not transferred to the new
-        /// <see cref="DataStream" />. Instead, the caller is still responsible
-        /// to dispose according the stream argument.</p>
-        /// </remarks>
-        /// <param name="stream">The stream to use as a base.</param>
-        /// <param name="offset">Offset of the base stream.</param>
-        /// <param name="length">Length of the new substream.</param>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromStreamKeepingOwnership(Stream stream, long offset, long length)
-        {
+    /// <summary>
+    /// Creates a new <see cref="DataStream"/> from a section of a
+    /// <see cref="Stream"/>.
+    /// </summary>
+    /// <remarks>
+    /// <p>The dispose ownership is not transferred to the new
+    /// <see cref="DataStream" />. Instead, the caller is still responsible
+    /// to dispose according the stream argument.</p>
+    /// </remarks>
+    /// <param name="stream">The stream to use as a base.</param>
+    /// <param name="offset">Offset of the base stream.</param>
+    /// <param name="length">Length of the new substream.</param>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromStreamKeepingOwnership(Stream stream, long offset, long length)
+    {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (offset < 0 || offset > stream.Length)
@@ -97,38 +97,38 @@ namespace Yarhl.IO
             return new DataStream(stream, offset, length, false);
         }
 
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> in memory.
-        /// </summary>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromMemory()
-        {
+    /// <summary>
+    /// Creates a new <see cref="DataStream"/> in memory.
+    /// </summary>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromMemory()
+    {
             var baseStream = new RecyclableMemoryStream();
             return new DataStream(baseStream);
         }
 
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> from an array of data.
-        /// </summary>
-        /// <param name="data">The array of data to use in the stream.</param>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromArray(byte[] data)
-        {
+    /// <summary>
+    /// Creates a new <see cref="DataStream"/> from an array of data.
+    /// </summary>
+    /// <param name="data">The array of data to use in the stream.</param>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromArray(byte[] data)
+    {
             if (data is null)
                 throw new ArgumentNullException(nameof(data));
 
             return FromArray(data, 0, data.Length);
         }
 
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> from an array of data.
-        /// </summary>
-        /// <param name="data">The array of data to use in the stream.</param>
-        /// <param name="offset">Offset in the array of data.</param>
-        /// <param name="length">Length of the new stream.</param>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromArray(byte[] data, int offset, int length)
-        {
+    /// <summary>
+    /// Creates a new <see cref="DataStream"/> from an array of data.
+    /// </summary>
+    /// <param name="data">The array of data to use in the stream.</param>
+    /// <param name="offset">Offset in the array of data.</param>
+    /// <param name="length">Length of the new stream.</param>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromArray(byte[] data, int offset, int length)
+    {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -141,14 +141,14 @@ namespace Yarhl.IO
             return new DataStream(baseStream, offset, length, true);
         }
 
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> from a file.
-        /// </summary>
-        /// <param name="path">The path of the file.</param>
-        /// <param name="mode">The mode to open the file.</param>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromFile(string path, FileOpenMode mode)
-        {
+    /// <summary>
+    /// Creates a new <see cref="DataStream"/> from a file.
+    /// </summary>
+    /// <param name="path">The path of the file.</param>
+    /// <param name="mode">The mode to open the file.</param>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromFile(string path, FileOpenMode mode)
+    {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException(nameof(path));
             if (mode == FileOpenMode.Read && !File.Exists(path)) {
@@ -159,16 +159,16 @@ namespace Yarhl.IO
             return new DataStream(baseStream);
         }
 
-        /// <summary>
-        /// Creates a new <see cref="DataStream"/> from a section of a file.
-        /// </summary>
-        /// <param name="path">The path of the file.</param>
-        /// <param name="mode">The mode to open the file.</param>
-        /// <param name="offset">Offset from the start of the file.</param>
-        /// <param name="length">Length of the new stream.</param>
-        /// <returns>A new <see cref="DataStream"/>.</returns>
-        public static DataStream FromFile(string path, FileOpenMode mode, long offset, long length)
-        {
+    /// <summary>
+    /// Creates a new <see cref="DataStream"/> from a section of a file.
+    /// </summary>
+    /// <param name="path">The path of the file.</param>
+    /// <param name="mode">The mode to open the file.</param>
+    /// <param name="offset">Offset from the start of the file.</param>
+    /// <param name="length">Length of the new stream.</param>
+    /// <returns>A new <see cref="DataStream"/>.</returns>
+    public static DataStream FromFile(string path, FileOpenMode mode, long offset, long length)
+    {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentNullException(nameof(path));
             if (mode == FileOpenMode.Read && !File.Exists(path)) {
@@ -196,5 +196,4 @@ namespace Yarhl.IO
             var baseStream = new LazyFileStream(path, mode);
             return new DataStream(baseStream, offset, length, true);
         }
-    }
 }
