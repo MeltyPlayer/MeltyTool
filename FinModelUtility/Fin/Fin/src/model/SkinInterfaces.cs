@@ -171,8 +171,8 @@ namespace fin.model {
     [Const]
     IEnumerable<IReadOnlyVertex> GetOrderedTriangleVertices();
 
-    IMaterial Material { get; }
-    IPrimitive SetMaterial(IMaterial material);
+    IMaterial? Material { get; }
+    IPrimitive SetMaterial(IMaterial? material);
 
     VertexOrder VertexOrder { get; }
     IPrimitive SetVertexOrder(VertexOrder vertexOrder);

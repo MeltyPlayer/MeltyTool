@@ -28,6 +28,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@DavidSM64](https://github.com/DavidSM64), whose [Quad64](https://github.com/DavidSM64/Quad64) is used as the base for the SM64 importer.
 - [@Emill](https://github.com/Emill), whose [Nintendo 64 Fast3D renderer](https://github.com/Emill/n64-fast3d-engine) was heavily referenced to vastly improve TMEM emulation.
 - [@EstevanBR](https://github.com/EstevanBR), whose [DATReaderC](https://github.com/EstevanBR/DATReaderC) was referenced as the starting point for the .dat importer.
+- [@follyfoxe](https://github.com/follyfoxe), whose [SpmViewer](https://github.com/follyfoxe/SpmViewer) was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - [@Gericom](https://github.com/Gericom), whose [MKDS Course Modifier](https://www.romhacking.net/utilities/1285/) program was used as the basis for the .bmd importer.
 - [@gibbed](https://github.com/gibbed), whose [Gibbed.Visceral](https://github.com/gibbed/Gibbed.Visceral) library was used as the base of the .str extractor.
 - [Hack64](https://hack64.net), which provided documentation for various N64 microcode/display list formats (e.g. [Fast3D Display List Commands](https://hack64.net/wiki/doku.php?id=super_mario_64:fast3d_display_list_commands))
@@ -43,7 +44,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@LordNed](https://github.com/LordNed), whose [J3D-Model-Viewer](https://github.com/LordNed/J3D-Model-Viewer) tool and [JStudio](https://github.com/LordNed/JStudio) library were referenced to fix bugs in the .bmd importer.
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
 - [@M-1-RLG](https://github.com/M-1-RLG), AKA M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
-- [@magcius](https://github.com/magcius), AKA Jasper, as their animated model viewer was used as the basis for the .csab importer.
+- [@magcius](https://github.com/magcius), AKA Jasper, as their model viewer [noclip.website](https://github.com/naclomi/noclip.website) was referenced to add support for importing .csab files and Paper Mario: The Thousand Year Door's animated group models.
 - [@mhvuze](https://github.com/mhvuze), whose [3ds-xfsatool](https://github.com/mhvuze/3ds-xfsatool) is used to extract XFSA archives.
 - [@Nanook](https://github.com/Nanook), whose [NKitv1](https://github.com/Nanook/NKitv1) is used to read NKit ISOs.
 - [@neimod](https://github.com/neimod), who originally created [ctrtool](https://github.com/neimod/ctr), which is used to extract the contents of 3DS .cias.
@@ -51,10 +52,12 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@nickbabcock](https://github.com/nickbabcock), whose [Pfim](https://github.com/nickbabcock/Pfim) library is used to extract the contents of .dds images.
 - [@nico](https://github.com/nico), AKA thakis, whose [szstools](http://amnoid.de/gc/) CLI is used to extract the contents of GameCube .isos and their [ddsview](http://www.amnoid.de/ddsview/index.html) tool was referenced to fix Halo Wars DXT5A/ATI1/BC4 parsing.
 - [@Nominom](https://github.com/Nominom), whose [BCnEncoder.NET](https://github.com/Nominom/BCnEncoder.NET) library is used to parse DXT1/3/5 images.
+- [@PistonMiner](https://github.com/PistonMiner), whose [ttyd-tools](https://github.com/PistonMiner/ttyd-tools) documentation was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - [@Ploaj](https://github.com/Ploaj), whose [HSDLib](https://github.com/Ploaj/HSDLib) library was heavily referenced to fix the Super Smash Bros. Melee .dat importer (since HSDLib has nearly perfect accuracy!!) and [Metanoia](https://github.com/Ploaj/Metanoia) library was heavily referenced to add support for parsing Level-5 formats. 
 - [@polym0rph](https://github.com/polym0rph), whose [GLSL.tmbundle](https://github.com/polym0rph/GLSL.tmbundle) was used to add TextMate syntax highlighting support for .glsl files in the material viewer.
 - [@revel8n](https://github.com/revel8n), whose [Smashboards thread](https://smashboards.com/threads/melee-dat-format.292603/) was referenced to add support for the .dat importer.
 - [@RenolY2](https://github.com/RenolY2), AKA Yoshi2, whose [bw-model-viewer](https://github.com/RenolY2/bw-model-viewer) tool was used as the basis for the .modl importer.
+- [Retriever II](https://www.mfgg.net/index.php?act=user&param=01&uid=2), AKA R-II, whose [documentation](https://www.emutalk.net/threads/pm-ttyd-model-file-format-pet-project.27613/) was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - [@Sage-of-Mirrors](https://github.com/Sage-of-Mirrors), whose [SuperBMD](https://github.com/Sage-of-Mirrors/SuperBMD) tool was referenced to clean up the .bmd logic and whose [Booldozer](https://github.com/Sage-of-Mirrors/Booldozer) tool was used as the basis for the .mdl importer.
 - [@SceneGate](https://github.com/SceneGate), whose [Yarhl](https://github.com/SceneGate/Yarhl), [Ekona](https://github.com/SceneGate/Ekona), and [Lemon](https://github.com/SceneGate/Lemon) libraries were used to rip files from DS and 3DS ROMs.
 - [@shravan2x](https://github.com/shravan2x), whose [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) library is used to deserialize the contents of Steam's .vdf files.
@@ -71,6 +74,8 @@ If you'd like to vote on new games or features that should be supported, please 
 
 *Not all of the models for each game are currently supported, and not every feature of each model will be accurately recreated in the output GLTF/FBX files. To flag any broken/missing models that you'd like to see fixed, please feel free to file feedback via the Issues tab above.*
 
+- /a (Animated group models) (GCN)
+  - Paper Mario: The Thousand Year Door (`paper_mario_the_thousand_year_door.[ciso/gcm/iso/nkit.iso]`)
 - J3dGraph (.bmd/.bdl) (GCN)
   - Mario Kart: Double Dash (`mario_kart_double_dash.[ciso/gcm/iso/nkit.iso]`)
   - Pikmin 2 (`pikmin_2.[ciso/gcm/iso/nkit.iso]`)

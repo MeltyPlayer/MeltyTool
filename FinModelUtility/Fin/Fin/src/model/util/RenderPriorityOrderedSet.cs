@@ -7,7 +7,7 @@ using fin.data.dictionaries;
 using fin.data.sets;
 
 namespace fin.model.util {
-  public class RenderPriorityOrderedSet<T> : IEnumerable<T> where T : notnull {
+  public class RenderPriorityOrderedSet<T> : IEnumerable<T> {
     // TODO: Optimize this somehow?
     private readonly OrderedHashSet<T> elements_ = new();
 

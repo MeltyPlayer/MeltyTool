@@ -48,10 +48,10 @@ namespace fin.ui.rendering.gl.model {
 
       var primitiveMerger = new PrimitiveMerger();
       foreach (var mesh in meshQueue) {
-        var materialQueue = new RenderPriorityOrderedSet<IReadOnlyMaterial>();
+        var materialQueue = new RenderPriorityOrderedSet<IReadOnlyMaterial?>();
         var primitivesByMaterial
-            = new ListDictionary<IReadOnlyMaterial, IReadOnlyPrimitive>(
-                new NullFriendlyDictionary<IReadOnlyMaterial,
+            = new ListDictionary<IReadOnlyMaterial?, IReadOnlyPrimitive>(
+                new NullFriendlyDictionary<IReadOnlyMaterial?,
                     IList<IReadOnlyPrimitive>>());
         foreach (var primitive in mesh.Primitives) {
           primitivesByMaterial.Add(primitive.Material, primitive);
