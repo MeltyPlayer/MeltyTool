@@ -236,10 +236,8 @@ namespace fin.math.matrix.four {
 
     // Shamelessly copied from https://math.stackexchange.com/a/1463487
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void CopyTranslationInto(out Position dst) {
-      dst = default;
-      Unsafe.As<Position, Vector3>(ref dst) = this.impl_.Translation;
-    }
+    public void CopyTranslationInto(out Vector3 dst)
+      => dst = this.impl_.Translation;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void CopyRotationInto(out Quaternion dst) {
@@ -248,24 +246,24 @@ namespace fin.math.matrix.four {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void CopyScaleInto(out Scale dst)
+    public void CopyScaleInto(out Vector3 dst)
       => this.Decompose(out _, out _, out dst);
 
 
     public const bool STRICT_DECOMPOSITION = true;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Decompose(out Position translation,
+    public void Decompose(out Vector3 translation,
                           out Quaternion rotation,
-                          out Scale scale) {
+                          out Vector3 scale) {
       translation = default;
       scale = default;
       Asserts.True(
           SystemMatrix.Decompose(
               impl_,
-              out Unsafe.As<Scale, Vector3>(ref scale),
+              out scale,
               out rotation,
-              out Unsafe.As<Position, Vector3>(ref translation)) ||
+              out translation) ||
           !STRICT_DECOMPOSITION,
           "Failed to decompose matrix!");
     }

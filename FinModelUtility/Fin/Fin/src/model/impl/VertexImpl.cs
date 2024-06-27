@@ -5,13 +5,14 @@ using fin.color;
 using fin.math.xyz;
 
 namespace fin.model.impl {
-  public class OneColor2UvVertexImpl : IVertex,
-                                       ISingleColorVertex,
-                                       IMultiUvVertex {
+  public class OneColor2UvVertexImpl
+      : IVertex,
+        ISingleColorVertex,
+        IMultiUvVertex {
     private IColor? color_;
-    private TexCoord[] uv_ = new TexCoord[2];
+    private Vector2[] uv_ = new Vector2[2];
 
-    public OneColor2UvVertexImpl(int index, Position position) {
+    public OneColor2UvVertexImpl(int index, Vector3 position) {
       this.Index = index;
       this.SetLocalPosition(position);
     }
@@ -34,25 +35,19 @@ namespace fin.model.impl {
     }
 
 
-    public Position LocalPosition { get; private set; }
-
-    public void SetLocalPosition(Position localPosition) {
-      this.LocalPosition = localPosition;
-    }
+    public Vector3 LocalPosition { get; private set; }
 
     public void SetLocalPosition(Vector3 localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.LocalPosition = localPosition;
 
     public void SetLocalPosition(IReadOnlyXyz localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.SetLocalPosition(new Vector3(localPosition.X,
+                                           localPosition.Y,
+                                           localPosition.Z));
 
 
     public void SetLocalPosition(float x, float y, float z)
-      => this.SetLocalPosition(new Position(x, y, z));
+      => this.SetLocalPosition(new Vector3(x, y, z));
 
 
     public void SetColor(Color? color)
@@ -86,24 +81,22 @@ namespace fin.model.impl {
     public IColor? GetColor() => this.color_;
 
     public int UvCount => 2;
-    public TexCoord? GetUv(int uvIndex) => this.uv_[uvIndex];
+    public Vector2? GetUv(int uvIndex) => this.uv_[uvIndex];
 
-    public void SetUv(int uvIndex, TexCoord? uv) {
-      this.uv_[uvIndex] = uv.Value;
-    }
+    public void SetUv(int uvIndex, Vector2? uv) => this.uv_[uvIndex] = uv.Value;
 
-    public void SetUv(int uvIndex, float u, float v) {
-      this.uv_[uvIndex] = new TexCoord { U = u, V = v };
-    }
+    public void SetUv(int uvIndex, float u, float v)
+      => this.uv_[uvIndex] = new Vector2(u, v);
   }
 
 
-  public class NormalUvVertexImpl : IVertex,
-                                    INormalVertex,
-                                    ISingleUvVertex {
-    private TexCoord? uv_;
+  public class NormalUvVertexImpl
+      : IVertex,
+        INormalVertex,
+        ISingleUvVertex {
+    private Vector2? uv_;
 
-    public NormalUvVertexImpl(int index, Position position) {
+    public NormalUvVertexImpl(int index, Vector3 position) {
       this.Index = index;
       this.SetLocalPosition(position);
     }
@@ -125,82 +118,60 @@ namespace fin.model.impl {
     }
 
 
-    public Position LocalPosition { get; private set; }
+    public Vector3 LocalPosition { get; private set; }
 
-    public void SetLocalPosition(Position localPosition) {
+    public void SetLocalPosition(Vector3 localPosition) {
       this.LocalPosition = localPosition;
     }
 
-    public void SetLocalPosition(Vector3 localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
-
     public void SetLocalPosition(IReadOnlyXyz localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.SetLocalPosition(new Vector3(localPosition.X,
+                                           localPosition.Y,
+                                           localPosition.Z));
 
 
     public void SetLocalPosition(float x, float y, float z)
-      => this.SetLocalPosition(new Position(x, y, z));
+      => this.SetLocalPosition(new Vector3(x, y, z));
 
 
-    public Normal? LocalNormal { get; private set; }
-
-    public void SetLocalNormal(Normal? localNormal) {
-      this.LocalNormal = localNormal;
-    }
+    public Vector3? LocalNormal { get; private set; }
 
     public void SetLocalNormal(Vector3? localNormal)
-      => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.Value.X,
-                                              localNormal.Value.Y,
-                                              localNormal.Value.Z)
-                                 : null);
+      => this.LocalNormal = localNormal;
 
     public void SetLocalNormal(IReadOnlyXyz? localNormal)
       => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.X,
-                                              localNormal.Y,
-                                              localNormal.Z)
+                                 ? new Vector3(localNormal.X,
+                                               localNormal.Y,
+                                               localNormal.Z)
                                  : null);
 
     public void SetLocalNormal(float x, float y, float z)
-      => this.SetLocalNormal(new Normal(x, y, z));
+      => this.SetLocalNormal(new Vector3(x, y, z));
 
 
-    public void SetUv(TexCoord? uv) {
-      this.uv_ = uv;
-    }
-
-    public void SetUv(Vector2? uv)
-      => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.Value.X, V = uv.Value.Y }
-                        : null);
+    public void SetUv(Vector2? uv) => this.uv_ = uv;
 
     public void SetUv(IReadOnlyVector2? uv)
       => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.X, V = uv.Y }
+                        ? new Vector2(uv.X, uv.Y)
                         : null);
 
-    public void SetUv(float u, float v) {
-      this.uv_ = new TexCoord { U = u, V = v };
-    }
+    public void SetUv(float u, float v) => this.uv_ = new Vector2(u, v);
 
-    public TexCoord? GetUv() => this.uv_;
+    public Vector2? GetUv() => this.uv_;
   }
 
 
-
-  public class Normal1Color1UvVertexImpl : IVertex,
-                                           INormalVertex,
-                                           ISingleColorVertex,
-                                           ISingleUvVertex {
+  public class Normal1Color1UvVertexImpl
+      : IVertex,
+        INormalVertex,
+        ISingleColorVertex,
+        ISingleUvVertex {
     private IColor? color_;
-    private TexCoord? uv_;
+    private Vector2? uv_;
 
-    public Normal1Color1UvVertexImpl(int index, Position position) {
+    public Normal1Color1UvVertexImpl(int index, Vector3 position) {
       this.Index = index;
       this.SetLocalPosition(position);
     }
@@ -217,54 +188,39 @@ namespace fin.model.impl {
 
     public IBoneWeights? BoneWeights { get; private set; }
 
-    public void SetBoneWeights(IBoneWeights boneWeights) {
-      this.BoneWeights = boneWeights;
-    }
+    public void SetBoneWeights(IBoneWeights boneWeights)
+      => this.BoneWeights = boneWeights;
 
 
-    public Position LocalPosition { get; private set; }
-
-    public void SetLocalPosition(Position localPosition) {
-      this.LocalPosition = localPosition;
-    }
+    public Vector3 LocalPosition { get; private set; }
 
     public void SetLocalPosition(Vector3 localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.LocalPosition = localPosition;
 
     public void SetLocalPosition(IReadOnlyXyz localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.SetLocalPosition(new Vector3(localPosition.X,
+                                           localPosition.Y,
+                                           localPosition.Z));
 
 
     public void SetLocalPosition(float x, float y, float z)
-      => this.SetLocalPosition(new Position(x, y, z));
+      => this.SetLocalPosition(new Vector3(x, y, z));
 
 
-    public Normal? LocalNormal { get; private set; }
-
-    public void SetLocalNormal(Normal? localNormal) {
-      this.LocalNormal = localNormal;
-    }
+    public Vector3? LocalNormal { get; private set; }
 
     public void SetLocalNormal(Vector3? localNormal)
-      => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.Value.X,
-                                              localNormal.Value.Y,
-                                              localNormal.Value.Z)
-                                 : null);
+      => this.LocalNormal = localNormal;
 
     public void SetLocalNormal(IReadOnlyXyz? localNormal)
       => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.X,
-                                              localNormal.Y,
-                                              localNormal.Z)
+                                 ? new Vector3(localNormal.X,
+                                               localNormal.Y,
+                                               localNormal.Z)
                                  : null);
 
     public void SetLocalNormal(float x, float y, float z)
-      => this.SetLocalNormal(new Normal(x, y, z));
+      => this.SetLocalNormal(new Vector3(x, y, z));
 
 
     public void SetColor(Color? color)
@@ -298,35 +254,25 @@ namespace fin.model.impl {
     public IColor? GetColor() => this.color_;
 
 
-    public void SetUv(TexCoord? uv) {
-      this.uv_ = uv;
-    }
-
-    public void SetUv(Vector2? uv)
-      => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.Value.X, V = uv.Value.Y }
-                        : null);
+    public void SetUv(Vector2? uv) => this.uv_ = uv;
 
     public void SetUv(IReadOnlyVector2? uv)
-      => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.X, V = uv.Y }
-                        : null);
+      => this.SetUv(uv != null ? new Vector2(uv.X, uv.Y) : null);
 
-    public void SetUv(float u, float v) {
-      this.uv_ = new TexCoord { U = u, V = v };
-    }
+    public void SetUv(float u, float v) => this.uv_ = new Vector2(u, v);
 
-    public TexCoord? GetUv() => this.uv_;
+    public Vector2? GetUv() => this.uv_;
   }
 
-  public class NormalTangent1Color1UvVertexImpl : IVertex,
-                                                  INormalTangentVertex,
-                                                  ISingleColorVertex,
-                                                  ISingleUvVertex {
+  public class NormalTangent1Color1UvVertexImpl
+      : IVertex,
+        INormalTangentVertex,
+        ISingleColorVertex,
+        ISingleUvVertex {
     private IColor? color_;
-    private TexCoord? uv_;
+    private Vector2? uv_;
 
-    public NormalTangent1Color1UvVertexImpl(int index, Position position) {
+    public NormalTangent1Color1UvVertexImpl(int index, Vector3 position) {
       this.Index = index;
       this.SetLocalPosition(position);
     }
@@ -348,75 +294,52 @@ namespace fin.model.impl {
     }
 
 
-    public Position LocalPosition { get; private set; }
-
-    public void SetLocalPosition(Position localPosition) {
-      this.LocalPosition = localPosition;
-    }
+    public Vector3 LocalPosition { get; private set; }
 
     public void SetLocalPosition(Vector3 localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.LocalPosition = localPosition;
 
     public void SetLocalPosition(IReadOnlyXyz localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.SetLocalPosition(new Vector3(localPosition.X,
+                                           localPosition.Y,
+                                           localPosition.Z));
 
 
     public void SetLocalPosition(float x, float y, float z)
-      => this.SetLocalPosition(new Position(x, y, z));
+      => this.SetLocalPosition(new Vector3(x, y, z));
 
 
-    public Normal? LocalNormal { get; private set; }
-
-    public void SetLocalNormal(Normal? localNormal) {
-      this.LocalNormal = localNormal;
-    }
+    public Vector3? LocalNormal { get; private set; }
 
     public void SetLocalNormal(Vector3? localNormal)
-      => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.Value.X,
-                                              localNormal.Value.Y,
-                                              localNormal.Value.Z)
-                                 : null);
+      => this.LocalNormal = localNormal;
 
     public void SetLocalNormal(IReadOnlyXyz? localNormal)
       => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.X,
-                                              localNormal.Y,
-                                              localNormal.Z)
+                                 ? new Vector3(localNormal.X,
+                                               localNormal.Y,
+                                               localNormal.Z)
                                  : null);
 
     public void SetLocalNormal(float x, float y, float z)
-      => this.SetLocalNormal(new Normal(x, y, z));
+      => this.SetLocalNormal(new Vector3(x, y, z));
 
 
-    public Tangent? LocalTangent { get; private set; }
-
-    public void SetLocalTangent(Tangent? localTangent) {
-      this.LocalTangent = localTangent;
-    }
+    public Vector4? LocalTangent { get; private set; }
 
     public void SetLocalTangent(Vector4? localTangent)
-      => this.SetLocalTangent(localTangent != null
-                                  ? new Tangent(localTangent.Value.X,
-                                                localTangent.Value.Y,
-                                                localTangent.Value.Z,
-                                                localTangent.Value.W)
-                                  : null);
+      => this.LocalTangent = localTangent;
 
     public void SetLocalTangent(IReadOnlyVector4? localTangent)
       => this.SetLocalTangent(localTangent != null
-                                  ? new Tangent(localTangent.X,
+                                  ? new Vector4(localTangent.X,
                                                 localTangent.Y,
                                                 localTangent.Z,
                                                 localTangent.W)
                                   : null);
 
     public void SetLocalTangent(float x, float y, float z, float w)
-      => this.SetLocalTangent(new Tangent(x, y, z, w));
+      => this.SetLocalTangent(new Vector4(x, y, z, w));
 
     public void SetColor(Color? color)
       => this.SetColor(color != null
@@ -449,43 +372,37 @@ namespace fin.model.impl {
     public IColor? GetColor() => this.color_;
 
 
-    public void SetUv(TexCoord? uv) {
-      this.uv_ = uv;
-    }
-
-    public void SetUv(Vector2? uv)
-      => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.Value.X, V = uv.Value.Y }
-                        : null);
+    public void SetUv(Vector2? uv) => this.uv_ = uv;
 
     public void SetUv(IReadOnlyVector2? uv)
-      => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.X, V = uv.Y }
-                        : null);
+      => this.SetUv(uv != null ? new Vector2(uv.X, uv.Y) : null);
 
-    public void SetUv(float u, float v) {
-      this.uv_ = new TexCoord { U = u, V = v };
-    }
-
-    public TexCoord? GetUv() => this.uv_;
+    public void SetUv(float u, float v) => this.uv_ = new Vector2(u, v);
+    public Vector2? GetUv() => this.uv_;
   }
 
   public class NormalTangentMultiColorMultiUvVertexImpl
-      : IVertex, 
+      : IVertex,
         INormalTangentVertex,
         ISingleColorVertex,
         IMultiColorVertex,
         ISingleUvVertex,
         IMultiUvVertex {
     private IVertexAttributeArray<IColor>? colors_;
-    private IVertexAttributeArray<TexCoord>? uvs_;
+    private IVertexAttributeArray<Vector2>? uvs_;
 
-    public NormalTangentMultiColorMultiUvVertexImpl(int index, Position position) {
+    public NormalTangentMultiColorMultiUvVertexImpl(
+        int index,
+        Vector3 position) {
       this.Index = index;
       this.SetLocalPosition(position);
     }
 
-    public NormalTangentMultiColorMultiUvVertexImpl(int index, float x, float y, float z) {
+    public NormalTangentMultiColorMultiUvVertexImpl(
+        int index,
+        float x,
+        float y,
+        float z) {
       this.Index = index;
       this.SetLocalPosition(x, y, z);
     }
@@ -499,75 +416,52 @@ namespace fin.model.impl {
     }
 
 
-    public Position LocalPosition { get; private set; }
-
-    public void SetLocalPosition(Position localPosition) {
-      this.LocalPosition = localPosition;
-    }
+    public Vector3 LocalPosition { get; private set; }
 
     public void SetLocalPosition(Vector3 localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.LocalPosition = localPosition;
 
     public void SetLocalPosition(IReadOnlyXyz localPosition)
-      => this.SetLocalPosition(new Position(localPosition.X,
-                                            localPosition.Y,
-                                            localPosition.Z));
+      => this.SetLocalPosition(new Vector3(localPosition.X,
+                                           localPosition.Y,
+                                           localPosition.Z));
 
 
     public void SetLocalPosition(float x, float y, float z)
-      => this.SetLocalPosition(new Position(x, y, z));
+      => this.SetLocalPosition(new Vector3(x, y, z));
 
 
-    public Normal? LocalNormal { get; private set; }
-
-    public void SetLocalNormal(Normal? localNormal) {
-      this.LocalNormal = localNormal;
-    }
+    public Vector3? LocalNormal { get; private set; }
 
     public void SetLocalNormal(Vector3? localNormal)
-      => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.Value.X,
-                                              localNormal.Value.Y,
-                                              localNormal.Value.Z)
-                                 : null);
+      => this.LocalNormal = localNormal;
 
     public void SetLocalNormal(IReadOnlyXyz? localNormal)
       => this.SetLocalNormal(localNormal != null
-                                 ? new Normal(localNormal.X,
-                                              localNormal.Y,
-                                              localNormal.Z)
+                                 ? new Vector3(localNormal.X,
+                                               localNormal.Y,
+                                               localNormal.Z)
                                  : null);
 
     public void SetLocalNormal(float x, float y, float z)
-      => this.SetLocalNormal(new Normal(x, y, z));
+      => this.SetLocalNormal(new Vector3(x, y, z));
 
 
-    public Tangent? LocalTangent { get; private set; }
-
-    public void SetLocalTangent(Tangent? localTangent) {
-      this.LocalTangent = localTangent;
-    }
+    public Vector4? LocalTangent { get; private set; }
 
     public void SetLocalTangent(Vector4? localTangent)
-      => this.SetLocalTangent(localTangent != null
-                                  ? new Tangent(localTangent.Value.X,
-                                                localTangent.Value.Y,
-                                                localTangent.Value.Z,
-                                                localTangent.Value.W)
-                                  : null);
+      => this.LocalTangent = localTangent;
 
     public void SetLocalTangent(IReadOnlyVector4? localTangent)
       => this.SetLocalTangent(localTangent != null
-                                  ? new Tangent(localTangent.X,
+                                  ? new Vector4(localTangent.X,
                                                 localTangent.Y,
                                                 localTangent.Z,
                                                 localTangent.W)
                                   : null);
 
     public void SetLocalTangent(float x, float y, float z, float w)
-      => this.SetLocalTangent(new Tangent(x, y, z, w));
+      => this.SetLocalTangent(new Vector4(x, y, z, w));
 
     public void SetColor(Color? color) {
       if (color != null) {
@@ -642,33 +536,26 @@ namespace fin.model.impl {
 
     public int UvCount => this.uvs_?.Count ?? 0;
 
-    public void SetUv(TexCoord? uv) {
+    public void SetUv(Vector2? uv) {
       if (uv == null) {
         this.uvs_ = null;
       } else {
-        this.uvs_ ??= new SingleVertexAttribute<TexCoord>();
+        this.uvs_ ??= new SingleVertexAttribute<Vector2>();
         this.uvs_[0] = uv.Value;
       }
     }
 
-    public void SetUv(Vector2? uv)
-      => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.Value.X, V = uv.Value.Y }
-                        : null);
-
     public void SetUv(IReadOnlyVector2? uv)
-      => this.SetUv(uv != null
-                        ? new TexCoord { U = uv.X, V = uv.Y }
-                        : null);
+      => this.SetUv(uv != null ? new Vector2(uv.X, uv.Y) : null);
 
     public void SetUv(float u, float v) {
-      this.uvs_ ??= new SingleVertexAttribute<TexCoord>();
-      this.uvs_[0] = new TexCoord { U = u, V = v };
+      this.uvs_ ??= new SingleVertexAttribute<Vector2>();
+      this.uvs_[0] = new Vector2(u, v);
     }
 
-    public void SetUv(int uvIndex, TexCoord? uv) {
+    public void SetUv(int uvIndex, Vector2? uv) {
       if (uv != null) {
-        this.uvs_ ??= new SparseVertexAttributeArray<TexCoord>();
+        this.uvs_ ??= new SparseVertexAttributeArray<Vector2>();
         this.uvs_[uvIndex] = uv.Value;
       } else {
         this.uvs_?.Set(uvIndex, default!);
@@ -679,10 +566,10 @@ namespace fin.model.impl {
     }
 
     public void SetUv(int uvIndex, float u, float v)
-      => this.SetUv(uvIndex, new TexCoord { U = u, V = v });
+      => this.SetUv(uvIndex, new Vector2(u, v));
 
-    public TexCoord? GetUv() => this.GetUv(0);
+    public Vector2? GetUv() => this.GetUv(0);
 
-    public TexCoord? GetUv(int uvIndex) => this.uvs_?.Get(uvIndex);
+    public Vector2? GetUv(int uvIndex) => this.uvs_?.Get(uvIndex);
   }
 }

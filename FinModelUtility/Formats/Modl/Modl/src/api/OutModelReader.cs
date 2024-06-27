@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.IO.Compression;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.color;
@@ -322,11 +323,11 @@ namespace modl.api {
                       tile.Schema.DetailTextureUvs[4 * pointY + pointX];
 
                   var (u0, v0) = surfaceTextureUvsInRow[pointX];
-                  var uv0 = new TexCoord { U = u0, V = v0, };
+                  var uv0 = new Vector2(u0, v0);
 
                   var u1 = LoadUOrV_(detailTextureUvs.U);
                   var v1 = LoadUOrV_(detailTextureUvs.V);
-                  var uv1 = new TexCoord { U = u1, V = v1 };
+                  var uv1 = new Vector2(u1, v1);
 
                   var finVertex =
                       finSkin.AddVertex(point.X, point.Height, point.Y);

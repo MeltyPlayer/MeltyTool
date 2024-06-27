@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace fin.model.accessor {
   public partial class ConsistentVertexAccessor {
@@ -10,7 +11,7 @@ namespace fin.model.accessor {
         this.tangentVertex_ = vertex as IReadOnlyTangentVertex;
       }
 
-      public Tangent? LocalTangent => this.tangentVertex_.LocalTangent;
+      public Vector4? LocalTangent => this.tangentVertex_.LocalTangent;
     }
   }
 }

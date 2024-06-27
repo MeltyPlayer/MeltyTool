@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 using fin.model;
 
@@ -23,12 +24,12 @@ namespace fin.scene.instance {
 
       public IReadOnlySceneObject Definition => sceneObject;
 
-      public Position Position { get; private set; } = sceneObject.Position;
+      public Vector3 Position { get; private set; } = sceneObject.Position;
       public IRotation Rotation { get; } = sceneObject.Rotation;
-      public Scale Scale { get; private set; } = sceneObject.Scale;
+      public Vector3 Scale { get; private set; } = sceneObject.Scale;
 
       public ISceneObjectInstance SetPosition(float x, float y, float z) {
-        this.Position = new Position(x, y, z);
+        this.Position = new Vector3(x, y, z);
         return this;
       }
 
@@ -55,7 +56,7 @@ namespace fin.scene.instance {
       }
 
       public ISceneObjectInstance SetScale(float x, float y, float z) {
-        this.Scale = new Scale(x, y, z);
+        this.Scale = new Vector3(x, y, z);
         return this;
       }
 

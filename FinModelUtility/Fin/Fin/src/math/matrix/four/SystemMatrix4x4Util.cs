@@ -41,10 +41,8 @@ namespace fin.math.matrix.four {
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix4x4 FromTranslation(Position translation)
-      => SystemMatrix4x4Util.FromTranslation(translation.X,
-                                             translation.Y,
-                                             translation.Z);
+    public static Matrix4x4 FromTranslation(Vector3 translation)
+      => Matrix4x4.CreateTranslation(translation);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 FromTranslation(float x, float y, float z)
@@ -61,12 +59,12 @@ namespace fin.math.matrix.four {
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Matrix4x4 FromScale(Scale scale)
-      => SystemMatrix4x4Util.FromScale(scale.X, scale.Y, scale.Z);
+    public static Matrix4x4 FromScale(Vector3 scale)
+      => Matrix4x4.CreateScale(scale);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 FromScale(float scale)
-      => SystemMatrix4x4Util.FromScale(scale, scale, scale);
+      => Matrix4x4.CreateScale(scale, scale, scale);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 FromScale(float scaleX, float scaleY, float scaleZ)
@@ -75,31 +73,29 @@ namespace fin.math.matrix.four {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 FromTrs(
-        Position? translation,
+        Vector3? translation,
         IRotation? rotation,
-        Scale? scale)
-      => SystemMatrix4x4Util.FromTrs(
+        Vector3? scale)
+      => FromTrs(
           translation,
           rotation != null ? QuaternionUtil.Create(rotation) : null,
           scale);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Matrix4x4 FromTrs(
-        Position? translation,
+        Vector3? translation,
         Quaternion? rotation,
-        Scale? scale) {
+        Vector3? scale) {
       var dst = rotation != null
-          ? SystemMatrix4x4Util.FromRotation(rotation.Value)
+          ? FromRotation(rotation.Value)
           : Matrix4x4.Identity;
 
       if (translation != null) {
-        var translationValue = translation.Value;
-        dst.Translation = Unsafe.As<Position, Vector3>(ref translationValue);
+        dst.Translation = translation.Value;
       }
 
       if (scale != null) {
-        dst = Matrix4x4.Multiply(SystemMatrix4x4Util.FromScale(scale.Value),
-                                 dst);
+        dst = Matrix4x4.Multiply(Matrix4x4.CreateScale(scale.Value), dst);
       }
 
       return dst;

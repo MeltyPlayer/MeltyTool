@@ -1,4 +1,6 @@
-﻿using fin.animation;
+﻿using System.Numerics;
+
+using fin.animation;
 using fin.data.indexable;
 using fin.io;
 using fin.model;
@@ -74,7 +76,7 @@ namespace uni.thirdparty {
       fw.WriteLine("}");
     }
 
-    private static bool IsScaleOne(Scale scale)
+    private static bool IsScaleOne(Vector3 scale)
       => Math.Abs(scale.X - 1) < .001
          && Math.Abs(scale.Y - 1) < .001
          && Math.Abs(scale.Z - 1) < .001;

@@ -176,7 +176,7 @@ namespace fin.model.io.importers.assimp {
                 var assPosition = assPositionKey.Value;
                 positionTrack.SetKeyframe(
                     frame,
-                    new Position(assPosition.X, assPosition.Y, assPosition.Z));
+                    new Vector3(assPosition.X, assPosition.Y, assPosition.Z));
               }
             }
 

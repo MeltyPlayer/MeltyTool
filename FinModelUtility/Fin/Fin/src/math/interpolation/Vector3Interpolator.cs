@@ -1,21 +1,20 @@
-﻿using System.Runtime.CompilerServices;
-
-using fin.model;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace fin.math.interpolation {
-  public readonly struct PositionInterpolator : IInterpolator<Position> {
+  public readonly struct Vector3Interpolator : IInterpolator<Vector3> {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Position Interpolate(Position lhs, Position rhs, float progress)
-      => Position.Lerp(lhs, rhs, progress);
+    public Vector3 Interpolate(Vector3 lhs, Vector3 rhs, float progress)
+      => Vector3.Lerp(lhs, rhs, progress);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Position Interpolate(float fromTime,
-                                Position p1,
-                                float fromTangent,
-                                float toTime,
-                                Position p2,
-                                float toTangent,
-                                float time) 
+    public Vector3 Interpolate(float fromTime,
+                               Vector3 p1,
+                               float fromTangent,
+                               float toTime,
+                               Vector3 p2,
+                               float toTangent,
+                               float time) 
       => new(
           HermiteInterpolationUtil.InterpolateFloats(
               fromTime,

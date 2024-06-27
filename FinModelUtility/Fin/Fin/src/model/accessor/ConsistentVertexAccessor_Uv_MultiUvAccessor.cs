@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace fin.model.accessor {
   public partial class ConsistentVertexAccessor {
@@ -13,10 +14,10 @@ namespace fin.model.accessor {
       public int UvCount => this.uvVertex_.UvCount;
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public TexCoord? GetUv() => this.GetUv(0);
+      public Vector2? GetUv() => this.GetUv(0);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public TexCoord? GetUv(int uvIndex) => this.uvVertex_.GetUv(uvIndex);
+      public Vector2? GetUv(int uvIndex) => this.uvVertex_.GetUv(uvIndex);
     }
   }
 }

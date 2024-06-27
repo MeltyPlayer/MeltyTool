@@ -15,7 +15,7 @@ namespace fin.math.matrix.four {
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IFinMatrix4x4 FromTranslation(Position translation)
+    public static IFinMatrix4x4 FromTranslation(Vector3 translation)
       => FinMatrix4x4Util.FromTranslation(
           translation.X,
           translation.Y,
@@ -36,7 +36,7 @@ namespace fin.math.matrix.four {
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IFinMatrix4x4 FromScale(Scale scale)
+    public static IFinMatrix4x4 FromScale(Vector3 scale)
       => FromScale(scale.X, scale.Y, scale.Z);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -53,9 +53,9 @@ namespace fin.math.matrix.four {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFinMatrix4x4 FromTrs(
-        Position? translation,
+        Vector3? translation,
         IRotation? rotation,
-        Scale? scale)
+        Vector3? scale)
       => FinMatrix4x4Util.FromTrs(
           translation,
           rotation != null ? QuaternionUtil.Create(rotation) : null,
@@ -63,16 +63,16 @@ namespace fin.math.matrix.four {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFinMatrix4x4 FromTrs(
-        Position? translation,
+        Vector3? translation,
         Quaternion? rotation,
-        Scale? scale)
+        Vector3? scale)
       => FromTrs(translation, rotation, scale, new FinMatrix4x4());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IFinMatrix4x4 FromTrs(
-        Position? translation,
+        Vector3? translation,
         Quaternion? rotation,
-        Scale? scale,
+        Vector3? scale,
         IFinMatrix4x4 dst) {
       dst.CopyFrom(SystemMatrix4x4Util.FromTrs(translation, rotation, scale));
       return dst;

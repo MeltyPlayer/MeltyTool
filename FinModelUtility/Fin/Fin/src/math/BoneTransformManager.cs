@@ -19,18 +19,18 @@ namespace fin.math {
   public interface IVertexProjector {
     void ProjectVertexPosition(
         IReadOnlyVertex vertex,
-        out Position outPosition);
+        out Vector3 outPosition);
 
     void ProjectVertexPositionNormal(
         IReadOnlyNormalVertex vertex,
-        out Position outPosition,
-        out Normal outNormal);
+        out Vector3 outPosition,
+        out Vector3 outNormal);
 
     void ProjectVertexPositionNormalTangent(
         IVertexAccessor vertex,
-        out Position outPosition,
-        out Normal outNormal,
-        out Tangent outTangent);
+        out Vector3 outPosition,
+        out Vector3 outNormal,
+        out Vector4 outTangent);
 
 
     void ProjectPosition(IReadOnlyBone bone, ref Vector3 xyz);
@@ -117,9 +117,9 @@ namespace fin.math {
       }
     }
 
-    private readonly MagFilterInterpolationTrack<Position>
+    private readonly MagFilterInterpolationTrack<Vector3>
         positionMagFilterInterpolationTrack_ =
-            new(null, Position.Lerp) {
+            new(null, Vector3.Lerp) {
                 AnimationInterpolationMagFilter
                     = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
             };
@@ -131,9 +131,9 @@ namespace fin.math {
                     = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
             };
 
-    private readonly MagFilterInterpolationTrack<Scale>
+    private readonly MagFilterInterpolationTrack<Vector3>
         scaleMagFilterInterpolationTrack_ =
-            new(null, Scale.Lerp) {
+            new(null, Vector3.Lerp) {
                 AnimationInterpolationMagFilter
                     = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
             };
@@ -184,9 +184,9 @@ namespace fin.math {
 
         boneToWorldMatrix.CopyFrom(parentBoneToWorldMatrix);
 
-        Position? animationLocalPosition = null;
+        Vector3? animationLocalPosition = null;
         Quaternion? animationLocalRotation = null;
-        Scale? animationLocalScale = null;
+        Vector3? animationLocalScale = null;
 
         // The pose of the animation, if available.
         IReadOnlyBoneTracks? boneTracks = null;
@@ -339,7 +339,7 @@ namespace fin.math {
 
     public void ProjectVertexPosition(
         IReadOnlyVertex vertex,
-        out Position outPosition) {
+        out Vector3 outPosition) {
       outPosition = vertex.LocalPosition;
 
       var finTransformMatrix = this.GetTransformMatrix(vertex);
@@ -353,8 +353,8 @@ namespace fin.math {
 
     public void ProjectVertexPositionNormal(
         IReadOnlyNormalVertex vertex,
-        out Position outPosition,
-        out Normal outNormal) {
+        out Vector3 outPosition,
+        out Vector3 outNormal) {
       outPosition = vertex.LocalPosition;
       outNormal = vertex.LocalNormal.GetValueOrDefault();
 
@@ -372,9 +372,9 @@ namespace fin.math {
 
     public void ProjectVertexPositionNormalTangent(
         IVertexAccessor vertex,
-        out Position outPosition,
-        out Normal outNormal,
-        out Tangent outTangent) {
+        out Vector3 outPosition,
+        out Vector3 outNormal,
+        out Vector4 outTangent) {
       outPosition = vertex.LocalPosition;
 
       outNormal = vertex.LocalNormal.GetValueOrDefault();
@@ -417,9 +417,9 @@ namespace fin.math {
     public static void ApplyTrsWithFancyBoneEffects(
         this IFinMatrix4x4? matrix,
         IReadOnlyBone bone,
-        in Position localPosition,
+        in Vector3 localPosition,
         in Quaternion? localRotation,
-        in Scale? localScale) {
+        in Vector3? localScale) {
       if (matrix == null) {
         return;
       }
@@ -444,9 +444,9 @@ namespace fin.math {
         matrix.CopyRotationInto(out rotationBuffer);
       }
 
-      Scale scaleBuffer;
+      Vector3 scaleBuffer;
       if (bone.IgnoreParentScale) {
-        scaleBuffer = new Scale(1);
+        scaleBuffer = new Vector3(1);
       } else {
         matrix.CopyScaleInto(out scaleBuffer);
       }

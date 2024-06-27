@@ -228,7 +228,7 @@ namespace dat.api {
                 var tObjRotationRadians = tObj.RotationRadians;
                 var tObjScale = tObj.Scale;
 
-                var rawTranslation = new Position(
+                var rawTranslation = new Vector3(
                     tObjTranslation.X,
                     tObjTranslation.Y,
                     tObjTranslation.Z);
@@ -237,7 +237,7 @@ namespace dat.api {
                     tObjRotationRadians.Y,
                     tObjRotationRadians.Z);
                 var rawScale =
-                    new Scale(tObjScale.X, tObjScale.Y, tObjScale.Z);
+                    new Vector3(tObjScale.X, tObjScale.Y, tObjScale.Z);
 
                 // This is an absolute nightmare, but it works.
                 var uvMatrix = FinMatrix4x4Util

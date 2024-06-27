@@ -187,14 +187,13 @@ namespace HaloWarsTools {
                     Vector3.One));
 
         // Simple UV based on original, non-warped terrain grid
-        Vector3 texCoord = new Vector3(x / ((float) this.gridSize_ - 1),
-                                       z / ((float) this.gridSize_ - 1),
-                                       0);
+        var texCoord = new Vector2(x / ((float) this.gridSize_ - 1),
+                                       z / ((float) this.gridSize_ - 1));
 
         var vertex = this.vertices_[index];
-        vertex.SetLocalPosition(Unsafe.As<Vector3, Position>(ref position));
-        vertex.SetLocalNormal(Unsafe.As<Vector3, Normal>(ref normal));
-        vertex.SetUv(texCoord.X, texCoord.Y);
+        vertex.SetLocalPosition(position);
+        vertex.SetLocalNormal(normal);
+        vertex.SetUv(texCoord);
       }
     }
 

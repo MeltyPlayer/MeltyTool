@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 
 using Assimp;
 
@@ -41,7 +42,7 @@ namespace fin.model.io.exporters.assimp.indirect {
 
           var finVertex = assUvIndex != -1 ? finVertices[assUvIndex] : null;
           for (var t = 0; t < uvCount; ++t) {
-            TexCoord? uv = null;
+            Vector2? uv = null;
             if (finVertex != null) {
               vertexAccessor.Target(finVertex);
               uv = vertexAccessor.GetUv(t);
@@ -49,7 +50,7 @@ namespace fin.model.io.exporters.assimp.indirect {
 
             if (uv != null) {
               hadUv[t] = true;
-              assUvs[t].Add(new Vector3D(uv.Value.U, 1 - uv.Value.V, 0));
+              assUvs[t].Add(new Vector3D(uv.Value.X, 1 - uv.Value.Y, 0));
             } else {
               assUvs[t].Add(nullUv);
             }

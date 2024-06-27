@@ -299,7 +299,7 @@ namespace modl.api {
             animBoneFrames.PositionFrames.Select(
                 (axes) => {
                   var (fPX, fPY, fPZ) = axes;
-                  return new Position(flipSign * fPX, fPY, fPZ);
+                  return new Vector3(flipSign * fPX, fPY, fPZ);
                 }));
 
         var fbtRotations =

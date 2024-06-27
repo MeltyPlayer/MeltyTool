@@ -11,11 +11,10 @@ namespace fin.model {
   [GenerateReadOnly]
   public partial interface IVertex : IIndexable {
     IBoneWeights? BoneWeights { get; }
-    Position LocalPosition { get; }
+    Vector3 LocalPosition { get; }
 
     void SetBoneWeights(IBoneWeights boneWeights);
 
-    void SetLocalPosition(Position localPosition);
     void SetLocalPosition(Vector3 localPosition);
     void SetLocalPosition(IReadOnlyXyz localPosition);
     void SetLocalPosition(float x, float y, float z);
@@ -23,8 +22,7 @@ namespace fin.model {
 
   [GenerateReadOnly]
   public partial interface INormalVertex : IVertex {
-    Normal? LocalNormal { get; }
-    void SetLocalNormal(Normal? localNormal);
+    Vector3? LocalNormal { get; }
     void SetLocalNormal(Vector3? localNormal);
     void SetLocalNormal(IReadOnlyXyz? localNormal);
     void SetLocalNormal(float x, float y, float z);
@@ -32,8 +30,7 @@ namespace fin.model {
 
   [GenerateReadOnly]
   public partial interface ITangentVertex : IVertex {
-    Tangent? LocalTangent { get; }
-    void SetLocalTangent(Tangent? localTangent);
+    Vector4? LocalTangent { get; }
     void SetLocalTangent(Vector4? localTangent);
     void SetLocalTangent(IReadOnlyVector4? localTangent);
     void SetLocalTangent(float x, float y, float z, float w);
@@ -73,9 +70,8 @@ namespace fin.model {
   [GenerateReadOnly]
   public partial interface ISingleUvVertex : IVertex {
     [Const]
-    TexCoord? GetUv();
+    Vector2? GetUv();
 
-    void SetUv(TexCoord? uv);
     void SetUv(Vector2? uv);
     void SetUv(IReadOnlyVector2? uv);
     void SetUv(float u, float v);
@@ -86,9 +82,9 @@ namespace fin.model {
     int UvCount { get; }
 
     [Const]
-    TexCoord? GetUv(int uvIndex);
+    Vector2? GetUv(int uvIndex);
 
-    void SetUv(int uvIndex, TexCoord? uv);
+    void SetUv(int uvIndex, Vector2? uv);
     void SetUv(int uvIndex, float u, float v);
   }
 }

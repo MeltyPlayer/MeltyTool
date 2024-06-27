@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 using fin.data.queues;
 using fin.math.matrix.four;
@@ -52,14 +53,10 @@ namespace fin.model.io.exporters.gltf {
 
     private void ApplyBoneOrientationToNode_(GltfNode node,
                                              IReadOnlyBone bone,
-                                             float scale) {
-      var bonePosition = bone.LocalPosition;
-      var scaledPosition = new Position(bonePosition.X * scale,
-                                        bonePosition.Y * scale,
-                                        bonePosition.Z * scale);
-      node.LocalMatrix = SystemMatrix4x4Util.FromTrs(scaledPosition,
-        bone.LocalRotation,
-        bone.LocalScale);
-    }
+                                             float scale)
+      => node.LocalMatrix = SystemMatrix4x4Util.FromTrs(
+          bone.LocalPosition * scale,
+          bone.LocalRotation,
+          bone.LocalScale);
   }
 }

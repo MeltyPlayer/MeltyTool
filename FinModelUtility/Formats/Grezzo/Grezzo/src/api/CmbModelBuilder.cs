@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 using fin.data.dictionaries;
 using fin.data.lazy;
@@ -347,9 +348,9 @@ namespace grezzo.api {
 
             foreach (var finVertex in finVertices) {
               morphTarget.MoveTo(finVertex,
-                                 new Position(position.X,
-                                              position.Y,
-                                              position.Z));
+                                 new Vector3(position.X,
+                                             position.Y,
+                                             position.Z));
             }
           }
         }

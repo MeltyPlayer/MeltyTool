@@ -38,7 +38,7 @@ namespace fin.model {
   public partial interface ISkin<out TVertex> : ISkin
       where TVertex : IReadOnlyVertex {
     IReadOnlyList<TVertex> TypedVertices { get; }
-    TVertex AddVertex(Position position);
+    TVertex AddVertex(Vector3 position);
   }
 
   [GenerateReadOnly]
@@ -120,13 +120,6 @@ namespace fin.model {
 
       return hash;
     }
-  }
-
-  public readonly struct TexCoord {
-    public float U { get; init; }
-    public float V { get; init; }
-
-    public override string ToString() => $"{{{this.U}, {this.V}}}";
   }
 
   public enum VertexSpace {

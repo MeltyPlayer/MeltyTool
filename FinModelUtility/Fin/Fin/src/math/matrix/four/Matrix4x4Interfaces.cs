@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.model;
-
 namespace fin.math.matrix.four {
   public interface IFinMatrix4x4
       : IFinMatrix<IFinMatrix4x4, IReadOnlyFinMatrix4x4, Matrix4x4>,
@@ -14,12 +12,12 @@ namespace fin.math.matrix.four {
     IFinMatrix4x4 CloneAndTranspose();
     void TransposeIntoBuffer(IFinMatrix4x4 buffer);
 
-    void CopyTranslationInto(out Position dst);
+    void CopyTranslationInto(out Vector3 dst);
     void CopyRotationInto(out Quaternion dst);
-    void CopyScaleInto(out Scale dst);
+    void CopyScaleInto(out Vector3 dst);
 
-    void Decompose(out Position translation,
+    void Decompose(out Vector3 translation,
                    out Quaternion rotation,
-                   out Scale scale);
+                   out Vector3 scale);
   }
 }

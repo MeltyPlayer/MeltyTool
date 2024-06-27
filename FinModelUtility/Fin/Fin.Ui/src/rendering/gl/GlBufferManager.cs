@@ -1,4 +1,6 @@
-﻿using fin.data;
+﻿using System.Numerics;
+
+using fin.data;
 using fin.math;
 using fin.model;
 using fin.model.accessor;
@@ -55,9 +57,9 @@ namespace fin.ui.rendering.gl {
       private const int COLOR_VERTEX_ATTRIB_INDEX =
           UV_VERTEX_ATTRIB_INDEX + MaterialConstants.MAX_UVS;
 
-      private readonly Position[] positionData_;
-      private readonly Normal[] normalData_;
-      private readonly Tangent[] tangentData_;
+      private readonly Vector3[] positionData_;
+      private readonly Vector3[] normalData_;
+      private readonly Vector4[] tangentData_;
       private readonly int[] boneIdsData_;
       private readonly float[] boneWeightsData_;
 
@@ -69,9 +71,9 @@ namespace fin.ui.rendering.gl {
         this.vertexAccessor_ =
             ConsistentVertexAccessor.GetAccessorForModel(model);
 
-        this.positionData_ = new Position[this.vertices_.Count];
-        this.normalData_ = new Normal[this.vertices_.Count];
-        this.tangentData_ = new Tangent[this.vertices_.Count];
+        this.positionData_ = new Vector3[this.vertices_.Count];
+        this.normalData_ = new Vector3[this.vertices_.Count];
+        this.tangentData_ = new Vector4[this.vertices_.Count];
         this.boneIdsData_ = new int[4 * this.vertices_.Count];
         this.boneWeightsData_ = new float[4 * this.vertices_.Count];
 
@@ -166,8 +168,8 @@ namespace fin.ui.rendering.gl {
             if (uv != null) {
               var uvOffset = UV_SIZE_ * i;
               var uvData = this.uvData_[u];
-              uvData[uvOffset + 0] = uv?.U ?? 0;
-              uvData[uvOffset + 1] = uv?.V ?? 0;
+              uvData[uvOffset + 0] = uv?.X ?? 0;
+              uvData[uvOffset + 1] = uv?.Y ?? 0;
             }
           }
 

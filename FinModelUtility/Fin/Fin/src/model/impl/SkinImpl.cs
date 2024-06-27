@@ -9,7 +9,6 @@ using fin.data;
 using fin.data.indexable;
 using fin.data.sets;
 using fin.math.matrix.four;
-using fin.math.xyz;
 using fin.util.enumerables;
 
 namespace fin.model.impl {
@@ -18,7 +17,7 @@ namespace fin.model.impl {
     public ISkin<TVertex> Skin { get; }
 
     private class SkinImpl : ISkin<TVertex> {
-      private readonly Func<int, Position, TVertex> vertexCreator_;
+      private readonly Func<int, Vector3, TVertex> vertexCreator_;
       private readonly IList<TVertex> vertices_;
       private readonly IList<IMesh> meshes_ = new List<IMesh>();
 
@@ -29,11 +28,11 @@ namespace fin.model.impl {
       private readonly IndexableDictionary<IReadOnlyBone, IBoneWeights>
           boneWeightsByBone_ = new();
 
-      public SkinImpl(Func<int, Position, TVertex> vertexCreator)
+      public SkinImpl(Func<int, Vector3, TVertex> vertexCreator)
           : this(0, vertexCreator) { }
 
       public SkinImpl(int vertexCount,
-                      Func<int, Position, TVertex> vertexCreator) {
+                      Func<int, Vector3, TVertex> vertexCreator) {
         this.vertexCreator_ = vertexCreator;
 
         this.vertices_ = new List<TVertex>();
@@ -52,7 +51,7 @@ namespace fin.model.impl {
       public IReadOnlyList<IVertex> Vertices { get; }
       public IReadOnlyList<TVertex> TypedVertices { get; }
 
-      public TVertex AddVertex(Position position) {
+      public TVertex AddVertex(Vector3 position) {
         lock (this.vertices_) {
           var vertex = this.vertexCreator_(this.vertices_.Count, position);
           this.vertices_.Add(vertex);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using CommunityToolkit.HighPerformance.Helpers;
@@ -202,7 +203,8 @@ namespace mod.api {
             }
 
             if (finBones[jointIndex] == null) {
-              finBones[jointIndex] = finBones[jointData.ParentIndex].AddChild(0, 0, 0);
+              finBones[jointIndex]
+                  = finBones[jointData.ParentIndex].AddChild(0, 0, 0);
             }
           }
         }
@@ -422,24 +424,24 @@ namespace mod.api {
     }
 
     private record FinModCache {
-      public Position[] PositionsByIndex { get; }
+      public Vector3[] PositionsByIndex { get; }
 
-      public Normal[] NormalsByIndex { get; }
+      public Vector3[] NormalsByIndex { get; }
 
-      public Normal[] NbtNormalsByIndex { get; }
-      public Tangent[] TangentsByIndex { get; }
+      public Vector3[] NbtNormalsByIndex { get; }
+      public Vector4[] TangentsByIndex { get; }
 
       public IColor[] ColorsByIndex { get; }
 
       public IColor Default { get; } =
         FinColor.FromRgbaBytes(255, 255, 255, 255);
 
-      public TexCoord[][] TexCoordsByIndex { get; }
+      public Vector2[][] TexCoordsByIndex { get; }
 
       public FinModCache(Mod mod) {
         this.PositionsByIndex =
             mod.vertices.Select(
-                   position => new Position(
+                   position => new Vector3(
                        position.X,
                        position.Y,
                        position.Z
@@ -447,21 +449,21 @@ namespace mod.api {
                .ToArray();
         this.NormalsByIndex =
             mod.vnormals.Select(
-                   vnormals => new Normal(
+                   vnormals => new Vector3(
                        vnormals.X,
                        vnormals.Y,
                        vnormals.Z
                    ))
                .ToArray();
         this.NbtNormalsByIndex =
-            mod.vertexnbt.Select(vertexnbt => new Normal(
+            mod.vertexnbt.Select(vertexnbt => new Vector3(
                                      vertexnbt.Normal.X,
                                      vertexnbt.Normal.Y,
                                      vertexnbt.Normal.Z
                                  ))
                .ToArray();
         this.TangentsByIndex = mod.vertexnbt.Select(
-                                      vertexnbt => new Tangent(
+                                      vertexnbt => new Vector4(
                                           vertexnbt.Tangent.X,
                                           vertexnbt.Tangent.Y,
                                           vertexnbt.Tangent.Z,
@@ -474,10 +476,9 @@ namespace mod.api {
             mod.texcoords.Select(
                    texcoords
                        => texcoords.Select(
-                                       texcoord => new TexCoord {
-                                           U = texcoord.X,
-                                           V = texcoord.Y,
-                                       })
+                                       texcoord => new Vector2(
+                                           texcoord.X,
+                                           texcoord.Y))
                                    .ToArray())
                .ToArray();
       }

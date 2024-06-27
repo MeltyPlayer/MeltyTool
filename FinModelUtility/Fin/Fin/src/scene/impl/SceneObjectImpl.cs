@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 
 using fin.model;
 using fin.model.impl;
@@ -7,12 +8,12 @@ namespace fin.scene {
   public partial class SceneImpl {
     private class SceneObjectImpl : ISceneObject {
       private readonly List<ISceneModel> models_ = [];
-      public Position Position { get; private set; }
+      public Vector3 Position { get; private set; }
       public IRotation Rotation { get; } = new RotationImpl();
-      public Scale Scale { get; private set; } = new Scale(1, 1, 1);
+      public Vector3 Scale { get; private set; } = new Vector3(1, 1, 1);
 
       public ISceneObject SetPosition(float x, float y, float z) {
-        this.Position = new Position(x, y, z);
+        this.Position = new Vector3(x, y, z);
         return this;
       }
 
@@ -39,7 +40,7 @@ namespace fin.scene {
       }
 
       public ISceneObject SetScale(float x, float y, float z) {
-        this.Scale = new Scale(x, y, z);
+        this.Scale = new Vector3(x, y, z);
         return this;
       }
 

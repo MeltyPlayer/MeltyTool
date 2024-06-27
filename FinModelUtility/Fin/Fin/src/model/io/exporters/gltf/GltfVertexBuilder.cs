@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
@@ -152,7 +151,7 @@ namespace fin.model.io.exporters.gltf {
     private static Vector4 FinToGltfColor_(IColor? color)
       => new(color?.Rf ?? 1, color?.Gf ?? 1, color?.Bf ?? 1, color?.Af ?? 1);
 
-    private static Vector2 FinToGltfUv_(TexCoord? uv)
-      => new(uv?.U ?? 0, uv?.V ?? 0);
+    private static Vector2 FinToGltfUv_(Vector2? uv)
+      => new(uv?.X ?? 0, uv?.Y ?? 0);
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 using fin.color;
 
@@ -19,12 +20,12 @@ namespace fin.model.accessor {
     public int Index => this.currentVertex_.Index;
 
     public IReadOnlyBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
-    public Position LocalPosition => this.currentVertex_.LocalPosition;
+    public Vector3 LocalPosition => this.currentVertex_.LocalPosition;
 
-    public Normal? LocalNormal
+    public Vector3? LocalNormal
       => (this.currentVertex_ as IReadOnlyNormalVertex)?.LocalNormal;
 
-    public Tangent? LocalTangent
+    public Vector4? LocalTangent
       => (this.currentVertex_ as IReadOnlyTangentVertex)?.LocalTangent;
 
     public int ColorCount
@@ -47,12 +48,12 @@ namespace fin.model.accessor {
          (this.currentVertex_ is IReadOnlySingleUvVertex ? 1 : 0);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TexCoord? GetUv()
+    public Vector2? GetUv()
       => (this.currentVertex_ as IReadOnlyMultiUvVertex)?.GetUv(0) ??
          (this.currentVertex_ as IReadOnlySingleUvVertex)?.GetUv();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TexCoord? GetUv(int uvIndex)
+    public Vector2? GetUv(int uvIndex)
       => (this.currentVertex_ as IReadOnlyMultiUvVertex)?.GetUv(uvIndex) ??
          (this.currentVertex_ as IReadOnlySingleUvVertex)?.GetUv();
   }

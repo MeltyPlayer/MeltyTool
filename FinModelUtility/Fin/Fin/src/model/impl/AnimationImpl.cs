@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 
 using fin.animation;
 using fin.animation.interpolation;
@@ -115,17 +116,17 @@ namespace fin.model.impl {
       }
 
       private class MorphTargetImpl : IMorphTarget {
-        private Dictionary<IReadOnlyVertex, Position> morphs_ = new();
+        private Dictionary<IReadOnlyVertex, Vector3> morphs_ = new();
 
         public MorphTargetImpl() {
           this.Morphs =
-              new ReadOnlyDictionary<IReadOnlyVertex, Position>(this.morphs_);
+              new ReadOnlyDictionary<IReadOnlyVertex, Vector3>(this.morphs_);
         }
 
         public string Name { get; set; }
-        public IReadOnlyDictionary<IReadOnlyVertex, Position> Morphs { get; }
+        public IReadOnlyDictionary<IReadOnlyVertex, Vector3> Morphs { get; }
 
-        public IMorphTarget MoveTo(IReadOnlyVertex vertex, Position position) {
+        public IMorphTarget MoveTo(IReadOnlyVertex vertex, Vector3 position) {
           this.morphs_[vertex] = position;
           return this;
         }

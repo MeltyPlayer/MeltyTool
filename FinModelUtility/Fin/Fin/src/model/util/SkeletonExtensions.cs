@@ -7,9 +7,6 @@ using fin.util.asserts;
 
 namespace fin.model.util {
   public static class SkeletonExtensions {
-    public static IBone AddChild(this IBone parent, Position position)
-      => parent.AddChild(position.X, position.Y, position.Z);
-
     public static IBone AddChild(this IBone parent, Vector3 position)
       => parent.AddChild(position.X, position.Y, position.Z);
 
@@ -36,9 +33,6 @@ namespace fin.model.util {
                    .SetLocalScale(scale);
     }
 
-
-    public static IBone SetLocalPosition(this IBone parent, Position position)
-      => parent.SetLocalPosition(position.X, position.Y, position.Z);
 
     public static IBone SetLocalPosition(this IBone parent, Vector3 position)
       => parent.SetLocalPosition(position.X, position.Y, position.Z);
@@ -73,9 +67,6 @@ namespace fin.model.util {
                                         eulerDegrees.Y,
                                         eulerDegrees.Z);
 
-
-    public static IBone SetLocalScale(this IBone parent, Scale scale)
-      => parent.SetLocalScale(scale.X, scale.Y, scale.Z);
 
     public static IBone SetLocalScale(this IBone parent, Vector3 scale)
       => parent.SetLocalScale(scale.X, scale.Y, scale.Z);

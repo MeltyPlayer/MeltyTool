@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.animation;
@@ -7,7 +8,7 @@ using fin.math.interpolation;
 namespace fin.model.impl {
   public partial class ModelImpl<TVertex> {
     public class ScaleTrackImpl
-        : BScalarAxesTrack<Scale, float, FloatInterpolator>,
+        : BScalarAxesTrack<Vector3, float, FloatInterpolator>,
           IScale3dTrack {
       private readonly IReadOnlyBone bone_;
 
@@ -21,7 +22,7 @@ namespace fin.model.impl {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public override bool TryGetInterpolatedFrame(
           float frame,
-          out Scale interpolatedValue,
+          out Vector3 interpolatedValue,
           AnimationInterpolationConfig? config = null) {
         var localScale = this.bone_.LocalScale;
 

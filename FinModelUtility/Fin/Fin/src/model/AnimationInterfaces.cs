@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 
 using fin.animation;
 using fin.animation.keyframes;
@@ -23,8 +24,8 @@ public partial interface IAnimationManager {
 public interface IMorphTarget {
   string Name { get; set; }
 
-  IReadOnlyDictionary<IReadOnlyVertex, Position> Morphs { get; }
-  IMorphTarget MoveTo(IReadOnlyVertex vertex, Position position);
+  IReadOnlyDictionary<IReadOnlyVertex, Vector3> Morphs { get; }
+  IMorphTarget MoveTo(IReadOnlyVertex vertex, Vector3 position);
 }
 
 [GenerateReadOnly]

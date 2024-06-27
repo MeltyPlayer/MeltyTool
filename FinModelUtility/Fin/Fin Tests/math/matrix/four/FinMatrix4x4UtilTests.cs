@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 using fin.math.rotations;
 using fin.model;
@@ -10,7 +11,7 @@ namespace fin.math.matrix.four {
   public class FinMatrix4x4UtilTests {
     [Test]
     public void TestTranslation() {
-      var expectedTranslation = new Position(2, 3, 4);
+      var expectedTranslation = new Vector3(2, 3, 4);
 
       var matrix = FinMatrix4x4Util.FromTranslation(
           expectedTranslation);
@@ -37,7 +38,7 @@ namespace fin.math.matrix.four {
 
     [Test]
     public void TestScale() {
-      var expectedScale = new Scale(3, 4, 5);
+      var expectedScale = new Vector3(3, 4, 5);
 
       var matrix = FinMatrix4x4Util.FromScale(
           expectedScale);
@@ -50,9 +51,9 @@ namespace fin.math.matrix.four {
 
     [Test]
     public void TestTrs() {
-      var expectedTranslation = new Position(2, 3, 4);
+      var expectedTranslation = new Vector3(2, 3, 4);
       var expectedRotation = QuaternionUtil.CreateZyx(1.2f, 2.3f, 3.4f);
-      var expectedScale = new Scale(3, 4, 5);
+      var expectedScale = new Vector3(3, 4, 5);
 
       var trs = FinMatrix4x4Util.FromTrs(
           expectedTranslation,
@@ -97,7 +98,7 @@ namespace fin.math.matrix.four {
       expectedMatrix.Decompose(out var translation,
                                out var rotation,
                                out var scale);
-      Assert.AreEqual(new Position(-189.294998f, -2.000000f, -265.059998f),
+      Assert.AreEqual(new Vector3(-189.294998f, -2.000000f, -265.059998f),
                       translation);
 
       var actualMatrix = FinMatrix4x4Util.FromTrs(translation, rotation, scale);

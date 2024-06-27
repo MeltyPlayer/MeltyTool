@@ -266,9 +266,9 @@ namespace glo.api {
               Asserts.True(time >= 0 && time < finAnimation.FrameCount);
 
               positions.SetKeyframe(time,
-                                    new Position(moveKey.Xyz.X,
-                                                 moveKey.Xyz.Y,
-                                                 moveKey.Xyz.Z));
+                                    new Vector3(moveKey.Xyz.X,
+                                                moveKey.Xyz.Y,
+                                                moveKey.Xyz.Z));
 
               if (isLast) {
                 break;

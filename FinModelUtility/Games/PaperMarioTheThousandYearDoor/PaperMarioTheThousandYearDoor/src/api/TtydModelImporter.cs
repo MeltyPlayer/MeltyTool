@@ -316,9 +316,7 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
                        !FinMatrix4x4.STRICT_DECOMPOSITION,
                        "Failed to decompose matrix!");
 
-          positionsTrack.SetKeyframe(
-              i,
-              new Position(position.X, position.Y, position.Z));
+          positionsTrack.SetKeyframe(i, position);
           rotationsTrack.SetKeyframe(i, quaternion);
           scalesTrack.Set(i, scale);
         }

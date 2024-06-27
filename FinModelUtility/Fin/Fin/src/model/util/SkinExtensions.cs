@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.math.matrix.four;
-using fin.math.rotations;
 using fin.math.xyz;
 
 namespace fin.model.util {
@@ -12,13 +10,7 @@ namespace fin.model.util {
         float y,
         float z)
         where TVertex : IReadOnlyVertex
-      => skin.AddVertex(new Position(x, y, z));
-
-    public static TVertex AddVertex<TVertex>(
-        this ISkin<TVertex> skin,
-        Vector3 position)
-        where TVertex : IReadOnlyVertex
-      => skin.AddVertex(position.X, position.Y, position.Z);
+      => skin.AddVertex(new Vector3(x, y, z));
 
     public static TVertex AddVertex<TVertex>(
         this ISkin<TVertex> skin,

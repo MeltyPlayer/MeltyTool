@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 
 using fin.animation;
 using fin.data.dictionaries;
@@ -52,9 +53,9 @@ namespace fin.scene {
   public partial interface ISceneObjectInstance : ITickable, IDisposable {
     IReadOnlySceneObject Definition { get; }
 
-    Position Position { get; }
+    Vector3 Position { get; }
     IRotation Rotation { get; }
-    Scale Scale { get; }
+    Vector3 Scale { get; }
 
     ISceneObjectInstance SetPosition(float x, float y, float z);
 

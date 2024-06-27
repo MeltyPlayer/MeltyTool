@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 using fin.io;
 using fin.io.bundles;
@@ -8,14 +9,14 @@ namespace fin.model.impl {
   // TODO: Add logic for optimizing the model.
   public partial class ModelImpl<TVertex>
       : IModel<ISkin<TVertex>> where TVertex : IVertex {
-    public ModelImpl(Func<int, Position, TVertex> vertexCreator) {
+    public ModelImpl(Func<int, Vector3, TVertex> vertexCreator) {
       this.Skin = new SkinImpl(vertexCreator);
       this.AnimationManager = new AnimationManagerImpl(this);
     }
 
     // TODO: Rewrite this to take in options instead.
     public ModelImpl(int vertexCount,
-                     Func<int, Position, TVertex> vertexCreator) {
+                     Func<int, Vector3, TVertex> vertexCreator) {
       this.Skin = new SkinImpl(vertexCount, vertexCreator);
       this.AnimationManager = new AnimationManagerImpl(this);
     }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace fin.model.accessor {
   public partial class ConsistentVertexAccessor {
@@ -6,7 +7,7 @@ namespace fin.model.accessor {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public void Target(IReadOnlyVertex vertex) { }
 
-      public Normal? LocalNormal => null;
+      public Vector3? LocalNormal => null;
     }
   }
 }

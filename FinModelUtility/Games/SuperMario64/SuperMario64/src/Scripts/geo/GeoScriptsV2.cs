@@ -1,4 +1,6 @@
-﻿using f3dzex2.io;
+﻿using System.Numerics;
+
+using f3dzex2.io;
 
 using fin.math.matrix.four;
 using fin.model;
@@ -116,7 +118,7 @@ namespace sm64.Scripts {
           case GeoScaleCommand geoScaleCommand: {
             var scale = (geoScaleCommand.Scale / 65536.0f);
             this.nodeCurrent.matrix.MultiplyInPlace(
-                FinMatrix4x4Util.FromScale(new Scale(scale)));
+                FinMatrix4x4Util.FromScale(scale));
             AddDisplayList(
                 mdlLods,
                 lvl,
@@ -174,7 +176,7 @@ namespace sm64.Scripts {
 
     public IFinMatrix4x4 CreateTranslationMatrix_(Vector3s position)
       => FinMatrix4x4Util.FromTranslation(
-          new Position(position.X, position.Y, position.Z));
+          new Vector3(position.X, position.Y, position.Z));
 
     public IFinMatrix4x4 CreateRotationMatrix_(Vector3s rotation)
       => FinMatrix4x4Util

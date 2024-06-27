@@ -169,16 +169,16 @@ namespace fin.ui.rendering.gl.material {
 
       var secondsSinceStart = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
 
-      Position? offset = null;
+      Vector3? offset = null;
       if (textureOffset != null || scrollingTexture != null) {
         offset =
-            new Position((textureOffset?.X ?? 0) +
-                         secondsSinceStart *
-                         (scrollingTexture?.ScrollSpeedX ?? 0),
-                         (textureOffset?.Y ?? 0) +
-                         secondsSinceStart *
-                         (scrollingTexture?.ScrollSpeedY ?? 0),
-                         textureOffset?.Z ?? 0);
+            new Vector3((textureOffset?.X ?? 0) +
+                        secondsSinceStart *
+                        (scrollingTexture?.ScrollSpeedX ?? 0),
+                        (textureOffset?.Y ?? 0) +
+                        secondsSinceStart *
+                        (scrollingTexture?.ScrollSpeedY ?? 0),
+                        textureOffset?.Z ?? 0);
       }
 
       Quaternion? rotation = null;
@@ -188,7 +188,7 @@ namespace fin.ui.rendering.gl.material {
                                             textureRotationRadians.Z);
       }
 
-      Scale? scale = null;
+      Vector3? scale = null;
       if (textureScale != null) {
         scale = new(textureScale.X, textureScale.Y, textureScale.Z);
       }

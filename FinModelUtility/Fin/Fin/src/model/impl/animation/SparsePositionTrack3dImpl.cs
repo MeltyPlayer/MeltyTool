@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.animation;
@@ -7,7 +8,7 @@ using fin.math.interpolation;
 namespace fin.model.impl {
   public partial class ModelImpl<TVertex> {
     public class SeparatePositionAxesTrack3dImpl
-        : BScalarAxesTrack<Position, float, FloatInterpolator>,
+        : BScalarAxesTrack<Vector3, float, FloatInterpolator>,
           ISeparatePositionAxesTrack3d {
       private readonly IReadOnlyBone bone_;
 
@@ -22,7 +23,7 @@ namespace fin.model.impl {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public override bool TryGetInterpolatedFrame(
           float frame,
-          out Position interpolatedValue,
+          out Vector3 interpolatedValue,
           AnimationInterpolationConfig? config = null) {
         var localPosition = this.bone_.LocalPosition;
 

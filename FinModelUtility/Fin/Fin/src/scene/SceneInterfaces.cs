@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 
 using fin.data.dictionaries;
 using fin.importers;
@@ -52,9 +53,9 @@ namespace fin.scene {
   /// </summary>
   [GenerateReadOnly]
   public partial interface ISceneObject {
-    Position Position { get; }
+    Vector3 Position { get; }
     IRotation Rotation { get; }
-    Scale Scale { get; }
+    Vector3 Scale { get; }
 
     ISceneObject SetPosition(float x, float y, float z);
 

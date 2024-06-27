@@ -48,7 +48,7 @@ namespace fin.model.io.exporters.gltf.lowlevel {
           4 * 3 * pointsCount,
           0,
           BufferMode.ARRAY_BUFFER);
-      var normalSpan = normalView.Content.AsSpan().Cast<byte, Normal>();
+      var normalSpan = normalView.Content.AsSpan().Cast<byte, Vector3>();
 
       for (var p = 0; p < pointsCount; ++p) {
         vertexAccessor.Target(points[p]);
@@ -58,9 +58,7 @@ namespace fin.model.io.exporters.gltf.lowlevel {
             point,
             out var outPosition,
             out var outNormal);
-        positionSpan[p] =
-            Vector3.Multiply(scale,
-                             Unsafe.As<Position, Vector3>(ref outPosition));
+        positionSpan[p] = outPosition * scale;
 
         if (point.LocalNormal != null) {
           normalSpan[p] = outNormal;
@@ -237,7 +235,7 @@ namespace fin.model.io.exporters.gltf.lowlevel {
             2 * sizeof(float) * pointsCount,
             0,
             BufferMode.ARRAY_BUFFER);
-        var uvSpan = uvView.Content.AsSpan().Cast<byte, TexCoord>();
+        var uvSpan = uvView.Content.AsSpan().Cast<byte, Vector2>();
 
         for (var p = 0; p < pointsCount; ++p) {
           vertexAccessor.Target(points[p]);

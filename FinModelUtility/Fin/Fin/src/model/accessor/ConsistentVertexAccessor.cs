@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.color;
@@ -51,10 +52,10 @@ namespace fin.model.accessor {
     public int Index => this.currentVertex_.Index;
 
     public IReadOnlyBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
-    public Position LocalPosition => this.currentVertex_.LocalPosition;
+    public Vector3 LocalPosition => this.currentVertex_.LocalPosition;
 
-    public Normal? LocalNormal => this.normalAccessor_.LocalNormal;
-    public Tangent? LocalTangent => this.tangentAccessor_.LocalTangent;
+    public Vector3? LocalNormal => this.normalAccessor_.LocalNormal;
+    public Vector4? LocalTangent => this.tangentAccessor_.LocalTangent;
 
     public int ColorCount => this.colorAccessor_.ColorCount;
 
@@ -68,10 +69,10 @@ namespace fin.model.accessor {
     public int UvCount => this.uvAccessor_.UvCount;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TexCoord? GetUv() => this.uvAccessor_.GetUv();
+    public Vector2? GetUv() => this.uvAccessor_.GetUv();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TexCoord? GetUv(int uvIndex) => this.uvAccessor_.GetUv(uvIndex);
+    public Vector2? GetUv(int uvIndex) => this.uvAccessor_.GetUv(uvIndex);
 
 
     private abstract class BAccessor : IReadOnlyVertex {
@@ -80,7 +81,7 @@ namespace fin.model.accessor {
       public IReadOnlyBoneWeights? BoneWeights
         => throw new NotImplementedException();
 
-      public Position LocalPosition => throw new NotImplementedException();
+      public Vector3 LocalPosition => throw new NotImplementedException();
     }
   }
 }

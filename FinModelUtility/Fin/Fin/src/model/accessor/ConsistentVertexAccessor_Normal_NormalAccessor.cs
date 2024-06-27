@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace fin.model.accessor {
   public partial class ConsistentVertexAccessor {
@@ -10,7 +11,7 @@ namespace fin.model.accessor {
         this.normalVertex_ = vertex as IReadOnlyNormalVertex;
       }
 
-      public Normal? LocalNormal => this.normalVertex_.LocalNormal;
+      public Vector3? LocalNormal => this.normalVertex_.LocalNormal;
     }
   }
 }
