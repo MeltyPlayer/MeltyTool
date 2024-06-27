@@ -86,6 +86,8 @@ If you'd like to vote on new games or features that should be supported, please 
   - Ocarina of Time 3D (`ocarina_of_time_3d.[3ds/cci/cia]`)
 - .dat (GCN)
   - Super Smash Bros. Melee (`super_smash_bros_melee.[ciso/gcm/iso/nkit.iso]`)
+- .geo (PC)
+  - Dead Space (Steam/Epic Games)
 - .glo (PC)
   - Glover (Steam)
 - .mod (GCN)
