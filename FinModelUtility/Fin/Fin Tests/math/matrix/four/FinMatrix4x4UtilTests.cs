@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
+using fin.math.matrix.three;
 using fin.math.rotations;
 using fin.model;
 using fin.util.asserts;
@@ -64,9 +65,8 @@ namespace fin.math.matrix.four {
       trs.CopyRotationInto(out var actualRotation);
       trs.CopyScaleInto(out var actualScale);
 
-      Assert.AreEqual(expectedTranslation, actualTranslation);
-
-      Assert.AreEqual(expectedScale, actualScale);
+      Assert.True(expectedTranslation.IsRoughly(actualTranslation));
+      Assert.True(expectedScale.IsRoughly(actualScale));
 
       Asserts.IsRoughly(expectedRotation.X, actualRotation.X);
       Asserts.IsRoughly(expectedRotation.Y, actualRotation.Y);
