@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using fin.animation;
+using fin.animation.interpolation;
+using fin.animation.keyframes;
 using fin.animation.tracks;
 using fin.data.indexable;
 using fin.math.interpolation;
@@ -42,8 +44,15 @@ namespace fin.model.impl {
         => this.animations_.Remove(animation);
 
       private class ModelAnimationImpl : IModelAnimation {
-        private readonly IndexableDictionary<IReadOnlyBone, IBoneTracks> boneTracks_;
-        private readonly Dictionary<IReadOnlyMesh, IMeshTracks> meshTracks_ = new();
+        private SharedInterpolationConfig sharedInterpolationConfig_ = new() {
+            Looping = true
+        };
+
+        private readonly IndexableDictionary<IReadOnlyBone, IBoneTracks>
+            boneTracks_;
+
+        private readonly Dictionary<IReadOnlyMesh, IMeshTracks> meshTracks_
+            = new();
 
         public ModelAnimationImpl(int boneCount) {
           this.boneTracks_ =
@@ -52,12 +61,25 @@ namespace fin.model.impl {
 
         public string Name { get; set; }
 
-        public int FrameCount { get; set; }
-        public float FrameRate { get; set; }
-        public bool UseLoopingInterpolation { get; set; } = true;
-        public AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
+        public int FrameCount {
+          get => this.sharedInterpolationConfig_.AnimationLength;
+          set => this.sharedInterpolationConfig_.AnimationLength = value;
+        }
 
-        public IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks
+        public float FrameRate { get; set; }
+
+        public bool UseLoopingInterpolation {
+          get => this.sharedInterpolationConfig_.Looping;
+          set => this.sharedInterpolationConfig_.Looping = value;
+        }
+
+        public AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
+          get;
+          set;
+        }
+
+        public IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks>
+            BoneTracks
           => this.boneTracks_;
 
         public IBoneTracks AddBoneTracks(IReadOnlyBone bone)
@@ -67,10 +89,12 @@ namespace fin.model.impl {
           => this.meshTracks_;
 
         public IMeshTracks AddMeshTracks(IReadOnlyMesh mesh)
-          => this.meshTracks_[mesh] = new MeshTracksImpl(this);
+          => this.meshTracks_[mesh]
+              = new MeshTracksImpl(this.sharedInterpolationConfig_);
 
 
-        public IReadOnlyDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks
+        public IReadOnlyDictionary<IReadOnlyTexture, ITextureTracks>
+            TextureTracks
           => throw new NotImplementedException();
 
         public ITextureTracks AddTextureTracks(IReadOnlyTexture texture) {
@@ -211,22 +235,10 @@ namespace fin.model.impl {
       // TODO: Add pattern for specifying WITH given tracks
     }
 
-    public class MeshTracksImpl : IMeshTracks {
-      public IInputOutputTrack<MeshDisplayState,
-          StairStepInterpolator<MeshDisplayState>> DisplayStates { get; }
-
-
-      public MeshTracksImpl(IAnimation animation) {
-        this.Animation = animation;
-        this.DisplayStates =
-            new InputOutputTrackImpl<MeshDisplayState,
-                StairStepInterpolator<MeshDisplayState>>(
-                animation,
-                0,
-                new StairStepInterpolator<MeshDisplayState>());
-      }
-
-      public IAnimation Animation { get; }
+    public class MeshTracksImpl(ISharedInterpolationConfig sharedConfig)
+        : IMeshTracks {
+      public IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
+        = new StairStepKeyframes<MeshDisplayState>(sharedConfig);
     }
   }
 }

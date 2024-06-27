@@ -1,4 +1,5 @@
-﻿using fin.data.dictionaries;
+﻿using fin.animation.keyframes;
+using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.nodes;
 using fin.data.queues;

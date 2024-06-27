@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using fin.animation;
+using fin.animation.keyframes;
 using fin.animation.tracks;
 using fin.data.indexable;
 using fin.math.interpolation;
@@ -97,9 +98,8 @@ public enum MeshDisplayState {
   VISIBLE,
 }
 
-public interface IMeshTracks : IAnimationData {
-  IInputOutputTrack<MeshDisplayState, StairStepInterpolator<MeshDisplayState>>
-      DisplayStates { get; }
+public interface IMeshTracks {
+  IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
 }
 
 

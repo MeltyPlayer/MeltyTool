@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.animation.keyframes;
 using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.queues;

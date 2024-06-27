@@ -93,9 +93,10 @@ namespace fin.ui.rendering.gl.scene {
         var hiddenMeshes = this.modelRenderer_.HiddenMeshes;
 
         hiddenMeshes.Clear();
+        // TODO: Make this a property of the mesh
         var defaultDisplayState = MeshDisplayState.VISIBLE;
         foreach (var (mesh, meshTracks) in animation.MeshTracks) {
-          if (!meshTracks.DisplayStates.TryGetInterpolatedFrame(
+          if (!meshTracks.DisplayStates.TryGetAtFrame(
                   frame,
                   out var displayState)) {
             displayState = defaultDisplayState;
