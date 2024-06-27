@@ -13,14 +13,15 @@ namespace fin.ui.rendering.gl.scene;
 
 public class SceneModelRenderer : IRenderable, IDisposable {
   private readonly ISceneModelInstance sceneModel_;
+  private readonly IReadOnlyMesh[] meshes_;
   private readonly IModelRenderer modelRenderer_;
 
-  private readonly ListDictionary<IReadOnlyBone, SceneModelRenderer>
-      children_ = new();
+  private readonly List<(IReadOnlyBone, SceneModelRenderer[])> children_ = new();
 
   public SceneModelRenderer(ISceneModelInstance sceneModel,
                             IReadOnlyLighting? lighting) {
     this.sceneModel_ = sceneModel;
+    this.meshes_ = sceneModel.Model.Skin.Meshes.ToArray();
 
     var model = sceneModel.Model;
     this.modelRenderer_ =
@@ -38,9 +39,10 @@ public class SceneModelRenderer : IRenderable, IDisposable {
         };
 
     foreach (var (bone, boneChildren) in sceneModel.Children.GetPairs()) {
-      foreach (var child in boneChildren) {
-        this.children_.Add(bone, new SceneModelRenderer(child, lighting));
-      }
+      this.children_.Add(
+          (bone,
+           boneChildren.Select(child => new SceneModelRenderer(child, lighting))
+                       .ToArray()));
     }
   }
 
@@ -53,8 +55,10 @@ public class SceneModelRenderer : IRenderable, IDisposable {
 
   private void ReleaseUnmanagedResources_() {
     this.modelRenderer_.Dispose();
-    foreach (var child in this.children_.Values) {
-      child.Dispose();
+    foreach (var (_, children) in this.children_) {
+      foreach (var child in children) {
+        child.Dispose();
+      }
     }
   }
 
@@ -107,7 +111,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
         }
       }
     } else {
-      foreach (var mesh in model.Skin.Meshes) {
+      foreach (var mesh in this.meshes_) {
         if (mesh.DefaultDisplayState == MeshDisplayState.HIDDEN) {
           hiddenMeshes.Add(mesh);
         }
@@ -121,7 +125,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
       this.SkeletonRenderer.Render();
     }
 
-    foreach (var (bone, boneChildren) in this.children_.GetPairs()) {
+    foreach (var (bone, boneChildren) in this.children_) {
       GlTransform.PushMatrix();
 
       GlTransform.MultMatrix(

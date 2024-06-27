@@ -15,6 +15,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   private LinkedList<CachedLightUniformData> cachedLightUniformDatas_ = [];
 
   private readonly IReadOnlyModel model_;
+  private readonly IReadOnlyBone[] bonesUsedByVertices_;
   private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
   private readonly GlShaderProgram impl_;
@@ -37,6 +38,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
       IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyLighting? lighting) {
       this.model_ = model;
+      this.bonesUsedByVertices_ = model.Skin.BonesUsedByVertices.ToArray();
       this.Material = material;
       this.boneTransformManager_ = boneTransformManager;
       this.lighting_ = lighting;
@@ -138,7 +140,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
           new Vector3(scCamX, scCamY, scCamZ));
 
       var boneIndex = 1;
-      foreach (var bone in this.model_.Skin.BonesUsedByVertices) {
+      foreach (var bone in this.bonesUsedByVertices_) {
         var localToWorldMatrix =
             this.boneTransformManager_?.GetLocalToWorldMatrix(bone).Impl ??
             Matrix4x4.Identity;

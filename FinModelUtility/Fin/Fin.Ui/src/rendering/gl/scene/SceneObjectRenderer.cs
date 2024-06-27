@@ -6,11 +6,12 @@ namespace fin.ui.rendering.gl.scene;
 
 public class SceneObjectRenderer : IRenderable, IDisposable {
   private readonly ISceneObjectInstance sceneObject_;
+  private readonly SceneModelRenderer[] modelRenderers_;
 
   public SceneObjectRenderer(ISceneObjectInstance sceneObject,
                              IReadOnlyLighting? lighting) {
       this.sceneObject_ = sceneObject;
-      this.ModelRenderers
+      this.modelRenderers_
           = sceneObject
             .Models
             .Select(model => new SceneModelRenderer(model, lighting))
@@ -30,7 +31,8 @@ public class SceneObjectRenderer : IRenderable, IDisposable {
       }
     }
 
-  public IReadOnlyList<SceneModelRenderer> ModelRenderers { get; }
+  public IReadOnlyList<SceneModelRenderer> ModelRenderers
+    => this.modelRenderers_;
 
   public void Render() {
       GlTransform.PushMatrix();
@@ -40,7 +42,7 @@ public class SceneObjectRenderer : IRenderable, IDisposable {
                                       this.sceneObject_.Rotation,
                                       this.sceneObject_.Scale));
 
-      foreach (var model in this.ModelRenderers) {
+      foreach (var model in this.modelRenderers_) {
         model.Render();
       }
 

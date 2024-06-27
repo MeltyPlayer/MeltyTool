@@ -159,6 +159,9 @@ public class BoneTransformManager : IBoneTransformManager {
     this.InitModelVertices_(model);
   }
 
+  private readonly List<(IReadOnlyBone, FinMatrix4x4, IReadOnlyFinMatrix4x4)>
+      boneList_ = new();
+
   public void CalculateMatrices(
       IReadOnlyBone rootBone,
       IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
@@ -171,18 +174,27 @@ public class BoneTransformManager : IBoneTransformManager {
     var animation = animationAndFrame?.Item1;
     var frame = animationAndFrame?.Item2;
 
-    var boneQueue = new Queue<(IReadOnlyBone, Matrix4x4)>();
-    boneQueue.Enqueue((rootBone, this.ManagerMatrix.Impl));
-    while (boneQueue.Count > 0) {
-      var (bone, parentBoneToWorldMatrix) = boneQueue.Dequeue();
+    if (isFirstPass) {
+      this.boneList_.Clear();
 
-      if (!this.bonesToWorldMatrices_.TryGetValue(
-              bone,
-              out var boneToWorldMatrix)) {
-        this.bonesToWorldMatrices_[bone]
-            = boneToWorldMatrix = new FinMatrix4x4();
+      var boneQueue = new Queue<(IReadOnlyBone, IReadOnlyFinMatrix4x4)>();
+      boneQueue.Enqueue((rootBone, this.ManagerMatrix));
+      while (boneQueue.Count > 0) {
+        var (bone, parentBoneToWorldMatrix) = boneQueue.Dequeue();
+
+        var boneToWorldMatrix = new FinMatrix4x4();
+        this.bonesToWorldMatrices_[bone] = boneToWorldMatrix;
+
+        this.boneList_.Add((bone, boneToWorldMatrix, parentBoneToWorldMatrix));
+
+        foreach (var child in bone.Children) {
+          boneQueue.Enqueue((child, boneToWorldMatrix));
+        }
       }
+    }
 
+    foreach (var (bone, boneToWorldMatrix, parentBoneToWorldMatrix) in this
+                 .boneList_) {
       boneToWorldMatrix.CopyFrom(parentBoneToWorldMatrix);
 
       Vector3? animationLocalPosition = null;
@@ -252,10 +264,6 @@ public class BoneTransformManager : IBoneTransformManager {
       if (isFirstPass) {
         this.bonesToInverseWorldMatrices_[bone]
             = boneToWorldMatrix.CloneAndInvert();
-      }
-
-      foreach (var child in bone.Children) {
-        boneQueue.Enqueue((child, boneToWorldMatrix.Impl));
       }
     }
 

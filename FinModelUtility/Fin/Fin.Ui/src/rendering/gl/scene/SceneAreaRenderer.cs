@@ -4,6 +4,8 @@ using fin.scene;
 namespace fin.ui.rendering.gl.scene;
 
 public class SceneAreaRenderer : IRenderable, IDisposable {
+  private readonly SceneObjectRenderer[] objectRenderers_;
+
   public SceneAreaRenderer(ISceneAreaInstance sceneArea,
                            IReadOnlyLighting? lighting) {
     var customSkybox = sceneArea.CustomSkyboxObject;
@@ -11,7 +13,7 @@ public class SceneAreaRenderer : IRenderable, IDisposable {
         ? new SceneObjectRenderer(customSkybox, lighting)
         : null;
 
-    this.ObjectRenderers
+    this.objectRenderers_
         = sceneArea
           .Objects
           .Where(obj => obj != customSkybox)
@@ -33,11 +35,13 @@ public class SceneAreaRenderer : IRenderable, IDisposable {
     }
   }
 
-  public IReadOnlyList<SceneObjectRenderer> ObjectRenderers { get; }
+  public IReadOnlyList<SceneObjectRenderer> ObjectRenderers
+    => this.objectRenderers_;
+
   public SceneObjectRenderer? CustomSkyboxRenderer { get; }
 
   public void Render() {
-    foreach (var objRenderer in this.ObjectRenderers) {
+    foreach (var objRenderer in this.objectRenderers_) {
       objRenderer.Render();
     }
   }
