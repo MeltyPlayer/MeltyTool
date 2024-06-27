@@ -32,9 +32,14 @@ namespace pmdc.api {
       };
 
       var finSkeleton = finModel.Skeleton;
-      var finRoot = finSkeleton.Root;
+      var finRoot = finSkeleton.Root.AddRoot(0, 0, 0);
       finRoot.SetLocalRotationDegrees(-90, 180, 0);
       finRoot.SetLocalScale(-1, 1, 1);
+
+      var finSkin = finModel.Skin;
+      var boneWeights = finSkin.GetOrCreateBoneWeights(
+          VertexSpace.RELATIVE_TO_BONE,
+          finRoot);
 
       var finMaterialManager = finModel.MaterialManager;
       var finMaterials =
@@ -44,14 +49,18 @@ namespace pmdc.api {
                 var texturePath = omdMaterial.TexturePath;
 
                 IMaterial finMaterial;
-                if (texturePath.Length == 0 || !omdFile.AssertGetParent()
-                        .TryToGetExistingFile(texturePath, out var imageFile)) {
+                if (texturePath.Length == 0 ||
+                    !omdFile.AssertGetParent()
+                            .TryToGetExistingFile(
+                                texturePath,
+                                out var imageFile)) {
                   finMaterial = finMaterialManager.AddNullMaterial();
                 } else {
                   var image = FinImage.FromFile(imageFile);
                   files.Add(imageFile);
 
                   var finTexture = finMaterialManager.CreateTexture(image);
+                  finTexture.Name = imageFile.NameWithoutExtension;
                   finTexture.WrapModeU = WrapMode.REPEAT;
                   finTexture.WrapModeV = WrapMode.REPEAT;
 
@@ -65,7 +74,6 @@ namespace pmdc.api {
               })
               .ToArray();
 
-      var finSkin = finModel.Skin;
       foreach (var omdMesh in omdModel.Meshes) {
         var finMesh = finSkin.AddMesh();
         finMesh.Name = omdMesh.Name;
@@ -76,12 +84,9 @@ namespace pmdc.api {
                 .Where(omdVertex => omdVertex.Something == 8)
                 .Select(omdVertex => {
                   var finVertex = finSkin.AddVertex(omdVertex.Position);
-                  finVertex.SetLocalNormal(Vector3.Negate(omdVertex.Normal));
+                  finVertex.SetLocalNormal(-omdVertex.Normal);
                   finVertex.SetUv(omdVertex.Uv);
-                  finVertex.SetBoneWeights(
-                      finSkin.GetOrCreateBoneWeights(
-                          VertexSpace.RELATIVE_TO_WORLD,
-                          finRoot));
+                  finVertex.SetBoneWeights(boneWeights);
 
                   return finVertex;
                 })

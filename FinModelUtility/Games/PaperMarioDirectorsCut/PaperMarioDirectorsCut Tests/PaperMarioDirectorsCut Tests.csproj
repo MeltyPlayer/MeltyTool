@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>PaperMarioDirectorsCut_Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -27,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor.csproj" />
+    <ProjectReference Include="..\PaperMarioDirectorsCut\PaperMarioDirectorsCut.csproj" />
   </ItemGroup>
 
   <ItemGroup>
