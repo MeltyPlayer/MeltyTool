@@ -94,107 +94,107 @@ public class BmdGxTexture : IGxTexture {
         if (!alphaAlreadyGood) {
           var pixelCount = image.Width * image.Height;
 
-         /*switch (alphaSetting) {
-            ase JutTransparency.OPAQUE: {
-              witch (image) {
-                ase BIndexedImage bIndexedImage: {
-                  ar palette = bIndexedImage.Palette;
-                  or (var i = 0; i < palette.Length; ++i) {
-                    ar color = palette[i];
-                    alette[i] =
-                        inColor.FromRgbBytes(color.Rb, color.Gb, color.Bb);
-                  
+        /*switch (alphaSetting) {
+           case JutTransparency.OPAQUE: {
+             switch (image) {
+               case BIndexedImage bIndexedImage: {
+                 var palette = bIndexedImage.Palette;
+                 for (var i = 0; i < palette.Length; ++i) {
+                   var color = palette[i];
+                   palette[i] =
+                       FinColor.FromRgbBytes(color.Rb, color.Gb, color.Bb);
+                 }
 
-                  reak;
-                
-                ase La16Image la16Image: {
-                  sing var fastLock = la16Image.Lock();
-                  ar ptr = fastLock.pixelScan0;
-                  or (var i = 0; i < pixelCount; ++i) {
-                    ar pixel = ptr[i];
-                    ixel.A = 255;
-                    tr[i] = pixel;
-                  
+                 break;
+               }
+               case La16Image la16Image: {
+                 using var fastLock = la16Image.Lock();
+                 var ptr = fastLock.pixelScan0;
+                 for (var i = 0; i < pixelCount; ++i) {
+                   var pixel = ptr[i];
+                   pixel.A = 255;
+                   ptr[i] = pixel;
+                 }
 
-                  reak;
-                
-                ase Rgba32Image rgba32Image: {
-                  sing var fastLock = rgba32Image.Lock();
-                  ar ptr = fastLock.pixelScan0;
-                  or (var i = 0; i < pixelCount; ++i) {
-                    ar pixel = ptr[i];
-                    ixel.A = 255;
-                    tr[i] = pixel;
-                  
+                 break;
+               }
+               case Rgba32Image rgba32Image: {
+                 using var fastLock = rgba32Image.Lock();
+                 var ptr = fastLock.pixelScan0;
+                 for (var i = 0; i < pixelCount; ++i) {
+                   var pixel = ptr[i];
+                   pixel.A = 255;
+                   ptr[i] = pixel;
+                 }
 
-                  reak;
-                
-              
+                 break;
+               }
+             }
 
-              reak;
-            
-            ase JutTransparency.CUTOUT: {
-              witch (image) {
-                ase BIndexedImage bIndexedImage: {
-                  ar palette = bIndexedImage.Palette;
-                  or (var i = 0; i < palette.Length; ++i) {
-                    ar color = palette[i];
-                    alette[i] =
-                        inColor.FromRgbaBytes(color.Rb,
-                                               olor.Gb,
-                                               olor.Bb,
-                                               ollapseAlphaForMask_(color.Ab));
-                  
+             break;
+           }
+           case JutTransparency.CUTOUT: {
+             switch (image) {
+               case BIndexedImage bIndexedImage: {
+                 var palette = bIndexedImage.Palette;
+                 for (var i = 0; i < palette.Length; ++i) {
+                   var color = palette[i];
+                   palette[i] =
+                       FinColor.FromRgbaBytes(color.Rb,
+                                              color.Gb,
+                                              color.Bb,
+                                              CollapseAlphaForMask_(color.Ab));
+                 }
 
-                  reak;
-                
-                ase La16Image la16Image: {
-                  sing var fastLock = la16Image.Lock();
-                  ar ptr = fastLock.pixelScan0;
-                  or (var i = 0; i < pixelCount; ++i) {
-                    ar pixel = ptr[i];
-                    ixel.A = CollapseAlphaForMask_(pixel.A);
-                    tr[i] = pixel;
-                  
+                 break;
+               }
+               case La16Image la16Image: {
+                 using var fastLock = la16Image.Lock();
+                 var ptr = fastLock.pixelScan0;
+                 for (var i = 0; i < pixelCount; ++i) {
+                   var pixel = ptr[i];
+                   pixel.A = CollapseAlphaForMask_(pixel.A);
+                   ptr[i] = pixel;
+                 }
 
-                  reak;
-                
-                ase Rgba32Image rgba32Image: {
-                  sing var fastLock = rgba32Image.Lock();
-                  ar ptr = fastLock.pixelScan0;
-                  or (var i = 0; i < pixelCount; ++i) {
-                    ar pixel = ptr[i];
-                    ixel.A = CollapseAlphaForMask_(pixel.A);
-                    tr[i] = pixel;
-                  
+                 break;
+               }
+               case Rgba32Image rgba32Image: {
+                 using var fastLock = rgba32Image.Lock();
+                 var ptr = fastLock.pixelScan0;
+                 for (var i = 0; i < pixelCount; ++i) {
+                   var pixel = ptr[i];
+                   pixel.A = CollapseAlphaForMask_(pixel.A);
+                   ptr[i] = pixel;
+                 }
 
-                  reak;
-                
-              
+                 break;
+               }
+             }
 
-              reak;
-            
-            ase JutTransparency.SPECIAL: {
-              witch (image) {
-                ase La16Image la16Image: {
-                  sing var fastLock = la16Image.Lock();
-                  ar ptr = fastLock.pixelScan0;
-                  or (var i = 0; i < pixelCount; ++i) {
-                    ar pixel = ptr[i];
-                    tr[i] = new La16(pixel.A, pixel.L);
-                  
+             break;
+           }
+           case JutTransparency.SPECIAL: {
+             switch (image) {
+               case La16Image la16Image: {
+                 using var fastLock = la16Image.Lock();
+                 var ptr = fastLock.pixelScan0;
+                 for (var i = 0; i < pixelCount; ++i) {
+                   var pixel = ptr[i];
+                   ptr[i] = new La16(pixel.A, pixel.L);
+                 }
 
-                  reak;
-                
-                / default: throw new NotImplementedException();
-              
+                 break;
+               }
+               // default: throw new NotImplementedException();
+             }
 
-              reak;
-            
-            efault: throw new ArgumentOutOfRangeException();
-          *//
+             break;
+           }
+           default: throw new ArgumentOutOfRangeException();
+         }*/
 
-          switch (image) {
+        switch (image) {
             case La16Image la16Image: {
               using var fastLock = la16Image.Lock();
               var ptr = fastLock.Pixels;
