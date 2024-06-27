@@ -1,16 +1,17 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace xmod.schema.xmod {
-  public class Xmod : ITextDeserializable {
-    public IReadOnlyList<Vector3> Positions { get; set; }
-    public IReadOnlyList<Vector3> Normals { get; set; }
-    public IReadOnlyList<Vector4> Colors { get; set; }
-    public IReadOnlyList<Vector2> Uv1s { get; set; }
-    public IReadOnlyList<Material> Materials { get; set; }
-    public IReadOnlyList<Packet> Packets { get; set; }
+namespace xmod.schema.xmod;
 
-    public void Read(ITextReader tr) {
+public class Xmod : ITextDeserializable {
+  public IReadOnlyList<Vector3> Positions { get; set; }
+  public IReadOnlyList<Vector3> Normals { get; set; }
+  public IReadOnlyList<Vector4> Colors { get; set; }
+  public IReadOnlyList<Vector2> Uv1s { get; set; }
+  public IReadOnlyList<Material> Materials { get; set; }
+  public IReadOnlyList<Packet> Packets { get; set; }
+
+  public void Read(ITextReader tr) {
       var version = TextReaderUtils.ReadKeyValue(tr, "version");
 
       var numVertices = TextReaderUtils.ReadKeyValueNumber<int>(tr, "verts");
@@ -52,5 +53,4 @@ namespace xmod.schema.xmod {
       var numPackets = Materials.Select(material => material.NumPackets).Sum();
       this.Packets = tr.ReadNews<Packet>(numPackets);
     }
-  }
 }

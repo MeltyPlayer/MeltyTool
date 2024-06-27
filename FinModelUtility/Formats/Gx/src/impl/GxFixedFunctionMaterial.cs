@@ -7,25 +7,26 @@ using fin.language.equations.fixedFunction.impl;
 using fin.model;
 using fin.util.asserts;
 
-namespace gx {
-  /// <summary>
-  ///   BMD material, one of the common formats for the GameCube.
-  ///
-  ///   For more info:
-  ///   http://www.amnoid.de/gc/tev.html
-  /// </summary>
-  public partial class GxFixedFunctionMaterial {
-    private const bool STRICT = false;
+namespace gx;
 
-    public override string ToString() => this.Material.Name ?? "(n/a)";
+/// <summary>
+///   BMD material, one of the common formats for the GameCube.
+///
+///   For more info:
+///   http://www.amnoid.de/gc/tev.html
+/// </summary>
+public partial class GxFixedFunctionMaterial {
+  private const bool STRICT = false;
 
-    public GxFixedFunctionMaterial(
-        IModel model,
-        IMaterialManager materialManager,
-        IPopulatedMaterial populatedMaterial,
-        IList<IGxTexture> tex1Textures,
-        ILazyDictionary<(IGxTexture, ITexCoordGen?, ITextureMatrixInfo?),
-            ITexture> lazyTextureDictionary) {
+  public override string ToString() => this.Material.Name ?? "(n/a)";
+
+  public GxFixedFunctionMaterial(
+      IModel model,
+      IMaterialManager materialManager,
+      IPopulatedMaterial populatedMaterial,
+      IList<IGxTexture> tex1Textures,
+      ILazyDictionary<(IGxTexture, ITexCoordGen?, ITextureMatrixInfo?),
+          ITexture> lazyTextureDictionary) {
       // TODO: materialEntry.Flag determines draw order
 
       var materialName = populatedMaterial.Name;
@@ -497,6 +498,5 @@ namespace gx {
       }
     }
 
-    public IMaterial Material { get; }
-  }
+  public IMaterial Material { get; }
 }
