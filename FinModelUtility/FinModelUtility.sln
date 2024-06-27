@@ -181,7 +181,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversalAssetTool.Ui.Avalo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PaperMarioTheThousandYearDoor", "PaperMarioTheThousandYearDoor", "{184EC62B-AEFD-4FCD-8EE8-4DB6D430AA16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperMarioTheThousandYearDoor", "Games\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor.csproj", "{248825D6-0B3D-4889-A486-F22B7C6F537B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperMarioTheThousandYearDoor", "Games\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor.csproj", "{248825D6-0B3D-4889-A486-F22B7C6F537B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperMarioTheThousandYearDoorTests", "PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoorTests\PaperMarioTheThousandYearDoorTests.csproj", "{9E85307D-2894-4C27-A582-2DAAF3E864A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -865,6 +867,18 @@ Global
 		{248825D6-0B3D-4889-A486-F22B7C6F537B}.Release|x64.Build.0 = Release|Any CPU
 		{248825D6-0B3D-4889-A486-F22B7C6F537B}.Release|x86.ActiveCfg = Release|Any CPU
 		{248825D6-0B3D-4889-A486-F22B7C6F537B}.Release|x86.Build.0 = Release|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Release|x64.Build.0 = Release|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -942,6 +956,7 @@ Global
 		{839F0CF0-2994-408C-9168-2B9501EF0EC6} = {2490FB17-BB03-4B06-95A2-56BD49921D53}
 		{184EC62B-AEFD-4FCD-8EE8-4DB6D430AA16} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{248825D6-0B3D-4889-A486-F22B7C6F537B} = {184EC62B-AEFD-4FCD-8EE8-4DB6D430AA16}
+		{9E85307D-2894-4C27-A582-2DAAF3E864A3} = {184EC62B-AEFD-4FCD-8EE8-4DB6D430AA16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}
