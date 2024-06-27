@@ -17,16 +17,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-
-public static class CollectionExtensions
+namespace Texim
 {
-    public static void Add<T>(this Collection<T> collection, IEnumerable<T> source)
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+
+    public static class CollectionExtensions
     {
+        public static void Add<T>(this Collection<T> collection, IEnumerable<T> source)
+        {
             if (collection == null)
                 throw new ArgumentNullException(nameof(collection));
             if (source == null)
@@ -36,4 +36,5 @@ public static class CollectionExtensions
                 collection.Add(element);
             }
         }
+    }
 }

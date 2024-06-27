@@ -17,20 +17,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats;
-
-using System;
-using Colors;
-using Images;
-using SixLabors.ImageSharp;
-using Yarhl.FileFormat;
-using Yarhl.IO;
-using Rgba32 = SixLabors.ImageSharp.PixelFormats.Rgba32;
-
-public class Bitmap2FullImage : IConverter<BinaryFormat, FullImage>
+namespace Texim.Formats
 {
-    public FullImage Convert(BinaryFormat source)
+    using System;
+    using Colors;
+    using Images;
+    using SixLabors.ImageSharp;
+    using Yarhl.FileFormat;
+    using Yarhl.IO;
+    using Rgba32 = SixLabors.ImageSharp.PixelFormats.Rgba32;
+
+    public class Bitmap2FullImage : IConverter<BinaryFormat, FullImage>
     {
+        public FullImage Convert(BinaryFormat source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -45,4 +45,5 @@ public class Bitmap2FullImage : IConverter<BinaryFormat, FullImage>
 
             return fullImage;
         }
+    }
 }

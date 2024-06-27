@@ -8,13 +8,12 @@ using hw.api;
 
 using uni.platforms.desktop;
 
-namespace uni.games.halo_wars;
+namespace uni.games.halo_wars {
+  using IAnnotatedHaloWarsBundle = IAnnotatedFileBundle<IHaloWarsFileBundle>;
 
-using IAnnotatedHaloWarsBundle = IAnnotatedFileBundle<IHaloWarsFileBundle>;
-
-public class HaloWarsFileBundleGatherer
-    : IAnnotatedFileBundleGatherer<IHaloWarsFileBundle> {
-  public IEnumerable<IAnnotatedHaloWarsBundle> GatherFileBundles() {
+  public class HaloWarsFileBundleGatherer
+      : IAnnotatedFileBundleGatherer<IHaloWarsFileBundle> {
+    public IEnumerable<IAnnotatedHaloWarsBundle> GatherFileBundles() {
       if (!SteamUtils.TryGetGameDirectory("HaloWarsDE",
                                           out var haloWarsSteamDirectory)) {
         yield break;
@@ -59,4 +58,5 @@ public class HaloWarsFileBundleGatherer
         artSubdirQueue.Enqueue(artSubdir.GetExistingSubdirs());
       }
     }
+  }
 }

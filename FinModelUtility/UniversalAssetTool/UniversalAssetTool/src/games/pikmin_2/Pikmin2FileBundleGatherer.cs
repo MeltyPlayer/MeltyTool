@@ -9,10 +9,9 @@ using jsystem.api;
 
 using uni.platforms.gcn;
 
-namespace uni.games.pikmin_2;
-
-public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+namespace uni.games.pikmin_2 {
+  public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "pikmin_2",
               GcnFileHierarchyExtractor.Options.Standard()
@@ -33,12 +32,12 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
               .Concat(this.ExtractAudio_(fileHierarchy));
     }
 
-  /// <summary>
-  ///   Gets from separate model/animation szs (e.g. Enemies)
-  /// </summary>
-  private IEnumerable<IAnnotatedFileBundle>
-      ExtractAllFromSeparateDirectories_(
-          IFileHierarchy fileHierarchy) {
+    /// <summary>
+    ///   Gets from separate model/animation szs (e.g. Enemies)
+    /// </summary>
+    private IEnumerable<IAnnotatedFileBundle>
+        ExtractAllFromSeparateDirectories_(
+            IFileHierarchy fileHierarchy) {
       foreach (var subdir in fileHierarchy) {
         var modelSubdir =
             subdir.GetExistingSubdirs()
@@ -62,11 +61,11 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-  /// <summary>
-  ///   Gets from model/animations in same szs (e.g. user\Kando)
-  /// </summary>
-  private IEnumerable<IAnnotatedFileBundle> ExtractAllFromMergedDirectories_(
-      IFileHierarchy fileHierarchy) {
+    /// <summary>
+    ///   Gets from model/animations in same szs (e.g. user\Kando)
+    /// </summary>
+    private IEnumerable<IAnnotatedFileBundle> ExtractAllFromMergedDirectories_(
+        IFileHierarchy fileHierarchy) {
       foreach (var subdir in fileHierarchy) {
         var arcSubdir =
             subdir.GetExistingSubdirs()
@@ -82,8 +81,8 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-  private IEnumerable<IAnnotatedFileBundle> ExtractAllLevelScenes_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle> ExtractAllLevelScenes_(
+        IFileHierarchy fileHierarchy) {
       var userDir = fileHierarchy.Root.AssertGetExistingSubdir("user");
       var abeMapRootDir = userDir.AssertGetExistingSubdir("Abe/map");
       var kandoMapRootDir = userDir.AssertGetExistingSubdir("Kando/map");
@@ -105,8 +104,8 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-  private IEnumerable<IAnnotatedFileBundle> ExtractPikminAndCaptainModels_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle> ExtractPikminAndCaptainModels_(
+        IFileHierarchy fileHierarchy) {
       var pikminAndCaptainBaseDirectory =
           fileHierarchy.Root.AssertGetExistingSubdir(
               @"user\Kando\piki\pikis_designer");
@@ -127,8 +126,8 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
                                          bcxFiles));
     }
 
-  private IEnumerable<IAnnotatedFileBundle> ExtractAllTreasures_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle> ExtractAllTreasures_(
+        IFileHierarchy fileHierarchy) {
       var treasureBaseDirectory =
           fileHierarchy.Root.AssertGetExistingSubdir(@"user\Abe\Pellet");
 
@@ -150,8 +149,8 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-  private IEnumerable<IAnnotatedFileBundle> GatherMapUnits_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle> GatherMapUnits_(
+        IFileHierarchy fileHierarchy) {
       var mapUnitsSubdir =
           fileHierarchy.Root.AssertGetExistingSubdir(
               @"user\Mukki\mapunits\arc");
@@ -171,40 +170,41 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-  private IEnumerable<IAnnotatedFileBundle> ExtractAudio_(
-      IFileHierarchy fileHierarchy)
-    => fileHierarchy.Root.AssertGetExistingSubdir(@"AudioRes\Stream")
-                    .FilesWithExtension(".ast")
-                    .Select(
-                        astFile => new AstAudioFileBundle {
-                            GameName = "pikmin_2",
-                            AstFile = astFile
-                        }.Annotate(astFile));
+    private IEnumerable<IAnnotatedFileBundle> ExtractAudio_(
+        IFileHierarchy fileHierarchy)
+      => fileHierarchy.Root.AssertGetExistingSubdir(@"AudioRes\Stream")
+                      .FilesWithExtension(".ast")
+                      .Select(
+                          astFile => new AstAudioFileBundle {
+                              GameName = "pikmin_2",
+                              AstFile = astFile
+                          }.Annotate(astFile));
 
-  private IEnumerable<IAnnotatedFileBundle> ExtractLeafBudFlower_(
-      IFileHierarchy fileHierarchy)
-    => this.ExtractModelsInDirectoryAutomatically_(
-        fileHierarchy.Root.AssertGetExistingSubdir(
-            @"user\Kando\piki\pikis_designer\happa_model"));
+    private IEnumerable<IAnnotatedFileBundle> ExtractLeafBudFlower_(
+        IFileHierarchy fileHierarchy)
+      => this.ExtractModelsInDirectoryAutomatically_(
+          fileHierarchy.Root.AssertGetExistingSubdir(
+              @"user\Kando\piki\pikis_designer\happa_model"));
 
-  private IEnumerable<IAnnotatedFileBundle>
-      ExtractModelsInDirectoryAutomatically_(
-          IFileHierarchyDirectory directory)
-    => this.ExtractModels_(
-        directory.FilesWithExtension(".bmd"),
-        directory.FilesWithExtensions(".bca", ".bck")
-                 .ToList(),
-        directory.FilesWithExtension(".bti").ToList());
+    private IEnumerable<IAnnotatedFileBundle>
+        ExtractModelsInDirectoryAutomatically_(
+            IFileHierarchyDirectory directory)
+      => this.ExtractModels_(
+          directory.FilesWithExtension(".bmd"),
+          directory.FilesWithExtensions(".bca", ".bck")
+                   .ToList(),
+          directory.FilesWithExtension(".bti").ToList());
 
-  private IEnumerable<IAnnotatedFileBundle> ExtractModels_(
-      IEnumerable<IFileHierarchyFile> bmdFiles,
-      IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
-      IReadOnlyList<IFileHierarchyFile>? btiFiles = null
-  )
-    => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
-        GameName = "pikmin_2",
-        BmdFile = bmdFile,
-        BcxFiles = bcxFiles,
-        BtiFiles = btiFiles,
-    }.Annotate(bmdFile));
+    private IEnumerable<IAnnotatedFileBundle> ExtractModels_(
+        IEnumerable<IFileHierarchyFile> bmdFiles,
+        IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
+        IReadOnlyList<IFileHierarchyFile>? btiFiles = null
+    )
+      => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
+          GameName = "pikmin_2",
+          BmdFile = bmdFile,
+          BcxFiles = bcxFiles,
+          BtiFiles = btiFiles,
+      }.Annotate(bmdFile));
+  }
 }

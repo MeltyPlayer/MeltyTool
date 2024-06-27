@@ -17,30 +17,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro;
-
-using System;
-using Images;
-using Pixels;
-using Processing;
-using Yarhl.FileFormat;
-using Yarhl.FileSystem;
-
-public class FullImageMapCompression :
-    IInitializer<FullImageMapCompressionParams>, IConverter<IFullImage, NodeContainerFormat>
+namespace Texim.Compressions.Nitro
 {
-    private FullImageMapCompressionParams parameters;
+    using System;
+    using Images;
+    using Pixels;
+    using Processing;
+    using Yarhl.FileFormat;
+    using Yarhl.FileSystem;
 
-    public void Initialize(FullImageMapCompressionParams parameters)
+    public class FullImageMapCompression :
+        IInitializer<FullImageMapCompressionParams>, IConverter<IFullImage, NodeContainerFormat>
     {
+        private FullImageMapCompressionParams parameters;
+
+        public void Initialize(FullImageMapCompressionParams parameters)
+        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
             this.parameters = parameters;
         }
 
-    public NodeContainerFormat Convert(IFullImage source)
-    {
+        public NodeContainerFormat Convert(IFullImage source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -58,4 +58,5 @@ public class FullImageMapCompression :
             compression.Initialize(parameters);
             return compression.Convert(fullIndexedImage);
         }
+    }
 }

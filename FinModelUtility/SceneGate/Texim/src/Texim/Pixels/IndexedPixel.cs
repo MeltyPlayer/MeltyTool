@@ -17,34 +17,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Pixels;
-
-public readonly struct IndexedPixel
+namespace Texim.Pixels
 {
-    public IndexedPixel(short index)
+    public readonly struct IndexedPixel
     {
+        public IndexedPixel(short index)
+        {
             Index = index;
             Alpha = 255;
             PaletteIndex = 0;
         }
 
-    public IndexedPixel(short index, byte alpha)
-    {
+        public IndexedPixel(short index, byte alpha)
+        {
             Index = index;
             Alpha = alpha;
             PaletteIndex = 0;
         }
 
-    public IndexedPixel(short index, byte alpha, byte paletteIndex)
-    {
+        public IndexedPixel(short index, byte alpha, byte paletteIndex)
+        {
             Index = index;
             Alpha = alpha;
             PaletteIndex = paletteIndex;
         }
 
-    public short Index { get; init; }
+        public short Index { get; init; }
 
-    public byte Alpha { get; init; }
+        public byte Alpha { get; init; }
 
-    public byte PaletteIndex { get; init; }
+        public byte PaletteIndex { get; init; }
+    }
 }

@@ -17,43 +17,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Pixels;
-
-using System.Collections.Generic;
-using Yarhl.IO;
-
-public static class IOExtensions
+namespace Texim.Pixels
 {
-    public static IndexedPixel[] ReadPixels<T>(this DataReader reader, int numPixels)
-        where T : IIndexedPixelEncoding, new()
+    using System.Collections.Generic;
+    using Yarhl.IO;
+
+    public static class IOExtensions
     {
+        public static IndexedPixel[] ReadPixels<T>(this DataReader reader, int numPixels)
+            where T : IIndexedPixelEncoding, new()
+        {
             T decoder = new T();
             return decoder.Decode(reader.Stream, numPixels);
         }
 
-    public static IndexedPixel[] DecodePixelsAs<T>(this byte[] data)
-        where T : IIndexedPixelEncoding, new()
-    {
+        public static IndexedPixel[] DecodePixelsAs<T>(this byte[] data)
+            where T : IIndexedPixelEncoding, new()
+        {
             T decoder = new T();
             return decoder.Decode(data);
         }
 
-    public static void Write<T>(this DataWriter writer, IEnumerable<IndexedPixel> pixels)
-        where T : IIndexedPixelEncoding, new()
-    {
+        public static void Write<T>(this DataWriter writer, IEnumerable<IndexedPixel> pixels)
+            where T : IIndexedPixelEncoding, new()
+        {
             T encoder = new T();
             writer.Write(encoder.Encode(pixels));
         }
 
-    public static byte[] EncodePixelsAs<T>(this IndexedPixel[] pixels)
-        where T : IIndexedPixelEncoding, new()
-    {
+        public static byte[] EncodePixelsAs<T>(this IndexedPixel[] pixels)
+            where T : IIndexedPixelEncoding, new()
+        {
             T encoder = new T();
             return encoder.Encode(pixels);
         }
 
-    public static IndexedPixel[] UnswizzleWith(this IndexedPixel[] pixels, ISwizzling<IndexedPixel> swizzling)
-    {
+        public static IndexedPixel[] UnswizzleWith(this IndexedPixel[] pixels, ISwizzling<IndexedPixel> swizzling)
+        {
             return swizzling.Unswizzle(pixels);
         }
+    }
 }

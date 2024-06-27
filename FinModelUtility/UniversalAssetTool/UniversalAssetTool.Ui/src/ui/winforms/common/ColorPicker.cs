@@ -2,10 +2,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace uni.ui.winforms.common;
-
-public partial class ColorPicker : UserControl {
-  public ColorPicker() {
+namespace uni.ui.winforms.common {
+  public partial class ColorPicker : UserControl {
+    public ColorPicker() {
       InitializeComponent();
 
       this.Value = Color.White;
@@ -13,9 +12,9 @@ public partial class ColorPicker : UserControl {
       this.Click += (_, _) => this.ShowColorPickerDialog_();
     }
 
-  public Color Value {
-    get => this.BackColor;
-    set {
+    public Color Value {
+      get => this.BackColor;
+      set {
         if (this.BackColor == value) {
           return;
         }
@@ -23,11 +22,11 @@ public partial class ColorPicker : UserControl {
         this.BackColor = value;
         this.ValueChanged.Invoke(value);
       }
-  }
+    }
 
-  public event Action<Color> ValueChanged = delegate { };
+    public event Action<Color> ValueChanged = delegate { };
 
-  private void ShowColorPickerDialog_() {
+    private void ShowColorPickerDialog_() {
       var colorDialog = new ColorDialog {
           Color = this.Value, SolidColorOnly = true,
       };
@@ -37,4 +36,5 @@ public partial class ColorPicker : UserControl {
         this.Value = colorDialog.Color;
       }
     }
+  }
 }

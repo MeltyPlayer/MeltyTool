@@ -6,11 +6,10 @@ using uni.util.io;
 
 using xmod.api;
 
-namespace uni.games.midnight_club_2;
-
-public class MidnightClub2FileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+namespace uni.games.midnight_club_2 {
+  public class MidnightClub2FileBundleGatherer
+      : IAnnotatedFileBundleGatherer {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
               "midnight_club_2",
               out var midnightClub2Directory)) {
@@ -39,4 +38,5 @@ public class MidnightClub2FileBundleGatherer
                                          PedFile = file,
                                      }.Annotate(file)))).GatherFileBundles();
     }
+  }
 }

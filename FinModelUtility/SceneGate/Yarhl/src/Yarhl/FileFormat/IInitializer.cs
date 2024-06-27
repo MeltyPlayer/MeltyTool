@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 SceneGate
+// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,17 +17,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileFormat;
-
-/// <summary>
-/// Initialization interface.
-/// </summary>
-/// <typeparam name="T">Type of the parameters for the initialize.</typeparam>
-public interface IInitializer<in T>
+namespace Yarhl.FileFormat
 {
     /// <summary>
-    /// Initialize the instance with the specified parameters.
+    /// Initialization interface.
     /// </summary>
-    /// <param name="parameters">Parameters for the initialize.</param>
-    void Initialize(T parameters);
+    /// <typeparam name="T">Type of the parameters for the initialize.</typeparam>
+    public interface IInitializer<in T>
+    {
+        /// <summary>
+        /// Initialize the instance with the specified parameters.
+        /// </summary>
+        /// <param name="parameters">Parameters for the initialize.</param>
+        void Initialize(T parameters);
+    }
 }

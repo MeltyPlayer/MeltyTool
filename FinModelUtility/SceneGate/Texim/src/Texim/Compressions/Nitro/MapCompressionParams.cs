@@ -17,14 +17,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro;
-
-using System.Drawing;
-using Images;
-
-public class MapCompressionParams
+namespace Texim.Compressions.Nitro
 {
-    public Size TileSize { get; set; } = new Size(8, 8);
+    using System.Drawing;
+    using Images;
 
-    public IIndexedImage MergeImage { get; set; }
+    public class MapCompressionParams
+    {
+        public Size TileSize { get; set; } = new Size(8, 8);
+
+        public IIndexedImage MergeImage { get; set; }
+    }
 }

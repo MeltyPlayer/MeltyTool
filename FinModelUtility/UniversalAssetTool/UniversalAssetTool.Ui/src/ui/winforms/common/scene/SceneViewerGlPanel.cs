@@ -12,24 +12,23 @@ using fin.ui.rendering.gl.model;
 using uni.config;
 using uni.model;
 
-namespace uni.ui.winforms.common.scene;
+namespace uni.ui.winforms.common.scene {
+  public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
+    private readonly SceneViewerGl viewerImpl_ = new();
 
-public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
-  private readonly SceneViewerGl viewerImpl_ = new();
+    private bool isMouseDown_ = false;
+    private (int, int)? prevMousePosition_ = null;
 
-  private bool isMouseDown_ = false;
-  private (int, int)? prevMousePosition_ = null;
+    private bool isForwardDown_ = false;
+    private bool isBackwardDown_ = false;
+    private bool isLeftwardDown_ = false;
+    private bool isRightwardDown_ = false;
+    private bool isUpwardDown_ = false;
+    private bool isDownwardDown_ = false;
+    private bool isSpeedupActive_ = false;
+    private bool isSlowdownActive_ = false;
 
-  private bool isForwardDown_ = false;
-  private bool isBackwardDown_ = false;
-  private bool isLeftwardDown_ = false;
-  private bool isRightwardDown_ = false;
-  private bool isUpwardDown_ = false;
-  private bool isDownwardDown_ = false;
-  private bool isSpeedupActive_ = false;
-  private bool isSlowdownActive_ = false;
-
-  public SceneViewerGlPanel() {
+    public SceneViewerGlPanel() {
       var inputTarget = this.impl_;
 
       inputTarget.MouseDown += (_, args) => {
@@ -156,10 +155,10 @@ public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
                            };
     }
 
-  protected override void InitGl() => this.ResetGl_();
-  private void ResetGl_() => GlUtil.ResetGl();
+    protected override void InitGl() => this.ResetGl_();
+    private void ResetGl_() => GlUtil.ResetGl();
 
-  protected override void RenderGl() {
+    protected override void RenderGl() {
       var forwardVector =
           (this.isForwardDown_ ? 1 : 0) - (this.isBackwardDown_ ? 1 : 0);
       var rightwardVector =
@@ -191,9 +190,9 @@ public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
       this.viewerImpl_.Render();
     }
 
-  public ISceneInstance? Scene {
-    get => this.viewerImpl_.Scene;
-    set {
+    public ISceneInstance? Scene {
+      get => this.viewerImpl_.Scene;
+      set {
         this.viewerImpl_.Scene = value;
 
         if (value == null) {
@@ -204,21 +203,22 @@ public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
                                     .ViewerModelScaleSource).GetScale(value);
         }
       }
+    }
+
+    public ISceneModelInstance? FirstSceneModel
+      => this.viewerImpl_.FirstSceneModel;
+
+    public IAnimationPlaybackManager? AnimationPlaybackManager
+      => this.viewerImpl_.AnimationPlaybackManager;
+
+    public IReadOnlyModelAnimation? Animation {
+      get => this.viewerImpl_.Animation;
+      set => this.viewerImpl_.Animation = value;
+    }
+
+    public ISkeletonRenderer? SkeletonRenderer
+      => this.viewerImpl_.SkeletonRenderer;
+
+    public Camera Camera => this.viewerImpl_.Camera;
   }
-
-  public ISceneModelInstance? FirstSceneModel
-    => this.viewerImpl_.FirstSceneModel;
-
-  public IAnimationPlaybackManager? AnimationPlaybackManager
-    => this.viewerImpl_.AnimationPlaybackManager;
-
-  public IReadOnlyModelAnimation? Animation {
-    get => this.viewerImpl_.Animation;
-    set => this.viewerImpl_.Animation = value;
-  }
-
-  public ISkeletonRenderer? SkeletonRenderer
-    => this.viewerImpl_.SkeletonRenderer;
-
-  public Camera Camera => this.viewerImpl_.Camera;
 }

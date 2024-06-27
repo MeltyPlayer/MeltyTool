@@ -16,21 +16,21 @@ using Material.Icons;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.common.treeViews;
+namespace uni.ui.avalonia.common.treeViews {
 
-// Top-level view model types
-public class FileBundleTreeViewModel<T>
-    : ViewModelBase, IFilterTreeViewViewModel<T> {
-  public ObservableCollection<INode<T>> Nodes { get; init; }
+  // Top-level view model types
+  public class FileBundleTreeViewModel<T>
+      : ViewModelBase, IFilterTreeViewViewModel<T> {
+    public ObservableCollection<INode<T>> Nodes { get; init; }
 
-  public event EventHandler<INode<T>>? NodeSelected;
+    public event EventHandler<INode<T>>? NodeSelected;
 
-  public void ChangeSelection(INode node)
-    => this.NodeSelected?.Invoke(this, Asserts.AsA<INode<T>>(node));
-}
+    public void ChangeSelection(INode node)
+      => this.NodeSelected?.Invoke(this, Asserts.AsA<INode<T>>(node));
+  }
 
-public class FileBundleTreeViewModelForDesigner : FileBundleTreeViewModel<IAnnotatedFileBundle> {
-  public FileBundleTreeViewModelForDesigner() {
+  public class FileBundleTreeViewModelForDesigner : FileBundleTreeViewModel<IAnnotatedFileBundle> {
+    public FileBundleTreeViewModelForDesigner() {
       this.Nodes = [
           new FileBundleDirectoryNode("Animals",
           [
@@ -42,33 +42,34 @@ public class FileBundleTreeViewModelForDesigner : FileBundleTreeViewModel<IAnnot
           ])
       ];
     }
-}
+  }
 
-// Node types
-public class FileBundleDirectoryNode(
-    string label,
-    ObservableCollection<INode<IAnnotatedFileBundle>>? subNodes = null)
-    : ViewModelBase, INode<IAnnotatedFileBundle> {
-  public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes { get; }
-    = subNodes;
+  // Node types
+  public class FileBundleDirectoryNode(
+      string label,
+      ObservableCollection<INode<IAnnotatedFileBundle>>? subNodes = null)
+      : ViewModelBase, INode<IAnnotatedFileBundle> {
+    public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes { get; }
+      = subNodes;
 
-  public MaterialIconKind? Icon => null;
+    public MaterialIconKind? Icon => null;
 
-  public string Label { get; } = label;
-}
+    public string Label { get; } = label;
+  }
 
-public class FileBundleLeafNode(string label, IAnnotatedFileBundle data)
-    : ViewModelBase, INode<IAnnotatedFileBundle> {
-  public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes => null;
+  public class FileBundleLeafNode(string label, IAnnotatedFileBundle data)
+      : ViewModelBase, INode<IAnnotatedFileBundle> {
+    public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes => null;
 
-  public MaterialIconKind? Icon => data.FileBundle switch {
+    public MaterialIconKind? Icon => data.FileBundle switch {
       IAudioFileBundle => MaterialIconKind.VolumeHigh,
       IImageFileBundle => MaterialIconKind.ImageOutline,
       IModelFileBundle => MaterialIconKind.CubeOutline,
       ISceneFileBundle => MaterialIconKind.Web,
-  };
+    };
 
-  public string Label { get; } = label;
+    public string Label { get; } = label;
 
-  public IAnnotatedFileBundle Data => data;
+    public IAnnotatedFileBundle Data => data;
+  }
 }

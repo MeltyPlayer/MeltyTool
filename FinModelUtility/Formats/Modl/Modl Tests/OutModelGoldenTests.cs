@@ -7,34 +7,34 @@ using fin.util.enumerables;
 
 using modl.api;
 
-namespace modl;
+namespace modl {
+  public class OutModelGoldenTests
+      : BModelGoldenTests<OutModelFileBundle, OutModelImporter> {
+    [Test]
+    [TestCaseSource(nameof(GetGoldenDirectories_))]
+    public void TestExportsGoldenAsExpected(
+        IFileHierarchyDirectory goldenDirectory)
+      => this.AssertGolden(goldenDirectory);
 
-public class OutModelGoldenTests
-    : BModelGoldenTests<OutModelFileBundle, OutModelImporter> {
-  [Test]
-  [TestCaseSource(nameof(GetGoldenDirectories_))]
-  public void TestExportsGoldenAsExpected(
-      IFileHierarchyDirectory goldenDirectory)
-    => this.AssertGolden(goldenDirectory);
+    public override OutModelFileBundle GetFileBundleFromDirectory(
+        IFileHierarchyDirectory directory)
+      => new() {
+          GameName = directory.Parent.Parent.Name,
+          GameVersion = directory.Parent.Parent.Name switch {
+              "battalion_wars_1" => GameVersion.BW1,
+              "battalion_wars_2" => GameVersion.BW2,
+          },
+          OutFile = directory.FilesWithExtension(".out").Single(),
+          TextureDirectories = directory.Yield(),
+      };
 
-  public override OutModelFileBundle GetFileBundleFromDirectory(
-      IFileHierarchyDirectory directory)
-    => new() {
-        GameName = directory.Parent.Parent.Name,
-        GameVersion = directory.Parent.Parent.Name switch {
-            "battalion_wars_1" => GameVersion.BW1,
-            "battalion_wars_2" => GameVersion.BW2,
-        },
-        OutFile = directory.FilesWithExtension(".out").Single(),
-        TextureDirectories = directory.Yield(),
-    };
-
-  private static IFileHierarchyDirectory[] GetGoldenDirectories_()
-    => GoldenAssert
-       .GetGoldenDirectories(
-           GoldenAssert
-               .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
-               .AssertGetExistingSubdir("out"))
-       .SelectMany(dir => dir.GetExistingSubdirs())
-       .ToArray();
+    private static IFileHierarchyDirectory[] GetGoldenDirectories_()
+      => GoldenAssert
+         .GetGoldenDirectories(
+             GoldenAssert
+                 .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
+                 .AssertGetExistingSubdir("out"))
+         .SelectMany(dir => dir.GetExistingSubdirs())
+         .ToArray();
+  }
 }

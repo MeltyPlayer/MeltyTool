@@ -17,15 +17,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro;
-
-using Yarhl.FileFormat;
-
-public interface IScreenMap : IFormat
+namespace Texim.Compressions.Nitro
 {
-    MapInfo[] Maps { get; }
+    using Yarhl.FileFormat;
 
-    int Width { get; }
+    public interface IScreenMap : IFormat
+    {
+        MapInfo[] Maps { get; }
 
-    int Height { get; }
+        int Width { get; }
+
+        int Height { get; }
+    }
 }

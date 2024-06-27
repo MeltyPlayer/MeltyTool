@@ -4,13 +4,12 @@ using System.Windows.Forms;
 using fin.model;
 using fin.util.lists;
 
-namespace uni.ui.winforms.right_panel.materials;
+namespace uni.ui.winforms.right_panel.materials {
+  public partial class MaterialSelector : UserControl {
+    private IReadOnlyList<IReadOnlyMaterial>? materials_;
+    private IReadOnlyMaterial? selectedMaterial_ = null;
 
-public partial class MaterialSelector : UserControl {
-  private IReadOnlyList<IReadOnlyMaterial>? materials_;
-  private IReadOnlyMaterial? selectedMaterial_ = null;
-
-  public MaterialSelector() {
+    public MaterialSelector() {
       InitializeComponent();
 
       this.comboBox_.SelectedIndexChanged += (_, _) => {
@@ -21,9 +20,9 @@ public partial class MaterialSelector : UserControl {
       };
     }
 
-  public IReadOnlyList<IReadOnlyMaterial>? Materials {
-    get => this.materials_;
-    set {
+    public IReadOnlyList<IReadOnlyMaterial>? Materials {
+      get => this.materials_;
+      set {
         this.materials_ = value;
 
         if (this.materials_ == null) {
@@ -40,11 +39,11 @@ public partial class MaterialSelector : UserControl {
         this.SelectedMaterial =
             this.materials_.Count > 0 ? this.materials_[0] : null;
       }
-  }
+    }
 
-  public IReadOnlyMaterial? SelectedMaterial {
-    get => this.selectedMaterial_;
-    set {
+    public IReadOnlyMaterial? SelectedMaterial {
+      get => this.selectedMaterial_;
+      set {
         if (this.selectedMaterial_ == value || this.materials_ == null) {
           return;
         }
@@ -57,9 +56,10 @@ public partial class MaterialSelector : UserControl {
 
         this.OnMaterialSelected(this.selectedMaterial_ = value);
       }
+    }
+
+    public delegate void OnMaterialSelectedHandler(IReadOnlyMaterial? material);
+
+    public event OnMaterialSelectedHandler OnMaterialSelected = delegate { };
   }
-
-  public delegate void OnMaterialSelectedHandler(IReadOnlyMaterial? material);
-
-  public event OnMaterialSelectedHandler OnMaterialSelected = delegate { };
 }

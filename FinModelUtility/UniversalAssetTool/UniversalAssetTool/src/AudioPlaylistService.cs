@@ -3,12 +3,11 @@
 using uni.config;
 using uni.ui.winforms.common.fileTreeView;
 
-namespace uni;
+namespace uni {
+  public static class AudioPlaylistService {
+    private static IFileTreeParentNode? gameDirectoryForPlaylist_;
 
-public static class AudioPlaylistService {
-  private static IFileTreeParentNode? gameDirectoryForPlaylist_;
-
-  static AudioPlaylistService() {
+    static AudioPlaylistService() {
       FileBundleService.OnFileBundleOpened
           += (_, fileBundle) => {
                if (fileBundle is IAudioFileBundle audioFileBundle) {
@@ -41,9 +40,10 @@ public static class AudioPlaylistService {
              };
     }
 
-  public static event Action<IReadOnlyList<IAudioFileBundle>>
-      OnPlaylistUpdated;
+    public static event Action<IReadOnlyList<IAudioFileBundle>>
+        OnPlaylistUpdated;
 
-  public static void UpdatePlaylist(IReadOnlyList<IAudioFileBundle> playlist)
-    => OnPlaylistUpdated?.Invoke(playlist);
+    public static void UpdatePlaylist(IReadOnlyList<IAudioFileBundle> playlist)
+      => OnPlaylistUpdated?.Invoke(playlist);
+  }
 }

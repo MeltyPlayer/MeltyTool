@@ -9,10 +9,9 @@ using modl.schema.res;
 
 using schema.binary;
 
-namespace uni.games.battalion_wars_1;
-
-public class ResDump {
-  public bool Run(IFileHierarchyFile resFile) {
+namespace uni.games.battalion_wars_1 {
+  public class ResDump {
+    public bool Run(IFileHierarchyFile resFile) {
       Asserts.True(
           resFile.Impl.Exists,
           $"Cannot dump RES because it does not exist: {resFile}");
@@ -72,4 +71,5 @@ public class ResDump {
 
       return false;
     }
+  }
 }

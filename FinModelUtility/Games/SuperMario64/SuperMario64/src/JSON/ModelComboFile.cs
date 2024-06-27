@@ -2,10 +2,9 @@
 
 using Newtonsoft.Json.Linq;
 
-namespace sm64.JSON;
-
-public class ModelComboFile {
-  private static byte parseByte(string str) {
+namespace sm64.JSON {
+  public class ModelComboFile {
+    private static byte parseByte(string str) {
       bool isHex = false;
       if (str.StartsWith("0x")) {
         str = str.Substring(2);
@@ -20,7 +19,7 @@ public class ModelComboFile {
         return byte.Parse(str, NumberStyles.HexNumber);
     }
 
-  private static uint parseUInt(string str) {
+    private static uint parseUInt(string str) {
       bool isHex = false;
       if (str.StartsWith("0x")) {
         str = str.Substring(2);
@@ -35,7 +34,7 @@ public class ModelComboFile {
         return uint.Parse(str, NumberStyles.HexNumber);
     }
 
-  public static void writeObjectCombosFile(string filename) {
+    public static void writeObjectCombosFile(string filename) {
       Globals.objectComboEntries.Sort((x, y) => string.Compare(x.Name, y.Name));
 
       JArray array = [];
@@ -70,12 +69,12 @@ public class ModelComboFile {
       File.WriteAllText(filename, o.ToString());
     }
 
-  private static bool checkValidEntry(JObject entry) {
+    private static bool checkValidEntry(JObject entry) {
       return (entry["Name"] != null && entry["ModelID"] != null &&
               entry["ModelAddress"] != null && entry["Behavior"] != null);
     }
 
-  public static void parseObjectCombos(string filename) {
+    public static void parseObjectCombos(string filename) {
       if (File.Exists(filename)) {
         string json = File.ReadAllText(filename);
         JObject o = JObject.Parse(json);
@@ -115,4 +114,5 @@ public class ModelComboFile {
         }
       }
     }
+  }
 }

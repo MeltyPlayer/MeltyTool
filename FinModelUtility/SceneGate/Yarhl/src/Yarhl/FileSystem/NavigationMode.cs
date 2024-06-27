@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 SceneGate
+// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,22 +17,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileSystem;
-
-/// <summary>
-/// Navigation mode through a file system.
-/// </summary>
-public enum NavigationMode
+namespace Yarhl.FileSystem
 {
     /// <summary>
-    /// Breadth-First Search.
-    /// Returns first nodes in the same directory.
+    /// Navigation mode through a file system.
     /// </summary>
-    BreadthFirst,
+    public enum NavigationMode
+    {
+        /// <summary>
+        /// Breadth-First Search.
+        /// Returns first nodes in the same directory.
+        /// </summary>
+        BreadthFirst,
 
-    /// <summary>
-    /// Depth-First Search.
-    /// Return first nodes in sub-directories.
-    /// </summary>
-    DepthFirst,
+        /// <summary>
+        /// Depth-First Search.
+        /// Return first nodes in sub-directories.
+        /// </summary>
+        DepthFirst,
+    }
 }

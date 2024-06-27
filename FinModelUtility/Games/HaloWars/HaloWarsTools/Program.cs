@@ -10,10 +10,9 @@ using fin.util.gc;
 
 using HaloWarsTools.Helpers;
 
-namespace HaloWarsTools;
-
-public class Program {
-  public void Run(string scratchDirectoryPath, string outputDirectoryPath) {
+namespace HaloWarsTools {
+  public class Program {
+    public void Run(string scratchDirectoryPath, string outputDirectoryPath) {
       string gameDirectory = null;
 
       if (OperatingSystem.IsWindows()) {
@@ -118,10 +117,10 @@ public class Program {
             parent.Create();
           }
 
-         /*var exporter = new AssimpIndirectModelExporter();
-          xporter.ExportModel(new ModelExporterParams {
-              utputFile = outFile, Model = finModel
-          );*//
+          /*var exporter = new AssimpIndirectModelExporter();
+          exporter.ExportModel(new ModelExporterParams {
+              OutputFile = outFile, Model = finModel
+          });*/
           Console.WriteLine($"Processed {visFile.FullPath}");
         }
 
@@ -129,30 +128,31 @@ public class Program {
       }
 
 
-     /*var gls = HWGlsResource.FromFile(context,
-                                       scenario\\skirmish\\design\\blood_gulch\\blood_gulch.gls");
-      onsole.WriteLine($"Processed {gls}");
+      /*var gls = HWGlsResource.FromFile(context,
+                                       "scenario\\skirmish\\design\\blood_gulch\\blood_gulch.gls");
+      Console.WriteLine($"Processed {gls}");
 
-      ar scn = HWScnResource.FromFile(context,
-                                       scenario\\skirmish\\design\\blood_gulch\\blood_gulch.scn");
-      rintScenarioObjects(scn);
-      onsole.WriteLine($"Processed {scn}");
+      var scn = HWScnResource.FromFile(context,
+                                       "scenario\\skirmish\\design\\blood_gulch\\blood_gulch.scn");
+      PrintScenarioObjects(scn);
+      Console.WriteLine($"Processed {scn}");
 
-      ar sc2 = HWSc2Resource.FromFile(context,
-                                       scenario\\skirmish\\design\\blood_gulch\\blood_gulch.sc2");
-      rintScenarioObjects(sc2);
-      onsole.WriteLine($"Processed {sc2}");
+      var sc2 = HWSc2Resource.FromFile(context,
+                                       "scenario\\skirmish\\design\\blood_gulch\\blood_gulch.sc2");
+      PrintScenarioObjects(sc2);
+      Console.WriteLine($"Processed {sc2}");
 
-      ar sc3 = HWSc3Resource.FromFile(context,
-                                       scenario\\skirmish\\design\\blood_gulch\\blood_gulch.sc3");
-      rintScenarioObjects(sc3);
-      onsole.WriteLine($"Processed {sc3}");
-      *//
+      var sc3 = HWSc3Resource.FromFile(context,
+                                       "scenario\\skirmish\\design\\blood_gulch\\blood_gulch.sc3");
+      PrintScenarioObjects(sc3);
+      Console.WriteLine($"Processed {sc3}");
+      }*/
     }
 
-  /*static void PrintScenarioObjects(HWScnResource scenario) {
-    foreach (var obj in scenario.Objects) {
-      Console.WriteLine($"\t{obj}");
-    }
-  }*/
+    /*static void PrintScenarioObjects(HWScnResource scenario) {
+      foreach (var obj in scenario.Objects) {
+        Console.WriteLine($"\t{obj}");
+      }
+    }*/
+  }
 }

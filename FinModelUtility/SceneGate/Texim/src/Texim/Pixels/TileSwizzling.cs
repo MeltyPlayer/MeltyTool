@@ -17,56 +17,56 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Pixels;
-
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Yarhl.IO;
-
-public class TileSwizzling<T> : ISwizzling<T>
+namespace Texim.Pixels
 {
-    public TileSwizzling()
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Linq;
+    using Yarhl.IO;
+
+    public class TileSwizzling<T> : ISwizzling<T>
     {
+        public TileSwizzling()
+        {
             TileSize = new Size(8, 8);
             Width = 256;
         }
 
-    public TileSwizzling(int width)
-    {
+        public TileSwizzling(int width)
+        {
             TileSize = new Size(8, 8);
             Width = width;
         }
 
-    public TileSwizzling(Size tileSize, int width)
-    {
+        public TileSwizzling(Size tileSize, int width)
+        {
             TileSize = tileSize;
             Width = width;
         }
 
-    public Size TileSize { get; set; }
+        public Size TileSize { get; set; }
 
-    public int Width { get; set; }
+        public int Width { get; set; }
 
-    public T[] Swizzle(IEnumerable<T> data)
-    {
+        public T[] Swizzle(IEnumerable<T> data)
+        {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
             return Codec(data, false);
         }
 
-    public T[] Unswizzle(IEnumerable<T> data)
-    {
+        public T[] Unswizzle(IEnumerable<T> data)
+        {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
             return Codec(data, true);
         }
 
-    private T[] Codec(IEnumerable<T> data, bool decoding)
-    {
+        private T[] Codec(IEnumerable<T> data, bool decoding)
+        {
             if (Width % TileSize.Width != 0)
                 throw new FormatException("Width must be a multiple of tile width");
 
@@ -89,8 +89,8 @@ public class TileSwizzling<T> : ISwizzling<T>
             return output;
         }
 
-    private int GetTiledIndex(int x, int y)
-    {
+        private int GetTiledIndex(int x, int y)
+        {
             int tileLength = TileSize.Width * TileSize.Height;
             int numTilesX = Width / TileSize.Width;
 
@@ -102,4 +102,5 @@ public class TileSwizzling<T> : ISwizzling<T>
                 + (pixelPos.Y * TileSize.Width) // plus start row inside tile
                 + pixelPos.X; // plus start column inside tile
         }
+    }
 }

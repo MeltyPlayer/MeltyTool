@@ -12,11 +12,10 @@ using ReactiveUI;
 using uni.ui.avalonia.resources.model;
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.resources.animation;
-
-public class AnimationPlaybackPanelViewModelForDesigner
-    : AnimationPlaybackPanelViewModel {
-  public AnimationPlaybackPanelViewModelForDesigner() {
+namespace uni.ui.avalonia.resources.animation {
+  public class AnimationPlaybackPanelViewModelForDesigner
+      : AnimationPlaybackPanelViewModel {
+    public AnimationPlaybackPanelViewModelForDesigner() {
       var animation = ModelDesignerUtil.CreateStubAnimation();
       this.AnimationPlaybackManager = new FrameAdvancer {
           FrameRate = (int) animation.FrameRate,
@@ -24,26 +23,26 @@ public class AnimationPlaybackPanelViewModelForDesigner
           TotalFrames = animation.FrameCount,
       };
     }
-}
+  }
 
-public class AnimationPlaybackPanelViewModel : ViewModelBase {
-  private IAnimationPlaybackManager? animationPlaybackManager_;
+  public class AnimationPlaybackPanelViewModel : ViewModelBase {
+    private IAnimationPlaybackManager? animationPlaybackManager_;
 
-  private bool isPlaying_;
-  private string playButtonTooltip_;
+    private bool isPlaying_;
+    private string playButtonTooltip_;
 
-  private bool loopPlayback_;
-  private string loopButtonTooltip_;
+    private bool loopPlayback_;
+    private string loopButtonTooltip_;
 
-  private int frameRate_;
-  private float frame_;
-  private int frameCount_;
-  private float lastFrame_;
-  private int frameTextWidth_;
+    private int frameRate_;
+    private float frame_;
+    private int frameCount_;
+    private float lastFrame_;
+    private int frameTextWidth_;
 
-  public IAnimationPlaybackManager? AnimationPlaybackManager {
-    get => this.animationPlaybackManager_;
-    set {
+    public IAnimationPlaybackManager? AnimationPlaybackManager {
+      get => this.animationPlaybackManager_;
+      set {
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.OnUpdate -= this.Update_;
         }
@@ -57,11 +56,11 @@ public class AnimationPlaybackPanelViewModel : ViewModelBase {
           this.animationPlaybackManager_.OnUpdate += this.Update_;
         }
       }
-  }
+    }
 
-  public bool IsPlaying {
-    get => this.isPlaying_;
-    set {
+    public bool IsPlaying {
+      get => this.isPlaying_;
+      set {
         this.RaiseAndSetIfChanged(ref this.isPlaying_, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.IsPlaying = value;
@@ -69,16 +68,16 @@ public class AnimationPlaybackPanelViewModel : ViewModelBase {
 
         this.PlayButtonTooltip = value ? "Playing" : "Paused";
       }
-  }
+    }
 
-  public string PlayButtonTooltip {
-    get => this.playButtonTooltip_;
-    set => this.RaiseAndSetIfChanged(ref this.playButtonTooltip_, value);
-  }
+    public string PlayButtonTooltip {
+      get => this.playButtonTooltip_;
+      set => this.RaiseAndSetIfChanged(ref this.playButtonTooltip_, value);
+    }
 
-  public bool LoopPlayback {
-    get => this.loopPlayback_;
-    set {
+    public bool LoopPlayback {
+      get => this.loopPlayback_;
+      set {
         this.RaiseAndSetIfChanged(ref this.loopPlayback_, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.LoopPlayback = value;
@@ -86,55 +85,55 @@ public class AnimationPlaybackPanelViewModel : ViewModelBase {
 
         this.LoopButtonTooltip = value ? "Looping" : "Not looping";
       }
-  }
+    }
 
-  public string LoopButtonTooltip {
-    get => this.loopButtonTooltip_;
-    set => this.RaiseAndSetIfChanged(ref this.loopButtonTooltip_, value);
-  }
+    public string LoopButtonTooltip {
+      get => this.loopButtonTooltip_;
+      set => this.RaiseAndSetIfChanged(ref this.loopButtonTooltip_, value);
+    }
 
-  public int FrameRate {
-    get => this.frameRate_;
-    set {
+    public int FrameRate {
+      get => this.frameRate_;
+      set {
         this.RaiseAndSetIfChanged(ref this.frameRate_, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.FrameRate = value;
         }
       }
-  }
+    }
 
-  public float Frame {
-    get => this.frame_;
-    set {
+    public float Frame {
+      get => this.frame_;
+      set {
         this.RaiseAndSetIfChanged(ref this.frame_, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.Frame = value;
         }
       }
-  }
+    }
 
-  public int FrameCount {
-    get => this.frameCount_;
-    private set {
+    public int FrameCount {
+      get => this.frameCount_;
+      private set {
         this.RaiseAndSetIfChanged(ref this.frameCount_, value);
         this.LastFrame = Math.Max(0, value - .0001f);
 
         var digitsInFrameCount = this.frameCount_.Base10DigitCount();
         this.FrameTextWidth = 45 + 10 * digitsInFrameCount;
       }
-  }
+    }
 
-  public float LastFrame {
-    get => this.lastFrame_;
-    private set => this.RaiseAndSetIfChanged(ref this.lastFrame_, value);
-  }
+    public float LastFrame {
+      get => this.lastFrame_;
+      private set => this.RaiseAndSetIfChanged(ref this.lastFrame_, value);
+    }
 
-  public int FrameTextWidth {
-    get => this.frameTextWidth_;
-    private set => this.RaiseAndSetIfChanged(ref this.frameTextWidth_, value);
-  }
+    public int FrameTextWidth {
+      get => this.frameTextWidth_;
+      private set => this.RaiseAndSetIfChanged(ref this.frameTextWidth_, value);
+    }
 
-  private void Update_() {
+    private void Update_() {
       var animationPlaybackManager = this.animationPlaybackManager_;
       if (animationPlaybackManager == null) {
         return;
@@ -146,33 +145,34 @@ public class AnimationPlaybackPanelViewModel : ViewModelBase {
       this.Frame = (float) animationPlaybackManager.Frame;
       this.FrameCount = animationPlaybackManager.TotalFrames;
     }
-}
+  }
 
-public partial class AnimationPlaybackPanel : UserControl {
-  public AnimationPlaybackPanel() {
+  public partial class AnimationPlaybackPanel : UserControl {
+    public AnimationPlaybackPanel() {
       InitializeComponent();
     }
 
-  private AnimationPlaybackPanelViewModel ViewModel
-    => this.DataContext.AssertAsA<AnimationPlaybackPanelViewModel>();
+    private AnimationPlaybackPanelViewModel ViewModel
+      => this.DataContext.AssertAsA<AnimationPlaybackPanelViewModel>();
 
-  private void JumpToFirstFrame_(object? sender, RoutedEventArgs e)
-    => this.SetFrame_(0);
+    private void JumpToFirstFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(0);
 
-  private void JumpToPreviousFrame_(object? sender, RoutedEventArgs e)
-    => this.SetFrame_(this.ViewModel.Frame - 1);
+    private void JumpToPreviousFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(this.ViewModel.Frame - 1);
 
-  private void JumpToNextFrame_(object? sender, RoutedEventArgs e)
-    => this.SetFrame_(this.ViewModel.Frame + 1);
+    private void JumpToNextFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(this.ViewModel.Frame + 1);
 
-  private void JumpToLastFrame_(object? sender, RoutedEventArgs e)
-    => this.SetFrame_(this.ViewModel.LastFrame);
+    private void JumpToLastFrame_(object? sender, RoutedEventArgs e)
+      => this.SetFrame_(this.ViewModel.LastFrame);
 
-  private void SetFrame_(float frame) {
+    private void SetFrame_(float frame) {
       var viewModel = this.ViewModel;
       viewModel.IsPlaying = false;
       viewModel.Frame = viewModel.LoopPlayback
           ? frame.Wrap(0, viewModel.LastFrame)
           : frame.Clamp(0, viewModel.LastFrame);
     }
+  }
 }

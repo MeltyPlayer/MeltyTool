@@ -3,12 +3,11 @@ using System.Windows.Forms;
 
 using fin.model;
 
-namespace uni.ui.winforms.right_panel.materials;
+namespace uni.ui.winforms.right_panel.materials {
+  public partial class MaterialsTab : UserControl {
+    private IReadOnlyModel? model_;
 
-public partial class MaterialsTab : UserControl {
-  private IReadOnlyModel? model_;
-
-  public MaterialsTab() {
+    public MaterialsTab() {
       InitializeComponent();
 
       this.materialSelector_.OnMaterialSelected += material => {
@@ -18,10 +17,11 @@ public partial class MaterialsTab : UserControl {
       };
     }
 
-  public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial>)? ModelAndMaterials {
-    set {
+    public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial>)? ModelAndMaterials {
+      set {
         this.model_ = value?.Item1;
         this.materialSelector_.Materials = value?.Item2;
       }
+    }
   }
 }

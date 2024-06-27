@@ -17,95 +17,95 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO;
-
-using System;
-using System.Buffers;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using FileFormat;
-using StreamFormat;
-
-/// <summary>
-/// Virtual <see cref="Stream" /> with substream capabilities and read/write
-/// abstraction layer.
-/// </summary>
-/// <remarks>
-/// The type is thread-safe at the level of the substream. For instance, it
-/// is safe to use several DataStream over the same base stream in parallel.
-/// The type is not thread-safe for its method. For instance, it is NOT safe
-/// to use the same DataStream in different threads at the same time.
-/// </remarks>
-[SuppressMessage(
-    "",
-    "S3881",
-    Justification = "Historical reasons: https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.dispose")]
-public class DataStream : Stream
+namespace Yarhl.IO
 {
-    static readonly ConcurrentDictionary<Stream, StreamInfo> Instances = new ConcurrentDictionary<Stream, StreamInfo>();
-    readonly Stack<long> positionStack = new Stack<long>();
-    readonly bool canExpand;
-    readonly bool hasOwnsership;
-    readonly StreamInfo streamInfo;
-    readonly Stream baseStream;
-
-    bool disposed;
-    long offset;
-    long position;
-    long length;
+    using System;
+    using System.Buffers;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Linq;
+    using FileFormat;
+    using StreamFormat;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DataStream"/> class.
-    /// A new stream is created in memory.
-    /// </summary>
-    public DataStream()
-        : this(new RecyclableMemoryStream())
-    {
-        }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataStream" /> class.
+    /// Virtual <see cref="Stream" /> with substream capabilities and read/write
+    /// abstraction layer.
     /// </summary>
     /// <remarks>
-    /// <p>The dispose ownership is transferred to this stream.</p>
+    /// The type is thread-safe at the level of the substream. For instance, it
+    /// is safe to use several DataStream over the same base stream in parallel.
+    /// The type is not thread-safe for its method. For instance, it is NOT safe
+    /// to use the same DataStream in different threads at the same time.
     /// </remarks>
-    /// <param name="stream">Base stream.</param>
-    public DataStream(Stream stream)
-        : this(stream, 0, stream?.Length ?? -1, true)
+    [SuppressMessage(
+        "",
+        "S3881",
+        Justification = "Historical reasons: https://docs.microsoft.com/en-us/dotnet/api/system.io.stream.dispose")]
+    public class DataStream : Stream
     {
+        static readonly ConcurrentDictionary<Stream, StreamInfo> Instances = new ConcurrentDictionary<Stream, StreamInfo>();
+        readonly Stack<long> positionStack = new Stack<long>();
+        readonly bool canExpand;
+        readonly bool hasOwnsership;
+        readonly StreamInfo streamInfo;
+        readonly Stream baseStream;
+
+        bool disposed;
+        long offset;
+        long position;
+        long length;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataStream"/> class.
+        /// A new stream is created in memory.
+        /// </summary>
+        public DataStream()
+            : this(new RecyclableMemoryStream())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataStream" /> class.
+        /// </summary>
+        /// <remarks>
+        /// <p>The dispose ownership is transferred to this stream.</p>
+        /// </remarks>
+        /// <param name="stream">Base stream.</param>
+        public DataStream(Stream stream)
+            : this(stream, 0, stream?.Length ?? -1, true)
+        {
             canExpand = true;
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataStream" /> class
-    /// from a substream transferring the ownership of the life-cycle. In the
-    /// case the stream is another <see cref="DataStream" /> the ownership
-    /// is inherited.
-    /// </summary>
-    /// <param name="stream">Base stream.</param>
-    /// <param name="offset">Offset from the base stream.</param>
-    /// <param name="length">Length of this substream.</param>
-    [SuppressMessage("", "S1125: remove unnecessary boolean", Justification = "Readability")]
-    public DataStream(Stream stream, long offset, long length)
-        : this(stream, offset, length, (stream is not DataStream dataStream) || dataStream.hasOwnsership)
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataStream" /> class
+        /// from a substream transferring the ownership of the life-cycle. In the
+        /// case the stream is another <see cref="DataStream" /> the ownership
+        /// is inherited.
+        /// </summary>
+        /// <param name="stream">Base stream.</param>
+        /// <param name="offset">Offset from the base stream.</param>
+        /// <param name="length">Length of this substream.</param>
+        [SuppressMessage("", "S1125: remove unnecessary boolean", Justification = "Readability")]
+        public DataStream(Stream stream, long offset, long length)
+            : this(stream, offset, length, (stream is not DataStream dataStream) || dataStream.hasOwnsership)
+        {
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataStream" /> class.
-    /// </summary>
-    /// <param name="stream">Base stream.</param>
-    /// <param name="offset">Offset from the base stream.</param>
-    /// <param name="length">Length of this substream.</param>
-    /// <param name="transferOwnership">
-    /// Transfer the ownsership of the stream argument to this class so
-    /// it can dispose it.
-    /// </param>
-    public DataStream(Stream stream, long offset, long length, bool transferOwnership)
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DataStream" /> class.
+        /// </summary>
+        /// <param name="stream">Base stream.</param>
+        /// <param name="offset">Offset from the base stream.</param>
+        /// <param name="length">Length of this substream.</param>
+        /// <param name="transferOwnership">
+        /// Transfer the ownsership of the stream argument to this class so
+        /// it can dispose it.
+        /// </param>
+        public DataStream(Stream stream, long offset, long length, bool transferOwnership)
+        {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (offset < 0 || offset > stream.Length)
@@ -136,34 +136,34 @@ public class DataStream : Stream
             streamInfo = GetOrCreateStreamInfo();
         }
 
-    /// <summary>
-    /// Gets the number of streams in use.
-    /// </summary>
-    public static int ActiveStreams => Instances.Values.Count(i => i.NumInstances > 0);
+        /// <summary>
+        /// Gets the number of streams in use.
+        /// </summary>
+        public static int ActiveStreams => Instances.Values.Count(i => i.NumInstances > 0);
 
-    /// <summary>
-    /// Gets a value indicating whether this <see cref="DataStream"/> is disposed.
-    /// </summary>
-    public bool Disposed {
-        get => disposed;
-        private set => disposed = value;
-    }
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="DataStream"/> is disposed.
+        /// </summary>
+        public bool Disposed {
+            get => disposed;
+            private set => disposed = value;
+        }
 
-    /// <summary>
-    /// Gets the offset from the BaseStream.
-    /// </summary>
-    public long Offset {
-        get => offset;
-        private set => offset = value;
-    }
+        /// <summary>
+        /// Gets the offset from the BaseStream.
+        /// </summary>
+        public long Offset {
+            get => offset;
+            private set => offset = value;
+        }
 
-    /// <summary>
-    /// Gets or sets the position from the start of this stream.
-    /// </summary>
-    public override long Position {
-        get => position;
+        /// <summary>
+        /// Gets or sets the position from the start of this stream.
+        /// </summary>
+        public override long Position {
+            get => position;
 
-        set {
+            set {
                 if (Disposed)
                     throw new ObjectDisposedException(nameof(DataStream));
                 if (value < 0 || value > Length)
@@ -171,100 +171,100 @@ public class DataStream : Stream
 
                 position = value;
             }
-    }
+        }
 
-    /// <summary>
-    /// Gets the length of this stream.
-    /// </summary>
-    public override long Length {
-        get => length;
-    }
+        /// <summary>
+        /// Gets the length of this stream.
+        /// </summary>
+        public override long Length {
+            get => length;
+        }
 
-    /// <summary>
-    /// Gets the parent DataStream only if this stream was initialized from
-    /// a DataStream.
-    /// </summary>
-    public DataStream? ParentDataStream {
-        get;
-        private set;
-    }
+        /// <summary>
+        /// Gets the parent DataStream only if this stream was initialized from
+        /// a DataStream.
+        /// </summary>
+        public DataStream? ParentDataStream {
+            get;
+            private set;
+        }
 
-    /// <summary>
-    /// Gets the base stream.
-    /// </summary>
-    public Stream BaseStream {
-        get => baseStream;
-    }
+        /// <summary>
+        /// Gets the base stream.
+        /// </summary>
+        public Stream BaseStream {
+            get => baseStream;
+        }
 
-    /// <summary>
-    /// Gets a value indicating whether the position is at end of the stream.
-    /// </summary>
-    public bool EndOfStream {
-        get => Position >= Length;
-    }
+        /// <summary>
+        /// Gets a value indicating whether the position is at end of the stream.
+        /// </summary>
+        public bool EndOfStream {
+            get => Position >= Length;
+        }
 
-    /// <summary>
-    /// Gets the position from the base stream.
-    /// </summary>
-    public long AbsolutePosition {
-        get => Offset + Position;
-    }
+        /// <summary>
+        /// Gets the position from the base stream.
+        /// </summary>
+        public long AbsolutePosition {
+            get => Offset + Position;
+        }
 
-    /// <summary>
-    /// Gets a value indicating whether the current stream supports reading.
-    /// </summary>
-    public override bool CanRead {
-        get => true;
-    }
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports reading.
+        /// </summary>
+        public override bool CanRead {
+            get => true;
+        }
 
-    /// <summary>
-    /// Gets a value indicating whether the current stream supports writing.
-    /// </summary>
-    public override bool CanWrite {
-        get => true;
-    }
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports writing.
+        /// </summary>
+        public override bool CanWrite {
+            get => true;
+        }
 
-    /// <summary>
-    /// Gets a value indicating whether the current stream supports seeking.
-    /// </summary>
-    public override bool CanSeek {
-        get => true;
-    }
+        /// <summary>
+        /// Gets a value indicating whether the current stream supports seeking.
+        /// </summary>
+        public override bool CanSeek {
+            get => true;
+        }
 
-    /// <summary>
-    /// Gets a value indicating whether the current stream support timeouts.
-    /// </summary>
-    public override bool CanTimeout => false;
+        /// <summary>
+        /// Gets a value indicating whether the current stream support timeouts.
+        /// </summary>
+        public override bool CanTimeout => false;
 
-    /// <summary>
-    /// Gets or sets an invalid value as read time is not supported.
-    /// </summary>
-    public override int ReadTimeout {
-        get => -1;
-        set => throw new InvalidOperationException("Read timeout is not supported");
-    }
+        /// <summary>
+        /// Gets or sets an invalid value as read time is not supported.
+        /// </summary>
+        public override int ReadTimeout {
+            get => -1;
+            set => throw new InvalidOperationException("Read timeout is not supported");
+        }
 
-    /// <summary>
-    /// Gets or sets an invalid value as write time is not supported.
-    /// </summary>
-    public override int WriteTimeout {
-        get => -1;
-        set => throw new InvalidOperationException("Write timeout is not supported");
-    }
+        /// <summary>
+        /// Gets or sets an invalid value as write time is not supported.
+        /// </summary>
+        public override int WriteTimeout {
+            get => -1;
+            set => throw new InvalidOperationException("Write timeout is not supported");
+        }
 
-    /// <summary>
-    /// Gets the internal stream information for testing pourpose only.
-    /// </summary>
-    internal StreamInfo InternalInfo {
-        get => streamInfo;
-    }
+        /// <summary>
+        /// Gets the internal stream information for testing pourpose only.
+        /// </summary>
+        internal StreamInfo InternalInfo {
+            get => streamInfo;
+        }
 
-    /// <summary>
-    /// Sets the length of the current stream.
-    /// </summary>
-    /// <param name="value">The new length value.</param>
-    public override void SetLength(long value)
-    {
+        /// <summary>
+        /// Sets the length of the current stream.
+        /// </summary>
+        /// <param name="value">The new length value.</param>
+        public override void SetLength(long value)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (value < 0)
@@ -291,26 +291,26 @@ public class DataStream : Stream
             }
         }
 
-    /// <summary>
-    /// Clears all buffers for this stream and causes any buffered data
-    /// to be written to the underlying device.
-    /// </summary>
-    public override void Flush()
-    {
+        /// <summary>
+        /// Clears all buffers for this stream and causes any buffered data
+        /// to be written to the underlying device.
+        /// </summary>
+        public override void Flush()
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
             BaseStream.Flush();
         }
 
-    /// <summary>
-    /// Move the position of the Stream.
-    /// </summary>
-    /// <param name="shift">Distance to move position.</param>
-    /// <param name="mode">Mode to move position.</param>
-    [Obsolete("Use the overload with SeekOrigin.")]
-    public void Seek(long shift, SeekMode mode)
-    {
+        /// <summary>
+        /// Move the position of the Stream.
+        /// </summary>
+        /// <param name="shift">Distance to move position.</param>
+        /// <param name="mode">Mode to move position.</param>
+        [Obsolete("Use the overload with SeekOrigin.")]
+        public void Seek(long shift, SeekMode mode)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -329,15 +329,15 @@ public class DataStream : Stream
             }
         }
 
-    /// <summary>
-    /// Move the position of the stream.
-    /// </summary>
-    /// <param name="offset">Distance to move position.</param>
-    /// <param name="origin">Mode to move position.</param>
-    /// <returns>The new position of the stream.</returns>
-    [SuppressMessage("", "S1006", Justification = "It's an good improvement")]
-    public override long Seek(long offset, SeekOrigin origin = SeekOrigin.Begin)
-    {
+        /// <summary>
+        /// Move the position of the stream.
+        /// </summary>
+        /// <param name="offset">Distance to move position.</param>
+        /// <param name="origin">Mode to move position.</param>
+        /// <returns>The new position of the stream.</returns>
+        [SuppressMessage("", "S1006", Justification = "It's an good improvement")]
+        public override long Seek(long offset, SeekOrigin origin = SeekOrigin.Begin)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -358,14 +358,14 @@ public class DataStream : Stream
             return Position;
         }
 
-    /// <summary>
-    /// Push the current position into a stack and move to a new one.
-    /// </summary>
-    /// <param name="shift">Distance to move position.</param>
-    /// <param name="mode">Mode to move position.</param>
-    [Obsolete("Use the overload with SeekOrigin.")]
-    public void PushToPosition(long shift, SeekMode mode)
-    {
+        /// <summary>
+        /// Push the current position into a stack and move to a new one.
+        /// </summary>
+        /// <param name="shift">Distance to move position.</param>
+        /// <param name="mode">Mode to move position.</param>
+        [Obsolete("Use the overload with SeekOrigin.")]
+        public void PushToPosition(long shift, SeekMode mode)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -373,13 +373,13 @@ public class DataStream : Stream
             Seek(shift, mode);
         }
 
-    /// <summary>
-    /// Push the current position into a stack and move to a new one.
-    /// </summary>
-    /// <param name="shift">Distance to move position.</param>
-    /// <param name="mode">Mode to move position.</param>
-    public void PushToPosition(long shift, SeekOrigin mode = SeekOrigin.Begin)
-    {
+        /// <summary>
+        /// Push the current position into a stack and move to a new one.
+        /// </summary>
+        /// <param name="shift">Distance to move position.</param>
+        /// <param name="mode">Mode to move position.</param>
+        public void PushToPosition(long shift, SeekOrigin mode = SeekOrigin.Begin)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -387,22 +387,22 @@ public class DataStream : Stream
             _ = Seek(shift, mode);
         }
 
-    /// <summary>
-    /// Push the current position into a stack.
-    /// </summary>
-    public void PushCurrentPosition()
-    {
+        /// <summary>
+        /// Push the current position into a stack.
+        /// </summary>
+        public void PushCurrentPosition()
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
             positionStack.Push(Position);
         }
 
-    /// <summary>
-    /// Pop the last position from the stack and move to it.
-    /// </summary>
-    public void PopPosition()
-    {
+        /// <summary>
+        /// Pop the last position from the stack and move to it.
+        /// </summary>
+        public void PopPosition()
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -412,17 +412,17 @@ public class DataStream : Stream
             Position = positionStack.Pop();
         }
 
-    /// <summary>
-    /// Run a method in a specific position.
-    /// This command will move into the position, run the method and return
-    /// to the current position.
-    /// </summary>
-    /// <param name="action">Action to run.</param>
-    /// <param name="position">Position to move.</param>
-    /// <param name="mode">Mode to move position.</param>
-    [Obsolete("Use the overload with SeekOrigin.")]
-    public void RunInPosition(Action action, long position, SeekMode mode)
-    {
+        /// <summary>
+        /// Run a method in a specific position.
+        /// This command will move into the position, run the method and return
+        /// to the current position.
+        /// </summary>
+        /// <param name="action">Action to run.</param>
+        /// <param name="position">Position to move.</param>
+        /// <param name="mode">Mode to move position.</param>
+        [Obsolete("Use the overload with SeekOrigin.")]
+        public void RunInPosition(Action action, long position, SeekMode mode)
+        {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
@@ -431,16 +431,16 @@ public class DataStream : Stream
             PopPosition();
         }
 
-    /// <summary>
-    /// Run a method in a specific position.
-    /// This command will move into the position, run the method and return
-    /// to the current position.
-    /// </summary>
-    /// <param name="action">Action to run.</param>
-    /// <param name="position">Position to move.</param>
-    /// <param name="mode">Mode to move position.</param>
-    public void RunInPosition(Action action, long position, SeekOrigin mode = SeekOrigin.Begin)
-    {
+        /// <summary>
+        /// Run a method in a specific position.
+        /// This command will move into the position, run the method and return
+        /// to the current position.
+        /// </summary>
+        /// <param name="action">Action to run.</param>
+        /// <param name="position">Position to move.</param>
+        /// <param name="mode">Mode to move position.</param>
+        public void RunInPosition(Action action, long position, SeekOrigin mode = SeekOrigin.Begin)
+        {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
 
@@ -449,13 +449,13 @@ public class DataStream : Stream
             PopPosition();
         }
 
-    /// <summary>
-    /// Reads a byte from the stream and advances the position within the
-    /// stream by one byte, or returns -1 if at the end of the stream.
-    /// </summary>
-    /// <returns>The unsigned byte cast to an Int32, or -1 if at the end of the stream.</returns>
-    public override int ReadByte()
-    {
+        /// <summary>
+        /// Reads a byte from the stream and advances the position within the
+        /// stream by one byte, or returns -1 if at the end of the stream.
+        /// </summary>
+        /// <returns>The unsigned byte cast to an Int32, or -1 if at the end of the stream.</returns>
+        public override int ReadByte()
+        {
             if (disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -469,20 +469,20 @@ public class DataStream : Stream
             }
         }
 
-    /// <summary>
-    /// Reads a sequence of bytes from the current stream and advances the
-    /// position within the stream by the number of bytes read.
-    /// </summary>
-    /// <returns>
-    /// The total number of bytes read into the buffer. This can be less than
-    /// the number of bytes requested if that many bytes are not currently
-    /// available, or zero (0) if the end of the stream has been reached.
-    /// </returns>
-    /// <param name="buffer">Buffer to copy data.</param>
-    /// <param name="offset">Index to start copying in buffer.</param>
-    /// <param name="count">Maximum number of bytes to read.</param>
-    public override int Read(byte[] buffer, int offset, int count)
-    {
+        /// <summary>
+        /// Reads a sequence of bytes from the current stream and advances the
+        /// position within the stream by the number of bytes read.
+        /// </summary>
+        /// <returns>
+        /// The total number of bytes read into the buffer. This can be less than
+        /// the number of bytes requested if that many bytes are not currently
+        /// available, or zero (0) if the end of the stream has been reached.
+        /// </returns>
+        /// <param name="buffer">Buffer to copy data.</param>
+        /// <param name="offset">Index to start copying in buffer.</param>
+        /// <param name="count">Maximum number of bytes to read.</param>
+        public override int Read(byte[] buffer, int offset, int count)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (buffer == null)
@@ -509,13 +509,13 @@ public class DataStream : Stream
             return read;
         }
 
-    /// <summary>
-    /// Reads a format from this stream.
-    /// </summary>
-    /// <returns>The format read.</returns>
-    /// <typeparam name="T">The type of the format to read.</typeparam>
-    public T ReadFormat<T>()
-    {
+        /// <summary>
+        /// Reads a format from this stream.
+        /// </summary>
+        /// <returns>The format read.</returns>
+        /// <typeparam name="T">The type of the format to read.</typeparam>
+        public T ReadFormat<T>()
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -525,12 +525,12 @@ public class DataStream : Stream
             return format;
         }
 
-    /// <summary>
-    /// Writes a byte.
-    /// </summary>
-    /// <param name="value">Byte value.</param>
-    public override void WriteByte(byte value)
-    {
+        /// <summary>
+        /// Writes a byte.
+        /// </summary>
+        /// <param name="value">Byte value.</param>
+        public override void WriteByte(byte value)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
 
@@ -549,14 +549,14 @@ public class DataStream : Stream
             Position++;
         }
 
-    /// <summary>
-    /// Writes the a portion of the buffer to the stream.
-    /// </summary>
-    /// <param name="buffer">Buffer to write.</param>
-    /// <param name="offset">Index in the buffer.</param>
-    /// <param name="count">Bytes to write.</param>
-    public override void Write(byte[] buffer, int offset, int count)
-    {
+        /// <summary>
+        /// Writes the a portion of the buffer to the stream.
+        /// </summary>
+        /// <param name="buffer">Buffer to write.</param>
+        /// <param name="offset">Index in the buffer.</param>
+        /// <param name="count">Bytes to write.</param>
+        public override void Write(byte[] buffer, int offset, int count)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (buffer == null)
@@ -584,15 +584,15 @@ public class DataStream : Stream
             position = pos + count;
         }
 
-    /// <summary>
-    /// Writes the complete stream into a file.
-    /// </summary>
-    /// <param name="fileOut">Output file path.</param>
-    /// <remarks>
-    /// It preserves the current position and creates any required directory.
-    /// </remarks>
-    public void WriteTo(string fileOut)
-    {
+        /// <summary>
+        /// Writes the complete stream into a file.
+        /// </summary>
+        /// <param name="fileOut">Output file path.</param>
+        /// <remarks>
+        /// It preserves the current position and creates any required directory.
+        /// </remarks>
+        public void WriteTo(string fileOut)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (string.IsNullOrEmpty(fileOut))
@@ -601,18 +601,18 @@ public class DataStream : Stream
             WriteSegmentTo(0, Length, fileOut);
         }
 
-    /// <summary>
-    /// Writes the complete stream into another stream preserving the current position.
-    /// </summary>
-    /// <param name="stream">The stream to write.</param>
-    /// <remarks>
-    /// This method is similar to <see cref="Stream.CopyTo(Stream)" />.
-    /// The difference is that it copies always from the position 0 of the
-    /// current stream, and it preserves the current position afterwards.
-    /// It writes into the current position of the destination stream.
-    /// </remarks>
-    public void WriteTo(Stream stream)
-    {
+        /// <summary>
+        /// Writes the complete stream into another stream preserving the current position.
+        /// </summary>
+        /// <param name="stream">The stream to write.</param>
+        /// <remarks>
+        /// This method is similar to <see cref="Stream.CopyTo(Stream)" />.
+        /// The difference is that it copies always from the position 0 of the
+        /// current stream, and it preserves the current position afterwards.
+        /// It writes into the current position of the destination stream.
+        /// </remarks>
+        public void WriteTo(Stream stream)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (stream == null)
@@ -621,16 +621,16 @@ public class DataStream : Stream
             WriteSegmentTo(0, Length, stream);
         }
 
-    /// <summary>
-    /// Writes a segment of the stream into a file from a defined position to the end.
-    /// </summary>
-    /// <param name="start">Starting position to read from the current stream.</param>
-    /// <param name="fileOut">Output file path.</param>
-    /// <remarks>
-    /// It preserves the current position and creates any required directory.
-    /// </remarks>
-    public void WriteSegmentTo(long start, string fileOut)
-    {
+        /// <summary>
+        /// Writes a segment of the stream into a file from a defined position to the end.
+        /// </summary>
+        /// <param name="start">Starting position to read from the current stream.</param>
+        /// <param name="fileOut">Output file path.</param>
+        /// <remarks>
+        /// It preserves the current position and creates any required directory.
+        /// </remarks>
+        public void WriteSegmentTo(long start, string fileOut)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (string.IsNullOrEmpty(fileOut))
@@ -641,17 +641,17 @@ public class DataStream : Stream
             WriteSegmentTo(start, Length - start, fileOut);
         }
 
-    /// <summary>
-    /// Writes a segment of the stream into another stream from a defined position to the end.
-    /// </summary>
-    /// <param name="start">Starting position to read from the current stream.</param>
-    /// <param name="stream">Output stream.</param>
-    /// <remarks>
-    /// It preserves the current position and writes to the current position
-    /// of the destination stream.
-    /// </remarks>
-    public void WriteSegmentTo(long start, Stream stream)
-    {
+        /// <summary>
+        /// Writes a segment of the stream into another stream from a defined position to the end.
+        /// </summary>
+        /// <param name="start">Starting position to read from the current stream.</param>
+        /// <param name="stream">Output stream.</param>
+        /// <remarks>
+        /// It preserves the current position and writes to the current position
+        /// of the destination stream.
+        /// </remarks>
+        public void WriteSegmentTo(long start, Stream stream)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (stream == null)
@@ -662,17 +662,17 @@ public class DataStream : Stream
             WriteSegmentTo(start, Length - start, stream);
         }
 
-    /// <summary>
-    /// Writes a segment of the stream into a file.
-    /// </summary>
-    /// <param name="start">Starting position to read from the current stream.</param>
-    /// <param name="length">Length of the segment to read.</param>
-    /// <param name="fileOut">Output file path.</param>
-    /// <remarks>
-    /// It preserves the current position and creates any required directory.
-    /// </remarks>
-    public void WriteSegmentTo(long start, long length, string fileOut)
-    {
+        /// <summary>
+        /// Writes a segment of the stream into a file.
+        /// </summary>
+        /// <param name="start">Starting position to read from the current stream.</param>
+        /// <param name="length">Length of the segment to read.</param>
+        /// <param name="fileOut">Output file path.</param>
+        /// <remarks>
+        /// It preserves the current position and creates any required directory.
+        /// </remarks>
+        public void WriteSegmentTo(long start, long length, string fileOut)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (string.IsNullOrEmpty(fileOut))
@@ -696,18 +696,18 @@ public class DataStream : Stream
             WriteSegmentTo(start, length, segment);
         }
 
-    /// <summary>
-    /// Writes a segment of the stream into another stream.
-    /// </summary>
-    /// <param name="start">Starting position to read from the current stream.</param>
-    /// <param name="length">Length of the segment to read.</param>
-    /// <param name="stream">Output stream.</param>
-    /// <remarks>
-    /// It preserves the current position and writes to the current position
-    /// of the destination stream.
-    /// </remarks>
-    public void WriteSegmentTo(long start, long length, Stream stream)
-    {
+        /// <summary>
+        /// Writes a segment of the stream into another stream.
+        /// </summary>
+        /// <param name="start">Starting position to read from the current stream.</param>
+        /// <param name="length">Length of the segment to read.</param>
+        /// <param name="stream">Output stream.</param>
+        /// <remarks>
+        /// It preserves the current position and writes to the current position
+        /// of the destination stream.
+        /// </remarks>
+        public void WriteSegmentTo(long start, long length, Stream stream)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(DataStream));
             if (stream == null)
@@ -743,13 +743,13 @@ public class DataStream : Stream
             PopPosition();
         }
 
-    /// <summary>
-    /// Compare the content of the stream with another one.
-    /// </summary>
-    /// <returns>The result of the comparison.</returns>
-    /// <param name="otherStream">Stream to compare with.</param>
-    public bool Compare(Stream otherStream)
-    {
+        /// <summary>
+        /// Compare the content of the stream with another one.
+        /// </summary>
+        /// <returns>The result of the comparison.</returns>
+        /// <param name="otherStream">Stream to compare with.</param>
+        public bool Compare(Stream otherStream)
+        {
             if (otherStream == null)
                 throw new ArgumentNullException(nameof(otherStream));
 
@@ -790,14 +790,14 @@ public class DataStream : Stream
             return result;
         }
 
-    /// <summary>
-    /// Releases all resource used by the <see cref="DataStream"/>
-    /// object.
-    /// </summary>
-    /// <param name="disposing">If set to
-    /// <see langword="true" /> free managed resources also.</param>
-    protected override void Dispose(bool disposing)
-    {
+        /// <summary>
+        /// Releases all resource used by the <see cref="DataStream"/>
+        /// object.
+        /// </summary>
+        /// <param name="disposing">If set to
+        /// <see langword="true" /> free managed resources also.</param>
+        protected override void Dispose(bool disposing)
+        {
             if (Disposed)
                 return;
 
@@ -818,8 +818,8 @@ public class DataStream : Stream
                 });
         }
 
-    private static int BlockRead(Stream stream, byte[] buffer, long endPosition)
-    {
+        private static int BlockRead(Stream stream, byte[] buffer, long endPosition)
+        {
             int read;
             if (stream.Position + buffer.Length > endPosition) {
                 read = (int)(endPosition - stream.Position);
@@ -831,8 +831,8 @@ public class DataStream : Stream
             return read;
         }
 
-    private StreamInfo GetOrCreateStreamInfo()
-    {
+        private StreamInfo GetOrCreateStreamInfo()
+        {
             StreamInfo info = Instances.GetOrAdd(BaseStream, new StreamInfo());
 
             // If we have ownership, we increase the counter so we take into
@@ -844,60 +844,61 @@ public class DataStream : Stream
             return info;
         }
 
-    /// <summary>
-    /// Information of the stream for the DataStream class.
-    /// </summary>
-    internal sealed class StreamInfo
-    {
         /// <summary>
-        /// Initializes a new instance of the <see cref=" StreamInfo"/> class.
+        /// Information of the stream for the DataStream class.
         /// </summary>
-        public StreamInfo()
+        internal sealed class StreamInfo
         {
+            /// <summary>
+            /// Initializes a new instance of the <see cref=" StreamInfo"/> class.
+            /// </summary>
+            public StreamInfo()
+            {
                 LockObj = new object();
                 NumInstances = 0;
             }
 
-        /// <summary>
-        /// Gets the number of DataStream instances for the base stream.
-        /// </summary>
-        public int NumInstances { get; private set; }
+            /// <summary>
+            /// Gets the number of DataStream instances for the base stream.
+            /// </summary>
+            public int NumInstances { get; private set; }
 
-        /// <summary>
-        /// Gets the lock object for the base stream operations.
-        /// </summary>
-        public object LockObj { get; }
+            /// <summary>
+            /// Gets the lock object for the base stream operations.
+            /// </summary>
+            public object LockObj { get; }
 
-        /// <summary>
-        /// Increase the number of instances using the base stream.
-        /// </summary>
-        public void IncreaseInstances()
-        {
+            /// <summary>
+            /// Increase the number of instances using the base stream.
+            /// </summary>
+            public void IncreaseInstances()
+            {
                 lock (LockObj) {
                     NumInstances++;
                 }
             }
 
-        /// <summary>
-        /// Decrease the number of instances using the base stream.
-        /// </summary>
-        public void DecreaseInstances()
-        {
+            /// <summary>
+            /// Decrease the number of instances using the base stream.
+            /// </summary>
+            public void DecreaseInstances()
+            {
                 lock (LockObj) {
                     NumInstances--;
                 }
             }
 
-        /// <summary>
-        /// Decrease the number of instances and run the action.
-        /// </summary>
-        /// <param name="action">The action to run.</param>
-        public void DecreaseInstancesAndRun(Action<StreamInfo> action)
-        {
+            /// <summary>
+            /// Decrease the number of instances and run the action.
+            /// </summary>
+            /// <param name="action">The action to run.</param>
+            public void DecreaseInstancesAndRun(Action<StreamInfo> action)
+            {
                 lock (LockObj) {
                     DecreaseInstances();
                     action(this);
                 }
             }
+        }
     }
 }

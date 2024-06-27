@@ -17,30 +17,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters;
-
-using System;
-using System.Diagnostics.CodeAnalysis;
-using Formats;
-using Yarhl.FileFormat;
-using Yarhl.FileSystem;
-using Yarhl.IO;
-
-/// <summary>
-/// Converter for Binary streams into a NCCH instance.
-/// </summary>
-public class Binary2Ncch : IConverter<BinaryFormat, Ncch>
+namespace SceneGate.Lemon.Containers.Converters
 {
-    const int HeaderLength = 0x200;
-    const int AccessDescriptorLength = 0x400;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using Formats;
+    using Yarhl.FileFormat;
+    using Yarhl.FileSystem;
+    using Yarhl.IO;
 
     /// <summary>
-    /// Converts a binary stream into a NCCH instance.
+    /// Converter for Binary streams into a NCCH instance.
     /// </summary>
-    /// <param name="source">Binary stream to convert.</param>
-    /// <returns>The new NCCH instance.</returns>
-    public Ncch Convert(BinaryFormat source)
+    public class Binary2Ncch : IConverter<BinaryFormat, Ncch>
     {
+        const int HeaderLength = 0x200;
+        const int AccessDescriptorLength = 0x400;
+
+        /// <summary>
+        /// Converts a binary stream into a NCCH instance.
+        /// </summary>
+        /// <param name="source">Binary stream to convert.</param>
+        /// <returns>The new NCCH instance.</returns>
+        public Ncch Convert(BinaryFormat source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -97,8 +97,8 @@ public class Binary2Ncch : IConverter<BinaryFormat, Ncch>
             return ncch;
         }
 
-    static void AddExtendedHeader(Node root, uint length, DataStream baseStream)
-    {
+        static void AddExtendedHeader(Node root, uint length, DataStream baseStream)
+        {
             // Extended header is just after the NCCH header
             var extendedHeader = NodeFactory.FromSubstream(
                 "extended_header",
@@ -116,17 +116,17 @@ public class Binary2Ncch : IConverter<BinaryFormat, Ncch>
             root.Add(accessDescriptor);
         }
 
-    [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
-    static void AddChildIfExists(string name, Node root, DataReader reader)
-    {
+        [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
+        static void AddChildIfExists(string name, Node root, DataReader reader)
+        {
             BinaryFormat binary = ReadBinaryChild(reader);
             if (binary != null) {
                 root.Add(new Node(name, binary));
             }
         }
 
-    static BinaryFormat ReadBinaryChild(DataReader reader)
-    {
+        static BinaryFormat ReadBinaryChild(DataReader reader)
+        {
             long offset = reader.ReadUInt32() * NcchHeader.Unit;
             long size = reader.ReadUInt32() * NcchHeader.Unit;
             if (size == 0) {
@@ -135,4 +135,5 @@ public class Binary2Ncch : IConverter<BinaryFormat, Ncch>
 
             return new BinaryFormat(reader.Stream, offset, size);
         }
+    }
 }

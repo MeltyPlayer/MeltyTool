@@ -7,23 +7,22 @@ using uni.platforms.threeDs;
 using uni.util.bundles;
 using uni.util.io;
 
-namespace uni.games.majoras_mask_3d;
+namespace uni.games.majoras_mask_3d {
+  using IAnnotatedBundle = IAnnotatedFileBundle<IFileBundle>;
 
-using IAnnotatedBundle = IAnnotatedFileBundle<IFileBundle>;
-
-public class MajorasMask3dFileBundleGatherer
-    : IAnnotatedFileBundleGatherer<IFileBundle> {
-  private readonly IModelSeparator separator_
-      = new ModelSeparator(directory => directory.Name)
-        .Register(new AllAnimationsModelSeparatorMethod(),
-                  "zelda_cow",
-                  "zelda2_jso")
-        .Register(new SameNameSeparatorMethod(), "zelda2_zoraband")
-        .Register(new PrimaryModelSeparatorMethod("eyegoal.cmb"),
-                  "zelda2_eg");
+  public class MajorasMask3dFileBundleGatherer
+      : IAnnotatedFileBundleGatherer<IFileBundle> {
+    private readonly IModelSeparator separator_
+        = new ModelSeparator(directory => directory.Name)
+          .Register(new AllAnimationsModelSeparatorMethod(),
+                    "zelda_cow",
+                    "zelda2_jso")
+          .Register(new SameNameSeparatorMethod(), "zelda2_zoraband")
+          .Register(new PrimaryModelSeparatorMethod("eyegoal.cmb"),
+                    "zelda2_eg");
 
 
-  public IEnumerable<IAnnotatedBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedBundle> GatherFileBundles() {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "majoras_mask_3d",
               out var fileHierarchy)) {
@@ -38,8 +37,8 @@ public class MajorasMask3dFileBundleGatherer
              .GatherFileBundles();
     }
 
-  private IEnumerable<IAnnotatedBundle> GetAutomaticModels_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedBundle> GetAutomaticModels_(
+        IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
       foreach (var actorDir in actorsDir.GetExistingSubdirs()) {
         if (actorDir.Name.StartsWith("zelda2_link_")) {
@@ -70,44 +69,44 @@ public class MajorasMask3dFileBundleGatherer
     }
 
 
-  private IEnumerable<IAnnotatedBundle> GetModelsViaSeparator_(
-      IFileHierarchy fileHierarchy)
-    => new FileHierarchyAssetBundleSeparator<IFileBundle>(
-        fileHierarchy,
-        subdir => {
-          if (!separator_.Contains(subdir)) {
-            return Enumerable.Empty<IAnnotatedBundle>();
+    private IEnumerable<IAnnotatedBundle> GetModelsViaSeparator_(
+        IFileHierarchy fileHierarchy)
+      => new FileHierarchyAssetBundleSeparator<IFileBundle>(
+          fileHierarchy,
+          subdir => {
+            if (!separator_.Contains(subdir)) {
+              return Enumerable.Empty<IAnnotatedBundle>();
+            }
+
+            var cmbFiles =
+                subdir.FilesWithExtensionsRecursive(".cmb").ToArray();
+            if (cmbFiles.Length == 0) {
+              return Enumerable.Empty<IAnnotatedBundle>();
+            }
+
+            var csabFiles =
+                subdir.FilesWithExtensionsRecursive(".csab").ToArray();
+            var ctxbFiles =
+                subdir.FilesWithExtensionsRecursive(".ctxb").ToArray();
+
+            try {
+              var bundles =
+                  this.separator_.Separate(subdir, cmbFiles, csabFiles);
+              return bundles.Select(bundle => new CmbModelFileBundle(
+                                        "majoras_mask_3d",
+                                        bundle.ModelFile,
+                                        bundle.AnimationFiles.ToArray(),
+                                        ctxbFiles,
+                                        null
+                                    ).Annotate(bundle.ModelFile));
+            } catch {
+              return Enumerable.Empty<IAnnotatedBundle>();
+            }
           }
+      ).GatherFileBundles();
 
-          var cmbFiles =
-              subdir.FilesWithExtensionsRecursive(".cmb").ToArray();
-          if (cmbFiles.Length == 0) {
-            return Enumerable.Empty<IAnnotatedBundle>();
-          }
-
-          var csabFiles =
-              subdir.FilesWithExtensionsRecursive(".csab").ToArray();
-          var ctxbFiles =
-              subdir.FilesWithExtensionsRecursive(".ctxb").ToArray();
-
-          try {
-            var bundles =
-                this.separator_.Separate(subdir, cmbFiles, csabFiles);
-            return bundles.Select(bundle => new CmbModelFileBundle(
-                                      "majoras_mask_3d",
-                                      bundle.ModelFile,
-                                      bundle.AnimationFiles.ToArray(),
-                                      ctxbFiles,
-                                      null
-                                  ).Annotate(bundle.ModelFile));
-          } catch {
-            return Enumerable.Empty<IAnnotatedBundle>();
-          }
-        }
-    ).GatherFileBundles();
-
-  private IEnumerable<IAnnotatedBundle> GetLinkModels_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedBundle> GetLinkModels_(
+        IFileHierarchy fileHierarchy) {
       var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
 
       var modelsAndAnimations = new[] {
@@ -139,4 +138,5 @@ public class MajorasMask3dFileBundleGatherer
                                               null).Annotate(cmbFile);
                                         });
     }
+  }
 }

@@ -6,49 +6,48 @@ using fin.util.asserts;
 
 using gx;
 
-namespace mod.schema.mod;
+namespace mod.schema.mod {
+  public class VertexDescriptor : IEnumerable<(GxAttribute, GxAttributeType?)> {
+    public bool posMat = false;
 
-public class VertexDescriptor : IEnumerable<(GxAttribute, GxAttributeType?)> {
-  public bool posMat = false;
+    public bool[] texMat = [
+        false,
+        false,
+        false,
+        false,
 
-  public bool[] texMat = [
-      false,
-      false,
-      false,
-      false,
+        false,
+        false,
+        false,
+        false
+    ];
 
-      false,
-      false,
-      false,
-      false
-  ];
+    public GxAttributeType position = GxAttributeType.NOT_PRESENT;
 
-  public GxAttributeType position = GxAttributeType.NOT_PRESENT;
+    public GxAttributeType normal = GxAttributeType.NOT_PRESENT;
+    public bool useNbt;
 
-  public GxAttributeType normal = GxAttributeType.NOT_PRESENT;
-  public bool useNbt;
+    public GxAttributeType color0 = GxAttributeType.NOT_PRESENT;
+    public GxAttributeType color1 = GxAttributeType.NOT_PRESENT;
 
-  public GxAttributeType color0 = GxAttributeType.NOT_PRESENT;
-  public GxAttributeType color1 = GxAttributeType.NOT_PRESENT;
+    public readonly GxAttributeType[] texcoord = [
+        GxAttributeType.NOT_PRESENT,
+        GxAttributeType.NOT_PRESENT,
+        GxAttributeType.NOT_PRESENT,
+        GxAttributeType.NOT_PRESENT,
 
-  public readonly GxAttributeType[] texcoord = [
-      GxAttributeType.NOT_PRESENT,
-      GxAttributeType.NOT_PRESENT,
-      GxAttributeType.NOT_PRESENT,
-      GxAttributeType.NOT_PRESENT,
+        GxAttributeType.NOT_PRESENT,
+        GxAttributeType.NOT_PRESENT,
+        GxAttributeType.NOT_PRESENT,
+        GxAttributeType.NOT_PRESENT
+    ];
 
-      GxAttributeType.NOT_PRESENT,
-      GxAttributeType.NOT_PRESENT,
-      GxAttributeType.NOT_PRESENT,
-      GxAttributeType.NOT_PRESENT
-  ];
+    public IEnumerator<(GxAttribute, GxAttributeType?)> GetEnumerator()
+      => this.ActiveAttributes();
 
-  public IEnumerator<(GxAttribute, GxAttributeType?)> GetEnumerator()
-    => this.ActiveAttributes();
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-  IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
-
-  public IEnumerator<(GxAttribute, GxAttributeType?)> ActiveAttributes() {
+    public IEnumerator<(GxAttribute, GxAttributeType?)> ActiveAttributes() {
       foreach (var attr in Enum.GetValues<GxAttribute>()) {
         if (!this.Exists(attr)) {
           continue;
@@ -62,7 +61,7 @@ public class VertexDescriptor : IEnumerable<(GxAttribute, GxAttributeType?)> {
       }
     }
 
-  public bool Exists(GxAttribute enumval) {
+    public bool Exists(GxAttribute enumval) {
       if (enumval == GxAttribute.NULL) {
         return false;
       }
@@ -105,7 +104,7 @@ public class VertexDescriptor : IEnumerable<(GxAttribute, GxAttributeType?)> {
       return false;
     }
 
-  public GxAttributeType GetFormat(GxAttribute enumval) {
+    public GxAttributeType GetFormat(GxAttribute enumval) {
       if (enumval == GxAttribute.POS) {
         return this.position;
       }
@@ -131,26 +130,26 @@ public class VertexDescriptor : IEnumerable<(GxAttribute, GxAttributeType?)> {
       return GxAttributeType.NOT_PRESENT;
     }
 
-  /*def from_value(self, val):
-  self.posmat = (val & 0b1) == 1
-  val = val >> 1
-  for i in range(8) :
-      self.texmat[i] = (val & 0b1) == 1
-  val = val >> 1
+    /*def from_value(self, val):
+    self.posmat = (val & 0b1) == 1
+    val = val >> 1
+    for i in range(8) :
+        self.texmat[i] = (val & 0b1) == 1
+    val = val >> 1
 
-  self.position = get_vtxformat(val & 0b11)
-  val = val >> 2
-  self.normal = get_vtxformat(val & 0b11)
-  val = val >> 2
-  self.color0 = get_vtxformat(val & 0b11)
-  val = val >> 2
-  self.color1 = get_vtxformat(val & 0b11)
-  val = val >> 2
-  for i in range(8) :
-      self.texcoord[i] = get_vtxformat(val & 0b11)
-  val = val >> 2*/
+    self.position = get_vtxformat(val & 0b11)
+    val = val >> 2
+    self.normal = get_vtxformat(val & 0b11)
+    val = val >> 2
+    self.color0 = get_vtxformat(val & 0b11)
+    val = val >> 2
+    self.color1 = get_vtxformat(val & 0b11)
+    val = val >> 2
+    for i in range(8) :
+        self.texcoord[i] = get_vtxformat(val & 0b11)
+    val = val >> 2*/
 
-  public void FromPikmin1(uint val, bool hasNormals = false) {
+    public void FromPikmin1(uint val, bool hasNormals = false) {
       this.position =
           GxAttributeType.INDEX_16; // Position is implied to be always enabled
 
@@ -179,21 +178,22 @@ public class VertexDescriptor : IEnumerable<(GxAttribute, GxAttributeType?)> {
       }
     }
 
-  /*def __str__(self) :
-      return str([x for x in self.active_attributes()])
+    /*def __str__(self) :
+        return str([x for x in self.active_attributes()])
 
-  def write_dmd(self, f):
-      f.write("vcd ")
-      for  attr in self.all_attributes():
-          if attr is None:
-              f.write("0 ")
-          else:
-              attr, fmt = attr
-              if fmt is None:
-                  f.write("1 ")
-              elif fmt == VTXFMT.INDEX16:
-                  f.write("1 ")
-              else:
-                  f.write("1 ")
-      f.write("\n")*/
+    def write_dmd(self, f):
+        f.write("vcd ")
+        for  attr in self.all_attributes():
+            if attr is None:
+                f.write("0 ")
+            else:
+                attr, fmt = attr
+                if fmt is None:
+                    f.write("1 ")
+                elif fmt == VTXFMT.INDEX16:
+                    f.write("1 ")
+                else:
+                    f.write("1 ")
+        f.write("\n")*/
+  }
 }

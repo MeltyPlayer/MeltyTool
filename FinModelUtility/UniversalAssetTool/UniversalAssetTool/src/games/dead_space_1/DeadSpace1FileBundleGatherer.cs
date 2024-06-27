@@ -5,10 +5,9 @@ using uni.platforms.desktop;
 
 using visceral.api;
 
-namespace uni.games.dead_space_1;
-
-public class DeadSpace1FileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+namespace uni.games.dead_space_1 {
+  public class DeadSpace1FileBundleGatherer : IAnnotatedFileBundleGatherer {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
       if (!SteamUtils.TryGetGameDirectory("Dead Space", out var deadSpaceDir)) {
         yield break;
       }
@@ -74,9 +73,10 @@ public class DeadSpace1FileBundleGatherer : IAnnotatedFileBundleGatherer {
         }
       }
 
-     /*return assetFileHierarchy
-       SelectMany(dir => dir.Files.Where(file => file.Name.EndsWith(".rcb.WIN")))
-       Select(
-           cbFile => new GeoModelFileBundle { RcbFile = rcbFile });*//
+      /*return assetFileHierarchy
+       .SelectMany(dir => dir.Files.Where(file => file.Name.EndsWith(".rcb.WIN")))
+       .Select(
+           rcbFile => new GeoModelFileBundle { RcbFile = rcbFile });*/
     }
+  }
 }

@@ -17,38 +17,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO;
-
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Serialization.Attributes;
-using SerializableAttribute = Serialization.Attributes.SerializableAttribute;
-
-/// <summary>
-/// Binary writer for DataStreams.
-/// </summary>
-public class DataWriter
+namespace Yarhl.IO
 {
-    static DataWriter()
+    using System;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using Serialization.Attributes;
+    using SerializableAttribute = Serialization.Attributes.SerializableAttribute;
+
+    /// <summary>
+    /// Binary writer for DataStreams.
+    /// </summary>
+    public class DataWriter
     {
+        static DataWriter()
+        {
             // Make sure that the shift-jis encoding is initialized.
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Yarhl.IO.DataWriter"/> class.
-    /// </summary>
-    /// <param name="stream">Stream to write to.</param>
-    /// <remarks>
-    /// <para>By default the endianess is LittleEndian and
-    /// the encoding is UTF-8.</para>
-    /// </remarks>
-    public DataWriter(Stream stream)
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Yarhl.IO.DataWriter"/> class.
+        /// </summary>
+        /// <param name="stream">Stream to write to.</param>
+        /// <remarks>
+        /// <para>By default the endianess is LittleEndian and
+        /// the encoding is UTF-8.</para>
+        /// </remarks>
+        public DataWriter(Stream stream)
+        {
             if (stream is null)
                 throw new ArgumentNullException(nameof(stream));
 
@@ -57,116 +57,116 @@ public class DataWriter
             DefaultEncoding = Encoding.UTF8;
         }
 
-    /// <summary>
-    /// Gets the stream.
-    /// </summary>
-    /// <value>The stream.</value>
-    public DataStream Stream {
-        get;
-        private set;
-    }
+        /// <summary>
+        /// Gets the stream.
+        /// </summary>
+        /// <value>The stream.</value>
+        public DataStream Stream {
+            get;
+            private set;
+        }
 
-    /// <summary>
-    /// Gets or sets the endianness.
-    /// </summary>
-    /// <value>The endianness.</value>
-    public EndiannessMode Endianness {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the endianness.
+        /// </summary>
+        /// <value>The endianness.</value>
+        public EndiannessMode Endianness {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Gets or sets the default encoding.
-    /// </summary>
-    /// <value>The default encoding.</value>
-    public Encoding DefaultEncoding {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the default encoding.
+        /// </summary>
+        /// <value>The default encoding.</value>
+        public Encoding DefaultEncoding {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Write the specified 8-bits byte value.
-    /// </summary>
-    /// <param name="val">Byte value.</param>
-    public void Write(byte val)
-    {
+        /// <summary>
+        /// Write the specified 8-bits byte value.
+        /// </summary>
+        /// <param name="val">Byte value.</param>
+        public void Write(byte val)
+        {
             Stream.WriteByte(val);
         }
 
-    /// <summary>
-    /// Write the specified 8-bits signed byte value.
-    /// </summary>
-    /// <param name="val">Signed byte value.</param>
-    [CLSCompliant(false)]
-    public void Write(sbyte val)
-    {
+        /// <summary>
+        /// Write the specified 8-bits signed byte value.
+        /// </summary>
+        /// <param name="val">Signed byte value.</param>
+        [CLSCompliant(false)]
+        public void Write(sbyte val)
+        {
             Stream.WriteByte((byte)val);
         }
 
-    /// <summary>
-    /// Write the specified 16-bits signed value.
-    /// </summary>
-    /// <param name="val">16-bits signed value.</param>
-    public void Write(short val)
-    {
+        /// <summary>
+        /// Write the specified 16-bits signed value.
+        /// </summary>
+        /// <param name="val">16-bits signed value.</param>
+        public void Write(short val)
+        {
             WriteNumber((ushort)val, 16);
         }
 
-    /// <summary>
-    /// Write the specified 16-bits unsigned value.
-    /// </summary>
-    /// <param name="val">16-bits unsigned value.</param>
-    [CLSCompliant(false)]
-    public void Write(ushort val)
-    {
+        /// <summary>
+        /// Write the specified 16-bits unsigned value.
+        /// </summary>
+        /// <param name="val">16-bits unsigned value.</param>
+        [CLSCompliant(false)]
+        public void Write(ushort val)
+        {
             WriteNumber(val, 16);
         }
 
-    /// <summary>
-    /// Write the specified 32-bits signed value.
-    /// </summary>
-    /// <param name="val">32-bits signed value.</param>
-    public void Write(int val)
-    {
+        /// <summary>
+        /// Write the specified 32-bits signed value.
+        /// </summary>
+        /// <param name="val">32-bits signed value.</param>
+        public void Write(int val)
+        {
             WriteNumber((uint)val, 32);
         }
 
-    /// <summary>
-    /// Write the specified 32-bits unsigned value.
-    /// </summary>
-    /// <param name="val">32-bits unsigned value.</param>
-    [CLSCompliant(false)]
-    public void Write(uint val)
-    {
+        /// <summary>
+        /// Write the specified 32-bits unsigned value.
+        /// </summary>
+        /// <param name="val">32-bits unsigned value.</param>
+        [CLSCompliant(false)]
+        public void Write(uint val)
+        {
             WriteNumber(val, 32);
         }
 
-    /// <summary>
-    /// Write the specified 64-bits signed value.
-    /// </summary>
-    /// <param name="val">64-bits signed value.</param>
-    public void Write(long val)
-    {
+        /// <summary>
+        /// Write the specified 64-bits signed value.
+        /// </summary>
+        /// <param name="val">64-bits signed value.</param>
+        public void Write(long val)
+        {
             WriteNumber((ulong)val, 64);
         }
 
-    /// <summary>
-    /// Write the specified 64-bits unsigned value.
-    /// </summary>
-    /// <param name="val">64-bits unsigned value.</param>
-    [CLSCompliant(false)]
-    public void Write(ulong val)
-    {
+        /// <summary>
+        /// Write the specified 64-bits unsigned value.
+        /// </summary>
+        /// <param name="val">64-bits unsigned value.</param>
+        [CLSCompliant(false)]
+        public void Write(ulong val)
+        {
             WriteNumber(val, 64);
         }
 
-    /// <summary>
-    /// Write the specified 32-bits IEEE 754 single precision
-    /// floating point value.
-    /// </summary>
-    /// <param name="val">Single precision floating point value.</param>
-    public void Write(float val)
-    {
+        /// <summary>
+        /// Write the specified 32-bits IEEE 754 single precision
+        /// floating point value.
+        /// </summary>
+        /// <param name="val">Single precision floating point value.</param>
+        public void Write(float val)
+        {
             if (Endianness == EndiannessMode.LittleEndian)
                 Write(BitConverter.GetBytes(val));
             else if (Endianness == EndiannessMode.BigEndian)
@@ -175,13 +175,13 @@ public class DataWriter
                 throw new NotSupportedException($"Endianness not supported: {Endianness}");
         }
 
-    /// <summary>
-    /// Write the specified 64-bits IEEE 754 double precision
-    /// floating point value.
-    /// </summary>
-    /// <param name="val">Double precision floating point value.</param>
-    public void Write(double val)
-    {
+        /// <summary>
+        /// Write the specified 64-bits IEEE 754 double precision
+        /// floating point value.
+        /// </summary>
+        /// <param name="val">Double precision floating point value.</param>
+        public void Write(double val)
+        {
             if (Endianness == EndiannessMode.LittleEndian)
                 Write(BitConverter.GetBytes(val));
             else if (Endianness == EndiannessMode.BigEndian)
@@ -190,44 +190,44 @@ public class DataWriter
                 throw new NotSupportedException($"Endianness not supported: {Endianness}");
         }
 
-    /// <summary>
-    /// Write the specified byte buffer.
-    /// </summary>
-    /// <param name="buffer">Byte buffer.</param>
-    public void Write(byte[] buffer)
-    {
+        /// <summary>
+        /// Write the specified byte buffer.
+        /// </summary>
+        /// <param name="buffer">Byte buffer.</param>
+        public void Write(byte[] buffer)
+        {
             if (buffer == null)
                 throw new ArgumentNullException(nameof(buffer));
 
             Stream.Write(buffer, 0, buffer.Length);
         }
 
-    /// <summary>
-    /// Write the specified char using a text encoding.
-    /// </summary>
-    /// <param name="ch">Char to write.</param>
-    /// <param name="encoding">Optional text encoding to use.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(char ch, Encoding? encoding = null)
-    {
+        /// <summary>
+        /// Write the specified char using a text encoding.
+        /// </summary>
+        /// <param name="ch">Char to write.</param>
+        /// <param name="encoding">Optional text encoding to use.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(char ch, Encoding? encoding = null)
+        {
             if (encoding == null)
                 encoding = DefaultEncoding;
 
             Write(encoding.GetBytes(new[] { ch }));
         }
 
-    /// <summary>
-    /// Write the specified chars using a text encoding.
-    /// </summary>
-    /// <param name="chars">Char array to write.</param>
-    /// <param name="encoding">Optional text encoding to use.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(char[] chars, Encoding? encoding = null)
-    {
+        /// <summary>
+        /// Write the specified chars using a text encoding.
+        /// </summary>
+        /// <param name="chars">Char array to write.</param>
+        /// <param name="encoding">Optional text encoding to use.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(char[] chars, Encoding? encoding = null)
+        {
             if (chars == null)
                 throw new ArgumentNullException(nameof(chars));
 
@@ -237,90 +237,90 @@ public class DataWriter
             Write(encoding.GetBytes(chars));
         }
 
-    /// <summary>
-    /// Write a text string.
-    /// </summary>
-    /// <param name="text">Text string to write.</param>
-    /// <param name="nullTerminator">
-    /// If set to <see langword="true" /> add null terminator.
-    /// </param>
-    /// <param name="encoding">Text encoding to use.</param>
-    /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(
-        string text,
-        bool nullTerminator = true,
-        Encoding? encoding = null,
-        int maxSize = -1)
-    {
+        /// <summary>
+        /// Write a text string.
+        /// </summary>
+        /// <param name="text">Text string to write.</param>
+        /// <param name="nullTerminator">
+        /// If set to <see langword="true" /> add null terminator.
+        /// </param>
+        /// <param name="encoding">Text encoding to use.</param>
+        /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(
+                string text,
+                bool nullTerminator = true,
+                Encoding? encoding = null,
+                int maxSize = -1)
+        {
             Write(text, nullTerminator ? "\0" : null, encoding, maxSize);
         }
 
-    /// <summary>
-    /// Write a text string with a fixed size.
-    /// </summary>
-    /// <param name="text">Text string to write.</param>
-    /// <param name="fixedSize">Fixed size of the encoded string in bytes.</param>
-    /// <param name="nullTerminator">
-    /// If set to <see langword="true" /> add null terminator.
-    /// </param>
-    /// <param name="encoding">Text encoding to use.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(
-        string text,
-        int fixedSize,
-        bool nullTerminator = true,
-        Encoding? encoding = null)
-    {
+        /// <summary>
+        /// Write a text string with a fixed size.
+        /// </summary>
+        /// <param name="text">Text string to write.</param>
+        /// <param name="fixedSize">Fixed size of the encoded string in bytes.</param>
+        /// <param name="nullTerminator">
+        /// If set to <see langword="true" /> add null terminator.
+        /// </param>
+        /// <param name="encoding">Text encoding to use.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(
+                string text,
+                int fixedSize,
+                bool nullTerminator = true,
+                Encoding? encoding = null)
+        {
             Write(text, fixedSize, nullTerminator ? "\0" : null, encoding);
         }
 
-    /// <summary>
-    /// Write a text string and its size.
-    /// </summary>
-    /// <param name="text">Text string to write.</param>
-    /// <param name="sizeType">Type of the string size to write.</param>
-    /// <param name="nullTerminator">
-    /// If set to <see langword="true" /> add null terminator.
-    /// </param>
-    /// <param name="encoding">Text encoding to use.</param>
-    /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(
-        string text,
-        Type sizeType,
-        bool nullTerminator = false,
-        Encoding? encoding = null,
-        int maxSize = -1)
-    {
+        /// <summary>
+        /// Write a text string and its size.
+        /// </summary>
+        /// <param name="text">Text string to write.</param>
+        /// <param name="sizeType">Type of the string size to write.</param>
+        /// <param name="nullTerminator">
+        /// If set to <see langword="true" /> add null terminator.
+        /// </param>
+        /// <param name="encoding">Text encoding to use.</param>
+        /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(
+                string text,
+                Type sizeType,
+                bool nullTerminator = false,
+                Encoding? encoding = null,
+                int maxSize = -1)
+        {
             Write(text, sizeType, nullTerminator ? "\0" : null, encoding, maxSize);
         }
 
-    /// <summary>
-    /// Write a text string using a custom terminator.
-    /// </summary>
-    /// <param name="text">Text string to write.</param>
-    /// <param name="terminator">
-    /// Token to add as terminator.
-    /// <remarks>If null, then no token will be added.</remarks>
-    /// </param>
-    /// <param name="encoding">Text encoding to use.</param>
-    /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(
-        string text,
-        string? terminator,
-        Encoding? encoding = null,
-        int maxSize = -1)
-    {
+        /// <summary>
+        /// Write a text string using a custom terminator.
+        /// </summary>
+        /// <param name="text">Text string to write.</param>
+        /// <param name="terminator">
+        /// Token to add as terminator.
+        /// <remarks>If null, then no token will be added.</remarks>
+        /// </param>
+        /// <param name="encoding">Text encoding to use.</param>
+        /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(
+                string text,
+                string? terminator,
+                Encoding? encoding = null,
+                int maxSize = -1)
+        {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
             if (maxSize < -1)
@@ -339,25 +339,25 @@ public class DataWriter
             Write(text, textSize, terminator, encoding);
         }
 
-    /// <summary>
-    /// Write a text string with a fixed size and a custom terminator.
-    /// </summary>
-    /// <param name="text">Text string to write.</param>
-    /// <param name="fixedSize">Fixed size of the encoded string in bytes.</param>
-    /// <param name="terminator">
-    /// Token to add as terminator.
-    /// <remarks>If null, then no token will be added.</remarks>
-    /// </param>
-    /// <param name="encoding">Text encoding to use.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(
-        string text,
-        int fixedSize,
-        string? terminator,
-        Encoding? encoding = null)
-    {
+        /// <summary>
+        /// Write a text string with a fixed size and a custom terminator.
+        /// </summary>
+        /// <param name="text">Text string to write.</param>
+        /// <param name="fixedSize">Fixed size of the encoded string in bytes.</param>
+        /// <param name="terminator">
+        /// Token to add as terminator.
+        /// <remarks>If null, then no token will be added.</remarks>
+        /// </param>
+        /// <param name="encoding">Text encoding to use.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(
+                string text,
+                int fixedSize,
+                string? terminator,
+                Encoding? encoding = null)
+        {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
@@ -378,27 +378,27 @@ public class DataWriter
             Write(buffer);
         }
 
-    /// <summary>
-    /// Write a text string and its size.
-    /// </summary>
-    /// <param name="text">Text string to write.</param>
-    /// <param name="sizeType">Type of the string size to write.</param>
-    /// <param name="terminator">
-    /// Token to add as terminator.
-    /// <remarks>If null, then no token will be added.</remarks>
-    /// </param>
-    /// <param name="encoding">Text encoding to use.</param>
-    /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
-    /// <remarks>
-    /// <para>If the encoding is null, it will use the default encoding.</para>
-    /// </remarks>
-    public void Write(
-        string text,
-        Type sizeType,
-        string? terminator,
-        Encoding? encoding = null,
-        int maxSize = -1)
-    {
+        /// <summary>
+        /// Write a text string and its size.
+        /// </summary>
+        /// <param name="text">Text string to write.</param>
+        /// <param name="sizeType">Type of the string size to write.</param>
+        /// <param name="terminator">
+        /// Token to add as terminator.
+        /// <remarks>If null, then no token will be added.</remarks>
+        /// </param>
+        /// <param name="encoding">Text encoding to use.</param>
+        /// <param name="maxSize">Maximum size of the encoded string in bytes.</param>
+        /// <remarks>
+        /// <para>If the encoding is null, it will use the default encoding.</para>
+        /// </remarks>
+        public void Write(
+                string text,
+                Type sizeType,
+                string? terminator,
+                Encoding? encoding = null,
+                int maxSize = -1)
+        {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
             if (sizeType == null)
@@ -420,17 +420,17 @@ public class DataWriter
             Write(text, textSize, terminator, encoding);
         }
 
-    /// <summary>
-    /// Write the specified value converting to any supported type.
-    /// </summary>
-    /// <param name="type">Type of the value.</param>
-    /// <param name="val">Value to write.</param>
-    /// <remarks>
-    /// <para>The supported types are: long, ulong, int, uint, short,
-    /// ushort, byte, sbyte, char and string.</para>
-    /// </remarks>
-    public void WriteOfType(Type type, dynamic val)
-    {
+        /// <summary>
+        /// Write the specified value converting to any supported type.
+        /// </summary>
+        /// <param name="type">Type of the value.</param>
+        /// <param name="val">Value to write.</param>
+        /// <remarks>
+        /// <para>The supported types are: long, ulong, int, uint, short,
+        /// ushort, byte, sbyte, char and string.</para>
+        /// </remarks>
+        public void WriteOfType(Type type, dynamic val)
+        {
             if (val == null)
                 throw new ArgumentNullException(nameof(val));
             if (type == null)
@@ -492,26 +492,26 @@ public class DataWriter
             }
         }
 
-    /// <summary>
-    /// Write the specified value forcing the type in the generic.
-    /// </summary>
-    /// <param name="val">Value to write.</param>
-    /// <typeparam name="T">The type of the value.</typeparam>
-    public void WriteOfType<T>(T val)
-    {
+        /// <summary>
+        /// Write the specified value forcing the type in the generic.
+        /// </summary>
+        /// <param name="val">Value to write.</param>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        public void WriteOfType<T>(T val)
+        {
             if (val == null)
                 throw new ArgumentNullException(nameof(val));
 
             WriteOfType(typeof(T), val);
         }
 
-    /// <summary>
-    /// Writes the same byte the specified number of times.
-    /// </summary>
-    /// <param name="val">Value to write.</param>
-    /// <param name="times">Number of times to write the byte.</param>
-    public void WriteTimes(byte val, long times)
-    {
+        /// <summary>
+        /// Writes the same byte the specified number of times.
+        /// </summary>
+        /// <param name="val">Value to write.</param>
+        /// <param name="times">Number of times to write the byte.</param>
+        public void WriteTimes(byte val, long times)
+        {
             const int BufferSize = 5 * 1024;
 
             if (times < 0)
@@ -535,13 +535,13 @@ public class DataWriter
             } while (written != times);
         }
 
-    /// <summary>
-    /// Writes the same byte until the given stream length is reached.
-    /// </summary>
-    /// <param name="val">Value to repeat.</param>
-    /// <param name="length">Stream length to reach.</param>
-    public void WriteUntilLength(byte val, long length)
-    {
+        /// <summary>
+        /// Writes the same byte until the given stream length is reached.
+        /// </summary>
+        /// <param name="val">Value to repeat.</param>
+        /// <param name="length">Stream length to reach.</param>
+        public void WriteUntilLength(byte val, long length)
+        {
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
 
@@ -554,13 +554,13 @@ public class DataWriter
             WriteTimes(val, times);
         }
 
-    /// <summary>
-    /// Write the same byte to pad the stream.
-    /// </summary>
-    /// <param name="val">Value to repeat.</param>
-    /// <param name="padding">Padding value.</param>
-    public void WritePadding(byte val, int padding)
-    {
+        /// <summary>
+        /// Write the same byte to pad the stream.
+        /// </summary>
+        /// <param name="val">Value to repeat.</param>
+        /// <param name="padding">Padding value.</param>
+        public void WritePadding(byte val, int padding)
+        {
             if (padding < 0)
                 throw new ArgumentOutOfRangeException(nameof(padding));
 
@@ -571,8 +571,8 @@ public class DataWriter
             WriteTimes(val, Stream.Position.Pad(padding) - Stream.Position);
         }
 
-    void WriteNumber(ulong number, byte numBits)
-    {
+        void WriteNumber(ulong number, byte numBits)
+        {
             byte start;
             byte end;
             int step;
@@ -595,8 +595,8 @@ public class DataWriter
             }
         }
 
-    void WriteUsingReflection(Type type, dynamic obj)
-    {
+        void WriteUsingReflection(Type type, dynamic obj)
+        {
             PropertyInfo[] properties = type.GetProperties(
                 BindingFlags.DeclaredOnly |
                 BindingFlags.Public |
@@ -649,4 +649,5 @@ public class DataWriter
                 Endianness = currentEndianness;
             }
         }
+    }
 }

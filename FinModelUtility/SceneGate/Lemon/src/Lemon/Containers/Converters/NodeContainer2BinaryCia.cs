@@ -17,57 +17,57 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters;
-
-using System;
-using System.IO;
-using System.Security.Cryptography;
-using Titles;
-using Yarhl.FileFormat;
-using Yarhl.FileSystem;
-using Yarhl.IO;
-
-/// <summary>
-/// Convert a NodeContainer with CIA sections into binary format.
-/// </summary>
-/// <remarks>
-/// <p>The initialization is optional. If no stream is provided, a new one
-/// will be created on memory. This may consume large RAM memory for big games.</p>
-/// <p>This converter expects to have a node with the following binary
-/// children: certs_chain, ticket, title (TMD), content/program,
-/// content/manual (optional), content/download_play (optional).</p>
-/// <p>This converter expects to receive consistent nodes. This means it expected
-/// that the TMD already has the updated chunks of the content and that the
-/// metadata match the exHeader and ExeFS info.</p>
-/// </remarks>
-public class NodeContainer2BinaryCia :
-    IConverter<NodeContainerFormat, BinaryFormat>,
-    IInitializer<DataStream>
+namespace SceneGate.Lemon.Containers.Converters
 {
-    const int BlockSize = 64;
-    const int ContentIndexSize = 0x2000;
-    const int HeaderSize = 0x20 + ContentIndexSize;
-    const ushort CiaType = 0;    // the type of format, always 0 for 3DS
-    const ushort CiaVersion = 0; // the version of the format
-
-    DataStream outputStream;
+    using System;
+    using System.IO;
+    using System.Security.Cryptography;
+    using Titles;
+    using Yarhl.FileFormat;
+    using Yarhl.FileSystem;
+    using Yarhl.IO;
 
     /// <summary>
-    /// Initializes the converter with the output stream.
+    /// Convert a NodeContainer with CIA sections into binary format.
     /// </summary>
-    /// <param name="parameters">The stream to write the new CIA.</param>
-    public void Initialize(DataStream parameters)
+    /// <remarks>
+    /// <p>The initialization is optional. If no stream is provided, a new one
+    /// will be created on memory. This may consume large RAM memory for big games.</p>
+    /// <p>This converter expects to have a node with the following binary
+    /// children: certs_chain, ticket, title (TMD), content/program,
+    /// content/manual (optional), content/download_play (optional).</p>
+    /// <p>This converter expects to receive consistent nodes. This means it expected
+    /// that the TMD already has the updated chunks of the content and that the
+    /// metadata match the exHeader and ExeFS info.</p>
+    /// </remarks>
+    public class NodeContainer2BinaryCia :
+        IConverter<NodeContainerFormat, BinaryFormat>,
+        IInitializer<DataStream>
     {
+        const int BlockSize = 64;
+        const int ContentIndexSize = 0x2000;
+        const int HeaderSize = 0x20 + ContentIndexSize;
+        const ushort CiaType = 0; // the type of format, always 0 for 3DS
+        const ushort CiaVersion = 0; // the version of the format
+
+        DataStream outputStream;
+
+        /// <summary>
+        /// Initializes the converter with the output stream.
+        /// </summary>
+        /// <param name="parameters">The stream to write the new CIA.</param>
+        public void Initialize(DataStream parameters)
+        {
             outputStream = parameters;
         }
 
-    /// <summary>
-    /// Converts a container into a binary CIA.
-    /// </summary>
-    /// <param name="source">The container with the CIA files.</param>
-    /// <returns>The new binary format with the CIA.</returns>
-    public BinaryFormat Convert(NodeContainerFormat source)
-    {
+        /// <summary>
+        /// Converts a container into a binary CIA.
+        /// </summary>
+        /// <param name="source">The container with the CIA files.</param>
+        /// <returns>The new binary format with the CIA.</returns>
+        public BinaryFormat Convert(NodeContainerFormat source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -112,8 +112,8 @@ public class NodeContainer2BinaryCia :
             return binary;
         }
 
-    void WriteHeader(DataWriter writer, Node root)
-    {
+        void WriteHeader(DataWriter writer, Node root)
+        {
             writer.Write(HeaderSize);
             writer.Write(CiaType);
             writer.Write(CiaVersion);
@@ -126,8 +126,8 @@ public class NodeContainer2BinaryCia :
             writer.WritePadding(0x00, BlockSize);
         }
 
-    void WriteFile(DataWriter writer, Node file, bool isRequired = true)
-    {
+        void WriteFile(DataWriter writer, Node file, bool isRequired = true)
+        {
             if (file == null && isRequired) {
                 throw new FileNotFoundException("Missing CIA file");
             }
@@ -140,8 +140,8 @@ public class NodeContainer2BinaryCia :
             writer.WritePadding(0x00, BlockSize);
         }
 
-    void UpdateTitleMetadata(TitleMetadata title, Node content)
-    {
+        void UpdateTitleMetadata(TitleMetadata title, Node content)
+        {
             int chunksHashed = 0;
             using var infoRecords = new DataStream();
             var infoRecordsWriter = new DataWriter(infoRecords) {
@@ -199,8 +199,8 @@ public class NodeContainer2BinaryCia :
             title.Hash = SHA256FromStream(infoRecords);
         }
 
-    byte[] SHA256FromStream(DataStream stream)
-    {
+        byte[] SHA256FromStream(DataStream stream)
+        {
             using (SHA256 sha256 = SHA256.Create()) {
                 try {
                     stream.Position = 0;
@@ -211,8 +211,8 @@ public class NodeContainer2BinaryCia :
             }
         }
 
-    void WriteContent(DataWriter writer, Node content, Node titleNode)
-    {
+        void WriteContent(DataWriter writer, Node content, Node titleNode)
+        {
             if (titleNode == null)
                 throw new FormatException("Missing game title");
 
@@ -239,4 +239,5 @@ public class NodeContainer2BinaryCia :
             writer.Write(contentBitset);
             writer.Stream.PopPosition();
         }
+    }
 }

@@ -2,10 +2,9 @@
 
 using uni.platforms.gcn;
 
-namespace uni.games.animal_crossing;
-
-public class AnimalCrossingMassExporter : IMassExporter {
-  public void ExportAll() {
+namespace uni.games.animal_crossing {
+  public class AnimalCrossingMassExporter : IMassExporter {
+    public void ExportAll() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "animal_crossing",
               out var fileHierarchy)) {
@@ -15,4 +14,5 @@ public class AnimalCrossingMassExporter : IMassExporter {
       var logger = Logging.Create<AnimalCrossingMassExporter>();
       // TODO: Extract models via display lists
     }
+  }
 }

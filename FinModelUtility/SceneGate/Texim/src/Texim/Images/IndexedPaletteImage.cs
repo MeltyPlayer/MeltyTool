@@ -17,27 +17,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Images;
-
-using System.Collections.ObjectModel;
-using Palettes;
-using Pixels;
-
-public class IndexedPaletteImage : IIndexedImage, IPaletteCollection
+namespace Texim.Images
 {
-    private static Indexed2FullImage fullImageConverter = new Indexed2FullImage();
+    using System.Collections.ObjectModel;
+    using Palettes;
+    using Pixels;
 
-    public int Width { get; init; }
-
-    public int Height { get; init; }
-
-    public IndexedPixel[] Pixels { get; init; }
-
-    public Collection<IPalette> Palettes { get; } = [];
-
-    public FullImage CreateFullImage()
+    public class IndexedPaletteImage : IIndexedImage, IPaletteCollection
     {
+        private static Indexed2FullImage fullImageConverter = new Indexed2FullImage();
+
+        public int Width { get; init; }
+
+        public int Height { get; init; }
+
+        public IndexedPixel[] Pixels { get; init; }
+
+        public Collection<IPalette> Palettes { get; } = [];
+
+        public FullImage CreateFullImage()
+        {
             fullImageConverter.Initialize(this);
             return fullImageConverter.Convert(this);
         }
+    }
 }

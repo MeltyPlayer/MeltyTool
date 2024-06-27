@@ -7,14 +7,13 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.common.progress;
+namespace uni.ui.avalonia.common.progress {
+  public class ValueFractionProgress
+      : ViewModelBase, IValueFractionProgress<object> {
+    public float Progress { get; private set; }
+    public object? Value { get; private set; }
 
-public class ValueFractionProgress
-    : ViewModelBase, IValueFractionProgress<object> {
-  public float Progress { get; private set; }
-  public object? Value { get; private set; }
-
-  public void ReportProgress(float progress1To100) {
+    public void ReportProgress(float progress1To100) {
       if (this.Progress.IsRoughly(progress1To100)) {
         return;
       }
@@ -25,7 +24,7 @@ public class ValueFractionProgress
       this.RaisePropertyChanged(nameof(this.Progress));
     }
 
-  public void ReportCompletion(object value) {
+    public void ReportCompletion(object value) {
       this.Progress = 100;
       this.Value = value;
 
@@ -36,6 +35,7 @@ public class ValueFractionProgress
       this.RaisePropertyChanged(nameof(this.Value));
     }
 
-  public event EventHandler<float>? OnProgressChanged;
-  public event EventHandler<object>? OnComplete;
+    public event EventHandler<float>? OnProgressChanged;
+    public event EventHandler<object>? OnComplete;
+  }
 }

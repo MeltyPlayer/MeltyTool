@@ -17,42 +17,42 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileSystem;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using IO;
-
-/// <summary>
-/// Node factory.
-/// </summary>
-public static class NodeFactory
+namespace Yarhl.FileSystem
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using IO;
+
     /// <summary>
-    /// Creates a new <see cref="Node"/> with a new NodeContainer format.
+    /// Node factory.
     /// </summary>
-    /// <returns>The new node.</returns>
-    /// <param name="name">Node name.</param>
-    [SuppressMessage(
-        "Reliability",
-        "CA2000:Dispose objects before losing scope",
-        Justification = "Ownserhip dispose transferred")]
-    public static Node CreateContainer(string name)
+    public static class NodeFactory
     {
+        /// <summary>
+        /// Creates a new <see cref="Node"/> with a new NodeContainer format.
+        /// </summary>
+        /// <returns>The new node.</returns>
+        /// <param name="name">Node name.</param>
+        [SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Ownserhip dispose transferred")]
+        public static Node CreateContainer(string name)
+        {
             return new Node(name, new NodeContainerFormat());
         }
 
-    /// <summary>
-    /// Creates the missing parent nodes to contain the child and add it.
-    /// </summary>
-    /// <param name="root">The root node that will contain the nodes.</param>
-    /// <param name="path">
-    /// The path for the child. It doesn't contain the root or child names.</param>
-    /// <param name="child">The child to add to root with the path.</param>
-    public static void CreateContainersForChild(Node root, string path, Node child)
-    {
+        /// <summary>
+        /// Creates the missing parent nodes to contain the child and add it.
+        /// </summary>
+        /// <param name="root">The root node that will contain the nodes.</param>
+        /// <param name="path">
+        /// The path for the child. It doesn't contain the root or child names.</param>
+        /// <param name="child">The child to add to root with the path.</param>
+        public static void CreateContainersForChild(Node root, string path, Node child)
+        {
             if (root == null)
                 throw new ArgumentNullException(nameof(root));
 
@@ -83,29 +83,29 @@ public static class NodeFactory
             currentNode.Add(child);
         }
 
-    /// <summary>
-    /// Creates a Node with a new stream from memory.
-    /// </summary>
-    /// <param name="name">The name of the node.</param>
-    /// <returns>The new node.</returns>
-    [SuppressMessage(
-        "Reliability",
-        "CA2000:Dispose objects before losing scope",
-        Justification = "Ownserhip dispose transferred")]
-    public static Node FromMemory(string name)
-    {
+        /// <summary>
+        /// Creates a Node with a new stream from memory.
+        /// </summary>
+        /// <param name="name">The name of the node.</param>
+        /// <returns>The new node.</returns>
+        [SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Ownserhip dispose transferred")]
+        public static Node FromMemory(string name)
+        {
             return new Node(name, new BinaryFormat());
         }
 
-    /// <summary>
-    /// Creates a Node with a binary format containing the array.
-    /// </summary>
-    /// <param name="name">The name of the node.</param>
-    /// <param name="data">The data for the binary format.</param>
-    /// <returns>The new node.</returns>
-    /// <exception cref="ArgumentNullException">The name is null or empty, the data is null.</exception>
-    public static Node FromArray(string name, byte[] data)
-    {
+        /// <summary>
+        /// Creates a Node with a binary format containing the array.
+        /// </summary>
+        /// <param name="name">The name of the node.</param>
+        /// <param name="data">The data for the binary format.</param>
+        /// <returns>The new node.</returns>
+        /// <exception cref="ArgumentNullException">The name is null or empty, the data is null.</exception>
+        public static Node FromArray(string name, byte[] data)
+        {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
             if (data is null)
@@ -115,17 +115,17 @@ public static class NodeFactory
             return new Node(name, format);
         }
 
-    /// <summary>
-    /// Creates a Node with a binary format containing a part of the array.
-    /// </summary>
-    /// <param name="name">The name of the node.</param>
-    /// <param name="data">The data for the binary format.</param>
-    /// <param name="offset">The offset to start the data of the node.</param>
-    /// <param name="length">The number of bytes for the node's data.</param>
-    /// <returns>The new node.</returns>
-    /// <exception cref="ArgumentNullException">The name is null or empty, the data is null.</exception>
-    public static Node FromArray(string name, byte[] data, int offset, int length)
-    {
+        /// <summary>
+        /// Creates a Node with a binary format containing a part of the array.
+        /// </summary>
+        /// <param name="name">The name of the node.</param>
+        /// <param name="data">The data for the binary format.</param>
+        /// <param name="offset">The offset to start the data of the node.</param>
+        /// <param name="length">The number of bytes for the node's data.</param>
+        /// <returns>The new node.</returns>
+        /// <exception cref="ArgumentNullException">The name is null or empty, the data is null.</exception>
+        public static Node FromArray(string name, byte[] data, int offset, int length)
+        {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
             if (data is null)
@@ -135,18 +135,18 @@ public static class NodeFactory
             return new Node(name, format);
         }
 
-    /// <summary>
-    /// Creates a Node from a stream.
-    /// </summary>
-    /// <param name="name">The name of the node.</param>
-    /// <param name="stream">The binary stream.</param>
-    /// <remarks>
-    /// <para>It will take over the ownership of the stream
-    /// argument, you should not dispose this stream argument.</para>
-    /// </remarks>
-    /// <returns>The new node.</returns>
-    public static Node FromStream(string name, Stream stream)
-    {
+        /// <summary>
+        /// Creates a Node from a stream.
+        /// </summary>
+        /// <param name="name">The name of the node.</param>
+        /// <param name="stream">The binary stream.</param>
+        /// <remarks>
+        /// <para>It will take over the ownership of the stream
+        /// argument, you should not dispose this stream argument.</para>
+        /// </remarks>
+        /// <returns>The new node.</returns>
+        public static Node FromStream(string name, Stream stream)
+        {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
             if (stream is null)
@@ -156,33 +156,33 @@ public static class NodeFactory
             return new Node(name, binary);
         }
 
-    /// <summary>
-    /// Creates a Node from a part of a stream.
-    /// </summary>
-    /// <param name="name">The name of the node.</param>
-    /// <param name="source">The source / parent stream.</param>
-    /// <param name="offset">
-    /// The offset in the source stream where the node starts.
-    /// </param>
-    /// <param name="length">The length of the data in the node.</param>
-    /// <remarks>
-    /// <para>This format creates an internal <see cref="DataStream" /> from the
-    /// provided stream. It will take over the ownership of the stream
-    /// argument, you should not dispose this argument, unless you are
-    /// providing a <see cref="DataStream" /> that we won't take over in case
-    /// you want to create more substreams.</para>
-    /// </remarks>
-    /// <returns>The new node.</returns>
-    [SuppressMessage(
-        "Reliability",
-        "CA2000:Dispose objects before losing scope",
-        Justification = "Ownserhip dispose transferred")]
-    public static Node FromSubstream(
-        string name,
-        Stream source,
-        long offset,
-        long length)
-    {
+        /// <summary>
+        /// Creates a Node from a part of a stream.
+        /// </summary>
+        /// <param name="name">The name of the node.</param>
+        /// <param name="source">The source / parent stream.</param>
+        /// <param name="offset">
+        /// The offset in the source stream where the node starts.
+        /// </param>
+        /// <param name="length">The length of the data in the node.</param>
+        /// <remarks>
+        /// <para>This format creates an internal <see cref="DataStream" /> from the
+        /// provided stream. It will take over the ownership of the stream
+        /// argument, you should not dispose this argument, unless you are
+        /// providing a <see cref="DataStream" /> that we won't take over in case
+        /// you want to create more substreams.</para>
+        /// </remarks>
+        /// <returns>The new node.</returns>
+        [SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Ownserhip dispose transferred")]
+        public static Node FromSubstream(
+            string name,
+            Stream source,
+            long offset,
+            long length)
+        {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
@@ -190,14 +190,14 @@ public static class NodeFactory
             return new Node(name, binary);
         }
 
-    /// <summary>
-    /// Creates a Node from a file.
-    /// </summary>
-    /// <returns>The node.</returns>
-    /// <param name="filePath">File path.</param>
-    /// <param name="mode">The mode to open the file.</param>
-    public static Node FromFile(string filePath, FileOpenMode mode = FileOpenMode.ReadWrite)
-    {
+        /// <summary>
+        /// Creates a Node from a file.
+        /// </summary>
+        /// <returns>The node.</returns>
+        /// <param name="filePath">File path.</param>
+        /// <param name="mode">The mode to open the file.</param>
+        public static Node FromFile(string filePath, FileOpenMode mode = FileOpenMode.ReadWrite)
+        {
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentNullException(nameof(filePath));
 
@@ -205,23 +205,23 @@ public static class NodeFactory
             return FromFile(filePath, filename, mode);
         }
 
-    /// <summary>
-    /// Creates a Node from a file.
-    /// </summary>
-    /// <returns>The node.</returns>
-    /// <param name="filePath">File path.</param>
-    /// <param name="nodeName">Node name.</param>
-    /// <param name="mode">The mode to open the file.</param>
-    /// <remarks>
-    /// <para>Add the tag "FileInfo" with the file info status at the time it's created.</para>
-    /// <para>In the case of Windows Symlinks, it will be the status of the link file, not the target.</para>
-    /// </remarks>
-    [SuppressMessage(
-        "Reliability",
-        "CA2000:Dispose objects before losing scope",
-        Justification = "Ownserhip dispose transferred")]
-    public static Node FromFile(string filePath, string nodeName, FileOpenMode mode = FileOpenMode.ReadWrite)
-    {
+        /// <summary>
+        /// Creates a Node from a file.
+        /// </summary>
+        /// <returns>The node.</returns>
+        /// <param name="filePath">File path.</param>
+        /// <param name="nodeName">Node name.</param>
+        /// <param name="mode">The mode to open the file.</param>
+        /// <remarks>
+        /// <para>Add the tag "FileInfo" with the file info status at the time it's created.</para>
+        /// <para>In the case of Windows Symlinks, it will be the status of the link file, not the target.</para>
+        /// </remarks>
+        [SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Ownserhip dispose transferred")]
+        public static Node FromFile(string filePath, string nodeName, FileOpenMode mode = FileOpenMode.ReadWrite)
+        {
             // We need to catch if the node creation fails
             // for instance for null names, to dispose the stream.
             var format = new BinaryFormat(DataStreamFactory.FromFile(filePath, mode));
@@ -238,15 +238,15 @@ public static class NodeFactory
             return node;
         }
 
-    /// <summary>
-    /// Creates a Node containing all the files from the directory.
-    /// </summary>
-    /// <returns>The container node.</returns>
-    /// <param name="dirPath">Directory path.</param>
-    /// <param name="filter">Filter for files in directory.</param>
-    /// <param name="mode">The mode to open the files.</param>
-    public static Node FromDirectory(string dirPath, string filter = "*", FileOpenMode mode = FileOpenMode.ReadWrite)
-    {
+        /// <summary>
+        /// Creates a Node containing all the files from the directory.
+        /// </summary>
+        /// <returns>The container node.</returns>
+        /// <param name="dirPath">Directory path.</param>
+        /// <param name="filter">Filter for files in directory.</param>
+        /// <param name="mode">The mode to open the files.</param>
+        public static Node FromDirectory(string dirPath, string filter = "*", FileOpenMode mode = FileOpenMode.ReadWrite)
+        {
             if (string.IsNullOrEmpty(dirPath))
                 throw new ArgumentNullException(nameof(dirPath));
 
@@ -261,28 +261,28 @@ public static class NodeFactory
             return FromDirectory(dirPath, filter, dirName, false, mode);
         }
 
-    /// <summary>
-    /// Creates a Node containing all the files from the directory.
-    /// </summary>
-    /// <returns>The container node.</returns>
-    /// <param name="dirPath">Directory path.</param>
-    /// <param name="filter">Filter for files in directory.</param>
-    /// <param name="nodeName">Node name.</param>
-    /// <param name="subDirectories">
-    /// If <see langword="true" /> it searchs recursively in subdirectories.
-    /// </param>
-    /// <param name="mode">The mode to open the files.</param>
-    [SuppressMessage(
-        "Reliability",
-        "CA2000:Dispose objects before losing scope",
-        Justification = "Ownserhip dispose transferred")]
-    public static Node FromDirectory(
-        string dirPath,
-        string filter,
-        string nodeName,
-        bool subDirectories = false,
-        FileOpenMode mode = FileOpenMode.ReadWrite)
-    {
+        /// <summary>
+        /// Creates a Node containing all the files from the directory.
+        /// </summary>
+        /// <returns>The container node.</returns>
+        /// <param name="dirPath">Directory path.</param>
+        /// <param name="filter">Filter for files in directory.</param>
+        /// <param name="nodeName">Node name.</param>
+        /// <param name="subDirectories">
+        /// If <see langword="true" /> it searchs recursively in subdirectories.
+        /// </param>
+        /// <param name="mode">The mode to open the files.</param>
+        [SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Ownserhip dispose transferred")]
+        public static Node FromDirectory(
+            string dirPath,
+            string filter,
+            string nodeName,
+            bool subDirectories = false,
+            FileOpenMode mode = FileOpenMode.ReadWrite)
+        {
             if (string.IsNullOrEmpty(dirPath))
                 throw new ArgumentNullException(nameof(dirPath));
 
@@ -306,15 +306,15 @@ public static class NodeFactory
             return FromFileList(dirPath, nodeName, fileList, mode);
         }
 
-    /// <summary>
-    /// Creates a Node containing all the files from the directory.
-    /// </summary>
-    /// <returns>The container node.</returns>
-    /// <param name="dirPath">Directory path.</param>
-    /// <param name="filter">Filter for files in directory.</param>
-    /// <param name="mode">The mode to open the files.</param>
-    public static Node FromDirectory(string dirPath, Func<string, bool> filter, FileOpenMode mode = FileOpenMode.ReadWrite)
-    {
+        /// <summary>
+        /// Creates a Node containing all the files from the directory.
+        /// </summary>
+        /// <returns>The container node.</returns>
+        /// <param name="dirPath">Directory path.</param>
+        /// <param name="filter">Filter for files in directory.</param>
+        /// <param name="mode">The mode to open the files.</param>
+        public static Node FromDirectory(string dirPath, Func<string, bool> filter, FileOpenMode mode = FileOpenMode.ReadWrite)
+        {
             if (string.IsNullOrEmpty(dirPath))
                 throw new ArgumentNullException(nameof(dirPath));
 
@@ -332,28 +332,28 @@ public static class NodeFactory
             return FromDirectory(dirPath, filter, dirName, false, mode);
         }
 
-    /// <summary>
-    /// Creates a Node containing all the files from the directory.
-    /// </summary>
-    /// <returns>The container node.</returns>
-    /// <param name="dirPath">Directory path.</param>
-    /// <param name="filter">Filter for files in directory.</param>
-    /// <param name="nodeName">Node name.</param>
-    /// <param name="subDirectories">
-    /// If <see langword="true" /> it searchs recursively in subdirectories.
-    /// </param>
-    /// <param name="mode">The mode to open the files.</param>
-    [SuppressMessage(
-        "Reliability",
-        "CA2000:Dispose objects before losing scope",
-        Justification = "Ownserhip dispose transferred")]
-    public static Node FromDirectory(
-        string dirPath,
-        Func<string, bool> filter,
-        string nodeName,
-        bool subDirectories = false,
-        FileOpenMode mode = FileOpenMode.ReadWrite)
-    {
+        /// <summary>
+        /// Creates a Node containing all the files from the directory.
+        /// </summary>
+        /// <returns>The container node.</returns>
+        /// <param name="dirPath">Directory path.</param>
+        /// <param name="filter">Filter for files in directory.</param>
+        /// <param name="nodeName">Node name.</param>
+        /// <param name="subDirectories">
+        /// If <see langword="true" /> it searchs recursively in subdirectories.
+        /// </param>
+        /// <param name="mode">The mode to open the files.</param>
+        [SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Ownserhip dispose transferred")]
+        public static Node FromDirectory(
+            string dirPath,
+            Func<string, bool> filter,
+            string nodeName,
+            bool subDirectories = false,
+            FileOpenMode mode = FileOpenMode.ReadWrite)
+        {
             if (string.IsNullOrEmpty(dirPath))
                 throw new ArgumentNullException(nameof(dirPath));
 
@@ -378,8 +378,8 @@ public static class NodeFactory
             return FromFileList(dirPath, nodeName, fileList, mode);
         }
 
-    private static Node FromFileList(string dirPath, string nodeName, IEnumerable<string> fileList, FileOpenMode mode = FileOpenMode.ReadWrite)
-    {
+        private static Node FromFileList(string dirPath, string nodeName, IEnumerable<string> fileList, FileOpenMode mode = FileOpenMode.ReadWrite)
+        {
             Node folder = CreateContainer(nodeName);
             folder.Tags["DirectoryInfo"] = new DirectoryInfo(dirPath);
 
@@ -401,4 +401,5 @@ public static class NodeFactory
 
             return folder;
         }
+    }
 }

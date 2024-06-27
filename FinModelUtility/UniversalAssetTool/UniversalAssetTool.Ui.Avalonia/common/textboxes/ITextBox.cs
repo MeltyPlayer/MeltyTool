@@ -2,17 +2,17 @@
 
 using Avalonia.Controls;
 
-namespace uni.ui.avalonia.common.textboxes;
+namespace uni.ui.avalonia.common.textboxes {
+  public interface ITextBox {
+    string? Text { get; set; }
 
-public interface ITextBox {
-  string? Text { get; set; }
+    event EventHandler<TextChangedEventArgs> TextChanged;
+  }
 
-  event EventHandler<TextChangedEventArgs> TextChanged;
-}
+  public interface IMultiLineTextBox : ITextBox {
+    int CaretIndex { get; set; }
+    int MaxLength { get; set; }
 
-public interface IMultiLineTextBox : ITextBox {
-  int CaretIndex { get; set; }
-  int MaxLength { get; set; }
-
-  int MaxLines { get; set; }
+    int MaxLines { get; set; }
+  }
 }

@@ -4,13 +4,12 @@ using fin.animation;
 using fin.animation.keyframes;
 using fin.model;
 
-namespace mod.schema.anm;
-
-public static class DcxHelpers {
-  public static IModelAnimation AddAnimation(
-      IReadOnlyList<IBone> bones,
-      IAnimationManager animationManager,
-      IDcx dcx) {
+namespace mod.schema.anm {
+  public static class DcxHelpers {
+    public static IModelAnimation AddAnimation(
+        IReadOnlyList<IBone> bones,
+        IAnimationManager animationManager,
+        IDcx dcx) {
       var isDck = dcx is Dck;
       var dcxAnimationData = dcx.AnimationData;
 
@@ -57,11 +56,11 @@ public static class DcxHelpers {
       return animation;
     }
 
-  private static KeyframeDefinition<ValueAndTangents<float>>[][] ReadKeyframes_(
-      bool isDck,
-      IDcxAnimationData animationData,
-      IDcxAxes axes,
-      float[] values) {
+    private static KeyframeDefinition<ValueAndTangents<float>>[][] ReadKeyframes_(
+        bool isDck,
+        IDcxAnimationData animationData,
+        IDcxAxes axes,
+        float[] values) {
       var frames = new KeyframeDefinition<ValueAndTangents<float>>[3][];
       for (var i = 0; i < 3; ++i) {
         var axis = axes.Axes[i];
@@ -84,11 +83,11 @@ public static class DcxHelpers {
       return frames;
     }
 
-  public static KeyframeDefinition<ValueAndTangents<float>>[] ReadDenseFrames(
-      float[] values,
-      int offset,
-      int count
-  ) {
+    public static KeyframeDefinition<ValueAndTangents<float>>[] ReadDenseFrames(
+        float[] values,
+        int offset,
+        int count
+    ) {
       var keyframes = new KeyframeDefinition<ValueAndTangents<float>>[count];
       for (var i = 0; i < count; ++i) {
         keyframes[i] =
@@ -100,11 +99,11 @@ public static class DcxHelpers {
       return keyframes;
     }
 
-  public static KeyframeDefinition<ValueAndTangents<float>>[] ReadSparseFrames(
-      float[] values,
-      int offset,
-      int count
-  ) {
+    public static KeyframeDefinition<ValueAndTangents<float>>[] ReadSparseFrames(
+        float[] values,
+        int offset,
+        int count
+    ) {
       var keyframes = new KeyframeDefinition<ValueAndTangents<float>>[count];
       for (var i = 0; i < count; ++i) {
         var index = (int) values[offset + 3 * i];
@@ -123,10 +122,10 @@ public static class DcxHelpers {
       return keyframes;
     }
 
-  // TODO: Do this sparsely
-  public static void MergeKeyframesToPositionTrack(
-      KeyframeDefinition<ValueAndTangents<float>>[][] positionKeyframes,
-      ISeparatePositionAxesTrack3d positionTrack) {
+    // TODO: Do this sparsely
+    public static void MergeKeyframesToPositionTrack(
+        KeyframeDefinition<ValueAndTangents<float>>[][] positionKeyframes,
+        ISeparatePositionAxesTrack3d positionTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in positionKeyframes[i]) {
           positionTrack.Set(keyframe.Frame,
@@ -139,9 +138,9 @@ public static class DcxHelpers {
       }
     }
 
-  public static void MergeKeyframesToRotationTrack(
-      KeyframeDefinition<ValueAndTangents<float>>[][] rotationKeyframes,
-      IEulerRadiansRotationTrack3d rotationTrack) {
+    public static void MergeKeyframesToRotationTrack(
+        KeyframeDefinition<ValueAndTangents<float>>[][] rotationKeyframes,
+        IEulerRadiansRotationTrack3d rotationTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in rotationKeyframes[i]) {
           rotationTrack.Set(keyframe.Frame,
@@ -154,9 +153,9 @@ public static class DcxHelpers {
       }
     }
 
-  public static void MergeKeyframesToScaleTrack(
-      KeyframeDefinition<ValueAndTangents<float>>[][] scaleKeyframes,
-      IScale3dTrack scaleTrack) {
+    public static void MergeKeyframesToScaleTrack(
+        KeyframeDefinition<ValueAndTangents<float>>[][] scaleKeyframes,
+        IScale3dTrack scaleTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in scaleKeyframes[i]) {
           scaleTrack.Set(keyframe.Frame,
@@ -168,4 +167,5 @@ public static class DcxHelpers {
         }
       }
     }
+  }
 }

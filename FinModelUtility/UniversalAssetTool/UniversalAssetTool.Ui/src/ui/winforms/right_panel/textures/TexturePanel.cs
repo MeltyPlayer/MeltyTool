@@ -6,10 +6,9 @@ using fin.model;
 
 using uni.ui.winforms.common;
 
-namespace uni.ui.winforms.right_panel.textures;
-
-public partial class TexturePanel : UserControl {
-  public TexturePanel() {
+namespace uni.ui.winforms.right_panel.textures {
+  public partial class TexturePanel : UserControl {
+    public TexturePanel() {
       InitializeComponent();
 
       this.Texture = null;
@@ -18,19 +17,20 @@ public partial class TexturePanel : UserControl {
           this.GenerateContextMenuItems_);
     }
 
-  public IReadOnlyTexture? Texture {
-    set {
+    public IReadOnlyTexture? Texture {
+      set {
         this.groupBox_.Text = value?.Name ?? "(Select a texture)";
         this.pictureBox_.Image = value?.ImageData;
       }
-  }
+    }
 
-  private IEnumerable<(string, Action)> GenerateContextMenuItems_() {
+    private IEnumerable<(string, Action)> GenerateContextMenuItems_() {
       if (this.pictureBox_.Image != null) {
         yield return ("Copy image", this.CopyImageToClipboard_);
       }
     }
 
-  private void CopyImageToClipboard_()
-    => Clipboard.SetImage(this.pictureBox_.Image);
+    private void CopyImageToClipboard_()
+      => Clipboard.SetImage(this.pictureBox_.Image);
+  }
 }

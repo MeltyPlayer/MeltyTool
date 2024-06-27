@@ -17,21 +17,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Colors;
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-public interface IColorEncoding
+namespace Texim.Colors
 {
-    Rgb Decode(Stream stream);
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
 
-    Rgb[] Decode(Stream stream, int numColors);
+    public interface IColorEncoding
+    {
+        Rgb Decode(Stream stream);
 
-    Rgb[] Decode(Span<byte> data);
+        Rgb[] Decode(Stream stream, int numColors);
 
-    byte[] Encode(Rgb color);
+        Rgb[] Decode(Span<byte> data);
 
-    byte[] Encode(IEnumerable<Rgb> colors);
+        byte[] Encode(Rgb color);
+
+        byte[] Encode(IEnumerable<Rgb> colors);
+    }
 }

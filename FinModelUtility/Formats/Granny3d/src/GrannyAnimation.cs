@@ -2,18 +2,17 @@
 
 using schema.binary;
 
-namespace granny3d;
+namespace granny3d {
+  public class GrannyAnimation : IGrannyAnimation, IBinaryDeserializable {
+    public string Name { get; private set; }
+    public float Duration { get; private set; }
+    public float TimeStep { get; private set; }
+    public float Oversampling { get; private set; }
 
-public class GrannyAnimation : IGrannyAnimation, IBinaryDeserializable {
-  public string Name { get; private set; }
-  public float Duration { get; private set; }
-  public float TimeStep { get; private set; }
-  public float Oversampling { get; private set; }
+    public IList<IGrannyTrackGroup> TrackGroups { get; } =
+      new List<IGrannyTrackGroup>();
 
-  public IList<IGrannyTrackGroup> TrackGroups { get; } =
-    new List<IGrannyTrackGroup>();
-
-  public void Read(IBinaryReader br) {
+    public void Read(IBinaryReader br) {
       GrannyUtils.SubreadRef(
           br, sbr => { this.Name = sbr.ReadStringNT(); });
 
@@ -29,16 +28,16 @@ public class GrannyAnimation : IGrannyAnimation, IBinaryDeserializable {
         }
       });
     }
-}
+  }
 
-public class GrannyTrackGroup : IGrannyTrackGroup, IBinaryDeserializable {
-  public string Name { get; private set; }
+  public class GrannyTrackGroup : IGrannyTrackGroup, IBinaryDeserializable {
+    public string Name { get; private set; }
 
-  public GrannyTransform InitialPlacement { get; } = new();
-  public Vector3f LoopTranslation { get; } = new();
-  public GrannyVariant ExtendedData { get; } = new();
+    public GrannyTransform InitialPlacement { get; } = new();
+    public Vector3f LoopTranslation { get; } = new();
+    public GrannyVariant ExtendedData { get; } = new();
 
-  public void Read(IBinaryReader br) {
+    public void Read(IBinaryReader br) {
       GrannyUtils.SubreadRef(
           br, ser => this.Name = ser.ReadStringNT());
 
@@ -66,10 +65,10 @@ public class GrannyTrackGroup : IGrannyTrackGroup, IBinaryDeserializable {
           br, sbr => { });
       this.ExtendedData.Read(br);
     }
-}
+  }
 
-public class GrannyVariant : IBinaryDeserializable {
-  public void Read(IBinaryReader br) {
+  public class GrannyVariant : IBinaryDeserializable {
+    public void Read(IBinaryReader br) {
       // TODO: type
       GrannyUtils.SubreadRef(
           br, sbr => { });
@@ -77,4 +76,5 @@ public class GrannyVariant : IBinaryDeserializable {
       GrannyUtils.SubreadRef(
           br, sbr => { });
     }
+  }
 }

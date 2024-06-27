@@ -17,22 +17,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Pixels;
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Yarhl.IO;
-
-public abstract class BytePixelEncoding : IIndexedPixelEncoding
+namespace Texim.Pixels
 {
-    public abstract int BitsPerPixel { get; }
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using Yarhl.IO;
 
-    public EndiannessMode Endianness { get; set; } = EndiannessMode.LittleEndian;
-
-    public IndexedPixel[] Decode(Stream stream, int numPixels)
+    public abstract class BytePixelEncoding : IIndexedPixelEncoding
     {
+        public abstract int BitsPerPixel { get; }
+
+        public EndiannessMode Endianness { get; set; } = EndiannessMode.LittleEndian;
+
+        public IndexedPixel[] Decode(Stream stream, int numPixels)
+        {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (numPixels < 0)
@@ -48,8 +48,8 @@ public abstract class BytePixelEncoding : IIndexedPixelEncoding
             return Decode(buffer);
         }
 
-    public IndexedPixel[] Decode(Span<byte> data)
-    {
+        public IndexedPixel[] Decode(Span<byte> data)
+        {
             int numPixels = data.Length * (8 / BitsPerPixel);
             var pixels = new IndexedPixel[numPixels];
 
@@ -65,8 +65,8 @@ public abstract class BytePixelEncoding : IIndexedPixelEncoding
             return pixels;
         }
 
-    public byte[] Encode(IEnumerable<IndexedPixel> pixels)
-    {
+        public byte[] Encode(IEnumerable<IndexedPixel> pixels)
+        {
             if (pixels == null)
                 throw new ArgumentNullException(nameof(pixels));
 
@@ -89,7 +89,8 @@ public abstract class BytePixelEncoding : IIndexedPixelEncoding
             return data;
         }
 
-    protected abstract IndexedPixel BitsToPixel(byte data);
+        protected abstract IndexedPixel BitsToPixel(byte data);
 
-    protected abstract byte PixelToBits(IndexedPixel pixel);
+        protected abstract byte PixelToBits(IndexedPixel pixel);
+    }
 }

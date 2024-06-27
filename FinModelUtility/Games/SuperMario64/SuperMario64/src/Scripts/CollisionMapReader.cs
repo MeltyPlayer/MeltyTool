@@ -1,26 +1,25 @@
 ﻿using System.Numerics;
 
-namespace sm64.Scripts;
+namespace sm64.Scripts {
+  public static class CollisionMapReader {
+    public enum CollisionSubCommand : ushort {
+      TERRAIN_LOAD_VERTICES =
+          0x0040, // Begins vertices list for collision triangles
 
-public static class CollisionMapReader {
-  public enum CollisionSubCommand : ushort {
-    TERRAIN_LOAD_VERTICES =
-        0x0040, // Begins vertices list for collision triangles
+      TERRAIN_LOAD_CONTINUE =
+          0x0041, // Stop loading vertices but continues to load other collision commands
+      TERRAIN_LOAD_END = 0x0042, // End the collision list
+      TERRAIN_LOAD_OBJECTS = 0x0043, // Loads in certain objects for level start
+      TERRAIN_LOAD_ENVIRONMENT = 0x0044, // Loads water/HMC gas
+    }
 
-    TERRAIN_LOAD_CONTINUE =
-        0x0041, // Stop loading vertices but continues to load other collision commands
-    TERRAIN_LOAD_END = 0x0042, // End the collision list
-    TERRAIN_LOAD_OBJECTS = 0x0043, // Loads in certain objects for level start
-    TERRAIN_LOAD_ENVIRONMENT = 0x0044, // Loads water/HMC gas
-  }
-
-  public static CollisionMap Load(uint address) {
+    public static CollisionMap Load(uint address) {
       var cmap = new CollisionMap();
       LoadInto(cmap, address);
       return cmap;
     }
 
-  public static void LoadInto(CollisionMap cmap, uint address) {
+    public static void LoadInto(CollisionMap cmap, uint address) {
       var rom = ROM.Instance;
 
       var segment = (ushort) (address >> 24);
@@ -85,7 +84,7 @@ public static class CollisionMapReader {
       }
     }
 
-  public static uint GetLengthOfSubCommand(CollisionSubCommand type) {
+    public static uint GetLengthOfSubCommand(CollisionSubCommand type) {
       switch ((int) type) {
         case 0x0E:
         case 0x24:
@@ -99,4 +98,5 @@ public static class CollisionMapReader {
           return 6;
       }
     }
+  }
 }

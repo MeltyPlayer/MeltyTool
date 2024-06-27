@@ -9,27 +9,26 @@ using schema.binary;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace mod.schema;
+namespace mod.schema {
+  public class GcnSerializablesTests {
+    [Test]
+    public void TestBaseCollTriInfo()
+      => TestGcnSerializableSimple(new BaseCollTriInfo());
 
-public class GcnSerializablesTests {
-  [Test]
-  public void TestBaseCollTriInfo()
-    => TestGcnSerializableSimple(new BaseCollTriInfo());
+    [Test]
+    public void TestBaseRoomInfo()
+      => TestGcnSerializableSimple(new BaseRoomInfo());
 
-  [Test]
-  public void TestBaseRoomInfo()
-    => TestGcnSerializableSimple(new BaseRoomInfo());
-
-  [Test]
-  public void TestCollGroup() {
+    [Test]
+    public void TestCollGroup() {
       var collGroup = new CollGroup();
       collGroup.unknown1 = [1, 2, 3, 4];
 
       TestGcnSerializableExisting(collGroup);
     }
 
-  [Test]
-  public void TestCollGrid() {
+    [Test]
+    public void TestCollGrid() {
       var collGrid = new CollGrid();
 
       collGrid.boundsMin.Set(1, 2, 3);
@@ -50,11 +49,11 @@ public class GcnSerializablesTests {
       TestGcnSerializableExisting(collGrid);
     }
 
-  /*[Test]
-  public void TestEnvelope() => TestGcnSerializableSimple(new Envelope());*/
+    /*[Test]
+    public void TestEnvelope() => TestGcnSerializableSimple(new Envelope());*/
 
-  [Test]
-  public void TestJoint() {
+    [Test]
+    public void TestJoint() {
       var joint = new Joint();
 
       joint.parentIdx = 1;
@@ -79,12 +78,12 @@ public class GcnSerializablesTests {
       TestGcnSerializableExisting(joint);
     }
 
-  [Test]
-  public void TestJointMatPoly()
-    => TestGcnSerializableSimple(new JointMatPoly());
+    [Test]
+    public void TestJointMatPoly()
+      => TestGcnSerializableSimple(new JointMatPoly());
 
-  [Test]
-  public void TestMesh() {
+    [Test]
+    public void TestMesh() {
       var mesh = new Mesh {
           boneIndex = 1,
           vtxDescriptor = 2
@@ -104,14 +103,14 @@ public class GcnSerializablesTests {
       TestGcnSerializableExisting(mesh);
     }
 
-  [Test]
-  public void TestNbt() => TestGcnSerializableSimple(new Nbt());
+    [Test]
+    public void TestNbt() => TestGcnSerializableSimple(new Nbt());
 
-  [Test]
-  public void TestPlane() => TestGcnSerializableSimple(new Plane());
+    [Test]
+    public void TestPlane() => TestGcnSerializableSimple(new Plane());
 
-  [Test]
-  public void TestTexture() {
+    [Test]
+    public void TestTexture() {
       var texture = new Texture {
           width = 1,
           height = 2,
@@ -122,8 +121,8 @@ public class GcnSerializablesTests {
       TestGcnSerializableExisting(texture);
     }
 
-  [Test]
-  public void TestTextureAttributes() {
+    [Test]
+    public void TestTextureAttributes() {
       var textureAttributes = new TextureAttributes {
           index = 1,
           TilingModeS = (TilingMode) 2,
@@ -135,21 +134,21 @@ public class GcnSerializablesTests {
       TestGcnSerializableExisting(textureAttributes);
     }
 
-  [Test]
-  public void TestVector2i() => TestGcnSerializableSimple(new Vector2i());
+    [Test]
+    public void TestVector2i() => TestGcnSerializableSimple(new Vector2i());
 
 
-  [Test]
-  public void TestVector3f() => TestGcnSerializableSimple(new Vector3f());
+    [Test]
+    public void TestVector3f() => TestGcnSerializableSimple(new Vector3f());
 
-  [Test]
-  public void TestVector3i() => TestGcnSerializableSimple(new Vector3i());
+    [Test]
+    public void TestVector3i() => TestGcnSerializableSimple(new Vector3i());
 
-  [Test]
-  public void TestVtxMatrix() => TestGcnSerializableSimple(new VtxMatrix());
+    [Test]
+    public void TestVtxMatrix() => TestGcnSerializableSimple(new VtxMatrix());
 
-  public static async void TestGcnSerializableSimple(
-      IBinaryConvertible gcnSerializable) {
+    public static async void TestGcnSerializableSimple(
+        IBinaryConvertible gcnSerializable) {
       var dataLen = 100;
       var inData = new byte[dataLen];
       for (var i = 0; i < dataLen; ++i) {
@@ -178,8 +177,8 @@ public class GcnSerializablesTests {
       }
     }
 
-  public static async void TestGcnSerializableExisting(
-      IBinaryConvertible gcnSerializable) {
+    public static async void TestGcnSerializableExisting(
+        IBinaryConvertible gcnSerializable) {
       var dataLen = 300;
       var firstWriter = new SchemaBinaryWriter(Endianness.BigEndian);
       gcnSerializable.Write(firstWriter);
@@ -209,4 +208,5 @@ public class GcnSerializablesTests {
                         $"Expected data to be equal at index: {i}");
       }
     }
+  }
 }

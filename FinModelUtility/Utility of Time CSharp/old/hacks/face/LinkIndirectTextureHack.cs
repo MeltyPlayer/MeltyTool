@@ -3,16 +3,15 @@
 using UoT.hacks;
 using UoT.hacks.fields;
 
-namespace UoT;
+namespace UoT {
+  public class LinkIndirectTextureHack : IIndirectTextureHack {
+    public IReadOnlyList<IField> Fields { get; } =
+      new List<IField>().AsReadOnly();
 
-public class LinkIndirectTextureHack : IIndirectTextureHack {
-  public IReadOnlyList<IField> Fields { get; } =
-    new List<IField>().AsReadOnly();
+    public EyeState EyeState { get; set; }
+    public MouthState MouthState { get; set; }
 
-  public EyeState EyeState { get; set; }
-  public MouthState MouthState { get; set; }
-
-  public uint MapTextureAddress(uint originalAddress) {
+    public uint MapTextureAddress(uint originalAddress) {
       // Eyes
       if (originalAddress == 0x08000000) {
         var eyeIndex = (uint) this.EyeState > 0
@@ -33,4 +32,5 @@ public class LinkIndirectTextureHack : IIndirectTextureHack {
 
       return originalAddress;
     }
+  }
 }

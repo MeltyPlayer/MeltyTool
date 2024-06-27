@@ -5,10 +5,9 @@ using f3dzex2.image;
 using sm64.LevelInfo;
 using sm64.memory;
 
-namespace sm64.Scripts;
-
-public class LevelScripts {
-  private static uint bytesToInt(byte[] b, int offset, int length) {
+namespace sm64.Scripts {
+  public class LevelScripts {
+    private static uint bytesToInt(byte[] b, int offset, int length) {
       switch (length) {
         case 1: return b[0 + offset];
         case 2: return (uint) (b[0 + offset] << 8 | b[1 + offset]);
@@ -21,10 +20,10 @@ public class LevelScripts {
       }
     }
 
-  public static int parse(IN64Hardware<ISm64Memory> sm64Hardware,
-                          ref Level lvl,
-                          byte seg,
-                          uint off) {
+    public static int parse(IN64Hardware<ISm64Memory> sm64Hardware,
+                            ref Level lvl,
+                            byte seg,
+                            uint off) {
       var sm64Memory = sm64Hardware.Memory;
 
       if (seg == 0) return -1;
@@ -163,7 +162,8 @@ public class LevelScripts {
             desc = "Allocate space for level data from pool";
             break;
           case 0x1F: {
-            //Globals.DEBUG_PLG = true;                          CMD_1F(sm64Hardware, ref lvl, ref desc, cmd, data);
+            //Globals.DEBUG_PLG = true;                       
+            CMD_1F(sm64Hardware, ref lvl, ref desc, cmd, data);
             break;
           }
           case 0x20: {
@@ -288,12 +288,12 @@ public class LevelScripts {
       return endCmd;
     }
 
-  private static void addLSCommandToDump(ref Level lvl,
-                                         byte[] cmd,
-                                         byte seg,
-                                         uint offset,
-                                         string description,
-                                         byte? areaID) {
+    private static void addLSCommandToDump(ref Level lvl,
+                                           byte[] cmd,
+                                           byte seg,
+                                           uint offset,
+                                           string description,
+                                           byte? areaID) {
       ScriptDumpCommandInfo info = new ScriptDumpCommandInfo();
       info.data = cmd;
       info.description = description;
@@ -303,13 +303,13 @@ public class LevelScripts {
       lvl.LevelScriptCommands_ForDump.Add(info);
     }
 
-  private static void CMD_00(
-      IN64Hardware<ISm64Memory> sm64Hardware,
-      ref Level lvl,
-      ref string desc,
-      byte[] cmd,
-      byte org_seg,
-      uint org_off) {
+    private static void CMD_00(
+        IN64Hardware<ISm64Memory> sm64Hardware,
+        ref Level lvl,
+        ref string desc,
+        byte[] cmd,
+        byte org_seg,
+        uint org_off) {
       ROM rom = ROM.Instance;
       byte seg = cmd[3];
       uint start = bytesToInt(cmd, 4, 4);
@@ -339,12 +339,12 @@ public class LevelScripts {
       parse(sm64Hardware, ref lvl, seg, off);
     }
 
-  private static int CMD_05(IN64Hardware<ISm64Memory> sm64Hardware,
-                            ref Level lvl,
-                            ref string desc,
-                            byte[] cmd,
-                            byte currentSeg,
-                            uint currentOff) {
+    private static int CMD_05(IN64Hardware<ISm64Memory> sm64Hardware,
+                              ref Level lvl,
+                              ref string desc,
+                              byte[] cmd,
+                              byte currentSeg,
+                              uint currentOff) {
       byte seg = cmd[4];
       uint off = bytesToInt(cmd, 5, 3);
       desc = "Jump to segment address 0x" + seg.ToString("X2") +
@@ -364,12 +364,12 @@ public class LevelScripts {
       return parse(sm64Hardware, ref lvl, seg, off);
     }
 
-  private static int CMD_06(IN64Hardware<ISm64Memory> sm64Hardware,
-                            ref Level lvl,
-                            ref string desc,
-                            byte[] cmd,
-                            byte org_seg,
-                            uint org_off) {
+    private static int CMD_06(IN64Hardware<ISm64Memory> sm64Hardware,
+                              ref Level lvl,
+                              ref string desc,
+                              byte[] cmd,
+                              byte org_seg,
+                              uint org_off) {
       byte seg = cmd[4];
       uint off = bytesToInt(cmd, 5, 3);
       desc = "Push script stack and jump to address 0x" + seg.ToString("X2") +
@@ -383,9 +383,9 @@ public class LevelScripts {
       return parse(sm64Hardware, ref lvl, seg, off);
     }
 
-  private static string getCondition(byte operation,
-                                     uint argument,
-                                     bool inverse) {
+    private static string getCondition(byte operation,
+                                       uint argument,
+                                       bool inverse) {
       string appendInverse = (inverse ? "!" : "");
       switch (operation) {
         case 0:
@@ -418,24 +418,24 @@ public class LevelScripts {
     }
 
 
-  private static void CMD_0B(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte org_seg,
-                             uint org_off,
-                             byte? areaID) {
+    private static void CMD_0B(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte org_seg,
+                               uint org_off,
+                               byte? areaID) {
       var lvlcheck = bytesToInt(cmd, 4, 4);
       byte operation = cmd[2];
       desc = "Pop stack " + " " + getCondition(operation, lvlcheck, false);
       addLSCommandToDump(ref lvl, cmd, org_seg, org_off, desc, areaID);
     }
 
-  private static void CMD_0C(IN64Hardware<ISm64Memory> sm64Hardware,
-                             ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte org_seg,
-                             uint org_off) {
+    private static void CMD_0C(IN64Hardware<ISm64Memory> sm64Hardware,
+                               ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte org_seg,
+                               uint org_off) {
       var lvlcheck = bytesToInt(cmd, 4, 4);
       byte operation = cmd[2];
       desc = "Jump to address 0x" + bytesToInt(cmd, 8, 4).ToString("X8") + " " +
@@ -456,12 +456,12 @@ public class LevelScripts {
     }
 
 
-  private static void CMD_0D(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte org_seg,
-                             uint org_off,
-                             byte? areaID) {
+    private static void CMD_0D(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte org_seg,
+                               uint org_off,
+                               byte? areaID) {
       var lvlcheck = bytesToInt(cmd, 4, 4);
       byte operation = cmd[2];
       desc = "Push next command to stack and jump " + " " +
@@ -469,12 +469,12 @@ public class LevelScripts {
       addLSCommandToDump(ref lvl, cmd, org_seg, org_off, desc, areaID);
     }
 
-  private static void CMD_0E(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte org_seg,
-                             uint org_off,
-                             byte? areaID) {
+    private static void CMD_0E(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte org_seg,
+                               uint org_off,
+                               byte? areaID) {
       var lvlcheck = bytesToInt(cmd, 4, 4);
       byte operation = cmd[2];
       desc = "Skip following 0x10 and 0x0F levelscript commands if " + " " +
@@ -482,7 +482,7 @@ public class LevelScripts {
       addLSCommandToDump(ref lvl, cmd, org_seg, org_off, desc, areaID);
     }
 
-  private static void CMD_17(ref Level lvl, ref string desc, byte[] cmd) {
+    private static void CMD_17(ref Level lvl, ref string desc, byte[] cmd) {
       ROM rom = ROM.Instance;
       byte seg = cmd[3];
       uint start = bytesToInt(cmd, 4, 4);
@@ -492,7 +492,7 @@ public class LevelScripts {
       rom.setSegment(seg, start, end, false, null);
     }
 
-  private static void CMD_18(ref Level lvl, ref string desc, byte[] cmd) {
+    private static void CMD_18(ref Level lvl, ref string desc, byte[] cmd) {
       ROM rom = ROM.Instance;
       byte seg = cmd[3];
       uint start = bytesToInt(cmd, 4, 4);
@@ -512,11 +512,11 @@ public class LevelScripts {
       }
     }
 
-  private static void CMD_1F(IN64Hardware<ISm64Memory> sm64Hardware,
-                             ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte[] data) {
+    private static void CMD_1F(IN64Hardware<ISm64Memory> sm64Hardware,
+                               ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte[] data) {
       byte areaID = cmd[2];
       byte seg = cmd[4];
       uint off = bytesToInt(cmd, 5, 3);
@@ -553,11 +553,11 @@ public class LevelScripts {
       // newArea.AreaModel.outputTextureAtlasToPng("Area_"+areaID+"_TexAtlus.png");
     }
 
-  private static void CMD_21(
-      IN64Hardware<ISm64Memory> sm64Hardware,
-      ref Level lvl,
-      ref string desc,
-      byte[] cmd) {
+    private static void CMD_21(
+        IN64Hardware<ISm64Memory> sm64Hardware,
+        ref Level lvl,
+        ref string desc,
+        byte[] cmd) {
       ROM rom = ROM.Instance;
       byte modelID = cmd[3];
       var address = bytesToInt(cmd, 4, 4);
@@ -578,10 +578,10 @@ public class LevelScripts {
       lvl.ModelIDs.Add(modelID, newModel);
     }
 
-  private static void CMD_22(IN64Hardware<ISm64Memory> sm64Hardware,
-                             ref Level lvl,
-                             ref string desc,
-                             byte[] cmd) {
+    private static void CMD_22(IN64Hardware<ISm64Memory> sm64Hardware,
+                               ref Level lvl,
+                               ref string desc,
+                               byte[] cmd) {
       ROM rom = ROM.Instance;
       byte modelID = cmd[3];
       byte seg = cmd[4];
@@ -620,13 +620,13 @@ public class LevelScripts {
         Globals.DEBUG_PARSING_DL = false;
     }
 
-  private static void CMD_24(
-      IReadOnlySm64Memory n64Memory,
-      ref Level lvl,
-      ref string desc,
-      byte[] cmd,
-      byte seg,
-      uint off) {
+    private static void CMD_24(
+        IReadOnlySm64Memory n64Memory,
+        ref Level lvl,
+        ref string desc,
+        byte[] cmd,
+        byte seg,
+        uint off) {
       ROM rom = ROM.Instance;
       Object3D newObj = new Object3D();
       if (rom.isSegmentMIO0(seg, n64Memory.AreaId)) {
@@ -669,12 +669,12 @@ public class LevelScripts {
     }
 
 
-  private static void CMD_26(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte seg,
-                             uint off,
-                             byte? areaID) {
+    private static void CMD_26(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte seg,
+                               uint off,
+                               byte? areaID) {
       ROM rom = ROM.Instance;
       Warp warp = new Warp(false);
       if (rom.isSegmentMIO0(seg, areaID)) {
@@ -703,12 +703,12 @@ public class LevelScripts {
       }
     }
 
-  private static void CMD_27(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte seg,
-                             uint off,
-                             byte? areaID) {
+    private static void CMD_27(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte seg,
+                               uint off,
+                               byte? areaID) {
       ROM rom = ROM.Instance;
       Warp warp = new Warp(true);
       if (rom.isSegmentMIO0(seg, areaID)) {
@@ -738,12 +738,12 @@ public class LevelScripts {
       }
     }
 
-  private static void CMD_28(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte seg,
-                             uint off,
-                             byte? areaID) {
+    private static void CMD_28(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte seg,
+                               uint off,
+                               byte? areaID) {
       ROM rom = ROM.Instance;
       WarpInstant warp = new WarpInstant();
       if (rom.isSegmentMIO0(seg, areaID)) {
@@ -768,11 +768,11 @@ public class LevelScripts {
               (warp.TriggerID + 0x1B).ToString("X2") + ")";
     }
 
-  /* Process collision map, Special Objects, and waterboxes. */
-  private static void CMD_2E(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte? areaID) {
+    /* Process collision map, Special Objects, and waterboxes. */
+    private static void CMD_2E(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte? areaID) {
       ROM rom = ROM.Instance;
       if (cmd.Length < 8)
         return;
@@ -901,10 +901,10 @@ public class LevelScripts {
       }
     }
 
-  private static void CMD_2F(ref Level lvl,
-                             ref string desc,
-                             byte[] cmd,
-                             byte? areaID) {
+    private static void CMD_2F(ref Level lvl,
+                               ref string desc,
+                               byte[] cmd,
+                               byte? areaID) {
       ROM rom = ROM.Instance;
       Console.WriteLine(bytesToInt(cmd, 4, 4).ToString("X8"));
       byte seg = cmd[4];
@@ -915,7 +915,7 @@ public class LevelScripts {
       //rom.printArray(data);
     }
 
-  private static byte[] getSpecialObjectEntry(byte presetID) {
+    private static byte[] getSpecialObjectEntry(byte presetID) {
       ROM rom = ROM.Instance;
       byte[] data = new byte[8];
       uint offset = Globals.MemoryConstants.SpecialPresetTable;
@@ -932,7 +932,7 @@ public class LevelScripts {
       return data;
     }
 
-  private static uint getSpecialObjectLength(int obj) {
+    private static uint getSpecialObjectLength(int obj) {
       if (obj > 0x64 && obj < 0x79) return 10;
       else if (obj > 0x78 && obj < 0x7E) return 8;
       else if (obj > 0x7D && obj < 0x83) return 10;
@@ -947,11 +947,11 @@ public class LevelScripts {
       return 8;
     }
 
-  private static void CMD_39(
-      IReadOnlySm64Memory sm64Memory,
-      ref Level lvl,
-      ref string desc,
-      byte[] cmd) {
+    private static void CMD_39(
+        IReadOnlySm64Memory sm64Memory,
+        ref Level lvl,
+        ref string desc,
+        byte[] cmd) {
       if (cmd.Length < 8)
         return;
       uint pos = bytesToInt(cmd, 4, 4);
@@ -1018,14 +1018,14 @@ public class LevelScripts {
       //rom.setSegment(seg, start, end, false);
     }
 
-  private static bool isPerAreaBank0E(byte[] segData) {
+    private static bool isPerAreaBank0E(byte[] segData) {
       if (segData.Length < 0x6000) return false;
       uint offset = 0x5FFC;
       return ((segData[0 + offset] << 24 | segData[1 + offset] << 16 |
                segData[2 + offset] << 8 | segData[3 + offset]) == 0x4BC9189A);
     }
 
-  private static void setAreaSegmented0xE(byte areaID, byte[] segData) {
+    private static void setAreaSegmented0xE(byte areaID, byte[] segData) {
       if (!isPerAreaBank0E(segData))
         return;
 
@@ -1041,4 +1041,5 @@ public class LevelScripts {
 
       ROM.Instance.setSegment(0xE, start, end, false, areaID);
     }
+  }
 }

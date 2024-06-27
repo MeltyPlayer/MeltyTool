@@ -17,58 +17,58 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileSystem;
-
-using System;
-using System.Linq;
-using FileFormat;
-
-/// <summary>
-/// Node container format for unpack / pack files.
-/// </summary>
-public class NodeContainerFormat : IDisposable, ICloneableFormat
+namespace Yarhl.FileSystem
 {
-    bool manageRoot;
+    using System;
+    using System.Linq;
+    using FileFormat;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NodeContainerFormat"/>
-    /// class.
+    /// Node container format for unpack / pack files.
     /// </summary>
-    public NodeContainerFormat()
+    public class NodeContainerFormat : IDisposable, ICloneableFormat
     {
+        bool manageRoot;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NodeContainerFormat"/>
+        /// class.
+        /// </summary>
+        public NodeContainerFormat()
+        {
             Root = new Node("NodeContainerRoot");
             manageRoot = true;
         }
 
-    /// <summary>
-    /// Gets the root node containing the children.
-    /// </summary>
-    public Node Root {
-        get;
-        private set;
-    }
+        /// <summary>
+        /// Gets the root node containing the children.
+        /// </summary>
+        public Node Root {
+            get;
+            private set;
+        }
 
-    /// <summary>
-    /// Gets a value indicating whether this <see cref="NodeContainerFormat"/>
-    /// is disposed.
-    /// </summary>
-    public bool Disposed {
-        get;
-        private set;
-    }
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="NodeContainerFormat"/>
+        /// is disposed.
+        /// </summary>
+        public bool Disposed {
+            get;
+            private set;
+        }
 
-    /// <summary>
-    /// Moves the children from this format to a <see cref="Node"/>.
-    /// </summary>
-    /// <remarks>
-    /// <para>The node will handle the lifecycle of the children.
-    /// Disposing the format won't dispose the children.
-    /// It will replace nodes with the same name.</para>
-    /// </remarks>
-    /// <param name="newNode">Node that will contain the children.</param>
-    /// <param name="mergeContainers">If set to <see langword="true" /> it will merge container nodes with the same name.</param>
-    public void MoveChildrenTo(Node newNode, bool mergeContainers = false)
-    {
+        /// <summary>
+        /// Moves the children from this format to a <see cref="Node"/>.
+        /// </summary>
+        /// <remarks>
+        /// <para>The node will handle the lifecycle of the children.
+        /// Disposing the format won't dispose the children.
+        /// It will replace nodes with the same name.</para>
+        /// </remarks>
+        /// <param name="newNode">Node that will contain the children.</param>
+        /// <param name="mergeContainers">If set to <see langword="true" /> it will merge container nodes with the same name.</param>
+        public void MoveChildrenTo(Node newNode, bool mergeContainers = false)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(NodeContainerFormat));
 
@@ -96,9 +96,9 @@ public class NodeContainerFormat : IDisposable, ICloneableFormat
             manageRoot = false;
         }
 
-    /// <inheritdoc />
-    public virtual object DeepClone()
-    {
+        /// <inheritdoc />
+        public virtual object DeepClone()
+        {
             var newFormat = new NodeContainerFormat();
 
             // Just copy the first generation children.
@@ -111,25 +111,25 @@ public class NodeContainerFormat : IDisposable, ICloneableFormat
             return newFormat;
         }
 
-    /// <summary>
-    /// Releases all resource used by the <see cref="NodeContainerFormat"/> object.
-    /// </summary>
-    public void Dispose()
-    {
+        /// <summary>
+        /// Releases all resource used by the <see cref="NodeContainerFormat"/> object.
+        /// </summary>
+        public void Dispose()
+        {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-    /// <summary>
-    /// Releases all resource used by the
-    /// <see cref="NodeContainerFormat"/> object.
-    /// </summary>
-    /// <param name="disposing">
-    /// If set to <see langword="true" /> free managed resources also.
-    /// It happens from Dispose() calls.
-    /// </param>
-    protected virtual void Dispose(bool disposing)
-    {
+        /// <summary>
+        /// Releases all resource used by the
+        /// <see cref="NodeContainerFormat"/> object.
+        /// </summary>
+        /// <param name="disposing">
+        /// If set to <see langword="true" /> free managed resources also.
+        /// It happens from Dispose() calls.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
             if (Disposed)
                 return;
 
@@ -138,4 +138,5 @@ public class NodeContainerFormat : IDisposable, ICloneableFormat
                 Root.Dispose();
             }
         }
+    }
 }

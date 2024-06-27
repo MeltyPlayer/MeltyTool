@@ -5,15 +5,14 @@ using fin.io;
 
 using uni.games;
 
-namespace uni;
-
-public class RootFileBundleGathererTests {
-  [TearDown]
-  public void Setup() {
+namespace uni {
+  public class RootFileBundleGathererTests {
+    [TearDown]
+    public void Setup() {
       FinFileSystem.FileSystem = new FileSystem();
     }
 
-  private const string CONFIG_JSON_ = @"
+    private const string CONFIG_JSON_ = @"
 {
   ""ExporterSettings"": {
     ""ExportedFormats"": [
@@ -41,8 +40,8 @@ public class RootFileBundleGathererTests {
   }
 }";
 
-  [Test]
-  public void TestEmpty() {
+    [Test]
+    public void TestEmpty() {
       {
         var mockFileSystem = new MockFileSystem();
 
@@ -63,4 +62,5 @@ public class RootFileBundleGathererTests {
       Assert.AreEqual(0, root.Subdirs.Count);
       Assert.AreEqual(0, root.FileBundles.Count);
     }
+  }
 }

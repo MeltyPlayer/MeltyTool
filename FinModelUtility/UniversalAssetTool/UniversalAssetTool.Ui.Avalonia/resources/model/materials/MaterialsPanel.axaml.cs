@@ -11,28 +11,27 @@ using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.resources.model.materials;
-
-public class MaterialsPanelViewModelForDesigner
-    : MaterialsPanelViewModel {
-  public MaterialsPanelViewModelForDesigner() {
+namespace uni.ui.avalonia.resources.model.materials {
+  public class MaterialsPanelViewModelForDesigner
+      : MaterialsPanelViewModel {
+    public MaterialsPanelViewModelForDesigner() {
       var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
       this.ModelAndMaterials = (model, new[] { material, material, material });
     }
-}
+  }
 
-public class MaterialsPanelViewModel : ViewModelBase {
-  private (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
-      modelAndMaterials_;
+  public class MaterialsPanelViewModel : ViewModelBase {
+    private (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
+        modelAndMaterials_;
 
-  private ObservableCollection<(int, IReadOnlyMaterial?)> materials_;
-  private (int, IReadOnlyMaterial?)? selectedMaterial_;
-  private MaterialPanelViewModel? selectedMaterialPanelViewModel_;
+    private ObservableCollection<(int, IReadOnlyMaterial?)> materials_;
+    private (int, IReadOnlyMaterial?)? selectedMaterial_;
+    private MaterialPanelViewModel? selectedMaterialPanelViewModel_;
 
-  public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
-      ModelAndMaterials {
-    get => this.modelAndMaterials_;
-    set {
+    public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
+        ModelAndMaterials {
+      get => this.modelAndMaterials_;
+      set {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterials_, value);
 
         var (_, materials) = value;
@@ -42,16 +41,16 @@ public class MaterialsPanelViewModel : ViewModelBase {
 
         this.SelectedMaterial = this.Materials.FirstOrDefault();
       }
-  }
+    }
 
-  public ObservableCollection<(int, IReadOnlyMaterial?)> Materials {
-    get => this.materials_;
-    private set => this.RaiseAndSetIfChanged(ref this.materials_, value);
-  }
+    public ObservableCollection<(int, IReadOnlyMaterial?)> Materials {
+      get => this.materials_;
+      private set => this.RaiseAndSetIfChanged(ref this.materials_, value);
+    }
 
-  public (int, IReadOnlyMaterial?)? SelectedMaterial {
-    get => this.selectedMaterial_;
-    set {
+    public (int, IReadOnlyMaterial?)? SelectedMaterial {
+      get => this.selectedMaterial_;
+      set {
         this.RaiseAndSetIfChanged(ref this.selectedMaterial_, value);
         this.SelectedMaterialPanel
             = value != null
@@ -61,25 +60,26 @@ public class MaterialsPanelViewModel : ViewModelBase {
                 }
                 : null;
       }
+    }
+
+    public MaterialPanelViewModel? SelectedMaterialPanel {
+      get => this.selectedMaterialPanelViewModel_;
+      private set => this.RaiseAndSetIfChanged(
+          ref this.selectedMaterialPanelViewModel_,
+          value);
+    }
   }
 
-  public MaterialPanelViewModel? SelectedMaterialPanel {
-    get => this.selectedMaterialPanelViewModel_;
-    private set => this.RaiseAndSetIfChanged(
-        ref this.selectedMaterialPanelViewModel_,
-        value);
-  }
-}
-
-public partial class MaterialsPanel : UserControl {
-  public MaterialsPanel() {
+  public partial class MaterialsPanel : UserControl {
+    public MaterialsPanel() {
       InitializeComponent();
     }
 
-  public static readonly IValueConverter GetMaterialLabel =
-      new FuncValueConverter<(int, IReadOnlyMaterial?), string>(
-          x => {
-            var (i, m) = x;
-            return $"Material {i}: {(m?.Name ?? "(null)")}";
-          });
+    public static readonly IValueConverter GetMaterialLabel =
+        new FuncValueConverter<(int, IReadOnlyMaterial?), string>(
+            x => {
+              var (i, m) = x;
+              return $"Material {i}: {(m?.Name ?? "(null)")}";
+            });
+  }
 }

@@ -17,31 +17,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO.StreamFormat;
-
-using System;
-using System.IO;
-
-/// <summary>
-/// Open file for reading or writing on the first operation (lazily).
-/// </summary>
-public sealed class LazyFileStream : StreamWrapper
+namespace Yarhl.IO.StreamFormat
 {
-    readonly string path;
-    readonly FileOpenMode mode;
-    readonly long initialLength;
-
-    bool isInitialized;
-    long initialPosition;
+    using System;
+    using System.IO;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LazyFileStream"/> class.
+    /// Open file for reading or writing on the first operation (lazily).
     /// </summary>
-    /// <param name="path">Path to the file.</param>
-    /// <param name="mode">Mode to open the file.</param>
-    public LazyFileStream(string path, FileOpenMode mode)
-        : base(null!)
+    public sealed class LazyFileStream : StreamWrapper
     {
+        readonly string path;
+        readonly FileOpenMode mode;
+        readonly long initialLength;
+
+        bool isInitialized;
+        long initialPosition;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LazyFileStream"/> class.
+        /// </summary>
+        /// <param name="path">Path to the file.</param>
+        /// <param name="mode">Mode to open the file.</param>
+        public LazyFileStream(string path, FileOpenMode mode)
+            : base(null!)
+        {
             this.path = path;
             this.mode = mode;
 
@@ -59,31 +59,31 @@ public sealed class LazyFileStream : StreamWrapper
             }
         }
 
-    /// <inheritdoc/>
-    public override long Position
-    {
-        get => BaseStream?.Position ?? 0;
-        set
+        /// <inheritdoc/>
+        public override long Position
         {
+            get => BaseStream?.Position ?? 0;
+            set
+            {
                 if (BaseStream is null) {
                     initialPosition = value;
                 } else {
                     BaseStream.Position = value;
                 }
             }
-    }
+        }
 
-    /// <summary>
-    /// Gets the length of this stream.
-    /// </summary>
-    public override long Length => BaseStream?.Length ?? initialLength;
+        /// <summary>
+        /// Gets the length of this stream.
+        /// </summary>
+        public override long Length => BaseStream?.Length ?? initialLength;
 
-    /// <summary>
-    /// Sets the length of the stream.
-    /// </summary>
-    /// <param name="value">The new length of the stream.</param>
-    public override void SetLength(long value)
-    {
+        /// <summary>
+        /// Sets the length of the stream.
+        /// </summary>
+        /// <param name="value">The new length of the stream.</param>
+        public override void SetLength(long value)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(LazyFileStream));
 
@@ -94,15 +94,15 @@ public sealed class LazyFileStream : StreamWrapper
             base.SetLength(value);
         }
 
-    /// <summary>
-    /// Reads from the stream to the buffer.
-    /// </summary>
-    /// <returns>The number of bytes read.</returns>
-    /// <param name="buffer">Buffer to copy data.</param>
-    /// <param name="offset">Index to start copying in buffer.</param>
-    /// <param name="count">Number of bytes to read.</param>
-    public override int Read(byte[] buffer, int offset, int count)
-    {
+        /// <summary>
+        /// Reads from the stream to the buffer.
+        /// </summary>
+        /// <returns>The number of bytes read.</returns>
+        /// <param name="buffer">Buffer to copy data.</param>
+        /// <param name="offset">Index to start copying in buffer.</param>
+        /// <param name="count">Number of bytes to read.</param>
+        public override int Read(byte[] buffer, int offset, int count)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(LazyFileStream));
 
@@ -113,12 +113,12 @@ public sealed class LazyFileStream : StreamWrapper
             return base.Read(buffer, offset, count);
         }
 
-    /// <summary>
-    /// Reads the next byte.
-    /// </summary>
-    /// <returns>The next byte.</returns>
-    public override int ReadByte()
-    {
+        /// <summary>
+        /// Reads the next byte.
+        /// </summary>
+        /// <returns>The next byte.</returns>
+        public override int ReadByte()
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(LazyFileStream));
 
@@ -129,14 +129,14 @@ public sealed class LazyFileStream : StreamWrapper
             return base.ReadByte();
         }
 
-    /// <summary>
-    /// Writes the a portion of the buffer to the stream.
-    /// </summary>
-    /// <param name="buffer">Buffer to write.</param>
-    /// <param name="offset">Index in the buffer.</param>
-    /// <param name="count">Bytes to write.</param>
-    public override void Write(byte[] buffer, int offset, int count)
-    {
+        /// <summary>
+        /// Writes the a portion of the buffer to the stream.
+        /// </summary>
+        /// <param name="buffer">Buffer to write.</param>
+        /// <param name="offset">Index in the buffer.</param>
+        /// <param name="count">Bytes to write.</param>
+        public override void Write(byte[] buffer, int offset, int count)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(LazyFileStream));
 
@@ -147,12 +147,12 @@ public sealed class LazyFileStream : StreamWrapper
             base.Write(buffer, offset, count);
         }
 
-    /// <summary>
-    /// Writes a byte.
-    /// </summary>
-    /// <param name="value">Byte value.</param>
-    public override void WriteByte(byte value)
-    {
+        /// <summary>
+        /// Writes a byte.
+        /// </summary>
+        /// <param name="value">Byte value.</param>
+        public override void WriteByte(byte value)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(LazyFileStream));
 
@@ -163,10 +163,11 @@ public sealed class LazyFileStream : StreamWrapper
             base.WriteByte(value);
         }
 
-    void Initialize()
-    {
+        void Initialize()
+        {
             isInitialized = true;
             BaseStream = new FileStream(path, mode.ToFileMode(), mode.ToFileAccess());
             BaseStream.Position = initialPosition;
         }
+    }
 }

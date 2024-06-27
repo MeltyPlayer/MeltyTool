@@ -11,15 +11,14 @@ using fin.util.strings;
 
 using uni.ui.winforms.common;
 
-namespace uni.ui.winforms.right_panel.registers;
-
-public partial class RegistersTab : UserControl {
-  public RegistersTab() {
+namespace uni.ui.winforms.right_panel.registers {
+  public partial class RegistersTab : UserControl {
+    public RegistersTab() {
       InitializeComponent();
     }
 
-  public IReadOnlyModel? Model {
-    set {
+    public IReadOnlyModel? Model {
+      set {
         this.SuspendLayout();
 
         this.flowLayoutPanel_.Controls.Clear();
@@ -148,5 +147,6 @@ public partial class RegistersTab : UserControl {
 
         this.ResumeLayout(true);
       }
+    }
   }
 }

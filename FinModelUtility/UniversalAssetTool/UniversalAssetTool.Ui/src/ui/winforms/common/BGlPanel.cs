@@ -7,15 +7,14 @@ using OpenTK.Graphics.OpenGL;
 
 using uni.util.windows;
 
-namespace uni.ui.winforms.common;
+namespace uni.ui.winforms.common {
+  public abstract partial class BGlPanel : UserControl {
+    private readonly TimedCallback timedCallback;
 
-public abstract partial class BGlPanel : UserControl {
-  private readonly TimedCallback timedCallback;
+    private static float DEFAULT_FRAMERATE_ { get; } = 
+      EnumDisplaySettingsUtil.GetDisplayFrequency();
 
-  private static float DEFAULT_FRAMERATE_ { get; } = 
-    EnumDisplaySettingsUtil.GetDisplayFrequency();
-
-  protected BGlPanel() {
+    protected BGlPanel() {
       InitializeComponent();
 
       if (!DesignModeUtil.InDesignMode) {
@@ -31,16 +30,16 @@ public abstract partial class BGlPanel : UserControl {
       }
     }
 
-  public float Framerate {
-    get => this.timedCallback.Frequency;
-    set => this.timedCallback.Frequency = value;
-  }
+    public float Framerate {
+      get => this.timedCallback.Frequency;
+      set => this.timedCallback.Frequency = value;
+    }
 
-  protected abstract void InitGl();
+    protected abstract void InitGl();
 
-  protected abstract void RenderGl();
+    protected abstract void RenderGl();
 
-  protected override void OnPaint(PaintEventArgs pe) {
+    protected override void OnPaint(PaintEventArgs pe) {
       base.OnPaint(pe);
       if (!DesignModeUtil.InDesignMode) {
         // TODO: This may not actually be needed? The concern is whether or not
@@ -58,4 +57,5 @@ public abstract partial class BGlPanel : UserControl {
         });
       }
     }
+  }
 }

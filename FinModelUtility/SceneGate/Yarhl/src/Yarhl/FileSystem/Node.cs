@@ -17,51 +17,51 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileSystem;
-
-using System;
-using System.Collections.Generic;
-using FileFormat;
-using IO;
-
-/// <summary>
-/// Node in the FileSystem with an associated format.
-/// </summary>
-public class Node : NavigableNode<Node>
+namespace Yarhl.FileSystem
 {
+    using System;
+    using System.Collections.Generic;
+    using FileFormat;
+    using IO;
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="Node"/> class.
+    /// Node in the FileSystem with an associated format.
     /// </summary>
-    /// <param name="name">Node name.</param>
-    public Node(string name)
-        : base(name)
+    public class Node : NavigableNode<Node>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Node"/> class.
+        /// </summary>
+        /// <param name="name">Node name.</param>
+        public Node(string name)
+            : base(name)
+        {
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Node"/> class.
-    /// </summary>
-    /// <param name="name">Node name.</param>
-    /// <param name="initialFormat">Node format.</param>
-    public Node(string name, IFormat initialFormat)
-        : this(name)
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Node"/> class.
+        /// </summary>
+        /// <param name="name">Node name.</param>
+        /// <param name="initialFormat">Node format.</param>
+        public Node(string name, IFormat initialFormat)
+            : this(name)
+        {
             ChangeFormat(initialFormat);
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Node"/> class.
-    /// </summary>
-    /// <param name="node">The original node.</param>
-    /// <remarks><para>It makes a copy of the original node.
-    /// The original format is deep copied. See <see cref="ICloneableFormat"/> for details.</para>
-    /// </remarks>
-    /// <remarks><para>If the node has children, it must be a <see cref="NodeContainerFormat"/> to clone them.
-    /// In other case, the format must implement <see cref="ICloneableFormat"/> and clone the children explicitly.
-    /// </para></remarks>
-    public Node(Node node)
-        : this(node != null ? node.Name : string.Empty)
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Node"/> class.
+        /// </summary>
+        /// <param name="node">The original node.</param>
+        /// <remarks><para>It makes a copy of the original node.
+        /// The original format is deep copied. See <see cref="ICloneableFormat"/> for details.</para>
+        /// </remarks>
+        /// <remarks><para>If the node has children, it must be a <see cref="NodeContainerFormat"/> to clone them.
+        /// In other case, the format must implement <see cref="ICloneableFormat"/> and clone the children explicitly.
+        /// </para></remarks>
+        public Node(Node node)
+            : this(node != null ? node.Name : string.Empty)
+        {
             if (node!.Format != null && node.Format is not ICloneableFormat)
                 throw new InvalidOperationException("Format does not implement ICloneableFormat interface.");
 
@@ -79,64 +79,64 @@ public class Node : NavigableNode<Node>
             }
         }
 
-    /// <summary>
-    /// Gets the current format of the node.
-    /// </summary>
-    /// <value>The current format.</value>
-    public IFormat? Format {
-        get;
-        private set;
-    }
+        /// <summary>
+        /// Gets the current format of the node.
+        /// </summary>
+        /// <value>The current format.</value>
+        public IFormat? Format {
+            get;
+            private set;
+        }
 
-    /// <summary>
-    /// Gets the node associated DataStream if the format is IBinary.
-    /// </summary>
-    /// <value>
-    /// DataStream if the format is IBinary, null otherwise.
-    /// </value>
-    public DataStream? Stream => GetFormatAs<IBinary>()?.Stream;
+        /// <summary>
+        /// Gets the node associated DataStream if the format is IBinary.
+        /// </summary>
+        /// <value>
+        /// DataStream if the format is IBinary, null otherwise.
+        /// </value>
+        public DataStream? Stream => GetFormatAs<IBinary>()?.Stream;
 
-    /// <summary>
-    /// Gets a value indicating whether the format is a container of nodes.
-    /// </summary>
-    /// <value>
-    /// <see langword="true"/> if the format is a container; otherwise,
-    /// <see langword="false"/>.
-    /// </value>
-    public bool IsContainer => Format is NodeContainerFormat;
+        /// <summary>
+        /// Gets a value indicating whether the format is a container of nodes.
+        /// </summary>
+        /// <value>
+        /// <see langword="true"/> if the format is a container; otherwise,
+        /// <see langword="false"/>.
+        /// </value>
+        public bool IsContainer => Format is NodeContainerFormat;
 
-    /// <summary>
-    /// Gets the format as the specified type.
-    /// </summary>
-    /// <returns>The format casted to the type or null if not possible.</returns>
-    /// <typeparam name="T">The format type.</typeparam>
-    public T? GetFormatAs<T>()
-        where T : class, IFormat
-    {
+        /// <summary>
+        /// Gets the format as the specified type.
+        /// </summary>
+        /// <returns>The format casted to the type or null if not possible.</returns>
+        /// <typeparam name="T">The format type.</typeparam>
+        public T? GetFormatAs<T>()
+            where T : class, IFormat
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
             return Format as T;
         }
 
-    /// <summary>
-    /// Change the format of the current node.
-    /// </summary>
-    /// <remarks>
-    /// <para>If the previous format was a container, this method will
-    /// remove the children of the node.
-    /// If the new format is a container, this method will add the format
-    /// children to the node.</para>
-    /// <para>If the new format is the same reference as the current format
-    /// the method is a no-op.</para>
-    /// </remarks>
-    /// <param name="newFormat">The new format to assign.</param>
-    /// <param name="disposePreviousFormat">
-    /// If <see langword="true" /> the method will dispose the previous
-    /// format.
-    /// </param>
-    public void ChangeFormat(IFormat? newFormat, bool disposePreviousFormat = true)
-    {
+        /// <summary>
+        /// Change the format of the current node.
+        /// </summary>
+        /// <remarks>
+        /// <para>If the previous format was a container, this method will
+        /// remove the children of the node.
+        /// If the new format is a container, this method will add the format
+        /// children to the node.</para>
+        /// <para>If the new format is the same reference as the current format
+        /// the method is a no-op.</para>
+        /// </remarks>
+        /// <param name="newFormat">The new format to assign.</param>
+        /// <param name="disposePreviousFormat">
+        /// If <see langword="true" /> the method will dispose the previous
+        /// format.
+        /// </param>
+        public void ChangeFormat(IFormat? newFormat, bool disposePreviousFormat = true)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
@@ -161,14 +161,14 @@ public class Node : NavigableNode<Node>
             }
         }
 
-    /// <summary>
-    /// Transforms the node format to the specified format.
-    /// </summary>
-    /// <typeparam name="TDst">Format to convert.</typeparam>
-    /// <returns>This node.</returns>
-    public Node TransformTo<TDst>()
-        where TDst : IFormat
-    {
+        /// <summary>
+        /// Transforms the node format to the specified format.
+        /// </summary>
+        /// <typeparam name="TDst">Format to convert.</typeparam>
+        /// <returns>This node.</returns>
+        public Node TransformTo<TDst>()
+            where TDst : IFormat
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
@@ -181,13 +181,13 @@ public class Node : NavigableNode<Node>
             return this;
         }
 
-    /// <summary>
-    /// Transforms the node format to the specified format.
-    /// </summary>
-    /// <returns>This node.</returns>
-    /// <param name="dst">Format to convert. It must implement IFormat.</param>
-    public Node TransformTo(Type dst)
-    {
+        /// <summary>
+        /// Transforms the node format to the specified format.
+        /// </summary>
+        /// <returns>This node.</returns>
+        /// <param name="dst">Format to convert. It must implement IFormat.</param>
+        public Node TransformTo(Type dst)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
@@ -205,14 +205,14 @@ public class Node : NavigableNode<Node>
             return this;
         }
 
-    /// <summary>
-    /// Transform the node format to another format with a given converter.
-    /// </summary>
-    /// <returns>This node.</returns>
-    /// <typeparam name="TConv">The type of the converter to use.</typeparam>
-    public Node TransformWith<TConv>()
-        where TConv : IConverter, new()
-    {
+        /// <summary>
+        /// Transform the node format to another format with a given converter.
+        /// </summary>
+        /// <returns>This node.</returns>
+        /// <typeparam name="TConv">The type of the converter to use.</typeparam>
+        public Node TransformWith<TConv>()
+            where TConv : IConverter, new()
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
@@ -227,17 +227,17 @@ public class Node : NavigableNode<Node>
             return this;
         }
 
-    /// <summary>
-    /// Transform the node format to another format with a given converter
-    /// initialized with parameters.
-    /// </summary>
-    /// <returns>This node.</returns>
-    /// <typeparam name="TConv">The type of the converter to use.</typeparam>
-    /// <typeparam name="TParam">The type for initializing the converter.</typeparam>
-    /// <param name="param">Parameters to initialize the converter.</param>
-    public Node TransformWith<TConv, TParam>(TParam param)
-        where TConv : IConverter, IInitializer<TParam>, new()
-    {
+        /// <summary>
+        /// Transform the node format to another format with a given converter
+        /// initialized with parameters.
+        /// </summary>
+        /// <returns>This node.</returns>
+        /// <typeparam name="TConv">The type of the converter to use.</typeparam>
+        /// <typeparam name="TParam">The type for initializing the converter.</typeparam>
+        /// <param name="param">Parameters to initialize the converter.</param>
+        public Node TransformWith<TConv, TParam>(TParam param)
+            where TConv : IConverter, IInitializer<TParam>, new()
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
@@ -252,13 +252,13 @@ public class Node : NavigableNode<Node>
             return this;
         }
 
-    /// <summary>
-    /// Transforms the node format with the specified converter.
-    /// </summary>
-    /// <returns>This node.</returns>
-    /// <param name="converterType">The type of the converter to use.</param>
-    public Node TransformWith(Type converterType)
-    {
+        /// <summary>
+        /// Transforms the node format with the specified converter.
+        /// </summary>
+        /// <returns>This node.</returns>
+        /// <param name="converterType">The type of the converter to use.</param>
+        public Node TransformWith(Type converterType)
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
@@ -276,17 +276,17 @@ public class Node : NavigableNode<Node>
             return this;
         }
 
-    /// <summary>
-    /// Transform the node format to another format using a converter.
-    /// </summary>
-    /// <param name="converter">Convert to use.</param>
-    /// <typeparam name="TSrc">The type of the source format.</typeparam>
-    /// <typeparam name="TDst">The type of the destination format.</typeparam>
-    /// <returns>This node.</returns>
-    public Node TransformWith<TSrc, TDst>(IConverter<TSrc, TDst> converter)
-        where TSrc : IFormat
-        where TDst : IFormat
-    {
+        /// <summary>
+        /// Transform the node format to another format using a converter.
+        /// </summary>
+        /// <param name="converter">Convert to use.</param>
+        /// <typeparam name="TSrc">The type of the source format.</typeparam>
+        /// <typeparam name="TDst">The type of the destination format.</typeparam>
+        /// <returns>This node.</returns>
+        public Node TransformWith<TSrc, TDst>(IConverter<TSrc, TDst> converter)
+            where TSrc : IFormat
+            where TDst : IFormat
+        {
             if (Disposed)
                 throw new ObjectDisposedException(nameof(Node));
 
@@ -302,29 +302,29 @@ public class Node : NavigableNode<Node>
             return this;
         }
 
-    /// <summary>
-    /// Releases all resource used by the <see cref="Node"/>
-    /// object.
-    /// </summary>
-    /// <param name="freeManagedResourcesAlso">
-    /// If set to <see langword="true"/> free managed resources also.
-    /// </param>
-    protected override void Dispose(bool freeManagedResourcesAlso)
-    {
+        /// <summary>
+        /// Releases all resource used by the <see cref="Node"/>
+        /// object.
+        /// </summary>
+        /// <param name="freeManagedResourcesAlso">
+        /// If set to <see langword="true"/> free managed resources also.
+        /// </param>
+        protected override void Dispose(bool freeManagedResourcesAlso)
+        {
             base.Dispose(freeManagedResourcesAlso);
             if (freeManagedResourcesAlso) {
                 (Format as IDisposable)?.Dispose();
             }
         }
 
-    void AddContainerChildren()
-    {
+        void AddContainerChildren()
+        {
             RemoveChildren();
             GetFormatAs<NodeContainerFormat>()?.MoveChildrenTo(this);
         }
 
-    void CastAndChangeFormat(object newFormat)
-    {
+        void CastAndChangeFormat(object newFormat)
+        {
             if (newFormat == null) {
                 // Null may be an acceptable format, for now.
                 ChangeFormat(null);
@@ -336,4 +336,5 @@ public class Node : NavigableNode<Node>
                     "Cannot assign to the Format property.");
             }
         }
+    }
 }

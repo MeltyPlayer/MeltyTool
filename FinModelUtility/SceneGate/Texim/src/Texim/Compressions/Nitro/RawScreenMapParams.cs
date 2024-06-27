@@ -17,22 +17,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro;
-
-public class RawScreenMapParams
+namespace Texim.Compressions.Nitro
 {
-    public static RawScreenMapParams Default => new RawScreenMapParams {
-        Offset = 0,
-        Size = -1,
-        Width = -1,
-        Height = -1,
-    };
+    public class RawScreenMapParams
+    {
+        public static RawScreenMapParams Default => new RawScreenMapParams {
+            Offset = 0,
+            Size = -1,
+            Width = -1,
+            Height = -1,
+        };
 
-    public long Offset { get; set; }
+        public long Offset { get; set; }
 
-    public int Size { get; set; }
+        public int Size { get; set; }
 
-    public int Width { get; set; }
+        public int Width { get; set; }
 
-    public int Height { get; set; }
+        public int Height { get; set; }
+    }
 }

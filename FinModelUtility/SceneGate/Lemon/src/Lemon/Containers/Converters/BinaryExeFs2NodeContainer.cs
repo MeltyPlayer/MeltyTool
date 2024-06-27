@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 SceneGate
+// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,41 +17,41 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters;
-
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using Logging;
-using Yarhl.FileFormat;
-using Yarhl.FileSystem;
-using Yarhl.IO;
-
-/// <summary>
-/// Converter for Binary streams into a file system following the
-/// Executable File System tree format.
-/// </summary>
-public class BinaryExeFs2NodeContainer :
-    IConverter<BinaryFormat, NodeContainerFormat>,
-    IConverter<NodeContainerFormat, BinaryFormat>
+namespace SceneGate.Lemon.Containers.Converters
 {
-    const int NumberFiles = 10;
-    const int HeaderSize = 0x200;
-    const int Sha256Size = 0x20;
-
-    static readonly ILog Logger = LogProvider.GetCurrentClassLogger();
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
+    using Logging;
+    using Yarhl.FileFormat;
+    using Yarhl.FileSystem;
+    using Yarhl.IO;
 
     /// <summary>
-    /// Converts a binary stream with Executable file system into nodes.
+    /// Converter for Binary streams into a file system following the
+    /// Executable File System tree format.
     /// </summary>
-    /// <param name="source">The binary stream to convert.</param>
-    /// <returns>The file system from the ExeFS stream.</returns>
-    [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
-    public NodeContainerFormat Convert(BinaryFormat source)
+    public class BinaryExeFs2NodeContainer :
+        IConverter<BinaryFormat, NodeContainerFormat>,
+        IConverter<NodeContainerFormat, BinaryFormat>
     {
+        const int NumberFiles = 10;
+        const int HeaderSize = 0x200;
+        const int Sha256Size = 0x20;
+
+        static readonly ILog Logger = LogProvider.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Converts a binary stream with Executable file system into nodes.
+        /// </summary>
+        /// <param name="source">The binary stream to convert.</param>
+        /// <returns>The file system from the ExeFS stream.</returns>
+        [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
+        public NodeContainerFormat Convert(BinaryFormat source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -89,14 +89,14 @@ public class BinaryExeFs2NodeContainer :
             return container;
         }
 
-    /// <summary>
-    /// Converts a container of nodes into a binary of format
-    /// Executable file system.
-    /// </summary>
-    /// <param name="source">Container of nodes.</param>
-    /// <returns>The new binary container.</returns>
-    public BinaryFormat Convert(NodeContainerFormat source)
-    {
+        /// <summary>
+        /// Converts a container of nodes into a binary of format
+        /// Executable file system.
+        /// </summary>
+        /// <param name="source">Container of nodes.</param>
+        /// <returns>The new binary container.</returns>
+        public BinaryFormat Convert(NodeContainerFormat source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -141,9 +141,9 @@ public class BinaryExeFs2NodeContainer :
             return binary;
         }
 
-    [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
-    static Node GetNodeFromHeader(DataReader reader)
-    {
+        [SuppressMessage("Reliability", "CA2000", Justification = "Transfer ownership")]
+        static Node GetNodeFromHeader(DataReader reader)
+        {
             string name = reader.ReadString(8).Replace("\0", string.Empty);
             uint offset = reader.ReadUInt32() + HeaderSize;
             uint size = reader.ReadUInt32();
@@ -156,8 +156,8 @@ public class BinaryExeFs2NodeContainer :
             return node;
         }
 
-    static byte[] ComputeHash(DataStream stream)
-    {
+        static byte[] ComputeHash(DataStream stream)
+        {
             byte[] hash;
             using (SHA256 sha = SHA256.Create()) {
                 // Read the file in blocks of 64 KB (small enough for the SOH).
@@ -178,4 +178,5 @@ public class BinaryExeFs2NodeContainer :
 
             return hash;
         }
+    }
 }

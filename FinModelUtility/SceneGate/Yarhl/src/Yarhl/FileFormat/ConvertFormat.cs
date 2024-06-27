@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 SceneGate
+// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,35 +17,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileFormat;
-
-using System;
-using System.Linq;
-
-/// <summary>
-/// Convert formats with converters.
-/// </summary>
-public static class ConvertFormat
+namespace Yarhl.FileFormat
 {
+    using System;
+    using System.Linq;
+
     /// <summary>
-    /// Converts the format to the specified type.
+    /// Convert formats with converters.
     /// </summary>
-    /// <returns>The new format.</returns>
-    /// <param name="src">Format to convert.</param>
-    /// <typeparam name="TDst">The destination format type.</typeparam>
-    public static TDst To<TDst>(dynamic src)
+    public static class ConvertFormat
     {
+        /// <summary>
+        /// Converts the format to the specified type.
+        /// </summary>
+        /// <returns>The new format.</returns>
+        /// <param name="src">Format to convert.</param>
+        /// <typeparam name="TDst">The destination format type.</typeparam>
+        public static TDst To<TDst>(dynamic src)
+        {
             return (TDst)To(typeof(TDst), src);
         }
 
-    /// <summary>
-    /// Converts the format into the specified type.
-    /// </summary>
-    /// <returns>The new format.</returns>
-    /// <param name="dstType">Type of the destination format.</param>
-    /// <param name="src">Format to convert.</param>
-    public static object To(Type dstType, dynamic src)
-    {
+        /// <summary>
+        /// Converts the format into the specified type.
+        /// </summary>
+        /// <returns>The new format.</returns>
+        /// <param name="dstType">Type of the destination format.</param>
+        /// <param name="src">Format to convert.</param>
+        public static object To(Type dstType, dynamic src)
+        {
             if (dstType == null)
                 throw new ArgumentNullException(nameof(dstType));
 
@@ -70,14 +70,14 @@ public static class ConvertFormat
             return converter.Convert(src);
         }
 
-    /// <summary>
-    /// Converts the format using a converter with the specified type.
-    /// </summary>
-    /// <param name="converterType">Type of the converter.</param>
-    /// <param name="src">Format to convert.</param>
-    /// <returns>The new format.</returns>
-    public static object With(Type converterType, dynamic src)
-    {
+        /// <summary>
+        /// Converts the format using a converter with the specified type.
+        /// </summary>
+        /// <param name="converterType">Type of the converter.</param>
+        /// <param name="src">Format to convert.</param>
+        /// <returns>The new format.</returns>
+        public static object With(Type converterType, dynamic src)
+        {
             if (converterType == null)
                 throw new ArgumentNullException(nameof(converterType));
 
@@ -94,44 +94,44 @@ public static class ConvertFormat
             return converter.Convert(src);
         }
 
-    /// <summary>
-    /// Converts the format using a converter with the specified type.
-    /// </summary>
-    /// <param name="src">Format to convert.</param>
-    /// <typeparam name="TConv">Type of the converter.</typeparam>
-    /// <returns>The new format.</returns>
-    public static object With<TConv>(dynamic src)
-        where TConv : IConverter, new()
-    {
+        /// <summary>
+        /// Converts the format using a converter with the specified type.
+        /// </summary>
+        /// <param name="src">Format to convert.</param>
+        /// <typeparam name="TConv">Type of the converter.</typeparam>
+        /// <returns>The new format.</returns>
+        public static object With<TConv>(dynamic src)
+            where TConv : IConverter, new()
+        {
             var converter = new TConv();
             return With(converter, src);
         }
 
-    /// <summary>
-    /// Converts the format using a converter with the specified type
-    /// and initialized with some parameters.
-    /// </summary>
-    /// <param name="param">Parameters to initialize the converter.</param>
-    /// <param name="src">Format to convert.</param>
-    /// <typeparam name="TConv">Type of the converter.</typeparam>
-    /// <typeparam name="TParam">Type of the parameters.</typeparam>
-    /// <returns>The new format.</returns>
-    public static object With<TConv, TParam>(TParam param, dynamic src)
-        where TConv : IConverter, IInitializer<TParam>, new()
-    {
+        /// <summary>
+        /// Converts the format using a converter with the specified type
+        /// and initialized with some parameters.
+        /// </summary>
+        /// <param name="param">Parameters to initialize the converter.</param>
+        /// <param name="src">Format to convert.</param>
+        /// <typeparam name="TConv">Type of the converter.</typeparam>
+        /// <typeparam name="TParam">Type of the parameters.</typeparam>
+        /// <returns>The new format.</returns>
+        public static object With<TConv, TParam>(TParam param, dynamic src)
+            where TConv : IConverter, IInitializer<TParam>, new()
+        {
             var converter = new TConv();
             converter.Initialize(param);
             return With(converter, src);
         }
 
-    /// <summary>
-    /// Converts the format using the specified converter.
-    /// </summary>
-    /// <returns>The new format.</returns>
-    /// <param name="converter">Converter to use.</param>
-    /// <param name="src">Format to convert.</param>
-    public static object With(IConverter converter, dynamic src)
-    {
+        /// <summary>
+        /// Converts the format using the specified converter.
+        /// </summary>
+        /// <returns>The new format.</returns>
+        /// <param name="converter">Converter to use.</param>
+        /// <param name="src">Format to convert.</param>
+        public static object With(IConverter converter, dynamic src)
+        {
             if (converter == null)
                 throw new ArgumentNullException(nameof(converter));
 
@@ -160,4 +160,5 @@ public static class ConvertFormat
 
             return ((dynamic)converter).Convert(src);
         }
+    }
 }

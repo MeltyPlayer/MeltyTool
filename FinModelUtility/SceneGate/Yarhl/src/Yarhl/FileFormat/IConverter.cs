@@ -17,32 +17,33 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileFormat;
-
-using System.Diagnostics.CodeAnalysis;
-
-/// <summary>
-/// Non-generic converter interface.
-/// </summary>
-[SuppressMessage(
-    "Microsoft.Design",
-    "CA1040:AvoidEmptyInterfaces",
-    Justification = "We use the interface as a compile time marker.")]
-public interface IConverter
+namespace Yarhl.FileFormat
 {
-}
+    using System.Diagnostics.CodeAnalysis;
 
-/// <summary>
-/// Format converter interface.
-/// </summary>
-/// <typeparam name="TSrc">Source format.</typeparam>
-/// <typeparam name="TDst">Destination format.</typeparam>
-public interface IConverter<in TSrc, out TDst> : IConverter
-{
     /// <summary>
-    /// Converts the specified source into the given type.
+    /// Non-generic converter interface.
     /// </summary>
-    /// <returns>The converted source.</returns>
-    /// <param name="source">Source format to convert.</param>
-    TDst Convert(TSrc source);
+    [SuppressMessage(
+        "Microsoft.Design",
+        "CA1040:AvoidEmptyInterfaces",
+        Justification = "We use the interface as a compile time marker.")]
+    public interface IConverter
+    {
+    }
+
+    /// <summary>
+    /// Format converter interface.
+    /// </summary>
+    /// <typeparam name="TSrc">Source format.</typeparam>
+    /// <typeparam name="TDst">Destination format.</typeparam>
+    public interface IConverter<in TSrc, out TDst> : IConverter
+    {
+        /// <summary>
+        /// Converts the specified source into the given type.
+        /// </summary>
+        /// <returns>The converted source.</returns>
+        /// <param name="source">Source format to convert.</param>
+        TDst Convert(TSrc source);
+    }
 }

@@ -17,70 +17,71 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Colors;
-
-using System.Drawing;
-
-public readonly struct Rgb
+namespace Texim.Colors
 {
-    public Rgb(Color color)
+    using System.Drawing;
+
+    public readonly struct Rgb
     {
+        public Rgb(Color color)
+        {
             Alpha = color.A;
             Red = color.R;
             Green = color.G;
             Blue = color.B;
         }
 
-    public Rgb(SixLabors.ImageSharp.PixelFormats.Rgba32 color)
-    {
+        public Rgb(SixLabors.ImageSharp.PixelFormats.Rgba32 color)
+        {
             Alpha = color.A;
             Red = color.R;
             Green = color.G;
             Blue = color.B;
         }
 
-    public Rgb(Rgb color, byte alpha)
-    {
+        public Rgb(Rgb color, byte alpha)
+        {
             Alpha = alpha;
             Red = color.Red;
             Green = color.Green;
             Blue = color.Blue;
         }
 
-    public Rgb(byte red, byte green, byte blue)
-    {
+        public Rgb(byte red, byte green, byte blue)
+        {
             Alpha = 255;
             Red = red;
             Green = green;
             Blue = blue;
         }
 
-    public Rgb(byte red, byte green, byte blue, byte alpha)
-    {
+        public Rgb(byte red, byte green, byte blue, byte alpha)
+        {
             Alpha = alpha;
             Red = red;
             Green = green;
             Blue = blue;
         }
 
-    public byte Red { get; init; }
+        public byte Red { get; init; }
 
-    public byte Green { get; init; }
+        public byte Green { get; init; }
 
-    public byte Blue { get; init; }
+        public byte Blue { get; init; }
 
-    public byte Alpha { get; init; }
+        public byte Alpha { get; init; }
 
-    public readonly Color ToColor() =>
-        Color.FromArgb(Alpha, Red, Green, Blue);
+        public readonly Color ToColor() =>
+            Color.FromArgb(Alpha, Red, Green, Blue);
 
-    public readonly SixLabors.ImageSharp.PixelFormats.Rgba32 ToImageSharpColor() =>
-        new SixLabors.ImageSharp.PixelFormats.Rgba32(Red, Green, Blue, Alpha);
+        public readonly SixLabors.ImageSharp.PixelFormats.Rgba32 ToImageSharpColor() =>
+            new SixLabors.ImageSharp.PixelFormats.Rgba32(Red, Green, Blue, Alpha);
 
-    public readonly int GetDistanceSquared(Rgb other)
-    {
+        public readonly int GetDistanceSquared(Rgb other)
+        {
             return ((Red - other.Red) * (Red - other.Red))
                 + ((Green - other.Green) * (Green - other.Green))
                 + ((Blue - other.Blue) * (Blue - other.Blue));
         }
+    }
 }

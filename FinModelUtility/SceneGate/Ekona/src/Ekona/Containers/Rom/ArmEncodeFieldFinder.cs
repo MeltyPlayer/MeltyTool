@@ -1,4 +1,4 @@
-// Copyright(c) 2021 SceneGate
+﻿// Copyright(c) 2021 SceneGate
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,32 +22,32 @@ using System;
 using System.IO;
 using Yarhl.IO;
 
-namespace SceneGate.Ekona.Containers.Rom;
-
-/// <summary>
-/// Find the constant with the decoded size of the ARM.
-/// </summary>
-public static class ArmEncodeFieldFinder
+namespace SceneGate.Ekona.Containers.Rom
 {
-    private const int SecureAreaSize = 0x4000;
-
-    // Number of bytes from the header to the first instruction in DecoderOps
-    private const int DecoderShift = 0x0C;
-
-    // First ARM instructions of the BLZ decoder
-    private static readonly uint[] DecoderOps = [
-        0xE9100006, 0xE0802002, 0xE0403C21, 0xE3C114FF,
-        0xE0401001, 0xE1A04002
-    ];
-
     /// <summary>
-    /// Searchs the encoded size address.
+    /// Find the constant with the decoded size of the ARM.
     /// </summary>
-    /// <param name="arm">The ARM file to analyze.</param>
-    /// <param name="info">The information of the program.</param>
-    /// <returns>The encoded size address. 0 if not found.</returns>
-    public static int SearchEncodedSizeAddress(IBinary arm, ProgramInfo info)
+    public static class ArmEncodeFieldFinder
     {
+        private const int SecureAreaSize = 0x4000;
+
+        // Number of bytes from the header to the first instruction in DecoderOps
+        private const int DecoderShift = 0x0C;
+
+        // First ARM instructions of the BLZ decoder
+        private static readonly uint[] DecoderOps = [
+            0xE9100006, 0xE0802002, 0xE0403C21, 0xE3C114FF,
+            0xE0401001, 0xE1A04002
+        ];
+
+        /// <summary>
+        /// Searchs the encoded size address.
+        /// </summary>
+        /// <param name="arm">The ARM file to analyze.</param>
+        /// <param name="info">The information of the program.</param>
+        /// <returns>The encoded size address. 0 if not found.</returns>
+        public static int SearchEncodedSizeAddress(IBinary arm, ProgramInfo info)
+        {
             // Steps to find the ARM9 size address that we need to change
             // in order to fix the BLZ decoded error.
             // 1º Get ARM9 entry address.
@@ -82,8 +82,8 @@ public static class ArmEncodeFieldFinder
             return (int)sizeAddress;
         }
 
-    private static uint SearchDecoder(DataStream stream)
-    {
+        private static uint SearchDecoder(DataStream stream)
+        {
             DataReader reader = new DataReader(stream);
             long startPosition = stream.Position;
 
@@ -110,8 +110,8 @@ public static class ArmEncodeFieldFinder
             return decoderAddress;
         }
 
-    private static uint SearchBaseOffset(DataStream stream, uint decoderAddress)
-    {
+        private static uint SearchBaseOffset(DataStream stream, uint decoderAddress)
+        {
             DataReader reader = new DataReader(stream);
             uint instr;
 
@@ -144,4 +144,5 @@ public static class ArmEncodeFieldFinder
             // I run a test with > 500 games and at the moment it is always there
             return baseOffset;
         }
+    }
 }

@@ -17,64 +17,64 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO;
-
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-
-/// <summary>
-/// Mode to open files.
-/// </summary>
-public enum FileOpenMode
+namespace Yarhl.IO
 {
-    /// <summary>
-    /// Open the file for reading.
-    /// If the file doesn't exist it will throw a FileNotFound exception.
-    /// Requires reading permissions.
-    /// </summary>
-    Read,
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
 
     /// <summary>
-    /// Open a file for writing.
-    /// If the file doesn't exist it will be created.
-    /// If the file exists it will be truncated and start writing from the beginning.
-    /// Requires writing permissions.
+    /// Mode to open files.
     /// </summary>
-    Write,
-
-    /// <summary>
-    /// Open a file for reading and/or writing.
-    /// If the file doesn't exist it wll be created.
-    /// If the file exists it will start writing from the beginning but not truncated.
-    /// Requires reading and writing permissions.
-    /// </summary>
-    ReadWrite,
-
-    /// <summary>
-    /// Open a file for appending data at the end.
-    /// If the file doesn't exist it will throw an exception.
-    /// Requires writing permissions.
-    /// </summary>
-    Append,
-}
-
-/// <summary>
-/// Extensions for the FileOpenMode enumeration.
-/// </summary>
-[SuppressMessage(
-    "Microsoft.StyleCop.CSharp.MaintainabilityRules",
-    "SA1649:FileNameMustMatchTypeName",
-    Justification = "Extension class for the enum.")]
-static class FileOpenModeExtensions
-{
-    /// <summary>
-    /// Get the equivalent <see cref="FileMode"/>.
-    /// </summary>
-    /// <returns>The file mode.</returns>
-    /// <param name="openMode">File open mode.</param>
-    public static FileMode ToFileMode(this FileOpenMode openMode)
+    public enum FileOpenMode
     {
+        /// <summary>
+        /// Open the file for reading.
+        /// If the file doesn't exist it will throw a FileNotFound exception.
+        /// Requires reading permissions.
+        /// </summary>
+        Read,
+
+        /// <summary>
+        /// Open a file for writing.
+        /// If the file doesn't exist it will be created.
+        /// If the file exists it will be truncated and start writing from the beginning.
+        /// Requires writing permissions.
+        /// </summary>
+        Write,
+
+        /// <summary>
+        /// Open a file for reading and/or writing.
+        /// If the file doesn't exist it wll be created.
+        /// If the file exists it will start writing from the beginning but not truncated.
+        /// Requires reading and writing permissions.
+        /// </summary>
+        ReadWrite,
+
+        /// <summary>
+        /// Open a file for appending data at the end.
+        /// If the file doesn't exist it will throw an exception.
+        /// Requires writing permissions.
+        /// </summary>
+        Append,
+    }
+
+    /// <summary>
+    /// Extensions for the FileOpenMode enumeration.
+    /// </summary>
+    [SuppressMessage(
+        "Microsoft.StyleCop.CSharp.MaintainabilityRules",
+        "SA1649:FileNameMustMatchTypeName",
+        Justification = "Extension class for the enum.")]
+    static class FileOpenModeExtensions
+    {
+        /// <summary>
+        /// Get the equivalent <see cref="FileMode"/>.
+        /// </summary>
+        /// <returns>The file mode.</returns>
+        /// <param name="openMode">File open mode.</param>
+        public static FileMode ToFileMode(this FileOpenMode openMode)
+        {
             switch (openMode) {
                 case FileOpenMode.Read:
                     return FileMode.Open;
@@ -89,13 +89,13 @@ static class FileOpenModeExtensions
             }
         }
 
-    /// <summary>
-    /// Get the equivalent <see cref="FileAccess"/>.
-    /// </summary>
-    /// <returns>The file access.</returns>
-    /// <param name="openMode">File open mode.</param>
-    public static FileAccess ToFileAccess(this FileOpenMode openMode)
-    {
+        /// <summary>
+        /// Get the equivalent <see cref="FileAccess"/>.
+        /// </summary>
+        /// <returns>The file access.</returns>
+        /// <param name="openMode">File open mode.</param>
+        public static FileAccess ToFileAccess(this FileOpenMode openMode)
+        {
             switch (openMode) {
                 case FileOpenMode.Read:
                     return FileAccess.Read;
@@ -109,4 +109,5 @@ static class FileOpenModeExtensions
                     throw new ArgumentOutOfRangeException(nameof(openMode));
             }
         }
+    }
 }

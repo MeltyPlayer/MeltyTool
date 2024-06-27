@@ -17,27 +17,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro;
-
-using System;
-using Yarhl.FileFormat;
-using Yarhl.IO;
-
-public class RawBinary2ScreenMap :
-    IInitializer<RawScreenMapParams>, IConverter<IBinary, ScreenMap>
+namespace Texim.Compressions.Nitro
 {
-    private RawScreenMapParams parameters = RawScreenMapParams.Default;
+    using System;
+    using Yarhl.FileFormat;
+    using Yarhl.IO;
 
-    public void Initialize(RawScreenMapParams parameters)
+    public class RawBinary2ScreenMap :
+        IInitializer<RawScreenMapParams>, IConverter<IBinary, ScreenMap>
     {
+        private RawScreenMapParams parameters = RawScreenMapParams.Default;
+
+        public void Initialize(RawScreenMapParams parameters)
+        {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
 
             this.parameters = parameters;
         }
 
-    public ScreenMap Convert(IBinary source)
-    {
+        public ScreenMap Convert(IBinary source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -68,4 +68,5 @@ public class RawBinary2ScreenMap :
                 Maps = maps,
             };
         }
+    }
 }

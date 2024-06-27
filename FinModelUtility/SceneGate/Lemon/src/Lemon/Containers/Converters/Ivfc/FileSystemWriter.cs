@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 SceneGate
+// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,9 +17,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters.Ivfc;
-
-using System.Collections.Generic;
+namespace SceneGate.Lemon.Containers.Converters.Ivfc
+{
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using Logging;
@@ -254,8 +254,8 @@ using System.Collections.Generic;
             }
         }
 
-    void WriteFileInfo(Node file, bool isFirst, bool isLast, uint parentOffset)
-    {
+        void WriteFileInfo(Node file, bool isFirst, bool isLast, uint parentOffset)
+        {
             uint currentPosition = (uint)fileInfoTable.Position;
             uint relativeParent = (uint)(parentOffset - dirInfoTable.Offset);
             if (isFirst) {
@@ -299,36 +299,37 @@ using System.Collections.Generic;
             fileData.Position += file.Stream.Length.Pad(0x10);
         }
 
-    class FileSystemInfo
-    {
-        public int Directories { get; set; }
-
-        public int DirNamesLength { get; set; }
-
-        public int DirectoryHashes { get; set; }
-
-        public int Files { get; set; }
-
-        public int FileNamesLength { get; set; }
-
-        public int FileHashes { get; set; }
-
-        public long FileDataLength { get; set; }
-    }
-
-    class Section
-    {
-        public long Offset { get; set; }
-
-        public long Position { get; set; }
-
-        public long RelativePosition => Position - Offset;
-
-        public long Size { get; set; }
-
-        public void ResetPosition()
+        class FileSystemInfo
         {
+            public int Directories { get; set; }
+
+            public int DirNamesLength { get; set; }
+
+            public int DirectoryHashes { get; set; }
+
+            public int Files { get; set; }
+
+            public int FileNamesLength { get; set; }
+
+            public int FileHashes { get; set; }
+
+            public long FileDataLength { get; set; }
+        }
+
+        class Section
+        {
+            public long Offset { get; set; }
+
+            public long Position { get; set; }
+
+            public long RelativePosition => Position - Offset;
+
+            public long Size { get; set; }
+
+            public void ResetPosition()
+            {
                 Position = Offset;
             }
+        }
     }
 }

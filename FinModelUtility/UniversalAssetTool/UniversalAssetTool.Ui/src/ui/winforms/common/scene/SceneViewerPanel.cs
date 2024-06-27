@@ -6,16 +6,15 @@ using fin.scene;
 using fin.ui.rendering;
 using fin.ui.rendering.gl.model;
 
-namespace uni.ui.winforms.common.scene;
-
-public partial class SceneViewerPanel : UserControl, ISceneViewer {
-  public SceneViewerPanel() {
+namespace uni.ui.winforms.common.scene {
+  public partial class SceneViewerPanel : UserControl, ISceneViewer {
+    public SceneViewerPanel() {
       this.InitializeComponent();
     }
 
-  public ISceneInstance? Scene {
-    get => this.impl_.Scene;
-    set {
+    public ISceneInstance? Scene {
+      get => this.impl_.Scene;
+      set {
         var fileBundle = value?.Definition.FileBundle;
         if (fileBundle != null) {
           this.groupBox_.Text = fileBundle.DisplayFullPath;
@@ -25,17 +24,18 @@ public partial class SceneViewerPanel : UserControl, ISceneViewer {
 
         this.impl_.Scene = value;
       }
-  }
+    }
 
-  public ISceneModelInstance? FirstSceneModel => this.impl_.FirstSceneModel;
+    public ISceneModelInstance? FirstSceneModel => this.impl_.FirstSceneModel;
 
-  public IAnimationPlaybackManager? AnimationPlaybackManager 
-    => this.impl_.AnimationPlaybackManager;
+    public IAnimationPlaybackManager? AnimationPlaybackManager 
+      => this.impl_.AnimationPlaybackManager;
 
-  public ISkeletonRenderer? SkeletonRenderer => this.impl_.SkeletonRenderer;
+    public ISkeletonRenderer? SkeletonRenderer => this.impl_.SkeletonRenderer;
 
-  public IReadOnlyModelAnimation? Animation {
-    get => this.impl_.Animation;
-    set => this.impl_.Animation = value;
+    public IReadOnlyModelAnimation? Animation {
+      get => this.impl_.Animation;
+      set => this.impl_.Animation = value;
+    }
   }
 }

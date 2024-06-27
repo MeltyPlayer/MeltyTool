@@ -8,13 +8,12 @@ using uni.platforms;
 using uni.platforms.wii;
 using uni.util.io;
 
-namespace uni.games.battalion_wars_2;
+namespace uni.games.battalion_wars_2 {
+  using IAnnotatedBwBundle = IAnnotatedFileBundle<IBattalionWarsFileBundle>;
 
-using IAnnotatedBwBundle = IAnnotatedFileBundle<IBattalionWarsFileBundle>;
-
-public class BattalionWars2FileBundleGatherer
-    : IAnnotatedFileBundleGatherer<IBattalionWarsFileBundle> {
-  public IEnumerable<IAnnotatedBwBundle> GatherFileBundles() {
+  public class BattalionWars2FileBundleGatherer
+      : IAnnotatedFileBundleGatherer<IBattalionWarsFileBundle> {
+    public IEnumerable<IAnnotatedBwBundle> GatherFileBundles() {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "battalion_wars_2.iso",
               out var battalionWarsRom)) {
@@ -140,4 +139,5 @@ public class BattalionWars2FileBundleGatherer
           }
       ).GatherFileBundles();
     }
+  }
 }

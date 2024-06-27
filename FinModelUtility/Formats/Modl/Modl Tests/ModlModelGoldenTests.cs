@@ -6,34 +6,34 @@ using fin.testing.model;
 
 using modl.api;
 
-namespace modl;
+namespace modl {
+  public class ModlModelGoldenTests
+      : BModelGoldenTests<ModlModelFileBundle, ModlModelImporter> {
+    [Test]
+    [TestCaseSource(nameof(GetGoldenDirectories_))]
+    public void TestExportsGoldenAsExpected(
+        IFileHierarchyDirectory goldenDirectory)
+      => this.AssertGolden(goldenDirectory);
 
-public class ModlModelGoldenTests
-    : BModelGoldenTests<ModlModelFileBundle, ModlModelImporter> {
-  [Test]
-  [TestCaseSource(nameof(GetGoldenDirectories_))]
-  public void TestExportsGoldenAsExpected(
-      IFileHierarchyDirectory goldenDirectory)
-    => this.AssertGolden(goldenDirectory);
+    public override ModlModelFileBundle GetFileBundleFromDirectory(
+        IFileHierarchyDirectory directory)
+      => new() {
+          GameName = directory.Parent.Parent.Name,
+          GameVersion = directory.Parent.Parent.Name switch {
+              "battalion_wars_1" => GameVersion.BW1,
+              "battalion_wars_2" => GameVersion.BW2,
+          },
+          ModlFile = directory.FilesWithExtension(".modl").Single(),
+          AnimFiles = directory.FilesWithExtension(".anim").ToArray(),
+      };
 
-  public override ModlModelFileBundle GetFileBundleFromDirectory(
-      IFileHierarchyDirectory directory)
-    => new() {
-        GameName = directory.Parent.Parent.Name,
-        GameVersion = directory.Parent.Parent.Name switch {
-            "battalion_wars_1" => GameVersion.BW1,
-            "battalion_wars_2" => GameVersion.BW2,
-        },
-        ModlFile = directory.FilesWithExtension(".modl").Single(),
-        AnimFiles = directory.FilesWithExtension(".anim").ToArray(),
-    };
-
-  private static IFileHierarchyDirectory[] GetGoldenDirectories_()
-    => GoldenAssert
-       .GetGoldenDirectories(
-           GoldenAssert
-               .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
-               .AssertGetExistingSubdir("modl"))
-       .SelectMany(dir => dir.GetExistingSubdirs())
-       .ToArray();
+    private static IFileHierarchyDirectory[] GetGoldenDirectories_()
+      => GoldenAssert
+         .GetGoldenDirectories(
+             GoldenAssert
+                 .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
+                 .AssertGetExistingSubdir("modl"))
+         .SelectMany(dir => dir.GetExistingSubdirs())
+         .ToArray();
+  }
 }

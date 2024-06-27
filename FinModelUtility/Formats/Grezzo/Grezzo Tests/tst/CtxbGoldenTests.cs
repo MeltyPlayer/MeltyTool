@@ -12,13 +12,12 @@ using schema.binary.testing;
 
 using Version = grezzo.schema.cmb.Version;
 
-namespace grezzo;
-
-public class CtxbGoldenTests {
-  [Test]
-  [TestCaseSource(nameof(GetGoldenFiles_))]
-  public async Task TestExportsGoldenAsExpected(
-      IReadOnlySystemFile goldenFile) {
+namespace grezzo {
+  public class CtxbGoldenTests {
+    [Test]
+    [TestCaseSource(nameof(GetGoldenFiles_))]
+    public async Task TestExportsGoldenAsExpected(
+        IReadOnlySystemFile goldenFile) {
       var goldenGameDir = goldenFile.AssertGetParent();
 
       CmbHeader.Version = goldenGameDir.Name switch {
@@ -31,7 +30,7 @@ public class CtxbGoldenTests {
       await BinarySchemaAssert.ReadsAndWritesIdentically<Ctxb>(br);
     }
 
-  private static IReadOnlySystemFile[] GetGoldenFiles_() {
+    private static IReadOnlySystemFile[] GetGoldenFiles_() {
       var rootGoldenDirectory
           = GoldenAssert
             .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
@@ -40,4 +39,5 @@ public class CtxbGoldenTests {
                                 .SelectMany(dir => dir.GetExistingFiles())
                                 .ToArray();
     }
+  }
 }

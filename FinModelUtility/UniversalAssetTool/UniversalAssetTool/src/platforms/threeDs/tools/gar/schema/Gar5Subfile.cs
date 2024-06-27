@@ -1,19 +1,18 @@
 ﻿using schema.binary;
 
-namespace uni.platforms.threeDs.tools.gar.schema;
+namespace uni.platforms.threeDs.tools.gar.schema {
+  public class Gar5Subfile : IGarSubfile {
+    public string FileName { get; }
+    public string? FullPath { get; }
 
-public class Gar5Subfile : IGarSubfile {
-  public string FileName { get; }
-  public string? FullPath { get; }
+    public int Position { get; }
+    public int Length { get; }
 
-  public int Position { get; }
-  public int Length { get; }
-
-  public Gar5Subfile(
-      IBinaryReader br,
-      GarHeader header,
-      Gar5FileType fileType,
-      int fileInFileTypeIndex) {
+    public Gar5Subfile(
+        IBinaryReader br,
+        GarHeader header,
+        Gar5FileType fileType,
+        int fileInFileTypeIndex) {
       br.Position = header.FileMetadataOffset +
                     (fileType.FirstFileIndex + fileInFileTypeIndex) * 4 * 4;
       var fileSize = br.ReadInt32();
@@ -40,4 +39,5 @@ public class Gar5Subfile : IGarSubfile {
       this.Position = (int) fileOffset;
       this.Length = fileSize;
     }
+  }
 }

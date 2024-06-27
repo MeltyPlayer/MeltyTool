@@ -17,31 +17,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Formats;
-
-using System;
-using Palettes;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Png;
-using SixLabors.ImageSharp.PixelFormats;
-using Yarhl.FileFormat;
-using Yarhl.IO;
-
-public class Palette2Bitmap :
-    IInitializer<IImageEncoder>, IConverter<IPalette, BinaryFormat>
+namespace Texim.Formats
 {
-    private const int ColorsPerRow = 16;
-    private const int ZoomSize = 10;
-    private IImageEncoder encoder = new PngEncoder();
+    using System;
+    using Palettes;
+    using SixLabors.ImageSharp;
+    using SixLabors.ImageSharp.Formats;
+    using SixLabors.ImageSharp.Formats.Png;
+    using SixLabors.ImageSharp.PixelFormats;
+    using Yarhl.FileFormat;
+    using Yarhl.IO;
 
-    public void Initialize(IImageEncoder parameters)
+    public class Palette2Bitmap :
+       IInitializer<IImageEncoder>, IConverter<IPalette, BinaryFormat>
     {
+        private const int ColorsPerRow = 16;
+        private const int ZoomSize = 10;
+        private IImageEncoder encoder = new PngEncoder();
+
+        public void Initialize(IImageEncoder parameters)
+        {
             encoder = parameters;
         }
 
-    public BinaryFormat Convert(IPalette source)
-    {
+        public BinaryFormat Convert(IPalette source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -70,4 +70,5 @@ public class Palette2Bitmap :
             image.Save(binary.Stream, encoder);
             return binary;
         }
+    }
 }

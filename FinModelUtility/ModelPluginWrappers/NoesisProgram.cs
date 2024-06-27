@@ -14,45 +14,44 @@ using ModelPluginWrappers.src.noesis;
 
 using schema.binary;
 
-namespace ModelPluginWrappers;
-
-public enum NoeFormat {
-  RPGEODATA_FLOAT,
-  RPGEODATA_USHORT,
-}
-
-public enum NoePrimitiveType {
-  RPGEO_POINTS,
-}
-
-public static class NoesisProgram {
-  public record Handle(string FormatName, string Extension) {
-    public Func<byte[], bool> checkType;
-    public Func<byte[], PythonList, bool> loadModel;
+namespace ModelPluginWrappers {
+  public enum NoeFormat {
+    RPGEODATA_FLOAT,
+    RPGEODATA_USHORT,
   }
 
-  public class Rpg {
-    private readonly ModelImpl model_ = ModelImpl.CreateForViewer();
+  public enum NoePrimitiveType {
+    RPGEO_POINTS,
+  }
 
-    private string name_;
+  public static class NoesisProgram {
+    public record Handle(string FormatName, string Extension) {
+      public Func<byte[], bool> checkType;
+      public Func<byte[], PythonList, bool> loadModel;
+    }
 
-    private Bytes positionBuffer_;
-    private NoeFormat positionFormat_;
-    private int positionStride_;
-    private int positionOffset_;
+    public class Rpg {
+      private readonly ModelImpl model_ = ModelImpl.CreateForViewer();
 
-    public void SetName(string name) {
+      private string name_;
+
+      private Bytes positionBuffer_;
+      private NoeFormat positionFormat_;
+      private int positionStride_;
+      private int positionOffset_;
+
+      public void SetName(string name) {
         this.name_ = name;
       }
 
-    public void BindPositionBufferOffset(Bytes data, NoeFormat format, int stride, int offset) {
+      public void BindPositionBufferOffset(Bytes data, NoeFormat format, int stride, int offset) {
         this.positionBuffer_ = data;
         this.positionFormat_ = format;
         this.positionStride_ = stride;
         this.positionOffset_ = offset;
       }
 
-    public void CommitTriangles(byte[]? indexBufferBytes, NoeFormat indexDataType, int numIndices, NoePrimitiveType primitiveType, bool usePlotMap) {
+      public void CommitTriangles(byte[]? indexBufferBytes, NoeFormat indexDataType, int numIndices, NoePrimitiveType primitiveType, bool usePlotMap) {
         if (indexBufferBytes == null) {
           this.CommitTrianglesWithoutIndices(primitiveType, usePlotMap);
           return;
@@ -61,7 +60,7 @@ public static class NoesisProgram {
         throw new NotImplementedException();
       }
 
-    public unsafe void CommitTrianglesWithoutIndices(NoePrimitiveType primitiveType, bool usePlotMap) {
+      public unsafe void CommitTrianglesWithoutIndices(NoePrimitiveType primitiveType, bool usePlotMap) {
         switch (primitiveType) {
           case NoePrimitiveType.RPGEO_POINTS: {
               var skin = model_.Skin;
@@ -101,32 +100,32 @@ public static class NoesisProgram {
         }
       }
 
-    public IModel ConstructModel() => model_;
+      public IModel ConstructModel() => model_;
 
-    public object CreateContext() {
+      public object CreateContext() {
         return new object();
       }
-  }
+    }
 
-  enum PixelType {
-    NOESISTEX_RGBA32
-  }
+    enum PixelType {
+      NOESISTEX_RGBA32
+    }
 
-  enum InterpolationType {
-    NOEKF_INTERPOLATE_LINEAR,
-  }
+    enum InterpolationType {
+      NOEKF_INTERPOLATE_LINEAR,
+    }
     
-  enum KeyframeType {
-    NOEKF_ROTATION_QUATERNION_4,
-    NOEKF_TRANSLATION_VECTOR_3,
-    NOEKF_SCALE_SCALAR_1,
-  }
+    enum KeyframeType {
+      NOEKF_ROTATION_QUATERNION_4,
+      NOEKF_TRANSLATION_VECTOR_3,
+      NOEKF_SCALE_SCALAR_1,
+    }
 
-  public static INoeBitStream NoeBitStream(byte[] data = null) {
+    public static INoeBitStream NoeBitStream(byte[] data = null) {
       return new NoeBitStreamReader(data);
     }
 
-  public static void Main() {
+    public static void Main() {
       var engine = Python.CreateEngine();
 
       var noesisDirectory = new FinDirectory("C:\\Users\\Ryan\\Documents\\CSharpWorkspace\\FinModelUtility\\FinModelUtility\\ModelPluginWrappers\\noesis");
@@ -211,11 +210,12 @@ import {name}
       }
     }
 
-  public static void PushEnumIntoScope<TEnum>(this ScriptScope scriptScope) 
+    public static void PushEnumIntoScope<TEnum>(this ScriptScope scriptScope) 
       where TEnum : struct, Enum {
       foreach (var value in Enum.GetValues<TEnum>()) {
         var name = value.ToString();
         scriptScope.SetVariable(name, value);
       }
     }
+  }
 }

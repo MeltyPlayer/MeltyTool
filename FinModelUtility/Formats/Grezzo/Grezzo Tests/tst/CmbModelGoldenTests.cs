@@ -6,18 +6,17 @@ using fin.testing.model;
 
 using grezzo.api;
 
-namespace grezzo;
+namespace grezzo {
+  public class CmbModelGoldenTests
+      : BModelGoldenTests<CmbModelFileBundle, CmbModelImporter> {
+    [Test]
+    [TestCaseSource(nameof(GetGoldenDirectories_))]
+    public void TestExportsGoldenAsExpected(
+        IFileHierarchyDirectory goldenDirectory)
+      => this.AssertGolden(goldenDirectory);
 
-public class CmbModelGoldenTests
-    : BModelGoldenTests<CmbModelFileBundle, CmbModelImporter> {
-  [Test]
-  [TestCaseSource(nameof(GetGoldenDirectories_))]
-  public void TestExportsGoldenAsExpected(
-      IFileHierarchyDirectory goldenDirectory)
-    => this.AssertGolden(goldenDirectory);
-
-  public override CmbModelFileBundle GetFileBundleFromDirectory(
-      IFileHierarchyDirectory directory) {
+    public override CmbModelFileBundle GetFileBundleFromDirectory(
+        IFileHierarchyDirectory directory) {
       var cmbFile = directory.FilesWithExtension(".cmb").Single();
       return new CmbModelFileBundle(
           directory.Parent.Name,
@@ -27,7 +26,7 @@ public class CmbModelGoldenTests
           null);
     }
 
-  private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
+    private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
       var rootGoldenDirectory
           = GoldenAssert
             .GetRootGoldensDirectory(Assembly.GetExecutingAssembly())
@@ -36,4 +35,5 @@ public class CmbModelGoldenTests
                          .SelectMany(dir => dir.GetExistingSubdirs())
                          .ToArray();
     }
+  }
 }

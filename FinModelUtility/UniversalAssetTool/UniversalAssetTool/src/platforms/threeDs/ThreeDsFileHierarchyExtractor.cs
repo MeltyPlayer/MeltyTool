@@ -6,12 +6,11 @@ using uni.platforms.threeDs.tools;
 using uni.platforms.threeDs.tools.ctrtool;
 using uni.platforms.threeDs.tools.gar;
 
-namespace uni.platforms.threeDs;
-
-public class ThreeDsFileHierarchyExtractor {
-  public bool TryToExtractFromGame(string gameName,
-                                   out IFileHierarchy fileHierarchy,
-                                   IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null) {
+namespace uni.platforms.threeDs {
+  public class ThreeDsFileHierarchyExtractor {
+    public bool TryToExtractFromGame(string gameName,
+                                     out IFileHierarchy fileHierarchy,
+                                     IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null) {
       if (!TryToFindRom_(gameName, out var romFile)) {
         fileHierarchy = default;
         return false;
@@ -21,17 +20,17 @@ public class ThreeDsFileHierarchyExtractor {
       return true;
     }
 
-  private static bool TryToFindRom_(string gameName, out IReadOnlySystemFile romFile)
-    => DirectoryConstants.ROMS_DIRECTORY
-                         .TryToGetExistingFileWithFileType(
-                             gameName,
-                             out romFile,
-                             ".cci",
-                             ".3ds",
-                             ".cia");
+    private static bool TryToFindRom_(string gameName, out IReadOnlySystemFile romFile)
+      => DirectoryConstants.ROMS_DIRECTORY
+                           .TryToGetExistingFileWithFileType(
+                               gameName,
+                               out romFile,
+                               ".cci",
+                               ".3ds",
+                               ".cia");
 
-  private IFileHierarchy ExtractFromRom_(IReadOnlySystemFile romFile,
-                                         IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null) {
+    private IFileHierarchy ExtractFromRom_(IReadOnlySystemFile romFile,
+                                           IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null) {
       IFileHierarchy fileHierarchy;
       switch (romFile.FileType) {
         case ".cia": {
@@ -96,4 +95,5 @@ public class ThreeDsFileHierarchyExtractor {
 
       return fileHierarchy;
     }
+  }
 }

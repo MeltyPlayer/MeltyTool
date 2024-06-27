@@ -1,7 +1,6 @@
-﻿namespace UoT;
-
-public static class AnimatedTextureHacks {
-  public static double GetVOffsetForTexture(TileDescriptor tileDescriptor) {
+﻿namespace UoT {
+  public static class AnimatedTextureHacks {
+    public static double GetVOffsetForTexture(TileDescriptor tileDescriptor) {
       // TODO: Rewrite this to switch between different composed classes for
       // different handlers.
       var address = tileDescriptor.Address;
@@ -13,4 +12,5 @@ public static class AnimatedTextureHacks {
 
       return 0;
     }
+  }
 }

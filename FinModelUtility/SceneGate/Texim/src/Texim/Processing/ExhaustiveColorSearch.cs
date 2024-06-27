@@ -17,23 +17,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Processing;
-
-using System.Collections.Generic;
-using System.Linq;
-using Colors;
-
-public class ExhaustiveColorSearch
+namespace Texim.Processing
 {
-    private readonly Rgb[] vertex;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Colors;
 
-    public ExhaustiveColorSearch(IEnumerable<Rgb> vertex)
+    public class ExhaustiveColorSearch
     {
+        private readonly Rgb[] vertex;
+
+        public ExhaustiveColorSearch(IEnumerable<Rgb> vertex)
+        {
             this.vertex = vertex.ToArray();
         }
 
-    public static (int Index, int Distance) Search(IEnumerable<Rgb> vertex, Rgb color)
-    {
+        public static (int Index, int Distance) Search(IEnumerable<Rgb> vertex, Rgb color)
+        {
             var vertexArray = (vertex as Rgb[]) ?? vertex.ToArray();
 
             // Set the largest distance and a null index
@@ -55,8 +55,9 @@ public class ExhaustiveColorSearch
             return (nearestColor, minDistance);
         }
 
-    public (int Index, int Distance) Search(Rgb color)
-    {
+        public (int Index, int Distance) Search(Rgb color)
+        {
             return Search(vertex, color);
         }
+    }
 }

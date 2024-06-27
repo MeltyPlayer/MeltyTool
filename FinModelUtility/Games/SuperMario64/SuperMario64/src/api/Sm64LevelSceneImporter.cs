@@ -9,19 +9,18 @@ using fin.util.sets;
 using sm64.LevelInfo;
 using sm64.Scripts;
 
-namespace sm64.api;
+namespace sm64.api {
+  public class Sm64LevelSceneFileBundle :
+      Sm64LevelFileBundle,
+      ISceneFileBundle {
+    public Sm64LevelSceneFileBundle(
+        IReadOnlyTreeDirectory directory,
+        IReadOnlyTreeFile sm64Rom,
+        LevelId levelId) : base(directory, sm64Rom, levelId) { }
+  }
 
-public class Sm64LevelSceneFileBundle :
-    Sm64LevelFileBundle,
-    ISceneFileBundle {
-  public Sm64LevelSceneFileBundle(
-      IReadOnlyTreeDirectory directory,
-      IReadOnlyTreeFile sm64Rom,
-      LevelId levelId) : base(directory, sm64Rom, levelId) { }
-}
-
-public class Sm64LevelSceneImporter : ISceneImporter<Sm64LevelSceneFileBundle> {
-  public IScene Import(Sm64LevelSceneFileBundle levelModelFileBundle) {
+  public class Sm64LevelSceneImporter : ISceneImporter<Sm64LevelSceneFileBundle> {
+    public IScene Import(Sm64LevelSceneFileBundle levelModelFileBundle) {
       var sm64Level = Sm64LevelImporter.LoadLevel(levelModelFileBundle);
 
       var finScene = new SceneImpl {
@@ -49,10 +48,10 @@ public class Sm64LevelSceneImporter : ISceneImporter<Sm64LevelSceneFileBundle> {
       return finScene;
     }
 
-  private static void AddAreaToScene_(
-      IScene finScene,
-      LazyDictionary<ushort, IModel?> lazyModelDictionary,
-      Area sm64Area) {
+    private static void AddAreaToScene_(
+        IScene finScene,
+        LazyDictionary<ushort, IModel?> lazyModelDictionary,
+        Area sm64Area) {
       var finArea = finScene.AddArea();
       AddAreaModelToScene_(finArea, sm64Area);
 
@@ -66,14 +65,14 @@ public class Sm64LevelSceneImporter : ISceneImporter<Sm64LevelSceneFileBundle> {
       }
     }
 
-  private static void AddAreaModelToScene_(ISceneArea finArea, Area sm64Area)
-    => finArea.AddObject()
-              .AddSceneModel(sm64Area.AreaModel.HighestLod2.Model);
+    private static void AddAreaModelToScene_(ISceneArea finArea, Area sm64Area)
+      => finArea.AddObject()
+                .AddSceneModel(sm64Area.AreaModel.HighestLod2.Model);
 
-  private static void AddAreaObjectToScene_(
-      ISceneArea finArea,
-      LazyDictionary<ushort, IModel?> lazyModelDictionary,
-      Object3D sm64Object) {
+    private static void AddAreaObjectToScene_(
+        ISceneArea finArea,
+        LazyDictionary<ushort, IModel?> lazyModelDictionary,
+        Object3D sm64Object) {
       var finModel = lazyModelDictionary[sm64Object.ModelID];
       if (finModel == null) {
         return;
@@ -108,4 +107,5 @@ public class Sm64LevelSceneImporter : ISceneImporter<Sm64LevelSceneFileBundle> {
         finModel.Skeleton.Root.AlwaysFaceTowardsCamera(rotateYaw);
       }
     }
+  }
 }

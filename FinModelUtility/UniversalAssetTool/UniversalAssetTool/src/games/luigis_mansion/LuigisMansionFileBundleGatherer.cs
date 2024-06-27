@@ -3,13 +3,12 @@ using fin.model.io;
 
 using uni.platforms.gcn;
 
-namespace uni.games.luigis_mansion;
+namespace uni.games.luigis_mansion {
+  using IAnnotatedMdlBundle = IAnnotatedFileBundle<IModelFileBundle>;
 
-using IAnnotatedMdlBundle = IAnnotatedFileBundle<IModelFileBundle>;
-
-public class LuigisMansionFileBundleGatherer
-    : IAnnotatedFileBundleGatherer<IModelFileBundle> {
-  public IEnumerable<IAnnotatedMdlBundle> GatherFileBundles() {
+  public class LuigisMansionFileBundleGatherer
+      : IAnnotatedFileBundleGatherer<IModelFileBundle> {
+    public IEnumerable<IAnnotatedMdlBundle> GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "luigis_mansion",
               GcnFileHierarchyExtractor.Options
@@ -21,4 +20,5 @@ public class LuigisMansionFileBundleGatherer
         yield break;
       }
     }
+  }
 }

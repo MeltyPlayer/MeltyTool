@@ -12,26 +12,25 @@ using uni.ui.winforms.common;
 
 using PrimitiveType = fin.model.PrimitiveType;
 
-namespace uni.ui.winforms.right_panel.materials;
+namespace uni.ui.winforms.right_panel.materials {
+  public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
+    private IReadOnlyMaterial? material_;
+    private IGlMaterialShader? materialShader_;
 
-public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
-  private IReadOnlyMaterial? material_;
-  private IGlMaterialShader? materialShader_;
-
-  public IReadOnlyMaterial? Material {
-    get => this.material_;
-    set {
+    public IReadOnlyMaterial? Material {
+      get => this.material_;
+      set {
         this.material_ = value;
         this.materialShader_?.Dispose();
         this.materialShader_ = null;
       }
-  }
+    }
 
-  private ModelImpl viewerModel_;
-  private GlBufferManager bufferManager_;
-  private GlBufferManager.GlBufferRenderer bufferRenderer_;
+    private ModelImpl viewerModel_;
+    private GlBufferManager bufferManager_;
+    private GlBufferManager.GlBufferRenderer bufferRenderer_;
 
-  protected override void InitGl() {
+    protected override void InitGl() {
       this.ResetGl_();
 
       this.viewerModel_ = ModelImpl.CreateForViewer(4);
@@ -57,9 +56,9 @@ public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
       });
     }
 
-  private void ResetGl_() => GlUtil.ResetGl();
+    private void ResetGl_() => GlUtil.ResetGl();
 
-  protected override void RenderGl() {
+    protected override void RenderGl() {
       var width = this.Width;
       var height = this.Height;
       GL.Viewport(0, 0, width, height);
@@ -80,7 +79,7 @@ public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
       }
     }
 
-  private void RenderOrtho_() {
+    private void RenderOrtho_() {
       var width = this.Width;
       var height = this.Height;
 
@@ -106,4 +105,5 @@ public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
 
       this.bufferRenderer_.Render();
     }
+  }
 }

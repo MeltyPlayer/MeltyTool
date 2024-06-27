@@ -6,14 +6,13 @@ using ts2;
 
 using uni.platforms.gcn;
 
-namespace uni.games.timesplitters_2;
+namespace uni.games.timesplitters_2 {
+  public class Timesplitters2FileBundleGatherer
+      : IAnnotatedFileBundleGatherer<IModelFileBundle> {
+    public string Name => "timesplitters_2";
 
-public class Timesplitters2FileBundleGatherer
-    : IAnnotatedFileBundleGatherer<IModelFileBundle> {
-  public string Name => "timesplitters_2";
-
-  public IEnumerable<IAnnotatedFileBundle<IModelFileBundle>>?
-      GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle<IModelFileBundle>>?
+        GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "timesplitters_2",
               out var fileHierarchy)) {
@@ -25,11 +24,12 @@ public class Timesplitters2FileBundleGatherer
                                   .ToArray();
       if (pakFiles.Length > 0) {
         foreach (var pakFile in pakFiles) {
-         /*extractor.ExtractRelativeToRoot<P8ckArchiveReader>(
-              akFile,
-              ileHierarchy.Root);*//
+          /*extractor.ExtractRelativeToRoot<P8ckArchiveReader>(
+              pakFile,
+              fileHierarchy.Root);*/
           //pakFile.Impl.Delete();
         }
       }
     }
+  }
 }

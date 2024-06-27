@@ -6,12 +6,11 @@ using System.Text.RegularExpressions;
 
 using Microsoft.Win32;
 
-namespace HaloWarsTools.Helpers;
-
-public class SteamInterop {
-  [SupportedOSPlatform("windows")]
-  // From https://github.com/pekempy/Breeze/blob/master/Models/ExeSearch.cs
-  public static string GetGameInstallDirectory(string directory) {
+namespace HaloWarsTools.Helpers {
+  public class SteamInterop {
+    [SupportedOSPlatform("windows")]
+    // From https://github.com/pekempy/Breeze/blob/master/Models/ExeSearch.cs
+    public static string GetGameInstallDirectory(string directory) {
       var steamGameDirs = new List<string>();
       string steam32 = "SOFTWARE\\VALVE\\";
       string steam64 = "SOFTWARE\\Wow6432Node\\Valve\\";
@@ -87,4 +86,5 @@ public class SteamInterop {
 
       return null;
     }
+  }
 }

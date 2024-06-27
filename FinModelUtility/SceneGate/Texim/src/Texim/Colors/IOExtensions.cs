@@ -17,45 +17,46 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Colors;
-
-using System.Collections.Generic;
-using Yarhl.IO;
-
-public static class IOExtensions
+namespace Texim.Colors
 {
-    public static Rgb ReadColor<T>(this DataReader reader)
-        where T : IColorEncoding, new()
+    using System.Collections.Generic;
+    using Yarhl.IO;
+
+    public static class IOExtensions
     {
+        public static Rgb ReadColor<T>(this DataReader reader)
+            where T : IColorEncoding, new()
+        {
             T encoding = new T();
             return encoding.Decode(reader.Stream);
         }
 
-    public static Rgb[] ReadColors<T>(this DataReader reader, int numColors)
-        where T : IColorEncoding, new()
-    {
+        public static Rgb[] ReadColors<T>(this DataReader reader, int numColors)
+            where T : IColorEncoding, new()
+        {
             T encoding = new T();
             return encoding.Decode(reader.Stream, numColors);
         }
 
-    public static Rgb[] DecodeColorsAs<T>(this byte[] data)
-        where T : IColorEncoding, new()
-    {
+        public static Rgb[] DecodeColorsAs<T>(this byte[] data)
+            where T : IColorEncoding, new()
+        {
             T decoder = new T();
             return decoder.Decode(data);
         }
 
-    public static void Write<T>(this DataWriter writer, Rgb color)
-        where T : IColorEncoding, new()
-    {
+        public static void Write<T>(this DataWriter writer, Rgb color)
+            where T : IColorEncoding, new()
+        {
             T encoding = new T();
             writer.Write(encoding.Encode(color));
         }
 
-    public static void Write<T>(this DataWriter writer, IEnumerable<Rgb> colors)
-        where T : IColorEncoding, new()
-    {
+        public static void Write<T>(this DataWriter writer, IEnumerable<Rgb> colors)
+            where T : IColorEncoding, new()
+        {
             T encoding = new T();
             writer.Write(encoding.Encode(colors));
         }
+    }
 }

@@ -23,44 +23,44 @@ using SceneGate.Ekona.Security;
 using Yarhl.FileFormat;
 using Yarhl.IO;
 
-namespace SceneGate.Ekona.Containers.Rom;
-
-/// <summary>
-/// Converter for binary ROM header into an object.
-/// </summary>
-public class Binary2RomHeader :
-    IInitializer<DsiKeyStore>,
-    IConverter<IBinary, RomHeader>
+namespace SceneGate.Ekona.Containers.Rom
 {
-    private const int SecureAreaLength = 16 * 1024;
-    private DsiKeyStore keyStore;
-
     /// <summary>
-    /// Gets the offset in the header containing the header size value.
+    /// Converter for binary ROM header into an object.
     /// </summary>
-    public static int HeaderSizeOffset => 0x84;
-
-    /// <summary>
-    /// Initialize the converter with the key store to enable additional features.
-    /// </summary>
-    /// <remarks>
-    /// The key store is used to verify a special token and set the value of `DisableSecureArea`.
-    /// Otherwise, it will always be `false`. The required key is `BlowfishDsKey`.
-    /// </remarks>
-    /// <param name="parameters">The converter parameters.</param>
-    /// <exception cref="ArgumentNullException">The argument is null.</exception>
-    public void Initialize(DsiKeyStore parameters)
+    public class Binary2RomHeader :
+        IInitializer<DsiKeyStore>,
+        IConverter<IBinary, RomHeader>
     {
+        private const int SecureAreaLength = 16 * 1024;
+        private DsiKeyStore keyStore;
+
+        /// <summary>
+        /// Gets the offset in the header containing the header size value.
+        /// </summary>
+        public static int HeaderSizeOffset => 0x84;
+
+        /// <summary>
+        /// Initialize the converter with the key store to enable additional features.
+        /// </summary>
+        /// <remarks>
+        /// The key store is used to verify a special token and set the value of `DisableSecureArea`.
+        /// Otherwise, it will always be `false`. The required key is `BlowfishDsKey`.
+        /// </remarks>
+        /// <param name="parameters">The converter parameters.</param>
+        /// <exception cref="ArgumentNullException">The argument is null.</exception>
+        public void Initialize(DsiKeyStore parameters)
+        {
             keyStore = parameters ?? throw new ArgumentNullException(nameof(parameters));
         }
 
-    /// <summary>
-    /// Convert a binary format into a ROM header object.
-    /// </summary>
-    /// <param name="source">The stream to read.</param>
-    /// <returns>The new ROM header.</returns>
-    public RomHeader Convert(IBinary source)
-    {
+        /// <summary>
+        /// Convert a binary format into a ROM header object.
+        /// </summary>
+        /// <param name="source">The stream to read.</param>
+        /// <returns>The new ROM header.</returns>
+        public RomHeader Convert(IBinary source)
+        {
             ArgumentNullException.ThrowIfNull(source);
 
             source.Stream.Position = 0;
@@ -78,16 +78,16 @@ public class Binary2RomHeader :
             return header;
         }
 
-    private static void ValidateChecksums(DataStream stream, ProgramInfo info)
-    {
+        private static void ValidateChecksums(DataStream stream, ProgramInfo info)
+        {
             // We don't validate the checksum of the secure area as it's outside the header. Same for HMAC.
             var crcGen = new NitroCrcGenerator();
             info.ChecksumLogo.Validate(crcGen.GenerateCrc16(stream, 0xC0, 0x9C));
             info.ChecksumHeader.Validate(crcGen.GenerateCrc16(stream, 0x00, 0x15E));
         }
 
-    private static void ReadDsiFields(DataReader reader, RomHeader header)
-    {
+        private static void ReadDsiFields(DataReader reader, RomHeader header)
+        {
             DsiProgramInfo info = header.ProgramInfo.DsiInfo;
             RomSectionInfo sections = header.SectionInfo;
 
@@ -196,8 +196,8 @@ public class Binary2RomHeader :
             info.Arm9Mac = reader.ReadHmacSha1();
         }
 
-    private static GlobalMemoryBankSettings[] ReadGlobalMemoryBankSettings(DataReader reader)
-    {
+        private static GlobalMemoryBankSettings[] ReadGlobalMemoryBankSettings(DataReader reader)
+        {
             var settings = new GlobalMemoryBankSettings[5 * 4];
             for (int i = 0; i < settings.Length; i++) {
                 byte data = reader.ReadByte();
@@ -211,8 +211,8 @@ public class Binary2RomHeader :
             return settings;
         }
 
-    private static LocalMemoryBankSettings[] ReadLocalMemoryBankSettings(DataReader reader)
-    {
+        private static LocalMemoryBankSettings[] ReadLocalMemoryBankSettings(DataReader reader)
+        {
             var settings = new LocalMemoryBankSettings[3];
 
             // MBK6 - WRAM A
@@ -236,8 +236,8 @@ public class Binary2RomHeader :
             return settings;
         }
 
-    private static ModcryptTargetKind GetModcryptTarget(uint offset, uint length, RomSectionInfo info)
-    {
+        private static ModcryptTargetKind GetModcryptTarget(uint offset, uint length, RomSectionInfo info)
+        {
             if (offset == 0)
                 return ModcryptTargetKind.None;
             if (offset == info.Arm9Offset)
@@ -254,15 +254,15 @@ public class Binary2RomHeader :
             return ModcryptTargetKind.Unknown;
         }
 
-    private static AgeRating DeserializeAgeRating(byte value) =>
-        new AgeRating {
-            Enabled = (value >> 7) == 1,
-            Prohibited = (value >> 6) == 1,
-            Age = value & 0x1F,
-        };
+        private static AgeRating DeserializeAgeRating(byte value) =>
+            new AgeRating {
+                Enabled = (value >> 7) == 1,
+                Prohibited = (value >> 6) == 1,
+                Age = value & 0x1F,
+            };
 
     private void ReadDsFields(DataReader reader, RomHeader header)
-    {
+        {
             // Pos: 0x00
             header.ProgramInfo.GameTitle = reader.ReadString(12).Replace("\0", string.Empty);
             header.ProgramInfo.GameCode = reader.ReadString(4);
@@ -375,4 +375,5 @@ public class Binary2RomHeader :
             reader.Stream.Position = 0xF80;
             header.ProgramInfo.Signature = reader.ReadSignatureSha1Rsa();
         }
+    }
 }

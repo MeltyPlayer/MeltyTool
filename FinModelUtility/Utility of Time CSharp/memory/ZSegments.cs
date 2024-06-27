@@ -11,28 +11,27 @@ using fin.schema;
 
 using schema.binary;
 
-namespace UoT.memory;
+namespace UoT.memory {
+  public class ZSegments {
+    public static ZSegments Instance { get; private set; }
 
-public class ZSegments {
-  public static ZSegments Instance { get; private set; }
+    public IReadOnlyList<ZObject> Objects { get; }
+    public IReadOnlyList<ZCodeFiles> ActorCode { get; }
+    public IReadOnlyList<ZScene> Scenes { get; }
+    public IReadOnlyList<ZOtherData> Others { get; }
 
-  public IReadOnlyList<ZObject> Objects { get; }
-  public IReadOnlyList<ZCodeFiles> ActorCode { get; }
-  public IReadOnlyList<ZScene> Scenes { get; }
-  public IReadOnlyList<ZOtherData> Others { get; }
-
-  private ZSegments(
-      IList<ZObject> objects,
-      IList<ZCodeFiles> actorCode,
-      IList<ZScene> levels,
-      IList<ZOtherData> others) {
+    private ZSegments(
+        IList<ZObject> objects,
+        IList<ZCodeFiles> actorCode,
+        IList<ZScene> levels,
+        IList<ZOtherData> others) {
       this.Objects = new ReadOnlyCollection<ZObject>(objects);
       this.ActorCode = new ReadOnlyCollection<ZCodeFiles>(actorCode);
       this.Scenes = new ReadOnlyCollection<ZScene>(levels);
       this.Others = new ReadOnlyCollection<ZOtherData>(others);
     }
 
-  public static ZSegments InitializeFromFile(IGenericFile romFile) {
+    public static ZSegments InitializeFromFile(IGenericFile romFile) {
       using var br =
           new SchemaBinaryReader(romFile.OpenRead(), Endianness.BigEndian);
 
@@ -74,10 +73,10 @@ public class ZSegments {
       throw new NotSupportedException();
     }
 
-  public static ZSegments InitializeFromSchemaBinaryReader(
-      SchemaBinaryReader br,
-      int segmentOffset,
-      int nameOffset) {
+    public static ZSegments InitializeFromSchemaBinaryReader(
+        SchemaBinaryReader br,
+        int segmentOffset,
+        int nameOffset) {
       var zSegments = ZSegments.GetZSegments_(br, segmentOffset, nameOffset);
 
       var objects = new List<ZObject>();
@@ -127,11 +126,11 @@ public class ZSegments {
       return Instance = new ZSegments(objects, actorCode, scenes.ToArray(), others);
     }
 
-  [Unknown]
-  private static IEnumerable<ZSegment> GetZSegments_(
-      SchemaBinaryReader br,
-      int segmentOffset,
-      long nameOffset) {
+    [Unknown]
+    private static IEnumerable<ZSegment> GetZSegments_(
+        SchemaBinaryReader br,
+        int segmentOffset,
+        long nameOffset) {
       var segments = new LinkedList<ZSegment>();
 
       br.SubreadAt(
@@ -182,8 +181,9 @@ public class ZSegments {
       return segments;
     }
 
-  private class ZSegment {
-    public required string FileName { get; init; }
-    public required Segment Segment { get; init; }
+    private class ZSegment {
+      public required string FileName { get; init; }
+      public required Segment Segment { get; init; }
+    }
   }
 }

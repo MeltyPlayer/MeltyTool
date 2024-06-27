@@ -4,15 +4,14 @@ using fin.schema.vector;
 
 using schema.binary;
 
-namespace granny3d;
+namespace granny3d {
+  public class GrannyTransform : IGrannyTransform, IBinaryDeserializable {
+    public GrannyTransformFlags Flags { get; private set; }
+    public Vector3f Position { get; private set; }
+    public Quaternion Orientation { get; private set; }
+    public Vector3f[] ScaleShear { get; } = new Vector3f[3];
 
-public class GrannyTransform : IGrannyTransform, IBinaryDeserializable {
-  public GrannyTransformFlags Flags { get; private set; }
-  public Vector3f Position { get; private set; }
-  public Quaternion Orientation { get; private set; }
-  public Vector3f[] ScaleShear { get; } = new Vector3f[3];
-
-  public void Read(IBinaryReader br) {
+    public void Read(IBinaryReader br) {
       this.Flags = (GrannyTransformFlags)br.ReadInt32();
 
       this.Position = br.ReadNew<Vector3f>();
@@ -24,4 +23,5 @@ public class GrannyTransform : IGrannyTransform, IBinaryDeserializable {
         this.ScaleShear[i] = br.ReadNew<Vector3f>();
       }
     }
+  }
 }

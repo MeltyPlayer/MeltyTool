@@ -6,12 +6,11 @@ using jsystem.api;
 
 using uni.platforms.gcn;
 
-namespace uni.games.super_mario_sunshine;
-
-public class SuperMarioSunshineFileBundleGatherer
-    : IAnnotatedFileBundleGatherer<BmdModelFileBundle> {
-  public IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-      GatherFileBundles() {
+namespace uni.games.super_mario_sunshine {
+  public class SuperMarioSunshineFileBundleGatherer
+      : IAnnotatedFileBundleGatherer<BmdModelFileBundle> {
+    public IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
+        GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "super_mario_sunshine",
               GcnFileHierarchyExtractor.Options.Standard()
@@ -26,8 +25,8 @@ public class SuperMarioSunshineFileBundleGatherer
                  .Concat(this.ExtractScenes_(fileHierarchy));
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractMario_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractMario_(
+        IFileHierarchy fileHierarchy) {
       var marioSubdir =
           fileHierarchy.Root.AssertGetExistingSubdir(@"data\mario");
       var bcxFiles = marioSubdir.AssertGetExistingSubdir("bck")
@@ -43,8 +42,8 @@ public class SuperMarioSunshineFileBundleGatherer
       return this.ExtractModels_(new[] { bmdFile }, bcxFiles);
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractFludd_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractFludd_(
+        IFileHierarchy fileHierarchy) {
       var fluddSubdir =
           fileHierarchy.Root.AssertGetExistingSubdir(@"data\mario\watergun2");
       foreach (var subdir in fluddSubdir.GetExistingSubdirs()) {
@@ -56,8 +55,8 @@ public class SuperMarioSunshineFileBundleGatherer
       }
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractYoshi_(
-      IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> ExtractYoshi_(
+        IFileHierarchy fileHierarchy) {
       var yoshiSubdir =
           fileHierarchy.Root.AssertGetExistingSubdir(@"data\yoshi");
       var bcxFiles = yoshiSubdir
@@ -74,9 +73,9 @@ public class SuperMarioSunshineFileBundleGatherer
       return this.ExtractModels_(new[] { bmdFile }, bcxFiles);
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-      ExtractScenes_(
-          IFileHierarchy fileHierarchy) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
+        ExtractScenes_(
+            IFileHierarchy fileHierarchy) {
       var sceneSubdir =
           fileHierarchy.Root.AssertGetExistingSubdir(@"data\scene");
 
@@ -136,10 +135,10 @@ public class SuperMarioSunshineFileBundleGatherer
       }
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-      ExtractFromSeparateDirectories_(
-          IFileHierarchyDirectory directory,
-          IFileHierarchyDirectory common) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
+        ExtractFromSeparateDirectories_(
+            IFileHierarchyDirectory directory,
+            IFileHierarchyDirectory common) {
       Asserts.Nonnull(common);
 
       var bmdFiles = directory.FilesWithExtension(".bmd")
@@ -172,9 +171,9 @@ public class SuperMarioSunshineFileBundleGatherer
       return Enumerable.Empty<IAnnotatedFileBundle<BmdModelFileBundle>>();
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-      ExtractModelsAndAnimationsFromSceneObject_(
-          IFileHierarchyDirectory directory) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
+        ExtractModelsAndAnimationsFromSceneObject_(
+            IFileHierarchyDirectory directory) {
       var bmdFiles = directory.GetExistingFiles()
                               .Where(
                                   file => file.FileType == ".bmd")
@@ -258,11 +257,11 @@ public class SuperMarioSunshineFileBundleGatherer
       });
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-      ExtractPrimaryAndSecondaryModels_(
-          IFileHierarchyDirectory directory,
-          Func<IFileHierarchyFile, bool> primaryIdentifier
-      ) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
+        ExtractPrimaryAndSecondaryModels_(
+            IFileHierarchyDirectory directory,
+            Func<IFileHierarchyFile, bool> primaryIdentifier
+        ) {
       var bmdFiles = directory.GetExistingFiles()
                               .Where(
                                   file => file.FileType == ".bmd")
@@ -279,12 +278,12 @@ public class SuperMarioSunshineFileBundleGatherer
                                                     bcxFiles);
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-      ExtractPrimaryAndSecondaryModels_(
-          Func<IFileHierarchyFile, bool> primaryIdentifier,
-          IReadOnlyList<IFileHierarchyFile> bmdFiles,
-          IReadOnlyList<IFileHierarchyFile>? bcxFiles = null
-      ) {
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
+        ExtractPrimaryAndSecondaryModels_(
+            Func<IFileHierarchyFile, bool> primaryIdentifier,
+            IReadOnlyList<IFileHierarchyFile> bmdFiles,
+            IReadOnlyList<IFileHierarchyFile>? bcxFiles = null
+        ) {
       var primaryBmdFile =
           bmdFiles.Single(bmdFile => primaryIdentifier(bmdFile));
       foreach (var bundle in this.ExtractModels_(
@@ -303,17 +302,18 @@ public class SuperMarioSunshineFileBundleGatherer
       }
     }
 
-  private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-      ExtractModels_(
-          IEnumerable<IFileHierarchyFile> bmdFiles,
-          IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
-          IReadOnlyList<IFileHierarchyFile>? btiFiles = null
-      )
-    => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
-        GameName = "super_mario_sunshine",
-        BmdFile = bmdFile,
-        BcxFiles = bcxFiles,
-        BtiFiles = btiFiles,
-        FrameRate = 60
-    }.Annotate(bmdFile));
+    private IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
+        ExtractModels_(
+            IEnumerable<IFileHierarchyFile> bmdFiles,
+            IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
+            IReadOnlyList<IFileHierarchyFile>? btiFiles = null
+        )
+      => bmdFiles.Select(bmdFile => new BmdModelFileBundle {
+          GameName = "super_mario_sunshine",
+          BmdFile = bmdFile,
+          BcxFiles = bcxFiles,
+          BtiFiles = btiFiles,
+          FrameRate = 60
+      }.Annotate(bmdFile));
+  }
 }

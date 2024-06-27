@@ -17,13 +17,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Palettes;
-
-using System.Collections.ObjectModel;
-using Colors;
-using Yarhl.FileFormat;
-
-public interface IPalette : IFormat
+namespace Texim.Palettes
 {
-    Collection<Rgb> Colors { get; }
+    using System.Collections.ObjectModel;
+    using Colors;
+    using Yarhl.FileFormat;
+
+    public interface IPalette : IFormat
+    {
+        Collection<Rgb> Colors { get; }
+    }
 }

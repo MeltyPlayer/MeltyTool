@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 SceneGate
+// Copyright (c) 2019 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,31 +17,32 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Formats;
-
-using Yarhl.FileSystem;
-
-/// <summary>
-/// Nintendo Content Container Header.
-/// This is the format for the CXI and CFA specialization.
-/// It can contain up to two file systems and several special files.
-/// </summary>
-public class Ncch : NodeContainerFormat
+namespace SceneGate.Lemon.Containers.Formats
 {
+    using Yarhl.FileSystem;
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="Ncch"/> class.
+    /// Nintendo Content Container Header.
+    /// This is the format for the CXI and CFA specialization.
+    /// It can contain up to two file systems and several special files.
     /// </summary>
-    public Ncch()
+    public class Ncch : NodeContainerFormat
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Ncch"/> class.
+        /// </summary>
+        public Ncch()
+        {
             Header = new NcchHeader();
         }
 
-    /// <summary>
-    /// Gets or sets the header.
-    /// </summary>
-    /// <value>The header.</value>
-    public NcchHeader Header {
-        get;
-        set;
+        /// <summary>
+        /// Gets or sets the header.
+        /// </summary>
+        /// <value>The header.</value>
+        public NcchHeader Header {
+            get;
+            set;
+        }
     }
 }

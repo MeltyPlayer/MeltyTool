@@ -4,17 +4,16 @@ using fin.util.asserts;
 
 using schema.binary;
 
-namespace uni.platforms.gcn.tools;
+namespace uni.platforms.gcn.tools {
+  public class CisoStream : Stream {
+    private readonly Stream impl_;
+    private readonly long offset_ = 0x8000;
+    private readonly bool[] blockMap_;
+    private const long ROM_SIZE = 1_459_978_240;
 
-public class CisoStream : Stream {
-  private readonly Stream impl_;
-  private readonly long offset_ = 0x8000;
-  private readonly bool[] blockMap_;
-  private const long ROM_SIZE = 1_459_978_240;
+    private readonly uint blockSize_;
 
-  private readonly uint blockSize_;
-
-  public CisoStream(Stream impl) {
+    public CisoStream(Stream impl) {
       this.impl_ = impl;
 
       var br = new SchemaBinaryReader(impl, Endianness.LittleEndian);
@@ -28,9 +27,9 @@ public class CisoStream : Stream {
                          .ToArray();
     }
 
-  public override void Flush() => this.impl_.Flush();
+    public override void Flush() => this.impl_.Flush();
 
-  public override int ReadByte() {
+    public override int ReadByte() {
       if (this.Position >= this.Length) {
         return -1;
       }
@@ -40,10 +39,10 @@ public class CisoStream : Stream {
       return value[0];
     }
 
-  public override int Read(byte[] buffer, int offset, int count)
-    => this.Read(buffer.AsSpan(offset, count));
+    public override int Read(byte[] buffer, int offset, int count)
+      => this.Read(buffer.AsSpan(offset, count));
 
-  public override int Read(Span<byte> buffer) {
+    public override int Read(Span<byte> buffer) {
       int dstOffset = 0;
       while (dstOffset < buffer.Length) {
         var remainingInBlock = GetRemainingBytesInBlock_(this.Position);
@@ -67,11 +66,11 @@ public class CisoStream : Stream {
       return dstOffset;
     }
 
-  private int GetRemainingBytesInBlock_(long originalPosition)
-    => (int) (this.blockSize_ - (originalPosition % this.blockSize_));
+    private int GetRemainingBytesInBlock_(long originalPosition)
+      => (int) (this.blockSize_ - (originalPosition % this.blockSize_));
 
-  private bool GetCisoPosition_(long originalPosition,
-                                out long cisoPosition) {
+    private bool GetCisoPosition_(long originalPosition,
+                                  out long cisoPosition) {
       var blockIndex = originalPosition / this.blockSize_;
       if (!this.blockMap_[blockIndex]) {
         cisoPosition = -1;
@@ -88,27 +87,28 @@ public class CisoStream : Stream {
       return true;
     }
 
-  public override long Seek(long offset, SeekOrigin origin)
-    => this.Position = origin switch {
-        SeekOrigin.Begin   => offset,
-        SeekOrigin.Current => this.Position + offset,
-        SeekOrigin.End     => this.Length + offset,
-        _ => throw new ArgumentOutOfRangeException(
-            nameof(origin),
-            origin,
-            null)
-    };
+    public override long Seek(long offset, SeekOrigin origin)
+      => this.Position = origin switch {
+          SeekOrigin.Begin   => offset,
+          SeekOrigin.Current => this.Position + offset,
+          SeekOrigin.End     => this.Length + offset,
+          _ => throw new ArgumentOutOfRangeException(
+              nameof(origin),
+              origin,
+              null)
+      };
 
-  public override void SetLength(long value)
-    => throw new NotSupportedException();
+    public override void SetLength(long value)
+      => throw new NotSupportedException();
 
-  public override void Write(byte[] buffer, int offset, int count)
-    => throw new NotSupportedException();
+    public override void Write(byte[] buffer, int offset, int count)
+      => throw new NotSupportedException();
 
-  public override bool CanRead => this.impl_.CanRead;
-  public override bool CanSeek => this.impl_.CanSeek;
-  public override bool CanWrite => false;
-  public override long Length => ROM_SIZE;
+    public override bool CanRead => this.impl_.CanRead;
+    public override bool CanSeek => this.impl_.CanSeek;
+    public override bool CanWrite => false;
+    public override long Length => ROM_SIZE;
 
-  public override long Position { get; set; }
+    public override long Position { get; set; }
+  }
 }

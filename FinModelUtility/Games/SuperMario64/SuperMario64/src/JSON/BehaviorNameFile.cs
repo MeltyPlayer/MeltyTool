@@ -2,10 +2,9 @@
 
 using Newtonsoft.Json.Linq;
 
-namespace sm64.JSON;
-
-public class BehaviorNameFile {
-  private static uint parseUInt(string str) {
+namespace sm64.JSON {
+  public class BehaviorNameFile {
+    private static uint parseUInt(string str) {
       bool isHex = false;
       if (str.StartsWith("0x")) {
         str = str.Substring(2);
@@ -20,7 +19,7 @@ public class BehaviorNameFile {
         return uint.Parse(str, NumberStyles.HexNumber);
     }
 
-  public static void writeObjectCombosFile(string filename) {
+    public static void writeObjectCombosFile(string filename) {
       Globals.objectComboEntries.Sort((x, y) => string.Compare(x.Name, y.Name));
 
       JArray array = [];
@@ -37,11 +36,11 @@ public class BehaviorNameFile {
       File.WriteAllText(filename, o.ToString());
     }
 
-  private static bool checkValidEntry(JObject entry) {
+    private static bool checkValidEntry(JObject entry) {
       return (entry["Name"] != null && entry["Behavior"] != null);
     }
 
-  public static void parseBehaviorNames(string filename) {
+    public static void parseBehaviorNames(string filename) {
       if (File.Exists(filename)) {
         string json = File.ReadAllText(filename);
         JObject o = JObject.Parse(json);
@@ -60,4 +59,5 @@ public class BehaviorNameFile {
         }
       }
     }
+  }
 }

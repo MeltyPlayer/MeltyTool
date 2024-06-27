@@ -1,7 +1,6 @@
-﻿namespace sm64.src;
-
-class AssemblyReader {
-  public List<JAL_CALL> findJALsInFunction(uint RAMFunc, uint RAMtoROM) {
+﻿namespace sm64.src {
+  class AssemblyReader {
+    public List<JAL_CALL> findJALsInFunction(uint RAMFunc, uint RAMtoROM) {
       List<JAL_CALL> calls = [];
       List<Instruction> inst = ReadFunction(RAMFunc, RAMtoROM);
       uint a0 = 0, a1 = 0, a2 = 0, a3 = 0;
@@ -128,7 +127,7 @@ class AssemblyReader {
       return calls;
     }
 
-  public List<Instruction> ReadFunction(uint RAMAddr, uint RAMtoROM) {
+    public List<Instruction> ReadFunction(uint RAMAddr, uint RAMtoROM) {
       List<Instruction> instructions = [];
       ROM rom = ROM.Instance;
       uint ROM_OFFSET = RAMAddr - RAMtoROM;
@@ -145,7 +144,7 @@ class AssemblyReader {
       return instructions;
     }
 
-  private Instruction parseInstruction(uint data) {
+    private Instruction parseInstruction(uint data) {
       Instruction inst = new Instruction();
       if (data == 0) {
         inst.opCode = OPCODE.NOP;
@@ -202,109 +201,109 @@ class AssemblyReader {
     }
 
 
-  long[] gp_register_values = new long[0x32];
+    long[] gp_register_values = new long[0x32];
 
-  // General-Purpose Registers
-  public enum GP_REGISTER {
-    R0, // Constant 0
-    AT, // Used for psuedo-instructions
-    V0,
-    V1, // Function returns
-    A0,
-    A1,
-    A2,
-    A3, // Function Arguments
-    T0,
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7, // Temporary
-    S0,
-    S1,
-    S2,
-    S3,
-    S4,
-    S5,
-    S6,
-    S7, // Saved
-    T8,
-    T9, // More temporary
-    K0,
-    K1, // Reserved for Kernal (do not use)
-    GP, // Global area pointer
-    SP, // Stack pointer
-    FP, // Frame pointer
-    RA  // Return address
-  }
+    // General-Purpose Registers
+    public enum GP_REGISTER {
+      R0, // Constant 0
+      AT, // Used for psuedo-instructions
+      V0,
+      V1, // Function returns
+      A0,
+      A1,
+      A2,
+      A3, // Function Arguments
+      T0,
+      T1,
+      T2,
+      T3,
+      T4,
+      T5,
+      T6,
+      T7, // Temporary
+      S0,
+      S1,
+      S2,
+      S3,
+      S4,
+      S5,
+      S6,
+      S7, // Saved
+      T8,
+      T9, // More temporary
+      K0,
+      K1, // Reserved for Kernal (do not use)
+      GP, // Global area pointer
+      SP, // Stack pointer
+      FP, // Frame pointer
+      RA // Return address
+    }
 
-  // Floating-Point Registers
-  public enum FP_REGISTER {
-    F0,
-    F1,
-    F2,
-    F3, // Function returns
-    F4,
-    F5,
-    F6,
-    F7,
-    F8,
-    F9,
-    F10,
-    F11, // Temporary
-    F12,
-    F13,
-    F14,
-    F15, // Function arguments
-    F16,
-    F17,
-    F18,
-    F19, // More Temporary
-    F20,
-    F21,
-    F22,
-    F23,
-    F24,
-    F25,
-    F26,
-    F27,
-    F28,
-    F29,
-    F30,
-    F31 // Saved
-  }
+    // Floating-Point Registers
+    public enum FP_REGISTER {
+      F0,
+      F1,
+      F2,
+      F3, // Function returns
+      F4,
+      F5,
+      F6,
+      F7,
+      F8,
+      F9,
+      F10,
+      F11, // Temporary
+      F12,
+      F13,
+      F14,
+      F15, // Function arguments
+      F16,
+      F17,
+      F18,
+      F19, // More Temporary
+      F20,
+      F21,
+      F22,
+      F23,
+      F24,
+      F25,
+      F26,
+      F27,
+      F28,
+      F29,
+      F30,
+      F31 // Saved
+    }
 
-  public enum OPCODE {
-    LUI,
-    ADDIU,
-    ORI,
-    JAL,
-    JR,
-    NOP,
-    DO_NOT_CARE
-  }
+    public enum OPCODE {
+      LUI,
+      ADDIU,
+      ORI,
+      JAL,
+      JR,
+      NOP,
+      DO_NOT_CARE
+    }
 
-  public class JAL_CALL {
-    public uint JAL_ADDRESS = 0, a0 = 0, a1 = 0, a2 = 0, a3 = 0;
+    public class JAL_CALL {
+      public uint JAL_ADDRESS = 0, a0 = 0, a1 = 0, a2 = 0, a3 = 0;
 
-    public override string ToString() {
+      public override string ToString() {
         return JAL_ADDRESS.ToString("X8") + "("
                                           + a0.ToString("X8") + ", "
                                           + a1.ToString("X8") + ", "
                                           + a2.ToString("X8") + ", "
                                           + a3.ToString("X8") + ")";
       }
-  }
+    }
 
-  public class Instruction {
-    public OPCODE opCode;
-    public GP_REGISTER gp_1, gp_dest;
-    public short immediate = 0;
-    public uint jump_to_func = 0;
+    public class Instruction {
+      public OPCODE opCode;
+      public GP_REGISTER gp_1, gp_dest;
+      public short immediate = 0;
+      public uint jump_to_func = 0;
 
-    public override string ToString() {
+      public override string ToString() {
         switch (opCode) {
           case OPCODE.JR:
             return "JR " + gp_1.ToString();
@@ -319,5 +318,6 @@ class AssemblyReader {
         }
         return opCode.ToString();
       }
+    }
   }
 }

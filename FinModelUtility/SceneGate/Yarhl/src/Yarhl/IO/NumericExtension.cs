@@ -17,81 +17,82 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO;
-
-using System;
-
-/// <summary>
-/// Extension methods for numeric types.
-/// </summary>
-public static class NumericExtension
+namespace Yarhl.IO
 {
+    using System;
+
     /// <summary>
-    /// Pad the specified address.
+    /// Extension methods for numeric types.
     /// </summary>
-    /// <returns>The address padded.</returns>
-    /// <param name="address">Address to pad.</param>
-    /// <param name="padding">Padding target.</param>
-    public static short Pad(this short address, int padding)
+    public static class NumericExtension
     {
+        /// <summary>
+        /// Pad the specified address.
+        /// </summary>
+        /// <returns>The address padded.</returns>
+        /// <param name="address">Address to pad.</param>
+        /// <param name="padding">Padding target.</param>
+        public static short Pad(this short address, int padding)
+        {
             return (short)Pad((ulong)address, (ulong)padding);
         }
 
-    /// <summary>
-    /// Pad the specified address.
-    /// </summary>
-    /// <returns>The address padded.</returns>
-    /// <param name="address">Address to pad.</param>
-    /// <param name="padding">Padding target.</param>
-    [CLSCompliant(false)]
-    public static ushort Pad(this ushort address, int padding)
-    {
+        /// <summary>
+        /// Pad the specified address.
+        /// </summary>
+        /// <returns>The address padded.</returns>
+        /// <param name="address">Address to pad.</param>
+        /// <param name="padding">Padding target.</param>
+        [CLSCompliant(false)]
+        public static ushort Pad(this ushort address, int padding)
+        {
             return (ushort)Pad(address, (ulong)padding);
         }
 
-    /// <summary>
-    /// Pad the specified address.
-    /// </summary>
-    /// <returns>The address padded.</returns>
-    /// <param name="address">Address to pad.</param>
-    /// <param name="padding">Padding target.</param>
-    public static int Pad(this int address, int padding)
-    {
+        /// <summary>
+        /// Pad the specified address.
+        /// </summary>
+        /// <returns>The address padded.</returns>
+        /// <param name="address">Address to pad.</param>
+        /// <param name="padding">Padding target.</param>
+        public static int Pad(this int address, int padding)
+        {
             return (int)Pad((ulong)address, (ulong)padding);
         }
 
-    /// <summary>
-    /// Pad the specified address.
-    /// </summary>
-    /// <returns>The address padded.</returns>
-    /// <param name="address">Address to pad.</param>
-    /// <param name="padding">Padding target.</param>
-    [CLSCompliant(false)]
-    public static uint Pad(this uint address, int padding)
-    {
+        /// <summary>
+        /// Pad the specified address.
+        /// </summary>
+        /// <returns>The address padded.</returns>
+        /// <param name="address">Address to pad.</param>
+        /// <param name="padding">Padding target.</param>
+        [CLSCompliant(false)]
+        public static uint Pad(this uint address, int padding)
+        {
             return (uint)Pad(address, (ulong)padding);
         }
 
-    /// <summary>
-    /// Pad the specified address.
-    /// </summary>
-    /// <returns>The address padded.</returns>
-    /// <param name="address">Address to pad.</param>
-    /// <param name="padding">Padding target.</param>
-    public static long Pad(this long address, long padding)
-    {
+        /// <summary>
+        /// Pad the specified address.
+        /// </summary>
+        /// <returns>The address padded.</returns>
+        /// <param name="address">Address to pad.</param>
+        /// <param name="padding">Padding target.</param>
+        public static long Pad(this long address, long padding)
+        {
             return (long)Pad((ulong)address, (ulong)padding);
         }
 
-    /// <summary>
-    /// Pad the specified address.
-    /// </summary>
-    /// <returns>The address padded.</returns>
-    /// <param name="address">Address to pad.</param>
-    /// <param name="padding">Padding target.</param>
-    [CLSCompliant(false)]
-    public static ulong Pad(this ulong address, ulong padding)
-    {
+        /// <summary>
+        /// Pad the specified address.
+        /// </summary>
+        /// <returns>The address padded.</returns>
+        /// <param name="address">Address to pad.</param>
+        /// <param name="padding">Padding target.</param>
+        [CLSCompliant(false)]
+        public static ulong Pad(this ulong address, ulong padding)
+        {
             return address + ((address % padding == 0) ? 0 : padding - (address % padding));
         }
+    }
 }

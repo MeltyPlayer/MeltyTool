@@ -17,13 +17,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Processing;
-
-using Colors;
-using Palettes;
-using Pixels;
-
-public interface IQuantization
+namespace Texim.Processing
 {
-    (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels);
+    using Colors;
+    using Palettes;
+    using Pixels;
+
+    public interface IQuantization
+    {
+        (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels);
+    }
 }

@@ -17,19 +17,19 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Processing;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Colors;
-using Palettes;
-using Pixels;
-
-public class MedianCutQuantization : IQuantization
+namespace Texim.Processing
 {
-    public MedianCutQuantization(int maxColors)
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Colors;
+    using Palettes;
+    using Pixels;
+
+    public class MedianCutQuantization : IQuantization
     {
+        public MedianCutQuantization(int maxColors)
+        {
             if (maxColors <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxColors), maxColors, "Cannot be less than 0");
             if ((maxColors & (maxColors - 1)) != 0)
@@ -38,10 +38,10 @@ public class MedianCutQuantization : IQuantization
             MaxColors = maxColors;
         }
 
-    public int MaxColors { get; }
+        public int MaxColors { get; }
 
-    public (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels)
-    {
+        public (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels)
+        {
             // Convert to pixel reference to keep track of pixel indexes
             var pixelrefs = new PixelRef[pixels.Length];
             for (int i = 0; i < pixels.Length; i++) {
@@ -77,8 +77,8 @@ public class MedianCutQuantization : IQuantization
             return (indexed, new PaletteCollection(palette));
         }
 
-    private (PixelRef[], PixelRef[]) MedianCut(PixelRef[] bucket)
-    {
+        private (PixelRef[], PixelRef[]) MedianCut(PixelRef[] bucket)
+        {
             long rangeRed = bucket.Max(c => c.Color.Red) - bucket.Min(c => c.Color.Red);
             long rangeGreen = bucket.Max(c => c.Color.Green) - bucket.Min(c => c.Color.Green);
             long rangeBlue = bucket.Max(c => c.Color.Blue) - bucket.Min(c => c.Color.Blue);
@@ -96,18 +96,19 @@ public class MedianCutQuantization : IQuantization
             return (sorted[..median], sorted[median..]);
         }
 
-    private Rgb Average(PixelRef[] bucket) =>
-        new Rgb(
-            (byte)bucket.Average(c => c.Color.Red),
-            (byte)bucket.Average(c => c.Color.Green),
-            (byte)bucket.Average(c => c.Color.Blue));
+        private Rgb Average(PixelRef[] bucket) =>
+            new Rgb(
+                (byte)bucket.Average(c => c.Color.Red),
+                (byte)bucket.Average(c => c.Color.Green),
+                (byte)bucket.Average(c => c.Color.Blue));
 
-    private readonly struct PixelRef
-    {
-        public PixelRef(Rgb color, int index) => (Color, Index) = (color, index);
+        private readonly struct PixelRef
+        {
+            public PixelRef(Rgb color, int index) => (Color, Index) = (color, index);
 
-        public Rgb Color { get; init; }
+            public Rgb Color { get; init; }
 
-        public int Index { get; init; }
+            public int Index { get; init; }
+        }
     }
 }

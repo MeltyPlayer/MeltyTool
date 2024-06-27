@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 SceneGate
+// Copyright (c) 2020 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,53 +17,53 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Titles;
-
-using System;
-using System.Diagnostics.CodeAnalysis;
-using YamlDotNet.Serialization;
-
-/// <summary>
-/// Information about a CIA content chunk.
-/// </summary>
-public class ContentChunkRecord
+namespace SceneGate.Lemon.Titles
 {
-    /// <summary>
-    /// Gets or sets the ID of the chunk.
-    /// </summary>
-    public int Id { get; set; }
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using YamlDotNet.Serialization;
 
     /// <summary>
-    /// Gets or sets the chunk index which maps into its actual content.
+    /// Information about a CIA content chunk.
     /// </summary>
-    public short Index { get; set; }
-
-    /// <summary>
-    /// Gets or sets the type of content.
-    /// </summary>
-    public ContentAttributes Attributes { get; set; }
-
-    /// <summary>
-    /// Gets or sets the chunk size.
-    /// </summary>
-    public long Size { get; set; }
-
-    /// <summary>
-    /// Gets or sets the chunk hash.
-    /// </summary>
-    [SuppressMessage(
-        "Performance",
-        "CA1819",
-        Justification = "This is how .NET API works with hashes too and this is a model")]
-    [YamlIgnore]
-    public byte[] Hash { get; set; }
-
-    /// <summary>
-    /// Gets the name of the chunk from its index.
-    /// </summary>
-    /// <returns>The chunk's name.</returns>
-    public string GetChunkName()
+    public class ContentChunkRecord
     {
+        /// <summary>
+        /// Gets or sets the ID of the chunk.
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
+        /// Gets or sets the chunk index which maps into its actual content.
+        /// </summary>
+        public short Index { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of content.
+        /// </summary>
+        public ContentAttributes Attributes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the chunk size.
+        /// </summary>
+        public long Size { get; set; }
+
+        /// <summary>
+        /// Gets or sets the chunk hash.
+        /// </summary>
+        [SuppressMessage(
+            "Performance",
+            "CA1819",
+            Justification = "This is how .NET API works with hashes too and this is a model")]
+        [YamlIgnore]
+        public byte[] Hash { get; set; }
+
+        /// <summary>
+        /// Gets the name of the chunk from its index.
+        /// </summary>
+        /// <returns>The chunk's name.</returns>
+        public string GetChunkName()
+        {
             return Index switch {
                 0 => "program",
                 1 => "manual",
@@ -71,4 +71,5 @@ public class ContentChunkRecord
                 _ => throw new NotSupportedException(),
             };
         }
+    }
 }

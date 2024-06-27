@@ -2,17 +2,16 @@
 
 using fin.image;
 
-namespace HaloWarsTools;
+namespace HaloWarsTools {
+  public class HWXttResource : HWBinaryResource {
+    public IImage AlbedoTexture { get; private set; }
 
-public class HWXttResource : HWBinaryResource {
-  public IImage AlbedoTexture { get; private set; }
+    public static new HWXttResource
+        FromFile(HWContext context, string filename)
+      => GetOrCreateFromFile(context, filename, HWResourceType.Xtt) as
+             HWXttResource;
 
-  public static new HWXttResource
-      FromFile(HWContext context, string filename)
-    => GetOrCreateFromFile(context, filename, HWResourceType.Xtt) as
-        HWXttResource;
-
-  protected override void Load(byte[] bytes) {
+    protected override void Load(byte[] bytes) {
       base.Load(bytes);
 
       this.AlbedoTexture = ExtractEmbeddedDXT1(
@@ -22,8 +21,8 @@ public class HWXttResource : HWBinaryResource {
                   .XTT_AtlasChunkAlbedo));
     }
 
-  private IImage ExtractEmbeddedDXT1(byte[] bytes,
-                                     HWBinaryResourceChunk chunk) {
+    private IImage ExtractEmbeddedDXT1(byte[] bytes,
+                                       HWBinaryResourceChunk chunk) {
       // Decompress DXT1 texture and turn it into a Bitmap
       var width =
           BinaryUtils.ReadInt32BigEndian(bytes, (int) chunk.Offset + 4);
@@ -34,4 +33,5 @@ public class HWXttResource : HWBinaryResource {
                                        width,
                                        height);
     }
+  }
 }

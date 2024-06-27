@@ -5,10 +5,9 @@ using sm64.LevelInfo;
 using sm64.memory;
 using sm64.Scripts;
 
-namespace sm64.api;
-
-public static class Sm64LevelImporter {
-  public static Level LoadLevel(Sm64LevelFileBundle levelFileBundle) {
+namespace sm64.api {
+  public static class Sm64LevelImporter {
+    public static Level LoadLevel(Sm64LevelFileBundle levelFileBundle) {
       ROM rom = ROM.Instance;
 
       rom.clearSegments();
@@ -45,4 +44,5 @@ public static class Sm64LevelImporter {
 
       return level;
     }
+  }
 }

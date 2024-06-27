@@ -1,26 +1,25 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace benchmarks;
+namespace benchmarks {
+  public class FetchDirectories {
+    [Benchmark]
+    public void FetchDirectoriesSeparately() =>
+        FetchDirectoriesSeparatelyImpl().ToArray();
 
-public class FetchDirectories {
-  [Benchmark]
-  public void FetchDirectoriesSeparately() =>
-      FetchDirectoriesSeparatelyImpl().ToArray();
+    [Benchmark]
+    public void FetchDirectoriesAllAtOnce() =>
+        FetchDirectoriesAllAtOnceImpl();
 
-  [Benchmark]
-  public void FetchDirectoriesAllAtOnce() =>
-      FetchDirectoriesAllAtOnceImpl();
+    [Benchmark]
+    public void FetchEntriesAllAtOnce() =>
+        FetchEntriesAllAtOnceImpl();
 
-  [Benchmark]
-  public void FetchEntriesAllAtOnce() =>
-      FetchEntriesAllAtOnceImpl();
+    public const string DIRECTORY =
+        @"R:\Documents\CSharpWorkspace\Pikmin2Utility\cli\roms";
 
-  public const string DIRECTORY =
-      @"R:\Documents\CSharpWorkspace\Pikmin2Utility\cli\roms";
+    public const string SEARCH_PATTERN = "*";
 
-  public const string SEARCH_PATTERN = "*";
-
-  public IEnumerable<string> FetchDirectoriesSeparatelyImpl() {
+    public IEnumerable<string> FetchDirectoriesSeparatelyImpl() {
       var rootFolderPath = DIRECTORY;
       var pending = new Queue<string>();
       pending.Enqueue(rootFolderPath);
@@ -42,7 +41,7 @@ public class FetchDirectories {
       }
     }
 
-  public string[] FetchDirectoriesAllAtOnceImpl() {
+    public string[] FetchDirectoriesAllAtOnceImpl() {
       return Directory.GetFiles(DIRECTORY, SEARCH_PATTERN,
                                 new EnumerationOptions {
                                     RecurseSubdirectories =
@@ -50,11 +49,12 @@ public class FetchDirectories {
                                 });
     }
 
-  public string[] FetchEntriesAllAtOnceImpl() {
+    public string[] FetchEntriesAllAtOnceImpl() {
       return Directory.GetFileSystemEntries(DIRECTORY, SEARCH_PATTERN,
                                             new EnumerationOptions {
                                                 RecurseSubdirectories =
                                                     true
                                             });
     }
+  }
 }

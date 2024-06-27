@@ -2,24 +2,23 @@
 
 using UoT.hacks.fields;
 
-namespace UoT;
+namespace UoT {
+  public class ZeldaAdultIndirectTextureHack : IIndirectTextureHack {
+    // TODO: Support different eyes/mouths depending on animation frame.
+    // TODO: Where are the rest of the expressions?
 
-public class ZeldaAdultIndirectTextureHack : IIndirectTextureHack {
-  // TODO: Support different eyes/mouths depending on animation frame.
-  // TODO: Where are the rest of the expressions?
+    public IReadOnlyList<IField> Fields { get; } =
+      new List<IField>().AsReadOnly();
 
-  public IReadOnlyList<IField> Fields { get; } =
-    new List<IField>().AsReadOnly();
+    public enum Eye {
+      NORMAL = 0x30C8,
+    }
 
-  public enum Eye {
-    NORMAL = 0x30C8,
-  }
-
-  public EyeState EyeState { get => default; set { } }
-  public MouthState MouthState { get => default; set { } }
+    public EyeState EyeState { get => default; set { } }
+    public MouthState MouthState { get => default; set { } }
 
 
-  public uint MapTextureAddress(uint originalAddress) {
+    public uint MapTextureAddress(uint originalAddress) {
       // Left eye
       if (originalAddress == 0x09000000) {
         return 0x06000000 + (uint)Eye.NORMAL;
@@ -37,4 +36,5 @@ public class ZeldaAdultIndirectTextureHack : IIndirectTextureHack {
 
       return originalAddress;
     }
+  }
 }

@@ -17,28 +17,28 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Converters;
-
-using System;
-using Titles;
-using Yarhl.FileFormat;
-using Yarhl.FileSystem;
-using Yarhl.IO;
-
-/// <summary>
-/// Converter for binary CIA streams into node containers.
-/// </summary>
-public class BinaryCia2NodeContainer : IConverter<BinaryFormat, NodeContainerFormat>
+namespace SceneGate.Lemon.Containers.Converters
 {
-    const int BlockSize = 64;
+    using System;
+    using Titles;
+    using Yarhl.FileFormat;
+    using Yarhl.FileSystem;
+    using Yarhl.IO;
 
     /// <summary>
-    /// Converts a binary CIA format into a container.
+    /// Converter for binary CIA streams into node containers.
     /// </summary>
-    /// <param name="source">The binary CIA format.</param>
-    /// <returns>The container with the CIA content.</returns>
-    public NodeContainerFormat Convert(BinaryFormat source)
+    public class BinaryCia2NodeContainer : IConverter<BinaryFormat, NodeContainerFormat>
     {
+        const int BlockSize = 64;
+
+        /// <summary>
+        /// Converts a binary CIA format into a container.
+        /// </summary>
+        /// <param name="source">The binary CIA format.</param>
+        /// <returns>The container with the CIA content.</returns>
+        public NodeContainerFormat Convert(BinaryFormat source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -86,8 +86,8 @@ public class BinaryCia2NodeContainer : IConverter<BinaryFormat, NodeContainerFor
             return container;
         }
 
-    static Header ReadHeader(DataStream stream)
-    {
+        static Header ReadHeader(DataStream stream)
+        {
             // Read header except content index array.
             // We don't need it as it's a bit array with a bit set for each
             // number of content (i.e. 0xC0 means two contents).
@@ -112,8 +112,8 @@ public class BinaryCia2NodeContainer : IConverter<BinaryFormat, NodeContainerFor
             return header;
         }
 
-    static Node UnpackContent(Node titleNode, DataStream stream, long offset)
-    {
+        static Node UnpackContent(Node titleNode, DataStream stream, long offset)
+        {
             Node content = NodeFactory.CreateContainer("content");
 
             var title = (TitleMetadata)ConvertFormat.With<Binary2TitleMetadata>(titleNode.Format);
@@ -135,29 +135,30 @@ public class BinaryCia2NodeContainer : IConverter<BinaryFormat, NodeContainerFor
             return content;
         }
 
-    static void AddNodes(Node parent, params Node[] children)
-    {
+        static void AddNodes(Node parent, params Node[] children)
+        {
             foreach (var child in children) {
                 parent.Add(child);
             }
         }
 
-    private struct Header
-    {
-        public uint HeaderSize { get; set; }
+        private struct Header
+        {
+            public uint HeaderSize { get; set; }
 
-        public ushort Type { get; set; }
+            public ushort Type { get; set; }
 
-        public ushort Version { get; set; }
+            public ushort Version { get; set; }
 
-        public uint CertificatesLength { get; set; }
+            public uint CertificatesLength { get; set; }
 
-        public uint TicketLength { get; set; }
+            public uint TicketLength { get; set; }
 
-        public uint TitleMetaLength { get; set; }
+            public uint TitleMetaLength { get; set; }
 
-        public uint MetaLength { get; set; }
+            public uint MetaLength { get; set; }
 
-        public long ContentLength { get; set; }
+            public long ContentLength { get; set; }
+        }
     }
 }

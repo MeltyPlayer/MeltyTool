@@ -17,20 +17,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro;
-
-using System.Collections.Generic;
-using Yarhl.IO;
-
-public static class IOExtensions
+namespace Texim.Compressions.Nitro
 {
-    public static MapInfo ReadMapInfo(this DataReader reader)
+    using System.Collections.Generic;
+    using Yarhl.IO;
+
+    public static class IOExtensions
     {
+        public static MapInfo ReadMapInfo(this DataReader reader)
+        {
             return new MapInfo(reader.ReadInt16());
         }
 
-    public static MapInfo[] ReadMapInfos(this DataReader reader, int numMaps)
-    {
+        public static MapInfo[] ReadMapInfos(this DataReader reader, int numMaps)
+        {
             var infos = new MapInfo[numMaps];
             for (int i = 0; i < numMaps; i++) {
                 infos[i] = new MapInfo(reader.ReadInt16());
@@ -39,15 +39,16 @@ public static class IOExtensions
             return infos;
         }
 
-    public static void Write(this DataWriter writer, MapInfo info)
-    {
+        public static void Write(this DataWriter writer, MapInfo info)
+        {
             writer.Write(info.ToInt16());
         }
 
-    public static void Write(this DataWriter writer, IEnumerable<MapInfo> infos)
-    {
+        public static void Write(this DataWriter writer, IEnumerable<MapInfo> infos)
+        {
             foreach (var info in infos) {
                 writer.Write(info.ToInt16());
             }
         }
+    }
 }

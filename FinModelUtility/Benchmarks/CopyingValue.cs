@@ -4,21 +4,20 @@ using CommunityToolkit.HighPerformance;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace benchmarks;
+namespace benchmarks {
+  public class CopyingValue {
+    private static int size_ = 10;
 
-public class CopyingValue {
-  private static int size_ = 10;
+    private int[] intSrc_ = new int[size_];
+    private int[] intDst_ = new int[size_];
+    private Rgba32[] rgbaSrc_ = new Rgba32[size_];
+    private Rgba32[] rgbaDst_ = new Rgba32[size_];
 
-  private int[] intSrc_ = new int[size_];
-  private int[] intDst_ = new int[size_];
-  private Rgba32[] rgbaSrc_ = new Rgba32[size_];
-  private Rgba32[] rgbaDst_ = new Rgba32[size_];
-
-  private readonly int n_ = 10000;
+    private readonly int n_ = 10000;
 
 
-  [Benchmark]
-  public void UsingSpanCopyRgba() {
+    [Benchmark]
+    public void UsingSpanCopyRgba() {
       for (var i = 0; i < n_; ++i) {
         var srcSpan = this.rgbaSrc_.AsSpan();
         var dstSpan = this.rgbaDst_.AsSpan();
@@ -29,8 +28,8 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSpanCopyInt() {
+    [Benchmark]
+    public void UsingSpanCopyInt() {
       for (var i = 0; i < n_; ++i) {
         var srcSpan = this.intSrc_.AsSpan();
         var dstSpan = this.intDst_.AsSpan();
@@ -41,8 +40,8 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSpanCopyMismatch() {
+    [Benchmark]
+    public void UsingSpanCopyMismatch() {
       for (var i = 0; i < n_; ++i) {
         var srcSpan = this.intSrc_.AsSpan().AsBytes();
         var dstSpan = this.rgbaDst_.AsSpan().AsBytes();
@@ -54,8 +53,8 @@ public class CopyingValue {
     }
 
 
-  [Benchmark]
-  public void UsingSpanCopyRgbaCommon() {
+    [Benchmark]
+    public void UsingSpanCopyRgbaCommon() {
       var srcSpan = this.rgbaSrc_.AsSpan();
       var dstSpan = this.rgbaDst_.AsSpan();
 
@@ -66,8 +65,8 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSpanCopyIntCommon() {
+    [Benchmark]
+    public void UsingSpanCopyIntCommon() {
       var srcSpan = this.intSrc_.AsSpan();
       var dstSpan = this.intDst_.AsSpan();
 
@@ -78,8 +77,8 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSpanCopyMismatchCommon() {
+    [Benchmark]
+    public void UsingSpanCopyMismatchCommon() {
       var srcSpan = this.intSrc_.AsSpan().AsBytes();
       var dstSpan = this.rgbaDst_.AsSpan().AsBytes();
 
@@ -92,8 +91,8 @@ public class CopyingValue {
 
 
     
-  [Benchmark]
-  public void UsingSetRgbaViaSpan() {
+    [Benchmark]
+    public void UsingSetRgbaViaSpan() {
       for (var i = 0; i < n_; ++i) {
         var srcSpan = this.rgbaSrc_.AsSpan();
         var dstSpan = this.rgbaDst_.AsSpan();
@@ -104,8 +103,8 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSetRgbaViaSpanCommon() {
+    [Benchmark]
+    public void UsingSetRgbaViaSpanCommon() {
       var srcSpan = this.rgbaSrc_.AsSpan();
       var dstSpan = this.rgbaDst_.AsSpan();
 
@@ -116,8 +115,8 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSetRgbaViaArray() {
+    [Benchmark]
+    public void UsingSetRgbaViaArray() {
       for (var i = 0; i < n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           this.rgbaDst_[p] = this.rgbaSrc_[p];
@@ -127,8 +126,8 @@ public class CopyingValue {
 
 
     
-  [Benchmark]
-  public void UsingSetIntViaSpan() {
+    [Benchmark]
+    public void UsingSetIntViaSpan() {
       for (var i = 0; i < n_; ++i) {
         var srcSpan = this.intSrc_.AsSpan();
         var dstSpan = this.intDst_.AsSpan();
@@ -139,8 +138,8 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSetIntViaSpanCommon() {
+    [Benchmark]
+    public void UsingSetIntViaSpanCommon() {
       var srcSpan = this.intSrc_.AsSpan();
       var dstSpan = this.intDst_.AsSpan();
 
@@ -151,12 +150,13 @@ public class CopyingValue {
       }
     }
 
-  [Benchmark]
-  public void UsingSetIntViaArray() {
+    [Benchmark]
+    public void UsingSetIntViaArray() {
       for (var i = 0; i < n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           this.intDst_[p] = this.intSrc_[p];
         }
       }
     }
+  }
 }

@@ -17,26 +17,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Images;
-
-using System;
-using Palettes;
-using Pixels;
-using Processing;
-using Yarhl.FileFormat;
-
-public class FullImage2IndexedPalette :
-    IInitializer<IQuantization>, IConverter<IFullImage, IndexedPaletteImage>
+namespace Texim.Images
 {
-    private IQuantization quantization;
+    using System;
+    using Palettes;
+    using Pixels;
+    using Processing;
+    using Yarhl.FileFormat;
 
-    public void Initialize(IQuantization parameters)
+    public class FullImage2IndexedPalette :
+        IInitializer<IQuantization>, IConverter<IFullImage, IndexedPaletteImage>
     {
+        private IQuantization quantization;
+
+        public void Initialize(IQuantization parameters)
+        {
             quantization = parameters ?? throw new ArgumentNullException(nameof(parameters));
         }
 
-    public IndexedPaletteImage Convert(IFullImage source)
-    {
+        public IndexedPaletteImage Convert(IFullImage source)
+        {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
@@ -51,4 +51,5 @@ public class FullImage2IndexedPalette :
 
             return indexed;
         }
+    }
 }

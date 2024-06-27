@@ -5,21 +5,20 @@ using fin.io.bundles;
 
 using uni.platforms.gcn;
 
-namespace uni.games.super_smash_bros_melee;
+namespace uni.games.super_smash_bros_melee {
+  using IAnnotatedDatBundle = IAnnotatedFileBundle<DatModelFileBundle>;
 
-using IAnnotatedDatBundle = IAnnotatedFileBundle<DatModelFileBundle>;
+  public class SuperSmashBrosMeleeFileBundleGatherer
+      : IAnnotatedFileBundleGatherer<DatModelFileBundle> {
+    public string Name => "super_smash_bros_melee";
 
-public class SuperSmashBrosMeleeFileBundleGatherer
-    : IAnnotatedFileBundleGatherer<DatModelFileBundle> {
-  public string Name => "super_smash_bros_melee";
+    private const string STAGE_PREFIX = "Gr";
+    private const string TROPHY_PREFIX = "Ty";
 
-  private const string STAGE_PREFIX = "Gr";
-  private const string TROPHY_PREFIX = "Ty";
+    private const string CHARACTER_PREFIX = "Pl";
+    private const string ANIMATION_SUFFIX = "AJ";
 
-  private const string CHARACTER_PREFIX = "Pl";
-  private const string ANIMATION_SUFFIX = "AJ";
-
-  public IEnumerable<IAnnotatedDatBundle>? GatherFileBundles() {
+    public IEnumerable<IAnnotatedDatBundle>? GatherFileBundles() {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "super_smash_bros_melee",
               out var fileHierarchy)) {
@@ -93,4 +92,5 @@ public class SuperSmashBrosMeleeFileBundleGatherer
         }
       }
     }
+  }
 }

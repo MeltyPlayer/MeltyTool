@@ -17,24 +17,25 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Compressions.Nitro;
-
-public class ScreenMap : IScreenMap
+namespace Texim.Compressions.Nitro
 {
-    public ScreenMap()
+    public class ScreenMap : IScreenMap
     {
+        public ScreenMap()
+        {
         }
 
-    public ScreenMap(int width, int height)
-    {
+        public ScreenMap(int width, int height)
+        {
             Width = width;
             Height = height;
             Maps = new MapInfo[width * height];
         }
 
-    public MapInfo[] Maps { get; init; }
+        public MapInfo[] Maps { get; init; }
 
-    public int Width { get; init; }
+        public int Width { get; init; }
 
-    public int Height { get; init; }
+        public int Height { get; init; }
+    }
 }

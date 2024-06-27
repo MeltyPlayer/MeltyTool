@@ -2,11 +2,10 @@
 using fin.io;
 using fin.io.bundles;
 
-namespace uni.util.io;
-
-public class FileBundleHierarchyOrganizer {
-  public IFileBundleDirectory Organize(
-      IEnumerable<IAnnotatedFileBundle> fileBundles) {
+namespace uni.util.io {
+  public class FileBundleHierarchyOrganizer {
+    public IFileBundleDirectory Organize(
+        IEnumerable<IAnnotatedFileBundle> fileBundles) {
       var rootFileBundleDirectory = new FileBundleDirectory("(root)");
 
       var lazyFileHierarchyDirToBundleDir =
@@ -28,4 +27,5 @@ public class FileBundleHierarchyOrganizer {
       rootFileBundleDirectory.CleanUp();
       return rootFileBundleDirectory;
     }
+  }
 }

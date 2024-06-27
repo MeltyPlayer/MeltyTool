@@ -7,14 +7,13 @@ using sm64.api;
 
 using uni.platforms;
 
-namespace uni.games.super_mario_64;
+namespace uni.games.super_mario_64 {
+  using IAnnotatedSm64Bundle = IAnnotatedFileBundle<Sm64LevelFileBundle>;
 
-using IAnnotatedSm64Bundle = IAnnotatedFileBundle<Sm64LevelFileBundle>;
-
-public class SuperMario64AnnotatedFileGatherer :
-    IAnnotatedFileBundleGatherer<Sm64LevelFileBundle> {
-  public IEnumerable<IAnnotatedSm64Bundle>
-      GatherFileBundles() {
+  public class SuperMario64AnnotatedFileGatherer :
+      IAnnotatedFileBundleGatherer<Sm64LevelFileBundle> {
+    public IEnumerable<IAnnotatedSm64Bundle>
+        GatherFileBundles() {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "super_mario_64.z64",
               out var superMario64Rom)) {
@@ -54,5 +53,7 @@ public class SuperMario64AnnotatedFileGatherer :
       }
 
       var marioAnimationsFile = prereqsDir.AssertGetExistingFile("mario_animations.csv");
-      // TODO:    }
+      // TODO: 
+    }
+  }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020 SceneGate
+// Copyright (c) 2020 SceneGate
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,39 +17,40 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO.Serialization.Attributes;
-
-using System;
-
-/// <summary>
-/// Define how to read and write a Enum value.
-/// <remarks>Default type is <see cref="int"/></remarks>
-/// </summary>
-[AttributeUsage(AttributeTargets.Property)]
-public sealed class BinaryEnumAttribute : Attribute
+namespace Yarhl.IO.Serialization.Attributes
 {
+    using System;
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="BinaryEnumAttribute"/> class.
+    /// Define how to read and write a Enum value.
+    /// <remarks>Default type is <see cref="int"/></remarks>
     /// </summary>
-    public BinaryEnumAttribute()
+    [AttributeUsage(AttributeTargets.Property)]
+    public sealed class BinaryEnumAttribute : Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BinaryEnumAttribute"/> class.
+        /// </summary>
+        public BinaryEnumAttribute()
+        {
             ReadAs = typeof(int);
             WriteAs = typeof(int);
         }
 
-    /// <summary>
-    /// Gets or sets the equivalent type for reading.
-    /// </summary>
-    public Type ReadAs {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the equivalent type for reading.
+        /// </summary>
+        public Type ReadAs {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Gets or sets the equivalent type for writing.
-    /// </summary>
-    public Type WriteAs {
-        get;
-        set;
+        /// <summary>
+        /// Gets or sets the equivalent type for writing.
+        /// </summary>
+        public Type WriteAs {
+            get;
+            set;
+        }
     }
 }

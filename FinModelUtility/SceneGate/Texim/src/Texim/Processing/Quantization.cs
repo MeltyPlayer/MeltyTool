@@ -17,20 +17,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Texim.Processing;
-
-using Colors;
-using Palettes;
-using Pixels;
-
-public class Quantization : IQuantization
+namespace Texim.Processing
 {
-    public bool FirstAsTransparent { get; set; }
+    using Colors;
+    using Palettes;
+    using Pixels;
 
-    public Rgb AlphaColor { get; set; }
-
-    public (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels)
+    public class Quantization : IQuantization
     {
+        public bool FirstAsTransparent { get; set; }
+
+        public Rgb AlphaColor { get; set; }
+
+        public (IndexedPixel[], IPaletteCollection) Quantize(Rgb[] pixels)
+        {
             var indexed = new IndexedPixel[pixels.Length];
             var palette = new Palette();
 
@@ -56,4 +56,5 @@ public class Quantization : IQuantization
             var collection = new PaletteCollection(palette);
             return (indexed, collection);
         }
+    }
 }

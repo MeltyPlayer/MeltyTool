@@ -13,12 +13,11 @@ using uni.platforms;
 using UoT.api;
 using UoT.memory;
 
-namespace uni.games.ocarina_of_time;
-
-public class OcarinaOfTimeFileBundleGatherer
-    : IAnnotatedFileBundleGatherer<OotModelFileBundle> {
-  public IEnumerable<IAnnotatedFileBundle<OotModelFileBundle>>
-      GatherFileBundles() {
+namespace uni.games.ocarina_of_time {
+  public class OcarinaOfTimeFileBundleGatherer
+      : IAnnotatedFileBundleGatherer<OotModelFileBundle> {
+    public IEnumerable<IAnnotatedFileBundle<OotModelFileBundle>>
+        GatherFileBundles() {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "ocarina_of_time.z64",
               out var ocarinaOfTimeRom)) {
@@ -62,4 +61,5 @@ public class OcarinaOfTimeFileBundleGatherer
             zObject).Annotate(zObjectFile);
       }
     }
+  }
 }

@@ -4,10 +4,9 @@ using System.Windows.Forms;
 
 using fin.audio.io;
 
-namespace uni.ui.winforms.common.audio;
-
-public partial class AudioPlayerPanel : UserControl, IAudioPlayerPanel {
-  public AudioPlayerPanel() {
+namespace uni.ui.winforms.common.audio {
+  public partial class AudioPlayerPanel : UserControl, IAudioPlayerPanel {
+    public AudioPlayerPanel() {
       this.InitializeComponent();
 
       this.impl_.OnChange += audioFileBundle => {
@@ -23,10 +22,11 @@ public partial class AudioPlayerPanel : UserControl, IAudioPlayerPanel {
       };
     }
 
-  public IReadOnlyList<IAudioFileBundle>? AudioFileBundles {
-    get => this.impl_.AudioFileBundles;
-    set => this.impl_.AudioFileBundles = value;
-  }
+    public IReadOnlyList<IAudioFileBundle>? AudioFileBundles {
+      get => this.impl_.AudioFileBundles;
+      set => this.impl_.AudioFileBundles = value;
+    }
 
-  public event Action<IAudioFileBundle?> OnChange = delegate { };
+    public event Action<IAudioFileBundle?> OnChange = delegate { };
+  }
 }

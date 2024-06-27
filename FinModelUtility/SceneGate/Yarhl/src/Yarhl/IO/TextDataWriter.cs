@@ -17,53 +17,53 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.IO;
-
-using System;
-using System.Globalization;
-using System.IO;
-using System.Text;
-
-/// <summary>
-/// Text writer for <see cref="Stream" />.
-/// </summary>
-public class TextDataWriter
+namespace Yarhl.IO
 {
-    readonly DataWriter writer;
+    using System;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
 
-    static TextDataWriter()
+    /// <summary>
+    /// Text writer for <see cref="Stream" />.
+    /// </summary>
+    public class TextDataWriter
     {
+        readonly DataWriter writer;
+
+        static TextDataWriter()
+        {
             // Make sure that the shift-jis encoding is initialized.
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TextDataWriter"/> class.
-    /// </summary>
-    /// <param name="stream">Stream to write to.</param>
-    /// <remarks><para>The default encoding is UTF-8.</para></remarks>
-    public TextDataWriter(Stream stream)
-        : this(stream, Encoding.UTF8)
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextDataWriter"/> class.
+        /// </summary>
+        /// <param name="stream">Stream to write to.</param>
+        /// <remarks><para>The default encoding is UTF-8.</para></remarks>
+        public TextDataWriter(Stream stream)
+            : this(stream, Encoding.UTF8)
+        {
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TextDataWriter"/> class.
-    /// </summary>
-    /// <param name="stream">Stream to read from.</param>
-    /// <param name="encoding">Encoding to use.</param>
-    public TextDataWriter(Stream stream, string encoding)
-        : this(stream, Encoding.GetEncoding(encoding))
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextDataWriter"/> class.
+        /// </summary>
+        /// <param name="stream">Stream to read from.</param>
+        /// <param name="encoding">Encoding to use.</param>
+        public TextDataWriter(Stream stream, string encoding)
+            : this(stream, Encoding.GetEncoding(encoding))
+        {
         }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="TextDataWriter"/> class.
-    /// </summary>
-    /// <param name="stream">Stream to write to.</param>
-    /// <param name="encoding">Encoding to use.</param>
-    public TextDataWriter(Stream stream, Encoding encoding)
-    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextDataWriter"/> class.
+        /// </summary>
+        /// <param name="stream">Stream to write to.</param>
+        /// <param name="encoding">Encoding to use.</param>
+        public TextDataWriter(Stream stream, Encoding encoding)
+        {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
             if (encoding == null)
@@ -78,60 +78,60 @@ public class TextDataWriter
             };
         }
 
-    /// <summary>
-    /// Gets the stream.
-    /// </summary>
-    public DataStream Stream {
-        get;
-        private set;
-    }
+        /// <summary>
+        /// Gets the stream.
+        /// </summary>
+        public DataStream Stream {
+            get;
+            private set;
+        }
 
-    /// <summary>
-    /// Gets the encoding.
-    /// </summary>
-    public Encoding Encoding {
-        get;
-        private set;
-    }
+        /// <summary>
+        /// Gets the encoding.
+        /// </summary>
+        public Encoding Encoding {
+            get;
+            private set;
+        }
 
-    /// <summary>
-    /// Gets or sets the new line character.
-    /// </summary>
-    /// <value>The new line character.</value>
-    /// <remarks><para>The default value is \n, the Unix new line.</para></remarks>
-    public string NewLine {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets the new line character.
+        /// </summary>
+        /// <value>The new line character.</value>
+        /// <remarks><para>The default value is \n, the Unix new line.</para></remarks>
+        public string NewLine {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether write automatically
-    /// the encoding preamble.
-    /// </summary>
-    /// <value>
-    /// True to write the preamble if the stream is empty, otherwise false.
-    /// </value>
-    public bool AutoPreamble {
-        get;
-        set;
-    }
+        /// <summary>
+        /// Gets or sets a value indicating whether write automatically
+        /// the encoding preamble.
+        /// </summary>
+        /// <value>
+        /// True to write the preamble if the stream is empty, otherwise false.
+        /// </value>
+        public bool AutoPreamble {
+            get;
+            set;
+        }
 
-    /// <summary>
-    /// Write the specified char.
-    /// </summary>
-    /// <param name="ch">Char to write.</param>
-    public void Write(char ch)
-    {
+        /// <summary>
+        /// Write the specified char.
+        /// </summary>
+        /// <param name="ch">Char to write.</param>
+        public void Write(char ch)
+        {
             CheckWritePreamble();
             writer.Write(ch);
         }
 
-    /// <summary>
-    /// Write the specified chars.
-    /// </summary>
-    /// <param name="chars">Chars to write.</param>
-    public void Write(char[] chars)
-    {
+        /// <summary>
+        /// Write the specified chars.
+        /// </summary>
+        /// <param name="chars">Chars to write.</param>
+        public void Write(char[] chars)
+        {
             if (chars == null)
                 throw new ArgumentNullException(nameof(chars));
 
@@ -139,12 +139,12 @@ public class TextDataWriter
             writer.Write(chars);
         }
 
-    /// <summary>
-    /// Write the specified text without including a new line.
-    /// </summary>
-    /// <param name="text">Text to write.</param>
-    public void Write(string text)
-    {
+        /// <summary>
+        /// Write the specified text without including a new line.
+        /// </summary>
+        /// <param name="text">Text to write.</param>
+        public void Write(string text)
+        {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
@@ -152,13 +152,13 @@ public class TextDataWriter
             writer.Write(text, false);
         }
 
-    /// <summary>
-    /// Write the specified text with format.
-    /// </summary>
-    /// <param name="format">Format for the text.</param>
-    /// <param name="args">Arguments for the format.</param>
-    public void Write(string format, params object[] args)
-    {
+        /// <summary>
+        /// Write the specified text with format.
+        /// </summary>
+        /// <param name="format">Format for the text.</param>
+        /// <param name="args">Arguments for the format.</param>
+        public void Write(string format, params object[] args)
+        {
             if (format == null)
                 throw new ArgumentNullException(nameof(format));
             if (args == null)
@@ -169,21 +169,21 @@ public class TextDataWriter
             writer.Write(text, false);
         }
 
-    /// <summary>
-    /// Writes a new line.
-    /// </summary>
-    public void WriteLine()
-    {
+        /// <summary>
+        /// Writes a new line.
+        /// </summary>
+        public void WriteLine()
+        {
             CheckWritePreamble();
             writer.Write(NewLine, false);
         }
 
-    /// <summary>
-    /// Writes the specified text and add a new line.
-    /// </summary>
-    /// <param name="text">Text to write.</param>
-    public void WriteLine(string text)
-    {
+        /// <summary>
+        /// Writes the specified text and add a new line.
+        /// </summary>
+        /// <param name="text">Text to write.</param>
+        public void WriteLine(string text)
+        {
             if (text == null)
                 throw new ArgumentNullException(nameof(text));
 
@@ -191,13 +191,13 @@ public class TextDataWriter
             writer.Write(text + NewLine, false);
         }
 
-    /// <summary>
-    /// Writes the specified text with format.
-    /// </summary>
-    /// <param name="format">Format for the text.</param>
-    /// <param name="args">Arguments of the format.</param>
-    public void WriteLine(string format, params object[] args)
-    {
+        /// <summary>
+        /// Writes the specified text with format.
+        /// </summary>
+        /// <param name="format">Format for the text.</param>
+        /// <param name="args">Arguments of the format.</param>
+        public void WriteLine(string format, params object[] args)
+        {
             if (format == null)
                 throw new ArgumentNullException(nameof(format));
             if (args == null)
@@ -208,11 +208,11 @@ public class TextDataWriter
             writer.Write(text + NewLine, false);
         }
 
-    /// <summary>
-    /// Write the encoding preamble.
-    /// </summary>
-    public void WritePreamble()
-    {
+        /// <summary>
+        /// Write the encoding preamble.
+        /// </summary>
+        public void WritePreamble()
+        {
             if (Stream.Position > 0) {
                 throw new InvalidOperationException(
                     "Preamble can be written only in position 0.");
@@ -221,10 +221,11 @@ public class TextDataWriter
             writer.Write(Encoding.GetPreamble());
         }
 
-    void CheckWritePreamble()
-    {
+        void CheckWritePreamble()
+        {
             if (AutoPreamble && Stream.Position == 0) {
                 WritePreamble();
             }
         }
+    }
 }

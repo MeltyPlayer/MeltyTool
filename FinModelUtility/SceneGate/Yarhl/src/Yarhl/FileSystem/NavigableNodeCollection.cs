@@ -17,34 +17,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace Yarhl.FileSystem;
-
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-
-/// <summary>
-/// Read-only collection of NavigableNodes.
-/// </summary>
-/// <typeparam name="T">The implementation of NavigableNodes.</typeparam>
-public class NavigableNodeCollection<T> : ReadOnlyCollection<T>
-    where T : NavigableNode<T>
+namespace Yarhl.FileSystem
 {
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+
     /// <summary>
-    /// Initializes a new instance of the
-    /// <see cref="Yarhl.FileSystem.NavigableNodeCollection{T}"/> class.
+    /// Read-only collection of NavigableNodes.
     /// </summary>
-    /// <param name="list">Original list of nodes.</param>
-    public NavigableNodeCollection(IList<T> list)
-        : base(list)
+    /// <typeparam name="T">The implementation of NavigableNodes.</typeparam>
+    public class NavigableNodeCollection<T> : ReadOnlyCollection<T>
+        where T : NavigableNode<T>
     {
+        /// <summary>
+        /// Initializes a new instance of the
+        /// <see cref="Yarhl.FileSystem.NavigableNodeCollection{T}"/> class.
+        /// </summary>
+        /// <param name="list">Original list of nodes.</param>
+        public NavigableNodeCollection(IList<T> list)
+            : base(list)
+        {
         }
 
-    /// <summary>
-    /// Gets the <see cref="Yarhl.FileSystem.NavigableNodeCollection{T}"/>
-    /// with the specified name.
-    /// </summary>
-    /// <param name="name">Node name.</param>
-    /// <returns>The node with the same name or null if not found.</returns>
-    public T? this[string name] => this.FirstOrDefault(node => node?.Name == name);
+        /// <summary>
+        /// Gets the <see cref="Yarhl.FileSystem.NavigableNodeCollection{T}"/>
+        /// with the specified name.
+        /// </summary>
+        /// <param name="name">Node name.</param>
+        /// <returns>The node with the same name or null if not found.</returns>
+        public T? this[string name] => this.FirstOrDefault(node => node?.Name == name);
+    }
 }

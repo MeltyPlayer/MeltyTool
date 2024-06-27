@@ -1,4 +1,4 @@
-// Copyright(c) 2021 SceneGate
+﻿// Copyright(c) 2021 SceneGate
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,30 @@
 
 using Yarhl.FileFormat;
 
-namespace SceneGate.Ekona.Containers.Rom;
-
-/// <summary>
-/// Header of the program in a ROM.
-/// </summary>
-public class RomHeader : IFormat
+namespace SceneGate.Ekona.Containers.Rom
 {
     /// <summary>
-    /// Gets or sets the information of the program.
+    /// Header of the program in a ROM.
     /// </summary>
-    public ProgramInfo ProgramInfo { get; set; } = new ProgramInfo();
+    public class RomHeader : IFormat
+    {
+        /// <summary>
+        /// Gets or sets the information of the program.
+        /// </summary>
+        public ProgramInfo ProgramInfo { get; set; } = new ProgramInfo();
 
-    /// <summary>
-    /// Gets or sets the information of the sections of the ROM.
-    /// </summary>
-    public RomSectionInfo SectionInfo { get; set; } = new RomSectionInfo();
+        /// <summary>
+        /// Gets or sets the information of the sections of the ROM.
+        /// </summary>
+        public RomSectionInfo SectionInfo { get; set; } = new RomSectionInfo();
 
-    /// <summary>
-    /// Gets or sets the compressed copyright logo.
-    /// </summary>
-    /// <remarks>
-    /// <para>The logo is compressed with Huffman with a header present in the BIOS.</para>
-    /// <para>The logo must be the original or the device won't boot the game.</para>
-    /// </remarks>
-    public byte[] CopyrightLogo { get; set; }
+        /// <summary>
+        /// Gets or sets the compressed copyright logo.
+        /// </summary>
+        /// <remarks>
+        /// <para>The logo is compressed with Huffman with a header present in the BIOS.</para>
+        /// <para>The logo must be the original or the device won't boot the game.</para>
+        /// </remarks>
+        public byte[] CopyrightLogo { get; set; }
+    }
 }

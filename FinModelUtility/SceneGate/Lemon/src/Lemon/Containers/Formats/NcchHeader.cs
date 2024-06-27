@@ -17,81 +17,82 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-namespace SceneGate.Lemon.Containers.Formats;
-
-using System.Diagnostics.CodeAnalysis;
-
-/// <summary>
-/// NCCH header information.
-/// </summary>
-public class NcchHeader
+namespace SceneGate.Lemon.Containers.Formats
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
-    /// Gets the magic identifier of the format.
+    /// NCCH header information.
     /// </summary>
-    /// <value>The magic ID of the format.</value>
-    public static string MagicId {
-        get { return "NCCH"; }
+    public class NcchHeader
+    {
+        /// <summary>
+        /// Gets the magic identifier of the format.
+        /// </summary>
+        /// <value>The magic ID of the format.</value>
+        public static string MagicId {
+            get { return "NCCH"; }
+        }
+
+        /// <summary>
+        /// Gets the equivalent in bytes of one unit for the header values.
+        /// </summary>
+        /// <value>One unit in bytes.</value>
+        public static int Unit {
+            get { return 0x200; }
+        }
+
+        /// <summary>
+        /// Gets or sets the RSA-2048 signature of the NCCH header using SHA-256.
+        /// </summary>
+        /// <value>The signature of the header.</value>
+        [SuppressMessage(
+            "Microsoft.Performance",
+            "CA1819:PropertiesShouldNotReturnArrays",
+            Justification="Model or DTO.")]
+        public byte[] Signature {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the partition id.
+        /// </summary>
+        public long PartitionId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maker code.
+        /// </summary>
+        public short MakerCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version.
+        /// </summary>
+        public short Version { get; set; }
+
+        /// <summary>
+        /// Gets or sets the program id.
+        /// </summary>
+        public long ProgramId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the product code.
+        /// </summary>
+        public string ProductCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets the flags.
+        /// </summary>
+        public byte[] Flags { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the system region (in units) that will be used for calculating the hash.
+        /// </summary>
+        public int SystemHashSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the program region (in units) that will be used for calculating the hash.
+        /// </summary>
+        public int RomHashSize { get; set; }
     }
-
-    /// <summary>
-    /// Gets the equivalent in bytes of one unit for the header values.
-    /// </summary>
-    /// <value>One unit in bytes.</value>
-    public static int Unit {
-        get { return 0x200; }
-    }
-
-    /// <summary>
-    /// Gets or sets the RSA-2048 signature of the NCCH header using SHA-256.
-    /// </summary>
-    /// <value>The signature of the header.</value>
-    [SuppressMessage(
-        "Microsoft.Performance",
-        "CA1819:PropertiesShouldNotReturnArrays",
-        Justification="Model or DTO.")]
-    public byte[] Signature {
-        get;
-        set;
-    }
-
-    /// <summary>
-    /// Gets or sets the partition id.
-    /// </summary>
-    public long PartitionId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the maker code.
-    /// </summary>
-    public short MakerCode { get; set; }
-
-    /// <summary>
-    /// Gets or sets the version.
-    /// </summary>
-    public short Version { get; set; }
-
-    /// <summary>
-    /// Gets or sets the program id.
-    /// </summary>
-    public long ProgramId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the product code.
-    /// </summary>
-    public string ProductCode { get; set; }
-
-    /// <summary>
-    /// Gets or sets the flags.
-    /// </summary>
-    public byte[] Flags { get; set; }
-
-    /// <summary>
-    /// Gets or sets the size of the system region (in units) that will be used for calculating the hash.
-    /// </summary>
-    public int SystemHashSize { get; set; }
-
-    /// <summary>
-    /// Gets or sets the size of the program region (in units) that will be used for calculating the hash.
-    /// </summary>
-    public int RomHashSize { get; set; }
 }
