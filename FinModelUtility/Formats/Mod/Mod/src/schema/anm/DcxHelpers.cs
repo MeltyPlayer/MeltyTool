@@ -23,7 +23,7 @@ namespace mod.schema.anm {
 
         var jointKeyframes = animation.AddBoneTracks(bones[jointIndex]);
 
-        Keyframe<ValueAndTangents<float>>[][] frames;
+        KeyframeDefinition<ValueAndTangents<float>>[][] frames;
 
         frames = DcxHelpers.ReadKeyframes_(
             isDck,
@@ -56,12 +56,12 @@ namespace mod.schema.anm {
       return animation;
     }
 
-    private static Keyframe<ValueAndTangents<float>>[][] ReadKeyframes_(
+    private static KeyframeDefinition<ValueAndTangents<float>>[][] ReadKeyframes_(
         bool isDck,
         IDcxAnimationData animationData,
         IDcxAxes axes,
         float[] values) {
-      var frames = new Keyframe<ValueAndTangents<float>>[3][];
+      var frames = new KeyframeDefinition<ValueAndTangents<float>>[3][];
       for (var i = 0; i < 3; ++i) {
         var axis = axes.Axes[i];
 
@@ -83,15 +83,15 @@ namespace mod.schema.anm {
       return frames;
     }
 
-    public static Keyframe<ValueAndTangents<float>>[] ReadDenseFrames(
+    public static KeyframeDefinition<ValueAndTangents<float>>[] ReadDenseFrames(
         float[] values,
         int offset,
         int count
     ) {
-      var keyframes = new Keyframe<ValueAndTangents<float>>[count];
+      var keyframes = new KeyframeDefinition<ValueAndTangents<float>>[count];
       for (var i = 0; i < count; ++i) {
         keyframes[i] =
-            new Keyframe<ValueAndTangents<float>>(
+            new KeyframeDefinition<ValueAndTangents<float>>(
                 i,
                 new ValueAndTangents<float>(values[offset + i]));
       }
@@ -99,12 +99,12 @@ namespace mod.schema.anm {
       return keyframes;
     }
 
-    public static Keyframe<ValueAndTangents<float>>[] ReadSparseFrames(
+    public static KeyframeDefinition<ValueAndTangents<float>>[] ReadSparseFrames(
         float[] values,
         int offset,
         int count
     ) {
-      var keyframes = new Keyframe<ValueAndTangents<float>>[count];
+      var keyframes = new KeyframeDefinition<ValueAndTangents<float>>[count];
       for (var i = 0; i < count; ++i) {
         var index = (int) values[offset + 3 * i];
         var value = values[offset + 3 * i + 1];
@@ -114,7 +114,7 @@ namespace mod.schema.anm {
         var tangent = values[offset + 3 * i + 2] / 30f;
 
         keyframes[i] =
-            new Keyframe<ValueAndTangents<float>>(
+            new KeyframeDefinition<ValueAndTangents<float>>(
                 index,
                 new ValueAndTangents<float>(value, tangent));
       }
@@ -124,7 +124,7 @@ namespace mod.schema.anm {
 
     // TODO: Do this sparsely
     public static void MergeKeyframesToPositionTrack(
-        Keyframe<ValueAndTangents<float>>[][] positionKeyframes,
+        KeyframeDefinition<ValueAndTangents<float>>[][] positionKeyframes,
         ISeparatePositionAxesTrack3d positionTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in positionKeyframes[i]) {
@@ -139,7 +139,7 @@ namespace mod.schema.anm {
     }
 
     public static void MergeKeyframesToRotationTrack(
-        Keyframe<ValueAndTangents<float>>[][] rotationKeyframes,
+        KeyframeDefinition<ValueAndTangents<float>>[][] rotationKeyframes,
         IEulerRadiansRotationTrack3d rotationTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in rotationKeyframes[i]) {
@@ -154,7 +154,7 @@ namespace mod.schema.anm {
     }
 
     public static void MergeKeyframesToScaleTrack(
-        Keyframe<ValueAndTangents<float>>[][] scaleKeyframes,
+        KeyframeDefinition<ValueAndTangents<float>>[][] scaleKeyframes,
         IScale3dTrack scaleTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in scaleKeyframes[i]) {

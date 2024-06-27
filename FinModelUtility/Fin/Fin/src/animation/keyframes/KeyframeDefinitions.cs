@@ -10,14 +10,14 @@ public class KeyframeDefinitions<T> : IKeyframeDefinitions<T> {
   // List used to store the specific keyframe at each index. Wasteful
   // memory-wise, but allows us to have O(1) frame lookups in terms of time.
   private List<int> frameToKeyframe_;
-  private List<Keyframe<T>> impl_;
+  private List<KeyframeDefinition<T>> impl_;
 
   public KeyframeDefinitions(int initialCapacity = 0) {
     this.impl_ = new(initialCapacity);
     this.frameToKeyframe_ = new List<int>(initialCapacity);
   }
 
-  public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
+  public IReadOnlyList<KeyframeDefinition<T>> Definitions => this.impl_;
 
   public bool HasAtLeastOneKeyframe => this.impl_.Count > 0;
 
@@ -27,7 +27,7 @@ public class KeyframeDefinitions<T> : IKeyframeDefinitions<T> {
                                                   out var existingKeyframe,
                                                   out var isLastKeyframe);
 
-    var newKeyframe = new Keyframe<T>(frame, value, frameType);
+    var newKeyframe = new KeyframeDefinition<T>(frame, value, frameType);
 
     if (keyframeExists && existingKeyframe.Frame == frame) {
       this.impl_[keyframeIndex] = newKeyframe;
@@ -55,7 +55,7 @@ public class KeyframeDefinitions<T> : IKeyframeDefinitions<T> {
 
   public void SetAllKeyframes(IEnumerable<T> values) {
     this.impl_ = values
-                 .Select((value, frame) => new Keyframe<T>(frame, value))
+                 .Select((value, frame) => new KeyframeDefinition<T>(frame, value))
                  .ToList();
 
     var lastFrame = this.impl_.Last().Frame;
@@ -74,10 +74,10 @@ public class KeyframeDefinitions<T> : IKeyframeDefinitions<T> {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Keyframe<T> GetKeyframeAtIndex(int index) => this.impl_[index];
+  public KeyframeDefinition<T> GetKeyframeAtIndex(int index) => this.impl_[index];
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Keyframe<T>? GetKeyframeAtFrame(int frame) {
+  public KeyframeDefinition<T>? GetKeyframeAtFrame(int frame) {
     this.FindIndexOfKeyframe(frame,
                              out _,
                              out var keyframe,
@@ -86,7 +86,7 @@ public class KeyframeDefinitions<T> : IKeyframeDefinitions<T> {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Keyframe<T>? GetKeyframeAtExactFrame(int frame) {
+  public KeyframeDefinition<T>? GetKeyframeAtExactFrame(int frame) {
     var keyframe = this.GetKeyframeAtFrame(frame);
     if (keyframe.HasValue && keyframe.Value.Frame == frame) {
       return keyframe;
@@ -99,7 +99,7 @@ public class KeyframeDefinitions<T> : IKeyframeDefinitions<T> {
   public bool FindIndexOfKeyframe(
       int frame,
       out int keyframeIndex,
-      out Keyframe<T> keyframe,
+      out KeyframeDefinition<T> keyframe,
       out bool isLastKeyframe) {
     if (this.frameToKeyframe_.Count == 0 || frame < 0) {
       keyframeIndex = 0;

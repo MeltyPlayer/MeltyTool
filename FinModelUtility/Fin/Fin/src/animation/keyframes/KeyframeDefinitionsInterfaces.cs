@@ -11,21 +11,21 @@ public partial interface IKeyframeDefinitions<T> {
 
   bool HasAtLeastOneKeyframe { get; }
 
-  IReadOnlyList<Keyframe<T>> Definitions { get; }
+  IReadOnlyList<KeyframeDefinition<T>> Definitions { get; }
 
   [Const]
-  Keyframe<T> GetKeyframeAtIndex(int index);
+  KeyframeDefinition<T> GetKeyframeAtIndex(int index);
 
   [Const]
-  Keyframe<T>? GetKeyframeAtFrame(int frame);
+  KeyframeDefinition<T>? GetKeyframeAtFrame(int frame);
 
   [Const]
-  Keyframe<T>? GetKeyframeAtExactFrame(int frame);
+  KeyframeDefinition<T>? GetKeyframeAtExactFrame(int frame);
 
   [Const]
   bool FindIndexOfKeyframe(
       int frame,
       out int keyframeIndex,
-      out Keyframe<T> keyframe,
+      out KeyframeDefinition<T> keyframe,
       out bool isLastKeyframe);
 }

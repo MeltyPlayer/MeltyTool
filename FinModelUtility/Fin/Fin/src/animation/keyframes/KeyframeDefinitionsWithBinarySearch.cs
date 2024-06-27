@@ -10,13 +10,13 @@ using fin.util.enumerables;
 namespace fin.animation.keyframes;
 
 public class KeyframeDefinitionsWithBinarySearch<T> : IKeyframeDefinitions<T> {
-  private List<Keyframe<T>> impl_;
+  private List<KeyframeDefinition<T>> impl_;
 
   public KeyframeDefinitionsWithBinarySearch(int initialCapacity = 0) {
     this.impl_ = new(initialCapacity);
   }
 
-  public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
+  public IReadOnlyList<KeyframeDefinition<T>> Definitions => this.impl_;
 
   public bool HasAtLeastOneKeyframe { get; set; }
 
@@ -38,7 +38,7 @@ public class KeyframeDefinitionsWithBinarySearch<T> : IKeyframeDefinitions<T> {
                                                   out var isLastKeyframe,
                                                   out performedBinarySearch);
 
-    var newKeyframe = new Keyframe<T>(frame, value, frameType);
+    var newKeyframe = new KeyframeDefinition<T>(frame, value, frameType);
 
     if (keyframeExists && existingKeyframe.Frame == frame) {
       this.lastAccessedKeyframeIndex_ = keyframeIndex;
@@ -55,18 +55,18 @@ public class KeyframeDefinitionsWithBinarySearch<T> : IKeyframeDefinitions<T> {
 
   public void SetAllKeyframes(IEnumerable<T> values) {
     this.impl_ = values
-                 .Select((value, frame) => new Keyframe<T>(frame, value))
+                 .Select((value, frame) => new KeyframeDefinition<T>(frame, value))
                  .ToList();
     this.HasAtLeastOneKeyframe = this.impl_.Count > 0;
     this.lastAccessedKeyframeIndex_ = this.impl_.Count - 1;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Keyframe<T> GetKeyframeAtIndex(int index)
+  public KeyframeDefinition<T> GetKeyframeAtIndex(int index)
     => this.impl_.AsSpan()[index];
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Keyframe<T>? GetKeyframeAtFrame(int frame) {
+  public KeyframeDefinition<T>? GetKeyframeAtFrame(int frame) {
     this.FindIndexOfKeyframe(frame,
                              out _,
                              out var keyframe,
@@ -75,7 +75,7 @@ public class KeyframeDefinitionsWithBinarySearch<T> : IKeyframeDefinitions<T> {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Keyframe<T>? GetKeyframeAtExactFrame(int frame) {
+  public KeyframeDefinition<T>? GetKeyframeAtExactFrame(int frame) {
     this.FindIndexOfKeyframe(frame,
                              out _,
                              out var keyframe,
@@ -93,7 +93,7 @@ public class KeyframeDefinitionsWithBinarySearch<T> : IKeyframeDefinitions<T> {
   public bool FindIndexOfKeyframe(
       int frame,
       out int keyframeIndex,
-      out Keyframe<T> keyframe,
+      out KeyframeDefinition<T> keyframe,
       out bool isLastKeyframe)
     => this.FindIndexOfKeyframe(frame,
                                 out keyframeIndex,
@@ -104,7 +104,7 @@ public class KeyframeDefinitionsWithBinarySearch<T> : IKeyframeDefinitions<T> {
   public bool FindIndexOfKeyframe(
       int frame,
       out int keyframeIndex,
-      out Keyframe<T> keyframe,
+      out KeyframeDefinition<T> keyframe,
       out bool isLastKeyframe,
       out bool performedBinarySearch) {
     performedBinarySearch = false;
@@ -146,7 +146,7 @@ public class KeyframeDefinitionsWithBinarySearch<T> : IKeyframeDefinitions<T> {
     }
 
     // Perform a binary search for the current frame.
-    var result = span.BinarySearch(new Keyframe<T>(frame, default!));
+    var result = span.BinarySearch(new KeyframeDefinition<T>(frame, default!));
     performedBinarySearch = true;
 
     if (result >= 0) {

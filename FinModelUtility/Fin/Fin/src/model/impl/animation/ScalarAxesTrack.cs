@@ -65,7 +65,7 @@ namespace fin.model.impl {
                     frameType);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public Keyframe<ValueAndTangents<TAxis>>? GetKeyframe(
+      public KeyframeDefinition<ValueAndTangents<TAxis>>? GetKeyframe(
           int keyframe,
           int axis)
         => this.axisTracks[axis].GetKeyframe(keyframe);

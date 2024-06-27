@@ -20,7 +20,7 @@ public partial class ModelImpl<TVertex> {
 
     public IAnimation Animation { get; }
 
-    public IReadOnlyList<Keyframe<ValueAndTangents<TValue>>> Keyframes
+    public IReadOnlyList<KeyframeDefinition<ValueAndTangents<TValue>>> Keyframes
       => this.impl.Definitions;
 
     public bool HasAtLeastOneKeyframe => this.impl.HasAtLeastOneKeyframe;
@@ -48,7 +48,7 @@ public partial class ModelImpl<TVertex> {
           values.Select(t => new ValueAndTangents<TValue>(t)));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Keyframe<ValueAndTangents<TValue>>? GetKeyframe(int frame)
+    public KeyframeDefinition<ValueAndTangents<TValue>>? GetKeyframe(int frame)
       => this.impl.GetKeyframeAtFrame(frame);
 
     public bool TryGetInterpolationData(

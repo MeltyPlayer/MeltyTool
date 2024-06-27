@@ -33,7 +33,7 @@ public interface IReadOnlyInterpolatedTrack<TInterpolated> : ITrack {
 
 
 public interface IImplTrack<TValue> : ITrack {
-  IReadOnlyList<Keyframe<ValueAndTangents<TValue>>> Keyframes { get; }
+  IReadOnlyList<KeyframeDefinition<ValueAndTangents<TValue>>> Keyframes { get; }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   void SetKeyframe(int frame, TValue value, string frameType = "")
@@ -73,7 +73,7 @@ public interface IImplTrack<TValue> : ITrack {
       AnimationInterpolationConfig? config = null
   );
 
-  Keyframe<ValueAndTangents<TValue>>? GetKeyframe(int frame);
+  KeyframeDefinition<ValueAndTangents<TValue>>? GetKeyframe(int frame);
 }
 
 

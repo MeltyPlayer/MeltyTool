@@ -57,7 +57,7 @@ namespace fin.model.impl {
                     frameType);
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public Keyframe<ValueAndTangents<float>>?[] GetAxisListAtKeyframe(
+      public KeyframeDefinition<ValueAndTangents<float>>?[] GetAxisListAtKeyframe(
           int keyframe)
         => this.axisTracks_.Select(axis => axis.GetKeyframe(keyframe))
                .ToArray();

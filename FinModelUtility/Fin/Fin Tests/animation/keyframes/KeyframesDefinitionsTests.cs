@@ -16,11 +16,11 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(4, "4");
 
     AssertKeyframes_(impl,
-                     new Keyframe<string>(0, "0"),
-                     new Keyframe<string>(1, "1"),
-                     new Keyframe<string>(2, "2"),
-                     new Keyframe<string>(3, "3"),
-                     new Keyframe<string>(4, "4")
+                     new KeyframeDefinition<string>(0, "0"),
+                     new KeyframeDefinition<string>(1, "1"),
+                     new KeyframeDefinition<string>(2, "2"),
+                     new KeyframeDefinition<string>(3, "3"),
+                     new KeyframeDefinition<string>(4, "4")
     );
   }
 
@@ -32,7 +32,7 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(1, "second");
     impl.SetKeyframe(1, "third");
 
-    AssertKeyframes_(impl, new Keyframe<string>(1, "third"));
+    AssertKeyframes_(impl, new KeyframeDefinition<string>(1, "third"));
   }
 
   [Test]
@@ -46,11 +46,11 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(0, "0");
 
     AssertKeyframes_(impl,
-                     new Keyframe<string>(0, "0"),
-                     new Keyframe<string>(1, "1"),
-                     new Keyframe<string>(2, "2"),
-                     new Keyframe<string>(4, "4"),
-                     new Keyframe<string>(5, "5")
+                     new KeyframeDefinition<string>(0, "0"),
+                     new KeyframeDefinition<string>(1, "1"),
+                     new KeyframeDefinition<string>(2, "2"),
+                     new KeyframeDefinition<string>(4, "4"),
+                     new KeyframeDefinition<string>(5, "5")
     );
   }
 
@@ -65,11 +65,11 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(7, "7");
 
     AssertKeyframes_(impl,
-                     new Keyframe<string>(0, "0"),
-                     new Keyframe<string>(2, "2"),
-                     new Keyframe<string>(5, "5"),
-                     new Keyframe<string>(7, "7"),
-                     new Keyframe<string>(9, "9")
+                     new KeyframeDefinition<string>(0, "0"),
+                     new KeyframeDefinition<string>(2, "2"),
+                     new KeyframeDefinition<string>(5, "5"),
+                     new KeyframeDefinition<string>(7, "7"),
+                     new KeyframeDefinition<string>(9, "9")
     );
   }
 
@@ -82,9 +82,9 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(123, "123");
 
     AssertKeyframes_(impl,
-                     new Keyframe<string>(2, "2"),
-                     new Keyframe<string>(123, "123"),
-                     new Keyframe<string>(1000, "1000")
+                     new KeyframeDefinition<string>(2, "2"),
+                     new KeyframeDefinition<string>(123, "123"),
+                     new KeyframeDefinition<string>(1000, "1000")
     );
   }
 
@@ -96,11 +96,11 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(2, "second");
     impl.SetKeyframe(4, "third");
 
-    Assert.AreEqual(new Keyframe<string>(0, "first"),
+    Assert.AreEqual(new KeyframeDefinition<string>(0, "first"),
                     impl.GetKeyframeAtIndex(0));
-    Assert.AreEqual(new Keyframe<string>(2, "second"),
+    Assert.AreEqual(new KeyframeDefinition<string>(2, "second"),
                     impl.GetKeyframeAtIndex(1));
-    Assert.AreEqual(new Keyframe<string>(4, "third"),
+    Assert.AreEqual(new KeyframeDefinition<string>(4, "third"),
                     impl.GetKeyframeAtIndex(2));
   }
 
@@ -112,19 +112,19 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(2, "second");
     impl.SetKeyframe(4, "third");
 
-    AssertKeyframe_(new Keyframe<string>(0, default),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, default),
                     impl.GetKeyframeAtFrame(-1));
-    AssertKeyframe_(new Keyframe<string>(0, "first"),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, "first"),
                     impl.GetKeyframeAtFrame(0));
-    AssertKeyframe_(new Keyframe<string>(0, "first"),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, "first"),
                     impl.GetKeyframeAtFrame(1));
-    AssertKeyframe_(new Keyframe<string>(2, "second"),
+    AssertKeyframe_(new KeyframeDefinition<string>(2, "second"),
                     impl.GetKeyframeAtFrame(2));
-    AssertKeyframe_(new Keyframe<string>(2, "second"),
+    AssertKeyframe_(new KeyframeDefinition<string>(2, "second"),
                     impl.GetKeyframeAtFrame(3));
-    AssertKeyframe_(new Keyframe<string>(4, "third"),
+    AssertKeyframe_(new KeyframeDefinition<string>(4, "third"),
                     impl.GetKeyframeAtFrame(4));
-    AssertKeyframe_(new Keyframe<string>(4, "third"),
+    AssertKeyframe_(new KeyframeDefinition<string>(4, "third"),
                     impl.GetKeyframeAtFrame(5));
   }
 
@@ -136,19 +136,19 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(2, "second");
     impl.SetKeyframe(0, "first");
 
-    AssertKeyframe_(new Keyframe<string>(0, default),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, default),
                     impl.GetKeyframeAtFrame(-1));
-    AssertKeyframe_(new Keyframe<string>(0, "first"),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, "first"),
                     impl.GetKeyframeAtFrame(0));
-    AssertKeyframe_(new Keyframe<string>(0, "first"),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, "first"),
                     impl.GetKeyframeAtFrame(1));
-    AssertKeyframe_(new Keyframe<string>(2, "second"),
+    AssertKeyframe_(new KeyframeDefinition<string>(2, "second"),
                     impl.GetKeyframeAtFrame(2));
-    AssertKeyframe_(new Keyframe<string>(2, "second"),
+    AssertKeyframe_(new KeyframeDefinition<string>(2, "second"),
                     impl.GetKeyframeAtFrame(3));
-    AssertKeyframe_(new Keyframe<string>(4, "third"),
+    AssertKeyframe_(new KeyframeDefinition<string>(4, "third"),
                     impl.GetKeyframeAtFrame(4));
-    AssertKeyframe_(new Keyframe<string>(4, "third"),
+    AssertKeyframe_(new KeyframeDefinition<string>(4, "third"),
                     impl.GetKeyframeAtFrame(5));
   }
 
@@ -160,19 +160,19 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(0, "first");
     impl.SetKeyframe(2, "second");
 
-    AssertKeyframe_(new Keyframe<string>(0, default),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, default),
                     impl.GetKeyframeAtFrame(-1));
-    AssertKeyframe_(new Keyframe<string>(0, "first"),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, "first"),
                     impl.GetKeyframeAtFrame(0));
-    AssertKeyframe_(new Keyframe<string>(0, "first"),
+    AssertKeyframe_(new KeyframeDefinition<string>(0, "first"),
                     impl.GetKeyframeAtFrame(1));
-    AssertKeyframe_(new Keyframe<string>(2, "second"),
+    AssertKeyframe_(new KeyframeDefinition<string>(2, "second"),
                     impl.GetKeyframeAtFrame(2));
-    AssertKeyframe_(new Keyframe<string>(2, "second"),
+    AssertKeyframe_(new KeyframeDefinition<string>(2, "second"),
                     impl.GetKeyframeAtFrame(3));
-    AssertKeyframe_(new Keyframe<string>(4, "third"),
+    AssertKeyframe_(new KeyframeDefinition<string>(4, "third"),
                     impl.GetKeyframeAtFrame(4));
-    AssertKeyframe_(new Keyframe<string>(4, "third"),
+    AssertKeyframe_(new KeyframeDefinition<string>(4, "third"),
                     impl.GetKeyframeAtFrame(5));
   }
 
@@ -256,11 +256,11 @@ public class KeyframeDefinitionsTests {
     }
   }
 
-  private void AssertKeyframe_(Keyframe<string>? expected,
-                               Keyframe<string>? actual)
+  private void AssertKeyframe_(KeyframeDefinition<string>? expected,
+                               KeyframeDefinition<string>? actual)
     => Assert.AreEqual(expected, actual);
 
   private void AssertKeyframes_(KeyframeDefinitions<string> actual,
-                                params Keyframe<string>[] expected)
+                                params KeyframeDefinition<string>[] expected)
     => Asserts.SequenceEqual(expected, actual.Definitions);
 }
