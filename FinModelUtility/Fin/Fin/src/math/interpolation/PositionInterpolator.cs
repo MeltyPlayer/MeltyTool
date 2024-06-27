@@ -15,9 +15,9 @@ namespace fin.math.interpolation {
                                 float toTime,
                                 Position p2,
                                 float toTangent,
-                                float time)
+                                float time) 
       => new(
-          InterpolatorWithTangents.InterpolateFloats(
+          HermiteInterpolationUtil.InterpolateFloats(
               fromTime,
               p1.X,
               fromTangent,
@@ -25,7 +25,7 @@ namespace fin.math.interpolation {
               p2.X,
               toTangent,
               time),
-          InterpolatorWithTangents.InterpolateFloats(
+          HermiteInterpolationUtil.InterpolateFloats(
               fromTime,
               p1.Y,
               fromTangent,
@@ -33,7 +33,7 @@ namespace fin.math.interpolation {
               p2.Y,
               toTangent,
               time),
-          InterpolatorWithTangents.InterpolateFloats(
+          HermiteInterpolationUtil.InterpolateFloats(
               fromTime,
               p1.Z,
               fromTangent,

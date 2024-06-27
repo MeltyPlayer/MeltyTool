@@ -3,7 +3,7 @@
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace fin.math.interpolation {
-  public class InterpolatorWithTangentsTests {
+  public class HermiteInterpolationUtilTests {
     [Test]
     public void TestInterpolationStartAndEnd() {
       var fromTime = 1;
@@ -14,7 +14,7 @@ namespace fin.math.interpolation {
       var toTangent = 6;
 
       Assert.AreEqual(fromValue,
-                      InterpolatorWithTangents.InterpolateFloats(
+                      HermiteInterpolationUtil.InterpolateFloats(
                           fromTime,
                           fromValue,
                           fromTangent,
@@ -24,7 +24,7 @@ namespace fin.math.interpolation {
                           fromTime));
 
       Assert.AreEqual(toValue,
-                      InterpolatorWithTangents.InterpolateFloats(
+                      HermiteInterpolationUtil.InterpolateFloats(
                           fromTime,
                           fromValue,
                           fromTangent,

@@ -14,7 +14,7 @@ namespace fin.math.interpolation {
                              float toValue,
                              float toTangent,
                              float time)
-      => InterpolatorWithTangents.InterpolateFloats(
+      => HermiteInterpolationUtil.InterpolateFloats(
           fromTime,
           fromValue,
           fromTangent,

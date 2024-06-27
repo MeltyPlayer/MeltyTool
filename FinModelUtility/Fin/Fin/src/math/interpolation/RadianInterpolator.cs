@@ -22,7 +22,7 @@ namespace fin.math.interpolation {
       toValue = fromValue +
                 RadiansUtil.CalculateRadiansTowards(fromValue, toValue);
 
-      return InterpolatorWithTangents.InterpolateFloats(
+      return HermiteInterpolationUtil.InterpolateFloats(
           fromTime,
           fromValue,
           fromTangent,
