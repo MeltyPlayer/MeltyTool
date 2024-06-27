@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
+using fin.animation.interpolation;
+using fin.math;
 using fin.util.lists;
 
 namespace fin.animation.keyframes;
@@ -26,7 +29,7 @@ public static class KeyframesUtil {
   public static bool TryGetPrecedingKeyframe<TKeyframe>(
       this List<TKeyframe> impl,
       float frame,
-      bool loop,
+      ISharedInterpolationConfig sharedConfig,
       out TKeyframe keyframe,
       out int keyframeIndex) where TKeyframe : IKeyframe {
     // Short-circuits early if there are no frames.
@@ -34,6 +37,12 @@ public static class KeyframesUtil {
       keyframe = default;
       keyframeIndex = default;
       return false;
+    }
+
+    var looping = sharedConfig.Looping;
+
+    if (looping) {
+      frame = frame.ModRange(0, sharedConfig.AnimationLength);
     }
 
     var index
@@ -51,7 +60,7 @@ public static class KeyframesUtil {
       // If index is negative after subtracting, then no frames are smaller.
       if (index < 0) {
         // If not looping, short-circuits early.
-        if (!loop) {
+        if (!looping) {
           keyframe = default;
           keyframeIndex = default;
           return false;
@@ -87,11 +96,11 @@ public static class KeyframesUtil {
       TKeyframe>(
       this List<TKeyframe> impl,
       float frame,
-      bool loop,
+      ISharedInterpolationConfig sharedConfig,
       out TKeyframe precedingKeyframe,
       out TKeyframe followingKeyframe) where TKeyframe : IKeyframe {
     if (!impl.TryGetPrecedingKeyframe(frame,
-                                      loop,
+                                      sharedConfig,
                                       out precedingKeyframe,
                                       out var precedingKeyframeIndex)) {
       followingKeyframe = default;
@@ -100,7 +109,7 @@ public static class KeyframesUtil {
 
     var followingKeyframeIndex = precedingKeyframeIndex + 1;
     if (followingKeyframeIndex == impl.Count) {
-      if (!loop) {
+      if (!sharedConfig.Looping) {
         followingKeyframe = default;
         return InterpolationDataType.PRECEDING_ONLY;
       }

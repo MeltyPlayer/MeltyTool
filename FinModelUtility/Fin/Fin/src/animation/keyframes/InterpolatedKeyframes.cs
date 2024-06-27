@@ -30,7 +30,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
   public bool TryGetAtFrame(float frame, out T value) {
     switch (this.impl_.TryGetPrecedingAndFollowingKeyframes(
                 frame,
-                sharedConfig.Looping,
+                sharedConfig,
                 out var precedingKeyframe,
                 out var followingKeyframe)) {
       case KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING:

@@ -20,7 +20,7 @@ public class StairStepKeyframes<T>(
 
   public bool TryGetAtFrame(float frame, out T value) {
     if (this.impl_.TryGetPrecedingKeyframe(frame,
-                                           sharedConfig.Looping,
+                                           sharedConfig,
                                            out var keyframe,
                                            out _)) {
       value = keyframe.Value;
