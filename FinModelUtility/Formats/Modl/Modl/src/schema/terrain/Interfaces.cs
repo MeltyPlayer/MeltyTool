@@ -5,47 +5,47 @@ using fin.schema.color;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace modl.schema.terrain {
-  public record BwSection(string Name, int Size, long Offset);
+namespace modl.schema.terrain;
 
-  [BinarySchema]
-  public partial class BwHeightmapMaterial : IBinaryConvertible {
-    [StringLengthSource(16)]
-    public string Texture1 { get; private set; }
+public record BwSection(string Name, int Size, long Offset);
 
-    [StringLengthSource(16)]
-    public string Texture2 { get; private set; }
+[BinarySchema]
+public partial class BwHeightmapMaterial : IBinaryConvertible {
+  [StringLengthSource(16)]
+  public string Texture1 { get; private set; }
 
-    [Unknown]
-    public uint[] Unknown { get; } = new uint[4];
-  }
+  [StringLengthSource(16)]
+  public string Texture2 { get; private set; }
 
-  public interface IBwTerrain {
-    IBwHeightmap Heightmap { get; }
-    IList<BwHeightmapMaterial> Materials { get; }
-  }
+  [Unknown]
+  public uint[] Unknown { get; } = new uint[4];
+}
 
-  public interface IBwHeightmap {
-    Grid<IBwHeightmapChunk?> Chunks { get; }
-    float GetHeightAtPosition(float x, float y);
-  }
+public interface IBwTerrain {
+  IBwHeightmap Heightmap { get; }
+  IList<BwHeightmapMaterial> Materials { get; }
+}
 
-  public interface IBwHeightmapChunk {
-    Grid<IBwHeightmapTile> Tiles { get; }
-  }
+public interface IBwHeightmap {
+  Grid<IBwHeightmapChunk?> Chunks { get; }
+  float GetHeightAtPosition(float x, float y);
+}
 
-  public interface IBwHeightmapTile {
-    Grid<IBwHeightmapPoint> Points { get; }
-    uint MatlIndex { get; }
+public interface IBwHeightmapChunk {
+  Grid<IBwHeightmapTile> Tiles { get; }
+}
 
-    HeightmapParser.SchemaTile Schema { get; }
-  }
+public interface IBwHeightmapTile {
+  Grid<IBwHeightmapPoint> Points { get; }
+  uint MatlIndex { get; }
 
-  public interface IBwHeightmapPoint {
-    float X { get; }
-    float Y { get; }
-    float Height { get; }
+  HeightmapParser.SchemaTile Schema { get; }
+}
 
-    Rgba32 LightColor { get; }
-  }
+public interface IBwHeightmapPoint {
+  float X { get; }
+  float Y { get; }
+  float Height { get; }
+
+  Rgba32 LightColor { get; }
 }

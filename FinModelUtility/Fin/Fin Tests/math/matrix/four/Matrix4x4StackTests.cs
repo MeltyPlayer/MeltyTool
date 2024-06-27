@@ -3,81 +3,81 @@
 using NUnit.Framework;
 
 
-namespace fin.math.matrix.four {
-  internal class Matrix4x4StackTests {
-    [Test]
-    public void TestFirstStackDefaultsToIdentity() {
-      var impl = new Matrix4x4Stack();
-      Assert.AreEqual(Matrix4x4.Identity, impl.Top);
-    }
+namespace fin.math.matrix.four;
 
-    [Test]
-    public void TestPushNew() {
-      var impl = new Matrix4x4Stack();
+internal class Matrix4x4StackTests {
+  [Test]
+  public void TestFirstStackDefaultsToIdentity() {
+    var impl = new Matrix4x4Stack();
+    Assert.AreEqual(Matrix4x4.Identity, impl.Top);
+  }
 
-      var matrix = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
-      impl.Push(matrix);
+  [Test]
+  public void TestPushNew() {
+    var impl = new Matrix4x4Stack();
 
-      Assert.AreEqual(matrix, impl.Top);
-    }
+    var matrix = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
+    impl.Push(matrix);
 
-    [Test]
-    public void TestPushSame() {
-      var impl = new Matrix4x4Stack();
+    Assert.AreEqual(matrix, impl.Top);
+  }
 
-      var matrix = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
-      impl.Push(matrix);
-      impl.Push();
+  [Test]
+  public void TestPushSame() {
+    var impl = new Matrix4x4Stack();
 
-      Assert.AreEqual(matrix, impl.Top);
-    }
+    var matrix = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
+    impl.Push(matrix);
+    impl.Push();
 
-    [Test]
-    public void TestPop() {
-      var impl = new Matrix4x4Stack();
-      var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
-      impl.Push(first);
-      var second = SystemMatrix4x4Util.FromTranslation(2, 3, 4);
-      impl.Push(second);
+    Assert.AreEqual(matrix, impl.Top);
+  }
 
-      impl.Pop();
+  [Test]
+  public void TestPop() {
+    var impl = new Matrix4x4Stack();
+    var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
+    impl.Push(first);
+    var second = SystemMatrix4x4Util.FromTranslation(2, 3, 4);
+    impl.Push(second);
 
-      Assert.AreEqual(first, impl.Top);
-    }
+    impl.Pop();
 
-    [Test]
-    public void TestSetTop() {
-      var impl = new Matrix4x4Stack();
-      var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
-      impl.Push(first);
+    Assert.AreEqual(first, impl.Top);
+  }
 
-      var second = SystemMatrix4x4Util.FromTranslation(2, 3, 4);
-      impl.Top = second;
+  [Test]
+  public void TestSetTop() {
+    var impl = new Matrix4x4Stack();
+    var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
+    impl.Push(first);
 
-      Assert.AreEqual(second, impl.Top);
-    }
+    var second = SystemMatrix4x4Util.FromTranslation(2, 3, 4);
+    impl.Top = second;
 
-    [Test]
-    public void TestSetIdentity() {
-      var impl = new Matrix4x4Stack();
-      var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
-      impl.Push(first);
+    Assert.AreEqual(second, impl.Top);
+  }
 
-      impl.SetIdentity();
+  [Test]
+  public void TestSetIdentity() {
+    var impl = new Matrix4x4Stack();
+    var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
+    impl.Push(first);
 
-      Assert.AreEqual(Matrix4x4.Identity, impl.Top);
-    }
+    impl.SetIdentity();
 
-    [Test]
-    public void TestMultiplyInPlace() {
-      var impl = new Matrix4x4Stack();
+    Assert.AreEqual(Matrix4x4.Identity, impl.Top);
+  }
 
-      var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
-      impl.MultiplyInPlace(first);
-      var second = SystemMatrix4x4Util.FromTranslation(2, 3, 4);
-      impl.MultiplyInPlace(second);
+  [Test]
+  public void TestMultiplyInPlace() {
+    var impl = new Matrix4x4Stack();
 
-      Assert.AreEqual(first * second, impl.Top);
-    }
+    var first = SystemMatrix4x4Util.FromTranslation(1, 2, 3);
+    impl.MultiplyInPlace(first);
+    var second = SystemMatrix4x4Util.FromTranslation(2, 3, 4);
+    impl.MultiplyInPlace(second);
+
+    Assert.AreEqual(first * second, impl.Top);
   }
 }

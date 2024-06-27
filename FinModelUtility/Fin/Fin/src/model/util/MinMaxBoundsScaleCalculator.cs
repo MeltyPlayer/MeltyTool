@@ -3,31 +3,31 @@ using System.Collections.Generic;
 using System.Numerics;
 
 
-namespace fin.model.util {
-  public record Bounds(float MinX,
-                       float MinY,
-                       float MinZ,
-                       float MaxX,
-                       float MaxY,
-                       float MaxZ) {
-    public Vector3 Dimensions => new(this.MaxX - this.MinX,
-                                     this.MaxY - this.MinY,
-                                     this.MaxZ - this.MinZ);
-  }
+namespace fin.model.util;
 
-  public interface IMinMaxBoundsScaleCalculator<in T> {
-    Bounds CalculateBounds(T value);
-    float CalculateScale(T value);
-  }
+public record Bounds(float MinX,
+                     float MinY,
+                     float MinZ,
+                     float MaxX,
+                     float MaxY,
+                     float MaxZ) {
+  public Vector3 Dimensions => new(this.MaxX - this.MinX,
+                                   this.MaxY - this.MinY,
+                                   this.MaxZ - this.MinZ);
+}
 
-  public abstract class BMinMaxBoundsScaleCalculator<T>
-      : IMinMaxBoundsScaleCalculator<T> {
-    public abstract Bounds CalculateBounds(T value);
+public interface IMinMaxBoundsScaleCalculator<in T> {
+  Bounds CalculateBounds(T value);
+  float CalculateScale(T value);
+}
 
-    public float CalculateScale(T value)
-      => this.ConvertBoundsToScale_(this.CalculateBounds(value));
+public abstract class BMinMaxBoundsScaleCalculator<T>
+    : IMinMaxBoundsScaleCalculator<T> {
+  public abstract Bounds CalculateBounds(T value);
 
-    private float ConvertBoundsToScale_(Bounds bounds)
-      => 1000 / bounds.Dimensions.Length();
-  }
+  public float CalculateScale(T value)
+    => this.ConvertBoundsToScale_(this.CalculateBounds(value));
+
+  private float ConvertBoundsToScale_(Bounds bounds)
+    => 1000 / bounds.Dimensions.Length();
 }

@@ -5,36 +5,36 @@ using fin.util.asserts;
 
 using schema.readOnly;
 
-namespace fin.data.dictionaries {
-  [GenerateReadOnly]
-  public partial interface ISubTypeDictionary<TKey, TValue>
-      : IFinCollection<(TKey Key, TValue Value)> {
-    [Const]
-    TValueSub Get<TValueSub>(TKey key) where TValueSub : TValue;
+namespace fin.data.dictionaries;
 
-    void Set<TValueSub>(TKey key, TValueSub value) where TValueSub : TValue;
-  }
+[GenerateReadOnly]
+public partial interface ISubTypeDictionary<TKey, TValue>
+    : IFinCollection<(TKey Key, TValue Value)> {
+  [Const]
+  TValueSub Get<TValueSub>(TKey key) where TValueSub : TValue;
 
-  public class SubTypeDictionary<TKey, TValueBase>(
-      IFinDictionary<TKey, TValueBase> impl)
-      : ISubTypeDictionary<TKey, TValueBase> {
-    public SubTypeDictionary() : this(
-        new NullFriendlyDictionary<TKey, TValueBase>()) { }
+  void Set<TValueSub>(TKey key, TValueSub value) where TValueSub : TValue;
+}
 
-    public void Clear() => impl.Clear();
+public class SubTypeDictionary<TKey, TValueBase>(
+    IFinDictionary<TKey, TValueBase> impl)
+    : ISubTypeDictionary<TKey, TValueBase> {
+  public SubTypeDictionary() : this(
+      new NullFriendlyDictionary<TKey, TValueBase>()) { }
 
-    public int Count => impl.Count;
+  public void Clear() => impl.Clear();
 
-    public void Set<TValueSub>(TKey key, TValueSub value)
-        where TValueSub : TValueBase
-      => impl[key] = value;
+  public int Count => impl.Count;
 
-    public TValueSub Get<TValueSub>(TKey key) where TValueSub : TValueBase
-      => Asserts.AsSubType<TValueBase, TValueSub>(impl[key]);
+  public void Set<TValueSub>(TKey key, TValueSub value)
+      where TValueSub : TValueBase
+    => impl[key] = value;
 
-    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+  public TValueSub Get<TValueSub>(TKey key) where TValueSub : TValueBase
+    => Asserts.AsSubType<TValueBase, TValueSub>(impl[key]);
 
-    public IEnumerator<(TKey Key, TValueBase Value)> GetEnumerator()
-      => impl.GetEnumerator();
-  }
+  IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+  public IEnumerator<(TKey Key, TValueBase Value)> GetEnumerator()
+    => impl.GetEnumerator();
 }

@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class DestroyBase : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class DestroyBase : BLevelObject {
 }

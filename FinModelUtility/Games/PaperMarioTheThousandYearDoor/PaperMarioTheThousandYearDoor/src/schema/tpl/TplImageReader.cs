@@ -6,19 +6,20 @@ using gx.image;
 
 using schema.binary;
 
-namespace ttyd.schema.tpl {
-  public class TplImageReader : IImageReader {
-    private readonly IImageReader impl_;
+namespace ttyd.schema.tpl;
 
-    public TplImageReader(int width, int height, TplImageFormat format) {
+public class TplImageReader : IImageReader {
+  private readonly IImageReader impl_;
+
+  public TplImageReader(int width, int height, TplImageFormat format) {
       this.impl_ = this.CreateImpl_(width, height, format);
     }
 
-    public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
+  public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
 
-    private IImageReader CreateImpl_(int width,
-                                     int height,
-                                     TplImageFormat format) {
+  private IImageReader CreateImpl_(int width,
+                                   int height,
+                                   TplImageFormat format) {
       return format switch {
           TplImageFormat.I4 => TiledImageReader.New(
               width,
@@ -67,5 +68,4 @@ namespace ttyd.schema.tpl {
               height),
       };
     }
-  }
 }

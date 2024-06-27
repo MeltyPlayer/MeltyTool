@@ -3,16 +3,16 @@
 using schema.text;
 using schema.text.reader;
 
-namespace xmod.schema.xmod {
+namespace xmod.schema.xmod;
 
-  public class Adjunct : ITextDeserializable {
-    public int PositionIndex { get; set; }
-    public int NormalIndex { get; set; }
-    public int ColorIndex { get; set; }
-    public int Uv1Index { get; set; }
-    public int MatrixIndex { get; set; }
+public class Adjunct : ITextDeserializable {
+  public int PositionIndex { get; set; }
+  public int NormalIndex { get; set; }
+  public int ColorIndex { get; set; }
+  public int Uv1Index { get; set; }
+  public int MatrixIndex { get; set; }
 
-    public void Read(ITextReader tr) {
+  public void Read(ITextReader tr) {
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
       tr.AssertString("adj");
 
@@ -31,5 +31,4 @@ namespace xmod.schema.xmod {
 
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
     }
-  }
 }

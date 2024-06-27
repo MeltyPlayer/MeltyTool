@@ -3,39 +3,39 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace fin.io.sharpfilelister {
-  public class Interop {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct WIN32_FIND_DATAW {
-      public FileAttributes dwFileAttributes;
-      internal FILETIME ftCreationTime;
+namespace fin.io.sharpfilelister;
 
-      internal FILETIME
-          ftLastAccessTime;
+public class Interop {
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+  public struct WIN32_FIND_DATAW {
+    public FileAttributes dwFileAttributes;
+    internal FILETIME ftCreationTime;
 
-      internal FILETIME ftLastWriteTime;
-      public int nFileSizeHigh;
-      public int nFileSizeLow;
-      public int dwReserved0;
-      public int dwReserved1;
+    internal FILETIME
+        ftLastAccessTime;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-      public string cFileName;
+    internal FILETIME ftLastWriteTime;
+    public int nFileSizeHigh;
+    public int nFileSizeLow;
+    public int dwReserved0;
+    public int dwReserved1;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-      public string cAlternateFileName;
-    }
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+    public string cFileName;
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-    public static extern IntPtr FindFirstFileW(string lpFileName,
-                                               out WIN32_FIND_DATAW
-                                                   lpFindFileData);
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-    public static extern bool FindNextFile(IntPtr hFindFile,
-                                           out WIN32_FIND_DATAW lpFindFileData);
-
-    [DllImport("kernel32.dll")]
-    public static extern bool FindClose(IntPtr hFindFile);
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+    public string cAlternateFileName;
   }
+
+  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+  public static extern IntPtr FindFirstFileW(string lpFileName,
+                                             out WIN32_FIND_DATAW
+                                                 lpFindFileData);
+
+  [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+  public static extern bool FindNextFile(IntPtr hFindFile,
+                                         out WIN32_FIND_DATAW lpFindFileData);
+
+  [DllImport("kernel32.dll")]
+  public static extern bool FindClose(IntPtr hFindFile);
 }

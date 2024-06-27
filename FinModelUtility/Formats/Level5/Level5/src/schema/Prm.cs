@@ -7,27 +7,28 @@ using level5.decompression;
 
 using schema.binary;
 
-namespace level5.schema {
-  public class Prm {
-    public string Name { get; private set; }
+namespace level5.schema;
 
-    public uint[] AnimationReferenceHashes { get; private set; }
+public class Prm {
+  public string Name { get; private set; }
 
-    public string MaterialName { get; private set; }
+  public uint[] AnimationReferenceHashes { get; private set; }
 
-    private uint[] nodeTable_;
+  public string MaterialName { get; private set; }
 
-    public List<uint> Triangles { get; set; }
-    public List<GenericVertex> Vertices { get; set; }
+  private uint[] nodeTable_;
 
-    public Prm(byte[] data) {
+  public List<uint> Triangles { get; set; }
+  public List<GenericVertex> Vertices { get; set; }
+
+  public Prm(byte[] data) {
       using (var r = new SchemaBinaryReader(new MemoryStream(data), Endianness.LittleEndian)) {
         Open(r);
       }
     }
 
-    [Unknown]
-    public void Open(IBinaryReader r) {
+  [Unknown]
+  public void Open(IBinaryReader r) {
       r.AssertString("XMPR");
       var prmOffset = r.ReadUInt32();
       var unknownOffset = r.ReadUInt32();
@@ -82,7 +83,7 @@ namespace level5.schema {
     }
 
 
-    private List<uint> ParseIndexBuffer_(byte[] buffer) {
+  private List<uint> ParseIndexBuffer_(byte[] buffer) {
       List<uint> indices = [];
       int primitiveType = 0;
       int faceCount = 0;
@@ -130,10 +131,10 @@ namespace level5.schema {
             } else {
               dir *= -1;
               if (f1 != f2 && f2 != f3 && f3 != f1) {
-                /*if (f1 > vCount || f2 > vCount || f3 > vCount)
-                {
-                    f1 = 0;
-                }*/
+               /*if (f1 > vCount || f2 > vCount || f3 > vCount)
+                
+                    1 = 0;
+                *//
                 if (dir > 0) {
                   indices.Add((uint)f1);
                   indices.Add((uint)f2);
@@ -153,7 +154,7 @@ namespace level5.schema {
       return indices;
     }
 
-    private List<GenericVertex> ParseBuffer_(byte[] buffer) {
+  private List<GenericVertex> ParseBuffer_(byte[] buffer) {
       List<GenericVertex> vertices = [];
       byte[] attributeBuffer = new byte[0];
       int stride = 0;
@@ -234,7 +235,7 @@ namespace level5.schema {
       return vertices;
     }
 
-    public Vector4 ReadAttribute(IBinaryReader f, int type, int count) {
+  public Vector4 ReadAttribute(IBinaryReader f, int type, int count) {
       Vector4 o = new Vector4();
       switch (type) {
         case 0://nothing
@@ -256,14 +257,13 @@ namespace level5.schema {
       }
       return o;
     }
-  }
+}
 
-  public class GenericVertex {
-    public Vector3 Pos { get; set; }
-    public Vector3 Nrm { get; set; }
-    public Vector2 Uv0 { get; set; }
-    public Vector4 Weights { get; set; }
-    public Vector4 Clr { get; set; }
-    public uint[]? Bones { get; set; }
-  }
+public class GenericVertex {
+  public Vector3 Pos { get; set; }
+  public Vector3 Nrm { get; set; }
+  public Vector2 Uv0 { get; set; }
+  public Vector4 Weights { get; set; }
+  public Vector4 Clr { get; set; }
+  public uint[]? Bones { get; set; }
 }

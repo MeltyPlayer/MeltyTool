@@ -1,35 +1,35 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace fin.schema.data {
-  [BinarySchema]
-  public partial class PassThruStringMagicJankSizedSection<T>
-      : IMagicSection<T> where T : IBinaryConvertible {
-    private string MagicAsserter_ => this.Magic;
+namespace fin.schema.data;
 
-    [Skip]
-    public string Magic { get; set; }
+[BinarySchema]
+public partial class PassThruStringMagicJankSizedSection<T>
+    : IMagicSection<T> where T : IBinaryConvertible {
+  private string MagicAsserter_ => this.Magic;
 
-    private readonly PassThruJankSizedSection<T> impl_;
+  [Skip]
+  public string Magic { get; set; }
 
-    public PassThruStringMagicJankSizedSection(string magic, T data) {
-      this.Magic = magic;
-      this.impl_ = new PassThruJankSizedSection<T>(data);
-    }
+  private readonly PassThruJankSizedSection<T> impl_;
 
-    [Skip]
-    public int TweakReadSize {
-      get => this.impl_.TweakReadSize;
-      set => this.impl_.TweakReadSize = value;
-    }
+  public PassThruStringMagicJankSizedSection(string magic, T data) {
+    this.Magic = magic;
+    this.impl_ = new PassThruJankSizedSection<T>(data);
+  }
 
-    [Skip]
-    public uint Size => this.impl_.Size;
+  [Skip]
+  public int TweakReadSize {
+    get => this.impl_.TweakReadSize;
+    set => this.impl_.TweakReadSize = value;
+  }
 
-    [Skip]
-    public T Data {
-      get => this.impl_.Data;
-      set => this.impl_.Data = value;
-    }
+  [Skip]
+  public uint Size => this.impl_.Size;
+
+  [Skip]
+  public T Data {
+    get => this.impl_.Data;
+    set => this.impl_.Data = value;
   }
 }

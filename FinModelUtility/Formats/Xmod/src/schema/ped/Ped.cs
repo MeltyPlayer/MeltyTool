@@ -1,13 +1,14 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace xmod.schema.ped {
-  public class Ped : ITextDeserializable {
-    public string SkelName { get; set; }
-    public string XmodName { get; set; }
-    public IDictionary<string, string> AnimMap { get; set; }
+namespace xmod.schema.ped;
 
-    public void Read(ITextReader tr) {
+public class Ped : ITextDeserializable {
+  public string SkelName { get; set; }
+  public string XmodName { get; set; }
+  public IDictionary<string, string> AnimMap { get; set; }
+
+  public void Read(ITextReader tr) {
       SkelName = TextReaderUtils.ReadKeyValue(tr, "skel").Trim();
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
 
@@ -29,5 +30,4 @@ namespace xmod.schema.ped {
         this.AnimMap[key] = value;
       }
     }
-  }
 }

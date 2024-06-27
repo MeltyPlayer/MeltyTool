@@ -1,10 +1,11 @@
 ﻿using schema.binary;
 
-namespace ttyd.schema.tpl {
-  public class Tpl : IBinaryDeserializable {
-    public IReadOnlyList<TplTexture> Textures { get; private set; }
+namespace ttyd.schema.tpl;
 
-    public void Read(IBinaryReader br) {
+public class Tpl : IBinaryDeserializable {
+  public IReadOnlyList<TplTexture> Textures { get; private set; }
+
+  public void Read(IBinaryReader br) {
       var header = br.ReadNew<TplHeader>();
 
       br.Position = header.HeaderSize;
@@ -31,5 +32,4 @@ namespace ttyd.schema.tpl {
 
       this.Textures = textures;
     }
-  }
 }

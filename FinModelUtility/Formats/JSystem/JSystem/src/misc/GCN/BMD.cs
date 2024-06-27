@@ -12,19 +12,20 @@ using schema.binary;
 
 #pragma warning disable CS8604
 
-namespace jsystem.GCN {
-  public partial class BMD {
-    public BmdHeader Header;
-    public Inf1 INF1 { get; set; }
-    public VTX1Section VTX1;
-    public EVP1Section EVP1;
-    public Drw1 DRW1 { get; set; }
-    public Jnt1 JNT1 { get; set; }
-    public SHP1Section SHP1;
-    public MAT3Section MAT3;
-    public Tex1 TEX1 { get; set; }
+namespace jsystem.GCN;
 
-    public BMD(byte[] file) {
+public partial class BMD {
+  public BmdHeader Header;
+  public Inf1 INF1 { get; set; }
+  public VTX1Section VTX1;
+  public EVP1Section EVP1;
+  public Drw1 DRW1 { get; set; }
+  public Jnt1 JNT1 { get; set; }
+  public SHP1Section SHP1;
+  public MAT3Section MAT3;
+  public Tex1 TEX1 { get; set; }
+
+  public BMD(byte[] file) {
       using var br =
           new SchemaBinaryReader((Stream) new MemoryStream(file),
                                  Endianness.BigEndian);
@@ -93,7 +94,7 @@ namespace jsystem.GCN {
       }
     }
 
-    public MA.Node[] GetJoints() {
+  public MA.Node[] GetJoints() {
       var nodeIndexStack = new Stack<int>();
       nodeIndexStack.Push(-1);
       var nodeList = new List<MA.Node>();
@@ -127,5 +128,4 @@ namespace jsystem.GCN {
       label_7:
       return nodeList.ToArray();
     }
-  }
 }

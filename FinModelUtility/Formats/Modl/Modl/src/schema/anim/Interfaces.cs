@@ -1,20 +1,20 @@
-﻿namespace modl.schema.anim {
-  public interface IAnim {
-    List<IBwAnimBone> AnimBones { get; }
-    List<AnimBoneFrames> AnimBoneFrames { get; }
-  }
+﻿namespace modl.schema.anim;
 
-  public interface IBwAnimBone {
-    string GetIdentifier();
+public interface IAnim {
+  List<IBwAnimBone> AnimBones { get; }
+  List<AnimBoneFrames> AnimBoneFrames { get; }
+}
 
-    uint PositionKeyframeCount { get; }
-    uint RotationKeyframeCount { get; }
+public interface IBwAnimBone {
+  string GetIdentifier();
 
-    float XPosDelta { get; }
-    float YPosDelta { get; }
-    float ZPosDelta { get; }
-    float XPosMin { get; }
-    float YPosMin { get; }
-    float ZPosMin { get; }
-  }
+  uint PositionKeyframeCount { get; }
+  uint RotationKeyframeCount { get; }
+
+  float XPosDelta { get; }
+  float YPosDelta { get; }
+  float ZPosDelta { get; }
+  float XPosMin { get; }
+  float YPosMin { get; }
+  float ZPosMin { get; }
 }

@@ -9,131 +9,131 @@ using fin.scene;
 using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
 
-namespace fin.ui.rendering.gl.scene {
-  public class SceneModelRenderer : IRenderable, IDisposable {
-    private readonly ISceneModelInstance sceneModel_;
-    private readonly IModelRenderer modelRenderer_;
+namespace fin.ui.rendering.gl.scene;
 
-    private readonly ListDictionary<IReadOnlyBone, SceneModelRenderer>
-        children_ = new();
+public class SceneModelRenderer : IRenderable, IDisposable {
+  private readonly ISceneModelInstance sceneModel_;
+  private readonly IModelRenderer modelRenderer_;
 
-    public SceneModelRenderer(ISceneModelInstance sceneModel,
-                              IReadOnlyLighting? lighting) {
-      this.sceneModel_ = sceneModel;
+  private readonly ListDictionary<IReadOnlyBone, SceneModelRenderer>
+      children_ = new();
 
-      var model = sceneModel.Model;
-      this.modelRenderer_ =
-          new ModelRendererV2(model,
-                              lighting,
-                              sceneModel.BoneTransformManager);
+  public SceneModelRenderer(ISceneModelInstance sceneModel,
+                            IReadOnlyLighting? lighting) {
+    this.sceneModel_ = sceneModel;
 
-      this.modelRenderer_.UseLighting =
-          new UseLightingDetector().ShouldUseLightingFor(model);
+    var model = sceneModel.Model;
+    this.modelRenderer_ =
+        new ModelRendererV2(model,
+                            lighting,
+                            sceneModel.BoneTransformManager);
 
-      this.SkeletonRenderer =
-          new SkeletonRenderer(model.Skeleton,
-                               this.sceneModel_.BoneTransformManager) {
-              Scale = this.sceneModel_.ViewerScale
-          };
+    this.modelRenderer_.UseLighting =
+        new UseLightingDetector().ShouldUseLightingFor(model);
 
-      foreach (var (bone, boneChildren) in sceneModel.Children.GetPairs()) {
-        foreach (var child in boneChildren) {
-          this.children_.Add(bone, new SceneModelRenderer(child, lighting));
+    this.SkeletonRenderer =
+        new SkeletonRenderer(model.Skeleton,
+                             this.sceneModel_.BoneTransformManager) {
+            Scale = this.sceneModel_.ViewerScale
+        };
+
+    foreach (var (bone, boneChildren) in sceneModel.Children.GetPairs()) {
+      foreach (var child in boneChildren) {
+        this.children_.Add(bone, new SceneModelRenderer(child, lighting));
+      }
+    }
+  }
+
+  ~SceneModelRenderer() => this.ReleaseUnmanagedResources_();
+
+  public void Dispose() {
+    this.ReleaseUnmanagedResources_();
+    GC.SuppressFinalize(this);
+  }
+
+  private void ReleaseUnmanagedResources_() {
+    this.modelRenderer_.Dispose();
+    foreach (var child in this.children_.Values) {
+      child.Dispose();
+    }
+  }
+
+  public ISkeletonRenderer SkeletonRenderer { get; }
+
+  public void Render() {
+    GlTransform.PushMatrix();
+
+    var model = this.sceneModel_.Model;
+    var skeleton = model.Skeleton;
+
+    var rootBone = skeleton.Root;
+    if (rootBone.FaceTowardsCamera) {
+      var camera = Camera.Instance;
+      var angle = camera.YawDegrees / 180f * MathF.PI;
+      var rotateYaw =
+          Quaternion.CreateFromYawPitchRoll(angle, 0, 0);
+
+      var rotationBuffer = rotateYaw * rootBone.FaceTowardsCameraAdjustment;
+      GlTransform.MultMatrix(
+          SystemMatrix4x4Util.FromRotation(rotationBuffer));
+    }
+
+    var animation = this.sceneModel_.Animation;
+    var animationPlaybackManager = this.sceneModel_.AnimationPlaybackManager;
+
+    var hiddenMeshes = this.modelRenderer_.HiddenMeshes;
+    hiddenMeshes.Clear();
+
+    if (animation != null) {
+      animationPlaybackManager.Tick();
+
+      var frame = (float) animationPlaybackManager.Frame;
+      this.sceneModel_.BoneTransformManager.CalculateMatrices(
+          skeleton.Root,
+          model.Skin.BoneWeights,
+          (animation, frame),
+          BoneWeightTransformType.FOR_RENDERING,
+          animationPlaybackManager.Config);
+
+      foreach (var (mesh, meshTracks) in animation.MeshTracks) {
+        if (!meshTracks.DisplayStates.TryGetAtFrame(
+                frame,
+                out var displayState)) {
+          continue;
+        }
+
+        if (displayState == MeshDisplayState.HIDDEN) {
+          hiddenMeshes.Add(mesh);
+        }
+      }
+    } else {
+      foreach (var mesh in model.Skin.Meshes) {
+        if (mesh.DefaultDisplayState == MeshDisplayState.HIDDEN) {
+          hiddenMeshes.Add(mesh);
         }
       }
     }
 
-    ~SceneModelRenderer() => this.ReleaseUnmanagedResources_();
+    this.modelRenderer_.Render();
 
-    public void Dispose() {
-      this.ReleaseUnmanagedResources_();
-      GC.SuppressFinalize(this);
+    if (FinConfig.ShowSkeleton) {
+      CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
+      this.SkeletonRenderer.Render();
     }
 
-    private void ReleaseUnmanagedResources_() {
-      this.modelRenderer_.Dispose();
-      foreach (var child in this.children_.Values) {
-        child.Dispose();
-      }
-    }
-
-    public ISkeletonRenderer SkeletonRenderer { get; }
-
-    public void Render() {
+    foreach (var (bone, boneChildren) in this.children_.GetPairs()) {
       GlTransform.PushMatrix();
 
-      var model = this.sceneModel_.Model;
-      var skeleton = model.Skeleton;
+      GlTransform.MultMatrix(
+          this.sceneModel_.BoneTransformManager.GetWorldMatrix(bone).Impl);
 
-      var rootBone = skeleton.Root;
-      if (rootBone.FaceTowardsCamera) {
-        var camera = Camera.Instance;
-        var angle = camera.YawDegrees / 180f * MathF.PI;
-        var rotateYaw =
-            Quaternion.CreateFromYawPitchRoll(angle, 0, 0);
-
-        var rotationBuffer = rotateYaw * rootBone.FaceTowardsCameraAdjustment;
-        GlTransform.MultMatrix(
-            SystemMatrix4x4Util.FromRotation(rotationBuffer));
-      }
-
-      var animation = this.sceneModel_.Animation;
-      var animationPlaybackManager = this.sceneModel_.AnimationPlaybackManager;
-
-      var hiddenMeshes = this.modelRenderer_.HiddenMeshes;
-      hiddenMeshes.Clear();
-
-      if (animation != null) {
-        animationPlaybackManager.Tick();
-
-        var frame = (float) animationPlaybackManager.Frame;
-        this.sceneModel_.BoneTransformManager.CalculateMatrices(
-            skeleton.Root,
-            model.Skin.BoneWeights,
-            (animation, frame),
-            BoneWeightTransformType.FOR_RENDERING,
-            animationPlaybackManager.Config);
-
-        foreach (var (mesh, meshTracks) in animation.MeshTracks) {
-          if (!meshTracks.DisplayStates.TryGetAtFrame(
-                  frame,
-                  out var displayState)) {
-            continue;
-          }
-
-          if (displayState == MeshDisplayState.HIDDEN) {
-            hiddenMeshes.Add(mesh);
-          }
-        }
-      } else {
-        foreach (var mesh in model.Skin.Meshes) {
-          if (mesh.DefaultDisplayState == MeshDisplayState.HIDDEN) {
-            hiddenMeshes.Add(mesh);
-          }
-        }
-      }
-
-      this.modelRenderer_.Render();
-
-      if (FinConfig.ShowSkeleton) {
-        CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
-        this.SkeletonRenderer.Render();
-      }
-
-      foreach (var (bone, boneChildren) in this.children_.GetPairs()) {
-        GlTransform.PushMatrix();
-
-        GlTransform.MultMatrix(
-            this.sceneModel_.BoneTransformManager.GetWorldMatrix(bone).Impl);
-
-        foreach (var child in boneChildren) {
-          child.Render();
-        }
-
-        GlTransform.PopMatrix();
+      foreach (var child in boneChildren) {
+        child.Render();
       }
 
       GlTransform.PopMatrix();
     }
+
+    GlTransform.PopMatrix();
   }
 }

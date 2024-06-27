@@ -5,40 +5,40 @@ using fin.data.indexable;
 
 using schema.readOnly;
 
-namespace fin.model {
-  [GenerateReadOnly]
-  public partial interface ISkeleton : IEnumerable<IReadOnlyBone> {
-    IBone Root { get; }
-    IReadOnlyList<IBone> Bones { get; }
-  }
+namespace fin.model;
 
-  [GenerateReadOnly]
-  public partial interface ILeafBone : IIndexable {
-    string Name { get; set; }
+[GenerateReadOnly]
+public partial interface ISkeleton : IEnumerable<IReadOnlyBone> {
+  IBone Root { get; }
+  IReadOnlyList<IBone> Bones { get; }
+}
 
-    IBone Root { get; }
-    IBone? Parent { get; }
+[GenerateReadOnly]
+public partial interface ILeafBone : IIndexable {
+  string Name { get; set; }
 
-    Vector3 LocalPosition { get; }
-    IRotation? LocalRotation { get; }
-    Vector3? LocalScale { get; }
+  IBone Root { get; }
+  IBone? Parent { get; }
 
-    IBone SetLocalPosition(float x, float y, float z);
-    IBone SetLocalRotationDegrees(float x, float y, float z);
-    IBone SetLocalRotationRadians(float x, float y, float z);
-    IBone SetLocalScale(float x, float y, float z);
+  Vector3 LocalPosition { get; }
+  IRotation? LocalRotation { get; }
+  Vector3? LocalScale { get; }
 
-    bool IgnoreParentScale { get; set; }
+  IBone SetLocalPosition(float x, float y, float z);
+  IBone SetLocalRotationDegrees(float x, float y, float z);
+  IBone SetLocalRotationRadians(float x, float y, float z);
+  IBone SetLocalScale(float x, float y, float z);
 
-    IBone AlwaysFaceTowardsCamera(Quaternion adjustment);
-    bool FaceTowardsCamera { get; }
-    Quaternion FaceTowardsCameraAdjustment { get; }
-  }
+  bool IgnoreParentScale { get; set; }
 
-  [GenerateReadOnly]
-  public partial interface IBone : ILeafBone {
-    IReadOnlyList<IBone> Children { get; }
-    IBone AddRoot(float x, float y, float z);
-    IBone AddChild(float x, float y, float z);
-  }
+  IBone AlwaysFaceTowardsCamera(Quaternion adjustment);
+  bool FaceTowardsCamera { get; }
+  Quaternion FaceTowardsCameraAdjustment { get; }
+}
+
+[GenerateReadOnly]
+public partial interface IBone : ILeafBone {
+  IReadOnlyList<IBone> Children { get; }
+  IBone AddRoot(float x, float y, float z);
+  IBone AddChild(float x, float y, float z);
 }

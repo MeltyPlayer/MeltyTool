@@ -4,84 +4,84 @@ using System.Runtime.CompilerServices;
 
 using fin.color;
 
-namespace fin.model.accessor {
-  /// <summary>
-  ///   Assumes all vertices are the same, consistent type.
-  /// </summary>
-  public partial class ConsistentVertexAccessor : IVertexAccessor {
-    private IReadOnlyVertex currentVertex_;
-    private readonly IVertexNormalAccessor normalAccessor_;
-    private readonly IVertexTangentAccessor tangentAccessor_;
-    private readonly IVertexColorAccessor colorAccessor_;
-    private readonly IVertexUvAccessor uvAccessor_;
+namespace fin.model.accessor;
 
-    public static IVertexAccessor GetAccessorForModel(IReadOnlyModel model)
-      => new ConsistentVertexAccessor(model);
+/// <summary>
+///   Assumes all vertices are the same, consistent type.
+/// </summary>
+public partial class ConsistentVertexAccessor : IVertexAccessor {
+  private IReadOnlyVertex currentVertex_;
+  private readonly IVertexNormalAccessor normalAccessor_;
+  private readonly IVertexTangentAccessor tangentAccessor_;
+  private readonly IVertexColorAccessor colorAccessor_;
+  private readonly IVertexUvAccessor uvAccessor_;
 
-    private ConsistentVertexAccessor(IReadOnlyModel model) {
-      var skin = model.Skin;
-      var firstVertex = skin.Vertices.Count > 0 ? skin.Vertices[0] : null;
+  public static IVertexAccessor GetAccessorForModel(IReadOnlyModel model)
+    => new ConsistentVertexAccessor(model);
 
-      this.normalAccessor_ = firstVertex is IReadOnlyNormalVertex
-          ? new NormalAccessor()
-          : new NullNormalAccessor();
-      this.tangentAccessor_ = firstVertex is IReadOnlyTangentVertex
-          ? new TangentAccessor()
-          : new NullTangentAccessor();
-      this.colorAccessor_ = firstVertex is IReadOnlyMultiColorVertex
-          ? new MultiColorAccessor()
-          : firstVertex is IReadOnlySingleColorVertex
-              ? new SingleColorAccessor()
-              : new NullColorAccessor();
-      this.uvAccessor_ = firstVertex is IReadOnlyMultiUvVertex
-          ? new MultiUvAccessor()
-          : firstVertex is IReadOnlySingleUvVertex
-              ? new SingleUvAccessor()
-              : new NullUvAccessor();
-    }
+  private ConsistentVertexAccessor(IReadOnlyModel model) {
+    var skin = model.Skin;
+    var firstVertex = skin.Vertices.Count > 0 ? skin.Vertices[0] : null;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Target(IReadOnlyVertex vertex) {
-      this.currentVertex_ = vertex;
-      this.normalAccessor_.Target(vertex);
-      this.tangentAccessor_.Target(vertex);
-      this.colorAccessor_.Target(vertex);
-      this.uvAccessor_.Target(vertex);
-    }
+    this.normalAccessor_ = firstVertex is IReadOnlyNormalVertex
+        ? new NormalAccessor()
+        : new NullNormalAccessor();
+    this.tangentAccessor_ = firstVertex is IReadOnlyTangentVertex
+        ? new TangentAccessor()
+        : new NullTangentAccessor();
+    this.colorAccessor_ = firstVertex is IReadOnlyMultiColorVertex
+        ? new MultiColorAccessor()
+        : firstVertex is IReadOnlySingleColorVertex
+            ? new SingleColorAccessor()
+            : new NullColorAccessor();
+    this.uvAccessor_ = firstVertex is IReadOnlyMultiUvVertex
+        ? new MultiUvAccessor()
+        : firstVertex is IReadOnlySingleUvVertex
+            ? new SingleUvAccessor()
+            : new NullUvAccessor();
+  }
 
-    public int Index => this.currentVertex_.Index;
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public void Target(IReadOnlyVertex vertex) {
+    this.currentVertex_ = vertex;
+    this.normalAccessor_.Target(vertex);
+    this.tangentAccessor_.Target(vertex);
+    this.colorAccessor_.Target(vertex);
+    this.uvAccessor_.Target(vertex);
+  }
 
-    public IReadOnlyBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
-    public Vector3 LocalPosition => this.currentVertex_.LocalPosition;
+  public int Index => this.currentVertex_.Index;
 
-    public Vector3? LocalNormal => this.normalAccessor_.LocalNormal;
-    public Vector4? LocalTangent => this.tangentAccessor_.LocalTangent;
+  public IReadOnlyBoneWeights? BoneWeights => this.currentVertex_.BoneWeights;
+  public Vector3 LocalPosition => this.currentVertex_.LocalPosition;
 
-    public int ColorCount => this.colorAccessor_.ColorCount;
+  public Vector3? LocalNormal => this.normalAccessor_.LocalNormal;
+  public Vector4? LocalTangent => this.tangentAccessor_.LocalTangent;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IColor? GetColor() => this.colorAccessor_.GetColor();
+  public int ColorCount => this.colorAccessor_.ColorCount;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IColor? GetColor(int colorIndex)
-      => this.colorAccessor_.GetColor(colorIndex);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public IColor? GetColor() => this.colorAccessor_.GetColor();
 
-    public int UvCount => this.uvAccessor_.UvCount;
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public IColor? GetColor(int colorIndex)
+    => this.colorAccessor_.GetColor(colorIndex);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector2? GetUv() => this.uvAccessor_.GetUv();
+  public int UvCount => this.uvAccessor_.UvCount;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Vector2? GetUv(int uvIndex) => this.uvAccessor_.GetUv(uvIndex);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Vector2? GetUv() => this.uvAccessor_.GetUv();
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public Vector2? GetUv(int uvIndex) => this.uvAccessor_.GetUv(uvIndex);
 
 
-    private abstract class BAccessor : IReadOnlyVertex {
-      public int Index => throw new NotImplementedException();
+  private abstract class BAccessor : IReadOnlyVertex {
+    public int Index => throw new NotImplementedException();
 
-      public IReadOnlyBoneWeights? BoneWeights
-        => throw new NotImplementedException();
+    public IReadOnlyBoneWeights? BoneWeights
+      => throw new NotImplementedException();
 
-      public Vector3 LocalPosition => throw new NotImplementedException();
-    }
+    public Vector3 LocalPosition => throw new NotImplementedException();
   }
 }

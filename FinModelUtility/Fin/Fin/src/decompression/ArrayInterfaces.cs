@@ -1,21 +1,21 @@
 ﻿using System;
 
-namespace fin.decompression {
-  public interface IArrayDecompressor {
-    bool TryDecompress(byte[] src, out byte[] dst);
+namespace fin.decompression;
 
-    byte[] Decompress(byte[] src);
-  }
+public interface IArrayDecompressor {
+  bool TryDecompress(byte[] src, out byte[] dst);
 
-  public abstract class BArrayDecompressor : IArrayDecompressor {
-    public abstract bool TryDecompress(byte[] src, out byte[] dst);
+  byte[] Decompress(byte[] src);
+}
 
-    public byte[] Decompress(byte[] src) {
-      if (TryDecompress(src, out byte[] dst)) {
-        return dst;
-      }
+public abstract class BArrayDecompressor : IArrayDecompressor {
+  public abstract bool TryDecompress(byte[] src, out byte[] dst);
 
-      throw new Exception("Failed to decompress bytes.");
+  public byte[] Decompress(byte[] src) {
+    if (TryDecompress(src, out byte[] dst)) {
+      return dst;
     }
+
+    throw new Exception("Failed to decompress bytes.");
   }
 }

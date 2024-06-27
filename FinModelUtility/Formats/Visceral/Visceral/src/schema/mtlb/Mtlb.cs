@@ -2,21 +2,22 @@
 
 using schema.binary;
 
-namespace visceral.schema.mtlb {
-  public class Mtlb : IBinaryDeserializable {
-    public string Name { get; private set; }
+namespace visceral.schema.mtlb;
 
-    public IReadOnlyList<MtlbChannel> HighLodMaterialChannels {
-      get;
-      private set;
-    }
+public class Mtlb : IBinaryDeserializable {
+  public string Name { get; private set; }
 
-    public IReadOnlyList<MtlbChannel> LowLodMaterialChannels {
-      get;
-      private set;
-    }
+  public IReadOnlyList<MtlbChannel> HighLodMaterialChannels {
+    get;
+    private set;
+  }
 
-    public void Read(IBinaryReader br) {
+  public IReadOnlyList<MtlbChannel> LowLodMaterialChannels {
+    get;
+    private set;
+  }
+
+  public void Read(IBinaryReader br) {
       br.Position = 0x10;
       var stringsLength = br.ReadUInt32();
 
@@ -82,69 +83,68 @@ namespace visceral.schema.mtlb {
         lowLodMaterialChannels[i] = readNewChannel();
       }
     }
-  }
+}
 
-  public enum MtlbChannelCategory {
-    Sampler = 5,
-  }
+public enum MtlbChannelCategory {
+  Sampler = 5,
+}
 
-  public enum MtlbChannelType {
-    NotSupported,
-    OcclusionSampler,
-    DiffuseSampler,
-    NormalSampler,
-    EmissiveSampler,
-    SpecEnvMapSampler,
-    SpecularTexSampler,
-    AmbLightAmbOcclIntensityFacingRatio,
-    bumpDiffLgtSpecModShinnyness,
-    g_blinkParams,
-    g_materialNormalMapScale,
-    g_skinPSParams,
-    Shininess,
-  }
+public enum MtlbChannelType {
+  NotSupported,
+  OcclusionSampler,
+  DiffuseSampler,
+  NormalSampler,
+  EmissiveSampler,
+  SpecEnvMapSampler,
+  SpecularTexSampler,
+  AmbLightAmbOcclIntensityFacingRatio,
+  bumpDiffLgtSpecModShinnyness,
+  g_blinkParams,
+  g_materialNormalMapScale,
+  g_skinPSParams,
+  Shininess,
+}
 
-  internal static class MtlbChannelTypeExtensions {
-    public static MtlbChannelType ToMtlbChannelType(this string typeText)
-      => typeText switch {
-          "AmbLightAmbOcclIntensityFacingRatio" => MtlbChannelType
-              .AmbLightAmbOcclIntensityFacingRatio,
-          "bumpDiffLgtSpecModShinnyness" => MtlbChannelType
-              .bumpDiffLgtSpecModShinnyness,
-          "colorTexSampler"
-              or "g_Sampler" => MtlbChannelType.DiffuseSampler,
-          "g_blinkParams" => MtlbChannelType.g_blinkParams,
-          "g_materialNormalMapScale" => MtlbChannelType
-              .g_materialNormalMapScale,
-          "g_skinPSParams" => MtlbChannelType.g_skinPSParams,
-          "normalSampler"
-              or "g_materialNormalMap" => MtlbChannelType.NormalSampler,
-          "OcclusionTexSampler"
-              or "AoMapSampler" => MtlbChannelType.OcclusionSampler,
-          "SelfIllumTexSampler"
-              or "LightMapSampler" => MtlbChannelType.EmissiveSampler,
-          "Shinnyness"
-              or "g_SpecularExponent" => MtlbChannelType.Shininess,
-          "SpecEnvMapSampler"
-              or "g_materialSpecMap" => MtlbChannelType.SpecEnvMapSampler,
-          "SpecularTexSampler"
-              or "g_GlossMapSampler" => MtlbChannelType.SpecularTexSampler,
-          _ => MtlbChannelType.NotSupported
-      };
+internal static class MtlbChannelTypeExtensions {
+  public static MtlbChannelType ToMtlbChannelType(this string typeText)
+    => typeText switch {
+        "AmbLightAmbOcclIntensityFacingRatio" => MtlbChannelType
+            .AmbLightAmbOcclIntensityFacingRatio,
+        "bumpDiffLgtSpecModShinnyness" => MtlbChannelType
+            .bumpDiffLgtSpecModShinnyness,
+        "colorTexSampler"
+            or "g_Sampler" => MtlbChannelType.DiffuseSampler,
+        "g_blinkParams" => MtlbChannelType.g_blinkParams,
+        "g_materialNormalMapScale" => MtlbChannelType
+            .g_materialNormalMapScale,
+        "g_skinPSParams" => MtlbChannelType.g_skinPSParams,
+        "normalSampler"
+            or "g_materialNormalMap" => MtlbChannelType.NormalSampler,
+        "OcclusionTexSampler"
+            or "AoMapSampler" => MtlbChannelType.OcclusionSampler,
+        "SelfIllumTexSampler"
+            or "LightMapSampler" => MtlbChannelType.EmissiveSampler,
+        "Shinnyness"
+            or "g_SpecularExponent" => MtlbChannelType.Shininess,
+        "SpecEnvMapSampler"
+            or "g_materialSpecMap" => MtlbChannelType.SpecEnvMapSampler,
+        "SpecularTexSampler"
+            or "g_GlossMapSampler" => MtlbChannelType.SpecularTexSampler,
+        _ => MtlbChannelType.NotSupported
+    };
 
-    public static bool IsSampler(this MtlbChannelType type)
-      => type is MtlbChannelType.DiffuseSampler
-                 or MtlbChannelType.NormalSampler
-                 or MtlbChannelType.OcclusionSampler
-                 or MtlbChannelType.EmissiveSampler
-                 or MtlbChannelType.SpecularTexSampler;
-  }
+  public static bool IsSampler(this MtlbChannelType type)
+    => type is MtlbChannelType.DiffuseSampler
+               or MtlbChannelType.NormalSampler
+               or MtlbChannelType.OcclusionSampler
+               or MtlbChannelType.EmissiveSampler
+               or MtlbChannelType.SpecularTexSampler;
+}
 
-  public class MtlbChannel {
-    public MtlbChannelCategory MtlbChannelCategory { get; set; }
-    public MtlbChannelType Type { get; set; }
-    public Vector4f? ColorValues { get; set; }
-    public Vector2i? IdValues { get; set; }
-    public string Path { get; set; }
-  }
+public class MtlbChannel {
+  public MtlbChannelCategory MtlbChannelCategory { get; set; }
+  public MtlbChannelType Type { get; set; }
+  public Vector4f? ColorValues { get; set; }
+  public Vector2i? IdValues { get; set; }
+  public string Path { get; set; }
 }

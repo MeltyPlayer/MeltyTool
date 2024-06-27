@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class WeaponSoundBase : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class WeaponSoundBase : BLevelObject {
 }

@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class AnimationTriggeredEffectChainItemSound : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class AnimationTriggeredEffectChainItemSound : BLevelObject {
 }

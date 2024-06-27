@@ -28,57 +28,57 @@ using schema.binary.attributes;
 
 using visceral.schema.str.content;
 
-namespace visceral.schema.str {
-  [Endianness(Endianness.LittleEndian)]
+namespace visceral.schema.str;
+
+[Endianness(Endianness.LittleEndian)]
+[BinarySchema]
+public partial class StreamSetFile : IBinaryConvertible {
+  private readonly BlockType magic_ = BlockType.Options;
+  private readonly uint size_ = 12;
+
+  /* Dead Space:
+   * unknown00 = 2
+   * unknown02 = 259
+   *
+   * Dead Space 2:
+   * unknown00 = 2
+   * unknown02 = 259
+   *
+   * Dante's Inferno:
+   * unknown00 = 2
+   * unknown02 = 1537
+   */
+  [Unknown]
+  public ushort Unknown00 { get; set; }
+
+  [Unknown]
+  public ushort Unknown02 { get; set; }
+
+  [RSequenceUntilEndOfStream]
+  public List<BlockWrapper> Contents { get; } = [];
+
   [BinarySchema]
-  public partial class StreamSetFile : IBinaryConvertible {
-    private readonly BlockType magic_ = BlockType.Options;
-    private readonly uint size_ = 12;
+  public partial class BlockWrapper : IBinaryConvertible {
+    public SwitchMagicUInt32SizedSection<BlockType, IBlock> Impl { get; }
+      = new(new BlockConfig()) { TweakReadSize = -8 };
 
-    /* Dead Space:
-     * unknown00 = 2
-     * unknown02 = 259
-     *
-     * Dead Space 2:
-     * unknown00 = 2
-     * unknown02 = 259
-     *
-     * Dante's Inferno:
-     * unknown00 = 2
-     * unknown02 = 1537
-     */
-    [Unknown]
-    public ushort Unknown00 { get; set; }
+    public override string ToString() => this.Impl.ToString();
+  }
 
-    [Unknown]
-    public ushort Unknown02 { get; set; }
+  private class BlockConfig : ISwitchMagicConfig<BlockType, IBlock> {
+    public BlockType ReadMagic(IBinaryReader br)
+      => (BlockType) br.ReadUInt32();
 
-    [RSequenceUntilEndOfStream]
-    public List<BlockWrapper> Contents { get; } = [];
+    public void WriteMagic(IBinaryWriter bw, BlockType magic)
+      => bw.WriteUInt32((uint) magic);
 
-    [BinarySchema]
-    public partial class BlockWrapper : IBinaryConvertible {
-      public SwitchMagicUInt32SizedSection<BlockType, IBlock> Impl { get; }
-        = new(new BlockConfig()) { TweakReadSize = -8 };
+    public BlockType GetMagic(IBlock data) => data.Type;
 
-      public override string ToString() => this.Impl.ToString();
-    }
-
-    private class BlockConfig : ISwitchMagicConfig<BlockType, IBlock> {
-      public BlockType ReadMagic(IBinaryReader br)
-        => (BlockType) br.ReadUInt32();
-
-      public void WriteMagic(IBinaryWriter bw, BlockType magic)
-        => bw.WriteUInt32((uint) magic);
-
-      public BlockType GetMagic(IBlock data) => data.Type;
-
-      public IBlock CreateData(BlockType magic)
-        => magic switch {
-            BlockType.Options => new NoopBlock(BlockType.Options),
-            BlockType.Content => new ContentBlock(),
-            BlockType.Padding => new NoopBlock(BlockType.Padding),
-        };
-    }
+    public IBlock CreateData(BlockType magic)
+      => magic switch {
+          BlockType.Options => new NoopBlock(BlockType.Options),
+          BlockType.Content => new ContentBlock(),
+          BlockType.Padding => new NoopBlock(BlockType.Padding),
+      };
   }
 }

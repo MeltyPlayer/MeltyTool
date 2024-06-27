@@ -1,42 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace fin.data.queues {
-  public class FinQueue<T> : IFinQueue<T> {
-    private readonly Queue<T> impl_ = new();
+namespace fin.data.queues;
 
-    public FinQueue() { }
+public class FinQueue<T> : IFinQueue<T> {
+  private readonly Queue<T> impl_ = new();
 
-    public FinQueue(T first, params T[] rest)
-      => this.Enqueue(first, rest);
+  public FinQueue() { }
 
-    public FinQueue(IEnumerable<T> values)
-      => this.Enqueue(values);
+  public FinQueue(T first, params T[] rest)
+    => this.Enqueue(first, rest);
 
-    public int Count => this.impl_.Count;
+  public FinQueue(IEnumerable<T> values)
+    => this.Enqueue(values);
 
-    public void Clear() => this.impl_.Clear();
+  public int Count => this.impl_.Count;
 
-    public void Enqueue(T first, params T[] rest) {
-      this.impl_.Enqueue(first);
-      foreach (var value in rest) {
-        this.Enqueue(value);
-      }
+  public void Clear() => this.impl_.Clear();
+
+  public void Enqueue(T first, params T[] rest) {
+    this.impl_.Enqueue(first);
+    foreach (var value in rest) {
+      this.Enqueue(value);
     }
-
-    public void Enqueue(IEnumerable<T> values) {
-      foreach (var value in values) {
-        this.Enqueue(value);
-      }
-    }
-
-    public T Dequeue() => this.impl_.Dequeue();
-    public bool TryDequeue(out T value) => this.impl_.TryDequeue(out value!);
-
-    public T Peek() => this.impl_.Peek();
-    public bool TryPeek(out T value) => this.impl_.TryPeek(out value!);
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    public IEnumerator<T> GetEnumerator() => this.impl_.GetEnumerator();
   }
+
+  public void Enqueue(IEnumerable<T> values) {
+    foreach (var value in values) {
+      this.Enqueue(value);
+    }
+  }
+
+  public T Dequeue() => this.impl_.Dequeue();
+  public bool TryDequeue(out T value) => this.impl_.TryDequeue(out value!);
+
+  public T Peek() => this.impl_.Peek();
+  public bool TryPeek(out T value) => this.impl_.TryPeek(out value!);
+
+  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  public IEnumerator<T> GetEnumerator() => this.impl_.GetEnumerator();
 }

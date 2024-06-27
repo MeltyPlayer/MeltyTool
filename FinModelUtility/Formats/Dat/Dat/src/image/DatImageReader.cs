@@ -8,17 +8,18 @@ using gx.image;
 
 using schema.binary;
 
-namespace dat.image {
-  public class DatImageReader : IImageReader {
-    private readonly IImageReader impl_;
+namespace dat.image;
 
-    public DatImageReader(int width, int height, GxTextureFormat format) {
+public class DatImageReader : IImageReader {
+  private readonly IImageReader impl_;
+
+  public DatImageReader(int width, int height, GxTextureFormat format) {
       this.impl_ = this.CreateImpl_(width, height, format);
     }
 
-    private IImageReader CreateImpl_(int width,
-                                     int height,
-                                     GxTextureFormat format) {
+  private IImageReader CreateImpl_(int width,
+                                   int height,
+                                   GxTextureFormat format) {
       return format switch {
           GxTextureFormat.I4 => TiledImageReader.New(
               width,
@@ -64,9 +65,8 @@ namespace dat.image {
       };
     }
 
-    public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
+  public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
 
-    public IImage ReadImage(byte[] data, Endianness endianness)
-      => this.impl_.ReadImage(data, endianness);
-  }
+  public IImage ReadImage(byte[] data, Endianness endianness)
+    => this.impl_.ReadImage(data, endianness);
 }

@@ -1,15 +1,15 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace jsystem.schema.j3dgraph.bmd {
-  [BinarySchema]
-  public partial class BmdHeader : IBinaryConvertible {
-    private readonly string magic_ = "J3D2bmd3";
+namespace jsystem.schema.j3dgraph.bmd;
 
-    [WSizeOfStreamInBytes]
-    public uint FileSize;
+[BinarySchema]
+public partial class BmdHeader : IBinaryConvertible {
+  private readonly string magic_ = "J3D2bmd3";
 
-    public uint NrSections;
-    public readonly byte[] Padding = new byte[16];
-  }
+  [WSizeOfStreamInBytes]
+  public uint FileSize;
+
+  public uint NrSections;
+  public readonly byte[] Padding = new byte[16];
 }

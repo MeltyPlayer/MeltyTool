@@ -12,11 +12,12 @@ using grezzo.schema.zsi;
 
 using schema.binary;
 
-namespace grezzo.api {
-  public class ZsiSceneImporter : ISceneImporter<ZsiSceneFileBundle> {
-    private readonly CmbModelBuilder cmbModelBuilder_ = new();
+namespace grezzo.api;
 
-    public IScene Import(ZsiSceneFileBundle sceneFileBundle) {
+public class ZsiSceneImporter : ISceneImporter<ZsiSceneFileBundle> {
+  private readonly CmbModelBuilder cmbModelBuilder_ = new();
+
+  public IScene Import(ZsiSceneFileBundle sceneFileBundle) {
       var zsiFile = sceneFileBundle.ZsiFile;
 
       var zsi = zsiFile.ReadNew<Zsi>(Endianness.LittleEndian);
@@ -76,9 +77,9 @@ namespace grezzo.api {
       return finScene;
     }
 
-    private void AddZsiMeshAsNewArea_(ZsiSceneFileBundle fileBundle,
-                                      IScene finScene,
-                                      Zsi zsi) {
+  private void AddZsiMeshAsNewArea_(ZsiSceneFileBundle fileBundle,
+                                    IScene finScene,
+                                    Zsi zsi) {
       var finArea = finScene.AddArea();
       foreach (var meshHeader in zsi.MeshHeaders) {
         foreach (var meshEntry in meshHeader.MeshEntries) {
@@ -98,5 +99,4 @@ namespace grezzo.api {
         }
       }
     }
-  }
 }

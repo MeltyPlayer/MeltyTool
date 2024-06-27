@@ -5,89 +5,90 @@ using fin.schema.color;
 
 using schema.binary;
 
-namespace grezzo.schema.cmb.mats {
-  public class Material : IBinaryConvertible {
-    public bool isFragmentLightingEnabled;
-    public bool isVertexLightingEnabled;
-    public bool IsFogEnabled { get; set; }
-    public RenderLayer RenderLayer { get; set; }
-    public CullMode faceCulling;
-    public bool isPolygonOffsetEnabled;
-    public float polygonOffset;
+namespace grezzo.schema.cmb.mats;
 
-    [Unknown]
-    public uint unk0;
+public class Material : IBinaryConvertible {
+  public bool isFragmentLightingEnabled;
+  public bool isVertexLightingEnabled;
+  public bool IsFogEnabled { get; set; }
+  public RenderLayer RenderLayer { get; set; }
+  public CullMode faceCulling;
+  public bool isPolygonOffsetEnabled;
+  public float polygonOffset;
 
-    public uint textureMappersUsed;
-    public uint textureCoordsUsed;
-    public readonly TexMapper[] texMappers = new TexMapper[3];
-    public readonly TexCoords[] texCoords = new TexCoords[3];
+  [Unknown]
+  public uint unk0;
 
-    public Rgba32 emissionColor { get; private set; }
-    public Rgba32 ambientColor { get; private set; }
-    public Rgba32 diffuseRgba { get; private set; }
-    public Rgba32 specular0Color { get; private set; }
-    public Rgba32 specular1Color { get; private set; }
+  public uint textureMappersUsed;
+  public uint textureCoordsUsed;
+  public readonly TexMapper[] texMappers = new TexMapper[3];
+  public readonly TexCoords[] texCoords = new TexCoords[3];
 
-    public Rgba32[] constantColors { get; } = new Rgba32[6];
+  public Rgba32 emissionColor { get; private set; }
+  public Rgba32 ambientColor { get; private set; }
+  public Rgba32 diffuseRgba { get; private set; }
+  public Rgba32 specular0Color { get; private set; }
+  public Rgba32 specular1Color { get; private set; }
 
-    public readonly float[] bufferColor = new float[4];
+  public Rgba32[] constantColors { get; } = new Rgba32[6];
 
-    public BumpTexture bumpTexture;
-    public BumpMode bumpMode;
-    public bool isBumpRenormalized;
+  public readonly float[] bufferColor = new float[4];
 
-    public LayerConfig layerConfig;
-    public FresnelConfig fresnelSelector;
-    public bool isClampHighlight;
-    public bool isDistribution0Enabled;
-    public bool isDistribution1Enabled;
-    public bool isGeometricFactor0Enabled;
-    public bool isGeometricFactor1Enabled;
-    public bool isReflectionEnabled;
+  public BumpTexture bumpTexture;
+  public BumpMode bumpMode;
+  public bool isBumpRenormalized;
 
-    public readonly Sampler reflectanceRSampler = new();
-    public readonly Sampler reflectanceGSampler = new();
-    public readonly Sampler reflectanceBSampler = new();
-    public readonly Sampler distibution0Sampler = new();
-    public readonly Sampler distibution1Sampler = new();
-    public readonly Sampler fresnelSampler = new();
+  public LayerConfig layerConfig;
+  public FresnelConfig fresnelSelector;
+  public bool isClampHighlight;
+  public bool isDistribution0Enabled;
+  public bool isDistribution1Enabled;
+  public bool isGeometricFactor0Enabled;
+  public bool isGeometricFactor1Enabled;
+  public bool isReflectionEnabled;
 
-    public uint texEnvStageCount;
-    public short[] texEnvStagesIndices = new short[6];
+  public readonly Sampler reflectanceRSampler = new();
+  public readonly Sampler reflectanceGSampler = new();
+  public readonly Sampler reflectanceBSampler = new();
+  public readonly Sampler distibution0Sampler = new();
+  public readonly Sampler distibution1Sampler = new();
+  public readonly Sampler fresnelSampler = new();
 
-    public bool alphaTestEnabled;
-    public float alphaTestReferenceValue;
-    public TestFunc alphaTestFunction;
-    public bool depthTestEnabled;
-    public bool depthWriteEnabled;
-    public TestFunc depthTestFunction;
-    public BlendMode blendMode;
+  public uint texEnvStageCount;
+  public short[] texEnvStagesIndices = new short[6];
 
-    public bool LogicOpEnabled { get; set; }
-    public ushort LogicOp { get; set; }
+  public bool alphaTestEnabled;
+  public float alphaTestReferenceValue;
+  public TestFunc alphaTestFunction;
+  public bool depthTestEnabled;
+  public bool depthWriteEnabled;
+  public TestFunc depthTestFunction;
+  public BlendMode blendMode;
 
-    public BlendFactor alphaSrcFunc;
-    public BlendFactor alphaDstFunc;
-    public BlendEquation alphaEquation;
-    public BlendFactor colorSrcFunc;
-    public BlendFactor colorDstFunc;
-    public BlendEquation colorEquation;
-    public readonly float[] blendColor = new float[4];
+  public bool LogicOpEnabled { get; set; }
+  public ushort LogicOp { get; set; }
 
-    public bool stencilEnabled;
-    public byte stencilReferenceValue;
-    public byte stencilBufferMask;
-    public byte stencilBuffer;
-    public TestFunc stencilFunc;
-    public StencilTestOp stencilFailOp;
-    public StencilTestOp stencilZFailOp;
-    public StencilTestOp stencilZPassOp;
+  public BlendFactor alphaSrcFunc;
+  public BlendFactor alphaDstFunc;
+  public BlendEquation alphaEquation;
+  public BlendFactor colorSrcFunc;
+  public BlendFactor colorDstFunc;
+  public BlendEquation colorEquation;
+  public readonly float[] blendColor = new float[4];
 
-    [Unknown]
-    public uint stenilUnk1; // CRC32 of something
+  public bool stencilEnabled;
+  public byte stencilReferenceValue;
+  public byte stencilBufferMask;
+  public byte stencilBuffer;
+  public TestFunc stencilFunc;
+  public StencilTestOp stencilFailOp;
+  public StencilTestOp stencilZFailOp;
+  public StencilTestOp stencilZPassOp;
 
-    public void Read(IBinaryReader br) {
+  [Unknown]
+  public uint stenilUnk1; // CRC32 of something
+
+  public void Read(IBinaryReader br) {
       this.isFragmentLightingEnabled = br.ReadByte() != 0;
       this.isVertexLightingEnabled = br.ReadByte() != 0;
       this.IsFogEnabled = br.ReadByte() != 0;
@@ -189,8 +190,7 @@ namespace grezzo.schema.cmb.mats {
       }
     }
 
-    public void Write(IBinaryWriter bw) {
+  public void Write(IBinaryWriter bw) {
       throw new NotImplementedException();
     }
-  }
 }

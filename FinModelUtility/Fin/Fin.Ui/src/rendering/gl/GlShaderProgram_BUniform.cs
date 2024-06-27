@@ -1,22 +1,22 @@
-﻿namespace fin.ui.rendering.gl {
-  public partial class GlShaderProgram {
-    private Dictionary<string, BShaderUniform> cachedUniforms_ = new();
+﻿namespace fin.ui.rendering.gl;
 
-    private int GetUniformLocation_(string name)
-      => this.cachedShaderProgram_.GetUniformLocation(name);
+public partial class GlShaderProgram {
+  private Dictionary<string, BShaderUniform> cachedUniforms_ = new();
 
-    private abstract class BShaderUniform {
-      protected bool IsDirty { get; private set; }
+  private int GetUniformLocation_(string name)
+    => this.cachedShaderProgram_.GetUniformLocation(name);
 
-      public void PassValueToProgramIfDirty() {
+  private abstract class BShaderUniform {
+    protected bool IsDirty { get; private set; }
+
+    public void PassValueToProgramIfDirty() {
         if (this.IsDirty) {
           this.IsDirty = false;
           this.PassValueToProgram();
         }
       }
 
-      protected void MarkDirty() => this.IsDirty = true;
-      protected abstract void PassValueToProgram();
-    }
+    protected void MarkDirty() => this.IsDirty = true;
+    protected abstract void PassValueToProgram();
   }
 }

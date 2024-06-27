@@ -1,9 +1,10 @@
-﻿namespace fin.ui.rendering.gl.material {
-  public static class CommonShaderPrograms {
-    private static GlShaderProgram? texturelessShaderProgram_;
+﻿namespace fin.ui.rendering.gl.material;
 
-    public static GlShaderProgram TEXTURELESS_SHADER_PROGRAM {
-      get {
+public static class CommonShaderPrograms {
+  private static GlShaderProgram? texturelessShaderProgram_;
+
+  public static GlShaderProgram TEXTURELESS_SHADER_PROGRAM {
+    get {
         if (CommonShaderPrograms.texturelessShaderProgram_ == null) {
           CommonShaderPrograms.texturelessShaderProgram_ =
               GlShaderProgram.FromShaders(@"
@@ -29,6 +30,5 @@ void main() {
 
         return texturelessShaderProgram_;
       }
-    }
   }
 }

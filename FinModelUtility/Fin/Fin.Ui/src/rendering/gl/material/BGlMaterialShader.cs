@@ -5,36 +5,37 @@ using fin.model;
 using fin.shaders.glsl;
 
 
-namespace fin.ui.rendering.gl.material {
-  public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
-      where TMaterial : IReadOnlyMaterial {
-    private LinkedList<CachedTextureUniformData> cachedTextureUniformDatas_ =
-        [];
+namespace fin.ui.rendering.gl.material;
 
-    private LinkedList<CachedLightUniformData> cachedLightUniformDatas_ = [];
+public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
+    where TMaterial : IReadOnlyMaterial {
+  private LinkedList<CachedTextureUniformData> cachedTextureUniformDatas_ =
+      [];
 
-    private readonly IReadOnlyModel model_;
-    private readonly IReadOnlyLighting? lighting_;
-    private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
-    private readonly GlShaderProgram impl_;
+  private LinkedList<CachedLightUniformData> cachedLightUniformDatas_ = [];
 
-    private readonly IShaderUniform<Matrix4x4> modelMatrixUniform_;
-    private readonly IShaderUniform<Matrix4x4> modelViewMatrixUniform_;
-    private readonly IShaderUniform<Matrix4x4> projectionMatrixUniform_;
+  private readonly IReadOnlyModel model_;
+  private readonly IReadOnlyLighting? lighting_;
+  private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
+  private readonly GlShaderProgram impl_;
 
-    private readonly IShaderUniformArray<Matrix4x4> matricesUniform_;
+  private readonly IShaderUniform<Matrix4x4> modelMatrixUniform_;
+  private readonly IShaderUniform<Matrix4x4> modelViewMatrixUniform_;
+  private readonly IShaderUniform<Matrix4x4> projectionMatrixUniform_;
 
-    private readonly IShaderUniform<Vector3> cameraPositionUniform_;
-    private readonly IShaderUniform<float> shininessUniform_;
+  private readonly IShaderUniformArray<Matrix4x4> matricesUniform_;
 
-    private readonly IShaderUniform<bool> useLightingUniform_;
-    private readonly IShaderUniform<Vector4> ambientLightColorUniform_;
+  private readonly IShaderUniform<Vector3> cameraPositionUniform_;
+  private readonly IShaderUniform<float> shininessUniform_;
 
-    protected BGlMaterialShader(
-        IReadOnlyModel model,
-        TMaterial material,
-        IReadOnlyBoneTransformManager? boneTransformManager,
-        IReadOnlyLighting? lighting) {
+  private readonly IShaderUniform<bool> useLightingUniform_;
+  private readonly IShaderUniform<Vector4> ambientLightColorUniform_;
+
+  protected BGlMaterialShader(
+      IReadOnlyModel model,
+      TMaterial material,
+      IReadOnlyBoneTransformManager? boneTransformManager,
+      IReadOnlyLighting? lighting) {
       this.model_ = model;
       this.Material = material;
       this.boneTransformManager_ = boneTransformManager;
@@ -81,14 +82,14 @@ namespace fin.ui.rendering.gl.material {
       this.Setup(material, this.impl_);
     }
 
-    ~BGlMaterialShader() => this.Dispose();
+  ~BGlMaterialShader() => this.Dispose();
 
-    public void Dispose() {
+  public void Dispose() {
       this.ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() {
+  private void ReleaseUnmanagedResources_() {
       this.impl_.Dispose();
 
       if (this.DisposeTextures) {
@@ -102,27 +103,27 @@ namespace fin.ui.rendering.gl.material {
       this.DisposeInternal();
     }
 
-    protected abstract void DisposeInternal();
+  protected abstract void DisposeInternal();
 
-    protected virtual IShaderSourceGlsl GenerateShaderSource(
-        IReadOnlyModel model,
-        TMaterial material) => material.ToShaderSource(model, true);
+  protected virtual IShaderSourceGlsl GenerateShaderSource(
+      IReadOnlyModel model,
+      TMaterial material) => material.ToShaderSource(model, true);
 
-    protected abstract void Setup(TMaterial material,
-                                  GlShaderProgram shaderProgram);
+  protected abstract void Setup(TMaterial material,
+                                GlShaderProgram shaderProgram);
 
-    protected abstract void PassUniformsAndBindTextures(
-        GlShaderProgram shaderProgram);
+  protected abstract void PassUniformsAndBindTextures(
+      GlShaderProgram shaderProgram);
 
-    public string VertexShaderSource => this.impl_.VertexShaderSource;
-    public string FragmentShaderSource => this.impl_.FragmentShaderSource;
+  public string VertexShaderSource => this.impl_.VertexShaderSource;
+  public string FragmentShaderSource => this.impl_.FragmentShaderSource;
 
-    public IReadOnlyMaterial? Material { get; }
+  public IReadOnlyMaterial? Material { get; }
 
-    public bool UseLighting { get; set; }
-    public bool DisposeTextures { get; set; } = true;
+  public bool UseLighting { get; set; }
+  public bool DisposeTextures { get; set; } = true;
 
-    public void Use() {
+  public void Use() {
       this.modelMatrixUniform_.SetAndMarkDirty(GlTransform.ModelMatrix);
       this.modelViewMatrixUniform_.SetAndMarkDirty(
           GlTransform.ModelViewMatrix);
@@ -165,7 +166,7 @@ namespace fin.ui.rendering.gl.material {
       this.impl_.Use();
     }
 
-    private void PassInLightUniforms_(IReadOnlyLighting? lighting) {
+  private void PassInLightUniforms_(IReadOnlyLighting? lighting) {
       var useLighting = this.UseLighting && this.lighting_ != null;
       this.useLightingUniform_.SetAndMaybeMarkDirty(useLighting);
 
@@ -186,16 +187,15 @@ namespace fin.ui.rendering.gl.material {
       }
     }
 
-    protected void SetUpTexture(
-        string textureName,
-        int textureIndex,
-        IReadOnlyTexture? finTexture,
-        GlTexture glTexture)
-      => this.cachedTextureUniformDatas_.AddLast(
-          new CachedTextureUniformData(textureName,
-                                       textureIndex,
-                                       finTexture,
-                                       glTexture,
-                                       this.impl_));
-  }
+  protected void SetUpTexture(
+      string textureName,
+      int textureIndex,
+      IReadOnlyTexture? finTexture,
+      GlTexture glTexture)
+    => this.cachedTextureUniformDatas_.AddLast(
+        new CachedTextureUniformData(textureName,
+                                     textureIndex,
+                                     finTexture,
+                                     glTexture,
+                                     this.impl_));
 }

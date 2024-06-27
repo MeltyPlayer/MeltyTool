@@ -20,16 +20,17 @@ using FinTextureMagFilter = fin.model.TextureMagFilter;
 using TextureMagFilter = grezzo.schema.cmb.TextureMagFilter;
 using TextureMinFilter = grezzo.schema.cmb.TextureMinFilter;
 
-namespace grezzo.material {
-  public class CmbFixedFunctionMaterial {
-    private const bool USE_FIXED_FUNCTION = true;
-    private const bool USE_JANKY_TRANSPARENCY = false;
+namespace grezzo.material;
 
-    public CmbFixedFunctionMaterial(
-        IModel finModel,
-        Cmb cmb,
-        int materialIndex,
-        ILazyArray<IImage> textureImages) {
+public class CmbFixedFunctionMaterial {
+  private const bool USE_FIXED_FUNCTION = true;
+  private const bool USE_JANKY_TRANSPARENCY = false;
+
+  public CmbFixedFunctionMaterial(
+      IModel finModel,
+      Cmb cmb,
+      int materialIndex,
+      ILazyArray<IImage> textureImages) {
       var mats = cmb.mats.Data;
       var cmbMaterials = mats.Materials;
       var cmbMaterial = cmbMaterials[materialIndex];
@@ -284,48 +285,47 @@ namespace grezzo.material {
       };
     }
 
-    public IMaterial Material { get; }
+  public IMaterial Material { get; }
 
-    public WrapMode CmbToFinWrapMode(TextureWrapMode cmbMode)
-      => cmbMode switch {
-          TextureWrapMode.ClampToBorder => WrapMode.CLAMP,
-          TextureWrapMode.Repeat        => WrapMode.REPEAT,
-          TextureWrapMode.ClampToEdge   => WrapMode.CLAMP,
-          TextureWrapMode.Mirror        => WrapMode.MIRROR_REPEAT,
-      };
+  public WrapMode CmbToFinWrapMode(TextureWrapMode cmbMode)
+    => cmbMode switch {
+        TextureWrapMode.ClampToBorder => WrapMode.CLAMP,
+        TextureWrapMode.Repeat        => WrapMode.REPEAT,
+        TextureWrapMode.ClampToEdge   => WrapMode.CLAMP,
+        TextureWrapMode.Mirror        => WrapMode.MIRROR_REPEAT,
+    };
 
-    public FinBlendEquation CmbBlendEquationToFin(
-        BlendEquation cmbBlendEquation)
-      => cmbBlendEquation switch {
-          BlendEquation.FuncAdd      => FinBlendEquation.ADD,
-          BlendEquation.FuncSubtract => FinBlendEquation.SUBTRACT,
-          BlendEquation.FuncReverseSubtract => FinBlendEquation
-              .REVERSE_SUBTRACT,
-          BlendEquation.Min => FinBlendEquation.MIN,
-          BlendEquation.Max => FinBlendEquation.MAX,
-          _ => throw new ArgumentOutOfRangeException(
-              nameof(cmbBlendEquation),
-              cmbBlendEquation,
-              null)
-      };
+  public FinBlendEquation CmbBlendEquationToFin(
+      BlendEquation cmbBlendEquation)
+    => cmbBlendEquation switch {
+        BlendEquation.FuncAdd      => FinBlendEquation.ADD,
+        BlendEquation.FuncSubtract => FinBlendEquation.SUBTRACT,
+        BlendEquation.FuncReverseSubtract => FinBlendEquation
+            .REVERSE_SUBTRACT,
+        BlendEquation.Min => FinBlendEquation.MIN,
+        BlendEquation.Max => FinBlendEquation.MAX,
+        _ => throw new ArgumentOutOfRangeException(
+            nameof(cmbBlendEquation),
+            cmbBlendEquation,
+            null)
+    };
 
-    public FinBlendFactor CmbBlendFactorToFin(BlendFactor cmbBlendFactor)
-      => cmbBlendFactor switch {
-          BlendFactor.Zero        => FinBlendFactor.ZERO,
-          BlendFactor.One         => FinBlendFactor.ONE,
-          BlendFactor.SourceColor => FinBlendFactor.SRC_COLOR,
-          BlendFactor.OneMinusSourceColor => FinBlendFactor
-              .ONE_MINUS_SRC_COLOR,
-          BlendFactor.SourceAlpha => FinBlendFactor.SRC_ALPHA,
-          BlendFactor.OneMinusSourceAlpha => FinBlendFactor
-              .ONE_MINUS_SRC_ALPHA,
-          BlendFactor.DestinationColor => FinBlendFactor.DST_COLOR,
-          BlendFactor.OneMinusDestinationColor => FinBlendFactor
-              .ONE_MINUS_DST_COLOR,
-          BlendFactor.DestinationAlpha => FinBlendFactor.DST_ALPHA,
-          BlendFactor.OneMinusDestinationAlpha => FinBlendFactor
-              .ONE_MINUS_DST_ALPHA,
-          _ => throw new NotSupportedException(),
-      };
-  }
+  public FinBlendFactor CmbBlendFactorToFin(BlendFactor cmbBlendFactor)
+    => cmbBlendFactor switch {
+        BlendFactor.Zero        => FinBlendFactor.ZERO,
+        BlendFactor.One         => FinBlendFactor.ONE,
+        BlendFactor.SourceColor => FinBlendFactor.SRC_COLOR,
+        BlendFactor.OneMinusSourceColor => FinBlendFactor
+            .ONE_MINUS_SRC_COLOR,
+        BlendFactor.SourceAlpha => FinBlendFactor.SRC_ALPHA,
+        BlendFactor.OneMinusSourceAlpha => FinBlendFactor
+            .ONE_MINUS_SRC_ALPHA,
+        BlendFactor.DestinationColor => FinBlendFactor.DST_COLOR,
+        BlendFactor.OneMinusDestinationColor => FinBlendFactor
+            .ONE_MINUS_DST_COLOR,
+        BlendFactor.DestinationAlpha => FinBlendFactor.DST_ALPHA,
+        BlendFactor.OneMinusDestinationAlpha => FinBlendFactor
+            .ONE_MINUS_DST_ALPHA,
+        _ => throw new NotSupportedException(),
+    };
 }

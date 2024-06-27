@@ -1,12 +1,12 @@
 ﻿using fin.model;
 
-namespace fin.ui.rendering.gl.material {
-  public interface IGlMaterialShader : IDisposable {
-    IReadOnlyMaterial Material { get; }
+namespace fin.ui.rendering.gl.material;
 
-    bool UseLighting { get; set; }
-    bool DisposeTextures { get; set; }
+public interface IGlMaterialShader : IDisposable {
+  IReadOnlyMaterial Material { get; }
 
-    void Use();
-  }
+  bool UseLighting { get; set; }
+  bool DisposeTextures { get; set; }
+
+  void Use();
 }

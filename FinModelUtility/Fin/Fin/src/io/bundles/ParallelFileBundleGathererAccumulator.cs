@@ -5,40 +5,40 @@ using System.Runtime.CompilerServices;
 
 using CommunityToolkit.HighPerformance.Helpers;
 
-namespace fin.io.bundles {
-  public class ParallelAnnotatedFileBundleGathererAccumulator :
-      IAnnotatedFileBundleGathererAccumulator {
-    private readonly List<IAnnotatedFileBundleGatherer> gatherers_ = [];
+namespace fin.io.bundles;
 
-    public IAnnotatedFileBundleGathererAccumulator Add(IAnnotatedFileBundleGatherer gatherer) {
-      this.gatherers_.Add(gatherer);
-      return this;
-    }
+public class ParallelAnnotatedFileBundleGathererAccumulator :
+    IAnnotatedFileBundleGathererAccumulator {
+  private readonly List<IAnnotatedFileBundleGatherer> gatherers_ = [];
 
-    public IAnnotatedFileBundleGathererAccumulator Add(
-        Func<IEnumerable<IAnnotatedFileBundle>> handler)
-      => this.Add(new AnnotatedFileBundleHandlerGatherer(handler));
+  public IAnnotatedFileBundleGathererAccumulator Add(IAnnotatedFileBundleGatherer gatherer) {
+    this.gatherers_.Add(gatherer);
+    return this;
+  }
 
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
-      var results = new IEnumerable<IAnnotatedFileBundle>[this.gatherers_.Count];
-      ParallelHelper.For(0,
-                         this.gatherers_.Count,
-                         new GathererRunner(this.gatherers_, results));
-      return results.SelectMany(result => result);
-    }
+  public IAnnotatedFileBundleGathererAccumulator Add(
+      Func<IEnumerable<IAnnotatedFileBundle>> handler)
+    => this.Add(new AnnotatedFileBundleHandlerGatherer(handler));
 
-    private readonly struct GathererRunner(
-        IReadOnlyList<IAnnotatedFileBundleGatherer> gatherers,
-        IList<IEnumerable<IAnnotatedFileBundle>> results) : IAction {
+  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+    var results = new IEnumerable<IAnnotatedFileBundle>[this.gatherers_.Count];
+    ParallelHelper.For(0,
+                       this.gatherers_.Count,
+                       new GathererRunner(this.gatherers_, results));
+    return results.SelectMany(result => result);
+  }
 
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public void Invoke(int i) {
-        try {
-          results[i] = gatherers[i].GatherFileBundles();
-        } catch (Exception e) {
-          results[i] = Enumerable.Empty<IAnnotatedFileBundle>();
-          Console.Error.WriteLine(e.ToString());
-        }
+  private readonly struct GathererRunner(
+      IReadOnlyList<IAnnotatedFileBundleGatherer> gatherers,
+      IList<IEnumerable<IAnnotatedFileBundle>> results) : IAction {
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Invoke(int i) {
+      try {
+        results[i] = gatherers[i].GatherFileBundles();
+      } catch (Exception e) {
+        results[i] = Enumerable.Empty<IAnnotatedFileBundle>();
+        Console.Error.WriteLine(e.ToString());
       }
     }
   }

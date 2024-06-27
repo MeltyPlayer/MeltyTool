@@ -11,42 +11,43 @@ using fin.model.impl;
 using fin.model.util;
 using fin.util.enums;
 
-namespace f3dzex2.model {
-  public interface IF3dVertices {
-    void ClearVertices();
+namespace f3dzex2.model;
 
-    void LoadVertices(IReadOnlyList<F3dVertex> vertices, int startIndex);
-    F3dVertex GetVertexDefinition(int index);
-    IVertex GetOrCreateVertexAtIndex(byte index);
+public interface IF3dVertices {
+  void ClearVertices();
 
-    Color DiffuseColor { get; set; }
-  }
+  void LoadVertices(IReadOnlyList<F3dVertex> vertices, int startIndex);
+  F3dVertex GetVertexDefinition(int index);
+  IVertex GetOrCreateVertexAtIndex(byte index);
 
-  public class F3dVertices : IF3dVertices {
-    private readonly IN64Hardware n64Hardware_;
-    private readonly ModelImpl model_;
+  Color DiffuseColor { get; set; }
+}
 
-    private const int VERTEX_COUNT = 32;
+public class F3dVertices : IF3dVertices {
+  private readonly IN64Hardware n64Hardware_;
+  private readonly ModelImpl model_;
 
-    private readonly F3dVertex[] vertexDefinitions_ =
-        new F3dVertex[VERTEX_COUNT];
+  private const int VERTEX_COUNT = 32;
 
-    private readonly IVertex?[] vertices_ = new IVertex?[VERTEX_COUNT];
+  private readonly F3dVertex[] vertexDefinitions_ =
+      new F3dVertex[VERTEX_COUNT];
 
-    private readonly IBone?[] bones_ = new IBone?[VERTEX_COUNT];
+  private readonly IVertex?[] vertices_ = new IVertex?[VERTEX_COUNT];
 
-    private Color diffuseColor_ = Color.White;
+  private readonly IBone?[] bones_ = new IBone?[VERTEX_COUNT];
+
+  private Color diffuseColor_ = Color.White;
 
 
-    public F3dVertices(IN64Hardware n64Hardware, ModelImpl model) {
+  public F3dVertices(IN64Hardware n64Hardware, ModelImpl model) {
       this.n64Hardware_ = n64Hardware;
       this.model_ = model;
     }
 
-    public void ClearVertices() => Array.Fill(this.vertices_, null);
+  public void ClearVertices() => Array.Fill(this.vertices_, null);
 
-    public void LoadVertices(IReadOnlyList<F3dVertex> newVertices,
-                             int startIndex) {
+  public void LoadVertices(IReadOnlyList<F3dVertex> newVertices,
+                           int startIndex) {
       for (var i = 0; i < newVertices.Count; ++i) {
         var index = startIndex + i;
         this.vertexDefinitions_[index] = newVertices[i];
@@ -56,10 +57,10 @@ namespace f3dzex2.model {
     }
 
 
-    public F3dVertex GetVertexDefinition(int index)
-      => this.vertexDefinitions_[index];
+  public F3dVertex GetVertexDefinition(int index)
+    => this.vertexDefinitions_[index];
 
-    public IVertex GetOrCreateVertexAtIndex(byte index) {
+  public IVertex GetOrCreateVertexAtIndex(byte index) {
       var existing = this.vertices_[index];
       if (existing != null) {
         return existing;
@@ -107,9 +108,8 @@ namespace f3dzex2.model {
       return newVertex;
     }
 
-    public Color DiffuseColor {
-      get => this.diffuseColor_;
-      set => this.diffuseColor_ = value;
-    }
+  public Color DiffuseColor {
+    get => this.diffuseColor_;
+    set => this.diffuseColor_ = value;
   }
 }

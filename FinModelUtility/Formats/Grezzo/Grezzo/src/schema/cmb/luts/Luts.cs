@@ -3,23 +3,23 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace grezzo.schema.cmb.luts {
-  /// <summary>
-  ///   "LUT" stands for "lookup table". (But where is this actually used...?)
-  /// </summary>
-  [BinarySchema]
-  public partial class Luts : IBinaryConvertible {
-    [WLengthOfSequence(nameof(Offset))]
-    [WLengthOfSequence(nameof(luts))]
-    private uint lutSetCount_;
+namespace grezzo.schema.cmb.luts;
 
-    [Unknown]
-    public uint unk;
+/// <summary>
+///   "LUT" stands for "lookup table". (But where is this actually used...?)
+/// </summary>
+[BinarySchema]
+public partial class Luts : IBinaryConvertible {
+  [WLengthOfSequence(nameof(Offset))]
+  [WLengthOfSequence(nameof(luts))]
+  private uint lutSetCount_;
 
-    [RSequenceLengthSource(nameof(lutSetCount_))]
-    public uint[] Offset { get; set; }
+  [Unknown]
+  public uint unk;
 
-    [RSequenceLengthSource(nameof(lutSetCount_))]
-    public LutSet[] luts { get; set; }
-  }
+  [RSequenceLengthSource(nameof(lutSetCount_))]
+  public uint[] Offset { get; set; }
+
+  [RSequenceLengthSource(nameof(lutSetCount_))]
+  public LutSet[] luts { get; set; }
 }

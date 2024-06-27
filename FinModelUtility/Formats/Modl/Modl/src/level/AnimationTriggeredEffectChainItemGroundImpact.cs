@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class AnimationTriggeredEffectChainItemGroundImpact : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class AnimationTriggeredEffectChainItemGroundImpact : BLevelObject {
 }

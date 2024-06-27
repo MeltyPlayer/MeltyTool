@@ -8,9 +8,10 @@ using System.Drawing;
 
 using schema.binary;
 
-namespace System {
-  public static class Extensions {
-    public static Color ReadColor16(this IBinaryReader br) {
+namespace System;
+
+public static class Extensions {
+  public static Color ReadColor16(this IBinaryReader br) {
       short num1 = br.ReadInt16();
       short num2 = br.ReadInt16();
       short num3 = br.ReadInt16();
@@ -21,11 +22,10 @@ namespace System {
           (int) Math.Abs(num3) & (int) byte.MaxValue);
     }
 
-    public static Color ReadColor8(this IBinaryReader br) {
+  public static Color ReadColor8(this IBinaryReader br) {
       int red = (int) br.ReadByte();
       int green = (int) br.ReadByte();
       int blue = (int) br.ReadByte();
       return Color.FromArgb((int) br.ReadByte(), red, green, blue);
     }
-  }
 }

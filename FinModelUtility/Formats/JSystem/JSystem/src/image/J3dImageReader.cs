@@ -7,17 +7,18 @@ using gx.image;
 
 using schema.binary;
 
-namespace jsystem.image {
-  public class J3dImageReader : IImageReader {
-    private readonly IImageReader impl_;
+namespace jsystem.image;
 
-    public J3dImageReader(int width, int height, GxTextureFormat format) {
+public class J3dImageReader : IImageReader {
+  private readonly IImageReader impl_;
+
+  public J3dImageReader(int width, int height, GxTextureFormat format) {
       this.impl_ = this.CreateImpl_(width, height, format);
     }
 
-    private IImageReader CreateImpl_(int width,
-                                     int height,
-                                     GxTextureFormat format) {
+  private IImageReader CreateImpl_(int width,
+                                   int height,
+                                   GxTextureFormat format) {
       return format switch {
           GxTextureFormat.I4 => TiledImageReader.New(
               width,
@@ -65,9 +66,8 @@ namespace jsystem.image {
       };
     }
 
-    public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
+  public IImage ReadImage(IBinaryReader br) => this.impl_.ReadImage(br);
 
-    public IImage ReadImage(byte[] data, Endianness endianness)
-      => this.impl_.ReadImage(data, endianness);
-  }
+  public IImage ReadImage(byte[] data, Endianness endianness)
+    => this.impl_.ReadImage(data, endianness);
 }

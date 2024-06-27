@@ -13,20 +13,21 @@ using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace level5.schema {
-  public class Xi {
-    public int Width { get; set; }
-    public int Height { get; set; }
+namespace level5.schema;
 
-    List<int> Tiles { get; set; } = [];
+public class Xi {
+  public int Width { get; set; }
+  public int Height { get; set; }
 
-    public byte ImageFormat { get; set; }
+  List<int> Tiles { get; set; } = [];
 
-    public byte[] ImageData { get; set; }
+  public byte ImageFormat { get; set; }
 
-    private bool SwitchFile { get; set; } = false;
+  public byte[] ImageData { get; set; }
 
-    public void Open(byte[] data) {
+  private bool SwitchFile { get; set; } = false;
+
+  public void Open(byte[] data) {
       using (var r =
              new SchemaBinaryReader(data, Endianness.LittleEndian)) {
         r.Position = 0x10;
@@ -96,11 +97,11 @@ namespace level5.schema {
       }
     }
     
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public unsafe IImage ToBitmap() {
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <returns></returns>
+  public unsafe IImage ToBitmap() {
       Bitmap tileSheet;
 
       var imageFormat = (_3dsImageTools.TexFormat) ImageFormat;
@@ -190,5 +191,4 @@ namespace level5.schema {
 
       return img;
     }
-  }
 }

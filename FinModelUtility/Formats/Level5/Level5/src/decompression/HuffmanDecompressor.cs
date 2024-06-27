@@ -1,14 +1,15 @@
 ﻿using fin.decompression;
 
-namespace level5.decompression {
-  public class HuffmanArrayDecompressor : ISpanDecompressor {
-    private readonly byte aType_;
+namespace level5.decompression;
 
-    public HuffmanArrayDecompressor(byte aType) {
+public class HuffmanArrayDecompressor : ISpanDecompressor {
+  private readonly byte aType_;
+
+  public HuffmanArrayDecompressor(byte aType) {
       this.aType_ = aType;
     }
 
-    public bool TryToGetLength(ReadOnlySpan<byte> src, out int length) {
+  public bool TryToGetLength(ReadOnlySpan<byte> src, out int length) {
       DecompressionUtils.GetLengthAndType(src,
                                           out length,
                                           out var decompressionType);
@@ -18,7 +19,7 @@ namespace level5.decompression {
               this.aType_ == 0x28);
     }
 
-    public bool TryToDecompressInto(ReadOnlySpan<byte> src, Span<byte> dst) {
+  public bool TryToDecompressInto(ReadOnlySpan<byte> src, Span<byte> dst) {
       HuffStream instream = new HuffStream();
 
       instream.ReadInt32(src);
@@ -93,42 +94,42 @@ namespace level5.decompression {
       return true;
     }
 
-    private class HuffStream {
-      public int p = 4;
+  private class HuffStream {
+    public int p = 4;
 
-      public bool HasBytes(ReadOnlySpan<byte> bytes) {
+    public bool HasBytes(ReadOnlySpan<byte> bytes) {
         return p < bytes.Length;
       }
 
-      public int ReadByte(ReadOnlySpan<byte> bytes) {
+    public int ReadByte(ReadOnlySpan<byte> bytes) {
         return bytes[p++] & 0xFF;
       }
 
-      public int ReadThree(ReadOnlySpan<byte> bytes) {
+    public int ReadThree(ReadOnlySpan<byte> bytes) {
         return ((bytes[p++] & 0xFF)) | ((bytes[p++] & 0xFF) << 8) |
                ((bytes[p++] & 0xFF) << 16);
       }
 
-      public int ReadInt32(ReadOnlySpan<byte> bytes) {
+    public int ReadInt32(ReadOnlySpan<byte> bytes) {
         if (p >= bytes.Length)
           return 0;
         else
           return ((bytes[p++] & 0xFF)) | ((bytes[p++] & 0xFF) << 8) |
                  ((bytes[p++] & 0xFF) << 16) | ((bytes[p++] & 0xFF) << 24);
       }
-    }
+  }
 
-    private class HuffTreeNode {
-      public byte data;
-      public bool isData;
-      public HuffTreeNode child0;
-      public HuffTreeNode child1;
+  private class HuffTreeNode {
+    public byte data;
+    public bool isData;
+    public HuffTreeNode child0;
+    public HuffTreeNode child1;
 
-      public HuffTreeNode(HuffStream stream,
-                          ReadOnlySpan<byte> bytes,
-                          bool isData,
-                          long relOffset,
-                          long maxStreamPos) {
+    public HuffTreeNode(HuffStream stream,
+                        ReadOnlySpan<byte> bytes,
+                        bool isData,
+                        long relOffset,
+                        long maxStreamPos) {
         if (stream.p >= maxStreamPos) {
           return;
         }
@@ -163,6 +164,5 @@ namespace level5.decompression {
           stream.p = currStreamPos;
         }
       }
-    }
   }
 }

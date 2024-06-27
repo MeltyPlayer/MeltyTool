@@ -15,55 +15,56 @@ using Vector2 = System.Numerics.Vector2;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
-namespace dat.schema.mesh {
-  [Flags]
-  public enum PObjFlags : ushort {
-    BIT_1 = (1 << 0),
-    BIT_2 = (1 << 1),
-    UNKNOWN2 = (1 << 2),
-    ANIM = (1 << 3),
+namespace dat.schema.mesh;
 
-    BIT_5 = (1 << 4),
-    BIT_6 = (1 << 5),
-    BIT_7 = (1 << 6),
-    BIT_8 = (1 << 7),
-    BIT_9 = (1 << 8),
-    BIT_10 = (1 << 9),
-    BIT_11 = (1 << 10),
-    BIT_12 = (1 << 11),
+[Flags]
+public enum PObjFlags : ushort {
+  BIT_1 = (1 << 0),
+  BIT_2 = (1 << 1),
+  UNKNOWN2 = (1 << 2),
+  ANIM = (1 << 3),
 
-    OBJTYPE_SHAPEANIM = 1 << 12,
-    OBJTYPE_ENVELOPE = 1 << 13,
+  BIT_5 = (1 << 4),
+  BIT_6 = (1 << 5),
+  BIT_7 = (1 << 6),
+  BIT_8 = (1 << 7),
+  BIT_9 = (1 << 8),
+  BIT_10 = (1 << 9),
+  BIT_11 = (1 << 10),
+  BIT_12 = (1 << 11),
 
-    CULLBACK = (1 << 14),
-    CULLFRONT = (1 << 15)
+  OBJTYPE_SHAPEANIM = 1 << 12,
+  OBJTYPE_ENVELOPE = 1 << 13,
+
+  CULLBACK = (1 << 14),
+  CULLFRONT = (1 << 15)
+}
+
+/// <summary>
+///   Polygon object.
+/// </summary>
+public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
+  [BinarySchema]
+  public partial class PObjHeader : IBinaryDeserializable {
+    public uint StringOffset { get; set; }
+    public uint NextPObjOffset { get; set; }
+    public uint VertexDescriptorListOffset { get; set; }
+    public PObjFlags Flags { get; set; }
+    public ushort DisplayListSize { get; set; }
+    public uint DisplayListOffset { get; set; }
+    public uint WeightListOffset { get; set; }
   }
 
-  /// <summary>
-  ///   Polygon object.
-  /// </summary>
-  public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
-    [BinarySchema]
-    public partial class PObjHeader : IBinaryDeserializable {
-      public uint StringOffset { get; set; }
-      public uint NextPObjOffset { get; set; }
-      public uint VertexDescriptorListOffset { get; set; }
-      public PObjFlags Flags { get; set; }
-      public ushort DisplayListSize { get; set; }
-      public uint DisplayListOffset { get; set; }
-      public uint WeightListOffset { get; set; }
-    }
+  public PObjHeader Header { get; } = new();
+  public PObj? NextSibling { get; private set; }
 
-    public PObjHeader Header { get; } = new();
-    public PObj? NextSibling { get; private set; }
+  public List<VertexDescriptor> VertexDescriptors { get; } = [];
+  public List<DatPrimitive> Primitives { get; } = [];
 
-    public List<VertexDescriptor> VertexDescriptors { get; } = [];
-    public List<DatPrimitive> Primitives { get; } = [];
+  public VertexSpace VertexSpace { get; private set; }
+  public List<IList<PObjWeight>>? Weights { get; private set; }
 
-    public VertexSpace VertexSpace { get; private set; }
-    public List<IList<PObjWeight>>? Weights { get; private set; }
-
-    public void Read(IBinaryReader br) {
+  public void Read(IBinaryReader br) {
       this.Header.Read(br);
 
       // TODO: Read weights
@@ -93,7 +94,7 @@ namespace dat.schema.mesh {
       }
     }
 
-    private void ReadDisplayList_(IBinaryReader br) {
+  private void ReadDisplayList_(IBinaryReader br) {
       if (this.Header.DisplayListOffset == 0) {
         return;
       }
@@ -298,8 +299,8 @@ namespace dat.schema.mesh {
       }
     }
 
-    private IColor ReadColorAttribute_(IBinaryReader br,
-                                       ColorComponentType colorComponentType) {
+  private IColor ReadColorAttribute_(IBinaryReader br,
+                                     ColorComponentType colorComponentType) {
       switch (colorComponentType) {
         case ColorComponentType.RGB565: {
           return ColorUtil.ParseRgb565(br.ReadUInt16());
@@ -351,36 +352,36 @@ namespace dat.schema.mesh {
         }
       }
     }
-  }
+}
 
-  public static class BinaryReaderExtensions {
-    public static Vector2 ReadVector2(this IBinaryReader br,
-                                      VertexDescriptor descriptor) {
+public static class BinaryReaderExtensions {
+  public static Vector2 ReadVector2(this IBinaryReader br,
+                                    VertexDescriptor descriptor) {
       var vec2 = new Vector2();
       br.ReadIntoVector(descriptor,
                         new Span<Vector2>(ref vec2).Cast<Vector2, float>());
       return vec2;
     }
 
-    public static Vector3 ReadVector3(this IBinaryReader br,
-                                      VertexDescriptor descriptor) {
+  public static Vector3 ReadVector3(this IBinaryReader br,
+                                    VertexDescriptor descriptor) {
       var vec3 = new Vector3();
       br.ReadIntoVector(descriptor,
                         new Span<Vector3>(ref vec3).Cast<Vector3, float>());
       return vec3;
     }
 
-    public static Vector4 ReadVector4(this IBinaryReader br,
-                                      VertexDescriptor descriptor) {
+  public static Vector4 ReadVector4(this IBinaryReader br,
+                                    VertexDescriptor descriptor) {
       var vec4 = new Vector4();
       br.ReadIntoVector(descriptor,
                         new Span<Vector4>(ref vec4).Cast<Vector4, float>());
       return vec4;
     }
 
-    public static void ReadIntoVector(this IBinaryReader br,
-                                      VertexDescriptor descriptor,
-                                      Span<float> floats) {
+  public static void ReadIntoVector(this IBinaryReader br,
+                                    VertexDescriptor descriptor,
+                                    Span<float> floats) {
       Asserts.True(floats.Length >= descriptor.ComponentCount);
 
       var scaleMultiplier = 1f / MathF.Pow(2, descriptor.Scale);
@@ -394,26 +395,25 @@ namespace dat.schema.mesh {
         };
       }
     }
-  }
+}
 
-  public class DatPrimitive {
-    public required GxOpcode Type { get; init; }
-    public required IReadOnlyList<DatVertex> Vertices { get; init; }
-  }
+public class DatPrimitive {
+  public required GxOpcode Type { get; init; }
+  public required IReadOnlyList<DatVertex> Vertices { get; init; }
+}
 
-  public class DatVertex {
-    public required int? WeightId { get; init; }
-    public required Vector3 Position { get; init; }
-    public Vector3? Normal { get; init; }
-    public Vector3? Binormal { get; init; }
-    public Vector3? Tangent { get; init; }
-    public Vector2? Uv0 { get; init; }
-    public Vector2? Uv1 { get; init; }
-    public IColor? Color { get; init; }
-  }
+public class DatVertex {
+  public required int? WeightId { get; init; }
+  public required Vector3 Position { get; init; }
+  public Vector3? Normal { get; init; }
+  public Vector3? Binormal { get; init; }
+  public Vector3? Tangent { get; init; }
+  public Vector2? Uv0 { get; init; }
+  public Vector2? Uv1 { get; init; }
+  public IColor? Color { get; init; }
+}
 
-  public class PObjWeight {
-    public required uint JObjOffset { get; init; }
-    public required float Weight { get; init; }
-  }
+public class PObjWeight {
+  public required uint JObjOffset { get; init; }
+  public required float Weight { get; init; }
 }

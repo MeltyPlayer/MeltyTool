@@ -1,8 +1,9 @@
 ﻿using fin.decompression;
 
-namespace level5.decompression {
-  public class Level5Decompressor : BArrayDecompressor {
-    public override bool TryDecompress(byte[] src, out byte[] dst) {
+namespace level5.decompression;
+
+public class Level5Decompressor : BArrayDecompressor {
+  public override bool TryDecompress(byte[] src, out byte[] dst) {
       int tableType = (src[0] & 0xFF);
 
       DecompressionUtils.GetLengthAndType(src,
@@ -30,5 +31,4 @@ namespace level5.decompression {
 
       return true;
     }
-  }
 }

@@ -7,56 +7,56 @@ using fin.math.matrix.four;
 
 using SharpGLTF.Schema2;
 
-namespace fin.model.io.exporters.gltf {
-  using GltfNode = Node;
-  using GltfSkin = Skin;
+namespace fin.model.io.exporters.gltf;
 
-  public class GltfSkeletonBuilder {
-    public (GltfNode, IReadOnlyBone)[] BuildAndBindSkeleton(
-        GltfNode rootNode,
-        GltfSkin skin,
-        float scale,
-        IReadOnlySkeleton skeleton) {
-      var rootBone = skeleton.Root;
+using GltfNode = Node;
+using GltfSkin = Skin;
 
-      var boneQueue
-          = new FinQueue<(GltfNode, IReadOnlyBone)>((rootNode, rootBone));
+public class GltfSkeletonBuilder {
+  public (GltfNode, IReadOnlyBone)[] BuildAndBindSkeleton(
+      GltfNode rootNode,
+      GltfSkin skin,
+      float scale,
+      IReadOnlySkeleton skeleton) {
+    var rootBone = skeleton.Root;
 
-      var skinNodesAndBones = new List<(GltfNode, IReadOnlyBone)>();
-      while (boneQueue.Count > 0) {
-        var (node, bone) = boneQueue.Dequeue();
+    var boneQueue
+        = new FinQueue<(GltfNode, IReadOnlyBone)>((rootNode, rootBone));
 
-        this.ApplyBoneOrientationToNode_(node, bone, scale);
+    var skinNodesAndBones = new List<(GltfNode, IReadOnlyBone)>();
+    while (boneQueue.Count > 0) {
+      var (node, bone) = boneQueue.Dequeue();
 
-        if (bone != rootBone) {
-          skinNodesAndBones.Add((node, bone));
-        }
+      this.ApplyBoneOrientationToNode_(node, bone, scale);
 
-        boneQueue.Enqueue(
-            bone.Children.Select(child => (
-                                     node.CreateNode(child.Name), child)));
+      if (bone != rootBone) {
+        skinNodesAndBones.Add((node, bone));
       }
 
-      var skinNodes = skinNodesAndBones
-                      .Select(skinNodesAndBone => skinNodesAndBone.Item1)
-                      .ToArray();
-      if (skinNodes.Length > 0) {
-        skin.BindJoints(skinNodes);
-      } else {
-        var nullNode = rootNode.CreateNode("null");
-        skin.BindJoints(nullNode);
-        skinNodesAndBones.Add((nullNode, null));
-      }
-
-      return skinNodesAndBones.ToArray();
+      boneQueue.Enqueue(
+          bone.Children.Select(child => (
+                                   node.CreateNode(child.Name), child)));
     }
 
-    private void ApplyBoneOrientationToNode_(GltfNode node,
-                                             IReadOnlyBone bone,
-                                             float scale)
-      => node.LocalMatrix = SystemMatrix4x4Util.FromTrs(
-          bone.LocalPosition * scale,
-          bone.LocalRotation,
-          bone.LocalScale);
+    var skinNodes = skinNodesAndBones
+                    .Select(skinNodesAndBone => skinNodesAndBone.Item1)
+                    .ToArray();
+    if (skinNodes.Length > 0) {
+      skin.BindJoints(skinNodes);
+    } else {
+      var nullNode = rootNode.CreateNode("null");
+      skin.BindJoints(nullNode);
+      skinNodesAndBones.Add((nullNode, null));
+    }
+
+    return skinNodesAndBones.ToArray();
   }
+
+  private void ApplyBoneOrientationToNode_(GltfNode node,
+                                           IReadOnlyBone bone,
+                                           float scale)
+    => node.LocalMatrix = SystemMatrix4x4Util.FromTrs(
+        bone.LocalPosition * scale,
+        bone.LocalRotation,
+        bone.LocalScale);
 }

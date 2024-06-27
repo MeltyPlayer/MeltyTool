@@ -16,41 +16,42 @@ using grezzo.schema.cmb.vatr;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace grezzo.schema.cmb {
-  [Endianness(Endianness.LittleEndian)]
-  public class Cmb : IBinaryDeserializable {
-    public readonly CmbHeader header = new();
+namespace grezzo.schema.cmb;
 
-    private const int TWEAK_AUTO_SIZE = -8;
+[Endianness(Endianness.LittleEndian)]
+public class Cmb : IBinaryDeserializable {
+  public readonly CmbHeader header = new();
 
-    public readonly AutoStringMagicUInt32SizedSection<Skl> skl
-        = new("skl" + AsciiUtil.GetChar(0x20));
+  private const int TWEAK_AUTO_SIZE = -8;
 
-    public readonly AutoStringMagicUInt32SizedSection<Qtrs> qtrs
-        = new("qtrs");
+  public readonly AutoStringMagicUInt32SizedSection<Skl> skl
+      = new("skl" + AsciiUtil.GetChar(0x20));
 
-    /// <summary>
-    ///   For some reason, the size for this section is wrong? We have to just ignore it.
-    /// </summary>
-    public AutoStringMagicJankSizedSection<Mats> mats { get; set; } =
-      new("mats") {
-          TweakReadSize = TWEAK_AUTO_SIZE,
-      };
+  public readonly AutoStringMagicUInt32SizedSection<Qtrs> qtrs
+      = new("qtrs");
 
-    public readonly AutoStringMagicUInt32SizedSection<Tex> tex
-        = new("tex" + AsciiUtil.GetChar(0x20));
+  /// <summary>
+  ///   For some reason, the size for this section is wrong? We have to just ignore it.
+  /// </summary>
+  public AutoStringMagicJankSizedSection<Mats> mats { get; set; } =
+    new("mats") {
+        TweakReadSize = TWEAK_AUTO_SIZE,
+    };
 
-    public IImage[]? TextureImages { get; set; }
+  public readonly AutoStringMagicUInt32SizedSection<Tex> tex
+      = new("tex" + AsciiUtil.GetChar(0x20));
 
-    public readonly AutoStringMagicUInt32SizedSection<Sklm> sklm =
-        new("sklm");
+  public IImage[]? TextureImages { get; set; }
 
-    public readonly AutoStringMagicUInt32SizedSection<Luts> luts
-        = new("luts");
+  public readonly AutoStringMagicUInt32SizedSection<Sklm> sklm =
+      new("sklm");
 
-    public readonly Vatr vatr = new();
+  public readonly AutoStringMagicUInt32SizedSection<Luts> luts
+      = new("luts");
 
-    public void Read(IBinaryReader br) {
+  public readonly Vatr vatr = new();
+
+  public void Read(IBinaryReader br) {
       br.PushLocalSpace();
       this.header.Read(br);
 
@@ -117,7 +118,6 @@ namespace grezzo.schema.cmb {
 
       br.PopLocalSpace();
     }
-  }
 }
 
 

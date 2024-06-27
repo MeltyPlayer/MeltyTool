@@ -1,10 +1,10 @@
 ﻿using fin.model;
 
-namespace fin.ui.rendering.gl.model {
-  public interface IModelRenderer : IRenderable, IDisposable {
-    IReadOnlyModel Model { get; }
-    ISet<IReadOnlyMesh> HiddenMeshes { get; }
+namespace fin.ui.rendering.gl.model;
 
-    bool UseLighting { get; set; }
-  }
+public interface IModelRenderer : IRenderable, IDisposable {
+  IReadOnlyModel Model { get; }
+  ISet<IReadOnlyMesh> HiddenMeshes { get; }
+
+  bool UseLighting { get; set; }
 }

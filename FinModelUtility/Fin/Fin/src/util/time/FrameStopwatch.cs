@@ -1,56 +1,56 @@
 ﻿using System;
 
-namespace fin.util.time {
-  public interface IStopwatch {
-    TimeSpan Elapsed { get; }
-    void Start();
-    void Stop();
-    void Reset();
-    void Restart();
+namespace fin.util.time;
+
+public interface IStopwatch {
+  TimeSpan Elapsed { get; }
+  void Start();
+  void Stop();
+  void Reset();
+  void Restart();
+}
+
+
+public class FrameStopwatch : IStopwatch {
+  public enum State {
+    STOPPED,
+    PLAYING,
   }
 
+  private State state_ = State.STOPPED;
+  private DateTime start_;
+  private TimeSpan elapsed_ = TimeSpan.Zero;
 
-  public class FrameStopwatch : IStopwatch {
-    public enum State {
-      STOPPED,
-      PLAYING,
+  public TimeSpan Elapsed => this.state_ switch {
+      State.STOPPED => this.elapsed_,
+      State.PLAYING => FrameTime.StartOfFrame - this.start_,
+  };
+
+  public void Start() {
+    if (this.state_ == State.STOPPED) {
+      this.start_ = FrameTime.StartOfFrame - this.elapsed_;
     }
 
-    private State state_ = State.STOPPED;
-    private DateTime start_;
-    private TimeSpan elapsed_ = TimeSpan.Zero;
+    this.state_ = State.PLAYING;
+  }
 
-    public TimeSpan Elapsed => this.state_ switch {
-        State.STOPPED => this.elapsed_,
-        State.PLAYING => FrameTime.StartOfFrame - this.start_,
-    };
-
-    public void Start() {
-      if (this.state_ == State.STOPPED) {
-        this.start_ = FrameTime.StartOfFrame - this.elapsed_;
-      }
-
-      this.state_ = State.PLAYING;
+  public void Stop() {
+    if (this.state_ == State.PLAYING) {
+      this.elapsed_ = FrameTime.StartOfFrame - this.start_;
     }
 
-    public void Stop() {
-      if (this.state_ == State.PLAYING) {
-        this.elapsed_ = FrameTime.StartOfFrame - this.start_;
-      }
+    this.state_ = State.STOPPED;
+  }
 
-      this.state_ = State.STOPPED;
-    }
+  public void Reset() {
+    this.state_ = State.STOPPED;
+    this.start_ = FrameTime.StartOfFrame;
+    this.elapsed_ = TimeSpan.Zero;
+  }
 
-    public void Reset() {
-      this.state_ = State.STOPPED;
-      this.start_ = FrameTime.StartOfFrame;
-      this.elapsed_ = TimeSpan.Zero;
-    }
-
-    public void Restart() {
-      this.state_ = State.PLAYING;
-      this.start_ = FrameTime.StartOfFrame;
-      this.elapsed_ = TimeSpan.Zero;
-    }
+  public void Restart() {
+    this.state_ = State.PLAYING;
+    this.start_ = FrameTime.StartOfFrame;
+    this.elapsed_ = TimeSpan.Zero;
   }
 }

@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 
-namespace fin.data.counters {
-  public class CounterSet<T> {
-    private readonly Dictionary<T, int> impl_ = new();
+namespace fin.data.counters;
 
-    public int Increment(T key) {
-      if (this.impl_.TryGetValue(key, out var count)) {
-        count++;
-      }
+public class CounterSet<T> {
+  private readonly Dictionary<T, int> impl_ = new();
 
-      return this.impl_[key] = count;
+  public int Increment(T key) {
+    if (this.impl_.TryGetValue(key, out var count)) {
+      count++;
     }
 
-    public void Clear() => this.impl_.Clear();
-    public int Count => this.impl_.Count;
+    return this.impl_[key] = count;
   }
+
+  public void Clear() => this.impl_.Clear();
+  public int Count => this.impl_.Count;
 }

@@ -20,13 +20,14 @@ using glo.schema;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace glo.api {
-  public class GloModelImporter : IModelImporter<GloModelFileBundle> {
-    private readonly string[] hiddenNames_ = ["Box01", "puzzle"];
+namespace glo.api;
 
-    private readonly string[] mirrorTextures_ = ["Badg2.bmp"];
+public class GloModelImporter : IModelImporter<GloModelFileBundle> {
+  private readonly string[] hiddenNames_ = ["Box01", "puzzle"];
 
-    public unsafe IModel Import(GloModelFileBundle gloModelFileBundle) {
+  private readonly string[] mirrorTextures_ = ["Badg2.bmp"];
+
+  public unsafe IModel Import(GloModelFileBundle gloModelFileBundle) {
       var gloFile = gloModelFileBundle.GloFile;
       var textureDirectories = gloModelFileBundle.TextureDirectories;
       var fps = 20;
@@ -470,8 +471,8 @@ namespace glo.api {
       return finModel;
     }
 
-    private static unsafe Rgba32Image AddTransparencyToGloImage_(
-        IImage rawImage) {
+  private static unsafe Rgba32Image AddTransparencyToGloImage_(
+      IImage rawImage) {
       var width = rawImage.Width;
       var height = rawImage.Height;
 
@@ -502,5 +503,4 @@ namespace glo.api {
 
       return textureImageWithAlpha;
     }
-  }
 }

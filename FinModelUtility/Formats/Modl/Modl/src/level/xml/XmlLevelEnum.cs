@@ -1,3 +1,3 @@
-﻿namespace modl.xml.level {
-  public class XmlLevelEnum : BXmlLevelTypedItem, IXmlLevelObjectField;
-}
+﻿namespace modl.xml.level;
+
+public class XmlLevelEnum : BXmlLevelTypedItem, IXmlLevelObjectField;

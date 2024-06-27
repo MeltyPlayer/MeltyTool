@@ -1,32 +1,33 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering.gl {
-  public class GlDisplayList : IDisposable {
-    private readonly int displayListId_;
-    private bool valid_ = false;
-    private Action compile_;
+namespace fin.ui.rendering.gl;
 
-    public GlDisplayList(Action compile) {
+public class GlDisplayList : IDisposable {
+  private readonly int displayListId_;
+  private bool valid_ = false;
+  private Action compile_;
+
+  public GlDisplayList(Action compile) {
       this.displayListId_ = GL.GenLists(1);
       this.compile_ = compile;
     }
 
-    ~GlDisplayList() => this.ReleaseUnmanagedResources_();
+  ~GlDisplayList() => this.ReleaseUnmanagedResources_();
 
-    public void Dispose() {
+  public void Dispose() {
       this.ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() {
+  private void ReleaseUnmanagedResources_() {
       GL.DeleteLists(this.displayListId_, 1);
     }
 
-    public void Invalidate() {
+  public void Invalidate() {
       this.valid_ = false;
     }
 
-    public void CompileOrRender() {
+  public void CompileOrRender() {
       if (this.valid_) {
         GL.CallList(this.displayListId_);
         return;
@@ -38,5 +39,4 @@ namespace fin.ui.rendering.gl {
       this.compile_();
       GL.EndList();
     }
-  }
 }

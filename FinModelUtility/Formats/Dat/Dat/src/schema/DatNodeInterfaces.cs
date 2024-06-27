@@ -1,20 +1,21 @@
-﻿namespace dat.schema {
-  public interface IDatNode;
+﻿namespace dat.schema;
 
-  public interface IDatLinkedListNode<out TSelf> : IDatNode
-      where TSelf : IDatLinkedListNode<TSelf> {
-    TSelf? NextSibling { get; }
-  }
+public interface IDatNode;
 
-  public interface IDatTreeNode<out TSelf> : IDatLinkedListNode<TSelf>
-      where TSelf : IDatTreeNode<TSelf> {
-    TSelf? FirstChild { get; }
-  }
+public interface IDatLinkedListNode<out TSelf> : IDatNode
+    where TSelf : IDatLinkedListNode<TSelf> {
+  TSelf? NextSibling { get; }
+}
 
-  public static class DatNodeExtensions {
-    public static IEnumerable<TNode> GetSelfAndSiblings<TNode>(
-        this TNode? node)
-        where TNode : IDatLinkedListNode<TNode> {
+public interface IDatTreeNode<out TSelf> : IDatLinkedListNode<TSelf>
+    where TSelf : IDatTreeNode<TSelf> {
+  TSelf? FirstChild { get; }
+}
+
+public static class DatNodeExtensions {
+  public static IEnumerable<TNode> GetSelfAndSiblings<TNode>(
+      this TNode? node)
+      where TNode : IDatLinkedListNode<TNode> {
       if (node == null) {
         yield break;
       }
@@ -26,9 +27,9 @@
       }
     }
 
-    public static IEnumerable<TNode> GetSelfAndChildrenAndSiblings<TNode>(
-        this TNode? root)
-        where TNode : IDatTreeNode<TNode> {
+  public static IEnumerable<TNode> GetSelfAndChildrenAndSiblings<TNode>(
+      this TNode? root)
+      where TNode : IDatTreeNode<TNode> {
       if (root == null) {
         yield break;
       }
@@ -49,8 +50,7 @@
       }
     }
 
-    public static IEnumerable<TNode> GetChildren<TNode>(this TNode? root)
-        where TNode : IDatTreeNode<TNode>
-      => root?.FirstChild?.GetSelfAndSiblings() ?? Enumerable.Empty<TNode>();
-  }
+  public static IEnumerable<TNode> GetChildren<TNode>(this TNode? root)
+      where TNode : IDatTreeNode<TNode>
+    => root?.FirstChild?.GetSelfAndSiblings() ?? Enumerable.Empty<TNode>();
 }

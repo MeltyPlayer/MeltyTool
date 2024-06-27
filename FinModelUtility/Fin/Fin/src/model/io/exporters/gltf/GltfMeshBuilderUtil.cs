@@ -5,27 +5,27 @@ using SharpGLTF.Geometry;
 using IGltfMeshBuilder
     = SharpGLTF.Geometry.IMeshBuilder<SharpGLTF.Materials.MaterialBuilder>;
 
-namespace fin.model.io.exporters.gltf {
-  public static class GltfMeshBuilderUtil {
-    private static readonly object?[] meshBuilderParams_ = [null];
+namespace fin.model.io.exporters.gltf;
 
-    public static IGltfMeshBuilder CreateMeshBuilder(
-        bool hasNormals,
-        bool hasTangents,
-        int colorCount,
-        int uvCount,
-        int weightCount) {
-      var geometryType
-          = GltfBuilderUtil.GetGeometryType(hasNormals, hasTangents);
-      var materialType = GltfBuilderUtil.GetMaterialType(colorCount, uvCount);
-      var skinningType = GltfBuilderUtil.GetSkinningType(weightCount);
+public static class GltfMeshBuilderUtil {
+  private static readonly object?[] meshBuilderParams_ = [null];
 
-      var meshBuilderType
-          = typeof(MeshBuilder<,,>).MakeGenericType(
-              [geometryType, materialType, skinningType]);
+  public static IGltfMeshBuilder CreateMeshBuilder(
+      bool hasNormals,
+      bool hasTangents,
+      int colorCount,
+      int uvCount,
+      int weightCount) {
+    var geometryType
+        = GltfBuilderUtil.GetGeometryType(hasNormals, hasTangents);
+    var materialType = GltfBuilderUtil.GetMaterialType(colorCount, uvCount);
+    var skinningType = GltfBuilderUtil.GetSkinningType(weightCount);
 
-      var constructor = meshBuilderType.GetConstructors().Single();
-      return (IGltfMeshBuilder) constructor.Invoke(meshBuilderParams_);
-    }
+    var meshBuilderType
+        = typeof(MeshBuilder<,,>).MakeGenericType(
+            [geometryType, materialType, skinningType]);
+
+    var constructor = meshBuilderType.GetConstructors().Single();
+    return (IGltfMeshBuilder) constructor.Invoke(meshBuilderParams_);
   }
 }

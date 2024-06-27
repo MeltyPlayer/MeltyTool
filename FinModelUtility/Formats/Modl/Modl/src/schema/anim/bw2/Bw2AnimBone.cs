@@ -1,42 +1,42 @@
 ﻿using schema.binary;
 
-namespace modl.schema.anim.bw2 {
-  public class Bw2AnimBone : IBwAnimBone, IBinaryDeserializable {
-    public string GetIdentifier() => this.Name;
+namespace modl.schema.anim.bw2;
 
-    public string Name { get; set; }
+public class Bw2AnimBone : IBwAnimBone, IBinaryDeserializable {
+  public string GetIdentifier() => this.Name;
 
-    public uint PositionKeyframeCount { get; set; }
-    public uint RotationKeyframeCount { get; set; }
+  public string Name { get; set; }
 
-    private readonly ulong padding0_ = 0;
-    public float XPosDelta { get; set; }
-    public float YPosDelta { get; set; }
-    public float ZPosDelta { get; set; }
-    public float XPosMin { get; set; }
-    public float YPosMin { get; set; }
-    public float ZPosMin { get; set; }
-    private readonly uint padding1_ = 0;
+  public uint PositionKeyframeCount { get; set; }
+  public uint RotationKeyframeCount { get; set; }
 
-    public void Read(IBinaryReader br) {
-      this.Name = br.ReadString(16);
+  private readonly ulong padding0_ = 0;
+  public float XPosDelta { get; set; }
+  public float YPosDelta { get; set; }
+  public float ZPosDelta { get; set; }
+  public float XPosMin { get; set; }
+  public float YPosMin { get; set; }
+  public float ZPosMin { get; set; }
+  private readonly uint padding1_ = 0;
 
-      this.PositionKeyframeCount = br.ReadUInt32();
-      this.RotationKeyframeCount = br.ReadUInt32();
+  public void Read(IBinaryReader br) {
+    this.Name = br.ReadString(16);
 
-      br.AssertUInt64(0);
+    this.PositionKeyframeCount = br.ReadUInt32();
+    this.RotationKeyframeCount = br.ReadUInt32();
 
-      this.XPosDelta = br.ReadSingle();
-      this.YPosDelta = br.ReadSingle();
-      this.ZPosDelta = br.ReadSingle();
+    br.AssertUInt64(0);
 
-      this.XPosMin = br.ReadSingle();
-      this.YPosMin = br.ReadSingle();
-      this.ZPosMin = br.ReadSingle();
+    this.XPosDelta = br.ReadSingle();
+    this.YPosDelta = br.ReadSingle();
+    this.ZPosDelta = br.ReadSingle();
 
-      br.AssertUInt32(0);
+    this.XPosMin = br.ReadSingle();
+    this.YPosMin = br.ReadSingle();
+    this.ZPosMin = br.ReadSingle();
 
-      var values = br.ReadBytes(4);
-    }
+    br.AssertUInt32(0);
+
+    var values = br.ReadBytes(4);
   }
 }

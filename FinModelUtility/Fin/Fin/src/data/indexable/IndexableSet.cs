@@ -2,16 +2,16 @@
 
 using schema.readOnly;
 
-namespace fin.data.indexable {
-  [GenerateReadOnly]
-  public partial interface IIndexableSet<TIndexable> : IFinSet<TIndexable>
-      where TIndexable : IIndexable {
-    [Const]
-    bool Contains(int index);
+namespace fin.data.indexable;
 
-    TIndexable this[int index] { get; }
+[GenerateReadOnly]
+public partial interface IIndexableSet<TIndexable> : IFinSet<TIndexable>
+    where TIndexable : IIndexable {
+  [Const]
+  bool Contains(int index);
 
-    [Const]
-    bool TryGetValue(int index, out TIndexable value);
-  }
+  TIndexable this[int index] { get; }
+
+  [Const]
+  bool TryGetValue(int index, out TIndexable value);
 }

@@ -6,36 +6,37 @@ using f3dzex2.io;
 
 using schema.binary;
 
-namespace f3dzex2.displaylist {
-  public interface IDisplayListReader {
-    IDisplayList ReadDisplayList(
-        IReadOnlyN64Memory n64Memory,
-        IOpcodeParser opcodeParser,
-        uint segmentedAddress);
+namespace f3dzex2.displaylist;
 
-    IReadOnlyList<IDisplayList> ReadPossibleDisplayLists(
-        IReadOnlyN64Memory n64Memory,
-        IOpcodeParser opcodeParser,
-        uint segmentedAddress);
+public interface IDisplayListReader {
+  IDisplayList ReadDisplayList(
+      IReadOnlyN64Memory n64Memory,
+      IOpcodeParser opcodeParser,
+      uint segmentedAddress);
 
-    IDisplayList ReadDisplayList(IReadOnlyN64Memory n64Memory,
-                                 IOpcodeParser opcodeParser,
-                                 SchemaBinaryReader br);
-  }
+  IReadOnlyList<IDisplayList> ReadPossibleDisplayLists(
+      IReadOnlyN64Memory n64Memory,
+      IOpcodeParser opcodeParser,
+      uint segmentedAddress);
 
-  public class DisplayListReader : IDisplayListReader {
-    public IDisplayList ReadDisplayList(IReadOnlyN64Memory n64Memory,
-                                        IOpcodeParser opcodeParser,
-                                        uint segmentedAddress)
-      => this.ReadPossibleDisplayLists(n64Memory,
-                                       opcodeParser,
-                                       segmentedAddress)
-             .Single();
+  IDisplayList ReadDisplayList(IReadOnlyN64Memory n64Memory,
+                               IOpcodeParser opcodeParser,
+                               SchemaBinaryReader br);
+}
 
-    public IReadOnlyList<IDisplayList> ReadPossibleDisplayLists(
-        IReadOnlyN64Memory n64Memory,
-        IOpcodeParser opcodeParser,
-        uint segmentedAddress) {
+public class DisplayListReader : IDisplayListReader {
+  public IDisplayList ReadDisplayList(IReadOnlyN64Memory n64Memory,
+                                      IOpcodeParser opcodeParser,
+                                      uint segmentedAddress)
+    => this.ReadPossibleDisplayLists(n64Memory,
+                                     opcodeParser,
+                                     segmentedAddress)
+           .Single();
+
+  public IReadOnlyList<IDisplayList> ReadPossibleDisplayLists(
+      IReadOnlyN64Memory n64Memory,
+      IOpcodeParser opcodeParser,
+      uint segmentedAddress) {
       var options = new LinkedList<IDisplayList>();
       if (Constants.STRICT) {
         foreach (var impl in n64Memory.OpenPossibilitiesAtSegmentedAddress(
@@ -56,9 +57,9 @@ namespace f3dzex2.displaylist {
       return options.ToArray();
     }
 
-    public IDisplayList ReadDisplayList(IReadOnlyN64Memory n64Memory,
-                                        IOpcodeParser opcodeParser,
-                                        SchemaBinaryReader br) {
+  public IDisplayList ReadDisplayList(IReadOnlyN64Memory n64Memory,
+                                      IOpcodeParser opcodeParser,
+                                      SchemaBinaryReader br) {
       var opcodeCommands = new LinkedList<IOpcodeCommand>();
       while (true) {
         var opcodeCommand = opcodeParser.Parse(n64Memory, this, br);
@@ -76,13 +77,12 @@ namespace f3dzex2.displaylist {
       };
     }
 
-    private class DisplayList : IDisplayList {
-      public required IReadOnlyList<IOpcodeCommand> OpcodeCommands {
-        get;
-        init;
-      }
-
-      public required DisplayListType Type { get; init; }
+  private class DisplayList : IDisplayList {
+    public required IReadOnlyList<IOpcodeCommand> OpcodeCommands {
+      get;
+      init;
     }
+
+    public required DisplayListType Type { get; init; }
   }
 }

@@ -1,5 +1,5 @@
-﻿namespace fin.data.indexable {
-  public interface IIndexable {
-    int Index { get; }
-  }
+﻿namespace fin.data.indexable;
+
+public interface IIndexable {
+  int Index { get; }
 }

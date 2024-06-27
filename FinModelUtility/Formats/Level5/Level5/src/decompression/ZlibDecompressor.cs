@@ -2,9 +2,10 @@
 
 using fin.decompression;
 
-namespace level5.decompression {
-  public class ZlibArrayDecompressor : BArrayDecompressor {
-    public override bool TryDecompress(byte[] src, out byte[] dst) {
+namespace level5.decompression;
+
+public class ZlibArrayDecompressor : BArrayDecompressor {
+  public override bool TryDecompress(byte[] src, out byte[] dst) {
       var b = src;
       if (b.Length < 6) {
         dst = null;
@@ -39,5 +40,4 @@ namespace level5.decompression {
       dst = stream.ToArray();
       return true;
     }
-  }
 }

@@ -1,10 +1,11 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering.gl {
-  public static partial class GlUtil {
-    public static bool IsInitialized { get; private set; }
+namespace fin.ui.rendering.gl;
 
-    public static void Init() {
+public static partial class GlUtil {
+  public static bool IsInitialized { get; private set; }
+
+  public static void Init() {
       if (IsInitialized) {
         return;
       }
@@ -14,17 +15,17 @@ namespace fin.ui.rendering.gl {
       IsInitialized = true;
     }
 
-    private static readonly object GL_LOCK_ = new();
+  private static readonly object GL_LOCK_ = new();
 
 
-    public static void RunLockedGl(Action handler) {
+  public static void RunLockedGl(Action handler) {
       lock (GL_LOCK_) {
         handler();
       }
     }
 
 
-    public static void ResetGl() {
+  public static void ResetGl() {
       GL.ShadeModel(ShadingModel.Smooth);
 
       GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
@@ -44,5 +45,4 @@ namespace fin.ui.rendering.gl {
       GlUtil.ResetDepth();
       GlUtil.ResetFlipFaces();
     }
-  }
 }

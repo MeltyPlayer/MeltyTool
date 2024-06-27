@@ -6,19 +6,20 @@ using fin.util.asserts;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace grezzo.schema.csab {
-  [Endianness(Endianness.LittleEndian)]
-  public class Csab : IBinaryDeserializable {
-    public uint Version { get; set; }
-    public bool IsPastVersion4 => this.Version > 4;
+namespace grezzo.schema.csab;
 
-    public uint Duration { get; set; }
+[Endianness(Endianness.LittleEndian)]
+public class Csab : IBinaryDeserializable {
+  public uint Version { get; set; }
+  public bool IsPastVersion4 => this.Version > 4;
 
-    public Dictionary<int, AnimationNode>
-        BoneIndexToAnimationNode { get; set; } = new();
+  public uint Duration { get; set; }
 
-    [Unknown]
-    public void Read(IBinaryReader br) {
+  public Dictionary<int, AnimationNode>
+      BoneIndexToAnimationNode { get; set; } = new();
+
+  [Unknown]
+  public void Read(IBinaryReader br) {
       var basePosition = br.Position;
 
       br.AssertString("csab");
@@ -81,5 +82,4 @@ namespace grezzo.schema.csab {
         }
       }
     }
-  }
 }

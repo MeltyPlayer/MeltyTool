@@ -4,34 +4,34 @@ using System.Linq;
 using fin.importers;
 using fin.io;
 
-namespace fin.model.io {
-  public interface IModelFileBundle : I3dFileBundle;
+namespace fin.model.io;
 
-  public interface IModelPlugin {
-    string DisplayName { get; }
-    string Description { get; }
-    IReadOnlyList<string> KnownPlatforms { get; }
-    IReadOnlyList<string> KnownGames { get; }
+public interface IModelFileBundle : I3dFileBundle;
 
-    IReadOnlyList<string> MainFileExtensions { get; }
-    IReadOnlyList<string> FileExtensions { get; }
-  }
+public interface IModelPlugin {
+  string DisplayName { get; }
+  string Description { get; }
+  IReadOnlyList<string> KnownPlatforms { get; }
+  IReadOnlyList<string> KnownGames { get; }
 
-  public interface IModelImporterPlugin : IModelPlugin {
-    bool SupportsFiles(IEnumerable<IReadOnlySystemFile> files) {
-      var fileTypes = files.Select(file => file.FileType).ToArray();
+  IReadOnlyList<string> MainFileExtensions { get; }
+  IReadOnlyList<string> FileExtensions { get; }
+}
 
-      if (!fileTypes.All(this.FileExtensions.Contains)) {
-        return false;
-      }
+public interface IModelImporterPlugin : IModelPlugin {
+  bool SupportsFiles(IEnumerable<IReadOnlySystemFile> files) {
+    var fileTypes = files.Select(file => file.FileType).ToArray();
 
-      return fileTypes.Where(this.MainFileExtensions.Contains).Count() == 1;
+    if (!fileTypes.All(this.FileExtensions.Contains)) {
+      return false;
     }
 
-    IModel Import(IEnumerable<IReadOnlySystemFile> files, float frameRate = 30);
+    return fileTypes.Where(this.MainFileExtensions.Contains).Count() == 1;
   }
 
-  public interface IModelExporterPlugin : IModelPlugin {
-    void ExportModel(IReadOnlyModel model);
-  }
+  IModel Import(IEnumerable<IReadOnlySystemFile> files, float frameRate = 30);
+}
+
+public interface IModelExporterPlugin : IModelPlugin {
+  void ExportModel(IReadOnlyModel model);
 }

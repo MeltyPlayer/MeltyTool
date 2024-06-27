@@ -11,105 +11,105 @@ using fin.util.strings;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace fin.testing {
-  public static class GoldenAssert {
-    private const string TMP_NAME = "tmp";
+namespace fin.testing;
 
-    public static ISystemDirectory GetRootGoldensDirectory(
-        Assembly executingAssembly) {
-      var assemblyName =
-          executingAssembly.ManifestModule.Name.SubstringUpTo(".dll");
+public static class GoldenAssert {
+  private const string TMP_NAME = "tmp";
 
-      var executingAssemblyDll = new FinFile(executingAssembly.Location);
-      var executingAssemblyDir = executingAssemblyDll.AssertGetParent();
+  public static ISystemDirectory GetRootGoldensDirectory(
+      Assembly executingAssembly) {
+    var assemblyName =
+        executingAssembly.ManifestModule.Name.SubstringUpTo(".dll");
 
-      var currentDir = executingAssemblyDir;
-      while (currentDir.Name != assemblyName) {
-        currentDir = currentDir.AssertGetParent();
-      }
+    var executingAssemblyDll = new FinFile(executingAssembly.Location);
+    var executingAssemblyDir = executingAssemblyDll.AssertGetParent();
 
-      Assert.IsNotNull(currentDir);
-
-      var gloTestsDir = currentDir;
-      var goldensDirectory = gloTestsDir.AssertGetExistingSubdir("goldens");
-
-      return goldensDirectory;
+    var currentDir = executingAssemblyDir;
+    while (currentDir.Name != assemblyName) {
+      currentDir = currentDir.AssertGetParent();
     }
 
-    public static IEnumerable<IFileHierarchyDirectory> GetGoldenDirectories(
-        ISystemDirectory rootGoldenDirectory) {
-      var hierarchy = FileHierarchy.From(rootGoldenDirectory);
-      return hierarchy.Root.GetExistingSubdirs()
-                      .Where(
-                          subdir => subdir.Name != TMP_NAME);
-    }
+    Assert.IsNotNull(currentDir);
 
-    public static IEnumerable<IFileHierarchyDirectory>
-        GetGoldenInputDirectories(ISystemDirectory rootGoldenDirectory)
-      => GetGoldenDirectories(rootGoldenDirectory)
-          .Select(subdir => subdir.AssertGetExistingSubdir("input"));
+    var gloTestsDir = currentDir;
+    var goldensDirectory = gloTestsDir.AssertGetExistingSubdir("goldens");
 
-    public static void RunInTestDirectory(
-        IFileHierarchyDirectory goldenSubdir,
-        Action<ISystemDirectory> handler) {
-      var tmpDirectory = goldenSubdir.Impl.GetOrCreateSubdir(TMP_NAME);
+    return goldensDirectory;
+  }
+
+  public static IEnumerable<IFileHierarchyDirectory> GetGoldenDirectories(
+      ISystemDirectory rootGoldenDirectory) {
+    var hierarchy = FileHierarchy.From(rootGoldenDirectory);
+    return hierarchy.Root.GetExistingSubdirs()
+                    .Where(
+                        subdir => subdir.Name != TMP_NAME);
+  }
+
+  public static IEnumerable<IFileHierarchyDirectory>
+      GetGoldenInputDirectories(ISystemDirectory rootGoldenDirectory)
+    => GetGoldenDirectories(rootGoldenDirectory)
+        .Select(subdir => subdir.AssertGetExistingSubdir("input"));
+
+  public static void RunInTestDirectory(
+      IFileHierarchyDirectory goldenSubdir,
+      Action<ISystemDirectory> handler) {
+    var tmpDirectory = goldenSubdir.Impl.GetOrCreateSubdir(TMP_NAME);
+    tmpDirectory.DeleteContents();
+
+    try {
+      handler(tmpDirectory);
+    } finally {
       tmpDirectory.DeleteContents();
+      tmpDirectory.Delete();
+    }
+  }
 
+  public static void AssertFilesInDirectoriesAreIdentical(
+      IReadOnlyTreeDirectory lhs,
+      IReadOnlyTreeDirectory rhs) {
+    var lhsFiles = lhs.GetExistingFiles()
+                      .ToDictionary(file => file.Name);
+    var rhsFiles = rhs.GetExistingFiles()
+                      .ToDictionary(file => file.Name);
+
+    Assert.IsTrue(lhsFiles.Keys.ToHashSet()
+                          .SetEquals(rhsFiles.Keys.ToHashSet()));
+
+    foreach (var (name, lhsFile) in lhsFiles) {
+      var rhsFile = rhsFiles[name];
       try {
-        handler(tmpDirectory);
-      } finally {
-        tmpDirectory.DeleteContents();
-        tmpDirectory.Delete();
+        AssertFilesAreIdentical_(lhsFile, rhsFile);
+      } catch (Exception ex) {
+        throw new Exception($"Found a change in file {name}: ", ex);
       }
     }
+  }
 
-    public static void AssertFilesInDirectoriesAreIdentical(
-        IReadOnlyTreeDirectory lhs,
-        IReadOnlyTreeDirectory rhs) {
-      var lhsFiles = lhs.GetExistingFiles()
-                        .ToDictionary(file => file.Name);
-      var rhsFiles = rhs.GetExistingFiles()
-                        .ToDictionary(file => file.Name);
+  private static void AssertFilesAreIdentical_(
+      IReadOnlyTreeFile lhs,
+      IReadOnlyTreeFile rhs) {
+    using var lhsStream = lhs.OpenRead();
+    using var rhsStream = rhs.OpenRead();
 
-      Assert.IsTrue(lhsFiles.Keys.ToHashSet()
-                            .SetEquals(rhsFiles.Keys.ToHashSet()));
+    Assert.AreEqual(lhsStream.Length, rhsStream.Length);
 
-      foreach (var (name, lhsFile) in lhsFiles) {
-        var rhsFile = rhsFiles[name];
-        try {
-          AssertFilesAreIdentical_(lhsFile, rhsFile);
-        } catch (Exception ex) {
-          throw new Exception($"Found a change in file {name}: ", ex);
-        }
-      }
-    }
+    var bytesToRead = sizeof(long);
+    int iterations =
+        (int) Math.Ceiling((double) lhsStream.Length / bytesToRead);
 
-    private static void AssertFilesAreIdentical_(
-        IReadOnlyTreeFile lhs,
-        IReadOnlyTreeFile rhs) {
-      using var lhsStream = lhs.OpenRead();
-      using var rhsStream = rhs.OpenRead();
+    long lhsLong = 0;
+    long rhsLong = 0;
 
-      Assert.AreEqual(lhsStream.Length, rhsStream.Length);
+    var lhsSpan = new Span<long>(ref lhsLong).AsBytes();
+    var rhsSpan = new Span<long>(ref rhsLong).AsBytes();
 
-      var bytesToRead = sizeof(long);
-      int iterations =
-          (int) Math.Ceiling((double) lhsStream.Length / bytesToRead);
+    for (int i = 0; i < iterations; i++) {
+      lhsStream.Read(lhsSpan);
+      rhsStream.Read(rhsSpan);
 
-      long lhsLong = 0;
-      long rhsLong = 0;
-
-      var lhsSpan = new Span<long>(ref lhsLong).AsBytes();
-      var rhsSpan = new Span<long>(ref rhsLong).AsBytes();
-
-      for (int i = 0; i < iterations; i++) {
-        lhsStream.Read(lhsSpan);
-        rhsStream.Read(rhsSpan);
-
-        if (lhsLong != rhsLong) {
-          Asserts.Fail(
-              $"Files with name \"{lhs.Name}\" are different around byte #: {i * bytesToRead}");
-        }
+      if (lhsLong != rhsLong) {
+        Asserts.Fail(
+            $"Files with name \"{lhs.Name}\" are different around byte #: {i * bytesToRead}");
       }
     }
   }

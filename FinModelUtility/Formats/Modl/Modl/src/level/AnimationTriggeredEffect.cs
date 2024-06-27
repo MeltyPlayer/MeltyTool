@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class AnimationTriggeredEffect : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class AnimationTriggeredEffect : BLevelObject {
 }

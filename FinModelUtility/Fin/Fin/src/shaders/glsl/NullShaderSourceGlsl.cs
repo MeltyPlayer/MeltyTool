@@ -1,22 +1,22 @@
 ﻿using fin.model;
 
-namespace fin.shaders.glsl {
-  public class NullShaderSourceGlsl(IReadOnlyModel model, bool useBoneMatrices)
-      : IShaderSourceGlsl {
-    public string VertexShaderSource { get; } =
-      GlslUtil.GetVertexSrc(model, useBoneMatrices);
+namespace fin.shaders.glsl;
 
-    public string FragmentShaderSource
-      => """
-         #version 400
+public class NullShaderSourceGlsl(IReadOnlyModel model, bool useBoneMatrices)
+    : IShaderSourceGlsl {
+  public string VertexShaderSource { get; } =
+    GlslUtil.GetVertexSrc(model, useBoneMatrices);
 
-         out vec4 fragColor;
+  public string FragmentShaderSource
+    => """
+       #version 400
 
-         in vec4 vertexColor0;
+       out vec4 fragColor;
 
-         void main() {
-           fragColor = vertexColor0;
-         }
-         """;
-  }
+       in vec4 vertexColor0;
+
+       void main() {
+         fragColor = vertexColor0;
+       }
+       """;
 }

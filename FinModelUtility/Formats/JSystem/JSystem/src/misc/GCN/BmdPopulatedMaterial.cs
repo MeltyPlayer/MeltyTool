@@ -8,59 +8,60 @@ using gx;
 
 using jsystem.schema.j3dgraph.bmd.mat3;
 
-namespace jsystem.GCN {
-  public class BmdPopulatedMaterial : IPopulatedMaterial {
-    public string Name { get; set; }
-    public GxCullMode CullMode { get; set; }
-    public byte ColorChannelControlsCountIndex;
-    public byte TexGensCountIndex;
-    public byte TevStagesCountIndex;
-    public byte ZCompLocIndex;
-    public byte ZModeIndex;
-    public byte DitherIndex;
+namespace jsystem.GCN;
 
-    public Color[] MaterialColors { get; set; }
-    public IColorChannelControl?[] ColorChannelControls { get; set; }
-    public Color[] AmbientColors { get; set; }
-    public Color?[] LightColors { get; set; }
+public class BmdPopulatedMaterial : IPopulatedMaterial {
+  public string Name { get; set; }
+  public GxCullMode CullMode { get; set; }
+  public byte ColorChannelControlsCountIndex;
+  public byte TexGensCountIndex;
+  public byte TevStagesCountIndex;
+  public byte ZCompLocIndex;
+  public byte ZModeIndex;
+  public byte DitherIndex;
 
-    public Color[] KonstColors { get; set; }
-    public IColorRegister?[] ColorRegisters { get; set; }
+  public Color[] MaterialColors { get; set; }
+  public IColorChannelControl?[] ColorChannelControls { get; set; }
+  public Color[] AmbientColors { get; set; }
+  public Color?[] LightColors { get; set; }
+
+  public Color[] KonstColors { get; set; }
+  public IColorRegister?[] ColorRegisters { get; set; }
 
 
-    public ushort[] TexGenInfo;
+  public ushort[] TexGenInfo;
 
-    public ushort[] TexGenInfo2;
-    public ITextureMatrixInfo?[] TextureMatrices { get; set; }
-    public ushort[] DttMatrices;
-    public short[] TextureIndices { get; set; }
-    public ushort[] TevKonstColorIndexes;
-    public byte[] ConstColorSel;
-    public byte[] ConstAlphaSel;
+  public ushort[] TexGenInfo2;
+  public ITextureMatrixInfo?[] TextureMatrices { get; set; }
+  public ushort[] DttMatrices;
+  public short[] TextureIndices { get; set; }
+  public ushort[] TevKonstColorIndexes;
+  public byte[] ConstColorSel;
+  public byte[] ConstAlphaSel;
 
-    public ITevOrder?[] TevOrderInfos { get; set; }
+  public ITevOrder?[] TevOrderInfos { get; set; }
 
-    public ushort[] TevOrderInfoIndexes;
-    public ushort[] TevColorIndexes;
-    public ITevStageProps?[] TevStageInfos { get; set; }
-    public ITevSwapMode?[] TevSwapModes { get; set; }
-    public ITevSwapModeTable?[] TevSwapModeTables { get; set; }
+  public ushort[] TevOrderInfoIndexes;
+  public ushort[] TevColorIndexes;
+  public ITevStageProps?[] TevStageInfos { get; set; }
+  public ITevSwapMode?[] TevSwapModes { get; set; }
+  public ITevSwapModeTable?[] TevSwapModeTables { get; set; }
 
-    [Unknown]
-    public ushort[] Unknown2;
+  [Unknown]
+  public ushort[] Unknown2;
 
-    public short FogInfoIndex;
-    public IAlphaCompare AlphaCompare { get; set; }
-    public IBlendFunction BlendMode { get; set; }
+  public short FogInfoIndex;
+  public IAlphaCompare AlphaCompare { get; set; }
+  public IBlendFunction BlendMode { get; set; }
 
-    [Unknown]
-    public short UnknownIndex;
+  [Unknown]
+  public short UnknownIndex;
 
-    public IDepthFunction DepthFunction { get; }
+  public IDepthFunction DepthFunction { get; }
 
-    public ITexCoordGen?[] TexCoordGens { get; set; }
+  public ITexCoordGen?[] TexCoordGens { get; set; }
 
-    public BmdPopulatedMaterial(BMD.MAT3Section mat3, int index, MaterialEntry entry) {
+  public BmdPopulatedMaterial(BMD.MAT3Section mat3, int index, MaterialEntry entry) {
       this.Name = mat3.MaterialNameTable[index];
 
       this.CullMode = mat3.CullModes[entry.CullModeIndex];
@@ -149,27 +150,26 @@ namespace jsystem.GCN {
       this.BlendMode = mat3.BlendFunctions[entry.BlendModeIndex];
     }
 
-    private class TevOrderWrapper : ITevOrder {
-      private TevOrder impl_;
+  private class TevOrderWrapper : ITevOrder {
+    private TevOrder impl_;
 
-      public TevOrderWrapper(TevOrder impl) {
+    public TevOrderWrapper(TevOrder impl) {
         this.impl_ = impl;
       }
 
-      public byte TexCoordId => this.impl_.TexCoordId;
-      public sbyte TexMap => this.impl_.TexMap;
-      public GxColorChannel ColorChannelId => this.impl_.ColorChannelId;
+    public byte TexCoordId => this.impl_.TexCoordId;
+    public sbyte TexMap => this.impl_.TexMap;
+    public GxColorChannel ColorChannelId => this.impl_.ColorChannelId;
 
-      public GxKonstColorSel KonstColorSel { get; set; }
-      public GxKonstAlphaSel KonstAlphaSel { get; set; }
-    }
-
-    private static T? GetOrNull_<T>(IList<T> array, int i)
-        where T : notnull
-      => i != -1 ? array[i] : default;
-
-    private static T? GetOrNullStruct_<T>(IList<T> array, int i)
-        where T : struct
-      => i != -1 ? array[i] : null;
+    public GxKonstColorSel KonstColorSel { get; set; }
+    public GxKonstAlphaSel KonstAlphaSel { get; set; }
   }
+
+  private static T? GetOrNull_<T>(IList<T> array, int i)
+      where T : notnull
+    => i != -1 ? array[i] : default;
+
+  private static T? GetOrNullStruct_<T>(IList<T> array, int i)
+      where T : struct
+    => i != -1 ? array[i] : null;
 }

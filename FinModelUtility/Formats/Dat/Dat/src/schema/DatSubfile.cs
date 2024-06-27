@@ -10,42 +10,43 @@ using fin.util.linq;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace dat.schema {
-  /// <summary>
-  ///   References:
-  ///     - https://github.com/jam1garner/Smash-Forge/blob/c0075bca364366bbea2d3803f5aeae45a4168640/Smash%20Forge/Filetypes/Melee/DAT.cs
-  /// </summary>
-  public class DatSubfile : IBinaryDeserializable {
-    private readonly List<RootNode> rootNodes_ = [];
-    private readonly HashSet<uint> validOffsets_ = [];
+namespace dat.schema;
 
-    private uint dataBlockOffset_;
-    private uint relocationTableOffset_;
-    private uint rootNodeOffset_;
-    private uint referenceNodeOffset_;
-    private uint stringTableOffset_;
+/// <summary>
+///   References:
+///     - https://github.com/jam1garner/Smash-Forge/blob/c0075bca364366bbea2d3803f5aeae45a4168640/Smash%20Forge/Filetypes/Melee/DAT.cs
+/// </summary>
+public class DatSubfile : IBinaryDeserializable {
+  private readonly List<RootNode> rootNodes_ = [];
+  private readonly HashSet<uint> validOffsets_ = [];
 
-    public uint FileSize { get; set; }
+  private uint dataBlockOffset_;
+  private uint relocationTableOffset_;
+  private uint rootNodeOffset_;
+  private uint referenceNodeOffset_;
+  private uint stringTableOffset_;
 
-    public LinkedList<(IDatNode, string)> RootNodesWithNames { get; } = [];
+  public uint FileSize { get; set; }
 
-    public IEnumerable<IDatNode> RootNodes
-      => this.RootNodesWithNames.Select(
-          rootNodeAndName => rootNodeAndName.Item1);
+  public LinkedList<(IDatNode, string)> RootNodesWithNames { get; } = [];
 
-    public IEnumerable<TNode> GetRootNodesOfType<TNode>()
-        where TNode : IDatNode
-      => this.RootNodes.WhereIs<IDatNode, TNode>();
+  public IEnumerable<IDatNode> RootNodes
+    => this.RootNodesWithNames.Select(
+        rootNodeAndName => rootNodeAndName.Item1);
 
-    public IEnumerable<(TNode, string)> GetRootNodesWithNamesOfType<TNode>()
-        where TNode : IDatNode
-      => this.RootNodesWithNames
-             .SelectWhere<(IDatNode, string), (TNode, string)>(IsOfType_);
+  public IEnumerable<TNode> GetRootNodesOfType<TNode>()
+      where TNode : IDatNode
+    => this.RootNodes.WhereIs<IDatNode, TNode>();
 
-    private static bool IsOfType_<TNode>(
-        (IDatNode, string) nodeWithName,
-        out (TNode, string) outNodeWithName)
-        where TNode : IDatNode {
+  public IEnumerable<(TNode, string)> GetRootNodesWithNamesOfType<TNode>()
+      where TNode : IDatNode
+    => this.RootNodesWithNames
+           .SelectWhere<(IDatNode, string), (TNode, string)>(IsOfType_);
+
+  private static bool IsOfType_<TNode>(
+      (IDatNode, string) nodeWithName,
+      out (TNode, string) outNodeWithName)
+      where TNode : IDatNode {
       var (node, name) = nodeWithName;
       if (node is TNode datNode) {
         outNodeWithName = (datNode, name);
@@ -57,16 +58,16 @@ namespace dat.schema {
     }
 
 
-    public IEnumerable<JObj> RootJObjs => this.GetRootNodesOfType<JObj>();
+  public IEnumerable<JObj> RootJObjs => this.GetRootNodesOfType<JObj>();
 
-    private readonly Dictionary<uint, JObj> jObjByOffset_ = new();
-    public IReadOnlyDictionary<uint, JObj> JObjByOffset => this.jObjByOffset_;
+  private readonly Dictionary<uint, JObj> jObjByOffset_ = new();
+  public IReadOnlyDictionary<uint, JObj> JObjByOffset => this.jObjByOffset_;
 
-    public IEnumerable<JObj> JObjs => this.RootJObjs.SelectMany(
-        DatNodeExtensions.GetSelfAndChildrenAndSiblings);
+  public IEnumerable<JObj> JObjs => this.RootJObjs.SelectMany(
+      DatNodeExtensions.GetSelfAndChildrenAndSiblings);
 
 
-    public void Read(IBinaryReader br) {
+  public void Read(IBinaryReader br) {
       var fileHeader = br.ReadNew<FileHeader>();
       this.FileSize = fileHeader.FileSize;
 
@@ -119,7 +120,7 @@ namespace dat.schema {
       this.ReadNames_(br);
     }
 
-    private void ReadRootNodeObjects_(IBinaryReader br) {
+  private void ReadRootNodeObjects_(IBinaryReader br) {
       br.Position = this.dataBlockOffset_;
       br.PushLocalSpace();
 
@@ -173,7 +174,7 @@ namespace dat.schema {
       }
     }
 
-    private void ReadNames_(IBinaryReader br) {
+  private void ReadNames_(IBinaryReader br) {
       br.Position = this.stringTableOffset_;
       br.PushLocalSpace();
 
@@ -212,76 +213,76 @@ namespace dat.schema {
 
       br.PopLocalSpace();
     }
+}
+
+[BinarySchema]
+public partial class FileHeader : IBinaryConvertible {
+  public uint FileSize { get; set; }
+  public uint DataBlockSize { get; set; }
+
+  public uint RelocationTableCount { get; set; }
+  public uint RootNodeCount { get; set; }
+  public uint ReferenceNodeCount { get; set; }
+
+  [StringLengthSource(4)]
+  public string Version { get; set; }
+
+  public uint Padding1 { get; set; }
+  public uint Padding2 { get; set; }
+
+
+  [Skip]
+  public uint DataBlockOffset => 0x20;
+
+  [Skip]
+  public uint RelocationTableOffset => DataBlockOffset + DataBlockSize;
+
+  [Skip]
+  public uint RootNodeOffset =>
+      RelocationTableOffset + 4 * RelocationTableCount;
+
+  [Skip]
+  public uint ReferenceNodeOffset => RootNodeOffset + 8 * RootNodeCount;
+
+  [Skip]
+  public uint StringTableOffset =>
+      ReferenceNodeOffset + 8 * ReferenceNodeCount;
+}
+
+[BinarySchema]
+public partial class RootNodeData : IBinaryConvertible {
+  public uint DataOffset { get; set; }
+  public uint StringOffset { get; set; }
+}
+
+public enum RootNodeType {
+  UNDEFINED,
+  JOBJ,
+  MATANIM_JOINT,
+  FIGATREE,
+  IMAGE,
+  SCENE_DATA,
+  SCENE_MODELSET,
+  TLUT,
+  TLUT_DESC,
+  FIGHTER_DATA
+}
+
+public class RootNode {
+  private string name_;
+
+  public RootNodeData Data { get; } = new();
+
+  public string Name {
+    get => this.name_;
+    set => this.Type = RootNode.GetTypeFromName_(this.name_ = value);
   }
 
-  [BinarySchema]
-  public partial class FileHeader : IBinaryConvertible {
-    public uint FileSize { get; set; }
-    public uint DataBlockSize { get; set; }
+  public override string ToString() => $"[{Type}]: {Name}";
 
-    public uint RelocationTableCount { get; set; }
-    public uint RootNodeCount { get; set; }
-    public uint ReferenceNodeCount { get; set; }
+  public RootNodeType Type { get; private set; }
 
-    [StringLengthSource(4)]
-    public string Version { get; set; }
-
-    public uint Padding1 { get; set; }
-    public uint Padding2 { get; set; }
-
-
-    [Skip]
-    public uint DataBlockOffset => 0x20;
-
-    [Skip]
-    public uint RelocationTableOffset => DataBlockOffset + DataBlockSize;
-
-    [Skip]
-    public uint RootNodeOffset =>
-        RelocationTableOffset + 4 * RelocationTableCount;
-
-    [Skip]
-    public uint ReferenceNodeOffset => RootNodeOffset + 8 * RootNodeCount;
-
-    [Skip]
-    public uint StringTableOffset =>
-        ReferenceNodeOffset + 8 * ReferenceNodeCount;
-  }
-
-  [BinarySchema]
-  public partial class RootNodeData : IBinaryConvertible {
-    public uint DataOffset { get; set; }
-    public uint StringOffset { get; set; }
-  }
-
-  public enum RootNodeType {
-    UNDEFINED,
-    JOBJ,
-    MATANIM_JOINT,
-    FIGATREE,
-    IMAGE,
-    SCENE_DATA,
-    SCENE_MODELSET,
-    TLUT,
-    TLUT_DESC,
-    FIGHTER_DATA
-  }
-
-  public class RootNode {
-    private string name_;
-
-    public RootNodeData Data { get; } = new();
-
-    public string Name {
-      get => this.name_;
-      set => this.Type = RootNode.GetTypeFromName_(this.name_ = value);
-    }
-
-    public override string ToString() => $"[{Type}]: {Name}";
-
-    public RootNodeType Type { get; private set; }
-
-    private static RootNodeType GetTypeFromName_(string name) {
+  private static RootNodeType GetTypeFromName_(string name) {
       // TODO: Use flags for this instead
       if (name.EndsWith("_joint") && !name.Contains("matanim") &&
           !name.Contains("anim_joint")) {
@@ -322,5 +323,4 @@ namespace dat.schema {
 
       return RootNodeType.UNDEFINED;
     }
-  }
 }

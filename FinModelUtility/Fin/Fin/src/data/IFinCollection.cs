@@ -2,10 +2,10 @@
 
 using schema.readOnly;
 
-namespace fin.data {
-  [GenerateReadOnly]
-  public partial interface IFinCollection<out T> : IEnumerable<T> {
-    int Count { get; }
-    void Clear();
-  }
+namespace fin.data;
+
+[GenerateReadOnly]
+public partial interface IFinCollection<out T> : IEnumerable<T> {
+  int Count { get; }
+  void Clear();
 }

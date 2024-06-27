@@ -9,98 +9,98 @@ using NUnit.Framework;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace fin.data {
-  public class ListDictionaryTests {
-    [Test]
-    public void TestClear() {
-      var impl = new ListDictionary<string?, string>();
-      Assert.AreEqual(0, impl.Count);
+namespace fin.data;
 
-      impl.Add("foo", "a");
-      impl.Add("foo", "b");
-      impl.Add("foo", "c");
-      Assert.AreEqual(3, impl.Count);
+public class ListDictionaryTests {
+  [Test]
+  public void TestClear() {
+    var impl = new ListDictionary<string?, string>();
+    Assert.AreEqual(0, impl.Count);
 
-      impl.Add("bar", "1");
-      impl.Add("bar", "2");
-      impl.Add("bar", "3");
-      Assert.AreEqual(6, impl.Count);
+    impl.Add("foo", "a");
+    impl.Add("foo", "b");
+    impl.Add("foo", "c");
+    Assert.AreEqual(3, impl.Count);
 
-      impl.Add(null, "x");
-      impl.Add(null, "y");
-      impl.Add(null, "z");
-      Assert.AreEqual(9, impl.Count);
+    impl.Add("bar", "1");
+    impl.Add("bar", "2");
+    impl.Add("bar", "3");
+    Assert.AreEqual(6, impl.Count);
 
-      impl.Clear();
-      Assert.AreEqual(0, impl.Count);
-    }
+    impl.Add(null, "x");
+    impl.Add(null, "y");
+    impl.Add(null, "z");
+    Assert.AreEqual(9, impl.Count);
 
-    [Test]
-    public void TestTryGetList() {
-      var impl = new ListDictionary<string?, string>();
-      Assert.AreEqual(0, impl.Count);
+    impl.Clear();
+    Assert.AreEqual(0, impl.Count);
+  }
 
-      Assert.AreEqual(false, impl.TryGetList("foo", out _));
-      Assert.AreEqual(false, impl.TryGetList("bar", out _));
-      Assert.AreEqual(false, impl.TryGetList(null, out _));
+  [Test]
+  public void TestTryGetList() {
+    var impl = new ListDictionary<string?, string>();
+    Assert.AreEqual(0, impl.Count);
 
-      impl.Add("foo", "a");
-      impl.Add("foo", "b");
-      impl.Add("foo", "c");
-      Assert.AreEqual(3, impl.Count);
+    Assert.AreEqual(false, impl.TryGetList("foo", out _));
+    Assert.AreEqual(false, impl.TryGetList("bar", out _));
+    Assert.AreEqual(false, impl.TryGetList(null, out _));
 
-      impl.Add("bar", "1");
-      impl.Add("bar", "2");
-      impl.Add("bar", "3");
-      Assert.AreEqual(6, impl.Count);
+    impl.Add("foo", "a");
+    impl.Add("foo", "b");
+    impl.Add("foo", "c");
+    Assert.AreEqual(3, impl.Count);
 
-      impl.Add(null, "x");
-      impl.Add(null, "y");
-      impl.Add(null, "z");
-      Assert.AreEqual(9, impl.Count);
+    impl.Add("bar", "1");
+    impl.Add("bar", "2");
+    impl.Add("bar", "3");
+    Assert.AreEqual(6, impl.Count);
 
-      Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
-      Asserts.SequenceEqual(new[] { "a", "b", "c" }, fooList!);
+    impl.Add(null, "x");
+    impl.Add(null, "y");
+    impl.Add(null, "z");
+    Assert.AreEqual(9, impl.Count);
 
-      Assert.AreEqual(true, impl.TryGetList("bar", out var barList));
-      Asserts.SequenceEqual(new[] { "1", "2", "3" }, barList!);
+    Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
+    Asserts.SequenceEqual(new[] { "a", "b", "c" }, fooList!);
 
-      Assert.AreEqual(true, impl.TryGetList(null, out var nullList));
-      Asserts.SequenceEqual(new[] { "x", "y", "z" }, nullList!);
-    }
+    Assert.AreEqual(true, impl.TryGetList("bar", out var barList));
+    Asserts.SequenceEqual(new[] { "1", "2", "3" }, barList!);
 
-    [Test]
-    public void TestEnumeratorLinq() {
-      var impl = new ListDictionary<string?, string>();
-      Assert.AreEqual(0, impl.Count);
+    Assert.AreEqual(true, impl.TryGetList(null, out var nullList));
+    Asserts.SequenceEqual(new[] { "x", "y", "z" }, nullList!);
+  }
 
-      impl.Add("foo", "a");
-      impl.Add("foo", "b");
-      impl.Add("foo", "c");
-      Assert.AreEqual(3, impl.Count);
+  [Test]
+  public void TestEnumeratorLinq() {
+    var impl = new ListDictionary<string?, string>();
+    Assert.AreEqual(0, impl.Count);
 
-      impl.Add("bar", "1");
-      impl.Add("bar", "2");
-      impl.Add("bar", "3");
-      Assert.AreEqual(6, impl.Count);
+    impl.Add("foo", "a");
+    impl.Add("foo", "b");
+    impl.Add("foo", "c");
+    Assert.AreEqual(3, impl.Count);
 
-      impl.Add(null, "x");
-      impl.Add(null, "y");
-      impl.Add(null, "z");
-      Assert.AreEqual(9, impl.Count);
+    impl.Add("bar", "1");
+    impl.Add("bar", "2");
+    impl.Add("bar", "3");
+    Assert.AreEqual(6, impl.Count);
 
-      var actualValues = impl.GetPairs().ToArray();
+    impl.Add(null, "x");
+    impl.Add(null, "y");
+    impl.Add(null, "z");
+    Assert.AreEqual(9, impl.Count);
 
-      Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
-      Assert.AreEqual(true, impl.TryGetList("bar", out var barList));
-      Assert.AreEqual(true, impl.TryGetList(null, out var nullList));
+    var actualValues = impl.GetPairs().ToArray();
 
-      Asserts.SequenceEqual([
-        ("bar", barList!),
-        ("foo", fooList!),
-        (null, nullList!),
-      ],
-                    actualValues);
-    }
+    Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
+    Assert.AreEqual(true, impl.TryGetList("bar", out var barList));
+    Assert.AreEqual(true, impl.TryGetList(null, out var nullList));
+
+    Asserts.SequenceEqual([
+                              ("bar", barList!),
+                              ("foo", fooList!),
+                              (null, nullList!),
+                          ],
+                          actualValues);
   }
 }

@@ -2,22 +2,22 @@
 
 using schema.readOnly;
 
-namespace fin.data.queues {
-  /// <summary>
-  ///   Simpler interface for queues that is easier to implement.
-  /// </summary>
-  [GenerateReadOnly]
-  public partial interface IFinQueue<T> : IFinCollection<T> {
-    void Enqueue(T first, params T[] rest);
-    void Enqueue(IEnumerable<T> values);
+namespace fin.data.queues;
 
-    T Dequeue();
-    bool TryDequeue(out T value);
+/// <summary>
+///   Simpler interface for queues that is easier to implement.
+/// </summary>
+[GenerateReadOnly]
+public partial interface IFinQueue<T> : IFinCollection<T> {
+  void Enqueue(T first, params T[] rest);
+  void Enqueue(IEnumerable<T> values);
 
-    [Const]
-    T Peek();
+  T Dequeue();
+  bool TryDequeue(out T value);
 
-    [Const]
-    bool TryPeek(out T value);
-  }
+  [Const]
+  T Peek();
+
+  [Const]
+  bool TryPeek(out T value);
 }

@@ -3,26 +3,27 @@
 using fin.model;
 using fin.util.hash;
 
-namespace f3dzex2.image {
-  public struct MaterialParams {
-    public MaterialParams() { }
+namespace f3dzex2.image;
 
-    public TextureParams TextureParams0 { get; set; } = new();
-    public TextureParams TextureParams1 { get; set; } = new();
+public struct MaterialParams {
+  public MaterialParams() { }
 
-    public CombinerCycleParams CombinerCycleParams0 { get; set; }
-    public CombinerCycleParams CombinerCycleParams1 { get; set; }
+  public TextureParams TextureParams0 { get; set; } = new();
+  public TextureParams TextureParams1 { get; set; } = new();
 
-    public CullingMode CullingMode { get; set; }
+  public CombinerCycleParams CombinerCycleParams0 { get; set; }
+  public CombinerCycleParams CombinerCycleParams1 { get; set; }
 
-    public override int GetHashCode() => FluentHash.Start()
-                                                   .With(this.TextureParams0)
-                                                   .With(this.TextureParams1)
-                                                   .With(this.CombinerCycleParams0)
-                                                   .With(this.CombinerCycleParams1)
-                                                   .With(CullingMode);
+  public CullingMode CullingMode { get; set; }
 
-    public override bool Equals(object? other) {
+  public override int GetHashCode() => FluentHash.Start()
+                                                 .With(this.TextureParams0)
+                                                 .With(this.TextureParams1)
+                                                 .With(this.CombinerCycleParams0)
+                                                 .With(this.CombinerCycleParams1)
+                                                 .With(CullingMode);
+
+  public override bool Equals(object? other) {
       if (ReferenceEquals(this, other)) {
         return true;
       }
@@ -37,5 +38,4 @@ namespace f3dzex2.image {
 
       return false;
     }
-  }
 }

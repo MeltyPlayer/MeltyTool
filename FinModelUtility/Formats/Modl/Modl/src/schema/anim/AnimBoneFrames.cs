@@ -1,13 +1,13 @@
-﻿namespace modl.schema.anim {
-  public class AnimBoneFrames {
-    public List<(float, float, float)> PositionFrames { get; }
-    public List<(float, float, float, float)> RotationFrames { get; }
+﻿namespace modl.schema.anim;
 
-    public AnimBoneFrames() : this(0, 0) { }
+public class AnimBoneFrames {
+  public List<(float, float, float)> PositionFrames { get; }
+  public List<(float, float, float, float)> RotationFrames { get; }
 
-    public AnimBoneFrames(int positionCapacity, int rotationCapacity) {
-      this.PositionFrames = new(positionCapacity);
-      this.RotationFrames = new(rotationCapacity);
-    }
+  public AnimBoneFrames() : this(0, 0) { }
+
+  public AnimBoneFrames(int positionCapacity, int rotationCapacity) {
+    this.PositionFrames = new(positionCapacity);
+    this.RotationFrames = new(rotationCapacity);
   }
 }

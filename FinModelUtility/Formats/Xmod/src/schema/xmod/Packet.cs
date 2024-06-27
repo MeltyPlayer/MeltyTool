@@ -1,13 +1,14 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace xmod.schema.xmod {
-  public class Packet : ITextDeserializable {
-    public IReadOnlyList<Adjunct> Adjuncts { get; set; }
-    public IReadOnlyList<Primitive> Primitives { get; set; }
-    public IReadOnlyList<int> MatrixTable { get; set; }
+namespace xmod.schema.xmod;
 
-    public void Read(ITextReader tr) {
+public class Packet : ITextDeserializable {
+  public IReadOnlyList<Adjunct> Adjuncts { get; set; }
+  public IReadOnlyList<Primitive> Primitives { get; set; }
+  public IReadOnlyList<int> MatrixTable { get; set; }
+
+  public void Read(ITextReader tr) {
       tr.AssertString("packet");
 
       var numAdjuncts = tr.ReadInt32();
@@ -27,5 +28,4 @@ namespace xmod.schema.xmod {
       tr.ReadUpToAndPastTerminator(TextReaderUtils.CLOSING_BRACE);
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
     }
-  }
 }

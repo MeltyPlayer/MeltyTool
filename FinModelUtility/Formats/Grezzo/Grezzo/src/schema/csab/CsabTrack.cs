@@ -4,20 +4,21 @@ using System.Runtime.CompilerServices;
 
 using schema.binary;
 
-namespace grezzo.schema.csab {
-  public enum TrackType {
-    POSITION,
-    SCALE,
-    ROTATION
-  }
+namespace grezzo.schema.csab;
 
-  public class CsabTrack : IBinaryDeserializable {
-    private readonly Csab parent_;
-    private Func<IBinaryReader, int> readRawLinearFloat_;
-    private Func<IBinaryReader, int> readRawLinearShort_;
+public enum TrackType {
+  POSITION,
+  SCALE,
+  ROTATION
+}
 
-    public CsabTrack(Csab parent,
-                     TrackType valueType) {
+public class CsabTrack : IBinaryDeserializable {
+  private readonly Csab parent_;
+  private Func<IBinaryReader, int> readRawLinearFloat_;
+  private Func<IBinaryReader, int> readRawLinearShort_;
+
+  public CsabTrack(Csab parent,
+                   TrackType valueType) {
       this.parent_ = parent;
       this.ValueType = valueType;
 
@@ -37,20 +38,20 @@ namespace grezzo.schema.csab {
       };
     }
 
-    public TrackType ValueType { get; }
+  public TrackType ValueType { get; }
 
-    public AnimationTrackType Type { get; set; }
+  public AnimationTrackType Type { get; set; }
 
-    public IList<CsabKeyframe> Keyframes { get; set; } =
-      new List<CsabKeyframe>();
+  public IList<CsabKeyframe> Keyframes { get; set; } =
+    new List<CsabKeyframe>();
 
-    public uint Duration { get; set; }
+  public uint Duration { get; set; }
 
-    public bool AreRotationsShort { get; set; }
+  public bool AreRotationsShort { get; set; }
 
-    public bool IsPastVersion4 => this.parent_.IsPastVersion4;
+  public bool IsPastVersion4 => this.parent_.IsPastVersion4;
 
-    public void Read(IBinaryReader br) {
+  public void Read(IBinaryReader br) {
       var startFrame = 0;
       if (IsPastVersion4) {
         var isConstant = br.ReadByte() != 0;
@@ -110,12 +111,12 @@ namespace grezzo.schema.csab {
       br.Align(4);
     }
 
-    private CsabKeyframe ReadKeyframeLinearFloat_(
-        IBinaryReader br,
-        float trackScale,
-        float trackBias,
-        int startFrame,
-        int index) {
+  private CsabKeyframe ReadKeyframeLinearFloat_(
+      IBinaryReader br,
+      float trackScale,
+      float trackBias,
+      int startFrame,
+      int index) {
       if (IsPastVersion4) {
         var raw = readRawLinearFloat_(br);
         var value = ApplyScaleAndBias_(raw, trackScale, trackBias);
@@ -129,12 +130,12 @@ namespace grezzo.schema.csab {
       };
     }
 
-    private CsabKeyframe ReadKeyframeLinearShort_(
-        IBinaryReader br,
-        float trackScale,
-        float trackBias,
-        int startFrame,
-        int index) {
+  private CsabKeyframe ReadKeyframeLinearShort_(
+      IBinaryReader br,
+      float trackScale,
+      float trackBias,
+      int startFrame,
+      int index) {
       if (IsPastVersion4) {
         var raw = this.readRawLinearShort_(br);
         var value = ApplyScaleAndBias_(raw, trackScale, trackBias);
@@ -149,26 +150,25 @@ namespace grezzo.schema.csab {
       };
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private float ApplyScaleAndBias_(float value, float scale, float bias)
-      => value * scale - bias;
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private float ApplyScaleAndBias_(float value, float scale, float bias)
+    => value * scale - bias;
 
-    private CsabKeyframe ReadKeyframeHermiteFloat_(IBinaryReader br,
-                                                   int startFrame)
-      => new CsabKeyframe {
-          Time = (uint) (startFrame + br.ReadUInt32()),
-          Value = br.ReadSingle(),
-          IncomingTangent = br.ReadSingle(),
-          OutgoingTangent = br.ReadSingle(),
-      };
+  private CsabKeyframe ReadKeyframeHermiteFloat_(IBinaryReader br,
+                                                 int startFrame)
+    => new CsabKeyframe {
+        Time = (uint) (startFrame + br.ReadUInt32()),
+        Value = br.ReadSingle(),
+        IncomingTangent = br.ReadSingle(),
+        OutgoingTangent = br.ReadSingle(),
+    };
 
-    private CsabKeyframe ReadKeyframeHermiteShort_(IBinaryReader br,
-                                                   int startFrame)
-      => new CsabKeyframe {
-          Time = (uint) (startFrame + br.ReadUInt16()),
-          Value = br.ReadSn16() * MathF.PI,
-          IncomingTangent = br.ReadSn16(),
-          OutgoingTangent = br.ReadSn16(),
-      };
-  }
+  private CsabKeyframe ReadKeyframeHermiteShort_(IBinaryReader br,
+                                                 int startFrame)
+    => new CsabKeyframe {
+        Time = (uint) (startFrame + br.ReadUInt16()),
+        Value = br.ReadSn16() * MathF.PI,
+        IncomingTangent = br.ReadSn16(),
+        OutgoingTangent = br.ReadSn16(),
+    };
 }

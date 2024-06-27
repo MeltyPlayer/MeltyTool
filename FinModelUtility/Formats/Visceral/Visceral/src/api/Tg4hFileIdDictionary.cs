@@ -2,18 +2,19 @@
 
 using schema.binary;
 
-namespace visceral.api {
-  public class Tg4hFileIdDictionary : IReadOnlyFileIdDictionary {
-    private readonly IFileIdDictionary impl_;
+namespace visceral.api;
 
-    public Tg4hFileIdDictionary(IReadOnlyTreeDirectory baseDirectory) {
+public class Tg4hFileIdDictionary : IReadOnlyFileIdDictionary {
+  private readonly IFileIdDictionary impl_;
+
+  public Tg4hFileIdDictionary(IReadOnlyTreeDirectory baseDirectory) {
       this.BaseDirectory = baseDirectory;
       this.impl_ = new FileIdDictionary(baseDirectory);
       this.PopulateFromBaseDirectory_(baseDirectory);
     }
 
-    public Tg4hFileIdDictionary(IReadOnlyTreeDirectory baseDirectory,
-                                ISystemFile fileIdFile) {
+  public Tg4hFileIdDictionary(IReadOnlyTreeDirectory baseDirectory,
+                              ISystemFile fileIdFile) {
       this.BaseDirectory = baseDirectory;
       if (fileIdFile.Exists) {
         this.impl_ = new FileIdDictionary(baseDirectory, fileIdFile);
@@ -24,8 +25,8 @@ namespace visceral.api {
       }
     }
 
-    private void PopulateFromBaseDirectory_(
-        IReadOnlyTreeDirectory baseDirectory) {
+  private void PopulateFromBaseDirectory_(
+      IReadOnlyTreeDirectory baseDirectory) {
       foreach (var tg4hFile in baseDirectory.GetFilesWithFileType(".tg4h",
                  true)) {
         using var br = tg4hFile.OpenReadAsBinary(Endianness.LittleEndian);
@@ -35,8 +36,7 @@ namespace visceral.api {
       }
     }
 
-    public IReadOnlyTreeDirectory BaseDirectory { get; }
-    public IReadOnlyTreeFile this[uint id] => this.impl_[id];
-    public void Save(IGenericFile fileIdFile) => this.impl_.Save(fileIdFile);
-  }
+  public IReadOnlyTreeDirectory BaseDirectory { get; }
+  public IReadOnlyTreeFile this[uint id] => this.impl_[id];
+  public void Save(IGenericFile fileIdFile) => this.impl_.Save(fileIdFile);
 }

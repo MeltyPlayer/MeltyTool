@@ -1,13 +1,13 @@
 ﻿using schema.binary;
 
-namespace modl.schema.terrain {
-  [BinarySchema]
-  public partial class TerrData : IBinaryConvertible {
-    public int ChunkCountX { get; } = 64;
-    public int ChunkCountY { get; } = 64;
+namespace modl.schema.terrain;
 
-    public uint SomeCount { get; } = 1;
+[BinarySchema]
+public partial class TerrData : IBinaryConvertible {
+  public int ChunkCountX { get; } = 64;
+  public int ChunkCountY { get; } = 64;
 
-    public int MaterialCount { get; private set; }
-  }
+  public uint SomeCount { get; } = 1;
+
+  public int MaterialCount { get; private set; }
 }

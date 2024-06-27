@@ -4,17 +4,18 @@ using fin.util.strings;
 
 using schema.binary;
 
-namespace grezzo.schema.cmb.sklm {
-  public class Primitive : IBinaryConvertible {
-    public uint chunkSize;
-    public bool isVisible;
-    public PrimitiveMode primitiveMode;
-    public DataType dataType;
-    public ushort indicesCount;
-    public uint[] indices;
-    public ushort offset { get; set; }
+namespace grezzo.schema.cmb.sklm;
 
-    public void Read(IBinaryReader br) {
+public class Primitive : IBinaryConvertible {
+  public uint chunkSize;
+  public bool isVisible;
+  public PrimitiveMode primitiveMode;
+  public DataType dataType;
+  public ushort indicesCount;
+  public uint[] indices;
+  public ushort offset { get; set; }
+
+  public void Read(IBinaryReader br) {
       br.AssertString("prm" + AsciiUtil.GetChar(0x20));
 
       this.chunkSize = br.ReadUInt32();
@@ -29,7 +30,6 @@ namespace grezzo.schema.cmb.sklm {
       this.offset = br.ReadUInt16();
     }
 
-    public void Write(IBinaryWriter bw)
-      => throw new NotImplementedException();
-  }
+  public void Write(IBinaryWriter bw)
+    => throw new NotImplementedException();
 }

@@ -13,39 +13,40 @@ using schema.binary;
 
 #pragma warning disable CS8604
 
-namespace jsystem.GCN {
-  public partial class BMD {
-    public partial class MAT3Section {
-      public const string Signature = "MAT3";
-      public DataBlockHeader Header;
-      public ushort NrMaterials;
-      public uint[] Offsets;
-      public MaterialEntry[] MaterialEntries;
-      public BmdPopulatedMaterial[] PopulatedMaterials;
-      public ushort[] MaterialEntryIndieces;
-      public short[] TextureIndices;
-      public GxCullMode[] CullModes;
-      public Color[] MaterialColor;
-      public Color[] LightColors;
-      public Color[] AmbientColors;
-      public Color[] TevColors;
-      public Color[] TevKonstColors;
-      public AlphaCompare[] AlphaCompares;
-      public BlendFunction[] BlendFunctions;
-      public DepthFunction[] DepthFunctions;
-      public TevStageProps[] TevStages;
-      public TevSwapMode[] TevSwapModes;
-      public TevSwapModeTable[] TevSwapModeTables;
-      public TexCoordGen[] TexCoordGens;
-      public ColorChannelControl[] ColorChannelControls;
-      public TextureMatrixInfo[] TextureMatrices;
-      public TevOrder[] TevOrders;
-      public StringTable MaterialNameTable;
+namespace jsystem.GCN;
 
-      public readonly List<MatIndirectTexturingEntry>
-          MatIndirectTexturingEntries = [];
+public partial class BMD {
+  public partial class MAT3Section {
+    public const string Signature = "MAT3";
+    public DataBlockHeader Header;
+    public ushort NrMaterials;
+    public uint[] Offsets;
+    public MaterialEntry[] MaterialEntries;
+    public BmdPopulatedMaterial[] PopulatedMaterials;
+    public ushort[] MaterialEntryIndieces;
+    public short[] TextureIndices;
+    public GxCullMode[] CullModes;
+    public Color[] MaterialColor;
+    public Color[] LightColors;
+    public Color[] AmbientColors;
+    public Color[] TevColors;
+    public Color[] TevKonstColors;
+    public AlphaCompare[] AlphaCompares;
+    public BlendFunction[] BlendFunctions;
+    public DepthFunction[] DepthFunctions;
+    public TevStageProps[] TevStages;
+    public TevSwapMode[] TevSwapModes;
+    public TevSwapModeTable[] TevSwapModeTables;
+    public TexCoordGen[] TexCoordGens;
+    public ColorChannelControl[] ColorChannelControls;
+    public TextureMatrixInfo[] TextureMatrices;
+    public TevOrder[] TevOrders;
+    public StringTable MaterialNameTable;
 
-      public MAT3Section(IBinaryReader br, out bool OK) {
+    public readonly List<MatIndirectTexturingEntry>
+        MatIndirectTexturingEntries = [];
+
+    public MAT3Section(IBinaryReader br, out bool OK) {
         long position1 = br.Position;
         bool OK1;
         this.Header = new DataBlockHeader(br, "MAT3", out OK1);
@@ -177,7 +178,7 @@ namespace jsystem.GCN {
         }
       }
 
-      public int[] GetSectionLengths() {
+    public int[] GetSectionLengths() {
         int[] numArray = new int[30];
         for (int index1 = 0; index1 < 30; ++index1) {
           int num1 = 0;
@@ -198,6 +199,5 @@ namespace jsystem.GCN {
 
         return numArray;
       }
-    }
   }
 }

@@ -2,19 +2,20 @@
 
 using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering.gl {
-  public partial class GlState {
-    public CullingMode CurrentCullingMode { get; set; } =
-      CullingMode.SHOW_NEITHER;
-  }
+namespace fin.ui.rendering.gl;
 
-  public static partial class GlUtil {
+public partial class GlState {
+  public CullingMode CurrentCullingMode { get; set; } =
+    CullingMode.SHOW_NEITHER;
+}
 
-    public static void ResetCulling()
-      => SetCulling(CullingMode.SHOW_FRONT_ONLY);
+public static partial class GlUtil {
+
+  public static void ResetCulling()
+    => SetCulling(CullingMode.SHOW_FRONT_ONLY);
 
 
-    public static bool SetCulling(CullingMode cullingMode) {
+  public static bool SetCulling(CullingMode cullingMode) {
       if (GlUtil.currentState_.CurrentCullingMode == cullingMode) {
         return false;
       }
@@ -36,5 +37,4 @@ namespace fin.ui.rendering.gl {
 
       return true;
     }
-  }
 }

@@ -1,20 +1,21 @@
 ﻿using fin.math;
 using fin.model;
 
-namespace fin.ui.rendering.gl.material {
-  public class GlStandardMaterialShader(
-      IReadOnlyModel model,
-      IReadOnlyStandardMaterial standardMaterial,
-      IReadOnlyBoneTransformManager? boneTransformManager,
-      IReadOnlyLighting? lighting)
-      : BGlMaterialShader<IReadOnlyStandardMaterial>(model,
-        standardMaterial,
-        boneTransformManager,
-        lighting) {
-    protected override void DisposeInternal() { }
+namespace fin.ui.rendering.gl.material;
 
-    protected override void Setup(IReadOnlyStandardMaterial material,
-                                  GlShaderProgram shaderProgram) {
+public class GlStandardMaterialShader(
+    IReadOnlyModel model,
+    IReadOnlyStandardMaterial standardMaterial,
+    IReadOnlyBoneTransformManager? boneTransformManager,
+    IReadOnlyLighting? lighting)
+    : BGlMaterialShader<IReadOnlyStandardMaterial>(model,
+                                                   standardMaterial,
+                                                   boneTransformManager,
+                                                   lighting) {
+  protected override void DisposeInternal() { }
+
+  protected override void Setup(IReadOnlyStandardMaterial material,
+                                GlShaderProgram shaderProgram) {
       var diffuseFinTexture = material.DiffuseTexture;
       var diffuseGlTexture =
           diffuseFinTexture != null
@@ -62,7 +63,6 @@ namespace fin.ui.rendering.gl.material {
                         specularGlTexture);
     }
 
-    protected override void PassUniformsAndBindTextures(
-        GlShaderProgram impl) { }
-  }
+  protected override void PassUniformsAndBindTextures(
+      GlShaderProgram impl) { }
 }

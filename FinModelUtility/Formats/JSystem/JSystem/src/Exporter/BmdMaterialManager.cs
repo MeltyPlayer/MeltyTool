@@ -11,16 +11,17 @@ using gx;
 using jsystem.GCN;
 using jsystem.schema.jutility.bti;
 
-namespace jsystem.exporter {
-  public class BmdMaterialManager {
-    private readonly BMD bmd_;
-    private readonly IList<IGxTexture> textures_;
-    private readonly IList<GxFixedFunctionMaterial> materials_;
+namespace jsystem.exporter;
 
-    public BmdMaterialManager(
-        IModel model,
-        BMD bmd,
-        IList<(string, Bti)>? pathsAndBtis = null) {
+public class BmdMaterialManager {
+  private readonly BMD bmd_;
+  private readonly IList<IGxTexture> textures_;
+  private readonly IList<GxFixedFunctionMaterial> materials_;
+
+  public BmdMaterialManager(
+      IModel model,
+      BMD bmd,
+      IList<(string, Bti)>? pathsAndBtis = null) {
       this.bmd_ = bmd;
 
       var tex1 = bmd.TEX1.Data;
@@ -37,11 +38,11 @@ namespace jsystem.exporter {
       this.materials_ = this.GetMaterials_(model, bmd);
     }
 
-    public GxFixedFunctionMaterial Get(int entryIndex)
-      => this.materials_[this.bmd_.MAT3.MaterialEntryIndieces[entryIndex]];
+  public GxFixedFunctionMaterial Get(int entryIndex)
+    => this.materials_[this.bmd_.MAT3.MaterialEntryIndieces[entryIndex]];
 
-    private IList<GxFixedFunctionMaterial>
-        GetMaterials_(IModel model, BMD bmd) {
+  private IList<GxFixedFunctionMaterial>
+      GetMaterials_(IModel model, BMD bmd) {
       var lazyTextureMap =
           new LazyDictionary<(IGxTexture, ITexCoordGen?, ITextureMatrixInfo?),
               ITexture>(
@@ -106,5 +107,4 @@ namespace jsystem.exporter {
                         lazyTextureMap))
                 .ToList();
     }
-  }
 }

@@ -6,27 +6,27 @@ using fin.io;
 using fin.testing;
 using fin.testing.audio;
 
-namespace ast {
-  public class AstGoldenTests
-      : BAudioGoldenTests<AstAudioFileBundle, AstAudioReader> {
-    [Test]
-    [TestCaseSource(nameof(GetGoldenDirectories_))]
-    public void TestExportsGoldenAsExpected(
-        IFileHierarchyDirectory goldenDirectory)
-      => this.AssertGolden(goldenDirectory);
+namespace ast;
 
-    public override AstAudioFileBundle GetFileBundleFromDirectory(
-        IFileHierarchyDirectory directory)
-      => new() {
-          GameName = directory.Parent.Parent.Name,
-          AstFile = directory.FilesWithExtension(".ast").Single(),
-      };
+public class AstGoldenTests
+    : BAudioGoldenTests<AstAudioFileBundle, AstAudioReader> {
+  [Test]
+  [TestCaseSource(nameof(GetGoldenDirectories_))]
+  public void TestExportsGoldenAsExpected(
+      IFileHierarchyDirectory goldenDirectory)
+    => this.AssertGolden(goldenDirectory);
 
-    private static IFileHierarchyDirectory[] GetGoldenDirectories_()
-      => GoldenAssert
-         .GetGoldenDirectories(
-             GoldenAssert
-                 .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
-         .ToArray();
-  }
+  public override AstAudioFileBundle GetFileBundleFromDirectory(
+      IFileHierarchyDirectory directory)
+    => new() {
+        GameName = directory.Parent.Parent.Name,
+        AstFile = directory.FilesWithExtension(".ast").Single(),
+    };
+
+  private static IFileHierarchyDirectory[] GetGoldenDirectories_()
+    => GoldenAssert
+       .GetGoldenDirectories(
+           GoldenAssert
+               .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
+       .ToArray();
 }

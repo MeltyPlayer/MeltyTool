@@ -3,25 +3,25 @@ using System.Linq;
 
 using fin.io;
 
-namespace fin.model.io.importers.assimp {
-  public class AssimpModelImporterPlugin : IModelImporterPlugin {
-    public string DisplayName => "Assimp";
-    public string Description => "Loads standard model formats via Assimp.";
+namespace fin.model.io.importers.assimp;
 
-    public IReadOnlyList<string> KnownPlatforms { get; } = new string[] { };
-    public IReadOnlyList<string> KnownGames { get; } = new string[] { };
+public class AssimpModelImporterPlugin : IModelImporterPlugin {
+  public string DisplayName => "Assimp";
+  public string Description => "Loads standard model formats via Assimp.";
 
-    public IReadOnlyList<string> MainFileExtensions { get; }
-      = new[] { ".glb", ".gltf", ".fbx", ".obj" };
+  public IReadOnlyList<string> KnownPlatforms { get; } = new string[] { };
+  public IReadOnlyList<string> KnownGames { get; } = new string[] { };
 
-    public IReadOnlyList<string> FileExtensions => this.MainFileExtensions;
+  public IReadOnlyList<string> MainFileExtensions { get; }
+    = new[] { ".glb", ".gltf", ".fbx", ".obj" };
 
-    public IModel Import(IEnumerable<IReadOnlySystemFile> files,
-                         float frameRate = 30) {
-      var assimpBundle = new AssimpModelFileBundle {
-          MainFile = files.Single(),
-      };
-      return new AssimpModelImporter().Import(assimpBundle);
-    }
+  public IReadOnlyList<string> FileExtensions => this.MainFileExtensions;
+
+  public IModel Import(IEnumerable<IReadOnlySystemFile> files,
+                       float frameRate = 30) {
+    var assimpBundle = new AssimpModelFileBundle {
+        MainFile = files.Single(),
+    };
+    return new AssimpModelImporter().Import(assimpBundle);
   }
 }

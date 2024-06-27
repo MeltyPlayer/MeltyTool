@@ -4,29 +4,30 @@ using fin.util.strings;
 
 using schema.binary;
 
-namespace grezzo.schema.cmb {
-  public class CmbHeader : IBinaryDeserializable {
-    // TODO: Better way to do this?
-    public static Version Version { get; set; }
+namespace grezzo.schema.cmb;
 
-    public uint fileSize { get; private set; }
-    public Version version { get; private set; }
-    public string name { get; private set; }
-    public uint faceIndicesCount { get; private set; }
-    public uint sklOffset { get; private set; }
-    public uint qtrsOffset { get; private set; }
-    public uint matsOffset { get; private set; }
-    public uint texOffset { get; private set; }
-    public uint sklmOffset { get; private set; }
-    public uint lutsOffset { get; private set; }
-    public uint vatrOffset { get; private set; }
-    public uint faceIndicesOffset { get; private set; }
-    public uint textureDataOffset { get; private set; }
+public class CmbHeader : IBinaryDeserializable {
+  // TODO: Better way to do this?
+  public static Version Version { get; set; }
 
-    [Unknown]
-    public uint unk0 { get; private set; }
+  public uint fileSize { get; private set; }
+  public Version version { get; private set; }
+  public string name { get; private set; }
+  public uint faceIndicesCount { get; private set; }
+  public uint sklOffset { get; private set; }
+  public uint qtrsOffset { get; private set; }
+  public uint matsOffset { get; private set; }
+  public uint texOffset { get; private set; }
+  public uint sklmOffset { get; private set; }
+  public uint lutsOffset { get; private set; }
+  public uint vatrOffset { get; private set; }
+  public uint faceIndicesOffset { get; private set; }
+  public uint textureDataOffset { get; private set; }
 
-    public void Read(IBinaryReader br) {
+  [Unknown]
+  public uint unk0 { get; private set; }
+
+  public void Read(IBinaryReader br) {
       br.AssertString("cmb" + AsciiUtil.GetChar(0x20));
 
       this.fileSize = br.ReadUInt32();
@@ -55,5 +56,4 @@ namespace grezzo.schema.cmb {
         this.unk0 = br.ReadUInt32();
       }
     }
-  }
 }

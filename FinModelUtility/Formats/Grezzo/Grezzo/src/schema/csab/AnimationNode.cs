@@ -3,11 +3,12 @@ using System.Linq;
 
 using schema.binary;
 
-namespace grezzo.schema.csab {
-  public class AnimationNode : IBinaryDeserializable {
-    private readonly Csab parent_;
+namespace grezzo.schema.csab;
 
-    public AnimationNode(Csab parent) {
+public class AnimationNode : IBinaryDeserializable {
+  private readonly Csab parent_;
+
+  public AnimationNode(Csab parent) {
       this.parent_ = parent;
 
       this.TranslationAxes =
@@ -24,15 +25,15 @@ namespace grezzo.schema.csab {
                     .ToArray();
     }
 
-    public ushort BoneIndex { get; set; }
+  public ushort BoneIndex { get; set; }
 
-    public IReadOnlyList<CsabTrack> TranslationAxes { get; }
-    public IReadOnlyList<CsabTrack> RotationAxes { get; }
-    public IReadOnlyList<CsabTrack> ScaleAxes { get; }
+  public IReadOnlyList<CsabTrack> TranslationAxes { get; }
+  public IReadOnlyList<CsabTrack> RotationAxes { get; }
+  public IReadOnlyList<CsabTrack> ScaleAxes { get; }
 
-    public bool IsPastVersion4 => this.parent_.IsPastVersion4;
+  public bool IsPastVersion4 => this.parent_.IsPastVersion4;
 
-    public void Read(IBinaryReader br) {
+  public void Read(IBinaryReader br) {
       var basePosition = br.Position;
 
       br.AssertString("anod");
@@ -66,5 +67,4 @@ namespace grezzo.schema.csab {
 
       br.AssertUInt16(0x00);
     }
-  }
 }

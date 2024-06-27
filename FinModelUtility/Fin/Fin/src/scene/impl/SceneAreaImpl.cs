@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-namespace fin.scene {
-  public partial class SceneImpl {
-    private class SceneAreaImpl : ISceneArea {
-      private readonly List<ISceneObject> objects_ = [];
+namespace fin.scene;
 
-      public IReadOnlyList<ISceneObject> Objects => this.objects_;
+public partial class SceneImpl {
+  private class SceneAreaImpl : ISceneArea {
+    private readonly List<ISceneObject> objects_ = [];
 
-      public ISceneObject AddObject() {
-        var obj = new SceneObjectImpl();
-        this.objects_.Add(obj);
-        return obj;
-      }
+    public IReadOnlyList<ISceneObject> Objects => this.objects_;
 
-      public Color? BackgroundColor { get; set; }
-      public ISceneObject? CustomSkyboxObject { get; set; }
-
-      public ISceneObject CreateCustomSkyboxObject()
-        => this.CustomSkyboxObject = new SceneObjectImpl();
+    public ISceneObject AddObject() {
+      var obj = new SceneObjectImpl();
+      this.objects_.Add(obj);
+      return obj;
     }
+
+    public Color? BackgroundColor { get; set; }
+    public ISceneObject? CustomSkyboxObject { get; set; }
+
+    public ISceneObject CreateCustomSkyboxObject()
+      => this.CustomSkyboxObject = new SceneObjectImpl();
   }
 }

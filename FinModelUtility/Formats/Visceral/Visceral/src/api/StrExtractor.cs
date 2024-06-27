@@ -31,17 +31,18 @@ using visceral.schema.str.content;
 
 using FileInfo = visceral.schema.str.content.FileInfo;
 
-namespace visceral.api {
-  public class StrExtractor {
-    private readonly ILogger logger_ = Logging.Create<StrExtractor>();
+namespace visceral.api;
 
-    public void Extract(IReadOnlyGenericFile strFile, ISystemDirectory outputDir) {
+public class StrExtractor {
+  private readonly ILogger logger_ = Logging.Create<StrExtractor>();
+
+  public void Extract(IReadOnlyGenericFile strFile, ISystemDirectory outputDir) {
       var task = ExtractAsync(strFile, outputDir);
       task.Wait();
     }
 
-    public async Task ExtractAsync(IReadOnlyGenericFile strFile,
-                                   ISystemDirectory outputDir) {
+  public async Task ExtractAsync(IReadOnlyGenericFile strFile,
+                                 ISystemDirectory outputDir) {
       this.logger_.LogInformation($"Extracting {strFile.DisplayFullPath}...");
 
       ContentBlock[] contentBlocks;
@@ -134,5 +135,4 @@ namespace visceral.api {
                         })
                     .ConfigureAwait(false);
     }
-  }
 }

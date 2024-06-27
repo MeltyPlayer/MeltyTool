@@ -5,27 +5,28 @@ using fin.model;
 using OpenTK.Graphics.OpenGL;
 
 
-namespace fin.ui.rendering.gl.material {
-  public class CachedLightUniformData {
-    public IReadOnlyLight Light { get; }
+namespace fin.ui.rendering.gl.material;
 
-    public IShaderUniform<bool> EnabledUniform { get; }
+public class CachedLightUniformData {
+  public IReadOnlyLight Light { get; }
 
-    public IShaderUniform<int> SourceTypeUniform { get; }
-    public IShaderUniform<Vector3> PositionUniform { get; }
-    public IShaderUniform<Vector3> NormalUniform { get; }
+  public IShaderUniform<bool> EnabledUniform { get; }
 
-    public IShaderUniform<Vector4> ColorUniform { get; }
+  public IShaderUniform<int> SourceTypeUniform { get; }
+  public IShaderUniform<Vector3> PositionUniform { get; }
+  public IShaderUniform<Vector3> NormalUniform { get; }
 
-    public IShaderUniform<int> DiffuseFunctionUniform { get; }
-    public IShaderUniform<int> AttenuationFunctionUniform { get; }
-    public IShaderUniform<Vector3> CosineAttenuationUniform { get; }
-    public IShaderUniform<Vector3> DistanceAttenuationUniform { get; }
+  public IShaderUniform<Vector4> ColorUniform { get; }
 
-    public CachedLightUniformData(
-        int lightIndex,
-        IReadOnlyLight light,
-        GlShaderProgram shaderProgram) {
+  public IShaderUniform<int> DiffuseFunctionUniform { get; }
+  public IShaderUniform<int> AttenuationFunctionUniform { get; }
+  public IShaderUniform<Vector3> CosineAttenuationUniform { get; }
+  public IShaderUniform<Vector3> DistanceAttenuationUniform { get; }
+
+  public CachedLightUniformData(
+      int lightIndex,
+      IReadOnlyLight light,
+      GlShaderProgram shaderProgram) {
       this.Light = light;
 
       var lightAccessor = $"{MaterialConstants.LIGHTS_NAME}[{lightIndex}]";
@@ -53,7 +54,7 @@ namespace fin.ui.rendering.gl.material {
           shaderProgram.GetUniformVec3($"{lightAccessor}.distanceAttenuation");
     }
 
-    public void PassInUniforms() {
+  public void PassInUniforms() {
       var light = this.Light;
       if (!light.Enabled) {
         return;
@@ -104,5 +105,4 @@ namespace fin.ui.rendering.gl.material {
             distanceAttenuation.Z));
       }
     }
-  }
 }

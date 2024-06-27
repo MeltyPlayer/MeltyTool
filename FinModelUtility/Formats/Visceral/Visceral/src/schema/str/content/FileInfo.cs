@@ -25,38 +25,38 @@ using fin.schema;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace visceral.schema.str.content {
-  [BinarySchema]
-  public partial class FileInfo : IContent {
-    public FileBuild Build { get; set; }
-    public ushort Alignment { get; set; }
-    public ushort Flags { get; set; }
+namespace visceral.schema.str.content;
 
-    public uint Type { get; set; }
+[BinarySchema]
+public partial class FileInfo : IContent {
+  public FileBuild Build { get; set; }
+  public ushort Alignment { get; set; }
+  public ushort Flags { get; set; }
 
-    [Unknown]
-    public uint Unknown0C { get; set; }
+  public uint Type { get; set; }
 
-    public uint Type2 { get; set; }
+  [Unknown]
+  public uint Unknown0C { get; set; }
 
-    [Unknown]
-    public uint Unknown14 { get; set; }
+  public uint Type2 { get; set; }
 
-    // seems to be some kind of hash of the file name
-    [Unknown]
-    public uint Unknown18 { get; set; }
+  [Unknown]
+  public uint Unknown14 { get; set; }
 
-    public uint TotalSize { get; set; }
+  // seems to be some kind of hash of the file name
+  [Unknown]
+  public uint Unknown18 { get; set; }
 
-    [NullTerminatedString]
-    public string BaseName { get; set; }
+  public uint TotalSize { get; set; }
 
-    [NullTerminatedString]
-    public string FileName { get; set; }
+  [NullTerminatedString]
+  public string BaseName { get; set; }
 
-    [NullTerminatedString]
-    public string TypeName { get; set; }
+  [NullTerminatedString]
+  public string FileName { get; set; }
 
-    public override string ToString() => this.FileName;
-  }
+  [NullTerminatedString]
+  public string TypeName { get; set; }
+
+  public override string ToString() => this.FileName;
 }

@@ -1,18 +1,18 @@
-﻿namespace fin.ui {
-  public interface ICamera {
-    float X { get; } 
-    float Y { get; }
-    float Z { get; }
+﻿namespace fin.ui;
 
-    float XNormal { get; }
-    float YNormal { get; }
-    float ZNormal { get; }
+public interface ICamera {
+  float X { get; } 
+  float Y { get; }
+  float Z { get; }
 
-    float XUp { get; }
-    float YUp { get; }
-    float ZUp { get; }
+  float XNormal { get; }
+  float YNormal { get; }
+  float ZNormal { get; }
 
-    float YawDegrees { get; }
-    float PitchDegrees { get; }
-  }
+  float XUp { get; }
+  float YUp { get; }
+  float ZUp { get; }
+
+  float YawDegrees { get; }
+  float PitchDegrees { get; }
 }

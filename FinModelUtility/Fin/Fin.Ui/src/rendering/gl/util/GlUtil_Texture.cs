@@ -2,17 +2,18 @@
 
 using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering.gl {
-  public partial class GlState {
-    public int ActiveTexture { get; set; }= -1;
+namespace fin.ui.rendering.gl;
 
-    public int[] CurrentTextureBindings { get; set; } =
-      [-1, -1, -1, -1, -1, -1, -1, -1];
-  }
+public partial class GlState {
+  public int ActiveTexture { get; set; }= -1;
 
-  public static partial class GlUtil {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void BindTexture(int textureIndex, int value) {
+  public int[] CurrentTextureBindings { get; set; } =
+    [-1, -1, -1, -1, -1, -1, -1, -1];
+}
+
+public static partial class GlUtil {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void BindTexture(int textureIndex, int value) {
       if (GlUtil.currentState_.CurrentTextureBindings[textureIndex] == value) {
         return;
       }
@@ -26,8 +27,7 @@ namespace fin.ui.rendering.gl {
                      GlUtil.currentState_.CurrentTextureBindings[textureIndex] = value);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void UnbindTexture(int textureIndex)
-      => BindTexture(textureIndex, -1);
-  }
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void UnbindTexture(int textureIndex)
+    => BindTexture(textureIndex, -1);
 }

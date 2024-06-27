@@ -5,16 +5,17 @@ using fin.io;
 using fin.model;
 using fin.model.io;
 
-namespace grezzo.api {
-  public class CmbModelImporterPlugin : IModelImporterPlugin {
-    public string DisplayName => "Cmb";
+namespace grezzo.api;
 
-    public string Description => "Grezzo's model format.";
+public class CmbModelImporterPlugin : IModelImporterPlugin {
+  public string DisplayName => "Cmb";
 
-    public IReadOnlyList<string> KnownPlatforms { get; } =
-      new[] { "3DS" };
+  public string Description => "Grezzo's model format.";
 
-    public IReadOnlyList<string> KnownGames { get; } = new[] {
+  public IReadOnlyList<string> KnownPlatforms { get; } =
+    new[] { "3DS" };
+
+  public IReadOnlyList<string> KnownGames { get; } = new[] {
         "Ever Oasis",
         "Luigi's Mansion 3D",
         "Majora's Mask 3D",
@@ -22,13 +23,13 @@ namespace grezzo.api {
     };
 
 
-    public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".cmb" };
+  public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".cmb" };
 
-    public IReadOnlyList<string> FileExtensions { get; } =
-      new[] { ".cmb", ".csab", ".ctxb", ".shpa" };
+  public IReadOnlyList<string> FileExtensions { get; } =
+    new[] { ".cmb", ".csab", ".ctxb", ".shpa" };
 
-    public IModel Import(IEnumerable<IReadOnlySystemFile> files,
-                         float frameRate = 30) {
+  public IModel Import(IEnumerable<IReadOnlySystemFile> files,
+                       float frameRate = 30) {
       var filesArray = files.ToArray();
       var csabFiles = filesArray.WithFileType(".csab").ToArray();
       var cmbFile = filesArray.WithFileType(".cmb").Single();
@@ -45,5 +46,4 @@ namespace grezzo.api {
       var cmbImporter = new CmbModelImporter();
       return cmbImporter.Import(cmbBundle);
     }
-  }
 }

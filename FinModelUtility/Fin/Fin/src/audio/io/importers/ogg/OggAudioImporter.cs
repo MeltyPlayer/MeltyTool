@@ -5,60 +5,60 @@ using fin.util.sets;
 
 using NVorbis;
 
-namespace fin.audio.io.importers.ogg {
-  public class OggAudioImporter : IAudioImporter<OggAudioFileBundle> {
-    public ILoadedAudioBuffer<short> ImportAudio(
-        IAudioManager<short> audioManager,
-        OggAudioFileBundle audioFileBundle) {
-      var oggFile = audioFileBundle.OggFile;
-      Asserts.SequenceEqual(".ogg", oggFile.FileType.ToLower());
+namespace fin.audio.io.importers.ogg;
 
-      using var ogg = new VorbisReader(oggFile.OpenRead());
+public class OggAudioImporter : IAudioImporter<OggAudioFileBundle> {
+  public ILoadedAudioBuffer<short> ImportAudio(
+      IAudioManager<short> audioManager,
+      OggAudioFileBundle audioFileBundle) {
+    var oggFile = audioFileBundle.OggFile;
+    Asserts.SequenceEqual(".ogg", oggFile.FileType.ToLower());
 
-      var mutableBuffer = audioManager.CreateLoadedAudioBuffer(
-          audioFileBundle,
-          oggFile.AsFileSet());
-      mutableBuffer.Frequency = ogg.SampleRate;
+    using var ogg = new VorbisReader(oggFile.OpenRead());
 
-      {
-        var sampleCount = (int) ogg.TotalSamples;
+    var mutableBuffer = audioManager.CreateLoadedAudioBuffer(
+        audioFileBundle,
+        oggFile.AsFileSet());
+    mutableBuffer.Frequency = ogg.SampleRate;
 
-        var channelCount = ogg.Channels;
-        var floatCount = channelCount * sampleCount;
-        var floatPcm = new float[floatCount];
-        ogg.ReadSamples(floatPcm);
+    {
+      var sampleCount = (int) ogg.TotalSamples;
 
-        var channels = new short[channelCount][];
-        for (var c = 0; c < channelCount; ++c) {
-          channels[c] = new short[sampleCount];
-        }
+      var channelCount = ogg.Channels;
+      var floatCount = channelCount * sampleCount;
+      var floatPcm = new float[floatCount];
+      ogg.ReadSamples(floatPcm);
 
-        for (var i = 0; i < sampleCount; ++i) {
-          for (var c = 0; c < channelCount; ++c) {
-            var floatSample = floatPcm[2 * i + c];
-
-            var floatMin = -1f;
-            var floatMax = 1f;
-
-            var normalizedFloatSample =
-                (MathF.Max(floatMin, Math.Min(floatSample, floatMax)) -
-                 floatMin) / (floatMax - floatMin);
-
-            float shortMin = short.MinValue;
-            float shortMax = short.MaxValue;
-
-            var shortSample = (short) (shortMin +
-                                       normalizedFloatSample *
-                                       (shortMax - shortMin));
-
-            channels[c][i] = shortSample;
-          }
-        }
-
-        mutableBuffer.SetPcm(channels);
+      var channels = new short[channelCount][];
+      for (var c = 0; c < channelCount; ++c) {
+        channels[c] = new short[sampleCount];
       }
 
-      return mutableBuffer;
+      for (var i = 0; i < sampleCount; ++i) {
+        for (var c = 0; c < channelCount; ++c) {
+          var floatSample = floatPcm[2 * i + c];
+
+          var floatMin = -1f;
+          var floatMax = 1f;
+
+          var normalizedFloatSample =
+              (MathF.Max(floatMin, Math.Min(floatSample, floatMax)) -
+               floatMin) / (floatMax - floatMin);
+
+          float shortMin = short.MinValue;
+          float shortMax = short.MaxValue;
+
+          var shortSample = (short) (shortMin +
+                                     normalizedFloatSample *
+                                     (shortMax - shortMin));
+
+          channels[c][i] = shortSample;
+        }
+      }
+
+      mutableBuffer.SetPcm(channels);
     }
+
+    return mutableBuffer;
   }
 }

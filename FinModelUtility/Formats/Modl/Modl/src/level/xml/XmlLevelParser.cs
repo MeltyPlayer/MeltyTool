@@ -7,53 +7,54 @@ using fin.util.asserts;
 using modl.api;
 using modl.schema.xml;
 
-namespace modl.xml.level {
-  public class XmlLevelParser {
-    public XmlLevel Parse(IReadOnlyGenericFile levelXmlFile,
-                          GameVersion gameVersion) {
-      Stream levelXmlStream;
-      if (gameVersion == GameVersion.BW2) {
-        using var gZipStream =
-            new GZipStream(levelXmlFile.OpenRead(),
-                           CompressionMode.Decompress);
+namespace modl.xml.level;
 
-        levelXmlStream = new MemoryStream();
-        gZipStream.CopyTo(levelXmlStream);
-        levelXmlStream.Position = 0;
-      } else {
-        levelXmlStream = levelXmlFile.OpenRead();
-      }
+public class XmlLevelParser {
+  public XmlLevel Parse(IReadOnlyGenericFile levelXmlFile,
+                        GameVersion gameVersion) {
+    Stream levelXmlStream;
+    if (gameVersion == GameVersion.BW2) {
+      using var gZipStream =
+          new GZipStream(levelXmlFile.OpenRead(),
+                         CompressionMode.Decompress);
 
-      using var levelXmlReader = new StreamReader(levelXmlStream);
-      var levelXml = new XmlDocument();
-      levelXml.LoadXml(levelXmlReader.ReadToEnd());
-
-      var xmlLevel = new XmlLevel();
-
-      var instancesTag = levelXml["Instances"];
-      foreach (var objectNode in instancesTag!.Children()) {
-        xmlLevel.Instances.Add(this.ParseObject_(objectNode));
-      }
-
-      return xmlLevel;
+      levelXmlStream = new MemoryStream();
+      gZipStream.CopyTo(levelXmlStream);
+      levelXmlStream.Position = 0;
+    } else {
+      levelXmlStream = levelXmlFile.OpenRead();
     }
 
-    private XmlLevelObject ParseObject_(XmlNode objectNode) {
-      Asserts.Equal("Object", objectNode.LocalName);
+    using var levelXmlReader = new StreamReader(levelXmlStream);
+    var levelXml = new XmlDocument();
+    levelXml.LoadXml(levelXmlReader.ReadToEnd());
 
-      var xmlObject = new XmlLevelObject {
-          Type = objectNode.GetAttributeValue("type"),
-          Id = objectNode.GetAttributeValue("id"),
-          Fields =
-              objectNode
-                  .Children()
-                  .Select(fieldNode => fieldNode.LocalName switch {
-                      "Attribute" => (IXmlLevelObjectField) this.ParseAttribute_(fieldNode),
-                      "Pointer"   => this.ParsePointer_(fieldNode),
-                      "Enum"      => this.ParseEnum_(fieldNode),
-                      "Resource"  => this.ParseResource_(fieldNode),
-                  }).ToArray(),
-      };
+    var xmlLevel = new XmlLevel();
+
+    var instancesTag = levelXml["Instances"];
+    foreach (var objectNode in instancesTag!.Children()) {
+      xmlLevel.Instances.Add(this.ParseObject_(objectNode));
+    }
+
+    return xmlLevel;
+  }
+
+  private XmlLevelObject ParseObject_(XmlNode objectNode) {
+    Asserts.Equal("Object", objectNode.LocalName);
+
+    var xmlObject = new XmlLevelObject {
+        Type = objectNode.GetAttributeValue("type"),
+        Id = objectNode.GetAttributeValue("id"),
+        Fields =
+            objectNode
+                .Children()
+                .Select(fieldNode => fieldNode.LocalName switch {
+                    "Attribute" => (IXmlLevelObjectField) this.ParseAttribute_(fieldNode),
+                    "Pointer"   => this.ParsePointer_(fieldNode),
+                    "Enum"      => this.ParseEnum_(fieldNode),
+                    "Resource"  => this.ParseResource_(fieldNode),
+                }).ToArray(),
+    };
 
     return xmlObject;
   }
@@ -138,6 +139,4 @@ public static class XmlExtensions {
 
   public static IEnumerable<XmlNode> Children(
       this XmlNodeList xmlNodeList) => xmlNodeList.Cast<XmlNode>();
-}
-
 }

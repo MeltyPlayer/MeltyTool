@@ -2,9 +2,10 @@
 using fin.schema.vector;
 using fin.util.asserts;
 
-namespace games.pikmin2.route {
-  public class RouteParser {
-    public IGraphNode<IRouteGraphNodeData>[] Parse(StreamReader streamReader) {
+namespace games.pikmin2.route;
+
+public class RouteParser {
+  public IGraphNode<IRouteGraphNodeData>[] Parse(StreamReader streamReader) {
       var lines = new List<string>();
       string? rawLine;
       while ((rawLine = streamReader.ReadLine()) != null) {
@@ -60,5 +61,4 @@ namespace games.pikmin2.route {
 
       return nodes;
     }
-  }
 }

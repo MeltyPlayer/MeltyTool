@@ -3,67 +3,67 @@ using System.IO;
 
 using schema.binary;
 
-namespace fin.io.archive {
-  public interface IArchiveContentFile {
-    string RelativeName { get; }
-  }
+namespace fin.io.archive;
 
-  public interface IArchiveStream<in TArchiveContentFile>
-      where TArchiveContentFile : IArchiveContentFile {
-    IBinaryReader AsBinaryReader();
-    IBinaryReader AsBinaryReader(Endianness endianness);
+public interface IArchiveContentFile {
+  string RelativeName { get; }
+}
 
-    Stream GetContentFileStream(TArchiveContentFile archiveContentFile);
+public interface IArchiveStream<in TArchiveContentFile>
+    where TArchiveContentFile : IArchiveContentFile {
+  IBinaryReader AsBinaryReader();
+  IBinaryReader AsBinaryReader(Endianness endianness);
 
-    void CopyContentFileInto(TArchiveContentFile archiveContentFile,
-                             Stream dstStream);
-  }
+  Stream GetContentFileStream(TArchiveContentFile archiveContentFile);
 
-  public interface IArchiveReader<TArchiveContentFile>
-      where TArchiveContentFile : IArchiveContentFile {
-    bool IsValidArchive(Stream archive);
+  void CopyContentFileInto(TArchiveContentFile archiveContentFile,
+                           Stream dstStream);
+}
 
-    IArchiveStream<TArchiveContentFile> Decompress(Stream archive);
+public interface IArchiveReader<TArchiveContentFile>
+    where TArchiveContentFile : IArchiveContentFile {
+  bool IsValidArchive(Stream archive);
 
-    IEnumerable<TArchiveContentFile> GetFiles(
-        IArchiveStream<TArchiveContentFile> archiveStream);
-  }
+  IArchiveStream<TArchiveContentFile> Decompress(Stream archive);
 
-  public enum ArchiveExtractionResult {
-    FAILED,
-    ALREADY_EXISTS,
-    NEWLY_EXTRACTED,
-  }
+  IEnumerable<TArchiveContentFile> GetFiles(
+      IArchiveStream<TArchiveContentFile> archiveStream);
+}
 
-  public interface IArchiveExtractor {
-    delegate void ArchiveFileProcessor(string archiveFileName, ref string relativeFileName, out bool relativeToRoot);
-  }
+public enum ArchiveExtractionResult {
+  FAILED,
+  ALREADY_EXISTS,
+  NEWLY_EXTRACTED,
+}
 
-  public interface IArchiveExtractor<TArchiveContentFile>
-      where TArchiveContentFile : IArchiveContentFile {
-    ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
-        IReadOnlyTreeFile archive,
-        ISystemDirectory targetDirectory)
-        where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
+public interface IArchiveExtractor {
+  delegate void ArchiveFileProcessor(string archiveFileName, ref string relativeFileName, out bool relativeToRoot);
+}
 
-    ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
-        Stream archive,
-        ISystemDirectory targetDirectory)
-        where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
+public interface IArchiveExtractor<TArchiveContentFile>
+    where TArchiveContentFile : IArchiveContentFile {
+  ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
+      IReadOnlyTreeFile archive,
+      ISystemDirectory targetDirectory)
+      where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
 
-    ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
-        IReadOnlyTreeFile archive,
-        ISystemDirectory rootDirectory,
-        ISystemDirectory targetDirectory,
-        IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null)
-        where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
+  ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
+      Stream archive,
+      ISystemDirectory targetDirectory)
+      where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
 
-    ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
-        string archiveName,
-        Stream archive,
-        ISystemDirectory rootDirectory,
-        ISystemDirectory targetDirectory,
-        IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null)
-        where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
-  }
+  ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
+      IReadOnlyTreeFile archive,
+      ISystemDirectory rootDirectory,
+      ISystemDirectory targetDirectory,
+      IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null)
+      where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
+
+  ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
+      string archiveName,
+      Stream archive,
+      ISystemDirectory rootDirectory,
+      ISystemDirectory targetDirectory,
+      IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null)
+      where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
 }

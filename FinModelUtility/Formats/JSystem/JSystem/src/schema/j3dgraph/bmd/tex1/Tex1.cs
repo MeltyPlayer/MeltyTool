@@ -5,35 +5,35 @@ using jsystem.schema.jutility.bti;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace jsystem.schema.j3dgraph.bmd.tex1 {
-  [BinarySchema]
-  [LocalPositions]
-  public partial class Tex1 : IBinaryConvertible {
-    private readonly AutoStringMagicUInt32SizedSection<Tex1Data> impl_ =
-        new("TEX1") { TweakReadSize = -8 };
+namespace jsystem.schema.j3dgraph.bmd.tex1;
 
-    [Skip]
-    public Tex1Data Data => this.impl_.Data;
-  }
+[BinarySchema]
+[LocalPositions]
+public partial class Tex1 : IBinaryConvertible {
+  private readonly AutoStringMagicUInt32SizedSection<Tex1Data> impl_ =
+      new("TEX1") { TweakReadSize = -8 };
 
-  [BinarySchema]
-  public partial class Tex1Data : IBinaryConvertible {
-    [WLengthOfSequence(nameof(TextureHeaders))]
-    private ushort textureCount_;
+  [Skip]
+  public Tex1Data Data => this.impl_.Data;
+}
 
-    private readonly ushort padding_ = ushort.MaxValue;
+[BinarySchema]
+public partial class Tex1Data : IBinaryConvertible {
+  [WLengthOfSequence(nameof(TextureHeaders))]
+  private ushort textureCount_;
 
-    [WPointerTo(nameof(TextureHeaders))]
-    private uint textureHeaderOffset_;
+  private readonly ushort padding_ = ushort.MaxValue;
 
-    [WPointerTo(nameof(StringTable))]
-    private uint stringTableOffset_;
+  [WPointerTo(nameof(TextureHeaders))]
+  private uint textureHeaderOffset_;
 
-    [RSequenceLengthSource(nameof(textureCount_))]
-    [RAtPosition(nameof(textureHeaderOffset_))]
-    public Bti[] TextureHeaders;
+  [WPointerTo(nameof(StringTable))]
+  private uint stringTableOffset_;
 
-    [RAtPosition(nameof(stringTableOffset_))]
-    public readonly StringTable StringTable = new();
-  }
+  [RSequenceLengthSource(nameof(textureCount_))]
+  [RAtPosition(nameof(textureHeaderOffset_))]
+  public Bti[] TextureHeaders;
+
+  [RAtPosition(nameof(stringTableOffset_))]
+  public readonly StringTable StringTable = new();
 }

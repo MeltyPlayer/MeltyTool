@@ -7,57 +7,57 @@ using schema.binary;
 
 using LzssDecompressor = level5.decompression.LzssDecompressor;
 
-namespace level5.schema {
-  public record XcFile(string Name, byte[] Data);
+namespace level5.schema;
 
-  public class Xc : IBinaryDeserializable {
-    public ListDictionary<string, XcFile> FilesByExtension { get; } = new();
+public record XcFile(string Name, byte[] Data);
 
-    public void Read(IBinaryReader br) {
-      br.AssertString("XPCK");
+public class Xc : IBinaryDeserializable {
+  public ListDictionary<string, XcFile> FilesByExtension { get; } = new();
 
-      var fileCount = br.ReadUInt16() & 0xfff;
+  public void Read(IBinaryReader br) {
+    br.AssertString("XPCK");
 
-      var fileInfoOffset = br.ReadUInt16() * 4;
-      var fileTableOffset = br.ReadUInt16() * 4;
-      var dataOffset = br.ReadUInt16() * 4;
+    var fileCount = br.ReadUInt16() & 0xfff;
 
-      br.ReadUInt16();
-      var filenameTableSize = br.ReadUInt16() * 4;
+    var fileInfoOffset = br.ReadUInt16() * 4;
+    var fileTableOffset = br.ReadUInt16() * 4;
+    var dataOffset = br.ReadUInt16() * 4;
 
-      var hashToData = new Dictionary<uint, byte[]>();
-      br.Position = fileInfoOffset;
+    br.ReadUInt16();
+    var filenameTableSize = br.ReadUInt16() * 4;
+
+    var hashToData = new Dictionary<uint, byte[]>();
+    br.Position = fileInfoOffset;
+    for (int i = 0; i < fileCount; i++) {
+      var nameCrc = br.ReadUInt32();
+      br.ReadInt16();
+      var offset = (uint)br.ReadUInt16();
+      var size = (uint)br.ReadUInt16();
+      var offsetExt = (uint)br.ReadByte();
+      var sizeExt = (uint)br.ReadByte();
+
+      offset |= offsetExt << 16;
+      size |= sizeExt << 16;
+      offset = (uint)(offset * 4 + dataOffset);
+
+      hashToData.Add(nameCrc, br.SubreadAt(offset, ser => ser.ReadBytes((int) size)));
+    }
+
+    var inNameTable = br.SubreadAt(fileTableOffset, ser => ser.ReadBytes(filenameTableSize));
+    if (!new ZlibArrayDecompressor().TryDecompress(inNameTable, out var nameTable)) {
+      nameTable = new LzssDecompressor().Decompress(inNameTable);
+    }
+
+    this.FilesByExtension.Clear();
+    using (var nt = new SchemaBinaryReader(new MemoryStream(nameTable), br.Endianness)) {
       for (int i = 0; i < fileCount; i++) {
-        var nameCrc = br.ReadUInt32();
-        br.ReadInt16();
-        var offset = (uint)br.ReadUInt16();
-        var size = (uint)br.ReadUInt16();
-        var offsetExt = (uint)br.ReadByte();
-        var sizeExt = (uint)br.ReadByte();
+        var name = nt.ReadStringNT();
 
-        offset |= offsetExt << 16;
-        size |= sizeExt << 16;
-        offset = (uint)(offset * 4 + dataOffset);
-
-        hashToData.Add(nameCrc, br.SubreadAt(offset, ser => ser.ReadBytes((int) size)));
-      }
-
-      var inNameTable = br.SubreadAt(fileTableOffset, ser => ser.ReadBytes(filenameTableSize));
-      if (!new ZlibArrayDecompressor().TryDecompress(inNameTable, out var nameTable)) {
-        nameTable = new LzssDecompressor().Decompress(inNameTable);
-      }
-
-      this.FilesByExtension.Clear();
-      using (var nt = new SchemaBinaryReader(new MemoryStream(nameTable), br.Endianness)) {
-        for (int i = 0; i < fileCount; i++) {
-          var name = nt.ReadStringNT();
-
-          var crc = Crc32.Crc32C(name);
-          if (hashToData.ContainsKey(crc)) {
-            this.FilesByExtension.Add(Path.GetExtension(name), new XcFile(name, hashToData[crc]));
-          } else {
-            Console.WriteLine("Couldn't find " + name + " " + crc.ToString("X"));
-          }
+        var crc = Crc32.Crc32C(name);
+        if (hashToData.ContainsKey(crc)) {
+          this.FilesByExtension.Add(Path.GetExtension(name), new XcFile(name, hashToData[crc]));
+        } else {
+          Console.WriteLine("Couldn't find " + name + " " + crc.ToString("X"));
         }
       }
     }

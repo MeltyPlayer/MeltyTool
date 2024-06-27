@@ -6,9 +6,10 @@ using fin.model.impl;
 using fin.model.util;
 using fin.util.sets;
 
-namespace games.pikmin2.route {
-  public class RouteModelImporter {
-    public IModel Import(IReadOnlyGenericFile routeTxt) {
+namespace games.pikmin2.route;
+
+public class RouteModelImporter {
+  public IModel Import(IReadOnlyGenericFile routeTxt) {
       using var routeReader = routeTxt.OpenReadAsText();
       var route = new RouteParser().Parse(routeReader);
 
@@ -109,5 +110,4 @@ namespace games.pikmin2.route {
 
       return model;
     }
-  }
 }

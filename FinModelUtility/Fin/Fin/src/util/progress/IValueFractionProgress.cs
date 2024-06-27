@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace fin.util.progress {
-  public interface IValueFractionProgress<T> {
-    float Progress { get; }
-    T? Value { get; }
+namespace fin.util.progress;
 
-    void ReportProgress(float progress);
-    void ReportCompletion(T value);
+public interface IValueFractionProgress<T> {
+  float Progress { get; }
+  T? Value { get; }
 
-    event EventHandler<float> OnProgressChanged;
-    event EventHandler<T> OnComplete;
-  }
+  void ReportProgress(float progress);
+  void ReportCompletion(T value);
+
+  event EventHandler<float> OnProgressChanged;
+  event EventHandler<T> OnComplete;
 }

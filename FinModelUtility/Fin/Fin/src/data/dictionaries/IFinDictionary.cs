@@ -4,35 +4,35 @@ using fin.data.indexable;
 
 using schema.readOnly;
 
-namespace fin.data.dictionaries {
-  [GenerateReadOnly]
-  public partial interface IFinDictionary<TKey, TValue>
-      : IFinCollection<(TKey Key, TValue Value)> {
-    IEnumerable<TKey> Keys { get; }
-    IEnumerable<TValue> Values { get; }
+namespace fin.data.dictionaries;
 
-    // Have to specify only contains key because "out" method parameters
-    // aren't allowed to be covariant:
-    // https://github.com/dotnet/csharplang/discussions/5623
-    [Const]
-    bool ContainsKey(TKey key);
+[GenerateReadOnly]
+public partial interface IFinDictionary<TKey, TValue>
+    : IFinCollection<(TKey Key, TValue Value)> {
+  IEnumerable<TKey> Keys { get; }
+  IEnumerable<TValue> Values { get; }
 
-    TValue this[TKey key] { get; set; }
-    bool Remove(TKey key);
-  }
+  // Have to specify only contains key because "out" method parameters
+  // aren't allowed to be covariant:
+  // https://github.com/dotnet/csharplang/discussions/5623
+  [Const]
+  bool ContainsKey(TKey key);
 
-  public static class FinDictionaryExtensions {
-    public static bool TryGetValue<TKey, TValue>(
-        this IReadOnlyFinDictionary<TKey, TValue> impl,
-        TKey key,
-        out TValue value) {
-      if (impl.ContainsKey(key)) {
-        value = impl[key];
-        return true;
-      }
+  TValue this[TKey key] { get; set; }
+  bool Remove(TKey key);
+}
 
-      value = default;
-      return false;
+public static class FinDictionaryExtensions {
+  public static bool TryGetValue<TKey, TValue>(
+      this IReadOnlyFinDictionary<TKey, TValue> impl,
+      TKey key,
+      out TValue value) {
+    if (impl.ContainsKey(key)) {
+      value = impl[key];
+      return true;
     }
+
+    value = default;
+    return false;
   }
 }

@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class TroopVoiceMessageBase : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class TroopVoiceMessageBase : BLevelObject {
 }

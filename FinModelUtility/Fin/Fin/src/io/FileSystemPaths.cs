@@ -2,83 +2,83 @@
 using System.IO;
 using System.Linq;
 
-namespace fin.io {
-  public interface ISubdirPaths {
-    string AbsoluteSubdirPath { get; }
-    IReadOnlyCollection<string> AbsoluteFilePaths { get; }
-    IReadOnlyCollection<ISubdirPaths> Subdirs { get; }
-  }
+namespace fin.io;
 
-  public interface IFileSystemPaths {
-    ISubdirPaths ListAllPopulatedSubdirs(string rootSubdirPath);
-  }
+public interface ISubdirPaths {
+  string AbsoluteSubdirPath { get; }
+  IReadOnlyCollection<string> AbsoluteFilePaths { get; }
+  IReadOnlyCollection<ISubdirPaths> Subdirs { get; }
+}
 
-  public class FileSystemPaths : IFileSystemPaths {
-    public ISubdirPaths ListAllPopulatedSubdirs(
-        string rootSubdirPath) {
-      var allFiles = Directory.GetFiles(
-                                  rootSubdirPath, "*",
-                                  new EnumerationOptions {
-                                      RecurseSubdirectories =
-                                          true
-                                  })
-                              .ToList();
-      allFiles.Sort();
+public interface IFileSystemPaths {
+  ISubdirPaths ListAllPopulatedSubdirs(string rootSubdirPath);
+}
 
-      rootSubdirPath = Path.GetFullPath(rootSubdirPath);
-      var root = new SubdirPaths(rootSubdirPath);
+public class FileSystemPaths : IFileSystemPaths {
+  public ISubdirPaths ListAllPopulatedSubdirs(
+      string rootSubdirPath) {
+    var allFiles = Directory.GetFiles(
+                                rootSubdirPath, "*",
+                                new EnumerationOptions {
+                                    RecurseSubdirectories =
+                                        true
+                                })
+                            .ToList();
+    allFiles.Sort();
 
-      var subdirStack = new Stack<SubdirPaths>();
-      subdirStack.Push(root);
+    rootSubdirPath = Path.GetFullPath(rootSubdirPath);
+    var root = new SubdirPaths(rootSubdirPath);
 
-      foreach (var file in allFiles) {
-        var directoryPath = Path.GetDirectoryName(file);
+    var subdirStack = new Stack<SubdirPaths>();
+    subdirStack.Push(root);
 
-        SubdirPaths currentSubdir = subdirStack.Peek();
-        // If file is in current directory...
-        if (directoryPath == currentSubdir.AbsoluteSubdirPath) {
-          // No action needed
-          ;
-        }
-        // If file is in a different directory...
-        else {
-          while (!file.StartsWith(currentSubdir.AbsoluteSubdirPath + '\\')) {
-            subdirStack.Pop();
-            currentSubdir = subdirStack.Peek();
-          }
+    foreach (var file in allFiles) {
+      var directoryPath = Path.GetDirectoryName(file);
 
-          // Push new directories
-          var basePath = currentSubdir.AbsoluteSubdirPath;
-          for (var i = basePath.Length + 1; i < file.Length; ++i) {
-            if (file[i] == '\\') {
-              var subdirPath = file.Substring(0, i);
-              var subdir = new SubdirPaths(subdirPath);
-              currentSubdir.SubdirsImpl.AddLast(subdir);
-              subdirStack.Push(subdir);
-
-              currentSubdir = subdir;
-            }
-          }
+      SubdirPaths currentSubdir = subdirStack.Peek();
+      // If file is in current directory...
+      if (directoryPath == currentSubdir.AbsoluteSubdirPath) {
+        // No action needed
+        ;
+      }
+      // If file is in a different directory...
+      else {
+        while (!file.StartsWith(currentSubdir.AbsoluteSubdirPath + '\\')) {
+          subdirStack.Pop();
+          currentSubdir = subdirStack.Peek();
         }
 
-        currentSubdir.AbsoluteFilePathsImpl.AddLast(file);
+        // Push new directories
+        var basePath = currentSubdir.AbsoluteSubdirPath;
+        for (var i = basePath.Length + 1; i < file.Length; ++i) {
+          if (file[i] == '\\') {
+            var subdirPath = file.Substring(0, i);
+            var subdir = new SubdirPaths(subdirPath);
+            currentSubdir.SubdirsImpl.AddLast(subdir);
+            subdirStack.Push(subdir);
+
+            currentSubdir = subdir;
+          }
+        }
       }
 
-      return root;
+      currentSubdir.AbsoluteFilePathsImpl.AddLast(file);
     }
 
-    private class SubdirPaths : ISubdirPaths {
-      public SubdirPaths(string absoluteSubdirPath) {
-        this.AbsoluteSubdirPath = absoluteSubdirPath;
-      }
+    return root;
+  }
 
-      public string AbsoluteSubdirPath { get; }
-
-      public IReadOnlyCollection<string> AbsoluteFilePaths => AbsoluteFilePathsImpl;
-      public IReadOnlyCollection<ISubdirPaths> Subdirs => SubdirsImpl;
-
-      public LinkedList<string> AbsoluteFilePathsImpl { get; } = [];
-      public LinkedList<ISubdirPaths> SubdirsImpl { get; } = [];
+  private class SubdirPaths : ISubdirPaths {
+    public SubdirPaths(string absoluteSubdirPath) {
+      this.AbsoluteSubdirPath = absoluteSubdirPath;
     }
+
+    public string AbsoluteSubdirPath { get; }
+
+    public IReadOnlyCollection<string> AbsoluteFilePaths => AbsoluteFilePathsImpl;
+    public IReadOnlyCollection<ISubdirPaths> Subdirs => SubdirsImpl;
+
+    public LinkedList<string> AbsoluteFilePathsImpl { get; } = [];
+    public LinkedList<ISubdirPaths> SubdirsImpl { get; } = [];
   }
 }

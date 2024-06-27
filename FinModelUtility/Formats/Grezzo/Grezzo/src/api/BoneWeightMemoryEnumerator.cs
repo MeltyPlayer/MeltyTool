@@ -7,28 +7,29 @@ using fin.util.enumerables;
 using grezzo.schema.cmb;
 using grezzo.schema.cmb.sklm;
 
-namespace grezzo.api {
-  public class BoneWeightMemoryEnumerator : IMemoryEnumerator<IBoneWeight[]> {
-    private readonly Cmb cmb_;
-    private readonly Sepd shape_;
-    private readonly bool hasBi_;
-    private readonly bool hasBw_;
-    private readonly IBone[] allFinBones_;
+namespace grezzo.api;
 
-    private readonly int boneCount_;
+public class BoneWeightMemoryEnumerator : IMemoryEnumerator<IBoneWeight[]> {
+  private readonly Cmb cmb_;
+  private readonly Sepd shape_;
+  private readonly bool hasBi_;
+  private readonly bool hasBw_;
+  private readonly IBone[] allFinBones_;
 
-    private readonly IMemoryEnumerator<PrimitiveSet> primitiveSetEnumerator_;
-    private readonly IMemoryEnumerator<float> boneIndexEnumerator_;
-    private IBone[]? bones_;
+  private readonly int boneCount_;
 
-    private readonly IMemoryEnumerator<float> weightEnumerator_;
-    private float[]? weights_;
+  private readonly IMemoryEnumerator<PrimitiveSet> primitiveSetEnumerator_;
+  private readonly IMemoryEnumerator<float> boneIndexEnumerator_;
+  private IBone[]? bones_;
 
-    public BoneWeightMemoryEnumerator(Cmb cmb,
-                                      Sepd shape,
-                                      bool hasBi,
-                                      bool hasBw,
-                                      IBone[] allFinBones) {
+  private readonly IMemoryEnumerator<float> weightEnumerator_;
+  private float[]? weights_;
+
+  public BoneWeightMemoryEnumerator(Cmb cmb,
+                                    Sepd shape,
+                                    bool hasBi,
+                                    bool hasBw,
+                                    IBone[] allFinBones) {
       this.cmb_ = cmb;
       this.shape_ = shape;
       this.hasBi_ = hasBi;
@@ -60,9 +61,9 @@ namespace grezzo.api {
             .ToMemoryEnumerator();
     }
 
-    public IBoneWeight[] Current { get; private set; }
+  public IBoneWeight[] Current { get; private set; }
 
-    public bool TryMoveNext(out IBoneWeight[] value) {
+  public bool TryMoveNext(out IBoneWeight[] value) {
       var didUpdateBones = this.TryMoveNextBones(out var bones, out var single);
       if (!this.hasBw_ || single) {
         if ((this.Current?.Length ?? 2) != 1) {
@@ -75,10 +76,10 @@ namespace grezzo.api {
       }
 
       var didUpdateWeights = this.TryMoveNextWeights(out var weights);
-      /*if (!didUpdateWeights && !didUpdateBones) {
-        value = this.Current;
-        return false;
-      }*/
+     /*if (!didUpdateWeights && !didUpdateBones) {
+        alue = this.Current;
+        eturn false;
+      *//
 
       if ((this.Current?.Length ?? -1) ! != this.boneCount_) {
         this.Current = new IBoneWeight[this.boneCount_];
@@ -93,7 +94,7 @@ namespace grezzo.api {
       return true;
     }
 
-    public bool TryMoveNextWeights(out float[] weights) {
+  public bool TryMoveNextWeights(out float[] weights) {
       var bWeights = this.shape_.bWeights;
       var boneCount = this.shape_.boneDimensions;
 
@@ -114,7 +115,7 @@ namespace grezzo.api {
       return this.weightEnumerator_.TryReadInto(this.weights_);
     }
 
-    public bool TryMoveNextBones(out IBone[] bones, out bool single) {
+  public bool TryMoveNextBones(out IBone[] bones, out bool single) {
       var primitiveSet
           = this.primitiveSetEnumerator_.TryMoveNextAndGetCurrent();
       var boneCount = this.shape_.boneDimensions;
@@ -158,5 +159,4 @@ namespace grezzo.api {
 
       return didUpdate;
     }
-  }
 }

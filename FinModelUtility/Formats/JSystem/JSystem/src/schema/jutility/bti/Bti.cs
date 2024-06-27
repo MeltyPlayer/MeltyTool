@@ -14,77 +14,78 @@ using schema.binary.attributes;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace jsystem.schema.jutility.bti {
+namespace jsystem.schema.jutility.bti;
+
+/// <summary>
+///   Shamelessly stolen from Hack.io:
+///   https://github.com/SuperHackio/Hack.io/blob/6b06dc5829bcde6f41f04673fdd544eeef37a5c3/Hack.io.J3D/J3DTexture.cs#L1421
+/// </summary>
+public enum JutTransparency : byte {
   /// <summary>
-  ///   Shamelessly stolen from Hack.io:
-  ///   https://github.com/SuperHackio/Hack.io/blob/6b06dc5829bcde6f41f04673fdd544eeef37a5c3/Hack.io.J3D/J3DTexture.cs#L1421
+  /// No Transperancy
   /// </summary>
-  public enum JutTransparency : byte {
-    /// <summary>
-    /// No Transperancy
-    /// </summary>
-    OPAQUE = 0x00,
-    /// <summary>
-    /// Only allows fully Transperant pixels to be see through
-    /// </summary>
-    CUTOUT = 0x01,
-    /// <summary>
-    /// Allows Partial Transperancy. Also known as XLUCENT
-    /// </summary>
-    TRANSLUCENT = 0x02,
-    /// <summary>
-    /// Unknown
-    /// </summary>
-    SPECIAL = 0xCC
-  }
-
+  OPAQUE = 0x00,
   /// <summary>
-  ///   BTI files define standalone textures. They are often used to replace
-  ///   dummy textures.
+  /// Only allows fully Transperant pixels to be see through
   /// </summary>
-  [BinarySchema]
-  [LocalPositions]
-  public partial class Bti : IBinaryConvertible {
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public GxTextureFormat Format;
-    public JutTransparency AlphaSetting;
-    public ushort Width;
-    public ushort Height;
-    public GxWrapMode WrapS;
-    public GxWrapMode WrapT;
+  CUTOUT = 0x01,
+  /// <summary>
+  /// Allows Partial Transperancy. Also known as XLUCENT
+  /// </summary>
+  TRANSLUCENT = 0x02,
+  /// <summary>
+  /// Unknown
+  /// </summary>
+  SPECIAL = 0xCC
+}
 
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public bool PalettesEnabled;
+/// <summary>
+///   BTI files define standalone textures. They are often used to replace
+///   dummy textures.
+/// </summary>
+[BinarySchema]
+[LocalPositions]
+public partial class Bti : IBinaryConvertible {
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public GxTextureFormat Format;
+  public JutTransparency AlphaSetting;
+  public ushort Width;
+  public ushort Height;
+  public GxWrapMode WrapS;
+  public GxWrapMode WrapT;
 
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public GxPaletteFormat PaletteFormat;
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public bool PalettesEnabled;
 
-    [WLengthOfSequence(nameof(palette))]
-    public ushort NrPaletteEntries;
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public GxPaletteFormat PaletteFormat;
 
-    public uint PaletteOffset;
-    public uint BorderColor;
-    public GX_MIN_TEXTURE_FILTER MinFilter;
-    public GX_MAG_TEXTURE_FILTER MagFilter;
-    [Unknown]
-    public ushort Unknown4;
-    public byte NrMipMap;
-    [Unknown]
-    public byte Unknown5;
-    public ushort LodBias;
+  [WLengthOfSequence(nameof(palette))]
+  public ushort NrPaletteEntries;
 
-    [WPointerTo(nameof(Data))]
-    public uint DataOffset;
+  public uint PaletteOffset;
+  public uint BorderColor;
+  public GX_MIN_TEXTURE_FILTER MinFilter;
+  public GX_MAG_TEXTURE_FILTER MagFilter;
+  [Unknown]
+  public ushort Unknown4;
+  public byte NrMipMap;
+  [Unknown]
+  public byte Unknown5;
+  public ushort LodBias;
 
-    [RAtPosition(nameof(DataOffset))]
-    [RSequenceLengthSource(nameof(CompressedBufferSize_))]
-    public byte[] Data;
+  [WPointerTo(nameof(Data))]
+  public uint DataOffset;
 
-    [Skip]
-    public Rgba32[] palette;
+  [RAtPosition(nameof(DataOffset))]
+  [RSequenceLengthSource(nameof(CompressedBufferSize_))]
+  public byte[] Data;
 
-    [ReadLogic]
-    private void ReadPalettes_(IBinaryReader br) {
+  [Skip]
+  public Rgba32[] palette;
+
+  [ReadLogic]
+  private void ReadPalettes_(IBinaryReader br) {
       long position = br.Position;
       this.palette = new Rgba32[this.NrPaletteEntries];
 
@@ -124,7 +125,7 @@ namespace jsystem.schema.jutility.bti {
       br.Position = position;
     }
 
-    public IImage ToBitmap() {
+  public IImage ToBitmap() {
       try {
         return new J3dImageReader(this.Width, this.Height, this.Format).ReadImage(
             this.Data,
@@ -180,9 +181,9 @@ namespace jsystem.schema.jutility.bti {
       throw new NotImplementedException();
     }
 
-    [Skip]
-    private int CompressedBufferSize_ {
-      get {
+  [Skip]
+  private int CompressedBufferSize_ {
+    get {
         int num1 = (int) this.Width + (8 - (int) this.Width % 8) % 8;
         int num2 = (int) this.Width + (4 - (int) this.Width % 4) % 4;
         int num3 = (int) this.Height + (8 - (int) this.Height % 8) % 8;
@@ -202,6 +203,5 @@ namespace jsystem.schema.jutility.bti {
           _ => -1
         };
       }
-    }
   }
 }

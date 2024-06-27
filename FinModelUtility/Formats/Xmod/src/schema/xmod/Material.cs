@@ -1,14 +1,15 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace xmod.schema.xmod {
-  public class Material : ITextDeserializable {
-    public string Name { get; set; }
+namespace xmod.schema.xmod;
 
-    public int NumPackets { get; set; }
-    public IReadOnlyList<TextureId> TextureIds { get; set; }
+public class Material : ITextDeserializable {
+  public string Name { get; set; }
 
-    public void Read(ITextReader tr) {
+  public int NumPackets { get; set; }
+  public IReadOnlyList<TextureId> TextureIds { get; set; }
+
+  public void Read(ITextReader tr) {
       tr.AssertString("mtl ");
 
       this.Name = tr.ReadUpToAndPastTerminator(TextReaderUtils.OPEN_BRACE);
@@ -29,5 +30,4 @@ namespace xmod.schema.xmod {
       tr.ReadUpToAndPastTerminator(TextReaderUtils.CLOSING_BRACE);
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
     }
-  }
 }

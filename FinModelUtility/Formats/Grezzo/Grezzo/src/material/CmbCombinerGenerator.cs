@@ -13,36 +13,37 @@ using grezzo.schema.cmb.mats;
 
 using mats_Material = grezzo.schema.cmb.mats.Material;
 
-namespace grezzo.material {
-  /// <summary>
-  ///   Shamelessly copied from https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/oot3d/render.ts
-  /// </summary>
-  public class CmbCombinerGenerator {
-    private readonly mats_Material cmbMaterial_;
-    private readonly IFixedFunctionEquations<FixedFunctionSource> equations_;
-    private readonly IFixedFunctionRegisters registers_;
-    private readonly ColorFixedFunctionOps cOps_;
-    private readonly ScalarFixedFunctionOps sOps_;
+namespace grezzo.material;
 
-    private int constColorIndex_;
-    private Rgba32 constColor_;
+/// <summary>
+///   Shamelessly copied from https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/oot3d/render.ts
+/// </summary>
+public class CmbCombinerGenerator {
+  private readonly mats_Material cmbMaterial_;
+  private readonly IFixedFunctionEquations<FixedFunctionSource> equations_;
+  private readonly IFixedFunctionRegisters registers_;
+  private readonly ColorFixedFunctionOps cOps_;
+  private readonly ScalarFixedFunctionOps sOps_;
 
-    private IColorValue? previousColor_;
-    private IColorValue? previousColorBuffer_;
-    private IScalarValue? previousAlpha_;
-    private IScalarValue? previousAlphaBuffer_;
+  private int constColorIndex_;
+  private Rgba32 constColor_;
 
-    private IColorValue? primaryColor_;
-    private IScalarValue? primaryAlpha_;
+  private IColorValue? previousColor_;
+  private IColorValue? previousColorBuffer_;
+  private IScalarValue? previousAlpha_;
+  private IScalarValue? previousAlphaBuffer_;
 
-    private IColorValue? ambientAndDiffuseLightColor_;
-    private IScalarValue? ambientAndDiffuseLightAlpha_;
+  private IColorValue? primaryColor_;
+  private IScalarValue? primaryAlpha_;
 
-    private IColorValue? specularLightColor_;
-    private IScalarValue? specularLightAlpha_;
+  private IColorValue? ambientAndDiffuseLightColor_;
+  private IScalarValue? ambientAndDiffuseLightAlpha_;
 
-    public CmbCombinerGenerator(mats_Material cmbMaterial,
-                                IFixedFunctionMaterial finMaterial) {
+  private IColorValue? specularLightColor_;
+  private IScalarValue? specularLightAlpha_;
+
+  public CmbCombinerGenerator(mats_Material cmbMaterial,
+                              IFixedFunctionMaterial finMaterial) {
       this.cmbMaterial_ = cmbMaterial;
       this.equations_ = finMaterial.Equations;
       this.registers_ = finMaterial.Registers;
@@ -55,9 +56,9 @@ namespace grezzo.material {
       this.previousAlphaBuffer_ = new ScalarConstant(bufferColor[3]);
     }
 
-    // TODO: Color is way too bright in OoT, looks like it expects vertex color
-    // based lighting. 
-    public void AddCombiners(IReadOnlyList<Combiner?> cmbCombiners) {
+  // TODO: Color is way too bright in OoT, looks like it expects vertex color
+  // based lighting. 
+  public void AddCombiners(IReadOnlyList<Combiner?> cmbCombiners) {
       var usesShaderLighting =
           this.cmbMaterial_.isFragmentLightingEnabled &&
           cmbCombiners
@@ -164,7 +165,7 @@ namespace grezzo.material {
           this.previousAlpha_ ?? this.sOps_.Zero);
     }
 
-    public void AddCombiner_(Combiner cmbCombiner) {
+  public void AddCombiner_(Combiner cmbCombiner) {
       this.constColorIndex_ = cmbCombiner.constColorIndex;
       this.constColor_ =
           this.cmbMaterial_.constantColors[this.constColorIndex_];
@@ -212,8 +213,8 @@ namespace grezzo.material {
       this.previousAlphaBuffer_ = newPreviousAlphaBuffer;
     }
 
-    private IColorValue? GetOppedSourceColor_(
-        (TexCombinerSource combinerSource, TexCombinerColorOp colorOp) input) {
+  private IColorValue? GetOppedSourceColor_(
+      (TexCombinerSource combinerSource, TexCombinerColorOp colorOp) input) {
       var (combinerSource, colorOp) = input;
 
       if (colorOp is TexCombinerColorOp.Color
@@ -234,39 +235,39 @@ namespace grezzo.material {
       return channelValue != null ? new ColorWrapper(channelValue) : null;
     }
 
-    private IScalarValue? GetOppedSourceAlpha_(
-        (TexCombinerSource combinerSource, TexCombinerAlphaOp alphaOp) input)
-      => this.GetScalarValue_(input.combinerSource,
-                              this.GetChannelAndIsOneMinus_(input.alphaOp));
+  private IScalarValue? GetOppedSourceAlpha_(
+      (TexCombinerSource combinerSource, TexCombinerAlphaOp alphaOp) input)
+    => this.GetScalarValue_(input.combinerSource,
+                            this.GetChannelAndIsOneMinus_(input.alphaOp));
 
-    private IColorValue? GetColorValue_(TexCombinerSource combinerSource)
-      => combinerSource switch {
-          TexCombinerSource.Texture0 => this.equations_.CreateOrGetColorInput(
-              FixedFunctionSource.TEXTURE_COLOR_0),
-          TexCombinerSource.Texture1 => this.equations_.CreateOrGetColorInput(
-              FixedFunctionSource.TEXTURE_COLOR_1),
-          TexCombinerSource.Texture2 => this.equations_.CreateOrGetColorInput(
-              FixedFunctionSource.TEXTURE_COLOR_2),
-          TexCombinerSource.Texture3 => this.equations_.CreateOrGetColorInput(
-              FixedFunctionSource.TEXTURE_COLOR_3),
-          TexCombinerSource.Constant =>
-              this.registers_.GetOrCreateColorRegister(
-                  $"3dsColor{this.constColorIndex_}",
-                  this.equations_.CreateColorConstant(
-                      this.constColor_.Rf,
-                      this.constColor_.Gf,
-                      this.constColor_.Bf)),
-          TexCombinerSource.PrimaryColor   => this.primaryColor_,
-          TexCombinerSource.Previous       => this.previousColor_,
-          TexCombinerSource.PreviousBuffer => this.previousColorBuffer_,
-          TexCombinerSource.FragmentPrimaryColor => this
-              .ambientAndDiffuseLightColor_,
-          TexCombinerSource.FragmentSecondaryColor => this.specularLightColor_,
-      };
+  private IColorValue? GetColorValue_(TexCombinerSource combinerSource)
+    => combinerSource switch {
+        TexCombinerSource.Texture0 => this.equations_.CreateOrGetColorInput(
+            FixedFunctionSource.TEXTURE_COLOR_0),
+        TexCombinerSource.Texture1 => this.equations_.CreateOrGetColorInput(
+            FixedFunctionSource.TEXTURE_COLOR_1),
+        TexCombinerSource.Texture2 => this.equations_.CreateOrGetColorInput(
+            FixedFunctionSource.TEXTURE_COLOR_2),
+        TexCombinerSource.Texture3 => this.equations_.CreateOrGetColorInput(
+            FixedFunctionSource.TEXTURE_COLOR_3),
+        TexCombinerSource.Constant =>
+            this.registers_.GetOrCreateColorRegister(
+                $"3dsColor{this.constColorIndex_}",
+                this.equations_.CreateColorConstant(
+                    this.constColor_.Rf,
+                    this.constColor_.Gf,
+                    this.constColor_.Bf)),
+        TexCombinerSource.PrimaryColor   => this.primaryColor_,
+        TexCombinerSource.Previous       => this.previousColor_,
+        TexCombinerSource.PreviousBuffer => this.previousColorBuffer_,
+        TexCombinerSource.FragmentPrimaryColor => this
+            .ambientAndDiffuseLightColor_,
+        TexCombinerSource.FragmentSecondaryColor => this.specularLightColor_,
+    };
 
-    private IScalarValue? GetScalarValue_(
-        TexCombinerSource combinerSource,
-        (Channel, bool) channelAndIsOneMinus) {
+  private IScalarValue? GetScalarValue_(
+      TexCombinerSource combinerSource,
+      (Channel, bool) channelAndIsOneMinus) {
       IScalarValue? channelValue;
 
       var (channel, isOneMinus) = channelAndIsOneMinus;
@@ -313,38 +314,38 @@ namespace grezzo.material {
       return channelValue;
     }
 
-    private enum Channel {
-      R,
-      G,
-      B,
-      A
-    }
+  private enum Channel {
+    R,
+    G,
+    B,
+    A
+  }
 
-    private (Channel, bool) GetChannelAndIsOneMinus_(
-        TexCombinerAlphaOp scalarOp)
-      => scalarOp switch {
-          TexCombinerAlphaOp.Red           => (Channel.R, false),
-          TexCombinerAlphaOp.OneMinusRed   => (Channel.R, true),
-          TexCombinerAlphaOp.Green         => (Channel.G, false),
-          TexCombinerAlphaOp.OneMinusGreen => (Channel.G, true),
-          TexCombinerAlphaOp.Blue          => (Channel.B, false),
-          TexCombinerAlphaOp.OneMinusBlue  => (Channel.B, true),
-          TexCombinerAlphaOp.Alpha         => (Channel.A, false),
-          TexCombinerAlphaOp.OneMinusAlpha => (Channel.A, true),
-      };
+  private (Channel, bool) GetChannelAndIsOneMinus_(
+      TexCombinerAlphaOp scalarOp)
+    => scalarOp switch {
+        TexCombinerAlphaOp.Red           => (Channel.R, false),
+        TexCombinerAlphaOp.OneMinusRed   => (Channel.R, true),
+        TexCombinerAlphaOp.Green         => (Channel.G, false),
+        TexCombinerAlphaOp.OneMinusGreen => (Channel.G, true),
+        TexCombinerAlphaOp.Blue          => (Channel.B, false),
+        TexCombinerAlphaOp.OneMinusBlue  => (Channel.B, true),
+        TexCombinerAlphaOp.Alpha         => (Channel.A, false),
+        TexCombinerAlphaOp.OneMinusAlpha => (Channel.A, true),
+    };
 
-    private TValue? Combine_<TValue, TConstant, TTerm, TExpression>(
-        IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
-            fixedFunctionOps,
-        IReadOnlyList<TValue?> sources,
-        TexCombineMode combineMode,
-        TexCombineScale combineScale)
-        where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-        where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>,
-        TValue
-        where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-        where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-        TValue {
+  private TValue? Combine_<TValue, TConstant, TTerm, TExpression>(
+      IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
+          fixedFunctionOps,
+      IReadOnlyList<TValue?> sources,
+      TexCombineMode combineMode,
+      TexCombineScale combineScale)
+      where TValue : IValue<TValue, TConstant, TTerm, TExpression>
+      where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>,
+      TValue
+      where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
+      where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
+      TValue {
       // TODO: Implement dot-product ones
       var combinedValue = combineMode switch {
           TexCombineMode.Replace => sources[0],
@@ -382,16 +383,16 @@ namespace grezzo.material {
       };
     }
 
-    private TValue? AddMult_<TValue, TConstant, TTerm, TExpression>(
-        IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
-            fixedFunctionOps,
-        IReadOnlyList<TValue?> sources
-    ) where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-      where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>,
-      TValue
-      where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-      where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-      TValue {
+  private TValue? AddMult_<TValue, TConstant, TTerm, TExpression>(
+      IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
+          fixedFunctionOps,
+      IReadOnlyList<TValue?> sources
+  ) where TValue : IValue<TValue, TConstant, TTerm, TExpression>
+    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>,
+    TValue
+    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
+    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
+    TValue {
       var addedValue = fixedFunctionOps.Add(sources[0], sources[1]);
       if (addedValue is IColorValue colorValue) {
         colorValue.Clamp = true;
@@ -401,5 +402,4 @@ namespace grezzo.material {
 
       return value;
     }
-  }
 }

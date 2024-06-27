@@ -3,16 +3,16 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace modl.schema.modl.bw1.node {
-  [BinarySchema]
-  public partial class Bw1Material : IBwMaterial, IBinaryConvertible {
-    [StringLengthSource(0x10)]
-    public string Texture1 { get; set; } = "";
+namespace modl.schema.modl.bw1.node;
 
-    [StringLengthSource(0x10)]
-    public string Texture2 { get; set; } = "";
+[BinarySchema]
+public partial class Bw1Material : IBwMaterial, IBinaryConvertible {
+  [StringLengthSource(0x10)]
+  public string Texture1 { get; set; } = "";
 
-    [Unknown]
-    public byte[] Data { get; } = new byte[0x28];
-  }
+  [StringLengthSource(0x10)]
+  public string Texture2 { get; set; } = "";
+
+  [Unknown]
+  public byte[] Data { get; } = new byte[0x28];
 }

@@ -2,16 +2,17 @@
 
 using fin.decompression;
 
-namespace level5.decompression {
-  public sealed class LzssDecompressor : ISpanDecompressor {
-    public bool TryToGetLength(ReadOnlySpan<byte> src, out int length) {
+namespace level5.decompression;
+
+public sealed class LzssDecompressor : ISpanDecompressor {
+  public bool TryToGetLength(ReadOnlySpan<byte> src, out int length) {
       DecompressionUtils.GetLengthAndType(src,
                                           out length,
                                           out var decompressionType);
       return decompressionType == DecompressionType.LZSS;
     }
 
-    public bool TryToDecompressInto(ReadOnlySpan<byte> src, Span<byte> dst) {
+  public bool TryToDecompressInto(ReadOnlySpan<byte> src, Span<byte> dst) {
       var dstIndex = 0;
 
       int srcIndex = 4;
@@ -44,14 +45,14 @@ namespace level5.decompression {
       return true;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void Copy_(
-        Span<byte> dst,
-        ref int dstIndex,
-        int dat,
-        ref int op,
-        int pos
-    ) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  private void Copy_(
+      Span<byte> dst,
+      ref int dstIndex,
+      int dat,
+      ref int op,
+      int pos
+  ) {
       if (op < pos) {
         return;
       }
@@ -67,5 +68,4 @@ namespace level5.decompression {
         op++;
       }
     }
-  }
 }

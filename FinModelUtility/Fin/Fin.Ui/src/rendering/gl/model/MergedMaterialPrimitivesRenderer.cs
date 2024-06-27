@@ -2,21 +2,22 @@
 using fin.model;
 using fin.ui.rendering.gl.material;
 
-namespace fin.ui.rendering.gl.model {
-  public class MergedMaterialPrimitivesRenderer : IDisposable {
-    private readonly GlBufferManager.GlBufferRenderer bufferRenderer_;
+namespace fin.ui.rendering.gl.model;
 
-    private readonly IReadOnlyMaterial? material_;
+public class MergedMaterialPrimitivesRenderer : IDisposable {
+  private readonly GlBufferManager.GlBufferRenderer bufferRenderer_;
 
-    private readonly IGlMaterialShader? materialShader_;
+  private readonly IReadOnlyMaterial? material_;
 
-    public MergedMaterialPrimitivesRenderer(
-        IReadOnlyBoneTransformManager? boneTransformManager,
-        GlBufferManager bufferManager,
-        IReadOnlyModel model,
-        IReadOnlyMaterial? material,
-        IReadOnlyLighting? lighting,
-        MergedPrimitive mergedPrimitive) {
+  private readonly IGlMaterialShader? materialShader_;
+
+  public MergedMaterialPrimitivesRenderer(
+      IReadOnlyBoneTransformManager? boneTransformManager,
+      GlBufferManager bufferManager,
+      IReadOnlyModel model,
+      IReadOnlyMaterial? material,
+      IReadOnlyLighting? lighting,
+      MergedPrimitive mergedPrimitive) {
       this.material_ = material;
 
       this.materialShader_ = GlMaterialShader.FromMaterial(model,
@@ -27,30 +28,30 @@ namespace fin.ui.rendering.gl.model {
       this.bufferRenderer_ = bufferManager.CreateRenderer(mergedPrimitive);
     }
 
-    ~MergedMaterialPrimitivesRenderer() => ReleaseUnmanagedResources_();
+  ~MergedMaterialPrimitivesRenderer() => ReleaseUnmanagedResources_();
 
-    public void Dispose() {
+  public void Dispose() {
       ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() {
+  private void ReleaseUnmanagedResources_() {
       this.materialShader_?.Dispose();
       this.bufferRenderer_.Dispose();
     }
 
-    public IMesh Mesh { get; }
+  public IMesh Mesh { get; }
 
-    public bool UseLighting {
-      get => this.materialShader_?.UseLighting ?? false;
-      set {
+  public bool UseLighting {
+    get => this.materialShader_?.UseLighting ?? false;
+    set {
         if (this.materialShader_ != null) {
           this.materialShader_.UseLighting = value;
         }
       }
-    }
+  }
 
-    public void Render() {
+  public void Render() {
       this.materialShader_?.Use();
 
       if (this.material_ is IReadOnlyFixedFunctionMaterial
@@ -75,5 +76,4 @@ namespace fin.ui.rendering.gl.model {
 
       this.bufferRenderer_.Render();
     }
-  }
 }

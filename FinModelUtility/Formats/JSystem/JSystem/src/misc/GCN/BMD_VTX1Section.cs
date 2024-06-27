@@ -14,20 +14,21 @@ using schema.binary;
 
 #pragma warning disable CS8604
 
-namespace jsystem.GCN {
-  public partial class BMD {
-    public partial class VTX1Section {
-      public Color[][] Colors = new Color[2][];
-      public Texcoord[][] Texcoords = new Texcoord[8][];
-      public const string Signature = "VTX1";
-      public DataBlockHeader Header;
-      public uint ArrayFormatOffset;
-      public uint[] Offsets;
-      public ArrayFormat[] ArrayFormats;
-      public Vector3[] Positions;
-      public Vector3[] Normals;
+namespace jsystem.GCN;
 
-      public VTX1Section(IBinaryReader br, out bool OK) {
+public partial class BMD {
+  public partial class VTX1Section {
+    public Color[][] Colors = new Color[2][];
+    public Texcoord[][] Texcoords = new Texcoord[8][];
+    public const string Signature = "VTX1";
+    public DataBlockHeader Header;
+    public uint ArrayFormatOffset;
+    public uint[] Offsets;
+    public ArrayFormat[] ArrayFormats;
+    public Vector3[] Positions;
+    public Vector3[] Normals;
+
+    public VTX1Section(IBinaryReader br, out bool OK) {
         long position1 = br.Position;
         bool OK1;
         this.Header = new DataBlockHeader(br, "VTX1", out OK1);
@@ -68,7 +69,7 @@ namespace jsystem.GCN {
         }
       }
 
-      private int GetLength(int k) {
+    private int GetLength(int k) {
         int offset = (int) this.Offsets[k];
         for (int index = k + 1; index < 13; ++index) {
           if (this.Offsets[index] != 0U)
@@ -78,10 +79,10 @@ namespace jsystem.GCN {
         return (int) this.Header.size - offset;
       }
 
-      private void ReadVertexArray(
-          ArrayFormat Format,
-          int Length,
-          IBinaryReader br) {
+    private void ReadVertexArray(
+        ArrayFormat Format,
+        int Length,
+        IBinaryReader br) {
         List<float> floatList = [];
         switch (Format.DataType) {
           case 3:
@@ -159,23 +160,23 @@ namespace jsystem.GCN {
         }
       }
 
-      private enum ColorDataType {
-        RGB565 = 0,
-        RGB8 = 1,
-        RGBX8 = 2,
-        RGBA4 = 3,
-        RGBA6 = 4,
-        RGBA8 = 5,
-      }
+    private enum ColorDataType {
+      RGB565 = 0,
+      RGB8 = 1,
+      RGBX8 = 2,
+      RGBA4 = 3,
+      RGBA6 = 4,
+      RGBA8 = 5,
+    }
 
-      /// <summary>
-      ///   Colors are a special case:
-      ///   https://wiki.cloudmodding.com/tww/BMD_and_BDL#Data_Types
-      /// </summary>
-      private void ReadColorArray(
-          ArrayFormat Format,
-          int byteLength,
-          IBinaryReader br) {
+    /// <summary>
+    ///   Colors are a special case:
+    ///   https://wiki.cloudmodding.com/tww/BMD_and_BDL#Data_Types
+    /// </summary>
+    private void ReadColorArray(
+        ArrayFormat Format,
+        int byteLength,
+        IBinaryReader br) {
         var colorIndex = Format.ArrayType - GxAttribute.CLR0;
 
         var colorDataType = (ColorDataType) Format.DataType;
@@ -252,36 +253,35 @@ namespace jsystem.GCN {
         this.Colors[colorIndex] = colors;
       }
 
-      public class Color {
-        public byte R;
-        public byte G;
-        public byte B;
-        public byte A;
+    public class Color {
+      public byte R;
+      public byte G;
+      public byte B;
+      public byte A;
 
-        public Color(byte r, byte g, byte b, byte a) {
+      public Color(byte r, byte g, byte b, byte a) {
           this.R = r;
           this.G = g;
           this.B = b;
           this.A = a;
         }
 
-        public static implicit operator System.Drawing.Color(Color c) {
+      public static implicit operator System.Drawing.Color(Color c) {
           return System.Drawing.Color.FromArgb((int) c.A,
                                                (int) c.R,
                                                (int) c.G,
                                                (int) c.B);
         }
-      }
+    }
 
-      public class Texcoord {
-        public float S;
-        public float T;
+    public class Texcoord {
+      public float S;
+      public float T;
 
-        public Texcoord(float s, float t) {
+      public Texcoord(float s, float t) {
           this.S = s;
           this.T = t;
         }
-      }
     }
   }
 }

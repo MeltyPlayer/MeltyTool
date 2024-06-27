@@ -2,15 +2,16 @@
 
 using OpenTK.Audio.OpenAL;
 
-namespace fin.ui.playback.al {
-  public partial class AlAudioManager : IAudioManager<short> {
-    private readonly ALDevice device_;
-    private readonly ALContext context_;
+namespace fin.ui.playback.al;
 
-    public bool IsDisposed { get; private set; }
-    public IAudioPlayer<short> AudioPlayer { get; }
+public partial class AlAudioManager : IAudioManager<short> {
+  private readonly ALDevice device_;
+  private readonly ALContext context_;
 
-    public AlAudioManager() {
+  public bool IsDisposed { get; private set; }
+  public IAudioPlayer<short> AudioPlayer { get; }
+
+  public AlAudioManager() {
       this.device_ = ALC.OpenDevice(null);
       this.context_
           = ALC.CreateContext(this.device_, new ALContextAttributes());
@@ -20,17 +21,16 @@ namespace fin.ui.playback.al {
       this.AudioPlayer = new AlAudioPlayer();
     }
 
-    ~AlAudioManager() => this.ReleaseUnmanagedResources_();
+  ~AlAudioManager() => this.ReleaseUnmanagedResources_();
 
-    public void Dispose() {
+  public void Dispose() {
       this.ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() {
+  private void ReleaseUnmanagedResources_() {
       this.IsDisposed = true;
       this.AudioPlayer.Dispose();
       ALC.DestroyContext(this.context_);
     }
-  }
 }

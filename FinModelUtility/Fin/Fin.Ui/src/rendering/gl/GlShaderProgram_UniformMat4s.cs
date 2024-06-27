@@ -5,11 +5,12 @@ using fin.util.asserts;
 using OpenTK.Graphics.OpenGL;
 
 
-namespace fin.ui.rendering.gl {
-  public partial class GlShaderProgram {
-    public IShaderUniformArray<Matrix4x4> GetUniformMat4s(
-        string name,
-        int length) {
+namespace fin.ui.rendering.gl;
+
+public partial class GlShaderProgram {
+  public IShaderUniformArray<Matrix4x4> GetUniformMat4s(
+      string name,
+      int length) {
       if (!this.cachedUniforms_.TryGetValue(name, out var uniform)) {
         this.cachedUniforms_[name] = uniform =
             new Mat4sShaderUniform(this.GetUniformLocation_(name), length);
@@ -18,22 +19,22 @@ namespace fin.ui.rendering.gl {
       return Asserts.AsA<IShaderUniformArray<Matrix4x4>>(uniform);
     }
 
-    private class Mat4sShaderUniform
-        : BShaderUniform, IShaderUniformArray<Matrix4x4> {
-      private readonly int location_;
-      private readonly Matrix4x4[] value_;
+  private class Mat4sShaderUniform
+      : BShaderUniform, IShaderUniformArray<Matrix4x4> {
+    private readonly int location_;
+    private readonly Matrix4x4[] value_;
 
-      public Mat4sShaderUniform(int location, int length) {
+    public Mat4sShaderUniform(int location, int length) {
         this.location_ = location;
         this.value_ = new Matrix4x4[length];
       }
 
-      public void SetAndMarkDirty(int index, in Matrix4x4 value) {
+    public void SetAndMarkDirty(int index, in Matrix4x4 value) {
         this.value_[index] = value;
         this.MarkDirty();
       }
 
-      public void SetAndMaybeMarkDirty(int index, in Matrix4x4 value) {
+    public void SetAndMaybeMarkDirty(int index, in Matrix4x4 value) {
         if (!this.IsDirty) {
           var current = this.value_[index];
           if (!current.Equals(value)) {
@@ -44,7 +45,7 @@ namespace fin.ui.rendering.gl {
         this.value_[index] = value;
       }
 
-      protected override unsafe void PassValueToProgram() {
+    protected override unsafe void PassValueToProgram() {
         fixed (Matrix4x4* mat = this.value_) {
           GL.UniformMatrix4(this.location_,
                             this.value_.Length,
@@ -52,6 +53,5 @@ namespace fin.ui.rendering.gl {
                             (float*) mat);
         }
       }
-    }
   }
 }

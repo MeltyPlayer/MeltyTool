@@ -1,18 +1,19 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace xmod.schema.xmod {
-  public enum PrimitiveType {
-    TRIANGLE_STRIP,
-    TRIANGLE_STRIP_REVERSED,
-    TRIANGLES,
-  }
+namespace xmod.schema.xmod;
 
-  public class Primitive : ITextDeserializable {
-    public PrimitiveType Type { get; set; }
-    public IReadOnlyList<int> VertexIndices { get; set; }
+public enum PrimitiveType {
+  TRIANGLE_STRIP,
+  TRIANGLE_STRIP_REVERSED,
+  TRIANGLES,
+}
 
-    public void Read(ITextReader tr) {
+public class Primitive : ITextDeserializable {
+  public PrimitiveType Type { get; set; }
+  public IReadOnlyList<int> VertexIndices { get; set; }
+
+  public void Read(ITextReader tr) {
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
 
       this.Type = tr.ReadString(3) switch {
@@ -25,5 +26,4 @@ namespace xmod.schema.xmod {
                                          TextReaderConstants.NEWLINE_STRINGS);
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
     }
-  }
 }

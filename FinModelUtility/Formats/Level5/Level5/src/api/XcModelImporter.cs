@@ -18,9 +18,10 @@ using schema.binary;
 
 using Quaternion = System.Numerics.Quaternion;
 
-namespace level5.api {
-  public class XcModelImporter : IModelImporter<XcModelFileBundle> {
-    public IModel Import(XcModelFileBundle modelFileBundle) {
+namespace level5.api;
+
+public class XcModelImporter : IModelImporter<XcModelFileBundle> {
+  public IModel Import(XcModelFileBundle modelFileBundle) {
       var endianness = Endianness.LittleEndian;
 
       var modelXcFile = modelFileBundle.ModelXcFile;
@@ -313,5 +314,4 @@ namespace level5.api {
 
       return model;
     }
-  }
 }

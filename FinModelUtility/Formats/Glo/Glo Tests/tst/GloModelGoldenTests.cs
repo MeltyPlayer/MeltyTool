@@ -12,39 +12,39 @@ using NUnit.Framework;
 using schema.binary;
 using schema.binary.testing;
 
-namespace glo {
-  public class
-      GloModelGoldenTests
-      : BModelGoldenTests<GloModelFileBundle,
-          GloModelImporter> {
-    [Test]
-    [TestCaseSource(nameof(GetGoldenDirectories_))]
-    public async Task TestReadsAndWritesIdentically(
-        IFileHierarchyDirectory goldenDirectory) {
-      var goldenBundle =
-          this.GetFileBundleFromDirectory(
-              goldenDirectory.AssertGetExistingSubdir("input"));
+namespace glo;
 
-      var br = new SchemaBinaryReader(goldenBundle.GloFile.OpenRead());
-      await BinarySchemaAssert.ReadsAndWritesIdentically<Glo>(br);
-    }
+public class
+    GloModelGoldenTests
+    : BModelGoldenTests<GloModelFileBundle,
+        GloModelImporter> {
+  [Test]
+  [TestCaseSource(nameof(GetGoldenDirectories_))]
+  public async Task TestReadsAndWritesIdentically(
+      IFileHierarchyDirectory goldenDirectory) {
+    var goldenBundle =
+        this.GetFileBundleFromDirectory(
+            goldenDirectory.AssertGetExistingSubdir("input"));
 
-    [Test]
-    [TestCaseSource(nameof(GetGoldenDirectories_))]
-    public void TestExportsGoldenAsExpected(
-        IFileHierarchyDirectory goldenDirectory)
-      => this.AssertGolden(goldenDirectory);
+    var br = new SchemaBinaryReader(goldenBundle.GloFile.OpenRead());
+    await BinarySchemaAssert.ReadsAndWritesIdentically<Glo>(br);
+  }
 
-    public override GloModelFileBundle GetFileBundleFromDirectory(
-        IFileHierarchyDirectory directory)
-      => new(directory.FilesWithExtension(".glo").Single(),
-             new[] { directory });
+  [Test]
+  [TestCaseSource(nameof(GetGoldenDirectories_))]
+  public void TestExportsGoldenAsExpected(
+      IFileHierarchyDirectory goldenDirectory)
+    => this.AssertGolden(goldenDirectory);
 
-    private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
-      var rootGoldenDirectory = GoldenAssert.GetRootGoldensDirectory(
-          Assembly.GetExecutingAssembly());
-      return GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
-                         .ToArray();
-    }
+  public override GloModelFileBundle GetFileBundleFromDirectory(
+      IFileHierarchyDirectory directory)
+    => new(directory.FilesWithExtension(".glo").Single(),
+           new[] { directory });
+
+  private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
+    var rootGoldenDirectory = GoldenAssert.GetRootGoldensDirectory(
+        Assembly.GetExecutingAssembly());
+    return GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)
+                       .ToArray();
   }
 }

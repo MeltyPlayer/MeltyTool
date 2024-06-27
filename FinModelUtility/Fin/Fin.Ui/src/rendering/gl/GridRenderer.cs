@@ -1,11 +1,12 @@
 ﻿using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering.gl {
-  public class GridRenderer {
-    public float Spacing { get; } = 32;
-    public float Size = 1024;
+namespace fin.ui.rendering.gl;
 
-    public void Render() {
+public class GridRenderer {
+  public float Spacing { get; } = 32;
+  public float Size = 1024;
+
+  public void Render() {
       GlTransform.PassMatricesIntoGl();
 
       GlUtil.ResetDepth();
@@ -47,5 +48,4 @@ namespace fin.ui.rendering.gl {
 
       GL.End();
     }
-  }
 }

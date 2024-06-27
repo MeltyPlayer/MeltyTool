@@ -1,41 +1,41 @@
 ﻿using System.Collections.Generic;
 
-namespace fin.data.fuzzy {
-  public interface IFuzzySearchResult<out T> {
-    T Data { get; }
-    int ChangeDistance { get; }
-    float Similarity { get; }
-  }
+namespace fin.data.fuzzy;
 
-  public interface IFuzzySearchDictionary<T> {
-    void Add(string keyword, T data);
+public interface IFuzzySearchResult<out T> {
+  T Data { get; }
+  int ChangeDistance { get; }
+  float Similarity { get; }
+}
 
-    IEnumerable<IFuzzySearchResult<T>> Search(
-        string filterText,
-        float minMatchPercentage);
-  }
+public interface IFuzzySearchDictionary<T> {
+  void Add(string keyword, T data);
+
+  IEnumerable<IFuzzySearchResult<T>> Search(
+      string filterText,
+      float minMatchPercentage);
+}
 
 
-  public interface IFuzzyNode<T> {
-    T Data { get; set; }
-    float Similarity { get; }
-    int ChangeDistance { get; }
+public interface IFuzzyNode<T> {
+  T Data { get; set; }
+  float Similarity { get; }
+  int ChangeDistance { get; }
 
-    IReadOnlySet<string> Keywords { get; }
+  IReadOnlySet<string> Keywords { get; }
 
-    IFuzzyNode<T>? Parent { get; }
-    IReadOnlyList<IFuzzyNode<T>> Children { get; }
+  IFuzzyNode<T>? Parent { get; }
+  IReadOnlyList<IFuzzyNode<T>> Children { get; }
 
-    IFuzzyNode<T> AddChild(T data);
-  }
+  IFuzzyNode<T> AddChild(T data);
+}
 
-  public interface IFuzzyFilterTree<T> {
-    IFuzzyNode<T> Root { get; }
+public interface IFuzzyFilterTree<T> {
+  IFuzzyNode<T> Root { get; }
 
-    void Reset();
+  void Reset();
 
-    void Filter(
-        string keyword,
-        float minMatchPercentage);
-  }
+  void Filter(
+      string keyword,
+      float minMatchPercentage);
 }

@@ -4,92 +4,92 @@ using fin.schema.color;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace grezzo.schema.zsi {
-  [BinarySchema]
-  public partial class LightNormal : IReadOnlyXyz, IBinaryConvertible {
-    [NumberFormat(SchemaNumberType.SN8)]
-    public float X { get; set; }
+namespace grezzo.schema.zsi;
 
-    [NumberFormat(SchemaNumberType.SN8)]
-    public float Y { get; set; }
+[BinarySchema]
+public partial class LightNormal : IReadOnlyXyz, IBinaryConvertible {
+  [NumberFormat(SchemaNumberType.SN8)]
+  public float X { get; set; }
 
-    [NumberFormat(SchemaNumberType.SN8)]
-    public float Z { get; set; }
-  }
+  [NumberFormat(SchemaNumberType.SN8)]
+  public float Y { get; set; }
 
-  public interface IEnvironmentSettings : IZsiSection {
-    float DrawDistance { get; }
-    public short Flags { get; }
+  [NumberFormat(SchemaNumberType.SN8)]
+  public float Z { get; set; }
+}
 
-    public Rgb24 SceneAmbientColor { get; }
-    public Rgb24 ActorAmbientColor { get; }
+public interface IEnvironmentSettings : IZsiSection {
+  float DrawDistance { get; }
+  public short Flags { get; }
 
-    public Rgb24 LightColor0 { get; }
-    public LightNormal LightNormal0 { get; }
+  public Rgb24 SceneAmbientColor { get; }
+  public Rgb24 ActorAmbientColor { get; }
 
-    public Rgb24 LightColor1 { get; }
-    public LightNormal LightNormal1 { get; }
+  public Rgb24 LightColor0 { get; }
+  public LightNormal LightNormal0 { get; }
 
-    public float FogStart { get; }
-    public float FogEnd { get; }
-    public float BlendRate { get; }
-    public Rgb24 FogColor { get; }
-  }
+  public Rgb24 LightColor1 { get; }
+  public LightNormal LightNormal1 { get; }
 
-  [BinarySchema]
-  public partial class EnvironmentSettingsOot3d : IEnvironmentSettings, IBinaryConvertible {
-    public float DrawDistance { get; set; }
-    public float FogEnd { get; set; }
+  public float FogStart { get; }
+  public float FogEnd { get; }
+  public float BlendRate { get; }
+  public Rgb24 FogColor { get; }
+}
 
-    public short Flags { get; set; }
+[BinarySchema]
+public partial class EnvironmentSettingsOot3d : IEnvironmentSettings, IBinaryConvertible {
+  public float DrawDistance { get; set; }
+  public float FogEnd { get; set; }
 
-    [Skip]
-    public float FogStart => this.Flags & 0x03FF;
+  public short Flags { get; set; }
 
-    [Skip]
-    public float BlendRate => (this.Flags >> 10) * 4;
+  [Skip]
+  public float FogStart => this.Flags & 0x03FF;
 
-    public Rgb24 AmbientColor { get; } = new();
+  [Skip]
+  public float BlendRate => (this.Flags >> 10) * 4;
 
-    [Skip]
-    public Rgb24 SceneAmbientColor => this.AmbientColor;
+  public Rgb24 AmbientColor { get; } = new();
 
-    [Skip]
-    public Rgb24 ActorAmbientColor => this.AmbientColor;
+  [Skip]
+  public Rgb24 SceneAmbientColor => this.AmbientColor;
 
-    public Rgb24 LightColor0 { get; } = new();
-    public LightNormal LightNormal0 { get; } = new();
+  [Skip]
+  public Rgb24 ActorAmbientColor => this.AmbientColor;
 
-    public Rgb24 LightColor1 { get; } = new();
-    public LightNormal LightNormal1 { get; } = new();
+  public Rgb24 LightColor0 { get; } = new();
+  public LightNormal LightNormal0 { get; } = new();
 
-    public Rgb24 FogColor { get; } = new();
-  }
+  public Rgb24 LightColor1 { get; } = new();
+  public LightNormal LightNormal1 { get; } = new();
 
-  [BinarySchema]
-  public partial class EnvironmentSettingsMm3d : IEnvironmentSettings, IBinaryConvertible {
-    public Rgb24 ActorAmbientColor { get; } = new();
-    public Rgb24 SceneAmbientColor { get; } = new();
+  public Rgb24 FogColor { get; } = new();
+}
 
-    public LightNormal LightNormal0 { get; } = new();
-    public Rgb24 LightColor0 { get; } = new();
+[BinarySchema]
+public partial class EnvironmentSettingsMm3d : IEnvironmentSettings, IBinaryConvertible {
+  public Rgb24 ActorAmbientColor { get; } = new();
+  public Rgb24 SceneAmbientColor { get; } = new();
 
-    public LightNormal LightNormal1 { get; } = new();
-    public Rgb24 LightColor1 { get; } = new();
+  public LightNormal LightNormal0 { get; } = new();
+  public Rgb24 LightColor0 { get; } = new();
 
-    public Rgb24 FogColor { get; } = new();
+  public LightNormal LightNormal1 { get; } = new();
+  public Rgb24 LightColor1 { get; } = new();
 
-    private byte unk_;
+  public Rgb24 FogColor { get; } = new();
 
-    public short Flags { get; set; }
+  private byte unk_;
 
-    [Skip]
-    public float FogStart => this.Flags & 0x03FF;
+  public short Flags { get; set; }
 
-    [Skip]
-    public float BlendRate => (this.Flags >> 10) * 4;
+  [Skip]
+  public float FogStart => this.Flags & 0x03FF;
 
-    public float FogEnd { get; set; }
-    public float DrawDistance { get; set; }
-  }
+  [Skip]
+  public float BlendRate => (this.Flags >> 10) * 4;
+
+  public float FogEnd { get; set; }
+  public float DrawDistance { get; set; }
 }

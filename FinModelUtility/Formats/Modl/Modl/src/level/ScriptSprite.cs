@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class ScriptSprite : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class ScriptSprite : BLevelObject {
 }

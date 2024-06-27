@@ -5,73 +5,73 @@ using grezzo.schema.cmb;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace grezzo.schema.ctxb {
-  [BinarySchema]
-  [Endianness(Endianness.LittleEndian)]
-  public partial class Ctxb : IBinaryConvertible {
-    public CtxbHeader Header { get; } = new();
-    public CtxbTexChunk Chunk { get; } = new();
-  }
+namespace grezzo.schema.ctxb;
 
-  [BinarySchema]
-  public partial class CtxbHeader : IChildOf<Ctxb>, IBinaryConvertible {
-    public Ctxb Parent { get; set; }
+[BinarySchema]
+[Endianness(Endianness.LittleEndian)]
+public partial class Ctxb : IBinaryConvertible {
+  public CtxbHeader Header { get; } = new();
+  public CtxbTexChunk Chunk { get; } = new();
+}
 
-    private readonly string magic_ = "ctxb";
+[BinarySchema]
+public partial class CtxbHeader : IChildOf<Ctxb>, IBinaryConvertible {
+  public Ctxb Parent { get; set; }
 
-    [WSizeOfStreamInBytes]
-    public int CtxbSize { get; private set; }
+  private readonly string magic_ = "ctxb";
 
-    private readonly uint texCount_ = 1;
-    private readonly uint padding_ = 0;
+  [WSizeOfStreamInBytes]
+  public int CtxbSize { get; private set; }
 
-    [WPointerTo(nameof(Parent.Chunk))]
-    public int ChunkOffset { get; private set; }
+  private readonly uint texCount_ = 1;
+  private readonly uint padding_ = 0;
 
-    [WPointerTo(nameof(Parent.Chunk.Entry.Data))]
-    public int DataOffset { get; private set; }
-  }
+  [WPointerTo(nameof(Parent.Chunk))]
+  public int ChunkOffset { get; private set; }
 
-  [BinarySchema]
-  public partial class CtxbTexChunk : IBinaryConvertible {
-    private readonly string magic_ = "tex" + AsciiUtil.GetChar(0x20);
-    private readonly int chunkSize_ = 0x30;
+  [WPointerTo(nameof(Parent.Chunk.Entry.Data))]
+  public int DataOffset { get; private set; }
+}
 
-    private readonly uint texCount_ = 1;
+[BinarySchema]
+public partial class CtxbTexChunk : IBinaryConvertible {
+  private readonly string magic_ = "tex" + AsciiUtil.GetChar(0x20);
+  private readonly int chunkSize_ = 0x30;
 
-    public CtxbTexEntry Entry { get; } = new();
-  }
+  private readonly uint texCount_ = 1;
 
-  [BinarySchema]
-  public partial class CtxbTexEntry : IBinaryConvertible {
-    [WLengthOfSequence(nameof(Data))]
-    private uint dataLength_;
-    public ushort mimapCount { get; private set; }
+  public CtxbTexEntry Entry { get; } = new();
+}
 
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public bool IsEtc1 { get; private set; }
+[BinarySchema]
+public partial class CtxbTexEntry : IBinaryConvertible {
+  [WLengthOfSequence(nameof(Data))]
+  private uint dataLength_;
+  public ushort mimapCount { get; private set; }
 
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public bool IsCubemap { get; private set; }
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public bool IsEtc1 { get; private set; }
 
-    public ushort Width { get; private set; }
-    public ushort Height { get; private set; }
-    public GlTextureFormat ImageFormat { get; private set; }
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public bool IsCubemap { get; private set; }
 
-    [StringLengthSource(16)]
-    public string Name { get; private set; }
+  public ushort Width { get; private set; }
+  public ushort Height { get; private set; }
+  public GlTextureFormat ImageFormat { get; private set; }
 
-    private readonly uint padding_ = 0;
+  [StringLengthSource(16)]
+  public string Name { get; private set; }
 
-    [Skip]
-    private bool includeExtraPadding_ 
-      => CmbHeader.Version >= Version.LUIGIS_MANSION_3D;
+  private readonly uint padding_ = 0;
 
-    [RIfBoolean(nameof(includeExtraPadding_))]
-    [SequenceLengthSource(56)]
-    private byte[]? extraPadding_;
+  [Skip]
+  private bool includeExtraPadding_ 
+    => CmbHeader.Version >= Version.LUIGIS_MANSION_3D;
 
-    [RSequenceLengthSource(nameof(dataLength_))]
-    public byte[] Data { get; private set; }
-  }
+  [RIfBoolean(nameof(includeExtraPadding_))]
+  [SequenceLengthSource(56)]
+  private byte[]? extraPadding_;
+
+  [RSequenceLengthSource(nameof(dataLength_))]
+  public byte[] Data { get; private set; }
 }

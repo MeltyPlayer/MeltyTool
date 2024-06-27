@@ -4,25 +4,25 @@ using fin.util.asserts;
 
 using NUnit.Framework;
 
-namespace fin.data {
-  public class AsyncCollectorTests {
-    [Test]
-    public async Task TestToArray() {
-      var collector = new AsyncCollector<string>();
+namespace fin.data;
 
-      var delay = new TaskCompletionSource();
+public class AsyncCollectorTests {
+  [Test]
+  public async Task TestToArray() {
+    var collector = new AsyncCollector<string>();
 
-      collector.Add("foo");
-      collector.Add("bar");
-      collector.Add(delay.Task.ContinueWith(_ => "awaited"));
+    var delay = new TaskCompletionSource();
 
-      var toArray = collector.ToArray();
-      collector.Clear();
+    collector.Add("foo");
+    collector.Add("bar");
+    collector.Add(delay.Task.ContinueWith(_ => "awaited"));
 
-      delay.SetResult();
+    var toArray = collector.ToArray();
+    collector.Clear();
 
-      Expect.AreArraysEqual(new[] { "foo", "bar", "awaited" },
-                            await toArray);
-    }
+    delay.SetResult();
+
+    Expect.AreArraysEqual(new[] { "foo", "bar", "awaited" },
+                          await toArray);
   }
 }

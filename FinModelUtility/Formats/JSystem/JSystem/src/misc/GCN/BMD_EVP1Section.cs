@@ -8,19 +8,20 @@ using schema.binary;
 
 #pragma warning disable CS8604
 
-namespace jsystem.GCN {
-  public partial class BMD {
-    public class EVP1Section {
-      public const string Signature = "EVP1";
-      public DataBlockHeader Header;
-      public ushort Count;
-      public ushort Padding;
-      public uint[] Offsets;
-      public byte[] Counts;
-      public Matrix3x4f[] InverseBindMatrices { get; set; }
-      public MultiMatrix[] WeightedIndices;
+namespace jsystem.GCN;
 
-      public EVP1Section(IBinaryReader br, out bool OK) {
+public partial class BMD {
+  public class EVP1Section {
+    public const string Signature = "EVP1";
+    public DataBlockHeader Header;
+    public ushort Count;
+    public ushort Padding;
+    public uint[] Offsets;
+    public byte[] Counts;
+    public Matrix3x4f[] InverseBindMatrices { get; set; }
+    public MultiMatrix[] WeightedIndices;
+
+    public EVP1Section(IBinaryReader br, out bool OK) {
         long position1 = br.Position;
         bool OK1;
         this.Header = new DataBlockHeader(br, "EVP1", out OK1);
@@ -68,10 +69,9 @@ namespace jsystem.GCN {
         }
       }
 
-      public class MultiMatrix {
-        public float[] Weights;
-        public ushort[] Indices;
-      }
+    public class MultiMatrix {
+      public float[] Weights;
+      public ushort[] Indices;
     }
   }
 }

@@ -18,17 +18,18 @@ using TextureMagFilter = fin.model.TextureMagFilter;
 using TextureMinFilter = OpenTK.Graphics.OpenGL.TextureMinFilter;
 
 
-namespace fin.ui.rendering.gl {
-  public class GlTexture : IFinDisposable {
-    private static readonly Dictionary<IReadOnlyTexture, GlTexture> cache_
-        = new();
+namespace fin.ui.rendering.gl;
+
+public class GlTexture : IFinDisposable {
+  private static readonly Dictionary<IReadOnlyTexture, GlTexture> cache_
+      = new();
 
 
-    private const int UNDEFINED_ID = -1;
-    private int id_ = UNDEFINED_ID;
-    private readonly IReadOnlyTexture texture_;
+  private const int UNDEFINED_ID = -1;
+  private int id_ = UNDEFINED_ID;
+  private readonly IReadOnlyTexture texture_;
 
-    public static GlTexture FromTexture(IReadOnlyTexture texture) {
+  public static GlTexture FromTexture(IReadOnlyTexture texture) {
       if (!cache_.TryGetValue(texture, out var glTexture)) {
         glTexture = new GlTexture(texture);
         cache_[texture] = glTexture;
@@ -37,7 +38,7 @@ namespace fin.ui.rendering.gl {
       return glTexture;
     }
 
-    public GlTexture(IReadOnlyImage image) {
+  public GlTexture(IReadOnlyImage image) {
       GL.GenTextures(1, out int id);
       this.id_ = id;
 
@@ -49,7 +50,7 @@ namespace fin.ui.rendering.gl {
       GL.BindTexture(target, UNDEFINED_ID);
     }
 
-    private GlTexture(IReadOnlyTexture texture) {
+  private GlTexture(IReadOnlyTexture texture) {
       this.texture_ = texture;
 
       GL.GenTextures(1, out int id);
@@ -127,9 +128,9 @@ namespace fin.ui.rendering.gl {
       GL.BindTexture(target, UNDEFINED_ID);
     }
 
-    private static readonly ArrayPool<byte> pool_ = ArrayPool<byte>.Shared;
+  private static readonly ArrayPool<byte> pool_ = ArrayPool<byte>.Shared;
 
-    private void LoadImageIntoTexture_(IReadOnlyImage image) {
+  private void LoadImageIntoTexture_(IReadOnlyImage image) {
       var imageWidth = image.Width;
       var imageHeight = image.Height;
 
@@ -208,16 +209,16 @@ namespace fin.ui.rendering.gl {
       pool_.Return(pixelBytes);
     }
 
-    ~GlTexture() => this.ReleaseUnmanagedResources_();
+  ~GlTexture() => this.ReleaseUnmanagedResources_();
 
-    public bool IsDisposed { get; private set; }
+  public bool IsDisposed { get; private set; }
 
-    public void Dispose() {
+  public void Dispose() {
       this.ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() {
+  private void ReleaseUnmanagedResources_() {
       this.IsDisposed = true;
       GlTexture.cache_.Remove(this.texture_);
 
@@ -227,28 +228,27 @@ namespace fin.ui.rendering.gl {
       this.id_ = UNDEFINED_ID;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Bind(int textureIndex = 0)
-      => GlUtil.BindTexture(textureIndex, this.id_);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public void Bind(int textureIndex = 0)
+    => GlUtil.BindTexture(textureIndex, this.id_);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Unbind(int textureIndex = 0)
-      => GlUtil.UnbindTexture(textureIndex);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public void Unbind(int textureIndex = 0)
+    => GlUtil.UnbindTexture(textureIndex);
 
-    private static TextureWrapMode ConvertFinWrapToGlWrap_(
-        WrapMode wrapMode,
-        bool hasBorderColor) =>
-        wrapMode switch {
-            WrapMode.CLAMP => hasBorderColor
-                ? TextureWrapMode.ClampToBorder
-                : TextureWrapMode.ClampToEdge,
-            WrapMode.REPEAT => TextureWrapMode.Repeat,
-            WrapMode.MIRROR_CLAMP or WrapMode.MIRROR_REPEAT
-                => TextureWrapMode.MirroredRepeat,
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(wrapMode),
-                wrapMode,
-                null)
-        };
-  }
+  private static TextureWrapMode ConvertFinWrapToGlWrap_(
+      WrapMode wrapMode,
+      bool hasBorderColor) =>
+      wrapMode switch {
+          WrapMode.CLAMP => hasBorderColor
+              ? TextureWrapMode.ClampToBorder
+              : TextureWrapMode.ClampToEdge,
+          WrapMode.REPEAT => TextureWrapMode.Repeat,
+          WrapMode.MIRROR_CLAMP or WrapMode.MIRROR_REPEAT
+              => TextureWrapMode.MirroredRepeat,
+          _ => throw new ArgumentOutOfRangeException(
+              nameof(wrapMode),
+              wrapMode,
+              null)
+      };
 }

@@ -1,21 +1,22 @@
 ﻿using fin.audio;
 using fin.util.asserts;
 
-namespace fin.ui.playback.al {
-  public partial class AlAudioManager {
-    public IAudioBuffer<short> CreateAudioBuffer()
-      => new AlAudioBuffer();
+namespace fin.ui.playback.al;
 
-    private class AlAudioBuffer : IAudioBuffer<short> {
-      private short[][] channels_;
+public partial class AlAudioManager {
+  public IAudioBuffer<short> CreateAudioBuffer()
+    => new AlAudioBuffer();
 
-      public AudioChannelsType AudioChannelsType { get; private set; }
+  private class AlAudioBuffer : IAudioBuffer<short> {
+    private short[][] channels_;
 
-      public int Frequency { get; set; }
+    public AudioChannelsType AudioChannelsType { get; private set; }
 
-      public int LengthInSamples { get; private set; }
+    public int Frequency { get; set; }
 
-      public void SetPcm(short[][] channelSamples) {
+    public int LengthInSamples { get; private set; }
+
+    public void SetPcm(short[][] channelSamples) {
         switch (channelSamples.Length) {
           case 1: {
             this.SetMonoPcm(channelSamples[0]);
@@ -30,14 +31,14 @@ namespace fin.ui.playback.al {
       }
 
 
-      public void SetMonoPcm(short[] samples) {
+    public void SetMonoPcm(short[] samples) {
         this.AudioChannelsType = AudioChannelsType.MONO;
         this.LengthInSamples = samples.Length;
         this.channels_ = [samples];
       }
 
-      public void SetStereoPcm(short[] leftChannelSamples,
-                               short[] rightChannelSamples) {
+    public void SetStereoPcm(short[] leftChannelSamples,
+                             short[] rightChannelSamples) {
         Asserts.Equal(leftChannelSamples.Length,
                       rightChannelSamples.Length,
                       "Expected the left/right channels to have the same number of samples!");
@@ -47,12 +48,11 @@ namespace fin.ui.playback.al {
         this.channels_ = [leftChannelSamples, rightChannelSamples];
       }
 
-      public short GetPcm(AudioChannelType channelType, int sampleOffset)
-        => this.channels_[channelType switch {
-            AudioChannelType.MONO         => 0,
-            AudioChannelType.STEREO_LEFT  => 0,
-            AudioChannelType.STEREO_RIGHT => 1
-        }][sampleOffset];
-    }
+    public short GetPcm(AudioChannelType channelType, int sampleOffset)
+      => this.channels_[channelType switch {
+          AudioChannelType.MONO         => 0,
+          AudioChannelType.STEREO_LEFT  => 0,
+          AudioChannelType.STEREO_RIGHT => 1
+      }][sampleOffset];
   }
 }

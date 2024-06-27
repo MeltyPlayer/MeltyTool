@@ -3,69 +3,70 @@
 using fin.model;
 using fin.util.hash;
 
-namespace f3dzex2.image {
-  public struct TextureParams {
-    public TextureParams() { }
+namespace f3dzex2.image;
 
-    public ImageParams ImageParams { get; private set; } = new();
+public struct TextureParams {
+  public TextureParams() { }
 
-    public N64ColorFormat ColorFormat {
-      get => this.ImageParams.ColorFormat;
-      set {
+  public ImageParams ImageParams { get; private set; } = new();
+
+  public N64ColorFormat ColorFormat {
+    get => this.ImageParams.ColorFormat;
+    set {
         ImageParams imageParams = this.ImageParams;
         imageParams.ColorFormat = value;
         this.ImageParams = imageParams;
       }
-    }
+  }
 
-    public BitsPerTexel BitsPerTexel {
-      get => this.ImageParams.BitsPerTexel;
-      set {
+  public BitsPerTexel BitsPerTexel {
+    get => this.ImageParams.BitsPerTexel;
+    set {
         ImageParams imageParams = this.ImageParams;
         imageParams.BitsPerTexel = value;
         this.ImageParams = imageParams;
       }
-    }
+  }
 
-    public ushort Width {
-      get => this.ImageParams.Width;
-      set {
+  public ushort Width {
+    get => this.ImageParams.Width;
+    set {
         ImageParams imageParams = this.ImageParams;
         imageParams.Width = value;
         this.ImageParams = imageParams;
       }
-    }
+  }
 
-    public ushort Height {
-      get => this.ImageParams.Height;
-      set {
+  public ushort Height {
+    get => this.ImageParams.Height;
+    set {
         ImageParams imageParams = this.ImageParams;
         imageParams.Height = value;
         this.ImageParams = imageParams;
       }
-    }
+  }
 
-    public uint SegmentedAddress {
-      get => this.ImageParams.SegmentedAddress;
-      set {
+  public uint SegmentedAddress {
+    get => this.ImageParams.SegmentedAddress;
+    set {
         ImageParams imageParams = this.ImageParams;
         imageParams.SegmentedAddress = value;
         this.ImageParams = imageParams;
       }
-    }
+  }
 
-    public F3dWrapMode WrapModeT { get; set; } = F3dWrapMode.REPEAT;
-    public F3dWrapMode WrapModeS { get; set; } = F3dWrapMode.REPEAT;
+  public F3dWrapMode WrapModeT { get; set; } = F3dWrapMode.REPEAT;
+  public F3dWrapMode WrapModeS { get; set; } = F3dWrapMode.REPEAT;
 
-    public UvType UvType { get; set; } = UvType.STANDARD;
+  public UvType UvType { get; set; } = UvType.STANDARD;
 
-    public override int GetHashCode() => FluentHash.Start()
-                                                   .With(this.ImageParams)
-                                                   .With(this.WrapModeT)
-                                                   .With(this.WrapModeS)
-                                                   .With(UvType);
+  public override int GetHashCode() => FluentHash.Start()
+                                                 .With(this.ImageParams)
+                                                 .With(this.WrapModeT)
+                                                 .With(this.WrapModeS)
+                                                 .With(UvType);
 
-    public override bool Equals(object? other) {
+  public override bool Equals(object? other) {
       if (ReferenceEquals(this, other)) {
         return true;
       }
@@ -79,5 +80,4 @@ namespace f3dzex2.image {
 
       return false;
     }
-  }
 }

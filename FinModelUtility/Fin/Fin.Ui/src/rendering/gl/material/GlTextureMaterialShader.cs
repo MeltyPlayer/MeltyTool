@@ -2,21 +2,22 @@
 using fin.model;
 using fin.model.util;
 
-namespace fin.ui.rendering.gl.material {
-  public class GlTextureMaterialShader(
-      IReadOnlyModel model,
-      IReadOnlyMaterial material,
-      IReadOnlyBoneTransformManager? boneTransformManager,
-      IReadOnlyLighting? lighting)
-      : BGlMaterialShader<IReadOnlyMaterial>(model,
-                                             material,
-                                             boneTransformManager,
-                                             lighting) {
-    protected override void DisposeInternal() { }
+namespace fin.ui.rendering.gl.material;
 
-    protected override void Setup(
-        IReadOnlyMaterial material,
-        GlShaderProgram shaderProgram) {
+public class GlTextureMaterialShader(
+    IReadOnlyModel model,
+    IReadOnlyMaterial material,
+    IReadOnlyBoneTransformManager? boneTransformManager,
+    IReadOnlyLighting? lighting)
+    : BGlMaterialShader<IReadOnlyMaterial>(model,
+                                           material,
+                                           boneTransformManager,
+                                           lighting) {
+  protected override void DisposeInternal() { }
+
+  protected override void Setup(
+      IReadOnlyMaterial material,
+      GlShaderProgram shaderProgram) {
       var finTexture = PrimaryTextureFinder.GetFor(material);
       var glTexture = finTexture != null
           ? GlTexture.FromTexture(finTexture)
@@ -25,7 +26,6 @@ namespace fin.ui.rendering.gl.material {
       this.SetUpTexture("diffuseTexture", 0, finTexture, glTexture);
     }
 
-    protected override void PassUniformsAndBindTextures(
-        GlShaderProgram shaderProgram) { }
-  }
+  protected override void PassUniformsAndBindTextures(
+      GlShaderProgram shaderProgram) { }
 }

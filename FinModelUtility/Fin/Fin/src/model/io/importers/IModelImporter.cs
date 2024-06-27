@@ -2,18 +2,18 @@
 
 using fin.importers;
 
-namespace fin.model.io.importers {
-  public interface IModelImporter<in TModelFileBundle>
-      : I3dImporter<IModel, TModelFileBundle>
-      where TModelFileBundle : IModelFileBundle;
+namespace fin.model.io.importers;
 
-  public interface IAsyncModelImporter<in TModelFileBundle>
-      : IModelImporter<TModelFileBundle>
-      where TModelFileBundle : IModelFileBundle {
-    IModel IImporter<IModel, TModelFileBundle>.Import(
-        TModelFileBundle modelFileBundle)
-      => this.ImportAsync(modelFileBundle).Result;
+public interface IModelImporter<in TModelFileBundle>
+    : I3dImporter<IModel, TModelFileBundle>
+    where TModelFileBundle : IModelFileBundle;
 
-    Task<IModel> ImportAsync(TModelFileBundle modelFileBundle);
-  }
+public interface IAsyncModelImporter<in TModelFileBundle>
+    : IModelImporter<TModelFileBundle>
+    where TModelFileBundle : IModelFileBundle {
+  IModel IImporter<IModel, TModelFileBundle>.Import(
+      TModelFileBundle modelFileBundle)
+    => this.ImportAsync(modelFileBundle).Result;
+
+  Task<IModel> ImportAsync(TModelFileBundle modelFileBundle);
 }

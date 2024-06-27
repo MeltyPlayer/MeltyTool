@@ -2,17 +2,18 @@
 
 using OpenTK.Audio.OpenAL;
 
-namespace fin.ui.playback.al {
-  public partial class AlAudioManager {
-    private class AlAotAudioPlayback : BAlAudioPlayback,
-                                       IAotAudioPlayback<short> {
-      private int alBufferId_;
+namespace fin.ui.playback.al;
 
-      public IAotAudioDataSource<short> TypedSource { get; }
+public partial class AlAudioManager {
+  private class AlAotAudioPlayback : BAlAudioPlayback,
+                                     IAotAudioPlayback<short> {
+    private int alBufferId_;
 
-      public AlAotAudioPlayback(IAudioPlayer<short> player,
-                                IAotAudioDataSource<short> source)
-          : base(player, source) {
+    public IAotAudioDataSource<short> TypedSource { get; }
+
+    public AlAotAudioPlayback(IAudioPlayer<short> player,
+                              IAotAudioDataSource<short> source)
+        : base(player, source) {
         this.TypedSource = source;
 
         AL.GenBuffer(out var newBuffer);
@@ -63,17 +64,17 @@ namespace fin.ui.playback.al {
         AL.Source(this.AlSourceId, ALSourcei.Buffer, this.alBufferId_);
       }
 
-      protected override void DisposeInternal() {
+    protected override void DisposeInternal() {
         AL.DeleteBuffer(this.alBufferId_);
       }
 
-      public void Pause() {
+    public void Pause() {
         this.AssertNotDisposed();
         AL.SourcePause(this.AlSourceId);
       }
 
-      public int SampleOffset {
-        get {
+    public int SampleOffset {
+      get {
           this.AssertNotDisposed();
 
           AL.GetSource(this.AlSourceId,
@@ -81,28 +82,27 @@ namespace fin.ui.playback.al {
                        out var sampleOffset);
           return sampleOffset;
         }
-        set {
+      set {
           this.AssertNotDisposed();
 
           AL.Source(this.AlSourceId, ALSourcei.SampleOffset, (int) value);
         }
-      }
+    }
 
-      public short GetPcm(AudioChannelType channelType)
-        => this.TypedSource.GetPcm(channelType, this.SampleOffset);
+    public short GetPcm(AudioChannelType channelType)
+      => this.TypedSource.GetPcm(channelType, this.SampleOffset);
 
-      public bool Looping {
-        get {
+    public bool Looping {
+      get {
           this.AssertNotDisposed();
 
           AL.GetSource(this.AlSourceId, ALSourceb.Looping, out var looping);
           return looping;
         }
-        set {
+      set {
           this.AssertNotDisposed();
           AL.Source(this.AlSourceId, ALSourceb.Looping, value);
         }
-      }
     }
   }
 }

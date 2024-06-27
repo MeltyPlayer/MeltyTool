@@ -1,14 +1,14 @@
-﻿namespace level5 {
-  public class GenericAnimation {
-    public string Name { get; set; }
-    public uint NameHash { get; set; }
+﻿namespace level5;
 
-    public List<GenericAnimationTransform> TransformNodes = [];
+public class GenericAnimation {
+  public string Name { get; set; }
+  public uint NameHash { get; set; }
 
-    public int FrameCount { get; set; } = 0;
+  public List<GenericAnimationTransform> TransformNodes = [];
 
-    public override string ToString() {
+  public int FrameCount { get; set; } = 0;
+
+  public override string ToString() {
       return Name;
     }
-  }
 }

@@ -1,29 +1,30 @@
 ﻿using ttyd.schema.model.blocks;
 
-namespace ttyd.api {
-  // TODO: Optimize this
-  public class TtydGroupTransformKeyframes {
-    private readonly float[] initialTransforms_;
-    private readonly int animationLength_;
+namespace ttyd.api;
 
-    private readonly
-        List<(float keyframe, IReadOnlyList<GroupTransformDelta> deltas)>
-        keyframeTimesAndDeltas_ = new();
+// TODO: Optimize this
+public class TtydGroupTransformKeyframes {
+  private readonly float[] initialTransforms_;
+  private readonly int animationLength_;
 
-    public TtydGroupTransformKeyframes(
-        float[] initialTransforms,
-        int animationLength) {
+  private readonly
+      List<(float keyframe, IReadOnlyList<GroupTransformDelta> deltas)>
+      keyframeTimesAndDeltas_ = new();
+
+  public TtydGroupTransformKeyframes(
+      float[] initialTransforms,
+      int animationLength) {
       this.initialTransforms_ = initialTransforms;
       this.animationLength_ = animationLength;
     }
 
-    public void AddDeltasForKeyframe(
-        float keyframe,
-        ReadOnlySpan<GroupTransformDelta> deltas) {
+  public void AddDeltasForKeyframe(
+      float keyframe,
+      ReadOnlySpan<GroupTransformDelta> deltas) {
       this.keyframeTimesAndDeltas_.Add((keyframe, deltas.ToArray()));
     }
 
-    public IGroupTransformBakedFrames BakeTransformsAtFrames() {
+  public IGroupTransformBakedFrames BakeTransformsAtFrames() {
       var allTransformFrames
           = new float[this.initialTransforms_.Length * this.animationLength_];
 
@@ -35,14 +36,14 @@ namespace ttyd.api {
                                                allTransformFrames);
     }
 
-    /// <summary>
-    ///   Shamelessly stolen from:
-    ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L903
-    /// </summary>
-    // TODO: Optimize this
-    private void AnimationUpdate_(
-        int frame,
-        Span<float> allTransformFrames) {
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L903
+  /// </summary>
+  // TODO: Optimize this
+  private void AnimationUpdate_(
+      int frame,
+      Span<float> allTransformFrames) {
       var allTransformsAtFrame = allTransformFrames.Slice(
           this.initialTransforms_.Length * frame,
           this.initialTransforms_.Length);
@@ -74,11 +75,11 @@ namespace ttyd.api {
       }
     }
 
-    /// <summary>
-    ///   Shamelessly stolen from:
-    ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L783
-    /// </summary>
-    private int FindKeyframeIndex_(int frame) {
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L783
+  /// </summary>
+  private int FindKeyframeIndex_(int frame) {
       for (var i = 0; i < this.keyframeTimesAndDeltas_.Count; ++i) {
         var (keyframeTime, _) = this.keyframeTimesAndDeltas_[i];
         if (frame < keyframeTime) {
@@ -89,14 +90,14 @@ namespace ttyd.api {
       return -1;
     }
 
-    /// <summary>
-    ///   Shamelessly stolen from:
-    ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L840
-    /// </summary>
-    // TODO: Optimize this
-    private static void AnimationUpdateFrameImmediate_(
-        IReadOnlyList<GroupTransformDelta> deltas,
-        Span<float> allTransformsAtFrame) {
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/PaperMarioTTYD/AnimGroup.ts#L840
+  /// </summary>
+  // TODO: Optimize this
+  private static void AnimationUpdateFrameImmediate_(
+      IReadOnlyList<GroupTransformDelta> deltas,
+      Span<float> allTransformsAtFrame) {
       var transformIndexAccumulator = 0;
 
       foreach (var delta in deltas) {
@@ -106,11 +107,11 @@ namespace ttyd.api {
       }
     }
 
-    private static void AnimationUpdateFrame_(
-        IReadOnlyList<GroupTransformDelta> deltas,
-        Span<float> allTransformsAtFrame,
-        float t,
-        float duration) {
+  private static void AnimationUpdateFrame_(
+      IReadOnlyList<GroupTransformDelta> deltas,
+      Span<float> allTransformsAtFrame,
+      float t,
+      float duration) {
       var transformIndexAccumulator = 0;
 
       var t2 = t * t;
@@ -135,5 +136,4 @@ namespace ttyd.api {
         );
       }
     }
-  }
 }

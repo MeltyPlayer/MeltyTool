@@ -1,3 +1,3 @@
-﻿namespace modl.xml.level {
-  internal class XmlLevelResource : BXmlLevelTypedItemList<string>, IXmlLevelObjectField;
-}
+﻿namespace modl.xml.level;
+
+internal class XmlLevelResource : BXmlLevelTypedItemList<string>, IXmlLevelObjectField;

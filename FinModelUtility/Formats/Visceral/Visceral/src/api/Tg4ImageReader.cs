@@ -11,14 +11,15 @@ using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace visceral.api {
-  public record Tg4ImageFileBundle {
-    public required IReadOnlyTreeFile Tg4hFile { get; init; }
-    public required IReadOnlyTreeFile Tg4dFile { get; init; }
-  }
+namespace visceral.api;
 
-  public class Tg4ImageReader {
-    public IImage ReadImage(Tg4ImageFileBundle bundle) {
+public record Tg4ImageFileBundle {
+  public required IReadOnlyTreeFile Tg4hFile { get; init; }
+  public required IReadOnlyTreeFile Tg4dFile { get; init; }
+}
+
+public class Tg4ImageReader {
+  public IImage ReadImage(Tg4ImageFileBundle bundle) {
       var headerFile = bundle.Tg4hFile;
       using var headerEr =
           new SchemaBinaryReader(headerFile.OpenRead(),
@@ -45,18 +46,18 @@ namespace visceral.api {
 
       var dataFile = bundle.Tg4dFile;
 
-      /*if (compressionFormat != CompressionFormat.Bc3) {
-        using var br = dataFile.OpenReadAsBinary();
+     /*if (compressionFormat != CompressionFormat.Bc3) {
+        sing var br = dataFile.OpenReadAsBinary();
 
-        return compressionFormat switch {
-            CompressionFormat.Bc1
-                => new Dxt1ImageReader(width, height, 1, 4, false)
-                    .ReadImage(br),
-            CompressionFormat.Bc1WithAlpha
-                => new Dxt1aImageReader(width, height, 1, 4, false)
-                    .ReadImage(br),
-        };
-      }*/
+        eturn compressionFormat switch {
+            ompressionFormat.Bc1
+                > new Dxt1ImageReader(width, height, 1, 4, false)
+                    ReadImage(br),
+            ompressionFormat.Bc1WithAlpha
+                > new Dxt1aImageReader(width, height, 1, 4, false)
+                    ReadImage(br),
+        ;
+      *//
 
       var bcDecoder = new BcDecoder();
       bcDecoder.Options.IsParallel = true;
@@ -85,5 +86,4 @@ namespace visceral.api {
 
       return rgbaImage;
     }
-  }
 }

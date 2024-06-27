@@ -1,17 +1,18 @@
 ﻿using schema.binary;
 
-namespace dat.schema.animation {
-  public static class DatKeyframesUtil {
-    /// <summary>
-    ///   Shamelessly stolen from:
-    ///   https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRaw/Tools/FOBJ_Decoder.cs#L22
-    ///   https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRaw/Tools/FOBJ_Player.cs#L162
-    /// </summary> 
-    public static void ReadKeyframes(
-        IBinaryReader br,
-        IDatKeyframes datKeyframes,
-        LinkedList<(int frame, float incomingValue, float outgoingValue, float?
-            incomingTangent, float? outgoingTangent)> keyframes) {
+namespace dat.schema.animation;
+
+public static class DatKeyframesUtil {
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRaw/Tools/FOBJ_Decoder.cs#L22
+  ///   https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRaw/Tools/FOBJ_Player.cs#L162
+  /// </summary> 
+  public static void ReadKeyframes(
+      IBinaryReader br,
+      IDatKeyframes datKeyframes,
+      LinkedList<(int frame, float incomingValue, float outgoingValue, float?
+          incomingTangent, float? outgoingTangent)> keyframes) {
       if (datKeyframes.JointTrackType
           is (< JointTrackType.HSD_A_J_ROTX or > JointTrackType.HSD_A_J_ROTZ)
              and (< JointTrackType.HSD_A_J_TRAX
@@ -140,11 +141,11 @@ namespace dat.schema.animation {
       br.PopEndianness();
     }
 
-    /// <summary>
-    ///   Shamelessly stolen from:
-    ///   https://github.com/Ploaj/HSDLib/blob/master/HSDRaw/BinaryReaderExt.cs#L249C9-L259C10
-    /// </summary>
-    private static int ReadPacked_(IBinaryReader br) {
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://github.com/Ploaj/HSDLib/blob/master/HSDRaw/BinaryReaderExt.cs#L249C9-L259C10
+  /// </summary>
+  private static int ReadPacked_(IBinaryReader br) {
       int type = br.ReadByte();
       int i = type;
       if ((i & 0x80) != 0) // max 16 bit I think
@@ -156,16 +157,15 @@ namespace dat.schema.animation {
       return type;
     }
 
-    private static float ParseFloat_(IBinaryReader br,
-                                     GXAnimDataFormat format,
-                                     float scale)
-      => format switch {
-          GXAnimDataFormat.Float  => br.ReadSingle(),
-          GXAnimDataFormat.Short  => br.ReadInt16() / scale,
-          GXAnimDataFormat.UShort => br.ReadUInt16() / scale,
-          GXAnimDataFormat.SByte  => br.ReadSByte() / scale,
-          GXAnimDataFormat.Byte   => br.ReadByte() / scale,
-          _                       => 0
-      };
-  }
+  private static float ParseFloat_(IBinaryReader br,
+                                   GXAnimDataFormat format,
+                                   float scale)
+    => format switch {
+        GXAnimDataFormat.Float  => br.ReadSingle(),
+        GXAnimDataFormat.Short  => br.ReadInt16() / scale,
+        GXAnimDataFormat.UShort => br.ReadUInt16() / scale,
+        GXAnimDataFormat.SByte  => br.ReadSByte() / scale,
+        GXAnimDataFormat.Byte   => br.ReadByte() / scale,
+        _                       => 0
+    };
 }

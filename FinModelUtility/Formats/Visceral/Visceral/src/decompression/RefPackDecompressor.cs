@@ -22,9 +22,10 @@
 
 using fin.decompression;
 
-namespace visceral.decompression {
-  public class RefPackArrayDecompressor : BArrayDecompressor {
-    public override bool TryDecompress(byte[] inData, out byte[] outData) {
+namespace visceral.decompression;
+
+public class RefPackArrayDecompressor : BArrayDecompressor {
+  public override bool TryDecompress(byte[] inData, out byte[] outData) {
       using var input = new MemoryStream(inData);
       Span<byte> dummy = stackalloc byte[4];
       if (input.Read(dummy[..2]) != 2) {
@@ -132,5 +133,4 @@ namespace visceral.decompression {
 
       return true;
     }
-  }
 }

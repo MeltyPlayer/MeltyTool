@@ -2,27 +2,27 @@
 
 using fin.color;
 
-namespace fin.language.equations.fixedFunction {
-  public interface IFixedFunctionRegisters {
-    IReadOnlyList<IColorRegister> ColorRegisters { get; }
-    IReadOnlyList<IScalarRegister> ScalarRegisters { get; }
+namespace fin.language.equations.fixedFunction;
 
-    IColorRegister GetOrCreateColorRegister(
-        string name,
-        IColorConstant defaultValue);
+public interface IFixedFunctionRegisters {
+  IReadOnlyList<IColorRegister> ColorRegisters { get; }
+  IReadOnlyList<IScalarRegister> ScalarRegisters { get; }
 
-    IScalarRegister GetOrCreateScalarRegister(
-        string name,
-        IScalarConstant defaultValue);
-  }
+  IColorRegister GetOrCreateColorRegister(
+      string name,
+      IColorConstant defaultValue);
 
-  public interface IColorRegister : IColorNamedValue {
-    IColorConstant DefaultValue { get; set; }
-    IColor Value { get; set; }
-  }
+  IScalarRegister GetOrCreateScalarRegister(
+      string name,
+      IScalarConstant defaultValue);
+}
 
-  public interface IScalarRegister : IScalarNamedValue {
-    IScalarConstant DefaultValue { get; set; }
-    float Value { get; set; }
-  }
+public interface IColorRegister : IColorNamedValue {
+  IColorConstant DefaultValue { get; set; }
+  IColor Value { get; set; }
+}
+
+public interface IScalarRegister : IScalarNamedValue {
+  IScalarConstant DefaultValue { get; set; }
+  float Value { get; set; }
 }

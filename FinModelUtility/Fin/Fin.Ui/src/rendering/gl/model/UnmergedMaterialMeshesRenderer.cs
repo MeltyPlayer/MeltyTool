@@ -2,27 +2,28 @@
 using fin.math;
 using fin.model;
 
-namespace fin.ui.rendering.gl.model {
-  public class UnmergedMaterialMeshesRenderer : IModelRenderer {
-    private GlBufferManager? bufferManager_;
-    private readonly IReadOnlyLighting? lighting_;
-    private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
+namespace fin.ui.rendering.gl.model;
 
-    private readonly
-        ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesRenderer>
-        materialMeshRenderers_ = new();
+public class UnmergedMaterialMeshesRenderer : IModelRenderer {
+  private GlBufferManager? bufferManager_;
+  private readonly IReadOnlyLighting? lighting_;
+  private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
 
-    public UnmergedMaterialMeshesRenderer(
-        IReadOnlyModel model,
-        IReadOnlyLighting? lighting,
-        IReadOnlyBoneTransformManager? boneTransformManager = null) {
+  private readonly
+      ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesRenderer>
+      materialMeshRenderers_ = new();
+
+  public UnmergedMaterialMeshesRenderer(
+      IReadOnlyModel model,
+      IReadOnlyLighting? lighting,
+      IReadOnlyBoneTransformManager? boneTransformManager = null) {
       this.Model = model;
       this.lighting_ = lighting;
       this.boneTransformManager_ = boneTransformManager;
     }
 
-    // Generates buffer manager and model within the current GL context.
-    private void GenerateModelIfNull_() {
+  // Generates buffer manager and model within the current GL context.
+  private void GenerateModelIfNull_() {
       if (this.bufferManager_ != null) {
         return;
       }
@@ -77,14 +78,14 @@ namespace fin.ui.rendering.gl.model {
       }
     }
 
-    ~UnmergedMaterialMeshesRenderer() => ReleaseUnmanagedResources_();
+  ~UnmergedMaterialMeshesRenderer() => ReleaseUnmanagedResources_();
 
-    public void Dispose() {
+  public void Dispose() {
       ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() {
+  private void ReleaseUnmanagedResources_() {
       foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_.GetPairs()) {
         foreach (var materialMeshRenderer in materialMeshRenderers) {
           materialMeshRenderer.Dispose();
@@ -95,16 +96,16 @@ namespace fin.ui.rendering.gl.model {
       this.bufferManager_?.Dispose();
     }
 
-    public IReadOnlyModel Model { get; }
+  public IReadOnlyModel Model { get; }
 
-    public ISet<IReadOnlyMesh> HiddenMeshes { get; }
-      = new HashSet<IReadOnlyMesh>();
+  public ISet<IReadOnlyMesh> HiddenMeshes { get; }
+    = new HashSet<IReadOnlyMesh>();
 
-    private bool useLighting_ = false;
+  private bool useLighting_ = false;
 
-    public bool UseLighting {
-      get => this.useLighting_;
-      set {
+  public bool UseLighting {
+    get => this.useLighting_;
+    set {
         this.useLighting_ = value;
         foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_
                      .GetPairs()) {
@@ -113,9 +114,9 @@ namespace fin.ui.rendering.gl.model {
           }
         }
       }
-    }
+  }
 
-    public void Render() {
+  public void Render() {
       this.GenerateModelIfNull_();
 
       foreach (var (mesh, materialMeshRenderers) in
@@ -129,5 +130,4 @@ namespace fin.ui.rendering.gl.model {
         }
       }
     }
-  }
 }

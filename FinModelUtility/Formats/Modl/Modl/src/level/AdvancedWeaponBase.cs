@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class AdvancedWeaponBase : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class AdvancedWeaponBase : BLevelObject {
 }

@@ -15,12 +15,13 @@ using jsystem.schema.jutility.bti;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace jsystem.exporter {
-  public class BmdGxTexture : IGxTexture {
-    public BmdGxTexture(
-        string name,
-        Bti header,
-        IList<(string, Bti)>? pathsAndBtis = null) {
+namespace jsystem.exporter;
+
+public class BmdGxTexture : IGxTexture {
+  public BmdGxTexture(
+      string name,
+      Bti header,
+      IList<(string, Bti)>? pathsAndBtis = null) {
       this.Name = name;
       this.DefaultHeader = header;
 
@@ -93,105 +94,105 @@ namespace jsystem.exporter {
         if (!alphaAlreadyGood) {
           var pixelCount = image.Width * image.Height;
 
-          /*switch (alphaSetting) {
-            case JutTransparency.OPAQUE: {
-              switch (image) {
-                case BIndexedImage bIndexedImage: {
-                  var palette = bIndexedImage.Palette;
-                  for (var i = 0; i < palette.Length; ++i) {
-                    var color = palette[i];
-                    palette[i] =
-                        FinColor.FromRgbBytes(color.Rb, color.Gb, color.Bb);
-                  }
+         /*switch (alphaSetting) {
+            ase JutTransparency.OPAQUE: {
+              witch (image) {
+                ase BIndexedImage bIndexedImage: {
+                  ar palette = bIndexedImage.Palette;
+                  or (var i = 0; i < palette.Length; ++i) {
+                    ar color = palette[i];
+                    alette[i] =
+                        inColor.FromRgbBytes(color.Rb, color.Gb, color.Bb);
+                  
 
-                  break;
-                }
-                case La16Image la16Image: {
-                  using var fastLock = la16Image.Lock();
-                  var ptr = fastLock.pixelScan0;
-                  for (var i = 0; i < pixelCount; ++i) {
-                    var pixel = ptr[i];
-                    pixel.A = 255;
-                    ptr[i] = pixel;
-                  }
+                  reak;
+                
+                ase La16Image la16Image: {
+                  sing var fastLock = la16Image.Lock();
+                  ar ptr = fastLock.pixelScan0;
+                  or (var i = 0; i < pixelCount; ++i) {
+                    ar pixel = ptr[i];
+                    ixel.A = 255;
+                    tr[i] = pixel;
+                  
 
-                  break;
-                }
-                case Rgba32Image rgba32Image: {
-                  using var fastLock = rgba32Image.Lock();
-                  var ptr = fastLock.pixelScan0;
-                  for (var i = 0; i < pixelCount; ++i) {
-                    var pixel = ptr[i];
-                    pixel.A = 255;
-                    ptr[i] = pixel;
-                  }
+                  reak;
+                
+                ase Rgba32Image rgba32Image: {
+                  sing var fastLock = rgba32Image.Lock();
+                  ar ptr = fastLock.pixelScan0;
+                  or (var i = 0; i < pixelCount; ++i) {
+                    ar pixel = ptr[i];
+                    ixel.A = 255;
+                    tr[i] = pixel;
+                  
 
-                  break;
-                }
-              }
+                  reak;
+                
+              
 
-              break;
-            }
-            case JutTransparency.CUTOUT: {
-              switch (image) {
-                case BIndexedImage bIndexedImage: {
-                  var palette = bIndexedImage.Palette;
-                  for (var i = 0; i < palette.Length; ++i) {
-                    var color = palette[i];
-                    palette[i] =
-                        FinColor.FromRgbaBytes(color.Rb,
-                                               color.Gb,
-                                               color.Bb,
-                                               CollapseAlphaForMask_(color.Ab));
-                  }
+              reak;
+            
+            ase JutTransparency.CUTOUT: {
+              witch (image) {
+                ase BIndexedImage bIndexedImage: {
+                  ar palette = bIndexedImage.Palette;
+                  or (var i = 0; i < palette.Length; ++i) {
+                    ar color = palette[i];
+                    alette[i] =
+                        inColor.FromRgbaBytes(color.Rb,
+                                               olor.Gb,
+                                               olor.Bb,
+                                               ollapseAlphaForMask_(color.Ab));
+                  
 
-                  break;
-                }
-                case La16Image la16Image: {
-                  using var fastLock = la16Image.Lock();
-                  var ptr = fastLock.pixelScan0;
-                  for (var i = 0; i < pixelCount; ++i) {
-                    var pixel = ptr[i];
-                    pixel.A = CollapseAlphaForMask_(pixel.A);
-                    ptr[i] = pixel;
-                  }
+                  reak;
+                
+                ase La16Image la16Image: {
+                  sing var fastLock = la16Image.Lock();
+                  ar ptr = fastLock.pixelScan0;
+                  or (var i = 0; i < pixelCount; ++i) {
+                    ar pixel = ptr[i];
+                    ixel.A = CollapseAlphaForMask_(pixel.A);
+                    tr[i] = pixel;
+                  
 
-                  break;
-                }
-                case Rgba32Image rgba32Image: {
-                  using var fastLock = rgba32Image.Lock();
-                  var ptr = fastLock.pixelScan0;
-                  for (var i = 0; i < pixelCount; ++i) {
-                    var pixel = ptr[i];
-                    pixel.A = CollapseAlphaForMask_(pixel.A);
-                    ptr[i] = pixel;
-                  }
+                  reak;
+                
+                ase Rgba32Image rgba32Image: {
+                  sing var fastLock = rgba32Image.Lock();
+                  ar ptr = fastLock.pixelScan0;
+                  or (var i = 0; i < pixelCount; ++i) {
+                    ar pixel = ptr[i];
+                    ixel.A = CollapseAlphaForMask_(pixel.A);
+                    tr[i] = pixel;
+                  
 
-                  break;
-                }
-              }
+                  reak;
+                
+              
 
-              break;
-            }
-            case JutTransparency.SPECIAL: {
-              switch (image) {
-                case La16Image la16Image: {
-                  using var fastLock = la16Image.Lock();
-                  var ptr = fastLock.pixelScan0;
-                  for (var i = 0; i < pixelCount; ++i) {
-                    var pixel = ptr[i];
-                    ptr[i] = new La16(pixel.A, pixel.L);
-                  }
+              reak;
+            
+            ase JutTransparency.SPECIAL: {
+              witch (image) {
+                ase La16Image la16Image: {
+                  sing var fastLock = la16Image.Lock();
+                  ar ptr = fastLock.pixelScan0;
+                  or (var i = 0; i < pixelCount; ++i) {
+                    ar pixel = ptr[i];
+                    tr[i] = new La16(pixel.A, pixel.L);
+                  
 
-                  break;
-                }
-                // default: throw new NotImplementedException();
-              }
+                  reak;
+                
+                / default: throw new NotImplementedException();
+              
 
-              break;
-            }
-            default: throw new ArgumentOutOfRangeException();
-          }*/
+              reak;
+            
+            efault: throw new ArgumentOutOfRangeException();
+          *//
 
           switch (image) {
             case La16Image la16Image: {
@@ -213,22 +214,22 @@ namespace jsystem.exporter {
       this.ColorType = BmdGxTexture.GetColorType_(this.Header.Format);
     }
 
-    public string Name { get; }
-    public override string ToString() => this.Name;
+  public string Name { get; }
+  public override string ToString() => this.Name;
 
-    public IImage Image { get; }
-    public Bti Header => OverrideHeader ?? DefaultHeader;
-    private Bti DefaultHeader { get; }
-    private Bti? OverrideHeader { get; }
+  public IImage Image { get; }
+  public Bti Header => OverrideHeader ?? DefaultHeader;
+  private Bti DefaultHeader { get; }
+  private Bti? OverrideHeader { get; }
 
-    public GxWrapMode WrapModeS => this.Header.WrapS;
-    public GxWrapMode WrapModeT => this.Header.WrapT;
-    public GX_MIN_TEXTURE_FILTER MinTextureFilter => this.Header.MinFilter;
-    public GX_MAG_TEXTURE_FILTER MagTextureFilter => this.Header.MagFilter;
+  public GxWrapMode WrapModeS => this.Header.WrapS;
+  public GxWrapMode WrapModeT => this.Header.WrapT;
+  public GX_MIN_TEXTURE_FILTER MinTextureFilter => this.Header.MinFilter;
+  public GX_MAG_TEXTURE_FILTER MagTextureFilter => this.Header.MagFilter;
 
-    public ColorType ColorType { get; }
+  public ColorType ColorType { get; }
 
-    private static ColorType GetColorType_(GxTextureFormat textureFormat) {
+  private static ColorType GetColorType_(GxTextureFormat textureFormat) {
       switch (textureFormat) {
         case GxTextureFormat.I4:
         case GxTextureFormat.I8:
@@ -250,13 +251,13 @@ namespace jsystem.exporter {
       }
     }
 
-    public static bool operator ==(BmdGxTexture lhs, BmdGxTexture rhs)
-      => lhs.Equals(rhs);
+  public static bool operator ==(BmdGxTexture lhs, BmdGxTexture rhs)
+    => lhs.Equals(rhs);
 
-    public static bool operator !=(BmdGxTexture lhs, BmdGxTexture rhs)
-      => !lhs.Equals(rhs);
+  public static bool operator !=(BmdGxTexture lhs, BmdGxTexture rhs)
+    => !lhs.Equals(rhs);
 
-    public override bool Equals(object? obj) {
+  public override bool Equals(object? obj) {
       if (Object.ReferenceEquals(this, obj)) {
         return true;
       }
@@ -274,18 +275,17 @@ namespace jsystem.exporter {
       return false;
     }
 
-    public override int GetHashCode()
-      => FluentHash.Start()
-                   .With(Name)
-                   .With(Image)
-                   .With(WrapModeS)
-                   .With(WrapModeT)
-                   .With(MinTextureFilter)
-                   .With(MagTextureFilter)
-                   .With(ColorType)
-                   .Hash;
+  public override int GetHashCode()
+    => FluentHash.Start()
+                 .With(Name)
+                 .With(Image)
+                 .With(WrapModeS)
+                 .With(WrapModeT)
+                 .With(MinTextureFilter)
+                 .With(MagTextureFilter)
+                 .With(ColorType)
+                 .Hash;
 
-    private static byte CollapseAlphaForMask_(byte value)
-      => (byte) (value == 0 ? 0 : 255);
-  }
+  private static byte CollapseAlphaForMask_(byte value)
+    => (byte) (value == 0 ? 0 : 255);
 }

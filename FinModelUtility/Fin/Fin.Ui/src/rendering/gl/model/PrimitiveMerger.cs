@@ -1,21 +1,22 @@
 ﻿using fin.model;
 using fin.util.enumerables;
 
-namespace fin.ui.rendering.gl.model {
-  public readonly struct MergedPrimitive {
-    public required PrimitiveType PrimitiveType { get; init; }
-    public required bool IsFlipped { get; init; }
+namespace fin.ui.rendering.gl.model;
 
-    public required IEnumerable<IEnumerable<IReadOnlyVertex>> Vertices {
-      get;
-      init;
-    }
+public readonly struct MergedPrimitive {
+  public required PrimitiveType PrimitiveType { get; init; }
+  public required bool IsFlipped { get; init; }
+
+  public required IEnumerable<IEnumerable<IReadOnlyVertex>> Vertices {
+    get;
+    init;
   }
+}
 
-  public class PrimitiveMerger {
-    public bool TryToMergePrimitives(
-        IList<IReadOnlyPrimitive> primitives,
-        out MergedPrimitive mergedPrimitive) {
+public class PrimitiveMerger {
+  public bool TryToMergePrimitives(
+      IList<IReadOnlyPrimitive> primitives,
+      out MergedPrimitive mergedPrimitive) {
       mergedPrimitive = default;
       if (primitives.Count == 0) {
         return false;
@@ -73,5 +74,4 @@ namespace fin.ui.rendering.gl.model {
 
       return true;
     }
-  }
 }

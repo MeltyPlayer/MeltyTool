@@ -1,23 +1,23 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace fin.model.accessor {
-  public partial class ConsistentVertexAccessor {
-    private sealed class MultiUvAccessor : BAccessor, IVertexUvAccessor {
-      private IReadOnlyMultiUvVertex uvVertex_;
+namespace fin.model.accessor;
 
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public void Target(IReadOnlyVertex vertex) {
-        this.uvVertex_ = vertex as IReadOnlyMultiUvVertex;
-      }
+public partial class ConsistentVertexAccessor {
+  private sealed class MultiUvAccessor : BAccessor, IVertexUvAccessor {
+    private IReadOnlyMultiUvVertex uvVertex_;
 
-      public int UvCount => this.uvVertex_.UvCount;
-
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public Vector2? GetUv() => this.GetUv(0);
-
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public Vector2? GetUv(int uvIndex) => this.uvVertex_.GetUv(uvIndex);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Target(IReadOnlyVertex vertex) {
+      this.uvVertex_ = vertex as IReadOnlyMultiUvVertex;
     }
+
+    public int UvCount => this.uvVertex_.UvCount;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Vector2? GetUv() => this.GetUv(0);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Vector2? GetUv(int uvIndex) => this.uvVertex_.GetUv(uvIndex);
   }
 }

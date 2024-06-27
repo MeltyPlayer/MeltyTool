@@ -4,74 +4,74 @@ using System.Numerics;
 
 using fin.scene;
 
-namespace fin.model.util {
-  public class SceneMinMaxBoundsScaleCalculator
-      : BMinMaxBoundsScaleCalculator<ISceneInstance> {
-    public override Bounds CalculateBounds(ISceneInstance scene) {
-      var minX = float.MaxValue;
-      var minY = float.MaxValue;
-      var minZ = float.MaxValue;
-      var maxX = float.MinValue;
-      var maxY = float.MinValue;
-      var maxZ = float.MinValue;
+namespace fin.model.util;
 
-      foreach (var area in scene.Areas) {
-        foreach (var obj in area.Objects) {
-          foreach (var sceneModel in obj.Models) {
-            var model = sceneModel.Model;
-            var boneTransformManager = sceneModel.BoneTransformManager;
+public class SceneMinMaxBoundsScaleCalculator
+    : BMinMaxBoundsScaleCalculator<ISceneInstance> {
+  public override Bounds CalculateBounds(ISceneInstance scene) {
+    var minX = float.MaxValue;
+    var minY = float.MaxValue;
+    var minZ = float.MaxValue;
+    var maxX = float.MinValue;
+    var maxY = float.MinValue;
+    var maxZ = float.MinValue;
 
-            var anyVertices = false;
-            foreach (var vertex in model.Skin.Vertices) {
-              anyVertices = true;
+    foreach (var area in scene.Areas) {
+      foreach (var obj in area.Objects) {
+        foreach (var sceneModel in obj.Models) {
+          var model = sceneModel.Model;
+          var boneTransformManager = sceneModel.BoneTransformManager;
 
-              boneTransformManager.ProjectVertexPosition(
-                  vertex,
-                  out var position);
+          var anyVertices = false;
+          foreach (var vertex in model.Skin.Vertices) {
+            anyVertices = true;
 
-              var x = position.X;
-              var y = position.Y;
-              var z = position.Z;
+            boneTransformManager.ProjectVertexPosition(
+                vertex,
+                out var position);
 
-              minX = MathF.Min(minX, x);
-              maxX = MathF.Max(maxX, x);
+            var x = position.X;
+            var y = position.Y;
+            var z = position.Z;
 
-              minY = MathF.Min(minY, y);
-              maxY = MathF.Max(maxY, y);
+            minX = MathF.Min(minX, x);
+            maxX = MathF.Max(maxX, x);
 
-              minZ = MathF.Min(minZ, z);
-              maxZ = MathF.Max(maxZ, z);
-            }
+            minY = MathF.Min(minY, y);
+            maxY = MathF.Max(maxY, y);
 
-            if (!anyVertices) {
-              var boneQueue = new Queue<IReadOnlyBone>();
-              boneQueue.Enqueue(model.Skeleton.Root);
+            minZ = MathF.Min(minZ, z);
+            maxZ = MathF.Max(maxZ, z);
+          }
 
-              while (boneQueue.Count > 0) {
-                var bone = boneQueue.Dequeue();
+          if (!anyVertices) {
+            var boneQueue = new Queue<IReadOnlyBone>();
+            boneQueue.Enqueue(model.Skeleton.Root);
 
-                var xyz = new Vector3();
-                boneTransformManager.ProjectPosition(bone, ref xyz);
+            while (boneQueue.Count > 0) {
+              var bone = boneQueue.Dequeue();
 
-                minX = MathF.Min(minX, xyz.X);
-                maxX = MathF.Max(maxX, xyz.X);
+              var xyz = new Vector3();
+              boneTransformManager.ProjectPosition(bone, ref xyz);
 
-                minY = MathF.Min(minY, xyz.Y);
-                maxY = MathF.Max(maxY, xyz.Y);
+              minX = MathF.Min(minX, xyz.X);
+              maxX = MathF.Max(maxX, xyz.X);
 
-                minZ = MathF.Min(minZ, xyz.Z);
-                maxZ = MathF.Max(maxZ, xyz.Z);
+              minY = MathF.Min(minY, xyz.Y);
+              maxY = MathF.Max(maxY, xyz.Y);
 
-                foreach (var child in bone.Children) {
-                  boneQueue.Enqueue(child);
-                }
+              minZ = MathF.Min(minZ, xyz.Z);
+              maxZ = MathF.Max(maxZ, xyz.Z);
+
+              foreach (var child in bone.Children) {
+                boneQueue.Enqueue(child);
               }
             }
           }
         }
       }
-
-      return new Bounds(minX, minY, minZ, maxX, maxY, maxZ);
     }
+
+    return new Bounds(minX, minY, minZ, maxX, maxY, maxZ);
   }
 }

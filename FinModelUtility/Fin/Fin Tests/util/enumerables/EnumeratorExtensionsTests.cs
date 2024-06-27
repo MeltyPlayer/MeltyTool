@@ -5,33 +5,33 @@ using fin.util.asserts;
 
 using NUnit.Framework;
 
-namespace fin.util.enumerables {
-  public class EnumeratorExtensionsTests {
-    [Test]
-    public void TestTryMoveNextEmpty() {
-      var emptyEnumerator = Enumerable.Empty<int>().ToEnumerator();
+namespace fin.util.enumerables;
 
-      Asserts.False(emptyEnumerator.TryMoveNext(out _));
-      Asserts.False(emptyEnumerator.TryMoveNext(out _));
-      Asserts.False(emptyEnumerator.TryMoveNext(out _));
-    }
+public class EnumeratorExtensionsTests {
+  [Test]
+  public void TestTryMoveNextEmpty() {
+    var emptyEnumerator = Enumerable.Empty<int>().ToEnumerator();
 
-    [Test]
-    public void TestTryMoveNext() {
-      var enumerator = new[] { 1, 2, 3 }.ToEnumerator();
+    Asserts.False(emptyEnumerator.TryMoveNext(out _));
+    Asserts.False(emptyEnumerator.TryMoveNext(out _));
+    Asserts.False(emptyEnumerator.TryMoveNext(out _));
+  }
 
-      Asserts.True(enumerator.TryMoveNext(out var first));
-      Asserts.Equal(1, first);
+  [Test]
+  public void TestTryMoveNext() {
+    var enumerator = new[] { 1, 2, 3 }.ToEnumerator();
 
-      Asserts.True(enumerator.TryMoveNext(out var second));
-      Asserts.Equal(2, second);
+    Asserts.True(enumerator.TryMoveNext(out var first));
+    Asserts.Equal(1, first);
 
-      Asserts.True(enumerator.TryMoveNext(out var third));
-      Asserts.Equal(3, third);
+    Asserts.True(enumerator.TryMoveNext(out var second));
+    Asserts.Equal(2, second);
 
-      Asserts.False(enumerator.TryMoveNext(out _));
-      Asserts.False(enumerator.TryMoveNext(out _));
-      Asserts.False(enumerator.TryMoveNext(out _));
-    }
+    Asserts.True(enumerator.TryMoveNext(out var third));
+    Asserts.Equal(3, third);
+
+    Asserts.False(enumerator.TryMoveNext(out _));
+    Asserts.False(enumerator.TryMoveNext(out _));
+    Asserts.False(enumerator.TryMoveNext(out _));
   }
 }

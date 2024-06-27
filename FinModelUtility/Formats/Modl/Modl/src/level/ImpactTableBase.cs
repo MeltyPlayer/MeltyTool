@@ -1,4 +1,4 @@
-﻿namespace modl.level {
-  public class ImpactTableBase : BLevelObject {
-  }
+﻿namespace modl.level;
+
+public class ImpactTableBase : BLevelObject {
 }

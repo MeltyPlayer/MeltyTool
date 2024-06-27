@@ -28,12 +28,13 @@ using jsystem.schema.jutility.bti;
 
 using schema.binary;
 
-namespace jsystem.api {
-  using MkdsNode = MA.Node;
-  using GxPrimitiveType = BMD.SHP1Section.Batch.Packet.Primitive.GXPrimitive;
+namespace jsystem.api;
 
-  public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
-    public IModel Import(BmdModelFileBundle modelFileBundle) {
+using MkdsNode = MA.Node;
+using GxPrimitiveType = BMD.SHP1Section.Batch.Packet.Primitive.GXPrimitive;
+
+public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
+  public IModel Import(BmdModelFileBundle modelFileBundle) {
       var logger = Logging.Create<BmdModelImporter>();
 
       var bmd = new BMD(modelFileBundle.BmdFile.ReadAllBytes());
@@ -92,7 +93,7 @@ namespace jsystem.api {
       return model;
     }
 
-    private (MkdsNode, IBone)[] ConvertBones_(IModel model, BMD bmd) {
+  private (MkdsNode, IBone)[] ConvertBones_(IModel model, BMD bmd) {
       var joints = bmd.GetJoints();
 
       var jointsAndBones = new (MkdsNode, IBone)[joints.Length];
@@ -147,12 +148,12 @@ namespace jsystem.api {
       return jointsAndBones;
     }
 
-    private void ConvertAnimations_(
-        IModel model,
-        BMD bmd,
-        IList<(string, IBcx)>? pathsAndBcxs,
-        float frameRate,
-        (MkdsNode, IBone)[] jointsAndBones) {
+  private void ConvertAnimations_(
+      IModel model,
+      BMD bmd,
+      IList<(string, IBcx)>? pathsAndBcxs,
+      float frameRate,
+      (MkdsNode, IBone)[] jointsAndBones) {
       var bcxCount = pathsAndBcxs?.Count ?? 0;
       for (var a = 0; a < bcxCount; ++a) {
         var (bcxPath, bcx) = pathsAndBcxs![a];
@@ -223,11 +224,11 @@ namespace jsystem.api {
       }
     }
 
-    private void ConvertMesh_(
-        ModelImpl model,
-        BMD bmd,
-        (MkdsNode, IBone)[] jointsAndBones,
-        BmdMaterialManager materialManager) {
+  private void ConvertMesh_(
+      ModelImpl model,
+      BMD bmd,
+      (MkdsNode, IBone)[] jointsAndBones,
+      BmdMaterialManager materialManager) {
       var finSkin = model.Skin;
       // TODO: Actually split this up
       var finMesh = finSkin.AddMesh();
@@ -447,7 +448,7 @@ namespace jsystem.api {
       DoneRendering:;
     }
 
-    private static IFinMatrix4x4 ConvertSchemaToFin_(Matrix3x4f schemaMatrix) {
+  private static IFinMatrix4x4 ConvertSchemaToFin_(Matrix3x4f schemaMatrix) {
       var finMatrix = new FinMatrix4x4().SetIdentity();
 
       for (var r = 0; r < 3; ++r) {
@@ -458,5 +459,4 @@ namespace jsystem.api {
 
       return finMatrix;
     }
-  }
 }

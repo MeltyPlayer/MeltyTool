@@ -5,64 +5,64 @@ using fin.math.xyz;
 
 using schema.readOnly;
 
-namespace fin.model {
-  public enum LightSourceType {
-    UNDEFINED,
-    POSITION,
-    RAY,
-    LINE,
-  }
+namespace fin.model;
 
-  public enum AttenuationFunction {
-    NONE,
-    SPECULAR,
-    SPOT,
-  }
+public enum LightSourceType {
+  UNDEFINED,
+  POSITION,
+  RAY,
+  LINE,
+}
 
-  public enum DiffuseFunction {
-    NONE,
-    SIGNED,
-    CLAMP,
-  }
+public enum AttenuationFunction {
+  NONE,
+  SPECULAR,
+  SPOT,
+}
 
-  [GenerateReadOnly]
-  public partial interface ILighting {
-    IReadOnlyList<ILight> Lights { get; }
+public enum DiffuseFunction {
+  NONE,
+  SIGNED,
+  CLAMP,
+}
 
-    ILight CreateLight();
+[GenerateReadOnly]
+public partial interface ILighting {
+  IReadOnlyList<ILight> Lights { get; }
 
-    IColor AmbientLightColor { get; set; }
-    float AmbientLightStrength { get; set; }
-  }
+  ILight CreateLight();
 
-  [GenerateReadOnly]
-  public partial interface ILight {
-    string Name { get; }
-    ILight SetName(string name);
+  IColor AmbientLightColor { get; set; }
+  float AmbientLightStrength { get; set; }
+}
 
-    bool Enabled { get; set; }
+[GenerateReadOnly]
+public partial interface ILight {
+  string Name { get; }
+  ILight SetName(string name);
 
-    LightSourceType SourceType { get; }
+  bool Enabled { get; set; }
 
-    IReadOnlyXyz? Position { get; }
-    ILight SetPosition(IReadOnlyXyz position);
+  LightSourceType SourceType { get; }
 
-    IReadOnlyXyz? Normal { get; }
-    ILight SetNormal(IReadOnlyXyz normal);
+  IReadOnlyXyz? Position { get; }
+  ILight SetPosition(IReadOnlyXyz position);
 
-    float Strength { get; set; }
+  IReadOnlyXyz? Normal { get; }
+  ILight SetNormal(IReadOnlyXyz normal);
 
-    IColor Color { get; }
-    ILight SetColor(IColor color);
+  float Strength { get; set; }
 
-    IReadOnlyXyz? CosineAttenuation { get; }
-    ILight SetCosineAttenuation(IReadOnlyXyz cosineAttenuation);
-    IReadOnlyXyz? DistanceAttenuation { get; }
-    ILight SetDistanceAttenuation(IReadOnlyXyz distanceAttenuation);
+  IColor Color { get; }
+  ILight SetColor(IColor color);
 
-    AttenuationFunction AttenuationFunction { get; }
-    ILight SetAttenuationFunction(AttenuationFunction attenuationFunction);
-    DiffuseFunction DiffuseFunction { get; }
-    ILight SetDiffuseFunction(DiffuseFunction diffuseFunction);
-  }
+  IReadOnlyXyz? CosineAttenuation { get; }
+  ILight SetCosineAttenuation(IReadOnlyXyz cosineAttenuation);
+  IReadOnlyXyz? DistanceAttenuation { get; }
+  ILight SetDistanceAttenuation(IReadOnlyXyz distanceAttenuation);
+
+  AttenuationFunction AttenuationFunction { get; }
+  ILight SetAttenuationFunction(AttenuationFunction attenuationFunction);
+  DiffuseFunction DiffuseFunction { get; }
+  ILight SetDiffuseFunction(DiffuseFunction diffuseFunction);
 }

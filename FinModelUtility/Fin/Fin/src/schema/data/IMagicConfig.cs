@@ -1,12 +1,12 @@
 ﻿using schema.binary;
 
-namespace fin.schema.data {
-  public interface IMagicConfig<TMagic, in TData>
-      where TMagic : notnull
-      where TData : IBinaryConvertible {
-    TMagic ReadMagic(IBinaryReader br);
-    void WriteMagic(IBinaryWriter bw, TMagic magic);
+namespace fin.schema.data;
 
-    TMagic GetMagic(TData data);
-  }
+public interface IMagicConfig<TMagic, in TData>
+    where TMagic : notnull
+    where TData : IBinaryConvertible {
+  TMagic ReadMagic(IBinaryReader br);
+  void WriteMagic(IBinaryWriter bw, TMagic magic);
+
+  TMagic GetMagic(TData data);
 }

@@ -6,43 +6,43 @@ using grezzo.schema.ctxb;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace grezzo.schema.cmb.tex {
-  [BinarySchema]
-  public partial class Texture : IBinaryConvertible {
-    public uint dataLength { get; private set; }
-    public ushort mimapCount { get; private set; }
+namespace grezzo.schema.cmb.tex;
 
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public bool isEtc1 { get; private set; }
+[BinarySchema]
+public partial class Texture : IBinaryConvertible {
+  public uint dataLength { get; private set; }
+  public ushort mimapCount { get; private set; }
 
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    public bool isCubemap { get; private set; }
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public bool isEtc1 { get; private set; }
 
-    public ushort width { get; private set; }
-    public ushort height { get; private set; }
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public bool isCubemap { get; private set; }
 
-    public GlTextureFormat imageFormat { get; private set; }
+  public ushort width { get; private set; }
+  public ushort height { get; private set; }
 
-    public uint DataOffset { get; private set; }
+  public GlTextureFormat imageFormat { get; private set; }
 
-    [StringLengthSource(0x10)]
-    public string name { get; private set; }
+  public uint DataOffset { get; private set; }
 
-    public IImageReader GetImageReader()
-      => new CmbImageReader(this.width,
-                            this.height,
-                            CollapseFormat_(this.imageFormat));
+  [StringLengthSource(0x10)]
+  public string name { get; private set; }
 
-    private GlTextureFormat CollapseFormat_(GlTextureFormat format) {
-      var lowerFormat = (GlTextureFormat) ((int) format & 0xFFFF);
+  public IImageReader GetImageReader()
+    => new CmbImageReader(this.width,
+                          this.height,
+                          CollapseFormat_(this.imageFormat));
 
-      if (lowerFormat == GlTextureFormat.ETC1) {
-        format = GlTextureFormat.ETC1;
-      } else if (lowerFormat == GlTextureFormat.ETC1a4) {
-        format = GlTextureFormat.ETC1a4;
-      }
+  private GlTextureFormat CollapseFormat_(GlTextureFormat format) {
+    var lowerFormat = (GlTextureFormat) ((int) format & 0xFFFF);
 
-      return format;
+    if (lowerFormat == GlTextureFormat.ETC1) {
+      format = GlTextureFormat.ETC1;
+    } else if (lowerFormat == GlTextureFormat.ETC1a4) {
+      format = GlTextureFormat.ETC1a4;
     }
+
+    return format;
   }
 }

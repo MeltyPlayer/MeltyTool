@@ -6,15 +6,15 @@
 
 using schema.binary;
 
-namespace jsystem.G3D_Binary_File_Format
-{
-  public class DataBlockHeader
-  {
-    public string kind;
-    public uint size;
+namespace jsystem.G3D_Binary_File_Format;
 
-    public DataBlockHeader(IBinaryReader br, string Signature, out bool OK)
-    {
+public class DataBlockHeader
+{
+  public string kind;
+  public uint size;
+
+  public DataBlockHeader(IBinaryReader br, string Signature, out bool OK)
+  {
       this.kind = br.ReadString(4);
       if (this.kind != Signature)
       {
@@ -27,16 +27,15 @@ namespace jsystem.G3D_Binary_File_Format
       }
     }
 
-    public DataBlockHeader(string kind, uint size)
-    {
+  public DataBlockHeader(string kind, uint size)
+  {
       this.kind = kind;
       this.size = size;
     }
 
-    public void Write(IBinaryWriter bw, int size)
-    {
+  public void Write(IBinaryWriter bw, int size)
+  {
       bw.WriteString(this.kind);
       bw.WriteInt32(size);
     }
-  }
 }

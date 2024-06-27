@@ -4,101 +4,101 @@ using fin.util.asserts;
 using SharpGLTF.Schema2;
 using SharpGLTF.Validation;
 
-namespace fin.model.io.exporters.gltf.lowlevel {
-  public class LowLevelGltfModelExporter : IGltfModelExporter {
-    private readonly ILogger logger_ = Logging.Create<GltfModelExporter>();
+namespace fin.model.io.exporters.gltf.lowlevel;
 
-    public bool UvIndices { get; set; }
-    public bool Embedded { get; set; }
+public class LowLevelGltfModelExporter : IGltfModelExporter {
+  private readonly ILogger logger_ = Logging.Create<GltfModelExporter>();
 
-    public ModelRoot CreateModelRoot(IReadOnlyModel model, float scale) {
-      var modelRoot = ModelRoot.CreateModel();
+  public bool UvIndices { get; set; }
+  public bool Embedded { get; set; }
 
-      var scene = modelRoot.UseScene("default");
-      var skin = modelRoot.CreateSkin();
+  public ModelRoot CreateModelRoot(IReadOnlyModel model, float scale) {
+    var modelRoot = ModelRoot.CreateModel();
 
-      var animations = model.AnimationManager.Animations;
-      var firstAnimation = (animations?.Count ?? 0) > 0 ? animations[0] : null;
+    var scene = modelRoot.UseScene("default");
+    var skin = modelRoot.CreateSkin();
 
-      if (firstAnimation != null) {
-        // TODO: Put this somewhere else!
-        // We should be able to use the raw bone positions, but this screws up
-        // bones with multiple weights for some reason, perhaps because the
-        // model is contorted in an unnatural way? Anyway, we NEED to use the
-        // first animation instead.
-        //this.ApplyFirstFrameToSkeleton_(model.Skeleton, firstAnimation);
-      }
+    var animations = model.AnimationManager.Animations;
+    var firstAnimation = (animations?.Count ?? 0) > 0 ? animations[0] : null;
 
-      // Builds skeleton.
-      var rootNode = scene.CreateNode();
-      var skinNodeAndBones = new GltfSkeletonBuilder().BuildAndBindSkeleton(
-          rootNode,
-          skin,
-          scale,
-          model.Skeleton);
-
-      // Builds animations.
-      new GltfAnimationBuilder().BuildAnimations(
-          modelRoot,
-          skinNodeAndBones,
-          scale,
-          model.AnimationManager.Animations);
-
-      // Builds materials.
-      var finToTexCoordAndGltfMaterial =
-          new GltfMaterialBuilder().GetMaterials(
-              modelRoot,
-              model.MaterialManager);
-
-      // Builds meshes.
-      var meshBuilder = new LowLevelGltfMeshBuilder
-          { UvIndices = this.UvIndices };
-      var gltfMeshes = meshBuilder.BuildAndBindMesh(
-          modelRoot,
-          model,
-          scale,
-          finToTexCoordAndGltfMaterial);
-
-      /*var joints = skinNodeAndBones
-                   .Select(
-                       skinNodeAndBone => skinNodeAndBone.Item1)
-                   .ToArray();*/
-      foreach (var gltfMesh in gltfMeshes) {
-        /*scene.CreateNode()
-             .WithSkinnedMesh(gltfMesh,
-                              rootNode.WorldMatrix,
-                              joints);*/
-        scene.CreateNode().WithMesh(gltfMesh);
-      }
-
-      return modelRoot;
+    if (firstAnimation != null) {
+      // TODO: Put this somewhere else!
+      // We should be able to use the raw bone positions, but this screws up
+      // bones with multiple weights for some reason, perhaps because the
+      // model is contorted in an unnatural way? Anyway, we NEED to use the
+      // first animation instead.
+      //this.ApplyFirstFrameToSkeleton_(model.Skeleton, firstAnimation);
     }
 
-    public void ExportModel(IModelExporterParams modelExporterParams) {
-      var outputFile = modelExporterParams.OutputFile;
-      var model = modelExporterParams.Model;
-      var scale = modelExporterParams.Scale;
+    // Builds skeleton.
+    var rootNode = scene.CreateNode();
+    var skinNodeAndBones = new GltfSkeletonBuilder().BuildAndBindSkeleton(
+        rootNode,
+        skin,
+        scale,
+        model.Skeleton);
 
-      Asserts.True(
-          outputFile.FileType.EndsWith(".gltf") ||
-          outputFile.FileType.EndsWith(".glb"),
-          "Target file is not a GLTF format!");
+    // Builds animations.
+    new GltfAnimationBuilder().BuildAnimations(
+        modelRoot,
+        skinNodeAndBones,
+        scale,
+        model.AnimationManager.Animations);
 
-      this.logger_.BeginScope("Export");
+    // Builds materials.
+    var finToTexCoordAndGltfMaterial =
+        new GltfMaterialBuilder().GetMaterials(
+            modelRoot,
+            model.MaterialManager);
 
-      var modelRoot = this.CreateModelRoot(model, scale);
+    // Builds meshes.
+    var meshBuilder = new LowLevelGltfMeshBuilder
+        { UvIndices = this.UvIndices };
+    var gltfMeshes = meshBuilder.BuildAndBindMesh(
+        modelRoot,
+        model,
+        scale,
+        finToTexCoordAndGltfMaterial);
 
-      var writeSettings = new WriteSettings {
-          ImageWriting = this.Embedded
-              ? ResourceWriteMode.EmbeddedAsBase64
-              : ResourceWriteMode.SatelliteFile,
-          MergeBuffers = false,
-          Validation = ValidationMode.Skip,
-      };
-
-      var outputPath = outputFile.FullPath;
-      this.logger_.LogInformation($"Writing to {outputPath}...");
-      modelRoot.Save(outputPath, writeSettings);
+    /*var joints = skinNodeAndBones
+                 .Select(
+                     skinNodeAndBone => skinNodeAndBone.Item1)
+                 .ToArray();*/
+    foreach (var gltfMesh in gltfMeshes) {
+      /*scene.CreateNode()
+           .WithSkinnedMesh(gltfMesh,
+                            rootNode.WorldMatrix,
+                            joints);*/
+      scene.CreateNode().WithMesh(gltfMesh);
     }
+
+    return modelRoot;
+  }
+
+  public void ExportModel(IModelExporterParams modelExporterParams) {
+    var outputFile = modelExporterParams.OutputFile;
+    var model = modelExporterParams.Model;
+    var scale = modelExporterParams.Scale;
+
+    Asserts.True(
+        outputFile.FileType.EndsWith(".gltf") ||
+        outputFile.FileType.EndsWith(".glb"),
+        "Target file is not a GLTF format!");
+
+    this.logger_.BeginScope("Export");
+
+    var modelRoot = this.CreateModelRoot(model, scale);
+
+    var writeSettings = new WriteSettings {
+        ImageWriting = this.Embedded
+            ? ResourceWriteMode.EmbeddedAsBase64
+            : ResourceWriteMode.SatelliteFile,
+        MergeBuffers = false,
+        Validation = ValidationMode.Skip,
+    };
+
+    var outputPath = outputFile.FullPath;
+    this.logger_.LogInformation($"Writing to {outputPath}...");
+    modelRoot.Save(outputPath, writeSettings);
   }
 }

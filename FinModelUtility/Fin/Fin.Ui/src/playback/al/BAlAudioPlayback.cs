@@ -2,17 +2,18 @@
 
 using OpenTK.Audio.OpenAL;
 
-namespace fin.ui.playback.al {
-  public partial class AlAudioManager {
-    private abstract class BAlAudioPlayback : IAudioPlayback<short> {
-      private readonly IAudioPlayer<short> player_;
-      protected int AlSourceId { get; }
+namespace fin.ui.playback.al;
 
-      public bool IsDisposed { get; private set; }
-      public IAudioDataSource<short> Source { get; }
+public partial class AlAudioManager {
+  private abstract class BAlAudioPlayback : IAudioPlayback<short> {
+    private readonly IAudioPlayer<short> player_;
+    protected int AlSourceId { get; }
 
-      protected BAlAudioPlayback(IAudioPlayer<short> player,
-                                 IAudioDataSource<short> source) {
+    public bool IsDisposed { get; private set; }
+    public IAudioDataSource<short> Source { get; }
+
+    protected BAlAudioPlayback(IAudioPlayer<short> player,
+                               IAudioDataSource<short> source) {
         this.player_ = player;
         this.Source = source;
 
@@ -20,32 +21,32 @@ namespace fin.ui.playback.al {
         this.AlSourceId = (int) alSourceId;
       }
 
-      ~BAlAudioPlayback() => this.ReleaseUnmanagedResources_();
+    ~BAlAudioPlayback() => this.ReleaseUnmanagedResources_();
 
-      public void Dispose() {
+    public void Dispose() {
         this.AssertNotDisposed();
 
         this.ReleaseUnmanagedResources_();
         GC.SuppressFinalize(this);
       }
 
-      private void ReleaseUnmanagedResources_() {
+    private void ReleaseUnmanagedResources_() {
         this.IsDisposed = true;
         AL.DeleteSource(this.AlSourceId);
 
         this.DisposeInternal();
       }
 
-      protected abstract void DisposeInternal();
+    protected abstract void DisposeInternal();
 
-      protected void AssertNotDisposed() {
+    protected void AssertNotDisposed() {
         if (this.State == PlaybackState.DISPOSED) {
           throw new Exception("Expected active sound to not be disposed");
         }
       }
 
-      public PlaybackState State {
-        get {
+    public PlaybackState State {
+      get {
           if (this.IsDisposed) {
             return PlaybackState.DISPOSED;
           }
@@ -62,33 +63,32 @@ namespace fin.ui.playback.al {
               _                     => throw new ArgumentOutOfRangeException()
           };
         }
-      }
+    }
 
-      public void Play() {
+    public void Play() {
         this.AssertNotDisposed();
         AL.SourcePlay(this.AlSourceId);
       }
 
-      public void Stop() {
+    public void Stop() {
         this.AssertNotDisposed();
         AL.SourceStop(this.AlSourceId);
       }
 
-      public float Volume {
-        get {
+    public float Volume {
+      get {
           this.AssertNotDisposed();
 
           AL.GetSource(this.AlSourceId, ALSourcef.Gain, out var gain);
           gain *= this.player_.Volume;
           return gain;
         }
-        set {
+      set {
           this.AssertNotDisposed();
           AL.Source(this.AlSourceId,
                     ALSourcef.Gain,
                     value * this.player_.Volume);
         }
-      }
     }
   }
 }

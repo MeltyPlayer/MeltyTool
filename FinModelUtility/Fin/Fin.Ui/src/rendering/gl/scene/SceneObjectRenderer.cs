@@ -2,12 +2,13 @@
 using fin.model;
 using fin.scene;
 
-namespace fin.ui.rendering.gl.scene {
-  public class SceneObjectRenderer : IRenderable, IDisposable {
-    private readonly ISceneObjectInstance sceneObject_;
+namespace fin.ui.rendering.gl.scene;
 
-    public SceneObjectRenderer(ISceneObjectInstance sceneObject,
-                               IReadOnlyLighting? lighting) {
+public class SceneObjectRenderer : IRenderable, IDisposable {
+  private readonly ISceneObjectInstance sceneObject_;
+
+  public SceneObjectRenderer(ISceneObjectInstance sceneObject,
+                             IReadOnlyLighting? lighting) {
       this.sceneObject_ = sceneObject;
       this.ModelRenderers
           = sceneObject
@@ -16,22 +17,22 @@ namespace fin.ui.rendering.gl.scene {
             .ToArray();
     }
 
-    ~SceneObjectRenderer() => this.ReleaseUnmanagedResources_();
+  ~SceneObjectRenderer() => this.ReleaseUnmanagedResources_();
 
-    public void Dispose() {
+  public void Dispose() {
       this.ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() {
+  private void ReleaseUnmanagedResources_() {
       foreach (var modelRenderer in this.ModelRenderers) {
         modelRenderer.Dispose();
       }
     }
 
-    public IReadOnlyList<SceneModelRenderer> ModelRenderers { get; }
+  public IReadOnlyList<SceneModelRenderer> ModelRenderers { get; }
 
-    public void Render() {
+  public void Render() {
       GlTransform.PushMatrix();
 
       GlTransform.MultMatrix(
@@ -45,5 +46,4 @@ namespace fin.ui.rendering.gl.scene {
 
       GlTransform.PopMatrix();
     }
-  }
 }

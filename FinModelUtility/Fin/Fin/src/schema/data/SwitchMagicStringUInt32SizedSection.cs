@@ -3,53 +3,53 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace fin.schema.data {
-  /// <summary>
-  ///   Schema class that implements a uint32-sized section without needing to
-  ///   worry about passing in an instance of the contained data. This should
-  ///   be adequate for most cases, except when the data class needs to access
-  ///   parent data.
-  /// </summary>
-  [BinarySchema]
-  public partial class SwitchMagicStringUInt32SizedSection<T> : IMagicSection<T>
-      where T : IBinaryConvertible {
-    [Skip]
-    private readonly int magicLength_;
+namespace fin.schema.data;
 
-    [Skip]
-    private readonly Func<string, T> createTypeHandler_;
+/// <summary>
+///   Schema class that implements a uint32-sized section without needing to
+///   worry about passing in an instance of the contained data. This should
+///   be adequate for most cases, except when the data class needs to access
+///   parent data.
+/// </summary>
+[BinarySchema]
+public partial class SwitchMagicStringUInt32SizedSection<T> : IMagicSection<T>
+    where T : IBinaryConvertible {
+  [Skip]
+  private readonly int magicLength_;
 
-    private readonly PassThruStringMagicUInt32SizedSection<T> impl_ =
-        new(default, default!);
+  [Skip]
+  private readonly Func<string, T> createTypeHandler_;
 
-    public SwitchMagicStringUInt32SizedSection(
-        int magicLength,
-        Func<string, T> createTypeHandler) {
-      this.magicLength_ = magicLength;
-      this.createTypeHandler_ = createTypeHandler;
-    }
+  private readonly PassThruStringMagicUInt32SizedSection<T> impl_ =
+      new(default, default!);
 
-    [Skip]
-    public int TweakReadSize {
-      get => this.impl_.TweakReadSize;
-      set => this.impl_.TweakReadSize = value;
-    }
+  public SwitchMagicStringUInt32SizedSection(
+      int magicLength,
+      Func<string, T> createTypeHandler) {
+    this.magicLength_ = magicLength;
+    this.createTypeHandler_ = createTypeHandler;
+  }
 
-    [Skip]
-    public string Magic => this.impl_.Magic;
+  [Skip]
+  public int TweakReadSize {
+    get => this.impl_.TweakReadSize;
+    set => this.impl_.TweakReadSize = value;
+  }
 
-    [Skip]
-    public T Data => this.impl_.Data;
+  [Skip]
+  public string Magic => this.impl_.Magic;
 
-    public void Read(IBinaryReader br) {
-      var baseOffset = br.Position;
+  [Skip]
+  public T Data => this.impl_.Data;
 
-      var magic = br.ReadString(this.magicLength_);
-      this.impl_.Magic = magic;
-      this.impl_.Data = this.createTypeHandler_(magic);
+  public void Read(IBinaryReader br) {
+    var baseOffset = br.Position;
 
-      br.Position = baseOffset;
-      this.impl_.Read(br);
-    }
+    var magic = br.ReadString(this.magicLength_);
+    this.impl_.Magic = magic;
+    this.impl_.Data = this.createTypeHandler_(magic);
+
+    br.Position = baseOffset;
+    this.impl_.Read(br);
   }
 }

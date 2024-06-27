@@ -1,15 +1,16 @@
 ﻿using fin.decompression;
 
-namespace level5.decompression {
-  public class RleArrayDecompressor : ISpanDecompressor {
-    public bool TryToGetLength(ReadOnlySpan<byte> src, out int length) {
+namespace level5.decompression;
+
+public class RleArrayDecompressor : ISpanDecompressor {
+  public bool TryToGetLength(ReadOnlySpan<byte> src, out int length) {
       DecompressionUtils.GetLengthAndType(src,
                                           out length,
                                           out var decompressionType);
       return decompressionType == DecompressionType.RLE_ARRAY;
     }
 
-    public bool TryToDecompressInto(ReadOnlySpan<byte> src, Span<byte> dst) {
+  public bool TryToDecompressInto(ReadOnlySpan<byte> src, Span<byte> dst) {
       var p = 4;
       var dstIndex = 0;
 
@@ -49,5 +50,4 @@ namespace level5.decompression {
 
       return true;
     }
-  }
 }

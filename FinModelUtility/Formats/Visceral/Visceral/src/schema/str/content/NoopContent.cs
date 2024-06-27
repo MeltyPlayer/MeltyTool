@@ -1,8 +1,7 @@
 ﻿using schema.binary;
 
-namespace visceral.schema.str.content {
+namespace visceral.schema.str.content;
 
-  [BinarySchema]
-  public partial class NoopContent : IContent {
-  }
+[BinarySchema]
+public partial class NoopContent : IContent {
 }

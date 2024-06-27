@@ -1,34 +1,34 @@
-﻿namespace fin.io.bundles {
-  public interface IAnnotatedFileBundle {
-    IFileBundle FileBundle { get; }
+﻿namespace fin.io.bundles;
 
-    IFileHierarchyFile File { get; }
-    string LocalPath { get; }
-    string GameAndLocalPath { get; }
-  }
+public interface IAnnotatedFileBundle {
+  IFileBundle FileBundle { get; }
 
-  public interface IAnnotatedFileBundle<out TFileBundle> : IAnnotatedFileBundle
-      where TFileBundle : IFileBundle {
-    TFileBundle TypedFileBundle { get; }
-  }
+  IFileHierarchyFile File { get; }
+  string LocalPath { get; }
+  string GameAndLocalPath { get; }
+}
 
-  public static class AnnotatedFileBundle {
-    public static IAnnotatedFileBundle<TFileBundle> Annotate<TFileBundle>(
-        this TFileBundle fileBundle,
-        IFileHierarchyFile file) where TFileBundle : IFileBundle
-      => new AnnotatedFileBundle<TFileBundle>(fileBundle, file);
-  }
+public interface IAnnotatedFileBundle<out TFileBundle> : IAnnotatedFileBundle
+    where TFileBundle : IFileBundle {
+  TFileBundle TypedFileBundle { get; }
+}
 
-  public class AnnotatedFileBundle<TFileBundle>(TFileBundle fileBundle,
-                                                IFileHierarchyFile file)
-      : IAnnotatedFileBundle<TFileBundle>
-      where TFileBundle : IFileBundle {
-    public IFileBundle FileBundle { get; } = fileBundle;
-    public TFileBundle TypedFileBundle { get; } = fileBundle;
+public static class AnnotatedFileBundle {
+  public static IAnnotatedFileBundle<TFileBundle> Annotate<TFileBundle>(
+      this TFileBundle fileBundle,
+      IFileHierarchyFile file) where TFileBundle : IFileBundle
+    => new AnnotatedFileBundle<TFileBundle>(fileBundle, file);
+}
 
-    public IFileHierarchyFile File => file;
-    public string LocalPath => file.LocalPath;
+public class AnnotatedFileBundle<TFileBundle>(TFileBundle fileBundle,
+                                              IFileHierarchyFile file)
+    : IAnnotatedFileBundle<TFileBundle>
+    where TFileBundle : IFileBundle {
+  public IFileBundle FileBundle { get; } = fileBundle;
+  public TFileBundle TypedFileBundle { get; } = fileBundle;
 
-    public string GameAndLocalPath => $"{file.Hierarchy.Name}/{this.LocalPath}";
-  }
+  public IFileHierarchyFile File => file;
+  public string LocalPath => file.LocalPath;
+
+  public string GameAndLocalPath => $"{file.Hierarchy.Name}/{this.LocalPath}";
 }

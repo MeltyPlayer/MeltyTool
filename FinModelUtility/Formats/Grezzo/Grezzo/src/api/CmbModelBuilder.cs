@@ -25,15 +25,16 @@ using grezzo.schema.shpa;
 
 using Version = grezzo.schema.cmb.Version;
 
-namespace grezzo.api {
-  public class CmbModelBuilder {
-    // TODO: Split these out into separate classes
-    public IModel BuildModel(
-        IFileBundle fileBundle,
-        Cmb cmb,
-        IReadOnlyList<Ctxb>? ctxbs = null,
-        IReadOnlyList<(string name, Csab csab)>? namesAndCsabs = null,
-        IReadOnlyList<(string name, Shpa shpa)>? namesAndShpas = null) {
+namespace grezzo.api;
+
+public class CmbModelBuilder {
+  // TODO: Split these out into separate classes
+  public IModel BuildModel(
+      IFileBundle fileBundle,
+      Cmb cmb,
+      IReadOnlyList<Ctxb>? ctxbs = null,
+      IReadOnlyList<(string name, Csab csab)>? namesAndCsabs = null,
+      IReadOnlyList<(string name, Shpa shpa)>? namesAndShpas = null) {
       var fps = 30;
 
       var finModel = new ModelImpl((int) cmb.vatr.maxIndex) {
@@ -358,5 +359,4 @@ namespace grezzo.api {
 
       return finModel;
     }
-  }
 }

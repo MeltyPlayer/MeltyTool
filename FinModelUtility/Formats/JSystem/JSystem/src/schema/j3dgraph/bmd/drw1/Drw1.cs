@@ -3,39 +3,39 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace jsystem.schema.j3dgraph.bmd.drw1 {
-  [BinarySchema]
-  [LocalPositions]
-  [Endianness(Endianness.BigEndian)]
-  public partial class Drw1 : IBinaryConvertible {
-    private readonly AutoStringMagicUInt32SizedSection<Drw1Data> impl_ =
-        new("DRW1") { TweakReadSize = -8 };
+namespace jsystem.schema.j3dgraph.bmd.drw1;
 
-    [Skip]
-    public Drw1Data Data => this.impl_.Data;
-  }
+[BinarySchema]
+[LocalPositions]
+[Endianness(Endianness.BigEndian)]
+public partial class Drw1 : IBinaryConvertible {
+  private readonly AutoStringMagicUInt32SizedSection<Drw1Data> impl_ =
+      new("DRW1") { TweakReadSize = -8 };
 
-  [BinarySchema]
-  public partial class Drw1Data : IBinaryConvertible {
-    [WLengthOfSequence(nameof(IsWeighted))]
-    [WLengthOfSequence(nameof(Data))]
-    private ushort count_;
+  [Skip]
+  public Drw1Data Data => this.impl_.Data;
+}
 
-    private readonly ushort padding_ = ushort.MaxValue;
+[BinarySchema]
+public partial class Drw1Data : IBinaryConvertible {
+  [WLengthOfSequence(nameof(IsWeighted))]
+  [WLengthOfSequence(nameof(Data))]
+  private ushort count_;
 
-    [WPointerTo(nameof(IsWeighted))]
-    private uint isWeightedOffset_;
+  private readonly ushort padding_ = ushort.MaxValue;
 
-    [WPointerTo(nameof(Data))]
-    private uint dataOffset_;
+  [WPointerTo(nameof(IsWeighted))]
+  private uint isWeightedOffset_;
 
-    [IntegerFormat(SchemaIntegerType.BYTE)]
-    [RSequenceLengthSource(nameof(count_))]
-    [RAtPosition(nameof(isWeightedOffset_))]
-    public bool[] IsWeighted { get; set; }
+  [WPointerTo(nameof(Data))]
+  private uint dataOffset_;
 
-    [RSequenceLengthSource(nameof(count_))]
-    [RAtPosition(nameof(dataOffset_))]
-    public ushort[] Data { get; set; }
-  }
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  [RSequenceLengthSource(nameof(count_))]
+  [RAtPosition(nameof(isWeightedOffset_))]
+  public bool[] IsWeighted { get; set; }
+
+  [RSequenceLengthSource(nameof(count_))]
+  [RAtPosition(nameof(dataOffset_))]
+  public ushort[] Data { get; set; }
 }

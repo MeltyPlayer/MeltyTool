@@ -6,36 +6,37 @@ using schema.binary;
 
 using ttyd.schema.model.blocks;
 
-namespace ttyd.schema.model {
-  public class Model : IBinaryDeserializable {
-    public Header Header { get; } = new();
+namespace ttyd.schema.model;
 
-    public Group[] Groups { get; private set; }
-    public SceneGraphObject[] SceneGraphObjects { get; private set; }
-    public float[] GroupTransforms { get; private set; }
+public class Model : IBinaryDeserializable {
+  public Header Header { get; } = new();
 
-    public Mesh[] Meshes { get; private set; }
-    public Polygon[] Polygons { get; private set; }
-    public Texture[] Textures { get; private set; }
-    public Sampler[] TextureMaps { get; private set; }
+  public Group[] Groups { get; private set; }
+  public SceneGraphObject[] SceneGraphObjects { get; private set; }
+  public float[] GroupTransforms { get; private set; }
 
-    public Vector3f[] Vertices { get; private set; }
-    public int[] VertexIndices { get; private set; }
+  public Mesh[] Meshes { get; private set; }
+  public Polygon[] Polygons { get; private set; }
+  public Texture[] Textures { get; private set; }
+  public Sampler[] TextureMaps { get; private set; }
 
-    public Vector3f[] Normals { get; private set; }
-    public int[] NormalIndices { get; private set; }
+  public Vector3f[] Vertices { get; private set; }
+  public int[] VertexIndices { get; private set; }
 
-    public Rgba32[] Colors { get; private set; }
-    public int[] ColorIndices { get; private set; }
+  public Vector3f[] Normals { get; private set; }
+  public int[] NormalIndices { get; private set; }
 
-    public Vector2f[] TexCoords { get; private set; }
-    public int[] TexCoordIndices { get; private set; }
+  public Rgba32[] Colors { get; private set; }
+  public int[] ColorIndices { get; private set; }
 
-    public bool[] GroupVisibilities { get; set; }
+  public Vector2f[] TexCoords { get; private set; }
+  public int[] TexCoordIndices { get; private set; }
 
-    public Animation[] Animations { get; private set; }
+  public bool[] GroupVisibilities { get; set; }
 
-    public void Read(IBinaryReader br) {
+  public Animation[] Animations { get; private set; }
+
+  public void Read(IBinaryReader br) {
       this.Header.Read(br);
 
       this.Groups = this.ReadNews_<Group>(br, BlockType.GROUP);
@@ -90,17 +91,16 @@ namespace ttyd.schema.model {
           BlockType.ANIMATION);
     }
 
-    private T[] ReadNews_<T>(IBinaryReader br, BlockType blockType)
-        where T : IBinaryDeserializable, new() {
+  private T[] ReadNews_<T>(IBinaryReader br, BlockType blockType)
+      where T : IBinaryDeserializable, new() {
       br.Position = this.Header.GetOffset(blockType);
       return br.ReadNews<T>(this.Header.GetCount(blockType));
     }
 
-    private T[] ReadNews_<T>(IBinaryReader br,
-                             BlockType blockType,
-                             Func<long, T[]> readNew) {
+  private T[] ReadNews_<T>(IBinaryReader br,
+                           BlockType blockType,
+                           Func<long, T[]> readNew) {
       br.Position = this.Header.GetOffset(blockType);
       return readNew(this.Header.GetCount(blockType));
     }
-  }
 }

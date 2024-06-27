@@ -2,20 +2,21 @@
 
 using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering.gl {
-  public partial class GlState {
-    public (DepthMode, DepthCompareType) DepthModeAndCompareType { get; set; }
-        = (DepthMode.USE_DEPTH_BUFFER, DepthCompareType.LEqual);
-  }
+namespace fin.ui.rendering.gl;
 
-  public static partial class GlUtil {
+public partial class GlState {
+  public (DepthMode, DepthCompareType) DepthModeAndCompareType { get; set; }
+    = (DepthMode.USE_DEPTH_BUFFER, DepthCompareType.LEqual);
+}
+
+public static partial class GlUtil {
     
-    public static void ResetDepth()
-      => SetDepth(DepthMode.USE_DEPTH_BUFFER, DepthCompareType.LEqual);
+  public static void ResetDepth()
+    => SetDepth(DepthMode.USE_DEPTH_BUFFER, DepthCompareType.LEqual);
 
-    public static bool SetDepth(
-        DepthMode depthMode,
-        DepthCompareType depthCompareType) {
+  public static bool SetDepth(
+      DepthMode depthMode,
+      DepthCompareType depthCompareType) {
       if (GlUtil.currentState_.DepthModeAndCompareType ==
           (depthMode, depthCompareType)) {
         return false;
@@ -49,21 +50,20 @@ namespace fin.ui.rendering.gl {
       return true;
     }
 
-    private static DepthFunction ConvertFinDepthCompareTypeToGl_(
-        DepthCompareType finDepthCompareType)
-      => finDepthCompareType switch {
-          DepthCompareType.LEqual  => DepthFunction.Lequal,
-          DepthCompareType.Less    => DepthFunction.Less,
-          DepthCompareType.Equal   => DepthFunction.Equal,
-          DepthCompareType.Greater => DepthFunction.Greater,
-          DepthCompareType.NEqual  => DepthFunction.Notequal,
-          DepthCompareType.GEqual  => DepthFunction.Gequal,
-          DepthCompareType.Always  => DepthFunction.Always,
-          DepthCompareType.Never   => DepthFunction.Never,
-          _ => throw new ArgumentOutOfRangeException(
-              nameof(finDepthCompareType), finDepthCompareType, null)
-      };
+  private static DepthFunction ConvertFinDepthCompareTypeToGl_(
+      DepthCompareType finDepthCompareType)
+    => finDepthCompareType switch {
+        DepthCompareType.LEqual  => DepthFunction.Lequal,
+        DepthCompareType.Less    => DepthFunction.Less,
+        DepthCompareType.Equal   => DepthFunction.Equal,
+        DepthCompareType.Greater => DepthFunction.Greater,
+        DepthCompareType.NEqual  => DepthFunction.Notequal,
+        DepthCompareType.GEqual  => DepthFunction.Gequal,
+        DepthCompareType.Always  => DepthFunction.Always,
+        DepthCompareType.Never   => DepthFunction.Never,
+        _ => throw new ArgumentOutOfRangeException(
+            nameof(finDepthCompareType), finDepthCompareType, null)
+    };
 
 
-  }
 }

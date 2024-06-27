@@ -2,21 +2,22 @@
 using fin.model;
 
 
-namespace fin.ui.rendering.gl.model {
-  /// <summary>
-  ///   A renderer for a Fin model.
-  ///
-  ///   NOTE: This will only be valid in the GL context this was first rendered in!
-  /// </summary>
-  public class ModelRendererV2 : IModelRenderer {
-    // TODO: Require passing in a GL context in the constructor.
+namespace fin.ui.rendering.gl.model;
 
-    private readonly IModelRenderer impl_;
+/// <summary>
+///   A renderer for a Fin model.
+///
+///   NOTE: This will only be valid in the GL context this was first rendered in!
+/// </summary>
+public class ModelRendererV2 : IModelRenderer {
+  // TODO: Require passing in a GL context in the constructor.
 
-    public ModelRendererV2(
-        IReadOnlyModel model,
-        IReadOnlyLighting? lighting,
-        IReadOnlyBoneTransformManager? boneTransformManager = null) {
+  private readonly IModelRenderer impl_;
+
+  public ModelRendererV2(
+      IReadOnlyModel model,
+      IReadOnlyLighting? lighting,
+      IReadOnlyBoneTransformManager? boneTransformManager = null) {
       this.impl_ = (model.Skin.AllowMaterialRendererMerging)
           ? new MergedMaterialMeshesRenderer(
               model,
@@ -27,23 +28,22 @@ namespace fin.ui.rendering.gl.model {
                                                boneTransformManager);
     }
 
-    ~ModelRendererV2() => ReleaseUnmanagedResources_();
+  ~ModelRendererV2() => ReleaseUnmanagedResources_();
 
-    public void Dispose() {
+  public void Dispose() {
       ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
+  private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
-    public IReadOnlyModel Model => this.impl_.Model;
-    public ISet<IReadOnlyMesh> HiddenMeshes => this.impl_.HiddenMeshes;
+  public IReadOnlyModel Model => this.impl_.Model;
+  public ISet<IReadOnlyMesh> HiddenMeshes => this.impl_.HiddenMeshes;
 
-    public bool UseLighting {
-      get => this.impl_.UseLighting;
-      set => this.impl_.UseLighting = value;
-    }
-
-    public void Render() => this.impl_.Render();
+  public bool UseLighting {
+    get => this.impl_.UseLighting;
+    set => this.impl_.UseLighting = value;
   }
+
+  public void Render() => this.impl_.Render();
 }

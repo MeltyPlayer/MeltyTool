@@ -8,15 +8,16 @@ using fin.schema.vector;
 
 using schema.binary;
 
-namespace visceral.schema.geo {
-  public class Geo : IBinaryDeserializable {
-    public string ModelName { get; set; }
+namespace visceral.schema.geo;
 
-    public IReadOnlyList<Bone> Bones { get; set; }
-    public IReadOnlyList<Mesh> Meshes { get; set; }
+public class Geo : IBinaryDeserializable {
+  public string ModelName { get; set; }
 
-    [Unknown]
-    public void Read(IBinaryReader br) {
+  public IReadOnlyList<Bone> Bones { get; set; }
+  public IReadOnlyList<Mesh> Meshes { get; set; }
+
+  [Unknown]
+  public void Read(IBinaryReader br) {
       br.AssertString("MGAE");
 
       br.Position += 8;
@@ -182,7 +183,7 @@ namespace visceral.schema.geo {
       this.Meshes = meshes;
     }
 
-    private Vector3 Read32BitNormal_(IBinaryReader br) {
+  private Vector3 Read32BitNormal_(IBinaryReader br) {
       var vec = new Vector3();
 
       var bitsPerAxis = 10;
@@ -197,7 +198,7 @@ namespace visceral.schema.geo {
       return vec / divisor;
     }
 
-    private Vector4 Read32BitTangent_(IBinaryReader br) {
+  private Vector4 Read32BitTangent_(IBinaryReader br) {
       var vec = new Vector4();
 
       var bitsPerAxis = 8;
@@ -212,7 +213,7 @@ namespace visceral.schema.geo {
       return vec / divisor;
     }
 
-    private int SignValue_(uint x, int bitsPerAxis) {
+  private int SignValue_(uint x, int bitsPerAxis) {
       var isSigned = x.GetBit(bitsPerAxis - 1);
       var signedX = (int) x;
 
@@ -226,32 +227,31 @@ namespace visceral.schema.geo {
       return signedX;
     }
 
-    public class Bone {
-      public required string Name { get; init; }
-      public required Matrix4x4f Matrix { get; init; }
-      public required uint Id { get; init; }
-    }
+  public class Bone {
+    public required string Name { get; init; }
+    public required Matrix4x4f Matrix { get; init; }
+    public required uint Id { get; init; }
+  }
 
-    public class Mesh {
-      public required string Name { get; init; }
-      public required uint MtlbId { get; init; }
-      public required ushort BaseVertexIndex { get; init; }
-      public required IReadOnlyList<Vertex> Vertices { get; init; }
-      public required IReadOnlyList<Face> Faces { get; init; }
-    }
+  public class Mesh {
+    public required string Name { get; init; }
+    public required uint MtlbId { get; init; }
+    public required ushort BaseVertexIndex { get; init; }
+    public required IReadOnlyList<Vertex> Vertices { get; init; }
+    public required IReadOnlyList<Face> Faces { get; init; }
+  }
 
-    public class Vertex {
-      public required Vector3 Position { get; init; }
-      public required Vector3 Normal { get; init; }
-      public required Vector4 Tangent { get; init; }
-      public Vector2 Uv { get; set; }
-      public int? Color { get; set; }
-      public required IReadOnlyList<byte> Bones { get; init; }
-      public required IReadOnlyList<float> Weights { get; init; }
-    }
+  public class Vertex {
+    public required Vector3 Position { get; init; }
+    public required Vector3 Normal { get; init; }
+    public required Vector4 Tangent { get; init; }
+    public Vector2 Uv { get; set; }
+    public int? Color { get; set; }
+    public required IReadOnlyList<byte> Bones { get; init; }
+    public required IReadOnlyList<float> Weights { get; init; }
+  }
 
-    public class Face {
-      public required IReadOnlyList<ushort> Indices { get; init; }
-    }
+  public class Face {
+    public required IReadOnlyList<ushort> Indices { get; init; }
   }
 }

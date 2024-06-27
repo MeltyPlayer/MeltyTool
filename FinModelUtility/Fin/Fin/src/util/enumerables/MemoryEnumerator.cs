@@ -1,72 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace fin.util.enumerables {
-  public interface IMemoryEnumerator<TValue> {
-    TValue Current { get; }
+namespace fin.util.enumerables;
 
-    bool TryMoveNext() => this.TryMoveNext(out _);
-    bool TryMoveNext(out TValue value);
+public interface IMemoryEnumerator<TValue> {
+  TValue Current { get; }
 
-    TValue TryMoveNextAndGetCurrent() {
-      this.TryMoveNext();
-      return this.Current;
-    }
+  bool TryMoveNext() => this.TryMoveNext(out _);
+  bool TryMoveNext(out TValue value);
 
-    bool TryReadInto(Span<TValue> dst) {
-      var didRead = false;
-      for (var i = 0; i < dst.Length; ++i) {
-        if (this.TryMoveNext()) {
-          didRead = didRead || true;
-        }
+  TValue TryMoveNextAndGetCurrent() {
+    this.TryMoveNext();
+    return this.Current;
+  }
 
-        dst[i] = this.Current;
+  bool TryReadInto(Span<TValue> dst) {
+    var didRead = false;
+    for (var i = 0; i < dst.Length; ++i) {
+      if (this.TryMoveNext()) {
+        didRead = didRead || true;
       }
 
-      return didRead;
+      dst[i] = this.Current;
     }
+
+    return didRead;
   }
+}
 
-  public class MemoryEnumerator<T>(
-      IEnumerator<T> impl,
-      MemoryEnumerator<T, T>.TryMoveNextDelegate tryMoveNextHandler)
-      : MemoryEnumerator<T, T>(impl, tryMoveNextHandler);
+public class MemoryEnumerator<T>(
+    IEnumerator<T> impl,
+    MemoryEnumerator<T, T>.TryMoveNextDelegate tryMoveNextHandler)
+    : MemoryEnumerator<T, T>(impl, tryMoveNextHandler);
 
-  public class MemoryEnumerator<TEnumerated, TValue>(
-      IEnumerator<TEnumerated> impl,
-      MemoryEnumerator<TEnumerated, TValue>.TryMoveNextDelegate
-          tryMoveNextHandler)
-      : IMemoryEnumerator<TValue> {
-    public delegate bool TryMoveNextDelegate(
-        IEnumerator<TEnumerated> enumerator,
-        out TValue value);
+public class MemoryEnumerator<TEnumerated, TValue>(
+    IEnumerator<TEnumerated> impl,
+    MemoryEnumerator<TEnumerated, TValue>.TryMoveNextDelegate
+        tryMoveNextHandler)
+    : IMemoryEnumerator<TValue> {
+  public delegate bool TryMoveNextDelegate(
+      IEnumerator<TEnumerated> enumerator,
+      out TValue value);
 
-    public TValue Current { get; private set; } = default;
+  public TValue Current { get; private set; } = default;
 
-    public bool TryMoveNext(out TValue nextValue) {
-      if (!tryMoveNextHandler(impl, out nextValue)) {
-        return false;
-      }
-
-      this.Current = nextValue;
-      return true;
+  public bool TryMoveNext(out TValue nextValue) {
+    if (!tryMoveNextHandler(impl, out nextValue)) {
+      return false;
     }
-  }
 
-  public static class MemoryEnumeratorExtensions {
-    public static IMemoryEnumerator<TValue>
-        ToMemoryEnumerator<TEnumerated, TValue>(
-            this IEnumerable<TEnumerated> enumerable,
-            MemoryEnumerator<TEnumerated, TValue>.TryMoveNextDelegate
-                tryMoveNextDelegate)
-      => new MemoryEnumerator<TEnumerated, TValue>(
-          enumerable.GetEnumerator(),
-          tryMoveNextDelegate);
-
-    public static IMemoryEnumerator<T> ToMemoryEnumerator<T>(
-        this IEnumerable<T> enumerable)
-      => new MemoryEnumerator<T>(
-          enumerable.GetEnumerator(),
-          EnumeratorExtensions.TryMoveNext);
+    this.Current = nextValue;
+    return true;
   }
+}
+
+public static class MemoryEnumeratorExtensions {
+  public static IMemoryEnumerator<TValue>
+      ToMemoryEnumerator<TEnumerated, TValue>(
+          this IEnumerable<TEnumerated> enumerable,
+          MemoryEnumerator<TEnumerated, TValue>.TryMoveNextDelegate
+              tryMoveNextDelegate)
+    => new MemoryEnumerator<TEnumerated, TValue>(
+        enumerable.GetEnumerator(),
+        tryMoveNextDelegate);
+
+  public static IMemoryEnumerator<T> ToMemoryEnumerator<T>(
+      this IEnumerable<T> enumerable)
+    => new MemoryEnumerator<T>(
+        enumerable.GetEnumerator(),
+        EnumeratorExtensions.TryMoveNext);
 }

@@ -3,102 +3,102 @@ using System.Linq;
 
 using fin.util.lists;
 
-namespace fin.language.equations.fixedFunction {
-  public abstract class BColorValue : IColorValue {
-    public IColorExpression Add(
-    IColorValue term1,
-        params IColorValue[] terms)
-      => new ColorExpression(ListUtil.ReadonlyFrom(this, term1, terms));
+namespace fin.language.equations.fixedFunction;
 
-    public IColorExpression Subtract(
-        IColorValue term1,
-        params IColorValue[] terms)
-      => new ColorExpression(
-          ListUtil.ReadonlyFrom(
-              this,
-              this.NegateTerms(term1, terms)));
+public abstract class BColorValue : IColorValue {
+  public IColorExpression Add(
+      IColorValue term1,
+      params IColorValue[] terms)
+    => new ColorExpression(ListUtil.ReadonlyFrom(this, term1, terms));
 
-    public IColorTerm Multiply(
-    IColorValue factor1,
-        params IColorValue[] factors)
-      => new ColorTerm(ListUtil.ReadonlyFrom(this, factor1, factors));
+  public IColorExpression Subtract(
+      IColorValue term1,
+      params IColorValue[] terms)
+    => new ColorExpression(
+        ListUtil.ReadonlyFrom(
+            this,
+            this.NegateTerms(term1, terms)));
 
-    public IColorTerm Divide(
-    IColorValue factor1,
-        params IColorValue[] factors)
-      => new ColorTerm(ListUtil.ReadonlyFrom(this),
-                       ListUtil.ReadonlyFrom(factor1, factors));
+  public IColorTerm Multiply(
+      IColorValue factor1,
+      params IColorValue[] factors)
+    => new ColorTerm(ListUtil.ReadonlyFrom(this, factor1, factors));
 
-    protected IColorValue[] NegateTerms(
-        IColorValue term1,
-        params IColorValue[] terms)
-      => this.NegateTerms(ListUtil.From(term1, terms).ToArray());
+  public IColorTerm Divide(
+      IColorValue factor1,
+      params IColorValue[] factors)
+    => new ColorTerm(ListUtil.ReadonlyFrom(this),
+                     ListUtil.ReadonlyFrom(factor1, factors));
 
-    protected IColorValue[] NegateTerms(
-        params IColorValue[] terms)
-      => terms.Select(
-    term => new ColorTerm(
-                      ListUtil.ReadonlyFrom(
-                          ColorConstant.NEGATIVE_ONE,
-                          term)))
-              .ToArray();
+  protected IColorValue[] NegateTerms(
+      IColorValue term1,
+      params IColorValue[] terms)
+    => this.NegateTerms(ListUtil.From(term1, terms).ToArray());
 
-
-    public IColorExpression Add(
-    IScalarValue term1,
-        params IScalarValue[] terms)
-      => new ColorExpression(
-          ListUtil.ReadonlyFrom(this, this.ToColorValues(term1, terms)));
-
-    public IColorExpression Subtract(
-        IScalarValue term1,
-        params IScalarValue[] terms)
-      => new ColorExpression(
-          ListUtil.ReadonlyFrom(
-              this,
-              this.ToColorValues(this.NegateTerms(term1, terms))));
-
-    public IColorTerm Multiply(
-        IScalarValue factor1,
-        params IScalarValue[] factors)
-      => new ColorTerm(
-          ListUtil.ReadonlyFrom(this, this.ToColorValues(factor1, factors)));
-
-    public IColorTerm Divide(
-        IScalarValue factor1,
-        params IScalarValue[] factors)
-      => new ColorTerm(ListUtil.ReadonlyFrom(this),
-                       new ReadOnlyCollection<IColorValue>(
-                           this.ToColorValues(factor1, factors)));
-
-    protected IScalarValue[] NegateTerms(
-        IScalarValue term1,
-        params IScalarValue[] terms)
-      => this.NegateTerms(ListUtil.From(term1, terms).ToArray());
-
-    protected IScalarValue[] NegateTerms(
-        params IScalarValue[] terms)
-      => terms.Select(
-                  term => new ScalarTerm(
-                      ListUtil.ReadonlyFrom(
-                          ScalarConstant.NEGATIVE_ONE,
-                          term)))
-              .ToArray();
-
-    protected IColorValue[] ToColorValues(params IScalarValue[] scalars)
-      => scalars.Select(scalar => new ColorWrapper(scalar)).ToArray();
-
-    protected IColorValue[] ToColorValues(
-        IScalarValue first,
-        params IScalarValue[] scalars)
-      => this.ToColorValues(ListUtil.From(first, scalars).ToArray());
+  protected IColorValue[] NegateTerms(
+      params IColorValue[] terms)
+    => terms.Select(
+                term => new ColorTerm(
+                    ListUtil.ReadonlyFrom(
+                        ColorConstant.NEGATIVE_ONE,
+                        term)))
+            .ToArray();
 
 
-    public abstract IScalarValue? Intensity { get; }
-    public abstract IScalarValue R { get; }
-    public abstract IScalarValue G { get; }
-    public abstract IScalarValue B { get; }
+  public IColorExpression Add(
+      IScalarValue term1,
+      params IScalarValue[] terms)
+    => new ColorExpression(
+        ListUtil.ReadonlyFrom(this, this.ToColorValues(term1, terms)));
 
-    public bool Clamp { get; set; }
-  }
+  public IColorExpression Subtract(
+      IScalarValue term1,
+      params IScalarValue[] terms)
+    => new ColorExpression(
+        ListUtil.ReadonlyFrom(
+            this,
+            this.ToColorValues(this.NegateTerms(term1, terms))));
+
+  public IColorTerm Multiply(
+      IScalarValue factor1,
+      params IScalarValue[] factors)
+    => new ColorTerm(
+        ListUtil.ReadonlyFrom(this, this.ToColorValues(factor1, factors)));
+
+  public IColorTerm Divide(
+      IScalarValue factor1,
+      params IScalarValue[] factors)
+    => new ColorTerm(ListUtil.ReadonlyFrom(this),
+                     new ReadOnlyCollection<IColorValue>(
+                         this.ToColorValues(factor1, factors)));
+
+  protected IScalarValue[] NegateTerms(
+      IScalarValue term1,
+      params IScalarValue[] terms)
+    => this.NegateTerms(ListUtil.From(term1, terms).ToArray());
+
+  protected IScalarValue[] NegateTerms(
+      params IScalarValue[] terms)
+    => terms.Select(
+                term => new ScalarTerm(
+                    ListUtil.ReadonlyFrom(
+                        ScalarConstant.NEGATIVE_ONE,
+                        term)))
+            .ToArray();
+
+  protected IColorValue[] ToColorValues(params IScalarValue[] scalars)
+    => scalars.Select(scalar => new ColorWrapper(scalar)).ToArray();
+
+  protected IColorValue[] ToColorValues(
+      IScalarValue first,
+      params IScalarValue[] scalars)
+    => this.ToColorValues(ListUtil.From(first, scalars).ToArray());
+
+
+  public abstract IScalarValue? Intensity { get; }
+  public abstract IScalarValue R { get; }
+  public abstract IScalarValue G { get; }
+  public abstract IScalarValue B { get; }
+
+  public bool Clamp { get; set; }
 }

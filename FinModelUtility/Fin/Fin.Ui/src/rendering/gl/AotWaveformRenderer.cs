@@ -3,17 +3,18 @@ using fin.math;
 
 using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering.gl {
-  public class AotWaveformRenderer {
-    private readonly float[] points_ = new float[1000];
+namespace fin.ui.rendering.gl;
 
-    public IAotAudioPlayback<short>? ActiveSound { get; set; }
+public class AotWaveformRenderer {
+  private readonly float[] points_ = new float[1000];
 
-    public int Width { get; set; }
-    public float MiddleY { get; set; }
-    public float Amplitude { get; set; }
+  public IAotAudioPlayback<short>? ActiveSound { get; set; }
 
-    public void Render() {
+  public int Width { get; set; }
+  public float MiddleY { get; set; }
+  public float Amplitude { get; set; }
+
+  public void Render() {
       if (this.ActiveSound == null) {
         return;
       }
@@ -81,5 +82,4 @@ namespace fin.ui.rendering.gl {
 
       GL.End();
     }
-  }
 }

@@ -2,14 +2,14 @@
 
 using schema.readOnly;
 
-namespace fin.io {
-  [GenerateReadOnly]
-  public partial interface IGenericFile {
-    string DisplayFullPath { get; }
+namespace fin.io;
 
-    [Const]
-    FileSystemStream OpenRead();
+[GenerateReadOnly]
+public partial interface IGenericFile {
+  string DisplayFullPath { get; }
 
-    FileSystemStream OpenWrite();
-  }
+  [Const]
+  FileSystemStream OpenRead();
+
+  FileSystemStream OpenWrite();
 }

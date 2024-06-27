@@ -8,65 +8,66 @@ using OpenTK.Graphics.OpenGL;
 
 using GlMatrixMode = OpenTK.Graphics.OpenGL.MatrixMode;
 
-namespace fin.ui.rendering.gl {
-  public enum TransformMatrixMode {
-    MODEL,
-    VIEW,
-    PROJECTION,
+namespace fin.ui.rendering.gl;
+
+public enum TransformMatrixMode {
+  MODEL,
+  VIEW,
+  PROJECTION,
+}
+
+public static class GlTransform {
+  private static readonly Matrix4x4Stack modelMatrix_ = new();
+  private static readonly Matrix4x4Stack modelViewMatrix_ = new();
+  private static readonly Matrix4x4Stack projectionMatrix_ = new();
+
+  private static LinkedList<Matrix4x4Stack> currentMatrices_ = [];
+
+  public static Matrix4x4 ModelMatrix {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    get => modelMatrix_.Top;
   }
 
-  public static class GlTransform {
-    private static readonly Matrix4x4Stack modelMatrix_ = new();
-    private static readonly Matrix4x4Stack modelViewMatrix_ = new();
-    private static readonly Matrix4x4Stack projectionMatrix_ = new();
-
-    private static LinkedList<Matrix4x4Stack> currentMatrices_ = [];
-
-    public static Matrix4x4 ModelMatrix {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => modelMatrix_.Top;
-    }
-
-    public static Matrix4x4 ModelViewMatrix {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => modelViewMatrix_.Top;
-    }
-
-    public static Matrix4x4 ProjectionMatrix {
-      [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      get => projectionMatrix_.Top;
-    }
-
+  public static Matrix4x4 ModelViewMatrix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void UniformMatrix4(int location, Matrix4x4 matrix) {
+    get => modelViewMatrix_.Top;
+  }
+
+  public static Matrix4x4 ProjectionMatrix {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    get => projectionMatrix_.Top;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static unsafe void UniformMatrix4(int location, Matrix4x4 matrix) {
       var ptr = &(matrix.M11);
       GL.UniformMatrix4(location, 1, false, ptr);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void UniformMatrix4s(int location,
-                                              ReadOnlySpan<Matrix4x4>
-                                                  matrices) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static unsafe void UniformMatrix4s(int location,
+                                            ReadOnlySpan<Matrix4x4>
+                                                matrices) {
       fixed (float* ptr = &(matrices[0].M11)) {
         GL.UniformMatrix4(location, matrices.Length, false, ptr);
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void PushMatrix() {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void PushMatrix() {
       foreach (var currentMatrix in currentMatrices_) {
         currentMatrix.Push();
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void PopMatrix() {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void PopMatrix() {
       foreach (var currentMatrix in currentMatrices_) {
         currentMatrix.Pop();
       }
     }
 
-    public static unsafe void PassMatricesIntoGl() {
+  public static unsafe void PassMatricesIntoGl() {
       var projection = ProjectionMatrix;
       GL.MatrixMode(GlMatrixMode.Projection);
       GL.LoadMatrix(&(projection.M11));
@@ -76,7 +77,7 @@ namespace fin.ui.rendering.gl {
       GL.LoadMatrix(&(modelViewMatrix.M11));
     }
 
-    public static void MatrixMode(TransformMatrixMode mode) {
+  public static void MatrixMode(TransformMatrixMode mode) {
       currentMatrices_.Clear();
 
       switch (mode) {
@@ -96,53 +97,53 @@ namespace fin.ui.rendering.gl {
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void LoadIdentity() {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void LoadIdentity() {
       foreach (var currentMatrix in currentMatrices_) {
         currentMatrix.SetIdentity();
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void MultMatrix(Matrix4x4 matrix) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void MultMatrix(Matrix4x4 matrix) {
       foreach (var currentMatrix in currentMatrices_) {
         currentMatrix.MultiplyInPlace(matrix);
       }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Translate(double x, double y, double z)
-      => Translate((float) x, (float) y, (float) z);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Translate(double x, double y, double z)
+    => Translate((float) x, (float) y, (float) z);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Translate(float x, float y, float z)
-      => MultMatrix(SystemMatrix4x4Util.FromTranslation(x, y, z));
-
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Scale(double x, double y, double z)
-      => Scale((float) x, (float) y, (float) z);
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Scale(float x, float y, float z)
-      => MultMatrix(SystemMatrix4x4Util.FromScale(x, y, z));
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Translate(float x, float y, float z)
+    => MultMatrix(SystemMatrix4x4Util.FromTranslation(x, y, z));
 
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Rotate(double degrees, double x, double y, double z)
-      => Rotate((float) degrees, (float) x, (float) y, (float) z);
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Scale(double x, double y, double z)
+    => Scale((float) x, (float) y, (float) z);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Rotate(float degrees, float x, float y, float z)
-      => MultMatrix(
-          Matrix4x4.CreateFromAxisAngle(new Vector3(x, y, z),
-                                        degrees * FinTrig.DEG_2_RAD));
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Scale(float x, float y, float z)
+    => MultMatrix(SystemMatrix4x4Util.FromScale(x, y, z));
 
 
-    public static void Perspective(double fovYDegrees,
-                                   double aspectRatio,
-                                   double zNear,
-                                   double zFar) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Rotate(double degrees, double x, double y, double z)
+    => Rotate((float) degrees, (float) x, (float) y, (float) z);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Rotate(float degrees, float x, float y, float z)
+    => MultMatrix(
+        Matrix4x4.CreateFromAxisAngle(new Vector3(x, y, z),
+                                      degrees * FinTrig.DEG_2_RAD));
+
+
+  public static void Perspective(double fovYDegrees,
+                                 double aspectRatio,
+                                 double zNear,
+                                 double zFar) {
       var matrix = new Matrix4x4();
 
       var f = 1.0 / Math.Tan(fovYDegrees * FinTrig.DEG_2_RAD * .5f);
@@ -156,7 +157,7 @@ namespace fin.ui.rendering.gl {
       MultMatrix(matrix);
     }
 
-    public static void Ortho2d(int left, int right, int bottom, int top) {
+  public static void Ortho2d(int left, int right, int bottom, int top) {
       var near = -1;
       var far = 1;
 
@@ -173,16 +174,16 @@ namespace fin.ui.rendering.gl {
       MultMatrix(matrix);
     }
 
-    public static void LookAt(
-        double eyeX,
-        double eyeY,
-        double eyeZ,
-        double centerX,
-        double centerY,
-        double centerZ,
-        double upX,
-        double upY,
-        double upZ) {
+  public static void LookAt(
+      double eyeX,
+      double eyeY,
+      double eyeZ,
+      double centerX,
+      double centerY,
+      double centerZ,
+      double upX,
+      double upY,
+      double upZ) {
       var lookX = centerX - eyeX;
       var lookY = centerY - eyeY;
       var lookZ = centerZ - eyeZ;
@@ -231,35 +232,34 @@ namespace fin.ui.rendering.gl {
       Translate(-eyeX, -eyeY, -eyeZ);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void SetInMatrix(ref Matrix4x4 matrix,
-                                   int r,
-                                   int c,
-                                   double value)
-      => matrix[r, c] = (float) value;
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void SetInMatrix(ref Matrix4x4 matrix,
+                                 int r,
+                                 int c,
+                                 double value)
+    => matrix[r, c] = (float) value;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void CrossProduct3(
-        double x1,
-        double y1,
-        double z1,
-        double x2,
-        double y2,
-        double z2,
-        out double outX,
-        out double outY,
-        out double outZ) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void CrossProduct3(
+      double x1,
+      double y1,
+      double z1,
+      double x2,
+      double y2,
+      double z2,
+      out double outX,
+      out double outY,
+      out double outZ) {
       outX = y1 * z2 - z1 * y2;
       outY = z1 * x2 - x1 * z2;
       outZ = x1 * y2 - y1 * x2;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Normalize3(ref double x, ref double y, ref double z) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Normalize3(ref double x, ref double y, ref double z) {
       var inverseLength = 1 / Math.Sqrt(x * x + y * y + z * z);
       x *= inverseLength;
       y *= inverseLength;
       z *= inverseLength;
     }
-  }
 }

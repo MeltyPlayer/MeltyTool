@@ -5,28 +5,29 @@ using fin.io;
 using fin.model;
 using fin.model.io;
 
-namespace jsystem.api {
-  public class BmdModelImporterPlugin : IModelImporterPlugin {
-    public string DisplayName => "Bmd";
+namespace jsystem.api;
 
-    public string Description
-      => "Nintendo's JStudio model format.";
+public class BmdModelImporterPlugin : IModelImporterPlugin {
+  public string DisplayName => "Bmd";
 
-    public IReadOnlyList<string> KnownPlatforms { get; } =
-      new[] { "GameCube", "Wii" };
+  public string Description
+    => "Nintendo's JStudio model format.";
 
-    public IReadOnlyList<string> KnownGames { get; } = new[] {
+  public IReadOnlyList<string> KnownPlatforms { get; } =
+    new[] { "GameCube", "Wii" };
+
+  public IReadOnlyList<string> KnownGames { get; } = new[] {
         "Mario Kart: Double Dash", "Pikmin 2", "Super Mario Sunshine"
     };
 
-    public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".bmd" };
+  public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".bmd" };
 
-    public IReadOnlyList<string> FileExtensions { get; } =
-      new[] { ".bca", ".bck", ".bmd", ".bti" };
+  public IReadOnlyList<string> FileExtensions { get; } =
+    new[] { ".bca", ".bck", ".bmd", ".bti" };
 
-    public IModel Import(
-        IEnumerable<IReadOnlySystemFile> files,
-        float frameRate = 30) {
+  public IModel Import(
+      IEnumerable<IReadOnlySystemFile> files,
+      float frameRate = 30) {
       var filesArray = files.ToArray();
 
       var bcxFiles = filesArray.WithFileTypes(".bca", ".bck").ToArray();
@@ -44,5 +45,4 @@ namespace jsystem.api {
       var bmdImporter = new BmdModelImporter();
       return bmdImporter.Import(bmdBundle);
     }
-  }
 }

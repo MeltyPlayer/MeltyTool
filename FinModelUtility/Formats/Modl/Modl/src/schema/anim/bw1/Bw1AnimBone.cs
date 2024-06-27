@@ -3,25 +3,25 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace modl.schema.anim.bw1 {
-  [BinarySchema]
-  public partial class Bw1AnimBone : IBwAnimBone, IBinaryConvertible {
-    public string GetIdentifier() => Bw1Node.GetIdentifier(this.WeirdId);
+namespace modl.schema.anim.bw1;
 
-    [StringLengthSource(16)] public string Name { get; set; }
+[BinarySchema]
+public partial class Bw1AnimBone : IBwAnimBone, IBinaryConvertible {
+  public string GetIdentifier() => Bw1Node.GetIdentifier(this.WeirdId);
 
-    public uint PositionKeyframeCount { get; set; }
-    public uint RotationKeyframeCount { get; set; }
+  [StringLengthSource(16)] public string Name { get; set; }
 
-    private readonly ulong padding0_ = 0;
-    public float XPosDelta { get; set; }
-    public float YPosDelta { get; set; }
-    public float ZPosDelta { get; set; }
-    public float XPosMin { get; set; }
-    public float YPosMin { get; set; }
-    public float ZPosMin { get; set; }
-    private readonly uint padding1_ = 0;
+  public uint PositionKeyframeCount { get; set; }
+  public uint RotationKeyframeCount { get; set; }
 
-    public uint WeirdId { get; set; }
-  }
+  private readonly ulong padding0_ = 0;
+  public float XPosDelta { get; set; }
+  public float YPosDelta { get; set; }
+  public float ZPosDelta { get; set; }
+  public float XPosMin { get; set; }
+  public float YPosMin { get; set; }
+  public float ZPosMin { get; set; }
+  private readonly uint padding1_ = 0;
+
+  public uint WeirdId { get; set; }
 }

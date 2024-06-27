@@ -8,10 +8,11 @@ using fin.util.asserts;
 
 using NUnit.Framework;
 
-namespace fin.math.matrix.four {
-  public class FinMatrix4x4UtilTests {
-    [Test]
-    public void TestTranslation() {
+namespace fin.math.matrix.four;
+
+public class FinMatrix4x4UtilTests {
+  [Test]
+  public void TestTranslation() {
       var expectedTranslation = new Vector3(2, 3, 4);
 
       var matrix = FinMatrix4x4Util.FromTranslation(
@@ -22,8 +23,8 @@ namespace fin.math.matrix.four {
       Assert.AreEqual(expectedTranslation, actualTranslation);
     }
 
-    [Test]
-    public void TestRotation() {
+  [Test]
+  public void TestRotation() {
       var expectedRotation = QuaternionUtil.CreateZyx(1.2f, 2.3f, 3.4f);
 
       var matrix = FinMatrix4x4Util.FromRotation(
@@ -37,8 +38,8 @@ namespace fin.math.matrix.four {
       Asserts.IsRoughly(expectedRotation.W, actualRotation.W);
     }
 
-    [Test]
-    public void TestScale() {
+  [Test]
+  public void TestScale() {
       var expectedScale = new Vector3(3, 4, 5);
 
       var matrix = FinMatrix4x4Util.FromScale(
@@ -50,8 +51,8 @@ namespace fin.math.matrix.four {
     }
 
 
-    [Test]
-    public void TestTrs() {
+  [Test]
+  public void TestTrs() {
       var expectedTranslation = new Vector3(2, 3, 4);
       var expectedRotation = QuaternionUtil.CreateZyx(1.2f, 2.3f, 3.4f);
       var expectedScale = new Vector3(3, 4, 5);
@@ -74,8 +75,8 @@ namespace fin.math.matrix.four {
       Asserts.IsRoughly(expectedRotation.W, actualRotation.W);
     }
 
-    [Test]
-    public void TestDecompose() {
+  [Test]
+  public void TestDecompose() {
       var expectedMatrix = new FinMatrix4x4(new[] {
           -0.690858f,
           0.000000f,
@@ -104,5 +105,4 @@ namespace fin.math.matrix.four {
       var actualMatrix = FinMatrix4x4Util.FromTrs(translation, rotation, scale);
       Assert.AreEqual(expectedMatrix, actualMatrix);
     }
-  }
 }

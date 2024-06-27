@@ -2,106 +2,106 @@
 
 using fin.color;
 
-namespace fin.language.equations.fixedFunction {
-  public class FixedFunctionRegisters : IFixedFunctionRegisters {
-    private readonly Dictionary<string, IColorRegister> colorRegistersMap_ =
-        new();
+namespace fin.language.equations.fixedFunction;
 
-    private readonly Dictionary<string, IScalarRegister> scalarRegistersMap_ =
-        new();
+public class FixedFunctionRegisters : IFixedFunctionRegisters {
+  private readonly Dictionary<string, IColorRegister> colorRegistersMap_ =
+      new();
 
-    private readonly List<IColorRegister> colorRegisters_ = [];
-    private readonly List<IScalarRegister> scalarRegisters_ = [];
+  private readonly Dictionary<string, IScalarRegister> scalarRegistersMap_ =
+      new();
 
-    public IReadOnlyList<IColorRegister> ColorRegisters
-      => this.colorRegisters_;
+  private readonly List<IColorRegister> colorRegisters_ = [];
+  private readonly List<IScalarRegister> scalarRegisters_ = [];
 
-    public IReadOnlyList<IScalarRegister> ScalarRegisters
-      => this.scalarRegisters_;
+  public IReadOnlyList<IColorRegister> ColorRegisters
+    => this.colorRegisters_;
 
-    public IColorRegister AmbientLightColorRegister { get; }
-    public IScalarRegister AmbientLightAmountRegister { get; }
+  public IReadOnlyList<IScalarRegister> ScalarRegisters
+    => this.scalarRegisters_;
 
-    public FixedFunctionRegisters() {
-      this.AmbientLightColorRegister =
-          this.GetOrCreateColorRegister("ambientLightColor",
-                                        new ColorConstant(1));
-      this.AmbientLightAmountRegister =
-          this.GetOrCreateScalarRegister("ambientLightAmount",
-                                         new ScalarConstant(.1f));
+  public IColorRegister AmbientLightColorRegister { get; }
+  public IScalarRegister AmbientLightAmountRegister { get; }
+
+  public FixedFunctionRegisters() {
+    this.AmbientLightColorRegister =
+        this.GetOrCreateColorRegister("ambientLightColor",
+                                      new ColorConstant(1));
+    this.AmbientLightAmountRegister =
+        this.GetOrCreateScalarRegister("ambientLightAmount",
+                                       new ScalarConstant(.1f));
+  }
+
+  public IColorRegister GetOrCreateColorRegister(
+      string name,
+      IColorConstant defaultValue) {
+    if (!this.colorRegistersMap_.TryGetValue(name, out var colorRegister)) {
+      colorRegister = new ColorRegister(name, defaultValue);
+
+      this.colorRegistersMap_[name] = colorRegister;
+      this.colorRegisters_.Add(colorRegister);
     }
 
-    public IColorRegister GetOrCreateColorRegister(
-        string name,
-        IColorConstant defaultValue) {
-      if (!this.colorRegistersMap_.TryGetValue(name, out var colorRegister)) {
-        colorRegister = new ColorRegister(name, defaultValue);
+    return colorRegister;
+  }
 
-        this.colorRegistersMap_[name] = colorRegister;
-        this.colorRegisters_.Add(colorRegister);
-      }
+  public IScalarRegister GetOrCreateScalarRegister(
+      string name,
+      IScalarConstant defaultValue) {
+    if (!this.scalarRegistersMap_.TryGetValue(name, out var scalarRegister)) {
+      scalarRegister = new ScalarRegister(name, defaultValue);
 
-      return colorRegister;
+      this.scalarRegistersMap_[name] = scalarRegister;
+      this.scalarRegisters_.Add(scalarRegister);
     }
 
-    public IScalarRegister GetOrCreateScalarRegister(
-        string name,
-        IScalarConstant defaultValue) {
-      if (!this.scalarRegistersMap_.TryGetValue(name, out var scalarRegister)) {
-        scalarRegister = new ScalarRegister(name, defaultValue);
+    return scalarRegister;
+  }
 
-        this.scalarRegistersMap_[name] = scalarRegister;
-        this.scalarRegisters_.Add(scalarRegister);
-      }
+  private class ColorRegister : BColorValue, IColorRegister {
+    public ColorRegister(string name, IColorConstant defaultValue) {
+      this.Name = name;
+      this.DefaultValue = defaultValue;
 
-      return scalarRegister;
+      this.Value = defaultValue.IntensityValue != null
+          ? FinColor.FromIntensityFloat(
+              (float) defaultValue.IntensityValue!)
+          : FinColor.FromRgbFloats((float) defaultValue.RValue,
+                                   (float) defaultValue.GValue,
+                                   (float) defaultValue.BValue);
     }
 
-    private class ColorRegister : BColorValue, IColorRegister {
-      public ColorRegister(string name, IColorConstant defaultValue) {
-        this.Name = name;
-        this.DefaultValue = defaultValue;
+    public string Name { get; }
 
-        this.Value = defaultValue.IntensityValue != null
-            ? FinColor.FromIntensityFloat(
-                (float) defaultValue.IntensityValue!)
-            : FinColor.FromRgbFloats((float) defaultValue.RValue,
-                                     (float) defaultValue.GValue,
-                                     (float) defaultValue.BValue);
-      }
+    // TODO: Consider switching this to a mutable color value and merging these fields
+    public IColorConstant DefaultValue { get; set; }
+    public IColor Value { get; set; }
 
-      public string Name { get; }
+    public IColorValue ColorValue => this.DefaultValue;
 
-      // TODO: Consider switching this to a mutable color value and merging these fields
-      public IColorConstant DefaultValue { get; set; }
-      public IColor Value { get; set; }
+    public override IScalarValue? Intensity => this.ColorValue.Intensity;
+    public override IScalarValue R => this.ColorValue.R;
+    public override IScalarValue G => this.ColorValue.G;
+    public override IScalarValue B => this.ColorValue.B;
 
-      public IColorValue ColorValue => this.DefaultValue;
+    public override string ToString() => $"{Name} : {ColorValue}";
+  }
 
-      public override IScalarValue? Intensity => this.ColorValue.Intensity;
-      public override IScalarValue R => this.ColorValue.R;
-      public override IScalarValue G => this.ColorValue.G;
-      public override IScalarValue B => this.ColorValue.B;
-
-      public override string ToString() => $"{Name} : {ColorValue}";
+  private class ScalarRegister : BScalarValue, IScalarRegister {
+    public ScalarRegister(string name, IScalarConstant defaultValue) {
+      this.Name = name;
+      this.DefaultValue = defaultValue;
+      this.Value = (float) defaultValue.Value;
     }
 
-    private class ScalarRegister : BScalarValue, IScalarRegister {
-      public ScalarRegister(string name, IScalarConstant defaultValue) {
-        this.Name = name;
-        this.DefaultValue = defaultValue;
-        this.Value = (float) defaultValue.Value;
-      }
+    public string Name { get; }
 
-      public string Name { get; }
+    // TODO: Consider switching this to a mutable scalar value and merging these fields
+    public IScalarConstant DefaultValue { get; set; }
+    public float Value { get; set; }
 
-      // TODO: Consider switching this to a mutable scalar value and merging these fields
-      public IScalarConstant DefaultValue { get; set; }
-      public float Value { get; set; }
+    public IScalarValue ScalarValue => this.DefaultValue;
 
-      public IScalarValue ScalarValue => this.DefaultValue;
-
-      public override string ToString() => $"{Name} : {ScalarValue}";
-    }
+    public override string ToString() => $"{Name} : {ScalarValue}";
   }
 }

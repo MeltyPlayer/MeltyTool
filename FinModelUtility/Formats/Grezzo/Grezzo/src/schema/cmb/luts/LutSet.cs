@@ -3,24 +3,24 @@
 using schema.binary;
 using schema.binary.attributes;
 
-namespace grezzo.schema.cmb.luts {
-  [BinarySchema]
-  public partial class LutSet : IBinaryConvertible {
-    public ushort BitFlags; //Not sure
+namespace grezzo.schema.cmb.luts;
 
-    [WLengthOfSequence(nameof(Keyframes))]
-    private ushort keyframeCount_;
+[BinarySchema]
+public partial class LutSet : IBinaryConvertible {
+  public ushort BitFlags; //Not sure
 
-    public short Start;
-    public short End;
+  [WLengthOfSequence(nameof(Keyframes))]
+  private ushort keyframeCount_;
 
-    [RSequenceLengthSource(nameof(keyframeCount_))]
-    public LutKeyframe[] Keyframes;
+  public short Start;
+  public short End;
 
-    [Unknown]
-    public float unk1;
+  [RSequenceLengthSource(nameof(keyframeCount_))]
+  public LutKeyframe[] Keyframes;
 
-    [Unknown]
-    public float unk2;
-  }
+  [Unknown]
+  public float unk1;
+
+  [Unknown]
+  public float unk2;
 }

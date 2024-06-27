@@ -1,23 +1,24 @@
 ﻿using fin.audio;
 using fin.data.disposables;
 
-namespace fin.ui.playback.al {
-  public partial class AlAudioManager {
-    private partial class AlAudioPlayer : IAudioPlayer<short> {
-      private readonly IAudioPlayer<short>? parent_;
-      private float volume_ = 1;
+namespace fin.ui.playback.al;
 
-      private readonly TrackedDisposables<IAudioPlayer<short>>
-          subAudioPlayers_ = [];
+public partial class AlAudioManager {
+  private partial class AlAudioPlayer : IAudioPlayer<short> {
+    private readonly IAudioPlayer<short>? parent_;
+    private float volume_ = 1;
 
-      private readonly TrackedDisposables<IAudioPlayback<short>> playbacks_ =
-          [];
+    private readonly TrackedDisposables<IAudioPlayer<short>>
+        subAudioPlayers_ = [];
 
-      public bool IsDisposed { get; private set; }
+    private readonly TrackedDisposables<IAudioPlayback<short>> playbacks_ =
+        [];
 
-      public float Volume {
-        get => this.volume_;
-        set {
+    public bool IsDisposed { get; private set; }
+
+    public float Volume {
+      get => this.volume_;
+      set {
           this.volume_ = value;
           foreach (var subAudioPlayer in this.subAudioPlayers_) {
             subAudioPlayer.Volume = subAudioPlayer.Volume;
@@ -27,51 +28,50 @@ namespace fin.ui.playback.al {
             playback.Volume = playback.Volume;
           }
         }
-      }
+    }
 
-      public IEnumerable<IAudioPlayback<short>> CurrentPlaybacks
-        => this.playbacks_;
+    public IEnumerable<IAudioPlayback<short>> CurrentPlaybacks
+      => this.playbacks_;
 
-      public AlAudioPlayer(IAudioPlayer<short>? parent = null) {
+    public AlAudioPlayer(IAudioPlayer<short>? parent = null) {
         this.parent_ = parent;
       }
 
-      ~AlAudioPlayer() => this.ReleaseUnmanagedResources_();
+    ~AlAudioPlayer() => this.ReleaseUnmanagedResources_();
 
-      public void Dispose() {
+    public void Dispose() {
         this.ReleaseUnmanagedResources_();
         GC.SuppressFinalize(this);
       }
 
-      private void ReleaseUnmanagedResources_() {
+    private void ReleaseUnmanagedResources_() {
         this.IsDisposed = true;
         this.subAudioPlayers_.DisposeAll();
         this.playbacks_.DisposeAll();
       }
 
-      public IAudioPlayer<short> CreateSubPlayer() {
+    public IAudioPlayer<short> CreateSubPlayer() {
         var subPlayer = new AlAudioPlayer(this);
         this.subAudioPlayers_.Add(subPlayer);
         return subPlayer;
       }
 
-      public IAudioPlayback<short> CreatePlayback(
-          IAudioDataSource<short> source)
-        => source switch {
-            IAotAudioDataSource<short> aotAudioDataSource =>
-                this.CreatePlayback(aotAudioDataSource),
-            IJitAudioDataSource<short> jitAudioDataSource =>
-                this.CreatePlayback(jitAudioDataSource),
-        };
+    public IAudioPlayback<short> CreatePlayback(
+        IAudioDataSource<short> source)
+      => source switch {
+          IAotAudioDataSource<short> aotAudioDataSource =>
+              this.CreatePlayback(aotAudioDataSource),
+          IJitAudioDataSource<short> jitAudioDataSource =>
+              this.CreatePlayback(jitAudioDataSource),
+      };
 
-      public IAotAudioPlayback<short> CreatePlayback(
-          IAotAudioDataSource<short> source)
-        => new AlAotAudioPlayback(this, source);
+    public IAotAudioPlayback<short> CreatePlayback(
+        IAotAudioDataSource<short> source)
+      => new AlAotAudioPlayback(this, source);
 
-      public IJitAudioPlayback<short> CreatePlayback(
-          IJitAudioDataSource<short> source,
-          uint bufferCount)
-        => new AlJitAudioPlayback(this, source, bufferCount);
-    }
+    public IJitAudioPlayback<short> CreatePlayback(
+        IJitAudioDataSource<short> source,
+        uint bufferCount)
+      => new AlJitAudioPlayback(this, source, bufferCount);
   }
 }

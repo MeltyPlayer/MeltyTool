@@ -21,522 +21,522 @@ using fin.util.image;
 
 using schema.binary;
 
-namespace f3dzex2.model {
-  public class DlModelBuilder {
-    private readonly IN64Hardware n64Hardware_;
-    private IMesh currentMesh_;
+namespace f3dzex2.model;
 
-    private readonly LazyDictionary<ImageParams, IImage>
-        lazyImageDictionary_;
+public class DlModelBuilder {
+  private readonly IN64Hardware n64Hardware_;
+  private IMesh currentMesh_;
 
-    private readonly LazyDictionary<TextureParams, ITexture>
-        lazyTextureDictionary_;
+  private readonly LazyDictionary<ImageParams, IImage>
+      lazyImageDictionary_;
 
-    private readonly LazyDictionary<MaterialParams, IMaterial>
-        lazyMaterialDictionary_;
+  private readonly LazyDictionary<TextureParams, ITexture>
+      lazyTextureDictionary_;
 
-    private MaterialParams cachedMaterialParams_;
-    private IMaterial cachedMaterial_;
-    private readonly IF3dVertices vertices_;
-    private bool isMaterialTransparent_ = false;
+  private readonly LazyDictionary<MaterialParams, IMaterial>
+      lazyMaterialDictionary_;
 
-    /// <summary>
-    ///   Each model gets its own DlModelBuilder, but they all need to share
-    ///   the same N64 hardware state (RSP/RDP). If they don't, you'll run into
-    ///   weird graphical bugs that you'll spend ages debugging. :(
-    /// </summary>
-    public DlModelBuilder(IN64Hardware n64Hardware) {
-      this.n64Hardware_ = n64Hardware;
-      this.Model = new ModelImpl {
-          // TODO: Fix this
-          FileBundle = null,
-          Files = new HashSet<IReadOnlyGenericFile>(),
-      };
+  private MaterialParams cachedMaterialParams_;
+  private IMaterial cachedMaterial_;
+  private readonly IF3dVertices vertices_;
+  private bool isMaterialTransparent_ = false;
 
-      this.currentMesh_ = this.Model.Skin.AddMesh();
-      this.vertices_ = new F3dVertices(n64Hardware, this.Model);
+  /// <summary>
+  ///   Each model gets its own DlModelBuilder, but they all need to share
+  ///   the same N64 hardware state (RSP/RDP). If they don't, you'll run into
+  ///   weird graphical bugs that you'll spend ages debugging. :(
+  /// </summary>
+  public DlModelBuilder(IN64Hardware n64Hardware) {
+    this.n64Hardware_ = n64Hardware;
+    this.Model = new ModelImpl {
+        // TODO: Fix this
+        FileBundle = null,
+        Files = new HashSet<IReadOnlyGenericFile>(),
+    };
 
-      lazyImageDictionary_ =
-          new(imageParams => {
-            if (imageParams.IsInvalid) {
-              return FinImage.Create1x1FromColor(this.vertices_.DiffuseColor);
-            }
+    this.currentMesh_ = this.Model.Skin.AddMesh();
+    this.vertices_ = new F3dVertices(n64Hardware, this.Model);
 
-            SchemaBinaryReader? br = null;
-            if (Constants.STRICT) {
-              br = this.n64Hardware_.Memory.OpenAtSegmentedAddress(
-                  imageParams.SegmentedAddress);
-            } else {
-              if (this.n64Hardware_.Memory
-                      .TryToOpenPossibilitiesAtSegmentedAddress(
-                          imageParams.SegmentedAddress,
-                          out var possibilities)) {
-                br = possibilities.First();
-              }
-            }
-
-            if (br != null) {
-              var imageData =
-                  br.ReadBytes(imageParams.Width *
-                               imageParams.Height * 4);
-              br.Dispose();
-              return new N64ImageParser(this.n64Hardware_).Parse(
-                  imageParams.ColorFormat,
-                  imageParams.BitsPerTexel,
-                  imageData,
-                  imageParams.Width,
-                  imageParams.Height);
-            } else {
-              return FinImage.Create1x1FromColor(Color.Magenta);
-            }
-          });
-
-      lazyTextureDictionary_ =
-          new(textureParams
-                  => {
-                var imageParams = textureParams.ImageParams;
-                var texture = this.Model.MaterialManager.CreateTexture(
-                    this.lazyImageDictionary_[imageParams]);
-
-                var color = this.vertices_.DiffuseColor;
-                texture.Name = !imageParams.IsInvalid
-                    ? String.Format("0x{0:X8}", textureParams.SegmentedAddress)
-                    : $"rgb({color.R}, {color.G}, {color.B})";
-
-                texture.WrapModeU = textureParams.WrapModeS.AsFinWrapMode();
-                texture.WrapModeV = textureParams.WrapModeT.AsFinWrapMode();
-                texture.UvType = textureParams.UvType;
-                return texture;
-              });
-
-      lazyMaterialDictionary_ =
-          new(materialParams
-                  => {
-                var texture0 =
-                    this.lazyTextureDictionary_[materialParams.TextureParams0];
-                var texture1 =
-                    this.lazyTextureDictionary_[materialParams.TextureParams1];
-
-                var finMaterial = this.Model.MaterialManager
-                                      .AddFixedFunctionMaterial();
-
-                finMaterial.Name = $"[{texture0.Name}]/[{texture1.Name}]";
-                finMaterial.CullingMode = materialParams.CullingMode;
-
-                finMaterial.SetTextureSource(0, texture0);
-                finMaterial.SetTextureSource(1, texture1);
-
-                var equations = finMaterial.Equations;
-                var color0 = equations.CreateColorConstant(0);
-                var color1 = equations.CreateColorConstant(1);
-                var scalar1 = equations.CreateScalarConstant(1);
-                var scalar0 = equations.CreateScalarConstant(0);
-
-                var colorFixedFunctionOps =
-                    new ColorFixedFunctionOps(equations);
-                var scalarFixedFunctionOps =
-                    new ScalarFixedFunctionOps(equations);
-
-                var rsp = this.n64Hardware_.Rsp;
-                var environmentColor = equations.CreateColorConstant(
-                    rsp.EnvironmentColor.R / 255.0,
-                    rsp.EnvironmentColor.G / 255.0,
-                    rsp.EnvironmentColor.B / 255.0);
-                var environmentAlpha = equations.CreateScalarConstant(
-                    rsp.EnvironmentColor.A / 255.0);
-                var primColor = equations.CreateColorConstant(
-                    rsp.PrimColor.R / 255.0,
-                    rsp.PrimColor.G / 255.0,
-                    rsp.PrimColor.B / 255.0);
-                var primAlpha = equations.CreateScalarConstant(
-                    rsp.PrimColor.A / 255.0);
-
-                IColorValue combinedColor = color0;
-                IScalarValue combinedAlpha = scalar0;
-
-                Func<GenericColorMux, IColorValue> getColorValue =
-                    (colorMux) => colorMux switch {
-                        GenericColorMux.G_CCMUX_COMBINED => combinedColor,
-                        GenericColorMux.G_CCMUX_TEXEL0
-                            => equations.CreateOrGetColorInput(
-                                FixedFunctionSource.TEXTURE_COLOR_0),
-                        GenericColorMux.G_CCMUX_TEXEL1
-                            => equations.CreateOrGetColorInput(
-                                FixedFunctionSource.TEXTURE_COLOR_1),
-                        GenericColorMux.G_CCMUX_PRIMITIVE => primColor,
-                        GenericColorMux.G_CCMUX_SHADE
-                            => equations.CreateOrGetColorInput(
-                                FixedFunctionSource.VERTEX_COLOR_0),
-                        GenericColorMux.G_CCMUX_ENVIRONMENT => environmentColor,
-                        GenericColorMux.G_CCMUX_1           => color1,
-                        GenericColorMux.G_CCMUX_0           => color0,
-                        GenericColorMux.G_CCMUX_NOISE       => color1,
-                        GenericColorMux.G_CCMUX_CENTER      => color1,
-                        GenericColorMux.G_CCMUX_K4          => color1,
-                        GenericColorMux.G_CCMUX_COMBINED_ALPHA =>
-                            equations.CreateColor(combinedAlpha),
-                        GenericColorMux.G_CCMUX_TEXEL0_ALPHA
-                            => equations.CreateOrGetColorInput(
-                                FixedFunctionSource.TEXTURE_ALPHA_0),
-                        GenericColorMux.G_CCMUX_TEXEL1_ALPHA
-                            => equations.CreateOrGetColorInput(
-                                FixedFunctionSource.TEXTURE_ALPHA_1),
-                        GenericColorMux.G_CCMUX_PRIMITIVE_ALPHA =>
-                            equations.CreateColor(primAlpha),
-                        GenericColorMux.G_CCMUX_SHADE_ALPHA
-                            => equations.CreateOrGetColorInput(
-                                FixedFunctionSource.VERTEX_ALPHA_0),
-                        GenericColorMux.G_CCMUX_ENV_ALPHA =>
-                            equations.CreateColor(environmentAlpha),
-                        GenericColorMux.G_CCMUX_PRIM_LOD_FRAC => color1,
-                        GenericColorMux.G_CCMUX_SCALE         => color1,
-                        GenericColorMux.G_CCMUX_K5            => color1,
-                        _ => throw new ArgumentOutOfRangeException(
-                            nameof(colorMux),
-                            colorMux,
-                            null)
-                    };
-
-                Func<GenericAlphaMux, IScalarValue> getAlphaValue =
-                    (alphaMux) => alphaMux switch {
-                        GenericAlphaMux.G_ACMUX_COMBINED => combinedAlpha,
-                        GenericAlphaMux.G_ACMUX_TEXEL0 =>
-                            equations.CreateOrGetScalarInput(
-                                FixedFunctionSource.TEXTURE_ALPHA_0),
-                        GenericAlphaMux.G_ACMUX_TEXEL1 =>
-                            equations.CreateOrGetScalarInput(
-                                FixedFunctionSource.TEXTURE_ALPHA_1),
-                        GenericAlphaMux.G_ACMUX_PRIMITIVE => primAlpha,
-                        GenericAlphaMux.G_ACMUX_SHADE
-                            => equations.CreateOrGetScalarInput(
-                                FixedFunctionSource.VERTEX_ALPHA_0),
-                        GenericAlphaMux.G_ACMUX_ENVIRONMENT => environmentAlpha,
-                        GenericAlphaMux.G_ACMUX_1 => scalar1,
-                        GenericAlphaMux.G_ACMUX_0 => scalar0,
-                        GenericAlphaMux.G_ACMUX_PRIM_LOD_FRAC => scalar1,
-                        GenericAlphaMux.G_ACMUX_LOD_FRACTION => scalar1,
-                        _ => throw new ArgumentOutOfRangeException(
-                            nameof(alphaMux),
-                            alphaMux,
-                            null)
-                    };
-
-                foreach (var combinerCycleParams in new[] {
-                             materialParams.CombinerCycleParams0,
-                             materialParams.CombinerCycleParams1
-                         }) {
-                  var cA = getColorValue(combinerCycleParams.ColorMuxA);
-                  var cB = getColorValue(combinerCycleParams.ColorMuxB);
-                  var cC = getColorValue(combinerCycleParams.ColorMuxC);
-                  var cD = getColorValue(combinerCycleParams.ColorMuxD);
-
-                  combinedColor = colorFixedFunctionOps.Add(
-                      colorFixedFunctionOps.Multiply(
-                          colorFixedFunctionOps.Subtract(cA, cB),
-                          cC),
-                      cD) ?? colorFixedFunctionOps.Zero;
-
-                  var aA = getAlphaValue(combinerCycleParams.AlphaMuxA);
-                  var aB = getAlphaValue(combinerCycleParams.AlphaMuxB);
-                  var aC = getAlphaValue(combinerCycleParams.AlphaMuxC);
-                  var aD = getAlphaValue(combinerCycleParams.AlphaMuxD);
-
-                  combinedAlpha = scalarFixedFunctionOps.Add(
-                      scalarFixedFunctionOps.Multiply(
-                          scalarFixedFunctionOps.Subtract(aA, aB),
-                          aC),
-                      aD) ?? scalarFixedFunctionOps.Zero;
-                }
-
-                equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
-                                            combinedColor);
-                equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
-                                             combinedAlpha);
-
-                if (finMaterial.Textures.Any(
-                        texture
-                            => TransparencyTypeUtil.GetTransparencyType(texture.Image) ==
-                               TransparencyType.TRANSPARENT)) {
-                  finMaterial.SetAlphaCompare(AlphaOp.Or,
-                                              AlphaCompareType.Always,
-                                              .5f,
-                                              AlphaCompareType.Always,
-                                              0);
-                  finMaterial.SetBlending(BlendEquation.ADD,
-                                          BlendFactor.SRC_ALPHA,
-                                          BlendFactor.ONE_MINUS_SRC_ALPHA,
-                                          LogicOp.UNDEFINED);
-                } else {
-                  finMaterial.SetAlphaCompare(AlphaOp.Or,
-                                              AlphaCompareType.Greater,
-                                              .5f,
-                                              AlphaCompareType.Never,
-                                              0);
-                }
-
-                return finMaterial;
-              });
-    }
-
-    public ModelImpl Model { get; }
-
-    public IReadOnlyFinMatrix4x4 Matrix {
-      set => this.n64Hardware_.Rsp.Matrix = value;
-    }
-
-    public int GetNumberOfTriangles() =>
-        this.Model.Skin.Meshes
-            .SelectMany(mesh => mesh.Primitives)
-            .Select(primitive => primitive.Vertices.Count / 3)
-            .Sum();
-
-    public void AddDl(IDisplayList dl) {
-      foreach (var opcodeCommand in dl.OpcodeCommands) {
-        switch (opcodeCommand) {
-          case NoopOpcodeCommand _:
-            break;
-          case DlOpcodeCommand dlOpcodeCommand: {
-            foreach (var childDl in dlOpcodeCommand.PossibleBranches) {
-              AddDl(childDl);
-            }
-
-            if (!dlOpcodeCommand.PushCurrentDlToStack) {
-              return;
-            }
-
-            break;
+    lazyImageDictionary_ =
+        new(imageParams => {
+          if (imageParams.IsInvalid) {
+            return FinImage.Create1x1FromColor(this.vertices_.DiffuseColor);
           }
-          case EndDlOpcodeCommand _: {
+
+          SchemaBinaryReader? br = null;
+          if (Constants.STRICT) {
+            br = this.n64Hardware_.Memory.OpenAtSegmentedAddress(
+                imageParams.SegmentedAddress);
+          } else {
+            if (this.n64Hardware_.Memory
+                    .TryToOpenPossibilitiesAtSegmentedAddress(
+                        imageParams.SegmentedAddress,
+                        out var possibilities)) {
+              br = possibilities.First();
+            }
+          }
+
+          if (br != null) {
+            var imageData =
+                br.ReadBytes(imageParams.Width *
+                             imageParams.Height * 4);
+            br.Dispose();
+            return new N64ImageParser(this.n64Hardware_).Parse(
+                imageParams.ColorFormat,
+                imageParams.BitsPerTexel,
+                imageData,
+                imageParams.Width,
+                imageParams.Height);
+          } else {
+            return FinImage.Create1x1FromColor(Color.Magenta);
+          }
+        });
+
+    lazyTextureDictionary_ =
+        new(textureParams
+                => {
+              var imageParams = textureParams.ImageParams;
+              var texture = this.Model.MaterialManager.CreateTexture(
+                  this.lazyImageDictionary_[imageParams]);
+
+              var color = this.vertices_.DiffuseColor;
+              texture.Name = !imageParams.IsInvalid
+                  ? String.Format("0x{0:X8}", textureParams.SegmentedAddress)
+                  : $"rgb({color.R}, {color.G}, {color.B})";
+
+              texture.WrapModeU = textureParams.WrapModeS.AsFinWrapMode();
+              texture.WrapModeV = textureParams.WrapModeT.AsFinWrapMode();
+              texture.UvType = textureParams.UvType;
+              return texture;
+            });
+
+    lazyMaterialDictionary_ =
+        new(materialParams
+                => {
+              var texture0 =
+                  this.lazyTextureDictionary_[materialParams.TextureParams0];
+              var texture1 =
+                  this.lazyTextureDictionary_[materialParams.TextureParams1];
+
+              var finMaterial = this.Model.MaterialManager
+                                    .AddFixedFunctionMaterial();
+
+              finMaterial.Name = $"[{texture0.Name}]/[{texture1.Name}]";
+              finMaterial.CullingMode = materialParams.CullingMode;
+
+              finMaterial.SetTextureSource(0, texture0);
+              finMaterial.SetTextureSource(1, texture1);
+
+              var equations = finMaterial.Equations;
+              var color0 = equations.CreateColorConstant(0);
+              var color1 = equations.CreateColorConstant(1);
+              var scalar1 = equations.CreateScalarConstant(1);
+              var scalar0 = equations.CreateScalarConstant(0);
+
+              var colorFixedFunctionOps =
+                  new ColorFixedFunctionOps(equations);
+              var scalarFixedFunctionOps =
+                  new ScalarFixedFunctionOps(equations);
+
+              var rsp = this.n64Hardware_.Rsp;
+              var environmentColor = equations.CreateColorConstant(
+                  rsp.EnvironmentColor.R / 255.0,
+                  rsp.EnvironmentColor.G / 255.0,
+                  rsp.EnvironmentColor.B / 255.0);
+              var environmentAlpha = equations.CreateScalarConstant(
+                  rsp.EnvironmentColor.A / 255.0);
+              var primColor = equations.CreateColorConstant(
+                  rsp.PrimColor.R / 255.0,
+                  rsp.PrimColor.G / 255.0,
+                  rsp.PrimColor.B / 255.0);
+              var primAlpha = equations.CreateScalarConstant(
+                  rsp.PrimColor.A / 255.0);
+
+              IColorValue combinedColor = color0;
+              IScalarValue combinedAlpha = scalar0;
+
+              Func<GenericColorMux, IColorValue> getColorValue =
+                  (colorMux) => colorMux switch {
+                      GenericColorMux.G_CCMUX_COMBINED => combinedColor,
+                      GenericColorMux.G_CCMUX_TEXEL0
+                          => equations.CreateOrGetColorInput(
+                              FixedFunctionSource.TEXTURE_COLOR_0),
+                      GenericColorMux.G_CCMUX_TEXEL1
+                          => equations.CreateOrGetColorInput(
+                              FixedFunctionSource.TEXTURE_COLOR_1),
+                      GenericColorMux.G_CCMUX_PRIMITIVE => primColor,
+                      GenericColorMux.G_CCMUX_SHADE
+                          => equations.CreateOrGetColorInput(
+                              FixedFunctionSource.VERTEX_COLOR_0),
+                      GenericColorMux.G_CCMUX_ENVIRONMENT => environmentColor,
+                      GenericColorMux.G_CCMUX_1           => color1,
+                      GenericColorMux.G_CCMUX_0           => color0,
+                      GenericColorMux.G_CCMUX_NOISE       => color1,
+                      GenericColorMux.G_CCMUX_CENTER      => color1,
+                      GenericColorMux.G_CCMUX_K4          => color1,
+                      GenericColorMux.G_CCMUX_COMBINED_ALPHA =>
+                          equations.CreateColor(combinedAlpha),
+                      GenericColorMux.G_CCMUX_TEXEL0_ALPHA
+                          => equations.CreateOrGetColorInput(
+                              FixedFunctionSource.TEXTURE_ALPHA_0),
+                      GenericColorMux.G_CCMUX_TEXEL1_ALPHA
+                          => equations.CreateOrGetColorInput(
+                              FixedFunctionSource.TEXTURE_ALPHA_1),
+                      GenericColorMux.G_CCMUX_PRIMITIVE_ALPHA =>
+                          equations.CreateColor(primAlpha),
+                      GenericColorMux.G_CCMUX_SHADE_ALPHA
+                          => equations.CreateOrGetColorInput(
+                              FixedFunctionSource.VERTEX_ALPHA_0),
+                      GenericColorMux.G_CCMUX_ENV_ALPHA =>
+                          equations.CreateColor(environmentAlpha),
+                      GenericColorMux.G_CCMUX_PRIM_LOD_FRAC => color1,
+                      GenericColorMux.G_CCMUX_SCALE         => color1,
+                      GenericColorMux.G_CCMUX_K5            => color1,
+                      _ => throw new ArgumentOutOfRangeException(
+                          nameof(colorMux),
+                          colorMux,
+                          null)
+                  };
+
+              Func<GenericAlphaMux, IScalarValue> getAlphaValue =
+                  (alphaMux) => alphaMux switch {
+                      GenericAlphaMux.G_ACMUX_COMBINED => combinedAlpha,
+                      GenericAlphaMux.G_ACMUX_TEXEL0 =>
+                          equations.CreateOrGetScalarInput(
+                              FixedFunctionSource.TEXTURE_ALPHA_0),
+                      GenericAlphaMux.G_ACMUX_TEXEL1 =>
+                          equations.CreateOrGetScalarInput(
+                              FixedFunctionSource.TEXTURE_ALPHA_1),
+                      GenericAlphaMux.G_ACMUX_PRIMITIVE => primAlpha,
+                      GenericAlphaMux.G_ACMUX_SHADE
+                          => equations.CreateOrGetScalarInput(
+                              FixedFunctionSource.VERTEX_ALPHA_0),
+                      GenericAlphaMux.G_ACMUX_ENVIRONMENT   => environmentAlpha,
+                      GenericAlphaMux.G_ACMUX_1             => scalar1,
+                      GenericAlphaMux.G_ACMUX_0             => scalar0,
+                      GenericAlphaMux.G_ACMUX_PRIM_LOD_FRAC => scalar1,
+                      GenericAlphaMux.G_ACMUX_LOD_FRACTION  => scalar1,
+                      _ => throw new ArgumentOutOfRangeException(
+                          nameof(alphaMux),
+                          alphaMux,
+                          null)
+                  };
+
+              foreach (var combinerCycleParams in new[] {
+                           materialParams.CombinerCycleParams0,
+                           materialParams.CombinerCycleParams1
+                       }) {
+                var cA = getColorValue(combinerCycleParams.ColorMuxA);
+                var cB = getColorValue(combinerCycleParams.ColorMuxB);
+                var cC = getColorValue(combinerCycleParams.ColorMuxC);
+                var cD = getColorValue(combinerCycleParams.ColorMuxD);
+
+                combinedColor = colorFixedFunctionOps.Add(
+                    colorFixedFunctionOps.Multiply(
+                        colorFixedFunctionOps.Subtract(cA, cB),
+                        cC),
+                    cD) ?? colorFixedFunctionOps.Zero;
+
+                var aA = getAlphaValue(combinerCycleParams.AlphaMuxA);
+                var aB = getAlphaValue(combinerCycleParams.AlphaMuxB);
+                var aC = getAlphaValue(combinerCycleParams.AlphaMuxC);
+                var aD = getAlphaValue(combinerCycleParams.AlphaMuxD);
+
+                combinedAlpha = scalarFixedFunctionOps.Add(
+                    scalarFixedFunctionOps.Multiply(
+                        scalarFixedFunctionOps.Subtract(aA, aB),
+                        aC),
+                    aD) ?? scalarFixedFunctionOps.Zero;
+              }
+
+              equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
+                                          combinedColor);
+              equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
+                                           combinedAlpha);
+
+              if (finMaterial.Textures.Any(
+                      texture
+                          => TransparencyTypeUtil.GetTransparencyType(texture.Image) ==
+                             TransparencyType.TRANSPARENT)) {
+                finMaterial.SetAlphaCompare(AlphaOp.Or,
+                                            AlphaCompareType.Always,
+                                            .5f,
+                                            AlphaCompareType.Always,
+                                            0);
+                finMaterial.SetBlending(BlendEquation.ADD,
+                                        BlendFactor.SRC_ALPHA,
+                                        BlendFactor.ONE_MINUS_SRC_ALPHA,
+                                        LogicOp.UNDEFINED);
+              } else {
+                finMaterial.SetAlphaCompare(AlphaOp.Or,
+                                            AlphaCompareType.Greater,
+                                            .5f,
+                                            AlphaCompareType.Never,
+                                            0);
+              }
+
+              return finMaterial;
+            });
+  }
+
+  public ModelImpl Model { get; }
+
+  public IReadOnlyFinMatrix4x4 Matrix {
+    set => this.n64Hardware_.Rsp.Matrix = value;
+  }
+
+  public int GetNumberOfTriangles() =>
+      this.Model.Skin.Meshes
+          .SelectMany(mesh => mesh.Primitives)
+          .Select(primitive => primitive.Vertices.Count / 3)
+          .Sum();
+
+  public void AddDl(IDisplayList dl) {
+    foreach (var opcodeCommand in dl.OpcodeCommands) {
+      switch (opcodeCommand) {
+        case NoopOpcodeCommand _:
+          break;
+        case DlOpcodeCommand dlOpcodeCommand: {
+          foreach (var childDl in dlOpcodeCommand.PossibleBranches) {
+            AddDl(childDl);
+          }
+
+          if (!dlOpcodeCommand.PushCurrentDlToStack) {
             return;
           }
-          case MtxOpcodeCommand mtxOpcodeCommand: {
-            if (mtxOpcodeCommand.ModelView && mtxOpcodeCommand.Load) {
-              if (this.n64Hardware_.Rsp.BoneMapper
-                      .TryToGetBoneAtSegmentedAddress(
-                          mtxOpcodeCommand.RamAddress,
-                          out var bone)) {
-                this.n64Hardware_.Rsp.ActiveBone = bone;
-              }
-            }
 
-            break;
+          break;
+        }
+        case EndDlOpcodeCommand _: {
+          return;
+        }
+        case MtxOpcodeCommand mtxOpcodeCommand: {
+          if (mtxOpcodeCommand.ModelView && mtxOpcodeCommand.Load) {
+            if (this.n64Hardware_.Rsp.BoneMapper
+                    .TryToGetBoneAtSegmentedAddress(
+                        mtxOpcodeCommand.RamAddress,
+                        out var bone)) {
+              this.n64Hardware_.Rsp.ActiveBone = bone;
+            }
           }
-          case PopMtxOpcodeCommand popMtxOpcodeCommand:
-            break;
-          case SetEnvColorOpcodeCommand setEnvColorOpcodeCommand: {
-            this.n64Hardware_.Rsp.EnvironmentColor = Color.FromArgb(
-                setEnvColorOpcodeCommand.A,
-                setEnvColorOpcodeCommand.R,
-                setEnvColorOpcodeCommand.G,
-                setEnvColorOpcodeCommand.B);
-            break;
-          }
-          case SetPrimColorOpcodeCommand setPrimColorOpcodeCommand: {
-            this.n64Hardware_.Rsp.PrimColor = Color.FromArgb(
-                setPrimColorOpcodeCommand.A,
-                setPrimColorOpcodeCommand.R,
-                setPrimColorOpcodeCommand.G,
-                setPrimColorOpcodeCommand.B);
-            break;
-          }
-          case SetFogColorOpcodeCommand setFogColorOpcodeCommand:
-            break;
-          // Geometry mode commands
-          case SetGeometryModeOpcodeCommand setGeometryModeOpcodeCommand: {
-            this.UpdateGeometryMode_(
-                dl.Type,
-                default,
-                setGeometryModeOpcodeCommand.FlagsToEnable);
-            break;
-          }
-          case ClearGeometryModeOpcodeCommand clearGeometryModeOpcodeCommand: {
-            this.UpdateGeometryMode_(
-                dl.Type,
-                clearGeometryModeOpcodeCommand.FlagsToDisable,
-                default);
-            break;
-          }
-          case GeometryModeOpcodeCommand geometryModeOpcodeCommand: {
-            this.UpdateGeometryMode_(
-                dl.Type,
-                geometryModeOpcodeCommand.FlagsToDisable,
-                geometryModeOpcodeCommand.FlagsToEnable);
-            break;
-          }
-          case SetTileOpcodeCommand setTileOpcodeCommand: {
-            this.n64Hardware_.Rdp.Tmem.GsDpSetTile(
-                setTileOpcodeCommand.ColorFormat,
-                setTileOpcodeCommand.BitsPerTexel,
-                setTileOpcodeCommand.Num64BitValuesPerRow,
-                setTileOpcodeCommand.OffsetOfTextureInTmem,
-                setTileOpcodeCommand.TileDescriptorIndex,
-                setTileOpcodeCommand.WrapModeS,
-                setTileOpcodeCommand.WrapModeT);
-            break;
-          }
-          case SetTileSizeOpcodeCommand setTileSizeOpcodeCommand: {
-            this.n64Hardware_.Rdp.Tmem.GsDpSetTileSize(
-                setTileSizeOpcodeCommand.Uls,
+
+          break;
+        }
+        case PopMtxOpcodeCommand popMtxOpcodeCommand:
+          break;
+        case SetEnvColorOpcodeCommand setEnvColorOpcodeCommand: {
+          this.n64Hardware_.Rsp.EnvironmentColor = Color.FromArgb(
+              setEnvColorOpcodeCommand.A,
+              setEnvColorOpcodeCommand.R,
+              setEnvColorOpcodeCommand.G,
+              setEnvColorOpcodeCommand.B);
+          break;
+        }
+        case SetPrimColorOpcodeCommand setPrimColorOpcodeCommand: {
+          this.n64Hardware_.Rsp.PrimColor = Color.FromArgb(
+              setPrimColorOpcodeCommand.A,
+              setPrimColorOpcodeCommand.R,
+              setPrimColorOpcodeCommand.G,
+              setPrimColorOpcodeCommand.B);
+          break;
+        }
+        case SetFogColorOpcodeCommand setFogColorOpcodeCommand:
+          break;
+        // Geometry mode commands
+        case SetGeometryModeOpcodeCommand setGeometryModeOpcodeCommand: {
+          this.UpdateGeometryMode_(
+              dl.Type,
+              default,
+              setGeometryModeOpcodeCommand.FlagsToEnable);
+          break;
+        }
+        case ClearGeometryModeOpcodeCommand clearGeometryModeOpcodeCommand: {
+          this.UpdateGeometryMode_(
+              dl.Type,
+              clearGeometryModeOpcodeCommand.FlagsToDisable,
+              default);
+          break;
+        }
+        case GeometryModeOpcodeCommand geometryModeOpcodeCommand: {
+          this.UpdateGeometryMode_(
+              dl.Type,
+              geometryModeOpcodeCommand.FlagsToDisable,
+              geometryModeOpcodeCommand.FlagsToEnable);
+          break;
+        }
+        case SetTileOpcodeCommand setTileOpcodeCommand: {
+          this.n64Hardware_.Rdp.Tmem.GsDpSetTile(
+              setTileOpcodeCommand.ColorFormat,
+              setTileOpcodeCommand.BitsPerTexel,
+              setTileOpcodeCommand.Num64BitValuesPerRow,
+              setTileOpcodeCommand.OffsetOfTextureInTmem,
+              setTileOpcodeCommand.TileDescriptorIndex,
+              setTileOpcodeCommand.WrapModeS,
+              setTileOpcodeCommand.WrapModeT);
+          break;
+        }
+        case SetTileSizeOpcodeCommand setTileSizeOpcodeCommand: {
+          this.n64Hardware_.Rdp.Tmem.GsDpSetTileSize(
+              setTileSizeOpcodeCommand.Uls,
               setTileSizeOpcodeCommand.Ult,
               setTileSizeOpcodeCommand
                   .TileDescriptorIndex,
               setTileSizeOpcodeCommand.Width,
               setTileSizeOpcodeCommand.Height);
-            break;
-          }
-          case SetTimgOpcodeCommand setTimgOpcodeCommand: {
-            this.n64Hardware_.Rdp.Tmem.GsDpSetTextureImage(
-                setTimgOpcodeCommand.ColorFormat,
-                setTimgOpcodeCommand.BitsPerTexel,
-                setTimgOpcodeCommand.Width,
-                setTimgOpcodeCommand
-                    .TextureSegmentedAddress);
-            break;
-          }
-          case TextureOpcodeCommand textureOpcodeCommand: {
-            this.n64Hardware_.Rdp.Tmem.GsSpTexture(
-                textureOpcodeCommand.HorizontalScaling,
-                textureOpcodeCommand.VerticalScaling,
-                textureOpcodeCommand.MaximumNumberOfMipmaps,
-                textureOpcodeCommand.TileDescriptorIndex,
-                textureOpcodeCommand.NewTileDescriptorState);
-            break;
-          }
-          case SetCombineOpcodeCommand setCombineOpcodeCommand: {
-            this.n64Hardware_.Rdp.CombinerCycleParams0 =
-                setCombineOpcodeCommand.CombinerCycleParams0;
-            this.n64Hardware_.Rdp.CombinerCycleParams1 =
-                setCombineOpcodeCommand.CombinerCycleParams1;
-            break;
-          }
-          case VtxOpcodeCommand vtxOpcodeCommand: {
-            this.vertices_.LoadVertices(
-                vtxOpcodeCommand.Vertices,
-                vtxOpcodeCommand.IndexToBeginStoringVertices);
-            break;
-          }
-          case Tri1OpcodeCommand tri1OpcodeCommand: {
-            var material = this.GetOrCreateMaterial_();
-            var vertices =
-                tri1OpcodeCommand.VertexIndicesInOrder.Select(
-                    this.vertices_.GetOrCreateVertexAtIndex);
-            var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
-                                .SetMaterial(material)
-                                .SetVertexOrder(VertexOrder.NORMAL);
-
-            if (isMaterialTransparent_) {
-              triangles.SetInversePriority(1);
-            } else {
-              triangles.SetInversePriority(0);
-            }
-
-            break;
-          }
-          case Tri2OpcodeCommand tri2OpcodeCommand: {
-            var material = this.GetOrCreateMaterial_();
-            var vertices =
-                tri2OpcodeCommand
-                    .VertexIndicesInOrder0
-                    .Concat(tri2OpcodeCommand.VertexIndicesInOrder1)
-                    .Select(this.vertices_.GetOrCreateVertexAtIndex);
-            var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
-                                .SetMaterial(material)
-                                .SetVertexOrder(VertexOrder.NORMAL);
-
-            if (isMaterialTransparent_) {
-              triangles.SetInversePriority(1);
-            } else {
-              triangles.SetInversePriority(0);
-            }
-
-            break;
-          }
-          case LoadBlockOpcodeCommand loadBlockOpcodeCommand: {
-            this.n64Hardware_.Rdp.Tmem.GsDpLoadBlock(0,
-              0,
-              loadBlockOpcodeCommand.TileDescriptorIndex,
-              loadBlockOpcodeCommand.Texels,
-              0);
-            break;
-          }
-          case LoadTlutOpcodeCommand loadTlutOpcodeCommand: {
-            this.n64Hardware_.Rdp.Tmem.GsDpLoadTlut(
-                loadTlutOpcodeCommand.TileDescriptorIndex,
-                loadTlutOpcodeCommand.NumColorsToLoad);
-            break;
-          }
-          case MoveMemOpcodeCommand moveMemOpcodeCommand: {
-            // TODO: How to handle this in a more generalized way?
-            switch (moveMemOpcodeCommand.DmemAddress) {
-              // Diffuse light
-              // https://hack64.net/wiki/doku.php?id=super_mario_64:fast3d_display_list_commands
-              case DmemAddress.G_MV_L0: {
-                using var br =
-                    this.n64Hardware_.Memory.OpenAtSegmentedAddress(
-                        moveMemOpcodeCommand.SegmentedAddress);
-                var r = br.ReadByte();
-                var g = br.ReadByte();
-                var b = br.ReadByte();
-
-                // TODO: Support normalized light direction
-
-                this.vertices_.DiffuseColor = Color.FromArgb(r, g, b);
-
-                break;
-              }
-              // Ambient light
-              case DmemAddress.G_MV_L1: {
-                break;
-              }
-            }
-
-            break;
-          }
-          case ModifyVtxOpcodeCommand: {
-            break;
-          }
-          default:
-            throw new ArgumentOutOfRangeException(nameof(opcodeCommand));
+          break;
         }
+        case SetTimgOpcodeCommand setTimgOpcodeCommand: {
+          this.n64Hardware_.Rdp.Tmem.GsDpSetTextureImage(
+              setTimgOpcodeCommand.ColorFormat,
+              setTimgOpcodeCommand.BitsPerTexel,
+              setTimgOpcodeCommand.Width,
+              setTimgOpcodeCommand
+                  .TextureSegmentedAddress);
+          break;
+        }
+        case TextureOpcodeCommand textureOpcodeCommand: {
+          this.n64Hardware_.Rdp.Tmem.GsSpTexture(
+              textureOpcodeCommand.HorizontalScaling,
+              textureOpcodeCommand.VerticalScaling,
+              textureOpcodeCommand.MaximumNumberOfMipmaps,
+              textureOpcodeCommand.TileDescriptorIndex,
+              textureOpcodeCommand.NewTileDescriptorState);
+          break;
+        }
+        case SetCombineOpcodeCommand setCombineOpcodeCommand: {
+          this.n64Hardware_.Rdp.CombinerCycleParams0 =
+              setCombineOpcodeCommand.CombinerCycleParams0;
+          this.n64Hardware_.Rdp.CombinerCycleParams1 =
+              setCombineOpcodeCommand.CombinerCycleParams1;
+          break;
+        }
+        case VtxOpcodeCommand vtxOpcodeCommand: {
+          this.vertices_.LoadVertices(
+              vtxOpcodeCommand.Vertices,
+              vtxOpcodeCommand.IndexToBeginStoringVertices);
+          break;
+        }
+        case Tri1OpcodeCommand tri1OpcodeCommand: {
+          var material = this.GetOrCreateMaterial_();
+          var vertices =
+              tri1OpcodeCommand.VertexIndicesInOrder.Select(
+                  this.vertices_.GetOrCreateVertexAtIndex);
+          var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
+                              .SetMaterial(material)
+                              .SetVertexOrder(VertexOrder.NORMAL);
+
+          if (isMaterialTransparent_) {
+            triangles.SetInversePriority(1);
+          } else {
+            triangles.SetInversePriority(0);
+          }
+
+          break;
+        }
+        case Tri2OpcodeCommand tri2OpcodeCommand: {
+          var material = this.GetOrCreateMaterial_();
+          var vertices =
+              tri2OpcodeCommand
+                  .VertexIndicesInOrder0
+                  .Concat(tri2OpcodeCommand.VertexIndicesInOrder1)
+                  .Select(this.vertices_.GetOrCreateVertexAtIndex);
+          var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
+                              .SetMaterial(material)
+                              .SetVertexOrder(VertexOrder.NORMAL);
+
+          if (isMaterialTransparent_) {
+            triangles.SetInversePriority(1);
+          } else {
+            triangles.SetInversePriority(0);
+          }
+
+          break;
+        }
+        case LoadBlockOpcodeCommand loadBlockOpcodeCommand: {
+          this.n64Hardware_.Rdp.Tmem.GsDpLoadBlock(0,
+                                                   0,
+                                                   loadBlockOpcodeCommand.TileDescriptorIndex,
+                                                   loadBlockOpcodeCommand.Texels,
+                                                   0);
+          break;
+        }
+        case LoadTlutOpcodeCommand loadTlutOpcodeCommand: {
+          this.n64Hardware_.Rdp.Tmem.GsDpLoadTlut(
+              loadTlutOpcodeCommand.TileDescriptorIndex,
+              loadTlutOpcodeCommand.NumColorsToLoad);
+          break;
+        }
+        case MoveMemOpcodeCommand moveMemOpcodeCommand: {
+          // TODO: How to handle this in a more generalized way?
+          switch (moveMemOpcodeCommand.DmemAddress) {
+            // Diffuse light
+            // https://hack64.net/wiki/doku.php?id=super_mario_64:fast3d_display_list_commands
+            case DmemAddress.G_MV_L0: {
+              using var br =
+                  this.n64Hardware_.Memory.OpenAtSegmentedAddress(
+                      moveMemOpcodeCommand.SegmentedAddress);
+              var r = br.ReadByte();
+              var g = br.ReadByte();
+              var b = br.ReadByte();
+
+              // TODO: Support normalized light direction
+
+              this.vertices_.DiffuseColor = Color.FromArgb(r, g, b);
+
+              break;
+            }
+            // Ambient light
+            case DmemAddress.G_MV_L1: {
+              break;
+            }
+          }
+
+          break;
+        }
+        case ModifyVtxOpcodeCommand: {
+          break;
+        }
+        default:
+          throw new ArgumentOutOfRangeException(nameof(opcodeCommand));
       }
     }
+  }
 
-    private void UpdateGeometryMode_(
-        DisplayListType displayListType,
-        GeometryMode flagsToDisable,
-        GeometryMode flagsToEnable) {
-      var originalCullingMode = this.GetCullingMode_(displayListType);
+  private void UpdateGeometryMode_(
+      DisplayListType displayListType,
+      GeometryMode flagsToDisable,
+      GeometryMode flagsToEnable) {
+    var originalCullingMode = this.GetCullingMode_(displayListType);
 
-      this.n64Hardware_.Rsp.GeometryMode =
-          (this.n64Hardware_.Rsp.GeometryMode & ~flagsToDisable) |
-          flagsToEnable;
+    this.n64Hardware_.Rsp.GeometryMode =
+        (this.n64Hardware_.Rsp.GeometryMode & ~flagsToDisable) |
+        flagsToEnable;
 
-      var newCullingMode = this.GetCullingMode_(displayListType);
+    var newCullingMode = this.GetCullingMode_(displayListType);
 
-      if (newCullingMode != originalCullingMode) {
-        this.n64Hardware_.Rdp.Tmem.CullingMode = newCullingMode;
-      }
+    if (newCullingMode != originalCullingMode) {
+      this.n64Hardware_.Rdp.Tmem.CullingMode = newCullingMode;
+    }
+  }
+
+  private CullingMode GetCullingMode_(DisplayListType displayListType)
+    => displayListType switch {
+        DisplayListType.F3DZEX2 => this.n64Hardware_.Rsp.GeometryMode
+                                       .GetCullingModeEx2(),
+        _ => this.n64Hardware_.Rsp.GeometryMode.GetCullingModeNonEx2()
+    };
+
+  private IMaterial GetOrCreateMaterial_() {
+    var newMaterialParams = this.n64Hardware_.Rdp.Tmem.GetMaterialParams();
+    if (!cachedMaterialParams_.Equals(newMaterialParams)) {
+      this.cachedMaterialParams_ = newMaterialParams;
+      this.cachedMaterial_ = this.lazyMaterialDictionary_[newMaterialParams];
+      this.isMaterialTransparent_ =
+          TransparencyTypeUtil.GetTransparencyType(
+              this.cachedMaterial_.Textures.First().Image) ==
+          TransparencyType.TRANSPARENT;
     }
 
-    private CullingMode GetCullingMode_(DisplayListType displayListType)
-      => displayListType switch {
-          DisplayListType.F3DZEX2 => this.n64Hardware_.Rsp.GeometryMode
-                                         .GetCullingModeEx2(),
-          _ => this.n64Hardware_.Rsp.GeometryMode.GetCullingModeNonEx2()
-      };
-
-    private IMaterial GetOrCreateMaterial_() {
-      var newMaterialParams = this.n64Hardware_.Rdp.Tmem.GetMaterialParams();
-      if (!cachedMaterialParams_.Equals(newMaterialParams)) {
-        this.cachedMaterialParams_ = newMaterialParams;
-        this.cachedMaterial_ = this.lazyMaterialDictionary_[newMaterialParams];
-        this.isMaterialTransparent_ =
-            TransparencyTypeUtil.GetTransparencyType(
-                this.cachedMaterial_.Textures.First().Image) ==
-            TransparencyType.TRANSPARENT;
-      }
-
-      return this.cachedMaterial_;
-    }
+    return this.cachedMaterial_;
   }
 }

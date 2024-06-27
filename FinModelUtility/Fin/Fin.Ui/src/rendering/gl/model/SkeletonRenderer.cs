@@ -8,30 +8,31 @@ using OpenTK.Graphics.OpenGL;
 
 using PrimitiveType = OpenTK.Graphics.OpenGL.PrimitiveType;
 
-namespace fin.ui.rendering.gl.model {
-  public interface ISkeletonRenderer : IRenderable {
-    IReadOnlySkeleton Skeleton { get; }
-    IReadOnlyBone? SelectedBone { get; set; }
-    float Scale { get; set; }
-  }
+namespace fin.ui.rendering.gl.model;
 
-  /// <summary>
-  ///   A renderer for a Fin model's skeleton.
-  /// </summary>
-  public class SkeletonRenderer : ISkeletonRenderer {
-    private readonly IReadOnlyBoneTransformManager boneTransformManager_;
+public interface ISkeletonRenderer : IRenderable {
+  IReadOnlySkeleton Skeleton { get; }
+  IReadOnlyBone? SelectedBone { get; set; }
+  float Scale { get; set; }
+}
 
-    public SkeletonRenderer(IReadOnlySkeleton skeleton,
-                            IReadOnlyBoneTransformManager boneTransformManager) {
+/// <summary>
+///   A renderer for a Fin model's skeleton.
+/// </summary>
+public class SkeletonRenderer : ISkeletonRenderer {
+  private readonly IReadOnlyBoneTransformManager boneTransformManager_;
+
+  public SkeletonRenderer(IReadOnlySkeleton skeleton,
+                          IReadOnlyBoneTransformManager boneTransformManager) {
       this.Skeleton = skeleton;
       this.boneTransformManager_ = boneTransformManager;
     }
 
-    public IReadOnlySkeleton Skeleton { get; }
-    public IReadOnlyBone? SelectedBone { get; set; }
-    public float Scale { get; set; } = 1;
+  public IReadOnlySkeleton Skeleton { get; }
+  public IReadOnlyBone? SelectedBone { get; set; }
+  public float Scale { get; set; } = 1;
 
-    public void Render() {
+  public void Render() {
       GlTransform.PassMatricesIntoGl();
 
       GlUtil.SetDepth(DepthMode.IGNORE_DEPTH_BUFFER, DepthCompareType.Always);
@@ -112,5 +113,4 @@ namespace fin.ui.rendering.gl.model {
       GL.Color4(1f, 1, 1, 1);
       GL.Enable(EnableCap.DepthTest);
     }
-  }
 }
