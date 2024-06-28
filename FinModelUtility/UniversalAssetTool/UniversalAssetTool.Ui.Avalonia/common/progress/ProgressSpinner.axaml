@@ -12,11 +12,11 @@
   </Design.DataContext>
 
   <ProgressBar
-    Width="64"
-    Height="64"
-    Classes="circular"
-    ShowProgressText="True"
-    Value="{Binding Progress.Progress}">
+      Width="64"
+      Height="64"
+      Classes="circular"
+      ShowProgressText="True"
+      Value="{Binding Progress.Progress}">
     <ProgressBar.Styles>
       <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Lime" />
     </ProgressBar.Styles>

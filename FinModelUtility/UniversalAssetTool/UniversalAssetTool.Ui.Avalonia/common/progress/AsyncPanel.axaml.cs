@@ -13,10 +13,10 @@ using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.common.progress;
 
-public class ProgressPanelViewModelForDesigner
-    : ProgressPanelViewModel {
-  public ProgressPanelViewModelForDesigner() {
-    this.Progress = new ValueFractionProgress();
+public class AsyncPanelViewModelForDesigner
+    : AsyncPanelViewModel {
+  public AsyncPanelViewModelForDesigner() {
+    this.Progress = new AsyncProgress();
 
     var secondsToWait = 3;
     var start = DateTime.Now;
@@ -28,10 +28,6 @@ public class ProgressPanelViewModelForDesigner
           do {
             current = DateTime.Now;
             elapsedSeconds = (current - start).TotalSeconds;
-            this.Progress.ReportProgress(
-                100 *
-                Math.Clamp((float) (elapsedSeconds / secondsToWait), 0, 1));
-
             await Task.Delay(50);
           } while (elapsedSeconds < secondsToWait);
 
@@ -40,25 +36,13 @@ public class ProgressPanelViewModelForDesigner
   }
 }
 
-public class ProgressPanelViewModel : ViewModelBase {
-  private ValueFractionProgress progress_;
-  private ProgressSpinnerViewModel progressSpinner_;
+public class AsyncPanelViewModel : ViewModelBase {
+  private AsyncProgress progress_;
   private IDataTemplate dataTemplate_;
 
-  public ValueFractionProgress Progress {
+  public AsyncProgress Progress {
     get => this.progress_;
-    set {
-      this.RaiseAndSetIfChanged(ref this.progress_, value);
-      this.ProgressSpinner = new ProgressSpinnerViewModel {
-          Progress = value
-      };
-    }
-  }
-
-  public ProgressSpinnerViewModel ProgressSpinner {
-    get => this.progressSpinner_;
-    private set
-      => this.RaiseAndSetIfChanged(ref this.progressSpinner_, value);
+    set => this.RaiseAndSetIfChanged(ref this.progress_, value);
   }
 
   public IDataTemplate DataTemplate {
@@ -67,13 +51,13 @@ public class ProgressPanelViewModel : ViewModelBase {
   }
 }
 
-public partial class ProgressPanel : UserControl {
-  public ProgressPanel() {
+public partial class AsyncPanel : UserControl {
+  public AsyncPanel() {
     InitializeComponent();
   }
 
-  private ProgressPanelViewModel ViewModel_
-    => Asserts.AsA<ProgressPanelViewModel>(this.DataContext);
+  private AsyncPanelViewModel ViewModel_
+    => Asserts.AsA<AsyncPanelViewModel>(this.DataContext);
 
   /// <summary>
   /// Defines the <see cref="ItemTemplate"/> property.

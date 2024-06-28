@@ -2,13 +2,14 @@
 
 namespace fin.util.progress;
 
-public interface IValueFractionProgress<T> {
-  float Progress { get; }
+public interface IAsyncProgress<T> {
   T? Value { get; }
-
-  void ReportProgress(float progress);
   void ReportCompletion(T value);
-
-  event EventHandler<float> OnProgressChanged;
   event EventHandler<T> OnComplete;
+}
+
+public interface IValueFractionProgress<T> : IAsyncProgress<T> {
+  float Progress { get; }
+  void ReportProgress(float progress);
+  event EventHandler<float> OnProgressChanged;
 }
