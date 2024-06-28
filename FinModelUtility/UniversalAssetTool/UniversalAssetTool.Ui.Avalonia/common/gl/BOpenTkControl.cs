@@ -33,8 +33,8 @@ namespace uni.ui.avalonia.common.gl {
     }
 
     protected override void OnOpenGlRender(GlInterface gl, int fb) {
-      Dispatcher.UIThread.Post(this.RequestNextFrameRendering,
-                               DispatcherPriority.Background);
+      Dispatcher.UIThread.Invoke(this.RequestNextFrameRendering,
+                                 DispatcherPriority.MaxValue);
       GlUtil.SwitchContext(this);
       this.RenderGl();
     }
