@@ -1,0 +1,52 @@
+if(object_get_parent(object_index) == parPlayer)
+	if(global.spin && global.spinTimer mod 5 == 0)
+		d3d_instance_create(x+lengthdir_x(5,direction+180),y+lengthdir_y(5,direction+180),z,objSmoke);
+
+if(animated_sprite_check_run())
+{
+	//CREATE SMOKE WHEN WALKING
+	var indexAmount;
+	if(global.playerType == "peach" || global.playerType == "darkpeach")
+        	indexAmount = 7.5;
+        else
+            	indexAmount = 5;
+        if(image_index >= indexAmount)
+            	d3d_instance_create(x+lengthdir_x(5,direction+180),y+lengthdir_y(5,direction+180),z,objSmoke);
+
+
+        //PLAY FOOTSTEP SOUND
+        if(image_index > 4 && image_index < 6 && !stepSound)
+        {
+            	sound_play(sndFootsteps);
+            	stepSound = true;
+        }
+        //Used to Make Sure the Sound is Only Played Once Each Footstep
+        if(image_index > 0 && image_index < 1)
+            	stepSound = false;
+        
+        //Move Character Up and Down
+        var h;
+        switch(type)
+        {
+        	case "mario":
+            	case "mariohd":
+            	case "luigi":
+            	case "geno": h = 2; break;
+    
+            	case "peach":
+            	case "darkpeach":
+            	case "kooper":
+            	case "bombette": h = 1; break;
+    
+            	default: h = 0; break;
+        }
+        
+        if(image_index >= 0 && image_index < 2)
+            	flyZ += (0 - flyZ)/1.5;
+        if((image_index >= 2 && image_index < 3) || (image_index >= 5 && image_index < 6))
+            	flyZ += (h/2 - flyZ)/1.5;
+        if(image_index >= 3 && image_index < 5)
+            	flyZ += (h - flyZ)/1.5;
+}
+else
+	flyZ += (0 - flyZ)/1.5;

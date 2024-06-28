@@ -1,0 +1,14 @@
+This is a Goomba. Goombas are what you'd
+call "small fries." Actually, they're
+pretty much the smallest fries. ...Hey,
+wait! I'm one of 'em!
+
+Max HP: 2,
+Attack Power: 1,
+Defense Power: 0
+
+
+You can jump on them or whack 'em with
+the Hammer. These guys are old school.
+They've been around since you were in
+Super Mario Bros.!

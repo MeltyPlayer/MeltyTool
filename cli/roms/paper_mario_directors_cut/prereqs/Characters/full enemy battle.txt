@@ -1,0 +1,258 @@
+if string(global.enemyTurn) != string_char_at(object_get_name(object_index),15)
+{
+    if(global.badPhase == 0 || global.goodPhase == 0)
+        sprite = sprStill;
+    exit;
+}
+
+if(global.badPhase != 0)
+    battle_focus_me();
+else
+{
+    execute_string("
+        sprite = " + string(name) + "_still;
+        if global.battleEnemy" + string_char_at(object_get_name(object_index),15) + " = 'goomba' || global.battleEnemy" + string_char_at(object_get_name(object_index),15) + " = 'spikegoomba' || global.battleEnemy" + string_char_at(object_get_name(object_index),15) + " = 'mario'  || global.battleEnemy" + string_char_at(object_get_name(object_index),15) + " = 'goombashoe' 
+        {
+            global.enemyAttackType = "jump"
+            global.enemyAttackStrength = 1
+        }
+        if global.battleEnemy" + string_char_at(object_get_name(object_index),15) + " = 'koopa' || global.battleEnemy" + string_char_at(object_get_name(object_index),15) + " = 'dark_koopa'
+        {
+            global.enemyAttackType = "shell"
+            image_index = 0;
+            global.enemyAttackStrength = 1
+        }
+    ")
+    if global.battleTimer = -1
+        global.battleTimer = 10
+    if global.battleTimer == 0
+        global.badPhase += 1
+}
+
+if global.badPhase == 1
+{
+    if global.enemyAttackType = 'jump'
+    {
+        if(global.battleTimer == -1)
+        {
+            sprite = sprRun;
+            direction = 90;
+            speed = global.charSpeed*2;
+        }
+        if y <= global.goodReturnY+33
+        {
+            if(global.battleTimer == -1)
+            {
+                y = global.goodReturnY + 33;
+                speed = 0;
+                global.battleTimer = time_to_steps(.25)/2;
+                sprite = sprStill;
+            }
+            if(global.battleTimer == 0)
+                    global.badPhase += 1;
+        }
+    }
+    if global.enemyAttackType = 'shell'
+    {
+        execute_string("
+            sprite = " + string(name) + "_hide;
+        ")
+        if image_index = 11
+            global.badPhase += 1;
+    }
+}
+
+if global.badPhase = 2
+{
+    if global.enemyAttackType = 'jump'
+    {
+        if zSpeed = 0 && z < 1
+        {
+            speed = global.charSpeed*.9;
+            direction = 90;
+            zSpeed = 6;
+            sound_play(sndJump);
+        }
+        sprite = sprJump;
+        if x = global.goodReturnX && y <= global.goodReturnY && z < 23
+        {
+            sprite = sprStill;
+            global.badPhase += 1
+            y = global.goodReturnY;
+            speed = 0;
+            global.battleTimer = 1.5
+            zSpeed = 0
+            z = 23
+        }
+    }
+    if global.enemyAttackType = 'shell'
+    {
+        execute_string("
+            sprite = " + string(name) + "_shell;
+        ")
+        motion_add(point_direction(x,y,global.goodReturnX,global.goodReturnY+8),global.toSpeed+2)
+        if speed > global.toSpeed*2
+            speed = global.toSpeed*2;
+        if y < global.goodReturnY+9
+        {
+            global.badPhase += 1
+            vspeed = 0
+            hspeed = 0
+            global.battleTimer = 1.5
+        }
+    }
+}
+
+if global.badPhase = 3
+{
+    if global.battleTimer = 0
+    {
+        global.badPhase += 1
+        global.hp -= (global.enemyAttackStrength - global.addedDefense)
+        damageStar = (global.enemyAttackStrength - global.addedDefense)
+        global.starImageIndex = 0
+        objBattlePlayer.sprite = mario_hurt;
+    }
+}
+
+if global.badPhase = 4
+{
+    if global.enemyAttackType = 'jump'
+    {
+        if zSpeed = 0 && z = 0
+            zSpeed = 1//2.25
+        sprite = sprJump;
+        if y < global.goodReturnY+16
+            motion_add(point_direction(x,y,global.goodReturnX,global.goodReturnY+16),2);
+        if y > global.goodReturnY+16
+            y = global.goodReturnY+16
+        if x = global.goodReturnX && y = global.goodReturnY+16 && z = 0
+        {
+            sprite = sprStill;
+            global.badPhase += 1
+            vspeed = 0
+            hspeed = 0
+            zSpeed = 0
+        }
+    }
+    if global.enemyAttackType = 'shell'
+    {
+        execute_string("
+            motion_add(point_direction(x,y,global.enemyReturn"+string_char_at(object_get_name(object_index),15)+"X,global.enemyReturn"+string_char_at(object_get_name(object_index),15)+"Y),global.returnSpeed*2)
+        ")
+        if speed > global.returnSpeed*2
+            speed = global.returnSpeed*2
+        execute_string("
+            if x = global.enemyReturn"+string_char_at(object_get_name(object_index),15)+"X && y > global.enemyReturn"+string_char_at(object_get_name(object_index),15)+"Y-3
+            {
+                global.badPhase += 1
+                x = global.enemyReturn"+string_char_at(object_get_name(object_index),15)+"X
+                y = global.enemyReturn"+string_char_at(object_get_name(object_index),15)+"Y
+                vspeed = 0
+                speed = 0
+                hspeed = 0
+                image_index = 11
+                sprite = " + string(name) + "_hide
+                image_speed = -1
+            }
+        ")
+    }
+}
+
+if global.badPhase = 5
+{
+    if global.enemyAttackType = 'jump'
+    {
+        sprite = sprRun;
+        direction = 270;
+        speed = global.charSpeed*4;
+        if(y >= ystart)
+        {
+            sprite = sprStill;
+            global.badPhase += 1
+            y = ystart;
+            speed = 0;
+        }
+    }
+    if global.enemyAttackType = 'shell'
+    {
+        if image_index = 1
+        {
+            sprite = sprStill;
+            image_speed = 1
+            global.badPhase += 1
+        }
+    }
+}
+
+if global.hp <= 0
+    exit
+
+if global.badPhase = 6
+{
+    if number < 5
+    {
+        execute_string('
+            if global.battleEnemy'+string(next)+' != ""
+            {
+                objBattlePlayer.sprite = objBattlePlayer.stillSprite
+                global.badPhase = 0
+                global.enemyTurn = next
+                exit
+            }
+        ')
+        if global.enemyTurn = next
+            exit;
+    }
+    if number < 4
+    {
+        execute_string("
+            if global.battleEnemy"+string(next)+" = '' && global.battleEnemy"+string(next2)+" != ''
+            {
+                objBattlePlayer.sprite = objBattlePlayer.stillSprite
+                global.badPhase = 0
+                global.enemyTurn = next2
+                exit
+            }
+        ")
+        if global.enemyTurn = next2
+            exit
+    }
+    if number < 3
+    {
+        execute_string("
+            if global.battleEnemy"+string(next)+" = '' && global.battleEnemy"+string(next2)+" = '' && global.battleEnemy"+string(next3)+" != ''
+            {
+                objBattlePlayer.sprite = objBattlePlayer.stillSprite
+                global.badPhase = 0
+                global.enemyTurn = next3
+                exit
+            }
+        ")
+        if global.enemyTurn = next3
+            exit
+    }
+    if number < 2
+    {
+        execute_string("
+            if global.battleEnemy"+string(next)+" = '' && global.battleEnemy"+string(next2)+" = '' && global.battleEnemy"+string(next3)+" = '' && global.battleEnemy"+string(next4)+" != ''
+            {
+                objBattlePlayer.sprite = objBattlePlayer.stillSprite
+                global.badPhase = 0
+                global.enemyTurn = next4
+                exit
+            }
+        ")
+        if global.enemyTurn = next4
+            exit
+    }
+    global.enemyTurn = 1
+    global.battleFocus = 'battle'
+    global.battlePhase = 0
+    global.goodPhase = 0
+    global.badPhase = -1
+    global.enemyAttackType = ""
+    global.choosing = 0
+    global.attackType = 3
+    global.attackingTarget = 1
+}

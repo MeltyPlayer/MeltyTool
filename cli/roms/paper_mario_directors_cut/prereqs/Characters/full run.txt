@@ -1,0 +1,152 @@
+if(model == "double sprite")
+    imageExtraIndex += .6*global.imageSpeed;
+
+if(type == "mario" || type == "mariohd" || type == "luigi" || (string_p(type,"peach")+1) || type == "goombario" || type == "kooper" || type == "bombette" || type == "geno")
+{
+    if(object_get_parent(object_index) == parPlayer)
+        if(global.spin && global.spinTimer mod 5 == 0)
+            d3d_instance_create(x+lengthdir_x(5,direction+180),y+lengthdir_y(5,direction+180),z,objSmoke);
+
+    if(animated_sprite_check_run())
+    {
+        //CREATE SMOKE WHEN WALKING
+        var indexAmount;
+        if(global.playerType == "peach" || global.playerType == "darkpeach")
+            indexAmount = 7.5;
+        else
+            indexAmount = 5;
+        if(image_index >= indexAmount)
+            d3d_instance_create(x+lengthdir_x(5,direction+180),y+lengthdir_y(5,direction+180),z,objSmoke);
+
+
+        //PLAY FOOTSTEP SOUND
+        if(image_index > 4 && image_index < 6 && !stepSound)
+        {
+            sound_play(sndFootsteps);
+            stepSound = true;
+        }
+        //Used to Make Sure the Sound is Only Played Once Each Footstep
+        if(image_index > 0 && image_index < 1)
+            stepSound = false;
+        
+        //Move Character Up and Down
+        var h;
+        switch(type)
+        {
+            case "mario":
+            case "mariohd":
+            case "luigi":
+            case "geno": h = 2; break;
+    
+            case "peach":
+            case "darkpeach":
+            case "kooper":
+            case "bombette": h = 1; break;
+    
+            default: h = 0; break;
+        }
+        
+        if(image_index >= 0 && image_index < 2)
+            flyZ += (0 - flyZ)/1.5;
+        if((image_index >= 2 && image_index < 3) || (image_index >= 5 && image_index < 6))
+            flyZ += (h/2 - flyZ)/1.5;
+        if(image_index >= 3 && image_index < 5)
+            flyZ += (h - flyZ)/1.5;
+    }
+    else
+        flyZ += (0 - flyZ)/1.5;
+}
+else if(type == "parakarry")
+    flyZ = -(imageExtraIndex mod sprite_get_number(parakarry_extra))/5 + 5;
+else if(type == "tippi" || type == "bow")
+{
+    flyZ += (3*flyZD - flyZ)/20;
+    if(abs(3*flyZD - flyZ) < 1)
+        flyZD *= -1;
+}
+else if(type == "watt")
+{
+    flyZ += (3*flyZD - flyZ)/13;
+    if(abs(3*flyZD - flyZ) < .75)
+        flyZD *= -1;
+
+    wattRay1 += .025;
+    wattRay2 += .025;
+    wattRay1 = wattRay1 mod 1;
+    wattRay2 = wattRay2 mod 1;
+}
+else
+    flyZ = 0;
+
+
+
+//BOWSER
+
+if(totSprite == "still")
+{
+    headSprite = "still";
+    
+    if(bounceTimer == -1)
+    {
+        bounce += bounceDir;
+        if(bounce >= bounceMax)
+            bounceDir *= -1;
+        else if(bounce < 0)
+        {
+            bounce = 0;
+            bounceDir = 1;
+            bounceTimer = bounceTimerMax;
+        }
+    }
+    else
+        bounceTimer -= 1;
+}
+else if(totSprite == "speaking")
+{
+    headSprite = "speaking";
+
+    if(bounce > 0)
+    {
+        bounceDir = abs(bounceDir)*-1;
+        bounce += bounceDir;
+    }
+    else
+    {
+        bounceDir = 1;
+        bounceTimer = -1;
+    }
+}
+
+//HEAD
+if headSprite = "talk"
+{
+    headStart = 0;
+    headEnd = 2;
+}
+if headSprite = "still"
+{
+    headStart = 0;
+    headEnd = 0;
+}
+if headSprite = "laugh"
+{
+    headStart = 3;
+    headEnd = 5;
+}
+if headSprite = "teeth"
+{
+    headStart = 6;
+    headEnd = 6;
+}
+
+if(headSprite != headSpritePrevious)
+    headIndex = headStart-.4;
+
+if(headIndex >= headEnd+.5)
+    headIndex -= ((headEnd+1) - (headStart));
+if(headStart == headEnd)
+    headIndex = headStart;
+    
+headIndex += headSpeed;
+    
+headSpritePrevious = headSprite;
