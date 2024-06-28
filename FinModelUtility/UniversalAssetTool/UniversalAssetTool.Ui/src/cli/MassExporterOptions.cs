@@ -12,6 +12,7 @@ using uni.games.majoras_mask_3d;
 using uni.games.mario_kart_double_dash;
 using uni.games.midnight_club_2;
 using uni.games.ocarina_of_time_3d;
+using uni.games.paper_mario_the_thousand_year_door;
 using uni.games.pikmin_1;
 using uni.games.pikmin_2;
 using uni.games.professor_layton_vs_phoenix_wright;
@@ -83,6 +84,10 @@ namespace uni.cli {
         HelpText = "Export models en-masse from Ocarina of Time 3D.")]
   public class OcarinaOfTime3dOptions
       : IMassExporterOptions<OcarinaOfTime3dMassExporter> { }
+
+  [Verb("paper_mario_the_thousand_year_door", HelpText = "Export models en-masse from Paper Mario: The Thousand Year Door.")]
+  public class PaperMarioTheThousandYearDoorOptions
+      : IMassExporterOptions<PaperMarioTheThousandYearDoorMassExporter> { }
 
   [Verb("pikmin_1", HelpText = "Export models en-masse from Pikmin 1.")]
   public class Pikmin1Options

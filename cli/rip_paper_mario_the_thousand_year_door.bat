@@ -1,0 +1,3 @@
+tools\universal_asset_tool\universal_asset_tool.exe paper_mario_the_thousand_year_door
+
+pause
