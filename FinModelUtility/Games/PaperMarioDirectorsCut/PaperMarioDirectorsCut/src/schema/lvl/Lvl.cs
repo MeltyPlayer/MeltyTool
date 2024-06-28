@@ -11,7 +11,7 @@ public class Lvl : ITextDeserializable {
   public string? BackgroundName { get; set; }
   public bool HasRoomModel { get; set; }
 
-  public List<Vector3> Trees { get; set; }
+  public List<Vector3> Trees { get; set; } = [];
 
   public void Read(ITextReader tr) {
     this.HasRoomModel = false;
