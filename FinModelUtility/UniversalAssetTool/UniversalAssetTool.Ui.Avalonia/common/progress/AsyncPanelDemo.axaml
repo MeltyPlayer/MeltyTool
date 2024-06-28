@@ -4,17 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="300">
-  <progress:ProgressPanel>
-    <progress:ProgressPanel.DataContext>
-      <progress:ProgressPanelViewModelForDesigner />
-    </progress:ProgressPanel.DataContext>
-    <progress:ProgressPanel.DataTemplate>
-      <DataTemplate x:DataType="progress:ValueFractionProgress">
+  <progress:AsyncPanel>
+    <progress:AsyncPanel.DataContext>
+      <progress:AsyncPanelViewModelForDesigner />
+    </progress:AsyncPanel.DataContext>
+    <progress:AsyncPanel.DataTemplate>
+      <DataTemplate x:DataType="progress:AsyncProgress">
         <StackPanel>
           <TextBlock Text="hi" />
           <TextBlock Text="{Binding Value}" />
         </StackPanel>
       </DataTemplate>
-    </progress:ProgressPanel.DataTemplate>
-  </progress:ProgressPanel>
+    </progress:AsyncPanel.DataTemplate>
+  </progress:AsyncPanel>
 </UserControl>

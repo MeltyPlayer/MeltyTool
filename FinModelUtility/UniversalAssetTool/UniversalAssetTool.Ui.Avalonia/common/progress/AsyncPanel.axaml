@@ -8,7 +8,7 @@
              x:Class="uni.ui.avalonia.common.progress.AsyncPanel"
              x:DataType="progress:AsyncPanelViewModel">
   <Design.DataContext>
-    <progress:ProgressPanelViewModelForDesigner />
+    <progress:AsyncPanelViewModelForDesigner />
   </Design.DataContext>
 
   <controls:If Condition="{Binding Progress.Value, Converter={x:Static ObjectConverters.IsNotNull}}">

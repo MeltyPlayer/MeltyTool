@@ -52,12 +52,19 @@ public class AsyncPanelViewModel : ViewModelBase {
 }
 
 public partial class AsyncPanel : UserControl {
+  private IDataTemplate dataTemplate_;
+
   public AsyncPanel() {
     InitializeComponent();
+    this.DataContextChanged += (_, _) => {
+      if (this.ViewModel_ != null) {
+        this.ViewModel_.DataTemplate = this.DataTemplate;
+      }
+    };
   }
 
-  private AsyncPanelViewModel ViewModel_
-    => Asserts.AsA<AsyncPanelViewModel>(this.DataContext);
+  private AsyncPanelViewModel? ViewModel_
+    => this.DataContext as AsyncPanelViewModel;
 
   /// <summary>
   /// Defines the <see cref="ItemTemplate"/> property.
@@ -70,11 +77,14 @@ public partial class AsyncPanel : UserControl {
               (owner, value) => owner.DataTemplate = value);
 
   public IDataTemplate DataTemplate {
-    get => this.ViewModel_.DataTemplate;
+    get => this.dataTemplate_;
     set {
-      var dataTemplate = this.DataTemplate;
-      this.ViewModel_.DataTemplate = value;
-      this.SetAndRaise(DataTemplateProperty, ref dataTemplate, value);
+      this.SetAndRaise(DataTemplateProperty, ref this.dataTemplate_, value);
+      this.dataTemplate_ = value;
+
+      if (this.ViewModel_ != null) {
+        this.ViewModel_.DataTemplate = value;
+      }
     }
   }
 }

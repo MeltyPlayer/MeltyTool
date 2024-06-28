@@ -8,6 +8,7 @@
              xmlns:scene="clr-namespace:uni.ui.avalonia.resources.scene"
              xmlns:views="clr-namespace:uni.ui.avalonia.Views"
              xmlns:audio="clr-namespace:uni.ui.avalonia.resources.audio"
+             xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -49,8 +50,16 @@
                OpenPaneLength="300"
                CompactPaneLength="32">
       <SplitView.Pane>
-        <Border x:Name="FileSelectorPanel" BoxShadow="0 0 10 0 Black">
-          <treeViews:FilterTreeView DataContext="{Binding FileBundleTreeViewModel}" />
+        <Border x:Name="FileSelectorPanel"
+                Background="Transparent"
+                BoxShadow="0 0 10 0 Black">
+          <progress:AsyncPanel DataContext="{Binding FileBundleTreeAsyncPanelViewModel}">
+            <progress:AsyncPanel.DataTemplate>
+              <DataTemplate x:DataType="progress:AsyncProgress">
+                <treeViews:FilterTreeView DataContext="{Binding Value}" />
+              </DataTemplate>
+            </progress:AsyncPanel.DataTemplate>
+          </progress:AsyncPanel>
         </Border>
       </SplitView.Pane>
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 
-using fin.math.floats;
 using fin.util.progress;
 
 using ReactiveUI;

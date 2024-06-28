@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using fin.io.bundles;
 using fin.model;
@@ -9,72 +12,97 @@ using fin.model;
 using ReactiveUI;
 
 using uni.games;
+using uni.ui.avalonia.common.progress;
 using uni.ui.avalonia.common.treeViews;
 using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.ViewModels;
 
 public class MainViewModelForDesigner {
-  public FileBundleTreeViewModelForDesigner FileBundleTreeViewModel { get; }
-    = new();
+  public AsyncPanelViewModel FileBundleTreeAsyncPanelViewModel { get; }
 
   public ModelPanelViewModel ModelPanel { get; }
     = new ModelPanelViewModelForDesigner();
 
   public string FileName => "//foo/bar.mod";
+
+  public MainViewModelForDesigner() {
+    var asyncProgress = new AsyncProgress();
+
+    Task.Run(() => {
+      var fileTreeViewModel = new FileBundleTreeViewModelForDesigner();
+      Thread.Sleep(TimeSpan.FromSeconds(3));
+      asyncProgress.ReportCompletion(fileTreeViewModel);
+    });
+
+    this.FileBundleTreeAsyncPanelViewModel = new AsyncPanelViewModel
+        { Progress = asyncProgress };
+    ;
+  }
 }
 
 public class MainViewModel : ViewModelBase {
-  private FileBundleTreeViewModel<IAnnotatedFileBundle> fileTree_;
+  private AsyncPanelViewModel fileTreeAsyncPanelViewModel_;
   private string fileName_;
   private ModelPanelViewModel modelPanel_;
 
   public MainViewModel() {
-    var rootDirectory = new RootFileBundleGatherer().GatherAllFiles();
-    this.FileBundleTreeViewModel = this.GetFileTreeViewModel_(rootDirectory);
+    var asyncProgress = new AsyncProgress();
+    Task.Run(() => {
+      var rootDirectory = new RootFileBundleGatherer().GatherAllFiles();
+      var fileTreeViewModel = this.GetFileTreeViewModel_(rootDirectory);
+      asyncProgress.ReportCompletion(fileTreeViewModel);
+    });
+
+    this.FileBundleTreeAsyncPanelViewModel = new AsyncPanelViewModel {
+        Progress = asyncProgress
+    };
 
 
     this.ModelPanel = new ModelPanelViewModel();
     SceneInstanceService.OnSceneInstanceOpened
         += (_, sceneInstance) => {
-             this.FileName
-                 = sceneInstance.Definition.FileBundle?.DisplayFullPath;
+          this.FileName
+              = sceneInstance.Definition.FileBundle?.DisplayFullPath;
 
-             var sceneModelInstances
-                 = sceneInstance
-                   .Areas
-                   .SelectMany(a => a.Objects)
-                   .SelectMany(o => o.Models)
-                   .ToArray();
+          var sceneModelInstances
+              = sceneInstance
+                .Areas
+                .SelectMany(a => a.Objects)
+                .SelectMany(o => o.Models)
+                .ToArray();
 
-             if (sceneModelInstances.Length == 1) {
-               var sceneModelInstance = sceneModelInstances.Single();
-               var model = sceneModelInstance.Model;
-               var animationPlaybackManager
-                   = sceneModelInstance.AnimationPlaybackManager;
+          if (sceneModelInstances.Length == 1) {
+            var sceneModelInstance = sceneModelInstances.Single();
+            var model = sceneModelInstance.Model;
+            var animationPlaybackManager
+                = sceneModelInstance.AnimationPlaybackManager;
 
-               this.ModelPanel = new ModelPanelViewModel { Model = model };
+            this.ModelPanel = new ModelPanelViewModel { Model = model };
 
-               var animationsPanel = this.ModelPanel.AnimationsPanel;
-               animationsPanel.AnimationPlaybackManager
-                   = animationPlaybackManager;
-               animationsPanel.OnAnimationSelected
-                   += (_, animation)
-                          => sceneModelInstance.Animation
-                              = animation as IReadOnlyModelAnimation;
-             } else {
-               this.ModelPanel = null;
-             }
-           };
+            var animationsPanel = this.ModelPanel.AnimationsPanel;
+            animationsPanel.AnimationPlaybackManager
+                = animationPlaybackManager;
+            animationsPanel.OnAnimationSelected
+                += (_, animation)
+                    => sceneModelInstance.Animation
+                        = animation as IReadOnlyModelAnimation;
+          } else {
+            this.ModelPanel = null;
+          }
+        };
   }
 
-  public FileBundleTreeViewModel<IAnnotatedFileBundle> FileBundleTreeViewModel {
-    get => this.fileTree_;
-    private set => this.RaiseAndSetIfChanged(ref this.fileTree_, value);
+  public AsyncPanelViewModel FileBundleTreeAsyncPanelViewModel {
+    get => this.fileTreeAsyncPanelViewModel_;
+    private set
+      => this.RaiseAndSetIfChanged(ref this.fileTreeAsyncPanelViewModel_,
+                                   value);
   }
 
   public string FileName {
     get => this.fileName_;
+
     set => this.RaiseAndSetIfChanged(ref this.fileName_, value);
   }
 
@@ -97,10 +125,10 @@ public class MainViewModel : ViewModelBase {
 
     viewModel.NodeSelected
         += (_, node) => {
-             if (node is FileBundleLeafNode leafNode) {
-               FileBundleService.OpenFileBundle(null, leafNode.Data.FileBundle);
-             }
-           };
+          if (node is FileBundleLeafNode leafNode) {
+            FileBundleService.OpenFileBundle(null, leafNode.Data.FileBundle);
+          }
+        };
 
     return viewModel;
   }
