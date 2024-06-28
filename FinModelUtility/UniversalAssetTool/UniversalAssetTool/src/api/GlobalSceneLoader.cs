@@ -8,6 +8,8 @@ using hw.api;
 
 using modl.api;
 
+using pmdc.api;
+
 using sm64.api;
 
 namespace uni.api {
@@ -16,6 +18,8 @@ namespace uni.api {
       => sceneFileBundle switch {
           BwSceneFileBundle bwSceneFileBundle
               => new BwSceneImporter().Import(bwSceneFileBundle),
+          LvlSceneFileBundle lvlSceneFileBundle
+              => new LvlSceneImporter().Import(lvlSceneFileBundle),
           Pikmin2SceneFileBundle pikmin2SceneFileBundle
               => new Pikmin2SceneImporter().Import(pikmin2SceneFileBundle),
           Sm64LevelSceneFileBundle sm64LevelSceneFileBundle

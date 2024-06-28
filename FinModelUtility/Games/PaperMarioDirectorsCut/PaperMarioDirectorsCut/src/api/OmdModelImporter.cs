@@ -1,12 +1,9 @@
-﻿using System.Numerics;
-
-using fin.image;
+﻿using fin.image;
 using fin.io;
 using fin.model;
 using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
-using fin.model.util;
 using fin.util.sets;
 
 using pmdc.schema.omd;
@@ -22,7 +19,7 @@ namespace pmdc.api {
   public class OmdModelImporter : IModelImporter<OmdModelFileBundle> {
     public IModel Import(OmdModelFileBundle modelFileBundle) {
       var omdFile = modelFileBundle.OmdFile;
-      var omdModel = omdFile.ReadNewFromText<Omd>();
+      var omd = omdFile.ReadNewFromText<Omd>();
 
       var files = omdFile.AsFileSet();
       var finModel = new ModelImpl<NormalUvVertexImpl>(
@@ -43,7 +40,7 @@ namespace pmdc.api {
 
       var finMaterialManager = finModel.MaterialManager;
       var finMaterials =
-          omdModel
+          omd
               .Materials
               .Select(omdMaterial => {
                 var texturePath = omdMaterial.TexturePath;
@@ -74,7 +71,7 @@ namespace pmdc.api {
               })
               .ToArray();
 
-      foreach (var omdMesh in omdModel.Meshes) {
+      foreach (var omdMesh in omd.Meshes) {
         var finMesh = finSkin.AddMesh();
         finMesh.Name = omdMesh.Name;
 
