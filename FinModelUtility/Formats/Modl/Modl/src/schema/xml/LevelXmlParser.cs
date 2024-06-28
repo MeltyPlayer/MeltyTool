@@ -421,6 +421,7 @@ public class LevelXmlParser {
 
             var skydomeObject = sceneArea.CreateCustomSkyboxObject();
             skydomeObject.AddSceneModel(skydomeModel);
+            skydomeObject.SetScale(10f, 10f, 10f);
             skydomeObject.Rotation.SetDegrees(90, 0, 0);
           }
 
