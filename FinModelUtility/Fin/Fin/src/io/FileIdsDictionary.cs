@@ -51,7 +51,7 @@ public partial class FileIdsDictionary : IFileIdsDictionary {
                         .Select(pair => new FileIdsPair {
                             Id = pair.Key,
                             FilePaths = pair.Value
-                                            .Select(v => new NullableString
+                                            .Select(v => new SizedString
                                                         { FilePath = v })
                                             .ToArray()
                         })
@@ -69,12 +69,12 @@ public partial class FileIdsDictionary : IFileIdsDictionary {
     public uint Id { get; set; }
 
     [SequenceLengthSource(SchemaIntegerType.BYTE)]
-    public NullableString[] FilePaths { get; set; }
+    public SizedString[] FilePaths { get; set; }
   }
 
   [BinarySchema]
-  private partial class NullableString : IBinaryConvertible {
-    [NullTerminatedString]
+  private partial class SizedString : IBinaryConvertible {
+    [StringLengthSource(SchemaIntegerType.UINT16)]
     public string FilePath { get; set; }
   }
 }

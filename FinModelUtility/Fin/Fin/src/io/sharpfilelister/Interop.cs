@@ -28,9 +28,9 @@ public class Interop {
   }
 
   [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-  public static extern IntPtr FindFirstFileW(string lpFileName,
-                                             out WIN32_FIND_DATAW
-                                                 lpFindFileData);
+  public static extern IntPtr FindFirstFileW(
+      IntPtr lpFileName,
+      out WIN32_FIND_DATAW lpFindFileData);
 
   [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
   public static extern bool FindNextFile(IntPtr hFindFile,

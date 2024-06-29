@@ -57,7 +57,7 @@ public partial class FileIdDictionary : IFileIdDictionary {
   private partial class FileIdPair : IBinaryConvertible {
     public uint Id { get; set; }
 
-    [NullTerminatedString]
+    [StringLengthSource(SchemaIntegerType.UINT16)]
     public string FilePath { get; set; }
   }
 }
