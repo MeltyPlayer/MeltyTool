@@ -14,6 +14,7 @@ using fin.data.queues;
 using fin.io;
 using fin.model;
 using fin.model.io.importers;
+using fin.util.enumerables;
 
 using schema.binary;
 
@@ -139,7 +140,11 @@ namespace UoT.api {
             gameplayKeep,
             ootLimbs.Count);
         } else {
-          var animationFiles = new List<IZFile> { zFile, gameplayKeep };
+          var animationFiles
+              = zSegments.Objects.Where(s => s.FileName.EndsWith("_anime"))
+                         .Concat(zFile.Yield())
+                         .ToArray();
+
           ootAnimations = animationReader.GetCommonAnimations(
               n64Memory,
               animationFiles,
@@ -197,7 +202,8 @@ namespace UoT.api {
         rotations.Set(f,
                       axis,
                       (float) ((ootAnimationTrack.Frames[f] *
-                                360.0) / 0xFFFF));
+                                360.0) /
+                               0xFFFF));
       }
     }
 

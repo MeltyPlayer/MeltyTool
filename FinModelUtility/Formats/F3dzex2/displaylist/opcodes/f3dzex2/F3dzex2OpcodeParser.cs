@@ -300,6 +300,7 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
       case F3dzex2Opcode.G_RDPTILESYNC:
       case F3dzex2Opcode.G_RDPFULLSYNC:
       case F3dzex2Opcode.G_RDPLOADSYNC:
+      case F3dzex2Opcode.G_SETENVCOLOR:
         return new NoopOpcodeCommand();
       default:
         throw new ArgumentOutOfRangeException(nameof(opcode), opcode, null);
