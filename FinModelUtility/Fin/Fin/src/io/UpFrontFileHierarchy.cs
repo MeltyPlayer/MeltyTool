@@ -158,31 +158,47 @@ public static partial class FileHierarchy {
         => this.files_;
 
       public void Refresh(bool recursive = false) {
-        var actualSubdirs = this.Impl.GetExistingSubdirs()
-                                .ToArray();
-        ListUtil.RemoveWhere(this.subdirs_,
-                             subdir => !actualSubdirs
-                                 .Contains(subdir.Impl));
-        foreach (var actualSubdir in actualSubdirs) {
-          if (this.subdirs_.All(
-                  subdir => !subdir.Impl.Equals(actualSubdir))) {
-            this.subdirs_.Add(
-                new FileHierarchyDirectory(this.Hierarchy,
-                                           this,
-                                           actualSubdir));
+        if (this.subdirs_.Count == 0) {
+          foreach (var actualSubdir in this.Impl.GetExistingSubdirs()) {
+            this.subdirs_.Add(new FileHierarchyDirectory(this.Hierarchy,
+                                this,
+                                actualSubdir));
+          }
+        } else {
+          var actualSubdirs = this.Impl.GetExistingSubdirs().ToArray();
+          ListUtil.RemoveWhere(this.subdirs_,
+                               subdir => !actualSubdirs
+                                   .Contains(subdir.Impl));
+          foreach (var actualSubdir in actualSubdirs) {
+            if (this.subdirs_.All(
+                    subdir => !subdir.Impl.Equals(actualSubdir))) {
+              this.subdirs_.Add(
+                  new FileHierarchyDirectory(this.Hierarchy,
+                                             this,
+                                             actualSubdir));
+            }
           }
         }
 
-        var actualFiles = this.Impl.GetExistingFiles().ToArray();
-        ListUtil.RemoveWhere(this.files_,
-                             file => !actualFiles.Contains(file.Impl));
-        foreach (var actualFile in actualFiles) {
-          if (this.files_.All(file => !file.Impl.Equals(actualFile))) {
-            this.files_.Add(
-                new FileHierarchyFile(this.Hierarchy,
-                                      this.Hierarchy.Root,
-                                      this,
-                                      actualFile));
+        if (this.files_.Count == 0) {
+          foreach (var actualFile in this.Impl.GetExistingFiles()) {
+            this.files_.Add(new FileHierarchyFile(this.Hierarchy,
+                                                  this.Hierarchy.Root,
+                                                  this,
+                                                  actualFile));
+          }
+        } else {
+          var actualFiles = this.Impl.GetExistingFiles().ToArray();
+          ListUtil.RemoveWhere(this.files_,
+                               file => !actualFiles.Contains(file.Impl));
+          foreach (var actualFile in actualFiles) {
+            if (this.files_.All(file => !file.Impl.Equals(actualFile))) {
+              this.files_.Add(
+                  new FileHierarchyFile(this.Hierarchy,
+                                        this.Hierarchy.Root,
+                                        this,
+                                        actualFile));
+            }
           }
         }
 
