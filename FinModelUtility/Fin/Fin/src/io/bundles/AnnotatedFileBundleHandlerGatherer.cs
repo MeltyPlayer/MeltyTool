@@ -16,9 +16,11 @@ public class AnnotatedFileBundleHandlerGatherer
 
   public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
       IMutablePercentageProgress mutablePercentageProgress) {
-    var value = this.impl_();
+    foreach (var value in this.impl_()) {
+      yield return value;
+    }
+
     mutablePercentageProgress.ReportProgressAndCompletion();
-    return value;
   }
 }
 
@@ -34,12 +36,13 @@ public class AnnotatedFileBundleHandlerGatherer<TFileBundle>
 
   public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
       IMutablePercentageProgress mutablePercentageProgress) {
-    var value = this.impl_();
+    foreach (var value in this.impl_()) {
+      yield return value;
+    }
+
     mutablePercentageProgress.ReportProgressAndCompletion();
-    return value;
   }
 }
-
 
 public class AnnotatedFileBundleHandlerGathererWithInput<TFileBundle, T>
     : IAnnotatedFileBundleGatherer<TFileBundle>
@@ -58,8 +61,10 @@ public class AnnotatedFileBundleHandlerGathererWithInput<TFileBundle, T>
 
   public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
       IMutablePercentageProgress mutablePercentageProgress) {
-    var value = this.impl_(this.input_);
+    foreach (var value in this.impl_(this.input_)) {
+      yield return value;
+    }
+
     mutablePercentageProgress.ReportProgressAndCompletion();
-    return value;
   }
 }

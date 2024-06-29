@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace fin.util.progress;
+﻿namespace fin.util.progress;
 
 public static class SplitPercentageProgressExtensions {
   public static void ReportProgressAndCompletion(

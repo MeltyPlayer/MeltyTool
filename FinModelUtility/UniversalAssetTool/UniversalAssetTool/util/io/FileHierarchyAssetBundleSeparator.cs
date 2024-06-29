@@ -21,10 +21,12 @@ namespace uni.util.io {
 
     public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
         IMutablePercentageProgress mutablePercentageProgress) {
-      var bundles = this.fileHierarchy_.SelectMany(directory
-                                                => this.handler_(directory));
+      foreach (var value in this.fileHierarchy_.SelectMany(
+                   directory => this.handler_(directory))) {
+        yield return value;
+      }
+
       mutablePercentageProgress.ReportProgressAndCompletion();
-      return bundles;
     }
   }
 
@@ -47,10 +49,12 @@ namespace uni.util.io {
 
     public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
         IMutablePercentageProgress mutablePercentageProgress) {
-      var bundles = this.fileHierarchy_.SelectMany(directory
-                                                => this.handler_(directory));
+      foreach (var value in this.fileHierarchy_.SelectMany(
+                   directory => this.handler_(directory))) {
+        yield return value;
+      }
+
       mutablePercentageProgress.ReportProgressAndCompletion();
-      return bundles;
     }
   }
 }

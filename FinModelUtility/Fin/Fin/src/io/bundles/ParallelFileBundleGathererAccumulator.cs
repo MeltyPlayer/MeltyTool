@@ -25,15 +25,27 @@ public class ParallelAnnotatedFileBundleGathererAccumulator
 
   public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
       IMutablePercentageProgress mutablePercentageProgress) {
+    var splitProgresses = mutablePercentageProgress.Split(2);
+    var gathererProgresses = splitProgresses[0].Split(this.gatherers_.Count);
+    var loaderProgresses = splitProgresses[1].Split(this.gatherers_.Count);
+
     var results = new IEnumerable<IAnnotatedFileBundle>[this.gatherers_.Count];
     ParallelHelper.For(
         0,
         this.gatherers_.Count,
         new GathererRunner(
             this.gatherers_,
-            mutablePercentageProgress.Split(this.gatherers_.Count),
+            gathererProgresses,
             results));
-    return results.SelectMany(result => result);
+
+    for (var i = 0; i < this.gatherers_.Count; ++i) {
+      var result = results[i];
+      foreach (var value in result) {
+        yield return value;
+      }
+
+      loaderProgresses[i].ReportProgressAndCompletion();
+    }
   }
 
   private readonly struct GathererRunner(
@@ -43,7 +55,6 @@ public class ParallelAnnotatedFileBundleGathererAccumulator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Invoke(int i) {
       var splitProgress = splitProgresses[i];
-
       try {
         results[i] = gatherers[i].GatherFileBundles(splitProgress);
       } catch (Exception e) {
