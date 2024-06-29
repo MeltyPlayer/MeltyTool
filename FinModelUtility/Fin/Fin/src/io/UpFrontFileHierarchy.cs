@@ -247,28 +247,47 @@ public static partial class FileHierarchy {
 
       public bool TryToGetExistingSubdir(
           string localPath,
+          out IFileHierarchyDirectory outDirectory)
+        => this.TryToGetExistingSubdirImpl_(localPath.AsSpan(),
+                                            out outDirectory);
+
+      private readonly char[] pathSeparators_ = ['/', '\\'];
+
+      private bool TryToGetExistingSubdirImpl_(
+          ReadOnlySpan<char> localPath,
           out IFileHierarchyDirectory outDirectory) {
-        outDirectory = default;
-        var subdirs = localPath.Split('/', '\\');
+        var numSlashes = localPath.Count('/') + localPath.Count('\\');
+        Span<Range> subdirRanges = stackalloc Range[1 + numSlashes];
+        localPath.SplitAny(subdirRanges, this.pathSeparators_);
 
         IFileHierarchyDirectory current = this;
-        foreach (var subdir in subdirs) {
-          if (subdir == "") {
+        foreach (var subdirRange in subdirRanges) {
+          var subdir = localPath[subdirRange];
+
+          if (subdir.Length == 0) {
             continue;
           }
 
-          if (subdir == "..") {
+          if (subdir is "..") {
             current = Asserts.CastNonnull(current.Parent);
             continue;
           }
 
-          var match = current.GetExistingSubdirs()
-                             .FirstOrDefault(dir => dir.Name == subdir);
-          if (match == null) {
-            return false;
+          var foundMatch = false;
+          foreach (var child in current.GetExistingSubdirs()) {
+            if (MemoryExtensions.Equals(child.Name,
+                                        subdir,
+                                        StringComparison.OrdinalIgnoreCase)) {
+              foundMatch = true;
+              current = child;
+              break;
+            }
           }
 
-          current = match;
+          if (!foundMatch) {
+            outDirectory = default;
+            return false;
+          }
         }
 
         outDirectory = current;
