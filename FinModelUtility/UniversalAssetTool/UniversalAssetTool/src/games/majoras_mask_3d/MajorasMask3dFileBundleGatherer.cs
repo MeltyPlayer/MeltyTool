@@ -7,6 +7,8 @@ using uni.platforms.threeDs;
 using uni.util.bundles;
 using uni.util.io;
 
+using fin.util.progress;
+
 namespace uni.games.majoras_mask_3d {
   using IAnnotatedBundle = IAnnotatedFileBundle<IFileBundle>;
 
@@ -22,7 +24,8 @@ namespace uni.games.majoras_mask_3d {
                     "zelda2_eg");
 
 
-    public IEnumerable<IAnnotatedBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "majoras_mask_3d",
               out var fileHierarchy)) {
@@ -34,7 +37,7 @@ namespace uni.games.majoras_mask_3d {
              .Add(this.GetAutomaticModels_)
              .Add(this.GetModelsViaSeparator_)
              .Add(this.GetLinkModels_)
-             .GatherFileBundles();
+             .GatherFileBundles(mutablePercentageProgress);
     }
 
     private IEnumerable<IAnnotatedBundle> GetAutomaticModels_(
@@ -103,7 +106,7 @@ namespace uni.games.majoras_mask_3d {
               return Enumerable.Empty<IAnnotatedBundle>();
             }
           }
-      ).GatherFileBundles();
+      ).GatherFileBundles(new PercentageProgress());
 
     private IEnumerable<IAnnotatedBundle> GetLinkModels_(
         IFileHierarchy fileHierarchy) {
@@ -118,25 +121,25 @@ namespace uni.games.majoras_mask_3d {
       };
 
       return modelsAndAnimations.Select(modelPathAndAnimationDir => {
-                                          var (modelPath, animationDir)
-                                              = modelPathAndAnimationDir;
+        var (modelPath, animationDir)
+            = modelPathAndAnimationDir;
 
-                                          var cmbFile
-                                              = actorsDir.AssertGetExistingFile(
-                                                  modelPath);
-                                          var csabFiles = fileHierarchy
-                                              .Root.AssertGetExistingSubdir(
-                                                  $"actors/zelda2_link_new/{animationDir}/anim")
-                                              .FilesWithExtension(".csab")
-                                              .ToArray();
+        var cmbFile
+            = actorsDir.AssertGetExistingFile(
+                modelPath);
+        var csabFiles = fileHierarchy
+                        .Root.AssertGetExistingSubdir(
+                            $"actors/zelda2_link_new/{animationDir}/anim")
+                        .FilesWithExtension(".csab")
+                        .ToArray();
 
-                                          return new CmbModelFileBundle(
-                                              "majoras_mask_3d",
-                                              cmbFile,
-                                              csabFiles,
-                                              null,
-                                              null).Annotate(cmbFile);
-                                        });
+        return new CmbModelFileBundle(
+            "majoras_mask_3d",
+            cmbFile,
+            csabFiles,
+            null,
+            null).Annotate(cmbFile);
+      });
     }
   }
 }

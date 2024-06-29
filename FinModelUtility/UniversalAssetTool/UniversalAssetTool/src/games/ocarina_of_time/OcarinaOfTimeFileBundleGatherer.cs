@@ -4,6 +4,7 @@ using f3dzex2.io;
 
 using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using schema.binary;
 using schema.util.streams;
@@ -17,7 +18,8 @@ namespace uni.games.ocarina_of_time {
   public class OcarinaOfTimeFileBundleGatherer
       : IAnnotatedFileBundleGatherer<OotModelFileBundle> {
     public IEnumerable<IAnnotatedFileBundle<OotModelFileBundle>>
-        GatherFileBundles() {
+        GatherFileBundles(
+            IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "ocarina_of_time.z64",
               out var ocarinaOfTimeRom)) {
@@ -35,9 +37,9 @@ namespace uni.games.ocarina_of_time {
 
       var zSegments = ZSegments.InitializeFromFile(ocarinaOfTimeRom);
       var zObjectsAndPaths = zSegments.Objects.Select(zObject => {
-            var path = Path.Join(zObjectsDir.Name, $"{zObject.FileName}.zobj");
-            return (zObject, path);
-          });
+        var path = Path.Join(zObjectsDir.Name, $"{zObject.FileName}.zobj");
+        return (zObject, path);
+      });
 
       {
         var n64Memory = new N64Memory(ocarinaOfTimeRom);

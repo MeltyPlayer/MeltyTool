@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using mod.api;
 
@@ -17,7 +18,8 @@ namespace uni.games.pikmin_1 {
             .Register(new AllAnimationsModelSeparatorMethod(),
                       @"\dataDir\pikis");
 
-    public IEnumerable<IAnnotatedModBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedModBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "pikmin_1",
               GcnFileHierarchyExtractor.Options.Empty(),
@@ -31,7 +33,7 @@ namespace uni.games.pikmin_1 {
                  fileHierarchy)
              .Add(this.GetAutomaticModels_)
              .Add(this.GetModelsViaSeparator_)
-             .GatherFileBundles();
+             .GatherFileBundles(mutablePercentageProgress);
     }
 
     private IEnumerable<IAnnotatedModBundle> GetAutomaticModels_(
@@ -89,6 +91,6 @@ namespace uni.games.pikmin_1 {
               return Enumerable.Empty<IAnnotatedModBundle>();
             }
           }
-      ).GatherFileBundles();
+      ).GatherFileBundles(new PercentageProgress());
   }
 }

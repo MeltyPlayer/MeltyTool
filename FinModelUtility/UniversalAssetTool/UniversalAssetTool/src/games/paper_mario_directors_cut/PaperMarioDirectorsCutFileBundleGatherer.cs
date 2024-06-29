@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using pmdc.api;
 
@@ -9,7 +10,8 @@ namespace uni.games.paper_mario_directors_cut {
   public class PaperMarioDirectorsCutFileBundleGatherer
       : IAnnotatedFileBundleGatherer<IFileBundle> {
     public IEnumerable<IAnnotatedFileBundle<IFileBundle>>
-        GatherFileBundles() {
+        GatherFileBundles(
+            IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
               Path.Join("paper_mario_directors_cut", ExtractorUtil.PREREQS),
               out var pmdcDir)) {

@@ -1,6 +1,7 @@
 ﻿using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
+using fin.util.progress;
 
 using jsystem.api;
 
@@ -10,7 +11,8 @@ namespace uni.games.super_mario_sunshine {
   public class SuperMarioSunshineFileBundleGatherer
       : IAnnotatedFileBundleGatherer<BmdModelFileBundle> {
     public IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>
-        GatherFileBundles() {
+        GatherFileBundles(
+            IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "super_mario_sunshine",
               GcnFileHierarchyExtractor.Options.Standard()

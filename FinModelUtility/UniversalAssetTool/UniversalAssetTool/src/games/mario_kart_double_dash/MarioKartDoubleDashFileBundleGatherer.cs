@@ -3,6 +3,7 @@
 using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
+using fin.util.progress;
 
 using jsystem.api;
 
@@ -11,7 +12,8 @@ using uni.platforms.gcn;
 namespace uni.games.mario_kart_double_dash {
   public class MarioKartDoubleDashFileBundleGatherer
       : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "mario_kart_double_dash",
               GcnFileHierarchyExtractor.Options.Standard()

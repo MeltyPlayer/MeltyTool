@@ -53,13 +53,13 @@
         <Border x:Name="FileSelectorPanel"
                 Background="Transparent"
                 BoxShadow="0 0 10 0 Black">
-          <progress:AsyncPanel DataContext="{Binding FileBundleTreeAsyncPanelViewModel}">
-            <progress:AsyncPanel.DataTemplate>
-              <DataTemplate x:DataType="progress:AsyncProgress">
+          <progress:ProgressPanel DataContext="{Binding FileBundleTreeAsyncPanelViewModel}">
+            <progress:ProgressPanel.DataTemplate>
+              <DataTemplate x:DataType="progress:ValueFractionProgress">
                 <treeViews:FilterTreeView DataContext="{Binding Value}" />
               </DataTemplate>
-            </progress:AsyncPanel.DataTemplate>
-          </progress:AsyncPanel>
+            </progress:ProgressPanel.DataTemplate>
+          </progress:ProgressPanel>
         </Border>
       </SplitView.Pane>
 

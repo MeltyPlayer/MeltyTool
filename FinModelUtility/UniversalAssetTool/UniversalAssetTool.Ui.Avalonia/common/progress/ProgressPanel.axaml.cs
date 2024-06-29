@@ -5,8 +5,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
-using fin.util.asserts;
-
 using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;
@@ -68,12 +66,19 @@ public class ProgressPanelViewModel : ViewModelBase {
 }
 
 public partial class ProgressPanel : UserControl {
+  private IDataTemplate dataTemplate_;
+
   public ProgressPanel() {
     InitializeComponent();
+    this.DataContextChanged += (_, _) => {
+      if (this.ViewModel_ != null) {
+        this.ViewModel_.DataTemplate = this.DataTemplate;
+      }
+    };
   }
 
-  private ProgressPanelViewModel ViewModel_
-    => Asserts.AsA<ProgressPanelViewModel>(this.DataContext);
+  private ProgressPanelViewModel? ViewModel_
+    => this.DataContext as ProgressPanelViewModel;
 
   /// <summary>
   /// Defines the <see cref="ItemTemplate"/> property.
@@ -86,11 +91,14 @@ public partial class ProgressPanel : UserControl {
               (owner, value) => owner.DataTemplate = value);
 
   public IDataTemplate DataTemplate {
-    get => this.ViewModel_.DataTemplate;
+    get => this.dataTemplate_;
     set {
-      var dataTemplate = this.DataTemplate;
-      this.ViewModel_.DataTemplate = value;
-      this.SetAndRaise(DataTemplateProperty, ref dataTemplate, value);
+      this.SetAndRaise(DataTemplateProperty, ref this.dataTemplate_, value);
+      this.dataTemplate_ = value;
+
+      if (this.ViewModel_ != null) {
+        this.ViewModel_.DataTemplate = value;
+      }
     }
   }
 }

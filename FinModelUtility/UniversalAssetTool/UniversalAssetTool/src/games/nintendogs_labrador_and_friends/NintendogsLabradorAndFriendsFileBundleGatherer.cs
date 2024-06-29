@@ -1,4 +1,5 @@
 ﻿using fin.io.bundles;
+using fin.util.progress;
 
 using SceneGate.Ekona.Containers.Rom;
 
@@ -9,7 +10,8 @@ using Yarhl.FileSystem;
 namespace uni.games.nintendogs_labrador_and_friends {
   public class NintendogsLabradorAndFriendsFileBundleGatherer
       : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "nintendogs_labrador_and_friends.nds",
               out var nintendogsRom)) {

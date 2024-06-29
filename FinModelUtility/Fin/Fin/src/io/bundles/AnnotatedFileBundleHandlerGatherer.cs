@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using fin.util.progress;
+
 namespace fin.io.bundles;
 
 public class AnnotatedFileBundleHandlerGatherer
@@ -12,8 +14,12 @@ public class AnnotatedFileBundleHandlerGatherer
     this.impl_ = impl;
   }
 
-  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles()
-    => this.impl_();
+  public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+      IMutablePercentageProgress mutablePercentageProgress) {
+    var value = this.impl_();
+    mutablePercentageProgress.ReportProgressAndCompletion();
+    return value;
+  }
 }
 
 public class AnnotatedFileBundleHandlerGatherer<TFileBundle>
@@ -26,8 +32,12 @@ public class AnnotatedFileBundleHandlerGatherer<TFileBundle>
     this.impl_ = impl;
   }
 
-  public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles()
-    => this.impl_();
+  public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
+      IMutablePercentageProgress mutablePercentageProgress) {
+    var value = this.impl_();
+    mutablePercentageProgress.ReportProgressAndCompletion();
+    return value;
+  }
 }
 
 
@@ -46,6 +56,10 @@ public class AnnotatedFileBundleHandlerGathererWithInput<TFileBundle, T>
     this.input_ = input;
   }
 
-  public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles()
-    => this.impl_(this.input_);
+  public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
+      IMutablePercentageProgress mutablePercentageProgress) {
+    var value = this.impl_(this.input_);
+    mutablePercentageProgress.ReportProgressAndCompletion();
+    return value;
+  }
 }

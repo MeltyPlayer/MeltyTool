@@ -5,8 +5,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
-using fin.util.asserts;
-
 using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;

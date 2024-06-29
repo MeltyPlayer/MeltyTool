@@ -14,6 +14,7 @@ using fin.model.io.exporters.assimp.indirect;
 using fin.model.io.importers;
 using fin.util.asserts;
 using fin.util.linq;
+using fin.util.progress;
 
 using uni.config;
 using uni.model;
@@ -85,18 +86,19 @@ namespace uni.games {
         IAnnotatedFileBundleGatherer<T> gatherer,
         IModelImporter<T> reader)
         where T : IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(gatherer.GatherFileBundles(),
-                                       reader,
-                                       Config.Instance.ExporterSettings
-                                             .ExportedFormats,
-                                       false);
+      => ExporterUtil.ExportAllForCli_(
+          gatherer.GatherFileBundles(new PercentageProgress()),
+          reader,
+          Config.Instance.ExporterSettings
+                .ExportedFormats,
+          false);
 
     public static void ExportAllForCli<T>(
         IAnnotatedFileBundleGatherer gatherer,
         IModelImporter<T> reader)
         where T : IModelFileBundle
       => ExporterUtil.ExportAllForCli_(
-          gatherer.GatherFileBundles(),
+          gatherer.GatherFileBundles(new PercentageProgress()),
           reader,
           Config.Instance.ExporterSettings.ExportedFormats,
           false);
@@ -107,7 +109,7 @@ namespace uni.games {
         where T : IFileBundle
         where TSubType : T, IModelFileBundle
       => ExporterUtil.ExportAllForCli_(
-          gatherer.GatherFileBundles()
+          gatherer.GatherFileBundles(new PercentageProgress())
                   .Where(f => f is IAnnotatedFileBundle<TSubType>)
                   .Select(f => (f as IAnnotatedFileBundle<TSubType>)!),
           reader,
@@ -201,10 +203,10 @@ namespace uni.games {
                     mainFile.NameWithoutExtension));
 
       Export(threeDFileBundle.TypedFileBundle,
-                loaderHandler,
-                outputDirectory,
-                extensions,
-                overwriteExistingFile);
+             loaderHandler,
+             outputDirectory,
+             extensions,
+             overwriteExistingFile);
     }
 
     public static void Export<T>(T threeDFileBundle,
@@ -239,8 +241,9 @@ namespace uni.games {
 
       var targetFiles = formats.Select(format => new FinFile(
                                            Path.Join(outputDirectory.FullPath,
-                                                     $"{name}.{format.FileExtension}")));
-      if (!overwriteExistingFile && targetFiles.All(targetFile => targetFile.Exists)) {
+                                             $"{name}.{format.FileExtension}")));
+      if (!overwriteExistingFile &&
+          targetFiles.All(targetFile => targetFile.Exists)) {
         MessageUtil.LogAlreadyProcessed(ExporterUtil.logger_, mainFile);
         return;
       }
@@ -252,18 +255,20 @@ namespace uni.games {
         var model = loaderHandler();
 
         new AssimpIndirectModelExporter {
-          LowLevel = threeDFileBundle.UseLowLevelExporter,
-          ForceGarbageCollection = threeDFileBundle.ForceGarbageCollection,
+            LowLevel = threeDFileBundle.UseLowLevelExporter,
+            ForceGarbageCollection = threeDFileBundle.ForceGarbageCollection,
         }.ExportFormats(new ModelExporterParams {
-          OutputFile = new FinFile(
-                                      Path.Join(outputDirectory.FullPath,
-                                                name + ".foo")),
-          Model = model,
-          Scale = new ScaleSource(Config.Instance.ExporterSettings.ExportedModelScaleSource)
-                                      .GetScale(model)
-        },
-                              formats,
-                              Config.Instance.ExporterSettings.ExportAllTextures);
+                            OutputFile = new FinFile(
+                                Path.Join(outputDirectory.FullPath,
+                                          name + ".foo")),
+                            Model = model,
+                            Scale = new ScaleSource(
+                                    Config.Instance.ExporterSettings
+                                          .ExportedModelScaleSource)
+                                .GetScale(model)
+                        },
+                        formats,
+                        Config.Instance.ExporterSettings.ExportAllTextures);
 
         if (Config.Instance.ThirdPartySettings
                   .ExportBoneScaleAnimationsSeparately) {

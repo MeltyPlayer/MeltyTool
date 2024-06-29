@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using level5.api;
 
@@ -12,7 +13,8 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
 
   public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
       : IAnnotatedFileBundleGatherer<XcModelFileBundle> {
-    public IEnumerable<IAnnotatedXcBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedXcBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "professor_layton_vs_phoenix_wright",
               out var fileHierarchy)) {
@@ -20,7 +22,8 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
       }
 
       if (new ThreeDsXfsaTool().Extract(
-              fileHierarchy.Root.GetExistingFiles().Single(file => file.Name == "vs1.fa"))) {
+              fileHierarchy.Root.GetExistingFiles()
+                           .Single(file => file.Name == "vs1.fa"))) {
         fileHierarchy.Root.Refresh(true);
       }
 
@@ -99,26 +102,30 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
                    })
                    .ToArray();
           }
-      ).GatherFileBundles();
+      ).GatherFileBundles(mutablePercentageProgress);
     }
 
     internal IXcFiles GetModelOnly(string name,
                                    IFileHierarchyDirectory directory,
                                    string modelFileName)
       => new ModelOnly(name,
-                       directory.GetExistingFiles().Single(
-                           file => file.Name == modelFileName));
+                       directory.GetExistingFiles()
+                                .Single(
+                                    file => file.Name == modelFileName));
 
     internal IXcFiles GetSameFile(string name,
                                   IFileHierarchyDirectory directory,
                                   string modelFileName) {
       var modelFile =
-          directory.GetExistingFiles().Single(file => file.NameWithoutExtension ==
-                                                  modelFileName);
+          directory.GetExistingFiles()
+                   .Single(file => file.NameWithoutExtension ==
+                                   modelFileName);
       var animationFiles =
-          directory.GetExistingFiles().Where(
-              file => file.NameWithoutExtension != modelFileName &&
-                      file.NameWithoutExtension.StartsWith(modelFileName));
+          directory.GetExistingFiles()
+                   .Where(
+                       file => file.NameWithoutExtension != modelFileName &&
+                               file.NameWithoutExtension.StartsWith(
+                                   modelFileName));
       return new ModelAndAnimations(
           name,
           modelFile,
@@ -131,11 +138,13 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
                                             params string[] animationFileNames)
       => new ModelAndAnimations(
           name,
-          directory.GetExistingFiles().Single(file => file.Name == modelFileName),
+          directory.GetExistingFiles()
+                   .Single(file => file.Name == modelFileName),
           animationFileNames.Select(animationFileName
-                                        => directory.GetExistingFiles().Single(
-                                            file => file.Name ==
-                                                    animationFileName))
+                                        => directory.GetExistingFiles()
+                                                    .Single(
+                                                        file => file.Name ==
+                                                            animationFileName))
                             .ToArray());
 
     internal interface IXcFiles {

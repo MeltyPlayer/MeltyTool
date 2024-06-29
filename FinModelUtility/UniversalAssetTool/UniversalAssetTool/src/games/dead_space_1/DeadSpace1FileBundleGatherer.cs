@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using uni.platforms.desktop;
 
@@ -7,7 +8,8 @@ using visceral.api;
 
 namespace uni.games.dead_space_1 {
   public class DeadSpace1FileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!SteamUtils.TryGetGameDirectory("Dead Space", out var deadSpaceDir)) {
         yield break;
       }

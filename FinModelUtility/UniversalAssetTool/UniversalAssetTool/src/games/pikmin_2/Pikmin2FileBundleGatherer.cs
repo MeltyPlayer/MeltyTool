@@ -2,6 +2,7 @@
 
 using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using games.pikmin2.api;
 
@@ -11,7 +12,8 @@ using uni.platforms.gcn;
 
 namespace uni.games.pikmin_2 {
   public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "pikmin_2",
               GcnFileHierarchyExtractor.Options.Standard()

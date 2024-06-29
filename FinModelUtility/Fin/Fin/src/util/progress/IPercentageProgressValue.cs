@@ -34,4 +34,7 @@ public interface IPercentageProgressValue<T>
     : IIndeterminateProgressValue<T>, IPercentageProgress;
 
 public interface IMutablePercentageProgressValue<T>
-    : IPercentageProgressValue<T>;
+    : IPercentageProgressValue<T> {
+  void ReportProgress(float progress);
+  void ReportCompletion(T value);
+}

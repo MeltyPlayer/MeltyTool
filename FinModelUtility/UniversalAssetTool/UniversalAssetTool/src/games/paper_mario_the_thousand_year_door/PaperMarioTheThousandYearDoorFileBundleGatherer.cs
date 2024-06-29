@@ -1,4 +1,5 @@
 ﻿using fin.io.bundles;
+using fin.util.progress;
 
 using ttyd.api;
 
@@ -9,7 +10,8 @@ namespace uni.games.paper_mario_the_thousand_year_door {
 
   public class PaperMarioTheThousandYearDoorFileBundleGatherer
       : IAnnotatedFileBundleGatherer<TtydModelFileBundle> {
-    public IEnumerable<IAnnotatedTtydBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedTtydBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "paper_mario_the_thousand_year_door",
               out var fileHierarchy)) {

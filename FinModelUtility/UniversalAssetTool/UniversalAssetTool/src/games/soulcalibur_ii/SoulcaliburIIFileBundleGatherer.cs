@@ -1,5 +1,6 @@
 ﻿using fin.io.bundles;
 using fin.model.io;
+using fin.util.progress;
 
 using uni.platforms.gcn;
 
@@ -9,7 +10,8 @@ namespace uni.games.soulcalibur_ii {
     public string Name => "soulcalibur_ii";
 
     public IEnumerable<IAnnotatedFileBundle<IModelFileBundle>>?
-        GatherFileBundles() {
+        GatherFileBundles(
+            IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "soulcalibur_ii",
               out var fileHierarchy)) {

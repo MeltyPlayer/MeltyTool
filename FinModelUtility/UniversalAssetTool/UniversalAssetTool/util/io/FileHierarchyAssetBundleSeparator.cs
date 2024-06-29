@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 namespace uni.util.io {
   public class FileHierarchyAssetBundleSeparator
@@ -18,8 +19,13 @@ namespace uni.util.io {
       this.handler_ = handler;
     }
 
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles()
-      => this.fileHierarchy_.SelectMany(directory => this.handler_(directory));
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
+      var bundles = this.fileHierarchy_.SelectMany(directory
+                                                => this.handler_(directory));
+      mutablePercentageProgress.ReportProgressAndCompletion();
+      return bundles;
+    }
   }
 
   public class FileHierarchyAssetBundleSeparator<TFileBundle>
@@ -39,7 +45,12 @@ namespace uni.util.io {
       this.handler_ = handler;
     }
 
-    public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles()
-      => this.fileHierarchy_.SelectMany(directory => this.handler_(directory));
+    public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
+      var bundles = this.fileHierarchy_.SelectMany(directory
+                                                => this.handler_(directory));
+      mutablePercentageProgress.ReportProgressAndCompletion();
+      return bundles;
+    }
   }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 
-using fin.math.floats;
 using fin.util.progress;
 
 using ReactiveUI;
@@ -11,11 +10,13 @@ namespace uni.ui.avalonia.common.progress;
 
 public class ValueFractionProgress
     : ViewModelBase, IMutablePercentageProgressValue<object> {
+  private bool isComplete_;
+
   public float Progress { get; private set; }
   public object? Value { get; private set; }
 
   public void ReportProgress(float progress1To100) {
-    if (this.Progress.IsRoughly(progress1To100)) {
+    if (this.isComplete_) {
       return;
     }
 
@@ -26,14 +27,17 @@ public class ValueFractionProgress
   }
 
   public void ReportCompletion(object value) {
-    this.Progress = 100;
+    if (this.isComplete_) {
+      return;
+    }
+
+    this.isComplete_ = true;
+
     this.Value = value;
 
-    this.OnProgressChanged?.Invoke(this, this.Progress);
     this.OnCompleteValue?.Invoke(this, this.Value);
     this.OnComplete?.Invoke(this, EventArgs.Empty);
 
-    this.RaisePropertyChanged(nameof(this.Progress));
     this.RaisePropertyChanged(nameof(this.Value));
   }
 

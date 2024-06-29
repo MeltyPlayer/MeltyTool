@@ -1,12 +1,14 @@
 ﻿using dat.api;
 
 using fin.io.bundles;
+using fin.util.progress;
 
 using uni.platforms.gcn;
 
 namespace uni.games.chibi_robo {
   public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "chibi_robo",
               out var fileHierarchy)) {

@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using modl.api;
 
@@ -13,7 +14,8 @@ namespace uni.games.battalion_wars_2 {
 
   public class BattalionWars2FileBundleGatherer
       : IAnnotatedFileBundleGatherer<IBattalionWarsFileBundle> {
-    public IEnumerable<IAnnotatedBwBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedBwBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "battalion_wars_2.iso",
               out var battalionWarsRom)) {
@@ -137,7 +139,7 @@ namespace uni.games.battalion_wars_2 {
 
             return bundles;
           }
-      ).GatherFileBundles();
+      ).GatherFileBundles(mutablePercentageProgress);
     }
   }
 }

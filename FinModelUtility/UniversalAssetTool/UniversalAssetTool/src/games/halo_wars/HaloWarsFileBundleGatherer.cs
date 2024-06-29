@@ -1,6 +1,7 @@
 ﻿using fin.data.queues;
 using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using HaloWarsTools;
 
@@ -13,7 +14,8 @@ namespace uni.games.halo_wars {
 
   public class HaloWarsFileBundleGatherer
       : IAnnotatedFileBundleGatherer<IHaloWarsFileBundle> {
-    public IEnumerable<IAnnotatedHaloWarsBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedHaloWarsBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!SteamUtils.TryGetGameDirectory("HaloWarsDE",
                                           out var haloWarsSteamDirectory)) {
         yield break;

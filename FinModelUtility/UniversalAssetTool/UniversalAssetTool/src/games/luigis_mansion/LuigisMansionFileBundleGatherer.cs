@@ -1,5 +1,6 @@
 ﻿using fin.io.bundles;
 using fin.model.io;
+using fin.util.progress;
 
 using uni.platforms.gcn;
 
@@ -8,7 +9,8 @@ namespace uni.games.luigis_mansion {
 
   public class LuigisMansionFileBundleGatherer
       : IAnnotatedFileBundleGatherer<IModelFileBundle> {
-    public IEnumerable<IAnnotatedMdlBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedMdlBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "luigis_mansion",
               GcnFileHierarchyExtractor.Options

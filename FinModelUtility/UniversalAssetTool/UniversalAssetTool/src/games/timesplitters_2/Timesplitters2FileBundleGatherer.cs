@@ -1,6 +1,7 @@
 ﻿using fin.io.archive;
 using fin.io.bundles;
 using fin.model.io;
+using fin.util.progress;
 
 using ts2;
 
@@ -12,7 +13,8 @@ namespace uni.games.timesplitters_2 {
     public string Name => "timesplitters_2";
 
     public IEnumerable<IAnnotatedFileBundle<IModelFileBundle>>?
-        GatherFileBundles() {
+        GatherFileBundles(
+            IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "timesplitters_2",
               out var fileHierarchy)) {

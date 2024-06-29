@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using modl.api;
 
@@ -10,7 +11,8 @@ namespace uni.games.battalion_wars_1 {
   public class BattalionWars1FileBundleGatherer
       : IAnnotatedFileBundleGatherer<IBattalionWarsFileBundle> {
     public IEnumerable<IAnnotatedFileBundle<IBattalionWarsFileBundle>>
-        GatherFileBundles() {
+        GatherFileBundles(
+            IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "battalion_wars_1",
               out var fileHierarchy)) {
@@ -212,7 +214,7 @@ namespace uni.games.battalion_wars_1 {
 
             return bundles;
           }
-      ).GatherFileBundles();
+      ).GatherFileBundles(mutablePercentageProgress);
     }
   }
 }

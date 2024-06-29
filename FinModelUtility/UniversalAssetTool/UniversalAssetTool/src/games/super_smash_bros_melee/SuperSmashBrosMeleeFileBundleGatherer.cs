@@ -2,6 +2,7 @@
 
 using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using uni.platforms.gcn;
 
@@ -18,7 +19,8 @@ namespace uni.games.super_smash_bros_melee {
     private const string CHARACTER_PREFIX = "Pl";
     private const string ANIMATION_SUFFIX = "AJ";
 
-    public IEnumerable<IAnnotatedDatBundle>? GatherFileBundles() {
+    public IEnumerable<IAnnotatedDatBundle>? GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "super_smash_bros_melee",
               out var fileHierarchy)) {

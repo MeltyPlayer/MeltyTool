@@ -5,6 +5,7 @@ using fin.io.bundles;
 
 using uni.platforms.threeDs;
 using uni.util.bundles;
+using fin.util.progress;
 
 namespace uni.games.luigis_mansion_3d {
   using IAnnotatedCmbBundle = IAnnotatedFileBundle<CmbModelFileBundle>;
@@ -23,7 +24,8 @@ namespace uni.games.luigis_mansion_3d {
             .Register(@"\model\luige",
                       new NameModelSeparatorMethod("Luigi.cmb"));
 
-    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "luigis_mansion_3d",
               out var fileHierarchy)) {

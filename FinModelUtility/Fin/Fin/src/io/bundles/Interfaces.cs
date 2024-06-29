@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using fin.util.asserts;
 using fin.util.linq;
+using fin.util.progress;
 
 namespace fin.io.bundles;
 
@@ -32,16 +33,18 @@ public interface IFileBundle : IUiFile {
 }
 
 public interface IAnnotatedFileBundleGatherer {
-  IEnumerable<IAnnotatedFileBundle> GatherFileBundles();
+  IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+      IMutablePercentageProgress mutablePercentageProgress);
 }
 
 public interface IAnnotatedFileBundleGatherer<out TFileBundle> : IAnnotatedFileBundleGatherer
     where TFileBundle : IFileBundle {
-  new IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles();
+  new IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
+      IMutablePercentageProgress mutablePercentageProgress);
 
   IEnumerable<IAnnotatedFileBundle> IAnnotatedFileBundleGatherer.
-      GatherFileBundles()
-    => this.GatherFileBundles()
+      GatherFileBundles(IMutablePercentageProgress mutablePercentageProgress)
+    => this.GatherFileBundles(mutablePercentageProgress)
            .CastTo<IAnnotatedFileBundle<TFileBundle>, IAnnotatedFileBundle>();
 }
 

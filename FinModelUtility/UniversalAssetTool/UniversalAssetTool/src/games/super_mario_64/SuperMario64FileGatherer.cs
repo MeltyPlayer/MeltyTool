@@ -2,6 +2,7 @@
 
 using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using sm64.api;
 
@@ -13,7 +14,8 @@ namespace uni.games.super_mario_64 {
   public class SuperMario64AnnotatedFileGatherer :
       IAnnotatedFileBundleGatherer<Sm64LevelFileBundle> {
     public IEnumerable<IAnnotatedSm64Bundle>
-        GatherFileBundles() {
+        GatherFileBundles(
+            IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "super_mario_64.z64",
               out var superMario64Rom)) {

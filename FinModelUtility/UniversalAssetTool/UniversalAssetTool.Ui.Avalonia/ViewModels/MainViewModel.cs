@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using fin.io.bundles;
 using fin.model;
+using fin.util.asserts;
+using fin.util.progress;
 
 using ReactiveUI;
 
@@ -19,7 +21,7 @@ using uni.ui.avalonia.resources.model;
 namespace uni.ui.avalonia.ViewModels;
 
 public class MainViewModelForDesigner {
-  public AsyncPanelViewModel FileBundleTreeAsyncPanelViewModel { get; }
+  public ProgressPanelViewModel FileBundleTreeAsyncPanelViewModel { get; }
 
   public ModelPanelViewModel ModelPanel { get; }
     = new ModelPanelViewModelForDesigner();
@@ -27,35 +29,53 @@ public class MainViewModelForDesigner {
   public string FileName => "//foo/bar.mod";
 
   public MainViewModelForDesigner() {
-    var asyncProgress = new AsyncProgress();
+    var progress = new ValueFractionProgress();
 
-    Task.Run(() => {
-      var fileTreeViewModel = new FileBundleTreeViewModelForDesigner();
-      Thread.Sleep(TimeSpan.FromSeconds(3));
-      asyncProgress.ReportCompletion(fileTreeViewModel);
-    });
+    var secondsToWait = 3;
+    var start = DateTime.Now;
 
-    this.FileBundleTreeAsyncPanelViewModel = new AsyncPanelViewModel
-        { Progress = asyncProgress };
+    Task.Run(
+        async () => {
+          DateTime current;
+          double elapsedSeconds;
+          do {
+            current = DateTime.Now;
+            elapsedSeconds = (current - start).TotalSeconds;
+            progress.ReportProgress(
+                100 *
+                Math.Clamp((float) (elapsedSeconds / secondsToWait), 0, 1));
+
+            await Task.Delay(50);
+          } while (elapsedSeconds < secondsToWait);
+
+          var fileTreeViewModel = new FileBundleTreeViewModelForDesigner();
+          progress.ReportCompletion(fileTreeViewModel);
+        });
+
+    this.FileBundleTreeAsyncPanelViewModel = new ProgressPanelViewModel
+        { Progress = progress };
     ;
   }
 }
 
 public class MainViewModel : ViewModelBase {
-  private AsyncPanelViewModel fileTreeAsyncPanelViewModel_;
+  private ProgressPanelViewModel fileTreeAsyncPanelViewModel_;
   private string fileName_;
   private ModelPanelViewModel modelPanel_;
 
   public MainViewModel() {
-    var asyncProgress = new AsyncProgress();
+    var valueFractionProgress = new ValueFractionProgress();
+
     Task.Run(() => {
-      var rootDirectory = new RootFileBundleGatherer().GatherAllFiles();
+      var rootDirectory
+          = new RootFileBundleGatherer().GatherAllFiles(
+              valueFractionProgress.AsValueless());
       var fileTreeViewModel = this.GetFileTreeViewModel_(rootDirectory);
-      asyncProgress.ReportCompletion(fileTreeViewModel);
+      valueFractionProgress.ReportCompletion(fileTreeViewModel);
     });
 
-    this.FileBundleTreeAsyncPanelViewModel = new AsyncPanelViewModel {
-        Progress = asyncProgress
+    this.FileBundleTreeAsyncPanelViewModel = new ProgressPanelViewModel {
+        Progress = valueFractionProgress
     };
 
 
@@ -93,7 +113,7 @@ public class MainViewModel : ViewModelBase {
         };
   }
 
-  public AsyncPanelViewModel FileBundleTreeAsyncPanelViewModel {
+  public ProgressPanelViewModel FileBundleTreeAsyncPanelViewModel {
     get => this.fileTreeAsyncPanelViewModel_;
     private set
       => this.RaiseAndSetIfChanged(ref this.fileTreeAsyncPanelViewModel_,

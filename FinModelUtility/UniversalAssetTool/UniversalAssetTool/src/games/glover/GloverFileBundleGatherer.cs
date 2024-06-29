@@ -1,6 +1,7 @@
 ﻿using fin.audio.io.importers.ogg;
 using fin.io;
 using fin.io.bundles;
+using fin.util.progress;
 
 using glo.api;
 
@@ -8,7 +9,8 @@ using uni.platforms.desktop;
 
 namespace uni.games.glover {
   public class GloverFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!SteamUtils.TryGetGameDirectory("Glover",
                                           out var gloverSteamDirectory)) {
         yield break;

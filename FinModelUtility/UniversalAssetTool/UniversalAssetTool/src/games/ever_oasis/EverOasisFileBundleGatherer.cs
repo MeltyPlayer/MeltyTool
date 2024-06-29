@@ -6,12 +6,15 @@ using fin.io.bundles;
 
 using uni.platforms.threeDs;
 
+using fin.util.progress;
+
 namespace uni.games.ever_oasis {
   using IAnnotatedCmbBundle = IAnnotatedFileBundle<CmbModelFileBundle>;
 
   public class EverOasisFileBundleGatherer
       : IAnnotatedFileBundleGatherer<CmbModelFileBundle> {
-    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (true ||
           !new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "ever_oasis",
@@ -24,7 +27,7 @@ namespace uni.games.ever_oasis {
                  CmbModelFileBundle,
                  IFileHierarchy>(fileHierarchy)
              .Add(this.GetAutomaticModels_)
-             .GatherFileBundles();
+             .GatherFileBundles(mutablePercentageProgress);
     }
 
     private void ArchiveFileNameProcessor_(string archiveName,

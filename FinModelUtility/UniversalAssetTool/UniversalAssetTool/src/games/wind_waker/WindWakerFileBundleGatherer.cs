@@ -3,6 +3,7 @@ using fin.io.bundles;
 using fin.log;
 using fin.util.asserts;
 using fin.util.lists;
+using fin.util.progress;
 using fin.util.strings;
 
 using jsystem.api;
@@ -18,7 +19,8 @@ namespace uni.games.wind_waker {
     private readonly ILogger logger_ =
         Logging.Create<WindWakerFileBundleGatherer>();
 
-    public IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> GatherFileBundles() {
+    public IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "wind_waker",
               out var fileHierarchy)) {

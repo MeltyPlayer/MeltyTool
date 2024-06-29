@@ -8,6 +8,8 @@ using uni.platforms.threeDs;
 using uni.util.bundles;
 using uni.util.io;
 
+using fin.util.progress;
+
 namespace uni.games.ocarina_of_time_3d {
   using IAnnotatedBundle = IAnnotatedFileBundle<IFileBundle>;
 
@@ -119,7 +121,8 @@ namespace uni.games.ocarina_of_time_3d {
           .Register("zelda_wm2", new NoAnimationsModelSeparatorMethod())
           .Register("zelda_xc", new NoAnimationsModelSeparatorMethod());
 
-    public IEnumerable<IAnnotatedBundle> GatherFileBundles() {
+    public IEnumerable<IAnnotatedBundle> GatherFileBundles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "ocarina_of_time_3d",
               out var fileHierarchy)) {
@@ -138,7 +141,7 @@ namespace uni.games.ocarina_of_time_3d {
              .Add(this.GetVolvagiaModels_)
              .Add(this.GetMoblinModels_)
              .Add(this.GetBongoBongoModels_)
-             .GatherFileBundles();
+             .GatherFileBundles(mutablePercentageProgress);
     }
 
     private IEnumerable<IAnnotatedBundle> GetModelsViaSeparator_(
@@ -176,7 +179,7 @@ namespace uni.games.ocarina_of_time_3d {
               return Enumerable.Empty<IAnnotatedBundle>();
             }
           }
-      ).GatherFileBundles();
+      ).GatherFileBundles(new PercentageProgress());
 
     private IEnumerable<IAnnotatedBundle> GetAutomaticModels_(
         IFileHierarchy fileHierarchy) {
@@ -257,8 +260,8 @@ namespace uni.games.ocarina_of_time_3d {
       foreach (var otherModel in modelDir.GetExistingFiles()
                                          .Where(
                                              file => file.Name !=
-                                                 "ganondorf.cmb"
-                                                 && file.Name !=
+                                                 "ganondorf.cmb" &&
+                                                 file.Name !=
                                                  "ganon_mant_model.cmb")) {
         yield return new CmbModelFileBundle("ocarina_of_time_3d", otherModel)
             .Annotate(otherModel);
@@ -311,7 +314,8 @@ namespace uni.games.ocarina_of_time_3d {
                                          .Where(
                                              file => file.Name is not
                                                  "valbasiagnd.cmb")) {
-        yield return new CmbModelFileBundle("ocarina_of_time_3d", otherModel).Annotate(otherModel);
+        yield return new CmbModelFileBundle("ocarina_of_time_3d", otherModel)
+            .Annotate(otherModel);
       }
 
       // TODO: What does vb_FWDtest.csab belong to?
@@ -368,7 +372,7 @@ namespace uni.games.ocarina_of_time_3d {
 
       // Right hand
       var rightHandModel = modelDir.AssertGetExistingFile("bongorhand.cmb");
-                                    yield return new CmbModelFileBundle(
+      yield return new CmbModelFileBundle(
           "ocarina_of_time_3d",
           rightHandModel,
           animDir.FilesWithExtension(".csab")
@@ -378,10 +382,10 @@ namespace uni.games.ocarina_of_time_3d {
       foreach (var otherModel in modelDir.GetExistingFiles()
                                          .Where(
                                              file => file.Name !=
-                                                 "bongobongo.cmb"
-                                                 && file.Name !=
-                                                 "bongolhand.cmb"
-                                                 && file.Name !=
+                                                 "bongobongo.cmb" &&
+                                                 file.Name !=
+                                                 "bongolhand.cmb" &&
+                                                 file.Name !=
                                                  "bongorhand.cmb")) {
         yield return new CmbModelFileBundle("ocarina_of_time_3d", otherModel)
             .Annotate(otherModel);

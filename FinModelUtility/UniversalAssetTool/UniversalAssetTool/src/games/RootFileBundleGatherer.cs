@@ -1,4 +1,5 @@
 ﻿using fin.io.bundles;
+using fin.util.progress;
 
 using uni.config;
 using uni.games.animal_crossing;
@@ -36,7 +37,8 @@ using uni.util.io;
 
 namespace uni.games {
   public class RootFileBundleGatherer {
-    public IFileBundleDirectory GatherAllFiles() {
+    public IFileBundleDirectory GatherAllFiles(
+        IMutablePercentageProgress mutablePercentageProgress) {
       IAnnotatedFileBundleGathererAccumulator accumulator =
           Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms
               ? new ParallelAnnotatedFileBundleGathererAccumulator()
@@ -80,7 +82,7 @@ namespace uni.games {
       }
 
       return new FileBundleHierarchyOrganizer().Organize(
-          accumulator.GatherFileBundles());
+          accumulator.GatherFileBundles(mutablePercentageProgress));
     }
   }
 }
