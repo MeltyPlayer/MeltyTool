@@ -72,6 +72,7 @@ public class SharpFileLister : IFileLister {
     return rootDirectoryInfo;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private unsafe nint FindFirstFileWInDirectory_(
       string directoryPath,
       out WIN32_FIND_DATAW findData) {
