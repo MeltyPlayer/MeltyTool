@@ -133,9 +133,7 @@ namespace uni.games.battalion_wars_2 {
                     .Concat<IAnnotatedBwBundle>(outBundles)
                     .Concat(sceneBundles)
                     .ToList();
-            bundles.Sort((lhs, rhs) =>
-                             lhs.GameAndLocalPath.CompareTo(
-                                 rhs.GameAndLocalPath));
+            bundles.Sort();
 
             return bundles;
           }

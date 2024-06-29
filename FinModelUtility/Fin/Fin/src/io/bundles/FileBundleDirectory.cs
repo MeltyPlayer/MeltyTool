@@ -65,8 +65,6 @@ public class FileBundleDirectory : IFileBundleDirectory {
     }
 
     this.subdirs_.Sort((lhs, rhs) => lhs.Name.CompareTo(rhs.Name));
-    this.fileBundles_.Sort((lhs, rhs)
-                               => lhs.GameAndLocalPath.CompareTo(
-                                   rhs.GameAndLocalPath));
+    this.fileBundles_.Sort();
   }
 }

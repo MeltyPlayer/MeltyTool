@@ -1,11 +1,24 @@
-﻿namespace fin.io.bundles;
+﻿using System;
 
-public interface IAnnotatedFileBundle {
+namespace fin.io.bundles;
+
+public interface IAnnotatedFileBundle : IComparable<IAnnotatedFileBundle> {
   IFileBundle FileBundle { get; }
 
   IFileHierarchyFile File { get; }
   string LocalPath { get; }
   string GameAndLocalPath { get; }
+
+  int IComparable<IAnnotatedFileBundle>.CompareTo(IAnnotatedFileBundle? other) {
+    var thisGameName = this.File.Hierarchy.Name;
+    var otherGameName = other.File.Hierarchy.Name;
+    var gameNameComparison = thisGameName.CompareTo(otherGameName);
+    if (gameNameComparison != 0) {
+      return gameNameComparison;
+    }
+
+    return this.LocalPath.CompareTo(other.LocalPath);
+  }
 }
 
 public interface IAnnotatedFileBundle<out TFileBundle> : IAnnotatedFileBundle
@@ -20,8 +33,9 @@ public static class AnnotatedFileBundle {
     => new AnnotatedFileBundle<TFileBundle>(fileBundle, file);
 }
 
-public class AnnotatedFileBundle<TFileBundle>(TFileBundle fileBundle,
-                                              IFileHierarchyFile file)
+public class AnnotatedFileBundle<TFileBundle>(
+    TFileBundle fileBundle,
+    IFileHierarchyFile file)
     : IAnnotatedFileBundle<TFileBundle>
     where TFileBundle : IFileBundle {
   public IFileBundle FileBundle { get; } = fileBundle;
