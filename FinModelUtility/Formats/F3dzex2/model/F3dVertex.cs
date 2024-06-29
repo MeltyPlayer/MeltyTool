@@ -1,13 +1,11 @@
 ﻿using System.Numerics;
 
-using fin.util.hash;
-
 using schema.binary;
 
 namespace f3dzex2.model;
 
 [BinarySchema]
-public partial struct F3dVertex : IBinaryConvertible {
+public partial record struct F3dVertex : IBinaryConvertible {
   public short X { get; set; }
   public short Y { get; set; }
   public short Z { get; set; }
@@ -36,37 +34,4 @@ public partial struct F3dVertex : IBinaryConvertible {
 
   public Vector4 GetColor()
     => new(NormalXOrR / 255f, NormalYOrG / 255f, NormalZOrB / 255f, A / 255f);
-
-  public override int GetHashCode() => FluentHash.Start()
-                                                 .With(X)
-                                                 .With(Y)
-                                                 .With(Z)
-                                                 .With(Flag)
-                                                 .With(U)
-                                                 .With(V)
-                                                 .With(NormalXOrR)
-                                                 .With(NormalYOrG)
-                                                 .With(NormalZOrB)
-                                                 .With(A);
-
-  public override bool Equals(object? other) {
-    if (object.ReferenceEquals(this, other)) {
-      return true;
-    }
-
-    if (other is F3dVertex otherVertex) {
-      return this.X == otherVertex.X && 
-             this.Y == otherVertex.Y &&
-             this.Z == otherVertex.Z && 
-             this.Flag == otherVertex.Flag &&
-             this.U == otherVertex.U && 
-             this.V == otherVertex.V &&
-             this.NormalXOrR == otherVertex.NormalXOrR && 
-             this.NormalYOrG == otherVertex.NormalYOrG &&
-             this.NormalZOrB == otherVertex.NormalZOrB &&
-             this.A == otherVertex.A;
-    }
-
-    return false;
-  }
 }
