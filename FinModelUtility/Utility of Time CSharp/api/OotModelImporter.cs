@@ -139,7 +139,7 @@ namespace UoT.api {
             gameplayKeep,
             ootLimbs.Count);
         } else {
-          var animationFiles = new List<IZFile> { zFile };
+          var animationFiles = new List<IZFile> { zFile, gameplayKeep };
           ootAnimations = animationReader.GetCommonAnimations(
               n64Memory,
               animationFiles,

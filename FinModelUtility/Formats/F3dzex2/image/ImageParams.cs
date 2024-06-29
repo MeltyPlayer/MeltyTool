@@ -19,7 +19,8 @@ public struct ImageParams {
                                                  .With(this.Height)
                                                  .With(this.SegmentedAddress);
 
-  public bool IsInvalid => this.Width == 0 || this.Height == 0 ||
+  public bool IsInvalid => this.Width <= 1 ||
+                           this.Height <= 1 ||
                            this.SegmentedAddress == 0;
 
   public override bool Equals(object? other) {

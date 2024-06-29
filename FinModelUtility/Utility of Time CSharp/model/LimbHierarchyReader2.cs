@@ -116,7 +116,10 @@ namespace UoT.model {
           var firstChild = possibleLimb.FirstChildIndex;
           var nextSibling = possibleLimb.NextSiblingIndex;
 
-          if (firstChild == limbI || nextSibling == limbI) {
+          if (firstChild == limbI ||
+              firstChild >= possibleLimbCount ||
+              nextSibling == limbI ||
+              nextSibling >= possibleLimbCount) {
             areLimbsValid = false;
             break;
           }

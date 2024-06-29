@@ -16,17 +16,17 @@ public struct JankTileDescriptor : IReadOnlyTileDescriptor {
     => FluentHash.Start().With(this.State).With(MaterialParams);
 
   public override bool Equals(object? obj) {
-      if (ReferenceEquals(this, obj)) {
-        return true;
-      }
-
-      if (obj is JankTileDescriptor otherTileDescriptor) {
-        return this.State == otherTileDescriptor.State &&
-               this.MaterialParams.Equals(otherTileDescriptor.MaterialParams);
-      }
-
-      return false;
+    if (ReferenceEquals(this, obj)) {
+      return true;
     }
+
+    if (obj is JankTileDescriptor otherTileDescriptor) {
+      return this.State == otherTileDescriptor.State &&
+             this.MaterialParams.Equals(otherTileDescriptor.MaterialParams);
+    }
+
+    return false;
+  }
 }
 
 /// <summary>
@@ -83,33 +83,35 @@ public class JankTmem : ITmem {
   private readonly bool[] texturesChanged_ = [true, true];
 
   public JankTmem(IN64Hardware n64Hardware) {
-      this.n64Hardware_ = n64Hardware;
-    }
+    this.n64Hardware_ = n64Hardware;
+  }
 
   public void GsDpLoadBlock(ushort uls,
                             ushort ult,
                             TileDescriptorIndex tileDescriptor,
                             ushort texels,
                             ushort deltaTPerScanline) {
-      if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
-        // The lrs field rather seems to be number of pixels to load
-        var wordSizeShift = this.setTextureImageParams_.BitsPerTexel.GetWordShift();
-        var sizeBytes = (uint) ((texels + 1) << wordSizeShift);
-        this.loadedTextures_[this.setTextureImageParams_.TileNumber].SizeInBytes =
-            sizeBytes;
-        this.loadedTextures_[this.setTextureImageParams_.TileNumber].SegmentedAddress =
-            this.setTextureImageParams_.SegmentedAddress;
-        this.texturesChanged_[this.setTextureImageParams_.TileNumber] = true;
-      }
+    if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
+      // The lrs field rather seems to be number of pixels to load
+      var wordSizeShift
+          = this.setTextureImageParams_.BitsPerTexel.GetWordShift();
+      var sizeBytes = (uint) ((texels + 1) << wordSizeShift);
+      this.loadedTextures_[this.setTextureImageParams_.TileNumber].SizeInBytes =
+          sizeBytes;
+      this.loadedTextures_[this.setTextureImageParams_.TileNumber]
+          .SegmentedAddress =
+          this.setTextureImageParams_.SegmentedAddress;
+      this.texturesChanged_[this.setTextureImageParams_.TileNumber] = true;
     }
+  }
 
   public void GsDpLoadTlut(TileDescriptorIndex tileDescriptor,
                            uint numColorsToLoad) {
-      if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
-        this.n64Hardware_.Rdp.PaletteSegmentedAddress =
-            this.setTextureImageParams_.SegmentedAddress;
-      }
+    if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
+      this.n64Hardware_.Rdp.PaletteSegmentedAddress =
+          this.setTextureImageParams_.SegmentedAddress;
     }
+  }
 
   public void GsDpSetTile(N64ColorFormat colorFormat,
                           BitsPerTexel bitsPerTexel,
@@ -118,101 +120,112 @@ public class JankTmem : ITmem {
                           TileDescriptorIndex tileDescriptor,
                           F3dWrapMode wrapModeS,
                           F3dWrapMode wrapModeT) {
-      if (tileDescriptor == TileDescriptorIndex.TX_RENDERTILE) {
-        this.textureTile_.ColorFormat = colorFormat;
-        this.textureTile_.BitsPerTexel = bitsPerTexel;
-        this.textureTile_.WrapModeT = wrapModeT;
-        this.textureTile_.WrapModeS = wrapModeS;
-        this.textureTile_.LineSizeBytes = num64BitValuesPerRow * 8;
-        this.texturesChanged_[0] = true;
-        this.texturesChanged_[1] = true;
-      }
-
-      if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
-        this.setTextureImageParams_.TileNumber = offsetOfTextureInTmem / 256;
-      }
+    if (tileDescriptor == TileDescriptorIndex.TX_RENDERTILE) {
+      this.textureTile_.ColorFormat = colorFormat;
+      this.textureTile_.BitsPerTexel = bitsPerTexel;
+      this.textureTile_.WrapModeT = wrapModeT;
+      this.textureTile_.WrapModeS = wrapModeS;
+      this.textureTile_.LineSizeBytes = num64BitValuesPerRow * 8;
+      this.texturesChanged_[0] = true;
+      this.texturesChanged_[1] = true;
     }
+
+    if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
+      this.setTextureImageParams_.TileNumber = offsetOfTextureInTmem / 256;
+    }
+  }
 
   public void GsDpSetTileSize(ushort uls,
                               ushort ult,
                               TileDescriptorIndex tileDescriptor,
-                              ushort width,
-                              ushort height) {
-      if (tileDescriptor == TileDescriptorIndex.TX_RENDERTILE) {
-        this.textureTile_.Uls = uls;
-        this.textureTile_.Ult = ult;
-        this.textureTile_.Lrs = (ushort) (uls + width);
-        this.textureTile_.Lrt = (ushort) (ult + height);
+                              ushort lrs,
+                              ushort lrt) {
+    if (tileDescriptor == TileDescriptorIndex.TX_RENDERTILE) {
+      this.textureTile_.Uls = uls;
+      this.textureTile_.Ult = ult;
+      this.textureTile_.Lrs = lrs;
+      this.textureTile_.Lrt = lrt;
 
-        this.texturesChanged_[0] = true;
-        this.texturesChanged_[1] = true;
-      }
+      this.texturesChanged_[0] = true;
+      this.texturesChanged_[1] = true;
     }
+  }
 
   public void GsSpTexture(ushort scaleS,
                           ushort scaleT,
                           uint maxExtraMipmapLevels,
                           TileDescriptorIndex tileDescriptor,
                           TileDescriptorState tileDescriptorState) {
-      this.n64Hardware_.Rsp.TexScaleXShort = scaleS;
-      this.n64Hardware_.Rsp.TexScaleYShort = scaleT;
-    }
+    this.n64Hardware_.Rsp.TexScaleXShort = scaleS;
+    this.n64Hardware_.Rsp.TexScaleYShort = scaleT;
+  }
 
   public void GsDpSetTextureImage(N64ColorFormat colorFormat,
                                   BitsPerTexel bitsPerTexel,
                                   ushort width,
                                   uint imageSegmentedAddress) {
-      this.setTextureImageParams_.ColorFormat = colorFormat;
-      this.setTextureImageParams_.SegmentedAddress = imageSegmentedAddress;
-      this.setTextureImageParams_.Width = width;
-      this.setTextureImageParams_.BitsPerTexel = bitsPerTexel;
-    }
+    this.setTextureImageParams_.ColorFormat = colorFormat;
+    this.setTextureImageParams_.SegmentedAddress = imageSegmentedAddress;
+    this.setTextureImageParams_.Width = width;
+    this.setTextureImageParams_.BitsPerTexel = bitsPerTexel;
+  }
 
   public MaterialParams GetMaterialParams() {
-      return new MaterialParams {
-          TextureParams0 = this.GetOrCreateTextureParamsForTile_(0),
-          TextureParams1 = this.GetOrCreateTextureParamsForTile_(1),
-          CombinerCycleParams0 = this.n64Hardware_.Rdp.CombinerCycleParams0,
-          CombinerCycleParams1 = this.n64Hardware_.Rdp.CombinerCycleParams1,
-          CullingMode = this.cullingMode_
-      };
-    }
+    return new MaterialParams {
+        TextureParams0 = this.GetOrCreateTextureParamsForTile_(0),
+        TextureParams1 = this.GetOrCreateTextureParamsForTile_(1),
+        CombinerCycleParams0 = this.n64Hardware_.Rdp.CombinerCycleParams0,
+        CombinerCycleParams1 = this.n64Hardware_.Rdp.CombinerCycleParams1,
+        CullingMode = this.cullingMode_
+    };
+  }
 
   private TextureParams GetOrCreateTextureParamsForTile_(int index) {
-      if (!this.texturesChanged_[index]) {
-        return this.textureParams_[index];
-      }
-
-      var loadedTexture = this.loadedTextures_[index];
-
-      var textureParams = new TextureParams();
-      textureParams.ColorFormat = this.textureTile_.ColorFormat;
-      textureParams.BitsPerTexel = this.textureTile_.BitsPerTexel;
-
-      textureParams.UvType =
-          this.n64Hardware_.Rsp.GeometryMode.GetUvType();
-      textureParams.SegmentedAddress = loadedTexture.SegmentedAddress;
-      textureParams.WrapModeS = this.textureTile_.WrapModeS;
-      textureParams.WrapModeT = this.textureTile_.WrapModeT;
-
-      textureParams.Width = (ushort) (textureTile_.LineSizeBytes >>
-                                      textureParams.BitsPerTexel
-                                                   .GetWordShift());
-      textureParams.Height = textureTile_.LineSizeBytes == 0
-          ? (ushort) 0
-          : (ushort) (loadedTexture.SizeInBytes / textureTile_.LineSizeBytes);
-
-      this.texturesChanged_[index] = false;
-      return this.textureParams_[index] = textureParams;
+    if (!this.texturesChanged_[index]) {
+      return this.textureParams_[index];
     }
+
+    var loadedTexture = this.loadedTextures_[index];
+
+    var textureParams = new TextureParams();
+    textureParams.ColorFormat = this.textureTile_.ColorFormat;
+    textureParams.BitsPerTexel = this.textureTile_.BitsPerTexel;
+
+    textureParams.UvType =
+        this.n64Hardware_.Rsp.GeometryMode.GetUvType();
+    textureParams.SegmentedAddress = loadedTexture.SegmentedAddress;
+    textureParams.WrapModeS = this.textureTile_.WrapModeS;
+    textureParams.WrapModeT = this.textureTile_.WrapModeT;
+
+    /*textureParams.Width = (ushort) (textureTile_.LineSizeBytes >>
+                                    textureParams.BitsPerTexel
+                                                 .GetWordShift());
+    textureParams.Height = textureTile_.LineSizeBytes == 0
+        ? (ushort) 0
+        : (ushort) (loadedTexture.SizeInBytes / textureTile_.LineSizeBytes);*/
+
+    var uls = this.textureTile_.Uls;
+    var ult = this.textureTile_.Ult;
+    var lrs = this.textureTile_.Lrs;
+    var lrt = this.textureTile_.Lrt;
+
+    var width = (lrs >> 2) - (uls >> 2) + 1;
+    var height = (lrt >> 2) - (ult >> 2) + 1;
+
+    textureParams.Width = (ushort) width;
+    textureParams.Height = (ushort) height;
+
+    this.texturesChanged_[index] = false;
+    return this.textureParams_[index] = textureParams;
+  }
 
   private CullingMode cullingMode_;
 
   public CullingMode CullingMode {
     set {
-        if (this.cullingMode_ != value) {
-          this.cullingMode_ = value;
-        }
+      if (this.cullingMode_ != value) {
+        this.cullingMode_ = value;
       }
+    }
   }
 }

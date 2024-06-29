@@ -64,138 +64,145 @@ public class N64ImageParser {
   private readonly IN64Hardware n64Hardware_;
 
   public N64ImageParser(IN64Hardware n64Hardware) {
-      this.n64Hardware_ = n64Hardware;
-    }
+    this.n64Hardware_ = n64Hardware;
+  }
 
   public static void SplitN64ImageFormat(byte imageFormat,
                                          out N64ColorFormat colorFormat,
                                          out BitsPerTexel bitsPerTexel) {
-      colorFormat =
-          (N64ColorFormat) BitLogic.ExtractFromRight(imageFormat, 5, 3);
-      bitsPerTexel =
-          (BitsPerTexel) BitLogic.ExtractFromRight(imageFormat, 3, 2);
-    }
+    colorFormat =
+        (N64ColorFormat) BitLogic.ExtractFromRight(imageFormat, 5, 3);
+    bitsPerTexel =
+        (BitsPerTexel) BitLogic.ExtractFromRight(imageFormat, 3, 2);
+  }
 
   public IImage Parse(N64ImageFormat format,
                       byte[] data,
                       int width,
                       int height) {
-      SplitN64ImageFormat((byte) format, out var colorFormat, out var bitSize);
-      return Parse(colorFormat,
-                   bitSize,
-                   data,
-                   width,
-                   height);
-    }
+    SplitN64ImageFormat((byte) format, out var colorFormat, out var bitSize);
+    return Parse(colorFormat,
+                 bitSize,
+                 data,
+                 width,
+                 height);
+  }
 
   public IImage Parse(N64ColorFormat colorFormat,
                       BitsPerTexel bitsPerTexel,
                       byte[] data,
                       int width,
                       int height) {
-      switch (colorFormat) {
-        case N64ColorFormat.RGBA: {
-          switch (bitsPerTexel) {
-            case BitsPerTexel._16BPT:
-              return PixelImageReader.New(width,
-                                          height,
-                                          new Argb1555PixelReader())
-                                     .ReadImage(data, Endianness.BigEndian);
-            default:
-              throw new ArgumentOutOfRangeException(
-                  nameof(bitsPerTexel),
-                  bitsPerTexel,
-                  null);
-          }
-        }
-        case N64ColorFormat.L: {
-          switch (bitsPerTexel) {
-            case BitsPerTexel._4BPT:
-              return PixelImageReader.New(width,
-                                          height,
-                                          new L4PixelReader())
-                                     .ReadImage(data, Endianness.BigEndian);
-            case BitsPerTexel._8BPT:
-              return PixelImageReader.New(width,
-                                          height,
-                                          new L8PixelReader())
-                                     .ReadImage(data, Endianness.BigEndian);
-            default:
-              throw new ArgumentOutOfRangeException(
-                  nameof(bitsPerTexel),
-                  bitsPerTexel,
-                  null);
-          }
-        }
-        case N64ColorFormat.LA: {
-          switch (bitsPerTexel) {
-            case BitsPerTexel._8BPT:
-              return PixelImageReader.New(width,
-                                          height,
-                                          new La8PixelReader())
-                                     .ReadImage(data, Endianness.BigEndian);
-            case BitsPerTexel._16BPT:
-              return PixelImageReader.New(width,
-                                          height,
-                                          new La16PixelReader())
-                                     .ReadImage(data, Endianness.BigEndian);
-            default:
-              throw new ArgumentOutOfRangeException(
-                  nameof(bitsPerTexel),
-                  bitsPerTexel,
-                  null);
-          }
-        }
-        case N64ColorFormat.CI: {
-          var indexedImage = bitsPerTexel switch {
-              BitsPerTexel._4BPT => PixelImageReader
-                                    .New(width, height, new L4PixelReader())
-                                    .ReadImage(data, Endianness.BigEndian),
-              BitsPerTexel._8BPT => PixelImageReader
-                                    .New(width, height, new L8PixelReader())
-                                    .ReadImage(data, Endianness.BigEndian),
-              _ => throw new ArgumentOutOfRangeException(
-                  nameof(bitsPerTexel),
-                  bitsPerTexel,
-                  null)
-          };
+    var imageWidth = width;
+    var imageHeight = height;
 
-          uint maxIndex = 0;
-          {
-            using var imgLock = indexedImage.Lock();
-            var ptr = imgLock.Pixels;
-            for (var i = 0; i < width * height; ++i) {
-              maxIndex = Math.Max(maxIndex, ptr[i].PackedValue);
-            }
-          }
-
-          using var paletteEr =
-              this.n64Hardware_.Memory.OpenAtSegmentedAddress(
-                  this.n64Hardware_.Rdp.PaletteSegmentedAddress);
-          var palette = paletteEr
-                        .ReadUInt16s(maxIndex + 1)
-                        .Select(value => {
-                                  ColorUtil.SplitArgb1555(
-                                      value,
-                                      out var r,
-                                      out var g,
-                                      out var b,
-                                      out var a);
-                                  return FinColor.FromRgbaBytes(r, g, b, a);
-                                })
-                        .ToArray();
-
-          return new IndexedImage8(bitsPerTexel switch {
-                                       BitsPerTexel._4BPT => PixelFormat.P4,
-                                       BitsPerTexel._8BPT => PixelFormat.P8,
-                                   },
-                                   indexedImage,
-                                   palette);
+    switch (colorFormat) {
+      case N64ColorFormat.RGBA: {
+        switch (bitsPerTexel) {
+          case BitsPerTexel._16BPT:
+            return PixelImageReader.New(imageWidth,
+                                        imageHeight,
+                                        new Argb1555PixelReader())
+                                   .ReadImage(data, Endianness.BigEndian);
+          default:
+            throw new ArgumentOutOfRangeException(
+                nameof(bitsPerTexel),
+                bitsPerTexel,
+                null);
         }
-        default:
-          throw new ArgumentOutOfRangeException(nameof(colorFormat),
-                                                colorFormat,
-                                                null);
       }
+      case N64ColorFormat.L: {
+        switch (bitsPerTexel) {
+          case BitsPerTexel._4BPT:
+            return PixelImageReader.New(imageWidth,
+                                        imageHeight,
+                                        new L4PixelReader())
+                                   .ReadImage(data, Endianness.BigEndian);
+          case BitsPerTexel._8BPT:
+            return PixelImageReader.New(imageWidth,
+                                        imageHeight,
+                                        new L8PixelReader())
+                                   .ReadImage(data, Endianness.BigEndian);
+          default:
+            throw new ArgumentOutOfRangeException(
+                nameof(bitsPerTexel),
+                bitsPerTexel,
+                null);
+        }
+      }
+      case N64ColorFormat.LA: {
+        switch (bitsPerTexel) {
+          case BitsPerTexel._8BPT:
+            return PixelImageReader.New(imageWidth,
+                                        imageHeight,
+                                        new La8PixelReader())
+                                   .ReadImage(data, Endianness.BigEndian);
+          case BitsPerTexel._16BPT:
+            return PixelImageReader.New(imageWidth,
+                                        imageHeight,
+                                        new La16PixelReader())
+                                   .ReadImage(data, Endianness.BigEndian);
+          default:
+            throw new ArgumentOutOfRangeException(
+                nameof(bitsPerTexel),
+                bitsPerTexel,
+                null);
+        }
+      }
+      case N64ColorFormat.CI: {
+        var indexedImage = bitsPerTexel switch {
+            BitsPerTexel._4BPT => PixelImageReader
+                                  .New(imageWidth,
+                                       imageHeight,
+                                       new L4PixelReader())
+                                  .ReadImage(data, Endianness.BigEndian),
+            BitsPerTexel._8BPT => PixelImageReader
+                                  .New(imageWidth,
+                                       imageHeight,
+                                       new L8PixelReader())
+                                  .ReadImage(data, Endianness.BigEndian),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(bitsPerTexel),
+                bitsPerTexel,
+                null)
+        };
+
+        uint maxIndex = 0;
+        {
+          using var imgLock = indexedImage.Lock();
+          var ptr = imgLock.Pixels;
+          for (var i = 0; i < width * height; ++i) {
+            maxIndex = Math.Max(maxIndex, ptr[i].PackedValue);
+          }
+        }
+
+        using var paletteEr =
+            this.n64Hardware_.Memory.OpenAtSegmentedAddress(
+                this.n64Hardware_.Rdp.PaletteSegmentedAddress);
+        var palette = paletteEr
+                      .ReadUInt16s(maxIndex + 1)
+                      .Select(value => {
+                        ColorUtil.SplitArgb1555(
+                            value,
+                            out var r,
+                            out var g,
+                            out var b,
+                            out var a);
+                        return FinColor.FromRgbaBytes(r, g, b, a);
+                      })
+                      .ToArray();
+
+        return new IndexedImage8(bitsPerTexel switch {
+                                     BitsPerTexel._4BPT => PixelFormat.P4,
+                                     BitsPerTexel._8BPT => PixelFormat.P8,
+                                 },
+                                 indexedImage,
+                                 palette);
+      }
+      default:
+        throw new ArgumentOutOfRangeException(nameof(colorFormat),
+                                              colorFormat,
+                                              null);
     }
+  }
 }

@@ -79,7 +79,8 @@ public class DlModelBuilder {
           if (br != null) {
             var imageData =
                 br.ReadBytes(imageParams.Width *
-                             imageParams.Height * 4);
+                             imageParams.Height *
+                             4);
             br.Dispose();
             return new N64ImageParser(this.n64Hardware_).Parse(
                 imageParams.ColorFormat,
@@ -232,10 +233,11 @@ public class DlModelBuilder {
                 var cD = getColorValue(combinerCycleParams.ColorMuxD);
 
                 combinedColor = colorFixedFunctionOps.Add(
-                    colorFixedFunctionOps.Multiply(
-                        colorFixedFunctionOps.Subtract(cA, cB),
-                        cC),
-                    cD) ?? colorFixedFunctionOps.Zero;
+                                    colorFixedFunctionOps.Multiply(
+                                        colorFixedFunctionOps.Subtract(cA, cB),
+                                        cC),
+                                    cD) ??
+                                colorFixedFunctionOps.Zero;
 
                 var aA = getAlphaValue(combinerCycleParams.AlphaMuxA);
                 var aB = getAlphaValue(combinerCycleParams.AlphaMuxB);
@@ -243,10 +245,11 @@ public class DlModelBuilder {
                 var aD = getAlphaValue(combinerCycleParams.AlphaMuxD);
 
                 combinedAlpha = scalarFixedFunctionOps.Add(
-                    scalarFixedFunctionOps.Multiply(
-                        scalarFixedFunctionOps.Subtract(aA, aB),
-                        aC),
-                    aD) ?? scalarFixedFunctionOps.Zero;
+                                    scalarFixedFunctionOps.Multiply(
+                                        scalarFixedFunctionOps.Subtract(aA, aB),
+                                        aC),
+                                    aD) ??
+                                scalarFixedFunctionOps.Zero;
               }
 
               equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
@@ -256,7 +259,8 @@ public class DlModelBuilder {
 
               if (finMaterial.Textures.Any(
                       texture
-                          => TransparencyTypeUtil.GetTransparencyType(texture.Image) ==
+                          => TransparencyTypeUtil.GetTransparencyType(
+                                 texture.Image) ==
                              TransparencyType.TRANSPARENT)) {
                 finMaterial.SetAlphaCompare(AlphaOp.Or,
                                             AlphaCompareType.Always,
@@ -379,10 +383,9 @@ public class DlModelBuilder {
           this.n64Hardware_.Rdp.Tmem.GsDpSetTileSize(
               setTileSizeOpcodeCommand.Uls,
               setTileSizeOpcodeCommand.Ult,
-              setTileSizeOpcodeCommand
-                  .TileDescriptorIndex,
-              setTileSizeOpcodeCommand.Width,
-              setTileSizeOpcodeCommand.Height);
+              setTileSizeOpcodeCommand.TileDescriptorIndex,
+              setTileSizeOpcodeCommand.Lrs,
+              setTileSizeOpcodeCommand.Lrt);
           break;
         }
         case SetTimgOpcodeCommand setTimgOpcodeCommand: {
@@ -453,11 +456,12 @@ public class DlModelBuilder {
           break;
         }
         case LoadBlockOpcodeCommand loadBlockOpcodeCommand: {
-          this.n64Hardware_.Rdp.Tmem.GsDpLoadBlock(0,
-                                                   0,
-                                                   loadBlockOpcodeCommand.TileDescriptorIndex,
-                                                   loadBlockOpcodeCommand.Texels,
-                                                   0);
+          this.n64Hardware_.Rdp.Tmem.GsDpLoadBlock(
+              loadBlockOpcodeCommand.Uls,
+              loadBlockOpcodeCommand.Ult,
+              loadBlockOpcodeCommand.TileDescriptorIndex,
+              loadBlockOpcodeCommand.Texels,
+              0);
           break;
         }
         case LoadTlutOpcodeCommand loadTlutOpcodeCommand: {

@@ -199,8 +199,8 @@ public class F3dOpcodeParser : IOpcodeParser {
             TileDescriptorIndex = tileDescriptor,
             Ult = 0,
             Uls = 0,
-            Width = width,
-            Height = height,
+            Lrs = width,
+            Lrt = height,
         };
       }
       case F3dOpcode.G_SETCOMBINE: {
