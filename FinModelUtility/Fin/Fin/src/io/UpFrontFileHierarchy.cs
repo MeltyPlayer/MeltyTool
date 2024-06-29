@@ -166,16 +166,18 @@ public static partial class FileHierarchy {
           }
         } else {
           var actualSubdirs = this.Impl.GetExistingSubdirs().ToArray();
-          ListUtil.RemoveWhere(this.subdirs_,
-                               subdir => !actualSubdirs
-                                   .Contains(subdir.Impl));
-          foreach (var actualSubdir in actualSubdirs) {
-            if (this.subdirs_.All(
-                    subdir => !subdir.Impl.Equals(actualSubdir))) {
-              this.subdirs_.Add(
-                  new FileHierarchyDirectory(this.Hierarchy,
-                                             this,
-                                             actualSubdir));
+          if (!actualSubdirs.SequenceEqual(this.subdirs_.Select(d => d.Impl))) {
+            ListUtil.RemoveWhere(this.subdirs_,
+                                 subdir => !actualSubdirs
+                                     .Contains(subdir.Impl));
+            foreach (var actualSubdir in actualSubdirs) {
+              if (this.subdirs_.All(
+                      subdir => !subdir.Impl.Equals(actualSubdir))) {
+                this.subdirs_.Add(
+                    new FileHierarchyDirectory(this.Hierarchy,
+                                               this,
+                                               actualSubdir));
+              }
             }
           }
         }
@@ -189,15 +191,17 @@ public static partial class FileHierarchy {
           }
         } else {
           var actualFiles = this.Impl.GetExistingFiles().ToArray();
-          ListUtil.RemoveWhere(this.files_,
-                               file => !actualFiles.Contains(file.Impl));
-          foreach (var actualFile in actualFiles) {
-            if (this.files_.All(file => !file.Impl.Equals(actualFile))) {
-              this.files_.Add(
-                  new FileHierarchyFile(this.Hierarchy,
-                                        this.Hierarchy.Root,
-                                        this,
-                                        actualFile));
+          if (!actualFiles.SequenceEqual(this.files_.Select(d => d.Impl))) {
+            ListUtil.RemoveWhere(this.files_,
+                                 file => !actualFiles.Contains(file.Impl));
+            foreach (var actualFile in actualFiles) {
+              if (this.files_.All(file => !file.Impl.Equals(actualFile))) {
+                this.files_.Add(
+                    new FileHierarchyFile(this.Hierarchy,
+                                          this.Hierarchy.Root,
+                                          this,
+                                          actualFile));
+              }
             }
           }
         }
