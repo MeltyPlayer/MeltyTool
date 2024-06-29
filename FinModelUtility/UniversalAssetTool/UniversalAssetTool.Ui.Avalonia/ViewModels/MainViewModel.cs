@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 using fin.io.bundles;
 using fin.model;
-using fin.util.asserts;
 using fin.util.progress;
 
 using ReactiveUI;
@@ -66,11 +64,21 @@ public class MainViewModel : ViewModelBase {
   public MainViewModel() {
     var valueFractionProgress = new ValueFractionProgress();
 
+    var splitProgress = valueFractionProgress.AsValueless().Split(2);
+    var loadingProgress = splitProgress[0];
+    var fileTreeProgress = splitProgress[1];
+
     Task.Run(() => {
       var rootDirectory
-          = new RootFileBundleGatherer().GatherAllFiles(
-              valueFractionProgress.AsValueless());
-      var fileTreeViewModel = this.GetFileTreeViewModel_(rootDirectory);
+          = new RootFileBundleGatherer().GatherAllFiles(loadingProgress);
+
+      var totalNodeCount = this.GetTotalNodeCountWithinDirectory_(rootDirectory);
+      var counterProgress = new CounterPercentageProgress(totalNodeCount);
+      counterProgress.OnProgressChanged += (_, progress)
+          => fileTreeProgress.ReportProgress(progress);
+
+      var fileTreeViewModel
+          = this.GetFileTreeViewModel_(rootDirectory, counterProgress);
       valueFractionProgress.ReportCompletion(fileTreeViewModel);
     });
 
@@ -133,14 +141,22 @@ public class MainViewModel : ViewModelBase {
         value);
   }
 
+  private int GetTotalNodeCountWithinDirectory_(
+      IFileBundleDirectory directoryRoot)
+    => 1 +
+       directoryRoot.Subdirs.Sum(this.GetTotalNodeCountWithinDirectory_) +
+       directoryRoot.FileBundles.Count;
 
   private FileBundleTreeViewModel<IAnnotatedFileBundle> GetFileTreeViewModel_(
-      IFileBundleDirectory directoryRoot) {
+      IFileBundleDirectory directoryRoot,
+      CounterPercentageProgress counterPercentageProgress) {
     var viewModel = new FileBundleTreeViewModel<IAnnotatedFileBundle> {
         Nodes = new ObservableCollection<INode<IAnnotatedFileBundle>>(
             directoryRoot
                 .Subdirs
-                .Select(subdir => this.CreateDirectoryNode_(subdir)))
+                .Select(subdir => this.CreateDirectoryNode_(
+                            subdir,
+                            counterPercentageProgress)))
     };
 
     viewModel.NodeSelected
@@ -155,7 +171,10 @@ public class MainViewModel : ViewModelBase {
 
   private INode<IAnnotatedFileBundle> CreateDirectoryNode_(
       IFileBundleDirectory directory,
+      CounterPercentageProgress counterPercentageProgress,
       IList<string>? parts = null) {
+    counterPercentageProgress.Increment();
+
     var subdirs = directory.Subdirs;
     var fileBundles = directory.FileBundles;
 
@@ -167,8 +186,12 @@ public class MainViewModel : ViewModelBase {
       parts.Add(directory.Name);
 
       return subdirCount == 1
-          ? this.CreateDirectoryNode_(subdirs[0], parts)
-          : this.CreateFileNode_(fileBundles[0], parts);
+          ? this.CreateDirectoryNode_(subdirs[0],
+                                      counterPercentageProgress,
+                                      parts)
+          : this.CreateFileNode_(fileBundles[0],
+                                 counterPercentageProgress,
+                                 parts);
     }
 
     string text = directory.Name;
@@ -181,15 +204,18 @@ public class MainViewModel : ViewModelBase {
         text,
         new ObservableCollection<INode<IAnnotatedFileBundle>>(
             directory
-                .Subdirs.Select(d => this.CreateDirectoryNode_(d))
+                .Subdirs.Select(d => this.CreateDirectoryNode_(d, counterPercentageProgress))
                 .Concat(
                     directory.FileBundles.Select(
-                        f => this.CreateFileNode_(f)))));
+                        f => this.CreateFileNode_(f, counterPercentageProgress)))));
   }
 
   private INode<IAnnotatedFileBundle> CreateFileNode_(
       IAnnotatedFileBundle fileBundle,
+      CounterPercentageProgress counterPercentageProgress,
       IList<string>? parts = null) {
+    counterPercentageProgress.Increment();
+
     string? text = null;
     if (parts != null) {
       parts.Add(fileBundle.FileBundle.DisplayName);
