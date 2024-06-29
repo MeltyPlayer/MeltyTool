@@ -215,27 +215,43 @@ public static partial class FileHierarchy {
         return outFile;
       }
 
-      public bool TryToGetExistingFile(
-          string localPath,
-          out IFileHierarchyFile outFile) {
-        outFile = default;
-        var subdirs = localPath.Split('/', '\\');
+      public bool TryToGetExistingFile(string localPath,
+                                       out IFileHierarchyFile outFile)
+        => this.TryToGetExistingFileImpl_(localPath.AsSpan(), out outFile);
 
-        IFileHierarchyDirectory parentDir;
-        if (subdirs.Length == 1) {
-          parentDir = this;
-        } else {
-          var parentDirPath = string.Join('/', subdirs.SkipLast(1));
-          if (!this.TryToGetExistingSubdir(parentDirPath, out parentDir)) {
+      private bool TryToGetExistingFileImpl_(
+          ReadOnlySpan<char> localPath,
+          out IFileHierarchyFile outFile) {
+        var numSlashes = localPath.Count('/') + localPath.Count('\\');
+
+        IFileHierarchyDirectory parentDir = this;
+        ReadOnlySpan<char> filePath = localPath;
+        if (numSlashes > 0) {
+          Span<Range> subdirRanges = stackalloc Range[1 + numSlashes];
+          localPath.SplitAny(subdirRanges, this.pathSeparators_);
+
+          var lastSubdirRange = subdirRanges[^1];
+          var parentDirPath
+              = localPath.Slice(0, lastSubdirRange.Start.Value - 1);
+          if (!this.TryToGetExistingSubdirImpl_(parentDirPath, out parentDir)) {
+            outFile = default;
             return false;
+          }
+
+          filePath = localPath[lastSubdirRange];
+        }
+
+        foreach (var child in parentDir.GetExistingFiles()) {
+          if (MemoryExtensions.Equals(child.Name,
+                                      filePath,
+                                      StringComparison.OrdinalIgnoreCase)) {
+            outFile = child;
+            return true;
           }
         }
 
-        var match = parentDir.GetExistingFiles()
-                             .FirstOrDefault(
-                                 file => file.Name == subdirs.Last());
-        outFile = match;
-        return match != null;
+        outFile = default;
+        return false;
       }
 
       public IFileHierarchyDirectory AssertGetExistingSubdir(
