@@ -39,7 +39,7 @@ public static class DatKeyframesUtil {
 
     DatKeyframe? currentKeyframe = null;
 
-    var firstInterpolation = interpolations[0];
+    var firstInterpolation = interpolations.First.Value;
     DatKeyframe nextKeyframe = new() {
         Frame = firstInterpolation.T0,
         IncomingValue = firstInterpolation.P0,
@@ -50,6 +50,7 @@ public static class DatKeyframesUtil {
     if (nextKeyframe.Frame >= 0) {
       keyframes.AddLast(nextKeyframe);
     }
+
     foreach (var interpolation in interpolations) {
       currentKeyframe = nextKeyframe;
       currentKeyframe.OutgoingValue = interpolation.P0;
@@ -77,10 +78,10 @@ public static class DatKeyframesUtil {
     public required int T1 { get; init; }
   }
 
-  private static IReadOnlyList<InterpolationRegisters>
+  private static LinkedList<InterpolationRegisters>
       GetInterpolationsFromFObjKeys_(
           IReadOnlyList<FObjKey> keys) {
-    var registers = new List<InterpolationRegisters>();
+    var registers = new LinkedList<InterpolationRegisters>();
 
     float p0 = 0;
     float p1 = 0;
@@ -142,16 +143,18 @@ public static class DatKeyframesUtil {
           break;
       }
 
-      if (timeChanged) {
-        registers.Add(new InterpolationRegisters {
-            P0 = p0,
-            P1 = p1,
-            D0 = d0,
-            D1 = d1,
-            T0 = t0,
-            T1 = t1,
-        });
+      if (!timeChanged) {
+        registers.RemoveLast();
       }
+
+      registers.AddLast(new InterpolationRegisters {
+          P0 = p0,
+          P1 = p1,
+          D0 = d0,
+          D1 = d1,
+          T0 = t0,
+          T1 = t1,
+      });
     }
 
     return registers;
