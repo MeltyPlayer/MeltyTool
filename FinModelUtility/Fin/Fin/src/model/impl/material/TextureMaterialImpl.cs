@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using fin.util.image;
+
 namespace fin.model.impl;
 
 public partial class ModelImpl<TVertex> {
@@ -17,6 +19,10 @@ public partial class ModelImpl<TVertex> {
       this.Texture = texture;
       this.Textures
           = new ReadOnlyCollection<IReadOnlyTexture>(new[] { texture });
+
+      if (texture.TransparencyType == TransparencyType.TRANSPARENT) {
+        this.TransparencyType = TransparencyType.TRANSPARENT;
+      }
     }
 
     public IReadOnlyTexture Texture { get; }
