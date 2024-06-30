@@ -15,31 +15,33 @@
 
   <controls:If Condition="{Binding RegisterCount, Converter={x:Static converters:IntConverters.IsNot0}}">
     <controls:If.ContentWhenTrue>
-      <StackPanel>
-        <gb:GroupBox
-            Classes="h2 spaceFirst"
-            Header="Color registers">
-          <ItemsControl ItemsSource="{Binding ColorRegisterPickers}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <registers:ColorRegisterPicker />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </gb:GroupBox>
+      <ScrollViewer>
+        <StackPanel Margin="0 0 0 4">
+          <gb:GroupBox
+              Classes="h2 spaceFirst"
+              Header="Color registers">
+            <ItemsControl ItemsSource="{Binding ColorRegisterPickers}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <registers:ColorRegisterPicker />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </gb:GroupBox>
 
-        <gb:GroupBox
+          <gb:GroupBox
             Classes="h2"
             Header="Scalar registers">
-          <ItemsControl ItemsSource="{Binding ScalarRegisterPickers}">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <registers:ScalarRegisterPicker />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-        </gb:GroupBox>
-      </StackPanel>
+            <ItemsControl ItemsSource="{Binding ScalarRegisterPickers}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <registers:ScalarRegisterPicker />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </gb:GroupBox>
+        </StackPanel>
+      </ScrollViewer>
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
       <controls:EmptyState
