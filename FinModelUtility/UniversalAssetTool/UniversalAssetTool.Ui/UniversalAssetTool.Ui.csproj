@@ -20,7 +20,7 @@
     <!--<PublishTrimmed>true</PublishTrimmed>-->
     <Product>universal_asset_tool</Product>
     <AssemblyName>universal_asset_tool</AssemblyName>
-    <StartupObject>uni.cli.Cli</StartupObject>
+    <StartupObject>uni.ui.Program</StartupObject>
     <UserSecretsId>7016d56f-b424-467d-8b3a-40e5d0483f29</UserSecretsId>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>

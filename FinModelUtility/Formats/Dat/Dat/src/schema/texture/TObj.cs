@@ -164,6 +164,8 @@ public class TObj : IBinaryDeserializable {
   public IImage Image { get; private set; }
 
   public void Read(IBinaryReader br) {
+    var offset = br.Position;
+
     if (br.Position == 24148) {
       ;
     }

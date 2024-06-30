@@ -27,7 +27,8 @@ public class CmprImageReader(
 
       var tileXCount
           = (int) Math.Ceiling(1f * width / this.tileReader_.TileWidth);
-      var tileYCount = height / this.tileReader_.TileHeight;
+      var tileYCount
+          = (int) Math.Ceiling(1f * height / this.tileReader_.TileHeight);
 
       for (var tileY = 0; tileY < tileYCount; ++tileY) {
         for (var tileX = 0; tileX < tileXCount; ++tileX) {
