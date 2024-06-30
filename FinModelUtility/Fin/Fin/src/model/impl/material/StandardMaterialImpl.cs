@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using fin.util.image;
+
 namespace fin.model.impl;
 
 public partial class ModelImpl<TVertex> {
@@ -12,6 +14,8 @@ public partial class ModelImpl<TVertex> {
   }
 
   private class StandardMaterialImpl : BMaterialImpl, IStandardMaterial {
+    private IReadOnlyTexture? diffuseTexture_;
+
     public override IEnumerable<IReadOnlyTexture> Textures {
       get {
         if (this.DiffuseTexture != null) {
@@ -40,7 +44,17 @@ public partial class ModelImpl<TVertex> {
       }
     }
 
-    public IReadOnlyTexture? DiffuseTexture { get; set; }
+    public IReadOnlyTexture? DiffuseTexture {
+      get => this.diffuseTexture_;
+      set {
+        this.diffuseTexture_ = value;
+        this.TransparencyType
+            = value?.TransparencyType == TransparencyType.TRANSPARENT
+                ? TransparencyType.TRANSPARENT
+                : TransparencyType.MASK;
+      }
+    }
+
     public IReadOnlyTexture? MaskTexture { get; set; }
     public IReadOnlyTexture? AmbientOcclusionTexture { get; set; }
     public IReadOnlyTexture? NormalTexture { get; set; }
