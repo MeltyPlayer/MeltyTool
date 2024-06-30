@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using fin.util.asserts;
-using fin.util.linq;
 using fin.util.progress;
 
 namespace fin.io.bundles;
@@ -33,46 +32,22 @@ public interface IFileBundle : IUiFile {
 }
 
 public interface IAnnotatedFileBundleGatherer {
-  IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
-      IMutablePercentageProgress mutablePercentageProgress);
+  void GatherFileBundles(IFileBundleOrganizer organizer,
+                         IMutablePercentageProgress mutablePercentageProgress);
 }
 
-public interface IAnnotatedFileBundleGatherer<out TFileBundle> : IAnnotatedFileBundleGatherer
-    where TFileBundle : IFileBundle {
-  new IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
-      IMutablePercentageProgress mutablePercentageProgress);
-
-  IEnumerable<IAnnotatedFileBundle> IAnnotatedFileBundleGatherer.
-      GatherFileBundles(IMutablePercentageProgress mutablePercentageProgress)
-    => this.GatherFileBundles(mutablePercentageProgress)
-           .CastTo<IAnnotatedFileBundle<TFileBundle>, IAnnotatedFileBundle>();
+public interface IAnnotatedFileBundleGathererAccumulator<out TSelf>
+    : IAnnotatedFileBundleGatherer
+    where TSelf : IAnnotatedFileBundleGathererAccumulator<TSelf> {
+  TSelf Add(IAnnotatedFileBundleGatherer gatherer);
+  TSelf Add(Action<IFileBundleOrganizer, IMutablePercentageProgress> handler);
+  TSelf Add(Action<IFileBundleOrganizer> handler);
 }
 
-public interface IAnnotatedFileBundleGathererAccumulator : IAnnotatedFileBundleGatherer {
-  IAnnotatedFileBundleGathererAccumulator Add(IAnnotatedFileBundleGatherer gatherer);
-
-  IAnnotatedFileBundleGathererAccumulator Add(
-      Func<IEnumerable<IAnnotatedFileBundle>> handler);
-}
-
-public interface IAnnotatedFileBundleGathererAccumulator<TFileBundle>
-    : IAnnotatedFileBundleGatherer<TFileBundle> where TFileBundle : IFileBundle {
-  IAnnotatedFileBundleGathererAccumulator<TFileBundle> Add(
-      IAnnotatedFileBundleGatherer<TFileBundle> gatherer);
-
-  IAnnotatedFileBundleGathererAccumulator<TFileBundle> Add(
-      Func<IEnumerable<IAnnotatedFileBundle<TFileBundle>>> handler);
-}
-
-public interface IAnnotatedFileBundleGathererAccumulatorWithInput<TFileBundle, out T>
-    : IAnnotatedFileBundleGatherer<TFileBundle>
-    where TFileBundle : IFileBundle {
-  IAnnotatedFileBundleGathererAccumulatorWithInput<TFileBundle, T> Add(
-      IAnnotatedFileBundleGatherer<TFileBundle> gatherer);
-
-  IAnnotatedFileBundleGathererAccumulatorWithInput<TFileBundle, T> Add(
-      Func<IEnumerable<IAnnotatedFileBundle<TFileBundle>>> handler);
-
-  IAnnotatedFileBundleGathererAccumulatorWithInput<TFileBundle, T> Add(
-      Func<T, IEnumerable<IAnnotatedFileBundle<TFileBundle>>> handler);
+public interface IAnnotatedFileBundleGathererAccumulatorWithInput<
+    out T, out TSelf>
+    : IAnnotatedFileBundleGathererAccumulator<TSelf>
+    where TSelf : IAnnotatedFileBundleGathererAccumulatorWithInput<T, TSelf> {
+  TSelf Add(Action<IFileBundleOrganizer, T> handler);
+  TSelf Add(Action<IFileBundleOrganizer, IMutablePercentageProgress, T> handler);
 }

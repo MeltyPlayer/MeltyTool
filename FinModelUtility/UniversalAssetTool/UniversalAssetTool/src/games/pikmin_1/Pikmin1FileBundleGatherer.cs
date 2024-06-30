@@ -8,89 +8,85 @@ using uni.platforms.gcn;
 using uni.util.bundles;
 using uni.util.io;
 
-namespace uni.games.pikmin_1 {
-  using IAnnotatedModBundle = IAnnotatedFileBundle<ModModelFileBundle>;
+namespace uni.games.pikmin_1;
 
-  public class Pikmin1FileBundleGatherer
-      : IAnnotatedFileBundleGatherer<ModModelFileBundle> {
-    private readonly IModelSeparator separator_
-        = new ModelSeparator(directory => directory.LocalPath)
-            .Register(new AllAnimationsModelSeparatorMethod(),
-                      @"\dataDir\pikis");
+public class Pikmin1FileBundleGatherer : IAnnotatedFileBundleGatherer {
+  private readonly IModelSeparator separator_
+      = new ModelSeparator(directory => directory.LocalPath)
+          .Register(new AllAnimationsModelSeparatorMethod(),
+                    @"\dataDir\pikis");
 
-    public IEnumerable<IAnnotatedModBundle> GatherFileBundles(
-        IMutablePercentageProgress mutablePercentageProgress) {
-      if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-              "pikmin_1",
-              GcnFileHierarchyExtractor.Options.Empty(),
-              out var fileHierarchy)) {
-        return Enumerable.Empty<IAnnotatedModBundle>();
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
+    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
+            "pikmin_1",
+            GcnFileHierarchyExtractor.Options.Empty(),
+            out var fileHierarchy)) {
+      return;
+    }
+
+    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+            fileHierarchy)
+        .Add(this.GetAutomaticModels_)
+        .Add(this.GetModelsViaSeparator_)
+        .GatherFileBundles(organizer, mutablePercentageProgress);
+  }
+
+  private void GetAutomaticModels_(
+      IFileBundleOrganizer organizer,
+      IFileHierarchy fileHierarchy) {
+    foreach (var directory in fileHierarchy) {
+      if (this.separator_.Contains(directory)) {
+        continue;
       }
 
-      return new AnnotatedFileBundleGathererAccumulatorWithInput<
-                 ModModelFileBundle,
-                 IFileHierarchy>(
-                 fileHierarchy)
-             .Add(this.GetAutomaticModels_)
-             .Add(this.GetModelsViaSeparator_)
-             .GatherFileBundles(mutablePercentageProgress);
+      var anmFiles = directory.FilesWithExtension(".anm").ToArray();
+      foreach (var modFile in directory.FilesWithExtension(".mod")) {
+        var anmFile = anmFiles.FirstOrDefault(
+            anmFile => anmFile.NameWithoutExtension ==
+                       modFile.NameWithoutExtension);
+        organizer.Add(new ModModelFileBundle {
+            GameName = "pikmin_1",
+            ModFile = modFile,
+            AnmFile = anmFile,
+        }.Annotate(modFile));
+      }
     }
+  }
 
-    private IEnumerable<IAnnotatedModBundle> GetAutomaticModels_(
-        IFileHierarchy fileHierarchy) {
-      return fileHierarchy.SelectMany(directory => {
-        if (this.separator_.Contains(directory)) {
-          return Enumerable.Empty<IAnnotatedModBundle>();
-        }
+  private void GetModelsViaSeparator_(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress progress,
+      IFileHierarchy fileHierarchy)
+    => new FileHierarchyAssetBundleSeparator(
+        fileHierarchy,
+        (subdir, organizer) => {
+          if (!this.separator_.Contains(subdir)) {
+            return;
+          }
 
-        var anmFiles = directory.FilesWithExtension(".anm").ToArray();
-        return directory
-               .FilesWithExtension(".mod")
-               .Select(modFile => {
-                 var anmFile = anmFiles
-                     .FirstOrDefault(
-                         anmFile => anmFile.NameWithoutExtension ==
-                                    modFile.NameWithoutExtension);
-                 return new ModModelFileBundle {
-                     GameName = "pikmin_1",
-                     ModFile = modFile,
-                     AnmFile = anmFile,
-                 }.Annotate(modFile);
-               });
-      });
-    }
+          var modFiles =
+              subdir.FilesWithExtensions(".mod").ToArray();
+          if (modFiles.Length == 0) {
+            return;
+          }
 
-    private IEnumerable<IAnnotatedModBundle> GetModelsViaSeparator_(
-        IFileHierarchy fileHierarchy)
-      => new FileHierarchyAssetBundleSeparator<ModModelFileBundle>(
-          fileHierarchy,
-          subdir => {
-            if (!this.separator_.Contains(subdir)) {
-              return Enumerable.Empty<IAnnotatedModBundle>();
-            }
+          var anmFiles =
+              subdir.FilesWithExtensions(".anm").ToArray();
 
-            var modFiles =
-                subdir.FilesWithExtensions(".mod").ToArray();
-            if (modFiles.Length == 0) {
-              return Enumerable.Empty<IAnnotatedModBundle>();
-            }
-
-            var anmFiles =
-                subdir.FilesWithExtensions(".anm").ToArray();
-
-            try {
-              var bundles =
-                  this.separator_.Separate(subdir, modFiles, anmFiles);
-
-              return bundles.Select(bundle => new ModModelFileBundle {
+          try {
+            foreach (var bundle in this.separator_.Separate(
+                         subdir,
+                         modFiles,
+                         anmFiles)) {
+              organizer.Add(new ModModelFileBundle {
                   GameName = "pikmin_1",
                   ModFile = bundle.ModelFile,
                   AnmFile = bundle.AnimationFiles.SingleOrDefault(),
               }.Annotate(bundle.ModelFile));
-            } catch {
-              return Enumerable.Empty<IAnnotatedModBundle>();
             }
-          }
-      ).GatherFileBundles(new PercentageProgress());
-  }
+          } catch { }
+        }
+    ).GatherFileBundles(organizer, progress);
 }

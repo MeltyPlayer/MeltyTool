@@ -7,39 +7,41 @@ using uni.util.io;
 
 using xmod.api;
 
-namespace uni.games.midnight_club_2 {
-  public class MidnightClub2FileBundleGatherer
-      : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
-        IMutablePercentageProgress mutablePercentageProgress) {
-      if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
-              "midnight_club_2",
-              out var midnightClub2Directory)) {
-        return Enumerable.Empty<IAnnotatedFileBundle>();
-      }
+namespace uni.games.midnight_club_2;
 
-      var fileHierarchy =
-          FileHierarchy.From("midnight_club_2", midnightClub2Directory);
-
-      var textureDirectory =
-          fileHierarchy.Root.AssertGetExistingSubdir("texture_x");
-
-      return new FileHierarchyAssetBundleSeparator(
-          fileHierarchy,
-          subdir
-              => subdir.FilesWithExtension(".xmod")
-                       .Select(file => new XmodModelFileBundle {
-                           GameName = "midnight_club_2",
-                           XmodFile = file,
-                           TextureDirectory = textureDirectory,
-                       }.Annotate(file))
-                       .Concat<IAnnotatedFileBundle>(
-                           subdir.FilesWithExtension(".ped")
-                                 .Select(
-                                     file => new PedModelFileBundle {
-                                         PedFile = file,
-                                     }.Annotate(file)))).GatherFileBundles(
-          mutablePercentageProgress);
+public class MidnightClub2FileBundleGatherer : IAnnotatedFileBundleGatherer {
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
+    if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
+            "midnight_club_2",
+            out var midnightClub2Directory)) {
+      return;
     }
+
+    var fileHierarchy =
+        FileHierarchy.From("midnight_club_2", midnightClub2Directory);
+
+    var textureDirectory =
+        fileHierarchy.Root.AssertGetExistingSubdir("texture_x");
+
+    new FileHierarchyAssetBundleSeparator(
+            fileHierarchy,
+            (subdir, organizer) => {
+              foreach (var xmodFile in subdir.FilesWithExtension(".xmod")) {
+                organizer.Add(new XmodModelFileBundle {
+                    GameName = "midnight_club_2",
+                    XmodFile = xmodFile,
+                    TextureDirectory = textureDirectory,
+                }.Annotate(xmodFile));
+              }
+
+              foreach (var pedFile in subdir.FilesWithExtension(".ped")) {
+                organizer.Add(new PedModelFileBundle {
+                    PedFile = pedFile,
+                }.Annotate(pedFile));
+              }
+            })
+        .GatherFileBundles(organizer, mutablePercentageProgress);
   }
 }

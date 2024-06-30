@@ -82,34 +82,30 @@ namespace uni.games {
       OVERWRITE_EXISTING,
     }
 
-    public static void ExportAllForCli<T>(
-        IAnnotatedFileBundleGatherer<T> gatherer,
-        IModelImporter<T> reader)
-        where T : IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(
-          gatherer.GatherFileBundles(new PercentageProgress()),
-          reader,
-          Config.Instance.ExporterSettings
-                .ExportedFormats,
-          false);
+    public static List<IAnnotatedFileBundle> GatherFileBundles(
+        this IAnnotatedFileBundleGatherer gatherer) {
+      var organizer = new FileBundleListOrganizer();
+      var progress = new PercentageProgress();
+      gatherer.GatherFileBundles(organizer, progress);
+      return organizer.List;
+    }
 
     public static void ExportAllForCli<T>(
         IAnnotatedFileBundleGatherer gatherer,
         IModelImporter<T> reader)
         where T : IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(
-          gatherer.GatherFileBundles(new PercentageProgress()),
+      => ExportAllForCli_(
+          gatherer.GatherFileBundles(),
           reader,
           Config.Instance.ExporterSettings.ExportedFormats,
           false);
 
-    public static void ExportAllOfTypeForCli<T, TSubType>(
-        IAnnotatedFileBundleGatherer<T> gatherer,
+    public static void ExportAllOfTypeForCli<TSubType>(
+        IAnnotatedFileBundleGatherer gatherer,
         IModelImporter<TSubType> reader)
-        where T : IFileBundle
-        where TSubType : T, IModelFileBundle
-      => ExporterUtil.ExportAllForCli_(
-          gatherer.GatherFileBundles(new PercentageProgress())
+        where TSubType : IModelFileBundle
+      => ExportAllForCli_(
+          gatherer.GatherFileBundles()
                   .Where(f => f is IAnnotatedFileBundle<TSubType>)
                   .Select(f => (f as IAnnotatedFileBundle<TSubType>)!),
           reader,

@@ -6,10 +6,11 @@ using uni.platforms.desktop;
 
 namespace uni.games.dead_space_3 {
   public class DeadSpace3FileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+    public void GatherFileBundles(
+        IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress) {
       if (!EaUtils.TryGetGameDirectory("Dead Space 3", out var deadSpace3Dir)) {
-        yield break;
+        return;
       }
 
       var originalGameFileHierarchy

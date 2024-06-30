@@ -9,25 +9,22 @@ using uni.platforms.threeDs;
 using fin.util.progress;
 
 namespace uni.games.ever_oasis {
-  using IAnnotatedCmbBundle = IAnnotatedFileBundle<CmbModelFileBundle>;
-
-  public class EverOasisFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<CmbModelFileBundle> {
-    public IEnumerable<IAnnotatedCmbBundle> GatherFileBundles(
+  public class EverOasisFileBundleGatherer : IAnnotatedFileBundleGatherer {
+    public void GatherFileBundles(
+        IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress) {
       if (true ||
           !new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "ever_oasis",
               out var fileHierarchy,
               archiveFileNameProcessor: this.ArchiveFileNameProcessor_)) {
-        return Enumerable.Empty<IAnnotatedCmbBundle>();
+        return;
       }
 
-      return new AnnotatedFileBundleGathererAccumulatorWithInput<
-                 CmbModelFileBundle,
-                 IFileHierarchy>(fileHierarchy)
-             .Add(this.GetAutomaticModels_)
-             .GatherFileBundles(mutablePercentageProgress);
+      new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+              fileHierarchy)
+          .Add(this.GetAutomaticModels_)
+          .GatherFileBundles(organizer, mutablePercentageProgress);
     }
 
     private void ArchiveFileNameProcessor_(string archiveName,
@@ -42,7 +39,8 @@ namespace uni.games.ever_oasis {
       relativeToRoot = false;
     }
 
-    private IEnumerable<IAnnotatedCmbBundle> GetAutomaticModels_(
+    private void GetAutomaticModels_(
+        IFileBundleOrganizer organizer,
         IFileHierarchy fileHierarchy) {
       var queue = new FinQueue<IFileHierarchyDirectory>(fileHierarchy.Root);
       while (queue.TryDequeue(out var dir)) {
@@ -57,12 +55,12 @@ namespace uni.games.ever_oasis {
 
           if (cmbFiles.Length == 1 || (csabFiles?.Length ?? 0) == 0) {
             foreach (var cmbFile in cmbFiles) {
-              yield return new CmbModelFileBundle(
-                  "ever_oasis",
-                  cmbFile,
-                  csabFiles,
-                  ctxbFiles,
-                  null).Annotate(cmbFile);
+              organizer.Add(new CmbModelFileBundle(
+                                "ever_oasis",
+                                cmbFile,
+                                csabFiles,
+                                ctxbFiles,
+                                null).Annotate(cmbFile));
             }
           }
         } else {

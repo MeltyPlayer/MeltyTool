@@ -33,17 +33,11 @@ using uni.games.super_mario_sunshine;
 using uni.games.super_smash_bros_melee;
 using uni.games.timesplitters_2;
 using uni.games.wind_waker;
-using uni.util.io;
 
 namespace uni.games {
   public class RootFileBundleGatherer {
     public IFileBundleDirectory GatherAllFiles(
         IMutablePercentageProgress mutablePercentageProgress) {
-      IAnnotatedFileBundleGathererAccumulator accumulator =
-          Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms
-              ? new ParallelAnnotatedFileBundleGathererAccumulator()
-              : new AnnotatedFileBundleGathererAccumulator();
-
       var gatherers = new IAnnotatedFileBundleGatherer[] {
           new AnimalCrossingFileBundleGatherer(),
           new BattalionWars1FileBundleGatherer(),
@@ -77,12 +71,27 @@ namespace uni.games {
           new Timesplitters2FileBundleGatherer(),
           new WindWakerFileBundleGatherer(),
       };
-      foreach (var gatherer in gatherers) {
-        accumulator.Add(gatherer);
+
+      IAnnotatedFileBundleGatherer rootGatherer;
+      if (Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms) {
+        var accumulator =new ParallelAnnotatedFileBundleGathererAccumulator();
+        foreach (var gatherer in gatherers) {
+          accumulator.Add(gatherer);
+        }
+
+        rootGatherer = accumulator;
+      } else {
+        var accumulator =new AnnotatedFileBundleGathererAccumulator();
+        foreach (var gatherer in gatherers) {
+          accumulator.Add(gatherer);
+        }
+
+        rootGatherer = accumulator;
       }
 
-      return new FileBundleHierarchyOrganizer().Organize(
-          accumulator.GatherFileBundles(mutablePercentageProgress));
+      var organizer = new FileBundleTreeOrganizer();
+      rootGatherer.GatherFileBundles(organizer, mutablePercentageProgress);
+      return organizer.CleanUpAndGetRoot();
     }
   }
 }

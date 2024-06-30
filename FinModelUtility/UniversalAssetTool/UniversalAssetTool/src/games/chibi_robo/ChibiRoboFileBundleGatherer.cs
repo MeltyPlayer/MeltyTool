@@ -7,12 +7,13 @@ using uni.platforms.gcn;
 
 namespace uni.games.chibi_robo {
   public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+    public void GatherFileBundles(
+        IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "chibi_robo",
               out var fileHierarchy)) {
-        yield break;
+        return;
       }
 
       var qpBinFile = fileHierarchy.Root.AssertGetExistingFile("qp.bin");
@@ -23,10 +24,10 @@ namespace uni.games.chibi_robo {
 
       foreach (var datFile in
                fileHierarchy.Root.FilesWithExtensionRecursive(".dat")) {
-        yield return new DatModelFileBundle {
+        organizer.Add(new DatModelFileBundle {
             GameName = "chibi_robo",
             PrimaryDatFile = datFile
-        }.Annotate(datFile);
+        }.Annotate(datFile));
       }
     }
   }

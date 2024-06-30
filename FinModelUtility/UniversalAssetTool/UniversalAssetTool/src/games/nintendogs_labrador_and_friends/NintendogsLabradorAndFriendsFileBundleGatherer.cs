@@ -10,12 +10,13 @@ using Yarhl.FileSystem;
 namespace uni.games.nintendogs_labrador_and_friends {
   public class NintendogsLabradorAndFriendsFileBundleGatherer
       : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+    public void GatherFileBundles(
+        IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "nintendogs_labrador_and_friends.nds",
               out var nintendogsRom)) {
-        yield break;
+        return;
       }
 
       using var game = NodeFactory.FromFile(nintendogsRom.FullPath);
@@ -26,8 +27,6 @@ namespace uni.games.nintendogs_labrador_and_friends {
       foreach (var node in Navigator.IterateNodes(game)) {
         names.Add(node.Name);
       }
-
-      yield break;
     }
   }
 }

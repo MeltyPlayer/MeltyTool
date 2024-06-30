@@ -9,16 +9,15 @@ using uni.platforms.threeDs.tools;
 using uni.util.io;
 
 namespace uni.games.professor_layton_vs_phoenix_wright {
-  using IAnnotatedXcBundle = IAnnotatedFileBundle<XcModelFileBundle>;
-
   public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<XcModelFileBundle> {
-    public IEnumerable<IAnnotatedXcBundle> GatherFileBundles(
+      : IAnnotatedFileBundleGatherer {
+    public void GatherFileBundles(
+        IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress) {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "professor_layton_vs_phoenix_wright",
               out var fileHierarchy)) {
-        return Enumerable.Empty<IAnnotatedXcBundle>();
+        return;
       }
 
       if (new ThreeDsXfsaTool().Extract(
@@ -27,9 +26,9 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
         fileHierarchy.Root.Refresh(true);
       }
 
-      return new FileHierarchyAssetBundleSeparator<XcModelFileBundle>(
+      new FileHierarchyAssetBundleSeparator(
           fileHierarchy,
-          directory => {
+          (directory, organizer) => {
             var xcFiles = directory.FilesWithExtension(".xc");
 
             var xcBundles = Array.Empty<IXcFiles>();
@@ -58,9 +57,8 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
               ];
             }
 
-            var bundles = new List<IAnnotatedXcBundle>();
             foreach (var xcBundle in xcBundles) {
-              bundles.Add(new XcModelFileBundle {
+              organizer.Add(new XcModelFileBundle {
                   GameName = "professor_layton_vs_phoenix_wright",
                   HumanReadableName = xcBundle.Name,
                   ModelXcFile = xcBundle.ModelFile,
@@ -88,21 +86,14 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
                                  .ToArray();
               }
 
-              bundles.Add(new XcModelFileBundle {
+              organizer.Add(new XcModelFileBundle {
                   GameName = "professor_layton_vs_phoenix_wright",
                   ModelXcFile = xcFile,
                   AnimationXcFiles = new[] { xcFile },
               }.Annotate(xcFile));
             }
-
-            return bundles
-                   .OrderBy(annotatedBundle => {
-                     var bundle = annotatedBundle.FileBundle;
-                     return bundle.HumanReadableName ?? bundle.MainFile.Name;
-                   })
-                   .ToArray();
           }
-      ).GatherFileBundles(mutablePercentageProgress);
+      ).GatherFileBundles(organizer, mutablePercentageProgress);
     }
 
     internal IXcFiles GetModelOnly(string name,

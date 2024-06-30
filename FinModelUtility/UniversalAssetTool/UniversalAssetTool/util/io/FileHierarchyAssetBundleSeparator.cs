@@ -2,59 +2,28 @@
 using fin.io.bundles;
 using fin.util.progress;
 
-namespace uni.util.io {
-  public class FileHierarchyAssetBundleSeparator
-      : IAnnotatedFileBundleGatherer {
-    private readonly IFileHierarchy fileHierarchy_;
+namespace uni.util.io;
 
-    private readonly Func<IFileHierarchyDirectory,
-            IEnumerable<IAnnotatedFileBundle>>
-        handler_;
+public class FileHierarchyAssetBundleSeparator : IAnnotatedFileBundleGatherer {
+  private readonly IFileHierarchy fileHierarchy_;
 
-    public FileHierarchyAssetBundleSeparator(
-        IFileHierarchy fileHierarchy,
-        Func<IFileHierarchyDirectory,
-            IEnumerable<IAnnotatedFileBundle>> handler) {
-      this.fileHierarchy_ = fileHierarchy;
-      this.handler_ = handler;
-    }
+  private readonly Action<IFileHierarchyDirectory, IFileBundleOrganizer>
+      handler_;
 
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
-        IMutablePercentageProgress mutablePercentageProgress) {
-      foreach (var value in this.fileHierarchy_.SelectMany(
-                   directory => this.handler_(directory))) {
-        yield return value;
-      }
-
-      mutablePercentageProgress.ReportProgressAndCompletion();
-    }
+  public FileHierarchyAssetBundleSeparator(
+      IFileHierarchy fileHierarchy,
+      Action<IFileHierarchyDirectory, IFileBundleOrganizer> handler) {
+    this.fileHierarchy_ = fileHierarchy;
+    this.handler_ = handler;
   }
 
-  public class FileHierarchyAssetBundleSeparator<TFileBundle>
-      : IAnnotatedFileBundleGatherer<TFileBundle>
-      where TFileBundle : IFileBundle {
-    private readonly IFileHierarchy fileHierarchy_;
-
-    private readonly Func<IFileHierarchyDirectory,
-            IEnumerable<IAnnotatedFileBundle<TFileBundle>>>
-        handler_;
-
-    public FileHierarchyAssetBundleSeparator(
-        IFileHierarchy fileHierarchy,
-        Func<IFileHierarchyDirectory,
-            IEnumerable<IAnnotatedFileBundle<TFileBundle>>> handler) {
-      this.fileHierarchy_ = fileHierarchy;
-      this.handler_ = handler;
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
+    foreach (var directory in this.fileHierarchy_) {
+      this.handler_(directory, organizer);
     }
 
-    public IEnumerable<IAnnotatedFileBundle<TFileBundle>> GatherFileBundles(
-        IMutablePercentageProgress mutablePercentageProgress) {
-      foreach (var value in this.fileHierarchy_.SelectMany(
-                   directory => this.handler_(directory))) {
-        yield return value;
-      }
-
-      mutablePercentageProgress.ReportProgressAndCompletion();
-    }
+    mutablePercentageProgress.ReportProgressAndCompletion();
   }
 }

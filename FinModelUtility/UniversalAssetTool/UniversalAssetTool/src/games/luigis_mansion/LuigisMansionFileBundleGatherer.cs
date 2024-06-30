@@ -7,9 +7,9 @@ using uni.platforms.gcn;
 namespace uni.games.luigis_mansion {
   using IAnnotatedMdlBundle = IAnnotatedFileBundle<IModelFileBundle>;
 
-  public class LuigisMansionFileBundleGatherer
-      : IAnnotatedFileBundleGatherer<IModelFileBundle> {
-    public IEnumerable<IAnnotatedMdlBundle> GatherFileBundles(
+  public class LuigisMansionFileBundleGatherer : IAnnotatedFileBundleGatherer {
+    public void GatherFileBundles(
+        IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "luigis_mansion",
@@ -19,7 +19,7 @@ namespace uni.games.luigis_mansion {
                                            // For some reason, some MDL files are compressed as RARC.
                                            ".mdl"),
               out var fileHierarchy)) {
-        yield break;
+        return;
       }
     }
   }

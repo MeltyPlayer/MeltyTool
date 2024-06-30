@@ -8,10 +8,11 @@ using visceral.api;
 
 namespace uni.games.dead_space_1 {
   public class DeadSpace1FileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
+    public void GatherFileBundles(
+        IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress) {
       if (!SteamUtils.TryGetGameDirectory("Dead Space", out var deadSpaceDir)) {
-        yield break;
+        return;
       }
 
       ExtractorUtil.GetOrCreateRomDirectories(
@@ -62,14 +63,14 @@ namespace uni.games.dead_space_1 {
         }
 
         if (geoFiles.Length > 0 || rcbFile != null) {
-          yield return new GeoModelFileBundle {
+          organizer.Add(new GeoModelFileBundle {
               GameName = "dead_space_1",
               GeoFiles = geoFiles,
               BnkFiles = bnkFiles,
               RcbFile = rcbFile,
               MtlbFileIdsDictionary = mtlbFileIdsDictionary,
               Tg4hFileIdDictionary = tg4hFileIdDictionary
-          }.Annotate(geoFiles.FirstOrDefault() ?? rcbFile!);
+          }.Annotate(geoFiles.FirstOrDefault() ?? rcbFile!));
         } else {
           ;
         }

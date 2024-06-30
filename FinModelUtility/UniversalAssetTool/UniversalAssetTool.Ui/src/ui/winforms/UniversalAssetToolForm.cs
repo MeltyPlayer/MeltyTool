@@ -11,6 +11,7 @@ using fin.model.io;
 using fin.scene;
 using fin.util.enumerables;
 using fin.util.io;
+using fin.util.progress;
 using fin.util.time;
 
 using uni.cli;
@@ -63,9 +64,9 @@ public partial class UniversalAssetToolForm : Form {
   }
 
   private void UniversalAssetToolForm_Load(object sender, EventArgs e) {
+    var progress = new PercentageProgress();
     this.fileBundleTreeView_.Populate(
-        new RootFileBundleGatherer().GatherAllFiles());
-
+        new RootFileBundleGatherer().GatherAllFiles(progress));
 
     this.fpsCallback_ =
         TimedCallback.WithPeriod(

@@ -7,70 +7,69 @@ using glo.api;
 
 using uni.platforms.desktop;
 
-namespace uni.games.glover {
-  public class GloverFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public IEnumerable<IAnnotatedFileBundle> GatherFileBundles(
-        IMutablePercentageProgress mutablePercentageProgress) {
-      if (!SteamUtils.TryGetGameDirectory("Glover",
-                                          out var gloverSteamDirectory)) {
-        yield break;
-      }
+namespace uni.games.glover;
 
-      var gloverFileHierarchy
-          = FileHierarchy.From("glover", gloverSteamDirectory);
-
-      var dataDirectory =
-          gloverFileHierarchy.Root.AssertGetExistingSubdir("data");
-      var topLevelBgmDirectory = dataDirectory.AssertGetExistingSubdir("bgm");
-      foreach (var bgmFile in topLevelBgmDirectory.GetExistingFiles()) {
-        yield return new OggAudioFileBundle(bgmFile).Annotate(bgmFile);
-      }
-
-      var topLevelObjectDirectory =
-          dataDirectory.AssertGetExistingSubdir("objects");
-      foreach (var objectDirectory in
-               topLevelObjectDirectory.GetExistingSubdirs()) {
-        foreach (var fileBundle in this.AddObjectDirectory_(
-                     gloverFileHierarchy,
-                     objectDirectory)) {
-          yield return fileBundle;
-        }
-      }
+public class GloverFileBundleGatherer : IAnnotatedFileBundleGatherer {
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
+    if (!SteamUtils.TryGetGameDirectory("Glover",
+                                        out var gloverSteamDirectory)) {
+      return;
     }
 
-    private IEnumerable<IAnnotatedFileBundle> AddObjectDirectory_(
-        IFileHierarchy gloverFileHierarchy,
-        IFileHierarchyDirectory objectDirectory) {
-      var objectFiles = objectDirectory.FilesWithExtension(".glo");
+    var gloverFileHierarchy
+        = FileHierarchy.From("glover", gloverSteamDirectory);
 
-      var gloverSteamDirectory = gloverFileHierarchy.Root;
-      var textureDirectories = gloverSteamDirectory
-                               .AssertGetExistingSubdir("data/textures/generic")
-                               .GetExistingSubdirs()
-                               .ToList();
+    var dataDirectory =
+        gloverFileHierarchy.Root.AssertGetExistingSubdir("data");
+    var topLevelBgmDirectory = dataDirectory.AssertGetExistingSubdir("bgm");
+    foreach (var bgmFile in topLevelBgmDirectory.GetExistingFiles()) {
+      organizer.Add(new OggAudioFileBundle(bgmFile).Annotate(bgmFile));
+    }
 
-      textureDirectories.AddRange([
-          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/hub"),
-          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/ootw"),
-          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/ootw/chars"),
-          gloverSteamDirectory.AssertGetExistingSubdir("data/textures/ootw/notused"),
-      ]);
+    var topLevelObjectDirectory =
+        dataDirectory.AssertGetExistingSubdir("objects");
+    foreach (var objectDirectory in
+             topLevelObjectDirectory.GetExistingSubdirs()) {
+      this.AddObjectDirectory_(organizer, gloverFileHierarchy, objectDirectory);
+    }
+  }
 
-      try {
-        var levelTextureDirectory =
-            gloverSteamDirectory.AssertGetExistingSubdir(
-                objectDirectory.LocalPath.Replace("data\\objects",
-                                                  "data\\textures"));
-        textureDirectories.Add(levelTextureDirectory);
-        textureDirectories.AddRange(levelTextureDirectory.GetExistingSubdirs());
-      } catch {
-        // ignored
-      }
+  private void AddObjectDirectory_(IFileBundleOrganizer organizer,
+                                   IFileHierarchy gloverFileHierarchy,
+                                   IFileHierarchyDirectory objectDirectory) {
+    var objectFiles = objectDirectory.FilesWithExtension(".glo");
 
-      foreach (var objectFile in objectFiles) {
-        yield return new GloModelFileBundle(objectFile, textureDirectories)
-            .Annotate(objectFile);
-      }
+    var gloverSteamDirectory = gloverFileHierarchy.Root;
+    var textureDirectories = gloverSteamDirectory
+                             .AssertGetExistingSubdir("data/textures/generic")
+                             .GetExistingSubdirs()
+                             .ToList();
+
+    textureDirectories.AddRange([
+        gloverSteamDirectory.AssertGetExistingSubdir("data/textures/hub"),
+        gloverSteamDirectory.AssertGetExistingSubdir("data/textures/ootw"),
+        gloverSteamDirectory.AssertGetExistingSubdir(
+            "data/textures/ootw/chars"),
+        gloverSteamDirectory.AssertGetExistingSubdir(
+            "data/textures/ootw/notused"),
+    ]);
+
+    try {
+      var levelTextureDirectory =
+          gloverSteamDirectory.AssertGetExistingSubdir(
+              objectDirectory.LocalPath.Replace("data\\objects",
+                                                "data\\textures"));
+      textureDirectories.Add(levelTextureDirectory);
+      textureDirectories.AddRange(levelTextureDirectory.GetExistingSubdirs());
+    } catch {
+      // ignored
+    }
+
+    foreach (var objectFile in objectFiles) {
+      organizer.Add(new GloModelFileBundle(objectFile, textureDirectories)
+                        .Annotate(objectFile));
     }
   }
 }
