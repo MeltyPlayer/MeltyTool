@@ -42,6 +42,6 @@ public partial class FigaTreeTrack : IDatKeyframes, IBinaryDeserializable {
 
   [ReadLogic]
   private void ReadKeyframes_(IBinaryReader br) {
-      DatKeyframesUtil.ReadKeyframes(br, this, this.Keyframes);
-    }
+    DatKeyframesUtil.ReadKeyframes(br, this, this.Keyframes);
+  }
 }

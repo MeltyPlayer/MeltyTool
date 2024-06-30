@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using CommunityToolkit.HighPerformance;
+
 using dat.schema;
 using dat.schema.animation;
 using dat.schema.material;
@@ -64,7 +66,9 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       boneQueue.Enqueue((finModel.Skeleton.Root, datRootBone));
     }
 
-    Span<float> inverseBindMatrixBuffer = stackalloc float[4 * 4];
+    Span<Matrix4x4> inverseBindMatrixBuffer = stackalloc Matrix4x4[1];
+    Span<float> inverseBindMatrixFloatBuffer
+        = inverseBindMatrixBuffer.Cast<Matrix4x4, float>();
     while (boneQueue.Count > 0) {
       var (finParentBone, jObj) = boneQueue.Dequeue();
 
@@ -79,10 +83,15 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
           finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE, finBone);
 
       var inverseBindMatrixValues = jObj.InverseBindMatrixValues;
-      inverseBindMatrixValues.CopyTo(inverseBindMatrixBuffer);
-      inverseBindMatrixBuffer[15] = 1;
-      inverseBindMatrixByJObj[jObj] =
-          new FinMatrix4x4(inverseBindMatrixBuffer).TransposeInPlace();
+      if (inverseBindMatrixValues != null) {
+        inverseBindMatrixValues.CopyTo(inverseBindMatrixFloatBuffer);
+        inverseBindMatrixFloatBuffer[15] = 1;
+      } else {
+        inverseBindMatrixBuffer[0] = Matrix4x4.Identity;
+      }
+
+      inverseBindMatrixByJObj[jObj]
+          = new FinMatrix4x4(inverseBindMatrixFloatBuffer).TransposeInPlace();
 
       foreach (var datChildBone in jObj.GetChildren()) {
         boneQueue.Enqueue((finBone, datChildBone));
@@ -101,6 +110,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       });
 
       var i = 0;
+
+      var jObjs = primaryDatSubfile.JObjs.ToArray();
       foreach (var animationDatSubfile in animationDat.Subfiles) {
         foreach (var (figaTree, figaTreeName) in animationDatSubfile
                      .GetRootNodesWithNamesOfType<FigaTree>()) {
@@ -109,13 +120,12 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                                           .SubstringUpTo("_figatree");
           finAnimation.FrameCount = (int) figaTree.FrameCount;
 
-          foreach (var (jObj, trackNode) in primaryDatSubfile.JObjs.Zip(
-                       figaTree.TrackNodes)) {
+          foreach (var (jObj, trackNode) in jObjs.Zip(figaTree.TrackNodes)) {
             var finBone = finBoneByJObj[jObj];
             var boneTracks = finAnimation.AddBoneTracks(finBone);
-            DatBoneTracksHelper.AddDatKeyframesToBoneTracks(
-                trackNode,
-                boneTracks);
+
+            DatBoneTracksHelper.AddDatKeyframesToBoneTracks(trackNode,
+              boneTracks);
           }
         }
       }
@@ -249,7 +259,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                            new Vector2(tObj.RepeatS, tObj.RepeatT);
             });
     var finMaterialsAndTextureMatricesByMObjOffset =
-        new LazyDictionary<(uint, CullingMode), (IMaterial, Func<Vector2, Vector2>[])?>(
+        new LazyDictionary<(uint, CullingMode), (IMaterial,
+            Func<Vector2, Vector2>[])?>(
             (mObjOffsetAndCullingMode => {
               var (mObjOffset, cullingMode) = mObjOffsetAndCullingMode;
               if (mObjOffset == 0) {
@@ -261,7 +272,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
 
               var tObjsAndFinTextures =
                   new (TObj, ITexture)[tObjsAndOffsets.Length];
-              var textureScalers = new Func<Vector2, Vector2>[tObjsAndFinTextures.Length];
+              var textureScalers
+                  = new Func<Vector2, Vector2>[tObjsAndFinTextures.Length];
               for (var i = 0; i < tObjsAndOffsets.Length; i++) {
                 var (tObjOffset, tObj) = tObjsAndOffsets[i];
                 tObjsAndFinTextures[i] = (
@@ -372,8 +384,9 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                 _             => CullingMode.SHOW_BOTH
             };
 
-        var tuple = 
-            finMaterialsAndTextureMatricesByMObjOffset[(mObjOffset, cullingMode)];
+        var tuple =
+            finMaterialsAndTextureMatricesByMObjOffset[
+                (mObjOffset, cullingMode)];
         var finMaterial = tuple?.Item1;
         var textureScalers = tuple?.Item2;
 

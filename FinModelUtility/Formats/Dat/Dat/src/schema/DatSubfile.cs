@@ -1,10 +1,7 @@
-﻿using System.Linq;
-
-using dat.schema.animation;
+﻿using dat.schema.animation;
 using dat.schema.melee;
 
 using fin.data.queues;
-using fin.io.bundles;
 using fin.util.linq;
 
 using schema.binary;
