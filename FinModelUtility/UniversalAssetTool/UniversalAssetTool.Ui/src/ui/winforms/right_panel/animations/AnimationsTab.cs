@@ -4,11 +4,12 @@ using System.Windows.Forms;
 using fin.animation;
 using fin.model;
 
-namespace uni.ui.winforms.right_panel {
-  public partial class AnimationsTab : UserControl {
-    private IReadOnlyModelAnimation[]? animations_;
+namespace uni.ui.winforms.right_panel;
 
-    public AnimationsTab() {
+public partial class AnimationsTab : UserControl {
+  private IReadOnlyModelAnimation[]? animations_;
+
+  public AnimationsTab() {
       InitializeComponent();
 
       this.listView_.SelectedIndexChanged += (_, e) => {
@@ -22,8 +23,8 @@ namespace uni.ui.winforms.right_panel {
       };
     }
 
-    public IReadOnlyModel? Model {
-      set {
+  public IReadOnlyModel? Model {
+    set {
         this.listView_.SelectedIndices.Clear();
         this.listView_.Items.Clear();
 
@@ -44,15 +45,14 @@ namespace uni.ui.winforms.right_panel {
           this.listView_.Items[0].Selected = true;
         }
       }
-    }
-
-    public IAnimationPlaybackManager? AnimationPlaybackManager {
-      get => this.animationPlaybackPanel_.Impl;
-      set => this.animationPlaybackPanel_.Impl = value;
-    }
-
-    public delegate void AnimationSelected(IReadOnlyModelAnimation? animation);
-
-    public event AnimationSelected OnAnimationSelected;
   }
+
+  public IAnimationPlaybackManager? AnimationPlaybackManager {
+    get => this.animationPlaybackPanel_.Impl;
+    set => this.animationPlaybackPanel_.Impl = value;
+  }
+
+  public delegate void AnimationSelected(IReadOnlyModelAnimation? animation);
+
+  public event AnimationSelected OnAnimationSelected;
 }

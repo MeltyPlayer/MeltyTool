@@ -8,40 +8,41 @@ using fin.util.linq;
 using uni.ui.common;
 
 
-namespace uni.ui.winforms.common.fileTreeView {
-  public abstract partial class FileTreeView<TFiles> {
-    protected class ParentFileNode : BFileNode, IFileTreeParentNode {
-      public ParentFileNode(FileTreeView<TFiles> treeView) : base(
-          treeView) {
+namespace uni.ui.winforms.common.fileTreeView;
+
+public abstract partial class FileTreeView<TFiles> {
+  protected class ParentFileNode : BFileNode, IFileTreeParentNode {
+    public ParentFileNode(FileTreeView<TFiles> treeView) : base(
+        treeView) {
         this.InitializeFilterNode(treeView.filterImpl_.Root);
         this.InitDirectory_();
       }
 
-      private ParentFileNode(ParentFileNode parent, string text) : base(
-          parent,
-          text) {
+    private ParentFileNode(ParentFileNode parent, string text) : base(
+        parent,
+        text) {
         this.InitializeFilterNode(parent);
         this.InitDirectory_();
       }
 
-      private void InitDirectory_() {
+    private void InitDirectory_() {
         this.treeNode.ClosedImage = Icons.folderClosedImage;
         this.treeNode.OpenImage = Icons.folderOpenImage;
       }
 
-      public IFileHierarchyDirectory? Directory { get; set; }
-      public override string? FullName => this.Directory?.FullPath;
+    public IFileHierarchyDirectory? Directory { get; set; }
+    public override string? FullName => this.Directory?.FullPath;
 
-      public ParentFileNode AddChild(string text) => new(this, text);
+    public ParentFileNode AddChild(string text) => new(this, text);
 
-      public LeafFileNode AddChild(IAnnotatedFileBundle file,
-                                   string? text = null)
-        => new(this, file, text);
+    public LeafFileNode AddChild(IAnnotatedFileBundle file,
+                                 string? text = null)
+      => new(this, file, text);
 
-      public IEnumerable<IFileTreeNode> ChildNodes
-        => this.filterNode.Children.Select(fuzzyNode => fuzzyNode.Data);
+    public IEnumerable<IFileTreeNode> ChildNodes
+      => this.filterNode.Children.Select(fuzzyNode => fuzzyNode.Data);
 
-      public IEnumerable<IAnnotatedFileBundle> GetFiles(bool recursive) {
+    public IEnumerable<IAnnotatedFileBundle> GetFiles(bool recursive) {
         var children = this.ChildNodes.OfType<IFileTreeLeafNode>()
                            .Select(fileNode => fileNode.File);
         return !recursive
@@ -55,14 +56,13 @@ namespace uni.ui.winforms.common.fileTreeView {
                                             true)));
       }
 
-      public IEnumerable<IAnnotatedFileBundle<TSpecificFile>> GetFilesOfType<
-          TSpecificFile>(bool recursive) where TSpecificFile : IFileBundle
-        => this.GetFiles(recursive)
-               .SelectWhere<IAnnotatedFileBundle,
-                   IAnnotatedFileBundle<TSpecificFile>>(
-                   AnnotatedFileBundleExtensions.IsOfType);
+    public IEnumerable<IAnnotatedFileBundle<TSpecificFile>> GetFilesOfType<
+        TSpecificFile>(bool recursive) where TSpecificFile : IFileBundle
+      => this.GetFiles(recursive)
+             .SelectWhere<IAnnotatedFileBundle,
+                 IAnnotatedFileBundle<TSpecificFile>>(
+                 AnnotatedFileBundleExtensions.IsOfType);
 
-      public void Expand() => this.treeNode.Expand();
-    }
+    public void Expand() => this.treeNode.Expand();
   }
 }

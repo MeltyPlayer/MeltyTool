@@ -3,15 +3,16 @@ using System.Windows.Forms;
 
 using fin.animation;
 
-namespace uni.ui.winforms.right_panel {
-  public partial class AnimationPlaybackPanel : UserControl {
-    // TODO: Add tests.
-    // TODO: How to right-align frame label?
-    // TODO: Fix bug where scrolling trackbar changes time dramatically?
+namespace uni.ui.winforms.right_panel;
 
-    private bool? wasPlayingBeforeScroll_;
+public partial class AnimationPlaybackPanel : UserControl {
+  // TODO: Add tests.
+  // TODO: How to right-align frame label?
+  // TODO: Fix bug where scrolling trackbar changes time dramatically?
 
-    public AnimationPlaybackPanel() {
+  private bool? wasPlayingBeforeScroll_;
+
+  public AnimationPlaybackPanel() {
       this.InitializeComponent();
 
       this.playButton_.Click += (sender, args) => { this.IsPlaying = true; };
@@ -45,11 +46,11 @@ namespace uni.ui.winforms.right_panel {
       this.FrameRate = (int) Math.Floor(this.frameRateSelector_.Value);
     }
 
-    private IAnimationPlaybackManager? impl_;
+  private IAnimationPlaybackManager? impl_;
 
-    public IAnimationPlaybackManager? Impl {
-      get => this.impl_;
-      set {
+  public IAnimationPlaybackManager? Impl {
+    get => this.impl_;
+    set {
         if (this.impl_ != null) {
           this.impl_.OnUpdate -= this.Update_;
         }
@@ -60,12 +61,12 @@ namespace uni.ui.winforms.right_panel {
           this.impl_.OnUpdate += this.Update_;
         }
       }
-    }
+  }
 
-    // TODO: Should carry over changes to form.
-    public double Frame {
-      get => this.Impl?.Frame ?? 0;
-      set {
+  // TODO: Should carry over changes to form.
+  public double Frame {
+    get => this.Impl?.Frame ?? 0;
+    set {
         if (this.Impl != null) {
           this.Impl.Frame = value;
         }
@@ -74,63 +75,63 @@ namespace uni.ui.winforms.right_panel {
           this.frameTrackBar_.Value = (int) value;
         }
       }
-    }
+  }
 
-    public int TotalFrames {
-      get => this.Impl?.TotalFrames ?? 0;
-      set {
+  public int TotalFrames {
+    get => this.Impl?.TotalFrames ?? 0;
+    set {
         if (this.Impl != null) {
           this.Impl.TotalFrames = value;
         }
 
         this.frameTrackBar_.Maximum = value;
       }
-    }
+  }
 
-    public int FrameRate {
-      get => this.Impl?.FrameRate ?? 0;
-      set {
+  public int FrameRate {
+    get => this.Impl?.FrameRate ?? 0;
+    set {
         if (this.Impl != null) {
           this.Impl.FrameRate = value;
         }
 
         this.frameRateSelector_.Value = value;
       }
-    }
+  }
 
 
-    public bool IsPlaying {
-      get => this.Impl?.IsPlaying ?? false;
-      set {
+  public bool IsPlaying {
+    get => this.Impl?.IsPlaying ?? false;
+    set {
         if (this.Impl != null) {
           this.Impl.IsPlaying = value;
         }
       }
-    }
+  }
 
-    public AnimationInterpolationConfig? Config {
-      get => this.Impl?.Config;
-      set {
+  public AnimationInterpolationConfig? Config {
+    get => this.Impl?.Config;
+    set {
         if (this.Impl != null) {
           this.Impl.Config = value;
         }
 
         this.loopCheckBox_.Checked = value?.UseLoopingInterpolation ?? false;
       }
-    }
+  }
 
-    public bool LoopPlayback {
-      get => this.Impl?.LoopPlayback ?? false;
-      set {
+  public bool LoopPlayback {
+    get => this.Impl?.LoopPlayback ?? false;
+    set {
         if (this.Impl != null) {
           this.Impl.LoopPlayback = value;
         }
 
         this.loopCheckBox_.Checked = value;
       }
-    }
+  }
 
-    private void Update_() {
+  private void Update_() {
       if (this.Impl != null) {
         this.frameTrackBar_.Maximum = this.Impl.TotalFrames;
         this.frameRateSelector_.Value = this.Impl.FrameRate;
@@ -161,5 +162,4 @@ namespace uni.ui.winforms.right_panel {
       this.elapsedSeconds_.Text = elapsedSecondsText;
       this.elapsedFrames_.Text = elapsedFramesText;
     }
-  }
 }

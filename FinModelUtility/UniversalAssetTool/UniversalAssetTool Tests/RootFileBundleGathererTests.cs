@@ -2,6 +2,7 @@ using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 
 using fin.io;
+using fin.util.progress;
 
 using uni.games;
 
@@ -58,7 +59,9 @@ namespace uni {
         FinFileSystem.FileSystem = mockFileSystem;
       }
 
-      var root = new RootFileBundleGatherer().GatherAllFiles();
+      var percentageProgress = new PercentageProgress();
+      var root
+          = new RootFileBundleGatherer().GatherAllFiles(percentageProgress);
       Assert.AreEqual(0, root.Subdirs.Count);
       Assert.AreEqual(0, root.FileBundles.Count);
     }

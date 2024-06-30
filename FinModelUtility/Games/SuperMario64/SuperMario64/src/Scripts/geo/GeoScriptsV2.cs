@@ -79,7 +79,7 @@ namespace sm64.Scripts {
 
             break;
           }
-          case GeoCloseNodeCommand geoCloseNodeCommand: {
+          case GeoCloseNodeCommand: {
             if (nodeCurrent != rootNode) {
               nodeCurrent = nodeCurrent.parent;
               mdlLods.Node = nodeCurrent;

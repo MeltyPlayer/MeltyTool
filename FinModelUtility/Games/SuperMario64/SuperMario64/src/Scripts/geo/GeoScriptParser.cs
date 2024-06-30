@@ -41,20 +41,6 @@ namespace sm64.scripts.geo {
         return null;
       }
 
-
-      {
-        var d = new byte[] { 1, 2, 3, 4 };
-
-        var r = new SchemaBinaryReader(d, SchemaConstants.SM64_ENDIANNESS);
-
-        var adr = r.ReadUInt32();
-
-        IoUtils.SplitSegmentedAddress(adr, out var sgm, out var ofst);
-
-        ;
-      }
-
-
       using var br =
           new SchemaBinaryReader(data, SchemaConstants.SM64_ENDIANNESS);
       br.Position = off;

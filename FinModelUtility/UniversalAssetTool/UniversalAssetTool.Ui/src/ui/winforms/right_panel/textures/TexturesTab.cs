@@ -2,9 +2,10 @@
 
 using fin.model;
 
-namespace uni.ui.winforms.right_panel.textures {
-  public partial class TexturesTab : UserControl {
-    public TexturesTab() {
+namespace uni.ui.winforms.right_panel.textures;
+
+public partial class TexturesTab : UserControl {
+  public TexturesTab() {
       InitializeComponent();
 
       this.textureSelectorBox_.OnTextureSelected
@@ -12,9 +13,8 @@ namespace uni.ui.winforms.right_panel.textures {
               this.textureInfoSection_.SelectedTexture = texture;
     }
 
-    public IReadOnlyModel? Model {
-      set => this.textureSelectorBox_.Textures =
-                 value?.MaterialManager.Textures;
-    }
+  public IReadOnlyModel? Model {
+    set => this.textureSelectorBox_.Textures =
+        value?.MaterialManager.Textures;
   }
 }

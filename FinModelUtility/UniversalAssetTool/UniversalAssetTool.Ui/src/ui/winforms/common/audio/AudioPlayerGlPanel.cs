@@ -13,18 +13,19 @@ using OpenTK.Graphics.OpenGL;
 
 using uni.api;
 
-namespace uni.ui.winforms.common.audio {
-  public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
-    private IReadOnlyList<IAudioFileBundle>? audioFileBundles_;
-    private ShuffledListView<IAudioFileBundle>? shuffledListView_;
-    private readonly IAudioManager<short> audioManager_ = new AlAudioManager();
-    private readonly IAudioPlayer<short> audioPlayer_;
+namespace uni.ui.winforms.common.audio;
 
-    private readonly AotWaveformRenderer waveformRenderer_ = new();
+public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
+  private IReadOnlyList<IAudioFileBundle>? audioFileBundles_;
+  private ShuffledListView<IAudioFileBundle>? shuffledListView_;
+  private readonly IAudioManager<short> audioManager_ = new AlAudioManager();
+  private readonly IAudioPlayer<short> audioPlayer_;
 
-    private readonly TimedCallback playNextCallback_;
+  private readonly AotWaveformRenderer waveformRenderer_ = new();
 
-    public AudioPlayerGlPanel() {
+  private readonly TimedCallback playNextCallback_;
+
+  public AudioPlayerGlPanel() {
       this.Disposed += (_, _) => this.audioManager_.Dispose();
 
       this.audioPlayer_ = this.audioManager_.AudioPlayer;
@@ -61,12 +62,12 @@ namespace uni.ui.winforms.common.audio {
       }, .1f);
     }
 
-    /// <summary>
-    ///   Sets the audio file bundles to play in the player.
-    /// </summary>
-    public IReadOnlyList<IAudioFileBundle>? AudioFileBundles {
-      get => this.audioFileBundles_;
-      set {
+  /// <summary>
+  ///   Sets the audio file bundles to play in the player.
+  /// </summary>
+  public IReadOnlyList<IAudioFileBundle>? AudioFileBundles {
+    get => this.audioFileBundles_;
+    set {
         var originalValue = this.audioFileBundles_;
         this.audioFileBundles_ = value;
 
@@ -82,14 +83,14 @@ namespace uni.ui.winforms.common.audio {
           this.OnChange(null);
         }
       }
-    }
+  }
 
-    public event Action<IAudioFileBundle?> OnChange = delegate { };
+  public event Action<IAudioFileBundle?> OnChange = delegate { };
 
-    protected override void InitGl() => this.ResetGl_();
-    private void ResetGl_() => GlUtil.ResetGl();
+  protected override void InitGl() => this.ResetGl_();
+  private void ResetGl_() => GlUtil.ResetGl();
 
-    protected override void RenderGl() {
+  protected override void RenderGl() {
       var width = this.Width;
       var height = this.Height;
       GL.Viewport(0, 0, width, height);
@@ -100,7 +101,7 @@ namespace uni.ui.winforms.common.audio {
       this.RenderOrtho_();
     }
 
-    private void RenderOrtho_() {
+  private void RenderOrtho_() {
       var width = this.Width;
       var height = this.Height;
 
@@ -124,5 +125,4 @@ namespace uni.ui.winforms.common.audio {
       this.waveformRenderer_.MiddleY = height / 2f;
       this.waveformRenderer_.Render();
     }
-  }
 }
