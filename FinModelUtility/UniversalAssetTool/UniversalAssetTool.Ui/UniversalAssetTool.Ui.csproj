@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>uni</RootNamespace>
+    <RootNamespace>uni.ui</RootNamespace>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
@@ -24,13 +24,6 @@
     <UserSecretsId>7016d56f-b424-467d-8b3a-40e5d0483f29</UserSecretsId>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="src\ui\wpf\**" />
-    <EmbeddedResource Remove="src\ui\wpf\**" />
-    <None Remove="src\ui\wpf\**" />
-    <Page Remove="src\ui\wpf\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Remove="img\folder_closed.png" />

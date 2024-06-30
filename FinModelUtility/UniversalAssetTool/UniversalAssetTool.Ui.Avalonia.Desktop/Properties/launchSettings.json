@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Ui": {
+      "commandName": "Project",
+      "commandLineArgs": "ui"
+    }
+  }
+}

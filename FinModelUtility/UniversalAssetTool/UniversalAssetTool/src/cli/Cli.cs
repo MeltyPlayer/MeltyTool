@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-using CommandLine;
+﻿using CommandLine;
 using CommandLine.Text;
 
 using fin.io;
@@ -11,14 +6,12 @@ using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
 
-using uni.ui;
-using uni.ui.winforms;
-
 namespace uni.cli;
 
-public class Cli {
-  [STAThread]
-  public static int Main(string[] args) {
+public static class Cli {
+  public static void Run(string[] args,
+                         Action launchUi,
+                         Action? runDebug = null) {
     IEnumerable<Error>? errors = null;
 
     var massExporterOptionTypes =
@@ -37,27 +30,13 @@ public class Cli {
                     })
                     .ToArray();
 
-    /*
-                var helpText = new HelpText {
-                        Heading = HeadingInfo.Default,
-                        Copyright = CopyrightInfo.Default,
-                        AdditionalNewLineAfterOption = true,
-                    }.AddVerbs(verbTypes)
-                     .ToString();
-     */
-
     ConsoleUtil.ShowConsole();
     var parserResult =
         Parser.Default.ParseArguments(args, verbTypes)
               .WithParsed(
                   (IMassExporterOptions extractorOptions)
                       => extractorOptions.CreateMassExporter().ExportAll())
-              .WithParsed((UiOptions _) => {
-                DesignModeUtil.InDesignMode = false;
-                ApplicationConfiguration.Initialize();
-                Application.Run(new UniversalAssetToolForm());
-                //new UniversalAssetToolForm().ShowDialog();
-              })
+              .WithParsed((UiOptions _) => launchUi())
               .WithParsed((ListPluginOptions _) => {
                 foreach (var plugin in plugins) {
                   PrintPluginInfo_(plugin);
@@ -151,11 +130,7 @@ public class Cli {
                     Model = model, OutputFile = outputFile,
                 });
               })
-              .WithParsed((DebugOptions _) => {
-                /*var window = new DebugWindow();
-                window.Run();*/
-                //new DebugProgram().Run();
-              })
+              .WithParsed((DebugOptions _) => runDebug?.Invoke())
               .WithNotParsed(parseErrors => errors = parseErrors);
 
     if (errors != null) {
@@ -164,8 +139,6 @@ public class Cli {
 
       throw new Exception();
     }
-
-    return 0;
   }
 
   private static void PrintPluginInfo_(IModelImporterPlugin plugin) {
