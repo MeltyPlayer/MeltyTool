@@ -121,11 +121,18 @@ public static class ModelDesignerUtil {
     return (model, material);
   }
 
-  public static IReadOnlyTexture CreateStubTexture(int width, int height) {
+  public static IReadOnlyTexture CreateStubTexture(int width, int height)
+    => CreateStubModelAndTexture(width, height).Item2;
+
+  public static (IReadOnlyModel, IReadOnlyTexture) CreateStubModelAndTexture(
+      int width,
+      int height) {
     var model = ModelImpl.CreateForViewer();
     var materialManager = model.MaterialManager;
-    return materialManager.CreateTexture(CreateStubImage(width, height));
+    return (
+        model, materialManager.CreateTexture(CreateStubImage(width, height)));
   }
+
 
   public static IReadOnlyImage CreateStubImage(int width, int height) {
     var image = new Rgba32Image(PixelFormat.ETC1, width, height);

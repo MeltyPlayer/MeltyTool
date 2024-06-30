@@ -100,7 +100,7 @@
       </TextBlock>
 
       <Grid ZIndex="-5">
-        <Grid Background="Magenta">
+        <Grid Background="{StaticResource ColorControlCheckeredBackgroundBrush}">
           <scene:SceneInstanceViewerGlPanel
               x:Name="SceneViewerGlPanel"
               IsTabStop="True"

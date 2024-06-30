@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using fin.animation;
 using fin.language.equations.fixedFunction;
 using fin.model;
+using fin.ui.rendering;
 
 using ReactiveUI;
 
@@ -52,7 +53,7 @@ namespace uni.ui.avalonia.resources.model {
             Skeleton = value.Skeleton,
         };
         this.TexturesPanel = new TexturesPanelViewModel {
-            Textures = value.MaterialManager.Textures,
+            ModelAndTextures = (value, value.MaterialManager.Textures),
         };
       }
     }
@@ -92,6 +93,28 @@ namespace uni.ui.avalonia.resources.model {
   public partial class ModelPanel : UserControl {
     public ModelPanel() {
       InitializeComponent();
+    }
+
+    private void ClearSelectedTextureWhenTabChanged_(
+        object? sender,
+        SelectionChangedEventArgs e) {
+      if (e.Source != this.ModelTabs) {
+        return;
+      }
+
+      var shouldDeselectTexture = true;
+      if (e.AddedItems.Count > 0) {
+        if (e.AddedItems[0] is TabItem item) {
+          var header = item.Header;
+          if (header == this.MaterialsTabHeader || header == this.TexturesTabHeader) {
+            shouldDeselectTexture = false;
+          }
+        }
+      }
+
+      if (shouldDeselectTexture) {
+        SelectedTextureService.SelectTexture(null);
+      }
     }
   }
 }

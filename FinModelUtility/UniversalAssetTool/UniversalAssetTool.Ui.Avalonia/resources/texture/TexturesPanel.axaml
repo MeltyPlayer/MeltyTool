@@ -14,7 +14,7 @@
     <textures:PopulatedTexturesPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <controls:If Condition="{Binding Textures, Converter={x:Static converters:ListConverters.HasAnyItems}}">
+  <controls:If Condition="{Binding TextureList.Textures, Converter={x:Static converters:ListConverters.HasAnyItems}}">
     <controls:If.ContentWhenTrue>
       <Grid RowDefinitions="150 *">
         <textures:TextureList DataContext="{Binding TextureList}"

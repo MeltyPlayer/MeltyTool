@@ -1,4 +1,4 @@
-﻿using fin.model;
+﻿using System.Drawing;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -28,17 +28,22 @@ public partial class GlState {
 }
 
 public static partial class GlUtil {
+  public static bool DisableChangingBlending { get; set; }
+
+  public static void SetBlendColor(Color color) {
+    GL.BlendColor(color);
+  }
+
   public static void ResetBlending() => SetBlending(
       FinBlendEquation.ADD,
       FinBlendFactor.SRC_ALPHA,
-      FinBlendFactor.ONE_MINUS_SRC_ALPHA,
-      FinLogicOp.UNDEFINED);
+      FinBlendFactor.ONE_MINUS_SRC_ALPHA);
 
   public static bool SetBlending(
       FinBlendEquation blendEquation,
       FinBlendFactor srcFactor,
       FinBlendFactor dstFactor,
-      FinLogicOp logicOp)
+      FinLogicOp logicOp = FinLogicOp.UNDEFINED)
     => SetBlendingSeparate(blendEquation,
                            srcFactor,
                            dstFactor,
@@ -54,7 +59,11 @@ public static partial class GlUtil {
       FinBlendEquation alphaBlendEquation,
       FinBlendFactor alphaSrcFactor,
       FinBlendFactor alphaDstFactor,
-      FinLogicOp logicOp) {
+      FinLogicOp logicOp = FinLogicOp.UNDEFINED) {
+    if (DisableChangingBlending) {
+      return false;
+    }
+
     if (GlUtil.currentState_.CurrentBlending ==
         (colorBlendEquation, colorSrcFactor, colorDstFactor,
          alphaBlendEquation, alphaSrcFactor, alphaDstFactor, logicOp)) {

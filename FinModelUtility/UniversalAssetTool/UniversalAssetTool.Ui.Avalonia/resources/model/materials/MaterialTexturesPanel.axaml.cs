@@ -16,22 +16,22 @@ namespace uni.ui.avalonia.resources.model.materials {
   public class MaterialTexturesPanelViewModelForDesigner
       : MaterialTexturesPanelViewModel {
     public MaterialTexturesPanelViewModelForDesigner() {
-      this.Textures
-          = ModelDesignerUtil.CreateStubMaterial().Textures.ToArray();
+      var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
+      this.ModelAndTextures = (model, material.Textures.ToArray());
     }
   }
 
   public class MaterialTexturesPanelViewModel : ViewModelBase {
-    private IReadOnlyList<IReadOnlyTexture>? textures_;
+    private (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)? modelAndTextures_;
     private TextureListViewModel textureListViewModel_;
     private TextureViewModel? selectedTextureViewModel_;
     private TexturePreviewViewModel? selectedTexturePreviewViewModel_;
 
-    public IReadOnlyList<IReadOnlyTexture>? Textures {
-      get => this.textures_;
+    public (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)? ModelAndTextures {
+      get => this.modelAndTextures_;
       set {
-        this.RaiseAndSetIfChanged(ref this.textures_, value);
-        this.TextureList = new TextureListViewModel { Textures = value };
+        this.RaiseAndSetIfChanged(ref this.modelAndTextures_, value);
+        this.TextureList = new TextureListViewModel { ModelAndTextures = value };
       }
     }
 

@@ -26,9 +26,11 @@ namespace uni.ui.avalonia.resources.model.materials {
       set {
         this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
 
-        var (_, material) = value;
+        var (model, material) = value;
         this.MaterialTexturesPanel = new() {
-            Textures = material?.Textures.ToArray(),
+            ModelAndTextures = material != null
+                ? (model, material.Textures.ToArray())
+                : null,
         };
         this.MaterialShadersPanel = new() {
             ModelAndMaterial = value,

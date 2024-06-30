@@ -35,7 +35,7 @@ public class SkeletonRenderer : ISkeletonRenderer {
   public void Render() {
       GlTransform.PassMatricesIntoGl();
 
-      GlUtil.SetDepth(DepthMode.IGNORE_DEPTH_BUFFER, DepthCompareType.Always);
+      GlUtil.SetDepth(DepthMode.IGNORE_DEPTH_BUFFER);
 
       var rootBone = this.Skeleton.Root;
 

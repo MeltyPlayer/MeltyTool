@@ -22,14 +22,16 @@ namespace uni.ui.avalonia.resources.texture {
   public class EmptyTexturesPanelViewModelForDesigner
       : TexturesPanelViewModel {
     public EmptyTexturesPanelViewModelForDesigner() {
-      this.Textures = Array.Empty<IReadOnlyTexture>();
+      this.ModelAndTextures = (ModelDesignerUtil.CreateStubModel(),
+                               Array.Empty<IReadOnlyTexture>());
     }
   }
 
   public class PopulatedTexturesPanelViewModelForDesigner
       : TexturesPanelViewModel {
     public PopulatedTexturesPanelViewModelForDesigner() {
-      this.Textures = ModelDesignerUtil.CreateStubMaterial().Textures.ToArray();
+      var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
+      this.ModelAndTextures = (model, material.Textures.ToArray());
     }
   }
 
@@ -44,6 +46,9 @@ namespace uni.ui.avalonia.resources.texture {
   }
 
   public class TexturesPanelViewModel : ViewModelBase {
+    private (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)?
+        modelAndTextures_;
+
     private IReadOnlyList<IReadOnlyTexture>? textures_;
     private TextureListViewModel textureListViewModel_;
     private TextureViewModel? selectedTextureViewModel_;
@@ -51,11 +56,12 @@ namespace uni.ui.avalonia.resources.texture {
 
     private KeyValueGridViewModel selectedTextureKeyValueGrid_;
 
-    public IReadOnlyList<IReadOnlyTexture>? Textures {
-      get => this.textures_;
+    public (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)? ModelAndTextures {
+      get => this.modelAndTextures_;
       set {
-        this.RaiseAndSetIfChanged(ref this.textures_, value);
-        this.TextureList = new TextureListViewModel { Textures = value };
+        this.RaiseAndSetIfChanged(ref this.modelAndTextures_, value);
+        this.TextureList = new TextureListViewModel
+            { ModelAndTextures = value };
       }
     }
 

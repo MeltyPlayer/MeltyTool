@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Data.Converters;
 
 using fin.model;
+using fin.ui.rendering;
 
 using ReactiveUI;
 
@@ -38,14 +39,15 @@ namespace uni.ui.avalonia.resources.model.materials {
         this.Materials
             = new ObservableCollection<(int, IReadOnlyMaterial?)>(
                 materials.Select((m, i) => (i, m)));
-
-        this.SelectedMaterial = this.Materials.FirstOrDefault();
       }
     }
 
     public ObservableCollection<(int, IReadOnlyMaterial?)> Materials {
       get => this.materials_;
-      private set => this.RaiseAndSetIfChanged(ref this.materials_, value);
+      private set {
+        this.RaiseAndSetIfChanged(ref this.materials_, value);
+        this.SelectedMaterial = this.Materials.FirstOrDefault();
+      }
     }
 
     public (int, IReadOnlyMaterial?)? SelectedMaterial {
@@ -59,6 +61,7 @@ namespace uni.ui.avalonia.resources.model.materials {
                         this.modelAndMaterials_.Item1, value.Value.Item2),
                 }
                 : null;
+        SelectedMaterialsService.SelectMaterial(this.selectedMaterial_?.Item2);
       }
     }
 

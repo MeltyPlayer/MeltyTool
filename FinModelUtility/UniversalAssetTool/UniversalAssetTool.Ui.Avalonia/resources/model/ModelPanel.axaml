@@ -17,7 +17,9 @@
     <model:ModelPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <TabControl Classes="h2 spaceFirst indented"
+  <TabControl x:Name="ModelTabs"
+              Classes="h2 spaceFirst indented"
+              SelectionChanged="ClearSelectedTextureWhenTabChanged_"
               TabStripPlacement="Left"
               Margin="-12 0">
     <TabControl.Styles>
@@ -59,7 +61,9 @@
     </TabItem>
     <TabItem>
       <TabItem.Header>
-        <StackPanel Classes="sideTab" Orientation="Horizontal">
+        <StackPanel x:Name="MaterialsTabHeader"
+                    Classes="sideTab"
+                    Orientation="Horizontal">
           <avalonia:MaterialIcon Kind="{StaticResource MaterialIcon}" />
           <TextBlock Text="Materials" />
         </StackPanel>
@@ -68,7 +72,9 @@
     </TabItem>
     <TabItem>
       <TabItem.Header>
-        <StackPanel Classes="sideTab" Orientation="Horizontal">
+        <StackPanel x:Name="TexturesTabHeader"
+                    Classes="sideTab"
+                    Orientation="Horizontal">
           <avalonia:MaterialIcon Kind="{StaticResource TextureIcon}" />
           <TextBlock Text="Textures" />
         </StackPanel>
