@@ -59,9 +59,7 @@ public partial class FObj : IDatLinkedListNode<FObj>,
   public FObj? NextSibling { get; set; }
 
   [Skip]
-  public LinkedList<(int frame, float incomingValue, float outgoingValue, float? incomingTangent, float? outgoingTangent)> Keyframes {
-    get;
-  } = [];
+  public LinkedList<DatKeyframe> Keyframes { get; } = [];
 
 
   [ReadLogic]

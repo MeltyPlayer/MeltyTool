@@ -20,8 +20,12 @@ public static class DatBoneTracksHelper {
         case JointTrackType.HSD_A_J_TRAZ: {
           var axis = jointTrackType - JointTrackType.HSD_A_J_TRAX;
           foreach (var keyframe in datKeyframes.Keyframes) {
-            var (frame, incomingValue, outgoingValue, incomingTangent,
-                outgoingTangent) = keyframe;
+            var frame = keyframe.Frame;
+            var incomingValue = keyframe.IncomingValue;
+            var outgoingValue = keyframe.OutgoingValue;
+            var incomingTangent = keyframe.IncomingTangent;
+            var outgoingTangent = keyframe.OutgoingTangent;
+
             positionTrack.Set(frame,
                               axis,
                               incomingValue,
@@ -37,8 +41,12 @@ public static class DatBoneTracksHelper {
         case JointTrackType.HSD_A_J_ROTZ: {
           var axis = jointTrackType - JointTrackType.HSD_A_J_ROTX;
           foreach (var keyframe in datKeyframes.Keyframes) {
-            var (frame, incomingValue, outgoingValue, incomingTangent,
-                outgoingTangent) = keyframe;
+            var frame = keyframe.Frame;
+            var incomingValue = keyframe.IncomingValue;
+            var outgoingValue = keyframe.OutgoingValue;
+            var incomingTangent = keyframe.IncomingTangent;
+            var outgoingTangent = keyframe.OutgoingTangent;
+
             rotationTrack.Set(frame,
                               axis,
                               incomingValue,
@@ -54,8 +62,12 @@ public static class DatBoneTracksHelper {
         case JointTrackType.HSD_A_J_SCAZ: {
           var axis = jointTrackType - JointTrackType.HSD_A_J_SCAX;
           foreach (var keyframe in datKeyframes.Keyframes) {
-            var (frame, incomingValue, outgoingValue, incomingTangent,
-                outgoingTangent) = keyframe;
+            var frame = keyframe.Frame;
+            var incomingValue = keyframe.IncomingValue;
+            var outgoingValue = keyframe.OutgoingValue;
+            var incomingTangent = keyframe.IncomingTangent;
+            var outgoingTangent = keyframe.OutgoingTangent;
+
             scaleTrack.Set(frame,
                            axis,
                            incomingValue,

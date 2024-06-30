@@ -35,10 +35,7 @@ public partial class FigaTreeTrack : IDatKeyframes, IBinaryDeserializable {
   public byte TexTrackType => this.TrackType;
 
   [Skip]
-  public LinkedList<(int frame, float incomingValue, float outgoingValue,
-      float? incomingTangent, float? outgoingTangent)> Keyframes { get; } =
-    [];
-
+  public LinkedList<DatKeyframe> Keyframes { get; } = [];
 
   [ReadLogic]
   private void ReadKeyframes_(IBinaryReader br) {
