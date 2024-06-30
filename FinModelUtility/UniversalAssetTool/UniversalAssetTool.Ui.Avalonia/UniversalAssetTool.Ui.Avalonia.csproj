@@ -79,6 +79,9 @@
     <Compile Update="common\textboxes\AutocompleteTextbox.axaml.cs">
       <DependentUpon>AutocompleteTextbox.axaml</DependentUpon>
     </Compile>
+    <Compile Update="resources\audio\AudioPlayerPanel.axaml.cs">
+      <DependentUpon>AudioPlayerPanel.axaml</DependentUpon>
+    </Compile>
     <Compile Update="resources\model\ModelPanel.axaml.cs">
       <DependentUpon>ModelPanel.axaml</DependentUpon>
     </Compile>

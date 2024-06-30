@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:audio="clr-namespace:uni.ui.avalonia.resources.audio"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="400"
+             x:Class="uni.ui.avalonia.resources.audio.AudioPlayerPanel"
+             x:DataType="audio:AudioPlayerPanelViewModel">
+  <Design.DataContext>
+    <audio:AudioPlayerPanelViewModelForDesigner />
+  </Design.DataContext>
+
+  <controls:If Condition="{Binding AudioFileBundles, Converter={x:Static ObjectConverters.IsNotNull}}">
+    <Border Background="{DynamicResource SystemAltMediumHighColor}"
+            BoxShadow="0 0 10 0 Black"
+            Padding="8">
+      <StackPanel>
+        <DockPanel>
+          <Button DockPanel.Dock="Right"
+                  Padding="4"
+                  ToolTip.Tip="Close audio panel"
+                  Click="ClosePanel_">
+            <avalonia:MaterialIcon
+                Width="12"
+                Height="12"
+                Kind="Close" />
+          </Button>
+
+          <TextBlock 
+            VerticalAlignment="Center"
+            Classes="h3 spaceFirst"
+            Text="{Binding AudioFileBundle.MainFile}" />
+        </DockPanel>
+
+        <Border HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                BorderThickness="1"
+                Height="32"
+                Margin="0 4"
+                BorderBrush="{StaticResource BorderBrush}"
+                Background="{StaticResource ColorControlCheckeredBackgroundBrush}">
+          <audio:AudioWaveformGlPanel
+              ActivePlayback="{Binding ActivePlayback}" />
+        </Border>
+
+
+        <StackPanel 
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+          <ToggleButton
+              IsEnabled="{Binding ActivePlayback, Converter={x:Static ObjectConverters.IsNotNull}}"
+              IsChecked="{Binding IsPlaying, Mode=TwoWay}"
+              ToolTip.Tip="{Binding PlayButtonTooltip}">
+            <controls:If Condition="{Binding IsPlaying}">
+              <controls:If.ContentWhenTrue>
+                <avalonia:MaterialIcon Kind="Play" />
+              </controls:If.ContentWhenTrue>
+              <controls:If.ContentWhenFalse>
+                <avalonia:MaterialIcon Kind="Pause" />
+              </controls:If.ContentWhenFalse>
+            </controls:If>
+          </ToggleButton>
+
+          <Button 
+              IsEnabled="{Binding AudioFileBundles, Converter={x:Static ObjectConverters.IsNotNull}}"
+              ToolTip.Tip="Play another random song in playlist"
+              Click="PlayNextRandom_">
+            <avalonia:MaterialIcon Kind="SkipForward" />
+          </Button>
+        </StackPanel>
+      </StackPanel>
+    </Border>
+  </controls:If>
+</UserControl>

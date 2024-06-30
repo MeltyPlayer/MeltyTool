@@ -108,4 +108,15 @@ public static class EnumerableExtensions {
       yield return (v1, v2, v3, v4);
     }
   }
+
+
+  public static bool SequenceEqualOrBothEmpty<T>(
+      this IEnumerable<T>? lhs,
+      IEnumerable<T>? rhs) {
+    if (lhs == null && rhs == null) {
+      return true;
+    }
+
+    return (lhs ?? []).SequenceEqual(rhs ?? []);
+  }
 }

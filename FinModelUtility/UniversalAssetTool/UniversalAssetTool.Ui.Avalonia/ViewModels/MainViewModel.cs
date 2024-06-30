@@ -14,12 +14,15 @@ using ReactiveUI;
 using uni.games;
 using uni.ui.avalonia.common.progress;
 using uni.ui.avalonia.common.treeViews;
+using uni.ui.avalonia.resources.audio;
 using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.ViewModels;
 
 public class MainViewModelForDesigner {
   public ProgressPanelViewModel FileBundleTreeAsyncPanelViewModel { get; }
+
+  public AudioPlayerPanelViewModel AudioPlayerPanel { get; } = new();
 
   public ModelPanelViewModel ModelPanel { get; }
     = new ModelPanelViewModelForDesigner();
@@ -60,6 +63,8 @@ public class MainViewModel : ViewModelBase {
   private ProgressPanelViewModel fileTreeAsyncPanelViewModel_;
   private string fileName_;
   private ModelPanelViewModel modelPanel_;
+
+  public AudioPlayerPanelViewModel AudioPlayerPanel { get; } = new();
 
   public MainViewModel() {
     var valueFractionProgress = new ValueFractionProgress();
@@ -118,6 +123,11 @@ public class MainViewModel : ViewModelBase {
           } else {
             this.ModelPanel = null;
           }
+        };
+
+    AudioPlaylistService.OnPlaylistUpdated
+        += playlist => {
+          this.AudioPlayerPanel.AudioFileBundles = playlist;
         };
   }
 

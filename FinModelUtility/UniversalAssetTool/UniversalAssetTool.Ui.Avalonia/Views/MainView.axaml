@@ -109,12 +109,10 @@
         </Grid>
 
         <Grid MaxWidth="500"
-              Height="32"
               VerticalAlignment="Bottom"
               Margin="0 32">
-          <audio:AudioPlayerGlPanel x:Name="AudioPlayerGlPanel" />
+          <audio:AudioPlayerPanel DataContext="{Binding AudioPlayerPanel}" />
         </Grid>
-
       </Grid>
     </Grid>
   </Grid>

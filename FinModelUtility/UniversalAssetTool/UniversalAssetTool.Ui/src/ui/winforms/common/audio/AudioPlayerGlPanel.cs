@@ -37,12 +37,12 @@ public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
             return;
           }
 
-          var activeSound = this.waveformRenderer_.ActiveSound;
+          var activeSound = this.waveformRenderer_.ActivePlayback;
           if (activeSound?.State == PlaybackState.PLAYING) {
             return;
           }
 
-          this.waveformRenderer_.ActiveSound = null;
+          this.waveformRenderer_.ActivePlayback = null;
           activeSound?.Stop();
           activeSound?.Dispose();
 
@@ -51,7 +51,7 @@ public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
                 this.audioManager_,
                 audioFileBundle);
 
-            activeSound = this.waveformRenderer_.ActiveSound =
+            activeSound = this.waveformRenderer_.ActivePlayback =
                               this.audioPlayer_.CreatePlayback(audioBuffer);
             activeSound.Volume = .1f;
             activeSound.Play();
@@ -71,8 +71,8 @@ public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
         var originalValue = this.audioFileBundles_;
         this.audioFileBundles_ = value;
 
-        this.waveformRenderer_.ActiveSound?.Stop();
-        this.waveformRenderer_.ActiveSound = null;
+        this.waveformRenderer_.ActivePlayback?.Stop();
+        this.waveformRenderer_.ActivePlayback = null;
 
         this.shuffledListView_
             = value != null

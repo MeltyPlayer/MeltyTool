@@ -8,18 +8,18 @@ namespace fin.ui.rendering.gl;
 public class AotWaveformRenderer {
   private readonly float[] points_ = new float[1000];
 
-  public IAotAudioPlayback<short>? ActiveSound { get; set; }
+  public IAotAudioPlayback<short>? ActivePlayback { get; set; }
 
   public int Width { get; set; }
   public float MiddleY { get; set; }
   public float Amplitude { get; set; }
 
   public void Render() {
-      if (this.ActiveSound == null) {
+      if (this.ActivePlayback == null) {
         return;
       }
 
-      var source = this.ActiveSound.TypedSource;
+      var source = this.ActivePlayback.TypedSource;
 
       GlTransform.PassMatricesIntoGl();
 
@@ -30,7 +30,7 @@ public class AotWaveformRenderer {
 
       var samplesAcrossWidth = samplesPerPoint * pointCount;
       var baseSampleOffset
-          = this.ActiveSound.SampleOffset - samplesAcrossWidth / 2;
+          = this.ActivePlayback.SampleOffset - samplesAcrossWidth / 2;
 
       var channelCount = source.AudioChannelsType == AudioChannelsType.STEREO
           ? 2
