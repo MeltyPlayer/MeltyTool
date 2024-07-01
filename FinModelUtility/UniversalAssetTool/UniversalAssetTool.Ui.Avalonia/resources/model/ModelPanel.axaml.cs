@@ -102,14 +102,25 @@ namespace uni.ui.avalonia.resources.model {
         return;
       }
 
+      var shouldDeselectSkeleton = true;
       var shouldDeselectTexture = true;
       if (e.AddedItems.Count > 0) {
         if (e.AddedItems[0] is TabItem item) {
           var header = item.Header;
-          if (header == this.MaterialsTabHeader || header == this.TexturesTabHeader) {
+
+          if (header == this.SkeletonTabHeader) {
+            shouldDeselectSkeleton = true;
+          }
+
+          if (header == this.MaterialsTabHeader ||
+              header == this.TexturesTabHeader) {
             shouldDeselectTexture = false;
           }
         }
+      }
+
+      if (shouldDeselectSkeleton) {
+        SelectedBoneService.SelectBone(null);
       }
 
       if (shouldDeselectTexture) {

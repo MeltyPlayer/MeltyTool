@@ -43,7 +43,9 @@
     </TabItem>
     <TabItem>
       <TabItem.Header>
-        <StackPanel Classes="sideTab" Orientation="Horizontal">
+        <StackPanel x:Name="SkeletonTabHeader"
+                    Classes="sideTab"
+                    Orientation="Horizontal">
           <avalonia:MaterialIcon Kind="{StaticResource BoneIcon}" />
           <TextBlock Text="Skeleton" />
         </StackPanel>

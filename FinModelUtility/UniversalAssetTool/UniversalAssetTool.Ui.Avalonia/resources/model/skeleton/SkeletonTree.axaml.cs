@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using fin.model;
+using fin.ui.rendering;
 using fin.util.asserts;
 
 using ReactiveUI;
@@ -78,6 +79,7 @@ namespace uni.ui.avalonia.resources.model.skeleton {
         object? sender,
         SelectionChangedEventArgs e) {
       if (e.AddedItems.Count == 0) {
+        SelectedBoneService.SelectBone(null);
         return;
       }
 
@@ -87,6 +89,7 @@ namespace uni.ui.avalonia.resources.model.skeleton {
           RoutedEvent = BoneSelectedEvent,
           Bone = selectedBone.Bone
       });
+      SelectedBoneService.SelectBone(selectedBone.Bone);
     }
   }
 

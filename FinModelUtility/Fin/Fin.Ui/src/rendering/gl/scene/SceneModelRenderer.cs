@@ -15,8 +15,10 @@ public class SceneModelRenderer : IRenderable, IDisposable {
   private readonly ISceneModelInstance sceneModel_;
   private readonly IReadOnlyMesh[] meshes_;
   private readonly IModelRenderer modelRenderer_;
+  private bool isBoneSelected_;
 
-  private readonly List<(IReadOnlyBone, SceneModelRenderer[])> children_ = new();
+  private readonly List<(IReadOnlyBone, SceneModelRenderer[])>
+      children_ = new();
 
   public SceneModelRenderer(ISceneModelInstance sceneModel,
                             IReadOnlyLighting? lighting) {
@@ -37,6 +39,17 @@ public class SceneModelRenderer : IRenderable, IDisposable {
                              this.sceneModel_.BoneTransformManager) {
             Scale = this.sceneModel_.ViewerScale
         };
+
+    SelectedBoneService.OnBoneSelected += selectedBone => {
+      var isBoneInModel = false;
+      if (selectedBone != null) {
+        isBoneInModel = model.Skeleton.Bones.Contains(selectedBone);
+      }
+
+      this.isBoneSelected_ = isBoneInModel;
+      this.SkeletonRenderer.SelectedBone
+          = this.isBoneSelected_ ? selectedBone : null;
+    };
 
     foreach (var (bone, boneChildren) in sceneModel.Children.GetPairs()) {
       this.children_.Add(
@@ -120,7 +133,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
 
     this.modelRenderer_.Render();
 
-    if (FinConfig.ShowSkeleton) {
+    if (FinConfig.ShowSkeleton || this.isBoneSelected_) {
       CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
       this.SkeletonRenderer.Render();
     }
