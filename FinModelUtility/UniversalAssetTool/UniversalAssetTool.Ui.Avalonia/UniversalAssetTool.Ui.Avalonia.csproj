@@ -97,6 +97,9 @@
     <Compile Update="resources\model\materials\MaterialShadersPanel.axaml.cs">
       <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
     </Compile>
+    <Compile Update="resources\model\mesh\MeshList.axaml.cs">
+      <DependentUpon>MeshList.axaml</DependentUpon>
+    </Compile>
     <Compile Update="resources\model\skeleton\SkeletonTree.axaml.cs">
       <DependentUpon>SkeletonTree.axaml</DependentUpon>
     </Compile>

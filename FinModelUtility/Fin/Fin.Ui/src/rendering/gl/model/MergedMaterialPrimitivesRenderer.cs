@@ -45,8 +45,6 @@ public class MergedMaterialPrimitivesRenderer : IDisposable {
     this.bufferRenderer_.Dispose();
   }
 
-  public IMesh Mesh { get; }
-
   public bool UseLighting {
     get => this.materialShader_?.UseLighting ?? false;
     set {

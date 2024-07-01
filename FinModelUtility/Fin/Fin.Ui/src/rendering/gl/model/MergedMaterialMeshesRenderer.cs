@@ -11,6 +11,7 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
   private GlBufferManager? bufferManager_;
   private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
+  private IReadOnlyMesh selectedMesh_;
 
   private (IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])[]
       materialMeshRenderers_ = [];
@@ -22,6 +23,9 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
     this.Model = model;
     this.lighting_ = lighting;
     this.boneTransformManager_ = boneTransformManager;
+
+    SelectedMeshService.OnMeshSelected += selectedMesh
+        => this.selectedMesh_ = selectedMesh;
   }
 
   // Generates buffer manager and model within the current GL context.
@@ -144,7 +148,17 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
       }
 
       foreach (var materialMeshRenderer in materialMeshRenderers) {
+        var isSelected = this.selectedMesh_ == mesh;
+
+        if (isSelected) {
+          GlUtil.RenderOutline(materialMeshRenderer.Render);
+        }
+
         materialMeshRenderer.Render();
+
+        if (isSelected) {
+          GlUtil.RenderHighlight(materialMeshRenderer.Render);
+        }
       }
     }
   }

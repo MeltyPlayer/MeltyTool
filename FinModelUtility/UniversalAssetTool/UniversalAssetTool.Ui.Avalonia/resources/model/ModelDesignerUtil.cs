@@ -87,6 +87,17 @@ public static class ModelDesignerUtil {
     }
 
     {
+      var skin = model.Skin;
+      var mesh1 = skin.AddMesh();
+      mesh1.AddTriangleStrip();
+
+      var mesh2 = skin.AddMesh();
+      mesh2.Name = "foo bar";
+      mesh2.AddPoints();
+      mesh2.AddTriangleFan();
+    }
+
+    {
       var animationManager = model.AnimationManager;
 
       var multiFrameAnimation = animationManager.AddAnimation();

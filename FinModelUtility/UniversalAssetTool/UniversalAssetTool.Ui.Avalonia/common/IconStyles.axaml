@@ -4,23 +4,43 @@
         xmlns:icons="clr-namespace:Material.Icons;assembly=Material.Icons">
   <Design.PreviewWith>
     <StackPanel Width="32" Height="300">
+      <avalonia:MaterialIcon Kind="{StaticResource InfoIcon}" />
       <avalonia:MaterialIcon Kind="{StaticResource FileIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource ModelIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource MeshIcon}" />
       <avalonia:MaterialIcon Kind="{StaticResource BoneIcon}" />
       <avalonia:MaterialIcon Kind="{StaticResource AnimationIcon}" />
       <avalonia:MaterialIcon Kind="{StaticResource MaterialIcon}" />
       <avalonia:MaterialIcon Kind="{StaticResource TextureIcon}" />
       <avalonia:MaterialIcon Kind="{StaticResource RegisterIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource CameraIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource LightIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource ActorIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource SceneIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource AreaIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource AudioIcon}" />
+      <avalonia:MaterialIcon Kind="{StaticResource ImageIcon}" />
     </StackPanel>
   </Design.PreviewWith>
 
   <Styles.Resources>
     <ResourceDictionary>
+      <icons:MaterialIconKind x:Key="InfoIcon">InfoOutline</icons:MaterialIconKind>
       <icons:MaterialIconKind x:Key="FileIcon">FileOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="ModelIcon">CubeOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="MeshIcon">ShapeOutline</icons:MaterialIconKind>
       <icons:MaterialIconKind x:Key="BoneIcon">CardsDiamondOutline</icons:MaterialIconKind>
       <icons:MaterialIconKind x:Key="AnimationIcon">AnimationOutline</icons:MaterialIconKind>
       <icons:MaterialIconKind x:Key="MaterialIcon">Sphere</icons:MaterialIconKind>
       <icons:MaterialIconKind x:Key="TextureIcon">TextureBox</icons:MaterialIconKind>
       <icons:MaterialIconKind x:Key="RegisterIcon">TuneVariant</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="CameraIcon">CameraOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="LightIcon">LightbulbOnOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="ActorIcon">AccountOutline</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="SceneIcon">Web</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="AreaIcon">ChartAreasplineVariant</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="AudioIcon">VolumeHigh</icons:MaterialIconKind>
+      <icons:MaterialIconKind x:Key="ImageIcon">ImageOutline</icons:MaterialIconKind>
     </ResourceDictionary>
   </Styles.Resources>
 </Styles>

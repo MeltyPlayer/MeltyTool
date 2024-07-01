@@ -10,6 +10,7 @@ using ReactiveUI;
 using uni.ui.avalonia.resources.animation;
 using uni.ui.avalonia.resources.registers;
 using uni.ui.avalonia.resources.model.materials;
+using uni.ui.avalonia.resources.model.mesh;
 using uni.ui.avalonia.resources.model.skeleton;
 using uni.ui.avalonia.resources.texture;
 using uni.ui.avalonia.ViewModels;
@@ -27,6 +28,7 @@ namespace uni.ui.avalonia.resources.model {
 
     private AnimationsPanelViewModel animationsPanel_;
     private MaterialsPanelViewModel materialsPanel_;
+    private MeshListViewModel meshList_;
     private RegistersPanelViewModel registersPanel_;
     private FilesPanelViewModel filesPanel_;
     private SkeletonTreeViewModel skeletonTree_;
@@ -45,6 +47,7 @@ namespace uni.ui.avalonia.resources.model {
         this.MaterialsPanel = new MaterialsPanelViewModel {
             ModelAndMaterials = (value, value.MaterialManager.All)
         };
+        this.MeshList = new MeshListViewModel { Meshes = value.Skin.Meshes };
         this.FilesPanel = new FilesPanelViewModel(value);
         this.RegistersPanel = new RegistersPanelViewModel() {
             Registers = value.MaterialManager.Registers,
@@ -64,19 +67,24 @@ namespace uni.ui.avalonia.resources.model {
         => this.RaiseAndSetIfChanged(ref this.animationsPanel_, value);
     }
 
+    public FilesPanelViewModel FilesPanel {
+      get => this.filesPanel_;
+      private set => this.RaiseAndSetIfChanged(ref this.filesPanel_, value);
+    }
+
     public MaterialsPanelViewModel MaterialsPanel {
       get => this.materialsPanel_;
       private set => this.RaiseAndSetIfChanged(ref this.materialsPanel_, value);
     }
 
+    public MeshListViewModel MeshList {
+      get => this.meshList_;
+      private set => this.RaiseAndSetIfChanged(ref this.meshList_, value);
+    }
+
     public RegistersPanelViewModel RegistersPanel {
       get => this.registersPanel_;
       private set => this.RaiseAndSetIfChanged(ref this.registersPanel_, value);
-    }
-
-    public FilesPanelViewModel FilesPanel {
-      get => this.filesPanel_;
-      private set => this.RaiseAndSetIfChanged(ref this.filesPanel_, value);
     }
 
     public SkeletonTreeViewModel SkeletonTree {
@@ -103,6 +111,7 @@ namespace uni.ui.avalonia.resources.model {
       }
 
       var shouldDeselectSkeleton = true;
+      var shouldDeselectMesh = true;
       var shouldDeselectTexture = true;
       if (e.AddedItems.Count > 0) {
         if (e.AddedItems[0] is TabItem item) {
@@ -110,6 +119,10 @@ namespace uni.ui.avalonia.resources.model {
 
           if (header == this.SkeletonTabHeader) {
             shouldDeselectSkeleton = true;
+          }
+
+          if (header == this.MeshesTabHeader) {
+            shouldDeselectMesh = true;
           }
 
           if (header == this.MaterialsTabHeader ||
@@ -121,6 +134,10 @@ namespace uni.ui.avalonia.resources.model {
 
       if (shouldDeselectSkeleton) {
         SelectedBoneService.SelectBone(null);
+      }
+
+      if (shouldDeselectMesh) {
+        SelectedMeshService.SelectMesh(null);
       }
 
       if (shouldDeselectTexture) {

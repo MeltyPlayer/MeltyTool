@@ -10,6 +10,7 @@
              xmlns:registers="clr-namespace:uni.ui.avalonia.resources.registers"
              xmlns:resource="clr-namespace:uni.ui.avalonia.resources"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:mesh="clr-namespace:uni.ui.avalonia.resources.model.mesh"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
              x:Class="uni.ui.avalonia.resources.model.ModelPanel"
              x:DataType="model:ModelPanelViewModel">
@@ -51,6 +52,17 @@
         </StackPanel>
       </TabItem.Header>
       <skeleton:SkeletonTree DataContext="{Binding SkeletonTree}" />
+    </TabItem>
+    <TabItem>
+      <TabItem.Header>
+        <StackPanel x:Name="MeshesTabHeader"
+                    Classes="sideTab"
+                    Orientation="Horizontal">
+          <avalonia:MaterialIcon Kind="{StaticResource MeshIcon}" />
+          <TextBlock Text="Meshes" />
+        </StackPanel>
+      </TabItem.Header>
+      <mesh:MeshList DataContext="{Binding MeshList}" />
     </TabItem>
     <TabItem>
       <TabItem.Header>
