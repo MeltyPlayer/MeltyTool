@@ -78,6 +78,10 @@ public static class DatKeyframesUtil {
     public required int T1 { get; init; }
   }
 
+  /// <summary>
+  ///   Helper method for getting the interpolations between each of the FObj
+  ///   keyframes.
+  /// </summary>
   private static LinkedList<InterpolationRegisters>
       GetInterpolationsFromFObjKeys_(
           IReadOnlyList<FObjKey> keys) {
@@ -168,6 +172,8 @@ public static class DatKeyframesUtil {
   }
 
   /// <summary>
+  ///   Helper method for reading the FObj keyframes.
+  /// 
   ///   Shamelessly stolen from:
   ///   https://github.com/Ploaj/HSDLib/blob/master/HSDRaw/Tools/FOBJ_Decoder.cs#L47
   /// </summary>

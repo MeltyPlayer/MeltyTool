@@ -11,6 +11,13 @@ namespace dat.schema.melee;
 public partial class MeleeModelLookupTables : IBinaryDeserializable {
   public uint VisibilityLookupLength { get; set; }
   public uint CostumeVisibilityLookupTableOffset { get; set; }
+  public uint MaterialLookupLength { get; set; }
+  public uint CostumeMaterialLookupTableOffset { get; set; }
+  public byte ItemHoldBone { get; set; }
+  public byte ShieldBone { get; set; }
+  public byte TopOfHeadBone { get; set; }
+  public byte LeftFootBone { get; set; }
+  public byte RightFootBone { get; set; }
 
   // TODO: Handle rest
 
