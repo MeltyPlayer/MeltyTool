@@ -141,9 +141,16 @@ namespace UoT.api {
             ootLimbs.Count);
         } else {
           var animationFiles
-              = zSegments.Objects.Where(s => s.FileName.EndsWith("_anime"))
-                         .Concat(zFile.Yield())
-                         .ToArray();
+              = zSegments
+                .Objects
+                .Where(s => s.FileName.EndsWith("_anime") ||
+                            s.FileName.EndsWith("_keep") ||
+                            s.FileName.EndsWith("_animetion") ||
+                            s.FileName.EndsWith("_anime1") ||
+                            s.FileName.EndsWith("_anime2") ||
+                            s.FileName.EndsWith("_anime3"))
+                .Concat(zFile.Yield())
+                .ToArray();
 
           ootAnimations = animationReader.GetCommonAnimations(
               n64Memory,
