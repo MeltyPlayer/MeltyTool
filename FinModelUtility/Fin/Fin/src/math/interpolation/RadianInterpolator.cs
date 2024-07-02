@@ -7,8 +7,6 @@ namespace fin.math.interpolation;
 public readonly struct RadianInterpolator : IInterpolator<float> {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public float Interpolate(float fromValue, float toValue, float progress) {
-    toValue = fromValue +
-              RadiansUtil.CalculateRadiansTowards(fromValue, toValue);
     return float.Lerp(fromValue, toValue, progress);
   }
 
@@ -20,9 +18,6 @@ public readonly struct RadianInterpolator : IInterpolator<float> {
                            float toValue,
                            float toTangent,
                            float time) {
-    toValue = fromValue +
-              RadiansUtil.CalculateRadiansTowards(fromValue, toValue);
-
     return HermiteInterpolationUtil.InterpolateFloats(
         fromTime,
         fromValue,
