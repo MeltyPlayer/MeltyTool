@@ -3,11 +3,11 @@
 namespace dat.schema.animation;
 
 public class DatKeyframe {
-  public required int Frame { get; init; }
-  public required float IncomingValue { get; init; }
-  public required float OutgoingValue { get; set; }
-  public required float IncomingTangent { get; init; }
-  public required float OutgoingTangent { get; set; }
+  public int Frame { get; init; }
+  public float IncomingValue { get; set; }
+  public float OutgoingValue { get; set; }
+  public float? IncomingTangent { get; set; }
+  public float? OutgoingTangent { get; set; }
 }
 
 public static class DatKeyframesUtil {
@@ -41,41 +41,57 @@ public static class DatKeyframesUtil {
 
     var firstInterpolation = interpolations.First.Value;
     DatKeyframe nextKeyframe = new() {
-        Frame = firstInterpolation.T0,
-        IncomingValue = firstInterpolation.P0,
-        OutgoingValue = firstInterpolation.P0,
-        IncomingTangent = firstInterpolation.D0,
-        OutgoingTangent = firstInterpolation.D0,
+        Frame = firstInterpolation.FromFrame,
+        IncomingValue = firstInterpolation.FromValue,
+        OutgoingValue = firstInterpolation.FromValue,
+        OutgoingTangent = null,
     };
     if (nextKeyframe.Frame >= 0) {
       keyframes.AddLast(nextKeyframe);
     }
 
     foreach (var interpolation in interpolations) {
+      // Pretty sure this is right?
+      var adj = interpolation.ToFrame - interpolation.FromFrame;
+
       currentKeyframe = nextKeyframe;
-      currentKeyframe.OutgoingValue = interpolation.P0;
-      currentKeyframe.OutgoingTangent = interpolation.D0;
+      currentKeyframe.OutgoingValue = interpolation.FromValue;
+      currentKeyframe.OutgoingTangent
+          = interpolation.FromTangentUnadjusted / adj;
 
       nextKeyframe = new() {
-          Frame = interpolation.T1,
-          IncomingValue = interpolation.P1,
-          OutgoingValue = interpolation.P1,
-          IncomingTangent = interpolation.D1,
-          OutgoingTangent = interpolation.D1,
+          Frame = interpolation.ToFrame,
+          IncomingValue = interpolation.ToValue,
+          IncomingTangent = interpolation.ToTangentUnadjusted / adj,
+          OutgoingValue = interpolation.ToValue,
       };
+
       if (nextKeyframe.Frame >= 0) {
         keyframes.AddLast(nextKeyframe);
+      }
+
+      if (interpolation.InterpolationType is GxInterpolationType
+              .ConstantSection) {
+        currentKeyframe.OutgoingValue
+            = nextKeyframe.IncomingValue = interpolation.ToValue;
+      }
+
+      if (interpolation.InterpolationType is
+          GxInterpolationType.ConstantSection
+          or GxInterpolationType.LinearSection) {
+        currentKeyframe.OutgoingTangent = nextKeyframe.IncomingTangent = null;
       }
     }
   }
 
   private class InterpolationRegisters {
-    public required float P0 { get; init; }
-    public required float P1 { get; init; }
-    public required float D0 { get; init; }
-    public required float D1 { get; init; }
-    public required int T0 { get; init; }
-    public required int T1 { get; init; }
+    public required GxInterpolationType InterpolationType { get; init; }
+    public required float FromValue { get; init; }
+    public required float ToValue { get; init; }
+    public required float FromTangentUnadjusted { get; init; }
+    public required float ToTangentUnadjusted { get; init; }
+    public required int FromFrame { get; init; }
+    public required int ToFrame { get; init; }
   }
 
   /// <summary>
@@ -87,63 +103,63 @@ public static class DatKeyframesUtil {
           IReadOnlyList<FObjKey> keys) {
     var registers = new LinkedList<InterpolationRegisters>();
 
-    float p0 = 0;
-    float p1 = 0;
-    float d0 = 0;
-    float d1 = 0;
-    int t0 = 0;
-    int t1 = 0;
-    var op_intrp = GxInterpolationType.Constant;
-    var op = GxInterpolationType.Constant;
+    float fromValue = 0;
+    float toValue = 0;
+    float fromTangent = 0;
+    float toTangent = 0;
+    int fromFrame = 0;
+    int toFrame = 0;
+    var interpolationType = GxInterpolationType.None;
 
     foreach (var key in keys) {
-      op_intrp = op;
-      op = key.InterpolationType;
+      var previousInterpolationType = interpolationType;
+      interpolationType = key.InterpolationType;
 
       var timeChanged = false;
 
-      switch (op) {
-        case GxInterpolationType.Constant:
-        case GxInterpolationType.Linear:
-          p0 = p1;
-          p1 = key.Value;
-          if (op_intrp != GxInterpolationType.Slp) {
-            d0 = d1;
-            d1 = 0;
+      switch (interpolationType) {
+        case GxInterpolationType.ConstantSection:
+        case GxInterpolationType.LinearSection:
+          fromValue = toValue;
+          toValue = key.Value;
+          if (previousInterpolationType !=
+              GxInterpolationType.FromTangentSetter) {
+            fromTangent = toTangent;
+            toTangent = 0;
           }
 
-          t0 = t1;
-          t1 = key.Frame;
+          fromFrame = toFrame;
+          toFrame = key.Frame;
 
           timeChanged = true;
           break;
-        case GxInterpolationType.Spl0:
-          p0 = p1;
-          d0 = d1;
-          p1 = key.Value;
-          d1 = 0;
-          t0 = t1;
-          t1 = key.Frame;
+        case GxInterpolationType.SplineTo0Section:
+          fromValue = toValue;
+          fromTangent = toTangent;
+          toValue = key.Value;
+          toTangent = 0;
+          fromFrame = toFrame;
+          toFrame = key.Frame;
 
           timeChanged = true;
           break;
-        case GxInterpolationType.Spl:
-          p0 = p1;
-          p1 = key.Value;
-          d0 = d1;
-          d1 = key.Tangent;
-          t0 = t1;
-          t1 = key.Frame;
+        case GxInterpolationType.SplineSection:
+          fromValue = toValue;
+          toValue = key.Value;
+          fromTangent = toTangent;
+          toTangent = key.Tangent;
+          fromFrame = toFrame;
+          toFrame = key.Frame;
 
           timeChanged = true;
           break;
-        case GxInterpolationType.Slp:
-          d0 = d1;
-          d1 = key.Tangent;
+        case GxInterpolationType.FromTangentSetter:
+          fromTangent = toTangent;
+          toTangent = key.Tangent;
           break;
-        case GxInterpolationType.Key:
-          p1 = key.Value;
-          p0 = key.Value;
+        case GxInterpolationType.FromValueSetter:
+          toValue = key.Value;
+          fromValue = key.Value;
           break;
       }
 
@@ -152,12 +168,13 @@ public static class DatKeyframesUtil {
       }
 
       registers.AddLast(new InterpolationRegisters {
-          P0 = p0,
-          P1 = p1,
-          D0 = d0,
-          D1 = d1,
-          T0 = t0,
-          T1 = t1,
+          InterpolationType = interpolationType,
+          FromValue = fromValue,
+          ToValue = toValue,
+          FromTangentUnadjusted = fromTangent,
+          ToTangentUnadjusted = toTangent,
+          FromFrame = fromFrame,
+          ToFrame = toFrame,
       });
     }
 
@@ -211,21 +228,21 @@ public static class DatKeyframesUtil {
               var time = 0;
 
               switch (interpolation) {
-                case GxInterpolationType.Constant:
-                case GxInterpolationType.Linear:
-                case GxInterpolationType.Spl0:
+                case GxInterpolationType.ConstantSection:
+                case GxInterpolationType.LinearSection:
+                case GxInterpolationType.SplineTo0Section:
                   value = ParseFloat_(sbr, valueFormat, valueScale);
                   time = ReadPacked_(sbr);
                   break;
-                case GxInterpolationType.Spl:
+                case GxInterpolationType.SplineSection:
                   value = ParseFloat_(sbr, valueFormat, valueScale);
                   tan = ParseFloat_(sbr, tangentFormat, tangentScale);
                   time = ReadPacked_(sbr);
                   break;
-                case GxInterpolationType.Slp:
+                case GxInterpolationType.FromTangentSetter:
                   tan = ParseFloat_(sbr, tangentFormat, tangentScale);
                   break;
-                case GxInterpolationType.Key:
+                case GxInterpolationType.FromValueSetter:
                   value = ParseFloat_(sbr, valueFormat, valueScale);
                   break;
                 default:

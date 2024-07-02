@@ -25,12 +25,12 @@ public enum JointTrackType : byte {
 
 public enum GxInterpolationType {
   None = 0,
-  Constant = 1,
-  Linear = 2,
-  Spl0 = 3,
-  Spl = 4,
-  Slp = 5,
-  Key = 6,
+  ConstantSection = 1,
+  LinearSection = 2,
+  SplineTo0Section = 3,
+  SplineSection = 4,
+  FromTangentSetter = 5,
+  FromValueSetter = 6,
 }
 
 /// <summary>

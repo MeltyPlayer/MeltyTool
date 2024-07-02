@@ -105,6 +105,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
         finAnimation.Name = $"Animation {i}";
 
         finAnimation.FrameRate = 60;
+        finAnimation.UseLoopingInterpolation = false;
 
         return finAnimation;
       });
