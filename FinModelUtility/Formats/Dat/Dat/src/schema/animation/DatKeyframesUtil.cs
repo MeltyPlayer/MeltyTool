@@ -51,18 +51,14 @@ public static class DatKeyframesUtil {
     }
 
     foreach (var interpolation in interpolations) {
-      // Pretty sure this is right?
-      var adj = interpolation.ToFrame - interpolation.FromFrame;
-
       currentKeyframe = nextKeyframe;
       currentKeyframe.OutgoingValue = interpolation.FromValue;
-      currentKeyframe.OutgoingTangent
-          = interpolation.FromTangentUnadjusted / adj;
+      currentKeyframe.OutgoingTangent = interpolation.FromTangent;
 
       nextKeyframe = new() {
           Frame = interpolation.ToFrame,
           IncomingValue = interpolation.ToValue,
-          IncomingTangent = interpolation.ToTangentUnadjusted / adj,
+          IncomingTangent = interpolation.ToTangent,
           OutgoingValue = interpolation.ToValue,
       };
 
@@ -88,8 +84,8 @@ public static class DatKeyframesUtil {
     public required GxInterpolationType InterpolationType { get; init; }
     public required float FromValue { get; init; }
     public required float ToValue { get; init; }
-    public required float FromTangentUnadjusted { get; init; }
-    public required float ToTangentUnadjusted { get; init; }
+    public required float FromTangent { get; init; }
+    public required float ToTangent { get; init; }
     public required int FromFrame { get; init; }
     public required int ToFrame { get; init; }
   }
@@ -109,25 +105,25 @@ public static class DatKeyframesUtil {
     float toTangent = 0;
     int fromFrame = 0;
     int toFrame = 0;
-    var interpolationType = GxInterpolationType.None;
 
     foreach (var key in keys) {
-      var previousInterpolationType = interpolationType;
-      interpolationType = key.InterpolationType;
+      var interpolationType = key.InterpolationType;
 
       var timeChanged = false;
 
       switch (interpolationType) {
         case GxInterpolationType.ConstantSection:
+          fromValue = toValue = key.Value;
+          fromTangent = toTangent = 0;
+          fromFrame = toFrame;
+          toFrame = key.Frame;
+
+          timeChanged = true;
+          break;
         case GxInterpolationType.LinearSection:
           fromValue = toValue;
           toValue = key.Value;
-          if (previousInterpolationType !=
-              GxInterpolationType.FromTangentSetter) {
-            fromTangent = toTangent;
-            toTangent = 0;
-          }
-
+          fromTangent = toTangent = 0;
           fromFrame = toFrame;
           toFrame = key.Frame;
 
@@ -163,19 +159,17 @@ public static class DatKeyframesUtil {
           break;
       }
 
-      if (!timeChanged) {
-        registers.RemoveLast();
+      if (timeChanged && fromFrame != toFrame) {
+        registers.AddLast(new InterpolationRegisters {
+            InterpolationType = interpolationType,
+            FromValue = fromValue,
+            ToValue = toValue,
+            FromTangent = fromTangent,
+            ToTangent = toTangent,
+            FromFrame = fromFrame,
+            ToFrame = toFrame,
+        });
       }
-
-      registers.AddLast(new InterpolationRegisters {
-          InterpolationType = interpolationType,
-          FromValue = fromValue,
-          ToValue = toValue,
-          FromTangentUnadjusted = fromTangent,
-          ToTangentUnadjusted = toTangent,
-          FromFrame = fromFrame,
-          ToFrame = toFrame,
-      });
     }
 
     return registers;
