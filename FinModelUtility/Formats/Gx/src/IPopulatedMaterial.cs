@@ -13,9 +13,9 @@ public interface IPopulatedMaterial {
   string Name { get; }
   GxCullMode CullMode { get; }
 
-  Color[] MaterialColors { get; }
+  (int, Color)[] MaterialColors { get; }
   IColorChannelControl?[] ColorChannelControls { get; }
-  Color[] AmbientColors { get; }
+  (int, Color)[] AmbientColors { get; }
   Color?[] LightColors { get; }
 
   Color[] KonstColors { get; }

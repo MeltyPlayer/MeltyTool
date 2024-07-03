@@ -20,9 +20,9 @@ public class BmdPopulatedMaterial : IPopulatedMaterial {
   public byte ZModeIndex;
   public byte DitherIndex;
 
-  public Color[] MaterialColors { get; set; }
+  public (int, Color)[] MaterialColors { get; set; }
   public IColorChannelControl?[] ColorChannelControls { get; set; }
-  public Color[] AmbientColors { get; set; }
+  public (int, Color)[] AmbientColors { get; set; }
   public Color?[] LightColors { get; set; }
 
   public Color[] KonstColors { get; set; }
@@ -69,11 +69,11 @@ public class BmdPopulatedMaterial : IPopulatedMaterial {
 
       this.MaterialColors =
           entry.MaterialColorIndexes
-               .Select(i => GetOrNull_(mat3.MaterialColor, i))
+               .Select(i => ((int) i, GetOrNull_(mat3.MaterialColor, i)))
                .ToArray();
       this.AmbientColors =
           entry.AmbientColorIndexes
-               .Select(i => GetOrNull_(mat3.AmbientColors, i))
+               .Select(i => ((int) i, GetOrNull_(mat3.AmbientColors, i)))
                .ToArray();
 
       this.LightColors =

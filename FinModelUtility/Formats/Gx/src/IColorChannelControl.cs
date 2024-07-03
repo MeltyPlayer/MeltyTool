@@ -68,6 +68,8 @@ public interface IColorChannelControl {
   GxAttenuationFunction AttenuationFunction { get; }
 
   GxColorSrc AmbientSrc { get; }
+
+  int? VertexColorIndex => null;
 }
 
 public class ColorChannelControlImpl : IColorChannelControl {
@@ -77,4 +79,5 @@ public class ColorChannelControlImpl : IColorChannelControl {
   public GxDiffuseFunction DiffuseFunction { get; set; }
   public GxAttenuationFunction AttenuationFunction { get; set; }
   public GxColorSrc AmbientSrc { get; set; }
+  public int? VertexColorIndex { get; set; }
 }

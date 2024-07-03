@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.HighPerformance.Helpers;
 
 using fin.color;
+using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
 using fin.io;
@@ -14,12 +15,16 @@ using fin.model.impl;
 using fin.model.io.importers;
 using fin.model.util;
 using fin.util.asserts;
+using fin.util.enums;
+using fin.util.image;
 using fin.util.lists;
 
 using gx;
+using gx.impl;
 
 using mod.schema.anm;
 using mod.schema.mod;
+using mod.util;
 
 using schema.binary;
 
@@ -118,34 +123,38 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
       finTexturesAndAttrs[i] = (finTexture, textureAttr);
     }
 
+    var lazyTextureDictionary = new GxLazyTextureDictionary(model);
+    
     // Writes materials
     var finMaterials = new List<IMaterial>();
     for (var i = 0; i < mod.materials.materials.Count; ++i) {
-      var material = mod.materials.materials[i];
+      var modMaterial = mod.materials.materials[i];
+      var isEnabled = modMaterial.flags.CheckFlag(MaterialFlags.ENABLED);
 
-      ITexture? finTexture = null;
+      
+      if (isEnabled) {
+        var modPopulatedMaterial =
+            new ModPopulatedMaterial(
+                i,
+                modMaterial,
+                mod.materials.texEnvironments[
+                    (int) modMaterial.TevGroupId]);
 
-      var texturesInMaterial = material.texInfo.TexturesInMaterial;
-      if (texturesInMaterial.Length > 0) {
-        var textureInMaterial = texturesInMaterial[0];
+        var finMaterial = new GxFixedFunctionMaterial(
+            model,
+            model.MaterialManager,
+            modPopulatedMaterial,
+            gxTextures,
+            lazyTextureDictionary).Material;
+        finMaterial.TransparencyType
+            = modMaterial.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)
+                ? TransparencyType.TRANSPARENT
+                : TransparencyType.MASK;
 
-        var texAttrIndex = textureInMaterial.TexAttrIndex;
-        TextureAttributes texAttr;
-        (finTexture, texAttr) = finTexturesAndAttrs[texAttrIndex];
+        finMaterials.Add(finMaterial);
+      } else {
+        finMaterials.Add(model.MaterialManager.AddNullMaterial());
       }
-
-      IMaterial finMaterial = finTexture != null
-          ? model.MaterialManager.AddTextureMaterial(
-              finTexture)
-          : model.MaterialManager.AddNullMaterial();
-
-      finMaterial.Name = $"material {i}";
-      finMaterials.Add(finMaterial);
-
-      /*var modPopulatedMaterial =
-        new ModPopulatedMaterial(material, mod.materials.texEnvironments[(int)material.TexEnvironmentIndex]);
-
-      finMaterials.Add(new GxFixedFunctionMaterial(model.MaterialManager, modPopulatedMaterial, gxTextures).Material);*/
     }
 
     // Writes bones
@@ -341,6 +350,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                     var envelopeIndex = -1 - attachmentIndex;
                     allVertexWeights.Add(envelopeBoneWeights[envelopeIndex]);
                   }
+                } else {
+                  ;
                 }
 
                 continue;

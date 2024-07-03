@@ -138,6 +138,10 @@ namespace mod.schema.mod {
               this.materials.materials.Add(mat);
             }
             br.Align(0x20);
+
+            var readLength = br.Position - beforePosition;
+
+            ;
             break;
           case ChunkId.VERTEX_MATRIX:
             Mod.ReadGenericChunk_(br, this.vtxMatrix);
