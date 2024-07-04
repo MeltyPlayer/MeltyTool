@@ -41,6 +41,7 @@
     <ProjectReference Include="..\..\Formats\Level5\Level5\Level5.csproj" />
     <ProjectReference Include="..\..\Formats\Mod\Mod\Mod.csproj" />
     <ProjectReference Include="..\..\Formats\Modl\Modl\Modl.csproj" />
+    <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
     <ProjectReference Include="..\..\Formats\Visceral\Visceral\Visceral.csproj" />
     <ProjectReference Include="..\..\Formats\Xmod\Xmod.csproj" />
 

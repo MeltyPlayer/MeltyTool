@@ -185,7 +185,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperMarioTheThousandYearDo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperMarioTheThousandYearDoor Tests", "Games\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor Tests\PaperMarioTheThousandYearDoor Tests.csproj", "{9E85307D-2894-4C27-A582-2DAAF3E864A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperMarioDirectorsCut Tests", "Games\PaperMarioDirectorsCut\PaperMarioDirectorsCut Tests\PaperMarioDirectorsCut Tests.csproj", "{4E7CA5F9-BDB7-4877-9358-B408B49A746A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaperMarioDirectorsCut Tests", "Games\PaperMarioDirectorsCut\PaperMarioDirectorsCut Tests\PaperMarioDirectorsCut Tests.csproj", "{4E7CA5F9-BDB7-4877-9358-B408B49A746A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ssm", "Ssm", "{258A6213-4C7C-4EDE-960E-DC48711B0655}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssm", "Formats\Ssm\Ssm\Ssm.csproj", "{F0F16AE1-2D86-4EF5-99E7-B11F18552470}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -893,6 +897,18 @@ Global
 		{4E7CA5F9-BDB7-4877-9358-B408B49A746A}.Release|x64.Build.0 = Release|Any CPU
 		{4E7CA5F9-BDB7-4877-9358-B408B49A746A}.Release|x86.ActiveCfg = Release|Any CPU
 		{4E7CA5F9-BDB7-4877-9358-B408B49A746A}.Release|x86.Build.0 = Release|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Debug|x64.Build.0 = Debug|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Release|x64.ActiveCfg = Release|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Release|x64.Build.0 = Release|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -972,6 +988,8 @@ Global
 		{248825D6-0B3D-4889-A486-F22B7C6F537B} = {184EC62B-AEFD-4FCD-8EE8-4DB6D430AA16}
 		{9E85307D-2894-4C27-A582-2DAAF3E864A3} = {184EC62B-AEFD-4FCD-8EE8-4DB6D430AA16}
 		{4E7CA5F9-BDB7-4877-9358-B408B49A746A} = {8C49C6B9-EC83-435D-98F6-50C8C6300E74}
+		{258A6213-4C7C-4EDE-960E-DC48711B0655} = {F825789E-A737-4B16-AB6B-37342AC56705}
+		{F0F16AE1-2D86-4EF5-99E7-B11F18552470} = {258A6213-4C7C-4EDE-960E-DC48711B0655}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}
