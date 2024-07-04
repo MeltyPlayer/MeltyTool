@@ -83,10 +83,19 @@ namespace mod.util {
 
       this.TevOrderInfos = tevInfo.TevStages.Select(tevStage => {
                                     var texMap = tevStage.TexMap;
-                                    byte texCoordId = 0;
-                                    if (texMap > 0) {
+                                    var texCoordId
+                                        = GxTexCoord.GX_TEXCOORD_NULL;
+                                    var texGenData
+                                        = material.texInfo.TexGenData;
+                                    if ((sbyte) texMap >= 0 &&
+                                        (sbyte) texMap < texGenData.Length) {
                                       texCoordId = material.texInfo
-                                          .TexGenData[texMap].TexCoordId;
+                                          .TexGenData[(int) texMap].TexCoordId;
+                                    }
+
+                                    if (tevStage.TexCoord !=
+                                        GxTexCoord.GX_TEXCOORD_NULL) {
+                                      texCoordId = tevStage.TexCoord;
                                     }
 
                                     var colorChannel = tevStage.ColorChannel;
@@ -184,6 +193,11 @@ namespace mod.util {
             Func1 = peInfo.CompareType1,
             Reference1 = peInfo.Reference1,
         };
+        this.DepthFunction = new DepthFunctionImpl {
+            Enable = peInfo.Enable,
+            Func = peInfo.DepthCompareType,
+            WriteNewValueIntoDepthBuffer = peInfo.WriteNewIntoBuffer,
+        };
       }
     }
 
@@ -207,11 +221,7 @@ namespace mod.util {
     public ITexCoordGen?[] TexCoordGens { get; }
     public ITextureMatrixInfo?[] TextureMatrices { get; }
 
-    public IDepthFunction DepthFunction { get; } = new DepthFunctionImpl {
-        Enable = true,
-        Func = GxCompareType.Less,
-        WriteNewValueIntoDepthBuffer = true,
-    };
+    public IDepthFunction DepthFunction { get; }
 
     public short[] TextureIndices { get; }
   }

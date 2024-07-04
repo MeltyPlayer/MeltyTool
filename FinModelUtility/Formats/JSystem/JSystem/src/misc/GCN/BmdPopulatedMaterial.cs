@@ -157,8 +157,8 @@ public class BmdPopulatedMaterial : IPopulatedMaterial {
         this.impl_ = impl;
       }
 
-    public byte TexCoordId => this.impl_.TexCoordId;
-    public sbyte TexMap => this.impl_.TexMap;
+    public GxTexCoord TexCoordId => this.impl_.TexCoordId;
+    public GxTexMap TexMap => this.impl_.TexMap;
     public GxColorChannel ColorChannelId => this.impl_.ColorChannelId;
 
     public GxKonstColorSel KonstColorSel { get; set; }

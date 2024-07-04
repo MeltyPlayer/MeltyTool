@@ -160,7 +160,17 @@ public partial class PeInfo : IBinaryConvertible {
     => ((AlphaCompareFunctionBits >> 24) & 0xFF) / 255f;
 
 
-  public int ZMode = 0;
+  public int ZModeBits = 0;
+
+  [Skip]
+  public bool Enable => ((ZModeBits >> 8) & 0x1) == 0x1;
+
+  [Skip]
+  public bool WriteNewIntoBuffer => ((ZModeBits >> 9) & 0x1) == 0x1;
+
+  [Skip]
+  public GxCompareType DepthCompareType
+    => (GxCompareType) ((ZModeBits >> 0) & 0xF);
 
   public int BlendModeBits { get; set; }
 
@@ -270,7 +280,7 @@ public class Material : IBinaryConvertible {
   public MaterialFlags flags = 0;
 
   [Unknown]
-  public uint unknown1 = 0;
+  public int unknown1 = 0;
 
   public Rgba32 SomeColor;
 
@@ -282,7 +292,7 @@ public class Material : IBinaryConvertible {
 
   public void Read(IBinaryReader br) {
     this.flags = (MaterialFlags) br.ReadUInt32();
-    this.unknown1 = br.ReadUInt32();
+    this.unknown1 = br.ReadInt32();
     this.SomeColor.Read(br);
 
     if (this.flags.CheckFlag(MaterialFlags.ENABLED)) {
@@ -320,7 +330,7 @@ public partial class TextureInfo : IBinaryConvertible {
 
 [BinarySchema]
 public partial class TexGenData : IBinaryConvertible {
-  public byte TexCoordId = 0;
+  public GxTexCoord TexCoordId = 0;
   public GxTexGenType TexGenType = 0;
   public GxTexGenSrc TexGenSrc { get; set; }
 
@@ -391,14 +401,11 @@ public partial class TCR_Unk2 : IBinaryConvertible {
 
 [BinarySchema]
 public partial class TEVStage : IBinaryConvertible {
-  // TODO: This is a guess
-  public byte TexCoordId { get; set; }
-
-  // TODO: This is a guess
-  public sbyte TexMap { get; set; }
-
   [Unknown]
-  public byte unknown3 = 0;
+  public byte Unknown = 0;
+
+  public GxTexCoord TexCoord { get; set; }
+  public GxTexMap TexMap { get; set; }
 
   public GxColorChannel ColorChannel { get; set; }
 

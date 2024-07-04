@@ -7,6 +7,7 @@ public enum GxOpcode : byte {
   NOP = 0x0,
 
   DRAW_QUADS = 0x80,
+
   // Early code for GX_DRAW_QUADS? Seen in Luigi's Mansion.
   DRAW_QUADS_2 = 0x88,
   DRAW_TRIANGLES = 0x90,
@@ -68,13 +69,16 @@ public enum GxComponentCount {
   // Position
   POS_XY = 0,
   POS_XYZ = 1,
+
   // Normal
   NRM_XYZ = 0,
   NRM_NBT = 1,
   NRM_NBT3 = 2,
+
   // Color
   CLR_RGB = 0,
   CLR_RGBA = 1,
+
   // TexCoord
   TEX_S = 0,
   TEX_ST = 1,
@@ -93,6 +97,30 @@ public enum GxComponentType {
   RGBA4 = 3,
   RGBA6 = 4,
   RGBA8 = 5,
+}
+
+public enum GxTexMap : byte {
+  GX_TEXMAP0,
+  GX_TEXMAP1,
+  GX_TEXMAP2,
+  GX_TEXMAP3,
+  GX_TEXMAP4,
+  GX_TEXMAP5,
+  GX_TEXMAP6,
+  GX_TEXMAP7,
+  GX_TEXMAP_NULL = 0xff,
+}
+
+public enum GxTexCoord : byte {
+  GX_TEXCOORD0,
+  GX_TEXCOORD1,
+  GX_TEXCOORD2,
+  GX_TEXCOORD3,
+  GX_TEXCOORD4,
+  GX_TEXCOORD5,
+  GX_TEXCOORD6,
+  GX_TEXCOORD7,
+  GX_TEXCOORD_NULL = 0xff,
 }
 
 public enum GxKonstColorSel : byte {

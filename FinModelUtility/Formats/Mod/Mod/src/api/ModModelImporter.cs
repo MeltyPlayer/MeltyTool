@@ -128,11 +128,13 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     var lazyTextureDictionary = new GxLazyTextureDictionary(model);
 
     // Writes materials
-    var finMaterials = new List<IMaterial>();
+    var modAndFinMaterials = new List<(Material, IMaterial)>();
     for (var i = 0; i < mod.materials.materials.Count; ++i) {
       var modMaterial = mod.materials.materials[i];
+
+      IMaterial finMaterial;
       if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
-        finMaterials.Add(model.MaterialManager.AddHiddenMaterial());
+        finMaterial = model.MaterialManager.AddHiddenMaterial();
       } else if (modMaterial.flags.CheckFlag(MaterialFlags.ENABLED)) {
         var modPopulatedMaterial =
             new ModPopulatedMaterial(
@@ -141,23 +143,24 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                 mod.materials.texEnvironments[
                     (int) modMaterial.TevGroupId]);
 
-        var finMaterial = new GxFixedFunctionMaterial(
+        finMaterial = new GxFixedFunctionMaterial(
             model,
             model.MaterialManager,
             modPopulatedMaterial,
             gxTextures,
             lazyTextureDictionary).Material;
-        finMaterial.TransparencyType
-            = modMaterial.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND) ||
-              finMaterial.Textures.Any(
-                  t => t.TransparencyType == TransparencyType.TRANSPARENT)
-                ? TransparencyType.TRANSPARENT
-                : TransparencyType.MASK;
 
-        finMaterials.Add(finMaterial);
+        /*finMaterial.TransparencyType
+            = modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE)
+                ? TransparencyType.OPAQUE
+                : modMaterial.flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
+                    ? TransparencyType.MASK
+                    : TransparencyType.TRANSPARENT;*/
       } else {
-        finMaterials.Add(model.MaterialManager.AddNullMaterial());
+        finMaterial = model.MaterialManager.AddNullMaterial();
       }
+     
+      modAndFinMaterials.Add((modMaterial, finMaterial));
     }
 
     // Writes bones
@@ -242,10 +245,11 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
         var meshIndex = jointMatPoly.meshIdx;
         var mesh = mod.meshes[meshIndex];
 
-        var material = finMaterials[jointMatPoly.matIdx];
+        var (modMaterial, finMaterial) = modAndFinMaterials[jointMatPoly.matIdx];
         this.AddMesh_(mod,
                       mesh,
-                      material,
+                      modMaterial,
+                      finMaterial,
                       model,
                       finBones,
                       envelopeBoneWeights,
@@ -268,7 +272,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
   private void AddMesh_(
       Mod mod,
       Mesh mesh,
-      IMaterial material,
+      Material modMaterial,
+      IMaterial finMaterial,
       ModelImpl model,
       IReadOnlyList<IBone> bones,
       IBoneWeights[] envelopeBoneWeights,
@@ -425,13 +430,17 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           }
 
           var finVertices = finVertexList.ToArray();
+          IPrimitive? primitive = null;
           if (opcode == GxOpcode.DRAW_TRIANGLE_FAN) {
-            finMesh.AddTriangleFan((IReadOnlyList<IReadOnlyVertex>) finVertices)
-                   .SetMaterial(material);
+            primitive = finMesh.AddTriangleFan((IReadOnlyList<IReadOnlyVertex>) finVertices);
           } else if (opcode == GxOpcode.DRAW_TRIANGLE_STRIP) {
-            finMesh.AddTriangleStrip(
-                       (IReadOnlyList<IReadOnlyVertex>) finVertices)
-                   .SetMaterial(material);
+            primitive = finMesh.AddTriangleStrip(
+                                (IReadOnlyList<IReadOnlyVertex>) finVertices);
+          }
+
+          if (primitive != null) {
+            primitive.SetMaterial(finMaterial);
+            primitive.SetInversePriority((uint) (10000 - modMaterial.unknown1));
           }
         }
       }

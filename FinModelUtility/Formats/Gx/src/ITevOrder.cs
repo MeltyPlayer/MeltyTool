@@ -14,8 +14,8 @@ public enum GxColorChannel : byte {
 }
 
 public interface ITevOrder {
-  byte TexCoordId { get; }
-  sbyte TexMap { get; }
+  GxTexCoord TexCoordId { get; }
+  GxTexMap TexMap { get; }
   GxColorChannel ColorChannelId { get; }
 
   GxKonstColorSel KonstColorSel { get; }
@@ -23,8 +23,8 @@ public interface ITevOrder {
 }
 
 public class TevOrderImpl : ITevOrder {
-  public byte TexCoordId { get; set; }
-  public sbyte TexMap { get; set; }
+  public GxTexCoord TexCoordId { get; set; }
+  public GxTexMap TexMap { get; set; }
   public GxColorChannel ColorChannelId { get; set; }
   public GxKonstColorSel KonstColorSel { get; set; }
   public GxKonstAlphaSel KonstAlphaSel { get; set; }

@@ -56,7 +56,7 @@ public class BoneWeightsDictionary {
       VertexSpace vertexSpace,
       params IBoneWeight[] weights
   ) {
-    var error = .0001;
+    var error = .01;
     if (weights.Length > 1) {
       weights = weights.Where(boneWeight => boneWeight.Weight > error)
                        .ToArray();
@@ -85,7 +85,7 @@ public class BoneWeightsDictionary {
   private IBoneWeights CreateInstance_(
       VertexSpace vertexSpace,
       params IBoneWeight[] weights) {
-    var error = .0001;
+    var error = .01;
     if (weights.Length > 1) {
       weights = weights.Where(boneWeight => boneWeight.Weight > error)
                        .ToArray();

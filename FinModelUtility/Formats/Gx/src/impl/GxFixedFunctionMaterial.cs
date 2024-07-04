@@ -272,13 +272,13 @@ public partial class GxFixedFunctionMaterial {
 
       // Updates which texture is referred to by TEXC
       var textureIndex = tevOrder.TexMap;
-      if (textureIndex == -1 || (!STRICT && textureIndex >= textures.Count)) {
+      if (textureIndex == GxTexMap.GX_TEXMAP_NULL || (!STRICT && (int) textureIndex >= textures.Count)) {
         valueManager.UpdateTextureIndex(null);
       } else {
-        var bmdTexture = textures[textureIndex];
+        var bmdTexture = textures[(int) textureIndex];
 
         var texCoordGen =
-            populatedMaterial.TexCoordGens[tevOrder.TexCoordId]!;
+            populatedMaterial.TexCoordGens[(int) tevOrder.TexCoordId]!;
 
         var texMatrixType = texCoordGen.TexMatrix;
         var texMatrixIndex = (texMatrixType - GxTexMatrix.TexMtx0) / 3;
@@ -289,8 +289,8 @@ public partial class GxFixedFunctionMaterial {
         var texture =
             lazyTextureDictionary[(bmdTexture, texCoordGen, texMatrix)];
 
-        valueManager.UpdateTextureIndex(textureIndex);
-        material.SetTextureSource(textureIndex, texture);
+        valueManager.UpdateTextureIndex((int) textureIndex);
+        material.SetTextureSource((int) textureIndex, texture);
       }
 
       // Updates which color is referred to by RASC
