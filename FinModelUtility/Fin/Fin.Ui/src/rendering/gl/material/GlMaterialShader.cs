@@ -29,6 +29,10 @@ public static class GlMaterialShader {
           Asserts.AsA<IReadOnlyStandardMaterial>(material),
           boneTransformManager,
           lighting),
+        FinShaderType.HIDDEN => new GlHiddenMaterialShader(
+            model,
+            boneTransformManager,
+            lighting),
         FinShaderType.NULL => new GlNullMaterialShader(
             model,
             boneTransformManager,

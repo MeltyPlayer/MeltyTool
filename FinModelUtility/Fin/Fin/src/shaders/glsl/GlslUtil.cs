@@ -16,6 +16,7 @@ public enum FinShaderType {
   TEXTURE,
   COLOR,
   STANDARD,
+  HIDDEN,
   NULL
 }
 
@@ -47,6 +48,10 @@ public static class GlslUtil {
 
     if (material is IColorMaterial) {
       return FinShaderType.COLOR;
+    }
+
+    if (material is IHiddenMaterial) {
+      return FinShaderType.HIDDEN;
     }
 
     if (material != null && material is not INullMaterial) {

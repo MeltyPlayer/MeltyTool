@@ -19,6 +19,7 @@ public static class GlslMaterialExtensions {
             model,
             Asserts.AsA<IStandardMaterial>(material),
             useBoneMatrices),
+        FinShaderType.HIDDEN => new HiddenShaderSourceGlsl(),
         FinShaderType.NULL => new NullShaderSourceGlsl(model, useBoneMatrices),
     };
 }

@@ -20,6 +20,7 @@ public partial interface IMaterialManager {
 
   // TODO: Name is actually required, should be required in the creation scripts?
   INullMaterial AddNullMaterial();
+  IHiddenMaterial AddHiddenMaterial();
   ITextureMaterial AddTextureMaterial(IReadOnlyTexture texture);
   IColorMaterial AddColorMaterial(Color color);
   IStandardMaterial AddStandardMaterial();
@@ -85,6 +86,9 @@ public partial interface IMaterial {
 
 [GenerateReadOnly]
 public partial interface INullMaterial : IMaterial;
+
+[GenerateReadOnly]
+public partial interface IHiddenMaterial : IMaterial;
 
 [GenerateReadOnly]
 public partial interface ITextureMaterial : IMaterial {

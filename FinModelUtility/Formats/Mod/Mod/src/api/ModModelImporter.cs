@@ -131,8 +131,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     for (var i = 0; i < mod.materials.materials.Count; ++i) {
       var modMaterial = mod.materials.materials[i];
       if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
-        finMaterials.Add(
-            model.MaterialManager.AddColorMaterial(Color.Transparent));
+        finMaterials.Add(model.MaterialManager.AddHiddenMaterial());
       } else if (modMaterial.flags.CheckFlag(MaterialFlags.ENABLED)) {
         var modPopulatedMaterial =
             new ModPopulatedMaterial(
