@@ -29,6 +29,7 @@ using mod.util;
 
 using schema.binary;
 
+
 namespace mod.api;
 
 public class ModModelImporter : IModelImporter<ModModelFileBundle> {
@@ -426,9 +427,12 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
           var finVertices = finVertexList.ToArray();
           if (opcode == GxOpcode.DRAW_TRIANGLE_FAN) {
-            finMesh.AddTriangleFan(finVertices).SetMaterial(material);
+            finMesh.AddTriangleFan((IReadOnlyList<IReadOnlyVertex>) finVertices)
+                   .SetMaterial(material);
           } else if (opcode == GxOpcode.DRAW_TRIANGLE_STRIP) {
-            finMesh.AddTriangleStrip(finVertices).SetMaterial(material);
+            finMesh.AddTriangleStrip(
+                       (IReadOnlyList<IReadOnlyVertex>) finVertices)
+                   .SetMaterial(material);
           }
         }
       }
