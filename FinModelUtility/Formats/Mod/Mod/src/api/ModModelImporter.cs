@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -124,15 +125,15 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     }
 
     var lazyTextureDictionary = new GxLazyTextureDictionary(model);
-    
+
     // Writes materials
     var finMaterials = new List<IMaterial>();
     for (var i = 0; i < mod.materials.materials.Count; ++i) {
       var modMaterial = mod.materials.materials[i];
-      var isEnabled = modMaterial.flags.CheckFlag(MaterialFlags.ENABLED);
-
-      
-      if (isEnabled) {
+      if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
+        finMaterials.Add(
+            model.MaterialManager.AddColorMaterial(Color.Transparent));
+      } else if (modMaterial.flags.CheckFlag(MaterialFlags.ENABLED)) {
         var modPopulatedMaterial =
             new ModPopulatedMaterial(
                 i,
@@ -147,7 +148,9 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
             gxTextures,
             lazyTextureDictionary).Material;
         finMaterial.TransparencyType
-            = modMaterial.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)
+            = modMaterial.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND) ||
+              finMaterial.Textures.Any(
+                  t => t.TransparencyType == TransparencyType.TRANSPARENT)
                 ? TransparencyType.TRANSPARENT
                 : TransparencyType.MASK;
 

@@ -25,13 +25,13 @@ namespace mod.image {
               height,
               8,
               8,
-              new A4PixelReader()),
+              new L2a4PixelReader()),
           Texture.TextureFormat.I8 => TiledImageReader.New(
               width,
               height,
               8,
               4,
-              new A8PixelReader()),
+              new L2a8PixelReader()),
           Texture.TextureFormat.IA4 => TiledImageReader.New(
               width,
               height,

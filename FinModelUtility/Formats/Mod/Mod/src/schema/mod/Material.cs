@@ -137,7 +137,6 @@ public partial class LightingInfo : IBinaryConvertible {
 public partial class PeInfo : IBinaryConvertible {
   public int Flags = 0;
 
-
   public int AlphaCompareFunctionBits { get; set; }
 
   [Skip]
@@ -150,15 +149,15 @@ public partial class PeInfo : IBinaryConvertible {
 
   [Skip]
   public GxAlphaOp AlphaCompareOp
-    => (GxAlphaOp) ((AlphaCompareFunctionBits >> 12) & 0xF);
+    => (GxAlphaOp) ((AlphaCompareFunctionBits >> 16) & 0xF);
 
   [Skip]
   public GxCompareType CompareType1
-    => (GxCompareType) ((AlphaCompareFunctionBits >> 16) & 0xF);
+    => (GxCompareType) ((AlphaCompareFunctionBits >> 20) & 0xF);
 
   [Skip]
   public float Reference1
-    => ((AlphaCompareFunctionBits >> 20) & 0xFF) / 255f;
+    => ((AlphaCompareFunctionBits >> 24) & 0xFF) / 255f;
 
 
   public int ZMode = 0;

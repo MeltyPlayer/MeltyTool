@@ -158,10 +158,10 @@ namespace mod.util {
       ];
 
       this.TexCoordGens = material.texInfo.TexGenData.Select(tex =>
-                                      new TexCoordGenImpl {
-                                          TexGenSrc = tex.TexGenSrc,
-                                          TexMatrix = GxTexMatrix.Identity
-                                      })
+                                        new TexCoordGenImpl {
+                                            TexGenSrc = tex.TexGenSrc,
+                                            TexMatrix = GxTexMatrix.Identity
+                                        })
                                   .ToArray();
 
       this.TextureIndices = material.texInfo.TexturesInMaterial
@@ -177,22 +177,13 @@ namespace mod.util {
             SrcFactor = peInfo.SrcFactor,
             LogicOp = peInfo.LogicOp,
         };
-
         this.AlphaCompare = new AlphaCompareImpl {
             MergeFunc = peInfo.AlphaCompareOp,
             Func0 = peInfo.CompareType0,
             Reference0 = peInfo.Reference0,
-            Func1 = FlipCompareType_(peInfo.CompareType1),
+            Func1 = peInfo.CompareType1,
             Reference1 = peInfo.Reference1,
         };
-
-        /*this.AlphaCompare = new AlphaCompareImpl {
-            MergeFunc = GxAlphaOp.Or,
-            Func0 = GxCompareType.Greater,
-            Reference0 = .5f,
-            Func1 = GxCompareType.Never,
-            Reference1 = 0f,
-        };*/
       }
     }
 
@@ -223,21 +214,5 @@ namespace mod.util {
     };
 
     public short[] TextureIndices { get; }
-
-    private static GxCompareType FlipCompareType_(GxCompareType compareType)
-      => compareType switch {
-          GxCompareType.Never   => GxCompareType.Never,
-          GxCompareType.Always  => GxCompareType.Always,
-          GxCompareType.Equal   => GxCompareType.Equal,
-          GxCompareType.NEqual  => GxCompareType.NEqual,
-          GxCompareType.Less    => GxCompareType.Greater,
-          GxCompareType.LEqual  => GxCompareType.GEqual,
-          GxCompareType.Greater => GxCompareType.Less,
-          GxCompareType.GEqual  => GxCompareType.LEqual,
-          _ => throw new ArgumentOutOfRangeException(
-              nameof(compareType),
-              compareType,
-              null)
-      };
   }
 }
