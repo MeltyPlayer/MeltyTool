@@ -52,13 +52,14 @@ namespace mod.schema.mod {
   public partial class TextureAttributes : IBinaryConvertible {
     public ushort index = 0;
     private readonly ushort padding_ = 0;
+
+    [IntegerFormat(SchemaIntegerType.UINT16)]
     public TilingMode TilingModeS { get; set; }
+
+    [IntegerFormat(SchemaIntegerType.UINT16)]
     public TilingMode TilingModeT { get; set; }
 
     [Unknown]
-    public ushort unknown1 = 0;
-
-    [Unknown]
-    public float unknown2 = 0;
+    public float WidthPercent = 0;
   }
 }

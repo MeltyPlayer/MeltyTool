@@ -10,7 +10,7 @@ public interface IReferenceCountCacheDictionary<in TKey, out TValue> {
 
 public class ReferenceCountCacheDictionary<TKey, TValue> :
     IReferenceCountCacheDictionary<TKey, TValue> where TKey : notnull {
-  private Dictionary<TKey, (TValue value, int count)> impl_ = new();
+  private readonly Dictionary<TKey, (TValue value, int count)> impl_ = new();
   private readonly Func<TKey, TValue> createHandler_;
   private readonly Action<TKey, TValue>? disposeHandler_;
 

@@ -1,12 +1,14 @@
 ﻿using fin.image;
 using fin.image.io;
 using fin.image.io.pixel;
+using fin.image.io.tile;
 
 using gx.image;
 
 using mod.schema.mod;
 
 using schema.binary;
+
 
 namespace mod.image {
   public class ModImageReader : IImageReader {
@@ -59,9 +61,7 @@ namespace mod.image {
           Texture.TextureFormat.RGBA32 => TiledImageReader.New(
               width,
               height,
-              4,
-              4,
-              new Rgba32PixelReader()),
+              new Ar88Gb88TileReader()),
           Texture.TextureFormat.CMPR => new CmprImageReader(width, height),
       };
     }

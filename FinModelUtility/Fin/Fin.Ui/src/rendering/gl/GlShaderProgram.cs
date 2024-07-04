@@ -11,28 +11,22 @@ public partial class GlShaderProgram : IShaderProgram {
   private readonly CachedShaderProgram cachedShaderProgram_;
 
   private static ReferenceCountCacheDictionary<string, int>
-      vertexShaderCache_ =
-          new(src =>
-                  GlShaderProgram.CreateAndCompileShader_(
-                      src,
-                      ShaderType.VertexShader),
-              (_, id) => {
-                if (id != UNDEFINED_ID) {
-                  GL.DeleteShader(id);
-                }
-              });
+      vertexShaderCache_ = new(
+          src => CreateAndCompileShader_(src, ShaderType.VertexShader),
+          (_, id) => {
+            if (id != UNDEFINED_ID) {
+              GL.DeleteShader(id);
+            }
+          });
 
   private static ReferenceCountCacheDictionary<string, int>
-      fragmentShaderCache_ =
-          new(src =>
-                  GlShaderProgram.CreateAndCompileShader_(
-                      src,
-                      ShaderType.FragmentShader),
-              (_, id) => {
-                if (id != UNDEFINED_ID) {
-                  GL.DeleteShader(id);
-                }
-              });
+      fragmentShaderCache_ = new(
+          src => CreateAndCompileShader_(src, ShaderType.FragmentShader),
+          (_, id) => {
+            if (id != UNDEFINED_ID) {
+              GL.DeleteShader(id);
+            }
+          });
 
   private static
       ReferenceCountCacheDictionary<(string vertexSrc, string fragmentSrc),
@@ -62,32 +56,30 @@ public partial class GlShaderProgram : IShaderProgram {
                 GL.DeleteProgram(cachedShaderProgram.ProgramId);
 
                 var (vertexSrc, fragmentSrc) = vertexAndFragmentSrc;
-                GlShaderProgram.vertexShaderCache_.DecrementAndMaybeDispose(
-                    vertexSrc);
-                GlShaderProgram.fragmentShaderCache_.DecrementAndMaybeDispose(
-                    fragmentSrc);
+                vertexShaderCache_.DecrementAndMaybeDispose(vertexSrc);
+                fragmentShaderCache_.DecrementAndMaybeDispose(fragmentSrc);
               });
 
   private const int UNDEFINED_ID = -1;
 
-  public static GlShaderProgram
-      FromShaders(string vertexShaderSrc, string fragmentShaderSrc)
+  public static GlShaderProgram FromShaders(string vertexShaderSrc,
+                                            string fragmentShaderSrc)
     => new(vertexShaderSrc, fragmentShaderSrc);
 
   private GlShaderProgram(string vertexShaderSrc,
                           string fragmentShaderSrc) {
-      this.cachedShaderProgram_ =
-          GlShaderProgram.programCache_.GetAndIncrement(
-              (vertexShaderSrc, fragmentShaderSrc));
-    }
+    this.cachedShaderProgram_ =
+        GlShaderProgram.programCache_.GetAndIncrement(
+            (vertexShaderSrc, fragmentShaderSrc));
+  }
 
   ~GlShaderProgram() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
-      this.isDisposed_ = true;
-      this.ReleaseUnmanagedResources_();
-      GC.SuppressFinalize(this);
-    }
+    this.isDisposed_ = true;
+    this.ReleaseUnmanagedResources_();
+    GC.SuppressFinalize(this);
+  }
 
   private void ReleaseUnmanagedResources_()
     => GlShaderProgram.programCache_.DecrementAndMaybeDispose(
@@ -95,24 +87,24 @@ public partial class GlShaderProgram : IShaderProgram {
 
   private static int CreateAndCompileShader_(string src,
                                              ShaderType shaderType) {
-      var shaderId = GL.CreateShader(shaderType);
-      GL.ShaderSource(shaderId, 1, [src], (int[]) null);
-      GL.CompileShader(shaderId);
+    var shaderId = GL.CreateShader(shaderType);
+    GL.ShaderSource(shaderId, 1, [src], (int[]) null);
+    GL.CompileShader(shaderId);
 
-      // TODO: Throw/return this error
-      var bufferSize = 10000;
-      GL.GetShaderInfoLog(
-          shaderId,
-          bufferSize,
-          out var shaderErrorLength,
-          out var shaderError);
+    // TODO: Throw/return this error
+    var bufferSize = 10000;
+    GL.GetShaderInfoLog(
+        shaderId,
+        bufferSize,
+        out var shaderErrorLength,
+        out var shaderError);
 
-      if (shaderError?.Length > 0) {
-        ;
-      }
-
-      return shaderId;
+    if (shaderError?.Length > 0) {
+      ;
     }
+
+    return shaderId;
+  }
 
   public int ProgramId => this.cachedShaderProgram_.ProgramId;
 
@@ -124,25 +116,25 @@ public partial class GlShaderProgram : IShaderProgram {
 
 
   public void Use() {
-      if (this.isDisposed_) {
-        return;
-      }
-
-      GlUtil.UseProgram(this.ProgramId);
-      foreach (var uniform in this.cachedUniforms_.Values) {
-        uniform.PassValueToProgramIfDirty();
-      }
+    if (this.isDisposed_) {
+      return;
     }
+
+    GlUtil.UseProgram(this.ProgramId);
+    foreach (var uniform in this.cachedUniforms_.Values) {
+      uniform.PassValueToProgramIfDirty();
+    }
+  }
 
   private class CachedShaderProgram {
     private readonly LazyDictionary<string, int> lazyUniforms_;
 
     public CachedShaderProgram() {
-        this.lazyUniforms_ = new(uniformName
-                                     => GL.GetUniformLocation(
-                                         this.ProgramId,
-                                         uniformName));
-      }
+      this.lazyUniforms_ = new(uniformName
+                                   => GL.GetUniformLocation(
+                                       this.ProgramId,
+                                       uniformName));
+    }
 
     public required int ProgramId { get; init; }
     public required string VertexShaderSource { get; init; }
