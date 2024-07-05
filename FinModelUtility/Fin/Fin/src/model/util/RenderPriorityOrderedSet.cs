@@ -29,7 +29,7 @@ public class RenderPriorityOrderedSet<T> : IEnumerable<T> {
 
   public IEnumerator<T> GetEnumerator()
     => this.elements_
-           .OrderBy(value => this.inversePriorityByElement_[value])
-           .ThenBy(value => this.isTransparentByElement_[value])
+           .OrderBy(value => this.isTransparentByElement_[value])
+           .ThenBy(value => this.inversePriorityByElement_[value])
            .GetEnumerator();
 }

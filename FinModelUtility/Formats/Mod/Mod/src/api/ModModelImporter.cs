@@ -146,6 +146,14 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                 modPopulatedMaterial,
                 gxTextures,
                 lazyTextureDictionary).Material;
+
+            finMaterial.TransparencyType
+                = modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE)
+                    ?
+                    TransparencyType.OPAQUE
+                    : modMaterial.flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
+                        ? TransparencyType.MASK
+                        : TransparencyType.TRANSPARENT;
           } else {
             finMaterial = model.MaterialManager.AddNullMaterial();
           }
@@ -440,7 +448,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
           if (primitive != null) {
             primitive.SetMaterial(finMaterial);
-            primitive.SetInversePriority((uint) (10000 - modMaterial.unknown1));
+            primitive.SetInversePriority((uint) (1000 - modMaterial.unknown1));
           }
         }
       }

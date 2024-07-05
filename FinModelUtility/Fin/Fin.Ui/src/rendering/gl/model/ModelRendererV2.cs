@@ -19,7 +19,7 @@ public class ModelRendererV2 : IModelRenderer {
       IReadOnlyLighting? lighting,
       IReadOnlyBoneTransformManager? boneTransformManager = null) {
       this.impl_ = (model.Skin.AllowMaterialRendererMerging)
-          ? new MergedMaterialAcrossMeshesRenderer(
+          ? new MergedMaterialByMeshRenderer(
               model,
               lighting,
               boneTransformManager)
