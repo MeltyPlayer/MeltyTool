@@ -88,6 +88,8 @@ public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
         this.material_?.DepthMode ?? DepthMode.USE_DEPTH_BUFFER,
         this.material_?.DepthCompareType ??
         DepthCompareType.LEqual);
+    GlUtil.SetChannelUpdateMask(this.material_?.UpdateColorChannel ?? true,
+                                this.material_?.UpdateAlphaChannel ?? true);
 
     this.bufferRenderer_.Render();
   }

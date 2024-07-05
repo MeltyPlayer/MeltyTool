@@ -47,6 +47,7 @@ public partial class GxFixedFunctionMaterial {
             GxCullMode.All   => CullingMode.SHOW_NEITHER,
             _                => throw new ArgumentOutOfRangeException(),
         };
+    material.UpdateAlphaChannel = false;
 
     var depthFunction = populatedMaterial.DepthFunction;
     material.DepthMode =

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -66,7 +67,6 @@ public enum DepthCompareType {
   Never,
 }
 
-
 [GenerateReadOnly]
 public partial interface IMaterial {
   string? Name { get; set; }
@@ -82,6 +82,9 @@ public partial interface IMaterial {
   float Shininess { get; set; }
 
   TransparencyType TransparencyType { get; set; }
+
+  bool UpdateColorChannel { get; set; }
+  bool UpdateAlphaChannel { get; set; }
 }
 
 [GenerateReadOnly]
