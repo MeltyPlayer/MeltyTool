@@ -238,15 +238,15 @@ public partial class TextureData : IBinaryConvertible {
   public float AnimationSpeed = 0;
 
   [Unknown]
-  public readonly Vector2f Uv = new();
+  public readonly Vector2f Scale = new();
 
   [Unknown]
   public float Rotation = 0;
 
   [Unknown]
-  public readonly Vector2f Pivot = new();
-
   public readonly Vector2f Position = new();
+
+  public readonly Vector2f Pivot = new();
 
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
@@ -334,7 +334,7 @@ public partial class TexGenData : IBinaryConvertible {
   public GxTexGenType TexGenType = 0;
   public GxTexGenSrc TexGenSrc { get; set; }
 
-  public GxTexMatrix TexMatrix = 0;
+  public byte TexMatrix = 0;
 }
 
 [BinarySchema]

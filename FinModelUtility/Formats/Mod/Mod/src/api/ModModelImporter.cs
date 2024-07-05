@@ -149,13 +149,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
             modPopulatedMaterial,
             gxTextures,
             lazyTextureDictionary).Material;
-
-        /*finMaterial.TransparencyType
-            = modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE)
-                ? TransparencyType.OPAQUE
-                : modMaterial.flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
-                    ? TransparencyType.MASK
-                    : TransparencyType.TRANSPARENT;*/
       } else {
         finMaterial = model.MaterialManager.AddNullMaterial();
       }

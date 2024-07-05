@@ -4,6 +4,7 @@ using System.Linq;
 
 using fin.color;
 using fin.math;
+using fin.schema.vector;
 using fin.util.enums;
 
 using gx;
@@ -166,16 +167,42 @@ namespace mod.util {
           colorChannelControl1
       ];
 
-      this.TexCoordGens = material.texInfo.TexGenData.Select(tex =>
-                                        new TexCoordGenImpl {
-                                            TexGenSrc = tex.TexGenSrc,
-                                            TexMatrix = GxTexMatrix.Identity
-                                        })
-                                  .ToArray();
-
-      this.TextureIndices = material.texInfo.TexturesInMaterial
-                                    .Select(tex => (short) tex.TexAttrIndex)
-                                    .ToArray();
+      {
+        this.TextureIndices = material.texInfo.TexturesInMaterial
+                                      .Select(tex => (short) tex.TexAttrIndex)
+                                      .ToArray();
+        this.TexCoordGens
+            = material
+              .texInfo
+              .TexGenData
+              .Select(tex => {
+                var mtx = tex.TexMatrix;
+                return new TexCoordGenImpl {
+                    TexGenSrc = tex.TexGenSrc,
+                    TexMatrix = mtx switch {
+                        10 => GxTexMatrix.Identity,
+                        >= 0 and < 8 => GxTexMatrix.TexMtx0 + mtx,
+                    },
+                };
+              })
+              .ToArray();
+        this.TextureMatrices
+            = material.texInfo.TexturesInMaterial.Select(
+                          t => new TextureMatrixInfoImpl {
+                              TexGenType = GxTexGenType.Matrix2x4,
+                              Translation = new Vector2f {
+                                  X = -t.Position.X,
+                                  Y = -t.Position.Y
+                              },
+                              Scale = new Vector2f {
+                                  X = 1 / t.Scale.X,
+                                  Y = 1 / t.Scale.Y
+                              },
+                              Rotation
+                                  = (short) (t.Rotation / MathF.PI * 32768f)
+                          })
+                      .ToArray();
+      }
 
       {
         var peInfo = material.peInfo;
@@ -218,7 +245,7 @@ namespace mod.util {
     public IAlphaCompare AlphaCompare { get; }
     public IBlendFunction BlendMode { get; }
 
-    public ITexCoordGen?[] TexCoordGens { get; }
+    public ITexCoordGen[] TexCoordGens { get; }
     public ITextureMatrixInfo?[] TextureMatrices { get; }
 
     public IDepthFunction DepthFunction { get; }
