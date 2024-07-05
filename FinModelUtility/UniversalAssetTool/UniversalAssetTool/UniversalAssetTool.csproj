@@ -16,6 +16,105 @@
 
   <ItemGroup>
     <None Remove=".editorconfig" />
+    <None Remove="src\img\bone.png" />
+    <None Remove="src\img\cancel.png" />
+    <None Remove="src\img\checkerboard.png" />
+    <None Remove="src\img\copy.png" />
+    <None Remove="src\img\export.png" />
+    <None Remove="src\img\export_all.png" />
+    <None Remove="src\img\folder_closed.png" />
+    <None Remove="src\img\folder_open.png" />
+    <None Remove="src\img\gamepad.png" />
+    <None Remove="src\img\grid.png" />
+    <None Remove="src\img\import.png" />
+    <None Remove="src\img\light.png" />
+    <None Remove="src\img\loop.png" />
+    <None Remove="src\img\mario.png" />
+    <None Remove="src\img\model.png" />
+    <None Remove="src\img\music.png" />
+    <None Remove="src\img\pause.png" />
+    <None Remove="src\img\picture.png" />
+    <None Remove="src\img\play.png" />
+    <None Remove="src\img\rig.png" />
+    <None Remove="src\img\save.png" />
+    <None Remove="src\img\scene.png" />
+    <None Remove="src\img\settings.png" />
+    <None Remove="src\img\video.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="src\img\bone.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\cancel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\checkerboard.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\copy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\export.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\export_all.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\folder_closed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\folder_open.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\gamepad.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\grid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\import.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\light.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\loop.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\mario.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\model.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\music.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\pause.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\picture.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\play.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\rig.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\save.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\scene.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\img\video.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

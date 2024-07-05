@@ -34,7 +34,7 @@ using schema.binary;
 namespace mod.api;
 
 public class ModModelImporter : IModelImporter<ModModelFileBundle> {
-  private const bool DEDUPLICATE_MATERIALS = false;
+  private const bool DEDUPLICATE_MATERIALS = true;
 
   /// <summary>
   ///   GX's active matrices. These are deferred to when a vertex matrix is
