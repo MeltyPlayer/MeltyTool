@@ -108,20 +108,17 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
       var finTexture =
           model.MaterialManager.CreateTexture(image);
-      finTexture.Name = $"texattr {i}";
 
       finTexture.WrapModeU =
           ModModelImporter.ConvertGcnToFin(textureAttr.TilingModeS);
       finTexture.WrapModeV =
           ModModelImporter.ConvertGcnToFin(textureAttr.TilingModeT);
-      // TODO: Set attributes
 
-      gxTextures[i] = new GxTexture2d {
-          Name = finTexture.Name,
-          Image = image,
-          WrapModeS = ConvertGcnToGx(textureAttr.TilingModeS),
-          WrapModeT = ConvertGcnToGx(textureAttr.TilingModeT),
-      };
+      gxTextures[i] = new GxTexture2d(
+          finTexture.Name,
+          image,
+          ConvertGcnToGx(textureAttr.TilingModeS),
+          ConvertGcnToGx(textureAttr.TilingModeT));
       finTexturesAndAttrs[i] = (finTexture, textureAttr);
     }
 
@@ -152,7 +149,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
       } else {
         finMaterial = model.MaterialManager.AddNullMaterial();
       }
-     
+
       modAndFinMaterials.Add((modMaterial, finMaterial));
     }
 
@@ -238,7 +235,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
         var meshIndex = jointMatPoly.meshIdx;
         var mesh = mod.meshes[meshIndex];
 
-        var (modMaterial, finMaterial) = modAndFinMaterials[jointMatPoly.matIdx];
+        var (modMaterial, finMaterial)
+            = modAndFinMaterials[jointMatPoly.matIdx];
         this.AddMesh_(mod,
                       mesh,
                       modMaterial,
@@ -425,10 +423,12 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           var finVertices = finVertexList.ToArray();
           IPrimitive? primitive = null;
           if (opcode == GxOpcode.DRAW_TRIANGLE_FAN) {
-            primitive = finMesh.AddTriangleFan((IReadOnlyList<IReadOnlyVertex>) finVertices);
+            primitive
+                = finMesh.AddTriangleFan(
+                    (IReadOnlyList<IReadOnlyVertex>) finVertices);
           } else if (opcode == GxOpcode.DRAW_TRIANGLE_STRIP) {
             primitive = finMesh.AddTriangleStrip(
-                                (IReadOnlyList<IReadOnlyVertex>) finVertices);
+                (IReadOnlyList<IReadOnlyVertex>) finVertices);
           }
 
           if (primitive != null) {

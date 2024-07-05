@@ -176,31 +176,30 @@ namespace mod.util {
               .texInfo
               .TexGenData
               .Select(tex => {
-                var mtx = tex.TexMatrix;
-                return new TexCoordGenImpl {
-                    TexGenSrc = tex.TexGenSrc,
-                    TexMatrix = mtx switch {
-                        10 => GxTexMatrix.Identity,
-                        >= 0 and < 8 => GxTexMatrix.TexMtx0 + mtx,
-                    },
+                var texMatrix = tex.TexMatrix switch {
+                    10           => GxTexMatrix.Identity,
+                    >= 0 and < 8 => GxTexMatrix.TexMtx0 + tex.TexMatrix,
                 };
+                return new TexCoordGenImpl(
+                    GxTexGenType.Matrix2x4,
+                    tex.TexGenSrc,
+                    texMatrix);
               })
               .ToArray();
         this.TextureMatrices
             = material.texInfo.TexturesInMaterial.Select(
-                          t => new TextureMatrixInfoImpl {
-                              TexGenType = GxTexGenType.Matrix2x4,
-                              Translation = new Vector2f {
-                                  X = -t.Position.X,
-                                  Y = -t.Position.Y
-                              },
-                              Scale = new Vector2f {
+                          t => new TextureMatrixInfoImpl(
+                              GxTexGenType.Matrix2x4,
+                              new Vector2f {
                                   X = 1 / t.Scale.X,
                                   Y = 1 / t.Scale.Y
                               },
-                              Rotation
-                                  = (short) (t.Rotation / MathF.PI * 32768f)
-                          })
+                              new Vector2f {
+                                  X = -t.Position.X,
+                                  Y = -t.Position.Y
+                              },
+                              (short) (t.Rotation / MathF.PI * 32768f)
+                          ))
                       .ToArray();
       }
 

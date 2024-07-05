@@ -55,17 +55,12 @@ public interface IGxTexture {
   ColorType ColorType { get; }
 }
 
-public class GxTexture2d : IGxTexture {
-  public string Name { get; set; }
-  public IImage Image { get; set; }
-  public GxWrapMode WrapModeS { get; set; }
-  public GxWrapMode WrapModeT { get; set; }
-
-  public GX_MIN_TEXTURE_FILTER MinTextureFilter { get; set; } =
-    GX_MIN_TEXTURE_FILTER.GX_LIN_MIP_LIN;
-
-  public GX_MAG_TEXTURE_FILTER MagTextureFilter { get; set; } =
-    GX_MAG_TEXTURE_FILTER.GX_LINEAR;
-
-  public ColorType ColorType { get; set; }
-}
+public record GxTexture2d(
+    string Name,
+    IImage Image,
+    GxWrapMode WrapModeS,
+    GxWrapMode WrapModeT,
+    GX_MIN_TEXTURE_FILTER MinTextureFilter
+        = GX_MIN_TEXTURE_FILTER.GX_LIN_MIP_LIN,
+    GX_MAG_TEXTURE_FILTER MagTextureFilter = GX_MAG_TEXTURE_FILTER.GX_LINEAR,
+    ColorType ColorType = ColorType.COLOR) : IGxTexture;

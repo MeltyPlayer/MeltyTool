@@ -9,9 +9,8 @@ public interface ITextureMatrixInfo {
   short Rotation { get; }
 }
 
-public class TextureMatrixInfoImpl : ITextureMatrixInfo {
-  public GxTexGenType TexGenType { get; set; }
-  public Vector2f Scale { get; set; }
-  public Vector2f Translation { get; set; }
-  public short Rotation { get; set; }
-}
+public record TextureMatrixInfoImpl(
+    GxTexGenType TexGenType,
+    Vector2f Scale,
+    Vector2f Translation,
+    short Rotation) : ITextureMatrixInfo;

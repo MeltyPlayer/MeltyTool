@@ -13,6 +13,8 @@
   <StackPanel>
     <TextBlock Classes="h3" Text="{Binding ScalarRegister.Name}" />
     <Slider Margin="0 -16"
+            Minimum="0"
+            Maximum="1"
             Value="{Binding Value, Mode=TwoWay}" />
   </StackPanel>
 </UserControl>

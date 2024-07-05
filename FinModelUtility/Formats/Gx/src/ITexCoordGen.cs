@@ -58,8 +58,7 @@ public interface ITexCoordGen {
   GxTexMatrix TexMatrix { get; }
 }
 
-public class TexCoordGenImpl : ITexCoordGen {
-  public GxTexGenType TexGenType { get; set; }
-  public GxTexGenSrc TexGenSrc { get; set; }
-  public GxTexMatrix TexMatrix { get; set; }
-}
+public record TexCoordGenImpl(
+    GxTexGenType TexGenType,
+    GxTexGenSrc TexGenSrc,
+    GxTexMatrix TexMatrix) : ITexCoordGen;
