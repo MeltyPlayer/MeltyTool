@@ -12,6 +12,9 @@ public class BoneWeightsDictionary {
   private readonly Dictionary<int, BoneWeightsSet> boneWeightsByCount_ =
       new();
 
+  private const float MIN_WEIGHT = .0001f;
+  private const float WEIGHT_ERROR = .01f;
+
   public IReadOnlyList<IBoneWeights> List => boneWeights_;
 
   public IBoneWeights GetOrCreate(
@@ -19,9 +22,8 @@ public class BoneWeightsDictionary {
       out bool newlyCreated,
       params IBoneWeight[] weights
   ) {
-    var error = .0001;
     if (weights.Length > 1) {
-      weights = weights.Where(boneWeight => boneWeight.Weight > error)
+      weights = weights.Where(boneWeight => boneWeight.Weight > MIN_WEIGHT)
                        .ToArray();
     }
 
@@ -30,7 +32,7 @@ public class BoneWeightsDictionary {
       totalWeight += weight.Weight;
     }
 
-    Asserts.True(Math.Abs(totalWeight - 1) < error);
+    Asserts.True(Math.Abs(totalWeight - 1) < WEIGHT_ERROR);
 
     if (!this.boneWeightsByCount_.TryGetValue(
             weights.Length,
@@ -56,9 +58,8 @@ public class BoneWeightsDictionary {
       VertexSpace vertexSpace,
       params IBoneWeight[] weights
   ) {
-    var error = .01;
     if (weights.Length > 1) {
-      weights = weights.Where(boneWeight => boneWeight.Weight > error)
+      weights = weights.Where(boneWeight => boneWeight.Weight > MIN_WEIGHT)
                        .ToArray();
     }
 
@@ -67,7 +68,7 @@ public class BoneWeightsDictionary {
       totalWeight += weight.Weight;
     }
 
-    Asserts.True(Math.Abs(totalWeight - 1) < error);
+    Asserts.True(Math.Abs(totalWeight - 1) < WEIGHT_ERROR);
 
     if (!this.boneWeightsByCount_.TryGetValue(
             weights.Length,
@@ -85,14 +86,13 @@ public class BoneWeightsDictionary {
   private IBoneWeights CreateInstance_(
       VertexSpace vertexSpace,
       params IBoneWeight[] weights) {
-    var error = .01;
     if (weights.Length > 1) {
-      weights = weights.Where(boneWeight => boneWeight.Weight > error)
+      weights = weights.Where(boneWeight => boneWeight.Weight > MIN_WEIGHT)
                        .ToArray();
     }
 
     var totalWeight = weights.Select(weight => weight.Weight).Sum();
-    Asserts.True(Math.Abs(totalWeight - 1) < error);
+    Asserts.True(Math.Abs(totalWeight - 1) < WEIGHT_ERROR);
 
     var boneWeights = new BoneWeightsImpl {
         Index = boneWeights_.Count,
