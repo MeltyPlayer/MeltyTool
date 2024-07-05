@@ -38,7 +38,10 @@ public partial class ModelImpl<TVertex> {
     }
 
     public IAnimation Animation { get; }
-    public bool HasAtLeastOneKeyframe => this.axisTracks_.Any(axis => axis.HasAtLeastOneKeyframe);
+    public bool HasAtLeastOneKeyframe 
+      => this.axisTracks_[0].HasAtLeastOneKeyframe ||
+         this.axisTracks_[1].HasAtLeastOneKeyframe ||
+         this.axisTracks_[2].HasAtLeastOneKeyframe;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Set(
