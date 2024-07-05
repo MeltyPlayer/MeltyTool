@@ -7,16 +7,16 @@ using fin.util.image;
 
 namespace fin.ui.rendering.gl.model;
 
-public class MergedMaterialMeshesRenderer : IModelRenderer {
+public class MergedMaterialByMeshRenderer : IModelRenderer {
   private GlBufferManager? bufferManager_;
   private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
   private IReadOnlyMesh selectedMesh_;
 
-  private (IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])[]
+  private (IReadOnlyMesh, MergedMaterialPrimitivesByMeshRenderer[])[]
       materialMeshRenderers_ = [];
 
-  public MergedMaterialMeshesRenderer(
+  public MergedMaterialByMeshRenderer(
       IReadOnlyModel model,
       IReadOnlyLighting? lighting,
       IReadOnlyBoneTransformManager? boneTransformManager = null) {
@@ -37,7 +37,7 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
     this.bufferManager_ = new GlBufferManager(this.Model);
 
     var allMaterialMeshRenderers =
-        new List<(IReadOnlyMesh, MergedMaterialPrimitivesRenderer[])>();
+        new List<(IReadOnlyMesh, MergedMaterialPrimitivesByMeshRenderer[])>();
 
     // TODO: Optimize this with something like a "MinMap"?
     var meshQueue = new RenderPriorityOrderedSet<IReadOnlyMesh>();
@@ -70,7 +70,7 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
 
       var materialMeshRenderers =
           new ListDictionary<IReadOnlyMesh,
-              MergedMaterialPrimitivesRenderer>();
+              MergedMaterialPrimitivesByMeshRenderer>();
       foreach (var material in materialQueue) {
         var primitives = primitivesByMaterial[material];
         if (!primitiveMerger.TryToMergePrimitives(
@@ -81,7 +81,7 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
 
         materialMeshRenderers.Add(
             mesh,
-            new MergedMaterialPrimitivesRenderer(
+            new MergedMaterialPrimitivesByMeshRenderer(
                 this.boneTransformManager_,
                 this.bufferManager_,
                 this.Model,
@@ -101,7 +101,7 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
     this.materialMeshRenderers_ = allMaterialMeshRenderers.ToArray();
   }
 
-  ~MergedMaterialMeshesRenderer() => ReleaseUnmanagedResources_();
+  ~MergedMaterialByMeshRenderer() => ReleaseUnmanagedResources_();
 
   public void Dispose() {
     ReleaseUnmanagedResources_();
@@ -120,8 +120,7 @@ public class MergedMaterialMeshesRenderer : IModelRenderer {
 
   public IReadOnlyModel Model { get; }
 
-  public ISet<IReadOnlyMesh> HiddenMeshes { get; }
-    = new HashSet<IReadOnlyMesh>();
+  public IReadOnlySet<IReadOnlyMesh>? HiddenMeshes { get; set; }
 
   private bool useLighting_ = false;
 

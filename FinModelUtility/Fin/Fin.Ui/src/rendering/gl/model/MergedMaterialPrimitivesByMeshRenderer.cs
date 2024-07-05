@@ -4,13 +4,13 @@ using fin.ui.rendering.gl.material;
 
 namespace fin.ui.rendering.gl.model;
 
-public class MergedMaterialPrimitivesRenderer : IDisposable {
+public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
   private readonly GlBufferManager.GlBufferRenderer bufferRenderer_;
   private readonly IReadOnlyMaterial? material_;
   private readonly IGlMaterialShader? materialShader_;
   private bool isSelected_;
 
-  public MergedMaterialPrimitivesRenderer(
+  public MergedMaterialPrimitivesByMeshRenderer(
       IReadOnlyBoneTransformManager? boneTransformManager,
       GlBufferManager bufferManager,
       IReadOnlyModel model,
@@ -33,7 +33,7 @@ public class MergedMaterialPrimitivesRenderer : IDisposable {
                                 false);
   }
 
-  ~MergedMaterialPrimitivesRenderer() => ReleaseUnmanagedResources_();
+  ~MergedMaterialPrimitivesByMeshRenderer() => ReleaseUnmanagedResources_();
 
   public void Dispose() {
     ReleaseUnmanagedResources_();

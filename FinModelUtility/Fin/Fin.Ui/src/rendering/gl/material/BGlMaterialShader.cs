@@ -126,10 +126,10 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   public bool DisposeTextures { get; set; } = true;
 
   public void Use() {
-      this.modelMatrixUniform_.SetAndMarkDirty(GlTransform.ModelMatrix);
-      this.modelViewMatrixUniform_.SetAndMarkDirty(
+      this.modelMatrixUniform_.SetAndMaybeMarkDirty(GlTransform.ModelMatrix);
+      this.modelViewMatrixUniform_.SetAndMaybeMarkDirty(
           GlTransform.ModelViewMatrix);
-      this.projectionMatrixUniform_.SetAndMarkDirty(
+      this.projectionMatrixUniform_.SetAndMaybeMarkDirty(
           GlTransform.ProjectionMatrix);
 
       var cameraPosition = Camera.Instance;
@@ -148,7 +148,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
             this.boneTransformManager_?.GetInverseBindMatrix(bone).Impl ??
             Matrix4x4.Identity;
 
-        this.matricesUniform_.SetAndMarkDirty(
+        this.matricesUniform_.SetAndMaybeMarkDirty(
             boneIndex++,
             inverseMatrix * localToWorldMatrix);
       }

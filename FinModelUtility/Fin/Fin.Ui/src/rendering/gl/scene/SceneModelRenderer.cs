@@ -15,6 +15,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
   private readonly ISceneModelInstance sceneModel_;
   private readonly IReadOnlyMesh[] meshes_;
   private readonly IModelRenderer modelRenderer_;
+  private readonly HashSet<IReadOnlyMesh> hiddenMeshes_ = new();
   private bool isBoneSelected_;
 
   private readonly List<(IReadOnlyBone, SceneModelRenderer[])>
@@ -29,10 +30,10 @@ public class SceneModelRenderer : IRenderable, IDisposable {
     this.modelRenderer_ =
         new ModelRendererV2(model,
                             lighting,
-                            sceneModel.BoneTransformManager);
-
-    this.modelRenderer_.UseLighting =
-        new UseLightingDetector().ShouldUseLightingFor(model);
+                            sceneModel.BoneTransformManager) {
+            HiddenMeshes = this.hiddenMeshes_,
+            UseLighting = new UseLightingDetector().ShouldUseLightingFor(model)
+        };
 
     this.SkeletonRenderer =
         new SkeletonRenderer(model.Skeleton,
@@ -98,8 +99,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
     var animation = this.sceneModel_.Animation;
     var animationPlaybackManager = this.sceneModel_.AnimationPlaybackManager;
 
-    var hiddenMeshes = this.modelRenderer_.HiddenMeshes;
-    hiddenMeshes.Clear();
+    this.hiddenMeshes_.Clear();
 
     if (animation != null) {
       animationPlaybackManager.Tick();
@@ -120,13 +120,13 @@ public class SceneModelRenderer : IRenderable, IDisposable {
         }
 
         if (displayState == MeshDisplayState.HIDDEN) {
-          hiddenMeshes.Add(mesh);
+          this.hiddenMeshes_.Add(mesh);
         }
       }
     } else {
       foreach (var mesh in this.meshes_) {
         if (mesh.DefaultDisplayState == MeshDisplayState.HIDDEN) {
-          hiddenMeshes.Add(mesh);
+          this.hiddenMeshes_.Add(mesh);
         }
       }
     }

@@ -4,7 +4,7 @@ namespace fin.ui.rendering.gl.model;
 
 public interface IModelRenderer : IRenderable, IDisposable {
   IReadOnlyModel Model { get; }
-  ISet<IReadOnlyMesh> HiddenMeshes { get; }
+  IReadOnlySet<IReadOnlyMesh>? HiddenMeshes { get; set; }
 
   bool UseLighting { get; set; }
 }

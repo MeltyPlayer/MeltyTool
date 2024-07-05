@@ -19,7 +19,7 @@ public class ModelRendererV2 : IModelRenderer {
       IReadOnlyLighting? lighting,
       IReadOnlyBoneTransformManager? boneTransformManager = null) {
       this.impl_ = (model.Skin.AllowMaterialRendererMerging)
-          ? new MergedMaterialMeshesRenderer(
+          ? new MergedMaterialAcrossMeshesRenderer(
               model,
               lighting,
               boneTransformManager)
@@ -38,7 +38,10 @@ public class ModelRendererV2 : IModelRenderer {
   private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
   public IReadOnlyModel Model => this.impl_.Model;
-  public ISet<IReadOnlyMesh> HiddenMeshes => this.impl_.HiddenMeshes;
+  public IReadOnlySet<IReadOnlyMesh>? HiddenMeshes {
+    get => this.impl_.HiddenMeshes;
+    set => this.impl_.HiddenMeshes = value;
+  }
 
   public bool UseLighting {
     get => this.impl_.UseLighting;

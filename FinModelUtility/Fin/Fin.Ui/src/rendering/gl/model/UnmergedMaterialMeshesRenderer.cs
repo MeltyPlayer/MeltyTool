@@ -10,7 +10,7 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
 
   private readonly
-      ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesRenderer>
+      ListDictionary<IReadOnlyMesh, MergedMaterialPrimitivesByMeshRenderer>
       materialMeshRenderers_ = new();
 
   public UnmergedMaterialMeshesRenderer(
@@ -41,7 +41,7 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
                         out var mergedPrimitive)) {
                   this.materialMeshRenderers_.Add(
                       mesh,
-                      new MergedMaterialPrimitivesRenderer(
+                      new MergedMaterialPrimitivesByMeshRenderer(
                           this.boneTransformManager_,
                           this.bufferManager_,
                           this.Model,
@@ -98,8 +98,7 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
 
   public IReadOnlyModel Model { get; }
 
-  public ISet<IReadOnlyMesh> HiddenMeshes { get; }
-    = new HashSet<IReadOnlyMesh>();
+  public IReadOnlySet<IReadOnlyMesh>? HiddenMeshes { get; set; }
 
   private bool useLighting_ = false;
 

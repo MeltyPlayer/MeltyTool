@@ -17,11 +17,11 @@ public class GlFixedFunctionMaterialShader(
         fixedFunctionMaterial,
         boneTransformManager,
         lighting) {
-  private readonly Dictionary<IColorRegister, IShaderUniform<Vector3>>
-      colorRegistersAndUniforms_ = new();
+  private (IColorRegister, IShaderUniform<Vector3>)[]
+      colorRegistersAndUniforms_;
 
-  private readonly Dictionary<IScalarRegister, IShaderUniform<float>>
-      scalarRegistersAndUniforms_ = new();
+  private (IScalarRegister, IShaderUniform<float>)[]
+      scalarRegistersAndUniforms_;
 
   protected override void DisposeInternal() { }
 
@@ -50,16 +50,28 @@ public class GlFixedFunctionMaterialShader(
       this.SetUpTexture($"texture{i}", i, finTexture, glTexture);
     }
 
+    var colorRegisterToUniform
+        = new Dictionary<IColorRegister, IShaderUniform<Vector3>>();
+    var scalarRegisterToUniform
+        = new Dictionary<IScalarRegister, IShaderUniform<float>>();
+
     var registers = material.Registers;
     foreach (var colorRegister in registers.ColorRegisters) {
-      this.colorRegistersAndUniforms_[colorRegister] =
+      colorRegisterToUniform[colorRegister] =
           impl.GetUniformVec3($"color_{colorRegister.Name}");
     }
 
     foreach (var scalarRegister in registers.ScalarRegisters) {
-      this.scalarRegistersAndUniforms_[scalarRegister] =
+      scalarRegisterToUniform[scalarRegister] =
           impl.GetUniformFloat($"scalar_{scalarRegister.Name}");
     }
+
+    this.colorRegistersAndUniforms_ = colorRegisterToUniform
+                                      .Select(p => (p.Key, p.Value))
+                                      .ToArray();
+    this.scalarRegistersAndUniforms_ = scalarRegisterToUniform
+                                       .Select(p => (p.Key, p.Value))
+                                       .ToArray();
   }
 
   protected override void PassUniformsAndBindTextures(
