@@ -98,28 +98,17 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
     // Writes textures
     var gxTextures = new IGxTexture[mod.texattrs.Count];
-    var finTexturesAndAttrs =
-        new (ITexture, TextureAttributes)[mod.texattrs.Count];
     for (var i = 0; i < mod.texattrs.Count; ++i) {
       var textureAttr = mod.texattrs[i];
 
       var textureIndex = textureAttr.index;
       var image = textureImages[textureIndex];
 
-      var finTexture =
-          model.MaterialManager.CreateTexture(image);
-
-      finTexture.WrapModeU =
-          ModModelImporter.ConvertGcnToFin(textureAttr.TilingModeS);
-      finTexture.WrapModeV =
-          ModModelImporter.ConvertGcnToFin(textureAttr.TilingModeT);
-
       gxTextures[i] = new GxTexture2d(
-          finTexture.Name,
+          null,
           image,
           ConvertGcnToGx(textureAttr.TilingModeS),
           ConvertGcnToGx(textureAttr.TilingModeT));
-      finTexturesAndAttrs[i] = (finTexture, textureAttr);
     }
 
     var lazyTextureDictionary = new GxLazyTextureDictionary(model);

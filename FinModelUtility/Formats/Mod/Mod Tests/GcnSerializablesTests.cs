@@ -127,8 +127,7 @@ namespace mod.schema {
           index = 1,
           TilingModeS = (TilingMode) 2,
           TilingModeT = (TilingMode) 3,
-          unknown1 = 4,
-          unknown2 = 5
+          WidthPercent = 123f
       };
 
       TestGcnSerializableExisting(textureAttributes);

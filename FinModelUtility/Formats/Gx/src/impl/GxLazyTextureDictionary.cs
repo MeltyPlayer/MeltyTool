@@ -11,15 +11,14 @@ using GxTextureBundle = (IGxTexture, ITexCoordGen?, ITextureMatrixInfo?);
 public class GxLazyTextureDictionary(IModel model)
     : ILazyDictionary<GxTextureBundle, ITexture> {
   private readonly LazyDictionary<GxTextureBundle, ITexture> impl_ = new(
-      texInfo => {
+      (dict, texInfo) => {
         var (bmdTexture, texCoordGen, texMatrix) = texInfo;
 
         // TODO: Share texture definitions between materials?
         var texture =
             model.MaterialManager.CreateTexture(bmdTexture.Image);
-        var type = TransparencyTypeUtil.GetTransparencyType(bmdTexture.Image);
-
-        texture.Name = bmdTexture.Name;
+        
+        texture.Name = bmdTexture.Name ?? $"texture{dict.Count}";
         texture.WrapModeU = bmdTexture.WrapModeS.ToFinWrapMode();
         texture.WrapModeV = bmdTexture.WrapModeT.ToFinWrapMode();
         texture.MagFilter =

@@ -26,7 +26,6 @@ uniform sampler2D texture2;
 uniform sampler2D texture3;
 uniform vec3 color_GxMaterialColor0;
 uniform vec3 color_GxAmbientColor0;
-uniform vec3 color_GxMaterialColor1;
 uniform vec3 color_GxAmbientColor1;
 uniform vec3 color_GxColor5;
 uniform vec3 color_GxColor6;
@@ -126,7 +125,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(color_GxMaterialColor1*clamp((individualLightDiffuseColors[2].rgb + clamp(color_GxAmbientColor1, 0, 1)), 0, 1)*(vec3(1) + vec3(-1)*(vec3(texture(texture1, uv1).a).g*65280 + vec3(texture(texture1, uv1).a).r*255 > 24575.625 ? vec3(1) : vec3(0))) + clamp((color_GxMaterialColor1*clamp((individualLightDiffuseColors[2].rgb + clamp(color_GxAmbientColor1, 0, 1)), 0, 1) + color_GxColor5*(vec3(1) + vec3(-1)*texture(texture0, uv0).rgb) + color_GxColor6*texture(texture0, uv0).rgb), 0, 1)*(vec3(texture(texture1, uv1).a).g*65280 + vec3(texture(texture1, uv1).a).r*255 > 24575.625 ? vec3(1) : vec3(0)) + texture(texture2, uv1).rgb*(vec3(1) + vec3(-1)*(vec3(texture(texture1, uv1).a).g*65280 + vec3(texture(texture1, uv1).a).r*255 > 24575.625 ? vec3(1) : vec3(0))) + clamp((vec3(0.625) + texture(texture3, uv0).rgb*(vec3(1) + vec3(-1)*vec3(0.625)) + color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*vec3(0.625) + vec3(-0.5)), 0, 1)*(vec3(1) + vec3(-1)*vec3(0.2980392156862745,0.4235294117647059,0.3803921568627451)) + vec3(-0.5), 0, 1);
+  vec3 colorComponent = clamp(color_GxMaterialColor0*clamp((individualLightDiffuseColors[2].rgb + clamp(color_GxAmbientColor1, 0, 1)), 0, 1)*(vec3(1) + vec3(-1)*(vec3(texture(texture1, uv1).a).g*65280 + vec3(texture(texture1, uv1).a).r*255 > 24575.625 ? vec3(1) : vec3(0))) + clamp((color_GxMaterialColor0*clamp((individualLightDiffuseColors[2].rgb + clamp(color_GxAmbientColor1, 0, 1)), 0, 1) + color_GxColor5*(vec3(1) + vec3(-1)*texture(texture0, uv0).rgb) + color_GxColor6*texture(texture0, uv0).rgb), 0, 1)*(vec3(texture(texture1, uv1).a).g*65280 + vec3(texture(texture1, uv1).a).r*255 > 24575.625 ? vec3(1) : vec3(0)) + texture(texture2, uv1).rgb*(vec3(1) + vec3(-1)*(vec3(texture(texture1, uv1).a).g*65280 + vec3(texture(texture1, uv1).a).r*255 > 24575.625 ? vec3(1) : vec3(0))) + clamp((vec3(0.625) + texture(texture3, uv0).rgb*(vec3(1) + vec3(-1)*vec3(0.625)) + color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*vec3(0.625) + vec3(-0.5)), 0, 1)*(vec3(1) + vec3(-1)*vec3(0.2980392156862745,0.4235294117647059,0.3803921568627451)) + vec3(-0.5), 0, 1);
 
   float alphaComponent = scalar_GxMaterialAlpha0;
 

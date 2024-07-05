@@ -20,8 +20,8 @@ public class RenderPriorityOrderedSetTests {
         impl,
         [
             "foo",
-            "bar",
             "123",
+            "bar",
             "abc",
         ]);
   }
@@ -43,9 +43,9 @@ public class RenderPriorityOrderedSetTests {
         impl,
         [
             "foo",
+            "123",
             "bar-1",
             "bar-2",
-            "123",
             "abc",
         ]);
   }
