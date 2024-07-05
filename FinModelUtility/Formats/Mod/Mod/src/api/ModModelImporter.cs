@@ -125,34 +125,41 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     var lazyTextureDictionary = new GxLazyTextureDictionary(model);
 
     // Writes materials
-    var modAndFinMaterials = new List<(Material, IMaterial)>();
-    for (var i = 0; i < mod.materials.materials.Count; ++i) {
-      var modMaterial = mod.materials.materials[i];
+    var finMaterialByModMaterial = new LazyDictionary<Material, IMaterial>(
+        (dict, modMaterial) => {
+          var i = dict.Count;
 
-      IMaterial finMaterial;
-      if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
-        finMaterial = model.MaterialManager.AddHiddenMaterial();
-      } else if (modMaterial.flags.CheckFlag(MaterialFlags.ENABLED)) {
-        var modPopulatedMaterial =
-            new ModPopulatedMaterial(
-                i,
-                modMaterial,
-                mod.materials.texEnvironments[
-                    (int) modMaterial.TevGroupId]);
+          IMaterial finMaterial;
+          if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
+            finMaterial = model.MaterialManager.AddHiddenMaterial();
+          } else if (modMaterial.flags.CheckFlag(MaterialFlags.ENABLED)) {
+            var modPopulatedMaterial =
+                new ModPopulatedMaterial(
+                    i,
+                    modMaterial,
+                    mod.materials.texEnvironments[
+                        (int) modMaterial.TevGroupId]);
 
-        finMaterial = new GxFixedFunctionMaterial(
-            model,
-            model.MaterialManager,
-            modPopulatedMaterial,
-            gxTextures,
-            lazyTextureDictionary).Material;
-      } else {
-        finMaterial = model.MaterialManager.AddNullMaterial();
-      }
+            finMaterial = new GxFixedFunctionMaterial(
+                model,
+                model.MaterialManager,
+                modPopulatedMaterial,
+                gxTextures,
+                lazyTextureDictionary).Material;
+          } else {
+            finMaterial = model.MaterialManager.AddNullMaterial();
+          }
 
-      modAndFinMaterials.Add((modMaterial, finMaterial));
-    }
-
+          return finMaterial;
+        });
+    var modMaterialAndFinMaterialByIndex
+        = new LazyDictionary<int, (Material, IMaterial)>(
+            index => {
+              var modMaterial = mod.materials.materials[index];
+              var finMaterial = finMaterialByModMaterial[modMaterial];
+              return (modMaterial, finMaterial);
+            });
+    
     // Writes bones
     // TODO: Simplify these loops
     var jointCount = mod.joints.Count;
@@ -236,7 +243,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
         var mesh = mod.meshes[meshIndex];
 
         var (modMaterial, finMaterial)
-            = modAndFinMaterials[jointMatPoly.matIdx];
+            = modMaterialAndFinMaterialByIndex[jointMatPoly.matIdx];
         this.AddMesh_(mod,
                       mesh,
                       modMaterial,

@@ -1,41 +1,45 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using fin.data.queues;
 using fin.util.linq;
 
+using Newtonsoft.Json.Linq;
+
 namespace fin.language.equations.fixedFunction;
 
-public partial class FixedFunctionEquations<TIdentifier> :
-    IFixedFunctionEquations<TIdentifier> {
+public partial class FixedFunctionEquations<TIdentifier>
+    : IFixedFunctionEquations<TIdentifier> {
   public bool HasInput(TIdentifier identifier)
     => this.ColorInputs.ContainsKey(identifier) ||
        this.ScalarInputs.ContainsKey(identifier);
 
   public bool DoOutputsDependOn(TIdentifier[] outputIdentifiers,
                                 IValue value)
-    => this.EnumerateOutputs_(outputIdentifiers)
-           .Any(someValue => someValue.Equals(value));
+    => this.DoOutputsDependOn_(outputIdentifiers, value.Equals);
 
   public bool DoOutputsDependOn(TIdentifier[] outputIdentifiers,
                                 TIdentifier identifier)
-    => this.EnumerateOutputs_(outputIdentifiers)
-           .WhereIs<IValue, IIdentifiedValue<TIdentifier>>()
-           .Any(someValue => identifier.Equals(someValue.Identifier));
+    => this.DoOutputsDependOn_(
+        outputIdentifiers,
+        value => value is IIdentifiedValue<TIdentifier> identifiedValue &&
+                 identifier.Equals(identifiedValue.Identifier));
 
   public bool DoOutputsDependOn(TIdentifier[] outputIdentifiers,
                                 TIdentifier[] identifiers) {
     var identifierSet = identifiers.ToHashSet();
-    return this.EnumerateOutputs_(outputIdentifiers)
-               .WhereIs<IValue, IIdentifiedValue<TIdentifier>>()
-               .Any(someValue
-                        => identifierSet.Contains(someValue.Identifier));
+    return this.DoOutputsDependOn_(
+        outputIdentifiers,
+        value => value is IIdentifiedValue<TIdentifier> identifiedValue &&
+                 identifierSet.Contains(identifiedValue.Identifier));
   }
 
-  private IEnumerable<IValue> EnumerateOutputs_(
-      TIdentifier[] outputIdentifiers) {
-    var colorQueue = new FinQueue<IColorValue>();
-    var scalarQueue = new FinQueue<IScalarValue>();
+  private bool DoOutputsDependOn_(
+      TIdentifier[] outputIdentifiers,
+      Func<IValue, bool> checker) {
+    var colorQueue = new Queue<IColorValue>();
+    var scalarQueue = new Queue<IScalarValue>();
 
     foreach (var outputIdentifier in outputIdentifiers) {
       if (this.colorOutputs_.TryGetValue(outputIdentifier,
@@ -55,7 +59,9 @@ public partial class FixedFunctionEquations<TIdentifier> :
       if (colorQueue.TryDequeue(out var colorValue)) {
         didUpdate = true;
 
-        yield return colorValue;
+        if (checker(colorValue)) {
+          return true;
+        }
 
         switch (colorValue) {
           case IColorConstant:
@@ -71,13 +77,21 @@ public partial class FixedFunctionEquations<TIdentifier> :
             break;
           }
           case IColorExpression colorExpression: {
-            colorQueue.Enqueue(colorExpression.Terms);
+            foreach (var term in colorExpression.Terms) {
+              colorQueue.Enqueue(term);
+            }
+
             break;
           }
           case IColorTerm colorTerm: {
-            colorQueue.Enqueue(colorTerm.NumeratorFactors);
+            foreach (var numerator in colorTerm.NumeratorFactors) {
+              colorQueue.Enqueue(numerator);
+            }
+
             if (colorTerm.DenominatorFactors != null) {
-              colorQueue.Enqueue(colorTerm.DenominatorFactors);
+              foreach (var denominator in colorTerm.DenominatorFactors) {
+                colorQueue.Enqueue(denominator);
+              }
             }
 
             break;
@@ -106,7 +120,9 @@ public partial class FixedFunctionEquations<TIdentifier> :
       if (scalarQueue.TryDequeue(out var scalarValue)) {
         didUpdate = true;
 
-        yield return scalarValue;
+        if (checker(scalarValue)) {
+          return true;
+        }
 
         switch (scalarValue) {
           case IScalarConstant:
@@ -130,13 +146,21 @@ public partial class FixedFunctionEquations<TIdentifier> :
             break;
           }
           case IScalarExpression scalarExpression: {
-            scalarQueue.Enqueue(scalarExpression.Terms);
+            foreach (var term in scalarExpression.Terms) {
+              scalarQueue.Enqueue(term);
+            }
+
             break;
           }
           case IScalarTerm scalarTerm: {
-            scalarQueue.Enqueue(scalarTerm.NumeratorFactors);
+            foreach (var numerator in scalarTerm.NumeratorFactors) {
+              scalarQueue.Enqueue(numerator);
+            }
+
             if (scalarTerm.DenominatorFactors != null) {
-              scalarQueue.Enqueue(scalarTerm.DenominatorFactors);
+              foreach (var denominator in scalarTerm.DenominatorFactors) {
+                scalarQueue.Enqueue(denominator);
+              }
             }
 
             break;
@@ -147,5 +171,7 @@ public partial class FixedFunctionEquations<TIdentifier> :
         }
       }
     } while (didUpdate);
+
+    return false;
   }
 }

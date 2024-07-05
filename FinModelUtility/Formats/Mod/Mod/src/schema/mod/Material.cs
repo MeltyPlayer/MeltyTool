@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using fin.schema;
 using fin.schema.color;
@@ -97,7 +98,8 @@ public partial class AlphaAnimationInfo : IBinaryConvertible {
 }
 
 [BinarySchema]
-public partial class PolygonColorInfo : IBinaryConvertible {
+public partial class PolygonColorInfo
+    : IBinaryConvertible, IEquatable<PolygonColorInfo> {
   public Rgba32 DiffuseColour;
 
   [Unknown]
@@ -113,6 +115,44 @@ public partial class PolygonColorInfo : IBinaryConvertible {
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public AlphaAnimationInfo[] AlphaAnimationInfo;
+
+  public bool Equals(PolygonColorInfo? other) {
+    if (ReferenceEquals(null, other)) {
+      return false;
+    }
+
+    if (ReferenceEquals(this, other)) {
+      return true;
+    }
+
+    return this.DiffuseColour.Equals(other.DiffuseColour) &&
+           this.AnimationLength == other.AnimationLength &&
+           this.AnimationSpeed.Equals(other.AnimationSpeed);
+  }
+
+  public override bool Equals(object? obj) {
+    if (ReferenceEquals(null, obj)) {
+      return false;
+    }
+
+    if (ReferenceEquals(this, obj)) {
+      return true;
+    }
+
+    if (obj.GetType() != this.GetType()) {
+      return false;
+    }
+
+    return Equals((PolygonColorInfo) obj);
+  }
+
+  public override int GetHashCode() {
+    return HashCode.Combine(this.DiffuseColour,
+                            this.AnimationLength,
+                            this.AnimationSpeed,
+                            this.ColorAnimationInfo,
+                            this.AlphaAnimationInfo);
+  }
 }
 
 [Flags]
@@ -126,7 +166,7 @@ public enum LightingInfoFlags : uint {
 }
 
 [BinarySchema]
-public partial class LightingInfo : IBinaryConvertible {
+public partial record LightingInfo : IBinaryConvertible {
   public LightingInfoFlags typeFlags = 0;
 
   [Unknown]
@@ -134,7 +174,7 @@ public partial class LightingInfo : IBinaryConvertible {
 }
 
 [BinarySchema]
-public partial class PeInfo : IBinaryConvertible {
+public partial record PeInfo : IBinaryConvertible {
   public int Flags = 0;
 
   public int AlphaCompareFunctionBits { get; set; }
@@ -207,7 +247,8 @@ public partial class TXD_Unk1 : IBinaryConvertible {
 }
 
 [BinarySchema]
-public partial class TextureData : IBinaryConvertible {
+public partial class TextureData
+    : IBinaryConvertible, IEquatable<TextureData> {
   public int TexAttrIndex = 0;
 
   [Unknown]
@@ -259,7 +300,70 @@ public partial class TextureData : IBinaryConvertible {
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public TXD_Unk1[] ScaleAnimationData;
-};
+
+  public bool Equals(TextureData? other) {
+    if (ReferenceEquals(null, other)) {
+      return false;
+    }
+
+    if (ReferenceEquals(this, other)) {
+      return true;
+    }
+
+    return this.TexAttrIndex == other.TexAttrIndex &&
+           this.unknown2 == other.unknown2 &&
+           this.unknown3 == other.unknown3 &&
+           this.unknown4 == other.unknown4 &&
+           this.unknown5 == other.unknown5 &&
+           this.unknown6 == other.unknown6 &&
+           this.unknown7 == other.unknown7 &&
+           this.TextureMatrixIdx == other.TextureMatrixIdx &&
+           this.AnimationLength == other.AnimationLength &&
+           this.AnimationSpeed.Equals(other.AnimationSpeed) &&
+           this.Scale.Equals(other.Scale) &&
+           this.Rotation.Equals(other.Rotation) &&
+           this.Position.Equals(other.Position) &&
+           this.Pivot.Equals(other.Pivot);
+  }
+
+  public override bool Equals(object? obj) {
+    if (ReferenceEquals(null, obj)) {
+      return false;
+    }
+
+    if (ReferenceEquals(this, obj)) {
+      return true;
+    }
+
+    if (obj.GetType() != this.GetType()) {
+      return false;
+    }
+
+    return Equals((TextureData) obj);
+  }
+
+  public override int GetHashCode() {
+    var hashCode = new HashCode();
+    hashCode.Add(this.TexAttrIndex);
+    hashCode.Add(this.unknown2);
+    hashCode.Add(this.unknown3);
+    hashCode.Add(this.unknown4);
+    hashCode.Add(this.unknown5);
+    hashCode.Add(this.unknown6);
+    hashCode.Add(this.unknown7);
+    hashCode.Add(this.TextureMatrixIdx);
+    hashCode.Add(this.AnimationLength);
+    hashCode.Add(this.AnimationSpeed);
+    hashCode.Add(this.Scale);
+    hashCode.Add(this.Rotation);
+    hashCode.Add(this.Position);
+    hashCode.Add(this.Pivot);
+    hashCode.Add(this.PositionAnimationData);
+    hashCode.Add(this.RotationAnimationData);
+    hashCode.Add(this.ScaleAnimationData);
+    return hashCode.ToHashCode();
+  }
+}
 
 public class MaterialContainer {
   public readonly List<Material> materials = [];
@@ -276,7 +380,7 @@ public enum MaterialFlags : uint {
   HIDDEN = 0x10000,
 }
 
-public class Material : IBinaryConvertible {
+public record Material : IBinaryConvertible {
   public MaterialFlags flags = 0;
 
   [Unknown]
@@ -313,7 +417,7 @@ public class Material : IBinaryConvertible {
 }
 
 [BinarySchema]
-public partial class TextureInfo : IBinaryConvertible {
+public partial class TextureInfo : IBinaryConvertible, IEquatable<TextureInfo> {
   [Unknown]
   public int unknown1 = 0;
 
@@ -326,10 +430,48 @@ public partial class TextureInfo : IBinaryConvertible {
 
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public TextureData[] TexturesInMaterial = [];
+
+  public bool Equals(TextureInfo? other) {
+    if (ReferenceEquals(null, other)) {
+      return false;
+    }
+
+    if (ReferenceEquals(this, other)) {
+      return true;
+    }
+
+    return this.unknown1 == other.unknown1 &&
+           this.unknown2.Equals(other.unknown2) &&
+           this.TexGenData.SequenceEqual(other.TexGenData) &&
+           this.TexturesInMaterial.SequenceEqual(other.TexturesInMaterial);
+  }
+
+  public override bool Equals(object? obj) {
+    if (ReferenceEquals(null, obj)) {
+      return false;
+    }
+
+    if (ReferenceEquals(this, obj)) {
+      return true;
+    }
+
+    if (obj.GetType() != this.GetType()) {
+      return false;
+    }
+
+    return Equals((TextureInfo) obj);
+  }
+
+  public override int GetHashCode() {
+    return HashCode.Combine(this.unknown1,
+                            this.unknown2,
+                            this.TexGenData,
+                            this.TexturesInMaterial);
+  }
 }
 
 [BinarySchema]
-public partial class TexGenData : IBinaryConvertible {
+public partial record TexGenData : IBinaryConvertible {
   public GxTexCoord TexCoordId = 0;
   public GxTexGenType TexGenType = 0;
   public GxTexGenSrc TexGenSrc { get; set; }
