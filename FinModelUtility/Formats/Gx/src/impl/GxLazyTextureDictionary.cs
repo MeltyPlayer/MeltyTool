@@ -12,20 +12,21 @@ public class GxLazyTextureDictionary(IModel model)
     : ILazyDictionary<GxTextureBundle, ITexture> {
   private readonly LazyDictionary<GxTextureBundle, ITexture> impl_ = new(
       (dict, texInfo) => {
-        var (bmdTexture, texCoordGen, texMatrix) = texInfo;
+        var (gxTexture, texCoordGen, texMatrix) = texInfo;
 
         // TODO: Share texture definitions between materials?
         var texture =
-            model.MaterialManager.CreateTexture(bmdTexture.Image);
-        
-        texture.Name = bmdTexture.Name ?? $"texture{dict.Count}";
-        texture.WrapModeU = bmdTexture.WrapModeS.ToFinWrapMode();
-        texture.WrapModeV = bmdTexture.WrapModeT.ToFinWrapMode();
+            model.MaterialManager.CreateTexture(gxTexture.Image);
+
+        texture.Name = gxTexture.Name ?? $"texture{dict.Count}";
+        texture.WrapModeU = gxTexture.WrapModeS.ToFinWrapMode();
+        texture.WrapModeV = gxTexture.WrapModeT.ToFinWrapMode();
+
         texture.MagFilter =
-            bmdTexture.MagTextureFilter.ToFinMagFilter();
+            gxTexture.MagTextureFilter.ToFinMagFilter();
         texture.MinFilter =
-            bmdTexture.MinTextureFilter.ToFinMinFilter();
-        texture.ColorType = bmdTexture.ColorType;
+            gxTexture.MinTextureFilter.ToFinMinFilter();
+        texture.ColorType = gxTexture.ColorType;
 
         var texGenSrc = texCoordGen.TexGenSrc;
         switch (texGenSrc) {

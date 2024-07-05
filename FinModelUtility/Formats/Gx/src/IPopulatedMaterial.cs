@@ -30,10 +30,12 @@ public interface IPopulatedMaterial {
   IAlphaCompare AlphaCompare { get; }
   IBlendFunction BlendMode { get; }
 
+  short[] TextureIndices { get; }
   ITexCoordGen?[] TexCoordGens { get; }
   ITextureMatrixInfo?[] TextureMatrices { get; }
 
-  IDepthFunction DepthFunction { get; }
+  (GxWrapMode wrapModeS, GxWrapMode wrapModeT)[]? TextureWrapModeOverrides
+    => null;
 
-  short[] TextureIndices { get; }
+  IDepthFunction DepthFunction { get; }
 }

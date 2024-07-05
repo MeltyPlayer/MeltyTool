@@ -122,9 +122,11 @@ public partial class GxFixedFunctionMaterial {
       if (i % 2 == 0) {
         var colorIndex = (byte) (i / 2);
 
-        var vertexColor = vertexColors[colorChannelControl.VertexColorIndex ?? colorIndex];
+        var vertexColor
+            = vertexColors[colorChannelControl.VertexColorIndex ?? colorIndex];
 
-        var (materialColorIndex, materialColor) = populatedMaterial.MaterialColors[colorIndex];
+        var (materialColorIndex, materialColor)
+            = populatedMaterial.MaterialColors[colorIndex];
         var materialColorRegisterValue =
             colorChannelControl.MaterialSrc switch {
                 GxColorSrc.Register => registers.GetOrCreateColorRegister(
@@ -193,7 +195,8 @@ public partial class GxFixedFunctionMaterial {
       } else {
         var alphaIndex = (byte) ((i - 1) / 2);
 
-        var vertexAlpha = vertexAlphas[colorChannelControl.VertexColorIndex ?? alphaIndex];
+        var vertexAlpha
+            = vertexAlphas[colorChannelControl.VertexColorIndex ?? alphaIndex];
 
         var (materialColorIndex, materialColor)
             = populatedMaterial.MaterialColors[alphaIndex];
@@ -210,7 +213,8 @@ public partial class GxFixedFunctionMaterial {
 
         var isLightingEnabled = colorChannelControl.LightingEnabled;
         if (isLightingEnabled) {
-          var (ambientColorIndex, ambientColor) = populatedMaterial.AmbientColors[alphaIndex];
+          var (ambientColorIndex, ambientColor)
+              = populatedMaterial.AmbientColors[alphaIndex];
           var ambientAlphaRegisterValue =
               colorChannelControl.AmbientSrc switch {
                   GxColorSrc.Register => registers.GetOrCreateScalarRegister(
@@ -273,10 +277,11 @@ public partial class GxFixedFunctionMaterial {
 
       // Updates which texture is referred to by TEXC
       var textureIndex = tevOrder.TexMap;
-      if (textureIndex == GxTexMap.GX_TEXMAP_NULL || (!STRICT && (int) textureIndex >= textures.Count)) {
+      if (textureIndex == GxTexMap.GX_TEXMAP_NULL ||
+          (!STRICT && (int) textureIndex >= textures.Count)) {
         valueManager.UpdateTextureIndex(null);
       } else {
-        var bmdTexture = textures[(int) textureIndex];
+        var gxTexture = textures[(int) textureIndex];
 
         var texCoordGen =
             populatedMaterial.TexCoordGens[(int) tevOrder.TexCoordId]!;
@@ -286,9 +291,19 @@ public partial class GxFixedFunctionMaterial {
         var texMatrix = texMatrixType != GxTexMatrix.Identity
             ? populatedMaterial.TextureMatrices?[texMatrixIndex]
             : null;
+        var wrapModeOverrides
+            = populatedMaterial.TextureWrapModeOverrides?[(int) textureIndex];
+        gxTexture = new GxTexture2d(
+            gxTexture.Name,
+            gxTexture.Image,
+            wrapModeOverrides?.wrapModeS ?? gxTexture.WrapModeS,
+            wrapModeOverrides?.wrapModeT ?? gxTexture.WrapModeT,
+            gxTexture.MinTextureFilter,
+            gxTexture.MagTextureFilter,
+            gxTexture.ColorType);
 
         var texture =
-            lazyTextureDictionary[(bmdTexture, texCoordGen, texMatrix)];
+            lazyTextureDictionary[(gxTexture, texCoordGen, texMatrix)];
 
         valueManager.UpdateTextureIndex((int) textureIndex);
         material.SetTextureSource((int) textureIndex, texture);

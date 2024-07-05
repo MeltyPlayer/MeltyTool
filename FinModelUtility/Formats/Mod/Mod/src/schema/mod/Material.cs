@@ -251,11 +251,11 @@ public partial class TextureData
     : IBinaryConvertible, IEquatable<TextureData> {
   public int TexAttrIndex = 0;
 
-  [Unknown]
-  public short unknown2 = 0;
+  [IntegerFormat(SchemaIntegerType.UINT16)]
+  public GxWrapMode WrapModeS { get; set; }
 
-  [Unknown]
-  public short unknown3 = 0;
+  [IntegerFormat(SchemaIntegerType.UINT16)]
+  public GxWrapMode WrapModeT { get; set; }
 
   [Unknown]
   public byte unknown4 = 0;
@@ -311,8 +311,8 @@ public partial class TextureData
     }
 
     return this.TexAttrIndex == other.TexAttrIndex &&
-           this.unknown2 == other.unknown2 &&
-           this.unknown3 == other.unknown3 &&
+           this.WrapModeS == other.WrapModeS &&
+           this.WrapModeT == other.WrapModeT &&
            this.unknown4 == other.unknown4 &&
            this.unknown5 == other.unknown5 &&
            this.unknown6 == other.unknown6 &&
@@ -345,8 +345,8 @@ public partial class TextureData
   public override int GetHashCode() {
     var hashCode = new HashCode();
     hashCode.Add(this.TexAttrIndex);
-    hashCode.Add(this.unknown2);
-    hashCode.Add(this.unknown3);
+    hashCode.Add(this.WrapModeS);
+    hashCode.Add(this.WrapModeT);
     hashCode.Add(this.unknown4);
     hashCode.Add(this.unknown5);
     hashCode.Add(this.unknown6);

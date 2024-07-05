@@ -40,20 +40,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
   /// </summary>
   private short[] activeMatrices_ = new short[10];
 
-  public static WrapMode ConvertGcnToFin(TilingMode tilingMode)
-    => tilingMode switch {
-        TilingMode.CLAMP         => WrapMode.CLAMP,
-        TilingMode.MIRROR_REPEAT => WrapMode.MIRROR_REPEAT,
-        _                        => WrapMode.REPEAT,
-    };
-
-  public static GxWrapMode ConvertGcnToGx(TilingMode tilingMode)
-    => tilingMode switch {
-        TilingMode.CLAMP         => GxWrapMode.GX_CLAMP,
-        TilingMode.MIRROR_REPEAT => GxWrapMode.GX_MIRROR,
-        _                        => GxWrapMode.GX_REPEAT,
-    };
-
   public IModel Import(ModModelFileBundle modelFileBundle) {
     var mod =
         modelFileBundle.ModFile.ReadNew<Mod>(Endianness.BigEndian);
@@ -101,14 +87,14 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     for (var i = 0; i < mod.texattrs.Count; ++i) {
       var textureAttr = mod.texattrs[i];
 
-      var textureIndex = textureAttr.index;
+      var textureIndex = textureAttr.TextureImageIndex;
       var image = textureImages[textureIndex];
 
       gxTextures[i] = new GxTexture2d(
           null,
           image,
-          ConvertGcnToGx(textureAttr.TilingModeS),
-          ConvertGcnToGx(textureAttr.TilingModeT));
+          textureAttr.TilingModeS.ConvertGcnToGx(),
+          textureAttr.TilingModeT.ConvertGcnToGx());
     }
 
     var lazyTextureDictionary = new GxLazyTextureDictionary(model);
@@ -138,14 +124,15 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
             finMaterial.TransparencyType
                 = modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE)
-                    ?
-                    TransparencyType.OPAQUE
+                    ? TransparencyType.OPAQUE
                     : modMaterial.flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
                         ? TransparencyType.MASK
                         : TransparencyType.TRANSPARENT;
           } else {
             finMaterial = model.MaterialManager.AddNullMaterial();
           }
+
+          finMaterial.Name = $"material{i}";
 
           return finMaterial;
         });
@@ -156,7 +143,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
               var finMaterial = finMaterialByModMaterial[modMaterial];
               return (modMaterial, finMaterial);
             });
-    
+
     // Writes bones
     // TODO: Simplify these loops
     var jointCount = mod.joints.Count;

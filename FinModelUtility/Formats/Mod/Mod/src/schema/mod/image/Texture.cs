@@ -50,7 +50,7 @@ namespace mod.schema.mod {
 
   [BinarySchema]
   public partial class TextureAttributes : IBinaryConvertible {
-    public ushort index = 0;
+    public ushort TextureImageIndex = 0;
     private readonly ushort padding_ = 0;
 
     [IntegerFormat(SchemaIntegerType.UINT16)]

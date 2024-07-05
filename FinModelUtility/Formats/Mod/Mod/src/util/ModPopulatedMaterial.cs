@@ -9,6 +9,7 @@ using fin.util.enums;
 
 using gx;
 
+using mod.api;
 using mod.schema.mod;
 
 namespace mod.util {
@@ -191,8 +192,8 @@ namespace mod.util {
                           t => new TextureMatrixInfoImpl(
                               GxTexGenType.Matrix2x4,
                               new Vector2f {
-                                  X = 1 / t.Scale.X,
-                                  Y = 1 / t.Scale.Y
+                                  X = 1/t.Scale.X,
+                                  Y = 1/t.Scale.Y
                               },
                               new Vector2f {
                                   X = -t.Position.X,
@@ -201,17 +202,31 @@ namespace mod.util {
                               (short) (t.Rotation / MathF.PI * 32768f)
                           ))
                       .ToArray();
+        this.TextureWrapModeOverrides
+            = material.texInfo.TexturesInMaterial
+                      .Select(tex => (tex.WrapModeS, tex.WrapModeT))
+                      .ToArray();
       }
 
       {
         var peInfo = material.peInfo;
 
-        this.BlendMode = new BlendFunctionImpl {
-            BlendMode = peInfo.BlendMode,
-            DstFactor = peInfo.DstFactor,
-            SrcFactor = peInfo.SrcFactor,
-            LogicOp = peInfo.LogicOp,
-        };
+        if (material.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)) {
+          this.BlendMode = new BlendFunctionImpl {
+              BlendMode = GxBlendMode.BLEND,
+              SrcFactor = GxBlendFactor.SRC_ALPHA,
+              DstFactor = GxBlendFactor.ONE_MINUS_SRC_ALPHA,
+              LogicOp = GxLogicOp.SET,
+          };
+        } else {
+          this.BlendMode = new BlendFunctionImpl {
+              BlendMode = peInfo.BlendMode,
+              SrcFactor = peInfo.SrcFactor,
+              DstFactor = peInfo.DstFactor,
+              LogicOp = peInfo.LogicOp,
+          };
+        }
+
         this.AlphaCompare = new AlphaCompareImpl {
             MergeFunc = peInfo.AlphaCompareOp,
             Func0 = peInfo.CompareType0,
@@ -244,11 +259,13 @@ namespace mod.util {
     public IAlphaCompare AlphaCompare { get; }
     public IBlendFunction BlendMode { get; }
 
+    public short[] TextureIndices { get; }
     public ITexCoordGen[] TexCoordGens { get; }
     public ITextureMatrixInfo?[] TextureMatrices { get; }
 
-    public IDepthFunction DepthFunction { get; }
+    public (GxWrapMode wrapModeS, GxWrapMode wrapModeT)[]?
+        TextureWrapModeOverrides { get; }
 
-    public short[] TextureIndices { get; }
+    public IDepthFunction DepthFunction { get; }
   }
 }

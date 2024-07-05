@@ -1,6 +1,7 @@
 ﻿using fin.image;
 using fin.image.io;
 using fin.image.io.pixel;
+using fin.image.io.tile;
 
 using gx;
 using gx.image;
@@ -43,7 +44,7 @@ public class J3dImageReader : IImageReader {
               height,
               4,
               4,
-              new La16PixelReader()),
+              new Al16PixelReader()),
           GxTextureFormat.R5_G6_B5 => TiledImageReader.New(
               width,
               height,
@@ -59,9 +60,7 @@ public class J3dImageReader : IImageReader {
           GxTextureFormat.ARGB8 => TiledImageReader.New(
               width,
               height,
-              4,
-              4,
-              new Rgba32PixelReader()),
+              new Ar88Gb88TileReader()),
           GxTextureFormat.S3TC1 => new CmprImageReader(width, height),
       };
     }
