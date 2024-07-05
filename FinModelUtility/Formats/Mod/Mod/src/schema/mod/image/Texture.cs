@@ -38,14 +38,9 @@ namespace mod.schema.mod {
 
     public IImage ToImage() {
       return new ModImageReader(this.width, this.height, this.format).ReadImage(
-          this.imageData, Endianness.BigEndian);
+          this.imageData,
+          Endianness.BigEndian);
     }
-  }
-
-  public enum TilingMode : byte {
-    REPEAT = 0,
-    CLAMP = 1,
-    MIRROR_REPEAT = 2,
   }
 
   [BinarySchema]
@@ -53,11 +48,11 @@ namespace mod.schema.mod {
     public ushort TextureImageIndex = 0;
     private readonly ushort padding_ = 0;
 
-    [IntegerFormat(SchemaIntegerType.UINT16)]
-    public TilingMode TilingModeS { get; set; }
+    [Unknown]
+    public ushort Unk0;
 
-    [IntegerFormat(SchemaIntegerType.UINT16)]
-    public TilingMode TilingModeT { get; set; }
+    [Unknown]
+    public ushort Unk1;
 
     [Unknown]
     public float WidthPercent = 0;

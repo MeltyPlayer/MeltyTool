@@ -124,8 +124,4 @@ void main() {
   float alphaComponent = texture(texture0, uv0).a*scalar_GxMaterialAlpha8*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + scalar_GxAmbientAlpha8);
 
   fragColor = vec4(colorComponent, alphaComponent);
-
-  if (!(fragColor.a >= 0.5019608)) {
-    discard;
-  }
 }

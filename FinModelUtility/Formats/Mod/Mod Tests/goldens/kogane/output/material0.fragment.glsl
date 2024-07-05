@@ -22,14 +22,11 @@ uniform vec3 cameraPosition;
 uniform float shininess;
 uniform sampler2D texture0;
 uniform sampler2D texture1;
+uniform vec3 color_GxColor0;
 uniform vec3 color_GxMaterialColor0;
 uniform vec3 color_GxAmbientColor0;
-uniform vec3 color_GxColor2;
-uniform vec3 color_GxColor1;
-uniform vec3 color_GxColor0;
 uniform float scalar_GxMaterialAlpha0;
 uniform float scalar_GxAmbientAlpha0;
-uniform float scalar_GxAlpha2;
 
 in vec2 normalUv;
 in vec3 vertexPosition;
@@ -125,7 +122,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(color_GxColor2*(vec3(1) + vec3(-1)*clamp((color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor0), 0, 1) + vec3(1) + vec3(-1)*vec3(scalar_GxAlpha2) + texture(texture1, acos(normalUv) / 3.14159).rgb*vec3(scalar_GxAlpha2) + vec3(-1)*texture(texture1, acos(normalUv) / 3.14159).rgb*vec3(scalar_GxAlpha2)), 0, 1)) + texture(texture0, uv0).rgb*clamp((color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor0), 0, 1) + vec3(1) + vec3(-1)*vec3(scalar_GxAlpha2) + texture(texture1, acos(normalUv) / 3.14159).rgb*vec3(scalar_GxAlpha2) + vec3(-1)*texture(texture1, acos(normalUv) / 3.14159).rgb*vec3(scalar_GxAlpha2)), 0, 1) + color_GxColor1*(vec3(1) + vec3(-1)*texture(texture1, acos(normalUv) / 3.14159).rgb) + color_GxColor0*texture(texture1, acos(normalUv) / 3.14159).rgb + vec3(-0.5), 0, 1);
+  vec3 colorComponent = clamp(texture(texture0, uv0).rgb*color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor0), 0, 1) + vec3(-0.5) + color_GxColor0*texture(texture1, acos(normalUv) / 3.14159).rgb, 0, 1);
 
   float alphaComponent = scalar_GxMaterialAlpha0*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + scalar_GxAmbientAlpha0);
 

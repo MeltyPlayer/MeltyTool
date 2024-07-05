@@ -155,14 +155,16 @@ public partial class PolygonColorInfo
   }
 }
 
-[Flags]
 public enum LightingInfoFlags : uint {
-  ENABLED = 0x1,
-  SPECULAR_ENABLED = 0x2,
-  ALPHA_ENABLED = 0x4,
+  ENABLED = 1 << 0,
+  SPECULAR_ENABLED = 1 << 1,
+  ALPHA_ENABLED = 1 << 2,
   UNK_0 = 0x10,
   UNK_1 = 0x40,
   UNK_2 = 0x80,
+  // TODO: Might be wrong
+  USE_VERTEX_COLOR = 1 << 11,
+  USE_VERTEX_ALPHA = 1 << 12,
 }
 
 [BinarySchema]

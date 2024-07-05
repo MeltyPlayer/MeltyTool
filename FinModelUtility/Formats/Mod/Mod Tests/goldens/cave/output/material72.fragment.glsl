@@ -21,13 +21,10 @@ uniform Light lights[8];
 uniform vec3 cameraPosition;
 uniform float shininess;
 uniform sampler2D texture0;
-uniform vec3 color_GxMaterialColor72;
-uniform vec3 color_GxAmbientColor72;
-uniform float scalar_GxMaterialAlpha72;
-uniform float scalar_GxAmbientAlpha72;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+in vec4 vertexColor0;
 in vec2 uv0;
 
 out vec4 fragColor;
@@ -119,9 +116,9 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(texture(texture0, uv0).rgb*color_GxMaterialColor72*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor72), 0, 1), 0, 1);
+  vec3 colorComponent = clamp(texture(texture0, uv0).rgb*vertexColor0.rgb*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + vertexColor0.rgb), 0, 1), 0, 1);
 
-  float alphaComponent = texture(texture0, uv0).a*scalar_GxMaterialAlpha72*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + scalar_GxAmbientAlpha72);
+  float alphaComponent = texture(texture0, uv0).a*vertexColor0.a*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + vertexColor0.a);
 
   fragColor = vec4(colorComponent, alphaComponent);
 

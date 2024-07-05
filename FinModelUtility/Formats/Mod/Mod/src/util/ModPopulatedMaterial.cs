@@ -129,15 +129,15 @@ namespace mod.util {
       var srcFor1 = GxColorSrc.Vertex;
 
       // TODO: Stupid hack, how to do this better???
-      var hasLightingColor = tevInfo.TevStages.Any(
+      var hasChannel0 = tevInfo.TevStages.Any(
           s => s.ColorChannel is GxColorChannel.GX_COLOR0
                                  or GxColorChannel.GX_COLOR0A0
                                  or GxColorChannel.GX_ALPHA0);
-      var hasVertexColor = tevInfo.TevStages.Any(
+      var hasChannel1 = tevInfo.TevStages.Any(
           s => s.ColorChannel is GxColorChannel.GX_COLOR1
                                  or GxColorChannel.GX_COLOR1A1
                                  or GxColorChannel.GX_ALPHA1);
-      var hasBothLightingAndVertexColor = hasLightingColor && hasVertexColor;
+      var hasBothLightingAndVertexColor = hasChannel0 && hasChannel1;
 
       var attenuationFunction = lightingSpecularEnabled
           ? GxAttenuationFunction.Spec
@@ -145,27 +145,52 @@ namespace mod.util {
       var litMask = GxLightMask.Light0 |
                     GxLightMask.Light1 |
                     GxLightMask.Light2;
-      var colorChannelControl0 = new ColorChannelControlImpl {
-          LightingEnabled = lightingEnabled,
-          MaterialSrc = GxColorSrc.Register,
-          AmbientSrc = GxColorSrc.Register,
-          LitMask = litMask,
-          AttenuationFunction = attenuationFunction,
-      };
-      var colorChannelControl1 = new ColorChannelControlImpl {
-          // Seems to sometimes be vertex color????
-          LightingEnabled = lightingEnabled && !hasBothLightingAndVertexColor,
-          MaterialSrc = GxColorSrc.Register,
-          AmbientSrc = GxColorSrc.Register,
-          LitMask = litMask,
-          AttenuationFunction = attenuationFunction,
-          VertexColorIndex = 0,
-      };
+
+      var useVertexColor
+          = lightingFlags.CheckFlag(LightingInfoFlags.USE_VERTEX_COLOR);
+      var useVertexAlpha
+          = lightingFlags.CheckFlag(LightingInfoFlags.USE_VERTEX_ALPHA);
+
+      var lightColorSrc
+          = useVertexColor ? GxColorSrc.Vertex : GxColorSrc.Register;
+      var lightAlphaSrc
+          = useVertexAlpha ? GxColorSrc.Vertex : GxColorSrc.Register;
+
       this.ColorChannelControls = [
-          colorChannelControl0,
-          colorChannelControl0,
-          colorChannelControl1,
-          colorChannelControl1
+          new ColorChannelControlImpl {
+              LightingEnabled = lightingEnabled,
+              MaterialSrc = lightColorSrc,
+              AmbientSrc = lightColorSrc,
+              LitMask = litMask,
+              AttenuationFunction = attenuationFunction,
+          },
+          new ColorChannelControlImpl {
+              LightingEnabled = lightingEnabled,
+              MaterialSrc = lightAlphaSrc,
+              AmbientSrc = lightAlphaSrc,
+              LitMask = litMask,
+              AttenuationFunction = attenuationFunction,
+          },
+          new ColorChannelControlImpl {
+              // Seems to sometimes be vertex color????
+              LightingEnabled
+                  = lightingEnabled && !hasBothLightingAndVertexColor,
+              MaterialSrc = lightColorSrc,
+              AmbientSrc = lightColorSrc,
+              LitMask = litMask,
+              AttenuationFunction = attenuationFunction,
+              VertexColorIndex = 0,
+          },
+          new ColorChannelControlImpl {
+              // Seems to sometimes be vertex color????
+              LightingEnabled
+                  = lightingEnabled && !hasBothLightingAndVertexColor,
+              MaterialSrc = lightAlphaSrc,
+              AmbientSrc = lightAlphaSrc,
+              LitMask = litMask,
+              AttenuationFunction = attenuationFunction,
+              VertexColorIndex = 0,
+          }
       ];
 
       {
@@ -192,8 +217,8 @@ namespace mod.util {
                           t => new TextureMatrixInfoImpl(
                               GxTexGenType.Matrix2x4,
                               new Vector2f {
-                                  X = 1/t.Scale.X,
-                                  Y = 1/t.Scale.Y
+                                  X = 1 / t.Scale.X,
+                                  Y = 1 / t.Scale.Y
                               },
                               new Vector2f {
                                   X = -t.Position.X,

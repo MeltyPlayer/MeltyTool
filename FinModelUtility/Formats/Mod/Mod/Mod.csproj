@@ -51,7 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="src\api\ModExtensions.cs" />
     <Compile Include="src\api\ModModelFileBundle.cs" />
     <Compile Include="src\api\ModModelImporter.cs" />
     <Compile Include="src\api\ModModelImporterPlugin.cs" />

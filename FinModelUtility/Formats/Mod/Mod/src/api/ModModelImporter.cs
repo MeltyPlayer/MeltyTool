@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -33,6 +34,8 @@ using schema.binary;
 namespace mod.api;
 
 public class ModModelImporter : IModelImporter<ModModelFileBundle> {
+  private const bool DEDUPLICATE_MATERIALS = false;
+
   /// <summary>
   ///   GX's active matrices. These are deferred to when a vertex matrix is
   ///   -1, which corresponds to using an active matrix from a previous
@@ -93,17 +96,15 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
       gxTextures[i] = new GxTexture2d(
           null,
           image,
-          textureAttr.TilingModeS.ConvertGcnToGx(),
-          textureAttr.TilingModeT.ConvertGcnToGx());
+          GxWrapMode.GX_CLAMP,
+          GxWrapMode.GX_CLAMP);
     }
 
     var lazyTextureDictionary = new GxLazyTextureDictionary(model);
 
     // Writes materials
-    var finMaterialByModMaterial = new LazyDictionary<Material, IMaterial>(
-        (dict, modMaterial) => {
-          var i = dict.Count;
-
+    Func<int, Material, IMaterial>
+        getFinMaterialFromModMaterial = (i, modMaterial) => {
           IMaterial finMaterial;
           if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
             finMaterial = model.MaterialManager.AddHiddenMaterial();
@@ -135,12 +136,25 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           finMaterial.Name = $"material{i}";
 
           return finMaterial;
+        };
+
+    var finMaterialByModMaterial = new LazyDictionary<Material, IMaterial>(
+        (dict, modMaterial) => {
+          var i = dict.Count;
+          return getFinMaterialFromModMaterial(i, modMaterial);
         });
     var modMaterialAndFinMaterialByIndex
         = new LazyDictionary<int, (Material, IMaterial)>(
             index => {
               var modMaterial = mod.materials.materials[index];
-              var finMaterial = finMaterialByModMaterial[modMaterial];
+
+              IMaterial finMaterial;
+              if (DEDUPLICATE_MATERIALS) {
+                finMaterial = finMaterialByModMaterial[modMaterial];
+              } else {
+                finMaterial = getFinMaterialFromModMaterial(index, modMaterial);
+              }
+
               return (modMaterial, finMaterial);
             });
 

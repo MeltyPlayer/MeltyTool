@@ -125,8 +125,8 @@ namespace mod.schema {
     public void TestTextureAttributes() {
       var textureAttributes = new TextureAttributes {
           TextureImageIndex = 1,
-          TilingModeS = (TilingMode) 2,
-          TilingModeT = (TilingMode) 3,
+          Unk0 = 2,
+          Unk1 = 3,
           WidthPercent = 123f
       };
 
