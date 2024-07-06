@@ -123,6 +123,8 @@ namespace mod.util {
       var lightingInfo = material.lightingInfo;
       var lightingFlags = lightingInfo.typeFlags;
       var lightingEnabled = lightingFlags.CheckFlag(LightingInfoFlags.ENABLED);
+      var lightingAlphaEnabled
+          = lightingFlags.CheckFlag(LightingInfoFlags.ALPHA_ENABLED);
       var lightingSpecularEnabled
           = lightingFlags.CheckFlag(LightingInfoFlags.SPECULAR_ENABLED);
       var srcFor0 = GxColorSrc.Register;
@@ -165,7 +167,7 @@ namespace mod.util {
               AttenuationFunction = attenuationFunction,
           },
           new ColorChannelControlImpl {
-              LightingEnabled = lightingEnabled,
+              LightingEnabled = lightingEnabled && lightingAlphaEnabled,
               MaterialSrc = lightAlphaSrc,
               AmbientSrc = lightAlphaSrc,
               LitMask = litMask,
@@ -184,7 +186,9 @@ namespace mod.util {
           new ColorChannelControlImpl {
               // Seems to sometimes be vertex color????
               LightingEnabled
-                  = lightingEnabled && !hasBothLightingAndVertexColor,
+                  = lightingEnabled &&
+                    !hasBothLightingAndVertexColor &&
+                    lightingAlphaEnabled,
               MaterialSrc = lightAlphaSrc,
               AmbientSrc = lightAlphaSrc,
               LitMask = litMask,
