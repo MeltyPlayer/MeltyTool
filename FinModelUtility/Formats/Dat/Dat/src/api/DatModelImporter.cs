@@ -345,18 +345,10 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       }
     }
 
-    var sortedJObjsAndDObjs =
-        allJObjsAndDObjs
-            .Where(
-                tuple => !(
-                    tuple.dObj.MObj?.RenderMode.CheckFlag(RenderMode.XLU) ??
-                    false))
-            .Concat(
-                allJObjsAndDObjs.Where(
-                    tuple
-                        => tuple.dObj.MObj?.RenderMode
-                                .CheckFlag(RenderMode.XLU) ??
-                           false));
+    var sortedJObjsAndDObjs = allJObjsAndDObjs
+        .OrderBy(
+            tuple => tuple.dObj.MObj?.RenderMode.CheckFlag(RenderMode.XLU) ??
+                     false);
 
     finSkin.AllowMaterialRendererMerging = false;
     var finMesh = finSkin.AddMesh();
