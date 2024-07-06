@@ -203,8 +203,10 @@ namespace mod.util {
               .TexGenData
               .Select(tex => {
                 var texMatrix = tex.TexMatrix switch {
-                    10           => GxTexMatrix.Identity,
-                    >= 0 and < 8 => GxTexMatrix.TexMtx0 + tex.TexMatrix,
+                    10 => GxTexMatrix.Identity,
+                    >= 0 and < 8
+                        => (GxTexMatrix) ((int) GxTexMatrix.TexMtx0 +
+                                          3 * tex.TexMatrix),
                 };
                 return new TexCoordGenImpl(
                     GxTexGenType.Matrix2x4,

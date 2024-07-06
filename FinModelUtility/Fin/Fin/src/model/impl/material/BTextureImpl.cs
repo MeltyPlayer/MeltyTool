@@ -136,7 +136,8 @@ public partial class ModelImpl<TVertex> {
       }
 
       if (other is ITexture otherTexture) {
-        return this.Image == otherTexture.Image &&
+        return this.Name == otherTexture.Name &&
+               this.Image == otherTexture.Image &&
                this.WrapModeU == otherTexture.WrapModeU &&
                this.WrapModeV == otherTexture.WrapModeV;
       }

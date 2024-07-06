@@ -2,11 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 
-using fin.data.queues;
-using fin.util.linq;
-
-using Newtonsoft.Json.Linq;
-
 namespace fin.language.equations.fixedFunction;
 
 public partial class FixedFunctionEquations<TIdentifier>
