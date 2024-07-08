@@ -182,10 +182,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     var finBones = ListUtil.OfLength<IBone>(jointCount);
 
     var jointQueue = new FinTuple2Queue<int, IBone?>((0, null));
-    var jointsInQueueOrder = new List<Joint>();
     while (jointQueue.TryDequeue(out var jointIndex, out var parent)) {
       var joint = mod.joints[jointIndex];
-      jointsInQueueOrder.Add(joint);
 
       var bone = (parent ?? model.Skeleton.Root).AddChild(joint.position);
       bone.SetLocalRotationRadians(joint.rotation);
@@ -241,26 +239,19 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
     model.Skin.AllowMaterialRendererMerging = false;
     var meshTuples
-        = jointsInQueueOrder
+        = mod.joints
           .SelectMany(j => j.matpolys)
           .Select(m => {
             var mesh = mod.meshes[m.meshIdx];
             var (modMaterial, finMaterial)
                 = modMaterialAndFinMaterialByIndex[m.matIdx];
-            /*var transparencyType
-                = !modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE);*/
             var transparencyType
-                = modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE)
-                    ? TransparencyType.OPAQUE
-                    : modMaterial.flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
-                        ? TransparencyType.MASK
-                        : TransparencyType.TRANSPARENT;
+                = modMaterial.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND);
             var priority = 1000 - modMaterial.unknown1;
             return (mesh, modMaterial, finMaterial, transparencyType, priority);
           })
-          //.ThenBy(m => m.priority)
           .OrderBy(m => m.transparencyType)
-          //.ThenBy(m => m.priority)
+          .ThenBy(m => m.priority)
           .ToArray();
 
     foreach (var (mesh, modMaterial, finMaterial, _, _) in meshTuples) {
