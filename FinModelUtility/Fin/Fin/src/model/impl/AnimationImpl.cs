@@ -54,8 +54,8 @@ public partial class ModelImpl<TVertex> {
       private readonly IndexableDictionary<IReadOnlyBone, IBoneTracks>
           boneTracks_;
 
-      private readonly Dictionary<IReadOnlyMesh, IMeshTracks> meshTracks_
-          = new();
+      private readonly IndexableDictionary<IReadOnlyMesh, IMeshTracks>
+          meshTracks_ = new();
 
       public ModelAnimationImpl(int boneCount) {
         this.boneTracks_ =
@@ -88,7 +88,7 @@ public partial class ModelImpl<TVertex> {
       public IBoneTracks AddBoneTracks(IReadOnlyBone bone)
         => this.boneTracks_[bone] = new BoneTracksImpl(this, bone);
 
-      public IReadOnlyDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks
+      public IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks
         => this.meshTracks_;
 
       public IMeshTracks AddMeshTracks(IReadOnlyMesh mesh)

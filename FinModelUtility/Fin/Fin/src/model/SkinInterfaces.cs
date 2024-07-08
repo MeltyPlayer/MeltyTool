@@ -43,7 +43,7 @@ public partial interface ISkin<out TVertex> : ISkin
 }
 
 [GenerateReadOnly]
-public partial interface IMesh {
+public partial interface IMesh : IIndexable {
   string Name { get; set; }
 
   IReadOnlyList<IPrimitive> Primitives { get; }

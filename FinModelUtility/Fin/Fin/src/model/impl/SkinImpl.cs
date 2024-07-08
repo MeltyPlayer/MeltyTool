@@ -20,7 +20,7 @@ public partial class ModelImpl<TVertex> {
   private class SkinImpl : ISkin<TVertex> {
     private readonly Func<int, Vector3, TVertex> vertexCreator_;
     private readonly IList<TVertex> vertices_;
-    private readonly IList<IMesh> meshes_ = new List<IMesh>();
+    private readonly List<IMesh> meshes_ = new();
 
     private readonly FinSortedSet<IReadOnlyBone> bonesUsedByVertices_
         = new((lhs, rhs) => lhs.Index.CompareTo(rhs.Index));
@@ -46,8 +46,6 @@ public partial class ModelImpl<TVertex> {
       for (var i = 0; i < vertexCount; ++i) {
         this.vertices_.Add(vertexCreator(i, default));
       }
-
-      this.Meshes = new ReadOnlyCollection<IMesh>(this.meshes_);
     }
 
     public IReadOnlyList<IVertex> Vertices { get; }
@@ -61,10 +59,10 @@ public partial class ModelImpl<TVertex> {
       }
     }
 
-    public IReadOnlyList<IMesh> Meshes { get; }
+    public IReadOnlyList<IMesh> Meshes => this.meshes_;
 
     public IMesh AddMesh() {
-      var mesh = new MeshImpl();
+      var mesh = new MeshImpl(this.meshes_.Count);
       this.meshes_.Add(mesh);
       return mesh;
     }
@@ -117,17 +115,14 @@ public partial class ModelImpl<TVertex> {
     }
 
 
-    private class MeshImpl : IMesh {
-      private readonly IList<IPrimitive> primitives_ = new List<IPrimitive>();
+    private class MeshImpl(int index) : IMesh {
+      private readonly List<IPrimitive> primitives_ = new();
 
-      public MeshImpl() {
-        this.Primitives =
-            new ReadOnlyCollection<IPrimitive>(this.primitives_);
-      }
+      public int Index => index;
 
       public string Name { get; set; }
 
-      public IReadOnlyList<IPrimitive> Primitives { get; }
+      public IReadOnlyList<IPrimitive> Primitives => this.primitives_;
 
       public MeshDisplayState DefaultDisplayState { get; set; }
         = MeshDisplayState.VISIBLE;

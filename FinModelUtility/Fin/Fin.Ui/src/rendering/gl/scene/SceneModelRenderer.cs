@@ -8,6 +8,7 @@ using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
+using fin.util.sets;
 
 namespace fin.ui.rendering.gl.scene;
 
@@ -112,7 +113,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
           BoneWeightTransformType.FOR_RENDERING,
           animationPlaybackManager.Config);
 
-      foreach (var (mesh, meshTracks) in animation.MeshTracks) {
+      foreach (var meshTracks in animation.MeshTracks) {
         if (!meshTracks.DisplayStates.TryGetAtFrame(
                 frame,
                 out var displayState)) {
@@ -120,7 +121,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
         }
 
         if (displayState == MeshDisplayState.HIDDEN) {
-          this.hiddenMeshes_.Add(mesh);
+          this.hiddenMeshes_.Add(meshTracks.Mesh);
         }
       }
     } else {

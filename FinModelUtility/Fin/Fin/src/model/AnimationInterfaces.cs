@@ -43,7 +43,7 @@ public partial interface IModelAnimation : IAnimation {
   IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks { get; }
   IBoneTracks AddBoneTracks(IReadOnlyBone bone);
 
-  IReadOnlyDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
+  IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
   IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
 
   IReadOnlyDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks { get; }
