@@ -241,8 +241,9 @@ namespace mod.util {
 
       {
         var peInfo = material.peInfo;
+        var flags = material.flags;
 
-        if (!material.flags.CheckFlag(MaterialFlags.OPAQUE)) {
+        if (flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)) {
           this.BlendMode = new BlendFunctionImpl {
               BlendMode = GxBlendMode.BLEND,
               SrcFactor = GxBlendFactor.SRC_ALPHA,
@@ -251,20 +252,38 @@ namespace mod.util {
           };
         } else {
           this.BlendMode = new BlendFunctionImpl {
-              BlendMode = GxBlendMode.NONE,
-              SrcFactor = GxBlendFactor.ONE,
-              DstFactor = GxBlendFactor.ZERO,
-              LogicOp = GxLogicOp.SET,
+              BlendMode = peInfo.BlendMode,
+              SrcFactor = peInfo.SrcFactor,
+              DstFactor = peInfo.DstFactor,
+              LogicOp = peInfo.LogicOp,
           };
         }
 
-        this.AlphaCompare = new AlphaCompareImpl {
-            MergeFunc = peInfo.AlphaCompareOp,
-            Func0 = peInfo.CompareType0,
-            Reference0 = peInfo.Reference0,
-            Func1 = peInfo.CompareType1,
-            Reference1 = peInfo.Reference1,
-        };
+        if (flags.CheckFlag(MaterialFlags.ALPHA_CLIP) &&
+            (peInfo is {
+                 CompareType0: GxCompareType.Always,
+                 CompareType1: GxCompareType.Always
+             } ||
+             (peInfo.AlphaCompareOp == GxAlphaOp.And &&
+              (peInfo.CompareType0 == GxCompareType.Never ||
+               peInfo.CompareType1 == GxCompareType.Never)))) {
+          this.AlphaCompare = new AlphaCompareImpl {
+              MergeFunc = GxAlphaOp.Or,
+              Func0 = GxCompareType.GEqual,
+              Reference0 = .95f,
+              Func1 = GxCompareType.Never,
+              Reference1 = 0,
+          };
+        } else {
+          this.AlphaCompare = new AlphaCompareImpl {
+              MergeFunc = peInfo.AlphaCompareOp,
+              Func0 = peInfo.CompareType0,
+              Reference0 = peInfo.Reference0,
+              Func1 = peInfo.CompareType1,
+              Reference1 = peInfo.Reference1,
+          };
+        }
+
         this.DepthFunction = new DepthFunctionImpl {
             Enable = peInfo.Enable,
             Func = peInfo.DepthCompareType,

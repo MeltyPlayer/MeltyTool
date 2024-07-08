@@ -6,6 +6,7 @@ using System.Text;
 using fin.model;
 using fin.shaders.glsl;
 using fin.util.asserts;
+using fin.util.image;
 
 namespace fin.language.equations.fixedFunction;
 
@@ -114,7 +115,8 @@ public class FixedFunctionEquationsGlslPrinter {
       }
     };
 
-    if (dependsOnAnyTextures && textures.Any(
+    if (dependsOnAnyTextures &&
+        textures.Any(
             texture => texture?.UvType is UvType.SPHERICAL
                                           or UvType.LINEAR)) {
       AppendLineBetweenUniformsAndIns();
@@ -194,6 +196,7 @@ public class FixedFunctionEquationsGlslPrinter {
                 
               """);
       }
+
       if (dependsOnMergedLights) {
         sb.AppendLine(
             $"""
@@ -222,7 +225,11 @@ public class FixedFunctionEquationsGlslPrinter {
     sb.AppendLine(";");
     sb.AppendLine();
 
-    sb.AppendLine("  fragColor = vec4(colorComponent, alphaComponent);");
+    if (material.TransparencyType == TransparencyType.TRANSPARENT) {
+      sb.AppendLine("  fragColor = vec4(colorComponent, alphaComponent);");
+    } else {
+      sb.AppendLine("  fragColor = vec4(colorComponent, 1);");
+    }
 
     var alphaOpValue =
         this.DetermineAlphaOpValue_(
@@ -238,11 +245,13 @@ public class FixedFunctionEquationsGlslPrinter {
       sb.AppendLine();
 
       var alphaCompareText0 =
-          GetAlphaCompareText_(material.AlphaCompareType0,
-                               material.AlphaReference0);
+          this.GetAlphaCompareText_(material.AlphaCompareType0,
+                                    "alphaComponent",
+                                    material.AlphaReference0);
       var alphaCompareText1 =
-          GetAlphaCompareText_(material.AlphaCompareType1,
-                               material.AlphaReference1);
+          this.GetAlphaCompareText_(material.AlphaCompareType1,
+                                    "alphaComponent",
+                                    material.AlphaReference1);
 
       switch (alphaOpValue) {
         case AlphaOpValue.ONLY_0_REQUIRED: {
@@ -304,15 +313,16 @@ public class FixedFunctionEquationsGlslPrinter {
 
   private string GetAlphaCompareText_(
       AlphaCompareType alphaCompareType,
+      string alphaAccessorText,
       float reference)
     => alphaCompareType switch {
         AlphaCompareType.Never   => "false",
-        AlphaCompareType.Less    => $"fragColor.a < {reference}",
-        AlphaCompareType.Equal   => $"fragColor.a == {reference}",
-        AlphaCompareType.LEqual  => $"fragColor.a <= {reference}",
-        AlphaCompareType.Greater => $"fragColor.a > {reference}",
-        AlphaCompareType.NEqual  => $"fragColor.a != {reference}",
-        AlphaCompareType.GEqual  => $"fragColor.a >= {reference}",
+        AlphaCompareType.Less    => $"{alphaAccessorText} < {reference}",
+        AlphaCompareType.Equal   => $"{alphaAccessorText} == {reference}",
+        AlphaCompareType.LEqual  => $"{alphaAccessorText} <= {reference}",
+        AlphaCompareType.Greater => $"{alphaAccessorText} > {reference}",
+        AlphaCompareType.NEqual  => $"{alphaAccessorText} != {reference}",
+        AlphaCompareType.GEqual  => $"{alphaAccessorText} >= {reference}",
         AlphaCompareType.Always  => "true",
         _ => throw new ArgumentOutOfRangeException(
             nameof(alphaCompareType),
@@ -544,8 +554,10 @@ public class FixedFunctionEquationsGlslPrinter {
     }
 
     return identifiedValue.Identifier switch {
-        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_MERGED => "mergedLightDiffuseColor.a",
-        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED => "mergedLightSpecularColor.a",
+        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_MERGED =>
+            "mergedLightDiffuseColor.a",
+        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED =>
+            "mergedLightSpecularColor.a",
 
         FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.a",
 
@@ -768,10 +780,14 @@ public class FixedFunctionEquationsGlslPrinter {
     }
 
     return identifiedValue.Identifier switch {
-        FixedFunctionSource.LIGHT_DIFFUSE_COLOR_MERGED => "mergedLightDiffuseColor.rgb",
-        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_MERGED => "mergedLightDiffuseColor.aaa",
-        FixedFunctionSource.LIGHT_SPECULAR_COLOR_MERGED => "mergedLightSpecularColor.rgb",
-        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED => "mergedLightSpecularColor.aaa",
+        FixedFunctionSource.LIGHT_DIFFUSE_COLOR_MERGED =>
+            "mergedLightDiffuseColor.rgb",
+        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_MERGED =>
+            "mergedLightDiffuseColor.aaa",
+        FixedFunctionSource.LIGHT_SPECULAR_COLOR_MERGED =>
+            "mergedLightSpecularColor.rgb",
+        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED =>
+            "mergedLightSpecularColor.aaa",
 
         FixedFunctionSource.LIGHT_AMBIENT_COLOR => "ambientLightColor.rgb",
         FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.aaa",

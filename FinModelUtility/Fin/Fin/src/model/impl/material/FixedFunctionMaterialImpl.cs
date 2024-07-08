@@ -4,6 +4,7 @@ using System.Linq;
 
 using fin.color;
 using fin.language.equations.fixedFunction;
+using fin.util.image;
 
 namespace fin.model.impl;
 
@@ -31,6 +32,7 @@ public partial class ModelImpl<TVertex> {
 
       this.TextureSources =
           new ReadOnlyCollection<ITexture?>(this.texturesSources_);
+      this.TransparencyType = TransparencyType.TRANSPARENT;
     }
 
     public override IEnumerable<ITexture> Textures { get; }
