@@ -1,8 +1,9 @@
 ﻿using System.Numerics;
 
+using fin.animation.interpolation;
 using fin.animation.keyframes;
 
-namespace fin.animation.interpolation;
+namespace fin.animation.types.quaternion;
 
 public readonly struct QuaternionKeyframeWithTangentsInterpolator<TKeyframe>
     : IKeyframeInterpolator<TKeyframe, Quaternion>

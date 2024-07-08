@@ -1,8 +1,9 @@
 ﻿using System.Numerics;
 
+using fin.animation.interpolation;
 using fin.animation.keyframes;
 
-namespace fin.animation.interpolation;
+namespace fin.animation.types.vector3;
 
 public class Vector3KeyframeWithTangentsInterpolator
     : Vector3KeyframeWithTangentsInterpolator<KeyframeWithTangents<Vector3>> {

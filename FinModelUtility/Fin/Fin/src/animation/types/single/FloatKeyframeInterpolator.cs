@@ -1,19 +1,18 @@
-﻿using System.Numerics;
-
+﻿using fin.animation.interpolation;
 using fin.animation.keyframes;
 
-namespace fin.animation.interpolation;
+namespace fin.animation.types.single;
 
-public class Vector3KeyframeInterpolator
-    : Vector3KeyframeInterpolator<Keyframe<Vector3>> {
-  public static Vector3KeyframeInterpolator Instance { get; } = new();
-  private Vector3KeyframeInterpolator() { }
+public class FloatKeyframeInterpolator
+    : FloatKeyframeInterpolator<Keyframe<float>> {
+  public static FloatKeyframeInterpolator Instance { get; } = new();
+  private FloatKeyframeInterpolator() { }
 }
 
-public class Vector3KeyframeInterpolator<TKeyframe>
-    : IKeyframeInterpolator<TKeyframe, Vector3>
-    where TKeyframe : IKeyframe<Vector3> {
-  public Vector3 Interpolate(
+public class FloatKeyframeInterpolator<TKeyframe>
+    : IKeyframeInterpolator<TKeyframe, float>
+    where TKeyframe : IKeyframe<float> {
+  public float Interpolate(
       TKeyframe from,
       TKeyframe to,
       float frame,

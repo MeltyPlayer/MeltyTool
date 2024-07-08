@@ -1,6 +1,7 @@
-﻿using fin.animation.keyframes;
+﻿using fin.animation.interpolation;
+using fin.animation.keyframes;
 
-namespace fin.animation.interpolation;
+namespace fin.animation.types.single;
 
 public class FloatKeyframeWithTangentsInterpolator
     : FloatKeyframeWithTangentsInterpolator<KeyframeWithTangents<float>> {

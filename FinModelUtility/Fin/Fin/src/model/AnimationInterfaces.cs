@@ -52,8 +52,6 @@ public partial interface IModelAnimation : IAnimation {
   // TODO: Allow setting looping behavior (once, back and forth, etc.)
 }
 
-
-
 [GenerateReadOnly]
 public partial interface IAnimationData {
   IAnimation Animation { get; }
@@ -67,18 +65,24 @@ public partial interface IBoneTracks : IAnimationData {
   IRotationTrack3d? Rotations { get; }
   IScale3dTrack? Scales { get; }
 
-  ICombinedPositionAxesTrack3d UseCombinedPositionAxesTrack(int initialCapacity = 0);
-  ISeparatePositionAxesTrack3d UseSeparatePositionAxesTrack(int initialCapacity = 0);
+  ICombinedPositionAxesTrack3d UseCombinedPositionAxesTrack(
+      int initialCapacity = 0);
+
+  ISeparatePositionAxesTrack3d UseSeparatePositionAxesTrack(
+      int initialCapacity = 0);
+
   ISeparatePositionAxesTrack3d UseSeparatePositionAxesTrack(
       int initialXCapacity,
       int initialYCapacity,
       int initialZCapacity);
 
-  IQuaternionRotationTrack3d UseQuaternionRotationTrack(int initialCapacity = 0);
+  IQuaternionRotationTrack3d
+      UseQuaternionRotationTrack(int initialCapacity = 0);
 
   IQuaternionAxesRotationTrack3d UseQuaternionAxesRotationTrack();
 
-  IEulerRadiansRotationTrack3d UseEulerRadiansRotationTrack(int initialCapacity = 0);
+  IEulerRadiansRotationTrack3d UseEulerRadiansRotationTrack(
+      int initialCapacity = 0);
 
   IEulerRadiansRotationTrack3d UseEulerRadiansRotationTrack(
       int initialXCapacity,
@@ -86,12 +90,12 @@ public partial interface IBoneTracks : IAnimationData {
       int initialZCapacity);
 
   IScale3dTrack UseScaleTrack(int initialCapacity = 0);
+
   IScale3dTrack UseScaleTrack(
       int initialXCapacity,
       int initialYCapacity,
       int initialZCapacity);
 }
-
 
 public enum MeshDisplayState {
   UNDEFINED,
@@ -103,10 +107,7 @@ public interface IMeshTracks {
   IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
 }
 
-
-
-public interface ITextureTracks : IAnimationData {
-}
+public interface ITextureTracks : IAnimationData { }
 
 
 // TODO: Add a track for animating params, e.g. textures, UVs, frames.
