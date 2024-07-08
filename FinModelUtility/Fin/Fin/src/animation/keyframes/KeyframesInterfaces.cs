@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using schema.readOnly;
+
 namespace fin.animation.keyframes;
 
 public interface IKeyframe {
@@ -18,11 +20,8 @@ public interface IKeyframeWithTangents : IKeyframe {
 public interface IKeyframeWithTangents<out T>
     : IKeyframe<T>, IKeyframeWithTangents;
 
-public interface IReadOnlyKeyframes<out TKeyframe> where TKeyframe : IKeyframe {
+[GenerateReadOnly]
+public partial interface IKeyframes<TKeyframe> where TKeyframe : IKeyframe {
   IReadOnlyList<TKeyframe> Definitions { get; }
-}
-
-public interface IKeyframes<TKeyframe> : IReadOnlyKeyframes<TKeyframe>
-    where TKeyframe : IKeyframe {
   void Add(TKeyframe keyframe);
 }

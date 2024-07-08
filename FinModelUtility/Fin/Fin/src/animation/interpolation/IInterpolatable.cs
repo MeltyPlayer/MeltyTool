@@ -1,5 +1,7 @@
 ﻿using fin.animation.keyframes;
 
+using schema.readOnly;
+
 namespace fin.animation.interpolation;
 
 public class SharedInterpolationConfig : ISharedInterpolationConfig {
@@ -13,6 +15,7 @@ public interface ISharedInterpolationConfig {
 }
 
 public interface IInterpolatable<T> {
+  [Const]
   bool TryGetAtFrame(float frame, out T value);
 }
 

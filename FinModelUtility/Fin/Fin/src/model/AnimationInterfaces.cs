@@ -103,7 +103,9 @@ public enum MeshDisplayState {
   VISIBLE,
 }
 
-public interface IMeshTracks {
+[GenerateReadOnly]
+public partial interface IMeshTracks {
+  IReadOnlyMesh Mesh { get; }
   IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
 }
 

@@ -2,9 +2,12 @@
 
 using fin.animation.interpolation;
 
+using schema.readOnly;
+
 namespace fin.animation.keyframes;
 
-public interface IStairStepKeyframes<T>
+[GenerateReadOnly]
+public partial interface IStairStepKeyframes<T>
     : IKeyframes<Keyframe<T>>, IInterpolatable<T>;
 
 public class StairStepKeyframes<T>(

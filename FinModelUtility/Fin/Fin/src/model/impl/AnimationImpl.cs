@@ -242,6 +242,8 @@ public partial class ModelImpl<TVertex> {
       IReadOnlyMesh mesh,
       ISharedInterpolationConfig sharedConfig)
       : IMeshTracks {
+    public IReadOnlyMesh Mesh => mesh;
+
     public IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
       = new StairStepKeyframes<MeshDisplayState>(
           sharedConfig,
