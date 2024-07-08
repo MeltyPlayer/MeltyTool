@@ -10,6 +10,8 @@ using fin.model;
 using fin.ui.rendering;
 using fin.util.asserts;
 
+using NaturalSort.Extension;
+
 using ReactiveUI;
 
 using uni.ui.avalonia.resources.model;
@@ -49,8 +51,12 @@ public class TextureListViewModel : ViewModelBase {
       this.RaiseAndSetIfChanged(ref this.textures_, value);
       this.TextureViewModels = new ObservableCollection<TextureViewModel>(
           value?.Select(texture => new TextureViewModel
-                            { Texture = texture }) ??
-          []);
+                            { Texture = texture })
+               .OrderBy(
+                   t => t.Texture.Name,
+                   new NaturalSortComparer(
+                       StringComparison.OrdinalIgnoreCase)) ??
+          Enumerable.Empty<TextureViewModel>());
     }
   }
 

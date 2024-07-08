@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -7,6 +8,8 @@ using Avalonia.Data.Converters;
 
 using fin.model;
 using fin.ui.rendering;
+
+using NaturalSort.Extension;
 
 using ReactiveUI;
 
@@ -38,7 +41,10 @@ namespace uni.ui.avalonia.resources.model.materials {
         var (_, materials) = value;
         this.Materials
             = new ObservableCollection<(int, IReadOnlyMaterial?)>(
-                materials.Select((m, i) => (i, m)));
+                materials.OrderBy(m => m?.Name,
+                                  new NaturalSortComparer(
+                                      StringComparison.OrdinalIgnoreCase))
+                         .Select((m, i) => (i, m)));
       }
     }
 
