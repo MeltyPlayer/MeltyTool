@@ -30,16 +30,25 @@ namespace mod.schema.mod {
     public ushort height = 0;
     public TextureFormat format = 0;
 
+    public uint MipmapCount;
+
     [Unknown]
-    public readonly uint[] unknowns = new uint[5];
+    public readonly uint[] unknowns = new uint[4];
 
     [SequenceLengthSource(SchemaIntegerType.UINT32)]
     public byte[] imageData { get; set; }
 
-    public IImage ToImage() {
-      return new ModImageReader(this.width, this.height, this.format).ReadImage(
-          this.imageData,
-          Endianness.BigEndian);
+    public IImage[] ToMipmapImages() {
+      using var br = new SchemaBinaryReader(this.imageData, Endianness.BigEndian);
+
+      var images = new IImage[this.MipmapCount];
+      for (var i = 0; i < images.Length; ++i) {
+        images[i]
+            = new ModImageReader(this.width >> i, this.height >> i, this.format)
+                .ReadImage(br);
+      }
+
+      return images;
     }
   }
 

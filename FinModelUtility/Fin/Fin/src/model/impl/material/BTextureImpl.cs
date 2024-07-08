@@ -21,8 +21,8 @@ public partial class ModelImpl<TVertex> {
     private TransparencyType? transparencyType_;
     private Bitmap? imageData_;
 
-    protected BTextureImpl(IReadOnlyImage image) {
-      this.Image = image;
+    protected BTextureImpl(IReadOnlyImage[] mipmapImages) {
+      this.MipmapImages = mipmapImages;
     }
 
     public string Name { get; set; }
@@ -39,22 +39,38 @@ public partial class ModelImpl<TVertex> {
 
     public ColorType ColorType { get; set; }
 
-    public IReadOnlyImage Image { get; }
-    public Bitmap ImageData => this.imageData_ ??= Image.AsBitmap();
+    public IReadOnlyImage[] MipmapImages { get; }
+    public IReadOnlyImage Image => this.MipmapImages[0];
+
+    public Bitmap ImageData => this.imageData_ ??= this.Image.AsBitmap();
 
     public void WriteToStream(Stream stream)
       => this.Image.ExportToStream(stream, this.BestImageFormat);
 
-    public ISystemFile SaveInDirectory(ISystemDirectory directory) {
-      ISystemFile outFile =
-          new FinFile(Path.Combine(directory.FullPath, this.ValidFileName));
-      using var writer = outFile.OpenWrite();
-      this.WriteToStream(writer);
-      return outFile;
+    public void SaveInDirectory(ISystemDirectory directory) {
+      var name = this.Name.ReplaceInvalidFilenameCharacters();
+      var extension = this.BestImageFormat.GetExtension();
+
+      if (this.MipmapImages.Length == 1) {
+        ISystemFile outFile =
+            new FinFile(Path.Combine(directory.FullPath, name + extension));
+        using var writer = outFile.OpenWrite();
+        this.WriteToStream(writer);
+      } else {
+        for (var i = 0; i < this.MipmapImages.Length; ++i) {
+          var mipmapImage = this.MipmapImages[i];
+          ISystemFile outFile =
+              new FinFile(Path.Combine(directory.FullPath,
+                                       $"{name}_level{i}{extension}"));
+          using var writer = outFile.OpenWrite();
+          mipmapImage.ExportToStream(writer, this.BestImageFormat);
+        }
+      }
     }
 
     public TransparencyType TransparencyType
-      => this.transparencyType_ ??= TransparencyTypeUtil.GetTransparencyType(this.Image);
+      => this.transparencyType_
+          ??= TransparencyTypeUtil.GetTransparencyType(this.Image);
 
     public WrapMode WrapModeU { get; set; }
     public WrapMode WrapModeV { get; set; }
@@ -67,6 +83,7 @@ public partial class ModelImpl<TVertex> {
       TextureMinFilter.LINEAR_MIPMAP_LINEAR;
 
     public float MinLod { get; set; } = -1000;
+    public float MaxLod { get; set; } = 1000;
     public float LodBias { get; set; } = 0;
 
     public IReadOnlyVector2? ClampS { get; set; }

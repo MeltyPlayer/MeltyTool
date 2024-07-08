@@ -25,14 +25,17 @@ public enum JutTransparency : byte {
   /// No Transperancy
   /// </summary>
   OPAQUE = 0x00,
+
   /// <summary>
   /// Only allows fully Transperant pixels to be see through
   /// </summary>
   CUTOUT = 0x01,
+
   /// <summary>
   /// Allows Partial Transperancy. Also known as XLUCENT
   /// </summary>
   TRANSLUCENT = 0x02,
+
   /// <summary>
   /// Unknown
   /// </summary>
@@ -48,6 +51,7 @@ public enum JutTransparency : byte {
 public partial class Bti : IBinaryConvertible {
   [IntegerFormat(SchemaIntegerType.BYTE)]
   public GxTextureFormat Format;
+
   public JutTransparency AlphaSetting;
   public ushort Width;
   public ushort Height;
@@ -67,12 +71,17 @@ public partial class Bti : IBinaryConvertible {
   public uint BorderColor;
   public GX_MIN_TEXTURE_FILTER MinFilter;
   public GX_MAG_TEXTURE_FILTER MagFilter;
+
   [Unknown]
-  public ushort Unknown4;
+  public byte MinLodTimes8;
+  public byte MaxLodTimes8;
+
   public byte NrMipMap;
+
   [Unknown]
   public byte Unknown5;
-  public ushort LodBias;
+
+  public short LodBiasTimes100;
 
   [WPointerTo(nameof(Data))]
   public uint DataOffset;
@@ -86,69 +95,74 @@ public partial class Bti : IBinaryConvertible {
 
   [ReadLogic]
   private void ReadPalettes_(IBinaryReader br) {
-      long position = br.Position;
-      this.palette = new Rgba32[this.NrPaletteEntries];
+    long position = br.Position;
+    this.palette = new Rgba32[this.NrPaletteEntries];
 
-      br.Position = this.PaletteOffset;
-      for (var i = 0; i < this.NrPaletteEntries; ++i) {
-        switch (this.PaletteFormat) {
-          case GxPaletteFormat.PAL_A8_I8: {
-              var alpha = br.ReadByte();
-              var intensity = br.ReadByte();
-              this.palette[i] =
-                  new Rgba32(intensity, intensity, intensity, alpha);
-              break;
-            }
-          case GxPaletteFormat.PAL_R5_G6_B5: {
-              ColorUtil.SplitRgb565(br.ReadUInt16(),
-                                    out var r,
-                                    out var b,
-                                    out var g);
-              this.palette[i] = new Rgba32(r, g, b);
-              break;
-            }
-          // TODO: There seems to be a bug reading the palette, these colors look weird
-          case GxPaletteFormat.PAL_A3_RGB5: {
-              ColorUtil.SplitRgb5A3(br.ReadUInt16(),
-                                    out var r,
-                                    out var g,
-                                    out var b,
-                                    out var a);
-              this.palette[i] = new Rgba32(r, g, b, a);
-              break;
-            }
-          default:
-            throw new ArgumentOutOfRangeException();
+    br.Position = this.PaletteOffset;
+    for (var i = 0; i < this.NrPaletteEntries; ++i) {
+      switch (this.PaletteFormat) {
+        case GxPaletteFormat.PAL_A8_I8: {
+          var alpha = br.ReadByte();
+          var intensity = br.ReadByte();
+          this.palette[i] =
+              new Rgba32(intensity, intensity, intensity, alpha);
+          break;
         }
+        case GxPaletteFormat.PAL_R5_G6_B5: {
+          ColorUtil.SplitRgb565(br.ReadUInt16(),
+                                out var r,
+                                out var b,
+                                out var g);
+          this.palette[i] = new Rgba32(r, g, b);
+          break;
+        }
+        // TODO: There seems to be a bug reading the palette, these colors look weird
+        case GxPaletteFormat.PAL_A3_RGB5: {
+          ColorUtil.SplitRgb5A3(br.ReadUInt16(),
+                                out var r,
+                                out var g,
+                                out var b,
+                                out var a);
+          this.palette[i] = new Rgba32(r, g, b, a);
+          break;
+        }
+        default:
+          throw new ArgumentOutOfRangeException();
       }
-
-      br.Position = position;
     }
 
-  public IImage ToBitmap() {
-      try {
-        return new J3dImageReader(this.Width, this.Height, this.Format).ReadImage(
-            this.Data,
-            Endianness.BigEndian);
-      } catch { }
+    br.Position = position;
+  }
 
-      var width = this.Width;
-      var height = this.Height;
+  public IReadOnlyImage[] ToMipmapImages() {
+    var mipmapImages = new IReadOnlyImage[this.NrMipMap];
 
-      Rgba32Image bitmap;
+    using var br = new SchemaBinaryReader(this.Data!, Endianness.BigEndian);
+
+    if (this.Format != GxTextureFormat.INDEX4 &&
+        this.Format != GxTextureFormat.INDEX8) {
+      for (var i = 0; i < mipmapImages.Length; ++i) {
+        mipmapImages[i]
+            = new J3dImageReader(this.Width >> i, this.Height >> i, this.Format)
+                .ReadImage(br);
+      }
+    } else {
       var isIndex4 = this.Format == GxTextureFormat.INDEX4;
-      var isIndex8 = this.Format == GxTextureFormat.INDEX8;
-      if (isIndex4 || isIndex8) {
-        bitmap = new Rgba32Image(isIndex4 ? PixelFormat.P4 : PixelFormat.P8,
-                                 width,
-                                 height);
+
+      for (var m = 0; m < mipmapImages.Length; ++m) {
+        var width = this.Width >> m;
+        var height = this.Height >> m;
+
+        var bitmap = new Rgba32Image(isIndex4 ? PixelFormat.P4 : PixelFormat.P8,
+                                     width,
+                                     height);
         using var imageLock = bitmap.Lock();
         var ptr = imageLock.Pixels;
 
         var indices = new byte[width * height];
         if (isIndex4) {
           for (var i = 0; i < this.Data.Length; ++i) {
-            var two = this.Data[i];
+            var two = br.ReadByte();
 
             var firstIndex = two >> 4;
             var secondIndex = two & 0x0F;
@@ -157,7 +171,7 @@ public partial class Bti : IBinaryConvertible {
             indices[2 * i + 1] = (byte) secondIndex;
           }
         } else {
-          indices = this.Data;
+          br.ReadBytes(indices);
         }
 
         var blockWidth = 8;
@@ -175,33 +189,34 @@ public partial class Bti : IBinaryConvertible {
           }
         }
 
-        return bitmap;
+        mipmapImages[m] = bitmap;
       }
-
-      throw new NotImplementedException();
     }
+
+    return mipmapImages;
+  }
 
   [Skip]
   private int CompressedBufferSize_ {
     get {
-        int num1 = (int) this.Width + (8 - (int) this.Width % 8) % 8;
-        int num2 = (int) this.Width + (4 - (int) this.Width % 4) % 4;
-        int num3 = (int) this.Height + (8 - (int) this.Height % 8) % 8;
-        int num4 = (int) this.Height + (4 - (int) this.Height % 4) % 4;
-        return this.Format switch {
-          GxTextureFormat.I4 => num1 * num3 / 2,
-          GxTextureFormat.I8 => num1 * num4,
-          GxTextureFormat.A4_I4 => num1 * num4,
-          GxTextureFormat.A8_I8 => num2 * num4 * 2,
-          GxTextureFormat.R5_G6_B5 => num2 * num4 * 2,
-          GxTextureFormat.A3_RGB5 => num2 * num4 * 2,
-          GxTextureFormat.ARGB8 => num2 * num4 * 4,
-          GxTextureFormat.INDEX4 => num1 * num3 / 2,
-          GxTextureFormat.INDEX8 => num1 * num4,
+      int num1 = (int) this.Width + (8 - (int) this.Width % 8) % 8;
+      int num2 = (int) this.Width + (4 - (int) this.Width % 4) % 4;
+      int num3 = (int) this.Height + (8 - (int) this.Height % 8) % 8;
+      int num4 = (int) this.Height + (4 - (int) this.Height % 4) % 4;
+      return this.Format switch {
+          GxTextureFormat.I4         => num1 * num3 / 2,
+          GxTextureFormat.I8         => num1 * num4,
+          GxTextureFormat.A4_I4      => num1 * num4,
+          GxTextureFormat.A8_I8      => num2 * num4 * 2,
+          GxTextureFormat.R5_G6_B5   => num2 * num4 * 2,
+          GxTextureFormat.A3_RGB5    => num2 * num4 * 2,
+          GxTextureFormat.ARGB8      => num2 * num4 * 4,
+          GxTextureFormat.INDEX4     => num1 * num3 / 2,
+          GxTextureFormat.INDEX8     => num1 * num4,
           GxTextureFormat.INDEX14_X2 => num2 * num4 * 2,
-          GxTextureFormat.S3TC1 => num2 * num4 / 2,
-          _ => -1
-        };
-      }
+          GxTextureFormat.S3TC1      => num2 * num4 / 2,
+          _                          => -1
+      };
+    }
   }
 }

@@ -16,7 +16,7 @@ public class GxLazyTextureDictionary(IModel model)
 
         // TODO: Share texture definitions between materials?
         var texture =
-            model.MaterialManager.CreateTexture(gxTexture.Image);
+            model.MaterialManager.CreateTexture(gxTexture.MipmapImages);
 
         texture.Name = gxTexture.Name ?? $"texture{dict.Count}";
         texture.WrapModeU = gxTexture.WrapModeS.ToFinWrapMode();
@@ -27,6 +27,10 @@ public class GxLazyTextureDictionary(IModel model)
         texture.MinFilter =
             gxTexture.MinTextureFilter.ToFinMinFilter();
         texture.ColorType = gxTexture.ColorType;
+
+        texture.MinLod = gxTexture.MinLod;
+        texture.MaxLod = gxTexture.MaxLod;
+        texture.LodBias = gxTexture.LodBias;
 
         var texGenSrc = texCoordGen.TexGenSrc;
         switch (texGenSrc) {

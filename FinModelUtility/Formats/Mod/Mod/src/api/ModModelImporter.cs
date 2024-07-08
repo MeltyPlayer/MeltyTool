@@ -34,7 +34,7 @@ using schema.binary;
 namespace mod.api;
 
 public class ModModelImporter : IModelImporter<ModModelFileBundle> {
-  private const bool DEDUPLICATE_MATERIALS = true;
+  private const bool DEDUPLICATE_MATERIALS = false;
 
   /// <summary>
   ///   GX's active matrices. These are deferred to when a vertex matrix is
@@ -80,7 +80,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
       }
     }*/
 
-    var textureImages = new IImage[mod.textures.Count];
+    var textureImages = new IReadOnlyImage[mod.textures.Count][];
     ParallelHelper.For(0,
                        textureImages.Length,
                        new TextureImageReader(mod.textures, textureImages));
@@ -97,7 +97,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           null,
           image,
           GxWrapMode.GX_CLAMP,
-          GxWrapMode.GX_CLAMP);
+          GxWrapMode.GX_CLAMP,
+          LodBias: textureAttr.WidthPercent);
     }
 
     var lazyTextureDictionary = new GxLazyTextureDictionary(model);
@@ -122,13 +123,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                 modPopulatedMaterial,
                 gxTextures,
                 lazyTextureDictionary).Material;
-
-            finMaterial.TransparencyType
-                = modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE)
-                    ? TransparencyType.OPAQUE
-                    : modMaterial.flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
-                        ? TransparencyType.MASK
-                        : TransparencyType.TRANSPARENT;
           } else {
             finMaterial = model.MaterialManager.AddNullMaterial();
           }
@@ -180,8 +174,10 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     var finBones = ListUtil.OfLength<IBone>(jointCount);
 
     var jointQueue = new FinTuple2Queue<int, IBone?>((0, null));
+    var jointsInQueueOrder = new List<Joint>();
     while (jointQueue.TryDequeue(out var jointIndex, out var parent)) {
       var joint = mod.joints[jointIndex];
+      jointsInQueueOrder.Add(joint);
 
       var bone = (parent ?? model.Skeleton.Root).AddChild(joint.position);
       bone.SetLocalRotationRadians(joint.rotation);
@@ -235,22 +231,40 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                                .ToArray()))
            .ToArray();
 
-    foreach (var joint in mod.joints) {
-      foreach (var jointMatPoly in joint.matpolys) {
-        var meshIndex = jointMatPoly.meshIdx;
-        var mesh = mod.meshes[meshIndex];
+    model.Skin.AllowMaterialRendererMerging = false;
+    var meshTuples
+        = jointsInQueueOrder
+          .SelectMany(j => j.matpolys)
+          .Select(m => {
+            var mesh = mod.meshes[m.meshIdx];
+            var (modMaterial, finMaterial)
+                = modMaterialAndFinMaterialByIndex[m.matIdx];
+            /*var transparencyType
+                = !modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE);*/
+            var transparencyType
+                = modMaterial.flags.CheckFlag(MaterialFlags.OPAQUE)
+                    ?
+                    TransparencyType.OPAQUE
+                    : modMaterial.flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
+                        ? TransparencyType.MASK
+                        : TransparencyType.TRANSPARENT;
+            var priority = 1000 - modMaterial.unknown1;
+            return (mesh, modMaterial, finMaterial, transparencyType, priority);
+          })
+          //.ThenBy(m => m.priority)
+          .OrderBy(m => m.transparencyType)
+          //.ThenBy(m => m.priority)
+          .ToArray();
 
-        var (modMaterial, finMaterial)
-            = modMaterialAndFinMaterialByIndex[jointMatPoly.matIdx];
-        this.AddMesh_(mod,
-                      mesh,
-                      modMaterial,
-                      finMaterial,
-                      model,
-                      finBones,
-                      envelopeBoneWeights,
-                      finModCache);
-      }
+    foreach (var (mesh, modMaterial, finMaterial, _, _) in meshTuples) {
+      this.AddMesh_(mod,
+                    mesh,
+                    modMaterial,
+                    finMaterial,
+                    model,
+                    finBones,
+                    envelopeBoneWeights,
+                    finModCache);
     }
 
     // Converts animations
@@ -438,7 +452,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
           if (primitive != null) {
             primitive.SetMaterial(finMaterial);
-            primitive.SetInversePriority((uint) (1000 - modMaterial.unknown1));
           }
         }
       }
@@ -522,17 +535,17 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
   private readonly struct TextureImageReader : IAction {
     private readonly IList<Texture> srcTextures_;
-    private readonly IList<IImage> dstImages_;
+    private readonly IList<IReadOnlyImage[]> dstImages_;
 
     public TextureImageReader(
         IList<Texture> srcTextures,
-        IList<IImage> dstImages) {
+        IList<IReadOnlyImage[]> dstImages) {
       this.srcTextures_ = srcTextures;
       this.dstImages_ = dstImages;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Invoke(int index)
-      => this.dstImages_[index] = this.srcTextures_[index].ToImage();
+      => this.dstImages_[index] = this.srcTextures_[index].ToMipmapImages();
   }
 }

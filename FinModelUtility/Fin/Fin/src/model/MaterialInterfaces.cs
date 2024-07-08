@@ -27,7 +27,8 @@ public partial interface IMaterialManager {
   IStandardMaterial AddStandardMaterial();
   IFixedFunctionMaterial AddFixedFunctionMaterial();
 
-  ITexture CreateTexture(IReadOnlyImage imageData);
+  ITexture CreateTexture(IReadOnlyImage image);
+  ITexture CreateTexture(IReadOnlyImage[] mipmapImages);
 
   IScrollingTexture CreateScrollingTexture(IReadOnlyImage imageData,
                                            float scrollSpeedX,
@@ -380,7 +381,8 @@ public partial interface ITexture {
   UvType UvType { get; set; }
   ColorType ColorType { get; set; }
 
-  IReadOnlyImage Image { get; }
+  IReadOnlyImage[] MipmapImages { get; }
+  IReadOnlyImage Image => this.MipmapImages[0];
   Bitmap ImageData { get; }
 
 
@@ -388,7 +390,7 @@ public partial interface ITexture {
   void WriteToStream(Stream stream);
 
   [Const]
-  ISystemFile SaveInDirectory(ISystemDirectory directory);
+  void SaveInDirectory(ISystemDirectory directory);
 
   TransparencyType TransparencyType { get; }
 
@@ -400,6 +402,7 @@ public partial interface ITexture {
   TextureMagFilter MagFilter { get; set; }
   TextureMinFilter MinFilter { get; set; }
   float MinLod { get; set; }
+  float MaxLod { get; set; }
   float LodBias { get; set; }
 
   IReadOnlyVector2? ClampS { get; set; }

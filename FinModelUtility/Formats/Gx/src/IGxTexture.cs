@@ -47,20 +47,24 @@ public static class GxTextureFilterExtensions {
 
 public interface IGxTexture {
   string Name { get; }
-  IImage Image { get; }
+  IReadOnlyImage[] MipmapImages { get; }
   GxWrapMode WrapModeS { get; }
   GxWrapMode WrapModeT { get; }
   GX_MAG_TEXTURE_FILTER MagTextureFilter { get; }
   GX_MIN_TEXTURE_FILTER MinTextureFilter { get; }
   ColorType ColorType { get; }
+  float MinLod => -1000;
+  float MaxLod => 1000;
+  float LodBias => 0;
 }
 
 public record GxTexture2d(
     string Name,
-    IImage Image,
+    IReadOnlyImage[] MipmapImages,
     GxWrapMode WrapModeS,
     GxWrapMode WrapModeT,
     GX_MIN_TEXTURE_FILTER MinTextureFilter
         = GX_MIN_TEXTURE_FILTER.GX_LIN_MIP_LIN,
     GX_MAG_TEXTURE_FILTER MagTextureFilter = GX_MAG_TEXTURE_FILTER.GX_LINEAR,
-    ColorType ColorType = ColorType.COLOR) : IGxTexture;
+    ColorType ColorType = ColorType.COLOR,
+    float LodBias = 0) : IGxTexture;

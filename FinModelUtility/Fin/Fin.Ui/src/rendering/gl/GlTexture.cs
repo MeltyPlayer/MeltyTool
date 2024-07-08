@@ -45,7 +45,7 @@ public class GlTexture : IFinDisposable {
       var target = TextureTarget.Texture2D;
       GL.BindTexture(target, this.id_);
       {
-        this.LoadImageIntoTexture_(image);
+        this.LoadImageIntoTexture_(image, 0);
       }
       GL.BindTexture(target, UNDEFINED_ID);
     }
@@ -59,7 +59,8 @@ public class GlTexture : IFinDisposable {
       var target = TextureTarget.Texture2D;
       GL.BindTexture(target, this.id_);
       {
-        this.LoadImageIntoTexture_(texture.Image);
+        var mipmapImages = texture.MipmapImages;
+        this.LoadMipmapImagesIntoTexture_(mipmapImages);
 
         var finBorderColor = texture.BorderColor;
         var hasBorderColor = finBorderColor != null;
@@ -87,7 +88,8 @@ public class GlTexture : IFinDisposable {
                           glBorderColor);
         }
 
-        if (texture.MinFilter is FinTextureMinFilter.NEAR_MIPMAP_NEAR
+        if (mipmapImages.Length == 1 &&
+            texture.MinFilter is FinTextureMinFilter.NEAR_MIPMAP_NEAR
                                  or FinTextureMinFilter.NEAR_MIPMAP_LINEAR
                                  or FinTextureMinFilter.LINEAR_MIPMAP_NEAR
                                  or FinTextureMinFilter.LINEAR_MIPMAP_LINEAR) {
@@ -123,14 +125,23 @@ public class GlTexture : IFinDisposable {
                         texture.LodBias);
         GL.TexParameter(target,
                         TextureParameterName.TextureMinLod,
-                        texture.LodBias);
+                        texture.MinLod);
+        GL.TexParameter(target,
+                        TextureParameterName.TextureMaxLod,
+                        texture.MaxLod);
       }
       GL.BindTexture(target, UNDEFINED_ID);
     }
 
   private static readonly ArrayPool<byte> pool_ = ArrayPool<byte>.Shared;
 
-  private void LoadImageIntoTexture_(IReadOnlyImage image) {
+  private void LoadMipmapImagesIntoTexture_(IReadOnlyImage[] mipmapImages) {
+    for (var i = 0; i < mipmapImages.Length; ++i) {
+      this.LoadImageIntoTexture_(mipmapImages[i], i);
+    }
+  }
+
+  private void LoadImageIntoTexture_(IReadOnlyImage image, int level) {
       var imageWidth = image.Width;
       var imageHeight = image.Height;
 
@@ -197,7 +208,7 @@ public class GlTexture : IFinDisposable {
       // https://stackoverflow.com/questions/52460143/texture-not-showing-correctly
       GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
       GL.TexImage2D(TextureTarget.Texture2D,
-                    0,
+                    level,
                     pixelInternalFormat,
                     imageWidth,
                     imageHeight,

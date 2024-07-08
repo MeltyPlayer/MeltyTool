@@ -295,7 +295,7 @@ public partial class GxFixedFunctionMaterial {
             = populatedMaterial.TextureWrapModeOverrides?[(int) textureIndex];
         gxTexture = new GxTexture2d(
             gxTexture.Name,
-            gxTexture.Image,
+            gxTexture.MipmapImages,
             wrapModeOverrides?.wrapModeS ?? gxTexture.WrapModeS,
             wrapModeOverrides?.wrapModeT ?? gxTexture.WrapModeT,
             gxTexture.MinTextureFilter,

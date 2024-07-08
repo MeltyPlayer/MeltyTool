@@ -205,14 +205,14 @@ public partial record PeInfo : IBinaryConvertible {
   public int ZModeBits = 0;
 
   [Skip]
-  public bool Enable => ((ZModeBits >> 8) & 0x1) == 0x1;
+  public bool Enable => ((ZModeBits >> 0) & 0x1) == 0x1;
 
   [Skip]
-  public bool WriteNewIntoBuffer => ((ZModeBits >> 9) & 0x1) == 0x1;
+  public bool WriteNewIntoBuffer => ((ZModeBits >> 1) & 0x1) == 0x1;
 
   [Skip]
   public GxCompareType DepthCompareType
-    => (GxCompareType) ((ZModeBits >> 0) & 0xF);
+    => (GxCompareType) ((ZModeBits >> 8) & 0xF);
 
   public int BlendModeBits { get; set; }
 
@@ -415,7 +415,7 @@ public record Material : IBinaryConvertible {
   }
 
   public override string ToString()
-    => $"[{this.flags}] --> {this.lightingInfo.typeFlags}";
+    => $"[{this.flags}] --> lightingFlags:{this.lightingInfo.typeFlags}, peFlags:{this.peInfo.Flags}, writeDepth:{this.peInfo.WriteNewIntoBuffer}, priority:{this.unknown1}";
 }
 
 [BinarySchema]

@@ -18,7 +18,7 @@ public partial class ModelImpl<TVertex> {
   private class ScrollingTextureImpl : BTextureImpl, IScrollingTexture {
     public ScrollingTextureImpl(IReadOnlyImage image,
                                 float scrollSpeedX,
-                                float scrollSpeedY) : base(image) {
+                                float scrollSpeedY) : base([image]) {
       this.ScrollSpeedX = scrollSpeedX;
       this.ScrollSpeedY = scrollSpeedY;
     }

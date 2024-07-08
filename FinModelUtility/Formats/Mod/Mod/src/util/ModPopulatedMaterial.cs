@@ -153,23 +153,23 @@ namespace mod.util {
       var useVertexAlpha
           = lightingFlags.CheckFlag(LightingInfoFlags.USE_VERTEX_ALPHA);
 
-      var lightColorSrc
+      var colorChannelSrc
           = useVertexColor ? GxColorSrc.Vertex : GxColorSrc.Register;
-      var lightAlphaSrc
+      var alphaChannelSrc
           = useVertexAlpha ? GxColorSrc.Vertex : GxColorSrc.Register;
 
       this.ColorChannelControls = [
           new ColorChannelControlImpl {
               LightingEnabled = lightingEnabled,
-              MaterialSrc = lightColorSrc,
-              AmbientSrc = lightColorSrc,
+              MaterialSrc = colorChannelSrc,
+              AmbientSrc = GxColorSrc.Register,
               LitMask = litMask,
               AttenuationFunction = attenuationFunction,
           },
           new ColorChannelControlImpl {
               LightingEnabled = lightingEnabled && lightingAlphaEnabled,
-              MaterialSrc = lightAlphaSrc,
-              AmbientSrc = lightAlphaSrc,
+              MaterialSrc = alphaChannelSrc,
+              AmbientSrc = GxColorSrc.Register,
               LitMask = litMask,
               AttenuationFunction = attenuationFunction,
           },
@@ -177,8 +177,8 @@ namespace mod.util {
               // Seems to sometimes be vertex color????
               LightingEnabled
                   = lightingEnabled && !hasBothLightingAndVertexColor,
-              MaterialSrc = lightColorSrc,
-              AmbientSrc = lightColorSrc,
+              MaterialSrc = colorChannelSrc,
+              AmbientSrc = GxColorSrc.Register,
               LitMask = litMask,
               AttenuationFunction = attenuationFunction,
               VertexColorIndex = 0,
@@ -189,8 +189,8 @@ namespace mod.util {
                   = lightingEnabled &&
                     !hasBothLightingAndVertexColor &&
                     lightingAlphaEnabled,
-              MaterialSrc = lightAlphaSrc,
-              AmbientSrc = lightAlphaSrc,
+              MaterialSrc = alphaChannelSrc,
+              AmbientSrc = GxColorSrc.Register,
               LitMask = litMask,
               AttenuationFunction = attenuationFunction,
               VertexColorIndex = 0,
@@ -242,7 +242,7 @@ namespace mod.util {
       {
         var peInfo = material.peInfo;
 
-        if (material.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)) {
+        if (!material.flags.CheckFlag(MaterialFlags.OPAQUE)) {
           this.BlendMode = new BlendFunctionImpl {
               BlendMode = GxBlendMode.BLEND,
               SrcFactor = GxBlendFactor.SRC_ALPHA,
@@ -251,10 +251,10 @@ namespace mod.util {
           };
         } else {
           this.BlendMode = new BlendFunctionImpl {
-              BlendMode = peInfo.BlendMode,
-              SrcFactor = peInfo.SrcFactor,
-              DstFactor = peInfo.DstFactor,
-              LogicOp = peInfo.LogicOp,
+              BlendMode = GxBlendMode.NONE,
+              SrcFactor = GxBlendFactor.ONE,
+              DstFactor = GxBlendFactor.ZERO,
+              LogicOp = GxLogicOp.SET,
           };
         }
 
@@ -268,7 +268,7 @@ namespace mod.util {
         this.DepthFunction = new DepthFunctionImpl {
             Enable = peInfo.Enable,
             Func = peInfo.DepthCompareType,
-            WriteNewValueIntoDepthBuffer = peInfo.WriteNewIntoBuffer,
+            WriteNewValueIntoDepthBuffer = true,
         };
       }
     }
