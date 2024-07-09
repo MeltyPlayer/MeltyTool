@@ -26,4 +26,13 @@ public static class Arrays {
 
     return totalArray;
   }
+
+  public static T[] New<T>(int length) where T : new() {
+    var array = new T[length];
+    for (var i = 0; i < length; ++i) {
+      array[i] = new();
+    }
+
+    return array;
+  }
 }

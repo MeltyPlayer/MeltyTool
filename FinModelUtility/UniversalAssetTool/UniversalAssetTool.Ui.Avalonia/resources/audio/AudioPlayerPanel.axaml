@@ -31,7 +31,7 @@
           <TextBlock 
             VerticalAlignment="Center"
             Classes="h3 spaceFirst"
-            Text="{Binding AudioFileBundle.MainFile}" />
+            Text="{Binding AudioBuffer.FileBundle.MainFile}" />
         </DockPanel>
 
         <Border HorizontalAlignment="Stretch"

@@ -15,7 +15,7 @@ public partial class DspChannel : IBinaryDeserializable, IChildOf<Dsp> {
   public uint CurrentAddress { get; set; }
 
   [SequenceLengthSource(0x10)]
-  public ushort[] Coefficients { get; set; }
+  public short[] Coefficients { get; set; }
 
   public short Gain { get; set; }
   public short InitialPredictorScale { get; set; }
@@ -34,7 +34,10 @@ public partial class DspChannel : IBinaryDeserializable, IChildOf<Dsp> {
        1;
 
   [Skip]
-  public uint DataLength => (this.LoopEndOffset - this.CurrentAddress) >> 2 + 1;
+  public uint NibbleCount => this.LoopEndOffset - this.CurrentAddress;
+
+  [Skip]
+  public uint DataLength => (this.NibbleCount >> 1) + 1;
 
   [RAtPosition(nameof(DataOffset))]
   [RSequenceLengthSource(nameof(DataLength))]

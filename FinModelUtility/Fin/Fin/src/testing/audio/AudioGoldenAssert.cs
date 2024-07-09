@@ -81,7 +81,7 @@ public static class AudioGoldenAssert {
               = audioImporter.ImportAudio(audioManager, audioBundle);
           new OggAudioExporter()
               .ExportAudio(
-                  audioBuffer,
+                  audioBuffer[0],
                   new FinFile(
                       Path.Combine(targetDirectory.FullPath,
                                    $"{audioBundle.MainFile.NameWithoutExtension}{EXTENSION}")));

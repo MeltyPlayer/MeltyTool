@@ -10,7 +10,7 @@ using schema.binary;
 namespace ast.api;
 
 public class AstAudioReader : IAudioImporter<AstAudioFileBundle> {
-  public ILoadedAudioBuffer<short> ImportAudio(
+  public ILoadedAudioBuffer<short>[] ImportAudio(
       IAudioManager<short> audioManager,
       AstAudioFileBundle audioFileBundle) {
     var astFile = audioFileBundle.AstFile;
@@ -27,6 +27,6 @@ public class AstAudioReader : IAudioImporter<AstAudioFileBundle> {
         ast.ChannelData.Select(data => data.ToArray()).ToArray();
     mutableBuffer.SetPcm(channelData);
 
-    return mutableBuffer;
+    return [mutableBuffer];
   }
 }

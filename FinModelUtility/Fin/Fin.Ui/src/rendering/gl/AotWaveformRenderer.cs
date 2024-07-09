@@ -15,7 +15,7 @@ public class AotWaveformRenderer {
   public float Amplitude { get; set; }
 
   public void Render() {
-      if (this.ActivePlayback == null) {
+      if (this.ActivePlayback?.IsDisposed ?? true) {
         return;
       }
 
@@ -43,6 +43,10 @@ public class AotWaveformRenderer {
         for (var s = 0; s < samplesPerPoint; ++s) {
           var sampleOffset = baseSampleOffset + i * samplesPerPoint + s;
           sampleOffset = sampleOffset.ModRange(0, source.LengthInSamples);
+
+          while (sampleOffset >= source.LengthInSamples) {
+            sampleOffset -= source.LengthInSamples;
+          }
 
           for (var c = 0; c < channelCount; ++c) {
             var sample = source.GetPcm(AudioChannelType.STEREO_LEFT + c,

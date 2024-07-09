@@ -1,4 +1,5 @@
 ﻿using fin.animation.interpolation;
+using fin.animation.types.single;
 using fin.util.asserts;
 
 using NUnit.Framework;

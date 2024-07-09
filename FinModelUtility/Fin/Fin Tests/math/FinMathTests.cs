@@ -43,6 +43,7 @@ public class FinMathTests {
   [TestCase(0, 1, 5, ExpectedResult = 4)]
   [TestCase(5, 1, 5, ExpectedResult = 1)]
   [TestCase(6, 1, 5, ExpectedResult = 2)]
+  [TestCase(2450, 0, 2450, ExpectedResult = 0)]
   public int TestModRange(int value, int min, int max)
     => value.ModRange(min, max);
 

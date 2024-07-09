@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -22,19 +23,18 @@ namespace uni.ui.avalonia.resources.audio;
 
 public interface IAudioPlayerPanelViewModel {
   IReadOnlyList<IAudioFileBundle>? AudioFileBundles { get; }
-  IAudioFileBundle? AudioFileBundle { get; }
+  IReadOnlyList<ILoadedAudioBuffer<short>>? LoadedAudioBuffers { get; }
+  ILoadedAudioBuffer<short>? AudioBuffer { get; }
   IAotAudioPlayback<short>? ActivePlayback { get; }
 }
 
 public class AudioPlayerPanelViewModelForDesigner
     : ViewModelBase, IAudioPlayerPanelViewModel {
   private IReadOnlyList<IAudioFileBundle>? audioFileBundles_;
-  private IAudioFileBundle? audioFileBundle_;
 
   public AudioPlayerPanelViewModelForDesigner() {
     var bundle = new OggAudioFileBundle(new FinFile("//fake/file.ogg"));
     this.AudioFileBundles = [bundle];
-    this.AudioFileBundle = bundle;
   }
 
   public IReadOnlyList<IAudioFileBundle>? AudioFileBundles {
@@ -42,12 +42,9 @@ public class AudioPlayerPanelViewModelForDesigner
     set => this.RaiseAndSetIfChanged(ref this.audioFileBundles_, value);
   }
 
-  public IAudioFileBundle? AudioFileBundle {
-    get => this.audioFileBundle_;
-    set => this.RaiseAndSetIfChanged(ref this.audioFileBundle_, value);
-  }
-
-  public IAotAudioPlayback<short>? ActivePlayback { get; }
+  public IReadOnlyList<ILoadedAudioBuffer<short>>? LoadedAudioBuffers => null;
+  public ILoadedAudioBuffer<short>? AudioBuffer => null;
+  public IAotAudioPlayback<short>? ActivePlayback => null;
 }
 
 public class AudioPlayerPanelViewModel
@@ -56,10 +53,11 @@ public class AudioPlayerPanelViewModel
   private readonly IAudioPlayer<short> audioPlayer_;
   private readonly TimedCallback playNextCallback_;
 
-  private ShuffledListView<IAudioFileBundle>? shuffledListView_;
-
   private IReadOnlyList<IAudioFileBundle>? audioFileBundles_;
-  private IAudioFileBundle? audioFileBundle_;
+  private IReadOnlyList<ILoadedAudioBuffer<short>>? loadedAudioBuffers_;
+  private ShuffledListView<ILoadedAudioBuffer<short>>? shuffledListView_;
+
+  private ILoadedAudioBuffer<short>? audioBuffer_;
   private IAotAudioPlayback<short>? activePlayback_;
 
   private bool isPlaying_;
@@ -93,16 +91,38 @@ public class AudioPlayerPanelViewModel
       }
 
       this.RaiseAndSetIfChanged(ref this.audioFileBundles_, value);
-
       this.audioFileBundles_ = value;
+
+      var ar = new GlobalAudioReader();
+      this.LoadedAudioBuffers
+          = value?.SelectMany(a => ar.ImportAudio(this.audioManager_, a))
+                 .ToArray();
+    }
+  }
+
+  public IReadOnlyList<ILoadedAudioBuffer<short>>? LoadedAudioBuffers {
+    get => this.loadedAudioBuffers_;
+    set {
+      if ((value?.Count ?? 0) == 0) {
+        value = null;
+      }
+
+      if (this.loadedAudioBuffers_.SequenceEqualOrBothEmpty(value)) {
+        return;
+      }
+
+      this.RaiseAndSetIfChanged(ref this.loadedAudioBuffers_, value);
+      this.loadedAudioBuffers_ = value;
+
       this.shuffledListView_
           = value != null
-              ? new ShuffledListView<IAudioFileBundle>(value)
+              ? new ShuffledListView<ILoadedAudioBuffer<short>>(value)
               : null;
 
       this.PlayRandomFromShuffledList();
     }
   }
+
 
   public void PlayRandomFromShuffledList(bool onlyIfNotPlaying = false) {
     lock (this.playNextLock_) {
@@ -113,17 +133,17 @@ public class AudioPlayerPanelViewModel
 
       if (this.shuffledListView_ != null &&
           this.shuffledListView_.TryGetNext(out var nextAudioFileBundle)) {
-        this.AudioFileBundle = nextAudioFileBundle;
+        this.AudioBuffer = nextAudioFileBundle;
       } else {
-        this.AudioFileBundle = null;
+        this.AudioBuffer = null;
       }
     }
   }
 
-  public IAudioFileBundle? AudioFileBundle {
-    get => this.audioFileBundle_;
+  public ILoadedAudioBuffer<short>? AudioBuffer {
+    get => this.audioBuffer_;
     set {
-      if (value == this.audioFileBundle_) {
+      if (value == this.audioBuffer_) {
         if (value != null) {
           this.activePlayback_.Stop();
           this.activePlayback_.Play();
@@ -132,14 +152,11 @@ public class AudioPlayerPanelViewModel
         return;
       }
 
-      this.RaiseAndSetIfChanged(ref this.audioFileBundle_, value);
+      this.RaiseAndSetIfChanged(ref this.audioBuffer_, value);
 
       IAotAudioPlayback<short>? newPlayback = null;
       if (value != null) {
-        var audioBuffer = new GlobalAudioReader().ImportAudio(
-            this.audioManager_,
-            value);
-        newPlayback = this.audioPlayer_.CreatePlayback(audioBuffer);
+        newPlayback = this.audioPlayer_.CreatePlayback(value);
       }
 
       this.ActivePlayback = newPlayback;

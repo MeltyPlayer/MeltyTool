@@ -8,7 +8,7 @@ using NVorbis;
 namespace fin.audio.io.importers.ogg;
 
 public class OggAudioImporter : IAudioImporter<OggAudioFileBundle> {
-  public ILoadedAudioBuffer<short> ImportAudio(
+  public ILoadedAudioBuffer<short>[] ImportAudio(
       IAudioManager<short> audioManager,
       OggAudioFileBundle audioFileBundle) {
     var oggFile = audioFileBundle.OggFile;
@@ -59,6 +59,6 @@ public class OggAudioImporter : IAudioImporter<OggAudioFileBundle> {
       mutableBuffer.SetPcm(channels);
     }
 
-    return mutableBuffer;
+    return [mutableBuffer];
   }
 }

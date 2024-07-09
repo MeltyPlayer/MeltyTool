@@ -1,39 +1,38 @@
 ﻿namespace gx.adpcm;
 
-using System;
-
 /// <summary>
 ///   Shamelessly stolen from:
 ///   https://github.com/Ploaj/MeleeMedia/blob/master/MeleeMediaLib/Audio/GcAdpcmDecoder.cs
 /// </summary>
 public static class GcAdpcmDecoder {
-  public static void Decode(
-      Span<short> pcm,
+  public static short[] Decode(
       ReadOnlySpan<byte> adpcm,
       ReadOnlySpan<short> coefficients,
-      ref int sampleIndex,
-      ref int hist1,
-      ref int hist2) {
-    var sampleCount = Math.Min(GcAdpcmMath.ByteCountToSampleCount(adpcm.Length),
-                               pcm.Length - sampleIndex);
-    if (sampleCount <= 0) {
-      return;
+      ref short hist1,
+      ref short hist2) {
+    var sampleCount = GcAdpcmMath.ByteCountToSampleCount(adpcm.Length);
+    if (sampleCount == 0) {
+      return [];
     }
 
-    int frameCount = sampleCount.DivideByRoundUp(GcAdpcmMath.SamplesPerFrame);
-    int inIndex = 0;
+    var pcm = new short[sampleCount];
 
-    for (var i = 0; i < frameCount; i++) {
+    int frameCount = sampleCount.DivideByRoundUp(GcAdpcmMath.SamplesPerFrame);
+    int currentSample = 0;
+    int inIndex = 0;
+    var outIndex = 0;
+
+    for (int f = 0; f < frameCount; f++) {
       byte predictorScale = adpcm[inIndex++];
-      int scale = (1 << GcAdpcmMath.GetLowNibble(predictorScale)) << 11;
+      int scale = (1 << GcAdpcmMath.GetLowNibble(predictorScale)) * 2048;
       int predictor = GcAdpcmMath.GetHighNibble(predictorScale);
       short coef1 = coefficients[predictor * 2];
       short coef2 = coefficients[predictor * 2 + 1];
 
       int samplesToRead
-          = Math.Min(GcAdpcmMath.SamplesPerFrame, sampleCount - sampleIndex);
+          = Math.Min(GcAdpcmMath.SamplesPerFrame, sampleCount - currentSample);
 
-      for (var s = 0; s < samplesToRead; s++) {
+      for (int s = 0; s < samplesToRead; s++) {
         int adpcmSample = s % 2 == 0
             ? GcAdpcmMath.GetHighNibbleSigned(adpcm[inIndex])
             : GcAdpcmMath.GetLowNibbleSigned(adpcm[inIndex++]);
@@ -46,9 +45,12 @@ public static class GcAdpcmDecoder {
         hist2 = hist1;
         hist1 = clampedSample;
 
-        pcm[sampleIndex++] = clampedSample;
+        pcm[outIndex++] = clampedSample;
+        currentSample++;
       }
     }
+
+    return pcm;
   }
 
   public static byte GetPredictorScale(byte[] adpcm, int sample)
