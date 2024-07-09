@@ -420,7 +420,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintScalarValue_(
       StringBuilder sb,
       IScalarValue value,
-      IReadOnlyList<ITexture> textures,
+      IReadOnlyList<IReadOnlyTexture> textures,
       bool wrapExpressions = false) {
     if (value is IScalarExpression expression) {
       if (wrapExpressions) {
@@ -443,7 +443,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintScalarExpression_(
       StringBuilder sb,
       IScalarExpression expression,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     var terms = expression.Terms;
 
     for (var i = 0; i < terms.Count; ++i) {
@@ -460,7 +460,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintScalarTerm_(
       StringBuilder sb,
       IScalarTerm scalarTerm,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     var numerators = scalarTerm.NumeratorFactors;
     var denominators = scalarTerm.DenominatorFactors;
 
@@ -492,7 +492,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintScalarFactor_(
       StringBuilder sb,
       IScalarFactor factor,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     if (factor is IScalarIdentifiedValue<FixedFunctionSource>
         identifiedValue) {
       this.PrintScalarIdentifiedValue_(sb, identifiedValue, textures);
@@ -519,12 +519,12 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintScalarIdentifiedValue_(
       StringBuilder sb,
       IScalarIdentifiedValue<FixedFunctionSource> identifiedValue,
-      IReadOnlyList<ITexture> textures)
+      IReadOnlyList<IReadOnlyTexture> textures)
     => sb.Append(this.GetScalarIdentifiedValue_(identifiedValue, textures));
 
   private string GetScalarIdentifiedValue_(
       IScalarIdentifiedValue<FixedFunctionSource> identifiedValue,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     var id = identifiedValue.Identifier;
     var isTextureAlpha = id is >= FixedFunctionSource.TEXTURE_ALPHA_0
                                and <= FixedFunctionSource.TEXTURE_ALPHA_7;
@@ -583,7 +583,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorValue_(
       StringBuilder sb,
       IColorValue value,
-      IReadOnlyList<ITexture> textures,
+      IReadOnlyList<IReadOnlyTexture> textures,
       WrapType wrapType = WrapType.NEVER) {
     var clamp = value.Clamp;
 
@@ -636,7 +636,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorExpression_(
       StringBuilder sb,
       IColorExpression expression,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     var terms = expression.Terms;
 
     for (var i = 0; i < terms.Count; ++i) {
@@ -653,7 +653,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorTerm_(
       StringBuilder sb,
       IColorTerm scalarTerm,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     var numerators = scalarTerm.NumeratorFactors;
     var denominators = scalarTerm.DenominatorFactors;
 
@@ -688,7 +688,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorFactor_(
       StringBuilder sb,
       IColorFactor factor,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     if (factor is IColorIdentifiedValue<FixedFunctionSource>
         identifiedValue) {
       this.PrintColorIdentifiedValue_(sb, identifiedValue, textures);
@@ -720,7 +720,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorIdentifiedValue_(
       StringBuilder sb,
       IColorIdentifiedValue<FixedFunctionSource> identifiedValue,
-      IReadOnlyList<ITexture> textures)
+      IReadOnlyList<IReadOnlyTexture> textures)
     => sb.Append(this.GetColorNamedValue_(identifiedValue, textures));
 
   private void PrintColorNamedValue_(
@@ -730,7 +730,7 @@ public class FixedFunctionEquationsGlslPrinter {
 
   private string GetColorNamedValue_(
       IColorIdentifiedValue<FixedFunctionSource> identifiedValue,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     var id = identifiedValue.Identifier;
     var isTextureColor = id is >= FixedFunctionSource.TEXTURE_COLOR_0
                                and <= FixedFunctionSource.TEXTURE_COLOR_7;
@@ -812,7 +812,7 @@ public class FixedFunctionEquationsGlslPrinter {
   }
 
   private string GetTextureValue_(int textureIndex,
-                                  IReadOnlyList<ITexture> textures) {
+                                  IReadOnlyList<IReadOnlyTexture> textures) {
     var texture = textures[textureIndex];
     var textureName = $"texture{textureIndex}";
     return texture.UvType switch {
@@ -838,7 +838,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorTernaryOperator_(
       StringBuilder sb,
       IColorValueTernaryOperator ternaryOperator,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     sb.Append('(');
     switch (ternaryOperator.ComparisonType) {
       case BoolComparisonType.EQUAL_TO: {
@@ -872,7 +872,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorNamedValueSwizzle_(
       StringBuilder sb,
       IColorNamedValueSwizzle<FixedFunctionSource> swizzle,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     this.PrintColorIdentifiedValue_(sb, swizzle.Source, textures);
     sb.Append(".");
     sb.Append(swizzle.SwizzleType switch {
@@ -885,7 +885,7 @@ public class FixedFunctionEquationsGlslPrinter {
   private void PrintColorValueSwizzle_(
       StringBuilder sb,
       IColorValueSwizzle swizzle,
-      IReadOnlyList<ITexture> textures) {
+      IReadOnlyList<IReadOnlyTexture> textures) {
     this.PrintColorValue_(sb, swizzle.Source, textures, WrapType.ALWAYS);
     sb.Append(".");
     sb.Append(swizzle.SwizzleType);

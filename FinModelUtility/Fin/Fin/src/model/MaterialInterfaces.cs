@@ -50,7 +50,6 @@ public enum CullingMode {
   SHOW_NEITHER,
 }
 
-
 public enum DepthMode {
   USE_DEPTH_BUFFER,
   IGNORE_DEPTH_BUFFER,
@@ -113,7 +112,6 @@ public partial interface IStandardMaterial : IMaterial {
   IReadOnlyTexture? SpecularTexture { get; set; }
 }
 
-
 // TODO: Support empty white materials
 // TODO: Support basic diffuse materials
 // TODO: Support lit/unlit
@@ -164,7 +162,6 @@ public enum LogicOp {
   NAND,
   SET,
 }
-
 
 public enum AlphaCompareType : byte {
   Never = 0,
@@ -281,15 +278,19 @@ public enum FixedFunctionSource {
   UNDEFINED,
 }
 
-
-public interface IReadOnlyFixedFunctionMaterial : IReadOnlyMaterial {
+[GenerateReadOnly]
+public partial interface IFixedFunctionMaterial : IMaterial {
   IFixedFunctionEquations<FixedFunctionSource> Equations { get; }
   IFixedFunctionRegisters Registers { get; }
 
-  IReadOnlyList<ITexture?> TextureSources { get; }
+  IReadOnlyList<IReadOnlyTexture?> TextureSources { get; }
 
-  ITexture? CompiledTexture { get; }
+  IFixedFunctionMaterial SetTextureSource(int textureIndex,
+                                          IReadOnlyTexture texture);
 
+  IReadOnlyTexture? CompiledTexture { get; set; }
+
+  // TODO: Merge this into a single type
   BlendEquation ColorBlendEquation { get; }
   BlendFactor ColorSrcFactor { get; }
   BlendFactor ColorDstFactor { get; }
@@ -298,21 +299,6 @@ public interface IReadOnlyFixedFunctionMaterial : IReadOnlyMaterial {
   BlendFactor AlphaDstFactor { get; }
   LogicOp LogicOp { get; }
 
-  AlphaOp AlphaOp { get; }
-  AlphaCompareType AlphaCompareType0 { get; }
-  float AlphaReference0 { get; }
-  AlphaCompareType AlphaCompareType1 { get; }
-  float AlphaReference1 { get; }
-}
-
-public interface IFixedFunctionMaterial
-    : IReadOnlyFixedFunctionMaterial,
-      IMaterial {
-  IFixedFunctionMaterial SetTextureSource(int textureIndex, ITexture texture);
-
-  new ITexture? CompiledTexture { get; set; }
-
-  // TODO: Merge this into a single type
   IFixedFunctionMaterial SetBlending(
       BlendEquation blendEquation,
       BlendFactor srcFactor,
@@ -329,6 +315,12 @@ public interface IFixedFunctionMaterial
       LogicOp logicOp);
 
   // TODO: Merge this into a single type
+  AlphaOp AlphaOp { get; }
+  AlphaCompareType AlphaCompareType0 { get; }
+  float AlphaReference0 { get; }
+  AlphaCompareType AlphaCompareType1 { get; }
+  float AlphaReference1 { get; }
+
   IFixedFunctionMaterial SetAlphaCompare(
       AlphaOp alphaOp,
       AlphaCompareType alphaCompareType0,
@@ -336,7 +328,6 @@ public interface IFixedFunctionMaterial
       AlphaCompareType alphaCompareType1,
       float reference1);
 }
-
 
 public enum UvType {
   STANDARD,

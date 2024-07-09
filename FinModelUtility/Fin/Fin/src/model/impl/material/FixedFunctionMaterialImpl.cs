@@ -20,33 +20,32 @@ public partial class ModelImpl<TVertex> {
 
   private class FixedFunctionMaterialImpl
       : BMaterialImpl, IFixedFunctionMaterial {
-    private readonly List<ITexture> textures_ = [];
+    private readonly List<IReadOnlyTexture> textures_ = [];
 
-    private readonly ITexture?[] texturesSources_ = new ITexture[8];
+    private readonly IReadOnlyTexture?[] texturesSources_
+        = new IReadOnlyTexture[8];
+
     private readonly IColor?[] colors_ = new IColor[2];
     private readonly float?[] alphas_ = new float?[2];
 
     public FixedFunctionMaterialImpl(IFixedFunctionRegisters registers) {
-      this.Textures = new ReadOnlyCollection<ITexture>(this.textures_);
       this.Registers = registers;
-
-      this.TextureSources =
-          new ReadOnlyCollection<ITexture?>(this.texturesSources_);
       this.TransparencyType = TransparencyType.TRANSPARENT;
     }
 
-    public override IEnumerable<ITexture> Textures { get; }
+    public override IEnumerable<IReadOnlyTexture> Textures => this.textures_;
 
     public IFixedFunctionEquations<FixedFunctionSource> Equations { get; } =
       new FixedFunctionEquations<FixedFunctionSource>();
 
     public IFixedFunctionRegisters Registers { get; }
 
-    public IReadOnlyList<ITexture?> TextureSources { get; }
+    public IReadOnlyList<IReadOnlyTexture?> TextureSources
+      => this.texturesSources_;
 
     public IFixedFunctionMaterial SetTextureSource(
         int textureIndex,
-        ITexture texture) {
+        IReadOnlyTexture texture) {
       if (!this.texturesSources_.Contains(texture)) {
         this.textures_.Add(texture);
       }
@@ -56,7 +55,7 @@ public partial class ModelImpl<TVertex> {
       return this;
     }
 
-    public ITexture? CompiledTexture { get; set; }
+    public IReadOnlyTexture? CompiledTexture { get; set; }
 
     public IFixedFunctionMaterial SetBlending(
         BlendEquation blendEquation,
