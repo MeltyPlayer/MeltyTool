@@ -4,6 +4,8 @@ using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
 
+using ssm.api;
+
 using uni.platforms.gcn;
 
 namespace uni.games.super_smash_bros_melee;
@@ -31,6 +33,14 @@ public class SuperSmashBrosMeleeFileBundleGatherer
     var trophyFiles = new LinkedList<IFileHierarchyFile>();
     var plFilesByNameWithoutExtension =
         new Dictionary<string, IFileHierarchyFile>();
+
+    foreach (var ssmFile in
+             fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
+      organizer.Add(new SsmAudioFileBundle {
+          GameName = "super_smash_bros_melee",
+          SsmFile = ssmFile,
+      }.Annotate(ssmFile));
+    }
 
     foreach (var datFile in fileHierarchy.Root.FilesWithExtension(".dat")) {
       var datNameWithoutExtension = datFile.NameWithoutExtension;
