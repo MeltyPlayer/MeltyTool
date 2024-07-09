@@ -119,7 +119,7 @@ void main() {
   
   vec3 colorComponent = clamp(color_GxMaterialColor54*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor54), 0, 1), 0, 1);
 
-  float alphaComponent = scalar_GxAlpha0*vertexColor0.a*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + vertexColor0.a);
+  float alphaComponent = scalar_GxAlpha0*vertexColor0.a;
 
   fragColor = vec4(colorComponent, alphaComponent);
 }

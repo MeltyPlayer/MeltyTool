@@ -52,7 +52,7 @@ public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
                 audioFileBundle);
 
             activeSound = this.waveformRenderer_.ActivePlayback =
-                              this.audioPlayer_.CreatePlayback(audioBuffer);
+                              this.audioPlayer_.CreatePlayback(audioBuffer[0]);
             activeSound.Volume = .1f;
             activeSound.Play();
 

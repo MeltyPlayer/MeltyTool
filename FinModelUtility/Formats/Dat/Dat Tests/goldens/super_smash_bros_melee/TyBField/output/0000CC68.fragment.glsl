@@ -16,7 +16,7 @@ void main() {
 
   fragColor = vec4(colorComponent, alphaComponent);
 
-  if (!(fragColor.a > 0)) {
+  if (!(alphaComponent > 0)) {
     discard;
   }
 }

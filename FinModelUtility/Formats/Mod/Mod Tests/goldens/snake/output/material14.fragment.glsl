@@ -24,7 +24,6 @@ uniform sampler2D texture0;
 uniform vec3 color_GxMaterialColor14;
 uniform vec3 color_GxAmbientColor14;
 uniform float scalar_GxMaterialAlpha14;
-uniform float scalar_GxAmbientAlpha14;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -121,7 +120,11 @@ void main() {
   
   vec3 colorComponent = clamp(texture(texture0, uv0).rgb*color_GxMaterialColor14*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor14), 0, 1), 0, 1);
 
-  float alphaComponent = texture(texture0, uv0).a*scalar_GxMaterialAlpha14*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + scalar_GxAmbientAlpha14);
+  float alphaComponent = texture(texture0, uv0).a*scalar_GxMaterialAlpha14;
 
-  fragColor = vec4(colorComponent, alphaComponent);
+  fragColor = vec4(colorComponent, 1);
+
+  if (!(alphaComponent >= 0.95)) {
+    discard;
+  }
 }

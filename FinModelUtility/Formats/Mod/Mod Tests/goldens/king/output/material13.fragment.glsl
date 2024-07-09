@@ -26,7 +26,6 @@ uniform vec3 color_GxMaterialColor13;
 uniform vec3 color_GxAmbientColor13;
 uniform vec3 color_GxColor0;
 uniform float scalar_GxMaterialAlpha13;
-uniform float scalar_GxAmbientAlpha13;
 uniform float scalar_GxAlpha2;
 
 in vec3 vertexPosition;
@@ -124,7 +123,7 @@ void main() {
   
   vec3 colorComponent = clamp(color_GxColor0 + texture(texture0, uv0).rgb*clamp((color_GxMaterialColor13*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor13), 0, 1) + texture(texture1, uv0).rgb*vec3(scalar_GxAlpha2) + vec3(-1)*texture(texture1, uv0).rgb*vec3(scalar_GxAlpha2)), 0, 1), 0, 1);
 
-  float alphaComponent = texture(texture0, uv0).a*scalar_GxMaterialAlpha13*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + scalar_GxAmbientAlpha13);
+  float alphaComponent = texture(texture0, uv0).a*scalar_GxMaterialAlpha13;
 
-  fragColor = vec4(colorComponent, alphaComponent);
+  fragColor = vec4(colorComponent, 1);
 }

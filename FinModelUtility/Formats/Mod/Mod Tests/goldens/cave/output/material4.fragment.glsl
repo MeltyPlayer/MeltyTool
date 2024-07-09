@@ -19,5 +19,5 @@ void main() {
 
   float alphaComponent = 0;
 
-  fragColor = vec4(colorComponent, alphaComponent);
+  fragColor = vec4(colorComponent, 1);
 }

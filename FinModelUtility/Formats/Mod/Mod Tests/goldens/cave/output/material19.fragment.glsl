@@ -33,7 +33,6 @@ uniform Texture texture3;
 uniform vec3 color_GxMaterialColor19;
 uniform vec3 color_GxAmbientColor19;
 uniform float scalar_GxMaterialAlpha19;
-uniform float scalar_GxAmbientAlpha19;
 
 in vec2 normalUv;
 in vec3 vertexPosition;
@@ -131,11 +130,11 @@ void main() {
   
   vec3 colorComponent = clamp(clamp(texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*color_GxMaterialColor19*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor19), 0, 1), 0, 1) + texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*color_GxMaterialColor19*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor19), 0, 1)*clamp(texture(texture3.sampler, texture3.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*color_GxMaterialColor19*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor19), 0, 1)*texture(texture2.sampler, texture2.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*texture(texture1.sampler, texture1.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb*vec3(4), 0, 1), 0, 1);
 
-  float alphaComponent = scalar_GxMaterialAlpha19*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + scalar_GxAmbientAlpha19);
+  float alphaComponent = scalar_GxMaterialAlpha19;
 
-  fragColor = vec4(colorComponent, alphaComponent);
+  fragColor = vec4(colorComponent, 1);
 
-  if (!(fragColor.a >= 0.5019608)) {
+  if (!(alphaComponent >= 0.5019608)) {
     discard;
   }
 }

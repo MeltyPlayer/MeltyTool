@@ -23,7 +23,6 @@ uniform float shininess;
 uniform vec3 color_GxMaterialColor9;
 uniform vec3 color_GxAmbientColor9;
 uniform float scalar_GxMaterialAlpha9;
-uniform float scalar_GxAmbientAlpha9;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -119,7 +118,7 @@ void main() {
   
   vec3 colorComponent = clamp(color_GxMaterialColor9*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor9), 0, 1), 0, 1);
 
-  float alphaComponent = scalar_GxMaterialAlpha9*(individualLightDiffuseColors[0].a + individualLightDiffuseColors[1].a + individualLightDiffuseColors[2].a + scalar_GxAmbientAlpha9);
+  float alphaComponent = scalar_GxMaterialAlpha9;
 
-  fragColor = vec4(colorComponent, alphaComponent);
+  fragColor = vec4(colorComponent, 1);
 }
