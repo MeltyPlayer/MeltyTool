@@ -3,6 +3,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.math.floats;
+using fin.math.rotations;
 using fin.util.hash;
 
 
@@ -96,5 +97,48 @@ public static class SystemMatrix3x2Util {
     }
 
     return dst;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Vector2 GetTranslation(this Matrix3x2 impl)
+    => impl.Translation;
+
+  // Stolen from https://stackoverflow.com/a/32125700
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static float GetRotation(this Matrix3x2 impl)
+    => FinTrig.Atan2(impl.M12, impl.M11);
+
+  // Stolen from https://stackoverflow.com/a/32125700
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Vector2 GetScale(this Matrix3x2 impl) {
+    var scaleX = MathF.Sqrt(impl.M11 * impl.M11 +
+                            impl.M12 * impl.M12);
+    var scaleY =
+        (impl.M11 * impl.M22 -
+         impl.M21 * impl.M12) /
+        scaleX;
+    return new Vector2(scaleX, scaleY);
+  }
+
+  // Stolen from https://stackoverflow.com/a/32125700
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static float GetSkewXRadians(this Matrix3x2 impl)
+    => MathF.Atan2(impl.M11 * impl.M21 +
+                   impl.M12 * impl.M22,
+                   impl.M11 * impl.M11 +
+                   impl.M12 * impl.M12);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Decompose(
+      this Matrix3x2 impl,
+      out Vector2 translation,
+      out float rotation,
+      out Vector2 scale,
+      out float skewXRadians) {
+    // Stolen from https://stackoverflow.com/a/32125700
+    translation = impl.GetTranslation();
+    rotation = impl.GetRotation();
+    scale = impl.GetScale();
+    skewXRadians = impl.GetSkewXRadians();
   }
 }

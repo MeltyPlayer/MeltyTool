@@ -18,6 +18,7 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
   public const int CELL_COUNT = ROW_COUNT * COLUMN_COUNT;
 
   internal SystemMatrix impl_;
+
   public SystemMatrix Impl {
     get => this.impl_;
     set => this.impl_ = value;
@@ -244,43 +245,29 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void CopyTranslationInto(out Vector2 dst) => dst = impl_.Translation;
+  public void CopyTranslationInto(out Vector2 dst)
+    => dst = this.impl_.GetTranslation();
 
-  // Stolen from https://stackoverflow.com/a/32125700
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void CopyRotationInto(out float dst)
-    => dst = FinTrig.Atan2(this.impl_.M12, this.impl_.M11);
+    => dst = this.impl_.GetRotation();
 
-  // Stolen from https://stackoverflow.com/a/32125700
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void CopyScaleInto(out Vector2 dst) {
-    var scaleX = MathF.Sqrt(this.impl_.M11 * this.impl_.M11 +
-                            this.impl_.M12 * this.impl_.M12);
-    var scaleY =
-        (this.impl_.M11 * this.impl_.M22 -
-         this.impl_.M21 * this.impl_.M12) / scaleX;
-    dst = new Vector2(scaleX, scaleY);
-  }
+  public void CopyScaleInto(out Vector2 dst) => dst = this.impl_.GetScale();
 
-  // Stolen from https://stackoverflow.com/a/32125700
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void CopySkewXRadiansInto(out float dst)
-    => dst = MathF.Atan2(this.impl_.M11 * this.impl_.M21 +
-                         this.impl_.M12 * this.impl_.M22,
-                         this.impl_.M11 * this.impl_.M11 +
-                         this.impl_.M12 * this.impl_.M12);
+    => dst = this.impl_.GetSkewXRadians();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Decompose(out Vector2 translation,
                         out float rotation,
                         out Vector2 scale,
-                        out float skewXRadians) {
-    // Stolen from https://stackoverflow.com/a/32125700
-    this.CopyTranslationInto(out translation);
-    this.CopyRotationInto(out rotation);
-    this.CopyScaleInto(out scale);
-    this.CopySkewXRadiansInto(out skewXRadians);
-  }
+                        out float skewXRadians)
+    => this.impl_.Decompose(out translation,
+                            out rotation,
+                            out scale,
+                            out skewXRadians);
 
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
