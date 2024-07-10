@@ -9,7 +9,8 @@ public interface IKeyframe {
 }
 
 public interface IKeyframe<out T> : IKeyframe {
-  T Value { get; }
+  T ValueIn { get; }
+  T ValueOut { get; }
 }
 
 public interface IKeyframeWithTangents : IKeyframe {

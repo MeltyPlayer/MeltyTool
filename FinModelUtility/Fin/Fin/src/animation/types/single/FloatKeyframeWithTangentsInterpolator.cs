@@ -26,8 +26,8 @@ public class FloatKeyframeWithTangentsInterpolator<TKeyframe>
         out var toCoefficient,
         out var oneCoefficient);
 
-    return fromCoefficient * from.Value +
-           toCoefficient * to.Value +
+    return fromCoefficient * from.ValueOut +
+           toCoefficient * to.ValueIn +
            oneCoefficient;
   }
 }

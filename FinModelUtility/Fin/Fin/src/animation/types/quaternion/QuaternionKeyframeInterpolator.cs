@@ -20,8 +20,8 @@ public readonly struct QuaternionKeyframeInterpolator<TKeyframe>
                                       out var t,
                                       out _);
 
-    var q1 = from.Value;
-    var q2 = to.Value;
+    var q1 = from.ValueOut;
+    var q2 = to.ValueIn;
 
     if (Quaternion.Dot(q1, q2) < 0) {
       q2 = -q2;

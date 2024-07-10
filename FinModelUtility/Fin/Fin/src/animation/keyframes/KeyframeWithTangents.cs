@@ -5,12 +5,14 @@ namespace fin.animation.keyframes;
 
 public readonly record struct KeyframeWithTangents<T>(
     float Frame,
-    T Value,
+    T ValueIn,
+    T ValueOut,
     float TangentIn,
     float TangentOut)
     : IKeyframeWithTangents<T>, IComparable<KeyframeWithTangents<T>> {
   public KeyframeWithTangents(float frame, T value, float tangent) : this(
       frame,
+      value,
       value,
       tangent,
       tangent) { }
@@ -21,6 +23,8 @@ public readonly record struct KeyframeWithTangents<T>(
 
   public bool Equals(KeyframeWithTangents<T> other)
     => FrameComparisonUtil.AreSameFrame(this.Frame, other.Frame) &&
-       (this.Value?.Equals(other.Value) ??
-        this.Value == null && other.Value == null);
+       (this.ValueIn?.Equals(other.ValueIn) ??
+        this.ValueIn == null && other.ValueIn == null) &&
+       (this.ValueOut?.Equals(other.ValueOut) ??
+        this.ValueOut == null && other.ValueOut == null);
 }

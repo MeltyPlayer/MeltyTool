@@ -24,6 +24,6 @@ public class FloatKeyframeInterpolator<TKeyframe>
                                       out var t,
                                       out _);
 
-    return from.Value * (1 - t) + to.Value * t;
+    return from.ValueOut * (1 - t) + to.ValueIn * t;
   }
 }

@@ -30,8 +30,8 @@ public class Vector3KeyframeWithTangentsInterpolator<TKeyframe>
         out var toCoefficient,
         out var oneCoefficient);
 
-    return fromCoefficient * from.Value +
-           toCoefficient * to.Value +
+    return fromCoefficient * from.ValueOut +
+           toCoefficient * to.ValueIn +
            Vector3.One * oneCoefficient;
   }
 }

@@ -20,5 +20,5 @@ public static class KeyframesExtensions {
       float tangentIn,
       float tangentOut)
     => keyframes.Add(
-        new KeyframeWithTangents<T>(frame, value, tangentIn, tangentOut));
+        new KeyframeWithTangents<T>(frame, value, value, tangentIn, tangentOut));
 }

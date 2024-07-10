@@ -42,7 +42,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
         return true;
 
       case KeyframesUtil.InterpolationDataType.PRECEDING_ONLY:
-        value = precedingKeyframe.Value;
+        value = precedingKeyframe.ValueOut;
         return true;
 
       default:

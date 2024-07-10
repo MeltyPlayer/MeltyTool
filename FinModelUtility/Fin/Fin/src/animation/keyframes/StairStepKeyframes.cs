@@ -27,7 +27,7 @@ public class StairStepKeyframes<T>(
                                            out var keyframe,
                                            out _,
                                            out _)) {
-      value = keyframe.Value;
+      value = keyframe.ValueOut;
       return true;
     }
 
