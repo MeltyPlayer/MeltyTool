@@ -13,14 +13,20 @@ public readonly struct QuaternionKeyframeWithTangentsInterpolator<TKeyframe>
       TKeyframe to,
       float frame,
       ISharedInterpolationConfig sharedInterpolationConfig) {
-    InterpolationUtil.GetHermiteCoefficients(
-        from,
-        to,
-        frame,
-        sharedInterpolationConfig,
-        out var fromCoefficient,
-        out var toCoefficient,
-        out var oneCoefficient);
+    if (!InterpolationUtil.TryToGetHermiteCoefficients(
+            from,
+            to,
+            frame,
+            sharedInterpolationConfig,
+            out var fromCoefficient,
+            out var toCoefficient,
+            out var oneCoefficient)) {
+      return new QuaternionKeyframeInterpolator<TKeyframe>().Interpolate(
+          from,
+          to,
+          frame,
+          sharedInterpolationConfig);
+    }
 
     var q1 = from.ValueOut;
     var q2 = to.ValueIn;

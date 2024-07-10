@@ -21,14 +21,20 @@ public class Vector2KeyframeWithTangentsInterpolator<TKeyframe>
       TKeyframe to,
       float frame,
       ISharedInterpolationConfig sharedInterpolationConfig) {
-    InterpolationUtil.GetHermiteCoefficients(
-        from,
-        to,
-        frame,
-        sharedInterpolationConfig,
-        out var fromCoefficient,
-        out var toCoefficient,
-        out var oneCoefficient);
+    if (!InterpolationUtil.TryToGetHermiteCoefficients(
+            from,
+            to,
+            frame,
+            sharedInterpolationConfig,
+            out var fromCoefficient,
+            out var toCoefficient,
+            out var oneCoefficient)) {
+      return new Vector2KeyframeInterpolator<TKeyframe>().Interpolate(
+          from,
+          to,
+          frame,
+          sharedInterpolationConfig);
+    }
 
     return fromCoefficient * from.ValueOut +
            toCoefficient * to.ValueIn +

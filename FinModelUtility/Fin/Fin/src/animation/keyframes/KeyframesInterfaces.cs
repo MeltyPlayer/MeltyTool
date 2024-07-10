@@ -14,8 +14,8 @@ public interface IKeyframe<out T> : IKeyframe {
 }
 
 public interface IKeyframeWithTangents : IKeyframe {
-  float TangentIn { get; }
-  float TangentOut { get; }
+  float? TangentIn { get; }
+  float? TangentOut { get; }
 }
 
 public interface IKeyframeWithTangents<out T>

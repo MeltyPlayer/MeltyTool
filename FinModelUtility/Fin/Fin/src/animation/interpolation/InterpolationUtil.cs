@@ -33,7 +33,7 @@ public static class InterpolationUtil {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void GetHermiteCoefficients<TKeyframe>(
+  public static bool TryToGetHermiteCoefficients<TKeyframe>(
       TKeyframe from,
       TKeyframe to,
       float frame,
@@ -42,14 +42,22 @@ public static class InterpolationUtil {
       out float toCoefficient,
       out float oneCoefficient)
       where TKeyframe : IKeyframeWithTangents {
-    HermiteInterpolationUtil.GetCoefficients(
-        from.Frame,
-        from.TangentOut,
-        to.Frame,
-        to.TangentIn,
-        frame,
-        out fromCoefficient,
-        out toCoefficient,
-        out oneCoefficient);
+    var tangentOut = from.TangentOut;
+    var tangentIn = to.TangentIn;
+    if (tangentOut != null && tangentIn != null) {
+      HermiteInterpolationUtil.GetCoefficients(
+          from.Frame,
+          tangentOut.Value,
+          to.Frame,
+          tangentIn.Value,
+          frame,
+          out fromCoefficient,
+          out toCoefficient,
+          out oneCoefficient);
+      return true;
+    }
+
+    fromCoefficient = toCoefficient = oneCoefficient = default;
+    return false;
   }
 }

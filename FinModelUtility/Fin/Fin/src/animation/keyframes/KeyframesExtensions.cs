@@ -10,15 +10,15 @@ public static class KeyframesExtensions {
       this IKeyframes<KeyframeWithTangents<T>> keyframes,
       float frame,
       T value,
-      float tangent)
+      float? tangent)
     => keyframes.Add(new KeyframeWithTangents<T>(frame, value, tangent));
 
   public static void SetKeyframe<T>(
       this IKeyframes<KeyframeWithTangents<T>> keyframes,
       float frame,
       T value,
-      float tangentIn,
-      float tangentOut)
+      float? tangentIn,
+      float? tangentOut)
     => keyframes.Add(
         new KeyframeWithTangents<T>(frame, value, value, tangentIn, tangentOut));
 }

@@ -7,10 +7,10 @@ public readonly record struct KeyframeWithTangents<T>(
     float Frame,
     T ValueIn,
     T ValueOut,
-    float TangentIn,
-    float TangentOut)
+    float? TangentIn,
+    float? TangentOut)
     : IKeyframeWithTangents<T>, IComparable<KeyframeWithTangents<T>> {
-  public KeyframeWithTangents(float frame, T value, float tangent) : this(
+  public KeyframeWithTangents(float frame, T value, float? tangent) : this(
       frame,
       value,
       value,
