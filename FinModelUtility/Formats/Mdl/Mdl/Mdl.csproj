@@ -8,6 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.5.2" />
+    <PackageReference Include="schema" Version="0.5.4" />
   </ItemGroup>
 </Project>
