@@ -13,6 +13,7 @@ using Dxt;
 using fin.data.lazy;
 using fin.io;
 using fin.math.rotations;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.util;
@@ -269,13 +270,12 @@ namespace HaloWarsTools {
                       parentFinBone.AddRoot(xSign * position.X, position.Y, position.Z)
                       : parentFinBone.AddChild(xSign * position.X, position.Y, position.Z);
 
-              finBone.SetLocalRotationRadians(rotation.X,
-                                              xSign * rotation.Y
-                                              , xSign * rotation.Z)
-                     .SetLocalScale(scaleShear[0].X,
-                                    scaleShear[1].Y,
-                                    scaleShear[2].Z);
-
+              finBone.LocalTransform.SetRotationRadians(rotation.X,
+                    xSign * rotation.Y,
+                    xSign * rotation.Z);
+              finBone.LocalTransform.SetScale(scaleShear[0].X,
+                                              scaleShear[1].Y,
+                                              scaleShear[2].Z);
 
               finBone.Name = grannyBone.Name;
 

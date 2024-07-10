@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Numerics;
 
 using fin.data;
+using fin.math.transform;
 
 namespace fin.model.impl;
 
@@ -33,7 +34,7 @@ public partial class ModelImpl<TVertex> {
         this.skeleton_ = skeletonImpl;
         this.Root = this;
         this.Parent = parent;
-        this.SetLocalPosition(x, y, z);
+        this.LocalTransform.SetTranslation(x, y, z);
 
         this.skeleton_.bones.Add(this);
 
@@ -52,7 +53,7 @@ public partial class ModelImpl<TVertex> {
         this.skeleton_ = skeletonImpl;
         this.Root = root;
         this.Parent = parent;
-        this.SetLocalPosition(x, y, z);
+        this.LocalTransform.SetTranslation(x, y, z);
 
         this.skeleton_.bones.Add(this);
 
@@ -85,31 +86,7 @@ public partial class ModelImpl<TVertex> {
       }
 
 
-      public Vector3 LocalPosition { get; private set; }
-      public IRotation? LocalRotation { get; private set; }
-      public Vector3? LocalScale { get; private set; }
-
-      public IBone SetLocalPosition(float x, float y, float z) {
-        this.LocalPosition = new Vector3(x, y, z);
-        return this;
-      }
-
-      public IBone SetLocalRotationDegrees(float x, float y, float z) {
-        this.LocalRotation ??= new RotationImpl();
-        this.LocalRotation.SetDegrees(x, y, z);
-        return this;
-      }
-
-      public IBone SetLocalRotationRadians(float x, float y, float z) {
-        this.LocalRotation ??= new RotationImpl();
-        this.LocalRotation.SetRadians(x, y, z);
-        return this;
-      }
-
-      public IBone SetLocalScale(float x, float y, float z) {
-        this.LocalScale ??= new Vector3(x, y, z);
-        return this;
-      }
+      public ITransform3d LocalTransform { get; } = new Transform3d();
 
 
       public bool IgnoreParentScale { get; set; }

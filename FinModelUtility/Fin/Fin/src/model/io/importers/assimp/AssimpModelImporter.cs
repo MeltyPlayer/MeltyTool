@@ -16,6 +16,7 @@ using fin.image.formats;
 using fin.io;
 using fin.math.matrix.four;
 using fin.math.rotations;
+using fin.math.transform;
 using fin.model.impl;
 using fin.model.util;
 using fin.util.sets;
@@ -144,7 +145,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
       finBone.Name = name;
       finBoneByName[name] = finBone;
 
-      finBone.SetLocalMatrix(
+      finBone.LocalTransform.SetMatrix(
           Matrix4x4ConversionUtil.ConvertAssimpToFin(assNode.Transform));
 
       nodeAndBoneQueue.Enqueue(

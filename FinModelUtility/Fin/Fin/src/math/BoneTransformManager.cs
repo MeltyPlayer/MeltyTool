@@ -242,21 +242,19 @@ public class BoneTransformManager : IBoneTransformManager {
       }
 
       // Uses the animation pose instead of the root pose when available.
-      var localPosition = animationLocalPosition ?? bone.LocalPosition;
-      var localRotation = animationLocalRotation ??
-                          (bone.LocalRotation != null
-                              ? QuaternionUtil.Create(bone.LocalRotation)
-                              : null);
-      var localScale = animationLocalScale ?? bone.LocalScale;
+      var localTransform = bone.LocalTransform;
+      var localTranslation = animationLocalPosition ?? localTransform.Translation;
+      var localRotation = animationLocalRotation ?? localTransform.Rotation;
+      var localScale = animationLocalScale ?? localTransform.Scale;
 
       if (bone is { IgnoreParentScale: false, FaceTowardsCamera: false }) {
-        var localMatrix = SystemMatrix4x4Util.FromTrs(localPosition,
+        var localMatrix = SystemMatrix4x4Util.FromTrs(localTranslation,
           localRotation,
           localScale);
         boneToWorldMatrix.MultiplyInPlace(localMatrix);
       } else {
         boneToWorldMatrix.ApplyTrsWithFancyBoneEffects(bone,
-          localPosition,
+          localTranslation,
           localRotation,
           localScale);
       }

@@ -38,7 +38,8 @@ public partial class ModelImpl<TVertex> {
     }
 
     public IAnimation Animation { get; }
-    public bool HasAtLeastOneKeyframe 
+
+    public bool HasAtLeastOneKeyframe
       => this.axisTracks_[0].HasAtLeastOneKeyframe ||
          this.axisTracks_[1].HasAtLeastOneKeyframe ||
          this.axisTracks_[2].HasAtLeastOneKeyframe;
@@ -74,10 +75,16 @@ public partial class ModelImpl<TVertex> {
       var yTrack = this.axisTracks_[1];
       var zTrack = this.axisTracks_[2];
 
-      var localRotation = this.bone_.LocalRotation;
-      var defaultX = localRotation?.XRadians ?? 0;
-      var defaultY = localRotation?.YRadians ?? 0;
-      var defaultZ = localRotation?.ZRadians ?? 0;
+      var defaultX = 0f;
+      var defaultY = 0f;
+      var defaultZ = 0f;
+      var localRotation = this.bone_.LocalTransform.Rotation;
+      if (localRotation != null) {
+        var eulerRadians = QuaternionUtil.ToEulerRadians(localRotation.Value);
+        defaultX = eulerRadians.X;
+        defaultY = eulerRadians.Y;
+        defaultZ = eulerRadians.Z;
+      }
 
       xTrack.TryGetInterpolationData(
           frame,
@@ -95,8 +102,7 @@ public partial class ModelImpl<TVertex> {
           out var toZFrame,
           config);
 
-      Span<(float frame, float value, float? tangent)?> fromsAndTos =
-      [
+      Span<(float frame, float value, float? tangent)?> fromsAndTos = [
           fromXFrame,
           fromYFrame,
           fromZFrame,
@@ -128,7 +134,8 @@ public partial class ModelImpl<TVertex> {
           zRadians = defaultZ;
         }
 
-        interpolatedValue = ConvertRadiansToQuaternionImpl(xRadians, yRadians, zRadians);
+        interpolatedValue
+            = ConvertRadiansToQuaternionImpl(xRadians, yRadians, zRadians);
         return true;
       }
 
@@ -161,9 +168,12 @@ public partial class ModelImpl<TVertex> {
       }
 
       interpolatedValue = Quaternion.Normalize(ConvertRadiansToQuaternionImpl(
-                                                   fromXFrame?.value ?? defaultX,
-                                                   fromYFrame?.value ?? defaultY,
-                                                   fromZFrame?.value ?? defaultZ));
+                                                   fromXFrame?.value ??
+                                                   defaultX,
+                                                   fromYFrame?.value ??
+                                                   defaultY,
+                                                   fromZFrame?.value ??
+                                                   defaultZ));
       return true;
     }
 
@@ -260,7 +270,8 @@ public partial class ModelImpl<TVertex> {
               return false;
             }
 
-            if (fromTangentOrNull != null && toTangentOrNull != null &&
+            if (fromTangentOrNull != null &&
+                toTangentOrNull != null &&
                 !fromTangentOrNull.Value.IsRoughly(toTangentOrNull.Value)) {
               return false;
             }

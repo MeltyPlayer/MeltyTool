@@ -10,6 +10,7 @@ using fin.data.queues;
 using fin.image;
 using fin.io.bundles;
 using fin.math;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.util;
@@ -61,11 +62,11 @@ public class CmbModelBuilder {
         var radians = cmbBone.rotation;
         var scale = cmbBone.scale;
 
-        var finBone =
-            (finBoneParent ?? finModel.Skeleton.Root)
-            .AddChild(translation)
-            .SetLocalRotationRadians(radians)
-            .SetLocalScale(scale);
+        var finBone
+                = (finBoneParent ?? finModel.Skeleton.Root).AddChild(
+                    translation);
+        finBone.LocalTransform.SetRotationRadians(radians);
+        finBone.LocalTransform.SetScale(scale);
         finBones[cmbBone.id] = finBone;
 
         if (boneChildren.TryGetList(cmbBone, out var children)) {

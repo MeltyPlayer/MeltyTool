@@ -26,7 +26,7 @@ public partial class ModelImpl<TVertex> {
         float frame,
         out Vector3 interpolatedValue,
         AnimationInterpolationConfig? config = null) {
-      var localPosition = this.bone_.LocalPosition;
+      var localPosition = this.bone_.LocalTransform.Translation;
 
       if (!this.axisTracks[0].TryGetInterpolatedFrame(frame, out var x, config)) {
         x = localPosition.X;

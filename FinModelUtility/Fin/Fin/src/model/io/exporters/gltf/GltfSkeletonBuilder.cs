@@ -56,7 +56,7 @@ public class GltfSkeletonBuilder {
                                            IReadOnlyBone bone,
                                            float scale)
     => node.LocalMatrix = SystemMatrix4x4Util.FromTrs(
-        bone.LocalPosition * scale,
-        bone.LocalRotation,
-        bone.LocalScale);
+        bone.LocalTransform.Translation * scale,
+        bone.LocalTransform.Rotation,
+        bone.LocalTransform.Scale);
 }

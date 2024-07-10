@@ -17,6 +17,7 @@ using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.math.matrix.four;
 using fin.math.rotations;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
@@ -72,10 +73,9 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     while (boneQueue.Count > 0) {
       var (finParentBone, jObj) = boneQueue.Dequeue();
 
-      var finBone =
-          finParentBone.AddChild(jObj.Position)
-                       .SetLocalRotationRadians(jObj.RotationRadians)
-                       .SetLocalScale(jObj.Scale);
+      var finBone = finParentBone.AddChild(jObj.Position);
+      finBone.LocalTransform.SetRotationRadians(jObj.RotationRadians);
+      finBone.LocalTransform.SetScale(jObj.Scale);
       finBone.Name = jObj.Name;
 
       finBoneByJObj[jObj] = finBone;

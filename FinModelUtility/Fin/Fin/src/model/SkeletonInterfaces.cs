@@ -2,6 +2,7 @@
 using System.Numerics;
 
 using fin.data.indexable;
+using fin.math.transform;
 
 using schema.readOnly;
 
@@ -20,14 +21,7 @@ public partial interface ILeafBone : IIndexable {
   IBone Root { get; }
   IBone? Parent { get; }
 
-  Vector3 LocalPosition { get; }
-  IRotation? LocalRotation { get; }
-  Vector3? LocalScale { get; }
-
-  IBone SetLocalPosition(float x, float y, float z);
-  IBone SetLocalRotationDegrees(float x, float y, float z);
-  IBone SetLocalRotationRadians(float x, float y, float z);
-  IBone SetLocalScale(float x, float y, float z);
+  IBoneTransform LocalTransform { get; }
 
   bool IgnoreParentScale { get; set; }
 

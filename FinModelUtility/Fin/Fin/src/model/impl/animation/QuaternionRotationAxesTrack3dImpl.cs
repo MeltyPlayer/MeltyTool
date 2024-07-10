@@ -27,9 +27,8 @@ public partial class ModelImpl<TVertex> {
         out Quaternion interpolatedValue,
         AnimationInterpolationConfig? config = null) {
       // TODO: Might need to do something fancier here
-      var defaultRotation = this.bone_.LocalRotation != null
-          ? QuaternionUtil.Create(this.bone_.LocalRotation)
-          : Quaternion.Identity;
+      var defaultRotation
+          = this.bone_.LocalTransform.Rotation ?? Quaternion.Identity;
 
       if (!this.axisTracks[0]
                .TryGetInterpolatedFrame(frame,

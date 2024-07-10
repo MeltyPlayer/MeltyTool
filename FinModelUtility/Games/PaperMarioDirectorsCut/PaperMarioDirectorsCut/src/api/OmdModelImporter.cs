@@ -1,5 +1,6 @@
 ﻿using fin.image;
 using fin.io;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io;
@@ -30,8 +31,8 @@ namespace pmdc.api {
 
       var finSkeleton = finModel.Skeleton;
       var finRoot = finSkeleton.Root.AddRoot(0, 0, 0);
-      finRoot.SetLocalRotationDegrees(-90, 180, 0);
-      finRoot.SetLocalScale(-1, 1, 1);
+      finRoot.LocalTransform.SetRotationDegrees(-90, 180, 0);
+      finRoot.LocalTransform.SetScale(-1, 1, 1);
 
       var finSkin = finModel.Skin;
       var boneWeights = finSkin.GetOrCreateBoneWeights(

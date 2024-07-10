@@ -12,6 +12,7 @@ using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
 using fin.io;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
@@ -186,8 +187,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
       var joint = mod.joints[jointIndex];
 
       var bone = (parent ?? model.Skeleton.Root).AddChild(joint.position);
-      bone.SetLocalRotationRadians(joint.rotation);
-      bone.SetLocalScale(joint.scale);
+      bone.LocalTransform.SetRotationRadians(joint.rotation);
+      bone.LocalTransform.SetScale(joint.scale);
 
       if (mod.jointNames.Count > 0) {
         var jointName = mod.jointNames[jointIndex];

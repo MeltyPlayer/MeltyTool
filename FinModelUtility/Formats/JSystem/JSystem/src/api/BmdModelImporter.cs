@@ -8,6 +8,7 @@ using fin;
 using fin.io;
 using fin.log;
 using fin.math.matrix.four;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
@@ -110,14 +111,12 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
         var jointName = node.Name;
 
         var rotationFactor = 1f / 32768f * 3.14159f;
-        var bone =
-            parentBone
-                .AddChild(joint.Translation)
-                .SetLocalRotationRadians(
-                    joint.Rotation.X * rotationFactor,
-                    joint.Rotation.Y * rotationFactor,
-                    joint.Rotation.Z * rotationFactor)
-                .SetLocalScale(joint.Scale);
+        var bone = parentBone.AddChild(joint.Translation);
+        bone.LocalTransform.SetRotationRadians(
+                joint.Rotation.X * rotationFactor,
+                joint.Rotation.Y * rotationFactor,
+                joint.Rotation.Z * rotationFactor);
+        bone.LocalTransform.SetScale(joint.Scale);
         bone.Name = jointName;
 
         bone.IgnoreParentScale = node.Entry.IgnoreParentScale;

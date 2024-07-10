@@ -7,6 +7,7 @@ using fin.data.queues;
 using fin.image;
 using fin.image.formats;
 using fin.io;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
@@ -218,14 +219,13 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
           var rotation = gloMesh.RotateKeys[0];
           var scale = gloMesh.ScaleKeys[0].Scale;
 
-          var finBone = parentFinBone
-                        .AddChild(position)
-                        .SetLocalRotationRadians(
-                            rotation.X,
-                            rotation.Y,
-                            rotation.Z)
-                        // This is weird, but seems to be right for levels.
-                        .SetLocalScale(scale.Y, scale.X, scale.Z);
+          var finBone = parentFinBone.AddChild(position);
+          finBone.LocalTransform.SetRotationRadians(
+              rotation.X,
+              rotation.Y,
+              rotation.Z);
+          // This is weird, but seems to be right for levels.
+          finBone.LocalTransform.SetScale(scale.Y, scale.X, scale.Z);
           finBone.Name = name + "_bone";
           finBone.IgnoreParentScale = true;
           meshesAndBones.Add((gloMesh, finBone));

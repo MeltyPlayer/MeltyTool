@@ -25,7 +25,7 @@ public partial class ModelImpl<TVertex> {
         float frame,
         out Vector3 interpolatedValue,
         AnimationInterpolationConfig? config = null) {
-      var localScale = this.bone_.LocalScale;
+      var localScale = this.bone_.LocalTransform.Scale;
 
       if (!this.axisTracks[0].TryGetInterpolatedFrame(frame, out var x, config)) {
         x = localScale?.X ?? 1;

@@ -5,6 +5,7 @@ using fin.data.nodes;
 using fin.data.queues;
 using fin.io;
 using fin.math.rotations;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
@@ -94,12 +95,10 @@ public class XcModelImporter : IModelImporter<XcModelFileBundle> {
                                             openTkQuaternion.Z,
                                             openTkQuaternion.W);
             var eulerRadians = QuaternionUtil.ToEulerRadians(quaternion);
-            bone.SetLocalRotationRadians(eulerRadians.X,
-                                         eulerRadians.Y,
-                                         eulerRadians.Z);
+            bone.LocalTransform.SetRotationRadians(eulerRadians);
 
             var scale = mbn.Scale;
-            bone.SetLocalScale(scale.X, scale.Y, scale.Z);
+            bone.LocalTransform.SetScale(scale);
 
             finBoneByIndex[mbn.Id] = bone;
             finBoneByName[bone.Name] = bone;
