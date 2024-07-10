@@ -21,7 +21,7 @@ public partial interface ILeafBone : IIndexable {
   IBone Root { get; }
   IBone? Parent { get; }
 
-  IBoneTransform LocalTransform { get; }
+  ITransform3d LocalTransform { get; }
 
   bool IgnoreParentScale { get; set; }
 
