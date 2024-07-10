@@ -12,13 +12,12 @@ public partial class ModelImpl<TVertex> {
       Asserts.True(mipmapImages.Length >= 1,
                    "Expected texture to have at least 1 mipmap!");
 
-      var texture = new TextureImpl(mipmapImages);
+      var texture = new TextureImpl(this.textures_.Count, mipmapImages);
       this.textures_.Add(texture);
       return texture;
     }
   }
 
-  private class TextureImpl : BTextureImpl {
-    public TextureImpl(IReadOnlyImage[] mipmapImages) : base(mipmapImages) { }
-  }
+  private class TextureImpl(int index, IReadOnlyImage[] mipmapImages)
+      : BTextureImpl(index, mipmapImages);
 }

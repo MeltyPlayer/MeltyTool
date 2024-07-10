@@ -46,7 +46,7 @@ public partial interface IModelAnimation : IAnimation {
   IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
   IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
 
-  IReadOnlyDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks { get; }
+  IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks { get; }
   ITextureTracks AddTextureTracks(IReadOnlyTexture texture);
 
   // TODO: Allow setting looping behavior (once, back and forth, etc.)
@@ -109,7 +109,10 @@ public partial interface IMeshTracks {
   IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
 }
 
-public interface ITextureTracks : IAnimationData { }
+[GenerateReadOnly]
+public partial interface ITextureTracks {
+  IReadOnlyTexture Texture { get; }
+}
 
 
 // TODO: Add a track for animating params, e.g. textures, UVs, frames.

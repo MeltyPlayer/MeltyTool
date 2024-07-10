@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 
 using fin.color;
+using fin.data.indexable;
 using fin.image;
 using fin.io;
 using fin.language.equations.fixedFunction;
@@ -362,7 +363,7 @@ public enum TextureMinFilter {
 }
 
 [GenerateReadOnly]
-public partial interface ITexture {
+public partial interface ITexture : IIndexable {
   string Name { get; set; }
 
   LocalImageFormat BestImageFormat { get; }

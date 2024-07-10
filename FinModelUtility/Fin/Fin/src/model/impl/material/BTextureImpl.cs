@@ -17,15 +17,13 @@ public partial class ModelImpl<TVertex> {
     public IReadOnlyList<ITexture> Textures { get; }
   }
 
-  private abstract class BTextureImpl : ITexture {
+  private abstract class BTextureImpl(int index, IReadOnlyImage[] mipmapImages)
+      : ITexture {
     private TransparencyType? transparencyType_;
     private Bitmap? imageData_;
 
-    protected BTextureImpl(IReadOnlyImage[] mipmapImages) {
-      this.MipmapImages = mipmapImages;
-    }
-
     public string Name { get; set; }
+    public int Index => index;
 
 
     public LocalImageFormat BestImageFormat => LocalImageFormat.PNG;
@@ -39,7 +37,7 @@ public partial class ModelImpl<TVertex> {
 
     public ColorType ColorType { get; set; }
 
-    public IReadOnlyImage[] MipmapImages { get; }
+    public IReadOnlyImage[] MipmapImages => mipmapImages;
     public IReadOnlyImage Image => this.MipmapImages[0];
 
     public Bitmap ImageData => this.imageData_ ??= this.Image.AsBitmap();
