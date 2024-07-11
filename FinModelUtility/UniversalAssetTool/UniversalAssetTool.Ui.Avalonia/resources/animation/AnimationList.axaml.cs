@@ -11,6 +11,8 @@ using fin.util.asserts;
 
 using Material.Icons;
 
+using NaturalSort.Extension;
+
 using ReactiveUI;
 
 using uni.ui.avalonia.resources.model;
@@ -36,8 +38,12 @@ namespace uni.ui.avalonia.resources.animation {
       set {
         this.RaiseAndSetIfChanged(ref this.animations_, value);
         this.AnimationViewModels = new ObservableCollection<AnimationViewModel>(
-            value?.Select(Animation => new AnimationViewModel
-                              { Animation = Animation }) ??
+            value?.Select(a => new AnimationViewModel
+                              { Animation = a })
+                 .OrderBy(
+                     a => a.Animation.Name,
+                     new NaturalSortComparer(
+                         StringComparison.OrdinalIgnoreCase)) ??
             Enumerable.Empty<AnimationViewModel>());
       }
     }
