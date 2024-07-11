@@ -3,6 +3,8 @@
 using fin.animation.interpolation;
 using fin.util.optional;
 
+using static fin.animation.keyframes.KeyframesUtil;
+
 namespace fin.animation.keyframes;
 
 public interface IInterpolatableKeyframes<TKeyframe, T>
@@ -56,4 +58,16 @@ public class InterpolatedKeyframes<TKeyframe, T>(
         return false;
     }
   }
+
+  public InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
+      float frame,
+      out TKeyframe precedingKeyframe,
+      out TKeyframe followingKeyframe,
+      out float normalizedFrame)
+    => this.impl_.TryGetPrecedingAndFollowingKeyframes(
+        frame,
+        sharedConfig,
+        out precedingKeyframe,
+        out followingKeyframe,
+        out normalizedFrame);
 }

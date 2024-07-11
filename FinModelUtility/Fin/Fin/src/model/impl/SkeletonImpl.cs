@@ -85,10 +85,7 @@ public partial class ModelImpl<TVertex> {
         return child;
       }
 
-
       public ITransform3d LocalTransform { get; } = new Transform3d();
-
-
       public bool IgnoreParentScale { get; set; }
 
 

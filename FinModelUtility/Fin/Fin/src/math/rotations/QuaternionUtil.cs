@@ -45,11 +45,11 @@ public static class QuaternionUtil {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Quaternion CreateZyxRadians(in Vector3 xyzRadians)
+  public static Quaternion CreateZyxRadians(in this Vector3 xyzRadians)
     => CreateZyx(xyzRadians.X, xyzRadians.Y, xyzRadians.Z);
 
   // TODO: Slow! Figure out how to populate animations with raw quaternions instead
-  public static Vector3 ToEulerRadians(Quaternion q) {
+  public static Vector3 ToEulerRadians(in this Quaternion q) {
     if (q.IsIdentity) {
       return Vector3.Zero;
     }
