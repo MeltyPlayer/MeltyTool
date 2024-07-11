@@ -3,7 +3,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.animation;
+using fin.animation.interpolation;
 using fin.data.indexable;
+using fin.math.interpolation;
 using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model;
@@ -132,9 +134,9 @@ public class BoneTransformManager : IBoneTransformManager {
                   = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
           };
 
-  private readonly MagFilterInterpolationTrack<Vector3>
+  private readonly MagFilterInterpolatable<Vector3>
       scaleMagFilterInterpolationTrack_ =
-          new(null, Vector3.Lerp) {
+          new(new Vector3Interpolator()) {
               AnimationInterpolationMagFilter
                   = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
           };
@@ -230,12 +232,11 @@ public class BoneTransformManager : IBoneTransformManager {
           }
         }
 
-        if (boneTracks.Scales?.HasAtLeastOneKeyframe ?? false) {
+        if (boneTracks.Scales?.HasAnyData ?? false) {
           this.scaleMagFilterInterpolationTrack_.Impl = boneTracks.Scales;
-          if (this.scaleMagFilterInterpolationTrack_.TryGetInterpolatedFrame(
+          if (this.scaleMagFilterInterpolationTrack_.TryGetAtFrame(
                   (float) frame,
-                  out var outAnimationLocalScale,
-                  config)) {
+                  out var outAnimationLocalScale)) {
             animationLocalScale = outAnimationLocalScale;
           }
         }
@@ -243,7 +244,8 @@ public class BoneTransformManager : IBoneTransformManager {
 
       // Uses the animation pose instead of the root pose when available.
       var localTransform = bone.LocalTransform;
-      var localTranslation = animationLocalPosition ?? localTransform.Translation;
+      var localTranslation
+          = animationLocalPosition ?? localTransform.Translation;
       var localRotation = animationLocalRotation ?? localTransform.Rotation;
       var localScale = animationLocalScale ?? localTransform.Scale;
 

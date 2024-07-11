@@ -1,6 +1,6 @@
 ﻿using System;
 
-using fin.animation;
+using fin.animation.interpolation;
 using fin.data.indexable;
 
 namespace fin.model.impl;
@@ -14,10 +14,14 @@ public partial class ModelImpl<TVertex> {
         BoneTracks => this.boneTracks_;
 
     public IBoneTracks AddBoneTracks(IReadOnlyBone bone)
-      => this.boneTracks_[bone] = new BoneTracksImpl(this, bone);
+      => this.boneTracks_[bone]
+          = new BoneTracksImpl(this, this.sharedInterpolationConfig_, bone);
   }
 
-  private class BoneTracksImpl(IAnimation animation, IReadOnlyBone bone)
+  private partial class BoneTracksImpl(
+      IAnimation animation,
+      ISharedInterpolationConfig sharedConfig,
+      IReadOnlyBone bone)
       : IBoneTracks {
     public override string ToString() => $"BoneTracks[{bone}]";
 
@@ -26,7 +30,6 @@ public partial class ModelImpl<TVertex> {
 
     public IPositionTrack3d? Positions { get; private set; }
     public IRotationTrack3d? Rotations { get; private set; }
-    public IScale3dTrack? Scales { get; private set; }
 
     public ICombinedPositionAxesTrack3d UseCombinedPositionAxesTrack(
         int initialCapacity)
@@ -88,28 +91,6 @@ public partial class ModelImpl<TVertex> {
               this.Animation,
               this.Bone,
               initialAxisCapacities));
-    }
-
-
-    public IScale3dTrack UseScaleTrack(
-        int initialCapacity)
-      => this.UseScaleTrack(initialCapacity,
-                            initialCapacity,
-                            initialCapacity);
-
-    public IScale3dTrack UseScaleTrack(
-        int initialXCapacity,
-        int initialYCapacity,
-        int initialZCapacity) {
-      Span<int> initialAxisCapacities = stackalloc int[3];
-      initialAxisCapacities[0] = initialXCapacity;
-      initialAxisCapacities[1] = initialYCapacity;
-      initialAxisCapacities[2] = initialZCapacity;
-
-      return this.Scales = new ScaleTrackImpl(
-          this.Animation,
-          this.Bone,
-          initialAxisCapacities);
     }
 
 

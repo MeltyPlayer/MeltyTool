@@ -18,6 +18,7 @@ public class StairStepKeyframes<T>(
       = new(individualConfig.InitialCapacity);
 
   public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
+  public bool HasAnyData => this.Definitions.Count > 0;
 
   public void Add(Keyframe<T> keyframe) => this.impl_.AddKeyframe(keyframe);
 

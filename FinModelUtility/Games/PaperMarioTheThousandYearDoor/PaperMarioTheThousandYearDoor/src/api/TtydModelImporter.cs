@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.animation.keyframes;
+using fin.animation.types.vector3;
 using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.queues;
@@ -221,15 +222,16 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
 
       var finBoneTracksByBone
           = new IndexableDictionary<IReadOnlyBone, (
-              ICombinedPositionAxesTrack3d, IQuaternionRotationTrack3d,
-              IScale3dTrack)>();
+              ICombinedPositionAxesTrack3d,
+              IQuaternionRotationTrack3d,
+              ISeparateVector3Keyframes<Keyframe<float>>)>();
       foreach (var (_, finBone) in groupsAndBones) {
         var finBoneTracks = finAnimation.AddBoneTracks(finBone);
 
         var positionsTrack = finBoneTracks.UseCombinedPositionAxesTrack();
         var rotationsTrack
             = finBoneTracks.UseQuaternionRotationTrack();
-        var scalesTrack = finBoneTracks.UseScaleTrack();
+        var scalesTrack = finBoneTracks.UseSeparateScaleAxesTrack();
 
         finBoneTracksByBone[finBone]
             = (positionsTrack, rotationsTrack, scalesTrack);
@@ -307,7 +309,7 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
 
           positionsTrack.SetKeyframe(i, position);
           rotationsTrack.SetKeyframe(i, quaternion);
-          scalesTrack.Set(i, scale);
+          scalesTrack.Add(new Keyframe<Vector3>(i, scale));
         }
       }
     }

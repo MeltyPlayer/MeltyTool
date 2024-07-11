@@ -115,7 +115,8 @@ public static class KeyframesUtil {
 
     var followingKeyframeIndex = precedingKeyframeIndex + 1;
     if (followingKeyframeIndex == impl.Count) {
-      if (!sharedConfig.Looping) {
+      // TODO: Should this support from a frame to itself?
+      if (!sharedConfig.Looping || impl.Count == 1) {
         followingKeyframe = default;
         return InterpolationDataType.PRECEDING_ONLY;
       }

@@ -2,6 +2,7 @@
 
 using fin.animation;
 using fin.animation.keyframes;
+using fin.animation.types.vector3;
 using fin.model;
 
 namespace mod.schema.anm {
@@ -32,7 +33,7 @@ namespace mod.schema.anm {
             dcxAnimationData.ScaleValues);
         DcxHelpers.MergeKeyframesToScaleTrack(
             frames,
-            jointKeyframes.UseScaleTrack());
+            jointKeyframes.UseSeparateScaleAxesTrackWithTangents());
 
         frames = DcxHelpers.ReadKeyframes_(
             isDck,
@@ -56,11 +57,12 @@ namespace mod.schema.anm {
       return animation;
     }
 
-    private static KeyframeDefinition<ValueAndTangents<float>>[][] ReadKeyframes_(
-        bool isDck,
-        IDcxAnimationData animationData,
-        IDcxAxes axes,
-        float[] values) {
+    private static KeyframeDefinition<ValueAndTangents<float>>[][]
+        ReadKeyframes_(
+            bool isDck,
+            IDcxAnimationData animationData,
+            IDcxAxes axes,
+            float[] values) {
       var frames = new KeyframeDefinition<ValueAndTangents<float>>[3][];
       for (var i = 0; i < 3; ++i) {
         var axis = axes.Axes[i];
@@ -99,11 +101,12 @@ namespace mod.schema.anm {
       return keyframes;
     }
 
-    public static KeyframeDefinition<ValueAndTangents<float>>[] ReadSparseFrames(
-        float[] values,
-        int offset,
-        int count
-    ) {
+    public static KeyframeDefinition<ValueAndTangents<float>>[]
+        ReadSparseFrames(
+            float[] values,
+            int offset,
+            int count
+        ) {
       var keyframes = new KeyframeDefinition<ValueAndTangents<float>>[count];
       for (var i = 0; i < count; ++i) {
         var index = (int) values[offset + 3 * i];
@@ -155,15 +158,15 @@ namespace mod.schema.anm {
 
     public static void MergeKeyframesToScaleTrack(
         KeyframeDefinition<ValueAndTangents<float>>[][] scaleKeyframes,
-        IScale3dTrack scaleTrack) {
+        ISeparateVector3Keyframes<KeyframeWithTangents<float>> scaleTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in scaleKeyframes[i]) {
-          scaleTrack.Set(keyframe.Frame,
-                         i,
-                         keyframe.Value.IncomingValue,
-                         keyframe.Value.OutgoingValue,
-                         keyframe.Value.IncomingTangent,
-                         keyframe.Value.OutgoingTangent);
+          scaleTrack.Axes[i]
+                    .Add(new KeyframeWithTangents<float>(keyframe.Frame,
+                           keyframe.Value.IncomingValue,
+                           keyframe.Value.OutgoingValue,
+                           keyframe.Value.IncomingTangent,
+                           keyframe.Value.OutgoingTangent));
         }
       }
     }

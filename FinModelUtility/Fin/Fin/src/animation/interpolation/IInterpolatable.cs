@@ -15,6 +15,8 @@ public interface ISharedInterpolationConfig {
 }
 
 public interface IInterpolatable<T> {
+  bool HasAnyData { get; }
+
   [Const]
   bool TryGetAtFrame(float frame, out T value);
 }

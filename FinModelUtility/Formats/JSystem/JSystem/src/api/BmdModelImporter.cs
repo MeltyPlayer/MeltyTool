@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 
 using fin;
+using fin.animation.keyframes;
 using fin.io;
 using fin.log;
 using fin.math.matrix.four;
@@ -206,16 +207,24 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
             }
           }
 
-          var scales = boneTracks.UseScaleTrack(
+          var scales = boneTracks.UseSeparateScaleAxesTrackWithTangents(
               bcxJoint.Values.Scales[0].Length,
               bcxJoint.Values.Scales[1].Length,
               bcxJoint.Values.Scales[2].Length);
           for (var i = 0; i < bcxJoint.Values.Scales.Length; ++i) {
             foreach (var key in bcxJoint.Values.Scales[i]) {
               if (key is Bck.ANK1Section.AnimatedJoint.JointAnim.Key bckKey) {
-                scales.Set(bckKey.Frame, i, bckKey.Value, bckKey.IncomingTangent, bckKey.OutgoingTangent);
+                scales.Axes[i]
+                      .Add(new KeyframeWithTangents<float>(
+                               bckKey.Frame,
+                               bckKey.Value,
+                               bckKey.IncomingTangent,
+                               bckKey.OutgoingTangent));
               } else {
-                scales.Set(key.Frame, i, key.Value);
+                scales.Axes[i]
+                      .Add(new KeyframeWithTangents<float>(
+                               key.Frame,
+                               key.Value));
               }
             }
           }

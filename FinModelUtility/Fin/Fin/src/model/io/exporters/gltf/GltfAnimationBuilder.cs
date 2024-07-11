@@ -35,7 +35,7 @@ public class GltfAnimationBuilder {
 
         var translationDefined = boneTracks.Positions?.HasAtLeastOneKeyframe ?? false;
         var rotationDefined = boneTracks.Rotations?.HasAtLeastOneKeyframe ?? false;
-        var scaleDefined = boneTracks.Scales?.HasAtLeastOneKeyframe ?? false;
+        var scaleDefined = boneTracks.Scales?.HasAnyData ?? false;
 
         // TODO: How to get keyframes for sparse tracks?
         for (var i = 0; i < animation.FrameCount; ++i) {
@@ -61,7 +61,7 @@ public class GltfAnimationBuilder {
           }
 
           if (scaleDefined) {
-            var scale = boneTracks.Scales.GetInterpolatedFrame(i);
+            boneTracks.Scales.TryGetAtFrame(i, out var scale);
             scaleKeyframes[time] = new Vector3(scale.X, scale.Y, scale.Z);
           }
         }

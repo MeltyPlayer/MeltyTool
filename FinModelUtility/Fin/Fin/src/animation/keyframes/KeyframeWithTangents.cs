@@ -10,12 +10,21 @@ public readonly record struct KeyframeWithTangents<T>(
     float? TangentIn,
     float? TangentOut)
     : IKeyframeWithTangents<T>, IComparable<KeyframeWithTangents<T>> {
-  public KeyframeWithTangents(float frame, T value, float? tangent) : this(
-      frame,
-      value,
-      value,
-      tangent,
-      tangent) { }
+  public KeyframeWithTangents(float frame, T value, float? tangent = null) :
+      this(frame,
+           value,
+           tangent,
+           tangent) { }
+
+  public KeyframeWithTangents(float frame,
+                              T value,
+                              float? tangentIn,
+                              float? tangentOut) :
+      this(frame,
+           value,
+           value,
+           tangentIn,
+           tangentOut) { }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public int CompareTo(KeyframeWithTangents<T> other)

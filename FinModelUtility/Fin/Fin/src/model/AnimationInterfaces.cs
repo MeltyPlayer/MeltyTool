@@ -3,9 +3,8 @@ using System.Numerics;
 
 using fin.animation;
 using fin.animation.keyframes;
-using fin.animation.tracks;
+using fin.animation.types.vector3;
 using fin.data.indexable;
-using fin.math.interpolation;
 
 using schema.readOnly;
 
@@ -46,7 +45,10 @@ public partial interface IModelAnimation : IAnimation {
   IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
   IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
 
-  IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks { get; }
+  IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks {
+    get;
+  }
+
   ITextureTracks AddTextureTracks(IReadOnlyTexture texture);
 
   // TODO: Allow setting looping behavior (once, back and forth, etc.)
@@ -63,7 +65,7 @@ public partial interface IBoneTracks : IAnimationData {
 
   IPositionTrack3d? Positions { get; }
   IRotationTrack3d? Rotations { get; }
-  IScale3dTrack? Scales { get; }
+  IVector3Interpolatable? Scales { get; }
 
   ICombinedPositionAxesTrack3d UseCombinedPositionAxesTrack(
       int initialCapacity = 0);
@@ -89,12 +91,28 @@ public partial interface IBoneTracks : IAnimationData {
       int initialYCapacity,
       int initialZCapacity);
 
-  IScale3dTrack UseScaleTrack(int initialCapacity = 0);
+  // Scale
+  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateScaleAxesTrack(
+      int initialCapacity = 0)
+    => this.UseSeparateScaleAxesTrack(initialCapacity,
+                                      initialCapacity,
+                                      initialCapacity);
 
-  IScale3dTrack UseScaleTrack(
+  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateScaleAxesTrack(
       int initialXCapacity,
       int initialYCapacity,
       int initialZCapacity);
+
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
+      UseSeparateScaleAxesTrackWithTangents(int initialCapacity = 0)
+    => this.UseSeparateScaleAxesTrackWithTangents(initialCapacity,
+                                                  initialCapacity,
+                                                  initialCapacity);
+
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
+      UseSeparateScaleAxesTrackWithTangents(int initialXCapacity,
+                                            int initialYCapacity,
+                                            int initialZCapacity);
 }
 
 public enum MeshDisplayState {

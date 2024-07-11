@@ -41,14 +41,21 @@ public class SeparateVector3Keyframes<TKeyframe>(
     ];
 
   public bool TryGetAtFrame(float frame, out Vector3 value) {
-    if (this.Axes[0].TryGetAtFrame(frame, out var x) &&
-        this.Axes[1].TryGetAtFrame(frame, out var y) &&
-        this.Axes[2].TryGetAtFrame(frame, out var z)) {
-      value = new Vector3(x, y, z);
-      return true;
+    value = default;
+
+    if (!this.Axes[0].TryGetAtFrameOrDefault(frame, individualConfigX, out var x)) {
+      return false;
     }
 
-    value = default;
-    return false;
+    if (!this.Axes[1].TryGetAtFrameOrDefault(frame, individualConfigY, out var y)) {
+      return false;
+    }
+
+    if (!this.Axes[2].TryGetAtFrameOrDefault(frame, individualConfigZ, out var z)) {
+      return false;
+    }
+
+    value = new Vector3(x, y, z);
+    return true;
   }
 }

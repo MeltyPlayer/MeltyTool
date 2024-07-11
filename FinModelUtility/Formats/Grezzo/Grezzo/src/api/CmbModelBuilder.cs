@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
+using fin.animation.keyframes;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
@@ -98,7 +99,7 @@ public class CmbModelBuilder {
                     anod.RotationAxes[1].Keyframes.Count,
                     anod.RotationAxes[2].Keyframes.Count);
             var scalesTrack =
-                boneTracks.UseScaleTrack(
+                boneTracks.UseSeparateScaleAxesTrackWithTangents(
                     anod.ScaleAxes[0].Keyframes.Count,
                     anod.ScaleAxes[1].Keyframes.Count,
                     anod.ScaleAxes[2].Keyframes.Count);
@@ -124,11 +125,11 @@ public class CmbModelBuilder {
 
               var scaleAxis = anod.ScaleAxes[i];
               foreach (var scale in scaleAxis.Keyframes) {
-                scalesTrack.Set((int) scale.Time,
-                                i,
-                                scale.Value,
-                                scale.IncomingTangent,
-                                scale.OutgoingTangent);
+                scalesTrack.Axes[i]
+                           .Add(new KeyframeWithTangents<float>(scale.Time,
+                                  scale.Value,
+                                  scale.IncomingTangent,
+                                  scale.OutgoingTangent));
               }
             }
           }

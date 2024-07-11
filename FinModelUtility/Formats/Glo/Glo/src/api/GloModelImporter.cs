@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using fin.animation.keyframes;
+using fin.animation.types.vector3;
 using fin.color;
 using fin.data.dictionaries;
 using fin.data.lazy;
@@ -310,7 +312,9 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
               }
             }
 
-            var scales = finBoneTracks.UseScaleTrack(gloMesh.ScaleKeys.Length);
+            var scales
+                = finBoneTracks.UseSeparateScaleAxesTrack(
+                    gloMesh.ScaleKeys.Length);
             prevTime = -1;
             foreach (var scaleKey in gloMesh.ScaleKeys) {
               Asserts.True(scaleKey.Time > prevTime);
@@ -331,7 +335,7 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
               Asserts.True(time >= 0 && time < finAnimation.FrameCount);
 
               // TODO: Does this also need to be out of order?
-              scales.Set(time, scaleKey.Scale);
+              scales.Add(new Keyframe<Vector3>(time, (Vector3) scaleKey.Scale));
 
               if (isLast) {
                 break;

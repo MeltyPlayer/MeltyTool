@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 
 using Assimp;
 
+using fin.animation.keyframes;
+using fin.animation.types.vector3;
 using fin.color;
 using fin.data.lazy;
 using fin.data.queues;
@@ -198,12 +200,17 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           }
 
           if (assNodeAnimationChannel.HasScalingKeys) {
-            var scaleTrack = finBoneTracks.UseScaleTrack();
+            var scaleTrack = finBoneTracks.UseSeparateScaleAxesTrack();
             foreach (var assScaleKey in assNodeAnimationChannel.ScalingKeys) {
               var frame = (int) Math.Round(assScaleKey.Time / frameRate);
               var assScale = assScaleKey.Value;
-              scaleTrack.Set(frame,
-                             new Vector3(assScale.X, assScale.Y, assScale.Z));
+              scaleTrack.Add(new Keyframe<Vector3>(
+                                 frame,
+                                 new Vector3(
+                                     assScale.X,
+                                     assScale.Y,
+                                     assScale.Z)
+                             ));
             }
           }
         }

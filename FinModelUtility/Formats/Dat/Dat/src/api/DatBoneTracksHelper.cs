@@ -1,5 +1,6 @@
 ﻿using dat.schema.animation;
 
+using fin.animation.keyframes;
 using fin.model;
 
 namespace dat.api;
@@ -10,7 +11,7 @@ public static class DatBoneTracksHelper {
       IBoneTracks boneTracks) {
     var positionTrack = boneTracks.UseSeparatePositionAxesTrack();
     var rotationTrack = boneTracks.UseEulerRadiansRotationTrack();
-    var scaleTrack = boneTracks.UseScaleTrack();
+    var scaleTrack = boneTracks.UseSeparateScaleAxesTrackWithTangents();
 
     foreach (var datKeyframes in allDatKeyframes) {
       var jointTrackType = datKeyframes.JointTrackType;
@@ -68,12 +69,13 @@ public static class DatBoneTracksHelper {
             var incomingTangent = keyframe.IncomingTangent;
             var outgoingTangent = keyframe.OutgoingTangent;
 
-            scaleTrack.Set(frame,
-                           axis,
-                           incomingValue,
-                           outgoingValue,
-                           incomingTangent,
-                           outgoingTangent);
+            scaleTrack.Axes[axis]
+                      .Add(new KeyframeWithTangents<float>(
+                               frame,
+                               incomingValue,
+                               outgoingValue,
+                               incomingTangent,
+                               outgoingTangent));
           }
 
           break;

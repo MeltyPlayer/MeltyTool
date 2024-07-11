@@ -31,12 +31,12 @@ namespace uni.thirdparty {
           }
 
           var scales = boneTracks.Scales;
-          if (scales is not { HasAtLeastOneKeyframe: true }) {
+          if (scales is not { HasAnyData: true }) {
             continue;
           }
 
           for (var f = 0; f < animation.FrameCount; ++f) {
-            var scale = scales.GetInterpolatedFrame(f, config);
+            scales.TryGetAtFrame(f, out var scale);
 
             if (!IsScaleOne(scale)) {
               definedBones[bone] = boneTracks;
@@ -57,7 +57,7 @@ namespace uni.thirdparty {
           fw.WriteLine($"    [\"{bone.Name}\"] = {{");
 
           for (var f = 0; f < animation.FrameCount; ++f) {
-            var scale = scales.GetInterpolatedFrame(f, config);
+            scales.TryGetAtFrame(f, out var scale);
 
             if (IsScaleOne(scale)) {
               fw.WriteLine("      defScale,");

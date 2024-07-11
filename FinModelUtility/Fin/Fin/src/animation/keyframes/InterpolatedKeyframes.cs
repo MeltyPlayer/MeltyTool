@@ -24,6 +24,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
       impl_ = new(individualConfig.InitialCapacity);
 
   public IReadOnlyList<TKeyframe> Definitions => this.impl_;
+  public bool HasAnyData => this.Definitions.Count > 0;
 
   public void Add(TKeyframe keyframe) => this.impl_.AddKeyframe(keyframe);
 
