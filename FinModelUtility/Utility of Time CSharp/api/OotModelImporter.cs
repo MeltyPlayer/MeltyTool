@@ -10,6 +10,7 @@ using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;
 
+using fin.animation.keyframes;
 using fin.data.queues;
 using fin.io;
 using fin.model;
@@ -170,8 +171,9 @@ namespace UoT.api {
             finAnimation.Name = $"Animation {animationIndex++}";
 
             var rootAnimationTracks = finAnimation.AddBoneTracks(rootBone);
-            var positions =
-                rootAnimationTracks.UseCombinedPositionAxesTrack(frameCount);
+            var positions
+                = rootAnimationTracks.UseCombinedTranslationKeyframes(
+                    frameCount);
             for (var f = 0; f < frameCount; ++f) {
               var pos = ootAnimation.GetPosition(f);
               positions.SetKeyframe(f, new Vector3(pos.X, pos.Y, pos.Z));
@@ -189,9 +191,10 @@ namespace UoT.api {
                   ConvertRadiansToQuaternionOot_;
 
               for (var a = 0; a < 3; ++a) {
-                AddOotAnimationTrackToFin_(ootAnimation.GetTrack(i * 3 + a),
-                                           a,
-                                           rotations);
+                this.AddOotAnimationTrackToFin_(
+                    ootAnimation.GetTrack(i * 3 + a),
+                    a,
+                    rotations);
               }
             }
           }

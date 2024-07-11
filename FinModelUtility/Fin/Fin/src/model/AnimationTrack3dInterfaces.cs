@@ -29,16 +29,6 @@ public interface IAxes3fTrack<TInterpolated>
   }
 }
 
-public interface IPositionTrack3d : IReadOnlyInterpolatedTrack<Vector3>,
-                                    IAnimationData { }
-
-public interface ICombinedPositionAxesTrack3d
-    : IPositionTrack3d,
-      IInputOutputTrack<Vector3, Vector3Interpolator> { }
-
-public interface ISeparatePositionAxesTrack3d : IPositionTrack3d,
-                                                IAxes3fTrack<Vector3> { }
-
 public interface IRotationTrack3d : IReadOnlyInterpolatedTrack<Quaternion>,
                                     IAnimationData { }
 
@@ -60,6 +50,3 @@ public interface IEulerRadiansRotationTrack3d : IRotationTrack3d,
                                                  float yRadians,
                                                  float zRadians);
 }
-
-public interface IScale3dTrack : IAxes3fTrack<Vector3>,
-                                 IAnimationData { }

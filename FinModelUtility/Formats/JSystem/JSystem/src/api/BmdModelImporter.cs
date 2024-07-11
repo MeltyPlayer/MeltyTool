@@ -179,16 +179,24 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
           var boneTracks = animation.AddBoneTracks(bone);
 
           // TODO: Handle mirrored animations
-          var positions = boneTracks.UseSeparatePositionAxesTrack(
+          var positions = boneTracks.UseSeparateTranslationKeyframesWithTangents(
               bcxJoint.Values.Translations[0].Length,
               bcxJoint.Values.Translations[1].Length,
               bcxJoint.Values.Translations[2].Length);
           for (var i = 0; i < bcxJoint.Values.Translations.Length; ++i) {
             foreach (var key in bcxJoint.Values.Translations[i]) {
               if (key is Bck.ANK1Section.AnimatedJoint.JointAnim.Key bckKey) {
-                positions.Set(bckKey.Frame, i, bckKey.Value, bckKey.IncomingTangent, bckKey.OutgoingTangent);
+                positions.Axes[i]
+                         .Add(new KeyframeWithTangents<float>(
+                                  bckKey.Frame,
+                                  bckKey.Value,
+                                  bckKey.IncomingTangent,
+                                  bckKey.OutgoingTangent));
               } else {
-                positions.Set(key.Frame, i, key.Value);
+                positions.Axes[i]
+                         .Add(new KeyframeWithTangents<float>(
+                                  key.Frame,
+                                  key.Value));
               }
             }
           }

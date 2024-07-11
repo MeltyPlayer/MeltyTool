@@ -63,21 +63,40 @@ public partial interface IAnimationData {
 public partial interface IBoneTracks : IAnimationData {
   IReadOnlyBone Bone { get; }
 
-  IPositionTrack3d? Positions { get; }
+  IVector3Interpolatable? Translations { get; }
   IRotationTrack3d? Rotations { get; }
   IVector3Interpolatable? Scales { get; }
 
-  ICombinedPositionAxesTrack3d UseCombinedPositionAxesTrack(
-      int initialCapacity = 0);
+  // Translation
+  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateTranslationKeyframes(
+      int initialCapacity = 0)
+    => this.UseSeparateTranslationKeyframes(initialCapacity,
+                                            initialCapacity,
+                                            initialCapacity);
 
-  ISeparatePositionAxesTrack3d UseSeparatePositionAxesTrack(
-      int initialCapacity = 0);
-
-  ISeparatePositionAxesTrack3d UseSeparatePositionAxesTrack(
+  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateTranslationKeyframes(
       int initialXCapacity,
       int initialYCapacity,
       int initialZCapacity);
 
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
+      UseSeparateTranslationKeyframesWithTangents(int initialCapacity = 0)
+    => this.UseSeparateTranslationKeyframesWithTangents(initialCapacity,
+      initialCapacity,
+      initialCapacity);
+
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
+      UseSeparateTranslationKeyframesWithTangents(int initialXCapacity,
+                                                  int initialYCapacity,
+                                                  int initialZCapacity);
+
+  ICombinedVector3Keyframes<Keyframe<Vector3>> UseCombinedTranslationKeyframes(
+      int initialCapacity = 0);
+
+  ICombinedVector3Keyframes<KeyframeWithTangents<Vector3>>
+      UseCombinedTranslationKeyframesWithTangents(int initialCapacity = 0);
+
+  // Rotation
   IQuaternionRotationTrack3d
       UseQuaternionRotationTrack(int initialCapacity = 0);
 

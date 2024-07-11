@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 
+using fin.animation.keyframes;
 using fin.data.queues;
 using fin.io;
 using fin.model;
@@ -142,7 +143,7 @@ public class BnkReader {
 
             var boneTracks = finAnimation.AddBoneTracks(bones[b]);
             var rotations = boneTracks.UseQuaternionAxesRotationTrack();
-            var positions = boneTracks.UseSeparatePositionAxesTrack();
+            var translations = boneTracks.UseSeparateTranslationKeyframes();
 
             for (var a = 0; a < 7; ++a) {
               var axisType = (AxisType) a;
@@ -161,7 +162,8 @@ public class BnkReader {
                   case AxisType.POS_X:
                   case AxisType.POS_Y:
                   case AxisType.POS_Z: {
-                    positions.Set(frame, axisType - AxisType.POS_X, value);
+                    translations.Axes[axisType - AxisType.POS_X]
+                                .SetKeyframe(frame, value);
                     break;
                   }
                   default: throw new Exception();

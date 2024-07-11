@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.animation.keyframes;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
@@ -292,7 +293,7 @@ public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
           finBone!);
 
       var fbtPositions =
-          finBoneTracks.UseCombinedPositionAxesTrack(
+          finBoneTracks.UseCombinedTranslationKeyframes(
               (int) animBone.PositionKeyframeCount);
       fbtPositions.SetAllKeyframes(
           animBoneFrames.PositionFrames.Select(

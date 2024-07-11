@@ -116,16 +116,15 @@ public class BoneTransformManager : IBoneTransformManager {
             vertices.Count);
     foreach (var vertex in vertices) {
       this.verticesToWorldMatrices_[vertex] =
-          DetermineTransformMatrix_(vertex.BoneWeights, forcePreproject);
+          this.DetermineTransformMatrix_(vertex.BoneWeights, forcePreproject);
     }
   }
 
-  private readonly MagFilterInterpolationTrack<Vector3>
-      positionMagFilterInterpolationTrack_ =
-          new(null, Vector3.Lerp) {
-              AnimationInterpolationMagFilter
-                  = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
-          };
+  private readonly MagFilterInterpolatable<Vector3>
+      translationMagFilterInterpolationTrack_ = new(new Vector3Interpolator()) {
+          AnimationInterpolationMagFilter
+              = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
+      };
 
   private readonly MagFilterInterpolationTrack<Quaternion>
       rotationMagFilterInterpolationTrack_ =
@@ -135,11 +134,10 @@ public class BoneTransformManager : IBoneTransformManager {
           };
 
   private readonly MagFilterInterpolatable<Vector3>
-      scaleMagFilterInterpolationTrack_ =
-          new(new Vector3Interpolator()) {
-              AnimationInterpolationMagFilter
-                  = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
-          };
+      scaleMagFilterInterpolationTrack_ = new(new Vector3Interpolator()) {
+          AnimationInterpolationMagFilter
+              = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
+      };
 
   public void CalculateStaticMatricesForManualProjection(
       IReadOnlyModel model,
@@ -199,7 +197,7 @@ public class BoneTransformManager : IBoneTransformManager {
                  .boneList_) {
       boneToWorldMatrix.CopyFrom(parentBoneToWorldMatrix);
 
-      Vector3? animationLocalPosition = null;
+      Vector3? animationLocalTranslation = null;
       Quaternion? animationLocalRotation = null;
       Vector3? animationLocalScale = null;
 
@@ -208,15 +206,14 @@ public class BoneTransformManager : IBoneTransformManager {
       animation?.BoneTracks.TryGetValue(bone, out boneTracks);
       if (boneTracks != null) {
         // Only gets the values from the animation if the frame is at least partially defined.
-        if (boneTracks.Positions?.HasAtLeastOneKeyframe ?? false) {
-          this.positionMagFilterInterpolationTrack_.Impl
-              = boneTracks.Positions;
-          if (this.positionMagFilterInterpolationTrack_
-                  .TryGetInterpolatedFrame(
-                      (float) frame,
-                      out var outAnimationLocalPosition,
-                      config)) {
-            animationLocalPosition = outAnimationLocalPosition;
+        if (boneTracks.Translations?.HasAnyData ?? false) {
+          this.translationMagFilterInterpolationTrack_.Impl
+              = boneTracks.Translations;
+          if (this.translationMagFilterInterpolationTrack_
+                  .TryGetAtFrame(
+                      frame.Value,
+                      out var outAnimationLocalTranslation)) {
+            animationLocalTranslation = outAnimationLocalTranslation;
           }
         }
 
@@ -235,7 +232,7 @@ public class BoneTransformManager : IBoneTransformManager {
         if (boneTracks.Scales?.HasAnyData ?? false) {
           this.scaleMagFilterInterpolationTrack_.Impl = boneTracks.Scales;
           if (this.scaleMagFilterInterpolationTrack_.TryGetAtFrame(
-                  (float) frame,
+                  frame.Value,
                   out var outAnimationLocalScale)) {
             animationLocalScale = outAnimationLocalScale;
           }
@@ -245,7 +242,7 @@ public class BoneTransformManager : IBoneTransformManager {
       // Uses the animation pose instead of the root pose when available.
       var localTransform = bone.LocalTransform;
       var localTranslation
-          = animationLocalPosition ?? localTransform.Translation;
+          = animationLocalTranslation ?? localTransform.Translation;
       var localRotation = animationLocalRotation ?? localTransform.Rotation;
       var localScale = animationLocalScale ?? localTransform.Scale;
 

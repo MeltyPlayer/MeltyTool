@@ -33,8 +33,9 @@ public class GltfAnimationBuilder {
         rotationKeyframes.Clear();
         scaleKeyframes.Clear();
 
-        var translationDefined = boneTracks.Positions?.HasAtLeastOneKeyframe ?? false;
-        var rotationDefined = boneTracks.Rotations?.HasAtLeastOneKeyframe ?? false;
+        var translationDefined = boneTracks.Translations?.HasAnyData ?? false;
+        var rotationDefined
+            = boneTracks.Rotations?.HasAtLeastOneKeyframe ?? false;
         var scaleDefined = boneTracks.Scales?.HasAnyData ?? false;
 
         // TODO: How to get keyframes for sparse tracks?
@@ -42,13 +43,8 @@ public class GltfAnimationBuilder {
           var time = i / fps;
 
           if (translationDefined) {
-            if (boneTracks.Positions.TryGetInterpolatedFrame(
-                    i,
-                    out var position)) {
-              translationKeyframes[time] =
-                  new Vector3(position.X * modelScale,
-                              position.Y * modelScale,
-                              position.Z * modelScale);
+            if (boneTracks.Translations.TryGetAtFrame(i, out var translation)) {
+              translationKeyframes[time] = translation * modelScale;
             }
           }
 
@@ -67,21 +63,15 @@ public class GltfAnimationBuilder {
         }
 
         if (translationDefined) {
-          gltfAnimation.CreateTranslationChannel(
-              node,
-              translationKeyframes);
+          gltfAnimation.CreateTranslationChannel(node, translationKeyframes);
         }
 
         if (rotationDefined) {
-          gltfAnimation.CreateRotationChannel(
-              node,
-              rotationKeyframes);
+          gltfAnimation.CreateRotationChannel(node, rotationKeyframes);
         }
 
         if (scaleDefined) {
-          gltfAnimation.CreateScaleChannel(
-              node,
-              scaleKeyframes);
+          gltfAnimation.CreateScaleChannel(node, scaleKeyframes);
         }
       }
     }

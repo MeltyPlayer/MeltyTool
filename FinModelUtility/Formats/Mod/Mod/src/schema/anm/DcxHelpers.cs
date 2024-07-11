@@ -51,7 +51,7 @@ namespace mod.schema.anm {
             dcxAnimationData.PositionValues);
         DcxHelpers.MergeKeyframesToPositionTrack(
             frames,
-            jointKeyframes.UseSeparatePositionAxesTrack());
+            jointKeyframes.UseSeparateTranslationKeyframesWithTangents());
       }
 
       return animation;
@@ -128,15 +128,15 @@ namespace mod.schema.anm {
     // TODO: Do this sparsely
     public static void MergeKeyframesToPositionTrack(
         KeyframeDefinition<ValueAndTangents<float>>[][] positionKeyframes,
-        ISeparatePositionAxesTrack3d positionTrack) {
+        ISeparateVector3Keyframes<KeyframeWithTangents<float>> positionTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in positionKeyframes[i]) {
-          positionTrack.Set(keyframe.Frame,
-                            i,
-                            keyframe.Value.IncomingValue,
-                            keyframe.Value.OutgoingValue,
-                            keyframe.Value.IncomingTangent,
-                            keyframe.Value.OutgoingTangent);
+          positionTrack.Axes[i]
+                       .Add(new KeyframeWithTangents<float>(keyframe.Frame,
+                              keyframe.Value.IncomingValue,
+                              keyframe.Value.OutgoingValue,
+                              keyframe.Value.IncomingTangent,
+                              keyframe.Value.OutgoingTangent));
         }
       }
     }

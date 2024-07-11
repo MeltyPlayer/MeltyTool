@@ -172,12 +172,13 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           var finBoneTracks = finAnimation.AddBoneTracks(finBone);
 
           if (assNodeAnimationChannel.HasPositionKeys) {
-            var positionTrack = finBoneTracks.UseCombinedPositionAxesTrack();
-            foreach (var assPositionKey in assNodeAnimationChannel
-                         .PositionKeys) {
+            var translationTrack
+                = finBoneTracks.UseCombinedTranslationKeyframes();
+            foreach (var assPositionKey in
+                     assNodeAnimationChannel.PositionKeys) {
               var frame = (int) Math.Round(assPositionKey.Time / frameRate);
               var assPosition = assPositionKey.Value;
-              positionTrack.SetKeyframe(
+              translationTrack.SetKeyframe(
                   frame,
                   new Vector3(assPosition.X, assPosition.Y, assPosition.Z));
             }

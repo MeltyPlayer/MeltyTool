@@ -88,8 +88,8 @@ public class CmbModelBuilder {
             var boneTracks = finAnimation.AddBoneTracks(
                 finBones[boneIndex]);
 
-            var positionsTrack =
-                boneTracks.UseSeparatePositionAxesTrack(
+            var translationsTrack =
+                boneTracks.UseSeparateTranslationKeyframesWithTangents(
                     anod.TranslationAxes[0].Keyframes.Count,
                     anod.TranslationAxes[1].Keyframes.Count,
                     anod.TranslationAxes[2].Keyframes.Count);
@@ -107,11 +107,12 @@ public class CmbModelBuilder {
             for (var i = 0; i < 3; ++i) {
               var translationAxis = anod.TranslationAxes[i];
               foreach (var translation in translationAxis.Keyframes) {
-                positionsTrack.Set((int) translation.Time,
-                                   i,
-                                   translation.Value,
-                                   translation.IncomingTangent,
-                                   translation.OutgoingTangent);
+                translationsTrack.Axes[i]
+                                 .Add(new KeyframeWithTangents<float>(
+                                          translation.Time,
+                                          translation.Value,
+                                          translation.IncomingTangent,
+                                          translation.OutgoingTangent));
               }
 
               var rotationAxis = anod.RotationAxes[i];

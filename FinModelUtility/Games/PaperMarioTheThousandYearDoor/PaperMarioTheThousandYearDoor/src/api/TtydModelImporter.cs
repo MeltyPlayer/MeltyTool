@@ -222,19 +222,19 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
 
       var finBoneTracksByBone
           = new IndexableDictionary<IReadOnlyBone, (
-              ICombinedPositionAxesTrack3d,
+              ICombinedVector3Keyframes<Keyframe<Vector3>>,
               IQuaternionRotationTrack3d,
               ICombinedVector3Keyframes<Keyframe<Vector3>>)>();
       foreach (var (_, finBone) in groupsAndBones) {
         var finBoneTracks = finAnimation.AddBoneTracks(finBone);
 
-        var positionsTrack = finBoneTracks.UseCombinedPositionAxesTrack();
+        var translationsTrack = finBoneTracks.UseCombinedTranslationKeyframes();
         var rotationsTrack
             = finBoneTracks.UseQuaternionRotationTrack();
         var scalesTrack = finBoneTracks.UseCombinedScaleKeyframes();
 
         finBoneTracksByBone[finBone]
-            = (positionsTrack, rotationsTrack, scalesTrack);
+            = (translationsTrack, rotationsTrack, scalesTrack);
       }
 
       var allFinMeshTracks
@@ -291,7 +291,7 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
       var bakedKeyframes = keyframes.BakeTransformsAtFrames();
 
       foreach (var (ttydGroup, finBone) in groupsAndBones) {
-        var (positionsTrack, rotationsTrack, scalesTrack)
+        var (translationsTrack, rotationsTrack, scalesTrack)
             = finBoneTracksByBone[finBone];
 
         for (var i = 0; i < finAnimation.FrameCount; ++i) {
@@ -303,13 +303,13 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
           Asserts.True(Matrix4x4.Decompose(matrix,
                                            out var scale,
                                            out var quaternion,
-                                           out var position) ||
+                                           out var translation) ||
                        !FinMatrix4x4.STRICT_DECOMPOSITION,
                        "Failed to decompose matrix!");
 
-          positionsTrack.SetKeyframe(i, position);
+          translationsTrack.SetKeyframe(i, translation);
           rotationsTrack.SetKeyframe(i, quaternion);
-          scalesTrack.Add(new Keyframe<Vector3>(i, scale));
+          scalesTrack.SetKeyframe(i, scale);
         }
       }
     }

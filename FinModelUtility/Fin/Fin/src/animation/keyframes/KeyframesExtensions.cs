@@ -1,4 +1,7 @@
-﻿namespace fin.animation.keyframes;
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace fin.animation.keyframes;
 
 public static class KeyframesExtensions {
   public static void SetKeyframe<T>(this IKeyframes<Keyframe<T>> keyframes,
@@ -20,5 +23,16 @@ public static class KeyframesExtensions {
       float? tangentIn,
       float? tangentOut)
     => keyframes.Add(
-        new KeyframeWithTangents<T>(frame, value, value, tangentIn, tangentOut));
+        new KeyframeWithTangents<T>(frame,
+                                    value,
+                                    value,
+                                    tangentIn,
+                                    tangentOut));
+
+  public static void SetAllKeyframes<T>(this IKeyframes<Keyframe<T>> keyframes,
+                                        IEnumerable<T> values) {
+    foreach (var (frame, value) in values.Select((v, i) => (i, v))) {
+      keyframes.Add(new Keyframe<T>(frame, value));
+    }
+  }
 }

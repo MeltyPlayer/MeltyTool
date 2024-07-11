@@ -9,7 +9,7 @@ public static class DatBoneTracksHelper {
   public static void AddDatKeyframesToBoneTracks(
       IEnumerable<IDatKeyframes> allDatKeyframes,
       IBoneTracks boneTracks) {
-    var positionTrack = boneTracks.UseSeparatePositionAxesTrack();
+    var translationTrack = boneTracks.UseSeparateTranslationKeyframesWithTangents();
     var rotationTrack = boneTracks.UseEulerRadiansRotationTrack();
     var scaleTrack = boneTracks.UseSeparateScaleKeyframesWithTangents();
 
@@ -27,12 +27,12 @@ public static class DatBoneTracksHelper {
             var incomingTangent = keyframe.IncomingTangent;
             var outgoingTangent = keyframe.OutgoingTangent;
 
-            positionTrack.Set(frame,
-                              axis,
-                              incomingValue,
-                              outgoingValue,
-                              incomingTangent,
-                              outgoingTangent);
+            translationTrack.Axes[axis]
+                            .Add(new KeyframeWithTangents<float>(frame,
+                                   incomingValue,
+                                   outgoingValue,
+                                   incomingTangent,
+                                   outgoingTangent));
           }
 
           break;
