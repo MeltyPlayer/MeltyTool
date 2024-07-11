@@ -18,26 +18,6 @@ public partial interface IVector4 {
   float W { get; set; }
 }
 
-
-/*public interface IQuaternion {
-  float X { get; }
-  float Y { get; }
-  float Z { get; }
-  float W { get; }
-
-  float Length { get; }
-
-  float XDegrees { get; }
-  float YDegrees { get; }
-  float ZDegrees { get; }
-  IQuaternion SetDegrees(float x, float y, float z);
-
-  float XRadians { get; }
-  float YRadians { get; }
-  float ZRadians { get; }
-  IQuaternion SetRadians(float x, float y, float z);
-}*/
-
 public interface IRotation {
   float XDegrees { get; }
   float YDegrees { get; }
