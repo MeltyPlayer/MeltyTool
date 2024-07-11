@@ -207,7 +207,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
             }
           }
 
-          var scales = boneTracks.UseSeparateScaleAxesTrackWithTangents(
+          var scales = boneTracks.UseSeparateScaleKeyframesWithTangents(
               bcxJoint.Values.Scales[0].Length,
               bcxJoint.Values.Scales[1].Length,
               bcxJoint.Values.Scales[2].Length);

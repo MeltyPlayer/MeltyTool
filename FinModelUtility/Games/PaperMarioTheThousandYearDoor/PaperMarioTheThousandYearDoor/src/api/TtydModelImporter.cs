@@ -224,14 +224,14 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
           = new IndexableDictionary<IReadOnlyBone, (
               ICombinedPositionAxesTrack3d,
               IQuaternionRotationTrack3d,
-              ISeparateVector3Keyframes<Keyframe<float>>)>();
+              ICombinedVector3Keyframes<Keyframe<Vector3>>)>();
       foreach (var (_, finBone) in groupsAndBones) {
         var finBoneTracks = finAnimation.AddBoneTracks(finBone);
 
         var positionsTrack = finBoneTracks.UseCombinedPositionAxesTrack();
         var rotationsTrack
             = finBoneTracks.UseQuaternionRotationTrack();
-        var scalesTrack = finBoneTracks.UseSeparateScaleAxesTrack();
+        var scalesTrack = finBoneTracks.UseCombinedScaleKeyframes();
 
         finBoneTracksByBone[finBone]
             = (positionsTrack, rotationsTrack, scalesTrack);

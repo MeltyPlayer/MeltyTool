@@ -99,7 +99,7 @@ public class CmbModelBuilder {
                     anod.RotationAxes[1].Keyframes.Count,
                     anod.RotationAxes[2].Keyframes.Count);
             var scalesTrack =
-                boneTracks.UseSeparateScaleAxesTrackWithTangents(
+                boneTracks.UseSeparateScaleKeyframesWithTangents(
                     anod.ScaleAxes[0].Keyframes.Count,
                     anod.ScaleAxes[1].Keyframes.Count,
                     anod.ScaleAxes[2].Keyframes.Count);

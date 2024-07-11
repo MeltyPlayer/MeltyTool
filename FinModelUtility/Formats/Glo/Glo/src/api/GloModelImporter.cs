@@ -312,9 +312,8 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
               }
             }
 
-            var scales
-                = finBoneTracks.UseSeparateScaleAxesTrack(
-                    gloMesh.ScaleKeys.Length);
+            var scales = finBoneTracks.UseCombinedScaleKeyframes(
+                gloMesh.ScaleKeys.Length);
             prevTime = -1;
             foreach (var scaleKey in gloMesh.ScaleKeys) {
               Asserts.True(scaleKey.Time > prevTime);

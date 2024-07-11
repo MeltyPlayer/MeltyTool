@@ -269,7 +269,7 @@ public class XcModelImporter : IModelImporter<XcModelFileBundle> {
                 var finBoneTracks = finAnimation.AddBoneTracks(finBone);
                 var positions = finBoneTracks.UseSeparatePositionAxesTrack();
                 var rotations = finBoneTracks.UseEulerRadiansRotationTrack();
-                var scales = finBoneTracks.UseSeparateScaleAxesTrackWithTangents();
+                var scales = finBoneTracks.UseSeparateScaleKeyframesWithTangents();
 
                 foreach (var mtnTrack in transformNode.Tracks.Values) {
                   foreach (var mtnKey in mtnTrack.Keys.Keys) {

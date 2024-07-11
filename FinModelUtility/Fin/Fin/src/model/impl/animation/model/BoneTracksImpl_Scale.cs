@@ -1,4 +1,6 @@
-﻿using fin.animation.keyframes;
+﻿using System.Numerics;
+
+using fin.animation.keyframes;
 using fin.animation.types.single;
 using fin.animation.types.vector3;
 using fin.util.optional;
@@ -10,7 +12,7 @@ public partial class ModelImpl<TVertex> {
     public IVector3Interpolatable? Scales { get; private set; }
 
     public ISeparateVector3Keyframes<Keyframe<float>>
-        UseSeparateScaleAxesTrack(
+        UseSeparateScaleKeyframes(
             int initialXCapacity,
             int initialYCapacity,
             int initialZCapacity) {
@@ -39,7 +41,7 @@ public partial class ModelImpl<TVertex> {
     }
 
     public ISeparateVector3Keyframes<KeyframeWithTangents<float>>
-        UseSeparateScaleAxesTrackWithTangents(
+        UseSeparateScaleKeyframesWithTangents(
             int initialXCapacity,
             int initialYCapacity,
             int initialZCapacity) {
@@ -61,6 +63,40 @@ public partial class ModelImpl<TVertex> {
               DefaultValue
                   = Optional.Of(() => bone.LocalTransform.Scale?.Z ?? 0),
           });
+
+      this.Scales = keyframes;
+
+      return keyframes;
+    }
+
+    public ICombinedVector3Keyframes<Keyframe<Vector3>>
+        UseCombinedScaleKeyframes(int initialCapacity = 0) {
+      var keyframes = new CombinedVector3Keyframes<Keyframe<Vector3>>(
+          sharedConfig,
+          Vector3KeyframeInterpolator.Instance,
+          new IndividualInterpolationConfig<Vector3> {
+              InitialCapacity = initialCapacity,
+              DefaultValue
+                  = Optional.Of(() => bone.LocalTransform.Scale ?? Vector3.One),
+          });
+
+      this.Scales = keyframes;
+
+      return keyframes;
+    }
+
+    public ICombinedVector3Keyframes<KeyframeWithTangents<Vector3>>
+        UseCombinedScaleKeyframesWithTangents(int initialCapacity = 0) {
+      var keyframes
+          = new CombinedVector3Keyframes<KeyframeWithTangents<Vector3>>(
+              sharedConfig,
+              Vector3KeyframeWithTangentsInterpolator.Instance,
+              new IndividualInterpolationConfig<Vector3> {
+                  InitialCapacity = initialCapacity,
+                  DefaultValue
+                      = Optional.Of(
+                          () => bone.LocalTransform.Scale ?? Vector3.One),
+              });
 
       this.Scales = keyframes;
 

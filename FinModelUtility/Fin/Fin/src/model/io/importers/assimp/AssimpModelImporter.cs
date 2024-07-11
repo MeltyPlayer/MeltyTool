@@ -17,7 +17,6 @@ using fin.image;
 using fin.image.formats;
 using fin.io;
 using fin.math.matrix.four;
-using fin.math.rotations;
 using fin.math.transform;
 using fin.model.impl;
 using fin.model.util;
@@ -200,7 +199,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           }
 
           if (assNodeAnimationChannel.HasScalingKeys) {
-            var scaleTrack = finBoneTracks.UseSeparateScaleAxesTrack();
+            var scaleTrack = finBoneTracks.UseCombinedScaleKeyframes();
             foreach (var assScaleKey in assNodeAnimationChannel.ScalingKeys) {
               var frame = (int) Math.Round(assScaleKey.Time / frameRate);
               var assScale = assScaleKey.Value;

@@ -92,27 +92,33 @@ public partial interface IBoneTracks : IAnimationData {
       int initialZCapacity);
 
   // Scale
-  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateScaleAxesTrack(
+  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateScaleKeyframes(
       int initialCapacity = 0)
-    => this.UseSeparateScaleAxesTrack(initialCapacity,
+    => this.UseSeparateScaleKeyframes(initialCapacity,
                                       initialCapacity,
                                       initialCapacity);
 
-  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateScaleAxesTrack(
+  ISeparateVector3Keyframes<Keyframe<float>> UseSeparateScaleKeyframes(
       int initialXCapacity,
       int initialYCapacity,
       int initialZCapacity);
 
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>
-      UseSeparateScaleAxesTrackWithTangents(int initialCapacity = 0)
-    => this.UseSeparateScaleAxesTrackWithTangents(initialCapacity,
+      UseSeparateScaleKeyframesWithTangents(int initialCapacity = 0)
+    => this.UseSeparateScaleKeyframesWithTangents(initialCapacity,
                                                   initialCapacity,
                                                   initialCapacity);
 
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>
-      UseSeparateScaleAxesTrackWithTangents(int initialXCapacity,
+      UseSeparateScaleKeyframesWithTangents(int initialXCapacity,
                                             int initialYCapacity,
                                             int initialZCapacity);
+
+  ICombinedVector3Keyframes<Keyframe<Vector3>> UseCombinedScaleKeyframes(
+      int initialCapacity = 0);
+
+  ICombinedVector3Keyframes<KeyframeWithTangents<Vector3>>
+      UseCombinedScaleKeyframesWithTangents(int initialCapacity = 0);
 }
 
 public enum MeshDisplayState {

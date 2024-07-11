@@ -11,7 +11,7 @@ public static class DatBoneTracksHelper {
       IBoneTracks boneTracks) {
     var positionTrack = boneTracks.UseSeparatePositionAxesTrack();
     var rotationTrack = boneTracks.UseEulerRadiansRotationTrack();
-    var scaleTrack = boneTracks.UseSeparateScaleAxesTrackWithTangents();
+    var scaleTrack = boneTracks.UseSeparateScaleKeyframesWithTangents();
 
     foreach (var datKeyframes in allDatKeyframes) {
       var jointTrackType = datKeyframes.JointTrackType;

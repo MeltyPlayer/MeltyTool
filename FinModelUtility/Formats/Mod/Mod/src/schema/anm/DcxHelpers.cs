@@ -33,7 +33,7 @@ namespace mod.schema.anm {
             dcxAnimationData.ScaleValues);
         DcxHelpers.MergeKeyframesToScaleTrack(
             frames,
-            jointKeyframes.UseSeparateScaleAxesTrackWithTangents());
+            jointKeyframes.UseSeparateScaleKeyframesWithTangents());
 
         frames = DcxHelpers.ReadKeyframes_(
             isDck,

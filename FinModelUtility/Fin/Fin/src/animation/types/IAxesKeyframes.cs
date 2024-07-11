@@ -7,7 +7,7 @@ namespace fin.animation.types;
 
 public interface IAxesInterpolatable<TAxes> : IInterpolatable<TAxes>;
 
-public interface IPopulatedAxesKeyframes<TAxesKeyframe, TAxes>
+public interface ICombinedAxesKeyframes<TAxesKeyframe, TAxes>
     : IAxesInterpolatable<TAxes>, IKeyframes<TAxesKeyframe>
     where TAxesKeyframe : IKeyframe<TAxes>;
 
