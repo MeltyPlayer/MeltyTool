@@ -94,7 +94,7 @@ public class CmbModelBuilder {
                     anod.TranslationAxes[1].Keyframes.Count,
                     anod.TranslationAxes[2].Keyframes.Count);
             var rotationsTrack =
-                boneTracks.UseEulerRadiansRotationTrack(
+                boneTracks.UseSeparateEulerRadiansKeyframesWithTangents(
                     anod.RotationAxes[0].Keyframes.Count,
                     anod.RotationAxes[1].Keyframes.Count,
                     anod.RotationAxes[2].Keyframes.Count);
@@ -117,11 +117,10 @@ public class CmbModelBuilder {
 
               var rotationAxis = anod.RotationAxes[i];
               foreach (var rotation in rotationAxis.Keyframes) {
-                rotationsTrack.Set((int) rotation.Time,
-                                   i,
-                                   rotation.Value,
-                                   rotation.IncomingTangent,
-                                   rotation.OutgoingTangent);
+                rotationsTrack.Axes[i].SetKeyframe(rotation.Time,
+                                                   rotation.Value,
+                                                   rotation.IncomingTangent,
+                                                   rotation.OutgoingTangent);
               }
 
               var scaleAxis = anod.ScaleAxes[i];

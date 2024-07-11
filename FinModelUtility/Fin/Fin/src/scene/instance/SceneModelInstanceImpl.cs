@@ -92,9 +92,6 @@ public partial class SceneInstanceImpl {
         apm.Frame = 0;
         apm.FrameRate = (int) (value?.FrameRate ?? 20);
         apm.TotalFrames = value?.FrameCount ?? 0;
-        apm.Config = new AnimationInterpolationConfig {
-            UseLoopingInterpolation = value?.UseLoopingInterpolation ?? false
-        };
       }
     }
 

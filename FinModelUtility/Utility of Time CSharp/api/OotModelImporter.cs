@@ -11,6 +11,7 @@ using f3dzex2.io;
 using f3dzex2.model;
 
 using fin.animation.keyframes;
+using fin.animation.types.quaternion;
 using fin.data.queues;
 using fin.io;
 using fin.model;
@@ -184,8 +185,9 @@ namespace UoT.api {
               var animationTracks = i == 0
                   ? rootAnimationTracks
                   : finAnimation.AddBoneTracks(finBone);
-              var rotations =
-                  animationTracks.UseEulerRadiansRotationTrack(frameCount);
+              var rotations
+                  = animationTracks
+                      .UseSeparateEulerRadiansKeyframes(frameCount);
 
               rotations.ConvertRadiansToQuaternionImpl =
                   ConvertRadiansToQuaternionOot_;
@@ -204,16 +206,16 @@ namespace UoT.api {
       return finModel;
     }
 
-    private void AddOotAnimationTrackToFin_(IAnimationTrack ootAnimationTrack,
-                                            int axis,
-                                            IEulerRadiansRotationTrack3d
-                                                rotations) {
+    private void AddOotAnimationTrackToFin_(
+        IAnimationTrack ootAnimationTrack,
+        int axis,
+        ISeparateEulerRadiansKeyframes<Keyframe<float>> rotations) {
       for (var f = 0; f < ootAnimationTrack.Frames.Count; ++f) {
-        rotations.Set(f,
-                      axis,
-                      (float) ((ootAnimationTrack.Frames[f] *
-                                360.0) /
-                               0xFFFF));
+        rotations
+            .Axes[axis]
+            .SetKeyframe(f,
+                         (float) ((ootAnimationTrack.Frames[f] * 360.0) /
+                                  0xFFFF));
       }
     }
 

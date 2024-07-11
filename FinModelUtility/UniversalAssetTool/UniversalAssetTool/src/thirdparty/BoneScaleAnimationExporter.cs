@@ -19,10 +19,6 @@ namespace uni.thirdparty {
       fw.WriteLine(
           "ScalerKeysTable = { // Animation name => Bone names => frame scale keys. The keys are in frame order so 1,2,3,4 etc");
 
-      var config = new AnimationInterpolationConfig {
-          UseLoopingInterpolation = true,
-      };
-
       foreach (var animation in animations) {
         var definedBones = new Dictionary<IReadOnlyBone, IReadOnlyBoneTracks>();
         foreach (var bone in model.Skeleton) {

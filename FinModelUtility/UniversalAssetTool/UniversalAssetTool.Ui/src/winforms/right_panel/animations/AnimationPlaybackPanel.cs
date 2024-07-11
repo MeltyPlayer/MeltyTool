@@ -109,17 +109,6 @@ public partial class AnimationPlaybackPanel : UserControl {
       }
   }
 
-  public AnimationInterpolationConfig? Config {
-    get => this.Impl?.Config;
-    set {
-        if (this.Impl != null) {
-          this.Impl.Config = value;
-        }
-
-        this.loopCheckBox_.Checked = value?.UseLoopingInterpolation ?? false;
-      }
-  }
-
   public bool LoopPlayback {
     get => this.Impl?.LoopPlayback ?? false;
     set {

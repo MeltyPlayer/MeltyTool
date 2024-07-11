@@ -2,6 +2,7 @@
 
 using fin.animation;
 using fin.animation.keyframes;
+using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
 using fin.model;
 
@@ -42,7 +43,7 @@ namespace mod.schema.anm {
             dcxAnimationData.RotationValues);
         DcxHelpers.MergeKeyframesToRotationTrack(
             frames,
-            jointKeyframes.UseEulerRadiansRotationTrack());
+            jointKeyframes.UseSeparateEulerRadiansKeyframesWithTangents());
 
         frames = DcxHelpers.ReadKeyframes_(
             isDck,
@@ -143,15 +144,17 @@ namespace mod.schema.anm {
 
     public static void MergeKeyframesToRotationTrack(
         KeyframeDefinition<ValueAndTangents<float>>[][] rotationKeyframes,
-        IEulerRadiansRotationTrack3d rotationTrack) {
+        ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>
+            rotationTrack) {
       for (var i = 0; i < 3; ++i) {
         foreach (var keyframe in rotationKeyframes[i]) {
-          rotationTrack.Set(keyframe.Frame,
-                            i,
-                            keyframe.Value.IncomingValue,
-                            keyframe.Value.OutgoingValue,
-                            keyframe.Value.IncomingTangent,
-                            keyframe.Value.OutgoingTangent);
+          rotationTrack.Axes[i]
+                       .Add(new KeyframeWithTangents<float>(
+                                keyframe.Frame,
+                                keyframe.Value.IncomingValue,
+                                keyframe.Value.OutgoingValue,
+                                keyframe.Value.IncomingTangent,
+                                keyframe.Value.OutgoingTangent));
         }
       }
     }

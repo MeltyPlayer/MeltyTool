@@ -77,7 +77,6 @@ namespace uni.ui.winforms.right_panel {
       this.animationPlaybackPanel_.Location = new System.Drawing.Point(0, 0);
       this.animationPlaybackPanel_.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
       this.animationPlaybackPanel_.Name = "animationPlaybackPanel_";
-      this.animationPlaybackPanel_.Config = new AnimationInterpolationConfig { UseLoopingInterpolation = true};
       this.animationPlaybackPanel_.Size = new System.Drawing.Size(245, 136);
       this.animationPlaybackPanel_.TabIndex = 1;
       this.animationPlaybackPanel_.TotalFrames = 0;

@@ -8,7 +8,9 @@ namespace fin.math.transform;
 
 [GenerateReadOnly]
 public partial interface ITransform3d
-    : ITransform<Vector3, Quaternion?, Vector3?>;
+    : ITransform<Vector3, Quaternion?, Vector3?> {
+  public Vector3? EulerRadians { get; set; }
+}
 
 public class Transform3d : ITransform3d {
   private Quaternion? rotation_;

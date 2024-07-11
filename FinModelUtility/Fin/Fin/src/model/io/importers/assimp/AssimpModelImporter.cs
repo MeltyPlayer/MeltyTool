@@ -185,7 +185,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           }
 
           if (assNodeAnimationChannel.HasRotationKeys) {
-            var rotationTrack = finBoneTracks.UseQuaternionRotationTrack();
+            var rotationTrack = finBoneTracks.UseCombinedQuaternionKeyframes();
             foreach (var assRotationKey in assNodeAnimationChannel
                          .RotationKeys) {
               var frame = (int) Math.Round(assRotationKey.Time / frameRate);

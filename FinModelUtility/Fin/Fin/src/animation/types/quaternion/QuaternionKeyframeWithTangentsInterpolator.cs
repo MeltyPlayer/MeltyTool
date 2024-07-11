@@ -5,7 +5,15 @@ using fin.animation.keyframes;
 
 namespace fin.animation.types.quaternion;
 
-public readonly struct QuaternionKeyframeWithTangentsInterpolator<TKeyframe>
+public class QuaternionKeyframeWithTangentsInterpolator
+    : QuaternionKeyframeInterpolator<Keyframe<Quaternion>> {
+  public static QuaternionKeyframeWithTangentsInterpolator Instance { get; }
+    = new();
+
+  private QuaternionKeyframeWithTangentsInterpolator() { }
+}
+
+public class QuaternionKeyframeWithTangentsInterpolator<TKeyframe>
     : IKeyframeInterpolator<TKeyframe, Quaternion>
     where TKeyframe : IKeyframeWithTangents<Quaternion> {
   public Quaternion Interpolate(

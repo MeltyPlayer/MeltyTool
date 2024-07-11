@@ -15,5 +15,13 @@ public interface ISeparateQuaternionKeyframes<TKeyframe>
     where TKeyframe : IKeyframe<float>;
 
 public interface ISeparateEulerRadiansKeyframes<TKeyframe>
-    : IQuaternionInterpolatable, ISeparateAxesKeyframes<TKeyframe, float, Quaternion>
-    where TKeyframe : IKeyframe<float>;
+    : IQuaternionInterpolatable,
+      ISeparateAxesKeyframes<TKeyframe, float, Quaternion>
+    where TKeyframe : IKeyframe<float> {
+  // TODO: Slow! Switch to using generics/structs for a speedup here
+  ConvertRadiansToQuaternion ConvertRadiansToQuaternionImpl { get; set; }
+
+  delegate Quaternion ConvertRadiansToQuaternion(float xRadians,
+                                                 float yRadians,
+                                                 float zRadians);
+}

@@ -64,8 +64,7 @@ public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
       IReadOnlyBone rootBone,
       IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
       (IReadOnlyModelAnimation, float)? animationAndFrame,
-      BoneWeightTransformType boneWeightTransformType,
-      AnimationInterpolationConfig? config = null
+      BoneWeightTransformType boneWeightTransformType
   );
 }
 
@@ -126,9 +125,9 @@ public class BoneTransformManager : IBoneTransformManager {
               = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
       };
 
-  private readonly MagFilterInterpolationTrack<Quaternion>
+  private readonly MagFilterInterpolatable<Quaternion>
       rotationMagFilterInterpolationTrack_ =
-          new(null, Quaternion.Slerp) {
+          new(new SimpleQuaternionInterpolator()) {
               AnimationInterpolationMagFilter
                   = AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_LINEAR
           };
@@ -166,8 +165,7 @@ public class BoneTransformManager : IBoneTransformManager {
       IReadOnlyBone rootBone,
       IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
       (IReadOnlyModelAnimation, float)? animationAndFrame,
-      BoneWeightTransformType boneWeightTransformType,
-      AnimationInterpolationConfig? config = null
+      BoneWeightTransformType boneWeightTransformType
   ) {
     var isFirstPass = animationAndFrame == null;
 
@@ -217,14 +215,13 @@ public class BoneTransformManager : IBoneTransformManager {
           }
         }
 
-        if (boneTracks.Rotations?.HasAtLeastOneKeyframe ?? false) {
+        if (boneTracks.Rotations?.HasAnyData ?? false) {
           this.rotationMagFilterInterpolationTrack_.Impl
               = boneTracks.Rotations;
           if (this.rotationMagFilterInterpolationTrack_
-                  .TryGetInterpolatedFrame(
-                      (float) frame,
-                      out var outAnimationLocalRotation,
-                      config)) {
+                  .TryGetAtFrame(
+                      frame.Value,
+                      out var outAnimationLocalRotation)) {
             animationLocalRotation = outAnimationLocalRotation;
           }
         }

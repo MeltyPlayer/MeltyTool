@@ -268,7 +268,7 @@ public class XcModelImporter : IModelImporter<XcModelFileBundle> {
 
                 var finBoneTracks = finAnimation.AddBoneTracks(finBone);
                 var positions = finBoneTracks.UseSeparateTranslationKeyframesWithTangents();
-                var rotations = finBoneTracks.UseEulerRadiansRotationTrack();
+                var rotations = finBoneTracks.UseSeparateEulerRadiansKeyframesWithTangents();
                 var scales = finBoneTracks.UseSeparateScaleKeyframesWithTangents();
 
                 foreach (var mtnTrack in transformNode.Tracks.Values) {
@@ -287,9 +287,8 @@ public class XcModelImporter : IModelImporter<XcModelFileBundle> {
                                         inTan,
                                         outTan));
                     } else if (mtnTrack.Type.IsRotation(out var rotationAxis)) {
-                      rotations.Set(
+                      rotations.Axes[rotationAxis].SetKeyframe(
                           frame,
-                          rotationAxis,
                           value,
                           inTan,
                           outTan);

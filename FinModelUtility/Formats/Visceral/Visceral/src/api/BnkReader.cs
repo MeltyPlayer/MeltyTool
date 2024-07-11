@@ -142,7 +142,7 @@ public class BnkReader {
             }
 
             var boneTracks = finAnimation.AddBoneTracks(bones[b]);
-            var rotations = boneTracks.UseQuaternionAxesRotationTrack();
+            var rotations = boneTracks.UseSeparateQuaternionKeyframes();
             var translations = boneTracks.UseSeparateTranslationKeyframes();
 
             for (var a = 0; a < 7; ++a) {
@@ -156,7 +156,8 @@ public class BnkReader {
                   case AxisType.ROT_Y:
                   case AxisType.ROT_Z:
                   case AxisType.ROT_W: {
-                    rotations.Set(frame, axisType - AxisType.ROT_X, value);
+                    rotations.Axes[axisType - AxisType.ROT_X]
+                             .SetKeyframe(frame, value);
                     break;
                   }
                   case AxisType.POS_X:

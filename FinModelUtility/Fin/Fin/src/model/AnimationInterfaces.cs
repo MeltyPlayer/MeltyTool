@@ -3,6 +3,7 @@ using System.Numerics;
 
 using fin.animation;
 using fin.animation.keyframes;
+using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
 using fin.data.indexable;
 
@@ -64,7 +65,7 @@ public partial interface IBoneTracks : IAnimationData {
   IReadOnlyBone Bone { get; }
 
   IVector3Interpolatable? Translations { get; }
-  IRotationTrack3d? Rotations { get; }
+  IQuaternionInterpolatable? Rotations { get; }
   IVector3Interpolatable? Scales { get; }
 
   // Translation
@@ -97,18 +98,43 @@ public partial interface IBoneTracks : IAnimationData {
       UseCombinedTranslationKeyframesWithTangents(int initialCapacity = 0);
 
   // Rotation
-  IQuaternionRotationTrack3d
-      UseQuaternionRotationTrack(int initialCapacity = 0);
+  ISeparateQuaternionKeyframes<Keyframe<float>>
+      UseSeparateQuaternionKeyframes(int initialCapacity = 0)
+    => this.UseSeparateQuaternionKeyframes(initialCapacity,
+                                           initialCapacity,
+                                           initialCapacity,
+                                           initialCapacity);
 
-  IQuaternionAxesRotationTrack3d UseQuaternionAxesRotationTrack();
+  ISeparateQuaternionKeyframes<Keyframe<float>>
+      UseSeparateQuaternionKeyframes(int initialXCapacity,
+                                     int initialYCapacity,
+                                     int initialZCapacity,
+                                     int initialWCapacity);
 
-  IEulerRadiansRotationTrack3d UseEulerRadiansRotationTrack(
-      int initialCapacity = 0);
+  ICombinedQuaternionKeyframes<Keyframe<Quaternion>>
+      UseCombinedQuaternionKeyframes(int initialCapacity = 0);
 
-  IEulerRadiansRotationTrack3d UseEulerRadiansRotationTrack(
-      int initialXCapacity,
-      int initialYCapacity,
-      int initialZCapacity);
+  ISeparateEulerRadiansKeyframes<Keyframe<float>>
+      UseSeparateEulerRadiansKeyframes(int initialCapacity = 0)
+    => this.UseSeparateEulerRadiansKeyframes(initialCapacity,
+                                             initialCapacity,
+                                             initialCapacity);
+
+  ISeparateEulerRadiansKeyframes<Keyframe<float>>
+      UseSeparateEulerRadiansKeyframes(int initialXCapacity,
+                                       int initialYCapacity,
+                                       int initialZCapacity);
+
+  ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>
+      UseSeparateEulerRadiansKeyframesWithTangents(int initialCapacity = 0)
+    => this.UseSeparateEulerRadiansKeyframesWithTangents(initialCapacity,
+      initialCapacity,
+      initialCapacity);
+
+  ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>
+      UseSeparateEulerRadiansKeyframesWithTangents(int initialXCapacity,
+                                                   int initialYCapacity,
+                                                   int initialZCapacity);
 
   // Scale
   ISeparateVector3Keyframes<Keyframe<float>> UseSeparateScaleKeyframes(

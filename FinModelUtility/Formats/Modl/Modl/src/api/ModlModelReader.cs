@@ -302,9 +302,8 @@ public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
                 return new Vector3(flipSign * fPX, fPY, fPZ);
               }));
 
-      var fbtRotations =
-          finBoneTracks.UseQuaternionRotationTrack(
-              (int) animBone.RotationKeyframeCount);
+      var fbtRotations = finBoneTracks.UseCombinedQuaternionKeyframes(
+          (int) animBone.RotationKeyframeCount);
       fbtRotations.SetAllKeyframes(
           animBoneFrames.RotationFrames.Select(
               (axes) => {

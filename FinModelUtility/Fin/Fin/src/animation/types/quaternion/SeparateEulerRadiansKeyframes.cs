@@ -4,20 +4,21 @@ using System.Numerics;
 
 using fin.animation.interpolation;
 using fin.animation.keyframes;
+using fin.math;
 using fin.math.floats;
 using fin.math.rotations;
-using fin.model;
 using fin.util.optional;
 
 namespace fin.animation.types.quaternion;
 
+// TODO: Add support for tangents in quaternions
 public class SeparateEulerRadiansKeyframes<TKeyframe>(
     ISharedInterpolationConfig sharedConfig,
     IKeyframeInterpolator<TKeyframe, float> interpolator,
     IndividualInterpolationConfig<float> individualConfigX,
     IndividualInterpolationConfig<float> individualConfigY,
     IndividualInterpolationConfig<float> individualConfigZ)
-    : ISeparateQuaternionKeyframes<TKeyframe>
+    : ISeparateEulerRadiansKeyframes<TKeyframe>
     where TKeyframe : IKeyframe<float> {
   private readonly IReadOnlyList<InterpolatedKeyframes<TKeyframe, float>> axes_
       = [
@@ -49,27 +50,43 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
     => this.axes_;
 
   public bool TryGetAtFrame(float frame, out Quaternion value) {
+    if (sharedConfig.Looping) {
+      frame = frame.ModRange(0, sharedConfig.AnimationLength);
+    }
+
     value = default;
 
     var xTrack = this.axes_[0];
     var yTrack = this.axes_[1];
     var zTrack = this.axes_[2];
 
-    xTrack.TryGetPrecedingAndFollowingKeyframes(
+    var xInterpolationType = xTrack.TryGetPrecedingAndFollowingKeyframes(
         frame,
         out var fromXFrame,
         out var toXFrame,
         out _);
-    yTrack.TryGetPrecedingAndFollowingKeyframes(
+    var yInterpolationType = yTrack.TryGetPrecedingAndFollowingKeyframes(
         frame,
         out var fromYFrame,
         out var toYFrame,
         out _);
-    zTrack.TryGetPrecedingAndFollowingKeyframes(
+    var zInterpolationType = zTrack.TryGetPrecedingAndFollowingKeyframes(
         frame,
         out var fromZFrame,
         out var toZFrame,
         out _);
+
+    Span<bool> areFromsAndTosNull = [
+        xInterpolationType is KeyframesUtil.InterpolationDataType.NONE,
+        yInterpolationType is KeyframesUtil.InterpolationDataType.NONE,
+        zInterpolationType is KeyframesUtil.InterpolationDataType.NONE,
+        xInterpolationType is not KeyframesUtil.InterpolationDataType
+                                               .PRECEDING_AND_FOLLOWING,
+        yInterpolationType is not KeyframesUtil.InterpolationDataType
+                                               .PRECEDING_AND_FOLLOWING,
+        zInterpolationType is not KeyframesUtil.InterpolationDataType
+                                               .PRECEDING_AND_FOLLOWING,
+    ];
 
     Span<TKeyframe?> fromsAndTos = [
         fromXFrame,
@@ -80,12 +97,10 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
         toZFrame,
     ];
     Span<bool> areAxesStatic = stackalloc bool[3];
-    AreAxesStatic_(fromsAndTos, areAxesStatic);
+    AreAxesStatic_(areFromsAndTosNull, fromsAndTos, areAxesStatic);
 
-    var defaultX = individualConfigX.DefaultValue.GetOrNull();
-    var defaultY = individualConfigY.DefaultValue.GetOrNull();
-    var defaultZ = individualConfigZ.DefaultValue.GetOrNull();
     if (!CanInterpolateWithQuaternions_(
+            areFromsAndTosNull,
             fromsAndTos,
             areAxesStatic)) {
       if (!xTrack.TryGetAtFrameOrDefault(frame,
@@ -110,6 +125,17 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
       return true;
     }
 
+    var defaultX = individualConfigX.DefaultValue.GetOrNull();
+    var defaultY = individualConfigY.DefaultValue.GetOrNull();
+    var defaultZ = individualConfigZ.DefaultValue.GetOrNull();
+
+    var fromX
+        = GetFromValueOrDefault_(xInterpolationType, fromXFrame, defaultX);
+    var fromY
+        = GetFromValueOrDefault_(yInterpolationType, fromYFrame, defaultY);
+    var fromZ
+        = GetFromValueOrDefault_(zInterpolationType, fromZFrame, defaultZ);
+
     if (GetFromAndToFrameIndex_(fromsAndTos,
                                 areAxesStatic,
                                 out var fromFrame,
@@ -120,14 +146,13 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
 
       var frameDelta = (frame - fromFrame) / (toFrame - fromFrame);
 
-      var q1 = this.ConvertRadiansToQuaternionImpl(
-          fromXFrame?.ValueOut ?? defaultX,
-          fromYFrame?.ValueOut ?? defaultY,
-          fromZFrame?.ValueOut ?? defaultZ);
-      var q2 = this.ConvertRadiansToQuaternionImpl(
-          toXFrame?.ValueIn ?? defaultX,
-          toYFrame?.ValueIn ?? defaultY,
-          toZFrame?.ValueIn ?? defaultZ);
+      var q1 = this.ConvertRadiansToQuaternionImpl(fromX, fromY, fromZ);
+
+      var toX = GetToValueOrDefault_(xInterpolationType, toXFrame, defaultX);
+      var toY = GetToValueOrDefault_(yInterpolationType, toYFrame, defaultY);
+      var toZ = GetToValueOrDefault_(zInterpolationType, toZFrame, defaultZ);
+
+      var q2 = this.ConvertRadiansToQuaternionImpl(toX, toY, toZ);
 
       if (Quaternion.Dot(q1, q2) < 0) {
         q2 = -q2;
@@ -138,37 +163,26 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
       return true;
     }
 
-    value = Quaternion.Normalize(this.ConvertRadiansToQuaternionImpl(
-                                     fromXFrame?.ValueOut ?? defaultX,
-                                     fromYFrame?.ValueOut ?? defaultY,
-                                     fromZFrame?.ValueOut ?? defaultZ));
+    value = Quaternion.Normalize(
+        this.ConvertRadiansToQuaternionImpl(fromX, fromY, fromZ));
     return true;
   }
 
-  private static void AreAxesStatic_(ReadOnlySpan<TKeyframe?> fromsAndTos,
-                                     Span<bool> areAxesStatic) {
+  private static void AreAxesStatic_(
+      ReadOnlySpan<bool> areFromsAndTosNull,
+      ReadOnlySpan<TKeyframe?> fromsAndTos,
+      Span<bool> areAxesStatic) {
     for (var i = 0; i < 3; ++i) {
-      var from = fromsAndTos[i];
-      var to = fromsAndTos[3 + i];
+      var fromIsNull = areFromsAndTosNull[i];
+      var toIsNull = areFromsAndTosNull[3 + i];
 
-      if (from == null && to == null) {
+      if (fromIsNull && toIsNull) {
         areAxesStatic[i] = true;
-      } else if (from != null && to != null) {
+      } else if (!fromIsNull && !toIsNull) {
+        var from = fromsAndTos[i];
+        var to = fromsAndTos[3 + i];
         if (from.ValueOut.IsRoughly(to.ValueIn)) {
-          if (!SUPPORTS_TANGENTS_IN_QUATERNIONS) {
-            areAxesStatic[i] = true;
-          } else {
-            /*var fromTangentOrNull = from.tangent;
-            var toTangentOrNull = from.tangent;
-            if (fromTangentOrNull == null && toTangentOrNull == null) {
-              areAxesStatic[i] = true;
-            } else if (fromTangentOrNull != null &&
-                       toTangentOrNull != null) {
-              var fromTangent = fromTangentOrNull.Value;
-              var toTangent = toTangentOrNull.Value;
-              areAxesStatic[i] = fromTangent.IsRoughly(toTangent);
-            }*/
-          }
+          areAxesStatic[i] = true;
         }
       }
     }
@@ -193,21 +207,26 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
   }
 
   private static bool CanInterpolateWithQuaternions_(
+      ReadOnlySpan<bool> areFromsAndTosNull,
       ReadOnlySpan<TKeyframe?> fromsAndTos,
       ReadOnlySpan<bool> areAxesStatic) {
-    for (var i = 0; i < 6; ++i) {
+    for (var i = 0; i < 3; ++i) {
       if (areAxesStatic[i % 3]) {
         continue;
       }
 
-      if (fromsAndTos[i] == null) {
+      if (areFromsAndTosNull[i] || areFromsAndTosNull[3 + i]) {
         return false;
       }
 
-      if (!SUPPORTS_TANGENTS_IN_QUATERNIONS) {
-        /*if ((fromsAndTos[i].Value.tangent ?? 0) != 0) {
-          return false;
-        }*/
+      if (fromsAndTos[i] is IKeyframeWithTangents<float> from &&
+          (from.TangentOut ?? 0) != 0) {
+        return false;
+      }
+
+      if (fromsAndTos[i] is IKeyframeWithTangents<float> to &&
+          (to.TangentIn ?? 0) != 0) {
+        return false;
       }
     }
 
@@ -226,31 +245,30 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
         if (!from.Frame.IsRoughly(to.Frame)) {
           return false;
         }
-
-        if (SUPPORTS_TANGENTS_IN_QUATERNIONS) {
-          /*var fromTangentOrNull = from.tangent;
-          var toTangentOrNull = to.tangent;
-          if ((fromTangentOrNull == null) != (toTangentOrNull == null)) {
-            return false;
-          }
-
-          if (fromTangentOrNull != null &&
-              toTangentOrNull != null &&
-              !fromTangentOrNull.Value.IsRoughly(toTangentOrNull.Value)) {
-            return false;
-          }*/
-        }
       }
     }
 
     return true;
   }
 
-  public IEulerRadiansRotationTrack3d.ConvertRadiansToQuaternion
+  public ISeparateEulerRadiansKeyframes<TKeyframe>.ConvertRadiansToQuaternion
       ConvertRadiansToQuaternionImpl { get; set; } =
     QuaternionUtil.CreateZyx;
 
+  private static float GetFromValueOrDefault_(
+      KeyframesUtil.InterpolationDataType interpolationType,
+      TKeyframe? fromKeyframe,
+      float defaultValue)
+    => interpolationType == KeyframesUtil.InterpolationDataType.NONE
+        ? defaultValue
+        : fromKeyframe.ValueOut;
 
-  // TODO: Add support for tangents in quaternions
-  private const bool SUPPORTS_TANGENTS_IN_QUATERNIONS = false;
+  private static float GetToValueOrDefault_(
+      KeyframesUtil.InterpolationDataType interpolationType,
+      TKeyframe? toKeyframe,
+      float defaultValue)
+    => interpolationType ==
+       KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING
+        ? toKeyframe.ValueIn
+        : defaultValue;
 }

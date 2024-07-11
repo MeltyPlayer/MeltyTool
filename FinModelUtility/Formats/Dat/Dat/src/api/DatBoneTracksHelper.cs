@@ -10,7 +10,7 @@ public static class DatBoneTracksHelper {
       IEnumerable<IDatKeyframes> allDatKeyframes,
       IBoneTracks boneTracks) {
     var translationTrack = boneTracks.UseSeparateTranslationKeyframesWithTangents();
-    var rotationTrack = boneTracks.UseEulerRadiansRotationTrack();
+    var rotationTrack = boneTracks.UseSeparateEulerRadiansKeyframesWithTangents();
     var scaleTrack = boneTracks.UseSeparateScaleKeyframesWithTangents();
 
     foreach (var datKeyframes in allDatKeyframes) {
@@ -48,12 +48,12 @@ public static class DatBoneTracksHelper {
             var incomingTangent = keyframe.IncomingTangent;
             var outgoingTangent = keyframe.OutgoingTangent;
 
-            rotationTrack.Set(frame,
-                              axis,
-                              incomingValue,
-                              outgoingValue,
-                              incomingTangent,
-                              outgoingTangent);
+            rotationTrack.Axes[axis]
+                         .Add(new KeyframeWithTangents<float>(frame,
+                                incomingValue,
+                                outgoingValue,
+                                incomingTangent,
+                                outgoingTangent));
           }
 
           break;

@@ -29,7 +29,6 @@ public class FrameAdvancer : IAnimationPlaybackManager {
     }
   }
 
-  public AnimationInterpolationConfig? Config { get; set; }
   public bool LoopPlayback { get; set; }
 
 

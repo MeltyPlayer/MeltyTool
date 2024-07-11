@@ -278,9 +278,8 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
               }
             }
 
-            var rotations =
-                finBoneTracks.UseQuaternionRotationTrack(
-                    gloMesh.RotateKeys.Length);
+            var rotations = finBoneTracks.UseCombinedQuaternionKeyframes(
+                gloMesh.RotateKeys.Length);
             prevTime = -1;
             foreach (var rotateKey in gloMesh.RotateKeys) {
               Asserts.True(rotateKey.Time > prevTime);
@@ -300,11 +299,10 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
 
               Asserts.True(time >= 0 && time < finAnimation.FrameCount);
 
-              var quaternionKey =
-                  new Quaternion(rotateKey.X,
-                                 rotateKey.Y,
-                                 rotateKey.Z,
-                                 rotateKey.W);
+              var quaternionKey = new Quaternion(rotateKey.X,
+                                                 rotateKey.Y,
+                                                 rotateKey.Z,
+                                                 rotateKey.W);
               rotations.SetKeyframe(time, quaternionKey);
 
               if (isLast) {

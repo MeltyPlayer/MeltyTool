@@ -201,16 +201,23 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
             }
           }
 
-          var rotations = boneTracks.UseEulerRadiansRotationTrack(
+          var rotations = boneTracks.UseSeparateEulerRadiansKeyframesWithTangents(
               bcxJoint.Values.Rotations[0].Length,
               bcxJoint.Values.Rotations[1].Length,
               bcxJoint.Values.Rotations[2].Length);
           for (var i = 0; i < bcxJoint.Values.Rotations.Length; ++i) {
             foreach (var key in bcxJoint.Values.Rotations[i]) {
               if (key is Bck.ANK1Section.AnimatedJoint.JointAnim.Key bckKey) {
-                rotations.Set(bckKey.Frame, i, bckKey.Value, bckKey.IncomingTangent, bckKey.OutgoingTangent);
+                rotations.Axes[i]
+                         .SetKeyframe(bckKey.Frame,
+                                      bckKey.Value,
+                                      bckKey.IncomingTangent,
+                                      bckKey.OutgoingTangent);
               } else {
-                rotations.Set(key.Frame, i, key.Value);
+                rotations.Axes[i]
+                         .Add(new KeyframeWithTangents<float>(
+                                  key.Frame,
+                                  key.Value));
               }
             }
           }

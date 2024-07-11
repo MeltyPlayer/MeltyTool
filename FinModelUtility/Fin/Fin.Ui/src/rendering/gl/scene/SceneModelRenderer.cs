@@ -110,8 +110,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
           skeleton.Root,
           model.Skin.BoneWeights,
           (animation, frame),
-          BoneWeightTransformType.FOR_RENDERING,
-          animationPlaybackManager.Config);
+          BoneWeightTransformType.FOR_RENDERING);
 
       foreach (var meshTracks in animation.MeshTracks) {
         if (!meshTracks.DisplayStates.TryGetAtFrame(
