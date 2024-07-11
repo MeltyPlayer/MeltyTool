@@ -13,6 +13,7 @@
     <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
     <avalonia:MaterialIconStyles />
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
+    <StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml" />
 
     <StyleInclude Source="common/CommonStyles.axaml" />
     <StyleInclude Source="common/IconStyles.axaml" />

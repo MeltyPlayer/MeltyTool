@@ -36,6 +36,7 @@
     <PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
     <PackageReference Include="NaturalSort.Extension" Version="4.3.0" />
+    <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0-Avalonia11" />
     <PackageReference Include="TextMateSharp" Version="1.0.56" />
     <PackageReference Include="TextMateSharp.Grammars" Version="1.0.56" />
     <PackageReference Include="UVtools.AvaloniaControls" Version="3.0.3" />
@@ -67,6 +68,9 @@
     </Compile>
     <Compile Update="resources\animation\AnimationList.axaml.cs">
       <DependentUpon>AnimationList.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="resources\animation\FloatInterpolatableGraph.axaml.cs">
+      <DependentUpon>FloatInterpolatableGraph.axaml</DependentUpon>
     </Compile>
     <Compile Update="resources\animation\AnimationsPanel.axaml.cs">
       <DependentUpon>AnimationsPanel.axaml</DependentUpon>
