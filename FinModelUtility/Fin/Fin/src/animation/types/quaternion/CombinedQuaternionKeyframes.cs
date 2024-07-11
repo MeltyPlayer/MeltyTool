@@ -15,6 +15,11 @@ public class CombinedQuaternionKeyframes<TKeyframe>(
   private readonly InterpolatedKeyframes<TKeyframe, Quaternion> impl_
       = new(sharedConfig, interpolator, individualConfig);
 
+  public ISharedInterpolationConfig SharedConfig => sharedConfig;
+
+  public IndividualInterpolationConfig<Quaternion> IndividualConfig
+    => individualConfig;
+
   public IReadOnlyList<TKeyframe> Definitions => this.impl_.Definitions;
   public bool HasAnyData => this.impl_.HasAnyData;
 

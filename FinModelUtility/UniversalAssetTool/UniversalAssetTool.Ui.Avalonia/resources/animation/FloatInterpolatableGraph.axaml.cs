@@ -67,6 +67,10 @@ public class FloatInterpolatableGraphViewModel : ViewModelBase {
           Position = AxisPosition.Bottom,
           Title = "Frame",
       });
+      plotModel.Axes.Add(new LinearAxis {
+          Position = AxisPosition.Left,
+          Title = "Value",
+      });
 
       this.PlotModel = plotModel;
     }

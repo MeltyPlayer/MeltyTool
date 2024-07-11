@@ -1,0 +1,15 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:oxy="clr-namespace:OxyPlot.Avalonia;assembly=OxyPlot.Avalonia" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:animations="clr-namespace:uni.ui.avalonia.resources.animation"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="900"
+             x:Class="uni.ui.avalonia.resources.animation.Vector3InterpolatableGraph"
+             x:DataType="animations:Vector3InterpolatableGraphViewModel">
+  <Design.DataContext>
+    <animations:Vector3InterpolatableGraphViewModelForDesigner />
+  </Design.DataContext>
+
+  <oxy:PlotView Model="{Binding PlotModel}" />
+</UserControl>

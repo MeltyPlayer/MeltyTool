@@ -15,6 +15,11 @@ public class CombinedVector3Keyframes<TKeyframe>(
   private readonly InterpolatedKeyframes<TKeyframe, Vector3> impl_
       = new(sharedConfig, interpolator, individualConfig);
 
+  public ISharedInterpolationConfig SharedConfig => sharedConfig;
+
+  public IndividualInterpolationConfig<Vector3> IndividualConfig
+    => individualConfig;
+
   public IReadOnlyList<TKeyframe> Definitions => this.impl_.Definitions;
   public bool HasAnyData => this.impl_.HasAnyData;
 

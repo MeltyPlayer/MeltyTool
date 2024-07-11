@@ -69,6 +69,9 @@
     <Compile Update="resources\animation\AnimationList.axaml.cs">
       <DependentUpon>AnimationList.axaml</DependentUpon>
     </Compile>
+    <Compile Update="resources\animation\Vector3InterpolatableGraph.axaml.cs">
+      <DependentUpon>Vector3InterpolatableGraph.axaml</DependentUpon>
+    </Compile>
     <Compile Update="resources\animation\FloatInterpolatableGraph.axaml.cs">
       <DependentUpon>FloatInterpolatableGraph.axaml</DependentUpon>
     </Compile>
