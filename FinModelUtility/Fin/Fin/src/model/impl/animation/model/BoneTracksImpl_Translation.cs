@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.animation.interpolation;
 using fin.animation.keyframes;
 using fin.animation.types.single;
 using fin.animation.types.vector3;

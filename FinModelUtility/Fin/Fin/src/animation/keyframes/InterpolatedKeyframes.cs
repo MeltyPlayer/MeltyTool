@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
 using fin.animation.interpolation;
-using fin.util.optional;
 
 using static fin.animation.keyframes.KeyframesUtil;
 
@@ -9,12 +8,7 @@ namespace fin.animation.keyframes;
 
 public interface IInterpolatableKeyframes<TKeyframe, T>
     : IKeyframes<TKeyframe>,
-      IInterpolatable<T> where TKeyframe : IKeyframe<T>;
-
-public readonly struct IndividualInterpolationConfig<T>() {
-  public int InitialCapacity { get; init; } = 0;
-  public IOptional<T>? DefaultValue { get; init; } = null;
-}
+      IConfiguredInterpolatable<T> where TKeyframe : IKeyframe<T>;
 
 public class InterpolatedKeyframes<TKeyframe, T>(
     ISharedInterpolationConfig sharedConfig,
@@ -24,6 +18,9 @@ public class InterpolatedKeyframes<TKeyframe, T>(
     where TKeyframe : IKeyframe<T> {
   private readonly List<TKeyframe>
       impl_ = new(individualConfig.InitialCapacity);
+
+  public ISharedInterpolationConfig SharedConfig => sharedConfig;
+  public IndividualInterpolationConfig<T> IndividualConfig => individualConfig;
 
   public IReadOnlyList<TKeyframe> Definitions => this.impl_;
   public bool HasAnyData => this.Definitions.Count > 0;

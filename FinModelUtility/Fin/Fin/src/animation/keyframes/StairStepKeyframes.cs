@@ -8,7 +8,7 @@ namespace fin.animation.keyframes;
 
 [GenerateReadOnly]
 public partial interface IStairStepKeyframes<T>
-    : IKeyframes<Keyframe<T>>, IInterpolatable<T>;
+    : IKeyframes<Keyframe<T>>, IConfiguredInterpolatable<T>;
 
 public class StairStepKeyframes<T>(
     ISharedInterpolationConfig sharedConfig,
@@ -16,6 +16,9 @@ public class StairStepKeyframes<T>(
     : IStairStepKeyframes<T> {
   private readonly List<Keyframe<T>> impl_
       = new(individualConfig.InitialCapacity);
+
+  public ISharedInterpolationConfig SharedConfig => sharedConfig;
+  public IndividualInterpolationConfig<T> IndividualConfig => individualConfig;
 
   public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
   public bool HasAnyData => this.Definitions.Count > 0;

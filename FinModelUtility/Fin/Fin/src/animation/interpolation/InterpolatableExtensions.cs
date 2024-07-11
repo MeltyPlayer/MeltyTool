@@ -1,10 +1,15 @@
 ﻿using System.Runtime.CompilerServices;
 
-using fin.animation.keyframes;
-
 namespace fin.animation.interpolation;
 
 public static class InterpolatableExtensions {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static bool TryGetAtFrameOrDefault<T>(
+      this IConfiguredInterpolatable<T> impl,
+      float frame,
+      out T value)
+    => impl.TryGetAtFrameOrDefault(frame, impl.IndividualConfig, out value);
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static bool TryGetAtFrameOrDefault<T>(
       this IInterpolatable<T> impl,

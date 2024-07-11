@@ -38,16 +38,18 @@ public class FloatInterpolatableGraphViewModelForDesigner
 }
 
 public class FloatInterpolatableGraphViewModel : ViewModelBase {
-  private IInterpolatable<float> keyframes_;
+  private IConfiguredInterpolatable<float> keyframes_;
   private IPlotModel plotModel_;
 
-  public IInterpolatable<float> Keyframes {
+  public IConfiguredInterpolatable<float> Keyframes {
     get => this.keyframes_;
     set {
       this.RaiseAndSetIfChanged(ref this.keyframes_, value);
 
       Func<double, double> graphFunction = frame => {
-        if (this.keyframes_.TryGetAtFrame((float) frame, out var value)) {
+        if (this.keyframes_.TryGetAtFrameOrDefault(
+                (float) frame,
+                out var value)) {
           return value;
         }
 
@@ -55,8 +57,11 @@ public class FloatInterpolatableGraphViewModel : ViewModelBase {
       };
 
       var plotModel = new PlotModel();
-      // TODO: Where to get the animation length?
-      plotModel.Series.Add(new FunctionSeries(graphFunction, 0, 30, 0.0001));
+      plotModel.Series.Add(new FunctionSeries(
+                               graphFunction,
+                               0,
+                               value.SharedConfig.AnimationLength,
+                               0.0001));
 
       plotModel.Axes.Add(new LinearAxis {
           Position = AxisPosition.Bottom,
