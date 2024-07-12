@@ -5,6 +5,7 @@ using fin.math.xyz;
 namespace fin.math;
 
 public static class VectorSwizzleUtil {
+  public static Vector2 Xy(this Vector3 vec3) => new(vec3.X, vec3.Y);
   public static Vector2 Xy(this IReadOnlyXyz vec3) => new(vec3.X, vec3.Y);
   public static Vector2 Xy(this Vector4 vec4) => new(vec4.X, vec4.Y);
 

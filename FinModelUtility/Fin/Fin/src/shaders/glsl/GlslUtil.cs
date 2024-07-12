@@ -452,8 +452,8 @@ out vec4 vertexColor{i};");
       return true;
     }
 
-    return (finTexture.ClampS != null && !finTexture.ClampS.IsRoughly01()) ||
-           (finTexture.ClampT != null && !finTexture.ClampT.IsRoughly01());
+    return (finTexture.ClampS != null && !finTexture.ClampS.Value.IsRoughly01()) ||
+           (finTexture.ClampT != null && !finTexture.ClampT.Value.IsRoughly01());
   }
 
   public static TextureTransformType GetTextureTransformType(

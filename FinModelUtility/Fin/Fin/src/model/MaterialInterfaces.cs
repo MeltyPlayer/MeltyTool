@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Numerics;
 
 using fin.color;
 using fin.data.indexable;
@@ -397,20 +398,20 @@ public partial interface ITexture : IIndexable {
   float MaxLod { get; set; }
   float LodBias { get; set; }
 
-  IReadOnlyVector2? ClampS { get; set; }
-  IReadOnlyVector2? ClampT { get; set; }
+  Vector2? ClampS { get; set; }
+  Vector2? ClampT { get; set; }
 
   bool IsTransform3d { get; }
 
-  IReadOnlyXyz? Offset { get; }
+  Vector3? Offset { get; }
   ITexture SetOffset2d(float x, float y);
   ITexture SetOffset3d(float x, float y, float z);
 
-  IReadOnlyXyz? Scale { get; }
+  Vector3? Scale { get; }
   ITexture SetScale2d(float x, float y);
   ITexture SetScale3d(float x, float y, float z);
 
-  IReadOnlyXyz? RotationRadians { get; }
+  Vector3? RotationRadians { get; }
   ITexture SetRotationRadians2d(float rotationRadians);
 
   ITexture SetRotationRadians3d(float xRadians,

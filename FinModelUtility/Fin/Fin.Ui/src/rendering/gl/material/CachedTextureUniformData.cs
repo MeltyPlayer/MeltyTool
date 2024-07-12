@@ -77,13 +77,13 @@ public class CachedTextureUniformData {
       var clampT = this.FinTexture?.ClampT;
 
       if (clampS != null) {
-        clampMin.X = clampS.X;
-        clampMax.X = clampS.Y;
+        clampMin.X = clampS.Value.X;
+        clampMax.X = clampS.Value.Y;
       }
 
       if (clampT != null) {
-        clampMin.Y = clampT.X;
-        clampMax.Y = clampT.Y;
+        clampMin.Y = clampT.Value.X;
+        clampMax.Y = clampT.Value.Y;
       }
 
       this.ClampMinUniform.SetAndMaybeMarkDirty(clampMin);
@@ -128,7 +128,8 @@ public class CachedTextureUniformData {
       return FinMatrix3x2.IDENTITY;
     }
 
-    var secondsSinceStart = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
+    var secondsSinceStart
+        = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
 
     Vector2? offset = null;
     if (textureOffset != null || scrollingTexture != null) {
@@ -142,7 +143,7 @@ public class CachedTextureUniformData {
 
     Vector2? scale = null;
     if (textureScale != null) {
-      scale = new Vector2(textureScale.X, textureScale.Y);
+      scale = new Vector2(textureScale.Value.X, textureScale.Value.Y);
     }
 
     return FinMatrix3x2Util.FromTrss(offset,
@@ -168,7 +169,8 @@ public class CachedTextureUniformData {
       return FinMatrix4x4.IDENTITY;
     }
 
-    var secondsSinceStart = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
+    var secondsSinceStart
+        = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
 
     Vector3? offset = null;
     if (textureOffset != null || scrollingTexture != null) {
@@ -184,14 +186,16 @@ public class CachedTextureUniformData {
 
     Quaternion? rotation = null;
     if (textureRotationRadians != null) {
-      rotation = QuaternionUtil.CreateZyx(textureRotationRadians.X,
-                                          textureRotationRadians.Y,
-                                          textureRotationRadians.Z);
+      rotation = QuaternionUtil.CreateZyx(textureRotationRadians.Value.X,
+                                          textureRotationRadians.Value.Y,
+                                          textureRotationRadians.Value.Z);
     }
 
     Vector3? scale = null;
     if (textureScale != null) {
-      scale = new(textureScale.X, textureScale.Y, textureScale.Z);
+      scale = new(textureScale.Value.X,
+                  textureScale.Value.Y,
+                  textureScale.Value.Z);
     }
 
     return FinMatrix4x4Util.FromTrs(offset, rotation, scale);

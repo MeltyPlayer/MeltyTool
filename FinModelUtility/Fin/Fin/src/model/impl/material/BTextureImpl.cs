@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Numerics;
 
 using fin.color;
 using fin.image;
@@ -84,52 +85,52 @@ public partial class ModelImpl<TVertex> {
     public float MaxLod { get; set; } = 1000;
     public float LodBias { get; set; } = 0;
 
-    public IReadOnlyVector2? ClampS { get; set; }
-    public IReadOnlyVector2? ClampT { get; set; }
+    public Vector2? ClampS { get; set; }
+    public Vector2? ClampT { get; set; }
 
 
     public bool IsTransform3d { get; private set; }
 
 
-    public IReadOnlyXyz? Offset { get; private set; }
+    public Vector3? Offset { get; private set; }
 
     public ITexture SetOffset2d(float x, float y) {
-      this.Offset = new Vector3f { X = x, Y = y };
+      this.Offset = new Vector3 { X = x, Y = y };
       return this;
     }
 
     public ITexture SetOffset3d(float x, float y, float z) {
-      this.Offset = new Vector3f { X = x, Y = y, Z = z };
+      this.Offset = new Vector3 { X = x, Y = y, Z = z };
       this.IsTransform3d = true;
       return this;
     }
 
 
-    public IReadOnlyXyz? Scale { get; private set; }
+    public Vector3? Scale { get; private set; }
 
     public ITexture SetScale2d(float x, float y) {
-      this.Scale = new Vector3f { X = x, Y = y };
+      this.Scale = new Vector3 { X = x, Y = y };
       return this;
     }
 
     public ITexture SetScale3d(float x, float y, float z) {
-      this.Scale = new Vector3f { X = x, Y = y, Z = z };
+      this.Scale = new Vector3 { X = x, Y = y, Z = z };
       this.IsTransform3d = true;
       return this;
     }
 
 
-    public IReadOnlyXyz? RotationRadians { get; private set; }
+    public Vector3? RotationRadians { get; private set; }
 
     public ITexture SetRotationRadians2d(float rotationRadians) {
-      this.RotationRadians = new Vector3f { Z = rotationRadians };
+      this.RotationRadians = new Vector3 { Z = rotationRadians };
       return this;
     }
 
     public ITexture SetRotationRadians3d(float xRadians,
                                          float yRadians,
                                          float zRadians) {
-      this.RotationRadians = new Vector3f
+      this.RotationRadians = new Vector3
           { X = xRadians, Y = yRadians, Z = zRadians };
       this.IsTransform3d = true;
       return this;
