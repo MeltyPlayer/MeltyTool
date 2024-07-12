@@ -2,8 +2,10 @@
 using System.Numerics;
 
 using fin.animation;
+using fin.animation.interpolation;
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
+using fin.animation.types.vector2;
 using fin.animation.types.vector3;
 using fin.data.indexable;
 
@@ -181,6 +183,67 @@ public partial interface IMeshTracks {
 [GenerateReadOnly]
 public partial interface ITextureTracks {
   IReadOnlyTexture Texture { get; }
+  
+  IVector2Interpolatable? Translations { get; }
+  IInterpolatable<float>? Rotations { get; }
+  IVector2Interpolatable? Scales { get; }
+
+  // Translation
+  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateTranslationKeyframes(
+      int initialCapacity = 0)
+    => this.UseSeparateTranslationKeyframes(initialCapacity,
+                                            initialCapacity);
+
+  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateTranslationKeyframes(
+      int initialXCapacity,
+      int initialYCapacity);
+
+  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+      UseSeparateTranslationKeyframesWithTangents(int initialCapacity = 0)
+    => this.UseSeparateTranslationKeyframesWithTangents(initialCapacity,
+      initialCapacity);
+
+  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+      UseSeparateTranslationKeyframesWithTangents(int initialXCapacity,
+                                                  int initialYCapacity);
+
+  ICombinedVector2Keyframes<Keyframe<Vector2>> UseCombinedTranslationKeyframes(
+      int initialCapacity = 0);
+
+  ICombinedVector2Keyframes<KeyframeWithTangents<Vector2>>
+      UseCombinedTranslationKeyframesWithTangents(int initialCapacity = 0);
+
+  // Rotation
+  IInterpolatableKeyframes<Keyframe<float>, float> UseRotationKeyframes(
+      int initialCapacity);
+
+  IInterpolatableKeyframes<KeyframeWithTangents<float>, float>
+      UseRotationKeyframesWithTangents(int initialCapacity);
+
+  // Scale
+  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateScaleKeyframes(
+      int initialCapacity = 0)
+    => this.UseSeparateScaleKeyframes(initialCapacity,
+                                      initialCapacity);
+
+  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateScaleKeyframes(
+      int initialXCapacity,
+      int initialYCapacity);
+
+  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+      UseSeparateScaleKeyframesWithTangents(int initialCapacity = 0)
+    => this.UseSeparateScaleKeyframesWithTangents(initialCapacity,
+                                                  initialCapacity);
+
+  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+      UseSeparateScaleKeyframesWithTangents(int initialXCapacity,
+                                            int initialYCapacity);
+
+  ICombinedVector2Keyframes<Keyframe<Vector2>> UseCombinedScaleKeyframes(
+      int initialCapacity = 0);
+
+  ICombinedVector2Keyframes<KeyframeWithTangents<Vector2>>
+      UseCombinedScaleKeyframesWithTangents(int initialCapacity = 0);
 }
 
 

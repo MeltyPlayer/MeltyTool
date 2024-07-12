@@ -16,7 +16,7 @@ public partial class ModelImpl<TVertex> {
           = new TextureTracksImpl(texture, this.sharedInterpolationConfig_);
   }
 
-  public class TextureTracksImpl(
+  private partial class TextureTracksImpl(
       IReadOnlyTexture texture,
       ISharedInterpolationConfig sharedConfig)
       : ITextureTracks {
