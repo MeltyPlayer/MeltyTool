@@ -11,6 +11,7 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
   private GlBufferManager? bufferManager_;
   private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
+  private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private IReadOnlyMesh selectedMesh_;
 
   private (IReadOnlyMesh, MergedMaterialPrimitivesByMeshRenderer[])[]
@@ -19,10 +20,12 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
   public MergedMaterialByMeshRenderer(
       IReadOnlyModel model,
       IReadOnlyLighting? lighting,
-      IReadOnlyBoneTransformManager? boneTransformManager = null) {
+      IReadOnlyBoneTransformManager? boneTransformManager = null,
+      IReadOnlyTextureTransformManager? textureTransformManager = null) {
     this.Model = model;
     this.lighting_ = lighting;
     this.boneTransformManager_ = boneTransformManager;
+    this.textureTransformManager_ = textureTransformManager;
 
     SelectedMeshService.OnMeshSelected += selectedMesh
         => this.selectedMesh_ = selectedMesh;
@@ -83,6 +86,7 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
             mesh,
             new MergedMaterialPrimitivesByMeshRenderer(
                 this.boneTransformManager_,
+                this.textureTransformManager_,
                 this.bufferManager_,
                 this.Model,
                 material,

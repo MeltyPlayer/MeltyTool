@@ -12,6 +12,7 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
 
   public MergedMaterialPrimitivesAcrossMeshesRenderer(
       IReadOnlyBoneTransformManager? boneTransformManager,
+      IReadOnlyTextureTransformManager? textureTransformManager,
       GlBufferManager bufferManager,
       IReadOnlyModel model,
       IReadOnlyMaterial? material,
@@ -22,6 +23,7 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
     this.materialShader_ = GlMaterialShader.FromMaterial(model,
       material,
       boneTransformManager,
+      textureTransformManager,
       lighting);
 
     this.bufferRenderer_ = bufferManager.CreateRenderer(mergedPrimitive);
@@ -33,7 +35,8 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
                                 false);
   }
 
-  ~MergedMaterialPrimitivesAcrossMeshesRenderer() => ReleaseUnmanagedResources_();
+  ~MergedMaterialPrimitivesAcrossMeshesRenderer()
+    => ReleaseUnmanagedResources_();
 
   public void Dispose() {
     ReleaseUnmanagedResources_();

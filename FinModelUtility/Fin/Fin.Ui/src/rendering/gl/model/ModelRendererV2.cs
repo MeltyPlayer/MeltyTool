@@ -17,27 +17,32 @@ public class ModelRendererV2 : IModelRenderer {
   public ModelRendererV2(
       IReadOnlyModel model,
       IReadOnlyLighting? lighting,
-      IReadOnlyBoneTransformManager? boneTransformManager = null) {
-      this.impl_ = (model.Skin.AllowMaterialRendererMerging)
-          ? new MergedMaterialByMeshRenderer(
-              model,
-              lighting,
-              boneTransformManager)
-          : new UnmergedMaterialMeshesRenderer(model,
-                                               lighting,
-                                               boneTransformManager);
-    }
+      IReadOnlyBoneTransformManager? boneTransformManager = null,
+      IReadOnlyTextureTransformManager? textureTransformManager = null) {
+    this.impl_ = (model.Skin.AllowMaterialRendererMerging)
+        ? new MergedMaterialByMeshRenderer(
+            model,
+            lighting,
+            boneTransformManager,
+            textureTransformManager)
+        : new UnmergedMaterialMeshesRenderer(
+            model,
+            lighting,
+            boneTransformManager,
+            textureTransformManager);
+  }
 
   ~ModelRendererV2() => ReleaseUnmanagedResources_();
 
   public void Dispose() {
-      ReleaseUnmanagedResources_();
-      GC.SuppressFinalize(this);
-    }
+    ReleaseUnmanagedResources_();
+    GC.SuppressFinalize(this);
+  }
 
   private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
   public IReadOnlyModel Model => this.impl_.Model;
+
   public IReadOnlySet<IReadOnlyMesh>? HiddenMeshes {
     get => this.impl_.HiddenMeshes;
     set => this.impl_.HiddenMeshes = value;

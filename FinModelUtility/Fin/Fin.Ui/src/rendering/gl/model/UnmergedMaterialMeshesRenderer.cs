@@ -7,6 +7,7 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
   private GlBufferManager? bufferManager_;
   private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
+  private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
 
   private readonly
       List<(IReadOnlyMesh, List<MergedMaterialPrimitivesByMeshRenderer>)>
@@ -15,10 +16,12 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
   public UnmergedMaterialMeshesRenderer(
       IReadOnlyModel model,
       IReadOnlyLighting? lighting,
-      IReadOnlyBoneTransformManager? boneTransformManager = null) {
+      IReadOnlyBoneTransformManager? boneTransformManager = null,
+      IReadOnlyTextureTransformManager? textureTransformManager = null) {
     this.Model = model;
     this.lighting_ = lighting;
     this.boneTransformManager_ = boneTransformManager;
+    this.textureTransformManager_ = textureTransformManager;
   }
 
   // Generates buffer manager and model within the current GL context.
@@ -42,6 +45,7 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
 
                 currentList.Add(new MergedMaterialPrimitivesByMeshRenderer(
                                     this.boneTransformManager_,
+                                    this.textureTransformManager_,
                                     this.bufferManager_,
                                     this.Model,
                                     material,

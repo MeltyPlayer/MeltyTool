@@ -28,8 +28,7 @@ namespace mod.schema.mod;
 
 [BinarySchema]
 public partial class KeyInfoU8 : IBinaryConvertible {
-  [Unknown]
-  public byte AnimationFrame = 0;
+  public byte Frame = 0;
 
   [Unknown]
   public byte unknownA = 0;
@@ -37,46 +36,39 @@ public partial class KeyInfoU8 : IBinaryConvertible {
   [Unknown]
   public ushort unknownB = 0;
 
-  [Unknown]
   public float StartValue = 0;
-
-  [Unknown]
   public float EndValue = 0;
 
   public string? ToString()
-    => $"{this.AnimationFrame} {this.StartValue} {this.EndValue}";
+    => $"{this.Frame} {this.StartValue} {this.EndValue}";
 }
 
 [BinarySchema]
 public partial class KeyInfoF32 : IBinaryConvertible {
   [Unknown]
-  public float unknown1 = 0;
+  public float Value = 0;
 
   [Unknown]
-  public float unknown2 = 0;
+  public float InTangent = 0;
 
   [Unknown]
-  public float unknown3 = 0;
+  public float OutTangent = 0;
 
   public string? ToString()
-    => $"{this.unknown1} {this.unknown2} {this.unknown3}";
+    => $"{this.Value} {this.InTangent} {this.OutTangent}";
 }
 
 [BinarySchema]
 public partial class KeyInfoS10 : IBinaryConvertible {
-  [Unknown]
-  public short unknown1 = 0;
+  public short Frame = 0;
 
   public readonly short padding = 0; // TODO: Is this right?
 
-  [Unknown]
-  public float unknown2 = 0;
-
-  [Unknown]
-  public float unknown3 = 0;
+  public float StartValue = 0;
+  public float EndValue = 0;
 
   public string? ToString()
-    => $"{this.unknown1} {this.unknown2} {this.unknown3}";
+    => $"{this.Frame} {this.StartValue} {this.EndValue}";
 };
 
 [BinarySchema]
@@ -234,18 +226,11 @@ public partial record PeInfo : IBinaryConvertible {
 };
 
 [BinarySchema]
-public partial class TXD_Unk1 : IBinaryConvertible {
-  [Unknown]
-  public int unknown1 = 0;
-
-  [Unknown]
-  public readonly KeyInfoF32 unknown2 = new();
-
-  [Unknown]
-  public readonly KeyInfoF32 unknown3 = new();
-
-  [Unknown]
-  public readonly KeyInfoF32 unknown4 = new();
+public partial class TextureAnimationData : IBinaryConvertible {
+  public int Frame = 0;
+  public KeyInfoF32 X { get; } = new();
+  public KeyInfoF32 Y { get; } = new();
+  public KeyInfoF32 Z { get; } = new();
 }
 
 [BinarySchema]
@@ -293,15 +278,15 @@ public partial class TextureData
 
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
-  public TXD_Unk1[] PositionAnimationData;
+  public TextureAnimationData[] ScaleAnimationData;
 
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
-  public TXD_Unk1[] RotationAnimationData;
+  public TextureAnimationData[] RotationAnimationData;
 
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
-  public TXD_Unk1[] ScaleAnimationData;
+  public TextureAnimationData[] PositionAnimationData;
 
   public bool Equals(TextureData? other) {
     if (ReferenceEquals(null, other)) {

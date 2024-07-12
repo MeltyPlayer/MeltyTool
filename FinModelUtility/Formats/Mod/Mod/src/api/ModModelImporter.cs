@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using CommunityToolkit.HighPerformance.Helpers;
 
+using fin.animation.keyframes;
 using fin.color;
 using fin.data.lazy;
 using fin.data.queues;
@@ -102,11 +102,106 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           LodBias: textureAttr.WidthPercent);
     }
 
-    var lazyTextureDictionary = new GxLazyTextureDictionary(model);
+    var materialAnimation = model.AnimationManager.AddAnimation();
+    materialAnimation.FrameRate = 30;
+
+    var lazyTextureDictionary = new GxLazyTextureDictionary<Material, string>(
+        model,
+        (gxTextureBundle, modMaterial)
+            => $"{gxTextureBundle.GetHashCode()},{modMaterial.GetHashCode()}",
+        (gxTextureBundle, modMaterial, finTexture) => {
+          var modTextureData
+              = modMaterial.texInfo.TexturesInMaterial[
+                  (int) gxTextureBundle.TexMap];
+          var animationLength = modTextureData.AnimationLength;
+          if (animationLength == 0) {
+            return;
+          }
+
+          materialAnimation.FrameCount = Math.Max(
+              materialAnimation.FrameCount,
+              animationLength);
+
+          var finTextureTracks = materialAnimation.AddTextureTracks(finTexture);
+          {
+            var modTranslationKeyframes = modTextureData.PositionAnimationData;
+            var finTranslationKeyframes
+                = finTextureTracks
+                    .UseSeparateTranslationKeyframesWithTangents();
+            foreach (var modTranslationKeyframe in modTranslationKeyframes) {
+              finTranslationKeyframes
+                  .Axes[0]
+                  .SetKeyframe(modTranslationKeyframe.Frame,
+                               modTranslationKeyframe.X.Value,
+                               modTranslationKeyframe.X.InTangent,
+                               modTranslationKeyframe.X.OutTangent);
+              finTranslationKeyframes
+                  .Axes[1]
+                  .SetKeyframe(modTranslationKeyframe.Frame,
+                               modTranslationKeyframe.Y.Value,
+                               modTranslationKeyframe.Y.InTangent,
+                               modTranslationKeyframe.Y.OutTangent);
+              finTranslationKeyframes
+                  .Axes[2]
+                  .SetKeyframe(modTranslationKeyframe.Frame,
+                               modTranslationKeyframe.Z.Value,
+                               modTranslationKeyframe.Z.InTangent,
+                               modTranslationKeyframe.Z.OutTangent);
+            }
+          }
+          {
+            var modRotationKeyframes = modTextureData.RotationAnimationData;
+            var finRotationKeyframes = finTextureTracks.UseSeparateRotationKeyframesWithTangents();
+            foreach (var modRotationKeyframe in modRotationKeyframes) {
+              finRotationKeyframes
+                  .Axes[0]
+                  .SetKeyframe(modRotationKeyframe.Frame,
+                               modRotationKeyframe.X.Value,
+                               modRotationKeyframe.X.InTangent,
+                               modRotationKeyframe.X.OutTangent);
+              finRotationKeyframes
+                  .Axes[1]
+                  .SetKeyframe(modRotationKeyframe.Frame,
+                               modRotationKeyframe.Y.Value,
+                               modRotationKeyframe.Y.InTangent,
+                               modRotationKeyframe.Y.OutTangent);
+              finRotationKeyframes
+                  .Axes[2]
+                  .SetKeyframe(modRotationKeyframe.Frame,
+                               modRotationKeyframe.Z.Value,
+                               modRotationKeyframe.Z.InTangent,
+                               modRotationKeyframe.Z.OutTangent);
+            }
+          }
+          {
+            var modScaleKeyframes = modTextureData.ScaleAnimationData;
+            var finScaleKeyframes
+                = finTextureTracks.UseSeparateScaleKeyframesWithTangents();
+            foreach (var modScaleKeyframe in modScaleKeyframes) {
+              finScaleKeyframes.Axes[0]
+                               .SetKeyframe(modScaleKeyframe.Frame,
+                                            modScaleKeyframe.X.Value,
+                                            modScaleKeyframe.X.InTangent,
+                                            modScaleKeyframe.X.OutTangent);
+              finScaleKeyframes.Axes[1]
+                               .SetKeyframe(modScaleKeyframe.Frame,
+                                            modScaleKeyframe.Y.Value,
+                                            modScaleKeyframe.Y.InTangent,
+                                            modScaleKeyframe.Y.OutTangent);
+              finScaleKeyframes.Axes[2]
+                               .SetKeyframe(modScaleKeyframe.Frame,
+                                            modScaleKeyframe.Z.Value,
+                                            modScaleKeyframe.Z.InTangent,
+                                            modScaleKeyframe.Z.OutTangent);
+            }
+          }
+        });
 
     // Writes materials
     Func<int, Material, IMaterial>
         getFinMaterialFromModMaterial = (i, modMaterial) => {
+          lazyTextureDictionary.State = modMaterial;
+
           IMaterial finMaterial;
           if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
             finMaterial = model.MaterialManager.AddHiddenMaterial();
@@ -241,19 +336,21 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     model.Skin.AllowMaterialRendererMerging = false;
     var meshTuples
         = mod.joints
-          .SelectMany(j => j.matpolys)
-          .Select(m => {
-            var mesh = mod.meshes[m.meshIdx];
-            var (modMaterial, finMaterial)
-                = modMaterialAndFinMaterialByIndex[m.matIdx];
-            var transparencyType
-                = modMaterial.flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND);
-            var priority = 1000 - modMaterial.unknown1;
-            return (mesh, modMaterial, finMaterial, transparencyType, priority);
-          })
-          .OrderBy(m => m.transparencyType)
-          .ThenBy(m => m.priority)
-          .ToArray();
+             .SelectMany(j => j.matpolys)
+             .Select(m => {
+               var mesh = mod.meshes[m.meshIdx];
+               var (modMaterial, finMaterial)
+                   = modMaterialAndFinMaterialByIndex[m.matIdx];
+               var transparencyType
+                   = modMaterial.flags.CheckFlag(
+                       MaterialFlags.TRANSPARENT_BLEND);
+               var priority = 1000 - modMaterial.unknown1;
+               return (mesh, modMaterial, finMaterial, transparencyType,
+                       priority);
+             })
+             .OrderBy(m => m.transparencyType)
+             .ThenBy(m => m.priority)
+             .ToArray();
 
     foreach (var (mesh, modMaterial, finMaterial, _, _) in meshTuples) {
       this.AddMesh_(mod,

@@ -13,6 +13,8 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
                                  bool useBoneMatrices) {
     this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);
 
+    var animations = model.AnimationManager.Animations;
+
     var diffuseTexture = material.Textures.FirstOrDefault();
     var hasNormals = model.Skin.HasNormalsForMaterial(material);
 
@@ -28,13 +30,13 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
            """);
     }
 
-    fragmentSrc.AppendTextureStructIfNeeded(material.Textures);
+    fragmentSrc.AppendTextureStructIfNeeded(material.Textures, animations);
 
     fragmentSrc.Append(
         $"""
 
 
-         uniform {GlslUtil.GetTypeOfTexture(diffuseTexture)} diffuseTexture;
+         uniform {GlslUtil.GetTypeOfTexture(diffuseTexture, animations)} diffuseTexture;
          uniform float {GlslConstants.UNIFORM_SHININESS_NAME};
          uniform int {GlslConstants.UNIFORM_USE_LIGHTING_NAME};
 
@@ -76,7 +78,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
 
           void main() {
-            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture)}};
+            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture, animations)}};
           
             fragColor = diffuseColor * vertexColor0;
           """);

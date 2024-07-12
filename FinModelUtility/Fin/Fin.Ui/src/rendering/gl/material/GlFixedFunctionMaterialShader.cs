@@ -11,11 +11,13 @@ public class GlFixedFunctionMaterialShader(
     IReadOnlyModel model,
     IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
     IReadOnlyBoneTransformManager? boneTransformManager,
+    IReadOnlyTextureTransformManager? textureTransformManager,
     IReadOnlyLighting? lighting)
     : BGlMaterialShader<IReadOnlyFixedFunctionMaterial>(
         model,
         fixedFunctionMaterial,
         boneTransformManager,
+        textureTransformManager,
         lighting) {
   private (IColorRegister, IShaderUniform<Vector3>)[]
       colorRegistersAndUniforms_;

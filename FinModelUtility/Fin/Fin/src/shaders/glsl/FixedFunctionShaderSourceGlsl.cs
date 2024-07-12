@@ -11,6 +11,6 @@ public class FixedFunctionShaderSourceGlsl(IReadOnlyModel model,
     GlslUtil.GetVertexSrc(model, useBoneMatrices);
 
   public string FragmentShaderSource { get; } =
-    new FixedFunctionEquationsGlslPrinter()
+    new FixedFunctionEquationsGlslPrinter(model)
         .Print(material);
 }

@@ -1,13 +1,8 @@
 ﻿using System.Numerics;
 
-using Assimp.Unmanaged;
-
-using fin.math.matrix.four;
-using fin.math.matrix.three;
-using fin.math.rotations;
+using fin.math;
 using fin.model;
 using fin.shaders.glsl;
-using fin.util.time;
 
 
 namespace fin.ui.rendering.gl.material;
@@ -17,10 +12,8 @@ public class CachedTextureUniformData {
 
   public int TextureIndex { get; }
   public IReadOnlyTexture? FinTexture { get; }
+  public readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   public GlTexture GlTexture { get; }
-
-  public IReadOnlyFinMatrix3x2? Transform2d { get; private set; }
-  public IReadOnlyFinMatrix4x4? Transform3d { get; private set; }
 
   public IShaderUniform<int> SamplerUniform { get; }
   public IShaderUniform<Vector2> ClampMinUniform { get; }
@@ -32,13 +25,16 @@ public class CachedTextureUniformData {
       string textureName,
       int textureIndex,
       IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations,
+      IReadOnlyTextureTransformManager? textureTransformManager,
       GlTexture glTexture,
       GlShaderProgram shaderProgram) {
     this.TextureIndex = textureIndex;
     this.FinTexture = finTexture;
+    this.textureTransformManager_ = textureTransformManager;
     this.GlTexture = glTexture;
 
-    this.needsStruct_ = finTexture.NeedsTextureShaderStruct();
+    this.needsStruct_ = finTexture.NeedsTextureShaderStruct(animations);
     if (!this.needsStruct_) {
       this.SamplerUniform = shaderProgram.GetUniformInt($"{textureName}");
     } else {
@@ -55,7 +51,7 @@ public class CachedTextureUniformData {
     }
   }
 
-  public unsafe void BindTextureAndPassInUniforms() {
+  public void BindTextureAndPassInUniforms() {
     this.GlTexture.Bind(this.TextureIndex);
     this.SamplerUniform.SetAndMaybeMarkDirty(this.TextureIndex);
 
@@ -89,115 +85,25 @@ public class CachedTextureUniformData {
       this.ClampMinUniform.SetAndMaybeMarkDirty(clampMin);
       this.ClampMaxUniform.SetAndMaybeMarkDirty(clampMax);
 
-      this.MaybeCalculateTextureTransform_();
-      if (!(this.FinTexture?.IsTransform3d ?? false)) {
-        this.Transform2dUniform.SetAndMaybeMarkDirty(this.Transform2d!.Impl);
-      } else {
-        var mat3d = this.Transform3d!.Impl;
-        this.Transform3dUniform.SetAndMaybeMarkDirty(mat3d);
+      var setMatrix = false;
+      if (this.FinTexture != null && this.textureTransformManager_ != null) {
+        var matrixValues
+            = this.textureTransformManager_.GetMatrix(this.FinTexture);
+        if (matrixValues != null) {
+          setMatrix = true;
+
+          var (is2d, twoDMatrix, threeDMatrix) = matrixValues.Value;
+          if (is2d) {
+            this.Transform2dUniform.SetAndMarkDirty(twoDMatrix);
+          } else {
+            this.Transform3dUniform.SetAndMarkDirty(threeDMatrix);
+          }
+        }
+      } 
+      
+      if (!setMatrix) {
+        this.Transform2dUniform.SetAndMaybeMarkDirty(Matrix3x2.Identity);
       }
     }
-  }
-
-  private void MaybeCalculateTextureTransform_() {
-    var finTexture = this.FinTexture;
-    var isTransform3d = finTexture?.IsTransform3d ?? false;
-    var cannotCache = finTexture is IScrollingTexture;
-
-    if (isTransform3d && (this.Transform3d == null || cannotCache)) {
-      this.Transform3d = CalculateTextureTransform3d_(finTexture);
-    } else if (!isTransform3d && (this.Transform2d == null || cannotCache)) {
-      this.Transform2d = CalculateTextureTransform2d_(finTexture);
-    }
-  }
-
-  private static IReadOnlyFinMatrix3x2 CalculateTextureTransform2d_(
-      IReadOnlyTexture? texture) {
-    if (texture == null) {
-      return FinMatrix3x2.IDENTITY;
-    }
-
-    var scrollingTexture = texture as IScrollingTexture;
-    var textureOffset = texture.Offset;
-    var textureScale = texture.Scale;
-    var textureRotationRadians = texture.RotationRadians;
-
-    if ((textureOffset == null && scrollingTexture == null) &&
-        textureScale == null &&
-        textureRotationRadians == null) {
-      return FinMatrix3x2.IDENTITY;
-    }
-
-    var secondsSinceStart
-        = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
-
-    Vector2? offset = null;
-    if (textureOffset != null || scrollingTexture != null) {
-      offset = new Vector2((textureOffset?.X ?? 0) +
-                           secondsSinceStart *
-                           (scrollingTexture?.ScrollSpeedX ?? 0),
-                           (textureOffset?.Y ?? 0) +
-                           secondsSinceStart *
-                           (scrollingTexture?.ScrollSpeedY ?? 0));
-    }
-
-    Vector2? scale = null;
-    if (textureScale != null) {
-      scale = new Vector2(textureScale.Value.X, textureScale.Value.Y);
-    }
-
-    return FinMatrix3x2Util.FromTrss(offset,
-                                     textureRotationRadians?.Z,
-                                     scale,
-                                     null);
-  }
-
-  private static IReadOnlyFinMatrix4x4 CalculateTextureTransform3d_(
-      IReadOnlyTexture? texture) {
-    if (texture == null) {
-      return FinMatrix4x4.IDENTITY;
-    }
-
-    var scrollingTexture = texture as IScrollingTexture;
-    var textureOffset = texture.Offset;
-    var textureScale = texture.Scale;
-    var textureRotationRadians = texture.RotationRadians;
-
-    if ((textureOffset == null && scrollingTexture == null) &&
-        textureScale == null &&
-        textureRotationRadians == null) {
-      return FinMatrix4x4.IDENTITY;
-    }
-
-    var secondsSinceStart
-        = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
-
-    Vector3? offset = null;
-    if (textureOffset != null || scrollingTexture != null) {
-      offset =
-          new Vector3((textureOffset?.X ?? 0) +
-                      secondsSinceStart *
-                      (scrollingTexture?.ScrollSpeedX ?? 0),
-                      (textureOffset?.Y ?? 0) +
-                      secondsSinceStart *
-                      (scrollingTexture?.ScrollSpeedY ?? 0),
-                      textureOffset?.Z ?? 0);
-    }
-
-    Quaternion? rotation = null;
-    if (textureRotationRadians != null) {
-      rotation = QuaternionUtil.CreateZyx(textureRotationRadians.Value.X,
-                                          textureRotationRadians.Value.Y,
-                                          textureRotationRadians.Value.Z);
-    }
-
-    Vector3? scale = null;
-    if (textureScale != null) {
-      scale = new(textureScale.Value.X,
-                  textureScale.Value.Y,
-                  textureScale.Value.Z);
-    }
-
-    return FinMatrix4x4Util.FromTrs(offset, rotation, scale);
   }
 }

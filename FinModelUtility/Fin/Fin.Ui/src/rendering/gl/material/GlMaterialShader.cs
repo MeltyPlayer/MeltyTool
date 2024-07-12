@@ -10,16 +10,19 @@ public static class GlMaterialShader {
       IReadOnlyModel model,
       IReadOnlyMaterial? material,
       IReadOnlyBoneTransformManager? boneTransformManager = null,
+      IReadOnlyTextureTransformManager? textureTransformManager = null,
       IReadOnlyLighting? lighting = null)
     => material.GetShaderType() switch {
         FinShaderType.FIXED_FUNCTION => new GlFixedFunctionMaterialShader(
             model,
             Asserts.AsA<IReadOnlyFixedFunctionMaterial>(material),
             boneTransformManager,
+            textureTransformManager,
             lighting),
         FinShaderType.TEXTURE => new GlTextureMaterialShader(model,
           Asserts.AsA<IReadOnlyTextureMaterial>(material),
           boneTransformManager,
+          textureTransformManager,
           lighting),
         FinShaderType.COLOR => new GlColorMaterialShader(model,
           Asserts.AsA<IReadOnlyColorMaterial>(material),
@@ -28,6 +31,7 @@ public static class GlMaterialShader {
         FinShaderType.STANDARD => new GlStandardMaterialShader(model,
           Asserts.AsA<IReadOnlyStandardMaterial>(material),
           boneTransformManager,
+          textureTransformManager,
           lighting),
         FinShaderType.HIDDEN => new GlHiddenMaterialShader(
             model,

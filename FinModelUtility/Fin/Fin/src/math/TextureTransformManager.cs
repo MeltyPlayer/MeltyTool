@@ -1,0 +1,184 @@
+﻿using System.Collections.Generic;
+using System.Numerics;
+
+using fin.data.indexable;
+using fin.math.matrix.four;
+using fin.math.matrix.three;
+using fin.math.rotations;
+using fin.model;
+using fin.util.time;
+
+namespace fin.math;
+
+public interface IReadOnlyTextureTransformManager {
+  (bool is2d, Matrix3x2 twoDMatrix, Matrix4x4 threeDMatrix)? GetMatrix(
+      IReadOnlyTexture texture);
+}
+
+public interface ITextureTransformManager : IReadOnlyTextureTransformManager {
+  void Clear();
+
+  void CalculateMatrices(
+      IReadOnlyList<IReadOnlyTexture> textures,
+      (IReadOnlyModelAnimation, float)? animationAndFrame
+  );
+}
+
+public class TextureTransformManager : ITextureTransformManager {
+  private readonly IndexableDictionary<IReadOnlyTexture, (bool is2d, Matrix3x2
+      twoDMatrix, Matrix4x4 threeDMatrix)> texturesToMatrices_ = new();
+
+  public void Clear() => this.texturesToMatrices_.Clear();
+
+  public void CalculateMatrices(
+      IReadOnlyList<IReadOnlyTexture> textures,
+      (IReadOnlyModelAnimation, float)? animationAndFrame) {
+    var animation = animationAndFrame?.Item1;
+    var frame = animationAndFrame?.Item2;
+
+    foreach (var texture in textures) {
+      Vector3? animationTranslation = null;
+      Vector3? animationRotation = null;
+      Vector3? animationScale = null;
+
+      // The pose of the animation, if available.
+      IReadOnlyTextureTracks? textureTracks = null;
+      animation?.TextureTracks.TryGetValue(texture, out textureTracks);
+      if (textureTracks != null) {
+        // Only gets the values from the animation if the frame is at least partially defined.
+        if (textureTracks.Translations?.HasAnyData ?? false) {
+          if (textureTracks.Translations.TryGetAtFrame(
+                  frame.Value,
+                  out var outAnimationTranslation)) {
+            animationTranslation = outAnimationTranslation;
+          }
+        }
+
+        if (textureTracks.Rotations?.HasAnyData ?? false) {
+          if (textureTracks.Rotations.TryGetAtFrame(
+                  frame.Value,
+                  out var outAnimationRotation)) {
+            animationRotation = outAnimationRotation.ToEulerRadians();
+          }
+        }
+
+        if (textureTracks.Scales?.HasAnyData ?? false) {
+          if (textureTracks.Scales.TryGetAtFrame(
+                  frame.Value,
+                  out var outAnimationScale)) {
+            animationScale = outAnimationScale;
+          }
+        }
+      }
+
+      // Uses the animation pose instead of the root pose when available.
+      var translation = animationTranslation ?? texture.Offset;
+      var rotation = animationRotation ?? texture.RotationRadians;
+      var scale = animationScale ?? texture.Scale;
+
+      var isTransform3d = texture.IsTransform3d;
+
+      if (isTransform3d) {
+        this.texturesToMatrices_[texture] = (
+            false,
+            default,
+            CalculateTextureTransform3d_(texture,
+                                         translation,
+                                         rotation,
+                                         scale));
+      } else {
+        this.texturesToMatrices_[texture] = (
+            true,
+            CalculateTextureTransform2d_(texture,
+                                         translation,
+                                         rotation,
+                                         scale),
+            default);
+      }
+    }
+  }
+
+  private static Matrix3x2 CalculateTextureTransform2d_(
+      IReadOnlyTexture texture,
+      Vector3? textureOffset,
+      Vector3? textureRotationRadians,
+      Vector3? textureScale) {
+    var scrollingTexture = texture as IScrollingTexture;
+
+    if ((textureOffset == null && scrollingTexture == null) &&
+        textureScale == null &&
+        textureRotationRadians == null) {
+      return Matrix3x2.Identity;
+    }
+
+    var secondsSinceStart
+        = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
+
+    Vector2? offset = null;
+    if (textureOffset != null || scrollingTexture != null) {
+      offset = new Vector2((textureOffset?.X ?? 0) +
+                           secondsSinceStart *
+                           (scrollingTexture?.ScrollSpeedX ?? 0),
+                           (textureOffset?.Y ?? 0) +
+                           secondsSinceStart *
+                           (scrollingTexture?.ScrollSpeedY ?? 0));
+    }
+
+    Vector2? scale = null;
+    if (textureScale != null) {
+      scale = new Vector2(textureScale.Value.X, textureScale.Value.Y);
+    }
+
+    return SystemMatrix3x2Util.FromTrss(offset,
+                                        textureRotationRadians?.Z,
+                                        scale,
+                                        null);
+  }
+
+  private static Matrix4x4 CalculateTextureTransform3d_(
+      IReadOnlyTexture texture,
+      Vector3? textureOffset,
+      Vector3? textureRotationRadians,
+      Vector3? textureScale) {
+    var scrollingTexture = texture as IScrollingTexture;
+
+    if ((textureOffset == null && scrollingTexture == null) &&
+        textureScale == null &&
+        textureRotationRadians == null) {
+      return Matrix4x4.Identity;
+    }
+
+    var secondsSinceStart
+        = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
+
+    Vector3? offset = null;
+    if (textureOffset != null || scrollingTexture != null) {
+      offset = new Vector3((textureOffset?.X ?? 0) +
+                           secondsSinceStart *
+                           (scrollingTexture?.ScrollSpeedX ?? 0),
+                           (textureOffset?.Y ?? 0) +
+                           secondsSinceStart *
+                           (scrollingTexture?.ScrollSpeedY ?? 0),
+                           textureOffset?.Z ?? 0);
+    }
+
+    Quaternion? rotation = null;
+    if (textureRotationRadians != null) {
+      rotation = QuaternionUtil.CreateZyx(textureRotationRadians.Value.X,
+                                          textureRotationRadians.Value.Y,
+                                          textureRotationRadians.Value.Z);
+    }
+
+    Vector3? scale = null;
+    if (textureScale != null) {
+      scale = new(textureScale.Value.X,
+                  textureScale.Value.Y,
+                  textureScale.Value.Z);
+    }
+
+    return SystemMatrix4x4Util.FromTrs(offset, rotation, scale);
+  }
+
+  public (bool is2d, Matrix3x2 twoDMatrix, Matrix4x4 threeDMatrix)? GetMatrix(
+      IReadOnlyTexture texture) => this.texturesToMatrices_[texture];
+}

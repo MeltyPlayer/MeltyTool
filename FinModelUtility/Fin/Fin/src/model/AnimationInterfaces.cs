@@ -183,67 +183,50 @@ public partial interface IMeshTracks {
 [GenerateReadOnly]
 public partial interface ITextureTracks {
   IReadOnlyTexture Texture { get; }
-  
-  IVector2Interpolatable? Translations { get; }
-  IInterpolatable<float>? Rotations { get; }
-  IVector2Interpolatable? Scales { get; }
+
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Translations { get; }
+
+  ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>? Rotations {
+    get;
+  }
+
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Scales { get; }
 
   // Translation
-  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateTranslationKeyframes(
-      int initialCapacity = 0)
-    => this.UseSeparateTranslationKeyframes(initialCapacity,
-                                            initialCapacity);
-
-  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateTranslationKeyframes(
-      int initialXCapacity,
-      int initialYCapacity);
-
-  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
       UseSeparateTranslationKeyframesWithTangents(int initialCapacity = 0)
     => this.UseSeparateTranslationKeyframesWithTangents(initialCapacity,
+      initialCapacity,
       initialCapacity);
 
-  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
       UseSeparateTranslationKeyframesWithTangents(int initialXCapacity,
-                                                  int initialYCapacity);
-
-  ICombinedVector2Keyframes<Keyframe<Vector2>> UseCombinedTranslationKeyframes(
-      int initialCapacity = 0);
-
-  ICombinedVector2Keyframes<KeyframeWithTangents<Vector2>>
-      UseCombinedTranslationKeyframesWithTangents(int initialCapacity = 0);
+                                                  int initialYCapacity,
+                                                  int initialZCapacity);
 
   // Rotation
-  IInterpolatableKeyframes<Keyframe<float>, float> UseRotationKeyframes(
-      int initialCapacity);
+  ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>
+      UseSeparateRotationKeyframesWithTangents(int initialCapacity = 0)
+    => this.UseSeparateRotationKeyframesWithTangents(initialCapacity,
+      initialCapacity,
+      initialCapacity);
 
-  IInterpolatableKeyframes<KeyframeWithTangents<float>, float>
-      UseRotationKeyframesWithTangents(int initialCapacity);
+  ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>
+      UseSeparateRotationKeyframesWithTangents(int initialXCapacity,
+                                               int initialYCapacity,
+                                               int initialZCapacity);
 
   // Scale
-  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateScaleKeyframes(
-      int initialCapacity = 0)
-    => this.UseSeparateScaleKeyframes(initialCapacity,
-                                      initialCapacity);
-
-  ISeparateVector2Keyframes<Keyframe<float>> UseSeparateScaleKeyframes(
-      int initialXCapacity,
-      int initialYCapacity);
-
-  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
       UseSeparateScaleKeyframesWithTangents(int initialCapacity = 0)
     => this.UseSeparateScaleKeyframesWithTangents(initialCapacity,
+                                                  initialCapacity,
                                                   initialCapacity);
 
-  ISeparateVector2Keyframes<KeyframeWithTangents<float>>
+  ISeparateVector3Keyframes<KeyframeWithTangents<float>>
       UseSeparateScaleKeyframesWithTangents(int initialXCapacity,
-                                            int initialYCapacity);
-
-  ICombinedVector2Keyframes<Keyframe<Vector2>> UseCombinedScaleKeyframes(
-      int initialCapacity = 0);
-
-  ICombinedVector2Keyframes<KeyframeWithTangents<Vector2>>
-      UseCombinedScaleKeyframesWithTangents(int initialCapacity = 0);
+                                            int initialYCapacity,
+                                            int initialZCapacity);
 }
 
 

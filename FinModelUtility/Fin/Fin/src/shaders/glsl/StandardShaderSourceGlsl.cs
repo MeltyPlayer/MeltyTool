@@ -14,6 +14,8 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
       bool useBoneMatrices) {
     this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);
 
+    var animations = model.AnimationManager.Animations;
+
     var hasNormalTexture = material.NormalTexture != null;
     var hasNormals = hasNormalTexture ||
                      model.Skin.HasNormalsForMaterial(material);
@@ -38,20 +40,22 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
            """);
     }
 
-    fragmentShaderSrc.AppendTextureStructIfNeeded(material.Textures);
+    fragmentShaderSrc.AppendTextureStructIfNeeded(
+        material.Textures,
+        animations);
 
     fragmentShaderSrc.Append(
         $"""
 
 
-         uniform {GlslUtil.GetTypeOfTexture(diffuseTexture)} diffuseTexture;
+         uniform {GlslUtil.GetTypeOfTexture(diffuseTexture, animations)} diffuseTexture;
          """);
 
     if (hasNormalTexture) {
       fragmentShaderSrc.Append(
           $"""
 
-           uniform {GlslUtil.GetTypeOfTexture(normalTexture)} normalTexture;
+           uniform {GlslUtil.GetTypeOfTexture(normalTexture, animations)} normalTexture;
            """);
     }
 
@@ -59,15 +63,15 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
       fragmentShaderSrc.Append(
           $"""
 
-           uniform {GlslUtil.GetTypeOfTexture(specularTexture)} specularTexture;
+           uniform {GlslUtil.GetTypeOfTexture(specularTexture, animations)} specularTexture;
            """);
     }
 
     fragmentShaderSrc.Append(
         $"""
 
-         uniform {GlslUtil.GetTypeOfTexture(ambientOcclusionTexture)} ambientOcclusionTexture;
-         uniform {GlslUtil.GetTypeOfTexture(emissiveTexture)} emissiveTexture;
+         uniform {GlslUtil.GetTypeOfTexture(ambientOcclusionTexture, animations)} ambientOcclusionTexture;
+         uniform {GlslUtil.GetTypeOfTexture(emissiveTexture, animations)} emissiveTexture;
          uniform float {GlslConstants.UNIFORM_SHININESS_NAME};
          uniform int {GlslConstants.UNIFORM_USE_LIGHTING_NAME};
 
@@ -111,9 +115,9 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
 
 
           void main() {
-            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture)}};
-            vec4 ambientOcclusionColor = {{GlslUtil.ReadColorFromTexture("ambientOcclusionTexture", "uv0", ambientOcclusionTexture)}};
-            vec4 emissiveColor = {{GlslUtil.ReadColorFromTexture("emissiveTexture", "uv0", emissiveTexture)}};
+            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture, animations)}};
+            vec4 ambientOcclusionColor = {{GlslUtil.ReadColorFromTexture("ambientOcclusionTexture", "uv0", ambientOcclusionTexture, animations)}};
+            vec4 emissiveColor = {{GlslUtil.ReadColorFromTexture("emissiveTexture", "uv0", emissiveTexture, animations)}};
           
             fragColor = diffuseColor * vertexColor0;
           """);
@@ -132,7 +136,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
              
                // Have to renormalize because the vertex normals can become distorted when interpolated.
                vec3 fragNormal = normalize(vertexNormal);
-               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", "uv0", normalTexture)}.xyz * 2 - 1;
+               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", "uv0", normalTexture, animations)}.xyz * 2 - 1;
                fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
              """);
       }
@@ -142,7 +146,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
           $"""
            
            
-             fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, {(hasSpecularTexture ? $"{GlslUtil.ReadColorFromTexture("specularTexture", "uv0", specularTexture)}" : "vec4(1)")}, ambientOcclusionColor.r).rgb, {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
+             fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, {(hasSpecularTexture ? $"{GlslUtil.ReadColorFromTexture("specularTexture", "uv0", specularTexture, animations)}" : "vec4(1)")}, ambientOcclusionColor.r).rgb, {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
            """);
     }
 

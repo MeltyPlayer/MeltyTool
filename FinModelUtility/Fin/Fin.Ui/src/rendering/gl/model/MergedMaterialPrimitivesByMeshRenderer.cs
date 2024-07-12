@@ -12,6 +12,7 @@ public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
 
   public MergedMaterialPrimitivesByMeshRenderer(
       IReadOnlyBoneTransformManager? boneTransformManager,
+      IReadOnlyTextureTransformManager? textureTransformManager,
       GlBufferManager bufferManager,
       IReadOnlyModel model,
       IReadOnlyMaterial? material,
@@ -22,6 +23,7 @@ public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
     this.materialShader_ = GlMaterialShader.FromMaterial(model,
       material,
       boneTransformManager,
+      textureTransformManager,
       lighting);
 
     this.bufferRenderer_ = bufferManager.CreateRenderer(mergedPrimitive);

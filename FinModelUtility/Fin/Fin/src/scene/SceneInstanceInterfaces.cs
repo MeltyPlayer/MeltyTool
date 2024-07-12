@@ -82,13 +82,12 @@ public partial interface ISceneObjectInstance : ITickable, IDisposable {
 public partial interface ISceneModelInstance : ITickable, IDisposable {
   IReadOnlySceneModel Definition { get; }
 
-  IReadOnlyListDictionary<IReadOnlyBone, ISceneModelInstance> Children {
-    get;
-  }
+  IReadOnlyListDictionary<IReadOnlyBone, ISceneModelInstance> Children { get; }
 
   IReadOnlyModel Model { get; }
 
   IBoneTransformManager BoneTransformManager { get; }
+  ITextureTransformManager TextureTransformManager { get; }
 
   IReadOnlyModelAnimation? Animation { get; set; }
   IAnimationPlaybackManager AnimationPlaybackManager { get; }

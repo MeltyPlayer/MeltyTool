@@ -1,6 +1,4 @@
-﻿using System;
-
-using fin.animation.interpolation;
+﻿using fin.animation.interpolation;
 using fin.data.indexable;
 
 namespace fin.model.impl;

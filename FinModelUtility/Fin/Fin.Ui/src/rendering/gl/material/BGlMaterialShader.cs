@@ -18,6 +18,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   private readonly IReadOnlyBone[] bonesUsedByVertices_;
   private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
+  private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private readonly GlShaderProgram impl_;
 
   private readonly IShaderUniform<Matrix4x4> modelMatrixUniform_;
@@ -36,11 +37,13 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
       IReadOnlyModel model,
       TMaterial material,
       IReadOnlyBoneTransformManager? boneTransformManager,
+      IReadOnlyTextureTransformManager? textureTransformManager,
       IReadOnlyLighting? lighting) {
     this.model_ = model;
     this.bonesUsedByVertices_ = model.Skin.BonesUsedByVertices.ToArray();
     this.Material = material;
     this.boneTransformManager_ = boneTransformManager;
+    this.textureTransformManager_ = textureTransformManager;
     this.lighting_ = lighting;
 
     var shaderSource = this.GenerateShaderSource(model, material);
@@ -200,6 +203,8 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
         new CachedTextureUniformData(textureName,
                                      textureIndex,
                                      finTexture,
+                                     this.model_.AnimationManager.Animations,
+                                     this.textureTransformManager_,
                                      glTexture,
                                      this.impl_));
 }

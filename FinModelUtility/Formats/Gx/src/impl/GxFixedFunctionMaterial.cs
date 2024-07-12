@@ -7,6 +7,8 @@ using fin.language.equations.fixedFunction.impl;
 using fin.model;
 using fin.util.asserts;
 
+using gx.impl;
+
 namespace gx;
 
 /// <summary>
@@ -25,8 +27,7 @@ public partial class GxFixedFunctionMaterial {
       IMaterialManager materialManager,
       IPopulatedMaterial populatedMaterial,
       IList<IGxTexture> tex1Textures,
-      ILazyDictionary<(IGxTexture, ITexCoordGen?, ITextureMatrixInfo?),
-          ITexture> lazyTextureDictionary) {
+      ILazyDictionary<IGxTextureBundle, ITexture> lazyTextureDictionary) {
     // TODO: materialEntry.Flag determines draw order
 
     var materialName = populatedMaterial.Name;
@@ -302,8 +303,10 @@ public partial class GxFixedFunctionMaterial {
             gxTexture.MagTextureFilter,
             gxTexture.ColorType);
 
-        var texture =
-            lazyTextureDictionary[(gxTexture, texCoordGen, texMatrix)];
+        var texture = lazyTextureDictionary[new GxTextureBundle(textureIndex,
+                                              gxTexture,
+                                              texCoordGen,
+                                              texMatrix)];
 
         valueManager.UpdateTextureIndex((int) textureIndex);
         material.SetTextureSource((int) textureIndex, texture);

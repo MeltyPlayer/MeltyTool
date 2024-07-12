@@ -10,7 +10,10 @@ using fin.util.image;
 
 namespace fin.language.equations.fixedFunction;
 
-public class FixedFunctionEquationsGlslPrinter {
+public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
+  private readonly IReadOnlyList<IReadOnlyModelAnimation> animations_
+      = model.AnimationManager.Animations;
+
   public string Print(IReadOnlyFixedFunctionMaterial material) {
     var sb = new StringBuilder();
     this.Print(sb, material);
@@ -81,14 +84,15 @@ public class FixedFunctionEquationsGlslPrinter {
         dependsOnIndividualTextures
             .Select((dependsOnTexture, i) => (i, dependsOnTexture))
             .Where(tuple => tuple.dependsOnTexture)
-            .Select(tuple => textures[tuple.i]));
+            .Select(tuple => textures[tuple.i]),
+        this.animations_);
 
     var hadUniform = false;
     for (var t = 0; t < MaterialConstants.MAX_TEXTURES; ++t) {
       if (dependsOnIndividualTextures[t]) {
         hadUniform = true;
         sb.AppendLine(
-            $"uniform {GlslUtil.GetTypeOfTexture(textures[t])} texture{t};");
+            $"uniform {GlslUtil.GetTypeOfTexture(textures[t], this.animations_)} texture{t};");
       }
     }
 
@@ -819,19 +823,22 @@ public class FixedFunctionEquationsGlslPrinter {
         UvType.STANDARD
             => GlslUtil.ReadColorFromTexture(textureName,
                                              $"uv{texture.UvIndex}",
-                                             texture),
+                                             texture,
+                                             this.animations_),
         UvType.SPHERICAL
             => GlslUtil.ReadColorFromTexture(
                 textureName,
                 "normalUv",
                 uv => $"asin({uv}) / 3.14159 + 0.5",
-                texture),
+                texture,
+                this.animations_),
         UvType.LINEAR
             => GlslUtil.ReadColorFromTexture(
                 textureName,
                 "normalUv",
                 uv => $"acos({uv}) / 3.14159",
-                texture),
+                texture,
+                this.animations_),
     };
   }
 

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Text;
 
+using fin.data.indexable;
 using fin.math;
 using fin.model;
-using fin.math.xyz;
 using fin.util.enums;
 
 namespace fin.shaders.glsl;
@@ -324,14 +323,15 @@ out vec4 vertexColor{i};");
 
   public static void AppendTextureStructIfNeeded(
       this StringBuilder sb,
-      IEnumerable<IReadOnlyTexture?> textures
+      IEnumerable<IReadOnlyTexture?> textures,
+      IReadOnlyList<IReadOnlyModelAnimation> animations
   ) {
     var usesClamping = false;
     var textureTransformType = TextureTransformType.NONE;
     foreach (var texture in textures) {
       usesClamping = usesClamping || texture.UsesShaderClamping();
-      textureTransformType
-          = textureTransformType.Merge(texture.GetTextureTransformType());
+      textureTransformType = textureTransformType.Merge(
+          texture.GetTextureTransformType_(animations));
     }
 
     if (!usesClamping && textureTransformType == TextureTransformType.NONE) {
@@ -394,22 +394,32 @@ out vec4 vertexColor{i};");
     }
   }
 
-  public static string GetTypeOfTexture(IReadOnlyTexture? finTexture)
-    => finTexture.NeedsTextureShaderStruct() ? "Texture" : "sampler2D";
+  public static string GetTypeOfTexture(
+      IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations)
+    => finTexture.NeedsTextureShaderStruct(animations)
+        ? "Texture"
+        : "sampler2D";
 
   public static string ReadColorFromTexture(
       string textureName,
       string rawUvName,
-      IReadOnlyTexture? finTexture)
-    => ReadColorFromTexture(textureName, rawUvName, t => t, finTexture);
+      IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations)
+    => ReadColorFromTexture(textureName,
+                            rawUvName,
+                            t => t,
+                            finTexture,
+                            animations);
 
   public static string ReadColorFromTexture(
       string textureName,
       string rawUvName,
       Func<string, string> uvConverter,
-      IReadOnlyTexture? finTexture) {
+      IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations) {
     var needsClamp = finTexture.UsesShaderClamping();
-    var textureTransformType = finTexture.GetTextureTransformType();
+    var textureTransformType = finTexture.GetTextureTransformType_(animations);
 
     if (!needsClamp && textureTransformType == TextureTransformType.NONE) {
       return $"texture({textureName}, {uvConverter(rawUvName)})";
@@ -438,9 +448,11 @@ out vec4 vertexColor{i};");
   }
 
   public static bool NeedsTextureShaderStruct(
-      this IReadOnlyTexture? finTexture)
+      this IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations)
     => finTexture.UsesShaderClamping() ||
-       finTexture.GetTextureTransformType() != TextureTransformType.NONE;
+       finTexture.GetTextureTransformType_(animations) !=
+       TextureTransformType.NONE;
 
   public static bool UsesShaderClamping(this IReadOnlyTexture? finTexture) {
     if (finTexture == null) {
@@ -452,29 +464,61 @@ out vec4 vertexColor{i};");
       return true;
     }
 
-    return (finTexture.ClampS != null && !finTexture.ClampS.Value.IsRoughly01()) ||
-           (finTexture.ClampT != null && !finTexture.ClampT.Value.IsRoughly01());
+    return (finTexture.ClampS != null &&
+            !finTexture.ClampS.Value.IsRoughly01()) ||
+           (finTexture.ClampT != null &&
+            !finTexture.ClampT.Value.IsRoughly01());
   }
 
-  public static TextureTransformType GetTextureTransformType(
-      this IReadOnlyTexture? finTexture) {
+  public static TextureTransformType GetTextureTransformType_(
+      this IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations) {
     if (finTexture == null) {
       return TextureTransformType.NONE;
     }
 
+    var isTransform3d = finTexture.IsTransform3d;
+    var isScrollingTexture = finTexture is IScrollingTexture;
+
+    var staticType = GetTextureTransformType_(isTransform3d,
+                                              isScrollingTexture,
+                                              finTexture.Offset,
+                                              finTexture.RotationRadians,
+                                              finTexture.Scale);
+    if (staticType != TextureTransformType.NONE) {
+      return staticType;
+    }
+
+    foreach (var animation in animations) {
+      if (animation.TextureTracks.TryGetValue(finTexture,
+                                              out var textureTracks)) {
+        return finTexture.IsTransform3d
+            ? TextureTransformType.THREE_D
+            : TextureTransformType.TWO_D;
+      }
+    }
+
+    return TextureTransformType.NONE;
+  }
+
+  private static TextureTransformType GetTextureTransformType_(
+      bool isTransform3d,
+      bool isScrollingTexture,
+      Vector3? translationOrNull,
+      Vector3? rotationOrNull,
+      Vector3? scaleOrNull) {
     var hasTransform
-        = (finTexture.Offset is { } offset && !offset.IsRoughly0() ||
-           (finTexture.RotationRadians is { } radians &&
-            !radians.IsRoughly0()) ||
-           finTexture is IScrollingTexture);
-    if (!hasTransform && finTexture.Scale is { } scale) {
-      hasTransform = finTexture.IsTransform3d
+        = (translationOrNull is { } translation && !translation.IsRoughly0() ||
+           (rotationOrNull is { } radians && !radians.IsRoughly0()) ||
+           isScrollingTexture);
+    if (!hasTransform && scaleOrNull is { } scale) {
+      hasTransform = isTransform3d
           ? !scale.IsRoughly1()
           : !scale.Xy().IsRoughly1();
     }
 
     return hasTransform
-        ? (finTexture.IsTransform3d
+        ? (isTransform3d
             ? TextureTransformType.THREE_D
             : TextureTransformType.TWO_D)
         : TextureTransformType.NONE;

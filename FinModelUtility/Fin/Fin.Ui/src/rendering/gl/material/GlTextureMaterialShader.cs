@@ -8,23 +8,26 @@ public class GlTextureMaterialShader(
     IReadOnlyModel model,
     IReadOnlyMaterial material,
     IReadOnlyBoneTransformManager? boneTransformManager,
+    IReadOnlyTextureTransformManager? textureTransformManager,
     IReadOnlyLighting? lighting)
-    : BGlMaterialShader<IReadOnlyMaterial>(model,
-                                           material,
-                                           boneTransformManager,
-                                           lighting) {
+    : BGlMaterialShader<IReadOnlyMaterial>(
+        model,
+        material,
+        boneTransformManager,
+        textureTransformManager,
+        lighting) {
   protected override void DisposeInternal() { }
 
   protected override void Setup(
       IReadOnlyMaterial material,
       GlShaderProgram shaderProgram) {
-      var finTexture = PrimaryTextureFinder.GetFor(material);
-      var glTexture = finTexture != null
-          ? GlTexture.FromTexture(finTexture)
-          : GlMaterialConstants.NULL_WHITE_TEXTURE;
+    var finTexture = PrimaryTextureFinder.GetFor(material);
+    var glTexture = finTexture != null
+        ? GlTexture.FromTexture(finTexture)
+        : GlMaterialConstants.NULL_WHITE_TEXTURE;
 
-      this.SetUpTexture("diffuseTexture", 0, finTexture, glTexture);
-    }
+    this.SetUpTexture("diffuseTexture", 0, finTexture, glTexture);
+  }
 
   protected override void PassUniformsAndBindTextures(
       GlShaderProgram shaderProgram) { }

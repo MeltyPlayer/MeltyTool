@@ -8,10 +8,12 @@ public class GlHiddenMaterialShader(
     IReadOnlyModel model,
     IReadOnlyBoneTransformManager? boneTransformManager,
     IReadOnlyLighting? lighting)
-    : BGlMaterialShader<IReadOnlyMaterial?>(model,
-                                            null,
-                                            boneTransformManager,
-                                            lighting) {
+    : BGlMaterialShader<IReadOnlyMaterial?>(
+        model,
+        null,
+        boneTransformManager,
+        null,
+        lighting) {
   protected override void DisposeInternal() { }
 
   protected override IShaderSourceGlsl GenerateShaderSource(

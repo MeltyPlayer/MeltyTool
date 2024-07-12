@@ -31,7 +31,8 @@ public class SceneModelRenderer : IRenderable, IDisposable {
     this.modelRenderer_ =
         new ModelRendererV2(model,
                             lighting,
-                            sceneModel.BoneTransformManager) {
+                            sceneModel.BoneTransformManager,
+                            sceneModel.TextureTransformManager) {
             HiddenMeshes = this.hiddenMeshes_,
             UseLighting = new UseLightingDetector().ShouldUseLightingFor(model)
         };
@@ -111,6 +112,9 @@ public class SceneModelRenderer : IRenderable, IDisposable {
           model.Skin.BoneWeights,
           (animation, frame),
           BoneWeightTransformType.FOR_RENDERING);
+      this.sceneModel_.TextureTransformManager.CalculateMatrices(
+          model.MaterialManager.Textures,
+          (animation, frame));
 
       foreach (var meshTracks in animation.MeshTracks) {
         if (!meshTracks.DisplayStates.TryGetAtFrame(
@@ -129,6 +133,10 @@ public class SceneModelRenderer : IRenderable, IDisposable {
           this.hiddenMeshes_.Add(mesh);
         }
       }
+
+      this.sceneModel_.TextureTransformManager.CalculateMatrices(
+          model.MaterialManager.Textures,
+          null);
     }
 
     this.modelRenderer_.Render();
