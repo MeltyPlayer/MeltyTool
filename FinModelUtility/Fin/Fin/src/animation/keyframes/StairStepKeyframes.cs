@@ -28,6 +28,7 @@ public class StairStepKeyframes<T>(
   public bool TryGetAtFrame(float frame, out T value) {
     if (this.impl_.TryGetPrecedingKeyframe(frame,
                                            sharedConfig,
+                                           individualConfig,
                                            out var keyframe,
                                            out _,
                                            out _)) {

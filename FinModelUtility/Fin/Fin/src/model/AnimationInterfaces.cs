@@ -2,10 +2,8 @@
 using System.Numerics;
 
 using fin.animation;
-using fin.animation.interpolation;
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
-using fin.animation.types.vector2;
 using fin.animation.types.vector3;
 using fin.data.indexable;
 
@@ -194,39 +192,48 @@ public partial interface ITextureTracks {
 
   // Translation
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>
-      UseSeparateTranslationKeyframesWithTangents(int initialCapacity = 0)
+      UseSeparateTranslationKeyframesWithTangents(int initialCapacity = 0,
+                                                  int? animationLength = null)
     => this.UseSeparateTranslationKeyframesWithTangents(initialCapacity,
       initialCapacity,
-      initialCapacity);
+      initialCapacity,
+      animationLength);
 
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>
       UseSeparateTranslationKeyframesWithTangents(int initialXCapacity,
                                                   int initialYCapacity,
-                                                  int initialZCapacity);
+                                                  int initialZCapacity,
+                                                  int? animationLength = null);
 
   // Rotation
   ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>
-      UseSeparateRotationKeyframesWithTangents(int initialCapacity = 0)
+      UseSeparateRotationKeyframesWithTangents(int initialCapacity = 0,
+                                               int? animationLength = null)
     => this.UseSeparateRotationKeyframesWithTangents(initialCapacity,
       initialCapacity,
-      initialCapacity);
+      initialCapacity,
+      animationLength);
 
   ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>
       UseSeparateRotationKeyframesWithTangents(int initialXCapacity,
                                                int initialYCapacity,
-                                               int initialZCapacity);
+                                               int initialZCapacity,
+                                               int? animationLength = null);
 
   // Scale
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>
-      UseSeparateScaleKeyframesWithTangents(int initialCapacity = 0)
+      UseSeparateScaleKeyframesWithTangents(int initialCapacity = 0,
+                                            int? animationLength = null)
     => this.UseSeparateScaleKeyframesWithTangents(initialCapacity,
                                                   initialCapacity,
-                                                  initialCapacity);
+                                                  initialCapacity,
+                                                  animationLength);
 
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>
       UseSeparateScaleKeyframesWithTangents(int initialXCapacity,
                                             int initialYCapacity,
-                                            int initialZCapacity);
+                                            int initialZCapacity,
+                                            int? animationLength = null);
 }
 
 

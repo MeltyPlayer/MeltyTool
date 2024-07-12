@@ -16,21 +16,25 @@ public partial class ModelImpl<TVertex> {
         UseSeparateTranslationKeyframesWithTangents(
             int initialXCapacity,
             int initialYCapacity,
-            int initialZCapacity) {
+            int initialZCapacity,
+            int? animationLength = null) {
       var keyframes = new SeparateVector3Keyframes<KeyframeWithTangents<float>>(
           sharedConfig,
           FloatKeyframeWithTangentsInterpolator.Instance,
           new IndividualInterpolationConfig<float> {
+              AnimationLength = animationLength,
               InitialCapacity = initialXCapacity,
               DefaultValue
                   = Optional.Of(() => texture.Offset?.X ?? 0),
           },
           new IndividualInterpolationConfig<float> {
+              AnimationLength = animationLength,
               InitialCapacity = initialYCapacity,
               DefaultValue
                   = Optional.Of(() => texture.Offset?.Y ?? 0),
           },
           new IndividualInterpolationConfig<float> {
+              AnimationLength = animationLength,
               InitialCapacity = initialZCapacity,
               DefaultValue
                   = Optional.Of(() => texture.Offset?.Z ?? 0),

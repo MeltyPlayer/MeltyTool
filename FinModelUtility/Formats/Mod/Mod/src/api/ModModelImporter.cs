@@ -118,32 +118,36 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
             return;
           }
 
-          materialAnimation.FrameCount = Math.Max(
-              materialAnimation.FrameCount,
-              animationLength);
+          var animationSpeed = modTextureData.AnimationSpeed;
+          var adjustedAnimationLength
+              = (int) (animationLength / animationSpeed);
+
+          materialAnimation.FrameCount = Math.Max(materialAnimation.FrameCount,
+                                                  adjustedAnimationLength);
 
           var finTextureTracks = materialAnimation.AddTextureTracks(finTexture);
           {
             var modTranslationKeyframes = modTextureData.PositionAnimationData;
-            var finTranslationKeyframes
-                = finTextureTracks
-                    .UseSeparateTranslationKeyframesWithTangents();
+            var finTranslationKeyframes = finTextureTracks
+                .UseSeparateTranslationKeyframesWithTangents(
+                    animationLength: adjustedAnimationLength);
             foreach (var modTranslationKeyframe in modTranslationKeyframes) {
+              var adjustedFrame = modTranslationKeyframe.Frame / animationSpeed;
               finTranslationKeyframes
                   .Axes[0]
-                  .SetKeyframe(modTranslationKeyframe.Frame,
+                  .SetKeyframe(adjustedFrame,
                                modTranslationKeyframe.X.Value,
                                modTranslationKeyframe.X.InTangent,
                                modTranslationKeyframe.X.OutTangent);
               finTranslationKeyframes
                   .Axes[1]
-                  .SetKeyframe(modTranslationKeyframe.Frame,
+                  .SetKeyframe(adjustedFrame,
                                modTranslationKeyframe.Y.Value,
                                modTranslationKeyframe.Y.InTangent,
                                modTranslationKeyframe.Y.OutTangent);
               finTranslationKeyframes
                   .Axes[2]
-                  .SetKeyframe(modTranslationKeyframe.Frame,
+                  .SetKeyframe(adjustedFrame,
                                modTranslationKeyframe.Z.Value,
                                modTranslationKeyframe.Z.InTangent,
                                modTranslationKeyframe.Z.OutTangent);
@@ -151,23 +155,26 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           }
           {
             var modRotationKeyframes = modTextureData.RotationAnimationData;
-            var finRotationKeyframes = finTextureTracks.UseSeparateRotationKeyframesWithTangents();
+            var finRotationKeyframes
+                = finTextureTracks.UseSeparateRotationKeyframesWithTangents(
+                    animationLength: adjustedAnimationLength);
             foreach (var modRotationKeyframe in modRotationKeyframes) {
+              var adjustedFrame = modRotationKeyframe.Frame / animationSpeed;
               finRotationKeyframes
                   .Axes[0]
-                  .SetKeyframe(modRotationKeyframe.Frame,
+                  .SetKeyframe(adjustedFrame,
                                modRotationKeyframe.X.Value,
                                modRotationKeyframe.X.InTangent,
                                modRotationKeyframe.X.OutTangent);
               finRotationKeyframes
                   .Axes[1]
-                  .SetKeyframe(modRotationKeyframe.Frame,
+                  .SetKeyframe(adjustedFrame,
                                modRotationKeyframe.Y.Value,
                                modRotationKeyframe.Y.InTangent,
                                modRotationKeyframe.Y.OutTangent);
               finRotationKeyframes
                   .Axes[2]
-                  .SetKeyframe(modRotationKeyframe.Frame,
+                  .SetKeyframe(adjustedFrame,
                                modRotationKeyframe.Z.Value,
                                modRotationKeyframe.Z.InTangent,
                                modRotationKeyframe.Z.OutTangent);
@@ -176,20 +183,22 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           {
             var modScaleKeyframes = modTextureData.ScaleAnimationData;
             var finScaleKeyframes
-                = finTextureTracks.UseSeparateScaleKeyframesWithTangents();
+                = finTextureTracks.UseSeparateScaleKeyframesWithTangents(
+                    animationLength: adjustedAnimationLength);
             foreach (var modScaleKeyframe in modScaleKeyframes) {
+              var adjustedFrame = modScaleKeyframe.Frame / animationSpeed;
               finScaleKeyframes.Axes[0]
-                               .SetKeyframe(modScaleKeyframe.Frame,
+                               .SetKeyframe(adjustedFrame,
                                             modScaleKeyframe.X.Value,
                                             modScaleKeyframe.X.InTangent,
                                             modScaleKeyframe.X.OutTangent);
               finScaleKeyframes.Axes[1]
-                               .SetKeyframe(modScaleKeyframe.Frame,
+                               .SetKeyframe(adjustedFrame,
                                             modScaleKeyframe.Y.Value,
                                             modScaleKeyframe.Y.InTangent,
                                             modScaleKeyframe.Y.OutTangent);
               finScaleKeyframes.Axes[2]
-                               .SetKeyframe(modScaleKeyframe.Frame,
+                               .SetKeyframe(adjustedFrame,
                                             modScaleKeyframe.Z.Value,
                                             modScaleKeyframe.Z.InTangent,
                                             modScaleKeyframe.Z.OutTangent);

@@ -31,6 +31,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
     switch (this.impl_.TryGetPrecedingAndFollowingKeyframes(
                 frame,
                 sharedConfig,
+                individualConfig,
                 out var precedingKeyframe,
                 out var followingKeyframe,
                 out var normalizedFrame)) {
@@ -64,6 +65,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
     => this.impl_.TryGetPrecedingAndFollowingKeyframes(
         frame,
         sharedConfig,
+        individualConfig,
         out precedingKeyframe,
         out followingKeyframe,
         out normalizedFrame);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using fin.animation.interpolation;
@@ -30,6 +29,7 @@ public static class KeyframesUtil {
       this List<TKeyframe> impl,
       float frame,
       ISharedInterpolationConfig sharedConfig,
+      IIndividualInterpolationConfig individualConfig,
       out TKeyframe keyframe,
       out int keyframeIndex,
       out float normalizedFrame) where TKeyframe : IKeyframe {
@@ -44,7 +44,9 @@ public static class KeyframesUtil {
     var looping = sharedConfig.Looping;
 
     if (looping) {
-      frame = frame.ModRange(0, sharedConfig.AnimationLength);
+      frame = frame.ModRange(0,
+                             individualConfig.AnimationLength ??
+                             sharedConfig.AnimationLength);
     }
 
     var index
@@ -101,11 +103,13 @@ public static class KeyframesUtil {
       this List<TKeyframe> impl,
       float frame,
       ISharedInterpolationConfig sharedConfig,
+      IIndividualInterpolationConfig individualConfig,
       out TKeyframe precedingKeyframe,
       out TKeyframe followingKeyframe,
       out float normalizedFrame) where TKeyframe : IKeyframe {
     if (!impl.TryGetPrecedingKeyframe(frame,
                                       sharedConfig,
+                                      individualConfig,
                                       out precedingKeyframe,
                                       out var precedingKeyframeIndex,
                                       out normalizedFrame)) {
