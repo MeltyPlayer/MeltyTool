@@ -52,10 +52,15 @@ public enum CullingMode {
   SHOW_NEITHER,
 }
 
+[Flags]
 public enum DepthMode {
-  USE_DEPTH_BUFFER,
-  IGNORE_DEPTH_BUFFER,
-  SKIP_WRITE_TO_DEPTH_BUFFER
+  NONE,
+  READ = 0x1,
+  WRITE = 0x2,
+
+  READ_ONLY = READ,
+  WRITE_ONLY = WRITE,
+  READ_AND_WRITE = READ | WRITE,
 }
 
 public enum DepthCompareType {

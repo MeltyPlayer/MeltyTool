@@ -51,12 +51,15 @@ public partial class GxFixedFunctionMaterial {
     material.UpdateAlphaChannel = false;
 
     var depthFunction = populatedMaterial.DepthFunction;
-    material.DepthMode =
-        depthFunction.Enable
-            ? (depthFunction.WriteNewValueIntoDepthBuffer
-                ? DepthMode.USE_DEPTH_BUFFER
-                : DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER)
-            : DepthMode.IGNORE_DEPTH_BUFFER;
+    material.DepthMode = DepthMode.NONE;
+    if (depthFunction.Enable) {
+      material.DepthMode |= DepthMode.READ;
+    }
+
+    if (depthFunction.WriteNewValueIntoDepthBuffer) {
+      material.DepthMode |= DepthMode.WRITE;
+    }
+
     material.DepthCompareType = depthFunction.Func.ToFinDepthCompareType();
 
     new GxFixedFunctionBlending().ApplyBlending(

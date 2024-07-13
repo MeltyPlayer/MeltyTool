@@ -21,7 +21,7 @@ public class RouteModelImporter {
       var mesh = skin.AddMesh();
 
       var routeMaterial = model.MaterialManager.AddColorMaterial(Color.Magenta);
-      routeMaterial.DepthMode = DepthMode.IGNORE_DEPTH_BUFFER;
+      routeMaterial.DepthMode = DepthMode.NONE;
       routeMaterial.IgnoreLights = true;
 
       var linkSet = new HashSet<(int, int)>();
@@ -62,7 +62,7 @@ public class RouteModelImporter {
       }
 
       var lineMaterial = model.MaterialManager.AddColorMaterial(Color.Magenta);
-      lineMaterial.DepthMode = DepthMode.IGNORE_DEPTH_BUFFER;
+      lineMaterial.DepthMode = DepthMode.NONE;
       lineMaterial.IgnoreLights = true;
 
       var links = linkSet.ToArray();

@@ -415,7 +415,7 @@ public class LevelXmlParser {
 
             var skydomeModel = modelMap[skyboxObj.ModelName];
             foreach (var finMaterial in skydomeModel.MaterialManager.All) {
-              finMaterial.DepthMode = DepthMode.IGNORE_DEPTH_BUFFER;
+              finMaterial.DepthMode = DepthMode.NONE;
               finMaterial.DepthCompareType = DepthCompareType.Always;
             }
 

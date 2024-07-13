@@ -32,7 +32,7 @@ public class BackgroundSphereRenderer : IRenderable {
     var mesh = model.Skin.AddMesh();
 
     var material = model.MaterialManager.AddNullMaterial();
-    material.DepthMode = DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER;
+    material.DepthMode = DepthMode.READ_ONLY;
 
     var scale = 100;
 

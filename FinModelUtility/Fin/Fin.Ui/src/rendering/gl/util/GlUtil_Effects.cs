@@ -16,7 +16,7 @@ public static partial class GlUtil {
     GlUtil.SetBlending(BlendEquation.ADD,
                        BlendFactor.CONST_COLOR,
                        BlendFactor.CONST_ALPHA);
-    GlUtil.SetDepth(DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER);
+    GlUtil.SetDepth(DepthMode.READ_ONLY);
     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
     GlUtil.DisableChangingBlending = true;
     GlUtil.DisableChangingDepth = true;
@@ -39,7 +39,7 @@ public static partial class GlUtil {
     GlUtil.SetBlending(BlendEquation.ADD,
                        BlendFactor.ZERO,
                        BlendFactor.CONST_COLOR);
-    GlUtil.SetDepth(DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER);
+    GlUtil.SetDepth(DepthMode.READ_ONLY);
     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
     GL.LineWidth(lineWidth);
     GlUtil.DisableChangingBlending = true;

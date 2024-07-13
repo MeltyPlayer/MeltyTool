@@ -268,12 +268,15 @@ public class CmbFixedFunctionMaterial {
             TestFunc.Gequal   => DepthCompareType.GEqual,
             TestFunc.Always   => DepthCompareType.Always,
         };
-        finMaterial.DepthMode = cmbMaterial.depthTestEnabled switch {
-            true => cmbMaterial.depthWriteEnabled
-                ? DepthMode.USE_DEPTH_BUFFER
-                : DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER,
-            false => DepthMode.IGNORE_DEPTH_BUFFER,
-        };
+
+        finMaterial.DepthMode = DepthMode.NONE;
+        if (cmbMaterial.depthTestEnabled) {
+          finMaterial.DepthMode |= DepthMode.READ;
+        }
+
+        if (cmbMaterial.depthWriteEnabled) {
+          finMaterial.DepthMode |= DepthMode.WRITE;
+        }
       }
 
       this.Material.Name = $"material{materialIndex}";

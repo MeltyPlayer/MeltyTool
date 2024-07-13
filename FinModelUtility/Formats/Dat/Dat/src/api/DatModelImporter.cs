@@ -290,8 +290,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               fixedFunctionMaterial.Shininess = mObjMaterial.Shininess;
               // TODO: This results in some issues with sorting
               if (mObj.RenderMode.CheckFlag(RenderMode.NO_ZUPDATE)) {
-                fixedFunctionMaterial.DepthMode =
-                    DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER;
+                fixedFunctionMaterial.DepthMode = DepthMode.READ_ONLY;
               }
 
               this.PopulateFixedFunctionMaterial_(mObj,

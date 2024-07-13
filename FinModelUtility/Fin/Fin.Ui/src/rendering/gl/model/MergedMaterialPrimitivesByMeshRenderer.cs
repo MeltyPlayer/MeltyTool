@@ -87,7 +87,7 @@ public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
 
     GlUtil.SetCulling(this.material_?.CullingMode ?? CullingMode.SHOW_BOTH);
     GlUtil.SetDepth(
-        this.material_?.DepthMode ?? DepthMode.USE_DEPTH_BUFFER,
+        this.material_?.DepthMode ?? DepthMode.READ_AND_WRITE,
         this.material_?.DepthCompareType ??
         DepthCompareType.LEqual);
     GlUtil.SetChannelUpdateMask(this.material_?.UpdateColorChannel ?? true,

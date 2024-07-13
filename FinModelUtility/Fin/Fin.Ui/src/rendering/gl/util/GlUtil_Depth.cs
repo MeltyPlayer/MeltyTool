@@ -1,26 +1,23 @@
 ﻿using fin.model;
+using fin.util.enums;
 
-using OpenTK.Audio.OpenAL;
 using OpenTK.Graphics.OpenGL;
 
 namespace fin.ui.rendering.gl;
 
 public partial class GlState {
   public (DepthMode, DepthCompareType) DepthModeAndCompareType { get; set; }
-    = (DepthMode.USE_DEPTH_BUFFER, DepthCompareType.LEqual);
+    = (DepthMode.READ | DepthMode.WRITE, DepthCompareType.LEqual);
 }
 
 public static partial class GlUtil {
   public static bool DisableChangingDepth { get; set; }
 
   public static void ResetDepth()
-    => SetDepth(DepthMode.USE_DEPTH_BUFFER, DepthCompareType.LEqual);
+    => SetDepth((DepthMode.READ | DepthMode.WRITE), DepthCompareType.LEqual);
 
   public static bool SetDepth(DepthMode depthMode)
-    => SetDepth(depthMode,
-                depthMode == DepthMode.IGNORE_DEPTH_BUFFER
-                    ? DepthCompareType.Always
-                    : DepthCompareType.LEqual);
+    => SetDepth(depthMode, depthMode == DepthMode.NONE ? DepthCompareType.Always : DepthCompareType.LEqual);
 
   public static bool SetDepth(
       DepthMode depthMode,
@@ -37,29 +34,15 @@ public static partial class GlUtil {
     GlUtil.currentState_.DepthModeAndCompareType
         = (depthMode, depthCompareType);
 
-    switch (depthMode) {
-      case DepthMode.USE_DEPTH_BUFFER: {
-        GL.DepthFunc(ConvertFinDepthCompareTypeToGl_(depthCompareType));
-        GL.Enable(EnableCap.DepthTest);
-        GL.DepthMask(true);
-        break;
-      }
-      case DepthMode.IGNORE_DEPTH_BUFFER: {
-        GL.Disable(EnableCap.DepthTest);
-        GL.DepthMask(false);
-        break;
-      }
-      case DepthMode.SKIP_WRITE_TO_DEPTH_BUFFER: {
-        GL.DepthFunc(ConvertFinDepthCompareTypeToGl_(depthCompareType));
-        GL.Enable(EnableCap.DepthTest);
-        GL.DepthMask(false);
-        break;
-      }
-      default:
-        throw new ArgumentOutOfRangeException(nameof(depthMode),
-                                              depthMode,
-                                              null);
+    if (depthMode.CheckFlag(DepthMode.READ) &&
+        depthCompareType != DepthCompareType.Always) {
+      GL.DepthFunc(ConvertFinDepthCompareTypeToGl_(depthCompareType));
+      GL.Enable(EnableCap.DepthTest);
+    } else {
+      GL.Disable(EnableCap.DepthTest);
     }
+
+    GL.DepthMask(depthMode.CheckFlag(DepthMode.WRITE));
 
     return true;
   }
