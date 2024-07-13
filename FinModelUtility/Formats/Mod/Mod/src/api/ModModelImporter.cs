@@ -138,20 +138,26 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                   .Axes[0]
                   .SetKeyframe(adjustedFrame,
                                modTranslationKeyframe.X.Value,
-                               modTranslationKeyframe.X.InTangent,
-                               modTranslationKeyframe.X.OutTangent);
+                               modTranslationKeyframe.X.InTangent *
+                               animationSpeed,
+                               modTranslationKeyframe.X.OutTangent *
+                               animationSpeed);
               finTranslationKeyframes
                   .Axes[1]
                   .SetKeyframe(adjustedFrame,
                                modTranslationKeyframe.Y.Value,
-                               modTranslationKeyframe.Y.InTangent,
-                               modTranslationKeyframe.Y.OutTangent);
+                               modTranslationKeyframe.Y.InTangent *
+                               animationSpeed,
+                               modTranslationKeyframe.Y.OutTangent *
+                               animationSpeed);
               finTranslationKeyframes
                   .Axes[2]
                   .SetKeyframe(adjustedFrame,
                                modTranslationKeyframe.Z.Value,
-                               modTranslationKeyframe.Z.InTangent,
-                               modTranslationKeyframe.Z.OutTangent);
+                               modTranslationKeyframe.Z.InTangent *
+                               animationSpeed,
+                               modTranslationKeyframe.Z.OutTangent *
+                               animationSpeed);
             }
           }
           {
@@ -165,20 +171,26 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                   .Axes[0]
                   .SetKeyframe(adjustedFrame,
                                modRotationKeyframe.X.Value,
-                               modRotationKeyframe.X.InTangent,
-                               modRotationKeyframe.X.OutTangent);
+                               modRotationKeyframe.X.InTangent *
+                               animationSpeed,
+                               modRotationKeyframe.X.OutTangent *
+                               animationSpeed);
               finRotationKeyframes
                   .Axes[1]
                   .SetKeyframe(adjustedFrame,
                                modRotationKeyframe.Y.Value,
-                               modRotationKeyframe.Y.InTangent,
-                               modRotationKeyframe.Y.OutTangent);
+                               modRotationKeyframe.Y.InTangent *
+                               animationSpeed,
+                               modRotationKeyframe.Y.OutTangent *
+                               animationSpeed);
               finRotationKeyframes
                   .Axes[2]
                   .SetKeyframe(adjustedFrame,
                                modRotationKeyframe.Z.Value,
-                               modRotationKeyframe.Z.InTangent,
-                               modRotationKeyframe.Z.OutTangent);
+                               modRotationKeyframe.Z.InTangent *
+                               animationSpeed,
+                               modRotationKeyframe.Z.OutTangent *
+                               animationSpeed);
             }
           }
           {
@@ -191,18 +203,24 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
               finScaleKeyframes.Axes[0]
                                .SetKeyframe(adjustedFrame,
                                             modScaleKeyframe.X.Value,
-                                            modScaleKeyframe.X.InTangent,
-                                            modScaleKeyframe.X.OutTangent);
+                                            modScaleKeyframe.X.InTangent *
+                                            animationSpeed,
+                                            modScaleKeyframe.X.OutTangent *
+                                            animationSpeed);
               finScaleKeyframes.Axes[1]
                                .SetKeyframe(adjustedFrame,
                                             modScaleKeyframe.Y.Value,
-                                            modScaleKeyframe.Y.InTangent,
-                                            modScaleKeyframe.Y.OutTangent);
+                                            modScaleKeyframe.Y.InTangent *
+                                            animationSpeed,
+                                            modScaleKeyframe.Y.OutTangent *
+                                            animationSpeed);
               finScaleKeyframes.Axes[2]
                                .SetKeyframe(adjustedFrame,
                                             modScaleKeyframe.Z.Value,
-                                            modScaleKeyframe.Z.InTangent,
-                                            modScaleKeyframe.Z.OutTangent);
+                                            modScaleKeyframe.Z.InTangent *
+                                            animationSpeed,
+                                            modScaleKeyframe.Z.OutTangent *
+                                            animationSpeed);
             }
           }
         });
