@@ -8,6 +8,7 @@ using CommunityToolkit.HighPerformance.Helpers;
 
 using fin.animation.keyframes;
 using fin.color;
+using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
@@ -270,6 +271,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     var jointCount = mod.joints.Count;
     // Pass 1: Creates lists at each index in joint children
     var jointChildren = new List<int>[jointCount];
+    var childrenByJoint = new ListDictionary<Joint, Joint>();
     for (var i = 0; i < jointCount; ++i) {
       jointChildren[i] = [];
     }
@@ -280,6 +282,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
       var parentIndex = (int) joint.parentIdx;
       if (parentIndex != -1) {
         jointChildren[parentIndex].Add(i);
+        childrenByJoint.Add(mod.joints[parentIndex], joint);
       }
     }
 
@@ -343,23 +346,30 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
            .ToArray();
 
     model.Skin.AllowMaterialRendererMerging = false;
-    var meshTuples
-        = mod.joints
-             .SelectMany(j => j.matpolys)
-             .Select(m => {
-               var mesh = mod.meshes[m.meshIdx];
-               var (modMaterial, finMaterial)
-                   = modMaterialAndFinMaterialByIndex[m.matIdx];
-               var transparencyType
-                   = modMaterial.flags.CheckFlag(
-                       MaterialFlags.TRANSPARENT_BLEND);
-               var priority = 1000 - modMaterial.unknown1;
-               return (mesh, modMaterial, finMaterial, transparencyType,
-                       priority);
-             })
-             .ToArray();
 
-    foreach (var (mesh, modMaterial, finMaterial, _, _) in meshTuples) {
+    // Ripped directly from the decomp
+    var sortedMatPolys = new LinkedList<JointMatPoly>();
+    AddSortedMatPolysSiblings_(sortedMatPolys,
+                               [mod.joints[0]],
+                               childrenByJoint,
+                               mod.materials.materials,
+                               MaterialFlags.TRANSPARENT_BLEND);
+    AddSortedMatPolysSiblings_(sortedMatPolys,
+                               [mod.joints[0]],
+                               childrenByJoint,
+                               mod.materials.materials,
+                               MaterialFlags.ALPHA_CLIP);
+    AddSortedMatPolysSiblings_(sortedMatPolys,
+                               [mod.joints[0]],
+                               childrenByJoint,
+                               mod.materials.materials,
+                               MaterialFlags.OPAQUE);
+
+    foreach (var matPoly in sortedMatPolys) {
+      var mesh = mod.meshes[matPoly.meshIdx];
+      var (modMaterial, finMaterial)
+          = modMaterialAndFinMaterialByIndex[matPoly.matIdx];
+
       this.AddMesh_(mod,
                     mesh,
                     modMaterial,
@@ -556,6 +566,30 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           if (primitive != null) {
             primitive.SetMaterial(finMaterial);
           }
+        }
+      }
+    }
+  }
+
+  private static void AddSortedMatPolysSiblings_(
+      LinkedList<JointMatPoly> sortedMatPolys,
+      IEnumerable<Joint> joints,
+      ListDictionary<Joint, Joint> childrenByJoint,
+      IReadOnlyList<Material> modMaterials,
+      MaterialFlags targetFlags) {
+    foreach (var joint in joints) {
+      if (childrenByJoint.TryGetList(joint, out var children)) {
+        AddSortedMatPolysSiblings_(sortedMatPolys,
+                                   children,
+                                   childrenByJoint,
+                                   modMaterials,
+                                   targetFlags);
+      }
+
+      foreach (var matPoly in joint.matpolys) {
+        var modMaterial = modMaterials[matPoly.matIdx];
+        if ((modMaterial.flags & targetFlags) != 0) {
+          sortedMatPolys.AddFirst(matPoly);
         }
       }
     }

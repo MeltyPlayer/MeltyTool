@@ -277,7 +277,7 @@ namespace mod.util {
         depthFunction = new DepthFunctionImpl {
             Enable = peInfo.Enable,
             Func = peInfo.DepthCompareType,
-            WriteNewValueIntoDepthBuffer = true //peInfo.WriteNewIntoBuffer,
+            WriteNewValueIntoDepthBuffer = peInfo.WriteNewIntoBuffer,
         };
         return;
       }
@@ -362,7 +362,7 @@ namespace mod.util {
       depthFunction = new DepthFunctionImpl {
           Enable = true,
           Func = GxCompareType.LEqual,
-          WriteNewValueIntoDepthBuffer = true //false,
+          WriteNewValueIntoDepthBuffer = false,
       };
     }
   }
