@@ -5,11 +5,11 @@ using System.Linq;
 using fin.color;
 using fin.math;
 using fin.schema.vector;
+using fin.util.asserts;
 using fin.util.enums;
 
 using gx;
 
-using mod.api;
 using mod.schema.mod;
 
 namespace mod.util {
@@ -299,8 +299,9 @@ namespace mod.util {
         depthFunction = new DepthFunctionImpl {
             Enable = true,
             Func = GxCompareType.LEqual,
-            WriteNewValueIntoDepthBuffer = false,
+            WriteNewValueIntoDepthBuffer = false
         };
+        return;
       }
 
       if (materialFlags.CheckFlag(MaterialFlags.OPAQUE)) {
@@ -322,6 +323,7 @@ namespace mod.util {
             Func = GxCompareType.LEqual,
             WriteNewValueIntoDepthBuffer = true,
         };
+        return;
       }
 
       if (materialFlags.CheckFlag(MaterialFlags.ALPHA_CLIP)) {
@@ -343,9 +345,11 @@ namespace mod.util {
             Func = GxCompareType.LEqual,
             WriteNewValueIntoDepthBuffer = true,
         };
+        return;
       }
 
       // Otherwise, TRANSPARENT_BLEND
+      Asserts.True(materialFlags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND));
       blendFunction = new BlendFunctionImpl {
           BlendMode = GxBlendMode.BLEND,
           SrcFactor = GxBlendFactor.SRC_ALPHA,
