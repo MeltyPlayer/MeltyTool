@@ -167,9 +167,14 @@ public partial record LightingInfo : IBinaryConvertible {
   public float unknown2 = 0;
 }
 
+[Flags]
+public enum PeInfoFlags : int {
+  ENABLED = 1
+}
+
 [BinarySchema]
 public partial record PeInfo : IBinaryConvertible {
-  public int Flags = 0;
+  public PeInfoFlags Flags = 0;
 
   public int AlphaCompareFunctionBits { get; set; }
 
@@ -204,7 +209,7 @@ public partial record PeInfo : IBinaryConvertible {
 
   [Skip]
   public GxCompareType DepthCompareType
-    => (GxCompareType) ((ZModeBits >> 8) & 0xF);
+    => (GxCompareType) ((ZModeBits >> 8) & 0xFF);
 
   public int BlendModeBits { get; set; }
 

@@ -50,6 +50,9 @@ namespace mod.schema.mod {
 
       return images;
     }
+
+    public override string ToString()
+      => $"{this.unknowns[0]}, {this.unknowns[1]}, {this.unknowns[2]}, {this.unknowns[3]}";
   }
 
   [BinarySchema]

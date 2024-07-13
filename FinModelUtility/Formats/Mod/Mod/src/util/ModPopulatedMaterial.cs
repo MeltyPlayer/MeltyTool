@@ -317,5 +317,119 @@ namespace mod.util {
         TextureWrapModeOverrides { get; }
 
     public IDepthFunction DepthFunction { get; }
+
+    /// <summary>
+    ///   Ripped straight from the decomp.
+    /// </summary>
+    private static void GetPeInfoValues_(PeInfo peInfo,
+                                         MaterialFlags materialFlags,
+                                         out IBlendFunction blendFunction,
+                                         out IAlphaCompare alphaCompare,
+                                         out IDepthFunction depthFunction) {
+      if (peInfo.Flags.CheckFlag(PeInfoFlags.ENABLED)) {
+        blendFunction = new BlendFunctionImpl {
+            BlendMode = peInfo.BlendMode,
+            SrcFactor = peInfo.SrcFactor,
+            DstFactor = peInfo.DstFactor,
+            LogicOp = peInfo.LogicOp,
+        };
+        alphaCompare = new AlphaCompareImpl {
+            MergeFunc = peInfo.AlphaCompareOp,
+            Func0 = peInfo.CompareType0,
+            Reference0 = peInfo.Reference0,
+            Func1 = peInfo.CompareType1,
+            Reference1 = peInfo.Reference1,
+        };
+        depthFunction = new DepthFunctionImpl {
+            Enable = peInfo.Enable,
+            Func = peInfo.DepthCompareType,
+            WriteNewValueIntoDepthBuffer = peInfo.WriteNewIntoBuffer,
+        };
+        return;
+      }
+
+      if (materialFlags.CheckFlag(MaterialFlags.INVERT_SPECIAL_BLEND)) {
+        blendFunction = new BlendFunctionImpl {
+            BlendMode = GxBlendMode.BLEND,
+            SrcFactor = GxBlendFactor.ZERO,
+            DstFactor = GxBlendFactor.ONE_MINUS_SRC_COLOR,
+            LogicOp = GxLogicOp.CLEAR,
+        };
+        alphaCompare = new AlphaCompareImpl {
+            Func0 = GxCompareType.Always,
+            Reference0 = 0,
+            MergeFunc = GxAlphaOp.Or,
+            Func1 = GxCompareType.Always,
+            Reference1 = 0,
+        };
+        depthFunction = new DepthFunctionImpl {
+            Enable = true,
+            Func = GxCompareType.LEqual,
+            WriteNewValueIntoDepthBuffer = false,
+        };
+      }
+
+      if (materialFlags.CheckFlag(MaterialFlags.OPAQUE)) {
+        blendFunction = new BlendFunctionImpl {
+            BlendMode = GxBlendMode.NONE,
+            SrcFactor = GxBlendFactor.ONE,
+            DstFactor = GxBlendFactor.ZERO,
+            LogicOp = GxLogicOp.COPY,
+        };
+        alphaCompare = new AlphaCompareImpl {
+            Func0 = GxCompareType.Always,
+            Reference0 = 0,
+            MergeFunc = GxAlphaOp.Or,
+            Func1 = GxCompareType.Always,
+            Reference1 = 0,
+        };
+        depthFunction = new DepthFunctionImpl {
+            Enable = true,
+            Func = GxCompareType.LEqual,
+            WriteNewValueIntoDepthBuffer = true,
+        };
+      }
+
+      if (materialFlags.CheckFlag(MaterialFlags.ALPHA_CLIP)) {
+        blendFunction = new BlendFunctionImpl {
+            BlendMode = GxBlendMode.NONE,
+            SrcFactor = GxBlendFactor.ONE,
+            DstFactor = GxBlendFactor.ZERO,
+            LogicOp = GxLogicOp.COPY,
+        };
+        alphaCompare = new AlphaCompareImpl {
+            Func0 = GxCompareType.GEqual,
+            Reference0 = .5f,
+            MergeFunc = GxAlphaOp.And,
+            Func1 = GxCompareType.LEqual,
+            Reference1 = 1,
+        };
+        depthFunction = new DepthFunctionImpl {
+            Enable = true,
+            Func = GxCompareType.LEqual,
+            WriteNewValueIntoDepthBuffer = true,
+        };
+      }
+
+      // Otherwise, TRANSPARENT_BLEND
+      blendFunction = new BlendFunctionImpl {
+          BlendMode = GxBlendMode.BLEND,
+          SrcFactor = GxBlendFactor.SRC_ALPHA,
+          DstFactor = GxBlendFactor.ONE_MINUS_SRC_ALPHA,
+          LogicOp = GxLogicOp.COPY,
+      };
+      alphaCompare = new AlphaCompareImpl {
+          Func0 = GxCompareType.Always,
+          Reference0 = 0,
+          MergeFunc = GxAlphaOp.Or,
+          Func1 = GxCompareType.Always,
+          Reference1 = 0,
+      };
+      depthFunction = new DepthFunctionImpl {
+          Enable = true,
+          Func = GxCompareType.LEqual,
+          WriteNewValueIntoDepthBuffer = false,
+      };
+    }
   }
 }
