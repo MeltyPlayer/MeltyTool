@@ -121,78 +121,53 @@ namespace mod.util {
                                   .ToArray();
 
       var lightingInfo = material.lightingInfo;
-      var lightingFlags = lightingInfo.typeFlags;
-      var lightingEnabled = lightingFlags.CheckFlag(LightingInfoFlags.ENABLED);
-      var lightingAlphaEnabled
-          = lightingFlags.CheckFlag(LightingInfoFlags.ALPHA_ENABLED);
-      var lightingSpecularEnabled
-          = lightingFlags.CheckFlag(LightingInfoFlags.SPECULAR_ENABLED);
-      var srcFor0 = GxColorSrc.Register;
-      var srcFor1 = GxColorSrc.Vertex;
 
-      // TODO: Stupid hack, how to do this better???
-      var hasChannel0 = tevInfo.TevStages.Any(
-          s => s.ColorChannel is GxColorChannel.GX_COLOR0
-                                 or GxColorChannel.GX_COLOR0A0
-                                 or GxColorChannel.GX_ALPHA0);
-      var hasChannel1 = tevInfo.TevStages.Any(
-          s => s.ColorChannel is GxColorChannel.GX_COLOR1
-                                 or GxColorChannel.GX_COLOR1A1
-                                 or GxColorChannel.GX_ALPHA1);
-      var hasBothLightingAndVertexColor = hasChannel0 && hasChannel1;
-
-      var attenuationFunction = lightingSpecularEnabled
-          ? GxAttenuationFunction.Spec
-          : GxAttenuationFunction.Spot;
+      // In the game, it only ever uses lights 0 and 1.
+      // In the game, it uses a different light mask for the alpha channel.
       var litMask = GxLightMask.Light0 |
                     GxLightMask.Light1 |
                     GxLightMask.Light2;
 
-      var useVertexColor
-          = lightingFlags.CheckFlag(LightingInfoFlags.USE_VERTEX_COLOR);
-      var useVertexAlpha
-          = lightingFlags.CheckFlag(LightingInfoFlags.USE_VERTEX_ALPHA);
-
-      var colorChannelSrc
-          = useVertexColor ? GxColorSrc.Vertex : GxColorSrc.Register;
-      var alphaChannelSrc
-          = useVertexAlpha ? GxColorSrc.Vertex : GxColorSrc.Register;
-
       this.ColorChannelControls = [
           new ColorChannelControlImpl {
-              LightingEnabled = lightingEnabled,
-              MaterialSrc = colorChannelSrc,
-              AmbientSrc = GxColorSrc.Register,
+              LightingEnabled = lightingInfo.LightingEnabledForChannelControl0,
+              MaterialSrc = lightingInfo.MaterialColorSrcForChannel0,
+              AmbientSrc = lightingInfo.AmbientColorSrcForChannel0,
               LitMask = litMask,
-              AttenuationFunction = attenuationFunction,
+              DiffuseFunction = lightingInfo.DiffuseFunctionForChannel0,
+              AttenuationFunction
+                  = lightingInfo.LightingEnabledForChannelControl0
+                      ? GxAttenuationFunction.Spot
+                      : GxAttenuationFunction.None,
           },
           new ColorChannelControlImpl {
-              LightingEnabled = lightingEnabled && lightingAlphaEnabled,
-              MaterialSrc = alphaChannelSrc,
-              AmbientSrc = GxColorSrc.Register,
-              LitMask = litMask,
-              AttenuationFunction = attenuationFunction,
-          },
-          new ColorChannelControlImpl {
-              // Seems to sometimes be vertex color????
               LightingEnabled
-                  = lightingEnabled && !hasBothLightingAndVertexColor,
-              MaterialSrc = colorChannelSrc,
+                  = lightingInfo.LightingEnabledForChannelControl1,
+              MaterialSrc = GxColorSrc.Register,
               AmbientSrc = GxColorSrc.Register,
               LitMask = litMask,
-              AttenuationFunction = attenuationFunction,
+              DiffuseFunction = lightingInfo.DiffuseFunctionForChannel1,
+              AttenuationFunction = GxAttenuationFunction.Spec,
+          },
+          new ColorChannelControlImpl {
+              LightingEnabled = lightingInfo.LightingEnabledForChannelControl2,
+              MaterialSrc = lightingInfo.MaterialColorSrcForChannel2,
+              AmbientSrc = lightingInfo.AmbientColorSrcForChannel2,
+              LitMask = litMask,
+              DiffuseFunction = lightingInfo.DiffuseFunctionForChannel2,
+              AttenuationFunction
+                  = lightingInfo.LightingEnabledForChannelControl2
+                      ? GxAttenuationFunction.Spot
+                      : GxAttenuationFunction.None,
               VertexColorIndex = 0,
           },
           new ColorChannelControlImpl {
-              // Seems to sometimes be vertex color????
-              LightingEnabled
-                  = lightingEnabled &&
-                    !hasBothLightingAndVertexColor &&
-                    lightingAlphaEnabled,
-              MaterialSrc = alphaChannelSrc,
+              LightingEnabled = false,
+              MaterialSrc = GxColorSrc.Register,
               AmbientSrc = GxColorSrc.Register,
               LitMask = litMask,
-              AttenuationFunction = attenuationFunction,
+              DiffuseFunction = GxDiffuseFunction.Clamp,
+              AttenuationFunction = GxAttenuationFunction.None,
               VertexColorIndex = 0,
           }
       ];
@@ -240,55 +215,14 @@ namespace mod.util {
       }
 
       {
-        var peInfo = material.peInfo;
-        var flags = material.flags;
-
-        if (flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)) {
-          this.BlendMode = new BlendFunctionImpl {
-              BlendMode = GxBlendMode.BLEND,
-              SrcFactor = GxBlendFactor.SRC_ALPHA,
-              DstFactor = GxBlendFactor.ONE_MINUS_SRC_ALPHA,
-              LogicOp = GxLogicOp.SET,
-          };
-        } else {
-          this.BlendMode = new BlendFunctionImpl {
-              BlendMode = peInfo.BlendMode,
-              SrcFactor = peInfo.SrcFactor,
-              DstFactor = peInfo.DstFactor,
-              LogicOp = peInfo.LogicOp,
-          };
-        }
-
-        if (flags.CheckFlag(MaterialFlags.ALPHA_CLIP) &&
-            (peInfo is {
-                 CompareType0: GxCompareType.Always,
-                 CompareType1: GxCompareType.Always
-             } ||
-             (peInfo.AlphaCompareOp == GxAlphaOp.And &&
-              (peInfo.CompareType0 == GxCompareType.Never ||
-               peInfo.CompareType1 == GxCompareType.Never)))) {
-          this.AlphaCompare = new AlphaCompareImpl {
-              MergeFunc = GxAlphaOp.Or,
-              Func0 = GxCompareType.GEqual,
-              Reference0 = .95f,
-              Func1 = GxCompareType.Never,
-              Reference1 = 0,
-          };
-        } else {
-          this.AlphaCompare = new AlphaCompareImpl {
-              MergeFunc = peInfo.AlphaCompareOp,
-              Func0 = peInfo.CompareType0,
-              Reference0 = peInfo.Reference0,
-              Func1 = peInfo.CompareType1,
-              Reference1 = peInfo.Reference1,
-          };
-        }
-
-        this.DepthFunction = new DepthFunctionImpl {
-            Enable = peInfo.Enable,
-            Func = peInfo.DepthCompareType,
-            WriteNewValueIntoDepthBuffer = true,
-        };
+        GetPeInfoValues_(material.peInfo,
+                              material.flags,
+                              out var blendFunction,
+                              out var alphaCompare,
+                              out var depthFunction);
+        this.BlendMode = blendFunction;
+        this.AlphaCompare = alphaCompare;
+        this.DepthFunction = depthFunction;
       }
     }
 
@@ -343,7 +277,7 @@ namespace mod.util {
         depthFunction = new DepthFunctionImpl {
             Enable = peInfo.Enable,
             Func = peInfo.DepthCompareType,
-            WriteNewValueIntoDepthBuffer = peInfo.WriteNewIntoBuffer,
+            WriteNewValueIntoDepthBuffer = true //peInfo.WriteNewIntoBuffer,
         };
         return;
       }
@@ -428,7 +362,7 @@ namespace mod.util {
       depthFunction = new DepthFunctionImpl {
           Enable = true,
           Func = GxCompareType.LEqual,
-          WriteNewValueIntoDepthBuffer = false,
+          WriteNewValueIntoDepthBuffer = true //false,
       };
     }
   }

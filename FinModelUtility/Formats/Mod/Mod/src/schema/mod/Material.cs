@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using fin.math;
 using fin.schema;
 using fin.schema.color;
 using fin.schema.vector;
@@ -147,21 +148,49 @@ public partial class PolygonColorInfo
   }
 }
 
-public enum LightingInfoFlags : uint {
-  ENABLED = 1 << 0,
-  SPECULAR_ENABLED = 1 << 1,
-  ALPHA_ENABLED = 1 << 2,
-  UNK_0 = 0x10,
-  UNK_1 = 0x40,
-  UNK_2 = 0x80,
-  // TODO: Might be wrong
-  USE_VERTEX_COLOR = 1 << 11,
-  USE_VERTEX_ALPHA = 1 << 12,
-}
-
 [BinarySchema]
 public partial record LightingInfo : IBinaryConvertible {
-  public LightingInfoFlags typeFlags = 0;
+  public uint lightingInfoFlags;
+
+  [Skip]
+  public bool LightingEnabledForChannelControl0
+    => this.lightingInfoFlags.GetBit(0);
+
+  [Skip]
+  public bool LightingEnabledForChannelControl1
+    => this.lightingInfoFlags.GetBit(1);
+
+  [Skip]
+  public bool LightingEnabledForChannelControl2
+    => this.lightingInfoFlags.GetBit(2);
+
+  [Skip]
+  public GxDiffuseFunction DiffuseFunctionForChannel0
+    => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(3, 2);
+
+  [Skip]
+  public GxDiffuseFunction DiffuseFunctionForChannel2
+    => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(5, 2);
+
+  [Skip]
+  public GxDiffuseFunction DiffuseFunctionForChannel1
+    => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(7, 2);
+
+  [Skip]
+  public GxColorSrc MaterialColorSrcForChannel0
+    => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(9, 1);
+
+  [Skip]
+  public GxColorSrc MaterialColorSrcForChannel2
+    => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(10, 1);
+
+  [Skip]
+  public GxColorSrc AmbientColorSrcForChannel0
+    => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(11, 1);
+
+  [Skip]
+  public GxColorSrc AmbientColorSrcForChannel2
+    => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(12, 1);
 
   [Unknown]
   public float unknown2 = 0;
@@ -405,7 +434,7 @@ public record Material : IBinaryConvertible {
   }
 
   public override string ToString()
-    => $"[{this.flags}] --> lightingFlags:{this.lightingInfo.typeFlags}, peFlags:{this.peInfo.Flags}, writeDepth:{this.peInfo.WriteNewIntoBuffer}, priority:{this.unknown1}";
+    => $"[{this.flags}] --> lightingFlags:{this.lightingInfo.lightingInfoFlags}, peFlags:{this.peInfo.Flags}, writeDepth:{this.peInfo.WriteNewIntoBuffer}, priority:{this.unknown1}";
 }
 
 [BinarySchema]

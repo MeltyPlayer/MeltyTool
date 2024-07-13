@@ -357,8 +357,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                return (mesh, modMaterial, finMaterial, transparencyType,
                        priority);
              })
-             .OrderBy(m => m.transparencyType)
-             .ThenBy(m => m.priority)
              .ToArray();
 
     foreach (var (mesh, modMaterial, finMaterial, _, _) in meshTuples) {
