@@ -120,57 +120,8 @@ namespace mod.util {
                                   })
                                   .ToArray();
 
-      var lightingInfo = material.lightingInfo;
-
-      // In the game, it only ever uses lights 0 and 1.
-      // In the game, it uses a different light mask for the alpha channel.
-      var litMask = GxLightMask.Light0 |
-                    GxLightMask.Light1 |
-                    GxLightMask.Light2;
-
-      this.ColorChannelControls = [
-          new ColorChannelControlImpl {
-              LightingEnabled = lightingInfo.LightingEnabledForChannelControl0,
-              MaterialSrc = lightingInfo.MaterialColorSrcForChannel0,
-              AmbientSrc = lightingInfo.AmbientColorSrcForChannel0,
-              LitMask = litMask,
-              DiffuseFunction = lightingInfo.DiffuseFunctionForChannel0,
-              AttenuationFunction
-                  = lightingInfo.LightingEnabledForChannelControl0
-                      ? GxAttenuationFunction.Spot
-                      : GxAttenuationFunction.None,
-          },
-          new ColorChannelControlImpl {
-              LightingEnabled
-                  = lightingInfo.LightingEnabledForChannelControl1,
-              MaterialSrc = GxColorSrc.Register,
-              AmbientSrc = GxColorSrc.Register,
-              LitMask = litMask,
-              DiffuseFunction = lightingInfo.DiffuseFunctionForChannel1,
-              AttenuationFunction = GxAttenuationFunction.Spec,
-          },
-          new ColorChannelControlImpl {
-              LightingEnabled = lightingInfo.LightingEnabledForChannelControl2,
-              MaterialSrc = lightingInfo.MaterialColorSrcForChannel2,
-              AmbientSrc = lightingInfo.AmbientColorSrcForChannel2,
-              LitMask = litMask,
-              DiffuseFunction = lightingInfo.DiffuseFunctionForChannel2,
-              AttenuationFunction
-                  = lightingInfo.LightingEnabledForChannelControl2
-                      ? GxAttenuationFunction.Spot
-                      : GxAttenuationFunction.None,
-              VertexColorIndex = 0,
-          },
-          new ColorChannelControlImpl {
-              LightingEnabled = false,
-              MaterialSrc = GxColorSrc.Register,
-              AmbientSrc = GxColorSrc.Register,
-              LitMask = litMask,
-              DiffuseFunction = GxDiffuseFunction.Clamp,
-              AttenuationFunction = GxAttenuationFunction.None,
-              VertexColorIndex = 0,
-          }
-      ];
+      this.ColorChannelControls
+          = GetColorChannelControls_(material.lightingInfo);
 
       {
         this.TextureIndices = material.texInfo.TexturesInMaterial
@@ -216,10 +167,10 @@ namespace mod.util {
 
       {
         GetPeInfoValues_(material.peInfo,
-                              material.flags,
-                              out var blendFunction,
-                              out var alphaCompare,
-                              out var depthFunction);
+                         material.flags,
+                         out var blendFunction,
+                         out var alphaCompare,
+                         out var depthFunction);
         this.BlendMode = blendFunction;
         this.AlphaCompare = alphaCompare;
         this.DepthFunction = depthFunction;
@@ -368,6 +319,74 @@ namespace mod.util {
           Func = GxCompareType.LEqual,
           WriteNewValueIntoDepthBuffer = false,
       };
+    }
+
+    private static IColorChannelControl[] GetColorChannelControls_(
+        LightingInfo lightingInfo) {
+      IColorChannelControl ccc0, ccc1, ccc2, ccc3;
+
+      // In the game, it only ever uses lights 0 and 1.
+      // In the game, it uses a different light mask for the alpha channel.
+      var litMask = GxLightMask.Light0 |
+                    GxLightMask.Light1 |
+                    GxLightMask.Light2;
+
+      ccc0 = new ColorChannelControlImpl {
+          LightingEnabled = lightingInfo.LightingEnabledForChannelControl0,
+          MaterialSrc = lightingInfo.MaterialColorSrcForChannel0,
+          AmbientSrc = lightingInfo.AmbientColorSrcForChannel0,
+          LitMask = litMask,
+          DiffuseFunction = lightingInfo.DiffuseFunctionForChannel0,
+          AttenuationFunction
+              = lightingInfo.LightingEnabledForChannelControl0
+                  ? GxAttenuationFunction.Spot
+                  : GxAttenuationFunction.None,
+      };
+      ccc2 = new ColorChannelControlImpl {
+          LightingEnabled = lightingInfo.LightingEnabledForChannelControl2,
+          MaterialSrc = lightingInfo.MaterialColorSrcForChannel2,
+          AmbientSrc = lightingInfo.AmbientColorSrcForChannel2,
+          LitMask = litMask,
+          DiffuseFunction = lightingInfo.DiffuseFunctionForChannel2,
+          AttenuationFunction
+              = lightingInfo.LightingEnabledForChannelControl2
+                  ? GxAttenuationFunction.Spot
+                  : GxAttenuationFunction.None,
+          VertexColorIndex = 0,
+      };
+
+      if (lightingInfo.LightingEnabledForChannelControl1) {
+        ccc1 = new ColorChannelControlImpl {
+            LightingEnabled
+                = lightingInfo.LightingEnabledForChannelControl1,
+            MaterialSrc = GxColorSrc.Register,
+            AmbientSrc = GxColorSrc.Register,
+            LitMask = litMask,
+            DiffuseFunction = lightingInfo.DiffuseFunctionForChannel1,
+            AttenuationFunction = GxAttenuationFunction.Spec,
+        };
+        ccc3 = new ColorChannelControlImpl {
+            LightingEnabled = false,
+            MaterialSrc = GxColorSrc.Register,
+            AmbientSrc = GxColorSrc.Register,
+            LitMask = litMask,
+            DiffuseFunction = GxDiffuseFunction.Clamp,
+            AttenuationFunction = GxAttenuationFunction.None,
+            VertexColorIndex = 0,
+        };
+      } else {
+        ccc1 = ccc3 = new ColorChannelControlImpl {
+            LightingEnabled = false,
+            MaterialSrc = GxColorSrc.Register,
+            AmbientSrc = GxColorSrc.Register,
+            LitMask = 0,
+            DiffuseFunction = GxDiffuseFunction.None,
+            AttenuationFunction = GxAttenuationFunction.None,
+            VertexColorIndex = 0,
+        };
+      }
+
+      return [ccc0, ccc1, ccc2, ccc3];
     }
   }
 }
