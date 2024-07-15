@@ -32,6 +32,7 @@ using uni.games.super_mario_64;
 using uni.games.super_mario_sunshine;
 using uni.games.super_smash_bros_melee;
 using uni.games.timesplitters_2;
+using uni.games.vrwdw;
 using uni.games.wind_waker;
 
 namespace uni.games {
@@ -69,6 +70,7 @@ namespace uni.games {
           new SuperMarioSunshineFileBundleGatherer(),
           new SuperSmashBrosMeleeFileBundleGatherer(),
           new Timesplitters2FileBundleGatherer(),
+          new VrwdwFileBundleGatherer(),
           new WindWakerFileBundleGatherer(),
       };
 

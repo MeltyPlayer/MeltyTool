@@ -142,6 +142,7 @@
     <ProjectReference Include="..\..\Formats\Modl\Modl\Modl.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
     <ProjectReference Include="..\..\Formats\Visceral\Visceral\Visceral.csproj" />
+    <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
     <ProjectReference Include="..\..\Formats\Xmod\Xmod.csproj" />
 
     <ProjectReference Include="..\..\Games\HaloWars\HaloWarsTools\HaloWarsTools.csproj" />

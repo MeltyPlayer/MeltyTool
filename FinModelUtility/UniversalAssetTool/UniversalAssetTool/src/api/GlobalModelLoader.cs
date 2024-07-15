@@ -26,7 +26,10 @@ using UoT.api;
 
 using visceral.api;
 
+using vrml.api;
+
 using xmod.api;
+
 
 namespace uni.api {
   public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
@@ -45,7 +48,7 @@ namespace uni.api {
               => new GeoModelImporter().Import(geoModelFileBundle),
           GloModelFileBundle gloModelFileBundle
               => new GloModelImporter().Import(gloModelFileBundle),
-          XtdModelFileBundle xtdModelFileBundle 
+          XtdModelFileBundle xtdModelFileBundle
               => new XtdModelImporter().Import(xtdModelFileBundle),
           ModModelFileBundle modModelFileBundle
               => new ModModelImporter().Import(modModelFileBundle),

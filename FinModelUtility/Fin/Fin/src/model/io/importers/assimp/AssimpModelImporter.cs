@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 using Assimp;
 
 using fin.animation.keyframes;
-using fin.animation.types.vector3;
 using fin.color;
 using fin.data.lazy;
 using fin.data.queues;
