@@ -3,12 +3,7 @@
 
 namespace vrml.schema;
 
-public record DefinitionNode : IDefinitionNode {
-  public required string DefinitionName { get; init; }
-  public required INode Definition { get; init; }
-}
-
-public record GroupNode : INode {
+public record GroupNode : IGroupNode {
   public required IReadOnlyList<INode> Children { get; init; }
 }
 
@@ -30,12 +25,12 @@ public record AnchorNode : IAnchorNode {
 
 public record ShapeNode : IShapeNode {
   public required IAppearanceNode Appearance { get; init; }
-  public required IIndexedFaceSetNode Geometry { get; init; }
+  public required IGeometryNode Geometry { get; init; }
 }
 
 public record AppearanceNode : IAppearanceNode {
   public required IMaterialNode Material { get; init; }
-  public ITextureNode? Texture { get; init; }
+  public IImageTextureNode? Texture { get; init; }
   public ITextureTransformNode? TextureTransform { get; init; }
 }
 
@@ -45,7 +40,7 @@ public record MaterialNode : IMaterialNode {
   public float? Transparency { get; init; }
 }
 
-public record TextureNode : ITextureNode {
+public record ImageTextureNode : IImageTextureNode {
   public required string Url { get; init; }
 }
 

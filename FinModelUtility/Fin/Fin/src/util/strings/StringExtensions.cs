@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using fin.util.asserts;
@@ -40,6 +41,14 @@ public static class StringExtensions {
     var indexTo = str.IndexOf(c);
     return indexTo >= 0 ? str[..indexTo] : str;
   }
+
+  public static ReadOnlySpan<char> SubstringUpTo(
+      this ReadOnlySpan<char> str,
+      char c) {
+    var indexTo = str.IndexOf(c);
+    return indexTo >= 0 ? str[..indexTo] : str;
+  }
+
 
   public static string SubstringUpTo(this string str, string substr) {
     var indexTo = str.IndexOf(substr);

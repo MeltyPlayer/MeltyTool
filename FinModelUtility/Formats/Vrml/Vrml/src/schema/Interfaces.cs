@@ -3,12 +3,7 @@
 
 namespace vrml.schema;
 
-public interface INode { }
-
-public interface IDefinitionNode : INode {
-  string DefinitionName { get; }
-  INode Definition { get; }
-}
+public interface INode;
 
 public interface IGroupNode : INode {
   IReadOnlyList<INode> Children { get; }
@@ -21,7 +16,7 @@ public interface ITransformNode : IGroupNode {
   Vector3? Scale { get; }
 }
 
-public interface IIsbLandscapeNode : ITransformNode {}
+public interface IIsbLandscapeNode : ITransformNode;
 
 public interface IAnchorNode : IGroupNode {
   string Url { get; }
@@ -30,12 +25,12 @@ public interface IAnchorNode : IGroupNode {
 
 public interface IShapeNode : INode {
   IAppearanceNode Appearance { get; }
-  IIndexedFaceSetNode Geometry { get; }
+  IGeometryNode Geometry { get; }
 }
 
 public interface IAppearanceNode : INode {
   IMaterialNode Material { get; }
-  ITextureNode? Texture { get; }
+  IImageTextureNode? Texture { get; }
   ITextureTransformNode? TextureTransform { get; }
 }
 
@@ -45,7 +40,7 @@ public interface IMaterialNode : INode {
   float? Transparency { get; }
 }
 
-public interface ITextureNode : INode {
+public interface IImageTextureNode : INode {
   string Url { get; }
 }
 
