@@ -21,9 +21,9 @@ uniform Light lights[8];
 uniform vec3 cameraPosition;
 uniform float shininess;
 uniform sampler2D texture0;
-uniform vec3 color_GxMaterialColor12345;
 uniform vec3 color_GxMaterialColor0;
 uniform vec3 color_GxAmbientColor0;
+uniform vec3 color_GxMaterialColor12345;
 uniform float scalar_GxMaterialAlpha12345;
 
 in vec3 vertexPosition;

@@ -27,12 +27,13 @@ namespace mod.util {
           tevInfo.ColorRegisters
                  .Select(reg => reg.Color)
                  .Select((rgba, i) => (IColorRegister) new GxColorRegister {
+                     // TODO: Support nonclipped colors
                      Color = Color.FromArgb(
                          rgba.A.Clamp((ushort) 0, (ushort) 255),
                          rgba.R.Clamp((ushort) 0, (ushort) 255),
                          rgba.G.Clamp((ushort) 0, (ushort) 255),
                          rgba.B.Clamp((ushort) 0, (ushort) 255)),
-                     Index = i,
+                     Index = 3 * materialIndex + i,
                  })
                  .ToArray();
 

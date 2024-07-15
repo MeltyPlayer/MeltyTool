@@ -22,9 +22,9 @@ uniform vec3 cameraPosition;
 uniform float shininess;
 uniform sampler2D texture0;
 uniform sampler2D texture1;
-uniform vec3 color_GxColor0;
 uniform vec3 color_GxMaterialColor2;
 uniform vec3 color_GxAmbientColor2;
+uniform vec3 color_GxColorRegister6;
 uniform float scalar_GxMaterialAlpha2;
 
 in vec2 normalUv;
@@ -121,7 +121,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(texture(texture0, uv0).rgb*color_GxMaterialColor2*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor2), 0, 1) + vec3(-0.5) + color_GxColor0*texture(texture1, acos(normalUv) / 3.14159).rgb, 0, 1);
+  vec3 colorComponent = clamp(texture(texture0, uv0).rgb*color_GxMaterialColor2*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor2), 0, 1) + vec3(-0.5) + color_GxColorRegister6*texture(texture1, acos(normalUv) / 3.14159).rgb, 0, 1);
 
   float alphaComponent = scalar_GxMaterialAlpha2;
 

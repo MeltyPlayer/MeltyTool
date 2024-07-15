@@ -31,8 +31,8 @@ uniform Texture texture1;
 uniform Texture texture2;
 uniform vec3 color_GxAmbientColor0;
 uniform vec3 color_GxMaterialColor0;
-uniform vec3 color_GxColor6;
-uniform vec3 color_GxColor5;
+uniform vec3 color_GxColorRegister6;
+uniform vec3 color_GxColorRegister5;
 uniform float scalar_GxMaterialAlpha0;
 
 in vec3 vertexPosition;
@@ -129,7 +129,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*clamp((color_GxColor6*(vec3(1) + vec3(-1)*texture(texture0, uv0).rgb) + color_GxColor5*texture(texture0, uv0).rgb), 0, 1);
+  vec3 colorComponent = color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*clamp((color_GxColorRegister6*(vec3(1) + vec3(-1)*texture(texture0, uv0).rgb) + color_GxColorRegister5*texture(texture0, uv0).rgb), 0, 1);
 
   float alphaComponent = texture(texture2.sampler, texture2.transform2d * vec3((uv1).x, (uv1).y, 1)).a*texture(texture1.sampler, texture1.transform2d * vec3((uv1).x, (uv1).y, 1)).a*scalar_GxMaterialAlpha0*texture(texture0, uv0).a;
 

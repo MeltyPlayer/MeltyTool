@@ -31,7 +31,7 @@ uniform Texture texture2;
 uniform Texture texture3;
 uniform vec3 color_GxMaterialColor0;
 uniform vec3 color_GxAmbientColor0;
-uniform float scalar_GxAlpha0;
+uniform float scalar_GxAlphaRegister0;
 
 in vec2 normalUv;
 in vec3 vertexPosition;
@@ -129,7 +129,7 @@ void main() {
   
   vec3 colorComponent = clamp(vec3(0.5)*texture(texture2.sampler, texture2.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb + vec3(0.5) + color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + color_GxAmbientColor0), 0, 1)*texture(texture0, uv0).rgb*vec3(2)*clamp((vec3(0.5)*texture(texture2.sampler, texture2.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb + vec3(0.5)), 0, 1) + vec3(-0.5), 0, 1);
 
-  float alphaComponent = texture(texture3.sampler, texture3.transform2d * vec3((uv0).x, (uv0).y, 1)).a + -1*(1 + -1*scalar_GxAlpha0);
+  float alphaComponent = texture(texture3.sampler, texture3.transform2d * vec3((uv0).x, (uv0).y, 1)).a + -1*(1 + -1*scalar_GxAlphaRegister0);
 
   fragColor = vec4(colorComponent, alphaComponent);
 

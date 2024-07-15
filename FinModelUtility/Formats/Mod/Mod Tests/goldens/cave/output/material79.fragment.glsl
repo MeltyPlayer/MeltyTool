@@ -133,8 +133,4 @@ void main() {
   float alphaComponent = scalar_GxMaterialAlpha79;
 
   fragColor = vec4(colorComponent, 1);
-
-  if (!(alphaComponent >= 0.5019608)) {
-    discard;
-  }
 }

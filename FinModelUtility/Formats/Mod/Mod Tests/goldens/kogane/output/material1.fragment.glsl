@@ -20,9 +20,9 @@ uniform Light lights[8];
 
 uniform vec3 cameraPosition;
 uniform float shininess;
-uniform vec3 color_GxColor0;
 uniform vec3 color_GxMaterialColor1;
 uniform vec3 color_GxAmbientColor1;
+uniform vec3 color_GxColorRegister3;
 uniform float scalar_GxMaterialAlpha1;
 
 in vec3 vertexPosition;
@@ -117,7 +117,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(color_GxMaterialColor1*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor1), 0, 1)*(vec3(1) + vec3(-1)*color_GxColor0) + color_GxColor0, 0, 1);
+  vec3 colorComponent = clamp(color_GxMaterialColor1*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor1), 0, 1)*(vec3(1) + vec3(-1)*color_GxColorRegister3) + color_GxColorRegister3, 0, 1);
 
   float alphaComponent = scalar_GxMaterialAlpha1;
 

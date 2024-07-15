@@ -384,7 +384,7 @@ public partial class GxFixedFunctionMaterial {
 
         if (isColor) {
           return this.registers_.GetOrCreateColorRegister(
-              $"GxColor{index}",
+              $"GxColorRegister{index}",
               this.equations_.CreateColorConstant(
                   color.R / 255f,
                   color.G / 255f,
@@ -393,7 +393,7 @@ public partial class GxFixedFunctionMaterial {
 
         return new ColorWrapper(
             this.registers_.GetOrCreateScalarRegister(
-                $"GxAlpha{index}",
+                $"GxAlphaRegister{index}",
                 this.equations_.CreateScalarConstant(
                     color.A / 255f)));
       }
@@ -432,7 +432,7 @@ public partial class GxFixedFunctionMaterial {
         var color = colorRegister.Color;
         var index = colorRegister.Index;
 
-        return this.registers_.GetOrCreateScalarRegister($"GxAlpha{index}",
+        return this.registers_.GetOrCreateScalarRegister($"GxAlphaRegister{index}",
           this.equations_.CreateScalarConstant(
               color.A / 255f));
       }
