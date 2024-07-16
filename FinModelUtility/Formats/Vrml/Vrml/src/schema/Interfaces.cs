@@ -10,6 +10,7 @@ public interface IGroupNode : INode {
 }
 
 public interface ITransformNode : IGroupNode {
+  Vector3? Center { get; }
   Vector3 Translation { get; }
   Quaternion? Rotation { get; }
   Quaternion? ScaleOrientation { get; }
@@ -85,6 +86,7 @@ public interface ITextNode : IGeometryNode {
 
 public interface IFontStyleNode : INode {
   string? Family { get; }
-  string Style { get; }
   IReadOnlyList<string> Justify { get; }
+  float? Size { get; }
+  string Style { get; }
 }

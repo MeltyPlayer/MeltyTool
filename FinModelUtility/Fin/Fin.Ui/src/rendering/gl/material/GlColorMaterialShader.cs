@@ -28,7 +28,7 @@ public class GlColorMaterialShader(
   }
 
   protected override void PassUniformsAndBindTextures(GlShaderProgram impl) {
-    this.diffuseLightColorUniform_.SetAndMaybeMarkDirty(
+    this.diffuseLightColorUniform_.SetAndMarkDirty(
         new Vector4(colorMaterial.Color.R / 255f,
                     colorMaterial.Color.G / 255f,
                     colorMaterial.Color.B / 255f,

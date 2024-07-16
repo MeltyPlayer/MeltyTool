@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Immutable;
-using System.Drawing;
+﻿using System.Collections.Immutable;
 using System.Numerics;
 using System.Text;
 
-using fin.model.impl;
 using fin.util.asserts;
 using fin.util.strings;
 
@@ -50,9 +47,10 @@ public class VrmlParser {
 
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
-              "Background", "DirectionalLight", "ISBPicture", "NavigationInfo",
-              "OrientationInterpolator", "PROTO", "ROUTE", "Sound",
-              "TimeSensor", "Viewpoint", "WorldInfo",
+              "Background", "DirectionalLight", "Collision", "Fog",
+              "ISBPicture", "NavigationInfo", "OrientationInterpolator",
+              "PositionInterpolator", "PROTO", "ProximitySensor", "ROUTE",
+              "Sphere", "Sound", "TimeSensor", "Viewpoint", "WorldInfo",
           }
           .ToImmutableHashSet();
 
@@ -266,6 +264,7 @@ public class VrmlParser {
   private static IFontStyleNode ReadFontStyleNode_(ITextReader tr) {
     string? family = null;
     IReadOnlyList<string> justify = default;
+    float? size = null;
     string style = default;
 
     ReadFields_(
@@ -280,6 +279,10 @@ public class VrmlParser {
               justify = ReadStringArray_(tr);
               break;
             }
+            case "size": {
+              size = tr.ReadSingle();
+              break;
+            }
             case "style": {
               style = ReadString_(tr);
               break;
@@ -290,6 +293,7 @@ public class VrmlParser {
     return new FontStyleNode {
         Family = family,
         Justify = justify,
+        Size = size,
         Style = style,
     };
   }
@@ -555,6 +559,7 @@ public class VrmlParser {
   private static ITransformNode ReadTransformNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
+    Vector3? center = null;
     IReadOnlyList<INode> children = default;
     Quaternion? rotation = null;
     Vector3? scale = null;
@@ -565,14 +570,16 @@ public class VrmlParser {
         tr,
         fieldName => {
           switch (fieldName) {
+            case "center": {
+              center = ReadVector3_(tr);
+              break;
+            }
             case "children": {
               children = ReadChildren_(tr, definitions);
               break;
             }
             case "rotation": {
-              var floats = ReadSingles_(tr, 4);
-              rotation
-                  = new Quaternion(floats[0], floats[1], floats[2], floats[3]);
+              rotation = ReadQuaternion_(tr);
               break;
             }
             case "scale": {
@@ -580,9 +587,7 @@ public class VrmlParser {
               break;
             }
             case "scaleOrientation": {
-              var floats = ReadSingles_(tr, 4);
-              scaleOrientation
-                  = new Quaternion(floats[0], floats[1], floats[2], floats[3]);
+              scaleOrientation = ReadQuaternion_(tr);
               break;
             }
             case "translation": {
@@ -594,6 +599,7 @@ public class VrmlParser {
         });
 
     return new TransformNode {
+        Center = center,
         Children = children,
         Rotation = rotation,
         Scale = scale,
@@ -687,6 +693,12 @@ public class VrmlParser {
 
   private static Vector3 ReadVector3_(ITextReader tr)
     => new(ReadSingles_(tr, 3));
+
+  private static Quaternion ReadQuaternion_(ITextReader tr) {
+    var values = ReadSingles_(tr, 4);
+    return Quaternion.CreateFromAxisAngle(new Vector3(values.AsSpan(0, 3)),
+                                          values[3]);
+  }
 
   private static float[] ReadSingles_(ITextReader tr, int count) {
     var singles = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS,

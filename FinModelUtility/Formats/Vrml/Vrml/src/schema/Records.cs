@@ -8,6 +8,7 @@ public record GroupNode : IGroupNode {
 }
 
 public record TransformNode : ITransformNode {
+  public Vector3? Center { get; init; }
   public required Vector3 Translation { get; init; }
   public Quaternion? Rotation { get; init; }
   public Quaternion? ScaleOrientation { get; init; }
@@ -84,7 +85,8 @@ public record TextNode : ITextNode {
 }
 
 public record FontStyleNode : IFontStyleNode {
-  public required string? Family { get; init; }
-  public required string Style { get; init; }
+  public string? Family { get; init; }
   public required IReadOnlyList<string> Justify { get; init; }
+  public float? Size { get; init; }
+  public required string Style { get; init; }
 }

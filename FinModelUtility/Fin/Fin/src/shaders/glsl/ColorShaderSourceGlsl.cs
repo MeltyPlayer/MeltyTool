@@ -84,9 +84,14 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
               if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
                 discard;
               }
-            }
             """);
     }
+
+    fragmentSrc.Append(
+        """
+
+        }
+        """);
 
     this.FragmentShaderSource = fragmentSrc.ToString();
   }

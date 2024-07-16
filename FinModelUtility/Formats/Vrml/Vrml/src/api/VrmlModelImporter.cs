@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Numerics;
 
 using EarClipperLib;
 
@@ -7,11 +8,14 @@ using fin.data.counters;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
+using fin.math;
+using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
+using fin.model.io.importers;
 using fin.model.util;
-using fin.scene;
 using fin.util.enumerables;
+using fin.util.image;
 using fin.util.sets;
 
 using vrml.schema;
@@ -20,20 +24,16 @@ namespace vrml.api;
 
 using IndexedFaceGroup = (int coordIndex, int? texCoordIndex, int? colorIndex);
 
-public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
-  public IScene Import(VrmlSceneFileBundle fileBundle) {
+public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
+  public IModel Import(VrmlModelFileBundle fileBundle) {
     var wrlFile = fileBundle.WrlFile.Impl;
     using var wrlFileStream = wrlFile.OpenRead();
 
     var vrmlScene = VrmlParser.Parse(wrlFileStream);
 
     var fileSet = fileBundle.WrlFile.AsFileSet();
-    var finScene = new SceneImpl { FileBundle = fileBundle, Files = fileSet };
-    var finArea = finScene.AddArea();
-    var finObject = finArea.AddObject();
 
     var finModel = new ModelImpl { FileBundle = fileBundle, Files = fileSet };
-    finObject.AddSceneModel(finModel);
 
     var lazyTextureDictionary
         = new LazyCaseInvariantStringDictionary<IReadOnlyTexture>(name => {
@@ -76,6 +76,10 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
                 vrmlColor);
           }
 
+          finMaterial.TransparencyType = a < 255
+              ? TransparencyType.TRANSPARENT
+              : TransparencyType.OPAQUE;
+
           return finMaterial;
         });
 
@@ -97,7 +101,7 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
           var finMesh = finModel.Skin.AddMesh();
           foreach (var faceVertices in GetIndexFaceSetCoordGroups_(
                        indexedFaceSetNode)) {
-            var finVertices = new LinkedList<IReadOnlyVertex>();
+            var finVertices = new LinkedList<INormalVertex>();
             foreach (var vrmlVertex in faceVertices) {
               var (coordIndex, texCoordIndex, colorIndex) = vrmlVertex;
 
@@ -127,28 +131,76 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
               finVertices.AddLast(finVertex);
             }
 
-            IPrimitive? finPrimitive = null;
-            if (finVertices.Count == 3) {
-              finPrimitive = finMesh.AddTriangles(finVertices.ToArray());
-            } else if (finVertices.Count == 4) {
-              finPrimitive = finMesh.AddQuads(finVertices.ToArray());
-            } else {
-              /*finPrimitive
-                  = finMesh.AddTriangles(
-                      TriangulateVertices_(finVertices.ToArray()));*/
-            }
+            var finVerticesArray = finVertices.ToArray();
+            if (finVerticesArray.Length >= 3) {
+              AddFaceNormal_(finVerticesArray);
 
-            finPrimitive?.SetVertexOrder(VertexOrder.NORMAL);
-            finPrimitive?.SetMaterial(finMaterial);
+              IPrimitive? finPrimitive = null;
+              if (finVertices.Count == 3) {
+                finPrimitive = finMesh.AddTriangles(finVerticesArray);
+              } else if (finVertices.Count == 4) {
+                finPrimitive = finMesh.AddQuads(finVerticesArray);
+              } else {
+                /*finPrimitive
+                    = finMesh.AddTriangles(
+                        TriangulateVertices_(finVertices.ToArray()));*/
+              }
+
+              finPrimitive?.SetVertexOrder(VertexOrder.NORMAL);
+              finPrimitive?.SetMaterial(finMaterial);
+            }
           }
 
           break;
         }
         case ITransformNode transformNode: {
           // TODO: How to handle scale orientation??
-          finBone = finParentBone.AddChild(transformNode.Translation);
-          finBone.LocalTransform.Rotation = transformNode.Rotation;
-          finBone.LocalTransform.Scale = transformNode.Scale;
+          /*finBone = finParentBone.AddChild(transformNode.Translation);
+          finBone.LocalTransform.Rotation
+              = transformNode.Rotation ?? Quaternion.Identity;
+          finBone.LocalTransform.Scale = transformNode.Scale;*/
+
+          // T × C × R × SR × S × -SR × -C
+          var translation = transformNode.Translation;
+          if (!translation.IsRoughly0()) {
+            finBone = finBone.AddChild(transformNode.Translation);
+          }
+
+          var center = transformNode.Center;
+          if (center != null && !center.Value.IsRoughly0()) {
+            finBone = finBone.AddChild(center.Value);
+          }
+
+          var rotation = transformNode.Rotation;
+          if (rotation != null && rotation != Quaternion.Identity) {
+            finBone = finBone.AddChild(
+                SystemMatrix4x4Util.FromRotation(rotation.Value));
+          }
+
+          var scaleOrientation = transformNode.ScaleOrientation;
+          if (scaleOrientation != null &&
+              scaleOrientation != Quaternion.Identity) {
+            finBone = finBone.AddChild(
+                SystemMatrix4x4Util.FromRotation(scaleOrientation.Value));
+          }
+
+          var scale = transformNode.Scale;
+          if (scale != null && !scale.Value.IsRoughly1()) {
+            finBone = finBone.AddChild(
+                SystemMatrix4x4Util.FromScale(scale.Value));
+          }
+
+          if (scaleOrientation != null &&
+              scaleOrientation != Quaternion.Identity) {
+            finBone = finBone.AddChild(
+                FinMatrix4x4Util.FromRotation(scaleOrientation.Value)
+                                .InvertInPlace());
+          }
+
+          if (center != null && !center.Value.IsRoughly0()) {
+            finBone = finBone.AddChild(-center.Value);
+          }
+
           break;
         }
       }
@@ -158,7 +210,7 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
       }
     }
 
-    return finScene;
+    return finModel;
   }
 
   private static IReadOnlyVertex[] TriangulateVertices_(
@@ -190,7 +242,8 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
     var list = new LinkedList<IndexedFaceGroup>();
 
     foreach (var indexedFaceSetGroup in GetIndexFaceSetCoords_(
-                     indexedFaceSetNode).SplitByNull()) {
+                     indexedFaceSetNode)
+                 .SplitByNull()) {
       if (indexedFaceSetGroup.Length == 0) {
         continue;
       }
@@ -266,4 +319,17 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
     => MathF.Sqrt(MathF.Pow((float) lhs.X - rhs.LocalPosition.X, 2) +
                   MathF.Pow((float) lhs.Y - rhs.LocalPosition.Y, 2) +
                   MathF.Pow((float) lhs.Z - rhs.LocalPosition.Z, 2));
+    
+  private static void AddFaceNormal_(IReadOnlyList<INormalVertex> vertices) {
+    var a = vertices[0].LocalPosition;
+    var b = vertices[1].LocalPosition;
+    var c = vertices[2].LocalPosition;
+
+    var normal = Vector3.Cross(b - a, c - a);
+    normal = Vector3.Normalize(normal);
+
+    foreach (var vertex in vertices) {
+      vertex.SetLocalNormal(normal);
+    }
+  }
 }

@@ -23,7 +23,7 @@ namespace uni.games.vrwdw {
       var fileHierarchy = FileHierarchy.From("vrwdw", vrwdwDir);
 
       foreach (var wrlFile in fileHierarchy.Root.GetFilesWithFileType(".wrl")) {
-        organizer.Add(new VrmlSceneFileBundle {
+        organizer.Add(new VrmlModelFileBundle {
             WrlFile = wrlFile,
         }.Annotate(wrlFile));
       }

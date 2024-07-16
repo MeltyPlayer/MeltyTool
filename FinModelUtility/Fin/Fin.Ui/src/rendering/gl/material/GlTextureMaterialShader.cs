@@ -33,7 +33,10 @@ public class GlTextureMaterialShader(
     this.SetUpTexture("diffuseTexture", 0, finTexture, glTexture);
 
     this.diffuseColorUniform_ = shaderProgram.GetUniformVec4("diffuseColor");
+  }
 
+  protected override void PassUniformsAndBindTextures(
+      GlShaderProgram shaderProgram) {
     var diffuseColor = material.DiffuseColor;
     if (diffuseColor != null) {
       this.diffuseColorUniform_.SetAndMarkDirty(
@@ -43,7 +46,4 @@ public class GlTextureMaterialShader(
                       diffuseColor.Value.A / 255f));
     }
   }
-
-  protected override void PassUniformsAndBindTextures(
-      GlShaderProgram shaderProgram) { }
 }

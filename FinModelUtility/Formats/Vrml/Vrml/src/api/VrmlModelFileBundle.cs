@@ -1,10 +1,10 @@
 ﻿using fin.io;
-using fin.scene;
+using fin.model.io;
 
 
 namespace vrml.api;
 
-public class VrmlSceneFileBundle : ISceneFileBundle {
+public class VrmlModelFileBundle : IModelFileBundle {
   public string? GameName { get; }
   public IReadOnlyTreeFile MainFile => this.WrlFile;
   public required IFileHierarchyFile WrlFile { get; init; }

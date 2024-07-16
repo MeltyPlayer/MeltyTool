@@ -60,6 +60,8 @@ namespace uni.api {
               => new PedModelImporter().Import(pedModelFileBundle),
           TtydModelFileBundle ttydModelFileBundle
               => new TtydModelImporter().Import(ttydModelFileBundle),
+          VrmlModelFileBundle vrmlModelFileBundle
+              => new VrmlModelImporter().Import(vrmlModelFileBundle),
           XcModelFileBundle xcModelFileBundle
               => new XcModelImporter().Import(xcModelFileBundle),
           XmodModelFileBundle xmodModelFileBundle
