@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Drawing;
 using System.Numerics;
 using System.Text;
 
@@ -29,6 +30,9 @@ public class VrmlParser {
     while (!sr.EndOfStream) {
       ReadOnlySpan<char> line = sr.ReadLine();
       line = line.SubstringUpTo('#').Trim();
+      if (line.IsEmpty) {
+        continue;
+      }
 
       sb.Append(line);
       sb.AppendLine();
@@ -44,7 +48,12 @@ public class VrmlParser {
   }
 
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
-      = new[] { "PROTO", "Sound", "World" }.ToImmutableHashSet();
+      = new[] {
+              "Background", "DirectionalLight", "NavigationInfo",
+              "OrientationInterpolator", "PROTO", "ROUTE", "Sound",
+              "TimeSensor", "Viewpoint", "WorldInfo"
+          }
+          .ToImmutableHashSet();
 
   private static IReadOnlyList<INode> ReadChildren_(
       ITextReader tr,
@@ -113,16 +122,25 @@ public class VrmlParser {
       } while (level > 0 && !tr.Eof);
 
       node = default;
-      return false;
+      return true;
     }
 
     node = nodeType switch {
-        "Appearance"   => ReadAppearanceNode_(tr, definitions),
-        "Group"        => ReadGroupNode_(tr, definitions),
-        "ImageTexture" => ReadImageTextureNode_(tr),
-        "Material"     => ReadMaterialNode_(tr, definitions),
-        "Shape"        => ReadShapeNode_(tr, definitions),
-        "Transform"    => ReadTransformNode_(tr, definitions),
+        "Anchor"                    => ReadAnchorNode_(tr, definitions),
+        "Appearance"                => ReadAppearanceNode_(tr, definitions),
+        "Color"                     => ReadColorNode_(tr),
+        "Coordinate"                => ReadCoordinateNode_(tr),
+        "FontStyle"                 => ReadFontStyleNode_(tr),
+        "Group"                     => ReadGroupNode_(tr, definitions),
+        "ImageTexture"              => ReadImageTextureNode_(tr),
+        "IndexedFaceSet"            => ReadIndexedFaceSetNode_(tr, definitions),
+        "ISBMovingTextureTransform" => ReadIsbMovingTextureTransformNode_(tr),
+        "Material"                  => ReadMaterialNode_(tr),
+        "Shape"                     => ReadShapeNode_(tr, definitions),
+        "Text"                      => ReadTextNode_(tr, definitions),
+        "TextureCoordinate"         => ReadTextureCoordinateNode_(tr),
+        "Transform"
+            or "ISBLandscape" => ReadTransformNode_(tr, definitions),
     };
 
     if (definitionName != null) {
@@ -132,24 +150,68 @@ public class VrmlParser {
     return true;
   }
 
+  private static IAnchorNode ReadAnchorNode_(
+      ITextReader tr,
+      IDictionary<string, INode> definitions) {
+    IReadOnlyList<INode> children = default;
+    string description = default;
+    IReadOnlyList<string> parameter = default;
+    string url = default;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "children": {
+              children = ReadChildren_(tr, definitions);
+              break;
+            }
+            case "description": {
+              description = ReadString_(tr);
+              break;
+            }
+            case "parameter": {
+              parameter = ReadStringArray_(tr);
+              break;
+            }
+            case "url": {
+              url = ReadString_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new AnchorNode {
+        Children = children,
+        Description = description,
+        Parameter = parameter,
+        Url = url,
+    };
+  }
+
   private static IAppearanceNode ReadAppearanceNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
-    IMaterialNode materialNode = default;
-    IImageTextureNode textureNode = default;
+    IMaterialNode material = default;
+    IImageTextureNode texture = default;
+    ITextureTransformNode? textureTransform = null;
 
     ReadFields_(
         tr,
         fieldName => {
           switch (fieldName) {
             case "material": {
-              materialNode
-                  = ParseNodeOfType_<IMaterialNode>(tr, definitions);
+              material = ParseNodeOfType_<IMaterialNode>(tr, definitions);
               break;
             }
             case "texture": {
-              textureNode
-                  = ParseNodeOfType_<IImageTextureNode>(tr, definitions);
+              texture = ParseNodeOfType_<IImageTextureNode>(tr, definitions);
+              break;
+            }
+            case "textureTransform": {
+              textureTransform
+                  = ParseNodeOfType_<ITextureTransformNode>(tr, definitions);
               break;
             }
             default: throw new NotImplementedException();
@@ -157,8 +219,72 @@ public class VrmlParser {
         });
 
     return new AppearanceNode {
-        Material = materialNode,
-        Texture = textureNode
+        Material = material,
+        Texture = texture,
+        TextureTransform = textureTransform,
+    };
+  }
+
+  private static IColorNode ReadColorNode_(ITextReader tr) {
+    IReadOnlyList<Vector3> color = default;
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "color": {
+              color = ReadColorArray_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+    return new ColorNode { Color = color };
+  }
+
+  private static ICoordinateNode ReadCoordinateNode_(ITextReader tr) {
+    IReadOnlyList<Vector3> point = default;
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "point": {
+              point = ReadVector3Array_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+    return new CoordinateNode { Point = point };
+  }
+
+  private static IFontStyleNode ReadFontStyleNode_(ITextReader tr) {
+    string? family = null;
+    IReadOnlyList<string> justify = default;
+    string style = default;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "family": {
+              family = ReadString_(tr);
+              break;
+            }
+            case "justify": {
+              justify = ReadStringArray_(tr);
+              break;
+            }
+            case "style": {
+              style = ReadString_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+    return new FontStyleNode {
+        Family = family,
+        Justify = justify,
+        Style = style,
     };
   }
 
@@ -185,25 +311,99 @@ public class VrmlParser {
   private static IImageTextureNode ReadImageTextureNode_(
       ITextReader tr) {
     string url = default;
-
     ReadFields_(
         tr,
         fieldName => {
           switch (fieldName) {
             case "url": {
-              url = ReadWord_(tr);
+              url = ReadString_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+    return new ImageTextureNode { Url = url };
+  }
+
+  private static IIndexedFaceSetNode ReadIndexedFaceSetNode_(
+      ITextReader tr,
+      IDictionary<string, INode> definitions) {
+    IColorNode? color = null;
+    bool? colorPerVertex = null;
+    bool? convex = null;
+    ICoordinateNode coord = default;
+    IReadOnlyList<int> coordIndex = default;
+    ITextureCoordinateNode? texCoord = null;
+    IReadOnlyList<int>? texCoordIndex = null;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "color": {
+              color = ParseNodeOfType_<IColorNode>(tr, definitions);
+              break;
+            }
+            case "colorPerVertex": {
+              colorPerVertex = ReadBool_(tr);
+              break;
+            }
+            case "convex": {
+              convex = ReadBool_(tr);
+              break;
+            }
+            case "coord": {
+              coord = ParseNodeOfType_<ICoordinateNode>(tr, definitions);
+              break;
+            }
+            case "coordIndex": {
+              coordIndex = ReadIndexArray_(tr);
+              break;
+            }
+            case "texCoord": {
+              texCoord
+                  = ParseNodeOfType_<ITextureCoordinateNode>(tr, definitions);
+              break;
+            }
+            case "texCoordIndex": {
+              texCoordIndex = ReadIndexArray_(tr);
               break;
             }
             default: throw new NotImplementedException();
           }
         });
 
-    return new ImageTextureNode { Url = url };
+    return new IndexedFaceSetNode {
+        Color = color,
+        Convex = convex,
+        ColorPerVertex = colorPerVertex,
+        Coord = coord,
+        CoordIndex = coordIndex,
+        TexCoord = texCoord,
+        TexCoordIndex = texCoordIndex
+    };
   }
 
-  private static IMaterialNode ReadMaterialNode_(
-      ITextReader tr,
-      IDictionary<string, INode> definitions) {
+  private static IIsbMovingTextureTransformNode
+      ReadIsbMovingTextureTransformNode_(ITextReader tr) {
+    Vector2 translationStep = default;
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "translationStep": {
+              translationStep = ReadVector2_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+    return new IsbMovingTextureTransformNode {
+        TranslationStep = translationStep
+    };
+  }
+
+  private static IMaterialNode ReadMaterialNode_(ITextReader tr) {
     float? ambientIntensity = null;
     Vector3 diffuseColor = default;
     float? transparency = null;
@@ -262,6 +462,51 @@ public class VrmlParser {
         Appearance = appearanceNode,
         Geometry = geometryNode
     };
+  }
+
+  private static ITextNode ReadTextNode_(
+      ITextReader tr,
+      IDictionary<string, INode> definitions) {
+    IReadOnlyList<string> @string = default;
+    IFontStyleNode fontStyle = default;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "string": {
+              @string = ReadStringArray_(tr);
+              break;
+            }
+            case "fontStyle": {
+              fontStyle = ParseNodeOfType_<IFontStyleNode>(tr, definitions);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new TextNode {
+        String = @string,
+        FontStyle = fontStyle,
+    };
+  }
+
+  private static ITextureCoordinateNode ReadTextureCoordinateNode_(
+      ITextReader tr) {
+    IReadOnlyList<Vector2> point = default;
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "point": {
+              point = ReadVector2Array_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+    return new TextureCoordinateNode { Point = point };
   }
 
   private static ITransformNode ReadTransformNode_(
@@ -329,9 +574,71 @@ public class VrmlParser {
     }
   }
 
-  private static Vector3 ReadVector3_(ITextReader tr)
-    => new Vector3(ReadSingles_(tr, 3));
+  private static void ReadArray_(ITextReader tr, Action lineHandler) {
+    SkipWhitespace_(tr);
+    tr.AssertChar('[');
 
+    while (!tr.Eof) {
+      SkipWhitespace_(tr);
+      if (tr.Matches(out _, [']'])) {
+        return;
+      }
+
+      lineHandler();
+    }
+  }
+
+  private static IReadOnlyList<int> ReadIndexArray_(ITextReader tr) {
+    SkipWhitespace_(tr);
+    tr.AssertChar('[');
+    return tr.ReadInt32s(TextReaderConstants.COMMA_STRINGS, ["]"]);
+  }
+
+  private static IReadOnlyList<Vector2> ReadVector2Array_(ITextReader tr) {
+    var list = new LinkedList<Vector2>();
+    ReadArray_(tr,
+               () => {
+                 tr.Matches(out _, [',']);
+                 list.AddLast(
+                     new Vector2(ReadSingles_(tr, 2, [",", "\n", "\r\n"])));
+               });
+    return list.ToArray();
+  }
+
+  private static IReadOnlyList<Vector3> ReadColorArray_(ITextReader tr) {
+    var list = new LinkedList<Vector3>();
+    ReadArray_(tr, () => list.AddLast(ReadVector3_(tr)));
+    return list.ToArray();
+  }
+
+  private static IReadOnlyList<Vector3> ReadVector3Array_(ITextReader tr) {
+    var list = new LinkedList<Vector3>();
+    ReadArray_(tr,
+               () => {
+                 tr.Matches(out _, [',']);
+                 list.AddLast(
+                     new Vector3(ReadSingles_(tr, 3, [",", "\n", "\r\n"])));
+               });
+    return list.ToArray();
+  }
+
+  private static IReadOnlyList<string> ReadStringArray_(ITextReader tr) {
+    var list = new LinkedList<string>();
+    ReadArray_(tr,
+               () => {
+                 tr.Matches(out _, [',']);
+                 list.AddLast(ReadString_(tr));
+               });
+    return list.ToArray();
+  }
+
+  private static bool ReadBool_(ITextReader tr) => ReadWord_(tr) == "TRUE";
+
+  private static Vector2 ReadVector2_(ITextReader tr)
+    => new(ReadSingles_(tr, 2));
+
+  private static Vector3 ReadVector3_(ITextReader tr)
+    => new(ReadSingles_(tr, 3));
 
   private static float[] ReadSingles_(ITextReader tr, int count) {
     var singles = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS,
@@ -340,8 +647,24 @@ public class VrmlParser {
     return singles;
   }
 
+  private static float[] ReadSingles_(ITextReader tr,
+                                      int count,
+                                      ReadOnlySpan<string> terminators) {
+    var singles
+        = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS, terminators);
+    Asserts.Equal(count, singles.Length);
+    return singles;
+  }
+
+
   private static void SkipWhitespace_(ITextReader tr)
     => tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+
+  private static string ReadString_(ITextReader tr) {
+    SkipWhitespace_(tr);
+    tr.AssertChar('"');
+    return tr.ReadUpToAndPastTerminator(["\""]);
+  }
 
   private static string ReadWord_(ITextReader tr) {
     SkipWhitespace_(tr);

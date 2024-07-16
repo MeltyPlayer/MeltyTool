@@ -15,11 +15,10 @@ public record TransformNode : ITransformNode {
   public required IReadOnlyList<INode> Children { get; init; }
 }
 
-public record IsbLandscapeNode : TransformNode;
-
 public record AnchorNode : IAnchorNode {
   public required string Url { get; init; }
   public required string Description { get; init; }
+  public IReadOnlyList<string>? Parameter { get; init; }
   public required IReadOnlyList<INode> Children { get; init; }
 }
 
@@ -51,8 +50,9 @@ public record TextureTransformNode : ITextureTransformNode {
   public Vector2? Translation { get; init; }
 }
 
-public record IsbMovingTextureTransformNode : TextureTransformNode,
-                                              IIsbMovingTextureTransformNode {
+public record IsbMovingTextureTransformNode
+    : TextureTransformNode,
+      IIsbMovingTextureTransformNode {
   public required Vector2 TranslationStep { get; init; }
 }
 
@@ -86,5 +86,5 @@ public record TextNode : ITextNode {
 public record FontStyleNode : IFontStyleNode {
   public required string? Family { get; init; }
   public required string Style { get; init; }
-  public required string Justify { get; init; }
+  public required IReadOnlyList<string> Justify { get; init; }
 }

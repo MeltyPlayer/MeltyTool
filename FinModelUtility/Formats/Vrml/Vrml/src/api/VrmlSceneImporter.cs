@@ -8,6 +8,8 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
     var wrlFile = fileBundle.WrlFile.Impl;
     using var wrlFileStream = wrlFile.OpenRead();
 
+    var vrmlScene = VrmlParser.Parse(wrlFileStream);
+
     var finScene = new SceneImpl
         {FileBundle = fileBundle, Files = fileBundle.WrlFile.AsFileSet()};
 

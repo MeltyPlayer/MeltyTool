@@ -16,11 +16,10 @@ public interface ITransformNode : IGroupNode {
   Vector3? Scale { get; }
 }
 
-public interface IIsbLandscapeNode : ITransformNode;
-
 public interface IAnchorNode : IGroupNode {
   string Url { get; }
   string Description { get; }
+  IReadOnlyList<string>? Parameter { get; }
 }
 
 public interface IShapeNode : INode {
@@ -87,5 +86,5 @@ public interface ITextNode : IGeometryNode {
 public interface IFontStyleNode : INode {
   string? Family { get; }
   string Style { get; }
-  string Justify { get; }
+  IReadOnlyList<string> Justify { get; }
 }
