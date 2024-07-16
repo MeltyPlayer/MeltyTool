@@ -54,9 +54,9 @@ public class GltfSkeletonBuilder {
 
   private void ApplyBoneOrientationToNode_(GltfNode node,
                                            IReadOnlyBone bone,
-                                           float scale)
-    => node.LocalMatrix = SystemMatrix4x4Util.FromTrs(
-        bone.LocalTransform.Translation * scale,
-        bone.LocalTransform.Rotation,
-        bone.LocalTransform.Scale);
+                                           float scale) {
+    var matrix = bone.LocalTransform.Matrix;
+    matrix.Translation *= scale;
+    node.LocalMatrix = matrix;
+  }
 }
