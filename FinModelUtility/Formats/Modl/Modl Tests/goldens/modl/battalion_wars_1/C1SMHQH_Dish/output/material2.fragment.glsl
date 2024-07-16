@@ -124,9 +124,7 @@ vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4
 }
 
 void main() {
-  vec4 diffuseColor = texture(diffuseTexture, uv0);
-
-  fragColor = diffuseColor * vertexColor0;
+  fragColor = texture(diffuseTexture, uv0) * vertexColor0;
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
   fragColor.rgb =
