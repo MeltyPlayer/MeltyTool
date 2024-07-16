@@ -99,7 +99,7 @@ If you'd like to vote on new games or features that should be supported, please 
   - Battalion Wars 2 (`battalion_wars_2.iso`)
 - .vis/.xtd (PC)
   - Halo Wars (Steam)
-- .wrl
+- VRML (.wrl)
   - [Virtual Reality Walt Disney World](https://web.archive.org/web/20040608032334/https://vrwdw.tripod.com/)
 - .xc (3DS)
   - Professor Layton vs. Phoenix Wright (`professor_layton_vs_phoenix_wright.[3ds/cci/cia]`)
