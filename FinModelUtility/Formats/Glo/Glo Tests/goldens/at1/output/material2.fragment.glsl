@@ -16,7 +16,5 @@ in vec4 vertexColor0;
 in vec2 uv0;
 
 void main() {
-  vec4 diffuseColor = texture(diffuseTexture.sampler, diffuseTexture.transform2d * vec3((uv0).x, (uv0).y, 1));
-
-  fragColor = diffuseColor * vertexColor0;
+  fragColor = texture(diffuseTexture.sampler, diffuseTexture.transform2d * vec3((uv0).x, (uv0).y, 1)) * vertexColor0;
 }

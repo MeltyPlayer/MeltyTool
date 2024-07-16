@@ -10,9 +10,7 @@ in vec4 vertexColor0;
 in vec2 uv0;
 
 void main() {
-  vec4 diffuseColor = texture(diffuseTexture, uv0);
-
-  fragColor = diffuseColor * vertexColor0;
+  fragColor = texture(diffuseTexture, uv0) * vertexColor0;
 
   if (fragColor.a < .95) {
     discard;

@@ -85,8 +85,8 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
         $$"""
           
           
-              void main() {
-                fragColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture, animations)}} * vertexColor0{{(material.DiffuseColor != null ? " * diffuseColor" : "")}};
+          void main() {
+            fragColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture, animations)}} * vertexColor0{{(material.DiffuseColor != null ? " * diffuseColor" : "")}};
           """);
 
     if (hasNormals) {
