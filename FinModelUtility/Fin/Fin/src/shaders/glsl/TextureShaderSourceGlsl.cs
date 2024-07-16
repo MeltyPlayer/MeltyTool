@@ -9,7 +9,7 @@ namespace fin.shaders.glsl;
 
 public class TextureShaderSourceGlsl : IShaderSourceGlsl {
   public TextureShaderSourceGlsl(IReadOnlyModel model,
-                                 IReadOnlyMaterial material,
+                                 IReadOnlyTextureMaterial material,
                                  bool useBoneMatrices) {
     this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);
 
@@ -31,6 +31,14 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
     }
 
     fragmentSrc.AppendTextureStructIfNeeded(material.Textures, animations);
+
+    if (material.DiffuseColor != null) {
+      fragmentSrc.Append(
+          """
+
+          uniform vec4 diffuseColor;
+          """);
+    }
 
     fragmentSrc.Append(
         $"""
@@ -75,12 +83,10 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
     fragmentSrc.Append(
         $$"""
-
-
-          void main() {
-            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture, animations)}};
           
-            fragColor = diffuseColor * vertexColor0;
+          
+              void main() {
+                fragColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture, animations)}} * vertexColor0{{(material.DiffuseColor != null ? " * diffuseColor" : "")}};
           """);
 
     if (hasNormals) {

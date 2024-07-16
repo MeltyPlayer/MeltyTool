@@ -9,7 +9,6 @@ using fin.data.indexable;
 using fin.image;
 using fin.io;
 using fin.language.equations.fixedFunction;
-using fin.math.xyz;
 using fin.util.image;
 
 using schema.readOnly;
@@ -103,6 +102,7 @@ public partial interface IHiddenMaterial : IMaterial;
 [GenerateReadOnly]
 public partial interface ITextureMaterial : IMaterial {
   IReadOnlyTexture Texture { get; }
+  Color? DiffuseColor { get; set; }
 }
 
 [GenerateReadOnly]

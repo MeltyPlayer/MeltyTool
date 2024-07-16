@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 
 using fin.util.image;
 
@@ -27,5 +28,7 @@ public partial class ModelImpl<TVertex> {
 
     public IReadOnlyTexture Texture { get; }
     public override IEnumerable<IReadOnlyTexture> Textures { get; }
+
+    public Color? DiffuseColor { get; set; }
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -119,4 +120,24 @@ public static class EnumerableExtensions {
 
     return (lhs ?? []).SequenceEqual(rhs ?? []);
   }
+
+  public static IEnumerable<T[]> SplitByNull<T>(
+      this IEnumerable<Nullable<T>> impl) where T : struct {
+    var current = new LinkedList<T>();
+    foreach (var value in impl) {
+      if (value == null) {
+        yield return current.ToArray();
+        current.Clear();
+        continue;
+      }
+
+      current.AddLast(value.Value);
+    }
+
+    yield return current.ToArray();
+  }
+
+  public static IEnumerable<(int index, T value)> Indexed<T>(
+      this IEnumerable<T> impl)
+    => impl.Select((v, i) => (i, v));
 }

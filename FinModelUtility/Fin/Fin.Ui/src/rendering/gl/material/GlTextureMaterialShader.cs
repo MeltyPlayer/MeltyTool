@@ -1,4 +1,6 @@
-﻿using fin.math;
+﻿using System.Numerics;
+
+using fin.math;
 using fin.model;
 using fin.model.util;
 
@@ -6,20 +8,22 @@ namespace fin.ui.rendering.gl.material;
 
 public class GlTextureMaterialShader(
     IReadOnlyModel model,
-    IReadOnlyMaterial material,
+    IReadOnlyTextureMaterial material,
     IReadOnlyBoneTransformManager? boneTransformManager,
     IReadOnlyTextureTransformManager? textureTransformManager,
     IReadOnlyLighting? lighting)
-    : BGlMaterialShader<IReadOnlyMaterial>(
+    : BGlMaterialShader<IReadOnlyTextureMaterial>(
         model,
         material,
         boneTransformManager,
         textureTransformManager,
         lighting) {
+  private IShaderUniform<Vector4> diffuseColorUniform_;
+
   protected override void DisposeInternal() { }
 
   protected override void Setup(
-      IReadOnlyMaterial material,
+      IReadOnlyTextureMaterial material,
       GlShaderProgram shaderProgram) {
     var finTexture = PrimaryTextureFinder.GetFor(material);
     var glTexture = finTexture != null
@@ -27,6 +31,17 @@ public class GlTextureMaterialShader(
         : GlMaterialConstants.NULL_WHITE_TEXTURE;
 
     this.SetUpTexture("diffuseTexture", 0, finTexture, glTexture);
+
+    this.diffuseColorUniform_ = shaderProgram.GetUniformVec4("diffuseColor");
+
+    var diffuseColor = material.DiffuseColor;
+    if (diffuseColor != null) {
+      this.diffuseColorUniform_.SetAndMarkDirty(
+          new Vector4(diffuseColor.Value.R / 255f,
+                      diffuseColor.Value.G / 255f,
+                      diffuseColor.Value.B / 255f,
+                      diffuseColor.Value.A / 255f));
+    }
   }
 
   protected override void PassUniformsAndBindTextures(

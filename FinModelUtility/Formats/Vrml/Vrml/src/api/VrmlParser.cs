@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Numerics;
 using System.Text;
 
+using fin.model.impl;
 using fin.util.asserts;
 using fin.util.strings;
 
@@ -49,9 +50,9 @@ public class VrmlParser {
 
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
-              "Background", "DirectionalLight", "NavigationInfo",
+              "Background", "DirectionalLight", "ISBPicture", "NavigationInfo",
               "OrientationInterpolator", "PROTO", "ROUTE", "Sound",
-              "TimeSensor", "Viewpoint", "WorldInfo"
+              "TimeSensor", "Viewpoint", "WorldInfo",
           }
           .ToImmutableHashSet();
 
@@ -68,6 +69,10 @@ public class VrmlParser {
     while (!tr.Eof) {
       SkipWhitespace_(tr);
       if (tr.Matches(out _, [']'])) {
+        break;
+      }
+
+      if (tr.Eof) {
         break;
       }
 
@@ -139,6 +144,7 @@ public class VrmlParser {
         "Shape"                     => ReadShapeNode_(tr, definitions),
         "Text"                      => ReadTextNode_(tr, definitions),
         "TextureCoordinate"         => ReadTextureCoordinateNode_(tr),
+        "TextureTransform"          => ReadTextureTransformNode_(tr),
         "Transform"
             or "ISBLandscape" => ReadTransformNode_(tr, definitions),
     };
@@ -509,6 +515,43 @@ public class VrmlParser {
     return new TextureCoordinateNode { Point = point };
   }
 
+  private static ITextureTransformNode ReadTextureTransformNode_(
+      ITextReader tr) {
+    Vector2? center = null;
+    float? rotation = null;
+    Vector2? scale = null;
+    Vector2? translation = null;
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "center": {
+              center = ReadVector2_(tr);
+              break;
+            }
+            case "rotation": {
+              rotation = tr.ReadSingle();
+              break;
+            }
+            case "scale": {
+              scale = ReadVector2_(tr);
+              break;
+            }
+            case "translation": {
+              translation = ReadVector2_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+    return new TextureTransformNode {
+        Center = center,
+        Rotation = rotation,
+        Scale = scale,
+        Translation = translation
+    };
+  }
+
   private static ITransformNode ReadTransformNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
@@ -567,6 +610,11 @@ public class VrmlParser {
       SkipWhitespace_(tr);
       if (tr.Matches(out _, ['}'])) {
         return;
+      }
+
+      if (tr.Matches(out _, ["ROUTE"])) {
+        tr.ReadLine();
+        continue;
       }
 
       var fieldName = ReadWord_(tr);

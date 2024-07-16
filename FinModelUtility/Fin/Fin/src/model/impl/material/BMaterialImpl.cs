@@ -11,8 +11,10 @@ public partial class ModelImpl<TVertex> {
     public string? Name { get; set; }
     public CullingMode CullingMode { get; set; }
 
-    public DepthMode DepthMode { get; set; }
+    public DepthMode DepthMode { get; set; } = DepthMode.READ_AND_WRITE;
+
     public DepthCompareType DepthCompareType { get; set; }
+      = DepthCompareType.LEqual;
 
     public bool IgnoreLights { get; set; }
 
