@@ -79,8 +79,10 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var vrmlMaterial = appearanceNode.Material;
           IMaterial finMaterial;
 
-          var color = vrmlMaterial.DiffuseColor;
-          var alpha = vrmlMaterial.Transparency ?? 1;
+          var color = vrmlMaterial.DiffuseColor ?? new Vector3(.8f);
+          var alpha = vrmlMaterial.Transparency == null
+              ? 1
+              : 1 - vrmlMaterial.Transparency;
 
           var r = (byte) (color.X * 255);
           var g = (byte) (color.Y * 255);
@@ -104,7 +106,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           finMaterial.TransparencyType = a < 255
               ? TransparencyType.TRANSPARENT
-              : TransparencyType.OPAQUE;
+              : finMaterial.Textures.FirstOrDefault()?.TransparencyType ??
+                TransparencyType.OPAQUE;
 
           // TODO: Should be show front only, how to get that working?
           finMaterial.CullingMode = CullingMode.SHOW_BOTH;
@@ -113,13 +116,90 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         });
 
     var finSkeleton = finModel.Skeleton;
+    var finSkin = finModel.Skin;
+
     var nodeQueue
         = new FinTuple2Queue<INode, IBone>(
             vrmlScene.Children.Select(n => (n, finSkeleton.Root)));
     while (nodeQueue.TryDequeue(out var vrmlNode, out var finParentBone)) {
       var finBone = finParentBone;
 
+      if (vrmlNode is ITransform transform) {
+        // T × C × R × SR × S × -SR × -C
+        var translation = transform.Translation;
+        if (!translation.IsRoughly0()) {
+          finBone = finBone.AddChild(transform.Translation);
+        }
+
+        var center = transform.Center;
+        if (center != null && !center.Value.IsRoughly0()) {
+          finBone = finBone.AddChild(center.Value);
+        }
+
+        var rotation = transform.Rotation;
+        if (rotation != null && rotation != Quaternion.Identity) {
+          finBone = finBone.AddChild(
+              SystemMatrix4x4Util.FromRotation(rotation.Value));
+        }
+
+        var scaleOrientation = transform.ScaleOrientation;
+        if (scaleOrientation != null &&
+            scaleOrientation != Quaternion.Identity) {
+          finBone = finBone.AddChild(
+              SystemMatrix4x4Util.FromRotation(scaleOrientation.Value));
+        }
+
+        var scale = transform.Scale;
+        if (scale != null && !scale.Value.IsRoughly1()) {
+          finBone = finBone.AddChild(
+              SystemMatrix4x4Util.FromScale(scale.Value));
+        }
+
+        if (scaleOrientation != null &&
+            scaleOrientation != Quaternion.Identity) {
+          finBone = finBone.AddChild(
+              FinMatrix4x4Util.FromRotation(scaleOrientation.Value)
+                              .InvertInPlace());
+        }
+
+        if (center != null && !center.Value.IsRoughly0()) {
+          finBone = finBone.AddChild(-center.Value);
+        }
+      }
+
       switch (vrmlNode) {
+        case IIsbPictureNode pictureNode: {
+          var image = pictureNode.Frames[0];
+          var appearance = new AppearanceNode {
+              Material = new MaterialNode { DiffuseColor = new Vector3(.5f) },
+              Texture = image,
+          };
+
+          var finMaterial = lazyMaterialDictionary[appearance];
+
+          var boneWeights = finSkin.GetOrCreateBoneWeights(
+              VertexSpace.RELATIVE_TO_BONE,
+              finBone);
+
+          var vtx0 = finSkin.AddVertex(0, 0, 1);
+          vtx0.SetUv(0, 1 - 0);
+          vtx0.SetBoneWeights(boneWeights);
+          var vtx1 = finSkin.AddVertex(1, 0, 1);
+          vtx1.SetUv(1, 1 - 0);
+          vtx1.SetBoneWeights(boneWeights);
+          var vtx2 = finSkin.AddVertex(1, 1, 1);
+          vtx2.SetUv(1, 1 - 1);
+          vtx2.SetBoneWeights(boneWeights);
+          var vtx3 = finSkin.AddVertex(0, 1, 1);
+          vtx3.SetUv(0, 1 - 1);
+          vtx3.SetBoneWeights(boneWeights);
+
+          var finMesh = finSkin.AddMesh();
+          var finPrimitive = finMesh.AddQuads([vtx0, vtx1, vtx2, vtx3]);
+          finPrimitive.SetVertexOrder(VertexOrder.NORMAL);
+          finPrimitive.SetMaterial(finMaterial);
+          break;
+        }
         case IShapeNode shapeNode: {
           var geometry = shapeNode.Geometry;
           if (geometry is not IIndexedFaceSetNode indexedFaceSetNode) {
@@ -127,7 +207,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           }
 
           var finMaterial = lazyMaterialDictionary[shapeNode.Appearance];
-          var finMesh = finModel.Skin.AddMesh();
+          var finMesh = finSkin.AddMesh();
           foreach (var faceVertices in GetIndexFaceSetCoordGroups_(
                        indexedFaceSetNode)) {
             var finVertices = new LinkedList<INormalVertex>();
@@ -142,8 +222,10 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                   ? indexedFaceSetNode.Color?.Color[colorIndex.Value]
                   : null;
 
-              var finVertex = finModel.Skin.AddVertex(coord);
-              finVertex.SetUv(texCoord);
+              var finVertex = finSkin.AddVertex(coord);
+              if (texCoord != null) {
+                finVertex.SetUv(texCoord.Value.X, 1 - texCoord.Value.Y);
+              }
 
               if (color != null) {
                 var finColor = FinColor.FromRgbFloats(color.Value.X,
@@ -153,7 +235,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               }
 
               finVertex.SetBoneWeights(
-                  finModel.Skin.GetOrCreateBoneWeights(
+                  finSkin.GetOrCreateBoneWeights(
                       VertexSpace.RELATIVE_TO_BONE,
                       finBone));
 
@@ -164,7 +246,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             if (finVerticesArray.Length >= 3) {
               AddFaceNormal_(finVerticesArray);
 
-              IPrimitive? finPrimitive = null;
+              IPrimitive finPrimitive;
               if (finVertices.Count == 3) {
                 finPrimitive = finMesh.AddTriangles(finVerticesArray);
               } else if (finVertices.Count == 4) {
@@ -175,53 +257,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                         TriangulateVertices_(finVertices.ToArray()));
               }
 
-              finPrimitive?.SetVertexOrder(VertexOrder.NORMAL);
-              finPrimitive?.SetMaterial(finMaterial);
+              finPrimitive.SetVertexOrder(VertexOrder.NORMAL);
+              finPrimitive.SetMaterial(finMaterial);
             }
-          }
-
-          break;
-        }
-        case ITransformNode transformNode: {
-          // T × C × R × SR × S × -SR × -C
-          var translation = transformNode.Translation;
-          if (!translation.IsRoughly0()) {
-            finBone = finBone.AddChild(transformNode.Translation);
-          }
-
-          var center = transformNode.Center;
-          if (center != null && !center.Value.IsRoughly0()) {
-            finBone = finBone.AddChild(center.Value);
-          }
-
-          var rotation = transformNode.Rotation;
-          if (rotation != null && rotation != Quaternion.Identity) {
-            finBone = finBone.AddChild(
-                SystemMatrix4x4Util.FromRotation(rotation.Value));
-          }
-
-          var scaleOrientation = transformNode.ScaleOrientation;
-          if (scaleOrientation != null &&
-              scaleOrientation != Quaternion.Identity) {
-            finBone = finBone.AddChild(
-                SystemMatrix4x4Util.FromRotation(scaleOrientation.Value));
-          }
-
-          var scale = transformNode.Scale;
-          if (scale != null && !scale.Value.IsRoughly1()) {
-            finBone = finBone.AddChild(
-                SystemMatrix4x4Util.FromScale(scale.Value));
-          }
-
-          if (scaleOrientation != null &&
-              scaleOrientation != Quaternion.Identity) {
-            finBone = finBone.AddChild(
-                FinMatrix4x4Util.FromRotation(scaleOrientation.Value)
-                                .InvertInPlace());
-          }
-
-          if (center != null && !center.Value.IsRoughly0()) {
-            finBone = finBone.AddChild(-center.Value);
           }
 
           break;

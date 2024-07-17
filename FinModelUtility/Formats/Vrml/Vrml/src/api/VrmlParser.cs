@@ -48,7 +48,7 @@ public class VrmlParser {
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
               "Background", "DirectionalLight", "Collision", "Fog",
-              "ISBPicture", "NavigationInfo", "OrientationInterpolator",
+              "NavigationInfo", "OrientationInterpolator",
               "PositionInterpolator", "PROTO", "ProximitySensor", "ROUTE",
               "Sphere", "Sound", "TimeSensor", "Viewpoint", "WorldInfo",
           }
@@ -138,6 +138,7 @@ public class VrmlParser {
         "ImageTexture"              => ReadImageTextureNode_(tr),
         "IndexedFaceSet"            => ReadIndexedFaceSetNode_(tr, definitions),
         "ISBMovingTextureTransform" => ReadIsbMovingTextureTransformNode_(tr),
+        "ISBPicture"                => ReadIsbPictureNode_(tr, definitions),
         "Material"                  => ReadMaterialNode_(tr),
         "Shape"                     => ReadShapeNode_(tr, definitions),
         "Text"                      => ReadTextNode_(tr, definitions),
@@ -413,9 +414,76 @@ public class VrmlParser {
     };
   }
 
+  private static IIsbPictureNode ReadIsbPictureNode_(
+      ITextReader tr,
+      IDictionary<string, INode> definitions) {
+    Vector3? center = null;
+    IReadOnlyList<IImageTextureNode> frames = default;
+    bool? pinned = null;
+    Quaternion? rotation = null;
+    Vector3? scale = null;
+    Quaternion? scaleOrientation = null;
+    Vector3 translation = default;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "center": {
+              center = ReadVector3_(tr);
+              break;
+            }
+            case "frameCount": {
+              var frameCount = ReadWord_(tr);
+              break;
+            }
+            case "frames": {
+              frames = ParseNodeArrayOfType_<IImageTextureNode>(
+                  tr,
+                  definitions);
+              break;
+            }
+            case "pinned": {
+              pinned = ReadBool_(tr);
+              break;
+            }
+            case "playOrder": {
+              var playOrder = ReadWord_(tr);
+              break;
+            }
+            case "rotation": {
+              rotation = ReadQuaternion_(tr);
+              break;
+            }
+            case "scale": {
+              scale = ReadVector3_(tr);
+              break;
+            }
+            case "scaleOrientation": {
+              scaleOrientation = ReadQuaternion_(tr);
+              break;
+            }
+            case "translation": {
+              translation = ReadVector3_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new IsbPictureNode {
+        Center = center,
+        Frames = frames,
+        Rotation = rotation,
+        Scale = scale,
+        ScaleOrientation = scaleOrientation,
+        Translation = translation
+    };
+  }
+
   private static IMaterialNode ReadMaterialNode_(ITextReader tr) {
     float? ambientIntensity = null;
-    Vector3 diffuseColor = default;
+    Vector3? diffuseColor = null;
     float? transparency = null;
 
     ReadFields_(
@@ -642,6 +710,17 @@ public class VrmlParser {
     }
   }
 
+  private static IReadOnlyList<TNode> ParseNodeArrayOfType_<TNode>(
+      ITextReader tr,
+      IDictionary<string, INode> definitions)
+      where TNode : INode {
+    var nodes = new LinkedList<TNode>();
+    ReadArray_(
+        tr,
+        () => nodes.AddLast(ParseNodeOfType_<TNode>(tr, definitions)));
+    return nodes.ToArray();
+  }
+
   private static IReadOnlyList<int> ReadIndexArray_(ITextReader tr) {
     SkipWhitespace_(tr);
     tr.AssertChar('[');
@@ -701,9 +780,10 @@ public class VrmlParser {
   }
 
   private static float[] ReadSingles_(ITextReader tr, int count) {
-    var singles = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS,
-                                 TextReaderConstants.NEWLINE_STRINGS);
-    Asserts.Equal(count, singles.Length);
+    var singles = new float[count];
+    for (var i = 0; i < count; ++i) {
+      singles[i] = float.Parse(ReadWord_(tr));
+    }
     return singles;
   }
 

@@ -35,7 +35,7 @@ public record AppearanceNode : IAppearanceNode {
 }
 
 public record MaterialNode : IMaterialNode {
-  public Vector3 DiffuseColor { get; init; }
+  public Vector3? DiffuseColor { get; init; }
   public float? AmbientIntensity { get; init; }
   public float? Transparency { get; init; }
 }
@@ -55,6 +55,16 @@ public record IsbMovingTextureTransformNode
     : TextureTransformNode,
       IIsbMovingTextureTransformNode {
   public required Vector2 TranslationStep { get; init; }
+}
+
+public record IsbPictureNode : IIsbPictureNode {
+  public Vector3? Center { get; init; }
+  public bool? Pinned { get; init; }
+  public Quaternion? Rotation { get; init; }
+  public Quaternion? ScaleOrientation { get; init; }
+  public Vector3? Scale { get; init; }
+  public Vector3 Translation { get; init; }
+  public IReadOnlyList<IImageTextureNode> Frames { get; init; }
 }
 
 public record IndexedFaceSetNode : IIndexedFaceSetNode {

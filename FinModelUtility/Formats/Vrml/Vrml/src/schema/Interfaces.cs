@@ -9,13 +9,15 @@ public interface IGroupNode : INode {
   IReadOnlyList<INode> Children { get; }
 }
 
-public interface ITransformNode : IGroupNode {
+public interface ITransform {
   Vector3? Center { get; }
   Vector3 Translation { get; }
   Quaternion? Rotation { get; }
   Quaternion? ScaleOrientation { get; }
   Vector3? Scale { get; }
 }
+
+public interface ITransformNode : IGroupNode, ITransform;
 
 public interface IAnchorNode : IGroupNode {
   string Url { get; }
@@ -35,7 +37,7 @@ public interface IAppearanceNode : INode {
 }
 
 public interface IMaterialNode : INode {
-  Vector3 DiffuseColor { get; }
+  Vector3? DiffuseColor { get; }
   float? AmbientIntensity { get; }
   float? Transparency { get; }
 }
@@ -65,6 +67,11 @@ public interface IIndexedFaceSetNode : IGeometryNode {
   IReadOnlyList<int> CoordIndex { get; }
   ITextureCoordinateNode? TexCoord { get; }
   IReadOnlyList<int>? TexCoordIndex { get; }
+}
+
+public interface IIsbPictureNode : INode, ITransform {
+  IReadOnlyList<IImageTextureNode> Frames { get; }
+  bool? Pinned { get; }
 }
 
 public interface IColorNode : INode {
