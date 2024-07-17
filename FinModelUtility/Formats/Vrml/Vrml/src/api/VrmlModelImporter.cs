@@ -36,7 +36,10 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     var finModel = new ModelImpl { FileBundle = fileBundle, Files = fileSet };
 
     var lazyTextureDictionary
-        = new LazyCaseInvariantStringDictionary<IReadOnlyTexture>(name => {
+        = new LazyDictionary<(string, ITextureTransformNode?),
+            IReadOnlyTexture>(tuple => {
+          var (name, transformNode) = tuple;
+
           var wrlDirectory = wrlFile.AssertGetParent();
           var imageFile = wrlDirectory.AssertGetExistingFile(name);
           fileSet.Add(imageFile);
@@ -46,6 +49,26 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                   FinImage.FromFile(imageFile));
           finTexture.Name = imageFile.NameWithoutExtension;
           finTexture.WrapModeU = finTexture.WrapModeV = WrapMode.REPEAT;
+
+          if (transformNode != null) {
+            var center = transformNode.Center;
+            // TODO: Support center
+
+            var rotation = transformNode.Rotation;
+            if (rotation != null) {
+              finTexture.SetRotationRadians2d(rotation.Value);
+            }
+
+            var scale = transformNode.Scale;
+            if (scale != null) {
+              finTexture.SetScale2d(scale.Value.X, scale.Value.Y);
+            }
+
+            var translation = transformNode.Translation;
+            if (translation != null) {
+              finTexture.SetOffset2d(translation.Value.X, translation.Value.Y);
+            }
+          }
 
           return finTexture;
         });
@@ -65,7 +88,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           var vrmlTexture = appearanceNode.Texture;
           if (vrmlTexture != null) {
-            var finTexture = lazyTextureDictionary[vrmlTexture.Url];
+            var finTexture = lazyTextureDictionary[
+                (vrmlTexture.Url.ToLower(), appearanceNode.TextureTransform)];
             var finTextureMaterial
                 = finModel.MaterialManager.AddTextureMaterial(finTexture);
             finTextureMaterial.DiffuseColor = vrmlColor;
@@ -154,12 +178,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           break;
         }
         case ITransformNode transformNode: {
-          // TODO: How to handle scale orientation??
-          /*finBone = finParentBone.AddChild(transformNode.Translation);
-          finBone.LocalTransform.Rotation
-              = transformNode.Rotation ?? Quaternion.Identity;
-          finBone.LocalTransform.Scale = transformNode.Scale;*/
-
           // T × C × R × SR × S × -SR × -C
           var translation = transformNode.Translation;
           if (!translation.IsRoughly0()) {
@@ -319,7 +337,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     => MathF.Sqrt(MathF.Pow((float) lhs.X - rhs.LocalPosition.X, 2) +
                   MathF.Pow((float) lhs.Y - rhs.LocalPosition.Y, 2) +
                   MathF.Pow((float) lhs.Z - rhs.LocalPosition.Z, 2));
-    
+
   private static void AddFaceNormal_(IReadOnlyList<INormalVertex> vertices) {
     var a = vertices[0].LocalPosition;
     var b = vertices[1].LocalPosition;

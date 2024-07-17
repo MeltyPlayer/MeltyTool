@@ -729,7 +729,7 @@ public class VrmlParser {
   private static string ReadWord_(ITextReader tr) {
     SkipWhitespace_(tr);
     var word
-        = tr.ReadUpToStartOfTerminator(TextReaderConstants.WHITESPACE_STRINGS);
+        = tr.ReadUpToStartOfTerminator([" ", "\t", "\n", "\r\n", "{", "["]);
     return word;
   }
 }
