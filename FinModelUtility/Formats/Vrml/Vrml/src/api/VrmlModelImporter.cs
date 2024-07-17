@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
-using EarClipperLib;
+using DelaunatorSharp;
 
 using fin.color;
 using fin.data.counters;
@@ -14,11 +14,13 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.model.util;
+using fin.util.asserts;
 using fin.util.enumerables;
 using fin.util.image;
 using fin.util.sets;
 
 using vrml.schema;
+using vrml.util;
 
 namespace vrml.api;
 
@@ -104,6 +106,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               ? TransparencyType.TRANSPARENT
               : TransparencyType.OPAQUE;
 
+          // TODO: Should be show front only, how to get that working?
+          finMaterial.CullingMode = CullingMode.SHOW_BOTH;
+
           return finMaterial;
         });
 
@@ -165,9 +170,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               } else if (finVertices.Count == 4) {
                 finPrimitive = finMesh.AddQuads(finVerticesArray);
               } else {
-                /*finPrimitive
+                finPrimitive
                     = finMesh.AddTriangles(
-                        TriangulateVertices_(finVertices.ToArray()));*/
+                        TriangulateVertices_(finVertices.ToArray()));
               }
 
               finPrimitive?.SetVertexOrder(VertexOrder.NORMAL);
@@ -233,70 +238,38 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
   private static IReadOnlyVertex[] TriangulateVertices_(
       IReadOnlyVertex[] finVertices) {
-    var inputPoints = EarClipping.GetCoplanarMapping(
-        finVertices.Select(v => new Vector3m(
-                               v.LocalPosition.X,
-                               v.LocalPosition.Y,
-                               v.LocalPosition.Z))
-                   .Reverse()
-                   .ToList(),
-        out var reverseMapping);
+    var points3d = finVertices;
+    var points2d
+        = CoplanarPointFlattener.FlattenCoplanarPoints(
+            points3d.Select(t => t.LocalPosition).ToArray());
 
-    var earClipping = new EarClipping();
-    earClipping.SetPoints(inputPoints);
-    earClipping.Triangulate();
+    var delaunator = new Delaunator(
+        points2d
+            .Select((p, i) => (IPoint) new PointWithIndex(
+                        p.X,
+                        p.Y,
+                        i))
+            .ToArray());
+    return delaunator
+           .GetTriangles()
+           .SelectMany(t => t.Points.Select(
+                                 p => finVertices[
+                                     p.AssertAsA<PointWithIndex>().Index])
+                             .Reverse())
+           .ToArray();
+  }
 
-    var result
-        = EarClipping.RevertCoplanarityMapping(earClipping.Result,
-                                               reverseMapping);
-
-    return result.Select(v => FindClosest_(v, finVertices))
-                 .ToArray();
+  private struct PointWithIndex(double x, double y, int index) : IPoint {
+    public double X { get; set; } = x;
+    public double Y { get; set; } = y;
+    public int Index => index;
   }
 
   private static IEnumerable<IndexedFaceGroup[]> GetIndexFaceSetCoordGroups_(
-      IIndexedFaceSetNode indexedFaceSetNode) {
-    var indexCounts = new CounterSet<int>();
-    var list = new LinkedList<IndexedFaceGroup>();
-
-    foreach (var indexedFaceSetGroup in GetIndexFaceSetCoords_(
-                     indexedFaceSetNode)
-                 .SplitByNull()) {
-      if (indexedFaceSetGroup.Length == 0) {
-        continue;
-      }
-
-      indexCounts.Clear();
-
-      foreach (var tuple in indexedFaceSetGroup) {
-        indexCounts.Increment(tuple.coordIndex);
-      }
-
-      if (!indexCounts.Any(kvp => kvp.Value > 1)) {
-        yield return indexedFaceSetGroup;
-        continue;
-      }
-
-      indexCounts.Clear();
-      list.Clear();
-      foreach (var tuple in indexedFaceSetGroup) {
-        if (indexCounts.GetCount(tuple.coordIndex) == 1) {
-          yield return list.ToArray();
-
-          indexCounts.Clear();
-          list.Clear();
-          continue;
-        }
-
-        list.AddLast(tuple);
-        indexCounts.Increment(tuple.coordIndex);
-      }
-
-      if (list.Count >= 3) {
-        yield return list.ToArray();
-      }
-    }
-  }
+      IIndexedFaceSetNode indexedFaceSetNode)
+    => GetIndexFaceSetCoords_(indexedFaceSetNode)
+       .SplitByNull()
+       .Where(t => t.Length > 0);
 
   private static IEnumerable<IndexedFaceGroup?> GetIndexFaceSetCoords_(
       IIndexedFaceSetNode indexedFaceSetNode) {
@@ -316,27 +289,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       }
     }
   }
-
-  private static IReadOnlyVertex FindClosest_(
-      Vector3m vec3,
-      IReadOnlyVertex[] finVertices) {
-    IReadOnlyVertex closestVertex = finVertices[0];
-    var closestDistance = GetDistance_(vec3, closestVertex);
-    foreach (var vertex in finVertices.Skip(1)) {
-      var distance = GetDistance_(vec3, vertex);
-      if (distance < closestDistance) {
-        closestVertex = vertex;
-        closestDistance = distance;
-      }
-    }
-
-    return closestVertex;
-  }
-
-  private static float GetDistance_(Vector3m lhs, IReadOnlyVertex rhs)
-    => MathF.Sqrt(MathF.Pow((float) lhs.X - rhs.LocalPosition.X, 2) +
-                  MathF.Pow((float) lhs.Y - rhs.LocalPosition.Y, 2) +
-                  MathF.Pow((float) lhs.Z - rhs.LocalPosition.Z, 2));
 
   private static void AddFaceNormal_(IReadOnlyList<INormalVertex> vertices) {
     var a = vertices[0].LocalPosition;

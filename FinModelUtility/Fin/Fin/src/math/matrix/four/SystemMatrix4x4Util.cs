@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using fin.math.floats;
 using fin.math.rotations;
 using fin.model;
+using fin.util.asserts;
 using fin.util.hash;
 
 
@@ -100,5 +101,13 @@ public static class SystemMatrix4x4Util {
     }
 
     return dst;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Matrix4x4 AssertInvert(in this Matrix4x4 matrix) {
+    Asserts.True(Matrix4x4.Invert(matrix, out var inverted) ||
+                 !FinMatrix4x4.STRICT_INVERTING,
+                 "Failed to invert matrix!");
+    return inverted;
   }
 }

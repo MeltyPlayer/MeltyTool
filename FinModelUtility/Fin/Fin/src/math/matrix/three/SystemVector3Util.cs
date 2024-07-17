@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 
 using fin.math.floats;
+using fin.util.hash;
 
 
 namespace fin.math.matrix.three;
@@ -20,4 +21,11 @@ public static class SystemVector3Util {
 
     return true;
   }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static unsafe int GetRoughHashCode(this Vector3 v)
+    => FluentHash.Start()
+                 .With(v.X.GetRoughHashCode())
+                 .With(v.Y.GetRoughHashCode())
+                 .With(v.Z.GetRoughHashCode());
 }

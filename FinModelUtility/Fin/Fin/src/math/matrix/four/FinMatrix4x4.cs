@@ -206,19 +206,8 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
   public const bool STRICT_INVERTING = true;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void InvertIntoBuffer(IFinMatrix4x4 buffer) {
-    if (buffer is FinMatrix4x4 bufferImpl) {
-      Asserts.True(SystemMatrix.Invert(impl_, out bufferImpl.impl_) ||
-                   !STRICT_INVERTING,
-                   "Failed to invert matrix!");
-      return;
-    }
-
-    Asserts.True(SystemMatrix.Invert(impl_, out var invertedSystemMatrix) ||
-                 !STRICT_INVERTING,
-                 "Failed to invert matrix!");
-    Matrix4x4ConversionUtil.CopySystemIntoFin(invertedSystemMatrix, buffer);
-  }
+  public void InvertIntoBuffer(IFinMatrix4x4 buffer)
+    => buffer.Impl = SystemMatrix4x4Util.AssertInvert(this.impl_);
 
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

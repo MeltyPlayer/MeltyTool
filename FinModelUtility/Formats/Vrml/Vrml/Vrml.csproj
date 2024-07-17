@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EarClipper" Version="1.2.0" />
+    <PackageReference Include="Delaunator" Version="1.0.10" />
   </ItemGroup>
 
   <ItemGroup>
