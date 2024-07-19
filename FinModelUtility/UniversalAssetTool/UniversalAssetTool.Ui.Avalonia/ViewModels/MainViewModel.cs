@@ -14,6 +14,7 @@ using ReactiveUI;
 using uni.games;
 using uni.ui.avalonia.common.progress;
 using uni.ui.avalonia.common.treeViews;
+using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.audio;
 using uni.ui.avalonia.resources.model;
 
@@ -95,6 +96,8 @@ public class MainViewModel : ViewModelBase {
     this.ModelPanel = new ModelPanelViewModel();
     SceneInstanceService.OnSceneInstanceOpened
         += (_, sceneInstance) => {
+          AvaloniaIconUtil.ClearCache();
+
           this.FileName
               = sceneInstance.Definition.FileBundle?.DisplayFullPath;
 
