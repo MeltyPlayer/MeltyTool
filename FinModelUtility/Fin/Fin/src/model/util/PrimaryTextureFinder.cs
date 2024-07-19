@@ -7,7 +7,9 @@ namespace fin.model.util;
 
 public static class PrimaryTextureFinder {
   public static IReadOnlyTexture? GetFor(IReadOnlyMaterial material) {
-    if (material is IReadOnlyNullMaterial or IReadOnlyHiddenMaterial) {
+    if (material is IReadOnlyNullMaterial
+                    or IReadOnlyHiddenMaterial
+                    or IReadOnlyColorMaterial) {
       return null;
     }
 

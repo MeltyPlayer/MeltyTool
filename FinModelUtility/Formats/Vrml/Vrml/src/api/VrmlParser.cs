@@ -1,10 +1,12 @@
 ﻿using System.Collections.Immutable;
+using System.IO.Compression;
 using System.Numerics;
 using System.Text;
 
 using fin.util.asserts;
 using fin.util.strings;
 
+using schema.binary;
 using schema.text.reader;
 
 using vrml.schema;
@@ -13,12 +15,26 @@ namespace vrml.api;
 
 public class VrmlParser {
   public static IGroupNode Parse(Stream stream) {
+    DecompressStreamIfNeeded_(ref stream);
     stream = RemoveComments_(stream);
     var tr = new SchemaTextReader(stream);
     var definitions = new Dictionary<string, INode>();
     return new GroupNode {
         Children = ReadChildren_(tr, definitions, false).ToArray()
     };
+  }
+
+  private static void DecompressStreamIfNeeded_(ref Stream stream) {
+    var baseOffset = stream.Position;
+
+    Span<uint> buffer = stackalloc uint[1];
+    var br = new SchemaBinaryReader(stream);
+    br.ReadUInt32s(buffer);
+    stream.Position = baseOffset;
+
+    if (buffer[0] == 0x88B1F) {
+      stream = new GZipStream(stream, CompressionMode.Decompress);
+    }
   }
 
   private static Stream RemoveComments_(Stream input) {
@@ -784,6 +800,7 @@ public class VrmlParser {
     for (var i = 0; i < count; ++i) {
       singles[i] = float.Parse(ReadWord_(tr));
     }
+
     return singles;
   }
 

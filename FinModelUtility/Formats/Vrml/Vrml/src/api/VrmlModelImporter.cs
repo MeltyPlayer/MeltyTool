@@ -1,7 +1,10 @@
 ﻿using System.Drawing;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 using DelaunatorSharp;
+
+using EarClipperLib;
 
 using fin.color;
 using fin.data.counters;
@@ -281,20 +284,40 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         = CoplanarPointFlattener.FlattenCoplanarPoints(
             points3d.Select(t => t.LocalPosition).ToArray());
 
-    var delaunator = new Delaunator(
-        points2d
-            .Select((p, i) => (IPoint) new PointWithIndex(
-                        p.X,
-                        p.Y,
-                        i))
-            .ToArray());
-    return delaunator
-           .GetTriangles()
-           .SelectMany(t => t.Points.Select(
-                                 p => finVertices[
-                                     p.AssertAsA<PointWithIndex>().Index])
-                             .Reverse())
-           .ToArray();
+    try {
+      var indexByVec3m = new Dictionary<Vector3m, int>(new EqualityComparer());
+      var vec3msWithIndices = new List<Vector3m>();
+      for (var i = 0; i < points2d.Count; ++i) {
+        var point2d = points2d[i];
+        var vec3m = new Vector3m(point2d.X, point2d.Y, 0);
+        indexByVec3m[vec3m] = i;
+        vec3msWithIndices.Add(vec3m);
+      }
+
+      var earClipping = new EarClipping();
+      earClipping.SetPoints(vec3msWithIndices);
+      earClipping.Triangulate();
+
+      return earClipping
+             .Result
+             .Select(v => points3d[indexByVec3m[v]])
+             .ToArray();
+    } catch {
+      var delaunator = new Delaunator(
+          points2d
+              .Select((p, i) => (IPoint) new PointWithIndex(
+                          p.X,
+                          p.Y,
+                          i))
+              .ToArray());
+      return delaunator
+             .GetTriangles()
+             .SelectMany(t => t.Points.Select(
+                                   p => finVertices[
+                                       p.AssertAsA<PointWithIndex>().Index])
+                               .Reverse())
+             .ToArray();
+    }
   }
 
   private struct PointWithIndex(double x, double y, int index) : IPoint {
@@ -303,11 +326,57 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     public int Index => index;
   }
 
+  private class EqualityComparer : IEqualityComparer<Vector3m> {
+    public bool Equals(Vector3m x, Vector3m y) => ReferenceEquals(x, y);
+    public int GetHashCode(Vector3m obj) => RuntimeHelpers.GetHashCode(obj);
+  }
+
   private static IEnumerable<IndexedFaceGroup[]> GetIndexFaceSetCoordGroups_(
-      IIndexedFaceSetNode indexedFaceSetNode)
-    => GetIndexFaceSetCoords_(indexedFaceSetNode)
-       .SplitByNull()
-       .Where(t => t.Length > 0);
+      IIndexedFaceSetNode indexedFaceSetNode) {
+    var indexCounts = new CounterSet<int>();
+    var list = new LinkedList<IndexedFaceGroup>();
+
+    foreach (var indexedFaceSetGroup in GetIndexFaceSetCoords_(
+                     indexedFaceSetNode)
+                 .SplitByNull()) {
+      if (indexedFaceSetGroup.Length == 0) {
+        continue;
+      }
+
+      yield return indexedFaceSetGroup;
+      continue;
+
+      indexCounts.Clear();
+
+      foreach (var tuple in indexedFaceSetGroup) {
+        indexCounts.Increment(tuple.coordIndex);
+      }
+
+      if (!indexCounts.Any(kvp => kvp.Value > 1)) {
+        yield return indexedFaceSetGroup;
+        continue;
+      }
+
+      indexCounts.Clear();
+      list.Clear();
+      foreach (var tuple in indexedFaceSetGroup) {
+        if (indexCounts.GetCount(tuple.coordIndex) == 1) {
+          yield return list.ToArray();
+
+          indexCounts.Clear();
+          list.Clear();
+          continue;
+        }
+
+        list.AddLast(tuple);
+        indexCounts.Increment(tuple.coordIndex);
+      }
+
+      if (list.Count >= 3) {
+        yield return list.ToArray();
+      }
+    }
+  }
 
   private static IEnumerable<IndexedFaceGroup?> GetIndexFaceSetCoords_(
       IIndexedFaceSetNode indexedFaceSetNode) {
