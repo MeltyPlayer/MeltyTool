@@ -5,6 +5,7 @@ using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
 using fin.data.indexable;
 using fin.data.lazy;
+using fin.data.nodes;
 using fin.data.queues;
 using fin.io;
 using fin.math.matrix.four;
@@ -14,6 +15,9 @@ using fin.model.io;
 using fin.model.io.importers;
 using fin.model.util;
 using fin.util.asserts;
+using fin.util.enums;
+
+using gx;
 
 using schema.binary;
 
@@ -35,10 +39,13 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
     var modelFile = fileBundle.ModelFile;
     var ttydModel = modelFile.ReadNew<Model>(Endianness.BigEndian);
 
-    var textureFile = modelFile.AssertGetParent()
-                               .AssertGetExistingFile(
-                                   $"{ttydModel.Header.TextureFileName}-");
-    var tpl = textureFile.ReadNew<Tpl>(Endianness.BigEndian);
+
+    Tpl? tpl = null;
+    if (modelFile.AssertGetParent()
+                 .TryToGetExistingFile($"{ttydModel.Header.TextureFileName}-",
+                                       out var textureFile)) {
+      tpl = textureFile.ReadNew<Tpl>(Endianness.BigEndian);
+    }
 
     var ttydGroups = ttydModel.Groups;
     var ttydGroupTransforms = ttydModel.GroupTransforms;
@@ -50,38 +57,49 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
     };
 
     // Sets up materials
-    var finTextureMap = new LazyDictionary<int, ITexture?>(
-        texMapIndex => {
-          if (texMapIndex == -1) {
-            return null;
-          }
-
-          var ttydTextureIndex
-              = ttydModel.TextureMaps[texMapIndex].TextureIndex;
+    var finTextureMap = new LazyDictionary<Sampler, ITexture>(
+        sampler => {
+          var ttydTextureIndex = sampler.TextureIndex;
           var ttydTexture = ttydModel.Textures[ttydTextureIndex];
 
           var tplTextureIndex = ttydTexture.TplTextureIndex;
-          var tplTexture = tpl.Textures[tplTextureIndex];
+          var tplTexture = tpl.AssertNonnull().Textures[tplTextureIndex];
 
           var finTexture
               = finModel.MaterialManager.CreateTexture(tplTexture.Image);
           finTexture.Name = ttydTexture.Name;
 
+          var wrapFlags = sampler.WrapFlags;
+          finTexture.WrapModeU = WrapModeUtil.FromMirrorAndRepeat(
+              wrapFlags.CheckFlag(WrapFlags.MIRROR_S),
+              wrapFlags.CheckFlag(WrapFlags.REPEAT_S));
+          finTexture.WrapModeV = WrapModeUtil.FromMirrorAndRepeat(
+              wrapFlags.CheckFlag(WrapFlags.MIRROR_T),
+              wrapFlags.CheckFlag(WrapFlags.REPEAT_T));
+
           return finTexture;
         });
-    var finMaterialMap = new LazyDictionary<int, IMaterial?>(
-        texMapIndex => {
-          var finTexture = finTextureMap[texMapIndex];
-          if (finTexture == null) {
-            return null;
-          }
+    var finMaterialMap
+        = new LazyDictionary<(Sampler?, BlendMode, CullMode), IMaterial?>(
+            tuple => {
+              var (sampler, blendMode, cullMode) = tuple;
+              if (sampler == null) {
+                return null;
+              }
 
-          var finMaterial
-              = finModel.MaterialManager.AddTextureMaterial(finTexture);
-          finMaterial.CullingMode = CullingMode.SHOW_BOTH;
+              var finTexture = finTextureMap[sampler];
+              var finMaterial
+                  = finModel.MaterialManager.AddTextureMaterial(finTexture);
+              finMaterial.Name = $"texMap{sampler.TextureIndex}";
+              finMaterial.CullingMode = cullMode switch {
+                  CullMode.BACK  => CullingMode.SHOW_FRONT_ONLY,
+                  CullMode.FRONT => CullingMode.SHOW_BACK_ONLY,
+                  CullMode.ALL   => CullingMode.SHOW_NEITHER,
+                  CullMode.NONE  => CullingMode.SHOW_BOTH,
+              };
 
-          return finMaterial;
-        });
+              return finMaterial;
+            });
 
     // Sets up meshes for each group visibility
     var finGroupVisibilityMeshes
@@ -97,14 +115,21 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
 
     // Adds bones/meshes
     var groupsAndBones = new (Group, IReadOnlyBone)[ttydGroups.Length];
+    var groupTreeRoot = new TreeNode<Group>();
 
-    var groupAndBoneQueue = new FinTuple3Queue<int, Group?, IBone>(
-        (ttydGroups.Length - 1, null, finModel.Skeleton.Root));
+    var groupAndBoneQueue
+        = new FinTuple3Queue<int, Group?, (IBone, TreeNode<Group>)>(
+            (ttydGroups.Length - 1, null,
+             (finModel.Skeleton.Root, groupTreeRoot)));
     while (groupAndBoneQueue.TryDequeue(
                out var ttydGroupIndex,
                out var ttydParentGroup,
-               out var parentFinBone)) {
+               out var parentFinBoneAndTreeNode)) {
       var ttydGroup = ttydGroups[ttydGroupIndex];
+      var (parentFinBone, parentTreeNode) = parentFinBoneAndTreeNode;
+
+      var treeNode = new TreeNode<Group> { Value = ttydGroup };
+      parentTreeNode.AddChild(treeNode);
 
       if (ttydParentGroup != null) {
         ttydGroupToParent[ttydGroup] = ttydParentGroup;
@@ -119,87 +144,104 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
       finBone.Name = ttydGroup.Name;
       groupsAndBones[ttydGroupIndex] = (ttydGroup, finBone);
 
-      var boneWeights = finModel.Skin.GetOrCreateBoneWeights(
-          VertexSpace.RELATIVE_TO_BONE,
-          finBone);
-
-      if (ttydGroup.SceneGraphObjectIndex != -1) {
-        var ttydSceneGraphObject
-            = ttydModel.SceneGraphObjects[
-                ttydGroup.SceneGraphObjectIndex];
-        var finMesh = finGroupVisibilityMeshes[ttydGroup.VisibilityGroupIndex];
-
-        var objectPositions = ttydModel.Vertices.AsSpan(
-            ttydSceneGraphObject.VertexPositionBaseIndex);
-        var objectNormals = ttydModel.Normals.AsSpan(
-            ttydSceneGraphObject.VertexNormalBaseIndex);
-        var objectColors = ttydModel.Colors.AsSpan(
-            ttydSceneGraphObject.VertexColorBaseIndex);
-        var objectTexCoords = ttydModel.TexCoords.AsSpan(
-            ttydSceneGraphObject.VertexTexCoordBaseIndex);
-
-        var ttydMeshes = ttydModel.Meshes.AsSpan(
-            ttydSceneGraphObject.MeshBaseIndex,
-            ttydSceneGraphObject.MeshCount);
-        foreach (var ttydMesh in ttydMeshes) {
-          if (ttydMesh.PolygonBaseIndex == -1) {
-            continue;
-          }
-
-          var finMaterial = finMaterialMap[ttydMesh.SamplerIndex];
-
-          var ttydPolygons
-              = ttydModel.Polygons.AsSpan(ttydMesh.PolygonBaseIndex,
-                                          ttydMesh.PolygonCount);
-          foreach (var ttydPolygon in ttydPolygons) {
-            var finVertices = new IVertex[ttydPolygon.VertexCount];
-            for (var i = 0; i < ttydPolygon.VertexCount; i++) {
-              var vertexPosition = objectPositions[
-                  ttydModel.VertexIndices[
-                      ttydMesh.VertexPositionBaseIndex +
-                      ttydPolygon.VertexBaseIndex +
-                      i]];
-              var vertexNormal = objectNormals[
-                  ttydModel.NormalIndices[
-                      ttydMesh.VertexNormalBaseIndex +
-                      ttydPolygon.VertexBaseIndex +
-                      i]];
-              var vertexColor = objectColors[
-                  ttydModel.ColorIndices[
-                      ttydMesh.VertexColorBaseIndex +
-                      ttydPolygon.VertexBaseIndex +
-                      i]];
-              var vertexTexCoord = objectTexCoords[
-                  ttydModel.TexCoordIndices[
-                      ttydMesh.VertexTexCoordBaseIndex +
-                      ttydPolygon.VertexBaseIndex +
-                      i]];
-
-              var finVertex = finModel.Skin.AddVertex(vertexPosition);
-              finVertex.SetLocalNormal(vertexNormal);
-              finVertex.SetColor(vertexColor);
-              finVertex.SetUv(vertexTexCoord);
-              finVertex.SetBoneWeights(boneWeights);
-
-              finVertices[i] = finVertex;
-            }
-
-            var finPrimitive = finMesh.AddTriangleFan(finVertices);
-            if (finMaterial != null) {
-              finPrimitive.SetMaterial(finMaterial);
-            }
-          }
-        }
-      }
-
       if (ttydGroup.NextGroupIndex != -1) {
         groupAndBoneQueue.Enqueue(
-            (ttydGroup.NextGroupIndex, ttydParentGroup, parentFinBone));
+            (ttydGroup.NextGroupIndex, ttydParentGroup,
+             (parentFinBone, parentTreeNode)));
       }
 
       if (ttydGroup.ChildGroupIndex != -1) {
         groupAndBoneQueue.Enqueue((ttydGroup.ChildGroupIndex, ttydGroup,
-                                   finBone));
+                                   (finBone, treeNode)));
+      }
+    }
+
+    // Sets up meshes
+    foreach (var (ttydGroup, finBone) in groupsAndBones) {
+      if (ttydGroup.SceneGraphObjectIndex == -1) {
+        continue;
+      }
+
+      var boneWeights = finModel.Skin.GetOrCreateBoneWeights(
+          VertexSpace.RELATIVE_TO_BONE,
+          finBone);
+
+      var ttydSceneGraphObject
+          = ttydModel.SceneGraphObjects[
+              ttydGroup.SceneGraphObjectIndex];
+      var finMesh = finGroupVisibilityMeshes[ttydGroup.VisibilityGroupIndex];
+
+      var objectPositions = ttydModel.Vertices.AsSpan(
+          ttydSceneGraphObject.VertexPosition.BaseIndex);
+      var objectNormals = ttydModel.Normals.AsSpan(
+          ttydSceneGraphObject.VertexNormal.BaseIndex);
+      var objectColors = ttydModel.Colors.AsSpan(
+          ttydSceneGraphObject.VertexColor.BaseIndex);
+      var objectTexCoords = ttydModel.TexCoords.AsSpan(
+          ttydSceneGraphObject.TexCoords[0].BaseIndex);
+
+      var ttydMeshes = ttydModel.Meshes.AsSpan(
+          ttydSceneGraphObject.MeshBaseIndex,
+          ttydSceneGraphObject.MeshCount);
+      foreach (var ttydMesh in ttydMeshes) {
+        if (ttydMesh.PolygonBaseIndex == -1) {
+          continue;
+        }
+
+        var sampler = ttydMesh.SamplerIndex != -1
+            ? ttydModel.TextureMaps[ttydMesh.SamplerIndex]
+            : null;
+
+        var finMaterial = finMaterialMap[(sampler,
+                                          ttydSceneGraphObject.BlendMode,
+                                          ttydSceneGraphObject.CullMode)];
+
+        var ttydPolygons
+            = ttydModel.Polygons.AsSpan(ttydMesh.PolygonBaseIndex,
+                                        ttydMesh.PolygonCount);
+        foreach (var ttydPolygon in ttydPolygons) {
+          var finVertices = new IVertex[ttydPolygon.VertexCount];
+          for (var i = 0; i < ttydPolygon.VertexCount; i++) {
+            var vertexPosition = objectPositions[
+                ttydModel.VertexIndices[
+                    ttydMesh.VertexPositionBaseIndex +
+                    ttydPolygon.VertexBaseIndex +
+                    i]];
+            var vertexNormal = objectNormals[
+                ttydModel.NormalIndices[
+                    ttydMesh.VertexNormalBaseIndex +
+                    ttydPolygon.VertexBaseIndex +
+                    i]];
+            var vertexColor = objectColors[
+                ttydModel.ColorIndices[
+                    ttydMesh.VertexColorBaseIndex +
+                    ttydPolygon.VertexBaseIndex +
+                    i]];
+
+            var finVertex = finModel.Skin.AddVertex(vertexPosition);
+            finVertex.SetLocalNormal(vertexNormal);
+            finVertex.SetColor(vertexColor);
+            finVertex.SetBoneWeights(boneWeights);
+
+            if (ttydMesh.SamplerIndex != -1) {
+              var vertexTexCoord = objectTexCoords[
+                  ttydModel.TexCoordIndices.Length > 0
+                      ? ttydModel.TexCoordIndices[
+                          ttydMesh.VertexTexCoordBaseIndices[0] +
+                          ttydPolygon.VertexBaseIndex +
+                          i]
+                      : i];
+              finVertex.SetUv(vertexTexCoord);
+            }
+
+            finVertices[i] = finVertex;
+          }
+
+          var finPrimitive = finMesh.AddTriangleFan(finVertices);
+          if (finMaterial != null) {
+            finPrimitive.SetMaterial(finMaterial);
+          }
+        }
       }
     }
 

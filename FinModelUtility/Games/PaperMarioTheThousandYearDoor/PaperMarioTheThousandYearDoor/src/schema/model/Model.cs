@@ -1,6 +1,5 @@
 ﻿using fin.schema.color;
 using fin.schema.vector;
-using fin.util.asserts;
 
 using schema.binary;
 

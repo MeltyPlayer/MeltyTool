@@ -17,4 +17,7 @@ public partial class Group : IBinaryDeserializable {
 
   [IntegerFormat(SchemaIntegerType.UINT32)]
   public bool IsJoint { get; set; }
+
+  public override string ToString()
+    => $"{this.Name}, scene graph object: {this.SceneGraphObjectIndex}";
 }

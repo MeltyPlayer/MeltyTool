@@ -5,4 +5,7 @@ public static class AssertsExtensions {
       this object? instance,
       string? message = null)
     => Asserts.AsA<TExpected>(instance, message);
+
+  public static T AssertNonnull<T>(this T? instance, string? message = null)
+    => Asserts.CastNonnull(instance, message);
 }

@@ -19,8 +19,9 @@ public partial class Mesh : IBinaryDeserializable {
   public int VertexPositionBaseIndex { get; set; }
   public int VertexNormalBaseIndex { get; set; }
   public int VertexColorBaseIndex { get; set; }
-  public int VertexTexCoordBaseIndex { get; set; }
 
-  [SequenceLengthSource(7)]
-  public int[] Unks3 { get; set; }
+  [SequenceLengthSource(8)]
+  public int[] VertexTexCoordBaseIndices { get; set; }
+
+  public override string ToString() => $"samplerIndex: {this.SamplerIndex}";
 }

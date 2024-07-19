@@ -40,14 +40,7 @@ public partial class GxFixedFunctionMaterial {
 
     var material = materialManager.AddFixedFunctionMaterial();
     material.Name = materialName;
-    material.CullingMode =
-        populatedMaterial.CullMode switch {
-            GxCullMode.None  => CullingMode.SHOW_BOTH,
-            GxCullMode.Front => CullingMode.SHOW_BACK_ONLY,
-            GxCullMode.Back  => CullingMode.SHOW_FRONT_ONLY,
-            GxCullMode.All   => CullingMode.SHOW_NEITHER,
-            _                => throw new ArgumentOutOfRangeException(),
-        };
+    material.CullingMode = populatedMaterial.CullMode.ToFinCullingMode();
     material.UpdateAlphaChannel = false;
 
     var depthFunction = populatedMaterial.DepthFunction;

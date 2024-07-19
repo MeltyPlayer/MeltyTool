@@ -349,6 +349,16 @@ public enum WrapMode {
   MIRROR_CLAMP,
 }
 
+public static class WrapModeUtil {
+  public static WrapMode FromMirrorAndRepeat(bool mirror, bool repeat)
+    => ((mirror, repeat)) switch {
+        (false, false) => WrapMode.CLAMP,
+        (false, true)  => WrapMode.REPEAT,
+        (true, false)  => WrapMode.MIRROR_CLAMP,
+        (true, true)   => WrapMode.MIRROR_REPEAT,
+    };
+}
+
 public enum ColorType {
   COLOR,
   INTENSITY,
