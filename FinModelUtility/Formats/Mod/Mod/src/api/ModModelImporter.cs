@@ -128,7 +128,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
           var finTextureTracks = materialAnimation.AddTextureTracks(finTexture);
           {
-            var modTranslationKeyframes = modTextureData.PositionAnimationData;
+            var modTranslationKeyframes = modTextureData.TranslationAnimationData;
             var finTranslationKeyframes = finTextureTracks
                 .UseSeparateTranslationKeyframesWithTangents(
                     animationLength: adjustedAnimationLength);

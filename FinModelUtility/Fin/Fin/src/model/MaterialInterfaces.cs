@@ -418,9 +418,13 @@ public partial interface ITexture : IIndexable {
 
   bool IsTransform3d { get; }
 
-  Vector3? Offset { get; }
-  ITexture SetOffset2d(float x, float y);
-  ITexture SetOffset3d(float x, float y, float z);
+  Vector3? Center { get; }
+  ITexture SetCenter2d(float x, float y);
+  ITexture SetCenter3d(float x, float y, float z);
+
+  Vector3? Translation { get; }
+  ITexture SetTranslation2d(float x, float y);
+  ITexture SetTranslation3d(float x, float y, float z);
 
   Vector3? Scale { get; }
   ITexture SetScale2d(float x, float y);

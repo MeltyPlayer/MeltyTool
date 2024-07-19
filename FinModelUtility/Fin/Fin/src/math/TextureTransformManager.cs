@@ -72,7 +72,8 @@ public class TextureTransformManager : ITextureTransformManager {
       }
 
       // Uses the animation pose instead of the root pose when available.
-      var translation = animationTranslation ?? texture.Offset;
+      var center = texture.Center;
+      var translation = animationTranslation ?? texture.Translation;
       var rotation = animationRotation ?? texture.RotationRadians;
       var scale = animationScale ?? texture.Scale;
 
@@ -83,6 +84,7 @@ public class TextureTransformManager : ITextureTransformManager {
             false,
             default,
             CalculateTextureTransform3d_(texture,
+                                         center,
                                          translation,
                                          rotation,
                                          scale));
@@ -90,6 +92,7 @@ public class TextureTransformManager : ITextureTransformManager {
         this.texturesToMatrices_[texture] = (
             true,
             CalculateTextureTransform2d_(texture,
+                                         center,
                                          translation,
                                          rotation,
                                          scale),
@@ -100,12 +103,13 @@ public class TextureTransformManager : ITextureTransformManager {
 
   private static Matrix3x2 CalculateTextureTransform2d_(
       IReadOnlyTexture texture,
-      Vector3? textureOffset,
+      Vector3? textureCenter,
+      Vector3? textureTranslation,
       Vector3? textureRotationRadians,
       Vector3? textureScale) {
     var scrollingTexture = texture as IScrollingTexture;
 
-    if ((textureOffset == null && scrollingTexture == null) &&
+    if ((textureTranslation == null && scrollingTexture == null) &&
         textureScale == null &&
         textureRotationRadians == null) {
       return Matrix3x2.Identity;
@@ -114,35 +118,42 @@ public class TextureTransformManager : ITextureTransformManager {
     var secondsSinceStart
         = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
 
-    Vector2? offset = null;
-    if (textureOffset != null || scrollingTexture != null) {
-      offset = new Vector2((textureOffset?.X ?? 0) +
-                           secondsSinceStart *
-                           (scrollingTexture?.ScrollSpeedX ?? 0),
-                           (textureOffset?.Y ?? 0) +
-                           secondsSinceStart *
-                           (scrollingTexture?.ScrollSpeedY ?? 0));
+    Vector2? center = null;
+    if (textureCenter != null) {
+      center = textureCenter.Value.Xy();
+    }
+
+    Vector2? translation = null;
+    if (textureTranslation != null || scrollingTexture != null) {
+      translation = new Vector2((textureTranslation?.X ?? 0) +
+                                secondsSinceStart *
+                                (scrollingTexture?.ScrollSpeedX ?? 0),
+                                (textureTranslation?.Y ?? 0) +
+                                secondsSinceStart *
+                                (scrollingTexture?.ScrollSpeedY ?? 0));
     }
 
     Vector2? scale = null;
     if (textureScale != null) {
-      scale = new Vector2(textureScale.Value.X, textureScale.Value.Y);
+      scale = textureScale.Value.Xy();
     }
 
-    return SystemMatrix3x2Util.FromTrss(offset,
-                                        textureRotationRadians?.Z,
-                                        scale,
-                                        null);
+    return SystemMatrix3x2Util.FromCtrss(center,
+                                         translation,
+                                         textureRotationRadians?.Z,
+                                         scale,
+                                         null);
   }
 
   private static Matrix4x4 CalculateTextureTransform3d_(
       IReadOnlyTexture texture,
-      Vector3? textureOffset,
+      Vector3? textureCenter,
+      Vector3? textureTranslation,
       Vector3? textureRotationRadians,
       Vector3? textureScale) {
     var scrollingTexture = texture as IScrollingTexture;
 
-    if ((textureOffset == null && scrollingTexture == null) &&
+    if ((textureTranslation == null && scrollingTexture == null) &&
         textureScale == null &&
         textureRotationRadians == null) {
       return Matrix4x4.Identity;
@@ -151,15 +162,15 @@ public class TextureTransformManager : ITextureTransformManager {
     var secondsSinceStart
         = (float) FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
 
-    Vector3? offset = null;
-    if (textureOffset != null || scrollingTexture != null) {
-      offset = new Vector3((textureOffset?.X ?? 0) +
-                           secondsSinceStart *
-                           (scrollingTexture?.ScrollSpeedX ?? 0),
-                           (textureOffset?.Y ?? 0) +
-                           secondsSinceStart *
-                           (scrollingTexture?.ScrollSpeedY ?? 0),
-                           textureOffset?.Z ?? 0);
+    Vector3? translation = null;
+    if (textureTranslation != null || scrollingTexture != null) {
+      translation = new Vector3((textureTranslation?.X ?? 0) +
+                                secondsSinceStart *
+                                (scrollingTexture?.ScrollSpeedX ?? 0),
+                                (textureTranslation?.Y ?? 0) +
+                                secondsSinceStart *
+                                (scrollingTexture?.ScrollSpeedY ?? 0),
+                                textureTranslation?.Z ?? 0);
     }
 
     Quaternion? rotation = null;
@@ -169,14 +180,7 @@ public class TextureTransformManager : ITextureTransformManager {
                                           textureRotationRadians.Value.Z);
     }
 
-    Vector3? scale = null;
-    if (textureScale != null) {
-      scale = new(textureScale.Value.X,
-                  textureScale.Value.Y,
-                  textureScale.Value.Z);
-    }
-
-    return SystemMatrix4x4Util.FromTrs(offset, rotation, scale);
+    return SystemMatrix4x4Util.FromCtrs(textureCenter, translation, rotation, textureScale);
   }
 
   public (bool is2d, Matrix3x2 twoDMatrix, Matrix4x4 threeDMatrix)? GetMatrix(

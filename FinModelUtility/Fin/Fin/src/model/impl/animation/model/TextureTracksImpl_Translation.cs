@@ -25,19 +25,19 @@ public partial class ModelImpl<TVertex> {
               AnimationLength = animationLength,
               InitialCapacity = initialXCapacity,
               DefaultValue
-                  = Optional.Of(() => texture.Offset?.X ?? 0),
+                  = Optional.Of(() => texture.Translation?.X ?? 0),
           },
           new IndividualInterpolationConfig<float> {
               AnimationLength = animationLength,
               InitialCapacity = initialYCapacity,
               DefaultValue
-                  = Optional.Of(() => texture.Offset?.Y ?? 0),
+                  = Optional.Of(() => texture.Translation?.Y ?? 0),
           },
           new IndividualInterpolationConfig<float> {
               AnimationLength = animationLength,
               InitialCapacity = initialZCapacity,
               DefaultValue
-                  = Optional.Of(() => texture.Offset?.Z ?? 0),
+                  = Optional.Of(() => texture.Translation?.Z ?? 0),
           });
 
       this.Translations = keyframes;

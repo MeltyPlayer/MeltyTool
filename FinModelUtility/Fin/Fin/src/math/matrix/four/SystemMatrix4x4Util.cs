@@ -104,6 +104,37 @@ public static class SystemMatrix4x4Util {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Matrix4x4 FromCtrs(
+      Vector3? center,
+      Vector3? translation,
+      Quaternion? rotation,
+      Vector3? scale) {
+    var dst = Matrix4x4.Identity;
+
+    if (center != null) {
+      dst = Matrix4x4.Multiply(FromTranslation(center.Value), dst);
+    }
+
+    if (translation != null) {
+      dst = Matrix4x4.Multiply(FromTranslation(translation.Value), dst);
+    }
+
+    if (rotation != null) {
+      dst = Matrix4x4.Multiply(FromRotation(rotation.Value), dst);
+    }
+
+    if (scale != null) {
+      dst = Matrix4x4.Multiply(FromScale(scale.Value), dst);
+    }
+
+    if (center != null) {
+      dst = Matrix4x4.Multiply(FromTranslation(-center.Value), dst);
+    }
+
+    return dst;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Matrix4x4 AssertInvert(in this Matrix4x4 matrix) {
     Asserts.True(Matrix4x4.Invert(matrix, out var inverted) ||
                  !FinMatrix4x4.STRICT_INVERTING,

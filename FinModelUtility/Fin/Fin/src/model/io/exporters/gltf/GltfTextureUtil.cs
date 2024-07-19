@@ -22,7 +22,7 @@ public static class GltfTextureUtil {
             GltfTextureUtil.ConvertMagFilter_(finTexture.MagFilter));
 
     textureBuilder.WithTransform(
-        new Vector2(finTexture.Offset?.X ?? 0, finTexture.Offset?.Y ?? 0),
+        new Vector2(finTexture.Translation?.X ?? 0, finTexture.Translation?.Y ?? 0),
         new Vector2(finTexture.Scale?.X ?? 1, finTexture.Scale?.Y ?? 1),
         finTexture.RotationRadians?.Z ?? 0);
 

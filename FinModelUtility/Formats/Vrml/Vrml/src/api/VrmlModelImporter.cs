@@ -57,7 +57,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           if (transformNode != null) {
             var center = transformNode.Center;
-            // TODO: Support center
+            if (center != null) {
+              finTexture.SetCenter2d(center.Value.X, center.Value.Y);
+            }
 
             var rotation = transformNode.Rotation;
             if (rotation != null) {
@@ -71,7 +73,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
             var translation = transformNode.Translation;
             if (translation != null) {
-              finTexture.SetOffset2d(translation.Value.X, translation.Value.Y);
+              finTexture.SetTranslation2d(translation.Value.X, translation.Value.Y);
             }
           }
 

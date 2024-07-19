@@ -149,13 +149,17 @@ namespace mod.util {
             = material.texInfo.TexturesInMaterial.Select(
                           t => new TextureMatrixInfoImpl(
                               GxTexGenType.Matrix2x4,
-                              new Vector2f {
-                                  X = 1 / t.Scale.X,
-                                  Y = 1 / t.Scale.Y
+                              new Vector3f {
+                                  X = t.Center.X,
+                                  Y = t.Center.Y
                               },
                               new Vector2f {
-                                  X = -t.Position.X,
-                                  Y = -t.Position.Y
+                                  X = t.Scale.X,
+                                  Y = t.Scale.Y
+                              },
+                              new Vector2f {
+                                  X = t.Translation.X,
+                                  Y = t.Translation.Y
                               },
                               (short) (t.Rotation / MathF.PI * 32768f)
                           ))

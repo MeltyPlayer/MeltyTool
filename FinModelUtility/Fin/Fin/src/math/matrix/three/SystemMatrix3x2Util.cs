@@ -73,6 +73,42 @@ public static class SystemMatrix3x2Util {
 
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Matrix3x2 FromCtrss(
+      Vector2? center,
+      Vector2? translation,
+      float? rotationRadians,
+      Vector2? scale,
+      float? skewXRadians) {
+    var dst = Matrix3x2.Identity;
+
+    if (center != null) {
+      dst = Matrix3x2.Multiply(FromTranslation(center.Value), dst);
+    }
+
+    if (translation != null) {
+      dst = Matrix3x2.Multiply(FromTranslation(translation.Value), dst);
+    }
+
+    if (rotationRadians != null) {
+      dst = Matrix3x2.Multiply(FromRotation(rotationRadians.Value), dst);
+    }
+
+    if (scale != null) {
+      dst = Matrix3x2.Multiply(FromScale(scale.Value), dst);
+    }
+
+    if (skewXRadians != null) {
+      dst = Matrix3x2.Multiply(FromSkewXRadians(skewXRadians.Value), dst);
+    }
+
+    if (center != null) {
+      dst = Matrix3x2.Multiply(FromTranslation(-center.Value), dst);
+    }
+
+    return dst;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Matrix3x2 FromTrss(
       Vector2? translation,
       float? rotationRadians,

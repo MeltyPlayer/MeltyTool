@@ -98,10 +98,14 @@ namespace uni.ui.avalonia.resources.texture {
                 ("Mag filter", texture?.MagFilter),
                 ("UV index", texture?.UvIndex),
                 ("UV type", texture?.UvType),
+                ("UV center",
+                 texture?.IsTransform3d ?? false
+                     ? texture.Center
+                     : texture?.Center?.Xy()),
                 ("UV translation",
                  texture?.IsTransform3d ?? false
-                     ? texture.Offset
-                     : texture?.Offset?.Xy()),
+                     ? texture.Translation
+                     : texture?.Translation?.Xy()),
                 ("UV rotation (radians)",
                  texture?.IsTransform3d ?? false
                      ? texture.RotationRadians

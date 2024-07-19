@@ -140,7 +140,7 @@ public class CmbFixedFunctionMaterial {
                     cmbTexCoord.translation.Y -= 1;
                   }
 
-                  finTexture.SetOffset2d(cmbTexCoord.translation.X,
+                  finTexture.SetTranslation2d(cmbTexCoord.translation.X,
                                         cmbTexCoord.translation.Y);
                   finTexture.SetRotationRadians2d(cmbTexCoord.rotation);
                   finTexture.SetScale2d(cmbTexCoord.scale.X,

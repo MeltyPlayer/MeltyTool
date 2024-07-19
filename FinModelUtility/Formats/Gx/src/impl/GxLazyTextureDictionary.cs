@@ -84,14 +84,17 @@ public class GxLazyTextureDictionary<TState, TDiscriminator>
           if (texMatrixType != GxTexMatrix.Identity) {
             // TODO: handle special matrix types
 
+            var texCenter = texMatrix.Center;
             var texTranslation = texMatrix.Translation;
             var texScale = texMatrix.Scale;
             var texRotationRadians =
                 texMatrix.Rotation / 32768f * MathF.PI;
 
-            texture.SetOffset2d(texTranslation.X, texTranslation.Y)
-                   .SetScale2d(texScale.X, texScale.Y)
-                   .SetRotationRadians2d(texRotationRadians);
+            texture
+                .SetCenter2d(texCenter.X, texCenter.Y)
+                .SetTranslation2d(texTranslation.X, texTranslation.Y)
+                .SetScale2d(texScale.X, texScale.Y)
+                .SetRotationRadians2d(texRotationRadians);
           }
 
           handleNewTexture?.Invoke(texInfo, this.State!, texture);

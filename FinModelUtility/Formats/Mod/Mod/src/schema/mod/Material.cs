@@ -293,34 +293,22 @@ public partial class TextureData
   [Unknown]
   public uint TextureMatrixIdx = 0;
 
-  [Unknown]
   public int AnimationLength = 0;
-
-  [Unknown]
   public float AnimationSpeed = 0;
 
-  [Unknown]
   public readonly Vector2f Scale = new();
-
-  [Unknown]
   public float Rotation = 0;
+  public readonly Vector2f Translation = new();
+  public readonly Vector2f Center = new();
 
-  [Unknown]
-  public readonly Vector2f Position = new();
-
-  public readonly Vector2f Pivot = new();
-
-  [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public TextureAnimationData[] ScaleAnimationData;
 
-  [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public TextureAnimationData[] RotationAnimationData;
 
-  [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
-  public TextureAnimationData[] PositionAnimationData;
+  public TextureAnimationData[] TranslationAnimationData;
 
   public bool Equals(TextureData? other) {
     if (ReferenceEquals(null, other)) {
@@ -343,8 +331,8 @@ public partial class TextureData
            this.AnimationSpeed.Equals(other.AnimationSpeed) &&
            this.Scale.Equals(other.Scale) &&
            this.Rotation.Equals(other.Rotation) &&
-           this.Position.Equals(other.Position) &&
-           this.Pivot.Equals(other.Pivot);
+           this.Translation.Equals(other.Translation) &&
+           this.Center.Equals(other.Center);
   }
 
   public override bool Equals(object? obj) {
@@ -377,9 +365,9 @@ public partial class TextureData
     hashCode.Add(this.AnimationSpeed);
     hashCode.Add(this.Scale);
     hashCode.Add(this.Rotation);
-    hashCode.Add(this.Position);
-    hashCode.Add(this.Pivot);
-    hashCode.Add(this.PositionAnimationData);
+    hashCode.Add(this.Translation);
+    hashCode.Add(this.Center);
+    hashCode.Add(this.TranslationAnimationData);
     hashCode.Add(this.RotationAnimationData);
     hashCode.Add(this.ScaleAnimationData);
     return hashCode.ToHashCode();

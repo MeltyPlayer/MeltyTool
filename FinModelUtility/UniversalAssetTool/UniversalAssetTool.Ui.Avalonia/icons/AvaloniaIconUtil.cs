@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.CompilerServices;
 
 using Avalonia;
 using Avalonia.Media.Imaging;
@@ -56,12 +54,12 @@ public static class AvaloniaIconUtil {
         break;
       }
       default: {
-        var data = new Rgba32[4 * image.Width * image.Height];
+        var data = new Rgba32[image.Width * image.Height];
         image.Access(get => {
           for (var y = 0; y < image.Height; ++y) {
             for (var x = 0; x < image.Width; ++x) {
               get(x, y, out var r, out var g, out var b, out var a);
-              data[4 * (y * image.Width + x)] = new Rgba32(r, g, b, a);
+              data[y * image.Width + x] = new Rgba32(r, g, b, a);
             }
           }
         });

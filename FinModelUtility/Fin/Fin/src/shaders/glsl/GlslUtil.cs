@@ -482,7 +482,7 @@ out vec4 vertexColor{i};");
 
     var staticType = GetTextureTransformType_(isTransform3d,
                                               isScrollingTexture,
-                                              finTexture.Offset,
+                                              finTexture.Translation,
                                               finTexture.RotationRadians,
                                               finTexture.Scale);
     if (staticType != TextureTransformType.NONE) {

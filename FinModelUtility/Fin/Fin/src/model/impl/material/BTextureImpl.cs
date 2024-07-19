@@ -6,8 +6,6 @@ using System.Numerics;
 using fin.color;
 using fin.image;
 using fin.io;
-using fin.math.xyz;
-using fin.schema.vector;
 using fin.util.hash;
 using fin.util.image;
 
@@ -91,16 +89,28 @@ public partial class ModelImpl<TVertex> {
 
     public bool IsTransform3d { get; private set; }
 
+    public Vector3? Center { get; private set; }
 
-    public Vector3? Offset { get; private set; }
-
-    public ITexture SetOffset2d(float x, float y) {
-      this.Offset = new Vector3 { X = x, Y = y };
+    public ITexture SetCenter2d(float x, float y) {
+      this.Center = new Vector3(x, y, 0);
       return this;
     }
 
-    public ITexture SetOffset3d(float x, float y, float z) {
-      this.Offset = new Vector3 { X = x, Y = y, Z = z };
+    public ITexture SetCenter3d(float x, float y, float z) {
+      this.Center = new Vector3(x, y, z);
+      this.IsTransform3d = true;
+      return this;
+    }
+
+    public Vector3? Translation { get; private set; }
+
+    public ITexture SetTranslation2d(float x, float y) {
+      this.Translation = new Vector3(x, y, 0);
+      return this;
+    }
+
+    public ITexture SetTranslation3d(float x, float y, float z) {
+      this.Translation = new Vector3(x, y, z);
       this.IsTransform3d = true;
       return this;
     }
@@ -109,12 +119,12 @@ public partial class ModelImpl<TVertex> {
     public Vector3? Scale { get; private set; }
 
     public ITexture SetScale2d(float x, float y) {
-      this.Scale = new Vector3 { X = x, Y = y };
+      this.Scale = new Vector3(x, y, 0);
       return this;
     }
 
     public ITexture SetScale3d(float x, float y, float z) {
-      this.Scale = new Vector3 { X = x, Y = y, Z = z };
+      this.Scale = new Vector3(x, y, z);
       this.IsTransform3d = true;
       return this;
     }
@@ -130,8 +140,7 @@ public partial class ModelImpl<TVertex> {
     public ITexture SetRotationRadians3d(float xRadians,
                                          float yRadians,
                                          float zRadians) {
-      this.RotationRadians = new Vector3
-          { X = xRadians, Y = yRadians, Z = zRadians };
+      this.RotationRadians = new Vector3(xRadians, yRadians, zRadians);
       this.IsTransform3d = true;
       return this;
     }
