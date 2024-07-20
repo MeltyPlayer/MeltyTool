@@ -6,9 +6,10 @@ using fin.util.asserts;
 
 using uni.util.cmd;
 
-namespace uni.platforms.gcn.tools {
-  public class Yaz0Dec {
-    public bool Run(IFileHierarchyFile file, bool cleanup) {
+namespace uni.platforms.gcn.tools;
+
+public class Yaz0Dec {
+  public bool Run(IFileHierarchyFile file, bool cleanup) {
       Asserts.True(
           file.Exists,
           $"Cannot decrypt YAZ0 because it does not exist: {file}");
@@ -43,5 +44,4 @@ namespace uni.platforms.gcn.tools {
 
       return true;
     }
-  }
 }

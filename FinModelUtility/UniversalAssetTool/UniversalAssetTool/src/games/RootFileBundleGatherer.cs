@@ -37,67 +37,67 @@ using uni.games.timesplitters_2;
 using uni.games.vrwdw;
 using uni.games.wind_waker;
 
-namespace uni.games {
-  public class RootFileBundleGatherer {
-    public IFileBundleDirectory GatherAllFiles(
-        IMutablePercentageProgress mutablePercentageProgress) {
-      var gatherers = new IAnnotatedFileBundleGatherer[] {
-          new AnimalCrossingFileBundleGatherer(),
-          new AnimalCrossingWildWorldFileBundleGatherer(),
-          new BattalionWars1FileBundleGatherer(),
-          new BattalionWars2FileBundleGatherer(),
-          new ChibiRoboFileBundleGatherer(),
-          new DeadSpace1FileBundleGatherer(),
-          new DeadSpace2FileBundleGatherer(),
-          new DeadSpace3FileBundleGatherer(),
-          new DoshinTheGiantFileBundleGatherer(),
-          new EverOasisFileBundleGatherer(),
-          new GloverFileBundleGatherer(),
-          new GreatAceAttorneyFileBundleGatherer(),
-          new HaloWarsFileBundleGatherer(),
-          new LuigisMansionFileBundleGatherer(),
-          new LuigisMansion3dFileBundleGatherer(),
-          new MajorasMask3dFileBundleGatherer(),
-          new MarioKartDoubleDashFileBundleGatherer(),
-          new MidnightClub2FileBundleGatherer(),
-          new NintendogsLabradorAndFriendsFileBundleGatherer(),
-          new OcarinaOfTimeFileBundleGatherer(),
-          new OcarinaOfTime3dFileBundleGatherer(),
-          new PaperMarioDirectorsCutFileBundleGatherer(),
-          new PaperMarioTheThousandYearDoorFileBundleGatherer(),
-          new Pikmin1FileBundleGatherer(),
-          new Pikmin2FileBundleGatherer(),
-          new ProfessorLaytonVsPhoenixWrightFileBundleGatherer(),
-          new SoulcaliburIIFileBundleGatherer(),
-          new SuperMario64DsFileBundleGatherer(),
-          new SuperMario64FileBundleGatherer(),
-          new SuperMarioSunshineFileBundleGatherer(),
-          new SuperSmashBrosMeleeFileBundleGatherer(),
-          new Timesplitters2FileBundleGatherer(),
-          new VrwdwFileBundleGatherer(),
-          new WindWakerFileBundleGatherer(),
-      };
+namespace uni.games;
 
-      IAnnotatedFileBundleGatherer rootGatherer;
-      if (Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms) {
-        var accumulator = new ParallelAnnotatedFileBundleGathererAccumulator();
-        foreach (var gatherer in gatherers) {
-          accumulator.Add(gatherer);
-        }
+public class RootFileBundleGatherer {
+  public IFileBundleDirectory GatherAllFiles(
+      IMutablePercentageProgress mutablePercentageProgress) {
+    var gatherers = new IAnnotatedFileBundleGatherer[] {
+        new AnimalCrossingFileBundleGatherer(),
+        new AnimalCrossingWildWorldFileBundleGatherer(),
+        new BattalionWars1FileBundleGatherer(),
+        new BattalionWars2FileBundleGatherer(),
+        new ChibiRoboFileBundleGatherer(),
+        new DeadSpace1FileBundleGatherer(),
+        new DeadSpace2FileBundleGatherer(),
+        new DeadSpace3FileBundleGatherer(),
+        new DoshinTheGiantFileBundleGatherer(),
+        new EverOasisFileBundleGatherer(),
+        new GloverFileBundleGatherer(),
+        new GreatAceAttorneyFileBundleGatherer(),
+        new HaloWarsFileBundleGatherer(),
+        new LuigisMansionFileBundleGatherer(),
+        new LuigisMansion3dFileBundleGatherer(),
+        new MajorasMask3dFileBundleGatherer(),
+        new MarioKartDoubleDashFileBundleGatherer(),
+        new MidnightClub2FileBundleGatherer(),
+        new NintendogsLabradorAndFriendsFileBundleGatherer(),
+        new OcarinaOfTimeFileBundleGatherer(),
+        new OcarinaOfTime3dFileBundleGatherer(),
+        new PaperMarioDirectorsCutFileBundleGatherer(),
+        new PaperMarioTheThousandYearDoorFileBundleGatherer(),
+        new Pikmin1FileBundleGatherer(),
+        new Pikmin2FileBundleGatherer(),
+        new ProfessorLaytonVsPhoenixWrightFileBundleGatherer(),
+        new SoulcaliburIIFileBundleGatherer(),
+        new SuperMario64DsFileBundleGatherer(),
+        new SuperMario64FileBundleGatherer(),
+        new SuperMarioSunshineFileBundleGatherer(),
+        new SuperSmashBrosMeleeFileBundleGatherer(),
+        new Timesplitters2FileBundleGatherer(),
+        new VrwdwFileBundleGatherer(),
+        new WindWakerFileBundleGatherer(),
+    };
 
-        rootGatherer = accumulator;
-      } else {
-        var accumulator = new AnnotatedFileBundleGathererAccumulator();
-        foreach (var gatherer in gatherers) {
-          accumulator.Add(gatherer);
-        }
-
-        rootGatherer = accumulator;
+    IAnnotatedFileBundleGatherer rootGatherer;
+    if (Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms) {
+      var accumulator = new ParallelAnnotatedFileBundleGathererAccumulator();
+      foreach (var gatherer in gatherers) {
+        accumulator.Add(gatherer);
       }
 
-      var organizer = new FileBundleTreeOrganizer();
-      rootGatherer.GatherFileBundles(organizer, mutablePercentageProgress);
-      return organizer.CleanUpAndGetRoot();
+      rootGatherer = accumulator;
+    } else {
+      var accumulator = new AnnotatedFileBundleGathererAccumulator();
+      foreach (var gatherer in gatherers) {
+        accumulator.Add(gatherer);
+      }
+
+      rootGatherer = accumulator;
     }
+
+    var organizer = new FileBundleTreeOrganizer();
+    rootGatherer.GatherFileBundles(organizer, mutablePercentageProgress);
+    return organizer.CleanUpAndGetRoot();
   }
 }

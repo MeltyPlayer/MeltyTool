@@ -1,22 +1,22 @@
 ﻿using fin.io;
 
-namespace uni.platforms.gcn.tools {
-  public static class GcnToolsConstants {
-    public static IReadOnlySystemDirectory SZSTOOLS_DIRECTORY { get; } =
-      DirectoryConstants.TOOLS_DIRECTORY.AssertGetExistingSubdir("szstools");
+namespace uni.platforms.gcn.tools;
 
-    public static IReadOnlySystemFile RARCDUMP_EXE { get; } =
-      GcnToolsConstants.SZSTOOLS_DIRECTORY
-                       .AssertGetExistingFile("rarcdump.exe");
+public static class GcnToolsConstants {
+  public static IReadOnlySystemDirectory SZSTOOLS_DIRECTORY { get; } =
+    DirectoryConstants.TOOLS_DIRECTORY.AssertGetExistingSubdir("szstools");
 
-    public static IReadOnlySystemFile YAZ0DEC_EXE { get; } =
-      GcnToolsConstants.SZSTOOLS_DIRECTORY.AssertGetExistingFile("yaz0dec.exe");
+  public static IReadOnlySystemFile RARCDUMP_EXE { get; } =
+    GcnToolsConstants.SZSTOOLS_DIRECTORY
+                     .AssertGetExistingFile("rarcdump.exe");
+
+  public static IReadOnlySystemFile YAZ0DEC_EXE { get; } =
+    GcnToolsConstants.SZSTOOLS_DIRECTORY.AssertGetExistingFile("yaz0dec.exe");
 
 
-    public static IReadOnlySystemDirectory YAY0DEC_DIRECTORY { get; } =
-      DirectoryConstants.TOOLS_DIRECTORY.AssertGetExistingSubdir("yay0dec");
+  public static IReadOnlySystemDirectory YAY0DEC_DIRECTORY { get; } =
+    DirectoryConstants.TOOLS_DIRECTORY.AssertGetExistingSubdir("yay0dec");
 
-    public static IReadOnlySystemFile YAY0DEC_EXE { get; } =
-      GcnToolsConstants.YAY0DEC_DIRECTORY.AssertGetExistingFile("yay0dec.exe");
-  }
+  public static IReadOnlySystemFile YAY0DEC_EXE { get; } =
+    GcnToolsConstants.YAY0DEC_DIRECTORY.AssertGetExistingFile("yay0dec.exe");
 }

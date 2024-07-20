@@ -3,47 +3,47 @@
 using uni.config;
 using uni.ui.winforms.common.fileTreeView;
 
-namespace uni {
-  public static class AudioPlaylistService {
-    private static IFileTreeParentNode? gameDirectoryForPlaylist_;
+namespace uni;
 
-    static AudioPlaylistService() {
-      FileBundleService.OnFileBundleOpened
-          += (_, fileBundle) => {
-               if (fileBundle is IAudioFileBundle audioFileBundle) {
-                 UpdatePlaylist([audioFileBundle]);
-               }
-             };
+public static class AudioPlaylistService {
+  private static IFileTreeParentNode? gameDirectoryForPlaylist_;
 
-      SceneInstanceService.OnSceneInstanceOpened
-          += (fileTreeLeafNode, _) => {
-               if (!Config.Instance.ViewerSettings
-                          .AutomaticallyPlayGameAudioForModel) {
-                 return;
-               }
+  static AudioPlaylistService() {
+    FileBundleService.OnFileBundleOpened
+        += (_, fileBundle) => {
+          if (fileBundle is IAudioFileBundle audioFileBundle) {
+            UpdatePlaylist([audioFileBundle]);
+          }
+        };
 
-               var gameDirectory = fileTreeLeafNode?.Parent;
-               while (gameDirectory?.Parent?.Parent != null) {
-                 gameDirectory = gameDirectory.Parent;
-               }
+    SceneInstanceService.OnSceneInstanceOpened
+        += (fileTreeLeafNode, _) => {
+          if (!Config.Instance.ViewerSettings
+                     .AutomaticallyPlayGameAudioForModel) {
+            return;
+          }
 
-               if (gameDirectoryForPlaylist_ == gameDirectory) {
-                 return;
-               }
+          var gameDirectory = fileTreeLeafNode?.Parent;
+          while (gameDirectory?.Parent?.Parent != null) {
+            gameDirectory = gameDirectory.Parent;
+          }
 
-               gameDirectoryForPlaylist_ = gameDirectory;
-               UpdatePlaylist(
-                   gameDirectory
-                       .GetFilesOfType<IAudioFileBundle>(true)
-                       .Select(bundle => bundle.TypedFileBundle)
-                       .ToArray());
-             };
-    }
+          if (gameDirectoryForPlaylist_ == gameDirectory) {
+            return;
+          }
 
-    public static event Action<IReadOnlyList<IAudioFileBundle>>
-        OnPlaylistUpdated;
-
-    public static void UpdatePlaylist(IReadOnlyList<IAudioFileBundle> playlist)
-      => OnPlaylistUpdated?.Invoke(playlist);
+          gameDirectoryForPlaylist_ = gameDirectory;
+          UpdatePlaylist(
+              gameDirectory
+                  .GetFilesOfType<IAudioFileBundle>(true)
+                  .Select(bundle => bundle.TypedFileBundle)
+                  .ToArray());
+        };
   }
+
+  public static event Action<IReadOnlyList<IAudioFileBundle>>
+      OnPlaylistUpdated;
+
+  public static void UpdatePlaylist(IReadOnlyList<IAudioFileBundle> playlist)
+    => OnPlaylistUpdated?.Invoke(playlist);
 }

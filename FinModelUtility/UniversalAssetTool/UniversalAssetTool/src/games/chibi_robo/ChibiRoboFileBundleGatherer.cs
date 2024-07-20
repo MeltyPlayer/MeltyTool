@@ -5,11 +5,12 @@ using fin.util.progress;
 
 using uni.platforms.gcn;
 
-namespace uni.games.chibi_robo {
-  public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public void GatherFileBundles(
-        IFileBundleOrganizer organizer,
-        IMutablePercentageProgress mutablePercentageProgress) {
+namespace uni.games.chibi_robo;
+
+public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
       if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
               "chibi_robo",
               out var fileHierarchy)) {
@@ -30,5 +31,4 @@ namespace uni.games.chibi_robo {
         }.Annotate(datFile));
       }
     }
-  }
 }

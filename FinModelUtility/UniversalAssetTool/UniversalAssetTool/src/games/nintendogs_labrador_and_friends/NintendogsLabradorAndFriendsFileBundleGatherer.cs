@@ -7,12 +7,13 @@ using uni.platforms;
 
 using Yarhl.FileSystem;
 
-namespace uni.games.nintendogs_labrador_and_friends {
-  public class NintendogsLabradorAndFriendsFileBundleGatherer
-      : IAnnotatedFileBundleGatherer {
-    public void GatherFileBundles(
-        IFileBundleOrganizer organizer,
-        IMutablePercentageProgress mutablePercentageProgress) {
+namespace uni.games.nintendogs_labrador_and_friends;
+
+public class NintendogsLabradorAndFriendsFileBundleGatherer
+    : IAnnotatedFileBundleGatherer {
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
               "nintendogs_labrador_and_friends.nds",
               out var nintendogsRom)) {
@@ -28,5 +29,4 @@ namespace uni.games.nintendogs_labrador_and_friends {
         names.Add(node.Name);
       }
     }
-  }
 }

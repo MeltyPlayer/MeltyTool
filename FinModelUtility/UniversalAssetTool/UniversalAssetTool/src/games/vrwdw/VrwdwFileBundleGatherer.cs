@@ -7,13 +7,14 @@ using uni.platforms;
 using vrml.api;
 
 
-namespace uni.games.vrwdw {
-  public class VrwdwFileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public string Name => "vrwdw";
+namespace uni.games.vrwdw;
 
-    public void GatherFileBundles(
-        IFileBundleOrganizer organizer,
-        IMutablePercentageProgress mutablePercentageProgress) {
+public class VrwdwFileBundleGatherer : IAnnotatedFileBundleGatherer {
+  public string Name => "vrwdw";
+
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
       if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
               Path.Join("vrwdw", ExtractorUtil.PREREQS),
               out var vrwdwDir)) {
@@ -28,5 +29,4 @@ namespace uni.games.vrwdw {
         }.Annotate(wrlFile));
       }
     }
-  }
 }

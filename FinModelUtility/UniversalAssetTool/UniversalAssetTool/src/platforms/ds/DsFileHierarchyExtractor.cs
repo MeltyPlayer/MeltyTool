@@ -8,10 +8,11 @@ using uni.games;
 
 using Yarhl.FileSystem;
 
-namespace uni.platforms.ds {
-  internal class DsFileHierarchyExtractor {
-    public IFileHierarchy ExtractFromRom(
-        IReadOnlySystemFile romFile) {
+namespace uni.platforms.ds;
+
+internal class DsFileHierarchyExtractor {
+  public IFileHierarchy ExtractFromRom(
+      IReadOnlySystemFile romFile) {
       if (ExtractorUtil.HasNotBeenExtractedYet(romFile, out var outDir)) {
         var game = NodeFactory.FromFile(romFile.FullPath);
         game.TransformWith<Binary2NitroRom>();
@@ -42,5 +43,4 @@ namespace uni.platforms.ds {
 
       return FileHierarchy.From(romFile.NameWithoutExtension, outDir);
     }
-  }
 }

@@ -8,12 +8,13 @@ using uni.platforms.threeDs;
 using uni.platforms.threeDs.tools;
 using uni.util.io;
 
-namespace uni.games.professor_layton_vs_phoenix_wright {
-  public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
-      : IAnnotatedFileBundleGatherer {
-    public void GatherFileBundles(
-        IFileBundleOrganizer organizer,
-        IMutablePercentageProgress mutablePercentageProgress) {
+namespace uni.games.professor_layton_vs_phoenix_wright;
+
+public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
+    : IAnnotatedFileBundleGatherer {
+  public void GatherFileBundles(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress) {
       if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
               "professor_layton_vs_phoenix_wright",
               out var fileHierarchy)) {
@@ -96,17 +97,17 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
       ).GatherFileBundles(organizer, mutablePercentageProgress);
     }
 
-    internal IXcFiles GetModelOnly(string name,
-                                   IFileHierarchyDirectory directory,
-                                   string modelFileName)
-      => new ModelOnly(name,
-                       directory.GetExistingFiles()
-                                .Single(
-                                    file => file.Name == modelFileName));
+  internal IXcFiles GetModelOnly(string name,
+                                 IFileHierarchyDirectory directory,
+                                 string modelFileName)
+    => new ModelOnly(name,
+                     directory.GetExistingFiles()
+                              .Single(
+                                  file => file.Name == modelFileName));
 
-    internal IXcFiles GetSameFile(string name,
-                                  IFileHierarchyDirectory directory,
-                                  string modelFileName) {
+  internal IXcFiles GetSameFile(string name,
+                                IFileHierarchyDirectory directory,
+                                string modelFileName) {
       var modelFile =
           directory.GetExistingFiles()
                    .Single(file => file.NameWithoutExtension ==
@@ -123,43 +124,42 @@ namespace uni.games.professor_layton_vs_phoenix_wright {
           new[] { modelFile, }.Concat(animationFiles).ToArray());
     }
 
-    internal IXcFiles GetModelAndAnimations(string name,
-                                            IFileHierarchyDirectory directory,
-                                            string modelFileName,
-                                            params string[] animationFileNames)
-      => new ModelAndAnimations(
-          name,
-          directory.GetExistingFiles()
-                   .Single(file => file.Name == modelFileName),
-          animationFileNames.Select(animationFileName
-                                        => directory.GetExistingFiles()
-                                                    .Single(
-                                                        file => file.Name ==
-                                                            animationFileName))
-                            .ToArray());
+  internal IXcFiles GetModelAndAnimations(string name,
+                                          IFileHierarchyDirectory directory,
+                                          string modelFileName,
+                                          params string[] animationFileNames)
+    => new ModelAndAnimations(
+        name,
+        directory.GetExistingFiles()
+                 .Single(file => file.Name == modelFileName),
+        animationFileNames.Select(animationFileName
+                                      => directory.GetExistingFiles()
+                                                  .Single(
+                                                      file => file.Name ==
+                                                          animationFileName))
+                          .ToArray());
 
-    internal interface IXcFiles {
-      string Name { get; }
-      IFileHierarchyFile ModelFile { get; }
-      IFileHierarchyFile[]? AnimationFiles { get; }
-    }
-
-
-    internal record ModelOnly(
-        string Name,
-        IFileHierarchyFile ModelFile) : IXcFiles {
-      public IFileHierarchyFile[]? AnimationFiles => null;
-    }
-
-    internal record SameFile(
-        string Name,
-        IFileHierarchyFile ModelFile) : IXcFiles {
-      public IFileHierarchyFile[] AnimationFiles { get; } = [ModelFile];
-    }
-
-    internal record ModelAndAnimations(
-        string Name,
-        IFileHierarchyFile ModelFile,
-        params IFileHierarchyFile[] AnimationFiles) : IXcFiles;
+  internal interface IXcFiles {
+    string Name { get; }
+    IFileHierarchyFile ModelFile { get; }
+    IFileHierarchyFile[]? AnimationFiles { get; }
   }
+
+
+  internal record ModelOnly(
+      string Name,
+      IFileHierarchyFile ModelFile) : IXcFiles {
+    public IFileHierarchyFile[]? AnimationFiles => null;
+  }
+
+  internal record SameFile(
+      string Name,
+      IFileHierarchyFile ModelFile) : IXcFiles {
+    public IFileHierarchyFile[] AnimationFiles { get; } = [ModelFile];
+  }
+
+  internal record ModelAndAnimations(
+      string Name,
+      IFileHierarchyFile ModelFile,
+      params IFileHierarchyFile[] AnimationFiles) : IXcFiles;
 }

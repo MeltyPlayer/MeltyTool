@@ -1,9 +1,9 @@
-﻿namespace uni.platforms.threeDs.tools.cia {
-  public class HashCode {
-    private readonly byte[] hash_ = new byte[32];
+﻿namespace uni.platforms.threeDs.tools.cia;
 
-    public HashCode() { }
+public class HashCode {
+  private readonly byte[] hash_ = new byte[32];
 
-    public IReadOnlyList<byte> Bytes => this.hash_;
-  }
+  public HashCode() { }
+
+  public IReadOnlyList<byte> Bytes => this.hash_;
 }

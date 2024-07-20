@@ -5,9 +5,10 @@ using fin.util.asserts;
 using uni.platforms.gcn.tools;
 using uni.util.cmd;
 
-namespace uni.platforms.threeDs.tools {
-  public class ThreeDsXfsaTool {
-    public bool Extract(IFileHierarchyFile xsfaFile) {
+namespace uni.platforms.threeDs.tools;
+
+public class ThreeDsXfsaTool {
+  public bool Extract(IFileHierarchyFile xsfaFile) {
       Asserts.True(xsfaFile.Exists,
                    $"Could not extract archive because it does not exist: {xsfaFile.FullPath}");
 
@@ -34,5 +35,4 @@ namespace uni.platforms.threeDs.tools {
 
       return true;
     }
-  }
 }

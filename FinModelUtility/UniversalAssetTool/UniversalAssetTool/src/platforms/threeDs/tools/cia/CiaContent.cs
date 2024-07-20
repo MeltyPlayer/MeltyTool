@@ -1,13 +1,14 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace uni.platforms.threeDs.tools.cia {
-  public partial class CiaContent : IChildOf<Cia>, IBinaryDeserializable {
-    public Cia Parent { get; set; }
+namespace uni.platforms.threeDs.tools.cia;
 
-    public IReadOnlyList<ContentInfo> ContentInfos { get; private set; }
+public partial class CiaContent : IChildOf<Cia>, IBinaryDeserializable {
+  public Cia Parent { get; set; }
 
-    public void Read(IBinaryReader br) {
+  public IReadOnlyList<ContentInfo> ContentInfos { get; private set; }
+
+  public void Read(IBinaryReader br) {
       switch (this.Parent.Header.FormatVersion) {
         case CiaFormatVersion.DEFAULT: {
           this.ReadDefault_(br);
@@ -22,9 +23,9 @@ namespace uni.platforms.threeDs.tools.cia {
       }
     }
 
-    private void ReadDefault_(IBinaryReader br) { }
+  private void ReadDefault_(IBinaryReader br) { }
 
-    private void ReadSimple_(IBinaryReader br) {
+  private void ReadSimple_(IBinaryReader br) {
       this.ContentInfos = new[] {
           new ContentInfo {
               Offset = br.Position,
@@ -38,22 +39,21 @@ namespace uni.platforms.threeDs.tools.cia {
           },
       };
     }
-  }
+}
 
-  public class ContentInfo {
-    public required long Offset { get; init; }
-    public required long Size { get; init; }
-    public required uint Id { get; init; }
-    public required ushort Index { get; init; }
-    public required bool IsEncrypted { get; init; }
-    public required bool IsHashed { get; init; }
-    public required HashCode HashCode { get; init; }
-    public required ValidState ValidState { get; init; }
-  }
+public class ContentInfo {
+  public required long Offset { get; init; }
+  public required long Size { get; init; }
+  public required uint Id { get; init; }
+  public required ushort Index { get; init; }
+  public required bool IsEncrypted { get; init; }
+  public required bool IsHashed { get; init; }
+  public required HashCode HashCode { get; init; }
+  public required ValidState ValidState { get; init; }
+}
 
-  public enum ValidState {
-    Unchecked,
-    Good,
-    Fail,
-  }
+public enum ValidState {
+  Unchecked,
+  Good,
+  Fail,
 }

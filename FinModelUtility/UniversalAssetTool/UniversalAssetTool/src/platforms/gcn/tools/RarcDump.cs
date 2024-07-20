@@ -6,12 +6,13 @@ using fin.util.asserts;
 
 using uni.util.cmd;
 
-namespace uni.platforms.gcn.tools {
-  public class RarcDump {
-    public bool Run(
-        IFileHierarchyFile rarcFile,
-        bool cleanup,
-        IReadOnlySet<string> junkTerms) {
+namespace uni.platforms.gcn.tools;
+
+public class RarcDump {
+  public bool Run(
+      IFileHierarchyFile rarcFile,
+      bool cleanup,
+      IReadOnlySet<string> junkTerms) {
       Asserts.True(
           rarcFile.Impl.Exists,
           $"Cannot dump RARC because it does not exist: {rarcFile}");
@@ -36,8 +37,7 @@ namespace uni.platforms.gcn.tools {
                      $"Directory was not created: {directoryPath}");
       }
 
-      // Determines final directory path from 
-      var directory = new FinDirectory(directoryPath);
+      // Determines final directory path from    var directory = new FinDirectory(directoryPath);
 
       var subdir = directory.GetExistingSubdirs().Single();
       var subdirName = subdir.Name;
@@ -54,8 +54,7 @@ namespace uni.platforms.gcn.tools {
       } else if (!isSubdirJunk && isRarcJunk) {
         finalDirectoryName = subdirName;
       }
-      // If subdir has same name or is an abbreviation of the parent, 
-      // just collapses them with the parent name.
+      // If subdir has same name or is an abbreviation of the parent,    // just collapses them with the parent name.
       else if ((subdirName.Length <= rarcName.Length &&
                 subdirName.ToLower() ==
                 rarcName.Substring(0, subdirName.Length).ToLower()) ||
@@ -87,5 +86,4 @@ namespace uni.platforms.gcn.tools {
 
       return true;
     }
-  }
 }
