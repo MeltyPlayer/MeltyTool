@@ -8,7 +8,7 @@ using uni.platforms;
 
 namespace uni.games.super_mario_64;
 
-public class SuperMario64AnnotatedFileGatherer : IAnnotatedFileBundleGatherer {
+public class SuperMario64FileBundleGatherer : IAnnotatedFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

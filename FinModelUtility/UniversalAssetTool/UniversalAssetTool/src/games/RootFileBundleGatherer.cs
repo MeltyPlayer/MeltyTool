@@ -3,6 +3,7 @@ using fin.util.progress;
 
 using uni.config;
 using uni.games.animal_crossing;
+using uni.games.animal_crossing_wild_world;
 using uni.games.battalion_wars_1;
 using uni.games.battalion_wars_2;
 using uni.games.chibi_robo;
@@ -29,6 +30,7 @@ using uni.games.pikmin_2;
 using uni.games.professor_layton_vs_phoenix_wright;
 using uni.games.soulcalibur_ii;
 using uni.games.super_mario_64;
+using uni.games.super_mario_64_ds;
 using uni.games.super_mario_sunshine;
 using uni.games.super_smash_bros_melee;
 using uni.games.timesplitters_2;
@@ -41,6 +43,7 @@ namespace uni.games {
         IMutablePercentageProgress mutablePercentageProgress) {
       var gatherers = new IAnnotatedFileBundleGatherer[] {
           new AnimalCrossingFileBundleGatherer(),
+          new AnimalCrossingWildWorldFileBundleGatherer(),
           new BattalionWars1FileBundleGatherer(),
           new BattalionWars2FileBundleGatherer(),
           new ChibiRoboFileBundleGatherer(),
@@ -66,7 +69,8 @@ namespace uni.games {
           new Pikmin2FileBundleGatherer(),
           new ProfessorLaytonVsPhoenixWrightFileBundleGatherer(),
           new SoulcaliburIIFileBundleGatherer(),
-          new SuperMario64AnnotatedFileGatherer(),
+          new SuperMario64DsFileBundleGatherer(),
+          new SuperMario64FileBundleGatherer(),
           new SuperMarioSunshineFileBundleGatherer(),
           new SuperSmashBrosMeleeFileBundleGatherer(),
           new Timesplitters2FileBundleGatherer(),
@@ -76,14 +80,14 @@ namespace uni.games {
 
       IAnnotatedFileBundleGatherer rootGatherer;
       if (Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms) {
-        var accumulator =new ParallelAnnotatedFileBundleGathererAccumulator();
+        var accumulator = new ParallelAnnotatedFileBundleGathererAccumulator();
         foreach (var gatherer in gatherers) {
           accumulator.Add(gatherer);
         }
 
         rootGatherer = accumulator;
       } else {
-        var accumulator =new AnnotatedFileBundleGathererAccumulator();
+        var accumulator = new AnnotatedFileBundleGathererAccumulator();
         foreach (var gatherer in gatherers) {
           accumulator.Add(gatherer);
         }
