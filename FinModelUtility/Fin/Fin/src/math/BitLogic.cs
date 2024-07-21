@@ -32,14 +32,22 @@ public static class BitLogic {
 
 
   /// <summary>
-  //    Function to extract k bits from p position
-  //    and returns the extracted value as integer
+  //    Function to extract k bits from p position and returns the extracted
+  //    value as integer
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static uint ExtractFromRight(this uint number, int offset, int count)
-      // => (((1 << count) - 1) & (number >> (offset - 1)));
     => ((number >> offset) & GetMask(count));
 
+  /// <summary>
+  //    Function to extract k bits from p position and returns the extracted
+  //    value as integer
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static ushort ExtractFromRight(this ushort number,
+                                        int offset,
+                                        int count)
+    => (ushort) ((number >> offset) & GetMask(count));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static bool GetBit(this byte number, int offset)
