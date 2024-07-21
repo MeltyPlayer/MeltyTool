@@ -1,27 +1,37 @@
-﻿namespace ttyd.api;
+﻿using fin.model;
 
-public class TtydTransformData<T> {
+namespace ttyd.api;
+
+public struct TtydTransformData<TVec, TRotation> {
   public required bool IsJoint { get; init; }
-  public required TtydTransformJointData<T>? JointData { get; init; }
-  public required TtydTransformNonJointData<T>? NonJointData { get; init; }
+
+  public required TtydTransformJointData<TVec, TRotation> JointData {
+    get;
+    init;
+  }
+
+  public required TtydTransformNonJointData<TVec, TRotation> NonJointData {
+    get;
+    init;
+  }
 }
 
-public class TtydTransformJointData<T> {
-  public required T Translation { get; init; }
-  public required T ParentScale { get; init; }
-  public required T Rotation1 { get; init; }
-  public required T Rotation2 { get; init; }
-  public required T Scale { get; init; }
+public struct TtydTransformJointData<TVec, TRotation> {
+  public required TVec Translation { get; init; }
+  public required TVec UndoParentScale { get; init; }
+  public required TRotation Rotation1 { get; init; }
+  public required TRotation Rotation2 { get; init; }
+  public required TVec Scale { get; init; }
 }
 
-public class TtydTransformNonJointData<T> {
-  public required T Translation { get; init; }
+public struct TtydTransformNonJointData<TVec, TRotation> {
+  public required TVec Translation { get; init; }
 
-  public required T ApplyRotationCenterAndTranslation { get; init; }
-  public required T Rotation { get; init; }
-  public required T UndoRotationCenter { get; init; }
+  public required TVec ApplyRotationCenterAndTranslation { get; init; }
+  public required TRotation Rotation { get; init; }
+  public required TVec UndoRotationCenter { get; init; }
 
-  public required T ApplyScaleCenterAndTranslation { get; init; }
-  public required T Scale { get; init; }
-  public required T UndoScaleCenter { get; init; }
+  public required TVec ApplyScaleCenterAndTranslation { get; init; }
+  public required TVec Scale { get; init; }
+  public required TVec UndoScaleCenter { get; init; }
 }

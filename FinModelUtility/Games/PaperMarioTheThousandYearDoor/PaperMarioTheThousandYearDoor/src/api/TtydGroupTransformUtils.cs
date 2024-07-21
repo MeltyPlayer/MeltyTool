@@ -7,7 +7,7 @@ using ttyd.schema.model.blocks;
 namespace ttyd.api;
 
 public static class TtydGroupTransformUtils {
-  public static Matrix4x4 GetTransformMatrix(
+  public static TtydTransformData<Vector3, Vector3> GetTransformData(
       Group group,
       IReadOnlyDictionary<Group, Group> groupToParent,
       ReadOnlySpan<float> allGroupTransforms) {
@@ -24,10 +24,10 @@ public static class TtydGroupTransformUtils {
       }
     }
 
-    return GetTransformMatrix(group, groupTransforms, parentGroupScale);
+    return GetTransformData(group, groupTransforms, parentGroupScale);
   }
 
-  public static Matrix4x4 GetTransformMatrix(
+  public static TtydTransformData<Vector3, Vector3> GetTransformData(
       Group group,
       IReadOnlyDictionary<Group, Group> groupToParent,
       IGroupTransformBakedFrames keyframes,
@@ -45,10 +45,10 @@ public static class TtydGroupTransformUtils {
       }
     }
 
-    return GetTransformMatrix(group, groupBuffer, parentGroupScale);
+    return GetTransformData(group, groupBuffer, parentGroupScale);
   }
 
-  public static Matrix4x4 GetTransformMatrix(
+  public static TtydTransformData<Vector3, Vector3> GetTransformData(
       Group group,
       ReadOnlySpan<float> groupTransforms,
       Vector3? parentGroupScale) {
@@ -56,50 +56,28 @@ public static class TtydGroupTransformUtils {
     var scale = new Vector3(groupTransforms.Slice(3, 3));
 
     var deg2Rad = MathF.PI / 180;
-    var rotationDegrees1
+    var rotationRadians1
         = new Vector3(groupTransforms.Slice(6, 3)) * 2 * deg2Rad;
 
-    Func<Matrix4x4, Matrix4x4, Matrix4x4> combineMatrices
-        = (lhs, rhs) => {
-          // TODO: This prevents an issue where the final matrix can't be
-          // decomposed, but it doesn't really *fix* the issue--how can we
-          // actually fix this?
-          Matrix4x4Factory.NormalizeMatrix(ref lhs);
-          Matrix4x4Factory.NormalizeMatrix(ref rhs);
-          var product = rhs * lhs;
-          Matrix4x4Factory.NormalizeMatrix(ref product);
-          return product;
-        };
-    Func<Matrix4x4, Vector3, Matrix4x4> applyRotationMatrixes
-        = (mtx, rotation) => {
-          mtx = combineMatrices(mtx, Matrix4x4.CreateRotationZ(rotation.Z));
-          mtx = combineMatrices(mtx, Matrix4x4.CreateRotationY(rotation.Y));
-          mtx = combineMatrices(mtx, Matrix4x4.CreateRotationX(rotation.X));
-
-          return mtx;
-        };
-
     if (group.IsJoint) {
-      var rotationDegrees2
+      var rotationRadians2
           = new Vector3(groupTransforms.Slice(9, 3)) * deg2Rad;
 
-      var jointMatrix = Matrix4x4.CreateTranslation(translation);
-
-      if (parentGroupScale != null) {
-        jointMatrix = combineMatrices(
-            jointMatrix,
-            Matrix4x4.CreateScale(new Vector3(1 / parentGroupScale.Value.X,
-                                              1 / parentGroupScale.Value.Y,
-                                              1 / parentGroupScale.Value.Z)));
-      }
-
-      jointMatrix = applyRotationMatrixes(jointMatrix, rotationDegrees2);
-      jointMatrix = applyRotationMatrixes(jointMatrix, rotationDegrees1);
-
-      jointMatrix
-          = combineMatrices(jointMatrix, Matrix4x4.CreateScale(scale));
-
-      return jointMatrix;
+      return new TtydTransformData<Vector3, Vector3> {
+          IsJoint = true,
+          JointData = new TtydTransformJointData<Vector3, Vector3> {
+              Translation = translation,
+              UndoParentScale = parentGroupScale != null
+                  ? new Vector3(1 / parentGroupScale.Value.X,
+                                1 / parentGroupScale.Value.Y,
+                                1 / parentGroupScale.Value.Z)
+                  : Vector3.One,
+              Rotation1 = rotationRadians1,
+              Rotation2 = rotationRadians2,
+              Scale = scale,
+          },
+          NonJointData = default,
+      };
     }
 
     var rotationCenter
@@ -111,25 +89,19 @@ public static class TtydGroupTransformUtils {
     var scaleTranslation
         = new Vector3(groupTransforms.Slice(21, 3));
 
-    var nonJointMatrix = Matrix4x4.CreateTranslation(translation);
-
-    nonJointMatrix = combineMatrices(
-        nonJointMatrix,
-        Matrix4x4.CreateTranslation(rotationCenter + rotationTranslation));
-    nonJointMatrix = applyRotationMatrixes(nonJointMatrix, rotationDegrees1);
-    nonJointMatrix
-        = combineMatrices(nonJointMatrix,
-                          Matrix4x4.CreateTranslation(-rotationCenter));
-
-    nonJointMatrix = combineMatrices(
-        nonJointMatrix,
-        Matrix4x4.CreateTranslation(scaleCenter + scaleTranslation));
-    nonJointMatrix
-        = combineMatrices(nonJointMatrix, Matrix4x4.CreateScale(scale));
-    nonJointMatrix
-        = combineMatrices(nonJointMatrix,
-                          Matrix4x4.CreateTranslation(-scaleCenter));
-
-    return nonJointMatrix;
+    return new TtydTransformData<Vector3, Vector3> {
+        IsJoint = false,
+        JointData = default,
+        NonJointData = new TtydTransformNonJointData<Vector3, Vector3> {
+            Translation = translation,
+            ApplyRotationCenterAndTranslation
+                = rotationCenter + rotationTranslation,
+            Rotation = rotationRadians1,
+            UndoRotationCenter = -rotationCenter,
+            ApplyScaleCenterAndTranslation = scaleCenter + scaleTranslation,
+            Scale = scale,
+            UndoScaleCenter = -scaleCenter,
+        },
+    };
   }
 }
