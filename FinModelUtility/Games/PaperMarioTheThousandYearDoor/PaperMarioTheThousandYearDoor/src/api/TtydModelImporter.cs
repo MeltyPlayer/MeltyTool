@@ -17,8 +17,6 @@ using fin.model.util;
 using fin.util.asserts;
 using fin.util.enums;
 
-using gx;
-
 using schema.binary;
 
 using ttyd.schema.model;
