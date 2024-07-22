@@ -6,7 +6,6 @@ namespace fin.ui.rendering.gl.model;
 public class UnmergedMaterialMeshesRenderer : IModelRenderer {
   private GlBufferManager? bufferManager_;
   private readonly IReadOnlyLighting? lighting_;
-  private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
 
   private readonly
@@ -16,11 +15,9 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
   public UnmergedMaterialMeshesRenderer(
       IReadOnlyModel model,
       IReadOnlyLighting? lighting,
-      IReadOnlyBoneTransformManager? boneTransformManager = null,
       IReadOnlyTextureTransformManager? textureTransformManager = null) {
     this.Model = model;
     this.lighting_ = lighting;
-    this.boneTransformManager_ = boneTransformManager;
     this.textureTransformManager_ = textureTransformManager;
   }
 
@@ -44,7 +41,6 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
                       out var mergedPrimitive)) {
 
                 currentList.Add(new MergedMaterialPrimitivesByMeshRenderer(
-                                    this.boneTransformManager_,
                                     this.textureTransformManager_,
                                     this.bufferManager_,
                                     this.Model,

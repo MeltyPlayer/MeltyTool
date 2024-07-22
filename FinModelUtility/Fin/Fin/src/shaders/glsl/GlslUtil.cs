@@ -74,30 +74,23 @@ public static class GlslUtil {
 
     var vertexSrc = new StringBuilder();
 
-    vertexSrc.Append($"""
-                      #version 330
+    vertexSrc.Append($$"""
+                        #version 430
+          
+                        layout (std140, binding = {{GlslConstants.UBO_MATRIX_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRIX_NAME}} {
+                          mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
+                          mat4 {{GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME}};
+                          mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
+                          
+                          mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
+                        };
 
-                      uniform mat4 {GlslConstants.UNIFORM_MODEL_MATRIX_NAME};
-                      uniform mat4 {GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME};
-                      uniform mat4 {GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME};
-                      uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
-                      """);
-
-    if (useBoneMatrices) {
-      vertexSrc.Append($"""
-
-                        uniform mat4 {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[{1 + model.Skin.BonesUsedByVertices.Count}];
+                        uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
+                        
+                        layout(location = {{location++}}) in vec3 in_Position;
+                        layout(location = {{location++}}) in vec3 in_Normal;
+                        layout(location = {{location++}}) in vec4 in_Tangent;
                         """);
-    }
-
-    vertexSrc.Append(
-        $"""
-
-
-         layout(location = {location++}) in vec3 in_Position;
-         layout(location = {location++}) in vec3 in_Normal;
-         layout(location = {location++}) in vec4 in_Tangent;
-         """);
 
     if (useBoneMatrices) {
       vertexSrc.Append(

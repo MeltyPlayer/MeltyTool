@@ -15,17 +15,9 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   private LinkedList<CachedLightUniformData> cachedLightUniformDatas_ = [];
 
   private readonly IReadOnlyModel model_;
-  private readonly IReadOnlyBone[] bonesUsedByVertices_;
   private readonly IReadOnlyLighting? lighting_;
-  private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private readonly GlShaderProgram impl_;
-
-  private readonly IShaderUniform<Matrix4x4> modelMatrixUniform_;
-  private readonly IShaderUniform<Matrix4x4> modelViewMatrixUniform_;
-  private readonly IShaderUniform<Matrix4x4> projectionMatrixUniform_;
-
-  private readonly IShaderUniformArray<Matrix4x4> matricesUniform_;
 
   private readonly IShaderUniform<Vector3> cameraPositionUniform_;
   private readonly IShaderUniform<float> shininessUniform_;
@@ -36,13 +28,10 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   protected BGlMaterialShader(
       IReadOnlyModel model,
       TMaterial material,
-      IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyTextureTransformManager? textureTransformManager,
       IReadOnlyLighting? lighting) {
     this.model_ = model;
-    this.bonesUsedByVertices_ = model.Skin.BonesUsedByVertices.ToArray();
     this.Material = material;
-    this.boneTransformManager_ = boneTransformManager;
     this.textureTransformManager_ = textureTransformManager;
     this.lighting_ = lighting;
 
@@ -50,18 +39,6 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
     this.impl_ = GlShaderProgram.FromShaders(
         shaderSource.VertexShaderSource,
         shaderSource.FragmentShaderSource);
-
-    this.modelMatrixUniform_ = this.impl_.GetUniformMat4(
-        GlslConstants.UNIFORM_MODEL_MATRIX_NAME);
-    this.modelViewMatrixUniform_ = this.impl_.GetUniformMat4(
-        GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME);
-    this.projectionMatrixUniform_ = this.impl_.GetUniformMat4(
-        GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME);
-
-    this.matricesUniform_ = this.impl_.GetUniformMat4s(
-        GlslConstants.UNIFORM_BONE_MATRICES_NAME,
-        1 + model.Skin.BonesUsedByVertices.Count);
-    this.matricesUniform_.SetAndMarkDirty(0, Matrix4x4.Identity);
 
     this.shininessUniform_ = this.impl_.GetUniformFloat(
         GlslConstants.UNIFORM_SHININESS_NAME);
@@ -129,34 +106,12 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   public bool DisposeTextures { get; set; } = true;
 
   public void Use() {
-    // TODO: Figure out how to call SetAndMaybeMarkDirty() without weird
-    // graphical bugs.
-    this.modelMatrixUniform_.SetAndMarkDirty(GlTransform.ModelMatrix);
-    this.modelViewMatrixUniform_.SetAndMarkDirty(
-        GlTransform.ModelViewMatrix);
-    this.projectionMatrixUniform_.SetAndMarkDirty(
-        GlTransform.ProjectionMatrix);
-
     var cameraPosition = Camera.Instance;
     var scCamX = cameraPosition.X;
     var scCamY = cameraPosition.Y;
     var scCamZ = cameraPosition.Z;
     this.cameraPositionUniform_.SetAndMaybeMarkDirty(
         new Vector3(scCamX, scCamY, scCamZ));
-
-    var boneIndex = 1;
-    foreach (var bone in this.bonesUsedByVertices_) {
-      var localToWorldMatrix =
-          this.boneTransformManager_?.GetLocalToWorldMatrix(bone).Impl ??
-          Matrix4x4.Identity;
-      var inverseMatrix =
-          this.boneTransformManager_?.GetInverseBindMatrix(bone).Impl ??
-          Matrix4x4.Identity;
-
-      this.matricesUniform_.SetAndMarkDirty(
-          boneIndex++,
-          inverseMatrix * localToWorldMatrix);
-    }
 
     this.shininessUniform_.SetAndMaybeMarkDirty(
         this.Material?.Shininess ?? 0);

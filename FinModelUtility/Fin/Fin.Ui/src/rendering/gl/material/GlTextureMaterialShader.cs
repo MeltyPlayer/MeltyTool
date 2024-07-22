@@ -9,13 +9,11 @@ namespace fin.ui.rendering.gl.material;
 public class GlTextureMaterialShader(
     IReadOnlyModel model,
     IReadOnlyTextureMaterial material,
-    IReadOnlyBoneTransformManager? boneTransformManager,
     IReadOnlyTextureTransformManager? textureTransformManager,
     IReadOnlyLighting? lighting)
     : BGlMaterialShader<IReadOnlyTextureMaterial>(
         model,
         material,
-        boneTransformManager,
         textureTransformManager,
         lighting) {
   private IShaderUniform<Vector4> diffuseColorUniform_;

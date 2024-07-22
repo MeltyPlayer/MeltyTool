@@ -100,7 +100,7 @@ public partial class GlShaderProgram : IShaderProgram {
         out var shaderError);
 
     if (shaderError?.Length > 0) {
-      ;
+       ;
     }
 
     return shaderId;

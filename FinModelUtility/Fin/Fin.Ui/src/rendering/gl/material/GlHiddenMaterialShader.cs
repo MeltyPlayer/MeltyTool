@@ -1,17 +1,14 @@
-﻿using fin.math;
-using fin.model;
+﻿using fin.model;
 using fin.shaders.glsl;
 
 namespace fin.ui.rendering.gl.material;
 
 public class GlHiddenMaterialShader(
     IReadOnlyModel model,
-    IReadOnlyBoneTransformManager? boneTransformManager,
     IReadOnlyLighting? lighting)
     : BGlMaterialShader<IReadOnlyMaterial?>(
         model,
         null,
-        boneTransformManager,
         null,
         lighting) {
   protected override void DisposeInternal() { }

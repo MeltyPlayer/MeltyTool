@@ -1,6 +1,9 @@
 ﻿namespace fin.shaders.glsl;
 
 public static class GlslConstants {
+  public const int UBO_MATRIX_BINDING_INDEX = 1;
+  public const string UBO_MATRIX_NAME = "Matrix";
+
   public const string UNIFORM_MODEL_MATRIX_NAME = "modelMatrix";
   public const string UNIFORM_MODEL_VIEW_MATRIX_NAME = "modelViewMatrix";
   public const string UNIFORM_PROJECTION_MATRIX_NAME = "projectionMatrix";

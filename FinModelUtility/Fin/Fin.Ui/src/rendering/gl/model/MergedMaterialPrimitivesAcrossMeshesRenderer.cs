@@ -11,7 +11,6 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
   private bool isSelected_;
 
   public MergedMaterialPrimitivesAcrossMeshesRenderer(
-      IReadOnlyBoneTransformManager? boneTransformManager,
       IReadOnlyTextureTransformManager? textureTransformManager,
       GlBufferManager bufferManager,
       IReadOnlyModel model,
@@ -22,7 +21,6 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
 
     this.materialShader_ = GlMaterialShader.FromMaterial(model,
       material,
-      boneTransformManager,
       textureTransformManager,
       lighting);
 

@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.math;
 using fin.model;
 
 
@@ -9,12 +8,10 @@ namespace fin.ui.rendering.gl.material;
 public class GlColorMaterialShader(
     IReadOnlyModel model,
     IReadOnlyColorMaterial colorMaterial,
-    IReadOnlyBoneTransformManager? boneTransformManager,
     IReadOnlyLighting? lighting)
     : BGlMaterialShader<IReadOnlyColorMaterial>(
         model,
         colorMaterial,
-        boneTransformManager,
         null,
         lighting) {
   private IShaderUniform<Vector4> diffuseLightColorUniform_;
