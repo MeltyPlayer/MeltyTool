@@ -1,10 +1,13 @@
-﻿using Avalonia;
+﻿using System.Threading;
+
+using Avalonia;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
 using Avalonia.Rendering;
 using Avalonia.Threading;
 
 using fin.ui.rendering.gl;
+using fin.util.time;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -12,6 +15,7 @@ namespace uni.ui.avalonia.common.gl {
   public abstract class BOpenTkControl
       : OpenGlControlBase, ICustomHitTest {
     private AvaloniaOpenTkContext? avaloniaTkContext_;
+    private TimedCallback renderCallback_;
 
     protected abstract void InitGl();
     protected abstract void RenderGl();
@@ -30,11 +34,14 @@ namespace uni.ui.avalonia.common.gl {
 
       GlUtil.SwitchContext(this);
       this.InitGl();
+
+      this.renderCallback_ = TimedCallback.WithFrequency(
+          () => Dispatcher.UIThread.Post(this.RequestNextFrameRendering,
+                                         DispatcherPriority.Background),
+          60);
     }
 
     protected override void OnOpenGlRender(GlInterface gl, int fb) {
-      Dispatcher.UIThread.Post(this.RequestNextFrameRendering,
-                               DispatcherPriority.Background);
       GlUtil.SwitchContext(this);
       this.RenderGl();
     }

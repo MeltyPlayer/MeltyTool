@@ -16,7 +16,11 @@ class Program {
   public static void Main(string[] args) {
     Cli.Run(args,
             () => {
-              BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+              try {
+                BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+              } catch (Exception e) {
+                ;
+              }
             });
   }
 
