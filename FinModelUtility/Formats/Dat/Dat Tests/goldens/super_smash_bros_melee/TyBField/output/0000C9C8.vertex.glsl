@@ -1,8 +1,13 @@
-#version 330
+#version 430
 
-uniform mat4 modelMatrix;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
+layout (std140, binding = 1) uniform Matrix {
+  mat4 modelMatrix;
+  mat4 modelViewMatrix;
+  mat4 projectionMatrix;
+  
+  mat4 boneMatrices[7];  
+};
+
 uniform vec3 cameraPosition;
 
 layout(location = 0) in vec3 in_Position;
