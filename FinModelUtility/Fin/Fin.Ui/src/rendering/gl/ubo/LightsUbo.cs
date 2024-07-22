@@ -2,7 +2,6 @@
 
 using fin.model;
 using fin.shaders.glsl;
-using fin.util.asserts;
 
 using OpenTK.Graphics.OpenGL;
 
