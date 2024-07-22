@@ -128,7 +128,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
           var finTextureTracks = materialAnimation.AddTextureTracks(finTexture);
           {
-            var modTranslationKeyframes = modTextureData.TranslationAnimationData;
+            var modTranslationKeyframes
+                = modTextureData.TranslationAnimationData;
             var finTranslationKeyframes = finTextureTracks
                 .UseSeparateTranslationKeyframesWithTangents(
                     animationLength: adjustedAnimationLength);
@@ -238,6 +239,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                 new ModPopulatedMaterial(
                     i,
                     modMaterial,
+                    (int) modMaterial.TevGroupId,
                     mod.materials.texEnvironments[
                         (int) modMaterial.TevGroupId]);
 

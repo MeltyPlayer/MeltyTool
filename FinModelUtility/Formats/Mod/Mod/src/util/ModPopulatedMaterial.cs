@@ -16,6 +16,7 @@ namespace mod.util {
   internal class ModPopulatedMaterial : IPopulatedMaterial {
     public ModPopulatedMaterial(int materialIndex,
                                 Material material,
+                                int tevInfoIndex,
                                 TEVInfo tevInfo) {
       // TODO: Where does this come from?
 
@@ -33,7 +34,7 @@ namespace mod.util {
                          rgba.R.Clamp((ushort) 0, (ushort) 255),
                          rgba.G.Clamp((ushort) 0, (ushort) 255),
                          rgba.B.Clamp((ushort) 0, (ushort) 255)),
-                     Index = 3 * materialIndex + i,
+                     Index = 3 * tevInfoIndex + i,
                  })
                  .ToArray();
 
