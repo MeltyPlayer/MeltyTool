@@ -1,6 +1,6 @@
 #version 430
 
-layout (std140, binding = 1) uniform Matrix {
+layout (std140, binding = 1) uniform Matrices {
   mat4 modelMatrix;
   mat4 modelViewMatrix;
   mat4 projectionMatrix;

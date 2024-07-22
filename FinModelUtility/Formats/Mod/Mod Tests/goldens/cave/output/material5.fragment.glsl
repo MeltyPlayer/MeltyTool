@@ -1,4 +1,4 @@
-#version 400
+#version 430
 
 void main() {
   discard;

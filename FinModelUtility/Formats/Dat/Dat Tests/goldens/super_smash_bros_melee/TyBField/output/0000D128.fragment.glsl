@@ -1,4 +1,4 @@
-#version 400
+#version 430
 
 uniform sampler2D texture0;
 uniform sampler2D texture1;

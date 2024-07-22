@@ -1,4 +1,4 @@
-#version 400
+#version 430
 struct Texture {
   sampler2D sampler;
   mat3x2 transform2d;
@@ -8,7 +8,6 @@ struct Texture {
 
 uniform Texture diffuseTexture;
 uniform float shininess;
-uniform int useLighting;
 
 out vec4 fragColor;
 

@@ -1,4 +1,4 @@
-#version 400
+#version 430
 
 uniform vec3 color_GxMaterialColor78;
 uniform float scalar_GxMaterialAlpha78;

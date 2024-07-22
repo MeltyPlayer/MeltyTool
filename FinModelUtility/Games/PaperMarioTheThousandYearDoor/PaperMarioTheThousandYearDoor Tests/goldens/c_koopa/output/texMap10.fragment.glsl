@@ -1,28 +1,37 @@
-#version 400
+#version 430
 
 
 struct Light {
+  // 0x00 (vec3 needs to be 16-byte aligned)
+  vec3 position;
   bool enabled;
 
-  int sourceType;
-  vec3 position;
+  // 0x10 (vec3 needs to be 16-byte aligned)
   vec3 normal;
+  int sourceType;
 
+  // 0x20 (vec4 needs to be 16-byte aligned)
   vec4 color;
   
-  int diffuseFunction;
-  int attenuationFunction;
+  // 0x30 (vec3 needs to be 16-byte aligned)
   vec3 cosineAttenuation;
+  int diffuseFunction;
+
+  // 0x40 (vec3 needs to be 16-byte aligned)
   vec3 distanceAttenuation;
+  int attenuationFunction;
 };
 
-uniform Light lights[8];
-uniform vec4 ambientLightColor;
+layout (std140, binding = 2) uniform Lights {
+  Light lights[8];
+  vec4 ambientLightColor;
+  int useLighting;
+};
+
 uniform vec3 cameraPosition;
 
 uniform sampler2D diffuseTexture;
 uniform float shininess;
-uniform int useLighting;
 
 out vec4 fragColor;
 
