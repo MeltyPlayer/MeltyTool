@@ -10,13 +10,11 @@ namespace fin.ui.rendering.gl.material;
 public class GlFixedFunctionMaterialShader(
     IReadOnlyModel model,
     IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
-    IReadOnlyTextureTransformManager? textureTransformManager,
-    IReadOnlyLighting? lighting)
+    IReadOnlyTextureTransformManager? textureTransformManager)
     : BGlMaterialShader<IReadOnlyFixedFunctionMaterial>(
         model,
         fixedFunctionMaterial,
-        textureTransformManager,
-        lighting) {
+        textureTransformManager) {
   private (IColorRegister, IShaderUniform<Vector3>)[]
       colorRegistersAndUniforms_;
 

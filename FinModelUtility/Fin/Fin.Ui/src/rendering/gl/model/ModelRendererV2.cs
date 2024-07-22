@@ -2,6 +2,7 @@
 
 using fin.math;
 using fin.model;
+using fin.ui.rendering.gl.ubo;
 
 
 namespace fin.ui.rendering.gl.model;
@@ -21,16 +22,11 @@ public class ModelRendererV2(
 
   private readonly IModelRenderer impl_
       = (model.Skin.AllowMaterialRendererMerging)
-          ? new MergedMaterialByMeshRenderer(
-              model,
-              lighting,
-              textureTransformManager)
-          : new UnmergedMaterialMeshesRenderer(
-              model,
-              lighting,
-              textureTransformManager);
+          ? new MergedMaterialByMeshRenderer(model, textureTransformManager)
+          : new UnmergedMaterialMeshesRenderer(model, textureTransformManager);
 
-  private MatrixUbo matricesAndCameraUbo_;
+  private MatricesUbo? matricesUbo_;
+  private LightsUbo? lightsUbo_;
 
   ~ModelRendererV2() => ReleaseUnmanagedResources_();
 
@@ -48,10 +44,7 @@ public class ModelRendererV2(
     set => this.impl_.HiddenMeshes = value;
   }
 
-  public bool UseLighting {
-    get => this.impl_.UseLighting;
-    set => this.impl_.UseLighting = value;
-  }
+  public bool UseLighting { get; set; }
 
   public void Render() {
     var camera = Camera.Instance;
@@ -71,17 +64,17 @@ public class ModelRendererV2(
       boneMatrices[boneIndex++] = inverseMatrix * localToWorldMatrix;
     }
 
-    if (this.matricesAndCameraUbo_ == null) {
-      this.matricesAndCameraUbo_ = new(model.Skin.BonesUsedByVertices.Count);
-    }
+    this.matricesUbo_ ??= new(model.Skin.BonesUsedByVertices.Count);
+    this.lightsUbo_ ??= new LightsUbo();
 
-    this.matricesAndCameraUbo_.UpdateData(
-        GlTransform.ModelMatrix,
-        GlTransform.ModelViewMatrix,
-        GlTransform.ProjectionMatrix,
-        boneMatrices);
+    this.matricesUbo_.UpdateData(GlTransform.ModelMatrix,
+                                 GlTransform.ModelViewMatrix,
+                                 GlTransform.ProjectionMatrix,
+                                 boneMatrices);
+    this.matricesUbo_.Bind();
 
-    this.matricesAndCameraUbo_.Bind();
+    this.lightsUbo_.UpdateData(this.UseLighting, lighting);
+    this.lightsUbo_.Bind();
 
     this.impl_.Render();
   }

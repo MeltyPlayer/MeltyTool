@@ -15,14 +15,12 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
       GlBufferManager bufferManager,
       IReadOnlyModel model,
       IReadOnlyMaterial? material,
-      IReadOnlyLighting? lighting,
       MergedPrimitive mergedPrimitive) {
     this.material_ = material;
 
     this.materialShader_ = GlMaterialShader.FromMaterial(model,
       material,
-      textureTransformManager,
-      lighting);
+      textureTransformManager);
 
     this.bufferRenderer_ = bufferManager.CreateRenderer(mergedPrimitive);
 
@@ -44,15 +42,6 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
   private void ReleaseUnmanagedResources_() {
     this.materialShader_?.Dispose();
     this.bufferRenderer_.Dispose();
-  }
-
-  public bool UseLighting {
-    get => this.materialShader_?.UseLighting ?? false;
-    set {
-      if (this.materialShader_ != null) {
-        this.materialShader_.UseLighting = value;
-      }
-    }
   }
 
   public void Render() {

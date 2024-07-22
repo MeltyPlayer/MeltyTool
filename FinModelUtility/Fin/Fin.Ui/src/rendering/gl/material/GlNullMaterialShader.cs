@@ -3,14 +3,8 @@ using fin.shaders.glsl;
 
 namespace fin.ui.rendering.gl.material;
 
-public class GlNullMaterialShader(
-    IReadOnlyModel model,
-    IReadOnlyLighting? lighting)
-    : BGlMaterialShader<IReadOnlyMaterial?>(
-        model,
-        null,
-        null,
-        lighting) {
+public class GlNullMaterialShader(IReadOnlyModel model)
+    : BGlMaterialShader<IReadOnlyMaterial?>(model, null, null) {
   protected override void DisposeInternal() { }
 
   protected override IShaderSourceGlsl GenerateShaderSource(

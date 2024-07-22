@@ -8,7 +8,6 @@ using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
-using fin.util.sets;
 
 namespace fin.ui.rendering.gl.scene;
 

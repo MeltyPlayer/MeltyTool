@@ -9,7 +9,6 @@ namespace fin.ui.rendering.gl.model;
 
 public class MergedMaterialByMeshRenderer : IModelRenderer {
   private GlBufferManager? bufferManager_;
-  private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private IReadOnlyMesh selectedMesh_;
 
@@ -18,10 +17,8 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
 
   public MergedMaterialByMeshRenderer(
       IReadOnlyModel model,
-      IReadOnlyLighting? lighting,
       IReadOnlyTextureTransformManager? textureTransformManager = null) {
     this.Model = model;
-    this.lighting_ = lighting;
     this.textureTransformManager_ = textureTransformManager;
 
     SelectedMeshService.OnMeshSelected += selectedMesh
@@ -86,10 +83,7 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
                 this.bufferManager_,
                 this.Model,
                 material,
-                this.lighting_,
-                mergedPrimitives) {
-                UseLighting = this.UseLighting
-            });
+                mergedPrimitives));
       }
 
       allMaterialMeshRenderers.AddRange(
@@ -121,21 +115,6 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
   public IReadOnlyModel Model { get; }
 
   public IReadOnlySet<IReadOnlyMesh>? HiddenMeshes { get; set; }
-
-  private bool useLighting_ = false;
-
-  public bool UseLighting {
-    get => this.useLighting_;
-    set {
-      this.useLighting_ = value;
-      foreach (var (_, materialMeshRenderers) in
-               this.materialMeshRenderers_) {
-        foreach (var materialMeshRenderer in materialMeshRenderers) {
-          materialMeshRenderer.UseLighting = value;
-        }
-      }
-    }
-  }
 
   public void Render() {
     this.GenerateModelIfNull_();

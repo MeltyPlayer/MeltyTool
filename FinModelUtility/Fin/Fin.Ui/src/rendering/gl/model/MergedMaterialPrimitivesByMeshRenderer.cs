@@ -15,14 +15,12 @@ public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
       GlBufferManager bufferManager,
       IReadOnlyModel model,
       IReadOnlyMaterial? material,
-      IReadOnlyLighting? lighting,
       MergedPrimitive mergedPrimitive) {
     this.material_ = material;
 
     this.materialShader_ = GlMaterialShader.FromMaterial(model,
       material,
-      textureTransformManager,
-      lighting);
+      textureTransformManager);
 
     this.bufferRenderer_ = bufferManager.CreateRenderer(mergedPrimitive);
 

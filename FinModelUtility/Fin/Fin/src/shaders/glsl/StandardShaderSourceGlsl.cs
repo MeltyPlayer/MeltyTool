@@ -21,7 +21,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
                      model.Skin.HasNormalsForMaterial(material);
 
     var fragmentShaderSrc = new StringBuilder();
-    fragmentShaderSrc.Append("#version 400");
+    fragmentShaderSrc.Append($"#version {GlslConstants.SHADER_VERSION}");
 
     var diffuseTexture = material.DiffuseTexture;
     var normalTexture = material.NormalTexture;
@@ -73,7 +73,6 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
          uniform {GlslUtil.GetTypeOfTexture(ambientOcclusionTexture, animations)} ambientOcclusionTexture;
          uniform {GlslUtil.GetTypeOfTexture(emissiveTexture, animations)} emissiveTexture;
          uniform float {GlslConstants.UNIFORM_SHININESS_NAME};
-         uniform int {GlslConstants.UNIFORM_USE_LIGHTING_NAME};
 
          out vec4 fragColor;
 

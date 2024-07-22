@@ -3,20 +3,17 @@
 using CommunityToolkit.HighPerformance;
 
 using fin.shaders.glsl;
-using fin.ui.rendering.gl;
 
 using OpenTK.Graphics.OpenGL;
 
-namespace fin.ui.rendering;
+namespace fin.ui.rendering.gl.ubo;
 
-public class MatrixUbo {
-  private const int SIZE_OF_MATRIX = 4 * 4 * 4;
-
+public class MatricesUbo {
   private readonly int sizeOfBuffer_;
   private readonly int id_;
 
-  public MatrixUbo(int boneCount) {
-    this.sizeOfBuffer_ = (3 + (1 + boneCount)) * SIZE_OF_MATRIX;
+  public MatricesUbo(int boneCount) {
+    this.sizeOfBuffer_ = (3 + (1 + boneCount)) * UboUtil.SIZE_OF_MATRIX4X4;
     this.id_ = GL.GenBuffer();
 
     GL.BindBuffer(BufferTarget.UniformBuffer, this.id_);
@@ -35,22 +32,10 @@ public class MatrixUbo {
     var offset = 0;
     Span<byte> buffer = stackalloc byte[this.sizeOfBuffer_];
 
-    buffer.Slice(offset, SIZE_OF_MATRIX).Cast<byte, Matrix4x4>()[0]
-        = modelMatrix;
-    offset += SIZE_OF_MATRIX;
-
-    buffer.Slice(offset, SIZE_OF_MATRIX).Cast<byte, Matrix4x4>()[0]
-        = modelViewMatrix;
-    offset += SIZE_OF_MATRIX;
-
-    buffer.Slice(offset, SIZE_OF_MATRIX).Cast<byte, Matrix4x4>()[0]
-        = projectionMatrix;
-    offset += SIZE_OF_MATRIX;
-
-    boneMatrices.CopyTo(
-        buffer.Slice(offset, boneMatrices.Length * SIZE_OF_MATRIX)
-              .Cast<byte, Matrix4x4>());
-    offset += boneMatrices.Length * SIZE_OF_MATRIX;
+    UboUtil.AppendMatrix4x4(buffer, ref offset, modelMatrix);
+    UboUtil.AppendMatrix4x4(buffer, ref offset, modelViewMatrix);
+    UboUtil.AppendMatrix4x4(buffer, ref offset, projectionMatrix);
+    UboUtil.AppendMatrix4x4s(buffer, ref offset, boneMatrices);
 
     fixed (byte* bufferPtr = &buffer.GetPinnableReference()) {
       GL.BindBuffer(BufferTarget.UniformBuffer, this.id_);
@@ -62,9 +47,8 @@ public class MatrixUbo {
     }
   }
 
-  public void Bind() {
-    GL.BindBufferBase(BufferRangeTarget.UniformBuffer,
-                      GlslConstants.UBO_MATRIX_BINDING_INDEX,
-                      this.id_);
-  }
+  public void Bind()
+    => GL.BindBufferBase(BufferRangeTarget.UniformBuffer,
+                         GlslConstants.UBO_MATRICES_BINDING_INDEX,
+                         this.id_);
 }

@@ -27,7 +27,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     var registers = material.Registers;
     var textures = material.TextureSources;
 
-    sb.AppendLine("#version 400");
+    sb.AppendLine($"#version {GlslConstants.SHADER_VERSION}");
     sb.AppendLine();
 
     var hasIndividualLights =

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-using fin.math;
+﻿using fin.math;
 using fin.model;
 using fin.model.util;
 using fin.util.image;
@@ -10,7 +8,6 @@ namespace fin.ui.rendering.gl.model;
 
 public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
   private GlBufferManager? bufferManager_;
-  private readonly IReadOnlyLighting? lighting_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private IReadOnlyMesh selectedMesh_;
 
@@ -19,10 +16,8 @@ public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
 
   public MergedMaterialAcrossMeshesRenderer(
       IReadOnlyModel model,
-      IReadOnlyLighting? lighting,
       IReadOnlyTextureTransformManager? textureTransformManager = null) {
     this.Model = model;
-    this.lighting_ = lighting;
     this.textureTransformManager_ = textureTransformManager;
 
     SelectedMeshService.OnMeshSelected += selectedMesh
@@ -71,10 +66,7 @@ public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
                    this.bufferManager_,
                    this.Model,
                    material,
-                   this.lighting_,
-                   mergedPrimitives) {
-                   UseLighting = this.UseLighting
-               }));
+                   mergedPrimitives)));
         };
 
     IReadOnlyMesh? currentMesh = null;
@@ -82,8 +74,10 @@ public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
     var currentPrimitives = new List<IReadOnlyPrimitive>();
     foreach (var (mesh, primitive) in primitiveQueue) {
       if (currentMesh != mesh || currentMaterial != primitive.Material) {
-        addMergedPrimitiveMesh(currentMesh!, currentMaterial!, currentPrimitives);
-      
+        addMergedPrimitiveMesh(currentMesh!,
+                               currentMaterial!,
+                               currentPrimitives);
+
         currentMesh = mesh;
         currentMaterial = primitive.Material;
         currentPrimitives.Clear();
@@ -115,18 +109,6 @@ public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
   public IReadOnlyModel Model { get; }
 
   public IReadOnlySet<IReadOnlyMesh>? HiddenMeshes { get; set; }
-
-  private bool useLighting_ = false;
-
-  public bool UseLighting {
-    get => this.useLighting_;
-    set {
-      this.useLighting_ = value;
-      foreach (var (_, materialMeshRenderer) in this.materialMeshRenderers_) {
-        materialMeshRenderer.UseLighting = value;
-      }
-    }
-  }
 
   public void Render() {
     this.GenerateModelIfNull_();

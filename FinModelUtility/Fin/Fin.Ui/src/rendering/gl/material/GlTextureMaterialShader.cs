@@ -9,13 +9,11 @@ namespace fin.ui.rendering.gl.material;
 public class GlTextureMaterialShader(
     IReadOnlyModel model,
     IReadOnlyTextureMaterial material,
-    IReadOnlyTextureTransformManager? textureTransformManager,
-    IReadOnlyLighting? lighting)
+    IReadOnlyTextureTransformManager? textureTransformManager)
     : BGlMaterialShader<IReadOnlyTextureMaterial>(
         model,
         material,
-        textureTransformManager,
-        lighting) {
+        textureTransformManager) {
   private IShaderUniform<Vector4> diffuseColorUniform_;
 
   protected override void DisposeInternal() { }

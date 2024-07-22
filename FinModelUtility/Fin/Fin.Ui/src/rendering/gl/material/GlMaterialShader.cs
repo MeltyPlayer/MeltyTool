@@ -9,30 +9,21 @@ public static class GlMaterialShader {
   public static IGlMaterialShader FromMaterial(
       IReadOnlyModel model,
       IReadOnlyMaterial? material,
-      IReadOnlyTextureTransformManager? textureTransformManager = null,
-      IReadOnlyLighting? lighting = null)
+      IReadOnlyTextureTransformManager? textureTransformManager = null)
     => material.GetShaderType() switch {
         FinShaderType.FIXED_FUNCTION => new GlFixedFunctionMaterialShader(
             model,
             Asserts.AsA<IReadOnlyFixedFunctionMaterial>(material),
-            textureTransformManager,
-            lighting),
+            textureTransformManager),
         FinShaderType.TEXTURE => new GlTextureMaterialShader(model,
           Asserts.AsA<IReadOnlyTextureMaterial>(material),
-          textureTransformManager,
-          lighting),
+          textureTransformManager),
         FinShaderType.COLOR => new GlColorMaterialShader(model,
-          Asserts.AsA<IReadOnlyColorMaterial>(material),
-          lighting),
+          Asserts.AsA<IReadOnlyColorMaterial>(material)),
         FinShaderType.STANDARD => new GlStandardMaterialShader(model,
           Asserts.AsA<IReadOnlyStandardMaterial>(material),
-          textureTransformManager,
-          lighting),
-        FinShaderType.HIDDEN => new GlHiddenMaterialShader(
-            model,
-            lighting),
-        FinShaderType.NULL => new GlNullMaterialShader(
-            model,
-            lighting),
+          textureTransformManager),
+        FinShaderType.HIDDEN => new GlHiddenMaterialShader(model),
+        FinShaderType.NULL => new GlNullMaterialShader(model),
     };
 }

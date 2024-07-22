@@ -8,8 +8,8 @@ public class NullShaderSourceGlsl(IReadOnlyModel model, bool useBoneMatrices)
     GlslUtil.GetVertexSrc(model, useBoneMatrices);
 
   public string FragmentShaderSource
-    => """
-       #version 400
+    => $$"""
+       #version {{GlslConstants.SHADER_VERSION}}
 
        out vec4 fragColor;
 

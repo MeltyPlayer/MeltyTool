@@ -7,13 +7,8 @@ namespace fin.ui.rendering.gl.material;
 
 public class GlColorMaterialShader(
     IReadOnlyModel model,
-    IReadOnlyColorMaterial colorMaterial,
-    IReadOnlyLighting? lighting)
-    : BGlMaterialShader<IReadOnlyColorMaterial>(
-        model,
-        colorMaterial,
-        null,
-        lighting) {
+    IReadOnlyColorMaterial colorMaterial)
+    : BGlMaterialShader<IReadOnlyColorMaterial>(model, colorMaterial, null) {
   private IShaderUniform<Vector4> diffuseLightColorUniform_;
 
   protected override void DisposeInternal() { }

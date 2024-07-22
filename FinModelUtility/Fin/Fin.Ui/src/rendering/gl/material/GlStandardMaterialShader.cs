@@ -6,13 +6,10 @@ namespace fin.ui.rendering.gl.material;
 public class GlStandardMaterialShader(
     IReadOnlyModel model,
     IReadOnlyStandardMaterial standardMaterial,
-    IReadOnlyTextureTransformManager? textureTransformManager,
-    IReadOnlyLighting? lighting)
-    : BGlMaterialShader<IReadOnlyStandardMaterial>(
-        model,
-        standardMaterial,
-        textureTransformManager,
-        lighting) {
+    IReadOnlyTextureTransformManager? textureTransformManager)
+    : BGlMaterialShader<IReadOnlyStandardMaterial>(model,
+                                                   standardMaterial,
+                                                   textureTransformManager) {
   protected override void DisposeInternal() { }
 
   protected override void Setup(IReadOnlyStandardMaterial material,

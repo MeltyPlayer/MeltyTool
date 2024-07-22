@@ -75,22 +75,22 @@ public static class GlslUtil {
     var vertexSrc = new StringBuilder();
 
     vertexSrc.Append($$"""
-                        #version 430
-          
-                        layout (std140, binding = {{GlslConstants.UBO_MATRIX_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRIX_NAME}} {
-                          mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
-                          mat4 {{GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME}};
-                          mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
-                          
-                          mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
-                        };
+                       #version {{GlslConstants.SHADER_VERSION}}
 
-                        uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
-                        
-                        layout(location = {{location++}}) in vec3 in_Position;
-                        layout(location = {{location++}}) in vec3 in_Normal;
-                        layout(location = {{location++}}) in vec4 in_Tangent;
-                        """);
+                       layout (std140, binding = {{GlslConstants.UBO_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRICES_NAME}} {
+                         mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
+                         mat4 {{GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME}};
+                         mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
+                         
+                         mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
+                       };
+
+                       uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
+
+                       layout(location = {{location++}}) in vec3 in_Position;
+                       layout(location = {{location++}}) in vec3 in_Normal;
+                       layout(location = {{location++}}) in vec4 in_Tangent;
+                       """);
 
     if (useBoneMatrices) {
       vertexSrc.Append(
@@ -180,24 +180,32 @@ out vec4 vertexColor{i};");
         $$"""
 
           struct Light {
+            // 0x00 (vec3 needs to be 16-byte aligned)
+            vec3 position;
             bool enabled;
           
-            int sourceType;
-            vec3 position;
+            // 0x10 (vec3 needs to be 16-byte aligned)
             vec3 normal;
+            int sourceType;
           
+            // 0x20 (vec4 needs to be 16-byte aligned)
             vec4 color;
             
-            int diffuseFunction;
-            int attenuationFunction;
+            // 0x30 (vec3 needs to be 16-byte aligned)
             vec3 cosineAttenuation;
+            int diffuseFunction;
+          
+            // 0x40 (vec3 needs to be 16-byte aligned)
             vec3 distanceAttenuation;
+            int attenuationFunction;
           };
 
-          uniform Light lights[{{MaterialConstants.MAX_LIGHTS}}];
-          {{(withAmbientLight ? """
-                                uniform vec4 ambientLightColor;
-                                """ : "")}}
+          layout (std140, binding = {{GlslConstants.UBO_LIGHTS_BINDING_INDEX}}) uniform {{GlslConstants.UBO_LIGHTS_NAME}} {
+            Light lights[{{MaterialConstants.MAX_LIGHTS}}];
+            vec4 ambientLightColor;
+            int {{GlslConstants.UNIFORM_USE_LIGHTING_NAME}};
+          };
+
           uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
           """;
   }
