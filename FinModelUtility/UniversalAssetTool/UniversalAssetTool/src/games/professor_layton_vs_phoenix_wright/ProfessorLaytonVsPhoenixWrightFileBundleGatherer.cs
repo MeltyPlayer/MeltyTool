@@ -90,7 +90,7 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
               organizer.Add(new XcModelFileBundle {
                   GameName = "professor_layton_vs_phoenix_wright",
                   ModelXcFile = xcFile,
-                  AnimationXcFiles = new[] { xcFile },
+                  AnimationXcFiles = [xcFile],
               }.Annotate(xcFile));
             }
           }

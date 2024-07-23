@@ -21,7 +21,7 @@ public class SetDictionaryTests {
     Assert.IsTrue(impl.TryGetSet("foo", out var outSet));
     Assert.AreEqual(outSet!, impl["foo"]);
     Asserts.SequenceEqual<IEnumerable<string>>(outSet!.Order(),
-                                               new[] { "bar", "goo" });
+                                               ["bar", "goo"]);
   }
 
   [Test]

@@ -116,8 +116,8 @@ public class LazyDictionaryTests {
     Assert.AreEqual("oog", lazyReverseMap["goo"]);
 
     Asserts.SequenceEqual<IEnumerable<string>>(lazyReverseMap.Keys.Order(),
-                                               new[] { "bar", "foo", "goo" });
+                                               ["bar", "foo", "goo"]);
     Asserts.SequenceEqual<IEnumerable<string>>(lazyReverseMap.Values.Order(),
-                                               new[] { "oof", "oog", "rab", });
+                                               ["oof", "oog", "rab",]);
   }
 }

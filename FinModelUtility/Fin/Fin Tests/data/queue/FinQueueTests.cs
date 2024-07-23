@@ -53,10 +53,10 @@ public class FinQueueTests {
     var queue = new FinQueue<string>();
     Assert.AreEqual(0, queue.Count);
 
-    queue.Enqueue(new[] { "value1", "value2" });
+    queue.Enqueue(["value1", "value2"]);
     Assert.AreEqual(2, queue.Count);
 
-    queue.Enqueue(new[] { "value3", "value4" });
+    queue.Enqueue(["value3", "value4"]);
     Assert.AreEqual(4, queue.Count);
 
     Assert.AreEqual("value1", queue.Dequeue());
@@ -82,7 +82,7 @@ public class FinQueueTests {
 
   [Test]
   public void TestConstructorEnumerable() {
-    var queue = new FinQueue<string>(new[] { "value1", "value2" });
+    var queue = new FinQueue<string>(["value1", "value2"]);
     Assert.AreEqual(2, queue.Count);
 
     Assert.AreEqual("value1", queue.Dequeue());
@@ -123,7 +123,7 @@ public class FinQueueTests {
     var queue = new FinQueue<string>();
     Assert.AreEqual(0, queue.Count);
 
-    queue.Enqueue(new[] { "value1", "value2", "value3" });
+    queue.Enqueue(["value1", "value2", "value3"]);
     Assert.AreEqual(3, queue.Count);
 
     queue.Clear();

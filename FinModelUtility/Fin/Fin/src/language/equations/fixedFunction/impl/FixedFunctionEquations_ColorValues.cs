@@ -165,7 +165,7 @@ public class ColorExpression(IReadOnlyList<IColorValue> terms)
       IColorValue term1,
       params IColorValue[] terms)
     => new ColorExpression(
-        ListUtil.ReadonlyConcat(this.Terms, new[] { term1 }, terms));
+        ListUtil.ReadonlyConcat(this.Terms, [term1], terms));
 
   public IColorExpression Subtract(
       IColorValue term1,

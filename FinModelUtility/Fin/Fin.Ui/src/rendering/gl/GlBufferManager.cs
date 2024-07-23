@@ -392,13 +392,13 @@ public class GlBufferManager(IReadOnlyModel model) : IDisposable {
       GL.BindVertexArray(this.vaoId_);
       GL.GenBuffers(1, out this.eboId_);
 
-      IReadOnlyList<int> restartIndex = new int[] {
+      IReadOnlyList<int> restartIndex = [
           (int) (INDEX_TYPE switch {
               DrawElementsType.UnsignedByte  => byte.MaxValue,
               DrawElementsType.UnsignedShort => ushort.MaxValue,
               DrawElementsType.UnsignedInt   => uint.MaxValue,
           })
-      };
+      ];
       this.indices_ =
           mergedPrimitive
               .Vertices

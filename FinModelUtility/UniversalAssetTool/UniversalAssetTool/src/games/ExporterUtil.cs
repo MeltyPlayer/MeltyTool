@@ -233,7 +233,7 @@ public static class ExporterUtil {
       var name = overrideName ?? mainFile.NameWithoutExtension;
 
       if (threeDFileBundle.UseLowLevelExporter) {
-        formats = new[] { AssimpUtil.GetExportFormatFromExtension(".gltf") };
+        formats = [AssimpUtil.GetExportFormatFromExtension(".gltf")];
       }
 
       var targetFiles = formats.Select(format => new FinFile(

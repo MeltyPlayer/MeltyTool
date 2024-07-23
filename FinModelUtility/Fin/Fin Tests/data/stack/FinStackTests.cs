@@ -14,7 +14,7 @@ public class FinStackTests {
 
   [Test]
   public void TestInitWithMultiple() {
-    var stack = new FinStack<string>(new [] { "foo", "bar", });
+    var stack = new FinStack<string>(["foo", "bar",]);
     Assert.AreEqual(2, stack.Count);
 
     Assert.AreEqual("bar", stack.Pop());
@@ -38,7 +38,7 @@ public class FinStackTests {
     var stack = new FinStack<string>();
     Assert.AreEqual(0, stack.Count);
 
-    stack.Push(new[] { "foo", "bar", "goo" });
+    stack.Push(["foo", "bar", "goo"]);
     Assert.AreEqual(3, stack.Count);
   }
 

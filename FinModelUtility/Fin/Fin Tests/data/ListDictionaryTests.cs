@@ -61,13 +61,13 @@ public class ListDictionaryTests {
     Assert.AreEqual(9, impl.Count);
 
     Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
-    Asserts.SequenceEqual(new[] { "a", "b", "c" }, fooList!);
+    Asserts.SequenceEqual(["a", "b", "c"], fooList!);
 
     Assert.AreEqual(true, impl.TryGetList("bar", out var barList));
-    Asserts.SequenceEqual(new[] { "1", "2", "3" }, barList!);
+    Asserts.SequenceEqual(["1", "2", "3"], barList!);
 
     Assert.AreEqual(true, impl.TryGetList(null, out var nullList));
-    Asserts.SequenceEqual(new[] { "x", "y", "z" }, nullList!);
+    Asserts.SequenceEqual(["x", "y", "z"], nullList!);
   }
 
   [Test]

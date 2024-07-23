@@ -22,12 +22,12 @@ public static class Cli {
     var plugins = PluginUtil.Plugins;
 
     var verbTypes = massExporterOptionTypes
-                    .Concat(new[] {
+                    .Concat([
                         typeof(UiOptions),
                         typeof(ListPluginOptions),
                         typeof(ConvertOptions),
                         typeof(DebugOptions),
-                    })
+                    ])
                     .ToArray();
 
     ConsoleUtil.ShowConsole();

@@ -64,10 +64,7 @@ public class NitroBlowfish
             | ((byte)idText[2] << 16)
             | ((byte)idText[1] << 8)
             | ((byte)idText[0] << 0));
-        uint[] keyCode = new uint[3];
-        keyCode[0] = idCode;
-        keyCode[1] = idCode >> 1;
-        keyCode[2] = idCode << 1;
+        uint[] keyCode = [idCode, idCode >> 1, idCode << 1];
 
         ApplyKeyCode(modulo, keyCode); // level 1 (always)
         if (level >= 2) {

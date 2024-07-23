@@ -60,7 +60,7 @@ public class ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
       IList<IFileHierarchyFile> modelFiles,
       IList<IFileHierarchyFile> animationFiles) {
     if (modelFiles.Count == 1) {
-      return new[] { new ModelBundle(modelFiles[0], animationFiles) };
+      return [new ModelBundle(modelFiles[0], animationFiles)];
     }
 
     if (animationFiles.Count == 0) {
@@ -111,7 +111,7 @@ public class PrimaryModelSeparatorMethod(string primaryModelName)
              .Where(file => file.Name != primaryModelName)
              .Select(modelFile
                          => new ModelBundle(modelFile,
-                                            new IFileHierarchyFile[] { })));
+                                            [])));
   }
 }
 

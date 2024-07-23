@@ -133,11 +133,11 @@ namespace ModelPluginWrappers {
       var scope = engine.CreateScope();
 
       // Hooks up common Python imports
-      engine.SetSearchPaths(new[] {
+      engine.SetSearchPaths([
         "C:\\Users\\Ryan\\Documents\\CSharpWorkspace\\FinModelUtility\\FinModelUtility\\ModelPluginWrappers\\lib\\3.4",
         "C:\\Users\\Ryan\\Documents\\CSharpWorkspace\\FinModelUtility\\FinModelUtility\\ModelPluginWrappers\\lib\\noesis",
         noesisDirectory.FullPath,
-      });
+      ]);
 
       // Hooks up missing Python imports
       {

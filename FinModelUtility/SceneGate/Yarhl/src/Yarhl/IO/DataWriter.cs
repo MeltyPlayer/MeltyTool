@@ -215,7 +215,7 @@ namespace Yarhl.IO
             if (encoding == null)
                 encoding = DefaultEncoding;
 
-            Write(encoding.GetBytes(new[] { ch }));
+            Write(encoding.GetBytes([ch]));
         }
 
         /// <summary>

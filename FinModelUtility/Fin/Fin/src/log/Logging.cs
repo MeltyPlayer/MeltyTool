@@ -30,9 +30,9 @@ public class Logging {
                       => Logging.VERBOSE_ ||
                          Logging.verboseExceptions_.Contains(logLevel)));
 
-  private static readonly IList<LogLevel> verboseExceptions_ = new[] {
+  private static readonly IList<LogLevel> verboseExceptions_ = [
       LogLevel.Critical, LogLevel.Error, LogLevel.Warning,
-  };
+  ];
 
 
   public static void Initialize(bool verbose) {

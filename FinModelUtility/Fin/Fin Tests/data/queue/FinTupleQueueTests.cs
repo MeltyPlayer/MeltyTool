@@ -53,10 +53,10 @@ public class FinTupleQueueTests {
     var queue = new FinQueue<(string, string)>();
     Assert.AreEqual(0, queue.Count);
 
-    queue.Enqueue(new[] {("foo1", "bar1"), ("foo2", "bar2")});
+    queue.Enqueue([("foo1", "bar1"), ("foo2", "bar2")]);
     Assert.AreEqual(2, queue.Count);
 
-    queue.Enqueue(new[] {("foo3", "bar3"), ("foo4", "bar4")});
+    queue.Enqueue([("foo3", "bar3"), ("foo4", "bar4")]);
     Assert.AreEqual(4, queue.Count);
 
     Assert.AreEqual(("foo1", "bar1"), queue.Dequeue());
@@ -85,7 +85,7 @@ public class FinTupleQueueTests {
   public void TestConstructorEnumerable() {
     var queue =
         new FinQueue<(string, string)>(
-            new[] {("foo1", "bar1"), ("foo2", "bar2")});
+            [("foo1", "bar1"), ("foo2", "bar2")]);
     Assert.AreEqual(2, queue.Count);
 
     Assert.AreEqual(("foo1", "bar1"), queue.Dequeue());
@@ -131,7 +131,7 @@ public class FinTupleQueueTests {
     Assert.AreEqual(0, queue.Count);
 
     queue.Enqueue(
-        new[] {("foo1", "bar1"), ("foo2", "bar2"), ("foo3", "bar3")});
+        [("foo1", "bar1"), ("foo2", "bar2"), ("foo3", "bar3")]);
     Assert.AreEqual(3, queue.Count);
 
     queue.Clear();

@@ -141,23 +141,25 @@ public class Modcrypt
         // KEY_X[0..7] = Decimal obfuscation of the forbidden fruit.
         // KEY_X[8..B] = gamecode forwards
         // KEY_X[C..F] = gamecode backwards because originality has its limits.
-        byte[] keyX = new byte[0x10];
-        keyX[0] = 78;
-        keyX[1] = 105;
-        keyX[2] = 110;
-        keyX[3] = 116;
-        keyX[4] = 101;
-        keyX[5] = 110;
-        keyX[6] = 100;
-        keyX[7] = 111;
-        keyX[8] = (byte)programInfo.GameCode[0];
-        keyX[9] = (byte)programInfo.GameCode[1];
-        keyX[10] = (byte)programInfo.GameCode[2];
-        keyX[11] = (byte)programInfo.GameCode[3];
-        keyX[12] = (byte)programInfo.GameCode[3];
-        keyX[13] = (byte)programInfo.GameCode[2];
-        keyX[14] = (byte)programInfo.GameCode[1];
-        keyX[15] = (byte)programInfo.GameCode[0];
+        byte[] keyX =
+        [
+            78,
+            105,
+            110,
+            116,
+            101,
+            110,
+            100,
+            111,
+            (byte)programInfo.GameCode[0],
+            (byte)programInfo.GameCode[1],
+            (byte)programInfo.GameCode[2],
+            (byte)programInfo.GameCode[3],
+            (byte)programInfo.GameCode[3],
+            (byte)programInfo.GameCode[2],
+            (byte)programInfo.GameCode[1],
+            (byte)programInfo.GameCode[0],
+        ];
 
         // KEY_Y[0..F]: First 16 bytes of the ARM9i SHA1-HMAC
         byte[] keyY = programInfo.DsiInfo.Arm9iMac.Hash[0..16];

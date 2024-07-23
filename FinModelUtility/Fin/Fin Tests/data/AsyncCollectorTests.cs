@@ -22,7 +22,7 @@ public class AsyncCollectorTests {
 
     delay.SetResult();
 
-    Expect.AreArraysEqual(new[] { "foo", "bar", "awaited" },
+    Expect.AreArraysEqual(["foo", "bar", "awaited"],
                           await toArray);
   }
 }

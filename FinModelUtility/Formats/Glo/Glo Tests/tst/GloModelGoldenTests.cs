@@ -39,7 +39,7 @@ public class
   public override GloModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)
     => new(directory.FilesWithExtension(".glo").Single(),
-           new[] { directory });
+           [directory]);
 
   private static IFileHierarchyDirectory[] GetGoldenDirectories_() {
     var rootGoldenDirectory = GoldenAssert.GetRootGoldensDirectory(

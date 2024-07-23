@@ -14,16 +14,16 @@ public class BmdModelImporterPlugin : IModelImporterPlugin {
     => "Nintendo's JStudio model format.";
 
   public IReadOnlyList<string> KnownPlatforms { get; } =
-    new[] { "GameCube", "Wii" };
+    ["GameCube", "Wii"];
 
-  public IReadOnlyList<string> KnownGames { get; } = new[] {
+  public IReadOnlyList<string> KnownGames { get; } = [
         "Mario Kart: Double Dash", "Pikmin 2", "Super Mario Sunshine"
-    };
+    ];
 
-  public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".bmd" };
+  public IReadOnlyList<string> MainFileExtensions { get; } = [".bmd"];
 
   public IReadOnlyList<string> FileExtensions { get; } =
-    new[] { ".bca", ".bck", ".bmd", ".bti" };
+    [".bca", ".bck", ".bmd", ".bti"];
 
   public IModel Import(
       IEnumerable<IReadOnlySystemFile> files,

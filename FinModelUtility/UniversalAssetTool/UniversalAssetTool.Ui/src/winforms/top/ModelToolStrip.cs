@@ -146,7 +146,7 @@ public partial class ModelToolStrip : UserControl {
 
       var (fileNode, _) = this.fileNodeAndModel_.Value;
       if (fileNode.File.IsOfType<IModelFileBundle>(out var modelFileBundle)) {
-        this.StartExportingModelsInBackground_(new[] { modelFileBundle });
+        this.StartExportingModelsInBackground_([modelFileBundle]);
       }
     }
 

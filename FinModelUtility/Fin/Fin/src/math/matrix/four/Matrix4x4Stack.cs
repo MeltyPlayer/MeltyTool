@@ -16,7 +16,7 @@ public interface IMatrix4x4Stack {
 }
 
 public class Matrix4x4Stack : IMatrix4x4Stack {
-  private readonly Stack<Matrix4x4> impl_ = new(new[] { Matrix4x4.Identity });
+  private readonly Stack<Matrix4x4> impl_ = new([Matrix4x4.Identity]);
 
   public Matrix4x4 Top {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

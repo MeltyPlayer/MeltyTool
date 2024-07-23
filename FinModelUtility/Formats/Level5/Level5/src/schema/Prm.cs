@@ -164,7 +164,7 @@ public class Prm {
 
   private List<GenericVertex> ParseBuffer_(byte[] buffer) {
     List<GenericVertex> vertices = [];
-    byte[] attributeBuffer = new byte[0];
+    byte[] attributeBuffer = [];
     int stride = 0;
     int vertexCount = 0;
 

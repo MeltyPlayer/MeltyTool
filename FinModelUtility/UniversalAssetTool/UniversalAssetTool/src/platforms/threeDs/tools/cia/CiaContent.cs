@@ -26,7 +26,7 @@ public partial class CiaContent : IChildOf<Cia>, IBinaryDeserializable {
   private void ReadDefault_(IBinaryReader br) { }
 
   private void ReadSimple_(IBinaryReader br) {
-      this.ContentInfos = new[] {
+      this.ContentInfos = [
           new ContentInfo {
               Offset = br.Position,
               Size = this.Parent.Header.ContentSize,
@@ -37,7 +37,7 @@ public partial class CiaContent : IChildOf<Cia>, IBinaryDeserializable {
               HashCode = new(),
               ValidState = ValidState.Unchecked,
           },
-      };
+      ];
     }
 }
 

@@ -50,7 +50,7 @@ namespace mod.schema.mod.collision {
     public readonly List<BaseCollTriInfo> collinfo = [];
 
     [Align(0x20)]
-    private readonly byte[] empty_ = new byte[0];
+    private readonly byte[] empty_ = [];
   }
 
   [BinarySchema]
@@ -96,6 +96,6 @@ namespace mod.schema.mod.collision {
     public readonly List<int> unknown2 = [];
 
     [Align(0x20)]
-    private readonly byte[] empty_ = new byte[0];
+    private readonly byte[] empty_ = [];
   }
 }

@@ -19,7 +19,7 @@ public partial class ModelImpl<TVertex> {
     public TextureMaterialImpl(IReadOnlyTexture texture) {
       this.Texture = texture;
       this.Textures
-          = new ReadOnlyCollection<IReadOnlyTexture>(new[] { texture });
+          = new ReadOnlyCollection<IReadOnlyTexture>([texture]);
 
       if (texture.TransparencyType == TransparencyType.TRANSPARENT) {
         this.TransparencyType = TransparencyType.TRANSPARENT;

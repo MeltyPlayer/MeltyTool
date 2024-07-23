@@ -17,7 +17,7 @@ public class EnumerableExtensionsTests {
   [Test]
   public void TestSeparatePairsWithMultiple()
     => Assert.AreEqual(
-        new[] { (1, 2), (3, 4) },
+        [(1, 2), (3, 4)],
         new[] { 1, 2, 3, 4 }.SeparatePairs());
 
   [Test]
@@ -35,7 +35,7 @@ public class EnumerableExtensionsTests {
   [Test]
   public void TestSeparateTripletsWithMultiple()
     => Assert.AreEqual(
-        new[] { (1, 2, 3), (4, 5, 6) },
+        [(1, 2, 3), (4, 5, 6)],
         new[] { 1, 2, 3, 4, 5, 6 }.SeparateTriplets());
 
   [Test]
@@ -53,7 +53,7 @@ public class EnumerableExtensionsTests {
   [Test]
   public void TestSeparateQuadrupletsWithMultiple()
     => Assert.AreEqual(
-        new[] { (1, 2, 3, 4), (5, 6, 7, 8) },
+        [(1, 2, 3, 4), (5, 6, 7, 8)],
         new[] { 1, 2, 3, 4, 5, 6, 7, 8 }.SeparateQuadruplets());
 
   [Test]

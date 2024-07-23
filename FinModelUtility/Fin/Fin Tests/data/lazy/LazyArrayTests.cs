@@ -37,7 +37,7 @@ public class LazyArrayTests {
     Assert.AreEqual("foo1", lazyReverseMap[1]);
     Assert.AreEqual("foo5", lazyReverseMap[5]);
 
-    Asserts.SequenceEqual(lazyReverseMap.Keys, new[] { 1, 3, 5 });
-    Asserts.SequenceEqual(lazyReverseMap.Values, new[] { "foo1", "foo3", "foo5" });
+    Asserts.SequenceEqual(lazyReverseMap.Keys, [1, 3, 5]);
+    Asserts.SequenceEqual(lazyReverseMap.Values, ["foo1", "foo3", "foo5"]);
   }
 }

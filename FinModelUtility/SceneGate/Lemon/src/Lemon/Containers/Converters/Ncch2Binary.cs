@@ -193,7 +193,7 @@ namespace SceneGate.Lemon.Containers.Converters
                     }
 
                     if (hasHashRegion && hashRegion == 0) {
-                        writer.Write(sha256.ComputeHash(new byte[0x0]));
+                        writer.Write(sha256.ComputeHash([]));
                     } else if (hasHashRegion) {
                         int hashSize = hashRegion * 0x200;
                         byte[] buffer = new byte[hashSize];

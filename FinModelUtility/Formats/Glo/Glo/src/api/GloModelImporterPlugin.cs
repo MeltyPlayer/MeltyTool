@@ -10,9 +10,9 @@ public class GloModelImporterPlugin : IModelImporterPlugin {
   public string Description
     => "Piko Interactive's model format for Glover's Steam release.";
 
-  public IReadOnlyList<string> KnownPlatforms => new[] { "PC" };
-  public IReadOnlyList<string> KnownGames => new[] { "Glover" };
-  public IReadOnlyList<string> MainFileExtensions => new[] { ".glo" };
+  public IReadOnlyList<string> KnownPlatforms => ["PC"];
+  public IReadOnlyList<string> KnownGames => ["Glover"];
+  public IReadOnlyList<string> MainFileExtensions => [".glo"];
   public IReadOnlyList<string> FileExtensions => this.MainFileExtensions;
 
   public IModel Import(IEnumerable<IReadOnlySystemFile> files,
@@ -23,7 +23,7 @@ public class GloModelImporterPlugin : IModelImporterPlugin {
       var textureDirectory = gloFile.AssertGetParent();
 
       var gloBundle =
-          new GloModelFileBundle(gloFile, new[] { textureDirectory });
+          new GloModelFileBundle(gloFile, [textureDirectory]);
 
       return new GloModelImporter().Import(gloBundle);
     }

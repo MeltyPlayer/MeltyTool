@@ -9,11 +9,11 @@ public class AssimpModelImporterPlugin : IModelImporterPlugin {
   public string DisplayName => "Assimp";
   public string Description => "Loads standard model formats via Assimp.";
 
-  public IReadOnlyList<string> KnownPlatforms { get; } = new string[] { };
-  public IReadOnlyList<string> KnownGames { get; } = new string[] { };
+  public IReadOnlyList<string> KnownPlatforms { get; } = [];
+  public IReadOnlyList<string> KnownGames { get; } = [];
 
   public IReadOnlyList<string> MainFileExtensions { get; }
-    = new[] { ".glb", ".gltf", ".fbx", ".obj" };
+    = [".glb", ".gltf", ".fbx", ".obj"];
 
   public IReadOnlyList<string> FileExtensions => this.MainFileExtensions;
 

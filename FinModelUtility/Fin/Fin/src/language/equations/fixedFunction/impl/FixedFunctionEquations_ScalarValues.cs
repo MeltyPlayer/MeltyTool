@@ -134,7 +134,7 @@ public class ScalarExpression(IReadOnlyList<IScalarValue> terms)
       IScalarValue term1,
       params IScalarValue[] terms)
     => new ScalarExpression(
-        ListUtil.ReadonlyConcat(this.Terms, new[] { term1 }, terms));
+        ListUtil.ReadonlyConcat(this.Terms, [term1], terms));
 
   public override IScalarExpression Subtract(
       IScalarValue term1,

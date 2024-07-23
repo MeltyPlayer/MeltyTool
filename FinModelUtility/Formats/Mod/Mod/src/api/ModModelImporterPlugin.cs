@@ -12,15 +12,15 @@ namespace mod.api {
     public string Description => "Pikmin 1 model format.";
 
     public IReadOnlyList<string> KnownPlatforms { get; } =
-      new[] { "GameCube" };
+      ["GameCube"];
 
-    public IReadOnlyList<string> KnownGames { get; } = new[] { "Pikmin 1", };
+    public IReadOnlyList<string> KnownGames { get; } = ["Pikmin 1",];
 
 
-    public IReadOnlyList<string> MainFileExtensions { get; } = new[] { ".mod" };
+    public IReadOnlyList<string> MainFileExtensions { get; } = [".mod"];
 
     public IReadOnlyList<string> FileExtensions { get; } =
-      new[] { ".anm", ".mod" };
+      [".anm", ".mod"];
 
     public IModel Import(
         IEnumerable<IReadOnlySystemFile> files,

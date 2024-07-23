@@ -5,9 +5,9 @@ namespace UoT {
   // https://wiki.cloudmodding.com/oot/Animation_Format#Normal_Animations
 
   public class NormalAnimation : IAnimation {
-    public ushort[] Angles = new ushort[0];
+    public ushort[] Angles = [];
     public IList<Vec3s> Positions;
-    public NormalAnimationTrack[] Tracks = new NormalAnimationTrack[0];
+    public NormalAnimationTrack[] Tracks = [];
     public uint TrackOffset;
     public uint AngleCount;
 
@@ -24,6 +24,6 @@ namespace UoT {
 
   public class NormalAnimationTrack : IAnimationTrack {
     public int Type { get; set; } // 0 = constant, 1 = keyframe
-    public IList<ushort> Frames { get; set; } = new ushort[0];
+    public IList<ushort> Frames { get; set; } = [];
   }
 }

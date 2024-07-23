@@ -35,7 +35,7 @@ public class TreeNodeTests {
 
     Asserts.SequenceEqual<IEnumerable<string>>(
         actualValues,
-        new[] { "root", "foo", "bar", "123", "abc" });
+        ["root", "foo", "bar", "123", "abc"]);
   }
 
   [Test]
@@ -60,7 +60,7 @@ public class TreeNodeTests {
 
     Asserts.SequenceEqual<IEnumerable<string>>(
         actualValues,
-        new[] { "123", "foo", "root" });
+        ["123", "foo", "root"]);
   }
 
   [Test]
@@ -76,17 +76,17 @@ public class TreeNodeTests {
 
     nodeChild.Parent = nodeFoo;
     Assert.AreEqual(nodeFoo, nodeChild.Parent);
-    Asserts.SequenceEqual(nodeFoo.ChildNodes, new[] { nodeChild });
+    Asserts.SequenceEqual(nodeFoo.ChildNodes, [nodeChild]);
     Assert.AreEqual(0, nodeBar.ChildNodes.Count());
 
     nodeBar.AddChild(nodeChild);
     Assert.AreEqual(nodeBar, nodeChild.Parent);
-    Asserts.SequenceEqual(nodeBar.ChildNodes, new[] { nodeChild });
+    Asserts.SequenceEqual(nodeBar.ChildNodes, [nodeChild]);
     Assert.AreEqual(0, nodeFoo.ChildNodes.Count());
 
     nodeChild.Parent = nodeFoo;
     Assert.AreEqual(nodeFoo, nodeChild.Parent);
-    Asserts.SequenceEqual(nodeFoo.ChildNodes, new[] { nodeChild });
+    Asserts.SequenceEqual(nodeFoo.ChildNodes, [nodeChild]);
     Assert.AreEqual(0, nodeBar.ChildNodes.Count());
   }
 }

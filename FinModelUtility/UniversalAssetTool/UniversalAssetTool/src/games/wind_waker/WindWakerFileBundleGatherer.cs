@@ -47,7 +47,7 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
       foreach (var rarcFile in objectDirectory.FilesWithExtension(".rarc")) {
         didDump |= rarcDump.Run(rarcFile,
                                 true,
-                                new HashSet<string>(new[] { "archive" }));
+                                new HashSet<string>(["archive"]));
       }
 
       if (didDump) {

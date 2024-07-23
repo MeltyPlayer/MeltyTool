@@ -49,12 +49,12 @@ public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
       lr.SetUv(1, 1);
 
       this.bufferManager_ = new GlBufferManager(this.viewerModel_);
-      this.bufferRenderer_ = this.bufferManager_.CreateRenderer(PrimitiveType.QUADS, new[] {
+      this.bufferRenderer_ = this.bufferManager_.CreateRenderer(PrimitiveType.QUADS, [
           ur,
           ul,
           ll,
           lr,
-      });
+      ]);
     }
 
   private void ResetGl_() => GlUtil.ResetGl();
