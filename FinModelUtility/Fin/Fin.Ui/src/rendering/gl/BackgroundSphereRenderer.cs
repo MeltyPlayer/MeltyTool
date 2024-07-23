@@ -82,12 +82,8 @@ public class BackgroundSphereRenderer : IRenderable {
   }
 }
 
-public class Gradient {
-  private (IColor color, float fraction)[] colorsAndFractions_;
-
-  public Gradient((IColor, float)[] colorsAndFractions) {
-    this.colorsAndFractions_ = colorsAndFractions;
-  }
+public class Gradient((IColor, float)[] colorsAndFractions) {
+  private (IColor color, float fraction)[] colorsAndFractions_ = colorsAndFractions;
 
   public IColor GetColor(float frac) {
     for (var i = 0; i < this.colorsAndFractions_.Length - 1; ++i) {

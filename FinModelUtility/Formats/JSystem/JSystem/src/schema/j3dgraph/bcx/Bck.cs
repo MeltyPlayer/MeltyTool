@@ -275,22 +275,16 @@ public partial class Bck : IBcx {
             }
           }
 
-        public class Key : IJointAnimKey {
-          public Key(
-              int frame,
-              float value,
-              float incomingTangent,
-              float outgoingTangent) {
-              this.Frame = frame;
-              this.Value = value;
-              this.IncomingTangent = incomingTangent;
-              this.OutgoingTangent = outgoingTangent;
-            }
-
-          public int Frame { get; }
-          public float Value { get; }
-          public float IncomingTangent { get; }
-          public float OutgoingTangent { get; }
+        public class Key(
+            int frame,
+            float value,
+            float incomingTangent,
+            float outgoingTangent)
+            : IJointAnimKey {
+          public int Frame { get; } = frame;
+          public float Value { get; } = value;
+          public float IncomingTangent { get; } = incomingTangent;
+          public float OutgoingTangent { get; } = outgoingTangent;
         }
       }
     }

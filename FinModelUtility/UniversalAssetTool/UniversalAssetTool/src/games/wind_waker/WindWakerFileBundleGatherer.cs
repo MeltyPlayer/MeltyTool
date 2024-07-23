@@ -171,12 +171,8 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
   }
 
-  public class NameMatchOrganizeMethod : IOrganizeMethod {
-    private string name_;
-
-    public NameMatchOrganizeMethod(string name) {
-      this.name_ = name.ToLower();
-    }
+  public class NameMatchOrganizeMethod(string name) : IOrganizeMethod {
+    private string name_ = name.ToLower();
 
     public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
         IFileHierarchyFile bmdFile,
@@ -189,20 +185,14 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
   }
 
-  public class SuffixOrganizeMethod : IOrganizeMethod {
-    private readonly int suffixLength_;
-
-    public SuffixOrganizeMethod(int suffixLength) {
-      this.suffixLength_ = suffixLength;
-    }
-
+  public class SuffixOrganizeMethod(int suffixLength) : IOrganizeMethod {
     public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
         IFileHierarchyFile bmdFile,
         IReadOnlyList<IFileHierarchyFile> bckFiles) {
       var suffix =
           bmdFile.NameWithoutExtension.Substring(
               bmdFile.NameWithoutExtension.Length -
-              this.suffixLength_);
+              suffixLength);
 
       return bckFiles.Where(file => file.Name.StartsWith(suffix)).ToArray();
     }

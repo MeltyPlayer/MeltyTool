@@ -20,15 +20,14 @@ namespace ModelPluginWrappers.src.noesis {
     string readline();
   }
 
-  public class NoeBitStreamReader : INoeBitStreamReader {
-    private readonly SchemaBinaryReader impl_; 
-
-    public NoeBitStreamReader(byte[] data, NoeEndianness endianness = NoeEndianness.NOE_LITTLEENDIAN) {
-      this.impl_ = new SchemaBinaryReader(data, endianness switch {
-        NoeEndianness.NOE_BIGENDIAN => Endianness.BigEndian,
+  public class NoeBitStreamReader(
+      byte[] data,
+      NoeEndianness endianness = NoeEndianness.NOE_LITTLEENDIAN)
+      : INoeBitStreamReader {
+    private readonly SchemaBinaryReader impl_ = new SchemaBinaryReader(data, endianness switch {
+        NoeEndianness.NOE_BIGENDIAN    => Endianness.BigEndian,
         NoeEndianness.NOE_LITTLEENDIAN => Endianness.LittleEndian,
-      });
-    }
+    });
 
     public int getSize() => (int) this.impl_.Length;
 

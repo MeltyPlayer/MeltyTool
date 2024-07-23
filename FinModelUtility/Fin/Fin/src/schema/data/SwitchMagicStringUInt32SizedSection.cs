@@ -12,23 +12,19 @@ namespace fin.schema.data;
 ///   parent data.
 /// </summary>
 [BinarySchema]
-public partial class SwitchMagicStringUInt32SizedSection<T> : IMagicSection<T>
+public partial class SwitchMagicStringUInt32SizedSection<T>(
+    int magicLength,
+    Func<string, T> createTypeHandler)
+    : IMagicSection<T>
     where T : IBinaryConvertible {
   [Skip]
-  private readonly int magicLength_;
+  private readonly int magicLength_ = magicLength;
 
   [Skip]
-  private readonly Func<string, T> createTypeHandler_;
+  private readonly Func<string, T> createTypeHandler_ = createTypeHandler;
 
   private readonly PassThruStringMagicUInt32SizedSection<T> impl_ =
       new(default, default!);
-
-  public SwitchMagicStringUInt32SizedSection(
-      int magicLength,
-      Func<string, T> createTypeHandler) {
-    this.magicLength_ = magicLength;
-    this.createTypeHandler_ = createTypeHandler;
-  }
 
   [Skip]
   public int TweakReadSize {

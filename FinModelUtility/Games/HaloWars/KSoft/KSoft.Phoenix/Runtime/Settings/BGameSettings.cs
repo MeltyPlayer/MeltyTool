@@ -8,12 +8,7 @@ namespace KSoft.Phoenix.Runtime
 		const uint kVersion = 1;
 		const int kDefaultSettingsCapacity = 113;
 
-		public List<BGameSetting> Settings { get; private set; }
-
-		public BGameSettings()
-		{
-			Settings = new List<BGameSetting>(kDefaultSettingsCapacity);
-		}
+		public List<BGameSetting> Settings { get; private set; } = new List<BGameSetting>(kDefaultSettingsCapacity);
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)

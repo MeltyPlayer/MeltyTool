@@ -16,12 +16,7 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		int mXmlVersion = TypeExtensions.kNone;
-		public BCollectiblesSkullManager SkullManager { get; private set; }
-
-		public BCollectiblesManager()
-		{
-			SkullManager = new BCollectiblesSkullManager();
-		}
+		public BCollectiblesSkullManager SkullManager { get; private set; } = new BCollectiblesSkullManager();
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

@@ -58,24 +58,18 @@ public class FixedFunctionRegisters : IFixedFunctionRegisters {
     return scalarRegister;
   }
 
-  private class ColorRegister : BColorValue, IColorRegister {
-    public ColorRegister(string name, IColorConstant defaultValue) {
-      this.Name = name;
-      this.DefaultValue = defaultValue;
-
-      this.Value = defaultValue.IntensityValue != null
-          ? FinColor.FromIntensityFloat(
-              (float) defaultValue.IntensityValue!)
-          : FinColor.FromRgbFloats((float) defaultValue.RValue,
-                                   (float) defaultValue.GValue,
-                                   (float) defaultValue.BValue);
-    }
-
-    public string Name { get; }
+  private class ColorRegister(string name, IColorConstant defaultValue)
+      : BColorValue, IColorRegister {
+    public string Name { get; } = name;
 
     // TODO: Consider switching this to a mutable color value and merging these fields
-    public IColorConstant DefaultValue { get; set; }
-    public IColor Value { get; set; }
+    public IColorConstant DefaultValue { get; set; } = defaultValue;
+    public IColor Value { get; set; } = defaultValue.IntensityValue != null
+        ? FinColor.FromIntensityFloat(
+            (float) defaultValue.IntensityValue!)
+        : FinColor.FromRgbFloats((float) defaultValue.RValue,
+                                 (float) defaultValue.GValue,
+                                 (float) defaultValue.BValue);
 
     public IColorValue ColorValue => this.DefaultValue;
 
@@ -87,18 +81,13 @@ public class FixedFunctionRegisters : IFixedFunctionRegisters {
     public override string ToString() => $"{Name} : {ColorValue}";
   }
 
-  private class ScalarRegister : BScalarValue, IScalarRegister {
-    public ScalarRegister(string name, IScalarConstant defaultValue) {
-      this.Name = name;
-      this.DefaultValue = defaultValue;
-      this.Value = (float) defaultValue.Value;
-    }
-
-    public string Name { get; }
+  private class ScalarRegister(string name, IScalarConstant defaultValue)
+      : BScalarValue, IScalarRegister {
+    public string Name { get; } = name;
 
     // TODO: Consider switching this to a mutable scalar value and merging these fields
-    public IScalarConstant DefaultValue { get; set; }
-    public float Value { get; set; }
+    public IScalarConstant DefaultValue { get; set; } = defaultValue;
+    public float Value { get; set; } = (float) defaultValue.Value;
 
     public IScalarValue ScalarValue => this.DefaultValue;
 

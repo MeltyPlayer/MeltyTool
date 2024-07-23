@@ -11,16 +11,11 @@ namespace KSoft.Phoenix.Runtime
 			MaxCount = 0x4E20,
 		};
 
-		public BPath Path { get; private set; }
+		public BPath Path { get; private set; } = new BPath();
 		public int CurrentWaypoint;
 		public uint PathTime;
 		public int LinkedPath = TypeExtensions.kNone;
 		public BPathLevel PathLevel;
-
-		public BPathMoveData()
-		{
-			Path = new BPath();
-		}
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)

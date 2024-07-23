@@ -19,16 +19,11 @@ public interface ISkeletonRenderer : IRenderable {
 /// <summary>
 ///   A renderer for a Fin model's skeleton.
 /// </summary>
-public class SkeletonRenderer : ISkeletonRenderer {
-  private readonly IReadOnlyBoneTransformManager boneTransformManager_;
-
-  public SkeletonRenderer(IReadOnlySkeleton skeleton,
-                          IReadOnlyBoneTransformManager boneTransformManager) {
-      this.Skeleton = skeleton;
-      this.boneTransformManager_ = boneTransformManager;
-    }
-
-  public IReadOnlySkeleton Skeleton { get; }
+public class SkeletonRenderer(
+    IReadOnlySkeleton skeleton,
+    IReadOnlyBoneTransformManager boneTransformManager)
+    : ISkeletonRenderer {
+  public IReadOnlySkeleton Skeleton { get; } = skeleton;
   public IReadOnlyBone? SelectedBone { get; set; }
   public float Scale { get; set; } = 1;
 
@@ -56,7 +51,7 @@ public class SkeletonRenderer : ISkeletonRenderer {
           if (bone != rootBone) {
             var xyz = new Vector3();
 
-            this.boneTransformManager_.ProjectPosition(bone, ref xyz);
+            boneTransformManager.ProjectPosition(bone, ref xyz);
 
             if (parentLocation != null) {
               var parentPos = parentLocation.Value;
@@ -88,7 +83,7 @@ public class SkeletonRenderer : ISkeletonRenderer {
           }
 
           var from = new Vector3();
-          this.boneTransformManager_.ProjectPosition(bone, ref from);
+          boneTransformManager.ProjectPosition(bone, ref from);
 
           GL.Vertex3(Unsafe.As<Vector3, OpenTK.Mathematics.Vector3>(ref from));
         }
@@ -102,7 +97,7 @@ public class SkeletonRenderer : ISkeletonRenderer {
           GL.Color4(1f, 1f, 1f, 1);
 
           var from = new Vector3();
-          this.boneTransformManager_.ProjectPosition(this.SelectedBone, ref from);
+          boneTransformManager.ProjectPosition(this.SelectedBone, ref from);
 
           GL.Vertex3(Unsafe.As<Vector3, OpenTK.Mathematics.Vector3>(ref from));
 

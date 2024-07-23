@@ -4,11 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace HaloWarsTools {
   public class LazyValueCache {
-    public LazyValueCache() {
-      CachedValues = new Dictionary<string, dynamic>();
-    }
-
-    private Dictionary<string, dynamic> CachedValues;
+    private Dictionary<string, dynamic> CachedValues = new();
 
     public bool Contains(string key) {
       return CachedValues.ContainsKey(key);

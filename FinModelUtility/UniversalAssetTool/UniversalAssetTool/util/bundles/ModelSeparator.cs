@@ -31,12 +31,9 @@ public interface IModelSeparator {
       IList<IFileHierarchyFile> animationFiles);
 }
 
-public class ModelSeparator : IModelSeparator {
-  private readonly Func<IFileHierarchyDirectory, string> directoryToId_;
+public class ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
+    : IModelSeparator {
   private readonly Dictionary<string, IModelSeparatorMethod> impl_ = new();
-
-  public ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
-    => this.directoryToId_ = directoryToId;
 
   public IModelSeparator Register(
       string directoryId,
@@ -56,7 +53,7 @@ public class ModelSeparator : IModelSeparator {
   }
 
   public bool Contains(IFileHierarchyDirectory directory)
-    => this.impl_.ContainsKey(this.directoryToId_(directory));
+    => this.impl_.ContainsKey(directoryToId(directory));
 
   public IEnumerable<IModelBundle> Separate(
       IFileHierarchyDirectory directory,
@@ -72,7 +69,7 @@ public class ModelSeparator : IModelSeparator {
              .ToArray();
     }
 
-    return this.impl_[this.directoryToId_(directory)]
+    return this.impl_[directoryToId(directory)]
                .Separate(modelFiles, animationFiles);
   }
 }
@@ -101,22 +98,17 @@ public class AllAnimationsModelSeparatorMethod
                 animationFiles));
 }
 
-public class PrimaryModelSeparatorMethod : IModelSeparatorMethod {
-  private readonly string primaryModelName_;
-
-  public PrimaryModelSeparatorMethod(string primaryModelName) {
-    this.primaryModelName_ = primaryModelName;
-  }
-
+public class PrimaryModelSeparatorMethod(string primaryModelName)
+    : IModelSeparatorMethod {
   public IEnumerable<IModelBundle> Separate(
       IList<IFileHierarchyFile> modelFiles,
       IList<IFileHierarchyFile> animationFiles) {
     return new[] {
         new ModelBundle(
-            modelFiles.Single(file => file.Name == this.primaryModelName_),
+            modelFiles.Single(file => file.Name == primaryModelName),
             animationFiles)
     }.Concat(modelFiles
-             .Where(file => file.Name != this.primaryModelName_)
+             .Where(file => file.Name != primaryModelName)
              .Select(modelFile
                          => new ModelBundle(modelFile,
                                             new IFileHierarchyFile[] { })));
@@ -286,11 +278,9 @@ public class SameNameSeparatorMethod
 }
 
 
-public class NameModelSeparatorMethod
+public class NameModelSeparatorMethod(string name)
     : BUnclaimedMatchModelSeparatorMethod {
-  private readonly string name_;
-
-  public NameModelSeparatorMethod(string name) => this.name_ = name.ToLower();
+  private readonly string name_ = name.ToLower();
 
   public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
       IFileHierarchyFile modelFile,
@@ -300,33 +290,24 @@ public class NameModelSeparatorMethod
         : Enumerable.Empty<IFileHierarchyFile>();
 }
 
-public class SuffixModelSeparatorMethod
+public class SuffixModelSeparatorMethod(int suffixLength)
     : BUnclaimedMatchModelSeparatorMethod {
-  private readonly int suffixLength_;
-
-  public SuffixModelSeparatorMethod(int suffixLength)
-    => this.suffixLength_ = suffixLength;
-
   public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles) {
     var suffix =
         modelFile.NameWithoutExtension.Substring(
             modelFile.NameWithoutExtension.Length -
-            this.suffixLength_);
+            suffixLength);
       
     return animationFiles.Where(file => file.Name.StartsWith(suffix));
   }
 }
 
-public class ModelBundle : IModelBundle {
-  public ModelBundle(
-      IFileHierarchyFile modelFile,
-      IList<IFileHierarchyFile> animationFiles) {
-    this.ModelFile = modelFile;
-    this.AnimationFiles = animationFiles;
-  }
-
-  public IFileHierarchyFile ModelFile { get; }
-  public IList<IFileHierarchyFile> AnimationFiles { get; }
+public class ModelBundle(
+    IFileHierarchyFile modelFile,
+    IList<IFileHierarchyFile> animationFiles)
+    : IModelBundle {
+  public IFileHierarchyFile ModelFile { get; } = modelFile;
+  public IList<IFileHierarchyFile> AnimationFiles { get; } = animationFiles;
 }

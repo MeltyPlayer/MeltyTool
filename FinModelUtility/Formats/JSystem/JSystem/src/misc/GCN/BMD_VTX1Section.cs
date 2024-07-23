@@ -253,18 +253,11 @@ public partial class BMD {
         this.Colors[colorIndex] = colors;
       }
 
-    public class Color {
-      public byte R;
-      public byte G;
-      public byte B;
-      public byte A;
-
-      public Color(byte r, byte g, byte b, byte a) {
-          this.R = r;
-          this.G = g;
-          this.B = b;
-          this.A = a;
-        }
+    public class Color(byte r, byte g, byte b, byte a) {
+      public byte R = r;
+      public byte G = g;
+      public byte B = b;
+      public byte A = a;
 
       public static implicit operator System.Drawing.Color(Color c) {
           return System.Drawing.Color.FromArgb((int) c.A,
@@ -274,14 +267,9 @@ public partial class BMD {
         }
     }
 
-    public class Texcoord {
-      public float S;
-      public float T;
-
-      public Texcoord(float s, float t) {
-          this.S = s;
-          this.T = t;
-        }
+    public class Texcoord(float s, float t) {
+      public float S = s;
+      public float T = t;
     }
   }
 }

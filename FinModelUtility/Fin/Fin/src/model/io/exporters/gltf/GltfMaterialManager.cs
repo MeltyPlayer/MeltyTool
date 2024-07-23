@@ -22,26 +22,17 @@ using AlphaMode = SharpGLTF.Materials.AlphaMode;
 namespace fin.model.io.exporters.gltf;
 
 public class GltfMaterialBuilder {
-  private readonly struct Fin2GltfImageConverter : IAction {
-    private readonly IReadOnlyImage[] finImages_;
-
-    private readonly IDictionary<IReadOnlyImage, MemoryImage>
-        gltfImageByFinImage_;
-
-    public Fin2GltfImageConverter(
-        IReadOnlyImage[] finImages,
-        IDictionary<IReadOnlyImage, MemoryImage> gltfImageByFinImage) {
-      this.finImages_ = finImages;
-      this.gltfImageByFinImage_ = gltfImageByFinImage;
-    }
-
+  private readonly struct Fin2GltfImageConverter(
+      IReadOnlyImage[] finImages,
+      IDictionary<IReadOnlyImage, MemoryImage> gltfImageByFinImage)
+      : IAction {
     public void Invoke(int i) {
-      var finImage = this.finImages_[i];
+      var finImage = finImages[i];
 
       using var imageStream = new MemoryStream();
       finImage.ExportToStream(imageStream, LocalImageFormat.PNG);
 
-      this.gltfImageByFinImage_[finImage] =
+      gltfImageByFinImage[finImage] =
           new MemoryImage(imageStream.ToArray());
     }
   }

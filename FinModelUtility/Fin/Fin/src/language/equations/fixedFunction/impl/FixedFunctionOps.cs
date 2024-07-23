@@ -101,29 +101,17 @@ public static class ColorWrapperExtensions {
     => scalarValue != null ? new ColorWrapper(scalarValue) : null;
 }
 
-public class ColorFixedFunctionOps
+public class ColorFixedFunctionOps(
+    IFixedFunctionEquations<FixedFunctionSource> equations)
     : BFixedFunctionOps<IColorValue, IColorConstant, IColorTerm,
         IColorExpression> {
-  private readonly IFixedFunctionEquations<FixedFunctionSource> equations_;
-  private readonly ScalarFixedFunctionOps scalarOps_;
+  private readonly ScalarFixedFunctionOps scalarOps_ = new(equations);
 
-  private readonly IScalarConstant scMinusOne_;
+  private readonly IScalarConstant scMinusOne_ = equations.CreateScalarConstant(-1);
 
-  public ColorFixedFunctionOps(
-      IFixedFunctionEquations<FixedFunctionSource> equations) {
-    this.equations_ = equations;
-    this.scalarOps_ = new ScalarFixedFunctionOps(equations);
-
-    this.Zero = equations.CreateColorConstant(0);
-    this.Half = equations.CreateColorConstant(.5f);
-    this.One = equations.CreateColorConstant(1);
-
-    this.scMinusOne_ = equations.CreateScalarConstant(-1);
-  }
-
-  public override IColorConstant Zero { get; }
-  public override IColorConstant Half { get; }
-  public override IColorConstant One { get; }
+  public override IColorConstant Zero { get; } = equations.CreateColorConstant(0);
+  public override IColorConstant Half { get; } = equations.CreateColorConstant(.5f);
+  public override IColorConstant One { get; } = equations.CreateColorConstant(1);
 
   public bool IsSingleScalarValue(
       IColorValue? value,
@@ -186,7 +174,7 @@ public class ColorFixedFunctionOps
       }
 
       if (lhsIsZero) {
-        return this.equations_.CreateColor(rhs!);
+        return equations.CreateColor(rhs!);
       }
 
       if (rhsIsZero) {
@@ -276,7 +264,7 @@ public class ColorFixedFunctionOps
       }
 
       if (lhsIsOne) {
-        return this.equations_.CreateColor(rhs!);
+        return equations.CreateColor(rhs!);
       }
 
       if (rhsIsOne) {
@@ -326,26 +314,17 @@ public class ColorFixedFunctionOps
   }
 }
 
-public class ScalarFixedFunctionOps
+public class ScalarFixedFunctionOps(
+    IFixedFunctionEquations<FixedFunctionSource> equations)
     : BFixedFunctionOps<IScalarValue, IScalarConstant, IScalarTerm,
         IScalarExpression> {
-  private readonly IFixedFunctionEquations<FixedFunctionSource> equations_;
+  private readonly IFixedFunctionEquations<FixedFunctionSource> equations_ = equations;
 
-  private readonly IScalarValue scMinusOne_;
+  private readonly IScalarValue scMinusOne_ = equations.CreateScalarConstant(-1);
 
-  public ScalarFixedFunctionOps(
-      IFixedFunctionEquations<FixedFunctionSource> equations) {
-    this.equations_ = equations;
-
-    this.Zero = equations.CreateScalarConstant(0);
-    this.Half = equations.CreateScalarConstant(.5f);
-    this.One = equations.CreateScalarConstant(1);
-    this.scMinusOne_ = equations.CreateScalarConstant(-1);
-  }
-
-  public override IScalarConstant Zero { get; }
-  public override IScalarConstant Half { get; }
-  public override IScalarConstant One { get; }
+  public override IScalarConstant Zero { get; } = equations.CreateScalarConstant(0);
+  public override IScalarConstant Half { get; } = equations.CreateScalarConstant(.5f);
+  public override IScalarConstant One { get; } = equations.CreateScalarConstant(1);
 
   public bool IsConstant(IScalarValue? value, out double constantValue) {
     if (value is IScalarConstant scalarConstant) {

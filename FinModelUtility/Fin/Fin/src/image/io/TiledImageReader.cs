@@ -49,22 +49,14 @@ public static class TiledImageReader {
            tileReader);
 }
 
-public class TiledImageReader<TPixel> : IImageReader<IImage<TPixel>>
+public class TiledImageReader<TPixel>(
+    int width,
+    int height,
+    ITileReader<TPixel> tileReader,
+    Endianness endianness = Endianness.LittleEndian)
+    : IImageReader<IImage<TPixel>>
     where TPixel : unmanaged, IPixel<TPixel> {
-  private readonly int width_;
-  private readonly int height_;
-  private readonly ITileReader<TPixel> tileReader_;
-  private readonly Endianness endianness_;
-
-  public TiledImageReader(int width,
-                          int height,
-                          ITileReader<TPixel> tileReader,
-                          Endianness endianness = Endianness.LittleEndian) {
-    this.width_ = width;
-    this.height_ = height;
-    this.tileReader_ = tileReader;
-    this.endianness_ = endianness;
-  }
+  private readonly Endianness endianness_ = endianness;
 
   public IImage<TPixel> ReadImage(
       byte[] srcBytes,
@@ -74,23 +66,23 @@ public class TiledImageReader<TPixel> : IImageReader<IImage<TPixel>>
   }
 
   public IImage<TPixel> ReadImage(IBinaryReader br) {
-    var image = this.tileReader_.CreateImage(this.width_, this.height_);
+    var image = tileReader.CreateImage(width, height);
     using var imageLock = image.Lock();
     var scan0 = imageLock.Pixels;
 
     var tileXCount
-        = (int) Math.Ceiling(1f * this.width_ / this.tileReader_.TileWidth);
+        = (int) Math.Ceiling(1f * width / tileReader.TileWidth);
     var tileYCount
-        = (int) Math.Ceiling(1f * this.height_ / this.tileReader_.TileHeight);
+        = (int) Math.Ceiling(1f * height / tileReader.TileHeight);
 
     for (var tileY = 0; tileY < tileYCount; ++tileY) {
       for (var tileX = 0; tileX < tileXCount; ++tileX) {
-        this.tileReader_.Decode(br,
+        tileReader.Decode(br,
                                 scan0,
                                 tileX,
                                 tileY,
-                                this.width_,
-                                this.height_);
+                                width,
+                                height);
       }
     }
 

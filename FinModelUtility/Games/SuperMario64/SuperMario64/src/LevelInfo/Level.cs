@@ -20,15 +20,16 @@ namespace sm64.LevelInfo {
     public List<uint> fogColor_romLocation = [];
   }
 
-  public class Area {
-    public Level parent;
-    private ushort areaID;
+  public class Area(
+      IN64Hardware<ISm64Memory> sm64Hardware,
+      ushort areaID,
+      uint geoLayoutPointer,
+      Level parent) {
+    public Level parent = parent;
 
     public ushort AreaID {
       get { return areaID; }
     }
-
-    private uint geoLayoutPointer;
 
     public uint GeometryLayoutPointer {
       get { return geoLayoutPointer; }
@@ -36,7 +37,7 @@ namespace sm64.LevelInfo {
 
     public AreaBackgroundInfo bgInfo = new AreaBackgroundInfo();
 
-    public Model3DLods AreaModel;
+    public Model3DLods AreaModel = new(sm64Hardware);
     public CollisionMap collision = new CollisionMap();
 
     public List<Object3D> Objects = [];
@@ -56,13 +57,6 @@ namespace sm64.LevelInfo {
         }
         this.defaultTerrainType_ = value;
       }
-    }
-
-    public Area(IN64Hardware<ISm64Memory> sm64Hardware, ushort areaID, uint geoLayoutPointer, Level parent) {
-      this.AreaModel = new Model3DLods(sm64Hardware);
-      this.areaID = areaID;
-      this.geoLayoutPointer = geoLayoutPointer;
-      this.parent = parent;
     }
   }
 

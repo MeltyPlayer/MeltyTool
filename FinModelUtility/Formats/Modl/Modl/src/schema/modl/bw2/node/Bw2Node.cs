@@ -18,9 +18,7 @@ public enum WeirdFlag {
   VALUE_4, 
 }
 
-public class Bw2Node : IBwNode, IBinaryDeserializable {
-  private int additionalDataCount_;
-
+public class Bw2Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
   public string GetIdentifier() => this.Name;
   public string Name { get; set; }
 
@@ -35,10 +33,6 @@ public class Bw2Node : IBwNode, IBinaryDeserializable {
   public float Scale { get; set; }
 
   public List<IBwMaterial> Materials { get; } = [];
-
-  public Bw2Node(int additionalDataCount) {
-    this.additionalDataCount_ = additionalDataCount;
-  }
 
   [Unknown]
   public void Read(IBinaryReader br) {
@@ -79,7 +73,7 @@ public class Bw2Node : IBwNode, IBinaryDeserializable {
     Asserts.Equal(br.Position, expectedHeaderEnd);
 
     // TODO: additional data
-    var additionalData = br.ReadUInt32s(this.additionalDataCount_);
+    var additionalData = br.ReadUInt32s(additionalDataCount);
 
     SectionHeaderUtil.AssertNameAndSize(br, "BBOX", 4 * 6);
     var bbox = br.ReadNew<BwBoundingBox>();

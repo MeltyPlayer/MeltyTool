@@ -18,14 +18,11 @@ namespace HaloWarsTools {
     Vis // Visual Representation
   }
 
-  public class HWResourceTypeDefinition {
-    public HWResourceType Type;
-    public Type Class;
-
-    public HWResourceTypeDefinition(HWResourceType type, Type resourceClass) {
-      Type = type;
-      Class = resourceClass;
-    }
+  public class HWResourceTypeDefinition(
+      HWResourceType type,
+      Type resourceClass) {
+    public HWResourceType Type = type;
+    public Type Class = resourceClass;
   }
 
   public abstract class HWResource {

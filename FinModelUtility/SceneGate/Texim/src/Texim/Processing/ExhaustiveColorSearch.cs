@@ -23,14 +23,9 @@ namespace Texim.Processing
     using System.Linq;
     using Colors;
 
-    public class ExhaustiveColorSearch
+    public class ExhaustiveColorSearch(IEnumerable<Rgb> vertex)
     {
-        private readonly Rgb[] vertex;
-
-        public ExhaustiveColorSearch(IEnumerable<Rgb> vertex)
-        {
-            this.vertex = vertex.ToArray();
-        }
+        private readonly Rgb[] vertex = vertex.ToArray();
 
         public static (int Index, int Distance) Search(IEnumerable<Rgb> vertex, Rgb color)
         {

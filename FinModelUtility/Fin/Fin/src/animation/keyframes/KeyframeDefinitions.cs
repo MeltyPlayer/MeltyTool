@@ -6,16 +6,12 @@ using fin.math;
 
 namespace fin.animation.keyframes;
 
-public class KeyframeDefinitions<T> : IKeyframeDefinitions<T> {
+public class KeyframeDefinitions<T>(int initialCapacity = 0)
+    : IKeyframeDefinitions<T> {
   // List used to store the specific keyframe at each index. Wasteful
   // memory-wise, but allows us to have O(1) frame lookups in terms of time.
-  private List<int> frameToKeyframe_;
-  private List<KeyframeDefinition<T>> impl_;
-
-  public KeyframeDefinitions(int initialCapacity = 0) {
-    this.impl_ = new(initialCapacity);
-    this.frameToKeyframe_ = new List<int>(initialCapacity);
-  }
+  private List<int> frameToKeyframe_ = new List<int>(initialCapacity);
+  private List<KeyframeDefinition<T>> impl_ = new(initialCapacity);
 
   public IReadOnlyList<KeyframeDefinition<T>> Definitions => this.impl_;
 

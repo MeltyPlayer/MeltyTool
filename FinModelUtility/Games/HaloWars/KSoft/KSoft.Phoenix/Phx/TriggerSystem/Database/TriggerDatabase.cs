@@ -10,18 +10,10 @@ namespace KSoft.Phoenix.Phx
 		public const string kXmlRootName = "TriggerDatabase";
 		#endregion
 
-		public Collections.BListAutoId<BTriggerProtoCondition> Conditions { get; private set; }
-		public Collections.BListAutoId<BTriggerProtoEffect> Effects { get; private set; }
-		public Dictionary<uint, TriggerSystemProtoObject> LookupTable { get; private set; }
-		System.Collections.BitArray mUsedIds;
-
-		public TriggerDatabase()
-		{
-			Conditions = new Collections.BListAutoId<BTriggerProtoCondition>();
-			Effects = new Collections.BListAutoId<BTriggerProtoEffect>();
-			LookupTable = new Dictionary<uint, TriggerSystemProtoObject>();
-			mUsedIds = new System.Collections.BitArray(1088);
-		}
+		public Collections.BListAutoId<BTriggerProtoCondition> Conditions { get; private set; } = new Collections.BListAutoId<BTriggerProtoCondition>();
+		public Collections.BListAutoId<BTriggerProtoEffect> Effects { get; private set; } = new Collections.BListAutoId<BTriggerProtoEffect>();
+		public Dictionary<uint, TriggerSystemProtoObject> LookupTable { get; private set; } = new Dictionary<uint, TriggerSystemProtoObject>();
+		System.Collections.BitArray mUsedIds = new System.Collections.BitArray(1088);
 
 		#region ITagElementStreamable<string> Members
 		static int SortById(TriggerSystemProtoObject x, TriggerSystemProtoObject y)

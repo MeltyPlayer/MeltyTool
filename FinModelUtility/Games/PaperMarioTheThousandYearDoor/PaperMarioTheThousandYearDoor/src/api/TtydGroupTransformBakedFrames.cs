@@ -14,26 +14,18 @@ public interface IGroupTransformBakedFrames {
                             Span<float> buffer);
 }
 
-public class TtydGroupTransformBakedFrames
+public class TtydGroupTransformBakedFrames(
+    int transformCount,
+    float[] bakedTransformFrames)
     : IGroupTransformBakedFrames {
-  private readonly int transformCount_;
-  private readonly float[] bakedTransformFrames_;
-
-  public TtydGroupTransformBakedFrames(
-      int transformCount,
-      float[] bakedTransformFrames) {
-      this.transformCount_ = transformCount;
-      this.bakedTransformFrames_ = bakedTransformFrames;
-    }
-
   public void GetTransformsAtFrame(
       Group group,
       int frame,
       int offsetInGroup,
       Span<float> buffer) {
       var allTransformsAtFrame
-          = this.bakedTransformFrames_.AsSpan(this.transformCount_ * frame,
-                                              this.transformCount_);
+          = bakedTransformFrames.AsSpan(transformCount * frame,
+                                              transformCount);
       allTransformsAtFrame
           .Slice(group.TransformBaseIndex + offsetInGroup, buffer.Length)
           .CopyTo(buffer);

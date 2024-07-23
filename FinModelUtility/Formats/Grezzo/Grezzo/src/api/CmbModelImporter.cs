@@ -53,22 +53,15 @@ public class CmbModelImporter : IModelImporter<CmbModelFileBundle> {
           namesAndShpas);
     }
 
-  public readonly struct CsabReader : IAction {
-    private readonly IReadOnlyList<IReadOnlyTreeFile> src_;
-    private readonly (string, Csab)[] dst_;
-
-    public CsabReader(
-        IReadOnlyList<IReadOnlyTreeFile> src,
-        (string, Csab)[] dst) {
-        this.src_ = src;
-        this.dst_ = dst;
-      }
-
+  public readonly struct CsabReader(
+      IReadOnlyList<IReadOnlyTreeFile> src,
+      (string, Csab)[] dst)
+      : IAction {
     public void Invoke(int i) {
-        var csabFile = this.src_[i];
+        var csabFile = src[i];
         var csab =
             csabFile.ReadNew<Csab>(Endianness.LittleEndian);
-        this.dst_[i] = (csabFile.NameWithoutExtension, csab);
+        dst[i] = (csabFile.NameWithoutExtension, csab);
       }
   }
 }

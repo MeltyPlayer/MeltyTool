@@ -3,20 +3,12 @@
 namespace ttyd.api;
 
 // TODO: Optimize this
-public class TtydGroupTransformKeyframes {
-  private readonly float[] initialTransforms_;
-  private readonly int animationLength_;
-
+public class TtydGroupTransformKeyframes(
+    float[] initialTransforms,
+    int animationLength) {
   private readonly
       List<(float keyframe, IReadOnlyList<GroupTransformDelta> deltas)>
       keyframeTimesAndDeltas_ = new();
-
-  public TtydGroupTransformKeyframes(
-      float[] initialTransforms,
-      int animationLength) {
-      this.initialTransforms_ = initialTransforms;
-      this.animationLength_ = animationLength;
-    }
 
   public void AddDeltasForKeyframe(
       float keyframe,
@@ -26,13 +18,13 @@ public class TtydGroupTransformKeyframes {
 
   public IGroupTransformBakedFrames BakeTransformsAtFrames() {
       var allTransformFrames
-          = new float[this.initialTransforms_.Length * this.animationLength_];
+          = new float[initialTransforms.Length * animationLength];
 
-      for (var i = 0; i < this.animationLength_; ++i) {
+      for (var i = 0; i < animationLength; ++i) {
         this.AnimationUpdate_(i, allTransformFrames);
       }
 
-      return new TtydGroupTransformBakedFrames(this.initialTransforms_.Length,
+      return new TtydGroupTransformBakedFrames(initialTransforms.Length,
                                                allTransformFrames);
     }
 
@@ -45,10 +37,10 @@ public class TtydGroupTransformKeyframes {
       int frame,
       Span<float> allTransformFrames) {
       var allTransformsAtFrame = allTransformFrames.Slice(
-          this.initialTransforms_.Length * frame,
-          this.initialTransforms_.Length);
+          initialTransforms.Length * frame,
+          initialTransforms.Length);
 
-      this.initialTransforms_.CopyTo(allTransformsAtFrame);
+      initialTransforms.CopyTo(allTransformsAtFrame);
 
       if (this.keyframeTimesAndDeltas_.Count == 1) {
         AnimationUpdateFrameImmediate_(this.keyframeTimesAndDeltas_[0].deltas,

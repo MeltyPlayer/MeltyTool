@@ -25,15 +25,10 @@ namespace UoT {
     public short Z { get; set; }
   }
 
-  public class FacialState {
+  public class FacialState(EyeState eyeState, MouthState mouthState) {
     public static FacialState DEFAULT = new FacialState(default, default);
 
-    public FacialState(EyeState eyeState, MouthState mouthState) {
-      this.EyeState = eyeState;
-      this.MouthState = mouthState;
-    }
-
-    public EyeState EyeState { get; }
-    public MouthState MouthState { get; }
+    public EyeState EyeState { get; } = eyeState;
+    public MouthState MouthState { get; } = mouthState;
   }
 }

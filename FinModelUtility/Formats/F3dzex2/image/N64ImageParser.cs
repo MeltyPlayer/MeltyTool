@@ -60,13 +60,7 @@ public static class BitsPerTexelExtensions {
     };
 }
 
-public class N64ImageParser {
-  private readonly IN64Hardware n64Hardware_;
-
-  public N64ImageParser(IN64Hardware n64Hardware) {
-    this.n64Hardware_ = n64Hardware;
-  }
-
+public class N64ImageParser(IN64Hardware n64Hardware) {
   public static void SplitN64ImageFormat(byte imageFormat,
                                          out N64ColorFormat colorFormat,
                                          out BitsPerTexel bitsPerTexel) {
@@ -177,8 +171,8 @@ public class N64ImageParser {
         }
 
         using var paletteEr =
-            this.n64Hardware_.Memory.OpenAtSegmentedAddress(
-                this.n64Hardware_.Rdp.PaletteSegmentedAddress);
+            n64Hardware.Memory.OpenAtSegmentedAddress(
+                n64Hardware.Rdp.PaletteSegmentedAddress);
         var palette = paletteEr
                       .ReadUInt16s(maxIndex + 1)
                       .Select(value => {

@@ -81,14 +81,10 @@ public static class AnimationTrackFormatExtensions {
 /// A track for <see cref="SBTransformAnimation"/>
 /// See <see cref="AnimationTrackFormat"/> for supported types
 /// </summary>
-public class GenericTransformTrack {
-  public AnimationTrackFormat Type { get; internal set; }
+public class GenericTransformTrack(AnimationTrackFormat type) {
+  public AnimationTrackFormat Type { get; internal set; } = type;
 
   public GenericKeyGroup<float> Keys { get; } = new GenericKeyGroup<float>();
-
-  public GenericTransformTrack(AnimationTrackFormat type) {
-      Type = type;
-    }
 
   public void AddKey(float frame,
                      float value,

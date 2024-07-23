@@ -15,13 +15,9 @@ public partial class GlShaderProgram {
       return Asserts.AsA<IShaderUniform<int>>(uniform);
     }
 
-  private class IntShaderUniform : BShaderUniform, IShaderUniform<int> {
-    private readonly int location_;
+  private class IntShaderUniform(int location)
+      : BShaderUniform, IShaderUniform<int> {
     private int value_;
-
-    public IntShaderUniform(int location) {
-        this.location_ = location;
-      }
 
     public void SetAndMarkDirty(in int value) {
         this.value_ = value;
@@ -38,6 +34,6 @@ public partial class GlShaderProgram {
       }
 
     protected override void PassValueToProgram()
-      => GL.Uniform1(this.location_, this.value_);
+      => GL.Uniform1(location, this.value_);
   }
 }

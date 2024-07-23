@@ -56,8 +56,8 @@ namespace KSoft.Phoenix.Phx
 		float mAirBurstSpan = PhxUtil.kInvalidSingle;
 		public float AirBurstSpan { get { return mAirBurstSpan; } }
 
-		public Collections.BTypeValues<BDamageRatingOverride> DamageOverrides { get; private set; }
-		public Collections.BListArray<BTargetPriority> TargetPriorities { get; private set; }
+		public Collections.BTypeValues<BDamageRatingOverride> DamageOverrides { get; private set; } = new Collections.BTypeValues<BDamageRatingOverride>(BDamageRatingOverride.kBListParams);
+		public Collections.BListArray<BTargetPriority> TargetPriorities { get; private set; } = new Collections.BListArray<BTargetPriority>();
 
 		bool mStasisSmartTargeting;
 		public bool StasisSmartTargeting { get { return mStasisSmartTargeting; } }
@@ -72,12 +72,6 @@ namespace KSoft.Phoenix.Phx
 		float mMaxPullRange = PhxUtil.kInvalidSingle;
 		public float MaxPullRange { get { return mMaxPullRange; } }
 		#endregion
-
-		public BWeapon()
-		{
-			DamageOverrides = new Collections.BTypeValues<BDamageRatingOverride>(BDamageRatingOverride.kBListParams);
-			TargetPriorities = new Collections.BListArray<BTargetPriority>();
-		}
 
 		#region BListAutoIdObject Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

@@ -16,17 +16,12 @@ namespace KSoft.Phoenix.Phx
 			set { mDefaultShieldSquadID = value; }
 		}
 
-		public Collections.BListArray<BProtoSquadShieldBubble> ProtoShieldIDs { get; private set; }
+		public Collections.BListArray<BProtoSquadShieldBubble> ProtoShieldIDs { get; private set; } = new Collections.BListArray<BProtoSquadShieldBubble>();
 
 		public bool IsNotEmpty { get {
 			return DefaultShieldSquadID.IsNotNone()
 				|| !ProtoShieldIDs.IsEmpty;
 		} }
-
-		public BProtoShieldBubbleTypes()
-		{
-			ProtoShieldIDs = new Collections.BListArray<BProtoSquadShieldBubble>();
-		}
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

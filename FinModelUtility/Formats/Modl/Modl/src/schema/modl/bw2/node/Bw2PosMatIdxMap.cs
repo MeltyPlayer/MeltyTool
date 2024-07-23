@@ -2,6 +2,4 @@
 
 namespace modl.schema.modl.bw2.node;
 
-public class Bw2PosMatIdxMap : BPosMatIdxMap {
-  public Bw2PosMatIdxMap() : base(2) { }
-}
+public class Bw2PosMatIdxMap() : BPosMatIdxMap(2);

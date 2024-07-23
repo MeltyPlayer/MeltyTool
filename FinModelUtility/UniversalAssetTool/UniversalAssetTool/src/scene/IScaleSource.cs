@@ -15,17 +15,13 @@ public interface IScaleSource {
   float GetScale(IReadOnlyModel model);
 }
 
-public class ScaleSource : IScaleSource {
-  private readonly IScaleSource impl_;
-
-  public ScaleSource(ScaleSourceType type) {
-    this.impl_ = type switch {
-        ScaleSourceType.NONE => new NullScaleSource(),
-        ScaleSourceType.MIN_MAX_BOUNDS => new MinMaxBoundsScaleSource(),
-        ScaleSourceType.GAME_CONFIG => new GameConfigScaleSource(),
-        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-    };
-  }
+public class ScaleSource(ScaleSourceType type) : IScaleSource {
+  private readonly IScaleSource impl_ = type switch {
+      ScaleSourceType.NONE           => new NullScaleSource(),
+      ScaleSourceType.MIN_MAX_BOUNDS => new MinMaxBoundsScaleSource(),
+      ScaleSourceType.GAME_CONFIG    => new GameConfigScaleSource(),
+      _                              => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+  };
 
   public float GetScale(ISceneInstance scene) => this.impl_.GetScale(scene);
   public float GetScale(IReadOnlyModel model) => this.impl_.GetScale(model);

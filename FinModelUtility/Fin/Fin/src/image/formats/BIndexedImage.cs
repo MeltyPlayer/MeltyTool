@@ -8,28 +8,22 @@ using fin.color;
 
 namespace fin.image.formats;
 
-public abstract class BIndexedImage : IImage {
-  private readonly IImage impl_;
-
-  protected BIndexedImage(PixelFormat pixelFormat,
-                          IImage impl,
-                          IColor[] palette) {
-    this.PixelFormat = pixelFormat;
-    this.impl_ = impl;
-    this.Palette = palette;
-  }
-
+public abstract class BIndexedImage(
+    PixelFormat pixelFormat,
+    IImage impl,
+    IColor[] palette)
+    : IImage {
   ~BIndexedImage() => this.Dispose();
 
   public void Dispose() {
-    this.impl_.Dispose();
+    impl.Dispose();
     GC.SuppressFinalize(this);
   }
 
-  public IColor[] Palette { get; }
-  public PixelFormat PixelFormat { get; }
-  public int Width => this.impl_.Width;
-  public int Height => this.impl_.Height;
+  public IColor[] Palette { get; } = palette;
+  public PixelFormat PixelFormat { get; } = pixelFormat;
+  public int Width => impl.Width;
+  public int Height => impl.Height;
 
   public abstract void Access(IImage.AccessHandler accessHandler);
 

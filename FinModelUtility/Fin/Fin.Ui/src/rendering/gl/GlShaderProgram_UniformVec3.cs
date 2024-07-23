@@ -17,13 +17,9 @@ public partial class GlShaderProgram {
       return Asserts.AsA<IShaderUniform<Vector3>>(uniform);
     }
 
-  private class Vec3ShaderUniform : BShaderUniform, IShaderUniform<Vector3> {
-    private readonly int location_;
+  private class Vec3ShaderUniform(int location)
+      : BShaderUniform, IShaderUniform<Vector3> {
     private Vector3 value_;
-
-    public Vec3ShaderUniform(int location) {
-        this.location_ = location;
-      }
 
     public void SetAndMarkDirty(in Vector3 value) {
         this.value_ = value;
@@ -41,7 +37,7 @@ public partial class GlShaderProgram {
 
     protected override unsafe void PassValueToProgram() {
         fixed (float* ptr = &this.value_.X) {
-          GL.Uniform3(this.location_, 1, ptr);
+          GL.Uniform3(location, 1, ptr);
         }
       }
   }

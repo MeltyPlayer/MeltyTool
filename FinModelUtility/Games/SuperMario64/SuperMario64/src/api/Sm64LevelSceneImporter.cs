@@ -10,14 +10,12 @@ using sm64.LevelInfo;
 using sm64.Scripts;
 
 namespace sm64.api {
-  public class Sm64LevelSceneFileBundle :
-      Sm64LevelFileBundle,
-      ISceneFileBundle {
-    public Sm64LevelSceneFileBundle(
-        IReadOnlyTreeDirectory directory,
-        IReadOnlyTreeFile sm64Rom,
-        LevelId levelId) : base(directory, sm64Rom, levelId) { }
-  }
+  public class Sm64LevelSceneFileBundle(
+      IReadOnlyTreeDirectory directory,
+      IReadOnlyTreeFile sm64Rom,
+      LevelId levelId)
+      : Sm64LevelFileBundle(directory, sm64Rom, levelId),
+        ISceneFileBundle;
 
   public class Sm64LevelSceneImporter : ISceneImporter<Sm64LevelSceneFileBundle> {
     public IScene Import(Sm64LevelSceneFileBundle levelModelFileBundle) {

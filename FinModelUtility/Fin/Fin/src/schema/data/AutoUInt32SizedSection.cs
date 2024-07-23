@@ -12,7 +12,7 @@ namespace fin.schema.data;
 [BinarySchema]
 public partial class AutoUInt32SizedSection<T> : ISizedSection<T>
     where T : IBinaryConvertible, new() {
-  private readonly PassThruUInt32SizedSection<T> impl_;
+  private readonly PassThruUInt32SizedSection<T> impl_ = new(new T());
 
   [Skip]
   public int TweakReadSize {
@@ -22,8 +22,4 @@ public partial class AutoUInt32SizedSection<T> : ISizedSection<T>
 
   [Skip]
   public T Data => this.impl_.Data;
-
-  public AutoUInt32SizedSection() {
-    this.impl_ = new(new T());
-  }
 }

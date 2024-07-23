@@ -3,17 +3,13 @@ using fin.model.io;
 
 namespace glo.api;
 
-public class GloModelFileBundle : IModelFileBundle {
-  public GloModelFileBundle(
-      IReadOnlyTreeFile gloFile,
-      IReadOnlyList<IReadOnlyTreeDirectory> textureDirectories) {
-    this.GloFile = gloFile;
-    this.TextureDirectories = textureDirectories;
-  }
-
+public class GloModelFileBundle(
+    IReadOnlyTreeFile gloFile,
+    IReadOnlyList<IReadOnlyTreeDirectory> textureDirectories)
+    : IModelFileBundle {
   public string GameName => "glover";
   public IReadOnlyTreeFile MainFile => this.GloFile;
 
-  public IReadOnlyTreeFile GloFile { get; }
-  public IReadOnlyList<IReadOnlyTreeDirectory> TextureDirectories { get; }
+  public IReadOnlyTreeFile GloFile { get; } = gloFile;
+  public IReadOnlyList<IReadOnlyTreeDirectory> TextureDirectories { get; } = textureDirectories;
 }

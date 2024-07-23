@@ -4,20 +4,15 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.image.formats;
 
-public class IndexedImage16 : BIndexedImage {
-  private readonly IImage<L16> impl_;
-
-  public IndexedImage16(PixelFormat pixelFormat,
-                        IImage<L16> impl,
-                        IColor[] palette) : base(
-      pixelFormat,
-      impl,
-      palette) {
-    this.impl_ = impl;
-  }
-
+public class IndexedImage16(
+    PixelFormat pixelFormat,
+    IImage<L16> impl,
+    IColor[] palette)
+    : BIndexedImage(pixelFormat,
+                    impl,
+                    palette) {
   public override unsafe void Access(IImage.AccessHandler accessHandler) {
-    using var bytes = this.impl_.UnsafeLock();
+    using var bytes = impl.UnsafeLock();
     var ptr = bytes.pixelScan0;
 
     void InternalGetHandler(

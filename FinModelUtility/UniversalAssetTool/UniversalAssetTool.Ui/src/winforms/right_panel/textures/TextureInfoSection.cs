@@ -20,46 +20,40 @@ public partial class TextureInfoSection : UserControl {
         new PropertyGridTexture(value);
   }
 
-  private class PropertyGridTexture {
-    private IReadOnlyTexture? impl_;
-
-    public PropertyGridTexture(IReadOnlyTexture? impl) {
-        this.impl_ = impl;
-      }
-
+  private class PropertyGridTexture(IReadOnlyTexture? impl) {
     [Display(Order = 0)]
     [Category("Metadata")]
-    public string? Name => this.impl_?.Name;
+    public string? Name => impl?.Name;
 
     [Display(Order = 1)]
     [Category("Metadata")]
-    public PixelFormat? PixelFormat => this.impl_?.Image.PixelFormat;
+    public PixelFormat? PixelFormat => impl?.Image.PixelFormat;
 
     [Display(Order = 2)]
     [Category("Metadata")]
     public TransparencyType? TransparencyType
-      => this.impl_ != null
-          ? TransparencyTypeUtil.GetTransparencyType(this.impl_.Image)
+      => impl != null
+          ? TransparencyTypeUtil.GetTransparencyType(impl.Image)
           : null;
 
     [Display(Order = 3)]
     [Category("Metadata")]
-    public int? Width => this.impl_?.Image.Width;
+    public int? Width => impl?.Image.Width;
  
     [Display(Order = 4)]
     [Category("Metadata")]
-    public int? Height => this.impl_?.Image.Height;
+    public int? Height => impl?.Image.Height;
 
     [Display(Order = 5)]
     [Category("Metadata")]
-    public WrapMode? HorizontalWrapMode => this.impl_?.WrapModeU;
+    public WrapMode? HorizontalWrapMode => impl?.WrapModeU;
 
     [Display(Order = 6)]
     [Category("Metadata")]
-    public WrapMode? VerticalWrapMode => this.impl_?.WrapModeV;
+    public WrapMode? VerticalWrapMode => impl?.WrapModeV;
 
     [Display(Order = 7)]
     [Category("Metadata")]
-    public UvType? UvType => this.impl_?.UvType;
+    public UvType? UvType => impl?.UvType;
   }
 }

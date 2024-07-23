@@ -14,7 +14,7 @@ using PrimitiveType = fin.model.PrimitiveType;
 
 namespace fin.ui.rendering.gl;
 
-public class GlBufferManager : IDisposable {
+public class GlBufferManager(IReadOnlyModel model) : IDisposable {
   private class VertexArrayObject : IDisposable {
     private const int POSITION_SIZE_ = 3;
     private const int NORMAL_SIZE_ = 3;
@@ -330,13 +330,7 @@ public class GlBufferManager : IDisposable {
                       (_, vao) => vao.Dispose());
 
 
-  private readonly IReadOnlyModel model_;
-  private readonly VertexArrayObject vao_;
-
-  public GlBufferManager(IReadOnlyModel model) {
-    this.model_ = model;
-    this.vao_ = GlBufferManager.vaoCache_.GetAndIncrement(model);
-  }
+  private readonly VertexArrayObject vao_ = GlBufferManager.vaoCache_.GetAndIncrement(model);
 
   ~GlBufferManager() => ReleaseUnmanagedResources_();
 
@@ -346,7 +340,7 @@ public class GlBufferManager : IDisposable {
   }
 
   private void ReleaseUnmanagedResources_() {
-    GlBufferManager.vaoCache_.DecrementAndMaybeDispose(this.model_);
+    GlBufferManager.vaoCache_.DecrementAndMaybeDispose(model);
   }
 
   public GlBufferRenderer CreateRenderer(

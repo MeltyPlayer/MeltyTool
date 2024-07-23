@@ -258,16 +258,13 @@ public partial class ModelImpl<TVertex> {
       }
     }
 
-    private class PrimitiveImpl : BPrimitiveImpl {
-      public PrimitiveImpl(PrimitiveType type,
-                           IReadOnlyList<IReadOnlyVertex> vertices) :
-          base(type, vertices) { }
-    }
+    private class PrimitiveImpl(
+        PrimitiveType type,
+        IReadOnlyList<IReadOnlyVertex> vertices)
+        : BPrimitiveImpl(type, vertices);
 
-    private class LinesPrimitiveImpl : BPrimitiveImpl, ILinesPrimitive {
-      public LinesPrimitiveImpl(IReadOnlyList<IReadOnlyVertex> vertices) :
-          base(PrimitiveType.LINES, vertices) { }
-
+    private class LinesPrimitiveImpl(IReadOnlyList<IReadOnlyVertex> vertices)
+        : BPrimitiveImpl(PrimitiveType.LINES, vertices), ILinesPrimitive {
       public float LineWidth { get; private set; }
 
       public ILinesPrimitive SetLineWidth(float width) {
@@ -276,10 +273,8 @@ public partial class ModelImpl<TVertex> {
       }
     }
 
-    private class PointsPrimitiveImpl : BPrimitiveImpl, IPointsPrimitive {
-      public PointsPrimitiveImpl(IReadOnlyList<IReadOnlyVertex> vertices) :
-          base(PrimitiveType.POINTS, vertices) { }
-
+    private class PointsPrimitiveImpl(IReadOnlyList<IReadOnlyVertex> vertices)
+        : BPrimitiveImpl(PrimitiveType.POINTS, vertices), IPointsPrimitive {
       public float Radius { get; private set; }
 
       public IPointsPrimitive SetRadius(float radius) {
@@ -288,15 +283,12 @@ public partial class ModelImpl<TVertex> {
       }
     }
 
-    private abstract class BPrimitiveImpl : IPrimitive {
-      public BPrimitiveImpl(PrimitiveType type,
-                            IReadOnlyList<IReadOnlyVertex> vertices) {
-        this.Type = type;
-        this.Vertices = vertices;
-      }
-
-      public PrimitiveType Type { get; }
-      public IReadOnlyList<IReadOnlyVertex> Vertices { get; }
+    private abstract class BPrimitiveImpl(
+        PrimitiveType type,
+        IReadOnlyList<IReadOnlyVertex> vertices)
+        : IPrimitive {
+      public PrimitiveType Type { get; } = type;
+      public IReadOnlyList<IReadOnlyVertex> Vertices { get; } = vertices;
 
 
       public IEnumerable<int> GetOrderedTriangleVertexIndices() {

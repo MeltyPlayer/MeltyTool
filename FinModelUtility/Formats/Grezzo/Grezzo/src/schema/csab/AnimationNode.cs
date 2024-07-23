@@ -5,33 +5,22 @@ using schema.binary;
 
 namespace grezzo.schema.csab;
 
-public class AnimationNode : IBinaryDeserializable {
-  private readonly Csab parent_;
-
-  public AnimationNode(Csab parent) {
-      this.parent_ = parent;
-
-      this.TranslationAxes =
-          Enumerable.Range(0, 3)
-                    .Select(_ => new CsabTrack(parent, TrackType.POSITION))
-                    .ToArray();
-      this.RotationAxes =
-          Enumerable.Range(0, 3)
-                    .Select(_ => new CsabTrack(parent, TrackType.ROTATION))
-                    .ToArray();
-      this.ScaleAxes =
-          Enumerable.Range(0, 3)
-                    .Select(_ => new CsabTrack(parent, TrackType.SCALE))
-                    .ToArray();
-    }
-
+public class AnimationNode(Csab parent) : IBinaryDeserializable {
   public ushort BoneIndex { get; set; }
 
-  public IReadOnlyList<CsabTrack> TranslationAxes { get; }
-  public IReadOnlyList<CsabTrack> RotationAxes { get; }
-  public IReadOnlyList<CsabTrack> ScaleAxes { get; }
+  public IReadOnlyList<CsabTrack> TranslationAxes { get; } = Enumerable.Range(0, 3)
+      .Select(_ => new CsabTrack(parent, TrackType.POSITION))
+      .ToArray();
 
-  public bool IsPastVersion4 => this.parent_.IsPastVersion4;
+  public IReadOnlyList<CsabTrack> RotationAxes { get; } = Enumerable.Range(0, 3)
+      .Select(_ => new CsabTrack(parent, TrackType.ROTATION))
+      .ToArray();
+
+  public IReadOnlyList<CsabTrack> ScaleAxes { get; } = Enumerable.Range(0, 3)
+      .Select(_ => new CsabTrack(parent, TrackType.SCALE))
+      .ToArray();
+
+  public bool IsPastVersion4 => parent.IsPastVersion4;
 
   public void Read(IBinaryReader br) {
       var basePosition = br.Position;

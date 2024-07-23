@@ -32,19 +32,14 @@ public class ProcessUtil {
     ASYNC
   }
 
-  public class ProcessSetup {
-    public IReadOnlySystemFile ExeFile { get; set; }
-    public string[] Args { get; set; }
+  public class ProcessSetup(IReadOnlySystemFile exeFile, params string[] args) {
+    public IReadOnlySystemFile ExeFile { get; set; } = exeFile;
+    public string[] Args { get; set; } = args;
 
     public ProcessExecutionMethod Method { get; set; } =
       ProcessExecutionMethod.BLOCK;
 
     public bool WithLogging { get; set; } = true;
-
-    public ProcessSetup(IReadOnlySystemFile exeFile, params string[] args) {
-      this.ExeFile = exeFile;
-      this.Args = args;
-    }
   }
 
   public static Process Execute(ProcessSetup processSetup) {

@@ -11,16 +11,9 @@ namespace KSoft.Phoenix.Phx
 		const string kXmlRoot = "Tactic";
 		#endregion
 
-		public Collections.BListArray<BTacticTargetRule> TargetRules { get; private set; }
-		public List<BProtoActionID> PersistentActions { get; private set; }
-		public List<BProtoActionID> PersistentSquadActions { get; private set; }
-
-		public BTactic()
-		{
-			TargetRules = new Collections.BListArray<BTacticTargetRule>();
-			PersistentActions = new List<BProtoActionID>();
-			PersistentSquadActions = new List<BProtoActionID>();
-		}
+		public Collections.BListArray<BTacticTargetRule> TargetRules { get; private set; } = new Collections.BListArray<BTacticTargetRule>();
+		public List<BProtoActionID> PersistentActions { get; private set; } = new List<BProtoActionID>();
+		public List<BProtoActionID> PersistentSquadActions { get; private set; } = new List<BProtoActionID>();
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

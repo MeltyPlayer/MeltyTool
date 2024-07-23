@@ -13,9 +13,7 @@ namespace fin.image.io.tile;
 ///   Stolen from:
 ///   https://github.com/xdanieldzd/Scarlet/blob/master/Scarlet/Drawing/Compression/ETC1.cs
 /// </summary>
-public readonly struct Etc1TileReader : ITileReader<Rgba32> {
-  private readonly bool hasAlpha_;
-
+public readonly struct Etc1TileReader(bool hasAlpha) : ITileReader<Rgba32> {
   /* Specs: https://www.khronos.org/registry/gles/extensions/OES/OES_compressed_ETC1_RGB8_texture.txt */
 
   /* Other implementations:
@@ -34,12 +32,8 @@ public readonly struct Etc1TileReader : ITileReader<Rgba32> {
       47, 183, -47, -183
   ];
 
-  public Etc1TileReader(bool hasAlpha) {
-    this.hasAlpha_ = hasAlpha;
-  }
-
   public IImage<Rgba32> CreateImage(int width, int height)
-    => new Rgba32Image(this.hasAlpha_ ? PixelFormat.ETC1A : PixelFormat.ETC1,
+    => new Rgba32Image(hasAlpha ? PixelFormat.ETC1A : PixelFormat.ETC1,
                        width,
                        height);
 
@@ -64,7 +58,7 @@ public readonly struct Etc1TileReader : ITileReader<Rgba32> {
         }
 
         var alpha = 0xFFFFFFFFFFFFFFFF;
-        if (this.hasAlpha_) {
+        if (hasAlpha) {
           alpha = br.ReadUInt64();
         }
 

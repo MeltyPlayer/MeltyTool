@@ -4,8 +4,9 @@ using fin.data.disposables;
 namespace fin.ui.playback.al;
 
 public partial class AlAudioManager {
-  private partial class AlAudioPlayer : IAudioPlayer<short> {
-    private readonly IAudioPlayer<short>? parent_;
+  private partial class AlAudioPlayer(IAudioPlayer<short>? parent = null)
+      : IAudioPlayer<short> {
+    private readonly IAudioPlayer<short>? parent_ = parent;
     private float volume_ = 1;
 
     private readonly TrackedDisposables<IAudioPlayer<short>>
@@ -32,10 +33,6 @@ public partial class AlAudioManager {
 
     public IEnumerable<IAudioPlayback<short>> CurrentPlaybacks
       => this.playbacks_;
-
-    public AlAudioPlayer(IAudioPlayer<short>? parent = null) {
-        this.parent_ = parent;
-      }
 
     ~AlAudioPlayer() => this.ReleaseUnmanagedResources_();
 

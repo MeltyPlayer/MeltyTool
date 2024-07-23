@@ -1,11 +1,6 @@
 ﻿namespace HaloWarsTools {
-  public class HWModel {
-    public string Name;
-    public HWUgxResource Resource;
-
-    public HWModel(string name, HWUgxResource resource) {
-      Name = name;
-      Resource = resource;
-    }
+  public class HWModel(string name, HWUgxResource resource) {
+    public string Name = name;
+    public HWUgxResource Resource = resource;
   }
 }

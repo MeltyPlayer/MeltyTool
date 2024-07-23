@@ -80,12 +80,8 @@ namespace benchmarks {
       }
     }
 
-    public class ViaMethodGroup {
-      public Func<double, double> methodGroup;
-
-      public ViaMethodGroup(Func<double, double> methodGroup) {
-        this.methodGroup = methodGroup;
-      }
+    public class ViaMethodGroup(Func<double, double> methodGroup) {
+      public Func<double, double> methodGroup = methodGroup;
     }
 
 
@@ -99,12 +95,8 @@ namespace benchmarks {
       }
     }
 
-    public class ViaLambda {
-      public Func<double, double> lambda;
-
-      public ViaLambda(Func<double, double> lambda) {
-        this.lambda = lambda;
-      }
+    public class ViaLambda(Func<double, double> lambda) {
+      public Func<double, double> lambda = lambda;
     }
 
 
@@ -118,15 +110,9 @@ namespace benchmarks {
       }
     }
 
-    public class ViaInterfaceImpl : IMethod {
-      private readonly IMethod impl_;
-
-      public ViaInterfaceImpl(IMethod impl) {
-        this.impl_ = impl;
-      }
-
+    public class ViaInterfaceImpl(IMethod impl) : IMethod {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
-      public double Run(double x)  => this.impl_.Run(x);
+      public double Run(double x)  => impl.Run(x);
     }
 
 
@@ -139,12 +125,9 @@ namespace benchmarks {
       }
     }
 
-    public class ViaGenericImpl<TMethod> where TMethod : IMethod {
-      private readonly TMethod impl_;
-
-      public ViaGenericImpl(TMethod impl) {
-        this.impl_ = impl;
-      }
+    public class ViaGenericImpl<TMethod>(TMethod impl)
+        where TMethod : IMethod {
+      private readonly TMethod impl_ = impl;
 
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public double Run(double x) => this.impl_.Run(x);

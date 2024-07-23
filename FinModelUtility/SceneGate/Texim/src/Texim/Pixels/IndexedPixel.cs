@@ -19,33 +19,21 @@
 // SOFTWARE.
 namespace Texim.Pixels
 {
-    public readonly struct IndexedPixel
+    public readonly struct IndexedPixel(
+        short index,
+        byte alpha,
+        byte paletteIndex)
     {
-        public IndexedPixel(short index)
-        {
-            Index = index;
-            Alpha = 255;
-            PaletteIndex = 0;
-        }
+        public IndexedPixel(short index) : this(index, 255, 0)
+        { }
 
-        public IndexedPixel(short index, byte alpha)
-        {
-            Index = index;
-            Alpha = alpha;
-            PaletteIndex = 0;
-        }
+        public IndexedPixel(short index, byte alpha) : this(index, alpha, 0)
+        { }
 
-        public IndexedPixel(short index, byte alpha, byte paletteIndex)
-        {
-            Index = index;
-            Alpha = alpha;
-            PaletteIndex = paletteIndex;
-        }
+        public short Index { get; init; } = index;
 
-        public short Index { get; init; }
+        public byte Alpha { get; init; } = alpha;
 
-        public byte Alpha { get; init; }
-
-        public byte PaletteIndex { get; init; }
+        public byte PaletteIndex { get; init; } = paletteIndex;
     }
 }

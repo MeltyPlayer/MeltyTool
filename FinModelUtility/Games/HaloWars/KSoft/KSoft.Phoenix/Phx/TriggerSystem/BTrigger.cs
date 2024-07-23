@@ -30,18 +30,12 @@ namespace KSoft.Phoenix.Phx
 
 		bool mConditionalTrigger;
 
-		public Collections.BListAutoId<BTriggerCondition> Conditions { get; private set; }
+		public Collections.BListAutoId<BTriggerCondition> Conditions { get; private set; } = new Collections.BListAutoId<BTriggerCondition>();
+
 		/// <summary>True if <see cref="Conditions"/> are OR, false if they're AND</summary>
 		public bool OrConditions { get; set; }
-		public Collections.BListAutoId<BTriggerEffect> EffectsOnTrue { get; private set; }
-		public Collections.BListAutoId<BTriggerEffect> EffectsOnFalse { get; private set; }
-
-		public BTrigger()
-		{
-			Conditions = new Collections.BListAutoId<BTriggerCondition>();
-			EffectsOnTrue = new Collections.BListAutoId<BTriggerEffect>();
-			EffectsOnFalse = new Collections.BListAutoId<BTriggerEffect>();
-		}
+		public Collections.BListAutoId<BTriggerEffect> EffectsOnTrue { get; private set; } = new Collections.BListAutoId<BTriggerEffect>();
+		public Collections.BListAutoId<BTriggerEffect> EffectsOnFalse { get; private set; } = new Collections.BListAutoId<BTriggerEffect>();
 
 		void StreamConditions<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class

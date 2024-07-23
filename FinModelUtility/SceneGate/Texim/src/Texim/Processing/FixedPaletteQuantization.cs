@@ -23,16 +23,9 @@ namespace Texim.Processing
     using Palettes;
     using Pixels;
 
-    public class FixedPaletteQuantization : IQuantization
+    public class FixedPaletteQuantization(IPalette palette) : IQuantization
     {
-        private readonly IPalette palette;
-        private readonly ExhaustiveColorSearch search;
-
-        public FixedPaletteQuantization(IPalette palette)
-        {
-            this.palette = palette;
-            search = new ExhaustiveColorSearch(palette.Colors);
-        }
+        private readonly ExhaustiveColorSearch search = new(palette.Colors);
 
         public int TransparentIndex { get; set; }
 

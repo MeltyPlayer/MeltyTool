@@ -37,12 +37,7 @@ namespace KSoft.Phoenix.Resource
 		public byte[] DataHash = new byte[PhxHash.kSha1SizeOf];
 		public ulong DataSize;
 
-		public byte[] Hash { get; private set; }
-
-		public MediaHeader()
-		{
-			Hash = new byte[PhxHash.kSha1SizeOf];
-		}
+		public byte[] Hash { get; private set; } = new byte[PhxHash.kSha1SizeOf];
 
 		public void UpdateHash(SHA1CryptoServiceProvider sha)
 		{

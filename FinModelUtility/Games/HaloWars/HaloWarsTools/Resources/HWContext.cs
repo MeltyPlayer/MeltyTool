@@ -4,9 +4,9 @@ using System.IO;
 using KSoft.Phoenix.Resource;
 
 namespace HaloWarsTools {
-  public class HWContext {
-    public string GameInstallDirectory;
-    public string ScratchDirectory;
+  public class HWContext(string gameInstallDirectory, string scratchDirectory) {
+    public string GameInstallDirectory = gameInstallDirectory;
+    public string ScratchDirectory = scratchDirectory;
 
     /*public Dictionary<string, HWObjectDefinition> ObjectDefinitions => ValueCache.Get(LoadObjectDefinitions);
 
@@ -31,11 +31,6 @@ namespace HaloWarsTools {
 
       return manifest;
     }*/
-
-    public HWContext(string gameInstallDirectory, string scratchDirectory) {
-      GameInstallDirectory = gameInstallDirectory;
-      ScratchDirectory = scratchDirectory;
-    }
 
     public string GetAbsoluteGamePath(string relativePath) {
       return Path.Combine(GameInstallDirectory, relativePath);

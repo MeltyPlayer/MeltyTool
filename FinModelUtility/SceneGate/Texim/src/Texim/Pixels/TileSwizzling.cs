@@ -25,29 +25,17 @@ namespace Texim.Pixels
     using System.Linq;
     using Yarhl.IO;
 
-    public class TileSwizzling<T> : ISwizzling<T>
+    public class TileSwizzling<T>(Size tileSize, int width) : ISwizzling<T>
     {
-        public TileSwizzling()
-        {
-            TileSize = new Size(8, 8);
-            Width = 256;
-        }
+        public TileSwizzling() : this(new Size(8, 8), 256)
+        { }
 
-        public TileSwizzling(int width)
-        {
-            TileSize = new Size(8, 8);
-            Width = width;
-        }
+        public TileSwizzling(int width) : this(new Size(8, 8), width)
+        { }
 
-        public TileSwizzling(Size tileSize, int width)
-        {
-            TileSize = tileSize;
-            Width = width;
-        }
+        public Size TileSize { get; set; } = tileSize;
 
-        public Size TileSize { get; set; }
-
-        public int Width { get; set; }
+        public int Width { get; set; } = width;
 
         public T[] Swizzle(IEnumerable<T> data)
         {

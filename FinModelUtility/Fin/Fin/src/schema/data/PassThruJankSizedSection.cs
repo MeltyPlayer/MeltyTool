@@ -6,16 +6,12 @@ using schema.binary;
 
 namespace fin.schema.data;
 
-public class PassThruJankSizedSection<T> : ISizedSection<T>
+public class PassThruJankSizedSection<T>(T data) : ISizedSection<T>
     where T : IBinaryConvertible {
-  public PassThruJankSizedSection(T data) {
-    this.Data = data;
-  }
-
   public uint Size { get; private set; }
   public bool UseSize { get; set; } = false;
 
-  public T Data { get; set; }
+  public T Data { get; set; } = data;
 
   public int TweakReadSize { get; set; }
 

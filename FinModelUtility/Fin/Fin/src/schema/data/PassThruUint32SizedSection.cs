@@ -6,14 +6,10 @@ using schema.binary;
 
 namespace fin.schema.data;
 
-public class PassThruUInt32SizedSection<T> : ISizedSection<T>
+public class PassThruUInt32SizedSection<T>(T data) : ISizedSection<T>
     where T : IBinaryConvertible {
-  public PassThruUInt32SizedSection(T data) {
-    this.Data = data;
-  }
-
   public uint Size { get; private set; }
-  public T Data { get; set; }
+  public T Data { get; set; } = data;
 
   public int TweakReadSize { get; set; }
 

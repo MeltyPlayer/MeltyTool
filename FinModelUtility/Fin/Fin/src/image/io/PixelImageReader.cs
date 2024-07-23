@@ -29,23 +29,13 @@ public static class PixelImageReader {
            pixelReader);
 }
 
-public class PixelImageReader<TPixel> : IImageReader<IImage<TPixel>>
+public class PixelImageReader<TPixel>(
+    int width,
+    int height,
+    IPixelIndexer pixelIndexer,
+    IPixelReader<TPixel> pixelReader)
+    : IImageReader<IImage<TPixel>>
     where TPixel : unmanaged, IPixel<TPixel> {
-  private readonly int width_;
-  private readonly int height_;
-  private readonly IPixelIndexer pixelIndexer_;
-  private readonly IPixelReader<TPixel> pixelReader_;
-
-  public PixelImageReader(int width,
-                          int height,
-                          IPixelIndexer pixelIndexer,
-                          IPixelReader<TPixel> pixelReader) {
-    this.width_ = width;
-    this.height_ = height;
-    this.pixelIndexer_ = pixelIndexer;
-    this.pixelReader_ = pixelReader;
-  }
-
   public IImage<TPixel> ReadImage(
       byte[] srcBytes,
       Endianness endianness = Endianness.LittleEndian) {
@@ -54,16 +44,16 @@ public class PixelImageReader<TPixel> : IImageReader<IImage<TPixel>>
   }
 
   public IImage<TPixel> ReadImage(IBinaryReader br) {
-    var image = this.pixelReader_.CreateImage(this.width_, this.height_);
+    var image = pixelReader.CreateImage(width, height);
     using var imageLock = image.Lock();
     var scan0 = imageLock.Pixels;
 
     for (var i = 0;
-         i < this.width_ * this.height_;
-         i += this.pixelReader_.PixelsPerRead) {
-      this.pixelIndexer_.GetPixelCoordinates(i, out var x, out var y);
-      var dstOffs = y * this.width_ + x;
-      this.pixelReader_.Decode(br, scan0, dstOffs);
+         i < width * height;
+         i += pixelReader.PixelsPerRead) {
+      pixelIndexer.GetPixelCoordinates(i, out var x, out var y);
+      var dstOffs = y * width + x;
+      pixelReader.Decode(br, scan0, dstOffs);
     }
 
     return image;

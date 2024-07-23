@@ -32,7 +32,7 @@ namespace KSoft.Phoenix.Resource
 		public DateTime BuildModeDefaultTimestamp { get; set; }
 			= DateTime.Now;
 
-		public Security.Cryptography.TigerHashBase TigerHasher { get; private set; }
+		public Security.Cryptography.TigerHashBase TigerHasher { get; private set; } = Security.Cryptography.PhxHash.CreateHaloWarsTigerHash();
 
 		private int FileChunksFirstIndex { get {
 			// First comes the filenames table in mFiles, then all the files defined in the listing
@@ -48,11 +48,6 @@ namespace KSoft.Phoenix.Resource
 			// Exclude the first chunk from the count, as it is the filenames table
 			return mFiles.Count - FileChunksFirstIndex;
 		} }
-
-		public EraFile()
-		{
-			TigerHasher = Security.Cryptography.PhxHash.CreateHaloWarsTigerHash();
-		}
 
 		#region IDisposable Members
 		public void Dispose()

@@ -12,9 +12,7 @@ using schema.binary;
 
 namespace modl.schema.modl.bw1.node;
 
-public class Bw1Node : IBwNode, IBinaryDeserializable {
-  private int additionalDataCount_;
-
+public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
   public uint WeirdId { get; set; }
   public bool IsHidden => (WeirdId & 0x80) != 0;
 
@@ -26,10 +24,6 @@ public class Bw1Node : IBwNode, IBinaryDeserializable {
   public float Scale { get; set; }
 
   public List<IBwMaterial> Materials { get; } = [];
-
-  public Bw1Node(int additionalDataCount) {
-    this.additionalDataCount_ = additionalDataCount;
-  }
 
   public static string GetIdentifier(uint weirdId) => $"Node {weirdId}";
 
@@ -64,7 +58,7 @@ public class Bw1Node : IBwNode, IBinaryDeserializable {
     Asserts.Equal(br.Position, expectedHeaderEnd);
 
     // TODO: additional data
-    var additionalData = br.ReadUInt32s(this.additionalDataCount_);
+    var additionalData = br.ReadUInt32s(additionalDataCount);
 
     this.BoundingBox.Read(br);
 

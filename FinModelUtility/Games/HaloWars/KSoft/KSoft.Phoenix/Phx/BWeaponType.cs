@@ -30,12 +30,7 @@ namespace KSoft.Phoenix.Phx
 		}
 		#endregion
 
-		public Collections.BTypeValues<BWeaponModifier> Modifiers { get; private set; }
-
-		public BWeaponType()
-		{
-			Modifiers = new Collections.BTypeValues<BWeaponModifier>(BWeaponModifier.kBListParams);
-		}
+		public Collections.BTypeValues<BWeaponModifier> Modifiers { get; private set; } = new Collections.BTypeValues<BWeaponModifier>(BWeaponModifier.kBListParams);
 
 		#region BListObjectBase Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

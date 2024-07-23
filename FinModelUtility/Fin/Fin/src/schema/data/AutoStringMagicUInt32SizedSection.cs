@@ -10,13 +10,10 @@ namespace fin.schema.data;
 ///   parent data.
 /// </summary>
 [BinarySchema]
-public partial class AutoStringMagicUInt32SizedSection<T> : IMagicSection<T>
+public partial class AutoStringMagicUInt32SizedSection<T>(string magic)
+    : IMagicSection<T>
     where T : IBinaryConvertible, new() {
-  private readonly PassThruStringMagicUInt32SizedSection<T> impl_;
-
-  public AutoStringMagicUInt32SizedSection(string magic) {
-    this.impl_ = new(magic, new T());
-  }
+  private readonly PassThruStringMagicUInt32SizedSection<T> impl_ = new(magic, new T());
 
   [Skip]
   public int TweakReadSize {

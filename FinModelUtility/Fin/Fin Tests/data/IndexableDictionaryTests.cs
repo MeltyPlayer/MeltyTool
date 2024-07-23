@@ -11,12 +11,8 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 namespace fin.data;
 
 public class IndexableDictionaryTests {
-  private class IndexableImpl : IIndexable {
-    public IndexableImpl(int index) {
-      this.Index = index;
-    }
-
-    public int Index { get; }
+  private class IndexableImpl(int index) : IIndexable {
+    public int Index { get; } = index;
   }
 
   [Test]

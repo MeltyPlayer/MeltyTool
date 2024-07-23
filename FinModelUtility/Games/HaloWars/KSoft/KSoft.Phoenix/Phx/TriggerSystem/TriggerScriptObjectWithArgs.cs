@@ -4,12 +4,7 @@ namespace KSoft.Phoenix.Phx
 	public abstract class TriggerScriptObjectWithArgs
 		: TriggerScriptObject
 	{
-		public Collections.BListExplicitIndex<BTriggerArg> Args { get; private set; }
-
-		protected TriggerScriptObjectWithArgs()
-		{
-			Args = new Collections.BListExplicitIndex<BTriggerArg>(BTriggerArg.kBListExplicitIndexParams);
-		}
+		public Collections.BListExplicitIndex<BTriggerArg> Args { get; private set; } = new Collections.BListExplicitIndex<BTriggerArg>(BTriggerArg.kBListExplicitIndexParams);
 
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{

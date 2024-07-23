@@ -665,27 +665,15 @@ namespace HaloWarsTools {
       public string Name;
     }
 
-    public struct MeshTableData {
-      public MeshDataType Type;
-      public int Offset;
-      public int Length;
-
-      public MeshTableData(int dataType, int dataOffset, int dataLength) :
-          this() {
-        Type = (MeshDataType) dataType;
-        Offset = dataOffset;
-        Length = dataLength;
-      }
+    public struct MeshTableData(int dataType, int dataOffset, int dataLength) {
+      public MeshDataType Type = (MeshDataType) dataType;
+      public int Offset = dataOffset;
+      public int Length = dataLength;
     }
 
-    public struct MeshTableSubData {
-      public int Offset;
-      public int Count;
-
-      public MeshTableSubData(int dataCount, int dataOffset) : this() {
-        Offset = dataOffset;
-        Count = dataCount;
-      }
+    public struct MeshTableSubData(int dataCount, int dataOffset) {
+      public int Offset = dataOffset;
+      public int Count = dataCount;
     }
 
     public enum MeshDataType {

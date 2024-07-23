@@ -2,21 +2,15 @@
 
 namespace level5.decompression;
 
-public class HuffmanArrayDecompressor : ISpanDecompressor {
-  private readonly byte aType_;
-
-  public HuffmanArrayDecompressor(byte aType) {
-      this.aType_ = aType;
-    }
-
+public class HuffmanArrayDecompressor(byte aType) : ISpanDecompressor {
   public bool TryToGetLength(ReadOnlySpan<byte> src, out int length) {
       DecompressionUtils.GetLengthAndType(src,
                                           out length,
                                           out var decompressionType);
       return (decompressionType == DecompressionType.HUFFMAN_ARRAY_24 &&
-              this.aType_ == 0x24) ||
+              aType == 0x24) ||
              (decompressionType == DecompressionType.HUFFMAN_ARRAY_28 &&
-              this.aType_ == 0x28);
+              aType == 0x28);
     }
 
   public bool TryToDecompressInto(ReadOnlySpan<byte> src, Span<byte> dst) {
@@ -67,7 +61,7 @@ public class HuffmanArrayDecompressor : ISpanDecompressor {
           currentNode = nextIsOne ? currentNode.child1 : currentNode.child0;
         }
 
-        switch (this.aType_) {
+        switch (aType) {
           case 0x28: {
             // just copy the data if the block size is a full byte
             //                        outstream.WriteByte(currentNode.Data);

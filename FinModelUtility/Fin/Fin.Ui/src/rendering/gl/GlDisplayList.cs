@@ -2,15 +2,9 @@
 
 namespace fin.ui.rendering.gl;
 
-public class GlDisplayList : IDisposable {
-  private readonly int displayListId_;
+public class GlDisplayList(Action compile) : IDisposable {
+  private readonly int displayListId_ = GL.GenLists(1);
   private bool valid_ = false;
-  private Action compile_;
-
-  public GlDisplayList(Action compile) {
-      this.displayListId_ = GL.GenLists(1);
-      this.compile_ = compile;
-    }
 
   ~GlDisplayList() => this.ReleaseUnmanagedResources_();
 
@@ -36,7 +30,7 @@ public class GlDisplayList : IDisposable {
       this.valid_ = true;
 
       GL.NewList(this.displayListId_, ListMode.CompileAndExecute);
-      this.compile_();
+      compile();
       GL.EndList();
     }
 }

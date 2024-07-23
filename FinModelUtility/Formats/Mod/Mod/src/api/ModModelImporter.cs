@@ -690,19 +690,12 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     return 0;
   }
 
-  private readonly struct TextureImageReader : IAction {
-    private readonly IList<Texture> srcTextures_;
-    private readonly IList<IReadOnlyImage[]> dstImages_;
-
-    public TextureImageReader(
-        IList<Texture> srcTextures,
-        IList<IReadOnlyImage[]> dstImages) {
-      this.srcTextures_ = srcTextures;
-      this.dstImages_ = dstImages;
-    }
-
+  private readonly struct TextureImageReader(
+      IList<Texture> srcTextures,
+      IList<IReadOnlyImage[]> dstImages)
+      : IAction {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Invoke(int index)
-      => this.dstImages_[index] = this.srcTextures_[index].ToMipmapImages();
+      => dstImages[index] = srcTextures[index].ToMipmapImages();
   }
 }

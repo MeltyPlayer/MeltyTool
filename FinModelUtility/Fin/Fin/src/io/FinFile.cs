@@ -8,11 +8,7 @@ using fin.util.asserts;
 
 namespace fin.io;
 
-public readonly struct FinFile : ISystemFile {
-  public FinFile(string fullName) {
-    this.FullPath = fullName;
-  }
-
+public readonly struct FinFile(string fullName) : ISystemFile {
   public override string ToString() => this.DisplayFullName;
 
 
@@ -41,7 +37,7 @@ public readonly struct FinFile : ISystemFile {
 
   // File fields
   public string Name => FinIoStatic.GetName(this.FullPath);
-  public string FullPath { get; }
+  public string FullPath { get; } = fullName;
   public string DisplayFullName => this.FullPath;
 
 

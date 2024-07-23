@@ -4,16 +4,9 @@ namespace KSoft.Phoenix.Runtime
 	public class CondensedListInfo
 	{
 		public bool SerializeCapacity { get; set; }
-		public int IndexSize { get; set; }
-		public int MaxCount { get; set; }
-		public int DoneIndex { get; set; }
-
-		public CondensedListInfo()
-		{
-			IndexSize = sizeof(short);
-			MaxCount = ushort.MaxValue;
-			DoneIndex = -1;
-		}
+		public int IndexSize { get; set; } = sizeof(short);
+		public int MaxCount { get; set; } = ushort.MaxValue;
+		public int DoneIndex { get; set; } = -1;
 
 		public void StreamCapacity(IO.EndianStream s, ref int capacity)
 		{

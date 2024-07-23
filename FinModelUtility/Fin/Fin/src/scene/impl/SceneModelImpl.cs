@@ -4,13 +4,9 @@ using fin.model;
 namespace fin.scene;
 
 public partial class SceneImpl {
-  private class SceneModelImpl : ISceneModel {
+  private class SceneModelImpl(IReadOnlyModel model) : ISceneModel {
     private readonly ListDictionary<IReadOnlyBone, IReadOnlySceneModel>
         children_ = new();
-
-    public SceneModelImpl(IReadOnlyModel model) {
-      this.Model = model;
-    }
 
     public IReadOnlyListDictionary<IReadOnlyBone, IReadOnlySceneModel>
         Children => this.children_;
@@ -22,6 +18,6 @@ public partial class SceneImpl {
       return child;
     }
 
-    public IReadOnlyModel Model { get; }
+    public IReadOnlyModel Model { get; } = model;
   }
 }

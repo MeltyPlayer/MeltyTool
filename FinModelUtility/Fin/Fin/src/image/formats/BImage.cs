@@ -8,12 +8,8 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.image.formats;
 
-public abstract class BImage<TPixel> : IImage<TPixel>
+public abstract class BImage<TPixel>(PixelFormat format) : IImage<TPixel>
     where TPixel : unmanaged, IPixel<TPixel> {
-  protected BImage(PixelFormat format) {
-    this.PixelFormat = format;
-  }
-
   ~BImage() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
@@ -25,7 +21,7 @@ public abstract class BImage<TPixel> : IImage<TPixel>
 
   protected abstract Image<TPixel> Impl { get; }
 
-  public PixelFormat PixelFormat { get; }
+  public PixelFormat PixelFormat { get; } = format;
   public int Width => this.Impl.Width;
   public int Height => this.Impl.Height;
 

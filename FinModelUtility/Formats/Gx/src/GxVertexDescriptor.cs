@@ -4,16 +4,12 @@ using fin.math;
 
 namespace gx;
 
-public struct GxVertexDescriptor :
-    IEnumerable<(GxVertexAttribute, GxAttributeType?)> {
+public struct GxVertexDescriptor(uint value)
+    : IEnumerable<(GxVertexAttribute, GxAttributeType?)> {
   private IEnumerable<(GxVertexAttribute, GxAttributeType?)>?
       cachedEnumerable_;
-    
-  public GxVertexDescriptor(uint value) {
-    this.Value = value;
-  }
 
-  public uint Value { get; }
+  public uint Value { get; } = value;
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 

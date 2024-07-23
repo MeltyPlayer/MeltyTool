@@ -323,14 +323,9 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		[Meta.BProtoPowerReference]
-		public List<BProtoPowerID> SupportPowerIDs { get; private set; }
+		public List<BProtoPowerID> SupportPowerIDs { get; private set; } = new List<BProtoSquadID>();
 
 		public bool IsEmpty { get { return SupportPowerIDs.Count == 0; } }
-
-		public BLeaderSupportPower()
-		{
-			SupportPowerIDs = new List<BProtoSquadID>();
-		}
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

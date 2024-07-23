@@ -91,16 +91,12 @@ public class CubeMapImpl<TImage> : ICubeMap<TImage> where TImage : notnull {
   }
 }
 
-public class MipMap<TImage> : IMipMap<TImage> where TImage : notnull {
-  public MipMap() {
-    this.Levels = new List<IMipMapLevel<TImage>>();
-  }
+public class MipMap<TImage>(IList<IMipMapLevel<TImage>> levels)
+    : IMipMap<TImage>
+    where TImage : notnull {
+  public MipMap() : this(new List<IMipMapLevel<TImage>>()) { }
 
-  public MipMap(IList<IMipMapLevel<TImage>> levels) {
-    this.Levels = levels;
-  }
-
-  public IList<IMipMapLevel<TImage>> Levels { get; }
+  public IList<IMipMapLevel<TImage>> Levels { get; } = levels;
 
   public void AddLevel(IMipMapLevel<TImage> level) {
     this.Levels.Add(level);
@@ -122,15 +118,10 @@ public static class MipMapUtil {
       new MipMapLevel<IImage>(image, image.Width, image.Height);
 }
 
-public class MipMapLevel<TImage> : IMipMapLevel<TImage>
+public class MipMapLevel<TImage>(TImage impl, int width, int height)
+    : IMipMapLevel<TImage>
     where TImage : notnull {
-  public MipMapLevel(TImage impl, int width, int height) {
-    this.Impl = impl;
-    this.Width = width;
-    this.Height = height;
-  }
-
-  public TImage Impl { get; }
-  public int Width { get; }
-  public int Height { get; }
+  public TImage Impl { get; } = impl;
+  public int Width { get; } = width;
+  public int Height { get; } = height;
 }

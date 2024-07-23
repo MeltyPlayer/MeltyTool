@@ -17,17 +17,13 @@ public partial class ModelImpl<TVertex> {
     }
   }
 
-  private class ScrollingTextureImpl : BTextureImpl, IScrollingTexture {
-    public ScrollingTextureImpl(
-        int index,
-        IReadOnlyImage image,
-        float scrollSpeedX,
-        float scrollSpeedY) : base(index, [image]) {
-      this.ScrollSpeedX = scrollSpeedX;
-      this.ScrollSpeedY = scrollSpeedY;
-    }
-
-    public float ScrollSpeedX { get; }
-    public float ScrollSpeedY { get; }
+  private class ScrollingTextureImpl(
+      int index,
+      IReadOnlyImage image,
+      float scrollSpeedX,
+      float scrollSpeedY)
+      : BTextureImpl(index, [image]), IScrollingTexture {
+    public float ScrollSpeedX { get; } = scrollSpeedX;
+    public float ScrollSpeedY { get; } = scrollSpeedY;
   }
 }

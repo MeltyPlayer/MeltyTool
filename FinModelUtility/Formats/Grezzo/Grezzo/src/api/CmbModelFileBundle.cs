@@ -6,7 +6,13 @@ using fin.util.enumerables;
 
 namespace grezzo.api;
 
-public class CmbModelFileBundle : IModelFileBundle {
+public class CmbModelFileBundle(
+    string gameName,
+    IReadOnlyTreeFile cmbFile,
+    IReadOnlyList<IReadOnlyTreeFile>? csabFiles,
+    IReadOnlyList<IReadOnlyTreeFile>? ctxbFiles,
+    IReadOnlyList<IReadOnlyTreeFile>? shpaFiles)
+    : IModelFileBundle {
   public CmbModelFileBundle(string gameName,
                             IReadOnlyTreeFile cmbFile) :
       this(gameName, cmbFile, null, null, null) { }
@@ -16,19 +22,7 @@ public class CmbModelFileBundle : IModelFileBundle {
                             IReadOnlyList<IReadOnlyTreeFile>? csabFiles) :
       this(gameName, cmbFile, csabFiles, null, null) { }
 
-  public CmbModelFileBundle(string gameName,
-                            IReadOnlyTreeFile cmbFile,
-                            IReadOnlyList<IReadOnlyTreeFile>? csabFiles,
-                            IReadOnlyList<IReadOnlyTreeFile>? ctxbFiles,
-                            IReadOnlyList<IReadOnlyTreeFile>? shpaFiles) {
-      this.GameName = gameName;
-      this.CmbFile = cmbFile;
-      this.CsabFiles = csabFiles;
-      this.CtxbFiles = ctxbFiles;
-      this.ShpaFiles = shpaFiles;
-    }
-
-  public string GameName { get; }
+  public string GameName { get; } = gameName;
 
   public IReadOnlyTreeFile MainFile => this.CmbFile;
 
@@ -38,8 +32,8 @@ public class CmbModelFileBundle : IModelFileBundle {
            .ConcatIfNonnull(this.CtxbFiles)
            .ConcatIfNonnull(this.ShpaFiles);
 
-  public IReadOnlyTreeFile CmbFile { get; }
-  public IReadOnlyList<IReadOnlyTreeFile>? CsabFiles { get; }
-  public IReadOnlyList<IReadOnlyTreeFile>? CtxbFiles { get; }
-  public IReadOnlyList<IReadOnlyTreeFile>? ShpaFiles { get; }
+  public IReadOnlyTreeFile CmbFile { get; } = cmbFile;
+  public IReadOnlyList<IReadOnlyTreeFile>? CsabFiles { get; } = csabFiles;
+  public IReadOnlyList<IReadOnlyTreeFile>? CtxbFiles { get; } = ctxbFiles;
+  public IReadOnlyList<IReadOnlyTreeFile>? ShpaFiles { get; } = shpaFiles;
 }

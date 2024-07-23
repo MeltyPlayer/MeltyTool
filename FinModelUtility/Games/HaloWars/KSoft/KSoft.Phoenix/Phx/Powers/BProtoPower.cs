@@ -435,12 +435,7 @@ namespace KSoft.Phoenix.Phx
 		};
 		#endregion
 
-		public Collections.BListArray<BProtoPowerData> Data { get; private set; }
-
-		public BProtoPowerDataLevel()
-		{
-			Data = new Collections.BListArray<BProtoPowerData>();
-		}
+		public Collections.BListArray<BProtoPowerData> Data { get; private set; } = new Collections.BListArray<BProtoPowerData>();
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

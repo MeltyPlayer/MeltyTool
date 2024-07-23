@@ -120,17 +120,12 @@ namespace KSoft.Phoenix.Runtime
 			DoneIndex=int.MaxValue,
 		};
 
-		public List<CondensedListItem32<BConcept>> Concepts { get; private set; }
+		public List<CondensedListItem32<BConcept>> Concepts { get; private set; } = new List<CondensedListItem32<BConcept>>();
 		public float TimeSinceLastHint;
 		public bool HintMessageOn;
 		public int[] AllowedConcepts;
 		public float WaitForNextRescore;
 		public uint LastGameTime;
-
-		public BHintEngine()
-		{
-			Concepts = new List<CondensedListItem32<BConcept>>();
-		}
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)

@@ -28,21 +28,13 @@ namespace KSoft.Phoenix.Resource
 		/// <summary>Number of random words that follow the content payload</summary>
 		const int kRandomBlockWords = 0xA00;
 
-		FileFlags Flags;
-		internal SHA1CryptoServiceProvider ShaContext { get; set; }
+		FileFlags Flags = FileFlags.kAll;
+		internal SHA1CryptoServiceProvider ShaContext { get; set; } = new SHA1CryptoServiceProvider();
 
-		public MediaHeader Header { get; private set; }
+		public MediaHeader Header { get; private set; } = new MediaHeader();
 
 		public byte[] Content { get; set; }
 		byte[] PaddingBytes { get; set; }
-
-		public GameFile()
-		{
-			Flags = FileFlags.kAll;
-			ShaContext = new SHA1CryptoServiceProvider();
-
-			Header = new MediaHeader();
-		}
 
 		public void GenerateHash()
 		{

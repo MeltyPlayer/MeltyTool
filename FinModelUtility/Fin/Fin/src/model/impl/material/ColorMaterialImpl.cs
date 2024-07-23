@@ -13,12 +13,8 @@ public partial class ModelImpl<TVertex> {
     }
   }
 
-  private class ColorMaterialImpl : BMaterialImpl, IColorMaterial {
-    public ColorMaterialImpl(Color color) {
-      this.Color = color;
-    }
-
-    public Color Color { get; set; }
+  private class ColorMaterialImpl(Color color) : BMaterialImpl, IColorMaterial {
+    public Color Color { get; set; } = color;
 
     public override IEnumerable<ITexture> Textures
       => Enumerable.Empty<ITexture>();

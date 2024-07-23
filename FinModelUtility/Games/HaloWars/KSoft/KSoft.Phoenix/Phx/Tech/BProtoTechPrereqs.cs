@@ -4,16 +4,10 @@ namespace KSoft.Phoenix.Phx
 	public sealed class BProtoTechPrereqs
 		: IO.ITagElementStringNameStreamable
 	{
-		public Collections.BListArray<BProtoTechPrereqTechStatus> TechStatus { get; private set; }
-		public Collections.BListArray<BProtoTechPrereqTypeCount> TypeCounts { get; private set; }
+		public Collections.BListArray<BProtoTechPrereqTechStatus> TechStatus { get; private set; } = new Collections.BListArray<BProtoTechPrereqTechStatus>();
+		public Collections.BListArray<BProtoTechPrereqTypeCount> TypeCounts { get; private set; } = new Collections.BListArray<BProtoTechPrereqTypeCount>();
 
 		public bool IsNotEmpty { get { return TechStatus.Count > 0 || TypeCounts.Count > 0; } }
-
-		public BProtoTechPrereqs()
-		{
-			TechStatus = new Collections.BListArray<BProtoTechPrereqTechStatus>();
-			TypeCounts = new Collections.BListArray<BProtoTechPrereqTypeCount>();
-		}
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

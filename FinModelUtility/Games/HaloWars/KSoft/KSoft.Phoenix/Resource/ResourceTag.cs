@@ -10,13 +10,13 @@ namespace KSoft.Phoenix.Resource
 {
 	public sealed class ResourceTag
 	{
-		public DateTime TimeStamp { get; set; }
+		public DateTime TimeStamp { get; set; } = DateTime.MinValue;
 		public Values.KGuid Guid { get; set; }
 		public string MachineName { get; set; }
 		public string UserName { get; set; }
 
 		public string SourceFileName { get; private set; }
-		public byte[] SourceDigest { get; private set; }
+		public byte[] SourceDigest { get; private set; } = new byte[Security.Cryptography.PhxHash.kSha1SizeOf];
 		public long SourceFileSize { get; private set; }
 		public DateTime SourceFileTimeStamp { get; private set; }
 
@@ -24,12 +24,6 @@ namespace KSoft.Phoenix.Resource
 		public string CreatorToolCommandLine { get; set; }
 
 		public ResourceTagPlatformId PlatformId { get; set; }
-
-		public ResourceTag()
-		{
-			TimeStamp = DateTime.MinValue;
-			SourceDigest = new byte[Security.Cryptography.PhxHash.kSha1SizeOf];
-		}
 
 		public bool SetSourceFile(string fileName)
 		{

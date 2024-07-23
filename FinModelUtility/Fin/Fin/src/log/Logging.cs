@@ -46,23 +46,17 @@ public class Logging {
     => new Logger(Logging.FACTORY_.CreateLogger(categoryName));
 
 
-  private class Logger : ILogger {
-    private readonly MicrosoftLogger impl_;
-
-    public Logger(MicrosoftLogger impl) {
-      this.impl_ = impl;
-    }
-
+  private class Logger(MicrosoftLogger impl) : ILogger {
     public IDisposable BeginScope(string scope)
-      => Asserts.CastNonnull(this.impl_.BeginScope(scope));
+      => Asserts.CastNonnull(impl.BeginScope(scope));
 
     public void LogInformation(string message)
-      => this.impl_.LogInformation(message);
+      => impl.LogInformation(message);
 
     public void LogWarning(string message)
-      => this.impl_.LogWarning(message);
+      => impl.LogWarning(message);
 
     public void LogError(string message)
-      => this.impl_.LogError(message);
+      => impl.LogError(message);
   }
 }

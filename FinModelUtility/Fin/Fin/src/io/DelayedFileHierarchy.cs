@@ -71,16 +71,13 @@ public static partial class FileHierarchy {
     }
 
 
-    private class FileHierarchyDirectory
-        : BFileHierarchyIoObject,
+    private class FileHierarchyDirectory(
+        IFileHierarchy hierarchy,
+        ISystemDirectory impl)
+        : BFileHierarchyIoObject(hierarchy),
           IFileHierarchyDirectory {
-      public FileHierarchyDirectory(IFileHierarchy hierarchy,
-                                    ISystemDirectory impl) : base(hierarchy) {
-        this.Impl = impl;
-      }
-
       protected override ISystemIoObject Instance => this.Impl;
-      public ISystemDirectory Impl { get; }
+      public ISystemDirectory Impl { get; } = impl;
 
       public bool IsEmpty => this.Impl.IsEmpty;
 

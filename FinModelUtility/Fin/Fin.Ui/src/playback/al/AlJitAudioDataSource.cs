@@ -10,19 +10,15 @@ public partial class AlAudioManager {
         audioChannelsType,
         frequency);
 
-  private class AlJitAudioDataSource : IJitAudioDataSource<short> {
+  private class AlJitAudioDataSource(
+      AudioChannelsType audioChannelsType,
+      int frequency)
+      : IJitAudioDataSource<short> {
     private DateTime lastQueueTime_;
     private int lastLengthOfQueuedSamples_;
 
-    public AlJitAudioDataSource(
-        AudioChannelsType audioChannelsType,
-        int frequency) {
-      this.AudioChannelsType = audioChannelsType;
-      this.Frequency = frequency;
-    }
-
-    public AudioChannelsType AudioChannelsType { get; }
-    public int Frequency { get; }
+    public AudioChannelsType AudioChannelsType { get; } = audioChannelsType;
+    public int Frequency { get; } = frequency;
 
     public int LengthInQueuedSamples
       => this.CurrentTimeAndLengthInQueuedSamples_.Item2;

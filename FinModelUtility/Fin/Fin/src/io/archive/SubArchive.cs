@@ -15,27 +15,22 @@ public readonly struct SubArchiveContentFile : IArchiveContentFile {
   public required int Length { get; init; }
 }
 
-public class SubArchiveStream : IArchiveStream<SubArchiveContentFile> {
-  private readonly Stream impl_;
-
-  public SubArchiveStream(Stream impl) {
-    this.impl_ = impl;
-  }
-
+public class SubArchiveStream(Stream impl)
+    : IArchiveStream<SubArchiveContentFile> {
   public IBinaryReader AsBinaryReader()
-    => new SchemaBinaryReader(this.impl_);
+    => new SchemaBinaryReader(impl);
 
   public IBinaryReader AsBinaryReader(Endianness endianness)
-    => new SchemaBinaryReader(this.impl_, endianness);
+    => new SchemaBinaryReader(impl, endianness);
 
   public Stream GetContentFileStream(
       SubArchiveContentFile archiveContentFile)
-    => this.impl_.Substream(archiveContentFile.Position,
+    => impl.Substream(archiveContentFile.Position,
                             archiveContentFile.Length);
 
   public void CopyContentFileInto(SubArchiveContentFile archiveContentFile,
                                   Stream dstStream) {
-    this.impl_.Position = archiveContentFile.Position;
+    impl.Position = archiveContentFile.Position;
 
     Span<byte> buffer = stackalloc byte[81920];
     for (var i = 0; i < archiveContentFile.Length; i += buffer.Length) {
@@ -44,7 +39,7 @@ public class SubArchiveStream : IArchiveStream<SubArchiveContentFile> {
           ? buffer
           : buffer.Slice(0, remaining);
 
-      this.impl_.Read(target);
+      impl.Read(target);
       dstStream.Write(target);
     }
   }

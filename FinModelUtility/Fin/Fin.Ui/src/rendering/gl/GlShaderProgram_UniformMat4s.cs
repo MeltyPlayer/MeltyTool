@@ -19,15 +19,9 @@ public partial class GlShaderProgram {
       return Asserts.AsA<IShaderUniformArray<Matrix4x4>>(uniform);
     }
 
-  private class Mat4sShaderUniform
+  private class Mat4sShaderUniform(int location, int length)
       : BShaderUniform, IShaderUniformArray<Matrix4x4> {
-    private readonly int location_;
-    private readonly Matrix4x4[] value_;
-
-    public Mat4sShaderUniform(int location, int length) {
-        this.location_ = location;
-        this.value_ = new Matrix4x4[length];
-      }
+    private readonly Matrix4x4[] value_ = new Matrix4x4[length];
 
     public void SetAndMarkDirty(int index, in Matrix4x4 value) {
         this.value_[index] = value;
@@ -47,7 +41,7 @@ public partial class GlShaderProgram {
 
     protected override unsafe void PassValueToProgram() {
         fixed (Matrix4x4* mat = this.value_) {
-          GL.UniformMatrix4(this.location_,
+          GL.UniformMatrix4(location,
                             this.value_.Length,
                             false,
                             (float*) mat);

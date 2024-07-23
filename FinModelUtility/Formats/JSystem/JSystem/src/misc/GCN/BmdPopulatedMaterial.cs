@@ -150,16 +150,10 @@ public class BmdPopulatedMaterial : IPopulatedMaterial {
       this.BlendMode = mat3.BlendFunctions[entry.BlendModeIndex];
     }
 
-  private class TevOrderWrapper : ITevOrder {
-    private TevOrder impl_;
-
-    public TevOrderWrapper(TevOrder impl) {
-        this.impl_ = impl;
-      }
-
-    public GxTexCoord TexCoordId => this.impl_.TexCoordId;
-    public GxTexMap TexMap => this.impl_.TexMap;
-    public GxColorChannel ColorChannelId => this.impl_.ColorChannelId;
+  private class TevOrderWrapper(TevOrder impl) : ITevOrder {
+    public GxTexCoord TexCoordId => impl.TexCoordId;
+    public GxTexMap TexMap => impl.TexMap;
+    public GxColorChannel ColorChannelId => impl.ColorChannelId;
 
     public GxKonstColorSel KonstColorSel { get; set; }
     public GxKonstAlphaSel KonstAlphaSel { get; set; }

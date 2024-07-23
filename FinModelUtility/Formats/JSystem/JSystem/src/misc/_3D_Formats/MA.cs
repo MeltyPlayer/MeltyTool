@@ -10,18 +10,12 @@ using jsystem.schema.j3dgraph.bmd.jnt1;
 namespace jsystem._3D_Formats;
 
 public class MA {
-  public class Node {
-    public Node(
-        Jnt1Entry entry,
-        string name,
-        int parentJointIndex) {
-        this.Entry = entry;
-        this.Name = name;
-        this.ParentJointIndex = parentJointIndex;
-      }
-
-    public Jnt1Entry Entry { get; set; }
-    public string Name { get; set; }
-    public int ParentJointIndex { get; set; }
+  public class Node(
+      Jnt1Entry entry,
+      string name,
+      int parentJointIndex) {
+    public Jnt1Entry Entry { get; set; } = entry;
+    public string Name { get; set; } = name;
+    public int ParentJointIndex { get; set; } = parentJointIndex;
   }
 }

@@ -34,16 +34,10 @@ namespace UoT.hacks.fields {
 
 
   public class DiscreteField<T> : IDiscreteField<T> {
-    public class Builder {
-      private readonly string name_;
-
+    public class Builder(string name) {
       private IDiscreteValue<T>? defaultValue_;
 
       private readonly List<IDiscreteValue<T>> possibleValues_ = [];
-
-      public Builder(string name) {
-        this.name_ = name;
-      }
 
       public Builder AddPossibleValue(
           string name,
@@ -63,20 +57,15 @@ namespace UoT.hacks.fields {
         var defaultValue = this.defaultValue_ ?? this.possibleValues_[0];
 
         return new DiscreteField<T>(
-            this.name_,
+            name,
             defaultValue.Value,
             this.possibleValues_.AsReadOnly()
         );
       }
 
-      private class DiscreteValue : IDiscreteValue<T> {
-        public DiscreteValue(string name, T value) {
-          this.Name = name;
-          this.Value = value;
-        }
-
-        public string Name { get; }
-        public T Value { get; }
+      private class DiscreteValue(string name, T value) : IDiscreteValue<T> {
+        public string Name { get; } = name;
+        public T Value { get; } = value;
       }
     }
 

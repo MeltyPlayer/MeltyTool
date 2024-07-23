@@ -4,19 +4,16 @@ using schema.binary.attributes;
 namespace fin.schema.data;
 
 [BinarySchema]
-public partial class PassThruStringMagicUInt32SizedSection<T>
-    : IMagicSection<T> where T : IBinaryConvertible {
+public partial class PassThruStringMagicUInt32SizedSection<T>(
+    string magic,
+    T data) : IMagicSection<T>
+    where T : IBinaryConvertible {
   private string MagicAsserter_ => this.Magic;
 
   [Skip]
-  public string Magic { get; set; }
+  public string Magic { get; set; } = magic;
 
-  private readonly PassThruUInt32SizedSection<T> impl_;
-
-  public PassThruStringMagicUInt32SizedSection(string magic, T data) {
-    this.Magic = magic;
-    this.impl_ = new PassThruUInt32SizedSection<T>(data);
-  }
+  private readonly PassThruUInt32SizedSection<T> impl_ = new(data);
 
   [Skip]
   public int TweakReadSize {

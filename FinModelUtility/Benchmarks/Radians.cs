@@ -60,15 +60,11 @@ namespace benchmarks {
     }
 
 
-    public readonly struct ReadonlyRadiansFloat {
+    public readonly struct ReadonlyRadiansFloat(float radians) {
       private const float PI2 = MathF.PI * 2;
       private const float PI3 = MathF.PI * 3;
 
-      private readonly float radians_;
-
-      public ReadonlyRadiansFloat(float radians) {
-        this.radians_ = (((radians % PI2) + PI3) % PI2) - MathF.PI;
-      }
+      private readonly float radians_ = (((radians % PI2) + PI3) % PI2) - MathF.PI;
 
       public ReadonlyRadiansFloat Add(ReadonlyRadiansFloat other)
         => new(this.radians_ + other.radians_);
@@ -86,15 +82,11 @@ namespace benchmarks {
         => lhs.Subtract(rhs);
     }
 
-    public struct RadiansFloat {
+    public struct RadiansFloat(float radians) {
       private const float PI2 = MathF.PI * 2;
       private const float PI3 = MathF.PI * 3;
 
-      private readonly float radians_;
-
-      public RadiansFloat(float radians) {
-        this.radians_ = (((radians % PI2) + PI3) % PI2) - MathF.PI;
-      }
+      private readonly float radians_ = (((radians % PI2) + PI3) % PI2) - MathF.PI;
 
       public RadiansFloat Add(RadiansFloat other)
         => new(this.radians_ + other.radians_);

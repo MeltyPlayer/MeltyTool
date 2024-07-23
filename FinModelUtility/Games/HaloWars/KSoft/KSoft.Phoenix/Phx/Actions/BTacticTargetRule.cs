@@ -45,9 +45,10 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		[Meta.BDamageTypeReference]
-		public List<BDamageTypeID> DamageTypes { get; private set; }
+		public List<BDamageTypeID> DamageTypes { get; private set; } = new List<BDamageTypeID>();
+
 		[Meta.UnitReference]
-		public List<BProtoUnitID> TargetTypes { get; private set; }
+		public List<BProtoUnitID> TargetTypes { get; private set; } = new List<BProtoUnitID>();
 
 		#region ActionID
 		int mActionID = TypeExtensions.kNone;
@@ -59,8 +60,8 @@ namespace KSoft.Phoenix.Phx
 		}
 		#endregion
 
-		public Collections.BBitSet Flags { get; private set; }
-		public Collections.BBitSet TargetStates { get; private set; }
+		public Collections.BBitSet Flags { get; private set; } = new Collections.BBitSet(kFlagsParams);
+		public Collections.BBitSet TargetStates { get; private set; } = new Collections.BBitSet(kTargetStatesParams);
 
 		#region AbilityID
 		int mAbilityID = TypeExtensions.kNone;
@@ -73,15 +74,6 @@ namespace KSoft.Phoenix.Phx
 
 		public bool IsOptionalAbility { get; private set; }
 		#endregion
-
-		public BTacticTargetRule()
-		{
-			DamageTypes = new List<BDamageTypeID>();
-			TargetTypes = new List<BProtoUnitID>();
-
-			Flags = new Collections.BBitSet(kFlagsParams);
-			TargetStates = new Collections.BBitSet(kTargetStatesParams);
-		}
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

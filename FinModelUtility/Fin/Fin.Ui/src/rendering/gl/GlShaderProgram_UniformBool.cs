@@ -15,13 +15,9 @@ public partial class GlShaderProgram {
     return Asserts.AsA<IShaderUniform<bool>>(uniform);
   }
 
-  private class BoolShaderUniform : BShaderUniform, IShaderUniform<bool> {
-    private readonly int location_;
+  private class BoolShaderUniform(int location)
+      : BShaderUniform, IShaderUniform<bool> {
     private bool value_;
-
-    public BoolShaderUniform(int location) {
-      this.location_ = location;
-    }
 
     public void SetAndMarkDirty(in bool value) {
       this.value_ = value;
@@ -38,6 +34,6 @@ public partial class GlShaderProgram {
     }
 
     protected override void PassValueToProgram()
-      => GL.Uniform1(this.location_, this.value_ ? 1 : 0);
+      => GL.Uniform1(location, this.value_ ? 1 : 0);
   }
 }

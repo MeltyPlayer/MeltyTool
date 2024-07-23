@@ -132,65 +132,46 @@ namespace HaloWarsTools {
       return finModel;
     }
 
-    private readonly struct GridVertexGenerator : IAction {
-      private readonly byte[] bytes_;
-      private readonly IReadOnlyList<NormalUvVertexImpl> vertices_;
-      private readonly int gridSize_;
-      private readonly float tileScale_;
-      private readonly int positionOffset_;
-      private readonly int normalOffset_;
-      private readonly Vector3 posCompMin_;
-      private readonly Vector3 posCompRange_;
-
-      public GridVertexGenerator(
-          byte[] bytes,
-          IReadOnlyList<NormalUvVertexImpl> vertices,
-          int gridSize,
-          float tileScale,
-          int positionOffset,
-          int normalOffset,
-          Vector3 posCompMin,
-          Vector3 posCompRange) {
-        this.bytes_ = bytes;
-        this.vertices_ = vertices;
-        this.gridSize_ = gridSize;
-        this.tileScale_ = tileScale;
-        this.positionOffset_ = positionOffset;
-        this.normalOffset_ = normalOffset;
-        this.posCompMin_ = posCompMin;
-        this.posCompRange_ = posCompRange;
-      }
-
+    private readonly struct GridVertexGenerator(
+        byte[] bytes,
+        IReadOnlyList<NormalUvVertexImpl> vertices,
+        int gridSize,
+        float tileScale,
+        int positionOffset,
+        int normalOffset,
+        Vector3 posCompMin,
+        Vector3 posCompRange)
+        : IAction {
       [MethodImpl(MethodImplOptions.AggressiveInlining)]
       public void Invoke(int index) {
-        var x = index % this.gridSize_;
-        var z = (index - x) / this.gridSize_;
+        var x = index % gridSize;
+        var z = (index - x) / gridSize;
 
         int offset = index * 4;
 
         // Get offset position and normal for this vertex
         Vector3 position =
             ReadVector3Compressed(
-                this.bytes_.AsSpan(this.positionOffset_ + offset, 4)) *
-            this.posCompRange_ -
-            this.posCompMin_;
+                bytes.AsSpan(positionOffset + offset, 4)) *
+            posCompRange -
+            posCompMin;
 
         // Positions are relative to the terrain grid, so shift them by the grid position
-        position += new Vector3(x, 0, z) * this.tileScale_;
+        position += new Vector3(x, 0, z) * tileScale;
 
         Vector3 normal =
             ConvertDirectionVector(
                 Vector3.Normalize(
                     ReadVector3Compressed(
-                        this.bytes_.AsSpan(this.normalOffset_ + offset, 4)) *
+                        bytes.AsSpan(normalOffset + offset, 4)) *
                     2.0f -
                     Vector3.One));
 
         // Simple UV based on original, non-warped terrain grid
-        var texCoord = new Vector2(x / ((float) this.gridSize_ - 1),
-                                       z / ((float) this.gridSize_ - 1));
+        var texCoord = new Vector2(x / ((float) gridSize - 1),
+                                       z / ((float) gridSize - 1));
 
-        var vertex = this.vertices_[index];
+        var vertex = vertices[index];
         vertex.SetLocalPosition(position);
         vertex.SetLocalNormal(normal);
         vertex.SetUv(texCoord);

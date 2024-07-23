@@ -18,14 +18,9 @@ public partial class GlShaderProgram {
     return Asserts.AsA<IShaderUniform<Matrix3x2>>(uniform);
   }
 
-  private class Mat3x2ShaderUniform
+  private class Mat3x2ShaderUniform(int location)
       : BShaderUniform, IShaderUniform<Matrix3x2> {
-    private readonly int location_;
     private Matrix3x2 value_;
-
-    public Mat3x2ShaderUniform(int location) {
-      this.location_ = location;
-    }
 
     public void SetAndMarkDirty(in Matrix3x2 value) {
       this.value_ = value;
@@ -43,7 +38,7 @@ public partial class GlShaderProgram {
 
     protected override unsafe void PassValueToProgram() {
       fixed (float* ptr = &this.value_.M11) {
-        GL.UniformMatrix3x2(this.location_, 1, false, ptr);
+        GL.UniformMatrix3x2(location, 1, false, ptr);
       }
     }
   }

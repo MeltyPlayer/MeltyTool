@@ -126,12 +126,9 @@ public abstract class BScalarValue : IScalarValue {
     };
 }
 
-public class ScalarExpression : BScalarValue, IScalarExpression {
-  public ScalarExpression(IReadOnlyList<IScalarValue> terms) {
-    this.Terms = terms;
-  }
-
-  public IReadOnlyList<IScalarValue> Terms { get; }
+public class ScalarExpression(IReadOnlyList<IScalarValue> terms)
+    : BScalarValue, IScalarExpression {
+  public IReadOnlyList<IScalarValue> Terms { get; } = terms;
 
   public override IScalarExpression Add(
       IScalarValue term1,
@@ -147,16 +144,12 @@ public class ScalarExpression : BScalarValue, IScalarExpression {
                                 this.NegateTerms(term1, terms)));
 }
 
-public class ScalarTerm : BScalarValue, IScalarTerm {
-  public ScalarTerm(
-      IReadOnlyList<IScalarValue> numeratorFactors,
-      IReadOnlyList<IScalarValue>? denominatorFactors = null) {
-    this.NumeratorFactors = numeratorFactors;
-    this.DenominatorFactors = denominatorFactors;
-  }
-
-  public IReadOnlyList<IScalarValue> NumeratorFactors { get; }
-  public IReadOnlyList<IScalarValue>? DenominatorFactors { get; }
+public class ScalarTerm(
+    IReadOnlyList<IScalarValue> numeratorFactors,
+    IReadOnlyList<IScalarValue>? denominatorFactors = null)
+    : BScalarValue, IScalarTerm {
+  public IReadOnlyList<IScalarValue> NumeratorFactors { get; } = numeratorFactors;
+  public IReadOnlyList<IScalarValue>? DenominatorFactors { get; } = denominatorFactors;
 
   public override IScalarTerm Multiply(
       IScalarValue factor1,
@@ -174,15 +167,11 @@ public class ScalarTerm : BScalarValue, IScalarTerm {
                           ListUtil.ReadonlyFrom(factor1, factors)));
 }
 
-public class ScalarConstant : BScalarValue, IScalarConstant {
+public class ScalarConstant(double value) : BScalarValue, IScalarConstant {
   public static readonly ScalarConstant ONE = new(1);
   public static readonly ScalarConstant NEGATIVE_ONE = new(-1);
 
-  public ScalarConstant(double value) {
-    this.Value = value;
-  }
-
-  public double Value { get; }
+  public double Value { get; } = value;
 
   public override string ToString() => $"{this.Value}";
 

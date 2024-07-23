@@ -2,20 +2,14 @@
 
 namespace modl.schema.modl.common;
 
-public abstract class BPosMatIdxMap : IBinaryDeserializable {
-  private readonly int tenCount_;
-  private readonly int[] impl_;
-
-  protected BPosMatIdxMap(int tenCount) {
-    this.tenCount_ = tenCount;
-    this.impl_ = new int[tenCount * 10];
-  }
+public abstract class BPosMatIdxMap(int tenCount) : IBinaryDeserializable {
+  private readonly int[] impl_ = new int[tenCount * 10];
 
   public void Read(IBinaryReader br) {
     // This may look simple, but it was an ABSOLUTE nightmare to reverse engineer, lol.
     var currentPosMatIdx = 0;
     var currentOffset = 0;
-    for (var i = 0; i < this.tenCount_; ++i) {
+    for (var i = 0; i < tenCount; ++i) {
       var posMatIdxOffsetFlags = br.ReadUInt32();
 
       // Loops over each bit in the offset.

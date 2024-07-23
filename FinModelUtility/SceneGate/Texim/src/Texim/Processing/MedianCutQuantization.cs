@@ -102,13 +102,11 @@ namespace Texim.Processing
                 (byte)bucket.Average(c => c.Color.Green),
                 (byte)bucket.Average(c => c.Color.Blue));
 
-        private readonly struct PixelRef
+        private readonly struct PixelRef(Rgb color, int index)
         {
-            public PixelRef(Rgb color, int index) => (Color, Index) = (color, index);
+            public Rgb Color { get; init; } = color;
 
-            public Rgb Color { get; init; }
-
-            public int Index { get; init; }
+            public int Index { get; init; } = index;
         }
     }
 }

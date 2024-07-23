@@ -9,22 +9,17 @@ namespace fin.data;
 /// <summary>
 ///   A list that stores values in one type but enumerates them as another.
 /// </summary>
-public class CastListView<TFrom, TTo> : IReadOnlyList<TTo>
+public class CastListView<TFrom, TTo>(IReadOnlyList<TFrom> impl)
+    : IReadOnlyList<TTo>
     where TFrom : TTo {
-  private readonly IReadOnlyList<TFrom> impl_;
-
-  public CastListView(IReadOnlyList<TFrom> impl) {
-    this.impl_ = impl;
-  }
-
   public int Count {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => this.impl_.Count;
+    get => impl.Count;
   }
 
   public TTo this[int index] {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => this.impl_[index];
+    get => impl[index];
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32,5 +27,5 @@ public class CastListView<TFrom, TTo> : IReadOnlyList<TTo>
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IEnumerator<TTo> GetEnumerator()
-    => this.impl_.CastTo<TFrom, TTo>().GetEnumerator();
+    => impl.CastTo<TFrom, TTo>().GetEnumerator();
 }

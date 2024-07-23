@@ -21,19 +21,12 @@ namespace Texim.Images
 {
     using Colors;
 
-    public class FullImage : IFullImage
+    public class FullImage(int width, int height) : IFullImage
     {
-        public FullImage(int width, int height)
-        {
-            Width = width;
-            Height = height;
-            Pixels = new Rgb[width * height];
-        }
+        public int Width { get; init; } = width;
 
-        public int Width { get; init; }
+        public int Height { get; init; } = height;
 
-        public int Height { get; init; }
-
-        public Rgb[] Pixels { get; init; }
+        public Rgb[] Pixels { get; init; } = new Rgb[width * height];
     }
 }

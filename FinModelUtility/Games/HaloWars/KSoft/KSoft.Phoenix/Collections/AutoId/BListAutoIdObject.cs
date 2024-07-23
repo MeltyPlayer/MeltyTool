@@ -6,7 +6,7 @@ namespace KSoft.Collections
 		: ObjectModel.BasicViewModel
 		, IListAutoIdObject
 	{
-		private string mName;
+		private string mName = Phoenix.Phx.BDatabaseBase.kInvalidString;
 		[Browsable(false)]
 		public string Name
 		{
@@ -18,11 +18,6 @@ namespace KSoft.Collections
 					OnPropertyChanged(nameof(IListAutoIdObject.Data));
 				}
 			}
-		}
-
-		protected BListAutoIdObject()
-		{
-			mName = Phoenix.Phx.BDatabaseBase.kInvalidString;
 		}
 
 		#region IListAutoIdObject Members

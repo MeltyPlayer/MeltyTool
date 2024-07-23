@@ -15,17 +15,12 @@ public interface ISwitchMagicConfig<TMagic, TData>
 ///   be adequate for most cases, except when the data class needs to access
 ///   parent data.
 /// </summary>
-public class SwitchMagicUInt32SizedSection<TMagic, TData>
+public class SwitchMagicUInt32SizedSection<TMagic, TData>(
+    ISwitchMagicConfig<TMagic, TData> config)
     : IMagicSection<TMagic, TData>
     where TMagic : notnull
     where TData : IBinaryConvertible {
-  private readonly ISwitchMagicConfig<TMagic, TData> config_;
   private readonly PassThruUInt32SizedSection<TData> impl_ = new(default!);
-
-  public SwitchMagicUInt32SizedSection(
-      ISwitchMagicConfig<TMagic, TData> config) {
-    this.config_ = config;
-  }
 
   public int TweakReadSize {
     get => this.impl_.TweakReadSize;
@@ -37,13 +32,13 @@ public class SwitchMagicUInt32SizedSection<TMagic, TData>
   public TData Data => this.impl_.Data;
 
   public void Read(IBinaryReader br) {
-    this.Magic = this.config_.ReadMagic(br);
-    this.impl_.Data = this.config_.CreateData(this.Magic);
+    this.Magic = config.ReadMagic(br);
+    this.impl_.Data = config.CreateData(this.Magic);
     this.impl_.Read(br);
   }
 
   public void Write(IBinaryWriter bw) {
-    this.config_.WriteMagic(bw, this.Magic);
+    config.WriteMagic(bw, this.Magic);
     this.impl_.Write(bw);
   }
 

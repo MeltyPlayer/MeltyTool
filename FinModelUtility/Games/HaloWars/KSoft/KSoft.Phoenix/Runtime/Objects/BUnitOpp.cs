@@ -17,7 +17,7 @@ namespace KSoft.Phoenix.Runtime
 		};
 
 		public BVector[] Path;
-		public BSimTarget Target { get; private set; }
+		public BSimTarget Target { get; private set; } = new BSimTarget();
 		public BEntityID Source;
 		public BUnitOppID ID;
 		public BUnitOppType Type;
@@ -30,11 +30,6 @@ namespace KSoft.Phoenix.Runtime
 			ForceLeash, Trigger, RemoveActions,
 			Complete, CompleteValue, PreserveDPS,
 			MustComplete, UserDataSet;
-
-		public BUnitOpp()
-		{
-			Target = new BSimTarget();
-		}
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)

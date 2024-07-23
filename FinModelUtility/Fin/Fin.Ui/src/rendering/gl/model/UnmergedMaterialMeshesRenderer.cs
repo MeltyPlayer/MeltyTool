@@ -3,20 +3,15 @@ using fin.model;
 
 namespace fin.ui.rendering.gl.model;
 
-public class UnmergedMaterialMeshesRenderer : IModelRenderer {
+public class UnmergedMaterialMeshesRenderer(
+    IReadOnlyModel model,
+    IReadOnlyTextureTransformManager? textureTransformManager = null)
+    : IModelRenderer {
   private GlBufferManager? bufferManager_;
-  private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
 
   private readonly
       List<(IReadOnlyMesh, List<MergedMaterialPrimitivesByMeshRenderer>)>
       materialMeshRenderers_ = new();
-
-  public UnmergedMaterialMeshesRenderer(
-      IReadOnlyModel model,
-      IReadOnlyTextureTransformManager? textureTransformManager = null) {
-    this.Model = model;
-    this.textureTransformManager_ = textureTransformManager;
-  }
 
   // Generates buffer manager and model within the current GL context.
   private void GenerateModelIfNull_() {
@@ -38,7 +33,7 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
                       out var mergedPrimitive)) {
 
                 currentList.Add(new MergedMaterialPrimitivesByMeshRenderer(
-                                    this.textureTransformManager_,
+                                    textureTransformManager,
                                     this.bufferManager_,
                                     this.Model,
                                     material,
@@ -92,7 +87,7 @@ public class UnmergedMaterialMeshesRenderer : IModelRenderer {
     this.bufferManager_?.Dispose();
   }
 
-  public IReadOnlyModel Model { get; }
+  public IReadOnlyModel Model { get; } = model;
 
   public IReadOnlySet<IReadOnlyMesh>? HiddenMeshes { get; set; }
 

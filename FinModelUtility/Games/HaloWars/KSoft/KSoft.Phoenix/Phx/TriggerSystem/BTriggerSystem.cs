@@ -55,20 +55,12 @@ namespace KSoft.Phoenix.Phx
 		int mNextEffectID = TypeExtensions.kNone;
 		bool mExternal;
 
-		public Collections.BListAutoId<BTriggerGroup> Groups { get; private set; }
+		public Collections.BListAutoId<BTriggerGroup> Groups { get; private set; } = new Collections.BListAutoId<BTriggerGroup>();
 
-		public Collections.BListAutoId<BTriggerVar> Vars { get; private set; }
-		public Collections.BListAutoId<BTrigger> Triggers { get; private set; }
+		public Collections.BListAutoId<BTriggerVar> Vars { get; private set; } = new Collections.BListAutoId<BTriggerVar>();
+		public Collections.BListAutoId<BTrigger> Triggers { get; private set; } = new Collections.BListAutoId<BTrigger>();
 
 		public BTriggerEditorData EditorData { get; private set; }
-
-		public BTriggerSystem()
-		{
-			Groups = new Collections.BListAutoId<BTriggerGroup>();
-
-			Vars = new Collections.BListAutoId<BTriggerVar>();
-			Triggers = new Collections.BListAutoId<BTrigger>();
-		}
 
 		#region Database interfaces
 		Dictionary<int, BTriggerGroup> mDbiGroups;

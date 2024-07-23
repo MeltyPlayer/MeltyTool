@@ -2,17 +2,14 @@
 using fin.model.io;
 
 namespace hw.api {
-  public class XtdModelFileBundle : IHaloWarsFileBundle, IModelFileBundle {
-    public XtdModelFileBundle(IReadOnlyTreeFile xtdFile,
-                              IReadOnlyTreeFile xttFile) {
-      this.XtdFile = xtdFile;
-      this.XttFile = xttFile;
-    }
-
+  public class XtdModelFileBundle(
+      IReadOnlyTreeFile xtdFile,
+      IReadOnlyTreeFile xttFile)
+      : IHaloWarsFileBundle, IModelFileBundle {
     public string GameName => "halo_wars";
     public IReadOnlyTreeFile MainFile => this.XtdFile;
-    public IReadOnlyTreeFile XttFile { get; }
-    public IReadOnlyTreeFile XtdFile { get; }
+    public IReadOnlyTreeFile XttFile { get; } = xttFile;
+    public IReadOnlyTreeFile XtdFile { get; } = xtdFile;
 
     public bool UseLowLevelExporter => true;
     public bool ForceGarbageCollection => true;

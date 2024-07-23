@@ -140,37 +140,26 @@ public partial class FixedFunctionEquations<TIdentifier> {
   }
 
 
-  private class ColorNamedValueSwizzle : BScalarValue,
-                                         IColorNamedValueSwizzle<
-                                             TIdentifier> {
-    public ColorNamedValueSwizzle(
-        IColorIdentifiedValue<TIdentifier> source,
-        ColorSwizzle swizzleType) {
-      this.Source = source;
-      this.SwizzleType = swizzleType;
-    }
-
-    public IColorIdentifiedValue<TIdentifier> Source { get; }
-    public ColorSwizzle SwizzleType { get; }
+  private class ColorNamedValueSwizzle(
+      IColorIdentifiedValue<TIdentifier> source,
+      ColorSwizzle swizzleType)
+      : BScalarValue,
+        IColorNamedValueSwizzle<
+            TIdentifier> {
+    public IColorIdentifiedValue<TIdentifier> Source { get; } = source;
+    public ColorSwizzle SwizzleType { get; } = swizzleType;
   }
 }
 
-public class ColorValueSwizzle : BScalarValue, IColorValueSwizzle {
-  public ColorValueSwizzle(IColorValue source, ColorSwizzle swizzleType) {
-    this.Source = source;
-    this.SwizzleType = swizzleType;
-  }
-
-  public IColorValue Source { get; }
-  public ColorSwizzle SwizzleType { get; }
+public class ColorValueSwizzle(IColorValue source, ColorSwizzle swizzleType)
+    : BScalarValue, IColorValueSwizzle {
+  public IColorValue Source { get; } = source;
+  public ColorSwizzle SwizzleType { get; } = swizzleType;
 }
 
-public class ColorExpression : BColorValue, IColorExpression {
-  public ColorExpression(IReadOnlyList<IColorValue> terms) {
-    this.Terms = terms;
-  }
-
-  public IReadOnlyList<IColorValue> Terms { get; }
+public class ColorExpression(IReadOnlyList<IColorValue> terms)
+    : BColorValue, IColorExpression {
+  public IReadOnlyList<IColorValue> Terms { get; } = terms;
 
   public IColorExpression Add(
       IColorValue term1,

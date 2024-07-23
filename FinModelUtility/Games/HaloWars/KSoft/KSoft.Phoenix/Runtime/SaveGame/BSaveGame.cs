@@ -24,26 +24,15 @@ namespace KSoft.Phoenix.Runtime
 //		, IO.IIndentedTextWritable
 	{
 		int SaveFileType;
-		public BDatabase Database { get; private set; }
+		public BDatabase Database { get; private set; } = new BDatabase();
 
-		public List<BSavePlayer> Players { get; private set; }
-		public List<BSaveTeam> Teams { get; private set; }
-		public BSaveUser UserSave { get; private set; }
+		public List<BSavePlayer> Players { get; private set; } = new List<BSavePlayer>();
+		public List<BSaveTeam> Teams { get; private set; } = new List<BSaveTeam>();
+		public BSaveUser UserSave { get; private set; } = new BSaveUser();
 
-		public BWorld World { get; private set; }
-		public BUIManager UIManager { get; private set; }
-		public BUser User { get; private set; }
-
-		public BSaveGame()
-		{
-			Database = new BDatabase();
-			Players = new List<BSavePlayer>();
-			Teams = new List<BSaveTeam>();
-			UserSave = new BSaveUser();
-			World = new BWorld();
-			UIManager = new BUIManager();
-			User = new BUser();
-		}
+		public BWorld World { get; private set; } = new BWorld();
+		public BUIManager UIManager { get; private set; } = new BUIManager();
+		public BUser User { get; private set; } = new BUser();
 
 		#region IEndianStreamSerializable Members
 		void SerializeSetup(IO.EndianStream s)

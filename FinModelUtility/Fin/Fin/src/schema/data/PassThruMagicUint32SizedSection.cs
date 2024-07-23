@@ -4,21 +4,15 @@ using schema.binary;
 
 namespace fin.schema.data;
 
-public class PassThruMagicUInt32SizedSection<TMagic, TData>
+public class PassThruMagicUInt32SizedSection<TMagic, TData>(
+    IMagicConfig<TMagic, TData> config,
+    TData data)
     : IMagicSection<TMagic, TData>
     where TMagic : notnull
     where TData : IBinaryConvertible {
-  private IMagicConfig<TMagic, TData> config_;
-  private readonly PassThruUInt32SizedSection<TData> impl_;
+  private readonly PassThruUInt32SizedSection<TData> impl_ = new(data);
 
-  public PassThruMagicUInt32SizedSection(IMagicConfig<TMagic, TData> config,
-                                         TData data) {
-    this.config_ = config;
-    this.impl_ = new PassThruUInt32SizedSection<TData>(data);
-    this.Magic = config.GetMagic(data);
-  }
-
-  public TMagic Magic { get; }
+  public TMagic Magic { get; } = config.GetMagic(data);
   public uint Size => this.impl_.Size;
 
   public int TweakReadSize {
@@ -33,13 +27,13 @@ public class PassThruMagicUInt32SizedSection<TMagic, TData>
   }
 
   public void Read(IBinaryReader br) {
-    var actualMagic = this.config_.ReadMagic(br);
+    var actualMagic = config.ReadMagic(br);
     Asserts.Equal(this.Magic, actualMagic);
     this.impl_.Read(br);
   }
 
   public void Write(IBinaryWriter bw) {
-    this.config_.WriteMagic(bw, this.Magic);
+    config.WriteMagic(bw, this.Magic);
     this.impl_.Write(bw);
   }
 }

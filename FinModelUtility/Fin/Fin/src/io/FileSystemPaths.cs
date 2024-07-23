@@ -68,12 +68,8 @@ public class FileSystemPaths : IFileSystemPaths {
     return root;
   }
 
-  private class SubdirPaths : ISubdirPaths {
-    public SubdirPaths(string absoluteSubdirPath) {
-      this.AbsoluteSubdirPath = absoluteSubdirPath;
-    }
-
-    public string AbsoluteSubdirPath { get; }
+  private class SubdirPaths(string absoluteSubdirPath) : ISubdirPaths {
+    public string AbsoluteSubdirPath { get; } = absoluteSubdirPath;
 
     public IReadOnlyCollection<string> AbsoluteFilePaths => AbsoluteFilePathsImpl;
     public IReadOnlyCollection<ISubdirPaths> Subdirs => SubdirsImpl;

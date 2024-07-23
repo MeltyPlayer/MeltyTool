@@ -44,9 +44,7 @@ public struct JankTileDescriptor : IReadOnlyTileDescriptor {
 ///   References:
 ///   https://github.com/Emill/n64-fast3d-engine/blob/master/gfx_pc.c#L605
 /// </summary>
-public class JankTmem : ITmem {
-  private readonly IN64Hardware n64Hardware_;
-
+public class JankTmem(IN64Hardware n64Hardware) : ITmem {
   private class SetTextureImageParams {
     public uint SegmentedAddress { get; set; }
     public N64ColorFormat ColorFormat { get; set; }
@@ -82,10 +80,6 @@ public class JankTmem : ITmem {
   private readonly TextureParams[] textureParams_ = new TextureParams[2];
   private readonly bool[] texturesChanged_ = [true, true];
 
-  public JankTmem(IN64Hardware n64Hardware) {
-    this.n64Hardware_ = n64Hardware;
-  }
-
   public void GsDpLoadBlock(ushort uls,
                             ushort ult,
                             TileDescriptorIndex tileDescriptor,
@@ -108,7 +102,7 @@ public class JankTmem : ITmem {
   public void GsDpLoadTlut(TileDescriptorIndex tileDescriptor,
                            uint numColorsToLoad) {
     if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
-      this.n64Hardware_.Rdp.PaletteSegmentedAddress =
+      n64Hardware.Rdp.PaletteSegmentedAddress =
           this.setTextureImageParams_.SegmentedAddress;
     }
   }
@@ -156,8 +150,8 @@ public class JankTmem : ITmem {
                           uint maxExtraMipmapLevels,
                           TileDescriptorIndex tileDescriptor,
                           TileDescriptorState tileDescriptorState) {
-    this.n64Hardware_.Rsp.TexScaleXShort = scaleS;
-    this.n64Hardware_.Rsp.TexScaleYShort = scaleT;
+    n64Hardware.Rsp.TexScaleXShort = scaleS;
+    n64Hardware.Rsp.TexScaleYShort = scaleT;
   }
 
   public void GsDpSetTextureImage(N64ColorFormat colorFormat,
@@ -174,8 +168,8 @@ public class JankTmem : ITmem {
     return new MaterialParams {
         TextureParams0 = this.GetOrCreateTextureParamsForTile_(0),
         TextureParams1 = this.GetOrCreateTextureParamsForTile_(1),
-        CombinerCycleParams0 = this.n64Hardware_.Rdp.CombinerCycleParams0,
-        CombinerCycleParams1 = this.n64Hardware_.Rdp.CombinerCycleParams1,
+        CombinerCycleParams0 = n64Hardware.Rdp.CombinerCycleParams0,
+        CombinerCycleParams1 = n64Hardware.Rdp.CombinerCycleParams1,
         CullingMode = this.cullingMode_
     };
   }
@@ -192,7 +186,7 @@ public class JankTmem : ITmem {
     textureParams.BitsPerTexel = this.textureTile_.BitsPerTexel;
 
     textureParams.UvType =
-        this.n64Hardware_.Rsp.GeometryMode.GetUvType();
+        n64Hardware.Rsp.GeometryMode.GetUvType();
     textureParams.SegmentedAddress = loadedTexture.SegmentedAddress;
     textureParams.WrapModeS = this.textureTile_.WrapModeS;
     textureParams.WrapModeT = this.textureTile_.WrapModeT;

@@ -11,9 +11,7 @@ namespace fin.util.asserts;
  * NOTE: Using $"" to define messages allocates strings, and can be expensive!
  * Try to avoid allocating strings unless an assertion actually fails.
  */
-public class AssertionException : Exception {
-  public AssertionException(string message) : base(message) { }
-
+public class AssertionException(string message) : Exception(message) {
   public override string StackTrace {
     get {
       List<string> stackTrace = [];

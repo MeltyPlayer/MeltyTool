@@ -21,55 +21,27 @@ namespace Texim.Colors
 {
     using System.Drawing;
 
-    public readonly struct Rgb
+    public readonly struct Rgb(byte red, byte green, byte blue, byte alpha)
     {
-        public Rgb(Color color)
-        {
-            Alpha = color.A;
-            Red = color.R;
-            Green = color.G;
-            Blue = color.B;
-        }
+        public Rgb(Color color) : this(color.R, color.G, color.B, color.A)
+        { }
 
-        public Rgb(SixLabors.ImageSharp.PixelFormats.Rgba32 color)
-        {
-            Alpha = color.A;
-            Red = color.R;
-            Green = color.G;
-            Blue = color.B;
-        }
+        public Rgb(SixLabors.ImageSharp.PixelFormats.Rgba32 color) : this(color.R, color.G, color.B, color.A)
+        { }
 
-        public Rgb(Rgb color, byte alpha)
-        {
-            Alpha = alpha;
-            Red = color.Red;
-            Green = color.Green;
-            Blue = color.Blue;
-        }
+        public Rgb(Rgb color, byte alpha) : this(color.Red, color.Green, color.Blue, alpha)
+        { }
 
-        public Rgb(byte red, byte green, byte blue)
-        {
-            Alpha = 255;
-            Red = red;
-            Green = green;
-            Blue = blue;
-        }
+        public Rgb(byte red, byte green, byte blue) : this(red, green, blue, 255)
+        { }
 
-        public Rgb(byte red, byte green, byte blue, byte alpha)
-        {
-            Alpha = alpha;
-            Red = red;
-            Green = green;
-            Blue = blue;
-        }
+        public byte Red { get; init; } = red;
 
-        public byte Red { get; init; }
+        public byte Green { get; init; } = green;
 
-        public byte Green { get; init; }
+        public byte Blue { get; init; } = blue;
 
-        public byte Blue { get; init; }
-
-        public byte Alpha { get; init; }
+        public byte Alpha { get; init; } = alpha;
 
         public readonly Color ToColor() =>
             Color.FromArgb(Alpha, Red, Green, Blue);

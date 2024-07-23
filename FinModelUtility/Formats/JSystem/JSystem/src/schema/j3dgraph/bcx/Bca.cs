@@ -214,14 +214,9 @@ public partial class Bca : IBcx {
             }
           }
 
-        private sealed class Key : IJointAnimKey {
-          public Key(int frame, float value) {
-              this.Frame = frame;
-              this.Value = value;
-            }
-
-          public int Frame { get; }
-          public float Value { get; }
+        private sealed class Key(int frame, float value) : IJointAnimKey {
+          public int Frame { get; } = frame;
+          public float Value { get; } = value;
         }
       }
     }

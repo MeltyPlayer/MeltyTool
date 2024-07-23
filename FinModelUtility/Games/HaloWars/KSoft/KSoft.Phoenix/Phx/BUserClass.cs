@@ -25,12 +25,7 @@ namespace KSoft.Phoenix.Phx
 		int mDbId = TypeExtensions.kNone;
 		public int DbId { get { return mDbId; } }
 
-		public Collections.BListAutoId<BUserClassField> Fields { get; private set; }
-
-		public BUserClass()
-		{
-			Fields = new Collections.BListAutoId<BUserClassField>();
-		}
+		public Collections.BListAutoId<BUserClassField> Fields { get; private set; } = new Collections.BListAutoId<BUserClassField>();
 
 		#region BListAutoIdObject Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)

@@ -23,10 +23,8 @@ public interface IF3dVertices {
   Color DiffuseColor { get; set; }
 }
 
-public class F3dVertices : IF3dVertices {
-  private readonly IN64Hardware n64Hardware_;
-  private readonly ModelImpl model_;
-
+public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
+    : IF3dVertices {
   private const int VERTEX_COUNT = 32;
 
   private readonly F3dVertex[] vertexDefinitions_ =
@@ -39,11 +37,6 @@ public class F3dVertices : IF3dVertices {
   private Color diffuseColor_ = Color.White;
 
 
-  public F3dVertices(IN64Hardware n64Hardware, ModelImpl model) {
-      this.n64Hardware_ = n64Hardware;
-      this.model_ = model;
-    }
-
   public void ClearVertices() => Array.Fill(this.vertices_, null);
 
   public void LoadVertices(IReadOnlyList<F3dVertex> newVertices,
@@ -52,7 +45,7 @@ public class F3dVertices : IF3dVertices {
         var index = startIndex + i;
         this.vertexDefinitions_[index] = newVertices[i];
         this.vertices_[index] = null;
-        this.bones_[index] = this.n64Hardware_.Rsp.ActiveBone;
+        this.bones_[index] = n64Hardware.Rsp.ActiveBone;
       }
     }
 
@@ -69,33 +62,33 @@ public class F3dVertices : IF3dVertices {
       var definition = this.vertexDefinitions_[index];
 
       var position = definition.GetPosition();
-      ProjectionUtil.ProjectPosition(this.n64Hardware_.Rsp.Matrix.Impl,
+      ProjectionUtil.ProjectPosition(n64Hardware.Rsp.Matrix.Impl,
                                    ref position);
 
-      var textureParams = this.n64Hardware_.Rdp.Tmem.GetMaterialParams()
+      var textureParams = n64Hardware.Rdp.Tmem.GetMaterialParams()
                     .TextureParams0;
       var bmpWidth = Math.Max(textureParams.Width, (ushort) 0);
       var bmpHeight = Math.Max(textureParams.Height, (ushort) 0);
 
-      var newVertex = this.model_.Skin.AddVertex(position);
+      var newVertex = model.Skin.AddVertex(position);
       newVertex.SetUv(definition.GetUv(
-                          this.n64Hardware_.Rsp.TexScaleXFloat /
+                          n64Hardware.Rsp.TexScaleXFloat /
                           (bmpWidth * 32),
-                          this.n64Hardware_.Rsp.TexScaleYFloat /
+                          n64Hardware.Rsp.TexScaleYFloat /
                           (bmpHeight * 32)));
 
       var activeBone = this.bones_[index];
       if (activeBone != null) {
         newVertex.SetBoneWeights(
-            this.model_.Skin.GetOrCreateBoneWeights(
+            model.Skin.GetOrCreateBoneWeights(
                 VertexSpace.RELATIVE_TO_BONE,
                 activeBone));
       }
 
-      if (this.n64Hardware_.Rsp.GeometryMode.CheckFlag(
+      if (n64Hardware.Rsp.GeometryMode.CheckFlag(
               GeometryMode.G_LIGHTING)) {
         var normal = definition.GetNormal();
-        ProjectionUtil.ProjectNormal(this.n64Hardware_.Rsp.Matrix.Impl,
+        ProjectionUtil.ProjectNormal(n64Hardware.Rsp.Matrix.Impl,
                                    ref normal);
         newVertex.SetLocalNormal(normal);
         // TODO: Get rid of this, seems to come from combiner instead
