@@ -3,6 +3,8 @@ using System.Linq;
 
 using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.util.enumerables;
 
 public class EnumerableExtensionsTests {
@@ -20,7 +22,7 @@ public class EnumerableExtensionsTests {
 
   [Test]
   public void TestSeparatePairsWithLastPartial()
-    => Assert.Throws<InvalidOperationException>(
+    => Assert.ThrowsException<InvalidOperationException>(
         () => new[] { 1, 2, 3, 4, 5 }.SeparatePairs().ToArray());
 
 
@@ -38,7 +40,7 @@ public class EnumerableExtensionsTests {
 
   [Test]
   public void TestSeparateTripletsWithLastPartial()
-    => Assert.Throws<InvalidOperationException>(
+    => Assert.ThrowsException<InvalidOperationException>(
         () => new[] { 1, 2, 3, 4, 5 }.SeparateTriplets().ToArray());
 
 
@@ -56,6 +58,6 @@ public class EnumerableExtensionsTests {
 
   [Test]
   public void TestSeparateQuadrupletsWithLastPartial()
-    => Assert.Throws<InvalidOperationException>(
+    => Assert.ThrowsException<InvalidOperationException>(
         () => new[] { 1, 2, 3, 4, 5 }.SeparateQuadruplets().ToArray());
 }

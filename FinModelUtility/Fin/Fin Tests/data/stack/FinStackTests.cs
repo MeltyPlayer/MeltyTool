@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.data.stacks;
 
 public class FinStackTests {
@@ -19,13 +21,13 @@ public class FinStackTests {
     Assert.AreEqual(1, stack.Count);
 
     Assert.AreEqual("foo", stack.Pop());
-    Assert.Zero(stack.Count);
+    Assert.AreEqual(0, stack.Count);
   }
 
   [Test]
   public void TestPush() {
     var stack = new FinStack<string>();
-    Assert.Zero(stack.Count);
+    Assert.AreEqual(0, stack.Count);
       
     stack.Push("foo");
     Assert.AreEqual(1, stack.Count);
@@ -34,7 +36,7 @@ public class FinStackTests {
   [Test]
   public void TestPushMultiple() {
     var stack = new FinStack<string>();
-    Assert.Zero(stack.Count);
+    Assert.AreEqual(0, stack.Count);
 
     stack.Push(new[] { "foo", "bar", "goo" });
     Assert.AreEqual(3, stack.Count);
@@ -51,7 +53,7 @@ public class FinStackTests {
     Assert.AreEqual(1, stack.Count);
 
     Assert.AreEqual("foo", stack.Pop());
-    Assert.Zero(stack.Count);
+    Assert.AreEqual(0, stack.Count);
   }
 
   [Test]
@@ -61,15 +63,15 @@ public class FinStackTests {
     stack.Push("bar");
     Assert.AreEqual(2, stack.Count);
 
-    Assert.True(stack.TryPop(out var value0));
+    Assert.IsTrue(stack.TryPop(out var value0));
     Assert.AreEqual("bar", value0);
     Assert.AreEqual(1, stack.Count);
 
-    Assert.True(stack.TryPop(out var value1));
+    Assert.IsTrue(stack.TryPop(out var value1));
     Assert.AreEqual("foo", value1);
-    Assert.Zero(stack.Count);
+    Assert.AreEqual(0, stack.Count);
 
-    Assert.False(stack.TryPop(out _));
+    Assert.IsFalse(stack.TryPop(out _));
   }
 
   [Test]
@@ -97,7 +99,7 @@ public class FinStackTests {
     stack.Push("bar");
 
     stack.Clear();
-    Assert.Zero(stack.Count);
-    Assert.False(stack.TryPop(out _));
+    Assert.AreEqual(0, stack.Count);
+    Assert.IsFalse(stack.TryPop(out _));
   }
 }

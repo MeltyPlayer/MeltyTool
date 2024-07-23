@@ -3,6 +3,8 @@ using fin.util.asserts;
 
 using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.animation.keyframes;
 
 public class StairStepKeyframesTests {
@@ -113,15 +115,15 @@ public class StairStepKeyframesTests {
     impl.SetKeyframe(2, "second");
     impl.SetKeyframe(4, "third");
 
-    Assert.False(impl.TryGetAtFrame(-1, out _));
+    Assert.IsFalse(impl.TryGetAtFrame(-1, out _));
 
-    this.AssertFrame_(impl, 0, "first");
-    this.AssertFrame_(impl, 1, "first");
-    this.AssertFrame_(impl, 2, "second");
-    this.AssertFrame_(impl, 3, "second");
-    this.AssertFrame_(impl, 4, "third");
+    AssertFrame_(impl, 0, "first");
+    AssertFrame_(impl, 1, "first");
+    AssertFrame_(impl, 2, "second");
+    AssertFrame_(impl, 3, "second");
+    AssertFrame_(impl, 4, "third");
 
-    this.AssertFrame_(impl, 5, "third");
+    AssertFrame_(impl, 5, "third");
   }
 
   [Test]
@@ -134,26 +136,26 @@ public class StairStepKeyframesTests {
     impl.SetKeyframe(2, "second");
     impl.SetKeyframe(4, "third");
 
-    this.AssertFrame_(impl, -1, "third");
+    AssertFrame_(impl, -1, "third");
 
-    this.AssertFrame_(impl, 0, "first");
-    this.AssertFrame_(impl, 1, "first");
-    this.AssertFrame_(impl, 2, "second");
-    this.AssertFrame_(impl, 3, "second");
-    this.AssertFrame_(impl, 4, "third");
-    this.AssertFrame_(impl, 5, "third");
+    AssertFrame_(impl, 0, "first");
+    AssertFrame_(impl, 1, "first");
+    AssertFrame_(impl, 2, "second");
+    AssertFrame_(impl, 3, "second");
+    AssertFrame_(impl, 4, "third");
+    AssertFrame_(impl, 5, "third");
     
-    this.AssertFrame_(impl, 6, "first");
+    AssertFrame_(impl, 6, "first");
   }
 
-  private void AssertFrame_<T>(IInterpolatable<T> impl,
+  private static void AssertFrame_<T>(IInterpolatable<T> impl,
                                float frame,
                                T expected) {
-    Assert.True(impl.TryGetAtFrame(frame, out var actual));
+    Assert.IsTrue(impl.TryGetAtFrame(frame, out var actual));
     Assert.AreEqual(expected, actual);
   }
 
-  private void AssertKeyframes_(IReadOnlyKeyframes<Keyframe<string>> actual,
+  private static void AssertKeyframes_(IReadOnlyKeyframes<Keyframe<string>> actual,
                                 params Keyframe<string>[] expected)
     => Asserts.SequenceEqual(expected, actual.Definitions);
 }

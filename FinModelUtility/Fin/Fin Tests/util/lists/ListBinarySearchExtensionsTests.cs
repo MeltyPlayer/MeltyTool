@@ -2,6 +2,8 @@
 
 using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.util.lists;
 
 public class ListBinarySearchExtensionsTests {

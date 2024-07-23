@@ -3,10 +3,11 @@ using System.Numerics;
 
 using fin.math.matrix.three;
 using fin.math.rotations;
-using fin.model;
 using fin.util.asserts;
 
 using NUnit.Framework;
+
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace fin.math.matrix.four;
 
@@ -66,8 +67,8 @@ public class FinMatrix4x4UtilTests {
       trs.CopyRotationInto(out var actualRotation);
       trs.CopyScaleInto(out var actualScale);
 
-      Assert.True(expectedTranslation.IsRoughly(actualTranslation));
-      Assert.True(expectedScale.IsRoughly(actualScale));
+      Assert.IsTrue(expectedTranslation.IsRoughly(actualTranslation));
+      Assert.IsTrue(expectedScale.IsRoughly(actualScale));
 
       Asserts.IsRoughly(expectedRotation.X, actualRotation.X);
       Asserts.IsRoughly(expectedRotation.Y, actualRotation.Y);

@@ -6,6 +6,8 @@ using fin.util.asserts;
 
 using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.data.nodes;
 
 public class TreeNodeTests {
@@ -70,7 +72,7 @@ public class TreeNodeTests {
     Assert.AreEqual(0, nodeBar.ChildNodes.Count());
 
     var nodeChild = new TreeNode<string> { Value = "child" };
-    Assert.Null(nodeChild.Parent);
+    Assert.IsNull(nodeChild.Parent);
 
     nodeChild.Parent = nodeFoo;
     Assert.AreEqual(nodeFoo, nodeChild.Parent);

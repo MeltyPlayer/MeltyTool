@@ -2,6 +2,8 @@
 
 using fin.schema.data;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using NUnit.Framework;
 
 using schema.binary;

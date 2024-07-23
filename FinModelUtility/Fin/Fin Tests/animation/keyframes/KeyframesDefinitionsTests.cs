@@ -2,6 +2,8 @@
 
 using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.animation.keyframes;
 
 public class KeyframeDefinitionsTests {
@@ -12,7 +14,7 @@ public class KeyframeDefinitionsTests {
     impl.SetKeyframe(0, "0");
     impl.SetKeyframe(1, "1");
     impl.SetKeyframe(2, "2");
-    impl.SetKeyframe(3, "3"); 
+    impl.SetKeyframe(3, "3");
     impl.SetKeyframe(4, "4");
 
     AssertKeyframes_(impl,
@@ -249,18 +251,19 @@ public class KeyframeDefinitionsTests {
         out var keyframe,
         out var isLastKeyframe);
 
-      Assert.True(isKeyframeDefined);
+      Assert.IsTrue(isKeyframeDefined);
       Assert.AreEqual(sI / s, keyframeIndex);
       Assert.AreEqual(sI, keyframe.Frame);
       Assert.AreEqual(i == n - 1, isLastKeyframe);
     }
   }
 
-  private void AssertKeyframe_(KeyframeDefinition<string>? expected,
-                               KeyframeDefinition<string>? actual)
+  private static void AssertKeyframe_(KeyframeDefinition<string>? expected,
+                                      KeyframeDefinition<string>? actual)
     => Assert.AreEqual(expected, actual);
 
-  private void AssertKeyframes_(KeyframeDefinitions<string> actual,
-                                params KeyframeDefinition<string>[] expected)
+  private static void AssertKeyframes_(KeyframeDefinitions<string> actual,
+                                       params KeyframeDefinition<string>[]
+                                           expected)
     => Asserts.SequenceEqual(expected, actual.Definitions);
 }

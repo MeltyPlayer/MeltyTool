@@ -4,6 +4,8 @@ using fin.util.asserts;
 
 using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.animation.keyframes;
 
 public class InterpolatedKeyframesTests {
@@ -128,15 +130,15 @@ public class InterpolatedKeyframesTests {
     impl.SetKeyframe(2, 2);
     impl.SetKeyframe(4, 3);
 
-    Assert.False(impl.TryGetAtFrame(-1, out _));
+    Assert.IsFalse(impl.TryGetAtFrame(-1, out _));
     
-    this.AssertFrame_(impl, 0, 1);
-    this.AssertFrame_(impl, 1, 1.5f);
-    this.AssertFrame_(impl, 2, 2);
-    this.AssertFrame_(impl, 3, 2.5f);
-    this.AssertFrame_(impl, 4, 3);
+    AssertFrame_(impl, 0, 1);
+    AssertFrame_(impl, 1, 1.5f);
+    AssertFrame_(impl, 2, 2);
+    AssertFrame_(impl, 3, 2.5f);
+    AssertFrame_(impl, 4, 3);
 
-    this.AssertFrame_(impl, 5, 3);
+    AssertFrame_(impl, 5, 3);
   }
 
   [Test]
@@ -149,26 +151,26 @@ public class InterpolatedKeyframesTests {
     impl.SetKeyframe(2, 2);
     impl.SetKeyframe(4, 3);
 
-    /*this.AssertFrame_(impl, -1, 2);
+    /*AssertFrame_(impl, -1, 2);
     
-    this.AssertFrame_(impl, 0, 1);
-    this.AssertFrame_(impl, 1, 1.5f);
-    this.AssertFrame_(impl, 2, 2);
-    this.AssertFrame_(impl, 3, 2.5f);
-    this.AssertFrame_(impl, 4, 3);
-    this.AssertFrame_(impl, 5, 2);*/
+    AssertFrame_(impl, 0, 1);
+    AssertFrame_(impl, 1, 1.5f);
+    AssertFrame_(impl, 2, 2);
+    AssertFrame_(impl, 3, 2.5f);
+    AssertFrame_(impl, 4, 3);
+    AssertFrame_(impl, 5, 2);*/
     
-    this.AssertFrame_(impl, 6, 1);
+    AssertFrame_(impl, 6, 1);
   }
 
-  private void AssertFrame_<T>(IInterpolatable<T> impl,
+  private static void AssertFrame_<T>(IInterpolatable<T> impl,
                                float frame,
                                T expected) {
-    Assert.True(impl.TryGetAtFrame(frame, out var actual));
+    Assert.IsTrue(impl.TryGetAtFrame(frame, out var actual));
     Assert.AreEqual(expected, actual);
   }
 
-  private void AssertKeyframes_(IReadOnlyKeyframes<Keyframe<float>> actual,
+  private static void AssertKeyframes_(IReadOnlyKeyframes<Keyframe<float>> actual,
                                 params Keyframe<float>[] expected)
     => Asserts.SequenceEqual(expected, actual.Definitions);
 }

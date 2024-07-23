@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
 
-using fin.math.rotations;
-using fin.model;
 using fin.util.asserts;
 
 using NUnit.Framework;
+
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace fin.math.matrix.three;
 
@@ -67,7 +67,7 @@ public class FinMatrix3x2UtilTests {
 
     Assert.AreEqual(expectedTranslation, trs.Impl.Translation);
     Assert.AreEqual(expectedTranslation, actualTranslation);
-      
+
     Asserts.IsRoughly(expectedRotation, actualRotation);
 
     Asserts.IsRoughly(expectedScale.X, actualScale.X);

@@ -6,6 +6,8 @@ using fin.util.progress;
 
 using uni.games;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace uni {
   public class RootFileBundleGathererTests {
     [TearDown]

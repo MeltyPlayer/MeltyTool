@@ -2,6 +2,8 @@
 
 using NUnit.Framework;
 
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 namespace fin.animation.keyframes;
 
 public class KeyframeDefinitionsWithBinarySearchTests {
@@ -10,19 +12,19 @@ public class KeyframeDefinitionsWithBinarySearchTests {
     var impl = new KeyframeDefinitionsWithBinarySearch<string>();
 
     impl.SetKeyframe(0, "0", out var performedBinarySearch0);
-    Assert.False(performedBinarySearch0);
+    Assert.IsFalse(performedBinarySearch0);
 
     impl.SetKeyframe(1, "1", out var performedBinarySearch1);
-    Assert.False(performedBinarySearch1);
+    Assert.IsFalse(performedBinarySearch1);
 
     impl.SetKeyframe(2, "2", out var performedBinarySearch2);
-    Assert.False(performedBinarySearch2);
+    Assert.IsFalse(performedBinarySearch2);
 
     impl.SetKeyframe(3, "3", out var performedBinarySearch3);
-    Assert.False(performedBinarySearch3);
+    Assert.IsFalse(performedBinarySearch3);
 
     impl.SetKeyframe(4, "4", out var performedBinarySearch4);
-    Assert.False(performedBinarySearch4);
+    Assert.IsFalse(performedBinarySearch4);
 
     AssertKeyframes_(impl,
                      new KeyframeDefinition<string>(0, "0"),
@@ -38,13 +40,13 @@ public class KeyframeDefinitionsWithBinarySearchTests {
     var impl = new KeyframeDefinitionsWithBinarySearch<string>();
 
     impl.SetKeyframe(1, "first", out var performedBinarySearch1);
-    Assert.False(performedBinarySearch1);
+    Assert.IsFalse(performedBinarySearch1);
 
     impl.SetKeyframe(1, "second", out var performedBinarySearch2);
-    Assert.False(performedBinarySearch2);
+    Assert.IsFalse(performedBinarySearch2);
 
     impl.SetKeyframe(1, "third", out var performedBinarySearch3);
-    Assert.False(performedBinarySearch3);
+    Assert.IsFalse(performedBinarySearch3);
 
     AssertKeyframes_(impl, new KeyframeDefinition<string>(1, "third"));
   }
@@ -54,19 +56,19 @@ public class KeyframeDefinitionsWithBinarySearchTests {
     var impl = new KeyframeDefinitionsWithBinarySearch<string>();
 
     impl.SetKeyframe(4, "4", out var performedBinarySearch4);
-    Assert.False(performedBinarySearch4);
+    Assert.IsFalse(performedBinarySearch4);
 
     impl.SetKeyframe(5, "5", out var performedBinarySearch5);
-    Assert.False(performedBinarySearch5);
-      
+    Assert.IsFalse(performedBinarySearch5);
+
     impl.SetKeyframe(2, "2", out var performedBinarySearch2);
-    Assert.True(performedBinarySearch2);
-      
+    Assert.IsTrue(performedBinarySearch2);
+
     impl.SetKeyframe(1, "1", out var performedBinarySearch1);
-    Assert.True(performedBinarySearch1);
+    Assert.IsTrue(performedBinarySearch1);
 
     impl.SetKeyframe(0, "0", out var performedBinarySearch0);
-    Assert.True(performedBinarySearch0);
+    Assert.IsTrue(performedBinarySearch0);
 
     AssertKeyframes_(impl,
                      new KeyframeDefinition<string>(0, "0"),
@@ -224,18 +226,19 @@ public class KeyframeDefinitionsWithBinarySearchTests {
         out var keyframe,
         out var isLastKeyframe);
 
-      Assert.True(isKeyframeDefined);
+      Assert.IsTrue(isKeyframeDefined);
       Assert.AreEqual(sI / s, keyframeIndex);
       Assert.AreEqual(sI, keyframe.Frame);
       Assert.AreEqual(i == n - 1, isLastKeyframe);
     }
   }
 
-  private void AssertKeyframe_(KeyframeDefinition<string>? expected,
+  private static void AssertKeyframe_(KeyframeDefinition<string>? expected,
                                KeyframeDefinition<string>? actual)
     => Assert.AreEqual(expected, actual);
 
-  private void AssertKeyframes_(KeyframeDefinitionsWithBinarySearch<string> actual,
-                                params KeyframeDefinition<string>[] expected)
+  private static void AssertKeyframes_(
+      KeyframeDefinitionsWithBinarySearch<string> actual,
+      params KeyframeDefinition<string>[] expected)
     => Asserts.SequenceEqual(expected, actual.Definitions);
 }

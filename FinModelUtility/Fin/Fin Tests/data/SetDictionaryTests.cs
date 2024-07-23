@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using fin.data.dictionaries;
 using fin.util.asserts;
 
 using NUnit.Framework;
+
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace fin.data;
 
@@ -17,9 +18,10 @@ public class SetDictionaryTests {
     impl.Add("foo", "goo");
 
     Assert.AreEqual(2, impl.Count);
-    Assert.True(impl.TryGetSet("foo", out var outSet));
+    Assert.IsTrue(impl.TryGetSet("foo", out var outSet));
     Assert.AreEqual(outSet!, impl["foo"]);
-    Asserts.SequenceEqual<IEnumerable<string>>(outSet!.Order(), new[] { "bar", "goo"});
+    Asserts.SequenceEqual<IEnumerable<string>>(outSet!.Order(),
+                                               new[] { "bar", "goo" });
   }
 
   [Test]
@@ -31,6 +33,6 @@ public class SetDictionaryTests {
     impl.Clear();
 
     Assert.AreEqual(0, impl.Count);
-    Assert.False(impl.TryGetSet("foo", out _));
+    Assert.IsFalse(impl.TryGetSet("foo", out _));
   }
 }

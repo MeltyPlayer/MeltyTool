@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using schema.binary;
 using schema.binary.testing;
