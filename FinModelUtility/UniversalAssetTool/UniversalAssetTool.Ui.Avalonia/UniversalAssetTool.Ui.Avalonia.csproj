@@ -32,13 +32,13 @@
     <PackageReference Include="BinToss.GroupBox.Avalonia" Version="1.0.0" />
     <PackageReference Include="LoadingIndicators.Avalonia" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Material.Avalonia" Version="3.6.0" />
-    <PackageReference Include="Material.Icons.Avalonia" Version="2.1.9" />
+    <PackageReference Include="Material.Icons.Avalonia" Version="2.1.10" />
     <PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" />
     <PackageReference Include="NaturalSort.Extension" Version="4.3.0" />
     <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0-Avalonia11" />
-    <PackageReference Include="TextMateSharp" Version="1.0.56" />
-    <PackageReference Include="TextMateSharp.Grammars" Version="1.0.56" />
+    <PackageReference Include="TextMateSharp" Version="1.0.58" />
+    <PackageReference Include="TextMateSharp.Grammars" Version="1.0.58" />
     <PackageReference Include="UVtools.AvaloniaControls" Version="3.0.3" />
   </ItemGroup>
 

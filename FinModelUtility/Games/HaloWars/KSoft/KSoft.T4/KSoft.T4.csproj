@@ -5,7 +5,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\..\KSoft.BCL.props" />
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.TextTemplating" Version="17.5.33428.366" />
+    <PackageReference Include="Microsoft.VisualStudio.TextTemplating" Version="17.10.40170" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.TextTemplating, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
