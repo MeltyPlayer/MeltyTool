@@ -65,7 +65,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\..\Gx\Gx.csproj" />
+    <ProjectReference Include="..\..\..\Platforms\Gx\Gx.csproj" />
   </ItemGroup>
 
 </Project>

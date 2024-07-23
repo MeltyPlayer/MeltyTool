@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\..\..\Formats\Gx\Gx.csproj" />
+    <ProjectReference Include="..\..\..\Platforms\Gx\Gx.csproj" />
   </ItemGroup>
 
 </Project>
