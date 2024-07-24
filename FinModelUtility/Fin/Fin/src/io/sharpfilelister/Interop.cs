@@ -22,9 +22,6 @@ public class Interop {
 
     [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
     public string cFileName;
-
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
-    public string cAlternateFileName;
   }
 
   [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]

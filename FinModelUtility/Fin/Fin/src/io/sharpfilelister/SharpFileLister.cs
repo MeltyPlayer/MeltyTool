@@ -45,13 +45,13 @@ public class SharpFileLister : IFileLister {
         fileSearchHandle = this.FindFirstFileWInDirectory_(path, out var findData);
         if (fileSearchHandle != INVALID_HANDLE_VALUE) {
           do {
-            if (findData.cFileName is "." or "..") {
+            var fileName = (ReadOnlySpan<char>) findData.cFileName;
+            if (fileName is "." or "..") {
               continue;
             }
 
-            var fullPath = @$"{path}\{findData.cFileName}";
-            if (!findData.dwFileAttributes.HasFlag(
-                    FileAttributes.Directory)) {
+            var fullPath = @$"{path}\{fileName}";
+            if (!findData.dwFileAttributes.HasFlag(FileAttributes.Directory)) {
               fileList.AddLast(fullPath);
             } else if (!findData.dwFileAttributes.HasFlag(
                            FileAttributes.ReparsePoint)) {
@@ -74,10 +74,10 @@ public class SharpFileLister : IFileLister {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private unsafe nint FindFirstFileWInDirectory_(
-      string directoryPath,
+      ReadOnlySpan<char> directoryPath,
       out WIN32_FIND_DATAW findData) {
     Span<char> pathChars = stackalloc char[directoryPath.Length + 3];
-    directoryPath.AsSpan().CopyTo(pathChars);
+    directoryPath.CopyTo(pathChars);
     pathChars[^3] = '\\';
     pathChars[^2] = '*';
 
