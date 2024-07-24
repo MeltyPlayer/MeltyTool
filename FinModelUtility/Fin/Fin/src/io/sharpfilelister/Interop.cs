@@ -10,10 +10,7 @@ public class Interop {
   public struct WIN32_FIND_DATAW {
     public FileAttributes dwFileAttributes;
     internal FILETIME ftCreationTime;
-
-    internal FILETIME
-        ftLastAccessTime;
-
+    internal FILETIME ftLastAccessTime;
     internal FILETIME ftLastWriteTime;
     public int nFileSizeHigh;
     public int nFileSizeLow;

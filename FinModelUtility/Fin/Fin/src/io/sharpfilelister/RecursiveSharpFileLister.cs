@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -11,23 +10,7 @@ using static fin.io.sharpfilelister.Interop;
 
 namespace fin.io.sharpDirLister;
 
-public class DirectoryInformation : ISubdirPaths {
-  public string AbsoluteSubdirPath { get; set; }
-
-  public IReadOnlyCollection<string> AbsoluteFilePaths
-    => AbsoluteFilePathsImpl;
-
-  public IReadOnlyCollection<ISubdirPaths> Subdirs => SubdirsImpl;
-
-  public LinkedList<string> AbsoluteFilePathsImpl { get; } = [];
-  public LinkedList<DirectoryInformation> SubdirsImpl { get; } = [];
-}
-
-public interface IFileLister {
-  DirectoryInformation FindNextFilePInvoke(string path);
-}
-
-public class SharpFileLister : IFileLister {
+public class RecursiveSharpFileLister : IFileLister {
   public const IntPtr INVALID_HANDLE_VALUE = -1;
 
   //Code based heavily on https://stackoverflow.com/q/47471744
