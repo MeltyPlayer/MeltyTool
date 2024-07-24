@@ -7,7 +7,7 @@ namespace fin.io.sharpfilelister;
 
 public class Interop {
   [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-  public struct WIN32_FIND_DATAW {
+  public unsafe struct WIN32_FIND_DATAW {
     public FileAttributes dwFileAttributes;
     internal FILETIME ftCreationTime;
     internal FILETIME ftLastAccessTime;
@@ -17,8 +17,8 @@ public class Interop {
     public int dwReserved0;
     public int dwReserved1;
 
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-    public string cFileName;
+    public fixed char cFileName[260];
+    public fixed char cFileNameAlternativeName[14];
   }
 
   [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
