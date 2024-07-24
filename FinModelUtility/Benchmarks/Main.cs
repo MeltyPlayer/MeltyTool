@@ -4,7 +4,7 @@ using BenchmarkDotNet.Running;
 namespace benchmarks {
   public class Program {
     public static void Main(string[] args) {
-      var summary = BenchmarkRunner.Run<ListingFiles>(
+      var summary = BenchmarkRunner.Run<Loops>(
           ManualConfig.Create(DefaultConfig.Instance)
                       .WithOptions(ConfigOptions
                                        .DisableOptimizationsValidator));
