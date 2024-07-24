@@ -16,8 +16,6 @@ using fin.math.rotations;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;
-using fin.model.util;
-using fin.scene;
 using fin.util.asserts;
 
 using granny3d;

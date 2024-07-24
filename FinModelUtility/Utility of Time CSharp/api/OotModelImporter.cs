@@ -13,12 +13,9 @@ using f3dzex2.model;
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
 using fin.data.queues;
-using fin.io;
 using fin.model;
 using fin.model.io.importers;
 using fin.util.enumerables;
-
-using schema.binary;
 
 using UoT.hacks;
 using UoT.memory;

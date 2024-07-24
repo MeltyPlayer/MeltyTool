@@ -1,6 +1,5 @@
 ﻿using fin.animation.interpolation;
 using fin.animation.keyframes;
-using fin.animation.types.quaternion;
 using fin.animation.types.single;
 using fin.animation.types.vector3;
 using fin.util.optional;

@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.math.matrix.two;
 using fin.util.asserts;
 
 using OpenTK.Graphics.OpenGL;

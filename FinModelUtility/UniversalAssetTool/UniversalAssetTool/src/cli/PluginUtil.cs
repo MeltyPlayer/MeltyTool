@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using grezzo.api;
+﻿using grezzo.api;
 
 using fin.model.io;
 using fin.model.io.importers.assimp;

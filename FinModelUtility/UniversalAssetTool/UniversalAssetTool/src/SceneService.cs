@@ -3,7 +3,6 @@ using System.Numerics;
 
 using fin.color;
 using fin.data.queues;
-using fin.language.equations.fixedFunction;
 using fin.model;
 using fin.scene;
 using fin.schema.vector;

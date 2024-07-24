@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using CommandLine;
+﻿using CommandLine;
 
 namespace uni.cli;
 

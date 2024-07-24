@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-using Avalonia.Data.Converters;
+﻿using Avalonia.Data.Converters;
 
 namespace uni.ui.avalonia.util.converters {
   public static class IntConverters {

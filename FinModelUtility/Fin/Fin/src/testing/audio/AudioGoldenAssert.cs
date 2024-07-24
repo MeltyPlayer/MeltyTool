@@ -6,8 +6,6 @@ using System.Linq;
 using fin.audio.io;
 using fin.audio.io.exporters.ogg;
 using fin.audio.io.importers;
-using fin.model.io.exporters;
-using fin.model.io.exporters.assimp.indirect;
 using fin.io;
 using fin.testing.audio.stubbed;
 

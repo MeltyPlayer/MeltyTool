@@ -1,5 +1,4 @@
-﻿using fin.math;
-using fin.math.matrix.four;
+﻿using fin.math.matrix.four;
 
 using schema.binary;
 

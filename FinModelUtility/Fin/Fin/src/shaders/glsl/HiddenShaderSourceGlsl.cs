@@ -1,6 +1,4 @@
-﻿using fin.model;
-
-namespace fin.shaders.glsl;
+﻿namespace fin.shaders.glsl;
 
 public class HiddenShaderSourceGlsl : IShaderSourceGlsl {
   public string VertexShaderSource

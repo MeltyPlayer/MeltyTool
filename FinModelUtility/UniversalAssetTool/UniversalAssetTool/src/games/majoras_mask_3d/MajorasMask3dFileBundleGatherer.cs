@@ -11,8 +11,6 @@ using fin.util.progress;
 
 namespace uni.games.majoras_mask_3d;
 
-using IAnnotatedBundle = IAnnotatedFileBundle<IFileBundle>;
-
 public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
   private readonly IModelSeparator separator_
       = new ModelSeparator(directory => directory.Name)

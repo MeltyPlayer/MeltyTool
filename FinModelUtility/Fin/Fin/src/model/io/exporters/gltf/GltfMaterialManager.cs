@@ -7,8 +7,6 @@ using System.Numerics;
 
 using CommunityToolkit.HighPerformance.Helpers;
 
-using fin.language.equations.fixedFunction;
-
 using fin.image;
 using fin.model.util;
 using fin.util.image;

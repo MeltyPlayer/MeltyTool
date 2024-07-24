@@ -1,5 +1,4 @@
-﻿using System;
-using Diag = System.Diagnostics;
+﻿using Diag = System.Diagnostics;
 
 namespace KSoft.Phoenix.Debug
 {

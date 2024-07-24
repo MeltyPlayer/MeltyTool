@@ -2,7 +2,6 @@
 
 using fin.io;
 using fin.testing;
-using fin.testing.model;
 
 using grezzo.schema.cmb;
 using grezzo.schema.shpa;

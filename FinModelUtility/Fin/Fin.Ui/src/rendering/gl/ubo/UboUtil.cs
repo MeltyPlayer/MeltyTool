@@ -2,7 +2,6 @@
 
 using CommunityToolkit.HighPerformance;
 
-using fin.color;
 using fin.math.xyz;
 
 namespace fin.ui.rendering.gl.ubo;

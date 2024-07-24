@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-using Assimp;
+﻿using Assimp;
 
 using fin.importers;
 using fin.model.io.exporters.assimp;

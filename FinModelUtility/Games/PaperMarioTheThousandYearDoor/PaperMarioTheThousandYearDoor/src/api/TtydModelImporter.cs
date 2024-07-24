@@ -1,15 +1,12 @@
-﻿using System.Drawing.Drawing2D;
-using System.Numerics;
+﻿using System.Numerics;
 
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
-using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.nodes;
 using fin.data.queues;
 using fin.io;
-using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model;
 using fin.model.impl;

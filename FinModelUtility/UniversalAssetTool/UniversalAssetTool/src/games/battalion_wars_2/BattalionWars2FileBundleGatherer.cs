@@ -11,8 +11,6 @@ using uni.util.io;
 
 namespace uni.games.battalion_wars_2;
 
-using IAnnotatedBwBundle = IAnnotatedFileBundle<IBattalionWarsFileBundle>;
-
 public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

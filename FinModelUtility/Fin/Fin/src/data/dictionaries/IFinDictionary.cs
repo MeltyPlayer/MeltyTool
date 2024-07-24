@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using fin.data.indexable;
-
 using schema.readOnly;
 
 namespace fin.data.dictionaries;

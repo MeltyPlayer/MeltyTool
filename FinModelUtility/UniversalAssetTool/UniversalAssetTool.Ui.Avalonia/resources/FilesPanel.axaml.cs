@@ -8,8 +8,6 @@ using fin.io;
 using fin.util.linq;
 using fin.util.strings;
 
-using uni.ui.avalonia.resources.model;
-
 namespace uni.ui.avalonia.resources;
 
 public class FilesPanelViewModelForDesigner() {

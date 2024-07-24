@@ -5,8 +5,6 @@ using Contract = System.Diagnostics.ContractsShim.Contract;
 using Contract = System.Diagnostics.Contracts.Contract; // SHIM'D
 #endif
 
-using TWord = System.UInt32;
-
 namespace KSoft.IO
 {
 	partial class BitStream

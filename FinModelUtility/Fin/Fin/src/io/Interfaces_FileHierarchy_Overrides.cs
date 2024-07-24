@@ -1,13 +1,7 @@
 ﻿namespace fin.io;
 
-using GROTreeIoObj =
-    IReadOnlyTreeIoObject<IReadOnlyTreeIoObject, IReadOnlyTreeDirectory,
-        IReadOnlyTreeFile, string>;
 using GROTreeDir =
     IReadOnlyTreeDirectory<IReadOnlyTreeIoObject, IReadOnlyTreeDirectory,
-        IReadOnlyTreeFile, string>;
-using GROTreeFile =
-    IReadOnlyTreeFile<IReadOnlyTreeIoObject, IReadOnlyTreeDirectory,
         IReadOnlyTreeFile, string>;
 
 using System.Collections.Generic;

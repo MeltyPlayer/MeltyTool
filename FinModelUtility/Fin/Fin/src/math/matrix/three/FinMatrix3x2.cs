@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.math.floats;
-using fin.math.rotations;
 using fin.util.asserts;
 
 

@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-using fin.io.archive;
+﻿using fin.io.archive;
 
 using schema.binary;
 

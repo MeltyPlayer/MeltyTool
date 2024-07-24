@@ -1,5 +1,4 @@
-﻿using System;
-using Contracts = System.Diagnostics.Contracts;
+﻿using Contracts = System.Diagnostics.Contracts;
 #if CONTRACTS_FULL_SHIM
 using Contract = System.Diagnostics.ContractsShim.Contract;
 #else

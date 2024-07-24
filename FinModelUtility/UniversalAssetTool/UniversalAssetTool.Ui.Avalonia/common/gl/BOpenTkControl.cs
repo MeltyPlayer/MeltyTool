@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
 using Avalonia.Rendering;

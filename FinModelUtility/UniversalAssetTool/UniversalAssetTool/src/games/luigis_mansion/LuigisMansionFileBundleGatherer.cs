@@ -6,8 +6,6 @@ using uni.platforms.gcn;
 
 namespace uni.games.luigis_mansion;
 
-using IAnnotatedMdlBundle = IAnnotatedFileBundle<IModelFileBundle>;
-
 public class LuigisMansionFileBundleGatherer : IAnnotatedFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

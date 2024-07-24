@@ -1,10 +1,8 @@
 ﻿using System.Numerics;
 
-using fin.color;
 using fin.math;
 using fin.schema;
 using fin.schema.matrix;
-using fin.schema.vector;
 
 using schema.binary;
 

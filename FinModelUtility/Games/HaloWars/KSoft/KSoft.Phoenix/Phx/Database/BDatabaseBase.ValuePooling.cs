@@ -3,7 +3,6 @@
 namespace KSoft.Phoenix.Phx
 {
 	using BCost = Collections.BTypeValuesSingle;
-	using BPops = Collections.BTypeValues<BPopulation>;
 	using BProtoObjectVeterancyList = Collections.BListExplicitIndex<BProtoObjectVeterancy>;
 
 	partial class BDatabaseBase

@@ -1,7 +1,6 @@
 ﻿using System.Windows.Forms;
 
 using fin.animation;
-using fin.importers;
 using fin.model;
 using fin.scene;
 using fin.ui;

@@ -1,5 +1,4 @@
-﻿using fin.language.equations.fixedFunction;
-using fin.model;
+﻿using fin.model;
 
 namespace fin.ui.rendering.gl.model;
 

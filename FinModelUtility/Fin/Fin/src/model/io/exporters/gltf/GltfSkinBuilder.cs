@@ -6,7 +6,6 @@ using fin.data.indexable;
 using fin.math;
 using fin.model.accessor;
 using fin.util.enumerables;
-using fin.util.linq;
 
 using SharpGLTF.Geometry;
 using SharpGLTF.Materials;

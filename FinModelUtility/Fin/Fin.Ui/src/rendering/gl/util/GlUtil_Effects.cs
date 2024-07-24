@@ -4,8 +4,6 @@ using fin.model;
 
 using OpenTK.Graphics.OpenGL;
 
-using LogicOp = fin.model.LogicOp;
-
 namespace fin.ui.rendering.gl;
 
 public static partial class GlUtil {

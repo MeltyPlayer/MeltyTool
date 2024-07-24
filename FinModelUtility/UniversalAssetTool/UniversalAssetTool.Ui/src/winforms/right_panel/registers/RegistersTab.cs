@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using fin.color;
-using fin.language.equations.fixedFunction;
 using fin.model;
 using fin.util.linq;
 using fin.util.strings;

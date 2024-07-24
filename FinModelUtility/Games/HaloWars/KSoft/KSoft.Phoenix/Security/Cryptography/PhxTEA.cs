@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace KSoft.Security.Cryptography
+﻿namespace KSoft.Security.Cryptography
 {
 	public sealed class PhxTEA
 	{

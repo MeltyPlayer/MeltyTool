@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace KSoft.Wwise.FilePackage
+﻿namespace KSoft.Wwise.FilePackage
 {
 	public sealed class AkLanguageMap
 		: IO.IEndianStreamSerializable

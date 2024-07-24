@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
 
-using SharpGLTF.Transforms;
-
 using ttyd.schema.model.blocks;
 
 namespace ttyd.api;

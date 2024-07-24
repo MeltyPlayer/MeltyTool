@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.data;
 using fin.data.dictionaries;
 using fin.math.rotations;
 using fin.schema;

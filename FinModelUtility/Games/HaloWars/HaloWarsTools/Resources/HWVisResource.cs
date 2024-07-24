@@ -10,7 +10,6 @@ using System.Xml.Linq;
 using fin.data.dictionaries;
 using fin.io;
 using fin.model;
-using fin.model.impl;
 using fin.scene;
 
 namespace HaloWarsTools {

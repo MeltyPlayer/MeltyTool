@@ -1,5 +1,4 @@
-﻿using fin.math.floats;
-using fin.util.asserts;
+﻿using fin.util.asserts;
 
 using OpenTK.Graphics.OpenGL;
 

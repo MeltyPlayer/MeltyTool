@@ -3,7 +3,6 @@
 using f3dzex2.io;
 
 using fin.math.matrix.four;
-using fin.model;
 using fin.model.impl;
 using fin.schema.vector;
 

@@ -1,6 +1,4 @@
-﻿using fin.model;
-
-namespace ttyd.api;
+﻿namespace ttyd.api;
 
 public struct TtydTransformData<TVec, TRotation> {
   public required bool IsJoint { get; init; }

@@ -1,5 +1,4 @@
-﻿using Debug = System.Diagnostics.Debug;
-using TextTemplating = Microsoft.VisualStudio.TextTemplating;
+﻿using TextTemplating = Microsoft.VisualStudio.TextTemplating;
 
 namespace KSoft.T4.Bitwise
 {

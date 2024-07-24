@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace KSoft.IO
+﻿namespace KSoft.IO
 {
 	/// <remarks>If the <see cref="TagElementStreamFormat.Binary"/> flag is not set, assume 'Text'</remarks>
 	public enum TagElementStreamFormat

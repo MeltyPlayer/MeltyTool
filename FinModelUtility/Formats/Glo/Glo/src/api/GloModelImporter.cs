@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
 using fin.animation.keyframes;
-using fin.animation.types.vector3;
 using fin.color;
 using fin.data.dictionaries;
 using fin.data.lazy;

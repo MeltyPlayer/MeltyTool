@@ -1,7 +1,6 @@
 ﻿using System.Windows.Forms;
 
 using fin.animation;
-using fin.io.bundles;
 using fin.model;
 
 using uni.ui.winforms.right_panel.skeleton;

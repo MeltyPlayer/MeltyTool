@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
 
-using CommunityToolkit.HighPerformance;
-
 using fin.shaders.glsl;
 
 using OpenTK.Graphics.OpenGL;

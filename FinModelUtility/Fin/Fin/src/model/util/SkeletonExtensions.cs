@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
 using fin.math.matrix.four;
-using fin.math.transform;
 using fin.math.xyz;
 using fin.util.asserts;
 

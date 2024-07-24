@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Debug = System.Diagnostics.Debug;
 using TextTemplating = Microsoft.VisualStudio.TextTemplating;
 
 namespace KSoft.T4.Bitwise

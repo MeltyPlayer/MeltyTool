@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TextTemplating = Microsoft.VisualStudio.TextTemplating;
 
 namespace KSoft.T4
 {

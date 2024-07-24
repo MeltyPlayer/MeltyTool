@@ -1,9 +1,5 @@
-﻿using gx;
-
-using schema.binary;
+﻿using schema.binary;
 using schema.binary.attributes;
-
-using SharpGLTF.Geometry.VertexTypes;
 
 namespace ttyd.schema.model.blocks;
 

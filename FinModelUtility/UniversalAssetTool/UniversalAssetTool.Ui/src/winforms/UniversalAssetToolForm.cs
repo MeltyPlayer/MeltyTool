@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 
-using fin.audio.io;
 using fin.importers;
 using fin.model.io.exporters.assimp;
 using fin.io;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace KSoft.Phoenix.Phx
+﻿namespace KSoft.Phoenix.Phx
 {
 	public sealed class BProtoObjectCommand
 		: IO.ITagElementStringNameStreamable

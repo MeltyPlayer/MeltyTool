@@ -5,7 +5,6 @@ using System.Numerics;
 using fin.data.indexable;
 using fin.data.sets;
 using fin.math.matrix.four;
-using fin.math.xyz;
 
 using schema.readOnly;
 

@@ -20,12 +20,6 @@ using GROSysDir =
 using GROSysFile =
     IReadOnlyTreeFile<IReadOnlySystemIoObject, IReadOnlySystemDirectory,
         IReadOnlySystemFile, string>;
-using GMSysIoObj =
-    IReadOnlyTreeIoObject<ISystemIoObject, ISystemDirectory, ISystemFile,
-        string>;
-using GMSysDir =
-    IReadOnlyTreeDirectory<ISystemIoObject, ISystemDirectory, ISystemFile,
-        string>;
 using GMSysFile =
     IReadOnlyTreeFile<ISystemIoObject, ISystemDirectory, ISystemFile, string>;
 

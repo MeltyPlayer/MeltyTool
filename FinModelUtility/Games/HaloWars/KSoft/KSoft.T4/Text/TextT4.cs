@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TextTemplating = Microsoft.VisualStudio.TextTemplating;
+﻿using TextTemplating = Microsoft.VisualStudio.TextTemplating;
 
 namespace KSoft.T4
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using BProtoObjectID = System.Int32;
 using BVector = System.Numerics.Vector4;
