@@ -99,6 +99,8 @@ public partial class FixedFunctionEquations<TIdentifier> {
     Asserts.False(this.colorInputs_.ContainsKey(identifier));
     Asserts.False(this.colorOutputs_.ContainsKey(identifier));
 
+    this.AddValueDependency_(value);
+
     var output = new ColorOutput(identifier, value);
     this.colorOutputs_[identifier] = output;
     return output;

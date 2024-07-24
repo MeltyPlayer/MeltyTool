@@ -29,6 +29,7 @@ class Program {
     => AppBuilder.Configure<App>()
                  .UsePlatformDetect()
                  .With(new Win32PlatformOptions {
+                     // TODO: Locks framerate to 60fps
                      RenderingMode = [Win32RenderingMode.Wgl],
                      // TODO: Allows GL.Begin to work
                      WglProfiles

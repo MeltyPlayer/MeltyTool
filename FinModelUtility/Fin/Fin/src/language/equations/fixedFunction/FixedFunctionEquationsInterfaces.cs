@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace fin.language.equations.fixedFunction;
 
@@ -51,14 +52,9 @@ public interface IFixedFunctionEquations<TIdentifier> {
 
   bool HasInput(TIdentifier identifier);
 
-  bool DoOutputsDependOn(TIdentifier[] outputIdentifiers,
-                         IValue value);
-
-  bool DoOutputsDependOn(TIdentifier[] outputIdentifiers,
-                         TIdentifier identifiers);
-
-  bool DoOutputsDependOn(TIdentifier[] outputIdentifiers,
-                         TIdentifier[] identifiers);
+  bool DoOutputsDependOn(IValue value);
+  bool DoOutputsDependOn(TIdentifier identifiers);
+  bool DoOutputsDependOn(ReadOnlySpan<TIdentifier> identifiers);
 }
 
 public interface IIdentifiedValue<out TIdentifier> : IValue {
@@ -77,7 +73,6 @@ public interface IConstant : IValue { }
 public interface ITerm : IValue { }
 
 public interface IExpression : IValue { }
-
 
 // Typed
 public interface IValue<in TValue, TConstant, out TTerm, out TExpression>

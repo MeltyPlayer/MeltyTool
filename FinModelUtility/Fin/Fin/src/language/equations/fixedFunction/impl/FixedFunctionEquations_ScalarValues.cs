@@ -52,6 +52,8 @@ public partial class FixedFunctionEquations<TIdentifier> {
     Asserts.False(this.scalarInputs_.ContainsKey(identifier));
     Asserts.False(this.scalarOutputs_.ContainsKey(identifier));
 
+    this.AddValueDependency_(value);
+
     var output = new ScalarOutput(identifier, value);
     this.scalarOutputs_[identifier] = output;
     return output;
