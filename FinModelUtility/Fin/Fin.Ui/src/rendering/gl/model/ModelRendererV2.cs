@@ -35,7 +35,11 @@ public class ModelRendererV2(
     GC.SuppressFinalize(this);
   }
 
-  private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
+  private void ReleaseUnmanagedResources_() {
+    this.impl_.Dispose();
+    this.matricesUbo_?.Dispose();
+    this.lightsUbo_?.Dispose();
+  }
 
   public IReadOnlyModel Model => this.impl_.Model;
 
@@ -47,8 +51,6 @@ public class ModelRendererV2(
   public bool UseLighting { get; set; }
 
   public void Render() {
-    var camera = Camera.Instance;
-
     var bonesUsedByVertices = model.Skin.BonesUsedByVertices;
     Span<Matrix4x4> boneMatrices
         = stackalloc Matrix4x4[1 + bonesUsedByVertices.Count];

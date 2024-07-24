@@ -3,13 +3,11 @@
 using fin.model;
 using fin.shaders.glsl;
 
-using OpenTK.Graphics.OpenGL;
-
 using Vector4 = System.Numerics.Vector4;
 
 namespace fin.ui.rendering.gl.ubo;
 
-public class LightsUbo {
+public class LightsUbo : IDisposable {
   private const int SIZE_OF_LIGHT = (UboUtil.SIZE_OF_VECTOR3 + 4) +
                                     (UboUtil.SIZE_OF_VECTOR3 + 4) +
                                     UboUtil.SIZE_OF_VECTOR4 +
@@ -21,20 +19,19 @@ public class LightsUbo {
         UboUtil.SIZE_OF_VECTOR4 +
         4;
 
-  private readonly int id_;
+  private readonly GlUbo impl_
+      = new(SIZE_OF_BUFFER, GlslConstants.UBO_LIGHTS_BINDING_INDEX);
 
-  public LightsUbo() {
-    this.id_ = GL.GenBuffer();
+  ~LightsUbo() => this.ReleaseUnmanagedResources_();
 
-    GL.BindBuffer(BufferTarget.UniformBuffer, this.id_);
-    GL.BufferData(BufferTarget.UniformBuffer,
-                  SIZE_OF_BUFFER,
-                  IntPtr.Zero,
-                  BufferUsageHint.StreamDraw);
-    GL.BindBuffer(BufferTarget.UniformBuffer, 0);
+  public void Dispose() {
+    this.ReleaseUnmanagedResources_();
+    GC.SuppressFinalize(this);
   }
 
-  public unsafe void UpdateData(bool useLighting, IReadOnlyLighting? lighting) {
+  private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
+
+  public void UpdateData(bool useLighting, IReadOnlyLighting? lighting) {
     var offset = 0;
     Span<byte> buffer = stackalloc byte[SIZE_OF_BUFFER];
 
@@ -59,20 +56,10 @@ public class LightsUbo {
       UboUtil.AppendBool(buffer, ref offset, true);
     }
 
-    fixed (byte* bufferPtr = &buffer.GetPinnableReference()) {
-      GL.BindBuffer(BufferTarget.UniformBuffer, this.id_);
-      GL.BufferSubData(BufferTarget.UniformBuffer,
-                       IntPtr.Zero,
-                       new IntPtr(buffer.Length),
-                       new IntPtr(bufferPtr));
-      GL.BindBuffer(BufferTarget.UniformBuffer, 0);
-    }
+    this.impl_.UpdateDataIfChanged(buffer);
   }
 
-  public void Bind()
-    => GL.BindBufferBase(BufferRangeTarget.UniformBuffer,
-                         GlslConstants.UBO_LIGHTS_BINDING_INDEX,
-                         this.id_);
+  public void Bind() => this.impl_.Bind();
 
   private static void AddLightToBuffer_(Span<byte> buffer,
                                         ref int offset,
