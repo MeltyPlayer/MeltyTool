@@ -15,6 +15,6 @@ public class DeadSpace3FileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
 
     var originalGameFileHierarchy
-        = FileHierarchy.From("dead_space_3", deadSpace3Dir);
+        = ExtractorUtil.GetFileHierarchy("dead_space_3", deadSpace3Dir);
   }
 }

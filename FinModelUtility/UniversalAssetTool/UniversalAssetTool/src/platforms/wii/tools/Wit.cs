@@ -27,7 +27,7 @@ public class Wit {
                    $"Directory was not created: {finalDirectory}");
     }
 
-    hierarchy = FileHierarchy.From(romFile.NameWithoutExtension, finalDirectory);
+    hierarchy = ExtractorUtil.GetFileHierarchy(romFile.NameWithoutExtension, finalDirectory);
     return didChange;
   }
 

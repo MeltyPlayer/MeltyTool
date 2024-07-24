@@ -20,7 +20,7 @@ public class PaperMarioDirectorsCutFileBundleGatherer
       }
 
       var fileHierarchy
-          = FileHierarchy.From("paper_mario_directors_cut", pmdcDir);
+          = ExtractorUtil.GetFileHierarchy("paper_mario_directors_cut", pmdcDir);
 
       foreach (var omdFile in fileHierarchy.Root.GetFilesWithFileType(
                    ".omd",

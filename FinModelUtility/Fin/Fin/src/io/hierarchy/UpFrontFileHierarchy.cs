@@ -88,7 +88,7 @@ public static partial class FileHierarchy {
       public FileHierarchyDirectory(
           IFileHierarchy hierarchy,
           ISystemDirectory root,
-          ISubdirPaths paths) : base(hierarchy) {
+          DirectoryInformation paths) : base(hierarchy) {
         this.Impl = root;
 
         foreach (var filePath in paths.AbsoluteFilePaths) {
@@ -115,7 +115,7 @@ public static partial class FileHierarchy {
           IFileHierarchyDirectory root,
           IFileHierarchyDirectory parent,
           ISystemDirectory directory,
-          ISubdirPaths paths) : base(hierarchy, root, parent, directory) {
+          DirectoryInformation paths) : base(hierarchy, root, parent, directory) {
         this.Impl = directory;
 
         foreach (var filePath in paths.AbsoluteFilePaths) {

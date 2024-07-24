@@ -21,7 +21,7 @@ public class SuperMario64FileBundleGatherer : IAnnotatedFileBundleGatherer {
     ExtractorUtil.GetOrCreateRomDirectories("super_mario_64",
                                             out var prereqsDir,
                                             out var extractedDir);
-    var fileHierarchy = FileHierarchy.From("super_mario_64", extractedDir);
+    var fileHierarchy = ExtractorUtil.GetFileHierarchy("super_mario_64", extractedDir);
     var root = fileHierarchy.Root;
 
     var rootSysDir = root.Impl;

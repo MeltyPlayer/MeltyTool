@@ -21,7 +21,7 @@ public class VrwdwFileBundleGatherer : IAnnotatedFileBundleGatherer {
         return;
       }
 
-      var fileHierarchy = FileHierarchy.From("vrwdw", vrwdwDir);
+      var fileHierarchy = ExtractorUtil.GetFileHierarchy("vrwdw", vrwdwDir);
 
       foreach (var wrlFile in fileHierarchy.Root.GetFilesWithFileType(".wrl")) {
         organizer.Add(new VrmlModelFileBundle {

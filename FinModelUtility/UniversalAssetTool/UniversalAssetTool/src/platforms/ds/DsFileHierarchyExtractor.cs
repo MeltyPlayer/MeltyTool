@@ -40,6 +40,6 @@ internal class DsFileHierarchyExtractor {
         }
       }
 
-      return FileHierarchy.From(romFile.NameWithoutExtension, outDir);
+      return ExtractorUtil.GetFileHierarchy(romFile.NameWithoutExtension, outDir);
     }
 }

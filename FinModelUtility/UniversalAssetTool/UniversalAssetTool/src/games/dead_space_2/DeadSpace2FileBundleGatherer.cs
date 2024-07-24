@@ -10,11 +10,11 @@ public class DeadSpace2FileBundleGatherer : IAnnotatedFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
-      if (!EaUtils.TryGetGameDirectory("Dead Space 2", out var deadSpace2Dir)) {
-        return;
-      }
-
-      var originalGameFileHierarchy
-          = FileHierarchy.From("dead_space_2", deadSpace2Dir);
+    if (!EaUtils.TryGetGameDirectory("Dead Space 2", out var deadSpace2Dir)) {
+      return;
     }
+
+    var originalGameFileHierarchy
+        = ExtractorUtil.GetFileHierarchy("dead_space_2", deadSpace2Dir);
+  }
 }

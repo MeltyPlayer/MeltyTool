@@ -1,35 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+using schema.binary;
+using schema.binary.attributes;
 
 using static fin.io.sharpfilelister.Interop;
 
 namespace fin.io.sharpDirLister;
 
-public class DirectoryInformation {
-  public string AbsoluteSubdirPath { get; set; }
-  public LinkedList<string> AbsoluteFilePaths { get; } = [];
-  public LinkedList<DirectoryInformation> Subdirs { get; } = [];
+[BinarySchema]
+public partial class SchemaDirectoryInformation : IBinaryConvertible {
+  [StringLengthSource(SchemaIntegerType.INT16)]
+  public string Name { get; set; }
+
+  [SequenceLengthSource(SchemaIntegerType.INT16)]
+  public Uint16SizedString[] FileNames { get; set; } = [];
+
+  [SequenceLengthSource(SchemaIntegerType.INT16)]
+  public SchemaDirectoryInformation[] Subdirs { get; set; } = [];
 }
 
-public class SharpFileLister {
+[BinarySchema]
+public partial class Uint16SizedString : IBinaryConvertible {
+  [StringLengthSource(SchemaIntegerType.UINT16)]
+  public string Name { get; set; }
+}
+
+public class SchemaSharpFileLister {
   public const IntPtr INVALID_HANDLE_VALUE = -1;
 
   //Code based heavily on https://stackoverflow.com/q/47471744
-  public unsafe DirectoryInformation FindNextFilePInvoke(string path) {
-    var directoryInfo = new DirectoryInformation { AbsoluteSubdirPath = path };
-    var fileList = directoryInfo.AbsoluteFilePaths;
-    var directoryList = directoryInfo.Subdirs;
+  public unsafe SchemaDirectoryInformation FindNextFilePInvoke(
+      string path,
+      string name) {
+    var directoryInfo = new SchemaDirectoryInformation { Name = name };
+    var fileList = new LinkedList<Uint16SizedString>();
+    var directoryList = new LinkedList<SchemaDirectoryInformation>();
 
     IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
     try {
       fileSearchHandle = FindFirstFileWInDirectory_(path, out var findData);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
-          var fileName = new ReadOnlySpan<char>(findData.cFileName, 260);
-          fileName = fileName[..fileName.IndexOf('\0')];
+          var fileNameSpan = new ReadOnlySpan<char>(findData.cFileName, 260);
+          var fileName = fileNameSpan[..fileNameSpan.IndexOf('\0')].ToString();
 
           if (fileName is "." or "..") {
             continue;
@@ -38,9 +56,9 @@ public class SharpFileLister {
           var attributes = findData.dwFileAttributes;
           var fullPath = @$"{path}\{fileName}";
           if ((attributes & FileAttributes.Directory) == 0) {
-            fileList.AddLast(fullPath);
+            fileList.AddLast(new Uint16SizedString { Name = fileName });
           } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
-            directoryList.AddLast(this.FindNextFilePInvoke(fullPath));
+            directoryList.AddLast(this.FindNextFilePInvoke(fullPath, fileName));
           }
         } while (FindNextFile(fileSearchHandle, out findData));
       }
@@ -49,6 +67,9 @@ public class SharpFileLister {
         FindClose(fileSearchHandle);
       }
     }
+
+    directoryInfo.FileNames = fileList.ToArray();
+    directoryInfo.Subdirs = directoryList.ToArray();
 
     return directoryInfo;
   }

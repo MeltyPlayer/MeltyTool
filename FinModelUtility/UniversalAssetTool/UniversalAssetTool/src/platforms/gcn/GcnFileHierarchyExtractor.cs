@@ -53,7 +53,7 @@ public class GcnFileHierarchyExtractor {
         throw new Exception();
       }
 
-      var fileHierarchy = FileHierarchy.From(romFile.NameWithoutExtension, directory);
+      var fileHierarchy = ExtractorUtil.GetFileHierarchy(romFile.NameWithoutExtension, directory);
       var hasChanged = false;
 
       // Decompresses all of the archives,

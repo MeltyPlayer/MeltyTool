@@ -29,7 +29,7 @@ public static partial class Ctrtool {
                       $"Failed to extract contents from the ROM: {romFile.FullPath}");
       }
 
-      hierarchy = FileHierarchy.From(romFile.NameWithoutExtension, directory);
+      hierarchy = ExtractorUtil.GetFileHierarchy(romFile.NameWithoutExtension, directory);
       return didChange;
     }
 

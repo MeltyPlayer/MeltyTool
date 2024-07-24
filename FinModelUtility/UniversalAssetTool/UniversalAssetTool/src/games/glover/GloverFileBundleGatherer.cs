@@ -19,7 +19,7 @@ public class GloverFileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
 
     var gloverFileHierarchy
-        = FileHierarchy.From("glover", gloverSteamDirectory);
+        = ExtractorUtil.GetFileHierarchy("glover", gloverSteamDirectory);
 
     var dataDirectory =
         gloverFileHierarchy.Root.AssertGetExistingSubdir("data");

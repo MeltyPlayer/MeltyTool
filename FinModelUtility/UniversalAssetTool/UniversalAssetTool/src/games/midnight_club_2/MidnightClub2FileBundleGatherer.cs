@@ -19,8 +19,8 @@ public class MidnightClub2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       return;
     }
 
-    var fileHierarchy =
-        FileHierarchy.From("midnight_club_2", midnightClub2Directory);
+    var fileHierarchy = ExtractorUtil.GetFileHierarchy("midnight_club_2",
+      midnightClub2Directory);
 
     var textureDirectory =
         fileHierarchy.Root.AssertGetExistingSubdir("texture_x");

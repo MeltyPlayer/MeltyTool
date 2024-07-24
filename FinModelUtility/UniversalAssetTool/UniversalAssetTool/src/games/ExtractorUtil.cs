@@ -30,10 +30,10 @@ public static class ExtractorUtil {
       string romName,
       out ISystemDirectory prereqsDir,
       out ISystemDirectory extractedDir) {
-      var romDir = GetOrCreateRomDirectory(romName);
-      prereqsDir = romDir.GetOrCreateSubdir(PREREQS);
-      extractedDir = romDir.GetOrCreateSubdir(EXTRACTED);
-    }
+    var romDir = GetOrCreateRomDirectory(romName);
+    prereqsDir = romDir.GetOrCreateSubdir(PREREQS);
+    extractedDir = romDir.GetOrCreateSubdir(EXTRACTED);
+  }
 
 
   public static ISystemDirectory GetOrCreateExtractedDirectory(
@@ -43,7 +43,20 @@ public static class ExtractorUtil {
   public static ISystemDirectory GetOrCreateExtractedDirectory(
       string romName)
     => GetOrCreateRomDirectory(romName).GetOrCreateSubdir(EXTRACTED);
-    
+
+
+  public static IFileHierarchy GetFileHierarchy(
+      string romName,
+      ISystemDirectory directory) {
+    var romDir = GetOrCreateRomDirectory(romName);
+    var prereqsDir = romDir.GetOrCreateSubdir(PREREQS);
+
+    var cacheFile
+        = new FinFile(Path.Join(prereqsDir.FullPath, "hierarchy.cache"));
+
+    return FileHierarchy.From(romName, directory, cacheFile);
+  }
+
 
   public static bool HasNotBeenExtractedYet(
       IReadOnlyTreeFile romFile,
@@ -53,9 +66,9 @@ public static class ExtractorUtil {
   public static bool HasNotBeenExtractedYet(
       string romName,
       out ISystemDirectory extractedDir) {
-      extractedDir = GetOrCreateExtractedDirectory(romName);
-      return extractedDir.IsEmpty;
-    }
+    extractedDir = GetOrCreateExtractedDirectory(romName);
+    return extractedDir.IsEmpty;
+  }
 
 
   public static ISystemDirectory GetOutputDirectoryForFileBundle(

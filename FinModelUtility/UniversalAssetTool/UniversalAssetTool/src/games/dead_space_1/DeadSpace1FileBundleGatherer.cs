@@ -27,8 +27,7 @@ namespace uni.games.dead_space_1 {
         }
       }
 
-      var assetFileHierarchy
-          = FileHierarchy.From("dead_space_1", extractedDir);
+      var assetFileHierarchy = ExtractorUtil.GetFileHierarchy("dead_space_1", extractedDir);
       var mtlbFileIdsDictionary = new MtlbFileIdsDictionary(
           extractedDir,
           new FinFile(Path.Join(prereqsDir.FullPath, "mtlbs.ids")));
