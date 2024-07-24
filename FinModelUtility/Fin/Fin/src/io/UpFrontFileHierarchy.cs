@@ -19,8 +19,8 @@ public static partial class FileHierarchy {
 
     public UpFrontFileHierarchy(string name, ISystemDirectory directory) {
       this.Name = name;
-      var populatedSubdirs
-          = new SharpFileLister().FindNextFilePInvoke(directory.FullPath);
+      var populatedSubdirs = new RecursiveSharpFileLister().FindNextFilePInvoke(
+          directory.FullPath);
       this.Root = new FileHierarchyDirectory(this,
                                              directory,
                                              populatedSubdirs);
