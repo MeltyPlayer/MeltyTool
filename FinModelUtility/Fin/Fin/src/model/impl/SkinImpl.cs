@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 
 using fin.data;
 using fin.data.indexable;
@@ -19,7 +20,8 @@ public partial class ModelImpl<TVertex> {
 
   private class SkinImpl : ISkin<TVertex> {
     private readonly Func<int, Vector3, TVertex> vertexCreator_;
-    private readonly IList<TVertex> vertices_;
+    private readonly List<IVertex> vertices_;
+    private readonly List<TVertex> typedVertices_;
     private readonly List<IMesh> meshes_ = new();
 
     private readonly FinSortedSet<IReadOnlyBone> bonesUsedByVertices_
@@ -37,25 +39,26 @@ public partial class ModelImpl<TVertex> {
                     Func<int, Vector3, TVertex> vertexCreator) {
       this.vertexCreator_ = vertexCreator;
 
-      this.vertices_ = new List<TVertex>();
-      this.TypedVertices = new ReadOnlyCollection<TVertex>(this.vertices_);
-      this.Vertices =
-          new CastListView<TVertex, IVertex>(this.TypedVertices);
+      this.vertices_ = new List<IVertex>(vertexCount);
+      this.typedVertices_ = new List<TVertex>(vertexCount);
 
       // TODO: Possible to speed this up?
       for (var i = 0; i < vertexCount; ++i) {
-        this.vertices_.Add(vertexCreator(i, default));
+        this.AddVertex(default);
       }
     }
 
-    public IReadOnlyList<IVertex> Vertices { get; }
-    public IReadOnlyList<TVertex> TypedVertices { get; }
+    public IReadOnlyList<IVertex> Vertices => this.vertices_;
+    public IReadOnlyList<TVertex> TypedVertices => this.typedVertices_;
 
     public TVertex AddVertex(Vector3 position) {
-      lock (this.vertices_) {
-        var vertex = this.vertexCreator_(this.vertices_.Count, position);
-        this.vertices_.Add(vertex);
-        return vertex;
+      lock (this.typedVertices_) {
+        lock (this.vertices_) {
+          var vertex = this.vertexCreator_(this.vertices_.Count, position);
+          this.vertices_.Add(vertex);
+          this.typedVertices_.Add(vertex);
+          return vertex;
+        }
       }
     }
 

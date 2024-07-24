@@ -47,11 +47,11 @@ public class SharpFileLister : IFileLister {
             continue;
           }
 
+          var attributes = findData.dwFileAttributes;
           var fullPath = @$"{path}\{fileName}";
-          if (!findData.dwFileAttributes.CheckFlag(FileAttributes.Directory)) {
+          if ((attributes & FileAttributes.Directory) == 0) {
             fileList.AddLast(fullPath);
-          } else if (!findData.dwFileAttributes.CheckFlag(
-                         FileAttributes.ReparsePoint)) {
+          } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
             directoryList.AddLast(this.FindNextFilePInvoke(fullPath));
           }
         } while (FindNextFile(fileSearchHandle, out findData));
