@@ -3,9 +3,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-using fin.util.enums;
-
-using static fin.io.sharpfilelister.Interop;
+using static fin.io.sharpfilelister.Interop2;
 
 namespace fin.io.sharpDirLister;
 
