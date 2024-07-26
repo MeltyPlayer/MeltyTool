@@ -124,7 +124,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls" Version="7.1.3" />
     <PackageReference Include="NullFX.CRC" Version="1.1.10" />
+    <PackageReference Include="SceneGate.Ekona" Version="1.1.0" />
     <PackageReference Include="schema" Version="0.5.4" />
+    <PackageReference Include="Yarhl" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -151,8 +153,6 @@
     <ProjectReference Include="..\..\Games\Pikmin2\Pikmin2\Pikmin2.csproj" />
     <ProjectReference Include="..\..\Games\SuperMario64\SuperMario64\SuperMario64.csproj" />
     <ProjectReference Include="..\..\Games\TimeSplitters2\TimeSplitters2\TimeSplitters2.csproj" />
-
-    <ProjectReference Include="..\..\SceneGate\Ekona\src\Ekona\Ekona.csproj" />
     <ProjectReference Include="..\..\Utility of Time CSharp\Utility of Time CSharp.csproj" />
   </ItemGroup>
 </Project>
