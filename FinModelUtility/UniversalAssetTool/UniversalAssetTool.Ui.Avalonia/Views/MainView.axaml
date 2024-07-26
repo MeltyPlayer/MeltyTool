@@ -9,6 +9,7 @@
              xmlns:views="clr-namespace:uni.ui.avalonia.Views"
              xmlns:audio="clr-namespace:uni.ui.avalonia.resources.audio"
              xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
+             xmlns:toolbars="clr-namespace:uni.ui.avalonia.toolbars"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="900"
              x:Class="uni.ui.avalonia.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -98,6 +99,11 @@
           Text="{Binding FileName}"
           Margin="41 9">
       </TextBlock>
+
+      <toolbars:TopToolbar 
+          Margin="41 9"
+          HorizontalAlignment="Right"
+          VerticalAlignment="Top" />
 
       <Grid ZIndex="-5">
         <Grid Background="{StaticResource ColorControlCheckeredBackgroundBrush}">

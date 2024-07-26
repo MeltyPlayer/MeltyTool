@@ -59,6 +59,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="common\buttons\ImportAssetButton.axaml.cs">
+      <DependentUpon>ImportAssetButton.axaml</DependentUpon>
+    </Compile>
     <Compile Update="common\progress\IndeterminateProgressSpinner.axaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>IndeterminateProgressSpinner.axaml</DependentUpon>

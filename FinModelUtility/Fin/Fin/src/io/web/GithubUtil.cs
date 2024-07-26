@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace fin.io.web;
 
-public static class GithubUtil {
+public static class GitHubUtil {
   public const string GITHUB_URL
       = "https://github.com/MeltyPlayer/FinModelUtility";
 

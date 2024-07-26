@@ -7,13 +7,13 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace fin.io.web;
 
-public class GithubUtilTests {
+public class GitHubUtilTests {
   [Test]
   public void TestGetNewIssueUrl() {
     try {
       this.SomeMethod1_(0);
     } catch (Exception e) {
-      var issueUrl = GithubUtil.GetNewIssueUrl(e);
+      var issueUrl = GitHubUtil.GetNewIssueUrl(e);
       var parsedQueryString
           = HttpUtility.ParseQueryString(issueUrl.Split('?')[1]);
 
@@ -21,9 +21,9 @@ public class GithubUtilTests {
           """
           **Stack trace**
           System.NotImplementedException: Foobar
-              at fin.io.web.GithubUtilTests.SomeMethod2_(System.String message) in //FinModelUtility/Fin/Fin Tests/io/web/GithubUtilTests.cs:line 49
-              at fin.io.web.GithubUtilTests.SomeMethod1_<T>(T value) in //FinModelUtility/Fin/Fin Tests/io/web/GithubUtilTests.cs:line 46
-              at fin.io.web.GithubUtilTests.TestGetNewIssueUrl() in //FinModelUtility/Fin/Fin Tests/io/web/GithubUtilTests.cs:line 14
+              at fin.io.web.GitHubUtilTests.SomeMethod2_(System.String message) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 49
+              at fin.io.web.GitHubUtilTests.SomeMethod1_<T>(T value) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 46
+              at fin.io.web.GitHubUtilTests.TestGetNewIssueUrl() in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 14
           
           **To Reproduce**
           Steps to reproduce the behavior:
