@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="24"
-             x:Class="uni.ui.avalonia.common.textboxes.PlaceholderTextbox">
+             x:Class="uni.ui.avalonia.common.textboxes.PlaceholderTextbox"
+             x:CompileBindings="False">
   <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}">
     <TextBox x:Name="impl_"
              TextChanged="OnTextChanged_" />

@@ -5,7 +5,8 @@
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:textboxes="clr-namespace:uni.ui.avalonia.common.textboxes"
              mc:Ignorable="d" d:DesignWidth="200"
-             x:Class="uni.ui.avalonia.common.textboxes.AutocompleteTextbox">
+             x:Class="uni.ui.avalonia.common.textboxes.AutocompleteTextbox"
+             x:CompileBindings="False">
   <UserControl.Styles>
     <Style Selector="textboxes|AutocompleteTextbox:not(:withoutIcon) TextBox#PART_TextBox">
       <Setter Property="MinWidth" Value="32" />

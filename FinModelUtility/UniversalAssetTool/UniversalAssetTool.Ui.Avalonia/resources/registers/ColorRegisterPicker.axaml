@@ -17,7 +17,7 @@
       <ColorPicker
           HorizontalAlignment="Stretch"
           Height="16"
-          Width="{Binding Unset}"
+          Width="{Binding }"
           Color="{Binding Color, Mode=TwoWay}">
         <ColorPicker.Styles>
           <Style Selector="DropDownButton">

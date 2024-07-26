@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="900"
-             x:Class="uni.ui.avalonia.common.controls.EmptyState">
+             x:Class="uni.ui.avalonia.common.controls.EmptyState"
+             x:CompileBindings="False">
   <StackPanel DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}"
               VerticalAlignment="Center">
     <avalonia:MaterialIcon

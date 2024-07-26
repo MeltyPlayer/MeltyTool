@@ -49,25 +49,27 @@
         Icon="Search"
         Placeholder="Search file bundles..." />
 
-    <TreeView ItemsSource="{Binding  Nodes}"
-              SelectionChanged="TreeView_OnSelectionChanged_"
-              Margin="-4 0">
-      <TreeView.ItemTemplate>
-        <TreeDataTemplate ItemsSource="{Binding SubNodes}">
-          <StackPanel Orientation="Horizontal">
-            <controls:If Condition="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}">
-              <avalonia:MaterialIcon
+    <controls:If Condition="{Binding Nodes, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TreeView ItemsSource="{Binding Nodes}"
+                SelectionChanged="TreeView_OnSelectionChanged_"
+                Margin="-4 0">
+        <TreeView.ItemTemplate>
+          <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+            <StackPanel Orientation="Horizontal">
+              <controls:If Condition="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <avalonia:MaterialIcon
                   Kind="{Binding Icon}"
                   Margin="-24 0 4 0"
                   Height="16"
                   Width="16" />
-            </controls:If>
-            <TextBlock 
+              </controls:If>
+              <TextBlock
                 Classes="regular"
                 Text="{Binding Label}" />
-          </StackPanel>
-        </TreeDataTemplate>
-      </TreeView.ItemTemplate>
-    </TreeView>
+            </StackPanel>
+          </TreeDataTemplate>
+        </TreeView.ItemTemplate>
+      </TreeView>
+    </controls:If>
   </DockPanel>
 </UserControl>
