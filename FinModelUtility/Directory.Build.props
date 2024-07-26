@@ -4,6 +4,8 @@
     <DebugSymbols>true</DebugSymbols>
     <AvaloniaVersion>11.0.10</AvaloniaVersion>
     <Platforms>x86;x64</Platforms>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Tests'))">

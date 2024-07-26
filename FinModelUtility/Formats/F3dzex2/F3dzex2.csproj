@@ -2,11 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>f3dzex2</RootNamespace>
-    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
-    <Platforms>AnyCPU;x64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
