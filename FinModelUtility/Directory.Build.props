@@ -3,6 +3,7 @@
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <AvaloniaVersion>11.0.10</AvaloniaVersion>
+    <Platforms>x86;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
