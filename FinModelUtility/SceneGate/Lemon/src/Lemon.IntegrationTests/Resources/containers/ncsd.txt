@@ -1,7 +1,0 @@
-# Manually created and committed
-fake.ncsd,fake_ncsd.yml
-
-# Optionals not committed
-aofm.3ds,aofm.yml
-update.csu,update.yml
-nand.bin,nand.yml

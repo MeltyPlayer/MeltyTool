@@ -1,4 +1,0 @@
-signature_length: 256
-regions_offset: [512, 1536, 2560, 3072, 2998272]
-regions_size: [1024, 1024, 512, 2993152, 575582208]
-available_regions: ["extended_header", "access_descriptor", "sdk_info.txt", "system", "rom"]

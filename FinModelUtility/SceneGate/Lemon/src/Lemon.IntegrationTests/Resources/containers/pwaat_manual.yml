@@ -1,4 +1,0 @@
-signature_length: 256
-regions_offset: [4096]
-regions_size: [872448]
-available_regions: ["rom"]

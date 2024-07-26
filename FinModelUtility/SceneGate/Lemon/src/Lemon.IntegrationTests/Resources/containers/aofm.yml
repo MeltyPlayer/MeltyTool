@@ -1,8 +1,0 @@
-signature_length: 256
-size: 536870912
-media_id: 1125899907790336
-firmwares_type: ["None", "None", "None", "None", "None", "None", "None", "None"]
-crypt_type: [0, 0, 0, 0, 0, 0, 0, 0]
-partitions_offset: [16384, 186126336]
-partitions_size: [186109952, 393216]
-available_partitions: ["program", "manual"]

@@ -1,3 +1,0 @@
-# Optionals not committed
-aofm_tmd.yml,../containers/aofm.cia,11712,2916
-aofm_tmd_legit.yml,../containers/aofm_legit.cia,11712,2916

@@ -1,5 +1,0 @@
-# Manually created and committed
-fake_exefs.yml,fake.ncsd,16896,2048
-
-# Optionals not committed
-aofm_exefs.yml,aofm.3ds,19456,1169408

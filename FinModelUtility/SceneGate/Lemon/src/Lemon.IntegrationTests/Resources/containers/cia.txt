@@ -1,4 +1,0 @@
-# Optionals not committed
-# Due to a bug in GodMode9, CIA dumps have junk that must be 0 between 0x3924 and 0x3940
-aofm_cia.yml,aofm.cia
-aofm_cia_legit.yml,aofm_legit.cia

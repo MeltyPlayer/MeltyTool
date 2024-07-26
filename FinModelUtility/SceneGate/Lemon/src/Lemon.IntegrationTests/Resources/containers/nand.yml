@@ -1,8 +1,0 @@
-signature_length: 256
-size: 1342177280
-media_id: 0
-firmwares_type: ["Normal", "AgbFirmware", "Firmware", "Firmware", "Normal", "None", "None", "None"]
-crypt_type: [1, 2, 2, 2, 3, 0, 0, 0]
-partitions_offset: [0, 185597952, 185794560, 189988864, 194183168]
-partitions_size: [185597952, 196608, 4194304, 4194304, 1106051072]
-available_partitions: ["firm0", "firm1", "firm2", "firm3", "firm4"]
