@@ -1,25 +1,30 @@
 {
-  "ExporterSettings": {
-    "ExportedFormats": [
-      ".fbx",
-      ".glb"
-    ],
-    "ExportAllTextures": true,
-    "ExportedModelScaleSource": "GAME_CONFIG"
+  "General": {
+    "Debug": {
+      "VerboseConsole": false
+    }
   },
-  "ExtractorSettings": {
-    "UseMultithreadingToExtractRoms": true
+  "Exporter": {
+    "General": {
+      "ExportedFormats": [
+        ".fbx",
+        ".glb"
+      ],
+      "ExportAllTextures": true,
+      "ExportedModelScaleSource": "GAME_CONFIG"
+    },
+    "ThirdParty": {
+      "ExportBoneScaleAnimationsSeparately": false
+    }
   },
-  "ViewerSettings": {
+  "Extractor": {
+    "CacheFileHierarchies": true,
+    "ExtractRomsInParallel": true
+  },
+  "Viewer": {
     "AutomaticallyPlayGameAudioForModel": false,
     "ShowGrid": true,
     "ShowSkeleton": false,
     "ViewerModelScaleSource": "MIN_MAX_BOUNDS"
-  },
-  "ThirdPartySettings": {
-    "ExportBoneScaleAnimationsSeparately": false
-  },
-  "DebugSettings": {
-    "VerboseConsole": false
   }
 }

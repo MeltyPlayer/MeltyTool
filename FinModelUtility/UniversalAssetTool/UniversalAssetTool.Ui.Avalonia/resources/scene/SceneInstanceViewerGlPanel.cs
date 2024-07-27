@@ -215,7 +215,7 @@ namespace uni.ui.avalonia.resources.scene {
       this.viewerImpl_.GlobalScale = DebugFlags.GLOBAL_SCALE;
       this.viewerImpl_.NearPlane = DebugFlags.NEAR_PLANE;
       this.viewerImpl_.FarPlane = DebugFlags.FAR_PLANE;
-      this.viewerImpl_.ShowGrid = Config.Instance.ViewerSettings.ShowGrid;
+      this.viewerImpl_.ShowGrid = Config.Instance.Viewer.ShowGrid;
 
       this.viewerImpl_.Render();
     }
@@ -229,7 +229,7 @@ namespace uni.ui.avalonia.resources.scene {
           this.viewerImpl_.ViewerScale = 1;
         } else {
           this.viewerImpl_.ViewerScale =
-              new ScaleSource(Config.Instance.ViewerSettings
+              new ScaleSource(Config.Instance.Viewer
                                     .ViewerModelScaleSource).GetScale(
                   value);
         }

@@ -18,7 +18,7 @@ public static class AudioPlaylistService {
 
     SceneInstanceService.OnSceneInstanceOpened
         += (fileTreeLeafNode, _) => {
-          if (!Config.Instance.ViewerSettings
+          if (!Config.Instance.Viewer
                      .AutomaticallyPlayGameAudioForModel) {
             return;
           }

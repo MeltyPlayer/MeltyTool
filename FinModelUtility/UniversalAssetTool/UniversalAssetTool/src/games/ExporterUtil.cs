@@ -23,57 +23,57 @@ namespace uni.games;
 
 public static class ExporterUtil {
   static ExporterUtil() {
-      ExporterUtil.logger_ = Logging.Create("exportor");
-    }
+    ExporterUtil.logger_ = Logging.Create("exportor");
+  }
 
   private static readonly ILogger logger_;
 
   public static bool CheckIfFilesAlreadyExist(
       IEnumerable<ISystemFile> outputFiles,
       out IReadOnlyList<ISystemFile> existingOutputFiles) {
-      existingOutputFiles =
-          outputFiles.Where(file => file.Exists).ToArray();
-      return existingOutputFiles.Count > 0;
-    }
+    existingOutputFiles =
+        outputFiles.Where(file => file.Exists).ToArray();
+    return existingOutputFiles.Count > 0;
+  }
 
   public static bool CheckIfModelFileBundlesAlreadyExported(
       IEnumerable<IAnnotatedFileBundle> modelFileBundles,
       IReadOnlyList<string> extensions,
       out IReadOnlyList<IAnnotatedFileBundle> existingModelFileBundles) {
-      existingModelFileBundles =
-          modelFileBundles
-              .Where(mfb => CheckIfModelFileBundleAlreadyExported(
-                         mfb,
-                         extensions))
-              .ToArray();
-      return existingModelFileBundles.Count > 0;
-    }
+    existingModelFileBundles =
+        modelFileBundles
+            .Where(mfb => CheckIfModelFileBundleAlreadyExported(
+                       mfb,
+                       extensions))
+            .ToArray();
+    return existingModelFileBundles.Count > 0;
+  }
 
   public static bool CheckIfModelFileBundleAlreadyExported(
       IAnnotatedFileBundle annotatedModelFileBundle,
       IEnumerable<string> extensions) {
-      // TODO: Clean this up!!
-      var bundle = annotatedModelFileBundle.FileBundle;
-      var mainFile = bundle.MainFile;
+    // TODO: Clean this up!!
+    var bundle = annotatedModelFileBundle.FileBundle;
+    var mainFile = bundle.MainFile;
 
-      var parentOutputDirectory =
-          ExtractorUtil.GetOutputDirectoryForFileBundle(
-              annotatedModelFileBundle);
-      var outputDirectory = new FinDirectory(
-          Path.Join(parentOutputDirectory.FullPath,
-                    mainFile.NameWithoutExtension));
+    var parentOutputDirectory =
+        ExtractorUtil.GetOutputDirectoryForFileBundle(
+            annotatedModelFileBundle);
+    var outputDirectory = new FinDirectory(
+        Path.Join(parentOutputDirectory.FullPath,
+                  mainFile.NameWithoutExtension));
 
-      if (outputDirectory.Exists) {
-        return extensions.All(
-            extension => outputDirectory
-                         .GetExistingFiles()
-                         .Where(file => extensions.Contains(file.FileType))
-                         .Any(file => file.NameWithoutExtension ==
-                                      mainFile.NameWithoutExtension));
-      }
-
-      return false;
+    if (outputDirectory.Exists) {
+      return extensions.All(
+          extension => outputDirectory
+                       .GetExistingFiles()
+                       .Where(file => extensions.Contains(file.FileType))
+                       .Any(file => file.NameWithoutExtension ==
+                                    mainFile.NameWithoutExtension));
     }
+
+    return false;
+  }
 
   public enum ExporterPromptChoice {
     CANCEL,
@@ -83,11 +83,11 @@ public static class ExporterUtil {
 
   public static List<IAnnotatedFileBundle> GatherFileBundles(
       this IAnnotatedFileBundleGatherer gatherer) {
-      var organizer = new FileBundleListOrganizer();
-      var progress = new PercentageProgress();
-      gatherer.GatherFileBundles(organizer, progress);
-      return organizer.List;
-    }
+    var organizer = new FileBundleListOrganizer();
+    var progress = new PercentageProgress();
+    gatherer.GatherFileBundles(organizer, progress);
+    return organizer.List;
+  }
 
   public static void ExportAllForCli<T>(
       IAnnotatedFileBundleGatherer gatherer,
@@ -96,7 +96,7 @@ public static class ExporterUtil {
     => ExportAllForCli_(
         gatherer.GatherFileBundles(),
         reader,
-        Config.Instance.ExporterSettings.ExportedFormats,
+        Config.Instance.Exporter.General.ExportedFormats,
         false);
 
   public static void ExportAllOfTypeForCli<TSubType>(
@@ -108,7 +108,7 @@ public static class ExporterUtil {
                 .Where(f => f is IAnnotatedFileBundle<TSubType>)
                 .Select(f => (f as IAnnotatedFileBundle<TSubType>)!),
         reader,
-        Config.Instance.ExporterSettings.ExportedFormats,
+        Config.Instance.Exporter.General.ExportedFormats,
         false);
 
   private static void ExportAllForCli_<T>(
@@ -129,17 +129,17 @@ public static class ExporterUtil {
       IReadOnlyList<string> extensions,
       bool overwriteExistingFiles)
       where T : IModelFileBundle {
-      var bundlesArray = modelFileBundles.ToArray();
-      Asserts.True(bundlesArray.Length > 0,
-                   "Expected to find bundles for the current ROM. Does the file exist, and was it exported correctly?");
+    var bundlesArray = modelFileBundles.ToArray();
+    Asserts.True(bundlesArray.Length > 0,
+                 "Expected to find bundles for the current ROM. Does the file exist, and was it exported correctly?");
 
-      foreach (var modelFileBundle in bundlesArray) {
-        ExporterUtil.Export(modelFileBundle,
-                            reader,
-                            extensions,
-                            overwriteExistingFiles);
-      }
+    foreach (var modelFileBundle in bundlesArray) {
+      ExporterUtil.Export(modelFileBundle,
+                          reader,
+                          extensions,
+                          overwriteExistingFiles);
     }
+  }
 
 
   public static void ExportAll<T>(
@@ -150,59 +150,59 @@ public static class ExporterUtil {
       IReadOnlyList<string> extensions,
       bool overwriteExistingFiles)
       where T : IModelFileBundle {
-      var fileBundleArray = fileBundles
-                            .WhereIs<IAnnotatedFileBundle,
-                                IAnnotatedFileBundle<T>>()
-                            .ToArray();
-      for (var i = 0; i < fileBundleArray.Length; ++i) {
-        if (cancellationTokenSource.IsCancellationRequested) {
-          break;
-        }
-
-        var modelFileBundle = fileBundleArray[i];
-        progress.Report((i * 1f / fileBundleArray.Length,
-                         modelFileBundle.TypedFileBundle));
-        ExporterUtil.Export(modelFileBundle,
-                            reader,
-                            extensions,
-                            overwriteExistingFiles);
+    var fileBundleArray = fileBundles
+                          .WhereIs<IAnnotatedFileBundle,
+                              IAnnotatedFileBundle<T>>()
+                          .ToArray();
+    for (var i = 0; i < fileBundleArray.Length; ++i) {
+      if (cancellationTokenSource.IsCancellationRequested) {
+        break;
       }
 
-      progress.Report((1, default));
+      var modelFileBundle = fileBundleArray[i];
+      progress.Report((i * 1f / fileBundleArray.Length,
+                       modelFileBundle.TypedFileBundle));
+      ExporterUtil.Export(modelFileBundle,
+                          reader,
+                          extensions,
+                          overwriteExistingFiles);
     }
+
+    progress.Report((1, default));
+  }
 
   public static void Export<T>(IAnnotatedFileBundle<T> modelFileBundle,
                                IModelImporter<T> reader,
                                IReadOnlyList<string> extensions,
                                bool overwriteExistingFile)
       where T : IModelFileBundle {
-      ExporterUtil.Export(modelFileBundle,
-                          () => reader.Import(
-                              modelFileBundle.TypedFileBundle),
-                          extensions,
-                          overwriteExistingFile);
-    }
+    ExporterUtil.Export(modelFileBundle,
+                        () => reader.Import(
+                            modelFileBundle.TypedFileBundle),
+                        extensions,
+                        overwriteExistingFile);
+  }
 
   public static void Export<T>(IAnnotatedFileBundle<T> threeDFileBundle,
                                Func<IModel> loaderHandler,
                                IReadOnlyList<string> extensions,
                                bool overwriteExistingFile)
       where T : I3dFileBundle {
-      var mainFile = Asserts.CastNonnull(threeDFileBundle.FileBundle.MainFile);
+    var mainFile = Asserts.CastNonnull(threeDFileBundle.FileBundle.MainFile);
 
-      var parentOutputDirectory =
-          ExtractorUtil
-              .GetOutputDirectoryForFileBundle(threeDFileBundle);
-      var outputDirectory = new FinDirectory(
-          Path.Join(parentOutputDirectory.FullPath,
-                    mainFile.NameWithoutExtension));
+    var parentOutputDirectory =
+        ExtractorUtil
+            .GetOutputDirectoryForFileBundle(threeDFileBundle);
+    var outputDirectory = new FinDirectory(
+        Path.Join(parentOutputDirectory.FullPath,
+                  mainFile.NameWithoutExtension));
 
-      Export(threeDFileBundle.TypedFileBundle,
-             loaderHandler,
-             outputDirectory,
-             extensions,
-             overwriteExistingFile);
-    }
+    Export(threeDFileBundle.TypedFileBundle,
+           loaderHandler,
+           outputDirectory,
+           extensions,
+           overwriteExistingFile);
+  }
 
   public static void Export<T>(T threeDFileBundle,
                                Func<IReadOnlyModel> loaderHandler,
@@ -227,55 +227,55 @@ public static class ExporterUtil {
       bool overwriteExistingFile,
       string? overrideName = null)
       where T : I3dFileBundle {
-      var mainFile = Asserts.CastNonnull(threeDFileBundle.MainFile);
-      var name = overrideName ?? mainFile.NameWithoutExtension;
+    var mainFile = Asserts.CastNonnull(threeDFileBundle.MainFile);
+    var name = overrideName ?? mainFile.NameWithoutExtension;
 
-      if (threeDFileBundle.UseLowLevelExporter) {
-        formats = [AssimpUtil.GetExportFormatFromExtension(".gltf")];
-      }
-
-      var targetFiles = formats.Select(format => new FinFile(
-                                           Path.Join(outputDirectory.FullPath,
-                                             $"{name}.{format.FileExtension}")));
-      if (!overwriteExistingFile &&
-          targetFiles.All(targetFile => targetFile.Exists)) {
-        MessageUtil.LogAlreadyProcessed(ExporterUtil.logger_, mainFile);
-        return;
-      }
-
-      outputDirectory.Create();
-      MessageUtil.LogExporting(ExporterUtil.logger_, mainFile);
-
-      try {
-        var model = loaderHandler();
-
-        new AssimpIndirectModelExporter {
-            LowLevel = threeDFileBundle.UseLowLevelExporter,
-            ForceGarbageCollection = threeDFileBundle.ForceGarbageCollection,
-        }.ExportFormats(new ModelExporterParams {
-                            OutputFile = new FinFile(
-                                Path.Join(outputDirectory.FullPath,
-                                          name + ".foo")),
-                            Model = model,
-                            Scale = new ScaleSource(
-                                    Config.Instance.ExporterSettings
-                                          .ExportedModelScaleSource)
-                                .GetScale(model)
-                        },
-                        formats,
-                        Config.Instance.ExporterSettings.ExportAllTextures);
-
-        if (Config.Instance.ThirdPartySettings
-                  .ExportBoneScaleAnimationsSeparately) {
-          new BoneScaleAnimationExporter().Export(
-              new FinFile(Path.Join(outputDirectory.FullPath,
-                                    name + "_bone_scale_animations.lua")),
-              model);
-        }
-      } catch (Exception e) {
-        ExporterUtil.logger_.LogError(e.ToString());
-      }
-
-      ExporterUtil.logger_.LogInformation(" ");
+    if (threeDFileBundle.UseLowLevelExporter) {
+      formats = [AssimpUtil.GetExportFormatFromExtension(".gltf")];
     }
+
+    var targetFiles = formats.Select(format => new FinFile(
+                                         Path.Join(outputDirectory.FullPath,
+                                                   $"{name}.{format.FileExtension}")));
+    if (!overwriteExistingFile &&
+        targetFiles.All(targetFile => targetFile.Exists)) {
+      MessageUtil.LogAlreadyProcessed(ExporterUtil.logger_, mainFile);
+      return;
+    }
+
+    outputDirectory.Create();
+    MessageUtil.LogExporting(ExporterUtil.logger_, mainFile);
+
+    try {
+      var model = loaderHandler();
+
+      new AssimpIndirectModelExporter {
+          LowLevel = threeDFileBundle.UseLowLevelExporter,
+          ForceGarbageCollection = threeDFileBundle.ForceGarbageCollection,
+      }.ExportFormats(new ModelExporterParams {
+                          OutputFile = new FinFile(
+                              Path.Join(outputDirectory.FullPath,
+                                        name + ".foo")),
+                          Model = model,
+                          Scale = new ScaleSource(
+                                  Config.Instance.Exporter.General
+                                        .ExportedModelScaleSource)
+                              .GetScale(model)
+                      },
+                      formats,
+                      Config.Instance.Exporter.General.ExportAllTextures);
+
+      if (Config.Instance.Exporter.ThirdParty
+                .ExportBoneScaleAnimationsSeparately) {
+        new BoneScaleAnimationExporter().Export(
+            new FinFile(Path.Join(outputDirectory.FullPath,
+                                  name + "_bone_scale_animations.lua")),
+            model);
+      }
+    } catch (Exception e) {
+      ExporterUtil.logger_.LogError(e.ToString());
+    }
+
+    ExporterUtil.logger_.LogInformation(" ");
+  }
 }

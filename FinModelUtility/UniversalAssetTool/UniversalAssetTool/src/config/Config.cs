@@ -20,14 +20,22 @@ public class Config {
   public static Config Instance { get; } =
     DirectoryConstants.CONFIG_FILE.Deserialize<Config>();
 
-  public ExporterSettings ExporterSettings { get; } = new();
-  public ExtractorSettings ExtractorSettings { get; } = new();
-  public ViewerSettings ViewerSettings { get; } = new();
-  public ThirdPartySettings ThirdPartySettings { get; } = new();
-  public DebugSettings DebugSettings { get; } = new();
+  public GeneralSettings General { get; } = new();
+  public ExporterSettings Exporter { get; } = new();
+  public ExtractorSettings Extractor { get; } = new();
+  public ViewerSettings Viewer { get; } = new();
 
   public void SaveSettings()
     => DirectoryConstants.CONFIG_FILE.Serialize(Config.Instance);
+}
+
+public class GeneralSettings {
+  public DebugSettings Debug { get; } = new();
+
+  [AutoInterface]
+  public class DebugSettings : IDebugSettings {
+    public bool VerboseConsole { get; set; }
+  }
 }
 
 [AutoInterface]
@@ -48,25 +56,26 @@ public class ViewerSettings : IViewerSettings {
 
 [AutoInterface]
 public class ExtractorSettings : IExtractorSettings {
-  public bool UseMultithreadingToExtractRoms { get; set; }
+  public bool CacheFileHierarchies { get; set; }
+  public bool ExtractRomsInParallel { get; set; }
 }
 
-[AutoInterface]
-public class ExporterSettings : IExporterSettings {
-  public string[] ExportedFormats { get; set; } = Array.Empty<string>();
-  public bool ExportAllTextures { get; set; }
+public class ExporterSettings {
+  public ExporterGeneralSettings General { get; } = new();
+  public ExporterThirdPartySettings ThirdParty { get; } = new();
 
-  [JsonConverter(typeof(StringEnumConverter))]
-  public ScaleSourceType ExportedModelScaleSource { get; set; } =
-    ScaleSourceType.NONE;
-}
+  [AutoInterface]
+  public class ExporterGeneralSettings : IExporterGeneralSettings {
+    public string[] ExportedFormats { get; set; } = [];
+    public bool ExportAllTextures { get; set; }
 
-[AutoInterface]
-public class DebugSettings : IDebugSettings {
-  public bool VerboseConsole { get; set; }
-}
+    [JsonConverter(typeof(StringEnumConverter))]
+    public ScaleSourceType ExportedModelScaleSource { get; set; } =
+      ScaleSourceType.NONE;
+  }
 
-[AutoInterface]
-public class ThirdPartySettings : IThirdPartySettings {
-  public bool ExportBoneScaleAnimationsSeparately { get; set; }
+  [AutoInterface]
+  public class ExporterThirdPartySettings : IExporterThirdPartySettings {
+    public bool ExportBoneScaleAnimationsSeparately { get; set; }
+  }
 }

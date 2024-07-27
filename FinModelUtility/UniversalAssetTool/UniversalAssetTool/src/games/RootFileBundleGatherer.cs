@@ -80,7 +80,7 @@ public class RootFileBundleGatherer {
     };
 
     IAnnotatedFileBundleGatherer rootGatherer;
-    if (Config.Instance.ExtractorSettings.UseMultithreadingToExtractRoms) {
+    if (Config.Instance.Extractor.ExtractRomsInParallel) {
       var accumulator = new ParallelAnnotatedFileBundleGathererAccumulator();
       foreach (var gatherer in gatherers) {
         accumulator.Add(gatherer);

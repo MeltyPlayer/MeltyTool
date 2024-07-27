@@ -17,7 +17,7 @@ namespace uni {
 
     private const string CONFIG_JSON_ = @"
 {
-  ""ExporterSettings"": {
+  ""Exporter"": {
     ""ExportedFormats"": [
       "".fbx"",
       "".glb""
@@ -25,20 +25,20 @@ namespace uni {
     ""ExportAllTextures"": true,
     ""ExportedModelScaleSource"": ""GAME_CONFIG""
   },
-  ""ExtractorSettings"": {
+  ""Extractor"": {
     ""UseMultithreadingToExtractRoms"": true
   },
-  ""ViewerSettings"": {
+  ""Viewer"": {
     ""AutomaticallyPlayGameAudioForModel"": false,
     ""RotateLight"": false,
     ""ShowGrid"": true,
     ""ShowSkeleton"": false,
     ""ViewerModelScaleSource"": ""MIN_MAX_BOUNDS""
   },
-  ""ThirdPartySettings"": {
+  ""ThirdParty"": {
     ""ExportBoneScaleAnimationsSeparately"": false
   },
-  ""DebugSettings"": {
+  ""Debug"": {
     ""VerboseConsole"": false
   }
 }";
