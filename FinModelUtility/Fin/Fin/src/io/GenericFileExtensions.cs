@@ -18,8 +18,12 @@ public static class GenericFileExtensions {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Serialize<T>(this IGenericFile file, T instance)
-      where T : notnull
-    => file.WriteAllText(JsonUtil.Serialize(instance));
+      where T : notnull {
+    using var fs = file.OpenWrite();
+    using var sw = new StreamWriter(fs);
+    sw.Write(JsonUtil.Serialize(instance));
+    fs.SetLength(fs.Position);
+  }
 
 
   // Read methods

@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 
+using fin.config;
 using fin.data.stacks;
 using fin.io.sharpDirLister;
 using fin.util.asserts;
@@ -19,13 +20,18 @@ public static partial class FileHierarchy {
                                ISystemFile cacheFile) {
       this.Name = name;
 
+      var useCaching = FinConfig.CacheFileHierarchies;
+
       SchemaDirectoryInformation populatedSubdirs;
-      if (!cacheFile.Exists) {
+      if (!cacheFile.Exists || !useCaching) {
         populatedSubdirs
             = new SchemaSharpFileLister().FindNextFilePInvoke(
                 directory.FullPath,
                 "");
-        cacheFile.Write(populatedSubdirs);
+
+        if (useCaching) {
+          cacheFile.Write(populatedSubdirs);
+        }
       } else {
         populatedSubdirs = cacheFile.ReadNew<SchemaDirectoryInformation>();
       }

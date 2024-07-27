@@ -1,11 +1,15 @@
-﻿using ConfigFactory.Core;
+﻿using System;
+
+using Avalonia.Controls;
+
+using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
 
 using uni.config;
 
 namespace uni.ui.avalonia.settings;
 
-public partial class SettingsViewModel
+public class SettingsViewModel
     : ConfigModule<SettingsViewModel>, IDebugSettings, IExporterGeneralSettings,
       IExporterThirdPartySettings, IExtractorSettings, IViewerSettings {
   private const string CATEGORY_GENERAL = "General";
@@ -19,6 +23,21 @@ public partial class SettingsViewModel
   private const string GROUP_VIEWER = "Viewer";
 
   private static Config Config_ => Config.Instance;
+
+  public event Action OnClose;
+
+
+  public override void Reset() {
+    base.Reset();
+    Config.ReloadSettings();
+    this.OnClose?.Invoke();
+  }
+
+  public override void Save() {
+    base.Save();
+    Config.SaveSettings();
+    this.OnClose?.Invoke();
+  }
 
   // Debug Settings
   [property: Config(

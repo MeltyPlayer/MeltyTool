@@ -17,15 +17,27 @@ public enum ScaleSourceType {
 }
 
 public class Config {
-  public static Config Instance { get; } =
-    DirectoryConstants.CONFIG_FILE.Deserialize<Config>();
+  private static Config? instance_;
+
+  public static Config Instance {
+    get {
+      if (instance_ == null) {
+        ReloadSettings();
+      }
+
+      return instance_!;
+    }
+  }
 
   public GeneralSettings General { get; } = new();
   public ExporterSettings Exporter { get; } = new();
   public ExtractorSettings Extractor { get; } = new();
   public ViewerSettings Viewer { get; } = new();
 
-  public void SaveSettings()
+  public static void ReloadSettings()
+    => instance_ = DirectoryConstants.CONFIG_FILE.Deserialize<Config>();
+
+  public static void SaveSettings()
     => DirectoryConstants.CONFIG_FILE.Serialize(Config.Instance);
 }
 
