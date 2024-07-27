@@ -11,9 +11,10 @@
     <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
     <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+    <StyleInclude Source="avares://ConfigFactory.Avalonia/Themes/Fluent/ConfigFactory.Avalonia.axaml" />
     <avalonia:MaterialIconStyles />
-    <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
     <StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml" />
+    <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
 
     <StyleInclude Source="common/CommonStyles.axaml" />
     <StyleInclude Source="common/IconStyles.axaml" />

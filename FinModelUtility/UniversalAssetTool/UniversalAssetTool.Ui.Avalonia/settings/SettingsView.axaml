@@ -2,73 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:ConfigFactory.Avalonia;assembly=ConfigFactory.Avalonia"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d"
              x:Class="uni.ui.avalonia.settings.SettingsView">
-    <Grid Background="{DynamicResource SystemChromeLowColor}" ColumnDefinitions="260,*">
-        <Grid Name="FocusDelegate">
-            <Border Margin="0,15"
-                    BorderBrush="{DynamicResource SystemChromeHighColor}"
-                    BorderThickness="0,0,1,0" />
-            <ScrollViewer>
-
-                <!--  Requires StackPanel 'Root' to attach UiElements  -->
-                <StackPanel Name="Root"
-                            Width="200"
-                            Margin="20,0,30,40"
-                            HorizontalAlignment="Right" />
-            </ScrollViewer>
-            <Grid Margin="15,15,30,15"
-                  VerticalAlignment="Bottom"
-                  ColumnDefinitions="0.6*,*,*">
-
-                <!--  Requires Button 'Cancel' to attach the cancel operation  -->
-                <Button Name="Cancel"
-                        Grid.Column="1"
-                        Margin="5,0"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Center"
-                        Content="Cancel"
-                        IsEnabled="{Binding CanClose}" />
-
-                <!--  Requires Button 'Save' to attach the save operation  -->
-                <Button Name="Save"
-                        Grid.Column="2"
-                        Margin="5,0,0,0"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Center"
-                        Content="Save" />
-            </Grid>
-        </Grid>
-
-        <Grid Name="FocusDelegate2" Grid.Column="1">
-            <ScrollViewer>
-                <Grid>
-                    <ContentControl Width="{Binding $parent.Bounds.Width}"
-                                    MinWidth="400"
-                                    MaxWidth="1200"
-                                    HorizontalAlignment="Left"
-                                    Content="{Binding ActiveElement}">
-                        <ContentControl.Styles>
-                            <Style Selector="Border.ElementBase">
-                                <Setter Property="Background" Value="{DynamicResource SystemChromeMediumColor}" />
-                                <Setter Property="BoxShadow" Value="1 1 5 0 #00000000" />
-                                <Setter Property="Transitions">
-                                    <Transitions>
-                                        <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.2" />
-                                        <BrushTransition Property="Background" Duration="0:0:0.2" />
-                                    </Transitions>
-                                </Setter>
-                            </Style>
-                            <Style Selector="Border.ElementBase:pointerover">
-                                <Setter Property="Background" Value="{DynamicResource SystemChromeMediumLowColor}" />
-                                <Setter Property="BoxShadow" Value="1 2 5 1 #25000000" />
-                            </Style>
-                        </ContentControl.Styles>
-                    </ContentControl>
-                </Grid>
-            </ScrollViewer>
-        </Grid>
-    </Grid>
+  <avalonia:ConfigPage Name="ConfigPage" />
 </UserControl>
