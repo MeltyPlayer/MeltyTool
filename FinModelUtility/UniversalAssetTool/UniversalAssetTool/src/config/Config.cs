@@ -1,4 +1,6 @@
-﻿using fin.config;
+﻿using AutoInterfaceAttributes;
+
+using fin.config;
 using fin.io;
 
 using Newtonsoft.Json;
@@ -28,7 +30,8 @@ public class Config {
     => DirectoryConstants.CONFIG_FILE.Serialize(Config.Instance);
 }
 
-public class ViewerSettings {
+[AutoInterface]
+public class ViewerSettings : IViewerSettings {
   public bool AutomaticallyPlayGameAudioForModel { get; set; }
 
   public bool ShowGrid { get; set; }
@@ -43,11 +46,13 @@ public class ViewerSettings {
     ScaleSourceType.MIN_MAX_BOUNDS;
 }
 
-public class ExtractorSettings {
+[AutoInterface]
+public class ExtractorSettings : IExtractorSettings {
   public bool UseMultithreadingToExtractRoms { get; set; }
 }
 
-public class ExporterSettings {
+[AutoInterface]
+public class ExporterSettings : IExporterSettings {
   public string[] ExportedFormats { get; set; } = Array.Empty<string>();
   public bool ExportAllTextures { get; set; }
 
@@ -56,10 +61,12 @@ public class ExporterSettings {
     ScaleSourceType.NONE;
 }
 
-public class DebugSettings {
+[AutoInterface]
+public class DebugSettings : IDebugSettings {
   public bool VerboseConsole { get; set; }
 }
 
-public class ThirdPartySettings {
+[AutoInterface]
+public class ThirdPartySettings : IThirdPartySettings {
   public bool ExportBoneScaleAnimationsSeparately { get; set; }
 }

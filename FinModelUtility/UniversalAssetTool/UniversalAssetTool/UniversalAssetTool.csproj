@@ -116,6 +116,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoInterface" Version="2.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.9.2" />

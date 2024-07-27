@@ -1,0 +1,9 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="uni.ui.avalonia.common.buttons.OpenSettingsButton">
+  <Button ToolTip.Tip="Edit settings"
+          Click="Button_OnClick">
+    <avalonia:MaterialIcon Kind="Settings" />
+  </Button>
+</UserControl>

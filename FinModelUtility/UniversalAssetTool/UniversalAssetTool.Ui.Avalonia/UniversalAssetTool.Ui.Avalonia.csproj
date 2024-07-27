@@ -9,6 +9,12 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="icons\**" />
+    <AvaloniaXaml Remove="settings\**" />
+    <Compile Remove="settings\**" />
+    <EmbeddedResource Remove="settings\**" />
+    <None Remove="settings\**" />
+    <AvaloniaXaml Remove="common\buttons\OpenSettingsButton.axaml" />
+    <Compile Remove="common\buttons\OpenSettingsButton.axaml.cs" />
     <AvaloniaResource Update="icons\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AvaloniaResource>
