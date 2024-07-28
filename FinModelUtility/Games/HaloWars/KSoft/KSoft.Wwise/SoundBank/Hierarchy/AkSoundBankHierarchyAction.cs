@@ -13,8 +13,8 @@ namespace KSoft.Wwise.SoundBank
 		{
 			base.Serialize(s);
 
-			s.Stream(ref Type, AkActionTypeStreamer.Instance);
-			s.Stream(ref TargetID);
+			s.Stream(ref this.Type, AkActionTypeStreamer.Instance);
+			s.Stream(ref this.TargetID);
 			// There's more...
 		}
 	};

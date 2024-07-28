@@ -15,9 +15,9 @@ namespace KSoft.Collections
 
 		public BListExplicitIndexParams(int initialCapacity = TypeExtensions.kNone) : base()
 		{
-			Flags.Clear();
+			this.Flags.Clear();
 			if (initialCapacity > 0)
-				base.InitialCapacity = initialCapacity;
+				this.InitialCapacity = initialCapacity;
 		}
 	};
 }

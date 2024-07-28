@@ -5,7 +5,7 @@ namespace fin.math.rotations;
 
 public static class FinTrig {
   public const float DEG_2_RAD = MathF.PI / 180;
-  public const float RAD_2_DEG = 1 / FinTrig.DEG_2_RAD;
+  public const float RAD_2_DEG = 1 / DEG_2_RAD;
 
 
   // At this point, native C# approach is faster than FastMath.
@@ -35,11 +35,11 @@ public static class FinTrig {
                                          out float xNormal,
                                          out float yNormal,
                                          out float zNormal) {
-    var horizontalNormal = FinTrig.Cos(pitchRadians);
-    var verticalNormal = FinTrig.Sin(pitchRadians);
+    var horizontalNormal = Cos(pitchRadians);
+    var verticalNormal = Sin(pitchRadians);
 
-    xNormal = horizontalNormal * FinTrig.Cos(yawRadians);
-    yNormal = horizontalNormal * FinTrig.Sin(yawRadians);
+    xNormal = horizontalNormal * Cos(yawRadians);
+    yNormal = horizontalNormal * Sin(yawRadians);
     zNormal = verticalNormal;
   }
 
@@ -49,8 +49,8 @@ public static class FinTrig {
                                          out float xNormal,
                                          out float yNormal,
                                          out float zNormal)
-    => FinTrig.FromPitchYawRadians(pitchDegrees * FinTrig.DEG_2_RAD,
-                                   yawDegrees * FinTrig.DEG_2_RAD,
+    => FromPitchYawRadians(pitchDegrees * DEG_2_RAD,
+                                   yawDegrees * DEG_2_RAD,
                                    out xNormal,
                                    out yNormal,
                                    out zNormal);

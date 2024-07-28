@@ -26,10 +26,10 @@ namespace KSoft.Phoenix.Xmb
 		[Interop.FieldOffset(2)]
 		public byte VectorLength;
 
-		public bool IsEmpty { get { return Type == XmbVariantType.Null; } }
+		public bool IsEmpty { get { return this.Type == XmbVariantType.Null; } }
 
 		public bool HasUnicodeData { get {
-			return Type == XmbVariantType.String && IsUnicode;
+			return this.Type == XmbVariantType.String && this.IsUnicode;
 		} }
 		#endregion
 
@@ -90,8 +90,8 @@ namespace KSoft.Phoenix.Xmb
 		{
 			string result = null;
 
-			if (IsIndirect)
-				result = pool.GetString(Offset, IsUnicode);
+			if (this.IsIndirect)
+				result = pool.GetString(this.Offset, this.IsUnicode);
 			else
 			{
 				// Unicode is always indirect
@@ -99,12 +99,12 @@ namespace KSoft.Phoenix.Xmb
 				//else
 				{
 					var sb = new System.Text.StringBuilder(3);
-					if (Char0 != '\0')
-						sb.Append((char)Char0);
-					if (Char1 != '\0')
-						sb.Append((char)Char1);
-					if (Char2 != '\0')
-						sb.Append((char)Char2);
+					if (this.Char0 != '\0')
+						sb.Append((char) this.Char0);
+					if (this.Char1 != '\0')
+						sb.Append((char) this.Char1);
+					if (this.Char2 != '\0')
+						sb.Append((char) this.Char2);
 
 					result = sb.ToString();
 				}
@@ -115,40 +115,40 @@ namespace KSoft.Phoenix.Xmb
 		{
 			string result = "";
 
-			switch (Type)
+			switch (this.Type)
 			{
 				case XmbVariantType.Single: {
-					float f = Single;
-					if (IsIndirect)
-						f = pool.GetSingle(Offset);
+					float f = this.Single;
+					if (this.IsIndirect)
+						f = pool.GetSingle(this.Offset);
 					result = f.ToStringInvariant(Numbers.kFloatRoundTripFormatSpecifier);
 				} break;
 
 				case XmbVariantType.Int: {
-					uint i = Int;
-					if (IsIndirect)
-						i = pool.GetUInt32(Offset);
-					result = IsUnsigned
+					uint i = this.Int;
+					if (this.IsIndirect)
+						i = pool.GetUInt32(this.Offset);
+					result = this.IsUnsigned
 						? i.ToString()
 						: ((int)i).ToString();
 				} break;
 
 				case XmbVariantType.Double: {
-					double d = pool.GetDouble(Offset);
+					double d = pool.GetDouble(this.Offset);
 					result = d.ToStringInvariant(Numbers.kDoubleRoundTripFormatSpecifier);
 				} break;
 
 				case XmbVariantType.Bool: {
 					// Phoenix uses lower case and Boolean.ToString uppercases the first letter
-					result = Bool ? "true" : "false";
+					result = this.Bool ? "true" : "false";
 				} break;
 
 				case XmbVariantType.String: {
-					result = StringToString(pool);
+					result = this.StringToString(pool);
 				} break;
 
 				case XmbVariantType.Vector: {
-					result = VectorToString(Offset, VectorLength, pool);
+					result = VectorToString(this.Offset, this.VectorLength, pool);
 				} break;
 			}
 

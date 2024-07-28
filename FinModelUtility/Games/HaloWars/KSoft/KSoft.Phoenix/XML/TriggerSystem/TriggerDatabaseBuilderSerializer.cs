@@ -10,7 +10,7 @@ namespace KSoft.Phoenix.XML
 		: BXmlSerializerInterface
 	{
 		Phx.BDatabaseBase mDatabase;
-		internal override Phx.BDatabaseBase Database { get { return mDatabase; } }
+		internal override Phx.BDatabaseBase Database { get { return this.mDatabase; } }
 
 		public Phx.TriggerDatabase TriggerDb { get; private set; }
 
@@ -18,8 +18,8 @@ namespace KSoft.Phoenix.XML
 		{
 			Contract.Requires(phx != null);
 
-			mDatabase = phx.Database;
-			TriggerDb = phx.TriggerDb;
+			this.mDatabase = phx.Database;
+			this.TriggerDb = phx.TriggerDb;
 		}
 
 		#region IDisposable Members
@@ -43,7 +43,7 @@ namespace KSoft.Phoenix.XML
 			if (s.StreamName.EndsWith("skirmishai.triggerscript"))
 				return;
 
-			ParseTriggerScript(s);
+			this.ParseTriggerScript(s);
 		}
 		void ParseScenarioScripts<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
@@ -62,47 +62,47 @@ namespace KSoft.Phoenix.XML
 		{
 			System.Threading.Tasks.ParallelLoopResult result;
 
-			ReadDataFilesAsync(Engine.ContentStorage.Game,   Engine.GameDirectory.TriggerScripts,
-				Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.TriggerScript),
-				ParseTriggerScriptSansSkrimishAI, out result);
+			this.ReadDataFilesAsync(Engine.ContentStorage.Game,   Engine.GameDirectory.TriggerScripts,
+			                        Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.TriggerScript),
+			                        this.ParseTriggerScriptSansSkrimishAI, out result);
 
-			ReadDataFilesAsync(Engine.ContentStorage.Update, Engine.GameDirectory.TriggerScripts,
-				Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.TriggerScript),
-				ParseTriggerScript, out result);
+			this.ReadDataFilesAsync(Engine.ContentStorage.Update, Engine.GameDirectory.TriggerScripts,
+			                        Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.TriggerScript),
+			                        this.ParseTriggerScript, out result);
 		}
 		void ParseAbilities(Engine.PhxEngine e)
 		{
 			System.Threading.Tasks.ParallelLoopResult result;
 
-			ReadDataFilesAsync(Engine.ContentStorage.Game,   Engine.GameDirectory.AbilityScripts,
-				Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.Ability),
-				ParseTriggerScript, out result);
+			this.ReadDataFilesAsync(Engine.ContentStorage.Game,   Engine.GameDirectory.AbilityScripts,
+			                        Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.Ability),
+			                        this.ParseTriggerScript, out result);
 		}
 		void ParsePowers(Engine.PhxEngine e)
 		{
 			System.Threading.Tasks.ParallelLoopResult result;
 
-			ReadDataFilesAsync(Engine.ContentStorage.Game,   Engine.GameDirectory.PowerScripts,
-				Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.Power),
-				ParseTriggerScript, out result);
+			this.ReadDataFilesAsync(Engine.ContentStorage.Game,   Engine.GameDirectory.PowerScripts,
+			                        Phx.BTriggerSystem.GetFileExtSearchPattern(Phx.BTriggerScriptType.Power),
+			                        this.ParseTriggerScript, out result);
 		}
 		void ParseScenarios(Engine.PhxEngine e)
 		{
 			System.Threading.Tasks.ParallelLoopResult result;
 
-			ReadDataFilesAsync(Engine.ContentStorage.Game, Engine.GameDirectory.Scenario,
-				"*.scn",
-				ParseScenarioScripts, out result);
+			this.ReadDataFilesAsync(Engine.ContentStorage.Game, Engine.GameDirectory.Scenario,
+			                        "*.scn",
+			                        this.ParseScenarioScripts, out result);
 		}
 
 		public void ParseScriptFiles()
 		{
-			var e = GameEngine;
+			var e = this.GameEngine;
 
-			ParseTriggerScripts(e);
-			ParseAbilities(e);
-			ParsePowers(e);
-			ParseScenarios(e);
+			this.ParseTriggerScripts(e);
+			this.ParseAbilities(e);
+			this.ParsePowers(e);
+			this.ParseScenarios(e);
 		}
 	};
 }

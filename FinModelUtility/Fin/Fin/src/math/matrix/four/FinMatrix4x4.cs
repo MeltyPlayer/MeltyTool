@@ -80,32 +80,32 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void CopyFrom(in SystemMatrix other) => impl_ = other;
+  public void CopyFrom(in SystemMatrix other) => this.impl_ = other;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IFinMatrix4x4 SetIdentity() {
-    impl_ = SystemMatrix.Identity;
+    this.impl_ = SystemMatrix.Identity;
     return this;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IFinMatrix4x4 SetZero() {
-    impl_ = new SystemMatrix();
+    this.impl_ = new SystemMatrix();
     return this;
   }
 
   public float this[int index] {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => Unsafe.Add(ref impl_.M11, index);
+    get => Unsafe.Add(ref this.impl_.M11, index);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    set => Unsafe.Add(ref impl_.M11, index) = value;
+    set => Unsafe.Add(ref this.impl_.M11, index) = value;
   }
 
   public float this[int row, int column] {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => this[FinMatrix4x4.GetIndex_(row, column)];
+    get => this[GetIndex_(row, column)];
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    set => this[FinMatrix4x4.GetIndex_(row, column)] = value;
+    set => this[GetIndex_(row, column)] = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -174,7 +174,7 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void MultiplyIntoBuffer(in SystemMatrix other,
                                  IFinMatrix4x4 buffer) {
-    buffer.Impl = SystemMatrix.Multiply(other, impl_);
+    buffer.Impl = SystemMatrix.Multiply(other, this.impl_);
   }
 
 
@@ -190,7 +190,7 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void MultiplyIntoBuffer(float other, IFinMatrix4x4 buffer)
-    => buffer.Impl = SystemMatrix.Multiply(impl_, other);
+    => buffer.Impl = SystemMatrix.Multiply(this.impl_, other);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IFinMatrix4x4 CloneAndInvert()
@@ -248,8 +248,7 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
     translation = default;
     scale = default;
     Asserts.True(
-        SystemMatrix.Decompose(
-            impl_,
+        SystemMatrix.Decompose(this.impl_,
             out scale,
             out rotation,
             out translation) ||

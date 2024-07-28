@@ -52,10 +52,38 @@ namespace KSoft.Security.Cryptography
 			for (int i = 1; i <= 32; i++)
 				r[i - 1] = kDeltas[i];
 
-			k0 = r[0]; k1 = r[1]; k2 = r[2]; k3 = r[3]; k4 = r[4]; k5 = r[5]; k6 = r[6]; k7 = r[7];
-			k8 = r[8]; k9 = r[9]; k10 = r[10]; k11 = r[11]; k12 = r[12]; k13 = r[13]; k14 = r[14]; k15 = r[15];
-			k16 = r[16]; k17 = r[17]; k18 = r[18]; k19 = r[19]; k20 = r[20]; k21 = r[21]; k22 = r[22]; k23 = r[23];
-			k24 = r[24]; k25 = r[25]; k26 = r[26]; k27 = r[27]; k28 = r[28]; k29 = r[29]; k30 = r[30]; k31 = r[31];
+			this.k0 = r[0];
+			this.k1 = r[1];
+			this.k2 = r[2];
+			this.k3 = r[3];
+			this.k4 = r[4];
+			this.k5 = r[5];
+			this.k6 = r[6];
+			this.k7 = r[7];
+			this.k8 = r[8];
+			this.k9 = r[9];
+			this.k10 = r[10];
+			this.k11 = r[11];
+			this.k12 = r[12];
+			this.k13 = r[13];
+			this.k14 = r[14];
+			this.k15 = r[15];
+			this.k16 = r[16];
+			this.k17 = r[17];
+			this.k18 = r[18];
+			this.k19 = r[19];
+			this.k20 = r[20];
+			this.k21 = r[21];
+			this.k22 = r[22];
+			this.k23 = r[23];
+			this.k24 = r[24];
+			this.k25 = r[25];
+			this.k26 = r[26];
+			this.k27 = r[27];
+			this.k28 = r[28];
+			this.k29 = r[29];
+			this.k30 = r[30];
+			this.k31 = r[31];
 		}
 		public void SetKeyHackDec()
 		{
@@ -63,10 +91,38 @@ namespace KSoft.Security.Cryptography
 			for (int r_i = 0, d_i = 32; r_i < 32; r_i++, d_i--)
 				r[r_i] = kDeltas[d_i];
 
-			k0 = r[0]; k1 = r[1]; k2 = r[2]; k3 = r[3]; k4 = r[4]; k5 = r[5]; k6 = r[6]; k7 = r[7];
-			k8 = r[8]; k9 = r[9]; k10 = r[10]; k11 = r[11]; k12 = r[12]; k13 = r[13]; k14 = r[14]; k15 = r[15];
-			k16 = r[16]; k17 = r[17]; k18 = r[18]; k19 = r[19]; k20 = r[20]; k21 = r[21]; k22 = r[22]; k23 = r[23];
-			k24 = r[24]; k25 = r[25]; k26 = r[26]; k27 = r[27]; k28 = r[28]; k29 = r[29]; k30 = r[30]; k31 = r[31];
+			this.k0 = r[0];
+			this.k1 = r[1];
+			this.k2 = r[2];
+			this.k3 = r[3];
+			this.k4 = r[4];
+			this.k5 = r[5];
+			this.k6 = r[6];
+			this.k7 = r[7];
+			this.k8 = r[8];
+			this.k9 = r[9];
+			this.k10 = r[10];
+			this.k11 = r[11];
+			this.k12 = r[12];
+			this.k13 = r[13];
+			this.k14 = r[14];
+			this.k15 = r[15];
+			this.k16 = r[16];
+			this.k17 = r[17];
+			this.k18 = r[18];
+			this.k19 = r[19];
+			this.k20 = r[20];
+			this.k21 = r[21];
+			this.k22 = r[22];
+			this.k23 = r[23];
+			this.k24 = r[24];
+			this.k25 = r[25];
+			this.k26 = r[26];
+			this.k27 = r[27];
+			this.k28 = r[28];
+			this.k29 = r[29];
+			this.k30 = r[30];
+			this.k31 = r[31];
 		}
 
 		protected abstract void EncryptBlock(byte[] inb, byte[] outb, int off);
@@ -75,17 +131,17 @@ namespace KSoft.Security.Cryptography
 		public void Encypt(byte[] bytes, int index, int length)
 		{
 			for (int x = index; x < (index + length); x += 8)
-				EncryptBlock(bytes, bytes, x);
+				this.EncryptBlock(bytes, bytes, x);
 		}
 		public void Decypt(byte[] bytes, int index, int length)
 		{
 			for (int x = index; x < (index + length); x += 8)
-				DecryptBlock(bytes, bytes, x);
+				this.DecryptBlock(bytes, bytes, x);
 		}
 		public void Decypt(byte[] inb, byte[] outb)
 		{
 			for (int x = 0; x < inb.Length; x += 8)
-				DecryptBlock(inb, outb, x);
+				this.DecryptBlock(inb, outb, x);
 		}
 	};
 }

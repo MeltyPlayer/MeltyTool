@@ -33,7 +33,8 @@ public partial class TransparentLabel : Label {
       }
     set {
         base.Text = value;
-        if (Parent != null) Parent.Invalidate(Bounds, false);
+        if (this.Parent != null)
+          this.Parent.Invalidate(this.Bounds, false);
       }
   }
 
@@ -43,15 +44,16 @@ public partial class TransparentLabel : Label {
       }
     set {
         base.TextAlign = value;
-        if (Parent != null) Parent.Invalidate(Bounds, false);
+        if (this.Parent != null)
+          this.Parent.Invalidate(this.Bounds, false);
       }
   }
 
   public TransparentLabel() {
-      InitializeComponent();
+    this.InitializeComponent();
 
-      SetStyle(ControlStyles.Opaque, true);
-      SetStyle(ControlStyles.OptimizedDoubleBuffer, false);
+    this.SetStyle(ControlStyles.Opaque, true);
+    this.SetStyle(ControlStyles.OptimizedDoubleBuffer, false);
 
       base.BackColor = Color.Transparent;
     }

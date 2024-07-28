@@ -40,19 +40,19 @@ namespace KSoft.IO
 
 		#region IKSoftStreamModeable
 		public System.IO.FileAccess StreamMode { get; set; }
-		public bool IsReading { get { return StreamMode == System.IO.FileAccess.Read; } }
-		public bool IsWriting { get { return StreamMode == System.IO.FileAccess.Write; } }
+		public bool IsReading { get { return this.StreamMode == System.IO.FileAccess.Read; } }
+		public bool IsWriting { get { return this.StreamMode == System.IO.FileAccess.Write; } }
 
 		/// <summary>Supported access permissions for this stream</summary>
 		public System.IO.FileAccess StreamPermissions { get; protected set; }
 
 		protected void ValidateReadPermission()
 		{
-			Contract.Assert(StreamPermissions.CanRead(), "Stream permissions do not support reading");
+			Contract.Assert(this.StreamPermissions.CanRead(), "Stream permissions do not support reading");
 		}
 		protected void ValidateWritePermission()
 		{
-			Contract.Assert(StreamPermissions.CanWrite(), "Stream permissions do not support writing");
+			Contract.Assert(this.StreamPermissions.CanWrite(), "Stream permissions do not support writing");
 		}
 		#endregion
 
@@ -65,12 +65,12 @@ namespace KSoft.IO
 		{
 			Contract.Assume(stream != null);
 
-			StreamName = null;
+			this.StreamName = null;
 
 			if (stream is System.IO.FileStream fs)
-				StreamName = fs.Name;
+				this.StreamName = fs.Name;
 
-			if (StreamName == null)
+			if (this.StreamName == null)
 				stream.ToString();
 		}
 		#endregion
@@ -84,11 +84,11 @@ namespace KSoft.IO
 		TCursor mCursor;
 		/// <summary>Element data we are streaming data to and from</summary>
 		public TCursor Cursor {
-			get { return mCursor; }
+			get { return this.mCursor; }
 			set {
 				Contract.Requires<ArgumentNullException>(value != null);
 
-				mCursor = value;
+				this.mCursor = value;
 			}
 		}
 
@@ -97,8 +97,8 @@ namespace KSoft.IO
 		/// <returns></returns>
 		public int TryGetCursorElementCount(int defaultCount = 0)
 		{
-			var count = Cursor != null
-				? PredictElementCount(Cursor)
+			var count = this.Cursor != null
+				? this.PredictElementCount(this.Cursor)
 				: TypeExtensions.kNone;
 
 			return count < 0
@@ -119,8 +119,9 @@ namespace KSoft.IO
 		/// <param name="oldCursor">On return, contains the value of <see cref="Cursor"/> before the call to this method</param>
 		public void SaveCursor(TCursor newCursor, out TCursor oldCursor)
 		{
-			oldCursor = Cursor;
-			if(newCursor != null) Cursor = newCursor;
+			oldCursor = this.Cursor;
+			if(newCursor != null)
+				this.Cursor = newCursor;
 		}
 		/// <summary>Returns the cursor to a previously saved cursor value</summary>
 		/// <param name="oldCursor">Previously saved cursor. Set to null before the method returns</param>
@@ -131,7 +132,7 @@ namespace KSoft.IO
 			#endif
 			Contract.Assert(oldCursor != null, "Can't restore a cursor that wasn't saved!");
 
-			Cursor = oldCursor;
+			this.Cursor = oldCursor;
 			oldCursor = null;
 		}
 
@@ -159,8 +160,8 @@ namespace KSoft.IO
 		/// </remarks>
 		public /*IDisposable*/TagElementStreamBookmark<TDoc, TCursor, TName> EnterCursorBookmarkOpt(TName elementName)
 		{
-			if ((IsReading && ElementsExists(elementName)) ||
-				 IsWriting)
+			if ((this.IsReading && this.ElementsExists(elementName)) ||
+			    this.IsWriting)
 				return new TagElementStreamBookmark<TDoc, TCursor, TName>(this, elementName);
 
 			return TagElementStreamBookmark<TDoc, TCursor, TName>.Null;
@@ -178,8 +179,8 @@ namespace KSoft.IO
 		public /*IDisposable*/TagElementStreamBookmark<TDoc, TCursor, TName> EnterCursorBookmarkOpt<T>(TName elementName,
 			T theObj, Predicate<T> writeShouldEnterBookmark)
 		{
-			if ((IsReading && ElementsExists(elementName)) ||
-				(IsWriting && writeShouldEnterBookmark(theObj)))
+			if ((this.IsReading && this.ElementsExists(elementName)) ||
+				(this.IsWriting && writeShouldEnterBookmark(theObj)))
 				return new TagElementStreamBookmark<TDoc, TCursor, TName>(this, elementName);
 
 			return TagElementStreamBookmark<TDoc, TCursor, TName>.Null;
@@ -192,11 +193,11 @@ namespace KSoft.IO
 		/// <remarks>Off by default, setting this when a stream doesn't support comments is an error</remarks>
 		public bool CommentsEnabled
 		{
-			get { return mCommentsEnabled; }
+			get { return this.mCommentsEnabled; }
 			set {
-				Contract.Requires(SupportsComments, "Stream must support comments in order to toggle their usage");
+				Contract.Requires(this.SupportsComments, "Stream must support comments in order to toggle their usage");
 
-				mCommentsEnabled = value;
+				this.mCommentsEnabled = value;
 			}
 		}
 
@@ -245,7 +246,7 @@ namespace KSoft.IO
 
 		public void Dispose()
 		{
-			Dispose(true);
+			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
@@ -253,9 +254,9 @@ namespace KSoft.IO
 		{
 			if (disposing)
 			{
-				mCursor = null;
+				this.mCursor = null;
 
-				Owner = null;
+				this.Owner = null;
 			}
 		}
 
@@ -264,7 +265,7 @@ namespace KSoft.IO
 		[Contracts.Pure]
 		public virtual bool ValidateNameArg(TName nodeName, TagElementNodeType nodeType)
 		{
-			return nodeType.RequiresName() == ValidateNameArg(nodeName);
+			return nodeType.RequiresName() == this.ValidateNameArg(nodeName);
 		}
 	};
 
@@ -274,7 +275,7 @@ namespace KSoft.IO
 		where TCursor : class
 	{
 		public override IEnumerable<TCursor> Elements { get {
-			Contract.Requires(Cursor != null);
+			Contract.Requires(this.Cursor != null);
 			Contract.Ensures(Contract.Result<IEnumerable<TCursor>>() != null);
 
 			throw new NotImplementedException();
@@ -282,7 +283,7 @@ namespace KSoft.IO
 
 		public override IEnumerable<TCursor> ElementsByName(TName localName)
 		{
-			Contract.Requires(ValidateNameArg(localName));
+			Contract.Requires(this.ValidateNameArg(localName));
 			Contract.Ensures(Contract.Result<IEnumerable<TCursor>>() != null);
 
 			throw new NotImplementedException();

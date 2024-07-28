@@ -22,9 +22,9 @@ namespace KSoft.Wwise.FilePackage
 			Contract.Requires<ArgumentNullException>(package != null);
 			Contract.Requires<ArgumentNullException>(eventToSoundNameMap != null);
 
-			PackageFileName = packageFileName;
-			Package = package;
-			EventToSoundNameMap = eventToSoundNameMap;
+			this.PackageFileName = packageFileName;
+			this.Package = package;
+			this.EventToSoundNameMap = eventToSoundNameMap;
 		}
 
 		internal Dictionary<SoundBank.HircType, Dictionary<uint, SoundBank.AkSoundBankHierarchyObjectBase>> mObjects =
@@ -44,30 +44,30 @@ namespace KSoft.Wwise.FilePackage
 		bool mPreparedForExtraction;
 		public void PrepareForExtraction()
 		{
-			if (mPreparedForExtraction)
+			if (this.mPreparedForExtraction)
 				return;
 
-			foreach (var bank in Package.SoundBanks)
+			foreach (var bank in this.Package.SoundBanks)
 			{
-				mIdToBank.Add(bank.Id, bank);
+				this.mIdToBank.Add(bank.Id, bank);
 				bank.CopyObjectsTo(this);
 			}
 
-			BuildSoundNames();
+			this.BuildSoundNames();
 
-			foreach (var bank in Package.SoundBanks)
+			foreach (var bank in this.Package.SoundBanks)
 				bank.PrepareForExtraction();
 
-			mPreparedForExtraction = true;
+			this.mPreparedForExtraction = true;
 		}
 
 		public void BuildSoundNames()
 		{
 			Dictionary<uint, SoundBank.AkSoundBankHierarchyObjectBase> events;
-			if (!mObjects.TryGetValue(SoundBank.HircType.Event, out events))
+			if (!this.mObjects.TryGetValue(SoundBank.HircType.Event, out events))
 			{
 				Debug.Trace.FilePackage.TraceInformation("{0} - No events?",
-					PackageFileName);
+				                                         this.PackageFileName);
 				return;
 			}
 
@@ -75,16 +75,16 @@ namespace KSoft.Wwise.FilePackage
 			{
 				var e = kv.Value as SoundBank.AkSoundBankHierarchyEvent;
 
-				if (!EventToSoundNameMap.TryGetValue(e.ID, out e.Name))
+				if (!this.EventToSoundNameMap.TryGetValue(e.ID, out e.Name))
 					continue;
 
 				foreach (var action_id in e.ActionList)
 				{
-					var action = mIdToObject[action_id] as SoundBank.AkSoundBankHierarchyAction;
+					var action = this.mIdToObject[action_id] as SoundBank.AkSoundBankHierarchyAction;
 					if (action.Type != SoundBank.AkActionType.Play)
 						continue;
 
-					var target = mIdToObject[action.TargetID];
+					var target = this.mIdToObject[action.TargetID];
 					if (target is SoundBank.AkSoundBankHierarchySound)
 					{
 						(target as SoundBank.AkSoundBankHierarchySound).Name = e.Name
@@ -98,7 +98,7 @@ namespace KSoft.Wwise.FilePackage
 							foreach (var item in ran_seq.Playlist)
 							{
 								SoundBank.AkSoundBankHierarchyObjectBase item_obj;
-								if (mIdToObject.TryGetValue(item.ID, out item_obj) &&
+								if (this.mIdToObject.TryGetValue(item.ID, out item_obj) &&
 									item_obj is SoundBank.AkSoundBankHierarchySound)
 								{
 									(item_obj as SoundBank.AkSoundBankHierarchySound).Name = e.Name
@@ -107,20 +107,20 @@ namespace KSoft.Wwise.FilePackage
 								else
 								{
 									Debug.Trace.FilePackage.TraceInformation("{0} - {1}: couldn't name item {2} {3}",
-										PackageFileName, e.Name, item.ID.ToString("X8"), item.GetType().Name);
+									                                         this.PackageFileName, e.Name, item.ID.ToString("X8"), item.GetType().Name);
 								}
 							}
 						}
 						else
 						{
 							Debug.Trace.FilePackage.TraceInformation("{0} - {1}: couldn't name playlist {2} {3}",
-								PackageFileName, e.Name, target.ID.ToString("X8"), SoundBank.HircType.RanSeqCntr.ToString());
+							                                         this.PackageFileName, e.Name, target.ID.ToString("X8"), SoundBank.HircType.RanSeqCntr.ToString());
 						}
 					}
 					else
 					{
 						Debug.Trace.FilePackage.TraceInformation("{0} - {1}: couldn't name {2} {3}",
-							PackageFileName, e.Name, target.ID.ToString("X8"), target.ToString());
+						                                         this.PackageFileName, e.Name, target.ID.ToString("X8"), target.ToString());
 					}
 				}
 			}
@@ -130,21 +130,21 @@ namespace KSoft.Wwise.FilePackage
 			bool overwriteExisting = false)
 		{
 			Dictionary<uint, SoundBank.AkSoundBankHierarchyObjectBase> sounds;
-			if (!mObjects.TryGetValue(SoundBank.HircType.Sound, out sounds))
+			if (!this.mObjects.TryGetValue(SoundBank.HircType.Sound, out sounds))
 			{
 				Debug.Trace.FilePackage.TraceInformation("{0} - No sounds to extract?",
-					PackageFileName);
+				                                         this.PackageFileName);
 				return;
 			}
 
 			foreach (var kv in sounds)
 			{
 				var snd = kv.Value as SoundBank.AkSoundBankHierarchySound;
-				if (snd.Name == null && mDupObjects.Contains(kv.Key))
+				if (snd.Name == null && this.mDupObjects.Contains(kv.Key))
 					continue;
 
 				uint src_id = snd.Source.MediaInfo.SourceID;
-				mUntouched.Remove(src_id);
+				this.mUntouched.Remove(src_id);
 
 				if (snd.Source.MediaInfo.FileID == 0)
 				{
@@ -157,13 +157,13 @@ namespace KSoft.Wwise.FilePackage
 
 				uint bank_id = snd.BankId;
 				string bank_name;
-				if (!Package.IdToName.TryGetValue(bank_id, out bank_name))
+				if (!this.Package.IdToName.TryGetValue(bank_id, out bank_name))
 					bank_name = bank_id.ToString("X8");
 
 				SoundBank.AkSoundBankData bank_data = null;
 				bool streamed = snd.Source.StreamType != SoundBank.AkBankSourceData.SourceType.Data;
 				if (!streamed)
-					bank_data = mIdToBank[bank_id].mData;
+					bank_data = this.mIdToBank[bank_id].mData;
 
 				dir = System.IO.Path.Combine(path, bank_name);
 				System.IO.Directory.CreateDirectory(dir);
@@ -178,7 +178,7 @@ namespace KSoft.Wwise.FilePackage
 				{
 					if (streamed)
 					{
-						var file = Package.FindStreamedFileById(snd.Source.MediaInfo.FileID);
+						var file = this.Package.FindStreamedFileById(snd.Source.MediaInfo.FileID);
 						pckReader.Seek(file.FileOffset);
 						byte[] data = pckReader.ReadBytes((int)file.FileSize32);
 
@@ -191,7 +191,7 @@ namespace KSoft.Wwise.FilePackage
 				}
 			}
 			//////////////////////////////////////////////////////////////////////////
-			foreach (var kv in mUntouched)
+			foreach (var kv in this.mUntouched)
 			{
 				var mr = kv.Value;
 
@@ -206,10 +206,10 @@ namespace KSoft.Wwise.FilePackage
 
 				uint bank_id = mr.BankId;
 				string bank_name;
-				if (!Package.IdToName.TryGetValue(bank_id, out bank_name))
+				if (!this.Package.IdToName.TryGetValue(bank_id, out bank_name))
 					bank_name = bank_id.ToString("X8");
 
-				SoundBank.AkSoundBankData bank_data = mIdToBank[bank_id].mData;
+				SoundBank.AkSoundBankData bank_data = this.mIdToBank[bank_id].mData;
 
 				string dir = System.IO.Path.Combine(path, bank_name);
 				System.IO.Directory.CreateDirectory(dir);

@@ -29,37 +29,37 @@ namespace KSoft.Phoenix.Resource
 
 		public EraFileBuilder(string listingPath)
 		{
-			if (System.IO.Path.GetExtension(listingPath) != kNameExtension)
+			if (Path.GetExtension(listingPath) != kNameExtension)
 				listingPath += kNameExtension;
 
-			mSourceFile = listingPath;
+			this.mSourceFile = listingPath;
 		}
 
 		bool ReadInternal()
 		{
 			bool result = true;
 
-			if (ProgressOutput != null)
-				ProgressOutput.WriteLine("Trying to read source listing {0}...", mSourceFile);
+			if (this.ProgressOutput != null)
+				this.ProgressOutput.WriteLine("Trying to read source listing {0}...", this.mSourceFile);
 
-			if (!File.Exists(mSourceFile))
+			if (!File.Exists(this.mSourceFile))
 				result = false;
 			else
 			{
-				mEraFile = new EraFile();
-				mEraFile.BuildModeDefaultTimestamp = EraFile.GetMostRecentTimeStamp(mSourceFile);
+				this.mEraFile = new EraFile();
+				this.mEraFile.BuildModeDefaultTimestamp = EraFile.GetMostRecentTimeStamp(this.mSourceFile);
 
-				using (var xml = new IO.XmlElementStream(mSourceFile, FA.Read, this))
+				using (var xml = new IO.XmlElementStream(this.mSourceFile, FA.Read, this))
 				{
 					xml.InitializeAtRootElement();
-					result &= mEraFile.ReadDefinition(xml);
+					result &= this.mEraFile.ReadDefinition(xml);
 				}
 			}
 
 			if (result == false)
 			{
-				if (ProgressOutput != null)
-					ProgressOutput.WriteLine("\tFailed!");
+				if (this.ProgressOutput != null)
+					this.ProgressOutput.WriteLine("\tFailed!");
 			}
 
 			return result;
@@ -68,11 +68,11 @@ namespace KSoft.Phoenix.Resource
 		{
 			bool result = true;
 
-			try { result &= ReadInternal(); }
+			try { result &= this.ReadInternal(); }
 			catch (Exception ex)
 			{
-				if (VerboseOutput != null)
-					VerboseOutput.WriteLine("\tEncountered an error while trying to read listing: {0}", ex);
+				if (this.VerboseOutput != null)
+					this.VerboseOutput.WriteLine("\tEncountered an error while trying to read listing: {0}", ex);
 				result = false;
 			}
 
@@ -81,8 +81,8 @@ namespace KSoft.Phoenix.Resource
 
 		void EncryptFileBytes(byte[] eraBytes, int eraBytesLength)
 		{
-			using (var era_in_ms = new System.IO.MemoryStream(eraBytes, 0, eraBytesLength, writable: false))
-			using (var era_out_ms = new System.IO.MemoryStream(eraBytes, 0, eraBytesLength, writable: true))
+			using (var era_in_ms = new MemoryStream(eraBytes, 0, eraBytesLength, writable: false))
+			using (var era_out_ms = new MemoryStream(eraBytes, 0, eraBytesLength, writable: true))
 			using (var era_reader = new IO.EndianReader(era_in_ms, Shell.EndianFormat.Big))
 			using (var era_writer = new IO.EndianWriter(era_out_ms, Shell.EndianFormat.Big))
 			{
@@ -94,16 +94,16 @@ namespace KSoft.Phoenix.Resource
 		bool BuildInternal(string workPath, string eraName, string outputPath)
 		{
 			string era_filename = Path.Combine(outputPath, eraName);
-			if (!BuilderOptions.Test(EraFileBuilderOptions.Encrypt))
+			if (!this.BuilderOptions.Test(EraFileBuilderOptions.Encrypt))
 			{
 				era_filename += EraFileExpander.kNameExtension;
 			}
 			else
 			{
-				era_filename += EraFileBuilder.kExtensionEncrypted;
+				era_filename += kExtensionEncrypted;
 			}
 
-			mEraFile.FileName = era_filename;
+			this.mEraFile.FileName = era_filename;
 
 			if (File.Exists(era_filename))
 			{
@@ -112,22 +112,22 @@ namespace KSoft.Phoenix.Resource
 					throw new IOException("ERA file is readonly, can't build: " + era_filename);
 			}
 
-			if (BuilderOptions.Test(EraFileBuilderOptions.AlwaysUseXmlOverXmb))
+			if (this.BuilderOptions.Test(EraFileBuilderOptions.AlwaysUseXmlOverXmb))
 			{
-				if (ProgressOutput != null)
-					ProgressOutput.WriteLine("Finding XML files to use over XMB references...");
+				if (this.ProgressOutput != null)
+					this.ProgressOutput.WriteLine("Finding XML files to use over XMB references...");
 
-				mEraFile.TryToReferenceXmlOverXmbFies(workPath, VerboseOutput);
+				this.mEraFile.TryToReferenceXmlOverXmbFies(workPath, this.VerboseOutput);
 			}
 
 			const FA k_mode = FA.Write;
 			const int k_initial_buffer_size = 24 * IntegerMath.kMega; // 24MB
 
-			if (ProgressOutput != null)
-				ProgressOutput.WriteLine("Building {0} to {1}...", eraName, outputPath);
+			if (this.ProgressOutput != null)
+				this.ProgressOutput.WriteLine("Building {0} to {1}...", eraName, outputPath);
 
-			if (ProgressOutput != null)
-				ProgressOutput.WriteLine("\tAllocating memory...");
+			if (this.ProgressOutput != null)
+				this.ProgressOutput.WriteLine("\tAllocating memory...");
 			bool result = true;
 			using (var ms = new MemoryStream(k_initial_buffer_size))
 			using (var era_memory = new IO.EndianStream(ms, Shell.EndianFormat.Big, this, permissions: k_mode))
@@ -138,23 +138,23 @@ namespace KSoft.Phoenix.Resource
 
 				// create null bytes for the header and embedded file chunk descriptors
 				// previously just used Seek to do this, but it doesn't update Length.
-				long preamble_size = mEraFile.CalculateHeaderAndFileChunksSize();
+				long preamble_size = this.mEraFile.CalculateHeaderAndFileChunksSize();
 				ms.SetLength(preamble_size);
 				ms.Seek(preamble_size, SeekOrigin.Begin);
 
 				// now we can start embedding the files
-				if (ProgressOutput != null)
-					ProgressOutput.WriteLine("\tPacking files...");
-				result &= mEraFile.Build(era_memory, workPath);
+				if (this.ProgressOutput != null)
+					this.ProgressOutput.WriteLine("\tPacking files...");
+				result &= this.mEraFile.Build(era_memory, workPath);
 
 				if (result)
 				{
-					if (ProgressOutput != null)
-						ProgressOutput.WriteLine("\tFinializing...");
+					if (this.ProgressOutput != null)
+						this.ProgressOutput.WriteLine("\tFinializing...");
 
 					// seek back to the start of the ERA and write out the finalized header and file chunk descriptors
 					ms.Seek(0, SeekOrigin.Begin);
-					mEraFile.Serialize(era_memory);
+					this.mEraFile.Serialize(era_memory);
 
 					// Right now we don't actually perform any file removing (eg, duplicates) until EraFile.Build so
 					// we also allow the written size to be LESS THAN the assumed preamble size
@@ -162,13 +162,13 @@ namespace KSoft.Phoenix.Resource
 						"Written ERA header size is greater than what we calculated");
 
 					// finally, bake the ERA memory stream into a file
-					if (BuilderOptions.Test(EraFileBuilderOptions.Encrypt))
+					if (this.BuilderOptions.Test(EraFileBuilderOptions.Encrypt))
 					{
-						if (ProgressOutput != null)
-							ProgressOutput.WriteLine("\tEncrypting...");
+						if (this.ProgressOutput != null)
+							this.ProgressOutput.WriteLine("\tEncrypting...");
 
 						var era_bytes = ms.GetBuffer();
-						EncryptFileBytes(era_bytes, (int)ms.Length);
+						this.EncryptFileBytes(era_bytes, (int)ms.Length);
 					}
 					else // not encrypted
 					{
@@ -194,11 +194,11 @@ namespace KSoft.Phoenix.Resource
 
 			try
 			{
-				result = BuildInternal(workPath, eraName, outputPath);
+				result = this.BuildInternal(workPath, eraName, outputPath);
 			} catch (Exception ex)
 			{
-				if (VerboseOutput != null)
-					VerboseOutput.WriteLine("\tEncountered an error while building the archive: {0}", ex);
+				if (this.VerboseOutput != null)
+					this.VerboseOutput.WriteLine("\tEncountered an error while building the archive: {0}", ex);
 				result = false;
 			}
 

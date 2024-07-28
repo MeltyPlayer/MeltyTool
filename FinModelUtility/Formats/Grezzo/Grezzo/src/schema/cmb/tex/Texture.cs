@@ -32,7 +32,7 @@ public partial class Texture : IBinaryConvertible {
   public IImageReader GetImageReader()
     => new CmbImageReader(this.width,
                           this.height,
-                          CollapseFormat_(this.imageFormat));
+                          this.CollapseFormat_(this.imageFormat));
 
   private GlTextureFormat CollapseFormat_(GlTextureFormat format) {
     var lowerFormat = (GlTextureFormat) ((int) format & 0xFFFF);

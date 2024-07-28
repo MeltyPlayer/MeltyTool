@@ -91,7 +91,7 @@ public partial interface IFileHierarchyDirectory {
   IEnumerable<IReadOnlyTreeFile> GROTreeDir.GetFilesWithFileType(
       string fileType,
       bool includeSubdirs = false)
-    => GetFilesWithFileType(fileType, includeSubdirs);
+    => this.GetFilesWithFileType(fileType, includeSubdirs);
 
   new IEnumerable<IFileHierarchyFile> GetFilesWithFileType(
       string fileType,

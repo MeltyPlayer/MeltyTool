@@ -18,11 +18,11 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.StreamV(ref InputDir); s.StreamV(ref LastUpdatePos);
-			s.Stream(ref RealBeamID); s.Stream(ref FakeBeamID); s.Stream(ref AirImpactObjectID);
-			s.Stream(ref TimestampNextCommand); s.Stream(ref CommandInterval);
-			s.Stream(ref MinBeamDistance); s.Stream(ref MaxBeamDistance); s.Stream(ref MaxBeamSpeed);
-			s.Stream(ref LOSMode);
+			s.StreamV(ref this.InputDir); s.StreamV(ref this.LastUpdatePos);
+			s.Stream(ref this.RealBeamID); s.Stream(ref this.FakeBeamID); s.Stream(ref this.AirImpactObjectID);
+			s.Stream(ref this.TimestampNextCommand); s.Stream(ref this.CommandInterval);
+			s.Stream(ref this.MinBeamDistance); s.Stream(ref this.MaxBeamDistance); s.Stream(ref this.MaxBeamSpeed);
+			s.Stream(ref this.LOSMode);
 		}
 		#endregion
 	};

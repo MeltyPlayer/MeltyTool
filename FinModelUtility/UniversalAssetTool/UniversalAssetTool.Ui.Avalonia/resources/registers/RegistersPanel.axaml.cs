@@ -63,6 +63,6 @@ public class RegistersPanelViewModel : ViewModelBase {
 
 public partial class RegistersPanel : UserControl {
   public RegistersPanel() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

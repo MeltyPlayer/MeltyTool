@@ -80,7 +80,7 @@ namespace KSoft.Phoenix.Resource
 		}
 		public static string RemoveXmbExtension(string filename)
 		{
-			ResourceUtils.RemoveXmbExtension(ref filename);
+			RemoveXmbExtension(ref filename);
 			return filename;
 		}
 		#endregion
@@ -178,7 +178,7 @@ namespace KSoft.Phoenix.Resource
 		}
 		#endregion
 
-		public static void XmbToXml(IO.EndianStream xmbStream, System.IO.Stream outputStream, Shell.ProcessorSize vaSize)
+		public static void XmbToXml(IO.EndianStream xmbStream, Stream outputStream, Shell.ProcessorSize vaSize)
 		{
 			ECF.EcfFileXmb.XmbToXml(xmbStream, outputStream, vaSize);
 		}
@@ -192,12 +192,12 @@ namespace KSoft.Phoenix.Resource
 			byte[] file_bytes = File.ReadAllBytes(xmbFile);
 
 			using (var xmb_ms = new MemoryStream(file_bytes, false))
-			using (var xmb = new IO.EndianStream(xmb_ms, endianFormat, System.IO.FileAccess.Read))
+			using (var xmb = new IO.EndianStream(xmb_ms, endianFormat, FileAccess.Read))
 			using (var xml_ms = new MemoryStream(IntegerMath.kMega * 1))
 			{
 				xmb.StreamMode = FileAccess.Read;
 
-				ResourceUtils.XmbToXml(xmb, xml_ms, vaSize);
+				XmbToXml(xmb, xml_ms, vaSize);
 
 				using (var xml_fs = File.Create(xmlFile))
 					xml_ms.WriteTo(xml_fs);

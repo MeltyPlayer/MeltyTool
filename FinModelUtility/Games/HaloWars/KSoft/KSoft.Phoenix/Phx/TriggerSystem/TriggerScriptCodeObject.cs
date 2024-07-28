@@ -10,13 +10,13 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		bool mCommentOut;
-		public bool CommentOut { get { return mCommentOut; } }
+		public bool CommentOut { get { return this.mCommentOut; } }
 
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
 			base.Serialize(s);
 
-			s.StreamAttribute(kXmlAttrCommentOut, ref mCommentOut);
+			s.StreamAttribute(kXmlAttrCommentOut, ref this.mCommentOut);
 		}
 	};
 }

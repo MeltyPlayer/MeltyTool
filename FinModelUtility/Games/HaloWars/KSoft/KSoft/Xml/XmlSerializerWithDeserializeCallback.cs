@@ -79,7 +79,7 @@ namespace KSoft.Xml
         {
             var result = base.Deserialize(xmlReader);
 
-            CheckForDeserializationCallbacks(result);
+            this.CheckForDeserializationCallbacks(result);
 
             return result;
         }
@@ -99,7 +99,7 @@ namespace KSoft.Xml
         {
             var result = base.Deserialize(xmlReader, encodingStyle);
 
-            CheckForDeserializationCallbacks(result);
+            this.CheckForDeserializationCallbacks(result);
 
             return result;
         }
@@ -108,7 +108,7 @@ namespace KSoft.Xml
         {
             var result = base.Deserialize(xmlReader, events);
 
-            CheckForDeserializationCallbacks(result);
+            this.CheckForDeserializationCallbacks(result);
 
             return result;
         }
@@ -117,7 +117,7 @@ namespace KSoft.Xml
         {
             var result = base.Deserialize(xmlReader, encodingStyle, events);
 
-            CheckForDeserializationCallbacks(result);
+            this.CheckForDeserializationCallbacks(result);
 
             return result;
         }
@@ -137,7 +137,7 @@ namespace KSoft.Xml
 				deserializedObject = deserializationCallback;
 			}
 
-			if (DontRecursivelyCheckForDeserializationCallbacks)
+			if (this.DontRecursivelyCheckForDeserializationCallbacks)
 				return;
 
 			var properties = deserializedObjectType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -156,13 +156,13 @@ namespace KSoft.Xml
 					{
 						foreach (var item in collection)
 						{
-							CheckForDeserializationCallbacks(item);
+							this.CheckForDeserializationCallbacks(item);
 						}
 					}
 				}
                 else
                 {
-                    CheckForDeserializationCallbacks(propertyInfo.GetValue(deserializedObject));
+	                this.CheckForDeserializationCallbacks(propertyInfo.GetValue(deserializedObject));
                 }
             }
         }

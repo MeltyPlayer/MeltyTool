@@ -16,7 +16,7 @@ public partial class TexCoordGen : ITexCoordGen, IBinaryConvertible {
   private readonly byte padding_ = byte.MaxValue;
 
   public override string ToString()
-    => $"TexCoordGen<{TexGenType}, {TexGenSrc}, {TexMatrix}>";
+    => $"TexCoordGen<{this.TexGenType}, {this.TexGenSrc}, {this.TexMatrix}>";
 
   public static bool operator ==(TexCoordGen lhs, TexCoordGen rhs)
     => lhs.Equals(rhs);
@@ -25,14 +25,15 @@ public partial class TexCoordGen : ITexCoordGen, IBinaryConvertible {
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {
-      if (Object.ReferenceEquals(this, obj)) {
+      if (ReferenceEquals(this, obj)) {
         return true;
       }
 
       if (obj is TexCoordGen other) {
         return this.TexGenType == other.TexGenType &&
-               TexGenSrc == other.TexGenSrc
-               && TexMatrix == other.TexMatrix;
+               this.TexGenSrc == other.TexGenSrc
+               &&
+               this.TexMatrix == other.TexMatrix;
       }
 
       return false;
@@ -40,8 +41,8 @@ public partial class TexCoordGen : ITexCoordGen, IBinaryConvertible {
 
   public override int GetHashCode()
     => FluentHash.Start()
-                 .With(TexGenType)
-                 .With(TexGenSrc)
-                 .With(TexMatrix)
+                 .With(this.TexGenType)
+                 .With(this.TexGenSrc)
+                 .With(this.TexMatrix)
                  .Hash;
 }

@@ -64,7 +64,7 @@ public struct TextureParams {
                                                  .With(this.ImageParams)
                                                  .With(this.WrapModeT)
                                                  .With(this.WrapModeS)
-                                                 .With(UvType);
+                                                 .With(this.UvType);
 
   public override bool Equals(object? other) {
       if (ReferenceEquals(this, other)) {
@@ -72,10 +72,10 @@ public struct TextureParams {
       }
 
       if (other is TextureParams otherTextureParams) {
-        return ImageParams.Equals(otherTextureParams.ImageParams) &&
+        return this.ImageParams.Equals(otherTextureParams.ImageParams) &&
                this.WrapModeT == otherTextureParams.WrapModeT &&
                this.WrapModeS == otherTextureParams.WrapModeS &&
-               UvType == otherTextureParams.UvType;
+               this.UvType == otherTextureParams.UvType;
       }
 
       return false;

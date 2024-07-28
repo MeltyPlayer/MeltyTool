@@ -18,8 +18,8 @@ namespace KSoft.Phoenix.Phx
 		ChildObjectType mType = ChildObjectType.Object;
 		public ChildObjectType Type
 		{
-			get { return mType; }
-			set { mType = value; }
+			get { return this.mType; }
+			set { this.mType = value; }
 		}
 		#endregion
 
@@ -27,8 +27,8 @@ namespace KSoft.Phoenix.Phx
 		int mID = TypeExtensions.kNone;
 		public int ID
 		{
-			get { return mID; }
-			set { mID = value; }
+			get { return this.mID; }
+			set { this.mID = value; }
 		}
 		#endregion
 
@@ -36,8 +36,8 @@ namespace KSoft.Phoenix.Phx
 		string mAttachBone;
 		public string AttachBone
 		{
-			get { return mAttachBone; }
-			set { mAttachBone = value; }
+			get { return this.mAttachBone; }
+			set { this.mAttachBone = value; }
 		}
 		#endregion
 
@@ -45,8 +45,8 @@ namespace KSoft.Phoenix.Phx
 		BVector mOffset;
 		public BVector Offset
 		{
-			get { return mOffset; }
-			set { mOffset = value; }
+			get { return this.mOffset; }
+			set { this.mOffset = value; }
 		}
 		#endregion
 
@@ -54,8 +54,8 @@ namespace KSoft.Phoenix.Phx
 		float mRotation;
 		public float Rotation
 		{
-			get { return mRotation; }
-			set { mRotation = value; }
+			get { return this.mRotation; }
+			set { this.mRotation = value; }
 		}
 		#endregion
 
@@ -64,13 +64,13 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BCivReference]
 		public int UserCivID
 		{
-			get { return mUserCivID; }
-			set { mUserCivID = value; }
+			get { return this.mUserCivID; }
+			set { this.mUserCivID = value; }
 		}
 		#endregion
 
 		public DatabaseObjectKind TypeObjectKind { get {
-			if (Type == ChildObjectType.OneTimeSpawnSquad)
+			if (this.Type == ChildObjectType.OneTimeSpawnSquad)
 				return DatabaseObjectKind.Squad;
 
 			return DatabaseObjectKind.Object;
@@ -83,13 +83,13 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttributeEnumOpt("Type", ref mType, e => e != ChildObjectType.Object);
+			s.StreamAttributeEnumOpt("Type", ref this.mType, e => e != ChildObjectType.Object);
 
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mID, TypeObjectKind, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
-			s.StreamAttributeOpt("AttachBone", ref mAttachBone, Predicates.IsNotNullOrEmpty);
-			s.StreamBVector("Offset", ref mOffset, xmlSource: XML.XmlUtil.kSourceAttr);
-			s.StreamAttributeOpt("Rotation", ref mRotation, Predicates.IsNotZero);
-			xs.StreamDBID(s, "UserCiv", ref mUserCivID, DatabaseObjectKind.Civ, xmlSource: XML.XmlUtil.kSourceAttr);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mID, this.TypeObjectKind, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+			s.StreamAttributeOpt("AttachBone", ref this.mAttachBone, Predicates.IsNotNullOrEmpty);
+			s.StreamBVector("Offset", ref this.mOffset, xmlSource: XML.XmlUtil.kSourceAttr);
+			s.StreamAttributeOpt("Rotation", ref this.mRotation, Predicates.IsNotZero);
+			xs.StreamDBID(s, "UserCiv", ref this.mUserCivID, DatabaseObjectKind.Civ, xmlSource: XML.XmlUtil.kSourceAttr);
 		}
 		#endregion
 	};

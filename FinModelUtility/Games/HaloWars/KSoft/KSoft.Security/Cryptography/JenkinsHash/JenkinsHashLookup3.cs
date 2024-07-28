@@ -22,98 +22,120 @@ namespace KSoft.Security.Cryptography
 		{
 			uint a, b, c;
 
-			public uint Result { get { return c; } }
+			public uint Result { get { return this.c; } }
 
 			public HashState(int length, uint seed)
 			{
-				a = b = c = kGoldenRatio + (uint)length + seed;
+				this.a = this.b = this.c = kGoldenRatio + (uint)length + seed;
 			}
 
 			void Mix()
 			{
-				a -= c; a ^= rot(c, 4); c += b;
-				b -= a; b ^= rot(a, 6); a += c;
-				c -= b; c ^= rot(b, 8); b += a;
-				a -= c; a ^= rot(c,16); c += b;
-				b -= a; b ^= rot(a,19); a += c;
-				c -= b; c ^= rot(b, 4); b += a;
+				this.a -= this.c;
+				this.a ^= rot(this.c, 4);
+				this.c += this.b;
+				this.b -= this.a;
+				this.b ^= rot(this.a, 6);
+				this.a += this.c;
+				this.c -= this.b;
+				this.c ^= rot(this.b, 8);
+				this.b += this.a;
+				this.a -= this.c;
+				this.a ^= rot(this.c,16);
+				this.c += this.b;
+				this.b -= this.a;
+				this.b ^= rot(this.a,19);
+				this.a += this.c;
+				this.c -= this.b;
+				this.c ^= rot(this.b, 4);
+				this.b += this.a;
 			}
 
 			void FinalMix()
 			{
-				c ^= b; c -= rot(b, 14);
-				a ^= c; a -= rot(c, 11);
-				b ^= a; b -= rot(a, 25);
-				c ^= b; c -= rot(b, 16);
-				a ^= c; a -= rot(c, 4);
-				b ^= a; b -= rot(a, 14);
-				c ^= b; c -= rot(b, 24);
+				this.c ^= this.b;
+				this.c -= rot(this.b, 14);
+				this.a ^= this.c;
+				this.a -= rot(this.c, 11);
+				this.b ^= this.a;
+				this.b -= rot(this.a, 25);
+				this.c ^= this.b;
+				this.c -= rot(this.b, 16);
+				this.a ^= this.c;
+				this.a -= rot(this.c, 4);
+				this.b ^= this.a;
+				this.b -= rot(this.a, 14);
+				this.c ^= this.b;
+				this.c -= rot(this.b, 24);
 			}
 
 			void Fill(byte[] data, ref int i)
 			{
-				JenkinsHashLookup.Fill(ref a, ref b, ref c, data, ref i);
+				JenkinsHashLookup.Fill(ref this.a, ref this.b, ref this.c, data, ref i);
 			}
 
 			void Fill(char[] data, ref int i)
 			{
-				JenkinsHashLookup.Fill(ref a, ref b, ref c, data, ref i);
+				JenkinsHashLookup.Fill(ref this.a, ref this.b, ref this.c, data, ref i);
 			}
 
 			void Fill(string data, ref int i)
 			{
-				JenkinsHashLookup.Fill(ref a, ref b, ref c, data, ref i);
+				JenkinsHashLookup.Fill(ref this.a, ref this.b, ref this.c, data, ref i);
 			}
 
 			void FinalFill(byte[] data, ref int i, int length)
 			{
-				JenkinsHashLookup.FinalFill(ref a, ref b, ref c, data, ref i, length);
+				JenkinsHashLookup.FinalFill(ref this.a, ref this.b, ref this.c, data, ref i, length);
 			}
 
 			void FinalFill(char[] data, ref int i, int length)
 			{
-				JenkinsHashLookup.FinalFill(ref a, ref b, ref c, data, ref i, length);
+				JenkinsHashLookup.FinalFill(ref this.a, ref this.b, ref this.c, data, ref i, length);
 			}
 
 			void FinalFill(string data, ref int i, int length)
 			{
-				JenkinsHashLookup.FinalFill(ref a, ref b, ref c, data, ref i, length);
+				JenkinsHashLookup.FinalFill(ref this.a, ref this.b, ref this.c, data, ref i, length);
 			}
 
 			public void ProcessBlock(byte[] buffer, ref int index)
 			{
-				Fill(buffer, ref index);
-				Mix();
+				this.Fill(buffer, ref index);
+				this.Mix();
 			}
 
 			public void ProcessBlock(char[] buffer, ref int index)
 			{
-				Fill(buffer, ref index);
-				Mix();
+				this.Fill(buffer, ref index);
+				this.Mix();
 			}
 
 			public void ProcessBlock(string buffer, ref int index)
 			{
-				Fill(buffer, ref index);
-				Mix();
+				this.Fill(buffer, ref index);
+				this.Mix();
 			}
 
 			public void ProcessFinalBlock(byte[] buffer, ref int index, int length)
 			{
-				FinalFill(buffer, ref index, length);
-				if(length > 0) FinalMix();
+				this.FinalFill(buffer, ref index, length);
+				if(length > 0)
+					this.FinalMix();
 			}
 
 			public void ProcessFinalBlock(char[] buffer, ref int index, int length)
 			{
-				FinalFill(buffer, ref index, length);
-				if (length > 0) FinalMix();
+				this.FinalFill(buffer, ref index, length);
+				if (length > 0)
+					this.FinalMix();
 			}
 
 			public void ProcessFinalBlock(string buffer, ref int index, int length)
 			{
-				FinalFill(buffer, ref index, length);
-				if (length > 0) FinalMix();
+				this.FinalFill(buffer, ref index, length);
+				if (length > 0)
+					this.FinalMix();
 			}
 		};
 

@@ -27,10 +27,38 @@ namespace KSoft.Security.Cryptography
 			for (int i = 0; i < r.Length; i++)
 				r[i] = kDeltas[i] + key[kKeyIndex[i]];
 
-			k0 =  r[0];  k1 =  r[1];  k2 =  r[2];  k3 =  r[3];  k4 =  r[4];  k5 =  r[5];  k6 =  r[6];  k7 =  r[7];
-			k8 =  r[8];  k9 =  r[9];  k10 = r[10]; k11 = r[11]; k12 = r[12]; k13 = r[13]; k14 = r[14]; k15 = r[15];
-			k16 = r[16]; k17 = r[17]; k18 = r[18]; k19 = r[19]; k20 = r[20]; k21 = r[21]; k22 = r[22]; k23 = r[23];
-			k24 = r[24]; k25 = r[25]; k26 = r[26]; k27 = r[27]; k28 = r[28]; k29 = r[29]; k30 = r[30]; k31 = r[31];
+			this.k0 =  r[0];
+			this.k1 =  r[1];
+			this.k2 =  r[2];
+			this.k3 =  r[3];
+			this.k4 =  r[4];
+			this.k5 =  r[5];
+			this.k6 =  r[6];
+			this.k7 =  r[7];
+			this.k8 =  r[8];
+			this.k9 =  r[9];
+			this.k10 = r[10];
+			this.k11 = r[11];
+			this.k12 = r[12];
+			this.k13 = r[13];
+			this.k14 = r[14];
+			this.k15 = r[15];
+			this.k16 = r[16];
+			this.k17 = r[17];
+			this.k18 = r[18];
+			this.k19 = r[19];
+			this.k20 = r[20];
+			this.k21 = r[21];
+			this.k22 = r[22];
+			this.k23 = r[23];
+			this.k24 = r[24];
+			this.k25 = r[25];
+			this.k26 = r[26];
+			this.k27 = r[27];
+			this.k28 = r[28];
+			this.k29 = r[29];
+			this.k30 = r[30];
+			this.k31 = r[31];
 		}
 
 		protected override void EncryptBlock(byte[] input, byte[] output, int offset)
@@ -45,24 +73,24 @@ namespace KSoft.Security.Cryptography
 
 			uint v;
 			v = y >> 5;
-			v ^= k31;
+			v ^= this.k31;
 
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k31; y -= (((z << 4) ^ (z >> 5)) + z) ^ k30;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k29; y -= (((z << 4) ^ (z >> 5)) + z) ^ k28;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k27; y -= (((z << 4) ^ (z >> 5)) + z) ^ k26;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k25; y -= (((z << 4) ^ (z >> 5)) + z) ^ k24;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k23; y -= (((z << 4) ^ (z >> 5)) + z) ^ k22;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k21; y -= (((z << 4) ^ (z >> 5)) + z) ^ k20;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k19; y -= (((z << 4) ^ (z >> 5)) + z) ^ k18;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k17; y -= (((z << 4) ^ (z >> 5)) + z) ^ k16;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k15; y -= (((z << 4) ^ (z >> 5)) + z) ^ k14;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k13; y -= (((z << 4) ^ (z >> 5)) + z) ^ k12;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k11; y -= (((z << 4) ^ (z >> 5)) + z) ^ k10;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k9;  y -= (((z << 4) ^ (z >> 5)) + z) ^ k8;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k7;  y -= (((z << 4) ^ (z >> 5)) + z) ^ k6;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k5;  y -= (((z << 4) ^ (z >> 5)) + z) ^ k4;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k3;  y -= (((z << 4) ^ (z >> 5)) + z) ^ k2;
-			z -= (((y >> 5) ^ (y << 4)) + y) ^ k1;  y -= (((z << 4) ^ (z >> 5)) + z) ^ k0;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k31; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k30;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k29; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k28;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k27; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k26;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k25; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k24;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k23; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k22;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k21; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k20;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k19; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k18;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k17; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k16;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k15; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k14;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k13; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k12;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k11; y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k10;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k9;  y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k8;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k7;  y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k6;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k5;  y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k4;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k3;  y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k2;
+			z -= (((y >> 5) ^ (y << 4)) + y) ^ this.k1;  y -= (((z << 4) ^ (z >> 5)) + z) ^ this.k0;
 
 			SetUInt32(output, offset + 0, y);
 			SetUInt32(output, offset + 4, z);

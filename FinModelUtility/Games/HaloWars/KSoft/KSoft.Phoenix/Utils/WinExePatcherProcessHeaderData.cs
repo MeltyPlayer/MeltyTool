@@ -22,7 +22,7 @@ namespace KSoft.Phoenix.zPatching
 
 		public WinExePatcherProcessHeaderData()
 		{
-			BytePattern = new short[] {
+			this.BytePattern = new short[] {
 				/*
 					call    sub
 					nop
@@ -40,16 +40,16 @@ namespace KSoft.Phoenix.zPatching
 				//0x66, 0x66,
 				//0x0F, 0x1F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00,
 			};
-			BytePatternNextJmpOffset = BytePattern.Length - sizeof(uint);
-			BytePatternModJmpOffset = BytePattern.Length - sizeof(uint) - sizeof(ushort);
+			this.BytePatternNextJmpOffset = this.BytePattern.Length - sizeof(uint);
+			this.BytePatternModJmpOffset = this.BytePattern.Length - sizeof(uint) - sizeof(ushort);
 		}
 
 		public bool ReadSourceExeBytes(string sourceExeFileName)
 		{
 			try
 			{
-				SourceExeFileName = sourceExeFileName;
-				SourceExeBytes = File.ReadAllBytes(SourceExeFileName);
+				this.SourceExeFileName = sourceExeFileName;
+				this.SourceExeBytes = File.ReadAllBytes(this.SourceExeFileName);
 			} catch (Exception ex)
 			{
 				Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Error, TypeExtensions.kNone
@@ -63,51 +63,51 @@ namespace KSoft.Phoenix.zPatching
 
 		public bool FindPatterns()
 		{
-			PatternFileOffsets.Clear();
+			this.PatternFileOffsets.Clear();
 
 			int offset = 0;
-			while (PhxUtil.FindBytePattern(PatternFileOffsets, SourceExeBytes, ref offset, BytePattern))
+			while (PhxUtil.FindBytePattern(this.PatternFileOffsets, this.SourceExeBytes, ref offset, this.BytePattern))
 			{
 			}
 
-			return PatternFileOffsets.Count == 1;
+			return this.PatternFileOffsets.Count == 1;
 		}
 
 		public bool CalculateModJmp()
 		{
-			ModJmpFileOffset = ModJmpVa = TypeExtensions.kNone;
+			this.ModJmpFileOffset = this.ModJmpVa = TypeExtensions.kNone;
 
-			int file_offset = PatternFileOffsets[0];
-			int next_jmp_index = file_offset + BytePatternNextJmpOffset;
-			int next_jmp_offset_va = BitConverter.ToInt32(SourceExeBytes, next_jmp_index);
+			int file_offset = this.PatternFileOffsets[0];
+			int next_jmp_index = file_offset + this.BytePatternNextJmpOffset;
+			int next_jmp_offset_va = BitConverter.ToInt32(this.SourceExeBytes, next_jmp_index);
 			int good_jmp_base = next_jmp_offset_va;
 			good_jmp_base += sizeof(uint);
 			good_jmp_base += next_jmp_index;
 
 			// jnz short i8
-			if (0x75 != SourceExeBytes[good_jmp_base])
+			if (0x75 != this.SourceExeBytes[good_jmp_base])
 				return false;
-			int good_asm_offset_va = SourceExeBytes[good_jmp_base + 1];
+			int good_asm_offset_va = this.SourceExeBytes[good_jmp_base + 1];
 			int good_asm_index = (good_jmp_base + 2);
 			good_asm_index += good_asm_offset_va;
 
 			// 0xE9 .. .. .. ..
-			int mod_jmp_base = file_offset + BytePatternModJmpOffset;
+			int mod_jmp_base = file_offset + this.BytePatternModJmpOffset;
 			mod_jmp_base += sizeof(byte) + sizeof(uint);
 			int mod_jmp_offset_va = good_asm_index;
 			mod_jmp_offset_va -= mod_jmp_base;
 
-			ModJmpFileOffset = file_offset + BytePatternModJmpOffset;
-			ModJmpVa = mod_jmp_offset_va;
+			this.ModJmpFileOffset = file_offset + this.BytePatternModJmpOffset;
+			this.ModJmpVa = mod_jmp_offset_va;
 
 			return true;
 		}
 
 		public void ApplyModJmp()
 		{
-			int index = ModJmpFileOffset;
-			SourceExeBytes[index++] = 0xE9;
-			Bitwise.ByteSwap.ReplaceBytes(SourceExeBytes, index, ModJmpVa);
+			int index = this.ModJmpFileOffset;
+			this.SourceExeBytes[index++] = 0xE9;
+			Bitwise.ByteSwap.ReplaceBytes(this.SourceExeBytes, index, this.ModJmpVa);
 		}
 	};
 }

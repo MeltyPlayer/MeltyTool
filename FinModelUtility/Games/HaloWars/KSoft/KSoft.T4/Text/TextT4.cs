@@ -35,7 +35,7 @@ namespace KSoft.T4
 
 			protected CharLookupCodeGeneratorBase(TextTemplating.TextTransformation ttFile)
 			{
-				File = ttFile;
+				this.File = ttFile;
 			}
 
 			protected abstract string TableName { get; }
@@ -79,90 +79,95 @@ namespace KSoft.T4
 
 			void WriteColumnHeader()
 			{
-				File.Write("//\t");
+				this.File.Write("//\t");
 				for (int x = 0; x < kMaxHexidecimal; x++)
-					File.Write("{0}{1}", x.ToString("X", UtilT4.InvariantCultureInfo), RowHeaderTabString);
-				File.WriteLine("");
+					this.File.Write("{0}{1}", x.ToString("X", UtilT4.InvariantCultureInfo), this.RowHeaderTabString);
+				this.File.WriteLine("");
 			}
 			void WriteColumnHeader_Numbers()
 			{
-				File.Write("//\t");
+				this.File.Write("//\t");
 				for (int x = 0; x < kMaxDecimal; x++)
-					File.Write("{0}{1}", x, RowHeaderTabString);
-				File.WriteLine("");
+					this.File.Write("{0}{1}", x, this.RowHeaderTabString);
+				this.File.WriteLine("");
 			}
 			void WriteColumnHeader_A_to_O(bool uppercase)
 			{
 				char min = ToCharCaseInvariant('A', uppercase);
 				char max = ToCharCaseInvariant('O', uppercase);
 
-				File.Write("//\t");
+				this.File.Write("//\t");
 				for (char x = min; x <= max; x++)
-					File.Write("{0}{1}", x, RowHeaderTabString);
-				File.WriteLine("");
+					this.File.Write("{0}{1}", x, this.RowHeaderTabString);
+				this.File.WriteLine("");
 			}
 			void WriteColumnHeader_P_to_Z(bool uppercase)
 			{
 				char min = ToCharCaseInvariant('P', uppercase);
 				char max = ToCharCaseInvariant('Z', uppercase);
 
-				File.Write("//\t");
+				this.File.Write("//\t");
 				for (char x = min; x <= max; x++)
-					File.Write("{0}{1}", x, RowHeaderTabString);
-				File.WriteLine("");
+					this.File.Write("{0}{1}", x, this.RowHeaderTabString);
+				this.File.WriteLine("");
 			}
 			public void Generate()
 			{
-				using (File.EnterCodeBlock())
-				using (File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
 				{
-					WriteXmlDoc();
-					File.WriteLine("static readonly {0}[] {1}{2} = {{",
-						TableElementType.Keyword,
-						TableName,
-						TableNamePostfix);
+					this.WriteXmlDoc();
+					this.File.WriteLine("static readonly {0}[] {1}{2} = {{",
+					                    this.TableElementType.Keyword,
+					                    this.TableName,
+					                    this.TableNamePostfix);
 				}
 
-				WriteColumnHeader();
+				this.WriteColumnHeader();
 
 				for (int x = byte.MinValue, column = 0, row = 0, digit_index = 0;
 					x <= byte.MaxValue;
 					x++)
 				{
 					#region write column headers
-						 if (column == 0 && row == 3) WriteColumnHeader_Numbers();
-					else if (column == 0 && row == 4) WriteColumnHeader_A_to_O(uppercase:true);
-					else if (column == 0 && row == 5) WriteColumnHeader_P_to_Z(uppercase:true);
-					else if (column == 0 && row == 6) WriteColumnHeader_A_to_O(uppercase:false);
-					else if (column == 0 && row == 7) WriteColumnHeader_P_to_Z(uppercase:false);
+						 if (column == 0 && row == 3)
+							 this.WriteColumnHeader_Numbers();
+					else if (column == 0 && row == 4)
+						this.WriteColumnHeader_A_to_O(uppercase:true);
+					else if (column == 0 && row == 5)
+						this.WriteColumnHeader_P_to_Z(uppercase:true);
+					else if (column == 0 && row == 6)
+						this.WriteColumnHeader_A_to_O(uppercase:false);
+					else if (column == 0 && row == 7)
+						this.WriteColumnHeader_P_to_Z(uppercase:false);
 					#endregion
 
 					if (column == 0)
-						File.PushIndent("\t");
+						this.File.PushIndent("\t");
 
-					if (LookupUsesCharByte(x))
+					if (this.LookupUsesCharByte(x))
 					{
-						digit_index = OverrideDigitIndex(x, digit_index);
+						digit_index = this.OverrideDigitIndex(x, digit_index);
 
-						File.Write(DigitToElementText(digit_index++));
+						this.File.Write(this.DigitToElementText(digit_index++));
 					}
 					else
-						File.Write(DigitToElementText(-1));
+						this.File.Write(this.DigitToElementText(-1));
 
 					if (column++ == kMaxHexidecimal-1)
 					{
-						File.PopIndent();
+						this.File.PopIndent();
 
-						File.WriteLine("// {0}", row.ToString("X", UtilT4.InvariantCultureInfo));
+						this.File.WriteLine("// {0}", row.ToString("X", UtilT4.InvariantCultureInfo));
 						column = 0;
 						row++;
 					}
 				}
 
-				using (File.EnterCodeBlock())
-				using (File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
 				{
-					File.WriteLine("};");
+					this.File.WriteLine("};");
 				}
 			}
 		};
@@ -180,8 +185,8 @@ namespace KSoft.T4
 
 			protected override void WriteXmlDoc()
 			{
-				File.WriteXmlDocSummary("Latin-1 lookup table for converting char to a digit");
-				File.WriteXmlDocRemarks("Supports up to base {0}", TableNamePostfix);
+				this.File.WriteXmlDocSummary("Latin-1 lookup table for converting char to a digit");
+				this.File.WriteXmlDocRemarks("Supports up to base {0}", this.TableNamePostfix);
 			}
 		};
 		public sealed class CharToByteLookupTable36CodeGenerator
@@ -250,8 +255,8 @@ namespace KSoft.T4
 
 			protected override void WriteXmlDoc()
 			{
-				File.WriteXmlDocSummary("Latin-1 lookup table for testing if char is a digit");
-				File.WriteXmlDocRemarks("Supports up to base {0}", TableNamePostfix);
+				this.File.WriteXmlDocSummary("Latin-1 lookup table for testing if char is a digit");
+				this.File.WriteXmlDocRemarks("Supports up to base {0}", this.TableNamePostfix);
 			}
 
 			protected override string DigitToElementText(int digitIndex)
@@ -303,8 +308,8 @@ namespace KSoft.T4
 
 			protected override void WriteXmlDoc()
 			{
-				File.WriteXmlDocSummary("Latin-1 lookup bitvector for testing if char is a digit");
-				File.WriteXmlDocRemarks("Supports up to base {0}", TableNamePostfix);
+				this.File.WriteXmlDocSummary("Latin-1 lookup bitvector for testing if char is a digit");
+				this.File.WriteXmlDocRemarks("Supports up to base {0}", this.TableNamePostfix);
 			}
 
 			protected virtual string BitArrayElementToElementText(byte element)
@@ -327,7 +332,7 @@ namespace KSoft.T4
 					x <= byte.MaxValue;
 					x++)
 				{
-					if (LookupUsesCharByte(x))
+					if (this.LookupUsesCharByte(x))
 					{
 						bits[x] = true;
 					}
@@ -337,17 +342,17 @@ namespace KSoft.T4
 			}
 			public void Generate()
 			{
-				using (File.EnterCodeBlock())
-				using (File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
 				{
-					WriteXmlDoc();
-					File.WriteLine("static readonly {0}[] {1}{2} = {{",
-						kVectorElementDef.Keyword,
-						TableName,
-						TableNamePostfix);
+					this.WriteXmlDoc();
+					this.File.WriteLine("static readonly {0}[] {1}{2} = {{",
+					                    kVectorElementDef.Keyword,
+					                    this.TableName,
+					                    this.TableNamePostfix);
 				}
 
-				var bits = BuildBitArray();
+				var bits = this.BuildBitArray();
 				var bitvector = new byte[GetBitArrayLength(bits.Length, kVectorElementBitSize)];
 				bits.CopyTo(bitvector, 0);
 
@@ -356,24 +361,24 @@ namespace KSoft.T4
 					x++)
 				{
 					if (column == 0)
-						File.PushIndent("\t");
+						this.File.PushIndent("\t");
 
-					File.Write(BitArrayElementToElementText(bitvector[x]));
+					this.File.Write(this.BitArrayElementToElementText(bitvector[x]));
 
 					if (column++ == kMaxHexidecimal-1)
 					{
-						File.PopIndent();
+						this.File.PopIndent();
 
-						File.WriteLine("// {0}", row.ToString("X", UtilT4.InvariantCultureInfo));
+						this.File.WriteLine("// {0}", row.ToString("X", UtilT4.InvariantCultureInfo));
 						column = 0;
 						row++;
 					}
 				}
 
-				using (File.EnterCodeBlock())
-				using (File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
 				{
-					File.WriteLine("};");
+					this.File.WriteLine("};");
 				}
 			}
 		};

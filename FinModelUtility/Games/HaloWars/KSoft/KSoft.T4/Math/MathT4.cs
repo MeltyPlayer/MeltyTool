@@ -12,23 +12,23 @@ namespace KSoft.T4.Math
 
 			internal VectorComponent(int index, string name, int vecDimensions = 0)
 			{
-				Index = index;
-				Name = name;
-				LastComponent = index == (vecDimensions-1);
+				this.Index = index;
+				this.Name = name;
+				this.LastComponent = index == (vecDimensions-1);
 			}
 
 			public string Prefix(string prefix)
 			{
-				return prefix + Name;
+				return prefix + this.Name;
 			}
 			public string Suffix(string suffix)
 			{
-				return Name + suffix;
+				return this.Name + suffix;
 			}
 
 			public string ContOrEnd(string cont, string end = "")
 			{
-				return LastComponent
+				return this.LastComponent
 					? end
 					: cont;
 			}
@@ -41,36 +41,37 @@ namespace KSoft.T4.Math
 
 			public VectorDef(NumberCodeDefinition codeDef, int dimensions)
 			{
-				CodeDef = codeDef;
-				Dimensions = dimensions;
+				this.CodeDef = codeDef;
+				this.Dimensions = dimensions;
 			}
 
 			public string TypeName { get {
-				string typeChar = CodeDef.IsInteger
+				string typeChar = this.CodeDef.IsInteger
 					? "i"
 					: "f";
 
 				return string.Format(System.Globalization.CultureInfo.InvariantCulture,
 					"Vec{0}{1}{2}",
-					Dimensions, typeChar, CodeDef.SizeOfInBits);
+					this.Dimensions, typeChar,
+					this.CodeDef.SizeOfInBits);
 			} }
 
 			public IEnumerable<VectorComponent> Components { get {
-				if (Dimensions >= 1) yield return new VectorComponent(0, "x", Dimensions);
-				if (Dimensions >= 2) yield return new VectorComponent(1, "y", Dimensions);
-				if (Dimensions >= 3) yield return new VectorComponent(2, "z", Dimensions);
+				if (this.Dimensions >= 1) yield return new VectorComponent(0, "x", this.Dimensions);
+				if (this.Dimensions >= 2) yield return new VectorComponent(1, "y", this.Dimensions);
+				if (this.Dimensions >= 3) yield return new VectorComponent(2, "z", this.Dimensions);
 			} }
 
-			public bool ComponentsRequireCast { get { return CodeDef.SizeOfInBytes < PrimitiveDefinitions.kInt32.SizeOfInBytes; } }
+			public bool ComponentsRequireCast { get { return this.CodeDef.SizeOfInBytes < PrimitiveDefinitions.kInt32.SizeOfInBytes; } }
 
 			public string ComponentDecls(string prefix = "", string suffix = "")
 			{
 				var sb = new System.Text.StringBuilder();
 
-				sb.Append(CodeDef.Keyword);
+				sb.Append(this.CodeDef.Keyword);
 				sb.Append(" ");
 
-				foreach (var comp in Components)
+				foreach (var comp in this.Components)
 				{
 					sb.Append(prefix);
 					sb.Append(comp.Name);
@@ -87,9 +88,9 @@ namespace KSoft.T4.Math
 			{
 				var sb = new System.Text.StringBuilder();
 
-				foreach (var comp in Components)
+				foreach (var comp in this.Components)
 				{
-					sb.Append(CodeDef.Keyword);
+					sb.Append(this.CodeDef.Keyword);
 					sb.Append(" ");
 
 					sb.Append(prefix);
@@ -108,14 +109,15 @@ namespace KSoft.T4.Math
 				var sb = new System.Text.StringBuilder();
 
 				if (useCastsIfNeeded)
-					useCastsIfNeeded = ComponentsRequireCast;
+					useCastsIfNeeded = this.ComponentsRequireCast;
 
-				foreach (var comp in Components)
+				foreach (var comp in this.Components)
 				{
 					if (useCastsIfNeeded)
 					{
 						sb.AppendFormat(System.Globalization.CultureInfo.InvariantCulture,
-							"({0})( ", CodeDef.Keyword);
+							"({0})( ",
+							this.CodeDef.Keyword);
 					}
 
 					sb.Append(prefix);

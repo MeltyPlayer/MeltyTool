@@ -12,8 +12,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref HudUpSound); s.Stream(ref HudAbortSound); s.Stream(ref HudFireSound);
-			s.Stream(ref HudLastFireSound); s.Stream(ref HudStartEnvSound); s.Stream(ref HudStopEnvSound);
+			s.Stream(ref this.HudUpSound); s.Stream(ref this.HudAbortSound); s.Stream(ref this.HudFireSound);
+			s.Stream(ref this.HudLastFireSound); s.Stream(ref this.HudStartEnvSound); s.Stream(ref this.HudStopEnvSound);
 		}
 		#endregion
 	};

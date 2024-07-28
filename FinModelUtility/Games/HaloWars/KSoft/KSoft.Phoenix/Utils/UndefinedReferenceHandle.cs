@@ -54,8 +54,8 @@ namespace KSoft.Phoenix
 
 		public UndefinedObjectResult(int id, string name)
 		{
-			MemberId = id;
-			MemberName = name;
+			this.MemberId = id;
+			this.MemberName = name;
 		}
 	};
 };

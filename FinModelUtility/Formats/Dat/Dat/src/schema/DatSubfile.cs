@@ -232,18 +232,16 @@ public partial class FileHeader : IBinaryConvertible {
   public uint DataBlockOffset => 0x20;
 
   [Skip]
-  public uint RelocationTableOffset => DataBlockOffset + DataBlockSize;
+  public uint RelocationTableOffset => this.DataBlockOffset + this.DataBlockSize;
 
   [Skip]
-  public uint RootNodeOffset =>
-      RelocationTableOffset + 4 * RelocationTableCount;
+  public uint RootNodeOffset => this.RelocationTableOffset + 4 * this.RelocationTableCount;
 
   [Skip]
-  public uint ReferenceNodeOffset => RootNodeOffset + 8 * RootNodeCount;
+  public uint ReferenceNodeOffset => this.RootNodeOffset + 8 * this.RootNodeCount;
 
   [Skip]
-  public uint StringTableOffset =>
-      ReferenceNodeOffset + 8 * ReferenceNodeCount;
+  public uint StringTableOffset => this.ReferenceNodeOffset + 8 * this.ReferenceNodeCount;
 }
 
 [BinarySchema]
@@ -272,10 +270,10 @@ public class RootNode {
 
   public string Name {
     get => this.name_;
-    set => this.Type = RootNode.GetTypeFromName_(this.name_ = value);
+    set => this.Type = GetTypeFromName_(this.name_ = value);
   }
 
-  public override string ToString() => $"[{Type}]: {Name}";
+  public override string ToString() => $"[{this.Type}]: {this.Name}";
 
   public RootNodeType Type { get; private set; }
 

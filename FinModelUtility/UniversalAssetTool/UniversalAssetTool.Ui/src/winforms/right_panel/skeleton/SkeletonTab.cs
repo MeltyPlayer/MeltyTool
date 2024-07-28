@@ -6,7 +6,7 @@ namespace uni.ui.winforms.right_panel.skeleton;
 
 public partial class SkeletonTab : UserControl {
   public SkeletonTab() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.skeletonTreeView_.BoneSelected += boneNode =>
           this.OnBoneSelected?.Invoke(boneNode.Bone);

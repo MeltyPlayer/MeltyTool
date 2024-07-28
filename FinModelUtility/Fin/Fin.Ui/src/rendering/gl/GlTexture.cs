@@ -66,12 +66,12 @@ public class GlTexture : IFinDisposable {
       var hasBorderColor = finBorderColor != null;
       GL.TexParameter(target,
                       TextureParameterName.TextureWrapS,
-                      (int) GlTexture.ConvertFinWrapToGlWrap_(
+                      (int) ConvertFinWrapToGlWrap_(
                           texture.WrapModeU,
                           hasBorderColor));
       GL.TexParameter(target,
                       TextureParameterName.TextureWrapT,
-                      (int) GlTexture.ConvertFinWrapToGlWrap_(
+                      (int) ConvertFinWrapToGlWrap_(
                           texture.WrapModeV,
                           hasBorderColor));
 
@@ -231,7 +231,7 @@ public class GlTexture : IFinDisposable {
 
   private void ReleaseUnmanagedResources_() {
     this.IsDisposed = true;
-    GlTexture.cache_.Remove(this.texture_);
+    cache_.Remove(this.texture_);
 
     var id = this.id_;
     GL.DeleteTextures(1, ref id);

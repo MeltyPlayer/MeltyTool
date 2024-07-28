@@ -32,7 +32,7 @@ public class CmbHeader : IBinaryDeserializable {
 
       this.fileSize = br.ReadUInt32();
 
-      this.version = CmbHeader.Version = (Version) br.ReadUInt32();
+      this.version = Version = (Version) br.ReadUInt32();
 
 
       Asserts.Equal(0, br.ReadInt32());

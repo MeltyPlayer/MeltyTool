@@ -12,48 +12,48 @@ namespace KSoft.T4
 		public NumberCodeDefinition(TypeCode typeCode)
 			: base(TypeCodeToKeyword(typeCode), typeCode)
 		{
-			OperationWord = TypeCodeToOperationWord(typeCode) ?? Keyword;
+			this.OperationWord = TypeCodeToOperationWord(typeCode) ?? this.Keyword;
 
 			string desc_prefix = "";
 			string desc_id;
 			string desc_postfix;
-			if(IsInteger)
+			if(this.IsInteger)
 			{
-				desc_prefix = IsSigned
+				desc_prefix = this.IsSigned
 					?   "signed"
 					: "unsigned";
 
-				desc_id = SizeOfInBits + "-bit";
+				desc_id = this.SizeOfInBits + "-bit";
 
 				desc_postfix = "integer";
 			}
 			else
 			{
-				desc_id = Code.ToString().ToLower(UtilT4.InvariantCultureInfo) + "-precision";
+				desc_id = this.Code.ToString().ToLower(UtilT4.InvariantCultureInfo) + "-precision";
 
 				desc_postfix = "number";
 			}
 
-			SetupDescription(string.Format(UtilT4.InvariantCultureInfo,
-				"{0} {1} {2}",
-				desc_prefix, desc_id, desc_postfix).Trim());
+			this.SetupDescription(string.Format(UtilT4.InvariantCultureInfo,
+			                                    "{0} {1} {2}",
+			                                    desc_prefix, desc_id, desc_postfix).Trim());
 		}
 
 		public override bool IsInteger { get {
-			return Code >= TypeCode.SByte && Code <= TypeCode.UInt64;
+			return this.Code >= TypeCode.SByte && this.Code <= TypeCode.UInt64;
 		} }
 		public bool IsByte { get {
-			return Code == TypeCode.SByte || Code == TypeCode.Byte;
+			return this.Code == TypeCode.SByte || this.Code == TypeCode.Byte;
 		} }
 		public bool IsSigned { get {
-			return IsInteger && Keyword[0] != 'u' && Keyword[0] != 'b';
+			return this.IsInteger && this.Keyword[0] != 'u' && this.Keyword[0] != 'b';
 		} }
 		public bool IsUnsigned { get {
-			return IsInteger && !IsSigned;
+			return this.IsInteger && !this.IsSigned;
 		} }
 
 		public override int SizeOfInBytes { get {
-			switch(Code)
+			switch(this.Code)
 			{
 				case TypeCode.Byte:
 				case TypeCode.SByte:
@@ -74,12 +74,12 @@ namespace KSoft.T4
 					return sizeof(ulong);
 
 				default:
-					throw new InvalidOperationException(Code.ToString());
+					throw new InvalidOperationException(this.Code.ToString());
 			}
 		} }
 
 		public TypeCode SignedCode { get {
-			switch(Code)
+			switch(this.Code)
 			{
 				case TypeCode.Byte:
 					return TypeCode.SByte;
@@ -94,16 +94,16 @@ namespace KSoft.T4
 					return TypeCode.Int64;
 
 				default:
-					return Code;
+					return this.Code;
 			}
 		} }
 		public string SignedKeyword { get {
-			return TypeCodeToKeyword(SignedCode);
+			return TypeCodeToKeyword(this.SignedCode);
 		} }
 
 		/// <summary>Suffix to use on literal values of this number type</summary>
 		public string LiteralSuffix { get {
-			switch(Code)
+			switch(this.Code)
 			{
 				case TypeCode.UInt32:
 					return "U";
@@ -124,19 +124,19 @@ namespace KSoft.T4
 
 		/// <summary>ToString format string to get the integer's value in a non-truncated hexadecimal value</summary>
 		public string ToStringHexFormat { get {
-			return IsInteger
-				? "X" + (SizeOfInBytes * 2)
+			return this.IsInteger
+				? "X" + (this.SizeOfInBytes * 2)
 				: "";
 		} }
 
 		/// <summary>Do the bit operators of this integer type cause the value to be implicitly upgraded to a larger int type?</summary>
 		public bool BitOperatorsImplicitlyUpCast { get {
-			return IsInteger && SizeOfInBits < 32;
+			return this.IsInteger && this.SizeOfInBits < 32;
 		} }
 
 		/// <summary>Shift amount to get or set the byte with the MSB</summary>
 		public int MostSignificantByteBitShift { get {
-			return SizeOfInBits - Bitwise.BitwiseT4.kBitsPerByte;
+			return this.SizeOfInBits - Bitwise.BitwiseT4.kBitsPerByte;
 		} }
 
 		static string TypeCodeToOperationWord(TypeCode typeCode)

@@ -28,7 +28,7 @@ public partial class ModelToolStrip : UserControl {
   private bool isModelSelected_;
 
   public ModelToolStrip() {
-    InitializeComponent();
+    this.InitializeComponent();
 
     var config = Config.Instance;
     var viewerSettings = config.Viewer;
@@ -161,7 +161,7 @@ public partial class ModelToolStrip : UserControl {
       this.CancellationToken = new CancellationTokenSource();
 
       Task.Run(() => {
-        ExporterUtil.ExportAll(modelFileBundles,
+        ExportAll(modelFileBundles,
                                new GlobalModelImporter(),
                                this.Progress,
                                this.CancellationToken,
@@ -197,7 +197,7 @@ public partial class ModelToolStrip : UserControl {
       PromptIfModelFileBundlesAlreadyExported_(
           IReadOnlyList<IAnnotatedFileBundle> modelFileBundles,
           IReadOnlySet<ExportedFormat> formats) {
-    if (ExporterUtil.CheckIfModelFileBundlesAlreadyExported(
+    if (CheckIfModelFileBundlesAlreadyExported(
             modelFileBundles,
             formats,
             out var existingOutputFiles)) {

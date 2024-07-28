@@ -18,7 +18,7 @@ public static class EnumDisplaySettingsUtil {
   }
 
   public static int GetDisplayFrequency()
-    => EnumDisplaySettingsUtil.GetCurrentDisplaySettings().dmDisplayFrequency;
+    => GetCurrentDisplaySettings().dmDisplayFrequency;
 
   [DllImport("user32.dll")]
   public static extern bool EnumDisplaySettings(

@@ -13,8 +13,8 @@ public abstract class BVector2<T> {
 
   public T this[int index] {
     get => index switch {
-        0 => X,
-        1 => Y,
+        0 => this.X,
+        1 => this.Y,
     };
     set {
       switch (index) {
@@ -49,7 +49,7 @@ public sealed partial class Vector2f
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {
-    if (Object.ReferenceEquals(this, obj)) {
+    if (ReferenceEquals(this, obj)) {
       return true;
     }
 
@@ -61,7 +61,7 @@ public sealed partial class Vector2f
   }
 
   public override int GetHashCode()
-    => FluentHash.Start().With(X).With(Y).Hash;
+    => FluentHash.Start().With(this.X).With(this.Y).Hash;
 }
 
 [BinarySchema]

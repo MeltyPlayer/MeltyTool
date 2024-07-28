@@ -19,7 +19,7 @@ public interface IFileBundle : IUiFile {
   }
 
 
-  IReadOnlyTreeDirectory Directory => MainFile.AssertGetParent();
+  IReadOnlyTreeDirectory Directory => this.MainFile.AssertGetParent();
   string IUiFile.RawName => this.MainFile?.Name ?? "(n/a)";
 
   string DisplayName => this.HumanReadableName ?? this.RawName;
@@ -28,7 +28,7 @@ public interface IFileBundle : IUiFile {
     => this.MainFile?.DisplayFullPath ??
        this.HumanReadableName ?? this.RawName;
 
-  string TrueFullPath => Asserts.CastNonnull(MainFile.FullPath);
+  string TrueFullPath => Asserts.CastNonnull(this.MainFile.FullPath);
 }
 
 public interface IAnnotatedFileBundleGatherer {

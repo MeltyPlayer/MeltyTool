@@ -28,17 +28,17 @@ namespace KSoft.Phoenix.Xmb
 		#region BuilderOptions
 		public Collections.BitVector32 BuilderOptions;
 		public string DebugBuilderOptions { get {
-			return BuilderOptions.ToString(XmbFileBuilderOptions.kNumberOf);
+			return this.BuilderOptions.ToString(XmbFileBuilderOptions.kNumberOf);
 		} }
 
 		public bool ForceStringVariants { get {
-			return BuilderOptions.Test(XmbFileBuilderOptions.ForceStringVariants);
+			return this.BuilderOptions.Test(XmbFileBuilderOptions.ForceStringVariants);
 		} }
 		public bool AllowUnicode { get {
-			return BuilderOptions.Test(XmbFileBuilderOptions.AllowUnicode);
+			return this.BuilderOptions.Test(XmbFileBuilderOptions.AllowUnicode);
 		} }
 		public bool ForceUnicode { get {
-			return BuilderOptions.Test(XmbFileBuilderOptions.ForceUnicode);
+			return this.BuilderOptions.Test(XmbFileBuilderOptions.ForceUnicode);
 		} }
 		#endregion
 
@@ -74,7 +74,7 @@ namespace KSoft.Phoenix.Xmb
 
 		public XmbFileBuilder()
 		{
-			BuilderOptions.Set(XmbFileBuilderOptions.AllowUnicode);
+			this.BuilderOptions.Set(XmbFileBuilderOptions.AllowUnicode);
 		}
 
 		public string GetCreatorToolCommandLine(string xmlFileName)
@@ -83,11 +83,11 @@ namespace KSoft.Phoenix.Xmb
 
 			sb.AppendFormat("XMLCOMP -file {0}",
 				xmlFileName);
-			sb.Append(BuilderOptions.Test(XmbFileBuilderOptions.LittleEndian)==false ? "" :
+			sb.Append(this.BuilderOptions.Test(XmbFileBuilderOptions.LittleEndian)==false ? "" :
 				" -littleEndian");
-			sb.Append(ForceStringVariants==false ? "" :
+			sb.Append(this.ForceStringVariants==false ? "" :
 				" -disableNumerics");
-			sb.Append(ForceUnicode==false ? "" :
+			sb.Append(this.ForceUnicode==false ? "" :
 				" -forceUnicode");
 
 			return sb.ToString();

@@ -6,7 +6,7 @@ namespace uni.ui.winforms.common;
 
 public partial class ColorPicker : UserControl {
   public ColorPicker() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.Value = Color.White;
 

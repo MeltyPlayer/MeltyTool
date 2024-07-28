@@ -26,10 +26,10 @@ namespace KSoft.Phoenix.Resource
 		#endregion
 
 		public string FileName;
-		public System.DateTime FileDateTime
+		public DateTime FileDateTime
 		{
-			get { return DateTime.FromFileTimeUtc((long)mFileTimeBits); }
-			set { mFileTimeBits = (ulong)value.ToFileTimeUtc(); }
+			get { return DateTime.FromFileTimeUtc((long) this.mFileTimeBits); }
+			set { this.mFileTimeBits = (ulong)value.ToFileTimeUtc(); }
 		}
 
 		#region IEndianStreamSerializable Members
@@ -40,37 +40,37 @@ namespace KSoft.Phoenix.Resource
 
 			base.Serialize(s);
 
-			s.Stream(ref mFileTimeBits);
-			s.Stream(ref DataUncompressedSize);
+			s.Stream(ref this.mFileTimeBits);
+			s.Stream(ref this.DataUncompressedSize);
 
 			if (s.IsWriting)
 			{
-				Bitwise.ByteSwap.SwapInt64(CompressedDataTiger128, sizeof(ulong) * 0);
-				Bitwise.ByteSwap.SwapInt64(CompressedDataTiger128, sizeof(ulong) * 1);
+				Bitwise.ByteSwap.SwapInt64(this.CompressedDataTiger128, sizeof(ulong) * 0);
+				Bitwise.ByteSwap.SwapInt64(this.CompressedDataTiger128, sizeof(ulong) * 1);
 			}
-			s.Stream(CompressedDataTiger128);
+			s.Stream(this.CompressedDataTiger128);
 			{
-				Bitwise.ByteSwap.SwapInt64(CompressedDataTiger128, sizeof(ulong) * 0);
-				Bitwise.ByteSwap.SwapInt64(CompressedDataTiger128, sizeof(ulong) * 1);
+				Bitwise.ByteSwap.SwapInt64(this.CompressedDataTiger128, sizeof(ulong) * 0);
+				Bitwise.ByteSwap.SwapInt64(this.CompressedDataTiger128, sizeof(ulong) * 1);
 			}
 
 
-			s.StreamUInt24(ref FileNameOffset);
+			s.StreamUInt24(ref this.FileNameOffset);
 			s.Pad8();
 
 			if (eraUtil != null && eraUtil.DebugOutput != null)
 			{
 				eraUtil.DebugOutput.Write("FileEntry: {0} @{1} offset={2} end={3} size={4} dsize={5} adler={6} ",
-					base.EntryId.ToString("X16"),
+					this.EntryId.ToString("X16"),
 					position.ToString("X8"),
-					base.DataOffset.u32.ToString("X8"),
-					(base.DataOffset.u32 + base.DataSize).ToString("X8"),
-					base.DataSize.ToString("X8"),
-					DataUncompressedSize.ToString("X8"),
-					base.Adler32.ToString("X8"));
+					this.DataOffset.u32.ToString("X8"),
+					(this.DataOffset.u32 + this.DataSize).ToString("X8"),
+					this.DataSize.ToString("X8"),
+					this.DataUncompressedSize.ToString("X8"),
+					this.Adler32.ToString("X8"));
 
-				if (!string.IsNullOrEmpty(FileName))
-					eraUtil.DebugOutput.Write(FileName);
+				if (!string.IsNullOrEmpty(this.FileName))
+					eraUtil.DebugOutput.Write(this.FileName);
 
 				eraUtil.DebugOutput.WriteLine();
 			}
@@ -79,21 +79,21 @@ namespace KSoft.Phoenix.Resource
 
 		#region Xml Streaming
 		string FileDateTimeString { get {
-			return FileDateTime.ToString("u"); // UniversalSorta­bleDateTimePat­tern
+			return this.FileDateTime.ToString("u"); // UniversalSorta­bleDateTimePat­tern
 		} }
 
 		protected override void WriteFields(IO.XmlElementStream s, bool includeFileData)
 		{
-			if (includeFileData && mFileTimeBits != 0)
-				s.WriteAttribute("fileTime", mFileTimeBits.ToString("X16"));
+			if (includeFileData && this.mFileTimeBits != 0)
+				s.WriteAttribute("fileTime", this.mFileTimeBits.ToString("X16"));
 
 			// only because it's interesting to have, never read back in
-			s.WriteAttribute("fileDateTime", FileDateTimeString);
+			s.WriteAttribute("fileDateTime", this.FileDateTimeString);
 
 			base.WriteFields(s, includeFileData);
 
 			// When we extract, we decode xmbs
-			string fn = FileName;
+			string fn = this.FileName;
 			if (ResourceUtils.IsXmbFile(fn))
 			{
 				bool remove_xmb_ext = true;
@@ -109,33 +109,33 @@ namespace KSoft.Phoenix.Resource
 
 			if (includeFileData)
 			{
-				if (DataUncompressedSize != DataSize)
-					s.WriteAttribute("fullSize", DataUncompressedSize.ToString("X8"));
+				if (this.DataUncompressedSize != this.DataSize)
+					s.WriteAttribute("fullSize", this.DataUncompressedSize.ToString("X8"));
 
 				s.WriteAttribute("compressedDataHash",
-					Text.Util.ByteArrayToString(CompressedDataTiger128));
+					Text.Util.ByteArrayToString(this.CompressedDataTiger128));
 
-				s.WriteAttribute("nameOffset", FileNameOffset.ToString("X6"));
+				s.WriteAttribute("nameOffset", this.FileNameOffset.ToString("X6"));
 			}
 
-			base.WriteFlags(s);
-			base.WriteResourceFlags(s);
+			this.WriteFlags(s);
+			this.WriteResourceFlags(s);
 		}
 
 		protected override void ReadFields(IO.XmlElementStream s, bool includeFileData)
 		{
 			base.ReadFields(s, includeFileData);
 
-			s.ReadAttributeOpt("fileTime", ref mFileTimeBits, NumeralBase.Hex);
+			s.ReadAttributeOpt("fileTime", ref this.mFileTimeBits, NumeralBase.Hex);
 
-			s.ReadAttribute("name", ref FileName);
+			s.ReadAttribute("name", ref this.FileName);
 
-			s.ReadAttributeOpt("fullSize", ref DataUncompressedSize, NumeralBase.Hex);
-			s.ReadAttributeOpt("nameOffset", ref FileNameOffset, NumeralBase.Hex);
+			s.ReadAttributeOpt("fullSize", ref this.DataUncompressedSize, NumeralBase.Hex);
+			s.ReadAttributeOpt("nameOffset", ref this.FileNameOffset, NumeralBase.Hex);
 
 			string hashString = null;
 			if (s.ReadAttributeOpt("compressedDataHash", ref hashString))
-				CompressedDataTiger128 = Text.Util.ByteStringToArray(hashString);
+				this.CompressedDataTiger128 = Text.Util.ByteStringToArray(hashString);
 		}
 		#endregion
 
@@ -143,7 +143,7 @@ namespace KSoft.Phoenix.Resource
 		protected override byte[] DecompressFromBuffer(IO.EndianStream blockStream, byte[] buffer)
 		{
 			uint result_adler;
-			return ResourceUtils.Decompress(buffer, DataUncompressedSize, out result_adler);
+			return ResourceUtils.Decompress(buffer, this.DataUncompressedSize, out result_adler);
 		}
 
 		public override void BuildBuffer(IO.EndianStream blockStream, System.IO.Stream sourceFile,
@@ -151,8 +151,8 @@ namespace KSoft.Phoenix.Resource
 		{
 			base.BuildBuffer(blockStream, sourceFile, hasher);
 
-			ComputeHash(blockStream, hasher);
-			Array.Copy(hasher.Hash, 0, CompressedDataTiger128, 0, CompressedDataTiger128.Length);
+			this.ComputeHash(blockStream, hasher);
+			Array.Copy(hasher.Hash, 0, this.CompressedDataTiger128, 0, this.CompressedDataTiger128.Length);
 		}
 
 		protected override void CompressSourceToStream(IO.EndianWriter blockStream, System.IO.Stream sourceFile)
@@ -166,7 +166,7 @@ namespace KSoft.Phoenix.Resource
 		public override string ToString()
 		{
 			return string.Format("{0}",
-				FileName);
+			                     this.FileName);
 		}
 	};
 }

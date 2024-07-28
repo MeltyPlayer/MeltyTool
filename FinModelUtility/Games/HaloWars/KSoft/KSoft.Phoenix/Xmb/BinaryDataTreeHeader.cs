@@ -50,10 +50,10 @@ namespace KSoft.Phoenix.Xmb
 			{
 				switch ((int)sectionId)
 				{
-					case 0: return BaseSectionSize0;
-					case 1: return BaseSectionSize1;
-					case 2: return BaseSectionSize2;
-					case 3: return BaseSectionSize3;
+					case 0: return this.BaseSectionSize0;
+					case 1: return this.BaseSectionSize1;
+					case 2: return this.BaseSectionSize2;
+					case 3: return this.BaseSectionSize3;
 
 					default:
 						throw new KSoft.Debug.UnreachableException(sectionId.ToString());
@@ -64,16 +64,16 @@ namespace KSoft.Phoenix.Xmb
 				switch ((int)sectionId)
 				{
 					case 0:
-						BaseSectionSize0 = value;
+						this.BaseSectionSize0 = value;
 						break;
 					case 1:
-						BaseSectionSize1 = value;
+						this.BaseSectionSize1 = value;
 						break;
 					case 2:
-						BaseSectionSize2 = value;
+						this.BaseSectionSize2 = value;
 						break;
 					case 3:
-						BaseSectionSize3 = value;
+						this.BaseSectionSize3 = value;
 						break;
 
 					default:
@@ -86,13 +86,13 @@ namespace KSoft.Phoenix.Xmb
 		{
 			get
 			{
-				return Signature == BinaryDataTreeHeaderSignature.LittleEndian
+				return this.Signature == BinaryDataTreeHeaderSignature.LittleEndian
 					? Shell.EndianFormat.Little
 					: Shell.EndianFormat.Big;
 			}
 			set
 			{
-				Signature = value == Shell.EndianFormat.Little
+				this.Signature = value == Shell.EndianFormat.Little
 					? BinaryDataTreeHeaderSignature.LittleEndian
 					: BinaryDataTreeHeaderSignature.BigEndian;
 			}
@@ -103,20 +103,20 @@ namespace KSoft.Phoenix.Xmb
 			var computer = new Security.Cryptography.Crc16.BitComputer(PhxUtil.kCrc16Definition);
 			computer.ComputeBegin();
 
-			computer.Compute((byte)Signature);
+			computer.Compute((byte) this.Signature);
 			computer.Compute(kExpectedHeaderDwordCount);
 			computer.Compute(byte.MinValue);
-			computer.Compute(UserSectionCount);
+			computer.Compute(this.UserSectionCount);
 
-			var byte_order = SignatureAsEndianFormat;
+			var byte_order = this.SignatureAsEndianFormat;
 
-			computer.Compute(byte_order, DataCrc32);
-			computer.Compute(byte_order, DataSize);
+			computer.Compute(byte_order, this.DataCrc32);
+			computer.Compute(byte_order, this.DataSize);
 
-			computer.Compute(byte_order, BaseSectionSize0);
-			computer.Compute(byte_order, BaseSectionSize1);
-			computer.Compute(byte_order, BaseSectionSize2);
-			computer.Compute(byte_order, BaseSectionSize3);
+			computer.Compute(byte_order, this.BaseSectionSize0);
+			computer.Compute(byte_order, this.BaseSectionSize1);
+			computer.Compute(byte_order, this.BaseSectionSize2);
+			computer.Compute(byte_order, this.BaseSectionSize3);
 
 			return computer.ComputeFinish();
 		}
@@ -125,36 +125,37 @@ namespace KSoft.Phoenix.Xmb
 		{
 			bool reading = s.IsReading;
 
-			byte signature = (byte)Signature;
+			byte signature = (byte) this.Signature;
 
 			if (!reading)
-				HeaderCrc8 = (byte)GetCrc16();
+				this.HeaderCrc8 = (byte) this.GetCrc16();
 
 			s.Stream(ref signature);
 			s.StreamSignature(kExpectedHeaderDwordCount);
-			s.Stream(ref HeaderCrc8);
-			s.Stream(ref UserSectionCount);
+			s.Stream(ref this.HeaderCrc8);
+			s.Stream(ref this.UserSectionCount);
 
-			s.Stream(ref DataCrc32);
-			s.Stream(ref DataSize);
+			s.Stream(ref this.DataCrc32);
+			s.Stream(ref this.DataSize);
 
-			s.Stream(ref BaseSectionSize0);
-			s.Stream(ref BaseSectionSize1);
-			s.Stream(ref BaseSectionSize2);
-			s.Stream(ref BaseSectionSize3);
+			s.Stream(ref this.BaseSectionSize0);
+			s.Stream(ref this.BaseSectionSize1);
+			s.Stream(ref this.BaseSectionSize2);
+			s.Stream(ref this.BaseSectionSize3);
 
 			if (reading)
 			{
-				Signature = (BinaryDataTreeHeaderSignature)signature;
+				this.Signature = (BinaryDataTreeHeaderSignature)signature;
 			}
 		}
 
 		public void Validate()
 		{
-			var actual_crc = (byte)GetCrc16();
-			if (actual_crc != HeaderCrc8)
+			var actual_crc = (byte) this.GetCrc16();
+			if (actual_crc != this.HeaderCrc8)
 				throw new InvalidDataException(string.Format("Invalid CRC 0x{0}, expected 0x{1}",
-					actual_crc.ToString("X2"), HeaderCrc8.ToString("X2")));
+					actual_crc.ToString("X2"),
+					this.HeaderCrc8.ToString("X2")));
 		}
 
 		public static BinaryDataTreeHeaderSignature PeekSignature(BinaryReader reader)
@@ -197,9 +198,9 @@ namespace KSoft.Phoenix.Xmb
 
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Id);
-			s.Stream(ref Size);
-			s.Stream(ref Offset);
+			s.Stream(ref this.Id);
+			s.Stream(ref this.Size);
+			s.Stream(ref this.Offset);
 		}
 	};
 }

@@ -4,11 +4,11 @@
     uint segmentAddress = 0;
 
     public byte ModelID {
-      get { return modelId; }
+      get { return this.modelId; }
     }
 
     public uint SegmentAddress {
-      get { return segmentAddress; }
+      get { return this.segmentAddress; }
     }
 
     public ModelCombo(byte modelId, uint segmentAddress) {
@@ -17,8 +17,9 @@
     }
 
     public override string ToString() {
-      return "[0x" + modelId.ToString("X2") + ", 0x" +
-             segmentAddress.ToString("X8") + "]";
+      return "[0x" +
+             this.modelId.ToString("X2") + ", 0x" +
+             this.segmentAddress.ToString("X8") + "]";
     }
   }
 }

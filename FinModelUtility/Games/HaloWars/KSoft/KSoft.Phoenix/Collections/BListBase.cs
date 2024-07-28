@@ -77,7 +77,7 @@ namespace KSoft.Collections
 
 		protected ObservableCollection<T> mList;
 		protected List<T> RawList { get {
-			var list = ObjectModel.Util.GetUnderlyingItemsAsList(mList);
+			var list = ObjectModel.Util.GetUnderlyingItemsAsList(this.mList);
 			return list;
 		} }
 
@@ -86,55 +86,55 @@ namespace KSoft.Collections
 
 		protected BListBase(int capacity = BCollectionParams.kDefaultCapacity)
 		{
-			mList = new ObservableCollection<T>(/*capacity*/);
-			Capacity = capacity;
+			this.mList = new ObservableCollection<T>(/*capacity*/);
+			this.Capacity = capacity;
 		}
 		protected BListBase(BListParams @params)
 			: this(@params != null ? @params.InitialCapacity : BCollectionParams.kDefaultCapacity)
 		{
-			Params = @params;
+			this.Params = @params;
 		}
 
 		#region List interface
-		public int Count { get { return mList.Count; } }
+		public int Count { get { return this.mList.Count; } }
 
 		internal int Capacity
 		{
-			get { return RawList.Capacity; }
-			set { RawList.Capacity = value; }
+			get { return this.RawList.Capacity; }
+			set { this.RawList.Capacity = value; }
 		}
 
 		public virtual T this[int index]
 		{
-			get { return mList[index]; }
-			set { mList[index] = value; }
+			get { return this.mList[index]; }
+			set { this.mList[index] = value; }
 		}
 
 		internal void AddItem(T item)
 		{
-			mList.Add(item);
+			this.mList.Add(item);
 		}
 
 		public virtual void Clear()
 		{
-			if (mList != null)
-				mList.Clear();
+			if (this.mList != null)
+				this.mList.Clear();
 		}
 
 		#region IEnumerable<T> Members
 		public List<T>.Enumerator GetEnumerator()
 		{
-			return RawList.GetEnumerator();
+			return this.RawList.GetEnumerator();
 		}
 
 		IEnumerator<T> IEnumerable<T>.GetEnumerator()
 		{
-			return mList.GetEnumerator();
+			return this.mList.GetEnumerator();
 		}
 
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return mList.GetEnumerator();
+			return this.mList.GetEnumerator();
 		}
 		#endregion
 		#endregion
@@ -144,14 +144,14 @@ namespace KSoft.Collections
 			return this[id];
 		}
 
-		object IBList.UnderlyingObjectsCollection { get { return mList; } }
+		object IBList.UnderlyingObjectsCollection { get { return this.mList; } }
 
-		public bool IsEmpty { get { return Count == 0; } }
+		public bool IsEmpty { get { return this.Count == 0; } }
 		internal void OptimizeStorage()
 		{
 			//if (Count == 0)
 			//	mList = null;
-			RawList.TrimExcess();
+			this.RawList.TrimExcess();
 		}
 
 		#region IEqualityComparer<BListBase<T>> Members
@@ -168,19 +168,19 @@ namespace KSoft.Collections
 
 		public void Sort()
 		{
-			mList.Sort();
+			this.mList.Sort();
 		}
 		public void Sort(IComparer<T> comparer)
 		{
-			mList.Sort(comparer);
+			this.mList.Sort(comparer);
 		}
 		public void Sort(int index, int count, IComparer<T> comparer)
 		{
-			RawList.Sort(index, count, comparer);
+			this.RawList.Sort(index, count, comparer);
 		}
 		public void Sort(Comparison<T> comparison)
 		{
-			mList.Sort(comparison);
+			this.mList.Sort(comparison);
 		}
 	};
 }

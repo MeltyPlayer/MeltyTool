@@ -16,16 +16,16 @@ public static class FrameTime {
       = new float[SMOOTH_COUNT];
 
   public static void MarkStartOfFrame() {
-    FrameTime.previousFrameStart_ = FrameTime.StartOfFrame;
-    FrameTime.StartOfFrame = DateTime.Now;
+    previousFrameStart_ = StartOfFrame;
+    StartOfFrame = DateTime.Now;
 
-    FrameTime.ElapsedTimeSinceApplicationOpened
-        = FrameTime.StartOfFrame - firstFrameStart_;
+    ElapsedTimeSinceApplicationOpened
+        = StartOfFrame - firstFrameStart_;
 
     var elapsedSeconds =
-        (float) (FrameTime.StartOfFrame - FrameTime.previousFrameStart_)
+        (float) (StartOfFrame - previousFrameStart_)
         .TotalSeconds;
-    FrameTime.DeltaTime = elapsedSeconds;
+    DeltaTime = elapsedSeconds;
 
     for (var i = frameTimesForSmoothedActualFps_.Length - 1; i >= 1; --i) {
       frameTimesForSmoothedActualFps_[i]
@@ -41,7 +41,7 @@ public static class FrameTime {
 
   public static void MarkEndOfFrameForFpsDisplay() {
     var elapsedSeconds
-        = (float) (DateTime.Now - FrameTime.StartOfFrame).TotalSeconds;
+        = (float) (DateTime.Now - StartOfFrame).TotalSeconds;
 
     for (var i = frameTimesForSmoothedTheoreticalFps_.Length - 1;
          i >= 1;

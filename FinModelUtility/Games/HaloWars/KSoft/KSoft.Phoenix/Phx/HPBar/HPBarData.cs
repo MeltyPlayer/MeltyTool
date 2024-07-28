@@ -37,37 +37,37 @@ namespace KSoft.Phoenix.Phx
 
 		public HPBarData()
 		{
-			ObjectDatabase = new ProtoDataObjectDatabase(this, typeof(HPBarDataObjectKind));
+			this.ObjectDatabase = new ProtoDataObjectDatabase(this, typeof(HPBarDataObjectKind));
 
-			HPBars = new Collections.BListAutoId<BProtoHPBar>();
-			ColorStages = new Collections.BListAutoId<BProtoHPBarColorStages>();
-			VeterancyBars = new Collections.BListAutoId<BProtoVeterancyBar>();
-			PieProgress = new Collections.BListAutoId<BProtoPieProgress>();
-			BobbleHeads = new Collections.BListAutoId<BProtoBobbleHead>();
-			BuildingStrengths = new Collections.BListAutoId<BProtoBuildingStrength>();
+			this.HPBars = new Collections.BListAutoId<BProtoHPBar>();
+			this.ColorStages = new Collections.BListAutoId<BProtoHPBarColorStages>();
+			this.VeterancyBars = new Collections.BListAutoId<BProtoVeterancyBar>();
+			this.PieProgress = new Collections.BListAutoId<BProtoPieProgress>();
+			this.BobbleHeads = new Collections.BListAutoId<BProtoBobbleHead>();
+			this.BuildingStrengths = new Collections.BListAutoId<BProtoBuildingStrength>();
 
-			InitializeDatabaseInterfaces();
+			this.InitializeDatabaseInterfaces();
 		}
 
 		public void Clear()
 		{
-			HPBars.Clear();
-			ColorStages.Clear();
-			VeterancyBars.Clear();
-			PieProgress.Clear();
-			BobbleHeads.Clear();
-			BuildingStrengths.Clear();
+			this.HPBars.Clear();
+			this.ColorStages.Clear();
+			this.VeterancyBars.Clear();
+			this.PieProgress.Clear();
+			this.BobbleHeads.Clear();
+			this.BuildingStrengths.Clear();
 		}
 
 		#region Database interfaces
 		void InitializeDatabaseInterfaces()
 		{
-			HPBars.SetupDatabaseInterface();
-			ColorStages.SetupDatabaseInterface();
-			VeterancyBars.SetupDatabaseInterface();
-			PieProgress.SetupDatabaseInterface();
-			BobbleHeads.SetupDatabaseInterface();
-			BuildingStrengths.SetupDatabaseInterface();
+			this.HPBars.SetupDatabaseInterface();
+			this.ColorStages.SetupDatabaseInterface();
+			this.VeterancyBars.SetupDatabaseInterface();
+			this.PieProgress.SetupDatabaseInterface();
+			this.BobbleHeads.SetupDatabaseInterface();
+			this.BuildingStrengths.SetupDatabaseInterface();
 		}
 
 		internal Collections.IBTypeNames GetNamesInterface(HPBarDataObjectKind kind)
@@ -76,12 +76,12 @@ namespace KSoft.Phoenix.Phx
 
 			switch (kind)
 			{
-			case HPBarDataObjectKind.HPBar:				return HPBars;
-			case HPBarDataObjectKind.ColorStages:		return ColorStages;
-			case HPBarDataObjectKind.VeterancyBar:		return VeterancyBars;
-			case HPBarDataObjectKind.PieProgress:		return PieProgress;
-			case HPBarDataObjectKind.BobbleHead:		return BobbleHeads;
-			case HPBarDataObjectKind.BuildingStrength:	return BuildingStrengths;
+			case HPBarDataObjectKind.HPBar:            return this.HPBars;
+			case HPBarDataObjectKind.ColorStages:      return this.ColorStages;
+			case HPBarDataObjectKind.VeterancyBar:     return this.VeterancyBars;
+			case HPBarDataObjectKind.PieProgress:      return this.PieProgress;
+			case HPBarDataObjectKind.BobbleHead:       return this.BobbleHeads;
+			case HPBarDataObjectKind.BuildingStrength: return this.BuildingStrengths;
 
 			default: throw new KSoft.Debug.UnreachableException(kind.ToString());
 			}
@@ -93,12 +93,12 @@ namespace KSoft.Phoenix.Phx
 
 			switch (kind)
 			{
-			case HPBarDataObjectKind.HPBar:				return HPBars;
-			case HPBarDataObjectKind.ColorStages:		return ColorStages;
-			case HPBarDataObjectKind.VeterancyBar:		return VeterancyBars;
-			case HPBarDataObjectKind.PieProgress:		return PieProgress;
-			case HPBarDataObjectKind.BobbleHead:		return BobbleHeads;
-			case HPBarDataObjectKind.BuildingStrength:	return BuildingStrengths;
+			case HPBarDataObjectKind.HPBar:            return this.HPBars;
+			case HPBarDataObjectKind.ColorStages:      return this.ColorStages;
+			case HPBarDataObjectKind.VeterancyBar:     return this.VeterancyBars;
+			case HPBarDataObjectKind.PieProgress:      return this.PieProgress;
+			case HPBarDataObjectKind.BobbleHead:       return this.BobbleHeads;
+			case HPBarDataObjectKind.BuildingStrength: return this.BuildingStrengths;
 
 			default: throw new KSoft.Debug.UnreachableException(kind.ToString());
 			}
@@ -111,12 +111,12 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			XML.XmlUtil.Serialize(s, HPBars, BProtoHPBar.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, ColorStages, BProtoHPBarColorStages.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, VeterancyBars, BProtoVeterancyBar.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, PieProgress, BProtoPieProgress.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, BobbleHeads, BProtoBobbleHead.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, BuildingStrengths, BProtoBuildingStrength.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.HPBars, BProtoHPBar.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.ColorStages, BProtoHPBarColorStages.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.VeterancyBars, BProtoVeterancyBar.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.PieProgress, BProtoPieProgress.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.BobbleHeads, BProtoBobbleHead.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.BuildingStrengths, BProtoBuildingStrength.kBListXmlParams);
 		}
 
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -124,7 +124,7 @@ namespace KSoft.Phoenix.Phx
 			where TCursor : class
 		{
 			using (s.EnterCursorBookmark(kXmlRoot))
-				StreamHPBarData(s);
+				this.StreamHPBarData(s);
 		}
 		#endregion
 
@@ -134,13 +134,13 @@ namespace KSoft.Phoenix.Phx
 		Collections.IBTypeNames IProtoDataObjectDatabaseProvider.GetNamesInterface(int objectKind)
 		{
 			var kind = (HPBarDataObjectKind)objectKind;
-			return GetNamesInterface(kind);
+			return this.GetNamesInterface(kind);
 		}
 
 		Collections.IHasUndefinedProtoMemberInterface IProtoDataObjectDatabaseProvider.GetMembersInterface(int objectKind)
 		{
 			var kind = (HPBarDataObjectKind)objectKind;
-			return GetMembersInterface(kind);
+			return this.GetMembersInterface(kind);
 		}
 		#endregion
 	};

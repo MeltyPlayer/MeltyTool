@@ -33,10 +33,10 @@ namespace KSoft.IO
 		/// <remarks>If <paramref name="newOrder"/> is the same as <see cref="ByteOrder"/> nothing will happen</remarks>
 		public void ChangeByteOrder(Shell.EndianFormat newOrder)
 		{
-			if (newOrder != ByteOrder)
+			if (newOrder != this.ByteOrder)
 			{
-				ByteOrder = newOrder;
-				mRequiresByteSwap = !mRequiresByteSwap;
+				this.ByteOrder = newOrder;
+				this.mRequiresByteSwap = !this.mRequiresByteSwap;
 			}
 		}
 
@@ -54,24 +54,24 @@ namespace KSoft.IO
 			/// <param name="requiresSwitch">Is there an actual order switch even occurring?</param>
 			public EndianFormatSwitchBlock(EndianReader s, bool requiresSwitch)
 			{
-				mStream = requiresSwitch
+				this.mStream = requiresSwitch
 					? s
 					: null;
 
 				if (requiresSwitch) // if not, don't do anything but keep the IDisposable wheel turning
 				{
-					mOldByteOrder = s.ByteOrder;
-					mOldRequiresByteSwap = s.mRequiresByteSwap;
+					this.mOldByteOrder = s.ByteOrder;
+					this.mOldRequiresByteSwap = s.mRequiresByteSwap;
 
-					s.ChangeByteOrder(mOldByteOrder.Invert());
+					s.ChangeByteOrder(this.mOldByteOrder.Invert());
 				}
 			}
 
 			#region IDisposable Members
 			public void Dispose()
 			{
-				if (mStream != null)
-					mStream.ChangeByteOrder(mOldByteOrder);
+				if (this.mStream != null)
+					this.mStream.ChangeByteOrder(this.mOldByteOrder);
 			}
 			#endregion
 		};
@@ -106,22 +106,22 @@ namespace KSoft.IO
 		#region Seek
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek32(uint offset)						=> Seek(offset, SeekOrigin.Begin);
+		public void Seek32(uint offset)						=> this.Seek(offset, SeekOrigin.Begin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
-		public void Seek32(uint offset, SeekOrigin origin)	=> Seek(offset, origin);
+		public void Seek32(uint offset, SeekOrigin origin)	=> this.Seek(offset, origin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek32(int offset)						=> Seek(offset, SeekOrigin.Begin);
+		public void Seek32(int offset)						=> this.Seek(offset, SeekOrigin.Begin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
-		public void Seek32(int offset, SeekOrigin origin)	=> Seek(offset, origin);
+		public void Seek32(int offset, SeekOrigin origin)	=> this.Seek(offset, origin);
 
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek(long offset)						=> Seek(offset, SeekOrigin.Begin);
+		public void Seek(long offset)						=> this.Seek(offset, SeekOrigin.Begin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
@@ -133,12 +133,12 @@ namespace KSoft.IO
 		/// <param name="ptrSize">Pointer size to use for the result handle</param>
 		/// <returns></returns>
 		public Values.PtrHandle GetPositionPtrWithExplicitWidth(Shell.ProcessorSize ptrSize) =>
-			new Values.PtrHandle(ptrSize, (ulong)BaseStream.Position);
+			new Values.PtrHandle(ptrSize, (ulong) this.BaseStream.Position);
 
 		/// <summary>Current position as a <see cref="Data.PtrHandle"/></summary>
 		/// <remarks>Pointer traits\info is inherited from <see cref="BaseAddress"/></remarks>
 		public Values.PtrHandle PositionPtr =>
-			new Values.PtrHandle(BaseAddress, (ulong)BaseStream.Position);
+			new Values.PtrHandle(this.BaseAddress, (ulong) this.BaseStream.Position);
 		#endregion
 		#endregion
 	};
@@ -173,10 +173,10 @@ namespace KSoft.IO
 		/// <remarks>If <paramref name="newOrder"/> is the same as <see cref="ByteOrder"/> nothing will happen</remarks>
 		public void ChangeByteOrder(Shell.EndianFormat newOrder)
 		{
-			if (newOrder != ByteOrder)
+			if (newOrder != this.ByteOrder)
 			{
-				ByteOrder = newOrder;
-				mRequiresByteSwap = !mRequiresByteSwap;
+				this.ByteOrder = newOrder;
+				this.mRequiresByteSwap = !this.mRequiresByteSwap;
 			}
 		}
 
@@ -194,24 +194,24 @@ namespace KSoft.IO
 			/// <param name="requiresSwitch">Is there an actual order switch even occurring?</param>
 			public EndianFormatSwitchBlock(EndianWriter s, bool requiresSwitch)
 			{
-				mStream = requiresSwitch
+				this.mStream = requiresSwitch
 					? s
 					: null;
 
 				if (requiresSwitch) // if not, don't do anything but keep the IDisposable wheel turning
 				{
-					mOldByteOrder = s.ByteOrder;
-					mOldRequiresByteSwap = s.mRequiresByteSwap;
+					this.mOldByteOrder = s.ByteOrder;
+					this.mOldRequiresByteSwap = s.mRequiresByteSwap;
 
-					s.ChangeByteOrder(mOldByteOrder.Invert());
+					s.ChangeByteOrder(this.mOldByteOrder.Invert());
 				}
 			}
 
 			#region IDisposable Members
 			public void Dispose()
 			{
-				if (mStream != null)
-					mStream.ChangeByteOrder(mOldByteOrder);
+				if (this.mStream != null)
+					this.mStream.ChangeByteOrder(this.mOldByteOrder);
 			}
 			#endregion
 		};
@@ -246,22 +246,22 @@ namespace KSoft.IO
 		#region Seek
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek32(uint offset)						=> Seek(offset, SeekOrigin.Begin);
+		public void Seek32(uint offset)						=> this.Seek(offset, SeekOrigin.Begin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
-		public void Seek32(uint offset, SeekOrigin origin)	=> Seek(offset, origin);
+		public void Seek32(uint offset, SeekOrigin origin)	=> this.Seek(offset, origin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek32(int offset)						=> Seek(offset, SeekOrigin.Begin);
+		public void Seek32(int offset)						=> this.Seek(offset, SeekOrigin.Begin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
-		public void Seek32(int offset, SeekOrigin origin)	=> Seek(offset, origin);
+		public void Seek32(int offset, SeekOrigin origin)	=> this.Seek(offset, origin);
 
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek(long offset)						=> Seek(offset, SeekOrigin.Begin);
+		public void Seek(long offset)						=> this.Seek(offset, SeekOrigin.Begin);
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
@@ -273,12 +273,12 @@ namespace KSoft.IO
 		/// <param name="ptrSize">Pointer size to use for the result handle</param>
 		/// <returns></returns>
 		public Values.PtrHandle GetPositionPtrWithExplicitWidth(Shell.ProcessorSize ptrSize) =>
-			new Values.PtrHandle(ptrSize, (ulong)BaseStream.Position);
+			new Values.PtrHandle(ptrSize, (ulong) this.BaseStream.Position);
 
 		/// <summary>Current position as a <see cref="Data.PtrHandle"/></summary>
 		/// <remarks>Pointer traits\info is inherited from <see cref="BaseAddress"/></remarks>
 		public Values.PtrHandle PositionPtr =>
-			new Values.PtrHandle(BaseAddress, (ulong)BaseStream.Position);
+			new Values.PtrHandle(this.BaseAddress, (ulong) this.BaseStream.Position);
 		#endregion
 		#endregion
 	};

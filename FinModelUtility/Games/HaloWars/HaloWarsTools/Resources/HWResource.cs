@@ -64,16 +64,16 @@ namespace HaloWarsTools {
 
     public HWContext Context { get; protected set; }
     public string RelativePath { get; protected set; }
-    public string AbsolutePath => Context.GetAbsoluteScratchPath(RelativePath);
+    public string AbsolutePath => this.Context.GetAbsoluteScratchPath(this.RelativePath);
     public HWResourceType Type;
 
     public override string ToString() {
       return
-          $"{Path.ChangeExtension(RelativePath, null)} [{Type.ToString().ToUpperInvariant()}]";
+          $"{Path.ChangeExtension(this.RelativePath, null)} [{this.Type.ToString().ToUpperInvariant()}]";
     }
 
     public static HWResource FromFile(HWContext context, string filename) {
-      return HWResource.GetOrCreateFromFile(context, filename);
+      return GetOrCreateFromFile(context, filename);
     }
 
     protected static HWResource GetOrCreateFromFile(HWContext? context,

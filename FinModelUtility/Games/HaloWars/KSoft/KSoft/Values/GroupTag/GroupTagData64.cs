@@ -21,7 +21,7 @@ namespace KSoft.Values
 		public static readonly GroupTagData64 Null = new GroupTagData64();
 		GroupTagData64() : base(kExpectedTagLength)
 		{
-			mID = TagWord.MaxValue;
+			this.mID = TagWord.MaxValue;
 		}
 		#endregion
 		public static readonly IEqualityComparer<GroupTagData> kEqualityComparer = Null;
@@ -38,7 +38,7 @@ namespace KSoft.Values
 		#region ID
 		readonly TagWord mID;
 		/// <summary>The eight character code translated into a unsigned integer</summary>
-		public TagWord ID { get { return mID; } }
+		public TagWord ID { get { return this.mID; } }
 		#endregion
 
 		#region Ctor
@@ -51,9 +51,9 @@ namespace KSoft.Values
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Requires(groupTag.Length == kExpectedTagLength);
 
-			Contract.Assume(Tag.Length == kExpectedTagLength);
+			Contract.Assume(this.Tag.Length == kExpectedTagLength);
 
-			mID = ToULong(Tag);
+			this.mID = ToULong(this.Tag);
 		}
 		/// <summary>Initialize a 64-bit group tag with a <see cref="Guid"/></summary>
 		/// <param name="groupTag">Eight character code string</param>
@@ -65,9 +65,9 @@ namespace KSoft.Values
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Requires(groupTag.Length == kExpectedTagLength);
 
-			Contract.Assume(Tag.Length == kExpectedTagLength);
+			Contract.Assume(this.Tag.Length == kExpectedTagLength);
 
-			mID = ToULong(Tag);
+			this.mID = ToULong(this.Tag);
 		}
 		/// <summary>Specialized ctor for initialing from two <see cref="GroupTagData32"/> instances</summary>
 		/// <param name="maj">First four-character code</param>
@@ -80,9 +80,9 @@ namespace KSoft.Values
 			Contract.Requires(min != null && min != GroupTagData32.Null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
 
-			Contract.Assume(Tag.Length == kExpectedTagLength);
+			Contract.Assume(this.Tag.Length == kExpectedTagLength);
 
-			mID = ToULong(Tag);
+			this.mID = ToULong(this.Tag);
 		}
 		/// <summary>Specialized ctor for initialing from two <see cref="GroupTagData32"/> instances along with a <see cref="Guid"/></summary>
 		/// <param name="maj">First four-character code</param>
@@ -96,9 +96,9 @@ namespace KSoft.Values
 			Contract.Requires(min != null && min != GroupTagData32.Null);
 			Contract.Requires(!string.IsNullOrEmpty(name));
 
-			Contract.Assume(Tag.Length == kExpectedTagLength);
+			Contract.Assume(this.Tag.Length == kExpectedTagLength);
 
-			mID = ToULong(Tag);
+			this.mID = ToULong(this.Tag);
 		}
 		#endregion
 
@@ -109,7 +109,7 @@ namespace KSoft.Values
 		public override bool Equals(object obj)
 		{
 			if(obj is GroupTagData64)
-				return mID == (obj as GroupTagData64).mID;
+				return this.mID == (obj as GroupTagData64).mID;
 
 			return false;
 		}
@@ -118,8 +118,8 @@ namespace KSoft.Values
 		/// <returns>This object's group tag</returns>
 		public override int GetHashCode()
 		{
-			int hi = (int)(mID >> 32);
-			int lo = (int)(mID & 0xFFFFFFFF);
+			int hi = (int)(this.mID >> 32);
+			int lo = (int)(this.mID & 0xFFFFFFFF);
 
 			return hi ^ lo;
 		}
@@ -142,9 +142,9 @@ namespace KSoft.Values
 		/// Takes another eight character code and performs a check on it against this object's tag to see if they are completely equal</summary>
 		/// <param name="other"></param>
 		/// <returns>True if equal to this</returns>
-		public override bool Test(char[] other) => GroupTagData64.Test(Tag, other);
+		public override bool Test(char[] other) => Test(this.Tag, other);
 		/// <summary>Is this <see cref="GroupTagData64"/> equal to the "null" equivalent value?</summary>
-		public override bool IsNull	=> object.ReferenceEquals(this, Null);
+		public override bool IsNull	=> ReferenceEquals(this, Null);
 
 		#region IEquatable & IEqualityComparer Members
 		/// <summary>Compares this to another <see cref="GroupTagData64"/> object testing their <see cref="ID"/> fields for equality</summary>
@@ -153,7 +153,7 @@ namespace KSoft.Values
 		public override bool Equals(GroupTagData obj)
 		{
 			if (obj is GroupTagData64 g)
-				return mID == g.mID;
+				return this.mID == g.mID;
 
 			return false;
 		}
@@ -166,7 +166,7 @@ namespace KSoft.Values
 		public override void Read(IO.EndianReader s)	=> s.Seek(sizeof(TagWord), System.IO.SeekOrigin.Current);
 		/// <summary>Writes this tag group's eight character code</summary>
 		/// <param name="s"></param>
-		public override void Write(IO.EndianWriter s)	=> s.WriteTag64(mID);
+		public override void Write(IO.EndianWriter s)	=> s.WriteTag64(this.mID);
 		#endregion
 
 
@@ -245,7 +245,7 @@ namespace KSoft.Values
 						((byte)tag[4 + 3])
 					);
 
-			if (!System.BitConverter.IsLittleEndian)
+			if (!BitConverter.IsLittleEndian)
 				Bitwise.ByteSwap.Swap(ref value);
 
 			return value;
@@ -276,7 +276,7 @@ namespace KSoft.Values
 						((byte)tag[4 + 3])
 					);
 
-			if (!System.BitConverter.IsLittleEndian)
+			if (!BitConverter.IsLittleEndian)
 				Bitwise.ByteSwap.Swap(ref value);
 
 			return value;
@@ -339,7 +339,7 @@ namespace KSoft.Values
 		/// <summary>Get the <see cref="GroupTagData64"/> this attribute defines</summary>
 		public GroupTagData64 GroupTag				{ get; private set; }
 		/// <summary>Get the <see cref="GroupTagData"/> this attribute defines</summary>
-		public override GroupTagData GroupTagData	{ get { return GroupTag; } }
+		public override GroupTagData GroupTagData	{ get { return this.GroupTag; } }
 		#endregion
 
 		/// <summary>Initialize a 64-bit group tag attribute</summary>
@@ -352,7 +352,7 @@ namespace KSoft.Values
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Requires(groupTag.Length == GroupTagData64.kExpectedTagLength);
 
-			GroupTag = new GroupTagData64(groupTag, name, new KGuid(uuid));
+			this.GroupTag = new GroupTagData64(groupTag, name, new KGuid(uuid));
 		}
 	};
 }

@@ -10,8 +10,8 @@ public class Vector2 : ITextDeserializable, IVector2 {
   public Vector2() { }
 
   public Vector2(float x, float y) {
-      X = x;
-      Y = y;
+    this.X = x;
+    this.Y = y;
     }
 
   public float X { get; set; }
@@ -21,7 +21,7 @@ public class Vector2 : ITextDeserializable, IVector2 {
       var values = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS,
                                   TextReaderConstants.NEWLINE_STRINGS);
       Asserts.Equal(2, values.Length);
-      X = values[0];
-      Y = values[1];
+      this.X = values[0];
+      this.Y = values[1];
     }
 }

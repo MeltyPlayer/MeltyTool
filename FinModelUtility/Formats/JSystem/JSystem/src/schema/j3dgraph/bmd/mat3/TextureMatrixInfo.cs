@@ -25,7 +25,7 @@ public partial class TextureMatrixInfo : ITextureMatrixInfo,
 
 
   public override string ToString()
-    => $"TextureMatrixInfo<{TexGenType}, {Center}, {Scale}, {Translation}, {Rotation}, {Matrix}>";
+    => $"TextureMatrixInfo<{this.TexGenType}, {this.Center}, {this.Scale}, {this.Translation}, {this.Rotation}, {this.Matrix}>";
 
   public static bool operator ==(TextureMatrixInfo lhs, TextureMatrixInfo rhs)
     => lhs.Equals(rhs);
@@ -34,18 +34,18 @@ public partial class TextureMatrixInfo : ITextureMatrixInfo,
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {
-      if (Object.ReferenceEquals(this, obj)) {
+      if (ReferenceEquals(this, obj)) {
         return true;
       }
 
       if (obj is TextureMatrixInfo other) {
         return this.TexGenType == other.TexGenType &&
                this.info == other.info &&
-               Center == other.Center &&
-               Scale == other.Scale &&
-               Rotation == other.Rotation &&
-               Translation == other.Translation &&
-               Matrix == other.Matrix;
+               this.Center == other.Center &&
+               this.Scale == other.Scale &&
+               this.Rotation == other.Rotation &&
+               this.Translation == other.Translation &&
+               this.Matrix == other.Matrix;
       }
 
       return false;
@@ -53,12 +53,12 @@ public partial class TextureMatrixInfo : ITextureMatrixInfo,
 
   public override int GetHashCode()
     => FluentHash.Start()
-                 .With(TexGenType)
-                 .With(info)
-                 .With(Center)
-                 .With(Scale)
-                 .With(Rotation)
-                 .With(Translation)
-                 .With(Matrix)
+                 .With(this.TexGenType)
+                 .With(this.info)
+                 .With(this.Center)
+                 .With(this.Scale)
+                 .With(this.Rotation)
+                 .With(this.Translation)
+                 .With(this.Matrix)
                  .Hash;
 }

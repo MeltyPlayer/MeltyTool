@@ -21,18 +21,18 @@ namespace KSoft.Phoenix.Phx
 
 		protected DatabaseObjectUserInterfaceTextData CreateDatabaseObjectUserInterfaceTextData()
 		{
-			Contract.Requires(UserInterfaceTextData == null);
+			Contract.Requires(this.UserInterfaceTextData == null);
 
-			UserInterfaceTextData = new DatabaseObjectUserInterfaceTextData();
-			return UserInterfaceTextData;
+			this.UserInterfaceTextData = new DatabaseObjectUserInterfaceTextData();
+			return this.UserInterfaceTextData;
 		}
 		#endregion
 
 		#region IXmlElementStreamable Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			if (UserInterfaceTextData != null)
-				UserInterfaceTextData.Serialize(s);
+			if (this.UserInterfaceTextData != null)
+				this.UserInterfaceTextData.Serialize(s);
 		}
 		#endregion
 	};

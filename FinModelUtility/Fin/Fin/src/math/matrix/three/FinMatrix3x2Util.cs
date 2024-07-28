@@ -5,7 +5,7 @@ namespace fin.math.matrix.three;
 
 public static class FinMatrix3x2Util {
   public static IReadOnlyFinMatrix3x2 IDENTITY { get; } =
-    FinMatrix3x2Util.FromIdentity();
+    FromIdentity();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix3x2 FromIdentity()
@@ -48,7 +48,7 @@ public static class FinMatrix3x2Util {
                                        float? rotationRadians,
                                        Vector2? scale,
                                        float? skewXRadians)
-    => FinMatrix3x2Util.FromTrss(translation, rotationRadians, scale, skewXRadians, new FinMatrix3x2());
+    => FromTrss(translation, rotationRadians, scale, skewXRadians, new FinMatrix3x2());
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix3x2 FromTrss(Vector2? translation,

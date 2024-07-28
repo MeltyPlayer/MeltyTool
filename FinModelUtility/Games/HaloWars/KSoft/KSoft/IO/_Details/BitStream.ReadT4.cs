@@ -18,7 +18,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kCharBitCount);
 
-			ReadWord(out TWord word, bitCount);
+			this.ReadWord(out TWord word, bitCount);
 
 			return (char)word;
 		}
@@ -30,7 +30,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kByteBitCount);
 
-			ReadWord(out TWord word, bitCount);
+			this.ReadWord(out TWord word, bitCount);
 
 			return (byte)word;
 		}
@@ -44,7 +44,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kSByteBitCount);
 
-			ReadWord(out TWord word, bitCount);
+			this.ReadWord(out TWord word, bitCount);
 			if (signExtend && bitCount != Bits.kSByteBitCount)
 				return (sbyte)Bits.SignExtend( (sbyte)word, bitCount );
 
@@ -58,7 +58,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kUInt16BitCount);
 
-			ReadWord(out TWord word, bitCount);
+			this.ReadWord(out TWord word, bitCount);
 
 			return (ushort)word;
 		}
@@ -72,7 +72,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kInt16BitCount);
 
-			ReadWord(out TWord word, bitCount);
+			this.ReadWord(out TWord word, bitCount);
 			if (signExtend && bitCount != Bits.kInt16BitCount)
 				return (short)Bits.SignExtend( (short)word, bitCount );
 
@@ -86,7 +86,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kUInt32BitCount);
 
-			ReadWord(out TWord word, bitCount);
+			this.ReadWord(out TWord word, bitCount);
 
 			return (uint)word;
 		}
@@ -100,7 +100,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kInt32BitCount);
 
-			ReadWord(out TWord word, bitCount);
+			this.ReadWord(out TWord word, bitCount);
 			if (signExtend && bitCount != Bits.kInt32BitCount)
 				return (int)Bits.SignExtend( (int)word, bitCount );
 
@@ -119,8 +119,8 @@ namespace KSoft.IO
 			int lsb_bit_count = bitCount > Bits.kInt32BitCount ? bitCount - msb_bit_count : bitCount;
 
 			if (msb_bit_count > 0)
-				ReadWord(out msb_word, msb_bit_count);
-			ReadWord(out uint lsb_word, lsb_bit_count);
+				this.ReadWord(out msb_word, msb_bit_count);
+			this.ReadWord(out uint lsb_word, lsb_bit_count);
 
 			ulong word = (ulong)msb_word << lsb_bit_count;
 			word |= (ulong)lsb_word;
@@ -142,8 +142,8 @@ namespace KSoft.IO
 			int lsb_bit_count = bitCount > Bits.kInt32BitCount ? bitCount - msb_bit_count : bitCount;
 
 			if (msb_bit_count > 0)
-				ReadWord(out msb_word, msb_bit_count);
-			ReadWord(out uint lsb_word, lsb_bit_count);
+				this.ReadWord(out msb_word, msb_bit_count);
+			this.ReadWord(out uint lsb_word, lsb_bit_count);
 
 			ulong word = (ulong)msb_word << lsb_bit_count;
 			word |= (ulong)lsb_word;
@@ -161,7 +161,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kCharBitCount);
 
-			value = ReadChar(bitCount);
+			value = this.ReadChar(bitCount);
 		}
 		/// <summary>Read an <see cref="System.Byte"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -171,7 +171,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kByteBitCount);
 
-			value = ReadByte(bitCount);
+			value = this.ReadByte(bitCount);
 		}
 		/// <summary>Read an <see cref="System.SByte"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -183,7 +183,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kSByteBitCount);
 
-			value = ReadSByte(bitCount, signExtend);
+			value = this.ReadSByte(bitCount, signExtend);
 		}
 		/// <summary>Read an <see cref="System.UInt16"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -193,7 +193,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kUInt16BitCount);
 
-			value = ReadUInt16(bitCount);
+			value = this.ReadUInt16(bitCount);
 		}
 		/// <summary>Read an <see cref="System.Int16"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -205,7 +205,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kInt16BitCount);
 
-			value = ReadInt16(bitCount, signExtend);
+			value = this.ReadInt16(bitCount, signExtend);
 		}
 		/// <summary>Read an <see cref="System.UInt32"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -215,7 +215,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kUInt32BitCount);
 
-			value = ReadUInt32(bitCount);
+			value = this.ReadUInt32(bitCount);
 		}
 		/// <summary>Read an <see cref="System.Int32"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -227,7 +227,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kInt32BitCount);
 
-			value = ReadInt32(bitCount, signExtend);
+			value = this.ReadInt32(bitCount, signExtend);
 		}
 		/// <summary>Read an <see cref="System.UInt64"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -237,7 +237,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kUInt64BitCount);
 
-			value = ReadUInt64(bitCount);
+			value = this.ReadUInt64(bitCount);
 		}
 		/// <summary>Read an <see cref="System.Int64"/> from the stream</summary>
 		/// <param name="value">value read from the stream</param>
@@ -249,7 +249,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(bitCount <= Bits.kInt64BitCount);
 
-			value = ReadInt64(bitCount, signExtend);
+			value = this.ReadInt64(bitCount, signExtend);
 		}
 	};
 }

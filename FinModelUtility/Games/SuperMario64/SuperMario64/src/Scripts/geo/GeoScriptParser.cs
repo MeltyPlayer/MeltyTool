@@ -24,7 +24,7 @@ namespace sm64.scripts.geo {
     }
 
     public IGeoCommandList Parse(uint address, byte? areaId)
-      => Asserts.CastNonnull(ParseImpl_(address, areaId).Value).Item1;
+      => Asserts.CastNonnull(this.ParseImpl_(address, areaId).Value).Item1;
 
     private (IGeoCommandList, ReturnType)?
         ParseImpl_(uint address, byte? areaId) {

@@ -16,7 +16,7 @@ namespace KSoft.Collections
 		}
 
 		public bool HasNonZeroItems { get {
-			for (int x = 0; x < Count; x++)
+			for (int x = 0; x < this.Count; x++)
 				if (this[x] != 0.0f)
 					return true;
 

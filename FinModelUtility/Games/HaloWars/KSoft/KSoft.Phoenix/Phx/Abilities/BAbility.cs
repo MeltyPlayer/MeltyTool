@@ -12,7 +12,7 @@ namespace KSoft.Phoenix.Phx
 		{
 			RootName = "Abilities",
 			ElementName = "Ability",
-			DataName = DatabaseNamedObject.kXmlAttrNameN,
+			DataName = kXmlAttrNameN,
 		};
 		public static readonly Engine.XmlFileInfo kXmlFileInfo = new Engine.XmlFileInfo
 		{
@@ -29,8 +29,8 @@ namespace KSoft.Phoenix.Phx
 		BAbilityType mType = BAbilityType.Invalid;
 		public BAbilityType Type
 		{
-			get { return mType; }
-			set { mType = value; }
+			get { return this.mType; }
+			set { this.mType = value; }
 		}
 		#endregion
 
@@ -38,8 +38,8 @@ namespace KSoft.Phoenix.Phx
 		float mAmmoCost;
 		public float AmmoCost
 		{
-			get { return mAmmoCost; }
-			set { mAmmoCost = value; }
+			get { return this.mAmmoCost; }
+			set { this.mAmmoCost = value; }
 		}
 		#endregion
 
@@ -50,8 +50,8 @@ namespace KSoft.Phoenix.Phx
 		BSquadMode mSquadMode = BSquadMode.Invalid;
 		public BSquadMode SquadMode
 		{
-			get { return mSquadMode; }
-			set { mSquadMode = value; }
+			get { return this.mSquadMode; }
+			set { this.mSquadMode = value; }
 		}
 		#endregion
 
@@ -59,8 +59,8 @@ namespace KSoft.Phoenix.Phx
 		BRecoverType mRecoverStart = BRecoverType.Move;
 		public BRecoverType RecoverStart
 		{
-			get { return mRecoverStart; }
-			set { mRecoverStart = value; }
+			get { return this.mRecoverStart; }
+			set { this.mRecoverStart = value; }
 		}
 		#endregion
 
@@ -68,8 +68,8 @@ namespace KSoft.Phoenix.Phx
 		BRecoverType mRecoverType = BRecoverType.Move;
 		public BRecoverType RecoverType
 		{
-			get { return mRecoverType; }
-			set { mRecoverType = value; }
+			get { return this.mRecoverType; }
+			set { this.mRecoverType = value; }
 		}
 		#endregion
 
@@ -77,8 +77,8 @@ namespace KSoft.Phoenix.Phx
 		float mRecoverTime;
 		public float RecoverTime
 		{
-			get { return mRecoverTime; }
-			set { mRecoverTime = value; }
+			get { return this.mRecoverTime; }
+			set { this.mRecoverTime = value; }
 		}
 		#endregion
 
@@ -86,8 +86,8 @@ namespace KSoft.Phoenix.Phx
 		float mMovementSpeedModifier;
 		public float MovementSpeedModifier
 		{
-			get { return mMovementSpeedModifier; }
-			set { mMovementSpeedModifier = value; }
+			get { return this.mMovementSpeedModifier; }
+			set { this.mMovementSpeedModifier = value; }
 		}
 		#endregion
 
@@ -95,8 +95,8 @@ namespace KSoft.Phoenix.Phx
 		BMovementModifierType mMovementModifierType = BMovementModifierType.Mode;
 		public BMovementModifierType MovementModifierType
 		{
-			get { return mMovementModifierType; }
-			set { mMovementModifierType = value; }
+			get { return this.mMovementModifierType; }
+			set { this.mMovementModifierType = value; }
 		}
 		#endregion
 
@@ -104,8 +104,8 @@ namespace KSoft.Phoenix.Phx
 		float mDamageTakenModifier;
 		public float DamageTakenModifier
 		{
-			get { return mDamageTakenModifier; }
-			set { mDamageTakenModifier = value; }
+			get { return this.mDamageTakenModifier; }
+			set { this.mDamageTakenModifier = value; }
 		}
 		#endregion
 
@@ -113,8 +113,8 @@ namespace KSoft.Phoenix.Phx
 		float mDodgeModifier;
 		public float DodgeModifier
 		{
-			get { return mDodgeModifier; }
-			set { mDodgeModifier = value; }
+			get { return this.mDodgeModifier; }
+			set { this.mDodgeModifier = value; }
 		}
 		#endregion
 
@@ -123,8 +123,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string Icon
 		{
-			get { return mIcon; }
-			set { mIcon = value; }
+			get { return this.mIcon; }
+			set { this.mIcon = value; }
 		}
 		#endregion
 
@@ -132,8 +132,8 @@ namespace KSoft.Phoenix.Phx
 		BAbilityTargetType mTargetType = BAbilityTargetType.None;
 		public BAbilityTargetType TargetType
 		{
-			get { return mTargetType; }
-			set { mTargetType = value; }
+			get { return this.mTargetType; }
+			set { this.mTargetType = value; }
 		}
 		#endregion
 
@@ -142,8 +142,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.AttachmentTypeReference]
 		public string RecoverAnimAttachment
 		{
-			get { return mRecoverAnimAttachment; }
-			set { mRecoverAnimAttachment = value; }
+			get { return this.mRecoverAnimAttachment; }
+			set { this.mRecoverAnimAttachment = value; }
 		}
 		#endregion
 
@@ -152,8 +152,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BAnimTypeReference]
 		public string RecoverStartAnim
 		{
-			get { return mRecoverStartAnim; }
-			set { mRecoverStartAnim = value; }
+			get { return this.mRecoverStartAnim; }
+			set { this.mRecoverStartAnim = value; }
 		}
 		#endregion
 
@@ -162,8 +162,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BAnimTypeReference]
 		public string RecoverEndAnim
 		{
-			get { return mRecoverEndAnim; }
-			set { mRecoverEndAnim = value; }
+			get { return this.mRecoverEndAnim; }
+			set { this.mRecoverEndAnim = value; }
 		}
 		#endregion
 
@@ -171,8 +171,8 @@ namespace KSoft.Phoenix.Phx
 		bool mSprinting;
 		public bool Sprinting
 		{
-			get { return mSprinting; }
-			set { mSprinting = value; }
+			get { return this.mSprinting; }
+			set { this.mSprinting = value; }
 		}
 		#endregion
 
@@ -180,8 +180,8 @@ namespace KSoft.Phoenix.Phx
 		bool mDontInterruptAttack;
 		public bool DontInterruptAttack
 		{
-			get { return mDontInterruptAttack; }
-			set { mDontInterruptAttack = value; }
+			get { return this.mDontInterruptAttack; }
+			set { this.mDontInterruptAttack = value; }
 		}
 		#endregion
 
@@ -189,8 +189,8 @@ namespace KSoft.Phoenix.Phx
 		bool mKeepSquadMode;
 		public bool KeepSquadMode
 		{
-			get { return mKeepSquadMode; }
-			set { mKeepSquadMode = value; }
+			get { return this.mKeepSquadMode; }
+			set { this.mKeepSquadMode = value; }
 		}
 		#endregion
 
@@ -198,8 +198,8 @@ namespace KSoft.Phoenix.Phx
 		bool mAttackSquadMode;
 		public bool AttackSquadMode
 		{
-			get { return mAttackSquadMode; }
-			set { mAttackSquadMode = value; }
+			get { return this.mAttackSquadMode; }
+			set { this.mAttackSquadMode = value; }
 		}
 		#endregion
 
@@ -207,8 +207,8 @@ namespace KSoft.Phoenix.Phx
 		float mDuration;
 		public float Duration
 		{
-			get { return mDuration; }
-			set { mDuration = value; }
+			get { return this.mDuration; }
+			set { this.mDuration = value; }
 		}
 		#endregion
 
@@ -218,8 +218,8 @@ namespace KSoft.Phoenix.Phx
 		float mSmartTargetRange = cDefaultSmartTargetRange;
 		public float SmartTargetRange
 		{
-			get { return mSmartTargetRange; }
-			set { mSmartTargetRange = value; }
+			get { return this.mSmartTargetRange; }
+			set { this.mSmartTargetRange = value; }
 		}
 		#endregion
 
@@ -227,8 +227,8 @@ namespace KSoft.Phoenix.Phx
 		bool mCanHeteroCommand = true;
 		public bool CanHeteroCommand
 		{
-			get { return mCanHeteroCommand; }
-			set { mCanHeteroCommand = value; }
+			get { return this.mCanHeteroCommand; }
+			set { this.mCanHeteroCommand = value; }
 		}
 		#endregion
 
@@ -236,19 +236,19 @@ namespace KSoft.Phoenix.Phx
 		bool mNoAbilityReticle;
 		public bool NoAbilityReticle
 		{
-			get { return mNoAbilityReticle; }
-			set { mNoAbilityReticle = value; }
+			get { return this.mNoAbilityReticle; }
+			set { this.mNoAbilityReticle = value; }
 		}
 		#endregion
 
 		public BAbility()
 		{
-			var textData = base.CreateDatabaseObjectUserInterfaceTextData();
+			var textData = this.CreateDatabaseObjectUserInterfaceTextData();
 			textData.HasDisplayNameID = true;
 			textData.HasDisplayName2ID = true;
 			textData.HasRolloverTextID = true;
 
-			ObjectIDs = new List<BProtoObjectID>();
+			this.ObjectIDs = new List<BProtoObjectID>();
 		}
 
 		#region ITagElementStreamable Members
@@ -257,30 +257,30 @@ namespace KSoft.Phoenix.Phx
 			base.Serialize(s);
 			var xs = s.GetSerializerInterface();
 
-			s.StreamElementEnumOpt("Type", ref mType, e => e != BAbilityType.Invalid);
-			s.StreamElementOpt("AmmoCost", ref mAmmoCost, Predicates.IsNotZero);
-			s.StreamElements("Object", ObjectIDs, xs, XML.BDatabaseXmlSerializerBase.StreamObjectID);
-			s.StreamElementEnumOpt("SquadMode", ref mSquadMode, e => e != BSquadMode.Invalid);
-			s.StreamElementEnumOpt("RecoverStart", ref mRecoverStart, e => e != BRecoverType.Move);
-			s.StreamElementEnumOpt("RecoverType", ref mRecoverType, e => e != BRecoverType.Move);
-			s.StreamElementOpt("RecoverTime", ref mRecoverTime, Predicates.IsNotZero);
-			s.StreamElementOpt("MovementSpeedModifier", ref mMovementSpeedModifier, Predicates.IsNotZero);
-			s.StreamElementEnumOpt("MovementModifierType", ref mMovementModifierType, e => e != BMovementModifierType.Mode);
-			s.StreamElementOpt("DamageTakenModifier", ref mDamageTakenModifier, Predicates.IsNotZero);
-			s.StreamElementOpt("DodgeModifier", ref mDodgeModifier, Predicates.IsNotZero);
-			s.StreamStringOpt("Icon", ref mIcon, toLower: false, type: XML.XmlUtil.kSourceElement);
-			s.StreamElementEnumOpt("TargetType", ref mTargetType, e => e != BAbilityTargetType.None);
-			s.StreamStringOpt("RecoverAnimAttachment", ref mRecoverAnimAttachment, toLower: false, type: XML.XmlUtil.kSourceElement);
-			s.StreamStringOpt("RecoverStartAnim", ref mRecoverStartAnim, toLower: false, type: XML.XmlUtil.kSourceElement);
-			s.StreamStringOpt("RecoverEndAnim", ref mRecoverEndAnim, toLower: false, type: XML.XmlUtil.kSourceElement);
-			s.StreamElementOpt("Sprinting", ref mSprinting, Predicates.IsTrue);
-			s.StreamElementOpt("DontInterruptAttack", ref mDontInterruptAttack, Predicates.IsTrue);
-			s.StreamElementOpt("KeepSquadMode", ref mKeepSquadMode, Predicates.IsTrue);
-			s.StreamElementOpt("AttackSquadMode", ref mAttackSquadMode, Predicates.IsTrue);
-			s.StreamElementOpt("Duration", ref mDuration, Predicates.IsNotZero);
-			s.StreamElementOpt("SmartTargetRange", ref mSmartTargetRange, v => v != cDefaultSmartTargetRange);
-			s.StreamElementOpt("CanHeteroCommand", ref mCanHeteroCommand, Predicates.IsFalse);
-			s.StreamElementOpt("NoAbilityReticle", ref mNoAbilityReticle, Predicates.IsTrue);
+			s.StreamElementEnumOpt("Type", ref this.mType, e => e != BAbilityType.Invalid);
+			s.StreamElementOpt("AmmoCost", ref this.mAmmoCost, Predicates.IsNotZero);
+			s.StreamElements("Object", this.ObjectIDs, xs, XML.BXmlSerializerInterface.StreamObjectID);
+			s.StreamElementEnumOpt("SquadMode", ref this.mSquadMode, e => e != BSquadMode.Invalid);
+			s.StreamElementEnumOpt("RecoverStart", ref this.mRecoverStart, e => e != BRecoverType.Move);
+			s.StreamElementEnumOpt("RecoverType", ref this.mRecoverType, e => e != BRecoverType.Move);
+			s.StreamElementOpt("RecoverTime", ref this.mRecoverTime, Predicates.IsNotZero);
+			s.StreamElementOpt("MovementSpeedModifier", ref this.mMovementSpeedModifier, Predicates.IsNotZero);
+			s.StreamElementEnumOpt("MovementModifierType", ref this.mMovementModifierType, e => e != BMovementModifierType.Mode);
+			s.StreamElementOpt("DamageTakenModifier", ref this.mDamageTakenModifier, Predicates.IsNotZero);
+			s.StreamElementOpt("DodgeModifier", ref this.mDodgeModifier, Predicates.IsNotZero);
+			s.StreamStringOpt("Icon", ref this.mIcon, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamElementEnumOpt("TargetType", ref this.mTargetType, e => e != BAbilityTargetType.None);
+			s.StreamStringOpt("RecoverAnimAttachment", ref this.mRecoverAnimAttachment, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamStringOpt("RecoverStartAnim", ref this.mRecoverStartAnim, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamStringOpt("RecoverEndAnim", ref this.mRecoverEndAnim, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamElementOpt("Sprinting", ref this.mSprinting, Predicates.IsTrue);
+			s.StreamElementOpt("DontInterruptAttack", ref this.mDontInterruptAttack, Predicates.IsTrue);
+			s.StreamElementOpt("KeepSquadMode", ref this.mKeepSquadMode, Predicates.IsTrue);
+			s.StreamElementOpt("AttackSquadMode", ref this.mAttackSquadMode, Predicates.IsTrue);
+			s.StreamElementOpt("Duration", ref this.mDuration, Predicates.IsNotZero);
+			s.StreamElementOpt("SmartTargetRange", ref this.mSmartTargetRange, v => v != cDefaultSmartTargetRange);
+			s.StreamElementOpt("CanHeteroCommand", ref this.mCanHeteroCommand, Predicates.IsFalse);
+			s.StreamElementOpt("NoAbilityReticle", ref this.mNoAbilityReticle, Predicates.IsTrue);
 		}
 		#endregion
 	};

@@ -38,7 +38,7 @@ public static partial class Ctrtool {
       var logger = Logging.Create<CiaExtractor>();
       logger.LogInformation($"Dumping ROM {romFile}...");
 
-      Ctrtool.RunInCtrDirectoryAndCleanUp_(() => {
+      RunInCtrDirectoryAndCleanUp_(() => {
         ProcessUtil
             .ExecuteBlockingSilently(
                 ThreeDsToolsConstants

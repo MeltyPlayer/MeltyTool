@@ -6,7 +6,7 @@ namespace KSoft.Phoenix.XML
 	{
 		protected virtual void FixWeaponTypes() {}
 
-		protected static XmlNode XPathSelectNodeByName(KSoft.IO.XmlElementStream s, XML.BListXmlParams op,
+		protected static XmlNode XPathSelectNodeByName(IO.XmlElementStream s, BListXmlParams op,
 			string dataName, string attributeName = Phx.DatabaseNamedObject.kXmlAttrName)
 		{
 			string xpath = string.Format(
@@ -15,7 +15,7 @@ namespace KSoft.Phoenix.XML
 			return s.Document.SelectSingleNode(xpath);
 		}
 
-		protected static XmlElement XPathSelectElementByName(KSoft.IO.XmlElementStream s, string rootName
+		protected static XmlElement XPathSelectElementByName(IO.XmlElementStream s, string rootName
 			, string dataName)
 		{
 			string xpath = string.Format("/{0}/{1}",
@@ -24,21 +24,21 @@ namespace KSoft.Phoenix.XML
 			return element as XmlElement;
 		}
 
-		protected virtual void FixGameDataXml(KSoft.IO.XmlElementStream s)
+		protected virtual void FixGameDataXml(IO.XmlElementStream s)
 		{ }
 		protected virtual void FixGameData()
 		{ }
 
-		protected virtual void FixObjectsXml(KSoft.IO.XmlElementStream s)
+		protected virtual void FixObjectsXml(IO.XmlElementStream s)
 		{ }
 
-		protected virtual void FixSquadsXml(KSoft.IO.XmlElementStream s)
+		protected virtual void FixSquadsXml(IO.XmlElementStream s)
 		{ }
 
-		protected virtual void FixTechsXml(KSoft.IO.XmlElementStream s)
+		protected virtual void FixTechsXml(IO.XmlElementStream s)
 		{ }
 
-		protected virtual void FixPowersXml(KSoft.IO.XmlElementStream s)
+		protected virtual void FixPowersXml(IO.XmlElementStream s)
 		{ }
 
 		protected static void FixTacticsTraceFixEvent(IO.XmlElementStream s, string tacticName, string xpath)
@@ -47,7 +47,7 @@ namespace KSoft.Phoenix.XML
 				"{0}: Fixing Tactic with XPath={1}", s.StreamName, xpath);
 		}
 
-		protected virtual void FixTacticsXml(KSoft.IO.XmlElementStream s, string name)
+		protected virtual void FixTacticsXml(IO.XmlElementStream s, string name)
 		{ }
 
 		protected static void FixXmlTraceFixEvent(IO.XmlElementStream s, XmlNode node, string message, params object[] args)

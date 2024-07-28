@@ -28,8 +28,8 @@ namespace KSoft.Phoenix.Phx
 		BRelationType mRelation = BRelationType.Enemy;
 		public BRelationType Relation
 		{
-			get { return mRelation; }
-			set { mRelation = value; }
+			get { return this.mRelation; }
+			set { this.mRelation = value; }
 		}
 		#endregion
 
@@ -37,8 +37,8 @@ namespace KSoft.Phoenix.Phx
 		BSquadMode mSquadMode = BSquadMode.Invalid;
 		public BSquadMode SquadMode
 		{
-			get { return mSquadMode; }
-			set { mSquadMode = value; }
+			get { return this.mSquadMode; }
+			set { this.mSquadMode = value; }
 		}
 
 		public bool AutoTargetSquadMode { get; private set; }
@@ -55,8 +55,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoActionReference]
 		public int ActionID
 		{
-			get { return mActionID; }
-			set { mActionID = value; }
+			get { return this.mActionID; }
+			set { this.mActionID = value; }
 		}
 		#endregion
 
@@ -68,8 +68,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BAbilityReference]
 		public int AbilityID
 		{
-			get { return mAbilityID; }
-			set { mAbilityID = value; }
+			get { return this.mAbilityID; }
+			set { this.mAbilityID = value; }
 		}
 
 		public bool IsOptionalAbility { get; private set; }
@@ -83,21 +83,21 @@ namespace KSoft.Phoenix.Phx
 			var xs = s.GetSerializerInterface();
 			var td = KSoft.Debug.TypeCheck.CastReference<BTacticData>(s.UserData);
 
-			s.StreamElementEnumOpt("Relation", ref mRelation, e => e != BRelationType.Enemy);
-			if (!s.StreamElementEnumOpt("SquadMode", ref mSquadMode, e => e != BSquadMode.Invalid))
-				if (s.StreamElementEnumOpt("AutoTargetSquadMode", ref mSquadMode, e => e != BSquadMode.Invalid))
-					AutoTargetSquadMode = true;
+			s.StreamElementEnumOpt("Relation", ref this.mRelation, e => e != BRelationType.Enemy);
+			if (!s.StreamElementEnumOpt("SquadMode", ref this.mSquadMode, e => e != BSquadMode.Invalid))
+				if (s.StreamElementEnumOpt("AutoTargetSquadMode", ref this.mSquadMode, e => e != BSquadMode.Invalid))
+					this.AutoTargetSquadMode = true;
 
-			s.StreamElements("DamageType", DamageTypes, xs, XML.BDatabaseXmlSerializerBase.StreamDamageType);
-			s.StreamElements("TargetType", TargetTypes, xs, XML.BDatabaseXmlSerializerBase.StreamUnitID);
+			s.StreamElements("DamageType", this.DamageTypes, xs, XML.BXmlSerializerInterface.StreamDamageType);
+			s.StreamElements("TargetType", this.TargetTypes, xs, XML.BXmlSerializerInterface.StreamUnitID);
 
-			td.StreamID(s, "Action", ref mActionID, TacticDataObjectKind.Action);
+			td.StreamID(s, "Action", ref this.mActionID, TacticDataObjectKind.Action);
 
-			XML.XmlUtil.Serialize(s, Flags, XML.BBitSetXmlParams.kFlagsAreElementNamesThatMeanTrue);
-			XML.XmlUtil.Serialize(s, TargetStates, kTargetStatesXmlParams);
+			XML.XmlUtil.Serialize(s, this.Flags, XML.BBitSetXmlParams.kFlagsAreElementNamesThatMeanTrue);
+			XML.XmlUtil.Serialize(s, this.TargetStates, kTargetStatesXmlParams);
 
-			if (!xs.StreamDBID(s, "Ability", ref mAbilityID, DatabaseObjectKind.Ability))
-				IsOptionalAbility = xs.StreamDBID(s, "OptionalAbility", ref mAbilityID, DatabaseObjectKind.Ability);
+			if (!xs.StreamDBID(s, "Ability", ref this.mAbilityID, DatabaseObjectKind.Ability))
+				this.IsOptionalAbility = xs.StreamDBID(s, "OptionalAbility", ref this.mAbilityID, DatabaseObjectKind.Ability);
 		}
 		#endregion
 	};

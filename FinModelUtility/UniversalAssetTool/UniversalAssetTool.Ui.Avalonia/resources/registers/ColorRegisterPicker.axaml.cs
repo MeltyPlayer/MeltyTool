@@ -53,6 +53,6 @@ public class ColorRegisterPickerViewModel : ViewModelBase {
 
 public partial class ColorRegisterPicker : UserControl {
   public ColorRegisterPicker() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

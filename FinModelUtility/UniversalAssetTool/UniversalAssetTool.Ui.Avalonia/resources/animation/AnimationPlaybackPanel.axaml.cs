@@ -149,7 +149,7 @@ namespace uni.ui.avalonia.resources.animation {
 
   public partial class AnimationPlaybackPanel : UserControl {
     public AnimationPlaybackPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     private AnimationPlaybackPanelViewModel ViewModel

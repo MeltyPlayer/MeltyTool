@@ -15,7 +15,7 @@ namespace KSoft.Text
 		/// <summary>Calculate the true character byte count of a raw <see cref="StringStorageType.CString"/> string</summary>
 		/// <param name="byteCount">Raw string's byte count</param>
 		/// <returns>Byte count of the actual string data to be transformed into characters</returns>
-		int CalcCharByteCountCString(int byteCount)				{ return byteCount - mNullCharacterSize; }
+		int CalcCharByteCountCString(int byteCount)				{ return byteCount - this.mNullCharacterSize; }
 		#region Pascal
 		/// <summary>Calculate the estimated character byte count of a raw <see cref="StringStorageLengthPrefix.Int7"/> string</summary>
 		/// <param name="byteCount">Raw string's byte count</param>
@@ -24,7 +24,7 @@ namespace KSoft.Text
 		{
 			// HACK: It is possible the underlying encoding doesn't actually have a
 			// fixed character size for one, some, or all of its characters
-			int char_count = byteCount / mNullCharacterSize;
+			int char_count = byteCount / this.mNullCharacterSize;
 
 				 if ((char_count - 1) <= Bitwise.Encoded7BitInt.kMaxValue1Bytes)	return byteCount - 1;
 			else if ((char_count - 2) <= Bitwise.Encoded7BitInt.kMaxValue2Bytes)	return byteCount - 2;
@@ -38,14 +38,14 @@ namespace KSoft.Text
 		/// <returns>Estimated byte count of the actual string data to be transformed into characters</returns>
 		int CalcCharByteCountPascal(int byteCount)
 		{
-			switch (mStorage.LengthPrefix)
+			switch (this.mStorage.LengthPrefix)
 			{
-				case StringStorageLengthPrefix.Int7: return CalcCharByteCountPascalInt7(byteCount);
-				case StringStorageLengthPrefix.Int8: return byteCount - sizeof(byte);
-				case StringStorageLengthPrefix.Int16:return byteCount - sizeof(short);
-				case StringStorageLengthPrefix.Int32:return byteCount - sizeof(int);
+				case StringStorageLengthPrefix.Int7:  return this.CalcCharByteCountPascalInt7(byteCount);
+				case StringStorageLengthPrefix.Int8:  return byteCount - sizeof(byte);
+				case StringStorageLengthPrefix.Int16: return byteCount - sizeof(short);
+				case StringStorageLengthPrefix.Int32: return byteCount - sizeof(int);
 				default:
-					throw new Debug.UnreachableException(mStorage.LengthPrefix.ToString());
+					throw new Debug.UnreachableException(this.mStorage.LengthPrefix.ToString());
 			}
 		}
 
@@ -56,14 +56,14 @@ namespace KSoft.Text
 	/// <remarks>For <see cref="StringStorageType.Pascal"/> cases, the value is a best-guess estimate</remarks>
 	int CalculateCharByteCount(int byteCount)
 		{
-			switch (mStorage.Type)
+			switch (this.mStorage.Type)
 			{
-				case StringStorageType.CString:		byteCount = CalcCharByteCountCString(byteCount); break;
-				case StringStorageType.Pascal:		byteCount = CalcCharByteCountPascal(byteCount); break;
+				case StringStorageType.CString: byteCount = this.CalcCharByteCountCString(byteCount); break;
+				case StringStorageType.Pascal:  byteCount = this.CalcCharByteCountPascal(byteCount); break;
 				// CharArray doesn't do anything anyway
 				case StringStorageType.CharArray:	/*byteCount = CalcCharByteCountCharArray(byteCount);*/ break;
 				default:
-					throw new Debug.UnreachableException(mStorage.Type.ToString());
+					throw new Debug.UnreachableException(this.mStorage.Type.ToString());
 			}
 
 			return byteCount;
@@ -93,14 +93,14 @@ namespace KSoft.Text
 		{
 			int result = 0;
 
-			switch (mStorage.LengthPrefix)
+			switch (this.mStorage.LengthPrefix)
 			{
 				case StringStorageLengthPrefix.Int7: result = CalcCharByteCountPascalInt7(buffer, ref byteIndex, byteCount); break;
 				case StringStorageLengthPrefix.Int8: result = buffer[byteIndex]; byteIndex += sizeof(byte); break;
 				case StringStorageLengthPrefix.Int16:result = BitConverter.ToInt16(buffer, byteIndex); byteIndex += sizeof(short); break;
 				case StringStorageLengthPrefix.Int32:result = BitConverter.ToInt32(buffer, byteIndex); byteIndex += sizeof(int); break;
 				default:
-					throw new Debug.UnreachableException(mStorage.LengthPrefix.ToString());
+					throw new Debug.UnreachableException(this.mStorage.LengthPrefix.ToString());
 			}
 
 			return result;
@@ -116,10 +116,10 @@ namespace KSoft.Text
 		/// <returns>Byte count of the actual string data to be transformed into characters</returns>
 		int CalculateCharByteCount(byte[] buffer, ref int byteIndex, int byteCount)
 		{
-			switch (mStorage.Type)
+			switch (this.mStorage.Type)
 			{
-				case StringStorageType.CString:		byteCount = CalcCharByteCountCString(byteCount); break;
-				case StringStorageType.Pascal:		byteCount = CalcCharByteCountPascal(buffer, ref byteIndex, byteCount); break;
+				case StringStorageType.CString: byteCount = this.CalcCharByteCountCString(byteCount); break;
+				case StringStorageType.Pascal:  byteCount = this.CalcCharByteCountPascal(buffer, ref byteIndex, byteCount); break;
 				// CharArray doesn't do anything anyway
 				case StringStorageType.CharArray:	/*byteCount = CalcCharByteCountCharArray(byteCount);*/ break;
 				default: throw new Debug.UnreachableException();
@@ -134,7 +134,9 @@ namespace KSoft.Text
 		{
 			StringStorageEncoding mEncoding;
 			System.Text.Decoder mDec;
-			public Decoder(StringStorageEncoding enc) { mEncoding = enc; mDec = enc.mBaseEncoding.GetDecoder(); }
+			public Decoder(StringStorageEncoding enc) {
+				this.mEncoding = enc;
+				this.mDec = enc.mBaseEncoding.GetDecoder(); }
 
 			/// <summary>Calculates the number of characters produced by decoding a sequence of bytes from the specified byte array</summary>
 			/// <param name="bytes">The byte array containing the sequence of bytes to decode.</param>
@@ -145,9 +147,9 @@ namespace KSoft.Text
 			/// <seealso cref="System.Text.Decoder.GetCharCount(Byte[], Int32, Int32)"/>
 			public override int GetCharCount(byte[] bytes, int index, int count)
 			{
-				count = mEncoding.CalculateCharByteCount(bytes, ref index, count); // Remove our String Storage calculations
+				count = this.mEncoding.CalculateCharByteCount(bytes, ref index, count); // Remove our String Storage calculations
 
-				int char_count = mDec.GetCharCount(bytes, index, count);
+				int char_count = this.mDec.GetCharCount(bytes, index, count);
 
 				return char_count;
 			}
@@ -163,9 +165,9 @@ namespace KSoft.Text
 			/// <seealso cref="System.Text.Decoder.GetCharCount(Byte[], Int32, Int32, Boolean)"/>
 			public override int GetCharCount(byte[] bytes, int index, int count, bool flush)
 			{
-				count = mEncoding.CalculateCharByteCount(bytes, ref index, count); // Remove our String Storage calculations
+				count = this.mEncoding.CalculateCharByteCount(bytes, ref index, count); // Remove our String Storage calculations
 
-				int char_count = mDec.GetCharCount(bytes, index, count, mEncoding.DontAlwaysFlush ? flush : true);
+				int char_count = this.mDec.GetCharCount(bytes, index, count, this.mEncoding.DontAlwaysFlush ? flush : true);
 
 				return char_count;
 			}
@@ -182,9 +184,9 @@ namespace KSoft.Text
 			/// <seealso cref="System.Text.Decoder.GetChars(Byte[], Int32, Int32, Char[], Int32)"/>
 			public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex)
 			{
-				byteCount = mEncoding.CalculateCharByteCount(bytes, ref byteIndex, byteCount); // Remove our String Storage calculations
+				byteCount = this.mEncoding.CalculateCharByteCount(bytes, ref byteIndex, byteCount); // Remove our String Storage calculations
 
-				int chars_written = mDec.GetChars(bytes, byteIndex, byteCount, chars, charIndex);
+				int chars_written = this.mDec.GetChars(bytes, byteIndex, byteCount, chars, charIndex);
 
 				return chars_written;
 			}
@@ -202,15 +204,16 @@ namespace KSoft.Text
 			/// <seealso cref="System.Text.Decoder.GetChars(Byte[], Int32, Int32, Char[], Int32, Boolean)"/>
 			public override int GetChars(byte[] bytes, int byteIndex, int byteCount, char[] chars, int charIndex, bool flush)
 			{
-				byteCount = mEncoding.CalculateCharByteCount(bytes, ref byteIndex, byteCount); // Remove our String Storage calculations
+				byteCount = this.mEncoding.CalculateCharByteCount(bytes, ref byteIndex, byteCount); // Remove our String Storage calculations
 
-				int chars_written = mDec.GetChars(bytes, byteIndex, byteCount, chars, charIndex, mEncoding.DontAlwaysFlush ? flush : true);
+				int chars_written = this.mDec.GetChars(bytes, byteIndex, byteCount, chars, charIndex, this.mEncoding.DontAlwaysFlush ? flush : true);
 
 				return chars_written;
 			}
 
 			/// <summary>Sets the decoder back to its initial state</summary>
-			public override void Reset()	{ mDec.Reset(); }
+			public override void Reset()	{
+				this.mDec.Reset(); }
 		};
 
 		#region ReadString
@@ -227,9 +230,9 @@ namespace KSoft.Text
 		{
 			bool result = false;
 
-			if (mNullCharacterSize == sizeof(uint))
+			if (this.mNullCharacterSize == sizeof(uint))
 			{
-				if (byteOrder != mStorage.ByteOrder)
+				if (byteOrder != this.mStorage.ByteOrder)
 					Bitwise.ByteSwap.SwapInt32(characters, offset);
 
 				result =  characters[offset+3] == 0;
@@ -237,16 +240,16 @@ namespace KSoft.Text
 				result &= characters[offset+1] == 0;
 				result &= characters[offset  ] == 0;
 			}
-			else if (mNullCharacterSize == sizeof(ushort))
+			else if (this.mNullCharacterSize == sizeof(ushort))
 			{
-				if (byteOrder != mStorage.ByteOrder)
+				if (byteOrder != this.mStorage.ByteOrder)
 					Bitwise.ByteSwap.SwapInt16(characters, offset);
 
 				result =  characters[offset+1] == 0;
 				result &= characters[offset  ] == 0;
 			}
 			else
-				throw new Debug.UnreachableException(mNullCharacterSize.ToString(KSoft.Util.InvariantCultureInfo));
+				throw new Debug.UnreachableException(this.mNullCharacterSize.ToString(KSoft.Util.InvariantCultureInfo));
 
 			return result;
 		}
@@ -258,12 +261,12 @@ namespace KSoft.Text
 		void ReadCStringSingleByte(System.IO.BinaryReader s, System.IO.MemoryStream ms)
 		{
 			byte character;
-			if (!mStorage.IsFixedLength)
+			if (!this.mStorage.IsFixedLength)
 				while((character = s.ReadByte()) != 0)
 					ms.WriteByte(character);
 			else
 			{
-				byte[] characters = s.ReadBytes(mFixedLengthByteLength);
+				byte[] characters = s.ReadBytes(this.mFixedLengthByteLength);
 
 				int x;
 				for (x = 0; x < characters.Length; x++)
@@ -286,12 +289,12 @@ namespace KSoft.Text
 				while ((character = s.ReadByte()) != 0 && ++x <= maxLength)
 					ms.WriteByte(character);
 			}
-			else if (!mStorage.IsFixedLength)
+			else if (!this.mStorage.IsFixedLength)
 				while((character = s.ReadByte()) != 0)
 					ms.WriteByte(character);
 			else
 			{
-				byte[] characters = s.ReadBytes(mFixedLengthByteLength);
+				byte[] characters = s.ReadBytes(this.mFixedLengthByteLength);
 
 				int x;
 				for (x = 0; x < characters.Length; x++)
@@ -307,19 +310,19 @@ namespace KSoft.Text
 		void ReadCStringMultiByte(IO.EndianReader s, System.IO.MemoryStream ms)
 		{
 			byte[] characters;
-			if (!mStorage.IsFixedLength)
+			if (!this.mStorage.IsFixedLength)
 			{
-				characters = new byte[mNullCharacterSize];
-				while (!ReadStringMultiByteIsNull(s.ByteOrder, s.Read(characters), 0))
+				characters = new byte[this.mNullCharacterSize];
+				while (!this.ReadStringMultiByteIsNull(s.ByteOrder, s.Read(characters), 0))
 					ms.Write(characters, 0, characters.Length);
 			}
 			else
 			{
-				characters = s.ReadBytes(mFixedLengthByteLength);
+				characters = s.ReadBytes(this.mFixedLengthByteLength);
 
 				int x;
-				for (x = 0; x < characters.Length - mNullCharacterSize; x += mNullCharacterSize)
-					if (ReadStringMultiByteIsNull(s.ByteOrder, characters, x))
+				for (x = 0; x < characters.Length - this.mNullCharacterSize; x += this.mNullCharacterSize)
+					if (this.ReadStringMultiByteIsNull(s.ByteOrder, characters, x))
 						break;
 
 				ms.Write(characters, 0, x);
@@ -335,23 +338,23 @@ namespace KSoft.Text
 			if (maxLength > 0)
 			{
 				int x = 0;
-				characters = new byte[mNullCharacterSize];
-				while (!ReadStringMultiByteIsNull(mStorage.ByteOrder, s.Read(characters), 0) && ++x <= maxLength)
+				characters = new byte[this.mNullCharacterSize];
+				while (!this.ReadStringMultiByteIsNull(this.mStorage.ByteOrder, s.Read(characters), 0) && ++x <= maxLength)
 					ms.Write(characters, 0, characters.Length);
 			}
-			else if (!mStorage.IsFixedLength)
+			else if (!this.mStorage.IsFixedLength)
 			{
-				characters = new byte[mNullCharacterSize];
-				while (!ReadStringMultiByteIsNull(mStorage.ByteOrder, s.Read(characters), 0))
+				characters = new byte[this.mNullCharacterSize];
+				while (!this.ReadStringMultiByteIsNull(this.mStorage.ByteOrder, s.Read(characters), 0))
 					ms.Write(characters, 0, characters.Length);
 			}
 			else
 			{
-				characters = s.ReadBytes(mFixedLengthByteLength);
+				characters = s.ReadBytes(this.mFixedLengthByteLength);
 
 				int x;
-				for (x = 0; x < characters.Length - mNullCharacterSize; x += mNullCharacterSize)
-					if (ReadStringMultiByteIsNull(mStorage.ByteOrder, characters, x))
+				for (x = 0; x < characters.Length - this.mNullCharacterSize; x += this.mNullCharacterSize)
+					if (this.ReadStringMultiByteIsNull(this.mStorage.ByteOrder, characters, x))
 						break;
 
 				ms.Write(characters, 0, x);
@@ -371,21 +374,23 @@ namespace KSoft.Text
 
 			// the user was nice and saved us some CPU trying to feel around for the null
 			// because we don't have a fixed length to speed things up
-			if (!mStorage.IsFixedLength && length > 0)
+			if (!this.mStorage.IsFixedLength && length > 0)
 			{
-				bytes = s.ReadBytes(GetMaxCleanByteCount(length));
-				s.Seek(mNullCharacterSize, System.IO.SeekOrigin.Current);
+				bytes = s.ReadBytes(this.GetMaxCleanByteCount(length));
+				s.Seek(this.mNullCharacterSize, System.IO.SeekOrigin.Current);
 			}
 			// FUCK: figure out the length ourselves. Or maybe we're a fixed length CString...
 			// in which case we'll ignore anything the user tried to tell us about the length
 			else
 			{
-				using (var ms = new System.IO.MemoryStream(!mStorage.IsFixedLength ? 512 : mStorage.FixedLength))
+				using (var ms = new System.IO.MemoryStream(!this.mStorage.IsFixedLength ? 512 : this.mStorage.FixedLength))
 				{
 					// The N-byte methods take care of reading past the
 					// null character, no need to do it in this case.
-					if (mNullCharacterSize == 1)	ReadCStringSingleByte(s, ms);
-					else							ReadCStringMultiByte(s, ms);
+					if (this.mNullCharacterSize == 1)
+						this.ReadCStringSingleByte(s, ms);
+					else
+						this.ReadCStringMultiByte(s, ms);
 
 					// We use ToArray instead of GetArray so all of [ms] can theoretically be disposed of
 					bytes = ms.ToArray();
@@ -408,21 +413,23 @@ namespace KSoft.Text
 
 			// the user was nice and saved us some CPU trying to feel around for the null
 			// because we don't have a fixed length to speed things up
-			if (!mStorage.IsFixedLength && length > 0)
+			if (!this.mStorage.IsFixedLength && length > 0)
 			{
-				bytes = s.ReadBytes(GetMaxCleanByteCount(length));
-				s.ReadUInt32(mNullCharacterSize * Bits.kByteBitCount);
+				bytes = s.ReadBytes(this.GetMaxCleanByteCount(length));
+				s.ReadUInt32(this.mNullCharacterSize * Bits.kByteBitCount);
 			}
 			// FUCK: figure out the length ourselves. Or maybe we're a fixed length CString...
 			// in which case we'll ignore anything the user tried to tell us about the length
 			else
 			{
-				using (var ms = new System.IO.MemoryStream(!mStorage.IsFixedLength ? 512 : mStorage.FixedLength))
+				using (var ms = new System.IO.MemoryStream(!this.mStorage.IsFixedLength ? 512 : this.mStorage.FixedLength))
 				{
 					// The N-byte methods take care of reading past the
 					// null character, no need to do it in this case.
-					if (mNullCharacterSize == 1)	ReadCStringSingleByte(s, ms, maxLength);
-					else							ReadCStringMultiByte(s, ms, maxLength);
+					if (this.mNullCharacterSize == 1)
+						this.ReadCStringSingleByte(s, ms, maxLength);
+					else
+						this.ReadCStringMultiByte(s, ms, maxLength);
 
 					// We use ToArray instead of GetArray so all of [ms] can theoretically be disposed of
 					bytes = ms.ToArray();
@@ -439,8 +446,8 @@ namespace KSoft.Text
 
 			int length;
 			// One would think that the length prefix would be of the same endian as the stream, but just in case...
-			using(s.BeginEndianSwitch(mStorage.ByteOrder))
-				switch (mStorage.LengthPrefix)
+			using(s.BeginEndianSwitch(this.mStorage.ByteOrder))
+				switch (this.mStorage.LengthPrefix)
 				{
 					case StringStorageLengthPrefix.Int7: length = s.Read7BitEncodedInt(); break;
 					case StringStorageLengthPrefix.Int8: length = s.ReadByte(); break;
@@ -449,7 +456,7 @@ namespace KSoft.Text
 					default: throw new Debug.UnreachableException();
 				}
 
-			return s.ReadBytes(GetMaxCleanByteCount(length));
+			return s.ReadBytes(this.GetMaxCleanByteCount(length));
 		}
 		byte[] ReadStrPascal(IO.BitStream s, out int actualCount, int prefixBitLength)
 		{
@@ -457,7 +464,7 @@ namespace KSoft.Text
 
 			if (prefixBitLength.IsNone())
 			{
-				switch (mStorage.LengthPrefix)
+				switch (this.mStorage.LengthPrefix)
 				{
 					case StringStorageLengthPrefix.Int8: prefixBitLength = Bits.kByteBitCount; break;
 					case StringStorageLengthPrefix.Int16:prefixBitLength = Bits.kInt16BitCount; break;
@@ -466,7 +473,7 @@ namespace KSoft.Text
 			}
 
 			int length;
-			switch (mStorage.LengthPrefix)
+			switch (this.mStorage.LengthPrefix)
 			{
 				case StringStorageLengthPrefix.Int7: throw new NotSupportedException();
 				case StringStorageLengthPrefix.Int8: length = s.ReadByte(prefixBitLength); break;
@@ -475,7 +482,7 @@ namespace KSoft.Text
 				default: throw new Debug.UnreachableException();
 			}
 
-			return s.ReadBytes(GetMaxCleanByteCount(length));
+			return s.ReadBytes(this.GetMaxCleanByteCount(length));
 		}
 		#endregion
 		#region CharArray
@@ -494,11 +501,11 @@ namespace KSoft.Text
 		}
 		int ReadStrCharArrayGetRealCountMultiByte(Shell.EndianFormat byteOrder, byte[] bytes)
 		{
-			if (ReadStringMultiByteIsNull(byteOrder, bytes, bytes.Length - mNullCharacterSize)) // padded string case
+			if (this.ReadStringMultiByteIsNull(byteOrder, bytes, bytes.Length - this.mNullCharacterSize)) // padded string case
 			{
 				// find the first last index which isn't null
-				for (int x = bytes.Length - (mNullCharacterSize * 2); x > mNullCharacterSize; x -= mNullCharacterSize)
-					if (!ReadStringMultiByteIsNull(byteOrder, bytes, x)) return x+mNullCharacterSize;
+				for (int x = bytes.Length - (this.mNullCharacterSize * 2); x > this.mNullCharacterSize; x -= this.mNullCharacterSize)
+					if (!this.ReadStringMultiByteIsNull(byteOrder, bytes, x)) return x+ this.mNullCharacterSize;
 
 				return 0; // wtf! no characters, not cool, what a waste
 			}
@@ -507,25 +514,23 @@ namespace KSoft.Text
 		}
 		byte[] ReadStrCharArray(IO.EndianReader s, int length, out int actualCount)
 		{
-			byte[] bytes = s.ReadBytes(mStorage.IsFixedLength
-				? mFixedLengthByteLength
-				: GetMaxCleanByteCount(length));
+			byte[] bytes = s.ReadBytes(this.mStorage.IsFixedLength
+				? this.mFixedLengthByteLength
+				: this.GetMaxCleanByteCount(length));
 
-			actualCount = mNullCharacterSize == sizeof(byte)
+			actualCount = this.mNullCharacterSize == sizeof(byte)
 				? ReadStrCharArrayGetRealCountSingleByte(bytes)
-				: ReadStrCharArrayGetRealCountMultiByte(s.ByteOrder, bytes);
+				: this.ReadStrCharArrayGetRealCountMultiByte(s.ByteOrder, bytes);
 
 			return bytes;
 		}
 		byte[] ReadStrCharArray(IO.BitStream s, int length, out int actualCount)
 		{
-			byte[] bytes = s.ReadBytes(mStorage.IsFixedLength ?
-				mFixedLengthByteLength :
-				GetMaxCleanByteCount(length));
+			byte[] bytes = s.ReadBytes(this.mStorage.IsFixedLength ? this.mFixedLengthByteLength : this.GetMaxCleanByteCount(length));
 
-			actualCount = mNullCharacterSize == sizeof(byte)
+			actualCount = this.mNullCharacterSize == sizeof(byte)
 				? ReadStrCharArrayGetRealCountSingleByte(bytes)
-				: ReadStrCharArrayGetRealCountMultiByte(mStorage.ByteOrder, bytes);
+				: this.ReadStrCharArrayGetRealCountMultiByte(this.mStorage.ByteOrder, bytes);
 
 			return bytes;
 		}
@@ -539,25 +544,25 @@ namespace KSoft.Text
 			Contract.Requires(s != null);
 
 			if (length < 0) // Not <= because FixedLength might just be zero itself, resulting in a redundant expression
-				length = mStorage.FixedLength;
+				length = this.mStorage.FixedLength;
 
 			byte[] bytes = null;
 			int actual_count = 0;
-			switch (mStorage.Type)
+			switch (this.mStorage.Type)
 			{
 				// Type streamers should set actual_count to -1 if we're to assume all the bytes are characters.
 				// Otherwise, set actual_count to a byte count for padded string cases (where we don't want to
 				// include null characters in the result string)
 
-				case StringStorageType.CString:		bytes = ReadStrCString(s, length, out actual_count); break;
-				case StringStorageType.Pascal:		bytes = ReadStrPascal(s, out actual_count); break;
-				case StringStorageType.CharArray:	bytes = ReadStrCharArray(s, length, out actual_count); break;
-				default:							throw new Debug.UnreachableException();
+				case StringStorageType.CString:   bytes = this.ReadStrCString(s, length, out actual_count); break;
+				case StringStorageType.Pascal:    bytes = this.ReadStrPascal(s, out actual_count); break;
+				case StringStorageType.CharArray: bytes = this.ReadStrCharArray(s, length, out actual_count); break;
+				default:                          throw new Debug.UnreachableException();
 			}
 
 			return new string(actual_count != -1
-				? mBaseEncoding.GetChars(bytes, 0, actual_count)// for padded string cases
-				: mBaseEncoding.GetChars(bytes));				// for complete string cases
+				? this.mBaseEncoding.GetChars(bytes, 0, actual_count) // for padded string cases
+				: this.mBaseEncoding.GetChars(bytes));                   // for complete string cases
 		}
 		/// <summary>Read a string from an bitstream using <see cref="Storage"/>'s specifications</summary>
 		/// <param name="s">Endian stream to read from</param>
@@ -570,25 +575,25 @@ namespace KSoft.Text
 			Contract.Requires(s != null);
 
 			if (length < 0) // Not <= because FixedLength might just be zero itself, resulting in a redundant expression
-				length = mStorage.FixedLength;
+				length = this.mStorage.FixedLength;
 
 			byte[] bytes = null;
 			int actual_count = 0;
-			switch (mStorage.Type)
+			switch (this.mStorage.Type)
 			{
 				// Type streamers should set actual_count to -1 if we're to assume all the bytes are characters.
 				// Otherwise, set actual_count to a byte count for padded string cases (where we don't want to
 				// include null characters in the result string)
 
-				case StringStorageType.CString:		bytes = ReadStrCString(s, length, out actual_count, maxLength); break;
-				case StringStorageType.Pascal:		bytes = ReadStrPascal(s, out actual_count, prefixBitLength); break;
-				case StringStorageType.CharArray:	bytes = ReadStrCharArray(s, length, out actual_count); break;
-				default:							throw new Debug.UnreachableException();
+				case StringStorageType.CString:   bytes = this.ReadStrCString(s, length, out actual_count, maxLength); break;
+				case StringStorageType.Pascal:    bytes = this.ReadStrPascal(s, out actual_count, prefixBitLength); break;
+				case StringStorageType.CharArray: bytes = this.ReadStrCharArray(s, length, out actual_count); break;
+				default:                          throw new Debug.UnreachableException();
 			}
 
 			return new string(actual_count != -1
-				? mBaseEncoding.GetChars(bytes, 0, actual_count)// for padded string cases
-				: mBaseEncoding.GetChars(bytes));				// for complete string cases
+				? this.mBaseEncoding.GetChars(bytes, 0, actual_count) // for padded string cases
+				: this.mBaseEncoding.GetChars(bytes));                   // for complete string cases
 		}
 		#endregion
 	};

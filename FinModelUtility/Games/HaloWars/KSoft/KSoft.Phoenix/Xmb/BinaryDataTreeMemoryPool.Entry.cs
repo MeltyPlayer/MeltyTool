@@ -40,8 +40,8 @@ namespace KSoft.Phoenix.Xmb
 			public byte PrePadSize;
 
 			#region Equals
-			public bool Equals(uint v)		{ return TypeDesc == BDTypeDesc.UInt32 && Int == v; }
-			public bool Equals(int v)		{ return TypeDesc == BDTypeDesc.Int32  && Int == (uint)v; }
+			public bool Equals(uint v)		{ return this.TypeDesc == BDTypeDesc.UInt32 && this.Int == v; }
+			public bool Equals(int v)		{ return this.TypeDesc == BDTypeDesc.Int32  && this.Int == (uint)v; }
 #if false
 			public bool Equals(float v)		{ return Type == BinaryDataTreeVariantType.Single && Single == v; }
 			public bool Equals(double v)	{ return Type == BinaryDataTreeVariantType.Double && Double == v; }
@@ -88,13 +88,13 @@ namespace KSoft.Phoenix.Xmb
 			}
 			#endregion
 
-			public BinaryDataTreeVariantType Type { get { return TypeDesc.Type; } }
-			public bool IsUnicode { get { return TypeDesc.IsUnicode; } }
-			public bool UseDirectEncoding { get { return TypeDesc.SizeOf <= sizeof(uint) && ArrayLength <= 1; } }
+			public BinaryDataTreeVariantType Type { get { return this.TypeDesc.Type; } }
+			public bool IsUnicode { get { return this.TypeDesc.IsUnicode; } }
+			public bool UseDirectEncoding { get { return this.TypeDesc.SizeOf <= sizeof(uint) && this.ArrayLength <= 1; } }
 
 			public uint CalculateSize()
 			{
-				switch (Type)
+				switch (this.Type)
 				{
 				case BinaryDataTreeVariantType.Null:
 					return 0;
@@ -103,38 +103,38 @@ namespace KSoft.Phoenix.Xmb
 				case BinaryDataTreeVariantType.Int:
 				case BinaryDataTreeVariantType.Float:
 				case BinaryDataTreeVariantType.String:
-					int array_length = ArrayLength > 1
-						? ArrayLength
+					int array_length = this.ArrayLength > 1
+						? this.ArrayLength
 						: 1;
-					int size = TypeDesc.SizeOf;
+					int size = this.TypeDesc.SizeOf;
 					return (uint)(size * array_length);
 
-				default: throw new KSoft.Debug.UnreachableException(Type.ToString());
+				default: throw new KSoft.Debug.UnreachableException(this.Type.ToString());
 				}
 			}
 
 			public uint CalculatePadding(uint offset, bool willWriteSizeToo)
 			{
-				PrePadSize = 0;
+				this.PrePadSize = 0;
 
-				int alignment_bit = System.Math.Max(TypeDesc.AlignmentBit, IntegerMath.kInt32AlignmentBit);
+				int alignment_bit = System.Math.Max(this.TypeDesc.AlignmentBit, IntegerMath.kInt32AlignmentBit);
 
-				if (Type != BinaryDataTreeVariantType.String)
-					PrePadSize = (byte)IntegerMath.PaddingRequired(alignment_bit, offset);
+				if (this.Type != BinaryDataTreeVariantType.String)
+					this.PrePadSize = (byte)IntegerMath.PaddingRequired(alignment_bit, offset);
 
 				if (willWriteSizeToo)
-					PrePadSize += sizeof(uint);
+					this.PrePadSize += sizeof(uint);
 
-				return PrePadSize;
+				return this.PrePadSize;
 			}
 
 			public uint GetSuperFastHashCode()
 			{
-				var hash = TypeDesc.GetSuperFastHashCode();
+				var hash = this.TypeDesc.GetSuperFastHashCode();
 
 				var buffer = PhxUtil.GetBufferForSuperFastHash(sizeof(uint));
 
-				Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (uint)ArrayLength);
+				Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (uint) this.ArrayLength);
 				hash = PhxUtil.SuperFastHash(buffer, 0, sizeof(uint), hash);
 
 				// #TODO hash the value's bytes
@@ -145,214 +145,218 @@ namespace KSoft.Phoenix.Xmb
 			#region IEndianStreamable Members
 			public void Read(IO.EndianReader s)
 			{
-				switch (Type)
+				switch (this.Type)
 				{
-				case BinaryDataTreeVariantType.Bool: ReadBool(s); break;
-				case BinaryDataTreeVariantType.Int: ReadInt(s); break;
-				case BinaryDataTreeVariantType.Float: ReadFloat(s); break;
-				case BinaryDataTreeVariantType.String: ReadString(s); break;
+				case BinaryDataTreeVariantType.Bool:
+					this.ReadBool(s); break;
+				case BinaryDataTreeVariantType.Int:
+					this.ReadInt(s); break;
+				case BinaryDataTreeVariantType.Float:
+					this.ReadFloat(s); break;
+				case BinaryDataTreeVariantType.String:
+					this.ReadString(s); break;
 
-				default: throw new KSoft.Debug.UnreachableException(Type.ToString());
+				default: throw new KSoft.Debug.UnreachableException(this.Type.ToString());
 				}
 			}
 			void ReadBool(IO.EndianReader s)
 			{
-				if (ArrayLength == 1)
+				if (this.ArrayLength == 1)
 				{
-					Int = s.ReadBoolean().ToUInt32();
+					this.Int = s.ReadBoolean().ToUInt32();
 				}
 				else
 				{
-					var array = new bool[ArrayLength];
+					var array = new bool[this.ArrayLength];
 					for (int x = 0; x < array.Length; x++)
 						array[x] = s.ReadBoolean();
 
-					OpaqueArrayRef = array;
+					this.OpaqueArrayRef = array;
 				}
 			}
 			void ReadInt(IO.EndianReader s)
 			{
-				switch (TypeDesc.SizeOf)
+				switch (this.TypeDesc.SizeOf)
 				{
 					case sizeof(byte):
 					{
-						if (ArrayLength == 1)
+						if (this.ArrayLength == 1)
 						{
-							Int = TypeDesc.IsUnsigned
+							this.Int = this.TypeDesc.IsUnsigned
 								? (uint)s.ReadByte()
 								: (uint)s.ReadSByte();
 						}
 						else
 						{
-							if (TypeDesc.IsUnsigned)
+							if (this.TypeDesc.IsUnsigned)
 							{
-								var array = s.ReadBytes(ArrayLength);
+								var array = s.ReadBytes(this.ArrayLength);
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 							else
 							{
-								var array = new sbyte[ArrayLength];
+								var array = new sbyte[this.ArrayLength];
 								for (int x = 0; x < array.Length; x++)
 									array[x] = s.ReadSByte();
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 						}
 					} break;
 
 					case sizeof(ushort):
 					{
-						if (ArrayLength == 1)
+						if (this.ArrayLength == 1)
 						{
-							Int = TypeDesc.IsUnsigned
+							this.Int = this.TypeDesc.IsUnsigned
 								? (uint)s.ReadUInt16()
 								: (uint)s.ReadInt16();
 						}
 						else
 						{
-							if (TypeDesc.IsUnsigned)
+							if (this.TypeDesc.IsUnsigned)
 							{
-								var array = new ushort[ArrayLength];
+								var array = new ushort[this.ArrayLength];
 								for (int x = 0; x < array.Length; x++)
 									array[x] = s.ReadUInt16();
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 							else
 							{
-								var array = new short[ArrayLength];
+								var array = new short[this.ArrayLength];
 								for (int x = 0; x < array.Length; x++)
 									array[x] = s.ReadInt16();
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 						}
 					} break;
 
 					case sizeof(uint):
 					{
-						if (ArrayLength == 1)
+						if (this.ArrayLength == 1)
 						{
-							Int = TypeDesc.IsUnsigned
+							this.Int = this.TypeDesc.IsUnsigned
 								? (uint)s.ReadUInt32()
 								: (uint)s.ReadInt32();
 						}
 						else
 						{
-							if (TypeDesc.IsUnsigned)
+							if (this.TypeDesc.IsUnsigned)
 							{
-								var array = new uint[ArrayLength];
+								var array = new uint[this.ArrayLength];
 								for (int x = 0; x < array.Length; x++)
 									array[x] = s.ReadUInt32();
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 							else
 							{
-								var array = new int[ArrayLength];
+								var array = new int[this.ArrayLength];
 								for (int x = 0; x < array.Length; x++)
 									array[x] = s.ReadInt32();
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 						}
 					} break;
 
 					case sizeof(ulong):
 					{
-						if (ArrayLength == 1)
+						if (this.ArrayLength == 1)
 						{
-							Int64 = TypeDesc.IsUnsigned
+							this.Int64 = this.TypeDesc.IsUnsigned
 								? (ulong)s.ReadUInt64()
 								: (ulong)s.ReadInt64();
 						}
 						else
 						{
-							if (TypeDesc.IsUnsigned)
+							if (this.TypeDesc.IsUnsigned)
 							{
-								var array = new ulong[ArrayLength];
+								var array = new ulong[this.ArrayLength];
 								for (int x = 0; x < array.Length; x++)
 									array[x] = s.ReadUInt64();
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 							else
 							{
-								var array = new long[ArrayLength];
+								var array = new long[this.ArrayLength];
 								for (int x = 0; x < array.Length; x++)
 									array[x] = s.ReadInt64();
 
-								OpaqueArrayRef = array;
+								this.OpaqueArrayRef = array;
 							}
 						}
 					} break;
 
 					default:
-						throw new KSoft.Debug.UnreachableException(TypeDesc.SizeOf.ToString());
+						throw new KSoft.Debug.UnreachableException(this.TypeDesc.SizeOf.ToString());
 				}
 			}
 			void ReadFloat(IO.EndianReader s)
 			{
-				switch (TypeDesc.SizeOf)
+				switch (this.TypeDesc.SizeOf)
 				{
 					case sizeof(float):
 					{
-						if (ArrayLength == 1)
+						if (this.ArrayLength == 1)
 						{
-							Single = s.ReadSingle();
+							this.Single = s.ReadSingle();
 						}
 						else
 						{
-							var array = new float[ArrayLength];
+							var array = new float[this.ArrayLength];
 							for (int x = 0; x < array.Length; x++)
 								array[x] = s.ReadSingle();
 
-							OpaqueArrayRef = array;
+							this.OpaqueArrayRef = array;
 						}
 					} break;
 
 					case sizeof(double):
 					{
-						if (ArrayLength == 1)
+						if (this.ArrayLength == 1)
 						{
-							Double = s.ReadDouble();
+							this.Double = s.ReadDouble();
 						}
 						else
 						{
-							var array = new double[ArrayLength];
+							var array = new double[this.ArrayLength];
 							for (int x = 0; x < array.Length; x++)
 								array[x] = s.ReadDouble();
 
-							OpaqueArrayRef = array;
+							this.OpaqueArrayRef = array;
 						}
 					} break;
 
 					default:
-						throw new KSoft.Debug.UnreachableException(TypeDesc.SizeOf.ToString());
+						throw new KSoft.Debug.UnreachableException(this.TypeDesc.SizeOf.ToString());
 				}
 			}
 			void ReadString(IO.EndianReader s)
 			{
-				if (UseDirectEncoding)
+				if (this.UseDirectEncoding)
 				{
 
 				}
 				else
 				{
-					String = s.ReadString(IsUnicode ? kUnicodeEncoding : kAnsiEncoding);
+					this.String = s.ReadString(this.IsUnicode ? kUnicodeEncoding : kAnsiEncoding);
 				}
 			}
 
 			public void Write(IO.EndianWriter s)
 			{
-				if (PrePadSize > 0)
-					for (int x = 0; x < PrePadSize; x++)
+				if (this.PrePadSize > 0)
+					for (int x = 0; x < this.PrePadSize; x++)
 						s.Write(byte.MinValue);
 
-				switch (Type)
+				switch (this.Type)
 				{
-				case BinaryDataTreeVariantType.Int:	s.Write(Int); break;
+				case BinaryDataTreeVariantType.Int:	s.Write(this.Int); break;
 #if false
 				case BinaryDataTreeVariantType.Single: s.Write(Single); break;
 				case BinaryDataTreeVariantType.Double: s.Write(Double); break;
@@ -367,7 +371,7 @@ namespace KSoft.Phoenix.Xmb
 					break;
 #endif
 
-				default: throw new KSoft.Debug.UnreachableException(Type.ToString());
+				default: throw new KSoft.Debug.UnreachableException(this.Type.ToString());
 				}
 			}
 			void WriteBool(IO.EndianWriter s)

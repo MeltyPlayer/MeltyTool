@@ -23,7 +23,7 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Unknown0); s.Stream(ref Unknown8); s.Stream(ref Unknown10);
+				s.Stream(ref this.Unknown0); s.Stream(ref this.Unknown8); s.Stream(ref this.Unknown10);
 			}
 			#endregion
 		};
@@ -38,9 +38,9 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.StreamPascalWideString32(ref TalkingHeadText);
-				s.Stream(ref ObjectiveID); s.Stream(ref LastCount);
-				s.Stream(ref ShowBackground); s.Stream(ref ObjectiveVisible); s.Stream(ref TalkingHeadVisible); s.Stream(ref IsShown);
+				s.StreamPascalWideString32(ref this.TalkingHeadText);
+				s.Stream(ref this.ObjectiveID); s.Stream(ref this.LastCount);
+				s.Stream(ref this.ShowBackground); s.Stream(ref this.ObjectiveVisible); s.Stream(ref this.TalkingHeadVisible); s.Stream(ref this.IsShown);
 			}
 			#endregion
 		};
@@ -57,8 +57,8 @@ namespace KSoft.Phoenix.Runtime
 				#region IEndianStreamSerializable Members
 				public void Serialize(IO.EndianStream s)
 				{
-					s.Stream(ref IsShown);
-					s.StreamPascalWideString32(ref Text);
+					s.Stream(ref this.IsShown);
+					s.StreamPascalWideString32(ref this.Text);
 				}
 				#endregion
 			};
@@ -74,10 +74,10 @@ namespace KSoft.Phoenix.Runtime
 				#region IEndianStreamSerializable Members
 				public void Serialize(IO.EndianStream s)
 				{
-					s.Stream(ref ObjectiveID);
-					s.Stream(ref LastCount);
-					s.Stream(ref FadeTime);
-					s.Stream(ref LabelIndex); s.Stream(ref MinIncrement);
+					s.Stream(ref this.ObjectiveID);
+					s.Stream(ref this.LastCount);
+					s.Stream(ref this.FadeTime);
+					s.Stream(ref this.LabelIndex); s.Stream(ref this.MinIncrement);
 				}
 				#endregion
 			};
@@ -87,15 +87,15 @@ namespace KSoft.Phoenix.Runtime
 
 			public BUIObjectiveProgressControl()
 			{
-				for (int x = 0; x < ObjectiveLabels.Length; x++)
-					ObjectiveLabels[x] = new BUILabel();
+				for (int x = 0; x < this.ObjectiveLabels.Length; x++)
+					this.ObjectiveLabels[x] = new BUILabel();
 			}
 
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				for (int x = 0; x < ObjectiveLabels.Length; x++) s.Stream(ref ObjectiveLabels[x]);
-				BSaveGame.StreamArray(s, ref Objectives);
+				for (int x = 0; x < this.ObjectiveLabels.Length; x++) s.Stream(ref this.ObjectiveLabels[x]);
+				BSaveGame.StreamArray(s, ref this.Objectives);
 			}
 			#endregion
 		};
@@ -121,25 +121,25 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref CounterCurrent); s.Stream(ref CounterMax); s.Stream(ref TimerID); s.Stream(ref TimerLabelID);
-			s.Stream(ref ElapsedTimerTime);
-			s.Stream(ref NumCitizensSaved); s.Stream(ref NumCitizensNeeded);
+			s.Stream(ref this.CounterCurrent); s.Stream(ref this.CounterMax); s.Stream(ref this.TimerID); s.Stream(ref this.TimerLabelID);
+			s.Stream(ref this.ElapsedTimerTime);
+			s.Stream(ref this.NumCitizensSaved); s.Stream(ref this.NumCitizensNeeded);
 
-			s.Stream(ref GarrisonContainerVisible0); s.Stream(ref GarrisonContainerVisible2);
-			s.Stream(ref GarrisonContainerEntities0); s.Stream(ref GarrisonContainerEntities4); s.Stream(ref GarrisonContainerEntities8);
-			s.Stream(ref GarrisonContainerUseEntity0); s.Stream(ref GarrisonContainerUseEntity2);
-			s.Stream(ref GarrisonContainerCounts0); s.Stream(ref GarrisonContainerCounts4); s.Stream(ref GarrisonContainerCounts8);
+			s.Stream(ref this.GarrisonContainerVisible0); s.Stream(ref this.GarrisonContainerVisible2);
+			s.Stream(ref this.GarrisonContainerEntities0); s.Stream(ref this.GarrisonContainerEntities4); s.Stream(ref this.GarrisonContainerEntities8);
+			s.Stream(ref this.GarrisonContainerUseEntity0); s.Stream(ref this.GarrisonContainerUseEntity2);
+			s.Stream(ref this.GarrisonContainerCounts0); s.Stream(ref this.GarrisonContainerCounts4); s.Stream(ref this.GarrisonContainerCounts8);
 
-			s.Stream(ref ReticulePointersVisible0); s.Stream(ref ReticulePointersVisible4);
-			s.Stream(ref ReticulePointerType);
-			for (int x = 0; x < ReticulePointerArea.Length; x++) s.StreamV(ref ReticulePointerArea[x]);
-			s.Stream(ref ReticulePointerEntities);
-			s.Stream(ref PointerRotation);
-			s.Stream(ref PointerRotationFloat);
-			s.Stream(TalkingHeadControl);
-			s.Stream(ObjectiveProgressControl);
-			s.Stream(ref WidgetPanelVisible); s.Stream(ref TimerVisible); s.Stream(ref CitizensSavedVisible);
-			s.Stream(ref CounterVisible); s.Stream(ref TimerShown);
+			s.Stream(ref this.ReticulePointersVisible0); s.Stream(ref this.ReticulePointersVisible4);
+			s.Stream(ref this.ReticulePointerType);
+			for (int x = 0; x < this.ReticulePointerArea.Length; x++) s.StreamV(ref this.ReticulePointerArea[x]);
+			s.Stream(ref this.ReticulePointerEntities);
+			s.Stream(ref this.PointerRotation);
+			s.Stream(ref this.PointerRotationFloat);
+			s.Stream(this.TalkingHeadControl);
+			s.Stream(this.ObjectiveProgressControl);
+			s.Stream(ref this.WidgetPanelVisible); s.Stream(ref this.TimerVisible); s.Stream(ref this.CitizensSavedVisible);
+			s.Stream(ref this.CounterVisible); s.Stream(ref this.TimerShown);
 			s.StreamSignature(cSaveMarker.UIWidget);
 		}
 		#endregion

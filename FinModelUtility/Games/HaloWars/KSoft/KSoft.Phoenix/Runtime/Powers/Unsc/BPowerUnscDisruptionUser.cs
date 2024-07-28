@@ -15,9 +15,9 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref LOSMode);
-			s.Stream(ref DisruptionObjectProtoID);
-			s.Stream(HudSounds);
+			s.Stream(ref this.LOSMode);
+			s.Stream(ref this.DisruptionObjectProtoID);
+			s.Stream(this.HudSounds);
 		}
 		#endregion
 	};

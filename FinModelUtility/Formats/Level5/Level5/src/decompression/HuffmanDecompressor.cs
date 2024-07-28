@@ -92,24 +92,24 @@ public class HuffmanArrayDecompressor(byte aType) : ISpanDecompressor {
     public int p = 4;
 
     public bool HasBytes(ReadOnlySpan<byte> bytes) {
-        return p < bytes.Length;
+        return this.p < bytes.Length;
       }
 
     public int ReadByte(ReadOnlySpan<byte> bytes) {
-        return bytes[p++] & 0xFF;
+        return bytes[this.p++] & 0xFF;
       }
 
     public int ReadThree(ReadOnlySpan<byte> bytes) {
-        return ((bytes[p++] & 0xFF)) | ((bytes[p++] & 0xFF) << 8) |
-               ((bytes[p++] & 0xFF) << 16);
+        return ((bytes[this.p++] & 0xFF)) | ((bytes[this.p++] & 0xFF) << 8) |
+               ((bytes[this.p++] & 0xFF) << 16);
       }
 
     public int ReadInt32(ReadOnlySpan<byte> bytes) {
-        if (p >= bytes.Length)
+        if (this.p >= bytes.Length)
           return 0;
         else
-          return ((bytes[p++] & 0xFF)) | ((bytes[p++] & 0xFF) << 8) |
-                 ((bytes[p++] & 0xFF) << 16) | ((bytes[p++] & 0xFF) << 24);
+          return ((bytes[this.p++] & 0xFF)) | ((bytes[this.p++] & 0xFF) << 8) |
+                 ((bytes[this.p++] & 0xFF) << 16) | ((bytes[this.p++] & 0xFF) << 24);
       }
   }
 

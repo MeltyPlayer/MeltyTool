@@ -35,14 +35,14 @@ public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
                                  this.impl_.Focus();
                                  if (args.Button == MouseButtons.Left ||
                                      args.Button == MouseButtons.Right) {
-                                   isMouseDown_ = true;
+                                   this.isMouseDown_ = true;
                                    this.prevMousePosition_ = null;
                                  }
                                };
       inputTarget.MouseUp += (_, args) => {
                                if (args.Button == MouseButtons.Left ||
                                    args.Button == MouseButtons.Right) {
-                                 isMouseDown_ = false;
+                                 this.isMouseDown_ = false;
                                }
                              };
       inputTarget.MouseMove += (_, args) => {

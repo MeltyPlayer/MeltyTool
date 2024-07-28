@@ -75,11 +75,11 @@ public class N64ImageParser(IN64Hardware n64Hardware) {
                       int width,
                       int height) {
     SplitN64ImageFormat((byte) format, out var colorFormat, out var bitSize);
-    return Parse(colorFormat,
-                 bitSize,
-                 data,
-                 width,
-                 height);
+    return this.Parse(colorFormat,
+                      bitSize,
+                      data,
+                      width,
+                      height);
   }
 
   public IImage Parse(N64ColorFormat colorFormat,

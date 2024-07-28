@@ -46,15 +46,15 @@ namespace KSoft.Phoenix.Phx
 
 		public BTacticData()
 		{
-			InitializeDatabaseInterfaces();
+			this.InitializeDatabaseInterfaces();
 		}
 
 		#region Database interfaces
 		void InitializeDatabaseInterfaces()
 		{
-			Weapons.SetupDatabaseInterface();
+			this.Weapons.SetupDatabaseInterface();
 			//TacticStates.SetupDatabaseInterface();
-			Actions.SetupDatabaseInterface();
+			this.Actions.SetupDatabaseInterface();
 		}
 
 		internal Collections.IBTypeNames GetNamesInterface(TacticDataObjectKind kind)
@@ -63,9 +63,9 @@ namespace KSoft.Phoenix.Phx
 
 			switch (kind)
 			{
-			case TacticDataObjectKind.Weapon:		return Weapons;
+			case TacticDataObjectKind.Weapon:		return this.Weapons;
 			//case TacticDataObjectKind.TacticState:	return TacticStates;
-			case TacticDataObjectKind.Action:		return Actions;
+			case TacticDataObjectKind.Action:		return this.Actions;
 
 			default: throw new KSoft.Debug.UnreachableException(kind.ToString());
 			}
@@ -77,9 +77,9 @@ namespace KSoft.Phoenix.Phx
 
 			switch (kind)
 			{
-			case TacticDataObjectKind.Weapon:		return Weapons;
+			case TacticDataObjectKind.Weapon:		return this.Weapons;
 			//case TacticDataObjectKind.TacticState:	return TacticStates;
-			case TacticDataObjectKind.Action:		return Actions;
+			case TacticDataObjectKind.Action:		return this.Actions;
 
 			default: throw new KSoft.Debug.UnreachableException(kind.ToString());
 			}
@@ -149,27 +149,27 @@ namespace KSoft.Phoenix.Phx
 		{
 			using (s.EnterUserDataBookmark(this))
 			{
-				XML.XmlUtil.Serialize(s, Weapons, BWeapon.kBListXmlParams);
+				XML.XmlUtil.Serialize(s, this.Weapons, BWeapon.kBListXmlParams);
 				//XML.XmlUtil.Serialize(s, TacticStates, BTacticState.kBListXmlParams);
-				XML.XmlUtil.Serialize(s, Actions, BProtoAction.kBListXmlParams);
-				Tactic.Serialize(s);
+				XML.XmlUtil.Serialize(s, this.Actions, BProtoAction.kBListXmlParams);
+				this.Tactic.Serialize(s);
 			}
 		}
 		#endregion
 
 		#region IProtoDataObjectDatabaseProvider members
-		Engine.XmlFileInfo IProtoDataObjectDatabaseProvider.SourceFileReference { get { return SourceXmlFile; } }
+		Engine.XmlFileInfo IProtoDataObjectDatabaseProvider.SourceFileReference { get { return this.SourceXmlFile; } }
 
 		Collections.IBTypeNames IProtoDataObjectDatabaseProvider.GetNamesInterface(int objectKind)
 		{
 			var kind = (TacticDataObjectKind)objectKind;
-			return GetNamesInterface(kind);
+			return this.GetNamesInterface(kind);
 		}
 
 		Collections.IHasUndefinedProtoMemberInterface IProtoDataObjectDatabaseProvider.GetMembersInterface(int objectKind)
 		{
 			var kind = (TacticDataObjectKind)objectKind;
-			return GetMembersInterface(kind);
+			return this.GetMembersInterface(kind);
 		}
 		#endregion
 	};

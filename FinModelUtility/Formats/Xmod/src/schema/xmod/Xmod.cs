@@ -50,7 +50,7 @@ public class Xmod : ITextDeserializable {
 
       this.Materials = tr.ReadNews<Material>(numMaterials);
 
-      var numPackets = Materials.Select(material => material.NumPackets).Sum();
+      var numPackets = this.Materials.Select(material => material.NumPackets).Sum();
       this.Packets = tr.ReadNews<Packet>(numPackets);
     }
 }

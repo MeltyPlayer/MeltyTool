@@ -209,7 +209,7 @@ public class AudioPlayerPanelViewModel
 
 public partial class AudioPlayerPanel : UserControl {
   public AudioPlayerPanel() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 
   private AudioPlayerPanelViewModel ViewModel_

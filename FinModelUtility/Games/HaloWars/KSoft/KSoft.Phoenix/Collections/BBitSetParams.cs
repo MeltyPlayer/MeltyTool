@@ -14,11 +14,11 @@ namespace KSoft.Collections
 
 		public BBitSetParams(Func<Phx.BDatabaseBase, IProtoEnum> protoEnumGetter)
 		{
-			kGetProtoEnumFromDB = protoEnumGetter;
+			this.kGetProtoEnumFromDB = protoEnumGetter;
 		}
 		public BBitSetParams(Func<IProtoEnum> protoEnumGetter)
 		{
-			kGetProtoEnum = protoEnumGetter;
+			this.kGetProtoEnum = protoEnumGetter;
 		}
 	};
 }

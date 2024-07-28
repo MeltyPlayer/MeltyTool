@@ -288,7 +288,7 @@ namespace KSoft
 		public static List<string> GetKSoftStackTraceList(this Exception e, bool needFileInfo = true)
 		{
 			var list = new List<string>();
-			var trace = new System.Diagnostics.StackTrace(e, needFileInfo);
+			var trace = new StackTrace(e, needFileInfo);
 			if (trace.FrameCount == 0)
 				return list;
 
@@ -472,7 +472,7 @@ namespace KSoft
 			{
 				char c = s[x];
 				if (c < 0 || c > sbyte.MaxValue)
-					throw new System.IO.InvalidDataException(string.Format(KSoft.Util.InvariantCultureInfo,
+					throw new System.IO.InvalidDataException(string.Format(Util.InvariantCultureInfo,
 						"0x{0:X4} does not look like ASCII. #{1} in '{2}'",
 						(int)c, x, s));
 
@@ -541,7 +541,7 @@ namespace KSoft
 
 		#region Array
 		[Contracts.Pure]
-		[System.Diagnostics.DebuggerStepThrough]
+		[DebuggerStepThrough]
 		public static IEnumerator<T> GetGenericEnumerator<T>(this T[] array)
 		{
 			Contract.Requires(array != null);
@@ -674,7 +674,7 @@ namespace KSoft
 
 				// fill the starting block in the array
 				int index = 0;
-				for (int initializeLength = System.Math.Min(block_size, length); index < initializeLength; index++)
+				for (int initializeLength = Math.Min(block_size, length); index < initializeLength; index++)
 				{
 					array[index] = fillValue;
 				}
@@ -682,7 +682,7 @@ namespace KSoft
 				// use the starting block to fill the rest, increasing the block size by however much we've filled so far or what's left
 				for (; index < length; index += block_size, block_size *= 2)
 				{
-					int copy_length = System.Math.Min(block_size, length-index) * sizeOfT;
+					int copy_length = Math.Min(block_size, length-index) * sizeOfT;
 					// Array.Copy is not the same as BlockCopy. We want BlockCopy.
 					Buffer.BlockCopy(
 						array, 0,
@@ -773,21 +773,21 @@ namespace KSoft
 
 		#region Collections
 		[Contracts.Pure]
-		[System.Diagnostics.DebuggerStepThrough]
+		[DebuggerStepThrough]
 		public static bool IsNullOrEmpty<T>(this ICollection<T> coll)
 		{
 			return coll == null || coll.Count == 0;
 		}
 
 		[Contracts.Pure]
-		[System.Diagnostics.DebuggerStepThrough]
+		[DebuggerStepThrough]
 		public static bool IsNotNullOrEmpty<T>(this ICollection<T> coll)
 		{
 			return coll != null && coll.Count != 0;
 		}
 
 		[Contracts.Pure]
-		[System.Diagnostics.DebuggerStepThrough]
+		[DebuggerStepThrough]
 		public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> seq)
 		{
 			return seq ?? Enumerable.Empty<T>();
@@ -798,7 +798,7 @@ namespace KSoft
 		/// <returns>True if there are duplicates, false if all values are distinct</returns>
 		/// <remarks>Based on this answer http://stackoverflow.com/a/4712539/444977 </remarks>
 		[Contracts.Pure]
-		[System.Diagnostics.DebuggerStepThrough]
+		[DebuggerStepThrough]
 		public static bool ContainsDuplicates<T>(this IEnumerable<T> seq)
 		{
 			// A list has *no* duplicates when All items can be Add-ed to a set.
@@ -831,7 +831,7 @@ namespace KSoft
 				.Select((v, i) => new KeyValuePair<T, int?>(v, i))
 				.FirstOrDefault(kvp => match(kvp.Key));
 
-			return found.Value ?? TypeExtensions.kNone;
+			return found.Value ?? kNone;
 		}
 
 		[Contracts.Pure]
@@ -852,7 +852,7 @@ namespace KSoft
 					return x;
 			}
 
-			return TypeExtensions.kNone;
+			return kNone;
 		}
 		[Contracts.Pure]
 		public static int FindIndex<T>(this IReadOnlyList<T> list,
@@ -1042,14 +1042,14 @@ namespace KSoft
 		{
 			Contract.Requires(source != null);
 
-			source.TraceData(eventType, TypeExtensions.kNone, data);
+			source.TraceData(eventType, kNone, data);
 		}
 
 		public static void TraceDataSansId(this TraceSource source, TraceEventType eventType, object data)
 		{
 			Contract.Requires(source != null);
 
-			source.TraceData(eventType, TypeExtensions.kNone, data);
+			source.TraceData(eventType, kNone, data);
 		}
 		#endregion
 
@@ -1148,7 +1148,7 @@ namespace KSoft
 
 			if (preallocatedBuffer == null)
 			{
-				buffer_size = System.Math.Min((int)count, 0x1000);
+				buffer_size = Math.Min((int)count, 0x1000);
 				buffer = new byte[buffer_size];
 			}
 			else
@@ -1165,7 +1165,7 @@ namespace KSoft
 
 			for (long bytes_remaining = count; bytes_remaining > 0; )
 			{
-				long num_bytes_to_read = System.Math.Min(bytes_remaining, buffer_size);
+				long num_bytes_to_read = Math.Min(bytes_remaining, buffer_size);
 				int num_bytes_read = 0;
 				do
 				{
@@ -1215,7 +1215,7 @@ namespace KSoft
 
 			for (long bytes_remaining = count; bytes_remaining > 0; )
 			{
-				long num_bytes_to_read = System.Math.Min(bytes_remaining, buffer_size);
+				long num_bytes_to_read = Math.Min(bytes_remaining, buffer_size);
 				int num_bytes_read = 0;
 				do
 				{
@@ -1266,8 +1266,8 @@ namespace KSoft
 				}
 			}
 		}
-		public static void SafeNotify(this System.Collections.Specialized.NotifyCollectionChangedEventHandler handler,
-			object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs args)
+		public static void SafeNotify(this NotifyCollectionChangedEventHandler handler,
+			object sender, NotifyCollectionChangedEventArgs args)
 		{
 			if (handler != null)
 				handler(sender, args);

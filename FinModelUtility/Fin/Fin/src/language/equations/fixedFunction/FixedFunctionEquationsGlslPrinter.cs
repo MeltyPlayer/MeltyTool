@@ -543,17 +543,17 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       return textureValueText;
     }
 
-    if (IsInRange_(id,
-                   FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0,
-                   FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_7,
-                   out var globalDiffuseAlphaIndex)) {
+    if (this.IsInRange_(id,
+                        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0,
+                        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_7,
+                        out var globalDiffuseAlphaIndex)) {
       return $"individualLightDiffuseColors[{globalDiffuseAlphaIndex}].a";
     }
 
-    if (IsInRange_(id,
-                   FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0,
-                   FixedFunctionSource.LIGHT_SPECULAR_ALPHA_7,
-                   out var globalSpecularAlphaIndex)) {
+    if (this.IsInRange_(id,
+                        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0,
+                        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_7,
+                        out var globalSpecularAlphaIndex)) {
       return $"individualLightSpecularColors[{globalSpecularAlphaIndex}].a";
     }
 
@@ -755,31 +755,31 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       return textureValueText;
     }
 
-    if (IsInRange_(id,
-                   FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0,
-                   FixedFunctionSource.LIGHT_DIFFUSE_COLOR_7,
-                   out var globalDiffuseColorIndex)) {
+    if (this.IsInRange_(id,
+                        FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0,
+                        FixedFunctionSource.LIGHT_DIFFUSE_COLOR_7,
+                        out var globalDiffuseColorIndex)) {
       return $"individualLightDiffuseColors[{globalDiffuseColorIndex}].rgb";
     }
 
-    if (IsInRange_(id,
-                   FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0,
-                   FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_7,
-                   out var globalDiffuseAlphaIndex)) {
+    if (this.IsInRange_(id,
+                        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0,
+                        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_7,
+                        out var globalDiffuseAlphaIndex)) {
       return $"individualLightDiffuseColors[{globalDiffuseAlphaIndex}].aaa";
     }
 
-    if (IsInRange_(id,
-                   FixedFunctionSource.LIGHT_SPECULAR_COLOR_0,
-                   FixedFunctionSource.LIGHT_SPECULAR_COLOR_7,
-                   out var globalSpecularColorIndex)) {
+    if (this.IsInRange_(id,
+                        FixedFunctionSource.LIGHT_SPECULAR_COLOR_0,
+                        FixedFunctionSource.LIGHT_SPECULAR_COLOR_7,
+                        out var globalSpecularColorIndex)) {
       return $"individualLightSpecularColors[{globalSpecularColorIndex}].rgb";
     }
 
-    if (IsInRange_(id,
-                   FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0,
-                   FixedFunctionSource.LIGHT_SPECULAR_ALPHA_7,
-                   out var globalSpecularAlphaIndex)) {
+    if (this.IsInRange_(id,
+                        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0,
+                        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_7,
+                        out var globalSpecularAlphaIndex)) {
       return $"individualLightSpecularColors[{globalSpecularAlphaIndex}].aaa";
     }
 

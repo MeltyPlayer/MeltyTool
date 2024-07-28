@@ -9,18 +9,18 @@ namespace KSoft.DDS
 	{
 		IntPtr Pointer;
 
-		public bool IsNull { get { return Pointer == IntPtr.Zero; } }
-		public bool IsNotNull { get { return Pointer != IntPtr.Zero; } }
+		public bool IsNull { get { return this.Pointer == IntPtr.Zero; } }
+		public bool IsNotNull { get { return this.Pointer != IntPtr.Zero; } }
 
 		public void Dispose()
 		{
-			if (IsNull || DirectXTexDLL.EntryPointsNotFound)
+			if (this.IsNull || DirectXTexDLL.EntryPointsNotFound)
 				return;
 
 			try
 			{
 				DirectXTexDLL.DirectXTex_BlobFree(this);
-				Pointer = IntPtr.Zero;
+				this.Pointer = IntPtr.Zero;
 			}
 			catch (EntryPointNotFoundException ex)
 			{
@@ -46,7 +46,7 @@ namespace KSoft.DDS
 		}
 
 		public IntPtr Buffer { get {
-			if (IsNull || DirectXTexDLL.EntryPointsNotFound)
+			if (this.IsNull || DirectXTexDLL.EntryPointsNotFound)
 				return IntPtr.Zero;
 
 			try
@@ -66,7 +66,7 @@ namespace KSoft.DDS
 		} }
 
 		public uint BufferSize { get {
-			if (IsNull || DirectXTexDLL.EntryPointsNotFound)
+			if (this.IsNull || DirectXTexDLL.EntryPointsNotFound)
 				return 0;
 
 			try

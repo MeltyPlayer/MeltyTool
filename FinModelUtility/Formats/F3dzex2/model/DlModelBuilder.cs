@@ -56,7 +56,7 @@ public class DlModelBuilder {
     this.currentMesh_ = this.Model.Skin.AddMesh();
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);
 
-    lazyImageDictionary_ =
+    this.lazyImageDictionary_ =
         new(imageParams => {
           if (imageParams.IsInvalid) {
             return FinImage.Create1x1FromColor(this.vertices_.DiffuseColor);
@@ -92,7 +92,7 @@ public class DlModelBuilder {
           }
         });
 
-    lazyTextureDictionary_ =
+    this.lazyTextureDictionary_ =
         new(textureParams
                 => {
               var imageParams = textureParams.ImageParams;
@@ -110,7 +110,7 @@ public class DlModelBuilder {
               return texture;
             });
 
-    lazyMaterialDictionary_ =
+    this.lazyMaterialDictionary_ =
         new(materialParams
                 => {
               var texture0 =
@@ -301,7 +301,7 @@ public class DlModelBuilder {
           break;
         case DlOpcodeCommand dlOpcodeCommand: {
           foreach (var childDl in dlOpcodeCommand.PossibleBranches) {
-            AddDl(childDl);
+            this.AddDl(childDl);
           }
 
           if (!dlOpcodeCommand.PushCurrentDlToStack) {
@@ -427,7 +427,7 @@ public class DlModelBuilder {
                               .SetMaterial(material)
                               .SetVertexOrder(VertexOrder.NORMAL);
 
-          if (isMaterialTransparent_) {
+          if (this.isMaterialTransparent_) {
             triangles.SetInversePriority(1);
           } else {
             triangles.SetInversePriority(0);
@@ -446,7 +446,7 @@ public class DlModelBuilder {
                               .SetMaterial(material)
                               .SetVertexOrder(VertexOrder.NORMAL);
 
-          if (isMaterialTransparent_) {
+          if (this.isMaterialTransparent_) {
             triangles.SetInversePriority(1);
           } else {
             triangles.SetInversePriority(0);
@@ -531,7 +531,7 @@ public class DlModelBuilder {
 
   private IMaterial GetOrCreateMaterial_() {
     var newMaterialParams = this.n64Hardware_.Rdp.Tmem.GetMaterialParams();
-    if (!cachedMaterialParams_.Equals(newMaterialParams)) {
+    if (!this.cachedMaterialParams_.Equals(newMaterialParams)) {
       this.cachedMaterialParams_ = newMaterialParams;
       this.cachedMaterial_ = this.lazyMaterialDictionary_[newMaterialParams];
       this.isMaterialTransparent_ =

@@ -50,39 +50,39 @@ namespace KSoft.Phoenix.Resource.ECF
 
 		public ulong DecompressedDataTiger64
 		{
-			get { return EntryId; }
-			set { EntryId = value; }
+			get { return this.EntryId; }
+			set { this.EntryId = value; }
 		}
 
 		public EcfCompressionType CompressionType
 		{
-			get { return (EcfCompressionType)(Flags & kCompressionTypeMask); }
-			set { Flags |= (byte)( ((byte)(value)) & kCompressionTypeMask ); }
+			get { return (EcfCompressionType)(this.Flags & kCompressionTypeMask); }
+			set { this.Flags |= (byte)( ((byte)(value)) & kCompressionTypeMask ); }
 		}
 
 		#region Resource flags
 		public bool IsContiguous
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
 		}
 
 		public bool IsWriteCombined
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
 		}
 
 		public bool IsDeflateStream
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
 		}
 
 		public bool IsResourceTag
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
 		}
 		#endregion
 
@@ -90,17 +90,17 @@ namespace KSoft.Phoenix.Resource.ECF
 		/// Flag is set but CompressionType is Stored. This will be the case with XMBs.
 		/// </summary>
 		public bool IsDeflateStreamButNoCompression { get {
-			return IsDeflateStream && CompressionType == EcfCompressionType.Stored;
+			return this.IsDeflateStream && this.CompressionType == EcfCompressionType.Stored;
 		} }
 
 		public void SeekTo(IO.IKSoftBinaryStream blockStream)
 		{
-			blockStream.Seek((long)DataOffset);
+			blockStream.Seek((long) this.DataOffset);
 		}
 		public byte[] GetRawBuffer(IO.EndianStream blockStream)
 		{
-			SeekTo(blockStream);
-			byte[] result = blockStream.Reader.ReadBytes(DataSize);
+			this.SeekTo(blockStream);
+			byte[] result = blockStream.Reader.ReadBytes(this.DataSize);
 
 			return result;
 		}
@@ -110,11 +110,11 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			byte[] result = null;
 
-			var assumed_compression_type = CompressionType;
+			var assumed_compression_type = this.CompressionType;
 
 			// #NOTE CompressionType can be Stored but IsDeflateStream can be true (seen it in XMB).
 			// So just handle the flag as we do EcfCompressionType.DeflateStream
-			if (IsDeflateStream)
+			if (this.IsDeflateStream)
 			{
 				assumed_compression_type = EcfCompressionType.DeflateStream;
 			}
@@ -122,16 +122,16 @@ namespace KSoft.Phoenix.Resource.ECF
 			switch (assumed_compression_type)
 			{
 				case EcfCompressionType.Stored:
-					result = GetRawBuffer(blockStream);
+					result = this.GetRawBuffer(blockStream);
 					break;
 
 				case EcfCompressionType.DeflateRaw:
-					result = GetRawBuffer(blockStream);
-					result = DecompressFromBuffer(blockStream, result);
+					result = this.GetRawBuffer(blockStream);
+					result = this.DecompressFromBuffer(blockStream, result);
 					break;
 
 				case EcfCompressionType.DeflateStream:
-					result = DecompressFromStream(blockStream);
+					result = this.DecompressFromStream(blockStream);
 					break;
 
 				default:
@@ -145,35 +145,35 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			throw new InvalidOperationException(string.Format(
 				"Can't get the decompressed bytes for {0} (from {1}). Need to know the uncompressed data size",
-				EntryId, blockStream.StreamName));
+				this.EntryId, blockStream.StreamName));
 		}
 
 		byte[] DecompressFromStream(IO.EndianStream blockStream)
 		{
-			SeekTo(blockStream);
+			this.SeekTo(blockStream);
 			return CompressedStream.DecompressFromStream(blockStream);
 		}
 
 		public virtual void BuildBuffer(IO.EndianStream blockStream, Stream sourceFile
 			, Security.Cryptography.TigerHashBase hasher = null)
 		{
-			blockStream.AlignToBoundry(DataAlignmentBit);
+			blockStream.AlignToBoundry(this.DataAlignmentBit);
 
 			sourceFile.Seek(0, SeekOrigin.Begin);
 			if (hasher != null)
-				UpdateDecompressedDataTigerHash(sourceFile, hasher);
+				this.UpdateDecompressedDataTigerHash(sourceFile, hasher);
 
 			Contract.Assert(blockStream.BaseStream.Position == blockStream.BaseStream.Length);
 
-			DataOffset = blockStream.PositionPtr;
+			this.DataOffset = blockStream.PositionPtr;
 
 			// #TODO determine if compressing the sourceFile data has any savings (eg, 7% smaller)
 
-			var assumed_compression_type = CompressionType;
+			var assumed_compression_type = this.CompressionType;
 
 			// #NOTE CompressionType can be Stored but IsDeflateStream can be true (seen it in XMB).
 			// So just handle the flag as we do EcfCompressionType.DeflateStream
-			if (IsDeflateStream)
+			if (this.IsDeflateStream)
 			{
 				assumed_compression_type = EcfCompressionType.DeflateStream;
 			}
@@ -183,27 +183,27 @@ namespace KSoft.Phoenix.Resource.ECF
 				case EcfCompressionType.Stored:
 				{
 					// Update this ECF's size
-					DataSize = (int)sourceFile.Length;
+					this.DataSize = (int)sourceFile.Length;
 					// Also update this ECF's checksum
-					Adler32 = Security.Cryptography.Adler32.Compute(sourceFile, DataSize, restorePosition: true);
+					this.Adler32 = Security.Cryptography.Adler32.Compute(sourceFile, this.DataSize, restorePosition: true);
 					// Copy the source file's bytes to the block stream
 					sourceFile.CopyTo(blockStream.BaseStream);
 					break;
 				}
 
 				case EcfCompressionType.DeflateRaw:
-					CompressSourceToStream(blockStream.Writer, sourceFile);
+					this.CompressSourceToStream(blockStream.Writer, sourceFile);
 					break;
 
 				case EcfCompressionType.DeflateStream:
-					CompressSourceToCompressionStream(blockStream.Writer, sourceFile);
+					this.CompressSourceToCompressionStream(blockStream.Writer, sourceFile);
 					break;
 
 				default:
 					throw new KSoft.Debug.UnreachableException(assumed_compression_type.ToString());
 			}
 
-			Contract.Assert(blockStream.BaseStream.Position == ((long)DataOffset + DataSize));
+			Contract.Assert(blockStream.BaseStream.Position == ((long) this.DataOffset + this.DataSize));
 		}
 
 		protected virtual void CompressSourceToStream(IO.EndianWriter blockStream, Stream sourceFile)
@@ -217,8 +217,8 @@ namespace KSoft.Phoenix.Resource.ECF
 			}
 
 			// Compress the source bytes into a new buffer
-			byte[] result = ResourceUtils.Compress(buffer, out Adler32);  // Also update this ECF's checksum
-			DataSize = result.Length; // Update this ECF's size
+			byte[] result = ResourceUtils.Compress(buffer, out this.Adler32); // Also update this ECF's checksum
+			this.DataSize = result.Length;                                       // Update this ECF's size
 
 			// Write the compressed bytes to the block stream
 			blockStream.Write(result);
@@ -228,7 +228,7 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			// Build a CompressedStream from the source file and write it to the block stream
 			CompressedStream.CompressFromStream(blockStream, sourceFile,
-				out Adler32, out DataSize);  // Update this ECF's checksum and size
+				out this.Adler32, out this.DataSize);  // Update this ECF's checksum and size
 		}
 		#endregion
 
@@ -238,8 +238,8 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			Contract.Requires(blockStream != null);
 
-			SeekTo(blockStream);
-			uint adler = Security.Cryptography.Adler32.Compute(blockStream.BaseStream, DataSize);
+			this.SeekTo(blockStream);
+			uint adler = Security.Cryptography.Adler32.Compute(blockStream.BaseStream, this.DataSize);
 			return adler;
 		}
 
@@ -251,69 +251,70 @@ namespace KSoft.Phoenix.Resource.ECF
 
 			hasher.Initialize();
 			hasher.ComputeHash(blockStream.BaseStream,
-				(long)DataOffset, DataSize);
+				(long) this.DataOffset,
+				this.DataSize);
 		}
 
-		protected void UpdateDecompressedDataTigerHash(System.IO.Stream source, Security.Cryptography.TigerHashBase hasher)
+		protected void UpdateDecompressedDataTigerHash(Stream source, Security.Cryptography.TigerHashBase hasher)
 		{
 			hasher.ComputeHash(source, 0, (int)source.Length,
 				restorePosition: true);
 
 			ulong tiger64;
 			hasher.TryGetAsTiger64(out tiger64);
-			DecompressedDataTiger64 = tiger64;
+			this.DecompressedDataTiger64 = tiger64;
 		}
 		#endregion
 
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref EntryId);
-			s.StreamVirtualAddress(ref DataOffset);
-			s.Stream(ref DataSize);
-			s.Stream(ref Adler32);
-			s.Stream(ref Flags);
-			s.Stream(ref DataAlignmentBit);
-			s.Stream(ref mResourceFlags);
+			s.Stream(ref this.EntryId);
+			s.StreamVirtualAddress(ref this.DataOffset);
+			s.Stream(ref this.DataSize);
+			s.Stream(ref this.Adler32);
+			s.Stream(ref this.Flags);
+			s.Stream(ref this.DataAlignmentBit);
+			s.Stream(ref this.mResourceFlags);
 		}
 		#endregion
 
 		#region Xml Streaming
 		public void Read(IO.XmlElementStream s, bool includeFileData)
 		{
-			ReadFields(s, includeFileData);
+			this.ReadFields(s, includeFileData);
 		}
 		public void Write(IO.XmlElementStream s, bool includeFileData)
 		{
 			using (s.EnterCursorBookmark(kXmlElementStreamName))
-				WriteFields(s, includeFileData);
+				this.WriteFields(s, includeFileData);
 		}
 
 		protected virtual void ReadFields(IO.XmlElementStream s, bool includeFileData)
 		{
-			s.ReadAttributeOpt("id", ref EntryId, NumeralBase.Hex);
+			s.ReadAttributeOpt("id", ref this.EntryId, NumeralBase.Hex);
 			//s.ReadAttributeOpt("flags", ref Flags, NumeralBase.Hex);
-			s.ReadAttributeOpt("align", ref DataAlignmentBit, NumeralBase.Hex);
+			s.ReadAttributeOpt("align", ref this.DataAlignmentBit, NumeralBase.Hex);
 			if (includeFileData)
 			{
-				s.ReadAttributeOpt("offset", ref DataOffset.u32, NumeralBase.Hex);
-				s.ReadAttributeOpt("size", ref DataSize, NumeralBase.Hex);
+				s.ReadAttributeOpt("offset", ref this.DataOffset.u32, NumeralBase.Hex);
+				s.ReadAttributeOpt("size", ref this.DataSize, NumeralBase.Hex);
 			}
 
-			ReadFlags(s);
-			ReadResourceFlags(s);
+			this.ReadFlags(s);
+			this.ReadResourceFlags(s);
 		}
 		protected virtual void WriteFields(IO.XmlElementStream s, bool includeFileData)
 		{
-			s.WriteAttribute("id", EntryId.ToString("X16"));
+			s.WriteAttribute("id", this.EntryId.ToString("X16"));
 			//if (Flags != 0)
 			//	s.WriteAttribute("flags", Flags.ToString("X1"));
-			if (DataAlignmentBit != kDefaultAlignmentBit)
-				s.WriteAttribute("align", DataAlignmentBit.ToString("X1"));
+			if (this.DataAlignmentBit != kDefaultAlignmentBit)
+				s.WriteAttribute("align", this.DataAlignmentBit.ToString("X1"));
 			if (includeFileData)
 			{
-				s.WriteAttribute("offset", DataOffset.u32.ToString("X8"));
-				s.WriteAttribute("size", DataSize.ToString("X8"));
+				s.WriteAttribute("offset", this.DataOffset.u32.ToString("X8"));
+				s.WriteAttribute("size", this.DataSize.ToString("X8"));
 			}
 		}
 
@@ -321,40 +322,40 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			var compType = EcfCompressionType.Stored;
 			if (s.ReadAttributeEnumOpt("Compression", ref compType))
-				CompressionType = compType;
+				this.CompressionType = compType;
 		}
 		protected void WriteFlags(IO.XmlElementStream s)
 		{
-			if (Flags == 0)
+			if (this.Flags == 0)
 				return;
 
-			s.WriteAttributeEnum("Compression", CompressionType);
+			s.WriteAttributeEnum("Compression", this.CompressionType);
 		}
 
 		protected void ReadResourceFlags(IO.XmlElementStream s)
 		{
 			bool flag = false;
 			if (s.ReadAttributeOpt("IsContiguous", ref flag))
-				IsContiguous = flag;
+				this.IsContiguous = flag;
 			if (s.ReadAttributeOpt("IsWriteCombined", ref flag))
-				IsWriteCombined = flag;
+				this.IsWriteCombined = flag;
 			if (s.ReadAttributeOpt("IsDeflateStream", ref flag))
-				IsDeflateStream = flag;
+				this.IsDeflateStream = flag;
 			if (s.ReadAttributeOpt("IsResourceTag", ref flag))
-				IsResourceTag = flag;
+				this.IsResourceTag = flag;
 		}
 		protected void WriteResourceFlags(IO.XmlElementStream s)
 		{
-			if (mResourceFlags == 0)
+			if (this.mResourceFlags == 0)
 				return;
 
-			if (IsContiguous)
+			if (this.IsContiguous)
 				s.WriteAttribute("IsContiguous", true);
-			if (IsWriteCombined)
+			if (this.IsWriteCombined)
 				s.WriteAttribute("IsWriteCombined", true);
-			if (IsDeflateStream)
+			if (this.IsDeflateStream)
 				s.WriteAttribute("IsDeflateStream", true);
-			if (IsResourceTag)
+			if (this.IsResourceTag)
 				s.WriteAttribute("IsResourceTag", true);
 		}
 		#endregion

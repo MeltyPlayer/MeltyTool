@@ -12,22 +12,22 @@ namespace sm64.Scripts {
     public int ibo { get; set; }
 
     public CollisionTriangleList(int ID) {
-      id = ID;
-      indicesList = [];
+      this.id = ID;
+      this.indicesList = [];
     }
 
     public void AddTriangle(uint a, uint b, uint c) {
-      indicesList.Add(a);
-      indicesList.Add(b);
-      indicesList.Add(c);
+      this.indicesList.Add(a);
+      this.indicesList.Add(b);
+      this.indicesList.Add(c);
     }
 
     public uint getTriangleCount() {
-      return (uint) indices.Length / 3;
+      return (uint) this.indices.Length / 3;
     }
 
     public void buildList() {
-      indices = indicesList.ToArray();
+      this.indices = this.indicesList.ToArray();
     }
   }
 
@@ -43,21 +43,21 @@ namespace sm64.Scripts {
     public Vector3[] verts;
 
     public void AddVertex(Vector3 newVert) {
-      vertices.Add(newVert);
+      this.vertices.Add(newVert);
     }
 
     public void AddTriangle(uint a, uint b, uint c) {
-      if (triangles.Count > 0)
-        triangles[triangles.Count - 1].AddTriangle(a, b, c);
+      if (this.triangles.Count > 0)
+        this.triangles[this.triangles.Count - 1].AddTriangle(a, b, c);
     }
 
     public void NewTriangleList(int ID) {
-      triangles.Add(new CollisionTriangleList(ID));
+      this.triangles.Add(new CollisionTriangleList(ID));
     }
 
     public uint getTriangleCount() {
       uint tri_count = 0;
-      foreach (CollisionTriangleList tri in triangles)
+      foreach (CollisionTriangleList tri in this.triangles)
         tri_count += tri.getTriangleCount();
       return tri_count;
     }
@@ -107,20 +107,20 @@ namespace sm64.Scripts {
 
     public short dropToGround(Vector3 pos) {
       List<float> found = [];
-      for (int i = 0; i < triangles.Count; i++) {
-        CollisionTriangleList list = triangles[i];
+      for (int i = 0; i < this.triangles.Count; i++) {
+        CollisionTriangleList list = this.triangles[i];
         for (int j = 0; j < list.indices.Length; j += 3) {
           tempTriangle temp;
           int index1 = (int) list.indices[j + 0];
           int index2 = (int) list.indices[j + 1];
           int index3 = (int) list.indices[j + 2];
-          int numVertices = vertices.Count;
+          int numVertices = this.vertices.Count;
           if (index1 >= numVertices || index2 >= numVertices ||
               index3 >= numVertices)
             continue;
-          temp.a = vertices[index1];
-          temp.b = vertices[index2];
-          temp.c = vertices[index3];
+          temp.a = this.vertices[index1];
+          temp.b = this.vertices[index2];
+          temp.c = this.vertices[index3];
           if (PointInTriangle(pos.Xz(),
                               temp.a.Xz(),
                               temp.b.Xz(),
@@ -148,25 +148,25 @@ namespace sm64.Scripts {
     }
 
     public void buildCollisionMap() {
-      verts = vertices.ToArray();
+      this.verts = this.vertices.ToArray();
 
-      vbo = GL.GenBuffer();
-      GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+      this.vbo = GL.GenBuffer();
+      GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbo);
       GL.BufferData(
           BufferTarget.ArrayBuffer,
-          (IntPtr) (3 * sizeof(float) * verts.Length),
-          verts,
+          (IntPtr) (3 * sizeof(float) * this.verts.Length),
+          this.verts,
           BufferUsageHint.StaticDraw
       );
 
-      for (int i = 0; i < triangles.Count; i++) {
-        triangles[i].buildList();
-        triangles[i].ibo = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ElementArrayBuffer, triangles[i].ibo);
+      for (int i = 0; i < this.triangles.Count; i++) {
+        this.triangles[i].buildList();
+        this.triangles[i].ibo = GL.GenBuffer();
+        GL.BindBuffer(BufferTarget.ElementArrayBuffer, this.triangles[i].ibo);
         GL.BufferData(
             BufferTarget.ElementArrayBuffer,
-            (IntPtr) (sizeof(uint) * triangles[i].indices.Length),
-            triangles[i].indices,
+            (IntPtr) (sizeof(uint) * this.triangles[i].indices.Length),
+            this.triangles[i].indices,
             BufferUsageHint.StaticDraw
         );
       }

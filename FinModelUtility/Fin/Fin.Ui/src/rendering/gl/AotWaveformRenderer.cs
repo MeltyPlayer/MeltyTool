@@ -25,7 +25,7 @@ public class AotWaveformRenderer {
 
       var samplesPerPoint = 10;
       var xPerPoint = 1;
-      var pointCount = Width / xPerPoint;
+      var pointCount = this.Width / xPerPoint;
       var points = this.points_.AsSpan(0, pointCount + 1);
 
       var samplesAcrossWidth = samplesPerPoint * pointCount;

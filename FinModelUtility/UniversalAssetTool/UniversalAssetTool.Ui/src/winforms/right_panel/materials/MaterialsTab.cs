@@ -9,7 +9,7 @@ public partial class MaterialsTab : UserControl {
   private IReadOnlyModel? model_;
 
   public MaterialsTab() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.materialSelector_.OnMaterialSelected += material => {
         this.materialViewerPanel1.Material = material;

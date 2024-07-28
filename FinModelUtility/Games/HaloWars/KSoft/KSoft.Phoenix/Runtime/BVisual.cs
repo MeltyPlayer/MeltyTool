@@ -32,7 +32,7 @@ namespace KSoft.Phoenix.Runtime
 			const byte k_size_in_bytes = sizeof(uint);
 
 			s.StreamSignature(k_size_in_bytes);
-			s.Stream(ref Flags);
+			s.Stream(ref this.Flags);
 		}
 		void StreamAttachments(IO.EndianStream s)
 		{
@@ -40,18 +40,18 @@ namespace KSoft.Phoenix.Runtime
 		}
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamMatrix(s, ref Matrix);
-			s.Stream(ref SubUpdateNumber);
-			s.Stream(ref GrannySubUpdateNumber);
-			BSaveGame.StreamMatrix(s, ref Matrix1);
-			BSaveGame.StreamMatrix(s, ref Matrix2);
-			s.StreamV(ref CombinedMinCorner); s.StreamV(ref CombinedMaxCorner);
-			s.StreamV(ref MinCorner); s.StreamV(ref MaxCorner);
-			s.Stream(ref ModelAsset);
-			if (s.StreamCond(ModelUVOffsets, offsets => !offsets.EqualsZero()))
-				s.Stream(ModelUVOffsets);
-			StreamFlags(s);
-			StreamAttachments(s);
+			BSaveGame.StreamMatrix(s, ref this.Matrix);
+			s.Stream(ref this.SubUpdateNumber);
+			s.Stream(ref this.GrannySubUpdateNumber);
+			BSaveGame.StreamMatrix(s, ref this.Matrix1);
+			BSaveGame.StreamMatrix(s, ref this.Matrix2);
+			s.StreamV(ref this.CombinedMinCorner); s.StreamV(ref this.CombinedMaxCorner);
+			s.StreamV(ref this.MinCorner); s.StreamV(ref this.MaxCorner);
+			s.Stream(ref this.ModelAsset);
+			if (s.StreamCond(this.ModelUVOffsets, offsets => !offsets.EqualsZero()))
+				s.Stream(this.ModelUVOffsets);
+			this.StreamFlags(s);
+			this.StreamAttachments(s);
 		}
 		#endregion
 	};
@@ -66,7 +66,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref UserData);
+			s.Stream(ref this.UserData);
 		}
 		#endregion
 	};

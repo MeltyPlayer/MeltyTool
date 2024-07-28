@@ -20,11 +20,11 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(Path);
-			s.Stream(ref CurrentWaypoint);
-			s.Stream(ref PathTime);
-			BSaveGame.StreamFreeListItemPtr(s, ref LinkedPath);
-			s.Stream(ref PathLevel);
+			s.Stream(this.Path);
+			s.Stream(ref this.CurrentWaypoint);
+			s.Stream(ref this.PathTime);
+			BSaveGame.StreamFreeListItemPtr(s, ref this.LinkedPath);
+			s.Stream(ref this.PathLevel);
 		}
 		#endregion
 	};

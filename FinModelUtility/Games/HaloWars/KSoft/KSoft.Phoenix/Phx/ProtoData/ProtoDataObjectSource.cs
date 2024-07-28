@@ -16,22 +16,23 @@ namespace KSoft.Phoenix.Phx
 			Contract.Requires(kind != ProtoDataObjectSourceKind.None);
 			Contract.Requires(!kind.RequiresFileReference() || fileReference != null);
 
-			SourceKind = kind;
-			FileReference = fileReference;
+			this.SourceKind = kind;
+			this.FileReference = fileReference;
 		}
 
 		public override string ToString()
 		{
-			if (FileReference == null)
-				return SourceKind.ToString();
+			if (this.FileReference == null)
+				return this.SourceKind.ToString();
 
 			return string.Format("{0} - {1}",
-				SourceKind, FileReference);
+			                     this.SourceKind,
+			                     this.FileReference);
 		}
 
 		public ProtoDataObjectDatabase GetObjectDatabase(Engine.PhxEngine engine)
 		{
-			switch (SourceKind)
+			switch (this.SourceKind)
 			{
 				case ProtoDataObjectSourceKind.Database:
 					return new ProtoDataObjectDatabase(engine.Database, typeof(DatabaseObjectKind));
@@ -44,7 +45,7 @@ namespace KSoft.Phoenix.Phx
 
 				default:
 					throw new System.NotImplementedException(string.Format(
-						nameof(GetObjectDatabase) + " needs support for {0}",
+						nameof(this.GetObjectDatabase) + " needs support for {0}",
 						this));
 			}
 		}

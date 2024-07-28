@@ -14,7 +14,7 @@ namespace KSoft.Collections
 	public abstract class BListExplicitIndexBase<T>
 		: BListBase<T>
 	{
-		internal BListExplicitIndexParams<T> ExplicitIndexParams { get { return Params as BListExplicitIndexParams<T>; } }
+		internal BListExplicitIndexParams<T> ExplicitIndexParams { get { return this.Params as BListExplicitIndexParams<T>; } }
 
 		protected BListExplicitIndexBase(BListExplicitIndexParams<T> @params) : base(@params)
 		{
@@ -29,34 +29,34 @@ namespace KSoft.Collections
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="newCount"/> is less than <see cref="Count"/></exception>
 		internal void ResizeCount(int newCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(newCount >= Count,
+			Contract.Requires<ArgumentOutOfRangeException>(newCount >= this.Count,
 				"For resizing to a smaller Count, use Capacity.");
 
-			var eip = ExplicitIndexParams;
+			var eip = this.ExplicitIndexParams;
 
-			for (int x = Count; x < newCount; x++)
-				AddItem(eip.kTypeGetInvalid());
+			for (int x = this.Count; x < newCount; x++)
+				this.AddItem(eip.kTypeGetInvalid());
 		}
 
 		public override void Clear()
 		{
-			int original_count = Count;
+			int original_count = this.Count;
 			base.Clear();
 
-			ResizeCount(original_count);
+			this.ResizeCount(original_count);
 		}
 
 		internal void InitializeItem(int index)
 		{
 			Contract.Requires<ArgumentOutOfRangeException>(index >= 0);
 
-			var eip = ExplicitIndexParams;
+			var eip = this.ExplicitIndexParams;
 
-			if (index >= Count)
+			if (index >= this.Count)
 			{
 				// expand the list up-to the requested index
-				for (int x = Count; x <= index; x++)
-					AddItem(eip.kTypeGetInvalid());
+				for (int x = this.Count; x <= index; x++)
+					this.AddItem(eip.kTypeGetInvalid());
 			}
 			else
 				base[index] = eip.kTypeGetInvalid();

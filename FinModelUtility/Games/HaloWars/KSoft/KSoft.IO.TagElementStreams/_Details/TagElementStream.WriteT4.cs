@@ -81,31 +81,31 @@ namespace KSoft.IO
 		public void WriteCursor(string value)
 		{
 			Contract.Requires<ArgumentNullException>(value != null);
-			WriteElement(Cursor, value);
+			this.WriteElement(this.Cursor, value);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		public void WriteCursor(char value)
 		{
-			WriteElement(Cursor, value);
+			this.WriteElement(this.Cursor, value);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		public void WriteCursor(bool value)
 		{
-			WriteElement(Cursor, value);
+			this.WriteElement(this.Cursor, value);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		public void WriteCursor(float value)
 		{
-			WriteElement(Cursor, value);
+			this.WriteElement(this.Cursor, value);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		public void WriteCursor(double value)
 		{
-			WriteElement(Cursor, value);
+			this.WriteElement(this.Cursor, value);
 		}
 
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
@@ -113,56 +113,56 @@ namespace KSoft.IO
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(byte value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(sbyte value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(ushort value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(short value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(uint value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(int value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(ulong value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		/// <summary>Set <see cref="Cursor"/>'s value to <paramref name="value"/></summary>
 		/// <param name="value">Data to set the <see cref="Cursor"/> to</param>
 		/// <param name="toBase">Numerical base to use</param>
 		public void WriteCursor(long value, NumeralBase toBase=kDefaultRadix)
 		{
-			WriteElement(Cursor, value, toBase);
+			this.WriteElement(this.Cursor, value, toBase);
 		}
 		#endregion
 
@@ -174,10 +174,10 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, string value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(value != null);
 
-			WriteElement(WriteElementAppend(name), value);
+			this.WriteElement(this.WriteElementAppend(name), value);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -185,9 +185,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, char value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value);
+			this.WriteElement(this.WriteElementAppend(name), value);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -195,9 +195,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, bool value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value);
+			this.WriteElement(this.WriteElementAppend(name), value);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -205,9 +205,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, float value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value);
+			this.WriteElement(this.WriteElementAppend(name), value);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -215,9 +215,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, double value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value);
+			this.WriteElement(this.WriteElementAppend(name), value);
 		}
 
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
@@ -227,9 +227,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, byte value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -238,9 +238,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, sbyte value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -249,9 +249,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, ushort value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -260,9 +260,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, short value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -271,9 +271,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, uint value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -282,9 +282,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, int value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -293,9 +293,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, ulong value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
 		/// <param name="name">The <see cref="XmlElement"/>'s name</param>
@@ -304,9 +304,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name, long value, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value, toBase);
+			this.WriteElement(this.WriteElementAppend(name), value, toBase);
 		}
 		#endregion
 
@@ -386,12 +386,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, string value, Predicate<string> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -404,14 +404,14 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, string value, Predicate<string> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			if (predicate != string.IsNullOrEmpty && value == null)
 				throw new ArgumentNullException(nameof(value));
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -424,12 +424,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, char value, Predicate<char> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -442,12 +442,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, char value, Predicate<char> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -460,12 +460,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, bool value, Predicate<bool> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -478,12 +478,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, bool value, Predicate<bool> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -496,12 +496,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, float value, Predicate<float> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -514,12 +514,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, float value, Predicate<float> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -532,12 +532,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, double value, Predicate<double> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -550,12 +550,12 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, double value, Predicate<double> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -570,13 +570,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, byte value, Predicate<byte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -590,13 +590,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, byte value, Predicate<byte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -610,13 +610,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, sbyte value, Predicate<sbyte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -630,13 +630,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, sbyte value, Predicate<sbyte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -650,13 +650,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, ushort value, Predicate<ushort> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -670,13 +670,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, ushort value, Predicate<ushort> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -690,13 +690,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, short value, Predicate<short> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -710,13 +710,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, short value, Predicate<short> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -730,13 +730,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, uint value, Predicate<uint> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -750,13 +750,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, uint value, Predicate<uint> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -770,13 +770,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, int value, Predicate<int> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -790,13 +790,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, int value, Predicate<int> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -810,13 +810,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, ulong value, Predicate<ulong> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -830,13 +830,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, ulong value, Predicate<ulong> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -850,13 +850,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnTrue(TName name, long value, Predicate<long> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -870,13 +870,13 @@ namespace KSoft.IO
 		public bool WriteElementOptOnFalse(TName name, long value, Predicate<long> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElement(name, value, toBase);
+				this.WriteElement(name, value, toBase);
 
 			return result;
 		}
@@ -892,13 +892,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, string value, Predicate<string> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -910,15 +910,15 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, string value, Predicate<string> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 			if (predicate != string.IsNullOrEmpty && value == null)
 				throw new ArgumentNullException(nameof(value));
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -930,13 +930,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, char value, Predicate<char> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -948,13 +948,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, char value, Predicate<char> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -966,13 +966,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, bool value, Predicate<bool> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -984,13 +984,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, bool value, Predicate<bool> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -1002,13 +1002,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, float value, Predicate<float> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -1020,13 +1020,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, float value, Predicate<float> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -1038,13 +1038,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, double value, Predicate<double> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -1056,13 +1056,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, double value, Predicate<double> predicate)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -1076,13 +1076,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, byte value, Predicate<byte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1095,13 +1095,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, byte value, Predicate<byte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1114,13 +1114,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, sbyte value, Predicate<sbyte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1133,13 +1133,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, sbyte value, Predicate<sbyte> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1152,13 +1152,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, ushort value, Predicate<ushort> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1171,13 +1171,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, ushort value, Predicate<ushort> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1190,13 +1190,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, short value, Predicate<short> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1209,13 +1209,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, short value, Predicate<short> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1228,13 +1228,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, uint value, Predicate<uint> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1247,13 +1247,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, uint value, Predicate<uint> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1266,13 +1266,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, int value, Predicate<int> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1285,13 +1285,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, int value, Predicate<int> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1304,13 +1304,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, ulong value, Predicate<ulong> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1323,13 +1323,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, ulong value, Predicate<ulong> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1342,13 +1342,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnTrue(TName name, long value, Predicate<long> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1361,13 +1361,13 @@ namespace KSoft.IO
 		public bool WriteAttributeOptOnFalse(TName name, long value, Predicate<long> predicate, NumeralBase toBase=NumeralBase.Decimal)
 		{
 			Contract.Requires(predicate != null);
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttribute(name, value, toBase);
+				this.WriteAttribute(name, value, toBase);
 
 			return result;
 		}
@@ -1377,108 +1377,108 @@ namespace KSoft.IO
 		#region WriteElements
 		public void WriteElements(TName elementName, ICollection< string > coll)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value);
+				this.WriteElement(elementName, value);
 		}
 		public void WriteElements(TName elementName, ICollection< char > coll)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value);
+				this.WriteElement(elementName, value);
 		}
 		public void WriteElements(TName elementName, ICollection< bool > coll)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value);
+				this.WriteElement(elementName, value);
 		}
 		public void WriteElements(TName elementName, ICollection< float > coll)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value);
+				this.WriteElement(elementName, value);
 		}
 		public void WriteElements(TName elementName, ICollection< double > coll)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value);
+				this.WriteElement(elementName, value);
 		}
 
 		public void WriteElements(TName elementName, ICollection< byte > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		public void WriteElements(TName elementName, ICollection< sbyte > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		public void WriteElements(TName elementName, ICollection< ushort > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		public void WriteElements(TName elementName, ICollection< short > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		public void WriteElements(TName elementName, ICollection< uint > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		public void WriteElements(TName elementName, ICollection< int > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		public void WriteElements(TName elementName, ICollection< ulong > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		public void WriteElements(TName elementName, ICollection< long > coll, NumeralBase toBase=kDefaultRadix)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
-				WriteElement(elementName, value, toBase);
+				this.WriteElement(elementName, value, toBase);
 		}
 		#endregion
 	};
@@ -1489,94 +1489,94 @@ namespace KSoft.IO
 		#region WriteAttribute
 		public override void WriteAttribute(TName name, string value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(value != null);
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, char value)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, bool value)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, float value)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, double value)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 
 		public override void WriteAttribute(TName name, byte value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, sbyte value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, ushort value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, short value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, uint value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, int value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, ulong value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 		public override void WriteAttribute(TName name, long value, NumeralBase toBase)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}

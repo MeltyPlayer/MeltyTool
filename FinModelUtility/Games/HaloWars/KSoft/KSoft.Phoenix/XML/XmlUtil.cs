@@ -34,7 +34,7 @@ namespace KSoft.Phoenix.XML
 			where TDoc : class
 			where TCursor : class
 		{
-			Contract.Requires(xmlSource.RequiresName() == (xmlName != XML.XmlUtil.kNoXmlName));
+			Contract.Requires(xmlSource.RequiresName() == (xmlName != kNoXmlName));
 			Contract.Requires(xmlSource != IO.TagElementNodeType.Attribute);
 
 			return xmlSource == IO.TagElementNodeType.Text
@@ -69,7 +69,7 @@ namespace KSoft.Phoenix
 
 				if (was_streamed)
 				{
-					var parse_result = PhxUtil.ParseBVectorString(string_value);
+					var parse_result = ParseBVectorString(string_value);
 					if (!parse_result.HasValue)
 						s.ThrowReadException(new System.IO.InvalidDataException(string.Format(
 							"Failed to parse value (hint: {0}) as vector: {1}",
@@ -120,7 +120,7 @@ namespace KSoft.Phoenix
 
 				if (was_streamed)
 				{
-					if (!PhxUtil.TokenizeIntegerColor(string_value, defaultAlpha, ref color))
+					if (!TokenizeIntegerColor(string_value, defaultAlpha, ref color))
 						s.ThrowReadException(new System.IO.InvalidDataException(string.Format(
 							"Failed to parse value (hint: {0}) as color: {1}",
 							xmlSource.RequiresName() ? xmlName : "ElementText",

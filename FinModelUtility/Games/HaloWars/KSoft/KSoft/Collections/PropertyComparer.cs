@@ -23,18 +23,20 @@ namespace KSoft.Collections.Generic
 		/// <exception cref="MissingMemberException" />
 		void ValidateProperty(Type type, bool checkPropertyOwner = false)
 		{
-			if (!mProperty.CanRead)
+			if (!this.mProperty.CanRead)
 			{
 				throw new MemberAccessException(string.Format(Util.InvariantCultureInfo,
 					"{0}'s property '{1}' can't be read!",
-					type.Name, mProperty.Name));
+					type.Name,
+					this.mProperty.Name));
 			}
 
-			if (checkPropertyOwner && mProperty.DeclaringType != type)
+			if (checkPropertyOwner && this.mProperty.DeclaringType != type)
 			{
 				throw new MissingMemberException(string.Format(Util.InvariantCultureInfo,
 					"Property '{1}' is not a member of {0}!",
-					type.Name, mProperty.Name));
+					type.Name,
+					this.mProperty.Name));
 			}
 		}
 
@@ -51,10 +53,10 @@ namespace KSoft.Collections.Generic
 
 			var type = typeof(T);
 
-			mProperty = property;
-			mDirection = direction;
+			this.mProperty = property;
+			this.mDirection = direction;
 
-			ValidateProperty(type, true);
+			this.ValidateProperty(type, true);
 		}
 		/// <summary>Build a new comparer</summary>
 		/// <param name="propertyName">Property of <typeparamref name="T"/> to compare, or null</param>
@@ -70,7 +72,7 @@ namespace KSoft.Collections.Generic
 				var properties = type.GetProperties();
 				if (properties.Length > 0)
 				{
-					mProperty = properties[0];
+					this.mProperty = properties[0];
 				}
 				else
 				{
@@ -84,7 +86,7 @@ namespace KSoft.Collections.Generic
 				var prop = type.GetProperty(propertyName);
 				if (prop != null)
 				{
-					mProperty = prop;
+					this.mProperty = prop;
 				}
 				else
 				{
@@ -94,9 +96,9 @@ namespace KSoft.Collections.Generic
 				}
 			}
 
-			mDirection = direction;
+			this.mDirection = direction;
 
-			ValidateProperty(type);
+			this.ValidateProperty(type);
 		}
 		/// <summary>Build a default comparer with <see cref="SortDirection.Ascending">Ascending</see> results</summary>
 		public PropertyComparer()
@@ -113,12 +115,12 @@ namespace KSoft.Collections.Generic
 
 			// #REVIEW: I think it's safe to cast to IComparable<T>
 			// unless you're still using .NET 1 assemblies...why would you do such a thing?
-			var obj1 = mProperty.GetValue(x, null) as IComparable;
-			var obj2 = mProperty.GetValue(y, null) as IComparable;
+			var obj1 = this.mProperty.GetValue(x, null) as IComparable;
+			var obj2 = this.mProperty.GetValue(y, null) as IComparable;
 
 			int result = obj1.CompareTo(obj2);
 
-			if (mDirection != SortDirection.Ascending)
+			if (this.mDirection != SortDirection.Ascending)
 				result *= -1;
 
 			return result;

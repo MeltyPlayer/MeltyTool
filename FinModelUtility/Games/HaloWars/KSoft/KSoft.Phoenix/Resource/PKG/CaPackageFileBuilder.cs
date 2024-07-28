@@ -26,7 +26,7 @@ namespace KSoft.Phoenix.Resource.PKG
 			if (Path.GetExtension(listingPath) != CaPackageFileDefinition.kFileExtension)
 				listingPath += CaPackageFileDefinition.kFileExtension;
 
-			mSourceFile = listingPath;
+			this.mSourceFile = listingPath;
 		}
 
 		#region Reading
@@ -34,26 +34,26 @@ namespace KSoft.Phoenix.Resource.PKG
 		{
 			bool result = true;
 
-			if (ProgressOutput != null)
-				ProgressOutput.WriteLine("Trying to read source listing {0}...", mSourceFile);
+			if (this.ProgressOutput != null)
+				this.ProgressOutput.WriteLine("Trying to read source listing {0}...", this.mSourceFile);
 
-			if (!File.Exists(mSourceFile))
+			if (!File.Exists(this.mSourceFile))
 				result = false;
 			else
 			{
-				mPkgFile = new CaPackageFile();
+				this.mPkgFile = new CaPackageFile();
 
-				using (var xml = new IO.XmlElementStream(mSourceFile, FileAccess.Read, this))
+				using (var xml = new IO.XmlElementStream(this.mSourceFile, FileAccess.Read, this))
 				{
 					xml.InitializeAtRootElement();
-					PkgDefinition.Serialize(xml);
+					this.PkgDefinition.Serialize(xml);
 				}
 			}
 
 			if (result == false)
 			{
-				if (ProgressOutput != null)
-					ProgressOutput.WriteLine("\tFailed!");
+				if (this.ProgressOutput != null)
+					this.ProgressOutput.WriteLine("\tFailed!");
 			}
 
 			return result;
@@ -62,11 +62,11 @@ namespace KSoft.Phoenix.Resource.PKG
 		{
 			bool result = true;
 
-			try { result &= ReadInternal(); }
+			try { result &= this.ReadInternal(); }
 			catch (Exception ex)
 			{
-				if (VerboseOutput != null)
-					VerboseOutput.WriteLine("\tEncountered an error while trying to read listing: {0}", ex);
+				if (this.VerboseOutput != null)
+					this.VerboseOutput.WriteLine("\tEncountered an error while trying to read listing: {0}", ex);
 				result = false;
 			}
 

@@ -33,15 +33,15 @@ namespace KSoft.Text
 		readonly bool kIncludeProceedingZeros;
 
 		/// <summary>Numerial base of this encoding</summary>
-		public int Radix { get { return kDigits.Length; } }
+		public int Radix { get { return this.kDigits.Length; } }
 		/// <summary>Endian ordering of bytes input to Encode and output by Decode</summary>
-		public Shell.EndianFormat Endian { get { return kEndian; } }
+		public Shell.EndianFormat Endian { get { return this.kEndian; } }
 		/// <summary>True if we want ending zero bytes to be encoded</summary>
-		public bool IncludeProceedingZeros { get { return kIncludeProceedingZeros; } }
+		public bool IncludeProceedingZeros { get { return this.kIncludeProceedingZeros; } }
 
 		public override string ToString()
 		{
-			return string.Format(KSoft.Util.InvariantCultureInfo, "Base-{0} {1}", Radix.ToString(KSoft.Util.InvariantCultureInfo), kDigits);
+			return string.Format(KSoft.Util.InvariantCultureInfo, "Base-{0} {1}", this.Radix.ToString(KSoft.Util.InvariantCultureInfo), this.kDigits);
 		}
 
 		/// <summary>Create a radix encoder using the given characters as the digits in the radix</summary>
@@ -54,22 +54,22 @@ namespace KSoft.Text
 			Contract.Requires<ArgumentNullException>(digits != null);
 			int radix = digits.Length;
 
-			kDigits = digits;
-			kBitsPerDigit = System.Math.Log(radix, 2);
-			kRadixBig = new BigInteger(radix);
-			kEndian = bytesEndian;
-			kIncludeProceedingZeros = includeProceedingZeros;
+			this.kDigits = digits;
+			this.kBitsPerDigit = Math.Log(radix, 2);
+			this.kRadixBig = new BigInteger(radix);
+			this.kEndian = bytesEndian;
+			this.kIncludeProceedingZeros = includeProceedingZeros;
 		}
 
 		// Number of characters needed for encoding the specified number of bytes
 		int EncodingCharsCount(int bytesLength)
 		{
-			return (int)System.Math.Ceiling((bytesLength * Bits.kByteBitCount) / kBitsPerDigit);
+			return (int)Math.Ceiling((bytesLength * Bits.kByteBitCount) / this.kBitsPerDigit);
 		}
 		// Number of bytes needed to decoding the specified number of characters
 		int DecodingBytesCount(int charsCount)
 		{
-			return (int)System.Math.Ceiling((charsCount * kBitsPerDigit) / Bits.kByteBitCount);
+			return (int)Math.Ceiling((charsCount * this.kBitsPerDigit) / Bits.kByteBitCount);
 		}
 
 		/// <summary>Encode a byte array into a radix-encoded string</summary>
@@ -87,7 +87,7 @@ namespace KSoft.Text
 
 			// if the array ends with zeros, having the capacity set to this will help us know how much
 			// 'padding' we will need to add
-			int result_length = EncodingCharsCount(bytes.Length);
+			int result_length = this.EncodingCharsCount(bytes.Length);
 			// List<> has a(n in-place) Reverse method. StringBuilder doesn't. That's why.
 			var result = new List<char>(result_length);
 
@@ -101,17 +101,17 @@ namespace KSoft.Text
 			// which invokes BigInteger.CompareTo(BigInteger)
 			while (!dividend.IsZero)
 			{
-				dividend = BigInteger.DivRem(dividend, kRadixBig, out BigInteger remainder);
-				int digit_index = System.Math.Abs((int)remainder);
-				result.Add(kDigits[digit_index]);
+				dividend = BigInteger.DivRem(dividend, this.kRadixBig, out BigInteger remainder);
+				int digit_index = Math.Abs((int)remainder);
+				result.Add(this.kDigits[digit_index]);
 			}
 
-			if (kIncludeProceedingZeros)
+			if (this.kIncludeProceedingZeros)
 				for (int x = result.Count; x < result.Capacity; x++)
-					result.Add(kDigits[0]); // pad with the character that represents 'zero'
+					result.Add(this.kDigits[0]); // pad with the character that represents 'zero'
 
 			// orientate the characters in big-endian ordering
-			if (kEndian == Shell.EndianFormat.Little)
+			if (this.kEndian == Shell.EndianFormat.Little)
 				result.Reverse();
 			// If we didn't end up adding padding, ToArray will end up returning a TrimExcess'd array,
 			// so nothing wasted
@@ -122,7 +122,7 @@ namespace KSoft.Text
 		{
 			if (padCount > 0)
 			{
-				int new_length = result.Length + DecodingBytesCount(padCount);
+				int new_length = result.Length + this.DecodingBytesCount(padCount);
 				Array.Resize(ref result, new_length); // new bytes will be zero, just the way we want it
 			}
 		}
@@ -132,9 +132,9 @@ namespace KSoft.Text
 			var bi = new BigInteger();
 			for (int x = startIndex; x < chars.Length; x++)
 			{
-				int i = kDigits.IndexOf(chars[x]);
+				int i = this.kDigits.IndexOf(chars[x]);
 				if (i < 0) return null; // invalid character
-				bi *= kRadixBig;
+				bi *= this.kRadixBig;
 				bi += i;
 			}
 
@@ -144,10 +144,10 @@ namespace KSoft.Text
 		{
 			int pad_count = 0;
 			for (int x = 0; x < chars.Length; x++, pad_count++)
-				if (chars[x] != kDigits[0]) break;
+				if (chars[x] != this.kDigits[0]) break;
 
-			var result = DecodeImpl(chars, pad_count);
-			DecodeImplPadResult(ref result, pad_count);
+			var result = this.DecodeImpl(chars, pad_count);
+			this.DecodeImplPadResult(ref result, pad_count);
 
 			return result;
 		}
@@ -158,9 +158,9 @@ namespace KSoft.Text
 			var bi = new BigInteger();
 			for (int x = (chars.Length-1)-startIndex; x >= 0; x--)
 			{
-				int i = kDigits.IndexOf(chars[x]);
+				int i = this.kDigits.IndexOf(chars[x]);
 				if (i < 0) return null; // invalid character
-				bi *= kRadixBig;
+				bi *= this.kRadixBig;
 				bi += i;
 			}
 
@@ -170,10 +170,10 @@ namespace KSoft.Text
 		{
 			int pad_count = 0;
 			for (int x = chars.Length - 1; x >= 0; x--, pad_count++)
-				if (chars[x] != kDigits[0]) break;
+				if (chars[x] != this.kDigits[0]) break;
 
-			var result = DecodeImplReversed(chars, pad_count);
-			DecodeImplPadResult(ref result, pad_count);
+			var result = this.DecodeImplReversed(chars, pad_count);
+			this.DecodeImplPadResult(ref result, pad_count);
 
 			return result;
 		}
@@ -192,10 +192,10 @@ namespace KSoft.Text
 		{
 			Contract.Requires<ArgumentNullException>(radixChars != null);
 
-			if (kEndian == Shell.EndianFormat.Big)
-				return kIncludeProceedingZeros ? DecodeImplReversedWithPadding(radixChars) : DecodeImplReversed(radixChars);
+			if (this.kEndian == Shell.EndianFormat.Big)
+				return this.kIncludeProceedingZeros ? this.DecodeImplReversedWithPadding(radixChars) : this.DecodeImplReversed(radixChars);
 			else
-				return kIncludeProceedingZeros ? DecodeImplWithPadding(radixChars) : DecodeImpl(radixChars);
+				return this.kIncludeProceedingZeros ? this.DecodeImplWithPadding(radixChars) : this.DecodeImpl(radixChars);
 		}
 	};
 };

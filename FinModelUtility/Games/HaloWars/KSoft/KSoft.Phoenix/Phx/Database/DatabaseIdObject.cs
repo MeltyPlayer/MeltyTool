@@ -9,8 +9,8 @@ namespace KSoft.Phoenix.Phx
 		private int mDbId = TypeExtensions.kNone;
 		public int DbId
 		{
-			get { return mDbId; }
-			set { this.SetFieldVal(ref mDbId, value); }
+			get { return this.mDbId; }
+			set { this.SetFieldVal(ref this.mDbId, value); }
 		}
 		#endregion
 
@@ -31,7 +31,7 @@ namespace KSoft.Phoenix.Phx
 		{
 			base.Serialize(s);
 
-			StreamDbId(s);
+			this.StreamDbId(s);
 		}
 		#endregion
 	};

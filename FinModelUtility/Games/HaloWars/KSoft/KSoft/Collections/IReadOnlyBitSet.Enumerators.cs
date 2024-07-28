@@ -19,13 +19,13 @@ namespace KSoft.Collections
 
 			public bool MoveNext()
 			{
-				if (mBitIndex < mLastIndex)
+				if (this.mBitIndex < this.mLastIndex)
 				{
-					mCurrent = mSet.Get(++mBitIndex);
+					this.mCurrent = this.mSet.Get(++this.mBitIndex);
 					return true;
 				}
 
-				mBitIndex = mSet.Length;
+				this.mBitIndex = this.mSet.Length;
 				return false;
 			}
 		};
@@ -39,27 +39,27 @@ namespace KSoft.Collections
 				Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0);
 				Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < bitset.Length || bitset.Length == 0);
 
-				mStateFilter = stateFilter;
-				mStartBitIndex = startBitIndex-1;
+				this.mStateFilter = stateFilter;
+				this.mStartBitIndex = startBitIndex-1;
 			}
 
 			public bool MoveNext()
 			{
-				if (mBitIndex.IsNone())
-					mBitIndex = mStartBitIndex;
+				if (this.mBitIndex.IsNone())
+					this.mBitIndex = this.mStartBitIndex;
 
-				if (mBitIndex < mLastIndex)
+				if (this.mBitIndex < this.mLastIndex)
 				{
-					mCurrent = mSet.NextBitIndex(++mBitIndex, mStateFilter);
+					this.mCurrent = this.mSet.NextBitIndex(++this.mBitIndex, this.mStateFilter);
 
-					if (mCurrent >= 0)
+					if (this.mCurrent >= 0)
 					{
-						mBitIndex = mCurrent;
+						this.mBitIndex = this.mCurrent;
 						return true;
 					}
 				}
 
-				mBitIndex = mSet.Length;
+				this.mBitIndex = this.mSet.Length;
 				return false;
 			}
 		};

@@ -22,7 +22,7 @@ namespace UoT.util {
     public static T Assert<T>(T? value, string? message = null)
         where T : class {
       if (value == null) {
-        Asserts.Fail(message);
+        Fail(message);
       }
       return value!;
     }

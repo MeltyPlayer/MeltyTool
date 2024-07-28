@@ -14,18 +14,18 @@ namespace KSoft.Phoenix.Xmb
 		public byte NameValuesCount;
 		public byte ChildNodesCount;
 
-		public bool IsRootNode { get { return ParentIndex == ushort.MaxValue; } }
-		public bool HasNameValuesCountOverflow { get { return NameValuesCount == byte.MaxValue; } }
-		public bool HasChildNodesCountOverflow { get { return ChildNodesCount == byte.MaxValue; } }
+		public bool IsRootNode { get { return this.ParentIndex == ushort.MaxValue; } }
+		public bool HasNameValuesCountOverflow { get { return this.NameValuesCount == byte.MaxValue; } }
+		public bool HasChildNodesCountOverflow { get { return this.ChildNodesCount == byte.MaxValue; } }
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref ParentIndex);
-			s.Stream(ref ChildNodeIndex);
-			s.Stream(ref NameValueOffset);
-			s.Stream(ref NameValuesCount);
-			s.Stream(ref ChildNodesCount);
+			s.Stream(ref this.ParentIndex);
+			s.Stream(ref this.ChildNodeIndex);
+			s.Stream(ref this.NameValueOffset);
+			s.Stream(ref this.NameValuesCount);
+			s.Stream(ref this.ChildNodesCount);
 		}
 		#endregion
 	};
@@ -39,11 +39,11 @@ namespace KSoft.Phoenix.Xmb
 		public List<BinaryDataTreeBuildNameValue> NameValues;
 
 		public string NodeName { get {
-			var name_value = NameValues[0];
+			var name_value = this.NameValues[0];
 			return name_value.Name;
 		} }
 		public BinaryDataTreeVariantData NodeVariant { get {
-			var name_value = NameValues[0];
+			var name_value = this.NameValues[0];
 			return name_value.Variant;
 		} }
 
@@ -52,34 +52,34 @@ namespace KSoft.Phoenix.Xmb
 			if (packedNode.IsRootNode)
 			{
 				decompiler.RootNode = this;
-				Parent = null;
+				this.Parent = null;
 			}
 			else
 			{
-				Parent = decompiler.Nodes[packedNode.ParentIndex];
+				this.Parent = decompiler.Nodes[packedNode.ParentIndex];
 			}
 		}
 
 		internal void SetChildren(BinaryDataTreeDecompiler decompiler, BinaryDataTreePackedNode packedNode, int numChildNodes)
 		{
-			Children = new List<BinaryDataTreeBuildNode>(numChildNodes);
+			this.Children = new List<BinaryDataTreeBuildNode>(numChildNodes);
 			for (int x = 0; x < numChildNodes; x++)
-				Children.Add(decompiler.Nodes[packedNode.ChildNodeIndex + x]);
+				this.Children.Add(decompiler.Nodes[packedNode.ChildNodeIndex + x]);
 		}
 
 		internal void SetNameValues(BinaryDataTreeDecompiler decompiler, BinaryDataTreePackedNode packedNode, int numNameValues)
 		{
-			NameValues = new List<BinaryDataTreeBuildNameValue>(numNameValues);
+			this.NameValues = new List<BinaryDataTreeBuildNameValue>(numNameValues);
 			for (int y = 0; y < numNameValues; y++)
-				NameValues.Add(new BinaryDataTreeBuildNameValue());
+				this.NameValues.Add(new BinaryDataTreeBuildNameValue());
 
-			for (int x = 0; x < NameValues.Count; x++)
+			for (int x = 0; x < this.NameValues.Count; x++)
 			{
 				int packed_name_value_index = packedNode.NameValueOffset + x;
 				var packed_name_value = decompiler.NameValues[packed_name_value_index];
-				var build_name_value = NameValues[x];
+				var build_name_value = this.NameValues[x];
 
-				if (x == (NameValues.Count-1))
+				if (x == (this.NameValues.Count-1))
 				{
 					if (!packed_name_value.IsLastNameValue)
 						throw new InvalidDataException("Expected IsLastNameValue");
@@ -95,22 +95,22 @@ namespace KSoft.Phoenix.Xmb
 
 		internal void ToXml(BinaryDataTree tree, IO.XmlElementStream s)
 		{
-			AttributesToXml(tree, s);
-			ChildrenToXml(tree, s);
-			InnerTextToXml(s);
+			this.AttributesToXml(tree, s);
+			this.ChildrenToXml(tree, s);
+			this.InnerTextToXml(s);
 		}
 		void AttributesToXml(BinaryDataTree tree, IO.XmlElementStream s)
 		{
-			if (NameValues == null || NameValues.Count <= 1)
+			if (this.NameValues == null || this.NameValues.Count <= 1)
 				return;
 
 			if (tree.DecompileAttributesWithTypeData)
 			{
 				using (s.EnterCursorBookmark("Attributes"))
 				{
-					for (int x = 1; x < NameValues.Count; x++)
+					for (int x = 1; x < this.NameValues.Count; x++)
 					{
-						var name_value = NameValues[x];
+						var name_value = this.NameValues[x];
 
 						using (s.EnterCursorBookmark(name_value.Name))
 							name_value.Variant.ToStream(s);
@@ -119,19 +119,19 @@ namespace KSoft.Phoenix.Xmb
 			}
 			else
 			{
-				for (int x = 1; x < NameValues.Count; x++)
+				for (int x = 1; x < this.NameValues.Count; x++)
 				{
-					var name_value = NameValues[x];
+					var name_value = this.NameValues[x];
 					name_value.Variant.ToStreamAsAttribute(name_value.Name, s);
 				}
 			}
 		}
 		void ChildrenToXml(BinaryDataTree tree, IO.XmlElementStream s)
 		{
-			if (Children == null || Children.Count == 0)
+			if (this.Children == null || this.Children.Count == 0)
 				return;
 
-			foreach (var child in Children)
+			foreach (var child in this.Children)
 			{
 				using (s.EnterCursorBookmark(child.NodeName))
 					child.ToXml(tree, s);
@@ -139,7 +139,7 @@ namespace KSoft.Phoenix.Xmb
 		}
 		void InnerTextToXml(IO.XmlElementStream s)
 		{
-			var inner_text_variant = NodeVariant;
+			var inner_text_variant = this.NodeVariant;
 			if (inner_text_variant.Type == BinaryDataTreeVariantType.Null)
 				return;
 

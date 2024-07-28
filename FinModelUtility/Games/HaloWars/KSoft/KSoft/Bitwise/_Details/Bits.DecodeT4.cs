@@ -75,7 +75,7 @@ namespace KSoft
 			Contract.Requires/*<ArgumentException>*/(bitMask != 0);
 
 			int bit_count = BitCount(bitMask);
-			Contract.Assert((bitIndex + bit_count) <= Bits.kInt32BitCount);
+			Contract.Assert((bitIndex + bit_count) <= kInt32BitCount);
 
 			var value = (bits >> bitIndex) & bitMask;
 			bitIndex += bit_count;
@@ -164,7 +164,7 @@ namespace KSoft
 			Contract.Requires/*<ArgumentException>*/(bitMask != 0);
 
 			int bit_count = BitCount(bitMask);
-			Contract.Assert((bitIndex + bit_count) <= Bits.kInt64BitCount);
+			Contract.Assert((bitIndex + bit_count) <= kInt64BitCount);
 
 			var value = (bits >> bitIndex) & bitMask;
 			bitIndex += bit_count;

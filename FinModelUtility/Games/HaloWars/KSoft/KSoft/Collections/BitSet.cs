@@ -116,7 +116,7 @@ namespace KSoft.Collections
 		/// This differs from <see cref="LengthInWords"/> as the internal array can be larger than needed due to downsizing
 		/// without calling <see cref="TrimExcess"/>
 		/// </remarks>
-		public int UnderlyingWordCount { get => mArray.Length; }
+		public int UnderlyingWordCount { get => this.mArray.Length; }
 
 		/// <summary>Can <see cref="Length"/> be adjusted?</summary>
 		public bool FixedLength { get; set; }
@@ -128,25 +128,25 @@ namespace KSoft.Collections
 		/// unaddressable. Call <see cref="TrimExcess"/> to optimize the underlying storage to the minimal size
 		/// </remarks>
 		public int Length {
-			get { return mLength; }
+			get { return this.mLength; }
 			set {
-				Contract.Requires<InvalidOperationException>(!FixedLength);
+				Contract.Requires<InvalidOperationException>(!this.FixedLength);
 				Contract.Requires<ArgumentOutOfRangeException>(value >= 0);
-				if (value == mLength)
+				if (value == this.mLength)
 					return;
 
 				int value_in_words = kVectorLengthInT(value);
 				#region resize mArray if needed
-				if (value_in_words > mArray.Length)
+				if (value_in_words > this.mArray.Length)
 				{
 					var new_array = new TWord[value_in_words];
-					Array.Copy(mArray, new_array, mArray.Length);
-					mArray = new_array;
+					Array.Copy(this.mArray, new_array, this.mArray.Length);
+					this.mArray = new_array;
 				}
 				#endregion
 
 				#region clear old bits if downsizing
-				if (value < mLength)
+				if (value < this.mLength)
 				{
 					kVectorBitCursorInT(value, out int index, out int bit_offset);
 
@@ -157,26 +157,26 @@ namespace KSoft.Collections
 						var retained_bits_mask = GetCabooseRetainedBitsMask(value);
 
 						// keep the still-used bits in the vector, while masking out the old ones
-						mArray[index] &= retained_bits_mask;
+						this.mArray[index] &= retained_bits_mask;
 					}
 					else // no caboose, 'hack' index so that the loop below clears it
 						index--;
 
-					for (int x = index + 1; x < mArray.Length; x++)
-						mArray[x] = 0;
+					for (int x = index + 1; x < this.mArray.Length; x++)
+						this.mArray[x] = 0;
 
 					// update the cardinality, if needed
-					if (Cardinality > 0)
+					if (this.Cardinality > 0)
 					{
-						Cardinality = 0;
+						this.Cardinality = 0;
 						for (int x = 0; x < value_in_words; x++)
-							RecalculateCardinalityRound(x);
+							this.RecalculateCardinalityRound(x);
 					}
 				}
 				#endregion
 
-				mLength = value;
-				mVersion++;
+				this.mLength = value;
+				this.mVersion++;
 			}
 		}
 		/// <summary>Number of implementation words <b>needed</b> to represent this bit set</summary>
@@ -184,16 +184,16 @@ namespace KSoft.Collections
 		/// This differs from <see cref="UnderlyingWordCount"/> as it only considers the absolute least amounts of words needed
 		/// and ignores any extra space that may have been accumulated from length downsizing without a call to <see cref="TrimExcess"/>
 		/// </remarks>
-		public int LengthInWords { get => kVectorLengthInT(mLength); }
+		public int LengthInWords { get => kVectorLengthInT(this.mLength); }
 		/// <summary>Number of bits set to true</summary>
 		public int Cardinality { get; private set; }
 		/// <summary>Number of bits set to false</summary>
-		public int CardinalityZeros { get => Length - Cardinality; }
+		public int CardinalityZeros { get => this.Length - this.Cardinality; }
 
 		/// <summary>Are all the bits in this set currently false?</summary>
-		public bool IsAllClear { get => Cardinality == 0; }
+		public bool IsAllClear { get => this.Cardinality == 0; }
 
-		int IReadOnlyBitSet.Version { get => mVersion; }
+		int IReadOnlyBitSet.Version { get => this.mVersion; }
 
 		#region Ctor
 		#region InitializeArray
@@ -201,35 +201,35 @@ namespace KSoft.Collections
 		{
 			outBitLength = length;
 
-			mArray = new TWord[kVectorLengthInT(length)];
+			this.mArray = new TWord[kVectorLengthInT(length)];
 
-			SetAllInternal(defaultValue);
+			this.SetAllInternal(defaultValue);
 
 			// the above method doesn't modify anything besides the raw bits,
 			if (defaultValue)
-				Cardinality = outBitLength;
+				this.Cardinality = outBitLength;
 		}
 		void InitializeArrayFromBytes(byte[] bytes, int index, int length, out int outBitLength)
 		{
 			outBitLength = length * Bits.kByteBitCount;
 
-			mArray = new TWord[kVectorLengthInT(outBitLength)];
+			this.mArray = new TWord[kVectorLengthInT(outBitLength)];
 
-			Buffer.BlockCopy(bytes, index, mArray, 0, length);
+			Buffer.BlockCopy(bytes, index, this.mArray, 0, length);
 
-			RecalculateCardinality();
+			this.RecalculateCardinality();
 		}
 		void InitializeArrayFromBools(bool[] values, int index, int length, out int outBitLength)
 		{
 			outBitLength = length;
 
-			mArray = new TWord[kVectorLengthInT(outBitLength)];
+			this.mArray = new TWord[kVectorLengthInT(outBitLength)];
 
 			for (int x = 0; x < length; x++)
 				if (values[index + x])
 				{
-					mArray[kVectorIndexInT(x)] |= kVectorElementBitMask(x);
-					Cardinality++;
+					this.mArray[kVectorIndexInT(x)] |= kVectorElementBitMask(x);
+					this.Cardinality++;
 				}
 		}
 		#endregion
@@ -244,9 +244,9 @@ namespace KSoft.Collections
 		{
 			Contract.Requires<ArgumentOutOfRangeException>(length >= 0);
 
-			mVersion = 0;
-			InitializeArrayWithDefault(length, defaultValue, out mLength);
-			FixedLength = fixedLength;
+			this.mVersion = 0;
+			this.InitializeArrayWithDefault(length, defaultValue, out this.mLength);
+			this.FixedLength = fixedLength;
 		}
 
 		public BitSet(byte[] bytes, int index, int length, bool fixedLength = true)
@@ -256,11 +256,11 @@ namespace KSoft.Collections
 			Contract.Requires<ArgumentOutOfRangeException>(length >= 0);
 			Contract.Requires<ArgumentOutOfRangeException>((index+length) <= bytes.Length);
 
-			mVersion = 0;
-			InitializeArrayFromBytes(bytes, index, length, out mLength);
-			FixedLength = fixedLength;
+			this.mVersion = 0;
+			this.InitializeArrayFromBytes(bytes, index, length, out this.mLength);
+			this.FixedLength = fixedLength;
 		}
-		[System.Diagnostics.CodeAnalysis.SuppressMessage(Kontracts.kCategory, Kontracts.kIgnoreOverrideId, Justification=Kontracts.kIgnoreOverrideJust)]
+		[SuppressMessage(Kontracts.kCategory, Kontracts.kIgnoreOverrideId, Justification=Kontracts.kIgnoreOverrideJust)]
 		public BitSet(params byte[] bytes) : this(bytes, 0, bytes.Length, true)
 		{
 		}
@@ -272,11 +272,11 @@ namespace KSoft.Collections
 			Contract.Requires<ArgumentOutOfRangeException>(length >= 0);
 			Contract.Requires<ArgumentOutOfRangeException>((index + length) <= values.Length);
 
-			mVersion = 0;
-			InitializeArrayFromBools(values, index, length, out mLength);
-			FixedLength = fixedLength;
+			this.mVersion = 0;
+			this.InitializeArrayFromBools(values, index, length, out this.mLength);
+			this.FixedLength = fixedLength;
 		}
-		[System.Diagnostics.CodeAnalysis.SuppressMessage(Kontracts.kCategory, Kontracts.kIgnoreOverrideId, Justification=Kontracts.kIgnoreOverrideJust)]
+		[SuppressMessage(Kontracts.kCategory, Kontracts.kIgnoreOverrideId, Justification=Kontracts.kIgnoreOverrideJust)]
 		public BitSet(params bool[] values) : this(values, 0, values.Length, true)
 		{
 		}
@@ -285,13 +285,13 @@ namespace KSoft.Collections
 		{
 			Contract.Requires<ArgumentNullException>(set != null);
 
-			mArray = new TWord[set.mArray.Length];
-			Array.Copy(set.mArray, mArray, mArray.Length);
+			this.mArray = new TWord[set.mArray.Length];
+			Array.Copy(set.mArray, this.mArray, this.mArray.Length);
 
-			mLength = set.mLength;
-			Cardinality = set.Cardinality;
-			mVersion = set.mVersion;
-			FixedLength = set.FixedLength;
+			this.mLength = set.mLength;
+			this.Cardinality = set.Cardinality;
+			this.mVersion = set.mVersion;
+			this.FixedLength = set.FixedLength;
 		}
 		public object Clone()	=> new BitSet(this);
 		#endregion
@@ -299,39 +299,39 @@ namespace KSoft.Collections
 		#region RecalculateCardinality
 		/// <summary>Update <see cref="Cardinality"/> for an individual word in the underlying array</summary>
 		/// <param name="wordIndex"></param>
-		void RecalculateCardinalityRound(int wordIndex)		=> Cardinality += Bits.BitCount(mArray[wordIndex]);
+		void RecalculateCardinalityRound(int wordIndex)		=> this.Cardinality += Bits.BitCount(this.mArray[wordIndex]);
 
 		/// <summary>Undo a previous <see cref="RecalculateCardinalityRound"/> for an individual word in the underlying array</summary>
 		/// <param name="wordIndex"></param>
-		void RecalculateCardinalityUndoRound(int wordIndex)	=> Cardinality -= Bits.BitCount(mArray[wordIndex]);
+		void RecalculateCardinalityUndoRound(int wordIndex)	=> this.Cardinality -= Bits.BitCount(this.mArray[wordIndex]);
 
 		void RecalculateCardinalityFinishRounds(int startWordIndex)
 		{
-			for (int x = startWordIndex, word_count = LengthInWords; x < word_count; x++)
-				RecalculateCardinalityRound(x);
+			for (int x = startWordIndex, word_count = this.LengthInWords; x < word_count; x++)
+				this.RecalculateCardinalityRound(x);
 		}
 		void RecalculateCardinality()
 		{
-			Cardinality = 0;
-			for (int x = 0, word_count = LengthInWords; x < word_count; x++)
-				RecalculateCardinalityRound(x);
+			this.Cardinality = 0;
+			for (int x = 0, word_count = this.LengthInWords; x < word_count; x++)
+				this.RecalculateCardinalityRound(x);
 		}
 		#endregion
 
 		#region ClearAlignmentOnlyBits
 		void ClearAlignmentOnlyBits()
 		{
-			int caboose_word_index = LengthInWords - 1;
+			int caboose_word_index = this.LengthInWords - 1;
 
 			if (caboose_word_index < 0)
 				return;
 
-			var retained_bits_mask = GetCabooseRetainedBitsMask(Length);
+			var retained_bits_mask = GetCabooseRetainedBitsMask(this.Length);
 
 			if (retained_bits_mask == 0)
 				return;
 
-			mArray[caboose_word_index] &= retained_bits_mask;
+			this.mArray[caboose_word_index] &= retained_bits_mask;
 		}
 		void ClearAlignmentOnlyBitsForBitOperation(IReadOnlyBitSet value)
 		{
@@ -340,17 +340,17 @@ namespace KSoft.Collections
 			if (value.Length <= this.Length)
 				return;
 
-			var retained_bits_mask = GetCabooseRetainedBitsMask(Length);
+			var retained_bits_mask = GetCabooseRetainedBitsMask(this.Length);
 
 			if (retained_bits_mask == 0)
 				return;
 
-			int last_word_index = LengthInWords - 1;
+			int last_word_index = this.LengthInWords - 1;
 			// the Bit Operations below update Cardinality as each word is touched
 			// so we'll need to 'undo' the last word's round before we mask out the alignment-only bits, then recalc
-			RecalculateCardinalityUndoRound(last_word_index);
-			mArray[last_word_index] &= retained_bits_mask;
-			RecalculateCardinalityRound(last_word_index);
+			this.RecalculateCardinalityUndoRound(last_word_index);
+			this.mArray[last_word_index] &= retained_bits_mask;
+			this.RecalculateCardinalityRound(last_word_index);
 		}
 		#endregion
 
@@ -359,12 +359,12 @@ namespace KSoft.Collections
 			get {
 				// REMINDER: Contract for bitIndex already specified by IReadOnlyBitSet's contract
 
-				return GetInternal(bitIndex);
+				return this.GetInternal(bitIndex);
 			}
 			set {
-				Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < Length);
+				Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < this.Length);
 
-				SetInternal(bitIndex, value);
+				this.SetInternal(bitIndex, value);
 			}
 		}
 		/// <summary>Tests the states of a range of bits</summary>
@@ -377,16 +377,16 @@ namespace KSoft.Collections
 				// REMINDER: Contracts already specified by IReadOnlyBitSet's contract
 
 				int bitCount = toBitIndex - frombitIndex;
-				return bitCount > 0 && TestBits(frombitIndex, bitCount);
+				return bitCount > 0 && this.TestBits(frombitIndex, bitCount);
 			}
 			set {
-				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < Length);
-				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= Length);
+				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < this.Length);
+				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= this.Length);
 
 				// handle the cases of the set already being all 1's or 0's
-				if (value && Cardinality == Length)
+				if (value && this.Cardinality == this.Length)
 					return;
-				if (!value && CardinalityZeros == Length)
+				if (!value && this.CardinalityZeros == this.Length)
 					return;
 
 				int bitCount = toBitIndex - frombitIndex;
@@ -394,9 +394,9 @@ namespace KSoft.Collections
 					return;
 
 				if (value)
-					SetBits(frombitIndex, bitCount);
+					this.SetBits(frombitIndex, bitCount);
 				else
-					ClearBits(frombitIndex, bitCount);
+					this.ClearBits(frombitIndex, bitCount);
 			}
 		}
 
@@ -405,32 +405,32 @@ namespace KSoft.Collections
 			wordIndex = kVectorIndexInT(bitIndex);
 			bitmask = kVectorElementBitMask(bitIndex);
 
-			return Flags.Test(mArray[wordIndex], bitmask);
+			return Flags.Test(this.mArray[wordIndex], bitmask);
 		}
 		/// <summary>Get the value of a specific bit, without performing and bounds checking on the bit index</summary>
 		/// <param name="bitIndex">Position of the bit</param>
 		/// <returns><paramref name="bitIndex"/>'s value in the bit array</returns>
-		bool GetInternal(int bitIndex) => GetInternal(bitIndex, out int index, out TWord bitmask);
+		bool GetInternal(int bitIndex) => this.GetInternal(bitIndex, out int index, out TWord bitmask);
 
 		/// <summary>Get the value of a specific bit</summary>
 		/// <param name="bitIndex">Position of the bit</param>
 		/// <returns><paramref name="bitIndex"/>'s value in the bit array</returns>
-		public bool Get(int bitIndex) => GetInternal(bitIndex);
+		public bool Get(int bitIndex) => this.GetInternal(bitIndex);
 
 		void SetInternal(int wordIndex, TWord bitmask, bool value)
 		{
 			if (value)
 			{
-				Flags.Add(ref mArray[wordIndex], bitmask);
-				++Cardinality;
+				Flags.Add(ref this.mArray[wordIndex], bitmask);
+				++this.Cardinality;
 			}
 			else
 			{
-				Flags.Remove(ref mArray[wordIndex], bitmask);
-				--Cardinality;
+				Flags.Remove(ref this.mArray[wordIndex], bitmask);
+				--this.Cardinality;
 			}
 
-			mVersion++;
+			this.mVersion++;
 		}
 		/// <summary>Set the value of a specific bit, without performing and bounds checking on the bit index</summary>
 		/// <param name="bitIndex">Position of the bit</param>
@@ -440,19 +440,19 @@ namespace KSoft.Collections
 			// #REVIEW: is it really worth checking that we're not setting a bit to the same state?
 			// Yes, currently, as SetInternal updates Cardinality
 
-			bool old_value = GetInternal(bitIndex, out int index, out TWord bitmask);
+			bool old_value = this.GetInternal(bitIndex, out int index, out TWord bitmask);
 
 			if (old_value != value)
-				SetInternal(index, bitmask, value);
+				this.SetInternal(index, bitmask, value);
 		}
 		/// <summary>Set the value of a specific bit</summary>
 		/// <param name="bitIndex">Position of the bit</param>
 		/// <param name="value">New value of the bit</param>
 		public void Set(int bitIndex, bool value)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < Length);
+			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < this.Length);
 
-			SetInternal(bitIndex, value);
+			this.SetInternal(bitIndex, value);
 		}
 
 		/// <summary>Flip the value of a specific bit</summary>
@@ -460,41 +460,41 @@ namespace KSoft.Collections
 		/// <returns>The bit's new value</returns>
 		public bool Toggle(int bitIndex)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < Length);
+			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < this.Length);
 
-			bool old_value = GetInternal(bitIndex, out int index, out TWord bitmask);
+			bool old_value = this.GetInternal(bitIndex, out int index, out TWord bitmask);
 			bool new_value = !old_value;
 
-			SetInternal(index, bitmask, new_value);
+			this.SetInternal(index, bitmask, new_value);
 
 			return new_value;
 		}
 
 		void SetAllInternal(bool value)
 		{
-			int word_count = LengthInWords;
+			int word_count = this.LengthInWords;
 
 			// NOTE: if the array is auto-aligned, this will end up setting alignment-only data
 			var fill_value = value
 				? kWordAllBitsSet
 				: kWordAllBitsClear;
 			for (int x = 0; x < word_count; x++)
-				mArray[x] = fill_value;
+				this.mArray[x] = fill_value;
 
 			if (value) // so if any exist, zero them out
-				ClearAlignmentOnlyBits();
+				this.ClearAlignmentOnlyBits();
 
 			// intentionally don't update Cardinality or mVersion here
 		}
 		public void SetAll(bool value)
 		{
-			SetAllInternal(value);
+			this.SetAllInternal(value);
 
-			Cardinality = value
-				? Length
+			this.Cardinality = value
+				? this.Length
 				: 0;
 
-			mVersion++;
+			this.mVersion++;
 		}
 
 		public int NextBitIndex(int startBitIndex, bool stateFilter)
@@ -505,10 +505,10 @@ namespace KSoft.Collections
 			var bitmask = kVectorElementSectionBitMask(bit_offset);
 
 			int result_bit_index = TypeExtensions.kNone;
-			var word = mArray[index];
+			var word = this.mArray[index];
 			for (	word = (stateFilter == false ? ~word : word) & bitmask;
 					result_bit_index.IsNone();
-					word =  stateFilter == false ? ~mArray[index] : mArray[index])
+					word =  stateFilter == false ? ~this.mArray[index] : this.mArray[index])
 			{
 				// word will be 0 if it contains bits that are NOT stateFilter, thus we want to ignore such elements.
 				// count the number of zeros (representing bits in the undesired state) leading up to the bit with
@@ -517,13 +517,13 @@ namespace KSoft.Collections
 					result_bit_index = kCountZerosForNextBit(word) + (index * kWordBitCount);
 
 				// I perform the increment and loop condition here to keep the for() statement simple
-				if (++index == mArray.Length)
+				if (++index == this.mArray.Length)
 					break;
 			}
 
 			// If we didn't find a next bit, result will be -1 and thus less than Length, which is desired behavior
 			// else, the result is a valid index of the next bit with the desired state
-			return result_bit_index < Length
+			return result_bit_index < this.Length
 				? result_bit_index
 				: TypeExtensions.kNone;
 		}
@@ -541,23 +541,23 @@ namespace KSoft.Collections
 		{
 			Contract.Requires<ArgumentNullException>(value != null);
 
-			if (!object.ReferenceEquals(value, this) && value.Length > 0)
+			if (!ReferenceEquals(value, this) && value.Length > 0)
 			{
-				Cardinality = 0;
-				int length_in_words = System.Math.Min(LengthInWords, value.LengthInWords);
+				this.Cardinality = 0;
+				int length_in_words = Math.Min(this.LengthInWords, value.LengthInWords);
 				int word_index;
 				for (word_index = 0; word_index < length_in_words; word_index++)
 				{
-					mArray[word_index] &= value.mArray[word_index];
-					RecalculateCardinalityRound(word_index);
+					this.mArray[word_index] &= value.mArray[word_index];
+					this.RecalculateCardinalityRound(word_index);
 				}
 
 				// NOTE: we don't do ClearAlignmentOnlyBitsForBitOperation here as a larger BitSet won't introduce
 				// new TRUE-bits in a And() operation
 
-				RecalculateCardinalityFinishRounds(word_index);
+				this.RecalculateCardinalityFinishRounds(word_index);
 
-				mVersion++;
+				this.mVersion++;
 			}
 			return this;
 		}
@@ -569,28 +569,28 @@ namespace KSoft.Collections
 			Contract.Requires<ArgumentNullException>(value != null);
 
 			// we're clearing with ourself, just clear all the bits
-			if (object.ReferenceEquals(value, this))
+			if (ReferenceEquals(value, this))
 			{
-				Clear(); // will increment mVersion
+				this.Clear(); // will increment mVersion
 			}
 			// test Cardinality, not Length, to optimally handle empty and all-zeros bitsets.
 			// if value is all-zeros, no bits in this will be cleared.
 			else if (value.Cardinality > 0)
 			{
-				Cardinality = 0;
-				int length_in_words = System.Math.Min(LengthInWords, value.LengthInWords);
+				this.Cardinality = 0;
+				int length_in_words = Math.Min(this.LengthInWords, value.LengthInWords);
 				int word_index;
 				for (word_index = 0; word_index < length_in_words; word_index++)
 				{
-					mArray[word_index] &= ~value.mArray[word_index];
-					RecalculateCardinalityRound(word_index);
+					this.mArray[word_index] &= ~value.mArray[word_index];
+					this.RecalculateCardinalityRound(word_index);
 				}
 
-				ClearAlignmentOnlyBitsForBitOperation(value);
+				this.ClearAlignmentOnlyBitsForBitOperation(value);
 
-				RecalculateCardinalityFinishRounds(word_index);
+				this.RecalculateCardinalityFinishRounds(word_index);
 
-				mVersion++;
+				this.mVersion++;
 			}
 
 			return this;
@@ -604,22 +604,22 @@ namespace KSoft.Collections
 
 			// test Cardinality, not Length, to optimally handle empty and all-zeros bitsets.
 			// if value is all-zeros, no bits in this would get modified.
-			if (!object.ReferenceEquals(value, this) && value.Cardinality > 0)
+			if (!ReferenceEquals(value, this) && value.Cardinality > 0)
 			{
-				Cardinality = 0;
-				int length_in_words = System.Math.Min(LengthInWords, value.LengthInWords);
+				this.Cardinality = 0;
+				int length_in_words = Math.Min(this.LengthInWords, value.LengthInWords);
 				int word_index;
 				for (word_index = 0; word_index < length_in_words; word_index++)
 				{
-					mArray[word_index] |= value.mArray[word_index];
-					RecalculateCardinalityRound(word_index);
+					this.mArray[word_index] |= value.mArray[word_index];
+					this.RecalculateCardinalityRound(word_index);
 				}
 
-				ClearAlignmentOnlyBitsForBitOperation(value);
+				this.ClearAlignmentOnlyBitsForBitOperation(value);
 
-				RecalculateCardinalityFinishRounds(word_index);
+				this.RecalculateCardinalityFinishRounds(word_index);
 
-				mVersion++;
+				this.mVersion++;
 			}
 			return this;
 		}
@@ -631,28 +631,28 @@ namespace KSoft.Collections
 			Contract.Requires<ArgumentNullException>(value != null);
 
 			// we're clearing with ourself, just clear all the bits
-			if (object.ReferenceEquals(value, this))
+			if (ReferenceEquals(value, this))
 			{
-				Clear(); // will increment mVersion
+				this.Clear(); // will increment mVersion
 			}
 			// test Cardinality, not Length, to optimally handle empty and all-zeros bitsets.
 			// if value is all-zeros, no bits in this would get modified.
 			else if (value.Cardinality > 0)
 			{
-				Cardinality = 0;
-				int length_in_words = System.Math.Min(LengthInWords, value.LengthInWords);
+				this.Cardinality = 0;
+				int length_in_words = Math.Min(this.LengthInWords, value.LengthInWords);
 				int word_index;
 				for (word_index = 0; word_index < length_in_words; word_index++)
 				{
-					mArray[word_index] ^= value.mArray[word_index];
-					RecalculateCardinalityRound(word_index);
+					this.mArray[word_index] ^= value.mArray[word_index];
+					this.RecalculateCardinalityRound(word_index);
 				}
 
-				ClearAlignmentOnlyBitsForBitOperation(value);
+				this.ClearAlignmentOnlyBitsForBitOperation(value);
 
-				RecalculateCardinalityFinishRounds(word_index);
+				this.RecalculateCardinalityFinishRounds(word_index);
 
-				mVersion++;
+				this.mVersion++;
 			}
 
 			return this;
@@ -663,15 +663,15 @@ namespace KSoft.Collections
 		public BitSet Not()
 		{
 			// NOTE: if the array is auto-aligned, this will end up setting alignment-only data
-			for (int x = 0, word_count = LengthInWords; x < word_count; x++)
-				mArray[x] = (TWord)~mArray[x];
+			for (int x = 0, word_count = this.LengthInWords; x < word_count; x++)
+				this.mArray[x] = (TWord)~this.mArray[x];
 			// so reset that data
-			ClearAlignmentOnlyBits();
+			this.ClearAlignmentOnlyBits();
 
 			// invert the Cardinality as what was once one is now none!
-			Cardinality = CardinalityZeros;
+			this.Cardinality = this.CardinalityZeros;
 
-			mVersion++;
+			this.mVersion++;
 			return this;
 		}
 		#endregion
@@ -682,7 +682,7 @@ namespace KSoft.Collections
 		/// <returns></returns>
 		bool BitwiseEquals(BitSet other, int bitsCount)
 		{
-			if (object.ReferenceEquals(other, this))
+			if (ReferenceEquals(other, this))
 				return true;
 
 			int word_index = 0;
@@ -692,7 +692,7 @@ namespace KSoft.Collections
 
 			for (; word_index < word_count; word_index++, bitsCount -= kWordBitCount)
 			{
-				if (mArray[word_index] != other.mArray[word_index])
+				if (this.mArray[word_index] != other.mArray[word_index])
 					return false;
 			}
 
@@ -712,7 +712,7 @@ namespace KSoft.Collections
 
 			// THIS is a subset of OTHER if it contains the same set bits as OTHER
 			// If THIS is larger, then OTHER couldn't contain the bits of THIS
-			return Length <= other.Length &&
+			return this.Length <= other.Length &&
 				// verify all our bits exist in OTHER
 				((BitSet)other).BitwiseEquals(this, this.Length);
 		}
@@ -725,7 +725,7 @@ namespace KSoft.Collections
 
 			// THIS is a superset of OTHER if it contains the same set bits as OTHER
 			// If THIS is shorter, then THIS couldn't contain the bits of OTHER
-			return Length >= other.Length &&
+			return this.Length >= other.Length &&
 				// verify all of OTHER's bits exist in THIS
 				this.BitwiseEquals((BitSet)other, other.Length);
 		}
@@ -736,18 +736,18 @@ namespace KSoft.Collections
 		{
 			Contract.Assert(other is BitSet, "Only implemented to work with BitSet");
 
-			if (object.ReferenceEquals(other, this))
+			if (ReferenceEquals(other, this))
 				return true;
 
-			if (Length != 0)
+			if (this.Length != 0)
 			{
 				// NOTE: this algorithm doesn't play nice with auto-aligned arrays where a Bit Operation
 				// has tweaked alignment-only data
 				var value = (BitSet)other;
-				int length_in_words = System.Math.Min(LengthInWords, value.LengthInWords);
+				int length_in_words = Math.Min(this.LengthInWords, value.LengthInWords);
 				for (int x = 0; x < length_in_words; x++)
 				{
-					var lhs = mArray[x];
+					var lhs = this.mArray[x];
 					var rhs = value.mArray[x];
 					// if each array has similar bits active only.
 					// negate to test for matching FALSE-bits
@@ -765,18 +765,18 @@ namespace KSoft.Collections
 		{
 			Contract.Assert(other is BitSet, "Only implemented to work with BitSet");
 
-			if (object.ReferenceEquals(other, this))
+			if (ReferenceEquals(other, this))
 				return true;
 
-			if (Length != 0)
+			if (this.Length != 0)
 			{
 				// NOTE: this algorithm doesn't play nice with auto-aligned arrays where a Bit Operation
 				// has tweaked alignment-only data
 				var value = (BitSet)other;
-				int length_in_words = System.Math.Min(LengthInWords, value.LengthInWords);
+				int length_in_words = Math.Min(this.LengthInWords, value.LengthInWords);
 				for (int x = 0; x < length_in_words; x++)
 				{
-					var lhs = mArray[x];
+					var lhs = this.mArray[x];
 					var rhs = value.mArray[x];
 					// if each array has similar bits active only. FALSE-bits are ignored
 					if ((lhs & rhs) != 0)
@@ -791,16 +791,16 @@ namespace KSoft.Collections
 		#region ICollection<bool> Members
 		[NonSerialized] object mSyncRoot;
 		public object SyncRoot { get {
-			if (mSyncRoot == null)
-				System.Threading.Interlocked.CompareExchange(ref mSyncRoot, new object(), null);
-			return mSyncRoot;
+			if (this.mSyncRoot == null)
+				System.Threading.Interlocked.CompareExchange(ref this.mSyncRoot, new object(), null);
+			return this.mSyncRoot;
 		} }
 		/// <summary>returns <see cref="Cardinality"/></summary>
-		int ICollection<bool>.Count					{ get => Cardinality; }
+		int ICollection<bool>.Count					{ get => this.Cardinality; }
 		/// <summary>returns <see cref="Cardinality"/></summary>
-		int IReadOnlyCollection<bool>.Count			{ get => Cardinality; }
+		int IReadOnlyCollection<bool>.Count			{ get => this.Cardinality; }
 		/// <summary>returns <see cref="Cardinality"/></summary>
-		int System.Collections.ICollection.Count	{ get => Cardinality; }
+		int System.Collections.ICollection.Count	{ get => this.Cardinality; }
 		public bool IsReadOnly						{ get => false; }
 		bool System.Collections.ICollection.IsSynchronized { get => false; }
 
@@ -812,15 +812,15 @@ namespace KSoft.Collections
 		/// <summary>Resizes the underlying storage to the minimal size needed to represent the current <see cref="Length"/></summary>
 		public void TrimExcess()
 		{
-			int length_in_words = LengthInWords;
+			int length_in_words = this.LengthInWords;
 
-			if (mArray.Length > length_in_words)
-				Array.Resize(ref mArray, length_in_words);
+			if (this.mArray.Length > length_in_words)
+				Array.Resize(ref this.mArray, length_in_words);
 		}
 
 		/// <summary>Set all the bits to zero; doesn't modify <see cref="Length"/></summary>
 		[System.Diagnostics.DebuggerStepThrough]
-		public void Clear() => SetAll(false);
+		public void Clear() => this.SetAll(false);
 
 		#region CopyTo
 		public void CopyTo(bool[] array, int arrayIndex)
@@ -833,11 +833,11 @@ namespace KSoft.Collections
 		{
 			// #TODO: verify 'array' lengths
 			if (array is TWord[])
-				Array.Copy(mArray, arrayIndex, array, 0, LengthInWords);
+				Array.Copy(this.mArray, arrayIndex, array, 0, this.LengthInWords);
 			else if (array is byte[])
-				Buffer.BlockCopy(mArray, arrayIndex, array, 0, LengthInWords * sizeof(TWord));
+				Buffer.BlockCopy(this.mArray, arrayIndex, array, 0, this.LengthInWords * sizeof(TWord));
 			else if (array is bool[])
-				CopyTo((bool[])array, arrayIndex);
+				this.CopyTo((bool[])array, arrayIndex);
 			else
 				throw new ArgumentException(string.Format(Util.InvariantCultureInfo, "Array type unsupported {0}", array.GetType()));
 		}
@@ -848,25 +848,25 @@ namespace KSoft.Collections
 			unchecked
 			{
 				int hash = 17;
-				hash = hash*23 + Length.GetHashCode();
-				hash = hash*23 + Cardinality.GetHashCode();
+				hash = hash*23 + this.Length.GetHashCode();
+				hash = hash*23 + this.Cardinality.GetHashCode();
 				return hash;
 			}
 		}
 		#region IComparable<IReadOnlyBitSet> Members
 		public int CompareTo(IReadOnlyBitSet other)
 		{
-			if (Length == other.Length)
-				return Cardinality - other.Cardinality;
+			if (this.Length == other.Length)
+				return this.Cardinality - other.Cardinality;
 
-			return Length - other.Length;
+			return this.Length - other.Length;
 		}
 		#endregion
 		#region IEquatable<IReadOnlyBitSet> Members
 		public bool Equals(IReadOnlyBitSet other)
 		{
 			// #TODO: this also needs to check BitwiseEquals
-			return Length == other.Length && Cardinality == other.Cardinality;
+			return this.Length == other.Length && this.Cardinality == other.Cardinality;
 		}
 		#endregion
 
@@ -881,15 +881,15 @@ namespace KSoft.Collections
 		{
 			bool byte_swap = streamedFormat != Bits.kVectorWordFormat;
 
-			for (int x = 0, word_count = LengthInWords; x < word_count; x++)
+			for (int x = 0, word_count = this.LengthInWords; x < word_count; x++)
 			{
-				if (byte_swap) Bits.BitReverse(ref mArray[x]);
-				s.Stream(ref mArray[x]);
-				if (byte_swap) Bits.BitReverse(ref mArray[x]);
+				if (byte_swap) Bits.BitReverse(ref this.mArray[x]);
+				s.Stream(ref this.mArray[x]);
+				if (byte_swap) Bits.BitReverse(ref this.mArray[x]);
 			}
 
 			if (s.IsReading)
-				RecalculateCardinality();
+				this.RecalculateCardinality();
 		}
 		#endregion
 
@@ -897,15 +897,15 @@ namespace KSoft.Collections
 		{
 			bool byte_swap = streamedFormat != Bits.kVectorWordFormat;
 
-			for (int x = 0, word_count = LengthInWords; x < word_count; x++)
+			for (int x = 0, word_count = this.LengthInWords; x < word_count; x++)
 			{
-				if (byte_swap) Bits.BitReverse(ref mArray[x]);
-				s.Stream(ref mArray[x]);
-				if (byte_swap) Bits.BitReverse(ref mArray[x]);
+				if (byte_swap) Bits.BitReverse(ref this.mArray[x]);
+				s.Stream(ref this.mArray[x]);
+				if (byte_swap) Bits.BitReverse(ref this.mArray[x]);
 			}
 
 			if (s.IsReading)
-				RecalculateCardinality();
+				this.RecalculateCardinality();
 		}
 
 		#region Enum interfaces
@@ -924,7 +924,7 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			int bitIndex = bit.ToInt32(null);
-			ValidateBit(bit, bitIndex);
+			this.ValidateBit(bit, bitIndex);
 
 			return this[bitIndex];
 		}
@@ -934,7 +934,7 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			int bitIndex = bit.ToInt32(null);
-			ValidateBit(bit, bitIndex);
+			this.ValidateBit(bit, bitIndex);
 
 			this.Set(bitIndex, value);
 			return this;
@@ -946,11 +946,11 @@ namespace KSoft.Collections
 			, bool stateFilter = true)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			if (Cardinality == 0)
+			if (this.Cardinality == 0)
 				return "";
 
 			int maxCountValue = maxCount.ToInt32(null);
-			if (maxCountValue < 0 || maxCountValue >= Length)
+			if (maxCountValue < 0 || maxCountValue >= this.Length)
 			{
 				throw new ArgumentOutOfRangeException(nameof(maxCount), string.Format(Util.InvariantCultureInfo,
 					"{0}/{1} is invalid",
@@ -970,8 +970,8 @@ namespace KSoft.Collections
 
 			var sb = new System.Text.StringBuilder();
 			var bitsInDesiredState = stateFilter
-				? SetBitIndices
-				: ClearBitIndices;
+				? this.SetBitIndices
+				: this.ClearBitIndices;
 			foreach (int bitIndex in bitsInDesiredState)
 			{
 				if (bitIndex >= maxCountValue)
@@ -995,8 +995,8 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			// LINQ stmt allows there to be whitespace around the commas
-			return TryParseFlags<TEnum>(
-				KSoft.Util.Trim(System.Text.RegularExpressions.Regex.Split(line, valueSeperator)),
+			return this.TryParseFlags<TEnum>(
+				Util.Trim(System.Text.RegularExpressions.Regex.Split(line, valueSeperator)),
 				errorsOutput);
 		}
 
@@ -1015,7 +1015,7 @@ namespace KSoft.Collections
 			bool success = true;
 			foreach (string flagStr in collection)
 			{
-				var parsed = TryParseFlag<TEnum>(flagStr, errorsOutput);
+				var parsed = this.TryParseFlag<TEnum>(flagStr, errorsOutput);
 				if (parsed.HasValue == false)
 					continue;
 				else if (parsed.Value == false)
@@ -1046,7 +1046,7 @@ namespace KSoft.Collections
 			}
 
 			int bitIndex = flag.ToInt32(null);
-			if (bitIndex < 0 || bitIndex > Length)
+			if (bitIndex < 0 || bitIndex > this.Length)
 			{
 				if (errorsOutput != null)
 				{

@@ -46,12 +46,12 @@ namespace KSoft.Security.Cryptography
 
 			var computer = new BitComputer(adler32);
 
-			int buffer_size = System.Math.Min(length, 1024);
+			int buffer_size = Math.Min(length, 1024);
 			byte[] buffer = new byte[buffer_size];
 
 			for (int bytes_remaining = length; bytes_remaining > 0; )
 			{
-				int num_bytes_to_read = System.Math.Min(bytes_remaining, buffer_size);
+				int num_bytes_to_read = Math.Min(bytes_remaining, buffer_size);
 				int num_bytes_read = 0;
 				do
 				{

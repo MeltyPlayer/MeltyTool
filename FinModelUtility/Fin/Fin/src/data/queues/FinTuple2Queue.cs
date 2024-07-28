@@ -72,6 +72,6 @@ public class FinTuple2Queue<T1, T2> : ITuple2Queue<T1, T2> {
     return false;
   }
 
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
   public IEnumerator<(T1, T2)> GetEnumerator() => this.impl_.GetEnumerator();
 }

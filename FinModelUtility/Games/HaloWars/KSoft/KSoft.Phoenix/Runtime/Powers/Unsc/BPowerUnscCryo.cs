@@ -27,17 +27,17 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			BSaveGame.StreamArray(s, ref IgnoreList);
-			s.Stream(ref NextTickTime);
-			s.Stream(ref CryoObjectID);
-			s.StreamV(ref Direction); s.StreamV(ref Right);
-			s.Stream(ref CryoObjectProtoID); s.Stream(ref BomberProtoID);
-			s.Stream(ref FilterTypeID);
-			s.Stream(ref CryoRadius); s.Stream(ref MinCryoFalloff);
-			s.Stream(ref TickDuration); s.Stream(ref TicksRemaining);
-			s.Stream(ref CryoAmountPerTick); s.Stream(ref KillableHpLeft); s.Stream(ref FreezingThawTime); s.Stream(ref FrozenThawTime);
-			s.Stream(BomberData);
-			s.Stream(ref ReactionPlayed);
+			BSaveGame.StreamArray(s, ref this.IgnoreList);
+			s.Stream(ref this.NextTickTime);
+			s.Stream(ref this.CryoObjectID);
+			s.StreamV(ref this.Direction); s.StreamV(ref this.Right);
+			s.Stream(ref this.CryoObjectProtoID); s.Stream(ref this.BomberProtoID);
+			s.Stream(ref this.FilterTypeID);
+			s.Stream(ref this.CryoRadius); s.Stream(ref this.MinCryoFalloff);
+			s.Stream(ref this.TickDuration); s.Stream(ref this.TicksRemaining);
+			s.Stream(ref this.CryoAmountPerTick); s.Stream(ref this.KillableHpLeft); s.Stream(ref this.FreezingThawTime); s.Stream(ref this.FrozenThawTime);
+			s.Stream(this.BomberData);
+			s.Stream(ref this.ReactionPlayed);
 		}
 		#endregion
 	};

@@ -54,14 +54,14 @@ public struct CombinerCycleParams {
 
   public override int GetHashCode()
     => FluentHash.Start()
-                 .With(ColorMuxA)
-                 .With(ColorMuxB)
-                 .With(ColorMuxC)
-                 .With(ColorMuxD)
-                 .With(AlphaMuxA)
-                 .With(AlphaMuxB)
-                 .With(AlphaMuxC)
-                 .With(AlphaMuxD);
+                 .With(this.ColorMuxA)
+                 .With(this.ColorMuxB)
+                 .With(this.ColorMuxC)
+                 .With(this.ColorMuxD)
+                 .With(this.AlphaMuxA)
+                 .With(this.AlphaMuxB)
+                 .With(this.AlphaMuxC)
+                 .With(this.AlphaMuxD);
 
   public override bool Equals(object? other) {
     if (ReferenceEquals(this, other)) {

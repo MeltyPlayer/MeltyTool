@@ -10,7 +10,7 @@ namespace KSoft.Phoenix.Phx
 		{
 			base.Serialize(s);
 
-			XML.XmlUtil.Serialize(s, Args, BTriggerArg.kBListExplicitIndexXmlParams);
+			XML.XmlUtil.Serialize(s, this.Args, BTriggerArg.kBListExplicitIndexXmlParams);
 		}
 	};
 }

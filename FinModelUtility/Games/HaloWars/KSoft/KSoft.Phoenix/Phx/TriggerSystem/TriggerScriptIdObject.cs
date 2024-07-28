@@ -10,11 +10,11 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		int mID = TypeExtensions.kNone;
-		public int ID { get { return mID; } }
+		public int ID { get { return this.mID; } }
 
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamAttribute(kXmlAttrId, ref mID);
+			s.StreamAttribute(kXmlAttrId, ref this.mID);
 		}
 	};
 }

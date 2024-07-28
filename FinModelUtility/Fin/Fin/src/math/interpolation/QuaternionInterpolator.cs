@@ -22,7 +22,7 @@ public readonly struct SimpleQuaternionInterpolator
                                 float time) {
     // TODO: Figure out how to use tangents here
     var t = (time - fromTime) / (toTime - fromTime);
-    return Interpolate(fromValue, toValue, t);
+    return this.Interpolate(fromValue, toValue, t);
   }
 }
 
@@ -50,6 +50,6 @@ public readonly struct QuaternionInterpolator : IInterpolator<Quaternion> {
                                 float time) {
     // TODO: Figure out how to use tangents here
     var t = (time - fromTime) / (toTime - fromTime);
-    return Interpolate(fromValue, toValue, t);
+    return this.Interpolate(fromValue, toValue, t);
   }
 }

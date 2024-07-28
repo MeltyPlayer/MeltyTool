@@ -37,23 +37,23 @@ namespace KSoft.IO
 		/// <summary>Fill the cache with <see cref="kWordByteCount"/> or fewer bytes bytes</summary>
 		void FillCache()
 		{
-			mCache = 0;
-			mCacheBitIndex = 0;
-			mCacheBitsStreamedCount = 0;
+			this.mCache = 0;
+			this.mCacheBitIndex = 0;
+			this.mCacheBitsStreamedCount = 0;
 
 			int byte_count = kWordByteCount-1; // number of bytes to try and read
 			int shift = kWordBitCount-Bits.kByteBitCount; // start shifting to the MSB
-			while (	!IsEndOfStream &&
+			while (	!this.IsEndOfStream &&
 					byte_count >= 0 &&
-					BaseStream.Read(mIoBuffer, 0, sizeof(byte)) != 0 )
+					this.BaseStream.Read(this.mIoBuffer, 0, sizeof(byte)) != 0 )
 			{
-				mCache |= ((TWord)mIoBuffer[0]) << shift;
+				this.mCache |= ((TWord) this.mIoBuffer[0]) << shift;
 				--byte_count;
 				shift -= Bits.kByteBitCount;
-				mCacheBitsStreamedCount += Bits.kByteBitCount;
+				this.mCacheBitsStreamedCount += Bits.kByteBitCount;
 			}
 
-			if (byte_count != -1 && ThrowOnOverflow.CanRead())
+			if (byte_count != -1 && this.ThrowOnOverflow.CanRead())
 				throw new System.IO.EndOfStreamException("Tried to read more bits than the stream has/can see");
 		}
 		/// <summary>Flush the cache to <see cref="BaseStream"/> with <see cref="kWordByteCount"/> or fewer bytes bytes</summary>
@@ -64,31 +64,31 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.ValueAtReturn(out mCacheBitIndex) == 0);
 			#endif
 
-			if (mCacheBitIndex == 0) // no bits to flush!
+			if (this.mCacheBitIndex == 0) // no bits to flush!
 			{
-				Contract.Assert(mCache == 0, "Why is there data in the cache?");
+				Contract.Assert(this.mCache == 0, "Why is there data in the cache?");
 				return;
 			}
 
-			mCacheBitsStreamedCount = 0;
+			this.mCacheBitsStreamedCount = 0;
 
-			int byte_count = (mCacheBitIndex-1) >> Bits.kByteBitShift; // number of bytes to try and write
+			int byte_count = (this.mCacheBitIndex-1) >> Bits.kByteBitShift; // number of bytes to try and write
 			int shift = kWordBitCount-Bits.kByteBitCount; // start shifting from the MSB
 			while (	/*!IsEndOfStream &&*/
 					byte_count >= 0)
 			{
-				mIoBuffer[0] = (byte)(mCache >> shift);
-				BaseStream.Write(mIoBuffer, 0, sizeof(byte));
+				this.mIoBuffer[0] = (byte)(this.mCache >> shift);
+				this.BaseStream.Write(this.mIoBuffer, 0, sizeof(byte));
 				--byte_count;
 				shift -= Bits.kByteBitCount;
-				mCacheBitsStreamedCount += Bits.kByteBitCount;
+				this.mCacheBitsStreamedCount += Bits.kByteBitCount;
 			}
 
-			if (byte_count != -1 && ThrowOnOverflow.CanWrite())
+			if (byte_count != -1 && this.ThrowOnOverflow.CanWrite())
 				throw new System.IO.EndOfStreamException("Tried to write more bits than the stream has/can see");
 
-			mCache = 0;
-			mCacheBitIndex = 0;
+			this.mCache = 0;
+			this.mCacheBitIndex = 0;
 		}
 
 		/// <remarks>Don't call me unless you are ReadWord</remarks>
@@ -96,10 +96,10 @@ namespace KSoft.IO
 		TWord ExtractWordFromCache(int bitCount)
 		{
 			// amount to shift the bits extracted from mCache
-			int shift = kWordBitCount - (mCacheBitIndex + bitCount);
+			int shift = kWordBitCount - (this.mCacheBitIndex + bitCount);
 			TWord word_mask = kBitmaskLUT[bitCount];
 
-			TWord word = mCache;
+			TWord word = this.mCache;
 			word >>= shift;
 			word &= word_mask;
 
@@ -108,21 +108,21 @@ namespace KSoft.IO
 		/// <remarks>Don't call me unless you are WriteWord</remarks>
 		void PutWordInCache(TWord word, int bitCount)
 		{
-			Contract.Ensures(Contract.OldValue(mCacheBitIndex) == mCacheBitIndex);
+			Contract.Ensures(Contract.OldValue(this.mCacheBitIndex) == this.mCacheBitIndex);
 
 			// amount to shift word before appending it to mCache bits
-			int shift = (kWordBitCount - mCacheBitIndex) - bitCount;
+			int shift = (kWordBitCount - this.mCacheBitIndex) - bitCount;
 			TWord word_mask = kBitmaskLUT[bitCount];
 
 			word &= word_mask;
 			word <<= shift;
-			mCache |= word;
+			this.mCache |= word;
 		}
 		#endregion
 
 		public bool ReadBoolean()
 		{
-			ReadWord(out TWord word, Bits.kBooleanBitCount);
+			this.ReadWord(out TWord word, Bits.kBooleanBitCount);
 
 			return 1 == word;
 		}

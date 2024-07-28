@@ -30,17 +30,18 @@ namespace KSoft.Phoenix.Phx
 		bool mDeductable;
 		public bool Deductable
 		{
-			get { return mDeductable; }
-			set { mDeductable = value; }
+			get { return this.mDeductable; }
+			set { this.mDeductable = value; }
 		}
 
 		public BResource() { }
-		internal BResource(bool deductable) { mDeductable = deductable; }
+		internal BResource(bool deductable) {
+			this.mDeductable = deductable; }
 
 		#region BListAutoIdObject Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamAttribute("Deductable", ref mDeductable);
+			s.StreamAttribute("Deductable", ref this.mDeductable);
 		}
 		#endregion
 	};

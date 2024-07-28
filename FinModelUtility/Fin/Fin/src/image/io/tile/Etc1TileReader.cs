@@ -64,7 +64,7 @@ public readonly struct Etc1TileReader(bool hasAlpha) : ITileReader<Rgba32> {
 
         var block = br.ReadUInt64();
 
-        Etc1TileReader.DecodeETC1Block_(colors, block);
+        DecodeETC1Block_(colors, block);
         for (int py = 0; py < 4; py++) {
           if (y + by + py >= imageHeight) {
             break;
@@ -142,13 +142,13 @@ public readonly struct Etc1TileReader(bool hasAlpha) : ITileReader<Rgba32> {
 
         if ((flipBit == 0x01 && py < 2) || (flipBit == 0x00 && px < 2)) {
           int modifier =
-              Etc1TileReader.ETC1_MODIFIER_TABLES_[4 * tableIndex1 + index];
+              ETC1_MODIFIER_TABLES_[4 * tableIndex1 + index];
           colors[indexInPart] = new Rgb24(ClampByte_(r1 + modifier),
                                           ClampByte_(g1 + modifier),
                                           ClampByte_(b1 + modifier));
         } else {
           int modifier =
-              Etc1TileReader.ETC1_MODIFIER_TABLES_[4 * tableIndex2 + index];
+              ETC1_MODIFIER_TABLES_[4 * tableIndex2 + index];
           colors[indexInPart] = new Rgb24(ClampByte_(r2 + modifier),
                                           ClampByte_(g2 + modifier),
                                           ClampByte_(b2 + modifier));

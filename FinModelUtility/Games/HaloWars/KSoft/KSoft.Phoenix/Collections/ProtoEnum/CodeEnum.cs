@@ -2,7 +2,7 @@
 
 namespace KSoft.Collections
 {
-	using PhxUtil = KSoft.Phoenix.PhxUtil;
+	using PhxUtil = Phoenix.PhxUtil;
 
 	public sealed class CodeEnum<TEnum>
 		: IProtoEnum
@@ -27,8 +27,8 @@ namespace KSoft.Collections
 		}
 		public string TryGetMemberName(int memberId)
 		{
-			return IsValidMemberId(memberId)
-				? GetMemberName(memberId)
+			return this.IsValidMemberId(memberId)
+				? this.GetMemberName(memberId)
 				: null;
 		}
 		public bool IsValidMemberId(int memberId)
@@ -37,14 +37,14 @@ namespace KSoft.Collections
 		}
 		public bool IsValidMemberName(string memberName)
 		{
-			int index = TryGetMemberId(memberName);
+			int index = this.TryGetMemberId(memberName);
 
 			return index.IsNotNone();
 		}
 
 		public int GetMemberId(string memberName)
 		{
-			int index = TryGetMemberId(memberName);
+			int index = this.TryGetMemberId(memberName);
 
 			if (index.IsNone())
 				throw new ArgumentException(kUnregisteredMessage, memberName);

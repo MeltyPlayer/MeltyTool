@@ -10,22 +10,22 @@ public static partial class GlUtil {
   public static void RenderHighlight(
       Action render,
       Color? highlightColor = null) {
-    GlUtil.SetBlendColor(highlightColor ?? Color.FromArgb(180, 255, 255, 255));
-    GlUtil.SetBlending(BlendEquation.ADD,
+    SetBlendColor(highlightColor ?? Color.FromArgb(180, 255, 255, 255));
+    SetBlending(BlendEquation.ADD,
                        BlendFactor.CONST_COLOR,
                        BlendFactor.CONST_ALPHA);
-    GlUtil.SetDepth(DepthMode.READ_ONLY);
+    SetDepth(DepthMode.READ_ONLY);
     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-    GlUtil.DisableChangingBlending = true;
-    GlUtil.DisableChangingDepth = true;
+    DisableChangingBlending = true;
+    DisableChangingDepth = true;
 
     render();
 
-    GlUtil.DisableChangingBlending = false;
-    GlUtil.DisableChangingDepth = false;
-    GlUtil.SetBlendColor(Color.White);
-    GlUtil.ResetBlending();
-    GlUtil.ResetDepth();
+    DisableChangingBlending = false;
+    DisableChangingDepth = false;
+    SetBlendColor(Color.White);
+    ResetBlending();
+    ResetDepth();
     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
   }
 
@@ -33,23 +33,23 @@ public static partial class GlUtil {
       Action render,
       Color? outlineColor = null,
       float lineWidth = 8) {
-    GlUtil.SetBlendColor(outlineColor ?? Color.Black);
-    GlUtil.SetBlending(BlendEquation.ADD,
+    SetBlendColor(outlineColor ?? Color.Black);
+    SetBlending(BlendEquation.ADD,
                        BlendFactor.ZERO,
                        BlendFactor.CONST_COLOR);
-    GlUtil.SetDepth(DepthMode.READ_ONLY);
+    SetDepth(DepthMode.READ_ONLY);
     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
     GL.LineWidth(lineWidth);
-    GlUtil.DisableChangingBlending = true;
-    GlUtil.DisableChangingDepth = true;
+    DisableChangingBlending = true;
+    DisableChangingDepth = true;
 
     render();
 
-    GlUtil.DisableChangingBlending = false;
-    GlUtil.DisableChangingDepth = false;
-    GlUtil.SetBlendColor(Color.White);
-    GlUtil.ResetBlending();
-    GlUtil.ResetDepth();
+    DisableChangingBlending = false;
+    DisableChangingDepth = false;
+    SetBlendColor(Color.White);
+    ResetBlending();
+    ResetDepth();
     GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
   }
 }

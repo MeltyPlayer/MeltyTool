@@ -16,11 +16,11 @@ public static partial class GlUtil {
 
 
   public static bool SetCulling(CullingMode cullingMode) {
-      if (GlUtil.currentState_.CurrentCullingMode == cullingMode) {
+      if (currentState_.CurrentCullingMode == cullingMode) {
         return false;
       }
 
-      GlUtil.currentState_.CurrentCullingMode = cullingMode;
+      currentState_.CurrentCullingMode = cullingMode;
 
       if (cullingMode == CullingMode.SHOW_BOTH) {
         GL.Disable(EnableCap.CullFace);

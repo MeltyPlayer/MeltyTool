@@ -27,16 +27,16 @@ namespace KSoft.Phoenix.Runtime
 			base.Serialize(s);
 			var sg = s.Owner as BSaveGame;
 
-			s.Stream(ref ProtoID);
-			s.Stream(ref BuildPoints);
-			sg.StreamBCost(s, ref Cost);
-			s.Stream(ref MaxHP); s.Stream(ref MaxSP); s.Stream(ref MaxAmmo);
-			s.Stream(ref Level); s.Stream(ref TechLevel); s.Stream(ref DisplayNameIndex);
-			s.Stream(ref CircleMenuIconID); s.Stream(ref AltCircleMenuIconID); s.Stream(ref HPBar);
-			s.Stream(ref Available); s.Stream(ref Forbid);
-			s.Stream(ref OneTimeSpawnUsed); s.Stream(ref KBAware);
-			s.Stream(ref HasOverrideNodes);
-			if (HasOverrideNodes) BSaveGame.StreamArray(s, ref OverrideNodes);
+			s.Stream(ref this.ProtoID);
+			s.Stream(ref this.BuildPoints);
+			sg.StreamBCost(s, ref this.Cost);
+			s.Stream(ref this.MaxHP); s.Stream(ref this.MaxSP); s.Stream(ref this.MaxAmmo);
+			s.Stream(ref this.Level); s.Stream(ref this.TechLevel); s.Stream(ref this.DisplayNameIndex);
+			s.Stream(ref this.CircleMenuIconID); s.Stream(ref this.AltCircleMenuIconID); s.Stream(ref this.HPBar);
+			s.Stream(ref this.Available); s.Stream(ref this.Forbid);
+			s.Stream(ref this.OneTimeSpawnUsed); s.Stream(ref this.KBAware);
+			s.Stream(ref this.HasOverrideNodes);
+			if (this.HasOverrideNodes) BSaveGame.StreamArray(s, ref this.OverrideNodes);
 			s.StreamSignature(cSaveMarker.ProtoSquad1);
 		}
 		#endregion

@@ -53,7 +53,7 @@ public static class SystemMatrix4x4Util {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Matrix4x4 FromRotation(IRotation rotation)
-    => SystemMatrix4x4Util.FromRotation(QuaternionUtil.Create(rotation));
+    => FromRotation(QuaternionUtil.Create(rotation));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Matrix4x4 FromRotation(Quaternion rotation)

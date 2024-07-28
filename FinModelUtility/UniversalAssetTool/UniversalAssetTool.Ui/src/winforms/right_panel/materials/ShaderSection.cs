@@ -7,7 +7,7 @@ namespace uni.ui.winforms.right_panel.materials;
 
 public partial class ShaderSection : UserControl {
   public ShaderSection() {
-      InitializeComponent();
+    this.InitializeComponent();
     }
 
   public (IReadOnlyModel, IReadOnlyMaterial?)? ModelAndMaterial {

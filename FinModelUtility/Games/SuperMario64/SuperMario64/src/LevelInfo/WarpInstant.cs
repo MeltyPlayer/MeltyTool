@@ -10,8 +10,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("Trigger ID")]
     public byte TriggerID {
-      get { return triggerID; }
-      set { triggerID = value; }
+      get { return this.triggerID; }
+      set { this.triggerID = value; }
     }
 
     private byte areaID;
@@ -20,8 +20,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("To Area")]
     public byte AreaID {
-      get { return areaID; }
-      set { areaID = value; }
+      get { return this.areaID; }
+      set { this.areaID = value; }
     }
 
     private short teleX;
@@ -30,8 +30,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("Teleport X")]
     public short TeleX {
-      get { return teleX; }
-      set { teleX = value; }
+      get { return this.teleX; }
+      set { this.teleX = value; }
     }
 
     private short teleY;
@@ -40,8 +40,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("Teleport Y")]
     public short TeleY {
-      get { return teleY; }
-      set { teleY = value; }
+      get { return this.teleY; }
+      set { this.teleY = value; }
     }
 
     private short teleZ;
@@ -50,8 +50,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("Teleport Z")]
     public short TeleZ {
-      get { return teleZ; }
-      set { teleZ = value; }
+      get { return this.teleZ; }
+      set { this.teleZ = value; }
     }
 
     [CustomSortedCategory("Info", 2, NUM_OF_CATERGORIES)]
@@ -69,14 +69,14 @@ namespace sm64.LevelInfo {
 
 
     private string getWarpName() {
-      return " [to Area " + AreaID + "]";
+      return " [to Area " + this.AreaID + "]";
     }
 
     public override string ToString() {
       //isPaintingWarp
       string warpName = "Instant Warp 0x";
 
-      warpName += TriggerID.ToString("X2") + getWarpName();
+      warpName += this.TriggerID.ToString("X2") + this.getWarpName();
 
       return warpName;
     }

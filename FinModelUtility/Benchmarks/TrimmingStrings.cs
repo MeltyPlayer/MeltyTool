@@ -10,16 +10,16 @@ namespace benchmarks {
 
     [Benchmark]
     public void UsingTrimEnd() {
-      for (var i = 0; i < n_; ++i) {
-        var substring = TrimmingStrings.TEXT.TrimEnd('\0');
+      for (var i = 0; i < this.n_; ++i) {
+        var substring = TEXT.TrimEnd('\0');
       }
     }
 
     [Benchmark]
     public void UsingIndexOfAndSubstring() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         var substring =
-            TrimmingStrings.TEXT.Substring(TrimmingStrings.TEXT.IndexOf('\0'));
+            TEXT.Substring(TEXT.IndexOf('\0'));
       }
     }
   }

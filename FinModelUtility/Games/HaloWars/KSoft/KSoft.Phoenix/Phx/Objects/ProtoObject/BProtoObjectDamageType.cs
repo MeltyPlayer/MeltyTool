@@ -19,8 +19,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BDamageTypeReference]
 		public int DamageType
 		{
-			get { return mDamageType; }
-			set { mDamageType = value; }
+			get { return this.mDamageType; }
+			set { this.mDamageType = value; }
 		}
 		#endregion
 
@@ -28,8 +28,8 @@ namespace KSoft.Phoenix.Phx
 		DamageDirection mDirection = DamageDirection.Invalid;
 		public DamageDirection Direction
 		{
-			get { return mDirection; }
-			set { mDirection = value; }
+			get { return this.mDirection; }
+			set { this.mDirection = value; }
 		}
 		#endregion
 
@@ -37,8 +37,8 @@ namespace KSoft.Phoenix.Phx
 		BSquadMode mMode = BSquadMode.Normal;
 		public BSquadMode Mode
 		{
-			get { return mMode; }
-			set { mMode = value; }
+			get { return this.mMode; }
+			set { this.mMode = value; }
 		}
 		#endregion
 
@@ -49,31 +49,33 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mDamageType, DatabaseObjectKind.DamageType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
-			s.StreamAttributeEnum("direction", ref mDirection);
-			s.StreamAttributeEnumOpt("mode", ref mMode, e => e != BSquadMode.Normal);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mDamageType, DatabaseObjectKind.DamageType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+			s.StreamAttributeEnum("direction", ref this.mDirection);
+			s.StreamAttributeEnumOpt("mode", ref this.mMode, e => e != BSquadMode.Normal);
 		}
 		#endregion
 
 		#region IComparable Members
 		public int CompareTo(BProtoObjectDamageType other)
 		{
-			if (DamageType != other.DamageType)
-				DamageType.CompareTo(other.DamageType);
+			if (this.DamageType != other.DamageType)
+				this.DamageType.CompareTo(other.DamageType);
 
-			if (Direction != other.Direction)
-				Direction.CompareTo(other.Direction);
+			if (this.Direction != other.Direction)
+				this.Direction.CompareTo(other.Direction);
 
-			return Mode.CompareTo(other.Mode);
+			return this.Mode.CompareTo(other.Mode);
 		}
 		#endregion
 
 		#region IEquatable Members
 		public bool Equals(BProtoObjectDamageType other)
 		{
-			return DamageType == other.DamageType
-				&& Direction == other.Direction
-				&& Mode == other.Mode;
+			return this.DamageType == other.DamageType
+				&&
+				this.Direction == other.Direction
+				&&
+				this.Mode == other.Mode;
 		}
 		#endregion
 	};

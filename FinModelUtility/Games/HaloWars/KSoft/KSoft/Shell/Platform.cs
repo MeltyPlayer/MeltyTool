@@ -44,7 +44,7 @@ namespace KSoft.Shell
 		#region Internal Value
 		[Interop.FieldOffset(0)] readonly uint mHandle;
 
-		internal uint Handle { get => mHandle; }
+		internal uint Handle { get => this.mHandle; }
 
 		static void InitializeHandle(out uint handle,
 			PlatformType platformType, Processor processorType)
@@ -53,7 +53,7 @@ namespace KSoft.Shell
 			encoder.Encode32(processorType.Handle, Processor.Bitmask);
 			encoder.Encode32(platformType, BitEncoders.PlatformType);
 
-			Contract.Assert(encoder.UsedBitCount == Platform.BitCount);
+			Contract.Assert(encoder.UsedBitCount == BitCount);
 
 			handle = encoder.GetHandle32();
 		}
@@ -64,24 +64,24 @@ namespace KSoft.Shell
 		/// <param name="processorType">Processor definition of the platform</param>
 		public Platform(PlatformType platformType, Processor processorType)
 		{
-			InitializeHandle(out mHandle, platformType, processorType);
+			InitializeHandle(out this.mHandle, platformType, processorType);
 		}
 		internal Platform(uint handle, BitFieldTraits platformField)
 		{
 			handle >>= platformField.BitIndex;
 			handle &= Bitmask;
 
-			mHandle = handle;
+			this.mHandle = handle;
 		}
 
 		#region Value properties
 		/// <summary>This platform's type</summary>
 		public PlatformType Type { get {
-			return BitEncoders.PlatformType.BitDecode(mHandle, Constants.kPlatformTypeBitField.BitIndex);
+			return BitEncoders.PlatformType.BitDecode(this.mHandle, Constants.kPlatformTypeBitField.BitIndex);
 		} }
 		/// <summary>This platform's normal processor type</summary>
 		public Processor ProcessorType { get {
-			return new Processor(mHandle, Constants.kProcessorBitField);
+			return new Processor(this.mHandle, Constants.kProcessorBitField);
 		} }
 		#endregion
 
@@ -99,7 +99,7 @@ namespace KSoft.Shell
 		/// <summary>Returns a unique 32-bit identifier for this object based on its exposed properties</summary>
 		/// <returns></returns>
 		/// <see cref="Object.GetHashCode"/>
-		public override int GetHashCode() => (int)mHandle;
+		public override int GetHashCode() => (int) this.mHandle;
 		/// <summary>Returns a string representation of this object</summary>
 		/// <returns>"[<see cref="Type"/>\t<see cref="ProcessorType.ToString()"/>]"</returns>
 		public override string ToString()
@@ -108,8 +108,8 @@ namespace KSoft.Shell
 
 			return string.Format(Util.InvariantCultureInfo,
 				"[{0}\t{1}]",
-				Type.ToString(),
-				ProcessorType.ToString()
+				this.Type.ToString(),
+				this.ProcessorType.ToString()
 				);
 		}
 		#endregion
@@ -119,7 +119,7 @@ namespace KSoft.Shell
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public int Compare(Platform x, Platform y) => Platform.StaticCompare(x, y);
+		public int Compare(Platform x, Platform y) => StaticCompare(x, y);
 		/// <summary>See <see cref="IComparer{T}.Compare"/></summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
@@ -129,7 +129,7 @@ namespace KSoft.Shell
 			Debug.TypeCheck.CastValue(x, out Platform _x);
 			Debug.TypeCheck.CastValue(y, out Platform _y);
 
-			return Platform.StaticCompare(_x, _y);
+			return StaticCompare(_x, _y);
 		}
 		#endregion
 
@@ -137,7 +137,7 @@ namespace KSoft.Shell
 		/// <summary>See <see cref="IComparable{T}.CompareTo"/></summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public int CompareTo(Platform other) => Platform.StaticCompare(this, other);
+		public int CompareTo(Platform other) => StaticCompare(this, other);
 		/// <summary>See <see cref="IComparable{T}.CompareTo"/></summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
@@ -145,7 +145,7 @@ namespace KSoft.Shell
 		{
 			Debug.TypeCheck.CastValue(obj, out Platform _obj);
 
-			return Platform.StaticCompare(this, _obj);
+			return StaticCompare(this, _obj);
 		}
 		#endregion
 

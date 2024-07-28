@@ -18,14 +18,14 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(TimerManager);
-			s.Stream(UICallouts);
-			s.Stream(UIWidgets);
-			s.Stream(ref WidgetsVisible); s.Stream(ref TalkingHeadShown); s.Stream(ref ObjectiveTrackerShown);
-			s.Stream(ref TimerShown); s.Stream(ref ObjectiveWidgetsShown); s.Stream(ref HintsVisible);
-			s.Stream(ref MinimapVisible); s.Stream(ref UnitStatsVisible); s.Stream(ref ReticleVisible);
-			s.Stream(ref ResourcePanelVisible); s.Stream(ref DpadPanelVisible); s.Stream(ref GameTimeVisible);
-			s.Stream(ref MinimapRotationOffset);
+			s.Stream(this.TimerManager);
+			s.Stream(this.UICallouts);
+			s.Stream(this.UIWidgets);
+			s.Stream(ref this.WidgetsVisible); s.Stream(ref this.TalkingHeadShown); s.Stream(ref this.ObjectiveTrackerShown);
+			s.Stream(ref this.TimerShown); s.Stream(ref this.ObjectiveWidgetsShown); s.Stream(ref this.HintsVisible);
+			s.Stream(ref this.MinimapVisible); s.Stream(ref this.UnitStatsVisible); s.Stream(ref this.ReticleVisible);
+			s.Stream(ref this.ResourcePanelVisible); s.Stream(ref this.DpadPanelVisible); s.Stream(ref this.GameTimeVisible);
+			s.Stream(ref this.MinimapRotationOffset);
 		}
 		#endregion
 	};

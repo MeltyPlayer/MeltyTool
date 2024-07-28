@@ -22,9 +22,9 @@ namespace KSoft.IO
 
 		#region Stream Values
 		public BitStream StreamValue<T>(ref T value)
-			where T : struct, IO.IBitStreamSerializable
+			where T : struct, IBitStreamSerializable
 		{
-			if (IsReading)
+			if (this.IsReading)
 				value = new T();
 
 			value.Serialize(this);
@@ -32,11 +32,11 @@ namespace KSoft.IO
 			return this;
 		}
 		public BitStream StreamValue<T>(ref T value, Func<T> initializer)
-			where T : struct, IO.IBitStreamSerializable
+			where T : struct, IBitStreamSerializable
 		{
 			Contract.Requires(initializer != null);
 
-			if (IsReading)
+			if (this.IsReading)
 				value = initializer();
 
 			value.Serialize(this);
@@ -47,7 +47,7 @@ namespace KSoft.IO
 
 		#region Stream Objects
 		public BitStream StreamObject<T>(T value)
-			where T : class, IO.IBitStreamSerializable
+			where T : class, IBitStreamSerializable
 		{
 			Contract.Requires(value != null);
 
@@ -56,12 +56,12 @@ namespace KSoft.IO
 			return this;
 		}
 		public BitStream StreamObject<T>(ref T value, Func<T> initializer)
-			where T : class, IO.IBitStreamSerializable
+			where T : class, IBitStreamSerializable
 		{
-			Contract.Requires(IsReading || value != null);
+			Contract.Requires(this.IsReading || value != null);
 			Contract.Requires(initializer != null);
 
-			if (IsReading)
+			if (this.IsReading)
 				value = initializer();
 
 			value.Serialize(this);
@@ -76,8 +76,8 @@ namespace KSoft.IO
 			Contract.Requires(read != null);
 			Contract.Requires(write != null);
 
-				 if (IsReading) read(this);
-			else if (IsWriting) write(this);
+				 if (this.IsReading) read(this);
+			else if (this.IsWriting) write(this);
 
 			return this;
 		}
@@ -88,8 +88,8 @@ namespace KSoft.IO
 			Contract.Requires(read != null);
 			Contract.Requires(write != null);
 
-				 if (IsReading) read(context, this);
-			else if (IsWriting) write(context, this);
+				 if (this.IsReading) read(context, this);
+			else if (this.IsWriting) write(context, this);
 
 			return this;
 		}
@@ -97,12 +97,12 @@ namespace KSoft.IO
 
 		#region Stream Array Values
 		public BitStream StreamValueArray<T>(T[] values)
-			where T : struct, IO.IBitStreamSerializable
+			where T : struct, IBitStreamSerializable
 		{
 			Contract.Requires(values != null);
 
 			for (int x = 0; x < values.Length; x++)
-				StreamValue(ref values[x]);
+				this.StreamValue(ref values[x]);
 
 			return this;
 		}
@@ -110,13 +110,13 @@ namespace KSoft.IO
 
 		#region Stream Array Objects
 		public BitStream StreamObjectArray<T>(T[] values, Func<T> initializer)
-			where T : class, IO.IBitStreamSerializable
+			where T : class, IBitStreamSerializable
 		{
 			Contract.Requires(values != null);
 			Contract.Requires(initializer != null);
 
 			for (int x = 0; x < values.Length; x++)
-				StreamObject(ref values[x], initializer);
+				this.StreamObject(ref values[x], initializer);
 
 			return this;
 		}
@@ -125,16 +125,16 @@ namespace KSoft.IO
 		#region Stream Collection
 		public BitStream StreamElements<T, TContext>(ICollection<T> list, int countBitSize,
 			TContext ctxt, Func<TContext, T> ctor)
-			where T : IO.IBitStreamSerializable
+			where T : IBitStreamSerializable
 		{
 			Contract.Requires(list != null);
 			Contract.Requires(countBitSize <= Bits.kInt32BitCount);
 			Contract.Requires(ctor != null);
 
 			int count = list.Count;
-			Stream(ref count, countBitSize);
+			this.Stream(ref count, countBitSize);
 
-			if (IsReading)
+			if (this.IsReading)
 			{
 				for (int x = 0; x < count; x++)
 				{
@@ -143,7 +143,7 @@ namespace KSoft.IO
 					list.Add(t);
 				}
 			}
-			else if (IsWriting)
+			else if (this.IsWriting)
 			{
 				foreach (var obj in list)
 					obj.Serialize(this);
@@ -152,13 +152,13 @@ namespace KSoft.IO
 			return this;
 		}
 
-		public IO.BitStream StreamElements<T>(ICollection<T> list, int countBitSize)
-			where T : IO.IBitStreamSerializable, new()
+		public BitStream StreamElements<T>(ICollection<T> list, int countBitSize)
+			where T : IBitStreamSerializable, new()
 		{
 			Contract.Requires(list != null);
 			Contract.Requires(countBitSize <= Bits.kInt32BitCount);
 
-			return StreamElements(list, countBitSize, (object)null, (nil) => new T());
+			return this.StreamElements(list, countBitSize, (object)null, (nil) => new T());
 		}
 		#endregion
 	};

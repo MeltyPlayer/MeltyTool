@@ -27,117 +27,117 @@ namespace KSoft.Phoenix.XML
 		public sealed class StreamXmlContextData
 		{
 			public Engine.ProtoDataXmlFileInfo ProtoFileInfo;
-			public Engine.XmlFileInfo FileInfo { get { return ProtoFileInfo.FileInfo; } }
-			public Engine.XmlFileInfo FileInfoWithUpdates { get { return ProtoFileInfo.FileInfoWithUpdates; } }
+			public Engine.XmlFileInfo FileInfo { get { return this.ProtoFileInfo.FileInfo; } }
+			public Engine.XmlFileInfo FileInfoWithUpdates { get { return this.ProtoFileInfo.FileInfoWithUpdates; } }
 			public Action<IO.XmlElementStream> Preload;
 			public Action<IO.XmlElementStream> Stream;
 			public Action<IO.XmlElementStream> StreamUpdates;
 
 			public StreamXmlContextData(Engine.ProtoDataXmlFileInfo protoFileInfo)
 			{
-				ProtoFileInfo = protoFileInfo;
+				this.ProtoFileInfo = protoFileInfo;
 			}
 		};
 		private List<StreamXmlContextData> mStreamXmlContexts;
 		private void SetupStreamXmlContexts()
 		{
-			if (mStreamXmlContexts != null)
+			if (this.mStreamXmlContexts != null)
 				return;
 
 			// #NOTE place new DatabaseObjectKind code here
 
-			mStreamXmlContexts = new List<StreamXmlContextData>()
+			this.mStreamXmlContexts = new List<StreamXmlContextData>()
 			{
 				#region Lists
 				new StreamXmlContextData(Phx.LocStringTable.kProtoFileInfoEnglish)
 				{
-					Preload=PreloadStringTable,
+					Preload= this.PreloadStringTable,
 				},
 				new StreamXmlContextData(Phx.BDatabaseBase.kObjectTypesProtoFileInfo)
 				{
-					Preload=StreamXmlObjectTypes,
+					Preload= this.StreamXmlObjectTypes,
 				},
 				new StreamXmlContextData(Phx.BDamageType.kProtoFileInfo)
 				{
-					Preload=PreloadDamageTypes,
-					Stream=StreamXmlDamageTypes,
+					Preload= this.PreloadDamageTypes,
+					Stream= this.StreamXmlDamageTypes,
 				},
 				new StreamXmlContextData(Phx.BProtoImpactEffect.kProtoFileInfo)
 				{
-					Preload=StreamXmlImpactEffects,
+					Preload= this.StreamXmlImpactEffects,
 				},
 				new StreamXmlContextData(Phx.TerrainTileType.kProtoFileInfo)
 				{
-					Preload=StreamXmlTerrainTileTypes,
+					Preload= this.StreamXmlTerrainTileTypes,
 				},
 				new StreamXmlContextData(Phx.BWeaponType.kProtoFileInfo)
 				{
-					Preload=StreamXmlWeaponTypes,
+					Preload= this.StreamXmlWeaponTypes,
 				},
 				new StreamXmlContextData(Phx.BUserClass.kProtoFileInfo)
 				{
-					Preload=StreamXmlUserClasses,
+					Preload= this.StreamXmlUserClasses,
 				},
 				#endregion
 
 				#region GameData
 				new StreamXmlContextData(Phx.HPBarData.kProtoFileInfo)
 				{
-					Stream=StreamXmlHPBars,
+					Stream= this.StreamXmlHPBars,
 				},
 				new StreamXmlContextData(Phx.BGameData.kProtoFileInfo)
 				{
-					Stream=StreamXmlGameData,
+					Stream= this.StreamXmlGameData,
 				},
 				new StreamXmlContextData(Phx.BAbility.kProtoFileInfo)
 				{
-					Stream=StreamXmlAbilities,
+					Stream= this.StreamXmlAbilities,
 				},
 				#endregion
 
 				#region ProtoData
 				new StreamXmlContextData(Phx.BProtoObject.kProtoFileInfo)
 				{
-					Preload=PreloadObjects,
-					Stream=StreamXmlObjects,
-					StreamUpdates=StreamXmlObjectsUpdate,
+					Preload= this.PreloadObjects,
+					Stream= this.StreamXmlObjects,
+					StreamUpdates= this.StreamXmlObjectsUpdate,
 				},
 				new StreamXmlContextData(Phx.BProtoSquad.kProtoFileInfo)
 				{
-					Preload=PreloadSquads,
-					Stream=StreamXmlSquads,
-					StreamUpdates=StreamXmlSquadsUpdate,
+					Preload= this.PreloadSquads,
+					Stream= this.StreamXmlSquads,
+					StreamUpdates= this.StreamXmlSquadsUpdate,
 				},
 				new StreamXmlContextData(Phx.BProtoPower.kProtoFileInfo)
 				{
-					Preload=PreloadPowers,
-					Stream=StreamXmlPowers,
+					Preload= this.PreloadPowers,
+					Stream= this.StreamXmlPowers,
 				},
 				new StreamXmlContextData(Phx.BProtoTech.kProtoFileInfo)
 				{
-					Preload=PreloadTechs,
-					Stream=StreamXmlTechs,
-					StreamUpdates=StreamXmlTechsUpdate,
+					Preload= this.PreloadTechs,
+					Stream= this.StreamXmlTechs,
+					StreamUpdates= this.StreamXmlTechsUpdate,
 				},
 
 				new StreamXmlContextData(Phx.BCiv.kProtoFileInfo)
 				{
 					//Preload=PreloadCivs,
-					Stream=StreamXmlCivs,
+					Stream= this.StreamXmlCivs,
 				},
 				new StreamXmlContextData(Phx.BLeader.kProtoFileInfo)
 				{
 					//Preload=PreloadLeaders,
-					Stream=StreamXmlLeaders,
+					Stream= this.StreamXmlLeaders,
 				},
 				#endregion
 			};
 		}
 		private void ProcessStreamXmlContexts(ref bool r, FA mode)
 		{
-			ProcessStreamXmlContexts(ref r, mode
-				, StreamXmlStage.Preload, StreamXmlStage.kNumberOf
-				, Engine.XmlFilePriority.Lists, Engine.XmlFilePriority.kNumberOf);
+			this.ProcessStreamXmlContexts(ref r, mode
+			                              , StreamXmlStage.Preload, StreamXmlStage.kNumberOf
+			                              , Engine.XmlFilePriority.Lists, Engine.XmlFilePriority.kNumberOf);
 		}
 
 		private struct ProcessStreamXmlContextStageArgs
@@ -154,28 +154,28 @@ namespace KSoft.Phoenix.XML
 				, Engine.XmlFilePriority firstPriority
 				, Engine.XmlFilePriority lastPriorityPlusOne)
 			{
-				Mode = mode;
-				Stage = stage;
-				FirstPriority = firstPriority;
-				LastPriorityPlusOne = lastPriorityPlusOne;
+				this.Mode = mode;
+				this.Stage = stage;
+				this.FirstPriority = firstPriority;
+				this.LastPriorityPlusOne = lastPriorityPlusOne;
 
-				Tasks = null;
-				TaskExceptions = null;
-				Tasks = new List<Task<bool>>();
-				TaskExceptions = new List<Exception>();
+				this.Tasks = null;
+				this.TaskExceptions = null;
+				this.Tasks = new List<Task<bool>>();
+				this.TaskExceptions = new List<Exception>();
 			}
 
 			public bool UpdateResultWithTaskResults(ref bool r)
 			{
-				PhxUtil.UpdateResultWithTaskResults(ref r, Tasks, TaskExceptions);
+				PhxUtil.UpdateResultWithTaskResults(ref r, this.Tasks, this.TaskExceptions);
 
 				return r;
 			}
 
 			public void ClearTaskData()
 			{
-				Tasks.Clear();
-				TaskExceptions.Clear();
+				this.Tasks.Clear();
+				this.TaskExceptions.Clear();
 			}
 		};
 
@@ -186,12 +186,12 @@ namespace KSoft.Phoenix.XML
 			, Engine.XmlFilePriority lastPriorityPlusOne = Engine.XmlFilePriority.kNumberOf
 			)
 		{
-			SetupStreamXmlContexts();
+			this.SetupStreamXmlContexts();
 
 			for (var s = firstStage; s < lastStagePlusOne; s++)
 			{
 				var args = new ProcessStreamXmlContextStageArgs(mode, s, firstPriority, lastPriorityPlusOne);
-				ProcessStreamXmlContextStage(ref r, args);
+				this.ProcessStreamXmlContextStage(ref r, args);
 			}
 		}
 
@@ -201,7 +201,7 @@ namespace KSoft.Phoenix.XML
 
 			for (var p = args.FirstPriority; p < args.LastPriorityPlusOne; p++)
 			{
-				foreach (var ctxt in mStreamXmlContexts)
+				foreach (var ctxt in this.mStreamXmlContexts)
 				{
 					if (ctxt.ProtoFileInfo.Priority != p)
 						continue;
@@ -214,7 +214,7 @@ namespace KSoft.Phoenix.XML
 							if (ctxt.Preload == null)
 								break;
 
-							var task = Task<bool>.Factory.StartNew(() => TryStreamData(ctxt.FileInfo, mode, ctxt.Preload));
+							var task = Task<bool>.Factory.StartNew(() => this.TryStreamData(ctxt.FileInfo, mode, ctxt.Preload));
 							args.Tasks.Add(task);
 						} break;
 						#endregion
@@ -224,7 +224,7 @@ namespace KSoft.Phoenix.XML
 							if (ctxt.Stream == null)
 								break;
 
-								var task = Task<bool>.Factory.StartNew(() => TryStreamData(ctxt.FileInfo, mode, ctxt.Stream));
+								var task = Task<bool>.Factory.StartNew(() => this.TryStreamData(ctxt.FileInfo, mode, ctxt.Stream));
 								args.Tasks.Add(task);
 						} break;
 						#endregion
@@ -236,7 +236,7 @@ namespace KSoft.Phoenix.XML
 							if (ctxt.StreamUpdates == null)
 								break;
 
-							var task = Task<bool>.Factory.StartNew(() => TryStreamData(ctxt.FileInfoWithUpdates, mode, ctxt.StreamUpdates));
+							var task = Task<bool>.Factory.StartNew(() => this.TryStreamData(ctxt.FileInfoWithUpdates, mode, ctxt.StreamUpdates));
 							args.Tasks.Add(task);
 						} break;
 						#endregion
@@ -259,7 +259,7 @@ namespace KSoft.Phoenix.XML
 
 		void StreamTacticsAsync(ref bool r, FA mode)
 		{
-			var tactics = Database.Tactics;
+			var tactics = this.Database.Tactics;
 			var tasks = new List<Task<bool>>(tactics.Count);
 			var task_exceptions = new List<Exception>(tactics.Count);
 
@@ -285,7 +285,7 @@ namespace KSoft.Phoenix.XML
 				var task = Task<bool>.Factory.StartNew((state) =>
 				{
 					var _tactic = state as Phx.BTacticData;
-					return TryStreamData(_tactic.SourceXmlFile, mode, StreamTactic, _tactic, Phx.BTacticData.kFileExt);
+					return this.TryStreamData(_tactic.SourceXmlFile, mode, this.StreamTactic, _tactic, Phx.BTacticData.kFileExt);
 				}, arg);
 				tasks.Add(task);
 			}
@@ -300,27 +300,27 @@ namespace KSoft.Phoenix.XML
 		}
 		bool StreamTactics(FA mode)
 		{
-			if (GameEngine.Build == PhxEngineBuild.Alpha)
+			if (this.GameEngine.Build == PhxEngineBuild.Alpha)
 			{
 				Debug.Trace.XML.TraceInformation("BDatabaseXmlSerializer: Alpha build detected, skipping Tactics streaming");
 				return false;
 			}
 
 			bool r = true;
-			StreamTacticsAsync(ref r, mode);
+			this.StreamTacticsAsync(ref r, mode);
 			return r;
 		}
 
 	private bool mIsPreloading;
-		protected bool IsNotPreloading { get { return !mIsPreloading; } }
+		protected bool IsNotPreloading { get { return !this.mIsPreloading; } }
 		public bool Preload()
 		{
-			if (Database.LoadState == Phx.DatabaseLoadState.Failed)
+			if (this.Database.LoadState == Phx.DatabaseLoadState.Failed)
 			{
 				Debug.Trace.Phoenix.TraceInformation("Not preloading Database because an earlier load stage failed");
 				return false;
 			}
-			if (Database.LoadState >= Phx.DatabaseLoadState.Preloading)
+			if (this.Database.LoadState >= Phx.DatabaseLoadState.Preloading)
 			{
 				Debug.Trace.Phoenix.TraceInformation("Skipping preloading of Database because it already is at a later stage");
 				return true;
@@ -328,22 +328,22 @@ namespace KSoft.Phoenix.XML
 
 			const FA k_mode = FA.Read;
 
-			mIsPreloading = true;
-			Database.LoadState = Phx.DatabaseLoadState.Preloading;
+			this.mIsPreloading = true;
+			this.Database.LoadState = Phx.DatabaseLoadState.Preloading;
 
-			AutoIdSerializersInitialize();
-			PreStreamXml(k_mode);
+			this.AutoIdSerializersInitialize();
+			this.PreStreamXml(k_mode);
 
 			bool r = true;
-			ProcessStreamXmlContexts(ref r, k_mode
-				, StreamXmlStage.Preload
-				, StreamXmlStage.Stream);
+			this.ProcessStreamXmlContexts(ref r, k_mode
+			                              , StreamXmlStage.Preload
+			                              , StreamXmlStage.Stream);
 
-			PostStreamXml(k_mode);
+			this.PostStreamXml(k_mode);
 			//AutoIdSerializersDispose();
 
-			mIsPreloading = false;
-			Database.LoadState = r
+			this.mIsPreloading = false;
+			this.Database.LoadState = r
 				? Phx.DatabaseLoadState.Preloaded
 				: Phx.DatabaseLoadState.Failed;
 
@@ -352,12 +352,12 @@ namespace KSoft.Phoenix.XML
 
 		public bool Load()
 		{
-			if (Database.LoadState == Phx.DatabaseLoadState.Failed)
+			if (this.Database.LoadState == Phx.DatabaseLoadState.Failed)
 			{
 				Debug.Trace.Phoenix.TraceInformation("Not loading Database because an earlier load stage failed");
 				return false;
 			}
-			if (Database.LoadState >= Phx.DatabaseLoadState.Loading)
+			if (this.Database.LoadState >= Phx.DatabaseLoadState.Loading)
 			{
 				Debug.Trace.Phoenix.TraceInformation("Skipping loading of Database because it already is at a later stage");
 				return true;
@@ -365,19 +365,19 @@ namespace KSoft.Phoenix.XML
 
 			const FA k_mode = FA.Read;
 
-			Database.LoadState = Phx.DatabaseLoadState.Loading;
-			AutoIdSerializersInitialize();
-			PreStreamXml(k_mode);
+			this.Database.LoadState = Phx.DatabaseLoadState.Loading;
+			this.AutoIdSerializersInitialize();
+			this.PreStreamXml(k_mode);
 
 			bool r = true;
-			ProcessStreamXmlContexts(ref r, k_mode
-				, StreamXmlStage.Stream
-				, StreamXmlStage.kNumberOf);
+			this.ProcessStreamXmlContexts(ref r, k_mode
+			                              , StreamXmlStage.Stream
+			                              , StreamXmlStage.kNumberOf);
 
-			PostStreamXml(k_mode);
+			this.PostStreamXml(k_mode);
 			//AutoIdSerializersDispose();
 
-			Database.LoadState = r
+			this.Database.LoadState = r
 				? Phx.DatabaseLoadState.Loaded
 				: Phx.DatabaseLoadState.Failed;
 
@@ -386,12 +386,12 @@ namespace KSoft.Phoenix.XML
 
 		public bool LoadAllTactics()
 		{
-			if (Database.LoadState == Phx.DatabaseLoadState.Failed)
+			if (this.Database.LoadState == Phx.DatabaseLoadState.Failed)
 			{
 				Debug.Trace.Phoenix.TraceInformation("Not loading Tactics because an earlier load stage failed");
 				return false;
 			}
-			if (Database.LoadState < Phx.DatabaseLoadState.Preloaded)
+			if (this.Database.LoadState < Phx.DatabaseLoadState.Preloaded)
 			{
 				Debug.Trace.Phoenix.TraceInformation("Not loading Tactics because an earlier the database is not at least preloaded");
 				return true;
@@ -399,14 +399,14 @@ namespace KSoft.Phoenix.XML
 
 			const FA k_mode = FA.Read;
 
-			PreStreamXml(k_mode);
+			this.PreStreamXml(k_mode);
 
-			bool r = StreamTactics(k_mode);
+			bool r = this.StreamTactics(k_mode);
 
-			PostStreamXml(k_mode);
+			this.PostStreamXml(k_mode);
 
 			if (!r)
-				Database.LoadState = Phx.DatabaseLoadState.Failed;
+				this.Database.LoadState = Phx.DatabaseLoadState.Failed;
 
 			return r;
 		}

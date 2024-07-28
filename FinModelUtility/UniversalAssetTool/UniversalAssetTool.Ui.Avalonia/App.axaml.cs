@@ -15,12 +15,12 @@ public partial class App : Application {
   }
 
   public override void OnFrameworkInitializationCompleted() {
-    if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime
+    if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime
         desktop) {
       desktop.MainWindow = new MainWindow {
           DataContext = new MainViewModel()
       };
-    } else if (ApplicationLifetime is ISingleViewApplicationLifetime
+    } else if (this.ApplicationLifetime is ISingleViewApplicationLifetime
                singleViewPlatform) {
       singleViewPlatform.MainView = new MainView {
           DataContext = new MainViewModel()

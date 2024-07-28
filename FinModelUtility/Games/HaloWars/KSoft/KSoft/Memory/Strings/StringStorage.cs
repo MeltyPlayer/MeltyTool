@@ -20,35 +20,35 @@ namespace KSoft.Memory.Strings
 		#region WidthType
 		StringStorageWidthType mWidthType;
 		/// <summary>Character serialization width/encoding type</summary>
-		public StringStorageWidthType WidthType { get { return mWidthType; } }
+		public StringStorageWidthType WidthType { get { return this.mWidthType; } }
 		#endregion
 
 		#region Type
 		StringStorageType mType;
 		/// <summary>Character serialization format method</summary>
-		public StringStorageType Type { get { return mType; } }
+		public StringStorageType Type { get { return this.mType; } }
 		#endregion
 
 		#region ByteOrder
 		Shell.EndianFormat mByteOrder;
 		/// <summary>Endian byte order of the character storage</summary>
 		/// <remarks>Affects both the wide-characters and any length prefixes written</remarks>
-		public Shell.EndianFormat ByteOrder { get { return mByteOrder; } }
+		public Shell.EndianFormat ByteOrder { get { return this.mByteOrder; } }
 		#endregion
 
 		#region LengthPrefix
 		StringStorageLengthPrefix mLengthPrefix;
 		/// <summary>Length prefix size</summary>
-		public StringStorageLengthPrefix LengthPrefix { get { return mLengthPrefix; } }
+		public StringStorageLengthPrefix LengthPrefix { get { return this.mLengthPrefix; } }
 
-		public bool HasLengthPrefix { get { return mType.UsesLengthPrefix(); } }
+		public bool HasLengthPrefix { get { return this.mType.UsesLengthPrefix(); } }
 		#endregion
 
 		#region FixedLength
 		short mFixedLength;
 		/// <summary>Fixed string serialization length</summary>
 		/// <remarks>Set to '0' when no specified fixed length</remarks>
-		public short FixedLength { get { return mFixedLength; } }
+		public short FixedLength { get { return this.mFixedLength; } }
 
 		/// <summary>Does the storage use a fixed length character array</summary>
 		/// <remarks>
@@ -58,7 +58,7 @@ namespace KSoft.Memory.Strings
 		/// buffer can be used, but for <see cref="StringStorageType.CString"/> cases
 		/// the <see cref="FixedLength"/> will be 1 less due to null termination
 		/// </remarks>
-		public bool IsFixedLength { get { return mFixedLength != 0 && !HasLengthPrefix; } }
+		public bool IsFixedLength { get { return this.mFixedLength != 0 && !this.HasLengthPrefix; } }
 
 	#endregion
 
@@ -76,13 +76,13 @@ namespace KSoft.Memory.Strings
 			Contract.Requires(fixedLength == 0 || !widthType.IsVariableWidth(),
 				"Can't use a variable width encoding with fixed buffers!");
 
-			mWidthType = widthType;
-			mType = type;
-			mByteOrder = byteOrder;
-			mLengthPrefix = StringStorageLengthPrefix.None;
-			mFixedLength = fixedLength;
+			this.mWidthType = widthType;
+			this.mType = type;
+			this.mByteOrder = byteOrder;
+			this.mLengthPrefix = StringStorageLengthPrefix.None;
+			this.mFixedLength = fixedLength;
 
-			kHashCode = CalculateHashCode(mWidthType, mType, mByteOrder, mLengthPrefix, mFixedLength);
+			this.kHashCode = CalculateHashCode(this.mWidthType, this.mType, this.mByteOrder, this.mLengthPrefix, this.mFixedLength);
 		}
 		/// <summary>Construct a new string storage definition (in <see cref="Shell.EndianFormat.Little"/> byte order)</summary>
 		/// <param name="widthType">Width size of a single character of this string definition</param>
@@ -103,13 +103,13 @@ namespace KSoft.Memory.Strings
 		public StringStorage(StringStorageWidthType widthType, StringStorageLengthPrefix prefix,
 			Shell.EndianFormat byteOrder = Shell.EndianFormat.Little)
 		{
-			mWidthType = widthType;
-			mType = StringStorageType.Pascal;
-			mByteOrder = byteOrder;
-			mLengthPrefix = prefix;
-			mFixedLength = 0;
+			this.mWidthType = widthType;
+			this.mType = StringStorageType.Pascal;
+			this.mByteOrder = byteOrder;
+			this.mLengthPrefix = prefix;
+			this.mFixedLength = 0;
 
-			kHashCode = CalculateHashCode(mWidthType, mType, mByteOrder, mLengthPrefix, mFixedLength);
+			this.kHashCode = CalculateHashCode(this.mWidthType, this.mType, this.mByteOrder, this.mLengthPrefix, this.mFixedLength);
 		}
 		#endregion
 
@@ -157,14 +157,14 @@ namespace KSoft.Memory.Strings
 		readonly int kHashCode;
 		/// <summary>Returns the hash code for this instance</summary>
 		/// <returns>All of this definition's fields bit-encoded into an integer</returns>
-		public override int GetHashCode()	{ return kHashCode; }
+		public override int GetHashCode()	{ return this.kHashCode; }
 		#endregion
 
 		#region IEquatable<StringStorage> Members
 		/// <summary>Compares this to another <see cref="StringStorage"/> object testing their underlying fields for equality</summary>
 		/// <param name="obj">other <see cref="StringStorage"/> object</param>
 		/// <returns>true if both this object and <paramref name="obj"/> are equal</returns>
-		public bool Equals(StringStorage other)					{ return kHashCode == other.kHashCode; }
+		public bool Equals(StringStorage other)					{ return this.kHashCode == other.kHashCode; }
 
 		public bool Equals(StringStorage x, StringStorage y)	{ return x.kHashCode == y.kHashCode; }
 
@@ -204,21 +204,21 @@ namespace KSoft.Memory.Strings
 		/// </remarks>
 		public int CompareTo(StringStorage other)
 		{
-			if (mType == other.mType)
+			if (this.mType == other.mType)
 			{
-				if (mWidthType == other.mWidthType)
-					if (mByteOrder == other.mByteOrder)
-						if (mLengthPrefix == other.mLengthPrefix)
-							return mFixedLength - other.mFixedLength;
+				if (this.mWidthType == other.mWidthType)
+					if (this.mByteOrder == other.mByteOrder)
+						if (this.mLengthPrefix == other.mLengthPrefix)
+							return this.mFixedLength - other.mFixedLength;
 						else
-							return ((int)mLengthPrefix) - ((int)other.mLengthPrefix);
+							return ((int) this.mLengthPrefix) - ((int)other.mLengthPrefix);
 					else
-						return ((int)mByteOrder) - ((int)other.mByteOrder);
+						return ((int) this.mByteOrder) - ((int)other.mByteOrder);
 				else
-					return ((int)mWidthType) - ((int)other.mWidthType);
+					return ((int) this.mWidthType) - ((int)other.mWidthType);
 			}
 			else
-				return ((int)mType) - ((int)other.mType);
+				return ((int) this.mType) - ((int)other.mType);
 		}
 
 		/// <summary></summary>
@@ -226,12 +226,12 @@ namespace KSoft.Memory.Strings
 		/// <param name="y"></param>
 		/// <returns></returns>
 		/// <see cref="int Compare(StringStorage, StringStorage)"/>
-		public int Compare(object x, object y) => Compare((StringStorage)x, (StringStorage)y);
+		public int Compare(object x, object y) => this.Compare((StringStorage)x, (StringStorage)y);
 		/// <summary></summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
 		/// <see cref="int CompareTo(StringStorage)"/>
-		public int CompareTo(object obj) => CompareTo((StringStorage)obj);
+		public int CompareTo(object obj) => this.CompareTo((StringStorage)obj);
 		#endregion
 
 		#region Operators

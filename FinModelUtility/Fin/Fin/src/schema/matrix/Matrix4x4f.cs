@@ -22,13 +22,13 @@ public partial class Matrix4x4f : IBinaryConvertible {
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {
-    if (Object.ReferenceEquals(this, obj)) {
+    if (ReferenceEquals(this, obj)) {
       return true;
     }
 
     if (obj is Matrix4x4f other) {
       for (var i = 0; i < this.Values.Length; ++i) {
-        if (Values[i] != other.Values[i]) {
+        if (this.Values[i] != other.Values[i]) {
           return false;
         }
       }
@@ -42,7 +42,7 @@ public partial class Matrix4x4f : IBinaryConvertible {
   public override int GetHashCode() {
     var hash = FluentHash.Start();
 
-    foreach (var value in Values) {
+    foreach (var value in this.Values) {
       hash = hash.With(value);
     }
 

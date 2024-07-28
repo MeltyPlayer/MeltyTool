@@ -26,19 +26,19 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref FakeGravityBall);
-			s.StreamV(ref HorizontalMoveInputDir); s.StreamV(ref VerticalMoveInputDir);
-			s.StreamV(ref LastUpdatePos); s.StreamV(ref CameraFocusPoint);
-			s.Stream(ref TimestampNextCommand);
-			s.Stream(ref TimeUntilHint);
-			s.Stream(ref CommandInterval);
-			s.Stream(ref MinBallDistance); s.Stream(ref MaxBallDistance); s.Stream(ref MinBallHeight);
-			s.Stream(ref MaxBallHeight); s.Stream(ref MaxBallSpeedStagnant); s.Stream(ref MaxBallSpeedPulling);
-			s.Stream(ref CameraDistance); s.Stream(ref CameraHeight); s.Stream(ref CameraHoverPointDistance);
-			s.Stream(ref CameraMaxBallAngle); s.Stream(ref PullingRange); s.Stream(ref PickupShakeDuration);
-			s.Stream(ref PickupRumbleShakeStrength); s.Stream(ref PickupCameraShakeStrength);
-			s.Stream(ref ExplodeTime); s.Stream(ref DelayShutdownTimeLeft);
-			s.Stream(ref HintShown); s.Stream(ref HintCompleted); s.Stream(ref ShuttingDown);
+			s.Stream(ref this.FakeGravityBall);
+			s.StreamV(ref this.HorizontalMoveInputDir); s.StreamV(ref this.VerticalMoveInputDir);
+			s.StreamV(ref this.LastUpdatePos); s.StreamV(ref this.CameraFocusPoint);
+			s.Stream(ref this.TimestampNextCommand);
+			s.Stream(ref this.TimeUntilHint);
+			s.Stream(ref this.CommandInterval);
+			s.Stream(ref this.MinBallDistance); s.Stream(ref this.MaxBallDistance); s.Stream(ref this.MinBallHeight);
+			s.Stream(ref this.MaxBallHeight); s.Stream(ref this.MaxBallSpeedStagnant); s.Stream(ref this.MaxBallSpeedPulling);
+			s.Stream(ref this.CameraDistance); s.Stream(ref this.CameraHeight); s.Stream(ref this.CameraHoverPointDistance);
+			s.Stream(ref this.CameraMaxBallAngle); s.Stream(ref this.PullingRange); s.Stream(ref this.PickupShakeDuration);
+			s.Stream(ref this.PickupRumbleShakeStrength); s.Stream(ref this.PickupCameraShakeStrength);
+			s.Stream(ref this.ExplodeTime); s.Stream(ref this.DelayShutdownTimeLeft);
+			s.Stream(ref this.HintShown); s.Stream(ref this.HintCompleted); s.Stream(ref this.ShuttingDown);
 		}
 		#endregion
 	};

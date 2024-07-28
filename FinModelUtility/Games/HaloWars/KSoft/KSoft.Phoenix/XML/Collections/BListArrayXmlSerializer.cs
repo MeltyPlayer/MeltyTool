@@ -33,16 +33,16 @@ namespace KSoft.Phoenix.XML
 		BListXmlParams mParams;
 		Collections.BListArray<T> mList;
 
-		public override BListXmlParams Params { get { return mParams; } }
-		public override Collections.BListBase<T> List { get { return mList; } }
+		public override BListXmlParams Params { get { return this.mParams; } }
+		public override Collections.BListBase<T> List { get { return this.mList; } }
 
 		public BListArrayXmlSerializer(BListXmlParams @params, Collections.BListArray<T> list)
 		{
 			Contract.Requires<ArgumentNullException>(@params != null);
 			Contract.Requires<ArgumentNullException>(list != null);
 
-			mParams = @params;
-			mList = list;
+			this.mParams = @params;
+			this.mList = list;
 		}
 
 		#region IXmlElementStreamable Members
@@ -51,7 +51,7 @@ namespace KSoft.Phoenix.XML
 			T item = new T();
 			item.Serialize(s);
 
-			List.AddItem(item);
+			this.List.AddItem(item);
 		}
 
 		protected override void Write<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, T data)

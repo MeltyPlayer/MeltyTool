@@ -252,7 +252,7 @@ public class BnkReader {
             br.Position -= 1;
           }
 
-          values_[4 - totalValueCount + i] = br.ReadSingle();
+          this.values_[4 - totalValueCount + i] = br.ReadSingle();
         }
 
         if (keyframeType == KeyframeType.ONLY_KEYFRAME) {

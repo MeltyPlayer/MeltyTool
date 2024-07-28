@@ -45,8 +45,8 @@ namespace KSoft.Phoenix.Phx
 		public BTriggerSystem Owner { get; private set; }
 
 		string mName;
-		public string Name { get { return mName; } }
-		public override string ToString() { return mName; }
+		public string Name { get { return this.mName; } }
+		public override string ToString() { return this.mName; }
 
 		BTriggerScriptType mType;
 		int mNextTriggerVarID = TypeExtensions.kNone;
@@ -79,7 +79,7 @@ namespace KSoft.Phoenix.Phx
 		public BTriggerVar GetVar(int var_id)
 		{
 			BTriggerVar var;
-			mDbiVars.TryGetValue(var_id, out var);
+			this.mDbiVars.TryGetValue(var_id, out var);
 
 			return var;
 		}
@@ -92,23 +92,23 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttribute(DatabaseNamedObject.kXmlAttrNameN, ref mName);
-			s.StreamAttributeEnum(kXmlAttrType, ref mType);
-			s.StreamAttribute(kXmlAttrNextTriggerVar, ref mNextTriggerVarID);
-			s.StreamAttribute(kXmlAttrNextTrigger, ref mNextTriggerID);
-			s.StreamAttribute(kXmlAttrNextCondition, ref mNextConditionID);
-			s.StreamAttribute(kXmlAttrNextEffect, ref mNextEffectID);
-			s.StreamAttribute(kXmlAttrExternal, ref mExternal);
+			s.StreamAttribute(DatabaseNamedObject.kXmlAttrNameN, ref this.mName);
+			s.StreamAttributeEnum(kXmlAttrType, ref this.mType);
+			s.StreamAttribute(kXmlAttrNextTriggerVar, ref this.mNextTriggerVarID);
+			s.StreamAttribute(kXmlAttrNextTrigger, ref this.mNextTriggerID);
+			s.StreamAttribute(kXmlAttrNextCondition, ref this.mNextConditionID);
+			s.StreamAttribute(kXmlAttrNextEffect, ref this.mNextEffectID);
+			s.StreamAttribute(kXmlAttrExternal, ref this.mExternal);
 
 			using (s.EnterUserDataBookmark(this))
 			{
-				XML.XmlUtil.Serialize(s, Groups, BTriggerGroup.kBListXmlParams);
-				if (s.IsReading) BuildDictionary(out mDbiGroups, Groups);
+				XML.XmlUtil.Serialize(s, this.Groups, BTriggerGroup.kBListXmlParams);
+				if (s.IsReading) BuildDictionary(out this.mDbiGroups, this.Groups);
 
-				XML.XmlUtil.Serialize(s, Vars, BTriggerVar.kBListXmlParams);
-				if (s.IsReading) BuildDictionary(out mDbiVars, Vars);
-				XML.XmlUtil.Serialize(s, Triggers, BTrigger.kBListXmlParams);
-				if (s.IsReading) BuildDictionary(out mDbiTriggers, Triggers);
+				XML.XmlUtil.Serialize(s, this.Vars, BTriggerVar.kBListXmlParams);
+				if (s.IsReading) BuildDictionary(out this.mDbiVars, this.Vars);
+				XML.XmlUtil.Serialize(s, this.Triggers, BTrigger.kBListXmlParams);
+				if (s.IsReading) BuildDictionary(out this.mDbiTriggers, this.Triggers);
 			}
 
 			if(s.IsReading)

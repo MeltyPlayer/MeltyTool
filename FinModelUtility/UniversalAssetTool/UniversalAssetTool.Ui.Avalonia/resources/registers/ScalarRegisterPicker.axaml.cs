@@ -46,6 +46,6 @@ public class ScalarRegisterPickerViewModel : ViewModelBase {
 
 public partial class ScalarRegisterPicker : UserControl {
   public ScalarRegisterPicker() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

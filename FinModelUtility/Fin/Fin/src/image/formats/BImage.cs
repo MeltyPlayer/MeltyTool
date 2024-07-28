@@ -35,11 +35,11 @@ public abstract class BImage<TPixel>(PixelFormat format) : IImage<TPixel>
         stream,
         FinImage.ConvertFinImageFormatToImageSharpEncoder(imageFormat));
 
-  public IImageLock<TPixel> Lock() => new FinImageLock<TPixel>(Impl);
-  public FinUnsafeImageLock<TPixel> UnsafeLock() => new(Impl);
+  public IImageLock<TPixel> Lock() => new FinImageLock<TPixel>(this.Impl);
+  public FinUnsafeImageLock<TPixel> UnsafeLock() => new(this.Impl);
 
   public override bool Equals(object? obj) {
-    if (Object.ReferenceEquals(this, obj)) {
+    if (ReferenceEquals(this, obj)) {
       return true;
     }
 

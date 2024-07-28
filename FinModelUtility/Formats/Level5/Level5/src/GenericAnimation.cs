@@ -9,6 +9,6 @@ public class GenericAnimation {
   public int FrameCount { get; set; } = 0;
 
   public override string ToString() {
-      return Name;
+      return this.Name;
     }
 }

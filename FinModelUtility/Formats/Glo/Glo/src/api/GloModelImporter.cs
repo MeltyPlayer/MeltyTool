@@ -71,7 +71,7 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
             using var rawTextureImage = FinImage.FromFile(textureFile);
             if (!gloMesh.Faces.Any(
                     f => f.Flags.CheckFlag(GloObjectFlags.ALPHA_TEXTURE))) {
-              return GloModelImporter.AddTransparencyToGloImage_(
+              return AddTransparencyToGloImage_(
                   rawTextureImage);
             } else {
               var width = rawTextureImage.Width;

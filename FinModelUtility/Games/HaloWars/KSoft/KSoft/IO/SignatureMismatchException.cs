@@ -34,7 +34,7 @@ namespace KSoft.IO
 		#endregion
 
 		#region EndianReader utils
-		public static void Assert(IO.EndianReader s, string expected, Memory.Strings.StringStorage storage)
+		public static void Assert(EndianReader s, string expected, Memory.Strings.StringStorage storage)
 		{
 			Contract.Requires(s != null);
 			Contract.Requires(!string.IsNullOrEmpty(expected));
@@ -43,7 +43,7 @@ namespace KSoft.IO
 			if (signature != expected) throw new SignatureMismatchException(s.BaseStream,
 				expected, signature);
 		}
-		public static void Assert(IO.EndianReader s, string expected, Text.StringStorageEncoding encoding)
+		public static void Assert(EndianReader s, string expected, Text.StringStorageEncoding encoding)
 		{
 			Contract.Requires(s != null);
 			Contract.Requires(!string.IsNullOrEmpty(expected));

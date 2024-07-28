@@ -16,13 +16,13 @@ namespace KSoft.Collections
 		public InvertedComparer(IComparer comparer)
 		{
 			Contract.Requires<ArgumentNullException>(comparer != null);
-			mComparer = comparer;
+			this.mComparer = comparer;
 		}
 
 		#region IComparer Members
 		public int Compare(object x, object y)
 		{
-			return -mComparer.Compare(x, y);
+			return -this.mComparer.Compare(x, y);
 		}
 		#endregion
 	};
@@ -34,13 +34,13 @@ namespace KSoft.Collections
 		public InvertedComparer(IComparer<T> comparer)
 		{
 			Contract.Requires<ArgumentNullException>(comparer != null);
-			mComparer = comparer;
+			this.mComparer = comparer;
 		}
 
 		#region IComparer<T> Members
 		public int Compare(T x, T y)
 		{
-			return -mComparer.Compare(x, y);
+			return -this.mComparer.Compare(x, y);
 		}
 		#endregion
 	};

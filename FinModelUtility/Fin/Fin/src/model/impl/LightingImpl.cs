@@ -13,7 +13,7 @@ public partial class ModelImpl<TVertex> {
 public class LightingImpl : ILighting {
   private readonly List<ILight> lights_ = [];
 
-  public IReadOnlyList<ILight> Lights => lights_;
+  public IReadOnlyList<ILight> Lights => this.lights_;
 
   public ILight CreateLight() {
     var light = new LightImpl();

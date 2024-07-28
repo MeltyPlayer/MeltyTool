@@ -39,10 +39,10 @@ public static partial class GlUtil {
       GL.Enable(EnableCap.PrimitiveRestart);
       GL.Enable(EnableCap.PrimitiveRestartFixedIndex);
 
-      GlUtil.ResetBlending();
-      GlUtil.ResetClearColor();
-      GlUtil.ResetCulling();
-      GlUtil.ResetDepth();
-      GlUtil.ResetFlipFaces();
+      ResetBlending();
+      ResetClearColor();
+      ResetCulling();
+      ResetDepth();
+      ResetFlipFaces();
     }
 }

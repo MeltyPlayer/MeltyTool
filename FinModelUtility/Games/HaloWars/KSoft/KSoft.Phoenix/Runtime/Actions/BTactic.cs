@@ -25,11 +25,11 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray(s, ref Weapons);
-			Contract.Assert(Weapons.Length <= BWeapon.kMaxCount);
-			BSaveGame.StreamArray(s, ref ProtoActions);
-			Contract.Assert(ProtoActions.Length <= BProtoAction.kMaxCount);
-			s.Stream(ref AnimInfoLoaded);
+			BSaveGame.StreamArray(s, ref this.Weapons);
+			Contract.Assert(this.Weapons.Length <= BWeapon.kMaxCount);
+			BSaveGame.StreamArray(s, ref this.ProtoActions);
+			Contract.Assert(this.ProtoActions.Length <= BProtoAction.kMaxCount);
+			s.Stream(ref this.AnimInfoLoaded);
 			s.StreamSignature(cSaveMarker.Tactic);
 		}
 		#endregion

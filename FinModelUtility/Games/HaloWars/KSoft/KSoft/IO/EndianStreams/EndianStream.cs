@@ -21,19 +21,23 @@ namespace KSoft.IO
 		/// <summary>Owner of this stream</summary>
 		public object Owner
 		{
-			get { return Reader != null ? Reader.Owner : Writer.Owner; }
+			get { return this.Reader != null ? this.Reader.Owner : this.Writer.Owner; }
 			set {
-				if (Reader != null) Reader.Owner = value;
-				if (Writer != null) Writer.Owner = value;
+				if (this.Reader != null)
+					this.Reader.Owner = value;
+				if (this.Writer != null)
+					this.Writer.Owner = value;
 			}
 		}
 
 		public object UserData
 		{
-			get { return Reader != null ? Reader.UserData : Writer.UserData; }
+			get { return this.Reader != null ? this.Reader.UserData : this.Writer.UserData; }
 			set {
-				if (Reader != null) Reader.UserData = value;
-				if (Writer != null) Writer.UserData = value;
+				if (this.Reader != null)
+					this.Reader.UserData = value;
+				if (this.Writer != null)
+					this.Writer.UserData = value;
 			}
 		}
 
@@ -41,9 +45,9 @@ namespace KSoft.IO
 		/// <remarks>So if this endian stream is interfacing with a file, this will be it's name</remarks>
 		[SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations")]
 		public string StreamName { get {
-				 if (IsReading) return Reader.StreamName;
-			else if (IsWriting) return Writer.StreamName;
-			else throw new Debug.UnreachableException(StreamMode.ToString());
+				 if (this.IsReading) return this.Reader.StreamName;
+			else if (this.IsWriting) return this.Writer.StreamName;
+			else throw new Debug.UnreachableException(this.StreamMode.ToString());
 		} }
 		#endregion
 
@@ -52,36 +56,44 @@ namespace KSoft.IO
 		/// <remarks>Default value is <see cref="Data.PtrHandle.Null32"/></remarks>
 		public Values.PtrHandle BaseAddress
 		{
-			get { return Reader != null ? Reader.BaseAddress : Writer.BaseAddress; }
+			get { return this.Reader != null ? this.Reader.BaseAddress : this.Writer.BaseAddress; }
 			set {
-				if (Reader != null) Reader.BaseAddress = value;
-				if (Writer != null) Writer.BaseAddress = value;
+				if (this.Reader != null)
+					this.Reader.BaseAddress = value;
+				if (this.Writer != null)
+					this.Writer.BaseAddress = value;
 			}
 		}
 
 		#region Seek
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek32(uint offset)						{ Seek(offset, SeekOrigin.Begin); }
+		public void Seek32(uint offset)						{
+			this.Seek(offset, SeekOrigin.Begin); }
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
-		public void Seek32(uint offset, SeekOrigin origin)	{ Seek(offset, origin); }
+		public void Seek32(uint offset, SeekOrigin origin)	{
+			this.Seek(offset, origin); }
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek32(int offset)						{ Seek(offset, SeekOrigin.Begin); }
+		public void Seek32(int offset)						{
+			this.Seek(offset, SeekOrigin.Begin); }
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
-		public void Seek32(int offset, SeekOrigin origin)	{ Seek(offset, origin); }
+		public void Seek32(int offset, SeekOrigin origin)	{
+			this.Seek(offset, origin); }
 
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to the beginning of the stream</summary>
 		/// <param name="offset">Offset to seek to</param>
-		public void Seek(long offset)						{ Seek(offset, SeekOrigin.Begin); }
+		public void Seek(long offset)						{
+			this.Seek(offset, SeekOrigin.Begin); }
 		/// <summary>Moves the stream cursor to <paramref name="offset"/> relative to <paramref name="origin"/></summary>
 		/// <param name="offset">Offset to seek to</param>
 		/// <param name="origin">Origin to base seek operation</param>
-		public void Seek(long offset, SeekOrigin origin)	{ BaseStream.Seek(offset, origin); }
+		public void Seek(long offset, SeekOrigin origin)	{
+			this.BaseStream.Seek(offset, origin); }
 		#endregion
 
 		/// <summary>Align the stream's position by a certain page boundry</summary>
@@ -89,9 +101,9 @@ namespace KSoft.IO
 		/// <returns>True if any alignment had to be performed, false if otherwise</returns>
 		public bool AlignToBoundry(int alignmentBit)
 		{
-				 if (IsReading) return Reader.AlignToBoundry(alignmentBit);
-			else if (IsWriting)	return Writer.AlignToBoundry(alignmentBit);
-			else throw new Debug.UnreachableException(StreamMode.ToString());
+				 if (this.IsReading) return this.Reader.AlignToBoundry(alignmentBit);
+			else if (this.IsWriting)	return this.Writer.AlignToBoundry(alignmentBit);
+			else throw new Debug.UnreachableException(this.StreamMode.ToString());
 		}
 
 		#region VirtualAddressTranslation
@@ -100,39 +112,47 @@ namespace KSoft.IO
 		/// <param name="translationCapacity">The initial table capacity</param>
 		public void VirtualAddressTranslationInitialize(Shell.ProcessorSize vaSize, int translationCapacity = 0)
 		{
-			if (Reader != null) Reader.VirtualAddressTranslationInitialize(vaSize, translationCapacity);
-			if (Writer != null) Writer.VirtualAddressTranslationInitialize(vaSize, translationCapacity);
+			if (this.Reader != null)
+				this.Reader.VirtualAddressTranslationInitialize(vaSize, translationCapacity);
+			if (this.Writer != null)
+				this.Writer.VirtualAddressTranslationInitialize(vaSize, translationCapacity);
 		}
 		/// <summary>Push a PA into to the VAT table, setting the current PA in the process</summary>
 		/// <param name="physicalAddress">PA to push and to use as the VAT's current address</param>
 		public void VirtualAddressTranslationPush(Values.PtrHandle physicalAddress)
 		{
-			if (Reader != null) Reader.VirtualAddressTranslationPush(physicalAddress);
-			if (Writer != null) Writer.VirtualAddressTranslationPush(physicalAddress);
+			if (this.Reader != null)
+				this.Reader.VirtualAddressTranslationPush(physicalAddress);
+			if (this.Writer != null)
+				this.Writer.VirtualAddressTranslationPush(physicalAddress);
 		}
 		/// <summary>Push the stream's position (as a physical address) into the VAT table</summary>
 		public void VirtualAddressTranslationPushPosition()
 		{
-			if (Reader != null) Reader.VirtualAddressTranslationPushPosition();
-			if (Writer != null) Writer.VirtualAddressTranslationPushPosition();
+			if (this.Reader != null)
+				this.Reader.VirtualAddressTranslationPushPosition();
+			if (this.Writer != null)
+				this.Writer.VirtualAddressTranslationPushPosition();
 		}
 		/// <summary>Increase the current address (PA) by a relative offset</summary>
 		/// <param name="relativeOffset">Offset, relative to the current address</param>
 		public void VirtualAddressTranslationIncrease(Values.PtrHandle relativeOffset)
 		{
-			if (Reader != null) Reader.VirtualAddressTranslationIncrease(relativeOffset);
-			if (Writer != null) Writer.VirtualAddressTranslationIncrease(relativeOffset);
+			if (this.Reader != null)
+				this.Reader.VirtualAddressTranslationIncrease(relativeOffset);
+			if (this.Writer != null)
+				this.Writer.VirtualAddressTranslationIncrease(relativeOffset);
 		}
 		/// <summary>Pop and return the current address (PA) in the VAT table</summary>
 		/// <returns>The VAT's current address value before this call</returns>
 		public Values.PtrHandle VirtualAddressTranslationPop()
 		{
-			var result = BaseAddress.Is64bit
+			var result = this.BaseAddress.Is64bit
 				? Values.PtrHandle.InvalidHandle64
 				: Values.PtrHandle.InvalidHandle32;
 
-			if (Reader != null) result = Reader.VirtualAddressTranslationPop();
-			if (Writer != null) result = Writer.VirtualAddressTranslationPop();
+			if (this.Reader != null) result = this.Reader.VirtualAddressTranslationPop();
+			if (this.Writer != null) result = this.Writer.VirtualAddressTranslationPop();
 
 			return result;
 		}
@@ -143,19 +163,19 @@ namespace KSoft.IO
 		/// <param name="ptrSize">Pointer size to use for the result handle</param>
 		/// <returns></returns>
 		public Values.PtrHandle GetPositionPtrWithExplicitWidth(Shell.ProcessorSize ptrSize) =>
-			new Values.PtrHandle(ptrSize, (ulong)BaseStream.Position);
+			new Values.PtrHandle(ptrSize, (ulong) this.BaseStream.Position);
 		/// <summary>Current position as a <see cref="Data.PtrHandle"/></summary>
 		/// <remarks>Pointer traits\info is inherited from <see cref="BaseAddress"/></remarks>
 		public Values.PtrHandle PositionPtr =>
-			new Values.PtrHandle(BaseAddress, (ulong)BaseStream.Position);
+			new Values.PtrHandle(this.BaseAddress, (ulong) this.BaseStream.Position);
 		#endregion
 		#endregion
 
 		#region IKSoftStreamModeable
 		public FileAccess StreamPermissions { get; private set; }
 		public FileAccess StreamMode { get; set; }
-		public bool IsReading { get { return StreamMode == FileAccess.Read; } }
-		public bool IsWriting { get { return StreamMode == FileAccess.Write; } }
+		public bool IsReading { get { return this.StreamMode == FileAccess.Read; } }
+		public bool IsWriting { get { return this.StreamMode == FileAccess.Write; } }
 		#endregion
 
 		#region IKSoftStreamWithVirtualBuffer Members
@@ -167,7 +187,7 @@ namespace KSoft.IO
 		/// <summary>The assumed byte order of the stream</summary>
 		/// <remarks>Use <see cref="ChangeByteOrder"/> to properly change this property</remarks>
 		public Shell.EndianFormat ByteOrder { get {
-			return Reader != null ? Reader.ByteOrder : Writer.ByteOrder;
+			return this.Reader != null ? this.Reader.ByteOrder : this.Writer.ByteOrder;
 		} }
 
 		/// <summary>Change the order in which bytes are ordered to/from the stream</summary>
@@ -175,8 +195,10 @@ namespace KSoft.IO
 		/// <remarks>If <paramref name="newOrder"/> is the same as <see cref="ByteOrder"/> nothing will happen</remarks>
 		public void ChangeByteOrder(Shell.EndianFormat newOrder)
 		{
-			if (Reader != null) Reader.ChangeByteOrder(newOrder);
-			if (Writer != null) Writer.ChangeByteOrder(newOrder);
+			if (this.Reader != null)
+				this.Reader.ChangeByteOrder(newOrder);
+			if (this.Writer != null)
+				this.Writer.ChangeByteOrder(newOrder);
 		}
 
 		/// <summary>Convenience class for C# "using" statements where we want to temporarily inverse the current byte order</summary>
@@ -188,15 +210,19 @@ namespace KSoft.IO
 			/// <param name="s"></param>
 			public EndianFormatSwitchBlock(EndianStream s)
 			{
-				if (s.Reader != null) mReaderSwitch = s.Reader.BeginEndianSwitch();
-				if (s.Writer != null) mWriterSwitch = s.Writer.BeginEndianSwitch();
+				if (s.Reader != null)
+					this.mReaderSwitch = s.Reader.BeginEndianSwitch();
+				if (s.Writer != null)
+					this.mWriterSwitch = s.Writer.BeginEndianSwitch();
 			}
 
 			#region IDisposable Members
 			public void Dispose()
 			{
-				if (mReaderSwitch != null) mReaderSwitch.Dispose();
-				if (mWriterSwitch != null) mWriterSwitch.Dispose();
+				if (this.mReaderSwitch != null)
+					this.mReaderSwitch.Dispose();
+				if (this.mWriterSwitch != null)
+					this.mWriterSwitch.Dispose();
 			}
 			#endregion
 		};
@@ -228,15 +254,17 @@ namespace KSoft.IO
 		/// <remarks>If we don't own the stream, when this object is disposed, the <see cref="BaseStream"/> won't be closed\disposed</remarks>
 		public bool BaseStreamOwner
 		{
-			get { return Reader != null ? Reader.BaseStreamOwner : Writer.BaseStreamOwner; }
+			get { return this.Reader != null ? this.Reader.BaseStreamOwner : this.Writer.BaseStreamOwner; }
 			set {
-				if (Reader != null) Reader.BaseStreamOwner = value;
-				if (Writer != null) Writer.BaseStreamOwner = value;
+				if (this.Reader != null)
+					this.Reader.BaseStreamOwner = value;
+				if (this.Writer != null)
+					this.Writer.BaseStreamOwner = value;
 			}
 		}
 
-		public bool CanRead		{ get { return Reader != null; } }
-		public bool CanWrite	{ get { return Writer != null; } }
+		public bool CanRead		{ get { return this.Reader != null; } }
+		public bool CanWrite	{ get { return this.Writer != null; } }
 
 		#region Ctor
 		private EndianStream()
@@ -247,14 +275,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(baseStream != null);
 
-			BaseStream = baseStream;
-			StreamPermissions = permissions;
-			StreamMode = 0;
+			this.BaseStream = baseStream;
+			this.StreamPermissions = permissions;
+			this.StreamMode = 0;
 
 			if (baseStream.CanRead && permissions.CanRead())
-				Reader = new EndianReader(baseStream);
+				this.Reader = new EndianReader(baseStream);
 			if (baseStream.CanWrite && permissions.CanWrite())
-				Writer = new EndianWriter(baseStream);
+				this.Writer = new EndianWriter(baseStream);
 		}
 
 		public EndianStream(Stream baseStream, Encoding encoding,
@@ -264,14 +292,14 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(baseStream != null);
 			Contract.Requires<ArgumentNullException>(encoding != null);
 
-			BaseStream = baseStream;
-			StreamPermissions = permissions;
-			StreamMode = 0;
+			this.BaseStream = baseStream;
+			this.StreamPermissions = permissions;
+			this.StreamMode = 0;
 
 			if (baseStream.CanRead && permissions.CanRead())
-				Reader = new EndianReader(baseStream, encoding, byteOrder, streamOwner, name);
+				this.Reader = new EndianReader(baseStream, encoding, byteOrder, streamOwner, name);
 			if (baseStream.CanWrite && permissions.CanWrite())
-				Writer = new EndianWriter(baseStream, encoding, byteOrder, streamOwner, name);
+				this.Writer = new EndianWriter(baseStream, encoding, byteOrder, streamOwner, name);
 		}
 
 		public EndianStream(Stream baseStream,
@@ -280,14 +308,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(baseStream != null);
 
-			BaseStream = baseStream;
-			StreamPermissions = permissions;
-			StreamMode = 0;
+			this.BaseStream = baseStream;
+			this.StreamPermissions = permissions;
+			this.StreamMode = 0;
 
 			if (baseStream.CanRead && permissions.CanRead())
-				Reader = new EndianReader(baseStream, byteOrder, streamOwner, name);
+				this.Reader = new EndianReader(baseStream, byteOrder, streamOwner, name);
 			if (baseStream.CanWrite && permissions.CanWrite())
-				Writer = new EndianWriter(baseStream, byteOrder, streamOwner, name);
+				this.Writer = new EndianWriter(baseStream, byteOrder, streamOwner, name);
 		}
 
 		public static EndianStream UsingReader(EndianReader reader)
@@ -328,15 +356,15 @@ namespace KSoft.IO
 			// NOTE: we intentionally don't call BaseStream's Dispose
 			// Reader/Writer should call it, if needed
 
-			if (Reader != null)
+			if (this.Reader != null)
 			{
-				Reader.Dispose();
-				Reader = null;
+				this.Reader.Dispose();
+				this.Reader = null;
 			}
-			if (Writer != null)
+			if (this.Writer != null)
 			{
-				Writer.Dispose();
-				Writer = null;
+				this.Writer.Dispose();
+				this.Writer = null;
 			}
 		}
 		#endregion
@@ -351,50 +379,64 @@ namespace KSoft.IO
 		{
 			Contract.Requires(byteCount > 0);
 
-				 if (IsReading) Reader.Pad(byteCount);
-			else if (IsWriting) Writer.Pad(byteCount);
+				 if (this.IsReading)
+					 this.Reader.Pad(byteCount);
+			else if (this.IsWriting)
+				this.Writer.Pad(byteCount);
 
 			return this;
 		}
 		public EndianStream Pad8()
 		{
-				 if (IsReading) Reader.Pad8();
-			else if (IsWriting) Writer.Pad8();
+				 if (this.IsReading)
+					 this.Reader.Pad8();
+			else if (this.IsWriting)
+				this.Writer.Pad8();
 
 			return this;
 		}
 		public EndianStream Pad16()
 		{
-				 if (IsReading) Reader.Pad16();
-			else if (IsWriting) Writer.Pad16();
+				 if (this.IsReading)
+					 this.Reader.Pad16();
+			else if (this.IsWriting)
+				this.Writer.Pad16();
 
 			return this;
 		}
 		public EndianStream Pad24()
 		{
-				 if (IsReading) Reader.Pad24();
-			else if (IsWriting) Writer.Pad24();
+				 if (this.IsReading)
+					 this.Reader.Pad24();
+			else if (this.IsWriting)
+				this.Writer.Pad24();
 
 			return this;
 		}
 		public EndianStream Pad32()
 		{
-				 if (IsReading) Reader.Pad32();
-			else if (IsWriting) Writer.Pad32();
+				 if (this.IsReading)
+					 this.Reader.Pad32();
+			else if (this.IsWriting)
+				this.Writer.Pad32();
 
 			return this;
 		}
 		public EndianStream Pad64()
 		{
-				 if (IsReading) Reader.Pad64();
-			else if (IsWriting) Writer.Pad64();
+				 if (this.IsReading)
+					 this.Reader.Pad64();
+			else if (this.IsWriting)
+				this.Writer.Pad64();
 
 			return this;
 		}
 		public EndianStream Pad128()
 		{
-				 if (IsReading) Reader.Pad128();
-			else if (IsWriting) Writer.Pad128();
+				 if (this.IsReading)
+					 this.Reader.Pad128();
+			else if (this.IsWriting)
+				this.Writer.Pad128();
 
 			return this;
 		}
@@ -402,8 +444,9 @@ namespace KSoft.IO
 
 		public EndianStream Stream(ref bool value)
 		{
-				 if (IsReading) value = Reader.ReadBoolean();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadBoolean();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
@@ -416,8 +459,10 @@ namespace KSoft.IO
 			Contract.Requires(count >= 0 && count <= value.Length);
 			Contract.Requires((index+count) <= value.Length);
 
-				 if (IsReading) Reader.Read(value, index, count);
-			else if (IsWriting) Writer.Write(value, index, count);
+				 if (this.IsReading)
+					 this.Reader.Read(value, index, count);
+			else if (this.IsWriting)
+				this.Writer.Write(value, index, count);
 
 			return this;
 		}
@@ -426,8 +471,10 @@ namespace KSoft.IO
 			Contract.Requires(value != null);
 			Contract.Requires(count >= 0 && count <= value.Length);
 
-				 if (IsReading) Reader.Read(value, count);
-			else if (IsWriting) Writer.Write(value, count);
+				 if (this.IsReading)
+					 this.Reader.Read(value, count);
+			else if (this.IsWriting)
+				this.Writer.Write(value, count);
 
 			return this;
 		}
@@ -435,8 +482,10 @@ namespace KSoft.IO
 		{
 			Contract.Requires(value != null);
 
-				 if (IsReading) Reader.Read(value, value.Length);
-			else if (IsWriting) Writer.Write(value, value.Length);
+				 if (this.IsReading)
+					 this.Reader.Read(value, value.Length);
+			else if (this.IsWriting)
+				this.Writer.Write(value, value.Length);
 
 			return this;
 		}
@@ -447,8 +496,10 @@ namespace KSoft.IO
 			Contract.Requires(count >= 0 && count <= value.Length);
 			Contract.Requires((index+count) <= value.Length);
 
-				 if (IsReading) Reader.Read(value, index, count);
-			else if (IsWriting) Writer.Write(value, index, count);
+				 if (this.IsReading)
+					 this.Reader.Read(value, index, count);
+			else if (this.IsWriting)
+				this.Writer.Write(value, index, count);
 
 			return this;
 		}
@@ -457,8 +508,10 @@ namespace KSoft.IO
 			Contract.Requires(value != null);
 			Contract.Requires(count >= 0 && count <= value.Length);
 
-				 if (IsReading) Reader.Read(value, count);
-			else if (IsWriting) Writer.Write(value, count);
+				 if (this.IsReading)
+					 this.Reader.Read(value, count);
+			else if (this.IsWriting)
+				this.Writer.Write(value, count);
 
 			return this;
 		}
@@ -466,8 +519,10 @@ namespace KSoft.IO
 		{
 			Contract.Requires(value != null);
 
-				 if (IsReading) Reader.Read(value, value.Length);
-			else if (IsWriting) Writer.Write(value, value.Length);
+				 if (this.IsReading)
+					 this.Reader.Read(value, value.Length);
+			else if (this.IsWriting)
+				this.Writer.Write(value, value.Length);
 
 			return this;
 		}
@@ -478,23 +533,24 @@ namespace KSoft.IO
 
 		public EndianStream StreamTag(ref uint value)
 		{
-				 if (IsReading) value = Reader.ReadTagUInt32();
-			else if (IsWriting) Writer.WriteTag32(value);
+				 if (this.IsReading) value = this.Reader.ReadTagUInt32();
+			else if (this.IsWriting)
+				this.Writer.WriteTag32(value);
 
 			return this;
 		}
 		// Tag always appears in big-endian order in the stream
 		public EndianStream StreamTagBigEndian(ref uint value)
 		{
-			if (IsReading)
+			if (this.IsReading)
 			{
-				Reader.ReadTag32(mTagScratchBuffer);
-				value = Values.GroupTagData32.ToUInt(mTagScratchBuffer);
+				this.Reader.ReadTag32(this.mTagScratchBuffer);
+				value = Values.GroupTagData32.ToUInt(this.mTagScratchBuffer);
 			}
-			else if (IsWriting)
+			else if (this.IsWriting)
 			{
-				Values.GroupTagData32.FromUInt(value, mTagScratchBuffer);
-				Writer.WriteTag32(mTagScratchBuffer);
+				Values.GroupTagData32.FromUInt(value, this.mTagScratchBuffer);
+				this.Writer.WriteTag32(this.mTagScratchBuffer);
 			}
 
 			return this;
@@ -502,8 +558,9 @@ namespace KSoft.IO
 
 		public EndianStream StreamTag(ref ulong value)
 		{
-				 if (IsReading) value = Reader.ReadTagUInt64();
-			else if (IsWriting) Writer.WriteTag64(value);
+				 if (this.IsReading) value = this.Reader.ReadTagUInt64();
+			else if (this.IsWriting)
+				this.Writer.WriteTag64(value);
 
 			return this;
 		}
@@ -513,22 +570,25 @@ namespace KSoft.IO
 		#region Stream numerics
 		public EndianStream StreamInt24(ref int value)
 		{
-				 if (IsReading) value = Reader.ReadInt24();
-			else if (IsWriting) Writer.WriteInt24(value);
+				 if (this.IsReading) value = this.Reader.ReadInt24();
+			else if (this.IsWriting)
+				this.Writer.WriteInt24(value);
 
 			return this;
 		}
 		public EndianStream StreamUInt24(ref uint value)
 		{
-				 if (IsReading) value = Reader.ReadUInt24();
-			else if (IsWriting) Writer.WriteUInt24(value);
+				 if (this.IsReading) value = this.Reader.ReadUInt24();
+			else if (this.IsWriting)
+				this.Writer.WriteUInt24(value);
 
 			return this;
 		}
 		public EndianStream StreamUInt40(ref ulong value)
 		{
-				 if (IsReading) value = Reader.ReadUInt40();
-			else if (IsWriting) Writer.WriteUInt40(value);
+				 if (this.IsReading) value = this.Reader.ReadUInt40();
+			else if (this.IsWriting)
+				this.Writer.WriteUInt40(value);
 
 			return this;
 		}
@@ -537,23 +597,26 @@ namespace KSoft.IO
 		#region Stream strings
 		public EndianStream Stream(ref string value)
 		{
-				 if (IsReading) value = Reader.ReadString();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadString();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref string value, Memory.Strings.StringStorage storage)
 		{
-				 if (IsReading) value = Reader.ReadString(storage);
-			else if (IsWriting) Writer.Write(value, storage);
+				 if (this.IsReading) value = this.Reader.ReadString(storage);
+			else if (this.IsWriting)
+				this.Writer.Write(value, storage);
 
 			return this;
 		}
 		public EndianStream Stream(ref string value, Memory.Strings.StringStorage storage, int length)
 		{
-				 if (IsReading) value = Reader.ReadString(storage, length);
-			else if (IsWriting) Writer.Write(value, storage);
+				 if (this.IsReading) value = this.Reader.ReadString(storage, length);
+			else if (this.IsWriting)
+				this.Writer.Write(value, storage);
 
 			return this;
 		}
@@ -562,8 +625,9 @@ namespace KSoft.IO
 		{
 			Contract.Requires(encoding != null);
 
-				 if (IsReading) value = Reader.ReadString(encoding);
-			else if (IsWriting) Writer.Write(value, encoding);
+				 if (this.IsReading) value = this.Reader.ReadString(encoding);
+			else if (this.IsWriting)
+				this.Writer.Write(value, encoding);
 
 			return this;
 		}
@@ -571,8 +635,9 @@ namespace KSoft.IO
 		{
 			Contract.Requires(encoding != null);
 
-				 if (IsReading) value = Reader.ReadString(encoding, length);
-			else if (IsWriting) Writer.Write(value, encoding);
+				 if (this.IsReading) value = this.Reader.ReadString(encoding, length);
+			else if (this.IsWriting)
+				this.Writer.Write(value, encoding);
 
 			return this;
 		}
@@ -581,38 +646,45 @@ namespace KSoft.IO
 		#region Stream Pointer
 		public EndianStream StreamRawPointer(ref Values.PtrHandle value)
 		{
-				 if (IsReading) Reader.ReadRawPointer(ref value);
-			else if (IsWriting) Writer.WriteRawPointer(value);
+				 if (this.IsReading)
+					 this.Reader.ReadRawPointer(ref value);
+			else if (this.IsWriting)
+				this.Writer.WriteRawPointer(value);
 
 			return this;
 		}
 		public EndianStream StreamRawPointer(ref Values.PtrHandle value, Shell.ProcessorSize addressSize)
 		{
-				 if (IsReading) value = Reader.ReadRawPointer(addressSize);
-			else if (IsWriting) Writer.WriteRawPointer(value);
+				 if (this.IsReading) value = this.Reader.ReadRawPointer(addressSize);
+			else if (this.IsWriting)
+				this.Writer.WriteRawPointer(value);
 
 			return this;
 		}
 
 		public EndianStream StreamPointer(ref Values.PtrHandle value)
 		{
-				 if (IsReading) Reader.ReadPointer(ref value);
-			else if (IsWriting) Writer.WritePointer(value);
+				 if (this.IsReading)
+					 this.Reader.ReadPointer(ref value);
+			else if (this.IsWriting)
+				this.Writer.WritePointer(value);
 
 			return this;
 		}
 		public EndianStream StreamPointer(ref Values.PtrHandle value, Shell.ProcessorSize addressSize)
 		{
-				 if (IsReading) value = Reader.ReadPointer(addressSize);
-			else if (IsWriting) Writer.WritePointer(value);
+				 if (this.IsReading) value = this.Reader.ReadPointer(addressSize);
+			else if (this.IsWriting)
+				this.Writer.WritePointer(value);
 
 			return this;
 		}
 
 		public EndianStream StreamPointerViaBaseAddress(ref Values.PtrHandle value)
 		{
-				 if (IsReading) value = Reader.ReadPointerViaBaseAddress();
-			else if (IsWriting) Writer.WritePointer(value);
+				 if (this.IsReading) value = this.Reader.ReadPointerViaBaseAddress();
+			else if (this.IsWriting)
+				this.Writer.WritePointer(value);
 
 			return this;
 		}
@@ -620,16 +692,18 @@ namespace KSoft.IO
 
 		public EndianStream Stream7BitEncodedInt(ref int value)
 		{
-				 if (IsReading) value = Reader.Read7BitEncodedInt();
-			else if (IsWriting) Writer.Write7BitEncodedInt(value);
+				 if (this.IsReading) value = this.Reader.Read7BitEncodedInt();
+			else if (this.IsWriting)
+				this.Writer.Write7BitEncodedInt(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref DateTime value, bool isUnixTime = false)
 		{
-				 if (IsReading) value = Reader.ReadDateTime(isUnixTime);
-			else if (IsWriting) Writer.Write(value, isUnixTime);
+				 if (this.IsReading) value = this.Reader.ReadDateTime(isUnixTime);
+			else if (this.IsWriting)
+				this.Writer.Write(value, isUnixTime);
 
 			return this;
 		}
@@ -646,36 +720,36 @@ namespace KSoft.IO
 
 		#region Stream Values
 		public EndianStream StreamValue<T>(ref T value)
-			where T : struct, IO.IEndianStreamable
+			where T : struct, IEndianStreamable
 		{
-			if (IsReading)
+			if (this.IsReading)
 			{
 				value = new T();
-				value.Read(Reader);
+				value.Read(this.Reader);
 			}
-			else if (IsWriting) value.Write(Writer);
+			else if (this.IsWriting) value.Write(this.Writer);
 
 			return this;
 		}
 		public EndianStream StreamValue<T>(ref T value, Func<T> initializer)
-			where T : struct, IO.IEndianStreamable
+			where T : struct, IEndianStreamable
 		{
 			Contract.Requires(initializer != null);
 
-			if (IsReading)
+			if (this.IsReading)
 			{
 				value = initializer();
-				value.Read(Reader);
+				value.Read(this.Reader);
 			}
-			else if (IsWriting) value.Write(Writer);
+			else if (this.IsWriting) value.Write(this.Writer);
 
 			return this;
 		}
 
 		public EndianStream Stream<T>(ref T value)
-			where T : struct, IO.IEndianStreamSerializable
+			where T : struct, IEndianStreamSerializable
 		{
-			if (IsReading)
+			if (this.IsReading)
 				value = new T();
 
 			value.Serialize(this);
@@ -686,33 +760,33 @@ namespace KSoft.IO
 
 		#region Stream Objects
 		public EndianStream StreamObject<T>(T value)
-			where T : class, IO.IEndianStreamable
+			where T : class, IEndianStreamable
 		{
 			Contract.Requires(value != null);
 
-				 if (IsReading) value.Read(Reader);
-			else if (IsWriting) value.Write(Writer);
+				 if (this.IsReading) value.Read(this.Reader);
+			else if (this.IsWriting) value.Write(this.Writer);
 
 			return this;
 		}
 		public EndianStream StreamObject<T>(ref T value, Func<T> initializer)
-			where T : class, IO.IEndianStreamable
+			where T : class, IEndianStreamable
 		{
-			Contract.Requires(IsReading || value != null);
+			Contract.Requires(this.IsReading || value != null);
 			Contract.Requires(initializer != null);
 
-			if (IsReading)
+			if (this.IsReading)
 			{
 				value = initializer();
-				value.Read(Reader);
+				value.Read(this.Reader);
 			}
-			else if (IsWriting) value.Write(Writer);
+			else if (this.IsWriting) value.Write(this.Writer);
 
 			return this;
 		}
 
 		public EndianStream Stream<T>(T value)
-			where T : class, IO.IEndianStreamSerializable
+			where T : class, IEndianStreamSerializable
 		{
 			Contract.Requires(value != null);
 
@@ -721,12 +795,12 @@ namespace KSoft.IO
 			return this;
 		}
 		public EndianStream Stream<T>(ref T value, Func<T> initializer)
-			where T : class, IO.IEndianStreamSerializable
+			where T : class, IEndianStreamSerializable
 		{
-			Contract.Requires(IsReading || value != null);
+			Contract.Requires(this.IsReading || value != null);
 			Contract.Requires(initializer != null);
 
-			if (IsReading)
+			if (this.IsReading)
 				value = initializer();
 
 			value.Serialize(this);
@@ -743,8 +817,8 @@ namespace KSoft.IO
 			Contract.Requires(read != null);
 			Contract.Requires(write != null);
 
-				 if (IsReading) read (Reader, out value);
-			else if (IsWriting) write(Writer, value);
+				 if (this.IsReading) read (this.Reader, out value);
+			else if (this.IsWriting) write(this.Writer, value);
 
 			return this;
 		}
@@ -757,8 +831,8 @@ namespace KSoft.IO
 			Contract.Requires(read != null);
 			Contract.Requires(write != null);
 
-				 if (IsReading) read (Reader, theObj);
-			else if (IsWriting) write(Writer, theObj);
+				 if (this.IsReading) read (this.Reader, theObj);
+			else if (this.IsWriting) write(this.Writer, theObj);
 
 			return this;
 		}
@@ -769,8 +843,8 @@ namespace KSoft.IO
 			Contract.Requires(read != null);
 			Contract.Requires(write != null);
 
-				 if (IsReading) read(Reader);
-			else if (IsWriting) write(Writer);
+				 if (this.IsReading) read(this.Reader);
+			else if (this.IsWriting) write(this.Writer);
 
 			return this;
 		}
@@ -781,8 +855,8 @@ namespace KSoft.IO
 			Contract.Requires(read != null);
 			Contract.Requires(write != null);
 
-				 if (IsReading) read(context, Reader);
-			else if (IsWriting) write(context, Writer);
+				 if (this.IsReading) read(context, this.Reader);
+			else if (this.IsWriting) write(context, this.Writer);
 
 			return this;
 		}
@@ -795,8 +869,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -804,7 +880,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 		#endregion
 
@@ -812,43 +888,43 @@ namespace KSoft.IO
 		public delegate EndianStream StreamArrayValueDelegate<T>(ref T value);
 
 		public EndianStream StreamArray<T>(T[] values)
-			where T : struct, IO.IEndianStreamSerializable
+			where T : struct, IEndianStreamSerializable
 		{
 			Contract.Requires(values != null);
 
 			for (int x = 0; x < values.Length; x++)
-				Stream(ref values[x]);
+				this.Stream(ref values[x]);
 
 			return this;
 		}
 
 		public EndianStream StreamArrayInt32<T>(ref T[] values)
-			where T : struct, IO.IEndianStreamSerializable
+			where T : struct, IEndianStreamSerializable
 		{
-			Contract.Requires(IsReading || values != null);
+			Contract.Requires(this.IsReading || values != null);
 
-			bool reading = IsReading;
+			bool reading = this.IsReading;
 
 			int count = reading ? 0 : values.Length;
-			Stream(ref count);
+			this.Stream(ref count);
 			if (reading)
 				values = new T[count];
 
 			for (int x = 0; x < count; x++)
-				Stream(ref values[x]);
+				this.Stream(ref values[x]);
 
 			return this;
 		}
 		public EndianStream StreamArrayInt32<T>(ref T[] values, StreamArrayValueDelegate<T> streamFunc)
 			where T : struct
 		{
-			Contract.Requires(IsReading || values != null);
+			Contract.Requires(this.IsReading || values != null);
 			Contract.Requires(streamFunc != null);
 
-			bool reading = IsReading;
+			bool reading = this.IsReading;
 
 			int count = reading ? 0 : values.Length;
-			Stream(ref count);
+			this.Stream(ref count);
 			if (reading)
 				values = new T[count];
 
@@ -861,32 +937,32 @@ namespace KSoft.IO
 
 		#region Stream Array Objects
 		public EndianStream StreamArray<T>(T[] values, Func<T> initializer)
-			where T : class, IO.IEndianStreamSerializable
+			where T : class, IEndianStreamSerializable
 		{
 			Contract.Requires(values != null);
 			Contract.Requires(initializer != null);
 
 			for (int x = 0; x < values.Length; x++)
-				Stream(ref values[x], initializer);
+				this.Stream(ref values[x], initializer);
 
 			return this;
 		}
 
 		public EndianStream StreamArrayInt32<T>(ref T[] values, Func<T> initializer)
-			where T : class, IO.IEndianStreamSerializable
+			where T : class, IEndianStreamSerializable
 		{
-			Contract.Requires(IsReading || values != null);
+			Contract.Requires(this.IsReading || values != null);
 			Contract.Requires(initializer != null);
 
-			bool reading = IsReading;
+			bool reading = this.IsReading;
 
 			int count = reading ? 0 : values.Length;
-			Stream(ref count);
+			this.Stream(ref count);
 			if (reading)
 				values = new T[count];
 
 			for (int x = 0; x < count; x++)
-				Stream(ref values[x], initializer);
+				this.Stream(ref values[x], initializer);
 
 			return this;
 		}
@@ -902,8 +978,8 @@ namespace KSoft.IO
 			Contract.Requires(read != null);
 			Contract.Requires(write != null);
 
-				 if (IsReading) read (Reader, ref array);
-			else if (IsWriting) write(Writer, array);
+				 if (this.IsReading) read (this.Reader, ref array);
+			else if (this.IsWriting) write(this.Writer, array);
 
 			return this;
 		}
@@ -911,13 +987,13 @@ namespace KSoft.IO
 
 		#region Stream List
 		public EndianStream StreamListElementsWithClear<T>(IList<T> values, int readCount, Func<T> initializer)
-			where T : class, IO.IEndianStreamSerializable
+			where T : class, IEndianStreamSerializable
 		{
 			Contract.Requires(values != null);
 			Contract.Requires(initializer != null);
 			Contract.Ensures(values.Count == readCount);
 
-			bool reading = IsReading;
+			bool reading = this.IsReading;
 
 			if (reading)
 				values.Clear();
@@ -930,7 +1006,7 @@ namespace KSoft.IO
 					? initializer()
 					: values[x];
 
-				Stream(v);
+				this.Stream(v);
 
 				if (reading)
 					values.Add(v);
@@ -943,29 +1019,33 @@ namespace KSoft.IO
 		#region Stream signature
 		public EndianStream StreamSignature(byte signature)
 		{
-				 if (IsReading) SignatureMismatchException.Assert(Reader, signature);
-			else if (IsWriting) Writer.Write(signature);
+				 if (this.IsReading) SignatureMismatchException.Assert(this.Reader, signature);
+			else if (this.IsWriting)
+				this.Writer.Write(signature);
 
 			return this;
 		}
 		public EndianStream StreamSignature(ushort signature)
 		{
-				 if (IsReading) SignatureMismatchException.Assert(Reader, signature);
-			else if (IsWriting) Writer.Write(signature);
+				 if (this.IsReading) SignatureMismatchException.Assert(this.Reader, signature);
+			else if (this.IsWriting)
+				this.Writer.Write(signature);
 
 			return this;
 		}
 		public EndianStream StreamSignature(uint signature)
 		{
-				 if (IsReading) SignatureMismatchException.Assert(Reader, signature);
-			else if (IsWriting) Writer.Write(signature);
+				 if (this.IsReading) SignatureMismatchException.Assert(this.Reader, signature);
+			else if (this.IsWriting)
+				this.Writer.Write(signature);
 
 			return this;
 		}
 		public EndianStream StreamSignature(ulong signature)
 		{
-				 if (IsReading) SignatureMismatchException.Assert(Reader, signature);
-			else if (IsWriting) Writer.Write(signature);
+				 if (this.IsReading) SignatureMismatchException.Assert(this.Reader, signature);
+			else if (this.IsWriting)
+				this.Writer.Write(signature);
 
 			return this;
 		}
@@ -973,8 +1053,9 @@ namespace KSoft.IO
 		{
 			Contract.Requires(!string.IsNullOrEmpty(signature));
 
-				 if (IsReading) SignatureMismatchException.Assert(Reader, signature, storage);
-			else if (IsWriting) Writer.Write(signature, storage);
+				 if (this.IsReading) SignatureMismatchException.Assert(this.Reader, signature, storage);
+			else if (this.IsWriting)
+				this.Writer.Write(signature, storage);
 
 			return this;
 		}
@@ -983,8 +1064,9 @@ namespace KSoft.IO
 			Contract.Requires(!string.IsNullOrEmpty(signature));
 			Contract.Requires(encoding != null);
 
-				 if (IsReading) SignatureMismatchException.Assert(Reader, signature, encoding);
-			else if (IsWriting) Writer.Write(signature, encoding);
+				 if (this.IsReading) SignatureMismatchException.Assert(this.Reader, signature, encoding);
+			else if (this.IsWriting)
+				this.Writer.Write(signature, encoding);
 
 			return this;
 		}
@@ -993,29 +1075,33 @@ namespace KSoft.IO
 		#region Stream version
 		public EndianStream StreamVersion(byte version)
 		{
-				 if (IsReading) VersionMismatchException.Assert(Reader, version);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) VersionMismatchException.Assert(this.Reader, version);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
 		public EndianStream StreamVersion(ushort version)
 		{
-				 if (IsReading) VersionMismatchException.Assert(Reader, version);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) VersionMismatchException.Assert(this.Reader, version);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
 		public EndianStream StreamVersion(uint version)
 		{
-				 if (IsReading) VersionMismatchException.Assert(Reader, version);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) VersionMismatchException.Assert(this.Reader, version);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
 		public EndianStream StreamVersion(ulong version)
 		{
-				 if (IsReading) VersionMismatchException.Assert(Reader, version);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) VersionMismatchException.Assert(this.Reader, version);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
@@ -1024,8 +1110,9 @@ namespace KSoft.IO
 			, byte versionMin
 			, byte versionMax)
 		{
-				 if (IsReading) version = VersionOutOfRangeException.Assert(Reader, versionMin, versionMax);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) version = VersionOutOfRangeException.Assert(this.Reader, versionMin, versionMax);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
@@ -1033,8 +1120,9 @@ namespace KSoft.IO
 			, ushort versionMin
 			, ushort versionMax)
 		{
-				 if (IsReading) version = VersionOutOfRangeException.Assert(Reader, versionMin, versionMax);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) version = VersionOutOfRangeException.Assert(this.Reader, versionMin, versionMax);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
@@ -1042,8 +1130,9 @@ namespace KSoft.IO
 			, uint versionMin
 			, uint versionMax)
 		{
-				 if (IsReading) version = VersionOutOfRangeException.Assert(Reader, versionMin, versionMax);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) version = VersionOutOfRangeException.Assert(this.Reader, versionMin, versionMax);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
@@ -1051,8 +1140,9 @@ namespace KSoft.IO
 			, ulong versionMin
 			, ulong versionMax)
 		{
-				 if (IsReading) version = VersionOutOfRangeException.Assert(Reader, versionMin, versionMax);
-			else if (IsWriting) Writer.Write(version);
+				 if (this.IsReading) version = VersionOutOfRangeException.Assert(this.Reader, versionMin, versionMax);
+			else if (this.IsWriting)
+				this.Writer.Write(version);
 
 			return this;
 		}
@@ -1069,9 +1159,9 @@ namespace KSoft.IO
 			, TEnum maxCount)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			if (IsReading)
-				version = VersionOutOfRangeException.AssertZeroBasedEnum(Reader, maxCount);
-			else if (IsWriting)
+			if (this.IsReading)
+				version = VersionOutOfRangeException.AssertZeroBasedEnum(this.Reader, maxCount);
+			else if (this.IsWriting)
 			{
 				var type_code = Reflection.EnumUtil<TEnum>.UnderlyingTypeCode;
 
@@ -1081,28 +1171,28 @@ namespace KSoft.IO
 					case TypeCode.Byte:
 					{
 						var integer = Reflection.EnumValue<TEnum>.ToByte(maxCount);
-						Writer.Write(integer);
+						this.Writer.Write(integer);
 					} break;
 
 					case TypeCode.Int16:
 					case TypeCode.UInt16:
 					{
 						var integer = Reflection.EnumValue<TEnum>.ToUInt16(maxCount);
-						Writer.Write(integer);
+						this.Writer.Write(integer);
 					} break;
 
 					case TypeCode.Int32:
 					case TypeCode.UInt32:
 					{
 						var integer = Reflection.EnumValue<TEnum>.ToUInt32(maxCount);
-						Writer.Write(integer);
+						this.Writer.Write(integer);
 					} break;
 
 					case TypeCode.Int64:
 					case TypeCode.UInt64:
 					{
 						var integer = Reflection.EnumValue<TEnum>.ToUInt64(maxCount);
-						Writer.Write(integer);
+						this.Writer.Write(integer);
 					} break;
 
 					default:
@@ -1117,10 +1207,10 @@ namespace KSoft.IO
 		[System.Diagnostics.Conditional("TRACE")]
 		public void TraceAndDebugPosition(ref long position)
 		{
-			if (IsReading)
-				position = BaseStream.Position;
-			else if (IsWriting)
-				Contract.Assert(position == BaseStream.Position);
+			if (this.IsReading)
+				position = this.BaseStream.Position;
+			else if (this.IsWriting)
+				Contract.Assert(position == this.BaseStream.Position);
 		}
 	};
 }

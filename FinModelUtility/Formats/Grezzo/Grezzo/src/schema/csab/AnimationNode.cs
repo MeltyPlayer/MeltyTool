@@ -31,14 +31,14 @@ public class AnimationNode(Csab parent) : IBinaryDeserializable {
 
       var isRotationShort = br.ReadUInt16() != 0;
 
-      foreach (var translationAxis in TranslationAxes) {
+      foreach (var translationAxis in this.TranslationAxes) {
         var offset = br.ReadUInt16();
         if (offset != 0) {
           br.SubreadAt(basePosition + offset, translationAxis.Read);
         }
       }
 
-      foreach (var rotationAxis in RotationAxes) {
+      foreach (var rotationAxis in this.RotationAxes) {
         rotationAxis.AreRotationsShort = isRotationShort;
 
         var offset = br.ReadUInt16();
@@ -47,7 +47,7 @@ public class AnimationNode(Csab parent) : IBinaryDeserializable {
         }
       }
 
-      foreach (var scaleAxis in ScaleAxes) {
+      foreach (var scaleAxis in this.ScaleAxes) {
         var offset = br.ReadUInt16();
         if (offset != 0) {
           br.SubreadAt(basePosition + offset, scaleAxis.Read);

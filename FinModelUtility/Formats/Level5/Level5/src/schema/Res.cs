@@ -23,8 +23,8 @@ public class Resource {
   public List<Material> Materials { get; } = [];
 
   public string GetResourceName(uint crc) {
-    if (ResourceNames.ContainsKey(crc))
-      return ResourceNames[crc];
+    if (this.ResourceNames.ContainsKey(crc))
+      return this.ResourceNames[crc];
 
     return "";
   }
@@ -52,8 +52,8 @@ public class Resource {
         string mname = r.ReadStringNT();
         if (mname == "")
           break;
-        if (!ResourceNames.ContainsKey(Crc32.Crc32C(mname)))
-          ResourceNames.Add(Crc32.Crc32C(mname), mname);
+        if (!this.ResourceNames.ContainsKey(Crc32.Crc32C(mname)))
+          this.ResourceNames.Add(Crc32.Crc32C(mname), mname);
       }
 
       r.Position = (uint)materialTableOffset;
@@ -70,8 +70,8 @@ public class Resource {
         for (int j = 0; j < count; j++) {
           r.Position = (uint)(offset + j * size);
           var key = r.ReadUInt32();
-          string resourceName = (ResourceNames.ContainsKey(key)
-              ? ResourceNames[key]
+          string resourceName = (this.ResourceNames.ContainsKey(key)
+              ? this.ResourceNames[key]
               : key.ToString("X"));
           //Console.WriteLine(resourceName + " " + unknown.ToString("X") + " " + size.ToString("X"));
 
@@ -79,18 +79,18 @@ public class Resource {
             // TODO: Default libs
             ;
           } else if (unknown == 0xF0) {
-            TextureNames.Add(resourceName);
+            this.TextureNames.Add(resourceName);
           } else if (unknown == 0x122) {
             Material mat = new Material();
             mat.Name = resourceName;
             r.Position += 12;
             key = r.ReadUInt32();
-            resourceName = (ResourceNames.ContainsKey(key)
-                ? ResourceNames[key]
+            resourceName = (this.ResourceNames.ContainsKey(key)
+                ? this.ResourceNames[key]
                 : key.ToString("X"));
             mat.TexName = resourceName;
             // Console.WriteLine(resourceName + " " + unknown.ToString("X") + " " + size.ToString("X"));
-            Materials.Add(mat);
+            this.Materials.Add(mat);
           } else {
             ;
           }

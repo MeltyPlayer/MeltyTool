@@ -37,8 +37,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string IconName
 		{
-			get { return mIconName; }
-			set { mIconName = value; }
+			get { return this.mIconName; }
+			set { this.mIconName = value; }
 		}
 		#endregion
 
@@ -46,8 +46,8 @@ namespace KSoft.Phoenix.Phx
 		bool mTest;
 		public bool Test
 		{
-			get { return mTest; }
-			set { mTest = value; }
+			get { return this.mTest; }
+			set { this.mTest = value; }
 		}
 		#endregion
 
@@ -55,8 +55,8 @@ namespace KSoft.Phoenix.Phx
 		int mAlpha = TypeExtensions.kNone;
 		public bool IsExcludedFromAlpha
 		{
-			get { return mAlpha == 0; }
-			set { mAlpha = value ? 0 : TypeExtensions.kNone; }
+			get { return this.mAlpha == 0; }
+			set { this.mAlpha = value ? 0 : TypeExtensions.kNone; }
 		}
 		#endregion
 
@@ -67,8 +67,8 @@ namespace KSoft.Phoenix.Phx
 		/// </summary>
 		public sbyte LeaderPickerOrder
 		{
-			get { return mLeaderPickerOrder; }
-			set { mLeaderPickerOrder = value; }
+			get { return this.mLeaderPickerOrder; }
+			set { this.mLeaderPickerOrder = value; }
 		}
 		#endregion
 
@@ -79,8 +79,8 @@ namespace KSoft.Phoenix.Phx
 		/// </summary>
 		public sbyte StatsID
 		{
-			get { return mStatsID; }
-			set { mStatsID = value; }
+			get { return this.mStatsID; }
+			set { this.mStatsID = value; }
 		}
 		#endregion
 
@@ -95,8 +95,8 @@ namespace KSoft.Phoenix.Phx
 		/// </summary>
 		public byte DefaultPlayerSlotFlags
 		{
-			get { return mDefaultPlayerSlotFlags; }
-			set { mDefaultPlayerSlotFlags = value; }
+			get { return this.mDefaultPlayerSlotFlags; }
+			set { this.mDefaultPlayerSlotFlags = value; }
 		}
 		#endregion
 
@@ -104,8 +104,8 @@ namespace KSoft.Phoenix.Phx
 		bool mIsRandom;
 		public bool IsRandom
 		{
-			get { return mIsRandom; }
-			set { mIsRandom = value; }
+			get { return this.mIsRandom; }
+			set { this.mIsRandom = value; }
 		}
 		#endregion
 
@@ -114,8 +114,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoTechReference]
 		public int TechID
 		{
-			get { return mTechID; }
-			set { mTechID = value; }
+			get { return this.mTechID; }
+			set { this.mTechID = value; }
 		}
 		#endregion
 
@@ -124,8 +124,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BCivReference]
 		public int CivID
 		{
-			get { return mCivID; }
-			set { mCivID = value; }
+			get { return this.mCivID; }
+			set { this.mCivID = value; }
 		}
 		#endregion
 
@@ -138,8 +138,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BCivReference]
 		public sbyte FlashCivID
 		{
-			get { return mFlashCivID; }
-			set { mFlashCivID = value; }
+			get { return this.mFlashCivID; }
+			set { this.mFlashCivID = value; }
 		}
 		#endregion
 
@@ -148,8 +148,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoPowerReference]
 		public int PowerID
 		{
-			get { return mPowerID; }
-			set { mPowerID = value; }
+			get { return this.mPowerID; }
+			set { this.mPowerID = value; }
 		}
 		#endregion
 
@@ -158,8 +158,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.UnusedData]
 		public string FlashImg
 		{
-			get { return mFlashImg; }
-			set { mFlashImg = value; }
+			get { return this.mFlashImg; }
+			set { this.mFlashImg = value; }
 		}
 		#endregion
 
@@ -168,8 +168,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string FlashPortrait
 		{
-			get { return mFlashPortrait; }
-			set { mFlashPortrait = value; }
+			get { return this.mFlashPortrait; }
+			set { this.mFlashPortrait = value; }
 		}
 		#endregion
 
@@ -181,8 +181,8 @@ namespace KSoft.Phoenix.Phx
 		BVector mRallyPointOffset;
 		public BVector RallyPointOffset
 		{
-			get { return mRallyPointOffset; }
-			set { mRallyPointOffset = value; }
+			get { return this.mRallyPointOffset; }
+			set { this.mRallyPointOffset = value; }
 		}
 		#endregion
 
@@ -190,8 +190,8 @@ namespace KSoft.Phoenix.Phx
 		float mRepairRate;
 		public float RepairRate
 		{
-			get { return mRepairRate; }
-			set { mRepairRate = value; }
+			get { return this.mRepairRate; }
+			set { this.mRepairRate = value; }
 		}
 		#endregion
 
@@ -200,8 +200,8 @@ namespace KSoft.Phoenix.Phx
 		/// <remarks>In seconds</remarks>
 		public float RepairDelay
 		{
-			get { return mRepairDelay; }
-			set { mRepairDelay = value; }
+			get { return this.mRepairDelay; }
+			set { this.mRepairDelay = value; }
 		}
 		#endregion
 
@@ -211,8 +211,8 @@ namespace KSoft.Phoenix.Phx
 		float mRepairTime;
 		public float RepairTime
 		{
-			get { return mRepairTime; }
-			set { mRepairTime = value; }
+			get { return this.mRepairTime; }
+			set { this.mRepairTime = value; }
 		}
 		#endregion
 
@@ -228,27 +228,27 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string UIControlBackground
 		{
-			get { return mUIControlBackground; }
-			set { mUIControlBackground = value; }
+			get { return this.mUIControlBackground; }
+			set { this.mUIControlBackground = value; }
 		}
 		#endregion
 
 		// Empty Leaders just have a Civ
-		public bool IsEmpty { get { return mTechID.IsNone(); } }
+		public bool IsEmpty { get { return this.mTechID.IsNone(); } }
 
 		public BLeader()
 		{
-			var textData = base.CreateDatabaseObjectUserInterfaceTextData();
+			var textData = this.CreateDatabaseObjectUserInterfaceTextData();
 			textData.HasNameID = true;
 			textData.HasDescriptionID = true;
 
-			SupportPowers = new Collections.BListArray<BLeaderSupportPower>();
-			StartingSquads = new Collections.BListArray<BLeaderStartingSquad>();
-			StartingUnits = new Collections.BListArray<BLeaderStartingUnit>();
-			RepairCost = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
-			ReverseHotDropCost = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
-			Populations = new Collections.BTypeValues<BPopulation>(BPopulation.kBListParams);
-			Resources = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
+			this.SupportPowers = new Collections.BListArray<BLeaderSupportPower>();
+			this.StartingSquads = new Collections.BListArray<BLeaderStartingSquad>();
+			this.StartingUnits = new Collections.BListArray<BLeaderStartingUnit>();
+			this.RepairCost = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
+			this.ReverseHotDropCost = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
+			this.Populations = new Collections.BTypeValues<BPopulation>(BPopulation.kBListParams);
+			this.Resources = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
 		}
 
 		#region ITagElementStreamable<string> Members
@@ -258,35 +258,35 @@ namespace KSoft.Phoenix.Phx
 
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttributeOpt("Icon", ref mIconName, Predicates.IsNotNullOrEmpty);
-			s.StreamAttributeOpt("Test", ref mTest, Predicates.IsTrue);
-			s.StreamAttributeOpt("Alpha", ref mAlpha, Predicates.IsNotNone);
+			s.StreamAttributeOpt("Icon", ref this.mIconName, Predicates.IsNotNullOrEmpty);
+			s.StreamAttributeOpt("Test", ref this.mTest, Predicates.IsTrue);
+			s.StreamAttributeOpt("Alpha", ref this.mAlpha, Predicates.IsNotNone);
 
-			s.StreamAttributeOpt("Random", ref mIsRandom, Predicates.IsTrue);
-			s.StreamAttributeOpt("StatsID", ref mStatsID, Predicates.IsNotNone);
-			s.StreamAttributeOpt("LeaderPickerOrder", ref mLeaderPickerOrder, Predicates.IsNotNone);
-			s.StreamAttributeOpt("DefaultPlayerSlotFlags", ref mDefaultPlayerSlotFlags, Predicates.IsNotZero,
+			s.StreamAttributeOpt("Random", ref this.mIsRandom, Predicates.IsTrue);
+			s.StreamAttributeOpt("StatsID", ref this.mStatsID, Predicates.IsNotNone);
+			s.StreamAttributeOpt("LeaderPickerOrder", ref this.mLeaderPickerOrder, Predicates.IsNotNone);
+			s.StreamAttributeOpt("DefaultPlayerSlotFlags", ref this.mDefaultPlayerSlotFlags, Predicates.IsNotZero,
 				NumeralBase.Hex);
 
-			xs.StreamDBID(s, "Tech", ref mTechID, DatabaseObjectKind.Tech);
-			xs.StreamDBID(s, "Civ", ref mCivID, DatabaseObjectKind.Civ);
-			xs.StreamDBID(s, "Power", ref mPowerID, DatabaseObjectKind.Power);
-			s.StreamElementOpt("FlashCivID", ref mFlashCivID, Predicates.IsNotNone);
-			s.StreamStringOpt("FlashImg", ref mFlashImg, toLower: false, type: XML.XmlUtil.kSourceElement);
+			xs.StreamDBID(s, "Tech", ref this.mTechID, DatabaseObjectKind.Tech);
+			xs.StreamDBID(s, "Civ", ref this.mCivID, DatabaseObjectKind.Civ);
+			xs.StreamDBID(s, "Power", ref this.mPowerID, DatabaseObjectKind.Power);
+			s.StreamElementOpt("FlashCivID", ref this.mFlashCivID, Predicates.IsNotNone);
+			s.StreamStringOpt("FlashImg", ref this.mFlashImg, toLower: false, type: XML.XmlUtil.kSourceElement);
 			// TODO: HW360's FlashPortrait elements have an ending " character (sans a starting quote). Be careful!
-			s.StreamStringOpt("FlashPortrait", ref mFlashPortrait, toLower: false, type: XML.XmlUtil.kSourceElement);
-			XML.XmlUtil.Serialize(s, SupportPowers, BLeaderSupportPower.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, StartingSquads, BLeaderStartingSquad.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, StartingUnits, BLeaderStartingUnit.kBListXmlParams);
-			s.StreamBVector("RallyPointOffset", ref mRallyPointOffset);
-			s.StreamElementOpt("RepairRate", ref mRepairRate, Predicates.IsNotZero);
-			s.StreamElementOpt("RepairDelay", ref mRepairDelay, Predicates.IsNotZero);
-			XML.XmlUtil.Serialize(s, RepairCost, kRepairCostTypeValuesXmlParams);
-			s.StreamElementOpt("RepairTime", ref mRepairTime, Predicates.IsNotZero);
-			XML.XmlUtil.Serialize(s, ReverseHotDropCost, kReverseHotDropCostTypeValuesXmlParams);
-			XML.XmlUtil.Serialize(s, Populations, BPopulation.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, Resources, BResource.kBListTypeValuesXmlParams);
-			s.StreamStringOpt("UIControlBackground", ref mUIControlBackground, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamStringOpt("FlashPortrait", ref this.mFlashPortrait, toLower: false, type: XML.XmlUtil.kSourceElement);
+			XML.XmlUtil.Serialize(s, this.SupportPowers, BLeaderSupportPower.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.StartingSquads, BLeaderStartingSquad.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.StartingUnits, BLeaderStartingUnit.kBListXmlParams);
+			s.StreamBVector("RallyPointOffset", ref this.mRallyPointOffset);
+			s.StreamElementOpt("RepairRate", ref this.mRepairRate, Predicates.IsNotZero);
+			s.StreamElementOpt("RepairDelay", ref this.mRepairDelay, Predicates.IsNotZero);
+			XML.XmlUtil.Serialize(s, this.RepairCost, kRepairCostTypeValuesXmlParams);
+			s.StreamElementOpt("RepairTime", ref this.mRepairTime, Predicates.IsNotZero);
+			XML.XmlUtil.Serialize(s, this.ReverseHotDropCost, kReverseHotDropCostTypeValuesXmlParams);
+			XML.XmlUtil.Serialize(s, this.Populations, BPopulation.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Resources, BResource.kBListTypeValuesXmlParams);
+			s.StreamStringOpt("UIControlBackground", ref this.mUIControlBackground, toLower: false, type: XML.XmlUtil.kSourceElement);
 		}
 		#endregion
 	};
@@ -307,8 +307,8 @@ namespace KSoft.Phoenix.Phx
 		int mIconLocation;
 		public int IconLocation
 		{
-			get { return mIconLocation; }
-			set { mIconLocation = value; }
+			get { return this.mIconLocation; }
+			set { this.mIconLocation = value; }
 		}
 		#endregion
 
@@ -317,15 +317,15 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoTechReference]
 		public int TechPrereqID
 		{
-			get { return mTechPrereqID; }
-			set { mTechPrereqID = value; }
+			get { return this.mTechPrereqID; }
+			set { this.mTechPrereqID = value; }
 		}
 		#endregion
 
 		[Meta.BProtoPowerReference]
 		public List<BProtoPowerID> SupportPowerIDs { get; private set; } = new List<BProtoSquadID>();
 
-		public bool IsEmpty { get { return SupportPowerIDs.Count == 0; } }
+		public bool IsEmpty { get { return this.SupportPowerIDs.Count == 0; } }
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -334,25 +334,25 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttribute("IconLocation", ref mIconLocation);
+			s.StreamAttribute("IconLocation", ref this.mIconLocation);
 
-			xs.StreamDBID(s, "Power", SupportPowerIDs, DatabaseObjectKind.Power, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+			xs.StreamDBID(s, "Power", this.SupportPowerIDs, DatabaseObjectKind.Power, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
 		}
 		#endregion
 
 		#region IComparable Members
 		public int CompareTo(BLeaderSupportPower other)
 		{
-			if (IconLocation != other.IconLocation)
-				IconLocation.CompareTo(other.IconLocation);
+			if (this.IconLocation != other.IconLocation)
+				this.IconLocation.CompareTo(other.IconLocation);
 
-			if (TechPrereqID != other.TechPrereqID)
-				TechPrereqID.CompareTo(other.TechPrereqID);
+			if (this.TechPrereqID != other.TechPrereqID)
+				this.TechPrereqID.CompareTo(other.TechPrereqID);
 
-			if (SupportPowerIDs.Count != other.SupportPowerIDs.Count)
-				SupportPowerIDs.Count.CompareTo(other.SupportPowerIDs.Count);
+			if (this.SupportPowerIDs.Count != other.SupportPowerIDs.Count)
+				this.SupportPowerIDs.Count.CompareTo(other.SupportPowerIDs.Count);
 
-			int a_hash = PhxUtil.CalculateHashCodeForDBIDs(SupportPowerIDs);
+			int a_hash = PhxUtil.CalculateHashCodeForDBIDs(this.SupportPowerIDs);
 			int b_hash = PhxUtil.CalculateHashCodeForDBIDs(other.SupportPowerIDs);
 			return a_hash.CompareTo(b_hash);
 		}
@@ -361,9 +361,11 @@ namespace KSoft.Phoenix.Phx
 		#region IEquatable Members
 		public bool Equals(BLeaderSupportPower other)
 		{
-			return IconLocation == other.IconLocation
-				&& TechPrereqID == other.TechPrereqID
-				&& SupportPowerIDs.EqualsList(other.SupportPowerIDs);
+			return this.IconLocation == other.IconLocation
+				&&
+				this.TechPrereqID == other.TechPrereqID
+				&&
+				this.SupportPowerIDs.EqualsList(other.SupportPowerIDs);
 		}
 		#endregion
 	};
@@ -385,8 +387,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public int SquadID
 		{
-			get { return mSquadID; }
-			set { mSquadID = value; }
+			get { return this.mSquadID; }
+			set { this.mSquadID = value; }
 		}
 		#endregion
 
@@ -394,8 +396,8 @@ namespace KSoft.Phoenix.Phx
 		bool mFlyIn;
 		public bool FlyIn
 		{
-			get { return mFlyIn; }
-			set { mFlyIn = value; }
+			get { return this.mFlyIn; }
+			set { this.mFlyIn = value; }
 		}
 		#endregion
 
@@ -403,12 +405,12 @@ namespace KSoft.Phoenix.Phx
 		BVector mOffset;
 		public BVector Offset
 		{
-			get { return mOffset; }
-			set { mOffset = value; }
+			get { return this.mOffset; }
+			set { this.mOffset = value; }
 		}
 		#endregion
 
-		public bool IsInvalid { get { return PhxUtil.IsUndefinedReferenceHandleOrNone(SquadID); } }
+		public bool IsInvalid { get { return PhxUtil.IsUndefinedReferenceHandleOrNone(this.SquadID); } }
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -417,32 +419,34 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamBVector("Offset", ref mOffset, xmlSource: XML.XmlUtil.kSourceAttr);
-			s.StreamAttributeOpt("FlyIn", ref mFlyIn, Predicates.IsTrue);
+			s.StreamBVector("Offset", ref this.mOffset, xmlSource: XML.XmlUtil.kSourceAttr);
+			s.StreamAttributeOpt("FlyIn", ref this.mFlyIn, Predicates.IsTrue);
 
-			XML.BXmlSerializerInterface.StreamSquadID(s, xs, ref mSquadID);
+			XML.BXmlSerializerInterface.StreamSquadID(s, xs, ref this.mSquadID);
 		}
 		#endregion
 
 		#region IComparable Members
 		public int CompareTo(BLeaderStartingSquad other)
 		{
-			if (FlyIn != other.FlyIn)
-				FlyIn.CompareTo(other.FlyIn);
+			if (this.FlyIn != other.FlyIn)
+				this.FlyIn.CompareTo(other.FlyIn);
 
-			if (Offset != other.Offset)
-				Offset.CompareTo(other.Offset);
+			if (this.Offset != other.Offset)
+				this.Offset.CompareTo(other.Offset);
 
-			return SquadID.CompareTo(other.SquadID);
+			return this.SquadID.CompareTo(other.SquadID);
 		}
 		#endregion
 
 		#region IEquatable Members
 		public bool Equals(BLeaderStartingSquad other)
 		{
-			return FlyIn == other.FlyIn
-				&& Offset == other.Offset
-				&& SquadID == other.SquadID;
+			return this.FlyIn == other.FlyIn
+				&&
+				this.Offset == other.Offset
+				&&
+				this.SquadID == other.SquadID;
 		}
 		#endregion
 	};
@@ -463,8 +467,8 @@ namespace KSoft.Phoenix.Phx
 		bool mDoppleOnStart;
 		public bool DoppleOnStart
 		{
-			get { return mDoppleOnStart; }
-			set { mDoppleOnStart = value; }
+			get { return this.mDoppleOnStart; }
+			set { this.mDoppleOnStart = value; }
 		}
 		#endregion
 
@@ -473,8 +477,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int ObjectTypeID
 		{
-			get { return mObjectTypeID; }
-			set { mObjectTypeID = value; }
+			get { return this.mObjectTypeID; }
+			set { this.mObjectTypeID = value; }
 		}
 		#endregion
 
@@ -483,8 +487,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int BuildOtherID
 		{
-			get { return mBuildOtherID; }
-			set { mBuildOtherID = value; }
+			get { return this.mBuildOtherID; }
+			set { this.mBuildOtherID = value; }
 		}
 		#endregion
 
@@ -492,12 +496,12 @@ namespace KSoft.Phoenix.Phx
 		BVector mOffset;
 		public BVector Offset
 		{
-			get { return mOffset; }
-			set { mOffset = value; }
+			get { return this.mOffset; }
+			set { this.mOffset = value; }
 		}
 		#endregion
 
-		public bool IsInvalid { get { return PhxUtil.IsUndefinedReferenceHandleOrNone(ObjectTypeID); } }
+		public bool IsInvalid { get { return PhxUtil.IsUndefinedReferenceHandleOrNone(this.ObjectTypeID); } }
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -506,38 +510,41 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamBVector("Offset", ref mOffset, xmlSource: XML.XmlUtil.kSourceAttr);
+			s.StreamBVector("Offset", ref this.mOffset, xmlSource: XML.XmlUtil.kSourceAttr);
 
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mObjectTypeID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceCursor);
-			xs.StreamDBID(s, "BuildOther", ref mBuildOtherID, DatabaseObjectKind.Object, xmlSource: XML.XmlUtil.kSourceAttr);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mObjectTypeID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceCursor);
+			xs.StreamDBID(s, "BuildOther", ref this.mBuildOtherID, DatabaseObjectKind.Object, xmlSource: XML.XmlUtil.kSourceAttr);
 
-			s.StreamAttributeOpt("DoppleOnStart", ref mDoppleOnStart, Predicates.IsTrue);
+			s.StreamAttributeOpt("DoppleOnStart", ref this.mDoppleOnStart, Predicates.IsTrue);
 		}
 		#endregion
 
 		#region IComparable Members
 		public int CompareTo(BLeaderStartingUnit other)
 		{
-			if (DoppleOnStart != other.DoppleOnStart)
-				DoppleOnStart.CompareTo(other.DoppleOnStart);
+			if (this.DoppleOnStart != other.DoppleOnStart)
+				this.DoppleOnStart.CompareTo(other.DoppleOnStart);
 
-			if (Offset != other.Offset)
-				Offset.CompareTo(other.Offset);
+			if (this.Offset != other.Offset)
+				this.Offset.CompareTo(other.Offset);
 
-			if (ObjectTypeID != other.ObjectTypeID)
-				ObjectTypeID.CompareTo(other.ObjectTypeID);
+			if (this.ObjectTypeID != other.ObjectTypeID)
+				this.ObjectTypeID.CompareTo(other.ObjectTypeID);
 
-			return BuildOtherID.CompareTo(other.BuildOtherID);
+			return this.BuildOtherID.CompareTo(other.BuildOtherID);
 		}
 		#endregion
 
 		#region IEquatable Members
 		public bool Equals(BLeaderStartingUnit other)
 		{
-			return DoppleOnStart == other.DoppleOnStart
-				&& Offset == other.Offset
-				&& ObjectTypeID == other.ObjectTypeID
-				&& BuildOtherID == other.BuildOtherID;
+			return this.DoppleOnStart == other.DoppleOnStart
+				&&
+				this.Offset == other.Offset
+				&&
+				this.ObjectTypeID == other.ObjectTypeID
+				&&
+				this.BuildOtherID == other.BuildOtherID;
 		}
 		#endregion
 	};

@@ -107,11 +107,11 @@ namespace KSoft.Phoenix.HaloWars
 
 			Debug.Trace.XML.TraceEvent(System.Diagnostics.TraceEventType.Warning, TypeExtensions.kNone,
 				"Fixing WeaponTypes with missing types");
-			Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "Cannon");
-			Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "needler");
-			Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "HeavyNeedler");
-			Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "Plasma");
-			Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "HeavyPlasma");
+			this.Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "Cannon");
+			this.Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "needler");
+			this.Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "HeavyNeedler");
+			this.Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "Plasma");
+			this.Database.WeaponTypes.DynamicAdd(new Phx.BWeaponType(), "HeavyPlasma");
 		}
 
 		#region Fix GameData
@@ -207,7 +207,7 @@ namespace KSoft.Phoenix.HaloWars
 			}
 			#endregion
 
-			FixGameDataXmlInfectionMap(Database.Engine.Build, s);
+			FixGameDataXmlInfectionMap(this.Database.Engine.Build, s);
 			FixGameDataAmbientLife(s);
 		}
 
@@ -367,7 +367,7 @@ namespace KSoft.Phoenix.HaloWars
 
 		protected override void FixObjectsXml(IO.XmlElementStream s)
 		{
-			var build = Database.Engine.Build;
+			var build = this.Database.Engine.Build;
 			FixObjectsXmlInvalidSingles(build, s);
 			if (build == Engine.PhxEngineBuild.Release)
 			{
@@ -462,7 +462,7 @@ namespace KSoft.Phoenix.HaloWars
 
 		protected override void FixSquadsXml(IO.XmlElementStream s)
 		{
-			if (Database.Engine.Build == Engine.PhxEngineBuild.Alpha)
+			if (this.Database.Engine.Build == Engine.PhxEngineBuild.Alpha)
 				FixSquadsXmlAlpha(s);
 			else
 			{
@@ -629,16 +629,16 @@ namespace KSoft.Phoenix.HaloWars
 			node = XPathSelectNodeByName(s, Phx.BProtoTech.kBListXmlParams, "unsc_grizzly_upgrade0");
 			if (node != null) FixTechsXmlEffectsDataSubType(s.Document, node);
 
-			FixTechsXmlEffectsInvalid(s, Phx.BProtoTech.kBListXmlParams, Database.Engine.Build);
+			FixTechsXmlEffectsInvalid(s, Phx.BProtoTech.kBListXmlParams, this.Database.Engine.Build);
 			if(gRemoveUndefined)
-				FixTechsXmlBadNames(s, Phx.BProtoTech.kBListXmlParams, Database.Engine.Build);
+				FixTechsXmlBadNames(s, Phx.BProtoTech.kBListXmlParams, this.Database.Engine.Build);
 		}
 		#endregion
 
 		#region Fix Powers
-		protected override void FixPowersXml(KSoft.IO.XmlElementStream s)
+		protected override void FixPowersXml(IO.XmlElementStream s)
 		{
-			FixPowersXmlUndefinedTechPrereqs(s, Phx.BProtoPower.kBListXmlParams, Database.Engine.Build);
+			FixPowersXmlUndefinedTechPrereqs(s, Phx.BProtoPower.kBListXmlParams, this.Database.Engine.Build);
 		}
 		static void FixPowersXmlUndefinedTechPrereqs(IO.XmlElementStream s, XML.BListXmlParams op, Engine.PhxEngineBuild build)
 		{

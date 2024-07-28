@@ -123,7 +123,7 @@ public partial class Bck : IBcx {
 
       public AnimatedJoint(IBinaryReader br) {
           this.axes = new AnimComponent[3];
-          for (var i = 0; i < axes.Length; ++i) {
+          for (var i = 0; i < this.axes.Length; ++i) {
             this.axes[i] = br.ReadNew<AnimComponent>();
           }
         }

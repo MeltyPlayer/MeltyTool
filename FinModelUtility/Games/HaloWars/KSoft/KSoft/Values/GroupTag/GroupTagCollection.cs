@@ -20,14 +20,14 @@ namespace KSoft.Values
 		/// <summary>Compare two <see cref="GroupTagData"/> objects by their <see cref="GroupTagData.Name"/> properties</summary>
 		class ByNameComparer
 			: System.Collections.IComparer
-			, System.Collections.Generic.IComparer<GroupTagData>
+			, IComparer<GroupTagData>
 		{
 			public int Compare(object x, object y)
 			{
 				Contract.Assume(x != null);
 				Contract.Assume(y != null);
 
-				return Compare((GroupTagData)x, (GroupTagData)y);
+				return this.Compare((GroupTagData)x, (GroupTagData)y);
 			}
 			public int Compare(GroupTagData x, GroupTagData y)
 			{
@@ -49,7 +49,7 @@ namespace KSoft.Values
 
 		/// <summary>Does this instance represent an empty collection of the concrete GroupTagData type?</summary>
 		/// <remarks>If the Uuid is not zero, but there are no GroupTags, this will return false</remarks>
-		public bool IsEmpty { get => BaseGroupTags.Length == 0 && Uuid == KGuid.Empty; }
+		public bool IsEmpty { get => this.BaseGroupTags.Length == 0 && this.Uuid == KGuid.Empty; }
 
 		protected GroupTagCollection(GroupTagData[] groups)
 		{
@@ -57,7 +57,7 @@ namespace KSoft.Values
 		}
 		protected GroupTagCollection(GroupTagData[] groups, KGuid uuid) : this(groups)
 		{
-			Uuid = uuid;
+			this.Uuid = uuid;
 		}
 
 		#region Indexers
@@ -67,17 +67,17 @@ namespace KSoft.Values
 		[SuppressMessage("Microsoft.Design", "CA1043:UseIntegralOrStringArgumentForIndexers")]
 		public string this[char[] tag] { get {
 			Contract.Requires(tag != null);
-			Contract.Requires(tag.Length == NullGroupTag.Tag.Length,
+			Contract.Requires(tag.Length == this.NullGroupTag.Tag.Length,
 				"Tag lengths mismatch");
 			Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
 
-			foreach (GroupTagData t in BaseGroupTags)
+			foreach (GroupTagData t in this.BaseGroupTags)
 			{
 				if (t.Test(tag))
 					return t.Name;
 			}
 
-			return NullGroupTag.Name;
+			return this.NullGroupTag.Name;
 		} }
 		#endregion
 
@@ -89,10 +89,10 @@ namespace KSoft.Values
 		public int FindGroupIndexByTag(char[] groupTag)
 		{
 			Contract.Requires(groupTag != null);
-			Contract.Requires(groupTag.Length == NullGroupTag.Tag.Length,
+			Contract.Requires(groupTag.Length == this.NullGroupTag.Tag.Length,
 				"Tag lengths mismatch");
 
-			return BaseGroupTags.FindIndex(gt => gt.Test(groupTag));
+			return this.BaseGroupTags.FindIndex(gt => gt.Test(groupTag));
 		}
 		/// <summary>Finds the index of a <see cref="GroupTagData"/></summary>
 		/// <param name="tagString">The <see cref="GroupTagData"/>'s 'tag' to search for</param>
@@ -101,10 +101,10 @@ namespace KSoft.Values
 		public int FindGroupIndexByTag(string tagString)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(tagString));
-			Contract.Requires(tagString.Length == NullGroupTag.Tag.Length,
+			Contract.Requires(tagString.Length == this.NullGroupTag.Tag.Length,
 				"Tag lengths mismatch");
 
-			return BaseGroupTags.FindIndex(gt => gt.TagString == tagString);
+			return this.BaseGroupTags.FindIndex(gt => gt.TagString == tagString);
 		}
 
 		/// <summary>Finds the index of a <see cref="GroupTagData"/></summary>
@@ -115,7 +115,7 @@ namespace KSoft.Values
 		{
 			Contract.Requires(!string.IsNullOrEmpty(groupName));
 
-			return BaseGroupTags.FindIndex(gt => gt.Name == groupName);
+			return this.BaseGroupTags.FindIndex(gt => gt.Name == groupName);
 		}
 
 		/// <summary>Finds the index of a supplied <see cref="GroupTagData"/> object</summary>
@@ -126,7 +126,7 @@ namespace KSoft.Values
 		{
 			Contract.Requires(group != null);
 
-			return BaseGroupTags.FindIndex(gt => object.ReferenceEquals(gt, group));
+			return this.BaseGroupTags.FindIndex(gt => ReferenceEquals(gt, group));
 		}
 
 		/// <summary>Finds a <see cref="GroupTagData"/> of this collection based on its group tag</summary>
@@ -137,11 +137,11 @@ namespace KSoft.Values
 		{
 			Contract.Requires(groupTag != null);
 
-			int index = FindGroupIndexByTag(groupTag);
+			int index = this.FindGroupIndexByTag(groupTag);
 			if (index.IsNone())
 				return null;
 
-			return BaseGroupTags[index];
+			return this.BaseGroupTags[index];
 		}
 		/// <summary>Finds a <see cref="GroupTagData"/> of this collection based on its group tag</summary>
 		/// <param name="tagString">The <see cref="GroupTagData"/>'s 'tag' to search for</param>
@@ -150,14 +150,14 @@ namespace KSoft.Values
 		public GroupTagData FindGroupByTag(string tagString)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(tagString));
-			Contract.Requires(tagString.Length == NullGroupTag.Tag.Length,
+			Contract.Requires(tagString.Length == this.NullGroupTag.Tag.Length,
 				"Tag lengths mismatch");
 
-			int index = FindGroupIndexByTag(tagString);
+			int index = this.FindGroupIndexByTag(tagString);
 			if (index.IsNone())
 				return null;
 
-			return BaseGroupTags[index];
+			return this.BaseGroupTags[index];
 		}
 
 		/// <summary>Finds a <see cref="GroupTagData"/> of this collection based on its group tag</summary>
@@ -168,24 +168,24 @@ namespace KSoft.Values
 		{
 			Contract.Requires(!string.IsNullOrEmpty(groupName));
 
-			int index = FindGroupIndex(groupName);
+			int index = this.FindGroupIndex(groupName);
 			if (index.IsNone())
 				return null;
 
-			return BaseGroupTags[index];
+			return this.BaseGroupTags[index];
 		}
 		#endregion
 
 		/// <summary>Sort the collection by the names of the group tags</summary>
-		public void Sort() => Array.Sort<GroupTagData>(BaseGroupTags, new ByNameComparer());
+		public void Sort() => Array.Sort<GroupTagData>(this.BaseGroupTags, new ByNameComparer());
 
 		/// <summary>Does the collection contain multiple elements which share the same group tag and\or name?</summary>
 		/// <returns></returns>
 		[Contracts.Pure]
 		public bool ContainsDuplicates()
 		{
-			var all_tags =	from gt in BaseGroupTags select gt.TagString;
-			var all_names = from gt in BaseGroupTags select gt.Name;
+			var all_tags =	from gt in this.BaseGroupTags select gt.TagString;
+			var all_names = from gt in this.BaseGroupTags select gt.Name;
 
 			return all_tags.ContainsDuplicates() || all_names.ContainsDuplicates();
 		}
@@ -198,7 +198,7 @@ namespace KSoft.Values
 		/// <param name="s"></param>
 		public void Write(IO.EndianWriter s)
 		{
-			foreach (GroupTagData g in BaseGroupTags)
+			foreach (GroupTagData g in this.BaseGroupTags)
 			{
 				Contract.Assume(g != null);
 
@@ -208,13 +208,13 @@ namespace KSoft.Values
 		#endregion
 
 		#region IReadOnlyList<GroupTagData> Members
-		public GroupTagData this[int index] { get => BaseGroupTags[index]; }
-		public int Count { get => BaseGroupTags.Length; }
+		public GroupTagData this[int index] { get => this.BaseGroupTags[index]; }
+		public int Count { get => this.BaseGroupTags.Length; }
 		#endregion
 
 		#region IEnumerable<GroupTagData> Members
-		public IEnumerator<GroupTagData> GetEnumerator() => (IEnumerator<GroupTagData>)BaseGroupTags.GetEnumerator();
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => BaseGroupTags.GetEnumerator();
+		public IEnumerator<GroupTagData> GetEnumerator() => (IEnumerator<GroupTagData>) this.BaseGroupTags.GetEnumerator();
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => this.BaseGroupTags.GetEnumerator();
 		#endregion
 	};
 	[Contracts.ContractClassFor(typeof(GroupTagCollection))]

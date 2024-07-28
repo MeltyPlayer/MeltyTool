@@ -21,74 +21,75 @@ namespace KSoft.Phoenix.Resource.ECF
 		public string FilePath { get; private set; }
 		public byte[] FileBytes { get; private set; }
 
-		public bool HasPossibleFileData { get { return FilePath.IsNotNullOrEmpty() || FileBytes.IsNotNullOrEmpty(); } }
+		public bool HasPossibleFileData { get { return this.FilePath.IsNotNullOrEmpty() || this.FileBytes.IsNotNullOrEmpty(); } }
 
 		#region ResourceFlags
 		private uint mResourceFlags;
 
 		public bool IsContiguous
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.Contiguous); }
 		}
 
 		public bool IsWriteCombined
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.WriteCombined); }
 		}
 
 		public bool IsDeflateStream
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsDeflateStream); }
 		}
 
 		public bool IsResourceTag
 		{
-			get { return Bitwise.Flags.Test(mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
-			set { Bitwise.Flags.Modify(value, ref mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
+			get { return Bitwise.Flags.Test(this.mResourceFlags, 1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
+			set { Bitwise.Flags.Modify(value, ref this.mResourceFlags, (ushort)1U<<(ushort)EcfChunkResourceFlags.IsResourceTag); }
 		}
 		#endregion
 
 		public void Initialize(EcfFileDefinition parent, EcfChunk rawChunk, int rawChunkIndex)
 		{
-			RawChunkIndex = rawChunkIndex;
+			this.RawChunkIndex = rawChunkIndex;
 
-			Parent = parent;
-			Id = rawChunk.EntryId;
-			AlignmentBit = rawChunk.DataAlignmentBit;
-			CompressionType = rawChunk.CompressionType;
-			IsContiguous = rawChunk.IsContiguous;
-			IsWriteCombined = rawChunk.IsWriteCombined;
-			IsDeflateStream = rawChunk.IsDeflateStream;
-			IsResourceTag = rawChunk.IsResourceTag;
+			this.Parent = parent;
+			this.Id = rawChunk.EntryId;
+			this.AlignmentBit = rawChunk.DataAlignmentBit;
+			this.CompressionType = rawChunk.CompressionType;
+			this.IsContiguous = rawChunk.IsContiguous;
+			this.IsWriteCombined = rawChunk.IsWriteCombined;
+			this.IsDeflateStream = rawChunk.IsDeflateStream;
+			this.IsResourceTag = rawChunk.IsResourceTag;
 		}
 
 		internal void SetupRawChunk(EcfChunk rawChunk, int rawChunkIndex)
 		{
-			RawChunkIndex = rawChunkIndex;
+			this.RawChunkIndex = rawChunkIndex;
 
-			rawChunk.EntryId = Id;
-			rawChunk.DataAlignmentBit = AlignmentBit;
-			rawChunk.CompressionType = CompressionType;
-			rawChunk.IsContiguous = IsContiguous;
-			rawChunk.IsWriteCombined = IsWriteCombined;
-			rawChunk.IsDeflateStream = IsDeflateStream;
-			rawChunk.IsResourceTag = IsResourceTag;
+			rawChunk.EntryId = this.Id;
+			rawChunk.DataAlignmentBit = this.AlignmentBit;
+			rawChunk.CompressionType = this.CompressionType;
+			rawChunk.IsContiguous = this.IsContiguous;
+			rawChunk.IsWriteCombined = this.IsWriteCombined;
+			rawChunk.IsDeflateStream = this.IsDeflateStream;
+			rawChunk.IsResourceTag = this.IsResourceTag;
 		}
 
 		public void SetFilePathFromParentNameAndId()
 		{
 			string file_name = string.Format("{0}_{1}{2}",
-				Parent.EcfName, Id.ToString("X8"), kFileExtension);
+			                                 this.Parent.EcfName,
+			                                 this.Id.ToString("X8"), kFileExtension);
 
-			FilePath = file_name;
+			this.FilePath = file_name;
 		}
 
 		internal void SetFileBytes(byte[] bytes)
 		{
-			FileBytes = bytes;
+			this.FileBytes = bytes;
 		}
 
 		#region ITagElementStringNameStreamable
@@ -101,28 +102,28 @@ namespace KSoft.Phoenix.Resource.ECF
 			var ecf_expander = s.Owner as EcfFileExpander;
 
 			if (s.IsReading)
-				Parent = (EcfFileDefinition)s.UserData;
+				this.Parent = (EcfFileDefinition)s.UserData;
 
-			s.StreamAttribute("id", this, obj => Id, NumeralBase.Hex);
-			s.StreamAttributeOpt("align", this, obj => AlignmentBit, b => b != EcfChunk.kDefaultAlignmentBit, NumeralBase.Hex);
+			s.StreamAttribute("id", this, obj => this.Id, NumeralBase.Hex);
+			s.StreamAttributeOpt("align", this, obj => this.AlignmentBit, b => b != EcfChunk.kDefaultAlignmentBit, NumeralBase.Hex);
 
-			if (s.StreamAttributeEnumOpt("Compression", this, obj => CompressionType, e => e != EcfCompressionType.Stored))
+			if (s.StreamAttributeEnumOpt("Compression", this, obj => this.CompressionType, e => e != EcfCompressionType.Stored))
 			{
 				// #NOTE DeflateRaw requires the decompressed size to be known somewhere, and generic ECF files do not store such info
 				// Only available in ERAs
-				if (CompressionType == EcfCompressionType.DeflateRaw)
-					s.ThrowReadException(new InvalidDataException(CompressionType + " is not supported in this context"));
+				if (this.CompressionType == EcfCompressionType.DeflateRaw)
+					s.ThrowReadException(new InvalidDataException(this.CompressionType + " is not supported in this context"));
 			}
 
 			if (s.IsReading)
-				ReadResourceFlags(s);
+				this.ReadResourceFlags(s);
 			else if (s.IsWriting)
-				WriteResourceFlags(s);
+				this.WriteResourceFlags(s);
 
-			s.StreamAttributeOpt("Path", this, obj => FilePath, Predicates.IsNotNullOrEmpty);
+			s.StreamAttributeOpt("Path", this, obj => this.FilePath, Predicates.IsNotNullOrEmpty);
 
 			// Don't try to write the file bytes
-			bool try_to_serialize_file_bytes = s.IsReading || FilePath.IsNullOrEmpty();
+			bool try_to_serialize_file_bytes = s.IsReading || this.FilePath.IsNullOrEmpty();
 			if (ecf_expander != null)
 			{
 				if (!ecf_expander.ExpanderOptions.Test(EcfFileExpanderOptions.DontSaveChunksToFiles))
@@ -133,9 +134,9 @@ namespace KSoft.Phoenix.Resource.ECF
 
 			if (try_to_serialize_file_bytes)
 			{
-				if (!s.StreamCursorBytesOpt(this, obj => FileBytes))
+				if (!s.StreamCursorBytesOpt(this, obj => this.FileBytes))
 				{
-					if (FilePath.IsNullOrEmpty())
+					if (this.FilePath.IsNullOrEmpty())
 						s.ThrowReadException(new InvalidDataException("Expect Path attribute or file hex bytes"));
 				}
 			}
@@ -147,28 +148,28 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			bool flag = false;
 			if (s.ReadAttributeOpt("IsContiguous", ref flag))
-				IsContiguous = flag;
+				this.IsContiguous = flag;
 			if (s.ReadAttributeOpt("IsWriteCombined", ref flag))
-				IsWriteCombined = flag;
+				this.IsWriteCombined = flag;
 			if (s.ReadAttributeOpt("IsDeflateStream", ref flag))
-				IsDeflateStream = flag;
+				this.IsDeflateStream = flag;
 			if (s.ReadAttributeOpt("IsResourceTag", ref flag))
-				IsResourceTag = flag;
+				this.IsResourceTag = flag;
 		}
 		private void WriteResourceFlags<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
 			where TCursor : class
 		{
-			if (mResourceFlags == 0)
+			if (this.mResourceFlags == 0)
 				return;
 
-			if (IsContiguous)
+			if (this.IsContiguous)
 				s.WriteAttribute("IsContiguous", true);
-			if (IsWriteCombined)
+			if (this.IsWriteCombined)
 				s.WriteAttribute("IsWriteCombined", true);
-			if (IsDeflateStream)
+			if (this.IsDeflateStream)
 				s.WriteAttribute("IsDeflateStream", true);
-			if (IsResourceTag)
+			if (this.IsResourceTag)
 				s.WriteAttribute("IsResourceTag", true);
 		}
 		#endregion

@@ -19,8 +19,8 @@ namespace KSoft.Phoenix.Phx
 		float mRating = 1.0f;
 		public float Rating
 		{
-			get { return mRating; }
-			set { mRating = value; }
+			get { return this.mRating; }
+			set { this.mRating = value; }
 		}
 		#endregion
 
@@ -28,7 +28,7 @@ namespace KSoft.Phoenix.Phx
 		float mDamagePercentage = 1.0f;
 		public float DamagePercentage
 		{
-			get { return mDamagePercentage; }
+			get { return this.mDamagePercentage; }
 		}
 		#endregion
 
@@ -36,8 +36,8 @@ namespace KSoft.Phoenix.Phx
 		float mReflectDamageFactor;
 		public float ReflectDamageFactor
 		{
-			get { return mReflectDamageFactor; }
-			set { mReflectDamageFactor = value; }
+			get { return this.mReflectDamageFactor; }
+			set { this.mReflectDamageFactor = value; }
 		}
 		#endregion
 
@@ -45,8 +45,8 @@ namespace KSoft.Phoenix.Phx
 		bool mBowlable;
 		public bool Bowlable
 		{
-			get { return mBowlable; }
-			set { mBowlable = value; }
+			get { return this.mBowlable; }
+			set { this.mBowlable = value; }
 		}
 		#endregion
 
@@ -54,8 +54,8 @@ namespace KSoft.Phoenix.Phx
 		bool mRammable;
 		public bool Rammable
 		{
-			get { return mRammable; }
-			set { mRammable = value; }
+			get { return this.mRammable; }
+			set { this.mRammable = value; }
 		}
 		#endregion
 
@@ -64,21 +64,21 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamAttributeOpt("rating", ref mRating, PhxPredicates.IsNotOne);
-			s.StreamCursor(ref mDamagePercentage);
-			s.StreamAttributeOpt("reflectDamageFactor", ref mReflectDamageFactor, Predicates.IsNotZero);
-			s.StreamAttributeOpt("bowlable", ref mBowlable, Predicates.IsTrue);
-			s.StreamAttributeOpt("rammable", ref mRammable, Predicates.IsTrue);
+			s.StreamAttributeOpt("rating", ref this.mRating, PhxPredicates.IsNotOne);
+			s.StreamCursor(ref this.mDamagePercentage);
+			s.StreamAttributeOpt("reflectDamageFactor", ref this.mReflectDamageFactor, Predicates.IsNotZero);
+			s.StreamAttributeOpt("bowlable", ref this.mBowlable, Predicates.IsTrue);
+			s.StreamAttributeOpt("rammable", ref this.mRammable, Predicates.IsTrue);
 		}
 		#endregion
 
 		#region IComparable<BDamageModifier> Members
 		public int CompareTo(BWeaponModifier other)
 		{
-			if (Rating != other.Rating)
-				return Rating.CompareTo(other.Rating);
+			if (this.Rating != other.Rating)
+				return this.Rating.CompareTo(other.Rating);
 
-			return DamagePercentage.CompareTo(other.DamagePercentage);
+			return this.DamagePercentage.CompareTo(other.DamagePercentage);
 		}
 		#endregion
 

@@ -68,7 +68,7 @@ namespace KSoft
 			where T : class
 		{ return theObj != null; }
 
-		[Pure, DebuggerStepThrough] public static bool IsNotEmpty(System.Guid uuid)		{ return uuid != System.Guid.Empty; }
+		[Pure, DebuggerStepThrough] public static bool IsNotEmpty(Guid uuid)		{ return uuid != Guid.Empty; }
 		[Pure, DebuggerStepThrough] public static bool IsNotEmpty(Values.KGuid uuid)	{ return uuid != Values.KGuid.Empty; }
 
 		[Pure, DebuggerStepThrough] public static bool IsZero(int x)	{ return x == 0; }

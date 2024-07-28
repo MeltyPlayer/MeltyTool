@@ -16,12 +16,12 @@ namespace KSoft.Security.Cryptography
 			readonly uint mXorIn;
 			readonly uint mXorOut;
 
-			public uint Polynomial { get { return mPolynomial; } }
+			public uint Polynomial { get { return this.mPolynomial; } }
 			[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1819:PropertiesShouldNotReturnArrays")]
-			public uint[] CrcTable { get { return mCrcTable; } }
-			public uint InitialValue { get { return mInitialValue; } }
-			public uint XorIn { get { return mXorIn; } }
-			public uint XorOut { get { return mXorOut; } }
+			public uint[] CrcTable { get { return this.mCrcTable; } }
+			public uint InitialValue { get { return this.mInitialValue; } }
+			public uint XorIn { get { return this.mXorIn; } }
+			public uint XorOut { get { return this.mXorOut; } }
 
 			static uint[] BuildCrcTable(uint polynomial)
 			{
@@ -50,13 +50,13 @@ namespace KSoft.Security.Cryptography
 			{
 				Contract.Requires(crcTable.IsNullOrEmpty() || crcTable.Length == kCrcTableSize);
 
-				mPolynomial = polynomial;
-				mInitialValue = initialValue;
-				mXorIn = xorIn;
-				mXorOut = xorOut;
+				this.mPolynomial = polynomial;
+				this.mInitialValue = initialValue;
+				this.mXorIn = xorIn;
+				this.mXorOut = xorOut;
 
-				mCrcTable = crcTable.IsNullOrEmpty()
-					? BuildCrcTable(Polynomial)
+				this.mCrcTable = crcTable.IsNullOrEmpty()
+					? BuildCrcTable(this.Polynomial)
 					: crcTable;
 			}
 
@@ -64,20 +64,20 @@ namespace KSoft.Security.Cryptography
 			{
 				value &= 0xFF;
 				uint a = (crc >> 8) & 0x00FFFFFF; // don't include the top most byte in case there was somehow any carry
-				uint b = CrcTable[((int)crc ^ value) & 0xFF];
+				uint b = this.CrcTable[((int)crc ^ value) & 0xFF];
 				return a ^ b;
 			}
 
 			public void ComputeUpdate(uint value, ref uint crc)
 			{
-				crc = ComputeUpdate(crc, value);
+				crc = this.ComputeUpdate(crc, value);
 			}
 
 			internal uint HashCore(uint crc, byte[] array, int startIndex, int count)
 			{
 				for (int index = startIndex; count != 0; --count, ++index)
 				{
-					crc = ComputeUpdate(crc, array[index]);
+					crc = this.ComputeUpdate(crc, array[index]);
 				}
 
 				return crc;
@@ -85,13 +85,13 @@ namespace KSoft.Security.Cryptography
 			public uint Crc(ref uint crc, byte[] buffer, int size)
 			{
 				if (crc == 0)
-					crc = InitialValue;
+					crc = this.InitialValue;
 
-				crc ^= XorIn;
+				crc ^= this.XorIn;
 
-				crc = HashCore(crc, buffer, 0, size);
+				crc = this.HashCore(crc, buffer, 0, size);
 
-				crc ^= XorOut;
+				crc ^= this.XorOut;
 
 				return crc;
 			}

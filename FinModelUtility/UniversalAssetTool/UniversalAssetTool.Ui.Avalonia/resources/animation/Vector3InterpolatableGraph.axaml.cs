@@ -113,6 +113,6 @@ public class Vector3InterpolatableGraphViewModel : ViewModelBase {
 
 public partial class Vector3InterpolatableGraph : UserControl {
   public Vector3InterpolatableGraph() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

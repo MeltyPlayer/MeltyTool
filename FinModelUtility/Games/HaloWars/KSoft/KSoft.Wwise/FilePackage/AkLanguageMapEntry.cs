@@ -15,8 +15,8 @@ namespace KSoft.Wwise.FilePackage
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Offset);
-			s.Stream(ref ID);
+			s.Stream(ref this.Offset);
+			s.Stream(ref this.ID);
 		}
 		#endregion
 	};

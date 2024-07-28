@@ -12,7 +12,7 @@ public abstract class BArrayDecompressor : IArrayDecompressor {
   public abstract bool TryDecompress(byte[] src, out byte[] dst);
 
   public byte[] Decompress(byte[] src) {
-    if (TryDecompress(src, out byte[] dst)) {
+    if (this.TryDecompress(src, out byte[] dst)) {
       return dst;
     }
 

@@ -9,12 +9,12 @@ public class Ped : ITextDeserializable {
   public IDictionary<string, string> AnimMap { get; set; }
 
   public void Read(ITextReader tr) {
-      SkelName = TextReaderUtils.ReadKeyValue(tr, "skel").Trim();
+    this.SkelName = TextReaderUtils.ReadKeyValue(tr, "skel").Trim();
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
 
       tr.AssertString("lod 0 {");
-      XmodName = tr.ReadUpToAndPastTerminator(TextReaderUtils.CLOSING_BRACE)
-                   .Trim();
+      this.XmodName = tr.ReadUpToAndPastTerminator(TextReaderUtils.CLOSING_BRACE)
+                        .Trim();
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
 
       this.AnimMap = new Dictionary<string, string>();

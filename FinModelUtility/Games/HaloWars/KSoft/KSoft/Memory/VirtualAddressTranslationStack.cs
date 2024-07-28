@@ -21,7 +21,7 @@ namespace KSoft.Memory
 		readonly Values.PtrHandle mNull;
 		Values.PtrHandle mCurrentPA;
 		/// <summary>The top PA on the stack</summary>
-		public Values.PtrHandle CurrentAddress { get { return mCurrentPA; } }
+		public Values.PtrHandle CurrentAddress { get { return this.mCurrentPA; } }
 
 		#region Ctor
 		public VirtualAddressTranslationStack(Shell.ProcessorSize ptrSize)
@@ -37,11 +37,13 @@ namespace KSoft.Memory
 
 			switch (ptrSize)
 			{
-			case Shell.ProcessorSize.x32: mNull = Values.PtrHandle.Null32; break;
-			case Shell.ProcessorSize.x64: mNull = Values.PtrHandle.Null64; break;
+			case Shell.ProcessorSize.x32:
+				this.mNull = Values.PtrHandle.Null32; break;
+			case Shell.ProcessorSize.x64:
+				this.mNull = Values.PtrHandle.Null64; break;
 			}
 
-			mCurrentPA = mNull;
+			this.mCurrentPA = this.mNull;
 		}
 		#endregion
 
@@ -50,16 +52,16 @@ namespace KSoft.Memory
 		/// <param name="pa">PA to push</param>
 		public void PushPhysicalAddress(Values.PtrHandle pa)
 		{
-			mCurrentPA = pa;
+			this.mCurrentPA = pa;
 
-			base.Push(pa);
+			this.Push(pa);
 		}
 		/// <summary>Push a new PA that is a relative offset of <see cref="CurrentAddress"/></summary>
 		/// <remarks>So, CurrentAddress += offset</remarks>
 		/// <param name="relativeOffset">offset relative to <see cref="CurrentAddress"/></param>
 		public void PushPhysicalAddressOffset(Values.PtrHandle relativeOffset)
 		{
-			var new_pa = CurrentAddress + relativeOffset;
+			var new_pa = this.CurrentAddress + relativeOffset;
 
 			this.PushPhysicalAddress(new_pa);
 		}
@@ -67,7 +69,7 @@ namespace KSoft.Memory
 		/// <remarks><see cref="CurrentAddress"/> gets set to the null identifier as well</remarks>
 		public void PushNull()
 		{
-			PushPhysicalAddress(mNull);
+			this.PushPhysicalAddress(this.mNull);
 		}
 
 		/// <summary>
@@ -76,12 +78,12 @@ namespace KSoft.Memory
 		/// <returns></returns>
 		public Values.PtrHandle PopPhysicalAddress()
 		{
-			var pop = base.Pop();
+			var pop = this.Pop();
 
-			if (base.Count != 0)
-				mCurrentPA = base.Peek();
+			if (this.Count != 0)
+				this.mCurrentPA = this.Peek();
 			else
-				mCurrentPA = mNull;
+				this.mCurrentPA = this.mNull;
 
 			return pop;
 		}
@@ -94,13 +96,13 @@ namespace KSoft.Memory
 		/// <remarks>If the VA read is a <see cref="PtrHandle.IsInvalidHandle">InvalidHandle</see>, it is returned without fix-up</remarks>
 		public Values.PtrHandle ReadVirtualAsPhysicalAddress(IO.EndianReader s)
 		{
-			Values.PtrHandle va = mNull;
+			Values.PtrHandle va = this.mNull;
 			s.ReadRawPointer(ref va);
 
 			if (va.IsInvalidHandle)
 				return va;
 
-			return CurrentAddress + va;
+			return this.CurrentAddress + va;
 		}
 		/// <summary>Translate a PA to a VA and write it to a stream</summary>
 		/// <param name="s">Stream to write to</param>
@@ -110,7 +112,7 @@ namespace KSoft.Memory
 		{
 			var va = pa.IsInvalidHandle
 				? pa
-				: pa - CurrentAddress;
+				: pa - this.CurrentAddress;
 
 			s.WriteRawPointer(va);
 		}

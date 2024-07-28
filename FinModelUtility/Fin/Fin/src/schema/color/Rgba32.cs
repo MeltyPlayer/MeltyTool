@@ -24,5 +24,5 @@ public partial struct Rgba32 : IColor, IBinaryConvertible {
   [Skip]
   public float Af => this.Ab / 255f;
 
-  public override string ToString() => $"rgba({Rf}, {Gf}, {Bf}, {Af})";
+  public override string ToString() => $"rgba({this.Rf}, {this.Gf}, {this.Bf}, {this.Af})";
 }

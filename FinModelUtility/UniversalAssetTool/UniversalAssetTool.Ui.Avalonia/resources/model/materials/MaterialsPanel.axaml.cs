@@ -81,7 +81,7 @@ namespace uni.ui.avalonia.resources.model.materials {
 
   public partial class MaterialsPanel : UserControl {
     public MaterialsPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     public static readonly IValueConverter GetMaterialLabel =

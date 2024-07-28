@@ -44,7 +44,7 @@ namespace KSoft.Values
 		[Obsolete(EnumBitEncoderBase.kObsoleteMsg, true)] kNumberOf,
 	};
 
-	[Interop.StructLayout(Interop.LayoutKind.Explicit, Size=KGuid.kSizeOf)]
+	[Interop.StructLayout(Interop.LayoutKind.Explicit, Size=kSizeOf)]
 	[Interop.ComVisible(true)]
 	[Serializable]
 	[SuppressMessage("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
@@ -116,14 +116,14 @@ namespace KSoft.Values
 			}
 		};
 
-		public int Data1 { get { return SysGuid.GetData1(mData); } }
-		public int Data2 { get { return SysGuid.GetData2(mData); } }
-		public int Data3 { get { return SysGuid.GetData3(mData); } }
+		public int Data1 { get { return SysGuid.GetData1(this.mData); } }
+		public int Data2 { get { return SysGuid.GetData2(this.mData); } }
+		public int Data3 { get { return SysGuid.GetData3(this.mData); } }
 		public long Data4 { get {
-			byte	d = SysGuid.GetData4[0](mData), e = SysGuid.GetData4[1](mData),
-					f = SysGuid.GetData4[2](mData), g = SysGuid.GetData4[3](mData),
-					h = SysGuid.GetData4[4](mData), i = SysGuid.GetData4[5](mData),
-					j = SysGuid.GetData4[6](mData), k = SysGuid.GetData4[7](mData);
+			byte	d = SysGuid.GetData4[0](this.mData), e = SysGuid.GetData4[1](this.mData),
+					f = SysGuid.GetData4[2](this.mData), g = SysGuid.GetData4[3](this.mData),
+					h = SysGuid.GetData4[4](this.mData), i = SysGuid.GetData4[5](this.mData),
+					j = SysGuid.GetData4[6](this.mData), k = SysGuid.GetData4[7](this.mData);
 			long result;
 
 			result =  d; result <<= Bits.kByteBitCount;
@@ -143,30 +143,30 @@ namespace KSoft.Values
 		[Interop.FieldOffset(0)] ulong mDataHi;
 		[Interop.FieldOffset(8)] ulong mDataLo;
 
-		public Guid ToGuid() => mData;
+		public Guid ToGuid() => this.mData;
 
 		public long MostSignificantBits { get {
-			ulong result = (uint)SysGuid.GetData1(mData);
+			ulong result = (uint)SysGuid.GetData1(this.mData);
 			result <<= Bits.kInt32BitCount;
 
-			result |= (ushort)SysGuid.GetData2(mData);
+			result |= (ushort)SysGuid.GetData2(this.mData);
 			result <<= Bits.kInt16BitCount;
 
-			result |= (ushort)SysGuid.GetData3(mData);
+			result |= (ushort)SysGuid.GetData3(this.mData);
 
 			return (long)result;
 		} }
 		public long LeastSignificantBits { get {
-			long result = Data4;
+			long result = this.Data4;
 
 			return result;
 		} }
 
 		#region Version and Variant
-		public UuidVersion Version { get => (UuidVersion)(SysGuid.GetData3(mData) >> kVersionBitShift); }
+		public UuidVersion Version { get => (UuidVersion)(SysGuid.GetData3(this.mData) >> kVersionBitShift); }
 
 		public UuidVariant Variant { get {
-			int raw = SysGuid.GetData4[0](mData) >> kVariantBitShift;
+			int raw = SysGuid.GetData4[0](this.mData) >> kVariantBitShift;
 
 			// Special condition due to the 'type' bits starting in the right-most (ie, MSB) bits,
 			// plus for NCS and Standard the lower two bits are documented in RFC as being 'don't care'
@@ -183,10 +183,10 @@ namespace KSoft.Values
 
 		#region TimeBased properties
 		public long Timestamp { get {
-			Contract.Requires<InvalidOperationException>(Version == UuidVersion.TimeBased,
+			Contract.Requires<InvalidOperationException>(this.Version == UuidVersion.TimeBased,
 				"Tried to get the Timestamp of a non-time-based GUID");
 
-			ulong msb = (ulong)MostSignificantBits;
+			ulong msb = (ulong) this.MostSignificantBits;
 			ulong result = (msb & 0xFFF) << 48;
 			result |= ((msb >> 16) & 0xFFFF) << 32;
 			result |= msb >> 32;
@@ -195,112 +195,118 @@ namespace KSoft.Values
 		} }
 
 		public int ClockSequence { get {
-			Contract.Requires<InvalidOperationException>(Version == UuidVersion.TimeBased,
+			Contract.Requires<InvalidOperationException>(this.Version == UuidVersion.TimeBased,
 				"Tried to get the ClockSequence of a non-time-based GUID");
 
 			// NOTE: While the Variant field is 3-bits, both the Java and RFC implementations
 			// seem to lob the two MSB off, instead of 0x1F
-			int hi = SysGuid.GetData4[0](mData) & 0x3F;
-			int lo = SysGuid.GetData4[1](mData);
+			int hi = SysGuid.GetData4[0](this.mData) & 0x3F;
+			int lo = SysGuid.GetData4[1](this.mData);
 
 			return (hi << 8) | lo;
 		} }
 
 		public long Node { get {
-			Contract.Requires<InvalidOperationException>(Version == UuidVersion.TimeBased,
+			Contract.Requires<InvalidOperationException>(this.Version == UuidVersion.TimeBased,
 				"Tried to get the Node of a non-time-based GUID");
 
 			long result = 0;
 
 			for (int x = 2; x < SysGuid.GetData4.Length; x++, result <<= Bits.kByteBitCount)
-				result |= SysGuid.GetData4[x](mData);
+				result |= SysGuid.GetData4[x](this.mData);
 
 			return result;
 		} }
 		#endregion
 
 		#region Ctor
-		public KGuid(Guid actualGuid)	{ mDataHi=mDataLo=0; mData = actualGuid; }
-		public KGuid(byte[] b)			{ mDataHi=mDataLo=0; mData = new Guid(b); }
-		public KGuid(string g)			{ mDataHi=mDataLo=0; mData = new Guid(g); }
+		public KGuid(Guid actualGuid)	{
+			this.mDataHi= this.mDataLo=0;
+			this.mData = actualGuid; }
+		public KGuid(byte[] b)			{
+			this.mDataHi= this.mDataLo=0;
+			this.mData = new Guid(b); }
+		public KGuid(string g)			{
+			this.mDataHi= this.mDataLo=0;
+			this.mData = new Guid(g); }
 		public KGuid(long msb, long lsb)
 		{
-			mData = Guid.Empty;
-			mDataHi = (ulong)msb;
-			mDataLo = (ulong)lsb;
+			this.mData = Guid.Empty;
+			this.mDataHi = (ulong)msb;
+			this.mDataLo = (ulong)lsb;
 		}
 
 		public KGuid(int a, short b, short c, byte[] d)
 		{
-			mDataHi=mDataLo=0;
-			mData = new Guid(a,b,c,d);
+			this.mDataHi= this.mDataLo=0;
+			this.mData = new Guid(a,b,c,d);
 		}
 		public KGuid(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
 		{
-			mDataHi=mDataLo=0;
-			mData = new Guid(a,b,c,d,e,f,g,h,i,j,k);
+			this.mDataHi= this.mDataLo=0;
+			this.mData = new Guid(a,b,c,d,e,f,g,h,i,j,k);
 		}
 		public KGuid(uint a, ushort b, ushort c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
 		{
-			mDataHi=mDataLo=0;
-			mData = new Guid(a,b,c,d,e,f,g,h,i,j,k);
+			this.mDataHi= this.mDataLo=0;
+			this.mData = new Guid(a,b,c,d,e,f,g,h,i,j,k);
 		}
 		#endregion
 
 		#region ToString
 		/// <see cref="Guid.ToString()"/>
-		public override string ToString()								=> mData.ToString();
+		public override string ToString()								=> this.mData.ToString();
 		/// <see cref="Guid.ToString(string)"/>
 		[SuppressMessage("Microsoft.Design", "CA1305:SpecifyIFormatProvider")]
-		public string ToString(string format)							=> mData.ToString(format);
+		public string ToString(string format)							=> this.mData.ToString(format);
 		/// <see cref="Guid.ToString(string, IFormatProvider)"/>
-		public string ToString(string format, IFormatProvider provider)	=> mData.ToString(format, provider);
+		public string ToString(string format, IFormatProvider provider)	=> this.mData.ToString(format, provider);
 
 		/// <summary>
 		/// 32 digits: 00000000000000000000000000000000
 		/// </summary>
 		/// <returns></returns>
 		[SuppressMessage("Microsoft.Design", "CA1305:SpecifyIFormatProvider")]
-		internal string ToStringNoStyle()								=> mData.ToString(kFormatNoStyle);
+		internal string ToStringNoStyle()								=> this.mData.ToString(kFormatNoStyle);
 		/// <summary>
 		/// 32 digits separated by hyphens: 00000000-0000-0000-0000-000000000000
 		/// </summary>
 		/// <returns></returns>
 		[SuppressMessage("Microsoft.Design", "CA1305:SpecifyIFormatProvider")]
-		internal string ToStringHyphenated()							=> mData.ToString(kFormatHyphenated);
+		internal string ToStringHyphenated()							=> this.mData.ToString(kFormatHyphenated);
 		#endregion
 
 		#region IEndianStreamable Members
 		public void Read(IO.EndianReader s)
 		{
-			SysGuid.SetData1(ref mData, s.ReadInt32());
-			SysGuid.SetData2(ref mData, s.ReadInt16());
-			SysGuid.SetData3(ref mData, s.ReadInt16());
+			SysGuid.SetData1(ref this.mData, s.ReadInt32());
+			SysGuid.SetData2(ref this.mData, s.ReadInt16());
+			SysGuid.SetData3(ref this.mData, s.ReadInt16());
 
 			foreach (var data4 in SysGuid.SetData4)
-				data4(ref mData, s.ReadByte());
+				data4(ref this.mData, s.ReadByte());
 		}
 
 		public void Write(IO.EndianWriter s)
 		{
-			int data1 = SysGuid.GetData1(mData);
-			short data2 = SysGuid.GetData2(mData);
-			short data3 = SysGuid.GetData3(mData);
+			int data1 = SysGuid.GetData1(this.mData);
+			short data2 = SysGuid.GetData2(this.mData);
+			short data3 = SysGuid.GetData3(this.mData);
 
 			s.Write(data1);
 			s.Write(data2);
 			s.Write(data3);
 
 			foreach (var data4 in SysGuid.GetData4)
-				s.Write(data4(mData));
+				s.Write(data4(this.mData));
 		}
 
 		public void Serialize(IO.EndianStream s)
 		{
 			if (s.IsReading)
-				Read(s.Reader);
+				this.Read(s.Reader);
 			else if (s.IsWriting)
-				Write(s.Writer);
+				this.Write(s.Writer);
 		}
 		#endregion
 
@@ -310,23 +316,23 @@ namespace KSoft.Values
 			if (obj == null)
 				return 1;
 			else if (obj is KGuid)
-				return CompareTo((KGuid)obj);
+				return this.CompareTo((KGuid)obj);
 			else if (obj is Guid)
-				return CompareTo((Guid)obj);
+				return this.CompareTo((Guid)obj);
 
 			throw new InvalidCastException(obj.GetType().ToString());
 		}
-		public int CompareTo(KGuid other)	=> mData.CompareTo(other.mData);
-		public int CompareTo(Guid other)	=> mData.CompareTo(other);
+		public int CompareTo(KGuid other)	=> this.mData.CompareTo(other.mData);
+		public int CompareTo(Guid other)	=> this.mData.CompareTo(other);
 		#endregion
 
 		#region IEquatable Members
 		public override bool Equals(object obj)
 		{
 			if (obj is KGuid kg)
-				return Equals(this, kg);
+				return this.Equals(this, kg);
 			else if (obj is Guid g)
-				return Equals(g);
+				return this.Equals(g);
 
 			return false;
 		}
@@ -339,10 +345,10 @@ namespace KSoft.Values
 				x.mDataHi == y.mDataHi &&
 				x.mDataLo == y.mDataLo;
 		}
-		public bool Equals(KGuid other)		=> Equals(this, other);
-		public bool Equals(Guid other)		=> mData == other;
+		public bool Equals(KGuid other)		=> this.Equals(this, other);
+		public bool Equals(Guid other)		=> this.mData == other;
 
-		public override int GetHashCode()	=> mData.GetHashCode();
+		public override int GetHashCode()	=> this.mData.GetHashCode();
 		public int GetHashCode(KGuid obj)	=> obj.GetHashCode();
 
 		public static bool operator ==(KGuid a, KGuid b)
@@ -386,8 +392,8 @@ namespace KSoft.Values
 		#endregion
 
 		public static KGuid Empty { get => new KGuid(); }
-		public bool IsEmpty { get => mDataHi == 0 && mDataLo == 0; }
-		public bool IsNotEmpty { get => mDataHi != 0 || mDataLo != 0; }
+		public bool IsEmpty { get => this.mDataHi == 0 && this.mDataLo == 0; }
+		public bool IsNotEmpty { get => this.mDataHi != 0 || this.mDataLo != 0; }
 
 		public static KGuid NewGuid() => new KGuid(Guid.NewGuid());
 
@@ -434,7 +440,7 @@ namespace KSoft.Values
 		#endregion
 
 		#region Byte Utils
-		public byte[] ToByteArray() => mData.ToByteArray();
+		public byte[] ToByteArray() => this.mData.ToByteArray();
 
 		public void ToByteBuffer(byte[] buffer, int index = 0)
 		{
@@ -442,11 +448,11 @@ namespace KSoft.Values
 			Contract.Requires<ArgumentOutOfRangeException>(index >= 0);
 			Contract.Requires<ArgumentOutOfRangeException>((index+kSizeOf) <= buffer.Length);
 
-			Bitwise.ByteSwap.ReplaceBytes(buffer, index, SysGuid.GetData1(mData)); index += sizeof(int);
-			Bitwise.ByteSwap.ReplaceBytes(buffer, index, SysGuid.GetData2(mData)); index += sizeof(short);
-			Bitwise.ByteSwap.ReplaceBytes(buffer, index, SysGuid.GetData3(mData)); index += sizeof(short);
+			Bitwise.ByteSwap.ReplaceBytes(buffer, index, SysGuid.GetData1(this.mData)); index += sizeof(int);
+			Bitwise.ByteSwap.ReplaceBytes(buffer, index, SysGuid.GetData2(this.mData)); index += sizeof(short);
+			Bitwise.ByteSwap.ReplaceBytes(buffer, index, SysGuid.GetData3(this.mData)); index += sizeof(short);
 			for (int x = 0; x < 8; x++, index++)
-				buffer[x] = SysGuid.GetData4[x](mData);
+				buffer[x] = SysGuid.GetData4[x](this.mData);
 		}
 		#endregion
 	};

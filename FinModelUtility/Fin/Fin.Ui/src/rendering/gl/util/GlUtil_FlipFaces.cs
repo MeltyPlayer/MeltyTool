@@ -11,11 +11,11 @@ public static partial class GlUtil {
   public static void ResetFlipFaces() => SetFlipFaces(false);
 
   public static void SetFlipFaces(bool flipFaces) {
-      if (GlUtil.currentState_.FlipFaces == flipFaces) {
+      if (currentState_.FlipFaces == flipFaces) {
         return;
       }
 
-      GlUtil.currentState_.FlipFaces = flipFaces;
+      currentState_.FlipFaces = flipFaces;
       GL.FrontFace(flipFaces ? FrontFaceDirection.Cw : FrontFaceDirection.Ccw);
     }
 }

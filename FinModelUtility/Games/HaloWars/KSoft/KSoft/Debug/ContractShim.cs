@@ -40,7 +40,7 @@ namespace System.Diagnostics.ContractsShim
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 		public static void Assert(bool condition)
 		{
-			System.Diagnostics.Debug.Assert(condition);
+			Debug.Assert(condition);
 		}
 		//
 		// Summary:
@@ -58,7 +58,7 @@ namespace System.Diagnostics.ContractsShim
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 		public static void Assert(bool condition, string userMessage)
 		{
-			System.Diagnostics.Debug.Assert(condition, userMessage);
+			Debug.Assert(condition, userMessage);
 		}
 		//
 		// Summary:
@@ -73,7 +73,7 @@ namespace System.Diagnostics.ContractsShim
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 		public static void Assume(bool condition)
 		{
-			System.Diagnostics.Debug.Assert(condition);
+			Debug.Assert(condition);
 		}
 		//
 		// Summary:
@@ -92,7 +92,7 @@ namespace System.Diagnostics.ContractsShim
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 		public static void Assume(bool condition, string userMessage)
 		{
-			System.Diagnostics.Debug.Assert(condition, userMessage);
+			Debug.Assert(condition, userMessage);
 		}
 		//
 		// Summary:
@@ -151,7 +151,7 @@ namespace System.Diagnostics.ContractsShim
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 		public static void Invariant(bool condition)
 		{
-			System.Diagnostics.Debug.Assert(condition);
+			Debug.Assert(condition);
 		}
 		//
 		// Summary:
@@ -168,7 +168,7 @@ namespace System.Diagnostics.ContractsShim
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 		public static void Invariant(bool condition, string userMessage)
 		{
-			System.Diagnostics.Debug.Assert(condition, userMessage);
+			Debug.Assert(condition, userMessage);
 		}
 #if true // #HORRIBLE_SHIM
 		//

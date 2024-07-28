@@ -20,8 +20,8 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				BSaveGame.StreamArray16(s, ref Keys);
-				BSaveGame.StreamArray16(s, ref Values);
+				BSaveGame.StreamArray16(s, ref this.Keys);
+				BSaveGame.StreamArray16(s, ref this.Values);
 			}
 			#endregion
 		};
@@ -42,14 +42,14 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.StreamPascalString32(ref Name);
-				s.Stream(ColorTransformRTable); s.Stream(ColorTransformGTable); s.Stream(ColorTransformBTable);
-				s.Stream(ColorTransformFactorTable);
-				s.Stream(BlurFactorTable); s.Stream(BlurFactorTable); s.Stream(BlurFactorTable); // yes, 3x
-				s.Stream(FOVTable); s.Stream(ZoomTable); s.Stream(YawTable);
-				s.Stream(PitchTable);
-				s.Stream(ref RadialBlur); s.Stream(ref Use3DPosition); s.Stream(ref ModeCameraEffect);
-				s.Stream(ref UserHoverPointAs3DPosition);
+				s.StreamPascalString32(ref this.Name);
+				s.Stream(this.ColorTransformRTable); s.Stream(this.ColorTransformGTable); s.Stream(this.ColorTransformBTable);
+				s.Stream(this.ColorTransformFactorTable);
+				s.Stream(this.BlurFactorTable); s.Stream(this.BlurFactorTable); s.Stream(this.BlurFactorTable); // yes, 3x
+				s.Stream(this.FOVTable); s.Stream(this.ZoomTable); s.Stream(this.YawTable);
+				s.Stream(this.PitchTable);
+				s.Stream(ref this.RadialBlur); s.Stream(ref this.Use3DPosition); s.Stream(ref this.ModeCameraEffect);
+				s.Stream(ref this.UserHoverPointAs3DPosition);
 			}
 			#endregion
 		};
@@ -81,26 +81,26 @@ namespace KSoft.Phoenix.Runtime
 			base.Serialize(s);
 			var sg = s.Owner as BSaveGame;
 
-			s.Stream(ref NextTickTime);
-			s.Stream(ref TargettedSquad);
-			s.StreamV(ref LastDirectionInput); s.StreamV(ref TeleportDestination); s.StreamV(ref PositionInput);
-			s.Stream(ref TimeUntilTeleport); s.Stream(ref TimeUntilRetarget);
-			s.Stream(ref AttackSound);
-			s.Stream(JumpSplineCurve);
-			s.Stream(CameraEffectData);
-			sg.StreamBCost(s, ref CostPerTick); sg.StreamBCost(s, ref CostPerTickAttacking); sg.StreamBCost(s, ref CostPerJump);
-			s.Stream(ref TickLength); s.Stream(ref DamageMultiplier); s.Stream(ref DamageTakenMultiplier);
-			s.Stream(ref SpeedMultiplier); s.Stream(ref NudgeMultiplier); s.Stream(ref ScanRadius);
-			s.Stream(ref ProjectileObject); s.Stream(ref HandAttachObject); s.Stream(ref TeleportAttachObject);
-			s.Stream(ref AudioReactionTimer); s.Stream(ref TeleportTime);
-			s.Stream(ref TeleportLateralDistance); s.Stream(ref TeleportJumpDistance); s.Stream(ref TimeBetweenRetarget);
-			s.Stream(ref MotionBlurAmount); s.Stream(ref MotionBlurDistance); s.Stream(ref MotionBlurTime);
-			s.Stream(ref DistanceVsAngleWeight); s.Stream(ref HealPerKillCombatValue); s.Stream(ref AuraRadius); s.Stream(ref AuraDamageBonus);
-			s.Stream(ref AuraAttachObjectSmall); s.Stream(ref AuraAttachObjectMedium); s.Stream(ref AuraAttachObjectLarge);
-			s.Stream(ref HealAttachObject);
-			BSaveGame.StreamArray(s, ref SquadsInAura);
-			s.Stream(ref FilterTypeID);
-			s.Stream(ref CompletedInitialization); s.Stream(ref HasSuccessfullyAttacked); s.Stream(ref UsePather);
+			s.Stream(ref this.NextTickTime);
+			s.Stream(ref this.TargettedSquad);
+			s.StreamV(ref this.LastDirectionInput); s.StreamV(ref this.TeleportDestination); s.StreamV(ref this.PositionInput);
+			s.Stream(ref this.TimeUntilTeleport); s.Stream(ref this.TimeUntilRetarget);
+			s.Stream(ref this.AttackSound);
+			s.Stream(this.JumpSplineCurve);
+			s.Stream(this.CameraEffectData);
+			sg.StreamBCost(s, ref this.CostPerTick); sg.StreamBCost(s, ref this.CostPerTickAttacking); sg.StreamBCost(s, ref this.CostPerJump);
+			s.Stream(ref this.TickLength); s.Stream(ref this.DamageMultiplier); s.Stream(ref this.DamageTakenMultiplier);
+			s.Stream(ref this.SpeedMultiplier); s.Stream(ref this.NudgeMultiplier); s.Stream(ref this.ScanRadius);
+			s.Stream(ref this.ProjectileObject); s.Stream(ref this.HandAttachObject); s.Stream(ref this.TeleportAttachObject);
+			s.Stream(ref this.AudioReactionTimer); s.Stream(ref this.TeleportTime);
+			s.Stream(ref this.TeleportLateralDistance); s.Stream(ref this.TeleportJumpDistance); s.Stream(ref this.TimeBetweenRetarget);
+			s.Stream(ref this.MotionBlurAmount); s.Stream(ref this.MotionBlurDistance); s.Stream(ref this.MotionBlurTime);
+			s.Stream(ref this.DistanceVsAngleWeight); s.Stream(ref this.HealPerKillCombatValue); s.Stream(ref this.AuraRadius); s.Stream(ref this.AuraDamageBonus);
+			s.Stream(ref this.AuraAttachObjectSmall); s.Stream(ref this.AuraAttachObjectMedium); s.Stream(ref this.AuraAttachObjectLarge);
+			s.Stream(ref this.HealAttachObject);
+			BSaveGame.StreamArray(s, ref this.SquadsInAura);
+			s.Stream(ref this.FilterTypeID);
+			s.Stream(ref this.CompletedInitialization); s.Stream(ref this.HasSuccessfullyAttacked); s.Stream(ref this.UsePather);
 		}
 		#endregion
 	};

@@ -29,9 +29,9 @@ namespace KSoft.Phoenix.Resource
 		{
 			bool reading = s.IsReading;
 
-			int sig_data_length = reading || SignatureData == null
+			int sig_data_length = reading || this.SignatureData == null
 				? 0
-				: SignatureData.Length;
+				: this.SignatureData.Length;
 			int size = reading
 				? 0
 				: kNonSignatureBytesSize + sig_data_length;
@@ -43,15 +43,15 @@ namespace KSoft.Phoenix.Resource
 			s.Pad64();
 
 			s.StreamSignature(kSignatureMarker);
-			s.Stream(ref SizeBit);
+			s.Stream(ref this.SizeBit);
 			if (reading)
 			{
-				Array.Resize(ref SignatureData, size - kNonSignatureBytesSize);
-				sig_data_length = SignatureData.Length;
+				Array.Resize(ref this.SignatureData, size - kNonSignatureBytesSize);
+				sig_data_length = this.SignatureData.Length;
 			}
 			if (sig_data_length > 0)
 			{
-				s.Stream(SignatureData);
+				s.Stream(this.SignatureData);
 			}
 			s.StreamSignature(kSignatureMarker);
 		}

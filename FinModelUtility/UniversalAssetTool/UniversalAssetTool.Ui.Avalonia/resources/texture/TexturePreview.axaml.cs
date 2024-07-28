@@ -56,7 +56,7 @@ public class TexturePreviewViewModel : ViewModelBase {
 
 public partial class TexturePreview : UserControl {
   public TexturePreview() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 
   private TexturePreviewViewModel ViewModel_

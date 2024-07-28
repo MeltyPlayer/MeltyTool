@@ -37,7 +37,7 @@ namespace KSoft.IO
 			}
 			set {
 				Contract.Requires<ArgumentOutOfRangeException>(value < FileAccess.ReadWrite);
-				Contract.Requires<InvalidOperationException>((StreamPermissions & value) == value,
+				Contract.Requires<InvalidOperationException>((this.StreamPermissions & value) == value,
 					"Stream doesn't support the requested access mode");
 
 				throw new NotImplementedException();

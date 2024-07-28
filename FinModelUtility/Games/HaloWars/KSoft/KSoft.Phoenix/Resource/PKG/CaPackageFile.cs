@@ -33,7 +33,7 @@ namespace KSoft.Phoenix.Resource.PKG
 		{
 			int size = 0;
 			size += sizeof(long);
-			size += Name.Length;
+			size += this.Name.Length;
 			size += sizeof(long); // Offset
 			size += sizeof(long); // Size
 
@@ -47,17 +47,17 @@ namespace KSoft.Phoenix.Resource.PKG
 				long position = s.Reader.BaseStream.Position;
 				long name_length = s.Reader.ReadInt64();
 				if (name_length < 0 || name_length > kMaxNameLength)
-					throw new System.IO.InvalidDataException("Invalid name length {0} at offset {1} in {2}".Format(name_length, position, s.StreamName));
-				Name = s.Reader.ReadString(Memory.Strings.StringStorage.AsciiString, (int)name_length);
-				Offset = s.Reader.ReadInt64();
-				Size = s.Reader.ReadInt64();
+					throw new InvalidDataException("Invalid name length {0} at offset {1} in {2}".Format(name_length, position, s.StreamName));
+				this.Name = s.Reader.ReadString(Memory.Strings.StringStorage.AsciiString, (int)name_length);
+				this.Offset = s.Reader.ReadInt64();
+				this.Size = s.Reader.ReadInt64();
 			}
 			else if (s.IsWriting)
 			{
-				s.Writer.Write((long)Name.Length);
-				s.Writer.Write(Name, Memory.Strings.StringStorage.AsciiString);
-				s.Writer.Write(Offset);
-				s.Writer.Write(Size);
+				s.Writer.Write((long) this.Name.Length);
+				s.Writer.Write(this.Name, Memory.Strings.StringStorage.AsciiString);
+				s.Writer.Write(this.Offset);
+				s.Writer.Write(this.Size);
 			}
 		}
 	};
@@ -83,7 +83,7 @@ namespace KSoft.Phoenix.Resource.PKG
 
 		public long Alignment = kDefaultAlignment;
 
-		public bool HasEnoughFileEntries { get { return FileEntries.Count > kMinFileEntryCount; } }
+		public bool HasEnoughFileEntries { get { return this.FileEntries.Count > kMinFileEntryCount; } }
 		public bool UseAlignment { get { return kCurrentVersion >= (ulong)CaPackageVersion.UsesAlignment; } }
 
 		public int CalculateHeaderAndFileChunksSize(CaPackageVersion version)
@@ -91,7 +91,7 @@ namespace KSoft.Phoenix.Resource.PKG
 			int size = 0;
 			size += kHeaderLength;
 
-			foreach (var entry in FileEntries)
+			foreach (var entry in this.FileEntries)
 			{
 				size += entry.CalculateSerializedSize();
 			}
@@ -112,35 +112,35 @@ namespace KSoft.Phoenix.Resource.PKG
 			ulong version = kCurrentVersion;
 			s.Stream(ref version);
 			if (version <= 0 || version > kCurrentVersion)
-				KSoft.IO.VersionMismatchException.Assert(s.Reader, kCurrentVersion);
+				IO.VersionMismatchException.Assert(s.Reader, kCurrentVersion);
 
-			SerializeAllocationTable(s);
+			this.SerializeAllocationTable(s);
 
 			if (version >= (ulong)CaPackageVersion.UsesAlignment)
 			{
-				s.Stream(ref Alignment);
+				s.Stream(ref this.Alignment);
 			}
 		}
 
 		void SerializeAllocationTable(IO.EndianStream s)
 		{
-			long entries_count = FileEntries.Count;
+			long entries_count = this.FileEntries.Count;
 			s.Stream(ref entries_count);
 			if (entries_count > 0)
 			{
 				if (s.IsReading)
 				{
-					FileEntries.Capacity = (int)entries_count;
+					this.FileEntries.Capacity = (int)entries_count;
 					for (int x = 0; x < entries_count; x++)
 					{
 						var e = new CaPackageEntry();
 						s.Stream(ref e);
-						FileEntries.Add(e);
+						this.FileEntries.Add(e);
 					}
 				}
 				else if (s.IsWriting)
 				{
-					foreach (var e in FileEntries)
+					foreach (var e in this.FileEntries)
 					{
 						var e_copy = e;
 						s.Stream(ref e_copy);

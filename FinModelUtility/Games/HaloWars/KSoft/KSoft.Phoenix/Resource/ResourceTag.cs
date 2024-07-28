@@ -37,10 +37,10 @@ namespace KSoft.Phoenix.Resource
 				var createTime = fileInfo.CreationTimeUtc;
 				var lastWriteTime = fileInfo.LastWriteTimeUtc;
 
-				SourceFileName = fileName;
-				Array.Clear(SourceDigest, 0, SourceDigest.Length);
-				SourceFileSize = fileSize;
-				SourceFileTimeStamp = lastWriteTime > createTime
+				this.SourceFileName = fileName;
+				Array.Clear(this.SourceDigest, 0, this.SourceDigest.Length);
+				this.SourceFileSize = fileSize;
+				this.SourceFileTimeStamp = lastWriteTime > createTime
 					? lastWriteTime
 					: createTime;
 			}
@@ -59,11 +59,11 @@ namespace KSoft.Phoenix.Resource
 			try
 			{
 				long fileLength;
-				result = Security.Cryptography.PhxHash.Sha1HashFile(SourceFileName, SourceDigest, out fileLength);
+				result = Security.Cryptography.PhxHash.Sha1HashFile(this.SourceFileName, this.SourceDigest, out fileLength);
 
 				if (result)
 				{
-					SourceFileSize = fileLength;
+					this.SourceFileSize = fileLength;
 				}
 			}
 			catch (Exception ex)
@@ -78,19 +78,19 @@ namespace KSoft.Phoenix.Resource
 		{
 			Contract.Requires(version >= 0 && version <= byte.MaxValue);
 
-			CreatorToolVersion = version;
-			CreatorToolCommandLine = cmdLine;
+			this.CreatorToolVersion = version;
+			this.CreatorToolCommandLine = cmdLine;
 		}
 
 		public void ComputeMetadata()
 		{
-			if (Guid.IsNotEmpty)
+			if (this.Guid.IsNotEmpty)
 				return;
 
-			TimeStamp = System.DateTime.UtcNow;
-			Guid = Values.KGuid.NewGuid();
-			MachineName = Environment.MachineName;
-			UserName = Environment.UserName;
+			this.TimeStamp = DateTime.UtcNow;
+			this.Guid = Values.KGuid.NewGuid();
+			this.MachineName = Environment.MachineName;
+			this.UserName = Environment.UserName;
 		}
 
 		public void PopulateFromStream(IO.EndianStream s, ResourceTagHeader header)

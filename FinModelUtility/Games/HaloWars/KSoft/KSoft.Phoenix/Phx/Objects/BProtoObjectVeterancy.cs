@@ -89,47 +89,47 @@ namespace KSoft.Phoenix.Phx
 
 		#region Properties
 		float mXP;
-		public float XP { get { return mXP; } }
+		public float XP { get { return this.mXP; } }
 		float mDamage = 1.0f;
-		public float Damage { get { return mDamage; } }
+		public float Damage { get { return this.mDamage; } }
 		float mVelocity = 1.0f;
-		public float Velocity { get { return mVelocity; } }
+		public float Velocity { get { return this.mVelocity; } }
 		float mAccuracy = 1.0f;
-		public float Accuracy { get { return mAccuracy; } }
+		public float Accuracy { get { return this.mAccuracy; } }
 		float mWorkRate = 1.0f;
-		public float WorkRate { get { return mWorkRate; } }
+		public float WorkRate { get { return this.mWorkRate; } }
 		float mWeaponRange = 1.0f;
-		public float WeaponRange { get { return mWeaponRange; } }
+		public float WeaponRange { get { return this.mWeaponRange; } }
 		float mDamageTaken = 1.0f;
-		public float DamageTaken { get { return mDamageTaken; } }
+		public float DamageTaken { get { return this.mDamageTaken; } }
 		#endregion
 
-		public bool IsInvalid { get { return object.ReferenceEquals(this, kInvalid); } }
-		public bool IsIgnored { get { return mXP == 0.0f; } }
+		public bool IsInvalid { get { return ReferenceEquals(this, kInvalid); } }
+		public bool IsIgnored { get { return this.mXP == 0.0f; } }
 
 		#region IComparable Members
 		int IComparable<BProtoObjectVeterancy>.CompareTo(BProtoObjectVeterancy other)
 		{
-			if (XP != other.XP)
-				return XP.CompareTo(other.XP);
+			if (this.XP != other.XP)
+				return this.XP.CompareTo(other.XP);
 
-			if (Damage != other.Damage)
-				return Damage.CompareTo(other.Damage);
+			if (this.Damage != other.Damage)
+				return this.Damage.CompareTo(other.Damage);
 
-			if (Velocity != other.Velocity)
-				return Velocity.CompareTo(other.Velocity);
+			if (this.Velocity != other.Velocity)
+				return this.Velocity.CompareTo(other.Velocity);
 
-			if (Accuracy != other.Accuracy)
-				return Accuracy.CompareTo(other.Accuracy);
+			if (this.Accuracy != other.Accuracy)
+				return this.Accuracy.CompareTo(other.Accuracy);
 
-			if (WorkRate != other.WorkRate)
-				return WorkRate.CompareTo(other.WorkRate);
+			if (this.WorkRate != other.WorkRate)
+				return this.WorkRate.CompareTo(other.WorkRate);
 
-			if (WeaponRange != other.WeaponRange)
-				return WeaponRange.CompareTo(other.WeaponRange);
+			if (this.WeaponRange != other.WeaponRange)
+				return this.WeaponRange.CompareTo(other.WeaponRange);
 
-			if (DamageTaken != other.DamageTaken)
-				return DamageTaken.CompareTo(other.DamageTaken);
+			if (this.DamageTaken != other.DamageTaken)
+				return this.DamageTaken.CompareTo(other.DamageTaken);
 
 			return 0;
 		}
@@ -152,13 +152,13 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamAttributeOpt("XP", ref mXP, Predicates.IsNotZero);
-			s.StreamAttributeOpt("Damage", ref mDamage, PhxPredicates.IsNotOne);
-			s.StreamAttributeOpt("Velocity", ref mVelocity, PhxPredicates.IsNotOne);
-			s.StreamAttributeOpt("Accuracy", ref mAccuracy, PhxPredicates.IsNotOne);
-			s.StreamAttributeOpt("WorkRate", ref mWorkRate, PhxPredicates.IsNotOne);
-			s.StreamAttributeOpt("WeaponRange", ref mWeaponRange, PhxPredicates.IsNotOne);
-			s.StreamAttributeOpt("DamageTaken", ref mDamageTaken, PhxPredicates.IsNotOne);
+			s.StreamAttributeOpt("XP", ref this.mXP, Predicates.IsNotZero);
+			s.StreamAttributeOpt("Damage", ref this.mDamage, PhxPredicates.IsNotOne);
+			s.StreamAttributeOpt("Velocity", ref this.mVelocity, PhxPredicates.IsNotOne);
+			s.StreamAttributeOpt("Accuracy", ref this.mAccuracy, PhxPredicates.IsNotOne);
+			s.StreamAttributeOpt("WorkRate", ref this.mWorkRate, PhxPredicates.IsNotOne);
+			s.StreamAttributeOpt("WeaponRange", ref this.mWeaponRange, PhxPredicates.IsNotOne);
+			s.StreamAttributeOpt("DamageTaken", ref this.mDamageTaken, PhxPredicates.IsNotOne);
 		}
 		#endregion
 	};

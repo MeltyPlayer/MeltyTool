@@ -67,7 +67,7 @@ namespace UoT.memory {
           default: throw new NotSupportedException();
         }
 
-        return ZSegments.InitializeFromSchemaBinaryReader(br, segmentOffset, nameOffset);
+        return InitializeFromSchemaBinaryReader(br, segmentOffset, nameOffset);
       }
 
       throw new NotSupportedException();
@@ -77,7 +77,7 @@ namespace UoT.memory {
         SchemaBinaryReader br,
         int segmentOffset,
         int nameOffset) {
-      var zSegments = ZSegments.GetZSegments_(br, segmentOffset, nameOffset);
+      var zSegments = GetZSegments_(br, segmentOffset, nameOffset);
 
       var objects = new List<ZObject>();
       var actorCode = new List<ZCodeFiles>();

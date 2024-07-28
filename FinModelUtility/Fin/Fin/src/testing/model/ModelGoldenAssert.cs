@@ -46,7 +46,7 @@ public static class ModelGoldenAssert {
       where TModelBundle : IModelFileBundle {
     foreach (var goldenSubdir in
              GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)) {
-      ModelGoldenAssert.AssertGolden(goldenSubdir,
+      AssertGolden(goldenSubdir,
                                      modelImporter,
                                      gatherModelBundleFromInputDirectory);
     }

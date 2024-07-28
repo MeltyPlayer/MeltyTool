@@ -136,7 +136,7 @@ public partial class PolygonColorInfo
       return false;
     }
 
-    return Equals((PolygonColorInfo) obj);
+    return this.Equals((PolygonColorInfo) obj);
   }
 
   public override int GetHashCode() {
@@ -209,54 +209,54 @@ public partial record PeInfo : IBinaryConvertible {
 
   [Skip]
   public GxCompareType CompareType0
-    => (GxCompareType) ((AlphaCompareFunctionBits >> 0) & 0xF);
+    => (GxCompareType) ((this.AlphaCompareFunctionBits >> 0) & 0xF);
 
   [Skip]
   public float Reference0
-    => ((AlphaCompareFunctionBits >> 4) & 0xFF) / 255f;
+    => ((this.AlphaCompareFunctionBits >> 4) & 0xFF) / 255f;
 
   [Skip]
   public GxAlphaOp AlphaCompareOp
-    => (GxAlphaOp) ((AlphaCompareFunctionBits >> 16) & 0xF);
+    => (GxAlphaOp) ((this.AlphaCompareFunctionBits >> 16) & 0xF);
 
   [Skip]
   public GxCompareType CompareType1
-    => (GxCompareType) ((AlphaCompareFunctionBits >> 20) & 0xF);
+    => (GxCompareType) ((this.AlphaCompareFunctionBits >> 20) & 0xF);
 
   [Skip]
   public float Reference1
-    => ((AlphaCompareFunctionBits >> 24) & 0xFF) / 255f;
+    => ((this.AlphaCompareFunctionBits >> 24) & 0xFF) / 255f;
 
 
   public int ZModeBits = 0;
 
   [Skip]
-  public bool Enable => ((ZModeBits >> 0) & 0x1) == 0x1;
+  public bool Enable => ((this.ZModeBits >> 0) & 0x1) == 0x1;
 
   [Skip]
-  public bool WriteNewIntoBuffer => ((ZModeBits >> 1) & 0x1) == 0x1;
+  public bool WriteNewIntoBuffer => ((this.ZModeBits >> 1) & 0x1) == 0x1;
 
   [Skip]
   public GxCompareType DepthCompareType
-    => (GxCompareType) ((ZModeBits >> 8) & 0xFF);
+    => (GxCompareType) ((this.ZModeBits >> 8) & 0xFF);
 
   public int BlendModeBits { get; set; }
 
   [Skip]
   public GxBlendMode BlendMode =>
-      (GxBlendMode) ((BlendModeBits >> 0) & 0xF);
+      (GxBlendMode) ((this.BlendModeBits >> 0) & 0xF);
 
   [Skip]
   public GxBlendFactor SrcFactor =>
-      (GxBlendFactor) ((BlendModeBits >> 4) & 0xF);
+      (GxBlendFactor) ((this.BlendModeBits >> 4) & 0xF);
 
   [Skip]
   public GxBlendFactor DstFactor =>
-      (GxBlendFactor) ((BlendModeBits >> 8) & 0xF);
+      (GxBlendFactor) ((this.BlendModeBits >> 8) & 0xF);
 
   [Skip]
   public GxLogicOp LogicOp =>
-      (GxLogicOp) ((BlendModeBits >> 12) & 0xF);
+      (GxLogicOp) ((this.BlendModeBits >> 12) & 0xF);
 };
 
 [BinarySchema]
@@ -348,7 +348,7 @@ public partial class TextureData
       return false;
     }
 
-    return Equals((TextureData) obj);
+    return this.Equals((TextureData) obj);
   }
 
   public override int GetHashCode() {
@@ -468,7 +468,7 @@ public partial class TextureInfo : IBinaryConvertible, IEquatable<TextureInfo> {
       return false;
     }
 
-    return Equals((TextureInfo) obj);
+    return this.Equals((TextureInfo) obj);
   }
 
   public override int GetHashCode() {

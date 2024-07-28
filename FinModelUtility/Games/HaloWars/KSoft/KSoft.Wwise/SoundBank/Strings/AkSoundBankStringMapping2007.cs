@@ -20,7 +20,7 @@ namespace KSoft.Wwise.SoundBank
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Offset);
+				s.Stream(ref this.Offset);
 			}
 			#endregion
 		};
@@ -30,25 +30,25 @@ namespace KSoft.Wwise.SoundBank
 			AKBKHashHeader mHeader;
 			public StringHashEntry[] Entries;
 
-			public uint ID { get { return mHeader.Hash; } }
+			public uint ID { get { return this.mHeader.Hash; } }
 
 			#region IEndianStreamSerializable Members
 			void SerializeGroupEntries(IO.EndianStream s)
 			{
-				s.StreamArrayInt32(ref Entries);
-				for (int x = 0; x < Entries.Length; x++)
+				s.StreamArrayInt32(ref this.Entries);
+				for (int x = 0; x < this.Entries.Length; x++)
 				{
-					s.Stream(ref Entries[x].ID);
-					s.Stream(ref Entries[x].Value, Memory.Strings.StringStorage.CStringAscii);
-					s.Stream(ref Entries[x].Key);
+					s.Stream(ref this.Entries[x].ID);
+					s.Stream(ref this.Entries[x].Value, Memory.Strings.StringStorage.CStringAscii);
+					s.Stream(ref this.Entries[x].Key);
 				}
 			}
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref mHeader);
+				s.Stream(ref this.mHeader);
 
-				long eos = EndOfStream(s, mHeader);
-				SerializeGroupEntries(s);
+				long eos = EndOfStream(s, this.mHeader);
+				this.SerializeGroupEntries(s);
 				Contract.Assert(s.BaseStream.Position == eos);
 			}
 			#endregion
@@ -70,8 +70,8 @@ namespace KSoft.Wwise.SoundBank
 		{
 			switch (hdr.Type)
 			{
-				case AkSoundBankStringMappingBase.StringType.OldEvents:
-					SerializeEntries(s, ref Events);
+				case StringType.OldEvents:
+					SerializeEntries(s, ref this.Events);
 					break;
 			}
 		}
@@ -89,7 +89,7 @@ namespace KSoft.Wwise.SoundBank
 				AKBKHashHeader hdr = new AKBKHashHeader();
 				hdr.Serialize(s);
 
-				SerializeStringType(s, hdr, bank);
+				this.SerializeStringType(s, hdr, bank);
 			}
 		}
 	};

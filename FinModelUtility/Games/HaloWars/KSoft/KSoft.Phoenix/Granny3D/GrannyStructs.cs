@@ -19,7 +19,7 @@ namespace KSoft.Granny3D
 		IntPtr Ignored;
 
 		// #64BIT: Workaround encountered issues trying to define a field which was a TPtr of the same parent type
-		public TPtr<granny_data_type_definition> ReferenceType { get { return new TPtr<granny_data_type_definition>(ReferenceTypeInternal); } }
+		public TPtr<granny_data_type_definition> ReferenceType { get { return new TPtr<granny_data_type_definition>(this.ReferenceTypeInternal); } }
 	};
 
 	[StructLayout(LayoutKind.Sequential, Pack=Granny2DLL.kAssumedPointerSize)]

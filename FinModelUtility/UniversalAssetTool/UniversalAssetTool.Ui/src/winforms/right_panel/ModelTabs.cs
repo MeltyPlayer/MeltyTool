@@ -9,7 +9,7 @@ namespace uni.ui.winforms.right_panel;
 
 public partial class ModelTabs : UserControl {
   public ModelTabs() {
-      InitializeComponent();
+    this.InitializeComponent();
     }
 
   public IReadOnlyModel? Model {

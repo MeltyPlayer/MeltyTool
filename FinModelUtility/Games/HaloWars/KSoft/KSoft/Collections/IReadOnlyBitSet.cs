@@ -132,20 +132,20 @@ namespace KSoft.Collections
 
 		#region Access
 		public bool this[int bitIndex] { get {
-			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < Length);
+			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < this.Length);
 
 			throw new NotImplementedException();
 		} }
 		public bool this[int frombitIndex, int toBitIndex] { get {
-			Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= this.Length);
 
 			throw new NotImplementedException();
 		} }
 
 		public bool Get(int bitIndex)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < Length);
+			Contract.Requires<ArgumentOutOfRangeException>(bitIndex >= 0 && bitIndex < this.Length);
 
 			throw new NotImplementedException();
 		}
@@ -153,21 +153,21 @@ namespace KSoft.Collections
 		public int NextBitIndex(int startBitIndex, bool stateFilter)
 		{
 			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0);
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < this.Length);
 
 			throw new NotImplementedException();
 		}
 		public int NextClearBitIndex(int startBitIndex)
 		{
 			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0);
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < this.Length);
 
 			throw new NotImplementedException();
 		}
 		public int NextSetBitIndex(int startBitIndex)
 		{
 			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0);
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < this.Length);
 
 			throw new NotImplementedException();
 		}
@@ -177,8 +177,8 @@ namespace KSoft.Collections
 
 		public bool TestBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			throw new NotImplementedException();
 		}

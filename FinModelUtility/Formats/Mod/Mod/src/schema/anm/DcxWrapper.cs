@@ -27,8 +27,8 @@ namespace mod.schema.anm {
 
     [Skip]
     public IDcx Dcx
-      => IsDca ? Dca! :
-         IsDck ? Dck! :
+      => this.IsDca ? this.Dca! :
+          this.IsDck ? this.Dck! :
          throw new NotSupportedException();
 
     public override string ToString() => this.Dcx.ToString()!;

@@ -28,14 +28,14 @@ public class MtxOpcodeCommand : IOpcodeCommand {
 
   public byte Params { get; set; }
 
-  public bool Push => (Params & 1) != 0;
-  public bool NoPush => !Push;
+  public bool Push => (this.Params & 1) != 0;
+  public bool NoPush => !this.Push;
 
-  public bool Load => (Params & 2) != 0;
-  public bool Mul => !Load;
+  public bool Load => (this.Params & 2) != 0;
+  public bool Mul => !this.Load;
 
-  public bool Projection => (Params & 4) != 0;
-  public bool ModelView => !Projection;
+  public bool Projection => (this.Params & 4) != 0;
+  public bool ModelView => !this.Projection;
 }
 
 public class PopMtxOpcodeCommand : IOpcodeCommand {
@@ -65,7 +65,7 @@ public class Tri1OpcodeCommand : IOpcodeCommand {
 
   public IEnumerable<byte> VertexIndicesInOrder {
     get {
-        var startOffset = VertexOrder switch {
+        var startOffset = this.VertexOrder switch {
             TriVertexOrder.ABC => 0,
             TriVertexOrder.BCA => 1,
             TriVertexOrder.CAB => 2,
@@ -75,9 +75,9 @@ public class Tri1OpcodeCommand : IOpcodeCommand {
         for (var i = 0; i < 3; ++i) {
           var current = (startOffset + i) % 3;
           yield return current switch {
-              0 => VertexIndexA,
-              1 => VertexIndexB,
-              2 => VertexIndexC,
+              0 => this.VertexIndexA,
+              1 => this.VertexIndexB,
+              2 => this.VertexIndexC,
               _ => throw new ArgumentOutOfRangeException()
           };
         }
@@ -98,7 +98,7 @@ public class Tri2OpcodeCommand : IOpcodeCommand {
 
   public IEnumerable<byte> VertexIndicesInOrder0 {
     get {
-        var startOffset = VertexOrder0 switch {
+        var startOffset = this.VertexOrder0 switch {
             TriVertexOrder.ABC => 0,
             TriVertexOrder.BCA => 1,
             TriVertexOrder.CAB => 2,
@@ -108,9 +108,9 @@ public class Tri2OpcodeCommand : IOpcodeCommand {
         for (var i = 0; i < 3; ++i) {
           var current = (startOffset + i) % 3;
           yield return current switch {
-              0 => VertexIndexA0,
-              1 => VertexIndexB0,
-              2 => VertexIndexC0,
+              0 => this.VertexIndexA0,
+              1 => this.VertexIndexB0,
+              2 => this.VertexIndexC0,
               _ => throw new ArgumentOutOfRangeException()
           };
         }
@@ -119,7 +119,7 @@ public class Tri2OpcodeCommand : IOpcodeCommand {
 
   public IEnumerable<byte> VertexIndicesInOrder1 {
     get {
-        var startOffset = VertexOrder1 switch {
+        var startOffset = this.VertexOrder1 switch {
             TriVertexOrder.ABC => 0,
             TriVertexOrder.BCA => 1,
             TriVertexOrder.CAB => 2,
@@ -129,9 +129,9 @@ public class Tri2OpcodeCommand : IOpcodeCommand {
         for (var i = 0; i < 3; ++i) {
           var current = (startOffset + i) % 3;
           yield return current switch {
-              0 => VertexIndexA1,
-              1 => VertexIndexB1,
-              2 => VertexIndexC1,
+              0 => this.VertexIndexA1,
+              1 => this.VertexIndexB1,
+              2 => this.VertexIndexC1,
               _ => throw new ArgumentOutOfRangeException()
           };
         }

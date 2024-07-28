@@ -15,7 +15,7 @@ namespace KSoft.Phoenix.Runtime
 		{
 			s.Pad8();
 			s.StreamVersion(kVersion);
-			BSaveGame.StreamCollection(s, Settings);
+			BSaveGame.StreamCollection(s, this.Settings);
 		}
 		#endregion
 	};

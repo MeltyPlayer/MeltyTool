@@ -12,7 +12,7 @@ namespace KSoft.Wwise.SoundBank
 		{
 			base.Serialize(s);
 
-			s.StreamArrayInt32(ref ActionList, s.Stream);
+			s.StreamArrayInt32(ref this.ActionList, s.Stream);
 		}
 	};
 }

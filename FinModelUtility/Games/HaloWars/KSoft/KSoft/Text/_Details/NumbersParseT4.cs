@@ -732,7 +732,7 @@ namespace KSoft
 			protected byte? ProcessItem(int start, int length)
 			{
 				var result = (byte)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (byte?)null;
@@ -764,7 +764,7 @@ namespace KSoft
 			protected override IEnumerable<byte?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -783,12 +783,12 @@ namespace KSoft
 
 			protected override byte? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<byte?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<byte?> TryParseByte(StringListDesc desc, string values)
@@ -813,7 +813,7 @@ namespace KSoft
 			protected sbyte? ProcessItem(int start, int length)
 			{
 				var result = (sbyte)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (sbyte?)null;
@@ -845,7 +845,7 @@ namespace KSoft
 			protected override IEnumerable<sbyte?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -864,12 +864,12 @@ namespace KSoft
 
 			protected override sbyte? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<sbyte?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<sbyte?> TryParseSByte(StringListDesc desc, string values)
@@ -894,7 +894,7 @@ namespace KSoft
 			protected ushort? ProcessItem(int start, int length)
 			{
 				var result = (ushort)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (ushort?)null;
@@ -926,7 +926,7 @@ namespace KSoft
 			protected override IEnumerable<ushort?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -945,12 +945,12 @@ namespace KSoft
 
 			protected override ushort? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<ushort?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<ushort?> TryParseUInt16(StringListDesc desc, string values)
@@ -975,7 +975,7 @@ namespace KSoft
 			protected short? ProcessItem(int start, int length)
 			{
 				var result = (short)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (short?)null;
@@ -1007,7 +1007,7 @@ namespace KSoft
 			protected override IEnumerable<short?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -1026,12 +1026,12 @@ namespace KSoft
 
 			protected override short? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<short?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<short?> TryParseInt16(StringListDesc desc, string values)
@@ -1056,7 +1056,7 @@ namespace KSoft
 			protected uint? ProcessItem(int start, int length)
 			{
 				var result = (uint)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (uint?)null;
@@ -1088,7 +1088,7 @@ namespace KSoft
 			protected override IEnumerable<uint?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -1107,12 +1107,12 @@ namespace KSoft
 
 			protected override uint? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<uint?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<uint?> TryParseUInt32(StringListDesc desc, string values)
@@ -1137,7 +1137,7 @@ namespace KSoft
 			protected int? ProcessItem(int start, int length)
 			{
 				var result = (int)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (int?)null;
@@ -1169,7 +1169,7 @@ namespace KSoft
 			protected override IEnumerable<int?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -1188,12 +1188,12 @@ namespace KSoft
 
 			protected override int? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<int?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<int?> TryParseInt32(StringListDesc desc, string values)
@@ -1218,7 +1218,7 @@ namespace KSoft
 			protected ulong? ProcessItem(int start, int length)
 			{
 				var result = (ulong)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (ulong?)null;
@@ -1250,7 +1250,7 @@ namespace KSoft
 			protected override IEnumerable<ulong?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -1269,12 +1269,12 @@ namespace KSoft
 
 			protected override ulong? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<ulong?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<ulong?> TryParseUInt64(StringListDesc desc, string values)
@@ -1299,7 +1299,7 @@ namespace KSoft
 			protected long? ProcessItem(int start, int length)
 			{
 				var result = (long)0;
-				bool success = TryParseImpl(mValues, ref result, (int)mDesc.Radix, start, length, mDesc.Digits);
+				bool success = TryParseImpl(this.mValues, ref result, (int) this.mDesc.Radix, start, length, this.mDesc.Digits);
 				return success
 					? result
 					: (long?)null;
@@ -1331,7 +1331,7 @@ namespace KSoft
 			protected override IEnumerable<long?> CreateResult()
 			{
 				return
-					from task in mList
+					from task in this.mList
 					select task.Result;
 			}
 		};
@@ -1350,12 +1350,12 @@ namespace KSoft
 
 			protected override long? CreateItem(int start, int length)
 			{
-				return base.ProcessItem(start, length);
+				return this.ProcessItem(start, length);
 			}
 
 			protected override IEnumerable<long?> CreateResult()
 			{
-				return mList;
+				return this.mList;
 			}
 		};
 		public static IEnumerable<long?> TryParseInt64(StringListDesc desc, string values)

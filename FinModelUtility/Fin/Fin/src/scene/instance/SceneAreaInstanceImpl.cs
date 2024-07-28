@@ -8,10 +8,10 @@ namespace fin.scene.instance;
 public partial class SceneInstanceImpl {
   private class SceneAreaInstanceImpl(IReadOnlySceneArea sceneArea)
       : ISceneAreaInstance {
-    ~SceneAreaInstanceImpl() => ReleaseUnmanagedResources_();
+    ~SceneAreaInstanceImpl() => this.ReleaseUnmanagedResources_();
 
     public void Dispose() {
-      ReleaseUnmanagedResources_();
+      this.ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 

@@ -16,10 +16,10 @@ namespace KSoft.Phoenix.Phx
 
 		int mUnitTypeID = TypeExtensions.kNone;
 		[Meta.UnitReference]
-		public int UnitTypeID { get { return mUnitTypeID; } }
+		public int UnitTypeID { get { return this.mUnitTypeID; } }
 
 		float mPriority = PhxUtil.kInvalidSingle;
-		public float Priority { get { return mPriority; } }
+		public float Priority { get { return this.mPriority; } }
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -28,8 +28,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, "type", ref mUnitTypeID, DatabaseObjectKind.Unit, false, XML.XmlUtil.kSourceAttr);
-			s.StreamCursor(ref mPriority);
+			xs.StreamDBID(s, "type", ref this.mUnitTypeID, DatabaseObjectKind.Unit, false, XML.XmlUtil.kSourceAttr);
+			s.StreamCursor(ref this.mPriority);
 		}
 		#endregion
 

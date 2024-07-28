@@ -23,10 +23,10 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamVectorArray16(s, ref Waypoints, cMaximumWaypoints);
-			s.Stream(ref Flags);
-			s.Stream(ref PathLength);
-			s.Stream(ref CreationTime);
+			BSaveGame.StreamVectorArray16(s, ref this.Waypoints, cMaximumWaypoints);
+			s.Stream(ref this.Flags);
+			s.Stream(ref this.PathLength);
+			s.Stream(ref this.CreationTime);
 
 			s.StreamSignature(cSaveMarker.cSaveMarkerPath1);
 		}

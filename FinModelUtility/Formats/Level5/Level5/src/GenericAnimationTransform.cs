@@ -32,9 +32,9 @@ public class GenericAnimationTransform {
                      AnimationTrackFormat type,
                      InterpolationType interpolationType =
                          InterpolationType.Linear) {
-      if (!Tracks.TryGetValue(type, out var track)) {
+      if (!this.Tracks.TryGetValue(type, out var track)) {
         track = new GenericTransformTrack(type);
-        Tracks[type] = track;
+        this.Tracks[type] = track;
       }
 
       track.AddKey(frame, value, interpolationType);
@@ -92,6 +92,6 @@ public class GenericTransformTrack(AnimationTrackFormat type) {
                          InterpolationType.Linear,
                      float InTan = 0,
                      float OutTan = float.MaxValue) {
-      Keys.AddKey(frame, value, interpolationType, InTan, OutTan);
+    this.Keys.AddKey(frame, value, interpolationType, InTan, OutTan);
     }
 }

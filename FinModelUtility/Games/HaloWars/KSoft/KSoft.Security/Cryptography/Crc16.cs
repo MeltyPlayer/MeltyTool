@@ -53,18 +53,18 @@ namespace KSoft.Security.Cryptography
 		{
 			Contract.Requires(definition != null);
 
-			base.HashSizeValue = Bits.kInt16BitCount;
+			this.HashSizeValue = Bits.kInt16BitCount;
 
-			mDefinition = definition;
-			mHashBytes = new byte[sizeof(ushort)];
+			this.mDefinition = definition;
+			this.mHashBytes = new byte[sizeof(ushort)];
 		}
 
 		public override void Initialize()
 		{
-			Array.Clear(mHashBytes, 0, mHashBytes.Length);
-			Hash16 = mDefinition.InitialValue;
+			Array.Clear(this.mHashBytes, 0, this.mHashBytes.Length);
+			this.Hash16 = this.mDefinition.InitialValue;
 
-			Hash16 ^= mDefinition.XorIn;
+			this.Hash16 ^= this.mDefinition.XorIn;
 		}
 
 		/// <summary>Performs the hash algorithm on the data provided.</summary>
@@ -73,16 +73,16 @@ namespace KSoft.Security.Cryptography
 		/// <param name="count">How many bytes in the array to read.</param>
 		protected override void HashCore(byte[] array, int startIndex, int count)
 		{
-			Hash16 = mDefinition.HashCore(Hash16, array, startIndex, count);
+			this.Hash16 = this.mDefinition.HashCore(this.Hash16, array, startIndex, count);
 		}
 
 		/// <summary>Performs any final activities required by the hash algorithm.</summary>
 		/// <returns>The final hash value.</returns>
 		protected override byte[] HashFinal()
 		{
-			Hash16 ^= mDefinition.XorOut;
-			Bitwise.ByteSwap.ReplaceBytes(mHashBytes, 0, Hash16);
-			return mHashBytes;
+			this.Hash16 ^= this.mDefinition.XorOut;
+			Bitwise.ByteSwap.ReplaceBytes(this.mHashBytes, 0, this.Hash16);
+			return this.mHashBytes;
 		}
 	};
 }

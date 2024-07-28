@@ -24,42 +24,42 @@ namespace KSoft.Collections
 
 		public BitVector32(uint bits)
 		{
-			mWord = bits;
+			this.mWord = bits;
 		}
 		public BitVector32(int bits)
 		{
-			mWord = (uint)bits;
+			this.mWord = (uint)bits;
 		}
 
-		public int Data { get { return (int)mWord; } }
+		public int Data { get { return (int) this.mWord; } }
 
 		/// <summary>Length in bits. Always returns 32</summary>
 		[SuppressMessage("Microsoft.Design", "CA1822:MarkMembersAsStatic")]
 		public int Length	{ get { return kNumberOfBits; } }
 		/// <summary>Number of bits set to true</summary>
-		public int Cardinality		{ get { return Bits.BitCount(mWord); } }
+		public int Cardinality		{ get { return Bits.BitCount(this.mWord); } }
 		/// <summary>Number of bits set to false</summary>
-		public int CardinalityZeros	{ get { return Length - Cardinality; } }
+		public int CardinalityZeros	{ get { return this.Length - this.Cardinality; } }
 
 		/// <summary>Are all the bits in this set currently false?</summary>
-		public bool IsAllClear	{ get { return mWord == uint.MinValue; } }
+		public bool IsAllClear	{ get { return this.mWord == uint.MinValue; } }
 		/// <summary>Are all the bits in this set currently true?</summary>
-		public bool IsAllSet	{ get { return mWord == uint.MaxValue; } }
+		public bool IsAllSet	{ get { return this.mWord == uint.MaxValue; } }
 
-		public int TrailingZerosCount	{ get { return Bits.TrailingZerosCount(mWord); } }
-		public int IndexOfHighestBitSet	{ get { return Bits.IndexOfHighestBitSet(mWord); } }
+		public int TrailingZerosCount	{ get { return Bits.TrailingZerosCount(this.mWord); } }
+		public int IndexOfHighestBitSet	{ get { return Bits.IndexOfHighestBitSet(this.mWord); } }
 
 		#region Overrides
 		public bool Equals(BitVector32 other)
 		{
-			return mWord == other.mWord;
+			return this.mWord == other.mWord;
 		}
 		public override bool Equals(object o)
 		{
 			if (!(o is BitVector32))
 				return false;
 
-			return Equals((BitVector32)o);
+			return this.Equals((BitVector32)o);
 		}
 		public static bool operator ==(BitVector32 x, BitVector32 y)
 		{
@@ -89,7 +89,7 @@ namespace KSoft.Collections
 
 		public override int GetHashCode()
 		{
-			return mWord.GetHashCode();
+			return this.mWord.GetHashCode();
 		}
 
 		public static string ToString(BitVector32 value)
@@ -112,7 +112,7 @@ namespace KSoft.Collections
 		}
 		public override string ToString()
 		{
-			return BitVector32.ToString(this);
+			return ToString(this);
 		}
 		#endregion
 
@@ -123,7 +123,7 @@ namespace KSoft.Collections
 			{
 				Contract.Requires(bitIndex >= 0 && bitIndex < Bits.kInt32BitCount);
 
-				return Bitwise.Flags.Test(mWord, ((uint)1) << bitIndex);
+				return Bitwise.Flags.Test(this.mWord, ((uint)1) << bitIndex);
 			}
 			set
 			{
@@ -131,7 +131,7 @@ namespace KSoft.Collections
 
 				var flag = ((uint)1) << bitIndex;
 
-				Bitwise.Flags.Modify(value, ref mWord, flag);
+				Bitwise.Flags.Modify(value, ref this.mWord, flag);
 			}
 		}
 		/// <summary>Tests the states of a range of bits</summary>
@@ -141,20 +141,20 @@ namespace KSoft.Collections
 		/// <remarks>If <paramref name="toBitIndex"/> == <paramref name="frombitIndex"/> this will always return false</remarks>
 		public bool this[int frombitIndex, int toBitIndex] {
 			get {
-				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < Length);
-				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= Length);
+				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < this.Length);
+				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= this.Length);
 
 				int bitCount = toBitIndex - frombitIndex;
-				return bitCount > 0 && TestBits(frombitIndex, bitCount);
+				return bitCount > 0 && this.TestBits(frombitIndex, bitCount);
 			}
 			set {
-				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < Length);
-				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= Length);
+				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < this.Length);
+				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= this.Length);
 
 				// handle the cases of the set already being all 1's or 0's
-				if (value && Cardinality == Length)
+				if (value && this.Cardinality == this.Length)
 					return;
-				if (!value && CardinalityZeros == Length)
+				if (!value && this.CardinalityZeros == this.Length)
 					return;
 
 				int bitCount = toBitIndex - frombitIndex;
@@ -162,9 +162,9 @@ namespace KSoft.Collections
 					return;
 
 				if (value)
-					SetBits(frombitIndex, bitCount);
+					this.SetBits(frombitIndex, bitCount);
 				else
-					ClearBits(frombitIndex, bitCount);
+					this.ClearBits(frombitIndex, bitCount);
 			}
 		}
 
@@ -187,8 +187,8 @@ namespace KSoft.Collections
 		#region Access (ranged)
 		public void ClearBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return ;
@@ -199,13 +199,13 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			Bitwise.Flags.Remove(ref mWord, mask);
+			Bitwise.Flags.Remove(ref this.mWord, mask);
 		}
 
 		public void SetBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return ;
@@ -216,13 +216,13 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			Bitwise.Flags.Add(ref mWord, mask);
+			Bitwise.Flags.Add(ref this.mWord, mask);
 		}
 
 		public void ToggleBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return ;
@@ -233,14 +233,14 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			Bitwise.Flags.Toggle(ref mWord, mask);
+			Bitwise.Flags.Toggle(ref this.mWord, mask);
 		}
 
 		[Contracts.Pure]
 		public bool TestBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return false;
@@ -251,7 +251,7 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			return Bitwise.Flags.TestAny(mWord, mask);
+			return Bitwise.Flags.TestAny(this.mWord, mask);
 		}
 
 		#endregion
@@ -263,12 +263,12 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector32 And(BitVector32 vector)
 		{
-			return new BitVector32(mWord & vector.mWord);
+			return new BitVector32(this.mWord & vector.mWord);
 		}
 		[Contracts.Pure]
 		public BitVector32 BitwiseAnd(BitVector32 vector)
 		{
-			return new BitVector32(mWord & vector.mWord);
+			return new BitVector32(this.mWord & vector.mWord);
 		}
 		/// <summary>Clears all of the bits in this vector whose corresponding bit is set in the specified vector</summary>
 		/// <param name="vector">vector with which to mask this vector</param>
@@ -276,7 +276,7 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector32 AndNot(BitVector32 vector)
 		{
-			return new BitVector32(Bitwise.Flags.Remove(mWord, vector.mWord));
+			return new BitVector32(Bitwise.Flags.Remove(this.mWord, vector.mWord));
 		}
 		/// <summary>Bit OR this set with another</summary>
 		/// <param name="vector">Vector with the bits to OR with</param>
@@ -284,12 +284,12 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector32 Or(BitVector32 vector)
 		{
-			return new BitVector32(mWord | vector.mWord);
+			return new BitVector32(this.mWord | vector.mWord);
 		}
 		[Contracts.Pure]
 		public BitVector32 BitwiseOr(BitVector32 vector)
 		{
-			return new BitVector32(mWord | vector.mWord);
+			return new BitVector32(this.mWord | vector.mWord);
 		}
 		/// <summary>Bit XOR this vector with another</summary>
 		/// <param name="vector">Vector with the bits to XOR with</param>
@@ -297,7 +297,7 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector32 Xor(BitVector32 vector)
 		{
-			return new BitVector32(Bitwise.Flags.Toggle(mWord, vector.mWord));
+			return new BitVector32(Bitwise.Flags.Toggle(this.mWord, vector.mWord));
 		}
 
 		/// <summary>Inverts all bits in this vector</summary>
@@ -305,19 +305,19 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector32 Not()
 		{
-			return new BitVector32(~mWord);
+			return new BitVector32(~this.mWord);
 		}
 		[Contracts.Pure]
 		public BitVector32 OnesComplement()
 		{
-			return new BitVector32(~mWord);
+			return new BitVector32(~this.mWord);
 		}
 		#endregion
 
 		/// <summary>Set all the bits to zero</summary>
 		public void Clear()
 		{
-			mWord = 0;
+			this.mWord = 0;
 		}
 
 		public void SetAll(bool value)
@@ -326,12 +326,12 @@ namespace KSoft.Collections
 				? uint.MaxValue
 				: uint.MinValue;
 
-			mWord = fill_value;
+			this.mWord = fill_value;
 		}
 
 		public int CompareTo(BitVector32 other)
 		{
-			return mWord.CompareTo(other.mWord);
+			return this.mWord.CompareTo(other.mWord);
 		}
 
 		#region Math operators
@@ -360,7 +360,7 @@ namespace KSoft.Collections
 		/// <returns>The next clear bit index, or -1 if one isn't found</returns>
 		public int NextClearBitIndex(int startBitIndex = -1)
 		{
-			return NextBitIndex(startBitIndex, false);
+			return this.NextBitIndex(startBitIndex, false);
 		}
 		/// <summary>Enumeration of bit indexes in this vector which are 0 (clear)</summary>
 		public EnumeratorWrapper<int, StateFilterEnumerator> ClearBitIndices { get {
@@ -372,7 +372,7 @@ namespace KSoft.Collections
 		/// <returns>The next set bit index, or -1 if one isn't found</returns>
 		public int NextSetBitIndex(int startBitIndex = -1)
 		{
-			return NextBitIndex(startBitIndex, true);
+			return this.NextBitIndex(startBitIndex, true);
 		}
 		/// <summary>Enumeration of bit indexes in this vector which are 1 (set)</summary>
 		public EnumeratorWrapper<int, StateFilterEnumerator> SetBitIndices { get {
@@ -392,35 +392,35 @@ namespace KSoft.Collections
 			public StateEnumerator(BitVector32 vector
 				)
 			{
-				mVector = vector;
-				mBitIndex = TypeExtensions.kNone;
-				mCurrent = default(bool);
+				this.mVector = vector;
+				this.mBitIndex = TypeExtensions.kNone;
+				this.mCurrent = default(bool);
 			}
 
 			public bool Current { get {
-				if (mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
-				if (mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
+				if (this.mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
+				if (this.mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
 
-				return mCurrent;
+				return this.mCurrent;
 			} }
 			object System.Collections.IEnumerator.Current { get { return this.Current; } }
 
 			public void Reset()
 			{
-				mBitIndex = TypeExtensions.kNone;
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			public void Dispose()	{ }
 
 			public bool MoveNext()
 			{
-				if (mBitIndex < kLastIndex)
+				if (this.mBitIndex < kLastIndex)
 				{
-					mCurrent = mVector[++mBitIndex];
+					this.mCurrent = this.mVector[++this.mBitIndex];
 					return true;
 				}
 
-				mBitIndex = kNumberOfBits;
+				this.mBitIndex = kNumberOfBits;
 				return false;
 			}
 		};
@@ -441,45 +441,45 @@ namespace KSoft.Collections
 				Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0);
 				Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < vector.Length);
 
-				mStateFilter = stateFilter;
-				mStartBitIndex = startBitIndex-1;
-				mVector = vector;
-				mBitIndex = TypeExtensions.kNone;
-				mCurrent = default(int);
+				this.mStateFilter = stateFilter;
+				this.mStartBitIndex = startBitIndex-1;
+				this.mVector = vector;
+				this.mBitIndex = TypeExtensions.kNone;
+				this.mCurrent = default(int);
 			}
 
 			public int Current { get {
-				if (mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
-				if (mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
+				if (this.mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
+				if (this.mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
 
-				return mCurrent;
+				return this.mCurrent;
 			} }
 			object System.Collections.IEnumerator.Current { get { return this.Current; } }
 
 			public void Reset()
 			{
-				mBitIndex = TypeExtensions.kNone;
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			public void Dispose()	{ }
 
 			public bool MoveNext()
 			{
-				if (mBitIndex.IsNone())
-					mBitIndex = mStartBitIndex;
+				if (this.mBitIndex.IsNone())
+					this.mBitIndex = this.mStartBitIndex;
 
-				if (mBitIndex < kLastIndex)
+				if (this.mBitIndex < kLastIndex)
 				{
-					mCurrent = mVector.NextBitIndex(mBitIndex, mStateFilter);
+					this.mCurrent = this.mVector.NextBitIndex(this.mBitIndex, this.mStateFilter);
 
-					if (mCurrent >= 0)
+					if (this.mCurrent >= 0)
 					{
-						mBitIndex = mCurrent;
+						this.mBitIndex = this.mCurrent;
 						return true;
 					}
 				}
 
-				mBitIndex = kNumberOfBits;
+				this.mBitIndex = kNumberOfBits;
 				return false;
 			}
 		};
@@ -502,11 +502,11 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			int bitIndex = bit.ToInt32(null);
-			ValidateBit(bit, bitIndex);
+			this.ValidateBit(bit, bitIndex);
 
 			var flag = ((uint)1) << bitIndex;
 
-			return Bitwise.Flags.Test(mWord, flag);
+			return Bitwise.Flags.Test(this.mWord, flag);
 		}
 
 		/// <typeparam name="TEnum">Members should be bit indices, not literal flag values</typeparam>
@@ -514,11 +514,11 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			int bitIndex = bit.ToInt32(null);
-			ValidateBit(bit, bitIndex);
+			this.ValidateBit(bit, bitIndex);
 
 			var flag = ((uint)1) << bitIndex;
 
-			Bitwise.Flags.Modify(value, ref mWord, flag);
+			Bitwise.Flags.Modify(value, ref this.mWord, flag);
 			return this;
 		}
 
@@ -530,13 +530,13 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			if (results == null)
-				results = new List<string>(Cardinality);
+				results = new List<string>(this.Cardinality);
 
-			if (Cardinality == 0)
+			if (this.Cardinality == 0)
 				return results;
 
 			int maxCountValue = maxCount.ToInt32(null);
-			if (maxCountValue < 0 || maxCountValue >= Length)
+			if (maxCountValue < 0 || maxCountValue >= this.Length)
 			{
 				throw new ArgumentOutOfRangeException(nameof(maxCount), string.Format(Util.InvariantCultureInfo,
 					"{0}/{1} is invalid",
@@ -555,8 +555,8 @@ namespace KSoft.Collections
 				memberIndex++;
 
 			var bitsInDesiredState = stateFilter
-				? SetBitIndices
-				: ClearBitIndices;
+				? this.SetBitIndices
+				: this.ClearBitIndices;
 			foreach (int bitIndex in bitsInDesiredState)
 			{
 				if (bitIndex >= maxCountValue)
@@ -574,11 +574,11 @@ namespace KSoft.Collections
 			, bool stateFilter = true)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			if (Cardinality == 0)
+			if (this.Cardinality == 0)
 				return "";
 
 			int maxCountValue = maxCount.ToInt32(null);
-			if (maxCountValue < 0 || maxCountValue >= Length)
+			if (maxCountValue < 0 || maxCountValue >= this.Length)
 			{
 				throw new ArgumentOutOfRangeException(nameof(maxCount), string.Format(Util.InvariantCultureInfo,
 					"{0}/{1} is invalid",
@@ -598,8 +598,8 @@ namespace KSoft.Collections
 
 			var sb = new System.Text.StringBuilder();
 			var bitsInDesiredState = stateFilter
-				? SetBitIndices
-				: ClearBitIndices;
+				? this.SetBitIndices
+				: this.ClearBitIndices;
 			foreach (int bitIndex in bitsInDesiredState)
 			{
 				if (bitIndex >= maxCountValue)
@@ -623,8 +623,8 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			// LINQ stmt allows there to be whitespace around the commas
-			return TryParseFlags<TEnum>(
-				KSoft.Util.Trim(System.Text.RegularExpressions.Regex.Split(line, valueSeperator)),
+			return this.TryParseFlags<TEnum>(
+				Util.Trim(System.Text.RegularExpressions.Regex.Split(line, valueSeperator)),
 				errorsOutput);
 		}
 
@@ -643,7 +643,7 @@ namespace KSoft.Collections
 			bool success = true;
 			foreach (string flagStr in collection)
 			{
-				var parsed = TryParseFlag<TEnum>(flagStr, errorsOutput);
+				var parsed = this.TryParseFlag<TEnum>(flagStr, errorsOutput);
 				if (parsed.HasValue==false)
 					continue;
 				else if (parsed.Value==false)
@@ -674,7 +674,7 @@ namespace KSoft.Collections
 			}
 
 			int bitIndex = flag.ToInt32(null);
-			if (bitIndex < 0 || bitIndex > Length)
+			if (bitIndex < 0 || bitIndex > this.Length)
 			{
 				if (errorsOutput != null)
 				{
@@ -704,42 +704,42 @@ namespace KSoft.Collections
 
 		public BitVector64(ulong bits)
 		{
-			mWord = bits;
+			this.mWord = bits;
 		}
 		public BitVector64(long bits)
 		{
-			mWord = (ulong)bits;
+			this.mWord = (ulong)bits;
 		}
 
-		public long Data { get { return (long)mWord; } }
+		public long Data { get { return (long) this.mWord; } }
 
 		/// <summary>Length in bits. Always returns 64</summary>
 		[SuppressMessage("Microsoft.Design", "CA1822:MarkMembersAsStatic")]
 		public int Length	{ get { return kNumberOfBits; } }
 		/// <summary>Number of bits set to true</summary>
-		public int Cardinality		{ get { return Bits.BitCount(mWord); } }
+		public int Cardinality		{ get { return Bits.BitCount(this.mWord); } }
 		/// <summary>Number of bits set to false</summary>
-		public int CardinalityZeros	{ get { return Length - Cardinality; } }
+		public int CardinalityZeros	{ get { return this.Length - this.Cardinality; } }
 
 		/// <summary>Are all the bits in this set currently false?</summary>
-		public bool IsAllClear	{ get { return mWord == ulong.MinValue; } }
+		public bool IsAllClear	{ get { return this.mWord == ulong.MinValue; } }
 		/// <summary>Are all the bits in this set currently true?</summary>
-		public bool IsAllSet	{ get { return mWord == ulong.MaxValue; } }
+		public bool IsAllSet	{ get { return this.mWord == ulong.MaxValue; } }
 
-		public int TrailingZerosCount	{ get { return Bits.TrailingZerosCount(mWord); } }
-		public int IndexOfHighestBitSet	{ get { return Bits.IndexOfHighestBitSet(mWord); } }
+		public int TrailingZerosCount	{ get { return Bits.TrailingZerosCount(this.mWord); } }
+		public int IndexOfHighestBitSet	{ get { return Bits.IndexOfHighestBitSet(this.mWord); } }
 
 		#region Overrides
 		public bool Equals(BitVector64 other)
 		{
-			return mWord == other.mWord;
+			return this.mWord == other.mWord;
 		}
 		public override bool Equals(object o)
 		{
 			if (!(o is BitVector64))
 				return false;
 
-			return Equals((BitVector64)o);
+			return this.Equals((BitVector64)o);
 		}
 		public static bool operator ==(BitVector64 x, BitVector64 y)
 		{
@@ -769,7 +769,7 @@ namespace KSoft.Collections
 
 		public override int GetHashCode()
 		{
-			return mWord.GetHashCode();
+			return this.mWord.GetHashCode();
 		}
 
 		public static string ToString(BitVector64 value)
@@ -792,7 +792,7 @@ namespace KSoft.Collections
 		}
 		public override string ToString()
 		{
-			return BitVector64.ToString(this);
+			return ToString(this);
 		}
 		#endregion
 
@@ -803,7 +803,7 @@ namespace KSoft.Collections
 			{
 				Contract.Requires(bitIndex >= 0 && bitIndex < Bits.kInt64BitCount);
 
-				return Bitwise.Flags.Test(mWord, ((ulong)1) << bitIndex);
+				return Bitwise.Flags.Test(this.mWord, ((ulong)1) << bitIndex);
 			}
 			set
 			{
@@ -811,7 +811,7 @@ namespace KSoft.Collections
 
 				var flag = ((ulong)1) << bitIndex;
 
-				Bitwise.Flags.Modify(value, ref mWord, flag);
+				Bitwise.Flags.Modify(value, ref this.mWord, flag);
 			}
 		}
 		/// <summary>Tests the states of a range of bits</summary>
@@ -821,20 +821,20 @@ namespace KSoft.Collections
 		/// <remarks>If <paramref name="toBitIndex"/> == <paramref name="frombitIndex"/> this will always return false</remarks>
 		public bool this[int frombitIndex, int toBitIndex] {
 			get {
-				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < Length);
-				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= Length);
+				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < this.Length);
+				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= this.Length);
 
 				int bitCount = toBitIndex - frombitIndex;
-				return bitCount > 0 && TestBits(frombitIndex, bitCount);
+				return bitCount > 0 && this.TestBits(frombitIndex, bitCount);
 			}
 			set {
-				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < Length);
-				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= Length);
+				Contract.Requires<ArgumentOutOfRangeException>(frombitIndex >= 0 && frombitIndex < this.Length);
+				Contract.Requires<ArgumentOutOfRangeException>(toBitIndex >= frombitIndex && toBitIndex <= this.Length);
 
 				// handle the cases of the set already being all 1's or 0's
-				if (value && Cardinality == Length)
+				if (value && this.Cardinality == this.Length)
 					return;
-				if (!value && CardinalityZeros == Length)
+				if (!value && this.CardinalityZeros == this.Length)
 					return;
 
 				int bitCount = toBitIndex - frombitIndex;
@@ -842,9 +842,9 @@ namespace KSoft.Collections
 					return;
 
 				if (value)
-					SetBits(frombitIndex, bitCount);
+					this.SetBits(frombitIndex, bitCount);
 				else
-					ClearBits(frombitIndex, bitCount);
+					this.ClearBits(frombitIndex, bitCount);
 			}
 		}
 
@@ -867,8 +867,8 @@ namespace KSoft.Collections
 		#region Access (ranged)
 		public void ClearBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return ;
@@ -879,13 +879,13 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			Bitwise.Flags.Remove(ref mWord, mask);
+			Bitwise.Flags.Remove(ref this.mWord, mask);
 		}
 
 		public void SetBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return ;
@@ -896,13 +896,13 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			Bitwise.Flags.Add(ref mWord, mask);
+			Bitwise.Flags.Add(ref this.mWord, mask);
 		}
 
 		public void ToggleBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return ;
@@ -913,14 +913,14 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			Bitwise.Flags.Toggle(ref mWord, mask);
+			Bitwise.Flags.Toggle(ref this.mWord, mask);
 		}
 
 		[Contracts.Pure]
 		public bool TestBits(int startBitIndex, int bitCount)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < Length);
-			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= Length);
+			Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0 && startBitIndex < this.Length);
+			Contract.Requires<ArgumentOutOfRangeException>((startBitIndex+bitCount) <= this.Length);
 
 			if (bitCount <= 0)
 				return false;
@@ -931,7 +931,7 @@ namespace KSoft.Collections
 //			last_word_mask -= 1;
 
 			var mask = from_word_mask;// & last_word_mask;
-			return Bitwise.Flags.TestAny(mWord, mask);
+			return Bitwise.Flags.TestAny(this.mWord, mask);
 		}
 
 		#endregion
@@ -943,12 +943,12 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector64 And(BitVector64 vector)
 		{
-			return new BitVector64(mWord & vector.mWord);
+			return new BitVector64(this.mWord & vector.mWord);
 		}
 		[Contracts.Pure]
 		public BitVector64 BitwiseAnd(BitVector64 vector)
 		{
-			return new BitVector64(mWord & vector.mWord);
+			return new BitVector64(this.mWord & vector.mWord);
 		}
 		/// <summary>Clears all of the bits in this vector whose corresponding bit is set in the specified vector</summary>
 		/// <param name="vector">vector with which to mask this vector</param>
@@ -956,7 +956,7 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector64 AndNot(BitVector64 vector)
 		{
-			return new BitVector64(Bitwise.Flags.Remove(mWord, vector.mWord));
+			return new BitVector64(Bitwise.Flags.Remove(this.mWord, vector.mWord));
 		}
 		/// <summary>Bit OR this set with another</summary>
 		/// <param name="vector">Vector with the bits to OR with</param>
@@ -964,12 +964,12 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector64 Or(BitVector64 vector)
 		{
-			return new BitVector64(mWord | vector.mWord);
+			return new BitVector64(this.mWord | vector.mWord);
 		}
 		[Contracts.Pure]
 		public BitVector64 BitwiseOr(BitVector64 vector)
 		{
-			return new BitVector64(mWord | vector.mWord);
+			return new BitVector64(this.mWord | vector.mWord);
 		}
 		/// <summary>Bit XOR this vector with another</summary>
 		/// <param name="vector">Vector with the bits to XOR with</param>
@@ -977,7 +977,7 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector64 Xor(BitVector64 vector)
 		{
-			return new BitVector64(Bitwise.Flags.Toggle(mWord, vector.mWord));
+			return new BitVector64(Bitwise.Flags.Toggle(this.mWord, vector.mWord));
 		}
 
 		/// <summary>Inverts all bits in this vector</summary>
@@ -985,19 +985,19 @@ namespace KSoft.Collections
 		[Contracts.Pure]
 		public BitVector64 Not()
 		{
-			return new BitVector64(~mWord);
+			return new BitVector64(~this.mWord);
 		}
 		[Contracts.Pure]
 		public BitVector64 OnesComplement()
 		{
-			return new BitVector64(~mWord);
+			return new BitVector64(~this.mWord);
 		}
 		#endregion
 
 		/// <summary>Set all the bits to zero</summary>
 		public void Clear()
 		{
-			mWord = 0;
+			this.mWord = 0;
 		}
 
 		public void SetAll(bool value)
@@ -1006,12 +1006,12 @@ namespace KSoft.Collections
 				? ulong.MaxValue
 				: ulong.MinValue;
 
-			mWord = fill_value;
+			this.mWord = fill_value;
 		}
 
 		public int CompareTo(BitVector64 other)
 		{
-			return mWord.CompareTo(other.mWord);
+			return this.mWord.CompareTo(other.mWord);
 		}
 
 		#region Math operators
@@ -1040,7 +1040,7 @@ namespace KSoft.Collections
 		/// <returns>The next clear bit index, or -1 if one isn't found</returns>
 		public int NextClearBitIndex(int startBitIndex = -1)
 		{
-			return NextBitIndex(startBitIndex, false);
+			return this.NextBitIndex(startBitIndex, false);
 		}
 		/// <summary>Enumeration of bit indexes in this vector which are 0 (clear)</summary>
 		public EnumeratorWrapper<int, StateFilterEnumerator> ClearBitIndices { get {
@@ -1052,7 +1052,7 @@ namespace KSoft.Collections
 		/// <returns>The next set bit index, or -1 if one isn't found</returns>
 		public int NextSetBitIndex(int startBitIndex = -1)
 		{
-			return NextBitIndex(startBitIndex, true);
+			return this.NextBitIndex(startBitIndex, true);
 		}
 		/// <summary>Enumeration of bit indexes in this vector which are 1 (set)</summary>
 		public EnumeratorWrapper<int, StateFilterEnumerator> SetBitIndices { get {
@@ -1072,35 +1072,35 @@ namespace KSoft.Collections
 			public StateEnumerator(BitVector64 vector
 				)
 			{
-				mVector = vector;
-				mBitIndex = TypeExtensions.kNone;
-				mCurrent = default(bool);
+				this.mVector = vector;
+				this.mBitIndex = TypeExtensions.kNone;
+				this.mCurrent = default(bool);
 			}
 
 			public bool Current { get {
-				if (mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
-				if (mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
+				if (this.mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
+				if (this.mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
 
-				return mCurrent;
+				return this.mCurrent;
 			} }
 			object System.Collections.IEnumerator.Current { get { return this.Current; } }
 
 			public void Reset()
 			{
-				mBitIndex = TypeExtensions.kNone;
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			public void Dispose()	{ }
 
 			public bool MoveNext()
 			{
-				if (mBitIndex < kLastIndex)
+				if (this.mBitIndex < kLastIndex)
 				{
-					mCurrent = mVector[++mBitIndex];
+					this.mCurrent = this.mVector[++this.mBitIndex];
 					return true;
 				}
 
-				mBitIndex = kNumberOfBits;
+				this.mBitIndex = kNumberOfBits;
 				return false;
 			}
 		};
@@ -1121,45 +1121,45 @@ namespace KSoft.Collections
 				Contract.Requires<ArgumentOutOfRangeException>(startBitIndex >= 0);
 				Contract.Requires<ArgumentOutOfRangeException>(startBitIndex < vector.Length);
 
-				mStateFilter = stateFilter;
-				mStartBitIndex = startBitIndex-1;
-				mVector = vector;
-				mBitIndex = TypeExtensions.kNone;
-				mCurrent = default(int);
+				this.mStateFilter = stateFilter;
+				this.mStartBitIndex = startBitIndex-1;
+				this.mVector = vector;
+				this.mBitIndex = TypeExtensions.kNone;
+				this.mCurrent = default(int);
 			}
 
 			public int Current { get {
-				if (mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
-				if (mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
+				if (this.mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
+				if (this.mBitIndex > kLastIndex)		throw new InvalidOperationException("Enumeration already finished");
 
-				return mCurrent;
+				return this.mCurrent;
 			} }
 			object System.Collections.IEnumerator.Current { get { return this.Current; } }
 
 			public void Reset()
 			{
-				mBitIndex = TypeExtensions.kNone;
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			public void Dispose()	{ }
 
 			public bool MoveNext()
 			{
-				if (mBitIndex.IsNone())
-					mBitIndex = mStartBitIndex;
+				if (this.mBitIndex.IsNone())
+					this.mBitIndex = this.mStartBitIndex;
 
-				if (mBitIndex < kLastIndex)
+				if (this.mBitIndex < kLastIndex)
 				{
-					mCurrent = mVector.NextBitIndex(mBitIndex, mStateFilter);
+					this.mCurrent = this.mVector.NextBitIndex(this.mBitIndex, this.mStateFilter);
 
-					if (mCurrent >= 0)
+					if (this.mCurrent >= 0)
 					{
-						mBitIndex = mCurrent;
+						this.mBitIndex = this.mCurrent;
 						return true;
 					}
 				}
 
-				mBitIndex = kNumberOfBits;
+				this.mBitIndex = kNumberOfBits;
 				return false;
 			}
 		};
@@ -1182,11 +1182,11 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			int bitIndex = bit.ToInt32(null);
-			ValidateBit(bit, bitIndex);
+			this.ValidateBit(bit, bitIndex);
 
 			var flag = ((ulong)1) << bitIndex;
 
-			return Bitwise.Flags.Test(mWord, flag);
+			return Bitwise.Flags.Test(this.mWord, flag);
 		}
 
 		/// <typeparam name="TEnum">Members should be bit indices, not literal flag values</typeparam>
@@ -1194,11 +1194,11 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			int bitIndex = bit.ToInt32(null);
-			ValidateBit(bit, bitIndex);
+			this.ValidateBit(bit, bitIndex);
 
 			var flag = ((ulong)1) << bitIndex;
 
-			Bitwise.Flags.Modify(value, ref mWord, flag);
+			Bitwise.Flags.Modify(value, ref this.mWord, flag);
 			return this;
 		}
 
@@ -1210,13 +1210,13 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			if (results == null)
-				results = new List<string>(Cardinality);
+				results = new List<string>(this.Cardinality);
 
-			if (Cardinality == 0)
+			if (this.Cardinality == 0)
 				return results;
 
 			int maxCountValue = maxCount.ToInt32(null);
-			if (maxCountValue < 0 || maxCountValue >= Length)
+			if (maxCountValue < 0 || maxCountValue >= this.Length)
 			{
 				throw new ArgumentOutOfRangeException(nameof(maxCount), string.Format(Util.InvariantCultureInfo,
 					"{0}/{1} is invalid",
@@ -1235,8 +1235,8 @@ namespace KSoft.Collections
 				memberIndex++;
 
 			var bitsInDesiredState = stateFilter
-				? SetBitIndices
-				: ClearBitIndices;
+				? this.SetBitIndices
+				: this.ClearBitIndices;
 			foreach (int bitIndex in bitsInDesiredState)
 			{
 				if (bitIndex >= maxCountValue)
@@ -1254,11 +1254,11 @@ namespace KSoft.Collections
 			, bool stateFilter = true)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			if (Cardinality == 0)
+			if (this.Cardinality == 0)
 				return "";
 
 			int maxCountValue = maxCount.ToInt32(null);
-			if (maxCountValue < 0 || maxCountValue >= Length)
+			if (maxCountValue < 0 || maxCountValue >= this.Length)
 			{
 				throw new ArgumentOutOfRangeException(nameof(maxCount), string.Format(Util.InvariantCultureInfo,
 					"{0}/{1} is invalid",
@@ -1278,8 +1278,8 @@ namespace KSoft.Collections
 
 			var sb = new System.Text.StringBuilder();
 			var bitsInDesiredState = stateFilter
-				? SetBitIndices
-				: ClearBitIndices;
+				? this.SetBitIndices
+				: this.ClearBitIndices;
 			foreach (int bitIndex in bitsInDesiredState)
 			{
 				if (bitIndex >= maxCountValue)
@@ -1303,8 +1303,8 @@ namespace KSoft.Collections
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
 			// LINQ stmt allows there to be whitespace around the commas
-			return TryParseFlags<TEnum>(
-				KSoft.Util.Trim(System.Text.RegularExpressions.Regex.Split(line, valueSeperator)),
+			return this.TryParseFlags<TEnum>(
+				Util.Trim(System.Text.RegularExpressions.Regex.Split(line, valueSeperator)),
 				errorsOutput);
 		}
 
@@ -1323,7 +1323,7 @@ namespace KSoft.Collections
 			bool success = true;
 			foreach (string flagStr in collection)
 			{
-				var parsed = TryParseFlag<TEnum>(flagStr, errorsOutput);
+				var parsed = this.TryParseFlag<TEnum>(flagStr, errorsOutput);
 				if (parsed.HasValue==false)
 					continue;
 				else if (parsed.Value==false)
@@ -1354,7 +1354,7 @@ namespace KSoft.Collections
 			}
 
 			int bitIndex = flag.ToInt32(null);
-			if (bitIndex < 0 || bitIndex > Length)
+			if (bitIndex < 0 || bitIndex > this.Length)
 			{
 				if (errorsOutput != null)
 				{

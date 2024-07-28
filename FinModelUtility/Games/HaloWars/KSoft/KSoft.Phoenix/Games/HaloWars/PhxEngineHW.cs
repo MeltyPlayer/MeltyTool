@@ -3,13 +3,13 @@ namespace KSoft.Phoenix.Engine
 {
 	partial class PhxEngine
 	{
-		void InitializeEngine(Engine.GameDirectories dirs)
+		void InitializeEngine(GameDirectories dirs)
 		{
-			Directories = dirs;
-			Database = new HaloWars.BDatabase(this);
-			TriggerDb = new Phx.TriggerDatabase();
+			this.Directories = dirs;
+			this.Database = new HaloWars.BDatabase(this);
+			this.TriggerDb = new Phx.TriggerDatabase();
 
-			Database.InitializeTriggerScriptSerializer();
+			this.Database.InitializeTriggerScriptSerializer();
 		}
 		public static PhxEngine CreateForHaloWars(string gameRoot, string updateRoot
 			, bool targets360 = false)
@@ -17,7 +17,7 @@ namespace KSoft.Phoenix.Engine
 			var e = new PhxEngine();
 			e.Build = PhxEngineBuild.Release;
 			e.TargetsXbox360 = targets360;
-			e.InitializeEngine(new Engine.GameDirectories(gameRoot, updateRoot));
+			e.InitializeEngine(new GameDirectories(gameRoot, updateRoot));
 
 			return e;
 		}
@@ -26,7 +26,7 @@ namespace KSoft.Phoenix.Engine
 			var e = new PhxEngine();
 			e.Build = PhxEngineBuild.Alpha;
 			e.TargetsXbox360 = true;
-			e.InitializeEngine(new Engine.GameDirectories(gameRoot));
+			e.InitializeEngine(new GameDirectories(gameRoot));
 
 			return e;
 		}

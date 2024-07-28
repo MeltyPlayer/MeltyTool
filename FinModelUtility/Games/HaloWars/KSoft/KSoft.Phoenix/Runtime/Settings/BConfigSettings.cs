@@ -39,38 +39,38 @@ namespace KSoft.Phoenix.Runtime
 		}
 		void ReadFloats(IO.EndianReader s)
 		{
-			Read(s, out PlatoonRadius);
-			Read(s, out ProjectionTime);
-			Read(s, out OverrideGroundIKRange);
-			Read(s, out OverrideGroundIKTiltFactor);
-			Read(s, out GameSpeed);
+			this.Read(s, out this.PlatoonRadius);
+			this.Read(s, out this.ProjectionTime);
+			this.Read(s, out this.OverrideGroundIKRange);
+			this.Read(s, out this.OverrideGroundIKTiltFactor);
+			this.Read(s, out this.GameSpeed);
 		}
 		void WriteFloats(IO.EndianWriter s)
 		{
-			Write(s, PlatoonRadius);
-			Write(s, ProjectionTime);
-			Write(s, OverrideGroundIKRange);
-			Write(s, OverrideGroundIKTiltFactor);
-			Write(s, GameSpeed);
+			this.Write(s, this.PlatoonRadius);
+			this.Write(s, this.ProjectionTime);
+			this.Write(s, this.OverrideGroundIKRange);
+			this.Write(s, this.OverrideGroundIKTiltFactor);
+			this.Write(s, this.GameSpeed);
 		}
 
 		public void Serialize(IO.EndianStream s)
 		{
 			s.StreamVersion(kVersion);
 
-			s.Stream(ref NoFogMask);			s.Stream(ref AIDisable);			s.Stream(ref AIShadow);			s.Stream(ref NoVismap);					s.Stream(ref NoRandomPlayerPlacement);
-			s.Stream(ref DisableOneBuilding);	s.Stream(ref BuildingQueue);		s.Stream(ref UseTestLeaders);	s.Stream(ref EnableFlight);				s.Stream(ref NoBirthAnims);
-			s.Stream(ref Veterancy);			s.Stream(ref TrueLOS);				s.Stream(ref NoDestruction);	s.Stream(ref CoopSharedResources);		s.Stream(ref MaxProjectileHeightForDecal);
-			s.Stream(ref EnableSubbreakage);	s.Stream(ref EnableThrowPart);		s.Stream(ref AllowAnimIsDirty);	s.Stream(ref NoVictoryCondition);		s.Stream(ref AIAutoDifficulty);
-			s.Stream(ref Demo);					s.Stream(ref AsyncWorldUpdate);		s.Stream(ref EnableHintSystem);	s.Stream(ref PercentFadeTimeCorpseSink);s.Stream(ref CorpseSinkSpeed);
-			s.Stream(ref CorpseMinScale);		s.Stream(ref BlockOutsideBounds);	s.Stream(ref AINoAttack);		s.Stream(ref PassThroughOwnVehicles);	s.Stream(ref EnableCapturePointResourceSharing);
-			s.Stream(ref NoUpdatePathingQuad);	s.Stream(ref SlaveUnitPosition);	s.Stream(ref Turning);			s.Stream(ref HumanAttackMove);			s.Stream(ref MoreNewMovement3);
-			s.Stream(ref OverrideGroundIK);		s.Stream(ref DriveWarthog);			s.Stream(ref EnableCorpses);	s.Stream(ref DisablePathingLimits);		s.Stream(ref DisableVelocityMatchingBySquadType);
-			s.Stream(ref ActiveAbilities);		s.Stream(ref AlphaTest);			s.Stream(ref NoDamage);			s.Stream(ref IgnoreAllPlatoonmates);	s.Stream(ref ClassicPlatoonGrouping);
-			s.Stream(ref NoShieldDamage);		s.Stream(ref EnableSubUpdating);	s.Stream(ref MPSubUpdating);	s.Stream(ref AlternateSubUpdating);		s.Stream(ref DynamicSubUpdateTime);
-			s.Stream(ref DecoupledUpdate);
+			s.Stream(ref this.NoFogMask);			s.Stream(ref this.AIDisable);			s.Stream(ref this.AIShadow);			s.Stream(ref this.NoVismap);					s.Stream(ref this.NoRandomPlayerPlacement);
+			s.Stream(ref this.DisableOneBuilding);	s.Stream(ref this.BuildingQueue);		s.Stream(ref this.UseTestLeaders);	s.Stream(ref this.EnableFlight);				s.Stream(ref this.NoBirthAnims);
+			s.Stream(ref this.Veterancy);			s.Stream(ref this.TrueLOS);				s.Stream(ref this.NoDestruction);	s.Stream(ref this.CoopSharedResources);		s.Stream(ref this.MaxProjectileHeightForDecal);
+			s.Stream(ref this.EnableSubbreakage);	s.Stream(ref this.EnableThrowPart);		s.Stream(ref this.AllowAnimIsDirty);	s.Stream(ref this.NoVictoryCondition);		s.Stream(ref this.AIAutoDifficulty);
+			s.Stream(ref this.Demo);					s.Stream(ref this.AsyncWorldUpdate);		s.Stream(ref this.EnableHintSystem);	s.Stream(ref this.PercentFadeTimeCorpseSink);s.Stream(ref this.CorpseSinkSpeed);
+			s.Stream(ref this.CorpseMinScale);		s.Stream(ref this.BlockOutsideBounds);	s.Stream(ref this.AINoAttack);		s.Stream(ref this.PassThroughOwnVehicles);	s.Stream(ref this.EnableCapturePointResourceSharing);
+			s.Stream(ref this.NoUpdatePathingQuad);	s.Stream(ref this.SlaveUnitPosition);	s.Stream(ref this.Turning);			s.Stream(ref this.HumanAttackMove);			s.Stream(ref this.MoreNewMovement3);
+			s.Stream(ref this.OverrideGroundIK);		s.Stream(ref this.DriveWarthog);			s.Stream(ref this.EnableCorpses);	s.Stream(ref this.DisablePathingLimits);		s.Stream(ref this.DisableVelocityMatchingBySquadType);
+			s.Stream(ref this.ActiveAbilities);		s.Stream(ref this.AlphaTest);			s.Stream(ref this.NoDamage);			s.Stream(ref this.IgnoreAllPlatoonmates);	s.Stream(ref this.ClassicPlatoonGrouping);
+			s.Stream(ref this.NoShieldDamage);		s.Stream(ref this.EnableSubUpdating);	s.Stream(ref this.MPSubUpdating);	s.Stream(ref this.AlternateSubUpdating);		s.Stream(ref this.DynamicSubUpdateTime);
+			s.Stream(ref this.DecoupledUpdate);
 
-			s.StreamMethods(ReadFloats, WriteFloats);
+			s.StreamMethods(this.ReadFloats, this.WriteFloats);
 		}
 		#endregion
 	};

@@ -18,9 +18,9 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref StartTime); s.Stream(ref StopTime); s.Stream(ref CurrentTime); s.Stream(ref LastTime);
-				s.Stream(ref ID);
-				s.Stream(ref CountUp); s.Stream(ref Active); s.Stream(ref Done); s.Stream(ref Paused);
+				s.Stream(ref this.StartTime); s.Stream(ref this.StopTime); s.Stream(ref this.CurrentTime); s.Stream(ref this.LastTime);
+				s.Stream(ref this.ID);
+				s.Stream(ref this.CountUp); s.Stream(ref this.Active); s.Stream(ref this.Done); s.Stream(ref this.Paused);
 			}
 			#endregion
 		};
@@ -30,9 +30,9 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			for (int x = 0; x < Timers.Length; x++)
-				s.Stream(ref Timers[x]);
-			s.Stream(ref NextTimerID);
+			for (int x = 0; x < this.Timers.Length; x++)
+				s.Stream(ref this.Timers[x]);
+			s.Stream(ref this.NextTimerID);
 		}
 		#endregion
 	};

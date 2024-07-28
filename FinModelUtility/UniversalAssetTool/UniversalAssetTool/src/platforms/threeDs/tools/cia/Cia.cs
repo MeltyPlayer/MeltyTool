@@ -9,15 +9,15 @@ public partial class Cia : IBinaryDeserializable {
 
   public CiaHeader Header { get; } = new();
 
-  [Align(Cia.SECTION_ALIGNMENT)]
+  [Align(SECTION_ALIGNMENT)]
   public CiaCertificates Certificates { get; } = new();
 
-  [Align(Cia.SECTION_ALIGNMENT)]
+  [Align(SECTION_ALIGNMENT)]
   public CiaTickets Tickets { get; } = new();
 
-  [Align(Cia.SECTION_ALIGNMENT)]
+  [Align(SECTION_ALIGNMENT)]
   public CiaTmd Tmd { get; } = new();
 
-  [Align(Cia.SECTION_ALIGNMENT)]
+  [Align(SECTION_ALIGNMENT)]
   public CiaContent Content { get; } = new();
 }

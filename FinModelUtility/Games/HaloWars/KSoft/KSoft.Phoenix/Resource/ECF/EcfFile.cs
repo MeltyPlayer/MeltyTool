@@ -19,38 +19,37 @@ namespace KSoft.Phoenix.Resource.ECF
 		internal EcfHeader mHeader = new EcfHeader();
 		protected List<EcfChunk> mChunks = new List<EcfChunk>();
 
-		public int ChunksCount { get { return mChunks.Count; } }
+		public int ChunksCount { get { return this.mChunks.Count; } }
 
 		public EcfFile()
 		{
-			mHeader.HeaderSize = EcfHeader.kSizeOf;
+			this.mHeader.HeaderSize = EcfHeader.kSizeOf;
 		}
 
 		public void InitializeChunkInfo(uint dataId, uint dataChunkExtraDataSize = 0)
 		{
-			mHeader.InitializeChunkInfo(dataId, dataChunkExtraDataSize);
+			this.mHeader.InitializeChunkInfo(dataId, dataChunkExtraDataSize);
 		}
 
 		public int CalculateHeaderAndChunkEntriesSize()
 		{
-			return
-				mHeader.HeaderSize +
-				mHeader.CalculateChunkEntriesSize(ChunksCount);
+			return this.mHeader.HeaderSize +
+			       this.mHeader.CalculateChunkEntriesSize(this.ChunksCount);
 		}
 
 		#region IDisposable Members
 		public virtual void Dispose()
 		{
-			mChunks.Clear();
+			this.mChunks.Clear();
 		}
 		#endregion
 
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			SerializeBegin(s);
-			SerializeChunkHeaders(s);
-			SerializeEnd(s);
+			this.SerializeBegin(s);
+			this.SerializeChunkHeaders(s);
+			this.SerializeEnd(s);
 		}
 
 		internal void SerializeBegin(IO.EndianStream s
@@ -60,18 +59,18 @@ namespace KSoft.Phoenix.Resource.ECF
 
 			if (s.IsWriting)
 			{
-				mHeader.ChunkCount = (short)mChunks.Count;
+				this.mHeader.ChunkCount = (short) this.mChunks.Count;
 
 				if (isFinalizing)
-					mHeader.UpdateTotalSize(s.BaseStream);
+					this.mHeader.UpdateTotalSize(s.BaseStream);
 			}
 
 			long header_position = s.BaseStream.CanSeek
 				? s.BaseStream.Position
 				: -1;
 
-			mHeader.BeginBlock(s);
-			mHeader.Serialize(s);
+			this.mHeader.BeginBlock(s);
+			this.mHeader.Serialize(s);
 
 			// verify or update the header checksum
 			if (s.IsReading)
@@ -80,12 +79,12 @@ namespace KSoft.Phoenix.Resource.ECF
 					ecfFile != null &&
 					!ecfFile.Options.Test(EraFileUtilOptions.SkipVerification))
 				{
-					var actual_adler = mHeader.ComputeAdler32(s.BaseStream, header_position);
-					if (actual_adler != mHeader.Adler32)
+					var actual_adler = this.mHeader.ComputeAdler32(s.BaseStream, header_position);
+					if (actual_adler != this.mHeader.Adler32)
 					{
 						throw new System.IO.InvalidDataException(string.Format(
 							"ECF header adler32 {0} does not match actual adler32 {1}",
-							mHeader.Adler32.ToString("X8"),
+							this.mHeader.Adler32.ToString("X8"),
 							actual_adler.ToString("X8")
 							));
 					}
@@ -95,56 +94,56 @@ namespace KSoft.Phoenix.Resource.ECF
 			{
 				if (header_position != -1 && isFinalizing)
 				{
-					mHeader.ComputeAdler32AndWrite(s, header_position);
+					this.mHeader.ComputeAdler32AndWrite(s, header_position);
 				}
 			}
 		}
 
 		internal void SerializeChunkHeaders(IO.EndianStream s)
 		{
-			s.StreamListElementsWithClear(mChunks, mHeader.ChunkCount, () => new EcfChunk());
+			s.StreamListElementsWithClear(this.mChunks, this.mHeader.ChunkCount, () => new EcfChunk());
 		}
 
 		internal void SerializeEnd(IO.EndianStream s)
 		{
-			mHeader.EndBlock(s);
+			this.mHeader.EndBlock(s);
 		}
 		#endregion
 
 		#region Chunk accessors
 		public IEnumerator<EcfChunk> GetEnumerator()
 		{
-			return ((IEnumerable<EcfChunk>)mChunks).GetEnumerator();
+			return ((IEnumerable<EcfChunk>) this.mChunks).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable<EcfChunk>)mChunks).GetEnumerator();
+			return ((IEnumerable<EcfChunk>) this.mChunks).GetEnumerator();
 		}
 
 		public EcfChunk GetChunk(int chunkIndex)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(chunkIndex >= 0 && chunkIndex < ChunksCount);
+			Contract.Requires<ArgumentOutOfRangeException>(chunkIndex >= 0 && chunkIndex < this.ChunksCount);
 
-			return mChunks[chunkIndex];
+			return this.mChunks[chunkIndex];
 		}
 		#endregion
 
 		public void CopyHeaderDataTo(EcfFileDefinition definition)
 		{
-			definition.CopyHeaderData(mHeader);
+			definition.CopyHeaderData(this.mHeader);
 		}
 
 		public void SetupHeaderAndChunks(EcfFileDefinition definition)
 		{
-			mChunks.Clear();
+			this.mChunks.Clear();
 
-			definition.UpdateHeader(ref mHeader);
+			definition.UpdateHeader(ref this.mHeader);
 			foreach (var chunk in definition.Chunks)
 			{
 				var rawChunk = new EcfChunk();
-				chunk.SetupRawChunk(rawChunk, ChunksCount);
-				mChunks.Add(rawChunk);
+				chunk.SetupRawChunk(rawChunk, this.ChunksCount);
+				this.mChunks.Add(rawChunk);
 			}
 		}
 	};

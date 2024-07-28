@@ -14,18 +14,18 @@ namespace KSoft.Phoenix.Resource
 		#region IEndianStreamSerializable Members
 		void SerializeLeftovers(IO.EndianStream s)
 		{
-			s.TraceAndDebugPosition(ref mLeftoversPos);
+			s.TraceAndDebugPosition(ref this.mLeftoversPos);
 
 			if (s.IsReading)
-				mLeftovers = new byte[s.BaseStream.Length - s.BaseStream.Position];
+				this.mLeftovers = new byte[s.BaseStream.Length - s.BaseStream.Position];
 
-			s.Stream(mLeftovers, 0, mLeftovers.Length);
+			s.Stream(this.mLeftovers, 0, this.mLeftovers.Length);
 		}
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(mSettings);
-			s.Stream(mSaveGame);
-			SerializeLeftovers(s);
+			s.Stream(this.mSettings);
+			s.Stream(this.mSaveGame);
+			this.SerializeLeftovers(s);
 		}
 		#endregion
 

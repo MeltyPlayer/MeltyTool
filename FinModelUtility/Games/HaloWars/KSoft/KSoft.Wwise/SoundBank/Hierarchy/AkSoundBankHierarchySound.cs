@@ -13,16 +13,16 @@ namespace KSoft.Wwise.SoundBank
 		{
 			base.Serialize(s);
 
-			s.Stream(Source);
+			s.Stream(this.Source);
 			// There's more...
 		}
 
 		internal void PrepareForExtraction(AkSoundBank bank)
 		{
-			if (Source.StreamType != AkBankSourceData.SourceType.Data)
-				BankId = bank.Id;
+			if (this.Source.StreamType != AkBankSourceData.SourceType.Data)
+				this.BankId = bank.Id;
 			else
-				BankId = Source.MediaInfo.FileID;
+				this.BankId = this.Source.MediaInfo.FileID;
 		}
 	};
 }

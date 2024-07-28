@@ -11,22 +11,22 @@ namespace KSoft.Collections
 
 	public sealed class BBitSet
 	{
-		Collections.BitSet mBits;
+		BitSet mBits;
 
 		/// <summary>Is this bitset void of any ON bits?</summary>
 		public bool IsEmpty { get {
-			return mBits == null || mBits.IsAllClear;
+			return this.mBits == null || this.mBits.IsAllClear;
 		} }
 		/// <summary>Number of bits in the set, both ON and OFF</summary>
 		public int Count { get {
-			return IsEmpty ? 0 : mBits.Length;
+			return this.IsEmpty ? 0 : this.mBits.Length;
 		} }
 		/// <summary>Number of bits in the set which are ON</summary>
 		public int EnabledCount { get {
-			return IsEmpty ? 0 : mBits.Cardinality;
+			return this.IsEmpty ? 0 : this.mBits.Cardinality;
 		} }
 
-		public Collections.BitSet RawBits { get { return mBits; } }
+		public BitSet RawBits { get { return this.mBits; } }
 
 		/// <summary>Parameters that dictate the functionality of this list</summary>
 		public BBitSetParams Params { get; private set; }
@@ -35,58 +35,58 @@ namespace KSoft.Collections
 		{
 			Contract.Requires<ArgumentNullException>(@params != null);
 
-			Params = @params;
+			this.Params = @params;
 
-			InitializeFromEnum(db);
+			this.InitializeFromEnum(db);
 		}
 
 		public void Clear()
 		{
-			if (mBits != null)
-				mBits.Clear();
+			if (this.mBits != null)
+				this.mBits.Clear();
 		}
 
 		internal void OptimizeStorage()
 		{
-			if (EnabledCount == 0)
-				mBits = null;
+			if (this.EnabledCount == 0)
+				this.mBits = null;
 		}
 
 		internal void Set(int bitIndex, bool value = true)
 		{
-			if (mBits == null)
+			if (this.mBits == null)
 			{
-				InitializeFromEnum(null);
+				this.InitializeFromEnum(null);
 
-				if (mBits == null)
+				if (this.mBits == null)
 					throw new InvalidOperationException("Can't use Set on BBitSet that requires BDatabase to initialize");
 			}
 
-			mBits.Set(bitIndex, value);
+			this.mBits.Set(bitIndex, value);
 		}
 
 		internal IProtoEnum InitializeFromEnum(Phx.BDatabaseBase db)
 		{
 			IProtoEnum penum = null;
 
-			if (Params.kGetProtoEnum != null)
-				penum = Params.kGetProtoEnum();
+			if (this.Params.kGetProtoEnum != null)
+				penum = this.Params.kGetProtoEnum();
 			else if (db != null)
-				penum = Params.kGetProtoEnumFromDB(db);
+				penum = this.Params.kGetProtoEnumFromDB(db);
 
 			if (penum != null)
 			{
-				if (mBits == null)
-					mBits = new Collections.BitSet(penum.MemberCount);
+				if (this.mBits == null)
+					this.mBits = new BitSet(penum.MemberCount);
 				else
 				{
-					mBits.Clear();
+					this.mBits.Clear();
 
-					if (mBits.Length != penum.MemberCount)
-						mBits.Length = penum.MemberCount;
+					if (this.mBits.Length != penum.MemberCount)
+						this.mBits.Length = penum.MemberCount;
 				}
 
-				InitializeDefaultValues(penum);
+				this.InitializeDefaultValues(penum);
 			}
 
 			return penum;
@@ -94,24 +94,24 @@ namespace KSoft.Collections
 
 		private void InitializeDefaultValues(IProtoEnum penum)
 		{
-			if (Params.kGetMemberDefaultValue == null)
+			if (this.Params.kGetMemberDefaultValue == null)
 				return;
 
 			for (int x = 0; x < penum.MemberCount; x++)
 			{
-				bool bitDefault = Params.kGetMemberDefaultValue(x);
+				bool bitDefault = this.Params.kGetMemberDefaultValue(x);
 				if (bitDefault)
-					mBits[x] = true;
+					this.mBits[x] = true;
 			}
 		}
 
 		public bool this[int bit_index]
 		{
-			get { return IsEmpty ? false : mBits[bit_index]; }
+			get { return this.IsEmpty ? false : this.mBits[bit_index]; }
 			set
 			{
-				if (!IsEmpty)
-					mBits[bit_index] = value;
+				if (!this.IsEmpty)
+					this.mBits[bit_index] = value;
 			}
 		}
 	};

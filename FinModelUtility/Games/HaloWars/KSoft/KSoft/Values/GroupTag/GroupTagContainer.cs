@@ -28,10 +28,10 @@ namespace KSoft.Values
 		{
 			Contract.Requires(container != null);
 
-			mHost = container;
+			this.mHost = container;
 
-			FindStaticGroupsProperty();
-			FindAllStaticGroupFields();
+			this.FindStaticGroupsProperty();
+			this.FindAllStaticGroupFields();
 		}
 
 		protected GroupTagContainerAttribute(Type container, string collectionName)
@@ -39,10 +39,10 @@ namespace KSoft.Values
 			Contract.Requires(container != null);
 			Contract.Requires(!string.IsNullOrEmpty(collectionName));
 
-			mHost = container;
+			this.mHost = container;
 
-			FindStaticGroupsProperty(collectionName);
-			FindAllStaticGroupFields();
+			this.FindStaticGroupsProperty(collectionName);
+			this.FindAllStaticGroupFields();
 		}
 		#endregion
 
@@ -52,26 +52,27 @@ namespace KSoft.Values
 		{
 			if (string.IsNullOrEmpty(collectionName)) collectionName = kDefaultName;
 
-			var pi = mHost.GetProperty(collectionName, BindingFlags.Public | BindingFlags.Static);
+			var pi = this.mHost.GetProperty(collectionName, BindingFlags.Public | BindingFlags.Static);
 			if (pi == null) throw new ArgumentException(
 				string.Format(Util.InvariantCultureInfo,
-					"[{0}] doesn't have a static collection property named '{1}'", mHost.FullName, collectionName),
+					"[{0}] doesn't have a static collection property named '{1}'",
+					this.mHost.FullName, collectionName),
 					nameof(collectionName));
 
-			TagCollection = pi.GetValue(null, null) as GroupTagCollection;
+			this.TagCollection = pi.GetValue(null, null) as GroupTagCollection;
 		}
 
 		private IEnumerable<KeyValuePair<string, GroupTagCollection>> mAllCollections;
 		void FindAllStaticGroupFields()
 		{
-			var pis = mHost.GetProperties(BindingFlags.Public | BindingFlags.Static);
+			var pis = this.mHost.GetProperties(BindingFlags.Public | BindingFlags.Static);
 
 			var tagc = from p in pis
 					   where p.PropertyType.IsSubclassOf(typeof(GroupTagCollection))
 					   //select p.GetValue(null, null) as GroupTagCollection;
 					   select new KeyValuePair<string, GroupTagCollection>(p.Name, p.GetValue(null, null) as GroupTagCollection);
 
-			mAllCollections = tagc;
+			this.mAllCollections = tagc;
 		}
 		#endregion
 

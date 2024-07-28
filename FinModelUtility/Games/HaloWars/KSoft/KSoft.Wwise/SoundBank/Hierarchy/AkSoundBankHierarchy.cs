@@ -35,10 +35,10 @@ namespace KSoft.Wwise.SoundBank
 			{
 				uint sdk_ver = (s.Owner as AkSoundBank).SdkVersion;
 
-				s.Stream(ref Type, AkVersion.HircTypeIs8bit(sdk_ver)
+				s.Stream(ref this.Type, AkVersion.HircTypeIs8bit(sdk_ver)
 					? HircTypeStreamer8.Instance
 					: HircTypeStreamer32.Instance);
-				s.Stream(ref SectionSize);
+				s.Stream(ref this.SectionSize);
 			}
 			#endregion
 		};
@@ -50,7 +50,7 @@ namespace KSoft.Wwise.SoundBank
 
 		public void CopyObjectsTo(FilePackage.AkFilePackageExtractor extractor)
 		{
-			foreach (var kv in mObjects)
+			foreach (var kv in this.mObjects)
 			{
 				var type = kv.Key;
 
@@ -78,11 +78,11 @@ namespace KSoft.Wwise.SoundBank
 		void MapObject(HircType type, AkSoundBankHierarchyObjectBase obj)
 		{
 			Dictionary<uint, AkSoundBankHierarchyObjectBase> dic;
-			if (!mObjects.TryGetValue(type, out dic))
-				mObjects.Add(type, dic = new Dictionary<uint, AkSoundBankHierarchyObjectBase>());
+			if (!this.mObjects.TryGetValue(type, out dic))
+				this.mObjects.Add(type, dic = new Dictionary<uint, AkSoundBankHierarchyObjectBase>());
 
 			dic.Add(obj.ID, obj);
-			mIdToObject.Add(obj.ID, obj);
+			this.mIdToObject.Add(obj.ID, obj);
 		}
 
 		#region IEndianStreamSerializable Members
@@ -97,7 +97,7 @@ namespace KSoft.Wwise.SoundBank
 				{
 					s.Stream(obj);
 
-					MapObject(section.Type, obj);
+					this.MapObject(section.Type, obj);
 				}
 			}
 		}
@@ -111,20 +111,20 @@ namespace KSoft.Wwise.SoundBank
 				{
 					var section = new AKBKSubHircSection(); section.Serialize(s);
 
-					SerializeItem(s, section);
+					this.SerializeItem(s, section);
 				}
 			}
 		}
 		public override void Serialize(IO.EndianStream s, AkSubchunkHeader header)
 		{
 			if (s.IsReading)
-				FromStream(s, header);
+				this.FromStream(s, header);
 		}
 		#endregion
 
 		internal void PrepareForExtraction(AkSoundBank bank)
 		{
-			foreach (var kv in mObjects)
+			foreach (var kv in this.mObjects)
 			{
 				if (kv.Key != HircType.Sound)
 					continue;

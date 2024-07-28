@@ -39,25 +39,25 @@ namespace KSoft.Wwise.SoundBank
 
 		public CAkParameterNodeBase ParameterNode = new CAkParameterNodeBase();
 
-		public bool Prefetch { get { return StreamType == SourceType.PrefetchStreaming; } }
+		public bool Prefetch { get { return this.StreamType == SourceType.PrefetchStreaming; } }
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref PluginID);
-			s.Stream(ref StreamType, SourceTypeStreamer.Instance);
-			s.Stream(ref AudioFormat_SampleRate);
-			s.Stream(ref AudioFormat_Bits);
-			s.Stream(ref MediaInfo.SourceID);
-			s.Stream(ref MediaInfo.FileID);
-			if (StreamType != SourceType.Streaming)
+			s.Stream(ref this.PluginID);
+			s.Stream(ref this.StreamType, SourceTypeStreamer.Instance);
+			s.Stream(ref this.AudioFormat_SampleRate);
+			s.Stream(ref this.AudioFormat_Bits);
+			s.Stream(ref this.MediaInfo.SourceID);
+			s.Stream(ref this.MediaInfo.FileID);
+			if (this.StreamType != SourceType.Streaming)
 			{
-				s.Stream(ref MediaInfo.FileOffset);
-				s.Stream(ref MediaInfo.MediaSize);
+				s.Stream(ref this.MediaInfo.FileOffset);
+				s.Stream(ref this.MediaInfo.MediaSize);
 			}
-			s.Stream(ref MediaInfo.IsLanguageSpecific);
+			s.Stream(ref this.MediaInfo.IsLanguageSpecific);
 
-			var ptype = (AkPluginType)(PluginID & AkPluginTypeMask);
+			var ptype = (AkPluginType)(this.PluginID & AkPluginTypeMask);
 			if (ptype == AkPluginType.Source || ptype == AkPluginType.MotionSource)
 				s.Pad32(); // size
 #if false

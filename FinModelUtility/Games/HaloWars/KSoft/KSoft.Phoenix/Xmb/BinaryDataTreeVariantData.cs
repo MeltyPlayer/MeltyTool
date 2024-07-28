@@ -34,21 +34,21 @@ namespace KSoft.Phoenix.Xmb
 		[Interop.FieldOffset(16)]
 		public Array OpaqueArrayRef;
 
-		public BinaryDataTreeVariantType Type { get { return TypeDesc.Type; } }
-		public bool IsUnicode { get { return TypeDesc.IsUnicode; } }
+		public BinaryDataTreeVariantType Type { get { return this.TypeDesc.Type; } }
+		public bool IsUnicode { get { return this.TypeDesc.IsUnicode; } }
 
-		public bool UseDirectEncoding { get { return TypeDesc.SizeOf <= sizeof(uint) && ArrayLength <= 1; } }
+		public bool UseDirectEncoding { get { return this.TypeDesc.SizeOf <= sizeof(uint) && this.ArrayLength <= 1; } }
 
 		public int StringOrArrayLength { get {
-			if (Type == BinaryDataTreeVariantType.String)
-				return String != null ? String.Length : 0;
+			if (this.Type == BinaryDataTreeVariantType.String)
+				return this.String != null ? this.String.Length : 0;
 
-			return OpaqueArrayRef != null ? OpaqueArrayRef.Length : 0;
+			return this.OpaqueArrayRef != null ? this.OpaqueArrayRef.Length : 0;
 		} }
 
 		internal void Read(BinaryDataTreeMemoryPool pool, BinaryDataTreeNameValue nameValue)
 		{
-			TypeDesc = nameValue.GuessTypeDesc();
+			this.TypeDesc = nameValue.GuessTypeDesc();
 
 			bool direct_encoding = nameValue.DirectEncoding;
 
@@ -64,40 +64,40 @@ namespace KSoft.Phoenix.Xmb
 					throw new InvalidOperationException();
 			}
 
-			if (TypeDesc.SizeOf > 0)
+			if (this.TypeDesc.SizeOf > 0)
 			{
-				if ((total_data_size % TypeDesc.SizeOf) != 0)
+				if ((total_data_size % this.TypeDesc.SizeOf) != 0)
 					throw new InvalidOperationException(nameValue.ToString());
 
-				ArrayLength = (int)(total_data_size / TypeDesc.SizeOf);
+				this.ArrayLength = (int)(total_data_size / this.TypeDesc.SizeOf);
 			}
 
-			if (ArrayLength > 1)
+			if (this.ArrayLength > 1)
 			{
-				if (Type != BinaryDataTreeVariantType.String)
-					OpaqueArrayRef = TypeDesc.MakeArray(ArrayLength);
+				if (this.Type != BinaryDataTreeVariantType.String)
+					this.OpaqueArrayRef = this.TypeDesc.MakeArray(this.ArrayLength);
 
 				pool.InternalBuffer.Seek(nameValue.Offset);
 			}
 
-			switch (Type)
+			switch (this.Type)
 			{
 				case BinaryDataTreeVariantType.Null:
 					break;
 
 				case BinaryDataTreeVariantType.Bool:
-					if (ArrayLength > 1)
-						TypeDesc.ReadArray(pool.InternalBuffer, OpaqueArrayRef);
+					if (this.ArrayLength > 1)
+						this.TypeDesc.ReadArray(pool.InternalBuffer, this.OpaqueArrayRef);
 					else
 						this.Bool = nameValue.Bool;
 					break;
 
 				case BinaryDataTreeVariantType.Int:
-					if (ArrayLength > 1)
-						TypeDesc.ReadArray(pool.InternalBuffer, OpaqueArrayRef);
+					if (this.ArrayLength > 1)
+						this.TypeDesc.ReadArray(pool.InternalBuffer, this.OpaqueArrayRef);
 					else
 					{
-						if (TypeDesc.SizeOf < sizeof(long))
+						if (this.TypeDesc.SizeOf < sizeof(long))
 							this.Int = nameValue.Int;
 						else
 							this.Int64 = pool.InternalBuffer.ReadUInt64();
@@ -105,11 +105,11 @@ namespace KSoft.Phoenix.Xmb
 					break;
 
 				case BinaryDataTreeVariantType.Float:
-					if (ArrayLength > 1)
-						TypeDesc.ReadArray(pool.InternalBuffer, OpaqueArrayRef);
+					if (this.ArrayLength > 1)
+						this.TypeDesc.ReadArray(pool.InternalBuffer, this.OpaqueArrayRef);
 					else
 					{
-						if (TypeDesc.SizeOf < sizeof(double))
+						if (this.TypeDesc.SizeOf < sizeof(double))
 							this.Single = nameValue.Single;
 						else
 							this.Double = pool.InternalBuffer.ReadDouble();
@@ -117,8 +117,8 @@ namespace KSoft.Phoenix.Xmb
 					break;
 
 				case BinaryDataTreeVariantType.String:
-					ArrayLength = 1;
-					if (!IsUnicode && total_data_size <= sizeof(uint))
+					this.ArrayLength = 1;
+					if (!this.IsUnicode && total_data_size <= sizeof(uint))
 					{
 						var sb = new System.Text.StringBuilder();
 						for (uint x = 0, v = nameValue.Int; x < sizeof(uint); x++, v >>= Bits.kByteBitCount)
@@ -130,13 +130,13 @@ namespace KSoft.Phoenix.Xmb
 					}
 					else
 					{
-						this.String = pool.InternalBuffer.ReadString(IsUnicode
+						this.String = pool.InternalBuffer.ReadString(this.IsUnicode
 							? Memory.Strings.StringStorage.CStringUnicode
 							: Memory.Strings.StringStorage.CStringAscii);
 					}
 					break;
 
-				default: throw new KSoft.Debug.UnreachableException(Type.ToString());
+				default: throw new KSoft.Debug.UnreachableException(this.Type.ToString());
 			}
 		}
 
@@ -144,19 +144,19 @@ namespace KSoft.Phoenix.Xmb
 			where TDoc : class
 			where TCursor : class
 		{
-			if (Type == BinaryDataTreeVariantType.Null)
+			if (this.Type == BinaryDataTreeVariantType.Null)
 				return;
 
-			TypeDesc.ToStream(s, ArrayLength);
+			this.TypeDesc.ToStream(s, this.ArrayLength);
 
-			if (ArrayLength > 1 && Type != BinaryDataTreeVariantType.String)
+			if (this.ArrayLength > 1 && this.Type != BinaryDataTreeVariantType.String)
 			{
-				var array_str = TypeDesc.ArrayToString(OpaqueArrayRef);
+				var array_str = this.TypeDesc.ArrayToString(this.OpaqueArrayRef);
 				s.WriteCursor(array_str);
 				return;
 			}
 
-			switch (Type)
+			switch (this.Type)
 			{
 				case BinaryDataTreeVariantType.Bool:
 					s.WriteCursor(this.Bool);
@@ -167,7 +167,7 @@ namespace KSoft.Phoenix.Xmb
 					break;
 
 				case BinaryDataTreeVariantType.Float:
-					if (TypeDesc.SizeOf < sizeof(double))
+					if (this.TypeDesc.SizeOf < sizeof(double))
 						s.WriteCursor(this.Single);
 					else
 						s.WriteCursor(this.Double);
@@ -178,7 +178,7 @@ namespace KSoft.Phoenix.Xmb
 						s.WriteCursor(this.String);
 					break;
 
-				default: throw new KSoft.Debug.UnreachableException(Type.ToString());
+				default: throw new KSoft.Debug.UnreachableException(this.Type.ToString());
 			}
 		}
 
@@ -186,17 +186,17 @@ namespace KSoft.Phoenix.Xmb
 			where TDoc : class
 			where TCursor : class
 		{
-			if (Type == BinaryDataTreeVariantType.Null)
+			if (this.Type == BinaryDataTreeVariantType.Null)
 				return;
 
-			if (ArrayLength > 1 && Type != BinaryDataTreeVariantType.String)
+			if (this.ArrayLength > 1 && this.Type != BinaryDataTreeVariantType.String)
 			{
-				var array_str = TypeDesc.ArrayToString(OpaqueArrayRef);
+				var array_str = this.TypeDesc.ArrayToString(this.OpaqueArrayRef);
 				s.WriteAttribute(attributeName, array_str);
 				return;
 			}
 
-			switch (Type)
+			switch (this.Type)
 			{
 				case BinaryDataTreeVariantType.Bool:
 					s.WriteAttribute(attributeName, this.Bool);
@@ -207,7 +207,7 @@ namespace KSoft.Phoenix.Xmb
 					break;
 
 				case BinaryDataTreeVariantType.Float:
-					if (TypeDesc.SizeOf < sizeof(double))
+					if (this.TypeDesc.SizeOf < sizeof(double))
 						s.WriteAttribute(attributeName, this.Single);
 					else
 						s.WriteAttribute(attributeName, this.Double);
@@ -218,7 +218,7 @@ namespace KSoft.Phoenix.Xmb
 						s.WriteAttribute(attributeName, this.String);
 					break;
 
-				default: throw new KSoft.Debug.UnreachableException(Type.ToString());
+				default: throw new KSoft.Debug.UnreachableException(this.Type.ToString());
 			}
 		}
 
@@ -226,7 +226,7 @@ namespace KSoft.Phoenix.Xmb
 			where TDoc : class
 			where TCursor : class
 		{
-			TypeDesc = BDTypeDesc.GuessFromStream(s, out ArrayLength);
+			this.TypeDesc = BDTypeDesc.GuessFromStream(s, out this.ArrayLength);
 
 			// #TODO
 			throw new NotImplementedException();

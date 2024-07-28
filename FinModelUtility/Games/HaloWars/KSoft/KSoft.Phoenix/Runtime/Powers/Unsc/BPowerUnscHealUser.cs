@@ -11,7 +11,7 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(HudSounds);
+			s.Stream(this.HudSounds);
 		}
 		#endregion
 	};

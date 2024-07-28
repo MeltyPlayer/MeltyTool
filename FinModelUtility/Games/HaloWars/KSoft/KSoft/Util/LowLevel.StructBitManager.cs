@@ -24,15 +24,16 @@ namespace KSoft.LowLevel.Util
 		/// <summary>Initialize the manager and allocate the underlying object</summary>
 		public StructBitManager()
 		{
-			mHandle = Unmanaged.New<T>();
+			this.mHandle = Unmanaged.New<T>();
 		}
 
 		#region IDisposable Members
-		~StructBitManager()	{ Dispose(false); }
+		~StructBitManager()	{
+			this.Dispose(false); }
 
 		public void Dispose()
 		{
-			Dispose(true);
+			this.Dispose(true);
 
 			GC.SuppressFinalize(this);
 		}
@@ -42,10 +43,10 @@ namespace KSoft.LowLevel.Util
 			KSoft.Util.MarkUnusedVariable(ref disposing);
 
 			// check to see if we've already been called
-			if (mHandle != IntPtr.Zero)
+			if (this.mHandle != IntPtr.Zero)
 			{
-				Unmanaged.Delete(mHandle);
-				mHandle = IntPtr.Zero;
+				Unmanaged.Delete(this.mHandle);
+				this.mHandle = IntPtr.Zero;
 			}
 		}
 		#endregion
@@ -59,7 +60,7 @@ namespace KSoft.LowLevel.Util
 			Contract.Requires(startIndex < buffer.Length);
 			Contract.Requires((startIndex+kSizeOf) < buffer.Length);
 
-			Marshal.Copy(buffer, startIndex, mHandle, kSizeOf);
+			Marshal.Copy(buffer, startIndex, this.mHandle, kSizeOf);
 		}
 
 		/// <summary>Copies the underlying <typeparamref name="T"/> object to a buffer</summary>
@@ -72,7 +73,7 @@ namespace KSoft.LowLevel.Util
 			Contract.Requires(startIndex < buffer.Length);
 			Contract.Requires((startIndex+kSizeOf) < buffer.Length);
 
-			Marshal.Copy(mHandle, buffer, startIndex, kSizeOf);
+			Marshal.Copy(this.mHandle, buffer, startIndex, kSizeOf);
 		}
 		/// <summary>Get a buffer containing the underlying <typeparamref name="T"/> object's bytes</summary>
 		/// <returns>A buffer holding the underlying object's bytes</returns>
@@ -82,7 +83,7 @@ namespace KSoft.LowLevel.Util
 			Contract.Ensures(Contract.Result<byte[]>() != null);
 
 			byte[] buffer = new byte[kSizeOf];
-			Marshal.Copy(mHandle, buffer, 0, kSizeOf);
+			Marshal.Copy(this.mHandle, buffer, 0, kSizeOf);
 
 			return buffer;
 		}
@@ -91,7 +92,7 @@ namespace KSoft.LowLevel.Util
 		/// <param name="value"></param>
 		public void FromValue(T value)
 		{
-			Unmanaged.StructureToPtr(value, mHandle);
+			Unmanaged.StructureToPtr(value, this.mHandle);
 		}
 
 		/// <summary>Get the underlying <typeparamref name="T"/> object</summary>
@@ -99,7 +100,7 @@ namespace KSoft.LowLevel.Util
 		[Contracts.Pure]
 		public T ToValue()
 		{
-			return Unmanaged.IntPtrToStructure<T>(mHandle);
+			return Unmanaged.IntPtrToStructure<T>(this.mHandle);
 		}
 	};
 }

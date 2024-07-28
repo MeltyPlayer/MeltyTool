@@ -9,31 +9,31 @@ namespace KSoft.Xml
 		internal XmlElementWithLocation(string prefix, string localName, string namespaceURI, XmlDocumentWithLocation document)
 			: base(prefix, localName, namespaceURI, document)
 		{
-			mLineInfo = document.CurrentLineInfo;
+			this.mLineInfo = document.CurrentLineInfo;
 		}
 
-		internal Text.TextLineInfo LineInfo { get { return mLineInfo; } }
+		internal Text.TextLineInfo LineInfo { get { return this.mLineInfo; } }
 
-		public bool HasLineInfo { get { return mLineInfo.HasLineInfo; } }
-		public int LineNumber	{ get { return mLineInfo.LineNumber; } }
-		public int LinePosition	{ get { return mLineInfo.LinePosition; } }
+		public bool HasLineInfo { get { return this.mLineInfo.HasLineInfo; } }
+		public int LineNumber	{ get { return this.mLineInfo.LineNumber; } }
+		public int LinePosition	{ get { return this.mLineInfo.LinePosition; } }
 
 		#region IXmlLineInfo Members
-		bool IXmlLineInfo.HasLineInfo()	{ return mLineInfo.HasLineInfo; }
-		int IXmlLineInfo.LineNumber		{ get { return mLineInfo.LineNumber; } }
-		int IXmlLineInfo.LinePosition	{ get { return mLineInfo.LinePosition; } }
+		bool IXmlLineInfo.HasLineInfo()	{ return this.mLineInfo.HasLineInfo; }
+		int IXmlLineInfo.LineNumber		{ get { return this.mLineInfo.LineNumber; } }
+		int IXmlLineInfo.LinePosition	{ get { return this.mLineInfo.LinePosition; } }
 		#endregion
 
 		XmlAttributeWithLocation GetAttributeWithLocation(string name)
 		{
-			var attr = Attributes[name];
+			var attr = this.Attributes[name];
 
 			return (XmlAttributeWithLocation)attr;
 		}
 
 		public Text.TextLineInfo GetAttributeLineInfo(string name)
 		{
-			var attr_with_location = GetAttributeWithLocation(name);
+			var attr_with_location = this.GetAttributeWithLocation(name);
 
 			return attr_with_location != null
 				? attr_with_location.LineInfo

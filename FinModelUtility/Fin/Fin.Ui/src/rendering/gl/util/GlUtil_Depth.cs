@@ -26,12 +26,12 @@ public static partial class GlUtil {
       return false;
     }
 
-    if (GlUtil.currentState_.DepthModeAndCompareType ==
+    if (currentState_.DepthModeAndCompareType ==
         (depthMode, depthCompareType)) {
       return false;
     }
 
-    GlUtil.currentState_.DepthModeAndCompareType
+    currentState_.DepthModeAndCompareType
         = (depthMode, depthCompareType);
 
     if (depthMode.CheckFlag(DepthMode.READ) &&

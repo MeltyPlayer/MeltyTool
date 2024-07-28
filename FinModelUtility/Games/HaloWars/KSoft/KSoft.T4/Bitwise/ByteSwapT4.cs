@@ -14,63 +14,63 @@ namespace KSoft.T4.Bitwise
 
 			internal ByteSwapableIntegerDefinition(NumberCodeDefinition codeDef, int bitCount)
 			{
-				mCodeDef = codeDef;
-				mSizeOfInBits = bitCount;
-				mSizeOfInBytes = bitCount / kBitsPerByte;
+				this.mCodeDef = codeDef;
+				this.mSizeOfInBits = bitCount;
+				this.mSizeOfInBytes = bitCount / kBitsPerByte;
 			}
 			internal ByteSwapableIntegerDefinition(NumberCodeDefinition codeDef)
 				: this(codeDef, codeDef.SizeOfInBits)
 			{
 			}
 
-			public NumberCodeDefinition CodeDefinition { get { return mCodeDef; } }
-			public int SizeOfInBits { get { return mSizeOfInBits; } }
-			public int SizeOfInBytes { get { return mSizeOfInBytes; } }
+			public NumberCodeDefinition CodeDefinition { get { return this.mCodeDef; } }
+			public int SizeOfInBits { get { return this.mSizeOfInBits; } }
+			public int SizeOfInBytes { get { return this.mSizeOfInBytes; } }
 
 			/// <summary>Can this integer not be represented via a one of .NET's System.Int types?</summary>
-			public bool IsUnnaturalWord { get { return SizeOfInBits != mCodeDef.SizeOfInBits; } }
+			public bool IsUnnaturalWord { get { return this.SizeOfInBits != this.mCodeDef.SizeOfInBits; } }
 
-			public string Keyword { get { return mCodeDef.Keyword; } }
-			public string SignedKeyword { get { return mCodeDef.SignedKeyword; } }
-			public TypeCode Code { get { return mCodeDef.Code; } }
-			public TypeCode SignedCode { get { return mCodeDef.SignedCode; } }
+			public string Keyword { get { return this.mCodeDef.Keyword; } }
+			public string SignedKeyword { get { return this.mCodeDef.SignedKeyword; } }
+			public TypeCode Code { get { return this.mCodeDef.Code; } }
+			public TypeCode SignedCode { get { return this.mCodeDef.SignedCode; } }
 
-			public string ToStringHexFormat { get { return mCodeDef.ToStringHexFormat; } }
-			public bool BitOperatorsImplicitlyUpCast { get { return mCodeDef.BitOperatorsImplicitlyUpCast; } }
+			public string ToStringHexFormat { get { return this.mCodeDef.ToStringHexFormat; } }
+			public bool BitOperatorsImplicitlyUpCast { get { return this.mCodeDef.BitOperatorsImplicitlyUpCast; } }
 
 			public string GetConstantKeyword()
 			{
-				return IsUnnaturalWord
-					? "Int" + SizeOfInBits.ToString(UtilT4.InvariantCultureInfo)
-					: mCodeDef.GetConstantKeyword();
+				return this.IsUnnaturalWord
+					? "Int" + this.SizeOfInBits.ToString(UtilT4.InvariantCultureInfo)
+					: this.mCodeDef.GetConstantKeyword();
 			}
 
-			public NumberCodeDefinition TryGetSignedDefinition() { return mCodeDef.TryGetSignedDefinition(); }
+			public NumberCodeDefinition TryGetSignedDefinition() { return this.mCodeDef.TryGetSignedDefinition(); }
 
 			public string WordTypeNameUnsigned { get {
-				return IsUnnaturalWord
-					? "UInt" + SizeOfInBits.ToString(UtilT4.InvariantCultureInfo)
-					: Code.ToString();
+				return this.IsUnnaturalWord
+					? "UInt" + this.SizeOfInBits.ToString(UtilT4.InvariantCultureInfo)
+					: this.Code.ToString();
 			} }
 			public string WordTypeNameSigned { get {
-				return IsUnnaturalWord
-					? "Int" + SizeOfInBits.ToString(UtilT4.InvariantCultureInfo)
-					: SignedCode.ToString();
+				return this.IsUnnaturalWord
+					? "Int" + this.SizeOfInBits.ToString(UtilT4.InvariantCultureInfo)
+					: this.SignedCode.ToString();
 			} }
 			public string GetOverloadSuffixForUnnaturalWord(bool isSigned)
 			{
-				if (!IsUnnaturalWord)
+				if (!this.IsUnnaturalWord)
 					return "";
 
 				return isSigned
-					? WordTypeNameSigned
-					: WordTypeNameUnsigned;
+					? this.WordTypeNameSigned
+					: this.WordTypeNameUnsigned;
 			}
 
 			public string SizeOfCode { get {
-				return IsUnnaturalWord
-					? "kSizeOf" + GetConstantKeyword()
-					: string.Format(UtilT4.InvariantCultureInfo, "sizeof({0})", Keyword);
+				return this.IsUnnaturalWord
+					? "kSizeOf" + this.GetConstantKeyword()
+					: string.Format(UtilT4.InvariantCultureInfo, "sizeof({0})", this.Keyword);
 			} }
 
 			public IntegerByteSwapCodeGenerator NewByteSwapCodeGenerator(TextTemplating.TextTransformation ttFile,
@@ -82,7 +82,7 @@ namespace KSoft.T4.Bitwise
 			public IntegerByteAccessCodeGenerator NewByteAccessCodeGenerator(TextTemplating.TextTransformation ttFile,
 				string byteName = "b", string bufferName = "buffer", string offsetName = "offset")
 			{
-				return new IntegerByteAccessCodeGenerator(ttFile, mCodeDef, byteName, bufferName, offsetName, mSizeOfInBits);
+				return new IntegerByteAccessCodeGenerator(ttFile, this.mCodeDef, byteName, bufferName, offsetName, this.mSizeOfInBits);
 			}
 		};
 
@@ -105,10 +105,10 @@ namespace KSoft.T4.Bitwise
 			public IntegerByteSwapCodeGenerator(TextTemplating.TextTransformation ttFile,
 				ByteSwapableIntegerDefinition def, string valueName)
 			{
-				mFile = ttFile;
-				mDef = def;
+				this.mFile = ttFile;
+				this.mDef = def;
 
-				mValueName = valueName;
+				this.mValueName = valueName;
 			}
 
 			void GeneratePrologue(bool cast, bool isSigned)
@@ -118,11 +118,11 @@ namespace KSoft.T4.Bitwise
 				if (cast)
 				{
 					var def = isSigned
-						? mDef.TryGetSignedDefinition()
-						: mDef.CodeDefinition;
+						? this.mDef.TryGetSignedDefinition()
+						: this.mDef.CodeDefinition;
 
-					mFile.WriteLine("({0})( ", def.Keyword);
-					mFile.PushIndent(TextTransformationCodeBlockBookmark.kIndent);
+					this.mFile.WriteLine("({0})( ", def.Keyword);
+					this.mFile.PushIndent(TextTransformationCodeBlockBookmark.kIndent);
 				}
 			}
 			void GenerateEpilogue(bool cast)
@@ -130,46 +130,47 @@ namespace KSoft.T4.Bitwise
 				// close the cast operation group
 				if (cast)
 				{
-					mFile.PopIndent();
-					mFile.Write(")");
+					this.mFile.PopIndent();
+					this.mFile.Write(")");
 				}
 			}
 			void GenerateStep(bool isSigned, int shift, string mask, bool lastOperation = false)
 			{
 				// mask is not added when this is the last op in signed expression as the mask will be an unsigned value
 				// this isn't the case for unnatural-words, which should consume fewer bits than the MSB/sign-bit
-				bool mask_op = mDef.IsUnnaturalWord || !isSigned || !lastOperation;
+				bool mask_op = this.mDef.IsUnnaturalWord || !isSigned || !lastOperation;
 				if (mask_op)
-					mFile.Write("(");
+					this.mFile.Write("(");
 				else
-					mFile.Write(" "); // add a space to keep aligned with statements prefixed with '('
+					this.mFile.Write(" "); // add a space to keep aligned with statements prefixed with '('
 
 				// start the shift operation group
-				mFile.Write("({0}", mValueName);
+				this.mFile.Write("({0}", this.mValueName);
 
 				// LHS with positive numbers, RHS with negative
 				if (shift > 0)
-					mFile.Write(" << ");
+					this.mFile.Write(" << ");
 				else
 				{
-					mFile.Write(" >> ");
+					this.mFile.Write(" >> ");
 					shift = -shift;
 				}
-				mFile.Write("{0,2}", shift);
+
+				this.mFile.Write("{0,2}", shift);
 
 				// close the shift operation group
-				mFile.Write(")");
+				this.mFile.Write(")");
 
 				// add the mask operation
 				if (mask_op)
 				{
-					mFile.Write(" & ");
-					mFile.Write("0x{0})", mask);
+					this.mFile.Write(" & ");
+					this.mFile.Write("0x{0})", mask);
 				}
 
 				// not the last operation so OR this with the next operation
 				if (!lastOperation)
-					mFile.Write(" | ");
+					this.mFile.Write(" | ");
 			}
 
 			void GenerateCode(bool isSigned)
@@ -178,33 +179,33 @@ namespace KSoft.T4.Bitwise
 				const int k_step_shift_inc = kBitsPerByte * 2;
 
 				// do we need to cast the result?
-				bool cast = mDef.BitOperatorsImplicitlyUpCast;
-				string hex_format = mDef.ToStringHexFormat;
+				bool cast = this.mDef.BitOperatorsImplicitlyUpCast;
+				string hex_format = this.mDef.ToStringHexFormat;
 
-				GeneratePrologue(cast, isSigned);
+				this.GeneratePrologue(cast, isSigned);
 
 				// GenerateStep's 'shift' is negative when the operation is a RHS (>>), and positive for LHS (<<)
-				int shift = (0-mDef.SizeOfInBits) + kBitsPerByte;
+				int shift = (0- this.mDef.SizeOfInBits) + kBitsPerByte;
 				// our byte mask for each step
 				ulong mask = byte.MaxValue;
 				// While 'shift' is negative, we're generating steps to swap the MSB bytes to the LSBs half.
 				// Once 'shift' becomes positive, we're generating steps to swap the LSB bytes to the MSBs half.
-				for(int x = mDef.SizeOfInBytes-1; x >= 0; x--, shift += k_step_shift_inc, mask <<= kBitsPerByte)
+				for(int x = this.mDef.SizeOfInBytes-1; x >= 0; x--, shift += k_step_shift_inc, mask <<= kBitsPerByte)
 				{
-					GenerateStep(isSigned, shift, mask.ToString(hex_format, UtilT4.InvariantCultureInfo), x == 0);
-					mFile.NewLine();
+					this.GenerateStep(isSigned, shift, mask.ToString(hex_format, UtilT4.InvariantCultureInfo), x == 0);
+					this.mFile.NewLine();
 				}
 
-				GenerateEpilogue(cast);
+				this.GenerateEpilogue(cast);
 			}
 			public void Generate(bool isSigned = false)
 			{
 				// indent to method code body's indention level, plus one (l-value statement should be on the line before)
-				using (mFile.EnterCodeBlock(indentCount: 3+1))
+				using (this.mFile.EnterCodeBlock(indentCount: 3+1))
 				{
-					GenerateCode(isSigned);
+					this.GenerateCode(isSigned);
 
-					mFile.EndStmt();
+					this.mFile.EndStmt();
 				}
 			}
 		};

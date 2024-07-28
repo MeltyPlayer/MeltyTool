@@ -11,7 +11,7 @@ public static class ColorUtil {
   public static byte ExtractScaled(ushort col, int offset, int count) {
     var maxPossible = 1 << count;
     var factor = 255f / maxPossible;
-    return ColorUtil.ExtractScaled(col, offset, count, factor);
+    return ExtractScaled(col, offset, count, factor);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -36,7 +36,7 @@ public static class ColorUtil {
   }
 
   public static IColor ParseRgb565(ushort color) {
-    ColorUtil.SplitRgb565(color, out var r, out var g, out var b);
+    SplitRgb565(color, out var r, out var g, out var b);
     return FinColor.FromRgbBytes(r, g, b);
   }
 
@@ -50,19 +50,19 @@ public static class ColorUtil {
 
     if (alphaFlag == 1) {
       a = 255;
-      r = ColorUtil.ExtractScaled(color, 10, 5);
-      g = ColorUtil.ExtractScaled(color, 5, 5);
-      b = ColorUtil.ExtractScaled(color, 0, 5);
+      r = ExtractScaled(color, 10, 5);
+      g = ExtractScaled(color, 5, 5);
+      b = ExtractScaled(color, 0, 5);
     } else {
-      a = ColorUtil.ExtractScaled(color, 12, 3);
-      r = ColorUtil.ExtractScaled(color, 8, 4, 17);
-      g = ColorUtil.ExtractScaled(color, 4, 4, 17);
-      b = ColorUtil.ExtractScaled(color, 0, 4, 17);
+      a = ExtractScaled(color, 12, 3);
+      r = ExtractScaled(color, 8, 4, 17);
+      g = ExtractScaled(color, 4, 4, 17);
+      b = ExtractScaled(color, 0, 4, 17);
     }
   }
 
   public static IColor ParseRgb5A3(ushort color) {
-    ColorUtil.SplitRgb5A3(color, out var r, out var g, out var b, out var a);
+    SplitRgb5A3(color, out var r, out var g, out var b, out var a);
     return FinColor.FromRgbaBytes(r, g, b, a);
   }
 
@@ -76,14 +76,14 @@ public static class ColorUtil {
 
     if (alphaFlag == 1) {
       a = 255;
-      r = ColorUtil.ExtractScaled(color, 10, 5);
-      g = ColorUtil.ExtractScaled(color, 5, 5);
-      b = ColorUtil.ExtractScaled(color, 0, 5);
+      r = ExtractScaled(color, 10, 5);
+      g = ExtractScaled(color, 5, 5);
+      b = ExtractScaled(color, 0, 5);
     } else {
       a = 0;
-      r = ColorUtil.ExtractScaled(color, 10, 5);
-      g = ColorUtil.ExtractScaled(color, 5, 5);
-      b = ColorUtil.ExtractScaled(color, 0, 5);
+      r = ExtractScaled(color, 10, 5);
+      g = ExtractScaled(color, 5, 5);
+      b = ExtractScaled(color, 0, 5);
     }
   }
 
@@ -97,14 +97,14 @@ public static class ColorUtil {
 
     if (alphaFlag == 1) {
       a = 255;
-      r = ColorUtil.ExtractScaled(color, 11, 5);
-      g = ColorUtil.ExtractScaled(color, 6, 5);
-      b = ColorUtil.ExtractScaled(color, 1, 5);
+      r = ExtractScaled(color, 11, 5);
+      g = ExtractScaled(color, 6, 5);
+      b = ExtractScaled(color, 1, 5);
     } else {
       a = 0;
-      r = ColorUtil.ExtractScaled(color, 11, 5);
-      g = ColorUtil.ExtractScaled(color, 6, 5);
-      b = ColorUtil.ExtractScaled(color, 1, 5);
+      r = ExtractScaled(color, 11, 5);
+      g = ExtractScaled(color, 6, 5);
+      b = ExtractScaled(color, 1, 5);
     }
   }
 
@@ -114,14 +114,14 @@ public static class ColorUtil {
       out byte g,
       out byte b,
       out byte a) {
-    r = ColorUtil.ExtractScaled(color, 12, 4);
-    g = ColorUtil.ExtractScaled(color, 8, 4);
-    b = ColorUtil.ExtractScaled(color, 4, 4);
-    a = ColorUtil.ExtractScaled(color, 0, 4);
+    r = ExtractScaled(color, 12, 4);
+    g = ExtractScaled(color, 8, 4);
+    b = ExtractScaled(color, 4, 4);
+    a = ExtractScaled(color, 0, 4);
   }
 
   public static IColor Interpolate(IColor from, IColor to, double amt) {
-    ColorUtil.Interpolate(from.Rb,
+    Interpolate(from.Rb,
                           from.Gb,
                           from.Bb,
                           from.Ab,

@@ -29,7 +29,7 @@ public static class ListUtil {
   }
 
   public static int AssertFindFirst<T>(IReadOnlyList<T> data, T value) {
-    if (ListUtil.TryFindFirst(data, value, out var index)) {
+    if (TryFindFirst(data, value, out var index)) {
       return index;
     }
 

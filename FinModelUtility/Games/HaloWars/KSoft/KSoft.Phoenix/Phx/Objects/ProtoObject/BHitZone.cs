@@ -15,8 +15,8 @@ namespace KSoft.Phoenix.Phx
 		string mAttachmentName;
 		public string AttachmentName
 		{
-			get { return mAttachmentName; }
-			set { mAttachmentName = value; }
+			get { return this.mAttachmentName; }
+			set { this.mAttachmentName = value; }
 		}
 		#endregion
 
@@ -24,8 +24,8 @@ namespace KSoft.Phoenix.Phx
 		float mHitpoints = PhxUtil.kInvalidSingle;
 		public float Hitpoints
 		{
-			get { return mHitpoints; }
-			set { mHitpoints = value; }
+			get { return this.mHitpoints; }
+			set { this.mHitpoints = value; }
 		}
 		#endregion
 
@@ -33,8 +33,8 @@ namespace KSoft.Phoenix.Phx
 		float mShieldpoints = PhxUtil.kInvalidSingle;
 		public float Shieldpoints
 		{
-			get { return mShieldpoints; }
-			set { mShieldpoints = value; }
+			get { return this.mShieldpoints; }
+			set { this.mShieldpoints = value; }
 		}
 		#endregion
 
@@ -42,8 +42,8 @@ namespace KSoft.Phoenix.Phx
 		float mActive;
 		public float Active
 		{
-			get { return mActive; }
-			set { mActive = value; }
+			get { return this.mActive; }
+			set { this.mActive = value; }
 		}
 		#endregion
 
@@ -51,8 +51,8 @@ namespace KSoft.Phoenix.Phx
 		float mHasShields;
 		public float HasShields
 		{
-			get { return mHasShields; }
-			set { mHasShields = value; }
+			get { return this.mHasShields; }
+			set { this.mHasShields = value; }
 		}
 		#endregion
 
@@ -61,9 +61,9 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamCursor(ref mAttachmentName);
-			s.StreamElementOpt("Hitpoints", ref mHitpoints, PhxPredicates.IsNotInvalid);
-			s.StreamElementOpt("Shieldpoints", ref mShieldpoints, PhxPredicates.IsNotInvalid);
+			s.StreamCursor(ref this.mAttachmentName);
+			s.StreamElementOpt("Hitpoints", ref this.mHitpoints, PhxPredicates.IsNotInvalid);
+			s.StreamElementOpt("Shieldpoints", ref this.mShieldpoints, PhxPredicates.IsNotInvalid);
 		}
 		#endregion
 	};

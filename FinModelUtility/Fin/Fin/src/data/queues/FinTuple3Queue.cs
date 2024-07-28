@@ -74,6 +74,6 @@ public class FinTuple3Queue<T1, T2, T3> : ITuple3Queue<T1, T2, T3> {
     return false;
   }
 
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
   public IEnumerator<(T1, T2, T3)> GetEnumerator() => this.impl_.GetEnumerator();
 }

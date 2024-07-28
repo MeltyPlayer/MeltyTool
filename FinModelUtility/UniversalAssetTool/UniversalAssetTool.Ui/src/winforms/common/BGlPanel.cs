@@ -16,7 +16,7 @@ public abstract partial class BGlPanel : UserControl {
     EnumDisplaySettingsUtil.GetDisplayFrequency();
 
   protected BGlPanel() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       if (!DesignModeUtil.InDesignMode) {
         GlUtil.Init();

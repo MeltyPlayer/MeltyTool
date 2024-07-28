@@ -377,8 +377,8 @@ public static partial class FileHierarchy {
           string fileType,
           bool includeSubdirs = false)
         => includeSubdirs
-            ? FilesWithExtensionRecursive(fileType)
-            : FilesWithExtension(fileType);
+            ? this.FilesWithExtensionRecursive(fileType)
+            : this.FilesWithExtension(fileType);
 
       public IEnumerable<IFileHierarchyFile> FilesWithExtension(
           string extension)

@@ -23,15 +23,15 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref InputState);
-			s.StreamV(ref Position); s.StreamV(ref DesiredForward);
-			s.Stream(ref DesiredScale); s.Stream(ref CurrentScale);
-			s.Stream(ref ShutdownTime);
-			s.Stream(ref ArrowID);
-			s.Stream(ref MaxBombOffset); s.Stream(ref LengthMultiplier);
-			s.Stream(ref LOSMode);
-			s.Stream(ref ArrowProtoID);
-			s.Stream(HudSounds);
+			s.Stream(ref this.InputState);
+			s.StreamV(ref this.Position); s.StreamV(ref this.DesiredForward);
+			s.Stream(ref this.DesiredScale); s.Stream(ref this.CurrentScale);
+			s.Stream(ref this.ShutdownTime);
+			s.Stream(ref this.ArrowID);
+			s.Stream(ref this.MaxBombOffset); s.Stream(ref this.LengthMultiplier);
+			s.Stream(ref this.LOSMode);
+			s.Stream(ref this.ArrowProtoID);
+			s.Stream(this.HudSounds);
 		}
 		#endregion
 	};

@@ -21,18 +21,18 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref RenderType);
-			s.Stream(ref Texture);
-			s.StreamV(ref TexUVOfs);
-			s.Stream(ref TexUVScale);
-			s.Stream(ref TexInten);
-			s.Stream(ref TexScrollSpeed);
-			s.Stream(ref TexTimeoutOffset);
-			s.Stream(ref ModulateOffset);
-			s.Stream(ref ModulateIntensity);
-			s.Stream(ref ShouldBeCopied);
-			s.Stream(ref TexClamp);
-			s.Stream(ref TexScrollLoop);
+			s.Stream(ref this.RenderType);
+			s.Stream(ref this.Texture);
+			s.StreamV(ref this.TexUVOfs);
+			s.Stream(ref this.TexUVScale);
+			s.Stream(ref this.TexInten);
+			s.Stream(ref this.TexScrollSpeed);
+			s.Stream(ref this.TexTimeoutOffset);
+			s.Stream(ref this.ModulateOffset);
+			s.Stream(ref this.ModulateIntensity);
+			s.Stream(ref this.ShouldBeCopied);
+			s.Stream(ref this.TexClamp);
+			s.Stream(ref this.TexScrollLoop);
 		}
 		#endregion
 	};

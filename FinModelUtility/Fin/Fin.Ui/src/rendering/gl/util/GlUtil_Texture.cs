@@ -14,17 +14,17 @@ public partial class GlState {
 public static partial class GlUtil {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void BindTexture(int textureIndex, int value) {
-      if (GlUtil.currentState_.CurrentTextureBindings[textureIndex] == value) {
+      if (currentState_.CurrentTextureBindings[textureIndex] == value) {
         return;
       }
 
-      if (GlUtil.currentState_.ActiveTexture != textureIndex) {
+      if (currentState_.ActiveTexture != textureIndex) {
         GL.ActiveTexture(TextureUnit.Texture0 +
-                         (GlUtil.currentState_.ActiveTexture = textureIndex));
+                         (currentState_.ActiveTexture = textureIndex));
       }
 
       GL.BindTexture(TextureTarget.Texture2D,
-                     GlUtil.currentState_.CurrentTextureBindings[textureIndex] = value);
+                     currentState_.CurrentTextureBindings[textureIndex] = value);
     }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

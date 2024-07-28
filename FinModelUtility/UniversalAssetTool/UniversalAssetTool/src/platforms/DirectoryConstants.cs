@@ -5,7 +5,7 @@ namespace uni.platforms;
 
 public static class DirectoryConstants {
   public static ISystemDirectory BASE_DIRECTORY { get; } =
-    DirectoryConstants.GetBaseDirectory_();
+    GetBaseDirectory_();
 
   private static ISystemDirectory GetBaseDirectory_() {
     var cwd = Files.GetCwd();
@@ -39,22 +39,22 @@ public static class DirectoryConstants {
   }
 
   public static ISystemDirectory CLI_DIRECTORY =
-      DirectoryConstants.BASE_DIRECTORY.AssertGetExistingSubdir("cli");
+      BASE_DIRECTORY.AssertGetExistingSubdir("cli");
 
 
   public static ISystemDirectory GAME_CONFIG_DIRECTORY { get; } =
     CLI_DIRECTORY.AssertGetExistingSubdir("config");
 
   public static ISystemFile CONFIG_FILE { get; } =
-    DirectoryConstants.CLI_DIRECTORY.AssertGetExistingFile("config.json");
+    CLI_DIRECTORY.AssertGetExistingFile("config.json");
 
 
   public static ISystemDirectory ROMS_DIRECTORY =
-      DirectoryConstants.CLI_DIRECTORY.AssertGetExistingSubdir("roms");
+      CLI_DIRECTORY.AssertGetExistingSubdir("roms");
 
   public static ISystemDirectory TOOLS_DIRECTORY =
-      DirectoryConstants.CLI_DIRECTORY.AssertGetExistingSubdir("tools");
+      CLI_DIRECTORY.AssertGetExistingSubdir("tools");
 
   public static ISystemDirectory OUT_DIRECTORY =
-      DirectoryConstants.CLI_DIRECTORY.AssertGetExistingSubdir("out");
+      CLI_DIRECTORY.AssertGetExistingSubdir("out");
 }

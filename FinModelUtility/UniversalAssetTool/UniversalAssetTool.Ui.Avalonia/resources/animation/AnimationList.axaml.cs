@@ -91,7 +91,7 @@ namespace uni.ui.avalonia.resources.animation {
 
   public partial class AnimationList : UserControl {
     public AnimationList() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     public static readonly RoutedEvent<AnimationSelectedEventArgs>

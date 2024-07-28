@@ -17,10 +17,10 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.StreamV(ref Position); s.StreamV(ref Up); s.StreamV(ref Forward);
-			s.Stream(ref AttachmentObjectID);
-			s.Stream(ref ToBoneHandle); s.Stream(ref FromBoneHandle);
-			s.Stream(ref IsUnitAttachment); s.Stream(ref UseOffset);
+			s.StreamV(ref this.Position); s.StreamV(ref this.Up); s.StreamV(ref this.Forward);
+			s.Stream(ref this.AttachmentObjectID);
+			s.Stream(ref this.ToBoneHandle); s.Stream(ref this.FromBoneHandle);
+			s.Stream(ref this.IsUnitAttachment); s.Stream(ref this.UseOffset);
 		}
 		#endregion
 	};

@@ -509,15 +509,15 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
               }
 
               if (attr == GxAttribute.POS) {
-                positionIndices.Add(ModModelImporter.Read_(br, format));
+                positionIndices.Add(Read_(br, format));
               } else if (attr == GxAttribute.NRM) {
-                normalIndices.Add(ModModelImporter.Read_(br, format));
+                normalIndices.Add(Read_(br, format));
               } else if (attr == GxAttribute.CLR0) {
-                color0Indices.Add(ModModelImporter.Read_(br, format));
+                color0Indices.Add(Read_(br, format));
               } else if (attr is >= GxAttribute.TEX0
                                  and <= GxAttribute.TEX7) {
                 texCoordIndices[attr - GxAttribute.TEX0]
-                    .Add(ModModelImporter.Read_(br, format));
+                    .Add(Read_(br, format));
               } else if (format == GxAttributeType.INDEX_16) {
                 br.ReadUInt16();
               } else {

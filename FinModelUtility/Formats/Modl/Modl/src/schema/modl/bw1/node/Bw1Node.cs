@@ -14,7 +14,7 @@ namespace modl.schema.modl.bw1.node;
 
 public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
   public uint WeirdId { get; set; }
-  public bool IsHidden => (WeirdId & 0x80) != 0;
+  public bool IsHidden => (this.WeirdId & 0x80) != 0;
 
   public BwTransform Transform { get; } = new();
 
@@ -27,7 +27,7 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
 
   public static string GetIdentifier(uint weirdId) => $"Node {weirdId}";
 
-  public string GetIdentifier() => Bw1Node.GetIdentifier(this.WeirdId);
+  public string GetIdentifier() => GetIdentifier(this.WeirdId);
 
   [Unknown]
   public void Read(IBinaryReader br) {
@@ -114,7 +114,7 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
         case "VPOS": {
           // TODO: Handle this properly
           // Each new VPOS section seems to correspond to a new LOD mesh, but we only need the first one.
-          if (Positions.Count > 0) {
+          if (this.Positions.Count > 0) {
             br.Position = expectedNodeEnd;
             goto BreakEarly;
           }

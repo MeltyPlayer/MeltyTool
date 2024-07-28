@@ -24,8 +24,8 @@ namespace KSoft.Collections
 
 		public bool ToLowerDataNames
 		{
-			get { return Flags.Test(BCollectionParamsFlags.ToLowerDataNames); }
-			set { Flags.Set(BCollectionParamsFlags.ToLowerDataNames, value); }
+			get { return this.Flags.Test(BCollectionParamsFlags.ToLowerDataNames); }
+			set { this.Flags.Set(BCollectionParamsFlags.ToLowerDataNames, value); }
 		}
 		#endregion
 

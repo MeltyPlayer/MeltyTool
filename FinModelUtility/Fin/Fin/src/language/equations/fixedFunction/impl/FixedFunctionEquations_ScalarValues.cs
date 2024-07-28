@@ -179,7 +179,7 @@ public class ScalarConstant(double value) : BScalarValue, IScalarConstant {
 
 
   public override bool Equals(object? other) {
-    if (Object.ReferenceEquals(this, other)) {
+    if (ReferenceEquals(this, other)) {
       return true;
     }
 

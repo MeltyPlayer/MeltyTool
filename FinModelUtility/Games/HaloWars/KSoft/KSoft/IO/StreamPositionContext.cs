@@ -24,8 +24,8 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(baseStream != null);
 			Contract.Requires<InvalidOperationException>(baseStream.CanSeek);
 
-			mPosition = baseStream.Position;
-			mStream = baseStream;
+			this.mPosition = baseStream.Position;
+			this.mStream = baseStream;
 		}
 
 		public StreamPositionContext(BinaryReader stream) : this(stream.BaseStream)
@@ -49,10 +49,10 @@ namespace KSoft.IO
 
 		public void Dispose()
 		{
-			if (mStream != null)
+			if (this.mStream != null)
 			{
-				mStream.Seek(mPosition, SeekOrigin.Begin);
-				mStream = null;
+				this.mStream.Seek(this.mPosition, SeekOrigin.Begin);
+				this.mStream = null;
 			}
 		}
 	};

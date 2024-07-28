@@ -27,22 +27,22 @@ namespace KSoft.Phoenix.Xmb
 
 		public Shell.EndianFormat Endian
 		{
-			get { return mHeader.SignatureAsEndianFormat; }
-			set { mHeader.SignatureAsEndianFormat = value; }
+			get { return this.mHeader.SignatureAsEndianFormat; }
+			set { this.mHeader.SignatureAsEndianFormat = value; }
 		}
 
 		#region IEndianStreamable Members
 		public void Serialize(IO.EndianStream s)
 		{
 			if (s.IsReading)
-				Endian = BinaryDataTreeHeader.PeekSignatureAsEndianFormat(s.Reader);
+				this.Endian = BinaryDataTreeHeader.PeekSignatureAsEndianFormat(s.Reader);
 
 			using (s.BeginEndianSwitch(this.Endian))
 			{
 				if (s.IsReading)
-					ReadInternal(s);
+					this.ReadInternal(s);
 				else if (s.IsWriting)
-					WriteInternal(s);
+					this.WriteInternal(s);
 			}
 		}
 
@@ -51,21 +51,21 @@ namespace KSoft.Phoenix.Xmb
 			long stream_length = s.BaseStream.Length - s.BaseStream.Position;
 
 			#region Header
-			if (ValidateData)
+			if (this.ValidateData)
 			{
 				if (stream_length < BinaryDataTreeHeader.kSizeOf)
 					throw new InvalidDataException("Expected more bytes for header data");
 			}
 
-			mHeader.Serialize(s);
+			this.mHeader.Serialize(s);
 
-			if (ValidateData)
+			if (this.ValidateData)
 			{
-				mHeader.Validate();
+				this.mHeader.Validate();
 
 				long min_expected_bytes_remaining =
 					BinaryDataTreeHeader.kSizeOf +
-					(BinaryDataTreeSectionHeader.kSizeOf * mHeader.UserSectionCount);
+					(BinaryDataTreeSectionHeader.kSizeOf * this.mHeader.UserSectionCount);
 				if (stream_length < min_expected_bytes_remaining)
 					throw new InvalidDataException("Expected more bytes for header and user sections data");
 			}
@@ -73,24 +73,25 @@ namespace KSoft.Phoenix.Xmb
 
 			#region Data
 			long data_position = s.BaseStream.Position;
-			if (ValidateData)
+			if (this.ValidateData)
 			{
-				long total_size = BinaryDataTreeHeader.kSizeOf + mHeader.DataSize;
+				long total_size = BinaryDataTreeHeader.kSizeOf + this.mHeader.DataSize;
 				if (stream_length < total_size)
 					throw new InvalidDataException("Expected more bytes for header and payload data");
 
-				uint actual_data_crc = GetDataCrc32(s.BaseStream);
-				if (mHeader.DataCrc32 != actual_data_crc)
+				uint actual_data_crc = this.GetDataCrc32(s.BaseStream);
+				if (this.mHeader.DataCrc32 != actual_data_crc)
 					throw new InvalidDataException(string.Format("Invalid Data CRC 0x{0}, expected 0x{1}",
-						actual_data_crc.ToString("X8"), mHeader.DataCrc32.ToString("X8")));
+						actual_data_crc.ToString("X8"),
+						this.mHeader.DataCrc32.ToString("X8")));
 			}
 			#endregion
 
 			#region Sections
-			var section_headers = new BinaryDataTreeSectionHeader[mHeader.UserSectionCount];
+			var section_headers = new BinaryDataTreeSectionHeader[this.mHeader.UserSectionCount];
 			s.StreamArray(section_headers);
 
-			if (ValidateData)
+			if (this.ValidateData)
 			{
 				foreach (var header in section_headers)
 				{
@@ -101,33 +102,33 @@ namespace KSoft.Phoenix.Xmb
 
 			long offset_cursor = data_position;
 
-			uint nodes_size = mHeader[BinaryDataTreeSectionID.NodeSectionIndex];
+			uint nodes_size = this.mHeader[BinaryDataTreeSectionID.NodeSectionIndex];
 			long nodes_offset = nodes_size > 0
 				? offset_cursor
 				: 0;
 			offset_cursor += nodes_size;
 
-			uint name_values_size = mHeader[BinaryDataTreeSectionID.NameValueSectionIndex];
+			uint name_values_size = this.mHeader[BinaryDataTreeSectionID.NameValueSectionIndex];
 			long name_values_offset = name_values_size > 0
 				? offset_cursor
 				: 0;
 			offset_cursor += name_values_size;
 
-			uint name_data_size = mHeader[BinaryDataTreeSectionID.NameDataSectionIndex];
+			uint name_data_size = this.mHeader[BinaryDataTreeSectionID.NameDataSectionIndex];
 			long name_data_offset = name_data_size > 0
 				? offset_cursor
 				: 0;
 			offset_cursor += name_data_size;
 
-			if (mHeader[BinaryDataTreeSectionID.ValueDataSectionIndex] > 0)
+			if (this.mHeader[BinaryDataTreeSectionID.ValueDataSectionIndex] > 0)
 				offset_cursor = IntegerMath.Align(IntegerMath.k16ByteAlignmentBit, offset_cursor);
-			uint value_data_size = mHeader[BinaryDataTreeSectionID.ValueDataSectionIndex];
+			uint value_data_size = this.mHeader[BinaryDataTreeSectionID.ValueDataSectionIndex];
 			long value_data_offset = value_data_size > 0
 				? offset_cursor
 				: 0;
 			offset_cursor += value_data_size;
 
-			if (ValidateData)
+			if (this.ValidateData)
 			{
 				if (stream_length < offset_cursor)
 					throw new InvalidDataException("Expected more bytes for section data");
@@ -135,37 +136,38 @@ namespace KSoft.Phoenix.Xmb
 			#endregion
 
 			#region Decompiler
-			Decompiler = new BinaryDataTreeDecompiler();
+
+			this.Decompiler = new BinaryDataTreeDecompiler();
 
 			s.Seek(name_data_offset);
-			Decompiler.NameData = new byte[name_data_size];
-			s.Stream(Decompiler.NameData);
+			this.Decompiler.NameData = new byte[name_data_size];
+			s.Stream(this.Decompiler.NameData);
 
 			s.Seek(value_data_offset);
-			Decompiler.ValueData = new byte[value_data_size];
-			s.Stream(Decompiler.ValueData);
+			this.Decompiler.ValueData = new byte[value_data_size];
+			s.Stream(this.Decompiler.ValueData);
 
 			s.Seek(nodes_offset);
-			Decompiler.PackedNodes = new BinaryDataTreePackedNode[nodes_size / BinaryDataTreePackedNode.kSizeOf];
-			s.StreamArray(Decompiler.PackedNodes);
+			this.Decompiler.PackedNodes = new BinaryDataTreePackedNode[nodes_size / BinaryDataTreePackedNode.kSizeOf];
+			s.StreamArray(this.Decompiler.PackedNodes);
 
 			s.Seek(name_values_offset);
-			Decompiler.NameValues = new BinaryDataTreeNameValue[name_values_size / BinaryDataTreeNameValue.kSizeOf];
-			s.StreamArray(Decompiler.NameValues);
+			this.Decompiler.NameValues = new BinaryDataTreeNameValue[name_values_size / BinaryDataTreeNameValue.kSizeOf];
+			s.StreamArray(this.Decompiler.NameValues);
 
-			Decompiler.Decompile();
+			this.Decompiler.Decompile();
 			#endregion
 		}
 
 		private void WriteInternal(IO.EndianStream s)
 		{
 			long headerPosition = s.BaseStream.Position;
-			mHeader.Serialize(s);
+			this.mHeader.Serialize(s);
 
 			// #TODO
 
 			s.Seek(headerPosition);
-			mHeader.Serialize(s);
+			this.mHeader.Serialize(s);
 
 			throw new NotImplementedException();
 		}
@@ -174,7 +176,7 @@ namespace KSoft.Phoenix.Xmb
 		{
 			var crc_hasher = new Security.Cryptography.CrcHash32(PhxUtil.kCrc32Definition);
 			var stream_crc_hash_computer = new Security.Cryptography.StreamHashComputer<Security.Cryptography.CrcHash32>(crc_hasher, s, restorePosition: true);
-			stream_crc_hash_computer.SetRangeAtCurrentOffset(mHeader.DataSize);
+			stream_crc_hash_computer.SetRangeAtCurrentOffset(this.mHeader.DataSize);
 			uint actual_data_crc = stream_crc_hash_computer.Compute().Hash32;
 			return actual_data_crc;
 		}
@@ -183,8 +185,8 @@ namespace KSoft.Phoenix.Xmb
 		#region ToXml
 		public XmlDocument ToXmlDocument()
 		{
-			if (Decompiler != null)
-				return Decompiler.ToXmlDocument(this);
+			if (this.Decompiler != null)
+				return this.Decompiler.ToXmlDocument(this);
 
 			throw new InvalidOperationException();
 		}
@@ -195,16 +197,16 @@ namespace KSoft.Phoenix.Xmb
 
 			using (var fs = File.Create(file))
 			{
-				ToXml(fs);
+				this.ToXml(fs);
 			}
 		}
 		public void ToXml(Stream stream)
 		{
 			Contract.Requires(stream != null);
 
-			var doc = ToXmlDocument();
+			var doc = this.ToXmlDocument();
 
-			var encoding = Decompiler.HasUnicodeStrings
+			var encoding = this.Decompiler.HasUnicodeStrings
 				? System.Text.Encoding.UTF8
 				: System.Text.Encoding.ASCII;
 			var xml_writer_settings = new XmlWriterSettings()
@@ -238,50 +240,50 @@ namespace KSoft.Phoenix.Xmb
 
 		public void Decompile()
 		{
-			NameDataReader = new IO.EndianReader(
-				new MemoryStream(NameData, writable: false),
+			this.NameDataReader = new IO.EndianReader(
+				new MemoryStream(this.NameData, writable: false),
 				Shell.EndianFormat.Little,
 				name: "NameDataReader");
 
-			ValueDataPool = new BinaryDataTreeMemoryPool(ValueData);
+			this.ValueDataPool = new BinaryDataTreeMemoryPool(this.ValueData);
 
-			Nodes = new List<BinaryDataTreeBuildNode>(PackedNodes.Length);
-			for (int x = 0; x < PackedNodes.Length; x++)
-				Nodes.Add(new BinaryDataTreeBuildNode());
+			this.Nodes = new List<BinaryDataTreeBuildNode>(this.PackedNodes.Length);
+			for (int x = 0; x < this.PackedNodes.Length; x++)
+				this.Nodes.Add(new BinaryDataTreeBuildNode());
 
-			for (int x = 0; x < PackedNodes.Length; x++)
+			for (int x = 0; x < this.PackedNodes.Length; x++)
 			{
-				var packed_node = PackedNodes[x];
-				var build_node = Nodes[x];
+				var packed_node = this.PackedNodes[x];
+				var build_node = this.Nodes[x];
 
 				build_node.SetParent(this, packed_node);
 
 				int num_child_nodes;
-				CalculateChildNodesCount(x, out num_child_nodes);
+				this.CalculateChildNodesCount(x, out num_child_nodes);
 				build_node.SetChildren(this, packed_node, num_child_nodes);
 
 				int num_name_values;
-				CalculateNameValuesCount(x, out num_name_values);
+				this.CalculateNameValuesCount(x, out num_name_values);
 				if (num_name_values == 0)
 					throw new InvalidDataException("No name-values: #" + x);
 				build_node.SetNameValues(this, packed_node, num_name_values);
 			}
 
-			Util.DisposeAndNull(ref NameDataReader);
+			Util.DisposeAndNull(ref this.NameDataReader);
 		}
 
 		public string ReadName(int nameOffset)
 		{
-			if (NameData == null || nameOffset >= NameData.Length)
+			if (this.NameData == null || nameOffset >= this.NameData.Length)
 				throw new InvalidOperationException(nameOffset.ToString("X8"));
 
-			NameDataReader.Seek(nameOffset);
-			return NameDataReader.ReadString(Memory.Strings.StringStorage.CStringAscii);
+			this.NameDataReader.Seek(nameOffset);
+			return this.NameDataReader.ReadString(Memory.Strings.StringStorage.CStringAscii);
 		}
 
 		private void CalculateChildNodesCount(int nodeIndex, out int numChildNodes)
 		{
-			var packed_node = PackedNodes[nodeIndex];
+			var packed_node = this.PackedNodes[nodeIndex];
 
 			numChildNodes = packed_node.ChildNodesCount;
 			if (!packed_node.HasChildNodesCountOverflow)
@@ -289,12 +291,12 @@ namespace KSoft.Phoenix.Xmb
 
 			for (int childNodeIndex = packed_node.ChildNodeIndex; ; numChildNodes++)
 			{
-				if ((childNodeIndex + numChildNodes) > Nodes.Count)
+				if ((childNodeIndex + numChildNodes) > this.Nodes.Count)
 					throw new InvalidDataException();
-				else if ((childNodeIndex + numChildNodes) == Nodes.Count)
+				else if ((childNodeIndex + numChildNodes) == this.Nodes.Count)
 					break;
 
-				var childNode = PackedNodes[childNodeIndex + numChildNodes];
+				var childNode = this.PackedNodes[childNodeIndex + numChildNodes];
 				if (childNode.ParentIndex != nodeIndex)
 					break;
 			}
@@ -302,7 +304,7 @@ namespace KSoft.Phoenix.Xmb
 
 		private void CalculateNameValuesCount(int nodeIndex, out int numNameValues)
 		{
-			var packed_node = PackedNodes[nodeIndex];
+			var packed_node = this.PackedNodes[nodeIndex];
 
 			numNameValues = packed_node.NameValuesCount;
 			if (!packed_node.HasNameValuesCountOverflow)
@@ -313,7 +315,7 @@ namespace KSoft.Phoenix.Xmb
 				if ((nameValueIndex + numNameValues) >= numNameValues)
 					throw new InvalidDataException();
 
-				var nameValue = NameValues[nameValueIndex + numNameValues];
+				var nameValue = this.NameValues[nameValueIndex + numNameValues];
 				if (nameValue.IsLastNameValue)
 					break;
 			}
@@ -321,12 +323,12 @@ namespace KSoft.Phoenix.Xmb
 
 		public XmlDocument ToXmlDocument(BinaryDataTree tree)
 		{
-			Contract.Requires(RootNode != null);
+			Contract.Requires(this.RootNode != null);
 			Contract.Ensures(Contract.Result<XmlDocument>() != null);
 
-			string root_name = RootNode.NodeName;
+			string root_name = this.RootNode.NodeName;
 			var s = IO.XmlElementStream.CreateForWrite(root_name);
-			RootNode.ToXml(tree, s);
+			this.RootNode.ToXml(tree, s);
 
 			return s.Document;
 		}

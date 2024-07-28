@@ -19,12 +19,12 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.StreamPascalWideString32(ref HelpString);
-			s.Stream(HudSounds);
-			s.Stream(ref LOSMode);
-			s.Stream(ref ODSTProtoSquadID); s.Stream(ref ODSTProtoObjectID);
-			s.Stream(ref CanFire);
-			s.StreamV(ref ValidDropLocation);
+			s.StreamPascalWideString32(ref this.HelpString);
+			s.Stream(this.HudSounds);
+			s.Stream(ref this.LOSMode);
+			s.Stream(ref this.ODSTProtoSquadID); s.Stream(ref this.ODSTProtoObjectID);
+			s.Stream(ref this.CanFire);
+			s.StreamV(ref this.ValidDropLocation);
 		}
 		#endregion
 	};

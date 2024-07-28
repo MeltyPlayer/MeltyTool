@@ -47,6 +47,6 @@ public class ProgressSpinnerViewModel : ViewModelBase {
 
 public partial class ProgressSpinner : UserControl {
   public ProgressSpinner() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

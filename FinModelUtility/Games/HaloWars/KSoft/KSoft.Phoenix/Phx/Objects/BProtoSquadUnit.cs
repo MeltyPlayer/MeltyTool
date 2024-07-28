@@ -15,8 +15,8 @@ namespace KSoft.Phoenix.Phx
 		int mCount;
 		public int Count
 		{
-			get { return mCount; }
-			set { mCount = value; }
+			get { return this.mCount; }
+			set { this.mCount = value; }
 		}
 		#endregion
 
@@ -25,8 +25,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int UnitID
 		{
-			get { return mUnitID; }
-			set { mUnitID = value; }
+			get { return this.mUnitID; }
+			set { this.mUnitID = value; }
 		}
 		#endregion
 
@@ -34,8 +34,8 @@ namespace KSoft.Phoenix.Phx
 		BUnitRole mUnitRole;
 		public BUnitRole UnitRole
 		{
-			get { return mUnitRole; }
-			set { mUnitRole = value; }
+			get { return this.mUnitRole; }
+			set { this.mUnitRole = value; }
 		}
 		#endregion
 
@@ -46,9 +46,9 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttribute("count", ref mCount);
-			s.StreamAttributeEnumOpt("role", ref mUnitRole, e => e != BUnitRole.Normal);
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mUnitID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceCursor);
+			s.StreamAttribute("count", ref this.mCount);
+			s.StreamAttributeEnumOpt("role", ref this.mUnitRole, e => e != BUnitRole.Normal);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mUnitID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceCursor);
 		}
 		#endregion
 	};

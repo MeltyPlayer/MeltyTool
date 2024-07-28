@@ -29,12 +29,11 @@ namespace HaloWarsTools {
 
       this.Mesh = this.ImportMesh(bytes);
 
-      this.AmbientOcclusionTexture = ExtractEmbeddedDXT5A(bytes,
-        GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_AOChunk));
-      this.OpacityTexture =
-          ExtractEmbeddedDXT5A(
+      this.AmbientOcclusionTexture = this.ExtractEmbeddedDXT5A(bytes,
+                                                               this.GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_AOChunk));
+      this.OpacityTexture = this.ExtractEmbeddedDXT5A(
               bytes,
-              GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_AlphaChunk));
+              this.GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_AlphaChunk));
     }
 
     private IImage ExtractEmbeddedDXT5A(byte[] bytes,
@@ -64,13 +63,11 @@ namespace HaloWarsTools {
     private IModel ImportMesh(byte[] bytes) {
       MeshNormalExportMode shadingMode = MeshNormalExportMode.Unchanged;
 
-      HWBinaryResourceChunk headerChunk =
-          GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_XTDHeader);
+      HWBinaryResourceChunk headerChunk = this.GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_XTDHeader);
       float tileScale =
           BinaryUtils.ReadFloatBigEndian(bytes,
                                          (int) headerChunk.Offset + 12);
-      HWBinaryResourceChunk atlasChunk =
-          GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_AtlasChunk);
+      HWBinaryResourceChunk atlasChunk = this.GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_AtlasChunk);
 
       int gridSize =
           (int) Math.Round(Math.Sqrt((atlasChunk.Size - 32) /
@@ -185,7 +182,7 @@ namespace HaloWarsTools {
     private const uint K_BIT_MASK_10 = (1 << 10) - 1;
 
     private const float INVERSE_K_BIT_MASK_10 =
-        1f / HWXtdResource.K_BIT_MASK_10;
+        1f / K_BIT_MASK_10;
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static Vector3 ReadVector3Compressed(ReadOnlySpan<byte> bytes) {

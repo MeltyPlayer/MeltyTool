@@ -20,14 +20,14 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(HudSounds);
-			s.StreamPascalWideString32(ref HelpString);
-			s.Stream(ref FakeTargettingLaserID); s.Stream(ref RealTargettingLaserID); s.Stream(ref TargettedSquadID);
-			s.Stream(ref ShotsRemaining);
-			s.Stream(ref LastCommandSent); s.Stream(ref CommandInterval); s.Stream(ref LastShotSent); s.Stream(ref ShotInterval);
-			s.Stream(ref LOSMode);
-			s.Stream(ref FlagLastCameraAutoZoomInstantEnabled); s.Stream(ref FlagLastCameraAutoZoomEnabled);
-			s.Stream(ref FlagLastCameraZoomEnabled); s.Stream(ref FlagLastCameraYawEnabled);
+			s.Stream(this.HudSounds);
+			s.StreamPascalWideString32(ref this.HelpString);
+			s.Stream(ref this.FakeTargettingLaserID); s.Stream(ref this.RealTargettingLaserID); s.Stream(ref this.TargettedSquadID);
+			s.Stream(ref this.ShotsRemaining);
+			s.Stream(ref this.LastCommandSent); s.Stream(ref this.CommandInterval); s.Stream(ref this.LastShotSent); s.Stream(ref this.ShotInterval);
+			s.Stream(ref this.LOSMode);
+			s.Stream(ref this.FlagLastCameraAutoZoomInstantEnabled); s.Stream(ref this.FlagLastCameraAutoZoomEnabled);
+			s.Stream(ref this.FlagLastCameraZoomEnabled); s.Stream(ref this.FlagLastCameraYawEnabled);
 		}
 		#endregion
 	};

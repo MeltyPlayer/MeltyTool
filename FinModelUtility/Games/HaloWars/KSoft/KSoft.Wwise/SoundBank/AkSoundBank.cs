@@ -48,10 +48,10 @@ namespace KSoft.Wwise.SoundBank
 		AkSubchunkHeader mHeaderChunkHeader;
 		AkBankHeader mHeader;
 
-		public uint GeneratorVersion{ get { return mHeader.BankGeneratorVersion; } }
-		public uint Id				{ get { return mHeader.SoundBankID; } }
-		public uint LanguageId		{ get { return mHeader.LanguageID; } }
-		public bool HasFeedback		{ get { return mHeader.FeedbackSupported > 0; } }
+		public uint GeneratorVersion{ get { return this.mHeader.BankGeneratorVersion; } }
+		public uint Id				{ get { return this.mHeader.SoundBankID; } }
+		public uint LanguageId		{ get { return this.mHeader.LanguageID; } }
+		public bool HasFeedback		{ get { return this.mHeader.FeedbackSupported > 0; } }
 		#endregion
 		Dictionary<AkSubchunkHeader, AkSoundBankObjectBase> mChunks;
 
@@ -59,26 +59,26 @@ namespace KSoft.Wwise.SoundBank
 		internal AkSoundBankDataIndex mDataIndex;
 
 		// TODO: mPackage can be null, need to get around this...
-		public uint SdkVersion { get { return mPackage.Settings.SdkVersion; } }
+		public uint SdkVersion { get { return this.mPackage.Settings.SdkVersion; } }
 
 		public AkSoundBank(long fileSize, long fileOffset = 0, FilePackage.AkFilePackage package = null)
 		{
-			mStreamOffset = fileOffset;
-			mEndOfStream = fileOffset + fileSize;
-			mPackage = package;
+			this.mStreamOffset = fileOffset;
+			this.mEndOfStream = fileOffset + fileSize;
+			this.mPackage = package;
 
 			if (package == null)
-				mIdToName = new Dictionary<uint,string>();
+				this.mIdToName = new Dictionary<uint,string>();
 
-			mChunks = new Dictionary<AkSubchunkHeader, AkSoundBankObjectBase>();
+			this.mChunks = new Dictionary<AkSubchunkHeader, AkSoundBankObjectBase>();
 		}
 
 		internal void MapIdToName(uint id, string name)
 		{
-			if (mPackage != null)
-				mPackage.MapIdToName(id, name);
+			if (this.mPackage != null)
+				this.mPackage.MapIdToName(id, name);
 			else
-				mIdToName.Add(id, name);
+				this.mIdToName.Add(id, name);
 		}
 
 		#region IEndianStreamSerializable Members
@@ -87,27 +87,27 @@ namespace KSoft.Wwise.SoundBank
 		{
 			if (s.IsReading)
 			{
-				Contract.Assert(s.BaseStream.Position <= mEndOfStream);
-				return s.BaseStream.Position == mEndOfStream;
+				Contract.Assert(s.BaseStream.Position <= this.mEndOfStream);
+				return s.BaseStream.Position == this.mEndOfStream;
 			}
 
 			return false;
 		}
 		void ReadChunks(IO.EndianStream es, IO.EndianReader s)
 		{
-			while (!EndOfStream(es))
+			while (!this.EndOfStream(es))
 			{
 				var hdr = new AkSubchunkHeader();
 				hdr.Serialize(es);
 
 				using (es.EnterVirtualBufferWithBookmark(hdr.ChunkSize))
 				{
-					var obj = AkSoundBankObjectBase.New(hdr.Tag, GeneratorVersion);
+					var obj = AkSoundBankObjectBase.New(hdr.Tag, this.GeneratorVersion);
 					if (obj != null)
 					{
 						obj.Serialize(es, hdr);
 
-						mChunks.Add(hdr, obj);
+						this.mChunks.Add(hdr, obj);
 					}
 				}
 			}
@@ -120,24 +120,25 @@ namespace KSoft.Wwise.SoundBank
 		{
 			using (s.EnterOwnerBookmark(this))
 			{
-				s.Seek(mStreamOffset, System.IO.SeekOrigin.Begin);
+				s.Seek(this.mStreamOffset, System.IO.SeekOrigin.Begin);
 				#region Header
-				s.Stream(ref mHeaderChunkHeader);
-				if (kHeaderSignature.ID!=mHeaderChunkHeader.Tag) throw new IO.SignatureMismatchException(s.BaseStream,
-					kHeaderSignature.ID, mHeaderChunkHeader.Tag);
+				s.Stream(ref this.mHeaderChunkHeader);
+				if (kHeaderSignature.ID!= this.mHeaderChunkHeader.Tag) throw new IO.SignatureMismatchException(s.BaseStream,
+				                                                                                            kHeaderSignature.ID,
+				                                                                                            this.mHeaderChunkHeader.Tag);
 
-				s.Stream(ref mHeader);
-				s.Pad((int)mHeaderChunkHeader.ChunkSize - AkBankHeader.kSizeOf);
+				s.Stream(ref this.mHeader);
+				s.Pad((int) this.mHeaderChunkHeader.ChunkSize - AkBankHeader.kSizeOf);
 				#endregion
 
-				s.StreamMethods(s, ReadChunks, WriteChunks);
+				s.StreamMethods(s, this.ReadChunks, this.WriteChunks);
 			}
 		}
 		#endregion
 
 		internal void PrepareForExtraction()
 		{
-			foreach (var kv in mChunks)
+			foreach (var kv in this.mChunks)
 			{
 				var obj = kv.Value as AkSoundBankHierarchy;
 				if (obj != null)
@@ -147,15 +148,15 @@ namespace KSoft.Wwise.SoundBank
 
 		internal void CopyObjectsTo(FilePackage.AkFilePackageExtractor extractor)
 		{
-			foreach (var chunk in mChunks)
+			foreach (var chunk in this.mChunks)
 				if (chunk.Value is AkSoundBankHierarchy)
 					((AkSoundBankHierarchy)chunk.Value).CopyObjectsTo(extractor);
 				else if (chunk.Value is AkSoundBankData)
-					mData = (AkSoundBankData)chunk.Value;
+					this.mData = (AkSoundBankData)chunk.Value;
 				else if (chunk.Value is AkSoundBankDataIndex)
 				{
-					mDataIndex = (AkSoundBankDataIndex)chunk.Value;
-					foreach (var media in mDataIndex.LoadedMedia)
+					this.mDataIndex = (AkSoundBankDataIndex)chunk.Value;
+					foreach (var media in this.mDataIndex.LoadedMedia)
 					{
 						if (!extractor.mUntouched.ContainsKey(media.ID))
 							extractor.mUntouched.Add(media.ID, new MediaReference { Media = media, BankId = this.Id });

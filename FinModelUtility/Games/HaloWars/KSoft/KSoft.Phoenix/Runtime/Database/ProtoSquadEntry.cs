@@ -12,8 +12,8 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.StreamPascalString32(ref Name);
-				s.Stream(ref FlagObjectProtoSquad);
+				s.StreamPascalString32(ref this.Name);
+				s.Stream(ref this.FlagObjectProtoSquad);
 			}
 			#endregion
 		};

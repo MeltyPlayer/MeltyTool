@@ -28,10 +28,10 @@ public class ModelRendererV2(
   private MatricesUbo? matricesUbo_;
   private LightsUbo? lightsUbo_;
 
-  ~ModelRendererV2() => ReleaseUnmanagedResources_();
+  ~ModelRendererV2() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
-    ReleaseUnmanagedResources_();
+    this.ReleaseUnmanagedResources_();
     GC.SuppressFinalize(this);
   }
 

@@ -14,7 +14,7 @@ public static partial class Ctrtool {
           .ToImmutableHashSet();
 
   private static void RunInCtrDirectoryAndCleanUp_(Action handler) {
-    lock (Ctrtool.CTRTOOL_LOCK) {
+    lock (CTRTOOL_LOCK) {
       Files.RunInDirectory(ThreeDsToolsConstants.CTRTOOL_DIRECTORY, handler);
 
       foreach (var fileToCleanUp in ThreeDsToolsConstants

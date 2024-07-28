@@ -27,30 +27,30 @@ namespace mod.schema.anm {
 
         KeyframeDefinition<ValueAndTangents<float>>[][] frames;
 
-        frames = DcxHelpers.ReadKeyframes_(
+        frames = ReadKeyframes_(
             isDck,
             dcxAnimationData,
             jointData.ScaleAxes,
             dcxAnimationData.ScaleValues);
-        DcxHelpers.MergeKeyframesToScaleTrack(
+        MergeKeyframesToScaleTrack(
             frames,
             jointKeyframes.UseSeparateScaleKeyframesWithTangents());
 
-        frames = DcxHelpers.ReadKeyframes_(
+        frames = ReadKeyframes_(
             isDck,
             dcxAnimationData,
             jointData.RotationAxes,
             dcxAnimationData.RotationValues);
-        DcxHelpers.MergeKeyframesToRotationTrack(
+        MergeKeyframesToRotationTrack(
             frames,
             jointKeyframes.UseSeparateEulerRadiansKeyframesWithTangents());
 
-        frames = DcxHelpers.ReadKeyframes_(
+        frames = ReadKeyframes_(
             isDck,
             dcxAnimationData,
             jointData.PositionAxes,
             dcxAnimationData.PositionValues);
-        DcxHelpers.MergeKeyframesToPositionTrack(
+        MergeKeyframesToPositionTrack(
             frames,
             jointKeyframes.UseSeparateTranslationKeyframesWithTangents());
       }
@@ -73,11 +73,11 @@ namespace mod.schema.anm {
 
         var sparse = isDck && frameCount != 1;
         frames[i] = !sparse
-            ? DcxHelpers.ReadDenseFrames(
+            ? ReadDenseFrames(
                 values,
                 frameOffset,
                 frameCount)
-            : DcxHelpers.ReadSparseFrames(
+            : ReadSparseFrames(
                 values,
                 frameOffset,
                 frameCount);

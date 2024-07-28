@@ -37,54 +37,54 @@ namespace HaloWarsTools {
     public List<GenericFace> Faces = [];
 
     public void ApplyExportOptions(MeshExportOptions options) {
-      if (!exportOptionsApplied || !options.Equals(ExportOptions)) {
+      if (!this.exportOptionsApplied || !options.Equals(this.ExportOptions)) {
         // If these settings haven't already been applied
 
         if (options.NormalExportMode == MeshNormalExportMode.CalculateNormalsFlatShaded) {
-          RecalculateNormalsFlatShaded();
+          this.RecalculateNormalsFlatShaded();
         } else if (options.NormalExportMode == MeshNormalExportMode.CalculateNormalsSmoothShaded) {
-          RecalculateNormalsSmoothShaded();
+          this.RecalculateNormalsSmoothShaded();
         } else {
           // Use already set up normals
         }
 
-        Vertices = Vertices.Select(vertex => Vector3.Transform(vertex, options.Matrix)).ToList();
-        Normals = Normals
-                  .Select(normal => Vector3.Normalize(Vector3.TransformNormal(normal, options.Matrix) *
-                                                      (options.InvertNormals ? -1.0f : 1.0f)))
-                  .ToList();
+        this.Vertices = this.Vertices.Select(vertex => Vector3.Transform(vertex, options.Matrix)).ToList();
+        this.Normals = this.Normals
+                           .Select(normal => Vector3.Normalize(Vector3.TransformNormal(normal, options.Matrix) *
+                                     (options.InvertNormals ? -1.0f : 1.0f)))
+                           .ToList();
         if (options.ReverseFaceWinding) {
-          Faces = Faces.Select(face => GenericFace.ReverseWinding(face)).ToList();
+          this.Faces = this.Faces.Select(face => GenericFace.ReverseWinding(face)).ToList();
         }
 
-        exportOptionsApplied = true;
+        this.exportOptionsApplied = true;
       }
     }
 
     public void AddMesh(GenericMesh other, Matrix4x4 transform) {
-      int offset = Vertices.Count;
+      int offset = this.Vertices.Count;
 
       var newVerts = other.Vertices.Select(vertex => Vector3.Transform(vertex, transform));
       var newNormals = other.Normals.Select(normal => Vector3.TransformNormal(normal, transform));
       var newFaces = other.Faces.Select(face => GenericFace.OffsetIndices(face, offset));
 
-      Vertices.AddRange(newVerts);
-      Normals.AddRange(newNormals);
-      TexCoords.AddRange(other.TexCoords);
-      Faces.AddRange(newFaces);
+      this.Vertices.AddRange(newVerts);
+      this.Normals.AddRange(newNormals);
+      this.TexCoords.AddRange(other.TexCoords);
+      this.Faces.AddRange(newFaces);
     }
 
     public bool Export(string filename, GenericMeshExportFormat format) {
-      ApplyExportOptions(ExportOptions);
+      this.ApplyExportOptions(this.ExportOptions);
 
       return format switch {
-          GenericMeshExportFormat.Obj => ExportObj(filename),
+          GenericMeshExportFormat.Obj => this.ExportObj(filename),
           _                           => throw new NotImplementedException()
       };
     }
 
     public GenericMeshSection[] GetMeshSections() {
-      return Faces.GroupBy(face => face.Section).Select(group => group.First().Section).ToArray();
+      return this.Faces.GroupBy(face => face.Section).Select(group => group.First().Section).ToArray();
     }
 
     private bool ExportObj(string filename) {
@@ -99,24 +99,24 @@ namespace HaloWarsTools {
 
       meshWriter.WriteLine($"mtllib {Path.GetFileName(Path.ChangeExtension(filename, ".mtl"))}");
 
-      foreach (var vertex in Vertices) {
-        meshWriter.WriteLine($"v {GetObjVectorString(vertex)}");
+      foreach (var vertex in this.Vertices) {
+        meshWriter.WriteLine($"v {this.GetObjVectorString(vertex)}");
       }
 
-      foreach (var normal in Normals) {
-        meshWriter.WriteLine($"vn {GetObjVectorString(normal)}");
+      foreach (var normal in this.Normals) {
+        meshWriter.WriteLine($"vn {this.GetObjVectorString(normal)}");
       }
 
-      foreach (var texCoord in TexCoords) {
-        meshWriter.WriteLine($"vt {GetObjVectorString(texCoord)}");
+      foreach (var texCoord in this.TexCoords) {
+        meshWriter.WriteLine($"vt {this.GetObjVectorString(texCoord)}");
       }
 
       List<GenericMaterial> materials = [];
-      GenericMeshSection[] sections = GetMeshSections();
+      GenericMeshSection[] sections = this.GetMeshSections();
 
       foreach (var section in sections) {
         meshWriter.WriteLine($"o {section.Name}");
-        var faceGroups = Faces.Where(face => face.Section == section).GroupBy(face => face.Material);
+        var faceGroups = this.Faces.Where(face => face.Section == section).GroupBy(face => face.Material);
 
         foreach (var group in faceGroups) {
           var material = group.First().Material;
@@ -126,7 +126,7 @@ namespace HaloWarsTools {
           }
 
           foreach (var face in group) {
-            meshWriter.WriteLine($"f {GetObjFaceString(face.A)} {GetObjFaceString(face.B)} {GetObjFaceString(face.C)}");
+            meshWriter.WriteLine($"f {this.GetObjFaceString(face.A)} {this.GetObjFaceString(face.B)} {this.GetObjFaceString(face.C)}");
           }
         }
       }
@@ -155,44 +155,44 @@ namespace HaloWarsTools {
     }
 
     public void RecalculateNormalsFlatShaded() {
-      var verticesCopy = new List<Vector3>(Vertices);
-      var uvsCopy = new List<Vector3>(TexCoords);
-      Vertices.Clear();
-      Normals.Clear();
-      TexCoords.Clear();
+      var verticesCopy = new List<Vector3>(this.Vertices);
+      var uvsCopy = new List<Vector3>(this.TexCoords);
+      this.Vertices.Clear();
+      this.Normals.Clear();
+      this.TexCoords.Clear();
 
-      for (int i = 0; i < Faces.Count; i++) {
-        int index = Vertices.Count;
-        Vertices.Add(verticesCopy[Faces[i].A]);
-        Vertices.Add(verticesCopy[Faces[i].B]);
-        Vertices.Add(verticesCopy[Faces[i].C]);
+      for (int i = 0; i < this.Faces.Count; i++) {
+        int index = this.Vertices.Count;
+        this.Vertices.Add(verticesCopy[this.Faces[i].A]);
+        this.Vertices.Add(verticesCopy[this.Faces[i].B]);
+        this.Vertices.Add(verticesCopy[this.Faces[i].C]);
 
-        TexCoords.Add(uvsCopy[Faces[i].A]);
-        TexCoords.Add(uvsCopy[Faces[i].B]);
-        TexCoords.Add(uvsCopy[Faces[i].C]);
+        this.TexCoords.Add(uvsCopy[this.Faces[i].A]);
+        this.TexCoords.Add(uvsCopy[this.Faces[i].B]);
+        this.TexCoords.Add(uvsCopy[this.Faces[i].C]);
 
-        var face = new GenericFace(index, index + 1, index + 2, Faces[i].Material, Faces[i].Section);
-        Faces[i] = face;
+        var face = new GenericFace(index, index + 1, index + 2, this.Faces[i].Material, this.Faces[i].Section);
+        this.Faces[i] = face;
 
-        var normal = face.CalculateNormal(Vertices);
-        Normals.Add(normal);
-        Normals.Add(normal);
-        Normals.Add(normal);
+        var normal = face.CalculateNormal(this.Vertices);
+        this.Normals.Add(normal);
+        this.Normals.Add(normal);
+        this.Normals.Add(normal);
       }
     }
 
     public void RecalculateNormalsSmoothShaded() {
-      var vertexMap = CalculateVertexIndexToFaceIndexMap();
-      Normals.Clear();
+      var vertexMap = this.CalculateVertexIndexToFaceIndexMap();
+      this.Normals.Clear();
 
-      for (int vertexIndex = 0; vertexIndex < Vertices.Count; vertexIndex++) {
+      for (int vertexIndex = 0; vertexIndex < this.Vertices.Count; vertexIndex++) {
         Vector3 sum = Vector3.Zero;
 
         if (vertexMap.ContainsKey(vertexIndex)) {
           List<int> faces = vertexMap[vertexIndex];
 
           foreach (var faceIndex in faces) {
-            sum += Faces[faceIndex].CalculateNormal(Vertices);
+            sum += this.Faces[faceIndex].CalculateNormal(this.Vertices);
           }
 
           if (faces.Count > 0) {
@@ -200,12 +200,12 @@ namespace HaloWarsTools {
           }
         }
 
-        Normals.Add(sum);
+        this.Normals.Add(sum);
       }
     }
 
     private string GetObjVectorString(Vector3 vector) {
-      return $"{GetObjFloatString(vector.X)} {GetObjFloatString(vector.Y)} {GetObjFloatString(vector.Z)}";
+      return $"{this.GetObjFloatString(vector.X)} {this.GetObjFloatString(vector.Y)} {this.GetObjFloatString(vector.Z)}";
     }
 
     private string GetObjFloatString(float value) {
@@ -213,8 +213,8 @@ namespace HaloWarsTools {
     }
 
     private string GetObjFaceString(int index) {
-      bool hasNormal = index < Normals.Count;
-      bool hasTexCoord = index < TexCoords.Count;
+      bool hasNormal = index < this.Normals.Count;
+      bool hasTexCoord = index < this.TexCoords.Count;
       string indexStr = (index + 1).ToString();
 
       if (hasTexCoord && !hasNormal) {
@@ -230,10 +230,10 @@ namespace HaloWarsTools {
 
     public Dictionary<int, List<int>> CalculateVertexIndexToFaceIndexMap() {
       var map = new Dictionary<int, List<int>>();
-      for (int i = 0; i < Faces.Count; i++) {
-        AssociateVertexWithFace(Faces[i].A, i, map);
-        AssociateVertexWithFace(Faces[i].B, i, map);
-        AssociateVertexWithFace(Faces[i].C, i, map);
+      for (int i = 0; i < this.Faces.Count; i++) {
+        this.AssociateVertexWithFace(this.Faces[i].A, i, map);
+        this.AssociateVertexWithFace(this.Faces[i].B, i, map);
+        this.AssociateVertexWithFace(this.Faces[i].C, i, map);
       }
 
       return map;
@@ -265,7 +265,7 @@ namespace HaloWarsTools {
       GenericMaterial material,
       GenericMeshSection section) {
     public Vector3 CalculateNormal(List<Vector3> vertices) {
-      return CalculateNormal(vertices[A], vertices[B], vertices[C]);
+      return CalculateNormal(vertices[this.A], vertices[this.B], vertices[this.C]);
     }
 
     public static Vector3 CalculateNormal(Vector3 a, Vector3 b, Vector3 c) {

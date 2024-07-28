@@ -17,10 +17,9 @@ namespace jsystem {
     public BmdModelGoldenTests(
         IFileHierarchyDirectory goldenDirectory) {
       this.goldenDirectory_ = goldenDirectory;
-      this.bmd_ = new BMD(
-          GetFileBundleFromDirectory(
-                  this.goldenDirectory_.AssertGetExistingSubdir("input"))
-              .BmdFile.ReadAllBytes());
+      this.bmd_ = new BMD(this.GetFileBundleFromDirectory(
+                                  this.goldenDirectory_.AssertGetExistingSubdir("input"))
+                              .BmdFile.ReadAllBytes());
     }
 
     [Test]

@@ -14,7 +14,7 @@ public readonly struct FinFile(string fullName) : ISystemFile {
 
   // Equality
   public bool Equals(object? other) {
-    if (object.ReferenceEquals(this, other)) {
+    if (ReferenceEquals(this, other)) {
       return true;
     }
 

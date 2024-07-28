@@ -8,7 +8,7 @@ using Material.Icons;
 namespace uni.ui.avalonia.common.textboxes {
   public partial class AutocompleteTextbox : UserControl, ITextBox {
     public AutocompleteTextbox() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     public string? Text {

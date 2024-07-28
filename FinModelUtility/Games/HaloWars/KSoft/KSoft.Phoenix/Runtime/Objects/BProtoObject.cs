@@ -44,8 +44,8 @@ namespace KSoft.Phoenix.Runtime
 
 		public void CommandDisabledNone()
 		{
-			for (int x = 0; x < CommandDisabled.Length; x++)
-				CommandDisabled[x] = 0;
+			for (int x = 0; x < this.CommandDisabled.Length; x++)
+				this.CommandDisabled[x] = 0;
 		}
 
 		#region IEndianStreamSerializable Members
@@ -54,28 +54,28 @@ namespace KSoft.Phoenix.Runtime
 			base.Serialize(s);
 			var sg = s.Owner as BSaveGame;
 
-			s.Stream(ref ProtoID);
-			BSaveGame.StreamArray(s, ref TrainLimits);
-			Contract.Assert(TrainLimits.Length <= kTrainLimitsMaxCount);
-			BSaveGame.StreamArray(s, ref Hardpoints);
-			Contract.Assert(Hardpoints.Length <= BHardpoint.kMaxCount);
-			sg.StreamBCost(s, ref Cost);
-			s.Stream(ref ProtoVisualIndex);
-			s.Stream(ref DesiredVelocity); s.Stream(ref MaxVelocity);
-			s.Stream(ref Hitpoints); s.Stream(ref Shieldpoints);
-			s.Stream(ref LOS);
-			s.Stream(ref SimLOS);
-			s.Stream(ref BuildPoints);
-			s.Stream(ref Bounty);
-			s.StreamNotNull(ref Tactic);
-			s.Stream(ref AmmoMax); s.Stream(ref AmmoRegenRate); s.Stream(ref RateAmount);
-			s.Stream(ref MaxContained); s.Stream(ref DisplayNameIndex); s.Stream(ref CircleMenuIconID);
-			s.Stream(ref DeathSpawnSquad);
-			BSaveGame.StreamArray(s, ref CommandDisabled);
-			BSaveGame.StreamArray(s, ref CommandSelectable);
-			s.Stream(ref Available); s.Stream(ref Forbid); s.Stream(ref AbilityDisabled);
-			s.Stream(ref AutoCloak); s.Stream(ref CloakMove); s.Stream(ref CloakAttack);
-			s.Stream(ref UniqueInstance);
+			s.Stream(ref this.ProtoID);
+			BSaveGame.StreamArray(s, ref this.TrainLimits);
+			Contract.Assert(this.TrainLimits.Length <= kTrainLimitsMaxCount);
+			BSaveGame.StreamArray(s, ref this.Hardpoints);
+			Contract.Assert(this.Hardpoints.Length <= BHardpoint.kMaxCount);
+			sg.StreamBCost(s, ref this.Cost);
+			s.Stream(ref this.ProtoVisualIndex);
+			s.Stream(ref this.DesiredVelocity); s.Stream(ref this.MaxVelocity);
+			s.Stream(ref this.Hitpoints); s.Stream(ref this.Shieldpoints);
+			s.Stream(ref this.LOS);
+			s.Stream(ref this.SimLOS);
+			s.Stream(ref this.BuildPoints);
+			s.Stream(ref this.Bounty);
+			s.StreamNotNull(ref this.Tactic);
+			s.Stream(ref this.AmmoMax); s.Stream(ref this.AmmoRegenRate); s.Stream(ref this.RateAmount);
+			s.Stream(ref this.MaxContained); s.Stream(ref this.DisplayNameIndex); s.Stream(ref this.CircleMenuIconID);
+			s.Stream(ref this.DeathSpawnSquad);
+			BSaveGame.StreamArray(s, ref this.CommandDisabled);
+			BSaveGame.StreamArray(s, ref this.CommandSelectable);
+			s.Stream(ref this.Available); s.Stream(ref this.Forbid); s.Stream(ref this.AbilityDisabled);
+			s.Stream(ref this.AutoCloak); s.Stream(ref this.CloakMove); s.Stream(ref this.CloakAttack);
+			s.Stream(ref this.UniqueInstance);
 			s.StreamSignature(cSaveMarker.ProtoObject);
 		}
 		#endregion

@@ -45,7 +45,7 @@ namespace uni.ui.avalonia.common {
 
   public partial class KeyValueGrid : UserControl {
     public KeyValueGrid() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
   }
 }

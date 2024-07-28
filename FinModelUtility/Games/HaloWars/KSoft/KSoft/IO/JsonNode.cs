@@ -19,16 +19,16 @@ namespace KSoft.IO
 	{
 		private IDictionary<string, object> mData;
 
-		public bool IsNull { get { return mData == null; } }
-		public bool IsNotNull { get { return mData != null; } }
-		public bool IsEmpty { get { return IsNull || mData.Count == 0; } }
-		public bool IsNotEmpty { get { return IsNotNull && mData.Count > 0; } }
+		public bool IsNull { get { return this.mData == null; } }
+		public bool IsNotNull { get { return this.mData != null; } }
+		public bool IsEmpty { get { return this.IsNull || this.mData.Count == 0; } }
+		public bool IsNotEmpty { get { return this.IsNotNull && this.mData.Count > 0; } }
 
-		public IDictionary<string, object> DictionaryData { get { return mData; } }
+		public IDictionary<string, object> DictionaryData { get { return this.mData; } }
 
 		public JsonNode(IDictionary<string, object> parsedData)
 		{
-			mData = parsedData;
+			this.mData = parsedData;
 		}
 
 		public static JsonNode New { get {
@@ -41,10 +41,10 @@ namespace KSoft.IO
 		public static JsonNode Null { get { return new JsonNode(); } }
 
 		public IEnumerable<KeyValuePair<string, JsonNode>> ChildNodes { get {
-			if (IsNull)
+			if (this.IsNull)
 				yield break;
 
-			foreach (var kvp in mData)
+			foreach (var kvp in this.mData)
 			{
 				if (!(kvp.Value is IDictionary<string, object> nodeValues))
 					continue;
@@ -55,31 +55,31 @@ namespace KSoft.IO
 		} }
 
 		public IEnumerable<KeyValuePair<string, object>> RawData { get {
-			if (IsNull)
+			if (this.IsNull)
 				return Enumerable.Empty<KeyValuePair<string, object>>();
 
-			var enumerable = (IEnumerable<KeyValuePair<string, object>>)mData;
+			var enumerable = (IEnumerable<KeyValuePair<string, object>>) this.mData;
 			return new EnumeratorWrapper<KeyValuePair<string, object>>(enumerable);
 		} }
 
 		public ICollection<string> ChildNames { get {
-			if (IsNull)
+			if (this.IsNull)
 				return Array.Empty<string>();
 
-			return mData.Keys;
+			return this.mData.Keys;
 		} }
 
 		public string ToJson(bool prettyPrint = false)
 		{
-			return MiniJSON.Json.Serialize(mData, prettyPrint);
+			return MiniJSON.Json.Serialize(this.mData, prettyPrint);
 		}
 
 		public bool ContainsChild(string valueName)
 		{
-			if (IsNull)
+			if (this.IsNull)
 				return false;
 
-			return mData.ContainsKey(valueName);
+			return this.mData.ContainsKey(valueName);
 		}
 
 		/// <summary>
@@ -87,12 +87,12 @@ namespace KSoft.IO
 		/// </summary>
 		public JsonNode AddChild(string valueName)
 		{
-			if (IsNull)
+			if (this.IsNull)
 				return Null;
 
 			IDictionary<string, object> childData;
 
-			if (mData.TryGetValue(valueName, out object existingValue))
+			if (this.mData.TryGetValue(valueName, out object existingValue))
 			{
 				childData = existingValue as IDictionary<string, object>;
 
@@ -107,7 +107,7 @@ namespace KSoft.IO
 			else
 			{
 				childData = new Dictionary<string, object>();
-				mData.Add(valueName, childData);
+				this.mData.Add(valueName, childData);
 			}
 
 			return new JsonNode(childData);
@@ -115,12 +115,12 @@ namespace KSoft.IO
 
 		public JsonNode GetChild(string valueName)
 		{
-			if (IsNull)
+			if (this.IsNull)
 				return Null;
 
 			IDictionary<string, object> childData;
 
-			if (mData.TryGetValue(valueName, out object existingValue))
+			if (this.mData.TryGetValue(valueName, out object existingValue))
 			{
 				childData = existingValue as IDictionary<string, object>;
 
@@ -140,12 +140,12 @@ namespace KSoft.IO
 
 		public bool AddArrayAsObjects(string valueName, IList<object> objects)
 		{
-			if (IsNull)
+			if (this.IsNull)
 				return false;
 
 			IList<object> existingArray = null;
 
-			if (mData.TryGetValue(valueName, out object existingValue))
+			if (this.mData.TryGetValue(valueName, out object existingValue))
 			{
 				existingArray = existingValue as IList<object>;
 
@@ -160,7 +160,7 @@ namespace KSoft.IO
 			else
 			{
 				existingArray = new List<object>();
-				mData.Add(valueName, existingArray);
+				this.mData.Add(valueName, existingArray);
 			}
 
 			foreach (var obj in objects)
@@ -171,12 +171,12 @@ namespace KSoft.IO
 
 		public bool AddArrayAsObjects(string valueName, IEnumerable<JsonNode> objects)
 		{
-			if (IsNull)
+			if (this.IsNull)
 				return false;
 
 			IList<object> existingArray = null;
 
-			if (mData.TryGetValue(valueName, out object existingValue))
+			if (this.mData.TryGetValue(valueName, out object existingValue))
 			{
 				existingArray = existingValue as IList<object>;
 
@@ -191,7 +191,7 @@ namespace KSoft.IO
 			else
 			{
 				existingArray = new List<object>();
-				mData.Add(valueName, existingArray);
+				this.mData.Add(valueName, existingArray);
 			}
 
 			foreach (var obj in objects)
@@ -202,12 +202,12 @@ namespace KSoft.IO
 
 		public IEnumerable<JsonNode> GetArrayAsObjects(string valueName)
 		{
-			if (IsNull)
+			if (this.IsNull)
 				yield break;
 
 			IList<object> array;
 
-			if (mData.TryGetValue(valueName, out object existingValue))
+			if (this.mData.TryGetValue(valueName, out object existingValue))
 			{
 				array = existingValue as IList<object>;
 
@@ -237,7 +237,7 @@ namespace KSoft.IO
 			if (value == null)
 				return false;
 
-			MiniJSON.Json.SetValue(mData, valueName, value);
+			MiniJSON.Json.SetValue(this.mData, valueName, value);
 			return true;
 		}
 		public bool SetValuesForName(string valueName, IEnumerable<string> values)
@@ -248,49 +248,49 @@ namespace KSoft.IO
 			if (!(values is List<string> list))
 				list = new List<string>(values);
 
-			MiniJSON.Json.SetValue(mData, valueName, list);
+			MiniJSON.Json.SetValue(this.mData, valueName, list);
 			return true;
 		}
 
 		public bool SetValue(string valueName, bool value)
 		{
-			MiniJSON.Json.SetValue(mData, valueName, value);
+			MiniJSON.Json.SetValue(this.mData, valueName, value);
 			return true;
 		}
 
 		public bool SetValue(string valueName, string value)
 		{
-			return SetValueForName(valueName, value);
+			return this.SetValueForName(valueName, value);
 		}
 
 		public bool SetValue(string valueName, int value)
 		{
-			MiniJSON.Json.SetValue(mData, valueName, value);
+			MiniJSON.Json.SetValue(this.mData, valueName, value);
 			return true;
 		}
 
 		public bool SetValue(string valueName, long value)
 		{
-			MiniJSON.Json.SetValue(mData, valueName, value);
+			MiniJSON.Json.SetValue(this.mData, valueName, value);
 			return true;
 		}
 
 		public bool SetValue(string valueName, float value)
 		{
-			MiniJSON.Json.SetValue(mData, valueName, value);
+			MiniJSON.Json.SetValue(this.mData, valueName, value);
 			return true;
 		}
 
 		public bool SetValue(string valueName, double value)
 		{
-			MiniJSON.Json.SetValue(mData, valueName, value);
+			MiniJSON.Json.SetValue(this.mData, valueName, value);
 			return true;
 		}
 
 		public bool SetEnumValue<TEnum>(string valueName, TEnum value)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			MiniJSON.Json.SetValue(mData, valueName, value.ToString());
+			MiniJSON.Json.SetValue(this.mData, valueName, value.ToString());
 			return true;
 		}
 		public bool SetEnumValue<TEnum>(string valueName, TEnum value, TEnum skipWritingIfThisValue)
@@ -299,7 +299,7 @@ namespace KSoft.IO
 			if (value.Equals(skipWritingIfThisValue))
 				return false;
 
-			MiniJSON.Json.SetValue(mData, valueName, value.ToString());
+			MiniJSON.Json.SetValue(this.mData, valueName, value.ToString());
 			return true;
 		}
 
@@ -316,12 +316,12 @@ namespace KSoft.IO
 			if (useArray)
 			{
 				var values = value.ToStrings(maxValue, valueSeperator);
-				return SetValuesForName(valueName, values);
+				return this.SetValuesForName(valueName, values);
 			}
 			else
 			{
 				string values = value.ToString(maxValue, valueSeperator);
-				return SetValueForName(valueName, values);
+				return this.SetValueForName(valueName, values);
 			}
 		}
 
@@ -338,12 +338,12 @@ namespace KSoft.IO
 			if (useArray)
 			{
 				var values = value.ToStrings(maxValue, valueSeperator);
-				return SetValuesForName(valueName, values);
+				return this.SetValuesForName(valueName, values);
 			}
 			else
 			{
 				string values = value.ToString(maxValue, valueSeperator);
-				return SetValueForName(valueName, values);
+				return this.SetValueForName(valueName, values);
 			}
 		}
 
@@ -359,7 +359,7 @@ namespace KSoft.IO
 
 			if (useArray || string.IsNullOrEmpty(valueSeperator))
 			{
-				MiniJSON.Json.SetValue(mData, valueName, list);
+				MiniJSON.Json.SetValue(this.mData, valueName, list);
 				return true;
 			}
 
@@ -367,7 +367,7 @@ namespace KSoft.IO
 			if (value == null)
 				return false;
 
-			return SetValueForName(valueName, value);
+			return this.SetValueForName(valueName, value);
 		}
 
 		public bool SetPodValues<T>(string valueName, IList<T> list)
@@ -399,7 +399,7 @@ namespace KSoft.IO
 				}
 			}
 
-			MiniJSON.Json.SetValue(mData, valueName, list);
+			MiniJSON.Json.SetValue(this.mData, valueName, list);
 			return true;
 		}
 		#endregion
@@ -407,17 +407,17 @@ namespace KSoft.IO
 		#region GetValue
 		public object TryGetValueForName(string valueName)
 		{
-			if (IsEmpty)
+			if (this.IsEmpty)
 				return null;
 
-			mData.TryGetValue(valueName, out object value);
+			this.mData.TryGetValue(valueName, out object value);
 
 			return value;
 		}
 
 		public bool GetValue(string valueName, ref bool retVal)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 
 			return ParseValue(value, ref retVal);
 		}
@@ -480,7 +480,7 @@ namespace KSoft.IO
 
 		public bool GetValue(string valueName, ref string retVal)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 
 			return ParseValue(value, ref retVal);
 		}
@@ -502,14 +502,14 @@ namespace KSoft.IO
 
 		public bool GetValue(string valueName, ref int retVal)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 
 			return ParseValue(value, ref retVal, valueName);
 		}
 		public bool GetValue(string valueName, ref byte retVal)
 		{
 			int integer = 0;
-			bool parsed = GetValue(valueName, ref integer);
+			bool parsed = this.GetValue(valueName, ref integer);
 			if (parsed)
 				retVal = (byte)integer;
 			return parsed;
@@ -556,7 +556,7 @@ namespace KSoft.IO
 
 		public bool GetValue(string valueName, ref long retVal)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 
 			return ParseValue(value, ref retVal, valueName);
 		}
@@ -603,7 +603,7 @@ namespace KSoft.IO
 		public bool GetValue(string valueName, ref float retVal)
 		{
 			double doubleValue = 0;
-			if (!GetValue(valueName, ref doubleValue))
+			if (!this.GetValue(valueName, ref doubleValue))
 				return false;
 
 			retVal = (float)doubleValue;
@@ -622,7 +622,7 @@ namespace KSoft.IO
 
 		public bool GetValue(string valueName, ref double retVal)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 
 			return ParseValue(value, ref retVal, valueName);
 		}
@@ -670,7 +670,7 @@ namespace KSoft.IO
 		public bool GetEnumValue<TEnum>(string valueName, ref TEnum retVal)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 			if (value == null)
 				return false;
 
@@ -700,7 +700,7 @@ namespace KSoft.IO
 			, string valueSeperator = ",", bool logFailures = true)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 			if (value == null)
 				return null;
 
@@ -741,7 +741,7 @@ namespace KSoft.IO
 			, string valueSeperator = ",", bool logFailures = true)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 			if (value == null)
 				return null;
 
@@ -780,7 +780,7 @@ namespace KSoft.IO
 		public bool GetValue(string valueName, List<string> list
 			, bool sort = false, string valueSeperator = ",")
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 			if (value == null)
 				return false;
 
@@ -805,7 +805,7 @@ namespace KSoft.IO
 		public bool GetPodValues<T>(string valueName, IList<T> list
 			, bool clearFirst = true)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 			if (value == null)
 				return false;
 
@@ -893,7 +893,7 @@ namespace KSoft.IO
 
 		public bool GetRangeValues(string valueName, ref int min, ref int max)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 			if (value == null)
 				return false;
 
@@ -937,7 +937,7 @@ namespace KSoft.IO
 
 		public bool GetRangeValues(string valueName, ref float min, ref float max)
 		{
-			object value = TryGetValueForName(valueName);
+			object value = this.TryGetValueForName(valueName);
 			if (value == null)
 				return false;
 

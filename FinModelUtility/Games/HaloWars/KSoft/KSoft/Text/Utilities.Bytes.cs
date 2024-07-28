@@ -357,7 +357,7 @@ namespace KSoft.Text
 		{
 			int digit = CharToAnyDigit(c);
 			int from_base = (int)radix;
-			int multiplier = (int)System.Math.Pow(from_base, place);
+			int multiplier = (int)Math.Pow(from_base, place);
 
 			return digit * multiplier;
 		}
@@ -374,7 +374,7 @@ namespace KSoft.Text
 		{
 			int digit = CharToAnyDigitExtended(c);
 			int from_base = (int)radix;
-			int multiplier = (int)System.Math.Pow(from_base, place);
+			int multiplier = (int)Math.Pow(from_base, place);
 
 			return digit * multiplier;
 		}

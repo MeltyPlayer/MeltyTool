@@ -16,7 +16,7 @@ public static class BetterTreeUtil {
       foreach (var childTreeNodeObj in collection) {
         var childTreeNode = (TreeNode) childTreeNodeObj;
         var childBetterTreeNode =
-            BetterTreeUtil.GetBetterFrom<T, S>(childTreeNode);
+            GetBetterFrom<T, S>(childTreeNode);
 
         callback(childBetterTreeNode);
       }
@@ -142,7 +142,7 @@ public class BetterTreeView<T> : IBetterTreeView<T> where T : class {
           return;
         }
 
-        if (ContextMenuItemsGenerator == null) {
+        if (this.ContextMenuItemsGenerator == null) {
           return;
         }
 
@@ -230,7 +230,7 @@ public class BetterTreeView<T> : IBetterTreeView<T> where T : class {
     public TreeNode? Impl { get; }
 
     public IBetterTreeView<T> Tree { get; }
-    public IBetterTreeNode<T>? Parent => parent_;
+    public IBetterTreeNode<T>? Parent => this.parent_;
 
     public int AbsoluteIndex { get; }
 

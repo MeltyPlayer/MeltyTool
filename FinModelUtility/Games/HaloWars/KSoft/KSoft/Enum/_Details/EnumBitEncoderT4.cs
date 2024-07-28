@@ -105,7 +105,7 @@ namespace KSoft
 				else
 				{
 					if (!Reflection.EnumUtil<TEnum>.IsFlags)
-						greatest = System.Math.Max(greatest, temp);
+						greatest = Math.Max(greatest, temp);
 					else
 						greatest |= temp; // just add all the flag values together
 				}
@@ -152,7 +152,7 @@ namespace KSoft
 		#region DefaultBitIndex
 		readonly int mDefaultBitIndex;
 		/// <summary>The bit index assumed when one isn't provided</summary>
-		public int DefaultBitIndex { get { return mDefaultBitIndex; } }
+		public int DefaultBitIndex { get { return this.mDefaultBitIndex; } }
 		#endregion
 
 		public EnumBitEncoder32() : this(0) {}
@@ -160,7 +160,7 @@ namespace KSoft
 		{
 			Contract.Requires(defaultBitIndex >= 0);
 
-			mDefaultBitIndex = defaultBitIndex;
+			this.mDefaultBitIndex = defaultBitIndex;
 		}
 
 		#region Encode
@@ -172,7 +172,7 @@ namespace KSoft
 		[Contracts.Pure]
 		public uint BitEncode(TEnum value, uint bits)
 		{
-			return BitEncode(value, bits, mDefaultBitIndex);
+			return this.BitEncode(value, bits, this.mDefaultBitIndex);
 		}
 		/// <summary>Bit encode an enumeration value into an unsigned integer</summary>
 		/// <param name="value">Enumeration value to encode</param>
@@ -204,7 +204,7 @@ namespace KSoft
 		{
 			Contract.Requires(!traits.IsEmpty);
 
-			return BitEncode(value, bits, traits.BitIndex);
+			return this.BitEncode(value, bits, traits.BitIndex);
 		}
 		/// <summary>Bit encode an enumeration value into an unsigned integer</summary>
 		/// <param name="value">Enumeration value to encode</param>
@@ -242,7 +242,7 @@ namespace KSoft
 		[Contracts.Pure]
 		public TEnum BitDecode(uint bits)
 		{
-			return BitDecode(bits, mDefaultBitIndex);
+			return this.BitDecode(bits, this.mDefaultBitIndex);
 		}
 		/// <summary>Bit decode an enumeration value from an unsigned integer</summary>
 		/// <param name="bits">Unsigned integer to decode from</param>
@@ -270,7 +270,7 @@ namespace KSoft
 		{
 			Contract.Requires(!traits.IsEmpty);
 
-			return BitDecode(bits, traits.BitIndex);
+			return this.BitDecode(bits, traits.BitIndex);
 		}
 		/// <summary>Bit decode an enumeration value from an unsigned integer</summary>
 		/// <param name="bits">Unsigned integer to decode from</param>
@@ -457,7 +457,7 @@ namespace KSoft
 				else
 				{
 					if (!Reflection.EnumUtil<TEnum>.IsFlags)
-						greatest = System.Math.Max(greatest, temp);
+						greatest = Math.Max(greatest, temp);
 					else
 						greatest |= temp; // just add all the flag values together
 				}
@@ -504,7 +504,7 @@ namespace KSoft
 		#region DefaultBitIndex
 		readonly int mDefaultBitIndex;
 		/// <summary>The bit index assumed when one isn't provided</summary>
-		public int DefaultBitIndex { get { return mDefaultBitIndex; } }
+		public int DefaultBitIndex { get { return this.mDefaultBitIndex; } }
 		#endregion
 
 		public EnumBitEncoder64() : this(0) {}
@@ -512,7 +512,7 @@ namespace KSoft
 		{
 			Contract.Requires(defaultBitIndex >= 0);
 
-			mDefaultBitIndex = defaultBitIndex;
+			this.mDefaultBitIndex = defaultBitIndex;
 		}
 
 		#region Encode
@@ -524,7 +524,7 @@ namespace KSoft
 		[Contracts.Pure]
 		public ulong BitEncode(TEnum value, ulong bits)
 		{
-			return BitEncode(value, bits, mDefaultBitIndex);
+			return this.BitEncode(value, bits, this.mDefaultBitIndex);
 		}
 		/// <summary>Bit encode an enumeration value into an unsigned integer</summary>
 		/// <param name="value">Enumeration value to encode</param>
@@ -556,7 +556,7 @@ namespace KSoft
 		{
 			Contract.Requires(!traits.IsEmpty);
 
-			return BitEncode(value, bits, traits.BitIndex);
+			return this.BitEncode(value, bits, traits.BitIndex);
 		}
 		/// <summary>Bit encode an enumeration value into an unsigned integer</summary>
 		/// <param name="value">Enumeration value to encode</param>
@@ -594,7 +594,7 @@ namespace KSoft
 		[Contracts.Pure]
 		public TEnum BitDecode(ulong bits)
 		{
-			return BitDecode(bits, mDefaultBitIndex);
+			return this.BitDecode(bits, this.mDefaultBitIndex);
 		}
 		/// <summary>Bit decode an enumeration value from an unsigned integer</summary>
 		/// <param name="bits">Unsigned integer to decode from</param>
@@ -622,7 +622,7 @@ namespace KSoft
 		{
 			Contract.Requires(!traits.IsEmpty);
 
-			return BitDecode(bits, traits.BitIndex);
+			return this.BitDecode(bits, traits.BitIndex);
 		}
 		/// <summary>Bit decode an enumeration value from an unsigned integer</summary>
 		/// <param name="bits">Unsigned integer to decode from</param>

@@ -38,18 +38,18 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.StreamV(ref Vector);
-			BSaveGame.StreamArray16(s, ref SquadList);
-			Contract.Assert(SquadList.Length <= kMaxEntitiesPerList);
-			BSaveGame.StreamArray16(s, ref UnitList);
-			Contract.Assert(SquadList.Length <= kMaxEntitiesPerList);
-			s.Stream(EntityFilterSet);
-			s.Stream(ref Float);
-			s.Stream(ref ObjectType);
-			s.Stream(ref LocStringID);
-			s.Stream(ref HasVector); s.Stream(ref HasSquadList); s.Stream(ref HasUnitList);
-			s.Stream(ref HasEntityFilterSet); s.Stream(ref HasFloat); s.Stream(ref HasObjectType);
-			s.Stream(ref HasLocStringID);
+			s.StreamV(ref this.Vector);
+			BSaveGame.StreamArray16(s, ref this.SquadList);
+			Contract.Assert(this.SquadList.Length <= kMaxEntitiesPerList);
+			BSaveGame.StreamArray16(s, ref this.UnitList);
+			Contract.Assert(this.SquadList.Length <= kMaxEntitiesPerList);
+			s.Stream(this.EntityFilterSet);
+			s.Stream(ref this.Float);
+			s.Stream(ref this.ObjectType);
+			s.Stream(ref this.LocStringID);
+			s.Stream(ref this.HasVector); s.Stream(ref this.HasSquadList); s.Stream(ref this.HasUnitList);
+			s.Stream(ref this.HasEntityFilterSet); s.Stream(ref this.HasFloat); s.Stream(ref this.HasObjectType);
+			s.Stream(ref this.HasLocStringID);
 		}
 		#endregion
 	};
@@ -89,21 +89,21 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref HasCommand); s.Stream(ref NewCommand);
-			s.Stream(ref StateChanged); s.Stream(ref NewState);
-			s.Stream(ref HasPreconditionResult); s.Stream(ref PreconditionResult);
-			s.Stream(ref PreconditionTime);
-			s.Stream(ref State);
-			s.Stream(ref GamesReinforced); s.Stream(ref TimesReinforced); s.Stream(ref HintDisplayedCount);
-			BSaveGame.StreamList(s, Pages, kPagesListInfo);
-			s.Stream(ref TimesReinforcedThisGame);
-			s.Stream(ref EventReady); s.Stream(ref Active); s.Stream(ref Permission);
-			s.Stream(ref InitialWaitTimeRemaining); s.Stream(ref TerminalWaitTimeRemaining);
-			s.Stream(ref CoolDownTimer); s.Stream(ref LastCoolDownAmount);
-			s.Stream(ref CoolDownTimerAccumulator);
-			BSaveGame.StreamArray(s, ref SubHints);
-			s.Stream(ref ParentHint); Contract.Assert(ParentHint <= kMaxCount);
-			s.Stream(ref PrereqsMet); s.Stream(ref DirtyProfile);
+			s.Stream(ref this.HasCommand); s.Stream(ref this.NewCommand);
+			s.Stream(ref this.StateChanged); s.Stream(ref this.NewState);
+			s.Stream(ref this.HasPreconditionResult); s.Stream(ref this.PreconditionResult);
+			s.Stream(ref this.PreconditionTime);
+			s.Stream(ref this.State);
+			s.Stream(ref this.GamesReinforced); s.Stream(ref this.TimesReinforced); s.Stream(ref this.HintDisplayedCount);
+			BSaveGame.StreamList(s, this.Pages, kPagesListInfo);
+			s.Stream(ref this.TimesReinforcedThisGame);
+			s.Stream(ref this.EventReady); s.Stream(ref this.Active); s.Stream(ref this.Permission);
+			s.Stream(ref this.InitialWaitTimeRemaining); s.Stream(ref this.TerminalWaitTimeRemaining);
+			s.Stream(ref this.CoolDownTimer); s.Stream(ref this.LastCoolDownAmount);
+			s.Stream(ref this.CoolDownTimerAccumulator);
+			BSaveGame.StreamArray(s, ref this.SubHints);
+			s.Stream(ref this.ParentHint); Contract.Assert(this.ParentHint <= kMaxCount);
+			s.Stream(ref this.PrereqsMet); s.Stream(ref this.DirtyProfile);
 			s.StreamSignature(cSaveMarker.Concept);
 		}
 		#endregion
@@ -130,13 +130,13 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamList(s, Concepts, kConceptsListInfo);
-			s.Stream(ref TimeSinceLastHint);
-			s.Stream(ref HintMessageOn);
-			BSaveGame.StreamArray16(s, ref AllowedConcepts);
-			Contract.Assert(AllowedConcepts.Length <= BConcept.kMaxCount);
-			s.Stream(ref WaitForNextRescore);
-			s.Stream(ref LastGameTime);
+			BSaveGame.StreamList(s, this.Concepts, kConceptsListInfo);
+			s.Stream(ref this.TimeSinceLastHint);
+			s.Stream(ref this.HintMessageOn);
+			BSaveGame.StreamArray16(s, ref this.AllowedConcepts);
+			Contract.Assert(this.AllowedConcepts.Length <= BConcept.kMaxCount);
+			s.Stream(ref this.WaitForNextRescore);
+			s.Stream(ref this.LastGameTime);
 			s.StreamSignature(cSaveMarker.HintEngine);
 		}
 		#endregion

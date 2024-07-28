@@ -14,7 +14,7 @@ namespace granny3d {
 
       GrannyUtils.SubreadRefToArray(br, (ser, boneCount) => {
         for (var i = 0; i < boneCount; ++i) {
-          Bones.Add(ser.ReadNew<GrannyBone>());
+          this.Bones.Add(ser.ReadNew<GrannyBone>());
         }
       });
     }

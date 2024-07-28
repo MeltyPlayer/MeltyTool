@@ -166,13 +166,13 @@ namespace KSoft
 
 			ComparerFactory(Func<T, T, int> comparer)
 			{
-				mComparer = comparer;
+				this.mComparer = comparer;
 			}
 
 			#region IComparer<T> Members
 			public int Compare(T x, T y)
 			{
-				return mComparer(x, y);
+				return this.mComparer(x, y);
 			}
 			#endregion
 
@@ -202,7 +202,7 @@ namespace KSoft
 			where T : class, IEquatable<T>
 		{
 			// Handles 'x is same instance as y' and 'null == null'
-			bool result = object.ReferenceEquals(x, y);
+			bool result = ReferenceEquals(x, y);
 
 			// If they're not the same instance, or both null, either one of them is null or neither is.
 			// If x isn't null, then either y is null or they're two objects in which case they can be equated
@@ -348,7 +348,7 @@ namespace KSoft
 					ch = format[pos];
 				} while (ch >= '0' && ch <= '9' && index < 1000000);
 
-				highestAddressedIndex = System.Math.Max(highestAddressedIndex, index);
+				highestAddressedIndex = Math.Max(highestAddressedIndex, index);
 
 				//if (index >= args.Length)
 				//	throw new FormatException(Environment.GetResourceString("Format_IndexOutOfRange"));

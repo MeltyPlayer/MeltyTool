@@ -33,20 +33,20 @@ namespace KSoft.Phoenix.Runtime
 			base.Serialize(s);
 			var sg = s.Owner as BSaveGame;
 
-			BSaveGame.StreamVectorArray(s, ref Waypoints, cMaximumWaypoints);
-			s.Stream(ref BeamID); s.Stream(ref AirImpactObjectID);
-			s.Stream(ref NextDamageTime);
-			s.StreamV(ref DesiredBeamPosition);
-			BSaveGame.StreamVectorArray(s, ref BeamPath, cMaximumBeamPathLength);
-			BSaveGame.StreamArray(s, ref RevealedTeamIDs);
-			sg.StreamBCost(s, ref CostPerTick);
-			s.Stream(ref Projectile);
-			s.Stream(ref TickLength); s.Stream(ref MinBeamDistance); s.Stream(ref MaxBeamDistance);
-			s.Stream(ref CommandInterval);
-			s.Stream(ref MaxBeamSpeed);
-			s.Stream(ref LOSMode);
-			s.Stream(ref UsePath);
-			s.Stream(ref AudioReactionTimer);
+			BSaveGame.StreamVectorArray(s, ref this.Waypoints, cMaximumWaypoints);
+			s.Stream(ref this.BeamID); s.Stream(ref this.AirImpactObjectID);
+			s.Stream(ref this.NextDamageTime);
+			s.StreamV(ref this.DesiredBeamPosition);
+			BSaveGame.StreamVectorArray(s, ref this.BeamPath, cMaximumBeamPathLength);
+			BSaveGame.StreamArray(s, ref this.RevealedTeamIDs);
+			sg.StreamBCost(s, ref this.CostPerTick);
+			s.Stream(ref this.Projectile);
+			s.Stream(ref this.TickLength); s.Stream(ref this.MinBeamDistance); s.Stream(ref this.MaxBeamDistance);
+			s.Stream(ref this.CommandInterval);
+			s.Stream(ref this.MaxBeamSpeed);
+			s.Stream(ref this.LOSMode);
+			s.Stream(ref this.UsePath);
+			s.Stream(ref this.AudioReactionTimer);
 		}
 		#endregion
 	};

@@ -10,8 +10,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray(s, ref Players);
-			BSaveGame.StreamArray(s, ref Relations);
+			BSaveGame.StreamArray(s, ref this.Players);
+			BSaveGame.StreamArray(s, ref this.Relations);
 		}
 		#endregion
 	};

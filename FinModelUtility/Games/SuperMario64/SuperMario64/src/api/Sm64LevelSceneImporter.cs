@@ -37,7 +37,7 @@ namespace sm64.api {
           });
 
       foreach (var sm64Area in sm64Level.Areas) {
-        Sm64LevelSceneImporter.AddAreaToScene_(
+        AddAreaToScene_(
             finScene,
             lazyModelDictionary,
             sm64Area);

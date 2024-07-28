@@ -3,16 +3,13 @@
 namespace benchmarks {
   public class FetchDirectories {
     [Benchmark]
-    public void FetchDirectoriesSeparately() =>
-        FetchDirectoriesSeparatelyImpl().ToArray();
+    public void FetchDirectoriesSeparately() => this.FetchDirectoriesSeparatelyImpl().ToArray();
 
     [Benchmark]
-    public void FetchDirectoriesAllAtOnce() =>
-        FetchDirectoriesAllAtOnceImpl();
+    public void FetchDirectoriesAllAtOnce() => this.FetchDirectoriesAllAtOnceImpl();
 
     [Benchmark]
-    public void FetchEntriesAllAtOnce() =>
-        FetchEntriesAllAtOnceImpl();
+    public void FetchEntriesAllAtOnce() => this.FetchEntriesAllAtOnceImpl();
 
     public const string DIRECTORY =
         @"R:\Documents\CSharpWorkspace\Pikmin2Utility\cli\roms";

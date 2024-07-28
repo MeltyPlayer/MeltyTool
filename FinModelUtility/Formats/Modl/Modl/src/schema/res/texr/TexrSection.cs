@@ -56,7 +56,7 @@ public class TexrSection : IBinaryConvertible {
       br.Position = baseOffset;
       var data = br.ReadBytes(endOffset - baseOffset);
 
-      Textures.Add(new BwTexrFile(textureName, data));
+      this.Textures.Add(new BwTexrFile(textureName, data));
     }
 
     Asserts.Equal(expectedTexrSectionEnd, br.Position);

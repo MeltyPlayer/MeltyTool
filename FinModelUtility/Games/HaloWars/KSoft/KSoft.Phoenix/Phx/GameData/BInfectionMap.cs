@@ -23,10 +23,10 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, "base", ref mBaseObjectID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceAttr);
-			xs.StreamDBID(s, "infected", ref mInfectedObjectID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceAttr);
+			xs.StreamDBID(s, "base", ref this.mBaseObjectID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceAttr);
+			xs.StreamDBID(s, "infected", ref this.mInfectedObjectID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceAttr);
 			if(xs.Database.Engine.Build != Engine.PhxEngineBuild.Alpha)
-				xs.StreamDBID(s, "infectedSquad", ref mInfectedSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceAttr);
+				xs.StreamDBID(s, "infectedSquad", ref this.mInfectedSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceAttr);
 		}
 		#endregion
 	};

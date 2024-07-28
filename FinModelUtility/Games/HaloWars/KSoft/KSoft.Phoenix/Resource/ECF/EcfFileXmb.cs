@@ -16,21 +16,21 @@ namespace KSoft.Phoenix.Resource.ECF
 
 		public EcfFileXmb()
 		{
-			InitializeChunkInfo(kSignature);
+			this.InitializeChunkInfo(kSignature);
 		}
 
 		public override void Dispose()
 		{
 			base.Dispose();
 
-			FileData = null;
+			this.FileData = null;
 		}
 
 		public override void Serialize(IO.EndianStream s)
 		{
 			base.Serialize(s);
 
-			foreach (var chunk in mChunks)
+			foreach (var chunk in this.mChunks)
 			{
 				if (s.IsReading)
 				{
@@ -40,7 +40,7 @@ namespace KSoft.Phoenix.Resource.ECF
 				switch (chunk.EntryId)
 				{
 					case kChunkId:
-						SerializeMainChunk(chunk, s);
+						this.SerializeMainChunk(chunk, s);
 						break;
 
 					// chunk.IsResourceTag
@@ -64,7 +64,7 @@ namespace KSoft.Phoenix.Resource.ECF
 						chunk.EntryId.ToString("X16")));
 				}
 
-				FileData = CompressedStream.DecompressFromStream(s);
+				this.FileData = CompressedStream.DecompressFromStream(s);
 			}
 			else if (s.IsWriting)
 			{
@@ -78,7 +78,7 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			byte[] xmbBytes;
 
-			using (var xmb = new ECF.EcfFileXmb())
+			using (var xmb = new EcfFileXmb())
 			{
 				xmb.Serialize(xmbStream);
 
@@ -95,7 +95,7 @@ namespace KSoft.Phoenix.Resource.ECF
 			{
 				s.UserData = context;
 
-				using (var xmbf = new Phoenix.Xmb.XmbFile())
+				using (var xmbf = new Xmb.XmbFile())
 				{
 					xmbf.Read(s);
 					xmbf.ToXml(outputStream);

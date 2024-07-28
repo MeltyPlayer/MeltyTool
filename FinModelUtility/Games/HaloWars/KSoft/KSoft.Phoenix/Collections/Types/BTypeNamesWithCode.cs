@@ -16,7 +16,7 @@ namespace KSoft.Collections
 		{
 			Contract.Requires<ArgumentNullException>(CodeTypes != null);
 
-			mCodeTypes = CodeTypes;
+			this.mCodeTypes = CodeTypes;
 		}
 
 		#region IProtoEnum Members
@@ -26,9 +26,9 @@ namespace KSoft.Collections
 
 			if (idx.IsNone())
 			{
-				idx = mCodeTypes.TryGetMemberId(memberName);
+				idx = this.mCodeTypes.TryGetMemberId(memberName);
 				if (idx.IsNotNone())
-					idx += Count;
+					idx += this.Count;
 			}
 
 			return idx;
@@ -38,22 +38,22 @@ namespace KSoft.Collections
 			string name = base.TryGetMemberName(memberId);
 
 			if (name == null)
-				return mCodeTypes.TryGetMemberName(memberId);
+				return this.mCodeTypes.TryGetMemberName(memberId);
 
 			return name;
 		}
 
 		public override string GetMemberName(int memberId)
 		{
-			if (memberId < Count)
+			if (memberId < this.Count)
 				return base.GetMemberName(memberId);
 
-			memberId -= Count;
-			return mCodeTypes.GetMemberName(memberId);
+			memberId -= this.Count;
+			return this.mCodeTypes.GetMemberName(memberId);
 		}
 
 		public override int MemberCount { get {
-			return Count + mCodeTypes.MemberCount;
+			return this.Count + this.mCodeTypes.MemberCount;
 		} }
 		#endregion
 	};

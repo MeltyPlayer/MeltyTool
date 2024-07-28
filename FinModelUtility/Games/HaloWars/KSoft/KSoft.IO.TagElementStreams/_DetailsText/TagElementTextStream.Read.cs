@@ -129,16 +129,14 @@ namespace KSoft.IO
 			// TextStream implementations should only ever need to set the node and forget
 			Contract.Assert(value is Text.ITextLineInfo);
 
-			mReadErrorState.LastReadLineInfo = (Text.ITextLineInfo)value;
+			this.mReadErrorState.LastReadLineInfo = (Text.ITextLineInfo)value;
 		} }
 		/// <summary>Throws a <see cref="Text.TextLineInfoException"/></summary>
 		/// <param name="detailsException">The details (inner) exception of what went wrong</param>
-		public sealed override void ThrowReadException(Exception detailsException) =>
-			mReadErrorState.ThrowReadExeception(detailsException);
+		public sealed override void ThrowReadException(Exception detailsException) => this.mReadErrorState.ThrowReadExeception(detailsException);
 
-		public Text.TextLineInfo TryGetLastReadLineInfo() =>
-			IsReading && mReadErrorState.LastReadLineInfo != null
-				? new Text.TextLineInfo(mReadErrorState.LastReadLineInfo)
+		public Text.TextLineInfo TryGetLastReadLineInfo() => this.IsReading && this.mReadErrorState.LastReadLineInfo != null
+				? new Text.TextLineInfo(this.mReadErrorState.LastReadLineInfo)
 				: Text.TextLineInfo.Empty;
 
 		/// <summary>Argument value for noThrow to throw exceptions</summary>
@@ -149,15 +147,15 @@ namespace KSoft.IO
 		protected bool ReadEnumInternal<TEnum>(string enumString, ref TEnum enumValue)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			var result = TagElementStreamParseEnumUtil.Parse(IgnoreCaseOnEnums,
+			var result = TagElementStreamParseEnumUtil.Parse(this.IgnoreCaseOnEnums,
 				enumString, ref enumValue);
 
 			if (result == TagElementStreamParseEnumResult.FailedMemberNotFound &&
-				ExceptionOnEnumParseFail)
+			    this.ExceptionOnEnumParseFail)
 			{
-				ThrowReadException(new System.IO.InvalidDataException(string.Format(KSoft.Util.InvariantCultureInfo,
-					"'{0}' is not a member of {1}",
-					enumString, typeof(TEnum) )));
+				this.ThrowReadException(new System.IO.InvalidDataException(string.Format(Util.InvariantCultureInfo,
+					                        "'{0}' is not a member of {1}",
+					                        enumString, typeof(TEnum) )));
 			}
 
 			return result == TagElementStreamParseEnumResult.Success;
@@ -165,15 +163,15 @@ namespace KSoft.IO
 		protected bool ReadEnumInternal<TEnum>(string enumString, ref int enumValue)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			var result = TagElementStreamParseEnumUtil.Parse<TEnum>(IgnoreCaseOnEnums,
+			var result = TagElementStreamParseEnumUtil.Parse<TEnum>(this.IgnoreCaseOnEnums,
 				enumString, ref enumValue);
 
 			if (result == TagElementStreamParseEnumResult.FailedMemberNotFound &&
-				ExceptionOnEnumParseFail)
+			    this.ExceptionOnEnumParseFail)
 			{
-				ThrowReadException(new System.IO.InvalidDataException(string.Format(KSoft.Util.InvariantCultureInfo,
-					"'{0}' is not a member of {1}",
-					enumString, typeof(TEnum))));
+				this.ThrowReadException(new System.IO.InvalidDataException(string.Format(Util.InvariantCultureInfo,
+					                        "'{0}' is not a member of {1}",
+					                        enumString, typeof(TEnum))));
 			}
 
 			return result == TagElementStreamParseEnumResult.Success;
@@ -183,20 +181,17 @@ namespace KSoft.IO
 		#region ReadElement impl
 		protected abstract string GetInnerText(TCursor n);
 
-		protected override void ReadElementEnum<TEnum>(TCursor n, ref TEnum enumValue) =>
-			ReadEnumInternal(GetInnerText(n), ref enumValue);
-		protected override void ReadElementEnum<TEnum>(TCursor n, ref int enumValue) =>
-			ReadEnumInternal<TEnum>(GetInnerText(n), ref enumValue);
+		protected override void ReadElementEnum<TEnum>(TCursor n, ref TEnum enumValue) => this.ReadEnumInternal(this.GetInnerText(n), ref enumValue);
+		protected override void ReadElementEnum<TEnum>(TCursor n, ref int enumValue) => this.ReadEnumInternal<TEnum>(this.GetInnerText(n), ref enumValue);
 
 		protected override void ReadElement(TCursor n, ref Values.KGuid value) =>
-			value = Values.KGuid.ParseExact(GetInnerText(n), mGuidFormatString);
+			value = Values.KGuid.ParseExact(this.GetInnerText(n), this.mGuidFormatString);
 		#endregion
 
 		/// <summary>Interpret the Name of <see cref="Cursor"/> as a member of <typeparamref name="TEnum"/></summary>
 		/// <typeparam name="TEnum">Enumeration type</typeparam>
 		/// <param name="enumValue">value to receive the data</param>
-		public override void ReadCursorName<TEnum>(ref TEnum enumValue) =>
-			ReadEnumInternal(CursorName, ref enumValue);
+		public override void ReadCursorName<TEnum>(ref TEnum enumValue) => this.ReadEnumInternal(this.CursorName, ref enumValue);
 
 		#region ReadAttribute
 		/// <summary>Streams out the attribute data of <paramref name="name"/></summary>
@@ -204,13 +199,11 @@ namespace KSoft.IO
 		/// <returns></returns>
 		protected abstract string ReadAttribute(string name);
 
-		public override void ReadAttributeEnum<TEnum>(string name, ref TEnum enumValue) =>
-			ReadEnumInternal(ReadAttribute(name), ref enumValue);
-		public override void ReadAttributeEnum<TEnum>(string name, ref int enumValue) =>
-			ReadEnumInternal<TEnum>(ReadAttribute(name), ref enumValue);
+		public override void ReadAttributeEnum<TEnum>(string name, ref TEnum enumValue) => this.ReadEnumInternal(this.ReadAttribute(name), ref enumValue);
+		public override void ReadAttributeEnum<TEnum>(string name, ref int enumValue) => this.ReadEnumInternal<TEnum>(this.ReadAttribute(name), ref enumValue);
 
 		public override void ReadAttribute(string name, ref Values.KGuid value) =>
-			value = Values.KGuid.ParseExact(ReadAttribute(name), mGuidFormatString);
+			value = Values.KGuid.ParseExact(this.ReadAttribute(name), this.mGuidFormatString);
 		#endregion
 
 		#region ReadElementOpt
@@ -221,20 +214,22 @@ namespace KSoft.IO
 
 		public override bool ReadElementEnumOpt<TEnum>(string name, ref TEnum enumValue)
 		{
-			string str = ReadElementOpt(name);
+			string str = this.ReadElementOpt(name);
 			return !string.IsNullOrEmpty(str)
-				&& ReadEnumInternal(str, ref enumValue);
+				&&
+				this.ReadEnumInternal(str, ref enumValue);
 		}
 		public override bool ReadElementEnumOpt<TEnum>(string name, ref int enumValue)
 		{
-			string str = ReadElementOpt(name);
+			string str = this.ReadElementOpt(name);
 			return !string.IsNullOrEmpty(str)
-				&& ReadEnumInternal<TEnum>(str, ref enumValue);
+				&&
+				this.ReadEnumInternal<TEnum>(str, ref enumValue);
 		}
 
 		public override bool ReadElementOpt(string name, ref Values.KGuid value)
 		{
-			string str = ReadElementOpt(name);
+			string str = this.ReadElementOpt(name);
 			return !string.IsNullOrEmpty(str) &&
 				Values.KGuid.TryParseExactHyphenated(str, out value);
 		}
@@ -248,20 +243,22 @@ namespace KSoft.IO
 
 		public override bool ReadAttributeEnumOpt<TEnum>(string name, ref TEnum enumValue)
 		{
-			string str = ReadAttributeOpt(name);
+			string str = this.ReadAttributeOpt(name);
 			return !string.IsNullOrEmpty(str)
-				&& ReadEnumInternal(str, ref enumValue);
+				&&
+				this.ReadEnumInternal(str, ref enumValue);
 		}
 		public override bool ReadAttributeEnumOpt<TEnum>(string name, ref int enumValue)
 		{
-			string str = ReadAttributeOpt(name);
+			string str = this.ReadAttributeOpt(name);
 			return !string.IsNullOrEmpty(str)
-				&& ReadEnumInternal<TEnum>(str, ref enumValue);
+				&&
+				this.ReadEnumInternal<TEnum>(str, ref enumValue);
 		}
 
 		public override bool ReadAttributeOpt(string name, ref Values.KGuid value)
 		{
-			string str = ReadAttributeOpt(name);
+			string str = this.ReadAttributeOpt(name);
 			return !string.IsNullOrEmpty(str) &&
 				Values.KGuid.TryParseExactHyphenated(str, out value);
 		}

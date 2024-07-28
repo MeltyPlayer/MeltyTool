@@ -21,7 +21,7 @@ namespace KSoft.Values
 		public static readonly GroupTagData32 Null = new GroupTagData32();
 		GroupTagData32() : base(kExpectedTagLength)
 		{
-			mID = TagWord.MaxValue;
+			this.mID = TagWord.MaxValue;
 		}
 		#endregion
 		public static readonly IEqualityComparer<GroupTagData> kEqualityComparer = Null;
@@ -38,7 +38,7 @@ namespace KSoft.Values
 		#region ID
 		readonly TagWord mID;
 		/// <summary>The four character code translated into a unsigned integer</summary>
-		public TagWord ID { get { return mID; } }
+		public TagWord ID { get { return this.mID; } }
 		#endregion
 
 		#region Ctor
@@ -51,9 +51,9 @@ namespace KSoft.Values
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Requires(groupTag.Length == kExpectedTagLength);
 
-			Contract.Assume(Tag.Length == kExpectedTagLength);
+			Contract.Assume(this.Tag.Length == kExpectedTagLength);
 
-			mID = ToUInt(Tag);
+			this.mID = ToUInt(this.Tag);
 		}
 		/// <summary>Initialize a 32-bit group tag with a <see cref="Guid"/></summary>
 		/// <param name="groupTag">Four character code string</param>
@@ -65,9 +65,9 @@ namespace KSoft.Values
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Requires(groupTag.Length == kExpectedTagLength);
 
-			Contract.Assume(Tag.Length == kExpectedTagLength);
+			Contract.Assume(this.Tag.Length == kExpectedTagLength);
 
-			mID = ToUInt(Tag);
+			this.mID = ToUInt(this.Tag);
 		}
 		#endregion
 
@@ -79,14 +79,14 @@ namespace KSoft.Values
 		public override bool Equals(object obj)
 		{
 			if(obj is GroupTagData32)
-				return mID == (obj as GroupTagData32).mID;
+				return this.mID == (obj as GroupTagData32).mID;
 
 			return false;
 		}
 
 		/// <summary>Returns the hash code for this instance</summary>
 		/// <returns>This object's group tag</returns>
-		public override int GetHashCode() { return (int)mID; }
+		public override int GetHashCode() { return (int) this.mID; }
 		#endregion
 
 		#region Operators
@@ -106,9 +106,9 @@ namespace KSoft.Values
 		/// Takes another four character code and performs a check on it against this object's tag to see if they are completely equal</summary>
 		/// <param name="other"></param>
 		/// <returns>True if equal to this</returns>
-		public override bool Test(char[] other) => GroupTagData32.Test(Tag, other);
+		public override bool Test(char[] other) => Test(this.Tag, other);
 		/// <summary>Is this <see cref="GroupTagData32"/> equal to the "null" equivalent value?</summary>
-		public override bool IsNull	=> object.ReferenceEquals(this, Null);
+		public override bool IsNull	=> ReferenceEquals(this, Null);
 
 		#region IEquatable & IEqualityComparer Members
 		/// <summary>Compares this to another <see cref="GroupTagData32"/> object testing their <see cref="ID"/> fields for equality
@@ -118,7 +118,7 @@ namespace KSoft.Values
 		public override bool Equals(GroupTagData obj)
 		{
 			if (obj is GroupTagData32 g)
-				return mID == g.mID;
+				return this.mID == g.mID;
 
 			return false;
 		}
@@ -131,7 +131,7 @@ namespace KSoft.Values
 		public override void Read(IO.EndianReader s)	=> s.Seek(sizeof(TagWord), System.IO.SeekOrigin.Current);
 		/// <summary>Writes this tag group's four character code</summary>
 		/// <param name="s"></param>
-		public override void Write(IO.EndianWriter s)	=> s.WriteTag32(mID);
+		public override void Write(IO.EndianWriter s)	=> s.WriteTag32(this.mID);
 		#endregion
 
 
@@ -192,7 +192,7 @@ namespace KSoft.Values
 					((byte)tag[3])
 				);
 
-			if (!System.BitConverter.IsLittleEndian)
+			if (!BitConverter.IsLittleEndian)
 				Bitwise.ByteSwap.Swap(ref value);
 
 			return value;
@@ -214,7 +214,7 @@ namespace KSoft.Values
 					((byte)tag[3])
 				);
 
-			if (!System.BitConverter.IsLittleEndian)
+			if (!BitConverter.IsLittleEndian)
 				Bitwise.ByteSwap.Swap(ref value);
 
 			return value;
@@ -266,7 +266,7 @@ namespace KSoft.Values
 		/// <summary>Get the <see cref="GroupTagData32"/> this attribute defines</summary>
 		public GroupTagData32 GroupTag				{ get; private set; }
 		/// <summary>Get the <see cref="GroupTagData"/> this attribute defines</summary>
-		public override GroupTagData GroupTagData	{ get { return GroupTag; } }
+		public override GroupTagData GroupTagData	{ get { return this.GroupTag; } }
 		#endregion
 
 		/// <summary>Initialize a 32-bit group tag attribute</summary>
@@ -279,7 +279,7 @@ namespace KSoft.Values
 			Contract.Requires(!string.IsNullOrEmpty(name));
 			Contract.Requires(groupTag.Length == GroupTagData32.kExpectedTagLength);
 
-			GroupTag = new GroupTagData32(groupTag, name, new KGuid(uuid));
+			this.GroupTag = new GroupTagData32(groupTag, name, new KGuid(uuid));
 		}
 	};
 }

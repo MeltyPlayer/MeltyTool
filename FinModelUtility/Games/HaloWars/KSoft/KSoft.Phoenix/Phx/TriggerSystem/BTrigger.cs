@@ -39,41 +39,42 @@ namespace KSoft.Phoenix.Phx
 
 			if (s.IsReading)
 			{
-				if (OrConditions = !s.ElementsExists(k_AND_params.RootName))
-					XML.XmlUtil.Serialize(s, Conditions, BTriggerCondition.kBListXmlParams_Or);
+				if (this.OrConditions = !s.ElementsExists(k_AND_params.RootName))
+					XML.XmlUtil.Serialize(s, this.Conditions, BTriggerCondition.kBListXmlParams_Or);
 				else
-					XML.XmlUtil.Serialize(s, Conditions, k_AND_params);
+					XML.XmlUtil.Serialize(s, this.Conditions, k_AND_params);
 			}
 			else if (s.IsWriting)
 			{
 				// Even if there are no conditions, the runtime expects there to be an empty And tag :|
 				// Well, technically we could use an empty Or tag as well, but it wouldn't be consistent
 				// with the engine. The runtime will assume the the TS is bad if neither tag is present
-				if (Conditions.Count == 0)
+				if (this.Conditions.Count == 0)
 					s.WriteElement(k_AND_params.RootName);
 				else
-					XML.XmlUtil.Serialize(s, Conditions, 
-						OrConditions ? BTriggerCondition.kBListXmlParams_Or : k_AND_params);
+					XML.XmlUtil.Serialize(s,
+					                      this.Conditions,
+					                      this.OrConditions ? BTriggerCondition.kBListXmlParams_Or : k_AND_params);
 			}
 		}
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
 			base.Serialize(s);
 
-			s.StreamAttribute(kXmlAttrActive, ref mActive);
-			s.StreamAttribute(kXmlAttrEvaluateFrequency, ref mEvaluateFrequency);
-			s.StreamAttribute(kXmlAttrEvalLimit, ref mEvalLimit);
-			s.StreamAttribute(kXmlAttrConditionalTrigger, ref mConditionalTrigger);
+			s.StreamAttribute(kXmlAttrActive, ref this.mActive);
+			s.StreamAttribute(kXmlAttrEvaluateFrequency, ref this.mEvaluateFrequency);
+			s.StreamAttribute(kXmlAttrEvalLimit, ref this.mEvalLimit);
+			s.StreamAttribute(kXmlAttrConditionalTrigger, ref this.mConditionalTrigger);
 
 			// These tags must exist no matter what :|
 			using (s.EnterCursorBookmark(BTriggerCondition.kXmlRootName))
-				StreamConditions(s);
+				this.StreamConditions(s);
 
 			using (s.EnterCursorBookmark(BTriggerEffect.kXmlRootName_OnTrue))
-				XML.XmlUtil.Serialize(s, EffectsOnTrue, BTriggerEffect.kBListXmlParams);
+				XML.XmlUtil.Serialize(s, this.EffectsOnTrue, BTriggerEffect.kBListXmlParams);
 
 			using (s.EnterCursorBookmark(BTriggerEffect.kXmlRootName_OnFalse))
-				XML.XmlUtil.Serialize(s, EffectsOnFalse, BTriggerEffect.kBListXmlParams);
+				XML.XmlUtil.Serialize(s, this.EffectsOnFalse, BTriggerEffect.kBListXmlParams);
 		}
 	};
 }

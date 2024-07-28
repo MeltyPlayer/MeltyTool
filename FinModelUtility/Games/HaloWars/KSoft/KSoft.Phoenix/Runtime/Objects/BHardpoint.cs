@@ -13,8 +13,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref YawRotationRate);
-			s.Stream(ref PitchRotationRate);
+			s.Stream(ref this.YawRotationRate);
+			s.Stream(ref this.PitchRotationRate);
 		}
 		#endregion
 	};
@@ -33,11 +33,11 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref OwnerAction);
-			s.Stream(ref AutoCenteringTimer);	s.Stream(ref YawSoundActivationTimer);	s.Stream(ref PitchSoundActivationTimer);
-			s.Stream(ref OppID);
-			s.Stream(ref AllowAutoCentering);	s.Stream(ref YawSound);				s.Stream(ref YawSoundPlaying);
-			s.Stream(ref PitchSound);			s.Stream(ref PitchSoundPlaying);	s.Stream(ref SecondaryTurretScanToken);
+			s.Stream(ref this.OwnerAction);
+			s.Stream(ref this.AutoCenteringTimer);	s.Stream(ref this.YawSoundActivationTimer);	s.Stream(ref this.PitchSoundActivationTimer);
+			s.Stream(ref this.OppID);
+			s.Stream(ref this.AllowAutoCentering);	s.Stream(ref this.YawSound);				s.Stream(ref this.YawSoundPlaying);
+			s.Stream(ref this.PitchSound);			s.Stream(ref this.PitchSoundPlaying);	s.Stream(ref this.SecondaryTurretScanToken);
 		}
 		#endregion
 	};

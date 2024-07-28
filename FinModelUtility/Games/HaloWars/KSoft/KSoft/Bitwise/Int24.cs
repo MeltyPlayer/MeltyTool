@@ -23,11 +23,11 @@ namespace KSoft.Bitwise
 
 		public static bool IsSigned(uint data)
 		{
-			return Bitwise.Flags.Test(data, kSignBitMask);
+			return Flags.Test(data, kSignBitMask);
 		}
 		public static uint SetSigned(uint data, bool isSigned)
 		{
-			return Bitwise.Flags.Modify(isSigned, data, kSignBitMask);
+			return Flags.Modify(isSigned, data, kSignBitMask);
 		}
 		#endregion
 

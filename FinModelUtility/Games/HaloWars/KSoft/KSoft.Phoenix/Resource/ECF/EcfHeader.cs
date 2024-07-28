@@ -27,14 +27,14 @@ namespace KSoft.Phoenix.Resource.ECF
 		private uint mID; // The signature of the data which this header encapsulates
 		private ushort mExtraDataSize;
 
-		public int Adler32BufferLength { get { return HeaderSize - kAdler32StartOffset; } }
-		public uint Id { get { return mID; } }
-		public ushort ExtraDataSize { get { return mExtraDataSize; } }
+		public int Adler32BufferLength { get { return this.HeaderSize - kAdler32StartOffset; } }
+		public uint Id { get { return this.mID; } }
+		public ushort ExtraDataSize { get { return this.mExtraDataSize; } }
 
 		public void InitializeChunkInfo(uint dataId, uint dataChunkExtraDataSize = 0)
 		{
-			mID = dataId;
-			mExtraDataSize = (ushort)dataChunkExtraDataSize;
+			this.mID = dataId;
+			this.mExtraDataSize = (ushort)dataChunkExtraDataSize;
 		}
 
 		public void BeginBlock(IO.IKSoftBinaryStream s)
@@ -51,27 +51,27 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			Contract.Requires(startOffset >= 0);
 
-			TotalSize = (int)(s.Length - startOffset);
+			this.TotalSize = (int)(s.Length - startOffset);
 		}
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
 			s.StreamSignature(kSignature);
-			s.Stream(ref HeaderSize);
-			s.Stream(ref Adler32);
-			s.Stream(ref TotalSize);
-			s.Stream(ref ChunkCount);
-			s.Stream(ref mFlags);
+			s.Stream(ref this.HeaderSize);
+			s.Stream(ref this.Adler32);
+			s.Stream(ref this.TotalSize);
+			s.Stream(ref this.ChunkCount);
+			s.Stream(ref this.mFlags);
 
-			if (s.IsReading && mFlags != 0)
+			if (s.IsReading && this.mFlags != 0)
 			{
 				// TODO: trace
 				System.Diagnostics.Debugger.Break();
 			}
 
-			s.Stream(ref mID);
-			s.Stream(ref mExtraDataSize);
+			s.Stream(ref this.mID);
+			s.Stream(ref this.mExtraDataSize);
 			s.Pad(sizeof(short) + sizeof(int));
 		}
 		#endregion
@@ -80,10 +80,10 @@ namespace KSoft.Phoenix.Resource.ECF
 			int assumedChunkCount = TypeExtensions.kNone)
 		{
 			if (assumedChunkCount.IsNone())
-				assumedChunkCount = ChunkCount;
+				assumedChunkCount = this.ChunkCount;
 
 			int entries_size = EcfChunk.kSizeOf;
-			entries_size += ExtraDataSize;
+			entries_size += this.ExtraDataSize;
 			entries_size *= assumedChunkCount;
 
 			return entries_size;
@@ -98,7 +98,7 @@ namespace KSoft.Phoenix.Resource.ECF
 
 			long adler_start_position = headerPosition + kAdler32StartOffset;
 			stream.Seek(adler_start_position, SeekOrigin.Begin);
-			var adler = Security.Cryptography.Adler32.Compute(stream, Adler32BufferLength);
+			var adler = Security.Cryptography.Adler32.Compute(stream, this.Adler32BufferLength);
 
 			stream.Seek(current_position, SeekOrigin.Begin);
 
@@ -114,8 +114,8 @@ namespace KSoft.Phoenix.Resource.ECF
 
 			long adler_start_position = headerPosition + kAdler32StartOffset;
 			s.BaseStream.Seek(adler_start_position, SeekOrigin.Begin);
-			var adler = Security.Cryptography.Adler32.Compute(s.BaseStream, Adler32BufferLength);
-			Adler32 = adler;
+			var adler = Security.Cryptography.Adler32.Compute(s.BaseStream, this.Adler32BufferLength);
+			this.Adler32 = adler;
 
 			s.BaseStream.Seek(headerPosition, SeekOrigin.Begin);
 			this.Serialize(s);

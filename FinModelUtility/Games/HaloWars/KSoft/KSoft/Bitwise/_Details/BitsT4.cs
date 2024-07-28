@@ -277,7 +277,7 @@ namespace KSoft
 			Contract.Requires/*<ArgumentOutOfRangeException>*/(maxValue > 1, kGetMaxEnumBits_MaxValueOutOfRangeMessage);
 			Contract.Ensures(Contract.Result<int>() > 0);
 
-			return Bits.IndexOfHighestBitSet(maxValue - 1) + 1;
+			return IndexOfHighestBitSet(maxValue - 1) + 1;
 		}
 		/// <summary>Calculate how many bits are needed to represent the provided value</summary>
 		/// <param name="maxValue">An enumeration's <b>kMax</b> value</param>
@@ -289,7 +289,7 @@ namespace KSoft
 			Contract.Requires/*<ArgumentOutOfRangeException>*/(maxValue > 1, kGetMaxEnumBits_MaxValueOutOfRangeMessage);
 			Contract.Ensures(Contract.Result<int>() > 0);
 
-			return Bits.IndexOfHighestBitSet((uint)maxValue - 1) + 1;
+			return IndexOfHighestBitSet((uint)maxValue - 1) + 1;
 		}
 
 		/// <summary>Calculate how many bits are needed to represent the provided value</summary>
@@ -302,7 +302,7 @@ namespace KSoft
 			Contract.Requires/*<ArgumentOutOfRangeException>*/(maxValue > 1, kGetMaxEnumBits_MaxValueOutOfRangeMessage);
 			Contract.Ensures(Contract.Result<int>() > 0);
 
-			return Bits.IndexOfHighestBitSet(maxValue - 1) + 1;
+			return IndexOfHighestBitSet(maxValue - 1) + 1;
 		}
 		/// <summary>Calculate how many bits are needed to represent the provided value</summary>
 		/// <param name="maxValue">An enumeration's <b>kMax</b> value</param>
@@ -314,7 +314,7 @@ namespace KSoft
 			Contract.Requires/*<ArgumentOutOfRangeException>*/(maxValue > 1, kGetMaxEnumBits_MaxValueOutOfRangeMessage);
 			Contract.Ensures(Contract.Result<int>() > 0);
 
-			return Bits.IndexOfHighestBitSet((ulong)maxValue - 1) + 1;
+			return IndexOfHighestBitSet((ulong)maxValue - 1) + 1;
 		}
 
 		#endregion

@@ -23,17 +23,17 @@ namespace KSoft.IO
 		{
 			Contract.Requires(stream != null);
 
-			mOldOwner = (mStream = stream).Owner;
-			mStream.Owner = newOwner;
+			this.mOldOwner = (this.mStream = stream).Owner;
+			this.mStream.Owner = newOwner;
 		}
 
 		/// <summary>Returns the owner of the underlying stream to the previous owner</summary>
 		public void Dispose()
 		{
-			if (mStream != null)
+			if (this.mStream != null)
 			{
-				mStream.Owner = mOldOwner;
-				mStream = null;
+				this.mStream.Owner = this.mOldOwner;
+				this.mStream = null;
 			}
 		}
 	};
@@ -52,17 +52,17 @@ namespace KSoft.IO
 		{
 			Contract.Requires(stream != null);
 
-			mOldUserData = (mStream = stream).UserData;
-			mStream.UserData = newUserData;
+			this.mOldUserData = (this.mStream = stream).UserData;
+			this.mStream.UserData = newUserData;
 		}
 
 		/// <summary>Returns the UserData of the underlying stream to the previous UserData</summary>
 		public void Dispose()
 		{
-			if (mStream != null)
+			if (this.mStream != null)
 			{
-				mStream.UserData = mOldUserData;
-				mStream = null;
+				this.mStream.UserData = this.mOldUserData;
+				this.mStream = null;
 			}
 		}
 	};
@@ -82,20 +82,20 @@ namespace KSoft.IO
 			Contract.Requires(stream != null);
 			Contract.Requires(newMode != 0, "New mode is unset!");
 
-			mOldMode = (mStream = stream).StreamMode;
-			mStream.StreamMode = newMode;
+			this.mOldMode = (this.mStream = stream).StreamMode;
+			this.mStream.StreamMode = newMode;
 
-			if (mOldMode == newMode)
-				mStream = null;
+			if (this.mOldMode == newMode)
+				this.mStream = null;
 		}
 
 		/// <summary>Returns the StreamMode of the underlying stream to the previous mode</summary>
 		public void Dispose()
 		{
-			if (mStream != null)
+			if (this.mStream != null)
 			{
-				mStream.StreamMode = mOldMode;
-				mStream = null;
+				this.mStream.StreamMode = this.mOldMode;
+				this.mStream = null;
 			}
 		}
 	};

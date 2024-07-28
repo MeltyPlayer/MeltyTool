@@ -27,7 +27,7 @@ namespace KSoft.Phoenix.Resource
 		public string Author;
 		#region DateTime
 		PhxSYSTEMTIME mDateTime;
-		public PhxSYSTEMTIME DateTime { get { return mDateTime; } }
+		public PhxSYSTEMTIME DateTime { get { return this.mDateTime; } }
 		#endregion
 		public ulong AuthorXuid;
 		public float Length;
@@ -42,37 +42,37 @@ namespace KSoft.Phoenix.Resource
 		public void UpdateHash(SHA1CryptoServiceProvider sha)
 		{
 			PhxHash.UInt8(sha, kVersion);
-			PhxHash.UInt64(sha, Id);
-			PhxHash.Unicode(sha, Name, kNameStorage.FixedLength-1);
-			PhxHash.Unicode(sha, Description, kDescStorage.FixedLength-1);
-			PhxHash.Ascii(sha, Author, kAuthorStorage.FixedLength);
-			DateTime.UpdateHash(sha);
-			PhxHash.UInt64(sha, AuthorXuid);
-			PhxHash.UInt32(sha, Bitwise.ByteSwap.SingleToUInt32(Length));
-			PhxHash.UInt16(sha, (uint)SessionId);
-			PhxHash.UInt32(sha, (uint)GameType);
-			PhxHash.UInt64(sha, DataCryptKey);
-			sha.TransformBlock(DataHash, 0, DataHash.Length, null, 0);
-			PhxHash.UInt64(sha, DataSize, isFinal: true);
+			PhxHash.UInt64(sha, this.Id);
+			PhxHash.Unicode(sha, this.Name, kNameStorage.FixedLength-1);
+			PhxHash.Unicode(sha, this.Description, kDescStorage.FixedLength-1);
+			PhxHash.Ascii(sha, this.Author, kAuthorStorage.FixedLength);
+			this.DateTime.UpdateHash(sha);
+			PhxHash.UInt64(sha, this.AuthorXuid);
+			PhxHash.UInt32(sha, Bitwise.ByteSwap.SingleToUInt32(this.Length));
+			PhxHash.UInt16(sha, (uint) this.SessionId);
+			PhxHash.UInt32(sha, (uint) this.GameType);
+			PhxHash.UInt64(sha, this.DataCryptKey);
+			sha.TransformBlock(this.DataHash, 0, this.DataHash.Length, null, 0);
+			PhxHash.UInt64(sha, this.DataSize, isFinal: true);
 		}
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
 			s.StreamVersion(kVersion);
-			s.Stream(ref Id);
-			s.Stream(ref Name, kNameStorage);
-			s.Stream(ref Description, kDescStorage);
-			s.Stream(ref Author, kAuthorStorage);
-			s.Stream(ref mDateTime);
-			s.Stream(ref AuthorXuid);
-			s.Stream(ref Length);
-			s.Stream(ref SessionId);
-			s.Stream(ref GameType);
-			s.Stream(ref DataCryptKey);
-			s.Stream(DataHash, 0, DataHash.Length);
-			s.Stream(ref DataSize);
-			s.Stream(Hash, 0, Hash.Length);
+			s.Stream(ref this.Id);
+			s.Stream(ref this.Name, kNameStorage);
+			s.Stream(ref this.Description, kDescStorage);
+			s.Stream(ref this.Author, kAuthorStorage);
+			s.Stream(ref this.mDateTime);
+			s.Stream(ref this.AuthorXuid);
+			s.Stream(ref this.Length);
+			s.Stream(ref this.SessionId);
+			s.Stream(ref this.GameType);
+			s.Stream(ref this.DataCryptKey);
+			s.Stream(this.DataHash, 0, this.DataHash.Length);
+			s.Stream(ref this.DataSize);
+			s.Stream(this.Hash, 0, this.Hash.Length);
 			s.Pad(kPaddingLength);
 		}
 		#endregion

@@ -15,14 +15,14 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		float mRating = PhxUtil.kInvalidSingle;
-		public float Rating { get { return mRating; } }
+		public float Rating { get { return this.mRating; } }
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamCursor(ref mRating);
+			s.StreamCursor(ref this.mRating);
 		}
 		#endregion
 

@@ -78,12 +78,12 @@ public class QpBinArchiveExtractor {
       Asserts.True(entries.Length >= endIndex && startIndex <= endIndex);
       for (var i = startIndex; i < endIndex;) {
         var childEntry = entries[i];
-        ProcessEntries_(entries,
-                        i,
-                        currentName,
-                        br,
-                        dataOffset,
-                        strings);
+        this.ProcessEntries_(entries,
+                             i,
+                             currentName,
+                             br,
+                             dataOffset,
+                             strings);
 
         if (!childEntry.IsDirectory) {
           ++i;

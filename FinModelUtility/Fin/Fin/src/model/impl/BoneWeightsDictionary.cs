@@ -15,7 +15,7 @@ public class BoneWeightsDictionary {
   private const float MIN_WEIGHT = .0001f;
   private const float WEIGHT_ERROR = .01f;
 
-  public IReadOnlyList<IBoneWeights> List => boneWeights_;
+  public IReadOnlyList<IBoneWeights> List => this.boneWeights_;
 
   public IBoneWeights GetOrCreate(
       VertexSpace vertexSpace,
@@ -77,7 +77,7 @@ public class BoneWeightsDictionary {
           new BoneWeightsSet();
     }
 
-    var boneWeights = CreateInstance_(vertexSpace, weights);
+    var boneWeights = this.CreateInstance_(vertexSpace, weights);
     allBoneWeightsWithCount.Add(boneWeights);
 
     return boneWeights;
@@ -95,7 +95,7 @@ public class BoneWeightsDictionary {
     Asserts.True(Math.Abs(totalWeight - 1) < WEIGHT_ERROR);
 
     var boneWeights = new BoneWeightsImpl {
-        Index = boneWeights_.Count,
+        Index = this.boneWeights_.Count,
         VertexSpace = vertexSpace,
         Weights = weights,
     };
@@ -123,14 +123,14 @@ public class BoneWeightsDictionary {
     public IReadOnlyList<IBoneWeight> Weights { get; init; }
 
     public override int GetHashCode()
-      => BoneWeightsSet.GetHashCode(this.VertexSpace, Weights);
+      => BoneWeightsSet.GetHashCode(this.VertexSpace, this.Weights);
 
     public override bool Equals(object? obj) {
       if (obj is not BoneWeightsImpl other) {
         return false;
       }
 
-      return Equals(other);
+      return this.Equals(other);
     }
 
     public bool Equals(IReadOnlyBoneWeights? weights)

@@ -95,10 +95,10 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
     this.materialMeshRenderers_ = allMaterialMeshRenderers.ToArray();
   }
 
-  ~MergedMaterialByMeshRenderer() => ReleaseUnmanagedResources_();
+  ~MergedMaterialByMeshRenderer() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
-    ReleaseUnmanagedResources_();
+    this.ReleaseUnmanagedResources_();
     GC.SuppressFinalize(this);
   }
 

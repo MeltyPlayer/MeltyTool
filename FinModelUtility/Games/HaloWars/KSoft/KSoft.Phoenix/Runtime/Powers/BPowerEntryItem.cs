@@ -15,10 +15,10 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref SquadID);
-			s.Stream(ref UsesRemaining); s.Stream(ref TimesUsed); s.Stream(ref ChargeCap);
-			s.Stream(ref NextGrantTime);
-			s.Stream(ref InfiniteUses); s.Stream(ref Recharging);
+			s.Stream(ref this.SquadID);
+			s.Stream(ref this.UsesRemaining); s.Stream(ref this.TimesUsed); s.Stream(ref this.ChargeCap);
+			s.Stream(ref this.NextGrantTime);
+			s.Stream(ref this.InfiniteUses); s.Stream(ref this.Recharging);
 		}
 		#endregion
 

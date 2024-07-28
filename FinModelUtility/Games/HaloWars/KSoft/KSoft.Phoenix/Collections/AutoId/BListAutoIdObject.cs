@@ -10,12 +10,12 @@ namespace KSoft.Collections
 		[Browsable(false)]
 		public string Name
 		{
-			get { return mName; }
+			get { return this.mName; }
 			protected set
 			{
-				if (this.SetFieldObj(ref mName, value))
+				if (this.SetFieldObj(ref this.mName, value))
 				{
-					OnPropertyChanged(nameof(IListAutoIdObject.Data));
+					this.OnPropertyChanged(nameof(IListAutoIdObject.Data));
 				}
 			}
 		}
@@ -24,14 +24,14 @@ namespace KSoft.Collections
 		private int mAutoId;
 		public int AutoId
 		{
-			get { return mAutoId; }
-			set { this.SetFieldVal(ref mAutoId, value); }
+			get { return this.mAutoId; }
+			set { this.SetFieldVal(ref this.mAutoId, value); }
 		}
 
 		string IListAutoIdObject.Data
 		{
-			get { return mName; }
-			set { Name = value; }
+			get { return this.mName; }
+			set { this.Name = value; }
 		}
 
 		public abstract void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -39,6 +39,6 @@ namespace KSoft.Collections
 			where TCursor : class;
 		#endregion
 
-		public override string ToString() { return mName; }
+		public override string ToString() { return this.mName; }
 	};
 }

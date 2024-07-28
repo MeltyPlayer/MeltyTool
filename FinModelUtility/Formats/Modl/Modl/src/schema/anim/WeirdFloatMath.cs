@@ -38,7 +38,7 @@ public static class WeirdFloatMath {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static double CreateWeirdDoubleFromUInt32(uint value)
-    => WeirdFloatMath.InterpretAsDouble(
-           WeirdFloatMath.Concat44(0x43300000, value)) -
+    => InterpretAsDouble(
+           Concat44(0x43300000, value)) -
        C_4503599627370496;
 }

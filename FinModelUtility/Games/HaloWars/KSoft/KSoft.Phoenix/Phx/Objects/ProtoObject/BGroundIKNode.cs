@@ -17,8 +17,8 @@ namespace KSoft.Phoenix.Phx
 		string mName;
 		public string Name
 		{
-			get { return mName; }
-			set { mName = value; }
+			get { return this.mName; }
+			set { this.mName = value; }
 		}
 		#endregion
 
@@ -26,37 +26,37 @@ namespace KSoft.Phoenix.Phx
 		float mIKRange;
 		public float IKRange
 		{
-			get { return mIKRange; }
-			set { mIKRange = value; }
+			get { return this.mIKRange; }
+			set { this.mIKRange = value; }
 		}
 
-		public bool IKRangeIsValid { get { return IKRange >= 0.0; } }
+		public bool IKRangeIsValid { get { return this.IKRange >= 0.0; } }
 		#endregion
 
 		#region LinkCount
 		int mLinkCount;
 		public int LinkCount
 		{
-			get { return mLinkCount; }
-			set { mLinkCount = value; }
+			get { return this.mLinkCount; }
+			set { this.mLinkCount = value; }
 		}
 
-		public bool LinkCountIsValid { get { return LinkCount >= byte.MinValue && LinkCount <= byte.MaxValue; } }
+		public bool LinkCountIsValid { get { return this.LinkCount >= byte.MinValue && this.LinkCount <= byte.MaxValue; } }
 		#endregion
 
 		#region AxisPositioning
 		BVector mAxisPositioning;
 		public BVector AxisPositioning
 		{
-			get { return mAxisPositioning; }
-			set { mAxisPositioning = value; }
+			get { return this.mAxisPositioning; }
+			set { this.mAxisPositioning = value; }
 		}
 
-		public bool OnLeft { get { return mAxisPositioning.X <= -1.0f; } }
-		public bool OnRight { get { return mAxisPositioning.X >= +1.0f; } }
+		public bool OnLeft { get { return this.mAxisPositioning.X <= -1.0f; } }
+		public bool OnRight { get { return this.mAxisPositioning.X >= +1.0f; } }
 
-		public bool InFront { get { return mAxisPositioning.Z >= +1.0f; } }
-		public bool InBack { get { return mAxisPositioning.Z <= -1.0f; } }
+		public bool InFront { get { return this.mAxisPositioning.Z >= +1.0f; } }
+		public bool InBack { get { return this.mAxisPositioning.Z <= -1.0f; } }
 		#endregion
 
 		#region ITagElementStreamable<string> Members
@@ -64,11 +64,11 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamCursor(ref mName);
-			s.StreamAttribute("ikRange", ref mIKRange);
-			s.StreamAttribute("linkCount", ref mLinkCount);
-			s.StreamAttributeOpt("x", ref mAxisPositioning.X, Predicates.IsNotZero);
-			s.StreamAttributeOpt("z", ref mAxisPositioning.Z, Predicates.IsNotZero);
+			s.StreamCursor(ref this.mName);
+			s.StreamAttribute("ikRange", ref this.mIKRange);
+			s.StreamAttribute("linkCount", ref this.mLinkCount);
+			s.StreamAttributeOpt("x", ref this.mAxisPositioning.X, Predicates.IsNotZero);
+			s.StreamAttributeOpt("z", ref this.mAxisPositioning.Z, Predicates.IsNotZero);
 		}
 		#endregion
 	};

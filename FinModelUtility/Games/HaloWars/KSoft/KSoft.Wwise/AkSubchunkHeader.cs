@@ -12,11 +12,11 @@ namespace KSoft.Wwise
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.StreamTagBigEndian(ref Tag);
-			s.Stream(ref ChunkSize);
+			s.StreamTagBigEndian(ref this.Tag);
+			s.Stream(ref this.ChunkSize);
 		}
 		#endregion
 
-		public override int GetHashCode() { return (int)Tag; }
+		public override int GetHashCode() { return (int) this.Tag; }
 	};
 }

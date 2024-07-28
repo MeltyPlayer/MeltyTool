@@ -58,13 +58,13 @@ public class ModelMinMaxBoundsScaleCalculator
                                       ref float maxX,
                                       ref float maxY,
                                       ref float maxZ) {
-    boneTransformManager_.CalculateStaticMatricesForManualProjection(model);
+    this.boneTransformManager_.CalculateStaticMatricesForManualProjection(model);
 
     var anyVertices = false;
     foreach (var vertex in model.Skin.Vertices) {
       anyVertices = true;
 
-      boneTransformManager_.ProjectVertexPosition(
+      this.boneTransformManager_.ProjectVertexPosition(
           vertex,
           out var position);
 
@@ -90,7 +90,7 @@ public class ModelMinMaxBoundsScaleCalculator
         var bone = boneQueue.Dequeue();
 
         var xyz = new Vector3();
-        boneTransformManager_.ProjectPosition(bone, ref xyz);
+        this.boneTransformManager_.ProjectPosition(bone, ref xyz);
 
         minX = MathF.Min(minX, xyz.X);
         maxX = MathF.Max(maxX, xyz.X);

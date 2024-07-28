@@ -43,14 +43,14 @@ public class BmdGxTexture : IGxTexture {
 
     this.MipmapImages = this.Header.ToMipmapImages();
 
-    this.ColorType = BmdGxTexture.GetColorType_(this.Header.Format);
+    this.ColorType = GetColorType_(this.Header.Format);
   }
 
   public string Name { get; }
   public override string ToString() => this.Name;
 
   public IReadOnlyImage[] MipmapImages { get; }
-  public Bti Header => OverrideHeader ?? DefaultHeader;
+  public Bti Header => this.OverrideHeader ?? this.DefaultHeader;
   private Bti DefaultHeader { get; }
   private Bti? OverrideHeader { get; }
 
@@ -94,18 +94,18 @@ public class BmdGxTexture : IGxTexture {
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {
-    if (Object.ReferenceEquals(this, obj)) {
+    if (ReferenceEquals(this, obj)) {
       return true;
     }
 
     if (obj is BmdGxTexture other) {
       return this.Name.Equals(other.Name) &&
              this.MipmapImages.SequenceEqual(other.MipmapImages) &&
-             WrapModeS == other.WrapModeS &&
-             WrapModeT == other.WrapModeT &&
-             MinTextureFilter == other.MinTextureFilter &&
-             MagTextureFilter == other.MagTextureFilter &&
-             ColorType == other.ColorType;
+             this.WrapModeS == other.WrapModeS &&
+             this.WrapModeT == other.WrapModeT &&
+             this.MinTextureFilter == other.MinTextureFilter &&
+             this.MagTextureFilter == other.MagTextureFilter &&
+             this.ColorType == other.ColorType;
     }
 
     return false;
@@ -113,12 +113,12 @@ public class BmdGxTexture : IGxTexture {
 
   public override int GetHashCode()
     => FluentHash.Start()
-                 .With(Name)
-                 .With(MipmapImages)
-                 .With(WrapModeS)
-                 .With(WrapModeT)
-                 .With(MinTextureFilter)
-                 .With(MagTextureFilter)
-                 .With(ColorType)
+                 .With(this.Name)
+                 .With(this.MipmapImages)
+                 .With(this.WrapModeS)
+                 .With(this.WrapModeT)
+                 .With(this.MinTextureFilter)
+                 .With(this.MagTextureFilter)
+                 .With(this.ColorType)
                  .Hash;
 }

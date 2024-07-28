@@ -24,7 +24,7 @@ namespace KSoft.Xml
 			Reflection.Util.GenerateMemberGetter<StreamReader, int>(kStreamReader_BufferPositionPropName);
 
 		static readonly int kStreamReader_DefaultBufferSize =
-			Reflection.Util.GenerateStaticFieldGetter<System.IO.StreamReader, int>(kStreamReader_DefaultBufferSizeFieldName)();
+			Reflection.Util.GenerateStaticFieldGetter<StreamReader, int>(kStreamReader_DefaultBufferSizeFieldName)();
 
 		static int GetBufferLength(StreamReader s)
 		{

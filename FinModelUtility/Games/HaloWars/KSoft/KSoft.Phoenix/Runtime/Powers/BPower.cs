@@ -22,16 +22,16 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref ID);
-			s.Stream(ref Type);
-			s.Stream(ref PowerUserID);
-			s.Stream(ref ProtoPowerID); s.Stream(ref PowerLevel);
-			s.Stream(ref MaintenanceSupplies);
-			s.Stream(ref Elapsed);
-			s.Stream(ref PlayerID);
-			s.Stream(ref OwnerID);
-			s.StreamV(ref TargetLocation);
-			s.Stream(ref Destroy); s.Stream(ref IgnoreAllReqs); s.Stream(ref CheckPowerLocation);
+			s.Stream(ref this.ID);
+			s.Stream(ref this.Type);
+			s.Stream(ref this.PowerUserID);
+			s.Stream(ref this.ProtoPowerID); s.Stream(ref this.PowerLevel);
+			s.Stream(ref this.MaintenanceSupplies);
+			s.Stream(ref this.Elapsed);
+			s.Stream(ref this.PlayerID);
+			s.Stream(ref this.OwnerID);
+			s.StreamV(ref this.TargetLocation);
+			s.Stream(ref this.Destroy); s.Stream(ref this.IgnoreAllReqs); s.Stream(ref this.CheckPowerLocation);
 		}
 		#endregion
 

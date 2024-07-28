@@ -14,7 +14,7 @@ namespace KSoft.IO
 		public override ushort ReadUInt16()
 		{
 			var value = base.ReadUInt16();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapUInt16(value);
 		}
@@ -25,7 +25,7 @@ namespace KSoft.IO
 		public override short ReadInt16()
 		{
 			var value = base.ReadInt16();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapInt16(value);
 		}
@@ -36,7 +36,7 @@ namespace KSoft.IO
 		public override uint ReadUInt32()
 		{
 			var value = base.ReadUInt32();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapUInt32(value);
 		}
@@ -47,7 +47,7 @@ namespace KSoft.IO
 		public override int ReadInt32()
 		{
 			var value = base.ReadInt32();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapInt32(value);
 		}
@@ -58,7 +58,7 @@ namespace KSoft.IO
 		public override ulong ReadUInt64()
 		{
 			var value = base.ReadUInt64();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapUInt64(value);
 		}
@@ -69,7 +69,7 @@ namespace KSoft.IO
 		public override long ReadInt64()
 		{
 			var value = base.ReadInt64();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapInt64(value);
 		}
@@ -80,7 +80,7 @@ namespace KSoft.IO
 		public override float ReadSingle()
 		{
 			var value = base.ReadSingle();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapSingle(value);
 		}
@@ -91,7 +91,7 @@ namespace KSoft.IO
 		public override double ReadDouble()
 		{
 			var value = base.ReadDouble();
-			return !mRequiresByteSwap
+			return !this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapDouble(value);
 		}
@@ -106,7 +106,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<byte[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadByte();
+				array[x] = this.ReadByte();
 
 			return array;
 		}
@@ -115,7 +115,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<byte[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public sbyte[] ReadFixedArray(sbyte[] array, int startIndex, int length)
@@ -126,7 +126,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<sbyte[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadSByte();
+				array[x] = this.ReadSByte();
 
 			return array;
 		}
@@ -135,7 +135,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<sbyte[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public ushort[] ReadFixedArray(ushort[] array, int startIndex, int length)
@@ -146,7 +146,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<ushort[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadUInt16();
+				array[x] = this.ReadUInt16();
 
 			return array;
 		}
@@ -155,7 +155,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<ushort[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public short[] ReadFixedArray(short[] array, int startIndex, int length)
@@ -166,7 +166,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<short[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadInt16();
+				array[x] = this.ReadInt16();
 
 			return array;
 		}
@@ -175,7 +175,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<short[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public uint[] ReadFixedArray(uint[] array, int startIndex, int length)
@@ -186,7 +186,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<uint[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadUInt32();
+				array[x] = this.ReadUInt32();
 
 			return array;
 		}
@@ -195,7 +195,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<uint[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public int[] ReadFixedArray(int[] array, int startIndex, int length)
@@ -206,7 +206,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<int[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadInt32();
+				array[x] = this.ReadInt32();
 
 			return array;
 		}
@@ -215,7 +215,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<int[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public ulong[] ReadFixedArray(ulong[] array, int startIndex, int length)
@@ -226,7 +226,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<ulong[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadUInt64();
+				array[x] = this.ReadUInt64();
 
 			return array;
 		}
@@ -235,7 +235,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<ulong[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public long[] ReadFixedArray(long[] array, int startIndex, int length)
@@ -246,7 +246,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<long[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadInt64();
+				array[x] = this.ReadInt64();
 
 			return array;
 		}
@@ -255,7 +255,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<long[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public float[] ReadFixedArray(float[] array, int startIndex, int length)
@@ -266,7 +266,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<float[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadSingle();
+				array[x] = this.ReadSingle();
 
 			return array;
 		}
@@ -275,7 +275,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<float[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		public double[] ReadFixedArray(double[] array, int startIndex, int length)
@@ -286,7 +286,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<double[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadDouble();
+				array[x] = this.ReadDouble();
 
 			return array;
 		}
@@ -295,7 +295,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<double[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 
 		#endregion
@@ -308,7 +308,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(ushort)"/>
 		public override void Write(ushort value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapUInt16(value));
 		}
@@ -318,7 +318,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(short)"/>
 		public override void Write(short value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapInt16(value));
 		}
@@ -328,7 +328,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(uint)"/>
 		public override void Write(uint value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapUInt32(value));
 		}
@@ -338,7 +338,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(int)"/>
 		public override void Write(int value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapInt32(value));
 		}
@@ -348,7 +348,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(ulong)"/>
 		public override void Write(ulong value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapUInt64(value));
 		}
@@ -358,7 +358,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(long)"/>
 		public override void Write(long value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapInt64(value));
 		}
@@ -368,7 +368,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(float)"/>
 		public override void Write(float value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapSingle(value));
 		}
@@ -378,7 +378,7 @@ namespace KSoft.IO
 		/// <seealso cref="System.IO.BinaryWriter.Write(double)"/>
 		public override void Write(double value)
 		{
-			base.Write(!mRequiresByteSwap
+			base.Write(!this.mRequiresByteSwap
 				? value
 				: Bitwise.ByteSwap.SwapDouble(value));
 		}
@@ -393,7 +393,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<byte[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -402,7 +402,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<byte[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public sbyte[] WriteFixedArray(sbyte[] array, int startIndex, int length)
@@ -413,7 +413,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<sbyte[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -422,7 +422,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<sbyte[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public ushort[] WriteFixedArray(ushort[] array, int startIndex, int length)
@@ -433,7 +433,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<ushort[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -442,7 +442,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<ushort[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public short[] WriteFixedArray(short[] array, int startIndex, int length)
@@ -453,7 +453,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<short[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -462,7 +462,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<short[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public uint[] WriteFixedArray(uint[] array, int startIndex, int length)
@@ -473,7 +473,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<uint[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -482,7 +482,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<uint[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public int[] WriteFixedArray(int[] array, int startIndex, int length)
@@ -493,7 +493,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<int[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -502,7 +502,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<int[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public ulong[] WriteFixedArray(ulong[] array, int startIndex, int length)
@@ -513,7 +513,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<ulong[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -522,7 +522,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<ulong[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public long[] WriteFixedArray(long[] array, int startIndex, int length)
@@ -533,7 +533,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<long[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -542,7 +542,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<long[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public float[] WriteFixedArray(float[] array, int startIndex, int length)
@@ -553,7 +553,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<float[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -562,7 +562,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<float[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		public double[] WriteFixedArray(double[] array, int startIndex, int length)
@@ -573,7 +573,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<double[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -582,7 +582,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<double[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 
 		#endregion
@@ -592,80 +592,90 @@ namespace KSoft.IO
 	{
 		public EndianStream Stream(ref byte value)
 		{
-				 if (IsReading) value = Reader.ReadByte();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadByte();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref sbyte value)
 		{
-				 if (IsReading) value = Reader.ReadSByte();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadSByte();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref ushort value)
 		{
-				 if (IsReading) value = Reader.ReadUInt16();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadUInt16();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref short value)
 		{
-				 if (IsReading) value = Reader.ReadInt16();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadInt16();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref uint value)
 		{
-				 if (IsReading) value = Reader.ReadUInt32();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadUInt32();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref int value)
 		{
-				 if (IsReading) value = Reader.ReadInt32();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadInt32();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref ulong value)
 		{
-				 if (IsReading) value = Reader.ReadUInt64();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadUInt64();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref long value)
 		{
-				 if (IsReading) value = Reader.ReadInt64();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadInt64();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref float value)
 		{
-				 if (IsReading) value = Reader.ReadSingle();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadSingle();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
 
 		public EndianStream Stream(ref double value)
 		{
-				 if (IsReading) value = Reader.ReadDouble();
-			else if (IsWriting) Writer.Write(value);
+				 if (this.IsReading) value = this.Reader.ReadDouble();
+			else if (this.IsWriting)
+				this.Writer.Write(value);
 
 			return this;
 		}
@@ -678,8 +688,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -687,7 +699,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(sbyte[] array, int startIndex, int length)
@@ -696,8 +708,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -705,7 +719,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(ushort[] array, int startIndex, int length)
@@ -714,8 +728,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -723,7 +739,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(short[] array, int startIndex, int length)
@@ -732,8 +748,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -741,7 +759,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(uint[] array, int startIndex, int length)
@@ -750,8 +768,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -759,7 +779,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(int[] array, int startIndex, int length)
@@ -768,8 +788,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -777,7 +799,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(ulong[] array, int startIndex, int length)
@@ -786,8 +808,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -795,7 +819,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(long[] array, int startIndex, int length)
@@ -804,8 +828,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -813,7 +839,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(float[] array, int startIndex, int length)
@@ -822,8 +848,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -831,7 +859,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		public EndianStream StreamFixedArray(double[] array, int startIndex, int length)
@@ -840,8 +868,10 @@ namespace KSoft.IO
 			Contract.Requires(startIndex >= 0);
 			Contract.Requires(length >= 0);
 
-				 if (IsReading) Reader.ReadFixedArray(array, startIndex, length);
-			else if (IsWriting) Writer.WriteFixedArray(array, startIndex, length);
+				 if (this.IsReading)
+					 this.Reader.ReadFixedArray(array, startIndex, length);
+			else if (this.IsWriting)
+				this.Writer.WriteFixedArray(array, startIndex, length);
 
 			return this;
 		}
@@ -849,7 +879,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(array != null);
 
-			return StreamFixedArray(array, 0, array.Length);
+			return this.StreamFixedArray(array, 0, array.Length);
 		}
 
 		#endregion

@@ -54,7 +54,7 @@ public static class DataTypeUtil {
       var values = new float[count];
 
       for (var i = 0; i < count; ++i) {
-        values[i] = DataTypeUtil.Read(br, dataType);
+        values[i] = Read(br, dataType);
       }
 
       return values;
@@ -79,7 +79,7 @@ public static class DataTypeUtil {
       var scale = attribute.Scale;
 
       for (var i = 0; i < span.Length / size; ++i) {
-        yield return scale * DataTypeUtil.Read(span.Slice(size * i, size), dataType);
+        yield return scale * Read(span.Slice(size * i, size), dataType);
       }
     }
 

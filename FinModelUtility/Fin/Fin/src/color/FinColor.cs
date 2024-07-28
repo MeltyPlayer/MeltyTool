@@ -69,7 +69,7 @@ public class FinColor : IColor {
     var g = (byte) Math.Sqrt(Lerp_(from.Gb * from.Gb, to.Gb * to.Gb, frac));
     var b = (byte) Math.Sqrt(Lerp_(from.Bb * from.Bb, to.Bb * to.Bb, frac));
 
-    return FinColor.FromRgbBytes(r, g, b);
+    return FromRgbBytes(r, g, b);
   }
 
   private static float Lerp_(float from, float to, float frac)

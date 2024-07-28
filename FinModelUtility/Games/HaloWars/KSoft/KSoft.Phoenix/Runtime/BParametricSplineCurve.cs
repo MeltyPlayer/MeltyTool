@@ -12,10 +12,10 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.StreamV(ref A0);
-			s.StreamV(ref A1);
-			s.StreamV(ref A2);
-			s.Stream(ref Valid);
+			s.StreamV(ref this.A0);
+			s.StreamV(ref this.A1);
+			s.StreamV(ref this.A2);
+			s.Stream(ref this.Valid);
 		}
 		#endregion
 	};

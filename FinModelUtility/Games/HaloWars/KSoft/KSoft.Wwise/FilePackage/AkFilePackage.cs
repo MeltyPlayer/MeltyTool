@@ -18,40 +18,40 @@ namespace KSoft.Wwise.FilePackage
 		List<KeyValuePair<uint, string>> mIdToNameDups;
 
 		bool HasExternalFiles { get {
-			return mExternalFilesTable != null;
+			return this.mExternalFilesTable != null;
 		} }
 
 		public AkFilePackage(AkFilePackageSettings settings)
 		{
-			Settings = settings;
+			this.Settings = settings;
 
-			mLangMap = new AkLanguageMap(settings.UseAsciiStrings);
+			this.mLangMap = new AkLanguageMap(settings.UseAsciiStrings);
 
-			mSoundBanksTable = new AkFileLookupTable();
-			mStreamedFilesTable = new AkFileLookupTable();
+			this.mSoundBanksTable = new AkFileLookupTable();
+			this.mStreamedFilesTable = new AkFileLookupTable();
 
 			if (AkVersion.HasExternalFiles(settings.SdkVersion))
-				mExternalFilesTable = new AkFileLookupTable();
+				this.mExternalFilesTable = new AkFileLookupTable();
 		}
 
-		public IReadOnlyDictionary<uint, string> IdToName { get { return mIdToName; } }
-		public IEnumerable<SoundBank.AkSoundBank> SoundBanks { get { return mSoundBanks; } }
+		public IReadOnlyDictionary<uint, string> IdToName { get { return this.mIdToName; } }
+		public IEnumerable<SoundBank.AkSoundBank> SoundBanks { get { return this.mSoundBanks; } }
 
 		internal void MapIdToName(uint id, string name)
 		{
 			string existing_name;
-			if (mIdToName.TryGetValue(id, out existing_name))
+			if (this.mIdToName.TryGetValue(id, out existing_name))
 			{
 				if (existing_name != name)
-					mIdToNameDups.Add(new KeyValuePair<uint, string>(id, name));
+					this.mIdToNameDups.Add(new KeyValuePair<uint, string>(id, name));
 			}
 			else
-				mIdToName.Add(id, name);
+				this.mIdToName.Add(id, name);
 		}
 
 		internal AkFileLookupTableEntry FindStreamedFileById(ulong streamedFileId)
 		{
-			return mStreamedFilesTable.Find(streamedFileId);
+			return this.mStreamedFilesTable.Find(streamedFileId);
 		}
 
 		#region IEndianStreamSerializable Members
@@ -60,37 +60,37 @@ namespace KSoft.Wwise.FilePackage
 			s.Owner = this;
 
 			if(s.IsWriting)
-				mHeader.InitializeSize(Settings.SdkVersion, mLangMap.TotalMapSize);
+				this.mHeader.InitializeSize(this.Settings.SdkVersion, this.mLangMap.TotalMapSize);
 
-			s.Stream(ref mHeader);
-			s.Stream(ref mLangMap.TotalMapSize);
-			s.Stream(ref mSoundBanksTable.TotalSize);
-			s.Stream(ref mStreamedFilesTable.TotalSize);
-			if (HasExternalFiles) s.Stream(ref mExternalFilesTable.TotalSize);
-			s.Stream(mLangMap);
-			s.Stream(mSoundBanksTable);
-			s.Stream(mStreamedFilesTable);
-			if (HasExternalFiles) s.Stream(mExternalFilesTable);
+			s.Stream(ref this.mHeader);
+			s.Stream(ref this.mLangMap.TotalMapSize);
+			s.Stream(ref this.mSoundBanksTable.TotalSize);
+			s.Stream(ref this.mStreamedFilesTable.TotalSize);
+			if (this.HasExternalFiles) s.Stream(ref this.mExternalFilesTable.TotalSize);
+			s.Stream(this.mLangMap);
+			s.Stream(this.mSoundBanksTable);
+			s.Stream(this.mStreamedFilesTable);
+			if (this.HasExternalFiles) s.Stream(this.mExternalFilesTable);
 		}
 
 		public void SerializeSoundBanks(IO.EndianStream s)
 		{
 			if (s.IsReading)
 			{
-				mSoundBanks = new SoundBank.AkSoundBank[mSoundBanksTable.Count];
-				mIdToName = new Dictionary<uint, string>(mSoundBanks.Length);
-				mIdToNameDups = new List<KeyValuePair<uint, string>>();
-				for (int x = 0; x < mSoundBanksTable.Count; x++)
+				this.mSoundBanks = new SoundBank.AkSoundBank[this.mSoundBanksTable.Count];
+				this.mIdToName = new Dictionary<uint, string>(this.mSoundBanks.Length);
+				this.mIdToNameDups = new List<KeyValuePair<uint, string>>();
+				for (int x = 0; x < this.mSoundBanksTable.Count; x++)
 				{
-					var entry = mSoundBanksTable[x];
-					mSoundBanks[x] = new SoundBank.AkSoundBank((long)entry.FileSize64, entry.FileOffset, this);
+					var entry = this.mSoundBanksTable[x];
+					this.mSoundBanks[x] = new SoundBank.AkSoundBank((long)entry.FileSize64, entry.FileOffset, this);
 				}
 			}
 
-			for (int x = 0; x < mSoundBanks.Length; x++)
-				s.Stream(mSoundBanks[x]);
+			for (int x = 0; x < this.mSoundBanks.Length; x++)
+				s.Stream(this.mSoundBanks[x]);
 
-			mSoundBanks.ToString();
+			this.mSoundBanks.ToString();
 		}
 		#endregion
 	};

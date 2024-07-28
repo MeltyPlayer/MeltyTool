@@ -48,7 +48,7 @@ namespace KSoft.Collections
 		public abstract int GetMemberId(string memberName);
 		string IProtoEnum.GetMemberName(int memberId)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(IsValidMemberId(memberId));
+			Contract.Requires<ArgumentOutOfRangeException>(this.IsValidMemberId(memberId));
 
 			throw new NotImplementedException();
 		}

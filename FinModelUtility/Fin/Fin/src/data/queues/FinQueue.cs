@@ -37,6 +37,6 @@ public class FinQueue<T> : IFinQueue<T> {
   public T Peek() => this.impl_.Peek();
   public bool TryPeek(out T value) => this.impl_.TryPeek(out value!);
 
-  IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+  IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
   public IEnumerator<T> GetEnumerator() => this.impl_.GetEnumerator();
 }

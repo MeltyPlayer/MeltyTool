@@ -33,12 +33,12 @@ namespace KSoft.IO
 
 			void AssertStreamTypeIsValid(out bool isSigned)
 			{
-				var tc = Type.GetTypeCode(StreamType);
+				var tc = Type.GetTypeCode(this.StreamType);
 				isSigned = tc.IsSigned();
 
 				if (!EnumUtils.TypeIsSupported(tc))
 				{
-					var message = string.Format(Util.InvariantCultureInfo, "{0} is an invalid stream type", StreamType);
+					var message = string.Format(Util.InvariantCultureInfo, "{0} is an invalid stream type", this.StreamType);
 
 					throw new NotSupportedException(message);
 				}
@@ -46,43 +46,43 @@ namespace KSoft.IO
 
 			public MethodGenerationArgs()
 			{
-				EnumType = typeof(TEnum);
-				StreamType = typeof(TStreamType);
-				UnderlyingType = Enum.GetUnderlyingType(EnumType);
+				this.EnumType = typeof(TEnum);
+				this.StreamType = typeof(TStreamType);
+				this.UnderlyingType = Enum.GetUnderlyingType(this.EnumType);
 
 				// Check if the user wants us to always use the underlying type
-				UseUnderlyingType = StreamType == typeof(EnumBinaryStreamerUseUnderlyingType);
-				if (UseUnderlyingType)
-					StreamType = UnderlyingType;
+				this.UseUnderlyingType = this.StreamType == typeof(EnumBinaryStreamerUseUnderlyingType);
+				if (this.UseUnderlyingType)
+					this.StreamType = this.UnderlyingType;
 
-				EnumUtils.AssertTypeIsEnum(EnumType);
-				EnumUtils.AssertUnderlyingTypeIsSupported(EnumType, UnderlyingType);
-				AssertStreamTypeIsValid(out StreamTypeIsSigned);
+				EnumUtils.AssertTypeIsEnum(this.EnumType);
+				EnumUtils.AssertUnderlyingTypeIsSupported(this.EnumType, this.UnderlyingType);
+				this.AssertStreamTypeIsValid(out this.StreamTypeIsSigned);
 
-				UnderlyingTypeNeedsConversion = UnderlyingType != StreamType;
+				this.UnderlyingTypeNeedsConversion = this.UnderlyingType != this.StreamType;
 
-				Options = new TOptions();
+				this.Options = new TOptions();
 
-				if (Options.UseNoneSentinelEncoding)
+				if (this.Options.UseNoneSentinelEncoding)
 				{
-					if (StreamType == typeof(sbyte) || StreamType == typeof(byte))
+					if (this.StreamType == typeof(sbyte) || this.StreamType == typeof(byte))
 						throw new ArgumentException(
 							"{0}: UseNoneSentinelEncoding can't operate on (s)byte types (StreamType)",
-							EnumType.FullName);
+							this.EnumType.FullName);
 				}
 				#region Options.BitSwap
-				if (Options.BitSwap)
+				if (this.Options.BitSwap)
 				{
-					if (StreamTypeIsSigned)
+					if (this.StreamTypeIsSigned)
 						throw new ArgumentException(
 							"{0}: Bit-swapping only makes sense on flags/unsigned types, but StreamType is signed",
-							EnumType.FullName);
+							this.EnumType.FullName);
 				}
 				else
 				{
-					if (Options.BitSwapGuardAgainstOneBit)
+					if (this.Options.BitSwapGuardAgainstOneBit)
 						Debug.Trace.IO.TraceInformation("{0}'s {1} says we should guard against one bit cases, but not bitswap",
-							EnumType.FullName, typeof(TOptions).FullName);
+						                                this.EnumType.FullName, typeof(TOptions).FullName);
 				}
 				#endregion
 			}
@@ -91,7 +91,7 @@ namespace KSoft.IO
 		/// <summary>Auto-generated method for reading enum values</summary>
 		static readonly ReadDelegate kRead;
 		/// <summary>Auto-generated method for writing enum values</summary>
-		static readonly Action<IO.BitStream, TEnum, int> kWrite;
+		static readonly Action<BitStream, TEnum, int> kWrite;
 
 		/// <summary>Object for referencing the streamer functionality as an instance instead of as a type</summary>
 		public static readonly IEnumBitStreamer<TEnum> Instance;
@@ -135,7 +135,7 @@ namespace KSoft.IO
 		/// <param name="s">Reader we're streaming from</param>
 		/// <param name="v">Value read from the stream</param>
 		/// <param name="bitCount"></param>
-		public delegate void ReadDelegate(IO.BitStream s, out TEnum v, int bitCount);
+		public delegate void ReadDelegate(BitStream s, out TEnum v, int bitCount);
 
 		/// <summary>Generates a method similar to this:
 		/// <code>
@@ -224,7 +224,7 @@ namespace KSoft.IO
 		/// <remarks>
 		/// If <see cref="args.UnderlyingType"/> is the same as <typeparamref name="TStreamType"/>, no conversion code is generated
 		/// </remarks>
-		static Action<IO.BitStream, TEnum, int> GenerateWriteMethod(MethodGenerationArgs args, MethodInfo writeMethodInfo, MethodInfo bitSwapMethod)
+		static Action<BitStream, TEnum, int> GenerateWriteMethod(MethodGenerationArgs args, MethodInfo writeMethodInfo, MethodInfo bitSwapMethod)
 		{
 			//////////////////////////////////////////////////////////////////////////
 			// Define the generated method's parameters
@@ -268,7 +268,7 @@ namespace KSoft.IO
 
 			//////////////////////////////////////////////////////////////////////////
 			// Generate a method based on the expression tree we've built
-			var lambda = Expr.Lambda<Action<IO.BitStream, TEnum, int>>(call_write, param_s, param_v, param_bc);
+			var lambda = Expr.Lambda<Action<BitStream, TEnum, int>>(call_write, param_s, param_v, param_bc);
 			return lambda.Compile();
 		}
 		#endregion
@@ -278,7 +278,7 @@ namespace KSoft.IO
 		/// <param name="s">Reader we're streaming from</param>
 		/// <param name="bitCount"></param>
 		/// <returns>Value read from the stream</returns>
-		public static TEnum Read(IO.BitStream s, int bitCount)
+		public static TEnum Read(BitStream s, int bitCount)
 		{
 			kRead(s, out TEnum value, bitCount);
 
@@ -288,18 +288,18 @@ namespace KSoft.IO
 		/// <param name="s">Reader we're streaming from</param>
 		/// <param name="value">Value read from the stream</param>
 		/// <param name="bitCount"></param>
-		public static void Read(IO.BitStream s, out TEnum value, int bitCount)	{ kRead(s, out value, bitCount); }
+		public static void Read(BitStream s, out TEnum value, int bitCount)	{ kRead(s, out value, bitCount); }
 		/// <summary>Stream a <typeparamref name="TEnum"/> value to a <see cref="IO.BitStream"/></summary>
 		/// <param name="s">Writer we're streaming to</param>
 		/// <param name="value"></param>
 		/// <param name="bitCount"></param>
-		public static void Write(IO.BitStream s, TEnum value, int bitCount)		{ kWrite(s, value, bitCount); }
+		public static void Write(BitStream s, TEnum value, int bitCount)		{ kWrite(s, value, bitCount); }
 
 		/// <summary>Serialize a <typeparamref name="TEnum"/> value using an <see cref="IO.BitStream"/></summary>
 		/// <param name="s">Stream we're using for serialization</param>
 		/// <param name="value">Value to serialize</param>
 		/// <param name="bitCount"></param>
-		public static void Stream(IO.BitStream s, ref TEnum value, int bitCount)
+		public static void Stream(BitStream s, ref TEnum value, int bitCount)
 		{
 				 if (s.IsReading) Read(s, out value, bitCount);
 			else if (s.IsWriting) Write(s, value, bitCount);
@@ -307,10 +307,10 @@ namespace KSoft.IO
 		#endregion
 
 		#region IEnumBitStreamer<TEnum> Members
-		TEnum IEnumBitStreamer<TEnum>.Read(IO.BitStream s, int bitCount)					{ return Read(s, bitCount); }
-		void IEnumBitStreamer<TEnum>.Read(IO.BitStream s, out TEnum value, int bitCount)	{ Read(s, out value, bitCount); }
-		void IEnumBitStreamer<TEnum>.Write(IO.BitStream s, TEnum value, int bitCount)		{ Write(s, value, bitCount); }
-		void IEnumBitStreamer<TEnum>.Stream(IO.BitStream s, ref TEnum value, int bitCount)	{ Stream(s, ref value, bitCount); }
+		TEnum IEnumBitStreamer<TEnum>.Read(BitStream s, int bitCount)					{ return Read(s, bitCount); }
+		void IEnumBitStreamer<TEnum>.Read(BitStream s, out TEnum value, int bitCount)	{ Read(s, out value, bitCount); }
+		void IEnumBitStreamer<TEnum>.Write(BitStream s, TEnum value, int bitCount)		{ Write(s, value, bitCount); }
+		void IEnumBitStreamer<TEnum>.Stream(BitStream s, ref TEnum value, int bitCount)	{ Stream(s, ref value, bitCount); }
 		#endregion
 	};
 

@@ -28,18 +28,18 @@ namespace KSoft.Phoenix.Phx
 		bool mInvert;
 
 		bool mAsync;
-		public bool Async { get { return mAsync; } }
+		public bool Async { get { return this.mAsync; } }
 
 		int mAsyncParameterKey; // References a Parameter (via SigID). Runtime then takes that parameter's BTriggerVarID
-		public int AsyncParameterKey { get { return mAsyncParameterKey; } }
+		public int AsyncParameterKey { get { return this.mAsyncParameterKey; } }
 
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
 			base.Serialize(s);
 
-			s.StreamAttribute(kXmlAttrInvert, ref mInvert);
-			s.StreamAttribute(kXmlAttrAsync, ref mAsync);
-			s.StreamAttribute(kXmlAttrAsyncParameterKey, ref mAsyncParameterKey);
+			s.StreamAttribute(kXmlAttrInvert, ref this.mInvert);
+			s.StreamAttribute(kXmlAttrAsync, ref this.mAsync);
+			s.StreamAttribute(kXmlAttrAsyncParameterKey, ref this.mAsyncParameterKey);
 		}
 	};
 }

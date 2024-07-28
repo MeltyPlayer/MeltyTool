@@ -13,8 +13,8 @@ namespace KSoft.Phoenix
 
 		private void InitializeReturns()
 		{
-			ReturnFailOffset = TypeExtensions.kNone;
-			ReturnIntegralDigits = ReturnFractionalDigits = ReturnSignificantDigits = 0;
+			this.ReturnFailOffset = TypeExtensions.kNone;
+			this.ReturnIntegralDigits = this.ReturnFractionalDigits = this.ReturnSignificantDigits = 0;
 		}
 
 		private enum Phase
@@ -37,17 +37,17 @@ namespace KSoft.Phoenix
 
 		public bool Test(string str)
 		{
-			InitializeReturns();
+			this.InitializeReturns();
 
 			if (str == null)
-				return TestFailed(0);
+				return this.TestFailed(0);
 
 			bool found_digits = false;
 
 			bool found_first_non_zero_digit = false;
 			var cur_phase = Phase.Whitespace;
 
-			for (int cur_pos = StartOffset; cur_pos < str.Length; cur_pos++)
+			for (int cur_pos = this.StartOffset; cur_pos < str.Length; cur_pos++)
 			{
 				char c = str[cur_pos];
 
@@ -78,13 +78,13 @@ namespace KSoft.Phoenix
 						case Phase.Digits: {
 							if (c_is_digit)
 							{
-								ReturnIntegralDigits++;
+								this.ReturnIntegralDigits++;
 
 								if (c != '0')
 									found_first_non_zero_digit = true;
 
 								if (found_first_non_zero_digit)
-									ReturnSignificantDigits++;
+									this.ReturnSignificantDigits++;
 
 								next_char = true;
 							}
@@ -100,35 +100,35 @@ namespace KSoft.Phoenix
 							}
 							else if (IsExponentCharacter(c))
 							{
-								if (!AllowExponential)
-									return TestFailed(cur_pos);
+								if (!this.AllowExponential)
+									return this.TestFailed(cur_pos);
 
 								next_char = true;
 								cur_phase = Phase.ExponentSign;
 							}
 							else
 							{
-								return TestFailed(cur_pos);
+								return this.TestFailed(cur_pos);
 							}
 						} break;
 
 						case Phase.FractionalDigits: {
 							if (c_is_digit)
 							{
-								ReturnFractionalDigits++;
+								this.ReturnFractionalDigits++;
 
 								if (c != '0')
 									found_first_non_zero_digit = true;
 
 								if (found_first_non_zero_digit)
-									ReturnSignificantDigits++;
+									this.ReturnSignificantDigits++;
 
 								next_char = true;
 							}
 							else if (IsExponentCharacter(c))
 							{
-								if (!AllowExponential)
-									return TestFailed(cur_pos);
+								if (!this.AllowExponential)
+									return this.TestFailed(cur_pos);
 
 								next_char = true;
 								cur_phase = Phase.ExponentSign;
@@ -140,7 +140,7 @@ namespace KSoft.Phoenix
 							}
 							else
 							{
-								return TestFailed(cur_pos);
+								return this.TestFailed(cur_pos);
 							}
 						} break;
 
@@ -163,7 +163,7 @@ namespace KSoft.Phoenix
 							}
 							else
 							{
-								TestFailed(cur_pos);
+								this.TestFailed(cur_pos);
 							}
 						} break;
 
@@ -171,7 +171,7 @@ namespace KSoft.Phoenix
 							if (IsIgnoredWhitespace(c))
 								next_char = true;
 							else
-								return TestFailed(cur_pos);
+								return this.TestFailed(cur_pos);
 						} break;
 					}
 				}
@@ -182,7 +182,7 @@ namespace KSoft.Phoenix
 
 		private bool TestFailed(int curPos)
 		{
-			ReturnFailOffset = curPos;
+			this.ReturnFailOffset = curPos;
 			return false;
 		}
 

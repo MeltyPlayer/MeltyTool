@@ -24,14 +24,14 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref DamagePerSecond); s.Stream(ref DOTrate); s.Stream(ref DOTduration); 
-			s.Stream(ref MaxRange); s.Stream(ref MinRange); s.Stream(ref AOERadius); 
-			s.Stream(ref AOEPrimaryTargetFactor); s.Stream(ref AOEDistanceFactor); s.Stream(ref AOEDamageFactor); 
-			s.Stream(ref Accuracy); s.Stream(ref MovingAccuracy); s.Stream(ref MaxDeviation);
-			s.Stream(ref MovingMaxDeviation); s.Stream(ref AccuracyDistanceFactor); s.Stream(ref AccuracyDeviationFactor);
-			s.Stream(ref MaxVelocityLead); s.Stream(ref MaxDamagePerRam); s.Stream(ref ReflectDamageFactor); 
-			s.Stream(ref AirBurstSpan);
-			s.Stream(ref ProjectileObjectID); s.Stream(ref ImpactEffectProtoID);
+			s.Stream(ref this.DamagePerSecond); s.Stream(ref this.DOTrate); s.Stream(ref this.DOTduration); 
+			s.Stream(ref this.MaxRange); s.Stream(ref this.MinRange); s.Stream(ref this.AOERadius); 
+			s.Stream(ref this.AOEPrimaryTargetFactor); s.Stream(ref this.AOEDistanceFactor); s.Stream(ref this.AOEDamageFactor); 
+			s.Stream(ref this.Accuracy); s.Stream(ref this.MovingAccuracy); s.Stream(ref this.MaxDeviation);
+			s.Stream(ref this.MovingMaxDeviation); s.Stream(ref this.AccuracyDistanceFactor); s.Stream(ref this.AccuracyDeviationFactor);
+			s.Stream(ref this.MaxVelocityLead); s.Stream(ref this.MaxDamagePerRam); s.Stream(ref this.ReflectDamageFactor); 
+			s.Stream(ref this.AirBurstSpan);
+			s.Stream(ref this.ProjectileObjectID); s.Stream(ref this.ImpactEffectProtoID);
 			s.StreamSignature(cSaveMarker.Weapon);
 		}
 		#endregion

@@ -17,8 +17,8 @@ namespace sm64.Scripts {
     private GeoScriptNode nodeCurrent;
 
     public GeoScriptsV2() {
-      rootNode = new GeoScriptNode(null);
-      nodeCurrent = rootNode;
+      this.rootNode = new GeoScriptNode(null);
+      this.nodeCurrent = this.rootNode;
     }
 
     public void parse(
@@ -34,9 +34,9 @@ namespace sm64.Scripts {
         return;
       }
 
-      mdlLods.Node = nodeCurrent;
+      mdlLods.Node = this.nodeCurrent;
 
-      Add_(mdlLods, lvl, commandList);
+      this.Add_(mdlLods, lvl, commandList);
     }
 
     private void Add_(
@@ -47,9 +47,8 @@ namespace sm64.Scripts {
         switch (command) {
           case GeoAnimatedPartCommand geoAnimatedPartCommand: {
             var translation = geoAnimatedPartCommand.Offset;
-            this.nodeCurrent.matrix.MultiplyInPlace(
-                CreateTranslationMatrix_(translation));
-            AddDisplayList(
+            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateTranslationMatrix_(translation));
+            this.AddDisplayList(
                 mdlLods,
                 lvl,
                 geoAnimatedPartCommand.DisplayListSegmentedAddress);
@@ -58,10 +57,10 @@ namespace sm64.Scripts {
           case GeoBillboardCommand geoBillboardCommand: break;
           case GeoBranchAndStoreCommand geoBranchAndStoreCommand: {
             if (geoBranchAndStoreCommand.GeoCommandList != null) {
-              var currentNode = nodeCurrent;
-              Add_(mdlLods,
-                   lvl,
-                   geoBranchAndStoreCommand.GeoCommandList);
+              var currentNode = this.nodeCurrent;
+              this.Add_(mdlLods,
+                        lvl,
+                        geoBranchAndStoreCommand.GeoCommandList);
               mdlLods.Node = currentNode;
             }
 
@@ -69,8 +68,8 @@ namespace sm64.Scripts {
           }
           case GeoBranchCommand geoBranchCommand: {
             if (geoBranchCommand.GeoCommandList != null) {
-              var currentNode = nodeCurrent;
-              Add_(mdlLods, lvl, geoBranchCommand.GeoCommandList);
+              var currentNode = this.nodeCurrent;
+              this.Add_(mdlLods, lvl, geoBranchCommand.GeoCommandList);
               if (geoBranchCommand.StoreReturnAddress) {
                 mdlLods.Node = currentNode;
               }
@@ -79,15 +78,15 @@ namespace sm64.Scripts {
             break;
           }
           case GeoCloseNodeCommand: {
-            if (nodeCurrent != rootNode) {
-              nodeCurrent = nodeCurrent.parent;
-              mdlLods.Node = nodeCurrent;
+            if (this.nodeCurrent != this.rootNode) {
+              this.nodeCurrent = this.nodeCurrent.parent;
+              mdlLods.Node = this.nodeCurrent;
             }
 
             break;
           }
           case GeoDisplayListCommand geoDisplayListCommand: {
-            AddDisplayList(
+            this.AddDisplayList(
                 mdlLods,
                 lvl,
                 geoDisplayListCommand.DisplayListSegmentedAddress);
@@ -97,18 +96,17 @@ namespace sm64.Scripts {
           case GeoHeldObjectCommand geoHeldObjectCommand:   break;
           case GeoObjectListCommand geoObjectListCommand:   break;
           case GeoOpenNodeCommand geoOpenNodeCommand: {
-            GeoScriptNode newNode = new GeoScriptNode(nodeCurrent);
-            newNode.ID = nodeCurrent.ID + 1;
-            newNode.parent = nodeCurrent;
-            nodeCurrent = newNode;
-            mdlLods.Node = nodeCurrent;
+            GeoScriptNode newNode = new GeoScriptNode(this.nodeCurrent);
+            newNode.ID = this.nodeCurrent.ID + 1;
+            newNode.parent = this.nodeCurrent;
+            this.nodeCurrent = newNode;
+            mdlLods.Node = this.nodeCurrent;
             break;
           }
           case GeoRotationCommand geoRotationCommand: {
             var rotation = geoRotationCommand.Rotation;
-            this.nodeCurrent.matrix.MultiplyInPlace(
-                CreateRotationMatrix_(rotation));
-            AddDisplayList(
+            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateRotationMatrix_(rotation));
+            this.AddDisplayList(
                 mdlLods,
                 lvl,
                 geoRotationCommand.DisplayListSegmentedAddress);
@@ -118,14 +116,14 @@ namespace sm64.Scripts {
             var scale = (geoScaleCommand.Scale / 65536.0f);
             this.nodeCurrent.matrix.MultiplyInPlace(
                 FinMatrix4x4Util.FromScale(scale));
-            AddDisplayList(
+            this.AddDisplayList(
                 mdlLods,
                 lvl,
                 geoScaleCommand.DisplayListSegmentedAddress);
             break;
           }
           case GeoSetRenderRangeCommand geoSetRenderRangeCommand: {
-            mdlLods.AddLod(nodeCurrent!);
+            mdlLods.AddLod(this.nodeCurrent!);
             break;
           }
           case GeoShadowCommand geoShadowCommand: break;
@@ -133,9 +131,8 @@ namespace sm64.Scripts {
           case GeoTranslateAndRotateCommand geoTranslateAndRotateCommand: {
             var translation = geoTranslateAndRotateCommand.Translation;
             var rotation = geoTranslateAndRotateCommand.Rotation;
-            this.nodeCurrent.matrix.MultiplyInPlace(
-                CreateTranslationAndRotationMatrix_(translation, rotation));
-            AddDisplayList(
+            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateTranslationAndRotationMatrix_(translation, rotation));
+            this.AddDisplayList(
                 mdlLods,
                 lvl,
                 geoTranslateAndRotateCommand.DisplayListSegmentedAddress);
@@ -143,9 +140,8 @@ namespace sm64.Scripts {
           }
           case GeoTranslationCommand geoTranslationCommand: {
             var translation = geoTranslationCommand.Translation;
-            this.nodeCurrent.matrix.MultiplyInPlace(
-                CreateTranslationMatrix_(translation));
-            AddDisplayList(
+            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateTranslationMatrix_(translation));
+            this.AddDisplayList(
                 mdlLods,
                 lvl,
                 geoTranslationCommand.DisplayListSegmentedAddress);
@@ -170,8 +166,8 @@ namespace sm64.Scripts {
     public IFinMatrix4x4 CreateTranslationAndRotationMatrix_(
         Vector3s position,
         Vector3s rotation)
-      => CreateRotationMatrix_(rotation)
-          .MultiplyInPlace(CreateTranslationMatrix_(position));
+      => this.CreateRotationMatrix_(rotation)
+             .MultiplyInPlace(this.CreateTranslationMatrix_(position));
 
     public IFinMatrix4x4 CreateTranslationMatrix_(Vector3s position)
       => FinMatrix4x4Util.FromTranslation(

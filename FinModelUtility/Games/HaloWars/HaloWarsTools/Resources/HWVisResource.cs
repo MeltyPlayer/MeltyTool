@@ -40,7 +40,7 @@ namespace HaloWarsTools {
       var visModels = new List<VisModel>();
       var visModelMap = new Dictionary<string, VisModel>();
 
-      var modelTags = XmlData.Elements("model");
+      var modelTags = this.XmlData.Elements("model");
       foreach (var modelTag in modelTags) {
         var modelName = modelTag.Attribute("name").Value;
 
@@ -128,8 +128,7 @@ namespace HaloWarsTools {
 
           // TODO: Sometimes models are missing, why is this??
           try {
-            var ugx = HWUgxResource.FromFile(
-                Context,
+            var ugx = HWUgxResource.FromFile(this.Context,
                 file,
                 flipFaces);
             var model = ugx.Mesh;

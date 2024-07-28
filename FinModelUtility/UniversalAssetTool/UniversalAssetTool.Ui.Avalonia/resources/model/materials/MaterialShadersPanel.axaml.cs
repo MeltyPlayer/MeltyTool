@@ -54,7 +54,7 @@ namespace uni.ui.avalonia.resources.model.materials {
 
   public partial class MaterialShadersPanel : UserControl {
     public MaterialShadersPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
       this.InitViewer_(this.vertexShaderViewer_);
       this.InitViewer_(this.fragmentShaderViewer_);
     }

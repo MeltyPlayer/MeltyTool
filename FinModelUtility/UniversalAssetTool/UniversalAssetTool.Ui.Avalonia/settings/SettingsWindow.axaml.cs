@@ -11,7 +11,7 @@ public partial class SettingsWindow : Window {
   }
 
   public SettingsWindow() {
-    InitializeComponent();
+    this.InitializeComponent();
 
     if (this.ConfigPage.DataContext is ConfigPageModel model) {
       var settingsViewModel = new SettingsViewModel();

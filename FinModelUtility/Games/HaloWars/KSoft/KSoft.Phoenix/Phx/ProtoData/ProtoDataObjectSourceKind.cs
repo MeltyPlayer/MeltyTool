@@ -25,7 +25,7 @@ namespace KSoft.Phoenix.Phx
 
 		public ProtoDataTypeObjectSourceKindAttribute(ProtoDataObjectSourceKind kind)
 		{
-			SourceKind = kind;
+			this.SourceKind = kind;
 		}
 	};
 }

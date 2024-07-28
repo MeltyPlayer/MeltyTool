@@ -18,8 +18,8 @@ namespace KSoft.IO
 		/// </summary>
 		public string GuidFormatString
 		{
-			get { return mGuidFormatString; }
-			set { mGuidFormatString = value ?? Values.KGuid.kFormatHyphenated; }
+			get { return this.mGuidFormatString; }
+			set { this.mGuidFormatString = value ?? Values.KGuid.kFormatHyphenated; }
 		}
 		#endregion
 
@@ -28,8 +28,8 @@ namespace KSoft.IO
 		/// <summary>RoundTrip by default</summary>
 		public string SingleFormatSpecifier
 		{
-			get { return mSingleFormatSpecifier; }
-			set { mSingleFormatSpecifier = value; }
+			get { return this.mSingleFormatSpecifier; }
+			set { this.mSingleFormatSpecifier = value; }
 		}
 		#endregion
 
@@ -38,8 +38,8 @@ namespace KSoft.IO
 		/// <summary>RoundTrip by default</summary>
 		public string DoubleFormatSpecifier
 		{
-			get { return mDoubleFormatSpecifier; }
-			set { mDoubleFormatSpecifier = value; }
+			get { return this.mDoubleFormatSpecifier; }
+			set { this.mDoubleFormatSpecifier = value; }
 		}
 		#endregion
 
@@ -48,18 +48,18 @@ namespace KSoft.IO
 
 		protected TagElementTextStream()
 		{
-			mReadErrorState = new TextStreamReadErrorState(this);
+			this.mReadErrorState = new TextStreamReadErrorState(this);
 		}
 
 		public void UseDefaultFloatFormatSpecifiers()
 		{
-			SingleFormatSpecifier = Numbers.kFloatDefaultFormatSpecifier;
-			DoubleFormatSpecifier = Numbers.kFloatDefaultFormatSpecifier;
+			this.SingleFormatSpecifier = Numbers.kFloatDefaultFormatSpecifier;
+			this.DoubleFormatSpecifier = Numbers.kFloatDefaultFormatSpecifier;
 		}
 		public void UseRoundTripFloatFormatSpecifiers()
 		{
-			SingleFormatSpecifier = Numbers.kSingleRoundTripFormatSpecifier;
-			DoubleFormatSpecifier = Numbers.kDoubleRoundTripFormatSpecifier;
+			this.SingleFormatSpecifier = Numbers.kSingleRoundTripFormatSpecifier;
+			this.DoubleFormatSpecifier = Numbers.kDoubleRoundTripFormatSpecifier;
 		}
 	};
 

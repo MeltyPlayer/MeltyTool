@@ -65,7 +65,7 @@ namespace benchmarks {
       var ptr = (byte*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = 4 * (y * EditingBitmaps.SIZE + x);
+          var i = 4 * (y * SIZE + x);
           var b = ptr[i + 0];
           var g = ptr[i + 1];
           var r = ptr[i + 2];
@@ -82,7 +82,7 @@ namespace benchmarks {
       var ptr = (uint*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = y * EditingBitmaps.SIZE + x;
+          var i = y * SIZE + x;
           var bgra = ptr[i];
           var b = bgra & 0xff;
           var g = (bgra >> 8) & 0xff;
@@ -100,7 +100,7 @@ namespace benchmarks {
       var ptr = (uint*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = y * EditingBitmaps.SIZE + x;
+          var i = y * SIZE + x;
 
           var bgra = ptr[i];
           var b = (byte) bgra;
@@ -133,7 +133,7 @@ namespace benchmarks {
       var ptr = (uint*) fastBitmap.Scan0;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = y * EditingBitmaps.SIZE + x;
+          var i = y * SIZE + x;
 
           var bgra = ptr[i];
           var b = bgra & 0xff;
@@ -167,7 +167,7 @@ namespace benchmarks {
       var ptr = (int*) this.bmpData_.Scan0;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = y * EditingBitmaps.SIZE + x;
+          var i = y * SIZE + x;
           var color = Color.FromArgb(ptr[i]);
           var r = color.R;
           var g = color.G;
@@ -185,7 +185,7 @@ namespace benchmarks {
       var ptr = (byte*) this.imagePtr_;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = 4 * (y * EditingBitmaps.SIZE + x);
+          var i = 4 * (y * SIZE + x);
           var r = ptr[i + 0];
           var g = ptr[i + 1];
           var b = ptr[i + 2];
@@ -205,7 +205,7 @@ namespace benchmarks {
                      out byte b,
                      out byte a)
                         => {
-                      var value = ptr[y * EditingBitmaps.SIZE + x];
+                      var value = ptr[y * SIZE + x];
                       r = (byte) (value & 0xff);
                       g = (byte) ((value >> 8) & 0xff);
                       b = (byte) ((value >> 16) & 0xff);
@@ -225,7 +225,7 @@ namespace benchmarks {
       var ptr = (uint*) this.imagePtr_;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = y * EditingBitmaps.SIZE + x;
+          var i = y * SIZE + x;
           var bgra = ptr[i];
           var b = bgra & 0xff;
           var g = (bgra >> 8) & 0xff;
@@ -241,7 +241,7 @@ namespace benchmarks {
       var ptr = this.imagePtr_;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = y * EditingBitmaps.SIZE + x;
+          var i = y * SIZE + x;
           var rgba = ptr[i];
           var r = rgba.R;
           var g = rgba.G;
@@ -253,7 +253,7 @@ namespace benchmarks {
 
     [Benchmark]
     public void ReadingFinImageWithNewValues() {
-      finImage_.Access(get => {
+      this.finImage_.Access(get => {
                          for (var y = 0; y < SIZE; ++y) {
                            for (var x = 0; x < SIZE; ++x) {
                              get(x,
@@ -269,7 +269,7 @@ namespace benchmarks {
 
     [Benchmark]
     public void ReadingFinImageWithSameValues() {
-      finImage_.Access(get => {
+      this.finImage_.Access(get => {
                          byte r, g, b, a;
                          for (var y = 0; y < SIZE; ++y) {
                            for (var x = 0; x < SIZE; ++x) {
@@ -285,7 +285,7 @@ namespace benchmarks {
       var ptr = imageLock.Pixels;
       for (var y = 0; y < SIZE; ++y) {
         for (var x = 0; x < SIZE; ++x) {
-          var i = y * EditingBitmaps.SIZE + x;
+          var i = y * SIZE + x;
           var rgba = ptr[i];
           var r = rgba.R;
           var g = rgba.G;

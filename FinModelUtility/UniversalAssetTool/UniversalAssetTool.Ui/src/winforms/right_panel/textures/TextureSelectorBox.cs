@@ -13,7 +13,7 @@ public partial class TextureSelectorBox : UserControl {
   private IReadOnlyTexture? selectedTexture_;
 
   public TextureSelectorBox() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.listView_.ItemSelectionChanged
           += (_, e) => { this.SelectedTexture = this.textures_?[e.ItemIndex]; };

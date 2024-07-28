@@ -35,26 +35,10 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
             var xcBundles = Array.Empty<IXcFiles>();
             if (directory.LocalPath == "\\vs1\\chr") {
               xcBundles = [
-                  GetSameFile("Emeer Punchenbaug", directory, "c206"),
-                  GetSameFile("Espella Cantabella", directory, "c105"),
-                  GetSameFile("Flynch", directory, "c203"),
-                  GetSameFile("Johnny Smiles", directory, "c201"),
-                  GetSameFile("Judge", directory, "c107"),
-                  GetSameFile("Kira", directory, "c215"),
-                  GetSameFile("Kira (with flower petals)",
-                              directory,
-                              "c216"),
-                  GetSameFile("Knightle", directory, "c213"),
-                  GetSameFile("Maya Fey", directory, "c104"),
-                  GetSameFile("Miles Edgeworth", directory, "c401"),
-                  GetSameFile("Olivia Aldente", directory, "c202"),
-                  GetSameFile("Phoenix Wright", directory, "c102"),
-                  GetSameFile("Phoenix Wright (Baker)", directory, "c113"),
-                  GetSameFile("Professor Layton", directory, "c101"),
-                  GetSameFile("Professor Layton (Gold)", directory, "c301"),
-                  GetSameFile("Storyteller", directory, "c134"),
-                  GetSameFile("Wordsmith", directory, "c211"),
-                  GetSameFile("Zacharias Barnham", directory, "c106_a")
+                  this.GetSameFile("Emeer Punchenbaug", directory, "c206"), this.GetSameFile("Espella Cantabella", directory, "c105"), this.GetSameFile("Flynch", directory, "c203"), this.GetSameFile("Johnny Smiles", directory, "c201"), this.GetSameFile("Judge", directory, "c107"), this.GetSameFile("Kira", directory, "c215"), this.GetSameFile("Kira (with flower petals)",
+                                                                                                                                                                                                                                                                                                                                                     directory,
+                                                                                                                                                                                                                                                                                                                                                     "c216"),
+                  this.GetSameFile("Knightle", directory, "c213"), this.GetSameFile("Maya Fey", directory, "c104"), this.GetSameFile("Miles Edgeworth", directory, "c401"), this.GetSameFile("Olivia Aldente", directory, "c202"), this.GetSameFile("Phoenix Wright", directory, "c102"), this.GetSameFile("Phoenix Wright (Baker)", directory, "c113"), this.GetSameFile("Professor Layton", directory, "c101"), this.GetSameFile("Professor Layton (Gold)", directory, "c301"), this.GetSameFile("Storyteller", directory, "c134"), this.GetSameFile("Wordsmith", directory, "c211"), this.GetSameFile("Zacharias Barnham", directory, "c106_a")
               ];
             }
 

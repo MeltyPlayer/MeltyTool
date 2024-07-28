@@ -23,15 +23,15 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		int mDbId = TypeExtensions.kNone;
-		public int DbId { get { return mDbId; } }
+		public int DbId { get { return this.mDbId; } }
 
 		public Collections.BListAutoId<BUserClassField> Fields { get; private set; } = new Collections.BListAutoId<BUserClassField>();
 
 		#region BListAutoIdObject Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamAttribute("DBID", ref mDbId);
-			XML.XmlUtil.Serialize(s, Fields, BUserClassField.kBListXmlParams);
+			s.StreamAttribute("DBID", ref this.mDbId);
+			XML.XmlUtil.Serialize(s, this.Fields, BUserClassField.kBListXmlParams);
 		}
 		#endregion
 	};

@@ -8,19 +8,19 @@ namespace KSoft.Phoenix.XML
 
 		#region Flags
 		[Contracts.Pure]
-		public bool InternDataNames { get { return HasFlag(BCollectionXmlParamsFlags.InternDataNames); } }
+		public bool InternDataNames { get { return this.HasFlag(BCollectionXmlParamsFlags.InternDataNames); } }
 		[Contracts.Pure]
-		public bool UseInnerTextForData { get { return HasFlag(BCollectionXmlParamsFlags.UseInnerTextForData); } }
+		public bool UseInnerTextForData { get { return this.HasFlag(BCollectionXmlParamsFlags.UseInnerTextForData); } }
 		[Contracts.Pure]
-		public bool UseElementForData { get { return HasFlag(BCollectionXmlParamsFlags.UseElementForData); } }
+		public bool UseElementForData { get { return this.HasFlag(BCollectionXmlParamsFlags.UseElementForData); } }
 		[Contracts.Pure]
-		public bool ToLowerDataNames { get { return HasFlag(BCollectionXmlParamsFlags.ToLowerDataNames); } }
+		public bool ToLowerDataNames { get { return this.HasFlag(BCollectionXmlParamsFlags.ToLowerDataNames); } }
 		[Contracts.Pure]
-		public bool RequiresDataNamePreloading { get { return HasFlag(BCollectionXmlParamsFlags.RequiresDataNamePreloading); } }
+		public bool RequiresDataNamePreloading { get { return this.HasFlag(BCollectionXmlParamsFlags.RequiresDataNamePreloading); } }
 		[Contracts.Pure]
-		public bool SupportsUpdating { get { return HasFlag(BCollectionXmlParamsFlags.SupportsUpdating); } }
+		public bool SupportsUpdating { get { return this.HasFlag(BCollectionXmlParamsFlags.SupportsUpdating); } }
 		[Contracts.Pure]
-		public bool DoNotWriteUndefinedData { get { return HasFlag(BCollectionXmlParamsFlags.DoNotWriteUndefinedData); } }
+		public bool DoNotWriteUndefinedData { get { return this.HasFlag(BCollectionXmlParamsFlags.DoNotWriteUndefinedData); } }
 		#endregion
 
 		public BListXmlParams() { }
@@ -29,16 +29,19 @@ namespace KSoft.Phoenix.XML
 		/// <param name="additionalFlags"></param>
 		public BListXmlParams(string elementName, BCollectionXmlParamsFlags additionalFlags = 0) : base(elementName)
 		{
-			Flags = additionalFlags;
-			Flags |= BCollectionXmlParamsFlags.UseInnerTextForData;
+			this.Flags = additionalFlags;
+			this.Flags |= BCollectionXmlParamsFlags.UseInnerTextForData;
 		}
 
 		public void StreamDataName<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, ref string name)
 			where TDoc : class
 			where TCursor : class
 		{
-			BCollectionXmlParams.StreamValue(s, DataName, ref name,
-				UseInnerTextForData, UseElementForData, InternDataNames,
+			StreamValue(s,
+			            this.DataName, ref name,
+			            this.UseInnerTextForData,
+			            this.UseElementForData,
+			            this.InternDataNames,
 				false/*ToLowerDataNames*/);
 		}
 	};

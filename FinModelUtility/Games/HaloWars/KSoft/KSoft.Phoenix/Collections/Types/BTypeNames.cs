@@ -2,7 +2,7 @@
 
 namespace KSoft.Collections
 {
-	using PhxUtil = KSoft.Phoenix.PhxUtil;
+	using PhxUtil = Phoenix.PhxUtil;
 
 	public interface IBTypeNames
 		: IBList
@@ -23,46 +23,46 @@ namespace KSoft.Collections
 		}
 		public BTypeNames()
 		{
-			kUnregisteredMessage = BuildUnRegisteredMsg();
-			mUndefinedInterface = new ProtoEnumWithUndefinedImpl(this);
+			this.kUnregisteredMessage = BuildUnRegisteredMsg();
+			this.mUndefinedInterface = new ProtoEnumWithUndefinedImpl(this);
 		}
 
 		public override void Clear()
 		{
 			base.Clear();
 
-			if (mUndefinedInterface != null)
-				mUndefinedInterface.Clear();
+			if (this.mUndefinedInterface != null)
+				this.mUndefinedInterface.Clear();
 		}
 
 		#region IProtoEnum Members
 		public virtual int TryGetMemberId(string memberName)
 		{
-			return mList.FindIndex(n => PhxUtil.StrEqualsIgnoreCase(n, memberName));
+			return this.mList.FindIndex(n => PhxUtil.StrEqualsIgnoreCase(n, memberName));
 		}
 		public virtual string TryGetMemberName(int memberId)
 		{
-			return IsValidMemberId(memberId)
-				? GetMemberName(memberId)
+			return this.IsValidMemberId(memberId)
+				? this.GetMemberName(memberId)
 				: null;
 		}
 		public bool IsValidMemberId(int memberId)
 		{
-			return memberId >= 0 && memberId < MemberCount;
+			return memberId >= 0 && memberId < this.MemberCount;
 		}
 		public bool IsValidMemberName(string memberName)
 		{
-			int index = TryGetMemberId(memberName);
+			int index = this.TryGetMemberId(memberName);
 
 			return index.IsNotNone();
 		}
 
 		public int GetMemberId(string memberName)
 		{
-			int index = TryGetMemberId(memberName);
+			int index = this.TryGetMemberId(memberName);
 
 			if (index.IsNone())
-				throw new ArgumentException(kUnregisteredMessage, memberName);
+				throw new ArgumentException(this.kUnregisteredMessage, memberName);
 
 			return index;
 		}
@@ -71,7 +71,7 @@ namespace KSoft.Collections
 			return this[memberId];
 		}
 
-		public virtual int MemberCount { get { return Count; } }
+		public virtual int MemberCount { get { return this.Count; } }
 		#endregion
 
 		public override object GetObject(int id)
@@ -80,14 +80,14 @@ namespace KSoft.Collections
 				return null;
 
 			if (PhxUtil.IsUndefinedReferenceHandle(id))
-				return Phoenix.TypeExtensionsPhx.GetUndefinedObject(mUndefinedInterface, id);
+				return Phoenix.TypeExtensionsPhx.GetUndefinedObject(this.mUndefinedInterface, id);
 
 			return base.GetObject(id);
 		}
 
 		private ProtoEnumWithUndefinedImpl mUndefinedInterface;
-		IProtoEnumWithUndefined IHasUndefinedProtoMemberInterface.UndefinedInterface { get { return mUndefinedInterface; } }
-		internal IProtoEnumWithUndefined UndefinedInterface { get { return mUndefinedInterface; } }
+		IProtoEnumWithUndefined IHasUndefinedProtoMemberInterface.UndefinedInterface { get { return this.mUndefinedInterface; } }
+		internal IProtoEnumWithUndefined UndefinedInterface { get { return this.mUndefinedInterface; } }
 	};
 }
 

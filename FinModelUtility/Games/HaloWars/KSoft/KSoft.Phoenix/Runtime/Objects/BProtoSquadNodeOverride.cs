@@ -9,8 +9,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref BaseNodeUnitType);
-			s.Stream(ref NodeUnitType);
+			s.Stream(ref this.BaseNodeUnitType);
+			s.Stream(ref this.NodeUnitType);
 		}
 		#endregion
 	};

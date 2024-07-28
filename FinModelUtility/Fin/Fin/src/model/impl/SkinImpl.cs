@@ -295,11 +295,11 @@ public partial class ModelImpl<TVertex> {
 
 
       public IEnumerable<int> GetOrderedTriangleVertexIndices() {
-        var pointsCount = Vertices.Count;
-        switch (Type) {
+        var pointsCount = this.Vertices.Count;
+        switch (this.Type) {
           case PrimitiveType.TRIANGLES: {
             for (var v = 0; v < pointsCount; v += 3) {
-              if (VertexOrder == VertexOrder.FLIP) {
+              if (this.VertexOrder == VertexOrder.FLIP) {
                 yield return v + 0;
                 yield return v + 2;
                 yield return v + 1;
@@ -327,7 +327,7 @@ public partial class ModelImpl<TVertex> {
                 v3 = v + 2;
               }
 
-              if (VertexOrder == VertexOrder.FLIP) {
+              if (this.VertexOrder == VertexOrder.FLIP) {
                 yield return v1;
                 yield return v3;
                 yield return v2;
@@ -348,7 +348,7 @@ public partial class ModelImpl<TVertex> {
               var v2 = v - 1;
               var v3 = v;
 
-              if (VertexOrder == VertexOrder.FLIP) {
+              if (this.VertexOrder == VertexOrder.FLIP) {
                 yield return v1;
                 yield return v3;
                 yield return v2;
@@ -363,7 +363,7 @@ public partial class ModelImpl<TVertex> {
           }
           case PrimitiveType.QUADS: {
             for (var v = 0; v < pointsCount; v += 4) {
-              if (VertexOrder == VertexOrder.FLIP) {
+              if (this.VertexOrder == VertexOrder.FLIP) {
                 yield return v + 1;
                 yield return v + 0;
                 yield return v + 2;

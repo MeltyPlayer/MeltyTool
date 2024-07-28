@@ -98,7 +98,7 @@ namespace uni.ui.avalonia.resources.model {
 
   public partial class ModelPanel : UserControl {
     public ModelPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     private void ClearSelectedTextureWhenTabChanged_(

@@ -73,7 +73,7 @@ public class LazyList<T> : ILazyArray<T> {
     => Enumerable.Range(0, this.Count).Where(this.ContainsKey);
 
   public IEnumerable<T> Values
-    => this.impl_.Where((value, i) => ContainsKey(i));
+    => this.impl_.Where((value, i) => this.ContainsKey(i));
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 

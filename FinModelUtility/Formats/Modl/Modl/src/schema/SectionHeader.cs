@@ -43,23 +43,23 @@ public static class SectionHeaderUtil {
       IBinaryReader br,
       out string sectionName,
       out uint size) {
-    SectionHeaderUtil.ReadName(br, out sectionName);
-    SectionHeaderUtil.ReadSize(br, out size);
+    ReadName(br, out sectionName);
+    ReadSize(br, out size);
   }
 
   public static void AssertNameAndReadSize(
       IBinaryReader br,
       string expectedSectionName,
       out uint size) {
-    SectionHeaderUtil.AssertName(br, expectedSectionName);
-    SectionHeaderUtil.ReadSize(br, out size);
+    AssertName(br, expectedSectionName);
+    ReadSize(br, out size);
   }
 
   public static void AssertNameAndSize(
       IBinaryReader br,
       string expectedSectionName,
       uint expectedSize) {
-    SectionHeaderUtil.AssertName(br, expectedSectionName);
-    SectionHeaderUtil.AssertSize(br, expectedSize);
+    AssertName(br, expectedSectionName);
+    AssertSize(br, expectedSize);
   }
 }

@@ -13,13 +13,13 @@ public static partial class GlUtil {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SetChannelUpdateMask(bool updateColorChannel,
                                           bool updateAlphaChannel) {
-    if (GlUtil.currentState_.UpdateColorChannel == updateColorChannel &&
-        GlUtil.currentState_.UpdateAlphaChannel == updateAlphaChannel) {
+    if (currentState_.UpdateColorChannel == updateColorChannel &&
+        currentState_.UpdateAlphaChannel == updateAlphaChannel) {
       return;
     }
 
-    GlUtil.currentState_.UpdateColorChannel = updateColorChannel;
-    GlUtil.currentState_.UpdateAlphaChannel = updateAlphaChannel;
+    currentState_.UpdateColorChannel = updateColorChannel;
+    currentState_.UpdateAlphaChannel = updateAlphaChannel;
     GL.ColorMask(updateColorChannel,
                  updateColorChannel,
                  updateColorChannel,

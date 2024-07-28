@@ -20,10 +20,10 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.StreamV(ref LaunchPos); s.StreamV(ref TargetPos);
-				s.Stream(ref LaunchTime); s.Stream(ref CreateLaserTime);
-				s.Stream(ref LaserObj);
-				s.Stream(ref LaserCreated);
+				s.StreamV(ref this.LaunchPos); s.StreamV(ref this.TargetPos);
+				s.Stream(ref this.LaunchTime); s.Stream(ref this.CreateLaserTime);
+				s.Stream(ref this.LaserObj);
+				s.Stream(ref this.LaserCreated);
 			}
 			#endregion
 		};
@@ -46,18 +46,18 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref RealTargettingLaserID);
-			s.StreamV(ref DesiredTargettingPosition);
-			BSaveGame.StreamArray(s, ref Shots);
-			s.Stream(ref FiredInitialShot);
-			s.Stream(ref ShotsRemaining); s.Stream(ref ImpactsToProcess);
-			s.Stream(ref TargetBeamID); s.Stream(ref ProjectileID); s.Stream(ref EffectProtoID);
-			s.Stream(ref RockSmallProtoID); s.Stream(ref RockMediumProtoID); s.Stream(ref RockLargeProtoID);
-			s.Stream(ref FiredSound);
-			s.Stream(ref TargetingDelay); s.Stream(ref AutoShotDelay);
-			s.Stream(ref AutoShotInnerRadius); s.Stream(ref AutoShotOuterRadius);
-			s.Stream(ref XOffset); s.Stream(ref YOffset); s.Stream(ref ZOffset);
-			s.Stream(ref LOSMode);
+			s.Stream(ref this.RealTargettingLaserID);
+			s.StreamV(ref this.DesiredTargettingPosition);
+			BSaveGame.StreamArray(s, ref this.Shots);
+			s.Stream(ref this.FiredInitialShot);
+			s.Stream(ref this.ShotsRemaining); s.Stream(ref this.ImpactsToProcess);
+			s.Stream(ref this.TargetBeamID); s.Stream(ref this.ProjectileID); s.Stream(ref this.EffectProtoID);
+			s.Stream(ref this.RockSmallProtoID); s.Stream(ref this.RockMediumProtoID); s.Stream(ref this.RockLargeProtoID);
+			s.Stream(ref this.FiredSound);
+			s.Stream(ref this.TargetingDelay); s.Stream(ref this.AutoShotDelay);
+			s.Stream(ref this.AutoShotInnerRadius); s.Stream(ref this.AutoShotOuterRadius);
+			s.Stream(ref this.XOffset); s.Stream(ref this.YOffset); s.Stream(ref this.ZOffset);
+			s.Stream(ref this.LOSMode);
 		}
 		#endregion
 	};

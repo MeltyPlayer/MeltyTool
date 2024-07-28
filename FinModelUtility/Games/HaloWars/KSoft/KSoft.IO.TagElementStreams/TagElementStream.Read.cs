@@ -92,7 +92,8 @@ namespace KSoft.IO
 		/// <param name="detailsException">The additional details to include in the thrown exception (really, the inner exception. eg, InvalidData)</param>
 		public abstract void ThrowReadException(Exception detailsException);
 		// #NOTE: this is dumb, but without doing this I get CS0535
-		void ICanThrowReadExceptionsWithExtraDetails.ThrowReadExeception(Exception detailsException) { ThrowReadException(detailsException); }
+		void ICanThrowReadExceptionsWithExtraDetails.ThrowReadExeception(Exception detailsException) {
+			this.ThrowReadException(detailsException); }
 
 		// #TODO: document that 'ref value' will equal the streamed value or 'null' after returning, depending on success
 
@@ -120,7 +121,7 @@ namespace KSoft.IO
 		public void ReadCursorEnum<TEnum>(ref TEnum enumValue)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			ReadElementEnum(Cursor, ref enumValue);
+			this.ReadElementEnum(this.Cursor, ref enumValue);
 		}
 		/// <summary>Stream out the Value of <see cref="Cursor"/> into the enum <paramref name="enumValue"/></summary>
 		/// <typeparam name="TEnum">Enumeration type</typeparam>
@@ -128,7 +129,7 @@ namespace KSoft.IO
 		public void ReadCursorEnum<TEnum>(ref int enumValue)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			ReadElementEnum(Cursor, ref enumValue);
+			this.ReadElementEnum(this.Cursor, ref enumValue);
 		}
 
 		/// <summary>Interpret the Name of <see cref="Cursor"/> as a member of <typeparamref name="TEnum"/></summary>
@@ -139,7 +140,7 @@ namespace KSoft.IO
 
 		public void ReadCursor(ref Values.KGuid value)
 		{
-			ReadElement(Cursor, ref value);
+			this.ReadElement(this.Cursor, ref value);
 		}
 		#endregion
 
@@ -157,9 +158,9 @@ namespace KSoft.IO
 		public void ReadElementEnum<TEnum>(TName name, ref TEnum enumValue)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElementEnum(GetElement(name), ref enumValue);
+			this.ReadElementEnum(this.GetElement(name), ref enumValue);
 		}
 		/// <summary>Stream out the InnerText of element <paramref name="name"/> into the enum <paramref name="value"/></summary>
 		/// <typeparam name="TEnum">Enumeration type</typeparam>
@@ -168,16 +169,16 @@ namespace KSoft.IO
 		public void ReadElementEnum<TEnum>(TName name, ref int enumValue)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElementEnum(GetElement(name), ref enumValue);
+			this.ReadElementEnum(this.GetElement(name), ref enumValue);
 		}
 
 		public void ReadElement(TName name, ref Values.KGuid value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value);
+			this.ReadElement(this.GetElement(name), ref value);
 		}
 		#endregion
 
@@ -243,7 +244,7 @@ namespace KSoft.IO
 			ICollection<T> coll, TContext ctxt, StreamAction<T, TContext> action, Func<TContext, T> ctor)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = ctor(ctxt);
 					action(this, ctxt, ref value);
@@ -258,7 +259,7 @@ namespace KSoft.IO
 			Contract.Requires(action != null);
 			Contract.Requires(ctor != null);
 
-			ReadElements(this.Elements, coll, ctxt, action, ctor);
+			this.ReadElements(this.Elements, coll, ctxt, action, ctor);
 		}
 		public void ReadElements<T, TContext>(
 			ICollection<T> coll, TContext ctxt, StreamAction<T, TContext> action)
@@ -267,27 +268,27 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(coll != null);
 			Contract.Requires(action != null);
 
-			ReadElements(this.Elements, coll, ctxt, action, _ctxt => new T());
+			this.ReadElements(this.Elements, coll, ctxt, action, _ctxt => new T());
 		}
 		public void ReadElements<T, TContext>(TName name,
 			ICollection<T> coll, TContext ctxt, StreamAction<T, TContext> action, Func<TContext, T> ctor)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 			Contract.Requires(action != null);
 			Contract.Requires(ctor != null);
 
-			ReadElements(this.ElementsByName(name), coll, ctxt, action, ctor);
+			this.ReadElements(this.ElementsByName(name), coll, ctxt, action, ctor);
 		}
 		public void ReadElements<T, TContext>(TName name,
 			ICollection<T> coll, TContext ctxt, StreamAction<T, TContext> action)
 			where T : new()
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 			Contract.Requires(action != null);
 
-			ReadElements(this.ElementsByName(name), coll, ctxt, action, _ctxt => new T());
+			this.ReadElements(this.ElementsByName(name), coll, ctxt, action, _ctxt => new T());
 		}
 
 		void ReadStreamableElements<T, TContext>(IEnumerable<TCursor> elements,
@@ -295,7 +296,7 @@ namespace KSoft.IO
 			where T : ITagElementStreamable<TName>
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = ctor(ctxt);
 					value.Serialize(this);
@@ -310,17 +311,17 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(coll != null);
 			Contract.Requires(ctor != null);
 
-			ReadStreamableElements(this.Elements, coll, ctxt, ctor);
+			this.ReadStreamableElements(this.Elements, coll, ctxt, ctor);
 		}
 		public void ReadStreamableElements<T, TContext>(TName name,
 			ICollection<T> coll, TContext ctxt, Func<TContext, T> ctor)
 			where T : ITagElementStreamable<TName>
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 			Contract.Requires(ctor != null);
 
-			ReadStreamableElements(this.ElementsByName(name), coll, ctxt, ctor);
+			this.ReadStreamableElements(this.ElementsByName(name), coll, ctxt, ctor);
 		}
 		#endregion
 
@@ -331,7 +332,7 @@ namespace KSoft.IO
 			StreamAction<TValue, TContext> streamValue, Func<TContext, TValue> valueCtor)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var key = default(TKey);
 					streamKey(this, ctxt, ref key);
@@ -351,7 +352,7 @@ namespace KSoft.IO
 			Contract.Requires(streamKey != null);
 			Contract.Requires(streamValue != null && valueCtor != null);
 
-			ReadElements(this.Elements, dic, ctxt, streamKey, streamValue, valueCtor);
+			this.ReadElements(this.Elements, dic, ctxt, streamKey, streamValue, valueCtor);
 		}
 		public void ReadElements<TKey, TValue, TContext>(
 			IDictionary<TKey, TValue> dic, TContext ctxt,
@@ -363,19 +364,19 @@ namespace KSoft.IO
 			Contract.Requires(streamKey != null);
 			Contract.Requires(streamValue != null);
 
-			ReadElements(this.Elements, dic, ctxt, streamKey, streamValue, _ctxt => new TValue());
+			this.ReadElements(this.Elements, dic, ctxt, streamKey, streamValue, _ctxt => new TValue());
 		}
 		public void ReadElements<TKey, TValue, TContext>(TName name,
 			IDictionary<TKey, TValue> dic, TContext ctxt,
 			StreamAction<TKey, TContext> streamKey,
 			StreamAction<TValue, TContext> streamValue, Func<TContext, TValue> valueCtor)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(dic != null);
 			Contract.Requires(streamKey != null);
 			Contract.Requires(streamValue != null && valueCtor != null);
 
-			ReadElements(this.ElementsByName(name), dic, ctxt, streamKey, streamValue, valueCtor);
+			this.ReadElements(this.ElementsByName(name), dic, ctxt, streamKey, streamValue, valueCtor);
 		}
 		public void ReadElements<TKey, TValue, TContext>(TName name,
 			IDictionary<TKey, TValue> dic, TContext ctxt,
@@ -383,12 +384,12 @@ namespace KSoft.IO
 			StreamAction<TValue, TContext> streamValue)
 			where TValue : new()
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(dic != null);
 			Contract.Requires(streamKey != null);
 			Contract.Requires(streamValue != null);
 
-			ReadElements(this.ElementsByName(name), dic, ctxt, streamKey, streamValue, _ctxt => new TValue());
+			this.ReadElements(this.ElementsByName(name), dic, ctxt, streamKey, streamValue, _ctxt => new TValue());
 		}
 
 		void ReadStreamableElements<TKey, TValue, TContext>(IEnumerable<TCursor> elements,
@@ -397,7 +398,7 @@ namespace KSoft.IO
 			where TValue : ITagElementStreamable<TName>, new()
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var key = default(TKey);
 					streamKey(this, ctxt, ref key);
@@ -415,7 +416,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(dic != null);
 
-			ReadStreamableElements(this.ElementsByName(name), dic, ctxt, streamKey);
+			this.ReadStreamableElements(this.ElementsByName(name), dic, ctxt, streamKey);
 		}
 		#endregion
 
@@ -427,7 +428,7 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = ctor(ctxt);
 					value.Serialize(this);
@@ -447,17 +448,17 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(array != null);
 			Contract.Requires(ctor != null);
 
-			return ReadFixedArray(this.Elements, array, ctxt, ctor);
+			return this.ReadFixedArray(this.Elements, array, ctxt, ctor);
 		}
 		public int ReadFixedArray<T, TContext>(TName name, T[] array,
 			TContext ctxt, Func<TContext, T> ctor)
 			where T : ITagElementStreamable<TName>
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 			Contract.Requires(ctor != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, ctxt, ctor);
+			return this.ReadFixedArray(this.ElementsByName(name), array, ctxt, ctor);
 		}
 		#endregion
 	};
@@ -467,7 +468,7 @@ namespace KSoft.IO
 		#region ReadElement
 		public override void ReadElementBegin(TName name, out TCursor oldCursor)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
@@ -483,20 +484,20 @@ namespace KSoft.IO
 		#region ReadAttribute
 		public override void ReadAttributeEnum<TEnum>(TName name, ref TEnum enumValue)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
 		public override void ReadAttributeEnum<TEnum>(TName name, ref int enumValue)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
 
 		public override void ReadAttribute(TName name, ref Values.KGuid value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
@@ -505,20 +506,20 @@ namespace KSoft.IO
 		#region ReadElementOpt
 		public override bool ReadElementEnumOpt<TEnum>(TName name, ref TEnum enumValue)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
 		public override bool ReadElementEnumOpt<TEnum>(TName name, ref int enumValue)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
 
 		public override bool ReadElementOpt(TName name, ref Values.KGuid value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
@@ -527,20 +528,20 @@ namespace KSoft.IO
 		#region ReadAttributeOpt
 		public override bool ReadAttributeEnumOpt<TEnum>(TName name, ref TEnum enumValue)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
 		public override bool ReadAttributeEnumOpt<TEnum>(TName name, ref int enumValue)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}
 
 		public override bool ReadAttributeOpt(TName name, ref Values.KGuid value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
 			throw new NotImplementedException();
 		}

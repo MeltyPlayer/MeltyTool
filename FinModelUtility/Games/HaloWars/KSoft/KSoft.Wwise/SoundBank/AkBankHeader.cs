@@ -22,23 +22,23 @@ namespace KSoft.Wwise.SoundBank
 
 				s.Pad32(); // Type; 0 or 1 (Init.bk)
 				s.Pad32(); // LanguageID?
-				s.Stream(ref BankGeneratorVersion);
+				s.Stream(ref this.BankGeneratorVersion);
 				s.Pad32(); // seen as '0', '12'
 				s.Pad32(); // some kind of ID
-				s.Stream(ref SoundBankID);
+				s.Stream(ref this.SoundBankID);
 			}
 			public void Serialize(IO.EndianStream s)
 			{
 				uint sdk_ver = (s.Owner as AkSoundBank).SdkVersion;
 
 				if (AkVersion.HasOldBankHeader(sdk_ver))
-					SerializeOld(s);
+					this.SerializeOld(s);
 				else
 				{
-					s.Stream(ref BankGeneratorVersion);
-					s.Stream(ref SoundBankID);
-					s.Stream(ref LanguageID);
-					s.Stream(ref FeedbackSupported);
+					s.Stream(ref this.BankGeneratorVersion);
+					s.Stream(ref this.SoundBankID);
+					s.Stream(ref this.LanguageID);
+					s.Stream(ref this.FeedbackSupported);
 				}
 			}
 			#endregion

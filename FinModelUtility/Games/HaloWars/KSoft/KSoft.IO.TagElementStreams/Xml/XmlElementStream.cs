@@ -31,44 +31,44 @@ namespace KSoft.IO
 		}
 
 		#region Cursor
-		public override string CursorName { get { return Cursor?.Name; } }
+		public override string CursorName { get { return this.Cursor?.Name; } }
 
 		public override void InitializeAtRootElement()
 		{
-			Cursor = Document.DocumentElement;
+			this.Cursor = this.Document.DocumentElement;
 		}
 		#endregion
 
 		#region Util
 		public override bool AttributeExists(string name)
 		{
-			if (Cursor == null)
+			if (this.Cursor == null)
 				return false;
-			if (!ValidateNameArg(name))
+			if (!this.ValidateNameArg(name))
 				return false;
 
-			XmlNode n = Cursor.Attributes[name];
+			XmlNode n = this.Cursor.Attributes[name];
 
 			return n != null;
 		}
 
-		public override bool AttributesExist { get { return Cursor != null && Cursor.HasAttributes; } }
+		public override bool AttributesExist { get { return this.Cursor != null && this.Cursor.HasAttributes; } }
 
 		public override IEnumerable<string> AttributeNames { get {
-			if (AttributesExist)
-				foreach (XmlAttribute attr in Cursor.Attributes)
+			if (this.AttributesExist)
+				foreach (XmlAttribute attr in this.Cursor.Attributes)
 					yield return attr.Name;
 		} }
 
 		[SuppressMessage("Microsoft.Design", "CA1820:TestForEmptyStringsUsingStringLength")]
 		public override bool ElementsExists(string name)
 		{
-			if (Cursor == null)
+			if (this.Cursor == null)
 				return false;
-			if (!ValidateNameArg(name))
+			if (!this.ValidateNameArg(name))
 				return false;
 
-			XmlElement n = Cursor[name];
+			XmlElement n = this.Cursor[name];
 
 			return n != null
 				// #REVIEW CA1820: When I changed this to IsNotNullOrEmpty, it broke pretty much everything. Need to evaluate dropping the n.Value check altogether.
@@ -76,19 +76,19 @@ namespace KSoft.IO
 				&& n.Value != string.Empty;
 		}
 
-		public override bool ElementsExist { get { return Cursor != null && Cursor.HasChildNodes; } }
+		public override bool ElementsExist { get { return this.Cursor != null && this.Cursor.HasChildNodes; } }
 
 		public override IEnumerable<XmlElement> Elements { get {
-			if (ElementsExist)
-				foreach (XmlNode n in Cursor)
+			if (this.ElementsExist)
+				foreach (XmlNode n in this.Cursor)
 					if (n is XmlElement)
 						yield return (XmlElement)n;
 		} }
 
 		public override IEnumerable<XmlElement> ElementsByName(string localName)
 		{
-			if (ElementsExist)
-				foreach (XmlNode n in Cursor.ChildNodes)
+			if (this.ElementsExist)
+				foreach (XmlNode n in this.Cursor.ChildNodes)
 					if (n is XmlElement && n.Name == localName)
 						yield return (XmlElement)n;
 
@@ -115,7 +115,7 @@ namespace KSoft.IO
 		#region Constructor
 		XmlElementStream()
 		{
-			CommentsEnabled = true;
+			this.CommentsEnabled = true;
 		}
 
 		/// <summary>Initialize an element stream from a stream with <see cref="owner"/> as the initial owner object</summary>
@@ -130,27 +130,27 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentException>(sourceStream.HasPermissions(permissions));
 
 			if (streamNameOverride.IsNullOrEmpty())
-				SetStreamName(sourceStream);
+				this.SetStreamName(sourceStream);
 			else
-				base.StreamName = streamNameOverride;
+				this.StreamName = streamNameOverride;
 
 			var doc = new Xml.XmlDocumentWithLocation
 			{
-				FileName = base.StreamName
+				FileName = this.StreamName
 			};
-			Document = doc;
+			this.Document = doc;
 			try
 			{
 				using (var xmlReader = XmlReader.Create(sourceStream))
 				{
-					Document.Load(xmlReader);
+					this.Document.Load(xmlReader);
 				}
 			} catch (Exception ex)
 			{
-				throw new System.IO.InvalidDataException("Failed to load " + StreamName, ex);
+				throw new System.IO.InvalidDataException("Failed to load " + this.StreamName, ex);
 			}
 
-			StreamMode = StreamPermissions = permissions;
+			this.StreamMode = this.StreamPermissions = permissions;
 
 			this.Owner = owner;
 		}
@@ -167,7 +167,7 @@ namespace KSoft.IO
 			if (!System.IO.File.Exists(filename))
 				throw new System.IO.FileNotFoundException("XmlElementStream: Load", filename);
 
-			Document = new Xml.XmlDocumentWithLocation();
+			this.Document = new Xml.XmlDocumentWithLocation();
 			try
 			{
 				var xml_reader_settings = new XmlReaderSettings
@@ -177,15 +177,15 @@ namespace KSoft.IO
 				};
 				using (var xml_reader = XmlReader.Create(this.StreamName = filename, xml_reader_settings))
 				{
-					Document.Load(xml_reader);
+					this.Document.Load(xml_reader);
 				}
 			}
 			catch (Exception ex)
 			{
-				throw new System.IO.InvalidDataException("Failed to load " + StreamName, ex);
+				throw new System.IO.InvalidDataException("Failed to load " + this.StreamName, ex);
 			}
 
-			StreamMode = StreamPermissions = permissions;
+			this.StreamMode = this.StreamPermissions = permissions;
 
 			this.Owner = owner;
 		}
@@ -202,14 +202,14 @@ namespace KSoft.IO
 			System.IO.FileAccess permissions = System.IO.FileAccess.ReadWrite, object owner = null)
 		{
 			Contract.Requires<ArgumentNullException>(document != null);
-			Contract.Requires(object.ReferenceEquals(cursor.OwnerDocument, document));
+			Contract.Requires(ReferenceEquals(cursor.OwnerDocument, document));
 
-			Document = document;
-			Cursor = cursor;
+			this.Document = document;
+			this.Cursor = cursor;
 
 			this.StreamName = string.Format(Util.InvariantCultureInfo, "XmlDocument:{0}", document.Name);
 
-			StreamMode = StreamPermissions = permissions;
+			this.StreamMode = this.StreamPermissions = permissions;
 
 			this.Owner = owner;
 		}

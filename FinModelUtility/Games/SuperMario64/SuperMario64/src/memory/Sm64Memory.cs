@@ -28,7 +28,7 @@ namespace sm64.memory {
 
     public bool TryToOpenPossibilitiesAtSegmentedAddress(uint segmentedAddress,
       out IEnumerable<SchemaBinaryReader> possibilities) {
-      possibilities = OpenPossibilitiesAtSegmentedAddress(segmentedAddress);
+      possibilities = this.OpenPossibilitiesAtSegmentedAddress(segmentedAddress);
       return true;
     }
 

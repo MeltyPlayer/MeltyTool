@@ -18,7 +18,7 @@ namespace benchmarks {
 
     [Benchmark]
     public void UsingSpanCopyRgba() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         var srcSpan = this.rgbaSrc_.AsSpan();
         var dstSpan = this.rgbaDst_.AsSpan();
 
@@ -30,7 +30,7 @@ namespace benchmarks {
 
     [Benchmark]
     public void UsingSpanCopyInt() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         var srcSpan = this.intSrc_.AsSpan();
         var dstSpan = this.intDst_.AsSpan();
 
@@ -42,7 +42,7 @@ namespace benchmarks {
 
     [Benchmark]
     public void UsingSpanCopyMismatch() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         var srcSpan = this.intSrc_.AsSpan().AsBytes();
         var dstSpan = this.rgbaDst_.AsSpan().AsBytes();
 
@@ -58,7 +58,7 @@ namespace benchmarks {
       var srcSpan = this.rgbaSrc_.AsSpan();
       var dstSpan = this.rgbaDst_.AsSpan();
 
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           srcSpan.Slice(p, 1).CopyTo(dstSpan.Slice(p, 1));
         }
@@ -70,7 +70,7 @@ namespace benchmarks {
       var srcSpan = this.intSrc_.AsSpan();
       var dstSpan = this.intDst_.AsSpan();
 
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           srcSpan.Slice(p, 1).CopyTo(dstSpan.Slice(p, 1));
         }
@@ -82,7 +82,7 @@ namespace benchmarks {
       var srcSpan = this.intSrc_.AsSpan().AsBytes();
       var dstSpan = this.rgbaDst_.AsSpan().AsBytes();
 
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           srcSpan.Slice(4 * p, 4).CopyTo(dstSpan.Slice(4 * p, 4));
         }
@@ -93,7 +93,7 @@ namespace benchmarks {
     
     [Benchmark]
     public void UsingSetRgbaViaSpan() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         var srcSpan = this.rgbaSrc_.AsSpan();
         var dstSpan = this.rgbaDst_.AsSpan();
 
@@ -108,7 +108,7 @@ namespace benchmarks {
       var srcSpan = this.rgbaSrc_.AsSpan();
       var dstSpan = this.rgbaDst_.AsSpan();
 
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           dstSpan[p] = srcSpan[p];
         }
@@ -117,7 +117,7 @@ namespace benchmarks {
 
     [Benchmark]
     public void UsingSetRgbaViaArray() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           this.rgbaDst_[p] = this.rgbaSrc_[p];
         }
@@ -128,7 +128,7 @@ namespace benchmarks {
     
     [Benchmark]
     public void UsingSetIntViaSpan() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         var srcSpan = this.intSrc_.AsSpan();
         var dstSpan = this.intDst_.AsSpan();
 
@@ -143,7 +143,7 @@ namespace benchmarks {
       var srcSpan = this.intSrc_.AsSpan();
       var dstSpan = this.intDst_.AsSpan();
 
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           dstSpan[p] = srcSpan[p];
         }
@@ -152,7 +152,7 @@ namespace benchmarks {
 
     [Benchmark]
     public void UsingSetIntViaArray() {
-      for (var i = 0; i < n_; ++i) {
+      for (var i = 0; i < this.n_; ++i) {
         for (var p = 0; p < size_; ++p) {
           this.intDst_[p] = this.intSrc_[p];
         }

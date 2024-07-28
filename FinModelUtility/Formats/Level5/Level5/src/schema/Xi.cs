@@ -31,8 +31,8 @@ public class Xi {
       using (var r =
              new SchemaBinaryReader(data, Endianness.LittleEndian)) {
         r.Position = 0x10;
-        Width = r.ReadInt16();
-        Height = r.ReadInt16();
+        this.Width = r.ReadInt16();
+        this.Height = r.ReadInt16();
 
         r.Position = 0xA;
         int type = r.ReadByte();
@@ -52,15 +52,15 @@ public class Xi {
 
         if (tileBytes.Length > 2 && tileBytes[0] == 0x53 &&
             tileBytes[1] == 0x04)
-          SwitchFile = true;
+          this.SwitchFile = true;
 
         using (var tileData =
                new SchemaBinaryReader(tileBytes, Endianness.LittleEndian)) {
           int tileCount = 0;
           while (tileData.Position + 2 <= tileData.Length) {
-            int i = SwitchFile ? tileData.ReadInt32() : tileData.ReadInt16();
+            int i = this.SwitchFile ? tileData.ReadInt32() : tileData.ReadInt16();
             if (i > tileCount) tileCount = i;
-            Tiles.Add(i);
+            this.Tiles.Add(i);
           }
         }
 
@@ -89,9 +89,9 @@ public class Xi {
           //break;
         }
 
-        ImageFormat = (byte) type;
+        this.ImageFormat = (byte) type;
 
-        ImageData = level5Decompressor.Decompress(
+        this.ImageData = level5Decompressor.Decompress(
             r.SubreadAt((uint) imageDataOffset,
                                 ser => ser.ReadBytes((int) (r.Length - imageDataOffset))));
       }
@@ -104,19 +104,18 @@ public class Xi {
   public unsafe IImage ToBitmap() {
       Bitmap tileSheet;
 
-      var imageFormat = (_3dsImageTools.TexFormat) ImageFormat;
+      var imageFormat = (_3dsImageTools.TexFormat) this.ImageFormat;
       if (imageFormat is _3dsImageTools.TexFormat.ETC1
                          or _3dsImageTools.TexFormat.ETC1a4) {
-        tileSheet = TiledImageReader.New(Tiles.Count * 8,
+        tileSheet = TiledImageReader.New(this.Tiles.Count * 8,
                                          8,
                                          new Etc1TileReader(
                                              imageFormat is _3dsImageTools.TexFormat.ETC1a4))
-                                    .ReadImage(ImageData)
+                                    .ReadImage(this.ImageData)
                                     .AsBitmap();
       } else {
-        tileSheet = _3dsImageTools.DecodeImage(
-            ImageData,
-            Tiles.Count * 8,
+        tileSheet = _3dsImageTools.DecodeImage(this.ImageData,
+                                               this.Tiles.Count * 8,
             8,
             imageFormat);
       }
@@ -141,7 +140,7 @@ public class Xi {
 
       var tileSheetWidth = tileSheet.Width;
 
-      var img = new Rgba32Image(pixelFormat, Width, Height);
+      var img = new Rgba32Image(pixelFormat, this.Width, this.Height);
 
       using var inputBmpData = tileSheet.FastLock();
       var inputPtr = (byte*) inputBmpData.Scan0;
@@ -151,8 +150,8 @@ public class Xi {
 
       int y = 0;
       int x = 0;
-      for (int i = 0; i < Tiles.Count; i++) {
-        int code = Tiles[i];
+      for (int i = 0; i < this.Tiles.Count; i++) {
+        int code = this.Tiles[i];
 
         if (code != -1) {
           for (int h = 0; h < 8; h++) {
@@ -163,27 +162,27 @@ public class Xi {
               var r = inputPtr[inputIndex + 2];
               var a = inputPtr[inputIndex + 3];
 
-              dstPtr[(x + w) * Width + y + h] = new Rgba32(r, g, b, a);
+              dstPtr[(x + w) * this.Width + y + h] = new Rgba32(r, g, b, a);
             }
           }
         }
 
-        if (code == -1 && (ImageFormat == 0xC || ImageFormat == 0xD)) {
+        if (code == -1 && (this.ImageFormat == 0xC || this.ImageFormat == 0xD)) {
           for (int h = 0; h < 8; h++) {
             for (int w = 0; w < 8; w++) {
-              dstPtr[(x + w) * Width + y + h] = new Rgba32(0, 0, 0, 0);
+              dstPtr[(x + w) * this.Width + y + h] = new Rgba32(0, 0, 0, 0);
             }
           }
         }
 
         y += 8;
 
-        if (y >= Width) {
+        if (y >= this.Width) {
           y = 0;
           x += 8;
 
           // TODO: This skips early, may not use all of the tiles. Is this right?
-          if (x >= Height) {
+          if (x >= this.Height) {
             break;
           }
         }

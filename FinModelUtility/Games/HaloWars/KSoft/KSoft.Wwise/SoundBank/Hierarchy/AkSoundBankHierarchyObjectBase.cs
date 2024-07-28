@@ -14,12 +14,12 @@ namespace KSoft.Wwise.SoundBank
 
 			public AkSoundBankHierarchyDefaultImpl(HircType type)
 			{
-				mType = type;
+				this.mType = type;
 			}
 
 			public override string ToString()
 			{
-				return mType.ToString();
+				return this.mType.ToString();
 			}
 		};
 
@@ -40,7 +40,7 @@ namespace KSoft.Wwise.SoundBank
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref ID);
+			s.Stream(ref this.ID);
 		}
 		#endregion
 	};

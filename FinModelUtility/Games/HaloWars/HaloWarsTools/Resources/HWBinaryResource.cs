@@ -36,10 +36,10 @@ namespace HaloWarsTools {
 
     protected HWBinaryResourceChunk[] GetAllChunksOfType(
         HWBinaryResourceChunkType type)
-      => Chunks.Where(chunk => chunk.Type == type).ToArray();
+      => this.Chunks.Where(chunk => chunk.Type == type).ToArray();
 
     protected HWBinaryResourceChunk GetFirstChunkOfType(
         HWBinaryResourceChunkType type)
-      => Chunks.FirstOrDefault(chunk => chunk.Type == type);
+      => this.Chunks.FirstOrDefault(chunk => chunk.Type == type);
   }
 }

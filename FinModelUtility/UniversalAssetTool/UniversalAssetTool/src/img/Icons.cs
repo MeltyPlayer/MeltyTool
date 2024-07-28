@@ -25,5 +25,5 @@ public static class Icons {
       LoadIcon_("uni.src.img.music.png");
 
   private static Image LoadIcon_(string embeddedResourceName)
-    => EmbeddedResourceImageUtil.Load(Icons.assembly_, embeddedResourceName);
+    => EmbeddedResourceImageUtil.Load(assembly_, embeddedResourceName);
 }

@@ -30,8 +30,8 @@ namespace KSoft.Phoenix.Phx
 		int mID = TypeExtensions.kNone;
 		public int ID
 		{
-			get { return mID; }
-			private set { this.SetFieldVal(ref mID, value); }
+			get { return this.mID; }
+			private set { this.SetFieldVal(ref this.mID, value); }
 		}
 		#endregion
 
@@ -40,8 +40,8 @@ namespace KSoft.Phoenix.Phx
 		LocStringCategory mCategory = LocStringCategory.None;
 		public LocStringCategory Category
 		{
-			get { return mCategory; }
-			set { this.SetFieldEnum(ref mCategory, value); }
+			get { return this.mCategory; }
+			set { this.SetFieldEnum(ref this.mCategory, value); }
 		}
 		#endregion
 
@@ -49,8 +49,8 @@ namespace KSoft.Phoenix.Phx
 		string mScenario;
 		public string Scenario
 		{
-			get { return mScenario; }
-			set { this.SetFieldObj(ref mScenario, value); }
+			get { return this.mScenario; }
+			set { this.SetFieldObj(ref this.mScenario, value); }
 		}
 		#endregion
 
@@ -58,8 +58,8 @@ namespace KSoft.Phoenix.Phx
 		bool mIsSubtitle;
 		public bool IsSubtitle
 		{
-			get { return mIsSubtitle; }
-			set { this.SetFieldVal(ref mIsSubtitle, value); }
+			get { return this.mIsSubtitle; }
+			set { this.SetFieldVal(ref this.mIsSubtitle, value); }
 		}
 		#endregion
 
@@ -67,8 +67,8 @@ namespace KSoft.Phoenix.Phx
 		bool mIsUpdate;
 		public bool IsUpdate
 		{
-			get { return mIsUpdate; }
-			set { this.SetFieldVal(ref mIsUpdate, value); }
+			get { return this.mIsUpdate; }
+			set { this.SetFieldVal(ref this.mIsUpdate, value); }
 		}
 		#endregion
 
@@ -76,8 +76,8 @@ namespace KSoft.Phoenix.Phx
 		int mMouseKeyboardID = TypeExtensions.kNone;
 		public int MouseKeyboardID
 		{
-			get { return mMouseKeyboardID; }
-			set { this.SetFieldVal(ref mMouseKeyboardID, value); }
+			get { return this.mMouseKeyboardID; }
+			set { this.SetFieldVal(ref this.mMouseKeyboardID, value); }
 		}
 		#endregion
 
@@ -87,8 +87,8 @@ namespace KSoft.Phoenix.Phx
 		string mOriginalID;
 		public string OriginalID
 		{
-			get { return mOriginalID; }
-			set { this.SetFieldObj(ref mOriginalID, value); }
+			get { return this.mOriginalID; }
+			set { this.SetFieldObj(ref this.mOriginalID, value); }
 		}
 		#endregion
 
@@ -96,8 +96,8 @@ namespace KSoft.Phoenix.Phx
 		string mText;
 		public string Text
 		{
-			get { return mText; }
-			set { this.SetFieldObj(ref mText, value); }
+			get { return this.mText; }
+			set { this.SetFieldObj(ref this.mText, value); }
 		}
 		#endregion
 
@@ -107,7 +107,7 @@ namespace KSoft.Phoenix.Phx
 
 		public LocString(int id)
 		{
-			mID = id;
+			this.mID = id;
 		}
 
 		#region ITagElementStreamable<string> Members
@@ -115,22 +115,23 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamAttribute("_locID", ref mID);
-			s.StreamAttributeEnumOpt("category", ref mCategory, e => e != LocStringCategory.None);
-			s.StreamAttributeOpt("scenario", ref mScenario, Predicates.IsNotNullOrEmpty);
-			s.StreamAttributeOpt("subtitle", ref mIsSubtitle, Predicates.IsTrue);
-			s.StreamAttributeOpt("Update", ref mIsUpdate, Predicates.IsTrue);
-			s.StreamAttributeOpt("_mouseKeyboard", ref mMouseKeyboardID, Predicates.IsNotNone);
-			s.StreamAttributeOpt("originally", ref mOriginalID, Predicates.IsNotNullOrEmpty);
-			if (s.IsReading || mText.IsNotNullOrEmpty())
-				s.StreamCursor(ref mText);
+			s.StreamAttribute("_locID", ref this.mID);
+			s.StreamAttributeEnumOpt("category", ref this.mCategory, e => e != LocStringCategory.None);
+			s.StreamAttributeOpt("scenario", ref this.mScenario, Predicates.IsNotNullOrEmpty);
+			s.StreamAttributeOpt("subtitle", ref this.mIsSubtitle, Predicates.IsTrue);
+			s.StreamAttributeOpt("Update", ref this.mIsUpdate, Predicates.IsTrue);
+			s.StreamAttributeOpt("_mouseKeyboard", ref this.mMouseKeyboardID, Predicates.IsNotNone);
+			s.StreamAttributeOpt("originally", ref this.mOriginalID, Predicates.IsNotNullOrEmpty);
+			if (s.IsReading || this.mText.IsNotNullOrEmpty())
+				s.StreamCursor(ref this.mText);
 		}
 		#endregion
 
 		public override string ToString()
 		{
 			return string.Format("({0}) '{1}'",
-				ID, Text ?? "");
+			                     this.ID,
+			                     this.Text ?? "");
 		}
 	};
 }

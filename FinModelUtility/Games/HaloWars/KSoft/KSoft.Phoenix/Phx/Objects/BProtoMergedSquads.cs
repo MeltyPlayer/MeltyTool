@@ -18,8 +18,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public BProtoSquadID ToMergeSquadID
 		{
-			get { return mToMergeSquadID; }
-			set { mToMergeSquadID = value; }
+			get { return this.mToMergeSquadID; }
+			set { this.mToMergeSquadID = value; }
 		}
 
 		[Meta.BProtoSquadReference]
@@ -32,8 +32,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mToMergeSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
-			s.StreamElements("MergedSquad", BaseSquadIDs, xs, XML.BDatabaseXmlSerializerBase.StreamSquadID);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mToMergeSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
+			s.StreamElements("MergedSquad", this.BaseSquadIDs, xs, XML.BXmlSerializerInterface.StreamSquadID);
 		}
 		#endregion
 	};

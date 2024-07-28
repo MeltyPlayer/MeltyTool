@@ -53,9 +53,9 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Id);
-				BSaveGame.StreamArray(s, ref Objects);
-				BSaveGame.StreamArray(s, ref TriggeredTeams);
+				s.Stream(ref this.Id);
+				BSaveGame.StreamArray(s, ref this.Objects);
+				BSaveGame.StreamArray(s, ref this.TriggeredTeams);
 			}
 			#endregion
 		};
@@ -68,7 +68,7 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Unknown0); s.Stream(ref Unknown4); s.Stream(ref Unknown8);
+				s.Stream(ref this.Unknown0); s.Stream(ref this.Unknown4); s.Stream(ref this.Unknown8);
 			}
 			#endregion
 		};
@@ -83,9 +83,9 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Objects); s.Stream(ref Corpse); s.Stream(ref Selection);
-				s.Stream(ref Minimap); s.Stream(ref UI);
-				s.Stream(ref Index);
+				s.Stream(ref this.Objects); s.Stream(ref this.Corpse); s.Stream(ref this.Selection);
+				s.Stream(ref this.Minimap); s.Stream(ref this.UI);
+				s.Stream(ref this.Index);
 			}
 			#endregion
 		};
@@ -105,26 +105,26 @@ namespace KSoft.Phoenix.Runtime
 
 			if (s.IsReading)
 			{
-				Players = new BPlayer[sg.Players.Count];
-				for(int x = 0; x < Players.Length; x++)
-					Players[x] = new BPlayer();
+				this.Players = new BPlayer[sg.Players.Count];
+				for(int x = 0; x < this.Players.Length; x++)
+					this.Players[x] = new BPlayer();
 			}
 
-			BSaveGame.StreamArray16(s, ref NumExplorationGroups, isIterated:true);
-			BSaveGame.StreamArray(s, ref ActiveExplorationGroups);
+			BSaveGame.StreamArray16(s, ref this.NumExplorationGroups, isIterated:true);
+			BSaveGame.StreamArray(s, ref this.ActiveExplorationGroups);
 			s.StreamSignature(cSaveMarker.World1);
-			foreach (var player in Players)
+			foreach (var player in this.Players)
 				s.Stream(player);
 			s.StreamSignature(cSaveMarker.Players);
 			s.StreamSignature(cMaximumSupportedPlayers);
 			s.StreamSignature(cMaxPlayerColorCategories);
  			for (int x = 0; x < cMaxPlayerColorCategories; x++)
  				for (int y = 0; y < cMaximumSupportedPlayers; y++)
- 					s.Stream(ref PlayerColorCategories[x, y]);
+ 					s.Stream(ref this.PlayerColorCategories[x, y]);
 			s.StreamSignature(cSaveMarker.World2);
-			BSaveGame.StreamFreeList(s, SimOrders, BSimOrder.kFreeListInfo);
-			BSaveGame.StreamFreeList(s, UnitOpps, BUnitOpp.kFreeListInfo);
-			BSaveGame.StreamFreeList(s, PathMoveData, BPathMoveData.kFreeListInfo);
+			BSaveGame.StreamFreeList(s, this.SimOrders, BSimOrder.kFreeListInfo);
+			BSaveGame.StreamFreeList(s, this.UnitOpps, BUnitOpp.kFreeListInfo);
+			BSaveGame.StreamFreeList(s, this.PathMoveData, BPathMoveData.kFreeListInfo);
 
 			//...
 		}

@@ -13,16 +13,16 @@ public static partial class GlUtil {
   private static GlState currentState_;
 
   public static void SwitchContext(IGraphicsContext? context) {
-      if (!GlUtil.stateByKey_.TryGetValue(context, out var state)) {
-        GlUtil.stateByKey_.Add(context, state = new GlState());
+      if (!stateByKey_.TryGetValue(context, out var state)) {
+        stateByKey_.Add(context, state = new GlState());
       }
 
       currentState_ = state;
     }
 
   public static void SwitchContext(object? any) {
-      if (!GlUtil.stateByKey_.TryGetValue(any, out var state)) {
-        GlUtil.stateByKey_.Add(any, state = new GlState());
+      if (!stateByKey_.TryGetValue(any, out var state)) {
+        stateByKey_.Add(any, state = new GlState());
       }
 
       currentState_ = state;

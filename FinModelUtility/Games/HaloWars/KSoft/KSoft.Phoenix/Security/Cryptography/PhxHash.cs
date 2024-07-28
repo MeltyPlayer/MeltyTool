@@ -108,7 +108,7 @@ namespace KSoft.Security.Cryptography
 		}
 
 		public static void Stream(SHA1CryptoServiceProvider sha
-			, System.IO.Stream inputStream
+			, Stream inputStream
 			, long inputOffset
 			, long inputLength
 			, bool isFinal = false)
@@ -124,7 +124,7 @@ namespace KSoft.Security.Cryptography
 
 			using (new IO.StreamPositionContext(inputStream))
 			{
-				inputStream.Seek(inputOffset, System.IO.SeekOrigin.Begin);
+				inputStream.Seek(inputOffset, SeekOrigin.Begin);
 
 				for (long input_bytes_read = 0; input_bytes_read < inputLength; )
 				{
@@ -169,19 +169,19 @@ namespace KSoft.Security.Cryptography
 				byte[] result1;
 				byte[] result_final;
 
-				PhxHash.UInt32(sha, 0xA4800C14);
+				UInt32(sha, 0xA4800C14);
 				//PhxHash.Ascii(sha, str);
 				sha.TransformBlock(str_bytes, 0, str_bytes.Length, null, 0);
-				PhxHash.UInt32(sha, 0x5AF4A9F1);
-				PhxHash.UInt32(sha, 0xCA6884EC, true);
+				UInt32(sha, 0x5AF4A9F1);
+				UInt32(sha, 0xCA6884EC, true);
 				result1 = sha.Hash;
 				if (System.Diagnostics.Debugger.IsAttached)
 					Debug.Trace.Security.TraceInformation("Sha1Hash: {0} Result: {1}", str, Text.Util.ByteArrayToString(result1));
 
 				sha.Initialize();
-				PhxHash.UInt32(sha, 0xCB92EAEB);
+				UInt32(sha, 0xCB92EAEB);
 				sha.TransformBlock(result1, 0, result1.Length, null, 0);
-				PhxHash.UInt32(sha, 0x1D919BF8, true);
+				UInt32(sha, 0x1D919BF8, true);
 				result_final = sha.Hash;
 				if (System.Diagnostics.Debugger.IsAttached)
 					Debug.Trace.Security.TraceInformation("Sha1Hash: {0} Final: {1}", str, Text.Util.ByteArrayToString(result_final));

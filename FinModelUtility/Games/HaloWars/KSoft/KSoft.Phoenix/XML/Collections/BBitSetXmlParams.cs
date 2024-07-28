@@ -15,11 +15,11 @@ namespace KSoft.Phoenix.XML
 		/// <param name="elementName">Name of the xml element which represents the type (enum) value</param>
 		public BBitSetXmlParams(string elementName)
 		{
-			ElementName = elementName;
+			this.ElementName = elementName;
 
-			Flags = 0
-				| BCollectionXmlParamsFlags.UseInnerTextForData
-				| BCollectionXmlParamsFlags.InternDataNames;
+			this.Flags = 0
+			             | BCollectionXmlParamsFlags.UseInnerTextForData
+			             | BCollectionXmlParamsFlags.InternDataNames;
 		}
 
 		public static readonly BBitSetXmlParams kFlagsSansRoot = new BBitSetXmlParams("Flag");

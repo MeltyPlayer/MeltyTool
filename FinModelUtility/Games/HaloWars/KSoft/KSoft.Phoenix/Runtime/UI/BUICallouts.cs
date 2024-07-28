@@ -34,15 +34,15 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref ID);
-				s.Stream(ref Type);
-				s.StreamV(ref Location);
-				s.Stream(ref EntityID); s.Stream(ref CalloutEntityID);
-				s.Stream(ref LocStringIndex); s.Stream(ref UICalloutID); s.Stream(ref X); s.Stream(ref Y);
-				s.Stream(ref Visible);
+				s.Stream(ref this.ID);
+				s.Stream(ref this.Type);
+				s.StreamV(ref this.Location);
+				s.Stream(ref this.EntityID); s.Stream(ref this.CalloutEntityID);
+				s.Stream(ref this.LocStringIndex); s.Stream(ref this.UICalloutID); s.Stream(ref this.X); s.Stream(ref this.Y);
+				s.Stream(ref this.Visible);
 				s.StreamSignature(cSaveMarker.UICallout);
 
-				s.StreamV(ref Position);
+				s.StreamV(ref this.Position);
 			}
 			#endregion
 		};
@@ -60,13 +60,13 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamList(s, Callouts, kCalloutsListInfo);
+			BSaveGame.StreamList(s, this.Callouts, kCalloutsListInfo);
 			s.StreamSignature(cSaveMarker.UICallouts1);
 			s.StreamSignature(cNumCallouts);
-			for (int x = 0; x < CalloutWidgets.Length; x++)
-				s.Stream(ref CalloutWidgets[x]);
-			s.Stream(ref NextCalloutID);
-			s.Stream(ref PanelVisible); s.Stream(ref CalloutsVisible);
+			for (int x = 0; x < this.CalloutWidgets.Length; x++)
+				s.Stream(ref this.CalloutWidgets[x]);
+			s.Stream(ref this.NextCalloutID);
+			s.Stream(ref this.PanelVisible); s.Stream(ref this.CalloutsVisible);
 			s.StreamSignature(cSaveMarker.UICallouts2);
 		}
 		#endregion

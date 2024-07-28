@@ -109,12 +109,12 @@ namespace KSoft
 				Contract.Requires(!string.IsNullOrEmpty(digits));
 				Contract.Requires(IsValidLookupTable(radix, digits));
 
-				Digits = digits;
-				Radix = radix;
-				RequiresTerminator = false;
+				this.Digits = digits;
+				this.Radix = radix;
+				this.RequiresTerminator = false;
 
-				Separator = separator;
-				Terminator = terminator;
+				this.Separator = separator;
+				this.Terminator = terminator;
 			}
 
 			[Contracts.Pure]
@@ -128,9 +128,9 @@ namespace KSoft
 				var sseg = new Collections.StringSegment(values);
 				foreach (char c in sseg)
 				{
-					if (c == Separator)
+					if (c == this.Separator)
 						count++;
-					else if (c == Terminator)
+					else if (c == this.Terminator)
 						break;
 				}
 
@@ -153,8 +153,8 @@ namespace KSoft
 
 			protected TryParseNumberListBase(StringListDesc desc, string values)
 			{
-				mDesc = desc;
-				mValues = values;
+				this.mDesc = desc;
+				this.mValues = values;
 			}
 
 			protected abstract IEnumerable<T?> EmptyResult { get; }
@@ -162,8 +162,8 @@ namespace KSoft
 			void InitializeList()
 			{
 				// ReSharper disable once ImpureMethodCallOnReadonlyValueField - yes IT IS fucking Pure you POS
-				int predicated_count = mDesc.PredictedCount(mValues);
-				mList = new List<TListItem>(predicated_count);
+				int predicated_count = this.mDesc.PredictedCount(this.mValues);
+				this.mList = new List<TListItem>(predicated_count);
 			}
 
 			protected abstract TListItem CreateItem(int start, int length);
@@ -172,27 +172,27 @@ namespace KSoft
 
 			public IEnumerable<T?> TryParse()
 			{
-				if (mValues == null)
-					return EmptyResult;
+				if (this.mValues == null)
+					return this.EmptyResult;
 
-				InitializeList();
+				this.InitializeList();
 
 				bool found_terminator = false;
-				int value_length = mValues.Length;
+				int value_length = this.mValues.Length;
 				for (int start = 0; !found_terminator && start < value_length; )
 				{
 					// Skip any starting whitespace
-					while (start < value_length && char.IsWhiteSpace(mValues[start]))
+					while (start < value_length && char.IsWhiteSpace(this.mValues[start]))
 						++start;
 
 					int end = start;
 					int length = 0;
 					while (end < value_length)
 					{
-						char c = mValues[end];
-						found_terminator = c == mDesc.Terminator;
+						char c = this.mValues[end];
+						found_terminator = c == this.mDesc.Terminator;
 						// NOTE: TryParseImpl actually handles leading and trailing whitespace
-						if (c == mDesc.Separator || found_terminator)
+						if (c == this.mDesc.Separator || found_terminator)
 							break;
 
 						// NOTE: we wouldn't want to update length if we hit ws before the separator and the TryParseImpl assumes no ws
@@ -201,16 +201,16 @@ namespace KSoft
 					}
 
 					if (length > 0)
-						mList.Add(CreateItem(start, length));
+						this.mList.Add(this.CreateItem(start, length));
 
 					start = end + 1;
 				}
 
 				// #REVIEW: should we add support for throwing an exception or such when a terminator isn't encountered?
 
-				return mList.Count == 0
-					? EmptyResult
-					: CreateResult();
+				return this.mList.Count == 0
+					? this.EmptyResult
+					: this.CreateResult();
 			}
 		};
 

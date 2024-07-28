@@ -12,10 +12,10 @@ namespace KSoft.IO
 		#region ReadElement impl
 		protected override string GetInnerText(XmlElement n)
 		{
-			var text_node = GetInnerTextNode(n);
+			var text_node = this.GetInnerTextNode(n);
 			if (text_node != null)
 			{
-				ReadErrorNode = text_node; // #REVIEW: which is more informative, using the element (n) or text_node?
+				this.ReadErrorNode = text_node; // #REVIEW: which is more informative, using the element (n) or text_node?
 				// TextNode's actual text
 				return text_node.Value;
 			}
@@ -49,34 +49,34 @@ namespace KSoft.IO
 		#region ReadElement
 		public override void ReadElementBegin(string name, out XmlElement oldCursor)
 		{
-			ValidateReadPermission();
+			this.ValidateReadPermission();
 
-			XmlElement n = Cursor[name];
+			XmlElement n = this.Cursor[name];
 			if (n == null)
-				ThrowReadException(new System.Collections.Generic.KeyNotFoundException(
-					"Element doesn't exist: " + name));
+				this.ThrowReadException(new System.Collections.Generic.KeyNotFoundException(
+					                        "Element doesn't exist: " + name));
 
-			oldCursor = Cursor;
+			oldCursor = this.Cursor;
 			// update the error state with the node we're about to read from
-			ReadErrorNode = n;
-			Cursor = n;
+			this.ReadErrorNode = n;
+			this.Cursor = n;
 		}
 		public override void ReadElementEnd(ref XmlElement oldCursor)
 		{
-			RestoreCursor(ref oldCursor);
+			this.RestoreCursor(ref oldCursor);
 		}
 
 		protected override XmlElement GetElement(string name)
 		{
-			ValidateReadPermission();
+			this.ValidateReadPermission();
 
-			XmlElement n = Cursor[name];
+			XmlElement n = this.Cursor[name];
 			if (n == null)
-				ThrowReadException(new System.Collections.Generic.KeyNotFoundException(
-					"Element doesn't exist: " + name));
+				this.ThrowReadException(new System.Collections.Generic.KeyNotFoundException(
+					                        "Element doesn't exist: " + name));
 
 			// update the error state with the node we're about to read from
-			ReadErrorNode = n;
+			this.ReadErrorNode = n;
 			return n;
 		}
 		#endregion
@@ -84,16 +84,16 @@ namespace KSoft.IO
 		#region ReadAttribute
 		protected override string ReadAttribute(string name)
 		{
-			ValidateReadPermission();
+			this.ValidateReadPermission();
 
-			XmlNode n = Cursor.Attributes[name];
+			XmlNode n = this.Cursor.Attributes[name];
 			if (n == null)
-				ThrowReadException(new System.Collections.Generic.KeyNotFoundException(
-					"Attribute doesn't exist: " + name));
+				this.ThrowReadException(new System.Collections.Generic.KeyNotFoundException(
+					                        "Attribute doesn't exist: " + name));
 
 			Contract.Assume(n != null);
 			// update the error state with the node we're about to read from
-			ReadErrorNode = n;
+			this.ReadErrorNode = n;
 			return n.Value;
 		}
 		#endregion
@@ -104,17 +104,17 @@ namespace KSoft.IO
 		/// <returns></returns>
 		protected override string ReadElementOpt(string name)
 		{
-			ValidateReadPermission();
+			this.ValidateReadPermission();
 
-			XmlElement n = Cursor[name];
+			XmlElement n = this.Cursor[name];
 			if (n == null)
 				return null;
 
 			// element exists, update the error state with the node we're about to read from
-			ReadErrorNode = n;
+			this.ReadErrorNode = n;
 
 			// NOTE: GetInnerText will probably overwrite ReadErrorNode anyway
-			string it = GetInnerText(n);
+			string it = this.GetInnerText(n);
 
 			return !string.IsNullOrEmpty(it)
 				? it
@@ -128,14 +128,14 @@ namespace KSoft.IO
 		/// <returns></returns>
 		protected override string ReadAttributeOpt(string name)
 		{
-			ValidateReadPermission();
+			this.ValidateReadPermission();
 
-			XmlNode n = Cursor.Attributes[name];
+			XmlNode n = this.Cursor.Attributes[name];
 			if (n == null)
 				return null;
 
 			// attribute exists, update the error state with the node we're about to read from
-			ReadErrorNode = n;
+			this.ReadErrorNode = n;
 
 			return n.Value;
 		}

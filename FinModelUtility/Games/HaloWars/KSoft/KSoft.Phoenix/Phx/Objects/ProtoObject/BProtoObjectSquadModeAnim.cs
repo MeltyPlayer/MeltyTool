@@ -18,8 +18,8 @@ namespace KSoft.Phoenix.Phx
 		BSquadMode mMode;
 		public BSquadMode Mode
 		{
-			get { return mMode; }
-			set { mMode = value; }
+			get { return this.mMode; }
+			set { this.mMode = value; }
 		}
 		#endregion
 
@@ -28,8 +28,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BAnimTypeReference]
 		public string AnimType
 		{
-			get { return mAnimType; }
-			set { mAnimType = value; }
+			get { return this.mAnimType; }
+			set { this.mAnimType = value; }
 		}
 		#endregion
 
@@ -38,26 +38,27 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamAttributeEnum("Mode", ref mMode);
-			s.StreamCursor(ref mAnimType);
+			s.StreamAttributeEnum("Mode", ref this.mMode);
+			s.StreamCursor(ref this.mAnimType);
 		}
 		#endregion
 
 		#region IComparable Members
 		public int CompareTo(BProtoObjectSquadModeAnim other)
 		{
-			if (Mode != other.Mode)
-				Mode.CompareTo(other.Mode);
+			if (this.Mode != other.Mode)
+				this.Mode.CompareTo(other.Mode);
 
-			return AnimType.CompareTo(other.AnimType);
+			return this.AnimType.CompareTo(other.AnimType);
 		}
 		#endregion
 
 		#region IEquatable Members
 		public bool Equals(BProtoObjectSquadModeAnim other)
 		{
-			return Mode == other.Mode
-				&& AnimType == other.AnimType;
+			return this.Mode == other.Mode
+				&&
+				this.AnimType == other.AnimType;
 		}
 		#endregion
 	};

@@ -45,7 +45,7 @@ namespace KSoft.IO
 		#endregion
 
 		#region EndianReader util
-		public static void Assert(IO.EndianReader s, byte expected)
+		public static void Assert(EndianReader s, byte expected)
 		{
 			Contract.Requires(s != null);
 
@@ -54,7 +54,7 @@ namespace KSoft.IO
 				expected, version);
 		}
 
-		public static void Assert(IO.EndianReader s, ushort expected)
+		public static void Assert(EndianReader s, ushort expected)
 		{
 			Contract.Requires(s != null);
 
@@ -63,7 +63,7 @@ namespace KSoft.IO
 				expected, version);
 		}
 
-		public static void Assert(IO.EndianReader s, uint expected)
+		public static void Assert(EndianReader s, uint expected)
 		{
 			Contract.Requires(s != null);
 
@@ -72,7 +72,7 @@ namespace KSoft.IO
 				expected, version);
 		}
 
-		public static void Assert(IO.EndianReader s, ulong expected)
+		public static void Assert(EndianReader s, ulong expected)
 		{
 			Contract.Requires(s != null);
 

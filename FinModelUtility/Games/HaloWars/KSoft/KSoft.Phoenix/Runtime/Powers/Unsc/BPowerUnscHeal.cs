@@ -27,18 +27,18 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			BSaveGame.StreamArray(s, ref SquadsRepairing);
-			BSaveGame.StreamArray(s, ref IgnoreList);
-			s.Stream(ref NextTickTime);
-			s.Stream(ref RepairObjectID);
-			s.Stream(ref RepairAttachmentProtoID);
-			s.Stream(ref FilterTypeID);
-			s.Stream(ref RepairRadius);
-			s.Stream(ref TickDuration);
-			s.Stream(ref RepairCombatValuePerTick);
-			s.Stream(ref CooldownTimeIfDamaged); s.Stream(ref TicksRemaining);
-			s.Stream(ref SpreadAmongSquads); s.Stream(ref AllowReinforce); s.Stream(ref IgnorePlacement);
-			s.Stream(ref HealAny); s.Stream(ref NeverStops);
+			BSaveGame.StreamArray(s, ref this.SquadsRepairing);
+			BSaveGame.StreamArray(s, ref this.IgnoreList);
+			s.Stream(ref this.NextTickTime);
+			s.Stream(ref this.RepairObjectID);
+			s.Stream(ref this.RepairAttachmentProtoID);
+			s.Stream(ref this.FilterTypeID);
+			s.Stream(ref this.RepairRadius);
+			s.Stream(ref this.TickDuration);
+			s.Stream(ref this.RepairCombatValuePerTick);
+			s.Stream(ref this.CooldownTimeIfDamaged); s.Stream(ref this.TicksRemaining);
+			s.Stream(ref this.SpreadAmongSquads); s.Stream(ref this.AllowReinforce); s.Stream(ref this.IgnorePlacement);
+			s.Stream(ref this.HealAny); s.Stream(ref this.NeverStops);
 		}
 		#endregion
 	};

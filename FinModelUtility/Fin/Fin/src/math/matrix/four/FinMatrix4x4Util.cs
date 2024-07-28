@@ -8,7 +8,7 @@ namespace fin.math.matrix.four;
 
 public static class FinMatrix4x4Util {
   public static IReadOnlyFinMatrix4x4 IDENTITY { get; } =
-    FinMatrix4x4Util.FromIdentity();
+    FromIdentity();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix4x4 FromIdentity()
@@ -17,7 +17,7 @@ public static class FinMatrix4x4Util {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix4x4 FromTranslation(Vector3 translation)
-    => FinMatrix4x4Util.FromTranslation(
+    => FromTranslation(
         translation.X,
         translation.Y,
         translation.Z);
@@ -29,7 +29,7 @@ public static class FinMatrix4x4Util {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix4x4 FromRotation(IRotation rotation)
-    => FinMatrix4x4Util.FromRotation(QuaternionUtil.Create(rotation));
+    => FromRotation(QuaternionUtil.Create(rotation));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix4x4 FromRotation(Quaternion rotation)
@@ -57,7 +57,7 @@ public static class FinMatrix4x4Util {
       Vector3? translation,
       IRotation? rotation,
       Vector3? scale)
-    => FinMatrix4x4Util.FromTrs(
+    => FromTrs(
         translation,
         rotation != null ? QuaternionUtil.Create(rotation) : null,
         scale);

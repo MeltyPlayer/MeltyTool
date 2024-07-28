@@ -251,10 +251,9 @@ public class CmbFixedFunctionMaterial {
               FinBlendFactor.ZERO,
               LogicOp.UNDEFINED);
         } else {
-          finMaterial.SetBlending(
-              CmbBlendEquationToFin(cmbMaterial.alphaEquation),
-              CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
-              CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
+          finMaterial.SetBlending(this.CmbBlendEquationToFin(cmbMaterial.alphaEquation),
+                                  this.CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
+                                  this.CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
               LogicOp.UNDEFINED);
         }
 

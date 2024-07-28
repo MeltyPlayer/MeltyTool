@@ -56,7 +56,7 @@ public static class SystemMatrix3x2Util {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Matrix3x2 FromScale(float scale)
-    => SystemMatrix3x2Util.FromScale(scale, scale);
+    => FromScale(scale, scale);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Matrix3x2 FromScale(Vector2 scale)

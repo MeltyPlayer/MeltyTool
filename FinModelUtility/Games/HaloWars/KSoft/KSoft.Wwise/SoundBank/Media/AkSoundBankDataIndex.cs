@@ -20,9 +20,9 @@ namespace KSoft.Wwise.SoundBank
 		public override void Serialize(IO.EndianStream s, AkSubchunkHeader header)
 		{
 			if (s.IsReading)
-				LoadedMedia = new AkMediaHeader[header.ChunkSize / AkMediaHeader.kSizeOf];
+				this.LoadedMedia = new AkMediaHeader[header.ChunkSize / AkMediaHeader.kSizeOf];
 
-			s.StreamArray(LoadedMedia);
+			s.StreamArray(this.LoadedMedia);
 		}
 	};
 }

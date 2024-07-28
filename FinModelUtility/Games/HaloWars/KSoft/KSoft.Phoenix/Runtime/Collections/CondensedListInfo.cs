@@ -10,26 +10,26 @@ namespace KSoft.Phoenix.Runtime
 
 		public void StreamCapacity(IO.EndianStream s, ref int capacity)
 		{
-			if (!SerializeCapacity) return;
+			if (!this.SerializeCapacity) return;
 
-			switch (IndexSize)
+			switch (this.IndexSize)
 			{
 			case sizeof(byte):	byte cap8 = (byte)capacity;		s.Stream(ref cap8); capacity = cap8; break;
 			case sizeof(ushort):ushort cap16 = (ushort)capacity;s.Stream(ref cap16);capacity = cap16; break;
 			case sizeof(int):	s.Stream(ref capacity); break;
 
-			default: throw new KSoft.Debug.UnreachableException(IndexSize.ToString());
+			default: throw new KSoft.Debug.UnreachableException(this.IndexSize.ToString());
 			}
 		}
 		public void StreamDoneIndex(IO.EndianStream s)
 		{
-			switch (IndexSize)
+			switch (this.IndexSize)
 			{
-			case sizeof(byte):s.StreamSignature((byte)DoneIndex); break;
-			case sizeof(ushort): s.StreamSignature((ushort)DoneIndex); break;
-			case sizeof(uint): s.StreamSignature((uint)DoneIndex); break;
+			case sizeof(byte):   s.StreamSignature((byte) this.DoneIndex); break;
+			case sizeof(ushort): s.StreamSignature((ushort) this.DoneIndex); break;
+			case sizeof(uint):   s.StreamSignature((uint) this.DoneIndex); break;
 
-			default: throw new KSoft.Debug.UnreachableException(IndexSize.ToString());
+			default: throw new KSoft.Debug.UnreachableException(this.IndexSize.ToString());
 			}
 		}
 	};

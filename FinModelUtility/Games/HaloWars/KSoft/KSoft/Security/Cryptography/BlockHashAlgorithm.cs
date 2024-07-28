@@ -15,18 +15,18 @@ namespace KSoft.Security.Cryptography
 		protected long TotalBytesProcessed { get; private set; }
 
 		/// <summary>The size in bytes of an individual block.</summary>
-		public int BlockSize { get { return mBlockBuffer.Length; } }
+		public int BlockSize { get { return this.mBlockBuffer.Length; } }
 		/// <summary>The number of bytes currently in the buffer waiting to be processed.</summary>
 		public int BlockBytesRemaining { get; private set; }
-		internal byte[] InternalBlockBuffer { get { return mBlockBuffer; } }
+		internal byte[] InternalBlockBuffer { get { return this.mBlockBuffer; } }
 
 		/// <summary>Initializes a new instance of the BlockHashAlgorithm class.</summary>
 		/// <param name="blockSize">The size in bytes of an individual block.</param>
 		protected BlockHashAlgorithm(int blockSize, int hashSize) : base()
 		{
-			base.HashSizeValue = hashSize;
+			this.HashSizeValue = hashSize;
 
-			mBlockBuffer = new byte[blockSize];
+			this.mBlockBuffer = new byte[blockSize];
 		}
 
 		/// <summary>Process a block of data.</summary>
@@ -47,9 +47,9 @@ namespace KSoft.Security.Cryptography
 		/// this function or you could risk garbage being carried over from one calculation to the next.</remarks>
 		public override void Initialize()
 		{
-			Array.Clear(mBlockBuffer, 0, mBlockBuffer.Length);
-			BlockBytesRemaining = 0;
-			TotalBytesProcessed = 0;
+			Array.Clear(this.mBlockBuffer, 0, this.mBlockBuffer.Length);
+			this.BlockBytesRemaining = 0;
+			this.TotalBytesProcessed = 0;
 		}
 
 		/// <summary>Performs the hash algorithm on the data provided.</summary>
@@ -59,41 +59,41 @@ namespace KSoft.Security.Cryptography
 		protected override void HashCore(byte[] array, int startIndex, int count)
 		{
 			// Use what may already be in the buffer.
-			if (BlockBytesRemaining > 0)
+			if (this.BlockBytesRemaining > 0)
 			{
-				if (count + BlockBytesRemaining < BlockSize)
+				if (count + this.BlockBytesRemaining < this.BlockSize)
 				{
 					// Still don't have enough for a full block, just store it.
-					Array.Copy(array, startIndex, mBlockBuffer, BlockBytesRemaining, count);
-					BlockBytesRemaining += count;
+					Array.Copy(array, startIndex, this.mBlockBuffer, this.BlockBytesRemaining, count);
+					this.BlockBytesRemaining += count;
 					return;
 				}
 				else
 				{
 					// Fill out the buffer to make a full block, and then process it.
-					int i = BlockSize - BlockBytesRemaining;
-					Array.Copy(array, startIndex, mBlockBuffer, BlockBytesRemaining, i);
-					ProcessBlock(mBlockBuffer, 0, 1);
-					TotalBytesProcessed += BlockSize;
-					BlockBytesRemaining = 0;
+					int i = this.BlockSize - this.BlockBytesRemaining;
+					Array.Copy(array, startIndex, this.mBlockBuffer, this.BlockBytesRemaining, i);
+					this.ProcessBlock(this.mBlockBuffer, 0, 1);
+					this.TotalBytesProcessed += this.BlockSize;
+					this.BlockBytesRemaining = 0;
 					startIndex += i;
 					count -= i;
 				}
 			}
 
 			// For as long as we have full blocks, process them.
-			if (count >= BlockSize)
+			if (count >= this.BlockSize)
 			{
-				ProcessBlock(array, startIndex, count / BlockSize);
-				TotalBytesProcessed += count - count % BlockSize;
+				this.ProcessBlock(array, startIndex, count / this.BlockSize);
+				this.TotalBytesProcessed += count - count % this.BlockSize;
 			}
 
 			// If we still have some bytes left, store them for later.
-			int bytesLeft = count % BlockSize;
+			int bytesLeft = count % this.BlockSize;
 			if (bytesLeft != 0)
 			{
-				Array.Copy(array, ((count - bytesLeft) + startIndex), mBlockBuffer, 0, bytesLeft);
-				BlockBytesRemaining = bytesLeft;
+				Array.Copy(array, ((count - bytesLeft) + startIndex), this.mBlockBuffer, 0, bytesLeft);
+				this.BlockBytesRemaining = bytesLeft;
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace KSoft.Security.Cryptography
 		/// <returns>The final hash value.</returns>
 		protected override byte[] HashFinal()
 		{
-			return ProcessFinalBlock(mBlockBuffer, 0, BlockBytesRemaining);
+			return this.ProcessFinalBlock(this.mBlockBuffer, 0, this.BlockBytesRemaining);
 		}
 		#endregion
 	};

@@ -19,12 +19,12 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(HudSounds);
-			BSaveGame.StreamArray(s, ref SquadsToTransport);
-			BSaveGame.StreamArray(s, ref TargetedSquads);
-			s.Stream(ref LOSMode);
-			s.Stream(ref GotPickupLocation);
-			s.StreamV(ref PickupLocation);
+			s.Stream(this.HudSounds);
+			BSaveGame.StreamArray(s, ref this.SquadsToTransport);
+			BSaveGame.StreamArray(s, ref this.TargetedSquads);
+			s.Stream(ref this.LOSMode);
+			s.Stream(ref this.GotPickupLocation);
+			s.StreamV(ref this.PickupLocation);
 		}
 		#endregion
 	};

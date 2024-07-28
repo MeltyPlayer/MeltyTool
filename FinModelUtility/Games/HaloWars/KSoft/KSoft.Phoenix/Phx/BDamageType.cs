@@ -47,31 +47,31 @@ namespace KSoft.Phoenix.Phx
 		bool mAttackRating;
 		public bool AttackRating
 		{
-			get { return mAttackRating; }
-			set { mAttackRating = value; }
+			get { return this.mAttackRating; }
+			set { this.mAttackRating = value; }
 		}
 
 		bool mBaseType;
 		public bool BaseType
 		{
-			get { return mBaseType; }
-			set { mBaseType = value; }
+			get { return this.mBaseType; }
+			set { this.mBaseType = value; }
 		}
 
 		bool mShielded;
 		/// <remarks>The last type with this set will be the shielded damage type, or anything named "Shielded" will be</remarks>
 		public bool Shielded
 		{
-			get { return mShielded; }
-			set { mShielded = value; }
+			get { return this.mShielded; }
+			set { this.mShielded = value; }
 		}
 
 		#region BListAutoIdObject Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamAttributeOpt("AttackRating", ref mAttackRating, Predicates.IsTrue);
-			s.StreamAttributeOpt("BaseType", ref mBaseType, Predicates.IsTrue);
-			s.StreamAttributeOpt("Shielded", ref mShielded, Predicates.IsTrue);
+			s.StreamAttributeOpt("AttackRating", ref this.mAttackRating, Predicates.IsTrue);
+			s.StreamAttributeOpt("BaseType", ref this.mBaseType, Predicates.IsTrue);
+			s.StreamAttributeOpt("Shielded", ref this.mShielded, Predicates.IsTrue);
 		}
 		#endregion
 	};

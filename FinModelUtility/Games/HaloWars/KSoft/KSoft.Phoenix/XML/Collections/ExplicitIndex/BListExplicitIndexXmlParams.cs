@@ -14,9 +14,9 @@ namespace KSoft.Phoenix.XML
 		/// <param name="indexName"></param>
 		public BListExplicitIndexXmlParams(string elementName, string indexName) : base(elementName)
 		{
-			RootName = null;
-			DataName = indexName;
-			Flags = 0;
+			this.RootName = null;
+			this.DataName = indexName;
+			this.Flags = 0;
 		}
 
 		public void StreamExplicitIndex<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, ref int index)
@@ -25,13 +25,15 @@ namespace KSoft.Phoenix.XML
 		{
 			// 'rebase' the index to how the XML defs expect it
 			if (s.IsWriting)
-				index += IndexBase;
+				index += this.IndexBase;
 
-			BCollectionXmlParams.StreamValue(s, DataName, ref index,
-				UseInnerTextForData, UseElementForData);
+			StreamValue(s,
+			            this.DataName, ref index,
+			            this.UseInnerTextForData,
+			            this.UseElementForData);
 
 			// Undo any rebasing
-			/*if (s.IsReading)*/ index -= IndexBase;
+			/*if (s.IsReading)*/ index -= this.IndexBase;
 		}
 	};
 }

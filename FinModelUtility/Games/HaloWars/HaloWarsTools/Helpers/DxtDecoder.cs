@@ -280,7 +280,7 @@ namespace Dxt {
                          var height = hdr.Height;
                          return (IMipMapLevel<IImage>) new
                              MipMapLevel<IImage>(
-                                 DxtDecoder.ConvertHdrToBitmap(hdr.Impl,
+                                 ConvertHdrToBitmap(hdr.Impl,
                                    width,
                                    height,
                                    max),

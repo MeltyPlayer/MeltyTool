@@ -23,11 +23,11 @@ namespace KSoft.Phoenix.Resource.PKG
 		{
 			using (s.EnterUserDataBookmark(this))
 			{
-				s.StreamAttributeOpt("name", this, obj => PkgName, Predicates.IsNotNullOrEmpty);
-				s.StreamAttributeOpt("alignment", this, obj => Alignment, Predicates.IsNotZero);
+				s.StreamAttributeOpt("name", this, obj => this.PkgName, Predicates.IsNotNullOrEmpty);
+				s.StreamAttributeOpt("alignment", this, obj => this.Alignment, Predicates.IsNotZero);
 
-				using (var bm = s.EnterCursorBookmarkOpt("Files", FileNames, Predicates.HasItems))
-					s.StreamElements("File", FileNames);
+				using (var bm = s.EnterCursorBookmarkOpt("Files", this.FileNames, Predicates.HasItems))
+					s.StreamElements("File", this.FileNames);
 			}
 		}
 		#endregion
@@ -49,11 +49,11 @@ namespace KSoft.Phoenix.Resource.PKG
 		{
 			bool made_changes = false;
 
-			FileNames.Sort(string.CompareOrdinal);
+			this.FileNames.Sort(string.CompareOrdinal);
 
-			for (int x = 0; x < FileNames.Count; x++)
+			for (int x = 0; x < this.FileNames.Count; x++)
 			{
-				string filename = FileNames[x];
+				string filename = this.FileNames[x];
 				if (alwaysUseXmlOverXmb &&
 					TryToReferenceXmlOverXmbFile(workPath, ref filename, verboseOutput))
 				{
@@ -69,7 +69,7 @@ namespace KSoft.Phoenix.Resource.PKG
 						verboseOutput.WriteLine("\tRemoving entry '{0}': Source file does not exist: {1}",
 							filename, filepath);
 					// remove and decrement x, to account for for loop increment
-					FileNames.RemoveAt(x--);
+					this.FileNames.RemoveAt(x--);
 					continue;
 				}
 

@@ -2,7 +2,7 @@
   class AssemblyReader {
     public List<JAL_CALL> findJALsInFunction(uint RAMFunc, uint RAMtoROM) {
       List<JAL_CALL> calls = [];
-      List<Instruction> inst = ReadFunction(RAMFunc, RAMtoROM);
+      List<Instruction> inst = this.ReadFunction(RAMFunc, RAMtoROM);
       uint a0 = 0, a1 = 0, a2 = 0, a3 = 0;
       uint jal_addr = 0;
       bool addNextTime = false;
@@ -47,16 +47,16 @@
             else {
               if (inst[i].gp_dest == GP_REGISTER.A0)
                 a0 = (uint) (inst[i].immediate +
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
               else if (inst[i].gp_dest == GP_REGISTER.A1)
                 a1 = (uint) (inst[i].immediate +
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
               else if (inst[i].gp_dest == GP_REGISTER.A2)
                 a2 = (uint) (inst[i].immediate +
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
               else if (inst[i].gp_dest == GP_REGISTER.A3)
                 a3 = (uint) (inst[i].immediate +
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
             }
 
             break;
@@ -89,19 +89,19 @@
               if (inst[i].gp_dest == GP_REGISTER.A0) {
                 uint immediate_unsigned = (uint) inst[i].immediate;
                 a0 = (uint) (immediate_unsigned |
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
               } else if (inst[i].gp_dest == GP_REGISTER.A1) {
                 uint immediate_unsigned = (uint) inst[i].immediate;
                 a1 = (uint) (immediate_unsigned |
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
               } else if (inst[i].gp_dest == GP_REGISTER.A2) {
                 uint immediate_unsigned = (uint) inst[i].immediate;
                 a2 = (uint) (immediate_unsigned |
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
               } else if (inst[i].gp_dest == GP_REGISTER.A3) {
                 uint immediate_unsigned = (uint) inst[i].immediate;
                 a3 = (uint) (immediate_unsigned |
-                             gp_register_values[(int) inst[i].gp_1]);
+                             this.gp_register_values[(int) inst[i].gp_1]);
               }
             }
             break;
@@ -134,7 +134,7 @@
       uint offset = ROM_OFFSET;
       int end = 0x8000;
       while (end > 0) {
-        Instruction cur = parseInstruction(rom.readWordUnsigned(offset));
+        Instruction cur = this.parseInstruction(rom.readWordUnsigned(offset));
         offset += 4;
         end--;
         if (cur.opCode == OPCODE.JR && cur.gp_1 == GP_REGISTER.RA)
@@ -174,8 +174,7 @@
           inst.gp_dest = (GP_REGISTER) ((data >> 16) & 0x1F);
           inst.gp_1 = (GP_REGISTER) ((data >> 21) & 0x1F);
           inst.immediate = (short) (data & 0xFFFF);
-          gp_register_values[(int) inst.gp_dest] =
-              gp_register_values[(int) inst.gp_1] + inst.immediate;
+          this.gp_register_values[(int) inst.gp_dest] = this.gp_register_values[(int) inst.gp_1] + inst.immediate;
           break;
         case 0x0D:
           inst.opCode = OPCODE.ORI;
@@ -183,14 +182,13 @@
           inst.gp_1 = (GP_REGISTER) ((data >> 21) & 0x1F);
           inst.immediate = (short) (data & 0xFFFF);
 
-          gp_register_values[(int) inst.gp_dest] =
-              gp_register_values[(int) inst.gp_1] | (long) inst.immediate;
+          this.gp_register_values[(int) inst.gp_dest] = this.gp_register_values[(int) inst.gp_1] | (long) inst.immediate;
           break;
         case 0x0F:
           inst.opCode = OPCODE.LUI;
           inst.gp_dest = (GP_REGISTER) ((data >> 16) & 0x1F);
           inst.immediate = (short) (data & 0xFFFF);
-          gp_register_values[(int) inst.gp_dest] = (long) inst.immediate << 16;
+          this.gp_register_values[(int) inst.gp_dest] = (long) inst.immediate << 16;
           break;
         default:
           inst.opCode = OPCODE.DO_NOT_CARE;
@@ -289,11 +287,15 @@
       public uint JAL_ADDRESS = 0, a0 = 0, a1 = 0, a2 = 0, a3 = 0;
 
       public override string ToString() {
-        return JAL_ADDRESS.ToString("X8") + "("
-                                          + a0.ToString("X8") + ", "
-                                          + a1.ToString("X8") + ", "
-                                          + a2.ToString("X8") + ", "
-                                          + a3.ToString("X8") + ")";
+        return this.JAL_ADDRESS.ToString("X8") + "("
+                                               +
+                                               this.a0.ToString("X8") + ", "
+                                               +
+                                               this.a1.ToString("X8") + ", "
+                                               +
+                                               this.a2.ToString("X8") + ", "
+                                               +
+                                               this.a3.ToString("X8") + ")";
       }
     }
 
@@ -304,19 +306,23 @@
       public uint jump_to_func = 0;
 
       public override string ToString() {
-        switch (opCode) {
+        switch (this.opCode) {
           case OPCODE.JR:
-            return "JR " + gp_1.ToString();
+            return "JR " + this.gp_1.ToString();
           case OPCODE.LUI:
-            return "LUI " + gp_dest.ToString() + " 0x" +
-                   immediate.ToString("X4");
+            return "LUI " +
+                   this.gp_dest.ToString() + " 0x" +
+                   this.immediate.ToString("X4");
           case OPCODE.ADDIU:
-            return "ADDIU " + gp_dest.ToString() + " " + gp_1.ToString() +
-                   " 0x" + immediate.ToString("X4");
+            return "ADDIU " +
+                   this.gp_dest.ToString() + " " +
+                   this.gp_1.ToString() +
+                   " 0x" +
+                   this.immediate.ToString("X4");
           case OPCODE.JAL:
-            return "JAL 0x" + jump_to_func.ToString("X8");
+            return "JAL 0x" + this.jump_to_func.ToString("X8");
         }
-        return opCode.ToString();
+        return this.opCode.ToString();
       }
     }
   }

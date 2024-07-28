@@ -112,31 +112,31 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref string value)
 		{
-			ReadElement(Cursor, ref value);
+			this.ReadElement(this.Cursor, ref value);
 		}
 		/// <summary>Stream out the Value of <see cref="Cursor"/> into <paramref name="value"/></summary>
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref char value)
 		{
-			ReadElement(Cursor, ref value);
+			this.ReadElement(this.Cursor, ref value);
 		}
 		/// <summary>Stream out the Value of <see cref="Cursor"/> into <paramref name="value"/></summary>
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref bool value)
 		{
-			ReadElement(Cursor, ref value);
+			this.ReadElement(this.Cursor, ref value);
 		}
 		/// <summary>Stream out the Value of <see cref="Cursor"/> into <paramref name="value"/></summary>
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref float value)
 		{
-			ReadElement(Cursor, ref value);
+			this.ReadElement(this.Cursor, ref value);
 		}
 		/// <summary>Stream out the Value of <see cref="Cursor"/> into <paramref name="value"/></summary>
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref double value)
 		{
-			ReadElement(Cursor, ref value);
+			this.ReadElement(this.Cursor, ref value);
 		}
 
 		/// <summary>
@@ -147,7 +147,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref byte value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the Value of <see cref="Cursor"/>
@@ -157,7 +157,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref sbyte value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the Value of <see cref="Cursor"/>
@@ -167,7 +167,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref ushort value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the Value of <see cref="Cursor"/>
@@ -177,7 +177,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref short value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the Value of <see cref="Cursor"/>
@@ -187,7 +187,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref uint value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the Value of <see cref="Cursor"/>
@@ -197,7 +197,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref int value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the Value of <see cref="Cursor"/>
@@ -207,7 +207,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref ulong value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the Value of <see cref="Cursor"/>
@@ -217,7 +217,7 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadCursor(ref long value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			ReadElement(Cursor, ref value, fromBase);
+			this.ReadElement(this.Cursor, ref value, fromBase);
 		}
 		#endregion
 
@@ -228,45 +228,45 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref string value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value);
+			this.ReadElement(this.GetElement(name), ref value);
 		}
 		/// <summary>Stream out the InnerText of element <paramref name="name"/> into <paramref name="value"/></summary>
 		/// <param name="name">Element name</param>
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref char value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value);
+			this.ReadElement(this.GetElement(name), ref value);
 		}
 		/// <summary>Stream out the InnerText of element <paramref name="name"/> into <paramref name="value"/></summary>
 		/// <param name="name">Element name</param>
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref bool value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value);
+			this.ReadElement(this.GetElement(name), ref value);
 		}
 		/// <summary>Stream out the InnerText of element <paramref name="name"/> into <paramref name="value"/></summary>
 		/// <param name="name">Element name</param>
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref float value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value);
+			this.ReadElement(this.GetElement(name), ref value);
 		}
 		/// <summary>Stream out the InnerText of element <paramref name="name"/> into <paramref name="value"/></summary>
 		/// <param name="name">Element name</param>
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref double value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value);
+			this.ReadElement(this.GetElement(name), ref value);
 		}
 
 		/// <summary>
@@ -279,9 +279,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  byte value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the InnerText of element <paramref name="name"/>
@@ -293,9 +293,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  sbyte value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the InnerText of element <paramref name="name"/>
@@ -307,9 +307,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  ushort value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the InnerText of element <paramref name="name"/>
@@ -321,9 +321,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  short value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the InnerText of element <paramref name="name"/>
@@ -335,9 +335,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  uint value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the InnerText of element <paramref name="name"/>
@@ -349,9 +349,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  int value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the InnerText of element <paramref name="name"/>
@@ -363,9 +363,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  ulong value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		/// <summary>
 		/// Stream out the InnerText of element <paramref name="name"/>
@@ -377,9 +377,9 @@ namespace KSoft.IO
 		/// <param name="value">value to receive the data</param>
 		public void ReadElement(TName name, ref  long value, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			ReadElement(GetElement(name), ref value, fromBase);
+			this.ReadElement(this.GetElement(name), ref value, fromBase);
 		}
 		#endregion
 
@@ -718,10 +718,10 @@ namespace KSoft.IO
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< string > coll)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = default(string);
-					ReadCursor(ref value);
+					this.ReadCursor(ref value);
 
 					coll.Add(value);
 				}
@@ -730,23 +730,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll);
+			this.ReadElements(this.Elements, coll);
 		}
 		public void ReadElements(TName name, ICollection< string > coll)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll);
+			this.ReadElements(this.ElementsByName(name), coll);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< char > coll)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = default(char);
-					ReadCursor(ref value);
+					this.ReadCursor(ref value);
 
 					coll.Add(value);
 				}
@@ -755,23 +755,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll);
+			this.ReadElements(this.Elements, coll);
 		}
 		public void ReadElements(TName name, ICollection< char > coll)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll);
+			this.ReadElements(this.ElementsByName(name), coll);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< bool > coll)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = default(bool);
-					ReadCursor(ref value);
+					this.ReadCursor(ref value);
 
 					coll.Add(value);
 				}
@@ -780,23 +780,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll);
+			this.ReadElements(this.Elements, coll);
 		}
 		public void ReadElements(TName name, ICollection< bool > coll)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll);
+			this.ReadElements(this.ElementsByName(name), coll);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< float > coll)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = default(float);
-					ReadCursor(ref value);
+					this.ReadCursor(ref value);
 
 					coll.Add(value);
 				}
@@ -805,23 +805,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll);
+			this.ReadElements(this.Elements, coll);
 		}
 		public void ReadElements(TName name, ICollection< float > coll)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll);
+			this.ReadElements(this.ElementsByName(name), coll);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< double > coll)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					var value = default(double);
-					ReadCursor(ref value);
+					this.ReadCursor(ref value);
 
 					coll.Add(value);
 				}
@@ -830,24 +830,24 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll);
+			this.ReadElements(this.Elements, coll);
 		}
 		public void ReadElements(TName name, ICollection< double > coll)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll);
+			this.ReadElements(this.ElementsByName(name), coll);
 		}
 
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< byte > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					byte value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -856,23 +856,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< byte > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< sbyte > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					sbyte value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -881,23 +881,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< sbyte > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< ushort > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					ushort value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -906,23 +906,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< ushort > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< short > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					short value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -931,23 +931,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< short > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< uint > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					uint value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -956,23 +956,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< uint > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< int > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					int value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -981,23 +981,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< int > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< ulong > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					ulong value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -1006,23 +1006,23 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< ulong > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		void ReadElements(IEnumerable<TCursor> elements, ICollection< long > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
 			foreach (var node in elements)
-				using (EnterCursorBookmark(node))
+				using (this.EnterCursorBookmark(node))
 				{
 					long value = 0;
-					ReadCursor(ref value, fromBase);
+					this.ReadCursor(ref value, fromBase);
 
 					coll.Add(value);
 				}
@@ -1031,14 +1031,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.Elements, coll, fromBase);
+			this.ReadElements(this.Elements, coll, fromBase);
 		}
 		public void ReadElements(TName name, ICollection< long > coll, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
-			ReadElements(this.ElementsByName(name), coll, fromBase);
+			this.ReadElements(this.ElementsByName(name), coll, fromBase);
 		}
 
 		#endregion
@@ -1050,8 +1050,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++]);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++]);
 
 				if(count == array.Length)
 					break;
@@ -1063,14 +1063,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array);
+			return this.ReadFixedArray(this.Elements, array);
 		}
 		public int ReadFixedArray(TName name, string[] array)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array);
+			return this.ReadFixedArray(this.ElementsByName(name), array);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, char[] array)
@@ -1078,8 +1078,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++]);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++]);
 
 				if(count == array.Length)
 					break;
@@ -1091,14 +1091,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array);
+			return this.ReadFixedArray(this.Elements, array);
 		}
 		public int ReadFixedArray(TName name, char[] array)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array);
+			return this.ReadFixedArray(this.ElementsByName(name), array);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, bool[] array)
@@ -1106,8 +1106,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++]);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++]);
 
 				if(count == array.Length)
 					break;
@@ -1119,14 +1119,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array);
+			return this.ReadFixedArray(this.Elements, array);
 		}
 		public int ReadFixedArray(TName name, bool[] array)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array);
+			return this.ReadFixedArray(this.ElementsByName(name), array);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, float[] array)
@@ -1134,8 +1134,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++]);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++]);
 
 				if(count == array.Length)
 					break;
@@ -1147,14 +1147,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array);
+			return this.ReadFixedArray(this.Elements, array);
 		}
 		public int ReadFixedArray(TName name, float[] array)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array);
+			return this.ReadFixedArray(this.ElementsByName(name), array);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, double[] array)
@@ -1162,8 +1162,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++]);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++]);
 
 				if(count == array.Length)
 					break;
@@ -1175,14 +1175,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array);
+			return this.ReadFixedArray(this.Elements, array);
 		}
 		public int ReadFixedArray(TName name, double[] array)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array);
+			return this.ReadFixedArray(this.ElementsByName(name), array);
 		}
 
 
@@ -1191,8 +1191,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1204,14 +1204,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, byte[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, sbyte[] array, NumeralBase fromBase = NumeralBase.Decimal)
@@ -1219,8 +1219,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1232,14 +1232,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, sbyte[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, ushort[] array, NumeralBase fromBase = NumeralBase.Decimal)
@@ -1247,8 +1247,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1260,14 +1260,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, ushort[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, short[] array, NumeralBase fromBase = NumeralBase.Decimal)
@@ -1275,8 +1275,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1288,14 +1288,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, short[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, uint[] array, NumeralBase fromBase = NumeralBase.Decimal)
@@ -1303,8 +1303,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1316,14 +1316,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, uint[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, int[] array, NumeralBase fromBase = NumeralBase.Decimal)
@@ -1331,8 +1331,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1344,14 +1344,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, int[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, ulong[] array, NumeralBase fromBase = NumeralBase.Decimal)
@@ -1359,8 +1359,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1372,14 +1372,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, ulong[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		int ReadFixedArray(IEnumerable<TCursor> elements, long[] array, NumeralBase fromBase = NumeralBase.Decimal)
@@ -1387,8 +1387,8 @@ namespace KSoft.IO
 			int count = 0;
 			foreach (var node in elements)
 			{
-				using (EnterCursorBookmark(node))
-					ReadCursor(ref array[count++], fromBase);
+				using (this.EnterCursorBookmark(node))
+					this.ReadCursor(ref array[count++], fromBase);
 
 				if(count == array.Length)
 					break;
@@ -1400,14 +1400,14 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.Elements, array, fromBase);
+			return this.ReadFixedArray(this.Elements, array, fromBase);
 		}
 		public int ReadFixedArray(TName name, long[] array, NumeralBase fromBase = NumeralBase.Decimal)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 			Contract.Requires<ArgumentNullException>(array != null);
 
-			return ReadFixedArray(this.ElementsByName(name), array, fromBase);
+			return this.ReadFixedArray(this.ElementsByName(name), array, fromBase);
 		}
 
 		#endregion
@@ -1418,94 +1418,94 @@ namespace KSoft.IO
 	{
 		#region ReadAttribute
 		public override void ReadAttribute(TName name, ref string value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref char value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref bool value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref float value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref double value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 
 		public override void ReadAttribute(TName name, ref byte value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref sbyte value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref ushort value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref short value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref uint value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref int value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref ulong value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override void ReadAttribute(TName name, ref long value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		#endregion
 
 
 		#region ReadElementOpt
 		public override bool ReadElementOpt(TName name, ref string value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref char value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref bool value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref float value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref double value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 
 		public override bool ReadElementOpt(TName name, ref byte value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref sbyte value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref ushort value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref short value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref uint value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref int value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref ulong value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadElementOpt(TName name, ref long value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		#endregion
 
 
 		#region ReadAttributeOpt
 		public override bool ReadAttributeOpt(TName name, ref string value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref char value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref bool value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref float value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref double value)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 
 		public override bool ReadAttributeOpt(TName name, ref byte value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref sbyte value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref ushort value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref short value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref uint value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref int value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref ulong value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		public override bool ReadAttributeOpt(TName name, ref long value, NumeralBase fromBase)
-		{ Contract.Requires(ValidateNameArg(name)); throw new NotImplementedException(); }
+		{ Contract.Requires(this.ValidateNameArg(name)); throw new NotImplementedException(); }
 		#endregion
 	};
 };

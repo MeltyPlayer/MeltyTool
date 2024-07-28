@@ -190,7 +190,7 @@ public class Geo : IBinaryDeserializable {
       var value = br.ReadUInt32();
       for (var i = 0; i < 3; ++i) {
         var axisValue = value.ExtractFromRight(bitsPerAxis * i, bitsPerAxis);
-        vec[i] = SignValue_(axisValue, bitsPerAxis);
+        vec[i] = this.SignValue_(axisValue, bitsPerAxis);
       }
 
       return vec / divisor;
@@ -205,7 +205,7 @@ public class Geo : IBinaryDeserializable {
       var value = br.ReadUInt32();
       for (var i = 0; i < 4; ++i) {
         var axisValue = value.ExtractFromRight(bitsPerAxis * i, bitsPerAxis);
-        vec[i] = SignValue_(axisValue, bitsPerAxis);
+        vec[i] = this.SignValue_(axisValue, bitsPerAxis);
       }
 
       return vec / divisor;

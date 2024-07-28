@@ -34,7 +34,7 @@ namespace KSoft.Phoenix.Phx
 		public static readonly Collections.BTypeValuesParams<BPopulation> kBListParams = new
 			Collections.BTypeValuesParams<BPopulation>(db => db.GameData.Populations)
 			{
-				kTypeGetInvalid = () => BPopulation.kInvalid
+				kTypeGetInvalid = () => kInvalid
 			};
 		public static readonly XML.BTypeValuesXmlParams<BPopulation> kBListXmlParams = new
 			XML.BTypeValuesXmlParams<BPopulation>("Pop", "Type");
@@ -55,12 +55,14 @@ namespace KSoft.Phoenix.Phx
 		private static BPopulation kInvalid { get { return new BPopulation(PhxUtil.kInvalidSingle, PhxUtil.kInvalidSingle); } }
 
 		float mMax;
-		public float Max { get { return mMax; } }
+		public float Max { get { return this.mMax; } }
 
 		float mCount;
-		public float Count { get { return mCount; } }
+		public float Count { get { return this.mCount; } }
 
-		BPopulation(float max, float count) { mMax = max; mCount = count; }
+		BPopulation(float max, float count) {
+			this.mMax = max;
+			this.mCount = count; }
 
 		#region IComparable<T> Members
 		int IComparable<BPopulation>.CompareTo(BPopulation other)
@@ -89,8 +91,8 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamAttribute("Max", ref mMax);
-			s.StreamCursor(ref mCount);
+			s.StreamAttribute("Max", ref this.mMax);
+			s.StreamCursor(ref this.mCount);
 		}
 		#endregion
 	};

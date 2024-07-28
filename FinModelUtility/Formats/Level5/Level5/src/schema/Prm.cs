@@ -24,7 +24,7 @@ public class Prm {
   public Prm(byte[] data) {
     using (var r = new SchemaBinaryReader(new MemoryStream(data),
                                           Endianness.LittleEndian)) {
-      Open(r);
+      this.Open(r);
     }
   }
 
@@ -68,16 +68,16 @@ public class Prm {
     var nameOffset = r.ReadUInt32();
     var nameLength = r.ReadUInt32();
     var name = r.SubreadAt(nameOffset, ser => ser.ReadString(nameLength));
-    Name = name;
+    this.Name = name;
 
     var mtlNameOffset = r.ReadUInt32();
     var mtlNameLength = r.ReadUInt32();
     var mtlName
         = r.SubreadAt(mtlNameOffset, ser => ser.ReadString(mtlNameLength));
-    MaterialName = mtlName;
+    this.MaterialName = mtlName;
 
-    Triangles = this.ParseIndexBuffer_(polygonVertexIndexBuffer);
-    Vertices = this.ParseBuffer_(polygonVertexBuffer);
+    this.Triangles = this.ParseIndexBuffer_(polygonVertexIndexBuffer);
+    this.Vertices = this.ParseBuffer_(polygonVertexBuffer);
 
     // hashes
     r.Position = prmHashesOffset;
@@ -230,21 +230,21 @@ public class Prm {
           br.Position = (uint) (i * stride + aOffset[j]);
           switch (j) {
             case 0: //Position
-              vert.Pos = ReadAttribute(br, aType[j], aCount[j]).Xyz();
+              vert.Pos = this.ReadAttribute(br, aType[j], aCount[j]).Xyz();
               break;
             case 1: //Tangent
               break;
             case 2: //Normal
-              vert.Nrm = ReadAttribute(br, aType[j], aCount[j]).Xyz();
+              vert.Nrm = this.ReadAttribute(br, aType[j], aCount[j]).Xyz();
               break;
             case 4: //Uv0
-              vert.Uv0 = ReadAttribute(br, aType[j], aCount[j]).Xy();
+              vert.Uv0 = this.ReadAttribute(br, aType[j], aCount[j]).Xy();
               break;
             case 7: //Bone Weight
-              vert.Weights = ReadAttribute(br, aType[j], aCount[j]);
+              vert.Weights = this.ReadAttribute(br, aType[j], aCount[j]);
               break;
             case 8: //Bone Index
-              Vector4 vn = ReadAttribute(br, aType[j], aCount[j]);
+              Vector4 vn = this.ReadAttribute(br, aType[j], aCount[j]);
               if (this.nodeTable_.Length > 0 && this.nodeTable_.Length != 1)
                 vert.Bones = [
                     this.nodeTable_[(int) vn.X], this.nodeTable_[(int) vn.Y],
@@ -252,7 +252,7 @@ public class Prm {
                 ];
               break;
             case 9: // Color
-              vert.Clr = ReadAttribute(br, aType[j], aCount[j]).Yzwx();
+              vert.Clr = this.ReadAttribute(br, aType[j], aCount[j]).Yzwx();
               break;
           }
         }

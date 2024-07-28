@@ -78,7 +78,7 @@ public class FixedFunctionRegisters : IFixedFunctionRegisters {
     public override IScalarValue G => this.ColorValue.G;
     public override IScalarValue B => this.ColorValue.B;
 
-    public override string ToString() => $"{Name} : {ColorValue}";
+    public override string ToString() => $"{this.Name} : {this.ColorValue}";
   }
 
   private class ScalarRegister(string name, IScalarConstant defaultValue)
@@ -91,6 +91,6 @@ public class FixedFunctionRegisters : IFixedFunctionRegisters {
 
     public IScalarValue ScalarValue => this.DefaultValue;
 
-    public override string ToString() => $"{Name} : {ScalarValue}";
+    public override string ToString() => $"{this.Name} : {this.ScalarValue}";
   }
 }

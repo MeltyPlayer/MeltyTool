@@ -33,12 +33,12 @@ namespace KSoft.IO
 		public void WriteCursorEnum<TEnum>(TEnum value, bool isFlags = false)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			WriteElementEnum(Cursor, value, isFlags);
+			this.WriteElementEnum(this.Cursor, value, isFlags);
 		}
 
 		public void WriteCursor(Values.KGuid value)
 		{
-			WriteElement(Cursor, value);
+			this.WriteElement(this.Cursor, value);
 		}
 		#endregion
 
@@ -52,9 +52,9 @@ namespace KSoft.IO
 		/// <param name="oldCursor">On return, contains the previous <see cref="Cursor"/> value</param>
 		public void WriteElementBegin(TName name, out TCursor oldCursor)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElementNest(name, out oldCursor);
+			this.WriteElementNest(name, out oldCursor);
 		}
 		/// <summary>Restore the cursor to what it was before the corresponding call to a <see cref="WriteElementBegin(string, XmlElement&amp;)"/></summary>
 		public void WriteElementEnd(ref TCursor oldCursor)
@@ -63,7 +63,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.ValueAtReturn(out oldCursor) == null);
 			#endif
 
-			RestoreCursor(ref oldCursor);
+			this.RestoreCursor(ref oldCursor);
 		}
 
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
@@ -71,9 +71,9 @@ namespace KSoft.IO
 		/// <remarks>Does not change <see cref="Cursor"/></remarks>
 		public void WriteElement(TName name)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElementAppend(name);
+			this.WriteElementAppend(name);
 		}
 
 		/// <summary>Create a new element in the underlying <see cref="XmlDocument"/>, relative to <see cref="Cursor"/></summary>
@@ -84,16 +84,16 @@ namespace KSoft.IO
 		public void WriteElementEnum<TEnum>(TName name, TEnum value, bool isFlags = false)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElementEnum(WriteElementAppend(name), value, isFlags);
+			this.WriteElementEnum(this.WriteElementAppend(name), value, isFlags);
 		}
 
 		public void WriteElement(TName name, Values.KGuid value)
 		{
-			Contract.Requires(ValidateNameArg(name));
+			Contract.Requires(this.ValidateNameArg(name));
 
-			WriteElement(WriteElementAppend(name), value);
+			this.WriteElement(this.WriteElementAppend(name), value);
 		}
 		#endregion
 
@@ -118,14 +118,14 @@ namespace KSoft.IO
 		public bool WriteElementEnumOptOnTrue<TEnum>(TName name, TEnum value, Predicate<TEnum> predicate, bool isFlags = false)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 			Contract.Requires(predicate != null);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElementEnum(name, value, isFlags);
+				this.WriteElementEnum(name, value, isFlags);
 
 			return result;
 		}
@@ -139,28 +139,28 @@ namespace KSoft.IO
 		public bool WriteElementEnumOptOnFalse<TEnum>(TName name, TEnum value, Predicate<TEnum> predicate, bool isFlags = false)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 			Contract.Requires(predicate != null);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteElementEnum(name, value, isFlags);
+				this.WriteElementEnum(name, value, isFlags);
 
 			return result;
 		}
 
 		public bool WriteElementOptOnTrue(TName name, Values.KGuid value, Predicate<Values.KGuid> predicate)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc, TCursor, TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc, TCursor, TName>.kCursorNullMsg);
 			Contract.Requires(predicate != null);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteElement(name, value);
+				this.WriteElement(name, value);
 
 			return result;
 		}
@@ -176,14 +176,14 @@ namespace KSoft.IO
 		public bool WriteAttributeEnumOptOnTrue<TEnum>(TName name, TEnum value, Predicate<TEnum> predicate, bool isFlags = false)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 			Contract.Requires(predicate != null);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttributeEnum(name, value, isFlags);
+				this.WriteAttributeEnum(name, value, isFlags);
 
 			return result;
 		}
@@ -197,28 +197,28 @@ namespace KSoft.IO
 		public bool WriteAttributeEnumOptOnFalse<TEnum>(TName name, TEnum value, Predicate<TEnum> predicate, bool isFlags = false)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc,TCursor,TName>.kCursorNullMsg);
 			Contract.Requires(predicate != null);
 
-			bool result = IgnoreWritePredicates || !predicate(value);
+			bool result = this.IgnoreWritePredicates || !predicate(value);
 
 			if (result)
-				WriteAttributeEnum(name, value, isFlags);
+				this.WriteAttributeEnum(name, value, isFlags);
 
 			return result;
 		}
 
 		public bool WriteAttributeOptOnTrue(TName name, Values.KGuid value, Predicate<Values.KGuid> predicate)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, TagElementStreamContract<TDoc, TCursor, TName>.kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, TagElementStreamContract<TDoc, TCursor, TName>.kCursorNullMsg);
 			Contract.Requires(predicate != null);
 
-			bool result = IgnoreWritePredicates || predicate(value);
+			bool result = this.IgnoreWritePredicates || predicate(value);
 
 			if (result)
-				WriteAttribute(name, value);
+				this.WriteAttribute(name, value);
 
 			return result;
 		}
@@ -228,12 +228,12 @@ namespace KSoft.IO
 		public void WriteElements<T, TContext>(TName elementName,
 			IEnumerable<T> coll, TContext ctxt, StreamAction<T, TContext> action)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 			Contract.Requires(action != null);
 
 			foreach (var value in coll)
-				using (EnterCursorBookmark(elementName))
+				using (this.EnterCursorBookmark(elementName))
 				{
 					var v = value; // can't pass a foreach value by ref
 					action(this, ctxt, ref v);
@@ -245,12 +245,12 @@ namespace KSoft.IO
 			Predicate<T> shouldWritePredicate = null)
 			where T : ITagElementStreamable<TName>
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(coll != null);
 
 			foreach (var value in coll)
 				if (shouldWritePredicate == null || shouldWritePredicate(value))
-					using (EnterCursorBookmark(elementName))
+					using (this.EnterCursorBookmark(elementName))
 						value.Serialize(this);
 		}
 		#endregion
@@ -261,13 +261,13 @@ namespace KSoft.IO
 			StreamAction<TKey, TContext> streamKey,
 			StreamAction<TValue, TContext> streamValue)
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(dic != null);
 			Contract.Requires(streamKey != null);
 			Contract.Requires(streamValue != null);
 
 			foreach (var kv in dic)
-				using (EnterCursorBookmark(elementName))
+				using (this.EnterCursorBookmark(elementName))
 				{
 					var key = kv.Key;
 					streamKey(this, ctxt, ref key);
@@ -283,13 +283,13 @@ namespace KSoft.IO
 			Predicate<KeyValuePair<TKey, TValue>> shouldWritePredicate = null)
 			where TValue : ITagElementStreamable<TName>
 		{
-			Contract.Requires(ValidateNameArg(elementName));
+			Contract.Requires(this.ValidateNameArg(elementName));
 			Contract.Requires<ArgumentNullException>(dic != null);
 			Contract.Requires(streamKey != null);
 
 			foreach (var kv in dic)
 				if (shouldWritePredicate == null || shouldWritePredicate(kv))
-					using (EnterCursorBookmark(elementName))
+					using (this.EnterCursorBookmark(elementName))
 					{
 						TKey key = kv.Key;
 						streamKey(this, ctxt, ref key);
@@ -303,7 +303,7 @@ namespace KSoft.IO
 		/// <remarks>Will throw a contract error if implementation's <see cref="SupportsComments"/> returns true but doesn't override this method</remarks>
 		protected virtual void WriteCommentImpl(string comment)
 		{
-			Contract.Assert(!SupportsComments, "Stream supports comments, but implementation class doesn't provide an API for it. Remove support or add the API");
+			Contract.Assert(!this.SupportsComments, "Stream supports comments, but implementation class doesn't provide an API for it. Remove support or add the API");
 		}
 
 		/// <summary>
@@ -312,17 +312,17 @@ namespace KSoft.IO
 		/// <param name="comment"></param>
 		public void WriteComment(string comment)
 		{
-			if (IsWriting && SupportsComments && CommentsEnabled)
-				WriteCommentImpl(comment);
+			if (this.IsWriting && this.SupportsComments && this.CommentsEnabled)
+				this.WriteCommentImpl(comment);
 		}
 		public virtual void WriteComment<TContext>(TContext ctxt, Func<TContext, string> commentMaker)
 		{
 			Contract.Requires(commentMaker != null);
 
-			if (IsWriting && SupportsComments && CommentsEnabled)
+			if (this.IsWriting && this.SupportsComments && this.CommentsEnabled)
 			{
 				string comment = commentMaker(ctxt);
-				WriteCommentImpl(comment);
+				this.WriteCommentImpl(comment);
 			}
 		}
 		#endregion
@@ -334,16 +334,16 @@ namespace KSoft.IO
 		#region WriteAttribute
 		public override void WriteAttributeEnum<TEnum>(TName name, TEnum value, bool isFlags)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
 
 		public override void WriteAttribute(TName name, Values.KGuid value)
 		{
-			Contract.Requires(ValidateNameArg(name));
-			Contract.Requires(Cursor != null, kCursorNullMsg);
+			Contract.Requires(this.ValidateNameArg(name));
+			Contract.Requires(this.Cursor != null, kCursorNullMsg);
 
 			throw new NotImplementedException();
 		}
@@ -370,18 +370,18 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(stream != null);
 			Contract.Requires<ArgumentNullException>(elementName != null);
 
-			mStream = null;
-			mOldCursor = null;
-			(mStream = stream).WriteElementBegin(elementName, out mOldCursor);
+			this.mStream = null;
+			this.mOldCursor = null;
+			(this.mStream = stream).WriteElementBegin(elementName, out this.mOldCursor);
 		}
 
 		/// <summary>Returns the cursor of the underlying stream to the last saved cursor value</summary>
 		public void Dispose()
 		{
-			if (mStream != null)
+			if (this.mStream != null)
 			{
-				mStream.WriteElementEnd(ref mOldCursor);
-				mStream = null;
+				this.mStream.WriteElementEnd(ref this.mOldCursor);
+				this.mStream = null;
 			}
 		}
 	};

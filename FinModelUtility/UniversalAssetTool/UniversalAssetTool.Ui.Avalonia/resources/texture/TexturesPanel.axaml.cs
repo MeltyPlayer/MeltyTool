@@ -134,7 +134,7 @@ namespace uni.ui.avalonia.resources.texture {
 
   public partial class TexturesPanel : UserControl {
     public TexturesPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     protected TexturesPanelViewModel ViewModel

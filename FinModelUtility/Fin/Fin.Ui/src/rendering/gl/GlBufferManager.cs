@@ -330,17 +330,17 @@ public class GlBufferManager(IReadOnlyModel model) : IDisposable {
                       (_, vao) => vao.Dispose());
 
 
-  private readonly VertexArrayObject vao_ = GlBufferManager.vaoCache_.GetAndIncrement(model);
+  private readonly VertexArrayObject vao_ = vaoCache_.GetAndIncrement(model);
 
-  ~GlBufferManager() => ReleaseUnmanagedResources_();
+  ~GlBufferManager() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
-    ReleaseUnmanagedResources_();
+    this.ReleaseUnmanagedResources_();
     GC.SuppressFinalize(this);
   }
 
   private void ReleaseUnmanagedResources_() {
-    GlBufferManager.vaoCache_.DecrementAndMaybeDispose(model);
+    vaoCache_.DecrementAndMaybeDispose(model);
   }
 
   public GlBufferRenderer CreateRenderer(
@@ -417,10 +417,10 @@ public class GlBufferManager(IReadOnlyModel model) : IDisposable {
       GL.BindVertexArray(0);
     }
 
-    ~GlBufferRenderer() => ReleaseUnmanagedResources_();
+    ~GlBufferRenderer() => this.ReleaseUnmanagedResources_();
 
     public void Dispose() {
-      ReleaseUnmanagedResources_();
+      this.ReleaseUnmanagedResources_();
       GC.SuppressFinalize(this);
     }
 

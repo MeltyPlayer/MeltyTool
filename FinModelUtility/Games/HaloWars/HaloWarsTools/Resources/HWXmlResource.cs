@@ -6,7 +6,7 @@ namespace HaloWarsTools {
     protected XElement XmlData { get; private set; }
 
     protected override void Load(byte[] bytes) {
-      this.XmlData = XElement.Load(AbsolutePath);
+      this.XmlData = XElement.Load(this.AbsolutePath);
     }
 
     protected static Vector3 DeserializeVector3(string value) {

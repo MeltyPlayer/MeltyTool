@@ -6,7 +6,7 @@ using Avalonia.Controls;
 namespace uni.ui.avalonia.common.textboxes {
   public partial class PlaceholderTextbox : UserControl, IMultiLineTextBox {
     public PlaceholderTextbox() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     public string? Text {

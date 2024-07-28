@@ -204,7 +204,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
 
                 if (vertexAttribute == GxAttribute.CLR0 &&
                     vertexFormat == GxAttributeType.DIRECT) {
-                  color = ReadColorAttribute_(
+                  color = this.ReadColorAttribute_(
                       br,
                       vertexDescriptor.ColorComponentType);
                   continue;

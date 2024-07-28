@@ -14,20 +14,20 @@ public class WaterMarkTextBox : TextBox {
   private Color _waterMarkColor = Color.Gray;
 
   public Color WaterMarkColor {
-    get { return _waterMarkColor; }
+    get { return this._waterMarkColor; }
     set {
-      _waterMarkColor = value;
-      Invalidate(); /*thanks to Bernhard Elbl for Invalidate()*/
+      this._waterMarkColor = value;
+      this.Invalidate(); /*thanks to Bernhard Elbl for Invalidate()*/
     }
   }
 
   private string _waterMarkText = "Water Mark";
 
   public string WaterMarkText {
-    get { return _waterMarkText; }
+    get { return this._waterMarkText; }
     set {
-      _waterMarkText = value;
-      Invalidate();
+      this._waterMarkText = value;
+      this.Invalidate();
     }
   }
 
@@ -35,27 +35,27 @@ public class WaterMarkTextBox : TextBox {
 
   //Default constructor
   public WaterMarkTextBox() {
-    JoinEvents(true);
+    this.JoinEvents(true);
   }
 
   //Override OnCreateControl ... thanks to  "lpgray .. codeproject guy"
   protected override void OnCreateControl() {
     base.OnCreateControl();
-    WaterMark_Toggle(null, null);
+    this.WaterMark_Toggle(null, null);
   }
 
   //Override OnPaint
   protected override void OnPaint(PaintEventArgs args) {
     // Use the same font that was defined in base class
-    Font drawFont = new Font(Font.FontFamily,
-                             Font.Size,
-                             Font.Style,
-                             Font.Unit);
+    Font drawFont = new Font(this.Font.FontFamily,
+                             this.Font.Size,
+                             this.Font.Style,
+                             this.Font.Unit);
     //Create new brush with gray color or 
     SolidBrush
-        drawBrush = new SolidBrush(WaterMarkColor); //use Water mark color
+        drawBrush = new SolidBrush(this.WaterMarkColor); //use Water mark color
     //Draw Text or WaterMark
-    args.Graphics.DrawString((waterMarkTextEnabled ? WaterMarkText : Text),
+    args.Graphics.DrawString((this.waterMarkTextEnabled ? this.WaterMarkText : this.Text),
                              drawFont,
                              drawBrush,
                              new PointF(0.0F, 0.0F));
@@ -81,23 +81,23 @@ public class WaterMarkTextBox : TextBox {
 
   private void WaterMark_Toggle(object? sender, EventArgs? args) {
     if (this.Text.Length <= 0)
-      EnableWaterMark();
+      this.EnableWaterMark();
     else
-      DisbaleWaterMark();
+      this.DisbaleWaterMark();
   }
 
   private void EnableWaterMark() {
     //Save current font until returning the UserPaint style to false (NOTE:
     //It is a try and error advice)
-    oldFont = new Font(Font.FontFamily,
-                       Font.Size,
-                       Font.Style,
-                       Font.Unit);
+    this.oldFont = new Font(this.Font.FontFamily,
+                            this.Font.Size,
+                            this.Font.Style,
+                            this.Font.Unit);
     //Enable OnPaint event handler
     this.SetStyle(ControlStyles.UserPaint, true);
     this.waterMarkTextEnabled = true;
     //Triger OnPaint immediatly
-    Refresh();
+    this.Refresh();
   }
 
   private void DisbaleWaterMark() {
@@ -105,20 +105,20 @@ public class WaterMarkTextBox : TextBox {
     this.waterMarkTextEnabled = false;
     this.SetStyle(ControlStyles.UserPaint, false);
     //Return back oldFont if existed
-    if (oldFont != null)
-      this.Font = new Font(oldFont.FontFamily,
-                           oldFont.Size,
-                           oldFont.Style,
-                           oldFont.Unit);
+    if (this.oldFont != null)
+      this.Font = new Font(this.oldFont.FontFamily,
+                           this.oldFont.Size,
+                           this.oldFont.Style,
+                           this.oldFont.Unit);
   }
 
   private void WaterMark_FontChanged(object sender, EventArgs args) {
-    if (waterMarkTextEnabled) {
-      oldFont = new Font(Font.FontFamily,
-                         Font.Size,
-                         Font.Style,
-                         Font.Unit);
-      Refresh();
+    if (this.waterMarkTextEnabled) {
+      this.oldFont = new Font(this.Font.FontFamily,
+                              this.Font.Size,
+                              this.Font.Style,
+                              this.Font.Unit);
+      this.Refresh();
     }
   }
 }

@@ -15,8 +15,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("From ID")]
     public byte WarpFrom_ID {
-      get { return warpFrom_ID; }
-      set { warpFrom_ID = value; }
+      get { return this.warpFrom_ID; }
+      set { this.warpFrom_ID = value; }
     }
 
     private byte warpTo_LevelID;
@@ -25,8 +25,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("To Level")]
     public byte WarpTo_LevelID {
-      get { return warpTo_LevelID; }
-      set { warpTo_LevelID = value; }
+      get { return this.warpTo_LevelID; }
+      set { this.warpTo_LevelID = value; }
     }
 
     private byte warpTo_AreaID;
@@ -35,8 +35,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("To Area")]
     public byte WarpTo_AreaID {
-      get { return warpTo_AreaID; }
-      set { warpTo_AreaID = value; }
+      get { return this.warpTo_AreaID; }
+      set { this.warpTo_AreaID = value; }
     }
 
     private byte warpTo_WarpID;
@@ -45,8 +45,8 @@ namespace sm64.LevelInfo {
     [Browsable(true)]
     [DisplayName("To ID")]
     public byte WarpTo_WarpID {
-      get { return warpTo_WarpID; }
-      set { warpTo_WarpID = value; }
+      get { return this.warpTo_WarpID; }
+      set { this.warpTo_WarpID = value; }
     }
 
     [CustomSortedCategory("Info", 2, NUM_OF_CATERGORIES)]
@@ -65,26 +65,26 @@ namespace sm64.LevelInfo {
     private string getLevelName() {
       ROM rom = ROM.Instance;
       foreach (KeyValuePair<string, ushort> entry in rom.levelIDs) {
-        if (entry.Value == WarpTo_LevelID)
-          return entry.Key + " (" + warpTo_AreaID + ")";
+        if (entry.Value == this.WarpTo_LevelID)
+          return entry.Key + " (" + this.warpTo_AreaID + ")";
       }
-      return "Unknown" + " (" + warpTo_AreaID + ")";
+      return "Unknown" + " (" + this.warpTo_AreaID + ")";
     }
 
     private string getWarpName() {
-      if (isPaintingWarp) {
-        return " [to " + getLevelName() + "]";
+      if (this.isPaintingWarp) {
+        return " [to " + this.getLevelName() + "]";
       } else {
-        switch (WarpFrom_ID) {
+        switch (this.WarpFrom_ID) {
           case 0xF0:
-            return " (Success)" + " [to " + getLevelName() + "]";
+            return " (Success)" + " [to " + this.getLevelName() + "]";
           case 0xF1:
-            return " (Failure)" + " [to " + getLevelName() + "]";
+            return " (Failure)" + " [to " + this.getLevelName() + "]";
           case 0xF2:
           case 0xF3:
-            return " (Special)" + " [to " + getLevelName() + "]";
+            return " (Special)" + " [to " + this.getLevelName() + "]";
           default:
-            return " [to " + getLevelName() + "]";
+            return " [to " + this.getLevelName() + "]";
         }
       }
     }
@@ -92,10 +92,10 @@ namespace sm64.LevelInfo {
     public override string ToString() {
       //isPaintingWarp
       string warpName = "Warp 0x";
-      if (isPaintingWarp)
+      if (this.isPaintingWarp)
         warpName = "Painting 0x";
 
-      warpName += WarpFrom_ID.ToString("X2") + getWarpName();
+      warpName += this.WarpFrom_ID.ToString("X2") + this.getWarpName();
 
       return warpName;
     }

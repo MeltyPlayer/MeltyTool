@@ -32,19 +32,19 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(input != null);
 			Contract.Requires<ArgumentNullException>(encoding != null);
 
-			BaseStreamOwner = true;
-			BaseAddress = Values.PtrHandle.Null32;
+			this.BaseStreamOwner = true;
+			this.BaseAddress = Values.PtrHandle.Null32;
 
-			ByteOrder = byteOrder;
-			Owner = streamOwner;
-			mStringEncoding = encoding;
+			this.ByteOrder = byteOrder;
+			this.Owner = streamOwner;
+			this.mStringEncoding = encoding;
 
-			StreamName = name ?? "(unnamed)";
+			this.StreamName = name ?? "(unnamed)";
 
 			// If the stream is a different endian than the runtime, data will
 			// be byte swapped of course
 			//this.mRequiresByteSwap = Shell.Platform.Environment.ProcessorType.ByteOrder != byteOrder;
-			mRequiresByteSwap = !byteOrder.IsSameAsRuntime();
+			this.mRequiresByteSwap = !byteOrder.IsSameAsRuntime();
 		}
 
 		/// <summary>Create a new binary reader which respects the endian format of the underlying stream's bytes</summary>
@@ -91,7 +91,7 @@ namespace KSoft.IO
 
 		public IDisposable ReadSignatureWithByteSwapSupport(uint expectedSignature)
 		{
-			return ReadSignatureWithByteSwapSupport(expectedSignature, out uint actualSignature);
+			return this.ReadSignatureWithByteSwapSupport(expectedSignature, out uint actualSignature);
 		}
 
 		#region Pad
@@ -99,15 +99,21 @@ namespace KSoft.IO
 		{
 			Contract.Requires(byteCount > 0);
 
-			BaseStream.Seek(sizeof(byte) * byteCount, SeekOrigin.Current);
+			this.BaseStream.Seek(sizeof(byte) * byteCount, SeekOrigin.Current);
 		}
 
-		public void Pad8()	{ Pad(sizeof(byte)); }
-		public void Pad16()	{ Pad(sizeof(ushort)); }
-		public void Pad24()	{ Pad(sizeof(ushort)+sizeof(byte)); }
-		public void Pad32()	{ Pad(sizeof(uint)); }
-		public void Pad64()	{ Pad(sizeof(ulong)); }
-		public void Pad128(){ Pad(sizeof(ulong)*2); }
+		public void Pad8()	{
+			this.Pad(sizeof(byte)); }
+		public void Pad16()	{
+			this.Pad(sizeof(ushort)); }
+		public void Pad24()	{
+			this.Pad(sizeof(ushort)+sizeof(byte)); }
+		public void Pad32()	{
+			this.Pad(sizeof(uint)); }
+		public void Pad64()	{
+			this.Pad(sizeof(ulong)); }
+		public void Pad128(){
+			this.Pad(sizeof(ulong)*2); }
 		#endregion
 
 		/// <summary>Reads an unsigned byte array</summary>
@@ -179,14 +185,14 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<char[]>() != null);
 			Contract.Ensures(Contract.Result<char[]>().Length >= 4);
 
-			tag[0] = (char)base.ReadByte();
-			tag[1] = (char)base.ReadByte();
-			tag[2] = (char)base.ReadByte();
-			tag[3] = (char)base.ReadByte();
+			tag[0] = (char)this.ReadByte();
+			tag[1] = (char)this.ReadByte();
+			tag[2] = (char)this.ReadByte();
+			tag[3] = (char)this.ReadByte();
 
 			// Explicitly check for Little endian since this is
 			// a character array and not a primitive integer
-			if (ByteOrder == Shell.EndianFormat.Little)
+			if (this.ByteOrder == Shell.EndianFormat.Little)
 			{
 				Array.Reverse(tag, 0, 4);
 				return tag;
@@ -201,7 +207,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<char[]>() != null);
 			Contract.Ensures(Contract.Result<char[]>().Length == 4);
 
-			return ReadTag32(new char[4]);
+			return this.ReadTag32(new char[4]);
 		}
 
 		/// <summary>Reads a tag id (eight character code)</summary>
@@ -214,18 +220,18 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<char[]>() != null);
 			Contract.Ensures(Contract.Result<char[]>().Length >= 8);
 
-			tag[0] = (char)base.ReadByte();
-			tag[1] = (char)base.ReadByte();
-			tag[2] = (char)base.ReadByte();
-			tag[3] = (char)base.ReadByte();
-			tag[4+0] = (char)base.ReadByte();
-			tag[4+1] = (char)base.ReadByte();
-			tag[4+2] = (char)base.ReadByte();
-			tag[4+3] = (char)base.ReadByte();
+			tag[0] = (char)this.ReadByte();
+			tag[1] = (char)this.ReadByte();
+			tag[2] = (char)this.ReadByte();
+			tag[3] = (char)this.ReadByte();
+			tag[4+0] = (char)this.ReadByte();
+			tag[4+1] = (char)this.ReadByte();
+			tag[4+2] = (char)this.ReadByte();
+			tag[4+3] = (char)this.ReadByte();
 
 			// Explicitly check for Little endian since this is
 			// a character array and not a primitive integer
-			if (ByteOrder == Shell.EndianFormat.Little)
+			if (this.ByteOrder == Shell.EndianFormat.Little)
 			{
 				Array.Reverse(tag, 0, 4);
 				Array.Reverse(tag, 4, 4);
@@ -240,7 +246,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<char[]>() != null);
 			Contract.Ensures(Contract.Result<char[]>().Length == 8);
 
-			return ReadTag64(new char[8]);
+			return this.ReadTag64(new char[8]);
 		}
 
 		/// <summary>Reads a tag id (four character code)</summary>
@@ -249,7 +255,7 @@ namespace KSoft.IO
 		public uint ReadTagUInt32()
 		{
 			uint value = base.ReadUInt32();
-			if (mRequiresByteSwap)	Bitwise.ByteSwap.Swap(ref value);
+			if (this.mRequiresByteSwap)	Bitwise.ByteSwap.Swap(ref value);
 
 			return value;
 		}
@@ -260,7 +266,7 @@ namespace KSoft.IO
 		public ulong ReadTagUInt64()
 		{
 			ulong value = base.ReadUInt64();
-			if (mRequiresByteSwap)	Bitwise.ByteSwap.Swap(ref value);
+			if (this.mRequiresByteSwap)	Bitwise.ByteSwap.Swap(ref value);
 
 			return value;
 		}
@@ -273,8 +279,8 @@ namespace KSoft.IO
 		/// <remarks>Sign extends the value read from the stream</remarks>
 		public int ReadInt24()
 		{
-			int value = base.ReadByte() | (base.ReadByte() << 8) | (base.ReadByte() << 16);
-			if(mRequiresByteSwap) Bitwise.ByteSwap.SwapInt24(ref value);
+			int value = this.ReadByte() | (this.ReadByte() << 8) | (this.ReadByte() << 16);
+			if(this.mRequiresByteSwap) Bitwise.ByteSwap.SwapInt24(ref value);
 
 			value = Bits.SignExtend(value, 24);
 			return value;
@@ -284,8 +290,8 @@ namespace KSoft.IO
 		/// <returns></returns>
 		public uint ReadUInt24()
 		{
-			uint value = (uint)(base.ReadByte() | (base.ReadByte() << 8) | (base.ReadByte() << 16));
-			if(mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt24(ref value);
+			uint value = (uint)(this.ReadByte() | (this.ReadByte() << 8) | (this.ReadByte() << 16));
+			if(this.mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt24(ref value);
 
 			return value;
 		}
@@ -295,13 +301,13 @@ namespace KSoft.IO
 		public ulong ReadUInt40()
 		{
 			var value =
-				((ulong)base.ReadByte()) |
-				((ulong)base.ReadByte() << 8) |
-				((ulong)base.ReadByte() << 16) |
-				((ulong)base.ReadByte() << 24) |
-				((ulong)base.ReadByte() << 32)
+				((ulong)this.ReadByte()) |
+				((ulong)this.ReadByte() << 8) |
+				((ulong)this.ReadByte() << 16) |
+				((ulong)this.ReadByte() << 24) |
+				((ulong)this.ReadByte() << 32)
 				;
-			if(mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt40(ref value);
+			if(this.mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt40(ref value);
 
 			return value;
 		}
@@ -344,7 +350,7 @@ namespace KSoft.IO
 		/// <returns></returns>
 		public string ReadString(Memory.Strings.StringStorage storage)
 		{
-			return ReadString(storage, storage.FixedLength);
+			return this.ReadString(storage, storage.FixedLength);
 		}
 
 		/// <summary>Read a string using a <see cref="Memory.Strings.StringStorage"/> encoding and a provided character length</summary>
@@ -373,7 +379,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires(encoding != null);
 
-			return ReadString(encoding, encoding.Storage.FixedLength);
+			return this.ReadString(encoding, encoding.Storage.FixedLength);
 		}
 		#endregion
 
@@ -385,8 +391,8 @@ namespace KSoft.IO
 		{
 			var ptr = new Values.PtrHandle(addressSize);
 
-			if (!ptr.Is64bit)	ptr.u32 = ReadUInt32();
-			else				ptr.u64 = ReadUInt64();
+			if (!ptr.Is64bit)	ptr.u32 = this.ReadUInt32();
+			else				ptr.u64 = this.ReadUInt64();
 
 			return ptr;
 		}
@@ -394,8 +400,8 @@ namespace KSoft.IO
 		/// <param name="ptrHandle">Handle to stream the value into</param>
 		public void ReadRawPointer(ref Values.PtrHandle ptrHandle)
 		{
-			if (!ptrHandle.Is64bit)	ptrHandle.u32 = ReadUInt32();
-			else					ptrHandle.u64 = ReadUInt64();
+			if (!ptrHandle.Is64bit)	ptrHandle.u32 = this.ReadUInt32();
+			else					ptrHandle.u64 = this.ReadUInt64();
 		}
 
 		/// <summary>Read a pointer value from the stream</summary>
@@ -415,17 +421,17 @@ namespace KSoft.IO
 
 			if (!ptr.Is64bit)
 			{
-				ptr.u32 = ReadUInt32();
+				ptr.u32 = this.ReadUInt32();
 
 				if (ptr.u32 != 0)
-					ptr.u32 -= BaseAddress.u32;
+					ptr.u32 -= this.BaseAddress.u32;
 			}
 			else
 			{
-				ptr.u64 = ReadUInt64();
+				ptr.u64 = this.ReadUInt64();
 
 				if (ptr.u64 != 0)
-					ptr.u64 -= BaseAddress.u64;
+					ptr.u64 -= this.BaseAddress.u64;
 			}
 
 			return ptr;
@@ -443,17 +449,17 @@ namespace KSoft.IO
 		{
 			if (!ptrHandle.Is64bit)
 			{
-				ptrHandle.u32 = ReadUInt32();
+				ptrHandle.u32 = this.ReadUInt32();
 
 				if (ptrHandle.u32 != 0)
-					ptrHandle.u32 -= BaseAddress.u32;
+					ptrHandle.u32 -= this.BaseAddress.u32;
 			}
 			else
 			{
-				ptrHandle.u64 = ReadUInt64();
+				ptrHandle.u64 = this.ReadUInt64();
 
 				if (ptrHandle.u64 != 0)
-					ptrHandle.u64 -= BaseAddress.u64;
+					ptrHandle.u64 -= this.BaseAddress.u64;
 			}
 		}
 
@@ -469,7 +475,7 @@ namespace KSoft.IO
 		/// </remarks>
 		public Values.PtrHandle ReadPointerViaBaseAddress()
 		{
-			return ReadPointer(BaseAddress.Size);
+			return this.ReadPointer(this.BaseAddress.Size);
 		}
 		/// <summary>Read a pointer value from the stream (size inherited from <see cref="BaseAddress"/>)</summary>
 		/// <param name="ptrHandle">Handle to initialize and stream the value into</param>
@@ -482,9 +488,9 @@ namespace KSoft.IO
 		/// </remarks>
 		public void ReadPointerViaBaseAddress(out Values.PtrHandle ptrHandle)
 		{
-			ptrHandle = new Values.PtrHandle(BaseAddress.Size);
+			ptrHandle = new Values.PtrHandle(this.BaseAddress.Size);
 
-			ReadPointer(ref ptrHandle);
+			this.ReadPointer(ref ptrHandle);
 		}
 		#endregion
 
@@ -494,7 +500,7 @@ namespace KSoft.IO
 
 		public DateTime ReadDateTime(bool isUnixTime = false)
 		{
-			long binary = ReadInt64();
+			long binary = this.ReadInt64();
 
 			return isUnixTime
 				? Util.ConvertDateTimeFromUnixTime(binary)
@@ -517,7 +523,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<bool[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				array[x] = ReadBoolean();
+				array[x] = this.ReadBoolean();
 
 			return array;
 		}
@@ -526,7 +532,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<bool[]>() != null);
 
-			return ReadFixedArray(array, 0, array.Length);
+			return this.ReadFixedArray(array, 0, array.Length);
 		}
 	};
 }

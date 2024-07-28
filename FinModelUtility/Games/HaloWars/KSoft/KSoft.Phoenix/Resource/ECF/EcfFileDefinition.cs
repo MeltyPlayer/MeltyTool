@@ -32,17 +32,17 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			using (s.EnterUserDataBookmark(this))
 			{
-				s.StreamAttributeOpt("name", this, obj => EcfName, Predicates.IsNotNullOrEmpty);
-				s.StreamAttributeOpt("ext", this, obj => EcfFileExtension, Predicates.IsNotNullOrEmpty);
+				s.StreamAttributeOpt("name", this, obj => this.EcfName, Predicates.IsNotNullOrEmpty);
+				s.StreamAttributeOpt("ext", this, obj => this.EcfFileExtension, Predicates.IsNotNullOrEmpty);
 
 				using (s.EnterCursorBookmark("Header"))
 				{
-					s.StreamAttribute("id", this, obj => HeaderId, NumeralBase.Hex);
-					s.StreamAttributeOpt("ChunkExtraDataSize", this, obj => ChunkExtraDataSize, Predicates.IsNotZero, NumeralBase.Hex);
+					s.StreamAttribute("id", this, obj => this.HeaderId, NumeralBase.Hex);
+					s.StreamAttributeOpt("ChunkExtraDataSize", this, obj => this.ChunkExtraDataSize, Predicates.IsNotZero, NumeralBase.Hex);
 				}
 
-				using (var bm = s.EnterCursorBookmarkOpt("Chunks", Chunks, Predicates.HasItems))
-					s.StreamableElements("C", Chunks, obj => obj.HasPossibleFileData);
+				using (var bm = s.EnterCursorBookmarkOpt("Chunks", this.Chunks, Predicates.HasItems))
+					s.StreamableElements("C", this.Chunks, obj => obj.HasPossibleFileData);
 			}
 
 			// #NOTE leaving this as an exercise for the caller instead, so they can yell when something is culled
@@ -57,9 +57,9 @@ namespace KSoft.Phoenix.Resource.ECF
 		internal void CullChunksPossiblyWithoutFileData(
 			Action<int, EcfFileChunkDefinition> cullCallback = null)
 		{
-			for (int x = Chunks.Count - 1; x >= 0; x--)
+			for (int x = this.Chunks.Count - 1; x >= 0; x--)
 			{
-				var chunk = Chunks[x];
+				var chunk = this.Chunks[x];
 				if (!chunk.HasPossibleFileData)
 				{
 					if (cullCallback != null)
@@ -67,7 +67,7 @@ namespace KSoft.Phoenix.Resource.ECF
 						cullCallback(x, chunk);
 					}
 
-					Chunks.RemoveAt(x);
+					this.Chunks.RemoveAt(x);
 					continue;
 				}
 			}
@@ -78,8 +78,8 @@ namespace KSoft.Phoenix.Resource.ECF
 		{
 			Contract.Requires(chunk != null && chunk.Parent == this);
 
-			Contract.Assert(WorkingDirectory.IsNotNullOrEmpty());
-			string abs_path = Path.Combine(WorkingDirectory, chunk.FilePath);
+			Contract.Assert(this.WorkingDirectory.IsNotNullOrEmpty());
+			string abs_path = Path.Combine(this.WorkingDirectory, chunk.FilePath);
 
 			abs_path = Path.GetFullPath(abs_path);
 			return abs_path;
@@ -87,27 +87,27 @@ namespace KSoft.Phoenix.Resource.ECF
 
 		public void Initialize(string ecfFileName)
 		{
-			EcfName = ecfFileName;
-			if (EcfName.IsNotNullOrEmpty())
+			this.EcfName = ecfFileName;
+			if (this.EcfName.IsNotNullOrEmpty())
 			{
-				EcfFileExtension = Path.GetExtension(EcfName);
+				this.EcfFileExtension = Path.GetExtension(this.EcfName);
 				// We don't use GetFileNameWithoutExtension because there are cases where
 				// files only differ by their extensions (like Terrain data XTD, XSD, etc)
-				EcfName = Path.GetFileName(EcfName);
+				this.EcfName = Path.GetFileName(this.EcfName);
 			}
 		}
 
 		public void CopyHeaderData(EcfHeader header)
 		{
-			HeaderId = header.Id;
-			ChunkExtraDataSize = header.ExtraDataSize;
+			this.HeaderId = header.Id;
+			this.ChunkExtraDataSize = header.ExtraDataSize;
 		}
 
 		public void UpdateHeader(ref EcfHeader header)
 		{
-			Contract.Requires<InvalidOperationException>(HeaderId != 0);
+			Contract.Requires<InvalidOperationException>(this.HeaderId != 0);
 
-			header.InitializeChunkInfo(HeaderId, ChunkExtraDataSize);
+			header.InitializeChunkInfo(this.HeaderId, this.ChunkExtraDataSize);
 		}
 
 		public EcfFileChunkDefinition Add(EcfChunk rawChunk, int rawChunkIndex)
@@ -116,7 +116,7 @@ namespace KSoft.Phoenix.Resource.ECF
 
 			var chunk = new EcfFileChunkDefinition();
 			chunk.Initialize(this, rawChunk, rawChunkIndex);
-			Chunks.Add(chunk);
+			this.Chunks.Add(chunk);
 
 			return chunk;
 		}
@@ -133,7 +133,7 @@ namespace KSoft.Phoenix.Resource.ECF
 			}
 			else
 			{
-				var source_file = GetChunkAbsolutePath(chunk);
+				var source_file = this.GetChunkAbsolutePath(chunk);
 				using (var fs = File.OpenRead(source_file))
 				{
 					ms = new MemoryStream((int)fs.Length);

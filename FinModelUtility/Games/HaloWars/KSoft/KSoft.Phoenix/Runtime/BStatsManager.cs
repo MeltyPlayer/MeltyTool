@@ -26,8 +26,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Lost);
-			s.Stream(ref Destroyed);
+			s.Stream(ref this.Lost);
+			s.Stream(ref this.Destroyed);
 		}
 		#endregion
 	};
@@ -40,8 +40,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Key);
-			s.Stream(ref Value);
+			s.Stream(ref this.Key);
+			s.Stream(ref this.Value);
 		}
 		#endregion
 	};
@@ -54,8 +54,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Index);
-			BSaveGame.StreamArray16(s, ref Killers);
+			s.Stream(ref this.Index);
+			BSaveGame.StreamArray16(s, ref this.Killers);
 		}
 		#endregion
 	};
@@ -71,8 +71,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref Levels);
-			s.Stream(ref XP);
+			BSaveGame.StreamArray16(s, ref this.Levels);
+			s.Stream(ref this.XP);
 		}
 		#endregion
 	};
@@ -85,8 +85,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Index);
-			s.Stream(Combat);
+			s.Stream(ref this.Index);
+			s.Stream(this.Combat);
 		}
 		#endregion
 	};
@@ -102,10 +102,10 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			s.Stream(KillerIDs);
-			s.Stream(ref Built); s.Stream(ref Lost); s.Stream(ref Destroyed); s.Stream(ref Max);
-			s.Stream(ref CombatID);
-			s.Stream(ref FirstTime); s.Stream(ref LastTime);
+			s.Stream(this.KillerIDs);
+			s.Stream(ref this.Built); s.Stream(ref this.Lost); s.Stream(ref this.Destroyed); s.Stream(ref this.Max);
+			s.Stream(ref this.CombatID);
+			s.Stream(ref this.FirstTime); s.Stream(ref this.LastTime);
 		}
 		#endregion
 	};
@@ -120,8 +120,8 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref Timestamp);
-			s.Stream(ref ProtoID);
+			s.Stream(ref this.Timestamp);
+			s.Stream(ref this.ProtoID);
 		}
 		#endregion
 	};
@@ -135,8 +135,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Key);
-			s.Stream(Value);
+			s.Stream(ref this.Key);
+			s.Stream(this.Value);
 		}
 		#endregion
 	};
@@ -151,8 +151,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref Killers, isIterated:true);
-			BSaveGame.StreamArray16(s, ref Combat);
+			BSaveGame.StreamArray16(s, ref this.Killers, isIterated:true);
+			BSaveGame.StreamArray16(s, ref this.Combat);
 			s.StreamSignature(BStatCombat.DoneIndex);
 		}
 		#endregion
@@ -171,9 +171,9 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			BSaveGame.StreamCollection(s, Totals);
-			s.Stream(Total);
-			s.StreamNotNull(ref Combat_);
+			BSaveGame.StreamCollection(s, this.Totals);
+			s.Stream(this.Total);
+			s.StreamNotNull(ref this.Combat_);
 		}
 		#endregion
 	};
@@ -190,8 +190,8 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(Total);
-			BSaveGame.StreamArray16(s, ref Events);
+			s.Stream(this.Total);
+			BSaveGame.StreamArray16(s, ref this.Events);
 		}
 		#endregion
 	};
@@ -249,10 +249,10 @@ namespace KSoft.Phoenix.Runtime
 		}
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Index);
-			s.Stream(ref StatType);
-			s.Stream(ref Stat, 
-				() => FromType(StatType));
+			s.Stream(ref this.Index);
+			s.Stream(ref this.StatType);
+			s.Stream(ref this.Stat, 
+				() => FromType(this.StatType));
 		}
 		#endregion
 	};
@@ -267,8 +267,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Key);
-			s.Stream(ref Value);
+			s.Stream(ref this.Key);
+			s.Stream(ref this.Value);
 		}
 		#endregion
 	};
@@ -281,8 +281,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Key);
-			s.Stream(ref Value);
+			s.Stream(ref this.Key);
+			s.Stream(ref this.Value);
 		}
 		#endregion
 	};
@@ -309,23 +309,23 @@ namespace KSoft.Phoenix.Runtime
 		{
 			var sg = s.Owner as BSaveGame;
 
-			BSaveGame.StreamArray16(s, ref Recorders, isIterated:true);
+			BSaveGame.StreamArray16(s, ref this.Recorders, isIterated:true);
 			s.StreamSignature(cSaveMarker.StatsRecorders);
-			BSaveGame.StreamCollection(s, Powers);
+			BSaveGame.StreamCollection(s, this.Powers);
 			s.StreamSignature(cSaveMarker.StatsPowers);
-			BSaveGame.StreamCollection(s, Abilities);
+			BSaveGame.StreamCollection(s, this.Abilities);
 			s.StreamSignature(cSaveMarker.StatsAbilities);
-			sg.StreamBCost(s, ref TotalResources); sg.StreamBCost(s, ref MaxResources);
-			sg.StreamBCost(s, ref GatheredResources); sg.StreamBCost(s, ref TributedResources);
-			s.Stream(ref PlayerID);
-			s.Stream(ref TeamID);
-			s.Stream(ref PlayerStateTime);
-			s.Stream(ref PlayerState);
-			s.Stream(ref StrengthTime); s.Stream(ref StrengthTimer);
-			s.Stream(ref CivID); s.Stream(ref LeaderID);
-			s.Stream(ref ResourcesUsed); s.Stream(ref PlayerType);
-			s.Stream(ref RandomCiv); s.Stream(ref RandomLeader); s.Stream(ref Resigned);
-			s.Stream(ref Defeated); s.Stream(ref Disconnected); s.Stream(ref Won);
+			sg.StreamBCost(s, ref this.TotalResources); sg.StreamBCost(s, ref this.MaxResources);
+			sg.StreamBCost(s, ref this.GatheredResources); sg.StreamBCost(s, ref this.TributedResources);
+			s.Stream(ref this.PlayerID);
+			s.Stream(ref this.TeamID);
+			s.Stream(ref this.PlayerStateTime);
+			s.Stream(ref this.PlayerState);
+			s.Stream(ref this.StrengthTime); s.Stream(ref this.StrengthTimer);
+			s.Stream(ref this.CivID); s.Stream(ref this.LeaderID);
+			s.Stream(ref this.ResourcesUsed); s.Stream(ref this.PlayerType);
+			s.Stream(ref this.RandomCiv); s.Stream(ref this.RandomLeader); s.Stream(ref this.Resigned);
+			s.Stream(ref this.Defeated); s.Stream(ref this.Disconnected); s.Stream(ref this.Won);
 			s.StreamSignature(cSaveMarker.StatsPlayer);
 		}
 		#endregion

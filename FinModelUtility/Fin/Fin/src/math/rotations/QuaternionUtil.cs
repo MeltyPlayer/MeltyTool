@@ -11,7 +11,7 @@ namespace fin.math.rotations;
 public static class QuaternionUtil {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Quaternion Create(IRotation rotation)
-    => QuaternionUtil.CreateZyx(rotation.XRadians,
+    => CreateZyx(rotation.XRadians,
                                 rotation.YRadians,
                                 rotation.ZRadians);
 

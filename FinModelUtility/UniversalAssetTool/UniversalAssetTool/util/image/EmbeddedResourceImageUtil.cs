@@ -11,6 +11,6 @@ public static class EmbeddedResourceImageUtil {
     Asserts.True(resourceNames.Contains(embeddedResourceName));
 
     using var stream = assembly.GetManifestResourceStream(embeddedResourceName)!;
-    return Bitmap.FromStream(stream);
+    return Image.FromStream(stream);
   }
 }

@@ -15,7 +15,7 @@ public struct FluentHash {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static FluentHash Start() => FluentHash.Start(17, 23);
+  public static FluentHash Start() => Start(17, 23);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static FluentHash Start(int startingPrimeHash,

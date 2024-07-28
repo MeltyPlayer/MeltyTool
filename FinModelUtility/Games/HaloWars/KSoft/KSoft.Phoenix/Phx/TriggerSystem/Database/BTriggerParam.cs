@@ -9,7 +9,7 @@ namespace KSoft.Phoenix.Phx
 		, IEqualityComparer<BTriggerParam>
 	{
 		static readonly BTriggerParam kInvalid = new BTriggerParam();
-		public bool IsInvalid { get { return object.ReferenceEquals(this, kInvalid); } }
+		public bool IsInvalid { get { return ReferenceEquals(this, kInvalid); } }
 
 		#region Xml constants
 		public static readonly Collections.BListExplicitIndexParams<BTriggerParam> kBListExplicitIndexParams = new
@@ -27,19 +27,19 @@ namespace KSoft.Phoenix.Phx
 
 		#region Properties
 		BTriggerParamType mType = BTriggerParamType.Invalid;
-		public BTriggerParamType Type { get { return mType; } }
+		public BTriggerParamType Type { get { return this.mType; } }
 
 		string mName;
-		public string Name { get { return mName; } }
+		public string Name { get { return this.mName; } }
 
 		int mSigID = TypeExtensions.kNone;
-		public int SigID { get { return mSigID; } }
+		public int SigID { get { return this.mSigID; } }
 
 		BTriggerVarType mVarType = BTriggerVarType.None;
-		public BTriggerVarType VarType { get { return mVarType; } }
+		public BTriggerVarType VarType { get { return this.mVarType; } }
 
 		bool mOptional;
-		public bool Optional { get { return mOptional; } }
+		public bool Optional { get { return this.mOptional; } }
 		#endregion
 
 		#region ITagElementStreamable<string> Members
@@ -48,11 +48,11 @@ namespace KSoft.Phoenix.Phx
 			where TCursor : class
 		{
 			//if (s.IsReading) s.ReadCursorName(ref mType);
-			s.StreamAttributeEnum(kXmlAttrType, ref mType);
-			s.StreamAttribute(kXmlAttrSigId, ref mSigID);
-			s.StreamAttribute(DatabaseNamedObject.kXmlAttrNameN, ref mName);
-			s.StreamAttributeOpt(kXmlAttrOptional, ref mOptional, Predicates.IsTrue);
-			s.StreamCursorEnum(ref mVarType);
+			s.StreamAttributeEnum(kXmlAttrType, ref this.mType);
+			s.StreamAttribute(kXmlAttrSigId, ref this.mSigID);
+			s.StreamAttribute(DatabaseNamedObject.kXmlAttrNameN, ref this.mName);
+			s.StreamAttributeOpt(kXmlAttrOptional, ref this.mOptional, Predicates.IsTrue);
+			s.StreamCursorEnum(ref this.mVarType);
 		}
 		#endregion
 
@@ -71,7 +71,7 @@ namespace KSoft.Phoenix.Phx
 
 		public int GetHashCode(BTriggerParam obj)
 		{
-			return mSigID;
+			return this.mSigID;
 		}
 		#endregion
 

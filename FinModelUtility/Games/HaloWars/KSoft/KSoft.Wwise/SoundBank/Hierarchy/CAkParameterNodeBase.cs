@@ -56,12 +56,12 @@ namespace KSoft.Wwise.SoundBank
 		void SerializeFxParams(IO.EndianStream s)
 		{
 			s.Pad8(); // IsOverrideParentFX
-			s.Stream(ref NumFx);
-			Contract.Assert(NumFx <= 4);
+			s.Stream(ref this.NumFx);
+			Contract.Assert(this.NumFx <= 4);
 			if (s.IsReading)
-				FX = new FXData[NumFx];
-			if (NumFx > 0) s.Pad8(); // bitsFXBypass
-			s.StreamArray(FX);
+				this.FX = new FXData[this.NumFx];
+			if (this.NumFx > 0) s.Pad8(); // bitsFXBypass
+			s.StreamArray(this.FX);
 		}
 		void SerializeParams(IO.EndianStream s)
 		{
@@ -81,9 +81,9 @@ namespace KSoft.Wwise.SoundBank
 		}
 		void SerializePositioningParams(IO.EndianStream s)
 		{
-			s.Stream(ref PositioningInfoOverrideParent);
-			Contract.Assert(!PositioningInfoOverrideParent);
-			if (PositioningInfoOverrideParent)
+			s.Stream(ref this.PositioningInfoOverrideParent);
+			Contract.Assert(!this.PositioningInfoOverrideParent);
+			if (this.PositioningInfoOverrideParent)
 			{
 				s.Pad32(); // CenterPct
 			}
@@ -109,8 +109,8 @@ namespace KSoft.Wwise.SoundBank
 				2 // Size
 				;
 
-			s.Stream(ref NumRTPC);
-			s.Pad((int)(NumRTPC * k_size_of));
+			s.Stream(ref this.NumRTPC);
+			s.Pad((int)(this.NumRTPC * k_size_of));
 		}
 		void SerializeFeedbackInfo(IO.EndianStream s)
 		{
@@ -126,25 +126,25 @@ namespace KSoft.Wwise.SoundBank
 		}
 		public void Serialize(IO.EndianStream s)
 		{
-			SerializeFxParams(s); // 0x2...
+			this.SerializeFxParams(s); // 0x2...
 			{ // 0xC
-				s.Stream(ref OverrideBusId);
-				s.Stream(ref DirectParentID);
-				s.Stream(ref Priority);
-				s.Stream(ref PriorityOverrideParent);
-				s.Stream(ref PriorityApplyDistFactor);
-				s.Stream(ref PriorityDistanceOffset);
+				s.Stream(ref this.OverrideBusId);
+				s.Stream(ref this.DirectParentID);
+				s.Stream(ref this.Priority);
+				s.Stream(ref this.PriorityOverrideParent);
+				s.Stream(ref this.PriorityApplyDistFactor);
+				s.Stream(ref this.PriorityDistanceOffset);
 			}
-			SerializeParams(s); // 0x34
-			SerializePositioningParams(s); // 0x1...
-			SerializeAdvSettingsParams(s); // 0x7
-			{ // 0x2...
-				s.Pad8(); // StateSyncType
-				s.Stream(ref NumStates);
-				s.Pad((int)(NumStates * AKBKStateItem.kSizeOf));
+			this.SerializeParams(s);            // 0x34
+			this.SerializePositioningParams(s); // 0x1...
+			this.SerializeAdvSettingsParams(s);    // 0x7
+			{                                   // 0x2...
+				s.Pad8();                       // StateSyncType
+				s.Stream(ref this.NumStates);
+				s.Pad((int)(this.NumStates * AKBKStateItem.kSizeOf));
 			}
-			SerializeRTPC(s); // 0x2...
-			SerializeFeedbackInfo(s); // // 0x1C
+			this.SerializeRTPC(s);      // 0x2...
+			this.SerializeFeedbackInfo(s); // // 0x1C
 		}
 		#endregion
 	};

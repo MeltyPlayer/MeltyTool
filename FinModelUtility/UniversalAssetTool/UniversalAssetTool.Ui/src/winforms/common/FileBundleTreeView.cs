@@ -36,9 +36,9 @@ public class FileBundleTreeView : FileTreeView<IFileBundleDirectory> {
         parts.Add(directory.Name);
 
         if (subdirCount == 1) {
-          AddDirectoryToNode_(subdirs[0], parentNode, parts);
+          this.AddDirectoryToNode_(subdirs[0], parentNode, parts);
         } else {
-          AddFileToNode_(fileBundles[0], parentNode, parts);
+          this.AddFileToNode_(fileBundles[0], parentNode, parts);
         }
       } else {
         string text = directory.Name;
@@ -55,7 +55,7 @@ public class FileBundleTreeView : FileTreeView<IFileBundleDirectory> {
         }
 
         foreach (var fileBundle in directory.FileBundles) {
-          AddFileToNode_(fileBundle, uiNode);
+          this.AddFileToNode_(fileBundle, uiNode);
         }
 
         if (DebugFlags.OPEN_DIRECTORIES_BY_DEFAULT) {

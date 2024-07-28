@@ -15,16 +15,16 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public int TargetShieldSquadID
 		{
-			get { return mTargetSquadID; }
-			set { mTargetSquadID = value; }
+			get { return this.mTargetSquadID; }
+			set { this.mTargetSquadID = value; }
 		}
 
 		int mShieldSquadID = TypeExtensions.kNone;
 		[Meta.BProtoSquadReference]
 		public int ShieldSquadID
 		{
-			get { return mShieldSquadID; }
-			set { mShieldSquadID = value; }
+			get { return this.mShieldSquadID; }
+			set { this.mShieldSquadID = value; }
 		}
 
 		#region ITagElementStreamable<string> Members
@@ -34,8 +34,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, "target", ref mTargetSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceAttr);
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mShieldSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
+			xs.StreamDBID(s, "target", ref this.mTargetSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceAttr);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mShieldSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
 		}
 		#endregion
 	};

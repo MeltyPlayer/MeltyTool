@@ -21,30 +21,30 @@ namespace KSoft.T4
 		public TextTransformationCodeBlockBookmark(Microsoft.VisualStudio.TextTemplating.TextTransformation file,
 			TextTransformationCodeBlockType type, int indentCount = 1)
 		{
-			mFile = file;
-			mType = type;
-			mIndentCount = indentCount;
+			this.mFile = file;
+			this.mType = type;
+			this.mIndentCount = indentCount;
 		}
 
 		internal void Enter()
 		{
-			if (mType == TextTransformationCodeBlockType.Brackets ||
-				mType == TextTransformationCodeBlockType.BracketsStatement)
-				mFile.WriteLine("{");
+			if (this.mType == TextTransformationCodeBlockType.Brackets ||
+			    this.mType == TextTransformationCodeBlockType.BracketsStatement)
+				this.mFile.WriteLine("{");
 
-			for (int x = 0; x < mIndentCount; x++)
-				mFile.PushIndent(kIndent);
+			for (int x = 0; x < this.mIndentCount; x++)
+				this.mFile.PushIndent(kIndent);
 		}
 
 		public void Dispose()
 		{
-			for (int x = 0; x < mIndentCount; x++)
-				mFile.PopIndent();
+			for (int x = 0; x < this.mIndentCount; x++)
+				this.mFile.PopIndent();
 
-			if (mType == TextTransformationCodeBlockType.Brackets)
-				mFile.WriteLine("}");
-			else if (mType == TextTransformationCodeBlockType.BracketsStatement)
-				mFile.WriteLine("};");
+			if (this.mType == TextTransformationCodeBlockType.Brackets)
+				this.mFile.WriteLine("}");
+			else if (this.mType == TextTransformationCodeBlockType.BracketsStatement)
+				this.mFile.WriteLine("};");
 		}
 	};
 }

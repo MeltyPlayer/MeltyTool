@@ -15,8 +15,8 @@ namespace KSoft.Phoenix.Phx
 		string mSound;
 		public string Sound
 		{
-			get { return mSound; }
-			set { mSound = value; }
+			get { return this.mSound; }
+			set { this.mSound = value; }
 		}
 		#endregion
 
@@ -24,8 +24,8 @@ namespace KSoft.Phoenix.Phx
 		BObjectSoundType mType = BObjectSoundType.None;
 		public BObjectSoundType Type
 		{
-			get { return mType; }
-			set { mType = value; }
+			get { return this.mType; }
+			set { this.mType = value; }
 		}
 		#endregion
 
@@ -34,8 +34,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public int SquadID
 		{
-			get { return mSquadID; }
-			set { mSquadID = value; }
+			get { return this.mSquadID; }
+			set { this.mSquadID = value; }
 		}
 		#endregion
 
@@ -44,8 +44,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoActionReference]
 		public string Action
 		{
-			get { return mAction; }
-			set { mAction = value; }
+			get { return this.mAction; }
+			set { this.mAction = value; }
 		}
 		#endregion
 
@@ -56,12 +56,12 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamCursor(ref mSound);
+			s.StreamCursor(ref this.mSound);
 
-			if (s.StreamAttributeEnumOpt("Type", ref mType, e => e != BObjectSoundType.None))
+			if (s.StreamAttributeEnumOpt("Type", ref this.mType, e => e != BObjectSoundType.None))
 			{
-				xs.StreamDBID(s, "Squad", ref mSquadID, DatabaseObjectKind.Squad, xmlSource: XML.XmlUtil.kSourceAttr);
-				s.StreamAttributeOpt("Action", ref mAction, Predicates.IsNotNullOrEmpty);
+				xs.StreamDBID(s, "Squad", ref this.mSquadID, DatabaseObjectKind.Squad, xmlSource: XML.XmlUtil.kSourceAttr);
+				s.StreamAttributeOpt("Action", ref this.mAction, Predicates.IsNotNullOrEmpty);
 			}
 		}
 		#endregion

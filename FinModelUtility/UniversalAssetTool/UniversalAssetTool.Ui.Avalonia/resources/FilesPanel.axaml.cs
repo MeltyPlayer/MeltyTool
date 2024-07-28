@@ -54,6 +54,6 @@ public class FilesPanelViewModel {
 
 public partial class FilesPanel : UserControl {
   public FilesPanel() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

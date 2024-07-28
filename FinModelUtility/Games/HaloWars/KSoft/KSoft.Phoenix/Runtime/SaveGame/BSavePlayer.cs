@@ -13,15 +13,15 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.StreamPascalString32(ref Name);
-			s.StreamPascalWideString32(ref DisplayName);
-			s.Stream(ref MPID);
-			s.Stream(ref ScenarioID);
-			s.Stream(ref CivID);
-			s.Stream(ref TeamID);
-			s.Stream(ref LeaderID);
-			s.Stream(ref Difficulty);
-			s.Stream(ref PlayerType);
+			s.StreamPascalString32(ref this.Name);
+			s.StreamPascalWideString32(ref this.DisplayName);
+			s.Stream(ref this.MPID);
+			s.Stream(ref this.ScenarioID);
+			s.Stream(ref this.CivID);
+			s.Stream(ref this.TeamID);
+			s.Stream(ref this.LeaderID);
+			s.Stream(ref this.Difficulty);
+			s.Stream(ref this.PlayerType);
 			s.StreamSignature(cSaveMarker.SetupPlayer);
 		}
 		#endregion

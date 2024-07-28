@@ -61,7 +61,7 @@ namespace uni.ui.avalonia.resources.model.skeleton {
 
   public partial class SkeletonTree : UserControl {
     public SkeletonTree() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     public static readonly RoutedEvent<BoneSelectedEventArgs>

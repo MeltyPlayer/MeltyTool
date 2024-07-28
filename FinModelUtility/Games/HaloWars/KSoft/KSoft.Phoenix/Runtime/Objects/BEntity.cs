@@ -59,35 +59,35 @@ namespace KSoft.Phoenix.Runtime
 			;
 		#endregion
 
-		public bool HasRefs { get { return EntityRefs != null; } }
+		public bool HasRefs { get { return this.EntityRefs != null; } }
 
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			s.StreamV(ref Position); s.StreamV(ref Up); s.StreamV(ref Forward); s.StreamV(ref Velocity);
-			BActionManager.StreamActionList(s, ref Actions);
+			s.StreamV(ref this.Position); s.StreamV(ref this.Up); s.StreamV(ref this.Forward); s.StreamV(ref this.Velocity);
+			BActionManager.StreamActionList(s, ref this.Actions);
 
-			bool has_refs = s.IsReading ? false : HasRefs;
+			bool has_refs = s.IsReading ? false : this.HasRefs;
 			s.Stream(ref has_refs);
 			if (has_refs)
-				BSaveGame.StreamArray16(s, ref EntityRefs, cMaximumEntityRefs);
+				BSaveGame.StreamArray16(s, ref this.EntityRefs, cMaximumEntityRefs);
 
-			s.Stream(ref ID);
-			s.Stream(ref PlayerID);
-			s.Stream(ref YDisplacement);
-			s.Stream(ref ObstructionRadiusX); s.Stream(ref ObstructionRadiusY); s.Stream(ref ObstructionRadiusZ);
+			s.Stream(ref this.ID);
+			s.Stream(ref this.PlayerID);
+			s.Stream(ref this.YDisplacement);
+			s.Stream(ref this.ObstructionRadiusX); s.Stream(ref this.ObstructionRadiusY); s.Stream(ref this.ObstructionRadiusZ);
 
 			#region Flags
-			s.Stream(ref FlagCollidable);		s.Stream(ref FlagMoving);			s.Stream(ref FlagDestroy);
-			s.Stream(ref FlagFirstUpdate);		s.Stream(ref FlagTiesToGround);		s.Stream(ref FlagUseMaxHeight);
-			s.Stream(ref FlagPhysicsControl);	s.Stream(ref FlagRotateObstruction);s.Stream(ref FlagFlying);
-			s.Stream(ref FlagValid);			s.Stream(ref FlagNonMobile);		s.Stream(ref FlagLockedDown);
-			s.Stream(ref FlagEntityRefsLocked);	s.Stream(ref FlagFlyingHeightFixup);s.Stream(ref FlagGarrisoned);
-			s.Stream(ref FlagPassiveGarrisoned);s.Stream(ref FlagMoved);			s.Stream(ref FlagTeleported);
-			s.Stream(ref FlagInSniper);			s.Stream(ref FlagIsBuilt);			s.Stream(ref FlagHasSounds);
-			s.Stream(ref FlagHitched);			s.Stream(ref FlagSprinting);		s.Stream(ref FlagRecovering);
-			s.Stream(ref FlagInCover);			s.Stream(ref FlagSelectable);		s.Stream(ref FlagUngarrisonValid);
-			s.Stream(ref FlagGarrisonValid);	s.Stream(ref FlagIsPhysicsReplacement);	s.Stream(ref FlagIsDoneBuilding);
+			s.Stream(ref this.FlagCollidable);		s.Stream(ref this.FlagMoving);			s.Stream(ref this.FlagDestroy);
+			s.Stream(ref this.FlagFirstUpdate);		s.Stream(ref this.FlagTiesToGround);		s.Stream(ref this.FlagUseMaxHeight);
+			s.Stream(ref this.FlagPhysicsControl);	s.Stream(ref this.FlagRotateObstruction);s.Stream(ref this.FlagFlying);
+			s.Stream(ref this.FlagValid);			s.Stream(ref this.FlagNonMobile);		s.Stream(ref this.FlagLockedDown);
+			s.Stream(ref this.FlagEntityRefsLocked);	s.Stream(ref this.FlagFlyingHeightFixup);s.Stream(ref this.FlagGarrisoned);
+			s.Stream(ref this.FlagPassiveGarrisoned);s.Stream(ref this.FlagMoved);			s.Stream(ref this.FlagTeleported);
+			s.Stream(ref this.FlagInSniper);			s.Stream(ref this.FlagIsBuilt);			s.Stream(ref this.FlagHasSounds);
+			s.Stream(ref this.FlagHitched);			s.Stream(ref this.FlagSprinting);		s.Stream(ref this.FlagRecovering);
+			s.Stream(ref this.FlagInCover);			s.Stream(ref this.FlagSelectable);		s.Stream(ref this.FlagUngarrisonValid);
+			s.Stream(ref this.FlagGarrisonValid);	s.Stream(ref this.FlagIsPhysicsReplacement);	s.Stream(ref this.FlagIsDoneBuilding);
 			#endregion
 
 			s.StreamSignature(cSaveMarker.Entity1);

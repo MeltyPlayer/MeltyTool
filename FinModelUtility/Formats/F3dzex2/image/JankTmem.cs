@@ -13,7 +13,7 @@ public struct JankTileDescriptor : IReadOnlyTileDescriptor {
   public TileDescriptorState State => TileDescriptorState.ENABLED;
 
   public override int GetHashCode()
-    => FluentHash.Start().With(this.State).With(MaterialParams);
+    => FluentHash.Start().With(this.State).With(this.MaterialParams);
 
   public override bool Equals(object? obj) {
     if (ReferenceEquals(this, obj)) {

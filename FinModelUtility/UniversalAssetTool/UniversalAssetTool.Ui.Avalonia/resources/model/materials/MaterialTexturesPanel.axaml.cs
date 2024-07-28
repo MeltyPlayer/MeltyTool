@@ -65,7 +65,7 @@ namespace uni.ui.avalonia.resources.model.materials {
 
   public partial class MaterialTexturesPanel : UserControl {
     public MaterialTexturesPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     protected MaterialTexturesPanelViewModel ViewModel

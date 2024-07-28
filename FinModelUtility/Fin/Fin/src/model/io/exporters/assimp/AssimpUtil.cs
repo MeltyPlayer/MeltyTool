@@ -8,10 +8,10 @@ namespace fin.model.io.exporters.assimp;
 public static class AssimpUtil {
   static AssimpUtil() {
     using var ctx = new AssimpContext();
-    AssimpUtil.SupportedExportFormats = ctx.GetSupportedExportFormats();
+    SupportedExportFormats = ctx.GetSupportedExportFormats();
 
-    AssimpUtil.ExportFormatsById =
-        AssimpUtil.SupportedExportFormats.ToDictionary(ef => ef.FormatId);
+    ExportFormatsById =
+        SupportedExportFormats.ToDictionary(ef => ef.FormatId);
   }
 
   public static IReadOnlyList<ExportFormatDescription> SupportedExportFormats {

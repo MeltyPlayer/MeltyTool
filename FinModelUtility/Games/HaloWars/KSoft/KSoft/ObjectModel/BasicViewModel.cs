@@ -11,7 +11,7 @@ namespace KSoft.ObjectModel
 		protected virtual void OnPropertyChanged(
 			[System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
-			var handler = PropertyChanged;
+			var handler = this.PropertyChanged;
 			if (handler != null)
 				handler.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
@@ -21,7 +21,8 @@ namespace KSoft.ObjectModel
 			, [System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 			where T : struct, IEquatable<T>
 		{
-			return TypeExtensions.SetFieldVal(this, PropertyChanged,
+			return TypeExtensions.SetFieldVal(this,
+			                                  this.PropertyChanged,
 				ref field, value, overrideChecks, propertyName);
 		}
 
@@ -30,7 +31,8 @@ namespace KSoft.ObjectModel
 			, [System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{
-			return TypeExtensions.SetFieldEnum(this, PropertyChanged,
+			return TypeExtensions.SetFieldEnum(this,
+			                                   this.PropertyChanged,
 				ref field, value, overrideChecks, propertyName);
 		}
 
@@ -39,7 +41,8 @@ namespace KSoft.ObjectModel
 			, [System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 			where T : class, IEquatable<T>
 		{
-			return TypeExtensions.SetFieldObj(this, PropertyChanged,
+			return TypeExtensions.SetFieldObj(this,
+			                                  this.PropertyChanged,
 				ref field, value, overrideChecks, propertyName);
 		}
 
@@ -47,7 +50,8 @@ namespace KSoft.ObjectModel
 			, bool overrideChecks = false
 			, [System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
-			return TypeExtensions.SetField(this, PropertyChanged,
+			return TypeExtensions.SetField(this,
+			                               this.PropertyChanged,
 				ref field, value, overrideChecks, propertyName);
 		}
 	};

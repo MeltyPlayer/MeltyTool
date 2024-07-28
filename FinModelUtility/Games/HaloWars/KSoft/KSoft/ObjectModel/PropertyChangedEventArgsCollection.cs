@@ -15,11 +15,11 @@ namespace KSoft.ObjectModel
 
 		public PropertyChangedEventArgsCollection()
 		{
-			mEventArgs = new List<System.ComponentModel.PropertyChangedEventArgs>();
+			this.mEventArgs = new List<System.ComponentModel.PropertyChangedEventArgs>();
 		}
 		PropertyChangedEventArgsCollection(IEnumerable<System.ComponentModel.PropertyChangedEventArgs> eventArgs)
 		{
-			mEventArgs = new List<System.ComponentModel.PropertyChangedEventArgs>(eventArgs);
+			this.mEventArgs = new List<System.ComponentModel.PropertyChangedEventArgs>(eventArgs);
 		}
 
 		public PropertyChangedEventArgsCollection CreateArgs<T, TProp>(
@@ -27,7 +27,7 @@ namespace KSoft.ObjectModel
 			Exprs.Expression<Func<T, TProp>> propertyExpr)
 		{
 			eventArgs = Util.CreatePropertyChangedEventArgs(propertyExpr);
-			mEventArgs.Add(eventArgs);
+			this.mEventArgs.Add(eventArgs);
 
 			return this;
 		}
@@ -36,24 +36,24 @@ namespace KSoft.ObjectModel
 		{
 			Contract.Ensures(Contract.Result<PropertyChangedEventArgsCollection>() != this);
 
-			return new PropertyChangedEventArgsCollection(mEventArgs);
+			return new PropertyChangedEventArgsCollection(this.mEventArgs);
 		}
 
 		public void NotifyPropertiesChanged(object sender, System.ComponentModel.PropertyChangedEventHandler handler)
 		{
 			if (handler != null)
-				foreach (var args in mEventArgs)
+				foreach (var args in this.mEventArgs)
 					handler(sender, args);
 		}
 
 		#region IEnumerable<PropertyChangedEventArgs> Members
 		public IEnumerator<System.ComponentModel.PropertyChangedEventArgs> GetEnumerator()
 		{
-			return mEventArgs.GetEnumerator();
+			return this.mEventArgs.GetEnumerator();
 		}
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return mEventArgs.GetEnumerator();
+			return this.mEventArgs.GetEnumerator();
 		}
 		#endregion
 	};

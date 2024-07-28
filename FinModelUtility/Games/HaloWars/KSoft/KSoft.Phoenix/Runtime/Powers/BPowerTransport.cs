@@ -16,9 +16,9 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.StreamV(ref PickupLocation);
-			BSaveGame.StreamArray(s, ref SquadsToTransport);
-			s.Stream(ref GotPickupLocation);
+			s.StreamV(ref this.PickupLocation);
+			BSaveGame.StreamArray(s, ref this.SquadsToTransport);
+			s.Stream(ref this.GotPickupLocation);
 		}
 		#endregion
 	};

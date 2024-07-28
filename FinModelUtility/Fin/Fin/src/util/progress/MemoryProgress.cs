@@ -19,7 +19,7 @@ public class MemoryProgress<T> : IProgress<T> {
   public event EventHandler<T> ProgressChanged {
     add {
       this.impl_.ProgressChanged += value;
-      value.Invoke(null, Current);
+      value.Invoke(null, this.Current);
     }
     remove => this.impl_.ProgressChanged -= value;
   }

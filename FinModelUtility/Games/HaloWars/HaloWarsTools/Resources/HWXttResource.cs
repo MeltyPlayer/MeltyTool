@@ -14,9 +14,9 @@ namespace HaloWarsTools {
     protected override void Load(byte[] bytes) {
       base.Load(bytes);
 
-      this.AlbedoTexture = ExtractEmbeddedDXT1(
+      this.AlbedoTexture = this.ExtractEmbeddedDXT1(
           bytes,
-          GetFirstChunkOfType(
+          this.GetFirstChunkOfType(
               HWBinaryResourceChunkType
                   .XTT_AtlasChunkAlbedo));
     }

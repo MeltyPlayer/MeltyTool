@@ -47,7 +47,7 @@ namespace KSoft.Memory.Strings
 
 		#region Count
 		/// <summary>Get the number of strings in the pool</summary>
-		public int Count { get { return mPool.Count; } }
+		public int Count { get { return this.mPool.Count; } }
 		#endregion
 
 		#region Size
@@ -59,26 +59,26 @@ namespace KSoft.Memory.Strings
 		/// <returns>Number of bytes <paramref name="value"/> will consume</returns>
 		int CalculateStringByteLength(string value)
 		{
-			return mEncoding.GetByteCount(value);
+			return this.mEncoding.GetByteCount(value);
 		}
 		#endregion
 
-		bool UseStringToIndex => !Settings.AllowDuplicates;
+		bool UseStringToIndex => !this.Settings.AllowDuplicates;
 
 		void InitializeCollections(int capacity)
 		{
-			mPool = new List<string>(capacity);
-			mReferences = new List<Values.PtrHandle>(capacity);
-			if (UseStringToIndex)
-				mStringToIndex = new Dictionary<string, int>(capacity, StringComparer.Ordinal);
+			this.mPool = new List<string>(capacity);
+			this.mReferences = new List<Values.PtrHandle>(capacity);
+			if (this.UseStringToIndex)
+				this.mStringToIndex = new Dictionary<string, int>(capacity, StringComparer.Ordinal);
 		}
 		/// <summary>Create a <see cref="StringMemoryPool"/> from a <see cref="StringMemoryPoolSettings"/> definition</summary>
 		/// <param name="definition"></param>
 		public StringMemoryPool(StringMemoryPoolSettings definition)
 		{
-			Settings = definition;
-			InitializeCollections(kEntryStartCount);
-			mEncoding = new Text.StringStorageEncoding(definition.Storage);
+			this.Settings = definition;
+			this.InitializeCollections(kEntryStartCount);
+			this.mEncoding = new Text.StringStorageEncoding(definition.Storage);
 		}
 
 		#region Add
@@ -95,44 +95,44 @@ namespace KSoft.Memory.Strings
 
 			if (string.IsNullOrEmpty(str))
 			{
-				if (Settings.ImplicitNull) // if we're setup to use a implicit null string, its always the first string in the pool
-					return Settings.BaseAddress;
+				if (this.Settings.ImplicitNull) // if we're setup to use a implicit null string, its always the first string in the pool
+					return this.Settings.BaseAddress;
 
-				if (mNullReference == kInvalidReference) // if not, check to see if a null string has been added yet
+				if (this.mNullReference == kInvalidReference) // if not, check to see if a null string has been added yet
 				{
-					index = Count;
+					index = this.Count;
 					this.AddInternal("");
-					mNullReference = Settings.BaseAddress + mReferences[index];
+					this.mNullReference = this.Settings.BaseAddress + this.mReferences[index];
 				}
-				return mNullReference;
+				return this.mNullReference;
 			}
 
 			// If we allow dups, we won't try to find a matching entry, we'll immediately add it.
-			if (Settings.AllowDuplicates || !mStringToIndex.TryGetValue(str, out index))
+			if (this.Settings.AllowDuplicates || !this.mStringToIndex.TryGetValue(str, out index))
 			{
-				index = Count;
+				index = this.Count;
 				this.AddInternal(str);
 			}
 
-			return mReferences[index];
+			return this.mReferences[index];
 		}
 
 		void AddInternal(string value)
 		{
-			if (UseStringToIndex)
-				mStringToIndex.Add(value, mPool.Count);
+			if (this.UseStringToIndex)
+				this.mStringToIndex.Add(value, this.mPool.Count);
 			// the PtrHandle created will implicitly take after [BaseAddress]'s address size
-			mReferences.Add(Settings.BaseAddress + Size);
-			mPool.Add(value);
+			this.mReferences.Add(this.Settings.BaseAddress + this.Size);
+			this.mPool.Add(value);
 
-			Size += (uint)CalculateStringByteLength(value);
+			this.Size += (uint) this.CalculateStringByteLength(value);
 		}
 
 		void AddFromRead(int index, string value)
 		{
-			if (UseStringToIndex)
-				mStringToIndex.Add(value, index);
-			mPool[index] = value;
+			if (this.UseStringToIndex)
+				this.mStringToIndex.Add(value, index);
+			this.mPool[index] = value;
 		}
 		#endregion
 
@@ -154,13 +154,13 @@ namespace KSoft.Memory.Strings
 		public Values.PtrHandle GetAddress(string value)
 		{
 			int index;
-			if (UseStringToIndex)
-				mStringToIndex.TryGetValue(value, out index);
+			if (this.UseStringToIndex)
+				this.mStringToIndex.TryGetValue(value, out index);
 			else
-				index = mPool.IndexOf(value);
+				index = this.mPool.IndexOf(value);
 
 			if (index.IsNone())
-				return Settings.BaseAddress + mReferences[index];
+				return this.Settings.BaseAddress + this.mReferences[index];
 
 			return kInvalidReference;
 		}
@@ -172,12 +172,12 @@ namespace KSoft.Memory.Strings
 		[Contracts.Pure]
 		/*public*/ int GetIndex(Values.PtrHandle address)
 		{
-			return mReferences.FindIndex(x => x == address);
+			return this.mReferences.FindIndex(x => x == address);
 		}
 
 		/// <summary>Get the address of the 'null' string</summary>
 		/// <returns></returns>
-		public Values.PtrHandle GetNull() { return mNullReference; }
+		public Values.PtrHandle GetNull() { return this.mNullReference; }
 
 		/// <summary>Get the string thats located at <paramref name="address"/></summary>
 		/// <param name="address"></param>
@@ -186,7 +186,7 @@ namespace KSoft.Memory.Strings
 		/// Code contracts will cause an assert if the address doesn't start a new string
 		/// </remarks>
 		[Contracts.Pure]
-		public string Get(Values.PtrHandle address)	{ return mPool[GetIndex(address)]; }
+		public string Get(Values.PtrHandle address)	{ return this.mPool[this.GetIndex(address)]; }
 		/// <summary>Get the string thats located at <paramref name="address"/></summary>
 		/// <param name="address"></param>
 		/// <returns></returns>
@@ -194,15 +194,15 @@ namespace KSoft.Memory.Strings
 		/// Code contracts will cause an assert if the address doesn't start a new string
 		/// </remarks>
 		[SuppressMessage("Microsoft.Design", "CA1043:UseIntegralOrStringArgumentForIndexers")]
-		public string this[Values.PtrHandle address]	{ get { return Get(address); } }
+		public string this[Values.PtrHandle address]	{ get { return this.Get(address); } }
 		#endregion
 
 		#region IEnumerable Members
 		/// <summary>Get an enumerator that iterates through this pool's stored string values</summary>
 		/// <returns></returns>
-		public IEnumerator<string> GetEnumerator()										{ return mPool.GetEnumerator(); }
+		public IEnumerator<string> GetEnumerator()										{ return this.mPool.GetEnumerator(); }
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()	{ return mPool.GetEnumerator(); }
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()	{ return this.mPool.GetEnumerator(); }
 		/// <summary>Get an enumerator that iterates through this pool using address/string pairs</summary>
 		/// <returns></returns>
 		public IEnumerator<KeyValuePair<Values.PtrHandle, string>> GetKeyValueEnumerator()		{ return new KeyValueEnumerator(this); }
@@ -217,11 +217,11 @@ namespace KSoft.Memory.Strings
 			// #TODO: test to see if the config is a built-in, else we could overwrite an existing config
 //			Configuration.Read(s);
 			int count = s.ReadInt32();
-			Size = s.ReadUInt32();
+			this.Size = s.ReadUInt32();
 
-			InitializeCollections(count);
-			for (int x = 0; x < mReferences.Count; x++)
-				mReferences[x] = new Values.PtrHandle(Settings.AddressSize);
+			this.InitializeCollections(count);
+			for (int x = 0; x < this.mReferences.Count; x++)
+				this.mReferences[x] = new Values.PtrHandle(this.Settings.AddressSize);
 		}
 		/// <summary>
 		/// Write the header for this pool to a stream for future re-initializing
@@ -233,8 +233,8 @@ namespace KSoft.Memory.Strings
 			Contract.Requires(s != null);
 
 //			Configuration.Write(s);
-			s.Write(Count);
-			s.Write(Size);
+			s.Write(this.Count);
+			s.Write(this.Size);
 		}
 
 		int[] ioStringLengths;
@@ -248,9 +248,9 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(s != null);
 
-			ioStringLengths = new int[Count];
-			for (int x = 0; x < ioStringLengths.Length; x++)
-				ioStringLengths[x] = s.ReadInt32();
+			this.ioStringLengths = new int[this.Count];
+			for (int x = 0; x < this.ioStringLengths.Length; x++)
+				this.ioStringLengths[x] = s.ReadInt32();
 		}
 		/// <summary>Write the character count for the string values to a stream</summary>
 		/// <param name="s"></param>
@@ -258,7 +258,7 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(s != null);
 
-			foreach (string str in mPool)
+			foreach (string str in this.mPool)
 				s.Write(str.Length);
 		}
 		/// <summary>Only used for Interop situations where explicit lengths are needed for cases (like enumeration) in unmanaged code</summary>
@@ -267,8 +267,8 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(s != null);
 
-			foreach (string str in mPool)
-				s.Write(CalculateStringByteLength(str));
+			foreach (string str in this.mPool)
+				s.Write(this.CalculateStringByteLength(str));
 		}
 
 		/// <summary>Read the string addresses from a stream</summary>
@@ -277,8 +277,8 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(s != null);
 
-			for (int x = 0; x < mReferences.Count; x++)
-				mReferences[x].Read(s);
+			for (int x = 0; x < this.mReferences.Count; x++)
+				this.mReferences[x].Read(s);
 		}
 		/// <summary>Write the string addresses to a stream</summary>
 		/// <param name="s"></param>
@@ -286,7 +286,7 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(s != null);
 
-			foreach (Values.PtrHandle r in mReferences)
+			foreach (Values.PtrHandle r in this.mReferences)
 				r.Write(s);
 		}
 
@@ -296,14 +296,14 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(s != null);
 
-			if (ioStringLengths == null)
-				for (int x = 0; x < mPool.Count; x++)
-					AddFromRead(x, s.ReadString(mEncoding));
+			if (this.ioStringLengths == null)
+				for (int x = 0; x < this.mPool.Count; x++)
+					this.AddFromRead(x, s.ReadString(this.mEncoding));
 			else
 			{
-				for (int x = 0; x < Count; x++)
-					AddFromRead(x, s.ReadString(mEncoding, ioStringLengths[x]));
-				ioStringLengths = null;
+				for (int x = 0; x < this.Count; x++)
+					this.AddFromRead(x, s.ReadString(this.mEncoding, this.ioStringLengths[x]));
+				this.ioStringLengths = null;
 			}
 		}
 		/// <summary>Write the string values to a stream</summary>
@@ -312,8 +312,8 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(s != null);
 
-			foreach (string str in mPool)
-				s.Write(str, mEncoding);
+			foreach (string str in this.mPool)
+				s.Write(str, this.mEncoding);
 		}
 
 		/// <summary>Read a <see cref="StringMemoryPool"/> from a stream</summary>
@@ -326,9 +326,9 @@ namespace KSoft.Memory.Strings
 		/// </remarks>
 		public void Read(IO.EndianReader s)
 		{
-			ReadHeader(s);
-			ReadReferences(s);
-			ReadStrings(s);
+			this.ReadHeader(s);
+			this.ReadReferences(s);
+			this.ReadStrings(s);
 		}
 		/// <summary>Write this <see cref="StringMemoryPool"/> to a stream</summary>
 		/// <param name="s"></param>
@@ -340,43 +340,54 @@ namespace KSoft.Memory.Strings
 		/// </remarks>
 		public void Write(IO.EndianWriter s)
 		{
-			WriteHeader(s);
-			WriteReferences(s);
-			WriteStrings(s);
+			this.WriteHeader(s);
+			this.WriteReferences(s);
+			this.WriteStrings(s);
 		}
 
 		public void SerializeHeader(IO.EndianStream s)
 		{
-				 if (s.IsReading) ReadHeader(s.Reader);
-			else if (s.IsWriting) WriteHeader(s.Writer);
+				 if (s.IsReading)
+					 this.ReadHeader(s.Reader);
+			else if (s.IsWriting)
+				this.WriteHeader(s.Writer);
 		}
 		public void SerializeStringCharacterLengths(IO.EndianStream s)
 		{
-				 if (s.IsReading) ReadStringCharacterLengths(s.Reader);
-			else if (s.IsWriting) WriteStringCharacterLengths(s.Writer);
+				 if (s.IsReading)
+					 this.ReadStringCharacterLengths(s.Reader);
+			else if (s.IsWriting)
+				this.WriteStringCharacterLengths(s.Writer);
 		}
 		public void SerializeReferences(IO.EndianStream s)
 		{
-				 if (s.IsReading) ReadReferences(s.Reader);
-			else if (s.IsWriting) WriteReferences(s.Writer);
+				 if (s.IsReading)
+					 this.ReadReferences(s.Reader);
+			else if (s.IsWriting)
+				this.WriteReferences(s.Writer);
 		}
 		public void SerializeStrings(IO.EndianStream s)
 		{
-				 if (s.IsReading) ReadStrings(s.Reader);
-			else if (s.IsWriting) WriteStrings(s.Writer);
+				 if (s.IsReading)
+					 this.ReadStrings(s.Reader);
+			else if (s.IsWriting)
+				this.WriteStrings(s.Writer);
 		}
 		public void Serialize(IO.EndianStream s)
 		{
-				 if (s.IsReading) Read(s.Reader);
-			else if (s.IsWriting) Write(s.Writer);
+				 if (s.IsReading)
+					 this.Read(s.Reader);
+			else if (s.IsWriting)
+				this.Write(s.Writer);
 		}
 		#endregion
 
 		#region ICollection<string> Members
-		void ICollection<string>.Add(string item)						{ var handle = Add(item); }
+		void ICollection<string>.Add(string item)						{ var handle = this.Add(item); }
 		void ICollection<string>.Clear()								{ throw new NotSupportedException("Can't clear items from a StringMemoryPool"); }
-		public bool Contains(string item)								{ return UseStringToIndex ? mStringToIndex.ContainsKey(item) : mPool.Contains(item); }
-		void ICollection<string>.CopyTo(string[] array, int arrayIndex)	{ mPool.CopyTo(array, arrayIndex); }
+		public bool Contains(string item)								{ return this.UseStringToIndex ? this.mStringToIndex.ContainsKey(item) : this.mPool.Contains(item); }
+		void ICollection<string>.CopyTo(string[] array, int arrayIndex)	{
+			this.mPool.CopyTo(array, arrayIndex); }
 		bool ICollection<string>.IsReadOnly								{ get { return false; } }
 
 		bool ICollection<string>.Remove(string item)					{ throw new NotSupportedException("Can't remove items from a StringMemoryPool"); }

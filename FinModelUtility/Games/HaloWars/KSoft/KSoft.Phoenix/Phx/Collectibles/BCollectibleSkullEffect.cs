@@ -21,9 +21,9 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamCursorEnum(ref mType);
-			s.StreamAttributeEnumOpt("target", ref mTarget, e => e != BCollectibleSkullTarget.None);
-			s.StreamAttributeOpt("value", ref mValue, PhxPredicates.IsNotInvalid);
+			s.StreamCursorEnum(ref this.mType);
+			s.StreamAttributeEnumOpt("target", ref this.mTarget, e => e != BCollectibleSkullTarget.None);
+			s.StreamAttributeOpt("value", ref this.mValue, PhxPredicates.IsNotInvalid);
 		}
 		#endregion
 	};

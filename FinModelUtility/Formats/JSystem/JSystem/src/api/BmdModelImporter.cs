@@ -335,7 +335,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
                     }
 
                     var skinToBoneMatrix =
-                        BmdModelImporter.ConvertSchemaToFin_(
+                        ConvertSchemaToFin_(
                             bmd.EVP1.InverseBindMatrices[jointIndex]);
 
                     var bone = jointsAndBones[jointIndex].Item2;

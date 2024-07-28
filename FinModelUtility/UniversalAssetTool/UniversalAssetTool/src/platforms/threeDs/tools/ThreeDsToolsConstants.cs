@@ -7,11 +7,11 @@ public static class ThreeDsToolsConstants {
     DirectoryConstants.TOOLS_DIRECTORY.AssertGetExistingSubdir("ctrtool");
 
   public static IReadOnlySystemFile EXTRACT_CIA_BAT { get; } =
-    ThreeDsToolsConstants.CTRTOOL_DIRECTORY.AssertGetExistingFile(
+    CTRTOOL_DIRECTORY.AssertGetExistingFile(
         "extract_cia.bat");
 
   public static IReadOnlySystemFile EXTRACT_CCI_BAT { get; } =
-    ThreeDsToolsConstants.CTRTOOL_DIRECTORY.AssertGetExistingFile(
+    CTRTOOL_DIRECTORY.AssertGetExistingFile(
         "extract_cci.bat");
 
 
@@ -20,6 +20,6 @@ public static class ThreeDsToolsConstants {
         "3ds-xfsatool");
 
   public static IReadOnlySystemFile THREEDS_XSFATOOL_EXE { get; } =
-    ThreeDsToolsConstants.THREEDS_XSFATOOL_DIRECTORY.AssertGetExistingFile(
+    THREEDS_XSFATOOL_DIRECTORY.AssertGetExistingFile(
         "3ds-xfsatool.exe");
 }

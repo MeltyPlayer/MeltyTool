@@ -22,9 +22,9 @@ namespace KSoft.Phoenix.Phx
 		{
 			var td = KSoft.Debug.TypeCheck.CastReference<BTacticData>(s.UserData);
 
-			XML.XmlUtil.Serialize(s, TargetRules, BTacticTargetRule.kBListXmlParams);
-			s.StreamElements("PersistentAction", PersistentActions, td, BTacticData.StreamProtoActionID);
-			s.StreamElements("PersistentSquadAction", PersistentSquadActions, td, BTacticData.StreamProtoActionID);
+			XML.XmlUtil.Serialize(s, this.TargetRules, BTacticTargetRule.kBListXmlParams);
+			s.StreamElements("PersistentAction", this.PersistentActions, td, BTacticData.StreamProtoActionID);
+			s.StreamElements("PersistentSquadAction", this.PersistentSquadActions, td, BTacticData.StreamProtoActionID);
 		}
 		#endregion
 	};

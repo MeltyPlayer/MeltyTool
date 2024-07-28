@@ -47,7 +47,7 @@ namespace KSoft.Shell
 		#region Internal Value
 		[Interop.FieldOffset(0)] readonly uint mHandle;
 
-		internal uint Handle { get => mHandle; }
+		internal uint Handle { get => this.mHandle; }
 
 		static void InitializeHandle(out uint handle,
 			InstructionSet instSet, ProcessorSize procSize, EndianFormat byteOrder)
@@ -57,7 +57,7 @@ namespace KSoft.Shell
 			encoder.Encode32(procSize, BitEncoders.ProcessorSize);
 			encoder.Encode32(instSet, BitEncoders.InstructionSet);
 
-			Contract.Assert(encoder.UsedBitCount == Processor.BitCount);
+			Contract.Assert(encoder.UsedBitCount == BitCount);
 
 			handle = encoder.GetHandle32();
 		}
@@ -69,28 +69,28 @@ namespace KSoft.Shell
 		/// <param name="instructionSet">Instruction set of the processor</param>
 		public Processor(ProcessorSize size, EndianFormat byteOrder, InstructionSet instructionSet)
 		{
-			InitializeHandle(out mHandle, instructionSet, size, byteOrder);
+			InitializeHandle(out this.mHandle, instructionSet, size, byteOrder);
 		}
 		internal Processor(uint handle, BitFieldTraits processorField)
 		{
 			handle >>= processorField.BitIndex;
 			handle &= Bitmask;
 
-			mHandle = handle;
+			this.mHandle = handle;
 		}
 
 		#region Value properties
 		/// <summary>The processor's instruction set</summary>
 		public InstructionSet InstructionSet { get =>
-			BitEncoders.InstructionSet.BitDecode(mHandle, Constants.kInstructionSetBitField.BitIndex);
+			BitEncoders.InstructionSet.BitDecode(this.mHandle, Constants.kInstructionSetBitField.BitIndex);
 		}
 		/// <summary>The processor's instruction size</summary>
 		public ProcessorSize ProcessorSize { get =>
-			BitEncoders.ProcessorSize.BitDecode(mHandle, Constants.kProcessorSizeBitField.BitIndex);
+			BitEncoders.ProcessorSize.BitDecode(this.mHandle, Constants.kProcessorSizeBitField.BitIndex);
 		}
 		/// <summary>The processor's byte ordering</summary>
 		public EndianFormat ByteOrder { get =>
-			BitEncoders.EndianFormat.BitDecode(mHandle, Constants.kByteOrderBitField.BitIndex);
+			BitEncoders.EndianFormat.BitDecode(this.mHandle, Constants.kByteOrderBitField.BitIndex);
 		}
 		#endregion
 
@@ -108,7 +108,7 @@ namespace KSoft.Shell
 		/// <summary>Returns a unique 32-bit identifier for this object based on its exposed properties</summary>
 		/// <returns></returns>
 		/// <see cref="Object.GetHashCode"/>
-		public override int GetHashCode() => (int)mHandle;
+		public override int GetHashCode() => (int) this.mHandle;
 		/// <summary>Returns a string representation of this object</summary>
 		/// <returns>"[InstructionSet\tProcessorSize\tByteOrder]"</returns>
 		public override string ToString()
@@ -117,9 +117,9 @@ namespace KSoft.Shell
 
 			return string.Format(Util.InvariantCultureInfo,
 				"[{0}\t{1}\t{2}]",
-				InstructionSet.ToString(),
-				ProcessorSize.ToString(),
-				ByteOrder.ToString()
+				this.InstructionSet.ToString(),
+				this.ProcessorSize.ToString(),
+				this.ByteOrder.ToString()
 				);
 		}
 		#endregion
@@ -129,7 +129,7 @@ namespace KSoft.Shell
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public int Compare(Processor x, Processor y) => Processor.StaticCompare(x, y);
+		public int Compare(Processor x, Processor y) => StaticCompare(x, y);
 		/// <summary>See <see cref="IComparer{T}.Compare"/></summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
@@ -139,7 +139,7 @@ namespace KSoft.Shell
 			Debug.TypeCheck.CastValue(x, out Processor _x);
 			Debug.TypeCheck.CastValue(y, out Processor _y);
 
-			return Processor.StaticCompare(_x, _y);
+			return StaticCompare(_x, _y);
 		}
 		#endregion
 
@@ -147,7 +147,7 @@ namespace KSoft.Shell
 		/// <summary>See <see cref="IComparable{T}.CompareTo"/></summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public int CompareTo(Processor other) => Processor.StaticCompare(this, other);
+		public int CompareTo(Processor other) => StaticCompare(this, other);
 		/// <summary>See <see cref="IComparable{T}.CompareTo"/></summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
@@ -155,7 +155,7 @@ namespace KSoft.Shell
 		{
 			Debug.TypeCheck.CastValue(obj, out Processor _obj);
 
-			return Processor.StaticCompare(this, _obj);
+			return StaticCompare(this, _obj);
 		}
 		#endregion
 
@@ -175,7 +175,7 @@ namespace KSoft.Shell
 		#region Util
 		static int StaticCompare(Processor lhs, Processor rhs)
 		{
-			Contract.Assert(Processor.BitCount < Bits.kInt32BitCount,
+			Contract.Assert(BitCount < Bits.kInt32BitCount,
 				"Handle bits needs to be <= 31 (ie, sans sign bit) in order for this implementation of CompareTo to reasonably work");
 
 			int lhs_data = (int)lhs.mHandle;

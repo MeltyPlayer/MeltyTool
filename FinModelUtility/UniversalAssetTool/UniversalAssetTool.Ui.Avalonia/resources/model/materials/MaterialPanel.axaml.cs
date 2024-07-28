@@ -53,7 +53,7 @@ namespace uni.ui.avalonia.resources.model.materials {
 
   public partial class MaterialPanel : UserControl {
     public MaterialPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
   }
 }

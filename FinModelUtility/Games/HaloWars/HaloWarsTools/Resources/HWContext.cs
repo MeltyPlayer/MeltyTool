@@ -33,29 +33,29 @@ namespace HaloWarsTools {
     }*/
 
     public string GetAbsoluteGamePath(string relativePath) {
-      return Path.Combine(GameInstallDirectory, relativePath);
+      return Path.Combine(this.GameInstallDirectory, relativePath);
     }
 
     public string GetRelativeGamePath(string absolutePath) {
-      return Path.GetRelativePath(GameInstallDirectory, absolutePath);
+      return Path.GetRelativePath(this.GameInstallDirectory, absolutePath);
     }
 
     public string GetAbsoluteScratchPath(string relativePath) {
-      return Path.Combine(ScratchDirectory, relativePath);
+      return Path.Combine(this.ScratchDirectory, relativePath);
     }
 
     public string GetRelativeScratchPath(string absolutePath) {
-      return Path.GetRelativePath(ScratchDirectory, absolutePath);
+      return Path.GetRelativePath(this.ScratchDirectory, absolutePath);
     }
 
     public bool UnpackEra(string relativeEraPath) {
-      if (IsEraUnpacked(relativeEraPath)) {
+      if (this.IsEraUnpacked(relativeEraPath)) {
         return false;
       }
 
       Console.WriteLine($"Unpacking {relativeEraPath}");
 
-      var absoluteEraPath = GetAbsoluteGamePath(relativeEraPath);
+      var absoluteEraPath = this.GetAbsoluteGamePath(relativeEraPath);
       var expander =
           new EraFileExpander(absoluteEraPath);
 
@@ -76,7 +76,7 @@ namespace HaloWarsTools {
         return false;
       }
 
-      if (!expander.ExpandTo(ScratchDirectory,
+      if (!expander.ExpandTo(this.ScratchDirectory,
                              Path.GetFileNameWithoutExtension(
                                  absoluteEraPath))) {
         return false;
@@ -86,16 +86,16 @@ namespace HaloWarsTools {
     }
 
     public bool IsEraUnpacked(string relativeEraPath) {
-      return File.Exists(Path.Combine(ScratchDirectory,
+      return File.Exists(Path.Combine(this.ScratchDirectory,
                                       Path.ChangeExtension(
                                           Path.GetFileName(relativeEraPath),
                                           ".eradef")));
     }
 
     public void ExpandAllEraFiles() {
-      var files = Directory.GetFiles(GameInstallDirectory, "*.era");
+      var files = Directory.GetFiles(this.GameInstallDirectory, "*.era");
       foreach (var eraFile in files) {
-        UnpackEra(GetRelativeGamePath(eraFile));
+        this.UnpackEra(this.GetRelativeGamePath(eraFile));
       }
     }
   }

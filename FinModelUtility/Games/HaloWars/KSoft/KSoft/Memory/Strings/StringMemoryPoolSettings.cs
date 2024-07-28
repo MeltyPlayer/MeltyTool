@@ -15,7 +15,7 @@ namespace KSoft.Memory.Strings
 		#region AddressSize
 		readonly Shell.ProcessorSize mAddressSize;
 		/// <summary>Size of addresses used for referencing serialized strings</summary>
-		public Shell.ProcessorSize AddressSize { get { return mAddressSize; } }
+		public Shell.ProcessorSize AddressSize { get { return this.mAddressSize; } }
 		#endregion
 
 		/// <summary>Is an empty string entry automatically add to the pool</summary>
@@ -33,12 +33,14 @@ namespace KSoft.Memory.Strings
 		/// <remarks>Base address defaults to the null equivlent on <paramref name="addressSize"/> platforms</remarks>
 		public StringMemoryPoolSettings(StringStorage method, bool implicitNull, Shell.ProcessorSize addressSize)
 		{
-			{ Storage = method; AllowDuplicates = false; }
+			{
+				this.Storage = method;
+				this.AllowDuplicates = false; }
 
-			mAddressSize = addressSize;
-			ImplicitNull = implicitNull;
+			this.mAddressSize = addressSize;
+			this.ImplicitNull = implicitNull;
 
-			BaseAddress = mAddressSize == Shell.ProcessorSize.x64 ?
+			this.BaseAddress = this.mAddressSize == Shell.ProcessorSize.x64 ?
 				Values.PtrHandle.Null64 : Values.PtrHandle.Null32;
 		}
 		/// <summary>Define a new <see cref="StringMemoryPool"/> configuration</summary>
@@ -48,11 +50,13 @@ namespace KSoft.Memory.Strings
 		/// <remarks><see cref="AddressSize"/> is determined from <see cref="baseAddress"/></remarks>
 		public StringMemoryPoolSettings(StringStorage method, bool implicitNull, Values.PtrHandle baseAddress)
 		{
-			{ Storage = method; AllowDuplicates = false; }
+			{
+				this.Storage = method;
+				this.AllowDuplicates = false; }
 
-			mAddressSize = baseAddress.Is64bit ? Shell.ProcessorSize.x64 : Shell.ProcessorSize.x32;
-			ImplicitNull = implicitNull;
-			BaseAddress = baseAddress;
+			this.mAddressSize = baseAddress.Is64bit ? Shell.ProcessorSize.x64 : Shell.ProcessorSize.x32;
+			this.ImplicitNull = implicitNull;
+			this.BaseAddress = baseAddress;
 		}
 
 		/// <summary>Define a new <see cref="StringMemoryPool"/> configuration</summary>

@@ -16,24 +16,24 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		bool mAsync;
-		public bool Async { get { return mAsync; } }
+		public bool Async { get { return this.mAsync; } }
 
 		int mAsyncParameterKey;
-		public int AsyncParameterKey { get { return mAsyncParameterKey; } }
+		public int AsyncParameterKey { get { return this.mAsyncParameterKey; } }
 
 		public BTriggerProtoCondition() { }
 		public BTriggerProtoCondition(BTriggerSystem root, BTriggerCondition instance) : base(root, instance)
 		{
-			mAsync = instance.Async;
-			mAsyncParameterKey = instance.AsyncParameterKey;
+			this.mAsync = instance.Async;
+			this.mAsyncParameterKey = instance.AsyncParameterKey;
 		}
 
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
 			base.Serialize(s);
 
-			if(s.StreamAttributeOpt(kXmlAttrAsync, ref mAsync, Predicates.IsTrue))
-				s.StreamAttribute(kXmlAttrAsyncParameterKey, ref mAsyncParameterKey);
+			if(s.StreamAttributeOpt(kXmlAttrAsync, ref this.mAsync, Predicates.IsTrue))
+				s.StreamAttribute(kXmlAttrAsyncParameterKey, ref this.mAsyncParameterKey);
 		}
 	};
 }

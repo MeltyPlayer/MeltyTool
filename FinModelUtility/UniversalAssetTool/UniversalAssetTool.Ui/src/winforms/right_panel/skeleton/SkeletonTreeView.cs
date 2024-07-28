@@ -33,7 +33,7 @@ public partial class SkeletonTreeView : UserControl, ISkeletonTreeView {
 
   // TODO: Clean this up.
   protected class SkeletonNode : ISkeletonTreeNode {
-    private readonly common.IBetterTreeNode<SkeletonNode> treeNode_;
+    private readonly IBetterTreeNode<SkeletonNode> treeNode_;
 
     public SkeletonNode(SkeletonTreeView treeView, IReadOnlyBone bone) {
         this.Bone = bone;

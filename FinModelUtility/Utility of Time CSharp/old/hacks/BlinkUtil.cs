@@ -9,26 +9,26 @@ namespace UoT.hacks {
     public const int CLOSED_FRAMES = 1;
 
     public const int TOTAL_FRAMES =
-        BlinkUtil.OPEN_FRAMES +
-        BlinkUtil.HALF_OPEN_FRAMES +
-        BlinkUtil.CLOSED_FRAMES +
-        BlinkUtil.HALF_OPEN_FRAMES;
+        OPEN_FRAMES +
+        HALF_OPEN_FRAMES +
+        CLOSED_FRAMES +
+        HALF_OPEN_FRAMES;
 
     public static T Get<T>(T open, T halfOpen, T closed) {
-      var frame = (int) Math.Floor(Time.Frame % BlinkUtil.TOTAL_FRAMES);
+      var frame = (int) Math.Floor(Time.Frame % TOTAL_FRAMES);
 
-      if (frame < BlinkUtil.OPEN_FRAMES) {
+      if (frame < OPEN_FRAMES) {
         return open;
       }
 
-      if (frame < BlinkUtil.OPEN_FRAMES + BlinkUtil.HALF_OPEN_FRAMES) {
+      if (frame < OPEN_FRAMES + HALF_OPEN_FRAMES) {
         return halfOpen;
       }
 
       if (frame <
-          BlinkUtil.OPEN_FRAMES +
-          BlinkUtil.HALF_OPEN_FRAMES +
-          BlinkUtil.CLOSED_FRAMES) {
+          OPEN_FRAMES +
+          HALF_OPEN_FRAMES +
+          CLOSED_FRAMES) {
         return closed;
       }
 

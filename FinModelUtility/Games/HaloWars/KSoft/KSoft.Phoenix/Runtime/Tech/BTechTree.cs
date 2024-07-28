@@ -17,7 +17,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref Techs);
+			BSaveGame.StreamArray16(s, ref this.Techs);
 			s.StreamSignature(cSaveMarker.TechTree);
 		}
 		#endregion

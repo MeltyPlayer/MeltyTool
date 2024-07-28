@@ -12,7 +12,7 @@ namespace KSoft.Collections
 
 		public BTypeValuesParams(Func<Phx.BDatabaseBase, IProtoEnum> protoEnumGetter)
 		{
-			kGetProtoEnumFromDB = protoEnumGetter;
+			this.kGetProtoEnumFromDB = protoEnumGetter;
 		}
 	};
 }

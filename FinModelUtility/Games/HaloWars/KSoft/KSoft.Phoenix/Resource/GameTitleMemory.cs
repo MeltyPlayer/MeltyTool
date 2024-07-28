@@ -25,17 +25,17 @@ namespace KSoft.Phoenix.Resource
 		public void Serialize(IO.EndianStream s)
 		{
 			s.StreamVersion(kVersion);
-			s.Stream(ref AutomaticDifficultyMultiplier);
-			s.Stream(ref Unk8);
+			s.Stream(ref this.AutomaticDifficultyMultiplier);
+			s.Stream(ref this.Unk8);
 
-			s.Stream(ref UnkLength);
+			s.Stream(ref this.UnkLength);
 			if (s.IsReading)
 			{
-				UnkC = new byte[UnkLength];
-				Unk18 = new byte[UnkLength];
+				this.UnkC = new byte[this.UnkLength];
+				this.Unk18 = new byte[this.UnkLength];
 			}
-			s.Stream(UnkC);
-			s.Stream(Unk18);
+			s.Stream(this.UnkC);
+			s.Stream(this.Unk18);
 		}
 		#endregion
 	};
@@ -68,8 +68,8 @@ namespace KSoft.Phoenix.Resource
 			Contract.Requires<ArgumentOutOfRangeException>(tm0 >= 0 && tm0 < gpdBaseStream.Length);
 			Contract.Requires<ArgumentOutOfRangeException>(tm1 >= 0 && tm1 < gpdBaseStream.Length);
 
-			mMemoryOffset0 = tm0;
-			mMemoryOffset1 = tm1;
+			this.mMemoryOffset0 = tm0;
+			this.mMemoryOffset1 = tm1;
 		}
 
 		void SerializeTitleMemory(IO.EndianStream gpdStream, long tmOffset, IO.IEndianStreamSerializable tm)
@@ -108,14 +108,14 @@ namespace KSoft.Phoenix.Resource
 			Contract.Requires<ArgumentNullException>(gpdStream != null);
 			Contract.Requires<ArgumentException>(gpdStream.BaseStream.CanSeek);
 
-			SerializeTitleMemory(gpdStream, mMemoryOffset0, mMemory0);
+			this.SerializeTitleMemory(gpdStream, this.mMemoryOffset0, this.mMemory0);
 		}
 		public void SerializeTitleMemory1(IO.EndianStream gpdStream)
 		{
 			Contract.Requires<ArgumentNullException>(gpdStream != null);
 			Contract.Requires<ArgumentException>(gpdStream.BaseStream.CanSeek);
 
-			SerializeTitleMemory(gpdStream, mMemoryOffset1, mMemory1);
+			this.SerializeTitleMemory(gpdStream, this.mMemoryOffset1, this.mMemory1);
 		}
 	};
 }

@@ -13,7 +13,7 @@ public static class FinFileStatic {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static bool Delete(string fullName) {
-    if (!FinFileStatic.Exists(fullName)) {
+    if (!Exists(fullName)) {
       return false;
     }
 

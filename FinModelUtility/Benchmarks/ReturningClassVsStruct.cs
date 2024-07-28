@@ -67,7 +67,7 @@ namespace benchmarks {
     }
 
     private XyzwStruct ReturnStructTwiceImpl1_() {
-      return ReturnStructTwiceImpl2_();
+      return this.ReturnStructTwiceImpl2_();
     }
 
     private XyzwStruct ReturnStructTwiceImpl2_() {
@@ -83,7 +83,7 @@ namespace benchmarks {
     }
 
     private void ReturnStructByRefTwiceImpl1_(out XyzwStruct value) {
-      value = ReturnStructTwiceImpl2_();
+      value = this.ReturnStructTwiceImpl2_();
     }
 
     [Benchmark]

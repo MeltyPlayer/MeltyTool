@@ -32,26 +32,26 @@ namespace KSoft.Phoenix.XML
 	{
 		Collections.BListExplicitIndex<T> mList;
 
-		public override Collections.BListExplicitIndexBase<T> ListExplicitIndex { get { return mList; } }
+		public override Collections.BListExplicitIndexBase<T> ListExplicitIndex { get { return this.mList; } }
 
 		public BListExplicitIndexXmlSerializer(BListExplicitIndexXmlParams<T> @params, Collections.BListExplicitIndex<T> list) : base(@params)
 		{
 			Contract.Requires<ArgumentNullException>(@params != null);
 			Contract.Requires<ArgumentNullException>(list != null);
 
-			mList = list;
+			this.mList = list;
 		}
 
 		#region IXmlElementStreamable Members
 		protected override void Read<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, int iteration)
 		{
-			int index = ReadExplicitIndex(s, xs);
+			int index = this.ReadExplicitIndex(s, xs);
 			Contract.Assert(index.IsNotNone());
 
-			mList.InitializeItem(index);
+			this.mList.InitializeItem(index);
 			T data = new T();
 			data.Serialize(s);
-			mList[index] = data;
+			this.mList[index] = data;
 		}
 		protected override void Write<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, T data)
 		{

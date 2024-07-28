@@ -41,20 +41,22 @@ namespace KSoft.Phoenix.Engine
 
 		public int CompareTo(XmlFileInfo other)
 		{
-			if (Location != other.Location)
-				return ((int)Location).CompareTo((int)other.Location);
+			if (this.Location != other.Location)
+				return ((int) this.Location).CompareTo((int)other.Location);
 
-			if (Directory != other.Directory)
-				return ((int)Directory).CompareTo((int)other.Directory);
+			if (this.Directory != other.Directory)
+				return ((int) this.Directory).CompareTo((int)other.Directory);
 
-			return string.CompareOrdinal(FileName, other.FileName);
+			return string.CompareOrdinal(this.FileName, other.FileName);
 		}
 
 		public bool Equals(XmlFileInfo other)
 		{
-			return Location == other.Location
-				&& Directory == other.Directory
-				&& FileName == other.FileName
+			return this.Location == other.Location
+				&&
+				this.Directory == other.Directory
+				&&
+				this.FileName == other.FileName
 				//&& RootName == other.RootName
 				//&& Writable == other.Writable
 				;
@@ -62,7 +64,7 @@ namespace KSoft.Phoenix.Engine
 
 		public override bool Equals(object obj)
 		{
-			return obj is XmlFileInfo && Equals((XmlFileInfo)obj);
+			return obj is XmlFileInfo && this.Equals((XmlFileInfo)obj);
 		}
 
 		public override int GetHashCode()
@@ -70,9 +72,9 @@ namespace KSoft.Phoenix.Engine
 			unchecked
 			{
 				int hash = 17;
-				hash *= 23 + Location.GetHashCode();
-				hash *= 23 + Directory.GetHashCode();
-				hash *= 23 + FileName.GetHashCode();
+				hash *= 23 + this.Location.GetHashCode();
+				hash *= 23 + this.Directory.GetHashCode();
+				hash *= 23 + this.FileName.GetHashCode();
 				return hash;
 			}
 		}
@@ -80,7 +82,9 @@ namespace KSoft.Phoenix.Engine
 		public override string ToString()
 		{
 			return string.Format("{0}.{1}.{2}",
-				Location, Directory, FileName);
+			                     this.Location,
+			                     this.Directory,
+			                     this.FileName);
 		}
 	};
 
@@ -92,12 +96,12 @@ namespace KSoft.Phoenix.Engine
 
 		public XmlFileLoadStateChangedArgs(XmlFileInfo xmlFile, XmlFileLoadState newState)
 		{
-			XmlFile = xmlFile;
-			NewState = newState;
+			this.XmlFile = xmlFile;
+			this.NewState = newState;
 		}
 	};
 
-	[System.Diagnostics.DebuggerDisplay("{"+ nameof(ProtoDataXmlFileInfo.DebuggerDisplay)  +"}")]
+	[System.Diagnostics.DebuggerDisplay("{"+ nameof(DebuggerDisplay)  +"}")]
 	public sealed class ProtoDataXmlFileInfo
 	{
 		public XmlFilePriority Priority;
@@ -108,14 +112,15 @@ namespace KSoft.Phoenix.Engine
 			, XmlFileInfo fileInfo
 			, XmlFileInfo fileInfoWithUpdates = null)
 		{
-			Priority = priority;
-			FileInfo = fileInfo;
-			FileInfoWithUpdates = fileInfoWithUpdates;
+			this.Priority = priority;
+			this.FileInfo = fileInfo;
+			this.FileInfoWithUpdates = fileInfoWithUpdates;
 		}
 
 		public string DebuggerDisplay { get {
 			return string.Format("{0} {1}",
-				Priority, FileInfo);
+			                     this.Priority,
+			                     this.FileInfo);
 		} }
 	};
 }

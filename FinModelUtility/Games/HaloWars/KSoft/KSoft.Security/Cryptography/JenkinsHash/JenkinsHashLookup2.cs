@@ -17,97 +17,115 @@ namespace KSoft.Security.Cryptography
 		{
 			uint a, b, c;
 
-			public uint Result { get { return c; } }
+			public uint Result { get { return this.c; } }
 
 			public HashState(uint seed)
 			{
-				a = b = kGoldenRatio;
-				c = seed;
+				this.a = this.b = kGoldenRatio;
+				this.c = seed;
 			}
 
 			void Mix()
 			{
-				a -= b; a -= c; a ^= (c >> 13);
-				b -= c; b -= a; b ^= (a <<  8);
-				c -= a; c -= b; c ^= (b >> 13);
-				a -= b; a -= c; a ^= (c >> 12);
-				b -= c; b -= a; b ^= (a << 16);
-				c -= a; c -= b; c ^= (b >>  5);
-				a -= b; a -= c; a ^= (c >>  3);
-				b -= c; b -= a; b ^= (a << 10);
-				c -= a; c -= b; c ^= (b >> 15);
+				this.a -= this.b;
+				this.a -= this.c;
+				this.a ^= (this.c >> 13);
+				this.b -= this.c;
+				this.b -= this.a;
+				this.b ^= (this.a <<  8);
+				this.c -= this.a;
+				this.c -= this.b;
+				this.c ^= (this.b >> 13);
+				this.a -= this.b;
+				this.a -= this.c;
+				this.a ^= (this.c >> 12);
+				this.b -= this.c;
+				this.b -= this.a;
+				this.b ^= (this.a << 16);
+				this.c -= this.a;
+				this.c -= this.b;
+				this.c ^= (this.b >>  5);
+				this.a -= this.b;
+				this.a -= this.c;
+				this.a ^= (this.c >>  3);
+				this.b -= this.c;
+				this.b -= this.a;
+				this.b ^= (this.a << 10);
+				this.c -= this.a;
+				this.c -= this.b;
+				this.c ^= (this.b >> 15);
 			}
 
 			void Fill(byte[] data, ref int i)
 			{
-				JenkinsHashLookup.Fill(ref a, ref b, ref c, data, ref i);
+				JenkinsHashLookup.Fill(ref this.a, ref this.b, ref this.c, data, ref i);
 			}
 
 			void Fill(char[] data, ref int i)
 			{
-				JenkinsHashLookup.Fill(ref a, ref b, ref c, data, ref i);
+				JenkinsHashLookup.Fill(ref this.a, ref this.b, ref this.c, data, ref i);
 			}
 
 			void Fill(string data, ref int i)
 			{
-				JenkinsHashLookup.Fill(ref a, ref b, ref c, data, ref i);
+				JenkinsHashLookup.Fill(ref this.a, ref this.b, ref this.c, data, ref i);
 			}
 
 			void FinalFill(byte[] data, ref int i, int length)
 			{
-				c += (uint)length;
+				this.c += (uint)length;
 
-				JenkinsHashLookup.FinalFill(ref a, ref b, ref c, data, ref i, length);
+				JenkinsHashLookup.FinalFill(ref this.a, ref this.b, ref this.c, data, ref i, length);
 			}
 
 			void FinalFill(char[] data, ref int i, int length)
 			{
-				c += (uint)length;
+				this.c += (uint)length;
 
-				JenkinsHashLookup.FinalFill(ref a, ref b, ref c, data, ref i, length);
+				JenkinsHashLookup.FinalFill(ref this.a, ref this.b, ref this.c, data, ref i, length);
 			}
 
 			void FinalFill(string data, ref int i, int length)
 			{
-				c += (uint)length;
+				this.c += (uint)length;
 
-				JenkinsHashLookup.FinalFill(ref a, ref b, ref c, data, ref i, length);
+				JenkinsHashLookup.FinalFill(ref this.a, ref this.b, ref this.c, data, ref i, length);
 			}
 
 			public void ProcessBlock(byte[] buffer, ref int index)
 			{
-				Fill(buffer, ref index);
-				Mix();
+				this.Fill(buffer, ref index);
+				this.Mix();
 			}
 
 			public void ProcessBlock(char[] buffer, ref int index)
 			{
-				Fill(buffer, ref index);
-				Mix();
+				this.Fill(buffer, ref index);
+				this.Mix();
 			}
 
 			public void ProcessBlock(string buffer, ref int index)
 			{
-				Fill(buffer, ref index);
-				Mix();
+				this.Fill(buffer, ref index);
+				this.Mix();
 			}
 
 			public void ProcessFinalBlock(byte[] buffer, ref int index, int length)
 			{
-				FinalFill(buffer, ref index, length);
-				Mix();
+				this.FinalFill(buffer, ref index, length);
+				this.Mix();
 			}
 
 			public void ProcessFinalBlock(char[] buffer, ref int index, int length)
 			{
-				FinalFill(buffer, ref index, length);
-				Mix();
+				this.FinalFill(buffer, ref index, length);
+				this.Mix();
 			}
 
 			public void ProcessFinalBlock(string buffer, ref int index, int length)
 			{
-				FinalFill(buffer, ref index, length);
-				Mix();
+				this.FinalFill(buffer, ref index, length);
+				this.Mix();
 			}
 		};
 

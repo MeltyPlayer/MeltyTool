@@ -19,15 +19,15 @@ public class Adjunct : ITextDeserializable {
       var indices = tr.ReadInt32s(TextReaderConstants.WHITESPACE_STRINGS, TextReaderConstants.NEWLINE_STRINGS);
       Asserts.Equal(6, indices.Length);
 
-      PositionIndex = indices[0];
-      NormalIndex = indices[1];
-      ColorIndex = indices[2];
-      Uv1Index = indices[3];
+      this.PositionIndex = indices[0];
+      this.NormalIndex = indices[1];
+      this.ColorIndex = indices[2];
+      this.Uv1Index = indices[3];
 
       // TODO: This might not be correct
       var uv2Index = indices[4];
 
-      MatrixIndex = indices[5];
+      this.MatrixIndex = indices[5];
 
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
     }

@@ -40,7 +40,7 @@ public partial class FigaTree : IDatNode, IBinaryDeserializable {
       br.SubreadAt(
           this.TrackDataOffset,
           sbr => {
-            foreach (var trackCount in TrackCounts) {
+            foreach (var trackCount in this.TrackCounts) {
               var treeTracks = new LinkedList<FigaTreeTrack>();
               for (var i = 0; i < trackCount; i++) {
                 treeTracks.AddLast(sbr.ReadNew<FigaTreeTrack>());

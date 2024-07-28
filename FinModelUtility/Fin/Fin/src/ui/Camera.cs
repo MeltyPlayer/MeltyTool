@@ -21,7 +21,7 @@ public class Camera : ICamera {
   public static ICamera Instance { get; private set; }
 
   public Camera() {
-    Camera.Instance = this;
+    Instance = this;
   }
 
   public float X { get; set; }

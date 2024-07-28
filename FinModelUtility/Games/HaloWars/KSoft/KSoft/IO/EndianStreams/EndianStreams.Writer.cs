@@ -20,17 +20,17 @@ namespace KSoft.IO
 		/// <summary>Null stream constructor</summary>
 		EndianWriter() : base()
 		{
-			BaseStreamOwner = true;
-			BaseAddress = Values.PtrHandle.Null32;
+			this.BaseStreamOwner = true;
+			this.BaseAddress = Values.PtrHandle.Null32;
 
-			ByteOrder = Shell.Platform.Environment.ProcessorType.ByteOrder;
-			Owner = null;
-			mStringEncoding = new UTF8Encoding(false, true);
+			this.ByteOrder = Shell.Platform.Environment.ProcessorType.ByteOrder;
+			this.Owner = null;
+			this.mStringEncoding = new UTF8Encoding(false, true);
 
 			// Satisfy ObjectInvariant
-			StreamName = "(null)";
+			this.StreamName = "(null)";
 
-			mRequiresByteSwap = !ByteOrder.IsSameAsRuntime();
+			this.mRequiresByteSwap = !this.ByteOrder.IsSameAsRuntime();
 		}
 
 		/// <summary>Create a new binary writer which respects the endian format of the underlying stream's bytes</summary>
@@ -45,19 +45,19 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(output != null);
 			Contract.Requires<ArgumentNullException>(encoding != null);
 
-			BaseStreamOwner = true;
-			BaseAddress = Values.PtrHandle.Null32;
+			this.BaseStreamOwner = true;
+			this.BaseAddress = Values.PtrHandle.Null32;
 
-			ByteOrder = byteOrder;
-			Owner = streamOwner;
-			mStringEncoding = encoding;
+			this.ByteOrder = byteOrder;
+			this.Owner = streamOwner;
+			this.mStringEncoding = encoding;
 
-			StreamName = name ?? "(unnamed)";
+			this.StreamName = name ?? "(unnamed)";
 
 			// If the stream is a different endian than the runtime, data will
 			// be byte swapped of course
 			//this.mRequiresByteSwap = Shell.Platform.Environment.ProcessorType.ByteOrder != byteOrder;
-			mRequiresByteSwap = !byteOrder.IsSameAsRuntime();
+			this.mRequiresByteSwap = !byteOrder.IsSameAsRuntime();
 		}
 
 		/// <summary>Create a new binary writer which respects the endian format of the underlying stream's bytes</summary>
@@ -136,7 +136,7 @@ namespace KSoft.IO
 
 			// Explicitly check for Little endian since this is
 			// a character array and not a primitive integer
-			if (ByteOrder == Shell.EndianFormat.Little)
+			if (this.ByteOrder == Shell.EndianFormat.Little)
 			{
 				base.Write((byte)tag[3]);
 				base.Write((byte)tag[2]);
@@ -156,7 +156,7 @@ namespace KSoft.IO
 		/// <param name="tag"></param>
 		public void WriteTag32(uint tag)
 		{
-			if (mRequiresByteSwap) Bitwise.ByteSwap.Swap(ref tag);
+			if (this.mRequiresByteSwap) Bitwise.ByteSwap.Swap(ref tag);
 			base.Write(tag);
 		}
 
@@ -164,7 +164,7 @@ namespace KSoft.IO
 		/// <param name="tag"></param>
 		public void WriteTag64(ulong tag)
 		{
-			if (mRequiresByteSwap) Bitwise.ByteSwap.Swap(ref tag);
+			if (this.mRequiresByteSwap) Bitwise.ByteSwap.Swap(ref tag);
 			base.Write(tag);
 		}
 		#endregion
@@ -175,7 +175,7 @@ namespace KSoft.IO
 		/// <param name="value"></param>
 		public void WriteInt24(int value)
 		{
-			if (mRequiresByteSwap) Bitwise.ByteSwap.SwapInt24(ref value);
+			if (this.mRequiresByteSwap) Bitwise.ByteSwap.SwapInt24(ref value);
 			base.Write((byte) value);
 			base.Write((byte)(value >>  8));
 			base.Write((byte)(value >> 16));
@@ -185,7 +185,7 @@ namespace KSoft.IO
 		/// <param name="value"></param>
 		public void WriteUInt24(uint value)
 		{
-			if (mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt24(ref value);
+			if (this.mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt24(ref value);
 			base.Write((byte) value);
 			base.Write((byte)(value >>  8));
 			base.Write((byte)(value >> 16));
@@ -195,7 +195,7 @@ namespace KSoft.IO
 		/// <param name="value"></param>
 		public void WriteUInt40(ulong value)
 		{
-			if (mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt40(ref value);
+			if (this.mRequiresByteSwap) Bitwise.ByteSwap.SwapUInt40(ref value);
 			base.Write((byte) value);
 			base.Write((byte)(value >>  8));
 			base.Write((byte)(value >> 16));
@@ -234,13 +234,17 @@ namespace KSoft.IO
 		{
 			if (!value.IsNull)
 			{
-				if (!value.Is64bit)	Write(value.u32);
-				else				Write(value.u64);
+				if (!value.Is64bit)
+					this.Write(value.u32);
+				else
+					this.Write(value.u64);
 			}
 			else
 			{
-				if (!value.Is64bit)	Write(uint.MinValue);
-				else				Write(ulong.MinValue);
+				if (!value.Is64bit)
+					this.Write(uint.MinValue);
+				else
+					this.Write(ulong.MinValue);
 			}
 		}
 
@@ -258,13 +262,17 @@ namespace KSoft.IO
 		{
 			if (!value.IsNull)
 			{
-				if (!value.Is64bit)	Write(value.u32 + BaseAddress.u32);
-				else				Write(value.u64 + BaseAddress.u64);
+				if (!value.Is64bit)
+					this.Write(value.u32 + this.BaseAddress.u32);
+				else
+					this.Write(value.u64 + this.BaseAddress.u64);
 			}
 			else
 			{
-				if (!value.Is64bit)	Write(uint.MinValue);
-				else				Write(ulong.MinValue);
+				if (!value.Is64bit)
+					this.Write(uint.MinValue);
+				else
+					this.Write(ulong.MinValue);
 			}
 		}
 		#endregion
@@ -279,7 +287,7 @@ namespace KSoft.IO
 				? Util.ConvertDateTimeToUnixTime(value)
 				: value.ToBinary();
 
-			Write(binary);
+			this.Write(binary);
 		}
 
 		public void Write<TEnum>(TEnum value, IEnumEndianStreamer<TEnum> implementation)
@@ -298,7 +306,7 @@ namespace KSoft.IO
 			Contract.Ensures(Contract.Result<bool[]>() != null);
 
 			for (int x = startIndex, end = startIndex+length; x < end; x++)
-				Write(array[x]);
+				this.Write(array[x]);
 
 			return array;
 		}
@@ -307,7 +315,7 @@ namespace KSoft.IO
 			Contract.Requires(array != null);
 			Contract.Ensures(Contract.Result<bool[]>() != null);
 
-			return WriteFixedArray(array, 0, array.Length);
+			return this.WriteFixedArray(array, 0, array.Length);
 		}
 	};
 }

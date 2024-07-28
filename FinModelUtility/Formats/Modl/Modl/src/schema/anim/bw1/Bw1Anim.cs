@@ -84,19 +84,18 @@ public class Bw1Anim : IAnim, IBinaryDeserializable {
       Span<ushort> shorts = stackalloc ushort[3];
 
       for (var p = 0; p < bone.PositionKeyframeCount; ++p) {
-        Parse3PositionValuesFrom2UShorts_(bone,
-                                          ber,
-                                          out var outX,
-                                          out var outY,
-                                          out var outZ);
+        this.Parse3PositionValuesFrom2UShorts_(bone,
+                                               ber,
+                                               out var outX,
+                                               out var outY,
+                                               out var outZ);
         animBoneFrames.PositionFrames.Add(((float) outX,
                                            (float) outY,
                                            (float) outZ));
       }
 
       for (var p = 0; p < bone.RotationKeyframeCount; ++p) {
-        var flipSigns =
-            Parse4RotationValuesFrom3UShorts_(
+        var flipSigns = this.Parse4RotationValuesFrom3UShorts_(
                 ber,
                 shorts,
                 out var outX,

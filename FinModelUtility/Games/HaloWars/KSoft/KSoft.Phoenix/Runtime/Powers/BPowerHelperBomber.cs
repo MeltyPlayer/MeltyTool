@@ -13,9 +13,9 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref BomberId);
-			s.Stream(ref BomberFlyinDistance); s.Stream(ref BomberFlyinHeight); s.Stream(ref BomberBombHeight);
-			s.Stream(ref BomberSpeed); s.Stream(ref BombTime); s.Stream(ref FlyoutTime); s.Stream(ref AdditionalHeight);
+			s.Stream(ref this.BomberId);
+			s.Stream(ref this.BomberFlyinDistance); s.Stream(ref this.BomberFlyinHeight); s.Stream(ref this.BomberBombHeight);
+			s.Stream(ref this.BomberSpeed); s.Stream(ref this.BombTime); s.Stream(ref this.FlyoutTime); s.Stream(ref this.AdditionalHeight);
 		}
 		#endregion
 	};

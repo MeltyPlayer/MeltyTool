@@ -35,8 +35,8 @@ namespace uni.platforms.gcn.tools {
 
       this.currentHeaderSize_ =
           Path.GetExtension(REL_Location).Contains("dol")
-              ? RelDump.DOL_HEADER_SIZE
-              : RelDump.REL_HEADER_SIZE;
+              ? DOL_HEADER_SIZE
+              : REL_HEADER_SIZE;
       byte[] REL_Data = File.ReadAllBytes(REL_Location);
       string[] MAP_Data = File.ReadAllLines(MAP_Location);
       string Memory_Map =

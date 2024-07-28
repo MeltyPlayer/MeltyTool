@@ -168,10 +168,10 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
         var parentId = rcbSkeleton.BoneParentIdMap[id];
         var rcbBone = rcbSkeleton.Bones[id];
 
-        var currentMatrix = GetMatrixFromBone_(rcbBone.Matrix);
+        var currentMatrix = this.GetMatrixFromBone_(rcbBone.Matrix);
         if (parentId != -1) {
           var rcbParentBone = rcbSkeleton.Bones[parentId];
-          var parentMatrix = GetMatrixFromBone_(rcbParentBone.Matrix);
+          var parentMatrix = this.GetMatrixFromBone_(rcbParentBone.Matrix);
           currentMatrix = parentMatrix.InvertInPlace()
                                       .CloneAndMultiply(currentMatrix);
         }

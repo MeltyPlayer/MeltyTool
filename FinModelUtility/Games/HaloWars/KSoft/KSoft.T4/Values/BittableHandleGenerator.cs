@@ -47,25 +47,25 @@ namespace KSoft.T4.Values
 		#region Ctors
 		BittableHandleGenerator()
 		{
-			BackingFieldName = "mValue";
+			this.BackingFieldName = "mValue";
 
-			IsPartial = true;
+			this.IsPartial = true;
 
-			Kind = BittableHandleKind.Undefined;
+			this.Kind = BittableHandleKind.Undefined;
 
-			SupportsIComparable = true;
-			SupportsIEquatable = true;
+			this.SupportsIComparable = true;
+			this.SupportsIEquatable = true;
 
-			CtorFromValueTypeName = null;
-			CtorFromValueParamName = "value";
+			this.CtorFromValueTypeName = null;
+			this.CtorFromValueParamName = "value";
 		}
 		public BittableHandleGenerator(TextTemplating.TextTransformation ttFile,
 			string underlyingTypeName, string structName)
 			: this()
 		{
-			mFile = ttFile;
-			mUnderlyingTypeName = underlyingTypeName;
-			mStructName = structName;
+			this.mFile = ttFile;
+			this.mUnderlyingTypeName = underlyingTypeName;
+			this.mStructName = structName;
 		}
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
 		public BittableHandleGenerator(TextTemplating.TextTransformation ttFile,
@@ -99,21 +99,21 @@ namespace KSoft.T4.Values
 		}
 		void WriteDeclHeader()
 		{
-			string visibility = IsInternal
+			string visibility = this.IsInternal
 				? "internal"
 				: "public";
 
-			string partial = IsPartial
+			string partial = this.IsPartial
 				? "partial "
 				: "";
 
-			mFile.WriteLine("{0} {1} struct {2}", visibility, partial, mStructName);
+			this.mFile.WriteLine("{0} {1} struct {2}", visibility, partial, this.mStructName);
 		}
 		#region GenerateDeclInheritance
 		// Curiously recurring template pattern
 		string BuildDeclInheritanceTextCRTP(string genericClassName)
 		{
-			return string.Format(UtilT4.InvariantCultureInfo, "{0}<{1}>", genericClassName, mStructName);
+			return string.Format(UtilT4.InvariantCultureInfo, "{0}<{1}>", genericClassName, this.mStructName);
 		}
 		int WriteDeclInheritanceEntry(int position, bool entryExists, string entryText)
 		{
@@ -123,7 +123,7 @@ namespace KSoft.T4.Values
 					? ","
 					: ":";
 
-				mFile.WriteLine("{0} {1}", prefix, entryText);
+				this.mFile.WriteLine("{0} {1}", prefix, entryText);
 				position++;
 			}
 
@@ -133,52 +133,60 @@ namespace KSoft.T4.Values
 		{
 			int entry_pos = 0;
 			// indent the inheritance entries +1 more than the type decl (ie, public struct...)
-			using (mFile.EnterCodeBlock())
+			using (this.mFile.EnterCodeBlock())
 			{
-				entry_pos = WriteDeclInheritanceEntry(entry_pos, SupportsIComparable,
-					BuildDeclInheritanceTextCRTP("IComparable"));
+				entry_pos = this.WriteDeclInheritanceEntry(entry_pos,
+				                                           this.SupportsIComparable,
+				                                           this.BuildDeclInheritanceTextCRTP("IComparable"));
 
-				entry_pos = WriteDeclInheritanceEntry(entry_pos, SupportsIEquatable,
-					BuildDeclInheritanceTextCRTP("IEquatable"));
+				entry_pos = this.WriteDeclInheritanceEntry(entry_pos,
+				                                           this.SupportsIEquatable,
+				                                           this.BuildDeclInheritanceTextCRTP("IEquatable"));
 			}
 		}
 		#endregion
 		public void GenerateDecl()
 		{
 			// indent the decl by 1. it is assumed the decl is nested in a single namespace declaration (like this codegen class)
-			using (mFile.EnterCodeBlock())
+			using (this.mFile.EnterCodeBlock())
 			{
-				WriteDeclAttributes();
-				WriteDeclHeader();
-				WriteDeclInheritance();
+				this.WriteDeclAttributes();
+				this.WriteDeclHeader();
+				this.WriteDeclInheritance();
 			}
 		}
 		#endregion
 
 		public void GenerateBackingFieldDecl()
 		{
-			mFile.WriteLine("{0} {1};",
-				mUnderlyingTypeName, BackingFieldName);
+			this.mFile.WriteLine("{0} {1};",
+			                     this.mUnderlyingTypeName,
+			                     this.BackingFieldName);
 
-			mFile.NewLine();
+			this.mFile.NewLine();
 		}
 
 		// Use non-default CtorFromValue... inputs when the 'value' is of a different bit size than the underlying type
 		// eg, underlying type is Int16, but we construct from Int32 inputs
 		public void GenerateCtorFromValueMethod()
 		{
-			if (CtorFromValueTypeName == null)
-				CtorFromValueTypeName = mUnderlyingTypeName;
+			if (this.CtorFromValueTypeName == null)
+				this.CtorFromValueTypeName = this.mUnderlyingTypeName;
 
-			mFile.WriteLine("public {0}({1} {2})",
-				mStructName, CtorFromValueTypeName, CtorFromValueParamName);
+			this.mFile.WriteLine("public {0}({1} {2})",
+			                     this.mStructName,
+			                     this.CtorFromValueTypeName,
+			                     this.CtorFromValueParamName);
 
-			using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+			using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 			{
-				mFile.WriteLine("{0} = ({1}){2};",
-					BackingFieldName, mUnderlyingTypeName, CtorFromValueParamName);
+				this.mFile.WriteLine("{0} = ({1}){2};",
+				                     this.BackingFieldName,
+				                     this.mUnderlyingTypeName,
+				                     this.CtorFromValueParamName);
 			}
-			mFile.NewLine();
+
+			this.mFile.NewLine();
 		}
 
 		#region Generate cast to and from methods
@@ -186,84 +194,88 @@ namespace KSoft.T4.Values
 		{
 			const string k_param_name = "handle";
 
-			mFile.WriteLine("public static implicit operator {0}({1} {2})",
-				mUnderlyingTypeName, mStructName, k_param_name);
+			this.mFile.WriteLine("public static implicit operator {0}({1} {2})",
+			                     this.mUnderlyingTypeName,
+			                     this.mStructName, k_param_name);
 
-			using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+			using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 			{
-				mFile.WriteLine("return {0}.{1}",
-					k_param_name, BackingFieldName);
+				this.mFile.WriteLine("return {0}.{1}",
+				                     k_param_name,
+				                     this.BackingFieldName);
 			}
 		}
 		void WriteCastFromUnderlyingTypeMethod()
 		{
 			const string k_param_name = "value";
 
-			mFile.WriteLine("public static implicit operator {0}({1} {2})",
-				mStructName, mUnderlyingTypeName, k_param_name);
+			this.mFile.WriteLine("public static implicit operator {0}({1} {2})",
+			                     this.mStructName,
+			                     this.mUnderlyingTypeName, k_param_name);
 
-			using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+			using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 			{
-				mFile.WriteLine("return new {0}({1});",
-					mStructName, k_param_name);
+				this.mFile.WriteLine("return new {0}({1});",
+				                     this.mStructName, k_param_name);
 			}
 		}
 		public void GenerateStockCastMethods()
 		{
-			WriteCastToUnderlyingTypeMethod();
-			WriteCastFromUnderlyingTypeMethod();
-			mFile.NewLine();
+			this.WriteCastToUnderlyingTypeMethod();
+			this.WriteCastFromUnderlyingTypeMethod();
+			this.mFile.NewLine();
 		}
 		#endregion
 
 		#region Generate equality methods
 		void WriteEqualityOperatorMethod(string operatorSymbol)
 		{
-			Debug.Assert(SupportsIEquatable,
+			Debug.Assert(this.SupportsIEquatable,
 				"Trying to generate handle without IEquatable support, but with equality operators (this is non-optimal)",
 				"in {0}",
-				mStructName);
+				this.mStructName);
 
-			mFile.WriteLine("public static bool operator {0}({1} x, {1} y)",
-				operatorSymbol, mStructName);
+			this.mFile.WriteLine("public static bool operator {0}({1} x, {1} y)",
+			                     operatorSymbol,
+			                     this.mStructName);
 
-			using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+			using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 			{
-				mFile.WriteLine("return x.Equals(y) {0} true",
-					operatorSymbol);
+				this.mFile.WriteLine("return x.Equals(y) {0} true",
+				                     operatorSymbol);
 			}
 		}
 		public void GenerateEqualityOperatorMethods()
 		{
-			WriteEqualityOperatorMethod("==");
-			WriteEqualityOperatorMethod("!=");
-			mFile.NewLine();
+			this.WriteEqualityOperatorMethod("==");
+			this.WriteEqualityOperatorMethod("!=");
+			this.mFile.NewLine();
 		}
 		#endregion
 
 		#region Generate NONE utilities
 		void WriteNoneField(string fieldName = kNoneFieldName)
 		{
-			mFile.WriteLine("public static readonly {0} {1} = new {0}({2});",
-				mStructName, fieldName, kNoneValueCodeName);
+			this.mFile.WriteLine("public static readonly {0} {1} = new {0}({2});",
+			                     this.mStructName, fieldName, kNoneValueCodeName);
 		}
 		void WriteNoneableProperties()
 		{
-			mFile.WriteLine("public bool IsNone { get { return {0} == {1}; } }",
-				BackingFieldName, kNoneValueCodeName);
+			this.mFile.WriteLine("public bool IsNone { get { return {0} == {1}; } }",
+			                     this.BackingFieldName, kNoneValueCodeName);
 
-			mFile.WriteLine("public bool IsNotNone { get { return {0} != {1}; } }",
-				BackingFieldName, kNoneValueCodeName);
+			this.mFile.WriteLine("public bool IsNotNone { get { return {0} != {1}; } }",
+			                     this.BackingFieldName, kNoneValueCodeName);
 		}
 		public void GenereateNoneableMembers(string noneFieldName = kNoneFieldName)
 		{
-			if (Kind == BittableHandleKind.Noneable)
+			if (this.Kind == BittableHandleKind.Noneable)
 			{
-				WriteNoneField(noneFieldName);
-				mFile.NewLine();
+				this.WriteNoneField(noneFieldName);
+				this.mFile.NewLine();
 
-				WriteNoneableProperties();
-				mFile.NewLine();
+				this.WriteNoneableProperties();
+				this.mFile.NewLine();
 			}
 		}
 		#endregion
@@ -271,26 +283,26 @@ namespace KSoft.T4.Values
 		#region Generate NULL utilities
 		void WriteNullField(string fieldName = kNullFieldName)
 		{
-			mFile.WriteLine("public static readonly {0} {1} = new {0}( 0 );",
-				mStructName, fieldName);
+			this.mFile.WriteLine("public static readonly {0} {1} = new {0}( 0 );",
+			                     this.mStructName, fieldName);
 		}
 		void WriteNullableProperties()
 		{
-			mFile.WriteLine("public bool IsNull { get { return {0} == 0; } }",
-				BackingFieldName);
+			this.mFile.WriteLine("public bool IsNull { get { return {0} == 0; } }",
+			                     this.BackingFieldName);
 
-			mFile.WriteLine("public bool IsNotNull { get { return {0} != 0; } }",
-				BackingFieldName);
+			this.mFile.WriteLine("public bool IsNotNull { get { return {0} != 0; } }",
+			                     this.BackingFieldName);
 		}
 		public void GenereateNullableMembers(string nullFieldName = kNullFieldName)
 		{
-			if (Kind == BittableHandleKind.Nullable)
+			if (this.Kind == BittableHandleKind.Nullable)
 			{
-				WriteNullField(nullFieldName);
-				mFile.NewLine();
+				this.WriteNullField(nullFieldName);
+				this.mFile.NewLine();
 
-				WriteNullableProperties();
-				mFile.NewLine();
+				this.WriteNullableProperties();
+				this.mFile.NewLine();
 			}
 		}
 		#endregion
@@ -298,38 +310,38 @@ namespace KSoft.T4.Values
 		#region Generate object overrides
 		void WriteGetHashCodeOverride()
 		{
-			mFile.WriteLine("public override int GetHashCode()");
+			this.mFile.WriteLine("public override int GetHashCode()");
 
-			using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+			using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 			{
-				mFile.WriteLine("{0}.GetHashCode();",
-					BackingFieldName);
+				this.mFile.WriteLine("{0}.GetHashCode();",
+				                     this.BackingFieldName);
 			}
 		}
 		void WriteEqualsOverride()
 		{
-			mFile.WriteLine("public override bool Equals(object obj)");
+			this.mFile.WriteLine("public override bool Equals(object obj)");
 
-			using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+			using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 			{
-				mFile.WriteLine("if (!(obj is {0}))",
-					mStructName);
-				using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+				this.mFile.WriteLine("if (!(obj is {0}))",
+				                     this.mStructName);
+				using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 				{
-					mFile.WriteLine("return false;");
+					this.mFile.WriteLine("return false;");
 				}
 
-				mFile.WriteLine("return Equals( ({0})obj );",
-					mStructName);
+				this.mFile.WriteLine("return Equals( ({0})obj );",
+				                     this.mStructName);
 			}
 		}
 		public void GenerateObjectMethodOverrides()
 		{
-			WriteGetHashCodeOverride();
-			mFile.NewLine();
+			this.WriteGetHashCodeOverride();
+			this.mFile.NewLine();
 
-			WriteEqualsOverride();
-			mFile.NewLine();
+			this.WriteEqualsOverride();
+			this.mFile.NewLine();
 		}
 		#endregion
 
@@ -339,21 +351,24 @@ namespace KSoft.T4.Values
 		{
 			const string k_interface_name = "IComparable";
 
-			mFile.WriteLine("#region {0}<{1}> Members",
-				k_interface_name, mStructName);
+			this.mFile.WriteLine("#region {0}<{1}> Members",
+			                     k_interface_name,
+			                     this.mStructName);
 			{
 				const string k_return_type = "int";
 
-				mFile.WriteLine("public {0} {1}({2} other)",
-					k_return_type, "ComapreTo", mStructName);
+				this.mFile.WriteLine("public {0} {1}({2} other)",
+				                     k_return_type, "ComapreTo",
+				                     this.mStructName);
 
-				using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+				using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 				{
-					mFile.WriteLine("return ({0})({1} - other.{1});",
-						k_return_type, BackingFieldName);
+					this.mFile.WriteLine("return ({0})({1} - other.{1});",
+					                     k_return_type,
+					                     this.BackingFieldName);
 				}
 			}
-			mFile.WriteLine("#endregion");
+			this.mFile.WriteLine("#endregion");
 		}
 		#endregion
 
@@ -362,85 +377,87 @@ namespace KSoft.T4.Values
 		{
 			const string k_interface_name = "IEquatable";
 
-			mFile.WriteLine("#region {0}<{1}> Members",
-				k_interface_name, mStructName);
+			this.mFile.WriteLine("#region {0}<{1}> Members",
+			                     k_interface_name,
+			                     this.mStructName);
 			{
 				const string k_return_type = "bool";
 
-				mFile.WriteLine("public {0} {1}({2} other)",
-					k_return_type, "Equals", mStructName);
+				this.mFile.WriteLine("public {0} {1}({2} other)",
+				                     k_return_type, "Equals",
+				                     this.mStructName);
 
-				using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+				using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 				{
-					mFile.WriteLine("return {0} == other.{0};",
-						BackingFieldName);
+					this.mFile.WriteLine("return {0} == other.{0};",
+					                     this.BackingFieldName);
 				}
 			}
-			mFile.WriteLine("#endregion");
+			this.mFile.WriteLine("#endregion");
 		}
 		#endregion
 
 		public void GenerateSupportedInterfaceImplementations()
 		{
-			if (SupportsIComparable)
+			if (this.SupportsIComparable)
 			{
-				GenerateIComparableImpl();
-				mFile.NewLine();
+				this.GenerateIComparableImpl();
+				this.mFile.NewLine();
 			}
 
-			if (SupportsIEquatable)
+			if (this.SupportsIEquatable)
 			{
-				GenerateIEquatableImpl();
-				mFile.NewLine();
+				this.GenerateIEquatableImpl();
+				this.mFile.NewLine();
 			}
 		}
 		#endregion
 
 		public void GenerateDefaultBody()
 		{
-			using (mFile.EnterCodeBlock(TextTransformationCodeBlockType.BracketsStatement))
+			using (this.mFile.EnterCodeBlock(TextTransformationCodeBlockType.BracketsStatement))
 			{
-				switch (Kind)
+				switch (this.Kind)
 				{
 				case BittableHandleKind.Noneable:
-					WriteNoneField();
+					this.WriteNoneField();
 					break;
 				case BittableHandleKind.Nullable:
-					WriteNullField();
+					this.WriteNullField();
 					break;
 				}
-				if (Kind != BittableHandleKind.Undefined)
-					mFile.NewLine();
+				if (this.Kind != BittableHandleKind.Undefined)
+					this.mFile.NewLine();
 
-				GenerateBackingFieldDecl();
+				this.GenerateBackingFieldDecl();
 
-				GenerateCtorFromValueMethod();
+				this.GenerateCtorFromValueMethod();
 
-				GenerateStockCastMethods();
-				GenerateEqualityOperatorMethods();
+				this.GenerateStockCastMethods();
+				this.GenerateEqualityOperatorMethods();
 
-				switch (Kind)
+				switch (this.Kind)
 				{
 				case BittableHandleKind.Noneable:
-					WriteNoneableProperties();
+					this.WriteNoneableProperties();
 					break;
 				case BittableHandleKind.Nullable:
-					WriteNullableProperties();
+					this.WriteNullableProperties();
 					break;
 				}
-				if (Kind != BittableHandleKind.Undefined)
-					mFile.NewLine();
+				if (this.Kind != BittableHandleKind.Undefined)
+					this.mFile.NewLine();
 
-				GenerateObjectMethodOverrides();
+				this.GenerateObjectMethodOverrides();
 
-				GenerateSupportedInterfaceImplementations();
+				this.GenerateSupportedInterfaceImplementations();
 			}
 		}
 
 		public void GenerateDefinition()
 		{
-			GenerateDecl();
-			GenerateDefaultBody();
+			this.GenerateDecl();
+			this.GenerateDefaultBody();
 		}
 	};
 }

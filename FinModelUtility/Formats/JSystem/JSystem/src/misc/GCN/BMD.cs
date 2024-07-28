@@ -34,11 +34,11 @@ public partial class BMD {
       bool OK;
       while (!br.Eof) {
         switch (br.ReadString(4)) {
-          case nameof(INF1):
+          case nameof(this.INF1):
             br.Position -= 4L;
             this.INF1 = br.ReadNew<Inf1>();
             break;
-          case nameof(VTX1):
+          case nameof(this.VTX1):
             br.Position -= 4L;
             this.VTX1 = new VTX1Section(br, out OK);
             if (!OK) {
@@ -47,7 +47,7 @@ public partial class BMD {
               return;
             } else
               break;
-          case nameof(EVP1):
+          case nameof(this.EVP1):
             br.Position -= 4L;
             this.EVP1 = new EVP1Section(br, out OK);
             if (!OK) {
@@ -56,15 +56,15 @@ public partial class BMD {
               return;
             } else
               break;
-          case nameof(DRW1):
+          case nameof(this.DRW1):
             br.Position -= 4L;
             this.DRW1 = br.ReadNew<Drw1>();
             break;
-          case nameof(JNT1):
+          case nameof(this.JNT1):
             br.Position -= 4L;
             this.JNT1 = br.ReadNew<Jnt1>();
             break;
-          case nameof(SHP1):
+          case nameof(this.SHP1):
             br.Position -= 4L;
             this.SHP1 = new SHP1Section(br, out OK);
             if (!OK) {
@@ -75,7 +75,7 @@ public partial class BMD {
               break;
           case "MAT1":
           case "MAT2":
-          case nameof(MAT3):
+          case nameof(this.MAT3):
             br.Position -= 4L;
             this.MAT3 = new MAT3Section(br, out OK);
             if (!OK) {
@@ -84,7 +84,7 @@ public partial class BMD {
               return;
             } else
               break;
-          case nameof(TEX1):
+          case nameof(this.TEX1):
             br.Position -= 4L;
             this.TEX1 = br.ReadNew<Tex1>();
             break;

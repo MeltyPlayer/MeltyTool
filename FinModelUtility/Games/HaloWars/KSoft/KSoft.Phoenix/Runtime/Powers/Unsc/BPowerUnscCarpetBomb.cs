@@ -17,7 +17,7 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Unknown0); s.Stream(ref Unknown8); s.Stream(ref Unknown10); s.Stream(ref Unknown18);
+				s.Stream(ref this.Unknown0); s.Stream(ref this.Unknown8); s.Stream(ref this.Unknown10); s.Stream(ref this.Unknown18);
 			}
 			#endregion
 		};
@@ -43,21 +43,21 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			BSaveGame.StreamArray(s, ref BombExplodeInfos);
-			BSaveGame.StreamCollection(s, NudgedUnits);
-			s.StreamV(ref StartLocation); s.StreamV(ref StartDirection); s.StreamV(ref RightVector);
-			s.Stream(ref State);
-			s.Stream(ref GotStartLocation); s.Stream(ref GotStartDirection);
-			s.Stream(ref TickLength); s.Stream(ref NextBombTime); s.Stream(ref LastBombTime);
-			s.Stream(ref NumBombClustersDropped);
-			s.Stream(ref ProjectileProtoID); s.Stream(ref ImpactProtoID); s.Stream(ref ExplosionProtoID); s.Stream(ref BomberProtoID);
-			s.Stream(ref InitialDelay); s.Stream(ref FuseTime);
-			s.Stream(ref MaxBombs);
-			s.Stream(ref MaxBombOffset); s.Stream(ref BombSpacing); s.Stream(ref LengthMultiplier);
-			s.Stream(ref WedgeLengthMultiplier); s.Stream(ref WedgeMinOffset); s.Stream(ref NudgeMultiplier);
-			s.Stream(BomberData);
-			s.Stream(ref LOSMode);
-			s.Stream(ref ReactionPlayed);
+			BSaveGame.StreamArray(s, ref this.BombExplodeInfos);
+			BSaveGame.StreamCollection(s, this.NudgedUnits);
+			s.StreamV(ref this.StartLocation); s.StreamV(ref this.StartDirection); s.StreamV(ref this.RightVector);
+			s.Stream(ref this.State);
+			s.Stream(ref this.GotStartLocation); s.Stream(ref this.GotStartDirection);
+			s.Stream(ref this.TickLength); s.Stream(ref this.NextBombTime); s.Stream(ref this.LastBombTime);
+			s.Stream(ref this.NumBombClustersDropped);
+			s.Stream(ref this.ProjectileProtoID); s.Stream(ref this.ImpactProtoID); s.Stream(ref this.ExplosionProtoID); s.Stream(ref this.BomberProtoID);
+			s.Stream(ref this.InitialDelay); s.Stream(ref this.FuseTime);
+			s.Stream(ref this.MaxBombs);
+			s.Stream(ref this.MaxBombOffset); s.Stream(ref this.BombSpacing); s.Stream(ref this.LengthMultiplier);
+			s.Stream(ref this.WedgeLengthMultiplier); s.Stream(ref this.WedgeMinOffset); s.Stream(ref this.NudgeMultiplier);
+			s.Stream(this.BomberData);
+			s.Stream(ref this.LOSMode);
+			s.Stream(ref this.ReactionPlayed);
 		}
 		#endregion
 	};

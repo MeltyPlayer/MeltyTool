@@ -28,8 +28,8 @@ namespace KSoft.Wwise.SoundBank
 
 			if (read_playlist)
 			{
-				Playlist = new AkPlaylistItem[item_count];
-				s.StreamArray(Playlist);
+				this.Playlist = new AkPlaylistItem[item_count];
+				s.StreamArray(this.Playlist);
 			}
 		}
 		public override void Serialize(IO.EndianStream s)
@@ -39,10 +39,10 @@ namespace KSoft.Wwise.SoundBank
 			uint gen_ver = (s.Owner as AkSoundBank).GeneratorVersion;
 
 			if (gen_ver == AkVersion.k2008.BankGenerator)
-				SerializeReverseHack2008(s);
+				this.SerializeReverseHack2008(s);
 			else
 			{
-				s.Stream(ParameterNode);
+				s.Stream(this.ParameterNode);
 				// 0x18
 				s.Pad16(); // LoopCount
 				s.Pad32(); // float TransitionTime

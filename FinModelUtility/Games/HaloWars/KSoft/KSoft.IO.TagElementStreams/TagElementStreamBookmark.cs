@@ -26,8 +26,8 @@ namespace KSoft.IO
 			[SuppressMessage("Microsoft.Design", "CA1801:ReviewUnusedParameters")]
 			bool dummy)
 		{
-			mStream = null;
-			mOldCursor = null;
+			this.mStream = null;
+			this.mOldCursor = null;
 		}
 
 		[SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes")]
@@ -38,7 +38,7 @@ namespace KSoft.IO
 
 		/// <summary>Is this bookmark active?</summary>
 		/// <remarks>The bookmark can start out 'null' or become null after disposal</remarks>
-		public bool IsNotNull { get { return mStream != null; } }
+		public bool IsNotNull { get { return this.mStream != null; } }
 
 		/// <summary>Saves the stream's cursor so a new one can be specified, but then later restored to the saved cursor, via <see cref="Dispose()"/></summary>
 		/// <param name="stream">The underlying stream for this bookmark</param>
@@ -47,20 +47,20 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(stream != null);
 
-			mStream = null;
-			mOldCursor = null;
+			this.mStream = null;
+			this.mOldCursor = null;
 
 			if(elementName != null)
-				(mStream = stream).StreamElementBegin(elementName, out mOldCursor);
+				(this.mStream = stream).StreamElementBegin(elementName, out this.mOldCursor);
 		}
 
 		/// <summary>Returns the cursor of the underlying stream to the last saved cursor value</summary>
 		public void Dispose()
 		{
-			if (mStream != null)
+			if (this.mStream != null)
 			{
-				mStream.StreamElementEnd(ref mOldCursor);
-				mStream = null;
+				this.mStream.StreamElementEnd(ref this.mOldCursor);
+				this.mStream = null;
 			}
 		}
 	};
@@ -83,7 +83,7 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(stream != null);
 
-			(mStream = stream).SaveCursor(null, out mOldCursor);
+			(this.mStream = stream).SaveCursor(null, out this.mOldCursor);
 		}
 		/// <summary>Saves the stream's cursor and sets <paramref name="newCursor"/> to be the new cursor for the stream</summary>
 		/// <param name="stream">The underlying stream for this bookmark</param>
@@ -93,16 +93,16 @@ namespace KSoft.IO
 			Contract.Requires<ArgumentNullException>(stream != null);
 			Contract.Requires<ArgumentNullException>(newCursor != null);
 
-			(mStream = stream).SaveCursor(newCursor, out mOldCursor);
+			(this.mStream = stream).SaveCursor(newCursor, out this.mOldCursor);
 		}
 
 		/// <summary>Returns the cursor of the underlying stream to the last saved cursor value</summary>
 		public void Dispose()
 		{
-			if (mStream != null)
+			if (this.mStream != null)
 			{
-				mStream.RestoreCursor(ref mOldCursor);
-				mStream = null;
+				this.mStream.RestoreCursor(ref this.mOldCursor);
+				this.mStream = null;
 			}
 		}
 	};

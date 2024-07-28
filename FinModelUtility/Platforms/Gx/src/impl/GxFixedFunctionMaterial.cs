@@ -410,7 +410,7 @@ public partial class GxFixedFunctionMaterial {
           }
 
           default: {
-            if (GxFixedFunctionMaterial.STRICT) {
+            if (STRICT) {
               throw new NotImplementedException();
             } else {
               colorValue = colorC;
@@ -474,7 +474,7 @@ public partial class GxFixedFunctionMaterial {
           }
 
           default: {
-            if (GxFixedFunctionMaterial.STRICT) {
+            if (STRICT) {
               throw new NotImplementedException();
             } else {
               alphaValue = scZero;

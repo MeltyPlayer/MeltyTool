@@ -42,16 +42,16 @@ namespace KSoft.Phoenix.Resource
 	/// <summary>Number of files destined for the ERA, excluding the internal filenames table</summary>
 	private int FileChunksCount { get {
 			// Exclude the first chunk from the count, as it is the filenames table
-			return mFiles.Count - FileChunksFirstIndex;
+			return this.mFiles.Count - this.FileChunksFirstIndex;
 		} }
 
 		#region IDisposable Members
 		public void Dispose()
 		{
-			if (TigerHasher != null)
+			if (this.TigerHasher != null)
 			{
-				TigerHasher.Dispose();
-				TigerHasher = null;
+				this.TigerHasher.Dispose();
+				this.TigerHasher = null;
 			}
 		}
 		#endregion
@@ -60,7 +60,7 @@ namespace KSoft.Phoenix.Resource
 		{
 			return
 				EraFileHeader.CalculateHeaderSize() +
-				EraFileEntryChunk.CalculateFileChunksSize(mFiles.Count);
+				EraFileEntryChunk.CalculateFileChunksSize(this.mFiles.Count);
 		}
 
 		private void ValidateAdler32(EraFileEntryChunk fileEntry, IO.EndianStream blockStream)
@@ -73,7 +73,7 @@ namespace KSoft.Phoenix.Resource
 					? fileEntry.FileName
 					: "FileNames";//fileEntry.EntryId.ToString("X16");
 
-				throw new System.IO.InvalidDataException(string.Format(
+				throw new InvalidDataException(string.Format(
 					"Invalid chunk adler32 for '{0}' offset={1} size={2} " +
 					"expected {3} but got {4}",
 					chunk_name, fileEntry.DataOffset, fileEntry.DataSize.ToString("X8"),
@@ -85,27 +85,27 @@ namespace KSoft.Phoenix.Resource
 
 		private void ValidateHashes(EraFileEntryChunk fileEntry, IO.EndianStream blockStream)
 		{
-			fileEntry.ComputeHash(blockStream, TigerHasher);
+			fileEntry.ComputeHash(blockStream, this.TigerHasher);
 
-			if (!fileEntry.CompressedDataTiger128.EqualsArray(TigerHasher.Hash))
+			if (!fileEntry.CompressedDataTiger128.EqualsArray(this.TigerHasher.Hash))
 			{
 				string chunk_name = !string.IsNullOrEmpty(fileEntry.FileName)
 					? fileEntry.FileName
 					: "FileNames";//fileEntry.EntryId.ToString("X16");
 
-				throw new System.IO.InvalidDataException(string.Format(
+				throw new InvalidDataException(string.Format(
 					"Invalid chunk hash for '{0}' offset={1} size={2} " +
 					"expected {3} but got {4}",
 					chunk_name, fileEntry.DataOffset, fileEntry.DataSize.ToString("X8"),
 					Text.Util.ByteArrayToString(fileEntry.CompressedDataTiger128),
-					Text.Util.ByteArrayToString(TigerHasher.Hash, 0, EraFileEntryChunk.kCompresssedDataTigerHashSize)
+					Text.Util.ByteArrayToString(this.TigerHasher.Hash, 0, EraFileEntryChunk.kCompresssedDataTigerHashSize)
 					));
 			}
 
 			if (fileEntry.CompressionType == ECF.EcfCompressionType.Stored)
 			{
 				ulong tiger64;
-				TigerHasher.TryGetAsTiger64(out tiger64);
+				this.TigerHasher.TryGetAsTiger64(out tiger64);
 
 				if (fileEntry.DecompressedDataTiger64 != tiger64)
 				{
@@ -113,12 +113,12 @@ namespace KSoft.Phoenix.Resource
 						? fileEntry.FileName
 						: "FileNames";//fileEntry.EntryId.ToString("X16");
 
-					throw new System.IO.InvalidDataException(string.Format(
+					throw new InvalidDataException(string.Format(
 						"Chunk id mismatch for '{0}' offset={1} size={2} " +
 						"expected {3} but got {4}",
 						chunk_name, fileEntry.DataOffset, fileEntry.DataSize.ToString("X8"),
 						fileEntry.DecompressedDataTiger64.ToString("X16"),
-						Text.Util.ByteArrayToString(TigerHasher.Hash, 0, sizeof(ulong))
+						Text.Util.ByteArrayToString(this.TigerHasher.Hash, 0, sizeof(ulong))
 						));
 				}
 			}
@@ -129,84 +129,86 @@ namespace KSoft.Phoenix.Resource
 			return fileIndex - 1;
 		}
 
-		private void BuildFileNameMaps(System.IO.TextWriter verboseOutput)
+		private void BuildFileNameMaps(TextWriter verboseOutput)
 		{
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; )
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; )
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 
 				EraFileEntryChunk existingFile;
-				if (mFileNameToChunk.TryGetValue(file.FileName, out existingFile))
+				if (this.mFileNameToChunk.TryGetValue(file.FileName, out existingFile))
 				{
 					if (verboseOutput != null)
 					{
 						verboseOutput.WriteLine("Removing duplicate {0} entry at #{1}",
-							file.FileName, FileIndexToListingIndex(x));
+							file.FileName,
+							this.FileIndexToListingIndex(x));
 					}
-					mFiles.RemoveAt(x);
+
+					this.mFiles.RemoveAt(x);
 					continue;
 				}
 
-				mFileNameToChunk.Add(file.FileName, file);
+				this.mFileNameToChunk.Add(file.FileName, file);
 				x++;
 			}
 		}
 
-		private void RemoveXmbFilesWhereXmlExists(System.IO.TextWriter verboseOutput)
+		private void RemoveXmbFilesWhereXmlExists(TextWriter verboseOutput)
 		{
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 				if (!ResourceUtils.IsXmbFile(file.FileName))
 					continue;
 
 				string xml_name = file.FileName;
 				ResourceUtils.RemoveXmbExtension(ref xml_name);
 				EraFileEntryChunk xml_file;
-				if (!mFileNameToChunk.TryGetValue(xml_name, out xml_file))
+				if (!this.mFileNameToChunk.TryGetValue(xml_name, out xml_file))
 					continue;
 
 				if (verboseOutput != null)
 					verboseOutput.WriteLine("\tRemoving XMB file #{0} '{1}' from listing since its XML already exists {2}",
-						FileIndexToListingIndex(x),
+					                        this.FileIndexToListingIndex(x),
 						file.FileName,
 						xml_file.FileName);
 
-				mFiles.RemoveAt(x);
+				this.mFiles.RemoveAt(x);
 				x--;
 			}
 		}
 
-		private void RemoveXmlFilesWhereXmbExists(System.IO.TextWriter verboseOutput)
+		private void RemoveXmlFilesWhereXmbExists(TextWriter verboseOutput)
 		{
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 				if (!ResourceUtils.IsXmlBasedFile(file.FileName))
 					continue;
 
 				string xmb_name = file.FileName;
 				xmb_name += Xmb.XmbFile.kFileExt;
 				EraFileEntryChunk xmb_file;
-				if (!mFileNameToChunk.TryGetValue(xmb_name, out xmb_file))
+				if (!this.mFileNameToChunk.TryGetValue(xmb_name, out xmb_file))
 					continue;
 
 				if (verboseOutput != null)
 					verboseOutput.WriteLine("\tRemoving XML file #{0} '{1}' from listing since its XMB already exists {2}",
-						FileIndexToListingIndex(x),
+					                        this.FileIndexToListingIndex(x),
 						file.FileName,
 						xmb_file.FileName);
 
-				mFiles.RemoveAt(x);
+				this.mFiles.RemoveAt(x);
 				x--;
 			}
 		}
 
 		public void TryToReferenceXmlOverXmbFies(string workPath, TextWriter verboseOutput)
 		{
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 				if (!ResourceUtils.IsXmbFile(file.FileName))
 					continue;
 
@@ -215,7 +217,7 @@ namespace KSoft.Phoenix.Resource
 
 				// if the user already references the XML file too, just skip doing anything
 				EraFileEntryChunk xml_file;
-				if (mFileNameToChunk.TryGetValue(xml_name, out xml_file))
+				if (this.mFileNameToChunk.TryGetValue(xml_name, out xml_file))
 					continue;
 
 				// does the XML file exist?
@@ -228,10 +230,10 @@ namespace KSoft.Phoenix.Resource
 						xml_name);
 
 				// right now, all we should need to do to update things is remove the XMB mapping and replace it with the XML we found
-				bool removed = mFileNameToChunk.Remove(file.FileName);
+				bool removed = this.mFileNameToChunk.Remove(file.FileName);
 				file.FileName = xml_name;
 				if (removed)
-					mFileNameToChunk.Add(xml_name, file);
+					this.mFileNameToChunk.Add(xml_name, file);
 			}
 		}
 
@@ -253,7 +255,7 @@ namespace KSoft.Phoenix.Resource
 					f.Read(s, false);
 				}
 
-				mFiles.Add(f);
+				this.mFiles.Add(f);
 			}
 		}
 		private void ReadLocalFiles(IO.XmlElementStream s)
@@ -269,21 +271,21 @@ namespace KSoft.Phoenix.Resource
 					s.ReadCursor(ref file_data);
 
 					if (!string.IsNullOrEmpty(file_name))
-						mLocalFiles[file_name] = file_data;
+						this.mLocalFiles[file_name] = file_data;
 				}
 			}
 		}
 
 		private void WriteChunks(IO.XmlElementStream s)
 		{
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 			{
-				mFiles[x].Write(s, false);
+				this.mFiles[x].Write(s, false);
 			}
 		}
 		private void WriteLocalFiles(IO.XmlElementStream s)
 		{
-			foreach (var kvp in mLocalFiles)
+			foreach (var kvp in this.mLocalFiles)
 			{
 				string file_name = kvp.Key;
 				string file_data = kvp.Value;
@@ -298,29 +300,29 @@ namespace KSoft.Phoenix.Resource
 
 		public bool ReadDefinition(IO.XmlElementStream s)
 		{
-			mFiles.Clear();
+			this.mFiles.Clear();
 
 			// first entry should always be the null terminated filenames table
-			mFiles.Add(GenerateFileNamesTableEntryChunk());
+			this.mFiles.Add(GenerateFileNamesTableEntryChunk());
 
 			using (s.EnterCursorBookmark("Files"))
-				ReadChunks(s);
+				this.ReadChunks(s);
 
 			using (var bm = s.EnterCursorBookmarkOpt("LocalFiles")) if (bm.IsNotNull)
-				ReadLocalFiles(s);
+				this.ReadLocalFiles(s);
 
-			AddVersionFile();
+			this.AddVersionFile();
 
 			// there should be at least one file destined for the ERA, excluding the filenames table
-			return FileChunksCount != 0;
+			return this.FileChunksCount != 0;
 		}
 		public void WriteDefinition(IO.XmlElementStream s)
 		{
 			using (s.EnterCursorBookmark("Files"))
-				WriteChunks(s);
+				this.WriteChunks(s);
 
-			using (var bm = s.EnterCursorBookmarkOpt("LocalFiles", mLocalFiles, Predicates.HasItems)) if (bm.IsNotNull)
-				WriteLocalFiles(s);
+			using (var bm = s.EnterCursorBookmarkOpt("LocalFiles", this.mLocalFiles, Predicates.HasItems)) if (bm.IsNotNull)
+				this.WriteLocalFiles(s);
 		}
 		#endregion
 
@@ -336,15 +338,16 @@ namespace KSoft.Phoenix.Resource
 				eraExpander.ProgressOutput.WriteLine("\tUnpacking files...");
 			}
 
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 
 				if (eraExpander.ProgressOutput != null)
 				{
 					eraExpander.ProgressOutput.Write("\r\t\t{0} ", file.EntryId.ToString("X16"));
 				}
-				TryUnpack(blockStream, workPath, eraExpander, file);
+
+				this.TryUnpack(blockStream, workPath, eraExpander, file);
 			}
 
 			if (eraExpander.ProgressOutput != null)
@@ -353,7 +356,7 @@ namespace KSoft.Phoenix.Resource
 				eraExpander.ProgressOutput.WriteLine("\t\tDone");
 			}
 
-			mDirsThatExistForUnpacking = null;
+			this.mDirsThatExistForUnpacking = null;
 		}
 
 		private bool TryUnpack(IO.EndianStream blockStream, string workPath, EraFileExpander expander, EraFileEntryChunk file)
@@ -361,20 +364,20 @@ namespace KSoft.Phoenix.Resource
 			if (IsIgnoredLocalFile(file.FileName))
 				return false;
 
-			string full_path = System.IO.Path.Combine(workPath, file.FileName);
+			string full_path = Path.Combine(workPath, file.FileName);
 
 			if (ResourceUtils.IsLocalScenarioFile(file.FileName))
 			{
 				return false;
 			}
-			else if (!ShouldUnpack(expander, full_path))
+			else if (!this.ShouldUnpack(expander, full_path))
 			{
 				return false;
 			}
 
-			CreatePathForUnpacking(full_path);
+			this.CreatePathForUnpacking(full_path);
 
-			UnpackToDisk(blockStream, full_path, expander, file);
+			this.UnpackToDisk(blockStream, full_path, expander, file);
 			return true;
 		}
 
@@ -382,13 +385,13 @@ namespace KSoft.Phoenix.Resource
 		{
 			byte[] buffer = file.GetBuffer(blockStream);
 
-			using (var fs = System.IO.File.Create(fullPath))
+			using (var fs = File.Create(fullPath))
 			{
 				fs.Write(buffer, 0, buffer.Length);
 			}
 
-			System.IO.File.SetCreationTimeUtc(fullPath, file.FileDateTime);
-			System.IO.File.SetLastWriteTimeUtc(fullPath, file.FileDateTime);
+			File.SetCreationTimeUtc(fullPath, file.FileDateTime);
+			File.SetLastWriteTimeUtc(fullPath, file.FileDateTime);
 
 			if (ResourceUtils.IsXmbFile(fullPath))
 			{
@@ -401,7 +404,7 @@ namespace KSoft.Phoenix.Resource
 						va_size = Shell.ProcessorSize.x64;
 					}
 
-					TransformXmbToXml(buffer, fullPath, blockStream.ByteOrder, va_size);
+					this.TransformXmbToXml(buffer, fullPath, blockStream.ByteOrder, va_size);
 				}
 			}
 			else if (ResourceUtils.IsScaleformFile(fullPath))
@@ -412,7 +415,7 @@ namespace KSoft.Phoenix.Resource
 
 					try
 					{
-						success = DecompressUIFileToDisk(buffer, fullPath);
+						success = this.DecompressUIFileToDisk(buffer, fullPath);
 					}
 					catch (Exception ex)
 					{
@@ -434,7 +437,7 @@ namespace KSoft.Phoenix.Resource
 
 					try
 					{
-						result = TransformGfxToSwfFile(buffer, fullPath);
+						result = this.TransformGfxToSwfFile(buffer, fullPath);
 					}
 					catch (Exception ex)
 					{
@@ -465,10 +468,10 @@ namespace KSoft.Phoenix.Resource
 			byte[] xmb_buffer;
 
 			using (var xmb = new ECF.EcfFileXmb())
-			using (var ms = new System.IO.MemoryStream(eraFileEntryBuffer))
-			using (var es = new IO.EndianStream(ms, byteOrder, permissions: System.IO.FileAccess.Read))
+			using (var ms = new MemoryStream(eraFileEntryBuffer))
+			using (var es = new IO.EndianStream(ms, byteOrder, permissions: FileAccess.Read))
 			{
-				es.StreamMode = System.IO.FileAccess.Read;
+				es.StreamMode = FileAccess.Read;
 				xmb.Serialize(es);
 
 				xmb_buffer = xmb.FileData;
@@ -482,12 +485,12 @@ namespace KSoft.Phoenix.Resource
 				PointerSize = vaSize,
 			};
 
-			using (var ms = new System.IO.MemoryStream(xmb_buffer, false))
+			using (var ms = new MemoryStream(xmb_buffer, false))
 			using (var s = new IO.EndianReader(ms, byteOrder))
 			{
 				s.UserData = context;
 
-				using (var xmbf = new Phoenix.Xmb.XmbFile())
+				using (var xmbf = new Xmb.XmbFile())
 				{
 					xmbf.Read(s);
 					xmbf.ToXml(xmb_path);
@@ -499,7 +502,7 @@ namespace KSoft.Phoenix.Resource
 		{
 			bool success = false;
 
-			using (var ms = new System.IO.MemoryStream(eraFileEntryBuffer, false))
+			using (var ms = new MemoryStream(eraFileEntryBuffer, false))
 			using (var s = new IO.EndianReader(ms, Shell.EndianFormat.Little))
 			{
 				uint buffer_signature;
@@ -509,7 +512,7 @@ namespace KSoft.Phoenix.Resource
 					int compressed_size = (int)(ms.Length - ms.Position);
 
 					byte[] decompressed_data = ResourceUtils.DecompressScaleform(eraFileEntryBuffer, decompressed_size);
-					using (var fs = System.IO.File.Create(fullPath + ".bin"))
+					using (var fs = File.Create(fullPath + ".bin"))
 					{
 						fs.Write(decompressed_data, 0, decompressed_data.Length);
 					}
@@ -531,7 +534,7 @@ namespace KSoft.Phoenix.Resource
 		{
 			var result = TransformGfxToSwfFileResult.Failed;
 
-			using (var ms = new System.IO.MemoryStream(eraFileEntryBuffer, false))
+			using (var ms = new MemoryStream(eraFileEntryBuffer, false))
 			using (var s = new IO.EndianReader(ms, Shell.EndianFormat.Little))
 			{
 				uint buffer_signature;
@@ -541,7 +544,7 @@ namespace KSoft.Phoenix.Resource
 						result = TransformGfxToSwfFileResult.InputIsAlreadySwf;
 					else
 					{
-						TransformGfxToSwfFileInternal(eraFileEntryBuffer, fullPath, buffer_signature);
+						this.TransformGfxToSwfFileInternal(eraFileEntryBuffer, fullPath, buffer_signature);
 						result = TransformGfxToSwfFileResult.Success;
 					}
 				}
@@ -552,7 +555,7 @@ namespace KSoft.Phoenix.Resource
 		private void TransformGfxToSwfFileInternal(byte[] eraFileEntryBuffer, string fullPath, uint bufferSignature)
 		{
 			uint swf_signature = ResourceUtils.GfxHeaderToSwf(bufferSignature);
-			using (var fs = System.IO.File.Create(fullPath + ".swf"))
+			using (var fs = File.Create(fullPath + ".swf"))
 			using (var out_s = new IO.EndianWriter(fs, Shell.EndianFormat.Little))
 			{
 				out_s.Write(swf_signature);
@@ -563,16 +566,16 @@ namespace KSoft.Phoenix.Resource
 		private HashSet<string> mDirsThatExistForUnpacking;
 		private void CreatePathForUnpacking(string full_path)
 		{
-			if (mDirsThatExistForUnpacking == null)
-				mDirsThatExistForUnpacking = new HashSet<string>();
+			if (this.mDirsThatExistForUnpacking == null)
+				this.mDirsThatExistForUnpacking = new HashSet<string>();
 
-			string folder = System.IO.Path.GetDirectoryName(full_path);
+			string folder = Path.GetDirectoryName(full_path);
 			// don't bother checking the file system if we've already encountered this folder
-			if (mDirsThatExistForUnpacking.Add(folder))
+			if (this.mDirsThatExistForUnpacking.Add(folder))
 			{
-				if (!System.IO.Directory.Exists(folder))
+				if (!Directory.Exists(folder))
 				{
-					System.IO.Directory.CreateDirectory(folder);
+					Directory.CreateDirectory(folder);
 				}
 			}
 		}
@@ -587,7 +590,7 @@ namespace KSoft.Phoenix.Resource
 					ResourceUtils.RemoveXmbExtension(ref path);
 				}
 
-				if (System.IO.File.Exists(path))
+				if (File.Exists(path))
 				{
 					return false;
 				}
@@ -608,20 +611,20 @@ namespace KSoft.Phoenix.Resource
 		{
 			Contract.Requires(blockStream.IsWriting);
 
-			using (var ms = new System.IO.MemoryStream(mFiles.Count * 128))
+			using (var ms = new MemoryStream(this.mFiles.Count * 128))
 			using (var s = new IO.EndianWriter(ms, blockStream.ByteOrder))
 			{
 				var smp = new Memory.Strings.StringMemoryPool(kFileNamesTablePoolConfig);
-				for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+				for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 				{
-					var file = mFiles[x];
+					var file = this.mFiles[x];
 
 					file.FileNameOffset = smp.Add(file.FileName).u32;
 				}
 				smp.WriteStrings(s);
 
-				var filenames_chunk = mFiles[0];
-				PackFileNames(blockStream, ms, filenames_chunk);
+				var filenames_chunk = this.mFiles[0];
+				this.PackFileNames(blockStream, ms, filenames_chunk);
 
 				return true;
 			}
@@ -633,25 +636,25 @@ namespace KSoft.Phoenix.Resource
 
 			var builder = blockStream.Owner as EraFileBuilder;
 
-			Contract.Assert(blockStream.BaseStream.Position == CalculateHeaderAndFileChunksSize());
+			Contract.Assert(blockStream.BaseStream.Position == this.CalculateHeaderAndFileChunksSize());
 
-			BuildFileNameMaps(builder != null ? builder.VerboseOutput : null);
-			bool success = BuildFileNamesTable(blockStream);
-			for (int x = FileChunksFirstIndex; x < mFiles.Count && success; x++)
+			this.BuildFileNameMaps(builder != null ? builder.VerboseOutput : null);
+			bool success = this.BuildFileNamesTable(blockStream);
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count && success; x++)
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 				if (builder != null && builder.ProgressOutput != null)
 				{
 					builder.ProgressOutput.Write("\r\t\t{0} ", file.EntryId.ToString("X16"));
 				}
 
-				success &= TryPack(blockStream, workPath, file);
+				success &= this.TryPack(blockStream, workPath, file);
 
 				if (!success &&
 					builder != null && builder.VerboseOutput != null)
 				{
 					builder.VerboseOutput.WriteLine("Couldn't pack file into {0}: {1}",
-						FileName, file.FileName);
+					                                this.FileName, file.FileName);
 				}
 			}
 
@@ -684,9 +687,9 @@ namespace KSoft.Phoenix.Resource
 			return success;
 		}
 
-		private void PackFileData(IO.EndianStream blockStream, System.IO.Stream source, EraFileEntryChunk file)
+		private void PackFileData(IO.EndianStream blockStream, Stream source, EraFileEntryChunk file)
 		{
-			file.BuildBuffer(blockStream, source, TigerHasher);
+			file.BuildBuffer(blockStream, source, this.TigerHasher);
 
 #if false
 			ValidateAdler32(file, blockStream);
@@ -694,36 +697,36 @@ namespace KSoft.Phoenix.Resource
 #endif
 		}
 
-		private void PackFileNames(IO.EndianStream blockStream, System.IO.MemoryStream source, EraFileEntryChunk file)
+		private void PackFileNames(IO.EndianStream blockStream, MemoryStream source, EraFileEntryChunk file)
 		{
-			file.FileDateTime = BuildModeDefaultTimestamp;
-			PackFileData(blockStream, source, file);
+			file.FileDateTime = this.BuildModeDefaultTimestamp;
+			this.PackFileData(blockStream, source, file);
 		}
 
 		private bool TryPack(IO.EndianStream blockStream, string workPath,
 			EraFileEntryChunk file)
 		{
-			if (mLocalFiles.ContainsKey(file.FileName))
-				return TryPackLocalFile(blockStream, file);
+			if (this.mLocalFiles.ContainsKey(file.FileName))
+				return this.TryPackLocalFile(blockStream, file);
 
-			return TryPackFileFromDisk(blockStream, workPath, file);
+			return this.TryPackFileFromDisk(blockStream, workPath, file);
 		}
 
 		private bool TryPackLocalFile(IO.EndianStream blockStream,
 			EraFileEntryChunk file)
 		{
 			string file_data;
-			if (!mLocalFiles.TryGetValue(file.FileName, out file_data))
+			if (!this.mLocalFiles.TryGetValue(file.FileName, out file_data))
 			{
 				Debug.Trace.Resource.TraceInformation("Couldn't pack local-file into {0}, local-file does not exist: {1}",
-					FileName, file.FileName);
+				                                      this.FileName, file.FileName);
 				return false;
 			}
 
 			byte[] file_bytes = System.Text.Encoding.ASCII.GetBytes(file_data);
 			using (var ms = new MemoryStream(file_bytes, false))
 			{
-				PackFileData(blockStream, ms, file);
+				this.PackFileData(blockStream, ms, file);
 			}
 
 			return true;
@@ -736,7 +739,7 @@ namespace KSoft.Phoenix.Resource
 			if (!File.Exists(path))
 			{
 				Debug.Trace.Resource.TraceInformation("Couldn't pack file into {0}, file does not exist: {1}",
-					FileName, file.FileName);
+				                                      this.FileName, file.FileName);
 				return false;
 			}
 
@@ -747,12 +750,12 @@ namespace KSoft.Phoenix.Resource
 				byte[] file_bytes = File.ReadAllBytes(path);
 				using (var ms = new MemoryStream(file_bytes, false))
 				{
-					PackFileData(blockStream, ms, file);
+					this.PackFileData(blockStream, ms, file);
 				}
 			} catch (Exception ex)
 			{
 				Debug.Trace.Resource.TraceData(System.Diagnostics.TraceEventType.Error, TypeExtensions.kNone,
-					string.Format("Couldn't pack file into {0}, encountered exception dealing with {1}", FileName, file.FileName),
+					string.Format("Couldn't pack file into {0}, encountered exception dealing with {1}", this.FileName, file.FileName),
 					ex);
 				return false;
 			}
@@ -764,7 +767,7 @@ namespace KSoft.Phoenix.Resource
 		#region IEndianStreamSerializable Members
 		public void ReadPostprocess(IO.EndianStream s)
 		{
-			if (mFiles.Count == 0)
+			if (this.mFiles.Count == 0)
 			{
 				return;
 			}
@@ -773,10 +776,10 @@ namespace KSoft.Phoenix.Resource
 			var progressOutput = expander != null ? expander.ProgressOutput : null;
 			var verboseOutput = expander != null ? expander.VerboseOutput : null;
 
-			ReadFileNamesChunk(s);
-			ValidateFileHashes(s);
+			this.ReadFileNamesChunk(s);
+			this.ValidateFileHashes(s);
 
-			BuildFileNameMaps(verboseOutput);
+			this.BuildFileNameMaps(verboseOutput);
 
 			if (expander != null && !expander.ExpanderOptions.Test(EraFileExpanderOptions.DontRemoveXmlOrXmbFiles))
 			{
@@ -785,48 +788,48 @@ namespace KSoft.Phoenix.Resource
 					if (progressOutput != null)
 						progressOutput.WriteLine("Removing any XML files if their XMB counterpart exists...");
 
-					RemoveXmlFilesWhereXmbExists(verboseOutput);
+					this.RemoveXmlFilesWhereXmbExists(verboseOutput);
 				}
 				else
 				{
 					if (progressOutput != null)
 						progressOutput.WriteLine("Removing any XMB files if their XML counterpart exists...");
 
-					RemoveXmbFilesWhereXmlExists(verboseOutput);
+					this.RemoveXmbFilesWhereXmlExists(verboseOutput);
 				}
 			}
 
-			BuildLocalFiles(s);
+			this.BuildLocalFiles(s);
 		}
 
 		void ReadFileNamesChunk(IO.EndianStream s)
 		{
 			var eraUtil = s.Owner as EraFileUtil;
 
-			var filenames_chunk = mFiles[0];
+			var filenames_chunk = this.mFiles[0];
 
 			if (eraUtil != null &&
 				!eraUtil.Options.Test(EraFileUtilOptions.SkipVerification))
 			{
-				ValidateAdler32(filenames_chunk, s);
-				ValidateHashes(filenames_chunk, s);
+				this.ValidateAdler32(filenames_chunk, s);
+				this.ValidateHashes(filenames_chunk, s);
 			}
 
 			filenames_chunk.FileName = kFileNamesTableName;
 
 			byte[] filenames_buffer = filenames_chunk.GetBuffer(s);
-			using (var ms = new System.IO.MemoryStream(filenames_buffer, false))
+			using (var ms = new MemoryStream(filenames_buffer, false))
 			using (var er = new IO.EndianReader(ms, s.ByteOrder))
 			{
-				for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+				for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 				{
-					var file = mFiles[x];
+					var file = this.mFiles[x];
 
 					if (file.FileNameOffset != er.BaseStream.Position)
 					{
-						throw new System.IO.InvalidDataException(string.Format(
+						throw new InvalidDataException(string.Format(
 							"#{0} {1} has bad filename offset {2} != {3}",
-							FileIndexToListingIndex(x),
+							this.FileIndexToListingIndex(x),
 							file.EntryId.ToString("X16"),
 							file.FileNameOffset.ToString("X8"),
 							er.BaseStream.Position.ToString("X8")
@@ -853,17 +856,17 @@ namespace KSoft.Phoenix.Resource
 				eraUtil.ProgressOutput.WriteLine("\tVerifying file hashes...");
 			}
 
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 
 				if (eraUtil != null && eraUtil.ProgressOutput != null)
 				{
 					eraUtil.ProgressOutput.Write("\r\t\t{0} ", file.EntryId.ToString("X16"));
 				}
 
-				ValidateAdler32(file, s);
-				ValidateHashes(file, s);
+				this.ValidateAdler32(file, s);
+				this.ValidateHashes(file, s);
 			}
 
 			if (eraUtil != null && eraUtil.ProgressOutput != null)
@@ -875,19 +878,19 @@ namespace KSoft.Phoenix.Resource
 
 		void BuildLocalFiles(IO.EndianStream s)
 		{
-			for (int x = FileChunksFirstIndex; x < mFiles.Count; x++)
+			for (int x = this.FileChunksFirstIndex; x < this.mFiles.Count; x++)
 			{
-				var file = mFiles[x];
+				var file = this.mFiles[x];
 				if (!ResourceUtils.IsLocalScenarioFile(file.FileName))
 					continue;
 
 				byte[] file_bytes = file.GetBuffer(s);
-				using (var ms = new System.IO.MemoryStream(file_bytes, false))
-				using (var sr = new System.IO.StreamReader(ms))
+				using (var ms = new MemoryStream(file_bytes, false))
+				using (var sr = new StreamReader(ms))
 				{
 					string file_data = sr.ReadToEnd();
 
-					mLocalFiles[file.FileName] = file_data;
+					this.mLocalFiles[file.FileName] = file_data;
 				}
 			}
 		}
@@ -898,10 +901,10 @@ namespace KSoft.Phoenix.Resource
 
 			if (s.IsWriting)
 			{
-				mHeader.UpdateFileCount(mFiles.Count);
+				this.mHeader.UpdateFileCount(this.mFiles.Count);
 			}
 
-			mHeader.Serialize(s);
+			this.mHeader.Serialize(s);
 
 			if (eraUtil != null && eraUtil.DebugOutput != null)
 			{
@@ -910,7 +913,7 @@ namespace KSoft.Phoenix.Resource
 				eraUtil.DebugOutput.WriteLine();
 			}
 
-			SerializeFileEntryChunks(s);
+			this.SerializeFileEntryChunks(s);
 
 			if (eraUtil != null && eraUtil.DebugOutput != null)
 			{
@@ -922,19 +925,19 @@ namespace KSoft.Phoenix.Resource
 		{
 			if (s.IsReading)
 			{
-				mFiles.Capacity = mHeader.FileCount;
+				this.mFiles.Capacity = this.mHeader.FileCount;
 
-				for (int x = 0; x < mFiles.Capacity; x++)
+				for (int x = 0; x < this.mFiles.Capacity; x++)
 				{
 					var file = new EraFileEntryChunk();
 					file.Serialize(s);
 
-					mFiles.Add(file);
+					this.mFiles.Add(file);
 				}
 			}
 			else if (s.IsWriting)
 			{
-				foreach (var f in mFiles)
+				foreach (var f in this.mFiles)
 				{
 					f.Serialize(s);
 				}
@@ -945,7 +948,7 @@ namespace KSoft.Phoenix.Resource
 		#region Local file utils
 		private static bool IsIgnoredLocalFile(string fileName)
 		{
-			if (0==string.Compare(fileName, "version.txt", System.StringComparison.OrdinalIgnoreCase))
+			if (0==string.Compare(fileName, "version.txt", StringComparison.OrdinalIgnoreCase))
 			{
 				return true;
 			}
@@ -959,13 +962,13 @@ namespace KSoft.Phoenix.Resource
 			file.CompressionType = ECF.EcfCompressionType.Stored;
 			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 			file.FileName = "version.txt";
-			file.FileDateTime = BuildModeDefaultTimestamp;
+			file.FileDateTime = this.BuildModeDefaultTimestamp;
 			string version = string.Format("{0}\n{1}\n{2}",
 				assembly.FullName,
 				assembly.GetName().Version,
 				System.Reflection.Assembly.GetEntryAssembly().FullName);
-			mLocalFiles[file.FileName] = version;
-			mFiles.Add(file);
+			this.mLocalFiles[file.FileName] = version;
+			this.mFiles.Add(file);
 		}
 		#endregion
 

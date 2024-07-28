@@ -9,7 +9,7 @@ namespace KSoft.Phoenix.Phx
 		, IEqualityComparer<BTriggerArg>
 	{
 		static readonly BTriggerArg kInvalid = new BTriggerArg();
-		public bool IsInvalid { get { return object.ReferenceEquals(this, kInvalid); } }
+		public bool IsInvalid { get { return ReferenceEquals(this, kInvalid); } }
 
 		#region Xml constants
 		public static readonly Collections.BListExplicitIndexParams<BTriggerArg> kBListExplicitIndexParams = new
@@ -25,16 +25,16 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		BTriggerParamType mType = BTriggerParamType.Invalid; // TODO: temporary!
-		public BTriggerParamType Type { get { return mType; } }
+		public BTriggerParamType Type { get { return this.mType; } }
 
 		string mName; // TODO: temporary!
-		public string Name { get { return mName; } }
+		public string Name { get { return this.mName; } }
 
 		int mSigID = TypeExtensions.kNone;
-		public int SigID { get { return mSigID; } }
+		public int SigID { get { return this.mSigID; } }
 
 		bool mOptional; // TODO: temporary!
-		public bool Optional { get { return mOptional; } }
+		public bool Optional { get { return this.mOptional; } }
 
 		int mVarID = TypeExtensions.kNone;
 
@@ -44,11 +44,11 @@ namespace KSoft.Phoenix.Phx
 			where TCursor : class
 		{
 			if (s.IsReading)
-				s.ReadCursorName(ref mType);
-			s.StreamAttribute(kXmlAttrSigId, ref mSigID);
-			s.StreamAttribute(DatabaseNamedObject.kXmlAttrNameN, ref mName);
-			s.StreamAttribute(kXmlAttrOptional, ref mOptional);
-			s.StreamCursor(ref mVarID);
+				s.ReadCursorName(ref this.mType);
+			s.StreamAttribute(kXmlAttrSigId, ref this.mSigID);
+			s.StreamAttribute(DatabaseNamedObject.kXmlAttrNameN, ref this.mName);
+			s.StreamAttribute(kXmlAttrOptional, ref this.mOptional);
+			s.StreamCursor(ref this.mVarID);
 		}
 		#endregion
 
@@ -67,13 +67,13 @@ namespace KSoft.Phoenix.Phx
 
 		public int GetHashCode(BTriggerArg obj)
 		{
-			return mSigID;
+			return this.mSigID;
 		}
 		#endregion
 
 		public BTriggerVarType GetVarType(BTriggerSystem root)
 		{
-			return root.GetVar(mVarID).Type;
+			return root.GetVar(this.mVarID).Type;
 		}
 	};
 }

@@ -46,43 +46,41 @@ namespace KSoft.Text
 
 		readonly int mLineNumber, mLinePosition;
 
-		public bool HasLineInfo		=> mLineNumber > 0;
+		public bool HasLineInfo		=> this.mLineNumber > 0;
 
-		public int LineNumber		=> mLineNumber;
-		public int LinePosition		=> mLinePosition;
+		public int LineNumber		=> this.mLineNumber;
+		public int LinePosition		=> this.mLinePosition;
 
 		public TextLineInfo(int lineNumber, int linePosition)
 		{
 			Contract.Requires(lineNumber > 0);
 			Contract.Requires(linePosition > 0);
 
-			mLineNumber = lineNumber;
-			mLinePosition = linePosition;
+			this.mLineNumber = lineNumber;
+			this.mLinePosition = linePosition;
 		}
 		public TextLineInfo(ITextLineInfo otherLineInfo) : this(otherLineInfo.LineNumber, otherLineInfo.LinePosition)
 		{
 			Contract.Requires<ArgumentNullException>(otherLineInfo != null);
 		}
 
-		public bool IsEmpty => LineNumber == 0 && LinePosition == 0;
+		public bool IsEmpty => this.LineNumber == 0 && this.LinePosition == 0;
 
 		public int CompareTo(ITextLineInfo other)
 		{
-			if (LineNumber == other.LineNumber)
-				return LinePosition - other.LinePosition;
+			if (this.LineNumber == other.LineNumber)
+				return this.LinePosition - other.LinePosition;
 			else
-				return LineNumber - other.LineNumber;
+				return this.LineNumber - other.LineNumber;
 		}
 
-		public bool Equals(ITextLineInfo other) =>
-			LineNumber == other.LineNumber &&
-			LinePosition == other.LinePosition;
+		public bool Equals(ITextLineInfo other) => this.LineNumber == other.LineNumber &&
+		                                           this.LinePosition == other.LinePosition;
 
 		public override bool Equals(object obj) =>
-			obj is ITextLineInfo other && Equals(other);
+			obj is ITextLineInfo other && this.Equals(other);
 
-		public override int GetHashCode() =>
-			LineNumber.GetHashCode() ^ LinePosition.GetHashCode();
+		public override int GetHashCode() => this.LineNumber.GetHashCode() ^ this.LinePosition.GetHashCode();
 
 		#region ToString
 		/// <summary>Returns a verbose string of the line/column values</summary>
@@ -92,7 +90,7 @@ namespace KSoft.Text
 		const string kNoLineInfoString = "<no line info>";
 
 		public static string ToStringLineOnly<T>(T lineInfo, bool verboseString)
-			where T : Text.ITextLineInfo
+			where T : ITextLineInfo
 		{
 			const string k_format_string =
 				"{0}";
@@ -107,7 +105,7 @@ namespace KSoft.Text
 				lineInfo.LineNumber.ToString(KSoft.Util.InvariantCultureInfo));
 		}
 		public static string ToString<T>(T lineInfo, bool verboseString)
-			where T : Text.ITextLineInfo
+			where T : ITextLineInfo
 		{
 			const string k_format_string =
 				"{0}, {1}";

@@ -7,27 +7,27 @@ namespace KSoft.IO
 		protected override void AppendElement(XmlElement e)
 		{
 			// if there is a node in scope, add the element after it and use it as the new scope
-			if(Cursor != null)
-				Cursor.AppendChild(e);
+			if(this.Cursor != null)
+				this.Cursor.AppendChild(e);
 			else // if there is no XML node in scope, assume we're adding to the root
-				Document.AppendChild(e);
+				this.Document.AppendChild(e);
 		}
 
 		protected override void NestElement(XmlElement e, out XmlElement oldCursor)
 		{
 			oldCursor = null;
 
-			if (Cursor != null)
+			if (this.Cursor != null)
 			{
-				Cursor.AppendChild(e);
+				this.Cursor.AppendChild(e);
 
-				oldCursor = Cursor;
-				Cursor = e;
+				oldCursor = this.Cursor;
+				this.Cursor = e;
 			}
 			else // if there is no XML node in scope, assume we're adding to the root
 			{
-				Document.DocumentElement.AppendChild(e);
-				Cursor = e;
+				this.Document.DocumentElement.AppendChild(e);
+				this.Cursor = e;
 			}
 		}
 
@@ -44,20 +44,20 @@ namespace KSoft.IO
 		#region WriteElement
 		protected override XmlElement WriteElementAppend(string name)
 		{
-			ValidateWritePermission();
+			this.ValidateWritePermission();
 
-			XmlElement e = Document.CreateElement(name);
-			AppendElement(e);
+			XmlElement e = this.Document.CreateElement(name);
+			this.AppendElement(e);
 
 			return e;
 		}
 
 		protected override XmlElement WriteElementNest(string name, out XmlElement oldCursor)
 		{
-			ValidateWritePermission();
+			this.ValidateWritePermission();
 
-			XmlElement e = Document.CreateElement(name);
-			NestElement(e, out oldCursor);
+			XmlElement e = this.Document.CreateElement(name);
+			this.NestElement(e, out oldCursor);
 
 			return e;
 		}
@@ -66,16 +66,16 @@ namespace KSoft.IO
 		#region WriteAttribute
 		protected override void CursorWriteAttribute(string name, string value)
 		{
-			ValidateWritePermission();
+			this.ValidateWritePermission();
 
-			Cursor.SetAttribute(name, value);
+			this.Cursor.SetAttribute(name, value);
 		}
 		#endregion
 
 		protected override void WriteCommentImpl(string comment)
 		{
 			if (!string.IsNullOrEmpty(comment))
-				Cursor.AppendChild(Document.CreateComment(comment));
+				this.Cursor.AppendChild(this.Document.CreateComment(comment));
 		}
 	};
 }

@@ -8,10 +8,10 @@ public partial class GlState {
 
 public static partial class GlUtil {
   public static void BindVao(int vaoId) {
-      if (GlUtil.currentState_.CurrentVaoId == vaoId) {
+      if (currentState_.CurrentVaoId == vaoId) {
         return;
       }
 
-      GL.BindVertexArray(GlUtil.currentState_.CurrentVaoId = vaoId);
+      GL.BindVertexArray(currentState_.CurrentVaoId = vaoId);
     }
 }

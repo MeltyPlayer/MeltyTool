@@ -18,7 +18,7 @@ namespace KSoft.IO
 			Contract.Requires(bitCount <= Bits.kCharBitCount);
 
 			TWord word = (TWord)value;
-			WriteWord(word, bitCount);
+			this.WriteWord(word, bitCount);
 		}
 		/// <summary>Read an <see cref="System.Byte"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -28,7 +28,7 @@ namespace KSoft.IO
 			Contract.Requires(bitCount <= Bits.kByteBitCount);
 
 			TWord word = (TWord)value;
-			WriteWord(word, bitCount);
+			this.WriteWord(word, bitCount);
 		}
 		/// <summary>Read an <see cref="System.SByte"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -38,7 +38,7 @@ namespace KSoft.IO
 			Contract.Requires(bitCount <= Bits.kSByteBitCount);
 
 			TWord word = (TWord)value;
-			WriteWord(word, bitCount);
+			this.WriteWord(word, bitCount);
 		}
 		/// <summary>Read an <see cref="System.UInt16"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -48,7 +48,7 @@ namespace KSoft.IO
 			Contract.Requires(bitCount <= Bits.kUInt16BitCount);
 
 			TWord word = (TWord)value;
-			WriteWord(word, bitCount);
+			this.WriteWord(word, bitCount);
 		}
 		/// <summary>Read an <see cref="System.Int16"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -58,7 +58,7 @@ namespace KSoft.IO
 			Contract.Requires(bitCount <= Bits.kInt16BitCount);
 
 			TWord word = (TWord)value;
-			WriteWord(word, bitCount);
+			this.WriteWord(word, bitCount);
 		}
 		/// <summary>Read an <see cref="System.UInt32"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -68,7 +68,7 @@ namespace KSoft.IO
 			Contract.Requires(bitCount <= Bits.kUInt32BitCount);
 
 			TWord word = (TWord)value;
-			WriteWord(word, bitCount);
+			this.WriteWord(word, bitCount);
 		}
 		/// <summary>Read an <see cref="System.Int32"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -78,7 +78,7 @@ namespace KSoft.IO
 			Contract.Requires(bitCount <= Bits.kInt32BitCount);
 
 			TWord word = (TWord)value;
-			WriteWord(word, bitCount);
+			this.WriteWord(word, bitCount);
 		}
 		/// <summary>Read an <see cref="System.UInt64"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -93,8 +93,8 @@ namespace KSoft.IO
 			int lsb_bit_count = bitCount > Bits.kInt32BitCount ? bitCount - msb_bit_count : bitCount;
 
 			if(msb_bit_count > 0)
-				WriteWord(msb_word, msb_bit_count);
-			WriteWord(lsb_word, lsb_bit_count);
+				this.WriteWord(msb_word, msb_bit_count);
+			this.WriteWord(lsb_word, lsb_bit_count);
 		}
 		/// <summary>Read an <see cref="System.Int64"/> to the stream</summary>
 		/// <param name="value">value to write to the stream</param>
@@ -109,8 +109,8 @@ namespace KSoft.IO
 			int lsb_bit_count = bitCount > Bits.kInt32BitCount ? bitCount - msb_bit_count : bitCount;
 
 			if(msb_bit_count > 0)
-				WriteWord(msb_word, msb_bit_count);
-			WriteWord(lsb_word, lsb_bit_count);
+				this.WriteWord(msb_word, msb_bit_count);
+			this.WriteWord(lsb_word, lsb_bit_count);
 		}
 	};
 }

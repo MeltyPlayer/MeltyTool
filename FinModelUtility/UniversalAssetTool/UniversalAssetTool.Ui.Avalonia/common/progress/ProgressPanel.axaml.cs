@@ -69,7 +69,7 @@ public partial class ProgressPanel : UserControl {
   private IDataTemplate dataTemplate_;
 
   public ProgressPanel() {
-    InitializeComponent();
+    this.InitializeComponent();
     this.DataContextChanged += (_, _) => {
       if (this.ViewModel_ != null) {
         this.ViewModel_.DataTemplate = this.DataTemplate;

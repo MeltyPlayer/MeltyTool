@@ -16,7 +16,7 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Unknown0); s.Stream(ref Unknown8);
+				s.Stream(ref this.Unknown0); s.Stream(ref this.Unknown8);
 			}
 			#endregion
 		};
@@ -32,11 +32,11 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref SquadSpawnDelay);
-			BSaveGame.StreamArray(s, ref ActiveDrops);
-			s.Stream(ref ProjectileProtoID); s.Stream(ref ODSTProtoSquadID);
-			s.Stream(ref AddToMissionID);
-			s.Stream(ref ReadyForShutdown);
+			s.Stream(ref this.SquadSpawnDelay);
+			BSaveGame.StreamArray(s, ref this.ActiveDrops);
+			s.Stream(ref this.ProjectileProtoID); s.Stream(ref this.ODSTProtoSquadID);
+			s.Stream(ref this.AddToMissionID);
+			s.Stream(ref this.ReadyForShutdown);
 		}
 		#endregion
 	};

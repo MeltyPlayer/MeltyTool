@@ -15,8 +15,8 @@ namespace KSoft.Phoenix.Phx
 		string mSound;
 		public string Sound
 		{
-			get { return mSound; }
-			set { mSound = value; }
+			get { return this.mSound; }
+			set { this.mSound = value; }
 		}
 		#endregion
 
@@ -24,8 +24,8 @@ namespace KSoft.Phoenix.Phx
 		BSquadSoundType mType = BSquadSoundType.None;
 		public BSquadSoundType Type
 		{
-			get { return mType; }
-			set { mType = value; }
+			get { return this.mType; }
+			set { this.mType = value; }
 		}
 		#endregion
 
@@ -34,8 +34,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public int SquadID
 		{
-			get { return mSquadID; }
-			set { mSquadID = value; }
+			get { return this.mSquadID; }
+			set { this.mSquadID = value; }
 		}
 		#endregion
 
@@ -46,8 +46,8 @@ namespace KSoft.Phoenix.Phx
 		int mWorldID = cWorldIdNone;
 		public int WorldID
 		{
-			get { return mWorldID; }
-			set { mWorldID = value; }
+			get { return this.mWorldID; }
+			set { this.mWorldID = value; }
 		}
 		#endregion
 
@@ -55,8 +55,8 @@ namespace KSoft.Phoenix.Phx
 		bool mCastingUnitOnly;
 		public bool CastingUnitOnly
 		{
-			get { return mCastingUnitOnly; }
-			set { mCastingUnitOnly = value; }
+			get { return this.mCastingUnitOnly; }
+			set { this.mCastingUnitOnly = value; }
 		}
 		#endregion
 
@@ -67,17 +67,17 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamCursor(ref mSound);
+			s.StreamCursor(ref this.mSound);
 
-			if (s.StreamAttributeEnumOpt("Type", ref mType, e => e != BSquadSoundType.None))
+			if (s.StreamAttributeEnumOpt("Type", ref this.mType, e => e != BSquadSoundType.None))
 			{
 				// #NOTE Engine, in debug builds, asserts Squad is valid when specified
-				xs.StreamDBID(s, "Squad", ref mSquadID, DatabaseObjectKind.Squad, xmlSource: XML.XmlUtil.kSourceAttr);
+				xs.StreamDBID(s, "Squad", ref this.mSquadID, DatabaseObjectKind.Squad, xmlSource: XML.XmlUtil.kSourceAttr);
 				// #NOTE Engine, in debug builds, asserts the world ID is not cWorldIdNone when the World value is defined.
 				// It doesn't explicitly parse None, but defaults to None when it doesn't recognize the provided value
-				s.StreamProtoEnum("World", ref mWorldID, xs.Database.GameScenarioWorlds, xmlSource: XML.XmlUtil.kSourceAttr
+				s.StreamProtoEnum("World", ref this.mWorldID, xs.Database.GameScenarioWorlds, xmlSource: XML.XmlUtil.kSourceAttr
 					, isOptionalDefaultValue: cWorldIdNone);
-				s.StreamAttributeOpt("CastingUnitOnly", ref mCastingUnitOnly, Predicates.IsTrue);
+				s.StreamAttributeOpt("CastingUnitOnly", ref this.mCastingUnitOnly, Predicates.IsTrue);
 			}
 		}
 		#endregion

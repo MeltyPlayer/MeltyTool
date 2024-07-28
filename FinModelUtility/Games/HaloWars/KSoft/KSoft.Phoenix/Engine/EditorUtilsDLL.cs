@@ -43,7 +43,7 @@ namespace KSoft.Phoenix.Engine
 				return;
 
 			EntryPointsNotFound = true;
-			Phoenix.Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
+			Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
 				"Failed to find a EditorUtils method",
 				ex);
 		}
@@ -61,7 +61,7 @@ namespace KSoft.Phoenix.Engine
 				var libPointerSize = GetPointerSize();
 				if (libPointerSize != IntPtr.Size)
 				{
-					Phoenix.Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
+					Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
 						"EditorUtils was built for a platform that doesn't match what we're currently running in",
 						libPointerSize,
 						IntPtr.Size);
@@ -71,7 +71,7 @@ namespace KSoft.Phoenix.Engine
 				var version = GetLibraryVersion();
 				if (version != kVersion)
 				{
-					Phoenix.Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
+					Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
 						"EditorUtils version doesn't match what we expected",
 						version,
 						kVersion);
@@ -79,7 +79,7 @@ namespace KSoft.Phoenix.Engine
 				}
 
 				var libMode = GetLibraryMode();
-				Phoenix.Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Information, TypeExtensions.kNone,
+				Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Information, TypeExtensions.kNone,
 					"Finished loading EditorUtils",
 					libMode,
 					version);
@@ -180,7 +180,7 @@ namespace KSoft.Phoenix.Engine
 			Contract.Requires(width > 0);
 			Contract.Requires(height > 0);
 
-			if (EditorUtilsDLL.EntryPointsNotFound)
+			if (EntryPointsNotFound)
 				return false;
 
 			if (dstArray == null || srcArray == null)
@@ -201,7 +201,7 @@ namespace KSoft.Phoenix.Engine
 				return false;
 			}
 
-			Phoenix.Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
+			Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
 				"EditorUtils.TileCopyData called with a destination and/or source array type that is not supported",
 				dstArray.GetType(),
 				srcArray.GetType(),
@@ -219,7 +219,7 @@ namespace KSoft.Phoenix.Engine
 			Contract.Requires(width > 0);
 			Contract.Requires(height > 0);
 
-			if (EditorUtilsDLL.EntryPointsNotFound)
+			if (EntryPointsNotFound)
 				return false;
 
 			if (dstArray == null || srcArray == null)
@@ -240,7 +240,7 @@ namespace KSoft.Phoenix.Engine
 				return false;
 			}
 
-			Phoenix.Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
+			Debug.Trace.Phoenix.TraceData(System.Diagnostics.TraceEventType.Critical, TypeExtensions.kNone,
 				"EditorUtils.UntileCopyData called with a destination and/or source array type that is not supported",
 				dstArray.GetType(),
 				srcArray.GetType(),

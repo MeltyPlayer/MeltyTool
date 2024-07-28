@@ -17,11 +17,11 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.StreamV(ref Position);
-			s.Stream(ref ID);
-			s.Stream(ref Range);
-			s.Stream(ref AbilityID);
-			s.Stream(ref PositionValid); s.Stream(ref RangeValid); s.Stream(ref AbilityIDValid);
+			s.StreamV(ref this.Position);
+			s.Stream(ref this.ID);
+			s.Stream(ref this.Range);
+			s.Stream(ref this.AbilityID);
+			s.Stream(ref this.PositionValid); s.Stream(ref this.RangeValid); s.Stream(ref this.AbilityIDValid);
 		}
 		#endregion
 	};

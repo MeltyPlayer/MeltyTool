@@ -13,10 +13,10 @@ namespace KSoft.Phoenix.Phx
 
 //		string mTypeStr; // TODO: temporary!
 		int mDbId = TypeExtensions.kNone;
-		public int DbId { get { return mDbId; } }
+		public int DbId { get { return this.mDbId; } }
 
 		int mVersion = TypeExtensions.kNone;
-		public int Version { get { return mVersion; } }
+		public int Version { get { return this.mVersion; } }
 
 		protected void StreamType<TTypeEnum, TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, ref TTypeEnum type)
 			where TTypeEnum : struct, IComparable, IFormattable, IConvertible
@@ -29,8 +29,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			base.Serialize(s);
 
-			s.StreamAttribute(kXmlAttrDbId, ref mDbId);
-			s.StreamAttribute(kXmlAttrVersion, ref mVersion);
+			s.StreamAttribute(kXmlAttrDbId, ref this.mDbId);
+			s.StreamAttribute(kXmlAttrVersion, ref this.mVersion);
 			// Stream it last, so when we save it ourselves, the (relatively) fixed width stuff comes first
 //			XML.XmlUtil.StreamInternString(s, kXmlAttrType, ref mTypeStr, false);
 		}

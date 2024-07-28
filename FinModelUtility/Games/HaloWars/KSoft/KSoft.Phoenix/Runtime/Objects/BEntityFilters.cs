@@ -18,9 +18,9 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public virtual void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Type);
-			s.Stream(ref IsInverted); s.Stream(ref AppliesToUnits); 
-			s.Stream(ref AppliesToSquads); s.Stream(ref AppliesToEntities);
+			s.Stream(ref this.Type);
+			s.Stream(ref this.IsInverted); s.Stream(ref this.AppliesToUnits); 
+			s.Stream(ref this.AppliesToSquads); s.Stream(ref this.AppliesToEntities);
 		}
 		#endregion
 
@@ -67,7 +67,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray(s, ref EntityList);
+			BSaveGame.StreamArray(s, ref this.EntityList);
 
 			base.Serialize(s);
 		}
@@ -83,7 +83,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray(s, ref Players);
+			BSaveGame.StreamArray(s, ref this.Players);
 
 			base.Serialize(s);
 		}
@@ -99,7 +99,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray(s, ref Teams);
+			BSaveGame.StreamArray(s, ref this.Teams);
 
 			base.Serialize(s);
 		}
@@ -115,7 +115,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref ProtoObjects);
+			BSaveGame.StreamArray16(s, ref this.ProtoObjects);
 
 			base.Serialize(s);
 		}
@@ -131,7 +131,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref ProtoSquads);
+			BSaveGame.StreamArray16(s, ref this.ProtoSquads);
 
 			base.Serialize(s);
 		}
@@ -147,7 +147,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref ObjectTypes);
+			BSaveGame.StreamArray16(s, ref this.ObjectTypes);
 
 			base.Serialize(s);
 		}
@@ -163,7 +163,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref RefCountType); s.Stream(ref CompareType); s.Stream(ref Count);
+			s.Stream(ref this.RefCountType); s.Stream(ref this.CompareType); s.Stream(ref this.Count);
 
 			base.Serialize(s);
 		}
@@ -180,8 +180,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref RelationType);
-			s.Stream(ref TeamID);
+			s.Stream(ref this.RelationType);
+			s.Stream(ref this.TeamID);
 
 			base.Serialize(s);
 		}
@@ -198,8 +198,8 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref ObjectTypeID);
-			s.Stream(ref MaxCount);
+			s.Stream(ref this.ObjectTypeID);
+			s.Stream(ref this.MaxCount);
 
 			base.Serialize(s);
 		}
@@ -215,7 +215,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref PlayerID);
+			s.Stream(ref this.PlayerID);
 
 			base.Serialize(s);
 		}
@@ -240,9 +240,9 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Type);
-			int type = Type; // since this is a struct we have to declare a local copy for the lambda
-			s.Stream(ref Filter,
+			s.Stream(ref this.Type);
+			int type = this.Type; // since this is a struct we have to declare a local copy for the lambda
+			s.Stream(ref this.Filter,
 				() => BEntityFilterBase.FromType(type));
 		}
 		#endregion
@@ -257,7 +257,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref Filters, maxCount:kMaxCount);
+			BSaveGame.StreamArray16(s, ref this.Filters, maxCount:kMaxCount);
 		}
 		#endregion
 	};

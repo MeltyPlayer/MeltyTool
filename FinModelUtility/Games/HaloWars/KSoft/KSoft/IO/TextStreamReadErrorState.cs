@@ -24,17 +24,17 @@ namespace KSoft.IO
 		{
 			Contract.Requires<ArgumentNullException>(textStream != null);
 
-			mStream = textStream;
-			mReadLineInfo = null;
-			GetLineInfoException = GetLineInfoExceptionInternal;
+			this.mStream = textStream;
+			this.mReadLineInfo = null;
+			this.GetLineInfoException = this.GetLineInfoExceptionInternal;
 		}
 
 		/// <summary>Line info of the last read that took place</summary>
 		/// <remarks>Rather, about to take place. Should be set before a read with a possible error executes</remarks>
 		public Text.ITextLineInfo LastReadLineInfo
 		{
-			get { return mReadLineInfo; }
-			set { mReadLineInfo = value; }
+			get { return this.mReadLineInfo; }
+			set { this.mReadLineInfo = value; }
 		}
 
 		const string kReadLineInfoIsNullMsg =
@@ -43,32 +43,32 @@ namespace KSoft.IO
 
 		private Exception GetLineInfoExceptionInternal()
 		{
-			Contract.Assert(mReadLineInfo != null, kReadLineInfoIsNullMsg);
+			Contract.Assert(this.mReadLineInfo != null, kReadLineInfoIsNullMsg);
 
-			return new Text.TextLineInfoException(mReadLineInfo, mStream.StreamName);
+			return new Text.TextLineInfoException(this.mReadLineInfo, this.mStream.StreamName);
 		}
 
 		private Text.TextLineInfoException GetReadException(Exception detailsException)
 		{
-			return new Text.TextLineInfoException(detailsException, mReadLineInfo, mStream.StreamName);
+			return new Text.TextLineInfoException(detailsException, this.mReadLineInfo, this.mStream.StreamName);
 		}
 
 		/// <summary>Throws a <see cref="Text.TextLineInfoException"/> using <see cref="LastReadLineInfo"/></summary>
 		/// <param name="detailsException">The details (inner) exception of what went wrong</param>
 		public void ThrowReadExeception(Exception detailsException)
 		{
-			Contract.Assert(mReadLineInfo != null, kReadLineInfoIsNullMsg);
+			Contract.Assert(this.mReadLineInfo != null, kReadLineInfoIsNullMsg);
 
-			throw GetReadException(detailsException);
+			throw this.GetReadException(detailsException);
 		}
 
 		public void LogReadExceptionWarning(Exception detailsException)
 		{
-			Contract.Assert(mReadLineInfo != null, kReadLineInfoIsNullMsg);
+			Contract.Assert(this.mReadLineInfo != null, kReadLineInfoIsNullMsg);
 
 			Debug.Trace.IO.TraceEvent(System.Diagnostics.TraceEventType.Warning, TypeExtensions.kNone,
 				"Failed to parse tag value: {0}",
-				GetReadException(detailsException));
+				this.GetReadException(detailsException));
 		}
 	};
 }

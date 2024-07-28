@@ -49,40 +49,40 @@ namespace KSoft.Phoenix.Engine
 	/*public*/
 	string RootDirectory { get; /*private*/ set; }
 		/*public*/ string UpdateDirectory { get; /*private*/ set; }
-		bool UpdateDirectoryIsValid { get { return UpdateDirectory != null; } }
+		bool UpdateDirectoryIsValid { get { return this.UpdateDirectory != null; } }
 		public bool UseTitleUpdates { get; set; }
 
 		public GameDirectories(string root, string updateRoot = null)
 		{
-			RootDirectory = root;
-			UpdateDirectory = updateRoot;
-			UseTitleUpdates = true;
+			this.RootDirectory = root;
+			this.UpdateDirectory = updateRoot;
+			this.UseTitleUpdates = true;
 
 			// Leave some breadcrumbs for the programmer in the event that they're confused as why an update file isn't loading.
-			if (!UpdateDirectoryIsValid)
+			if (!this.UpdateDirectoryIsValid)
 				Debug.Trace.Engine.TraceInformation("GameDirectories: No matching update directory for '{0}'", updateRoot);
 
-			ArtPath = kArtPath;//Path.Combine(RootDirectory, kArtPath);
-			ParticleEffectPath = Path.Combine(ArtPath, kParticleEffectPath);
-			SkyBoxPath = Path.Combine(ArtPath, kSkyBoxPath);
-			TerrainTexturesPath = Path.Combine(ArtPath, kTerrainTexturesPath);
-			FlashUIPath = Path.Combine(ArtPath, kFlashUIPath);
-			MinimapPath = Path.Combine(ArtPath, kMinimapPath);
-			LoadmapPath = Path.Combine(ArtPath, kLoadmapPath);
-			ClipArtPath = Path.Combine(ArtPath, kClipArtPath);
-			RoadsPath = Path.Combine(ArtPath, kRoadsPath);
-			FoliagePath = Path.Combine(ArtPath, kFoliagePath);
+			this.ArtPath = kArtPath;//Path.Combine(RootDirectory, kArtPath);
+			this.ParticleEffectPath = Path.Combine(this.ArtPath, kParticleEffectPath);
+			this.SkyBoxPath = Path.Combine(this.ArtPath, kSkyBoxPath);
+			this.TerrainTexturesPath = Path.Combine(this.ArtPath, kTerrainTexturesPath);
+			this.FlashUIPath = Path.Combine(this.ArtPath, kFlashUIPath);
+			this.MinimapPath = Path.Combine(this.ArtPath, kMinimapPath);
+			this.LoadmapPath = Path.Combine(this.ArtPath, kLoadmapPath);
+			this.ClipArtPath = Path.Combine(this.ArtPath, kClipArtPath);
+			this.RoadsPath = Path.Combine(this.ArtPath, kRoadsPath);
+			this.FoliagePath = Path.Combine(this.ArtPath, kFoliagePath);
 
-			DataPath = kDataPath;//Path.Combine(RootDirectory, kDataPath);
-			AbilityScriptsPath = Path.Combine(DataPath, kAbilitiesPath);
-			AIDataPath = Path.Combine(DataPath, kAIPath);
-			PowerScriptsPath = Path.Combine(DataPath, kPowersPath);
-			TacticsPath = Path.Combine(DataPath, kTacticsPath);
-			TriggerScriptsPath = Path.Combine(DataPath, kTriggerScriptsPath);
+			this.DataPath = kDataPath;//Path.Combine(RootDirectory, kDataPath);
+			this.AbilityScriptsPath = Path.Combine(this.DataPath, kAbilitiesPath);
+			this.AIDataPath = Path.Combine(this.DataPath, kAIPath);
+			this.PowerScriptsPath = Path.Combine(this.DataPath, kPowersPath);
+			this.TacticsPath = Path.Combine(this.DataPath, kTacticsPath);
+			this.TriggerScriptsPath = Path.Combine(this.DataPath, kTriggerScriptsPath);
 
-			PhysicsPath = kPhysicsPath;
-			ScenarioPath = kScenariosPath;
-			SoundPath = kSoundPath;
+			this.PhysicsPath = kPhysicsPath;
+			this.ScenarioPath = kScenariosPath;
+			this.SoundPath = kSoundPath;
 		}
 
 		#region Art
@@ -115,9 +115,9 @@ namespace KSoft.Phoenix.Engine
 		{
 			switch (location)
 			{
-			case ContentStorage.Game: return RootDirectory;
+			case ContentStorage.Game: return this.RootDirectory;
 			case ContentStorage.Update:
-				return UpdateDirectoryIsValid ? UpdateDirectory : RootDirectory;
+				return this.UpdateDirectoryIsValid ? this.UpdateDirectory : this.RootDirectory;
 
 			default: throw new NotImplementedException();
 			}
@@ -127,29 +127,29 @@ namespace KSoft.Phoenix.Engine
 			switch (dir)
 			{
 			#region Art
-			case GameDirectory.Art: return ArtPath;
+			case GameDirectory.Art: return this.ArtPath;
 
 			#endregion
 			#region Data
-			case GameDirectory.Data: return DataPath;
+			case GameDirectory.Data: return this.DataPath;
 
-			case GameDirectory.AbilityScripts: return AbilityScriptsPath;
-			case GameDirectory.AIData: return AIDataPath;
-			case GameDirectory.PowerScripts: return PowerScriptsPath;
-			case GameDirectory.Tactics: return TacticsPath;
-			case GameDirectory.TriggerScripts: return TriggerScriptsPath;
+			case GameDirectory.AbilityScripts: return this.AbilityScriptsPath;
+			case GameDirectory.AIData:         return this.AIDataPath;
+			case GameDirectory.PowerScripts:   return this.PowerScriptsPath;
+			case GameDirectory.Tactics:        return this.TacticsPath;
+			case GameDirectory.TriggerScripts: return this.TriggerScriptsPath;
 			#endregion
-			case GameDirectory.Physics: return PhysicsPath;
-			case GameDirectory.Scenario: return ScenarioPath;
-			case GameDirectory.Sound: return SoundPath;
+			case GameDirectory.Physics:  return this.PhysicsPath;
+			case GameDirectory.Scenario: return this.ScenarioPath;
+			case GameDirectory.Sound:    return this.SoundPath;
 
 			default: throw new NotImplementedException();
 			}
 		}
 		public string GetAbsoluteDirectory(ContentStorage loc, GameDirectory gameDir)
 		{
-			string root = GetContentLocation(loc);
-			string dir = GetDirectory(gameDir);
+			string root = this.GetContentLocation(loc);
+			string dir = this.GetDirectory(gameDir);
 			return Path.Combine(root, dir);
 		}
 
@@ -158,8 +158,8 @@ namespace KSoft.Phoenix.Engine
 		{
 			file = null;
 
-			string root = GetContentLocation(loc);
-			string dir = GetDirectory(gameDir);
+			string root = this.GetContentLocation(loc);
+			string dir = this.GetDirectory(gameDir);
 			string file_path = Path.Combine(root, dir, filename.ToLowerInvariant());
 			if (!string.IsNullOrEmpty(ext))
 				file_path += ext;
@@ -171,21 +171,21 @@ namespace KSoft.Phoenix.Engine
 		{
 			file = null;
 
-			if (!UseTitleUpdates)
-				return TryGetFileImpl(ContentStorage.Game, gameDir, filename, out file, ext);
+			if (!this.UseTitleUpdates)
+				return this.TryGetFileImpl(ContentStorage.Game, gameDir, filename, out file, ext);
 
 			//////////////////////////////////////////////////////////////////////////
 			// Try to get the file from the TU storage first
-			string dir = GetDirectory(gameDir);
+			string dir = this.GetDirectory(gameDir);
 			string file_path = Path.Combine(dir, filename.ToLowerInvariant());
 			if (!string.IsNullOrEmpty(ext))
 				file_path += ext;
 
 			string full_path;
 
-			if (UpdateDirectoryIsValid)
+			if (this.UpdateDirectoryIsValid)
 			{
-				full_path = Path.Combine(UpdateDirectory, file_path);
+				full_path = Path.Combine(this.UpdateDirectory, file_path);
 				file = new FileInfo(full_path);
 			}
 
@@ -193,7 +193,7 @@ namespace KSoft.Phoenix.Engine
 			// No update file exists, fall back to regular game storage
 			if (file == null || !file.Exists)
 			{
-				full_path = Path.Combine(RootDirectory, file_path);
+				full_path = Path.Combine(this.RootDirectory, file_path);
 				file = new FileInfo(full_path);
 				return file.Exists;
 			}
@@ -206,8 +206,8 @@ namespace KSoft.Phoenix.Engine
 			file = null;
 
 			return loc == ContentStorage.UpdateOrGame
-				? TryGetFileFromUpdateOrGame(gameDir, filename, out file, ext)
-				: TryGetFileImpl(loc, gameDir, filename, out file, ext);
+				? this.TryGetFileFromUpdateOrGame(gameDir, filename, out file, ext)
+				: this.TryGetFileImpl(loc, gameDir, filename, out file, ext);
 		}
 		public GetXmlOrXmbFileResult TryGetXmlOrXmbFile(ContentStorage loc, GameDirectory gameDir, string filename, out FileInfo file,
 			string ext = null)
@@ -215,7 +215,7 @@ namespace KSoft.Phoenix.Engine
 			Contract.Requires(!string.IsNullOrEmpty(filename));
 			file = null;
 
-			if (TryGetFile(loc, gameDir, filename, out file, ext))
+			if (this.TryGetFile(loc, gameDir, filename, out file, ext))
 				return GetXmlOrXmbFileResult.Xml;
 
 			if (ext.IsNotNullOrEmpty())
@@ -225,8 +225,8 @@ namespace KSoft.Phoenix.Engine
 
 			// purposely don't pass ext through in the XMB round
 			bool xmb_found = loc == ContentStorage.UpdateOrGame
-				? TryGetFileFromUpdateOrGame(gameDir, filename, out file, ext: null)
-				: TryGetFileImpl(loc, gameDir, filename, out file, ext: null);
+				? this.TryGetFileFromUpdateOrGame(gameDir, filename, out file, ext: null)
+				: this.TryGetFileImpl(loc, gameDir, filename, out file, ext: null);
 			if (xmb_found)
 				return GetXmlOrXmbFileResult.Xmb;
 
@@ -238,7 +238,7 @@ namespace KSoft.Phoenix.Engine
 			Contract.Requires(loc != ContentStorage.UpdateOrGame, "Must iterate storages separately");
 			Contract.Requires(!string.IsNullOrEmpty(searchPattern));
 
-			string dir = GetAbsoluteDirectory(loc, gameDir);
+			string dir = this.GetAbsoluteDirectory(loc, gameDir);
 
 			if (!Directory.Exists(dir))
 				throw new DirectoryNotFoundException(dir);

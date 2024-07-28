@@ -91,10 +91,10 @@ public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
     this.materialMeshRenderers_ = allMaterialMeshRenderers.ToArray();
   }
 
-  ~MergedMaterialAcrossMeshesRenderer() => ReleaseUnmanagedResources_();
+  ~MergedMaterialAcrossMeshesRenderer() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
-    ReleaseUnmanagedResources_();
+    this.ReleaseUnmanagedResources_();
     GC.SuppressFinalize(this);
   }
 

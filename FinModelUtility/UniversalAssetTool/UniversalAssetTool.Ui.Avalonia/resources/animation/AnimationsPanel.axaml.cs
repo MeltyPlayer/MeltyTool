@@ -84,7 +84,7 @@ namespace uni.ui.avalonia.resources.animation {
 
   public partial class AnimationsPanel : UserControl {
     public AnimationsPanel() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     protected AnimationsPanelViewModel ViewModel

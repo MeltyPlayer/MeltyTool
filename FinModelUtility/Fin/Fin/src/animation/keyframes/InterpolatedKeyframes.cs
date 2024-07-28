@@ -35,19 +35,19 @@ public class InterpolatedKeyframes<TKeyframe, T>(
                 out var precedingKeyframe,
                 out var followingKeyframe,
                 out var normalizedFrame)) {
-      case KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING:
+      case InterpolationDataType.PRECEDING_AND_FOLLOWING:
         value = interpolator.Interpolate(precedingKeyframe,
                                          followingKeyframe,
                                          normalizedFrame,
                                          sharedConfig);
         return true;
 
-      case KeyframesUtil.InterpolationDataType.PRECEDING_ONLY:
+      case InterpolationDataType.PRECEDING_ONLY:
         value = precedingKeyframe.ValueOut;
         return true;
 
       default:
-      case KeyframesUtil.InterpolationDataType.NONE:
+      case InterpolationDataType.NONE:
         if (individualConfig.DefaultValue?.Try(out value) ?? false) {
           return true;
         }

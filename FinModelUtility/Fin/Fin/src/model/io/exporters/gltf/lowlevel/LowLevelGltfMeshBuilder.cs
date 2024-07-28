@@ -209,7 +209,7 @@ public class LowLevelGltfMeshBuilder {
         var finColor0 = point.GetColor(0);
         var hasColor0 = finColor0 != null;
         var assColor0 = hasColor0
-            ? LowLevelGltfMeshBuilder.FinToGltfColor_(
+            ? FinToGltfColor_(
                 finColor0)
             : Vector4.One;
         colorSpan[p] = assColor0;

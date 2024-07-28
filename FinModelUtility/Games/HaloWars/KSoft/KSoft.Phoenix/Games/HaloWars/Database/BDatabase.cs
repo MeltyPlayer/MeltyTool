@@ -23,16 +23,16 @@ namespace KSoft.Phoenix.HaloWars
 
 		public BDatabase(Engine.PhxEngine engine) : base(engine, kGameObjectTypes)
 		{
-			RepairPowerID = RallyPointPowerID = HookRepairPowerID = UnscOdstDropPowerID =
+			this.RepairPowerID = this.RallyPointPowerID = this.HookRepairPowerID = this.UnscOdstDropPowerID =
 				TypeExtensions.kNone;
 		}
 
 		internal void SetupDBIDs()
 		{
-			RepairPowerID = base.GetId(Phx.DatabaseObjectKind.Power, "_Repair");
-			RallyPointPowerID = base.GetId(Phx.DatabaseObjectKind.Power, "_RallyPoint");
-			HookRepairPowerID = base.GetId(Phx.DatabaseObjectKind.Power, "HookRepair");
-			UnscOdstDropPowerID = base.GetId(Phx.DatabaseObjectKind.Power, "UnscOdstDrop");
+			this.RepairPowerID = this.GetId(Phx.DatabaseObjectKind.Power, "_Repair");
+			this.RallyPointPowerID = this.GetId(Phx.DatabaseObjectKind.Power, "_RallyPoint");
+			this.HookRepairPowerID = this.GetId(Phx.DatabaseObjectKind.Power, "HookRepair");
+			this.UnscOdstDropPowerID = this.GetId(Phx.DatabaseObjectKind.Power, "UnscOdstDrop");
 		}
 	};
 }

@@ -27,8 +27,8 @@ namespace KSoft.Phoenix.Phx
 		uint mEditorColor;
 		public System.Drawing.Color EditorColor
 		{
-			get { return System.Drawing.Color.FromArgb((int)mEditorColor); }
-			set { mEditorColor = (uint)value.ToArgb(); }
+			get { return System.Drawing.Color.FromArgb((int) this.mEditorColor); }
+			set { this.mEditorColor = (uint)value.ToArgb(); }
 		}
 		#endregion
 
@@ -38,16 +38,16 @@ namespace KSoft.Phoenix.Phx
 		[Meta.VisualReference]
 		public string ImpactEffect
 		{
-			get { return mImpactEffect; }
-			set { mImpactEffect = value; }
+			get { return this.mImpactEffect; }
+			set { this.mImpactEffect = value; }
 		}
 		#endregion
 
 		#region BListAutoIdObject Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamAttribute("EditorColor", ref mEditorColor, NumeralBase.Hex);
-			s.StreamElementOpt("ImpactEffect", ref mImpactEffect, Predicates.IsNotNullOrEmpty);
+			s.StreamAttribute("EditorColor", ref this.mEditorColor, NumeralBase.Hex);
+			s.StreamElementOpt("ImpactEffect", ref this.mImpactEffect, Predicates.IsNotNullOrEmpty);
 		}
 		#endregion
 	};

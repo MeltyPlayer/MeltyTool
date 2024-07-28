@@ -37,7 +37,7 @@ public class StrExtractor {
   private readonly ILogger logger_ = Logging.Create<StrExtractor>();
 
   public void Extract(IReadOnlyGenericFile strFile, ISystemDirectory outputDir) {
-      var task = ExtractAsync(strFile, outputDir);
+      var task = this.ExtractAsync(strFile, outputDir);
       task.Wait();
     }
 

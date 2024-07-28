@@ -9,7 +9,7 @@ public partial record struct F3dVertex : IBinaryConvertible {
   public short X { get; set; }
   public short Y { get; set; }
   public short Z { get; set; }
-  public Vector3 GetPosition() => new(X, Y, Z);
+  public Vector3 GetPosition() => new(this.X, this.Y, this.Z);
 
   public short Flag { get; set; }
 
@@ -17,7 +17,7 @@ public partial record struct F3dVertex : IBinaryConvertible {
   public short V { get; set; }
 
   public Vector2 GetUv(float scaleX, float scaleY)
-    => new(U * scaleX, V * scaleY);
+    => new(this.U * scaleX, this.V * scaleY);
 
   public byte NormalXOrR { get; set; }
   public byte NormalYOrG { get; set; }
@@ -25,13 +25,13 @@ public partial record struct F3dVertex : IBinaryConvertible {
   public byte A { get; set; }
 
   public Vector3 GetNormal() => new Vector3(
-      GetNormalChannel_(NormalXOrR),
-      GetNormalChannel_(NormalYOrG),
-      GetNormalChannel_(NormalZOrB));
+      GetNormalChannel_(this.NormalXOrR),
+      GetNormalChannel_(this.NormalYOrG),
+      GetNormalChannel_(this.NormalZOrB));
 
   private static float GetNormalChannel_(byte value)
     => ((sbyte) value) / (byte.MaxValue * .5f);
 
   public Vector4 GetColor()
-    => new(NormalXOrR / 255f, NormalYOrG / 255f, NormalZOrB / 255f, A / 255f);
+    => new(this.NormalXOrR / 255f, this.NormalYOrG / 255f, this.NormalZOrB / 255f, this.A / 255f);
 }

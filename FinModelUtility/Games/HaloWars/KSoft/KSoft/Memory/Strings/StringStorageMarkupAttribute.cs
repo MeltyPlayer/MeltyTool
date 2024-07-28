@@ -23,7 +23,7 @@ namespace KSoft.Memory.Strings
 		{
 			Contract.Requires(fixedLength >= 0);
 
-			Storage = new StringStorage(widthType, type, byteOrder, fixedLength);
+			this.Storage = new StringStorage(widthType, type, byteOrder, fixedLength);
 		}
 		/// <summary>Define a string storage markup (in <see cref="Shell.EndianFormat.Little"/> byte order)</summary>
 		/// <param name="widthType">Width size of a single character of this string type</param>

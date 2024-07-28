@@ -125,7 +125,7 @@ public class Bw2Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
         case "VPOS": {
           // TODO: Handle this properly
           // Each new VPOS section seems to correspond to a new LOD mesh, but we only need the first one.
-          if (Positions.Count > 0) {
+          if (this.Positions.Count > 0) {
             br.Position = expectedNodeEnd;
             goto BreakEarly;
           }

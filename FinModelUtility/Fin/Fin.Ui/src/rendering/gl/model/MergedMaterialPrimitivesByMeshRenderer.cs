@@ -31,10 +31,10 @@ public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
                                 false);
   }
 
-  ~MergedMaterialPrimitivesByMeshRenderer() => ReleaseUnmanagedResources_();
+  ~MergedMaterialPrimitivesByMeshRenderer() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
-    ReleaseUnmanagedResources_();
+    this.ReleaseUnmanagedResources_();
     GC.SuppressFinalize(this);
   }
 

@@ -15,19 +15,19 @@ namespace KSoft.Phoenix.Phx
 		BProtoTechEffectTargetType mType = BProtoTechEffectTargetType.None;
 		public BProtoTechEffectTargetType Type
 		{
-			get { return mType; }
-			set { mType = value; }
+			get { return this.mType; }
+			set { this.mType = value; }
 		}
 
 		int mValueID = TypeExtensions.kNone;
 		public int ValueID
 		{
-			get { return mValueID; }
-			set { mValueID = value; }
+			get { return this.mValueID; }
+			set { this.mValueID = value; }
 		}
 
 		public DatabaseObjectKind ObjectKind { get {
-			switch (mType)
+			switch (this.mType)
 			{
 			case BProtoTechEffectTargetType.ProtoUnit:
 				return DatabaseObjectKind.Unit;
@@ -46,10 +46,10 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			DatabaseObjectKind kind = ObjectKind;
+			DatabaseObjectKind kind = this.ObjectKind;
 
 			if (kind != DatabaseObjectKind.None)
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mValueID, kind, false, XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mValueID, kind, false, XML.XmlUtil.kSourceCursor);
 		}
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
@@ -57,8 +57,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttributeEnum("type", ref mType);
-			StreamValueID(s, xs);
+			s.StreamAttributeEnum("type", ref this.mType);
+			this.StreamValueID(s, xs);
 		}
 		#endregion
 	};

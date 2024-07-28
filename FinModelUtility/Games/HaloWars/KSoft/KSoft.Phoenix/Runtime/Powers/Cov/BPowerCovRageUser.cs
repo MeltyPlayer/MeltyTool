@@ -21,15 +21,15 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref CameraZoom); s.Stream(ref CameraHeight);
-			s.Stream(ref TimestampNextCommand);
-			s.StreamV(ref MoveInputDir); s.StreamV(ref AttackInputDir);
-			s.Stream(ref TimeUntilHint);
-			s.StreamV(ref LastMovePos); s.StreamV(ref LastMoveDir); s.StreamV(ref LastAttackDir);
-			s.Stream(ref CommandInterval);
-			s.Stream(ref ScanRadius); s.Stream(ref MovementProjectionMultiplier);
-			s.Stream(ref HasMoved); s.Stream(ref HasAttacked); s.Stream(ref HintShown);
-			s.Stream(ref HintCompleted); s.Stream(ref ForceCommandNextUpdate);
+			s.Stream(ref this.CameraZoom); s.Stream(ref this.CameraHeight);
+			s.Stream(ref this.TimestampNextCommand);
+			s.StreamV(ref this.MoveInputDir); s.StreamV(ref this.AttackInputDir);
+			s.Stream(ref this.TimeUntilHint);
+			s.StreamV(ref this.LastMovePos); s.StreamV(ref this.LastMoveDir); s.StreamV(ref this.LastAttackDir);
+			s.Stream(ref this.CommandInterval);
+			s.Stream(ref this.ScanRadius); s.Stream(ref this.MovementProjectionMultiplier);
+			s.Stream(ref this.HasMoved); s.Stream(ref this.HasAttacked); s.Stream(ref this.HintShown);
+			s.Stream(ref this.HintCompleted); s.Stream(ref this.ForceCommandNextUpdate);
 		}
 		#endregion
 	};

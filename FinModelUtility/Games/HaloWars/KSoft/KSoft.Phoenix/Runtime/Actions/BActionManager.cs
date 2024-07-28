@@ -35,16 +35,16 @@ namespace KSoft.Phoenix.Runtime
 	#region IEndianStreamSerializable Members
 	public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Action);
-			if (Action)
+			s.Stream(ref this.Action);
+			if (this.Action)
 			{
-				s.Stream(ref ActionType, BActionTypeStreamer.Instance);
-				BSaveGame.StreamFreeListItemPtr(s, ref ActionPtr);
+				s.Stream(ref this.ActionType, BActionTypeStreamer.Instance);
+				BSaveGame.StreamFreeListItemPtr(s, ref this.ActionPtr);
 			}
 			else
 			{
-				ActionType = Phx.BActionType.Invalid;
-				ActionPtr = TypeExtensions.kNone;
+				this.ActionType = Phx.BActionType.Invalid;
+				this.ActionPtr = TypeExtensions.kNone;
 			}
 		}
 		#endregion

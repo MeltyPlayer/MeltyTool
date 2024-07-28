@@ -7,5 +7,5 @@ public static class WiiToolsConstants {
     DirectoryConstants.TOOLS_DIRECTORY.AssertGetExistingSubdir("wit");
 
   public static IReadOnlySystemFile WIT_EXE { get; } =
-    WiiToolsConstants.WIT_DIRECTORY.AssertGetExistingFile("wit.exe");
+    WIT_DIRECTORY.AssertGetExistingFile("wit.exe");
 }

@@ -66,11 +66,11 @@ namespace KSoft
 
 		public ushort BitEncode(TEnum value, ushort bits, Bitwise.BitFieldTraits traits)
 		{
-			return (ushort)BitEncode(value, bits, traits.BitIndex);
+			return (ushort) this.BitEncode(value, bits, traits.BitIndex);
 		}
 		public TEnum BitEncode(uint bits, Bitwise.BitFieldTraits traits)
 		{
-			return BitDecode(bits, traits.BitIndex);
+			return this.BitDecode(bits, traits.BitIndex);
 		}
 	};
 

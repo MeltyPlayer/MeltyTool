@@ -26,16 +26,16 @@ namespace KSoft.Values
 
 		readonly string mName;
 		/// <summary>Full name of this group</summary>
-		public string Name { get => mName; }
+		public string Name { get => this.mName; }
 
 		/// <summary>Formats <see cref="Name"/> to a properly (left) aligned string (using blank-white-space)</summary>
 		/// <returns><see cref="string.PadLeft"/> on <see cref="Name"/></returns>
 		/// <remarks>Pad width is determined by <see cref="kGroupNamePadLength"/></remarks>
-		public string NameToLeftPaddedString()	=> mName.PadLeft(kGroupNamePadLength);
+		public string NameToLeftPaddedString()	=> this.mName.PadLeft(kGroupNamePadLength);
 		/// <summary> Formats <see cref="Name"/> to a properly (right) aligned string (using blank-white-space)</summary>
 		/// <returns><see cref="string.PadRight"/> on <see cref="Name"/></returns>
 		/// <remarks>Pad width is determined by <see cref="kGroupNamePadLength"/></remarks>
-		public string NameToRightPaddedString()	=> mName.PadRight(kGroupNamePadLength);
+		public string NameToRightPaddedString()	=> this.mName.PadRight(kGroupNamePadLength);
 		#endregion
 
 		#region Tag
@@ -44,9 +44,9 @@ namespace KSoft.Values
 		/// <summary>The character code of this group</summary>
 		[System.ComponentModel.Browsable(false)]
 		[SuppressMessage("Microsoft.Design", "CA1819:PropertiesShouldNotReturnArrays")]
-		public char[] Tag { get => mTag; }
+		public char[] Tag { get => this.mTag; }
 		/// <summary>Get the character code of this group as a string</summary>
-		public string TagString { get => mTagAsString; }
+		public string TagString { get => this.mTagAsString; }
 		#endregion
 
 		/// <summary>Extra data that can be tagged to this Group Tag</summary>
@@ -72,13 +72,13 @@ namespace KSoft.Values
 		{
 			Contract.Assume(expectedLength > 0);
 
-			mName = kNullGroupName;
+			this.mName = kNullGroupName;
 
-			mTag = new char[expectedLength];
-			for (int x = 0; x < mTag.Length; x++)
-				mTag[x] = (char)0xFF;
+			this.mTag = new char[expectedLength];
+			for (int x = 0; x < this.mTag.Length; x++)
+				this.mTag[x] = (char)0xFF;
 
-			mTagAsString = new string(mTag);
+			this.mTagAsString = new string(this.mTag);
 		}
 		/// <summary>Initialize a group tag from a character code and name</summary>
 		/// <param name="groupTag">Character code string</param>
@@ -95,9 +95,9 @@ namespace KSoft.Values
 
 			Util.MarkUnusedVariable(ref expectedLength); // #REVIEW: why did I leave the Requires using this commented out?
 
-			mName = name;
-			mTagAsString = groupTag;
-			mTag = groupTag.ToCharArray();
+			this.mName = name;
+			this.mTagAsString = groupTag;
+			this.mTag = groupTag.ToCharArray();
 		}
 		/// <summary>Initialize a group tag from a character code, name and <see cref="Guid"/></summary>
 		/// <param name="groupTag">Character code string</param>
@@ -113,7 +113,7 @@ namespace KSoft.Values
 			Contract.Requires(uuid != KGuid.Empty);
 #endif
 
-			Uuid = uuid;
+			this.Uuid = uuid;
 		}
 		/// <summary>Specialized ctor for <see cref="GroupTagData64"/> built from two <see cref="GroupTagData32"/></summary>
 		/// <param name="maj">First four-character code</param>
@@ -129,10 +129,10 @@ namespace KSoft.Values
 #endif
 			Contract.Requires<ArgumentException>(name != kNullGroupName, "Name reserved for null group tags");
 
-			mName = name;
-			mTagAsString = string.Format(Util.InvariantCultureInfo,
-				"{0}{1}", maj.mTagAsString, min.mTagAsString);
-			mTag = mTagAsString.ToCharArray();
+			this.mName = name;
+			this.mTagAsString = string.Format(Util.InvariantCultureInfo,
+			                                  "{0}{1}", maj.mTagAsString, min.mTagAsString);
+			this.mTag = this.mTagAsString.ToCharArray();
 		}
 		/// <summary>Specialized ctor for <see cref="GroupTagData64"/> built from two <see cref="GroupTagData32"/></summary>
 		/// <param name="maj">First four-character code</param>
@@ -149,7 +149,7 @@ namespace KSoft.Values
 			Contract.Requires(uuid != KGuid.Empty);
 #endif
 
-			Uuid = uuid;
+			this.Uuid = uuid;
 		}
 		#endregion
 
@@ -157,9 +157,10 @@ namespace KSoft.Values
 		#region Overrides
 		public override string ToString() => string.Format(Util.InvariantCultureInfo,
 			"['{0," + (this is GroupTagData32 ? "4" : "8") + "}'  {1}]",
-			TagString, Name);
+			this.TagString,
+			this.Name);
 
-		public override int GetHashCode() => Name.GetHashCode();
+		public override int GetHashCode() => this.Name.GetHashCode();
 
 		public override bool Equals(object obj)
 		{
@@ -254,7 +255,7 @@ namespace KSoft.Values
 			Contract.Assume(x != null);
 			Contract.Assume(y != null);
 
-			return Compare((GroupTagData)x, (GroupTagData)y);
+			return this.Compare((GroupTagData)x, (GroupTagData)y);
 		}
 		/// <summary>Does a comparison based on the tag group's names</summary>
 		/// <param name="obj"></param>
@@ -264,7 +265,7 @@ namespace KSoft.Values
 		{
 			Contract.Assume(obj != null);
 
-			return CompareTo((GroupTagData)obj);
+			return this.CompareTo((GroupTagData)obj);
 		}
 		#endregion
 
@@ -309,7 +310,7 @@ namespace KSoft.Values
 		public override bool Test(char[] other)
 		{
 			Contract.Requires(other != null);
-			Contract.Requires<ArgumentOutOfRangeException>(other.Length == Tag.Length);
+			Contract.Requires<ArgumentOutOfRangeException>(other.Length == this.Tag.Length);
 
 			throw new NotImplementedException();
 		}

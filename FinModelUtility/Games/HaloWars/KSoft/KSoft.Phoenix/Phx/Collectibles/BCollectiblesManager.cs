@@ -23,8 +23,8 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamElementOpt("CollectiblesXMLVersion", ref mXmlVersion, Predicates.IsNotNone);
-			SkullManager.Serialize(s);
+			s.StreamElementOpt("CollectiblesXMLVersion", ref this.mXmlVersion, Predicates.IsNotNone);
+			this.SkullManager.Serialize(s);
 		}
 		#endregion
 	};

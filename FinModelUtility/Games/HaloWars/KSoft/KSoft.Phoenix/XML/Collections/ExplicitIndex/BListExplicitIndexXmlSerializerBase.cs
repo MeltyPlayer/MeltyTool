@@ -14,14 +14,14 @@ namespace KSoft.Phoenix.XML
 
 		public abstract Collections.BListExplicitIndexBase<T> ListExplicitIndex { get; }
 
-		public override BListXmlParams Params { get { return mParams; } }
-		public override Collections.BListBase<T> List { get { return ListExplicitIndex; } }
+		public override BListXmlParams Params { get { return this.mParams; } }
+		public override Collections.BListBase<T> List { get { return this.ListExplicitIndex; } }
 
 		protected BListExplicitIndexXmlSerializerBase(BListExplicitIndexXmlParams<T> @params)
 		{
 			Contract.Requires<ArgumentNullException>(@params != null);
 
-			mParams = @params;
+			this.mParams = @params;
 		}
 
 		#region IXmlElementStreamable Members
@@ -30,7 +30,7 @@ namespace KSoft.Phoenix.XML
 			where TCursor : class
 		{
 			int index = TypeExtensions.kNone;
-			mParams.StreamExplicitIndex(s, ref index);
+			this.mParams.StreamExplicitIndex(s, ref index);
 
 			return index;
 		}
@@ -38,23 +38,23 @@ namespace KSoft.Phoenix.XML
 			where TDoc : class
 			where TCursor : class
 		{
-			mParams.StreamExplicitIndex(s, ref index);
+			this.mParams.StreamExplicitIndex(s, ref index);
 		}
 
 		protected override void WriteNodes<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs)
 		{
-			var eip = ListExplicitIndex.ExplicitIndexParams;
+			var eip = this.ListExplicitIndex.ExplicitIndexParams;
 			T k_invalid = eip.kTypeGetInvalid();
 
 			int index = 0;
-			foreach (T data in ListExplicitIndex)
+			foreach (T data in this.ListExplicitIndex)
 			{
 				if (eip.kComparer.Compare(data, k_invalid) != 0)
 				{
-					using (s.EnterCursorBookmark(WriteGetElementName(data)))
+					using (s.EnterCursorBookmark(this.WriteGetElementName(data)))
 					{
-						WriteExplicitIndex(s, xs, index);
-						Write(s, xs, data);
+						this.WriteExplicitIndex(s, xs, index);
+						this.Write(s, xs, data);
 					}
 				}
 

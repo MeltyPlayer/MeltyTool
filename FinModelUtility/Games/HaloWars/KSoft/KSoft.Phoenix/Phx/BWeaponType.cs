@@ -25,8 +25,8 @@ namespace KSoft.Phoenix.Phx
 		string mDeathAnimation;
 		public string DeathAnimation
 		{
-			get { return mDeathAnimation; }
-			set { mDeathAnimation = value; }
+			get { return this.mDeathAnimation; }
+			set { this.mDeathAnimation = value; }
 		}
 		#endregion
 
@@ -35,9 +35,9 @@ namespace KSoft.Phoenix.Phx
 		#region BListObjectBase Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamElementOpt("DeathAnimation", ref mDeathAnimation, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("DeathAnimation", ref this.mDeathAnimation, Predicates.IsNotNullOrEmpty);
 
-			XML.XmlUtil.Serialize(s, Modifiers, BWeaponModifier.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Modifiers, BWeaponModifier.kBListXmlParams);
 		}
 		#endregion
 	};

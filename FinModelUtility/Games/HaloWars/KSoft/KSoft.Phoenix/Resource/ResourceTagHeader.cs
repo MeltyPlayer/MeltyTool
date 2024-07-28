@@ -40,23 +40,23 @@ namespace KSoft.Phoenix.Resource
 		private byte mPlatformId;
 		public ResourceTagPlatformId PlatformId
 		{
-			get { return (ResourceTagPlatformId)mPlatformId; }
-			set { mPlatformId = (byte)value; }
+			get { return (ResourceTagPlatformId) this.mPlatformId; }
+			set { this.mPlatformId = (byte)value; }
 		}
 
 		public ResourceTagHeader(Shell.ProcessorSize pointerSize = Shell.ProcessorSize.x32)
 		{
 			if (pointerSize == Shell.ProcessorSize.x32)
 			{
-				TagMachineNameOffset = Values.PtrHandle.InvalidHandle32;
-				TagUserNameOffset = Values.PtrHandle.InvalidHandle32;
-				CreatorToolCommandLine = Values.PtrHandle.InvalidHandle32;
+				this.TagMachineNameOffset = Values.PtrHandle.InvalidHandle32;
+				this.TagUserNameOffset = Values.PtrHandle.InvalidHandle32;
+				this.CreatorToolCommandLine = Values.PtrHandle.InvalidHandle32;
 			}
 			else
 			{
-				TagMachineNameOffset = Values.PtrHandle.InvalidHandle64;
-				TagUserNameOffset = Values.PtrHandle.InvalidHandle64;
-				CreatorToolCommandLine = Values.PtrHandle.InvalidHandle64;
+				this.TagMachineNameOffset = Values.PtrHandle.InvalidHandle64;
+				this.TagUserNameOffset = Values.PtrHandle.InvalidHandle64;
+				this.CreatorToolCommandLine = Values.PtrHandle.InvalidHandle64;
 			}
 		}
 
@@ -65,9 +65,9 @@ namespace KSoft.Phoenix.Resource
 		{
 			using (s.BeginEndianSwitch(Shell.EndianFormat.Little))
 			{
-				s.VirtualAddressTranslationInitialize(CreatorPointerSize);
+				s.VirtualAddressTranslationInitialize(this.CreatorPointerSize);
 				s.VirtualAddressTranslationPushPosition();
-				SerializeBody(s);
+				this.SerializeBody(s);
 				s.VirtualAddressTranslationPop();
 			}
 		}
@@ -78,46 +78,46 @@ namespace KSoft.Phoenix.Resource
 			s.StreamVersion(kMajorVersion);
 			s.StreamVersion(kMinorVersion);
 
-			s.Stream(ref HeaderSize);
-			s.Stream(ref DataSize);
-			s.Stream(ref HeaderAdler32);
+			s.Stream(ref this.HeaderSize);
+			s.Stream(ref this.DataSize);
+			s.Stream(ref this.HeaderAdler32);
 
-			s.Stream(ref TagTimeStamp);
-			s.Stream(ref TagGuid);
+			s.Stream(ref this.TagTimeStamp);
+			s.Stream(ref this.TagGuid);
 
-			s.StreamVirtualAddress(ref TagMachineNameOffset);
-			s.StreamVirtualAddress(ref TagUserNameOffset);
+			s.StreamVirtualAddress(ref this.TagMachineNameOffset);
+			s.StreamVirtualAddress(ref this.TagUserNameOffset);
 
-			s.StreamVirtualAddress(ref SourceFileName);
-			s.Stream(SourceDigest);
-			s.Stream(ref SourceFileSize);
-			s.Stream(ref SourceFileTimeStamp);
+			s.StreamVirtualAddress(ref this.SourceFileName);
+			s.Stream(this.SourceDigest);
+			s.Stream(ref this.SourceFileSize);
+			s.Stream(ref this.SourceFileTimeStamp);
 
-			s.StreamVirtualAddress(ref CreatorToolCommandLine);
-			s.Stream(ref CreatorToolVersion);
+			s.StreamVirtualAddress(ref this.CreatorToolCommandLine);
+			s.Stream(ref this.CreatorToolVersion);
 
-			s.Stream(ref mPlatformId);
+			s.Stream(ref this.mPlatformId);
 			s.Pad(sizeof(byte) + sizeof(uint));
 		}
 
 		public bool StreamTagMachineName(IO.EndianStream s, ref string value)
 		{
-			return PhxUtil.StreamPointerizedCString(s, ref TagMachineNameOffset, ref value);
+			return PhxUtil.StreamPointerizedCString(s, ref this.TagMachineNameOffset, ref value);
 		}
 
 		public bool StreamTagUserName(IO.EndianStream s, ref string value)
 		{
-			return PhxUtil.StreamPointerizedCString(s, ref TagUserNameOffset, ref value);
+			return PhxUtil.StreamPointerizedCString(s, ref this.TagUserNameOffset, ref value);
 		}
 
 		public bool StreamSourceFileNamee(IO.EndianStream s, ref string value)
 		{
-			return PhxUtil.StreamPointerizedCString(s, ref SourceFileName, ref value);
+			return PhxUtil.StreamPointerizedCString(s, ref this.SourceFileName, ref value);
 		}
 
 		public bool StreamCreatorToolCommandLine(IO.EndianStream s, ref string value)
 		{
-			return PhxUtil.StreamPointerizedCString(s, ref CreatorToolCommandLine, ref value);
+			return PhxUtil.StreamPointerizedCString(s, ref this.CreatorToolCommandLine, ref value);
 		}
 		#endregion
 	};

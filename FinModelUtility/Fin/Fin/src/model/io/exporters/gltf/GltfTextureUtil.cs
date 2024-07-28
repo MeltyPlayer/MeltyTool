@@ -16,10 +16,10 @@ public static class GltfTextureUtil {
         .WithPrimaryImage(memoryImage)
         .WithCoordinateSet(0)
         .WithSampler(
-            GltfTextureUtil.ConvertWrapMode_(finTexture.WrapModeU),
-            GltfTextureUtil.ConvertWrapMode_(finTexture.WrapModeV),
-            GltfTextureUtil.ConvertMinFilter_(finTexture.MinFilter),
-            GltfTextureUtil.ConvertMagFilter_(finTexture.MagFilter));
+            ConvertWrapMode_(finTexture.WrapModeU),
+            ConvertWrapMode_(finTexture.WrapModeV),
+            ConvertMinFilter_(finTexture.MinFilter),
+            ConvertMagFilter_(finTexture.MagFilter));
 
     textureBuilder.WithTransform(
         new Vector2(finTexture.Translation?.X ?? 0, finTexture.Translation?.Y ?? 0),

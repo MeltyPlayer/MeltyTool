@@ -6,7 +6,7 @@ using Material.Icons;
 namespace uni.ui.avalonia.common.controls {
   public partial class EmptyState : UserControl {
     public EmptyState() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     public static readonly StyledProperty<string> TextProperty =

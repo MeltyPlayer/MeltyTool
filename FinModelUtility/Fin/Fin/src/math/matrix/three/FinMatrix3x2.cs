@@ -65,32 +65,32 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void CopyFrom(in SystemMatrix other) => impl_ = other;
+  public void CopyFrom(in SystemMatrix other) => this.impl_ = other;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IFinMatrix3x2 SetIdentity() {
-    impl_ = SystemMatrix.Identity;
+    this.impl_ = SystemMatrix.Identity;
     return this;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IFinMatrix3x2 SetZero() {
-    impl_ = new SystemMatrix();
+    this.impl_ = new SystemMatrix();
     return this;
   }
 
   public float this[int index] {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => Unsafe.Add(ref impl_.M11, index);
+    get => Unsafe.Add(ref this.impl_.M11, index);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    set => Unsafe.Add(ref impl_.M11, index) = value;
+    set => Unsafe.Add(ref this.impl_.M11, index) = value;
   }
 
   public float this[int row, int column] {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => this[FinMatrix3x2.GetIndex_(row, column)];
+    get => this[GetIndex_(row, column)];
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    set => this[FinMatrix3x2.GetIndex_(row, column)] = value;
+    set => this[GetIndex_(row, column)] = value;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -126,7 +126,7 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void AddIntoBuffer(in SystemMatrix other, IFinMatrix3x2 buffer)
-    => buffer.Impl = SystemMatrix.Add(impl_, other);
+    => buffer.Impl = SystemMatrix.Add(this.impl_, other);
 
 
   // Matrix Multiplication
@@ -146,7 +146,7 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
       IFinMatrix3x2 buffer) {
     if (other is FinMatrix3x2 otherImpl &&
         buffer is FinMatrix3x2 bufferImpl) {
-      bufferImpl.impl_ = SystemMatrix.Multiply(otherImpl.impl_, impl_);
+      bufferImpl.impl_ = SystemMatrix.Multiply(otherImpl.impl_, this.impl_);
       return;
     }
 
@@ -179,7 +179,7 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
       in SystemMatrix other,
       IFinMatrix3x2 buffer) {
     if (buffer is FinMatrix3x2 bufferImpl) {
-      bufferImpl.impl_ = SystemMatrix.Multiply(other, impl_);
+      bufferImpl.impl_ = SystemMatrix.Multiply(other, this.impl_);
       return;
     }
 
@@ -210,7 +210,7 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void MultiplyIntoBuffer(float other, IFinMatrix3x2 buffer) {
     if (buffer is FinMatrix3x2 bufferImpl) {
-      bufferImpl.impl_ = SystemMatrix.Multiply(impl_, other);
+      bufferImpl.impl_ = SystemMatrix.Multiply(this.impl_, other);
       return;
     }
 
@@ -234,11 +234,11 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void InvertIntoBuffer(IFinMatrix3x2 buffer) {
     if (buffer is FinMatrix3x2 bufferImpl) {
-      SystemMatrix.Invert(impl_, out bufferImpl.impl_);
+      SystemMatrix.Invert(this.impl_, out bufferImpl.impl_);
       return;
     }
 
-    SystemMatrix.Invert(impl_, out var invertedSystemMatrix);
+    SystemMatrix.Invert(this.impl_, out var invertedSystemMatrix);
     Matrix3x2ConversionUtil.CopySystemIntoFin(invertedSystemMatrix, buffer);
   }
 

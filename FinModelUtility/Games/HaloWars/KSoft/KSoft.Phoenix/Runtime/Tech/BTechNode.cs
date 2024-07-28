@@ -16,11 +16,11 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamArray16(s, ref UniqueNodes);
-			s.Stream(ref ResearchPoints);
-			s.Stream(ref ResearchBuilding);
-			s.Stream(ref Status, BProtoTechStatusStreamer.Instance);
-			s.Stream(ref Unique);
+			BSaveGame.StreamArray16(s, ref this.UniqueNodes);
+			s.Stream(ref this.ResearchPoints);
+			s.Stream(ref this.ResearchBuilding);
+			s.Stream(ref this.Status, BProtoTechStatusStreamer.Instance);
+			s.Stream(ref this.Unique);
 		}
 		#endregion
 

@@ -23,8 +23,8 @@ namespace KSoft.Phoenix.Phx
 		BVector mSize = new BVector(2.0f, 0, 2.0f, 0);
 		public BVector Size
 		{
-			get { return mSize; }
-			set { mSize = value; }
+			get { return this.mSize; }
+			set { this.mSize = value; }
 		}
 		#endregion
 
@@ -32,8 +32,8 @@ namespace KSoft.Phoenix.Phx
 		float mTimeFullyOpaque = 5.0f;
 		public float TimeFullyOpaque
 		{
-			get { return mTimeFullyOpaque; }
-			set { mTimeFullyOpaque = value; }
+			get { return this.mTimeFullyOpaque; }
+			set { this.mTimeFullyOpaque = value; }
 		}
 		#endregion
 
@@ -41,8 +41,8 @@ namespace KSoft.Phoenix.Phx
 		float mFadeOutTime = 10.0f;
 		public float FadeOutTime
 		{
-			get { return mFadeOutTime; }
-			set { mFadeOutTime = value; }
+			get { return this.mFadeOutTime; }
+			set { this.mFadeOutTime = value; }
 		}
 		#endregion
 
@@ -50,8 +50,8 @@ namespace KSoft.Phoenix.Phx
 		OrientationType mOrientation = OrientationType.Random;
 		public OrientationType Orientation
 		{
-			get { return mOrientation; }
-			set { mOrientation = value; }
+			get { return this.mOrientation; }
+			set { this.mOrientation = value; }
 		}
 		#endregion
 
@@ -60,8 +60,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string TextureName
 		{
-			get { return mTextureName; }
-			set { mTextureName = value; }
+			get { return this.mTextureName; }
+			set { this.mTextureName = value; }
 		}
 		#endregion
 
@@ -70,12 +70,12 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamAttributeOpt("sizeX", ref mSize.X, f => f != 2.0f);
-			s.StreamAttributeOpt("sizeZ", ref mSize.Z, f => f != 2.0f);
-			s.StreamAttributeOpt("timeFullyOpaque", ref mTimeFullyOpaque, f => f != 5.0f);
-			s.StreamAttributeOpt("fadeOutTime", ref mFadeOutTime, f => f != 10.0f);
-			s.StreamAttributeEnumOpt("orientation", ref mOrientation, e => e != OrientationType.Random);
-			s.StreamCursor(ref mTextureName);
+			s.StreamAttributeOpt("sizeX", ref this.mSize.X, f => f != 2.0f);
+			s.StreamAttributeOpt("sizeZ", ref this.mSize.Z, f => f != 2.0f);
+			s.StreamAttributeOpt("timeFullyOpaque", ref this.mTimeFullyOpaque, f => f != 5.0f);
+			s.StreamAttributeOpt("fadeOutTime", ref this.mFadeOutTime, f => f != 10.0f);
+			s.StreamAttributeEnumOpt("orientation", ref this.mOrientation, e => e != OrientationType.Random);
+			s.StreamCursor(ref this.mTextureName);
 		}
 		#endregion
 	};

@@ -15,9 +15,9 @@ public abstract class BVector3<T> {
 
   public T this[int index] {
     get => index switch {
-        0 => X,
-        1 => Y,
-        2 => Z,
+        0 => this.X,
+        1 => this.Y,
+        2 => this.Z,
     };
     set {
       switch (index) {
@@ -59,7 +59,7 @@ public sealed partial class Vector3f
     => (!lhs?.Equals(rhs)) ?? (rhs != null);
 
   public override bool Equals(object? obj) {
-    if (Object.ReferenceEquals(this, obj)) {
+    if (ReferenceEquals(this, obj)) {
       return true;
     }
 
@@ -76,7 +76,7 @@ public sealed partial class Vector3f
     => new(value.X, value.Y, value.Z);
 
   public override int GetHashCode()
-    => FluentHash.Start().With(X).With(Y).With(Z).Hash;
+    => FluentHash.Start().With(this.X).With(this.Y).With(this.Z).Hash;
 }
 
 [BinarySchema]

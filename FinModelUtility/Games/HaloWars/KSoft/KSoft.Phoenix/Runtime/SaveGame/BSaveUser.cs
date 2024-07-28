@@ -17,16 +17,16 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref CurrentPlayer);
-			s.Stream(ref CoopPlayer);
-			s.StreamV(ref HoverPoint); s.StreamV(ref CameraHoverPoint); s.StreamV(ref CameraPosition);
-			s.StreamV(ref CameraForward); s.StreamV(ref CameraRight); s.StreamV(ref CameraUp);
-			s.Stream(ref CameraDefaultPitch); s.Stream(ref CameraDefaultYaw); s.Stream(ref CameraDefaultZoom);
-			s.Stream(ref CameraPitch); s.Stream(ref CameraYaw); s.Stream(ref CameraZoom);
-			s.Stream(ref CameraFOV);
-			s.Stream(ref CameraHoverPointOffsetHeight);
-			s.Stream(ref HaveHoverPoint);
-			s.Stream(ref DefaultCamera);
+			s.Stream(ref this.CurrentPlayer);
+			s.Stream(ref this.CoopPlayer);
+			s.StreamV(ref this.HoverPoint); s.StreamV(ref this.CameraHoverPoint); s.StreamV(ref this.CameraPosition);
+			s.StreamV(ref this.CameraForward); s.StreamV(ref this.CameraRight); s.StreamV(ref this.CameraUp);
+			s.Stream(ref this.CameraDefaultPitch); s.Stream(ref this.CameraDefaultYaw); s.Stream(ref this.CameraDefaultZoom);
+			s.Stream(ref this.CameraPitch); s.Stream(ref this.CameraYaw); s.Stream(ref this.CameraZoom);
+			s.Stream(ref this.CameraFOV);
+			s.Stream(ref this.CameraHoverPointOffsetHeight);
+			s.Stream(ref this.HaveHoverPoint);
+			s.Stream(ref this.DefaultCamera);
 			s.StreamSignature(cSaveMarker.User1);
 		}
 		#endregion

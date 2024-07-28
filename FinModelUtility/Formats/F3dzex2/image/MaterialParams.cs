@@ -21,7 +21,7 @@ public struct MaterialParams {
                                                  .With(this.TextureParams1)
                                                  .With(this.CombinerCycleParams0)
                                                  .With(this.CombinerCycleParams1)
-                                                 .With(CullingMode);
+                                                 .With(this.CullingMode);
 
   public override bool Equals(object? other) {
       if (ReferenceEquals(this, other)) {
@@ -29,11 +29,11 @@ public struct MaterialParams {
       }
 
       if (other is MaterialParams otherMaterialParams) {
-        return TextureParams0.Equals(otherMaterialParams.TextureParams0) &&
-               TextureParams1.Equals(otherMaterialParams.TextureParams1) &&
-               CombinerCycleParams0.Equals(otherMaterialParams.CombinerCycleParams0) &&
-               CombinerCycleParams1.Equals(otherMaterialParams.CombinerCycleParams1) &&
-               CullingMode == otherMaterialParams.CullingMode;
+        return this.TextureParams0.Equals(otherMaterialParams.TextureParams0) &&
+               this.TextureParams1.Equals(otherMaterialParams.TextureParams1) &&
+               this.CombinerCycleParams0.Equals(otherMaterialParams.CombinerCycleParams0) &&
+               this.CombinerCycleParams1.Equals(otherMaterialParams.CombinerCycleParams1) &&
+               this.CullingMode == otherMaterialParams.CullingMode;
       }
 
       return false;

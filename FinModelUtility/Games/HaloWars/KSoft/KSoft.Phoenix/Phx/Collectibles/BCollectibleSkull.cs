@@ -8,7 +8,7 @@ namespace KSoft.Phoenix.Phx
 		public static readonly XML.BListXmlParams kBListXmlParams = new XML.BListXmlParams
 		{
 			ElementName = "Skull",
-			DataName = DatabaseIdObject.kXmlAttrName,
+			DataName = kXmlAttrName,
 		};
 		#endregion
 
@@ -17,8 +17,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int ObjectDBID
 		{
-			get { return mObjectDBID; }
-			set { mObjectDBID = value; }
+			get { return this.mObjectDBID; }
+			set { this.mObjectDBID = value; }
 		}
 		#endregion
 
@@ -29,8 +29,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string DisplayImageOn
 		{
-			get { return mDisplayImageOn; }
-			set { mDisplayImageOn = value; }
+			get { return this.mDisplayImageOn; }
+			set { this.mDisplayImageOn = value; }
 		}
 		#endregion
 
@@ -39,8 +39,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string DisplayImageOff
 		{
-			get { return mDisplayImageOff; }
-			set { mDisplayImageOff = value; }
+			get { return this.mDisplayImageOff; }
+			set { this.mDisplayImageOff = value; }
 		}
 		#endregion
 
@@ -49,8 +49,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string DisplayImageLocked
 		{
-			get { return mDisplayImageLocked; }
-			set { mDisplayImageLocked = value; }
+			get { return this.mDisplayImageLocked; }
+			set { this.mDisplayImageLocked = value; }
 		}
 		#endregion
 
@@ -58,18 +58,18 @@ namespace KSoft.Phoenix.Phx
 		bool mHidden;
 		public bool Hidden
 		{
-			get { return mHidden; }
-			set { mHidden = value; }
+			get { return this.mHidden; }
+			set { this.mHidden = value; }
 		}
 		#endregion
 
 		public BProtoSkull()
 		{
-			var textData = base.CreateDatabaseObjectUserInterfaceTextData();
+			var textData = this.CreateDatabaseObjectUserInterfaceTextData();
 			textData.HasDescriptionID = true;
 			textData.HasDisplayNameID = true;
 
-			Effects = new Collections.BListArray<BCollectibleSkullEffect>();
+			this.Effects = new Collections.BListArray<BCollectibleSkullEffect>();
 		}
 
 		#region ITagElementStreamable<string> Members
@@ -77,12 +77,12 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttribute("objectdbid", ref mObjectDBID);
-			XML.XmlUtil.Serialize(s, Effects, BCollectibleSkullEffect.kBListXmlParams);
-			s.StreamElementOpt("DisplayImageOn", ref mDisplayImageOn, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("DisplayImageOff", ref mDisplayImageOff, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("DisplayImageLocked", ref mDisplayImageLocked, Predicates.IsNotNullOrEmpty);
-			s.StreamElementNamedFlag("Hidden", ref mHidden);
+			s.StreamAttribute("objectdbid", ref this.mObjectDBID);
+			XML.XmlUtil.Serialize(s, this.Effects, BCollectibleSkullEffect.kBListXmlParams);
+			s.StreamElementOpt("DisplayImageOn", ref this.mDisplayImageOn, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("DisplayImageOff", ref this.mDisplayImageOff, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("DisplayImageLocked", ref this.mDisplayImageLocked, Predicates.IsNotNullOrEmpty);
+			s.StreamElementNamedFlag("Hidden", ref this.mHidden);
 		}
 		#endregion
 	};

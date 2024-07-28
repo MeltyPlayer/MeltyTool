@@ -8,7 +8,7 @@ namespace KSoft.Phoenix.Phx
 		#region Xml constants
 		public static readonly XML.BListXmlParams kBListXmlParams = new XML.BListXmlParams("Power")
 		{
-			DataName = DatabaseNamedObject.kXmlAttrName,
+			DataName = kXmlAttrName,
 			Flags = XML.BCollectionXmlParamsFlags.RequiresDataNamePreloading
 		};
 		public static readonly Engine.XmlFileInfo kXmlFileInfo = new Engine.XmlFileInfo
@@ -55,16 +55,16 @@ namespace KSoft.Phoenix.Phx
 		float mUIRadius;
 		public float UIRadius
 		{
-			get { return mUIRadius; }
-			set { mUIRadius = value; }
+			get { return this.mUIRadius; }
+			set { this.mUIRadius = value; }
 		}
 		#endregion
 		#region PowerType
 		BPowerType mPowerType = BPowerType.Invalid;
 		public BPowerType PowerType
 		{
-			get { return mPowerType; }
-			set { mPowerType = value; }
+			get { return this.mPowerType; }
+			set { this.mPowerType = value; }
 		}
 		#endregion
 		#region AutoRecharge
@@ -72,16 +72,16 @@ namespace KSoft.Phoenix.Phx
 		/// <remarks>In milliseconds</remarks>
 		public int AutoRecharge
 		{
-			get { return mAutoRecharge; }
-			set { mAutoRecharge = value; }
+			get { return this.mAutoRecharge; }
+			set { this.mAutoRecharge = value; }
 		}
 		#endregion
 		#region UseLimit
 		int mUseLimit;
 		public int UseLimit
 		{
-			get { return mUseLimit; }
-			set { mUseLimit = value; }
+			get { return this.mUseLimit; }
+			set { this.mUseLimit = value; }
 		}
 		#endregion
 		public Collections.BBitSet Flags { get; private set; }
@@ -91,8 +91,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string IconTextureName
 		{
-			get { return mIconTextureName; }
-			set { mIconTextureName = value; }
+			get { return this.mIconTextureName; }
+			set { this.mIconTextureName = value; }
 		}
 		#endregion
 		public List<int> IconLocations { get; private set; }
@@ -102,48 +102,48 @@ namespace KSoft.Phoenix.Phx
 		BActionType mActionType = BActionType.Invalid;
 		public BActionType ActionType
 		{
-			get { return mActionType; }
-			set { mActionType = value; }
+			get { return this.mActionType; }
+			set { this.mActionType = value; }
 		}
 		#endregion
 		#region MinigameType
 		BMinigameType mMinigameType;
 		public BMinigameType MinigameType
 		{
-			get { return mMinigameType; }
-			set { mMinigameType = value; }
+			get { return this.mMinigameType; }
+			set { this.mMinigameType = value; }
 		}
 		#endregion
 		#region CameraZoomMin
 		float mCameraZoomMin;
 		public float CameraZoomMin
 		{
-			get { return mCameraZoomMin; }
-			set { mCameraZoomMin = value; }
+			get { return this.mCameraZoomMin; }
+			set { this.mCameraZoomMin = value; }
 		}
 		#endregion
 		#region CameraZoomMax
 		float mCameraZoomMax;
 		public float CameraZoomMax
 		{
-			get { return mCameraZoomMax; }
-			set { mCameraZoomMax = value; }
+			get { return this.mCameraZoomMax; }
+			set { this.mCameraZoomMax = value; }
 		}
 		#endregion
 		#region CameraPitchMin
 		float mCameraPitchMin;
 		public float CameraPitchMin
 		{
-			get { return mCameraPitchMin; }
-			set { mCameraPitchMin = value; }
+			get { return this.mCameraPitchMin; }
+			set { this.mCameraPitchMin = value; }
 		}
 		#endregion
 		#region CameraPitchMax
 		float mCameraPitchMax;
 		public float CameraPitchMax
 		{
-			get { return mCameraPitchMax; }
-			set { mCameraPitchMax = value; }
+			get { return this.mCameraPitchMax; }
+			set { this.mCameraPitchMax = value; }
 		}
 		#endregion
 		#region CameraEffectIn
@@ -151,8 +151,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.CameraEffectReference]
 		public string CameraEffectIn
 		{
-			get { return mCameraEffectIn; }
-			set { mCameraEffectIn = value; }
+			get { return this.mCameraEffectIn; }
+			set { this.mCameraEffectIn = value; }
 		}
 		#endregion
 		#region CameraEffectOut
@@ -160,24 +160,24 @@ namespace KSoft.Phoenix.Phx
 		[Meta.CameraEffectReference]
 		public string CameraEffectOut
 		{
-			get { return mCameraEffectOut; }
-			set { mCameraEffectOut = value; }
+			get { return this.mCameraEffectOut; }
+			set { this.mCameraEffectOut = value; }
 		}
 		#endregion
 		#region MinDistanceToSquad
 		float mMinDistanceToSquad = PhxUtil.kInvalidSingle;
 		public float MinDistanceToSquad
 		{
-			get { return mMinDistanceToSquad; }
-			set { mMinDistanceToSquad = value; }
+			get { return this.mMinDistanceToSquad; }
+			set { this.mMinDistanceToSquad = value; }
 		}
 		#endregion
 		#region MaxDistanceToSquad
 		float mMaxDistanceToSquad = PhxUtil.kInvalidSingle;
 		public float MaxDistanceToSquad
 		{
-			get { return mMaxDistanceToSquad; }
-			set { mMaxDistanceToSquad = value; }
+			get { return this.mMaxDistanceToSquad; }
+			set { this.mMaxDistanceToSquad = value; }
 		}
 		#endregion
 		#region ShowTargetHighlight
@@ -186,20 +186,21 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int ShowTargetHighlightObjectType
 		{
-			get { return mShowTargetHighlightObjectType; }
-			set { mShowTargetHighlightObjectType = value; }
+			get { return this.mShowTargetHighlightObjectType; }
+			set { this.mShowTargetHighlightObjectType = value; }
 		}
 
 		BRelationType mShowTargetHighlightRelation = BRelationType.Any;
 		public BRelationType ShowTargetHighlightRelation
 		{
-			get { return mShowTargetHighlightRelation; }
-			set { mShowTargetHighlightRelation = value; }
+			get { return this.mShowTargetHighlightRelation; }
+			set { this.mShowTargetHighlightRelation = value; }
 		}
 
 		bool HasShowTargetHighlightData { get {
-			return mShowTargetHighlightObjectType.IsNotNone()
-				|| mShowTargetHighlightRelation != BRelationType.Any;
+			return this.mShowTargetHighlightObjectType.IsNotNone()
+				||
+				this.mShowTargetHighlightRelation != BRelationType.Any;
 		} }
 		#endregion
 		public List<int> ChildObjectIDs { get; private set; }
@@ -207,8 +208,8 @@ namespace KSoft.Phoenix.Phx
 		BProtoPowerDataLevel mBaseDataLevel;
 		public BProtoPowerDataLevel BaseDataLevel
 		{
-			get { return mBaseDataLevel; }
-			set { mBaseDataLevel = value; }
+			get { return this.mBaseDataLevel; }
+			set { this.mBaseDataLevel = value; }
 		}
 		#endregion
 		public Collections.BListExplicitIndex<BProtoPowerDataLevel> LevelData { get; private set; }
@@ -217,8 +218,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TriggerScriptReference]
 		public string TriggerScript
 		{
-			get { return mTriggerScript; }
-			set { mTriggerScript = value; }
+			get { return this.mTriggerScript; }
+			set { this.mTriggerScript = value; }
 		}
 		#endregion
 		#region CommandTriggerScript
@@ -226,32 +227,32 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TriggerScriptReference]
 		public string CommandTriggerScript
 		{
-			get { return mCommandTriggerScript; }
-			set { mCommandTriggerScript = value; }
+			get { return this.mCommandTriggerScript; }
+			set { this.mCommandTriggerScript = value; }
 		}
 		#endregion
 
 		public BProtoPower()
 		{
-			var textData = base.CreateDatabaseObjectUserInterfaceTextData();
+			var textData = this.CreateDatabaseObjectUserInterfaceTextData();
 			textData.HasDisplayNameID = true;
 			textData.HasRolloverTextID = true;
 			textData.HasPrereqTextID = true;
 			textData.HasChooseTextID = true;
 
-			Cost = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
-			DynamicCosts = new Collections.BListArray<BPowerDynamicCost>();
-			TargetEffectiveness = new Collections.BListArray<BPowerTargetEffectiveness>();
-			Populations = new Collections.BTypeValuesSingle(BPopulation.kBListParamsSingle);
+			this.Cost = new Collections.BTypeValuesSingle(BResource.kBListTypeValuesParams);
+			this.DynamicCosts = new Collections.BListArray<BPowerDynamicCost>();
+			this.TargetEffectiveness = new Collections.BListArray<BPowerTargetEffectiveness>();
+			this.Populations = new Collections.BTypeValuesSingle(BPopulation.kBListParamsSingle);
 
-			Flags = new Collections.BBitSet(kFlagsParams);
-			Flags2 = new Collections.BBitSet(kFlags2Params);
+			this.Flags = new Collections.BBitSet(kFlagsParams);
+			this.Flags2 = new Collections.BBitSet(kFlags2Params);
 
-			IconLocations = new List<int>();
-			TechPrereqs = new List<int>();
+			this.IconLocations = new List<int>();
+			this.TechPrereqs = new List<int>();
 
-			ChildObjectIDs = new List<int>();
-			LevelData = new Collections.BListExplicitIndex<BProtoPowerDataLevel>(BProtoPowerDataLevel.kBListExplicitIndexParams);
+			this.ChildObjectIDs = new List<int>();
+			this.LevelData = new Collections.BListExplicitIndex<BProtoPowerDataLevel>(BProtoPowerDataLevel.kBListExplicitIndexParams);
 		}
 
 		#region ITagElementStreamable<string> Members
@@ -263,50 +264,50 @@ namespace KSoft.Phoenix.Phx
 			{
 				base.Serialize(s);
 
-				using (var bm = s.EnterCursorBookmarkOpt("Cost", Cost, x => x.HasNonZeroItems)) if (bm.IsNotNull)
-					XML.XmlUtil.SerializeCostHack(s, Cost);
-				XML.XmlUtil.Serialize(s, DynamicCosts, BPowerDynamicCost.kBListXmlParams);
-				XML.XmlUtil.Serialize(s, TargetEffectiveness, BPowerTargetEffectiveness.kBListXmlParams);
-				XML.XmlUtil.Serialize(s, Populations, BPopulation.kBListXmlParamsSingle_LowerCase);
-				s.StreamElementOpt("UIRadius", ref mUIRadius, Predicates.IsNotZero);
-				s.StreamElementEnumOpt("PowerType", ref mPowerType, e => e != BPowerType.Invalid);
-				s.StreamElementOpt("AutoRecharge", ref mAutoRecharge, Predicates.IsNotZero);
-				s.StreamElementOpt("UseLimit", ref mUseLimit, Predicates.IsNotZero);
-				XML.XmlUtil.Serialize(s, Flags, XML.BBitSetXmlParams.kFlagsAreElementNamesThatMeanTrue);
-				XML.XmlUtil.Serialize(s, Flags2, XML.BBitSetXmlParams.kFlagsAreElementNamesThatMeanTrue);
-				s.StreamElementOpt("Icon", ref mIconTextureName, Predicates.IsNotNullOrEmpty);
-				s.StreamElements("IconLocation", IconLocations, xs, StreamIconLocation);
-				s.StreamElements("TechPrereq", TechPrereqs, xs, XML.BDatabaseXmlSerializerBase.StreamTechID);
-				s.StreamElementEnumOpt("Action", ref mActionType, BProtoAction.kNotInvalidActionType);
-				s.StreamElementEnumOpt("Minigame", ref mMinigameType, e => e != BMinigameType.None);
-				s.StreamElementOpt("CameraZoomMin", ref mCameraZoomMin, Predicates.IsNotZero);
-				s.StreamElementOpt("CameraZoomMax", ref mCameraZoomMax, Predicates.IsNotZero);
-				s.StreamElementOpt("CameraPitchMin", ref mCameraPitchMin, Predicates.IsNotZero);
-				s.StreamElementOpt("CameraPitchMax", ref mCameraPitchMax, Predicates.IsNotZero);
-				s.StreamElementOpt("CameraEffectIn", ref mCameraEffectIn, Predicates.IsNotNullOrEmpty);
-				s.StreamElementOpt("CameraEffectOut", ref mCameraEffectOut, Predicates.IsNotNullOrEmpty);
-				s.StreamElementOpt("MinDistanceToSquad", ref mMinDistanceToSquad, PhxPredicates.IsNotInvalid);
-				s.StreamElementOpt("MaxDistanceToSquad", ref mMaxDistanceToSquad, PhxPredicates.IsNotInvalid);
+				using (var bm = s.EnterCursorBookmarkOpt("Cost", this.Cost, x => x.HasNonZeroItems)) if (bm.IsNotNull)
+					XML.XmlUtil.SerializeCostHack(s, this.Cost);
+				XML.XmlUtil.Serialize(s, this.DynamicCosts, BPowerDynamicCost.kBListXmlParams);
+				XML.XmlUtil.Serialize(s, this.TargetEffectiveness, BPowerTargetEffectiveness.kBListXmlParams);
+				XML.XmlUtil.Serialize(s, this.Populations, BPopulation.kBListXmlParamsSingle_LowerCase);
+				s.StreamElementOpt("UIRadius", ref this.mUIRadius, Predicates.IsNotZero);
+				s.StreamElementEnumOpt("PowerType", ref this.mPowerType, e => e != BPowerType.Invalid);
+				s.StreamElementOpt("AutoRecharge", ref this.mAutoRecharge, Predicates.IsNotZero);
+				s.StreamElementOpt("UseLimit", ref this.mUseLimit, Predicates.IsNotZero);
+				XML.XmlUtil.Serialize(s, this.Flags, XML.BBitSetXmlParams.kFlagsAreElementNamesThatMeanTrue);
+				XML.XmlUtil.Serialize(s, this.Flags2, XML.BBitSetXmlParams.kFlagsAreElementNamesThatMeanTrue);
+				s.StreamElementOpt("Icon", ref this.mIconTextureName, Predicates.IsNotNullOrEmpty);
+				s.StreamElements("IconLocation", this.IconLocations, xs, StreamIconLocation);
+				s.StreamElements("TechPrereq", this.TechPrereqs, xs, XML.BXmlSerializerInterface.StreamTechID);
+				s.StreamElementEnumOpt("Action", ref this.mActionType, BProtoAction.kNotInvalidActionType);
+				s.StreamElementEnumOpt("Minigame", ref this.mMinigameType, e => e != BMinigameType.None);
+				s.StreamElementOpt("CameraZoomMin", ref this.mCameraZoomMin, Predicates.IsNotZero);
+				s.StreamElementOpt("CameraZoomMax", ref this.mCameraZoomMax, Predicates.IsNotZero);
+				s.StreamElementOpt("CameraPitchMin", ref this.mCameraPitchMin, Predicates.IsNotZero);
+				s.StreamElementOpt("CameraPitchMax", ref this.mCameraPitchMax, Predicates.IsNotZero);
+				s.StreamElementOpt("CameraEffectIn", ref this.mCameraEffectIn, Predicates.IsNotNullOrEmpty);
+				s.StreamElementOpt("CameraEffectOut", ref this.mCameraEffectOut, Predicates.IsNotNullOrEmpty);
+				s.StreamElementOpt("MinDistanceToSquad", ref this.mMinDistanceToSquad, PhxPredicates.IsNotInvalid);
+				s.StreamElementOpt("MaxDistanceToSquad", ref this.mMaxDistanceToSquad, PhxPredicates.IsNotInvalid);
 				using (var bm = s.EnterCursorBookmarkOpt("ShowTargetHighlight", this, x => x.HasShowTargetHighlightData)) if (bm.IsNotNull)
 				{
-					xs.StreamDBID(s, "ObjectType", ref mShowTargetHighlightObjectType, DatabaseObjectKind.ObjectType, xmlSource: XML.XmlUtil.kSourceAttr);
-					s.StreamAttributeEnumOpt("Relation", ref mShowTargetHighlightRelation, e => e != BRelationType.Any);
+					xs.StreamDBID(s, "ObjectType", ref this.mShowTargetHighlightObjectType, DatabaseObjectKind.ObjectType, xmlSource: XML.XmlUtil.kSourceAttr);
+					s.StreamAttributeEnumOpt("Relation", ref this.mShowTargetHighlightRelation, e => e != BRelationType.Any);
 				}
-				using (var bm = s.EnterCursorBookmarkOpt("ChildObjects", ChildObjectIDs, Predicates.HasItems)) if (bm.IsNotNull)
+				using (var bm = s.EnterCursorBookmarkOpt("ChildObjects", this.ChildObjectIDs, Predicates.HasItems)) if (bm.IsNotNull)
 				{
-					s.StreamElements("Object", ChildObjectIDs, xs, XML.BDatabaseXmlSerializerBase.StreamObjectID);
+					s.StreamElements("Object", this.ChildObjectIDs, xs, XML.BXmlSerializerInterface.StreamObjectID);
 				}
 				using (var bm = s.EnterCursorBookmarkOpt("BaseDataLevel", this, x => x.BaseDataLevel != null)) if (bm.IsNotNull)
 				{
 					if (s.IsReading)
-						mBaseDataLevel = new BProtoPowerDataLevel();
+						this.mBaseDataLevel = new BProtoPowerDataLevel();
 
-					BaseDataLevel.Serialize(s);
+					this.BaseDataLevel.Serialize(s);
 				}
-				XML.XmlUtil.Serialize(s, LevelData, BProtoPowerDataLevel.kBListExplicitIndexXmlParams);
+				XML.XmlUtil.Serialize(s, this.LevelData, BProtoPowerDataLevel.kBListExplicitIndexXmlParams);
 			}
-			s.StreamElementOpt("TriggerScript", ref mTriggerScript, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("CommandTriggerScript", ref mCommandTriggerScript, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("TriggerScript", ref this.mTriggerScript, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("CommandTriggerScript", ref this.mCommandTriggerScript, Predicates.IsNotNullOrEmpty);
 		}
 
 		static void StreamIconLocation<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, XML.BXmlSerializerInterface xs,
@@ -334,8 +335,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int ObjectType
 		{
-			get { return mObjectType; }
-			set { mObjectType = value; }
+			get { return this.mObjectType; }
+			set { this.mObjectType = value; }
 		}
 		#endregion
 
@@ -343,8 +344,8 @@ namespace KSoft.Phoenix.Phx
 		float mMultiplier = 1.0f;
 		public float Multiplier
 		{
-			get { return mMultiplier; }
-			set { mMultiplier = value; }
+			get { return this.mMultiplier; }
+			set { this.mMultiplier = value; }
 		}
 		#endregion
 
@@ -355,8 +356,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, "ObjectType", ref mObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
-			s.StreamCursor(ref mMultiplier);
+			xs.StreamDBID(s, "ObjectType", ref this.mObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
+			s.StreamCursor(ref this.mMultiplier);
 		}
 		#endregion
 	};
@@ -376,8 +377,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int ObjectType
 		{
-			get { return mObjectType; }
-			set { mObjectType = value; }
+			get { return this.mObjectType; }
+			set { this.mObjectType = value; }
 		}
 		#endregion
 
@@ -385,8 +386,8 @@ namespace KSoft.Phoenix.Phx
 		int mEffectiveness;
 		public int Effectiveness
 		{
-			get { return mEffectiveness; }
-			set { mEffectiveness = value; }
+			get { return this.mEffectiveness; }
+			set { this.mEffectiveness = value; }
 		}
 		#endregion
 
@@ -397,8 +398,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, "ObjectType", ref mObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
-			s.StreamCursor(ref mEffectiveness);
+			xs.StreamDBID(s, "ObjectType", ref this.mObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
+			s.StreamCursor(ref this.mEffectiveness);
 		}
 		#endregion
 	};
@@ -444,7 +445,7 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			XML.XmlUtil.Serialize(s, Data, BProtoPowerData.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Data, BProtoPowerData.kBListXmlParams);
 		}
 		#endregion
 	};
@@ -463,8 +464,8 @@ namespace KSoft.Phoenix.Phx
 		string mName;
 		public string Name
 		{
-			get { return mName; }
-			set { mName = value; }
+			get { return this.mName; }
+			set { this.mName = value; }
 		}
 		#endregion
 
@@ -472,8 +473,8 @@ namespace KSoft.Phoenix.Phx
 		ProtoPowerDataType mDataType = ProtoPowerDataType.Invalid;
 		public ProtoPowerDataType DataType
 		{
-			get { return mDataType; }
-			set { mDataType = value; }
+			get { return this.mDataType; }
+			set { this.mDataType = value; }
 		}
 		#endregion
 
@@ -485,57 +486,57 @@ namespace KSoft.Phoenix.Phx
 
 		public float Float
 		{
-			get { return mDataFloat; }
-			set { mDataFloat = value; }
+			get { return this.mDataFloat; }
+			set { this.mDataFloat = value; }
 		}
 
 		public int Int
 		{
-			get { return mDataInt; }
-			set { mDataInt = value; }
+			get { return this.mDataInt; }
+			set { this.mDataInt = value; }
 		}
 		[Meta.BProtoObjectReference]
 		public int ObjectID
 		{
-			get { return mDataInt; }
-			set { mDataInt = value; }
+			get { return this.mDataInt; }
+			set { this.mDataInt = value; }
 		}
 		[Meta.BProtoSquadReference]
 		public int SquadID
 		{
-			get { return mDataInt; }
-			set { mDataInt = value; }
+			get { return this.mDataInt; }
+			set { this.mDataInt = value; }
 		}
 		[Meta.BProtoTechReference]
 		public int TechID
 		{
-			get { return mDataInt; }
-			set { mDataInt = value; }
+			get { return this.mDataInt; }
+			set { this.mDataInt = value; }
 		}
 		[Meta.ObjectTypeReference]
 		public int ObjectType
 		{
-			get { return mDataInt; }
-			set { mDataInt = value; }
+			get { return this.mDataInt; }
+			set { this.mDataInt = value; }
 		}
 
 		public bool Bool
 		{
-			get { return mDataBool; }
-			set { mDataBool = value; }
+			get { return this.mDataBool; }
+			set { this.mDataBool = value; }
 		}
 
 		[Meta.SoundCueReference]
 		public string SoundCue
 		{
-			get { return mDataString; }
-			set { mDataString = value; }
+			get { return this.mDataString; }
+			set { this.mDataString = value; }
 		}
 		[Meta.TextureReference]
 		public string TextureName
 		{
-			get { return mDataString; }
-			set { mDataString = value; }
+			get { return this.mDataString; }
+			set { this.mDataString = value; }
 		}
 		#endregion
 
@@ -546,40 +547,40 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttributeEnum("type", ref mDataType);
-			s.StreamAttribute("name", ref mName);
+			s.StreamAttributeEnum("type", ref this.mDataType);
+			s.StreamAttribute("name", ref this.mName);
 
-			switch (DataType)
+			switch (this.DataType)
 			{
 			case ProtoPowerDataType.Float:
-				s.StreamCursor(ref mDataFloat);
+				s.StreamCursor(ref this.mDataFloat);
 				break;
 
 			case ProtoPowerDataType.Int:
-				s.StreamCursor(ref mDataInt);
+				s.StreamCursor(ref this.mDataInt);
 				break;
 			case ProtoPowerDataType.ProtoObject:
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mDataInt, DatabaseObjectKind.Object, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mDataInt, DatabaseObjectKind.Object, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
 				break;
 			case ProtoPowerDataType.ProtoSquad:
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mDataInt, DatabaseObjectKind.Squad, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mDataInt, DatabaseObjectKind.Squad, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
 				break;
 			case ProtoPowerDataType.Tech:
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mDataInt, DatabaseObjectKind.Tech, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mDataInt, DatabaseObjectKind.Tech, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
 				break;
 			case ProtoPowerDataType.ObjectType:
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mDataInt, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mDataInt, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
 				break;
 
 			case ProtoPowerDataType.Bool:
-				s.StreamCursor(ref mDataBool);
+				s.StreamCursor(ref this.mDataBool);
 				break;
 
 			case ProtoPowerDataType.Sound:
-				s.StreamCursor(ref mDataString);
+				s.StreamCursor(ref this.mDataString);
 				break;
 			case ProtoPowerDataType.Texture:
-				s.StreamCursor(ref mDataString);
+				s.StreamCursor(ref this.mDataString);
 				break;
 			}
 

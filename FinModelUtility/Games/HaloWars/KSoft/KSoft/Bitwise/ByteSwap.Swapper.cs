@@ -20,13 +20,13 @@ namespace KSoft.Bitwise
 				Contract.Requires<ArgumentOutOfRangeException>(sizeOf > 0);
 				Contract.Requires<ArgumentNullException>(codes != null);
 
-				kCodes = codes;
+				this.kCodes = codes;
 			}
 			public Swapper(IByteSwappable definition)
 			{
 				Contract.Requires<ArgumentNullException>(definition != null);
 
-				kCodes = definition.ByteSwapCodes;
+				this.kCodes = definition.ByteSwapCodes;
 			}
 
 			public int SwapData(byte[] buffer, int startIndex = 0)
@@ -34,7 +34,7 @@ namespace KSoft.Bitwise
 				Contract.Requires<ArgumentOutOfRangeException>(startIndex >= 0);
 				Contract.Requires<ArgumentOutOfRangeException>(startIndex <= buffer.Length);
 
-				return SwapData(buffer, startIndex, out int size_in_bytes, out int size_in_codes);
+				return this.SwapData(buffer, startIndex, out int size_in_bytes, out int size_in_codes);
 			}
 
 			public int SwapData(byte[] buffer, int startIndex,
@@ -43,7 +43,7 @@ namespace KSoft.Bitwise
 				Contract.Requires<ArgumentOutOfRangeException>(startIndex >= 0);
 				Contract.Requires<ArgumentOutOfRangeException>(buffer == null || startIndex <= buffer.Length);
 
-				return SwapDataImpl(buffer, startIndex, out sizeInBytes, out sizeInCodes, 0);
+				return this.SwapDataImpl(buffer, startIndex, out sizeInBytes, out sizeInCodes, 0);
 			}
 
 			private int SwapDataImpl(byte[] buffer, int startIndex
@@ -55,9 +55,9 @@ namespace KSoft.Bitwise
 				int size_in_codes = 0;
 
 				int codes_index = codesStartIndex;
-				Contract.Assert(kCodes[codes_index] == (int)BsCode.ArrayStart);
+				Contract.Assert(this.kCodes[codes_index] == (int)BsCode.ArrayStart);
 
-				int array_count = kCodes[codes_index + 1]; // array count comes after ArrayStart
+				int array_count = this.kCodes[codes_index + 1]; // array count comes after ArrayStart
 
 				bool buffer_is_valid = buffer != null;
 				int buffer_index = startIndex;
@@ -67,7 +67,7 @@ namespace KSoft.Bitwise
 					bool found_array_end = false;
 					for (codes_index = codesStartIndex + size_in_codes; !found_array_end; )
 					{
-						var current_code = kCodes[codes_index];
+						var current_code = this.kCodes[codes_index];
 						switch (current_code)
 						{
 							#region Word
@@ -115,9 +115,9 @@ namespace KSoft.Bitwise
 							case (int)BsCode.ArrayStart:
 								int recursive_size_in_bytes, recursive_size_in_codes;
 
-								SwapDataImpl(buffer, buffer_index,
-									out recursive_size_in_bytes, out recursive_size_in_codes,
-									codes_index);
+								this.SwapDataImpl(buffer, buffer_index,
+								                  out recursive_size_in_bytes, out recursive_size_in_codes,
+								                  codes_index);
 
 								if (buffer_is_valid)
 									buffer_index += recursive_size_in_bytes;

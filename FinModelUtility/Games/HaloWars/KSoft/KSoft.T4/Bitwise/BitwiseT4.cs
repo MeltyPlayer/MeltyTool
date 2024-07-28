@@ -190,81 +190,82 @@ namespace KSoft.T4.Bitwise
 				string byteName, string bufferName, string offsetName = null,
 				int bitCount = -1)
 			{
-				mFile = ttFile;
+				this.mFile = ttFile;
 				//mDef = def;
-				mSizeOfInBits = bitCount == -1
+				this.mSizeOfInBits = bitCount == -1
 					? def.SizeOfInBits
 					: bitCount;
-				mSizeOfInBytes = bitCount == -1
+				this.mSizeOfInBytes = bitCount == -1
 					? def.SizeOfInBytes
 					: bitCount / kBitsPerByte;
-				mByteName = byteName;
+				this.mByteName = byteName;
 
-				mBufferName = bufferName;
-				mOffsetName = offsetName;
+				this.mBufferName = bufferName;
+				this.mOffsetName = offsetName;
 			}
 
 			void GenerateByteDeclarationsCode()
 			{
-				mFile.Write("{0} ", kByteKeyword);
-				for (int x = 0; x < mSizeOfInBytes; x++)
+				this.mFile.Write("{0} ", kByteKeyword);
+				for (int x = 0; x < this.mSizeOfInBytes; x++)
 				{
-					mFile.Write("{0}{1}", mByteName, x);
+					this.mFile.Write("{0}{1}", this.mByteName, x);
 
-					if (x < (mSizeOfInBytes - 1))
-						mFile.Write(", ");
+					if (x < (this.mSizeOfInBytes - 1))
+						this.mFile.Write(", ");
 				}
-				mFile.WriteLine(";");
+
+				this.mFile.WriteLine(";");
 			}
 			public void GenerateByteDeclarations()
 			{
 				// indent to method code body's indention level
-				using (mFile.EnterCodeBlock(indentCount: 3))
+				using (this.mFile.EnterCodeBlock(indentCount: 3))
 				{
-					GenerateByteDeclarationsCode();
+					this.GenerateByteDeclarationsCode();
 				}
 			}
 
 			void GenerateBytesFromBufferCode()
 			{
-				Debug.Assert(mOffsetName != null, "generator not setup for read/write from/to a buffer");
+				Debug.Assert(this.mOffsetName != null, "generator not setup for read/write from/to a buffer");
 
-				for (int x = 0; x < mSizeOfInBytes; x++, mFile.WriteLine(";"))
+				for (int x = 0; x < this.mSizeOfInBytes; x++, this.mFile.WriteLine(";"))
 				{
-					mFile.Write("{0}{1} = ", mByteName, x);
-					mFile.Write("{0}[{1}++]", mBufferName, mOffsetName);
+					this.mFile.Write("{0}{1} = ", this.mByteName, x);
+					this.mFile.Write("{0}[{1}++]", this.mBufferName, this.mOffsetName);
 				}
 			}
 			public void GenerateBytesFromBuffer()
 			{
 				// indent to method code body's indention level
-				using (mFile.EnterCodeBlock(indentCount: 3))
+				using (this.mFile.EnterCodeBlock(indentCount: 3))
 				{
-					GenerateBytesFromBufferCode();
+					this.GenerateBytesFromBufferCode();
 				}
 			}
 
 			void GenerateBytesFromValueCode(string valueName, bool littleEndian)
 			{
 				int bit_offset = !littleEndian
-					? mSizeOfInBits
+					? this.mSizeOfInBits
 					: 0 - kBitsPerByte;
 				int bit_adjustment = !littleEndian
 					? -kBitsPerByte
 					: +kBitsPerByte;
 
-				for (int x = 0; x < mSizeOfInBytes; x++, mFile.WriteLine(";"))
+				for (int x = 0; x < this.mSizeOfInBytes; x++, this.mFile.WriteLine(";"))
 				{
-					mFile.Write("{0}{1} = ", mByteName, x);
-					mFile.Write("({0})({1} >> {2,2})", kByteKeyword, valueName, bit_offset += bit_adjustment);
+					this.mFile.Write("{0}{1} = ", this.mByteName, x);
+					this.mFile.Write("({0})({1} >> {2,2})", kByteKeyword, valueName, bit_offset += bit_adjustment);
 				}
 			}
 			public void GenerateBytesFromValue(string valueName, bool littleEndian = true)
 			{
 				// indent to method code body's indention level, plus one (assumed we are in a if-statement)
-				using (mFile.EnterCodeBlock(indentCount: 3+1))
+				using (this.mFile.EnterCodeBlock(indentCount: 3+1))
 				{
-					GenerateBytesFromValueCode(valueName, littleEndian);
+					this.GenerateBytesFromValueCode(valueName, littleEndian);
 				}
 			}
 
@@ -273,24 +274,24 @@ namespace KSoft.T4.Bitwise
 				const string k_swap_format =		"{0}[--{1}] = ";
 				const string k_replacement_format =	"{0}[{1}++] = ";
 
-				Debug.Assert(mOffsetName != null);
+				Debug.Assert(this.mOffsetName != null);
 
 				string format = useSwapFormat
 					? k_swap_format
 					: k_replacement_format;
 
-				for (int x = 0; x < mSizeOfInBytes; x++, mFile.WriteLine(";"))
+				for (int x = 0; x < this.mSizeOfInBytes; x++, this.mFile.WriteLine(";"))
 				{
-					mFile.Write(format, mBufferName, mOffsetName);
-					mFile.Write("{0}{1}", mByteName, x);
+					this.mFile.Write(format, this.mBufferName, this.mOffsetName);
+					this.mFile.Write("{0}{1}", this.mByteName, x);
 				}
 			}
 			public void GenerateWriteBytesToBuffer(bool useSwapFormat = true)
 			{
 				// indent to method code body's indention level
-				using (mFile.EnterCodeBlock(indentCount: 3))
+				using (this.mFile.EnterCodeBlock(indentCount: 3))
 				{
-					GenerateWriteBytesToBufferCode(useSwapFormat);
+					this.GenerateWriteBytesToBufferCode(useSwapFormat);
 				}
 			}
 		};
@@ -302,23 +303,23 @@ namespace KSoft.T4.Bitwise
 
 			protected BitUtilCodeGenerator(TextTemplating.TextTransformation ttFile, NumberCodeDefinition def)
 			{
-				File = ttFile;
-				Def = def;
+				this.File = ttFile;
+				this.Def = def;
 			}
 
 			public void Generate()
 			{
-				using (File.EnterCodeBlock())
-				using (File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
+				using (this.File.EnterCodeBlock())
 				{
-					GenerateXmlDoc();
-					GenerateMethodSignature();
+					this.GenerateXmlDoc();
+					this.GenerateMethodSignature();
 
-					using (File.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
+					using (this.File.EnterCodeBlock(TextTransformationCodeBlockType.Brackets))
 					{
-						GeneratePrologue();
-						GenerateCode();
-						GenerateEpilogue();
+						this.GeneratePrologue();
+						this.GenerateCode();
+						this.GenerateEpilogue();
 					}
 				}
 			}

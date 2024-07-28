@@ -34,10 +34,10 @@ public partial class GlShaderProgram : IShaderProgram {
           new(vertexAndFragmentSrc => {
                 var (vertexSrc, fragmentSrc) = vertexAndFragmentSrc;
                 var vertexShaderId =
-                    GlShaderProgram.vertexShaderCache_.GetAndIncrement(
+                    vertexShaderCache_.GetAndIncrement(
                         vertexSrc);
                 var fragmentShaderId =
-                    GlShaderProgram.fragmentShaderCache_.GetAndIncrement(
+                    fragmentShaderCache_.GetAndIncrement(
                         fragmentSrc);
 
                 var programId = GL.CreateProgram();
@@ -69,7 +69,7 @@ public partial class GlShaderProgram : IShaderProgram {
   private GlShaderProgram(string vertexShaderSrc,
                           string fragmentShaderSrc) {
     this.cachedShaderProgram_ =
-        GlShaderProgram.programCache_.GetAndIncrement(
+        programCache_.GetAndIncrement(
             (vertexShaderSrc, fragmentShaderSrc));
   }
 
@@ -82,7 +82,7 @@ public partial class GlShaderProgram : IShaderProgram {
   }
 
   private void ReleaseUnmanagedResources_()
-    => GlShaderProgram.programCache_.DecrementAndMaybeDispose(
+    => programCache_.DecrementAndMaybeDispose(
         (this.VertexShaderSource, this.FragmentShaderSource));
 
   private static int CreateAndCompileShader_(string src,

@@ -150,8 +150,8 @@ namespace KSoft.Reflection
 		/// <summary>Does the underlying enumeration have a <see cref="FlagsAttribute"/>?</summary>
 		protected static readonly bool kIsFlags =				kEnumType.GetCustomAttributes(typeof(FlagsAttribute), false).Length > 0;
 
-		protected static readonly string[] kEnumNames =			System.Enum.GetNames(kEnumType);
-		protected static readonly TEnum[] kEnumValues =			(TEnum[])System.Enum.GetValues(kEnumType);
+		protected static readonly string[] kEnumNames =			Enum.GetNames(kEnumType);
+		protected static readonly TEnum[] kEnumValues =			(TEnum[])Enum.GetValues(kEnumType);
 
 		/// <summary>
 		/// Sign extends the Enum value's hash-code if its underlying type is:

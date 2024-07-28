@@ -24,11 +24,11 @@ public class AssimpIndirectModelExporter : IModelExporter {
   public bool ForceGarbageCollection { get; set; }
 
   public void ExportModel(IModelExporterParams modelExporterParams)
-    => ExportExtensions(modelExporterParams,
-                        !LowLevel
-                            ? [".fbx", ".glb"]
-                            : new[] { ".gltf" },
-                        false);
+    => this.ExportExtensions(modelExporterParams,
+                             !this.LowLevel
+                                 ? [".fbx", ".glb"]
+                                 : new[] { ".gltf" },
+                             false);
 
   public void ExportExtensions(IModelExporterParams modelExporterParams,
                                IReadOnlyList<string> exportedExtensions,
@@ -104,7 +104,7 @@ public class AssimpIndirectModelExporter : IModelExporter {
       gltfModelExporter.Embedded = false;
 
       var gltfModelRoot = gltfModelExporter.CreateModelRoot(model, scale);
-      if (ForceGarbageCollection) {
+      if (this.ForceGarbageCollection) {
         GcUtil.ForceCollectEverything();
       }
 
@@ -118,7 +118,7 @@ public class AssimpIndirectModelExporter : IModelExporter {
             ? ResourceWriteMode.EmbeddedAsBase64
             : ResourceWriteMode.SatelliteFile;
 
-        if (LowLevel) {
+        if (this.LowLevel) {
           gltfWriteSettings.MergeBuffers = false;
           gltfWriteSettings.Validation = ValidationMode.Skip;
         }
@@ -133,13 +133,13 @@ public class AssimpIndirectModelExporter : IModelExporter {
         }
 
         //gltfModelRoot.Save(gltfOutputFile.FullName, gltfWriteSettings);
-        if (ForceGarbageCollection) {
+        if (this.ForceGarbageCollection) {
           GcUtil.ForceCollectEverything();
         }
       }
     }
 
-    if (!LowLevel && nonGltfFormats.Length > 0) {
+    if (!this.LowLevel && nonGltfFormats.Length > 0) {
       gltfModelExporter.UvIndices = true;
       gltfModelExporter.Embedded = true;
 
@@ -148,7 +148,7 @@ public class AssimpIndirectModelExporter : IModelExporter {
       gltfModelExporter.ExportModel(new ModelExporterParams {
           OutputFile = inputFile, Model = model, Scale = scale * 100,
       });
-      if (ForceGarbageCollection) {
+      if (this.ForceGarbageCollection) {
         GcUtil.ForceCollectEverything();
       }
 
@@ -187,7 +187,7 @@ public class AssimpIndirectModelExporter : IModelExporter {
                            preProcessing);
         Asserts.True(success, "Failed to export model.");
 
-        if (ForceGarbageCollection) {
+        if (this.ForceGarbageCollection) {
           GcUtil.ForceCollectEverything();
         }
       }

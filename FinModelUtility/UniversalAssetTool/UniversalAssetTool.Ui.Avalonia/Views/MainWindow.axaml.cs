@@ -9,7 +9,7 @@ public partial class MainWindow : Window {
   private readonly TimedCallback fpsCallback_;
 
   public MainWindow() {
-    InitializeComponent();
+    this.InitializeComponent();
 
     this.Closed += (_, _) => this.fpsCallback_.Dispose();
 

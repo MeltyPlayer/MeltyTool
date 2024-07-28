@@ -28,9 +28,9 @@ namespace KSoft.Phoenix.Phx
 			where TCursor : class
 		{
 			int count = 0;
-			for (int x = 1; x < mUsedIds.Length; x++)
+			for (int x = 1; x < this.mUsedIds.Length; x++)
 			{
-				if (!mUsedIds[x])
+				if (!this.mUsedIds[x])
 				{
 					s.WriteElement("Unknown", x);
 					count++;
@@ -44,28 +44,30 @@ namespace KSoft.Phoenix.Phx
 		{
 			if (s.IsWriting)
 			{
-				var task_sort_cond = Task.Factory.StartNew(() => Conditions.Sort(SortById));
-				var task_sort_effe = Task.Factory.StartNew(() => Effects.Sort(SortById));
+				var task_sort_cond = Task.Factory.StartNew(() => this.Conditions.Sort(SortById));
+				var task_sort_effe = Task.Factory.StartNew(() => this.Effects.Sort(SortById));
 
 				var task_unknowns = Task<int>.Factory.StartNew(() =>
 				{
 					using (s.EnterCursorBookmark("Unknowns"))
-						return WriteUnknowns(s);
+						return this.WriteUnknowns(s);
 				});
 				s.WriteAttribute("UnknownCount", task_unknowns.Result);
-				s.WriteAttribute("ConditionsCount", Conditions.Count);
-				s.WriteAttribute("EffectsCount", Effects.Count);
+				s.WriteAttribute("ConditionsCount", this.Conditions.Count);
+				s.WriteAttribute("EffectsCount", this.Effects.Count);
 
 				Task.WaitAll(task_sort_cond, task_sort_effe);
 			}
 
-			XML.XmlUtil.Serialize(s, Conditions, BTriggerProtoCondition.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, Effects, BTriggerProtoEffect.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Conditions, BTriggerProtoCondition.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Effects, BTriggerProtoEffect.kBListXmlParams);
 
 			if (s.IsReading)
 			{
-				foreach (var c in Conditions) LookupTableAdd(c);
-				foreach (var e in Effects) LookupTableAdd(e);
+				foreach (var c in this.Conditions)
+					this.LookupTableAdd(c);
+				foreach (var e in this.Effects)
+					this.LookupTableAdd(e);
 			}
 		}
 		#endregion
@@ -81,13 +83,13 @@ namespace KSoft.Phoenix.Phx
 
 	void LookupTableAdd(TriggerSystemProtoObject dbo)
 		{
-			mUsedIds[dbo.DbId] = true;
-			LookupTable.Add(GenerateHandle(dbo), dbo);
+			this.mUsedIds[dbo.DbId] = true;
+			this.LookupTable.Add(GenerateHandle(dbo), dbo);
 		}
 		bool LookupTableContains<T>(T obj, out TriggerSystemProtoObject dbo)
 			where T : TriggerScriptObject
 		{
-			return LookupTable.TryGetValue(GenerateHandle(obj), out dbo);
+			return this.LookupTable.TryGetValue(GenerateHandle(obj), out dbo);
 		}
 
 		static void TraceUpdate(BTriggerSystem ts, TriggerSystemProtoObject dbo)
@@ -99,12 +101,12 @@ namespace KSoft.Phoenix.Phx
 		void TryUpdate(BTriggerSystem ts, BTriggerCondition cond)
 		{
 			TriggerSystemProtoObject dbo;
-			if (!LookupTableContains(cond, out dbo))
+			if (!this.LookupTableContains(cond, out dbo))
 			{
 				var dbo_cond = new BTriggerProtoCondition(ts, cond);
 
-				Conditions.DynamicAdd(dbo_cond, dbo_cond.Name);
-				LookupTableAdd(dbo_cond);
+				this.Conditions.DynamicAdd(dbo_cond, dbo_cond.Name);
+				this.LookupTableAdd(dbo_cond);
 			}
 			else
 			{
@@ -112,7 +114,7 @@ namespace KSoft.Phoenix.Phx
 				if (diff < 0)
 				{
 					var dbo_cond = new BTriggerProtoCondition(ts, cond);
-					LookupTable[GenerateHandle(cond)] = dbo_cond;
+					this.LookupTable[GenerateHandle(cond)] = dbo_cond;
 					TraceUpdate(ts, dbo_cond);
 				}
 			}
@@ -120,12 +122,12 @@ namespace KSoft.Phoenix.Phx
 		void TryUpdate(BTriggerSystem ts, BTriggerEffect effe)
 		{
 			TriggerSystemProtoObject dbo;
-			if (!LookupTableContains(effe, out dbo))
+			if (!this.LookupTableContains(effe, out dbo))
 			{
 				var dbo_effe = new BTriggerProtoEffect(ts, effe);
 
-				Effects.DynamicAdd(dbo_effe, dbo_effe.Name);
-				LookupTableAdd(dbo_effe);
+				this.Effects.DynamicAdd(dbo_effe, dbo_effe.Name);
+				this.LookupTableAdd(dbo_effe);
 			}
 			else
 			{
@@ -133,31 +135,34 @@ namespace KSoft.Phoenix.Phx
 				if (diff < 0)
 				{
 					var dbo_effe = new BTriggerProtoEffect(ts, effe);
-					LookupTable[GenerateHandle(effe)] = dbo_effe;
+					this.LookupTable[GenerateHandle(effe)] = dbo_effe;
 					TraceUpdate(ts, dbo_effe);
 				}
 			}
 		}
 		internal void UpdateFromGameData(BTriggerSystem ts)
 		{
-			lock (LookupTable)
+			lock (this.LookupTable)
 			{
 				foreach (var t in ts.Triggers)
 				{
-					foreach (var c in t.Conditions) TryUpdate(ts, c);
-					foreach (var e in t.EffectsOnTrue) TryUpdate(ts, e);
-					foreach (var e in t.EffectsOnFalse) TryUpdate(ts, e);
+					foreach (var c in t.Conditions)
+						this.TryUpdate(ts, c);
+					foreach (var e in t.EffectsOnTrue)
+						this.TryUpdate(ts, e);
+					foreach (var e in t.EffectsOnFalse)
+						this.TryUpdate(ts, e);
 				}
 			}
 		}
 		public void Save(string path, BDatabaseBase db)
 		{
-			using (var s = KSoft.IO.XmlElementStream.CreateForWrite(kXmlRootName))
+			using (var s = IO.XmlElementStream.CreateForWrite(kXmlRootName))
 			{
 				s.InitializeAtRootElement();
 				s.StreamMode = System.IO.FileAccess.Write;
 				s.SetSerializerInterface(XML.BXmlSerializerInterface.GetNullInterface(db));
-				Serialize(s);
+				this.Serialize(s);
 
 				s.Document.Save(path);
 			}

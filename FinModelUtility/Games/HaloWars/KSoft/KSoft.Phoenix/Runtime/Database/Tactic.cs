@@ -11,8 +11,8 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				BSaveGame.StreamArray(s, ref ProtoActions);
-				BSaveGame.StreamArray(s, ref Weapons);
+				BSaveGame.StreamArray(s, ref this.ProtoActions);
+				BSaveGame.StreamArray(s, ref this.Weapons);
 			}
 			#endregion
 		};

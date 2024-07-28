@@ -22,7 +22,7 @@ namespace KSoft.Phoenix.Phx
 		#region Xml constants
 		public static readonly XML.BListXmlParams kBListXmlParams = new XML.BListXmlParams("Object")
 		{
-			DataName = DatabaseNamedObject.kXmlAttrName,
+			DataName = kXmlAttrName,
 			Flags = 0
 				| XML.BCollectionXmlParamsFlags.ToLowerDataNames
 				| XML.BCollectionXmlParamsFlags.RequiresDataNamePreloading
@@ -63,19 +63,19 @@ namespace KSoft.Phoenix.Phx
 
 		#region Unused poop
 		int mUnusedIs = TypeExtensions.kNone;
-		public int UnusedIs { get { return mUnusedIs; } }
+		public int UnusedIs { get { return this.mUnusedIs; } }
 		int mUnusedId = TypeExtensions.kNone;
-		public int UnusedId { get { return mUnusedId; } }
+		public int UnusedId { get { return this.mUnusedId; } }
 		#endregion
 		bool mUpdate;
-		public bool Update { get { return mUpdate; } }
+		public bool Update { get { return this.mUpdate; } }
 
 		#region MovementType
 		BProtoObjectMovementType mMovementType = BProtoObjectMovementType.None;
 		public BProtoObjectMovementType MovementType
 		{
-			get { return mMovementType; }
-			set { mMovementType = value; }
+			get { return this.mMovementType; }
+			set { this.mMovementType = value; }
 		}
 		#endregion
 
@@ -92,8 +92,8 @@ namespace KSoft.Phoenix.Phx
 		BVector mObstructionRadius;
 		public BVector ObstructionRadius
 		{
-			get { return mObstructionRadius; }
-			set { mObstructionRadius = value; }
+			get { return this.mObstructionRadius; }
+			set { this.mObstructionRadius = value; }
 		}
 		#endregion
 
@@ -103,27 +103,27 @@ namespace KSoft.Phoenix.Phx
 		BVector mTerrainFlattennMin0;
 		public BVector TerrainFlattenMin0
 		{
-			get { return mTerrainFlattennMin0; }
-			set { mTerrainFlattennMin0 = value; }
+			get { return this.mTerrainFlattennMin0; }
+			set { this.mTerrainFlattennMin0 = value; }
 		}
 		BVector mTerrainFlattennMax0;
 		public BVector TerrainFlattenMax0
 		{
-			get { return mTerrainFlattennMax0; }
-			set { mTerrainFlattennMax0 = value; }
+			get { return this.mTerrainFlattennMax0; }
+			set { this.mTerrainFlattennMax0 = value; }
 		}
 
 		BVector mTerrainFlattennMin1;
 		public BVector TerrainFlattenMin1
 		{
-			get { return mTerrainFlattennMin1; }
-			set { mTerrainFlattennMin1 = value; }
+			get { return this.mTerrainFlattennMin1; }
+			set { this.mTerrainFlattennMin1 = value; }
 		}
 		BVector mTerrainFlattennMax1;
 		public BVector TerrainFlattenMax1
 		{
-			get { return mTerrainFlattennMax1; }
-			set { mTerrainFlattennMax1 = value; }
+			get { return this.mTerrainFlattennMax1; }
+			set { this.mTerrainFlattennMax1 = value; }
 		}
 		#endregion
 		#region Parking lot
@@ -132,14 +132,14 @@ namespace KSoft.Phoenix.Phx
 		BVector mParkingLotMin;
 		public BVector ParkingLotMin
 		{
-			get { return mParkingLotMin; }
-			set { mParkingLotMin = value; }
+			get { return this.mParkingLotMin; }
+			set { this.mParkingLotMin = value; }
 		}
 		BVector mParkingLotMax;
 		public BVector ParkingLotMax
 		{
-			get { return mParkingLotMax; }
-			set { mParkingLotMax = value; }
+			get { return this.mParkingLotMax; }
+			set { this.mParkingLotMax = value; }
 		}
 		#endregion
 		#region TerrainHeightTolerance
@@ -148,8 +148,8 @@ namespace KSoft.Phoenix.Phx
 		float mTerrainHeightTolerance = cDefaultTerrainHeightTolerance;
 		public float TerrainHeightTolerance
 		{
-			get { return mTerrainHeightTolerance; }
-			set { mTerrainHeightTolerance = value; }
+			get { return this.mTerrainHeightTolerance; }
+			set { this.mTerrainHeightTolerance = value; }
 		}
 		#endregion
 		#region Physics
@@ -157,68 +157,68 @@ namespace KSoft.Phoenix.Phx
 		[Meta.PhysicsInfoReference]
 		public string PhysicsInfo
 		{
-			get { return mPhysicsInfo; }
-			set { mPhysicsInfo = value; }
+			get { return this.mPhysicsInfo; }
+			set { this.mPhysicsInfo = value; }
 		}
 
 		string mPhysicsReplacementInfo;
 		[Meta.PhysicsInfoReference]
 		public string PhysicsReplacementInfo
 		{
-			get { return mPhysicsReplacementInfo; }
-			set { mPhysicsReplacementInfo = value; }
+			get { return this.mPhysicsReplacementInfo; }
+			set { this.mPhysicsReplacementInfo = value; }
 		}
 
 		float mVelocity;
 		public float Velocity
 		{
-			get { return mVelocity; }
-			set { mVelocity = value; }
+			get { return this.mVelocity; }
+			set { this.mVelocity = value; }
 		}
 
 		float mMaxVelocity;
 		public float MaxVelocity
 		{
-			get { return mMaxVelocity; }
-			set { mMaxVelocity = value; }
+			get { return this.mMaxVelocity; }
+			set { this.mMaxVelocity = value; }
 		}
 
 		const float cDefaultReverseSpeed = 1.0f;
 		float mReverseSpeed = cDefaultReverseSpeed;
 		public float ReverseSpeed
 		{
-			get { return mReverseSpeed; }
-			set { mReverseSpeed = value; }
+			get { return this.mReverseSpeed; }
+			set { this.mReverseSpeed = value; }
 		}
 
 		float mAcceleration;
 		public float Acceleration
 		{
-			get { return mAcceleration; }
-			set { mAcceleration = value; }
+			get { return this.mAcceleration; }
+			set { this.mAcceleration = value; }
 		}
 
 		float mTrackingDelay;
 		// in seconds
 		public float TrackingDelay
 		{
-			get { return mTrackingDelay; }
-			set { mTrackingDelay = value; }
+			get { return this.mTrackingDelay; }
+			set { this.mTrackingDelay = value; }
 		}
 
 		float mStartingVelocity;
 		public float StartingVelocity
 		{
-			get { return mStartingVelocity; }
-			set { mStartingVelocity = value; }
+			get { return this.mStartingVelocity; }
+			set { this.mStartingVelocity = value; }
 		}
 		#endregion
 		#region Fuel
 		float mFuel;
 		public float Fuel
 		{
-			get { return mFuel; }
-			set { mFuel = value; }
+			get { return this.mFuel; }
+			set { this.mFuel = value; }
 		}
 		#endregion
 		#region Perturbance
@@ -226,108 +226,111 @@ namespace KSoft.Phoenix.Phx
 		float mPerturbanceChance;
 		public float PerturbanceChance
 		{
-			get { return mPerturbanceChance; }
-			set { mPerturbanceChance = value; }
+			get { return this.mPerturbanceChance; }
+			set { this.mPerturbanceChance = value; }
 		}
 
 		float mPerturbanceVelocity;
 		public float PerturbanceVelocity
 		{
-			get { return mPerturbanceVelocity; }
-			set { mPerturbanceVelocity = value; }
+			get { return this.mPerturbanceVelocity; }
+			set { this.mPerturbanceVelocity = value; }
 		}
 
 		float mPerturbanceMinTime;
 		public float PerturbanceMinTime
 		{
-			get { return mPerturbanceMinTime; }
-			set { mPerturbanceMinTime = value; }
+			get { return this.mPerturbanceMinTime; }
+			set { this.mPerturbanceMinTime = value; }
 		}
 
 		float mPerturbanceMaxTime;
 		public float PerturbanceMaxTime
 		{
-			get { return mPerturbanceMaxTime; }
-			set { mPerturbanceMaxTime = value; }
+			get { return this.mPerturbanceMaxTime; }
+			set { this.mPerturbanceMaxTime = value; }
 		}
 
 		float mPerturbInitialVelocity;
 		public float PerturbInitialVelocity
 		{
-			get { return mPerturbInitialVelocity; }
-			set { mPerturbInitialVelocity = value; }
+			get { return this.mPerturbInitialVelocity; }
+			set { this.mPerturbInitialVelocity = value; }
 		}
 
 		float mInitialPerturbanceMinTime;
 		public float InitialPerturbanceMinTime
 		{
-			get { return mInitialPerturbanceMinTime; }
-			set { mInitialPerturbanceMinTime = value; }
+			get { return this.mInitialPerturbanceMinTime; }
+			set { this.mInitialPerturbanceMinTime = value; }
 		}
 
 		float mInitialPerturbanceMaxTime;
 		public float InitialPerturbanceMaxTime
 		{
-			get { return mInitialPerturbanceMaxTime; }
-			set { mInitialPerturbanceMaxTime = value; }
+			get { return this.mInitialPerturbanceMaxTime; }
+			set { this.mInitialPerturbanceMaxTime = value; }
 		}
 
 		bool HasInitialPerturbanceData { get {
-			return PerturbInitialVelocity != 0.0
-				|| InitialPerturbanceMinTime > 0.0
-				|| InitialPerturbanceMaxTime > 0.0;
+			return this.PerturbInitialVelocity != 0.0
+				||
+				this.InitialPerturbanceMinTime > 0.0
+				||
+				this.InitialPerturbanceMaxTime > 0.0;
 		} }
 		#endregion
 		#region ActiveScan
 		float mActiveScanChance;
 		public float ActiveScanChance
 		{
-			get { return mActiveScanChance; }
-			set { mActiveScanChance = value; }
+			get { return this.mActiveScanChance; }
+			set { this.mActiveScanChance = value; }
 		}
 
 		float mActiveScanRadiusScale;
 		public float ActiveScanRadiusScale
 		{
-			get { return mActiveScanRadiusScale; }
-			set { mActiveScanRadiusScale = value; }
+			get { return this.mActiveScanRadiusScale; }
+			set { this.mActiveScanRadiusScale = value; }
 		}
 
 		bool HasActiveScanData { get {
-			return ActiveScanChance > 0.0
-				|| ActiveScanRadiusScale > 0.0;
+			return this.ActiveScanChance > 0.0
+				||
+				this.ActiveScanRadiusScale > 0.0;
 		} }
 		#endregion
 		#region TurnRate
 		float mTurnRate;
 		public float TurnRate
 		{
-			get { return mTurnRate; }
-			set { mTurnRate = value; }
+			get { return this.mTurnRate; }
+			set { this.mTurnRate = value; }
 		}
 		#endregion
 		#region Hitpoints
 		float mHitpoints;
 		public float Hitpoints
 		{
-			get { return mHitpoints; }
-			set { mHitpoints = value; }
+			get { return this.mHitpoints; }
+			set { this.mHitpoints = value; }
 		}
 		#endregion
 		#region Shieldpoints
 		float mShieldpoints;
 		public float Shieldpoints
 		{
-			get { return mShieldpoints; }
-			set { mShieldpoints = value; }
+			get { return this.mShieldpoints; }
+			set { this.mShieldpoints = value; }
 		}
 		#endregion
 		#region LOS
 		float mLOS;
 		public float LOS
 		{
-			get { return mLOS; }
-			set { mLOS = value; }
+			get { return this.mLOS; }
+			set { this.mLOS = value; }
 		}
 		#endregion
 		#region Pick and Select
@@ -335,43 +338,43 @@ namespace KSoft.Phoenix.Phx
 		float mPickRadius;
 		public float PickRadius
 		{
-			get { return mPickRadius; }
-			set { mPickRadius = value; }
+			get { return this.mPickRadius; }
+			set { this.mPickRadius = value; }
 		}
 
 		float mPickOffset;
 		public float PickOffset
 		{
-			get { return mPickOffset; }
-			set { mPickOffset = value; }
+			get { return this.mPickOffset; }
+			set { this.mPickOffset = value; }
 		}
 
 		BPickPriority mPickPriority;
 		public BPickPriority PickPriority
 		{
-			get { return mPickPriority; }
-			set { mPickPriority = value; }
+			get { return this.mPickPriority; }
+			set { this.mPickPriority = value; }
 		}
 
 		BProtoObjectSelectType mSelectType;
 		public BProtoObjectSelectType SelectType
 		{
-			get { return mSelectType; }
-			set { mSelectType = value; }
+			get { return this.mSelectType; }
+			set { this.mSelectType = value; }
 		}
 
 		BGotoType mGotoType;
 		public BGotoType GotoType
 		{
-			get { return mGotoType; }
-			set { mGotoType = value; }
+			get { return this.mGotoType; }
+			set { this.mGotoType = value; }
 		}
 
 		BVector mSelectedRadius;
 		public BVector SelectedRadius
 		{
-			get { return mSelectedRadius; }
-			set { mSelectedRadius = value; }
+			get { return this.mSelectedRadius; }
+			set { this.mSelectedRadius = value; }
 		}
 
 		#endregion
@@ -380,44 +383,45 @@ namespace KSoft.Phoenix.Phx
 		[Meta.UnusedData]
 		public float RepairPoints
 		{
-			get { return mRepairPoints; }
-			set { mRepairPoints = value; }
+			get { return this.mRepairPoints; }
+			set { this.mRepairPoints = value; }
 		}
 		#endregion
 		#region ClassType
 		BProtoObjectClassType mClassType = BProtoObjectClassType.Object;
 		public BProtoObjectClassType ClassType
 		{
-			get { return mClassType; }
-			set { mClassType = value; }
+			get { return this.mClassType; }
+			set { this.mClassType = value; }
 		}
 		#endregion
 		#region TrainerType
 		int mTrainerType = TypeExtensions.kNone;
 		public int TrainerType
 		{
-			get { return mTrainerType; }
-			set { mTrainerType = value; }
+			get { return this.mTrainerType; }
+			set { this.mTrainerType = value; }
 		}
 
 		bool mTrainerApplyFormation;
 		public bool TrainerApplyFormation
 		{
-			get { return mTrainerApplyFormation; }
-			set { TrainerApplyFormation = value; }
+			get { return this.mTrainerApplyFormation; }
+			set { this.TrainerApplyFormation = value; }
 		}
 
 		bool HasTrainerTypeData { get {
-			return TrainerType.IsNotNone()
-				|| TrainerApplyFormation;
+			return this.TrainerType.IsNotNone()
+				||
+				this.TrainerApplyFormation;
 		} }
 		#endregion
 		#region AutoLockDown
 		BAutoLockDown mAutoLockDown;
 		public BAutoLockDown AutoLockDown
 		{
-			get { return mAutoLockDown; }
-			set { mAutoLockDown = value; }
+			get { return this.mAutoLockDown; }
+			set { this.mAutoLockDown = value; }
 		}
 		#endregion
 		#region CostEscalation
@@ -426,10 +430,10 @@ namespace KSoft.Phoenix.Phx
 		// Also, CostEscalationObject and Flag.LinearCostEscalation
 		public float CostEscalation
 		{
-			get { return mCostEscalation; }
-			set { mCostEscalation = value; }
+			get { return this.mCostEscalation; }
+			set { this.mCostEscalation = value; }
 		}
-		public bool HasCostEscalation { get { return CostEscalation > 0.0f; } }
+		public bool HasCostEscalation { get { return this.CostEscalation > 0.0f; } }
 		#endregion
 		[Meta.BProtoObjectReference]
 		public List<	BProtoObjectID> CostEscalationObjects { get; private set; }
@@ -441,16 +445,16 @@ namespace KSoft.Phoenix.Phx
 		/// <summary>Vet XP contribution value</summary>
 		public float Bounty
 		{
-			get { return mBounty; }
-			set { mBounty = value; }
+			get { return this.mBounty; }
+			set { this.mBounty = value; }
 		}
 		#endregion
 		#region AIAssetValueAdjust
 		float mAIAssetValueAdjust;
 		public float AIAssetValueAdjust
 		{
-			get { return mAIAssetValueAdjust; }
-			set { mAIAssetValueAdjust = value; }
+			get { return this.mAIAssetValueAdjust; }
+			set { this.mAIAssetValueAdjust = value; }
 		}
 		#endregion
 		#region CombatValue
@@ -458,16 +462,16 @@ namespace KSoft.Phoenix.Phx
 		/// <summary>Score value</summary>
 		public float CombatValue
 		{
-			get { return mCombatValue; }
-			set { mCombatValue = value; }
+			get { return this.mCombatValue; }
+			set { this.mCombatValue = value; }
 		}
 		#endregion
 		#region ResourceAmount
 		float mResourceAmount;
 		public float ResourceAmount
 		{
-			get { return mResourceAmount; }
-			set { mResourceAmount = value; }
+			get { return this.mResourceAmount; }
+			set { this.mResourceAmount = value; }
 		}
 		#endregion
 		#region PlacementRules
@@ -475,24 +479,24 @@ namespace KSoft.Phoenix.Phx
 		/// <summary>PlacementRules file name (sans extension)</summary>
 		public string PlacementRules
 		{
-			get { return mPlacementRules; }
-			set { mPlacementRules = value; }
+			get { return this.mPlacementRules; }
+			set { this.mPlacementRules = value; }
 		}
 		#endregion
 		#region DeathFadeTime
 		float mDeathFadeTime = 1.0f;
 		public float DeathFadeTime
 		{
-			get { return mDeathFadeTime; }
-			set { mDeathFadeTime = value; }
+			get { return this.mDeathFadeTime; }
+			set { this.mDeathFadeTime = value; }
 		}
 		#endregion
 		#region DeathFadeDelayTime
 		float mDeathFadeDelayTime;
 		public float DeathFadeDelayTime
 		{
-			get { return mDeathFadeDelayTime; }
-			set { mDeathFadeDelayTime = value; }
+			get { return this.mDeathFadeDelayTime; }
+			set { this.mDeathFadeDelayTime = value; }
 		}
 		#endregion
 		#region TrainAnim
@@ -500,8 +504,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BAnimTypeReference]
 		public string TrainAnim
 		{
-			get { return mTrainAnim; }
-			set { mTrainAnim = value; }
+			get { return this.mTrainAnim; }
+			set { this.mTrainAnim = value; }
 		}
 		#endregion
 		/// <remarks>Engine actually uses a fixed array that maps a BSquadMode to an AnimType</remarks>
@@ -511,16 +515,16 @@ namespace KSoft.Phoenix.Phx
 		BRallyPointType mRallyPoint = BRallyPointType.Invalid;
 		public BRallyPointType RallyPoint
 		{
-			get { return mRallyPoint; }
-			set { mRallyPoint = value; }
+			get { return this.mRallyPoint; }
+			set { this.mRallyPoint = value; }
 		}
 		#endregion
 		#region MaxProjectileHeight
 		float mMaxProjectileHeight;
 		public float MaxProjectileHeight
 		{
-			get { return mMaxProjectileHeight; }
-			set { mMaxProjectileHeight = value; }
+			get { return this.mMaxProjectileHeight; }
+			set { this.mMaxProjectileHeight = value; }
 		}
 		#endregion
 		#region GroundIKTilt
@@ -528,20 +532,21 @@ namespace KSoft.Phoenix.Phx
 		float mGroundIKTiltFactor;
 		public float GroundIKTiltFactor
 		{
-			get { return mGroundIKTiltFactor; }
-			set { mGroundIKTiltFactor = value; }
+			get { return this.mGroundIKTiltFactor; }
+			set { this.mGroundIKTiltFactor = value; }
 		}
 
 		string mGroundIKTiltBoneName;
 		public string GroundIKTiltBoneName
 		{
-			get { return mGroundIKTiltBoneName; }
-			set { mGroundIKTiltBoneName = value; }
+			get { return this.mGroundIKTiltBoneName; }
+			set { this.mGroundIKTiltBoneName = value; }
 		}
 
 		bool HasGroundIKTiltData { get {
-			return GroundIKTiltFactor > 0.0
-				|| GroundIKTiltBoneName.IsNotNullOrEmpty();
+			return this.GroundIKTiltFactor > 0.0
+				||
+				this.GroundIKTiltBoneName.IsNotNullOrEmpty();
 		} }
 		#endregion
 		#region DeathReplacement
@@ -549,8 +554,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int DeathReplacementID
 		{
-			get { return mDeathReplacementID; }
-			set { mDeathReplacementID = value; }
+			get { return this.mDeathReplacementID; }
+			set { this.mDeathReplacementID = value; }
 		}
 		#endregion
 		#region DeathSpawnSquad
@@ -559,28 +564,30 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public int DeathSpawnSquadID
 		{
-			get { return mDeathSpawnSquadID; }
-			set { mDeathSpawnSquadID = value; }
+			get { return this.mDeathSpawnSquadID; }
+			set { this.mDeathSpawnSquadID = value; }
 		}
 
 		bool mDeathSpawnSquadCheckPosition;
 		public bool DeathSpawnSquadCheckPosition
 		{
-			get { return mDeathSpawnSquadCheckPosition; }
-			set { mDeathSpawnSquadCheckPosition = value; }
+			get { return this.mDeathSpawnSquadCheckPosition; }
+			set { this.mDeathSpawnSquadCheckPosition = value; }
 		}
 
 		int mDeathSpawnSquadMaxPopCount;
 		public int DeathSpawnSquadMaxPopCount
 		{
-			get { return mDeathSpawnSquadMaxPopCount; }
-			set { mDeathSpawnSquadMaxPopCount = value; }
+			get { return this.mDeathSpawnSquadMaxPopCount; }
+			set { this.mDeathSpawnSquadMaxPopCount = value; }
 		}
 
 		bool HasDeathSpawnSquadData { get {
-			return mDeathSpawnSquadID.IsNotNone()
-				|| mDeathSpawnSquadCheckPosition
-				|| mDeathSpawnSquadMaxPopCount > 0;
+			return this.mDeathSpawnSquadID.IsNotNone()
+				||
+				this.mDeathSpawnSquadCheckPosition
+				||
+				this.mDeathSpawnSquadMaxPopCount > 0;
 		} }
 		#endregion
 		#region SurfaceType
@@ -588,8 +595,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TerrainTileTypeReference]
 		public int SurfaceType
 		{
-			get { return mSurfaceType; }
-			set { mSurfaceType = value; }
+			get { return this.mSurfaceType; }
+			set { this.mSurfaceType = value; }
 		}
 		#endregion
 		#region Visual
@@ -597,8 +604,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.VisualReference]
 		public string Visual
 		{
-			get { return mVisual; }
-			set { mVisual = value; }
+			get { return this.mVisual; }
+			set { this.mVisual = value; }
 		}
 		#endregion
 		#region CorpseDeath
@@ -606,8 +613,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.VisualReference]
 		public string CorpseDeath
 		{
-			get { return mCorpseDeath; }
-			set { mCorpseDeath = value; }
+			get { return this.mCorpseDeath; }
+			set { this.mCorpseDeath = value; }
 		}
 		#endregion
 		#region AbilityCommandID
@@ -615,8 +622,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BAbilityReference]
 		public int AbilityCommandID
 		{
-			get { return mAbilityCommandID; }
-			set { mAbilityCommandID = value; }
+			get { return this.mAbilityCommandID; }
+			set { this.mAbilityCommandID = value; }
 		}
 		#endregion
 		#region PowerID
@@ -624,8 +631,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoPowerReference]
 		public int PowerID
 		{
-			get { return mPowerID; }
-			set { mPowerID = value; }
+			get { return this.mPowerID; }
+			set { this.mPowerID = value; }
 		}
 		#endregion
 		[Meta.TriggerScriptReference]
@@ -639,16 +646,16 @@ namespace KSoft.Phoenix.Phx
 		string mExistSoundBoneName;
 		public string ExistSoundBoneName
 		{
-			get { return mExistSoundBoneName; }
-			set { mExistSoundBoneName = value; }
+			get { return this.mExistSoundBoneName; }
+			set { this.mExistSoundBoneName = value; }
 		}
 		#endregion
 		#region GathererLimit
 		int mGathererLimit = -1;
 		public int GathererLimit
 		{
-			get { return mGathererLimit; }
-			set { mGathererLimit = value; }
+			get { return this.mGathererLimit; }
+			set { this.mGathererLimit = value; }
 		}
 		#endregion
 		#region BlockMovementObjectID
@@ -656,48 +663,48 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int BlockMovementObjectID
 		{
-			get { return mBlockMovementObjectID; }
-			set { mBlockMovementObjectID = value; }
+			get { return this.mBlockMovementObjectID; }
+			set { this.mBlockMovementObjectID = value; }
 		}
 		#endregion
 		#region Lifespan
 		float mLifespan;
 		public float Lifespan
 		{
-			get { return mLifespan; }
-			set { mLifespan = value; }
+			get { return this.mLifespan; }
+			set { this.mLifespan = value; }
 		}
 		#endregion
 		#region AmmoMax
 		float mAmmoMax;
 		public float AmmoMax
 		{
-			get { return mAmmoMax; }
-			set { mAmmoMax = value; }
+			get { return this.mAmmoMax; }
+			set { this.mAmmoMax = value; }
 		}
 		#endregion
 		#region AmmoRegenRate
 		float mAmmoRegenRate;
 		public float AmmoRegenRate
 		{
-			get { return mAmmoRegenRate; }
-			set { mAmmoRegenRate = value; }
+			get { return this.mAmmoRegenRate; }
+			set { this.mAmmoRegenRate = value; }
 		}
 		#endregion
 		#region NumConversions
 		int mNumConversions;
 		public int NumConversions
 		{
-			get { return mNumConversions; }
-			set { mNumConversions = value; }
+			get { return this.mNumConversions; }
+			set { this.mNumConversions = value; }
 		}
 		#endregion
 		#region NumStasisFieldsToStop
 		int mNumStasisFieldsToStop = 1;
 		public int NumStasisFieldsToStop
 		{
-			get { return mNumStasisFieldsToStop; }
-			set { mNumStasisFieldsToStop = value; }
+			get { return this.mNumStasisFieldsToStop; }
+			set { this.mNumStasisFieldsToStop = value; }
 		}
 		#endregion
 		public Collections.BBitSet Flags { get; private set; }
@@ -713,16 +720,16 @@ namespace KSoft.Phoenix.Phx
 		string mExtendedSoundBank;
 		public string ExtendedSoundBank
 		{
-			get { return mExtendedSoundBank; }
-			set { mExtendedSoundBank = value; }
+			get { return this.mExtendedSoundBank; }
+			set { this.mExtendedSoundBank = value; }
 		}
 		#endregion
 		#region PortraitIcon
 		string mPortraitIcon;
 		public string PortraitIcon
 		{
-			get { return mPortraitIcon; }
-			set { mPortraitIcon = value; }
+			get { return this.mPortraitIcon; }
+			set { this.mPortraitIcon = value; }
 		}
 		#endregion
 		#region Minimap
@@ -730,30 +737,31 @@ namespace KSoft.Phoenix.Phx
 		string mMinimapIcon;
 		public string MinimapIcon
 		{
-			get { return mMinimapIcon; }
-			set { mMinimapIcon = value; }
+			get { return this.mMinimapIcon; }
+			set { this.mMinimapIcon = value; }
 		}
 
 		float mMiniMapIconSize = 1.0f;
 		public float MiniMapIconSize
 		{
-			get { return mMiniMapIconSize; }
-			set { mMiniMapIconSize = value; }
+			get { return this.mMiniMapIconSize; }
+			set { this.mMiniMapIconSize = value; }
 		}
 
 		static BVector cDefaultMinimapColor { get { return new BVector(1.0f, 1.0f, 1.0f, 0.0f); } }
 		BVector mMinimapColor = cDefaultMinimapColor;
 		public BVector MinimapColor
 		{
-			get { return mMinimapColor; }
-			set { mMinimapColor = value; }
+			get { return this.mMinimapColor; }
+			set { this.mMinimapColor = value; }
 		}
 
 		bool HasMiniMapIconData { get {
-			return MinimapIcon.IsNotNullOrEmpty()
-				|| MiniMapIconSize != 1.0f;
+			return this.MinimapIcon.IsNotNullOrEmpty()
+				||
+				this.MiniMapIconSize != 1.0f;
 		} }
-		bool HasMinimapColorData { get { return MinimapColor != cDefaultMinimapColor; } }
+		bool HasMinimapColorData { get { return this.MinimapColor != cDefaultMinimapColor; } }
 		#endregion
 		public Collections.BListArray<		BProtoObjectCommand> Commands { get; private set; }
 			= new Collections.BListArray<	BProtoObjectCommand>();
@@ -765,37 +773,40 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int GatherLinkObjectType
 		{
-			get { return mGatherLinkObjectType; }
-			set { mGatherLinkObjectType = value; }
+			get { return this.mGatherLinkObjectType; }
+			set { this.mGatherLinkObjectType = value; }
 		}
 
 		float mGatherLinkRadius;
 		public float GatherLinkRadius
 		{
-			get { return mGatherLinkRadius; }
-			set { mGatherLinkRadius = value; }
+			get { return this.mGatherLinkRadius; }
+			set { this.mGatherLinkRadius = value; }
 		}
 
 		int mGatherLinkTarget = TypeExtensions.kNone;
 		[Meta.ObjectTypeReference]
 		public int GatherLinkTarget
 		{
-			get { return mGatherLinkTarget; }
-			set { mGatherLinkTarget = value; }
+			get { return this.mGatherLinkTarget; }
+			set { this.mGatherLinkTarget = value; }
 		}
 
 		bool mGatherLinkSelf;
 		public bool GatherLinkSelf
 		{
-			get { return mGatherLinkSelf; }
-			set { mGatherLinkSelf = value; }
+			get { return this.mGatherLinkSelf; }
+			set { this.mGatherLinkSelf = value; }
 		}
 
 		bool HasGatherLinkData { get {
-			return GatherLinkObjectType.IsNotNone()
-				|| GatherLinkRadius > 0.0f
-				|| GatherLinkTarget.IsNotNone()
-				|| GatherLinkSelf;
+			return this.GatherLinkObjectType.IsNotNone()
+				||
+				this.GatherLinkRadius > 0.0f
+				||
+				this.GatherLinkTarget.IsNotNone()
+				||
+				this.GatherLinkSelf;
 		} }
 		#endregion
 		public Collections.BListArray<		BProtoObjectChildObject> ChildObjects { get; private set; }
@@ -809,8 +820,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BTacticDataReference]
 		public int Tactics
 		{
-			get { return mTactics; }
-			set { mTactics = value; }
+			get { return this.mTactics; }
+			set { this.mTactics = value; }
 		}
 		#endregion
 		#region FlightLevel
@@ -820,16 +831,16 @@ namespace KSoft.Phoenix.Phx
 		/// <summary>relative Y displacement of the object</summary>
 		public float FlightLevel
 		{
-			get { return mFlightLevel; }
-			set { mFlightLevel = value; }
+			get { return this.mFlightLevel; }
+			set { this.mFlightLevel = value; }
 		}
 		#endregion
 		#region ExitFromDirection
 		int mExitFromDirection = (int)BProtoObjectExitDirection.FromFront;
 		public int ExitFromDirection
 		{
-			get { return mExitFromDirection; }
-			set { mExitFromDirection = value; }
+			get { return this.mExitFromDirection; }
+			set { this.mExitFromDirection = value; }
 		}
 		#endregion
 		#region HPBar
@@ -838,28 +849,28 @@ namespace KSoft.Phoenix.Phx
 		string mHPBarID;
 		public string HPBarID
 		{
-			get { return mHPBarID; }
-			set { mHPBarID = value; }
+			get { return this.mHPBarID; }
+			set { this.mHPBarID = value; }
 		}
 
 		BVector mHPBarSize;
 		public BVector HPBarSize
 		{
-			get { return mHPBarSize; }
-			set { mHPBarSize = value; }
+			get { return this.mHPBarSize; }
+			set { this.mHPBarSize = value; }
 		}
 
 		BVector mHPBarOffset;
 		public BVector HPBarOffset
 		{
-			get { return mHPBarOffset; }
-			set { mHPBarOffset = value; }
+			get { return this.mHPBarOffset; }
+			set { this.mHPBarOffset = value; }
 		}
 
 		bool HasHPBarData { get {
-			return mHPBarID.IsNotNullOrEmpty()
-				|| PhxPredicates.IsNotZero(HPBarSize)
-				|| PhxPredicates.IsNotZero(HPBarOffset);
+			return this.mHPBarID.IsNotNullOrEmpty()
+				|| PhxPredicates.IsNotZero(this.HPBarSize)
+				|| PhxPredicates.IsNotZero(this.HPBarOffset);
 		} }
 		#endregion
 		public Collections.BListArray<		BHitZone> HitZones { get; private set; }
@@ -869,8 +880,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int BeamHead
 		{
-			get { return mBeamHead; }
-			set { mBeamHead = value; }
+			get { return this.mBeamHead; }
+			set { this.mBeamHead = value; }
 		}
 		#endregion
 		#region BeamTail
@@ -878,16 +889,16 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int BeamTail
 		{
-			get { return mBeamTail; }
-			set { mBeamTail = value; }
+			get { return this.mBeamTail; }
+			set { this.mBeamTail = value; }
 		}
 		#endregion
 		#region Level
 		int mLevel;
 		public int Level
 		{
-			get { return mLevel; }
-			set { mLevel = value; }
+			get { return this.mLevel; }
+			set { this.mLevel = value; }
 		}
 		#endregion
 		#region LevelUpEffect
@@ -895,8 +906,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int LevelUpEffect
 		{
-			get { return mLevelUpEffect; }
-			set { mLevelUpEffect = value; }
+			get { return this.mLevelUpEffect; }
+			set { this.mLevelUpEffect = value; }
 		}
 		#endregion
 		#region RecoveringEffect
@@ -904,8 +915,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int RecoveringEffect
 		{
-			get { return mRecoveringEffect; }
-			set { mRecoveringEffect = value; }
+			get { return this.mRecoveringEffect; }
+			set { this.mRecoveringEffect = value; }
 		}
 		#endregion
 		#region AutoTrainOnBuilt
@@ -913,8 +924,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public int AutoTrainOnBuilt
 		{
-			get { return mAutoTrainOnBuilt; }
-			set { mAutoTrainOnBuilt = value; }
+			get { return this.mAutoTrainOnBuilt; }
+			set { this.mAutoTrainOnBuilt = value; }
 		}
 		#endregion
 		#region Socket
@@ -923,28 +934,30 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int SocketID
 		{
-			get { return mSocketID; }
-			set { mSocketID = value; }
+			get { return this.mSocketID; }
+			set { this.mSocketID = value; }
 		}
 
 		BPlayerScope mSocketPlayerScope = BPlayerScope.Player;
 		public BPlayerScope SocketPlayerScope
 		{
-			get { return mSocketPlayerScope; }
-			set { mSocketPlayerScope = value; }
+			get { return this.mSocketPlayerScope; }
+			set { this.mSocketPlayerScope = value; }
 		}
 
 		bool mAutoSocket;
 		public bool AutoSocket
 		{
-			get { return mAutoSocket; }
-			set { mAutoSocket = value; }
+			get { return this.mAutoSocket; }
+			set { this.mAutoSocket = value; }
 		}
 
 		bool HasSocketData { get {
-			return SocketID.IsNotNone()
-				|| SocketPlayerScope != BPlayerScope.Player
-				|| AutoSocket;
+			return this.SocketID.IsNotNone()
+				||
+				this.SocketPlayerScope != BPlayerScope.Player
+				||
+				this.AutoSocket;
 		} }
 		#endregion
 		#region Rate
@@ -953,36 +966,37 @@ namespace KSoft.Phoenix.Phx
 		[Meta.RateReference]
 		public int RateID
 		{
-			get { return mRateID; }
-			set { mRateID = value; }
+			get { return this.mRateID; }
+			set { this.mRateID = value; }
 		}
 
 		float mRateAmount;
 		public float RateAmount
 		{
-			get { return mRateAmount; }
-			set { mRateAmount = value; }
+			get { return this.mRateAmount; }
+			set { this.mRateAmount = value; }
 		}
 
 		bool HasRateData { get {
-			return RateID.IsNotNone()
-				|| RateAmount > 0.0f;
+			return this.RateID.IsNotNone()
+				||
+				this.RateAmount > 0.0f;
 		} }
 		#endregion
 		#region MaxContained
 		int mMaxContained;
 		public int MaxContained
 		{
-			get { return mMaxContained; }
-			set { mMaxContained = value; }
+			get { return this.mMaxContained; }
+			set { this.mMaxContained = value; }
 		}
 		#endregion
 		#region MaxFlameEffects
 		int mMaxFlameEffects = TypeExtensions.kNone;
 		public int MaxFlameEffects
 		{
-			get { return mMaxFlameEffects; }
-			set { mMaxFlameEffects = value; }
+			get { return this.mMaxFlameEffects; }
+			set { this.mMaxFlameEffects = value; }
 		}
 		#endregion
 		[Meta.ObjectTypeReference]
@@ -992,8 +1006,8 @@ namespace KSoft.Phoenix.Phx
 		BSquadMode mGarrisonSquadMode = BSquadMode.Invalid;
 		public BSquadMode GarrisonSquadMode
 		{
-			get { return mGarrisonSquadMode; }
-			set { mGarrisonSquadMode = value; }
+			get { return this.mGarrisonSquadMode; }
+			set { this.mGarrisonSquadMode = value; }
 		}
 		#endregion
 		#region BuildStatsObjectID
@@ -1001,32 +1015,32 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int BuildStatsObjectID
 		{
-			get { return mBuildStatsObjectID; }
-			set { mBuildStatsObjectID = value; }
+			get { return this.mBuildStatsObjectID; }
+			set { this.mBuildStatsObjectID = value; }
 		}
 		#endregion
 		#region SubSelectSort
 		int mSubSelectSort = int.MaxValue;
 		public int SubSelectSort
 		{
-			get { return mSubSelectSort; }
-			set { mSubSelectSort = value; }
+			get { return this.mSubSelectSort; }
+			set { this.mSubSelectSort = value; }
 		}
 		#endregion
 		#region AttackGradeDPS
 		float mAttackGradeDPS;
 		public float AttackGradeDPS
 		{
-			get { return mAttackGradeDPS; }
-			set { mAttackGradeDPS = value; }
+			get { return this.mAttackGradeDPS; }
+			set { this.mAttackGradeDPS = value; }
 		}
 		#endregion
 		#region RamDodgeFactor
 		float mRamDodgeFactor;
 		public float RamDodgeFactor
 		{
-			get { return mRamDodgeFactor; }
-			set { mRamDodgeFactor = value; }
+			get { return this.mRamDodgeFactor; }
+			set { this.mRamDodgeFactor = value; }
 		}
 		#endregion
 		public BRumbleEvent HoveringRumble { get; set; }
@@ -1034,16 +1048,16 @@ namespace KSoft.Phoenix.Phx
 		BVisualDisplayPriority mVisualDisplayPriority = BVisualDisplayPriority.Normal;
 		public BVisualDisplayPriority VisualDisplayPriority
 		{
-			get { return mVisualDisplayPriority; }
-			set { mVisualDisplayPriority = value; }
+			get { return this.mVisualDisplayPriority; }
+			set { this.mVisualDisplayPriority = value; }
 		}
 		#endregion
 		#region ChildObjectDamageTakenScalar
 		float mChildObjectDamageTakenScalar;
 		public float ChildObjectDamageTakenScalar
 		{
-			get { return mChildObjectDamageTakenScalar; }
-			set { mChildObjectDamageTakenScalar = value; }
+			get { return this.mChildObjectDamageTakenScalar; }
+			set { this.mChildObjectDamageTakenScalar = value; }
 		}
 		#endregion
 		#region TrueLOSHeight
@@ -1052,32 +1066,32 @@ namespace KSoft.Phoenix.Phx
 		float mTrueLOSHeight = cDefaultTrueLOSHeight;
 		public float TrueLOSHeight
 		{
-			get { return mTrueLOSHeight; }
-			set { mTrueLOSHeight = value; }
+			get { return this.mTrueLOSHeight; }
+			set { this.mTrueLOSHeight = value; }
 		}
 		#endregion
 		#region GarrisonTime
 		float mGarrisonTime;
 		public float GarrisonTime
 		{
-			get { return mGarrisonTime; }
-			set { mGarrisonTime = value; }
+			get { return this.mGarrisonTime; }
+			set { this.mGarrisonTime = value; }
 		}
 		#endregion
 		#region BuildRotation
 		float mBuildRotation;
 		public float BuildRotation
 		{
-			get { return mBuildRotation; }
-			set { mBuildRotation = value; }
+			get { return this.mBuildRotation; }
+			set { this.mBuildRotation = value; }
 		}
 		#endregion
 		#region BuildOffset
 		BVector mBuildOffset;
 		public BVector BuildOffset
 		{
-			get { return mBuildOffset; }
-			set { mBuildOffset = value; }
+			get { return this.mBuildOffset; }
+			set { this.mBuildOffset = value; }
 		}
 		#endregion
 		#region AutoParkingLot
@@ -1086,28 +1100,29 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int AutoParkingLotObjectID
 		{
-			get { return mAutoParkingLotObjectID; }
-			set { mAutoParkingLotObjectID = value; }
+			get { return this.mAutoParkingLotObjectID; }
+			set { this.mAutoParkingLotObjectID = value; }
 		}
 
 		float mAutoParkingLotRotation;
 		public float AutoParkingLotRotation
 		{
-			get { return mAutoParkingLotRotation; }
-			set { mAutoParkingLotRotation = value; }
+			get { return this.mAutoParkingLotRotation; }
+			set { this.mAutoParkingLotRotation = value; }
 		}
 
 		BVector mAutoParkingLotOffset;
 		public BVector AutoParkingLotOffset
 		{
-			get { return mAutoParkingLotOffset; }
-			set { mAutoParkingLotOffset = value; }
+			get { return this.mAutoParkingLotOffset; }
+			set { this.mAutoParkingLotOffset = value; }
 		}
 
 		bool HasAutoParkingLotData { get {
-			return AutoParkingLotObjectID.IsNotNone()
-				|| AutoParkingLotRotation != 0.0
-				|| PhxPredicates.IsNotZero(AutoParkingLotOffset);
+			return this.AutoParkingLotObjectID.IsNotNone()
+				||
+				this.AutoParkingLotRotation != 0.0
+				|| PhxPredicates.IsNotZero(this.AutoParkingLotOffset);
 		} }
 		#endregion
 		#region BuildingStrengthID
@@ -1116,8 +1131,8 @@ namespace KSoft.Phoenix.Phx
 		string mBuildingStrengthID;
 		public string BuildingStrengthID
 		{
-			get { return mBuildingStrengthID; }
-			set { mBuildingStrengthID = value; }
+			get { return this.mBuildingStrengthID; }
+			set { this.mBuildingStrengthID = value; }
 		}
 		#endregion
 		#region ShieldType
@@ -1125,16 +1140,16 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ObjectTypeReference]
 		public int ShieldType
 		{
-			get { return mShieldType; }
-			set { mShieldType = value; }
+			get { return this.mShieldType; }
+			set { this.mShieldType = value; }
 		}
 		#endregion
 		#region RevealRadius
 		float mRevealRadius;
 		public float RevealRadius
 		{
-			get { return mRevealRadius; }
-			set { mRevealRadius = value; }
+			get { return this.mRevealRadius; }
+			set { this.mRevealRadius = value; }
 		}
 		#endregion
 		#region TargetBeam
@@ -1142,8 +1157,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int TargetBeam
 		{
-			get { return mTargetBeam; }
-			set { mTargetBeam = value; }
+			get { return this.mTargetBeam; }
+			set { this.mTargetBeam = value; }
 		}
 		#endregion
 		#region KillBeam
@@ -1151,22 +1166,22 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int KillBeam
 		{
-			get { return mKillBeam; }
-			set { mKillBeam = value; }
+			get { return this.mKillBeam; }
+			set { this.mKillBeam = value; }
 		}
 		#endregion
 		#region MinimapIconName (EDITOR ONLY)
 		string mMinimapIconName;
 		public string MinimapIconName
 		{
-			get { return mMinimapIconName; }
-			set { mMinimapIconName = value; }
+			get { return this.mMinimapIconName; }
+			set { this.mMinimapIconName = value; }
 		}
 		#endregion
 
 		public BProtoObject() : base(BResource.kBListTypeValuesParams, BResource.kBListTypeValuesXmlParams_Cost)
 		{
-			var textData = base.CreateDatabaseObjectUserInterfaceTextData();
+			var textData = this.CreateDatabaseObjectUserInterfaceTextData();
 			textData.HasDisplayNameID = true;
 			textData.HasRolloverTextID = true;
 			textData.HasStatsNameID = true;
@@ -1182,181 +1197,181 @@ namespace KSoft.Phoenix.Phx
 			base.Serialize(s);
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttributeOpt("is", ref mUnusedIs, Predicates.IsNotNone);
-			s.StreamAttributeOpt("id", ref mUnusedId, Predicates.IsNotNone);
-			s.StreamAttributeOpt("update", ref mUpdate, Predicates.IsTrue);
-			s.StreamElementEnumOpt("MovementType", ref mMovementType, e => e != BProtoObjectMovementType.None);
-			XML.XmlUtil.Serialize(s, Hardpoints, BHardpoint.kBListXmlParams);
-			s.StreamElements("SingleBoneIK", SingleBoneIKs, xs, XML.BDatabaseXmlSerializerBase.StreamStringValue, dummy => (string)null);
-			XML.XmlUtil.Serialize(s, GroundIKs, BGroundIKNode.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, SweetSpotIKs, BSweetSpotIKNode.kBListXmlParams);
+			s.StreamAttributeOpt("is", ref this.mUnusedIs, Predicates.IsNotNone);
+			s.StreamAttributeOpt("id", ref this.mUnusedId, Predicates.IsNotNone);
+			s.StreamAttributeOpt("update", ref this.mUpdate, Predicates.IsTrue);
+			s.StreamElementEnumOpt("MovementType", ref this.mMovementType, e => e != BProtoObjectMovementType.None);
+			XML.XmlUtil.Serialize(s, this.Hardpoints, BHardpoint.kBListXmlParams);
+			s.StreamElements("SingleBoneIK", this.SingleBoneIKs, xs, XML.BXmlSerializerInterface.StreamStringValue, dummy => (string)null);
+			XML.XmlUtil.Serialize(s, this.GroundIKs, BGroundIKNode.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.SweetSpotIKs, BSweetSpotIKNode.kBListXmlParams);
 			#region ObstructionRadius
-			s.StreamElementOpt("ObstructionRadiusX", ref mObstructionRadius.X, Predicates.IsNotZero);
-			s.StreamElementOpt("ObstructionRadiusY", ref mObstructionRadius.Y, Predicates.IsNotZero);
-			s.StreamElementOpt("ObstructionRadiusZ", ref mObstructionRadius.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("ObstructionRadiusX", ref this.mObstructionRadius.X, Predicates.IsNotZero);
+			s.StreamElementOpt("ObstructionRadiusY", ref this.mObstructionRadius.Y, Predicates.IsNotZero);
+			s.StreamElementOpt("ObstructionRadiusZ", ref this.mObstructionRadius.Z, Predicates.IsNotZero);
 			#endregion
 			#region TerrainFlatten
-			s.StreamElementOpt("FlattenMinX0", ref mTerrainFlattennMin0.X, Predicates.IsNotZero);
-			s.StreamElementOpt("FlattenMaxX0", ref mTerrainFlattennMax0.X, Predicates.IsNotZero);
-			s.StreamElementOpt("FlattenMinZ0", ref mTerrainFlattennMin0.Z, Predicates.IsNotZero);
-			s.StreamElementOpt("FlattenMaxZ0", ref mTerrainFlattennMax0.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMinX0", ref this.mTerrainFlattennMin0.X, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMaxX0", ref this.mTerrainFlattennMax0.X, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMinZ0", ref this.mTerrainFlattennMin0.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMaxZ0", ref this.mTerrainFlattennMax0.Z, Predicates.IsNotZero);
 
-			s.StreamElementOpt("FlattenMinX1", ref mTerrainFlattennMin1.X, Predicates.IsNotZero);
-			s.StreamElementOpt("FlattenMaxX1", ref mTerrainFlattennMax1.X, Predicates.IsNotZero);
-			s.StreamElementOpt("FlattenMinZ1", ref mTerrainFlattennMin1.Z, Predicates.IsNotZero);
-			s.StreamElementOpt("FlattenMaxZ1", ref mTerrainFlattennMax1.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMinX1", ref this.mTerrainFlattennMin1.X, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMaxX1", ref this.mTerrainFlattennMax1.X, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMinZ1", ref this.mTerrainFlattennMin1.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("FlattenMaxZ1", ref this.mTerrainFlattennMax1.Z, Predicates.IsNotZero);
 			#endregion
 			#region Parking lot
-			s.StreamElementOpt("ParkingMinX", ref mParkingLotMin.X, Predicates.IsNotZero);
-			s.StreamElementOpt("ParkingMaxX", ref mParkingLotMax.X, Predicates.IsNotZero);
-			s.StreamElementOpt("ParkingMinZ", ref mParkingLotMin.Z, Predicates.IsNotZero);
-			s.StreamElementOpt("ParkingMaxZ", ref mParkingLotMax.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("ParkingMinX", ref this.mParkingLotMin.X, Predicates.IsNotZero);
+			s.StreamElementOpt("ParkingMaxX", ref this.mParkingLotMax.X, Predicates.IsNotZero);
+			s.StreamElementOpt("ParkingMinZ", ref this.mParkingLotMin.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("ParkingMaxZ", ref this.mParkingLotMax.Z, Predicates.IsNotZero);
 			#endregion
-			s.StreamElementOpt("TerrainHeightTolerance", ref mTerrainHeightTolerance, f => f != cDefaultTerrainHeightTolerance);
+			s.StreamElementOpt("TerrainHeightTolerance", ref this.mTerrainHeightTolerance, f => f != cDefaultTerrainHeightTolerance);
 			#region Physics
-			s.StreamElementOpt("PhysicsInfo", ref mPhysicsInfo, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("PhysicsReplacementInfo", ref mPhysicsReplacementInfo, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("Velocity", ref mVelocity, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxVelocity", ref mMaxVelocity, Predicates.IsNotZero);
-			s.StreamElementOpt(kXmlElementReverseSpeed, ref mReverseSpeed, f => f != cDefaultReverseSpeed);
-			s.StreamElementOpt("Acceleration", ref mAcceleration, Predicates.IsNotZero);
-			s.StreamElementOpt("TrackingDelay", ref mTrackingDelay, Predicates.IsNotZero);
-			s.StreamElementOpt("StartingVelocity", ref mStartingVelocity, Predicates.IsNotZero);
+			s.StreamElementOpt("PhysicsInfo", ref this.mPhysicsInfo, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("PhysicsReplacementInfo", ref this.mPhysicsReplacementInfo, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("Velocity", ref this.mVelocity, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxVelocity", ref this.mMaxVelocity, Predicates.IsNotZero);
+			s.StreamElementOpt(kXmlElementReverseSpeed, ref this.mReverseSpeed, f => f != cDefaultReverseSpeed);
+			s.StreamElementOpt("Acceleration", ref this.mAcceleration, Predicates.IsNotZero);
+			s.StreamElementOpt("TrackingDelay", ref this.mTrackingDelay, Predicates.IsNotZero);
+			s.StreamElementOpt("StartingVelocity", ref this.mStartingVelocity, Predicates.IsNotZero);
 			#endregion
-			s.StreamElementOpt("Fuel", ref mFuel, Predicates.IsNotZero);
+			s.StreamElementOpt("Fuel", ref this.mFuel, Predicates.IsNotZero);
 			#region Perturbance
-			s.StreamElementOpt("PerturbanceChance", ref mPerturbanceChance, Predicates.IsNotZero);
-			s.StreamElementOpt("PerturbanceVelocity", ref mPerturbanceVelocity, Predicates.IsNotZero);
-			s.StreamElementOpt("PerturbanceMinTime", ref mPerturbanceMinTime, Predicates.IsNotZero);
-			s.StreamElementOpt("PerturbanceMaxTime", ref mPerturbanceMaxTime, Predicates.IsNotZero);
+			s.StreamElementOpt("PerturbanceChance", ref this.mPerturbanceChance, Predicates.IsNotZero);
+			s.StreamElementOpt("PerturbanceVelocity", ref this.mPerturbanceVelocity, Predicates.IsNotZero);
+			s.StreamElementOpt("PerturbanceMinTime", ref this.mPerturbanceMinTime, Predicates.IsNotZero);
+			s.StreamElementOpt("PerturbanceMaxTime", ref this.mPerturbanceMaxTime, Predicates.IsNotZero);
 			using (var bm = s.EnterCursorBookmarkOpt("PerturbInitialVelocity", this, v => v.HasInitialPerturbanceData)) if (bm.IsNotNull)
 			{
-				s.StreamCursor(ref mPerturbInitialVelocity);
-				s.StreamAttributeOpt("minTime", ref mInitialPerturbanceMinTime, Predicates.IsNotZero);
-				s.StreamAttributeOpt("maxTime", ref mInitialPerturbanceMaxTime, Predicates.IsNotZero);
+				s.StreamCursor(ref this.mPerturbInitialVelocity);
+				s.StreamAttributeOpt("minTime", ref this.mInitialPerturbanceMinTime, Predicates.IsNotZero);
+				s.StreamAttributeOpt("maxTime", ref this.mInitialPerturbanceMaxTime, Predicates.IsNotZero);
 			}
 			#endregion
 			#region ActiveScan
 			using (var bm = s.EnterCursorBookmarkOpt("ActiveScanChance", this, v => v.HasActiveScanData)) if (bm.IsNotNull)
 			{
-				s.StreamCursor(ref mActiveScanChance);
-				s.StreamAttributeOpt("radiusScale", ref mActiveScanRadiusScale, Predicates.IsNotZero);
+				s.StreamCursor(ref this.mActiveScanChance);
+				s.StreamAttributeOpt("radiusScale", ref this.mActiveScanRadiusScale, Predicates.IsNotZero);
 			}
 			#endregion
-			s.StreamElementOpt("TurnRate", ref mTurnRate, Predicates.IsNotZero);
-			s.StreamElementOpt("Hitpoints", ref mHitpoints, Predicates.IsNotZero);
+			s.StreamElementOpt("TurnRate", ref this.mTurnRate, Predicates.IsNotZero);
+			s.StreamElementOpt("Hitpoints", ref this.mHitpoints, Predicates.IsNotZero);
 			#region Shieldpoints
 			{
-				bool streamedShieldpoints = s.StreamElementOpt("Shieldpoints", ref mShieldpoints, Predicates.IsNotZero);
+				bool streamedShieldpoints = s.StreamElementOpt("Shieldpoints", ref this.mShieldpoints, Predicates.IsNotZero);
 				// #HACK fucking deal with original HW game data that was hand edited, but only when reading
 				if (s.IsReading && !streamedShieldpoints)
-					s.StreamElementOpt("ShieldPoints", ref mShieldpoints, Predicates.IsNotZero);
+					s.StreamElementOpt("ShieldPoints", ref this.mShieldpoints, Predicates.IsNotZero);
 			}
 			#endregion
-			s.StreamElementOpt("LOS", ref mLOS, Predicates.IsNotZero);
+			s.StreamElementOpt("LOS", ref this.mLOS, Predicates.IsNotZero);
 			#region Pick and Select
-			s.StreamElementOpt("PickRadius", ref mPickRadius, Predicates.IsNotZero);
-			s.StreamElementOpt("PickOffset", ref mPickOffset, Predicates.IsNotZero);
-			s.StreamElementEnumOpt("PickPriority", ref mPickPriority, e => e != BPickPriority.None);
-			s.StreamElementEnumOpt("SelectType", ref mSelectType, e => e != BProtoObjectSelectType.None);
-			s.StreamElementEnumOpt("GotoType", ref mGotoType, e => e != BGotoType.None);
-			s.StreamElementOpt("SelectedRadiusX", ref mSelectedRadius.X, Predicates.IsNotZero);
-			s.StreamElementOpt("SelectedRadiusZ", ref mSelectedRadius.Z, Predicates.IsNotZero);
+			s.StreamElementOpt("PickRadius", ref this.mPickRadius, Predicates.IsNotZero);
+			s.StreamElementOpt("PickOffset", ref this.mPickOffset, Predicates.IsNotZero);
+			s.StreamElementEnumOpt("PickPriority", ref this.mPickPriority, e => e != BPickPriority.None);
+			s.StreamElementEnumOpt("SelectType", ref this.mSelectType, e => e != BProtoObjectSelectType.None);
+			s.StreamElementEnumOpt("GotoType", ref this.mGotoType, e => e != BGotoType.None);
+			s.StreamElementOpt("SelectedRadiusX", ref this.mSelectedRadius.X, Predicates.IsNotZero);
+			s.StreamElementOpt("SelectedRadiusZ", ref this.mSelectedRadius.Z, Predicates.IsNotZero);
 			#endregion
-			s.StreamElementOpt("RepairPoints", ref mRepairPoints, Predicates.IsNotZero);
-			s.StreamElementEnumOpt("ObjectClass", ref mClassType, x => x != BProtoObjectClassType.Object);
+			s.StreamElementOpt("RepairPoints", ref this.mRepairPoints, Predicates.IsNotZero);
+			s.StreamElementEnumOpt("ObjectClass", ref this.mClassType, x => x != BProtoObjectClassType.Object);
 			#region TrainerType
 			using (var bm = s.EnterCursorBookmarkOpt("TrainerType", this, v => v.HasTrainerTypeData)) if (bm.IsNotNull)
 			{
-				s.StreamCursor(ref mTrainerType);
-				s.StreamAttributeOpt("ApplyFormation", ref mTrainerApplyFormation, Predicates.IsTrue);
+				s.StreamCursor(ref this.mTrainerType);
+				s.StreamAttributeOpt("ApplyFormation", ref this.mTrainerApplyFormation, Predicates.IsTrue);
 			}
 			#endregion
-			s.StreamElementEnumOpt("AutoLockDown", ref mAutoLockDown, e => e != BAutoLockDown.None);
-			s.StreamElementOpt("CostEscalation", ref mCostEscalation, PhxPredicates.IsNotOne);
-			s.StreamElements("CostEscalationObject", CostEscalationObjects, xs, XML.BDatabaseXmlSerializerBase.StreamObjectID);
-			XML.XmlUtil.Serialize(s, CaptureCosts, BProtoObjectCaptureCost.kBListXmlParams);
-			s.StreamElementOpt("Bounty", ref mBounty, Predicates.IsNotZero);
-			s.StreamElementOpt("AIAssetValueAdjust", ref mAIAssetValueAdjust, Predicates.IsNotZero);
-			s.StreamElementOpt("CombatValue", ref mCombatValue, Predicates.IsNotZero);
-			s.StreamElementOpt("ResourceAmount", ref mResourceAmount, Predicates.IsNotZero);
-			s.StreamElementOpt("PlacementRules", ref mPlacementRules, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("DeathFadeTime", ref mDeathFadeTime, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("DeathFadeDelayTime", ref mDeathFadeDelayTime, Predicates.IsNotZero);
-			s.StreamElementOpt("TrainAnim", ref mTrainAnim, Predicates.IsNotNullOrEmpty);
-			XML.XmlUtil.Serialize(s, SquadModeAnims, BProtoObjectSquadModeAnim.kBListXmlParams);
-			s.StreamElementEnumOpt("RallyPoint", ref mRallyPoint, x => x != BRallyPointType.Invalid);
-			s.StreamElementOpt("MaxProjectileHeight", ref mMaxProjectileHeight, Predicates.IsNotZero);
+			s.StreamElementEnumOpt("AutoLockDown", ref this.mAutoLockDown, e => e != BAutoLockDown.None);
+			s.StreamElementOpt("CostEscalation", ref this.mCostEscalation, PhxPredicates.IsNotOne);
+			s.StreamElements("CostEscalationObject", this.CostEscalationObjects, xs, XML.BXmlSerializerInterface.StreamObjectID);
+			XML.XmlUtil.Serialize(s, this.CaptureCosts, BProtoObjectCaptureCost.kBListXmlParams);
+			s.StreamElementOpt("Bounty", ref this.mBounty, Predicates.IsNotZero);
+			s.StreamElementOpt("AIAssetValueAdjust", ref this.mAIAssetValueAdjust, Predicates.IsNotZero);
+			s.StreamElementOpt("CombatValue", ref this.mCombatValue, Predicates.IsNotZero);
+			s.StreamElementOpt("ResourceAmount", ref this.mResourceAmount, Predicates.IsNotZero);
+			s.StreamElementOpt("PlacementRules", ref this.mPlacementRules, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("DeathFadeTime", ref this.mDeathFadeTime, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("DeathFadeDelayTime", ref this.mDeathFadeDelayTime, Predicates.IsNotZero);
+			s.StreamElementOpt("TrainAnim", ref this.mTrainAnim, Predicates.IsNotNullOrEmpty);
+			XML.XmlUtil.Serialize(s, this.SquadModeAnims, BProtoObjectSquadModeAnim.kBListXmlParams);
+			s.StreamElementEnumOpt("RallyPoint", ref this.mRallyPoint, x => x != BRallyPointType.Invalid);
+			s.StreamElementOpt("MaxProjectileHeight", ref this.mMaxProjectileHeight, Predicates.IsNotZero);
 			#region GroundIKTilt
 			using (var bm = s.EnterCursorBookmarkOpt("GroundIKTilt", this, v => v.HasGroundIKTiltData)) if (bm.IsNotNull)
 			{
-				s.StreamCursor(ref mGroundIKTiltBoneName);
-				s.StreamAttributeOpt("factor", ref mGroundIKTiltFactor, Predicates.IsNotZero);
+				s.StreamCursor(ref this.mGroundIKTiltBoneName);
+				s.StreamAttributeOpt("factor", ref this.mGroundIKTiltFactor, Predicates.IsNotZero);
 			}
 			#endregion
-			xs.StreamDBID(s, "DeathReplacement", ref mDeathReplacementID, DatabaseObjectKind.Object);
+			xs.StreamDBID(s, "DeathReplacement", ref this.mDeathReplacementID, DatabaseObjectKind.Object);
 			#region DeathSpawnSquad
 			using (var bm = s.EnterCursorBookmarkOpt("DeathSpawnSquad", this, v => v.HasDeathSpawnSquadData)) if (bm.IsNotNull)
 			{
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mDeathSpawnSquadID, DatabaseObjectKind.Squad, xmlSource: XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mDeathSpawnSquadID, DatabaseObjectKind.Squad, xmlSource: XML.XmlUtil.kSourceCursor);
 
 				// #NOTE engine streams this as CheckPos, but it is also case insensitive
 				const string kCheckPosName = "checkPos";
 				// #NOTE the engine interprets the presence of this attribute as true
 				if (s.IsReading)
 				{
-					mDeathSpawnSquadCheckPosition = s.AttributeExists(kCheckPosName);
+					this.mDeathSpawnSquadCheckPosition = s.AttributeExists(kCheckPosName);
 				}
 				else if (s.IsWriting)
 				{
-					if (mDeathSpawnSquadCheckPosition)
+					if (this.mDeathSpawnSquadCheckPosition)
 						s.WriteAttribute(kCheckPosName, true);
 				}
 
-				s.StreamAttributeOpt("MaxPopCount", ref mDeathSpawnSquadMaxPopCount, Predicates.IsNotZero);
+				s.StreamAttributeOpt("MaxPopCount", ref this.mDeathSpawnSquadMaxPopCount, Predicates.IsNotZero);
 			}
 			#endregion
-			xs.StreamDBID(s, "SurfaceType", ref mSurfaceType, DatabaseObjectKind.TerrainTileType);
-			s.StreamElementOpt("Visual", ref mVisual, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("CorpseDeath", ref mCorpseDeath, Predicates.IsNotNullOrEmpty);
-			xs.StreamDBID(s, "AbilityCommand", ref mAbilityCommandID, DatabaseObjectKind.Ability);
-			xs.StreamDBID(s, "Power", ref mPowerID, DatabaseObjectKind.Power);
-			s.StreamElements("Ability", AbilityTriggerScripts, xs, XML.BDatabaseXmlSerializerBase.StreamStringValue, dummy => (string)null);
-			XML.XmlUtil.Serialize(s, Veterancy, BProtoObjectVeterancy.kBListExplicitIndexXmlParams);
-			XML.XmlUtil.Serialize(s, AddResource, BResource.kBListTypeValuesXmlParams_AddResource, "Amount");
+			xs.StreamDBID(s, "SurfaceType", ref this.mSurfaceType, DatabaseObjectKind.TerrainTileType);
+			s.StreamElementOpt("Visual", ref this.mVisual, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("CorpseDeath", ref this.mCorpseDeath, Predicates.IsNotNullOrEmpty);
+			xs.StreamDBID(s, "AbilityCommand", ref this.mAbilityCommandID, DatabaseObjectKind.Ability);
+			xs.StreamDBID(s, "Power", ref this.mPowerID, DatabaseObjectKind.Power);
+			s.StreamElements("Ability", this.AbilityTriggerScripts, xs, XML.BXmlSerializerInterface.StreamStringValue, dummy => (string)null);
+			XML.XmlUtil.Serialize(s, this.Veterancy, BProtoObjectVeterancy.kBListExplicitIndexXmlParams);
+			XML.XmlUtil.Serialize(s, this.AddResource, BResource.kBListTypeValuesXmlParams_AddResource, "Amount");
 			#region ExistSound
-			using (var bm = s.EnterCursorBookmarkOpt("ExistSound", mExistSoundBoneName, Predicates.IsNotNullOrEmpty)) if (bm.IsNotNull)
+			using (var bm = s.EnterCursorBookmarkOpt("ExistSound", this.mExistSoundBoneName, Predicates.IsNotNullOrEmpty)) if (bm.IsNotNull)
 			{
-				s.StreamAttribute("bone", ref mExistSoundBoneName);
+				s.StreamAttribute("bone", ref this.mExistSoundBoneName);
 			}
 			#endregion
-			s.StreamElementOpt("GathererLimit", ref mGathererLimit, Predicates.IsNotNone);
-			xs.StreamDBID(s, "BlockMovementObject", ref mBlockMovementObjectID, DatabaseObjectKind.Object);
-			s.StreamElementOpt("Lifespan", ref mLifespan, Predicates.IsNotZero);
-			s.StreamElementOpt("AmmoMax", ref mAmmoMax, Predicates.IsNotZero);
-			s.StreamElementOpt("AmmoRegenRate", ref mAmmoRegenRate, Predicates.IsNotZero);
-			s.StreamElementOpt("NumConversions", ref mNumConversions, Predicates.IsNotZero);
-			s.StreamElementOpt("NumStasisFieldsToStop", ref mNumStasisFieldsToStop, PhxPredicates.IsNotOne);
-			XML.XmlUtil.Serialize(s, Flags, XML.BBitSetXmlParams.kFlagsSansRoot);
-			XML.XmlUtil.Serialize(s, ObjectTypes, kObjectTypesXmlParams);
-			XML.XmlUtil.Serialize(s, DamageTypes, BProtoObjectDamageType.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, Sounds, BProtoObjectSound.kBListXmlParams);
+			s.StreamElementOpt("GathererLimit", ref this.mGathererLimit, Predicates.IsNotNone);
+			xs.StreamDBID(s, "BlockMovementObject", ref this.mBlockMovementObjectID, DatabaseObjectKind.Object);
+			s.StreamElementOpt("Lifespan", ref this.mLifespan, Predicates.IsNotZero);
+			s.StreamElementOpt("AmmoMax", ref this.mAmmoMax, Predicates.IsNotZero);
+			s.StreamElementOpt("AmmoRegenRate", ref this.mAmmoRegenRate, Predicates.IsNotZero);
+			s.StreamElementOpt("NumConversions", ref this.mNumConversions, Predicates.IsNotZero);
+			s.StreamElementOpt("NumStasisFieldsToStop", ref this.mNumStasisFieldsToStop, PhxPredicates.IsNotOne);
+			XML.XmlUtil.Serialize(s, this.Flags, XML.BBitSetXmlParams.kFlagsSansRoot);
+			XML.XmlUtil.Serialize(s, this.ObjectTypes, kObjectTypesXmlParams);
+			XML.XmlUtil.Serialize(s, this.DamageTypes, BProtoObjectDamageType.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Sounds, BProtoObjectSound.kBListXmlParams);
 			#region ImpactDecal
-			using (var bm = s.EnterCursorBookmarkOpt(BTerrainImpactDecalHandle.kBListXmlParams.ElementName, ImpactDecal, Predicates.IsNotNull)) if (bm.IsNotNull)
+			using (var bm = s.EnterCursorBookmarkOpt(BTerrainImpactDecalHandle.kBListXmlParams.ElementName, this.ImpactDecal, Predicates.IsNotNull)) if (bm.IsNotNull)
 			{
 				if (s.IsReading)
-					ImpactDecal = new BTerrainImpactDecalHandle();
+					this.ImpactDecal = new BTerrainImpactDecalHandle();
 
-				ImpactDecal.Serialize(s);
+				this.ImpactDecal.Serialize(s);
 			}
 			#endregion
-			s.StreamElementOpt("ExtendedSoundBank", ref mExtendedSoundBank, Predicates.IsNotNullOrEmpty);
-			s.StreamElementOpt("PortraitIcon", ref mPortraitIcon, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("ExtendedSoundBank", ref this.mExtendedSoundBank, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("PortraitIcon", ref this.mPortraitIcon, Predicates.IsNotNullOrEmpty);
 			#region Minimap
 			using (var bm = s.EnterCursorBookmarkOpt("MinimapIcon", this, v => v.HasMiniMapIconData)) if (bm.IsNotNull)
 			{
-				s.StreamCursor(ref mMinimapIcon);
-				s.StreamAttributeOpt("size", ref mMiniMapIconSize, PhxPredicates.IsNotOne);
+				s.StreamCursor(ref this.mMinimapIcon);
+				s.StreamAttributeOpt("size", ref this.mMiniMapIconSize, PhxPredicates.IsNotOne);
 			}
 			using (var bm = s.EnterCursorBookmarkOpt("MinimapColor", this, v => v.HasMinimapColorData)) if (bm.IsNotNull)
 			{
@@ -1364,102 +1379,102 @@ namespace KSoft.Phoenix.Phx
 				// because when loading the game defaults the temp rgb values to 0 and then sets
 				// the final game data to those values (so excluding red would mean it is zero).
 				// #NOTE the engine parses these names in lowercase, but actual data uses uppercase
-				s.StreamAttributeOpt("Red", ref mMinimapColor.X, Predicates.IsNotZero);
-				s.StreamAttributeOpt("Green", ref mMinimapColor.Y, Predicates.IsNotZero);
-				s.StreamAttributeOpt("Blue", ref mMinimapColor.Z, Predicates.IsNotZero);
+				s.StreamAttributeOpt("Red", ref this.mMinimapColor.X, Predicates.IsNotZero);
+				s.StreamAttributeOpt("Green", ref this.mMinimapColor.Y, Predicates.IsNotZero);
+				s.StreamAttributeOpt("Blue", ref this.mMinimapColor.Z, Predicates.IsNotZero);
 			}
 			#endregion
-			XML.XmlUtil.Serialize(s, Commands, BProtoObjectCommand.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, TrainLimits, BProtoObjectTrainLimit.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Commands, BProtoObjectCommand.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.TrainLimits, BProtoObjectTrainLimit.kBListXmlParams);
 			#region GatherLink
 			using (var bm = s.EnterCursorBookmarkOpt("GatherLink", this, v => v.HasGatherLinkData)) if (bm.IsNotNull)
 			{
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mGatherLinkObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
-				s.StreamAttributeOpt("Radius", ref mGatherLinkRadius, Predicates.IsNotZero);
-				xs.StreamDBID(s, "Target", ref mGatherLinkObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
-				s.StreamAttributeOpt("Self", ref mGatherLinkSelf, Predicates.IsTrue);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mGatherLinkObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+				s.StreamAttributeOpt("Radius", ref this.mGatherLinkRadius, Predicates.IsNotZero);
+				xs.StreamDBID(s, "Target", ref this.mGatherLinkObjectType, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
+				s.StreamAttributeOpt("Self", ref this.mGatherLinkSelf, Predicates.IsTrue);
 			}
 			#endregion
-			XML.XmlUtil.Serialize(s, ChildObjects, BProtoObjectChildObject.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, Populations, BPopulation.kBListXmlParamsSingle);
-			XML.XmlUtil.Serialize(s, PopulationsCapAddition, BPopulation.kBListXmlParamsSingle_CapAddition);
-			xs.StreamTactic(s, "Tactics", ref mTactics);
-			s.StreamElementOpt("FlightLevel", ref mFlightLevel, f => f != cDefaultFlightLevel);
-			s.StreamElementOpt("ExitFromDirection", ref mExitFromDirection, Predicates.IsNotZero);
+			XML.XmlUtil.Serialize(s, this.ChildObjects, BProtoObjectChildObject.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Populations, BPopulation.kBListXmlParamsSingle);
+			XML.XmlUtil.Serialize(s, this.PopulationsCapAddition, BPopulation.kBListXmlParamsSingle_CapAddition);
+			xs.StreamTactic(s, "Tactics", ref this.mTactics);
+			s.StreamElementOpt("FlightLevel", ref this.mFlightLevel, f => f != cDefaultFlightLevel);
+			s.StreamElementOpt("ExitFromDirection", ref this.mExitFromDirection, Predicates.IsNotZero);
 			#region HPBar
 			using (var bm = s.EnterCursorBookmarkOpt("HPBar", this, v => v.HasHPBarData)) if (bm.IsNotNull)
 			{
-				s.StreamCursor(ref mHPBarID);
-				s.StreamAttributeOpt("sizeX", ref mHPBarSize.X, Predicates.IsNotZero);
-				s.StreamAttributeOpt("sizeY", ref mHPBarSize.Y, Predicates.IsNotZero);
-				s.StreamBVector("offset", ref mHPBarOffset, xmlSource: XML.XmlUtil.kSourceAttr);
+				s.StreamCursor(ref this.mHPBarID);
+				s.StreamAttributeOpt("sizeX", ref this.mHPBarSize.X, Predicates.IsNotZero);
+				s.StreamAttributeOpt("sizeY", ref this.mHPBarSize.Y, Predicates.IsNotZero);
+				s.StreamBVector("offset", ref this.mHPBarOffset, xmlSource: XML.XmlUtil.kSourceAttr);
 			}
 			#endregion
-			XML.XmlUtil.Serialize(s, HitZones, BHitZone.kBListXmlParams);
-			xs.StreamDBID(s, "BeamHead", ref mBeamHead, DatabaseObjectKind.Unit);
-			xs.StreamDBID(s, "BeamTail", ref mBeamTail, DatabaseObjectKind.Unit);
-			s.StreamElementOpt("Level", ref mLevel, Predicates.IsNotZero);
-			xs.StreamDBID(s, "LevelUpEffect", ref mLevelUpEffect, DatabaseObjectKind.Object);
-			xs.StreamDBID(s, "RecoveringEffect", ref mRecoveringEffect, DatabaseObjectKind.Object);
-			xs.StreamDBID(s, "AutoTrainOnBuilt", ref mAutoTrainOnBuilt, DatabaseObjectKind.Squad);
+			XML.XmlUtil.Serialize(s, this.HitZones, BHitZone.kBListXmlParams);
+			xs.StreamDBID(s, "BeamHead", ref this.mBeamHead, DatabaseObjectKind.Unit);
+			xs.StreamDBID(s, "BeamTail", ref this.mBeamTail, DatabaseObjectKind.Unit);
+			s.StreamElementOpt("Level", ref this.mLevel, Predicates.IsNotZero);
+			xs.StreamDBID(s, "LevelUpEffect", ref this.mLevelUpEffect, DatabaseObjectKind.Object);
+			xs.StreamDBID(s, "RecoveringEffect", ref this.mRecoveringEffect, DatabaseObjectKind.Object);
+			xs.StreamDBID(s, "AutoTrainOnBuilt", ref this.mAutoTrainOnBuilt, DatabaseObjectKind.Squad);
 			#region Socket
 			using (var bm = s.EnterCursorBookmarkOpt("Socket", this, v => v.HasSocketData)) if (bm.IsNotNull)
 			{
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mSocketID, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mSocketID, DatabaseObjectKind.ObjectType, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
 				// #NOTE engine reads this Player in lower case, but actual uses pascal case
-				s.StreamAttributeEnumOpt("Player", ref mSocketPlayerScope, e => e != BPlayerScope.Player);
-				s.StreamAttributeOpt("AutoSocket", ref mAutoSocket, Predicates.IsTrue);
+				s.StreamAttributeEnumOpt("Player", ref this.mSocketPlayerScope, e => e != BPlayerScope.Player);
+				s.StreamAttributeOpt("AutoSocket", ref this.mAutoSocket, Predicates.IsTrue);
 			}
 			#endregion
 			#region Rate
 			using (var bm = s.EnterCursorBookmarkOpt(BGameData.kRatesBListTypeValuesXmlParams.ElementName, this, v => v.HasRateData)) if (bm.IsNotNull)
 			{
 				// #NOTE engine reads Rate as lower case, but actual data is in pascal case
-				xs.StreamTypeName(s, BGameData.kRatesBListTypeValuesXmlParams.DataName, ref mRateID, GameDataObjectKind.Rate, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
-				s.StreamCursor(ref mRateAmount);
+				xs.StreamTypeName(s, BGameData.kRatesBListTypeValuesXmlParams.DataName, ref this.mRateID, GameDataObjectKind.Rate, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr);
+				s.StreamCursor(ref this.mRateAmount);
 			}
 			#endregion
-			s.StreamElementOpt("MaxContained", ref mMaxContained, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxFlameEffects", ref mMaxFlameEffects, Predicates.IsNotNone);
-			s.StreamElements("Contain", Contains, xs, XML.BDatabaseXmlSerializerBase.StreamObjectType);
-			s.StreamElementEnumOpt("GarrisonSquadMode", ref mGarrisonSquadMode, e => e != BSquadMode.Invalid);
-			xs.StreamDBID(s, "BuildStatsObject", ref mBuildStatsObjectID, DatabaseObjectKind.Object);
-			s.StreamElementOpt("SubSelectSort", ref mSubSelectSort, v => v != int.MaxValue);
-			s.StreamElementOpt(kXmlElementAttackGradeDPS, ref mAttackGradeDPS, Predicates.IsNotZero);
-			s.StreamElementOpt("RamDodgeFactor", ref mRamDodgeFactor, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxContained", ref this.mMaxContained, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxFlameEffects", ref this.mMaxFlameEffects, Predicates.IsNotNone);
+			s.StreamElements("Contain", this.Contains, xs, XML.BXmlSerializerInterface.StreamObjectType);
+			s.StreamElementEnumOpt("GarrisonSquadMode", ref this.mGarrisonSquadMode, e => e != BSquadMode.Invalid);
+			xs.StreamDBID(s, "BuildStatsObject", ref this.mBuildStatsObjectID, DatabaseObjectKind.Object);
+			s.StreamElementOpt("SubSelectSort", ref this.mSubSelectSort, v => v != int.MaxValue);
+			s.StreamElementOpt(kXmlElementAttackGradeDPS, ref this.mAttackGradeDPS, Predicates.IsNotZero);
+			s.StreamElementOpt("RamDodgeFactor", ref this.mRamDodgeFactor, Predicates.IsNotZero);
 			#region HoveringRumble
-			using (var bm = s.EnterCursorBookmarkOpt("HoveringRumble", HoveringRumble, Predicates.IsNotNull)) if (bm.IsNotNull)
+			using (var bm = s.EnterCursorBookmarkOpt("HoveringRumble", this.HoveringRumble, Predicates.IsNotNull)) if (bm.IsNotNull)
 			{
 				if (s.IsReading)
-					HoveringRumble = new BRumbleEvent();
+					this.HoveringRumble = new BRumbleEvent();
 
-				HoveringRumble.Serialize(s);
+				this.HoveringRumble.Serialize(s);
 			}
 			#endregion
-			s.StreamElementEnumOpt("VisualDisplayPriority", ref mVisualDisplayPriority, e => e != BVisualDisplayPriority.Normal);
-			s.StreamElementOpt("ChildObjectDamageTakenScalar", ref mChildObjectDamageTakenScalar, Predicates.IsNotZero);
-			s.StreamElementOpt("TrueLOSHeight", ref mTrueLOSHeight, f => f != cDefaultTrueLOSHeight);
-			s.StreamElementOpt("GarrisonTime", ref mGarrisonTime, Predicates.IsNotZero);
-			s.StreamElementOpt("BuildRotation", ref mBuildRotation, Predicates.IsNotZero);
-			s.StreamBVector("BuildOffset", ref mBuildOffset);
+			s.StreamElementEnumOpt("VisualDisplayPriority", ref this.mVisualDisplayPriority, e => e != BVisualDisplayPriority.Normal);
+			s.StreamElementOpt("ChildObjectDamageTakenScalar", ref this.mChildObjectDamageTakenScalar, Predicates.IsNotZero);
+			s.StreamElementOpt("TrueLOSHeight", ref this.mTrueLOSHeight, f => f != cDefaultTrueLOSHeight);
+			s.StreamElementOpt("GarrisonTime", ref this.mGarrisonTime, Predicates.IsNotZero);
+			s.StreamElementOpt("BuildRotation", ref this.mBuildRotation, Predicates.IsNotZero);
+			s.StreamBVector("BuildOffset", ref this.mBuildOffset);
 			#region AutoParkingLot
 			using (var bm = s.EnterCursorBookmarkOpt("AutoParkingLot", this, v => v.HasAutoParkingLotData)) if (bm.IsNotNull)
 			{
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mAutoParkingLotObjectID, DatabaseObjectKind.Object, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
-				s.StreamAttributeOpt("Rotation", ref mAutoParkingLotRotation, Predicates.IsNotZero);
-				s.StreamBVector("Offset", ref mAutoParkingLotOffset, xmlSource: XML.XmlUtil.kSourceAttr);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mAutoParkingLotObjectID, DatabaseObjectKind.Object, isOptional: false, xmlSource: XML.XmlUtil.kSourceCursor);
+				s.StreamAttributeOpt("Rotation", ref this.mAutoParkingLotRotation, Predicates.IsNotZero);
+				s.StreamBVector("Offset", ref this.mAutoParkingLotOffset, xmlSource: XML.XmlUtil.kSourceAttr);
 			}
 			#endregion
-			s.StreamElementOpt("BuildingStrengthDisplay", ref mBuildingStrengthID, Predicates.IsNotNullOrEmpty);
-			xs.StreamDBID(s, "ShieldType", ref mShieldType, DatabaseObjectKind.Unit);
-			s.StreamElementOpt("RevealRadius", ref mRevealRadius, Predicates.IsNotZero);
-			xs.StreamDBID(s, "TargetBeam", ref mTargetBeam, DatabaseObjectKind.Object);
-			xs.StreamDBID(s, "KillBeam", ref mKillBeam, DatabaseObjectKind.Object);
-			s.StreamElementOpt("MinimapIconName", ref mMinimapIconName, Predicates.IsNotNullOrEmpty);
+			s.StreamElementOpt("BuildingStrengthDisplay", ref this.mBuildingStrengthID, Predicates.IsNotNullOrEmpty);
+			xs.StreamDBID(s, "ShieldType", ref this.mShieldType, DatabaseObjectKind.Unit);
+			s.StreamElementOpt("RevealRadius", ref this.mRevealRadius, Predicates.IsNotZero);
+			xs.StreamDBID(s, "TargetBeam", ref this.mTargetBeam, DatabaseObjectKind.Object);
+			xs.StreamDBID(s, "KillBeam", ref this.mKillBeam, DatabaseObjectKind.Object);
+			s.StreamElementOpt("MinimapIconName", ref this.mMinimapIconName, Predicates.IsNotNullOrEmpty);
 
 			if (s.IsReading)
 			{
-				PostDeserialize();
+				this.PostDeserialize();
 			}
 		}
 
@@ -1467,17 +1482,17 @@ namespace KSoft.Phoenix.Phx
 		{
 			if (SortCommandsAfterReading)
 			{
-				SortCommands();
+				this.SortCommands();
 			}
 
-			SquadModeAnims.Sort();
+			this.SquadModeAnims.Sort();
 		}
 		#endregion
 
 		public static bool SortCommandsAfterReading = false;
 		private void SortCommands()
 		{
-			Commands.Sort(CompareCommands);
+			this.Commands.Sort(CompareCommands);
 		}
 
 		private static int CompareCommands(BProtoObjectCommand x, BProtoObjectCommand y)

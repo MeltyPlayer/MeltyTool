@@ -25,16 +25,16 @@ namespace KSoft.Phoenix.Runtime
 		{
 			base.Serialize(s);
 
-			s.Stream(ref DisruptionObjectID);
-			s.Stream(ref DisruptionRadius); s.Stream(ref DisruptionRadiusSqr); s.Stream(ref TimeRemainingSec);
-			s.Stream(ref DisruptionStartTime);
-			s.StreamV(ref Direction); s.StreamV(ref Right);
-			s.Stream(ref BomberProtoID); s.Stream(ref DisruptionObjectProtoID);
-			s.Stream(ref PulseObjectProtoID); s.Stream(ref StrikeObjectProtoID);
-			s.Stream(ref PulseSpacing); s.Stream(ref NextPulseTime);
-			s.Stream(ref NumPulses);
-			s.Stream(BomberData);
-			s.Stream(ref PulseSound);
+			s.Stream(ref this.DisruptionObjectID);
+			s.Stream(ref this.DisruptionRadius); s.Stream(ref this.DisruptionRadiusSqr); s.Stream(ref this.TimeRemainingSec);
+			s.Stream(ref this.DisruptionStartTime);
+			s.StreamV(ref this.Direction); s.StreamV(ref this.Right);
+			s.Stream(ref this.BomberProtoID); s.Stream(ref this.DisruptionObjectProtoID);
+			s.Stream(ref this.PulseObjectProtoID); s.Stream(ref this.StrikeObjectProtoID);
+			s.Stream(ref this.PulseSpacing); s.Stream(ref this.NextPulseTime);
+			s.Stream(ref this.NumPulses);
+			s.Stream(this.BomberData);
+			s.Stream(ref this.PulseSound);
 		}
 		#endregion
 	};

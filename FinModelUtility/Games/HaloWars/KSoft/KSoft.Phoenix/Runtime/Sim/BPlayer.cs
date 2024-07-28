@@ -37,10 +37,10 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref RechargeTime);
-				s.Stream(ref UseLimit);
-				s.Stream(ref Level);
-				s.Stream(ref AvailableTime);
+				s.Stream(ref this.RechargeTime);
+				s.Stream(ref this.UseLimit);
+				s.Stream(ref this.Level);
+				s.Stream(ref this.AvailableTime);
 			}
 			#endregion
 		};
@@ -52,8 +52,8 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref Amount);
-				s.Stream(ref Multiplier);
+				s.Stream(ref this.Amount);
+				s.Stream(ref this.Multiplier);
 			}
 			#endregion
 		};
@@ -66,8 +66,8 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref FutureUnitCount);
-				s.Stream(ref DeadUnitCount);
+				s.Stream(ref this.FutureUnitCount);
+				s.Stream(ref this.DeadUnitCount);
 			}
 			#endregion
 		};
@@ -86,8 +86,8 @@ namespace KSoft.Phoenix.Runtime
 			#region IEndianStreamSerializable Members
 			public void Serialize(IO.EndianStream s)
 			{
-				s.Stream(ref DamageType);
-				s.Stream(ref Modifier);
+				s.Stream(ref this.DamageType);
+				s.Stream(ref this.Modifier);
 			}
 			#endregion
 		};
@@ -183,86 +183,86 @@ namespace KSoft.Phoenix.Runtime
 			#region Init
 			if (s.IsReading)
 			{
-				ProtoObjects = new List<CondensedListItem16<BProtoObject>>(sg.Database.GenericProtoObjects.Count);
-				ProtoSquads = new List<CondensedListItem16<BProtoSquad>>(sg.Database.ProtoSquads.Count);
-				ProtoTechs = new List<CondensedListItem16<BProtoTech>>(sg.Database.ProtoTechs.Count);
+				this.ProtoObjects = new List<CondensedListItem16<BProtoObject>>(sg.Database.GenericProtoObjects.Count);
+				this.ProtoSquads = new List<CondensedListItem16<BProtoSquad>>(sg.Database.ProtoSquads.Count);
+				this.ProtoTechs = new List<CondensedListItem16<BProtoTech>>(sg.Database.ProtoTechs.Count);
 
-				Powers = new PowerInfo[sg.Database.ProtoPowers.Count];
-				Rates = new RateInfo[sg.Database.Rates.Count];
-				Populations = new BPlayerPop[sg.Database.Populations.Count];
+				this.Powers = new PowerInfo[sg.Database.ProtoPowers.Count];
+				this.Rates = new RateInfo[sg.Database.Rates.Count];
+				this.Populations = new BPlayerPop[sg.Database.Populations.Count];
 
-				GenericObjectCounts = new List<CondensedListItemValue16<UnitCountInfo>>(sg.Database.GenericProtoObjects.Count);
-				SquadCounts = new List<CondensedListItemValue16<UnitCountInfo>>(sg.Database.ProtoSquads.Count);
-				WeaponTypes = new List<CondensedListItemValue8<WeaponType>>(sg.Database.WeaponTypes.Count);
+				this.GenericObjectCounts = new List<CondensedListItemValue16<UnitCountInfo>>(sg.Database.GenericProtoObjects.Count);
+				this.SquadCounts = new List<CondensedListItemValue16<UnitCountInfo>>(sg.Database.ProtoSquads.Count);
+				this.WeaponTypes = new List<CondensedListItemValue8<WeaponType>>(sg.Database.WeaponTypes.Count);
 			}
 			#endregion
 
 			#region Player1
-			s.StreamV(ref LookAtPos);
-			s.StreamPascalString32(ref Name);
-			s.StreamV(ref RallyPoint);
-			s.Stream(StatsManager);
-			BSaveGame.StreamList(s, ProtoObjects, kProtoUnitsListInfo);
-			BSaveGame.StreamList(s, ProtoSquads, kProtoUnitsListInfo);
-			BSaveGame.StreamList(s, ProtoTechs, kProtoTechsListInfo);
-			BSaveGame.StreamArray16(s, ref UniqueProtoObjects);
-			Contract.Assert(UniqueProtoObjects.Length <= kProtoUniqueUnitsListInfo.MaxCount);
-			BSaveGame.StreamArray16(s, ref UniqueProtoSquad);
-			Contract.Assert(UniqueProtoSquad.Length <= kProtoUniqueUnitsListInfo.MaxCount);
-			BSaveGame.StreamArray(s, ref PowerEntries);
-			BSaveGame.StreamArray(s, ref Abilities);
-			for (int x = 0; x < Powers.Length; x++)
-				s.Stream(ref Powers[x]);
-			sg.StreamBCost(s, ref Resources);
-			for (int x = 0; x < Rates.Length; x++)
-				s.Stream(ref Rates[x]);
-			sg.StreamBCost(s, ref TotalResources);
-			sg.StreamBCost(s, ref ResourceTrickleRate);
-			for (int x = 0; x < Populations.Length; x++)
-				s.Stream(ref Populations[x]);
+			s.StreamV(ref this.LookAtPos);
+			s.StreamPascalString32(ref this.Name);
+			s.StreamV(ref this.RallyPoint);
+			s.Stream(this.StatsManager);
+			BSaveGame.StreamList(s, this.ProtoObjects, kProtoUnitsListInfo);
+			BSaveGame.StreamList(s, this.ProtoSquads, kProtoUnitsListInfo);
+			BSaveGame.StreamList(s, this.ProtoTechs, kProtoTechsListInfo);
+			BSaveGame.StreamArray16(s, ref this.UniqueProtoObjects);
+			Contract.Assert(this.UniqueProtoObjects.Length <= kProtoUniqueUnitsListInfo.MaxCount);
+			BSaveGame.StreamArray16(s, ref this.UniqueProtoSquad);
+			Contract.Assert(this.UniqueProtoSquad.Length <= kProtoUniqueUnitsListInfo.MaxCount);
+			BSaveGame.StreamArray(s, ref this.PowerEntries);
+			BSaveGame.StreamArray(s, ref this.Abilities);
+			for (int x = 0; x < this.Powers.Length; x++)
+				s.Stream(ref this.Powers[x]);
+			sg.StreamBCost(s, ref this.Resources);
+			for (int x = 0; x < this.Rates.Length; x++)
+				s.Stream(ref this.Rates[x]);
+			sg.StreamBCost(s, ref this.TotalResources);
+			sg.StreamBCost(s, ref this.ResourceTrickleRate);
+			for (int x = 0; x < this.Populations.Length; x++)
+				s.Stream(ref this.Populations[x]);
 			s.StreamSignature(cSaveMarker.Player1);
 			#endregion
 			#region Player2
-			s.StreamNotNull(ref HintEngine);
-			BSaveGame.StreamList(s, GenericObjectCounts, kUnitCountsListInfo);
-			BSaveGame.StreamList(s, SquadCounts, kUnitCountsListInfo);
+			s.StreamNotNull(ref this.HintEngine);
+			BSaveGame.StreamList(s, this.GenericObjectCounts, kUnitCountsListInfo);
+			BSaveGame.StreamList(s, this.SquadCounts, kUnitCountsListInfo);
 			s.StreamSignature(cSaveMarker.Player2);
 			#endregion
 			#region Player3
-			s.Stream(ref TotalFutureUnitCounts); s.Stream(ref TotalDeadUnitCounts);
-			s.Stream(ref TotalFutureSquadCounts); s.Stream(ref TotalDeadSquadCounts);
-			BSaveGame.StreamArray(s, ref GotoBases);
-			BSaveGame.StreamList(s, WeaponTypes, kWeaponTypesListInfo);
-			BSaveGame.StreamArray16(s, ref AbilityRecoverTimes);
-			s.Stream(TechTree);
+			s.Stream(ref this.TotalFutureUnitCounts); s.Stream(ref this.TotalDeadUnitCounts);
+			s.Stream(ref this.TotalFutureSquadCounts); s.Stream(ref this.TotalDeadSquadCounts);
+			BSaveGame.StreamArray(s, ref this.GotoBases);
+			BSaveGame.StreamList(s, this.WeaponTypes, kWeaponTypesListInfo);
+			BSaveGame.StreamArray16(s, ref this.AbilityRecoverTimes);
+			s.Stream(this.TechTree);
 			s.StreamSignature(cSaveMarker.Player3);
 			#endregion
 			#region Player4
-			s.Stream(ref MPID); s.Stream(ref ColorIndex);
-			s.Stream(ref ID); s.Stream(ref CoopID); s.Stream(ref ScenarioID);
-			s.Stream(ref CivID);
-			s.Stream(ref TeamID);
-			s.Stream(ref PlayerState);
-			s.Stream(ref LeaderID); s.Stream(ref BountyResource);
-			s.Stream(ref RallyObject);
-			s.Stream(ref Strength);
-			s.Stream(ref TributeCost);
-			sg.StreamBCost(s, ref RepairCost);
-			s.Stream(ref RepairTime); s.Stream(ref HandicapMultiplier); s.Stream(ref ShieldRegenRate);
-			s.Stream(ref ShieldRegenDelay);
-			s.Stream(ref TotalCombatValue);
-			s.Stream(ref Difficulty);
-			s.Stream(ref GamePlayedTime);
-			s.Stream(ref FloodPoofPlayer);
-			s.Stream(ref PlayerType); s.Stream(ref SquadSearchAttempts);
-			s.Stream(ref WeaponPhysicsMultiplier); s.Stream(ref AIDamageMultiplier); s.Stream(ref AIDamageTakenMultiplier);
-			s.Stream(ref AIBuildSpeedMultiplier);
-			s.Stream(ref FlagRallyPoint); s.Stream(ref FlagBountyResource); s.Stream(ref FlagMinimapBlocked);
-			s.Stream(ref FlagLeaderPowersBlocked); s.Stream(ref FlagDefeatedDestroy);
-			s.Stream(ref SquadAISearchIndex); s.Stream(ref SquadAIWorkIndex); s.Stream(ref SquadAISecondaryTurretScanIndex);
+			s.Stream(ref this.MPID); s.Stream(ref this.ColorIndex);
+			s.Stream(ref this.ID); s.Stream(ref this.CoopID); s.Stream(ref this.ScenarioID);
+			s.Stream(ref this.CivID);
+			s.Stream(ref this.TeamID);
+			s.Stream(ref this.PlayerState);
+			s.Stream(ref this.LeaderID); s.Stream(ref this.BountyResource);
+			s.Stream(ref this.RallyObject);
+			s.Stream(ref this.Strength);
+			s.Stream(ref this.TributeCost);
+			sg.StreamBCost(s, ref this.RepairCost);
+			s.Stream(ref this.RepairTime); s.Stream(ref this.HandicapMultiplier); s.Stream(ref this.ShieldRegenRate);
+			s.Stream(ref this.ShieldRegenDelay);
+			s.Stream(ref this.TotalCombatValue);
+			s.Stream(ref this.Difficulty);
+			s.Stream(ref this.GamePlayedTime);
+			s.Stream(ref this.FloodPoofPlayer);
+			s.Stream(ref this.PlayerType); s.Stream(ref this.SquadSearchAttempts);
+			s.Stream(ref this.WeaponPhysicsMultiplier); s.Stream(ref this.AIDamageMultiplier); s.Stream(ref this.AIDamageTakenMultiplier);
+			s.Stream(ref this.AIBuildSpeedMultiplier);
+			s.Stream(ref this.FlagRallyPoint); s.Stream(ref this.FlagBountyResource); s.Stream(ref this.FlagMinimapBlocked);
+			s.Stream(ref this.FlagLeaderPowersBlocked); s.Stream(ref this.FlagDefeatedDestroy);
+			s.Stream(ref this.SquadAISearchIndex); s.Stream(ref this.SquadAIWorkIndex); s.Stream(ref this.SquadAISecondaryTurretScanIndex);
 			s.StreamSignature(cSaveMarker.Player4);
 			#endregion
-			s.TraceAndDebugPosition(ref mPositionMarker);
+			s.TraceAndDebugPosition(ref this.mPositionMarker);
 		}
 		#endregion
 	};

@@ -21,30 +21,30 @@ namespace KSoft.Collections
 				bool dummy)
 				: this()
 			{
-				mSet = bitset;
-				mLastIndex = bitset.Length - 1;
-				mVersion = bitset.Version;
-				mBitIndex = TypeExtensions.kNone;
+				this.mSet = bitset;
+				this.mLastIndex = bitset.Length - 1;
+				this.mVersion = bitset.Version;
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			void VerifyVersion()
 			{
-				if (mVersion != mSet.Version)
+				if (this.mVersion != this.mSet.Version)
 					throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
 			}
 
 			public bool Current { get {
-				if (mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
-				if (mBitIndex > mLastIndex)		throw new InvalidOperationException("Enumeration already finished");
+				if (this.mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
+				if (this.mBitIndex > this.mLastIndex)		throw new InvalidOperationException("Enumeration already finished");
 
-				return mCurrent;
+				return this.mCurrent;
 			} }
 			object System.Collections.IEnumerator.Current { get => this.Current; }
 
 			public void Reset()
 			{
-				VerifyVersion();
-				mBitIndex = TypeExtensions.kNone;
+				this.VerifyVersion();
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			public void Dispose()	{ }
@@ -68,30 +68,30 @@ namespace KSoft.Collections
 				bool dummy)
 				: this()
 			{
-				mSet = bitset;
-				mLastIndex = bitset.Length - 1;
-				mVersion = bitset.Version;
-				mBitIndex = TypeExtensions.kNone;
+				this.mSet = bitset;
+				this.mLastIndex = bitset.Length - 1;
+				this.mVersion = bitset.Version;
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			void VerifyVersion()
 			{
-				if (mVersion != mSet.Version)
+				if (this.mVersion != this.mSet.Version)
 					throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
 			}
 
 			public int Current { get {
-				if (mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
-				if (mBitIndex > mLastIndex)		throw new InvalidOperationException("Enumeration already finished");
+				if (this.mBitIndex.IsNone())			throw new InvalidOperationException("Enumeration has not started");
+				if (this.mBitIndex > this.mLastIndex)		throw new InvalidOperationException("Enumeration already finished");
 
-				return mCurrent;
+				return this.mCurrent;
 			} }
 			object System.Collections.IEnumerator.Current { get => this.Current; }
 
 			public void Reset()
 			{
-				VerifyVersion();
-				mBitIndex = TypeExtensions.kNone;
+				this.VerifyVersion();
+				this.mBitIndex = TypeExtensions.kNone;
 			}
 
 			public void Dispose()	{ }

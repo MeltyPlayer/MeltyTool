@@ -24,7 +24,7 @@ namespace benchmarks {
     public void StaticCall() {
       for (var i = 0; i < n; i++) {
         var radians =
-            RadiansUtil.CalculateRadiansTowards(Radians.lhs, Radians.rhs);
+            RadiansUtil.CalculateRadiansTowards(lhs, rhs);
       }
     }
 
@@ -34,7 +34,7 @@ namespace benchmarks {
     [Benchmark]
     public void ReadonlyStruct() {
       for (var i = 0; i < n; i++) {
-        var radians = lhsStruct - rhsStruct;
+        var radians = this.lhsStruct - this.rhsStruct;
       }
     }
 

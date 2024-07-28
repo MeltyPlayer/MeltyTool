@@ -22,15 +22,15 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Type, GameSettingTypeStreamer.Instance);
-			switch (Type)
+			s.Stream(ref this.Type, GameSettingTypeStreamer.Instance);
+			switch (this.Type)
 			{
-				case GameSettingType.Float:	s.Stream(ref Float); break;
-				case GameSettingType.Int:	s.Stream(ref Int); break;
-				case GameSettingType.Byte:	s.Stream(ref Byte); break;
-				case GameSettingType.Bool:	s.Stream(ref Bool); break;
-				case GameSettingType.Long:	s.Stream(ref Long); break;
-				case GameSettingType.String:s.Stream(ref String); break;
+				case GameSettingType.Float:  s.Stream(ref this.Float); break;
+				case GameSettingType.Int:    s.Stream(ref this.Int); break;
+				case GameSettingType.Byte:   s.Stream(ref this.Byte); break;
+				case GameSettingType.Bool:   s.Stream(ref this.Bool); break;
+				case GameSettingType.Long:   s.Stream(ref this.Long); break;
+				case GameSettingType.String: s.Stream(ref this.String); break;
 			}
 		}
 		#endregion

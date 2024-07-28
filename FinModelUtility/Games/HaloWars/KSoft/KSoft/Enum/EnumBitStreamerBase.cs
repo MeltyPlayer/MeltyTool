@@ -89,7 +89,7 @@ namespace KSoft.IO
 		[SuppressMessage("Microsoft.Design", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
 		static EnumBitStreamerBase()
 		{
-			kBitStreamType = typeof(IO.BitStream);
+			kBitStreamType = typeof(BitStream);
 
 			InitializeMethodDictionaries();
 		}

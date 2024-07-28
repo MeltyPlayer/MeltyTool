@@ -98,33 +98,33 @@ namespace KSoft
 			readonly int mDstTypeSize;
 			readonly int mSrcTypeSize;
 
-			public int DestinationTypeSize { get { return mDstTypeSize; } }
-			public int SourceTypeSize { get { return mSrcTypeSize; } }
+			public int DestinationTypeSize { get { return this.mDstTypeSize; } }
+			public int SourceTypeSize { get { return this.mSrcTypeSize; } }
 
 			public MemoryCopier(
 				[SuppressMessage("Microsoft.Design", "CA1801:ReviewUnusedParameters")]
 				bool dummy)
 			{
-				mDstTypeSize = LowLevel.Util.Unmanaged.SizeOf<TDst>();
-				mSrcTypeSize = LowLevel.Util.Unmanaged.SizeOf<TSrc>();
+				this.mDstTypeSize = LowLevel.Util.Unmanaged.SizeOf<TDst>();
+				this.mSrcTypeSize = LowLevel.Util.Unmanaged.SizeOf<TSrc>();
 			}
 
 			internal void CopyInternal(TDst[] dst, int dstOffset,
 				TSrc[] src, int srcOffset,
 				int srcCopyCount)
 			{
-				Contract.Assert(DestinationTypeSize != 0 && SourceTypeSize != 0,
+				Contract.Assert(this.DestinationTypeSize != 0 && this.SourceTypeSize != 0,
 					"somebody used MemoryCopier's default constructor!");
 
 				if (srcCopyCount == 0)
 					return;
 
 				// Get the available size of the buffers
-				int dst_buffer_local_size_in_bytes = (dst.Length - dstOffset) * mDstTypeSize;
-				int src_buffer_local_size_in_bytes = (src.Length - srcOffset) * mSrcTypeSize;
+				int dst_buffer_local_size_in_bytes = (dst.Length - dstOffset) * this.mDstTypeSize;
+				int src_buffer_local_size_in_bytes = (src.Length - srcOffset) * this.mSrcTypeSize;
 
 				// Size, in bytes, of the src elements to copy. Could be smaller than src_buffer_size
-				int src_copy_count_in_bytes = mSrcTypeSize * srcCopyCount;
+				int src_copy_count_in_bytes = this.mSrcTypeSize * srcCopyCount;
 
 				if (src_copy_count_in_bytes > dst_buffer_local_size_in_bytes)
 					throw new ArgumentOutOfRangeException(nameof(srcCopyCount), srcCopyCount,
@@ -150,7 +150,7 @@ namespace KSoft
 				Contract.Requires<ArgumentOutOfRangeException>(
 					(srcOffset+srcCopyCount) <= src.Length);
 
-				CopyInternal(dst, dstOffset, src, srcOffset, srcCopyCount);
+				this.CopyInternal(dst, dstOffset, src, srcOffset, srcCopyCount);
 			}
 
 			public void Copy(TDst[] dst, TSrc[] src,
@@ -160,7 +160,7 @@ namespace KSoft
 				Contract.Requires<ArgumentNullException>(src != null);
 				Contract.Requires<ArgumentOutOfRangeException>(srcCopyCount >= 0);
 
-				CopyInternal(dst, 0, src, 0, srcCopyCount);
+				this.CopyInternal(dst, 0, src, 0, srcCopyCount);
 			}
 		};
 

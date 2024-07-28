@@ -23,7 +23,7 @@ namespace uni.games;
 
 public static class ExporterUtil {
   static ExporterUtil() {
-    ExporterUtil.logger_ = Logging.Create("exportor");
+    logger_ = Logging.Create("exportor");
   }
 
   private static readonly ILogger logger_;
@@ -132,7 +132,7 @@ public static class ExporterUtil {
       IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFiles)
       where T : IModelFileBundle
-    => ExporterUtil.ExportAllForCli_(
+    => ExportAllForCli_(
         fileBundles.WhereIs<IAnnotatedFileBundle, IAnnotatedFileBundle<T>>(),
         reader,
         formats,
@@ -149,7 +149,7 @@ public static class ExporterUtil {
                  "Expected to find bundles for the current ROM. Does the file exist, and was it exported correctly?");
 
     foreach (var modelFileBundle in bundlesArray) {
-      ExporterUtil.Export(modelFileBundle,
+      Export(modelFileBundle,
                           reader,
                           formats,
                           overwriteExistingFiles);
@@ -177,7 +177,7 @@ public static class ExporterUtil {
       var modelFileBundle = fileBundleArray[i];
       progress.Report((i * 1f / fileBundleArray.Length,
                        modelFileBundle.TypedFileBundle));
-      ExporterUtil.Export(modelFileBundle,
+      Export(modelFileBundle,
                           reader,
                           formats,
                           overwriteExistingFiles);
@@ -191,7 +191,7 @@ public static class ExporterUtil {
                                IReadOnlySet<ExportedFormat> formats,
                                bool overwriteExistingFile)
       where T : IModelFileBundle {
-    ExporterUtil.Export(modelFileBundle,
+    Export(modelFileBundle,
                         () => reader.Import(
                             modelFileBundle.TypedFileBundle),
                         formats,
@@ -255,12 +255,12 @@ public static class ExporterUtil {
                                                    $"{name}.{format.FileExtension}")));
     if (!overwriteExistingFile &&
         targetFiles.All(targetFile => targetFile.Exists)) {
-      MessageUtil.LogAlreadyProcessed(ExporterUtil.logger_, mainFile);
+      MessageUtil.LogAlreadyProcessed(logger_, mainFile);
       return;
     }
 
     outputDirectory.Create();
-    MessageUtil.LogExporting(ExporterUtil.logger_, mainFile);
+    MessageUtil.LogExporting(logger_, mainFile);
 
     try {
       var model = loaderHandler();
@@ -289,9 +289,9 @@ public static class ExporterUtil {
             model);
       }
     } catch (Exception e) {
-      ExporterUtil.logger_.LogError(e.ToString());
+      logger_.LogError(e.ToString());
     }
 
-    ExporterUtil.logger_.LogInformation(" ");
+    logger_.LogInformation(" ");
   }
 }

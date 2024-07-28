@@ -14,8 +14,8 @@
 		int mPosition;
 		public int Position
 		{
-			get { return mPosition; }
-			set { mPosition = value; }
+			get { return this.mPosition; }
+			set { this.mPosition = value; }
 		}
 		#endregion
 
@@ -23,8 +23,8 @@
 		BProtoObjectCommandType mCommandType = BProtoObjectCommandType.Invalid;
 		public BProtoObjectCommandType CommandType
 		{
-			get { return mCommandType; }
-			set { mCommandType = value; }
+			get { return this.mCommandType; }
+			set { this.mCommandType = value; }
 		}
 		#endregion
 
@@ -32,8 +32,8 @@
 		int mID = TypeExtensions.kNone;
 		public int ID
 		{
-			get { return mID; }
-			set { mID = value; }
+			get { return this.mID; }
+			set { this.mID = value; }
 		}
 		#endregion
 
@@ -41,8 +41,8 @@
 		BSquadMode mSquadMode = BSquadMode.Invalid;
 		public BSquadMode SquadMode
 		{
-			get { return mSquadMode; }
-			set { mSquadMode = value; }
+			get { return this.mSquadMode; }
+			set { this.mSquadMode = value; }
 		}
 		#endregion
 
@@ -50,23 +50,25 @@
 		bool mAutoClose;
 		public bool AutoClose
 		{
-			get { return mAutoClose; }
-			set { mAutoClose = value; }
+			get { return this.mAutoClose; }
+			set { this.mAutoClose = value; }
 		}
 		#endregion
 
 		public bool IsValid { get {
-			return CommandType != BProtoObjectCommandType.Invalid
-				&& Position >= 0
-				&& IsCommandDataValid;
+			return this.CommandType != BProtoObjectCommandType.Invalid
+				&&
+				this.Position >= 0
+				&&
+				this.IsCommandDataValid;
 		} }
 
 		public bool IsCommandDataValid { get {
-			if (CommandType.RequiresValidId())
-				return ID.IsNotNone();
+			if (this.CommandType.RequiresValidId())
+				return this.ID.IsNotNone();
 
-			if (CommandType == BProtoObjectCommandType.ChangeMode)
-				return SquadMode != BSquadMode.Invalid;
+			if (this.CommandType == BProtoObjectCommandType.ChangeMode)
+				return this.SquadMode != BSquadMode.Invalid;
 
 			return true;
 		} }
@@ -78,36 +80,36 @@
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttribute("Position", ref mPosition);
+			s.StreamAttribute("Position", ref this.mPosition);
 
-			s.StreamAttributeEnum("Type", ref mCommandType);
-			switch (mCommandType)
+			s.StreamAttributeEnum("Type", ref this.mCommandType);
+			switch (this.mCommandType)
 			{
 			case BProtoObjectCommandType.Research: // proto tech
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mID, DatabaseObjectKind.Tech, false, XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mID, DatabaseObjectKind.Tech, false, XML.XmlUtil.kSourceCursor);
 				break;
 			case BProtoObjectCommandType.TrainUnit: // proto object
 			case BProtoObjectCommandType.Build:
 			case BProtoObjectCommandType.BuildOther:
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceCursor);
 				break;
 			case BProtoObjectCommandType.TrainSquad: // proto squad
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
 				break;
 
 			case BProtoObjectCommandType.ChangeMode: // unused
-				s.StreamCursorEnum(ref mSquadMode);
+				s.StreamCursorEnum(ref this.mSquadMode);
 				break;
 
 			case BProtoObjectCommandType.Ability:
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mID, DatabaseObjectKind.Ability, false, XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mID, DatabaseObjectKind.Ability, false, XML.XmlUtil.kSourceCursor);
 				break;
 			case BProtoObjectCommandType.Power:
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mID, DatabaseObjectKind.Power, false, XML.XmlUtil.kSourceCursor);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mID, DatabaseObjectKind.Power, false, XML.XmlUtil.kSourceCursor);
 				break;
 			}
 
-			s.StreamAttributeOpt("AutoClose", ref mAutoClose, Predicates.IsTrue);
+			s.StreamAttributeOpt("AutoClose", ref this.mAutoClose, Predicates.IsTrue);
 		}
 		#endregion
 	};

@@ -11,7 +11,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public override void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref BaseType);
+			s.Stream(ref this.BaseType);
 		}
 		#endregion
 	};

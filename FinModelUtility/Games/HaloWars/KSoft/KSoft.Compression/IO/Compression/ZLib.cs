@@ -22,7 +22,7 @@ namespace KSoft.IO.Compression
 
 			// adjust for zlib header
 			if (skipHeader)
-				dec.BaseStream.Seek(offset + kSizeOfHeader, System.IO.SeekOrigin.Begin);
+				dec.BaseStream.Seek(offset + kSizeOfHeader, SeekOrigin.Begin);
 
 			// decompress the data and fill in the result array
 			result = new byte[length];

@@ -58,8 +58,8 @@ namespace KSoft.Phoenix.Phx
 		BProtoTechAlphaMode mAlphaMode = BProtoTechAlphaMode.None;
 		public BProtoTechAlphaMode AlphaMode
 		{
-			get { return mAlphaMode; }
-			set { mAlphaMode = value; }
+			get { return this.mAlphaMode; }
+			set { this.mAlphaMode = value; }
 		}
 		#endregion
 
@@ -70,8 +70,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.TextureReference]
 		public string Icon
 		{
-			get { return mIcon; }
-			set { mIcon = value; }
+			get { return this.mIcon; }
+			set { this.mIcon = value; }
 		}
 		#endregion
 
@@ -80,8 +80,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.SoundCueReference]
 		public string ResearchCompleteSound
 		{
-			get { return mResearchCompleteSound; }
-			set { mResearchCompleteSound = value; }
+			get { return this.mResearchCompleteSound; }
+			set { this.mResearchCompleteSound = value; }
 		}
 		#endregion
 
@@ -90,8 +90,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BAnimTypeReference]
 		public string ResearchAnim
 		{
-			get { return mResearchAnim; }
-			set { mResearchAnim = value; }
+			get { return this.mResearchAnim; }
+			set { this.mResearchAnim = value; }
 		}
 		#endregion
 
@@ -103,23 +103,23 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int StatsObjectID
 		{
-			get { return mStatsObjectID; }
-			set { mStatsObjectID = value; }
+			get { return this.mStatsObjectID; }
+			set { this.mStatsObjectID = value; }
 		}
 		#endregion
 
-		public bool HasPrereqs { get { return Prereqs != null && Prereqs.IsNotEmpty; } }
+		public bool HasPrereqs { get { return this.Prereqs != null && this.Prereqs.IsNotEmpty; } }
 
 		public BProtoTech() : base(BResource.kBListTypeValuesParams, BResource.kBListTypeValuesXmlParams_CostLowercaseType)
 		{
-			var textData = base.CreateDatabaseObjectUserInterfaceTextData();
+			var textData = this.CreateDatabaseObjectUserInterfaceTextData();
 			textData.HasDisplayNameID = true;
 			textData.HasRolloverTextID = true;
 			textData.HasPrereqTextID = true;
 
-			Flags = new Collections.BBitSet(kFlagsParams);
-			Prereqs = new BProtoTechPrereqs();
-			Effects = new Collections.BListArray<BProtoTechEffect>();
+			this.Flags = new Collections.BBitSet(kFlagsParams);
+			this.Prereqs = new BProtoTechPrereqs();
+			this.Effects = new Collections.BListArray<BProtoTechEffect>();
 		}
 
 		#region IXmlElementStreamable Members
@@ -136,11 +136,11 @@ namespace KSoft.Phoenix.Phx
 
 			var xs = s.GetSerializerInterface();
 
-			int alpha = (int)mAlphaMode;
+			int alpha = (int) this.mAlphaMode;
 			s.StreamAttributeOpt("Alpha", ref alpha, Predicates.IsNotNone);
-			mAlphaMode = (BProtoTechAlphaMode)alpha;
+			this.mAlphaMode = (BProtoTechAlphaMode)alpha;
 
-			XML.XmlUtil.Serialize(s, Flags, XML.BBitSetXmlParams.kFlagsSansRoot);
+			XML.XmlUtil.Serialize(s, this.Flags, XML.BBitSetXmlParams.kFlagsSansRoot);
 
 			if (s.IsReading)
 			{
@@ -149,19 +149,19 @@ namespace KSoft.Phoenix.Phx
 					string statusValue = null;
 					s.ReadCursor(ref statusValue);
 					if (string.Equals(statusValue, "Unobtainable", System.StringComparison.OrdinalIgnoreCase))
-						Flags.Set((int)BProtoTechFlags.Unobtainable);
+						this.Flags.Set((int)BProtoTechFlags.Unobtainable);
 				}
 			}
 
-			s.StreamStringOpt("Icon", ref mIcon, toLower: false, type: XML.XmlUtil.kSourceElement);
-			s.StreamStringOpt("ResearchCompleteSound", ref mResearchCompleteSound, toLower: false, type: XML.XmlUtil.kSourceElement);
-			s.StreamStringOpt("ResearchAnim", ref mResearchAnim, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamStringOpt("Icon", ref this.mIcon, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamStringOpt("ResearchCompleteSound", ref this.mResearchCompleteSound, toLower: false, type: XML.XmlUtil.kSourceElement);
+			s.StreamStringOpt("ResearchAnim", ref this.mResearchAnim, toLower: false, type: XML.XmlUtil.kSourceElement);
 			using (var bm = s.EnterCursorBookmarkOpt("Prereqs", this, v => v.HasPrereqs)) if (bm.IsNotNull)
 			{
-				Prereqs.Serialize(s);
+				this.Prereqs.Serialize(s);
 			}
-			XML.XmlUtil.Serialize(s, Effects, BProtoTechEffect.kBListXmlParams);
-			xs.StreamDBID(s, "StatsObject", ref mStatsObjectID, DatabaseObjectKind.Object);
+			XML.XmlUtil.Serialize(s, this.Effects, BProtoTechEffect.kBListXmlParams);
+			xs.StreamDBID(s, "StatsObject", ref this.mStatsObjectID, DatabaseObjectKind.Object);
 		}
 		#endregion
 	};

@@ -11,7 +11,7 @@ public partial class MaterialSelector : UserControl {
   private IReadOnlyMaterial? selectedMaterial_ = null;
 
   public MaterialSelector() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.comboBox_.SelectedIndexChanged += (_, _) => {
         var selectedIndex = this.comboBox_.SelectedIndex;

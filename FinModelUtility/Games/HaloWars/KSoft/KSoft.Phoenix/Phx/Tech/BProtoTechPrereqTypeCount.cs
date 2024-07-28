@@ -17,8 +17,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoObjectReference]
 		public int UnitID
 		{
-			get { return mUnitID; }
-			set { mUnitID = value; }
+			get { return this.mUnitID; }
+			set { this.mUnitID = value; }
 		}
 		#endregion
 
@@ -26,8 +26,8 @@ namespace KSoft.Phoenix.Phx
 		BProtoTechTypeCountOperator mOperator;
 		public BProtoTechTypeCountOperator Operator
 		{
-			get { return mOperator; }
-			set { mOperator = value; }
+			get { return this.mOperator; }
+			set { this.mOperator = value; }
 		}
 		#endregion
 
@@ -35,8 +35,8 @@ namespace KSoft.Phoenix.Phx
 		int mCount;
 		public int Count
 		{
-			get { return mCount; }
-			set { mCount = value; }
+			get { return this.mCount; }
+			set { this.mCount = value; }
 		}
 
 		public const int cMaxCount = 2048;
@@ -49,9 +49,9 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, "unit", ref mUnitID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceAttr);
-			s.StreamAttributeEnumOpt("operator", ref mOperator, e => e != BProtoTechTypeCountOperator.e);
-			s.StreamAttributeOpt("count", ref mCount, Predicates.IsNotZero);
+			xs.StreamDBID(s, "unit", ref this.mUnitID, DatabaseObjectKind.Object, false, XML.XmlUtil.kSourceAttr);
+			s.StreamAttributeEnumOpt("operator", ref this.mOperator, e => e != BProtoTechTypeCountOperator.e);
+			s.StreamAttributeOpt("count", ref this.mCount, Predicates.IsNotZero);
 		}
 		#endregion
 	};

@@ -50,7 +50,7 @@ namespace sm64.LevelInfo {
     private byte? defaultTerrainType_;
 
     public byte DefaultTerrainType {
-      get => defaultTerrainType_ ?? 0;
+      get => this.defaultTerrainType_ ?? 0;
       set {
         if (this.defaultTerrainType_.HasValue) {
           throw new Exception();
@@ -64,14 +64,14 @@ namespace sm64.LevelInfo {
     private ushort levelID;
 
     public ushort LevelID {
-      get { return levelID; }
+      get { return this.levelID; }
     }
 
     private ushort currentAreaID;
 
     public ushort CurrentAreaID {
-      get { return currentAreaID; }
-      set { currentAreaID = value; }
+      get { return this.currentAreaID; }
+      set { this.currentAreaID = value; }
     }
 
     public List<Area> Areas = [];
@@ -104,8 +104,8 @@ namespace sm64.LevelInfo {
         uint modelAddress,
         uint behavior,
         out int index) {
-      for (int i = 0; i < LevelObjectCombos.Count; i++) {
-        ObjectComboEntry oce = LevelObjectCombos[i];
+      for (int i = 0; i < this.LevelObjectCombos.Count; i++) {
+        ObjectComboEntry oce = this.LevelObjectCombos[i];
         if (oce.ModelID == modelID && oce.ModelSegmentAddress == modelAddress
                                    && oce.Behavior == behavior) {
           index = i;
@@ -117,7 +117,7 @@ namespace sm64.LevelInfo {
     }
 
     private void AddMacroObjectEntries() {
-      MacroObjectPresets.Clear();
+      this.MacroObjectPresets.Clear();
       ROM rom = ROM.Instance;
 
       using var br = new SchemaBinaryReader(rom.Bytes);
@@ -134,14 +134,14 @@ namespace sm64.LevelInfo {
     public void AddSpecialObjectPreset_8(ushort presetID,
                                          byte modelId,
                                          uint behavior) {
-      SpecialObjectPresets_8.Add(
+      this.SpecialObjectPresets_8.Add(
           new PresetMacroEntry(presetID, modelId, behavior));
     }
 
     public void AddSpecialObjectPreset_10(ushort presetID,
                                           byte modelId,
                                           uint behavior) {
-      SpecialObjectPresets_10.Add(
+      this.SpecialObjectPresets_10.Add(
           new PresetMacroEntry(presetID, modelId, behavior));
     }
 
@@ -150,7 +150,7 @@ namespace sm64.LevelInfo {
                                           uint behavior,
                                           byte bp1,
                                           byte bp2) {
-      SpecialObjectPresets_12.Add(
+      this.SpecialObjectPresets_12.Add(
           new PresetMacroEntry(presetID, modelId, behavior, bp1, bp2));
     }
 
@@ -159,7 +159,7 @@ namespace sm64.LevelInfo {
         ObjectComboEntry oce = Globals.objectComboEntries[i];
         if (oce.ModelID == modelId &&
             oce.ModelSegmentAddress == modelSegAddress)
-          LevelObjectCombos.Add(oce);
+          this.LevelObjectCombos.Add(oce);
       }
     }
 
@@ -167,35 +167,36 @@ namespace sm64.LevelInfo {
       for (int i = 0; i < Globals.objectComboEntries.Count; i++) {
         ObjectComboEntry oce = Globals.objectComboEntries[i];
         if (oce.ModelID == 0x00)
-          LevelObjectCombos.Add(oce);
+          this.LevelObjectCombos.Add(oce);
       }
-      LevelObjectCombos.Sort((x, y) => string.Compare(x.Name, y.Name));
+
+      this.LevelObjectCombos.Sort((x, y) => string.Compare(x.Name, y.Name));
     }
 
     public Area getCurrentArea() {
-      foreach (Area a in Areas)
-        if (a.AreaID == currentAreaID)
+      foreach (Area a in this.Areas)
+        if (a.AreaID == this.currentAreaID)
           return a;
-      return Areas[0]; // return default area
+      return this.Areas[0]; // return default area
     }
 
     public void setAreaBackgroundInfo(ref Area area) {
-      area.bgInfo.address = temp_bgInfo.address;
-      area.bgInfo.id_or_color = temp_bgInfo.id_or_color;
-      area.bgInfo.isEndCakeImage = temp_bgInfo.isEndCakeImage;
-      area.bgInfo.romLocation = temp_bgInfo.romLocation;
-      area.bgInfo.usesFog = temp_bgInfo.usesFog;
-      area.bgInfo.fogColor = temp_bgInfo.fogColor;
-      area.bgInfo.fogColor_romLocation = temp_bgInfo.fogColor_romLocation;
+      area.bgInfo.address = this.temp_bgInfo.address;
+      area.bgInfo.id_or_color = this.temp_bgInfo.id_or_color;
+      area.bgInfo.isEndCakeImage = this.temp_bgInfo.isEndCakeImage;
+      area.bgInfo.romLocation = this.temp_bgInfo.romLocation;
+      area.bgInfo.usesFog = this.temp_bgInfo.usesFog;
+      area.bgInfo.fogColor = this.temp_bgInfo.fogColor;
+      area.bgInfo.fogColor_romLocation = this.temp_bgInfo.fogColor_romLocation;
     }
 
     public Level(ushort levelID, ushort startArea) {
       ROM.Instance.clearSegments();
       this.levelID = levelID;
-      currentAreaID = startArea;
-      LevelObjectCombos.Clear();
-      LevelScriptCommands_ForDump.Clear();
-      AddMacroObjectEntries();
+      this.currentAreaID = startArea;
+      this.LevelObjectCombos.Clear();
+      this.LevelScriptCommands_ForDump.Clear();
+      this.AddMacroObjectEntries();
     }
   }
 }

@@ -21,9 +21,9 @@
 		public void InitializeKey(ulong[] key, ulong userKey = 0)
 		{
 			if (userKey == 0)
-				mKey = key;
+				this.mKey = key;
 			else
-				mKey = new ulong[kKeySize] { key[0], key[1], userKey };
+				this.mKey = new ulong[kKeySize] { key[0], key[1], userKey };
 		}
 		#endregion
 
@@ -33,51 +33,51 @@
 
 		void InitializeBuffers()
 		{
-			mBufferIn = new ulong[kBlocksPerIteration];
-			mBufferOut = new ulong[kBlocksPerIteration];
+			this.mBufferIn = new ulong[kBlocksPerIteration];
+			this.mBufferOut = new ulong[kBlocksPerIteration];
 		}
 
 		public PhxTEA(IO.EndianReader streamIn, IO.EndianWriter streamOut)
 		{
-			mStreamIn = streamIn;
-			mStreamOut = streamOut;
-			InitializeBuffers();
+			this.mStreamIn = streamIn;
+			this.mStreamOut = streamOut;
+			this.InitializeBuffers();
 		}
 
 		void FillBufferIn()
 		{
-			for (int x = 0; x < mBufferIn.Length; x++)
-				mStreamIn.Read(out mBufferIn[x]);
+			for (int x = 0; x < this.mBufferIn.Length; x++)
+				this.mStreamIn.Read(out this.mBufferIn[x]);
 		}
 		void FillBufferOut()
 		{
-			for (int x = 0; x < mBufferOut.Length; x++)
-				mStreamOut.Write(mBufferOut[x]);
+			for (int x = 0; x < this.mBufferOut.Length; x++)
+				this.mStreamOut.Write(this.mBufferOut[x]);
 		}
 
 		void ProcessBuffer(long size, ProcessIterationProc proc)
 		{
 			if (size == 0)
-				size = mStreamIn.BaseStream.Length - mStreamIn.BaseStream.Position;
+				size = this.mStreamIn.BaseStream.Length - this.mStreamIn.BaseStream.Position;
 
 			uint interation_count = GetIterationsCount(size);
 
 			for (uint x = 0; x < interation_count; x++)
 			{
-				FillBufferIn();
+				this.FillBufferIn();
 
-				proc(mKey, mBufferIn, mBufferOut, x);
+				proc(this.mKey, this.mBufferIn, this.mBufferOut, x);
 
-				FillBufferOut();
+				this.FillBufferOut();
 			}
 		}
 		public void Decrypt(long size = 0)
 		{
-			ProcessBuffer(size, DecryptIteration);
+			this.ProcessBuffer(size, DecryptIteration);
 		}
 		public void Encrypt(long size = 0)
 		{
-			ProcessBuffer(size, EncryptIteration);
+			this.ProcessBuffer(size, EncryptIteration);
 		}
 
 		#region Implementation

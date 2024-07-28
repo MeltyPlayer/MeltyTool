@@ -53,7 +53,7 @@ public class CsabTrack : IBinaryDeserializable {
 
   public void Read(IBinaryReader br) {
       var startFrame = 0;
-      if (IsPastVersion4) {
+      if (this.IsPastVersion4) {
         var isConstant = br.ReadByte() != 0;
         this.Type = (AnimationTrackType) br.ReadByte();
         this.Keyframes = new CsabKeyframe[br.ReadUInt16()];
@@ -65,7 +65,7 @@ public class CsabTrack : IBinaryDeserializable {
             var value = br.ReadUInt32();
 
             this.Keyframes[i] = new CsabKeyframe {
-                Time = (uint) i, Value = ApplyScaleAndBias_(value, scale, bias),
+                Time = (uint) i, Value = this.ApplyScaleAndBias_(value, scale, bias),
             };
           }
 
@@ -80,7 +80,7 @@ public class CsabTrack : IBinaryDeserializable {
 
       float trackScale = -1;
       float trackBias = -1;
-      if (IsPastVersion4 && this.Type == AnimationTrackType.LINEAR) {
+      if (this.IsPastVersion4 && this.Type == AnimationTrackType.LINEAR) {
         trackScale = br.ReadSingle();
         trackBias = br.ReadSingle();
       }
@@ -117,9 +117,9 @@ public class CsabTrack : IBinaryDeserializable {
       float trackBias,
       int startFrame,
       int index) {
-      if (IsPastVersion4) {
-        var raw = readRawLinearFloat_(br);
-        var value = ApplyScaleAndBias_(raw, trackScale, trackBias);
+      if (this.IsPastVersion4) {
+        var raw = this.readRawLinearFloat_(br);
+        var value = this.ApplyScaleAndBias_(raw, trackScale, trackBias);
         return new CsabKeyframe {
             Time = (uint) (startFrame + index), Value = value,
         };
@@ -136,9 +136,9 @@ public class CsabTrack : IBinaryDeserializable {
       float trackBias,
       int startFrame,
       int index) {
-      if (IsPastVersion4) {
+      if (this.IsPastVersion4) {
         var raw = this.readRawLinearShort_(br);
-        var value = ApplyScaleAndBias_(raw, trackScale, trackBias);
+        var value = this.ApplyScaleAndBias_(raw, trackScale, trackBias);
         return new CsabKeyframe {
             Time = (uint) (startFrame + index), Value = value,
         };

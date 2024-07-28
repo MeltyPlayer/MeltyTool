@@ -37,35 +37,35 @@ namespace KSoft.Phoenix.Resource
 
 		public EraFileExpander(string eraPath)
 		{
-			mSourceFile = eraPath;
+			this.mSourceFile = eraPath;
 		}
 
 		public override void Dispose()
 		{
 			base.Dispose();
 
-			Util.DisposeAndNull(ref mEraStream);
-			Util.DisposeAndNull(ref mEraBaseStream);
+			Util.DisposeAndNull(ref this.mEraStream);
+			Util.DisposeAndNull(ref this.mEraBaseStream);
 		}
 
 		bool ReadEraFromStream()
 		{
 			bool result = true;
 
-			result = EraFileHeader.VerifyIsEraAndDecrypted(mEraStream.Reader);
+			result = EraFileHeader.VerifyIsEraAndDecrypted(this.mEraStream.Reader);
 			if (!result)
 			{
-				if (VerboseOutput != null)
-					VerboseOutput.WriteLine("\tFailed: File is either not decrypted, corrupt, or not even an ERA");
+				if (this.VerboseOutput != null)
+					this.VerboseOutput.WriteLine("\tFailed: File is either not decrypted, corrupt, or not even an ERA");
 			}
 			else
 			{
-				mEraStream.VirtualAddressTranslationInitialize(Shell.ProcessorSize.x32);
+				this.mEraStream.VirtualAddressTranslationInitialize(Shell.ProcessorSize.x32);
 
-				mEraFile = new EraFile();
-				mEraFile.FileName = mSourceFile;
-				mEraFile.Serialize(mEraStream);
-				mEraFile.ReadPostprocess(mEraStream);
+				this.mEraFile = new EraFile();
+				this.mEraFile.FileName = this.mSourceFile;
+				this.mEraFile.Serialize(this.mEraStream);
+				this.mEraFile.ReadPostprocess(this.mEraStream);
 			}
 
 			return result;
@@ -73,30 +73,30 @@ namespace KSoft.Phoenix.Resource
 
 		bool ReadEraFromFile()
 		{
-			if (ProgressOutput != null)
-				ProgressOutput.WriteLine("Opening and reading ERA file {0}...",
-					mSourceFile);
+			if (this.ProgressOutput != null)
+				this.ProgressOutput.WriteLine("Opening and reading ERA file {0}...",
+				                              this.mSourceFile);
 
-			if (ExpanderOptions.Test(EraFileExpanderOptions.DontLoadEntireEraIntoMemory))
-				mEraBaseStream = System.IO.File.OpenRead(mSourceFile);
+			if (this.ExpanderOptions.Test(EraFileExpanderOptions.DontLoadEntireEraIntoMemory))
+				this.mEraBaseStream = System.IO.File.OpenRead(this.mSourceFile);
 			else
 			{
-				byte[] era_bytes = System.IO.File.ReadAllBytes(mSourceFile);
-				if (ExpanderOptions.Test(EraFileExpanderOptions.Decrypt))
+				byte[] era_bytes = System.IO.File.ReadAllBytes(this.mSourceFile);
+				if (this.ExpanderOptions.Test(EraFileExpanderOptions.Decrypt))
 				{
-					if (ProgressOutput != null)
-						ProgressOutput.WriteLine("Decrypting...");
+					if (this.ProgressOutput != null)
+						this.ProgressOutput.WriteLine("Decrypting...");
 
-					DecryptFileBytes(era_bytes);
+					this.DecryptFileBytes(era_bytes);
 				}
 
-				mEraBaseStream = new System.IO.MemoryStream(era_bytes, writable: false);
+				this.mEraBaseStream = new System.IO.MemoryStream(era_bytes, writable: false);
 			}
 
-			mEraStream = new IO.EndianStream(mEraBaseStream, Shell.EndianFormat.Big, this, permissions: FA.Read);
-			mEraStream.StreamMode = FA.Read;
+			this.mEraStream = new IO.EndianStream(this.mEraBaseStream, Shell.EndianFormat.Big, this, permissions: FA.Read);
+			this.mEraStream.StreamMode = FA.Read;
 
-			return ReadEraFromStream();
+			return this.ReadEraFromStream();
 		}
 
 		void DecryptFileBytes(byte[] eraBytes)
@@ -119,11 +119,11 @@ namespace KSoft.Phoenix.Resource
 		{
 			bool result = true;
 
-			try { result &= ReadEraFromFile(); }
+			try { result &= this.ReadEraFromFile(); }
 			catch (Exception ex)
 			{
-				if (VerboseOutput != null)
-					VerboseOutput.WriteLine("\tEncountered an error while trying to read the ERA: {0}", ex);
+				if (this.VerboseOutput != null)
+					this.VerboseOutput.WriteLine("\tEncountered an error while trying to read the ERA: {0}", ex);
 				result = false;
 			}
 
@@ -139,14 +139,14 @@ namespace KSoft.Phoenix.Resource
 				xml.InitializeAtRootElement();
 				xml.StreamMode = FA.Write;
 
-				mEraFile.WriteDefinition(xml);
+				this.mEraFile.WriteDefinition(xml);
 
 				xml.Document.Save(listing_filename + EraFileBuilder.kNameExtension);
 			}
 		}
 		public bool ExpandTo(string workPath, string listingName)
 		{
-			if (mEraFile == null)
+			if (this.mEraFile == null)
 				return false;
 
 			if (!System.IO.Directory.Exists(workPath))
@@ -154,35 +154,37 @@ namespace KSoft.Phoenix.Resource
 
 			bool result = true;
 
-			if (ProgressOutput != null)
-				ProgressOutput.WriteLine("Outputting listing...");
+			if (this.ProgressOutput != null)
+				this.ProgressOutput.WriteLine("Outputting listing...");
 
-			try { SaveListing(workPath, listingName); }
+			try {
+				this.SaveListing(workPath, listingName); }
 			catch (Exception ex)
 			{
-				if (VerboseOutput != null)
-					VerboseOutput.WriteLine("\tEncountered an error while outputting listing: {0}", ex);
+				if (this.VerboseOutput != null)
+					this.VerboseOutput.WriteLine("\tEncountered an error while outputting listing: {0}", ex);
 				result = false;
 			}
 
-			if (result && !ExpanderOptions.Test(EraFileExpanderOptions.OnlyDumpListing))
+			if (result && !this.ExpanderOptions.Test(EraFileExpanderOptions.OnlyDumpListing))
 			{
-				if (ProgressOutput != null)
-					ProgressOutput.WriteLine("Expanding archive to {0}...", workPath);
+				if (this.ProgressOutput != null)
+					this.ProgressOutput.WriteLine("Expanding archive to {0}...", workPath);
 
-				try { mEraFile.ExpandTo(mEraStream, workPath); }
+				try {
+					this.mEraFile.ExpandTo(this.mEraStream, workPath); }
 				catch (Exception ex)
 				{
-					if (VerboseOutput != null)
-						VerboseOutput.WriteLine("\tEncountered an error while expanding archive: {0}", ex);
+					if (this.VerboseOutput != null)
+						this.VerboseOutput.WriteLine("\tEncountered an error while expanding archive: {0}", ex);
 					result = false;
 				}
 
-				if (ProgressOutput != null)
-					ProgressOutput.WriteLine("Done");
+				if (this.ProgressOutput != null)
+					this.ProgressOutput.WriteLine("Done");
 			}
 
-			mEraStream.Close();
+			this.mEraStream.Close();
 
 			return result;
 		}

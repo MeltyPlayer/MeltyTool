@@ -27,8 +27,8 @@ public class Logging {
               .AddDebug()
               .AddFilter(
                   logLevel
-                      => Logging.VERBOSE_ ||
-                         Logging.verboseExceptions_.Contains(logLevel)));
+                      => VERBOSE_ ||
+                         verboseExceptions_.Contains(logLevel)));
 
   private static readonly IList<LogLevel> verboseExceptions_ = [
       LogLevel.Critical, LogLevel.Error, LogLevel.Warning,
@@ -36,14 +36,14 @@ public class Logging {
 
 
   public static void Initialize(bool verbose) {
-    Logging.VERBOSE_ = verbose;
+    VERBOSE_ = verbose;
   }
 
   public static FinLogger Create<T>()
-    => new Logger(Logging.FACTORY_.CreateLogger<T>());
+    => new Logger(FACTORY_.CreateLogger<T>());
 
   public static FinLogger Create(string categoryName)
-    => new Logger(Logging.FACTORY_.CreateLogger(categoryName));
+    => new Logger(FACTORY_.CreateLogger(categoryName));
 
 
   private class Logger(MicrosoftLogger impl) : ILogger {

@@ -36,12 +36,12 @@ namespace KSoft.Phoenix.Resource
 
 		public void GenerateHash()
 		{
-			ShaContext.Initialize();
+			this.ShaContext.Initialize();
 
-			PhxHash.UInt16(ShaContext, (ushort)Flags);
-			PhxHash.UInt16(ShaContext, kVersion);
+			PhxHash.UInt16(this.ShaContext, (ushort) this.Flags);
+			PhxHash.UInt16(this.ShaContext, kVersion);
 
-			Header.UpdateHash(ShaContext);
+			this.Header.UpdateHash(this.ShaContext);
 		}
 
 		static uint WriteRandomBlock(IO.EndianWriter s, uint seed = 1)
@@ -105,18 +105,18 @@ namespace KSoft.Phoenix.Resource
 
 	public void Dispose()
 		{
-			if (ShaContext != null)
+			if (this.ShaContext != null)
 			{
-				ShaContext.Dispose();
-				ShaContext = null;
+				this.ShaContext.Dispose();
+				this.ShaContext = null;
 			}
 		}
 
 		#region IEndianStreamSerializable Members
 		void ReadLeftovers(IO.EndianReader er)
 		{
-			PaddingBytes = new byte[(int)(er.BaseStream.Length - er.BaseStream.Position)];
-			er.Read(PaddingBytes, 0, PaddingBytes.Length);
+			this.PaddingBytes = new byte[(int)(er.BaseStream.Length - er.BaseStream.Position)];
+			er.Read(this.PaddingBytes, 0, this.PaddingBytes.Length);
 		}
 		void WriteLeftovers(IO.EndianWriter ew)
 		{
@@ -124,8 +124,8 @@ namespace KSoft.Phoenix.Resource
 
 			if (ew.BaseStream.Length < kMaxContentSize)
 			{
-				int padding_bytes_count = System.Math.Min(PaddingBytes.Length, kMaxContentSize - (int)(ew.BaseStream.Length));
-				ew.Write(PaddingBytes, 0, padding_bytes_count);
+				int padding_bytes_count = System.Math.Min(this.PaddingBytes.Length, kMaxContentSize - (int)(ew.BaseStream.Length));
+				ew.Write(this.PaddingBytes, 0, padding_bytes_count);
 			}
 
 			if (ew.BaseStream.Length < kMaxContentSize)
@@ -137,8 +137,10 @@ namespace KSoft.Phoenix.Resource
 		}
 		void StreamLeftovers(IO.EndianStream s)
 		{
-				 if (s.IsReading) ReadLeftovers(s.Reader);
-			else if (s.IsWriting) WriteLeftovers(s.Writer);
+				 if (s.IsReading)
+					 this.ReadLeftovers(s.Reader);
+			else if (s.IsWriting)
+				this.WriteLeftovers(s.Writer);
 		}
 		void StreamCompressedContent(IO.EndianStream s)
 		{
@@ -146,11 +148,11 @@ namespace KSoft.Phoenix.Resource
 			{
 				using (var cs = new CompressedStream(true))
 				{
-					Stream(s, EnumFlags.Test(Flags, FileFlags.EncryptContent), cs,
-						userKey: Header.DataCryptKey, streamLeftovers: StreamLeftovers);
+					Stream(s, EnumFlags.Test(this.Flags, FileFlags.EncryptContent), cs,
+						userKey: this.Header.DataCryptKey, streamLeftovers: this.StreamLeftovers);
 
 					cs.Decompress();
-					Content = cs.UncompressedData;
+					this.Content = cs.UncompressedData;
 				}
 			}
 			else if (s.IsWriting)
@@ -159,14 +161,14 @@ namespace KSoft.Phoenix.Resource
 				using (var ms = new System.IO.MemoryStream(kMaxContentSize))
 				using (var sout = new IO.EndianWriter(ms, s.ByteOrder))
 				{
-					sout.Write(Content);
+					sout.Write(this.Content);
 					sout.Seek(0);
 
 					cs.InitializeFromStream(ms);
 					cs.Compress();
 
-					Stream(s, EnumFlags.Test(Flags, FileFlags.EncryptContent), cs,
-						userKey: Header.DataCryptKey, streamLeftovers: StreamLeftovers);
+					Stream(s, EnumFlags.Test(this.Flags, FileFlags.EncryptContent), cs,
+						userKey: this.Header.DataCryptKey, streamLeftovers: this.StreamLeftovers);
 				}
 			}
 		}
@@ -179,22 +181,22 @@ namespace KSoft.Phoenix.Resource
 				//Flags = EnumFlags.Remove(Flags, FileFlags.EncryptHeader | FileFlags.EncryptContent);
 			}
 
-			s.Stream(ref Flags, FileFlagsStreamer.Instance);
+			s.Stream(ref this.Flags, FileFlagsStreamer.Instance);
 			s.StreamVersion(kVersion);
 
-			Stream(s, EnumFlags.Test(Flags, FileFlags.EncryptHeader), Header, MediaHeader.kSizeOf);
-			GenerateHash();
+			Stream(s, EnumFlags.Test(this.Flags, FileFlags.EncryptHeader), this.Header, MediaHeader.kSizeOf);
+			this.GenerateHash();
 
-			if (EnumFlags.Test(Flags, FileFlags.CompressContent))
+			if (EnumFlags.Test(this.Flags, FileFlags.CompressContent))
 			{
-				StreamCompressedContent(s);
+				this.StreamCompressedContent(s);
 			}
 			else
 			{
 				if (s.IsReading)
-					Content = new byte[(int)(s.BaseStream.Length - s.BaseStream.Position)];
+					this.Content = new byte[(int)(s.BaseStream.Length - s.BaseStream.Position)];
 
-				s.Stream(Content);
+				s.Stream(this.Content);
 			}
 		}
 		#endregion

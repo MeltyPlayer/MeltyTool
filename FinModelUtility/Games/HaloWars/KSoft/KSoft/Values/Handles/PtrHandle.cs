@@ -25,7 +25,7 @@ namespace KSoft.Values
 
 	/// <summary>Wrapper structure for handling either a 32-bit or 64-bit pointer (address)</summary>
 	/// <remarks>If you use the parameterless ctor, the pointer will be implicitly 32-bit</remarks>
-	[Interop.StructLayout(Interop.LayoutKind.Explicit, Size = PtrHandle.kSizeOf)]
+	[Interop.StructLayout(Interop.LayoutKind.Explicit, Size = kSizeOf)]
 //	[System.ComponentModel.TypeConverter(typeof(PtrHandleConverter))]
 	[SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]
 	public struct PtrHandle
@@ -99,7 +99,7 @@ namespace KSoft.Values
 		#endregion
 
 		/// <summary>The size of this pointer</summary>
-		public Shell.ProcessorSize Size { get { return !Is64bit ? Shell.ProcessorSize.x32 : Shell.ProcessorSize.x64; } }
+		public Shell.ProcessorSize Size { get { return !this.Is64bit ? Shell.ProcessorSize.x32 : Shell.ProcessorSize.x64; } }
 		/// <summary>Is this pointer not referencing anything?</summary>
 		public bool IsNull { get { return this.Handle == 0; } }
 		public bool IsNotNull { get { return this.Handle != 0; } }
@@ -110,9 +110,9 @@ namespace KSoft.Values
 		#region Ctor
 		PtrHandle(bool is64bit, ulong handle)
 		{
-			Handle = Info = u64 = 0;
-			u32 = UserData = 0;
-			Type = PtrHandleType.Absolute;
+			this.Handle = this.Info = this.u64 = 0;
+			this.u32 = this.UserData = 0;
+			this.Type = PtrHandleType.Absolute;
 
 			this.Handle = handle;
 			this.Is64bit = is64bit;
@@ -137,19 +137,21 @@ namespace KSoft.Values
 		/// <param name="addressSize">This pointer's Address size</param>
 		public PtrHandle(Shell.ProcessorSize addressSize)
 		{
-			Handle = Info = u64 = 0;
-			u32 = UserData = 0;
-			Type = PtrHandleType.Absolute;
+			this.Handle = this.Info = this.u64 = 0;
+			this.u32 = this.UserData = 0;
+			this.Type = PtrHandleType.Absolute;
 
-			Is64bit = addressSize == Shell.ProcessorSize.x64;
+			this.Is64bit = addressSize == Shell.ProcessorSize.x64;
 		}
 
 		/// <summary>Construct a 32-bit address</summary>
 		/// <param name="address">Starting address value</param>
-		public PtrHandle(uint address) : this(Shell.ProcessorSize.x32)	{ u32 = address; }
+		public PtrHandle(uint address) : this(Shell.ProcessorSize.x32)	{
+			this.u32 = address; }
 		/// <summary>Construct a 64-bit address</summary>
 		/// <param name="address">Starting address value</param>
-		public PtrHandle(ulong address) : this(Shell.ProcessorSize.x64)	{ u64 = address; }
+		public PtrHandle(ulong address) : this(Shell.ProcessorSize.x64)	{
+			this.u64 = address; }
 		#endregion
 
 		#region IEndianStreamable Members
@@ -158,7 +160,7 @@ namespace KSoft.Values
 		/// <remarks>Number of bytes read depends on <see cref="Is64bit"/></remarks>
 		public void Read(IO.EndianReader s)
 		{
-			if (!Is64bit)	this.u32 = s.ReadUInt32();
+			if (!this.Is64bit)	this.u32 = s.ReadUInt32();
 			else			this.u64 = s.ReadUInt64();
 		}
 		/// <summary>Stream the pointer data to a buffer</summary>
@@ -166,7 +168,7 @@ namespace KSoft.Values
 		/// <remarks>Number of bytes written depends on <see cref="Is64bit"/></remarks>
 		public void Write(IO.EndianWriter s)
 		{
-			if (!Is64bit)	s.Write(this.u32);
+			if (!this.Is64bit)	s.Write(this.u32);
 			else			s.Write(this.u64);
 		}
 		#endregion
@@ -201,19 +203,19 @@ namespace KSoft.Values
 		/// <summary>Compare this with another <see cref="PtrHandle"/> object for similar size and address values</summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public int CompareTo(PtrHandle other)							{ return Compare(this, other); }
+		public int CompareTo(PtrHandle other)							{ return this.Compare(this, other); }
 
 		/// <summary></summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
 		/// <see cref=""/>
-		int System.Collections.IComparer.Compare(object x, object y)	{ return Compare((PtrHandle)x, (PtrHandle)y); }
+		int System.Collections.IComparer.Compare(object x, object y)	{ return this.Compare((PtrHandle)x, (PtrHandle)y); }
 		/// <summary></summary>
 		/// <param name="obj"></param>
 		/// <returns></returns>
 		/// <see cref=""/>
-		int IComparable.CompareTo(object obj)							{ return Compare(this, (PtrHandle)obj); }
+		int IComparable.CompareTo(object obj)							{ return this.Compare(this, (PtrHandle)obj); }
 		#endregion
 
 		#region IEquatable & IEqualityComparer Members
@@ -256,15 +258,15 @@ namespace KSoft.Values
 		public override int GetHashCode()
 		{
 			// 32-bit cases
-			if (!Is64bit)
-				return u32.GetHashCode();
+			if (!this.Is64bit)
+				return this.u32.GetHashCode();
 
 			// 64-bit cases
 			int hi, lo;
 			unchecked
 			{
-				hi = (int)Bits.GetHighBits(u64);
-				lo = (int)Bits.GetLowBits(u64);
+				hi = (int)Bits.GetHighBits(this.u64);
+				lo = (int)Bits.GetLowBits(this.u64);
 			}
 
 			return hi ^ lo;
@@ -276,8 +278,8 @@ namespace KSoft.Values
 		{
 			return string.Format(Util.InvariantCultureInfo,
 				"[0x{0}{1}]",
-				!Is64bit ? u32.ToString("X8", Util.InvariantCultureInfo) : u64.ToString("X16", Util.InvariantCultureInfo),
-				!Is64bit ? "u32" : "u64");
+				!this.Is64bit ? this.u32.ToString("X8", Util.InvariantCultureInfo) : this.u64.ToString("X16", Util.InvariantCultureInfo),
+				!this.Is64bit ? "u32" : "u64");
 		}
 		#endregion
 
@@ -289,19 +291,19 @@ namespace KSoft.Values
 		[SuppressMessage("Microsoft.Design", "CA2225:OperatorOverloadsHaveNamedAlternates")]
 		public static explicit operator bool(PtrHandle value)	=> value.u64 == 0;
 
-		public uint ToUInt32()									=> u32;
+		public uint ToUInt32()									=> this.u32;
 		/// <summary>Explicit cast to a <see cref="UInt32"/></summary>
 		/// <param name="value">Address being casted</param>
 		/// <returns>The address as a 32-bit integer</returns>
 		public static explicit operator uint(PtrHandle value)	=> value.ToUInt32();
 
-		public long ToInt64()									=> (long)u64;
+		public long ToInt64()									=> (long) this.u64;
 		/// <summary>Explicit cast to a <see cref="Int64"/></summary>
 		/// <param name="value">Address being casted</param>
 		/// <returns>The address as a 64-bit integer</returns>
 		public static explicit operator long(PtrHandle value)	=> value.ToInt64();
 
-		public ulong ToUInt64()									=> u64;
+		public ulong ToUInt64()									=> this.u64;
 		/// <summary>Explicit cast to a <see cref="UInt64"/></summary>
 		/// <param name="value">Address being casted</param>
 		/// <returns>The address as a 64-bit integer</returns>
@@ -319,7 +321,7 @@ namespace KSoft.Values
 		/// On a 32-bit platform, <see cref="Handle"/> is too large to represent as
 		/// an <see cref="UIntPtr"/>.
 		/// </exception>
-		public System.UIntPtr ToUIntPtr() { return new System.UIntPtr(this.Handle); }
+		public UIntPtr ToUIntPtr() { return new UIntPtr(this.Handle); }
 		#endregion
 
 		#region Boolean

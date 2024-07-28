@@ -10,7 +10,7 @@ namespace uni.ui.winforms.right_panel.textures;
 
 public partial class TexturePanel : UserControl {
   public TexturePanel() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.Texture = null;
 

@@ -50,36 +50,36 @@ namespace KSoft.Phoenix.Runtime
 
 			var sg = s.Owner as BSaveGame;
 
-			s.Stream(ref NextTickTime);
-			s.Stream(ref RealGravityBall);
-			s.StreamV(ref DesiredBallPosition);
-			BSaveGame.StreamCollection(s, CapturedUnits);
-			s.Stream(ref ExplodeCooldownLeft);
-			BSaveGame.StreamArray(s, ref UnitsToPull);
-			BSaveGame.StreamArray(s, ref QueuedPickupObjects);
-			sg.StreamBCost(s, ref CostPerTick);
-			s.Stream(ref TickLength);
-			s.Stream(ref BallProtoID); s.Stream(ref LightningProtoID); s.Stream(ref LightningBeamVisualProtoID);
-			s.Stream(ref DebrisProtoID); s.Stream(ref ExplodeProtoID); s.Stream(ref PickupAttachmentProtoID);
-			s.Stream(ref AudioReactionTimer);
-			s.Stream(ref LeaderAnimOrderID);
+			s.Stream(ref this.NextTickTime);
+			s.Stream(ref this.RealGravityBall);
+			s.StreamV(ref this.DesiredBallPosition);
+			BSaveGame.StreamCollection(s, this.CapturedUnits);
+			s.Stream(ref this.ExplodeCooldownLeft);
+			BSaveGame.StreamArray(s, ref this.UnitsToPull);
+			BSaveGame.StreamArray(s, ref this.QueuedPickupObjects);
+			sg.StreamBCost(s, ref this.CostPerTick);
+			s.Stream(ref this.TickLength);
+			s.Stream(ref this.BallProtoID); s.Stream(ref this.LightningProtoID); s.Stream(ref this.LightningBeamVisualProtoID);
+			s.Stream(ref this.DebrisProtoID); s.Stream(ref this.ExplodeProtoID); s.Stream(ref this.PickupAttachmentProtoID);
+			s.Stream(ref this.AudioReactionTimer);
+			s.Stream(ref this.LeaderAnimOrderID);
 
-			s.Stream(ref MaxBallSpeedStagnant); s.Stream(ref MaxBallSpeedPulling); s.Stream(ref ExplodeTime);
-			s.Stream(ref PullingRange); s.Stream(ref ExplosionForceOnDebris); s.Stream(ref HealthToCapture);
-			s.Stream(ref NudgeStrength); s.Stream(ref InitialLateralPullStrength); s.Stream(ref CapturedRadialSpacing);
-			s.Stream(ref CapturedSpringStrength); s.Stream(ref CapturedSpringDampening); s.Stream(ref CapturedSpringRestLength);
-			s.Stream(ref CapturedMinLateralSpeed); s.Stream(ref RipAttachmentChancePulling); s.Stream(ref PickupObjectRate);
-			s.Stream(ref DebrisAngularDamping); s.Stream(ref CurrentExplosionDamageBank); s.Stream(ref MaxPossibleExplosionDamageBank);
-			s.Stream(ref MaxExplosionDamageBankPerCaptured); s.Stream(ref ExplosionDamageBankPerTick);
-			s.Stream(ref CommandInterval);
-			s.Stream(ref MinBallDistance); s.Stream(ref MaxBallDistance);
-			s.Stream(ref LightningPerTick); s.Stream(ref MaxCapturedObjects);
-			s.Stream(ref NudgeChancePulling); s.Stream(ref ThrowPartChancePulling); s.Stream(ref LightningChancePulling);
-			s.Stream(ref ExplodeSound);
-			s.Stream(ref MinDamageBankPercentToThrow);
-			BSaveGame.StreamArray(s, ref RevealedTeamIDs);
-			s.Stream(ref unknown0); s.Stream(ref unknown1); s.Stream(ref unknown2);
-			s.Stream(ref CompletedInitialization); s.Stream(ref ThrowUnitsOnExplosion);
+			s.Stream(ref this.MaxBallSpeedStagnant); s.Stream(ref this.MaxBallSpeedPulling); s.Stream(ref this.ExplodeTime);
+			s.Stream(ref this.PullingRange); s.Stream(ref this.ExplosionForceOnDebris); s.Stream(ref this.HealthToCapture);
+			s.Stream(ref this.NudgeStrength); s.Stream(ref this.InitialLateralPullStrength); s.Stream(ref this.CapturedRadialSpacing);
+			s.Stream(ref this.CapturedSpringStrength); s.Stream(ref this.CapturedSpringDampening); s.Stream(ref this.CapturedSpringRestLength);
+			s.Stream(ref this.CapturedMinLateralSpeed); s.Stream(ref this.RipAttachmentChancePulling); s.Stream(ref this.PickupObjectRate);
+			s.Stream(ref this.DebrisAngularDamping); s.Stream(ref this.CurrentExplosionDamageBank); s.Stream(ref this.MaxPossibleExplosionDamageBank);
+			s.Stream(ref this.MaxExplosionDamageBankPerCaptured); s.Stream(ref this.ExplosionDamageBankPerTick);
+			s.Stream(ref this.CommandInterval);
+			s.Stream(ref this.MinBallDistance); s.Stream(ref this.MaxBallDistance);
+			s.Stream(ref this.LightningPerTick); s.Stream(ref this.MaxCapturedObjects);
+			s.Stream(ref this.NudgeChancePulling); s.Stream(ref this.ThrowPartChancePulling); s.Stream(ref this.LightningChancePulling);
+			s.Stream(ref this.ExplodeSound);
+			s.Stream(ref this.MinDamageBankPercentToThrow);
+			BSaveGame.StreamArray(s, ref this.RevealedTeamIDs);
+			s.Stream(ref this.unknown0); s.Stream(ref this.unknown1); s.Stream(ref this.unknown2);
+			s.Stream(ref this.CompletedInitialization); s.Stream(ref this.ThrowUnitsOnExplosion);
 		}
 		#endregion
 	};

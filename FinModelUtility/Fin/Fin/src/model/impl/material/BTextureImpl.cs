@@ -29,7 +29,7 @@ public partial class ModelImpl<TVertex> {
 
     public string ValidFileName
       => this.Name.ReplaceInvalidFilenameCharacters() +
-         BestImageFormat.GetExtension();
+         this.BestImageFormat.GetExtension();
 
     public int UvIndex { get; set; }
     public UvType UvType { get; set; }
@@ -147,9 +147,9 @@ public partial class ModelImpl<TVertex> {
 
     public override int GetHashCode()
       => new FluentHash()
-         .With(Image)
-         .With(WrapModeU)
-         .With(WrapModeV);
+         .With(this.Image)
+         .With(this.WrapModeU)
+         .With(this.WrapModeV);
 
     public override bool Equals(object? other) {
       if (ReferenceEquals(null, other)) {

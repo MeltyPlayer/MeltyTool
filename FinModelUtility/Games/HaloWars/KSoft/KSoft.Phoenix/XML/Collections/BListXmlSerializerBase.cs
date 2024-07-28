@@ -23,43 +23,43 @@ namespace KSoft.Phoenix.XML
 			where TCursor : class
 		{
 			int child_element_count = s.TryGetCursorElementCount();
-			if (List.Capacity < child_element_count)
-				List.Capacity = child_element_count;
+			if (this.List.Capacity < child_element_count)
+				this.List.Capacity = child_element_count;
 		}
 		protected virtual IEnumerable<TCursor> ReadGetNodes<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
 			where TCursor : class
 		{
-			return Params.UseElementName
-				? s.ElementsByName(Params.ElementName)
+			return this.Params.UseElementName
+				? s.ElementsByName(this.Params.ElementName)
 				: s.Elements;
 		}
 		protected virtual void ReadNodes<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs)
 			where TDoc : class
 			where TCursor : class
 		{
-			ReadDetermineListSize(s, xs);
+			this.ReadDetermineListSize(s, xs);
 
 			int x = 0;
-			foreach (var n in ReadGetNodes(s))
+			foreach (var n in this.ReadGetNodes(s))
 			{
 				using (s.EnterCursorBookmark(n))
-					Read(s, xs, x++);
+					this.Read(s, xs, x++);
 			}
 
-			List.OptimizeStorage();
+			this.List.OptimizeStorage();
 		}
 		protected virtual string WriteGetElementName(T data)
 		{
-			return Params.ElementName;
+			return this.Params.ElementName;
 		}
 		protected virtual void WriteNodes<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs)
 			where TDoc : class
 			where TCursor : class
 		{
-			foreach (T data in List)
-				using (s.EnterCursorBookmark(WriteGetElementName(data)))
-					Write(s, xs, data);
+			foreach (T data in this.List)
+				using (s.EnterCursorBookmark(this.WriteGetElementName(data)))
+					this.Write(s, xs, data);
 		}
 
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -67,18 +67,20 @@ namespace KSoft.Phoenix.XML
 			where TCursor : class
 		{
 			bool should_stream = true;
-			string root_name = Params.GetOptionalRootName();
+			string root_name = this.Params.GetOptionalRootName();
 			var xs = s.GetSerializerInterface();
 
 			if (s.IsReading) // If the stream doesn't have the expected element, don't try to stream
 				should_stream = root_name == null || s.ElementsExists(root_name);
 			else if (s.IsWriting)
-				should_stream = List != null && List.IsEmpty == false;
+				should_stream = this.List != null && this.List.IsEmpty == false;
 
 			if (should_stream) using (s.EnterCursorBookmark(root_name))
 			{
-					 if (s.IsReading)	ReadNodes(s, xs);
-				else if (s.IsWriting)	WriteNodes(s, xs);
+					 if (s.IsReading)
+						 this.ReadNodes(s, xs);
+				else if (s.IsWriting)
+					this.WriteNodes(s, xs);
 			}
 		}
 		#endregion

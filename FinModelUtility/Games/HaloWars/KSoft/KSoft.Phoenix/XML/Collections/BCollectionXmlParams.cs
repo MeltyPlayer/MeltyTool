@@ -10,25 +10,27 @@ namespace KSoft.Phoenix.XML
 		public /*readonly*/ string ElementName;
 
 		/// <summary>Do we explicitly filter the XML tags to match <see cref="ElementName"/>?</summary>
-		public bool UseElementName { get { return ElementName != null; } }
+		public bool UseElementName { get { return this.ElementName != null; } }
 
 		#region Flags
 		public /*readonly*/ BCollectionXmlParamsFlags Flags;
 
 		[Contracts.Pure]
-		protected bool HasFlag(BCollectionXmlParamsFlags flag) { return (Flags & flag) == flag; }
+		protected bool HasFlag(BCollectionXmlParamsFlags flag) { return (this.Flags & flag) == flag; }
 
 		public void SetForceNoRootElementStreaming(bool isSet)
 		{
-			if (isSet) Flags |= BCollectionXmlParamsFlags.ForceNoRootElementStreaming;
-			else Flags &= ~BCollectionXmlParamsFlags.ForceNoRootElementStreaming;
+			if (isSet)
+				this.Flags |= BCollectionXmlParamsFlags.ForceNoRootElementStreaming;
+			else
+				this.Flags &= ~BCollectionXmlParamsFlags.ForceNoRootElementStreaming;
 		}
 		#endregion
 
 		public string GetOptionalRootName()
 		{
-			if (!HasFlag(BCollectionXmlParamsFlags.ForceNoRootElementStreaming))
-				return RootName;
+			if (!this.HasFlag(BCollectionXmlParamsFlags.ForceNoRootElementStreaming))
+				return this.RootName;
 
 			return null;
 		}
@@ -38,8 +40,8 @@ namespace KSoft.Phoenix.XML
 		/// <param name="elementName"></param>
 		protected BCollectionXmlParams(string elementName)
 		{
-			RootName = elementName + "s";
-			ElementName = elementName;
+			this.RootName = elementName + "s";
+			this.ElementName = elementName;
 		}
 
 		#region IO.TagElementStream util

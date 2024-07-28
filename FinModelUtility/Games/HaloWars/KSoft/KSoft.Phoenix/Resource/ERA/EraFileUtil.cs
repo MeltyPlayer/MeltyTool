@@ -33,9 +33,9 @@ namespace KSoft.Phoenix.Resource
 
 		/*protected*/ internal EraFile mEraFile;
 		protected string mSourceFile; // filename of the source file which the util stems from (.era, .xml)
-		public System.IO.TextWriter ProgressOutput { get; set; }
-		public System.IO.TextWriter VerboseOutput { get; set; }
-		public System.IO.TextWriter DebugOutput { get; set; }
+		public TextWriter ProgressOutput { get; set; }
+		public TextWriter VerboseOutput { get; set; }
+		public TextWriter DebugOutput { get; set; }
 
 		/// <see cref="EraFileUtilOptions"/>
 		public Collections.BitVector32 Options = new Collections.BitVector32();
@@ -43,18 +43,18 @@ namespace KSoft.Phoenix.Resource
 		protected EraFileUtil()
 		{
 			if (System.Diagnostics.Debugger.IsAttached)
-				ProgressOutput = Console.Out;
+				this.ProgressOutput = Console.Out;
 			if (System.Diagnostics.Debugger.IsAttached)
-				VerboseOutput = Console.Out;
+				this.VerboseOutput = Console.Out;
 		}
 
 		#region IDisposable Members
 		public virtual void Dispose()
 		{
-			ProgressOutput = null;
-			VerboseOutput = null;
-			DebugOutput = null;
-			Util.DisposeAndNull(ref mEraFile);
+			this.ProgressOutput = null;
+			this.VerboseOutput = null;
+			this.DebugOutput = null;
+			Util.DisposeAndNull(ref this.mEraFile);
 		}
 		#endregion
 

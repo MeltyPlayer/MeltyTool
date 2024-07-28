@@ -87,7 +87,7 @@ public class Bw2Anim : IAnim, IBinaryDeserializable {
       Span<double> floats = stackalloc double[4];
 
       for (var p = 0; p < bone.PositionKeyframeCount; ++p) {
-        Parse3PositionValuesFrom2UShorts_(bone, ber, floats);
+        this.Parse3PositionValuesFrom2UShorts_(bone, ber, floats);
         animBoneFrames.PositionFrames.Add(((float) floats[0],
                                            (float) floats[1],
                                            (float) floats[2]));

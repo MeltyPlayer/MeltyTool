@@ -20,7 +20,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref X); s.Stream(ref Y); s.Stream(ref Z); s.Stream(ref W);
+			s.Stream(ref this.X); s.Stream(ref this.Y); s.Stream(ref this.Z); s.Stream(ref this.W);
 		}
 		#endregion
 	};
@@ -436,7 +436,7 @@ namespace KSoft.Phoenix.Runtime
 		public IO.EndianStream StreamBCost(IO.EndianStream s, ref BCost[] c)
 		{
 			if (s.IsReading)
-				c = new float[Database.Resources.Count];
+				c = new float[this.Database.Resources.Count];
 
 			for (int x = 0; x < c.Length; x++)
 				s.Stream(ref c[x]);

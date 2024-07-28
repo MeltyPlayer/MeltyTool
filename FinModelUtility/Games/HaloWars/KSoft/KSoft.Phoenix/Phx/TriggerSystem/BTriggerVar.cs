@@ -15,10 +15,10 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		BTriggerVarType mType = BTriggerVarType.None;
-		public BTriggerVarType Type { get { return mType; } }
+		public BTriggerVarType Type { get { return this.mType; } }
 
 		bool mIsNull;
-		public bool IsNull { get { return mIsNull; } }
+		public bool IsNull { get { return this.mIsNull; } }
 
 		//string mValue;
 
@@ -26,8 +26,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			base.Serialize(s);
 
-			s.StreamAttributeEnum(kXmlAttrType, ref mType);
-			s.StreamAttribute    (kXmlAttrIsNull, ref mIsNull);
+			s.StreamAttributeEnum(kXmlAttrType, ref this.mType);
+			s.StreamAttribute    (kXmlAttrIsNull, ref this.mIsNull);
 			//s.StreamCursor(ref mValue);
 		}
 	};

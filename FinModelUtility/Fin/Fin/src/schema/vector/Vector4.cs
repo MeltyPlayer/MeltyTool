@@ -14,10 +14,10 @@ public abstract class BVector4<T> {
 
   public T this[int index] {
     get => index switch {
-        0 => X,
-        1 => Y,
-        2 => Z,
-        3 => W,
+        0 => this.X,
+        1 => this.Y,
+        2 => this.Z,
+        3 => this.W,
     };
     set {
       switch (index) {

@@ -11,8 +11,8 @@ namespace KSoft.T4
 
 			public BitSetEnumeratorDef(string name, PrimitiveCodeDefinition def)
 			{
-				Name = name;
-				ResultCodeDef = def;
+				this.Name = name;
+				this.ResultCodeDef = def;
 			}
 		};
 		public static IEnumerable<BitSetEnumeratorDef> BitSetEnumeratorDefs { get {
@@ -27,26 +27,26 @@ namespace KSoft.T4
 
 			public BitStateDef(string name, bool value)
 			{
-				ApiName = name;
-				Value = value;
+				this.ApiName = name;
+				this.Value = value;
 			}
 
 			// name to use in XMLdoc contents
 			public string DocName { get {
-				return ApiName.ToLower(UtilT4.InvariantCultureInfo);
+				return this.ApiName.ToLower(UtilT4.InvariantCultureInfo);
 			} }
 			// C# bool keyword
 			public string ValueKeyword { get {
-				return Value.ToString(UtilT4.InvariantCultureInfo).ToLower(UtilT4.InvariantCultureInfo);
+				return this.Value.ToString(UtilT4.InvariantCultureInfo).ToLower(UtilT4.InvariantCultureInfo);
 			} }
 			public string BinaryName { get {
-				return Value
+				return this.Value
 					? "1"
 					: "0";
 			} }
 
 			public string DocNameVerbose { get {
-				return string.Format(UtilT4.InvariantCultureInfo, "{0} ({1})", BinaryName, DocName);
+				return string.Format(UtilT4.InvariantCultureInfo, "{0} ({1})", this.BinaryName, this.DocName);
 			} }
 		};
 		public static IEnumerable<BitStateDef> BitStateDefs { get {

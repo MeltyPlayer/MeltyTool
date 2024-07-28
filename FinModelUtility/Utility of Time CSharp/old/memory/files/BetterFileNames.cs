@@ -7,7 +7,7 @@ namespace UoT {
 
     // TODO: Add ability to sort into categories too?
     static BetterFileNames() {
-      BetterFileNames.Add(
+      Add(
           ("object_am", "Armos"),
           ("object_Bb", "Bubble"),
           ("object_bdan_objects", "Misc. Inside Jabu-Jabu's Belly"),
@@ -103,7 +103,7 @@ namespace UoT {
           ("object_zo", "Zora")
       );
 
-      BetterFileNames.Add(
+      Add(
           ("bdan_scene", "Inside Jabu-Jabu's Belly"),
           ("Bmori1_scene", "Forest Temple"),
           ("bowling_scene", "Bombchu Bowling Alley"),
@@ -142,13 +142,13 @@ namespace UoT {
     }
 
     public static string Get(string filename) {
-      BetterFileNames.impl_.TryGetValue(filename, out var betterFilename);
+      impl_.TryGetValue(filename, out var betterFilename);
       return betterFilename ?? filename;
     }
 
     private static void Add(params (string, string)[] pairs) {
       foreach (var pair in pairs) {
-        BetterFileNames.impl_.Add(pair.Item1, pair.Item2);
+        impl_.Add(pair.Item1, pair.Item2);
       }
     }
   }

@@ -5,8 +5,8 @@ public static class CommonShaderPrograms {
 
   public static GlShaderProgram TEXTURELESS_SHADER_PROGRAM {
     get {
-        if (CommonShaderPrograms.texturelessShaderProgram_ == null) {
-          CommonShaderPrograms.texturelessShaderProgram_ =
+        if (texturelessShaderProgram_ == null) {
+          texturelessShaderProgram_ =
               GlShaderProgram.FromShaders(@"
 #version 120
 

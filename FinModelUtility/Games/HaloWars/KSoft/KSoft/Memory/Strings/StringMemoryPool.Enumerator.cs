@@ -18,15 +18,15 @@ namespace KSoft.Memory.Strings
 
 			public KeyValueEnumerator(StringMemoryPool pool)
 			{
-				mPool = pool;
-				mCurrentIndex = kBlankIndexState;
-				mCurrent = new KeyValuePair<Values.PtrHandle, string>(Values.PtrHandle.Null32, null);
+				this.mPool = pool;
+				this.mCurrentIndex = kBlankIndexState;
+				this.mCurrent = new KeyValuePair<Values.PtrHandle, string>(Values.PtrHandle.Null32, null);
 			}
 
 			#region IEnumerator<T> Members
 			KeyValuePair<Values.PtrHandle, string> mCurrent;
 			/// <summary>Get the current element in the enumeration</summary>
-			public KeyValuePair<Values.PtrHandle, string> Current { get { return mCurrent; } }
+			public KeyValuePair<Values.PtrHandle, string> Current { get { return this.mCurrent; } }
 			#endregion
 
 			#region IDisposable Members
@@ -35,31 +35,31 @@ namespace KSoft.Memory.Strings
 
 			#region IEnumerator Members
 			/// <summary>Get the current element in the enumeration</summary>
-			object System.Collections.IEnumerator.Current { get { return mCurrent; } }
+			object System.Collections.IEnumerator.Current { get { return this.mCurrent; } }
 
 			/// <summary>Advances the enumerator to the next address\string pair</summary>
 			/// <returns></returns>
 			public bool MoveNext()
 			{
 				// for supporting state Resets
-				if (mCurrentIndex == kBlankIndexState)
-					mCurrentIndex = 0;
+				if (this.mCurrentIndex == kBlankIndexState)
+					this.mCurrentIndex = 0;
 
-				if (mCurrentIndex >= 0 && mCurrentIndex < mPool.Count)
+				if (this.mCurrentIndex >= 0 && this.mCurrentIndex < this.mPool.Count)
 				{
-					mCurrent = new KeyValuePair<Values.PtrHandle, string>(
-						mPool.mReferences[mCurrentIndex], mPool.mPool[mCurrentIndex]);
+					this.mCurrent = new KeyValuePair<Values.PtrHandle, string>(this.mPool.mReferences[this.mCurrentIndex], this.mPool.mPool[this.mCurrentIndex]);
 
-					mCurrentIndex++;
+					this.mCurrentIndex++;
 				}
 				// when we've past the end of the pool
 				else
-					mCurrentIndex = TypeExtensions.kNone;
+					this.mCurrentIndex = TypeExtensions.kNone;
 
-				return mCurrentIndex >= 0 && mCurrentIndex < mPool.Count;
+				return this.mCurrentIndex >= 0 && this.mCurrentIndex < this.mPool.Count;
 			}
 
-			public void Reset() { mCurrentIndex = kBlankIndexState; }
+			public void Reset() {
+				this.mCurrentIndex = kBlankIndexState; }
 			#endregion
 		};
 	};

@@ -78,7 +78,7 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     => new FileHierarchyAssetBundleSeparator(
         fileHierarchy,
         (subdir, organizer) => {
-          if (!separator_.Contains(subdir)) {
+          if (!this.separator_.Contains(subdir)) {
             return;
           }
 

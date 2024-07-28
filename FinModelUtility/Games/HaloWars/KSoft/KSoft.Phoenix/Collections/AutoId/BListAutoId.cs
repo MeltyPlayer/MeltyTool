@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace KSoft.Collections
 {
-	using PhxUtil = KSoft.Phoenix.PhxUtil;
+	using PhxUtil = Phoenix.PhxUtil;
 
 	public sealed class BListAutoIdParams
 		: BListParams
@@ -25,19 +25,19 @@ namespace KSoft.Collections
 		}
 		public BListAutoId(BListAutoIdParams @params = null) : base(@params)
 		{
-			kUnregisteredMessage = BuildUnRegisteredMsg();
-			mUndefinedInterface = new ProtoEnumWithUndefinedImpl(this);
+			this.kUnregisteredMessage = BuildUnRegisteredMsg();
+			this.mUndefinedInterface = new ProtoEnumWithUndefinedImpl(this);
 		}
 
 		public override void Clear()
 		{
 			base.Clear();
 
-			if (mDBI != null)
-				mDBI.Clear();
+			if (this.mDBI != null)
+				this.mDBI.Clear();
 
-			if (mUndefinedInterface != null)
-				mUndefinedInterface.Clear();
+			if (this.mUndefinedInterface != null)
+				this.mUndefinedInterface.Clear();
 		}
 
 		#region Database interfaces
@@ -46,17 +46,17 @@ namespace KSoft.Collections
 		{
 			item.AutoId = id.IsNotNone()
 				? id
-				: Count;
+				: this.Count;
 
 			if (itemName != null)
 				item.Data = itemName;
 		}
 		internal int DynamicAdd(T item, string itemName, int id = TypeExtensions.kNone)
 		{
-			PreAdd(item, itemName, id);
-			if (mDBI != null)
+			this.PreAdd(item, itemName, id);
+			if (this.mDBI != null)
 			{
-				if (mDBI.ContainsKey(itemName))
+				if (this.mDBI.ContainsKey(itemName))
 				{
 					throw new ArgumentException(string.Format(
 						"There is already a {0} named {1}",
@@ -64,16 +64,16 @@ namespace KSoft.Collections
 						), nameof(itemName));
 				}
 
-				mDBI.Add(item.Data, item);
+				this.mDBI.Add(item.Data, item);
 
-				if (Params != null && Params.ToLowerDataNames)
+				if (this.Params != null && this.Params.ToLowerDataNames)
 				{
-					string lower_name = Phoenix.PhxUtil.ToLowerIfContainsUppercase(item.Data);
-					if (!object.ReferenceEquals(lower_name, item.Data))
-						mDBI.Add(lower_name, item);
+					string lower_name = PhxUtil.ToLowerIfContainsUppercase(item.Data);
+					if (!ReferenceEquals(lower_name, item.Data))
+						this.mDBI.Add(lower_name, item);
 				}
 			}
-			base.AddItem(item);
+			this.AddItem(item);
 
 			return item.AutoId;
 		}
@@ -81,17 +81,17 @@ namespace KSoft.Collections
 		Dictionary<string, T> mDBI;
 		internal void SetupDatabaseInterface()
 		{
-			mDBI = new Dictionary<string, T>(Params != null ? Params.InitialCapacity : BCollectionParams.kDefaultCapacity);
+			this.mDBI = new Dictionary<string, T>(this.Params != null ? this.Params.InitialCapacity : BCollectionParams.kDefaultCapacity);
 		}
 
 		internal int TryGetId(string name)
 		{
 			int id = TypeExtensions.kNone;
-			if (mDBI == null)
+			if (this.mDBI == null)
 				return id;
 
 			T obj;
-			if (mDBI.TryGetValue(name, out obj))
+			if (this.mDBI.TryGetValue(name, out obj))
 				id = obj.AutoId;
 
 			return id;
@@ -101,29 +101,29 @@ namespace KSoft.Collections
 		#region IProtoEnum Members
 		public int TryGetMemberId(string memberName)
 		{
-			return mList.FindIndex(n => PhxUtil.StrEqualsIgnoreCase(n.Data, memberName));
+			return this.mList.FindIndex(n => PhxUtil.StrEqualsIgnoreCase(n.Data, memberName));
 		}
 		public string TryGetMemberName(int memberId)
 		{
-			return IsValidMemberId(memberId) ? GetMemberName(memberId) : null;
+			return this.IsValidMemberId(memberId) ? this.GetMemberName(memberId) : null;
 		}
 		public bool IsValidMemberId(int memberId)
 		{
-			return memberId >= 0 && memberId < Count;
+			return memberId >= 0 && memberId < this.Count;
 		}
 		public bool IsValidMemberName(string memberName)
 		{
-			int index = TryGetMemberId(memberName);
+			int index = this.TryGetMemberId(memberName);
 
 			return index.IsNotNone();
 		}
 
 		public int GetMemberId(string memberName)
 		{
-			int index = TryGetMemberId(memberName);
+			int index = this.TryGetMemberId(memberName);
 
 			if (index.IsNone())
-				throw new ArgumentException(kUnregisteredMessage, memberName);
+				throw new ArgumentException(this.kUnregisteredMessage, memberName);
 
 			return index;
 		}
@@ -132,7 +132,7 @@ namespace KSoft.Collections
 			return this[memberId].Data;
 		}
 
-		public int MemberCount { get { return Count; } }
+		public int MemberCount { get { return this.Count; } }
 		#endregion
 
 		public override object GetObject(int id)
@@ -141,14 +141,14 @@ namespace KSoft.Collections
 				return null;
 
 			if (PhxUtil.IsUndefinedReferenceHandle(id))
-				return Phoenix.TypeExtensionsPhx.GetUndefinedObject(mUndefinedInterface, id);
+				return Phoenix.TypeExtensionsPhx.GetUndefinedObject(this.mUndefinedInterface, id);
 
 			return base.GetObject(id);
 		}
 
 		private ProtoEnumWithUndefinedImpl mUndefinedInterface;
-		IProtoEnumWithUndefined IHasUndefinedProtoMemberInterface.UndefinedInterface { get { return mUndefinedInterface; } }
-		internal IProtoEnumWithUndefined UndefinedInterface { get { return mUndefinedInterface; } }
+		IProtoEnumWithUndefined IHasUndefinedProtoMemberInterface.UndefinedInterface { get { return this.mUndefinedInterface; } }
+		internal IProtoEnumWithUndefined UndefinedInterface { get { return this.mUndefinedInterface; } }
 	};
 }
 

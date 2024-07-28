@@ -55,7 +55,7 @@ namespace UoT {
 
     static IndirectTextureHacks() {
       var linkIndirectTextureHack = new LinkIndirectTextureHack();
-      IndirectTextureHacks.Add_(
+      Add_(
           ("object_link_boy", linkIndirectTextureHack),
           ("object_link_child", linkIndirectTextureHack),
           ("object_tite", new TektiteIndirectTextureHack()),
@@ -65,13 +65,13 @@ namespace UoT {
     }
 
     public static IIndirectTextureHack Get(string filename) {
-      IndirectTextureHacks.impl_.TryGetValue(filename, out var hack);
+      impl_.TryGetValue(filename, out var hack);
       return hack;
     }
 
     private static void Add_(params (string, IIndirectTextureHack)[] pairs) {
       foreach (var pair in pairs) {
-        IndirectTextureHacks.impl_.Add(pair.Item1, pair.Item2);
+        impl_.Add(pair.Item1, pair.Item2);
       }
     }
   }

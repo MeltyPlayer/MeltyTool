@@ -10,12 +10,12 @@ namespace KSoft.Phoenix.HaloWars
 		DefinitiveEditionSku mSku = DefinitiveEditionSku.Undefined;
 		public DefinitiveEditionSku Sku
 		{
-			get { return mSku; }
+			get { return this.mSku; }
 			set
 			{
-				if (this.SetFieldEnum(ref mSku, value))
+				if (this.SetFieldEnum(ref this.mSku, value))
 				{
-					FilePath = Sku.GetModManifestPath();
+					this.FilePath = this.Sku.GetModManifestPath();
 				}
 			}
 		}
@@ -25,13 +25,13 @@ namespace KSoft.Phoenix.HaloWars
 		string mFilePath;
 		public string FilePath
 		{
-			get { return mFilePath; }
+			get { return this.mFilePath; }
 			set
 			{
-				if (this.SetFieldObj(ref mFilePath, value))
+				if (this.SetFieldObj(ref this.mFilePath, value))
 				{
-					ContainingFolder = ContainingFolder;
-					DisplayTitle = DisplayTitle;
+					this.ContainingFolder = this.ContainingFolder;
+					this.DisplayTitle = this.DisplayTitle;
 				}
 			}
 		}
@@ -41,19 +41,19 @@ namespace KSoft.Phoenix.HaloWars
 		{
 			get
 			{
-				if (FilePath.IsNullOrEmpty())
+				if (this.FilePath.IsNullOrEmpty())
 					return null;
 
-				string path = FilePath;
+				string path = this.FilePath;
 				path = Path.GetDirectoryName(path);
 				return path;
 			}
-			private set { OnPropertyChanged(); }
+			private set { this.OnPropertyChanged(); }
 		}
 
 		public string DisplayTitle
 		{
-			get { return string.Format("{0} ModManifest - {1}", Sku, FilePath); }
+			get { return string.Format("{0} ModManifest - {1}", this.Sku, this.FilePath); }
 			set { this.OnPropertyChanged(); }
 		}
 
@@ -62,12 +62,12 @@ namespace KSoft.Phoenix.HaloWars
 
 		public void ReadFromFile()
 		{
-			if (!File.Exists(FilePath))
+			if (!File.Exists(this.FilePath))
 				return;
 
-			string[] lines = File.ReadAllLines(FilePath);
+			string[] lines = File.ReadAllLines(this.FilePath);
 
-			Directories.Clear();
+			this.Directories.Clear();
 
 			for (int x = 0; x < lines.Length; x++)
 			{
@@ -79,20 +79,20 @@ namespace KSoft.Phoenix.HaloWars
 					continue;
 				}
 
-				Directories.Add(dir);
+				this.Directories.Add(dir);
 			}
 		}
 
 		public void WriteToFile()
 		{
-			if (!Directory.Exists(ContainingFolder))
+			if (!Directory.Exists(this.ContainingFolder))
 				return;
 
-			using (var sw = new StreamWriter(FilePath))
+			using (var sw = new StreamWriter(this.FilePath))
 			{
 				var line = new System.Text.StringBuilder(512);
 
-				foreach (var dir in Directories)
+				foreach (var dir in this.Directories)
 				{
 					line.Clear();
 					if (!dir.WriteToLine(line))
@@ -113,8 +113,8 @@ namespace KSoft.Phoenix.HaloWars
 		bool mIsDisabled;
 		public bool IsDisabled
 		{
-			get { return mIsDisabled; }
-			set { this.SetFieldVal(ref mIsDisabled, value); }
+			get { return this.mIsDisabled; }
+			set { this.SetFieldVal(ref this.mIsDisabled, value); }
 		}
 		#endregion
 
@@ -122,14 +122,14 @@ namespace KSoft.Phoenix.HaloWars
 		string mDirectory;
 		public string Directory
 		{
-			get { return mDirectory; }
+			get { return this.mDirectory; }
 			set
 			{
-				if (this.SetFieldObj(ref mDirectory, value))
+				if (this.SetFieldObj(ref this.mDirectory, value))
 				{
 					// refresh validity
-					IsValid = IsValid;
-					DoesExist = DoesExist;
+					this.IsValid = this.IsValid;
+					this.DoesExist = this.DoesExist;
 				}
 			}
 		}
@@ -138,10 +138,10 @@ namespace KSoft.Phoenix.HaloWars
 		#region IsValid
 		public bool IsValid
 		{
-			get { return Directory.IsNotNullOrEmpty(); }
+			get { return this.Directory.IsNotNullOrEmpty(); }
 			private set
 			{
-				OnPropertyChanged();
+				this.OnPropertyChanged();
 			}
 		}
 		#endregion
@@ -149,10 +149,10 @@ namespace KSoft.Phoenix.HaloWars
 		#region DoesExist
 		public bool DoesExist
 		{
-			get { return IsValid && System.IO.Directory.Exists(Directory); }
+			get { return this.IsValid && System.IO.Directory.Exists(this.Directory); }
 			private set
 			{
-				OnPropertyChanged();
+				this.OnPropertyChanged();
 			}
 		}
 		#endregion
@@ -162,12 +162,12 @@ namespace KSoft.Phoenix.HaloWars
 			if (line.IsNullOrEmpty())
 				return false;
 
-			IsDisabled = false;
+			this.IsDisabled = false;
 
 			int directory_start_index = 0;
 			if (line.StartsWith(kDisabledPrefix))
 			{
-				IsDisabled = true;
+				this.IsDisabled = true;
 				directory_start_index = 1;
 			}
 
@@ -185,22 +185,22 @@ namespace KSoft.Phoenix.HaloWars
 				}
 			}
 
-			Directory = dir;
+			this.Directory = dir;
 
 			return true;
 		}
 
 		public bool WriteToLine(System.Text.StringBuilder line)
 		{
-			if (!IsValid)
+			if (!this.IsValid)
 				return false;
 
-			if (IsDisabled)
+			if (this.IsDisabled)
 			{
 				line.Append(kDisabledPrefix);
 			}
 
-			line.Append(Directory);
+			line.Append(this.Directory);
 
 			return true;
 		}

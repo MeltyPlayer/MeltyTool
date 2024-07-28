@@ -37,14 +37,14 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		void SerializeSetup(IO.EndianStream s)
 		{
-			StreamCollection(s, Players);
-			StreamCollection(s, Teams);
+			StreamCollection(s, this.Players);
+			StreamCollection(s, this.Teams);
 			s.StreamSignature(cSaveMarker.SetupTeam);
-			s.Stream(UserSave);
+			s.Stream(this.UserSave);
 		}
 		void SerializeGameState(IO.EndianStream s)
 		{
-			s.Stream(World);
+			s.Stream(this.World);
 // 			s.StreamSignature(cSaveMarker.World);
 // 			s.StreamObject(UIManager);
 // 			s.StreamSignature(cSaveMarker.UI);
@@ -57,13 +57,13 @@ namespace KSoft.Phoenix.Runtime
 			using (s.EnterOwnerBookmark(this))
 			{
 				s.StreamSignature(kClassVersions.BSaveGame);
-				s.Stream(ref SaveFileType);
+				s.Stream(ref this.SaveFileType);
 
 				s.StreamSignature(cSaveMarker.Start);
 				kClassVersions.Serialize(s);
-				s.Stream(Database);
-				SerializeSetup(s);
-				SerializeGameState(s);
+				s.Stream(this.Database);
+				this.SerializeSetup(s);
+				this.SerializeGameState(s);
 				//s.StreamSignature(cSaveMarker.End);
 			}
 		}

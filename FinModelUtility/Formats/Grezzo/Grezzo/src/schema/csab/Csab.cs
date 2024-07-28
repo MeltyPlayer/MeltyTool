@@ -31,7 +31,7 @@ public class Csab : IBinaryDeserializable {
       br.AssertUInt32(0x00);
 
       float[] unk;
-      if (IsPastVersion4) {
+      if (this.IsPastVersion4) {
         // TODO: Might have to do with translations?
         unk = br.ReadSingles(3);
       }

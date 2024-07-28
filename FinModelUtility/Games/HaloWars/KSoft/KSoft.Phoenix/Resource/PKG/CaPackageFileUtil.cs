@@ -15,21 +15,21 @@ namespace KSoft.Phoenix.Resource.PKG
 
 		protected CaPackageFileUtil()
 		{
-			PkgDefinition = new CaPackageFileDefinition();
+			this.PkgDefinition = new CaPackageFileDefinition();
 
 			if (System.Diagnostics.Debugger.IsAttached)
-				ProgressOutput = Console.Out;
+				this.ProgressOutput = Console.Out;
 			if (System.Diagnostics.Debugger.IsAttached)
-				VerboseOutput = Console.Out;
+				this.VerboseOutput = Console.Out;
 		}
 
 		#region IDisposable Members
 		public virtual void Dispose()
 		{
-			ProgressOutput = null;
-			VerboseOutput = null;
-			DebugOutput = null;
-			mPkgFile = null;
+			this.ProgressOutput = null;
+			this.VerboseOutput = null;
+			this.DebugOutput = null;
+			this.mPkgFile = null;
 		}
 		#endregion
 	};

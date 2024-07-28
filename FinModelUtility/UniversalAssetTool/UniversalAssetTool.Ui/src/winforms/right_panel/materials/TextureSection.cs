@@ -9,7 +9,7 @@ namespace uni.ui.winforms.right_panel.materials;
 
 public partial class TextureSection : UserControl {
   public TextureSection() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.textureSelectorBox_.OnTextureSelected
           += texture => this.texturePanel_.Texture = texture;

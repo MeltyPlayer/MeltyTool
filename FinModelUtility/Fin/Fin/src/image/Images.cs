@@ -37,7 +37,7 @@ public static class FinImage {
   public static IImage FromFile(IReadOnlyGenericFile file) {
     try {
       using var stream = file.OpenRead();
-      return FinImage.FromStream(stream);
+      return FromStream(stream);
     } catch (Exception e) {
       throw new Exception($"Failed to load image \"{file}\"!", e);
     }
@@ -45,7 +45,7 @@ public static class FinImage {
 
   public static async Task<IImage> FromFileAsync(IReadOnlyGenericFile file) {
     await using var stream = file.OpenRead();
-    return await FinImage.FromStreamAsync(stream);
+    return await FromStreamAsync(stream);
   }
 
 

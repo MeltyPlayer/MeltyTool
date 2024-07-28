@@ -4,12 +4,12 @@
     uint behavior = 0;
 
     public string Name {
-      get { return name; }
-      set { name = value; }
+      get { return this.name; }
+      set { this.name = value; }
     }
 
     public uint Behavior {
-      get { return behavior; }
+      get { return this.behavior; }
     }
 
     public BehaviorNameEntry(string name, uint behavior) {
@@ -18,7 +18,7 @@
     }
 
     public override string ToString() {
-      return name + " = [" + "0x" + behavior.ToString("X8") + "]";
+      return this.name + " = [" + "0x" + this.behavior.ToString("X8") + "]";
     }
   }
 }

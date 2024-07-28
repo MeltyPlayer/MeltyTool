@@ -378,10 +378,10 @@ public class ColorConstant : BColorValue, IColorConstant {
   public override IScalarValue G { get; }
   public override IScalarValue B { get; }
 
-  public override string ToString() => $"<{R}, {G}, {B}>";
+  public override string ToString() => $"<{this.R}, {this.G}, {this.B}>";
 
   public override bool Equals(object? other) {
-    if (Object.ReferenceEquals(this, other)) {
+    if (ReferenceEquals(this, other)) {
       return true;
     }
 
@@ -430,10 +430,10 @@ public class ColorWrapper(
   public override IScalarValue B { get; } = b;
 
   public override string ToString()
-    => this.Intensity != null ? $"{this.Intensity}" : $"<{R}, {G}, {B}>";
+    => this.Intensity != null ? $"{this.Intensity}" : $"<{this.R}, {this.G}, {this.B}>";
 
   public override bool Equals(object? other) {
-    if (Object.ReferenceEquals(this, other)) {
+    if (ReferenceEquals(this, other)) {
       return true;
     }
 

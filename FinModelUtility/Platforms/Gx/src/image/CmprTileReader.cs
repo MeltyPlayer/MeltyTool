@@ -58,14 +58,14 @@ public readonly struct CmprTileReader(
                      Span<byte> indicesBuffer) {
     for (var j = 0; j < subTileCountInAxis; ++j) {
       for (var i = 0; i < subTileCountInAxis; ++i) {
-        DecodeSubblock_(
+        this.DecodeSubblock_(
             br,
             shortBuffer,
             scan0,
             paletteBuffer,
             indicesBuffer,
-            tileX * TileWidth + i * subTileSizeInAxis,
-            tileY * TileHeight + j * subTileSizeInAxis,
+            tileX * this.TileWidth + i * subTileSizeInAxis,
+            tileY * this.TileHeight + j * subTileSizeInAxis,
             imageWidth,
             imageHeight);
       }

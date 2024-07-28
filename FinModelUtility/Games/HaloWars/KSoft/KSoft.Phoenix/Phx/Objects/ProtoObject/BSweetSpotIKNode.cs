@@ -15,8 +15,8 @@ namespace KSoft.Phoenix.Phx
 		string mName;
 		public string Name
 		{
-			get { return mName; }
-			set { mName = value; }
+			get { return this.mName; }
+			set { this.mName = value; }
 		}
 		#endregion
 
@@ -24,11 +24,11 @@ namespace KSoft.Phoenix.Phx
 		int mLinkCount;
 		public int LinkCount
 		{
-			get { return mLinkCount; }
-			set { mLinkCount = value; }
+			get { return this.mLinkCount; }
+			set { this.mLinkCount = value; }
 		}
 
-		public bool LinkCountIsValid { get { return LinkCount >= byte.MinValue && LinkCount <= byte.MaxValue; } }
+		public bool LinkCountIsValid { get { return this.LinkCount >= byte.MinValue && this.LinkCount <= byte.MaxValue; } }
 		#endregion
 
 		#region ITagElementStreamable<string> Members
@@ -36,8 +36,8 @@ namespace KSoft.Phoenix.Phx
 			where TDoc : class
 			where TCursor : class
 		{
-			s.StreamCursor(ref mName);
-			s.StreamAttribute("linkCount", ref mLinkCount);
+			s.StreamCursor(ref this.mName);
+			s.StreamAttribute("linkCount", ref this.mLinkCount);
 		}
 		#endregion
 	};

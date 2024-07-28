@@ -28,21 +28,21 @@ namespace KSoft.Phoenix.Resource.ECF
 
 		protected EcfFileUtil()
 		{
-			EcfDefinition = new EcfFileDefinition();
+			this.EcfDefinition = new EcfFileDefinition();
 
 			if (System.Diagnostics.Debugger.IsAttached)
-				ProgressOutput = Console.Out;
+				this.ProgressOutput = Console.Out;
 			if (System.Diagnostics.Debugger.IsAttached)
-				VerboseOutput = Console.Out;
+				this.VerboseOutput = Console.Out;
 		}
 
 		#region IDisposable Members
 		public virtual void Dispose()
 		{
-			ProgressOutput = null;
-			VerboseOutput = null;
-			DebugOutput = null;
-			Util.DisposeAndNull(ref mEcfFile);
+			this.ProgressOutput = null;
+			this.VerboseOutput = null;
+			this.DebugOutput = null;
+			Util.DisposeAndNull(ref this.mEcfFile);
 		}
 		#endregion
 	};

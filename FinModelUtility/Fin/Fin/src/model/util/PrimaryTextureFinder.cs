@@ -14,15 +14,15 @@ public static class PrimaryTextureFinder {
     }
 
     if (material is IReadOnlyFixedFunctionMaterial fixedFunctionMaterial) {
-      return PrimaryTextureFinder.GetFor(fixedFunctionMaterial);
+      return GetFor(fixedFunctionMaterial);
     }
 
     if (material is IReadOnlyTextureMaterial textureMaterial) {
-      return PrimaryTextureFinder.GetFor(textureMaterial);
+      return GetFor(textureMaterial);
     }
 
     if (material is IReadOnlyStandardMaterial standardMaterial) {
-      return PrimaryTextureFinder.GetFor(standardMaterial);
+      return GetFor(standardMaterial);
     }
 
     throw new NotImplementedException();

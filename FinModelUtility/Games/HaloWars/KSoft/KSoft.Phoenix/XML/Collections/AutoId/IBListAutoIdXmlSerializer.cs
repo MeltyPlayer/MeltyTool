@@ -33,7 +33,7 @@ namespace KSoft.Phoenix.XML
 			where TDoc : class
 			where TCursor : class
 		{
-			Contract.Requires(Params.RequiresDataNamePreloading);
+			Contract.Requires(this.Params.RequiresDataNamePreloading);
 
 			throw new NotImplementedException();
 		}
@@ -42,7 +42,7 @@ namespace KSoft.Phoenix.XML
 			where TDoc : class
 			where TCursor : class
 		{
-			Contract.Requires(Params.SupportsUpdating);
+			Contract.Requires(this.Params.SupportsUpdating);
 
 			throw new NotImplementedException();
 		}

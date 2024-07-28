@@ -17,7 +17,7 @@ namespace KSoft.Phoenix.Phx
 		#region IXmlElementStreamable Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamAttributeEnum("Type", ref mType);
+			s.StreamAttributeEnum("Type", ref this.mType);
 		}
 		#endregion
 	};

@@ -14,7 +14,7 @@ namespace uni.ui.winforms.right_panel.registers;
 
 public partial class RegistersTab : UserControl {
   public RegistersTab() {
-      InitializeComponent();
+    this.InitializeComponent();
     }
 
   public IReadOnlyModel? Model {

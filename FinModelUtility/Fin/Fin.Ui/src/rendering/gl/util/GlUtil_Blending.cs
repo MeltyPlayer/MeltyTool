@@ -64,13 +64,13 @@ public static partial class GlUtil {
       return false;
     }
 
-    if (GlUtil.currentState_.CurrentBlending ==
+    if (currentState_.CurrentBlending ==
         (colorBlendEquation, colorSrcFactor, colorDstFactor,
          alphaBlendEquation, alphaSrcFactor, alphaDstFactor, logicOp)) {
       return false;
     }
 
-    GlUtil.currentState_.CurrentBlending =
+    currentState_.CurrentBlending =
         (colorBlendEquation, colorSrcFactor, colorDstFactor,
          alphaBlendEquation, alphaSrcFactor, alphaDstFactor, logicOp);
 
@@ -89,7 +89,7 @@ public static partial class GlUtil {
       GlBlendFactorDst colorDstFactorGl = GlBlendFactorDst.OneMinusSrcAlpha;
       if (!isColorNone) {
         colorBlendEquationGl =
-            GlUtil.ConvertFinBlendEquationToGl_(colorBlendEquation);
+            ConvertFinBlendEquationToGl_(colorBlendEquation);
         colorSrcFactorGl = ConvertFinBlendFactorToGlSrc_(colorSrcFactor);
         colorDstFactorGl = ConvertFinBlendFactorToGlDst_(colorDstFactor);
       }
@@ -99,7 +99,7 @@ public static partial class GlUtil {
       GlBlendFactorDst alphaDstFactorGl = GlBlendFactorDst.OneMinusSrcAlpha;
       if (!isAlphaNone) {
         alphaBlendEquationGl =
-            GlUtil.ConvertFinBlendEquationToGl_(alphaBlendEquation);
+            ConvertFinBlendEquationToGl_(alphaBlendEquation);
         alphaSrcFactorGl = ConvertFinBlendFactorToGlSrc_(alphaSrcFactor);
         alphaDstFactorGl = ConvertFinBlendFactorToGlDst_(alphaDstFactor);
       }
@@ -115,7 +115,7 @@ public static partial class GlUtil {
       GL.Disable(EnableCap.ColorLogicOp);
     } else {
       GL.Enable(EnableCap.ColorLogicOp);
-      GL.LogicOp(GlUtil.ConvertFinLogicOpToGl_(logicOp));
+      GL.LogicOp(ConvertFinLogicOpToGl_(logicOp));
     }
 
     return true;

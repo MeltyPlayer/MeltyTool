@@ -20,5 +20,5 @@ public partial class Mbn : IBinaryDeserializable {
 
   public Vector3f Scale { get; } = new();
 
-  public override string ToString() => $"{Id}";
+  public override string ToString() => $"{this.Id}";
 }

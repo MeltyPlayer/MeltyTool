@@ -84,20 +84,20 @@ namespace KSoft.Phoenix.XML
 		BListXmlParams mParams;
 		Collections.BListAutoId<T> mList;
 
-		public override BListXmlParams Params { get { return mParams; } }
-		public override Collections.BListBase<T> List { get { return mList; } }
+		public override BListXmlParams Params { get { return this.mParams; } }
+		public override Collections.BListBase<T> List { get { return this.mList; } }
 
 		public BListAutoIdXmlSerializer(BListXmlParams @params, Collections.BListAutoId<T> list)
 		{
 			Contract.Requires<ArgumentNullException>(@params != null);
 			Contract.Requires<ArgumentNullException>(list != null);
 
-			mParams = @params;
-			mList = list;
+			this.mParams = @params;
+			this.mList = list;
 		}
 
 		bool mIsPreloaded;
-		bool RequiresDataNamePreloading { get { return Params.RequiresDataNamePreloading; } }
+		bool RequiresDataNamePreloading { get { return this.Params.RequiresDataNamePreloading; } }
 
 		int mCountBeforeUpdate;
 		bool mIsUpdating;
@@ -105,29 +105,29 @@ namespace KSoft.Phoenix.XML
 		#region Database interfaces
 		bool SetupItem(out T item, string item_name, int iteration)
 		{
-			bool stream_item = !RequiresDataNamePreloading || (RequiresDataNamePreloading && mIsPreloaded);
+			bool stream_item = !this.RequiresDataNamePreloading || (this.RequiresDataNamePreloading && this.mIsPreloaded);
 
-			if (mIsUpdating)
+			if (this.mIsUpdating)
 			{
 				// The update system in HW is fucked...just because the "update" attribute is true or left out, doesn't mean the value existed before or is not a new value
 				// So just try
-				int idx = mList.TryGetMemberId(item_name);
+				int idx = this.mList.TryGetMemberId(item_name);
 				if (idx.IsNotNone())
 				{
-					item = mList[idx];
+					item = this.mList[idx];
 					return stream_item;
 				}
 
-				iteration += mCountBeforeUpdate;
+				iteration += this.mCountBeforeUpdate;
 			}
 
-			if (RequiresDataNamePreloading && mIsPreloaded)
+			if (this.RequiresDataNamePreloading && this.mIsPreloaded)
 			{
-				item = mList[iteration];
+				item = this.mList[iteration];
 				return stream_item;
 			}
 
-			mList.DynamicAdd(item = new T(), item_name, iteration);
+			this.mList.DynamicAdd(item = new T(), item_name, iteration);
 
 			return stream_item;
 		}
@@ -137,17 +137,17 @@ namespace KSoft.Phoenix.XML
 		protected override void Read<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, int iteration)
 		{
 			string item_name = null;
-			Params.StreamDataName(s, ref item_name);
+			this.Params.StreamDataName(s, ref item_name);
 
 			T item;
-			if (SetupItem(out item, item_name, iteration))
+			if (this.SetupItem(out item, item_name, iteration))
 				item.Serialize(s);
 		}
 		protected override void Write<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, T data)
 		{
 			string item_name = data.Data;
 			if (item_name != null)
-				Params.StreamDataName(s, ref item_name);
+				this.Params.StreamDataName(s, ref item_name);
 
 			try
 			{
@@ -163,37 +163,37 @@ namespace KSoft.Phoenix.XML
 		{
 			base.WriteNodes(s, xs);
 
-			ProtoEnumUndefinedMembers.Write(s, mParams, mList.UndefinedInterface);
+			ProtoEnumUndefinedMembers.Write(s, this.mParams, this.mList.UndefinedInterface);
 		}
 
 		void Preload<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
 			where TCursor : class
 		{
-			mIsPreloaded = false;
+			this.mIsPreloaded = false;
 
-			Serialize(s);
+			this.Serialize(s);
 
-			mIsPreloaded = true;
+			this.mIsPreloaded = true;
 		}
 		public void StreamPreload<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
 			where TCursor : class
 		{
-			Preload(s);
+			this.Preload(s);
 		}
 		public void StreamUpdate<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 			where TDoc : class
 			where TCursor : class
 		{
-			mIsUpdating = true;
-			mCountBeforeUpdate = mList.Count;
+			this.mIsUpdating = true;
+			this.mCountBeforeUpdate = this.mList.Count;
 
-			if (RequiresDataNamePreloading)
-				Preload(s);
-			Serialize(s);
+			if (this.RequiresDataNamePreloading)
+				this.Preload(s);
+			this.Serialize(s);
 
-			mIsUpdating = false;
+			this.mIsUpdating = false;
 			//mCountBeforeUpdate = 0;
 		}
 		#endregion

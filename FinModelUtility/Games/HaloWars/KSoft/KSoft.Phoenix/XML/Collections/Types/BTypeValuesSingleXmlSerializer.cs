@@ -42,12 +42,12 @@ namespace KSoft.Phoenix.XML
 		#region IXmlElementStreamable Members
 		protected override void Read<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, int iteration)
 		{
-			int index = ReadExplicitIndex(s, xs);
+			int index = this.ReadExplicitIndex(s, xs);
 
-			ListExplicitIndex.InitializeItem(index);
+			this.ListExplicitIndex.InitializeItem(index);
 			float value = 0;
 			s.ReadCursor(ref value);
-			ListExplicitIndex[index] = value;
+			this.ListExplicitIndex[index] = value;
 		}
 		protected override void Write<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, float data)
 		{

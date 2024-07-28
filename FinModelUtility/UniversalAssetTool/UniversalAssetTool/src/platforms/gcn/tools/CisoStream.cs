@@ -44,7 +44,7 @@ public class CisoStream : Stream {
   public override int Read(Span<byte> buffer) {
     int dstOffset = 0;
     while (dstOffset < buffer.Length) {
-      var remainingInBlock = GetRemainingBytesInBlock_(this.Position);
+      var remainingInBlock = this.GetRemainingBytesInBlock_(this.Position);
       var copyAmount = Math.Min(buffer.Length - dstOffset, remainingInBlock);
       var currentSlice = buffer.Slice(dstOffset, copyAmount);
 

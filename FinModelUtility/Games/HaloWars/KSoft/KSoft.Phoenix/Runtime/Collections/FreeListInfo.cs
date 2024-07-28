@@ -6,25 +6,25 @@ namespace KSoft.Phoenix.Runtime
 	{
 		public ushort SaveMarker
 		{
-			get { return (ushort)DoneIndex; }
-			set { DoneIndex = value; }
+			get { return (ushort) this.DoneIndex; }
+			set { this.DoneIndex = value; }
 		}
 
 		public FreeListInfo(ushort saveMarker)
 		{
-			SerializeCapacity = true;
-			IndexSize = sizeof(short);
-			MaxCount = ushort.MaxValue;
-			SaveMarker = saveMarker;
+			this.SerializeCapacity = true;
+			this.IndexSize = sizeof(short);
+			this.MaxCount = ushort.MaxValue;
+			this.SaveMarker = saveMarker;
 		}
 
 		public void StreamCount(IO.EndianStream s, ref int count)
 		{
-			StreamCapacity(s, ref count);
+			this.StreamCapacity(s, ref count);
 		}
 		public void StreamSaveMarker(IO.EndianStream s)
 		{
-			s.StreamSignature(SaveMarker);
+			s.StreamSignature(this.SaveMarker);
 		}
 	};
 }

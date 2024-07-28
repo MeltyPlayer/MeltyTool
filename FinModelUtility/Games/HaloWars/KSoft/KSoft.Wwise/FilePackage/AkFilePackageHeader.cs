@@ -13,21 +13,21 @@ namespace KSoft.Wwise.FilePackage
 
 		public void InitializeSize(uint sdkVersion, uint langMapTotalSize)
 		{
-			HeaderSize = 0;
-			HeaderSize += kSizeOfHeader;
-			HeaderSize += sizeof(uint); // field for lang map size
-			HeaderSize += sizeof(uint); // field for LUT size (sound banks)
-			HeaderSize += sizeof(uint); // field for LUT size (streamed files)
+			this.HeaderSize = 0;
+			this.HeaderSize += kSizeOfHeader;
+			this.HeaderSize += sizeof(uint); // field for lang map size
+			this.HeaderSize += sizeof(uint); // field for LUT size (sound banks)
+			this.HeaderSize += sizeof(uint);    // field for LUT size (streamed files)
 			if (AkVersion.HasExternalFiles(sdkVersion))
-				HeaderSize += sizeof(uint); // field for LUT size (external files)
-			HeaderSize += langMapTotalSize;
+				this.HeaderSize += sizeof(uint); // field for LUT size (external files)
+			this.HeaderSize += langMapTotalSize;
 		}
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
 			s.StreamSignature(kSignature.TagString, Memory.Strings.StringStorage.AsciiString);
-			s.Stream(ref HeaderSize);
+			s.Stream(ref this.HeaderSize);
 			s.StreamVersion(kVersion);
 		}
 		#endregion

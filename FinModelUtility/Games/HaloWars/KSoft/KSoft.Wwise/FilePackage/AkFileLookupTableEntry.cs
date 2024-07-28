@@ -19,24 +19,24 @@ namespace KSoft.Wwise.FilePackage
 		[FieldOffset(0x18)] public uint StartingBlock;
 		[FieldOffset(0x1C)] public uint LanguageId;
 
-		public long FileOffset { get { return StartingBlock * BlockSize; } }
+		public long FileOffset { get { return this.StartingBlock * this.BlockSize; } }
 
 		#region IEndianStreamSerializable Members
 		void SerializePre2011_2(IO.EndianStream s)
 		{
-			s.Stream(ref FileId32); s.Stream(ref BlockSize); s.Stream(ref FileSize64);
-			s.Stream(ref StartingBlock); s.Stream(ref LanguageId);
+			s.Stream(ref this.FileId32); s.Stream(ref this.BlockSize); s.Stream(ref this.FileSize64);
+			s.Stream(ref this.StartingBlock); s.Stream(ref this.LanguageId);
 		}
 		void Serialize32(IO.EndianStream s)
 		{
-			s.Stream(ref FileId32); s.Stream(ref BlockSize); s.Stream(ref FileSize32);
-			s.Stream(ref StartingBlock); s.Stream(ref LanguageId);
+			s.Stream(ref this.FileId32); s.Stream(ref this.BlockSize); s.Stream(ref this.FileSize32);
+			s.Stream(ref this.StartingBlock); s.Stream(ref this.LanguageId);
 		}
 		void Serialize64(IO.EndianStream s)
 		{
-			s.Stream(ref FileId64); s.Stream(ref BlockSize); s.Stream(ref FileSize32); 
-			s.Stream(ref StartingBlock);
-			s.Stream(ref LanguageId);
+			s.Stream(ref this.FileId64); s.Stream(ref this.BlockSize); s.Stream(ref this.FileSize32); 
+			s.Stream(ref this.StartingBlock);
+			s.Stream(ref this.LanguageId);
 		}
 
 		public void Serialize(IO.EndianStream s)
@@ -46,12 +46,12 @@ namespace KSoft.Wwise.FilePackage
 			if (AkVersion.HasWordSizeDependentLUT(settings.SdkVersion))
 			{
 				if (settings.Platform.ProcessorType.ProcessorSize == Shell.ProcessorSize.x32)
-					Serialize32(s);
+					this.Serialize32(s);
 				else
-					Serialize64(s);
+					this.Serialize64(s);
 			}
 			else
-				SerializePre2011_2(s);
+				this.SerializePre2011_2(s);
 		}
 		#endregion
 

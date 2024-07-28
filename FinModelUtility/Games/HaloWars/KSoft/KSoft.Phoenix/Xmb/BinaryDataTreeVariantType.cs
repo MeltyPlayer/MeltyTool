@@ -41,25 +41,28 @@ namespace KSoft.Phoenix.Xmb
 		private ESizeInBytes Alignment;
 		private byte Flags;
 
-		public bool IsUnsigned { get { return Flags != 0; } }
-		public bool IsUnicode { get { return Type == EType.String && Size == ESizeInBytes._2byte; } }
-		public int SizeBit { get { return (int)Size; } }
-		public int SizeOf { get { return 1<<SizeBit; } }
-		public int AlignmentBit { get { return (int)Alignment; } }
-		public int AlignmentOf { get { return 1<<AlignmentBit; } }
+		public bool IsUnsigned { get { return this.Flags != 0; } }
+		public bool IsUnicode { get { return this.Type == EType.String && this.Size == ESizeInBytes._2byte; } }
+		public int SizeBit { get { return (int) this.Size; } }
+		public int SizeOf { get { return 1<< this.SizeBit; } }
+		public int AlignmentBit { get { return (int) this.Alignment; } }
+		public int AlignmentOf { get { return 1<< this.AlignmentBit; } }
 
 		private BinaryDataTreeVariantTypeDesc(EType type, ESizeInBytes size, ESizeInBytes alignment, byte flags = 0)
 		{
-			Type = type;
-			Size = size;
-			Alignment = alignment;
-			Flags = flags;
+			this.Type = type;
+			this.Size = size;
+			this.Alignment = alignment;
+			this.Flags = flags;
 		}
 
 		public override string ToString()
 		{
 			return string.Format("{0} {1} {2} {3}",
-				Size, Alignment, Flags, Type);
+			                     this.Size,
+			                     this.Alignment,
+			                     this.Flags,
+			                     this.Type);
 		}
 
 		#region Equality utils
@@ -96,16 +99,16 @@ namespace KSoft.Phoenix.Xmb
 
 			uint hash;
 
-			Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (uint)Type);
+			Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (uint) this.Type);
 			hash = PhxUtil.SuperFastHash(buffer, 0, sizeof(uint));
 
-			Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (ushort)Size);
+			Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (ushort) this.Size);
 			hash = PhxUtil.SuperFastHash(buffer, 0, sizeof(ushort), hash);
 
-			Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (ushort)Alignment);
+			Bitwise.ByteSwap.ReplaceBytes(buffer, 0, (ushort) this.Alignment);
 			hash = PhxUtil.SuperFastHash(buffer, 0, sizeof(ushort), hash);
 
-			buffer[0] = Flags;
+			buffer[0] = this.Flags;
 			hash = PhxUtil.SuperFastHash(buffer, 0, sizeof(byte), hash);
 
 			return hash;
@@ -118,7 +121,7 @@ namespace KSoft.Phoenix.Xmb
 			if (length <= 1)
 				return null;
 
-			switch (Type)
+			switch (this.Type)
 			{
 				case EType.Null:
 					return null;
@@ -128,9 +131,9 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Int:
 				{
-					if (IsUnsigned)
+					if (this.IsUnsigned)
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return new byte[length];
 							case ESizeInBytes._2byte: return new ushort[length];
@@ -140,7 +143,7 @@ namespace KSoft.Phoenix.Xmb
 					}
 					else
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return new sbyte[length];
 							case ESizeInBytes._2byte: return new short[length];
@@ -152,7 +155,7 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Float:
 				{
-					switch (Size)
+					switch (this.Size)
 					{
 						case ESizeInBytes._4byte: return new float[length];
 						case ESizeInBytes._8byte: return new double[length];
@@ -169,7 +172,7 @@ namespace KSoft.Phoenix.Xmb
 
 		public Array ReadArray(IO.EndianReader reader, Array array)
 		{
-			switch (Type)
+			switch (this.Type)
 			{
 				case EType.Null:
 					return null;
@@ -179,9 +182,9 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Int:
 				{
-					if (IsUnsigned)
+					if (this.IsUnsigned)
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return reader.ReadFixedArray((byte[])array);
 							case ESizeInBytes._2byte: return reader.ReadFixedArray((ushort[])array);
@@ -191,7 +194,7 @@ namespace KSoft.Phoenix.Xmb
 					}
 					else
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return reader.ReadFixedArray((sbyte[])array);
 							case ESizeInBytes._2byte: return reader.ReadFixedArray((short[])array);
@@ -203,7 +206,7 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Float:
 				{
-					switch (Size)
+					switch (this.Size)
 					{
 						case ESizeInBytes._4byte: return reader.ReadFixedArray((float[])array);
 						case ESizeInBytes._8byte: return reader.ReadFixedArray((double[])array);
@@ -220,7 +223,7 @@ namespace KSoft.Phoenix.Xmb
 
 		public Array WriteArray(IO.EndianWriter writer, Array array)
 		{
-			switch (Type)
+			switch (this.Type)
 			{
 				case EType.Null:
 					return null;
@@ -230,9 +233,9 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Int:
 				{
-					if (IsUnsigned)
+					if (this.IsUnsigned)
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return writer.WriteFixedArray((byte[])array);
 							case ESizeInBytes._2byte: return writer.WriteFixedArray((ushort[])array);
@@ -242,7 +245,7 @@ namespace KSoft.Phoenix.Xmb
 					}
 					else
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return writer.WriteFixedArray((sbyte[])array);
 							case ESizeInBytes._2byte: return writer.WriteFixedArray((short[])array);
@@ -254,7 +257,7 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Float:
 				{
-					switch (Size)
+					switch (this.Size)
 					{
 						case ESizeInBytes._4byte: return writer.WriteFixedArray((float[])array);
 						case ESizeInBytes._8byte: return writer.WriteFixedArray((double[])array);
@@ -271,7 +274,7 @@ namespace KSoft.Phoenix.Xmb
 
 		public string ArrayToString(Array array)
 		{
-			switch (Type)
+			switch (this.Type)
 			{
 				case EType.Null:
 					return null;
@@ -284,7 +287,7 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Float:
 				{
-					switch (Size)
+					switch (this.Size)
 					{
 						case ESizeInBytes._4byte: return ((float[])array).ToConcatStringInvariant();
 						case ESizeInBytes._8byte: return ((double[])array).ToConcatStringInvariant();
@@ -301,7 +304,7 @@ namespace KSoft.Phoenix.Xmb
 
 		public Array ArrayFromString(string str)
 		{
-			if (str.IsNullOrEmpty() || Type == EType.Null)
+			if (str.IsNullOrEmpty() || this.Type == EType.Null)
 				return null;
 
 			var str_list = new List<string>();
@@ -311,16 +314,16 @@ namespace KSoft.Phoenix.Xmb
 			if (str_list.Count == 0)
 				return null;
 
-			switch (Type)
+			switch (this.Type)
 			{
 				case EType.Bool:
 					return str_list.ConvertAllArray(Text.Util.ParseBooleanLazy);
 
 				case EType.Int:
 				{
-					if (IsUnsigned)
+					if (this.IsUnsigned)
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return str_list.ConvertAllArray(Convert.ToByte);
 							case ESizeInBytes._2byte: return str_list.ConvertAllArray(Convert.ToUInt16);
@@ -330,7 +333,7 @@ namespace KSoft.Phoenix.Xmb
 					}
 					else
 					{
-						switch (Size)
+						switch (this.Size)
 						{
 							case ESizeInBytes._1byte: return str_list.ConvertAllArray(Convert.ToSByte);
 							case ESizeInBytes._2byte: return str_list.ConvertAllArray(Convert.ToInt16);
@@ -342,7 +345,7 @@ namespace KSoft.Phoenix.Xmb
 
 				case EType.Float:
 				{
-					switch (Size)
+					switch (this.Size)
 					{
 						case ESizeInBytes._4byte: return str_list.ConvertAllArray(Numbers.FloatParseInvariant);
 						case ESizeInBytes._8byte: return str_list.ConvertAllArray(Numbers.DoubleParseInvariant);
@@ -361,7 +364,7 @@ namespace KSoft.Phoenix.Xmb
 		#region ITagElementTextStreamable Members
 		string GetSerializedTypeName()
 		{
-			switch (Type)
+			switch (this.Type)
 			{
 				case EType.Null:
 					return "null";
@@ -369,14 +372,14 @@ namespace KSoft.Phoenix.Xmb
 					return "bool";
 				case EType.Int:
 					return string.Format("{0}int{1}",
-						IsUnsigned ? "u" : "",
-						SizeOf * Bits.kByteBitCount);
+					                     this.IsUnsigned ? "u" : "",
+					                     this.SizeOf * Bits.kByteBitCount);
 				case EType.Float:
-					return SizeOf == sizeof(float)
+					return this.SizeOf == sizeof(float)
 						? "float"
 						: "double";
 				case EType.String:
-					return IsUnicode
+					return this.IsUnicode
 						? "ustring"
 						: "string";
 
@@ -415,14 +418,14 @@ namespace KSoft.Phoenix.Xmb
 			where TDoc : class
 			where TCursor : class
 		{
-			if (Type != EType.Null)
+			if (this.Type != EType.Null)
 			{
-				string typeName = GetSerializedTypeName();
+				string typeName = this.GetSerializedTypeName();
 				s.WriteAttribute("dataType", typeName);
 			}
 
-			if (Type != EType.Null && AlignmentOf > SizeOf)
-				s.WriteAttribute("alignment", AlignmentOf);
+			if (this.Type != EType.Null && this.AlignmentOf > this.SizeOf)
+				s.WriteAttribute("alignment", this.AlignmentOf);
 
 			if (arrayLength > 1)
 				s.WriteAttribute("arraySize", arrayLength);

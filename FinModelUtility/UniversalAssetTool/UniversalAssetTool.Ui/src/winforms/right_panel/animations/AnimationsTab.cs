@@ -10,7 +10,7 @@ public partial class AnimationsTab : UserControl {
   private IReadOnlyModelAnimation[]? animations_;
 
   public AnimationsTab() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.listView_.SelectedIndexChanged += (_, e) => {
         var selectedIndices = this.listView_.SelectedIndices;

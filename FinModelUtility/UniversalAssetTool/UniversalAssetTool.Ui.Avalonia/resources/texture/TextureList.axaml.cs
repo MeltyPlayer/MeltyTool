@@ -107,7 +107,7 @@ public class TextureViewModel : ViewModelBase {
 
 public partial class TextureList : UserControl {
   public TextureList() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 
   public static readonly RoutedEvent<TextureSelectedEventArgs>

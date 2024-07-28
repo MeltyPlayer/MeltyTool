@@ -15,7 +15,7 @@ namespace KSoft.Wwise.SoundBank
 
 		void SerializeStringType(IO.EndianStream s, AKBKHashHeader hdr, AkSoundBank bank)
 		{
-			Contract.Assert(hdr.Type == AkSoundBankStringMappingBase.StringType.Bank);
+			Contract.Assert(hdr.Type == StringType.Bank);
 
 			uint bank_id = uint.MaxValue;
 			string str = null;
@@ -39,7 +39,7 @@ namespace KSoft.Wwise.SoundBank
 				hdr.Serialize(s);
 
 				for (int x = 0; x < hdr.Size; x++)
-					SerializeStringType(s, hdr, bank);
+					this.SerializeStringType(s, hdr, bank);
 			}
 		}
 	};

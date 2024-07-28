@@ -135,9 +135,9 @@ namespace UoT.model {
           animation.Positions = new Vec3s[animation.FrameCount];
           for (var pi = 0; pi < animation.FrameCount; ++pi) {
             animation.Positions[pi] = new Vec3s {
-                X = ConvertUShortToShort_(xList[Math.Min(pi, xList.Length - 1)]),
-                Y = ConvertUShortToShort_(yList[Math.Min(pi, yList.Length - 1)]),
-                Z = ConvertUShortToShort_(zList[Math.Min(pi, zList.Length - 1)]),
+                X = this.ConvertUShortToShort_(xList[Math.Min(pi, xList.Length - 1)]),
+                Y = this.ConvertUShortToShort_(yList[Math.Min(pi, yList.Length - 1)]),
+                Z = this.ConvertUShortToShort_(zList[Math.Min(pi, zList.Length - 1)]),
             };
           }
 

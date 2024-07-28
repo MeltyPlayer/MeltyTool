@@ -14,8 +14,8 @@ internal static class SteamUtils {
         "InstallPath") as string;
 
   private static IReadOnlySystemDirectory? InstallDirectory_ { get; } =
-    SteamUtils.InstallPath_ != null
-        ? new FinDirectory(SteamUtils.InstallPath_)
+    InstallPath_ != null
+        ? new FinDirectory(InstallPath_)
         : null;
 
   private static IReadOnlySystemFile? LibraryFoldersVdf_ { get; } =

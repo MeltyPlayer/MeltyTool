@@ -48,7 +48,7 @@ namespace KSoft.Phoenix.XML
 		}
 
 		Phx.BDatabaseBase mDatabase;
-		internal override Phx.BDatabaseBase Database { get { return mDatabase; } }
+		internal override Phx.BDatabaseBase Database { get { return this.mDatabase; } }
 
 		public Phx.TriggerDatabase TriggerDb { get; private set; }
 
@@ -58,9 +58,9 @@ namespace KSoft.Phoenix.XML
 		{
 			Contract.Requires(phx != null);
 
-			mDatabase = phx.Database;
-			TriggerDb = phx.TriggerDb;
-			Scenario = scnr;
+			this.mDatabase = phx.Database;
+			this.TriggerDb = phx.TriggerDb;
+			this.Scenario = scnr;
 		}
 
 		#region IDisposable Members

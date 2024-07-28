@@ -95,12 +95,12 @@ public class LevelXmlParser {
     }
 
     {
-      AddObjects_(files,
-                  sceneArea,
-                  levelXmlFile,
-                  gameVersion,
-                  bwTerrain,
-                  objectMap);
+      this.AddObjects_(files,
+                       sceneArea,
+                       levelXmlFile,
+                       gameVersion,
+                       bwTerrain,
+                       objectMap);
     }
 
     return scene;

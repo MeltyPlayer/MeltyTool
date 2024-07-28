@@ -37,62 +37,72 @@ namespace KSoft.Phoenix.Runtime
 
 		public BDatabase()
 		{
-			Civs = new List<string>();			Leaders = new List<string>();
-			Abilities = new List<string>();		ProtoVisuals = new List<string>();
-			Models = new List<string>();		Animations = new List<string>();
-			TerrainEffects = new List<string>();ProtoImpactEffects = new List<string>();
-			LightEffects = new List<string>();	ParticleGateways = new List<string>();
-			GenericProtoObjects = new List<GenericProtoObjectEntry>();
-			ProtoSquads = new List<ProtoSquadEntry>();
-			ProtoTechs = new List<string>();	ProtoPowers = new List<string>();
-			ProtoObjects = new List<string>();	Resources = new List<string>();
-			Rates = new List<string>();			Populations = new List<string>();
-			WeaponTypes = new List<string>();	DamageTypes = new List<string>();
-			Templates = new List<TemplateEntry>();
-			AnimTypes = new List<string>();		EffectTypes = new List<string>();
-			Actions = new List<string>();
-			Tactics = new List<CondensedListItem16<Tactic>>();
-			Shapes = new List<CondensedListItemValue32<DataTagValue>>();
-			PhysicsInfo = new List<CondensedListItemValue32<DataTagValue>>();
-			ProtoIcons = new List<ProtoIcon>();
+			this.Civs = new List<string>();
+			this.Leaders = new List<string>();
+			this.Abilities = new List<string>();
+			this.ProtoVisuals = new List<string>();
+			this.Models = new List<string>();
+			this.Animations = new List<string>();
+			this.TerrainEffects = new List<string>();
+			this.ProtoImpactEffects = new List<string>();
+			this.LightEffects = new List<string>();
+			this.ParticleGateways = new List<string>();
+			this.GenericProtoObjects = new List<GenericProtoObjectEntry>();
+			this.ProtoSquads = new List<ProtoSquadEntry>();
+			this.ProtoTechs = new List<string>();
+			this.ProtoPowers = new List<string>();
+			this.ProtoObjects = new List<string>();
+			this.Resources = new List<string>();
+			this.Rates = new List<string>();
+			this.Populations = new List<string>();
+			this.WeaponTypes = new List<string>();
+			this.DamageTypes = new List<string>();
+			this.Templates = new List<TemplateEntry>();
+			this.AnimTypes = new List<string>();
+			this.EffectTypes = new List<string>();
+			this.Actions = new List<string>();
+			this.Tactics = new List<CondensedListItem16<Tactic>>();
+			this.Shapes = new List<CondensedListItemValue32<DataTagValue>>();
+			this.PhysicsInfo = new List<CondensedListItemValue32<DataTagValue>>();
+			this.ProtoIcons = new List<ProtoIcon>();
 		}
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamCollection(s, Civs);
-			BSaveGame.StreamCollection(s, Leaders);
-			BSaveGame.StreamCollection(s, Abilities);
-			BSaveGame.StreamCollection(s, ProtoVisuals);
-			BSaveGame.StreamCollection(s, Models);
-			BSaveGame.StreamCollection(s, Animations);
-			BSaveGame.StreamCollection(s, TerrainEffects);
-			BSaveGame.StreamCollection(s, ProtoImpactEffects);
-			BSaveGame.StreamCollection(s, LightEffects);
-			BSaveGame.StreamCollection(s, ParticleGateways);
-			BSaveGame.StreamCollection(s, GenericProtoObjects);
-			BSaveGame.StreamCollection(s, ProtoSquads);
-			BSaveGame.StreamCollection(s, ProtoTechs);
-			BSaveGame.StreamCollection(s, ProtoPowers);
-			BSaveGame.StreamCollection(s, ProtoObjects);
-			BSaveGame.StreamCollection(s, Resources);
-			BSaveGame.StreamCollection(s, Rates);
-			BSaveGame.StreamCollection(s, Populations);
-			BSaveGame.StreamCollection(s, WeaponTypes);
-			BSaveGame.StreamCollection(s, DamageTypes);
-			BSaveGame.StreamCollection(s, Templates);
-			BSaveGame.StreamCollection(s, AnimTypes);
-			BSaveGame.StreamCollection(s, EffectTypes);
-			BSaveGame.StreamCollection(s, Actions);
-			BSaveGame.StreamList(s, Tactics, kTacticsListInfo);
+			BSaveGame.StreamCollection(s, this.Civs);
+			BSaveGame.StreamCollection(s, this.Leaders);
+			BSaveGame.StreamCollection(s, this.Abilities);
+			BSaveGame.StreamCollection(s, this.ProtoVisuals);
+			BSaveGame.StreamCollection(s, this.Models);
+			BSaveGame.StreamCollection(s, this.Animations);
+			BSaveGame.StreamCollection(s, this.TerrainEffects);
+			BSaveGame.StreamCollection(s, this.ProtoImpactEffects);
+			BSaveGame.StreamCollection(s, this.LightEffects);
+			BSaveGame.StreamCollection(s, this.ParticleGateways);
+			BSaveGame.StreamCollection(s, this.GenericProtoObjects);
+			BSaveGame.StreamCollection(s, this.ProtoSquads);
+			BSaveGame.StreamCollection(s, this.ProtoTechs);
+			BSaveGame.StreamCollection(s, this.ProtoPowers);
+			BSaveGame.StreamCollection(s, this.ProtoObjects);
+			BSaveGame.StreamCollection(s, this.Resources);
+			BSaveGame.StreamCollection(s, this.Rates);
+			BSaveGame.StreamCollection(s, this.Populations);
+			BSaveGame.StreamCollection(s, this.WeaponTypes);
+			BSaveGame.StreamCollection(s, this.DamageTypes);
+			BSaveGame.StreamCollection(s, this.Templates);
+			BSaveGame.StreamCollection(s, this.AnimTypes);
+			BSaveGame.StreamCollection(s, this.EffectTypes);
+			BSaveGame.StreamCollection(s, this.Actions);
+			BSaveGame.StreamList(s, this.Tactics, kTacticsListInfo);
 
-			s.Stream(ref NumUniqueProtoObjects);
-			s.StreamSignature((uint)NumUniqueProtoObjects);
+			s.Stream(ref this.NumUniqueProtoObjects);
+			s.StreamSignature((uint) this.NumUniqueProtoObjects);
 
-			BSaveGame.StreamList(s, Shapes, kDataTagsListInfo);
-			BSaveGame.StreamList(s, PhysicsInfo, kDataTagsListInfo);
+			BSaveGame.StreamList(s, this.Shapes, kDataTagsListInfo);
+			BSaveGame.StreamList(s, this.PhysicsInfo, kDataTagsListInfo);
 
-			BSaveGame.StreamCollection(s, ProtoIcons);
+			BSaveGame.StreamCollection(s, this.ProtoIcons);
 
 			s.StreamSignature(cSaveMarker.DB);
 		}

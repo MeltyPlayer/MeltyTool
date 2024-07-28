@@ -47,7 +47,7 @@ namespace uni.ui.avalonia.resources.model.mesh {
 
   public partial class MeshList : UserControl {
     public MeshList() {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     protected void SelectingItemsControl_OnSelectionChanged(

@@ -11,7 +11,7 @@ namespace uni.ui.winforms.right_panel.info;
 
 public partial class InfoTab : UserControl {
   public InfoTab() {
-      InitializeComponent();
+    this.InitializeComponent();
     }
 
   public IResource? Resource {

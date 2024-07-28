@@ -12,8 +12,8 @@ namespace KSoft.Phoenix.Runtime
 		public void Serialize(IO.EndianStream s)
 		{
 			s.StreamVersion(kVersion);
-			s.Stream(GameSettings);
-			s.Stream(ConfigSettings);
+			s.Stream(this.GameSettings);
+			s.Stream(this.ConfigSettings);
 		}
 		#endregion
 	};

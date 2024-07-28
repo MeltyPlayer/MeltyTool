@@ -223,13 +223,13 @@ namespace sm64.scripts {
     public byte Params { get; set; }
 
     public GeoDrawingLayer DrawingLayer
-      => GeoUtils.GetDrawingLayerFromParams(Params);
+      => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
     public bool HasDisplayList
-      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(Params);
+      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(this.Params);
 
     public GeoTranslateAndRotateFormat Format
-      => GeoUtils.GetTranslateAndRotateFormat(Params);
+      => GeoUtils.GetTranslateAndRotateFormat(this.Params);
 
     public Vector3s Translation => new();
     public Vector3s Rotation => new();
@@ -248,13 +248,13 @@ namespace sm64.scripts {
 
     [Skip]
     public GeoDrawingLayer DrawingLayer
-      => GeoUtils.GetDrawingLayerFromParams(Params);
+      => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
     public Vector3s Translation => new();
 
     [Skip]
     public bool HasDisplayList
-      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(Params);
+      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(this.Params);
 
     [RIfBoolean(nameof(HasDisplayList))]
     public uint? DisplayListSegmentedAddress { get; set; }
@@ -271,13 +271,13 @@ namespace sm64.scripts {
 
     [Skip]
     public GeoDrawingLayer DrawingLayer
-      => GeoUtils.GetDrawingLayerFromParams(Params);
+      => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
     public Vector3s Rotation => new();
 
     [Skip]
     public bool HasDisplayList
-      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(Params);
+      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(this.Params);
 
     [RIfBoolean(nameof(HasDisplayList))]
     public uint? DisplayListSegmentedAddress { get; set; }
@@ -306,13 +306,13 @@ namespace sm64.scripts {
 
     [Skip]
     public GeoDrawingLayer DrawingLayer
-      => GeoUtils.GetDrawingLayerFromParams(Params);
+      => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
     public Vector3s Translation => new();
 
     [Skip]
     public bool HasDisplayList
-      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(Params);
+      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(this.Params);
 
     [RIfBoolean(nameof(HasDisplayList))]
     public uint? DisplayListSegmentedAddress { get; set; }
@@ -399,7 +399,7 @@ namespace sm64.scripts {
 
     [Skip]
     public GeoDrawingLayer DrawingLayer
-      => GeoUtils.GetDrawingLayerFromParams(Params);
+      => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
     private readonly ushort padding_ = 0;
 
@@ -407,7 +407,7 @@ namespace sm64.scripts {
 
     [Skip]
     public bool HasDisplayList
-      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(Params);
+      => GeoUtils.IsDisplayListAndDrawingLayerEnabled(this.Params);
 
     [RIfBoolean(nameof(HasDisplayList))]
     public uint? DisplayListSegmentedAddress { get; set; }

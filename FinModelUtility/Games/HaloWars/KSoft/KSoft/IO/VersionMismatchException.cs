@@ -64,7 +64,7 @@ namespace KSoft.IO
 		/// <param name="s"></param>
 		/// <param name="maxCount"></param>
 		/// <returns></returns>
-		public static TEnum AssertZeroBasedEnum<TEnum>(IO.EndianReader s
+		public static TEnum AssertZeroBasedEnum<TEnum>(EndianReader s
 			, TEnum maxCount)
 			where TEnum : struct, IComparable, IFormattable, IConvertible
 		{

@@ -6,7 +6,7 @@ namespace uni.ui.winforms.right_panel.textures;
 
 public partial class TexturesTab : UserControl {
   public TexturesTab() {
-      InitializeComponent();
+    this.InitializeComponent();
 
       this.textureSelectorBox_.OnTextureSelected
           += texture => this.texturePanel_.Texture =

@@ -39,15 +39,15 @@ namespace KSoft.Collections
 			public TKey Key;
 			public TValue Value;
 
-			public bool IsFree { get => HashCode.IsNone(); }
-			public bool IsLast { get => NextEntryIndex.IsNone(); }
+			public bool IsFree { get => this.HashCode.IsNone(); }
+			public bool IsLast { get => this.NextEntryIndex.IsNone(); }
 
 			public DicEntry GetNext(ClrDictionaryInspector<TKey, TValue> inspector)
 			{
 				Contract.Requires<ArgumentNullException>(inspector != null);
-				Contract.Requires<InvalidOperationException>(!IsLast);
+				Contract.Requires<InvalidOperationException>(!this.IsLast);
 
-				return inspector.Entries[NextEntryIndex];
+				return inspector.Entries[this.NextEntryIndex];
 			}
 		};
 
@@ -116,27 +116,27 @@ namespace KSoft.Collections
 		{
 			Contract.Requires<ArgumentNullException>(dic != null);
 
-			mDic = dic;
-			mExpectedVersion = Version;
+			this.mDic = dic;
+			this.mExpectedVersion = this.Version;
 		}
 
 		[Contracts.ContractInvariantMethod]
 		void ObjectInvariant()
 		{
-			Contract.Invariant(Version == mExpectedVersion,
+			Contract.Invariant(this.Version == this.mExpectedVersion,
 				"Tried to inspect a dictionary that has been modified since the inspector was created");
 		}
 
 		void InitializeEntries()
 		{
-			mEntries = new DicEntry[Buckets.Count];
-			var array = kGetDicEntries(mDic);
+			this.mEntries = new DicEntry[this.Buckets.Count];
+			var array = kGetDicEntries(this.mDic);
 
 			for (int x = 0; x < array.Length; x++)
 			{
 				var entry = array.GetValue(x);
 
-				mEntries[x] = new DicEntry()
+				this.mEntries[x] = new DicEntry()
 				{
 					HashCode = kGetEntryHashCode(entry),
 					NextEntryIndex = kGetEntryNextEntryIndex(entry),
@@ -147,35 +147,35 @@ namespace KSoft.Collections
 		}
 
 		public IReadOnlyList<int> Buckets { get {
-			var buckets = kGetDicBuckets(mDic);
+			var buckets = kGetDicBuckets(this.mDic);
 
 			return buckets ?? Array.Empty<int>();
 		} }
 		public IReadOnlyList<DicEntry> Entries { get {
-			if (mEntries == null)
-				InitializeEntries();
+			if (this.mEntries == null)
+				this.InitializeEntries();
 
-			return mEntries;
+			return this.mEntries;
 		} }
-		public int Count { get => kGetDicCount(mDic); }
-		private int Version { get => kGetDicVersion(mDic); }
-		public int FreeList { get => kGetDicFreeList(mDic); }
-		public int FreeCount { get => kGetDicFreeCount(mDic); }
+		public int Count { get => kGetDicCount(this.mDic); }
+		private int Version { get => kGetDicVersion(this.mDic); }
+		public int FreeList { get => kGetDicFreeList(this.mDic); }
+		public int FreeCount { get => kGetDicFreeCount(this.mDic); }
 
-		public IEnumerable<int> BucketsInUse { get => Buckets.Where(b => b >= 0); }
+		public IEnumerable<int> BucketsInUse { get => this.Buckets.Where(b => b >= 0); }
 
 		public IEnumerable<DicEntry> GetEntriesInBucket(int bucketIndex)
 		{
-			Contract.Requires<ArgumentOutOfRangeException>(bucketIndex >= 0 && bucketIndex < Buckets.Count);
+			Contract.Requires<ArgumentOutOfRangeException>(bucketIndex >= 0 && bucketIndex < this.Buckets.Count);
 
-			for (int x = Buckets[bucketIndex]; x >= 0; x = Entries[x].NextEntryIndex)
-				yield return Entries[x];
+			for (int x = this.Buckets[bucketIndex]; x >= 0; x = this.Entries[x].NextEntryIndex)
+				yield return this.Entries[x];
 		}
 
 		public IEnumerable<DicEntry> EntryCollisions(TKey key)
 		{
-			int hash_code = mDic.Comparer.GetHashCode(key) & 0x7FFFFFFF;
-			int target_bucket = hash_code % Buckets.Count;
+			int hash_code = this.mDic.Comparer.GetHashCode(key) & 0x7FFFFFFF;
+			int target_bucket = hash_code % this.Buckets.Count;
 
 #if false // result as entry indices
 			for (int x = Buckets[target_bucket]; x >= 0; x = Entries[x].NextEntryIndex)
@@ -188,8 +188,8 @@ namespace KSoft.Collections
 #endif
 
 			return
-				from e in GetEntriesInBucket(target_bucket)
-				where e.HashCode == hash_code && !mDic.Comparer.Equals(e.Key, key)
+				from e in this.GetEntriesInBucket(target_bucket)
+				where e.HashCode == hash_code && !this.mDic.Comparer.Equals(e.Key, key)
 				select e;
 		}
 	};

@@ -12,15 +12,15 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoSquadReference]
 		public int DefaultShieldSquadID
 		{
-			get { return mDefaultShieldSquadID; }
-			set { mDefaultShieldSquadID = value; }
+			get { return this.mDefaultShieldSquadID; }
+			set { this.mDefaultShieldSquadID = value; }
 		}
 
 		public Collections.BListArray<BProtoSquadShieldBubble> ProtoShieldIDs { get; private set; } = new Collections.BListArray<BProtoSquadShieldBubble>();
 
 		public bool IsNotEmpty { get {
-			return DefaultShieldSquadID.IsNotNone()
-				|| !ProtoShieldIDs.IsEmpty;
+			return this.DefaultShieldSquadID.IsNotNone()
+				|| !this.ProtoShieldIDs.IsEmpty;
 		} }
 
 		#region ITagElementStreamable<string> Members
@@ -32,8 +32,8 @@ namespace KSoft.Phoenix.Phx
 
 			using (var bm = s.EnterCursorBookmarkOpt(kXmlRoot)) if (bm.IsNotNull)
 			{
-				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mDefaultShieldSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
-				XML.XmlUtil.Serialize(s, ProtoShieldIDs, BProtoSquadShieldBubble.kBListXmlParams);
+				xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mDefaultShieldSquadID, DatabaseObjectKind.Squad, false, XML.XmlUtil.kSourceCursor);
+				XML.XmlUtil.Serialize(s, this.ProtoShieldIDs, BProtoSquadShieldBubble.kBListXmlParams);
 			}
 		}
 		#endregion

@@ -23,9 +23,9 @@ namespace KSoft.T4
 
 			public OperationDefinition(TagElementStreamSubjectType type, bool supportsOpt = true)
 			{
-				SubjectType = type;
-				Name = type.ToString();
-				SupportsOptional = supportsOpt;
+				this.SubjectType = type;
+				this.Name = type.ToString();
+				this.SupportsOptional = supportsOpt;
 			}
 		};
 		static readonly OperationDefinition kCursorOp = new OperationDefinition(TagElementStreamSubjectType.Cursor, false);

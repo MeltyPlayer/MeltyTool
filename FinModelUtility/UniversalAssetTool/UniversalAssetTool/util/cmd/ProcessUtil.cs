@@ -13,7 +13,7 @@ public class ProcessUtil {
     var processSetup = new ProcessSetup(exeFile, args) {
         Method = ProcessExecutionMethod.BLOCK,
     };
-    return ProcessUtil.Execute(processSetup);
+    return Execute(processSetup);
   }
 
   public static Process ExecuteBlockingSilently(
@@ -22,7 +22,7 @@ public class ProcessUtil {
     var processSetup = new ProcessSetup(exeFile, args) {
         Method = ProcessExecutionMethod.BLOCK, WithLogging = false,
     };
-    return ProcessUtil.Execute(processSetup);
+    return Execute(processSetup);
   }
 
   public enum ProcessExecutionMethod {

@@ -111,7 +111,7 @@ public class MipMap<TImage>(IList<IMipMapLevel<TImage>> levels)
 
 public static class MipMapUtil {
   public static IMipMap<IImage> From(IList<IImage> images) =>
-      new MipMap<IImage>(images.Select(image => MipMapUtil.From(image))
+      new MipMap<IImage>(images.Select(image => From(image))
                                .ToList());
 
   public static IMipMapLevel<IImage> From(IImage image) =>

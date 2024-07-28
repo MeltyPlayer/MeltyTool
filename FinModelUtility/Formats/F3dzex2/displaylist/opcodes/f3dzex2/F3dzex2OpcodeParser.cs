@@ -18,8 +18,8 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
                               SchemaBinaryReader br) {
     var baseOffset = br.Position;
     var opcode = (F3dzex2Opcode) br.ReadByte();
-    var opcodeCommand = ParseOpcodeCommand_(n64Memory, dlr, br, opcode);
-    br.Position = baseOffset + GetCommandLength_(opcode);
+    var opcodeCommand = this.ParseOpcodeCommand_(n64Memory, dlr, br, opcode);
+    br.Position = baseOffset + this.GetCommandLength_(opcode);
     return opcodeCommand;
   }
 
@@ -142,20 +142,20 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
 
         return new SetCombineOpcodeCommand {
             CombinerCycleParams0 = new CombinerCycleParams {
-                ColorMuxA = GetColorMuxA_(a),
-                ColorMuxB = GetColorMuxB_(b),
-                ColorMuxC = GetColorMuxC_(c),
-                ColorMuxD = GetColorMuxD_(d),
+                ColorMuxA = this.GetColorMuxA_(a),
+                ColorMuxB = this.GetColorMuxB_(b),
+                ColorMuxC = this.GetColorMuxC_(c),
+                ColorMuxD = this.GetColorMuxD_(d),
                 AlphaMuxA = this.GetAlphaMuxABD_(e),
                 AlphaMuxB = this.GetAlphaMuxABD_(f),
                 AlphaMuxC = this.GetAlphaMuxC_(g),
                 AlphaMuxD = this.GetAlphaMuxABD_(h),
             },
             CombinerCycleParams1 = new CombinerCycleParams {
-                ColorMuxA = GetColorMuxA_(i),
-                ColorMuxB = GetColorMuxB_(j),
-                ColorMuxC = GetColorMuxC_(k),
-                ColorMuxD = GetColorMuxD_(l),
+                ColorMuxA = this.GetColorMuxA_(i),
+                ColorMuxB = this.GetColorMuxB_(j),
+                ColorMuxC = this.GetColorMuxC_(k),
+                ColorMuxD = this.GetColorMuxD_(l),
                 AlphaMuxA = this.GetAlphaMuxABD_(m),
                 AlphaMuxB = this.GetAlphaMuxABD_(n),
                 AlphaMuxC = this.GetAlphaMuxC_(o),

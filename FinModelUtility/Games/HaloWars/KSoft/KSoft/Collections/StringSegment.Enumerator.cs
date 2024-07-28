@@ -15,35 +15,35 @@ namespace KSoft.Collections
 
 			public Enumerator(StringSegment segment)
 			{
-				mData = segment.mData;
-				mStart = segment.mOffset;
-				mEnd = mStart + segment.mCount;
-				mCurrent = mStart - 1;
+				this.mData = segment.mData;
+				this.mStart = segment.mOffset;
+				this.mEnd = this.mStart + segment.mCount;
+				this.mCurrent = this.mStart - 1;
 			}
 			public void Dispose() { }
 
 			#region IEnumerator<char> Members
 			public char Current { get {
-				if (mCurrent < mStart)	throw new InvalidOperationException("Enumeration has not started");
-				if (mCurrent >= mEnd)	throw new InvalidOperationException("Enumeration already finished");
+				if (this.mCurrent < this.mStart)	throw new InvalidOperationException("Enumeration has not started");
+				if (this.mCurrent >= this.mEnd)	throw new InvalidOperationException("Enumeration already finished");
 
-				return mData[mCurrent];
+				return this.mData[this.mCurrent];
 			} }
-			object System.Collections.IEnumerator.Current { get { return Current; } }
+			object System.Collections.IEnumerator.Current { get { return this.Current; } }
 
 			public bool MoveNext()
 			{
-				if (mCurrent < mEnd)
+				if (this.mCurrent < this.mEnd)
 				{
-					++mCurrent;
-					return mCurrent < mEnd;
+					++this.mCurrent;
+					return this.mCurrent < this.mEnd;
 				}
 				return false;
 			}
 
 			public void Reset()
 			{
-				mCurrent = mStart - 1;
+				this.mCurrent = this.mStart - 1;
 			}
 			#endregion
 		};

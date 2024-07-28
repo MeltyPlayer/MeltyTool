@@ -20,8 +20,8 @@ namespace KSoft.Xml
 		public string FileName { get; set; }
 
 		internal Text.TextLineInfo CurrentLineInfo { get {
-			if (mLoadReader != null && mLoadReader.HasLineInfo())
-				return new Text.TextLineInfo(mLoadReader.LineNumber, mLoadReader.LinePosition);
+			if (this.mLoadReader != null && this.mLoadReader.HasLineInfo())
+				return new Text.TextLineInfo(this.mLoadReader.LineNumber, this.mLoadReader.LinePosition);
 
 			return Text.TextLineInfo.Empty;
 		} }
@@ -29,16 +29,16 @@ namespace KSoft.Xml
 		[SuppressMessage("Microsoft.Design", "CA3075:InsecureDTDProcessing")]
 		public override void Load(string filename)
 		{
-			FileName = filename;
+			this.FileName = filename;
 
 			base.Load(filename);
 		}
 
 		public override void Load(XmlReader reader)
 		{
-			mLoadReader = (IXmlLineInfo)reader;
+			this.mLoadReader = (IXmlLineInfo)reader;
 			base.Load(reader);
-			mLoadReader = null;
+			this.mLoadReader = null;
 		}
 
 		#region Create overrides
@@ -67,13 +67,13 @@ namespace KSoft.Xml
 		{
 			return string.Format(Util.InvariantCultureInfo,
 				"{0} ({1})",
-				FileName, Text.TextLineInfo.ToStringLineOnly(lineInfo, verboseString));
+				this.FileName, Text.TextLineInfo.ToStringLineOnly(lineInfo, verboseString));
 		}
 		string GetFileLocationStringWithColumn(Text.ITextLineInfo lineInfo, bool verboseString)
 		{
 			return string.Format(Util.InvariantCultureInfo,
 				"{0} ({1})",
-				FileName, Text.TextLineInfo.ToString(lineInfo, verboseString));
+				this.FileName, Text.TextLineInfo.ToString(lineInfo, verboseString));
 		}
 		public string GetFileLocationString(XmlNode node, bool verboseString = false)
 		{
@@ -85,11 +85,11 @@ namespace KSoft.Xml
 			var loc_info = (Text.ITextLineInfo)node;
 
 			if (!loc_info.HasLineInfo)
-				return FileName;
+				return this.FileName;
 			else if (loc_info.LinePosition != 0)
-				return GetFileLocationStringWithColumn(loc_info, verboseString);
+				return this.GetFileLocationStringWithColumn(loc_info, verboseString);
 			else
-				return GetFileLocationStringWithLineOnly(loc_info, verboseString);
+				return this.GetFileLocationStringWithLineOnly(loc_info, verboseString);
 		}
 	};
 }

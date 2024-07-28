@@ -112,9 +112,9 @@ namespace KSoft.Phoenix.Phx.Meta
 
 		public abstract GameDataObjectKind ProtoKind { get; }
 
-		Type IProtoDataReferenceAttribute.ProtoType { get { return ProtoType; } }
-		string IProtoDataReferenceAttribute.ProtoKindName { get { return ProtoKind.ToString(); } }
-		int IProtoDataReferenceAttribute.ProtoKindId { get { return (int)ProtoKind; } }
+		Type IProtoDataReferenceAttribute.ProtoType { get { return this.ProtoType; } }
+		string IProtoDataReferenceAttribute.ProtoKindName { get { return this.ProtoKind.ToString(); } }
+		int IProtoDataReferenceAttribute.ProtoKindId { get { return (int) this.ProtoKind; } }
 	};
 
 	/// <summary>Cost/Resource type reference</summary>
@@ -148,9 +148,9 @@ namespace KSoft.Phoenix.Phx.Meta
 
 		public abstract HPBarDataObjectKind ProtoKind { get; }
 
-		Type IProtoDataReferenceAttribute.ProtoType { get { return ProtoType; } }
-		string IProtoDataReferenceAttribute.ProtoKindName { get { return ProtoKind.ToString(); } }
-		int IProtoDataReferenceAttribute.ProtoKindId { get { return (int)ProtoKind; } }
+		Type IProtoDataReferenceAttribute.ProtoType { get { return this.ProtoType; } }
+		string IProtoDataReferenceAttribute.ProtoKindName { get { return this.ProtoKind.ToString(); } }
+		int IProtoDataReferenceAttribute.ProtoKindId { get { return (int) this.ProtoKind; } }
 	};
 
 	[AttributeUsage(kValidOn, AllowMultiple=false)]
@@ -206,9 +206,9 @@ namespace KSoft.Phoenix.Phx.Meta
 
 		public abstract DatabaseObjectKind ProtoKind { get; }
 
-		Type IProtoDataReferenceAttribute.ProtoType { get { return ProtoType; } }
-		string IProtoDataReferenceAttribute.ProtoKindName { get { return ProtoKind.ToString(); } }
-		int IProtoDataReferenceAttribute.ProtoKindId { get { return (int)ProtoKind; } }
+		Type IProtoDataReferenceAttribute.ProtoType { get { return this.ProtoType; } }
+		string IProtoDataReferenceAttribute.ProtoKindName { get { return this.ProtoKind.ToString(); } }
+		int IProtoDataReferenceAttribute.ProtoKindId { get { return (int) this.ProtoKind; } }
 	};
 
 	[AttributeUsage(kValidOn, AllowMultiple=false)]

@@ -113,12 +113,12 @@ public record BoneWeight(
     int hash = 216613626;
     var sub = 16780669;
 
-    hash = hash * sub ^ Bone.Index.GetHashCode();
-    if (InverseBindMatrix != null) {
-      hash = hash * sub ^ InverseBindMatrix.GetHashCode();
+    hash = hash * sub ^ this.Bone.Index.GetHashCode();
+    if (this.InverseBindMatrix != null) {
+      hash = hash * sub ^ this.InverseBindMatrix.GetHashCode();
     }
 
-    hash = hash * sub ^ Weight.GetHashCode();
+    hash = hash * sub ^ this.Weight.GetHashCode();
 
     return hash;
   }

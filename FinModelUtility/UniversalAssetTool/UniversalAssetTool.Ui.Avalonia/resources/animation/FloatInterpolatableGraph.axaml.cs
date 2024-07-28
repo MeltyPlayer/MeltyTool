@@ -84,6 +84,6 @@ public class FloatInterpolatableGraphViewModel : ViewModelBase {
 
 public partial class FloatInterpolatableGraph : UserControl {
   public FloatInterpolatableGraph() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

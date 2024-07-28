@@ -62,7 +62,7 @@ namespace KSoft.IO
 		#endregion
 
 		#region EndianReader util
-		public static void Assert(IO.EndianReader s, byte expected)
+		public static void Assert(EndianReader s, byte expected)
 		{
 			Contract.Requires(s != null);
 
@@ -71,7 +71,7 @@ namespace KSoft.IO
 				throw new VersionMismatchException(s.BaseStream, expected, version);
 		}
 
-		public static void Assert(IO.EndianReader s, ushort expected)
+		public static void Assert(EndianReader s, ushort expected)
 		{
 			Contract.Requires(s != null);
 
@@ -80,7 +80,7 @@ namespace KSoft.IO
 				throw new VersionMismatchException(s.BaseStream, expected, version);
 		}
 
-		public static void Assert(IO.EndianReader s, uint expected)
+		public static void Assert(EndianReader s, uint expected)
 		{
 			Contract.Requires(s != null);
 
@@ -89,7 +89,7 @@ namespace KSoft.IO
 				throw new VersionMismatchException(s.BaseStream, expected, version);
 		}
 
-		public static void Assert(IO.EndianReader s, ulong expected)
+		public static void Assert(EndianReader s, ulong expected)
 		{
 			Contract.Requires(s != null);
 
@@ -164,7 +164,7 @@ namespace KSoft.IO
 		#endregion
 
 		#region EndianReader util
-		public static byte Assert(IO.EndianReader s
+		public static byte Assert(EndianReader s
 			, byte expectedMin
 			, byte expectedMax)
 		{
@@ -177,7 +177,7 @@ namespace KSoft.IO
 			return version;
 		}
 
-		public static ushort Assert(IO.EndianReader s
+		public static ushort Assert(EndianReader s
 			, ushort expectedMin
 			, ushort expectedMax)
 		{
@@ -190,7 +190,7 @@ namespace KSoft.IO
 			return version;
 		}
 
-		public static uint Assert(IO.EndianReader s
+		public static uint Assert(EndianReader s
 			, uint expectedMin
 			, uint expectedMax)
 		{
@@ -203,7 +203,7 @@ namespace KSoft.IO
 			return version;
 		}
 
-		public static ulong Assert(IO.EndianReader s
+		public static ulong Assert(EndianReader s
 			, ulong expectedMin
 			, ulong expectedMax)
 		{

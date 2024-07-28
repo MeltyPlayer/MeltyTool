@@ -45,12 +45,12 @@ namespace KSoft.Bitwise
 			: IByteSwappable
 		{
 			readonly string kName;
-			public override string ToString()	{ return kName; }
+			public override string ToString()	{ return this.kName; }
 			readonly short[] kBsCodes;
 			[SuppressMessage("Microsoft.Design", "CA1819:PropertiesShouldNotReturnArrays")]
-			public short[] ByteSwapCodes		{ get { return kBsCodes; } }
+			public short[] ByteSwapCodes		{ get { return this.kBsCodes; } }
 			readonly int kSizeOf;
-			public int SizeOf					{ get { return kSizeOf; } }
+			public int SizeOf					{ get { return this.kSizeOf; } }
 
 			public BsDefinition(string name, int sizeOf, params short[] bsCodes)
 			{
@@ -59,9 +59,9 @@ namespace KSoft.Bitwise
 				Contract.Requires<ArgumentNullException>(bsCodes != null);
 				Contract.Requires<ArgumentException>(bsCodes.Length >= kMinumumNumberOfDefinitionBsCodes);
 
-				kName = name;
-				kSizeOf = sizeOf;
-				kBsCodes = bsCodes;
+				this.kName = name;
+				this.kSizeOf = sizeOf;
+				this.kBsCodes = bsCodes;
 			}
 		};
 

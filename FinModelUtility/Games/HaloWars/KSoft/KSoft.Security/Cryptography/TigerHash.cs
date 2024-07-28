@@ -28,12 +28,12 @@ namespace KSoft.Security.Cryptography
 
 		public TigerHash()
 		{
-			Version = TigerHashVersion.V1;
+			this.Version = TigerHashVersion.V1;
 		}
 
 		public override void Initialize()
 		{
-			Version = TigerHashVersion.V1;
+			this.Version = TigerHashVersion.V1;
 
 			base.Initialize();
 		}
@@ -51,12 +51,12 @@ namespace KSoft.Security.Cryptography
 
 		public TigerHash2()
 		{
-			Version = TigerHashVersion.V2;
+			this.Version = TigerHashVersion.V2;
 		}
 
 		public override void Initialize()
 		{
-			Version = TigerHashVersion.V2;
+			this.Version = TigerHashVersion.V2;
 
 			base.Initialize();
 		}
@@ -100,9 +100,9 @@ namespace KSoft.Security.Cryptography
 			tiger64 = 0;
 
 			// This would only ever happen if Initialize wasn't called
-			if (mRegs != null && mRegs.Length >= 1)
+			if (this.mRegs != null && this.mRegs.Length >= 1)
 			{
-				tiger64 = mRegs[0];
+				tiger64 = this.mRegs[0];
 				return true;
 			}
 
@@ -115,10 +115,10 @@ namespace KSoft.Security.Cryptography
 			tiger128 = 0;
 
 			// This would only ever happen if Initialize wasn't called
-			if (mRegs != null && mRegs.Length >= 2)
+			if (this.mRegs != null && this.mRegs.Length >= 2)
 			{
-				tiger64 = mRegs[0];
-				tiger128 = mRegs[1];
+				tiger64 = this.mRegs[0];
+				tiger128 = this.mRegs[1];
 				return true;
 			}
 
@@ -132,11 +132,11 @@ namespace KSoft.Security.Cryptography
 			tiger192 = 0;
 
 			// This would only ever happen if Initialize wasn't called
-			if (mRegs != null && mRegs.Length >= 3)
+			if (this.mRegs != null && this.mRegs.Length >= 3)
 			{
-				tiger64 = mRegs[0];
-				tiger128 = mRegs[1];
-				tiger192 = mRegs[2];
+				tiger64 = this.mRegs[0];
+				tiger128 = this.mRegs[1];
+				tiger192 = this.mRegs[2];
 				return true;
 			}
 
@@ -152,9 +152,9 @@ namespace KSoft.Security.Cryptography
 				return false;
 
 			// This would only ever happen if Initialize wasn't called
-			if (mRegs != null && mRegs.Length >= 3)
+			if (this.mRegs != null && this.mRegs.Length >= 3)
 			{
-				Bits.ArrayCopy(mRegs, 0, buffer, offset, mRegs.Length);
+				Bits.ArrayCopy(this.mRegs, 0, buffer, offset, this.mRegs.Length);
 				return true;
 			}
 
@@ -163,39 +163,39 @@ namespace KSoft.Security.Cryptography
 
 		protected TigerHashBase() : base(kBlockSize, kHashSize)
 		{
-			Initialize();
+			this.Initialize();
 		}
 
 		public override void Initialize()
 		{
 			base.Initialize();
 
-			if (mRegs == null)
-				mRegs = new ulong[3];
-			mRegs[0] = kRegister0;
-			mRegs[1] = kRegister1;
-			mRegs[2] = kRegister2;
+			if (this.mRegs == null)
+				this.mRegs = new ulong[3];
+			this.mRegs[0] = kRegister0;
+			this.mRegs[1] = kRegister1;
+			this.mRegs[2] = kRegister2;
 
-			if (mX == null)
+			if (this.mX == null)
 			{
-				mX = new ulong[kWordCount];
+				this.mX = new ulong[kWordCount];
 			}
 			else
 			{
-				Array.Resize(ref mX, kWordCount);
-				Array.Clear(mX, 0, kWordCount);
+				Array.Resize(ref this.mX, kWordCount);
+				Array.Clear(this.mX, 0, kWordCount);
 			}
 
-			Contract.Assert(Version == TigerHashVersion.V1 || Version == TigerHashVersion.V2,
+			Contract.Assert(this.Version == TigerHashVersion.V1 || this.Version == TigerHashVersion.V2,
 				"TigerHash version is not recognized");
 		}
 
 		private void ProcessWords()
 		{
 			int i = -1;
-			ulong a = mRegs[0], b = mRegs[1], c = mRegs[2];
-			ulong x0=mX[++i], x1=mX[++i], x2=mX[++i], x3=mX[++i];
-			ulong x4=mX[++i], x5=mX[++i], x6=mX[++i], x7=mX[++i];
+			ulong a = this.mRegs[0], b = this.mRegs[1], c = this.mRegs[2];
+			ulong x0= this.mX[++i], x1= this.mX[++i], x2= this.mX[++i], x3= this.mX[++i];
+			ulong x4= this.mX[++i], x5= this.mX[++i], x6= this.mX[++i], x7= this.mX[++i];
 
 			// rounds and schedule
 			c^=x0; Round(ref a,ref b,(uint)(c>>32),(uint)c); b*=5;
@@ -230,43 +230,43 @@ namespace KSoft.Security.Cryptography
 			b^=x7; Round(ref c,ref a,(uint)(b>>32),(uint)b); a*=9;
 
 			// feed forward
-			mRegs[0] ^= a;
-			b -= mRegs[1];
-			mRegs[1] = b;
-			mRegs[2] += c;
+			this.mRegs[0] ^= a;
+			b -= this.mRegs[1];
+			this.mRegs[1] = b;
+			this.mRegs[2] += c;
 		}
 
 		void CopyBlock(byte[] inputBuffer, int inputOffset)
 		{
 			int remaining_bytes = inputBuffer.Length - inputOffset;
-			int input_count = System.Math.Min(BlockSize, remaining_bytes);
-			if (input_count != BlockSize)
+			int input_count = Math.Min(this.BlockSize, remaining_bytes);
+			if (input_count != this.BlockSize)
 			{
-				Array.Clear(mX, 0, mX.Length);
+				Array.Clear(this.mX, 0, this.mX.Length);
 			}
-			Bits.ArrayCopy(inputBuffer, inputOffset, mX, 0, input_count);
+			Bits.ArrayCopy(inputBuffer, inputOffset, this.mX, 0, input_count);
 		}
 
 		void ProcessBlockOfWords(byte[] inputBuffer, int inputOffset, int blockCount)
 		{
-			for (int block_index = 0, block_offset_in_input = inputOffset; block_index < blockCount; block_index++, block_offset_in_input += BlockSize)
+			for (int block_index = 0, block_offset_in_input = inputOffset; block_index < blockCount; block_index++, block_offset_in_input += this.BlockSize)
 			{
-				CopyBlock(inputBuffer, block_offset_in_input);
+				this.CopyBlock(inputBuffer, block_offset_in_input);
 
-				ProcessWords();
+				this.ProcessWords();
 			}
 		}
 
 		protected override void ProcessBlock(byte[] inputBuffer, int inputOffset, int blockCount)
 		{
-			ProcessBlockOfWords(inputBuffer, inputOffset, blockCount);
+			this.ProcessBlockOfWords(inputBuffer, inputOffset, blockCount);
 		}
 
 		protected override byte[] ProcessFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
 		{
 			// it's okay to modify inputBuffer here since it's the final block and it's actually BlockHashAlgorithm's internal buffer
 
-			ulong msg_bit_length = ((ulong)TotalBytesProcessed + (ulong)inputCount) << 3;
+			ulong msg_bit_length = ((ulong) this.TotalBytesProcessed + (ulong)inputCount) << 3;
 
 			if (inputOffset > 0 && inputCount > 0)
 			{
@@ -276,37 +276,38 @@ namespace KSoft.Security.Cryptography
 
 			inputOffset = 0;
 
-			Array.Clear(inputBuffer, inputCount, BlockSize-inputCount);
+			Array.Clear(inputBuffer, inputCount, this.BlockSize-inputCount);
 
 			// write the padding byte then align up to the next word boundary (proceeding bytes are already zero due to above Clear)
 			int input_offset = inputCount;
-			inputBuffer[input_offset++] = (byte)Version; // padding byte
+			inputBuffer[input_offset++] = (byte) this.Version; // padding byte
 			input_offset = IntegerMath.Align(IntegerMath.kInt64AlignmentBit, input_offset);
 
 			// if we don't have enough space to encode the length, process what we have now as a block.
 			// remaining bytes are still all zero, due to above Clear.
-			if (input_offset > (BlockSize-sizeof(ulong)))
+			if (input_offset > (this.BlockSize-sizeof(ulong)))
 			{
-				ProcessBlock(inputBuffer, inputOffset, 1);
+				this.ProcessBlock(inputBuffer, inputOffset, 1);
 
 				input_offset = 0;
-				Array.Clear(inputBuffer, 0, BlockSize);
+				Array.Clear(inputBuffer, 0, this.BlockSize);
 			}
 
 			// write out the number of bytes that were processed before finalization
-			for ( input_offset = BlockSize - sizeof(ulong)
+			for ( input_offset = this.BlockSize - sizeof(ulong)
 				; msg_bit_length != 0
 				; inputBuffer[input_offset] = (byte)msg_bit_length, msg_bit_length >>= 8, ++input_offset)
 			{
 			}
-			ProcessBlock(inputBuffer, inputOffset, 1);
 
-			if (HashValue == null)
+			this.ProcessBlock(inputBuffer, inputOffset, 1);
+
+			if (this.HashValue == null)
 			{
-				HashValue = new byte[HashSizeValue / kWordCount];
+				this.HashValue = new byte[this.HashSizeValue / kWordCount];
 			}
-			Bits.ArrayCopy(mRegs, 0, HashValue, 0, mRegs.Length);
-			return HashValue;
+			Bits.ArrayCopy(this.mRegs, 0, this.HashValue, 0, this.mRegs.Length);
+			return this.HashValue;
 		}
 
 		#region S-Boxes

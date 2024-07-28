@@ -17,7 +17,7 @@ namespace benchmarks {
     [Benchmark]
     public void ReversingWithManualSize() {
       for (var i = 0; i < n; i++) {
-        values[i] = ReversingWithManualSizeImpl<float>(sizeof(float));
+        this.values[i] = this.ReversingWithManualSizeImpl<float>(sizeof(float));
       }
     }
 
@@ -35,7 +35,7 @@ namespace benchmarks {
     [Benchmark]
     public void ReversingWithGenericSize() {
       for (var i = 0; i < n; i++) {
-        values[i] = ReversingWithGenericSizeImpl<float>();
+        this.values[i] = this.ReversingWithGenericSizeImpl<float>();
       }
     }
 
@@ -53,7 +53,7 @@ namespace benchmarks {
     [Benchmark]
     public void ReversingWithSpans() {
       for (var i = 0; i < n; i++) {
-        values[i] = ReversingWithSpansImpl<float>();
+        this.values[i] = this.ReversingWithSpansImpl<float>();
       }
     }
 
@@ -69,7 +69,7 @@ namespace benchmarks {
     [Benchmark]
     public void ReversingWithPointer() {
       for (var i = 0; i < n; i++) {
-        values[i] = ReversingWithSpansImpl<float>();
+        this.values[i] = this.ReversingWithSpansImpl<float>();
       }
     }
 
@@ -87,7 +87,7 @@ namespace benchmarks {
     [Benchmark]
     public void ReversingDirectly() {
       for (var i = 0; i < n; i++) {
-        ReversingDirectlyImpl(out this.values[i]);
+        this.ReversingDirectlyImpl(out this.values[i]);
       }
     }
 

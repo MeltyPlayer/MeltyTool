@@ -16,8 +16,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.UnusedData("Not actually parsed by the engine")]
 		public BProtoTechStatus TechStatus
 		{
-			get { return mTechStatus; }
-			set { mTechStatus = value; }
+			get { return this.mTechStatus; }
+			set { this.mTechStatus = value; }
 		}
 
 		static System.Predicate<BProtoTechStatus> BProtoTechStatusIsNotInvalid = (BProtoTechStatus v) => v != BProtoTechStatus.Invalid;
@@ -28,8 +28,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BProtoTechReference]
 		public int TechID
 		{
-			get { return mTechID; }
-			set { mTechID = value; }
+			get { return this.mTechID; }
+			set { this.mTechID = value; }
 		}
 		#endregion
 
@@ -40,8 +40,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttributeEnumOpt("status", ref mTechStatus, BProtoTechStatusIsNotInvalid);
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mTechID, DatabaseObjectKind.Tech, false, XML.XmlUtil.kSourceCursor);
+			s.StreamAttributeEnumOpt("status", ref this.mTechStatus, BProtoTechStatusIsNotInvalid);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mTechID, DatabaseObjectKind.Tech, false, XML.XmlUtil.kSourceCursor);
 		}
 		#endregion
 	};

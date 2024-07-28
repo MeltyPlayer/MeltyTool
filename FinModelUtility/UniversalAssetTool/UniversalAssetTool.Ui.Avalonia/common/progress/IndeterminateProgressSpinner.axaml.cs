@@ -4,6 +4,6 @@ namespace uni.ui.avalonia.common.progress;
 
 public partial class IndeterminateProgressSpinner : UserControl {
   public IndeterminateProgressSpinner() {
-    InitializeComponent();
+    this.InitializeComponent();
   }
 }

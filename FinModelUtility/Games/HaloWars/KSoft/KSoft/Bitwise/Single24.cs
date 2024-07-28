@@ -52,7 +52,7 @@ namespace KSoft.Bitwise
 		const uint kSignBit = kSignBitMask;
 
 		const int kExponentBias = (1 << (kExponentBitCount - 1)) - 1;
-		const int kExponentBiasDiff = Single32.kExponentBias - Single24.kExponentBias;
+		const int kExponentBiasDiff = Single32.kExponentBias - kExponentBias;
 
 		const int kMantissaBitDiff = Single32.kMantissaBitCount - kMantissaBitCount;
 	#endregion
@@ -72,7 +72,7 @@ namespace KSoft.Bitwise
 
 		public static uint FromSingle(float singleValue)
 		{
-			uint data = Bitwise.ByteSwap.SingleToUInt32(singleValue);
+			uint data = ByteSwap.SingleToUInt32(singleValue);
 			uint mantissa = (data & Single32.kMantissaBitMask) >> Single32.kMantissaBitIndex;
 			uint exponent = (data & Single32.kExponentBitMask) >> Single32.kExponentBitIndex;
 			uint sign = (data & Single32.kSignBitMask) >> Single32.kSignBitIndex;
@@ -114,7 +114,7 @@ namespace KSoft.Bitwise
 				v |= sign;
 			}
 
-			return Bitwise.ByteSwap.SingleFromUInt32(v);
+			return ByteSwap.SingleFromUInt32(v);
 		}
 	};
 }

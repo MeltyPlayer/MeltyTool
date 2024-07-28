@@ -156,7 +156,7 @@ namespace KSoft.IO
 	public interface IEnumEndianStreamer<TEnum> : IEnumBinaryStreamer<TEnum>
 		where TEnum : struct
 	{
-		void Stream(IO.EndianStream s, ref TEnum value);
+		void Stream(EndianStream s, ref TEnum value);
 	};
 	[Contracts.ContractClassFor(typeof(IEnumEndianStreamer<>))]
 	abstract class IEnumEndianStreamerContract<TEnum> : IEnumEndianStreamer<TEnum>
@@ -166,7 +166,7 @@ namespace KSoft.IO
 		public abstract void Read(BinaryReader s, out TEnum value);
 		public abstract void Write(BinaryWriter s, TEnum value);
 
-		public void Stream(IO.EndianStream s, ref TEnum value)
+		public void Stream(EndianStream s, ref TEnum value)
 		{
 			Contract.Requires<ArgumentNullException>(s != null);
 
@@ -235,11 +235,11 @@ namespace KSoft.IO
 
 			void AssertStreamTypeIsValid()
 			{
-				var tc = Type.GetTypeCode(StreamType);
+				var tc = Type.GetTypeCode(this.StreamType);
 
 				if (!EnumUtils.TypeIsSupported(tc))
 				{
-					var message = string.Format(Util.InvariantCultureInfo, "{0} is an invalid stream type", StreamType);
+					var message = string.Format(Util.InvariantCultureInfo, "{0} is an invalid stream type", this.StreamType);
 
 					throw new NotSupportedException(message);
 				}
@@ -247,20 +247,20 @@ namespace KSoft.IO
 
 			public MethodGenerationArgs()
 			{
-				EnumType = typeof(TEnum);
-				StreamType = typeof(TStreamType);
-				UnderlyingType = Enum.GetUnderlyingType(EnumType);
+				this.EnumType = typeof(TEnum);
+				this.StreamType = typeof(TStreamType);
+				this.UnderlyingType = Enum.GetUnderlyingType(this.EnumType);
 
 				// Check if the user wants us to always use the underlying type
-				UseUnderlyingType = StreamType == typeof(EnumBinaryStreamerUseUnderlyingType);
-				if (UseUnderlyingType)
-					StreamType = UnderlyingType;
+				this.UseUnderlyingType = this.StreamType == typeof(EnumBinaryStreamerUseUnderlyingType);
+				if (this.UseUnderlyingType)
+					this.StreamType = this.UnderlyingType;
 
-				EnumUtils.AssertTypeIsEnum(EnumType);
-				EnumUtils.AssertUnderlyingTypeIsSupported(EnumType, UnderlyingType);
-				AssertStreamTypeIsValid();
+				EnumUtils.AssertTypeIsEnum(this.EnumType);
+				EnumUtils.AssertUnderlyingTypeIsSupported(this.EnumType, this.UnderlyingType);
+				this.AssertStreamTypeIsValid();
 
-				UnderlyingTypeNeedsConversion = UnderlyingType != StreamType;
+				this.UnderlyingTypeNeedsConversion = this.UnderlyingType != this.StreamType;
 			}
 		};
 
@@ -367,7 +367,7 @@ namespace KSoft.IO
 		/// <remarks>
 		/// If <see cref="args.UnderlyingType"/> is the same as <typeparamref name="TStreamType"/>, no conversion code is generated
 		/// </remarks>
-		static Action<System.IO.BinaryWriter, TEnum> GenerateWriteMethod(MethodGenerationArgs args, MethodInfo writeMethodInfo)
+		static Action<BinaryWriter, TEnum> GenerateWriteMethod(MethodGenerationArgs args, MethodInfo writeMethodInfo)
 		{
 			//////////////////////////////////////////////////////////////////////////
 			// Define the generated method's parameters
@@ -415,7 +415,7 @@ namespace KSoft.IO
 		/// <summary>Serialize a <typeparamref name="TEnum"/> value using an <see cref="IO.EndianStream"/></summary>
 		/// <param name="s">Stream we're using for serialization</param>
 		/// <param name="value">Value to serialize</param>
-		public static void Stream(IO.EndianStream s, ref TEnum value)
+		public static void Stream(EndianStream s, ref TEnum value)
 		{
 				 if (s.IsReading) Read(s.Reader, out value);
 			else if (s.IsWriting) Write(s.Writer, value);
@@ -426,7 +426,7 @@ namespace KSoft.IO
 		TEnum IEnumBinaryStreamer<TEnum>.Read(BinaryReader s)						{ return Read(s); }
 		void IEnumBinaryStreamer<TEnum>.Read(BinaryReader s, out TEnum value)		{ Read(s, out value); }
 		void IEnumBinaryStreamer<TEnum>.Write(BinaryWriter s, TEnum value)			{ Write(s, value); }
-		void IEnumEndianStreamer<TEnum>.Stream(IO.EndianStream s, ref TEnum value)	{ Stream(s, ref value); }
+		void IEnumEndianStreamer<TEnum>.Stream(EndianStream s, ref TEnum value)	{ Stream(s, ref value); }
 		#endregion
 	};
 

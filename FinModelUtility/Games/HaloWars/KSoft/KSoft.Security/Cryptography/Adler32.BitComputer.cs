@@ -16,14 +16,15 @@ namespace KSoft.Security.Cryptography
 
 			public BitComputer(uint adler32)
 			{
-				s1 = adler32 & 0xFFFF; s2 = adler32 >> 16;
+				this.s1 = adler32 & 0xFFFF;
+				this.s2 = adler32 >> 16;
 			}
 
 			public static BitComputer New { get { return new BitComputer(1); } }
 
 			public uint ComputeFinish()
 			{
-				return Adler32.ComputeFinish(s1, s2);
+				return Adler32.ComputeFinish(this.s1, this.s2);
 			}
 
 			public void Compute(byte[] buffer, int offset, int length)
@@ -42,52 +43,62 @@ namespace KSoft.Security.Cryptography
 					int x;
 					for (x = 0; x + 7 < blocklen; x += 8, offset += 8)
 					{
-						s1 += buffer[offset + 0]; s2 += s1;
-						s1 += buffer[offset + 1]; s2 += s1;
-						s1 += buffer[offset + 2]; s2 += s1;
-						s1 += buffer[offset + 3]; s2 += s1;
-						s1 += buffer[offset + 4]; s2 += s1;
-						s1 += buffer[offset + 5]; s2 += s1;
-						s1 += buffer[offset + 6]; s2 += s1;
-						s1 += buffer[offset + 7]; s2 += s1;
+						this.s1 += buffer[offset + 0];
+						this.s2 += this.s1;
+						this.s1 += buffer[offset + 1];
+						this.s2 += this.s1;
+						this.s1 += buffer[offset + 2];
+						this.s2 += this.s1;
+						this.s1 += buffer[offset + 3];
+						this.s2 += this.s1;
+						this.s1 += buffer[offset + 4];
+						this.s2 += this.s1;
+						this.s1 += buffer[offset + 5];
+						this.s2 += this.s1;
+						this.s1 += buffer[offset + 6];
+						this.s2 += this.s1;
+						this.s1 += buffer[offset + 7];
+						this.s2 += this.s1;
 					}
 
 					for (; x < blocklen; x++, offset++)
 					{
-						s1 += buffer[offset]; s2 += s1;
+						this.s1 += buffer[offset];
+						this.s2 += this.s1;
 					}
 
-					s1 %= kAdlerMod; s2 %= kAdlerMod;
+					this.s1 %= kAdlerMod;
+					this.s2 %= kAdlerMod;
 				}
 			}
 
 			#region Compute 16-bits
 			public void ComputeLE(ushort value)
 			{
-				ComputeUpdate((value & 0x00FFU) >> 0, ref s1, ref s2);
-				ComputeUpdate((value & 0xFF00U) >> 8, ref s1, ref s2);
+				ComputeUpdate((value & 0x00FFU) >> 0, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0xFF00U) >> 8, ref this.s1, ref this.s2);
 			}
 			public void ComputeBE(ushort value)
 			{
-				ComputeUpdate((value & 0xFF00U) >> 8, ref s1, ref s2);
-				ComputeUpdate((value & 0x00FFU) >> 0, ref s1, ref s2);
+				ComputeUpdate((value & 0xFF00U) >> 8, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0x00FFU) >> 0, ref this.s1, ref this.s2);
 			}
 			#endregion
 
 			#region Compute 32-bits
 			public void ComputeLE(uint value)
 			{
-				ComputeUpdate((value & 0x000000FFU) >> 0, ref s1, ref s2);
-				ComputeUpdate((value & 0x0000FF00U) >> 8, ref s1, ref s2);
-				ComputeUpdate((value & 0x00FF0000U) >> 16, ref s1, ref s2);
-				ComputeUpdate((value & 0xFF000000U) >> 24, ref s1, ref s2);
+				ComputeUpdate((value & 0x000000FFU) >> 0, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0x0000FF00U) >> 8, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0x00FF0000U) >> 16, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0xFF000000U) >> 24, ref this.s1, ref this.s2);
 			}
 			public void ComputeBE(uint value)
 			{
-				ComputeUpdate((value & 0xFF000000U) >> 24, ref s1, ref s2);
-				ComputeUpdate((value & 0x00FF0000U) >> 16, ref s1, ref s2);
-				ComputeUpdate((value & 0x0000FF00U) >> 8, ref s1, ref s2);
-				ComputeUpdate((value & 0x000000FFU) >> 0, ref s1, ref s2);
+				ComputeUpdate((value & 0xFF000000U) >> 24, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0x00FF0000U) >> 16, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0x0000FF00U) >> 8, ref this.s1, ref this.s2);
+				ComputeUpdate((value & 0x000000FFU) >> 0, ref this.s1, ref this.s2);
 			}
 			#endregion
 
@@ -99,10 +110,10 @@ namespace KSoft.Security.Cryptography
 				uint _value;
 
 				_value = lo;
-				ComputeLE(_value);
+				this.ComputeLE(_value);
 
 				_value = hi;
-				ComputeLE(_value);
+				this.ComputeLE(_value);
 			}
 			public void ComputeBE(ulong value)
 			{
@@ -111,10 +122,10 @@ namespace KSoft.Security.Cryptography
 				uint _value;
 
 				_value = hi;
-				ComputeBE(_value);
+				this.ComputeBE(_value);
 
 				_value = lo;
-				ComputeBE(_value);
+				this.ComputeBE(_value);
 			}
 			#endregion
 		};

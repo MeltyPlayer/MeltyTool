@@ -14,7 +14,7 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
 
   // Equality
   public override bool Equals(object? other) {
-    if (object.ReferenceEquals(this, other)) {
+    if (ReferenceEquals(this, other)) {
       return true;
     }
 
@@ -119,7 +119,7 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
       string path,
       out IReadOnlySystemDirectory outDirectory) {
     outDirectory = default;
-    return TryToGetExistingSubdir(
+    return this.TryToGetExistingSubdir(
         path,
         out Unsafe.As<IReadOnlySystemDirectory, ISystemDirectory>(
             ref outDirectory));

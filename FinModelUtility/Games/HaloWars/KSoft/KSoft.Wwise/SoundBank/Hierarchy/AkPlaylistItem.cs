@@ -13,8 +13,8 @@ namespace KSoft.Wwise.SoundBank
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref ID);
-			s.Stream(ref Weight);
+			s.Stream(ref this.ID);
+			s.Stream(ref this.Weight);
 		}
 		#endregion
 	};

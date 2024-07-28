@@ -12,15 +12,15 @@ namespace KSoft.T4
 
 		protected PrimitiveCodeDefinition(string keyword, TypeCode typeCode)
 		{
-			Keyword = keyword;
-			Code = typeCode;
+			this.Keyword = keyword;
+			this.Code = typeCode;
 
-			SimpleDesc = "NO DESC";
+			this.SimpleDesc = "NO DESC";
 		}
 
 		public PrimitiveCodeDefinition SetupDescription(string simpleDesc)
 		{
-			SimpleDesc = simpleDesc;
+			this.SimpleDesc = simpleDesc;
 
 			return this;
 		}
@@ -33,7 +33,7 @@ namespace KSoft.T4
 			return 0;
 		} }
 		public virtual int SizeOfInBits { get {
-			return SizeOfInBytes * 8;
+			return this.SizeOfInBytes * 8;
 		} }
 	};
 }

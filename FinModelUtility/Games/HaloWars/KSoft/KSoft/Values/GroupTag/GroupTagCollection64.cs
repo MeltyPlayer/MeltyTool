@@ -20,9 +20,9 @@ namespace KSoft.Values
 		#region Elements
 		readonly GroupTagDatum[] mGroupTags;
 		/// <summary>This collection's group tag elements</summary>
-		public IReadOnlyList<GroupTagDatum> GroupTags { get { return mGroupTags; } }
+		public IReadOnlyList<GroupTagDatum> GroupTags { get { return this.mGroupTags; } }
 
-		protected override GroupTagData[] BaseGroupTags { get { return (GroupTagData[])mGroupTags; } }
+		protected override GroupTagData[] BaseGroupTags { get { return (GroupTagData[]) this.mGroupTags; } }
 		#endregion
 
 		public override GroupTagData NullGroupTag { get { return GroupTagDatum.Null; } }
@@ -41,8 +41,8 @@ namespace KSoft.Values
 		{
 			Contract.Requires<ArgumentNullException>(groupTags != null);
 
-			mGroupTags = new GroupTagDatum[groupTags.Length];
-			groupTags.CopyTo(mGroupTags, 0);
+			this.mGroupTags = new GroupTagDatum[groupTags.Length];
+			groupTags.CopyTo(this.mGroupTags, 0);
 		}
 		/// <summary>Create a collection using an explicit list of group tags</summary>
 		/// <param name="sort">Should we sort the list?</param>
@@ -52,7 +52,7 @@ namespace KSoft.Values
 			Contract.Requires<ArgumentNullException>(groupTags != null);
 
 			if (sort)
-				Sort();
+				this.Sort();
 		}
 		/// <summary>Create a collection using an explicit list of group tags</summary>
 		/// <param name="uuid">Guid for this group tag collection</param>
@@ -63,7 +63,7 @@ namespace KSoft.Values
 			Contract.Requires<ArgumentNullException>(groupTags != null);
 
 			if (sort)
-				Sort();
+				this.Sort();
 		}
 		#endregion
 
@@ -74,7 +74,7 @@ namespace KSoft.Values
 		[Contracts.Pure]
 		public int FindGroupIndexByTag(TagWord groupTag)
 		{
-			return GroupTags.FindIndex(gt => gt.ID == groupTag);
+			return this.GroupTags.FindIndex(gt => gt.ID == groupTag);
 		}
 
 		/// <summary>Find a <see cref="GroupTagData64"/> object in this collection based on it's group tag</summary>
@@ -83,7 +83,7 @@ namespace KSoft.Values
 		[Contracts.Pure]
 		public GroupTagDatum FindGroupByTag(TagWord tag)
 		{
-			var matching_tags = from gt in GroupTags
+			var matching_tags = from gt in this.GroupTags
 								where gt.ID == tag
 								select gt;
 
@@ -96,7 +96,7 @@ namespace KSoft.Values
 		[Contracts.Pure]
 		public bool Contains(TagWord tag)
 		{
-			return GroupTags.Any(gt => gt.ID == tag);
+			return this.GroupTags.Any(gt => gt.ID == tag);
 		}
 		#endregion
 
@@ -106,7 +106,7 @@ namespace KSoft.Values
 		/// <remarks>Doesn't actually read any data from the stream, only seeks forward</remarks>
 		public override void Read(IO.EndianReader s)
 		{
-			s.Seek(GroupTags.Count * sizeof(TagWord), System.IO.SeekOrigin.Current);
+			s.Seek(this.GroupTags.Count * sizeof(TagWord), System.IO.SeekOrigin.Current);
 		}
 		#endregion
 
@@ -144,6 +144,6 @@ namespace KSoft.Values
 		}
 
 		/// <summary>The "main" group of the class which this attribute was applied to</summary>
-		public GroupTag64Collection Collection { get { return TagCollection as GroupTag64Collection; } }
+		public GroupTag64Collection Collection { get { return this.TagCollection as GroupTag64Collection; } }
 	};
 }

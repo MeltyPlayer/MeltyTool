@@ -62,12 +62,12 @@ namespace KSoft.Phoenix.Phx
 
 		#region GoodAgainstGrades
 		uint[] mGoodAgainstGrades = new uint[(int)ReticleAttackGrade.kNumberOf];
-		public uint[] GoodAgainstGrades { get { return mGoodAgainstGrades; } }
+		public uint[] GoodAgainstGrades { get { return this.mGoodAgainstGrades; } }
 		#endregion
 
 		#region DifficultyModifiers
 		float[] mDifficultyModifiers = new float[(int)BDifficultyTypeModifier.kNumberOf];
-		public float[] DifficultyModifiers { get { return mDifficultyModifiers; } }
+		public float[] DifficultyModifiers { get { return this.mDifficultyModifiers; } }
 		#endregion
 
 		public Collections.BTypeNames Populations { get; private set; }
@@ -78,8 +78,8 @@ namespace KSoft.Phoenix.Phx
 		float mGarrisonDamageMultiplier = 1.0f;
 		public float GarrisonDamageMultiplier
 		{
-			get { return mGarrisonDamageMultiplier; }
-			set { mGarrisonDamageMultiplier = value; }
+			get { return this.mGarrisonDamageMultiplier; }
+			set { this.mGarrisonDamageMultiplier = value; }
 		}
 		#endregion
 
@@ -87,8 +87,8 @@ namespace KSoft.Phoenix.Phx
 		float mConstructionDamageMultiplier = 1.0f;
 		public float ConstructionDamageMultiplier
 		{
-			get { return mConstructionDamageMultiplier; }
-			set { mConstructionDamageMultiplier = value; }
+			get { return this.mConstructionDamageMultiplier; }
+			set { this.mConstructionDamageMultiplier = value; }
 		}
 		#endregion
 
@@ -96,8 +96,8 @@ namespace KSoft.Phoenix.Phx
 		float mCaptureDecayRate;
 		public float CaptureDecayRate
 		{
-			get { return mCaptureDecayRate; }
-			set { mCaptureDecayRate = value; }
+			get { return this.mCaptureDecayRate; }
+			set { this.mCaptureDecayRate = value; }
 		}
 		#endregion
 
@@ -105,8 +105,8 @@ namespace KSoft.Phoenix.Phx
 		float mSquadLeashLength;
 		public float SquadLeashLength
 		{
-			get { return mSquadLeashLength; }
-			set { mSquadLeashLength = value; }
+			get { return this.mSquadLeashLength; }
+			set { this.mSquadLeashLength = value; }
 		}
 		#endregion
 
@@ -114,20 +114,20 @@ namespace KSoft.Phoenix.Phx
 		float mSquadAggroLength;
 		public float SquadAggroLength
 		{
-			get { return mSquadAggroLength; }
-			set { mSquadAggroLength = value; }
+			get { return this.mSquadAggroLength; }
+			set { this.mSquadAggroLength = value; }
 		}
 
 		/// <summary>Engine clamps aggro length to leash length</summary>
-		public bool SquadAggroLengthIsLessThanLeash { get { return SquadAggroLength < SquadLeashLength; } }
+		public bool SquadAggroLengthIsLessThanLeash { get { return this.SquadAggroLength < this.SquadLeashLength; } }
 		#endregion
 
 		#region UnitLeashLength
 		float mUnitLeashLength;
 		public float UnitLeashLength
 		{
-			get { return mUnitLeashLength; }
-			set { mUnitLeashLength = value; }
+			get { return this.mUnitLeashLength; }
+			set { this.mUnitLeashLength = value; }
 		}
 		#endregion
 
@@ -135,8 +135,8 @@ namespace KSoft.Phoenix.Phx
 		int mMaxNumCorpses;
 		public int MaxNumCorpses
 		{
-			get { return mMaxNumCorpses; }
-			set { mMaxNumCorpses = value; }
+			get { return this.mMaxNumCorpses; }
+			set { this.mMaxNumCorpses = value; }
 		}
 		#endregion
 
@@ -144,8 +144,8 @@ namespace KSoft.Phoenix.Phx
 		int mDefaultBurningEffectLimit = 1;
 		public int DefaultBurningEffectLimit
 		{
-			get { return mDefaultBurningEffectLimit; }
-			set { mDefaultBurningEffectLimit = value; }
+			get { return this.mDefaultBurningEffectLimit; }
+			set { this.mDefaultBurningEffectLimit = value; }
 		}
 
 		public Collections.BListArray<BBurningEffectLimit> BurningEffectLimits { get; private set; }
@@ -155,37 +155,37 @@ namespace KSoft.Phoenix.Phx
 		float mFatalityTransitionScale;
 		public float FatalityTransitionScale
 		{
-			get { return mFatalityTransitionScale; }
-			set { mFatalityTransitionScale = value; }
+			get { return this.mFatalityTransitionScale; }
+			set { this.mFatalityTransitionScale = value; }
 		}
 
 		float mFatalityMaxTransitionTime;
 		public float FatalityMaxTransitionTime
 		{
-			get { return mFatalityMaxTransitionTime; }
-			set { mFatalityMaxTransitionTime = value; }
+			get { return this.mFatalityMaxTransitionTime; }
+			set { this.mFatalityMaxTransitionTime = value; }
 		}
 
 		float mFatalityPositionOffsetTolerance;
 		public float FatalityPositionOffsetTolerance
 		{
-			get { return mFatalityPositionOffsetTolerance; }
-			set { mFatalityPositionOffsetTolerance = value; }
+			get { return this.mFatalityPositionOffsetTolerance; }
+			set { this.mFatalityPositionOffsetTolerance = value; }
 		}
 
 		float mFatalityOrientationOffsetTolerance;
 		/// <summary>angle</summary>
 		public float FatalityOrientationOffsetTolerance
 		{
-			get { return mFatalityOrientationOffsetTolerance; }
-			set { mFatalityOrientationOffsetTolerance = value; }
+			get { return this.mFatalityOrientationOffsetTolerance; }
+			set { this.mFatalityOrientationOffsetTolerance = value; }
 		}
 
 		float mFatalityExclusionRange;
 		public float FatalityExclusionRange
 		{
-			get { return mFatalityExclusionRange; }
-			set { mFatalityExclusionRange = value; }
+			get { return this.mFatalityExclusionRange; }
+			set { this.mFatalityExclusionRange = value; }
 		}
 		#endregion
 
@@ -193,8 +193,8 @@ namespace KSoft.Phoenix.Phx
 		float mGameOverDelay;
 		public float GameOverDelay
 		{
-			get { return mGameOverDelay; }
-			set { mGameOverDelay = value; }
+			get { return this.mGameOverDelay; }
+			set { this.mGameOverDelay = value; }
 		}
 		#endregion
 
@@ -202,8 +202,8 @@ namespace KSoft.Phoenix.Phx
 		float mInfantryCorpseDecayTime;
 		public float InfantryCorpseDecayTime
 		{
-			get { return mInfantryCorpseDecayTime; }
-			set { mInfantryCorpseDecayTime = value; }
+			get { return this.mInfantryCorpseDecayTime; }
+			set { this.mInfantryCorpseDecayTime = value; }
 		}
 		#endregion
 
@@ -211,8 +211,8 @@ namespace KSoft.Phoenix.Phx
 		float mCorpseSinkingSpacing;
 		public float CorpseSinkingSpacing
 		{
-			get { return mCorpseSinkingSpacing; }
-			set { mCorpseSinkingSpacing = value; }
+			get { return this.mCorpseSinkingSpacing; }
+			set { this.mCorpseSinkingSpacing = value; }
 		}
 		#endregion
 
@@ -220,8 +220,8 @@ namespace KSoft.Phoenix.Phx
 		int mMaxCorpseDisposalCount;
 		public int MaxCorpseDisposalCount
 		{
-			get { return mMaxCorpseDisposalCount; }
-			set { mMaxCorpseDisposalCount = value; }
+			get { return this.mMaxCorpseDisposalCount; }
+			set { this.mMaxCorpseDisposalCount = value; }
 		}
 		#endregion
 
@@ -229,8 +229,8 @@ namespace KSoft.Phoenix.Phx
 		uint mMaxSquadPathsPerFrame = 10;
 		public uint MaxSquadPathsPerFrame
 		{
-			get { return mMaxSquadPathsPerFrame; }
-			set { mMaxSquadPathsPerFrame = value; }
+			get { return this.mMaxSquadPathsPerFrame; }
+			set { this.mMaxSquadPathsPerFrame = value; }
 		}
 		#endregion
 
@@ -238,8 +238,8 @@ namespace KSoft.Phoenix.Phx
 		uint mMaxPlatoonPathsPerFrame = 10;
 		public uint MaxPlatoonPathsPerFrame
 		{
-			get { return mMaxPlatoonPathsPerFrame; }
-			set { mMaxPlatoonPathsPerFrame = value; }
+			get { return this.mMaxPlatoonPathsPerFrame; }
+			set { this.mMaxPlatoonPathsPerFrame = value; }
 		}
 		#endregion
 
@@ -247,8 +247,8 @@ namespace KSoft.Phoenix.Phx
 		float mProjectileGravity;
 		public float ProjectileGravity
 		{
-			get { return mProjectileGravity; }
-			set { mProjectileGravity = value; }
+			get { return this.mProjectileGravity; }
+			set { this.mProjectileGravity = value; }
 		}
 		#endregion
 
@@ -257,8 +257,8 @@ namespace KSoft.Phoenix.Phx
 		/// <summary>angle</summary>
 		public float ProjectileTumbleRate
 		{
-			get { return mProjectileTumbleRate; }
-			set { mProjectileTumbleRate = value; }
+			get { return this.mProjectileTumbleRate; }
+			set { this.mProjectileTumbleRate = value; }
 		}
 		#endregion
 
@@ -266,8 +266,8 @@ namespace KSoft.Phoenix.Phx
 		float mTrackInterceptDistance;
 		public float TrackInterceptDistance
 		{
-			get { return mTrackInterceptDistance; }
-			set { mTrackInterceptDistance = value; }
+			get { return this.mTrackInterceptDistance; }
+			set { this.mTrackInterceptDistance = value; }
 		}
 		#endregion
 
@@ -275,8 +275,8 @@ namespace KSoft.Phoenix.Phx
 		float mStationaryTargetAttackToleranceAngle;
 		public float StationaryTargetAttackToleranceAngle
 		{
-			get { return mStationaryTargetAttackToleranceAngle; }
-			set { mStationaryTargetAttackToleranceAngle = value; }
+			get { return this.mStationaryTargetAttackToleranceAngle; }
+			set { this.mStationaryTargetAttackToleranceAngle = value; }
 		}
 		#endregion
 
@@ -284,8 +284,8 @@ namespace KSoft.Phoenix.Phx
 		float mMovingTargetAttackToleranceAngle;
 		public float MovingTargetAttackToleranceAngle
 		{
-			get { return mMovingTargetAttackToleranceAngle; }
-			set { mMovingTargetAttackToleranceAngle = value; }
+			get { return this.mMovingTargetAttackToleranceAngle; }
+			set { this.mMovingTargetAttackToleranceAngle = value; }
 		}
 		#endregion
 
@@ -293,8 +293,8 @@ namespace KSoft.Phoenix.Phx
 		float mMovingTargetTrackingAttackToleranceAngle;
 		public float MovingTargetTrackingAttackToleranceAngle
 		{
-			get { return mMovingTargetTrackingAttackToleranceAngle; }
-			set { mMovingTargetTrackingAttackToleranceAngle = value; }
+			get { return this.mMovingTargetTrackingAttackToleranceAngle; }
+			set { this.mMovingTargetTrackingAttackToleranceAngle = value; }
 		}
 		#endregion
 
@@ -302,8 +302,8 @@ namespace KSoft.Phoenix.Phx
 		float mMovingTargetRangeMultiplier = 1.0f;
 		public float MovingTargetRangeMultiplier
 		{
-			get { return mMovingTargetRangeMultiplier; }
-			set { mMovingTargetRangeMultiplier = value; }
+			get { return this.mMovingTargetRangeMultiplier; }
+			set { this.mMovingTargetRangeMultiplier = value; }
 		}
 		#endregion
 
@@ -311,8 +311,8 @@ namespace KSoft.Phoenix.Phx
 		float mCloakingDelay;
 		public float CloakingDelay
 		{
-			get { return mCloakingDelay; }
-			set { mCloakingDelay = value; }
+			get { return this.mCloakingDelay; }
+			set { this.mCloakingDelay = value; }
 		}
 		#endregion
 
@@ -320,8 +320,8 @@ namespace KSoft.Phoenix.Phx
 		float mReCloakDelay;
 		public float ReCloakDelay
 		{
-			get { return mReCloakDelay; }
-			set { mReCloakDelay = value; }
+			get { return this.mReCloakDelay; }
+			set { this.mReCloakDelay = value; }
 		}
 		#endregion
 
@@ -329,8 +329,8 @@ namespace KSoft.Phoenix.Phx
 		float mCloakDetectFrequency;
 		public float CloakDetectFrequency
 		{
-			get { return mCloakDetectFrequency; }
-			set { mCloakDetectFrequency = value; }
+			get { return this.mCloakDetectFrequency; }
+			set { this.mCloakDetectFrequency = value; }
 		}
 		#endregion
 
@@ -338,8 +338,8 @@ namespace KSoft.Phoenix.Phx
 		float mShieldRegenDelay;
 		public float ShieldRegenDelay
 		{
-			get { return mShieldRegenDelay; }
-			set { mShieldRegenDelay = value; }
+			get { return this.mShieldRegenDelay; }
+			set { this.mShieldRegenDelay = value; }
 		}
 		#endregion
 
@@ -347,8 +347,8 @@ namespace KSoft.Phoenix.Phx
 		float mShieldRegenTime;
 		public float ShieldRegenTime
 		{
-			get { return mShieldRegenTime; }
-			set { mShieldRegenTime = value; }
+			get { return this.mShieldRegenTime; }
+			set { this.mShieldRegenTime = value; }
 		}
 		#endregion
 
@@ -356,8 +356,8 @@ namespace KSoft.Phoenix.Phx
 		float mAttackedRevealerLOS;
 		public float AttackedRevealerLOS
 		{
-			get { return mAttackedRevealerLOS; }
-			set { mAttackedRevealerLOS = value; }
+			get { return this.mAttackedRevealerLOS; }
+			set { this.mAttackedRevealerLOS = value; }
 		}
 		#endregion
 
@@ -365,8 +365,8 @@ namespace KSoft.Phoenix.Phx
 		float mAttackedRevealerLifespan;
 		public float AttackedRevealerLifespan
 		{
-			get { return mAttackedRevealerLifespan; }
-			set { mAttackedRevealerLifespan = value; }
+			get { return this.mAttackedRevealerLifespan; }
+			set { this.mAttackedRevealerLifespan = value; }
 		}
 		#endregion
 
@@ -374,8 +374,8 @@ namespace KSoft.Phoenix.Phx
 		float mAttackRevealerLOS;
 		public float AttackRevealerLOS
 		{
-			get { return mAttackRevealerLOS; }
-			set { mAttackRevealerLOS = value; }
+			get { return this.mAttackRevealerLOS; }
+			set { this.mAttackRevealerLOS = value; }
 		}
 		#endregion
 
@@ -383,8 +383,8 @@ namespace KSoft.Phoenix.Phx
 		float mAttackRevealerLifespan;
 		public float AttackRevealerLifespan
 		{
-			get { return mAttackRevealerLifespan; }
-			set { mAttackRevealerLifespan = value; }
+			get { return this.mAttackRevealerLifespan; }
+			set { this.mAttackRevealerLifespan = value; }
 		}
 		#endregion
 
@@ -392,8 +392,8 @@ namespace KSoft.Phoenix.Phx
 		float mMinimumRevealerSize;
 		public float MinimumRevealerSize
 		{
-			get { return mMinimumRevealerSize; }
-			set { mMinimumRevealerSize = value; }
+			get { return this.mMinimumRevealerSize; }
+			set { this.mMinimumRevealerSize = value; }
 		}
 		#endregion
 
@@ -401,8 +401,8 @@ namespace KSoft.Phoenix.Phx
 		float mAttackRatingMultiplier = 20f;
 		public float AttackRatingMultiplier
 		{
-			get { return mAttackRatingMultiplier; }
-			set { mAttackRatingMultiplier = value; }
+			get { return this.mAttackRatingMultiplier; }
+			set { this.mAttackRatingMultiplier = value; }
 		}
 		#endregion
 
@@ -410,8 +410,8 @@ namespace KSoft.Phoenix.Phx
 		float mDefenseRatingMultiplier = 10f;
 		public float DefenseRatingMultiplier
 		{
-			get { return mDefenseRatingMultiplier; }
-			set { mDefenseRatingMultiplier = value; }
+			get { return this.mDefenseRatingMultiplier; }
+			set { this.mDefenseRatingMultiplier = value; }
 		}
 		#endregion
 
@@ -419,8 +419,8 @@ namespace KSoft.Phoenix.Phx
 		uint mGoodAgainstMinAttackGrade = 3;
 		public uint GoodAgainstMinAttackGrade
 		{
-			get { return mGoodAgainstMinAttackGrade; }
-			set { mGoodAgainstMinAttackGrade = value; }
+			get { return this.mGoodAgainstMinAttackGrade; }
+			set { this.mGoodAgainstMinAttackGrade = value; }
 		}
 		#endregion
 
@@ -428,8 +428,8 @@ namespace KSoft.Phoenix.Phx
 		float mHeightBonusDamage;
 		public float HeightBonusDamage
 		{
-			get { return mHeightBonusDamage; }
-			set { mHeightBonusDamage = value; }
+			get { return this.mHeightBonusDamage; }
+			set { this.mHeightBonusDamage = value; }
 		}
 		#endregion
 
@@ -437,8 +437,8 @@ namespace KSoft.Phoenix.Phx
 		System.Drawing.Color mShieldBarColor;
 		public System.Drawing.Color ShieldBarColor
 		{
-			get { return mShieldBarColor; }
-			set { mShieldBarColor = value; }
+			get { return this.mShieldBarColor; }
+			set { this.mShieldBarColor = value; }
 		}
 		#endregion
 
@@ -446,8 +446,8 @@ namespace KSoft.Phoenix.Phx
 		System.Drawing.Color mAmmoBarColor;
 		public System.Drawing.Color AmmoBarColor
 		{
-			get { return mAmmoBarColor; }
-			set { mAmmoBarColor = value; }
+			get { return this.mAmmoBarColor; }
+			set { this.mAmmoBarColor = value; }
 		}
 		#endregion
 
@@ -455,8 +455,8 @@ namespace KSoft.Phoenix.Phx
 		float mOpportunityDistPriFactor = 1.0f;
 		public float OpportunityDistPriFactor
 		{
-			get { return mOpportunityDistPriFactor; }
-			set { mOpportunityDistPriFactor = value; }
+			get { return this.mOpportunityDistPriFactor; }
+			set { this.mOpportunityDistPriFactor = value; }
 		}
 		#endregion
 
@@ -464,8 +464,8 @@ namespace KSoft.Phoenix.Phx
 		float mOpportunityBeingAttackedPriBonus;
 		public float OpportunityBeingAttackedPriBonus
 		{
-			get { return mOpportunityBeingAttackedPriBonus; }
-			set { mOpportunityBeingAttackedPriBonus = value; }
+			get { return this.mOpportunityBeingAttackedPriBonus; }
+			set { this.mOpportunityBeingAttackedPriBonus = value; }
 		}
 		#endregion
 
@@ -473,8 +473,8 @@ namespace KSoft.Phoenix.Phx
 		float mChanceToRocket;
 		public float ChanceToRocket
 		{
-			get { return mChanceToRocket; }
-			set { mChanceToRocket = value; }
+			get { return this.mChanceToRocket; }
+			set { this.mChanceToRocket = value; }
 		}
 		#endregion
 
@@ -482,8 +482,8 @@ namespace KSoft.Phoenix.Phx
 		float mMaxDamageBankPctAdjust;
 		public float MaxDamageBankPctAdjust
 		{
-			get { return mMaxDamageBankPctAdjust; }
-			set { mMaxDamageBankPctAdjust = value; }
+			get { return this.mMaxDamageBankPctAdjust; }
+			set { this.mMaxDamageBankPctAdjust = value; }
 		}
 		#endregion
 
@@ -491,8 +491,8 @@ namespace KSoft.Phoenix.Phx
 		float mDamageBankTimer;
 		public float DamageBankTimer
 		{
-			get { return mDamageBankTimer; }
-			set { mDamageBankTimer = value; }
+			get { return this.mDamageBankTimer; }
+			set { this.mDamageBankTimer = value; }
 		}
 		#endregion
 
@@ -500,8 +500,8 @@ namespace KSoft.Phoenix.Phx
 		float mBuildingSelfDestructTime;
 		public float BuildingSelfDestructTime
 		{
-			get { return mBuildingSelfDestructTime; }
-			set { mBuildingSelfDestructTime = value; }
+			get { return this.mBuildingSelfDestructTime; }
+			set { this.mBuildingSelfDestructTime = value; }
 		}
 		#endregion
 
@@ -509,8 +509,8 @@ namespace KSoft.Phoenix.Phx
 		float mTributeAmount = 500f;
 		public float TributeAmount
 		{
-			get { return mTributeAmount; }
-			set { mTributeAmount = value; }
+			get { return this.mTributeAmount; }
+			set { this.mTributeAmount = value; }
 		}
 		#endregion
 
@@ -518,8 +518,8 @@ namespace KSoft.Phoenix.Phx
 		float mTributeCost;
 		public float TributeCost
 		{
-			get { return mTributeCost; }
-			set { mTributeCost = value; }
+			get { return this.mTributeCost; }
+			set { this.mTributeCost = value; }
 		}
 		#endregion
 
@@ -527,8 +527,8 @@ namespace KSoft.Phoenix.Phx
 		float mUnscSupplyPadBonus;
 		public float UnscSupplyPadBonus
 		{
-			get { return mUnscSupplyPadBonus; }
-			set { mUnscSupplyPadBonus = value; }
+			get { return this.mUnscSupplyPadBonus; }
+			set { this.mUnscSupplyPadBonus = value; }
 		}
 		#endregion
 
@@ -536,8 +536,8 @@ namespace KSoft.Phoenix.Phx
 		float mUnscSupplyPadBreakEvenPoint;
 		public float UnscSupplyPadBreakEvenPoint
 		{
-			get { return mUnscSupplyPadBreakEvenPoint; }
-			set { mUnscSupplyPadBreakEvenPoint = value; }
+			get { return this.mUnscSupplyPadBreakEvenPoint; }
+			set { this.mUnscSupplyPadBreakEvenPoint = value; }
 		}
 		#endregion
 
@@ -545,8 +545,8 @@ namespace KSoft.Phoenix.Phx
 		float mCovSupplyPadBonus;
 		public float CovSupplyPadBonus
 		{
-			get { return mCovSupplyPadBonus; }
-			set { mCovSupplyPadBonus = value; }
+			get { return this.mCovSupplyPadBonus; }
+			set { this.mCovSupplyPadBonus = value; }
 		}
 		#endregion
 
@@ -554,8 +554,8 @@ namespace KSoft.Phoenix.Phx
 		float mCovSupplyPadBreakEvenPoint;
 		public float CovSupplyPadBreakEvenPoint
 		{
-			get { return mCovSupplyPadBreakEvenPoint; }
-			set { mCovSupplyPadBreakEvenPoint = value; }
+			get { return this.mCovSupplyPadBreakEvenPoint; }
+			set { this.mCovSupplyPadBreakEvenPoint = value; }
 		}
 		#endregion
 
@@ -564,8 +564,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ResourceReference]
 		public int LeaderPowerChargeResourceID
 		{
-			get { return mLeaderPowerChargeResourceID; }
-			set { mLeaderPowerChargeResourceID = value; }
+			get { return this.mLeaderPowerChargeResourceID; }
+			set { this.mLeaderPowerChargeResourceID = value; }
 		}
 		#endregion
 
@@ -574,8 +574,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.RateReference]
 		public int LeaderPowerChargeRateID
 		{
-			get { return mLeaderPowerChargeRateID; }
-			set { mLeaderPowerChargeRateID = value; }
+			get { return this.mLeaderPowerChargeRateID; }
+			set { this.mLeaderPowerChargeRateID = value; }
 		}
 		#endregion
 
@@ -583,8 +583,8 @@ namespace KSoft.Phoenix.Phx
 		float mDamageReceivedXPFactor;
 		public float DamageReceivedXPFactor
 		{
-			get { return mDamageReceivedXPFactor; }
-			set { mDamageReceivedXPFactor = value; }
+			get { return this.mDamageReceivedXPFactor; }
+			set { this.mDamageReceivedXPFactor = value; }
 		}
 		#endregion
 
@@ -592,8 +592,8 @@ namespace KSoft.Phoenix.Phx
 		float mAirStrikeLoiterTime;
 		public float AirStrikeLoiterTime
 		{
-			get { return mAirStrikeLoiterTime; }
-			set { mAirStrikeLoiterTime = value; }
+			get { return this.mAirStrikeLoiterTime; }
+			set { this.mAirStrikeLoiterTime = value; }
 		}
 		#endregion
 
@@ -601,8 +601,8 @@ namespace KSoft.Phoenix.Phx
 		float mRecyleRefundRate = 1.0f;
 		public float RecyleRefundRate
 		{
-			get { return mRecyleRefundRate; }
-			set { mRecyleRefundRate = value; }
+			get { return this.mRecyleRefundRate; }
+			set { this.mRecyleRefundRate = value; }
 		}
 		#endregion
 
@@ -610,8 +610,8 @@ namespace KSoft.Phoenix.Phx
 		float mBaseRebuildTimer;
 		public float BaseRebuildTimer
 		{
-			get { return mBaseRebuildTimer; }
-			set { mBaseRebuildTimer = value; }
+			get { return this.mBaseRebuildTimer; }
+			set { this.mBaseRebuildTimer = value; }
 		}
 		#endregion
 
@@ -619,8 +619,8 @@ namespace KSoft.Phoenix.Phx
 		float mObjectiveArrowRadialOffset;
 		public float ObjectiveArrowRadialOffset
 		{
-			get { return mObjectiveArrowRadialOffset; }
-			set { mObjectiveArrowRadialOffset = value; }
+			get { return this.mObjectiveArrowRadialOffset; }
+			set { this.mObjectiveArrowRadialOffset = value; }
 		}
 		#endregion
 
@@ -628,8 +628,8 @@ namespace KSoft.Phoenix.Phx
 		float mObjectiveArrowSwitchOffset;
 		public float ObjectiveArrowSwitchOffset
 		{
-			get { return mObjectiveArrowSwitchOffset; }
-			set { mObjectiveArrowSwitchOffset = value; }
+			get { return this.mObjectiveArrowSwitchOffset; }
+			set { this.mObjectiveArrowSwitchOffset = value; }
 		}
 		#endregion
 
@@ -637,8 +637,8 @@ namespace KSoft.Phoenix.Phx
 		float mObjectiveArrowYOffset;
 		public float ObjectiveArrowYOffset
 		{
-			get { return mObjectiveArrowYOffset; }
-			set { mObjectiveArrowYOffset = value; }
+			get { return this.mObjectiveArrowYOffset; }
+			set { this.mObjectiveArrowYOffset = value; }
 		}
 		#endregion
 
@@ -646,8 +646,8 @@ namespace KSoft.Phoenix.Phx
 		byte mObjectiveArrowMaxIndex;
 		public byte ObjectiveArrowMaxIndex
 		{
-			get { return mObjectiveArrowMaxIndex; }
-			set { mObjectiveArrowMaxIndex = value; }
+			get { return this.mObjectiveArrowMaxIndex; }
+			set { this.mObjectiveArrowMaxIndex = value; }
 		}
 		#endregion
 
@@ -655,8 +655,8 @@ namespace KSoft.Phoenix.Phx
 		float mOverrunMinVel;
 		public float OverrunMinVel
 		{
-			get { return mOverrunMinVel; }
-			set { mOverrunMinVel = value; }
+			get { return this.mOverrunMinVel; }
+			set { this.mOverrunMinVel = value; }
 		}
 		#endregion
 
@@ -664,8 +664,8 @@ namespace KSoft.Phoenix.Phx
 		float mOverrunJumpForce;
 		public float OverrunJumpForce
 		{
-			get { return mOverrunJumpForce; }
-			set { mOverrunJumpForce = value; }
+			get { return this.mOverrunJumpForce; }
+			set { this.mOverrunJumpForce = value; }
 		}
 		#endregion
 
@@ -673,8 +673,8 @@ namespace KSoft.Phoenix.Phx
 		float mOverrunDistance;
 		public float OverrunDistance
 		{
-			get { return mOverrunDistance; }
-			set { mOverrunDistance = value; }
+			get { return this.mOverrunDistance; }
+			set { this.mOverrunDistance = value; }
 		}
 		#endregion
 
@@ -682,8 +682,8 @@ namespace KSoft.Phoenix.Phx
 		float mCoopResourceSplitRate = 1.0f;
 		public float CoopResourceSplitRate
 		{
-			get { return mCoopResourceSplitRate; }
-			set { mCoopResourceSplitRate = value; }
+			get { return this.mCoopResourceSplitRate; }
+			set { this.mCoopResourceSplitRate = value; }
 		}
 		#endregion
 
@@ -692,8 +692,8 @@ namespace KSoft.Phoenix.Phx
 		float mHeroDownedLOS;
 		public float HeroDownedLOS
 		{
-			get { return mHeroDownedLOS; }
-			set { mHeroDownedLOS = value; }
+			get { return this.mHeroDownedLOS; }
+			set { this.mHeroDownedLOS = value; }
 		}
 		#endregion
 
@@ -701,8 +701,8 @@ namespace KSoft.Phoenix.Phx
 		float mHeroHPRegenTime;
 		public float HeroHPRegenTime
 		{
-			get { return mHeroHPRegenTime; }
-			set { mHeroHPRegenTime = value; }
+			get { return this.mHeroHPRegenTime; }
+			set { this.mHeroHPRegenTime = value; }
 		}
 		#endregion
 
@@ -710,8 +710,8 @@ namespace KSoft.Phoenix.Phx
 		float mHeroRevivalDistance;
 		public float HeroRevivalDistance
 		{
-			get { return mHeroRevivalDistance; }
-			set { mHeroRevivalDistance = value; }
+			get { return this.mHeroRevivalDistance; }
+			set { this.mHeroRevivalDistance = value; }
 		}
 		#endregion
 
@@ -719,8 +719,8 @@ namespace KSoft.Phoenix.Phx
 		float mHeroPercentHPRevivalThreshhold;
 		public float HeroPercentHPRevivalThreshhold
 		{
-			get { return mHeroPercentHPRevivalThreshhold; }
-			set { mHeroPercentHPRevivalThreshhold = value; }
+			get { return this.mHeroPercentHPRevivalThreshhold; }
+			set { this.mHeroPercentHPRevivalThreshhold = value; }
 		}
 		#endregion
 
@@ -728,8 +728,8 @@ namespace KSoft.Phoenix.Phx
 		float mMaxDeadHeroTransportDist;
 		public float MaxDeadHeroTransportDist
 		{
-			get { return mMaxDeadHeroTransportDist; }
-			set { mMaxDeadHeroTransportDist = value; }
+			get { return this.mMaxDeadHeroTransportDist; }
+			set { this.mMaxDeadHeroTransportDist = value; }
 		}
 		#endregion
 		#endregion
@@ -738,36 +738,36 @@ namespace KSoft.Phoenix.Phx
 		float mTransportClearRadiusScale = 1.0f;
 		public float TransportClearRadiusScale
 		{
-			get { return mTransportClearRadiusScale; }
-			set { mTransportClearRadiusScale = value; }
+			get { return this.mTransportClearRadiusScale; }
+			set { this.mTransportClearRadiusScale = value; }
 		}
 
 		float mTransportMaxSearchRadiusScale = 1.0f;
 		public float TransportMaxSearchRadiusScale
 		{
-			get { return mTransportMaxSearchRadiusScale; }
-			set { mTransportMaxSearchRadiusScale = value; }
+			get { return this.mTransportMaxSearchRadiusScale; }
+			set { this.mTransportMaxSearchRadiusScale = value; }
 		}
 
 		uint mTransportMaxSearchLocations = 1;
 		public uint TransportMaxSearchLocations
 		{
-			get { return mTransportMaxSearchLocations; }
-			set { mTransportMaxSearchLocations = value; }
+			get { return this.mTransportMaxSearchLocations; }
+			set { this.mTransportMaxSearchLocations = value; }
 		}
 
 		uint mTransportBlockTime;
 		public uint TransportBlockTime
 		{
-			get { return mTransportBlockTime; }
-			set { mTransportBlockTime = value; }
+			get { return this.mTransportBlockTime; }
+			set { this.mTransportBlockTime = value; }
 		}
 
 		uint mTransportLoadBlockTime;
 		public uint TransportLoadBlockTime
 		{
-			get { return mTransportLoadBlockTime; }
-			set { mTransportLoadBlockTime = value; }
+			get { return this.mTransportLoadBlockTime; }
+			set { this.mTransportLoadBlockTime = value; }
 		}
 		#endregion
 
@@ -775,64 +775,64 @@ namespace KSoft.Phoenix.Phx
 		uint mALMaxWanderFrequency;
 		public uint ALMaxWanderFrequency
 		{
-			get { return mALMaxWanderFrequency; }
-			set { mALMaxWanderFrequency = value; }
+			get { return this.mALMaxWanderFrequency; }
+			set { this.mALMaxWanderFrequency = value; }
 		}
 
 		uint mALPredatorCheckFrequency;
 		public uint ALPredatorCheckFrequency
 		{
-			get { return mALPredatorCheckFrequency; }
-			set { mALPredatorCheckFrequency = value; }
+			get { return this.mALPredatorCheckFrequency; }
+			set { this.mALPredatorCheckFrequency = value; }
 		}
 
 		uint mALPreyCheckFrequency;
 		public uint ALPreyCheckFrequency
 		{
-			get { return mALPreyCheckFrequency; }
-			set { mALPreyCheckFrequency = value; }
+			get { return this.mALPreyCheckFrequency; }
+			set { this.mALPreyCheckFrequency = value; }
 		}
 
 		float mALOppCheckRadius;
 		public float ALOppCheckRadius
 		{
-			get { return mALOppCheckRadius; }
-			set { mALOppCheckRadius = value; }
+			get { return this.mALOppCheckRadius; }
+			set { this.mALOppCheckRadius = value; }
 		}
 
 		float mALFleeDistance;
 		public float ALFleeDistance
 		{
-			get { return mALFleeDistance; }
-			set { mALFleeDistance = value; }
+			get { return this.mALFleeDistance; }
+			set { this.mALFleeDistance = value; }
 		}
 
 		float mALFleeMovementModifier;
 		public float ALFleeMovementModifier
 		{
-			get { return mALFleeMovementModifier; }
-			set { mALFleeMovementModifier = value; }
+			get { return this.mALFleeMovementModifier; }
+			set { this.mALFleeMovementModifier = value; }
 		}
 
 		float mALMinWanderDistance;
 		public float ALMinWanderDistance
 		{
-			get { return mALMinWanderDistance; }
-			set { mALMinWanderDistance = value; }
+			get { return this.mALMinWanderDistance; }
+			set { this.mALMinWanderDistance = value; }
 		}
 
 		float mALMaxWanderDistance;
 		public float ALMaxWanderDistance
 		{
-			get { return mALMaxWanderDistance; }
-			set { mALMaxWanderDistance = value; }
+			get { return this.mALMaxWanderDistance; }
+			set { this.mALMaxWanderDistance = value; }
 		}
 
 		float mALSpawnerCheckFrequency;
 		public float ALSpawnerCheckFrequency
 		{
-			get { return mALSpawnerCheckFrequency; }
-			set { mALSpawnerCheckFrequency = value; }
+			get { return this.mALSpawnerCheckFrequency; }
+			set { this.mALSpawnerCheckFrequency = value; }
 		}
 		#endregion
 
@@ -840,57 +840,57 @@ namespace KSoft.Phoenix.Phx
 		uint mTransportMaxBlockAttempts = 1;
 		public uint TransportMaxBlockAttempts
 		{
-			get { return mTransportMaxBlockAttempts; }
-			set { mTransportMaxBlockAttempts = value; }
+			get { return this.mTransportMaxBlockAttempts; }
+			set { this.mTransportMaxBlockAttempts = value; }
 		}
 
 		float mTransportIncomingHeight = 60.0f;
 		public float TransportIncomingHeight
 		{
-			get { return mTransportIncomingHeight; }
-			set { mTransportIncomingHeight = value; }
+			get { return this.mTransportIncomingHeight; }
+			set { this.mTransportIncomingHeight = value; }
 		}
 
 		float mTransportIncomingOffset = 40.0f;
 		public float TransportIncomingOffset
 		{
-			get { return mTransportIncomingOffset; }
-			set { mTransportIncomingOffset = value; }
+			get { return this.mTransportIncomingOffset; }
+			set { this.mTransportIncomingOffset = value; }
 		}
 
 		float mTransportOutgoingHeight = 60.0f;
 		public float TransportOutgoingHeight
 		{
-			get { return mTransportOutgoingHeight; }
-			set { mTransportOutgoingHeight = value; }
+			get { return this.mTransportOutgoingHeight; }
+			set { this.mTransportOutgoingHeight = value; }
 		}
 
 		float mTransportOutgoingOffset = 40.0f;
 		public float TransportOutgoingOffset
 		{
-			get { return mTransportOutgoingOffset; }
-			set { mTransportOutgoingOffset = value; }
+			get { return this.mTransportOutgoingOffset; }
+			set { this.mTransportOutgoingOffset = value; }
 		}
 
 		float mTransportPickupHeight = 12.0f;
 		public float TransportPickupHeight
 		{
-			get { return mTransportPickupHeight; }
-			set { mTransportPickupHeight = value; }
+			get { return this.mTransportPickupHeight; }
+			set { this.mTransportPickupHeight = value; }
 		}
 
 		float mTransportDropoffHeight = 12.0f;
 		public float TransportDropoffHeight
 		{
-			get { return mTransportDropoffHeight; }
-			set { mTransportDropoffHeight = value; }
+			get { return this.mTransportDropoffHeight; }
+			set { this.mTransportDropoffHeight = value; }
 		}
 
 		uint mTransportMax = 3;
 		public uint TransportMax
 		{
-			get { return mTransportMax; }
-			set { mTransportMax = value; }
+			get { return this.mTransportMax; }
+			set { this.mTransportMax = value; }
 		}
 		#endregion
 
@@ -898,8 +898,8 @@ namespace KSoft.Phoenix.Phx
 		float mHitchOffset = 8.0f;
 		public float HitchOffset
 		{
-			get { return mHitchOffset; }
-			set { mHitchOffset = value; }
+			get { return this.mHitchOffset; }
+			set { this.mHitchOffset = value; }
 		}
 		#endregion
 
@@ -908,8 +908,8 @@ namespace KSoft.Phoenix.Phx
 		float mTimeFrozenToThaw;
 		public float TimeFrozenToThaw
 		{
-			get { return mTimeFrozenToThaw; }
-			set { mTimeFrozenToThaw = value; }
+			get { return this.mTimeFrozenToThaw; }
+			set { this.mTimeFrozenToThaw = value; }
 		}
 		#endregion
 
@@ -917,8 +917,8 @@ namespace KSoft.Phoenix.Phx
 		float mTimeFreezingToThaw;
 		public float TimeFreezingToThaw
 		{
-			get { return mTimeFreezingToThaw; }
-			set { mTimeFreezingToThaw = value; }
+			get { return this.mTimeFreezingToThaw; }
+			set { this.mTimeFreezingToThaw = value; }
 		}
 		#endregion
 
@@ -926,8 +926,8 @@ namespace KSoft.Phoenix.Phx
 		float mDefaultCryoPoints;
 		public float DefaultCryoPoints
 		{
-			get { return mDefaultCryoPoints; }
-			set { mDefaultCryoPoints = value; }
+			get { return this.mDefaultCryoPoints; }
+			set { this.mDefaultCryoPoints = value; }
 		}
 		#endregion
 
@@ -935,8 +935,8 @@ namespace KSoft.Phoenix.Phx
 		float mDefaultThawSpeed;
 		public float DefaultThawSpeed
 		{
-			get { return mDefaultThawSpeed; }
-			set { mDefaultThawSpeed = value; }
+			get { return this.mDefaultThawSpeed; }
+			set { this.mDefaultThawSpeed = value; }
 		}
 		#endregion
 
@@ -944,8 +944,8 @@ namespace KSoft.Phoenix.Phx
 		float mFreezingSpeedModifier;
 		public float FreezingSpeedModifier
 		{
-			get { return mFreezingSpeedModifier; }
-			set { mFreezingSpeedModifier = value; }
+			get { return this.mFreezingSpeedModifier; }
+			set { this.mFreezingSpeedModifier = value; }
 		}
 		#endregion
 
@@ -953,8 +953,8 @@ namespace KSoft.Phoenix.Phx
 		float mFreezingDamageModifier;
 		public float FreezingDamageModifier
 		{
-			get { return mFreezingDamageModifier; }
-			set { mFreezingDamageModifier = value; }
+			get { return this.mFreezingDamageModifier; }
+			set { this.mFreezingDamageModifier = value; }
 		}
 		#endregion
 
@@ -962,8 +962,8 @@ namespace KSoft.Phoenix.Phx
 		float mFrozenDamageModifier;
 		public float FrozenDamageModifier
 		{
-			get { return mFrozenDamageModifier; }
-			set { mFrozenDamageModifier = value; }
+			get { return this.mFrozenDamageModifier; }
+			set { this.mFrozenDamageModifier = value; }
 		}
 		#endregion
 		#endregion
@@ -972,8 +972,8 @@ namespace KSoft.Phoenix.Phx
 		float mSmallDotSize;
 		public float SmallDotSize
 		{
-			get { return mSmallDotSize; }
-			set { mSmallDotSize = value; }
+			get { return this.mSmallDotSize; }
+			set { this.mSmallDotSize = value; }
 		}
 		#endregion
 
@@ -981,8 +981,8 @@ namespace KSoft.Phoenix.Phx
 		float mMediumDotSize;
 		public float MediumDotSize
 		{
-			get { return mMediumDotSize; }
-			set { mMediumDotSize = value; }
+			get { return this.mMediumDotSize; }
+			set { this.mMediumDotSize = value; }
 		}
 		#endregion
 
@@ -1002,34 +1002,37 @@ namespace KSoft.Phoenix.Phx
 		#endregion
 
 		/// <summary>Get how much it costs, in total, to tribute a resource to another player</summary>
-		public float TotalTributeCost { get { return (mTributeAmount * mTributeCost) + mTributeAmount; } }
+		public float TotalTributeCost { get { return (this.mTributeAmount * this.mTributeCost) + this.mTributeAmount; } }
 
 		public BGameData()
 		{
-			ObjectDatabase = new ProtoDataObjectDatabase(this, typeof(GameDataObjectKind));
+			this.ObjectDatabase = new ProtoDataObjectDatabase(this, typeof(GameDataObjectKind));
 
-			Resources = new Collections.BListAutoId<BResource>();
-			Rates = new Collections.BTypeNames();
+			this.Resources = new Collections.BListAutoId<BResource>();
+			this.Rates = new Collections.BTypeNames();
 			#region DifficultyModifiers
-			mDifficultyModifiers[(int)BDifficultyTypeModifier.Normal] = 0.34f;
-			mDifficultyModifiers[(int)BDifficultyTypeModifier.Hard] = 0.67f;
-			mDifficultyModifiers[(int)BDifficultyTypeModifier.Legendary] = 1.0f;
-			mDifficultyModifiers[(int)BDifficultyTypeModifier.Default] = 0.4f;
-			mDifficultyModifiers[(int)BDifficultyTypeModifier.SPCAIDefault] = 0.5f;
+
+			this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Normal] = 0.34f;
+			this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Hard] = 0.67f;
+			this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Legendary] = 1.0f;
+			this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Default] = 0.4f;
+			this.mDifficultyModifiers[(int)BDifficultyTypeModifier.SPCAIDefault] = 0.5f;
 			#endregion
-			Populations = new Collections.BTypeNames();
-			RefCounts = new Collections.BTypeNames();
-			PlayerStates = new Collections.BTypeNames();
-			BurningEffectLimits = new Collections.BListArray<BBurningEffectLimit>();
-			CodeProtoObjects = new Collections.BTypeValuesString(kCodeProtoObjectsParams);
-			CodeObjectTypes = new Collections.BTypeValuesString(kCodeObjectTypesParams);
-			InfectionMap = new Collections.BListArray<BInfectionMap>();
+
+			this.Populations = new Collections.BTypeNames();
+			this.RefCounts = new Collections.BTypeNames();
+			this.PlayerStates = new Collections.BTypeNames();
+			this.BurningEffectLimits = new Collections.BListArray<BBurningEffectLimit>();
+			this.CodeProtoObjects = new Collections.BTypeValuesString(kCodeProtoObjectsParams);
+			this.CodeObjectTypes = new Collections.BTypeValuesString(kCodeObjectTypesParams);
+			this.InfectionMap = new Collections.BListArray<BInfectionMap>();
 
 			#region Nonsense
-			HUDItems = new Collections.BTypeNames();
-			FlashableItems = new Collections.BTypeNames();
-			UnitFlags = new Collections.BTypeNames();
-			SquadFlags = new Collections.BTypeNames();
+
+			this.HUDItems = new Collections.BTypeNames();
+			this.FlashableItems = new Collections.BTypeNames();
+			this.UnitFlags = new Collections.BTypeNames();
+			this.SquadFlags = new Collections.BTypeNames();
 			#endregion
 		}
 
@@ -1040,9 +1043,9 @@ namespace KSoft.Phoenix.Phx
 
 			switch (kind)
 			{
-			case GameDataObjectKind.Cost:	return Resources;
-			case GameDataObjectKind.Pop:	return Populations;
-			case GameDataObjectKind.Rate:	return Rates;
+			case GameDataObjectKind.Cost: return this.Resources;
+			case GameDataObjectKind.Pop:  return this.Populations;
+			case GameDataObjectKind.Rate: return this.Rates;
 
 			default: throw new KSoft.Debug.UnreachableException(kind.ToString());
 			}
@@ -1054,9 +1057,9 @@ namespace KSoft.Phoenix.Phx
 
 			switch (kind)
 			{
-			case GameDataObjectKind.Cost:	return Resources;
-			case GameDataObjectKind.Pop:	return Populations;
-			case GameDataObjectKind.Rate:	return Rates;
+			case GameDataObjectKind.Cost: return this.Resources;
+			case GameDataObjectKind.Pop:  return this.Populations;
+			case GameDataObjectKind.Rate: return this.Rates;
 
 			default: throw new KSoft.Debug.UnreachableException(kind.ToString());
 			}
@@ -1071,167 +1074,167 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			XML.XmlUtil.Serialize(s, Resources, BResource.kBListXmlParams);
-			XML.XmlUtil.Serialize(s, Rates, kRatesXmlParams);
+			XML.XmlUtil.Serialize(s, this.Resources, BResource.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.Rates, kRatesXmlParams);
 			#region GoodAgainstReticle
 			using (s.EnterCursorBookmark("GoodAgainstReticle"))
 			{
-				s.StreamElementOpt("NoEffect", ref mGoodAgainstGrades[(int)ReticleAttackGrade.NoEffect], Predicates.IsNotZero);
-				s.StreamElementOpt("Weak",     ref mGoodAgainstGrades[(int)ReticleAttackGrade.Weak], Predicates.IsNotZero);
-				s.StreamElementOpt("Fair",     ref mGoodAgainstGrades[(int)ReticleAttackGrade.Fair], Predicates.IsNotZero);
-				s.StreamElementOpt("Good",     ref mGoodAgainstGrades[(int)ReticleAttackGrade.Good], Predicates.IsNotZero);
-				s.StreamElementOpt("Extreme",  ref mGoodAgainstGrades[(int)ReticleAttackGrade.Extreme], Predicates.IsNotZero);
+				s.StreamElementOpt("NoEffect", ref this.mGoodAgainstGrades[(int)ReticleAttackGrade.NoEffect], Predicates.IsNotZero);
+				s.StreamElementOpt("Weak",     ref this.mGoodAgainstGrades[(int)ReticleAttackGrade.Weak], Predicates.IsNotZero);
+				s.StreamElementOpt("Fair",     ref this.mGoodAgainstGrades[(int)ReticleAttackGrade.Fair], Predicates.IsNotZero);
+				s.StreamElementOpt("Good",     ref this.mGoodAgainstGrades[(int)ReticleAttackGrade.Good], Predicates.IsNotZero);
+				s.StreamElementOpt("Extreme",  ref this.mGoodAgainstGrades[(int)ReticleAttackGrade.Extreme], Predicates.IsNotZero);
 			}
 			#endregion
 			#region DifficultyModifiers
-			s.StreamElementOpt("DifficultyEasy",         ref mDifficultyModifiers[(int)BDifficultyTypeModifier.Easy], Predicates.IsNotZero);
+			s.StreamElementOpt("DifficultyEasy",         ref this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Easy], Predicates.IsNotZero);
 			// #NOTE The engine has a typo in it and looks for "DifficultyNormali"
-			s.StreamElementOpt("DifficultyNormal",       ref mDifficultyModifiers[(int)BDifficultyTypeModifier.Normal], Predicates.IsNotZero);
-			s.StreamElementOpt("DifficultyHard",         ref mDifficultyModifiers[(int)BDifficultyTypeModifier.Hard], Predicates.IsNotZero);
-			s.StreamElementOpt("DifficultyLegendary",    ref mDifficultyModifiers[(int)BDifficultyTypeModifier.Legendary], Predicates.IsNotZero);
-			s.StreamElementOpt("DifficultyDefault",      ref mDifficultyModifiers[(int)BDifficultyTypeModifier.Default], Predicates.IsNotZero);
-			s.StreamElementOpt("DifficultySPCAIDefault", ref mDifficultyModifiers[(int)BDifficultyTypeModifier.SPCAIDefault], Predicates.IsNotZero);
+			s.StreamElementOpt("DifficultyNormal",       ref this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Normal], Predicates.IsNotZero);
+			s.StreamElementOpt("DifficultyHard",         ref this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Hard], Predicates.IsNotZero);
+			s.StreamElementOpt("DifficultyLegendary",    ref this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Legendary], Predicates.IsNotZero);
+			s.StreamElementOpt("DifficultyDefault",      ref this.mDifficultyModifiers[(int)BDifficultyTypeModifier.Default], Predicates.IsNotZero);
+			s.StreamElementOpt("DifficultySPCAIDefault", ref this.mDifficultyModifiers[(int)BDifficultyTypeModifier.SPCAIDefault], Predicates.IsNotZero);
 			#endregion
-			XML.XmlUtil.Serialize(s, Populations, kPopsXmlParams);
-			XML.XmlUtil.Serialize(s, RefCounts, kRefCountsXmlParams);
-			XML.XmlUtil.Serialize(s, PlayerStates, kPlayerStatesXmlParams);
-			s.StreamElementOpt("GarrisonDamageMultiplier", ref mGarrisonDamageMultiplier, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("ConstructionDamageMultiplier", ref mConstructionDamageMultiplier, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("CaptureDecayRate", ref mCaptureDecayRate, Predicates.IsNotZero);
-			s.StreamElementOpt("SquadLeashLength", ref mSquadLeashLength, Predicates.IsNotZero);
-			s.StreamElementOpt("SquadAggroLength", ref mSquadAggroLength, Predicates.IsNotZero);
-			s.StreamElementOpt("UnitLeashLength", ref mUnitLeashLength, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxNumCorpses", ref mMaxNumCorpses, Predicates.IsNotZero);
+			XML.XmlUtil.Serialize(s, this.Populations, kPopsXmlParams);
+			XML.XmlUtil.Serialize(s, this.RefCounts, kRefCountsXmlParams);
+			XML.XmlUtil.Serialize(s, this.PlayerStates, kPlayerStatesXmlParams);
+			s.StreamElementOpt("GarrisonDamageMultiplier", ref this.mGarrisonDamageMultiplier, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("ConstructionDamageMultiplier", ref this.mConstructionDamageMultiplier, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("CaptureDecayRate", ref this.mCaptureDecayRate, Predicates.IsNotZero);
+			s.StreamElementOpt("SquadLeashLength", ref this.mSquadLeashLength, Predicates.IsNotZero);
+			s.StreamElementOpt("SquadAggroLength", ref this.mSquadAggroLength, Predicates.IsNotZero);
+			s.StreamElementOpt("UnitLeashLength", ref this.mUnitLeashLength, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxNumCorpses", ref this.mMaxNumCorpses, Predicates.IsNotZero);
 			#region BurningEffectLimits
 			using (s.EnterCursorBookmark("BurningEffectLimits"))
 			{
-				s.StreamAttribute("DefaultLimit", ref mDefaultBurningEffectLimit);
-				XML.XmlUtil.Serialize(s, BurningEffectLimits, BBurningEffectLimit.kBListXmlParams);
+				s.StreamAttribute("DefaultLimit", ref this.mDefaultBurningEffectLimit);
+				XML.XmlUtil.Serialize(s, this.BurningEffectLimits, BBurningEffectLimit.kBListXmlParams);
 			}
 			#endregion
 			#region Fatality
-			s.StreamElementOpt("FatalityTransitionScale", ref mFatalityTransitionScale, Predicates.IsNotZero);
-			s.StreamElementOpt("FatalityMaxTransitionTime", ref mFatalityMaxTransitionTime, Predicates.IsNotZero);
-			s.StreamElementOpt("FatalityPositionOffsetTolerance", ref mFatalityPositionOffsetTolerance, Predicates.IsNotZero);
-			s.StreamElementOpt("FatalityOrientationOffsetTolerance", ref mFatalityOrientationOffsetTolerance, Predicates.IsNotZero);
-			s.StreamElementOpt("FatalityExclusionRange", ref mFatalityExclusionRange, Predicates.IsNotZero);
+			s.StreamElementOpt("FatalityTransitionScale", ref this.mFatalityTransitionScale, Predicates.IsNotZero);
+			s.StreamElementOpt("FatalityMaxTransitionTime", ref this.mFatalityMaxTransitionTime, Predicates.IsNotZero);
+			s.StreamElementOpt("FatalityPositionOffsetTolerance", ref this.mFatalityPositionOffsetTolerance, Predicates.IsNotZero);
+			s.StreamElementOpt("FatalityOrientationOffsetTolerance", ref this.mFatalityOrientationOffsetTolerance, Predicates.IsNotZero);
+			s.StreamElementOpt("FatalityExclusionRange", ref this.mFatalityExclusionRange, Predicates.IsNotZero);
 			#endregion
-			s.StreamElementOpt("GameOverDelay", ref mGameOverDelay, Predicates.IsNotZero);
-			s.StreamElementOpt("InfantryCorpseDecayTime", ref mInfantryCorpseDecayTime, Predicates.IsNotZero);
-			s.StreamElementOpt("CorpseSinkingSpacing", ref mCorpseSinkingSpacing, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxCorpseDisposalCount", ref mMaxCorpseDisposalCount, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxSquadPathsPerFrame", ref mMaxSquadPathsPerFrame, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxPlatoonPathsPerFrame", ref mMaxPlatoonPathsPerFrame, Predicates.IsNotZero);
-			s.StreamElementOpt("ProjectileGravity", ref mProjectileGravity, Predicates.IsNotZero);
-			s.StreamElementOpt("ProjectileTumbleRate", ref mProjectileTumbleRate, Predicates.IsNotZero);
-			s.StreamElementOpt("TrackInterceptDistance", ref mTrackInterceptDistance, Predicates.IsNotZero);
-			s.StreamElementOpt("StationaryTargetAttackToleranceAngle", ref mStationaryTargetAttackToleranceAngle, Predicates.IsNotZero);
-			s.StreamElementOpt("MovingTargetAttackToleranceAngle", ref mMovingTargetAttackToleranceAngle, Predicates.IsNotZero);
-			s.StreamElementOpt("MovingTargetTrackingAttackToleranceAngle", ref mMovingTargetTrackingAttackToleranceAngle, Predicates.IsNotZero);
-			s.StreamElementOpt("MovingTargetRangeMultiplier", ref mMovingTargetRangeMultiplier, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("CloakingDelay", ref mCloakingDelay, Predicates.IsNotZero);
-			s.StreamElementOpt("ReCloakDelay", ref mReCloakDelay, Predicates.IsNotZero);
-			s.StreamElementOpt("CloakDetectFrequency", ref mCloakDetectFrequency, Predicates.IsNotZero);
-			s.StreamElementOpt("ShieldRegenDelay", ref mShieldRegenDelay, Predicates.IsNotZero);
-			s.StreamElementOpt("ShieldRegenTime", ref mShieldRegenTime, Predicates.IsNotZero);
-			s.StreamElementOpt("AttackedRevealerLOS", ref mAttackedRevealerLOS, Predicates.IsNotZero);
-			s.StreamElementOpt("AttackedRevealerLifespan", ref mAttackedRevealerLifespan, Predicates.IsNotZero);
-			s.StreamElementOpt("AttackRevealerLOS", ref mAttackRevealerLOS, Predicates.IsNotZero);
-			s.StreamElementOpt("AttackRevealerLifespan", ref mAttackRevealerLifespan, Predicates.IsNotZero);
-			s.StreamElementOpt("MinimumRevealerSize", ref mMinimumRevealerSize, Predicates.IsNotZero);
-			s.StreamElementOpt("AttackRatingMultiplier", ref mAttackRatingMultiplier, Predicates.IsNotZero);
-			s.StreamElementOpt("DefenseRatingMultiplier", ref mDefenseRatingMultiplier, Predicates.IsNotZero);
+			s.StreamElementOpt("GameOverDelay", ref this.mGameOverDelay, Predicates.IsNotZero);
+			s.StreamElementOpt("InfantryCorpseDecayTime", ref this.mInfantryCorpseDecayTime, Predicates.IsNotZero);
+			s.StreamElementOpt("CorpseSinkingSpacing", ref this.mCorpseSinkingSpacing, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxCorpseDisposalCount", ref this.mMaxCorpseDisposalCount, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxSquadPathsPerFrame", ref this.mMaxSquadPathsPerFrame, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxPlatoonPathsPerFrame", ref this.mMaxPlatoonPathsPerFrame, Predicates.IsNotZero);
+			s.StreamElementOpt("ProjectileGravity", ref this.mProjectileGravity, Predicates.IsNotZero);
+			s.StreamElementOpt("ProjectileTumbleRate", ref this.mProjectileTumbleRate, Predicates.IsNotZero);
+			s.StreamElementOpt("TrackInterceptDistance", ref this.mTrackInterceptDistance, Predicates.IsNotZero);
+			s.StreamElementOpt("StationaryTargetAttackToleranceAngle", ref this.mStationaryTargetAttackToleranceAngle, Predicates.IsNotZero);
+			s.StreamElementOpt("MovingTargetAttackToleranceAngle", ref this.mMovingTargetAttackToleranceAngle, Predicates.IsNotZero);
+			s.StreamElementOpt("MovingTargetTrackingAttackToleranceAngle", ref this.mMovingTargetTrackingAttackToleranceAngle, Predicates.IsNotZero);
+			s.StreamElementOpt("MovingTargetRangeMultiplier", ref this.mMovingTargetRangeMultiplier, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("CloakingDelay", ref this.mCloakingDelay, Predicates.IsNotZero);
+			s.StreamElementOpt("ReCloakDelay", ref this.mReCloakDelay, Predicates.IsNotZero);
+			s.StreamElementOpt("CloakDetectFrequency", ref this.mCloakDetectFrequency, Predicates.IsNotZero);
+			s.StreamElementOpt("ShieldRegenDelay", ref this.mShieldRegenDelay, Predicates.IsNotZero);
+			s.StreamElementOpt("ShieldRegenTime", ref this.mShieldRegenTime, Predicates.IsNotZero);
+			s.StreamElementOpt("AttackedRevealerLOS", ref this.mAttackedRevealerLOS, Predicates.IsNotZero);
+			s.StreamElementOpt("AttackedRevealerLifespan", ref this.mAttackedRevealerLifespan, Predicates.IsNotZero);
+			s.StreamElementOpt("AttackRevealerLOS", ref this.mAttackRevealerLOS, Predicates.IsNotZero);
+			s.StreamElementOpt("AttackRevealerLifespan", ref this.mAttackRevealerLifespan, Predicates.IsNotZero);
+			s.StreamElementOpt("MinimumRevealerSize", ref this.mMinimumRevealerSize, Predicates.IsNotZero);
+			s.StreamElementOpt("AttackRatingMultiplier", ref this.mAttackRatingMultiplier, Predicates.IsNotZero);
+			s.StreamElementOpt("DefenseRatingMultiplier", ref this.mDefenseRatingMultiplier, Predicates.IsNotZero);
 			// #NOTE data has this as "GoodAgainstMinAttackRating"
-			s.StreamElementOpt("GoodAgainstMinAttackRating", ref mGoodAgainstMinAttackGrade, Predicates.IsNotZero);
-			s.StreamElementOpt("HeightBonusDamage", ref mHeightBonusDamage, Predicates.IsNotZero);
-			s.StreamIntegerColor("ShieldBarColor", ref mShieldBarColor);
-			s.StreamIntegerColor("AmmoBarColor", ref mAmmoBarColor);
-			s.StreamElementOpt("OpportunityDistPriFactor", ref mOpportunityDistPriFactor, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("OpportunityBeingAttackedPriBonus", ref mOpportunityBeingAttackedPriBonus, Predicates.IsNotZero);
-			s.StreamElementOpt("ChanceToRocket", ref mChanceToRocket, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxDamageBankPctAdjust", ref mMaxDamageBankPctAdjust, Predicates.IsNotZero);
-			s.StreamElementOpt("DamageBankTimer", ref mDamageBankTimer, Predicates.IsNotZero);
-			s.StreamElementOpt("BuildingSelfDestructTime", ref mBuildingSelfDestructTime, Predicates.IsNotZero);
-			s.StreamElementOpt("TributeAmount", ref mTributeAmount, Predicates.IsNotZero);
-			s.StreamElementOpt("TributeCost", ref mTributeCost, Predicates.IsNotZero);
-			s.StreamElementOpt("UnscSupplyPadBonus", ref mUnscSupplyPadBonus, Predicates.IsNotZero);
-			s.StreamElementOpt("UnscSupplyPadBreakEvenPoint", ref mUnscSupplyPadBreakEvenPoint, Predicates.IsNotZero);
-			s.StreamElementOpt("CovSupplyPadBonus", ref mCovSupplyPadBonus, Predicates.IsNotZero);
-			s.StreamElementOpt("CovSupplyPadBreakEvenPoint", ref mCovSupplyPadBreakEvenPoint, Predicates.IsNotZero);
-			xs.StreamTypeName(s, "LeaderPowerChargeResource", ref mLeaderPowerChargeResourceID, GameDataObjectKind.Cost);
-			xs.StreamTypeName(s, "LeaderPowerChargeRate", ref mLeaderPowerChargeRateID, GameDataObjectKind.Rate);
-			s.StreamElementOpt("DamageReceivedXPFactor", ref mDamageReceivedXPFactor, PhxPredicates.IsNotInvalid);
-			s.StreamElementOpt("AirStrikeLoiterTime", ref mAirStrikeLoiterTime, Predicates.IsNotZero);
-			s.StreamElementOpt("RecyleRefundRate", ref mRecyleRefundRate, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("BaseRebuildTimer", ref mBaseRebuildTimer, Predicates.IsNotZero);
-			s.StreamElementOpt("ObjectiveArrowRadialOffset", ref mObjectiveArrowRadialOffset, Predicates.IsNotZero);
-			s.StreamElementOpt("ObjectiveArrowSwitchOffset", ref mObjectiveArrowSwitchOffset, Predicates.IsNotZero);
-			s.StreamElementOpt("ObjectiveArrowYOffset", ref mObjectiveArrowYOffset, Predicates.IsNotZero);
-			s.StreamElementOpt("ObjectiveArrowMaxIndex", ref mObjectiveArrowMaxIndex, Predicates.IsNotZero);
-			s.StreamElementOpt("OverrunMinVel", ref mOverrunMinVel, Predicates.IsNotZero);
-			s.StreamElementOpt("OverrunJumpForce", ref mOverrunJumpForce, Predicates.IsNotZero);
-			s.StreamElementOpt("OverrunDistance", ref mOverrunDistance, Predicates.IsNotZero);
-			s.StreamElementOpt("CoopResourceSplitRate", ref mCoopResourceSplitRate, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("GoodAgainstMinAttackRating", ref this.mGoodAgainstMinAttackGrade, Predicates.IsNotZero);
+			s.StreamElementOpt("HeightBonusDamage", ref this.mHeightBonusDamage, Predicates.IsNotZero);
+			s.StreamIntegerColor("ShieldBarColor", ref this.mShieldBarColor);
+			s.StreamIntegerColor("AmmoBarColor", ref this.mAmmoBarColor);
+			s.StreamElementOpt("OpportunityDistPriFactor", ref this.mOpportunityDistPriFactor, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("OpportunityBeingAttackedPriBonus", ref this.mOpportunityBeingAttackedPriBonus, Predicates.IsNotZero);
+			s.StreamElementOpt("ChanceToRocket", ref this.mChanceToRocket, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxDamageBankPctAdjust", ref this.mMaxDamageBankPctAdjust, Predicates.IsNotZero);
+			s.StreamElementOpt("DamageBankTimer", ref this.mDamageBankTimer, Predicates.IsNotZero);
+			s.StreamElementOpt("BuildingSelfDestructTime", ref this.mBuildingSelfDestructTime, Predicates.IsNotZero);
+			s.StreamElementOpt("TributeAmount", ref this.mTributeAmount, Predicates.IsNotZero);
+			s.StreamElementOpt("TributeCost", ref this.mTributeCost, Predicates.IsNotZero);
+			s.StreamElementOpt("UnscSupplyPadBonus", ref this.mUnscSupplyPadBonus, Predicates.IsNotZero);
+			s.StreamElementOpt("UnscSupplyPadBreakEvenPoint", ref this.mUnscSupplyPadBreakEvenPoint, Predicates.IsNotZero);
+			s.StreamElementOpt("CovSupplyPadBonus", ref this.mCovSupplyPadBonus, Predicates.IsNotZero);
+			s.StreamElementOpt("CovSupplyPadBreakEvenPoint", ref this.mCovSupplyPadBreakEvenPoint, Predicates.IsNotZero);
+			xs.StreamTypeName(s, "LeaderPowerChargeResource", ref this.mLeaderPowerChargeResourceID, GameDataObjectKind.Cost);
+			xs.StreamTypeName(s, "LeaderPowerChargeRate", ref this.mLeaderPowerChargeRateID, GameDataObjectKind.Rate);
+			s.StreamElementOpt("DamageReceivedXPFactor", ref this.mDamageReceivedXPFactor, PhxPredicates.IsNotInvalid);
+			s.StreamElementOpt("AirStrikeLoiterTime", ref this.mAirStrikeLoiterTime, Predicates.IsNotZero);
+			s.StreamElementOpt("RecyleRefundRate", ref this.mRecyleRefundRate, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("BaseRebuildTimer", ref this.mBaseRebuildTimer, Predicates.IsNotZero);
+			s.StreamElementOpt("ObjectiveArrowRadialOffset", ref this.mObjectiveArrowRadialOffset, Predicates.IsNotZero);
+			s.StreamElementOpt("ObjectiveArrowSwitchOffset", ref this.mObjectiveArrowSwitchOffset, Predicates.IsNotZero);
+			s.StreamElementOpt("ObjectiveArrowYOffset", ref this.mObjectiveArrowYOffset, Predicates.IsNotZero);
+			s.StreamElementOpt("ObjectiveArrowMaxIndex", ref this.mObjectiveArrowMaxIndex, Predicates.IsNotZero);
+			s.StreamElementOpt("OverrunMinVel", ref this.mOverrunMinVel, Predicates.IsNotZero);
+			s.StreamElementOpt("OverrunJumpForce", ref this.mOverrunJumpForce, Predicates.IsNotZero);
+			s.StreamElementOpt("OverrunDistance", ref this.mOverrunDistance, Predicates.IsNotZero);
+			s.StreamElementOpt("CoopResourceSplitRate", ref this.mCoopResourceSplitRate, PhxPredicates.IsNotOne);
 			#region Hero globals
-			s.StreamElementOpt("HeroDownedLOS", ref mHeroDownedLOS, Predicates.IsNotZero);
-			s.StreamElementOpt("HeroHPRegenTime", ref mHeroHPRegenTime, Predicates.IsNotZero);
-			s.StreamElementOpt("HeroRevivalDistance", ref mHeroRevivalDistance, Predicates.IsNotZero);
-			s.StreamElementOpt("HeroPercentHPRevivalThreshhold", ref mHeroPercentHPRevivalThreshhold, Predicates.IsNotZero);
-			s.StreamElementOpt("MaxDeadHeroTransportDist", ref mMaxDeadHeroTransportDist, Predicates.IsNotZero);
+			s.StreamElementOpt("HeroDownedLOS", ref this.mHeroDownedLOS, Predicates.IsNotZero);
+			s.StreamElementOpt("HeroHPRegenTime", ref this.mHeroHPRegenTime, Predicates.IsNotZero);
+			s.StreamElementOpt("HeroRevivalDistance", ref this.mHeroRevivalDistance, Predicates.IsNotZero);
+			s.StreamElementOpt("HeroPercentHPRevivalThreshhold", ref this.mHeroPercentHPRevivalThreshhold, Predicates.IsNotZero);
+			s.StreamElementOpt("MaxDeadHeroTransportDist", ref this.mMaxDeadHeroTransportDist, Predicates.IsNotZero);
 			#endregion
 			#region Transport
-			s.StreamElementOpt("TransportClearRadiusScale", ref mTransportClearRadiusScale, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("TransportMaxSearchRadiusScale", ref mTransportMaxSearchRadiusScale, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("TransportMaxSearchLocations", ref mTransportMaxSearchLocations, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("TransportBlockTime", ref mTransportBlockTime, Predicates.IsNotZero);
-			s.StreamElementOpt("TransportLoadBlockTime", ref mTransportLoadBlockTime, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportClearRadiusScale", ref this.mTransportClearRadiusScale, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("TransportMaxSearchRadiusScale", ref this.mTransportMaxSearchRadiusScale, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("TransportMaxSearchLocations", ref this.mTransportMaxSearchLocations, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("TransportBlockTime", ref this.mTransportBlockTime, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportLoadBlockTime", ref this.mTransportLoadBlockTime, Predicates.IsNotZero);
 			#endregion
 			#region Ambient life
-			s.StreamElementOpt("ALMaxWanderFrequency", ref mALMaxWanderFrequency, Predicates.IsNotZero);
-			s.StreamElementOpt("ALPredatorCheckFrequency", ref mALPredatorCheckFrequency, Predicates.IsNotZero);
-			s.StreamElementOpt("ALPreyCheckFrequency", ref mALPreyCheckFrequency, Predicates.IsNotZero);
-			s.StreamElementOpt("ALOppCheckRadius", ref mALOppCheckRadius, Predicates.IsNotZero);
-			s.StreamElementOpt("ALFleeDistance", ref mALFleeDistance, Predicates.IsNotZero);
-			s.StreamElementOpt("ALFleeMovementModifier", ref mALFleeMovementModifier, Predicates.IsNotZero);
-			s.StreamElementOpt("ALMinWanderDistance", ref mALMinWanderDistance, Predicates.IsNotZero);
-			s.StreamElementOpt("ALMaxWanderDistance", ref mALMaxWanderDistance, Predicates.IsNotZero);
-			s.StreamElementOpt("ALSpawnerCheckFrequency", ref mALSpawnerCheckFrequency, Predicates.IsNotZero);
+			s.StreamElementOpt("ALMaxWanderFrequency", ref this.mALMaxWanderFrequency, Predicates.IsNotZero);
+			s.StreamElementOpt("ALPredatorCheckFrequency", ref this.mALPredatorCheckFrequency, Predicates.IsNotZero);
+			s.StreamElementOpt("ALPreyCheckFrequency", ref this.mALPreyCheckFrequency, Predicates.IsNotZero);
+			s.StreamElementOpt("ALOppCheckRadius", ref this.mALOppCheckRadius, Predicates.IsNotZero);
+			s.StreamElementOpt("ALFleeDistance", ref this.mALFleeDistance, Predicates.IsNotZero);
+			s.StreamElementOpt("ALFleeMovementModifier", ref this.mALFleeMovementModifier, Predicates.IsNotZero);
+			s.StreamElementOpt("ALMinWanderDistance", ref this.mALMinWanderDistance, Predicates.IsNotZero);
+			s.StreamElementOpt("ALMaxWanderDistance", ref this.mALMaxWanderDistance, Predicates.IsNotZero);
+			s.StreamElementOpt("ALSpawnerCheckFrequency", ref this.mALSpawnerCheckFrequency, Predicates.IsNotZero);
 			#endregion
 			#region Transport
-			s.StreamElementOpt("TransportMaxBlockAttempts", ref mTransportMaxBlockAttempts, PhxPredicates.IsNotOne);
-			s.StreamElementOpt("TransportIncomingHeight", ref mTransportIncomingHeight, Predicates.IsNotZero);
-			s.StreamElementOpt("TransportIncomingOffset", ref mTransportIncomingOffset, Predicates.IsNotZero);
-			s.StreamElementOpt("TransportOutgoingHeight", ref mTransportOutgoingHeight, Predicates.IsNotZero);
-			s.StreamElementOpt("TransportOutgoingOffset", ref mTransportOutgoingOffset, Predicates.IsNotZero);
-			s.StreamElementOpt("TransportPickupHeight", ref mTransportPickupHeight, Predicates.IsNotZero);
-			s.StreamElementOpt("TransportDropoffHeight", ref mTransportDropoffHeight, Predicates.IsNotZero);
-			s.StreamElementOpt("TransportMax", ref mTransportMax, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportMaxBlockAttempts", ref this.mTransportMaxBlockAttempts, PhxPredicates.IsNotOne);
+			s.StreamElementOpt("TransportIncomingHeight", ref this.mTransportIncomingHeight, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportIncomingOffset", ref this.mTransportIncomingOffset, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportOutgoingHeight", ref this.mTransportOutgoingHeight, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportOutgoingOffset", ref this.mTransportOutgoingOffset, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportPickupHeight", ref this.mTransportPickupHeight, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportDropoffHeight", ref this.mTransportDropoffHeight, Predicates.IsNotZero);
+			s.StreamElementOpt("TransportMax", ref this.mTransportMax, Predicates.IsNotZero);
 			#endregion
-			s.StreamElementOpt("HitchOffset", ref mHitchOffset, Predicates.IsNotZero);
+			s.StreamElementOpt("HitchOffset", ref this.mHitchOffset, Predicates.IsNotZero);
 			#region Cryo globals
-			s.StreamElementOpt("TimeFrozenToThaw", ref mTimeFrozenToThaw, Predicates.IsNotZero);
-			s.StreamElementOpt("TimeFreezingToThaw", ref mTimeFreezingToThaw, Predicates.IsNotZero);
-			s.StreamElementOpt("DefaultCryoPoints", ref mDefaultCryoPoints, Predicates.IsNotZero);
-			s.StreamElementOpt("DefaultThawSpeed", ref mDefaultThawSpeed, Predicates.IsNotZero);
-			s.StreamElementOpt("FreezingSpeedModifier", ref mFreezingSpeedModifier, Predicates.IsNotZero);
-			s.StreamElementOpt("FreezingDamageModifier", ref mFreezingDamageModifier, Predicates.IsNotZero);
-			s.StreamElementOpt("FrozenDamageModifier", ref mFrozenDamageModifier, Predicates.IsNotZero);
+			s.StreamElementOpt("TimeFrozenToThaw", ref this.mTimeFrozenToThaw, Predicates.IsNotZero);
+			s.StreamElementOpt("TimeFreezingToThaw", ref this.mTimeFreezingToThaw, Predicates.IsNotZero);
+			s.StreamElementOpt("DefaultCryoPoints", ref this.mDefaultCryoPoints, Predicates.IsNotZero);
+			s.StreamElementOpt("DefaultThawSpeed", ref this.mDefaultThawSpeed, Predicates.IsNotZero);
+			s.StreamElementOpt("FreezingSpeedModifier", ref this.mFreezingSpeedModifier, Predicates.IsNotZero);
+			s.StreamElementOpt("FreezingDamageModifier", ref this.mFreezingDamageModifier, Predicates.IsNotZero);
+			s.StreamElementOpt("FrozenDamageModifier", ref this.mFrozenDamageModifier, Predicates.IsNotZero);
 			#endregion
 			using (s.EnterCursorBookmark("Dot"))
 			{
-				s.StreamAttributeOpt("small", ref mSmallDotSize, Predicates.IsNotZero);
-				s.StreamAttributeOpt("medium", ref mMediumDotSize, Predicates.IsNotZero);
+				s.StreamAttributeOpt("small", ref this.mSmallDotSize, Predicates.IsNotZero);
+				s.StreamAttributeOpt("medium", ref this.mMediumDotSize, Predicates.IsNotZero);
 			}
 
-			XML.XmlUtil.Serialize(s, CodeProtoObjects, kCodeProtoObjectsXmlParams);
-			XML.XmlUtil.Serialize(s, CodeObjectTypes, kCodeObjectTypesXmlParams);
-			XML.XmlUtil.Serialize(s, InfectionMap, BInfectionMap.kBListXmlParams);
+			XML.XmlUtil.Serialize(s, this.CodeProtoObjects, kCodeProtoObjectsXmlParams);
+			XML.XmlUtil.Serialize(s, this.CodeObjectTypes, kCodeObjectTypesXmlParams);
+			XML.XmlUtil.Serialize(s, this.InfectionMap, BInfectionMap.kBListXmlParams);
 
 			#region Nonsense
-			XML.XmlUtil.Serialize(s, HUDItems, kHUDItemsXmlParams);
-			XML.XmlUtil.Serialize(s, FlashableItems, kFlashableItemsXmlParams);
-			XML.XmlUtil.Serialize(s, UnitFlags, kUnitFlagsXmlParams);
-			XML.XmlUtil.Serialize(s, SquadFlags, kSquadFlagsXmlParams);
+			XML.XmlUtil.Serialize(s, this.HUDItems, kHUDItemsXmlParams);
+			XML.XmlUtil.Serialize(s, this.FlashableItems, kFlashableItemsXmlParams);
+			XML.XmlUtil.Serialize(s, this.UnitFlags, kUnitFlagsXmlParams);
+			XML.XmlUtil.Serialize(s, this.SquadFlags, kSquadFlagsXmlParams);
 			#endregion
 		}
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -1239,7 +1242,7 @@ namespace KSoft.Phoenix.Phx
 			where TCursor : class
 		{
 			using (s.EnterCursorBookmark(kXmlRoot))
-				StreamGameData(s);
+				this.StreamGameData(s);
 		}
 		#endregion
 
@@ -1249,13 +1252,13 @@ namespace KSoft.Phoenix.Phx
 		Collections.IBTypeNames IProtoDataObjectDatabaseProvider.GetNamesInterface(int objectKind)
 		{
 			var kind = (GameDataObjectKind)objectKind;
-			return GetNamesInterface(kind);
+			return this.GetNamesInterface(kind);
 		}
 
 		Collections.IHasUndefinedProtoMemberInterface IProtoDataObjectDatabaseProvider.GetMembersInterface(int objectKind)
 		{
 			var kind = (GameDataObjectKind)objectKind;
-			return GetMembersInterface(kind);
+			return this.GetMembersInterface(kind);
 		}
 		#endregion
 	};
@@ -1276,8 +1279,8 @@ namespace KSoft.Phoenix.Phx
 		int mLimit;
 		public int Limit
 		{
-			get { return mLimit; }
-			set { mLimit = value; }
+			get { return this.mLimit; }
+			set { this.mLimit = value; }
 		}
 		#endregion
 
@@ -1286,12 +1289,12 @@ namespace KSoft.Phoenix.Phx
 		[Meta.UnitReference]
 		public int ObjectTypeID
 		{
-			get { return mObjectTypeID; }
-			set { mObjectTypeID = value; }
+			get { return this.mObjectTypeID; }
+			set { this.mObjectTypeID = value; }
 		}
 		#endregion
 
-		public bool IsInvalid { get { return PhxUtil.IsUndefinedReferenceHandleOrNone(ObjectTypeID); } }
+		public bool IsInvalid { get { return PhxUtil.IsUndefinedReferenceHandleOrNone(this.ObjectTypeID); } }
 
 		#region ITagElementStreamable<string> Members
 		public void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
@@ -1300,26 +1303,27 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			s.StreamAttribute("Limit", ref mLimit);
-			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref mObjectTypeID, DatabaseObjectKind.Unit, false, XML.XmlUtil.kSourceCursor);
+			s.StreamAttribute("Limit", ref this.mLimit);
+			xs.StreamDBID(s, XML.XmlUtil.kNoXmlName, ref this.mObjectTypeID, DatabaseObjectKind.Unit, false, XML.XmlUtil.kSourceCursor);
 		}
 		#endregion
 
 		#region IComparable Members
 		public int CompareTo(BBurningEffectLimit other)
 		{
-			if (Limit != other.Limit)
-				Limit.CompareTo(other.Limit);
+			if (this.Limit != other.Limit)
+				this.Limit.CompareTo(other.Limit);
 
-			return ObjectTypeID.CompareTo(other.ObjectTypeID);
+			return this.ObjectTypeID.CompareTo(other.ObjectTypeID);
 		}
 		#endregion
 
 		#region IEquatable Members
 		public bool Equals(BBurningEffectLimit other)
 		{
-			return Limit == other.Limit
-				&& ObjectTypeID == other.ObjectTypeID;
+			return this.Limit == other.Limit
+				&&
+				this.ObjectTypeID == other.ObjectTypeID;
 		}
 		#endregion
 	};

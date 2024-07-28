@@ -34,20 +34,20 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			BSaveGame.StreamVectorArray(s, ref Path, cMaximumPathLength);
-			s.Stream(Target);
-			s.Stream(ref Source);
-			s.Stream(ref ID);
-			s.Stream(ref Type);
-			s.Stream(ref UserData);
-			s.Stream(ref Priority);
-			s.Stream(ref UserData2);
-			s.Stream(ref WaitCount);
-			s.Stream(ref Evaluated); s.Stream(ref ExistForOneUpdate); s.Stream(ref ExistUntilEvaluated);
-			s.Stream(ref AllowComplete); s.Stream(ref NotifySource); s.Stream(ref Leash);
-			s.Stream(ref ForceLeash); s.Stream(ref Trigger); s.Stream(ref RemoveActions);
-			s.Stream(ref Complete); s.Stream(ref CompleteValue); s.Stream(ref PreserveDPS);
-			s.Stream(ref MustComplete); s.Stream(ref UserDataSet);
+			BSaveGame.StreamVectorArray(s, ref this.Path, cMaximumPathLength);
+			s.Stream(this.Target);
+			s.Stream(ref this.Source);
+			s.Stream(ref this.ID);
+			s.Stream(ref this.Type);
+			s.Stream(ref this.UserData);
+			s.Stream(ref this.Priority);
+			s.Stream(ref this.UserData2);
+			s.Stream(ref this.WaitCount);
+			s.Stream(ref this.Evaluated); s.Stream(ref this.ExistForOneUpdate); s.Stream(ref this.ExistUntilEvaluated);
+			s.Stream(ref this.AllowComplete); s.Stream(ref this.NotifySource); s.Stream(ref this.Leash);
+			s.Stream(ref this.ForceLeash); s.Stream(ref this.Trigger); s.Stream(ref this.RemoveActions);
+			s.Stream(ref this.Complete); s.Stream(ref this.CompleteValue); s.Stream(ref this.PreserveDPS);
+			s.Stream(ref this.MustComplete); s.Stream(ref this.UserDataSet);
 		}
 		#endregion
 	};

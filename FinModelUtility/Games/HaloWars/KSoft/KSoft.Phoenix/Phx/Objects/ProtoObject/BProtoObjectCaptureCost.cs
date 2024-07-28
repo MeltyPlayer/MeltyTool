@@ -16,8 +16,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.BCivReference]
 		public int CivID
 		{
-			get { return mCivID; }
-			set { mCivID = value; }
+			get { return this.mCivID; }
+			set { this.mCivID = value; }
 		}
 		#endregion
 
@@ -26,8 +26,8 @@ namespace KSoft.Phoenix.Phx
 		[Meta.ResourceReference]
 		public int ResourceType
 		{
-			get { return mResourceType; }
-			set { mResourceType = value; }
+			get { return this.mResourceType; }
+			set { this.mResourceType = value; }
 		}
 		#endregion
 
@@ -35,16 +35,17 @@ namespace KSoft.Phoenix.Phx
 		float mCost;
 		public float Cost
 		{
-			get { return mCost; }
-			set { mCost = value; }
+			get { return this.mCost; }
+			set { this.mCost = value; }
 		}
 		#endregion
 
-		public bool AppliesToAllCivs { get { return CivID.IsNone(); } }
+		public bool AppliesToAllCivs { get { return this.CivID.IsNone(); } }
 		/// <summary>Does the engine not ignore the XML data of this bit?</summary>
 		public bool IsNotIgnored { get {
-			return ResourceType >= 0
-				&& Cost != 0.0f;
+			return this.ResourceType >= 0
+				&&
+				this.Cost != 0.0f;
 		} }
 
 		#region ITagElementStreamable<string> Members
@@ -54,14 +55,14 @@ namespace KSoft.Phoenix.Phx
 		{
 			var xs = s.GetSerializerInterface();
 
-			xs.StreamDBID(s, "Civ", ref mCivID, DatabaseObjectKind.Civ, xmlSource: XML.XmlUtil.kSourceAttr);
+			xs.StreamDBID(s, "Civ", ref this.mCivID, DatabaseObjectKind.Civ, xmlSource: XML.XmlUtil.kSourceAttr);
 
-			if (!xs.StreamTypeName(s, BResource.kBListTypeValuesXmlParams_Cost.DataName, ref mResourceType, GameDataObjectKind.Cost, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr))
+			if (!xs.StreamTypeName(s, BResource.kBListTypeValuesXmlParams_Cost.DataName, ref this.mResourceType, GameDataObjectKind.Cost, isOptional: false, xmlSource: XML.XmlUtil.kSourceAttr))
 				s.ThrowReadException(new System.IO.InvalidDataException(string.Format(
 					"ProtoObject's {0} XML doesn't define a {1}",
 					kBListXmlParams.ElementName, BResource.kBListTypeValuesXmlParams_Cost.DataName)));
 
-			s.StreamCursor(ref mCost);
+			s.StreamCursor(ref this.mCost);
 		}
 		#endregion
 	};

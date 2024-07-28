@@ -26,7 +26,8 @@ namespace KSoft.Bitwise
 
 		/// <summary>Reset the internal value with another</summary>
 		/// <param name="value"></param>
-		public void Reset(uint value)				{ mValue = value; }
+		public void Reset(uint value)				{
+			this.mValue = value; }
 		/// <summary>Reset the internal value with an array of bits</summary>
 		/// <param name="values">Array of bit values</param>
 		public void Reset(params uint[] values)
@@ -34,7 +35,7 @@ namespace KSoft.Bitwise
 			Contract.Requires(values != null);
 
 			foreach (uint f in values)
-				Add(f);
+				this.Add(f);
 		}
 
 		/// <summary>Implicitly cast an <see cref="Flags32"/> to its unsigned integer representation</summary>
@@ -53,26 +54,28 @@ namespace KSoft.Bitwise
 
 		/// <summary>Construct a flags value from a 32-bit bit-vector</summary>
 		/// <param name="value"></param>
-		public Flags32(uint value)					{ Reset(value); }
+		public Flags32(uint value)					{
+			this.Reset(value); }
 		/// <summary>Construct a flags value from an array of 32-bit bit-vectors</summary>
 		/// <param name="values"></param>
 		public Flags32(params uint[] values)
 		{
 			Contract.Requires(values != null);
 
-			Reset(values);
+			this.Reset(values);
 		}
 
 		/// <summary>Tests if this.Value has <paramref name="flag"/></summary>
 		/// <param name="flag">flag to test</param>
 		/// <returns>True if <paramref name="flag"/> is set</returns>
 		[Contracts.Pure]
-		public bool Test(uint flag)					{ return (mValue & flag) == flag; }
+		public bool Test(uint flag)					{ return (this.mValue & flag) == flag; }
 
 		#region Add
 		/// <summary>Adds <paramref name="flags"/> from this.Value</summary>
 		/// <param name="flags">flags to add</param>
-		public void Add(uint flags)					{ mValue |= flags; }
+		public void Add(uint flags)					{
+			this.mValue |= flags; }
 
 		/// <summary>Adds <paramref name="flags"/> when <paramref name="cond"/> is true</summary>
 		/// <param name="cond">condition to use to determine when to set flags</param>
@@ -81,7 +84,7 @@ namespace KSoft.Bitwise
 		public bool Add(bool cond, uint flags)
 		{
 			if (cond)
-				Add(flags);
+				this.Add(flags);
 
 			return cond;
 		}
@@ -90,7 +93,8 @@ namespace KSoft.Bitwise
 		#region Remove
 		/// <summary>Removes <paramref name="flags"/> from this.Value</summary>
 		/// <param name="flags">flags to remove</param>
-		public void Remove(uint flags)				{ mValue &= ~flags; }
+		public void Remove(uint flags)				{
+			this.mValue &= ~flags; }
 
 		/// <summary>Removes <paramref name="flags"/> when <paramref name="cond"/> is true</summary>
 		/// <param name="cond">condition to use to determine when to remove flags</param>
@@ -99,7 +103,7 @@ namespace KSoft.Bitwise
 		public bool Remove(bool cond, uint flags)
 		{
 			if (cond)
-				Remove(flags);
+				this.Remove(flags);
 
 			return cond;
 		}
@@ -110,16 +114,16 @@ namespace KSoft.Bitwise
 		/// <summary>Tests whether or not <paramref name="obj"/> is equal to this</summary>
 		/// <param name="obj">The other object</param>
 		/// <returns>Returns true if <paramref name="obj"/> is a <see cref="Flags32"/> object and if it's value is the same as this</returns>
-		public override bool Equals(object obj)	{ return obj is Flags32 && ((Flags32)obj).mValue == mValue; }
+		public override bool Equals(object obj)	{ return obj is Flags32 && ((Flags32)obj).mValue == this.mValue; }
 		/// <summary><see cref="uint.GetHashCode()"/></summary>
 		/// <returns></returns>
 		/// <remarks>Beware: this uses the underlying flags value's hash code</remarks>
-		public override int GetHashCode()		{ return mValue.GetHashCode(); }
+		public override int GetHashCode()		{ return this.mValue.GetHashCode(); }
 		/// <summary><see cref="uint.ToString()"/></summary>
 		/// <returns>Returns a 8 character hexadecimal value in a string</returns>
 		public override string ToString()
 		{
-			return mValue.ToString("X8", Util.InvariantCultureInfo);
+			return this.mValue.ToString("X8", Util.InvariantCultureInfo);
 		}
 		#endregion
 	};

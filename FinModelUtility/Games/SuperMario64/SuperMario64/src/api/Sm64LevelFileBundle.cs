@@ -11,7 +11,7 @@ namespace sm64.api {
 
     public IReadOnlyTreeFile Sm64Rom { get; } = sm64Rom;
     public LevelId LevelId { get; } = levelId;
-    string IUiFile.HumanReadableName => $"{LevelId}".ToLower();
+    string IUiFile.HumanReadableName => $"{this.LevelId}".ToLower();
     public string TrueFullPath => this.Sm64Rom.FullPath;
   }
 }

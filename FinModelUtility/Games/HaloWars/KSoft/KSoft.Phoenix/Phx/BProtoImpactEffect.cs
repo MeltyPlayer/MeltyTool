@@ -25,8 +25,8 @@ namespace KSoft.Phoenix.Phx
 		int mLimit = 2;
 		public int Limit
 		{
-			get { return mLimit; }
-			set { mLimit = value; }
+			get { return this.mLimit; }
+			set { this.mLimit = value; }
 		}
 		#endregion
 
@@ -34,8 +34,8 @@ namespace KSoft.Phoenix.Phx
 		float mLifespan = 3.0f;
 		public float Lifespan
 		{
-			get { return mLifespan; }
-			set { mLifespan = value; }
+			get { return this.mLifespan; }
+			set { this.mLifespan = value; }
 		}
 		#endregion
 
@@ -43,17 +43,17 @@ namespace KSoft.Phoenix.Phx
 		string mFileName;
 		public string FileName
 		{
-			get { return mFileName; }
-			set { mFileName = value; }
+			get { return this.mFileName; }
+			set { this.mFileName = value; }
 		}
 		#endregion
 
 		#region BListAutoIdObject Members
 		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
-			s.StreamAttributeOpt("limit", ref mLimit, x => x != 2);
-			s.StreamAttributeOpt("lifespan", ref mLifespan, x => x != 3.0f);
-			s.StreamCursor(ref mFileName);
+			s.StreamAttributeOpt("limit", ref this.mLimit, x => x != 2);
+			s.StreamAttributeOpt("lifespan", ref this.mLifespan, x => x != 3.0f);
+			s.StreamCursor(ref this.mFileName);
 		}
 		#endregion
 	};

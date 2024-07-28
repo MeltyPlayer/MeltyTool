@@ -5,7 +5,7 @@ namespace uni.ui.winforms.common;
 
 public partial class CancellableProgressBar : UserControl {
   public CancellableProgressBar() {
-      InitializeComponent();
+    this.InitializeComponent();
     }
 
   public string Text {

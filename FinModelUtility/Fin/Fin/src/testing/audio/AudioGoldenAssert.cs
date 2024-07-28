@@ -46,7 +46,7 @@ public static class AudioGoldenAssert {
       where TAudioBundle : IAudioFileBundle {
     foreach (var goldenSubdir in
              GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)) {
-      AudioGoldenAssert.AssertGolden(goldenSubdir,
+      AssertGolden(goldenSubdir,
                                      audioImporter,
                                      gatherAudioBundleFromInputDirectory);
     }

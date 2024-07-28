@@ -22,22 +22,22 @@ namespace KSoft.Phoenix.XML
 			Contract.Requires<ArgumentNullException>(list != null);
 			Contract.Requires<ArgumentNullException>(attributeName != null);
 
-			kAttrName = attributeName;
+			this.kAttrName = attributeName;
 		}
 
 		#region IXmlElementStreamable Members
 		protected override void Read<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, int iteration)
 		{
-			int index = ReadExplicitIndex(s, xs);
+			int index = this.ReadExplicitIndex(s, xs);
 
-			ListExplicitIndex.InitializeItem(index);
+			this.ListExplicitIndex.InitializeItem(index);
 			float value = 0;
-			s.ReadAttribute(kAttrName, ref value);
-			ListExplicitIndex[index] = value;
+			s.ReadAttribute(this.kAttrName, ref value);
+			this.ListExplicitIndex[index] = value;
 		}
 		protected override void Write<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s, BXmlSerializerInterface xs, float data)
 		{
-			s.WriteAttribute(kAttrName, data);
+			s.WriteAttribute(this.kAttrName, data);
 		}
 		#endregion
 	};

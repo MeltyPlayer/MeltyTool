@@ -63,23 +63,23 @@ namespace ModelPluginWrappers {
       public unsafe void CommitTrianglesWithoutIndices(NoePrimitiveType primitiveType, bool usePlotMap) {
         switch (primitiveType) {
           case NoePrimitiveType.RPGEO_POINTS: {
-              var skin = model_.Skin;
+              var skin = this.model_.Skin;
 
               var mesh = skin.AddMesh();
-              mesh.Name = name_;
+              mesh.Name = this.name_;
 
               var vertices = new List<IVertex>();
-              var bytes = positionBuffer_.ToArray();
+              var bytes = this.positionBuffer_.ToArray();
               using var br = new SchemaBinaryReader(bytes);
 
               var i = 0;
               while (true) {
-                br.Position = positionOffset_ + i * positionStride_;
+                br.Position = this.positionOffset_ + i * this.positionStride_;
                 if (br.Eof) {
                   break;
                 }
 
-                switch (positionFormat_) {
+                switch (this.positionFormat_) {
                   case NoeFormat.RPGEODATA_FLOAT: {
                       var x = br.ReadSingle();
                       var y = br.ReadSingle();
@@ -100,7 +100,7 @@ namespace ModelPluginWrappers {
         }
       }
 
-      public IModel ConstructModel() => model_;
+      public IModel ConstructModel() => this.model_;
 
       public object CreateContext() {
         return new object();

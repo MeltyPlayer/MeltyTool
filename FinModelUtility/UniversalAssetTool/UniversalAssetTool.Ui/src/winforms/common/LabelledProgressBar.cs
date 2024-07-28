@@ -4,7 +4,7 @@ namespace uni.ui.winforms.common;
 
 public partial class LabelledProgressBar : UserControl {
   public LabelledProgressBar() {
-      InitializeComponent();
+    this.InitializeComponent();
     }
 
   public string Text {

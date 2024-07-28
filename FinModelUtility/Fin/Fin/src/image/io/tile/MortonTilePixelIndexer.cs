@@ -8,8 +8,8 @@ namespace fin.image.io.tile;
 /// </summary>
 public class MortonPixelIndexer : IPixelIndexer {
   public void GetPixelCoordinates(int index, out int x, out int y) {
-    x = Morton7_(index);
-    y = Morton7_(index >>> 1);
+    x = this.Morton7_(index);
+    y = this.Morton7_(index >>> 1);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

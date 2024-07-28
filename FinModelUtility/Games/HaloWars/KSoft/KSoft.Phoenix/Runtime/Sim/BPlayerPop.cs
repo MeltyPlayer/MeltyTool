@@ -9,7 +9,7 @@ namespace KSoft.Phoenix.Runtime
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)
 		{
-			s.Stream(ref Existing); s.Stream(ref Cap); s.Stream(ref Max); s.Stream(ref Future);
+			s.Stream(ref this.Existing); s.Stream(ref this.Cap); s.Stream(ref this.Max); s.Stream(ref this.Future);
 		}
 		#endregion
 #if false

@@ -11,11 +11,11 @@ public partial class GlState {
 public static partial class GlUtil {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void UseProgram(int shader) {
-      if (GlUtil.currentState_.CurrentShader == shader) {
+      if (currentState_.CurrentShader == shader) {
         return;
       }
 
-      GlUtil.currentState_.CurrentShader = shader;
+      currentState_.CurrentShader = shader;
       GL.UseProgram(shader);
     }
 }

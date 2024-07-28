@@ -16,7 +16,7 @@ namespace UoT.api {
     public IReadOnlyTreeFile OotRom { get; } = ootRom;
     public IZFile ZFile { get; } = zFile;
 
-    string IUiFile.HumanReadableName => ZFile.FileName;
+    string IUiFile.HumanReadableName => this.ZFile.FileName;
     public string TrueFullPath => this.OotRom.FullPath;
   }
 }

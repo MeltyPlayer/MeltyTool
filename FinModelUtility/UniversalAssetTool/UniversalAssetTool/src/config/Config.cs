@@ -39,7 +39,7 @@ public class Config {
     => instance_ = DirectoryConstants.CONFIG_FILE.Deserialize<Config>();
 
   public static void SaveSettings()
-    => DirectoryConstants.CONFIG_FILE.Serialize(Config.Instance);
+    => DirectoryConstants.CONFIG_FILE.Serialize(Instance);
 }
 
 public class GeneralSettings {

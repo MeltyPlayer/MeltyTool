@@ -92,8 +92,8 @@ namespace DouglasCrockford.JsMin
 
 		public void Dispose()
 		{
-			KSoft.Util.DisposeAndNull(ref _reader);
-			KSoft.Util.DisposeAndNull(ref _writer);
+			KSoft.Util.DisposeAndNull(ref this._reader);
+			KSoft.Util.DisposeAndNull(ref this._writer);
 		}
 
 		/// <summary>
@@ -105,33 +105,33 @@ namespace DouglasCrockford.JsMin
 		{
 			string minifiedContent;
 
-			lock (_minificationSynchronizer)
+			lock (this._minificationSynchronizer)
 			{
-				_theA = 0;
-				_theB = 0;
-				_theLookahead = EOF;
-				_theX = EOF;
-				_theY = EOF;
+				this._theA = 0;
+				this._theB = 0;
+				this._theLookahead = EOF;
+				this._theX = EOF;
+				this._theY = EOF;
 
 				int estimatedCapacity = (int)Math.Floor(content.Length * AVERAGE_COMPRESSION_RATIO);
-				if (_sb == null)
+				if (this._sb == null)
 				{
-					_sb = new StringBuilder(estimatedCapacity);
+					this._sb = new StringBuilder(estimatedCapacity);
 				}
 				else
 				{
-					_sb.Capacity = estimatedCapacity;
+					this._sb.Capacity = estimatedCapacity;
 				}
 
-				_reader = new StringReader(content);
-				_writer = new StringWriter(_sb);
+				this._reader = new StringReader(content);
+				this._writer = new StringWriter(this._sb);
 
 				try
 				{
-					InnerMinify();
-					_writer.Flush();
+					this.InnerMinify();
+					this._writer.Flush();
 
-					minifiedContent = TrimStartAndToString(_sb);
+					minifiedContent = TrimStartAndToString(this._sb);
 				}
 				catch (JsMinificationException)
 				{
@@ -139,10 +139,10 @@ namespace DouglasCrockford.JsMin
 				}
 				finally
 				{
-					KSoft.Util.DisposeAndNull(ref _reader);
-					KSoft.Util.DisposeAndNull(ref _writer);
+					KSoft.Util.DisposeAndNull(ref this._reader);
+					KSoft.Util.DisposeAndNull(ref this._writer);
 
-					_sb.Clear();
+					this._sb.Clear();
 				}
 			}
 
@@ -168,12 +168,12 @@ namespace DouglasCrockford.JsMin
 		/// <returns>The character</returns>
 		private int Get()
 		{
-			int c = _theLookahead;
-			_theLookahead = EOF;
+			int c = this._theLookahead;
+			this._theLookahead = EOF;
 
 			if (c == EOF)
 			{
-				c = _reader.Read();
+				c = this._reader.Read();
 			}
 
 			if (c >= ' ' || c == '\n' || c == EOF)
@@ -195,9 +195,9 @@ namespace DouglasCrockford.JsMin
 		/// <returns>The character</returns>
 		private int Peek()
 		{
-			_theLookahead = Get();
+			this._theLookahead = this.Get();
 
-			return _theLookahead;
+			return this._theLookahead;
 		}
 
 		/// <summary>
@@ -207,16 +207,16 @@ namespace DouglasCrockford.JsMin
 		/// <returns>The character</returns>
 		private int Next()
 		{
-			int c = Get();
+			int c = this.Get();
 
 			if (c == '/')
 			{
-				switch (Peek())
+				switch (this.Peek())
 				{
 					case '/':
 						for (;;)
 						{
-							c = Get();
+							c = this.Get();
 
 							if (c <= '\n')
 							{
@@ -226,16 +226,16 @@ namespace DouglasCrockford.JsMin
 
 						break;
 					case '*':
-						Get();
+						this.Get();
 
 						while (c != ' ')
 						{
-							switch (Get())
+							switch (this.Get())
 							{
 								case '*':
-									if (Peek() == '/')
+									if (this.Peek() == '/')
 									{
-										Get();
+										this.Get();
 										c = ' ';
 									}
 
@@ -249,8 +249,8 @@ namespace DouglasCrockford.JsMin
 				}
 			}
 
-			_theY = _theX;
-			_theX = c;
+			this._theY = this._theX;
+			this._theX = c;
 
 			return c;
 		}
@@ -269,41 +269,41 @@ namespace DouglasCrockford.JsMin
 		{
 			if (d == 1)
 			{
-				Put(_theA);
+				this.Put(this._theA);
 
 				if (
-					(_theY == '\n' || _theY == ' ') &&
-					(_theA == '+' || _theA == '-' || _theA == '*' || _theA == '/') &&
-					(_theB == '+' || _theB == '-' || _theB == '*' || _theB == '/')
+					(this._theY == '\n' || this._theY == ' ') &&
+					(this._theA == '+' || this._theA == '-' || this._theA == '*' || this._theA == '/') &&
+					(this._theB == '+' || this._theB == '-' || this._theB == '*' || this._theB == '/')
 				)
 				{
-					Put(_theY);
+					this.Put(this._theY);
 				}
 			}
 
 			if (d <= 2)
 			{
-				_theA = _theB;
+				this._theA = this._theB;
 
-				if (_theA == '\'' || _theA == '"' || _theA == '`')
+				if (this._theA == '\'' || this._theA == '"' || this._theA == '`')
 				{
 					for (;;)
 					{
-						Put(_theA);
-						_theA = Get();
+						this.Put(this._theA);
+						this._theA = this.Get();
 
-						if (_theA == _theB)
+						if (this._theA == this._theB)
 						{
 							break;
 						}
 
-						if (_theA == '\\')
+						if (this._theA == '\\')
 						{
-							Put(_theA);
-							_theA = Get();
+							this.Put(this._theA);
+							this._theA = this.Get();
 						}
 
-						if (_theA == EOF)
+						if (this._theA == EOF)
 						{
 							throw new JsMinificationException("Unterminated string literal.");
 						}
@@ -313,54 +313,65 @@ namespace DouglasCrockford.JsMin
 
 			if (d <= 3)
 			{
-				_theB = Next();
-				if (_theB == '/' && (
-					_theA == '(' || _theA == ',' || _theA == '=' || _theA == ':' ||
-					_theA == '[' || _theA == '!' || _theA == '&' || _theA == '|' ||
-					_theA == '?' || _theA == '+' || _theA == '-' || _theA == '~' ||
-					_theA == '*' || _theA == '/' || _theA == '{' || _theA == '\n'
+				this._theB = this.Next();
+				if (this._theB == '/' && (this._theA == '(' ||
+				                          this._theA == ',' ||
+				                          this._theA == '=' ||
+				                          this._theA == ':' ||
+				                          this._theA == '[' ||
+				                          this._theA == '!' ||
+				                          this._theA == '&' ||
+				                          this._theA == '|' ||
+				                          this._theA == '?' ||
+				                          this._theA == '+' ||
+				                          this._theA == '-' ||
+				                          this._theA == '~' ||
+				                          this._theA == '*' ||
+				                          this._theA == '/' ||
+				                          this._theA == '{' ||
+				                          this._theA == '\n'
 				))
 				{
-					Put(_theA);
+					this.Put(this._theA);
 
-					if (_theA == '/' || _theA == '*')
+					if (this._theA == '/' || this._theA == '*')
 					{
-						Put(' ');
+						this.Put(' ');
 					}
 
-					Put(_theB);
+					this.Put(this._theB);
 
 					for (;;)
 					{
-						_theA = Get();
+						this._theA = this.Get();
 
-						if (_theA == '[')
+						if (this._theA == '[')
 						{
 							for (;;)
 							{
-								Put(_theA);
-								_theA = Get();
+								this.Put(this._theA);
+								this._theA = this.Get();
 
-								if (_theA == ']')
+								if (this._theA == ']')
 								{
 									break;
 								}
 
-								if (_theA == '\\')
+								if (this._theA == '\\')
 								{
-									Put(_theA);
-									_theA = Get();
+									this.Put(this._theA);
+									this._theA = this.Get();
 								}
 
-								if (_theA == EOF)
+								if (this._theA == EOF)
 								{
 									throw new JsMinificationException("Unterminated set in Regular Expression literal.");
 								}
 							}
 						}
-						else if (_theA == '/')
+						else if (this._theA == '/')
 						{
-							switch (Peek())
+							switch (this.Peek())
 							{
 								case '/':
 								case '*':
@@ -369,20 +380,20 @@ namespace DouglasCrockford.JsMin
 
 							break;
 						}
-						else if (_theA == '\\')
+						else if (this._theA == '\\')
 						{
-							Put(_theA);
-							_theA = Get();
+							this.Put(this._theA);
+							this._theA = this.Get();
 						}
 
-						if (_theA == EOF) {
+						if (this._theA == EOF) {
 							throw new JsMinificationException("Unterminated Regular Expression literal.");
 						}
 
-						Put(_theA);
+						this.Put(this._theA);
 					}
 
-					_theB = Next();
+					this._theB = this.Next();
 				}
 			}
 		}
@@ -394,25 +405,25 @@ namespace DouglasCrockford.JsMin
 		/// </summary>
 		private void InnerMinify()
 		{
-			if (Peek() == 0xEF)
+			if (this.Peek() == 0xEF)
 			{
-				Get();
-				Get();
-				Get();
+				this.Get();
+				this.Get();
+				this.Get();
 			}
 
-			_theA = '\n';
-			Action(3);
+			this._theA = '\n';
+			this.Action(3);
 
-			while (_theA != EOF)
+			while (this._theA != EOF)
 			{
-				switch (_theA)
+				switch (this._theA)
 				{
 					case ' ':
-						Action(IsAlphanum(_theB) ? 1 : 2);
+						this.Action(IsAlphanum(this._theB) ? 1 : 2);
 						break;
 					case '\n':
-						switch (_theB)
+						switch (this._theB)
 						{
 							case '{':
 							case '[':
@@ -421,25 +432,25 @@ namespace DouglasCrockford.JsMin
 							case '-':
 							case '!':
 							case '~':
-								Action(1);
+								this.Action(1);
 								break;
 							case ' ':
-								Action(3);
+								this.Action(3);
 								break;
 							default:
-								Action(IsAlphanum(_theB) ? 1 : 2);
+								this.Action(IsAlphanum(this._theB) ? 1 : 2);
 								break;
 						}
 
 						break;
 					default:
-						switch (_theB)
+						switch (this._theB)
 						{
 							case ' ':
-								Action(IsAlphanum(_theA) ? 1 : 3);
+								this.Action(IsAlphanum(this._theA) ? 1 : 3);
 								break;
 							case '\n':
-								switch (_theA)
+								switch (this._theA)
 								{
 									case '}':
 									case ']':
@@ -449,16 +460,16 @@ namespace DouglasCrockford.JsMin
 									case '"':
 									case '\'':
 									case '`':
-										Action(1);
+										this.Action(1);
 										break;
 									default:
-										Action(IsAlphanum(_theA) ? 1 : 3);
+										this.Action(IsAlphanum(this._theA) ? 1 : 3);
 										break;
 								}
 
 								break;
 							default:
-								Action(1);
+								this.Action(1);
 								break;
 						}
 
@@ -475,7 +486,7 @@ namespace DouglasCrockford.JsMin
 		/// <param name="c">The character</param>
 		private void Put(int c)
 		{
-			_writer.Write((char)c);
+			this._writer.Write((char)c);
 		}
 
 		#endregion
