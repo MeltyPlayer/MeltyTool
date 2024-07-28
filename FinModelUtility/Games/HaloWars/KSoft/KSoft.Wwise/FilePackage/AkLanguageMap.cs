@@ -3,9 +3,7 @@
 	public sealed class AkLanguageMap
 		: IO.IEndianStreamSerializable
 	{
-		const int kAlignmentBit = 2;
-
-		AkLanguageMapEntry[] mEntries;
+	AkLanguageMapEntry[] mEntries;
 
 		bool mUseAsciiStrings;
 

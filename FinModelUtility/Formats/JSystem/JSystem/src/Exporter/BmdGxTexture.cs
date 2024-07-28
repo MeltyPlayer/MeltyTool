@@ -121,7 +121,4 @@ public class BmdGxTexture : IGxTexture {
                  .With(MagTextureFilter)
                  .With(ColorType)
                  .Hash;
-
-  private static byte CollapseAlphaForMask_(byte value)
-    => (byte) (value == 0 ? 0 : 255);
 }

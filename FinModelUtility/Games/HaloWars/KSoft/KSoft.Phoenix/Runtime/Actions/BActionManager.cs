@@ -32,15 +32,8 @@ namespace KSoft.Phoenix.Runtime
 		public Phx.BActionType ActionType;
 		public int ActionPtr;
 
-		ActionListEntry(bool dummy)
-		{
-			Action = false;
-			ActionType = Phx.BActionType.Invalid;
-			ActionPtr = TypeExtensions.kNone;
-		}
-
-		#region IEndianStreamSerializable Members
-		public void Serialize(IO.EndianStream s)
+	#region IEndianStreamSerializable Members
+	public void Serialize(IO.EndianStream s)
 		{
 			s.Stream(ref Action);
 			if (Action)

@@ -28,8 +28,6 @@ public static class EnumDisplaySettingsUtil {
 
   const int ENUM_CURRENT_SETTINGS = -1;
 
-  const int ENUM_REGISTRY_SETTINGS = -2;
-
   /// <summary>Specifies the angle of the screen.</summary>
   public enum ScreenOrientation {
     /// <summary>The screen is oriented at 0 degrees.</summary>

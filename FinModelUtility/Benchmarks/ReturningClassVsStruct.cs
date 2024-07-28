@@ -86,13 +86,6 @@ namespace benchmarks {
       value = ReturnStructTwiceImpl2_();
     }
 
-    private void ReturnStructByRefTwiceImpl2_(out XyzwStruct value) {
-      value = new XyzwStruct { X = 1, Y = 2, Z = 3, W = 4 };
-    }
-
-
-
-
     [Benchmark]
     public void ReturnStructViaInterface() {
       for (var i = 0; i < n; i++) {

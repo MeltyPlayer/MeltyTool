@@ -24,7 +24,6 @@ using uni.ui.winforms.common.fileTreeView;
 namespace uni.ui.winforms;
 
 public partial class UniversalAssetToolForm : Form {
-  private IFileTreeNode? gameDirectory_;
   private TimedCallback fpsCallback_;
 
   public UniversalAssetToolForm() {

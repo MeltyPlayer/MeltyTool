@@ -11,16 +11,6 @@ namespace KSoft.Phoenix.Phx
 			Flags = XML.BCollectionXmlParamsFlags.UseElementForData |
 				XML.BCollectionXmlParamsFlags.ForceNoRootElementStreaming,
 		};
-
-		//////////////////////////////////////////////////////////////////////////
-		// anim names
-		const string kXmlElementIdleAnim = "IdleAnim";
-		const string kXmlElementWalkAnim = "WalkAnim";
-		const string kXmlElementJogAnim = "JogAnim";
-		const string kXmlElementRunAnim = "RunAnim";
-		const string kXmlElementDeathAnim = "DeathAnim";
-		//////////////////////////////////////////////////////////////////////////
-		const string kXmlElementAction = "Action";
-		#endregion
-	};
+	#endregion
+  };
 }

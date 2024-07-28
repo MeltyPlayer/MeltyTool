@@ -48,16 +48,13 @@ namespace KSoft.Text
 					throw new Debug.UnreachableException(mStorage.LengthPrefix.ToString());
 			}
 		}
-		#endregion
-		/// <summary>Calculate the true character byte count of a raw <see cref="StringStorageType.CharArray"/> string</summary>
-		/// <param name="byteCount">Raw string's byte count</param>
-		/// <returns>Byte count of the actual string data to be transformed into characters</returns>
-		static int CalcCharByteCountCharArray(int byteCount)	{ return byteCount; }
-		/// <summary>Calculate the true character byte count of a raw string's characters when decoding them</summary>
-		/// <param name="byteCount">Raw string's byte count</param>
-		/// <returns>Byte count of the actual string data to be transformed into characters</returns>
-		/// <remarks>For <see cref="StringStorageType.Pascal"/> cases, the value is a best-guess estimate</remarks>
-		int CalculateCharByteCount(int byteCount)
+
+	#endregion
+	/// <summary>Calculate the true character byte count of a raw string's characters when decoding them</summary>
+	/// <param name="byteCount">Raw string's byte count</param>
+	/// <returns>Byte count of the actual string data to be transformed into characters</returns>
+	/// <remarks>For <see cref="StringStorageType.Pascal"/> cases, the value is a best-guess estimate</remarks>
+	int CalculateCharByteCount(int byteCount)
 		{
 			switch (mStorage.Type)
 			{

@@ -3,8 +3,7 @@ namespace KSoft.Phoenix
 {
 	static class SingleFixedPoint
 	{
-		const double kExponent = 4; // scaling exponent
-		const double kScaleToSingleMultiplier = 0.0001;//System.Math.Pow(10, -kExponent);
+	const double kScaleToSingleMultiplier = 0.0001;//System.Math.Pow(10, -kExponent);
 		const double kScaleFromSingleMultiplier = 10000;//System.Math.Pow(10, kExponent);
 
 		const double kMax =   kScaleToSingleMultiplier * (double) Bitwise.Int24.MaxValue;

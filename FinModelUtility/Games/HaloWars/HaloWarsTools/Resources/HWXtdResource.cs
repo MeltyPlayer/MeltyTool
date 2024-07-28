@@ -198,10 +198,6 @@ namespace HaloWarsTools {
       return new Vector3(x, y, z) * INVERSE_K_BIT_MASK_10;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Vector3 ConvertPositionVector(Vector3 vector)
-      => new(vector.X, -vector.Z, vector.Y);
-
     // TODO: This might not be right
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static Vector3 ConvertDirectionVector(Vector3 vector)

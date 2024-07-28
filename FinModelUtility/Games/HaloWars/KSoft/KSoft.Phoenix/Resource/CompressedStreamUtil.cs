@@ -21,9 +21,7 @@ namespace KSoft.Phoenix.Resource
 			const int kOffsetCompressedAdler = kOffsetCompressedSize + sizeof(ulong);
 			const int kOffsetMode = kOffsetCompressedAdler + sizeof(uint);
 
-			const int kSizeOf = kOffsetMode + sizeof(uint); // 0x14
-
-			public static uint Checksum(ulong srcSize, uint srcAdler, ulong cmpSize, uint cmpAdler,
+	  public static uint Checksum(ulong srcSize, uint srcAdler, ulong cmpSize, uint cmpAdler,
 				uint mode = 0)
 			{
 				var bc = Adler32.BitComputer.New;

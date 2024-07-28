@@ -59,18 +59,16 @@ namespace KSoft.Memory.Strings
 		/// the <see cref="FixedLength"/> will be 1 less due to null termination
 		/// </remarks>
 		public bool IsFixedLength { get { return mFixedLength != 0 && !HasLengthPrefix; } }
-		#endregion
 
-		[Contracts.ContractInvariantMethod]
-		void ObjectInvariant()	{ Contract.Invariant(mFixedLength >= 0); }
+	#endregion
 
-		#region Ctor
-		/// <summary>Construct a new string storage definition</summary>
-		/// <param name="widthType">Width size of a single character of this string definition</param>
-		/// <param name="type">Storage method for this string definition</param>
-		/// <param name="byteOrder"></param>
-		/// <param name="fixedLength">The storage fixed length (in characters) of this string definition</param>
-		public StringStorage(StringStorageWidthType widthType, StringStorageType type,
+	#region Ctor
+	/// <summary>Construct a new string storage definition</summary>
+	/// <param name="widthType">Width size of a single character of this string definition</param>
+	/// <param name="type">Storage method for this string definition</param>
+	/// <param name="byteOrder"></param>
+	/// <param name="fixedLength">The storage fixed length (in characters) of this string definition</param>
+	public StringStorage(StringStorageWidthType widthType, StringStorageType type,
 			Shell.EndianFormat byteOrder = Shell.EndianFormat.Little, short fixedLength = 0)
 		{
 			Contract.Requires(!type.UsesLengthPrefix(), "Use ctor with StringStorageLengthPrefix instead");

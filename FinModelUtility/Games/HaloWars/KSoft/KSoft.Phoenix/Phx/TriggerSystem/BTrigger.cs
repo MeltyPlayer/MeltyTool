@@ -14,15 +14,9 @@ namespace KSoft.Phoenix.Phx
 		const string kXmlAttrEvaluateFrequency = "EvaluateFrequency";
 		const string kXmlAttrEvalLimit = "EvalLimit";
 		const string kXmlAttrConditionalTrigger = "ConditionalTrigger";
+	#endregion
 
-		const string kXmlAttrCommentOut = "CommentOut";
-		const string kXmlAttrX = "X";
-		const string kXmlAttrY = "Y";
-		const string kXmlAttrGroupID = "GroupID";
-		const string kXmlAttrTemplateID = "TemplateID";
-		#endregion
-
-		bool mActive;
+	bool mActive;
 
 		int mEvaluateFrequency;
 

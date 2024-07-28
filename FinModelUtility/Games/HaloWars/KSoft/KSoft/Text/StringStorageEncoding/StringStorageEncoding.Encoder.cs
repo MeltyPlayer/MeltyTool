@@ -30,17 +30,11 @@ namespace KSoft.Text
 					throw new Debug.UnreachableException(mStorage.LengthPrefix.ToString());
 			}
 		}
-		/// <summary>Calculate how many additional bytes are needed to encode a raw <see cref="StringStorageType.CharArray"/> string</summary>
-		/// <param name="byteCount">Base characters byte count</param>
-		/// <returns>Total byte count needed for encoding a <see cref="StringStorageType.CharArray"/> string</returns>
-		static int CalcByteCountCharArray(int byteCount)
-		{
-			return byteCount;
-		}
-		/// <summary>Calculate how many additional bytes are needed for encoding a raw string</summary>
-		/// <param name="byteCount">Base characters byte count</param>
-		/// <returns>Total byte count needed for encoding a string</returns>
-		int CalculateByteCount(int byteCount)
+
+	/// <summary>Calculate how many additional bytes are needed for encoding a raw string</summary>
+	/// <param name="byteCount">Base characters byte count</param>
+	/// <returns>Total byte count needed for encoding a string</returns>
+	int CalculateByteCount(int byteCount)
 		{
 			if (mStorage.IsFixedLength)
 				return mFixedLengthByteLength;

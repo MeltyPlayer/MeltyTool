@@ -9,11 +9,6 @@ namespace KSoft.Phoenix.Phx
 			RootName = "NoteNodes",
 			ElementName = "NoteNodeXml",
 		};
-
-		// X, Y, Width, Height, GroupID
-
-		const string kXmlElementTitle = "Title";
-		const string kXmlElementDescription = "Description";
-		#endregion
-	};
+	#endregion
+  };
 }

@@ -78,13 +78,8 @@ namespace KSoft.Phoenix.Phx
 		{
 			return ((uint)dbo.DbId << 8) | (uint)dbo.Version;
 		}
-		static void HandleGetData(uint handle, out int dbid, out int version)
-		{
-			version = (int)(handle & 0xFF);
-			dbid = (int)(handle >> 8);
-		}
 
-		void LookupTableAdd(TriggerSystemProtoObject dbo)
+	void LookupTableAdd(TriggerSystemProtoObject dbo)
 		{
 			mUsedIds[dbo.DbId] = true;
 			LookupTable.Add(GenerateHandle(dbo), dbo);

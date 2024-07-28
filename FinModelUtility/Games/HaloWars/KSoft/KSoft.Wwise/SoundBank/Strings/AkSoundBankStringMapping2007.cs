@@ -65,17 +65,8 @@ namespace KSoft.Wwise.SoundBank
 				s.Stream(ref entries[x].Key);
 			}
 		}
-		static void SerializeGroups(IO.EndianStream s, ref StringHashEntry[] entries)
-		{
-			s.StreamArrayInt32(ref entries);
-			for (int x = 0; x < entries.Length; x++)
-			{
-				s.Stream(ref entries[x].ID);
-				s.Stream(ref entries[x].Value, Memory.Strings.StringStorage.CStringAscii);
-				s.Stream(ref entries[x].Key);
-			}
-		}
-		void SerializeStringType(IO.EndianStream s, AKBKHashHeader hdr, AkSoundBank bank)
+
+	void SerializeStringType(IO.EndianStream s, AKBKHashHeader hdr, AkSoundBank bank)
 		{
 			switch (hdr.Type)
 			{

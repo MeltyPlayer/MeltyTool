@@ -11,14 +11,7 @@ namespace KSoft.Phoenix.Phx
 		//HashSet<BPops> mPoolPops;
 		HashSet<BProtoObjectVeterancyList> mPoolVeterancies;
 
-		void InitializeValuePools()
-		{
-			mPoolCosts = new HashSet<BCost>();
-
-			mPoolVeterancies = new HashSet<BProtoObjectVeterancyList>();
-		}
-
-		public bool InternTypeValues<T>(ref Collections.BTypeValuesBase<T> values)
+	public bool InternTypeValues<T>(ref Collections.BTypeValuesBase<T> values)
 		{
 			return false;
 		}

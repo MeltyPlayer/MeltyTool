@@ -57,10 +57,7 @@ namespace KSoft.Phoenix.Phx
 
 		static readonly Collections.BBitSetParams kObjectTypesParams = new Collections.BBitSetParams(db => db.ObjectTypes);
 		static readonly XML.BBitSetXmlParams kObjectTypesXmlParams = new XML.BBitSetXmlParams("ObjectType");
-
-		const string kXmlAttrIs = "is"; // boolean int, only streamed when '0', only used by tools?
-
-		internal const string kXmlElementAttackGradeDPS = "AttackGradeDPS";
+	internal const string kXmlElementAttackGradeDPS = "AttackGradeDPS";
 		internal const string kXmlElementReverseSpeed = "ReverseSpeed";
 		#endregion
 

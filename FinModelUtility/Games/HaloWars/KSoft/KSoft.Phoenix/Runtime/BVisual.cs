@@ -15,9 +15,7 @@ namespace KSoft.Phoenix.Runtime
 		: IO.IEndianStreamSerializable
 	{
 		const int kUVOffsetsSize = 0x18;
-		const int cMaximumAttachments = 0x64;
-
-		public BMatrix Matrix;
+	public BMatrix Matrix;
 		public uint SubUpdateNumber, GrannySubUpdateNumber;
 		public BMatrix Matrix1, Matrix2;
 		public BVector

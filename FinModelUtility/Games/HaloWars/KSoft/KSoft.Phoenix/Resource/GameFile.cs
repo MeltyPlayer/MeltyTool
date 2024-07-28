@@ -11,9 +11,7 @@ namespace KSoft.Phoenix.Resource
 		: IDisposable
 		, IO.IEndianStreamSerializable
 	{
-		const string kHashSeed = "TehHaloz";
-
-		[Flags]
+	[Flags]
 		internal enum FileFlags : ushort
 		{
 			CompressContent = 1<<0,
@@ -61,12 +59,8 @@ namespace KSoft.Phoenix.Resource
 
 			return seed;
 		}
-		void WriteRandomBlocks(IO.EndianWriter s)
-		{
-			WriteRandomBlock(s);
-		}
 
-		static void Stream(IO.EndianStream s, bool crypt, IO.IEndianStreamSerializable obj,
+	static void Stream(IO.EndianStream s, bool crypt, IO.IEndianStreamSerializable obj,
 			long size = 0, ulong userKey = 0, Action<IO.EndianStream> streamLeftovers = null)
 		{
 			if(!crypt)
@@ -108,58 +102,8 @@ namespace KSoft.Phoenix.Resource
 				}
 			}
 		}
-		static void Read(IO.EndianReader s, bool decrypt, IO.IEndianStreamable obj,
-			long size = 0, ulong userKey = 0, Action<IO.EndianReader> readLeftovers = null)
-		{
-			if (!decrypt)
-				obj.Read(s);
-			else
-				using (var ms = new System.IO.MemoryStream())
-				using (var sout = new IO.EndianWriter(ms, Shell.EndianFormat.Big))
-				using (var decrypted = new IO.EndianReader(ms, Shell.EndianFormat.Big))
-				{
-					long position = s.BaseStream.Position;
 
-					var tea = new Security.Cryptography.PhxTEA(s, sout);
-					tea.InitializeKey(Security.Cryptography.PhxTEA.kKeyGameFile, userKey);
-					tea.Decrypt(size);
-
-					decrypted.Seek(0);
-					obj.Read(decrypted);
-
-					if (readLeftovers != null)
-						readLeftovers(decrypted);
-				}
-		}
-		static void Write(IO.EndianWriter s, bool encrypt, IO.IEndianStreamable obj,
-			long size = 0, ulong userKey = 0, Action<IO.EndianWriter> writeLeftovers = null)
-		{
-			if (!encrypt)
-			{
-				obj.Write(s);
-
-				if (writeLeftovers != null)
-					writeLeftovers(s);
-			}
-			else
-				using (var ms = new System.IO.MemoryStream())
-				using (var sin = new IO.EndianWriter(ms, Shell.EndianFormat.Big))
-				using (var encrypted = new IO.EndianReader(ms, Shell.EndianFormat.Big))
-				{
-					obj.Write(sin);
-
-					if (writeLeftovers != null)
-						writeLeftovers(sin);
-
-					encrypted.Seek(0);
-
-					var tea = new Security.Cryptography.PhxTEA(encrypted, s);
-					tea.InitializeKey(Security.Cryptography.PhxTEA.kKeyGameFile, userKey);
-					tea.Encrypt(size);
-				}
-		}
-
-		public void Dispose()
+	public void Dispose()
 		{
 			if (ShaContext != null)
 			{

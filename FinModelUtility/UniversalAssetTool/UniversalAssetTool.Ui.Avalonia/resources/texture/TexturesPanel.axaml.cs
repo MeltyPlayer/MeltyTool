@@ -48,8 +48,6 @@ namespace uni.ui.avalonia.resources.texture {
   public class TexturesPanelViewModel : ViewModelBase {
     private (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)?
         modelAndTextures_;
-
-    private IReadOnlyList<IReadOnlyTexture>? textures_;
     private TextureListViewModel textureListViewModel_;
     private TextureViewModel? selectedTextureViewModel_;
     private TexturePreviewViewModel? selectedTexturePreviewViewModel_;

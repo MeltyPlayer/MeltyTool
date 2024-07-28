@@ -27,18 +27,8 @@ namespace KSoft.Phoenix.Xmb
 
 		public bool HasUnicodeStrings { get { return mHasUnicodeStrings; } }
 
-		Element NewElement(int rootElementIndex = TypeExtensions.kNone)
-		{
-			var e = new Element();
-			e.Index = mElements.Count;
-			e.RootElementIndex = rootElementIndex;
-
-			mElements.Add(e);
-			return e;
-		}
-
-		#region IDisposable Members
-		public void Dispose()
+	#region IDisposable Members
+	public void Dispose()
 		{
 			if (mElements != null)
 			{

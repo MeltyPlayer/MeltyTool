@@ -38,13 +38,9 @@ namespace KSoft.Phoenix.Resource
 			// First comes the filenames table in mFiles, then all the files defined in the listing
 			return 1;
 		} }
-		/// <summary>All files destined for the ERA, excluding the internal filenames table</summary>
-		private IEnumerable<EraFileEntryChunk> FileChunks { get {
-			// Skip the first chunk, as it is the filenames table
-			return Enumerable.Skip(mFiles, FileChunksFirstIndex);
-		} }
-		/// <summary>Number of files destined for the ERA, excluding the internal filenames table</summary>
-		private int FileChunksCount { get {
+
+	/// <summary>Number of files destined for the ERA, excluding the internal filenames table</summary>
+	private int FileChunksCount { get {
 			// Exclude the first chunk from the count, as it is the filenames table
 			return mFiles.Count - FileChunksFirstIndex;
 		} }
@@ -896,19 +892,7 @@ namespace KSoft.Phoenix.Resource
 			}
 		}
 
-		void CalculateFileCompressedDataHashes(IO.EndianStream s)
-		{
-			for (int x = 0/*FileChunksFirstIndex*/; x < mFiles.Count; x++)
-			{
-				var file = mFiles[x];
-
-				file.ComputeHash(s, TigerHasher);
-				System.Array.Copy(TigerHasher.Hash,
-					file.CompressedDataTiger128, file.CompressedDataTiger128.Length);
-			}
-		}
-
-		public void Serialize(IO.EndianStream s)
+	public void Serialize(IO.EndianStream s)
 		{
 			var eraUtil = s.Owner as EraFileUtil;
 

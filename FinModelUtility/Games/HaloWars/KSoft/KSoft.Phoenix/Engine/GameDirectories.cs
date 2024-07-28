@@ -45,9 +45,9 @@ namespace KSoft.Phoenix.Engine
 		const string kPhysicsPath = @"physics\";
 		const string kScenariosPath = @"scenario\";
 		const string kSoundPath = @"sound\";
-		const string kTalkingHeadsPath = @"video\talkingheads\";
 
-		/*public*/ string RootDirectory { get; /*private*/ set; }
+	/*public*/
+	string RootDirectory { get; /*private*/ set; }
 		/*public*/ string UpdateDirectory { get; /*private*/ set; }
 		bool UpdateDirectoryIsValid { get { return UpdateDirectory != null; } }
 		public bool UseTitleUpdates { get; set; }

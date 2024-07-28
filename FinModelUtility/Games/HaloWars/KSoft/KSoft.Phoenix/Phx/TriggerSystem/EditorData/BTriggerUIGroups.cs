@@ -9,10 +9,6 @@ namespace KSoft.Phoenix.Phx
 			RootName = "Groups",
 			ElementName = "GroupUI",
 		};
-
-		// X, Y, iX, iY, oX, oY, Width, Height, GroupID, InternalGroupID
-
-		const string kXmlElementTitle = "Title";
-		#endregion
-	};
+	#endregion
+  };
 }

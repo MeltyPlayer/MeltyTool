@@ -60,10 +60,6 @@ namespace HaloWarsTools {
       ImportMesh(bytes, this.Mesh);
     }
 
-    private bool ShouldStopScanning(char value) {
-      return value < 46 || value > 122;
-    }
-
     private IList<IMaterial> GetMaterials(IMaterialManager materialManager,
                                           byte[] bytes) {
       var textureFiles = new List<IReadOnlySystemFile>();

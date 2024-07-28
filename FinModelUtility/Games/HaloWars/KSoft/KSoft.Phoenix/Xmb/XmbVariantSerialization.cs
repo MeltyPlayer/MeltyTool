@@ -160,8 +160,7 @@ namespace KSoft.Phoenix.Xmb
 		};
 
 		const int kInfoFlagsBitIndex = kInfoLengthBitIndex + kInfoLengthBitCount;
-		const int kInfoFlagsBitCount = 2;
-		const uint kInfoFlagsBitMask = 0xC0000000;
+	const uint kInfoFlagsBitMask = 0xC0000000;
 		static RawVariantFlags GetFlags(uint data)
 		{
 			data &= kInfoFlagsBitMask;

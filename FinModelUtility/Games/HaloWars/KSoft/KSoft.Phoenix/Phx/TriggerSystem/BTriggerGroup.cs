@@ -11,13 +11,11 @@ namespace KSoft.Phoenix.Phx
 			ElementName = "Group",
 			DataName = DatabaseNamedObject.kXmlAttrNameN,
 		};
+	#endregion
 
-		const string kXmlAttrId = "ID";
-		#endregion
+	//string mValue;
 
-		//string mValue;
-
-		public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
+	public override void Serialize<TDoc, TCursor>(IO.TagElementStream<TDoc, TCursor, string> s)
 		{
 			base.Serialize(s);
 

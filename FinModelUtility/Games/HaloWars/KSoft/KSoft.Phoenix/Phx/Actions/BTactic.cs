@@ -7,11 +7,11 @@ namespace KSoft.Phoenix.Phx
 	public sealed class BTactic
 		: IO.ITagElementStringNameStreamable
 	{
-		#region Xml constants
-		const string kXmlRoot = "Tactic";
-		#endregion
 
-		public Collections.BListArray<BTacticTargetRule> TargetRules { get; private set; } = new Collections.BListArray<BTacticTargetRule>();
+	#region Xml constants
+	#endregion
+
+	public Collections.BListArray<BTacticTargetRule> TargetRules { get; private set; } = new Collections.BListArray<BTacticTargetRule>();
 		public List<BProtoActionID> PersistentActions { get; private set; } = new List<BProtoActionID>();
 		public List<BProtoActionID> PersistentSquadActions { get; private set; } = new List<BProtoActionID>();
 

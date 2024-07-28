@@ -7,23 +7,7 @@ namespace KSoft.Wwise.SoundBank
 		public CAkParameterNodeBase ParameterNode = new CAkParameterNodeBase();
 		public AkPlaylistItem[] Playlist;
 
-		void SerializeHack2008(IO.EndianStream s)
-		{
-			s.Pad(0x74);
-			int item_count = 0;
-			s.Stream(ref item_count);
-			long children_size = item_count * sizeof(uint);
-			long playlist_size = item_count * AkPlaylistItem.kSizeOf;
-			long predicted_end = children_size + sizeof(uint) + playlist_size;
-			long vb_end = s.VirtualBufferStart + s.VirtualBufferLength;
-			if ((s.BaseStream.Position + predicted_end) == vb_end)
-			{
-				s.Pad((int)(children_size + sizeof(uint)));
-				Playlist = new AkPlaylistItem[item_count];
-				s.StreamArray(Playlist);
-			}
-		}
-		void SerializeReverseHack2008(IO.EndianStream s)
+	void SerializeReverseHack2008(IO.EndianStream s)
 		{
 			const long k_seek_amount = -(sizeof(uint) + AkPlaylistItem.kSizeOf);
 			int item_count = 1;

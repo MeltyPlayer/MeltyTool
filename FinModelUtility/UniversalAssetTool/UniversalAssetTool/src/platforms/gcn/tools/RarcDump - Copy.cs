@@ -50,21 +50,6 @@ namespace uni.platforms.gcn.tools {
       return true;
     }
 
-    // Based on version 1 of rarcdump by thakis.
-    // Expanded with information from: http://wiki.tockdom.com/wiki/RARC_(File_Format)
-    private bool Impl_(IFileHierarchyFile rarcFile) {
-      var directoryPath = rarcFile.FullPath + "_dir";
-      if (Directory.Exists(directoryPath)) {
-        //return false;
-      }
-
-      var logger = Logging.Create<RarcDump>();
-      using var rarcDumpScope = logger.BeginScope("rarcdump");
-
-      logger.LogInformation($"Dumping ARC {rarcFile.LocalPath}...");
-      return this.ReadFile_(rarcFile);
-    }
-
     [Unknown]
     private bool ReadFile_(IFileHierarchyFile rarcFile) {
       using var br =
@@ -178,31 +163,6 @@ string nodeName = getString(0x20 + n.filenameOffset + h.stringTableOffset, f);
         }
 
         _chdir("..");       */
-    }
-
-    [Unknown]
-    private FileEntry GetFileEntry_(
-        SchemaBinaryReader br,
-        RarcHeader header,
-        RarcNode node,
-        int i) {
-      br.Position = 0x20 +
-                    header.fileEntriesOffset +
-                    node.firstFileEntryOffset +
-                    i * 20;
-
-      var fileEntry = new FileEntry();
-      fileEntry.id = br.ReadUInt16();
-      fileEntry.unknown = br.ReadUInt16();
-      fileEntry.unknown2 = br.ReadUInt16();
-      fileEntry.filenameOffset = br.ReadUInt16();
-
-      fileEntry.dataOffset = br.ReadUInt32();
-
-      fileEntry.dataSize = br.ReadUInt32();
-      fileEntry.zero = br.ReadUInt32();
-
-      return fileEntry;
     }
 
     public class RarcHeader {

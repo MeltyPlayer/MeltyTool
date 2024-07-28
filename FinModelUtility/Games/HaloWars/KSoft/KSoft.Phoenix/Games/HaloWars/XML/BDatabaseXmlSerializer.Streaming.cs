@@ -211,19 +211,7 @@ namespace KSoft.Phoenix.HaloWars
 			FixGameDataAmbientLife(s);
 		}
 
-		static void FixGameDataResources(Phx.BGameData gd)
-		{
-			// Don't add the types if we're not removing undefined data
-			// as we assume the UndefinedHandle/ProtoEnum shit is in use
-			if (!gRemoveUndefined) return;
-
-			Debug.Trace.XML.TraceEvent(System.Diagnostics.TraceEventType.Warning, TypeExtensions.kNone,
-				"Fixing GameData with missing resource types");
-			gd.Resources.DynamicAdd(new Phx.BResource(true), "Favor"); // [2]
-			gd.Resources.DynamicAdd(new Phx.BResource(true), "Relics");// [3]
-			gd.Resources.DynamicAdd(new Phx.BResource(true), "Honor"); // [4]
-		}
-		protected override void FixGameData()
+	protected override void FixGameData()
 		{
 			//FixGameDataResources(Database.GameData);
 		}

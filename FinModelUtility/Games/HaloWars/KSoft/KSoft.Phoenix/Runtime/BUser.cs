@@ -14,9 +14,7 @@ namespace KSoft.Phoenix.Runtime
 		public struct HUDItemEnabledStates
 			: IO.IEndianStreamSerializable
 		{
-			const int kSizeOf = 0xB;
-
-			public bool Minimap, Resources, Time,
+	  public bool Minimap, Resources, Time,
 				PowerStatus, Units, DpadHelp,
 				ButtonHelp, Reticle, Score,
 				UnitStats, CircleMenuExtraInfo;

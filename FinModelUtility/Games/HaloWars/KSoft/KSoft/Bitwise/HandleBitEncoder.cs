@@ -17,15 +17,8 @@ namespace KSoft.Bitwise
 		IntegerUnion mBits;
 		int mBitIndex;
 
-		[Contracts.ContractInvariantMethod]
-		void ObjectInvariant()
-		{
-			Contract.Invariant(mBitIndex >= 0);
-			Contract.Invariant(mBitIndex <= Bits.kInt64BitCount);
-		}
-
-		/// <summary>How many bits have actually been consumed by the handle data</summary>
-		public int UsedBitCount => mBitIndex;
+	/// <summary>How many bits have actually been consumed by the handle data</summary>
+	public int UsedBitCount => mBitIndex;
 
 		/// <summary>Get the entire handle's value represented in 32-bits</summary>
 		/// <returns></returns>
@@ -38,15 +31,8 @@ namespace KSoft.Bitwise
 			return hi ^ mBits.u32;
 		}
 
-		void VerifyBitIndex(int advanceBitCount)
-		{
-			if (mBitIndex + advanceBitCount > Bits.kInt64BitCount)
-				throw new System.ArgumentOutOfRangeException(nameof(advanceBitCount), mBitIndex + advanceBitCount,
-					"bitIndex is or will be greater than to Bits.kInt64BitCount");
-		}
-
-		/// <summary>Clear the internal state of the encoder</summary>
-		public void Reset()
+	/// <summary>Clear the internal state of the encoder</summary>
+	public void Reset()
 		{
 			mBits = new IntegerUnion();
 			mBitIndex = 0;

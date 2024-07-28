@@ -24,8 +24,6 @@ namespace uni.ui.avalonia.resources.model {
 
   public class ModelPanelViewModel : ViewModelBase {
     private IReadOnlyModel model_;
-    private IFixedFunctionRegisters registers_;
-
     private AnimationsPanelViewModel animationsPanel_;
     private MaterialsPanelViewModel materialsPanel_;
     private MeshListViewModel meshList_;

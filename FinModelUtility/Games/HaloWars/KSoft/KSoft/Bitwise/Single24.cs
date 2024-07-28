@@ -45,9 +45,9 @@ namespace KSoft.Bitwise
 		const uint kExponentBitMask = ((1U << kExponentBitCount) - 1) << kExponentBitIndex;
 
 		const int kSignBitIndex = kExponentBitIndex + kExponentBitCount;
-		const int kSignBitCount = 1;
-		// 0x00800000, 1 << 23
-		const uint kSignBitMask = 1U << kSignBitIndex;
+
+	// 0x00800000, 1 << 23
+	const uint kSignBitMask = 1U << kSignBitIndex;
 
 		const uint kSignBit = kSignBitMask;
 
@@ -55,14 +55,11 @@ namespace KSoft.Bitwise
 		const int kExponentBiasDiff = Single32.kExponentBias - Single24.kExponentBias;
 
 		const int kMantissaBitDiff = Single32.kMantissaBitCount - kMantissaBitCount;
-		/// <remarks>Exponent is encoded in offset-binary, so we can't just shift the bits like mantissa</remarks>
-		[Obsolete]
-		const int kExponentBitDiff = Single32.kExponentBitCount - kExponentBitCount;
-		#endregion
+	#endregion
 
-		#region Min\Max
-		// min\max values for a signed single
-		internal const uint kMinInt = 0xFFFFFF;
+	#region Min\Max
+	// min\max values for a signed single
+	internal const uint kMinInt = 0xFFFFFF;
 		internal const uint kMaxInt = 0x7FFFFF;
 		const float kMin = -8.589902E+09F;
 		const float kMax = 8.589902E+09F;

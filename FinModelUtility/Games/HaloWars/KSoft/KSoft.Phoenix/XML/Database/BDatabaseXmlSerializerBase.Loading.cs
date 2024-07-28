@@ -311,13 +311,7 @@ namespace KSoft.Phoenix.XML
 			return r;
 		}
 
-		void StreamData(FA mode)
-		{
-			bool r = true;
-			ProcessStreamXmlContexts(ref r, mode);
-		}
-
-		private bool mIsPreloading;
+	private bool mIsPreloading;
 		protected bool IsNotPreloading { get { return !mIsPreloading; } }
 		public bool Preload()
 		{

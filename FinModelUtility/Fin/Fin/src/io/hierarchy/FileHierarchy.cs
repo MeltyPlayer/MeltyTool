@@ -1,8 +1,6 @@
 ﻿namespace fin.io;
 
 public static partial class FileHierarchy {
-  private const bool USE_DELAYED = false;
-
   public static IFileHierarchy From(ISystemDirectory directory)
     => new UpFrontFileHierarchy(directory);
 

@@ -5,8 +5,6 @@ using CommunityToolkit.HighPerformance;
 
 namespace benchmarks {
   public class Loops {
-    private const string TEXT =
-        "sample foobar text, another line\nhere's some more text\0and there's more content after this\0";
     private readonly int n_ = 1000;
 
     private readonly List<int> values_ = Enumerable.Range(0, 10).ToList();

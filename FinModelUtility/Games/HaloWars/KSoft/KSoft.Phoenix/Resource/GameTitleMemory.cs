@@ -43,8 +43,7 @@ namespace KSoft.Phoenix.Resource
 	sealed class GameTitleMemory1
 		: IO.IEndianStreamSerializable
 	{
-		const byte kVersion = 0x1B;
-		const byte kVersionTU = 0x1C;
+	const byte kVersionTU = 0x1C;
 
 		#region IEndianStreamSerializable Members
 		public void Serialize(IO.EndianStream s)

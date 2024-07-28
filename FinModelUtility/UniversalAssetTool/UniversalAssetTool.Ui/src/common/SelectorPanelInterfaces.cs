@@ -21,9 +21,6 @@ public record SelectorPanelKey<T> { }
 public static class SelectorPanels {
   private static readonly SortedSetDictionary<object, object> panelsByKey_ =
       new();
-
-  private static readonly SortedDictionary<object, object> delegatesByKey_;
-
   private static readonly SortedSetDictionary<object, object> handlersByKey =
       new();
 
