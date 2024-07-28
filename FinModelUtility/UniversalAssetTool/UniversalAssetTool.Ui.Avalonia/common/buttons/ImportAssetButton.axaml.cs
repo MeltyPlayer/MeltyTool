@@ -32,7 +32,7 @@ public partial class ImportAssetButton : UserControl {
             .OpenFilePickerAsync(new FilePickerOpenOptions {
                 SuggestedStartLocation = romsDirectory,
                 AllowMultiple = true,
-                Title = "Select files for a single asset",
+                Title = "Import single asset from files",
                 FileTypeFilter = [
                     new FilePickerFileType(
                         "All supported plugin extensions") {
