@@ -3,11 +3,13 @@ using Avalonia.Controls;
 using ConfigFactory;
 using ConfigFactory.Models;
 
-using uni.config;
-
 namespace uni.ui.avalonia.settings;
 
 public partial class SettingsWindow : Window {
+  static SettingsWindow() {
+    EnumCheckboxesControlBuilder.Shared.Register();
+  }
+
   public SettingsWindow() {
     InitializeComponent();
 

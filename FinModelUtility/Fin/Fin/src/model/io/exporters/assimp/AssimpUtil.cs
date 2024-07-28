@@ -10,7 +10,7 @@ public static class AssimpUtil {
     using var ctx = new AssimpContext();
     AssimpUtil.SupportedExportFormats = ctx.GetSupportedExportFormats();
 
-    AssimpUtil.ExportFormatsById = 
+    AssimpUtil.ExportFormatsById =
         AssimpUtil.SupportedExportFormats.ToDictionary(ef => ef.FormatId);
   }
 
@@ -18,18 +18,17 @@ public static class AssimpUtil {
     get;
   }
 
-  public static IReadOnlyDictionary<string, ExportFormatDescription> ExportFormatsById {
-    get;
-  }
+  public static IReadOnlyDictionary<string, ExportFormatDescription>
+      ExportFormatsById { get; }
 
   public static ExportFormatDescription GetExportFormatFromExtension(
-      string extension) {
-    var extensionsById = ExportFormatsById;
-    return extension switch {
-        ".gltf" => extensionsById["gltf2"],
-        ".glb"  => extensionsById["glb2"],
-        ".fbx"  => extensionsById["fbx"],
-        _       => extensionsById[extension[1..]],
+      string extension)
+    => extension switch {
+        ".dae"  => ExportFormatsById["dae"],
+        ".fbx"  => ExportFormatsById["fbx"],
+        ".gltf" => ExportFormatsById["gltf2"],
+        ".glb"  => ExportFormatsById["glb2"],
+        ".obj"  => ExportFormatsById["obj"],
+        _       => ExportFormatsById[extension[1..]],
     };
-  }
 }

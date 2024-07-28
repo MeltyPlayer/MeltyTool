@@ -1,6 +1,5 @@
 ﻿using System;
-
-using Avalonia.Controls;
+using System.Collections.Generic;
 
 using ConfigFactory.Core;
 using ConfigFactory.Core.Attributes;
@@ -67,7 +66,7 @@ public class SettingsViewModel
       Group = GROUP_EXPORTER_GENERAL,
       Header = "Exported Formats",
       Description = "Which model formats to export.")]
-  public string[] ExportedFormats {
+  public HashSet<ExportedFormat> ExportedFormats {
     get => Config_.Exporter.General.ExportedFormats;
     set => Config_.Exporter.General.ExportedFormats = value;
   }

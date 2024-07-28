@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,9 +14,11 @@ using fin.util.io;
 using fin.util.progress;
 using fin.util.time;
 
-using uni.cli;
-using uni.games;
+using Org.BouncyCastle.Utilities.Collections;
 
+using uni.cli;
+using uni.config;
+using uni.games;
 using uni.ui.winforms.common.fileTreeView;
 
 namespace uni.ui.winforms;
@@ -105,7 +108,8 @@ public partial class UniversalAssetToolForm : Form {
 
     this.modelToolStrip_.DirectoryNode = fileNode?.Parent;
     this.modelToolStrip_.FileNodeAndModel = (fileNode, model);
-    this.exportAsToolStripMenuItem.Enabled = model?.FileBundle is IModelFileBundle;
+    this.exportAsToolStripMenuItem.Enabled
+        = model?.FileBundle is IModelFileBundle;
   }
 
   private void importToolstripMenuItem_Click(object sender, EventArgs e) {
@@ -173,12 +177,13 @@ public partial class UniversalAssetToolForm : Form {
     var result = saveFileDialog.ShowDialog();
     if (result == DialogResult.OK) {
       var outputFile = new FinFile(saveFileDialog.FileName);
-      ExporterUtil.Export(threeDFileBundle,
-                          () => model,
-                          outputFile.AssertGetParent(),
-                          new[] { outputFile.FileType },
-                          true,
-                          outputFile.NameWithoutExtension);
+      ExporterUtil.Export(
+          threeDFileBundle,
+          () => model,
+          outputFile.AssertGetParent(),
+          new HashSet<ExportedFormat> { outputFile.FileType.AsFormat() },
+          true,
+          outputFile.NameWithoutExtension);
     }
   }
 

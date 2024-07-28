@@ -196,10 +196,10 @@ public partial class ModelToolStrip : UserControl {
   private static ExporterPromptChoice
       PromptIfModelFileBundlesAlreadyExported_(
           IReadOnlyList<IAnnotatedFileBundle> modelFileBundles,
-          IReadOnlyList<string> extensions) {
+          IReadOnlySet<ExportedFormat> formats) {
     if (ExporterUtil.CheckIfModelFileBundlesAlreadyExported(
             modelFileBundles,
-            extensions,
+            formats,
             out var existingOutputFiles)) {
       var totalCount = modelFileBundles.Count;
       if (totalCount == 1) {

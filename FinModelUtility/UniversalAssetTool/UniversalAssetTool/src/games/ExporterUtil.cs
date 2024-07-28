@@ -38,20 +38,20 @@ public static class ExporterUtil {
 
   public static bool CheckIfModelFileBundlesAlreadyExported(
       IEnumerable<IAnnotatedFileBundle> modelFileBundles,
-      IReadOnlyList<string> extensions,
+      IReadOnlySet<ExportedFormat> formats,
       out IReadOnlyList<IAnnotatedFileBundle> existingModelFileBundles) {
     existingModelFileBundles =
         modelFileBundles
             .Where(mfb => CheckIfModelFileBundleAlreadyExported(
                        mfb,
-                       extensions))
+                       formats))
             .ToArray();
     return existingModelFileBundles.Count > 0;
   }
 
   public static bool CheckIfModelFileBundleAlreadyExported(
       IAnnotatedFileBundle annotatedModelFileBundle,
-      IEnumerable<string> extensions) {
+      IEnumerable<ExportedFormat> formats) {
     // TODO: Clean this up!!
     var bundle = annotatedModelFileBundle.FileBundle;
     var mainFile = bundle.MainFile;
@@ -64,16 +64,31 @@ public static class ExporterUtil {
                   mainFile.NameWithoutExtension));
 
     if (outputDirectory.Exists) {
-      return extensions.All(
-          extension => outputDirectory
-                       .GetExistingFiles()
-                       .Where(file => extensions.Contains(file.FileType))
-                       .Any(file => file.NameWithoutExtension ==
-                                    mainFile.NameWithoutExtension));
+      return formats
+             .AsFileExtensions()
+             .All(extension => outputDirectory
+                               .GetExistingFiles()
+                               .Where(file => extension == file.FileType)
+                               .Any(file => file.NameWithoutExtension ==
+                                            mainFile.NameWithoutExtension));
     }
 
     return false;
   }
+
+  public static IEnumerable<string> AsFileExtensions(
+      this IEnumerable<ExportedFormat> formats)
+    => formats.Select(AsFileExtension);
+
+  public static string AsFileExtension(this ExportedFormat format)
+    => format switch {
+        ExportedFormat.DAE => ".dae",
+        ExportedFormat.FBX => ".fbx",
+        ExportedFormat.GLB => ".glb",
+        ExportedFormat.GLTF => ".gltf",
+        ExportedFormat.OBJ => ".obj",
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+    };
 
   public enum ExporterPromptChoice {
     CANCEL,
@@ -114,19 +129,19 @@ public static class ExporterUtil {
   private static void ExportAllForCli_<T>(
       IEnumerable<IAnnotatedFileBundle> fileBundles,
       IModelImporter<T> reader,
-      IReadOnlyList<string> extensions,
+      IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFiles)
       where T : IModelFileBundle
     => ExporterUtil.ExportAllForCli_(
         fileBundles.WhereIs<IAnnotatedFileBundle, IAnnotatedFileBundle<T>>(),
         reader,
-        extensions,
+        formats,
         overwriteExistingFiles);
 
   private static void ExportAllForCli_<T>(
       IEnumerable<IAnnotatedFileBundle<T>> modelFileBundles,
       IModelImporter<T> reader,
-      IReadOnlyList<string> extensions,
+      IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFiles)
       where T : IModelFileBundle {
     var bundlesArray = modelFileBundles.ToArray();
@@ -136,7 +151,7 @@ public static class ExporterUtil {
     foreach (var modelFileBundle in bundlesArray) {
       ExporterUtil.Export(modelFileBundle,
                           reader,
-                          extensions,
+                          formats,
                           overwriteExistingFiles);
     }
   }
@@ -147,7 +162,7 @@ public static class ExporterUtil {
       IModelImporter<T> reader,
       IProgress<(float, T?)> progress,
       CancellationTokenSource cancellationTokenSource,
-      IReadOnlyList<string> extensions,
+      IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFiles)
       where T : IModelFileBundle {
     var fileBundleArray = fileBundles
@@ -164,7 +179,7 @@ public static class ExporterUtil {
                        modelFileBundle.TypedFileBundle));
       ExporterUtil.Export(modelFileBundle,
                           reader,
-                          extensions,
+                          formats,
                           overwriteExistingFiles);
     }
 
@@ -173,19 +188,19 @@ public static class ExporterUtil {
 
   public static void Export<T>(IAnnotatedFileBundle<T> modelFileBundle,
                                IModelImporter<T> reader,
-                               IReadOnlyList<string> extensions,
+                               IReadOnlySet<ExportedFormat> formats,
                                bool overwriteExistingFile)
       where T : IModelFileBundle {
     ExporterUtil.Export(modelFileBundle,
                         () => reader.Import(
                             modelFileBundle.TypedFileBundle),
-                        extensions,
+                        formats,
                         overwriteExistingFile);
   }
 
   public static void Export<T>(IAnnotatedFileBundle<T> threeDFileBundle,
                                Func<IModel> loaderHandler,
-                               IReadOnlyList<string> extensions,
+                               IReadOnlySet<ExportedFormat> formats,
                                bool overwriteExistingFile)
       where T : I3dFileBundle {
     var mainFile = Asserts.CastNonnull(threeDFileBundle.FileBundle.MainFile);
@@ -200,22 +215,23 @@ public static class ExporterUtil {
     Export(threeDFileBundle.TypedFileBundle,
            loaderHandler,
            outputDirectory,
-           extensions,
+           formats,
            overwriteExistingFile);
   }
 
   public static void Export<T>(T threeDFileBundle,
                                Func<IReadOnlyModel> loaderHandler,
                                ISystemDirectory outputDirectory,
-                               IReadOnlyList<string> extensions,
+                               IReadOnlySet<ExportedFormat> formats,
                                bool overwriteExistingFile,
                                string? overrideName = null)
       where T : I3dFileBundle
     => Export(threeDFileBundle,
               loaderHandler,
               outputDirectory,
-              extensions.Select(AssimpUtil.GetExportFormatFromExtension)
-                        .ToArray(),
+              formats.AsFileExtensions()
+                     .Select(AssimpUtil.GetExportFormatFromExtension)
+                     .ToArray(),
               overwriteExistingFile,
               overrideName);
 

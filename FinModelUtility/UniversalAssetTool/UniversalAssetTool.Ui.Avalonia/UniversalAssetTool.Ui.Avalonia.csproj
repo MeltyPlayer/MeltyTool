@@ -135,5 +135,8 @@
     <Compile Update="resources\texture\TextureList.axaml.cs">
       <DependentUpon>TextureList.axaml</DependentUpon>
     </Compile>
+    <Compile Update="settings\EnumCheckboxesControl.axaml.cs">
+      <DependentUpon>EnumCheckboxesControl.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

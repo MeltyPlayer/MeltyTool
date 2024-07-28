@@ -1,6 +1,7 @@
 ﻿using AutoInterfaceAttributes;
 
 using fin.config;
+using fin.data.dictionaries;
 using fin.io;
 
 using Newtonsoft.Json;
@@ -72,13 +73,36 @@ public class ExtractorSettings : IExtractorSettings {
   public bool ExtractRomsInParallel { get; set; }
 }
 
+[JsonConverter(typeof(StringEnumConverter))]
+public enum ExportedFormat {
+  DAE = 1,
+  FBX,
+  GLB,
+  GLTF,
+  OBJ,
+}
+
+public static class ExportedFormatUtil {
+  public static readonly BidirectionalDictionary<ExportedFormat, string> map_
+      = new() {
+          [ExportedFormat.DAE] = ".dae",
+          [ExportedFormat.FBX] = ".fbx",
+          [ExportedFormat.GLB] = ".glb",
+          [ExportedFormat.GLTF] = ".gltf",
+          [ExportedFormat.OBJ] = ".obj",
+      };
+
+  public static string AsFileType(this ExportedFormat format) => map_[format];
+  public static ExportedFormat AsFormat(this string fileType) => map_[fileType];
+}
+
 public class ExporterSettings {
   public ExporterGeneralSettings General { get; } = new();
   public ExporterThirdPartySettings ThirdParty { get; } = new();
 
   [AutoInterface]
   public class ExporterGeneralSettings : IExporterGeneralSettings {
-    public string[] ExportedFormats { get; set; } = [];
+    public HashSet<ExportedFormat> ExportedFormats { get; set; } = [];
     public bool ExportAllTextures { get; set; }
 
     [JsonConverter(typeof(StringEnumConverter))]

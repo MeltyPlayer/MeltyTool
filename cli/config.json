@@ -7,8 +7,8 @@
   "Exporter": {
     "General": {
       "ExportedFormats": [
-        ".fbx",
-        ".glb"
+        "FBX",
+        "GLB"
       ],
       "ExportAllTextures": true,
       "ExportedModelScaleSource": "GAME_CONFIG"
