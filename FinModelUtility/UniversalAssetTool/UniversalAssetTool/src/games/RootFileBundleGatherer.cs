@@ -7,6 +7,7 @@ using uni.games.animal_crossing_wild_world;
 using uni.games.battalion_wars_1;
 using uni.games.battalion_wars_2;
 using uni.games.chibi_robo;
+using uni.games.custom_robo;
 using uni.games.dead_space_1;
 using uni.games.dead_space_2;
 using uni.games.dead_space_3;
@@ -48,6 +49,7 @@ public class RootFileBundleGatherer {
         new BattalionWars1FileBundleGatherer(),
         new BattalionWars2FileBundleGatherer(),
         new ChibiRoboFileBundleGatherer(),
+        new CustomRoboFileBundleGatherer(),
         new DeadSpace1FileBundleGatherer(),
         new DeadSpace2FileBundleGatherer(),
         new DeadSpace3FileBundleGatherer(),
