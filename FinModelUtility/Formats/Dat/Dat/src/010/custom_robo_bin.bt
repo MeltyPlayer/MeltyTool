@@ -1,0 +1,251 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+SetBackColor(cDkRed);
+
+local uint currentBaseOffset = 0;
+
+void FSeekFromBase(int offset) {
+  FSeek(currentBaseOffset + offset);
+}
+
+typedef struct {
+  uint fileSize;
+  uint dataBlockSize;
+  uint relocationTableCount;
+  uint rootNodeCount;
+  uint referenceNodeCount;
+  
+  local uint dataBlockOffset = 0x20;
+  local uint relocationTableOffset = dataBlockOffset + dataBlockSize;
+  local uint rootNodeOffset = relocationTableOffset + 4 * relocationTableCount;
+  local uint referenceNodeOffset = rootNodeOffset + 8 * rootNodeCount;
+  local uint stringTableOffset = referenceNodeOffset + 8 * referenceNodeCount;
+  
+  typedef struct {
+    uint dataOffset;
+    uint stringOffset;
+    
+    {
+      local uint tmpRootNodeNameOffset = FTell();
+      FSeekFromBase(stringTableOffset + stringOffset);
+      
+      string name;
+      
+      FSeekFromBase(tmpRootNodeNameOffset);
+    }
+    
+    if (Strstr(name, "scene_data") != -1) {
+      local uint tmpRootNodeJObjOffset = FTell();
+      FSeekFromBase(dataBlockOffset + dataOffset);
+  
+      struct JObj jObj;
+  
+      FSeekFromBase(tmpRootNodeJObjOffset);
+    }
+  } RootNode;
+  
+  FSeekFromBase(rootNodeOffset);
+  RootNode rootNodes[rootNodeCount] <optimize=false>;
+  
+  
+  
+  typedef struct {
+    uint validOffset;
+    
+    {
+      local uint tmpRelTableNodeOffset = FTell();
+      FSeekFromBase(validOffset);
+      
+      byte firstWord <bgcolor=cLtGray>;
+      
+      FSeekFromBase(tmpRelTableNodeOffset);
+    }    
+  } RelocationTableNode;
+  
+  FSeekFromBase(relocationTableOffset);
+  RelocationTableNode relocationTableNodes[relocationTableCount] <optimize=false>;
+  
+  typedef struct {
+    float values[4*3];  
+  } Matrix4x3 <bgcolor=cYellow>;
+  
+  typedef struct {
+    uint stringOffset;
+    uint jObjFlags;
+    uint firstChildJObjOffset;
+    uint nextSiblingJObjOffset;
+    uint firstDObjOffset;
+    float rotationRadians[3];
+    float scale[3];
+    float position[3];
+    uint inverseBindMatrixOffset; 
+    uint unknown;
+  
+    if (firstChildJObjOffset != 0) {
+      local uint tmpJObjFirstChildOffset = FTell();
+      FSeekFromBase(dataBlockOffset + firstChildJObjOffset);
+  
+      struct JObj firstChild;
+  
+      FSeekFromBase(tmpJObjFirstChildOffset);
+    }
+    
+    if (nextSiblingJObjOffset != 0) {
+      local uint tmpJObjNextSiblingOffset = FTell();
+      FSeekFromBase(dataBlockOffset + nextSiblingJObjOffset);
+  
+      struct JObj nextSibling;
+  
+      FSeekFromBase(tmpJObjNextSiblingOffset);
+    }
+    
+    if (firstDObjOffset != 0) {
+      local uint tmpJObjFirstDObjOffset = FTell();
+      FSeekFromBase(dataBlockOffset + firstDObjOffset);
+  
+      struct DObj firstDObj;
+  
+      FSeekFromBase(tmpJObjFirstDObjOffset);
+    }
+    
+    if (inverseBindMatrixOffset != 0) {
+      local uint tmpJObjIbmOffset = FTell();
+      FSeekFromBase(dataBlockOffset + inverseBindMatrixOffset);
+  
+      Matrix4x3 inverseBindMatrix;
+  
+      FSeekFromBase(tmpJObjIbmOffset);
+    }
+  } JObj <bgcolor=cDkGreen>;
+  
+  typedef struct {
+    uint stringOffset;
+    uint nextSiblingDObjOffset;
+    uint mObjOffset;
+    uint firstPObjOffset;
+    
+    if (nextSiblingDObjOffset != 0) {
+      local uint tmpDObjNextSiblingOffset = FTell();
+      FSeekFromBase(dataBlockOffset + nextSiblingDObjOffset);
+  
+      struct DObj nextSibling;
+  
+      FSeekFromBase(tmpDObjNextSiblingOffset);
+    }
+    
+    if (mObjOffset != 0) {
+      local uint tmpDObjMObjOffset = FTell();
+      FSeekFromBase(dataBlockOffset + mObjOffset);
+  
+      struct MObj mObj;
+  
+      FSeekFromBase(tmpDObjMObjOffset);
+    }
+  } DObj <bgcolor=cDkBlue>;
+  
+  typedef struct {
+    uint stringOffset;
+    uint renderMode;
+    uint firstTObjOffset;
+    uint materialOffset;
+    uint unknown;
+    uint peDescOffset;
+    
+    if (materialOffset != 0) {
+      local uint tmpMObjMaterialOffset = FTell();
+      FSeekFromBase(dataBlockOffset + materialOffset);
+  
+      struct DatMaterial material;
+  
+      FSeekFromBase(tmpMObjMaterialOffset);
+    }
+    
+    if (peDescOffset != 0) {
+      local uint tmpMObjPeDescOffset = FTell();
+      FSeekFromBase(dataBlockOffset + peDescOffset);
+  
+      struct PeDesc peDesc;
+  
+      FSeekFromBase(tmpMObjPeDescOffset);
+    }
+  } MObj <bgcolor=cLtGreen>;
+  
+  typedef struct {
+    byte ambientRgba[4];
+    byte diffuseRgba[4];
+    byte specularRgba[4];
+    float alpha;
+    float shininess;
+  } DatMaterial <bgcolor=cLtYellow>;
+  
+  typedef struct {
+    byte flags;
+    byte alphaRef0;
+    byte alphaRef1;
+    byte destinationAlpha;
+    byte blendMode;
+    byte srcFactor;
+    byte dstFactor;
+    byte logicOp;
+    byte depthFunction;
+    byte alphaCompare0;
+    byte alphaOp;
+    byte alphaCompare1;
+  } PeDesc <bgcolor=cLtRed>;
+} HsdRawFile;
+
+local uint tmp;
+local uint nodeType;
+  
+typedef struct {
+  uint nodeOffset;
+  uint nodeLength;
+    
+  tmp = FTell();
+  FSeekFromBase(nodeOffset);
+  
+  uint firstValue;
+  FSeekFromBase(nodeOffset);
+
+  currentBaseOffset += nodeOffset;
+
+  // Just DAT file
+  if (firstValue == nodeLength - 1) {
+    HsdRawFile hsdRawFile;
+  }
+  // Some weird header
+  else if (firstValue == 0x40) {
+  }
+  // Sub files?
+  else {
+    
+  }
+  
+  // byte data[nodeLength] <optimize=false,bgcolor=0x00ff00>;
+  
+  currentBaseOffset -= nodeOffset;
+  FSeekFromBase(tmp);
+} Node;
+
+typedef struct {
+  uint childCount;
+  Node children[childCount] <optimize=false>;
+} ParentNode;
+
+uint magic;
+Assert(magic == 0x53464400);
+
+ParentNode rootNode <bgcolor=0x0000ff>;

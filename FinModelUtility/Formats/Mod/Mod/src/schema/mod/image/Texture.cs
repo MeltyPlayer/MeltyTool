@@ -1,7 +1,10 @@
-﻿using fin.image;
+﻿using System;
+
+using fin.image;
 using fin.schema;
 
-using mod.image;
+using gx;
+using gx.image;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -39,13 +42,26 @@ namespace mod.schema.mod {
     public byte[] imageData { get; set; }
 
     public IImage[] ToMipmapImages() {
-      using var br = new SchemaBinaryReader(this.imageData, Endianness.BigEndian);
+      using var br
+          = new SchemaBinaryReader(this.imageData, Endianness.BigEndian);
 
       var images = new IImage[this.MipmapCount];
       for (var i = 0; i < images.Length; ++i) {
-        images[i]
-            = new ModImageReader(this.width >> i, this.height >> i, this.format)
-                .ReadImage(br);
+        images[i] = new GxImageReader(
+                this.width >> i,
+                this.height >> i,
+                this.format switch {
+                    TextureFormat.RGB565 => GxTextureFormat.R5_G6_B5,
+                    TextureFormat.CMPR   => GxTextureFormat.S3TC1,
+                    TextureFormat.RGB5A3 => GxTextureFormat.A3_RGB5,
+                    TextureFormat.I4     => GxTextureFormat.I4,
+                    TextureFormat.I8     => GxTextureFormat.I8,
+                    TextureFormat.IA4    => GxTextureFormat.A4_I4,
+                    TextureFormat.IA8    => GxTextureFormat.A8_I8,
+                    TextureFormat.RGBA32 => GxTextureFormat.ARGB8,
+                    _                    => throw new ArgumentOutOfRangeException()
+                })
+            .ReadImage(br);
       }
 
       return images;

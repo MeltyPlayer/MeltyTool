@@ -1,11 +1,10 @@
-﻿using dat.image;
-
-using fin.image;
+﻿using fin.image;
 using fin.image.formats;
 using fin.schema.vector;
 using fin.util.color;
 
 using gx;
+using gx.image;
 
 using schema.binary;
 
@@ -222,7 +221,7 @@ public class TObj : IBinaryDeserializable {
     var isIndex8 = format == GxTextureFormat.INDEX8;
     if (!isIndex4 && !isIndex8) {
       br.Position = imageDataOffset;
-      this.Image = new DatImageReader(width, height, format).ReadImage(br);
+      this.Image = new GxImageReader(width, height, format).ReadImage(br);
     } else {
       var palette = new Rgba32[paletteEntryCount];
       br.Position = paletteDataOffset;

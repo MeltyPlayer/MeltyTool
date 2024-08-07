@@ -6,8 +6,7 @@ using fin.schema;
 using fin.util.color;
 
 using gx;
-
-using jsystem.image;
+using gx.image;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -74,6 +73,7 @@ public partial class Bti : IBinaryConvertible {
 
   [Unknown]
   public byte MinLodTimes8;
+
   public byte MaxLodTimes8;
 
   public byte NrMipMap;
@@ -143,7 +143,7 @@ public partial class Bti : IBinaryConvertible {
         this.Format != GxTextureFormat.INDEX8) {
       for (var i = 0; i < mipmapImages.Length; ++i) {
         mipmapImages[i]
-            = new J3dImageReader(this.Width >> i, this.Height >> i, this.Format)
+            = new GxImageReader(this.Width >> i, this.Height >> i, this.Format)
                 .ReadImage(br);
       }
     } else {
