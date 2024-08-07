@@ -101,6 +101,11 @@ public class SceneModelRenderer : IRenderable, IDisposable {
     var animationPlaybackManager = this.sceneModel_.AnimationPlaybackManager;
 
     this.hiddenMeshes_.Clear();
+    foreach (var mesh in this.meshes_) {
+      if (mesh.DefaultDisplayState == MeshDisplayState.HIDDEN) {
+        this.hiddenMeshes_.Add(mesh);
+      }
+    }
 
     if (animation != null) {
       animationPlaybackManager.Tick();
@@ -124,15 +129,11 @@ public class SceneModelRenderer : IRenderable, IDisposable {
 
         if (displayState == MeshDisplayState.HIDDEN) {
           this.hiddenMeshes_.Add(meshTracks.Mesh);
+        } else {
+          this.hiddenMeshes_.Remove(meshTracks.Mesh);
         }
       }
     } else {
-      foreach (var mesh in this.meshes_) {
-        if (mesh.DefaultDisplayState == MeshDisplayState.HIDDEN) {
-          this.hiddenMeshes_.Add(mesh);
-        }
-      }
-
       this.sceneModel_.TextureTransformManager.CalculateMatrices(
           model.MaterialManager.Textures,
           null);

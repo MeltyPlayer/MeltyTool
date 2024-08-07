@@ -8,26 +8,26 @@ using dat.api;
 using fin.testing;
 
 namespace dat {
-  public class DatModelGoldenTests
-      : BModelGoldenTests<DatModelFileBundle, DatModelImporter> {
+  public class MeleeModelGoldenTests
+      : BModelGoldenTests<MeleeModelFileBundle, MeleeModelImporter> {
     [Test]
     [TestCaseSource(nameof(GetGoldenDirectories_))]
     public void TestExportsGoldenAsExpected(
         IFileHierarchyDirectory goldenDirectory)
       => this.AssertGolden(goldenDirectory);
 
-    public override DatModelFileBundle GetFileBundleFromDirectory(
+    public override MeleeModelFileBundle GetFileBundleFromDirectory(
         IFileHierarchyDirectory directory) {
       var gameName = directory.Parent.Parent.Name;
       var datFiles = directory.FilesWithExtension(".dat").ToArray();
       if (datFiles.Length == 1) {
-        return new DatModelFileBundle {
+        return new MeleeModelFileBundle {
             GameName = gameName,
             PrimaryDatFile = datFiles.Single(),
         };
       }
 
-      return new DatModelFileBundle {
+      return new MeleeModelFileBundle {
           GameName = gameName,
           PrimaryDatFile = datFiles.Single(f => f.Name.EndsWith("Nr.dat")),
           AnimationDatFile = datFiles.Single(f => f.Name.EndsWith("AJ.dat")),

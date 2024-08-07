@@ -3,9 +3,7 @@
 using CommunityToolkit.HighPerformance;
 
 using dat.schema;
-using dat.schema.animation;
 using dat.schema.material;
-using dat.schema.melee;
 using dat.schema.mesh;
 using dat.schema.texture;
 
@@ -24,7 +22,6 @@ using fin.model.io.importers;
 using fin.model.util;
 using fin.util.enums;
 using fin.util.hex;
-using fin.util.strings;
 
 using gx;
 
@@ -34,36 +31,39 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace dat.api;
 
-// TODO: Split out this importer based on the game
 public class DatModelImporter : IModelImporter<DatModelFileBundle> {
-  public unsafe IModel Import(DatModelFileBundle modelFileBundle) {
-    var primaryDat =
-        modelFileBundle.PrimaryDatFile.ReadNew<Dat>(Endianness.BigEndian);
-    var primaryDatSubfile = primaryDat.Subfiles.Single();
+  public IModel Import(DatModelFileBundle modelFileBundle)
+    => this.Import(modelFileBundle, out _, out _, out _, out _, out _);
 
-    var animationDat =
-        modelFileBundle.AnimationDatFile?.ReadNew<Dat>(Endianness.BigEndian);
-    var fighterDatSubfile =
-        modelFileBundle
-            .FighterDatFile?
-            .ReadNew<Dat>(Endianness.BigEndian)
-            .Subfiles
-            .Single();
+  public unsafe IModel Import(
+      DatModelFileBundle modelFileBundle,
+      out HashSet<IReadOnlyGenericFile> files,
+      out DatSubfile datSubfile,
+      out IReadOnlyDictionary<JObj, IReadOnlyBone> outFinBoneByJObj,
+      out IReadOnlyList<(JObj jObj,
+          byte jObjIndex,
+          DObj dObj,
+          byte dObjIndex)> sortedJObjsAndDObjs,
+      out IReadOnlyDictionary<DObj, IMesh> outFinMeshByDObj) {
+    var dat = modelFileBundle.DatFile.ReadNew<Dat>(Endianness.BigEndian);
+    datSubfile = dat.Subfiles.Single();
 
+    files = modelFileBundle.Files.ToHashSet();
     var finModel = new ModelImpl {
         FileBundle = modelFileBundle,
-        Files = modelFileBundle.Files.ToHashSet()
+        Files = files
     };
     var finSkin = finModel.Skin;
 
     // Adds skeleton
-    var jObjByOffset = primaryDatSubfile.JObjByOffset;
-    var finBoneByJObj = new Dictionary<JObj, IBone>();
+    var jObjByOffset = datSubfile.JObjByOffset;
+    var finBoneByJObj = new Dictionary<JObj, IReadOnlyBone>();
+    outFinBoneByJObj = finBoneByJObj;
     var boneWeightsByJObj = new Dictionary<JObj, IBoneWeights>();
     var inverseBindMatrixByJObj =
         new Dictionary<JObj, IReadOnlyFinMatrix4x4>();
     var boneQueue = new Queue<(IBone finParentBone, JObj datBone)>();
-    foreach (var datRootBone in primaryDatSubfile.RootJObjs) {
+    foreach (var datRootBone in datSubfile.RootJObjs) {
       boneQueue.Enqueue((finModel.Skeleton.Root, datRootBone));
     }
 
@@ -80,7 +80,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
 
       finBoneByJObj[jObj] = finBone;
       boneWeightsByJObj[jObj] =
-          finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE, finBone);
+          finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
+                                         finBone);
 
       var inverseBindMatrixValues = jObj.InverseBindMatrixValues;
       if (inverseBindMatrixValues != null) {
@@ -98,72 +99,16 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       }
     }
 
-    // Adds animations
-    if (animationDat != null) {
-      var lazyFinAnimations = new LazyList<IModelAnimation>(i => {
-        var finAnimation = finModel.AnimationManager.AddAnimation();
-        finAnimation.Name = $"Animation {i}";
-
-        finAnimation.FrameRate = 60;
-        finAnimation.UseLoopingInterpolation = false;
-
-        return finAnimation;
-      });
-
-      var i = 0;
-
-      var jObjs = primaryDatSubfile.JObjs.ToArray();
-      foreach (var animationDatSubfile in animationDat.Subfiles) {
-        foreach (var (figaTree, figaTreeName) in animationDatSubfile
-                     .GetRootNodesWithNamesOfType<FigaTree>()) {
-          var finAnimation = lazyFinAnimations[i++];
-          finAnimation.Name = figaTreeName.SubstringAfter("Share_ACTION_")
-                                          .SubstringUpTo("_figatree");
-          finAnimation.FrameCount = (int) figaTree.FrameCount;
-
-          foreach (var (jObj, trackNode) in jObjs.Zip(figaTree.TrackNodes)) {
-            var finBone = finBoneByJObj[jObj];
-            var boneTracks = finAnimation.AddBoneTracks(finBone);
-
-            DatBoneTracksHelper.AddDatKeyframesToBoneTracks(trackNode,
-              boneTracks);
-          }
-        }
-      }
-    }
-
     // Adds mesh and materials
     var mObjByOffset = new Dictionary<uint, MObj>();
     var tObjByOffset = new Dictionary<uint, TObj>();
-    foreach (var jObj in primaryDatSubfile.JObjs) {
+    foreach (var jObj in datSubfile.JObjs) {
       foreach (var dObj in jObj.DObjs) {
         var mObj = dObj.MObj;
         if (mObj != null) {
           mObjByOffset[dObj.MObjOffset] = mObj;
           foreach (var (tObjOffset, tObj) in mObj.TObjsAndOffsets) {
             tObjByOffset[tObjOffset] = tObj;
-          }
-        }
-      }
-    }
-
-    List<HashSet<byte>>? lowPolyDObjs = null;
-    if (fighterDatSubfile != null) {
-      var fighterData =
-          fighterDatSubfile.GetRootNodesOfType<MeleeFighterData>()
-                           .Single();
-
-      var lowPoly = fighterData.ModelLookupTables
-                               .CostumeVisibilityLookupTable
-                               ?.LowPoly;
-      if (lowPoly != null) {
-        lowPolyDObjs = [];
-        foreach (var lookupEntry in lowPoly.LookupEntries) {
-          var set = new HashSet<byte>();
-          lowPolyDObjs.Add(set);
-
-          foreach (var byteEntry in lookupEntry.ByteEntries) {
-            set.Add(byteEntry);
           }
         }
       }
@@ -332,7 +277,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
         allJObjsAndDObjs = [];
     {
       byte jObjIndex = 0;
-      foreach (var rootJObj in primaryDatSubfile.RootJObjs) {
+      foreach (var rootJObj in datSubfile.RootJObjs) {
         byte dObjIndex = 0;
         foreach (var jObj in rootJObj.GetSelfAndChildrenAndSiblings()) {
           foreach (var dObj in jObj.DObjs) {
@@ -344,25 +289,23 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       }
     }
 
-    var sortedJObjsAndDObjs = allJObjsAndDObjs
-        .OrderBy(
-            tuple => tuple.dObj.MObj?.RenderMode.CheckFlag(RenderMode.XLU) ??
-                     false);
+    sortedJObjsAndDObjs
+        = allJObjsAndDObjs
+          .OrderBy(
+              tuple => tuple.dObj.MObj?.RenderMode.CheckFlag(RenderMode.XLU) ??
+                       false)
+          .ToArray();
+
+    var finMeshByDObj = new Dictionary<DObj, IMesh>();
+    outFinMeshByDObj = finMeshByDObj;
 
     finSkin.AllowMaterialRendererMerging = false;
-    var finMesh = finSkin.AddMesh();
-    foreach (var (jObj, jObjIndex, dObj, dObjIndex) in sortedJObjsAndDObjs) {
-      if (lowPolyDObjs != null && jObjIndex < lowPolyDObjs.Count) {
-        var lowPolyDObjsSet = lowPolyDObjs[jObjIndex];
-        if (lowPolyDObjsSet.Contains(dObjIndex)) {
-          continue;
-        }
-      }
-
+    foreach (var (jObj, _, dObj, _) in sortedJObjsAndDObjs) {
       var defaultBoneWeights = boneWeightsByJObj[jObj];
       var mObjOffset = dObj.MObjOffset;
 
-      // TODO: Use fighter file to choose only high-poly meshes
+      var finMesh = finSkin.AddMesh();
+      finMeshByDObj[dObj] = finMesh;
 
       // Adds polygons
       foreach (var pObj in dObj.PObjs) {

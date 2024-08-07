@@ -27,7 +27,7 @@ public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
                fileHierarchy.Root.FilesWithExtensionRecursive(".dat")) {
         organizer.Add(new DatModelFileBundle {
             GameName = "chibi_robo",
-            PrimaryDatFile = datFile
+            DatFile = datFile
         }.Annotate(datFile));
       }
     }

@@ -61,7 +61,7 @@ public class SuperSmashBrosMeleeFileBundleGatherer
     }
 
     foreach (var stageOrTrophyFile in stageFiles.Concat(trophyFiles)) {
-      organizer.Add(new DatModelFileBundle {
+      organizer.Add(new MeleeModelFileBundle {
           GameName = "super_smash_bros_melee",
           PrimaryDatFile = stageOrTrophyFile,
       }.Annotate(stageOrTrophyFile));
@@ -95,7 +95,7 @@ public class SuperSmashBrosMeleeFileBundleGatherer
                plFilesStartingWithName
                    .Where(pair => !pair.Key.EndsWith(ANIMATION_SUFFIX))
                    .Select(pair => pair.Value)) {
-        organizer.Add(new DatModelFileBundle {
+        organizer.Add(new MeleeModelFileBundle {
             GameName = "super_smash_bros_melee",
             PrimaryDatFile = modelFile,
             AnimationDatFile = animationFile,
