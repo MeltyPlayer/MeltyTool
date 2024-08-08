@@ -16,6 +16,7 @@ using uni.games.ever_oasis;
 using uni.games.glover;
 using uni.games.great_ace_attorney;
 using uni.games.halo_wars;
+using uni.games.kirby_air_ride;
 using uni.games.luigis_mansion;
 using uni.games.luigis_mansion_3d;
 using uni.games.majoras_mask_3d;
@@ -58,6 +59,7 @@ public class RootFileBundleGatherer {
         new GloverFileBundleGatherer(),
         new GreatAceAttorneyFileBundleGatherer(),
         new HaloWarsFileBundleGatherer(),
+        new KirbyAirRideFileBundleGatherer(),
         new LuigisMansionFileBundleGatherer(),
         new LuigisMansion3dFileBundleGatherer(),
         new MajorasMask3dFileBundleGatherer(),

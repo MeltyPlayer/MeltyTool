@@ -1,8 +1,13 @@
-﻿using fin.io;
+﻿using System.Collections;
+
+using fin.data.dictionaries;
+using fin.data.lists;
+using fin.io;
 using fin.util.asserts;
 
 using schema.binary;
 using schema.binary.attributes;
+using schema.util.streams;
 
 namespace uni.games.chibi_robo;
 
@@ -14,84 +19,96 @@ namespace uni.games.chibi_robo;
 public class QpBinArchiveExtractor {
   public void Extract(IReadOnlyGenericFile qpBinFile,
                       ISystemDirectory outDirectory) {
-      using var br =
-          new SchemaBinaryReader(qpBinFile.OpenRead(), Endianness.BigEndian);
-      var header = br.ReadNew<QpBinArchiveHeader>();
+    using var br =
+        new SchemaBinaryReader(qpBinFile.OpenRead(), Endianness.BigEndian);
+    var header = br.ReadNew<QpBinArchiveHeader>();
 
-      FileStringTableEntry[] entries = Array.Empty<FileStringTableEntry>();
-      List<string> strings = [];
+    IFileStringTableEntry[] entries = [];
+    long stringTableOffset = 0;
 
-      br.Position = header.FileStringTableOffset;
-      br.Subread(
-          (int) header.FileStringTableSize,
-          sbr => {
-            var root = sbr.ReadNew<FileStringTableEntry>();
-            Asserts.True(root.IsDirectory);
+    br.Position = header.FileStringTableOffset;
+    br.Subread(
+        (int) header.FileStringTableSize,
+        sbr => {
+          sbr.AssertByte(1); // isDirectory
+          var root = sbr.ReadNew<FileStringTableDirectory>();
 
-            var numEntries = root.DataSizeOrNextEntryIndex;
+          var numEntries = root.NextEntryIndex;
+          entries = new IFileStringTableEntry[numEntries];
+          entries[0] = root;
+          for (var i = 1; i < numEntries; ++i) {
+            var isDirectory = sbr.ReadByte() != 0;
+            entries[i] = isDirectory
+                ? sbr.ReadNew<FileStringTableDirectory>()
+                : sbr.ReadNew<FileStringTableFile>();
+          }
 
-            entries = new FileStringTableEntry[numEntries];
-            entries[0] = root;
-            for (var i = 1; i < numEntries; ++i) {
-              entries[i] = sbr.ReadNew<FileStringTableEntry>();
-            }
+          stringTableOffset = header.FileStringTableOffset + sbr.Position;
+        });
 
-            while (!sbr.Eof) {
-              try {
-                strings.Add(sbr.ReadStringNT(StringEncodingType.UTF8));
-              } catch {}
-            }
-          });
+    this.ProcessEntries_(outDirectory,
+                         entries,
+                         0,
+                         "",
+                         br,
+                         stringTableOffset);
+  }
 
-      this.ProcessEntries_(entries,
-                           0,
-                           "",
-                           br,
-                           header.DataTableOffset,
-                           strings);
+  private void ProcessEntries_(
+      ISystemDirectory rootDirectory,
+      IFileStringTableEntry[] entries,
+      int currentEntryIndex,
+      string parentName,
+      IBinaryReader br,
+      long baseStringOffset) {
+    var currentEntry = entries[currentEntryIndex];
+
+    string currentName = parentName;
+    if (currentEntryIndex > 0) {
+      var stringOffset = baseStringOffset + currentEntry.NameOffset;
+      br.Position = stringOffset;
+      var namePart = br.ReadStringNT(StringEncodingType.UTF8);
+      currentName = Path.Join(currentName, namePart);
     }
 
-  private void ProcessEntries_(FileStringTableEntry[] entries,
-                               int currentEntryIndex,
-                               string parentName,
-                               IBinaryReader br,
-                               uint dataOffset,
-                               IList<string> strings) {
-      var currentEntry = entries[currentEntryIndex];
+    switch (currentEntry) {
+      case FileStringTableFile fileEntry: {
+        var dataOffset = fileEntry.DataOffset;
+        var dataSize = fileEntry.DataSize;
 
-      string currentName = parentName;
-      if (currentEntryIndex > 0) {
-        var namePart = strings[(int) currentEntry.NameOffset];
-        currentName = Path.Join(currentName, namePart);
+        var file = new FinFile(Path.Join(rootDirectory.FullPath, currentName));
+        using var fs = file.OpenWrite();
+        br.SubreadAt(dataOffset,
+                     (int) dataSize,
+                     sbr => sbr.CopyTo(fs));
+        break;
       }
+      case FileStringTableDirectory directoryEntry: {
+        rootDirectory.GetOrCreateSubdir(currentName);
 
-      if (!currentEntry.IsDirectory) {
-        // TODO: Write file
+        var startIndex = currentEntryIndex + 1;
+        var endIndex = directoryEntry.NextEntryIndex;
+        Asserts.True(entries.Length >= endIndex && startIndex <= endIndex);
+        for (var i = startIndex; i < endIndex;) {
+          var childEntry = entries[i];
+          this.ProcessEntries_(rootDirectory,
+                               entries,
+                               i,
+                               currentName,
+                               br,
+                               baseStringOffset);
 
-        ;
-
-        return;
-      }
-
-      var startIndex = currentEntryIndex + 1;
-      var endIndex = currentEntry.DataSizeOrNextEntryIndex;
-      Asserts.True(entries.Length >= endIndex && startIndex <= endIndex);
-      for (var i = startIndex; i < endIndex;) {
-        var childEntry = entries[i];
-        this.ProcessEntries_(entries,
-                             i,
-                             currentName,
-                             br,
-                             dataOffset,
-                             strings);
-
-        if (!childEntry.IsDirectory) {
-          ++i;
-        } else {
-          i = (int) childEntry.DataSizeOrNextEntryIndex;
+          if (childEntry is FileStringTableDirectory childDirectoryEntry) {
+            i = (int) childDirectoryEntry.NextEntryIndex;
+          } else if (childEntry is FileStringTableFile) {
+            ++i;
+          }
         }
+
+        break;
       }
     }
+  }
 }
 
 [BinarySchema]
@@ -106,14 +123,26 @@ public partial class QpBinArchiveHeader : IBinaryDeserializable {
       Enumerable.Repeat((byte) 0xcc, 16).ToArray();
 }
 
-[BinarySchema]
-public partial class FileStringTableEntry : IBinaryDeserializable {
-  [IntegerFormat(SchemaIntegerType.BYTE)]
-  public bool IsDirectory { get; set; }
+public interface IFileStringTableEntry {
+  public uint NameOffset { get; }
+}
 
+[BinarySchema]
+public partial class FileStringTableDirectory
+    : IFileStringTableEntry, IBinaryDeserializable {
   [IntegerFormat(SchemaIntegerType.UINT24)]
   public uint NameOffset { get; set; }
 
-  public uint DataOffsetOrParentIndex { get; set; }
-  public uint DataSizeOrNextEntryIndex { get; set; }
+  public uint ParentIndex { get; set; }
+  public uint NextEntryIndex { get; set; }
+}
+
+[BinarySchema]
+public partial class FileStringTableFile
+    : IFileStringTableEntry, IBinaryDeserializable {
+  [IntegerFormat(SchemaIntegerType.UINT24)]
+  public uint NameOffset { get; set; }
+
+  public uint DataOffset { get; set; }
+  public uint DataSize { get; set; }
 }

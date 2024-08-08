@@ -7,29 +7,22 @@ using ssm.api;
 
 using uni.platforms.gcn;
 
-namespace uni.games.chibi_robo;
+namespace uni.games.kirby_air_ride;
 
-public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class KirbyAirRideFileBundleGatherer : IAnnotatedFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "chibi_robo",
+            "kirby_air_ride",
             out var fileHierarchy)) {
       return;
-    }
-
-    var qpBinFile = fileHierarchy.Root.AssertGetExistingFile("qp.bin");
-    var qpDir = fileHierarchy.Root.Impl.GetOrCreateSubdir("qpBin");
-    if (qpDir.IsEmpty) {
-      new QpBinArchiveExtractor().Extract(qpBinFile, qpDir);
-      fileHierarchy.Root.Refresh(true);
     }
 
     foreach (var datFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".dat")) {
       organizer.Add(new DatModelFileBundle {
-          GameName = "chibi_robo",
+          GameName = "kirby_air_ride",
           DatFile = datFile
       }.Annotate(datFile));
     }
@@ -37,7 +30,7 @@ public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
     foreach (var ssmFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
       organizer.Add(new SsmAudioFileBundle {
-          GameName = "chibi_robo",
+          GameName = "kirby_air_ride",
           SsmFile = ssmFile,
       }.Annotate(ssmFile));
     }
