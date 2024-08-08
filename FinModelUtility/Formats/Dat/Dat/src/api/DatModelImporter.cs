@@ -3,6 +3,7 @@
 using CommunityToolkit.HighPerformance;
 
 using dat.schema;
+using dat.schema.animation;
 using dat.schema.material;
 using dat.schema.mesh;
 using dat.schema.texture;
@@ -26,6 +27,7 @@ using fin.util.hex;
 using gx;
 
 using schema.binary;
+using schema.util.enumerables;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -96,6 +98,41 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
 
       foreach (var datChildBone in jObj.GetChildren()) {
         boneQueue.Enqueue((finBone, datChildBone));
+      }
+    }
+
+    // Adds animations
+    {
+      var rootJointAnims
+          = datSubfile
+            .GetRootNodesOfType<SObj>()
+            .SelectMany(sObj => sObj.JObjDescs?.Values ?? [])
+            .SelectMany(jObjDesc => jObjDesc.JointAnimations?.Values ?? []);
+
+      var i = 0;
+      var jObjs = datSubfile.JObjs.ToArray();
+      foreach (var rootJointAnim in rootJointAnims) {
+        var finAnimation = finModel.AnimationManager.AddAnimation();
+        finAnimation.Name = $"animation {i++}";
+        finAnimation.FrameRate = 30;
+
+        foreach (var (jObj, jointAnim) in jObjs.Zip(
+                     rootJointAnim.GetSelfAndChildrenAndSiblings())) {
+          var aObj = jointAnim.AObj;
+          if (aObj == null) {
+            continue;
+          }
+
+          finAnimation.FrameCount
+              = Math.Max(finAnimation.FrameCount, (int) aObj.EndFrame);
+
+          var finBone = finBoneByJObj[jObj];
+          var boneTracks = finAnimation.AddBoneTracks(finBone);
+
+          DatBoneTracksHelper.AddDatKeyframesToBoneTracks(
+              aObj.FObjs,
+              boneTracks);
+        }
       }
     }
 

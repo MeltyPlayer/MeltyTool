@@ -1,4 +1,6 @@
-﻿using schema.binary;
+﻿using dat.schema.animation;
+
+using schema.binary;
 using schema.binary.attributes;
 
 namespace dat.schema;
@@ -18,4 +20,7 @@ public partial class JObjDesc : IBinaryDeserializable {
 
   [RAtPositionOrNull(nameof(RootJObjOffset))]
   public JObj? RootJObj { get; private set; }
+
+  [RAtPositionOrNull(nameof(JointAnimationsOffset))]
+  public HsdNullTerminatedPointerArray<AnimJoint>? JointAnimations { get; private set; }
 }
