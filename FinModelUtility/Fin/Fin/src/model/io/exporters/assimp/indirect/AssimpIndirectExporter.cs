@@ -112,8 +112,9 @@ public class AssimpIndirectModelExporter : IModelExporter {
         var gltfOutputFile =
             outputFile.CloneWithFileType($".{gltfFormat.FileExtension}");
 
-        var gltfWriteSettings =
-            WriteContext.CreateFromFile(gltfOutputFile.FullPath);
+        var gltfWriteSettings
+            = WriteContext.CreateFromDirectory(
+                new DirectoryInfo(gltfOutputFile.AssertGetParent().FullPath));
         gltfWriteSettings.ImageWriting = gltfModelExporter.Embedded
             ? ResourceWriteMode.EmbeddedAsBase64
             : ResourceWriteMode.SatelliteFile;
@@ -123,9 +124,9 @@ public class AssimpIndirectModelExporter : IModelExporter {
           gltfWriteSettings.Validation = ValidationMode.Skip;
         }
 
-        var name =
-            Path.GetFileNameWithoutExtension(gltfOutputFile
-                                                 .FullNameWithoutExtension);
+        var name
+            = Path.GetFileNameWithoutExtension(
+                gltfOutputFile.FullNameWithoutExtension);
         if (gltfFormat.FileExtension == "glb") {
           gltfWriteSettings.WriteBinarySchema2(name, gltfModelRoot);
         } else {
