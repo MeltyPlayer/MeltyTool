@@ -19,13 +19,7 @@ public class KirbyAirRideFileBundleGatherer : IAnnotatedFileBundleGatherer {
       return;
     }
 
-    foreach (var datFile in
-             fileHierarchy.Root.FilesWithExtensionRecursive(".dat")) {
-      organizer.Add(new DatModelFileBundle {
-          GameName = "kirby_air_ride",
-          DatFile = datFile
-      }.Annotate(datFile));
-    }
+    // TODO: Support dat files, appear to be similar to Custom Robo?
 
     foreach (var ssmFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
