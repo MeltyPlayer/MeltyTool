@@ -1,8 +1,4 @@
-﻿using dat.schema.animation;
-using dat.schema.material;
-using dat.schema.mesh;
-
-using schema.binary;
+﻿using schema.binary;
 using schema.binary.attributes;
 
 namespace dat.schema;

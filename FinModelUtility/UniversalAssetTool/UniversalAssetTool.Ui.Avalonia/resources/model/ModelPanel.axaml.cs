@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 
 using fin.animation;
-using fin.language.equations.fixedFunction;
 using fin.model;
 using fin.ui.rendering;
 

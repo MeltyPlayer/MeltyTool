@@ -1,6 +1,4 @@
-﻿using System;
-
-using fin.util.hash;
+﻿using fin.util.hash;
 
 using gx;
 

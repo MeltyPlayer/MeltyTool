@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 
-using fin.data;
 using fin.data.indexable;
 using fin.data.sets;
 using fin.math.matrix.four;
