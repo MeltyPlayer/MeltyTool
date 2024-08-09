@@ -1,5 +1,6 @@
 ﻿using fin.schema;
 using fin.schema.vector;
+using fin.util.enums;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -61,18 +62,25 @@ public partial class JObj : IDatTreeNode<JObj>, IBinaryDeserializable {
   public JObjFlags Flags { get; set; }
   public uint FirstChildBoneOffset { get; set; }
   public uint NextSiblingBoneOffset { get; set; }
-  public uint FirstDObjOffset { get; set; }
+  public uint RenderObjOffset { get; set; }
   public Vector3f RotationRadians { get; } = new();
   public Vector3f Scale { get; } = new();
   public Vector3f Position { get; } = new();
   public uint InverseBindMatrixOffset { get; set; }
-
-  [Unknown]
-  public uint UnknownPointer { get; set; }
+  public uint FirstRObjOffset { get; set; }
 
 
   [Skip]
   public string? Name { get; set; }
+
+  [Skip]
+  public bool HasSpline => this.Flags.CheckFlag(JObjFlags.SPLINE);
+
+  [Skip]
+  public bool HasParticleJoint => this.Flags.CheckFlag(JObjFlags.PTCL);
+
+  [Skip]
+  public bool HasDObj => !this.HasSpline && !this.HasParticleJoint;
 
   [RAtPositionOrNull(nameof(FirstChildBoneOffset))]
   public JObj? FirstChild { get; set; }
@@ -80,12 +88,16 @@ public partial class JObj : IDatTreeNode<JObj>, IBinaryDeserializable {
   [RAtPositionOrNull(nameof(NextSiblingBoneOffset))]
   public JObj? NextSibling { get; set; }
 
-  [RAtPositionOrNull(nameof(FirstDObjOffset))]
+  [RIfBoolean(nameof(HasDObj))]
+  [RAtPositionOrNull(nameof(RenderObjOffset))]
   public DObj? FirstDObj { get; set; }
 
   [RAtPositionOrNull(nameof(InverseBindMatrixOffset))]
   [SequenceLengthSource(4 * 3)]
   public float[]? InverseBindMatrixValues { get; set; }
+
+  [RAtPositionOrNull(nameof(FirstRObjOffset))]
+  public RObj? FirstRObj { get; set; }
 
 
   [Skip]

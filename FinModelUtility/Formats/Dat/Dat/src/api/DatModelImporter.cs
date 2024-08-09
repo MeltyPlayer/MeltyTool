@@ -27,7 +27,6 @@ using fin.util.hex;
 using gx;
 
 using schema.binary;
-using schema.util.enumerables;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -371,6 +370,10 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                         pObjWeights
                             .Select(
                                 pObjWeight => {
+                                  if (!jObjByOffset.ContainsKey(
+                                          pObjWeight.JObjOffset)) {
+                                    ;
+                                  }
                                   var jObj =
                                       jObjByOffset[pObjWeight.JObjOffset];
                                   return new BoneWeight(

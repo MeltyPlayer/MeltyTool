@@ -14,6 +14,9 @@ public partial class AnimJoint
   public uint FirstChildOffset { get; set; }
   public uint NextSiblingOffset { get; set; }
   public uint AObjOffset { get; set; }
+  public uint FirstRObjOffset { get; set; }
+  public uint Flags { get; set; }
+
 
   [RAtPositionOrNull(nameof(FirstChildOffset))]
   public AnimJoint? FirstChild { get; set; }
@@ -23,4 +26,7 @@ public partial class AnimJoint
 
   [RAtPositionOrNull(nameof(AObjOffset))]
   public AObj? AObj { get; set; }
+
+  [RAtPositionOrNull(nameof(FirstRObjOffset))]
+  public RObj? FirstRObj { get; set; }
 }

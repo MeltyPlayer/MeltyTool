@@ -52,7 +52,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
     public PObjFlags Flags { get; set; }
     public ushort DisplayListSize { get; set; }
     public uint DisplayListOffset { get; set; }
-    public uint WeightListOffset { get; set; }
+    public uint WeightListOrShapeAnimOffset { get; set; }
   }
 
   public PObjHeader Header { get; } = new();
@@ -104,25 +104,17 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
 
     this.VertexSpace = VertexSpace.RELATIVE_TO_BONE;
 
-    var weightListOffset = this.Header.WeightListOffset;
-    if (weightListOffset != 0) {
+    var flags = this.Header.Flags;
+    var hasEnvelope = flags.CheckFlag(PObjFlags.OBJTYPE_ENVELOPE);
+    var hasShapeAnim = flags.CheckFlag(PObjFlags.OBJTYPE_SHAPEANIM);
+    var hasUnknown2 = flags.CheckFlag(PObjFlags.UNKNOWN2);
+
+    var weightListOrShapeAnimOffset = this.Header.WeightListOrShapeAnimOffset;
+    if (weightListOrShapeAnimOffset != 0) {
+      br.Position = this.Header.WeightListOrShapeAnimOffset;
+
       var pObjWeights = this.Weights = [];
-
-      // Weight list is children of a given bone
-      if (!this.Header.Flags.CheckFlag(PObjFlags.OBJTYPE_ENVELOPE)) {
-        var currentJObjOffset = weightListOffset;
-        while (currentJObjOffset != 0) {
-          pObjWeights.Add(new PObjWeight {
-              JObjOffset = currentJObjOffset,
-              Weight = 1,
-          }.AsList());
-
-          br.Position = currentJObjOffset;
-          br.Position += 8; // FirstChildBoneOffset
-          currentJObjOffset = br.ReadUInt32();
-        }
-      } else {
-        br.Position = this.Header.WeightListOffset;
+      if (hasEnvelope) {
         int offset = 0;
         while ((offset = br.ReadInt32()) != 0) {
           br.SubreadAt(
@@ -142,8 +134,17 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                 pObjWeights.Add(weights);
               });
         }
+      } else if (hasShapeAnim) {
+        // TODO: Support this
+      } else if (!hasUnknown2) {
+        var currentJObjOffset = weightListOrShapeAnimOffset;
+        pObjWeights.Add(new PObjWeight {
+            JObjOffset = currentJObjOffset,
+            Weight = 1,
+        }.AsList());
       }
     }
+
 
     // Reads display list
     br.Position = this.Header.DisplayListOffset;
