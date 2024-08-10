@@ -4,6 +4,7 @@ Program for extracting and working with assets from various games. Provides both
 
 ## Credits
 
+- [@Adierking](https://github.com/adierking), whose [Unplug](https://github.com/adierking/unplug) tool was referenced to parse Chibi-Robo!'s qp.bin file.
 - [@Asia81](https://github.com/Asia81), whose [HackingToolkit9DS](https://github.com/Asia81/HackingToolkit9DS-Deprecated-) was originally used to extract the contents of 3DS .cias.
 - cooliscool, whose [Utility of Time](http://wiki.maco64.com/Tools/Utility_of_Time) program was used as the basis for the UI.
 - [@HimeWorks](https://github.com/HimeWorks), whose [Noesis plugins](https://himeworks.com/noesis-plugins/) were used to add support for various formats.

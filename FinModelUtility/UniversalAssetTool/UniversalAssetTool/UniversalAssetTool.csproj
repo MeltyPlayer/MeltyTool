@@ -137,9 +137,9 @@
 
     <ProjectReference Include="..\..\Formats\Ast\Ast\Ast.csproj" />
     <ProjectReference Include="..\..\Formats\Grezzo\Grezzo\Grezzo.csproj" />
-    <ProjectReference Include="..\..\Formats\Dat\Dat\Dat.csproj" />
     <ProjectReference Include="..\..\Formats\F3dzex2\F3dzex2.csproj" />
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
+    <ProjectReference Include="..\..\Formats\Hsd\Hsd\Hsd.csproj" />
     <ProjectReference Include="..\..\Formats\JSystem\JSystem\JSystem.csproj" />
     <ProjectReference Include="..\..\Formats\Level5\Level5\Level5.csproj" />
     <ProjectReference Include="..\..\Formats\Mod\Mod\Mod.csproj" />

@@ -19,8 +19,9 @@ If you'd like to vote on new games or features that should be supported, please 
 ## Credits
 
 - Acewell, whose [Noesis script](https://forum.xentax.com/viewtopic.php?p=122302#p122302) was used as the basis for reading Dead Space textures.
+- [@Adierking](https://github.com/adierking), whose [Unplug](https://github.com/adierking/unplug) tool was referenced to parse Chibi-Robo!'s qp.bin file.
 - [@Asia81](https://github.com/Asia81), whose [HackingToolkit9DS](https://github.com/Asia81/HackingToolkit9DS-Deprecated-) was originally used to extract the contents of 3DS .cias.
-- [@Chadderz121](https://github.com/Chadderz121), AKA Chadderz, whose [CTools](https://www.chadsoft.co.uk/wiicoder/) suite was originally used to read .bmd texture formats.
+- [@Chadderz121](https://github.com/Chadderz121), aka Chadderz, whose [CTools](https://www.chadsoft.co.uk/wiicoder/) suite was originally used to read .bmd texture formats.
 - [CloudModding](https://wiki.cloudmodding.com), which provides wikis documenting various Zelda games and their internal formats (e.g. [F3DZEX2](https://wiki.cloudmodding.com/oot/F3DZEX2))
 - cooliscool, whose [Utility of Time](http://wiki.maco64.com/Tools/Utility_of_Time) program was used as the basis for the UI and F3DZEX2/F3DEX2 importer.
 - [@Cuyler36](https://github.com/Cuyler36), aka CulyerAC, whose [RELDumper](https://github.com/Cuyler36/RELDumper) is used to extract the contents of .rel/.map files.
@@ -39,27 +40,27 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@jam1garner](https://github.com/jam1garner), whose [Smash-Forge](https://github.com/jam1garner/Smash-Forge) tool was referenced to add support for Melee models.
 - jdh, whose [Virtual Reality Walt Disney World](https://web.archive.org/web/20040608032334/https://vrwdw.tripod.com/) was bundled in the viewer for the sake of preservation.
 - [@Julgodis](https://github.com/Julgodis), whose [picori](https://github.com/Julgodis/picori) library was referenced to implement parsing .ciso files. 
-- [@Justin Aquadro](https://github.com/jaquadro), AKA [Retriever II](https://www.mfgg.net/index.php?act=user&param=01&uid=2), whose [documentation](https://www.emutalk.net/threads/pm-ttyd-model-file-format-pet-project.27613/) was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
+- [@Justin Aquadro](https://github.com/jaquadro), aka [Retriever II](https://www.mfgg.net/index.php?act=user&param=01&uid=2), whose [documentation](https://www.emutalk.net/threads/pm-ttyd-model-file-format-pet-project.27613/) was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - [@KillzXGaming](https://github.com/KillzXGaming), whose [Switch-Toolbox](https://github.com/KillzXGaming/Switch-Toolbox) was referenced to add support for LZSS decompression.
-- [@kornman00](https://github.com/kornman00), AKA [@KornnerStudios](https://github.com/KornnerStudios), for documenting the Halo Wars formats in [HaloWarsDocs](https://github.com/HaloMods/HaloWarsDocs) and providing the [KSoft suite](https://github.com/KornnerStudios/KSoft) to extract the contents of the game.
+- [@kornman00](https://github.com/kornman00), aka [@KornnerStudios](https://github.com/KornnerStudios), for documenting the Halo Wars formats in [HaloWarsDocs](https://github.com/HaloMods/HaloWarsDocs) and providing the [KSoft suite](https://github.com/KornnerStudios/KSoft) to extract the contents of the game.
 - [@leftp](https://github.com/leftp), whose [SharpDirLister](https://github.com/EncodeGroup/SharpDirLister) API was used to dramatically improve listing out the file hierarchy.
 - [@LordNed](https://github.com/LordNed), whose [J3D-Model-Viewer](https://github.com/LordNed/J3D-Model-Viewer) tool and [JStudio](https://github.com/LordNed/JStudio) library were referenced to fix bugs in the .bmd importer.
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
-- [@M-1-RLG](https://github.com/M-1-RLG), AKA M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
-- [@magcius](https://github.com/magcius), AKA Jasper, as their model viewer [noclip.website](https://github.com/naclomi/noclip.website) was referenced to add support for importing .csab files and Paper Mario: The Thousand Year Door's animated group models.
+- [@M-1-RLG](https://github.com/M-1-RLG), aka M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
+- [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/naclomi/noclip.website) was referenced to add support for importing .csab files and Paper Mario: The Thousand Year Door's animated group models.
 - [@mhvuze](https://github.com/mhvuze), whose [3ds-xfsatool](https://github.com/mhvuze/3ds-xfsatool) is used to extract XFSA archives.
 - [@Nanook](https://github.com/Nanook), whose [NKitv1](https://github.com/Nanook/NKitv1) is used to read NKit ISOs.
 - [@neimod](https://github.com/neimod), who originally created [ctrtool](https://github.com/neimod/ctr), which is used to extract the contents of 3DS .cias.
 - [@NerduMiner](https://github.com/NerduMiner), whose [Pikmin1Toolset](https://github.com/NerduMiner/Pikmin1Toolset) was ported from C++ to C# to add texture support for Pikmin 1.
 - [@nickbabcock](https://github.com/nickbabcock), whose [Pfim](https://github.com/nickbabcock/Pfim) library is used to extract the contents of .dds images.
-- [@nico](https://github.com/nico), AKA thakis, whose [szstools](http://amnoid.de/gc/) CLI is used to extract the contents of GameCube .isos and their [ddsview](http://www.amnoid.de/ddsview/index.html) tool was referenced to fix Halo Wars DXT5A/ATI1/BC4 parsing.
+- [@nico](https://github.com/nico), aka thakis, whose [szstools](http://amnoid.de/gc/) CLI is used to extract the contents of GameCube .isos and their [ddsview](http://www.amnoid.de/ddsview/index.html) tool was referenced to fix Halo Wars DXT5A/ATI1/BC4 parsing.
 - [@Nominom](https://github.com/Nominom), whose [BCnEncoder.NET](https://github.com/Nominom/BCnEncoder.NET) library is used to parse DXT1/3/5 images.
 - [@oxyplot](https://github.com/oxyplot), whose [oxyplot-avalonia](https://github.com/oxyplot/oxyplot-avalonia) library is used to render graphs of animation values.
 - [@PistonMiner](https://github.com/PistonMiner), whose [ttyd-tools](https://github.com/PistonMiner/ttyd-tools) documentation was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - [@Ploaj](https://github.com/Ploaj), whose [HSDLib](https://github.com/Ploaj/HSDLib) library was heavily referenced to fix the Super Smash Bros. Melee .dat importer (since HSDLib has nearly perfect accuracy!!) and [Metanoia](https://github.com/Ploaj/Metanoia) library was heavily referenced to add support for parsing Level-5 formats. 
 - [@polym0rph](https://github.com/polym0rph), whose [GLSL.tmbundle](https://github.com/polym0rph/GLSL.tmbundle) was used to add TextMate syntax highlighting support for .glsl files in the material viewer.
 - [@revel8n](https://github.com/revel8n), whose [Smashboards thread](https://smashboards.com/threads/melee-dat-format.292603/) was referenced to add support for the .dat importer.
-- [@RenolY2](https://github.com/RenolY2), AKA Yoshi2, whose [bw-model-viewer](https://github.com/RenolY2/bw-model-viewer) tool was used as the basis for the .modl importer.
+- [@RenolY2](https://github.com/RenolY2), aka Yoshi2, whose [bw-model-viewer](https://github.com/RenolY2/bw-model-viewer) tool was used as the basis for the .modl importer.
 - [@Sage-of-Mirrors](https://github.com/Sage-of-Mirrors), whose [SuperBMD](https://github.com/Sage-of-Mirrors/SuperBMD) tool was referenced to clean up the .bmd logic and whose [Booldozer](https://github.com/Sage-of-Mirrors/Booldozer) tool was used as the basis for the .mdl importer.
 - [@SceneGate](https://github.com/SceneGate), whose [Yarhl](https://github.com/SceneGate/Yarhl), [Ekona](https://github.com/SceneGate/Ekona), and [Lemon](https://github.com/SceneGate/Lemon) libraries were used to rip files from DS and 3DS ROMs.
 - [@shravan2x](https://github.com/shravan2x), whose [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) library is used to deserialize the contents of Steam's .vdf files.
@@ -90,7 +91,7 @@ If you'd like to vote on new games or features that should be supported, please 
   - Dead Space (Steam/Epic Games)
 - .glo (PC)
   - Glover (Steam)
-- HSD (.dat) (GCN)
+- HSD, aka HAL sysdolphin (.dat) (GCN)
   - Chibi-Robo! (`chibi_robo.[ciso/gcm/iso/nkit.iso]`)
   - Super Smash Bros. Melee (`super_smash_bros_melee.[ciso/gcm/iso/nkit.iso]`)
 - .mod (GCN)
