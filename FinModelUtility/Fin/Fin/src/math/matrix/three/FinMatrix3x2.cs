@@ -270,7 +270,7 @@ public sealed class FinMatrix3x2 : IFinMatrix3x2 {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public override bool Equals(object? obj)
-    => ReferenceEquals(this, obj) || this.Equals(obj);
+    => ReferenceEquals(this, obj) || this.Equals(obj as IReadOnlyFinMatrix3x2);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public bool Equals(IReadOnlyFinMatrix3x2? other) {

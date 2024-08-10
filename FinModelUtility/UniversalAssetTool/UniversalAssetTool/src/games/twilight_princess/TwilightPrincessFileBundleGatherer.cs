@@ -44,14 +44,27 @@ public class TwilightPrincessFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-    foreach (var bmdFile in fileHierarchy.Root.GetFilesWithFileType(
-                 ".bmd",
-                 true)) {
-      organizer.Add(new BmdModelFileBundle {
-          GameName = "twilight_princess",
-          BmdFile = bmdFile,
-          FrameRate = 60
-      }.Annotate(bmdFile)); 
+    foreach (var dir in objectDirectory.GetExistingSubdirs()) {
+      var extractedAnything = false;
+      if (dir.TryToGetExistingSubdir("bmdr", out var bmdrDirectory)) {
+        var bmdFiles = bmdrDirectory.GetExistingFiles().ToArray();
+        if (bmdFiles.Length == 1) {
+          var animations = dir.FilesWithExtensionsRecursive([".bca", ".bck"]);
+          organizer.Add(new BmdModelFileBundle {
+              GameName = "twilight_princess",
+              BmdFile = bmdFiles[0],
+              BcxFiles = animations.ToArray(),
+              FrameRate = 30
+          }.Annotate(bmdFiles[0]));
+        }
+      } else {
+        foreach (var bmdFile in dir.GetFilesWithFileType(".bmd", true)) {
+          organizer.Add(new BmdModelFileBundle {
+              GameName = "twilight_princess",
+              BmdFile = bmdFile,
+          }.Annotate(bmdFile));
+        }
+      }
     }
   }
 }

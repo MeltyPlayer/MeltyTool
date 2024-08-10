@@ -259,7 +259,7 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public override bool Equals(object? obj)
-    => ReferenceEquals(this, obj) || this.Equals(obj);
+    => ReferenceEquals(this, obj) || this.Equals(obj as IReadOnlyFinMatrix4x4);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public bool Equals(IReadOnlyFinMatrix4x4? other) {
