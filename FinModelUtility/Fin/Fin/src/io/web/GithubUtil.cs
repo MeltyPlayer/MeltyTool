@@ -67,7 +67,8 @@ public static class GitHubUtil {
                                      .SubstringAfter("FinModelUtility/");
       abbreviatedFileName
           = abbreviatedFileName.Replace("FinModelUtility/FinModelUtility",
-                                        "FinModelUtility");
+                                        "FinModelUtility")
+                               .Replace("Github", "GitHub");
 
       description.Append(" in //").Append(abbreviatedFileName);
 

@@ -36,6 +36,7 @@ using uni.games.super_mario_64_ds;
 using uni.games.super_mario_sunshine;
 using uni.games.super_smash_bros_melee;
 using uni.games.timesplitters_2;
+using uni.games.twilight_princess;
 using uni.games.vrwdw;
 using uni.games.wind_waker;
 
@@ -79,6 +80,7 @@ public class RootFileBundleGatherer {
         new SuperMarioSunshineFileBundleGatherer(),
         new SuperSmashBrosMeleeFileBundleGatherer(),
         new Timesplitters2FileBundleGatherer(),
+        new TwilightPrincessFileBundleGatherer(),
         new VrwdwFileBundleGatherer(),
         new WindWakerFileBundleGatherer(),
     };
