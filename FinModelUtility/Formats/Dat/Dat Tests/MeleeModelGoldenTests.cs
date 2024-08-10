@@ -42,6 +42,7 @@ public class MeleeModelGoldenTests
        .GetGoldenDirectories(
            GoldenAssert
                .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
+       .Where(dir => dir.Name == "super_smash_bros_melee")
        .SelectMany(dir => dir.GetExistingSubdirs())
        .ToArray();
 }

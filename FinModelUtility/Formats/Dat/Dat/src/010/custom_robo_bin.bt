@@ -57,9 +57,11 @@ typedef struct {
     }
   } RootNode;
   
-  FSeekFromBase(rootNodeOffset);
-  RootNode rootNodes[rootNodeCount] <optimize=false>;
-  
+  if (rootNodeOffset != 0 && rootNodeCount != 0) {
+    FSeekFromBase(rootNodeOffset);
+    RootNode rootNodes[rootNodeCount] <optimize=false>;
+  }
+
   
   
   typedef struct {
@@ -69,18 +71,20 @@ typedef struct {
       local uint tmpRelTableNodeOffset = FTell();
       FSeekFromBase(validOffset);
       
-      byte firstWord <bgcolor=cLtGray>;
+      byte firstWord;
       
       FSeekFromBase(tmpRelTableNodeOffset);
     }    
   } RelocationTableNode;
   
-  FSeekFromBase(relocationTableOffset);
-  RelocationTableNode relocationTableNodes[relocationTableCount] <optimize=false>;
+  if (relocationTableOffset != 0 && relocationTableCount != 0) {
+    FSeekFromBase(relocationTableOffset);
+    RelocationTableNode relocationTableNodes[relocationTableCount] <optimize=false>;
+  }
   
   typedef struct {
     float values[4*3];  
-  } Matrix4x3 <bgcolor=cYellow>;
+  } Matrix4x3;
   
   typedef struct {
     uint stringOffset;
@@ -129,7 +133,7 @@ typedef struct {
   
       FSeekFromBase(tmpJObjIbmOffset);
     }
-  } JObj <bgcolor=cDkGreen>;
+  } JObj;
   
   typedef struct {
     uint stringOffset;
@@ -154,7 +158,7 @@ typedef struct {
   
       FSeekFromBase(tmpDObjMObjOffset);
     }
-  } DObj <bgcolor=cDkBlue>;
+  } DObj;
   
   typedef struct {
     uint stringOffset;
@@ -181,7 +185,7 @@ typedef struct {
   
       FSeekFromBase(tmpMObjPeDescOffset);
     }
-  } MObj <bgcolor=cLtGreen>;
+  } MObj;
   
   typedef struct {
     byte ambientRgba[4];
@@ -189,7 +193,7 @@ typedef struct {
     byte specularRgba[4];
     float alpha;
     float shininess;
-  } DatMaterial <bgcolor=cLtYellow>;
+  } DatMaterial;
   
   typedef struct {
     byte flags;
@@ -204,8 +208,8 @@ typedef struct {
     byte alphaCompare0;
     byte alphaOp;
     byte alphaCompare1;
-  } PeDesc <bgcolor=cLtRed>;
-} HsdRawFile;
+  } PeDesc;
+} HsdRawFile <bgcolor=cLtRed>;
 
 local uint tmp;
 local uint nodeType;
@@ -228,6 +232,8 @@ typedef struct {
   }
   // Some weird header
   else if (firstValue == 0x40) {
+    uint unk[0x8];
+    HsdRawFile hsdRawFile;
   }
   // Sub files?
   else {

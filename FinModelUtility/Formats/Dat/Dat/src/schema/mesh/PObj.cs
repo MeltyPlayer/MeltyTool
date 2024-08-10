@@ -257,6 +257,14 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                       });
                   break;
                 }
+                case GxAttribute.CLR0: {
+                  color = br.SubreadAt(
+                      offset,
+                      sbr => this.ReadColorAttribute_(
+                          sbr,
+                          vertexDescriptor.ColorComponentType));
+                  break;
+                }
                 case GxAttribute.TEX0: {
                   uv0 = br.SubreadAt(
                       offset,

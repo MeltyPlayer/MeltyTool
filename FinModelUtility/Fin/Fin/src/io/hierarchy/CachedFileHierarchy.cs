@@ -383,20 +383,31 @@ public static partial class FileHierarchy {
       public IEnumerable<IFileHierarchyFile> FilesWithExtension(
           string extension)
         => this.GetExistingFiles()
-               .Where(file => file.FullPath.EndsWith(extension));
+               .Where(file => file.FullPath.EndsWith(
+                          extension,
+                          StringComparison.OrdinalIgnoreCase));
 
       public IEnumerable<IFileHierarchyFile> FilesWithExtensions(
           IEnumerable<string> extensions)
         => this.GetExistingFiles()
                .Where(
-                   file => extensions.Any(ext => file.FullPath.EndsWith(ext)));
+                   file => extensions.Any(
+                       ext => file.FullPath.EndsWith(
+                           ext,
+                           StringComparison.OrdinalIgnoreCase)));
 
       public IEnumerable<IFileHierarchyFile> FilesWithExtensions(
           string first,
           params string[] rest)
         => this.GetExistingFiles()
-               .Where(file => file.FullPath.EndsWith(first) ||
-                              rest.Any(ext => file.FullPath.EndsWith(ext)));
+               .Where(file
+                          => file.FullPath.EndsWith(
+                                 first,
+                                 StringComparison.OrdinalIgnoreCase) ||
+                             rest.Any(
+                                 ext => file.FullPath.EndsWith(
+                                     ext,
+                                     StringComparison.OrdinalIgnoreCase)));
 
       public IEnumerable<IFileHierarchyFile> FilesWithExtensionRecursive(
           string extension)

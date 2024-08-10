@@ -370,10 +370,6 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                         pObjWeights
                             .Select(
                                 pObjWeight => {
-                                  if (!jObjByOffset.ContainsKey(
-                                          pObjWeight.JObjOffset)) {
-                                    ;
-                                  }
                                   var jObj =
                                       jObjByOffset[pObjWeight.JObjOffset];
                                   return new BoneWeight(
@@ -467,6 +463,12 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     IColorValue? diffuseSurfaceColor = colorOps.One;
     IScalarValue? diffuseSurfaceAlpha = scalarOps.One;
 
+    var hasConstantRenderMode = renderMode.CheckFlag(RenderMode.CONSTANT);
+    var hasDiffuseRenderMode = renderMode.CheckFlag(RenderMode.DIFFUSE);
+    var hasSpecularRenderMode = renderMode.CheckFlag(RenderMode.SPECULAR);
+
+    var hasLighting = hasDiffuseRenderMode || hasSpecularRenderMode;
+
     // Constant color
     var diffuseRgba = material.DiffuseColor;
     diffuseSurfaceColor = equations.CreateColorConstant(
@@ -501,12 +503,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     IScalarValue? specularSurfaceAlpha = equations.CreateScalarConstant(
         material.SpecularColor.Af);
 
-
     // Lighting passes
-    var hasConstantRenderMode = renderMode.CheckFlag(RenderMode.CONSTANT);
-    var hasDiffuseRenderMode = renderMode.CheckFlag(RenderMode.DIFFUSE);
-    var hasSpecularRenderMode = renderMode.CheckFlag(RenderMode.SPECULAR);
-
     IColorValue? ambientLightColor = null;
     IColorValue diffuseLightColor = colorOps.One;
     IColorValue? specularLightColor = null;
