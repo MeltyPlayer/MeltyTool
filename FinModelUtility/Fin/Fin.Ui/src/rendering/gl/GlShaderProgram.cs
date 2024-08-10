@@ -100,7 +100,7 @@ public partial class GlShaderProgram : IShaderProgram {
         out var shaderError);
 
     if (shaderError?.Length > 0) {
-       ;
+      ;
     }
 
     return shaderId;
@@ -130,10 +130,8 @@ public partial class GlShaderProgram : IShaderProgram {
     private readonly LazyDictionary<string, int> lazyUniforms_;
 
     public CachedShaderProgram() {
-      this.lazyUniforms_ = new(uniformName
-                                   => GL.GetUniformLocation(
-                                       this.ProgramId,
-                                       uniformName));
+      this.lazyUniforms_ = new(
+          uniformName => GL.GetUniformLocation(this.ProgramId, uniformName));
     }
 
     public required int ProgramId { get; init; }
