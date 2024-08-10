@@ -62,10 +62,14 @@ public static class GitHubUtil {
         description.Append(')');
       }
 
-      description.Append(" in //")
-                 .Append(frame.GetFileName()
-                              .Replace('\\', '/')
-                              .SubstringAfter("FinModelUtility/"));
+      var abbreviatedFileName = frame.GetFileName()
+                                     .Replace('\\', '/')
+                                     .SubstringAfter("FinModelUtility/");
+      abbreviatedFileName
+          = abbreviatedFileName.Replace("FinModelUtility/FinModelUtility",
+                                        "FinModelUtility");
+
+      description.Append(" in //").Append(abbreviatedFileName);
 
       description.AppendLine($":line {frame.GetFileLineNumber()}");
     }
