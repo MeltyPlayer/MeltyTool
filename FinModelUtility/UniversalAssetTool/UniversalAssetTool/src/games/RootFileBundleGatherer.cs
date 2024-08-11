@@ -25,6 +25,7 @@ using uni.games.midnight_club_2;
 using uni.games.nintendogs_labrador_and_friends;
 using uni.games.ocarina_of_time;
 using uni.games.ocarina_of_time_3d;
+using uni.games.odyssey_of_hyrule;
 using uni.games.paper_mario_directors_cut;
 using uni.games.paper_mario_the_thousand_year_door;
 using uni.games.pikmin_1;
@@ -69,6 +70,7 @@ public class RootFileBundleGatherer {
         new NintendogsLabradorAndFriendsFileBundleGatherer(),
         new OcarinaOfTimeFileBundleGatherer(),
         new OcarinaOfTime3dFileBundleGatherer(),
+        new OdysseyOfHyruleFileBundleGatherer(),
         new PaperMarioDirectorsCutFileBundleGatherer(),
         new PaperMarioTheThousandYearDoorFileBundleGatherer(),
         new Pikmin1FileBundleGatherer(),

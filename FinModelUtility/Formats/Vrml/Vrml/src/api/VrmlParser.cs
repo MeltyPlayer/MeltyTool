@@ -63,10 +63,11 @@ public class VrmlParser {
 
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
-              "Background", "DirectionalLight", "Collision", "Fog",
-              "NavigationInfo", "OrientationInterpolator",
-              "PositionInterpolator", "PROTO", "ProximitySensor", "ROUTE",
-              "Sphere", "Sound", "TimeSensor", "Viewpoint", "WorldInfo",
+              "Background", "BackgroundColor", "Collision", "DirectionalLight",
+              "Fog", "Info", "NavigationInfo", "OrientationInterpolator",
+              "PerspectiveCamera", "PositionInterpolator", "PROTO",
+              "ProximitySensor", "ROUTE", "ShapeHints", "Sphere", "Sound",
+              "TimeSensor", "Viewpoint", "WorldInfo", "WWWAnchor",
           }
           .ToImmutableHashSet();
 
@@ -145,23 +146,25 @@ public class VrmlParser {
     }
 
     node = nodeType switch {
-        "Anchor"                    => ReadAnchorNode_(tr, definitions),
-        "Appearance"                => ReadAppearanceNode_(tr, definitions),
-        "Color"                     => ReadColorNode_(tr),
-        "Coordinate"                => ReadCoordinateNode_(tr),
-        "FontStyle"                 => ReadFontStyleNode_(tr),
-        "Group"                     => ReadGroupNode_(tr, definitions),
-        "ImageTexture"              => ReadImageTextureNode_(tr),
-        "IndexedFaceSet"            => ReadIndexedFaceSetNode_(tr, definitions),
+        "Anchor" => ReadAnchorNode_(tr, definitions),
+        "Appearance" => ReadAppearanceNode_(tr, definitions),
+        "Color" => ReadColorNode_(tr),
+        "Coordinate" or "Coordinate3" => ReadCoordinateNode_(tr),
+        "FontStyle" => ReadFontStyleNode_(tr),
+        "Group" => ReadGroupNode_(tr, definitions),
+        "ImageTexture" => ReadImageTextureNode_(tr),
+        "IndexedFaceSet" => ReadIndexedFaceSetNode_(tr, definitions),
         "ISBMovingTextureTransform" => ReadIsbMovingTextureTransformNode_(tr),
-        "ISBPicture"                => ReadIsbPictureNode_(tr, definitions),
-        "Material"                  => ReadMaterialNode_(tr),
-        "Shape"                     => ReadShapeNode_(tr, definitions),
-        "Text"                      => ReadTextNode_(tr, definitions),
-        "TextureCoordinate"         => ReadTextureCoordinateNode_(tr),
-        "TextureTransform"          => ReadTextureTransformNode_(tr),
+        "ISBPicture" => ReadIsbPictureNode_(tr, definitions),
+        "Material" => ReadMaterialNode_(tr),
+        "Separator" => ReadSeparatorNode_(tr, definitions),
+        "Shape" => ReadShapeNode_(tr, definitions),
+        "Text" => ReadTextNode_(tr, definitions),
+        "TextureCoordinate" => ReadTextureCoordinateNode_(tr),
+        "TextureTransform" => ReadTextureTransformNode_(tr),
         "Transform"
             or "ISBLandscape" => ReadTransformNode_(tr, definitions),
+        _ => throw new NotImplementedException(),
     };
 
     if (definitionName != null) {
@@ -174,7 +177,7 @@ public class VrmlParser {
   private static IAnchorNode ReadAnchorNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
-    IReadOnlyList<INode> children = default;
+    IReadOnlyList<INode> children = [];
     string description = default;
     IReadOnlyList<string> parameter = default;
     string url = default;
@@ -318,7 +321,7 @@ public class VrmlParser {
   private static IGroupNode ReadGroupNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
-    IReadOnlyList<INode> children = default;
+    IReadOnlyList<INode> children = [];
 
     ReadFields_(
         tr,
@@ -498,6 +501,7 @@ public class VrmlParser {
   }
 
   private static IMaterialNode ReadMaterialNode_(ITextReader tr) {
+    Vector3? ambientColor = null;
     float? ambientIntensity = null;
     Vector3? diffuseColor = null;
     float? transparency = null;
@@ -506,6 +510,10 @@ public class VrmlParser {
         tr,
         fieldName => {
           switch (fieldName) {
+            case "ambientColor": {
+              ambientColor = ReadVector3_(tr);
+              break;
+            }
             case "ambientIntensity": {
               ambientIntensity = tr.ReadSingle();
               break;
@@ -527,6 +535,66 @@ public class VrmlParser {
         DiffuseColor = diffuseColor,
         Transparency = transparency
     };
+  }
+
+  private static INode ReadSeparatorNode_(
+      ITextReader tr,
+      IDictionary<string, INode> definitions) {
+    LinkedList<INode> rawChildren = new();
+
+    SkipWhitespace_(tr);
+    tr.AssertChar('{');
+
+    while (!tr.Eof) {
+      SkipWhitespace_(tr);
+      if (tr.Matches(out _, ['}'])) {
+        break;
+      }
+
+      if (tr.Eof) {
+        break;
+      }
+
+      if (TryParseNode_(tr, definitions, out var node)) {
+        if (node != null) {
+          rawChildren.AddLast(node);
+        }
+      } else {
+        break;
+      }
+    }
+
+    LinkedList<INode> children = new();
+
+    ICoordinateNode? currentCoord = default;
+    IAppearanceNode? currentAppearance = default;
+    foreach (var child in rawChildren) {
+      switch (child) {
+        case ICoordinateNode coordNode: {
+          currentCoord = coordNode;
+          break;
+        }
+        case IMaterialNode materialNode: {
+          currentAppearance = new AppearanceNode { Material = materialNode };
+          break;
+        }
+        case IndexedFaceSetNode indexedFaceSetNode: {
+          children.AddLast(new ShapeNode {
+              Appearance = Asserts.CastNonnull(currentAppearance),
+              Geometry = indexedFaceSetNode with {
+                  Coord = currentCoord.AssertNonnull()
+              }
+          });
+          break;
+        }
+        default: {
+          children.AddLast(child);
+          break;
+        }
+      }
+    }
+
+    return new GroupNode { Children = children.ToArray() };
   }
 
   private static IShapeNode ReadShapeNode_(
@@ -644,7 +712,7 @@ public class VrmlParser {
       ITextReader tr,
       IDictionary<string, INode> definitions) {
     Vector3? center = null;
-    IReadOnlyList<INode> children = default;
+    IReadOnlyList<INode> children = [];
     Quaternion? rotation = null;
     Vector3? scale = null;
     Quaternion? scaleOrientation = null;
@@ -666,7 +734,8 @@ public class VrmlParser {
               rotation = ReadQuaternion_(tr);
               break;
             }
-            case "scale": {
+            case "scale":
+            case "scaleFactor": {
               scale = ReadVector3_(tr);
               break;
             }
