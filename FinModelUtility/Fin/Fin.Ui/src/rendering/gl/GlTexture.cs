@@ -60,7 +60,20 @@ public class GlTexture : IFinDisposable {
     GL.BindTexture(target, this.id_);
     {
       var mipmapImages = texture.MipmapImages;
+      
       this.LoadMipmapImagesIntoTexture_(mipmapImages);
+
+      if (mipmapImages.Length == 1 &&
+          texture.MinFilter is FinTextureMinFilter.NEAR_MIPMAP_NEAR
+                               or FinTextureMinFilter.NEAR_MIPMAP_LINEAR
+                               or FinTextureMinFilter.LINEAR_MIPMAP_NEAR
+                               or FinTextureMinFilter.LINEAR_MIPMAP_LINEAR) {
+        GL.GenerateTextureMipmap(this.id_);
+      } else {
+        GL.TexParameter(target,
+                        TextureParameterName.TextureMaxLevel,
+                        mipmapImages.Length - 1);
+      }
 
       var finBorderColor = texture.BorderColor;
       var hasBorderColor = finBorderColor != null;
@@ -86,14 +99,6 @@ public class GlTexture : IFinDisposable {
         GL.TexParameter(target,
                         TextureParameterName.TextureBorderColor,
                         glBorderColor);
-      }
-
-      if (mipmapImages.Length == 1 &&
-          texture.MinFilter is FinTextureMinFilter.NEAR_MIPMAP_NEAR
-                               or FinTextureMinFilter.NEAR_MIPMAP_LINEAR
-                               or FinTextureMinFilter.LINEAR_MIPMAP_NEAR
-                               or FinTextureMinFilter.LINEAR_MIPMAP_LINEAR) {
-        GL.GenerateTextureMipmap(this.id_);
       }
 
       GL.TexParameter(

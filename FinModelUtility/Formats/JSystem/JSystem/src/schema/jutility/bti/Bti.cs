@@ -71,9 +71,7 @@ public partial class Bti : IBinaryConvertible {
   public GX_MIN_TEXTURE_FILTER MinFilter;
   public GX_MAG_TEXTURE_FILTER MagFilter;
 
-  [Unknown]
   public byte MinLodTimes8;
-
   public byte MaxLodTimes8;
 
   public byte NrMipMap;
