@@ -7,6 +7,7 @@
 
 using jsystem.schema.j3dgraph.bmd.jnt1;
 
+
 namespace jsystem._3D_Formats;
 
 public class MA {

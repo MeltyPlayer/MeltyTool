@@ -3,6 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bmd.jnt1;
 
 [BinarySchema]
@@ -10,7 +11,7 @@ namespace jsystem.schema.j3dgraph.bmd.jnt1;
 [Endianness(Endianness.BigEndian)]
 public partial class Jnt1 : IBinaryConvertible {
   private readonly AutoStringMagicUInt32SizedSection<Jnt1Data> impl_ =
-      new("JNT1") { TweakReadSize = -8 };
+      new("JNT1") {TweakReadSize = -8};
 
   [Skip]
   public Jnt1Data Data => this.impl_.Data;

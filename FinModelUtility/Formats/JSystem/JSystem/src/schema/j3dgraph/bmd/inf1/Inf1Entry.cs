@@ -1,5 +1,6 @@
 ﻿using schema.binary;
 
+
 namespace jsystem.schema.j3dgraph.bmd.inf1;
 
 public enum Inf1EntryType : ushort {

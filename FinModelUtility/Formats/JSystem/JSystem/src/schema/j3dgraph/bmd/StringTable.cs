@@ -7,6 +7,7 @@ using fin.util.enumerables;
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bmd;
 
 [BinarySchema]
@@ -32,6 +33,7 @@ public partial class StringTable : IBinaryConvertible {
 public partial class StringTableEntry : IBinaryConvertible {
   [Unknown]
   public ushort unknown;
+
   private ushort offset;
 }
 

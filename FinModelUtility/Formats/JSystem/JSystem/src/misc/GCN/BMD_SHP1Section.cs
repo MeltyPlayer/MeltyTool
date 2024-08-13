@@ -13,6 +13,7 @@ using schema.binary;
 
 #pragma warning disable CS8604
 
+
 namespace jsystem.GCN;
 
 public partial class BMD {
@@ -276,13 +277,13 @@ public partial class BMD {
           public Index[] Points;
 
           public enum GXPrimitive {
-            GX_QUADS = 128,         // 0x00000080
-            GX_TRIANGLES = 144,     // 0x00000090
+            GX_QUADS = 128, // 0x00000080
+            GX_TRIANGLES = 144, // 0x00000090
             GX_TRIANGLESTRIP = 152, // 0x00000098
-            GX_TRIANGLEFAN = 160,   // 0x000000A0
-            GX_LINES = 168,         // 0x000000A8
-            GX_LINESTRIP = 176,     // 0x000000B0
-            GX_POINTS = 184,        // 0x000000B8
+            GX_TRIANGLEFAN = 160, // 0x000000A0
+            GX_LINES = 168, // 0x000000A8
+            GX_LINESTRIP = 176, // 0x000000B0
+            GX_POINTS = 184, // 0x000000B8
           }
 
           public class Index {

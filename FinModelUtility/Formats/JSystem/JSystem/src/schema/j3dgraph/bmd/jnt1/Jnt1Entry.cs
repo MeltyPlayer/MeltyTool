@@ -3,6 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bmd.jnt1;
 
 public enum JointType : ushort {
@@ -14,12 +15,14 @@ public enum JointType : ushort {
   ///   face the camera.
   /// </summary>
   MANUAL,
+
   /// <summary>
   ///   This seems to be associated with automatically animated joints, that
   ///   is joints that automatically receive matrices based on BCA/BCK
   ///   animations.
   /// </summary>
   AUTOMATED,
+
   /// <summary>
   ///   This seems to be associated with joints like hands and feet, where
   ///   things may be attached. It seems most likely that this marks an
@@ -35,11 +38,11 @@ public partial class Jnt1Entry : IBinaryConvertible {
   [IntegerFormat(SchemaIntegerType.BYTE)]
   public bool IgnoreParentScale { get; set; }
 
-    
+
   private readonly byte padding1_ = byte.MaxValue;
   public Vector3f Scale { get; } = new();
   public Vector3s Rotation { get; } = new();
-    
+
   private readonly ushort padding2_ = ushort.MaxValue;
   public Vector3f Translation { get; } = new();
 
