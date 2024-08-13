@@ -6,6 +6,7 @@ using gx;
 
 using schema.binary;
 
+
 namespace jsystem.schema.j3dgraph.bmd.mat3;
 
 [BinarySchema]
@@ -32,22 +33,22 @@ public partial class TextureMatrixInfo : ITextureMatrixInfo,
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {
-      if (ReferenceEquals(this, obj)) {
-        return true;
-      }
-
-      if (obj is TextureMatrixInfo other) {
-        return this.TexGenType == other.TexGenType &&
-               this.info == other.info &&
-               this.Center == other.Center &&
-               this.Scale == other.Scale &&
-               this.Rotation == other.Rotation &&
-               this.Translation == other.Translation &&
-               this.Matrix == other.Matrix;
-      }
-
-      return false;
+    if (ReferenceEquals(this, obj)) {
+      return true;
     }
+
+    if (obj is TextureMatrixInfo other) {
+      return this.TexGenType == other.TexGenType &&
+             this.info == other.info &&
+             this.Center == other.Center &&
+             this.Scale == other.Scale &&
+             this.Rotation == other.Rotation &&
+             this.Translation == other.Translation &&
+             this.Matrix == other.Matrix;
+    }
+
+    return false;
+  }
 
   public override int GetHashCode()
     => FluentHash.Start()

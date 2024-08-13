@@ -3,6 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bmd.mat3;
 
 [BinarySchema]
@@ -17,6 +18,7 @@ public partial class MatIndirectTexturingEntry : IBinaryConvertible {
 
   [SequenceLengthSource(4)]
   public IndTexOrder[] IndTexOrder { get; set; }
+
   [SequenceLengthSource(3)]
   public IndTexMatrix[] IndTexMatrix { get; set; }
 

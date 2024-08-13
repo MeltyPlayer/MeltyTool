@@ -3,6 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bmd.mat3;
 
 /// <summary>

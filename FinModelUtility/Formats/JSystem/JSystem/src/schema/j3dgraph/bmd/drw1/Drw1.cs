@@ -3,6 +3,7 @@
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bmd.drw1;
 
 [BinarySchema]
@@ -10,7 +11,7 @@ namespace jsystem.schema.j3dgraph.bmd.drw1;
 [Endianness(Endianness.BigEndian)]
 public partial class Drw1 : IBinaryConvertible {
   private readonly AutoStringMagicUInt32SizedSection<Drw1Data> impl_ =
-      new("DRW1") { TweakReadSize = -8 };
+      new("DRW1") {TweakReadSize = -8};
 
   [Skip]
   public Drw1Data Data => this.impl_.Data;

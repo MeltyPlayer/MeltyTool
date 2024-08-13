@@ -5,13 +5,14 @@ using jsystem.schema.jutility.bti;
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bmd.tex1;
 
 [BinarySchema]
 [LocalPositions]
 public partial class Tex1 : IBinaryConvertible {
   private readonly AutoStringMagicUInt32SizedSection<Tex1Data> impl_ =
-      new("TEX1") { TweakReadSize = -8 };
+      new("TEX1") {TweakReadSize = -8};
 
   [Skip]
   public Tex1Data Data => this.impl_.Data;

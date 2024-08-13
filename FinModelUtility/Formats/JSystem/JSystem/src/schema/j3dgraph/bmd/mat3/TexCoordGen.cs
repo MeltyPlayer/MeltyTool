@@ -4,6 +4,7 @@ using gx;
 
 using schema.binary;
 
+
 namespace jsystem.schema.j3dgraph.bmd.mat3;
 
 [BinarySchema]
@@ -23,19 +24,19 @@ public partial class TexCoordGen : ITexCoordGen, IBinaryConvertible {
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {
-      if (ReferenceEquals(this, obj)) {
-        return true;
-      }
-
-      if (obj is TexCoordGen other) {
-        return this.TexGenType == other.TexGenType &&
-               this.TexGenSrc == other.TexGenSrc
-               &&
-               this.TexMatrix == other.TexMatrix;
-      }
-
-      return false;
+    if (ReferenceEquals(this, obj)) {
+      return true;
     }
+
+    if (obj is TexCoordGen other) {
+      return this.TexGenType == other.TexGenType &&
+             this.TexGenSrc == other.TexGenSrc
+             &&
+             this.TexMatrix == other.TexMatrix;
+    }
+
+    return false;
+  }
 
   public override int GetHashCode()
     => FluentHash.Start()

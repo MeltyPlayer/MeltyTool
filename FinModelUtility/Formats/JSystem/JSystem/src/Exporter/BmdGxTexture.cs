@@ -11,6 +11,7 @@ using gx;
 
 using jsystem.schema.jutility.bti;
 
+
 namespace jsystem.exporter;
 
 public class BmdGxTexture : IGxTexture {
@@ -87,10 +88,10 @@ public class BmdGxTexture : IGxTexture {
   public float MaxLod => this.Header.MaxLodTimes8 / 8f;
   public float LodBias => this.Header.LodBiasTimes100 / 100f;
 
-  public static bool operator==(BmdGxTexture lhs, BmdGxTexture rhs)
+  public static bool operator ==(BmdGxTexture lhs, BmdGxTexture rhs)
     => lhs.Equals(rhs);
 
-  public static bool operator!=(BmdGxTexture lhs, BmdGxTexture rhs)
+  public static bool operator !=(BmdGxTexture lhs, BmdGxTexture rhs)
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {

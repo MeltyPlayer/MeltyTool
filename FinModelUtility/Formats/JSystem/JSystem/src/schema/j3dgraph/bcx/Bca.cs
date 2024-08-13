@@ -13,6 +13,7 @@ using jsystem.G3D_Binary_File_Format;
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace jsystem.schema.j3dgraph.bcx;
 
 /// <summary>
@@ -24,11 +25,11 @@ public partial class Bca : IBcx {
   public ANF1Section ANF1;
 
   public Bca(byte[] file) {
-      using var br = new SchemaBinaryReader((Stream)new MemoryStream(file),
-                                            Endianness.BigEndian);
-      this.Header = br.ReadNew<BcaHeader>();
-      this.ANF1 = new ANF1Section(br, out _);
-    }
+    using var br = new SchemaBinaryReader((Stream) new MemoryStream(file),
+                                          Endianness.BigEndian);
+    this.Header = br.ReadNew<BcaHeader>();
+    this.ANF1 = new ANF1Section(br, out _);
+  }
 
   public IAnx1 Anx1 => this.ANF1;
 
@@ -64,44 +65,44 @@ public partial class Bca : IBcx {
     public float[] Translation;
 
     public ANF1Section(IBinaryReader br, out bool OK) {
-        bool OK1;
+      bool OK1;
 
-        this.Header = new DataBlockHeader(br, "ANF1", out OK1);
-        if (!OK1) {
-          OK = false;
-        } else {
-          this.LoopFlags = br.ReadByte();
-          this.AngleMultiplier = br.ReadByte();
-          this.AnimLength = br.ReadUInt16();
-          this.NrJoints = br.ReadUInt16();
-          this.NrScale = br.ReadUInt16();
-          this.NrRot = br.ReadUInt16();
-          this.NrTrans = br.ReadUInt16();
-          this.JointOffset = br.ReadUInt32();
-          this.ScaleOffset = br.ReadUInt32();
-          this.RotOffset = br.ReadUInt32();
-          this.TransOffset = br.ReadUInt32();
+      this.Header = new DataBlockHeader(br, "ANF1", out OK1);
+      if (!OK1) {
+        OK = false;
+      } else {
+        this.LoopFlags = br.ReadByte();
+        this.AngleMultiplier = br.ReadByte();
+        this.AnimLength = br.ReadUInt16();
+        this.NrJoints = br.ReadUInt16();
+        this.NrScale = br.ReadUInt16();
+        this.NrRot = br.ReadUInt16();
+        this.NrTrans = br.ReadUInt16();
+        this.JointOffset = br.ReadUInt32();
+        this.ScaleOffset = br.ReadUInt32();
+        this.RotOffset = br.ReadUInt32();
+        this.TransOffset = br.ReadUInt32();
 
-          br.Position = (long)(32U + this.ScaleOffset);
-          this.Scale = br.ReadSingles((int)this.NrScale);
-          br.Position = (long)(32U + this.RotOffset);
-          this.Rotation = br.ReadInt16s((int)this.NrRot);
-          br.Position = (long)(32U + this.TransOffset);
-          this.Translation = br.ReadSingles((int)this.NrTrans);
-          float rotScale = (float)(1 * Math.PI / 32768f);
-          br.Position = (long)(32U + this.JointOffset);
-          this.Joints = new AnimatedJoint[(int)this.NrJoints];
-          for (int index = 0; index < (int)this.NrJoints; ++index) {
-            var animatedJoint = new AnimatedJoint(br);
-            animatedJoint.SetValues(this.Scale,
-                                    this.Rotation,
-                                    this.Translation,
-                                    rotScale);
-            this.Joints[index] = animatedJoint;
-          }
-          OK = true;
+        br.Position = (long) (32U + this.ScaleOffset);
+        this.Scale = br.ReadSingles((int) this.NrScale);
+        br.Position = (long) (32U + this.RotOffset);
+        this.Rotation = br.ReadInt16s((int) this.NrRot);
+        br.Position = (long) (32U + this.TransOffset);
+        this.Translation = br.ReadSingles((int) this.NrTrans);
+        float rotScale = (float) (1 * Math.PI / 32768f);
+        br.Position = (long) (32U + this.JointOffset);
+        this.Joints = new AnimatedJoint[(int) this.NrJoints];
+        for (int index = 0; index < (int) this.NrJoints; ++index) {
+          var animatedJoint = new AnimatedJoint(br);
+          animatedJoint.SetValues(this.Scale,
+                                  this.Rotation,
+                                  this.Translation,
+                                  rotScale);
+          this.Joints[index] = animatedJoint;
         }
+        OK = true;
       }
+    }
 
     public int FrameCount => this.AnimLength;
     public IAnimatedJoint[] Joints { get; }
@@ -110,11 +111,11 @@ public partial class Bca : IBcx {
       public AnimComponent[] axes;
 
       public AnimatedJoint(IBinaryReader br) {
-          this.axes = new AnimComponent[3];
-          for (var i = 0; i < this.axes.Length; ++i) {
-            this.axes[i] = br.ReadNew<AnimComponent>();
-          }
+        this.axes = new AnimComponent[3];
+        for (var i = 0; i < this.axes.Length; ++i) {
+          this.axes[i] = br.ReadNew<AnimComponent>();
         }
+      }
 
       public IJointAnim Values { get; private set; }
 
@@ -123,20 +124,20 @@ public partial class Bca : IBcx {
           short[] rotations,
           float[] translations,
           float totScale) {
-          this.Values =
-              new JointAnim(
-                  this,
-                  scales,
-                  rotations,
-                  translations,
-                  totScale);
-        }
+        this.Values =
+            new JointAnim(
+                this,
+                scales,
+                rotations,
+                translations,
+                totScale);
+      }
 
       public float GetAnimValue(IJointAnimKey[] keys, float t) {
-          if (keys.Length == 0)
-            return 0.0f;
-          return keys.Length == 1 ? keys[0].Value : keys[(int)t].Value;
-        }
+        if (keys.Length == 0)
+          return 0.0f;
+        return keys.Length == 1 ? keys[0].Value : keys[(int) t].Value;
+      }
 
       [BinarySchema]
       public partial class AnimComponent : IBinaryConvertible {
@@ -158,22 +159,33 @@ public partial class Bca : IBcx {
             short[] rotations,
             float[] translations,
             float rotScale) {
-            this.Scales = joint.axes.Select(
-                axisSrc => {
-                  this.SetKeysSt_(out var axis, scales, axisSrc.S);
-                  return axis;
-                }).ToArray();
-            this.Rotations = joint.axes.Select(
-                axisSrc => {
-                  this.SetKeysR_(out var axis, rotations, rotScale, axisSrc.R);
-                  return axis;
-                }).ToArray();
-            this.Translations = joint.axes.Select(
-                axisSrc => {
-                  this.SetKeysSt_(out var axis, translations, axisSrc.T);
-                  return axis;
-                }).ToArray();
-          }
+          this.Scales = joint.axes.Select(
+                                 axisSrc => {
+                                   this.SetKeysSt_(
+                                       out var axis,
+                                       scales,
+                                       axisSrc.S);
+                                   return axis;
+                                 })
+                             .ToArray();
+          this.Rotations = joint.axes.Select(
+                                    axisSrc => {
+                                      this.SetKeysR_(out var axis,
+                                        rotations,
+                                        rotScale,
+                                        axisSrc.R);
+                                      return axis;
+                                    })
+                                .ToArray();
+          this.Translations = joint.axes.Select(
+                                       axisSrc => {
+                                         this.SetKeysSt_(out var axis,
+                                           translations,
+                                           axisSrc.T);
+                                         return axis;
+                                       })
+                                   .ToArray();
+        }
 
         public IJointAnimKey[][] Scales { get; }
         public IJointAnimKey[][] Rotations { get; }
@@ -183,36 +195,37 @@ public partial class Bca : IBcx {
             out IJointAnimKey[] dst,
             float[] src,
             AnimComponent.AnimIndex component) {
-            dst = new IJointAnimKey[component.Count];
-            if (component.Count <= 0)
-              throw new Exception("Count <= 0");
-            if (component.Count == 1) {
-              dst[0] = new Key(0, src[component.Index]);
-            } else {
-              for (var index = 0; index < component.Count; ++index)
-                dst[index] =
-                    new Key(index, src[component.Index + index]);
-            }
+          dst = new IJointAnimKey[component.Count];
+          if (component.Count <= 0)
+            throw new Exception("Count <= 0");
+          if (component.Count == 1) {
+            dst[0] = new Key(0, src[component.Index]);
+          } else {
+            for (var index = 0; index < component.Count; ++index)
+              dst[index] =
+                  new Key(index, src[component.Index + index]);
           }
+        }
 
         private void SetKeysR_(
             out IJointAnimKey[] dst,
             short[] src,
             float rotScale,
             AnimComponent.AnimIndex component) {
-            dst = new IJointAnimKey[component.Count];
-            if (component.Count <= 0)
-              throw new Exception("Count <= 0");
-            if (component.Count == 1) {
-              dst[0] =
-                  new Key(0, src[component.Index] * rotScale);
-            } else {
-              for (var index = 0; index < component.Count; ++index)
-                dst[index] =
-                    new Key(index, src[component.Index + index] *
-                            rotScale);
-            }
+          dst = new IJointAnimKey[component.Count];
+          if (component.Count <= 0)
+            throw new Exception("Count <= 0");
+          if (component.Count == 1) {
+            dst[0] =
+                new Key(0, src[component.Index] * rotScale);
+          } else {
+            for (var index = 0; index < component.Count; ++index)
+              dst[index] =
+                  new Key(index,
+                          src[component.Index + index] *
+                          rotScale);
           }
+        }
 
         private sealed class Key(int frame, float value) : IJointAnimKey {
           public int Frame { get; } = frame;

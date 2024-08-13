@@ -5,4 +5,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "module")]
+[assembly:
+    SuppressMessage("Style",
+                    "IDE1006:Naming Styles",
+                    Justification = "<Pending>",
+                    Scope = "module")]
