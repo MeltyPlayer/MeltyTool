@@ -4,6 +4,7 @@ using System.IO;
 using jsystem._3D_Formats;
 using jsystem.schema.j3dgraph.bmd;
 using jsystem.schema.j3dgraph.bmd.drw1;
+using jsystem.schema.j3dgraph.bmd.evp1;
 using jsystem.schema.j3dgraph.bmd.inf1;
 using jsystem.schema.j3dgraph.bmd.jnt1;
 using jsystem.schema.j3dgraph.bmd.tex1;
@@ -19,7 +20,7 @@ public partial class BMD {
   public BmdHeader Header;
   public Inf1 INF1 { get; set; }
   public VTX1Section VTX1;
-  public EVP1Section EVP1;
+  public Evp1 EVP1;
   public Drw1 DRW1 { get; set; }
   public Jnt1 JNT1 { get; set; }
   public SHP1Section SHP1;
@@ -50,13 +51,8 @@ public partial class BMD {
             break;
         case nameof(this.EVP1):
           br.Position -= 4L;
-          this.EVP1 = new EVP1Section(br, out OK);
-          if (!OK) {
-            // TODO: Message box
-            //int num2 = (int) System.Windows.Forms.MessageBox.Show("Error 4");
-            return;
-          } else
-            break;
+          this.EVP1 = br.ReadNew<Evp1>();
+          break;
         case nameof(this.DRW1):
           br.Position -= 4L;
           this.DRW1 = br.ReadNew<Drw1>();
@@ -74,9 +70,7 @@ public partial class BMD {
             return;
           } else
             break;
-        case "MAT1":
-        case "MAT2":
-        case nameof(this.MAT3):
+        case "MAT1" or "MAT2" or nameof(this.MAT3):
           br.Position -= 4L;
           this.MAT3 = new MAT3Section(br, out OK);
           if (!OK) {

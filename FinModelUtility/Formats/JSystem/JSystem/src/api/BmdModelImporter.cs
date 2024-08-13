@@ -325,7 +325,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
 
               BoneWeight[] weights;
               if (isWeighted) {
-                var weightedIndices = bmd.EVP1.WeightedIndices[drw1Index];
+                var weightedIndices = bmd.EVP1.Data.WeightedIndices[drw1Index];
                 weights = new BoneWeight[weightedIndices.Indices.Length];
                 for (var w = 0; w < weightedIndices.Indices.Length; ++w) {
                   var jointIndex = weightedIndices.Indices[w];
@@ -337,7 +337,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
 
                   var skinToBoneMatrix =
                       ConvertSchemaToFin_(
-                          bmd.EVP1.InverseBindMatrices[jointIndex]);
+                          bmd.EVP1.Data.InverseBindMatrices[jointIndex]);
 
                   var bone = jointsAndBones[jointIndex].Item2;
                   weights[w] = new BoneWeight(bone, skinToBoneMatrix, weight);

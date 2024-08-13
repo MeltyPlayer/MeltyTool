@@ -143,24 +143,14 @@ public partial class BMD {
             case GxAttribute.NRM:
               this.HasNormals = true;
               break;
-            case GxAttribute.CLR0:
-            case GxAttribute.CLR1:
-              this.HasColors[
-                      this.BatchAttributes[index].Attribute -
-                      GxAttribute.CLR0] =
+            case GxAttribute.CLR0 or GxAttribute.CLR1:
+              this.HasColors[this.BatchAttributes[index].Attribute -
+                             GxAttribute.CLR0] =
                   true;
               break;
-            case GxAttribute.TEX0:
-            case GxAttribute.TEX1:
-            case GxAttribute.TEX2:
-            case GxAttribute.TEX3:
-            case GxAttribute.TEX4:
-            case GxAttribute.TEX5:
-            case GxAttribute.TEX6:
-            case GxAttribute.TEX7:
+            case >= GxAttribute.TEX0 and <= GxAttribute.TEX7:
               this.HasTexCoords[this.BatchAttributes[index].Attribute -
-                                GxAttribute.TEX0] =
-                  true;
+                                GxAttribute.TEX0] = true;
               break;
           }
         }
@@ -241,21 +231,13 @@ public partial class BMD {
                     case GxAttribute.NRM:
                       primitive.Points[index1].NormalIndex = num3;
                       break;
-                    case GxAttribute.CLR0:
-                    case GxAttribute.CLR1:
+                    case GxAttribute.CLR0 or GxAttribute.CLR1:
                       primitive.Points[index1]
                                .ColorIndex[
                                    (Attributes[index2].Attribute -
                                     GxAttribute.CLR0)] = num3;
                       break;
-                    case GxAttribute.TEX0:
-                    case GxAttribute.TEX1:
-                    case GxAttribute.TEX2:
-                    case GxAttribute.TEX3:
-                    case GxAttribute.TEX4:
-                    case GxAttribute.TEX5:
-                    case GxAttribute.TEX6:
-                    case GxAttribute.TEX7:
+                    case >= GxAttribute.TEX0 and <= GxAttribute.TEX7:
                       primitive.Points[index1]
                                .TexCoordIndex[
                                    (Attributes[index2].Attribute -
