@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
 using Avalonia.Rendering;
@@ -48,5 +49,16 @@ namespace uni.ui.avalonia.common.gl {
       => this.TeardownGl();
 
     public bool HitTest(Point point) => this.Bounds.Contains(point);
+
+    protected void GetBoundsForGlViewport(out int width, out int height) {
+      var scaling = 1f;
+      if (TopLevel.GetTopLevel(this) is Window window) {
+        scaling = (float) window.RenderScaling;
+      }
+
+      var bounds = this.Bounds;
+      width = (int) (scaling * bounds.Width);
+      height = (int) (scaling * bounds.Height);
+    }
   }
 }

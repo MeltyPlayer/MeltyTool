@@ -31,9 +31,7 @@ public class AudioWaveformGlPanel : BOpenTkControl {
   protected override void TeardownGl() { }
 
   protected override void RenderGl() {
-    // No idea why this scaling is necessary, it just is.
-    var width = (int) (this.Bounds.Width * 1.25);
-    var height = (int) (this.Bounds.Height * 1.25);
+    this.GetBoundsForGlViewport(out var width, out var height);
     GL.Viewport(0, 0, width, height);
 
     GL.ClearColor(0, 0, 0, 0);

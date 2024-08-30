@@ -1,4 +1,5 @@
-﻿using Avalonia.Input;
+﻿using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 using fin.animation;
@@ -12,6 +13,9 @@ using fin.ui.rendering.gl.model;
 using uni.config;
 using uni.model;
 using uni.ui.avalonia.common.gl;
+
+using Window = Avalonia.Controls.Window;
+
 
 namespace uni.ui.avalonia.resources.scene {
   public class SceneInstanceViewerGlPanel : BOpenTkControl, ISceneViewer {
@@ -208,9 +212,9 @@ namespace uni.ui.avalonia.resources.scene {
                        upwardVector,
                        cameraSpeed);
 
-      // No idea why this scaling is necessary, it just is.
-      this.viewerImpl_.Width = (int) (this.Bounds.Width * 1.25);
-      this.viewerImpl_.Height = (int) (this.Bounds.Height * 1.25);
+      this.GetBoundsForGlViewport(out var width, out var height);
+      this.viewerImpl_.Width = width;
+      this.viewerImpl_.Height = height;
 
       this.viewerImpl_.GlobalScale = DebugFlags.GLOBAL_SCALE;
       this.viewerImpl_.NearPlane = DebugFlags.NEAR_PLANE;
