@@ -72,8 +72,8 @@ public partial class Bti : IBinaryConvertible {
   public GX_MIN_TEXTURE_FILTER MinFilter;
   public GX_MAG_TEXTURE_FILTER MagFilter;
 
-  public byte MinLodTimes8;
-  public byte MaxLodTimes8;
+  public sbyte MinLodTimes8;
+  public sbyte MaxLodTimes8;
 
   public byte NrMipMap;
 
@@ -136,19 +136,28 @@ public partial class Bti : IBinaryConvertible {
   public IReadOnlyImage[] ToMipmapImages() {
     var mipmapImages = new IReadOnlyImage[this.NrMipMap];
 
-    using var br = new SchemaBinaryReader(this.Data!, Endianness.BigEndian);
+    using var br = new SchemaBinaryReader(this.Data, Endianness.BigEndian);
 
     if (this.Format != GxTextureFormat.INDEX4 &&
         this.Format != GxTextureFormat.INDEX8) {
       for (var i = 0; i < mipmapImages.Length; ++i) {
+        var initialOffset = br.Position;
+
         mipmapImages[i]
             = new GxImageReader(this.Width >> i, this.Height >> i, this.Format)
                 .ReadImage(br);
+
+        var finalOffset = br.Position;
+        if (finalOffset - initialOffset < 32) {
+          br.Position = initialOffset + 32;
+        }
       }
     } else {
       var isIndex4 = this.Format == GxTextureFormat.INDEX4;
 
       for (var m = 0; m < mipmapImages.Length; ++m) {
+        var initialOffset = br.Position;
+
         var width = this.Width >> m;
         var height = this.Height >> m;
 
@@ -189,6 +198,11 @@ public partial class Bti : IBinaryConvertible {
         }
 
         mipmapImages[m] = bitmap;
+
+        var finalOffset = br.Position;
+        if (finalOffset - initialOffset < 32) {
+          br.Position = initialOffset + 32;
+        }
       }
     }
 
@@ -202,7 +216,7 @@ public partial class Bti : IBinaryConvertible {
       int num2 = (int) this.Width + (4 - (int) this.Width % 4) % 4;
       int num3 = (int) this.Height + (8 - (int) this.Height % 8) % 8;
       int num4 = (int) this.Height + (4 - (int) this.Height % 4) % 4;
-      return this.Format switch {
+      var firstImageSize = this.Format switch {
           GxTextureFormat.I4         => num1 * num3 / 2,
           GxTextureFormat.I8         => num1 * num4,
           GxTextureFormat.A4_I4      => num1 * num4,
@@ -216,6 +230,13 @@ public partial class Bti : IBinaryConvertible {
           GxTextureFormat.S3TC1      => num2 * num4 / 2,
           _                          => -1
       };
+
+      var totalSize = 0;
+      for (var i = 0; i < this.NrMipMap; ++i) {
+        totalSize += firstImageSize >> (2 * i);
+      }
+
+      return totalSize;
     }
   }
 }

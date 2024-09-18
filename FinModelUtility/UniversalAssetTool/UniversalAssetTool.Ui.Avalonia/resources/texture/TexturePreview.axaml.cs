@@ -7,10 +7,13 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 
 using fin.image;
+using fin.image.formats;
 using fin.model;
 using fin.util.asserts;
 
 using ReactiveUI;
+
+using SixLabors.ImageSharp.PixelFormats;
 
 using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.model;
@@ -39,7 +42,7 @@ public class TexturePreviewViewModel : ViewModelBase {
     get => this.texture_;
     set {
       this.RaiseAndSetIfChanged(ref this.texture_, value);
-      this.Image = value?.AsAvaloniaImage() ?? missingImage_;
+      this.Image = value?.AsMergedMipmapAvaloniaImage() ?? missingImage_;
     }
   }
 
@@ -73,14 +76,54 @@ public partial class TexturePreview : UserControl {
       return;
     }
 
-    var formatName = "image/png";
-
     using var ms = new MemoryStream();
-    texture.WriteToStream(ms);
+    var firstImage = texture.Image;
+    var mipmapImages = texture.MipmapImages;
+
+    if (mipmapImages.Length == 1) {
+      firstImage.ExportToStream(ms, LocalImageFormat.PNG);
+    } else {
+      using var mergedMipmapImage = this.GetMergedMipmapImage_(texture);
+      mergedMipmapImage.ExportToStream(ms, LocalImageFormat.PNG);
+    }
 
     var dataObject = new DataObject();
+    var formatName = "image/png";
     dataObject.Set(formatName, ms.ToArray());
 
     await clipboard.SetDataObjectAsync(dataObject);
+  }
+
+  private unsafe Rgba32Image GetMergedMipmapImage_(IReadOnlyTexture texture) {
+    var firstImage = texture.Image;
+    var dst = new Rgba32Image(2 * firstImage.Width, firstImage.Height);
+    using var dstLock = dst.UnsafeLock();
+    var pixels = dstLock.pixelScan0;
+
+    var mipmapImages = texture.MipmapImages;
+    var baseDstY = 0;
+    for (var i = 0; i < mipmapImages.Length; i++) {
+      var baseDstX = i == 0 ? 0 : firstImage.Width;
+
+      var mipmapImage = mipmapImages[i];
+      mipmapImage.Access(get => {
+        for (var srcY = 0; srcY < mipmapImage.Height; ++srcY) {
+          for (var srcX = 0; srcX < mipmapImage.Width; ++srcX) {
+            get(srcX, srcY, out var r, out var g, out var b, out var a);
+
+            var dstX = baseDstX + srcX;
+            var dstY = baseDstY + srcY;
+
+            pixels[dstY * dst.Width + dstX] = new Rgba32(r, g, b, a);
+          }
+        }
+      });
+
+      if (i >= 1) {
+        baseDstY += mipmapImage.Height;
+      }
+    }
+
+    return dst;
   }
 }

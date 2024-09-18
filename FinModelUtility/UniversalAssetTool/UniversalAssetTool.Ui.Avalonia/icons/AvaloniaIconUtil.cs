@@ -55,14 +55,7 @@ public static class AvaloniaIconUtil {
       }
       default: {
         var data = new Rgba32[image.Width * image.Height];
-        image.Access(get => {
-          for (var y = 0; y < image.Height; ++y) {
-            for (var x = 0; x < image.Width; ++x) {
-              get(x, y, out var r, out var g, out var b, out var a);
-              data[y * image.Width + x] = new Rgba32(r, g, b, a);
-            }
-          }
-        });
+        BlitFinImageIntoArray_(image, data, 0, 0, image.Width);
 
         fixed (Rgba32* ptr = data) {
           bitmap = new Bitmap(PixelFormat.Rgba8888,
@@ -78,5 +71,82 @@ public static class AvaloniaIconUtil {
     }
 
     return imageCache_[image] = bitmap;
+  }
+
+  public static unsafe Bitmap AsMergedMipmapAvaloniaImage(
+      this IReadOnlyTexture texture) {
+    var mipmapImages = texture.MipmapImages;
+    if (mipmapImages.Length == 1) {
+      return texture.AsAvaloniaImage();
+    }
+
+    var firstImage = texture.Image;
+    var pixelSize = new PixelSize((int) (firstImage.Width * 1.5f),
+                                  firstImage.Height);
+    var dpi = new Vector(96, 96);
+    var stride = pixelSize.Width;
+    var data = new Rgba32[pixelSize.Width * pixelSize.Height];
+
+    var baseDstY = 0;
+    for (var i = 0; i < mipmapImages.Length; i++) {
+      var baseDstX = i == 0 ? 0 : firstImage.Width;
+
+      var mipmapImage = mipmapImages[i];
+      BlitFinImageIntoArray_(mipmapImage, data, baseDstX, baseDstY, stride);
+
+      if (i >= 1) {
+        baseDstY += mipmapImage.Height;
+      }
+    }
+
+    fixed (Rgba32* ptr = data) {
+      return new Bitmap(PixelFormat.Rgba8888,
+                        AlphaFormat.Premul,
+                        new IntPtr(ptr),
+                        pixelSize,
+                        dpi,
+                        stride);
+    }
+  }
+
+  private static void BlitFinImageIntoArray_(IReadOnlyImage src,
+                                             Memory<Rgba32> dstMemory,
+                                             int baseDstX,
+                                             int baseDstY,
+                                             int dstStride) {
+    var width = src.Width;
+    var height = src.Height;
+
+    switch (src) {
+      case Rgba32Image rgba32Image: {
+        var dstSpan = dstMemory.Span;
+        var dstX = baseDstX;
+
+        using var fastLock = rgba32Image.Lock();
+        var srcSpan = fastLock.Pixels;
+        for (var y = 0; y < height; ++y) {
+          var dstY = baseDstY + y;
+          var dstRowSpan = dstSpan.Slice(dstY * dstStride + dstX, width);
+          srcSpan.Slice(y * width, width).CopyTo(dstRowSpan);
+        }
+
+        break;
+      }
+      default: {
+        src.Access(get => {
+          var dstSpan = dstMemory.Span;
+          for (var y = 0; y < height; ++y) {
+            for (var x = 0; x < width; ++x) {
+              get(x, y, out var r, out var g, out var b, out var a);
+
+              var dstX = baseDstX + x;
+              var dstY = baseDstY + y;
+              dstSpan[dstY * dstStride + dstX] = new Rgba32(r, g, b, a);
+            }
+          }
+        });
+        break;
+      }
+    }
   }
 }
