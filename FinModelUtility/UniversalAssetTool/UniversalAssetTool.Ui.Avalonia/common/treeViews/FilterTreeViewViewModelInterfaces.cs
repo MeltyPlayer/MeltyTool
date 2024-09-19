@@ -1,28 +1,42 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 using Material.Icons;
 
+using ObservableCollections;
+
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.common.treeViews {
-  // Top-level view model types
+namespace uni.ui.avalonia.common.treeViews;
 
-  public interface IFilterTreeViewViewModel : IViewModelBase {
-    void ChangeSelection(INode node);
+// Top-level view model types
+
+public interface IFilter<T> {
+  bool MatchesNode(INode<T> node);
+}
+
+public interface IFilterTreeViewViewModel : IViewModelBase {
+  void ChangeSelection(INode node);
+  void UpdateFilter(string? text);
+}
+
+public interface IFilterTreeViewViewModel<T> : IFilterTreeViewViewModel {
+  event EventHandler<INode<T>>? NodeSelected;
+}
+
+// Node types
+public interface INode : IViewModelBase {
+  MaterialIconKind? Icon { get; }
+  string Label { get; }
+  bool InFilter { get; }
+}
+
+public interface INode<T> : INode {
+  T Value { get; }
+
+  INotifyCollectionChangedSynchronizedViewList<INode<T>>? FilteredSubNodes {
+    get;
   }
 
-  public interface IFilterTreeViewViewModel<T> : IFilterTreeViewViewModel {
-    event EventHandler<INode<T>>? NodeSelected;
-  }
-
-  // Node types
-  public interface INode : IViewModelBase {
-    MaterialIconKind? Icon { get; }
-    string Label { get; }
-  }
-
-  public interface INode<T> : INode {
-    ObservableCollection<INode<T>>? SubNodes { get; }
-  }
+  IFilter<T>? Filter { set; }
 }

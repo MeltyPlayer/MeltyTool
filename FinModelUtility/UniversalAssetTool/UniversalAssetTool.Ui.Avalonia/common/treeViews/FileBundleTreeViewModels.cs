@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
 
 using fin.audio.io;
 using fin.audio.io.importers.ogg;
@@ -14,62 +15,195 @@ using grezzo.api;
 
 using Material.Icons;
 
+using ObservableCollections;
+
 using uni.ui.avalonia.ViewModels;
 
-namespace uni.ui.avalonia.common.treeViews {
+namespace uni.ui.avalonia.common.treeViews;
 
-  // Top-level view model types
-  public class FileBundleTreeViewModel<T>
-      : ViewModelBase, IFilterTreeViewViewModel<T> {
-    public ObservableCollection<INode<T>> Nodes { get; init; }
+using IFileBundleNode = INode<IAnnotatedFileBundle>;
 
-    public event EventHandler<INode<T>>? NodeSelected;
+// Top-level view model types
+public class FileBundleTreeViewModel
+    : ViewModelBase, IFilterTreeViewViewModel<IAnnotatedFileBundle> {
+  private readonly IReadOnlyList<IFileBundleNode> nodes_;
 
-    public void ChangeSelection(INode node)
-      => this.NodeSelected?.Invoke(this, Asserts.AsA<INode<T>>(node));
+  private readonly ISynchronizedView<IFileBundleNode, IFileBundleNode>
+      filteredNodes_;
+
+  public FileBundleTreeViewModel(IReadOnlyList<IFileBundleNode> nodes) {
+    this.nodes_ = nodes;
+
+    var obsList = new ObservableList<IFileBundleNode>(nodes);
+    this.filteredNodes_ = obsList.CreateView(t => t);
+    this.FilteredNodes = this.filteredNodes_.ToNotifyCollectionChanged();
   }
 
-  public class FileBundleTreeViewModelForDesigner : FileBundleTreeViewModel<IAnnotatedFileBundle> {
-    public FileBundleTreeViewModelForDesigner() {
-      this.Nodes = [
-          new FileBundleDirectoryNode("Animals",
-          [
-              new FileBundleDirectoryNode("Mammals",
-              [
-                  new FileBundleLeafNode("Lion", new CmbModelFileBundle("foo", new FinFile()).Annotate(null)),
-                  new FileBundleLeafNode("Cat", new OggAudioFileBundle(new FinFile()).Annotate(null))
-              ])
-          ])
-      ];
+  public INotifyCollectionChangedSynchronizedViewList<INode> FilteredNodes {
+    get;
+  }
+
+  public event EventHandler<IFileBundleNode>? NodeSelected;
+
+  public void ChangeSelection(INode node)
+    => this.NodeSelected?.Invoke(this, Asserts.AsA<IFileBundleNode>(node));
+
+  public void UpdateFilter(string? text) {
+    var filter = FileBundleFilter.FromText(text);
+
+    foreach (var node in this.nodes_) {
+      node.Filter = filter;
+    }
+
+    if (filter == null) {
+      this.filteredNodes_.ResetFilter();
+      return;
+    }
+
+    this.filteredNodes_.AttachFilter(n => n.InFilter);
+  }
+}
+
+public class FileBundleTreeViewModelForDesigner()
+    : FileBundleTreeViewModel([
+        new FileBundleDirectoryNode("Animals",
+        [
+            new FileBundleDirectoryNode("Mammals",
+            [
+                new FileBundleLeafNode("Lion",
+                                       new CmbModelFileBundle(
+                                           "foo",
+                                           new FinFile()).Annotate(null)),
+                new FileBundleLeafNode("Cat",
+                                       new OggAudioFileBundle(new FinFile())
+                                           .Annotate(null))
+            ])
+        ])
+    ]);
+
+// Node types
+public class FileBundleDirectoryNode
+    : ViewModelBase, IFileBundleNode {
+  private readonly IReadOnlyList<IFileBundleNode>? subNodes_;
+
+  private readonly
+      ISynchronizedView<IFileBundleNode,
+          IFileBundleNode>? filteredSubNodes_;
+
+  public FileBundleDirectoryNode(
+      string label,
+      IReadOnlyList<IFileBundleNode>? subNodes) : this(label,
+    subNodes,
+    new HashSet<string>([label])) { }
+
+  public FileBundleDirectoryNode(
+      string label,
+      IReadOnlyList<IFileBundleNode>? subNodes,
+      IReadOnlySet<string> filterTerms) {
+    this.subNodes_ = subNodes;
+    this.Label = label;
+    this.FilterTerms = filterTerms;
+
+    var obsList = subNodes != null
+        ? new ObservableList<IFileBundleNode>(subNodes)
+        : null;
+    this.filteredSubNodes_ = obsList?.CreateView(t => t);
+    this.FilteredSubNodes = this.filteredSubNodes_?.ToNotifyCollectionChanged();
+  }
+
+  public IAnnotatedFileBundle? Value => null;
+
+  public INotifyCollectionChangedSynchronizedViewList<
+      IFileBundleNode>? FilteredSubNodes { get; }
+
+  public MaterialIconKind? Icon => null;
+  public string Label { get; }
+  public IReadOnlySet<string> FilterTerms { get; }
+
+  public IFilter<IAnnotatedFileBundle>? Filter {
+    set {
+      if (this.subNodes_ == null || this.FilteredSubNodes == null) {
+        return;
+      }
+
+      foreach (var node in this.subNodes_) {
+        node.Filter = value;
+      }
+
+      if (value == null) {
+        this.filteredSubNodes_?.ResetFilter();
+        this.InFilter = true;
+        return;
+      }
+
+      this.filteredSubNodes_?.AttachFilter(n => n.InFilter);
+      this.InFilter = this.subNodes_.Any(n => n.InFilter);
     }
   }
 
-  // Node types
-  public class FileBundleDirectoryNode(
-      string label,
-      ObservableCollection<INode<IAnnotatedFileBundle>>? subNodes = null)
-      : ViewModelBase, INode<IAnnotatedFileBundle> {
-    public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes { get; }
-      = subNodes;
+  public bool InFilter { get; private set; } = true;
+}
 
-    public MaterialIconKind? Icon => null;
+public class FileBundleLeafNode(string label, IAnnotatedFileBundle data)
+    : ViewModelBase, IFileBundleNode {
+  public INotifyCollectionChangedSynchronizedViewList<
+      IFileBundleNode>? FilteredSubNodes => null;
 
-    public string Label { get; } = label;
-  }
-
-  public class FileBundleLeafNode(string label, IAnnotatedFileBundle data)
-      : ViewModelBase, INode<IAnnotatedFileBundle> {
-    public ObservableCollection<INode<IAnnotatedFileBundle>>? SubNodes => null;
-
-    public MaterialIconKind? Icon => data.FileBundle switch {
+  public MaterialIconKind? Icon => data.FileBundle switch {
       IAudioFileBundle => MaterialIconKind.VolumeHigh,
       IImageFileBundle => MaterialIconKind.ImageOutline,
       IModelFileBundle => MaterialIconKind.CubeOutline,
       ISceneFileBundle => MaterialIconKind.Web,
-    };
+  };
 
-    public string Label { get; } = label;
+  public IAnnotatedFileBundle Value => data;
+  public string Label { get; } = label;
 
-    public IAnnotatedFileBundle Data => data;
+  public IFilter<IAnnotatedFileBundle>? Filter {
+    set => this.InFilter = value?.MatchesNode(this) ?? true;
   }
+
+  public bool InFilter { get; private set; } = true;
+}
+
+public class FileBundleFilter(IReadOnlySet<string> tokens)
+    : IFilter<IAnnotatedFileBundle> {
+  public static FileBundleFilter? FromText(string? text) {
+    var tokens = text?.Split(new[] { ' ', '\t', '\n' },
+                             StringSplitOptions.RemoveEmptyEntries |
+                             StringSplitOptions.TrimEntries);
+    return tokens?.Length > 0
+        ? new FileBundleFilter(new HashSet<string>(tokens))
+        : null;
+  }
+
+  public bool MatchesNode(IFileBundleNode node) {
+    foreach (var token in tokens) {
+      var fileBundle = node.Value.FileBundle;
+
+      if (this.ContainsToken_(node.Label, token)) {
+        goto FoundMatch;
+      }
+
+      if (fileBundle.GameName != null &&
+          this.ContainsToken_(fileBundle.GameName, token)) {
+        goto FoundMatch;
+      }
+
+      foreach (var file in fileBundle.Files) {
+        if (this.ContainsToken_(file.DisplayFullPath, token)) {
+          goto FoundMatch;
+        }
+      }
+
+      return false;
+
+      FoundMatch: ;
+    }
+
+    return true;
+  }
+
+  private bool ContainsToken_(string text, string token)
+    => text.Contains(token, StringComparison.OrdinalIgnoreCase);
 }

@@ -45,27 +45,28 @@
   <!-- Renders tree view. -->
   <DockPanel>
     <textboxes:AutocompleteTextbox
+        x:Name="autocompleteTextbox_"
         DockPanel.Dock="Top"
         Icon="Search"
         Placeholder="Search file bundles..." />
 
-    <controls:If Condition="{Binding Nodes, Converter={x:Static ObjectConverters.IsNotNull}}">
-      <TreeView ItemsSource="{Binding Nodes}"
+    <controls:If Condition="{Binding FilteredNodes, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TreeView ItemsSource="{Binding FilteredNodes}"
                 SelectionChanged="TreeView_OnSelectionChanged_"
                 Margin="-4 0">
         <TreeView.ItemTemplate>
-          <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+          <TreeDataTemplate ItemsSource="{Binding FilteredSubNodes}">
             <StackPanel Orientation="Horizontal">
               <controls:If Condition="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}">
                 <avalonia:MaterialIcon
-                  Kind="{Binding Icon}"
-                  Margin="-24 0 4 0"
-                  Height="16"
-                  Width="16" />
+                    Kind="{Binding Icon}"
+                    Margin="-24 0 4 0"
+                    Height="16"
+                    Width="16" />
               </controls:If>
               <TextBlock
-                Classes="regular"
-                Text="{Binding Label}" />
+                  Classes="regular"
+                  Text="{Binding Label}" />
             </StackPanel>
           </TreeDataTemplate>
         </TreeView.ItemTemplate>

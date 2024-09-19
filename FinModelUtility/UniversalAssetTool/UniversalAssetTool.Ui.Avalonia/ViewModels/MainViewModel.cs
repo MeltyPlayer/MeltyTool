@@ -78,7 +78,8 @@ public class MainViewModel : ViewModelBase {
       var rootDirectory
           = new RootFileBundleGatherer().GatherAllFiles(loadingProgress);
 
-      var totalNodeCount = this.GetTotalNodeCountWithinDirectory_(rootDirectory);
+      var totalNodeCount
+          = this.GetTotalNodeCountWithinDirectory_(rootDirectory);
       var counterProgress = new CounterPercentageProgress(totalNodeCount);
       counterProgress.OnProgressChanged += (_, progress)
           => fileTreeProgress.ReportProgress(progress);
@@ -129,9 +130,7 @@ public class MainViewModel : ViewModelBase {
         };
 
     AudioPlaylistService.OnPlaylistUpdated
-        += playlist => {
-          this.AudioPlayerPanel.AudioFileBundles = playlist;
-        };
+        += playlist => { this.AudioPlayerPanel.AudioFileBundles = playlist; };
   }
 
   public ProgressPanelViewModel FileBundleTreeAsyncPanelViewModel {
@@ -160,22 +159,22 @@ public class MainViewModel : ViewModelBase {
        directoryRoot.Subdirs.Sum(this.GetTotalNodeCountWithinDirectory_) +
        directoryRoot.FileBundles.Count;
 
-  private FileBundleTreeViewModel<IAnnotatedFileBundle> GetFileTreeViewModel_(
+  private FileBundleTreeViewModel GetFileTreeViewModel_(
       IFileBundleDirectory directoryRoot,
       CounterPercentageProgress counterPercentageProgress) {
-    var viewModel = new FileBundleTreeViewModel<IAnnotatedFileBundle> {
-        Nodes = new ObservableCollection<INode<IAnnotatedFileBundle>>(
+    var viewModel = new FileBundleTreeViewModel(
+        new ObservableCollection<INode<IAnnotatedFileBundle>>(
             directoryRoot
                 .Subdirs
                 .Select(subdir => this.CreateDirectoryNode_(
                             subdir,
                             counterPercentageProgress)))
-    };
+    );
 
     viewModel.NodeSelected
         += (_, node) => {
           if (node is FileBundleLeafNode leafNode) {
-            FileBundleService.OpenFileBundle(null, leafNode.Data.FileBundle);
+            FileBundleService.OpenFileBundle(null, leafNode.Value.FileBundle);
           }
         };
 
@@ -217,10 +216,16 @@ public class MainViewModel : ViewModelBase {
         text,
         new ObservableCollection<INode<IAnnotatedFileBundle>>(
             directory
-                .Subdirs.Select(d => this.CreateDirectoryNode_(d, counterPercentageProgress))
+                .Subdirs
+                .Select(
+                    d => this.CreateDirectoryNode_(
+                        d,
+                        counterPercentageProgress))
                 .Concat(
                     directory.FileBundles.Select(
-                        f => this.CreateFileNode_(f, counterPercentageProgress)))));
+                        f => this.CreateFileNode_(
+                            f,
+                            counterPercentageProgress)))));
   }
 
   private INode<IAnnotatedFileBundle> CreateFileNode_(
@@ -235,7 +240,7 @@ public class MainViewModel : ViewModelBase {
       text = Path.Join(parts.ToArray());
     }
 
-    return new FileBundleLeafNode(text ?? fileBundle.FileBundle.DisplayName,
-                                  fileBundle);
+    var label = text ?? fileBundle.FileBundle.DisplayName;
+    return new FileBundleLeafNode(label, fileBundle);
   }
 }
