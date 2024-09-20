@@ -52,7 +52,4 @@ public static class GcAdpcmDecoder {
 
     return pcm;
   }
-
-  public static byte GetPredictorScale(byte[] adpcm, int sample)
-    => adpcm[sample / GcAdpcmMath.SamplesPerFrame * GcAdpcmMath.BytesPerFrame];
 }

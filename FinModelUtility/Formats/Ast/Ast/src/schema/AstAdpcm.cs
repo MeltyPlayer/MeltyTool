@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 using fin.math;
 using fin.util.asserts;
 
@@ -114,10 +112,10 @@ public partial class Ast {
         var nibbles = frame[0x01 + sI / 2];
 
         var isLeftChannel = sampleIndex.GetBit(0);
-        var sample = isLeftChannel
+        int sample = isLeftChannel
             ? /* high nibble first */
-            GetLowNibbleSigned_(nibbles)
-            : GetHighNibbleSigned_(nibbles);
+            GcAdpcmMath.GetLowNibbleSigned(nibbles)
+            : GcAdpcmMath.GetHighNibbleSigned(nibbles);
         sample = ((sample * scale) << 11);
         sample = (sample + coef1 * hist1 + coef2 * hist2) >> 11;
 
@@ -128,14 +126,4 @@ public partial class Ast {
       }
     }
   }
-
-  private static readonly int[] nibbleToInt_ = [
-      0, 1, 2, 3, 4, 5, 6, 7, -8, -7, -6, -5, -4, -3, -2, -1
-  ];
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static int GetHighNibbleSigned_(byte n) => nibbleToInt_[n >> 4];
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static int GetLowNibbleSigned_(byte n) => nibbleToInt_[n & 0xf];
 }
