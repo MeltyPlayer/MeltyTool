@@ -1,0 +1,7 @@
+model		"amoeba_stretch.ase"
+
+anim		"stretch"	"amoeba_stretch.ase"		""
+anim		"stretch_fast"	"amoeba_stretch_fast.ase"	""
+
+type_move	amoeba
+type_collide	mesh

@@ -1,0 +1,9 @@
+model		"hoover_down.ase"
+
+anim		"down"	"hoover_down.ase"	""
+anim		"up"	"hoover_down.ase"	""		reverse
+anim		"on"	"hoover_on.ase"		"hoover_72.ogg"	loop
+anim		"dying"	"hoover_on.ase"		"hoover_72.ogg"	loop
+
+type_move	hoover
+type_collide	mesh

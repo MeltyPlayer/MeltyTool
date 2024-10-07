@@ -1,0 +1,4 @@
+model		"lev5.ASE"
+
+type_move	world
+type_collide	mesh

@@ -1,0 +1,8 @@
+model		"blacky_mini.ASE"
+
+anim		"chase"		"blacky_mini.ASE"		""
+anim		"death_broken"	"blacky_squashed_mini.ase"	""
+anim		"death_falling"	"blacky_squashed_mini.ase"	""
+anim		"squashed"	"blacky_squashed_mini.ase"	"squash_92.ogg"
+
+type_move	blacky_mini

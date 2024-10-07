@@ -1,0 +1,2 @@
+animframes	5
+animduration	0.7

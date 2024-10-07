@@ -1,0 +1,9 @@
+actor		"world5"
+name		"SILLY"
+message	"EVERYTHING YOU KNOW IS WRONG"
+time		20
+sound		"marble5.mp3"
+bonus		1	2000
+goal		5000
+
+roll_player

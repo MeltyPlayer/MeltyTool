@@ -1,0 +1,3 @@
+model		"lev2_bridge.ase"		loop
+type_collide	mesh
+specular	0.6

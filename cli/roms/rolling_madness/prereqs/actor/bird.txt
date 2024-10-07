@@ -1,0 +1,8 @@
+model		"bird.ase"	loop
+
+anim		"fast"		"bird_fast.ase"	""			loop
+anim		"explode"	"bird_expl.ase"	"bird_stuck_89.ogg"
+anim		"respawn"	"bird_expl.ase"	"bird_84.ogg"		reverse
+
+type_move	bird
+type_collide	sphere

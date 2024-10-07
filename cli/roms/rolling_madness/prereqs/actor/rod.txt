@@ -1,0 +1,2 @@
+model		"rod.ase"		loop
+type_collide	mesh

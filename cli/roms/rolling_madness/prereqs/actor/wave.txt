@@ -1,0 +1,2 @@
+model		"lev3_wave.ase"		loop
+type_collide	mesh

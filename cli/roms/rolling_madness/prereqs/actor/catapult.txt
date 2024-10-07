@@ -1,0 +1,5 @@
+model		"catapult.ase"
+anim		"throw"		"catapult_throw.ase"	""
+
+type_collide	mesh
+type_move	catapult

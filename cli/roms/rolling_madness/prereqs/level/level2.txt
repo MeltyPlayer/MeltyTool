@@ -1,0 +1,7 @@
+actor		"world2"
+name		"BEGINNER"
+time		60
+sound		"marble2.mp3"
+bonus		1	4000
+bonus		2	2000
+goal		2000

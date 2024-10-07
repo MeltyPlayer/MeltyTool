@@ -1,0 +1,4 @@
+model		"flag2.ase"		loop
+
+type_collide	mesh
+sound		"bounce_metal_66.ogg"

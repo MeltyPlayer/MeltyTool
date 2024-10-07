@@ -1,0 +1,8 @@
+model		"stick_idle_mini.ase"
+
+anim		"bend"		"stick_bend_mini.ase"		""
+anim		"rise"		"stick_bend_mini.ase"		""		reverse
+anim		"squashed"	"stick_squashed_mini.ase"	"squash_92.ogg"
+
+type_move	stick_mini
+type_collide	mesh

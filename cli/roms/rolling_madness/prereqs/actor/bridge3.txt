@@ -1,0 +1,2 @@
+model		"lev6_bridge3.ase"	loop	no_interpolation
+type_collide	mesh

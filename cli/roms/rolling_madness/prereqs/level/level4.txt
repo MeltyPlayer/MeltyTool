@@ -1,0 +1,5 @@
+actor		"world4"
+name		"AERIAL"
+time		35
+sound		"marble4.mp3"
+goal		4000

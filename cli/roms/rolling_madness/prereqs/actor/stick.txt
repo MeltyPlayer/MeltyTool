@@ -1,0 +1,9 @@
+model		"stick_idle.ase"
+
+anim		"bend"		"stick_bend.ase"	""
+anim		"rise"		"stick_bend.ase"	""	reverse
+anim		"jump start"	"stick_jump_start.ase"	""
+anim		"jump"		"stick_jump.ase"	""	reverse
+
+type_move	stick
+type_collide	mesh

@@ -1,0 +1,17 @@
+model				"player.ase"
+
+anim		"respawn"	"player_expl.ASE"	"respawn_60.ogg"	reverse
+anim		"dizzy"		"player_dizzy.ASE"	"dizzy_57.ogg"
+anim		"death_broken"	"player_broken.ASE"	"broken_56.ogg"
+anim		"death_falling"	"player.ASE"		"fall_69.ogg"
+anim		"melt"		"player_melt.ASE"	"melt_94.ogg"
+anim		"tube"		"player.ASE"		"tube_53.ogg"
+anim		"explode"	"player_expl.ASE"	"explode_62.ogg"
+anim		"hoover"	"player_hoover.ASE"	""
+
+
+type_move	player
+sound		"bounce_52.ogg"
+
+env		"player_env.jpg"
+trail		"particle.png"

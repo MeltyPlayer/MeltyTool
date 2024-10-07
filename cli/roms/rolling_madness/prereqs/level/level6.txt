@@ -1,0 +1,6 @@
+actor		"world6"
+name		"ULTIMATE"
+time		21
+sound		"marble6.mp3"
+bonus		1	2000
+goal		6000

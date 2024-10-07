@@ -1,0 +1,9 @@
+model		"blacky.ASE"
+
+anim		"chase"		"blacky.ASE"		""
+anim		"death_broken"	"blacky_broken.ASE"	"broken_56.ogg"
+anim		"death_falling"	"blacky.ASE"		"fall_69.ogg"
+
+type_move	blacky
+
+sound		"bounce_blacky_50.ogg"

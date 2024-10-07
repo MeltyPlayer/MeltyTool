@@ -1,0 +1,6 @@
+actor		"world3"
+name		"INTERMEDIATE"
+time		35
+sound		"marble3.mp3"
+bonus		1	2000
+goal		3000

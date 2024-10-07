@@ -1,0 +1,7 @@
+actor		"world1"
+name		"PRACTICE"
+time		60
+sound		"marble1.mp3"
+bonus		1	3000
+bonus		2	3500
+goal		1000

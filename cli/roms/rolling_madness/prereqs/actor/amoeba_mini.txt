@@ -1,0 +1,8 @@
+model		"amoeba_stretch_mini.ase"
+
+anim		"stretch"	"amoeba_stretch_mini.ase"	""
+anim		"stretch_fast"	"amoeba_stretch_mini.ase"	""
+anim		"squashed"	"amoeba_squashed_mini.ase"	"squash_92.ogg"
+
+type_move	amoeba_mini
+type_collide	mesh
