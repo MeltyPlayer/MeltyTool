@@ -1,0 +1,24 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+typedef struct {
+  string value;
+} String;
+
+uint imgCount0;
+String imgs0[imgCount0] <optimize=false>;
+
+uint imgCount1;
+String imgs1[imgCount1] <optimize=false>;
