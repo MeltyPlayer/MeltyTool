@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
+using fin.color;
 using fin.util.asserts;
 using fin.util.color;
 
@@ -20,7 +21,7 @@ namespace jsystem.GCN;
 
 public partial class BMD {
   public partial class VTX1Section {
-    public Color[][] Colors = new Color[2][];
+    public IColor[][] Colors = new IColor[2][];
     public Texcoord[][] Texcoords = new Texcoord[8][];
     public const string Signature = "VTX1";
     public DataBlockHeader Header;
@@ -189,67 +190,9 @@ public partial class BMD {
           _                           => throw new ArgumentOutOfRangeException()
       };
 
-      var colors = new Color[colorCount];
+      var colors = this.Colors[colorIndex] = new IColor[colorCount];
       for (var i = 0; i < colorCount; ++i) {
-        Color color;
-        switch (colorDataType) {
-          case GxColorComponentType.RGB565: {
-            ColorUtil.SplitRgb565(br.ReadUInt16(),
-                                  out var r,
-                                  out var g,
-                                  out var b);
-            color = new Color(r, g, b, 255);
-            break;
-          }
-          case GxColorComponentType.RGB8: {
-            color = new Color(br.ReadByte(),
-                              br.ReadByte(),
-                              br.ReadByte(),
-                              255);
-            break;
-          }
-          case GxColorComponentType.RGBX8: {
-            color = new Color(br.ReadByte(),
-                              br.ReadByte(),
-                              br.ReadByte(),
-                              br.ReadByte());
-            break;
-          }
-          case GxColorComponentType.RGBA4: {
-            throw new ArgumentOutOfRangeException();
-          }
-          case GxColorComponentType.RGBA6: {
-            throw new ArgumentOutOfRangeException();
-          }
-          case GxColorComponentType.RGBA8: {
-            color = new Color(br.ReadByte(),
-                              br.ReadByte(),
-                              br.ReadByte(),
-                              br.ReadByte());
-            break;
-          }
-          default: throw new ArgumentOutOfRangeException();
-        }
-
-        Asserts.Nonnull(color);
-
-        colors[i] = color;
-      }
-
-      this.Colors[colorIndex] = colors;
-    }
-
-    public class Color(byte r, byte g, byte b, byte a) {
-      public byte R = r;
-      public byte G = g;
-      public byte B = b;
-      public byte A = a;
-
-      public static implicit operator System.Drawing.Color(Color c) {
-        return System.Drawing.Color.FromArgb((int) c.A,
-                                             (int) c.R,
-                                             (int) c.G,
-                                             (int) c.B);
+        colors[i] = GxColorUtil.ReadColor(br, colorDataType);
       }
     }
 

@@ -402,10 +402,10 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
                     var colorIndex = point.ColorIndex[c];
                     var color = vertexColors[c][colorIndex];
                     vertex.SetColorBytes(c,
-                                         color.R,
-                                         color.G,
-                                         color.B,
-                                         color.A);
+                                         color.Rb,
+                                         color.Gb,
+                                         color.Bb,
+                                         color.Ab);
                   }
                 }
 
