@@ -21,6 +21,7 @@ using fin.util.enums;
 using fin.util.hex;
 
 using gx;
+using gx.vertex;
 
 using schema.binary;
 
@@ -418,10 +419,10 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                   .ToArray();
 
           var finPrimitive = datPrimitive.Type switch {
-              GxOpcode.DRAW_TRIANGLES =>
+              GxPrimitiveType.GX_TRIANGLES =>
                   finMesh.AddTriangles(finVertices),
-              GxOpcode.DRAW_QUADS => finMesh.AddQuads(finVertices),
-              GxOpcode.DRAW_TRIANGLE_STRIP => finMesh.AddTriangleStrip(
+              GxPrimitiveType.GX_QUADS => finMesh.AddQuads(finVertices),
+              GxPrimitiveType.GX_TRIANGLESTRIP => finMesh.AddTriangleStrip(
                   finVertices)
           };
 

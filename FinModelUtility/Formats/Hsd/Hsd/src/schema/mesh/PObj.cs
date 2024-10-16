@@ -300,7 +300,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
           }
 
           this.Primitives.Add(new DatPrimitive {
-              Type = opcode,
+              Type = (GxPrimitiveType) opcode,
               Vertices = vertices
           });
           break;
@@ -415,7 +415,7 @@ public static class BinaryReaderExtensions {
 }
 
 public class DatPrimitive {
-  public required GxOpcode Type { get; init; }
+  public required GxPrimitiveType Type { get; init; }
   public required IReadOnlyList<DatVertex> Vertices { get; init; }
 }
 
