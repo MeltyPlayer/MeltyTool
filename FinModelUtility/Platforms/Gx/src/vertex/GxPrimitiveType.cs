@@ -1,0 +1,12 @@
+﻿namespace gx.vertex;
+
+public enum GxPrimitiveType {
+  GX_QUADS = GxOpcode.DRAW_QUADS,
+  GX_QUADS_2 = GxOpcode.DRAW_QUADS_2,
+  GX_TRIANGLES = GxOpcode.DRAW_TRIANGLES,
+  GX_TRIANGLESTRIP = GxOpcode.DRAW_TRIANGLE_STRIP,
+  GX_TRIANGLEFAN = GxOpcode.DRAW_TRIANGLE_FAN,
+  GX_LINES = GxOpcode.DRAW_LINES,
+  GX_LINESTRIP = GxOpcode.DRAW_LINE_STRIP,
+  GX_POINTS = GxOpcode.DRAW_POINTS,
+}

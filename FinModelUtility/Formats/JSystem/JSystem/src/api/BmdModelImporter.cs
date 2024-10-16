@@ -18,6 +18,7 @@ using fin.schema.matrix;
 using fin.util.asserts;
 
 using gx;
+using gx.vertex;
 
 using jsystem._3D_Formats;
 using jsystem.exporter;
@@ -34,7 +35,6 @@ using schema.binary;
 namespace jsystem.api;
 
 using MkdsNode = MA.Node;
-using GxPrimitiveType = BMD.SHP1Section.Batch.Packet.Primitive.GXPrimitive;
 
 public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
   public IModel Import(BmdModelFileBundle modelFileBundle) {
@@ -175,6 +175,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
           // TODO: What does this mean???
           continue;
         }
+
         var bcxJoint = bcx.Anx1.Joints[jointIndex];
 
         var boneTracks = animation.AddBoneTracks(bone);
@@ -284,6 +285,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
           foreach (var primitive in scheduledDrawOnWayDownPrimitives) {
             primitive.SetInversePriority(currentRenderIndex++);
           }
+
           scheduledDrawOnWayDownPrimitives.Clear();
           break;
         }
@@ -292,6 +294,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
           foreach (var primitive in scheduledDrawOnWayUpPrimitives) {
             primitive.SetInversePriority(currentRenderIndex++);
           }
+
           scheduledDrawOnWayUpPrimitives.Clear();
           break;
         }
@@ -356,6 +359,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
                     new BoneWeight(bone, FinMatrix4x4Util.IDENTITY, 1)
                 ];
               }
+
               weightsTable[i] =
                   finSkin.GetOrCreateBoneWeights(
                       VertexSpace.RELATIVE_TO_BONE,
@@ -375,6 +379,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
                   throw new Exception(
                       "How can a point not have a position??");
                 }
+
                 var position = vertexPositions[point.PosIndex];
                 var vertex =
                     finSkin.AddVertex(position.X, position.Y, position.Z);
@@ -416,40 +421,20 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
 
               Asserts.Nonnull(currentMaterial);
 
-              IPrimitive finPrimitive;
-              switch (gxPrimitiveType) {
-                case GxPrimitiveType.GX_TRIANGLES: {
-                  finPrimitive = finMesh.AddTriangles(vertices)
-                                        .SetMaterial(
-                                            currentMaterial.Material);
-                  break;
-                }
+              var finPrimitive = gxPrimitiveType switch {
+                  GxPrimitiveType.GX_TRIANGLES
+                      => finMesh.AddTriangles(vertices),
+                  GxPrimitiveType.GX_TRIANGLESTRIP
+                      => finMesh.AddTriangleStrip(vertices),
+                  GxPrimitiveType.GX_TRIANGLEFAN
+                      => finMesh.AddTriangleFan(vertices),
+                  GxPrimitiveType.GX_QUADS
+                      => finMesh.AddQuads(vertices),
+                  _ => throw new NotSupportedException(
+                      $"Unsupported primitive type: {gxPrimitiveType}")
+              };
 
-                case GxPrimitiveType.GX_TRIANGLESTRIP: {
-                  finPrimitive =
-                      finMesh.AddTriangleStrip(vertices)
-                             .SetMaterial(currentMaterial.Material);
-                  break;
-                }
-
-                case GxPrimitiveType.GX_TRIANGLEFAN: {
-                  finPrimitive = finMesh.AddTriangleFan(vertices)
-                                        .SetMaterial(
-                                            currentMaterial.Material);
-                  break;
-                }
-
-                case GxPrimitiveType.GX_QUADS: {
-                  finPrimitive =
-                      finMesh.AddQuads(vertices)
-                             .SetMaterial(currentMaterial.Material);
-                  break;
-                }
-
-                default:
-                  throw new NotSupportedException(
-                      $"Unsupported primitive type: {gxPrimitiveType}");
-              }
+              finPrimitive.SetMaterial(currentMaterial.Material);
 
               var renderOrder = currentMaterialEntry?.RenderOrder ??
                                 RenderOrder.DRAW_ON_WAY_DOWN;
@@ -466,6 +451,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
               }
             }
           }
+
           break;
       }
     }

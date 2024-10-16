@@ -203,20 +203,19 @@ public partial class BMD {
           int num1 = 0;
           while (!flag) {
             Primitive primitive = new Primitive();
-            primitive.Type = (Primitive.GXPrimitive) br.ReadByte();
+            primitive.Type = (GxPrimitiveType) br.ReadByte();
             ++num1;
-            if (primitive.Type == (Primitive.GXPrimitive) 0 ||
-                num1 >= Length) {
+            if (primitive.Type == 0 || num1 >= Length) {
               flag = true;
             } else {
               ushort num2 = br.ReadUInt16();
               num1 += 2;
               primitive.Points = new Primitive.Index[(int) num2];
               for (int index1 = 0; index1 < (int) num2; ++index1) {
-                primitive.Points[index1] = new Primitive.Index();
-                for (int index2 = 0; index2 < Attributes.Length; ++index2) {
+                var point = primitive.Points[index1] = new Primitive.Index();
+                foreach (var attribute in Attributes) {
                   ushort num3 = 0;
-                  switch (Attributes[index2].DataType) {
+                  switch (attribute.DataType) {
                     case GxAttributeType.DIRECT:
                       num3 = (ushort) br.ReadByte();
                       ++num1;
@@ -227,28 +226,26 @@ public partial class BMD {
                       break;
                   }
 
-                  switch (Attributes[index2].Attribute) {
+                  switch (attribute.Attribute) {
                     case GxVertexAttribute.PosMatIdx:
-                      primitive.Points[index1].MatrixIndex = num3;
+                      point.MatrixIndex = num3;
                       break;
                     case GxVertexAttribute.Position:
-                      primitive.Points[index1].PosIndex = num3;
+                      point.PosIndex = num3;
                       break;
                     case GxVertexAttribute.Normal:
-                      primitive.Points[index1].NormalIndex = num3;
+                      point.NormalIndex = num3;
                       break;
                     case GxVertexAttribute.Color0 or GxVertexAttribute.Color1:
-                      primitive.Points[index1]
-                               .ColorIndex[
-                                   (Attributes[index2].Attribute -
-                                    GxVertexAttribute.Color0)] = num3;
+                      point.ColorIndex[
+                          (attribute.Attribute -
+                           GxVertexAttribute.Color0)] = num3;
                       break;
                     case >= GxVertexAttribute.Tex0Coord
                          and <= GxVertexAttribute.Tex7Coord:
-                      primitive.Points[index1]
-                               .TexCoordIndex[
-                                   (Attributes[index2].Attribute -
-                                    GxVertexAttribute.Tex0Coord)] = num3;
+                      point.TexCoordIndex[
+                          (attribute.Attribute -
+                           GxVertexAttribute.Tex0Coord)] = num3;
                       break;
                   }
                 }
@@ -262,18 +259,8 @@ public partial class BMD {
         }
 
         public class Primitive {
-          public GXPrimitive Type;
+          public GxPrimitiveType Type;
           public Index[] Points;
-
-          public enum GXPrimitive {
-            GX_QUADS = 128,         // 0x00000080
-            GX_TRIANGLES = 144,     // 0x00000090
-            GX_TRIANGLESTRIP = 152, // 0x00000098
-            GX_TRIANGLEFAN = 160,   // 0x000000A0
-            GX_LINES = 168,         // 0x000000A8
-            GX_LINESTRIP = 176,     // 0x000000B0
-            GX_POINTS = 184,        // 0x000000B8
-          }
 
           public class Index {
             public ushort[] ColorIndex = new ushort[2];

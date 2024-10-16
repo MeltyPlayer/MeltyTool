@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 using fin.util.asserts;
 
-using gx;
 using gx.vertex;
 
 namespace mod.schema.mod {
@@ -76,7 +75,8 @@ namespace mod.schema.mod {
         return this.texMat[texMatId];
       }
 
-      if (enumval is >= GxVertexAttribute.Tex0Coord and <= GxVertexAttribute.Tex7Coord) {
+      if (enumval is >= GxVertexAttribute.Tex0Coord
+                     and <= GxVertexAttribute.Tex7Coord) {
         var texCoordId = enumval - GxVertexAttribute.Tex0Coord;
         return this.texcoord[texCoordId] != GxAttributeType.NOT_PRESENT;
       }
@@ -185,23 +185,5 @@ namespace mod.schema.mod {
         this.normal = GxAttributeType.INDEX_16;
       }
     }
-
-    /*def __str__(self) :
-        return str([x for x in self.active_attributes()])
-
-    def write_dmd(self, f):
-        f.write("vcd ")
-        for  attr in self.all_attributes():
-            if attr is None:
-                f.write("0 ")
-            else:
-                attr, fmt = attr
-                if fmt is None:
-                    f.write("1 ")
-                elif fmt == VTXFMT.INDEX16:
-                    f.write("1 ")
-                else:
-                    f.write("1 ")
-        f.write("\n")*/
   }
 }
