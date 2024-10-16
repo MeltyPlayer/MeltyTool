@@ -1,5 +1,6 @@
 ﻿using fin.schema;
 
+using gx;
 using gx.vertex;
 
 using schema.binary;
@@ -10,8 +11,8 @@ namespace jsystem.schema.j3dgraph.bmd.vtx1;
 [BinarySchema]
 public partial class ArrayFormat : IBinaryConvertible {
   public GxVertexAttribute ArrayType;
-  public uint ComponentCount;
-  public uint DataType;
+  public GxComponentCount ComponentCount { get; set; }
+  public GxComponentType DataType;
   public byte DecimalPoint;
 
   [Unknown]

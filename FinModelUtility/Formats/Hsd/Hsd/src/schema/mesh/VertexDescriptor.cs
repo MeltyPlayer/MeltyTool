@@ -6,22 +6,12 @@ using schema.binary.attributes;
 
 namespace sysdolphin.schema.mesh;
 
-public enum ColorComponentType : uint {
-  RGB565,
-  RGB888,
-  RGBX8888,
-  RGBA4444,
-  RGBA6,
-  RGBA8888,
-}
-
 [BinarySchema]
 public partial class VertexDescriptor : IBinaryConvertible {
   public GxVertexAttribute Attribute { get; set; }
 
   [IntegerFormat(SchemaIntegerType.UINT32)]
   public GxAttributeType AttributeType { get; set; }
-
 
   [IntegerFormat(SchemaIntegerType.UINT32)]
   public GxComponentCount ComponentCountType { get; set; }
@@ -45,17 +35,15 @@ public partial class VertexDescriptor : IBinaryConvertible {
       },
   };
 
-
-  [IntegerFormat(SchemaIntegerType.UINT32)]
-  public uint RawComponentType { get; set; }
+  public GxComponentType RawComponentType { get; set; }
 
   [Skip]
-  public GxComponentType AxesComponentType
-    => (GxComponentType) this.RawComponentType;
+  public GxAxisComponentType AxesComponentType
+    => (GxAxisComponentType) this.RawComponentType;
 
   [Skip]
-  public ColorComponentType ColorComponentType
-    => (ColorComponentType) this.RawComponentType;
+  public GxColorComponentType ColorComponentType
+    => (GxColorComponentType) this.RawComponentType;
 
 
   public byte Scale { get; set; }

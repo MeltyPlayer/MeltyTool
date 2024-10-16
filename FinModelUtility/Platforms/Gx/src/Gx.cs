@@ -47,12 +47,29 @@ public enum GxComponentCount {
 }
 
 public enum GxComponentType {
+  U8 = GxAxisComponentType.U8,
+  S8 = GxAxisComponentType.S8,
+  U16 = GxAxisComponentType.U16,
+  S16 = GxAxisComponentType.S16,
+  F32 = GxAxisComponentType.F32,
+
+  RGB565 = GxColorComponentType.RGB565,
+  RGB8 = GxColorComponentType.RGB8,
+  RGBX8 = GxColorComponentType.RGBX8,
+  RGBA4 = GxColorComponentType.RGBA4,
+  RGBA6 = GxColorComponentType.RGBA6,
+  RGBA8 = GxColorComponentType.RGBA8,
+}
+
+public enum GxAxisComponentType {
   U8 = 0,
   S8 = 1,
   U16 = 2,
   S16 = 3,
   F32 = 4,
+}
 
+public enum GxColorComponentType {
   RGB565 = 0,
   RGB8 = 1,
   RGBX8 = 2,

@@ -313,18 +313,18 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
   }
 
   private IColor ReadColorAttribute_(IBinaryReader br,
-                                     ColorComponentType colorComponentType) {
+                                     GxColorComponentType colorComponentType) {
     switch (colorComponentType) {
-      case ColorComponentType.RGB565: {
+      case GxColorComponentType.RGB565: {
         return ColorUtil.ParseRgb565(br.ReadUInt16());
       }
-      case ColorComponentType.RGB888: {
+      case GxColorComponentType.RGB8: {
         return FinColor.FromRgbBytes(
             br.ReadByte(),
             br.ReadByte(),
             br.ReadByte());
       }
-      case ColorComponentType.RGBX8888: {
+      case GxColorComponentType.RGBX8: {
         var color = FinColor.FromRgbBytes(
             br.ReadByte(),
             br.ReadByte(),
@@ -332,7 +332,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
         br.ReadByte();
         return color;
       }
-      case ColorComponentType.RGBA4444: {
+      case GxColorComponentType.RGBA4: {
         ColorUtil.SplitRgba4444(
             br.ReadUInt16(),
             out var r,
@@ -341,7 +341,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
             out var a);
         return FinColor.FromRgbaBytes(r, g, b, a);
       }
-      case ColorComponentType.RGBA6: {
+      case GxColorComponentType.RGBA6: {
         var c = br.ReadUInt24();
         var r = ((((c >> 18) & 0x3F) << 2) |
                  (((c >> 18) & 0x3F) >> 4)) /
@@ -356,7 +356,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                 (float) 0xFF;
         return FinColor.FromRgbaFloats(r, g, b, a);
       }
-      case ColorComponentType.RGBA8888: {
+      case GxColorComponentType.RGBA8: {
         return FinColor.FromRgbaBytes(
             br.ReadByte(),
             br.ReadByte(),
@@ -404,11 +404,11 @@ public static class BinaryReaderExtensions {
     for (var i = 0; i < descriptor.ComponentCount; ++i) {
       floats[i] = scaleMultiplier *
                   descriptor.AxesComponentType switch {
-                      GxComponentType.U8  => br.ReadByte(),
-                      GxComponentType.S8  => br.ReadSByte(),
-                      GxComponentType.U16 => br.ReadUInt16(),
-                      GxComponentType.S16 => br.ReadInt16(),
-                      GxComponentType.F32 => br.ReadSingle(),
+                      GxAxisComponentType.U8  => br.ReadByte(),
+                      GxAxisComponentType.S8  => br.ReadSByte(),
+                      GxAxisComponentType.U16 => br.ReadUInt16(),
+                      GxAxisComponentType.S16 => br.ReadInt16(),
+                      GxAxisComponentType.F32 => br.ReadSingle(),
                   };
     }
   }

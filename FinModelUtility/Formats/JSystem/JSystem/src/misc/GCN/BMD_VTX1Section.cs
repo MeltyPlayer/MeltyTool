@@ -86,13 +86,13 @@ public partial class BMD {
         int Length,
         IBinaryReader br) {
       List<float> floatList = [];
-      switch (Format.DataType) {
-        case 3:
+      switch ((GxAxisComponentType) Format.DataType) {
+        case GxAxisComponentType.S16:
           float num1 = (float) Math.Pow(0.5, (double) Format.DecimalPoint);
           for (int index = 0; index < Length / 2; ++index)
             floatList.Add((float) br.ReadInt16() * num1);
           break;
-        case 4:
+        case GxAxisComponentType.F32:
           floatList.AddRange((IEnumerable<float>) br.ReadSingles(Length / 4));
           break;
         default:
@@ -102,13 +102,13 @@ public partial class BMD {
       switch (Format.ArrayType) {
         case GxVertexAttribute.Position:
           switch (Format.ComponentCount) {
-            case 0:
+            case GxComponentCount.POS_XY:
               this.Positions = new Vector3[floatList.Count / 2];
               for (int index = 0; index < floatList.Count - 1; index += 2)
                 this.Positions[index / 2] =
                     new Vector3(floatList[index], floatList[index + 1], 0.0f);
               return;
-            case 1:
+            case GxComponentCount.POS_XYZ:
               this.Positions = new Vector3[floatList.Count / 3];
               for (int index = 0; index < floatList.Count - 2; index += 3)
                 this.Positions[index / 3] = new Vector3(
@@ -132,13 +132,13 @@ public partial class BMD {
         case >= GxVertexAttribute.Tex0Coord and <= GxVertexAttribute.Tex7Coord:
           var texCoordIndex = Format.ArrayType - GxVertexAttribute.Tex0Coord;
           switch (Format.ComponentCount) {
-            case 0:
+            case GxComponentCount.TEX_S:
               this.Texcoords[texCoordIndex] = new Texcoord[floatList.Count];
               for (int index = 0; index < floatList.Count; ++index)
                 this.Texcoords[texCoordIndex][index] =
                     new Texcoord(floatList[index], 0.0f);
               return;
-            case 1:
+            case GxComponentCount.TEX_ST:
               this.Texcoords[texCoordIndex] =
                   new Texcoord[floatList.Count / 2];
               for (int index = 0; index < floatList.Count - 1; index += 2)
@@ -155,15 +155,6 @@ public partial class BMD {
       }
     }
 
-    private enum ColorDataType {
-      RGB565 = 0,
-      RGB8 = 1,
-      RGBX8 = 2,
-      RGBA4 = 3,
-      RGBA6 = 4,
-      RGBA8 = 5,
-    }
-
     /// <summary>
     ///   Colors are a special case:
     ///   https://wiki.cloudmodding.com/tww/BMD_and_BDL#Data_Types
@@ -174,35 +165,35 @@ public partial class BMD {
         IBinaryReader br) {
       var colorIndex = Format.ArrayType - GxVertexAttribute.Color0;
 
-      var colorDataType = (ColorDataType) Format.DataType;
+      var colorDataType = (GxColorComponentType) Format.DataType;
       var expectedComponentCount = colorDataType switch {
-          ColorDataType.RGB565 => 3,
-          ColorDataType.RGB8   => 3,
-          ColorDataType.RGBX8  => 4,
-          ColorDataType.RGBA4  => 4,
-          ColorDataType.RGBA6  => 4,
-          ColorDataType.RGBA8  => 4,
-          _                    => throw new ArgumentOutOfRangeException()
+          GxColorComponentType.RGB565 => 3,
+          GxColorComponentType.RGB8   => 3,
+          GxColorComponentType.RGBX8  => 4,
+          GxColorComponentType.RGBA4  => 4,
+          GxColorComponentType.RGBA6  => 4,
+          GxColorComponentType.RGBA8  => 4,
+          _                           => throw new ArgumentOutOfRangeException()
       };
 
       var actualComponentCount = (int) (3 + Format.ComponentCount);
       Asserts.Equal(expectedComponentCount, actualComponentCount);
 
       var colorCount = colorDataType switch {
-          ColorDataType.RGB565 => byteLength / 2,
-          ColorDataType.RGB8   => byteLength / 3,
-          ColorDataType.RGBX8  => byteLength / 4,
-          ColorDataType.RGBA4  => byteLength / 2,
-          ColorDataType.RGBA6  => byteLength / 3,
-          ColorDataType.RGBA8  => byteLength / 4,
-          _                    => throw new ArgumentOutOfRangeException()
+          GxColorComponentType.RGB565 => byteLength / 2,
+          GxColorComponentType.RGB8   => byteLength / 3,
+          GxColorComponentType.RGBX8  => byteLength / 4,
+          GxColorComponentType.RGBA4  => byteLength / 2,
+          GxColorComponentType.RGBA6  => byteLength / 3,
+          GxColorComponentType.RGBA8  => byteLength / 4,
+          _                           => throw new ArgumentOutOfRangeException()
       };
 
       var colors = new Color[colorCount];
       for (var i = 0; i < colorCount; ++i) {
         Color color;
         switch (colorDataType) {
-          case ColorDataType.RGB565: {
+          case GxColorComponentType.RGB565: {
             ColorUtil.SplitRgb565(br.ReadUInt16(),
                                   out var r,
                                   out var g,
@@ -210,27 +201,27 @@ public partial class BMD {
             color = new Color(r, g, b, 255);
             break;
           }
-          case ColorDataType.RGB8: {
+          case GxColorComponentType.RGB8: {
             color = new Color(br.ReadByte(),
                               br.ReadByte(),
                               br.ReadByte(),
                               255);
             break;
           }
-          case ColorDataType.RGBX8: {
+          case GxColorComponentType.RGBX8: {
             color = new Color(br.ReadByte(),
                               br.ReadByte(),
                               br.ReadByte(),
                               br.ReadByte());
             break;
           }
-          case ColorDataType.RGBA4: {
+          case GxColorComponentType.RGBA4: {
             throw new ArgumentOutOfRangeException();
           }
-          case ColorDataType.RGBA6: {
+          case GxColorComponentType.RGBA6: {
             throw new ArgumentOutOfRangeException();
           }
-          case ColorDataType.RGBA8: {
+          case GxColorComponentType.RGBA8: {
             color = new Color(br.ReadByte(),
                               br.ReadByte(),
                               br.ReadByte(),
