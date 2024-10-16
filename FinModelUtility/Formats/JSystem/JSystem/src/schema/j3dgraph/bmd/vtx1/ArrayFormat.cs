@@ -11,7 +11,7 @@ namespace jsystem.schema.j3dgraph.bmd.vtx1;
 [BinarySchema]
 public partial class ArrayFormat : IBinaryConvertible {
   public GxVertexAttribute ArrayType;
-  public GxComponentCount ComponentCount { get; set; }
+  public GxComponentCountType ComponentCountType { get; set; }
   public GxComponentType DataType;
   public byte DecimalPoint;
 

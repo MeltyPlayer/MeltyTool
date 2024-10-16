@@ -209,7 +209,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
 
               if (vertexAttribute == GxVertexAttribute.Color0 &&
                   vertexFormat == GxAttributeType.DIRECT) {
-                color = GxColorUtil.ReadColor(
+                color = GxAttributeUtil.ReadColor(
                     br,
                     vertexDescriptor.ColorComponentType);
                 continue;
@@ -261,7 +261,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                 case GxVertexAttribute.Color0: {
                   color = br.SubreadAt(
                       offset,
-                      sbr => GxColorUtil.ReadColor(
+                      sbr => GxAttributeUtil.ReadColor(
                           sbr,
                           vertexDescriptor.ColorComponentType));
                   break;
@@ -346,13 +346,7 @@ public static class BinaryReaderExtensions {
     var scaleMultiplier = 1f / MathF.Pow(2, descriptor.Scale);
     for (var i = 0; i < descriptor.ComponentCount; ++i) {
       floats[i] = scaleMultiplier *
-                  descriptor.AxesComponentType switch {
-                      GxAxisComponentType.U8  => br.ReadByte(),
-                      GxAxisComponentType.S8  => br.ReadSByte(),
-                      GxAxisComponentType.U16 => br.ReadUInt16(),
-                      GxAxisComponentType.S16 => br.ReadInt16(),
-                      GxAxisComponentType.F32 => br.ReadSingle(),
-                  };
+                  GxAttributeUtil.ReadValue(br, descriptor.AxesComponentType);
     }
   }
 }

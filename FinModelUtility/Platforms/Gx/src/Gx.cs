@@ -27,7 +27,7 @@ public enum GxOpcode : byte {
   LOAD_XF_REG = 0x10,
 }
 
-public enum GxComponentCount {
+public enum GxComponentCountType {
   // Position
   POS_XY = 0,
   POS_XYZ = 1,

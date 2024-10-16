@@ -22,7 +22,7 @@ namespace jsystem.GCN;
 public partial class BMD {
   public partial class VTX1Section {
     public IColor[][] Colors = new IColor[2][];
-    public Texcoord[][] Texcoords = new Texcoord[8][];
+    public Vector2[][] TexCoords = new Vector2[8][];
     public const string Signature = "VTX1";
     public DataBlockHeader Header;
     public uint ArrayFormatOffset;
@@ -84,73 +84,54 @@ public partial class BMD {
 
     private void ReadVertexArray(
         ArrayFormat Format,
-        int Length,
+        int dataLength,
         IBinaryReader br) {
-      List<float> floatList = [];
-      switch ((GxAxisComponentType) Format.DataType) {
-        case GxAxisComponentType.S16:
-          float num1 = (float) Math.Pow(0.5, (double) Format.DecimalPoint);
-          for (int index = 0; index < Length / 2; ++index)
-            floatList.Add((float) br.ReadInt16() * num1);
-          break;
-        case GxAxisComponentType.F32:
-          floatList.AddRange((IEnumerable<float>) br.ReadSingles(Length / 4));
-          break;
-        default:
-          throw new NotImplementedException();
-      }
+      var axisComponentType = (GxAxisComponentType) Format.DataType;
+      var valueCount = dataLength / axisComponentType.GetByteCount();
+      var componentCount = GxAttributeUtil.GetComponentCount(Format.ArrayType,
+        Format.ComponentCountType);
+      var vectorCount = valueCount / componentCount;
 
       switch (Format.ArrayType) {
-        case GxVertexAttribute.Position:
-          switch (Format.ComponentCount) {
-            case GxComponentCount.POS_XY:
-              this.Positions = new Vector3[floatList.Count / 2];
-              for (int index = 0; index < floatList.Count - 1; index += 2)
-                this.Positions[index / 2] =
-                    new Vector3(floatList[index], floatList[index + 1], 0.0f);
-              return;
-            case GxComponentCount.POS_XYZ:
-              this.Positions = new Vector3[floatList.Count / 3];
-              for (int index = 0; index < floatList.Count - 2; index += 3)
-                this.Positions[index / 3] = new Vector3(
-                    floatList[index],
-                    floatList[index + 1],
-                    floatList[index + 2]);
-              return;
-            default:
-              return;
+        case GxVertexAttribute.Position: {
+          this.Positions = new Vector3[vectorCount];
+          for (var i = 0; i < vectorCount; ++i) {
+            this.Positions[i] = GxAttributeUtil.ReadPosition(
+                br,
+                Format.ComponentCountType,
+                axisComponentType,
+                Format.DecimalPoint);
           }
-        case GxVertexAttribute.Normal:
-          if (Format.ComponentCount != 0U)
-            break;
-          this.Normals = new Vector3[floatList.Count / 3];
-          for (int index = 0; index < floatList.Count - 2; index += 3)
-            this.Normals[index / 3] = new Vector3(
-                floatList[index],
-                floatList[index + 1],
-                floatList[index + 2]);
+
           break;
-        case >= GxVertexAttribute.Tex0Coord and <= GxVertexAttribute.Tex7Coord:
-          var texCoordIndex = Format.ArrayType - GxVertexAttribute.Tex0Coord;
-          switch (Format.ComponentCount) {
-            case GxComponentCount.TEX_S:
-              this.Texcoords[texCoordIndex] = new Texcoord[floatList.Count];
-              for (int index = 0; index < floatList.Count; ++index)
-                this.Texcoords[texCoordIndex][index] =
-                    new Texcoord(floatList[index], 0.0f);
-              return;
-            case GxComponentCount.TEX_ST:
-              this.Texcoords[texCoordIndex] =
-                  new Texcoord[floatList.Count / 2];
-              for (int index = 0; index < floatList.Count - 1; index += 2)
-                this.Texcoords[texCoordIndex][index / 2] =
-                    new Texcoord(
-                        floatList[index],
-                        floatList[index + 1]);
-              return;
-            default:
-              return;
+        }
+        case GxVertexAttribute.Normal: {
+          this.Normals = new Vector3[vectorCount];
+          for (var i = 0; i < vectorCount; ++i) {
+            this.Normals[i] = GxAttributeUtil.ReadNormal(
+                br,
+                Format.ComponentCountType,
+                axisComponentType,
+                Format.DecimalPoint);
           }
+
+          break;
+        }
+        case >= GxVertexAttribute.Tex0Coord
+             and <= GxVertexAttribute.Tex7Coord: {
+          var texCoordIndex = Format.ArrayType - GxVertexAttribute.Tex0Coord;
+          var texCoords = this.TexCoords[texCoordIndex]
+              = new Vector2[vectorCount];
+          for (var i = 0; i < vectorCount; ++i) {
+            texCoords[i] = GxAttributeUtil.ReadTexCoord(
+                br,
+                Format.ComponentCountType,
+                axisComponentType,
+                Format.DecimalPoint);
+          }
+
+          break;
+        }
         default:
           throw new NotImplementedException();
       }
@@ -177,7 +158,8 @@ public partial class BMD {
           _                           => throw new ArgumentOutOfRangeException()
       };
 
-      var actualComponentCount = (int) (3 + Format.ComponentCount);
+      var actualComponentCount
+          = GxAttributeUtil.GetColorComponentCount(Format.ComponentCountType);
       Asserts.Equal(expectedComponentCount, actualComponentCount);
 
       var colorCount = colorDataType switch {
@@ -192,13 +174,8 @@ public partial class BMD {
 
       var colors = this.Colors[colorIndex] = new IColor[colorCount];
       for (var i = 0; i < colorCount; ++i) {
-        colors[i] = GxColorUtil.ReadColor(br, colorDataType);
+        colors[i] = GxAttributeUtil.ReadColor(br, colorDataType);
       }
-    }
-
-    public class Texcoord(float s, float t) {
-      public float S = s;
-      public float T = t;
     }
   }
 }

@@ -263,7 +263,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
     var vertexPositions = bmd.VTX1.Positions;
     var vertexNormals = bmd.VTX1.Normals;
     var vertexColors = bmd.VTX1.Colors;
-    var vertexUvs = bmd.VTX1.Texcoords;
+    var vertexUvs = bmd.VTX1.TexCoords;
     var entries = bmd.INF1.Data.Entries;
     var batches = bmd.SHP1.Batches;
 
@@ -411,8 +411,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
 
                 for (var i = 0; i < 8; ++i) {
                   if (batch.HasTexCoords[i]) {
-                    var texCoord = vertexUvs[i][point.TexCoordIndex[i]];
-                    vertex.SetUv(i, texCoord.S, texCoord.T);
+                    vertex.SetUv(i, vertexUvs[i][point.TexCoordIndex[i]]);
                   }
                 }
               }
