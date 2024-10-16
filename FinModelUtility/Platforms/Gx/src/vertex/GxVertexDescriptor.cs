@@ -2,7 +2,7 @@
 
 using fin.math;
 
-namespace gx;
+namespace gx.vertex;
 
 public struct GxVertexDescriptor(uint value)
     : IEnumerable<(GxVertexAttribute, GxAttributeType?)> {
@@ -25,12 +25,14 @@ public struct GxVertexDescriptor(uint value)
       if (value.GetBit(0)) {
         attributeList.AddLast((GxVertexAttribute.PosMatIdx, null));
       }
+
       value >>= 1;
 
-      for (var i = 0; i < 8; ++i) {
+      for (uint i = 0; i < 8; ++i) {
         if (value.GetBit(0)) {
           attributeList.AddLast((GxVertexAttribute.Tex0MatIdx + i, null));
         }
+
         value >>= 1;
       }
 
@@ -38,30 +40,35 @@ public struct GxVertexDescriptor(uint value)
       if (positionFormat != GxAttributeType.NOT_PRESENT) {
         attributeList.AddLast((GxVertexAttribute.Position, positionFormat));
       }
+
       value >>= 2;
 
       var normalFormat = (GxAttributeType) (value & 3);
       if (normalFormat != GxAttributeType.NOT_PRESENT) {
         attributeList.AddLast((GxVertexAttribute.Normal, normalFormat));
       }
+
       value >>= 2;
 
       var colorFormat0 = (GxAttributeType) (value & 3);
       if (colorFormat0 != GxAttributeType.NOT_PRESENT) {
         attributeList.AddLast((GxVertexAttribute.Color0, colorFormat0));
       }
+
       value >>= 2;
 
       var colorFormat1 = (GxAttributeType) (value & 3);
       if (colorFormat1 != GxAttributeType.NOT_PRESENT) {
         attributeList.AddLast((GxVertexAttribute.Color1, colorFormat1));
       }
+
       value >>= 2;
 
-      for (var i = 0; i < 8; ++i) {
+      for (uint i = 0; i < 8; ++i) {
         if (value.GetBit(0)) {
           attributeList.AddLast((GxVertexAttribute.Tex0Coord + i, null));
         }
+
         value >>= 1;
       }
 
@@ -72,32 +79,4 @@ public struct GxVertexDescriptor(uint value)
 
     return this.cachedEnumerable_.GetEnumerator();
   }
-}
-
-public enum GxVertexAttribute {
-  PosMatIdx,
-
-  Tex0MatIdx,
-  Tex1MatIdx,
-  Tex2MatIdx,
-  Tex3MatIdx,
-  Tex4MatIdx,
-  Tex5MatIdx,
-  Tex6MatIdx,
-  Tex7MatIdx,
-
-  Position,
-  Normal,
-
-  Color0,
-  Color1,
-
-  Tex0Coord,
-  Tex1Coord,
-  Tex2Coord,
-  Tex3Coord,
-  Tex4Coord,
-  Tex5Coord,
-  Tex6Coord,
-  Tex7Coord,
 }

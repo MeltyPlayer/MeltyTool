@@ -1,4 +1,5 @@
 ﻿using gx;
+using gx.vertex;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -16,7 +17,7 @@ public enum ColorComponentType : uint {
 
 [BinarySchema]
 public partial class VertexDescriptor : IBinaryConvertible {
-  public GxAttribute Attribute { get; set; }
+  public GxVertexAttribute Attribute { get; set; }
 
   [IntegerFormat(SchemaIntegerType.UINT32)]
   public GxAttributeType AttributeType { get; set; }
@@ -27,17 +28,18 @@ public partial class VertexDescriptor : IBinaryConvertible {
 
   [Skip]
   public int ComponentCount => this.Attribute switch {
-      GxAttribute.POS => this.ComponentCountType switch {
+      GxVertexAttribute.Position => this.ComponentCountType switch {
           GxComponentCount.POS_XY  => 2,
           GxComponentCount.POS_XYZ => 3,
       },
-      GxAttribute.NRM => this.ComponentCountType switch {
+      GxVertexAttribute.Normal => this.ComponentCountType switch {
           GxComponentCount.NRM_XYZ => 3,
       },
-      GxAttribute.NBT => this.ComponentCountType switch {
+      GxVertexAttribute.NBT => this.ComponentCountType switch {
           GxComponentCount.NRM_NBT => 3,
       },
-      GxAttribute.TEX0 or GxAttribute.TEX1 => this.ComponentCountType switch {
+      GxVertexAttribute.Tex0Coord or GxVertexAttribute.Tex1Coord => this
+          .ComponentCountType switch {
           GxComponentCount.TEX_S  => 1,
           GxComponentCount.TEX_ST => 2,
       },

@@ -27,44 +27,6 @@ public enum GxOpcode : byte {
   LOAD_XF_REG = 0x10,
 }
 
-public enum GxAttributeType {
-  NOT_PRESENT = 0,
-  DIRECT = 1,
-  INDEX_8 = 2,
-  INDEX_16 = 3,
-}
-
-public enum GxAttribute : uint {
-  PNMTXIDX = 0,
-  TEX0MTXIDX = 1,
-  TEX1MTXIDX = 2,
-  TEX2MTXIDX = 3,
-  TEX3MTXIDX = 4,
-  TEX4MTXIDX = 5,
-  TEX5MTXIDX = 6,
-  TEX6MTXIDX = 7,
-  TEX7MTXIDX = 8,
-  POS = 9,
-  NRM = 10,
-  CLR0 = 11,
-  CLR1 = 12,
-  TEX0 = 13,
-  TEX1 = 14,
-  TEX2 = 15,
-  TEX3 = 16,
-  TEX4 = 17,
-  TEX5 = 18,
-  TEX6 = 19,
-  TEX7 = 20,
-  POS_MTX_ARRAY = 21,
-  NRM_MTX_ARRAY = 22,
-  TEX_MTX_ARRAY = 23,
-  LIGHT_ARRAY = 24,
-  NBT = 25,
-  MAX = NBT,
-  NULL = 0xFF,
-}
-
 public enum GxComponentCount {
   // Position
   POS_XY = 0,

@@ -4,7 +4,7 @@ using System.Linq;
 
 using fin.schema;
 
-using gx;
+using gx.vertex;
 
 using jsystem.G3D_Binary_File_Format;
 using jsystem.schema.j3dgraph.bmd.shp1;
@@ -129,28 +129,29 @@ public partial class BMD {
 
         source.Remove(source.Last<BatchAttribute>());
         this.BatchAttributes = source.ToArray();
-        for (int index = 0; index < this.BatchAttributes.Length; ++index) {
-          if (this.BatchAttributes[index].DataType != 1U &&
-              this.BatchAttributes[index].DataType != 3U)
+        foreach (var t in this.BatchAttributes) {
+          if (t.DataType != GxAttributeType.DIRECT &&
+              t.DataType != GxAttributeType.INDEX_16)
             throw new Exception();
-          switch (this.BatchAttributes[index].Attribute) {
-            case GxAttribute.PNMTXIDX:
+          switch (t.Attribute) {
+            case GxVertexAttribute.PosMatIdx:
               this.HasMatrixIndices = true;
               break;
-            case GxAttribute.POS:
+            case GxVertexAttribute.Position:
               this.HasPositions = true;
               break;
-            case GxAttribute.NRM:
+            case GxVertexAttribute.Normal:
               this.HasNormals = true;
               break;
-            case GxAttribute.CLR0 or GxAttribute.CLR1:
-              this.HasColors[this.BatchAttributes[index].Attribute -
-                             GxAttribute.CLR0] =
+            case GxVertexAttribute.Color0 or GxVertexAttribute.Color1:
+              this.HasColors[t.Attribute -
+                             GxVertexAttribute.Color0] =
                   true;
               break;
-            case >= GxAttribute.TEX0 and <= GxAttribute.TEX7:
-              this.HasTexCoords[this.BatchAttributes[index].Attribute -
-                                GxAttribute.TEX0] = true;
+            case >= GxVertexAttribute.Tex0Coord
+                 and <= GxVertexAttribute.Tex7Coord:
+              this.HasTexCoords[t.Attribute -
+                                GxVertexAttribute.Tex0Coord] = true;
               break;
           }
         }
@@ -158,24 +159,29 @@ public partial class BMD {
         this.Packets = new Packet[(int) this.NrPacket];
         this.PacketLocations = new PacketLocation[(int) this.NrPacket];
         for (int index = 0; index < (int) this.NrPacket; ++index) {
-          br.Position = baseoffset + (long) Parent.PacketLocationsOffset +
+          br.Position = baseoffset +
+                        (long) Parent.PacketLocationsOffset +
                         (long) (((int) this.FirstPacketLocation + index) * 8);
           var packetLocation = new PacketLocation();
           packetLocation.Read(br);
           this.PacketLocations[index] = packetLocation;
 
-          br.Position = baseoffset + (long) Parent.DataOffset +
+          br.Position = baseoffset +
+                        (long) Parent.DataOffset +
                         (long) this.PacketLocations[index].Offset;
           this.Packets[index] = new Packet(br,
                                            (int) this.PacketLocations[index]
                                                .Size,
                                            this.BatchAttributes);
-          br.Position = baseoffset + (long) Parent.MatrixDataOffset +
+          br.Position = baseoffset +
+                        (long) Parent.MatrixDataOffset +
                         (long) (((int) this.FirstMatrixData + index) * 8);
           this.Packets[index].MatrixData = br.ReadNew<MatrixData>();
-          br.Position = baseoffset + (long) Parent.MatrixTableOffset +
-                        (long) (2U * this.Packets[index].MatrixData
-                                         .FirstIndex);
+          br.Position = baseoffset +
+                        (long) Parent.MatrixTableOffset +
+                        (long) (2U *
+                                this.Packets[index].MatrixData
+                                    .FirstIndex);
           this.Packets[index].MatrixTable =
               br.ReadUInt16s((int) this.Packets[index].MatrixData.Count);
         }
@@ -211,37 +217,38 @@ public partial class BMD {
                 for (int index2 = 0; index2 < Attributes.Length; ++index2) {
                   ushort num3 = 0;
                   switch (Attributes[index2].DataType) {
-                    case 1:
+                    case GxAttributeType.DIRECT:
                       num3 = (ushort) br.ReadByte();
                       ++num1;
                       break;
-                    case 3:
+                    case GxAttributeType.INDEX_16:
                       num3 = br.ReadUInt16();
                       num1 += 2;
                       break;
                   }
 
                   switch (Attributes[index2].Attribute) {
-                    case GxAttribute.PNMTXIDX:
+                    case GxVertexAttribute.PosMatIdx:
                       primitive.Points[index1].MatrixIndex = num3;
                       break;
-                    case GxAttribute.POS:
+                    case GxVertexAttribute.Position:
                       primitive.Points[index1].PosIndex = num3;
                       break;
-                    case GxAttribute.NRM:
+                    case GxVertexAttribute.Normal:
                       primitive.Points[index1].NormalIndex = num3;
                       break;
-                    case GxAttribute.CLR0 or GxAttribute.CLR1:
+                    case GxVertexAttribute.Color0 or GxVertexAttribute.Color1:
                       primitive.Points[index1]
                                .ColorIndex[
                                    (Attributes[index2].Attribute -
-                                    GxAttribute.CLR0)] = num3;
+                                    GxVertexAttribute.Color0)] = num3;
                       break;
-                    case >= GxAttribute.TEX0 and <= GxAttribute.TEX7:
+                    case >= GxVertexAttribute.Tex0Coord
+                         and <= GxVertexAttribute.Tex7Coord:
                       primitive.Points[index1]
                                .TexCoordIndex[
                                    (Attributes[index2].Attribute -
-                                    GxAttribute.TEX0)] = num3;
+                                    GxVertexAttribute.Tex0Coord)] = num3;
                       break;
                   }
                 }
@@ -259,13 +266,13 @@ public partial class BMD {
           public Index[] Points;
 
           public enum GXPrimitive {
-            GX_QUADS = 128, // 0x00000080
-            GX_TRIANGLES = 144, // 0x00000090
+            GX_QUADS = 128,         // 0x00000080
+            GX_TRIANGLES = 144,     // 0x00000090
             GX_TRIANGLESTRIP = 152, // 0x00000098
-            GX_TRIANGLEFAN = 160, // 0x000000A0
-            GX_LINES = 168, // 0x000000A8
-            GX_LINESTRIP = 176, // 0x000000B0
-            GX_POINTS = 184, // 0x000000B8
+            GX_TRIANGLEFAN = 160,   // 0x000000A0
+            GX_LINES = 168,         // 0x000000A8
+            GX_LINESTRIP = 176,     // 0x000000B0
+            GX_POINTS = 184,        // 0x000000B8
           }
 
           public class Index {

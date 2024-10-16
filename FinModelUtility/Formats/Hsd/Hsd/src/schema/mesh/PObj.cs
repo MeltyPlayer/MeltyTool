@@ -8,6 +8,7 @@ using fin.util.enumerables;
 using fin.util.enums;
 
 using gx;
+using gx.vertex;
 
 using schema.binary;
 
@@ -78,7 +79,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
         var vertexDescriptor = new VertexDescriptor();
         vertexDescriptor.Read(br);
 
-        if (vertexDescriptor.Attribute == GxAttribute.NULL) {
+        if (vertexDescriptor.Attribute == GxVertexAttribute.NULL) {
           break;
         }
 
@@ -206,7 +207,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
               var vertexAttribute = vertexDescriptor.Attribute;
               var vertexFormat = vertexDescriptor.AttributeType;
 
-              if (vertexAttribute == GxAttribute.CLR0 &&
+              if (vertexAttribute == GxVertexAttribute.Color0 &&
                   vertexFormat == GxAttributeType.DIRECT) {
                 color = this.ReadColorAttribute_(
                     br,
@@ -214,7 +215,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                 continue;
               }
 
-              if (vertexAttribute == GxAttribute.PNMTXIDX &&
+              if (vertexAttribute == GxVertexAttribute.PosMatIdx &&
                   vertexFormat == GxAttributeType.DIRECT) {
                 weightId = br.ReadByte() / 3;
                 continue;
@@ -231,20 +232,20 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                            vertexDescriptor.Stride * value;
 
               switch (vertexAttribute) {
-                case GxAttribute.POS: {
+                case GxVertexAttribute.Position: {
                   position = br.SubreadAt(
                       offset,
                       sbr => sbr.ReadVector3(vertexDescriptor));
                   break;
                 }
-                case GxAttribute.NRM: {
+                case GxVertexAttribute.Normal: {
                   normal = br.SubreadAt(
                       offset,
                       sbr => Vector3.Normalize(
                           sbr.ReadVector3(vertexDescriptor)));
                   break;
                 }
-                case GxAttribute.NBT: {
+                case GxVertexAttribute.NBT: {
                   br.SubreadAt(
                       offset,
                       sbr => {
@@ -257,7 +258,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                       });
                   break;
                 }
-                case GxAttribute.CLR0: {
+                case GxVertexAttribute.Color0: {
                   color = br.SubreadAt(
                       offset,
                       sbr => this.ReadColorAttribute_(
@@ -265,13 +266,13 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                           vertexDescriptor.ColorComponentType));
                   break;
                 }
-                case GxAttribute.TEX0: {
+                case GxVertexAttribute.Tex0Coord: {
                   uv0 = br.SubreadAt(
                       offset,
                       sbr => sbr.ReadVector2(vertexDescriptor));
                   break;
                 }
-                case GxAttribute.TEX1: {
+                case GxVertexAttribute.Tex1Coord: {
                   uv1 = br.SubreadAt(
                       offset,
                       sbr => sbr.ReadVector2(vertexDescriptor));

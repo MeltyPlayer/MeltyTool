@@ -6,6 +6,7 @@ using fin.util.asserts;
 using fin.util.color;
 
 using gx;
+using gx.vertex;
 
 using jsystem.G3D_Binary_File_Format;
 using jsystem.schema.j3dgraph.bmd.vtx1;
@@ -54,8 +55,8 @@ public partial class BMD {
             ArrayFormat arrayFormat = this.ArrayFormats[index1];
             int length2 = this.GetLength(k);
             br.Position = position1 + (long) this.Offsets[k];
-            if (arrayFormat.ArrayType is GxAttribute.CLR0
-                                         or GxAttribute.CLR1) {
+            if (arrayFormat.ArrayType is GxVertexAttribute.Color0
+                                         or GxVertexAttribute.Color1) {
               this.ReadColorArray(arrayFormat, length2, br);
             } else {
               this.ReadVertexArray(arrayFormat, length2, br);
@@ -99,7 +100,7 @@ public partial class BMD {
       }
 
       switch (Format.ArrayType) {
-        case GxAttribute.POS:
+        case GxVertexAttribute.Position:
           switch (Format.ComponentCount) {
             case 0:
               this.Positions = new Vector3[floatList.Count / 2];
@@ -118,7 +119,7 @@ public partial class BMD {
             default:
               return;
           }
-        case GxAttribute.NRM:
+        case GxVertexAttribute.Normal:
           if (Format.ComponentCount != 0U)
             break;
           this.Normals = new Vector3[floatList.Count / 3];
@@ -128,15 +129,8 @@ public partial class BMD {
                 floatList[index + 1],
                 floatList[index + 2]);
           break;
-        case GxAttribute.TEX0:
-        case GxAttribute.TEX1:
-        case GxAttribute.TEX2:
-        case GxAttribute.TEX3:
-        case GxAttribute.TEX4:
-        case GxAttribute.TEX5:
-        case GxAttribute.TEX6:
-        case GxAttribute.TEX7:
-          var texCoordIndex = Format.ArrayType - GxAttribute.TEX0;
+        case >= GxVertexAttribute.Tex0Coord and <= GxVertexAttribute.Tex7Coord:
+          var texCoordIndex = Format.ArrayType - GxVertexAttribute.Tex0Coord;
           switch (Format.ComponentCount) {
             case 0:
               this.Texcoords[texCoordIndex] = new Texcoord[floatList.Count];
@@ -178,7 +172,7 @@ public partial class BMD {
         ArrayFormat Format,
         int byteLength,
         IBinaryReader br) {
-      var colorIndex = Format.ArrayType - GxAttribute.CLR0;
+      var colorIndex = Format.ArrayType - GxVertexAttribute.Color0;
 
       var colorDataType = (ColorDataType) Format.DataType;
       var expectedComponentCount = colorDataType switch {

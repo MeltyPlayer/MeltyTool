@@ -3,6 +3,7 @@ using fin.schema.matrix;
 using fin.util.asserts;
 
 using gx;
+using gx.vertex;
 
 using modl.schema.modl.common;
 

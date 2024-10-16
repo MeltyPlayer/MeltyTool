@@ -25,6 +25,7 @@ using fin.util.lists;
 
 using gx;
 using gx.impl;
+using gx.vertex;
 
 using mod.schema.anm;
 using mod.schema.mod;
@@ -461,7 +462,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
               if (format == null) {
                 var unused = br.ReadByte();
 
-                if (attr == GxAttribute.PNMTXIDX) {
+                if (attr == GxVertexAttribute.PosMatIdx) {
                   // Internally, this represents which of the 10 active
                   // matrices to bind to.
                   var activeMatrixIndex = unused / 3;
@@ -508,15 +509,15 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                 continue;
               }
 
-              if (attr == GxAttribute.POS) {
+              if (attr == GxVertexAttribute.Position) {
                 positionIndices.Add(Read_(br, format));
-              } else if (attr == GxAttribute.NRM) {
+              } else if (attr == GxVertexAttribute.Normal) {
                 normalIndices.Add(Read_(br, format));
-              } else if (attr == GxAttribute.CLR0) {
+              } else if (attr == GxVertexAttribute.Color0) {
                 color0Indices.Add(Read_(br, format));
-              } else if (attr is >= GxAttribute.TEX0
-                                 and <= GxAttribute.TEX7) {
-                texCoordIndices[attr - GxAttribute.TEX0]
+              } else if (attr is >= GxVertexAttribute.Tex0Coord
+                                 and <= GxVertexAttribute.Tex7Coord) {
+                texCoordIndices[attr - GxVertexAttribute.Tex0Coord]
                     .Add(Read_(br, format));
               } else if (format == GxAttributeType.INDEX_16) {
                 br.ReadUInt16();

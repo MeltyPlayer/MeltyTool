@@ -5,6 +5,7 @@ using fin.util.asserts;
 using fin.util.strings;
 
 using gx;
+using gx.vertex;
 
 using modl.schema.modl.common;
 

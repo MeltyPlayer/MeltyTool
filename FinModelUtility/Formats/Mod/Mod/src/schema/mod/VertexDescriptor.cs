@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using fin.util.asserts;
 
 using gx;
+using gx.vertex;
 
 namespace mod.schema.mod {
-  public class VertexDescriptor : IEnumerable<(GxAttribute, GxAttributeType?)> {
+  public class VertexDescriptor
+      : IEnumerable<(GxVertexAttribute, GxAttributeType?)> {
     public bool posMat = false;
 
     public bool[] texMat = [
@@ -42,18 +44,20 @@ namespace mod.schema.mod {
         GxAttributeType.NOT_PRESENT
     ];
 
-    public IEnumerator<(GxAttribute, GxAttributeType?)> GetEnumerator()
+    public IEnumerator<(GxVertexAttribute, GxAttributeType?)> GetEnumerator()
       => this.ActiveAttributes();
 
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-    public IEnumerator<(GxAttribute, GxAttributeType?)> ActiveAttributes() {
-      foreach (var attr in Enum.GetValues<GxAttribute>()) {
+    public IEnumerator<(GxVertexAttribute, GxAttributeType?)>
+        ActiveAttributes() {
+      foreach (var attr in Enum.GetValues<GxVertexAttribute>()) {
         if (!this.Exists(attr)) {
           continue;
         }
 
-        if (attr is >= GxAttribute.POS and <= GxAttribute.TEX7) {
+        if (attr is >= GxVertexAttribute.Position
+                    and <= GxVertexAttribute.Tex7Coord) {
           yield return (attr, this.GetFormat(attr));
         } else {
           yield return (attr, null);
@@ -61,42 +65,43 @@ namespace mod.schema.mod {
       }
     }
 
-    public bool Exists(GxAttribute enumval) {
-      if (enumval == GxAttribute.NULL) {
+    public bool Exists(GxVertexAttribute enumval) {
+      if (enumval == GxVertexAttribute.NULL) {
         return false;
       }
 
-      if (enumval is >= GxAttribute.TEX0MTXIDX and <= GxAttribute.TEX7MTXIDX) {
-        var texMatId = enumval - GxAttribute.TEX0MTXIDX;
+      if (enumval is >= GxVertexAttribute.Tex0MatIdx
+                     and <= GxVertexAttribute.Tex7MatIdx) {
+        var texMatId = enumval - GxVertexAttribute.Tex0MatIdx;
         return this.texMat[texMatId];
       }
 
-      if (enumval is >= GxAttribute.TEX0 and <= GxAttribute.TEX7) {
-        var texCoordId = enumval - GxAttribute.TEX0;
+      if (enumval is >= GxVertexAttribute.Tex0Coord and <= GxVertexAttribute.Tex7Coord) {
+        var texCoordId = enumval - GxVertexAttribute.Tex0Coord;
         return this.texcoord[texCoordId] != GxAttributeType.NOT_PRESENT;
       }
 
-      if (enumval == GxAttribute.PNMTXIDX) {
+      if (enumval == GxVertexAttribute.PosMatIdx) {
         return this.posMat;
       }
 
-      if (enumval == GxAttribute.POS) {
+      if (enumval == GxVertexAttribute.Position) {
         return this.position != GxAttributeType.NOT_PRESENT;
       }
 
-      if (enumval == GxAttribute.NRM) {
+      if (enumval == GxVertexAttribute.Normal) {
         return this.normal != GxAttributeType.NOT_PRESENT;
       }
 
-      if (enumval == GxAttribute.CLR0) {
+      if (enumval == GxVertexAttribute.Color0) {
         return this.color0 != GxAttributeType.NOT_PRESENT;
       }
 
-      if (enumval == GxAttribute.CLR1) {
+      if (enumval == GxVertexAttribute.Color1) {
         return this.color1 != GxAttributeType.NOT_PRESENT;
       }
 
-      if (enumval >= GxAttribute.POS_MTX_ARRAY) {
+      if (enumval >= GxVertexAttribute.POS_MTX_ARRAY) {
         return false;
       }
 
@@ -104,25 +109,26 @@ namespace mod.schema.mod {
       return false;
     }
 
-    public GxAttributeType GetFormat(GxAttribute enumval) {
-      if (enumval == GxAttribute.POS) {
+    public GxAttributeType GetFormat(GxVertexAttribute enumval) {
+      if (enumval == GxVertexAttribute.Position) {
         return this.position;
       }
 
-      if (enumval == GxAttribute.NRM) {
+      if (enumval == GxVertexAttribute.Normal) {
         return this.normal;
       }
 
-      if (enumval == GxAttribute.CLR0) {
+      if (enumval == GxVertexAttribute.Color0) {
         return this.color0;
       }
 
-      if (enumval == GxAttribute.CLR1) {
+      if (enumval == GxVertexAttribute.Color1) {
         return this.color1;
       }
 
-      if (enumval is >= GxAttribute.TEX0 and <= GxAttribute.TEX7) {
-        var texcoordid = enumval - GxAttribute.TEX0;
+      if (enumval is >= GxVertexAttribute.Tex0Coord
+                     and <= GxVertexAttribute.Tex7Coord) {
+        var texcoordid = enumval - GxVertexAttribute.Tex0Coord;
         return this.texcoord[texcoordid];
       }
 
@@ -162,12 +168,14 @@ namespace mod.schema.mod {
       if ((val & 0b1) == 1) {
         this.color0 = GxAttributeType.INDEX_16;
       }
+
       val = val >> 1;
 
       for (var i = 0; i < 8; ++i) {
         if ((val & 0b1) == 1) {
           this.texcoord[i] = GxAttributeType.INDEX_16;
         }
+
         val = val >> 1;
       }
 
