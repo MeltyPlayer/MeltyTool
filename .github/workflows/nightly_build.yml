@@ -30,22 +30,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.0.x
-        include-prerelease: true
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: FinModelUtility
-
-    - name: Build
-      shell: cmd
-      run: publish_universal_asset_tool.bat /f
-      working-directory: cli/tools
       
     - name: Upload
-      uses: eine/tip@master
+      uses: pyTooling/Actions/releaser@main
       with:
         tag: nightly
         rm: true
