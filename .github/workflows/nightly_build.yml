@@ -34,7 +34,7 @@ jobs:
     - name: Upload
       uses: andelf/nightly-release@main
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag: nightly
         files: cli/**
