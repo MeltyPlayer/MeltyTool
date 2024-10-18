@@ -41,7 +41,7 @@ jobs:
 
     - name: Build
       shell: cmd
-      run: cli/tools/publish_universal_asset_tool.bat /f
+      run: publish_universal_asset_tool.bat /f
       working-directory: cli/tools
       
     - name: Upload
