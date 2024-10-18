@@ -1,9 +1,17 @@
 @echo off 
 setlocal EnableDelayedExpansion
 
-echo This will rebuild Universal Asset Tool via Visual Studio. Are you sure you wish to proceed?
+SET /A askFirst = 1
+FOR %%A IN (%*) DO (
+  IF "%%A"=="/f" (
+  	set /A askFirst = 0
+  )
+)
 
-pause
+IF %askFirst%==1 (
+  echo This will rebuild Universal Asset Tool via Visual Studio. Are you sure you wish to proceed?
+  pause
+)
 
 set universalAssetToolBasePath=%~dp0%universal_asset_tool\
 
