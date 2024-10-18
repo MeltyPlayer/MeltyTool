@@ -38,10 +38,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       working-directory: FinModelUtility
-
-    - name: Build
-      run: cli/tools/publish_universal_asset_tool.bat /f
-      working-directory: cli/tools
       
     - name: Upload
       uses: actions/upload-artifact@v4
