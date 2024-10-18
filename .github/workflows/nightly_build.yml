@@ -50,9 +50,9 @@ jobs:
       run: Compress-Archive -Path cli/** -Destination fin_model_utility.zip
       
     - name: Upload
-      uses: IsaacShelton/update-existing-release@v1.3.4
+      uses: andelf/nightly-release@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        token: ${{secrets.GITHUB_TOKEN}}
         tag: nightly
-        replace: true
         files: fin_model_utility.zip
