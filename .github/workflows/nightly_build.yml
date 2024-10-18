@@ -41,10 +41,10 @@ jobs:
 
     - name: Build
       run: publish_universal_asset_tool.bat /f
-      working-directory: FinModelUtility/cli/tools
+      working-directory: cli/tools
       
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: dist
-        path: FinModelUtility/cli/**
+        path: cli/**
