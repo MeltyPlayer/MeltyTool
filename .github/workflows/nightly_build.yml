@@ -38,9 +38,16 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       working-directory: FinModelUtility
+
+    - name: Build
+      shell: cmd
+      run: cli/tools/publish_universal_asset_tool.bat /f
+      working-directory: cli/tools
       
     - name: Upload
-      uses: actions/upload-artifact@v4
+      uses: eine/tip@master
       with:
-        name: dist
-        path: cli/**
+        tag: nightly
+        rm: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: cli/**
