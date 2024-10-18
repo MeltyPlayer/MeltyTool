@@ -1,0 +1,50 @@
+name: .NET
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  check_date:
+    runs-on: ubuntu-latest
+    name: Check latest commit
+    outputs:
+      should_run: ${{ steps.should_run.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: print latest_commit
+        run: echo ${{ github.sha }}
+
+      - id: should_run
+        continue-on-error: true
+        name: check latest commit is less than a day
+        if: ${{ github.event_name == 'schedule' }}
+        run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
+  build:
+    needs: check_date
+    if: ${{ needs.check_date.outputs.should_run != 'false' }}
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+        include-prerelease: true
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: FinModelUtility
+
+    - name: Build
+      run: publish_universal_asset_tool.bat /f
+      working-directory: FinModelUtility/cli/tools
+      
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: FinModelUtility/cli/**
