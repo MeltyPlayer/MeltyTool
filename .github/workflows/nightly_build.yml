@@ -40,7 +40,7 @@ jobs:
       working-directory: FinModelUtility
 
     - name: Build
-      run: publish_universal_asset_tool.bat /f
+      run: cli/tools/publish_universal_asset_tool.bat /f
       working-directory: cli/tools
       
     - name: Upload
