@@ -44,12 +44,10 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       IFileBundleOrganizer organizer,
       IFileHierarchy fileHierarchy) {
     foreach (var subdir in fileHierarchy) {
-      var modelSubdir =
-          subdir.GetExistingSubdirs()
-                .SingleOrDefault(dir => dir.Name == "model");
-      var animSubdir =
-          subdir.GetExistingSubdirs()
-                .SingleOrDefault(dir => dir.Name == "anim");
+      var modelSubdir
+          = subdir.GetExistingSubdirs().SingleOrDefaultByName("model");
+      var animSubdir
+          = subdir.GetExistingSubdirs().SingleOrDefaultByName("anim");
 
       if (modelSubdir != null && animSubdir != null) {
         var bmdFiles = modelSubdir.FilesWithExtension(".bmd").ToArray();

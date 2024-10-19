@@ -42,8 +42,7 @@ public class SuperMarioSunshineFileBundleGatherer
                               .ToArray();
     var bmdFile = marioSubdir.AssertGetExistingSubdir("bmd")
                              .GetExistingFiles()
-                             .Single(
-                                 file => file.Name == "ma_mdl1.bmd");
+                             .SingleByName("ma_mdl1.bmd");
 
     this.ExtractModel_(organizer, bmdFile, bcxFiles);
   }
@@ -72,8 +71,7 @@ public class SuperMarioSunshineFileBundleGatherer
                    .Where(file => !file.Name.StartsWith("yoshi_tongue"))
                    .ToArray();
     var bmdFile = yoshiSubdir.GetExistingFiles()
-                             .Single(
-                                 file => file.Name == "yoshi_model.bmd");
+                             .SingleByName("yoshi_model.bmd");
 
     this.ExtractModel_(organizer, bmdFile, bcxFiles);
   }

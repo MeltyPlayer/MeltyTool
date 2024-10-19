@@ -110,9 +110,8 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var bmdcSubdir =
         directory.GetExistingSubdirs()
                  .SingleOrDefault(subdir => subdir.Name == "bmdc");
-    var bmdmSubdir =
-        directory.GetExistingSubdirs()
-                 .SingleOrDefault(subdir => subdir.Name == "bmdm");
+    var bmdmSubdir
+        = directory.GetExistingSubdirs().SingleOrDefaultByName("bmdm");
 
     var bmdOrBdlFiles = ListUtil.ReadonlyConcat(
         //bdlSubdir?.FilesWithExtension(".bdl").ToArray(),

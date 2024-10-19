@@ -104,9 +104,8 @@ public class PrimaryModelSeparatorMethod(string primaryModelName)
       IList<IFileHierarchyFile> modelFiles,
       IList<IFileHierarchyFile> animationFiles) {
     return new[] {
-        new ModelBundle(
-            modelFiles.Single(file => file.Name == primaryModelName),
-            animationFiles)
+        new ModelBundle(modelFiles.SingleByName(primaryModelName),
+                        animationFiles)
     }.Concat(modelFiles
              .Where(file => file.Name != primaryModelName)
              .Select(modelFile
@@ -277,7 +276,6 @@ public class SameNameSeparatorMethod
   }
 }
 
-
 public class NameModelSeparatorMethod(string name)
     : BUnclaimedMatchModelSeparatorMethod {
   private readonly string name_ = name.ToLower();
@@ -299,7 +297,7 @@ public class SuffixModelSeparatorMethod(int suffixLength)
         modelFile.NameWithoutExtension.Substring(
             modelFile.NameWithoutExtension.Length -
             suffixLength);
-      
+
     return animationFiles.Where(file => file.Name.StartsWith(suffix));
   }
 }
