@@ -42,7 +42,7 @@ jobs:
     - name: Build
       shell: cmd
       run: publish_universal_asset_tool.bat /f
-      working-directory: cli/tools
+      working-directory: bat
       
     - name: Zip files
       run: Compress-Archive -Path cli/** -Destination fin_model_utility.zip

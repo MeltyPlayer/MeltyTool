@@ -48,15 +48,14 @@ namespace uni {
       {
         var mockFileSystem = new MockFileSystem();
 
-        mockFileSystem.AddDirectory("cli");
-        mockFileSystem.Directory.SetCurrentDirectory("cli");
+        mockFileSystem.AddDirectory("FinModelUtility");
+        mockFileSystem.AddDirectory("cli/config");
+        mockFileSystem.AddDirectory("cli/out");
+        mockFileSystem.AddDirectory("cli/roms");
+        mockFileSystem.AddDirectory("cli/tools/universal_asset_tool");
+        mockFileSystem.AddFile("cli/config.json", new MockFileData(CONFIG_JSON_));
 
-        mockFileSystem.AddDirectory("config");
-        mockFileSystem.AddDirectory("out");
-        mockFileSystem.AddDirectory("roms");
-        mockFileSystem.AddDirectory("tools");
-
-        mockFileSystem.AddFile("config.json", new MockFileData(CONFIG_JSON_));
+        mockFileSystem.Directory.SetCurrentDirectory("cli/tools/universal_asset_tool");
 
         FinFileSystem.FileSystem = mockFileSystem;
       }

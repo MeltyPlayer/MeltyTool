@@ -1,4 +1,6 @@
-﻿using fin.io;
+﻿using System.Reflection;
+
+using fin.io;
 using fin.util.asserts;
 
 namespace uni.platforms;
@@ -8,21 +10,15 @@ public static class DirectoryConstants {
     GetBaseDirectory_();
 
   private static ISystemDirectory GetBaseDirectory_() {
-    var cwd = Files.GetCwd();
-    if (cwd.Name == "FinModelUtility") {
-      return cwd;
+    // Launched externally
+    var exeDirectory = new FinDirectory(AppContext.BaseDirectory);
+    if (exeDirectory.Name == "universal_asset_tool") {
+      return exeDirectory.AssertGetParent()  // tools
+                         .AssertGetParent()  // cli
+                         .AssertGetParent(); // FinModelUtility
     }
 
-    if (cwd.Name == "cli") {
-      return cwd.AssertGetParent();
-    }
-
-    if (cwd.Name == "universal_model_extractor") {
-      return cwd.AssertGetParent()  // tools
-                .AssertGetParent()  // cli
-                .AssertGetParent(); // FinModelUtility
-    }
-
+    // Launched via Visual Studio
     return
         Asserts
             .CastNonnull(Files.GetCwd().GetAncestry())
