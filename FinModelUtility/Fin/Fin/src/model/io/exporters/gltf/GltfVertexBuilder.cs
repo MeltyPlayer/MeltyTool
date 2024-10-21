@@ -13,13 +13,16 @@ using SharpGLTF.Geometry.VertexTypes;
 namespace fin.model.io.exporters.gltf;
 
 public class GltfVertexBuilder {
+  public bool UvIndices { get; set; }
+
   private static readonly (int, float)[] defaultSkinning_ = [(0, 1)];
 
   private readonly IndexableDictionary<IReadOnlyBoneWeights, (int, float)[]>
       skinningByBoneWeights_ = new();
 
   public GltfVertexBuilder(IReadOnlyModel model,
-                           IIndexableDictionary<IReadOnlyBone, int> boneToIndex) {
+                           IIndexableDictionary<IReadOnlyBone, int>
+                               boneToIndex) {
     foreach (var boneWeights in model.Skin.BoneWeights) {
       this.skinningByBoneWeights_[boneWeights] =
           boneWeights.Weights.Select(boneWeight => (
@@ -40,7 +43,9 @@ public class GltfVertexBuilder {
       int weightCount) {
     var geometryType
         = GltfBuilderUtil.GetGeometryType(hasNormals, hasTangents);
-    var materialType = GltfBuilderUtil.GetMaterialType(colorCount, uvCount);
+    var materialType = !this.UvIndices
+        ? GltfBuilderUtil.GetMaterialType(colorCount, uvCount)
+        : typeof(VertexTexture1);
     var skinningType = GltfBuilderUtil.GetSkinningType(weightCount);
 
     var vertexBuilderType
@@ -90,8 +95,16 @@ public class GltfVertexBuilder {
     }
 
     // Material
-    vertexBuilder.SetMaterial(
-        GetVertexMaterial_(vertexAccessor, colorCount, uvCount));
+    if (!this.UvIndices) {
+      vertexBuilder.SetMaterial(
+          GetVertexMaterial_(vertexAccessor, colorCount, uvCount));
+    } else {
+      var index = vertexAccessor.Index;
+
+      vertexBuilder.SetMaterial(
+          new VertexTexture1(new Vector2(uvCount > 0 ? index : -1,
+                                         colorCount > 0 ? index : -1)));
+    }
 
     // Skinning
     {

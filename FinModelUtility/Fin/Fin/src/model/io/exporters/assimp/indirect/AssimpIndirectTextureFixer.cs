@@ -54,7 +54,7 @@ public class AssimpIndirectTextureFixer {
         continue;
       }
 
-      var assMaterial = new Material {Name = finMaterial.Name};
+      var assMaterial = new Material { Name = finMaterial.Name };
 
       var finTexture = PrimaryTextureFinder.GetFor(finMaterial);
       if (finTexture != null) {
@@ -62,11 +62,10 @@ public class AssimpIndirectTextureFixer {
             FilePath = finTexture.ValidFileName,
             // TODO: FBX doesn't support mirror. Blegh
             WrapModeU = this.ConvertWrapMode_(finTexture.WrapModeU),
-            WrapModeV = this.ConvertWrapMode_(finTexture.WrapModeV)
+            WrapModeV = this.ConvertWrapMode_(finTexture.WrapModeV),
+            TextureType = TextureType.Diffuse,
+            UVIndex = finTexture.UvIndex
         };
-
-        assTextureSlot.TextureType = TextureType.Diffuse;
-        assTextureSlot.UVIndex = finTexture.UvIndex;
 
         assMaterial.AddMaterialTexture(assTextureSlot);
       }

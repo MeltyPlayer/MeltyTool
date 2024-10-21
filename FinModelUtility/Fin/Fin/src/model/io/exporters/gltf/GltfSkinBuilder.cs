@@ -42,7 +42,9 @@ public class GltfSkinBuilder {
         = new IndexableDictionary<IReadOnlyVertex, IVertexBuilder>(
             skin.Vertices.Count);
 
-    var gltfVertexBuilder = new GltfVertexBuilder(model, boneToIndex);
+    var gltfVertexBuilder = new GltfVertexBuilder(model, boneToIndex) {
+        UvIndices = this.UvIndices
+    };
 
     var gltfMeshes = new List<(Mesh, bool)>();
     foreach (var finMesh in skin.Meshes) {
