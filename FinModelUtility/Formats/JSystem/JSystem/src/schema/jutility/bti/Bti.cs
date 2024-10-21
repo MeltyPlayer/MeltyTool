@@ -96,7 +96,7 @@ public partial class Bti : IBinaryConvertible {
 
   [RAtPosition(nameof(PaletteOffset))]
   [RSequenceLengthSource(nameof(NrPaletteEntries))]
-  public ushort[]? PaletteEntries { get; }
+  public ushort[]? PaletteEntries { get; set; }
 
   public IReadOnlyImage[] ToMipmapImages() {
     var mipmapImages = new IReadOnlyImage[this.NrMipMap];
