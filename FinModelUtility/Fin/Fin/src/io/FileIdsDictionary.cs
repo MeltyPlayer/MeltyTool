@@ -12,6 +12,7 @@ namespace fin.io;
 [GenerateReadOnly]
 public partial interface IFileIdsDictionary {
   IEnumerable<IReadOnlyTreeFile> this[uint id] { get; }
+  bool TryToLookUpFiles(uint id, out IEnumerable<IReadOnlyTreeFile> files);
 
   public void AddFile(uint id, IReadOnlyTreeFile file);
 
@@ -40,6 +41,17 @@ public partial class FileIdsDictionary : IFileIdsDictionary {
 
   public IEnumerable<IReadOnlyTreeFile> this[uint id]
     => this.impl_[id].Select(this.baseDirectory_.AssertGetExistingFile);
+
+  public bool TryToLookUpFiles(uint id,
+                               out IEnumerable<IReadOnlyTreeFile> files) {
+    if (this.impl_.TryGetSet(id, out var set)) {
+      files = set!.Select(this.baseDirectory_.AssertGetExistingFile);
+      return true;
+    }
+
+    files = default!;
+    return false;
+  }
 
   public void AddFile(uint id, IReadOnlyTreeFile file)
     => this.impl_.Add(id, file.AssertGetPathRelativeTo(this.baseDirectory_));

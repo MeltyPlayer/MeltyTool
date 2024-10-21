@@ -4,17 +4,17 @@ using schema.binary;
 
 namespace visceral.api;
 
-public class MtlbFileIdsDictionary : IReadOnlyFileIdsDictionary {
+public class BnkFileIdsDictionary : IReadOnlyFileIdsDictionary {
   private readonly IFileIdsDictionary impl_;
 
-  public MtlbFileIdsDictionary(IReadOnlyTreeDirectory baseDirectory) {
+  public BnkFileIdsDictionary(IReadOnlyTreeDirectory baseDirectory) {
     this.BaseDirectory = baseDirectory;
     this.impl_ = new FileIdsDictionary(baseDirectory);
     this.PopulateFromBaseDirectory_(baseDirectory);
   }
 
-  public MtlbFileIdsDictionary(IReadOnlyTreeDirectory baseDirectory,
-                               ISystemFile fileIdsFile) {
+  public BnkFileIdsDictionary(IReadOnlyTreeDirectory baseDirectory,
+                              ISystemFile fileIdsFile) {
     this.BaseDirectory = baseDirectory;
     if (fileIdsFile.Exists) {
       this.impl_ = new FileIdsDictionary(baseDirectory, fileIdsFile);
@@ -28,10 +28,10 @@ public class MtlbFileIdsDictionary : IReadOnlyFileIdsDictionary {
   private void PopulateFromBaseDirectory_(
       IReadOnlyTreeDirectory baseDirectory) {
     foreach (var mtlbFile in baseDirectory.GetFilesWithFileType(
-                 ".mtlb",
+                 ".bnk.WIN",
                  true)) {
       using var br = mtlbFile.OpenReadAsBinary(Endianness.LittleEndian);
-      br.Position = 8;
+      br.Position = 12;
       var id = br.ReadUInt32();
       this.impl_.AddFile(id, mtlbFile);
     }
@@ -39,5 +39,9 @@ public class MtlbFileIdsDictionary : IReadOnlyFileIdsDictionary {
 
   public IReadOnlyTreeDirectory BaseDirectory { get; }
   public IEnumerable<IReadOnlyTreeFile> this[uint id] => this.impl_[id];
+
+  public bool TryToLookUpBnks(uint id, out IEnumerable<IReadOnlyTreeFile> bnks)
+    => this.impl_.TryToLookUpFiles(id, out bnks);
+
   public void Save(IGenericFile fileIdsFile) => this.impl_.Save(fileIdsFile);
 }

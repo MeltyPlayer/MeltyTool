@@ -28,6 +28,9 @@ namespace uni.games.dead_space_1 {
       }
 
       var assetFileHierarchy = ExtractorUtil.GetFileHierarchy("dead_space_1", extractedDir);
+      var bnkFileIdsDictionary = new BnkFileIdsDictionary(
+          extractedDir,
+          new FinFile(Path.Join(prereqsDir.FullPath, "bnks.ids")));
       var mtlbFileIdsDictionary = new MtlbFileIdsDictionary(
           extractedDir,
           new FinFile(Path.Join(prereqsDir.FullPath, "mtlbs.ids")));
@@ -55,20 +58,16 @@ namespace uni.games.dead_space_1 {
           rcbFile =
               cctSubdir.GetExistingFiles()
                        .Single(file => file.Name.EndsWith(".rcb.WIN"));
-          bnkFiles =
-              cctSubdir.GetExistingFiles()
-                       .Where(file => file.Name.EndsWith(".bnk.WIN"))
-                       .ToArray();
         }
 
         if (geoFiles.Length > 0 || rcbFile != null) {
           organizer.Add(new GeoModelFileBundle {
               GameName = "dead_space_1",
               GeoFiles = geoFiles,
-              BnkFiles = bnkFiles,
               RcbFile = rcbFile,
+              BnkFileIdsDictionary = bnkFileIdsDictionary,
               MtlbFileIdsDictionary = mtlbFileIdsDictionary,
-              Tg4hFileIdDictionary = tg4hFileIdDictionary
+              Tg4hFileIdDictionary = tg4hFileIdDictionary,
           }.Annotate(geoFiles.FirstOrDefault() ?? rcbFile!));
         } else {
           ;

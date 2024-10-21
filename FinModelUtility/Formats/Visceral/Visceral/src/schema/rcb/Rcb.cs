@@ -6,6 +6,8 @@ using schema.binary;
 namespace visceral.schema.rcb;
 
 public partial class Rcb : IBinaryDeserializable {
+  public uint MainBnkId { get; set; }
+
   public const float SCALE = 100;
 
   public IReadOnlyList<Skeleton> Skeletons { get; private set; }
@@ -13,7 +15,12 @@ public partial class Rcb : IBinaryDeserializable {
   [Unknown]
   public void Read(IBinaryReader br) {
     var fileLength = br.ReadUInt32();
-    br.Position += 20;
+
+    br.Position += 4;
+
+    this.MainBnkId = br.ReadUInt32();
+
+    br.Position += 12;
 
     var skeletonCount = br.ReadUInt32();
 
@@ -31,6 +38,7 @@ public partial class Rcb : IBinaryDeserializable {
   }
 
   public class Skeleton : IBinaryDeserializable {
+    public uint BnkId { get; private set; }
     public string SkeletonName { get; private set; }
     public IReadOnlyList<int> BoneParentIdMap { get; private set; }
     public IReadOnlyList<Bone> Bones { get; private set; }
@@ -38,7 +46,7 @@ public partial class Rcb : IBinaryDeserializable {
     [Unknown]
     public void Read(IBinaryReader br) {
       // Read skeleton header
-      var unk7 = br.ReadUInt32();
+      this.BnkId = br.ReadUInt32();
 
       this.SkeletonName =
           br.SubreadAt(br.ReadUInt32(), ser => ser.ReadStringNT());

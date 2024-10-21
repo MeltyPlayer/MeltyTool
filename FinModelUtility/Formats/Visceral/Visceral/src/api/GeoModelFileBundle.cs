@@ -16,9 +16,9 @@ public class GeoModelFileBundle : IModelFileBundle {
            .ConcatIfNonnull(this.RcbFile);
 
   public required IReadOnlyList<IReadOnlyTreeFile> GeoFiles { get; init; }
-  public required IReadOnlyList<IReadOnlyTreeFile> BnkFiles { get; init; }
   public required IReadOnlyTreeFile? RcbFile { get; init; }
 
+  public required BnkFileIdsDictionary BnkFileIdsDictionary { get; init; }
   public required MtlbFileIdsDictionary MtlbFileIdsDictionary { get; init; }
   public required Tg4hFileIdDictionary Tg4hFileIdDictionary { get; init; }
 }

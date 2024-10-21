@@ -8,6 +8,7 @@ using fin.model.impl;
 using fin.model.io.importers;
 using fin.model.util;
 using fin.schema.matrix;
+using fin.util.enumerables;
 using fin.util.hash;
 
 using visceral.schema.geo;
@@ -30,11 +31,23 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
     IBone[] finBones = Array.Empty<IBone>();
     var rcbFile = modelFileBundle.RcbFile;
     if (rcbFile != null) {
-      this.AddRcbFileToModel_(finModel, rcbFile, out finBones);
-    }
+      var rcb = rcbFile.ReadNew<Rcb>();
+      this.AddRcbFileToModel_(finModel, rcb, out finBones);
 
-    foreach (var bnkFile in modelFileBundle.BnkFiles) {
-      new BnkReader().ReadBnk(finModel, bnkFile, rcbFile, finBones);
+      var bnkFileIdsDictionary = modelFileBundle.BnkFileIdsDictionary;
+      var bnkFiles
+          = rcb.MainBnkId.Yield()
+               .Concat(rcb.Skeletons.Select(s => s.BnkId))
+               .Distinct()
+               .SelectMany(
+                   id => bnkFileIdsDictionary.TryToLookUpBnks(id, out var bnks)
+                       ? bnks
+                       : []);
+
+      foreach (var bnkFile in bnkFiles) {
+        files.Add(bnkFile);
+        new BnkReader().ReadBnk(finModel, bnkFile, rcbFile, finBones);
+      }
     }
 
     // Gets materials
@@ -139,11 +152,10 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
 
   private void AddRcbFileToModel_(
       IModel finModel,
-      IReadOnlyGenericFile rcbFile,
+      Rcb rcb,
       out IBone[] finBones) {
     finBones = Array.Empty<IBone>();
 
-    var rcb = rcbFile.ReadNew<Rcb>();
     foreach (var rcbSkeleton in rcb.Skeletons) {
       finBones = new IBone[rcbSkeleton.Bones.Count];
 
