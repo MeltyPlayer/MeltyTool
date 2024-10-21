@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 using fin.data.indexable;
@@ -16,6 +17,18 @@ public class GltfAnimationBuilder {
       float modelScale,
       IReadOnlyList<IReadOnlyModelAnimation> animations) {
     foreach (var animation in animations) {
+      var isValid
+          = animation
+            .BoneTracks
+            .Any(finBoneTracks
+                     => (finBoneTracks.Translations?.HasAnyData ?? false) ||
+                        (finBoneTracks.Rotations?.HasAnyData ?? false) ||
+                        (finBoneTracks.Scales?.HasAnyData ?? false));
+
+      if (!isValid) {
+        continue;
+      }
+
       var gltfAnimation = gltfModel.UseAnimation(animation.Name);
 
       var fps = animation.FrameRate;

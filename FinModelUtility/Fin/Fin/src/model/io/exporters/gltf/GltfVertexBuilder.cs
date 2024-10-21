@@ -64,7 +64,9 @@ public class GltfVertexBuilder {
                       outPosition.Z * scale);
 
       if (hasNormals) {
-        var normal = new Vector3(outNormal.X, outNormal.Y, outNormal.Z);
+        var normal
+            = Vector3.Normalize(
+                new Vector3(outNormal.X, outNormal.Y, outNormal.Z));
 
         if (hasTangents) {
           var tangent = new Vector4(outTangent.X,

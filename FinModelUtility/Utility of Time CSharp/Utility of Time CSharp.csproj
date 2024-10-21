@@ -15,7 +15,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.1" />
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
