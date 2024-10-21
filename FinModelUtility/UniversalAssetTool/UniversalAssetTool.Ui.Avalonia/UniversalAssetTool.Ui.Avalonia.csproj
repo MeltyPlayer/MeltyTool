@@ -38,8 +38,8 @@
     <PackageReference Include="NaturalSort.Extension" Version="4.3.0" />
     <PackageReference Include="ObservableCollections" Version="3.0.4" />
     <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0-Avalonia11" />
-    <PackageReference Include="TextMateSharp" Version="1.0.58" />
-    <PackageReference Include="TextMateSharp.Grammars" Version="1.0.58" />
+    <PackageReference Include="TextMateSharp" Version="1.0.64" />
+    <PackageReference Include="TextMateSharp.Grammars" Version="1.0.64" />
     <PackageReference Include="UVtools.AvaloniaControls" Version="3.0.3" />
   </ItemGroup>
 

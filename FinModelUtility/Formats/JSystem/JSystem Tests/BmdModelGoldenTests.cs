@@ -31,6 +31,10 @@ namespace jsystem {
       => await SchemaTesting.WritesAndReadsIdentically(this.bmd_.DRW1);
 
     [Test]
+    public async Task TestExportBmdEvp1s()
+      => await SchemaTesting.WritesAndReadsIdentically(this.bmd_.EVP1);
+
+    [Test]
     public async Task TestExportBmdInf1s()
       => await SchemaTesting.WritesAndReadsIdentically(this.bmd_.INF1);
 

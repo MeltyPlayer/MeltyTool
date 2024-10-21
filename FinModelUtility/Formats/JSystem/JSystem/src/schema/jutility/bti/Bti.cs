@@ -27,12 +27,12 @@ public enum JutTransparency : byte {
   OPAQUE = 0x00,
 
   /// <summary>
-  /// Only allows fully Transperant pixels to be see through
+  /// Only allows fully Transparent pixels to be see through
   /// </summary>
   CUTOUT = 0x01,
 
   /// <summary>
-  /// Allows Partial Transperancy. Also known as XLUCENT
+  /// Allows Partial Transparency. Also known as XLUCENT
   /// </summary>
   TRANSLUCENT = 0x02,
 

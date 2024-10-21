@@ -116,7 +116,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoInterface" Version="2.3.0">
+    <PackageReference Include="AutoInterface" Version="2.4.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -127,7 +127,7 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls" Version="7.1.3" />
     <PackageReference Include="NullFX.CRC" Version="1.1.10" />
     <PackageReference Include="SceneGate.Ekona" Version="1.1.0" />
-    <PackageReference Include="schema" Version="0.5.5" />
+    <PackageReference Include="schema" Version="0.5.8" />
     <PackageReference Include="Yarhl" Version="4.0.0" />
   </ItemGroup>
 

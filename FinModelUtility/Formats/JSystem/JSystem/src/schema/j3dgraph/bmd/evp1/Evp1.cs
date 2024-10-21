@@ -23,6 +23,7 @@ public partial class Evp1 : IBinaryConvertible {
 
 [BinarySchema]
 public partial class Evp1Data : IBinaryConvertible {
+  [WLengthOfSequence(nameof(envelopeSizes_))]
   private ushort envelopeCount_;
   private readonly ushort padding_ = ushort.MaxValue;
 
@@ -39,11 +40,11 @@ public partial class Evp1Data : IBinaryConvertible {
   private uint inverseBindMatricesOffset_;
 
   [RSequenceLengthSource(nameof(envelopeCount_))]
-  [RAtPosition(nameof(envelopeSizeOffset_))]
-  private byte[] envelopeSizes_;
+  [RAtPositionOrNull(nameof(envelopeSizeOffset_))]
+  private byte[]? envelopeSizes_;
 
   [Skip]
-  private int TotalEnvelopeSize => this.envelopeSizes_.Sum(i => i);
+  private int TotalEnvelopeSize => this.envelopeSizes_?.Sum(i => i) ?? 0;
 
   [RAtPosition(nameof(envelopeIndicesOffset_))]
   [RSequenceLengthSource(nameof(TotalEnvelopeSize))]
@@ -66,12 +67,12 @@ public partial class Evp1Data : IBinaryConvertible {
   public MultiMatrix[] WeightedIndices { get; private set; }
 
   [ReadLogic]
-  private void SetUpWeightedIndices_(IBinaryReader br) {
+  private void SetUpWeightedIndices_(IBinaryReader _) {
     this.WeightedIndices = new MultiMatrix[this.envelopeCount_];
 
     var envelopeI = 0;
     for (var i = 0; i < this.envelopeCount_; ++i) {
-      var envelopeSize = this.envelopeSizes_[i];
+      var envelopeSize = this.envelopeSizes_![i];
 
       this.WeightedIndices[i] = new MultiMatrix {
           Indices = this.envelopeIndices_.AsSpan()

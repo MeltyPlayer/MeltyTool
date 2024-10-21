@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Delaunator" Version="1.0.10" />
-    <PackageReference Include="EarClipper" Version="1.2.0" />
+    <PackageReference Include="EarClipper" Version="1.2.2" />
   </ItemGroup>
 
   <ItemGroup>
