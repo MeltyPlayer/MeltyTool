@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.3.2" />
     <PackageReference Include="Crayon" Version="2.0.69" />
     <PackageReference Include="FastBitmapLib" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.7" />

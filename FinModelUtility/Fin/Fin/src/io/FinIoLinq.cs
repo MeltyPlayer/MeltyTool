@@ -15,8 +15,8 @@ public static class FinIoLinq {
       where T : IReadOnlyTreeIoObject
     => objects.ByName(name).Single();
 
-  public static T SingleOrDefaultByName<T>(this IEnumerable<T> objects,
-                                           string name)
+  public static T? SingleOrDefaultByName<T>(this IEnumerable<T> objects,
+                                            string name)
       where T : IReadOnlyTreeIoObject
-    => objects.ByName(name).Single();
+    => objects.ByName(name).SingleOrDefault();
 }
