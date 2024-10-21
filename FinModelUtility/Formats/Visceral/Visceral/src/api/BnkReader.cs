@@ -65,7 +65,7 @@ public class BnkReader {
         try {
           this.ReadIntoAnimation_(bnkBr, rcbFile, bones, finAnimation);
         } catch (Exception e) {
-          model.AnimationManager.RemoveAnimation(finAnimation);
+          finAnimation.Name = $"* {finAnimation.Name}";
         }
       }
     }
