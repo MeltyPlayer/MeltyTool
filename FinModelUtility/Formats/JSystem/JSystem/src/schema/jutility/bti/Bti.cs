@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 
 using fin.image;
 using fin.image.formats;
+using fin.math;
 using fin.schema;
+using fin.util.asserts;
 using fin.util.color;
 
 using gx;
@@ -64,10 +67,12 @@ public partial class Bti : IBinaryConvertible {
   [IntegerFormat(SchemaIntegerType.BYTE)]
   public GxPaletteFormat PaletteFormat;
 
-  [WLengthOfSequence(nameof(palette))]
+  [WLengthOfSequence(nameof(PaletteEntries))]
   public ushort NrPaletteEntries;
 
+  [WPointerToOrNull(nameof(PaletteEntries))]
   public uint PaletteOffset;
+
   public uint BorderColor;
   public GX_MIN_TEXTURE_FILTER MinFilter;
   public GX_MAG_TEXTURE_FILTER MagFilter;
@@ -89,49 +94,9 @@ public partial class Bti : IBinaryConvertible {
   [RSequenceLengthSource(nameof(CompressedBufferSize_))]
   public byte[] Data;
 
-  [Skip]
-  public Rgba32[] palette;
-
-  [ReadLogic]
-  private void ReadPalettes_(IBinaryReader br) {
-    long position = br.Position;
-    this.palette = new Rgba32[this.NrPaletteEntries];
-
-    br.Position = this.PaletteOffset;
-    for (var i = 0; i < this.NrPaletteEntries; ++i) {
-      switch (this.PaletteFormat) {
-        case GxPaletteFormat.PAL_A8_I8: {
-          var alpha = br.ReadByte();
-          var intensity = br.ReadByte();
-          this.palette[i] =
-              new Rgba32(intensity, intensity, intensity, alpha);
-          break;
-        }
-        case GxPaletteFormat.PAL_R5_G6_B5: {
-          ColorUtil.SplitRgb565(br.ReadUInt16(),
-                                out var r,
-                                out var b,
-                                out var g);
-          this.palette[i] = new Rgba32(r, g, b);
-          break;
-        }
-        // TODO: There seems to be a bug reading the palette, these colors look weird
-        case GxPaletteFormat.PAL_A3_RGB5: {
-          ColorUtil.SplitRgb5A3(br.ReadUInt16(),
-                                out var r,
-                                out var g,
-                                out var b,
-                                out var a);
-          this.palette[i] = new Rgba32(r, g, b, a);
-          break;
-        }
-        default:
-          throw new ArgumentOutOfRangeException();
-      }
-    }
-
-    br.Position = position;
-  }
+  [RAtPosition(nameof(PaletteOffset))]
+  [RSequenceLengthSource(nameof(NrPaletteEntries))]
+  public ushort[]? PaletteEntries { get; }
 
   public IReadOnlyImage[] ToMipmapImages() {
     var mipmapImages = new IReadOnlyImage[this.NrMipMap];
@@ -185,13 +150,48 @@ public partial class Bti : IBinaryConvertible {
         var blockWidth = 8;
         var blockHeight = isIndex4 ? 8 : 4;
 
+        var palette
+           = this.PaletteEntries
+                  .AssertNonnull()
+                  .Select(entry => {
+                    switch (this.PaletteFormat) {
+                      case GxPaletteFormat.PAL_A8_I8: {
+                        var alpha = entry & 0xFF;
+                        var intensity = entry >> 8;
+                        return new Rgba32(intensity,
+                                          intensity,
+                                          intensity,
+                                          alpha);
+                      }
+                      case GxPaletteFormat.PAL_R5_G6_B5: {
+                        ColorUtil.SplitRgb565(entry,
+                                              out var r,
+                                              out var b,
+                                              out var g);
+                        return new Rgba32(r, g, b);
+                      }
+                      // TODO: There seems to be a bug reading the palette, these colors look weird
+                      case GxPaletteFormat.PAL_A3_RGB5: {
+                        ColorUtil.SplitRgb5A3(entry,
+                                              out var r,
+                                              out var g,
+                                              out var b,
+                                              out var a);
+                        return new Rgba32(r, g, b, a);
+                      }
+                      default:
+                        throw new ArgumentOutOfRangeException();
+                    }
+                  })
+                  .ToArray();
+
         var index = 0;
         for (var ty = 0; ty < height / blockHeight; ty++) {
           for (var tx = 0; tx < width / blockWidth; tx++) {
             for (var y = 0; y < blockHeight; ++y) {
               for (var x = 0; x < blockWidth; ++x) {
                 ptr[(ty * blockHeight + y) * width + (tx * blockWidth + x)] =
-                    this.palette[indices[index++]];
+                    palette[indices[index++]];
               }
             }
           }
