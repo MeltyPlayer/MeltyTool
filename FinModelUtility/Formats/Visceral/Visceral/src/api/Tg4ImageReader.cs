@@ -46,19 +46,6 @@ public class Tg4ImageReader {
 
     var dataFile = bundle.Tg4dFile;
 
-    /*if (compressionFormat != CompressionFormat.Bc3) {
-       using var br = dataFile.OpenReadAsBinary();
-
-       return compressionFormat switch {
-           CompressionFormat.Bc1
-               => new Dxt1ImageReader(width, height, 1, 4, false)
-                   .ReadImage(br),
-           CompressionFormat.Bc1WithAlpha
-               => new Dxt1aImageReader(width, height, 1, 4, false)
-                   .ReadImage(br),
-       };
-     }*/
-
     var bcDecoder = new BcDecoder();
     bcDecoder.Options.IsParallel = true;
 

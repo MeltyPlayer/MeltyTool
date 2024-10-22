@@ -21,11 +21,9 @@ public class GeoModelGoldenTests
     => new() {
         GameName = directory.Parent.Parent.Name,
         GeoFiles = directory.FilesWithExtension(".geo").ToArray(),
-        BnkFiles = directory.GetExistingFiles()
-                            .Where(f => f.Name.EndsWith(".bnk.WIN"))
-                            .ToArray(),
         RcbFile = directory.GetExistingFiles()
                            .SingleOrDefault(f => f.Name.EndsWith(".rcb.WIN")),
+        BnkFileIdsDictionary = new BnkFileIdsDictionary(directory),
         MtlbFileIdsDictionary = new MtlbFileIdsDictionary(directory),
         Tg4hFileIdDictionary = new Tg4hFileIdDictionary(directory),
     };

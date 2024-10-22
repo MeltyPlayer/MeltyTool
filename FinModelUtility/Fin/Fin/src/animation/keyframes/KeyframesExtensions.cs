@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace fin.animation.keyframes;
 
 public static class KeyframesExtensions {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SetKeyframe<T>(this IKeyframes<Keyframe<T>> keyframes,
                                     float frame,
                                     T value)
@@ -16,6 +18,7 @@ public static class KeyframesExtensions {
       float? tangent)
     => keyframes.Add(new KeyframeWithTangents<T>(frame, value, tangent));
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SetKeyframe<T>(
       this IKeyframes<KeyframeWithTangents<T>> keyframes,
       float frame,

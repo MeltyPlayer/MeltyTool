@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 using fin.animation.interpolation;
 
@@ -25,6 +26,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
   public IReadOnlyList<TKeyframe> Definitions => this.impl_;
   public bool HasAnyData => this.Definitions.Count > 0;
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Add(TKeyframe keyframe) => this.impl_.AddKeyframe(keyframe);
 
   public bool TryGetAtFrame(float frame, out T value) {
@@ -57,6 +59,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
     }
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
       float frame,
       out TKeyframe precedingKeyframe,

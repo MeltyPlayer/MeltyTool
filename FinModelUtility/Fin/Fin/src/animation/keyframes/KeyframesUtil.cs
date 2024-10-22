@@ -11,6 +11,11 @@ public static class KeyframesUtil {
   public static void AddKeyframe<TKeyframe>(
       this List<TKeyframe> impl,
       TKeyframe keyframe) where TKeyframe : IKeyframe {
+    if (impl.Count == 0 || keyframe.Frame > impl[^1].Frame) {
+      impl.Add(keyframe);
+      return;
+    }
+
     var index = impl.BinarySearch(keyframe);
 
     // If index is greater than 0, then we found an exact match! We can replace
