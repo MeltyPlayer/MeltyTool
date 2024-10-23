@@ -1,4 +1,6 @@
-﻿using BCnEncoder.Decoder;
+﻿using System.Drawing;
+
+using BCnEncoder.Decoder;
 using BCnEncoder.Shared;
 
 using CommunityToolkit.HighPerformance;
@@ -29,12 +31,17 @@ public class Tg4ImageReader {
     var height = headerEr.ReadUInt16();
     var format = headerEr.SubreadStringNTAt(0x4b);
 
-    var compressionFormat = format switch {
+    CompressionFormat? compressionFormat = format switch {
         "DXT1c"   => CompressionFormat.Bc1,
         "DXT1a"   => CompressionFormat.Bc1WithAlpha,
         "DXT5"    => CompressionFormat.Bc3,
         "DXT5_NM" => CompressionFormat.Bc3,
+        _         => null,
     };
+
+    if (compressionFormat == null) {
+      return FinImage.Create1x1FromColor(Color.Magenta);
+    }
 
     var isNormal = format == "DXT5_NM";
 
@@ -51,7 +58,7 @@ public class Tg4ImageReader {
 
     using var dataS = dataFile.OpenRead();
     var loadedDxt = bcDecoder
-                    .DecodeRaw(dataS, width, height, compressionFormat)
+                    .DecodeRaw(dataS, width, height, compressionFormat.Value)
                     .AsSpan();
 
     var rgbaImage = new Rgba32Image(imageFormat, width, height);
