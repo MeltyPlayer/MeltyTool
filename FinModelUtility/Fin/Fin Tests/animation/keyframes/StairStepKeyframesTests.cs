@@ -1,5 +1,10 @@
-﻿using fin.animation.interpolation;
+﻿using System;
+
+using fin.animation.interpolation;
 using fin.util.asserts;
+using fin.util.optional;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NUnit.Framework;
 
@@ -108,54 +113,128 @@ public class StairStepKeyframesTests {
   }
 
   [Test]
-  public void TestInterpolateValesNonLooping() {
-    var impl = new StairStepKeyframes<string>(new SharedInterpolationConfig());
+  public void TestInterpolateValuesNonLoopingWithoutDefault() {
+    var impl = new StairStepKeyframes<string>(
+        new SharedInterpolationConfig { AnimationLength = 8 });
 
-    impl.SetKeyframe(0, "first");
-    impl.SetKeyframe(2, "second");
-    impl.SetKeyframe(4, "third");
+    impl.SetKeyframe(2, "first");
+    impl.SetKeyframe(4, "second");
+    impl.SetKeyframe(6, "third");
 
     Assert.IsFalse(impl.TryGetAtFrame(-1, out _));
 
-    AssertFrame_(impl, 0, "first");
-    AssertFrame_(impl, 1, "first");
-    AssertFrame_(impl, 2, "second");
-    AssertFrame_(impl, 3, "second");
-    AssertFrame_(impl, 4, "third");
+    Assert.IsFalse(impl.TryGetAtFrame(0, out _));
+    Assert.IsFalse(impl.TryGetAtFrame(1, out _));
+    AssertFrame_(impl, 2, "first");
+    AssertFrame_(impl, 3, "first");
+    AssertFrame_(impl, 4, "second");
+    AssertFrame_(impl, 5, "second");
+    AssertFrame_(impl, 6, "third");
+    AssertFrame_(impl, 7, "third");
 
-    AssertFrame_(impl, 5, "third");
+    AssertFrame_(impl, 8, "third");
   }
 
   [Test]
-  public void TestInterpolateValesLooping() {
-    var impl = new StairStepKeyframes<string>(new SharedInterpolationConfig {
-        AnimationLength = 6, Looping = true
-    });
+  public void TestInterpolateValuesNonLoopingWithDefault() {
+    var impl = new StairStepKeyframes<string>(
+        new SharedInterpolationConfig { AnimationLength = 8 },
+        new IndividualInterpolationConfig<
+            string> {
+            DefaultValue = Optional.Of("default"),
+        });
 
-    impl.SetKeyframe(0, "first");
-    impl.SetKeyframe(2, "second");
-    impl.SetKeyframe(4, "third");
+    impl.SetKeyframe(2, "first");
+    impl.SetKeyframe(4, "second");
+    impl.SetKeyframe(6, "third");
+
+    AssertFrame_(impl, -1, "default");
+
+    AssertFrame_(impl, 0, "default");
+    AssertFrame_(impl, 1, "default");
+    AssertFrame_(impl, 2, "first");
+    AssertFrame_(impl, 3, "first");
+    AssertFrame_(impl, 4, "second");
+    AssertFrame_(impl, 5, "second");
+    AssertFrame_(impl, 6, "third");
+    AssertFrame_(impl, 7, "third");
+
+    AssertFrame_(impl, 8, "third");
+  }
+
+  [Test]
+  public void TestInterpolateValuesLooping() {
+    var impl = new StairStepKeyframes<string>(
+        new SharedInterpolationConfig {
+            AnimationLength = 8,
+            Looping = true
+        },
+        new IndividualInterpolationConfig<
+            string> {
+            DefaultValue = Optional.Of("default"),
+        });
+
+    impl.SetKeyframe(2, "first");
+    impl.SetKeyframe(4, "second");
+    impl.SetKeyframe(6, "third");
 
     AssertFrame_(impl, -1, "third");
+    AssertFrame_(impl, 0, "third");
+    AssertFrame_(impl, 1, "third");
 
-    AssertFrame_(impl, 0, "first");
-    AssertFrame_(impl, 1, "first");
-    AssertFrame_(impl, 2, "second");
-    AssertFrame_(impl, 3, "second");
-    AssertFrame_(impl, 4, "third");
-    AssertFrame_(impl, 5, "third");
-    
-    AssertFrame_(impl, 6, "first");
+    AssertFrame_(impl, 2, "first");
+    AssertFrame_(impl, 3, "first");
+    AssertFrame_(impl, 4, "second");
+    AssertFrame_(impl, 5, "second");
+    AssertFrame_(impl, 6, "third");
+    AssertFrame_(impl, 7, "third");
+
+    AssertFrame_(impl, 8, "third");
+  }
+
+  [Test]
+  public void TestGetAllFramesNonLooping() {
+    var impl = new StairStepKeyframes<char>(
+        new SharedInterpolationConfig(),
+        new IndividualInterpolationConfig<char> {
+            DefaultValue = Optional.Of('d')
+        });
+    impl.SetKeyframe(2, 'a');
+    impl.SetKeyframe(4, 'b');
+    impl.SetKeyframe(6, 'c');
+
+    Span<char> frames = stackalloc char[8];
+    impl.GetAllFrames(frames);
+
+    Asserts.SpansEqual(['d', 'd', 'a', 'a', 'b', 'b', 'c', 'c'], frames);
+  }
+
+  [Test]
+  public void TestGetAllFramesLooping() {
+    var impl = new StairStepKeyframes<char>(
+        new SharedInterpolationConfig { Looping = true },
+        new IndividualInterpolationConfig<char> {
+            DefaultValue = Optional.Of('d')
+        });
+    impl.SetKeyframe(2, 'a');
+    impl.SetKeyframe(4, 'b');
+    impl.SetKeyframe(6, 'c');
+
+    Span<char> frames = stackalloc char[8];
+    impl.GetAllFrames(frames);
+
+    Asserts.SpansEqual(['c', 'c', 'a', 'a', 'b', 'b', 'c', 'c'], frames);
   }
 
   private static void AssertFrame_<T>(IInterpolatable<T> impl,
-                               float frame,
-                               T expected) {
+                                      float frame,
+                                      T expected) {
     Assert.IsTrue(impl.TryGetAtFrame(frame, out var actual));
     Assert.AreEqual(expected, actual);
   }
 
-  private static void AssertKeyframes_(IReadOnlyKeyframes<Keyframe<string>> actual,
-                                params Keyframe<string>[] expected)
+  private static void AssertKeyframes_(
+      IReadOnlyKeyframes<Keyframe<string>> actual,
+      params Keyframe<string>[] expected)
     => Asserts.SequenceEqual(expected, actual.Definitions);
 }

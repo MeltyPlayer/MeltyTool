@@ -1,4 +1,6 @@
-﻿using fin.animation.keyframes;
+﻿using System;
+
+using fin.animation.keyframes;
 
 using schema.readOnly;
 
@@ -9,6 +11,9 @@ public interface IInterpolatable<T> {
 
   [Const]
   bool TryGetAtFrame(float frame, out T value);
+
+  [Const]
+  void GetAllFrames(Span<T> frames) => throw new NotImplementedException();
 }
 
 public interface IKeyframeInterpolator<in TKeyframe, out T>

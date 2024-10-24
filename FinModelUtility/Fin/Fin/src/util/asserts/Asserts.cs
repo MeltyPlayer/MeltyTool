@@ -86,7 +86,15 @@ public class Asserts {
     }
 
     True(!hasA && !hasB,
-                 "Expected enumerables to be the same length.");
+         "Expected enumerables to be the same length.");
+  }
+
+  public static void SpansEqual<T>(ReadOnlySpan<T> expected,
+                                   ReadOnlySpan<T> actual) {
+    Equal(expected.Length, actual.Length);
+    for (var i = 0; i < expected.Length; ++i) {
+      Equal(expected[i], actual[i]);
+    }
   }
 
   public static bool Equal<T>(
@@ -115,7 +123,7 @@ public class Asserts {
     }
 
     Fail(message ??
-                 $"Expected {actual} to roughly equal {expected}.");
+         $"Expected {actual} to roughly equal {expected}.");
     return false;
   }
 
@@ -124,13 +132,13 @@ public class Asserts {
       object? instance,
       string? message = null)
     => True(instance != null,
-                    message ?? "Expected reference to be nonnull.");
+            message ?? "Expected reference to be nonnull.");
 
   public static T CastNonnull<T>(
       T? instance,
       string? message = null) {
     True(instance != null,
-                 message ?? "Expected reference to be nonnull.");
+         message ?? "Expected reference to be nonnull.");
     return instance!;
   }
 

@@ -118,6 +118,20 @@ public static class KeyframesUtil {
                                       out precedingKeyframe,
                                       out var precedingKeyframeIndex,
                                       out normalizedFrame)) {
+      if (sharedConfig.Looping) {
+        if (impl.Count == 1) {
+          precedingKeyframe = impl[0];
+          followingKeyframe = default;
+          return InterpolationDataType.PRECEDING_ONLY;
+        }
+
+        if (impl.Count > 1) {
+          precedingKeyframe = impl[^1];
+          followingKeyframe = impl[0];
+          return InterpolationDataType.PRECEDING_AND_FOLLOWING;
+        }
+      }
+
       followingKeyframe = default;
       return InterpolationDataType.NONE;
     }

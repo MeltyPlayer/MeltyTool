@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using fin.animation.interpolation;
 
@@ -42,5 +43,26 @@ public class StairStepKeyframes<T>(
 
     value = default;
     return false;
+  }
+
+  public void GetAllFrames(Span<T> frames) {
+    T defaultValue = default!;
+    individualConfig.DefaultValue?.Try(out defaultValue);
+    if (sharedConfig.Looping) {
+      defaultValue = this.impl_[^1].ValueOut;
+    }
+
+    frames.Fill(defaultValue);
+    if (this.impl_.Count == 0) {
+      return;
+    }
+
+    var f = frames.Length - 1;
+    for (var k = this.impl_.Count - 1; k >= 0; --k) {
+      var keyframe = this.impl_[k];
+      while (f >= keyframe.Frame) {
+        frames[f--] = keyframe.ValueOut;
+      }
+    }
   }
 }
