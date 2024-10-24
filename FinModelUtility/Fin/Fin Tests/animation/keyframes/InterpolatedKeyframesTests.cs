@@ -196,12 +196,30 @@ public class InterpolatedKeyframesTests {
     AssertFrame_(impl, 8, 2);
   }
 
-  /*[Test]
+  [Test]
   public void TestGetAllFramesNonLooping() {
     var impl = new InterpolatedKeyframes<Keyframe<float>, float>(
         new SharedInterpolationConfig(),
         FloatKeyframeInterpolator.Instance,
-        new IndividualInterpolationConfig<float> { DefaultValue = 5 });
+        new IndividualInterpolationConfig<float>
+            { DefaultValue = Optional.Of(5f) });
+    impl.SetKeyframe(2, 1);
+    impl.SetKeyframe(4, 2);
+    impl.SetKeyframe(6, 3);
+
+    Span<float> frames = stackalloc float[8];
+    impl.GetAllFrames(frames);
+
+    Asserts.SpansEqual([5, 5, 1, 1.5f, 2, 2.5f, 3, 3], frames);
+  }
+
+  [Test]
+  public void TestGetAllFramesLooping() {
+    var impl = new InterpolatedKeyframes<Keyframe<float>, float>(
+        new SharedInterpolationConfig { Looping = true, AnimationLength = 8},
+        FloatKeyframeInterpolator.Instance,
+        new IndividualInterpolationConfig<float>
+            { DefaultValue = Optional.Of(5f) });
     impl.SetKeyframe(2, 1);
     impl.SetKeyframe(4, 2);
     impl.SetKeyframe(6, 3);
@@ -210,7 +228,7 @@ public class InterpolatedKeyframesTests {
     impl.GetAllFrames(frames);
 
     Asserts.SpansEqual([2, 1.5f, 1, 1.5f, 2, 2.5f, 3, 2.5f], frames);
-  }*/
+  }
 
   private static void AssertFrame_<T>(IInterpolatable<T> impl,
                                       float frame,

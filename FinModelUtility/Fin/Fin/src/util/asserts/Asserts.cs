@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 using fin.math.floats;
@@ -91,9 +92,19 @@ public class Asserts {
 
   public static void SpansEqual<T>(ReadOnlySpan<T> expected,
                                    ReadOnlySpan<T> actual) {
-    Equal(expected.Length, actual.Length);
+    var sb = new StringBuilder();
+    if (expected.Length != actual.Length) {
+      sb.AppendLine($"Expected length {actual.Length} to be {expected.Length}");
+    }
+
     for (var i = 0; i < expected.Length; ++i) {
-      Equal(expected[i], actual[i]);
+      if (!expected[i].Equals(actual[i])) {
+        sb.AppendLine($"- Expected [{i}] = {actual[i]} to be {expected[i]}");
+      }
+    }
+
+    if (sb.Length > 0) {
+      Fail(sb.ToString());
     }
   }
 

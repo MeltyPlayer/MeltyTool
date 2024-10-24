@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using fin.animation.interpolation;
@@ -72,4 +73,46 @@ public class InterpolatedKeyframes<TKeyframe, T>(
         out precedingKeyframe,
         out followingKeyframe,
         out normalizedFrame);
+
+  public void GetAllFrames(Span<T> dst) {
+    T defaultValue = default!;
+    individualConfig.DefaultValue?.Try(out defaultValue);
+    dst.Fill(defaultValue);
+    if (this.impl_.Count == 0) {
+      return;
+    }
+
+    var from = this.impl_[0];
+    if (!sharedConfig.Looping) {
+      dst.Slice((int) MathF.Ceiling(from.Frame)).Fill(from.ValueOut);
+    }
+
+    for (var k = 1; k < this.impl_.Count; ++k) {
+      var to = this.impl_[k];
+      this.AddFrames_(dst, from, to);
+      from = to;
+    }
+
+    if (sharedConfig.Looping) {
+      this.AddFrames_(dst, this.impl_[^1], this.impl_[0]);
+    } else {
+      var last = this.impl_[^1];
+      dst.Slice((int) MathF.Ceiling(last.Frame)).Fill(last.ValueOut);
+    }
+  }
+
+  private void AddFrames_(Span<T> dst, TKeyframe from, TKeyframe to) {
+    var fromFrame = (int) MathF.Ceiling(from.Frame);
+    var toFrame = (int) MathF.Ceiling(to.Frame);
+
+    if (toFrame < fromFrame) {
+      toFrame += dst.Length;
+    }
+
+    for (var i = fromFrame; i < toFrame; ++i) {
+      var normalizedFrame = i % dst.Length;
+      dst[normalizedFrame]
+          = interpolator.Interpolate(from, to, normalizedFrame, sharedConfig);
+    }
+  }
 }
