@@ -13,7 +13,7 @@ public interface IInterpolatable<T> {
   bool TryGetAtFrame(float frame, out T value);
 
   [Const]
-  void GetAllFrames(Span<T> frames) => throw new NotImplementedException();
+  void GetAllFrames(Span<T> dst);
 }
 
 public interface IKeyframeInterpolator<in TKeyframe, out T>

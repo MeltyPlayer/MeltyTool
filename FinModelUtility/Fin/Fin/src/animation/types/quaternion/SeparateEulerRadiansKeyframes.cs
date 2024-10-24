@@ -271,4 +271,7 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
        KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING
         ? toKeyframe.ValueIn
         : defaultValue;
+
+  public void GetAllFrames(Span<Quaternion> dst)
+    => throw new NotImplementedException();
 }

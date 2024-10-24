@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 using fin.animation.interpolation;
@@ -27,4 +28,6 @@ public class CombinedQuaternionKeyframes<TKeyframe>(
 
   public bool TryGetAtFrame(float frame, out Quaternion value)
     => this.impl_.TryGetAtFrame(frame, out value);
+
+  public void GetAllFrames(Span<Quaternion> dst) => this.impl_.GetAllFrames(dst);
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 using fin.math.floats;
 using fin.math.interpolation;
@@ -48,4 +49,6 @@ public class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
     value = default;
     return false;
   }
+
+  public void GetAllFrames(Span<T> dst) => this.Impl.GetAllFrames(dst);
 }

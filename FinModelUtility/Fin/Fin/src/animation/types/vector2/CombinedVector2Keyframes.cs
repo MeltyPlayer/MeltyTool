@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 using fin.animation.interpolation;
@@ -27,4 +28,6 @@ public class CombinedVector2Keyframes<TKeyframe>(
 
   public bool TryGetAtFrame(float frame, out Vector2 value)
     => this.impl_.TryGetAtFrame(frame, out value);
+
+  public void GetAllFrames(Span<Vector2> dst) => this.impl_.GetAllFrames(dst);
 }

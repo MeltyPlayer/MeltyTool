@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 using fin.animation.interpolation;
@@ -57,5 +58,19 @@ public class SeparateVector3Keyframes<TKeyframe>(
 
     value = new Vector3(x, y, z);
     return true;
+  }
+
+  public void GetAllFrames(Span<Vector3> dst) {
+    Span<float> x = stackalloc float[dst.Length];
+    Span<float> y = stackalloc float[dst.Length];
+    Span<float> z = stackalloc float[dst.Length];
+
+    this.Axes[0].GetAllFrames(x);
+    this.Axes[1].GetAllFrames(y);
+    this.Axes[2].GetAllFrames(z);
+
+    for (var i = 0; i < dst.Length; ++i) {
+      dst[i] = new Vector3(x[i], y[i], z[i]);
+    }
   }
 }

@@ -97,7 +97,10 @@ public class InterpolatedKeyframes<TKeyframe, T>(
       this.AddFrames_(dst, this.impl_[^1], this.impl_[0]);
     } else {
       var last = this.impl_[^1];
-      dst.Slice((int) MathF.Ceiling(last.Frame)).Fill(last.ValueOut);
+      var lastFrame = (int) MathF.Ceiling(last.Frame);
+      if (lastFrame < dst.Length) {
+        dst.Slice(lastFrame).Fill(last.ValueOut);
+      }
     }
   }
 
