@@ -269,12 +269,12 @@ public class LowLevelGltfMeshBuilder {
   private static Accessor CreateIndexAccessor_(
       ModelRoot gltfModelRoot,
       int[] vertexIndices) {
-    int bytesPerIndex = vertexIndices.Max() switch {
+    var maxIndex = vertexIndices.Max();
+    int bytesPerIndex = maxIndex switch {
         < byte.MaxValue   => 1,
         < ushort.MaxValue => 2,
         _                 => 4
     };
-
     var indexEncodingType = bytesPerIndex switch {
         1 => IndexEncodingType.UNSIGNED_BYTE,
         2 => IndexEncodingType.UNSIGNED_SHORT,
@@ -286,10 +286,32 @@ public class LowLevelGltfMeshBuilder {
         0,
         BufferMode.ELEMENT_ARRAY_BUFFER);
 
-    int i = 0;
-    var iSpan = indexView.Content.AsSpan().Cast<byte, uint>();
-    foreach (var v in vertexIndices) {
-      iSpan[i++] = (uint) v;
+    switch (indexEncodingType) {
+      case IndexEncodingType.UNSIGNED_BYTE: {
+        int i = 0;
+        var bSpan = indexView.Content.AsSpan();
+        foreach (var v in vertexIndices) {
+          bSpan[i++] = (byte) v;
+        }
+        break;
+      }
+      case IndexEncodingType.UNSIGNED_SHORT: {
+        int i = 0;
+        var sSpan = indexView.Content.AsSpan().Cast<byte, ushort>();
+        foreach (var v in vertexIndices) {
+          sSpan[i++] = (ushort) v;
+        }
+        break;
+      }
+      case IndexEncodingType.UNSIGNED_INT: {
+        int i = 0;
+        var iSpan = indexView.Content.AsSpan().Cast<byte, uint>();
+        foreach (var v in vertexIndices) {
+          iSpan[i++] = (uint) v;
+        }
+        break;
+      }
+      default:                               throw new ArgumentOutOfRangeException();
     }
 
     var indexAccessor = gltfModelRoot.CreateAccessor();
