@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Numerics;
 
 using fin.data.indexable;
 using fin.data.sets;
 using fin.math.matrix.four;
-using fin.util.enumerables;
 
 namespace fin.model.impl;
 
@@ -289,110 +287,6 @@ public partial class ModelImpl<TVertex> {
         : IPrimitive {
       public PrimitiveType Type { get; } = type;
       public IReadOnlyList<IReadOnlyVertex> Vertices { get; } = vertices;
-
-
-      public IEnumerable<int> GetOrderedTriangleVertexIndices() {
-        var pointsCount = this.Vertices.Count;
-        switch (this.Type) {
-          case PrimitiveType.TRIANGLES: {
-            for (var v = 0; v < pointsCount; v += 3) {
-              if (this.VertexOrder == VertexOrder.FLIP) {
-                yield return v + 0;
-                yield return v + 2;
-                yield return v + 1;
-              } else {
-                yield return v + 0;
-                yield return v + 1;
-                yield return v + 2;
-              }
-            }
-
-            break;
-          }
-          case PrimitiveType.TRIANGLE_STRIP: {
-            for (var v = 0; v < pointsCount - 2; ++v) {
-              int v1, v2, v3;
-              if (v % 2 == 0) {
-                v1 = v + 0;
-                v2 = v + 1;
-                v3 = v + 2;
-              } else {
-                // Switches drawing order to maintain proper winding:
-                // https://www.khronos.org/opengl/wiki/Primitive
-                v1 = v + 1;
-                v2 = v + 0;
-                v3 = v + 2;
-              }
-
-              if (this.VertexOrder == VertexOrder.FLIP) {
-                yield return v1;
-                yield return v3;
-                yield return v2;
-              } else {
-                yield return v1;
-                yield return v2;
-                yield return v3;
-              }
-            }
-
-            break;
-          }
-          case PrimitiveType.TRIANGLE_FAN: {
-            // https://stackoverflow.com/a/8044252
-            var firstVertex = 0;
-            for (var v = 2; v < pointsCount; ++v) {
-              var v1 = firstVertex;
-              var v2 = v - 1;
-              var v3 = v;
-
-              if (this.VertexOrder == VertexOrder.FLIP) {
-                yield return v1;
-                yield return v3;
-                yield return v2;
-              } else {
-                yield return v1;
-                yield return v2;
-                yield return v3;
-              }
-            }
-
-            break;
-          }
-          case PrimitiveType.QUADS: {
-            for (var v = 0; v < pointsCount; v += 4) {
-              if (this.VertexOrder == VertexOrder.FLIP) {
-                yield return v + 1;
-                yield return v + 0;
-                yield return v + 2;
-
-                yield return v + 3;
-                yield return v + 2;
-                yield return v + 0;
-              } else {
-                yield return v + 0;
-                yield return v + 1;
-                yield return v + 2;
-
-                yield return v + 2;
-                yield return v + 3;
-                yield return v + 0;
-              }
-            }
-
-            break;
-          }
-          default: throw new NotImplementedException();
-        }
-      }
-
-      public IEnumerable<(int, int, int)>
-          GetOrderedTriangleVertexIndexTriplets()
-        => this.GetOrderedTriangleVertexIndices().SeparateTriplets();
-
-      public IEnumerable<IReadOnlyVertex> GetOrderedTriangleVertices()
-        => this.GetOrderedTriangleVertexIndices()
-               .Select(index => this.Vertices[index]);
-
 
       public IMaterial Material { get; private set; }
 

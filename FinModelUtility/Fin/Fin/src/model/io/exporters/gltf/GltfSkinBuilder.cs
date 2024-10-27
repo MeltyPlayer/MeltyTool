@@ -5,6 +5,7 @@ using System.Linq;
 using fin.data.indexable;
 using fin.math;
 using fin.model.accessor;
+using fin.model.util;
 using fin.util.enumerables;
 
 using SharpGLTF.Geometry;
@@ -23,7 +24,8 @@ public class GltfSkinBuilder {
       ModelRoot gltfModel,
       IReadOnlyModel model,
       float scale,
-      IDictionary<IReadOnlyMaterial, MaterialBuilder> finToTexCoordAndGltfMaterial) {
+      IDictionary<IReadOnlyMaterial, MaterialBuilder>
+          finToTexCoordAndGltfMaterial) {
     var skin = model.Skin;
 
     var boneTransformManager = new BoneTransformManager();
@@ -38,7 +40,7 @@ public class GltfSkinBuilder {
                                    .WithSpecularGlossiness();
 
     var vertexAccessor = MaximalVertexAccessor.GetAccessorForModel(model);
-    var vertexMap
+    var vertexToBuilder
         = new IndexableDictionary<IReadOnlyVertex, IVertexBuilder>(
             skin.Vertices.Count);
 
@@ -82,7 +84,7 @@ public class GltfSkinBuilder {
             uvCount,
             weightCount);
 
-        vertexMap[finVertex] = vertexBuilder;
+        vertexToBuilder[finVertex] = vertexBuilder;
       }
 
       IGltfMeshBuilder gltfMeshBuilder
@@ -102,22 +104,15 @@ public class GltfSkinBuilder {
           materialBuilder = nullMaterialBuilder;
         }
 
-        var points = primitive.Vertices;
-        var pointsCount = points.Count;
-
-        var vertices = primitive.Vertices.Select(vertex => vertexMap[vertex])
-                                .ToArray();
-
         switch (primitive.Type) {
           case PrimitiveType.TRIANGLES:
           case PrimitiveType.TRIANGLE_STRIP:
           case PrimitiveType.TRIANGLE_FAN: {
-            var triangles =
-                gltfMeshBuilder.UsePrimitive(materialBuilder, 3);
+            var triangles = gltfMeshBuilder.UsePrimitive(materialBuilder);
 
             foreach (var (v1, v2, v3) in primitive
-                                         .GetOrderedTriangleVertexIndices()
-                                         .Select(i => vertices[i])
+                                         .GetOrderedTriangleVertices()
+                                         .Select(v => vertexToBuilder[v])
                                          .SeparateTriplets()) {
               triangles.AddTriangle(v1, v2, v3);
             }
@@ -126,22 +121,22 @@ public class GltfSkinBuilder {
           }
           case PrimitiveType.QUADS: {
             var quads = gltfMeshBuilder.UsePrimitive(materialBuilder);
-            for (var v = 0; v < pointsCount; v += 4) {
-              quads.AddQuadrangle(vertices[v + 0],
-                                  vertices[v + 1],
-                                  vertices[v + 2],
-                                  vertices[v + 3]);
+            var verticesInPrimitive = primitive.Vertices;
+            for (var v = 0; v < verticesInPrimitive.Count; v += 4) {
+              quads.AddQuadrangle(vertexToBuilder[verticesInPrimitive[v + 0]],
+                                  vertexToBuilder[verticesInPrimitive[v + 1]],
+                                  vertexToBuilder[verticesInPrimitive[v + 2]],
+                                  vertexToBuilder[verticesInPrimitive[v + 3]]);
             }
 
             break;
           }
           case PrimitiveType.POINTS: {
-            var pointPrimitive =
-                gltfMeshBuilder.UsePrimitive(
-                    materialBuilder,
-                    1);
-            for (var v = 0; v < pointsCount; v += 4) {
-              pointPrimitive.AddPoint(vertices[v]);
+            var pointPrimitive
+                = gltfMeshBuilder.UsePrimitive(materialBuilder, 1);
+            var verticesInPrimitive = primitive.Vertices;
+            for (var v = 0; v < verticesInPrimitive.Count; v += 4) {
+              pointPrimitive.AddPoint(vertexToBuilder[verticesInPrimitive[v]]);
             }
 
             break;

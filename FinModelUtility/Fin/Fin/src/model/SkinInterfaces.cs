@@ -162,15 +162,6 @@ public partial interface IPrimitive {
   PrimitiveType Type { get; }
   IReadOnlyList<IReadOnlyVertex> Vertices { get; }
 
-  [Const]
-  IEnumerable<int> GetOrderedTriangleVertexIndices();
-
-  [Const]
-  IEnumerable<(int, int, int)> GetOrderedTriangleVertexIndexTriplets();
-
-  [Const]
-  IEnumerable<IReadOnlyVertex> GetOrderedTriangleVertices();
-
   IMaterial? Material { get; }
   IPrimitive SetMaterial(IMaterial? material);
 

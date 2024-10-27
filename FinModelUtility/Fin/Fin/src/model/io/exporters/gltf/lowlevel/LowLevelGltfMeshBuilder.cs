@@ -8,6 +8,7 @@ using CommunityToolkit.HighPerformance;
 using fin.color;
 using fin.math;
 using fin.model.accessor;
+using fin.model.util;
 
 using SharpGLTF.Schema2;
 
