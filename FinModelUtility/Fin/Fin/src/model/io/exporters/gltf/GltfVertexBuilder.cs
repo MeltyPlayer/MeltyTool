@@ -71,20 +71,13 @@ public class GltfVertexBuilder {
       if (!hasNormals) {
         vertexBuilder.SetGeometry(new VertexPosition(position));
       } else {
-        var normal
-            = Vector3.Normalize(
-                new Vector3(outNormal.X, outNormal.Y, outNormal.Z));
+        var normal = Vector3.Normalize(outNormal);
 
         if (!hasTangents) {
           vertexBuilder.SetGeometry(
               new VertexPositionNormal(position, normal));
         } else {
-          var tangent = new Vector4(outTangent.X,
-                                    outTangent.Y,
-                                    outTangent.Z,
-                                    outTangent.W) /
-                        Math.Abs(outTangent.W);
-
+          var tangent = outTangent / outTangent.W;
           vertexBuilder.SetGeometry(
               new VertexPositionNormalTangent(
                   position,
