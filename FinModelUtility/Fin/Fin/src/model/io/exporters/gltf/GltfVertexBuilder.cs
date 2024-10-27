@@ -68,12 +68,17 @@ public class GltfVertexBuilder {
                       outPosition.Y * scale,
                       outPosition.Z * scale);
 
-      if (hasNormals) {
+      if (!hasNormals) {
+        vertexBuilder.SetGeometry(new VertexPosition(position));
+      } else {
         var normal
             = Vector3.Normalize(
                 new Vector3(outNormal.X, outNormal.Y, outNormal.Z));
 
-        if (hasTangents) {
+        if (!hasTangents) {
+          vertexBuilder.SetGeometry(
+              new VertexPositionNormal(position, normal));
+        } else {
           var tangent = new Vector4(outTangent.X,
                                     outTangent.Y,
                                     outTangent.Z,
@@ -85,12 +90,7 @@ public class GltfVertexBuilder {
                   position,
                   normal,
                   tangent));
-        } else {
-          vertexBuilder.SetGeometry(
-              new VertexPositionNormal(position, normal));
         }
-      } else {
-        vertexBuilder.SetGeometry(new VertexPosition(position));
       }
     }
 
@@ -128,45 +128,85 @@ public class GltfVertexBuilder {
   private static IVertexMaterial GetVertexMaterial_(
       IVertexAccessor vertexAccessor,
       int colorCount,
-      int uvCount) {
-    var color0 = FinToGltfColor_(vertexAccessor.GetColor(0));
-    var color1 = FinToGltfColor_(vertexAccessor.GetColor(1));
+      int uvCount)
+    => colorCount switch {
+        >= 2 => uvCount switch {
+            >= 4 => new VertexColor2Texture4(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetColorOrDefault(1),
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1),
+                vertexAccessor.GetUvOrDefault(2),
+                vertexAccessor.GetUvOrDefault(3)),
+            3 => new VertexColor2Texture3(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetColorOrDefault(1),
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1),
+                vertexAccessor.GetUvOrDefault(2)),
+            2 => new VertexColor2Texture2(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetColorOrDefault(1),
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1)),
+            1 => new VertexColor2Texture1(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetColorOrDefault(1),
+                vertexAccessor.GetUvOrDefault(0)),
+            _ => new VertexColor2(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetColorOrDefault(1))
+        },
+        1 => uvCount switch {
+            >= 4 => new VertexColor1Texture4(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1),
+                vertexAccessor.GetUvOrDefault(2),
+                vertexAccessor.GetUvOrDefault(3)),
+            3 => new VertexColor1Texture3(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1),
+                vertexAccessor.GetUvOrDefault(2)),
+            2 => new VertexColor1Texture2(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1)),
+            1 => new VertexColor1Texture1(
+                vertexAccessor.GetColorOrDefault(0),
+                vertexAccessor.GetUvOrDefault(0)),
+            _ => new VertexColor1(
+                vertexAccessor.GetColorOrDefault(0))
+        },
+        _ => uvCount switch {
+            >= 4 => new VertexTexture4(
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1),
+                vertexAccessor.GetUvOrDefault(2),
+                vertexAccessor.GetUvOrDefault(3)),
+            3 => new VertexTexture3(
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1),
+                vertexAccessor.GetUvOrDefault(2)),
+            2 => new VertexTexture2(
+                vertexAccessor.GetUvOrDefault(0),
+                vertexAccessor.GetUvOrDefault(1)),
+            1 => new VertexTexture1(
+                vertexAccessor.GetUvOrDefault(0)),
+            _ => new VertexEmpty()
+        },
+    };
+}
 
-    var uv0 = FinToGltfUv_(vertexAccessor.GetUv(0));
-    var uv1 = FinToGltfUv_(vertexAccessor.GetUv(1));
-
-    if (colorCount >= 2) {
-      return uvCount switch {
-          >= 2 => new VertexColor2Texture2(color0, color1, uv0, uv1),
-          1    => new VertexColor2Texture1(color0, color1, uv0),
-          _    => new VertexColor2(color0, color1)
-      };
-    }
-
-    if (uvCount >= 2) {
-      return colorCount == 1
-          ? new VertexColor1Texture2(color0, uv0, uv1)
-          : new VertexTexture2(uv0, uv1);
-    }
-
-    if (colorCount == 1 && uvCount == 1) {
-      return new VertexColor1Texture1(color0, uv0);
-    }
-
-    if (colorCount == 1) {
-      return new VertexColor1(color0);
-    }
-
-    if (uvCount == 1) {
-      return new VertexTexture1(uv0);
-    }
-
-    return new VertexEmpty();
+public static class VertexAccessorExtensions {
+  public static Vector4 GetColorOrDefault(this IVertexAccessor vertexAccessor,
+                                          int index) {
+    var color = vertexAccessor.GetColor(index);
+    return new(color?.Rf ?? 1, color?.Gf ?? 1, color?.Bf ?? 1, color?.Af ?? 1);
   }
 
-  private static Vector4 FinToGltfColor_(IColor? color)
-    => new(color?.Rf ?? 1, color?.Gf ?? 1, color?.Bf ?? 1, color?.Af ?? 1);
-
-  private static Vector2 FinToGltfUv_(Vector2? uv)
-    => new(uv?.X ?? 0, uv?.Y ?? 0);
+  public static Vector2 GetUvOrDefault(this IVertexAccessor vertexAccessor,
+                                       int index)
+    => vertexAccessor.GetUv(index) ?? Vector2.Zero;
 }

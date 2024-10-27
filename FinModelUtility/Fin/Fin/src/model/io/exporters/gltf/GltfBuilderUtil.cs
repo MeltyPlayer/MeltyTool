@@ -12,35 +12,30 @@ public static class GltfBuilderUtil {
         _                     => typeof(VertexPosition)
     };
 
-  public static Type GetMaterialType(int colorCount, int uvCount) {
-    if (colorCount >= 2) {
-      return uvCount switch {
-          >= 2 => typeof(VertexColor2Texture2),
-          1    => typeof(VertexColor2Texture1),
-          _    => typeof(VertexColor2)
-      };
-    }
-
-    if (uvCount >= 2) {
-      return colorCount == 1
-          ? typeof(VertexColor1Texture2)
-          : typeof(VertexTexture2);
-    }
-
-    if (colorCount == 1 && uvCount == 1) {
-      return typeof(VertexColor1Texture1);
-    }
-
-    if (colorCount == 1) {
-      return typeof(VertexColor1);
-    }
-
-    if (uvCount == 1) {
-      return typeof(VertexTexture1);
-    }
-
-    return typeof(VertexEmpty);
-  }
+  public static Type GetMaterialType(int colorCount, int uvCount)
+    => colorCount switch {
+        >= 2 => uvCount switch {
+            >= 4 => typeof(VertexColor2Texture4),
+            3    => typeof(VertexColor2Texture3),
+            2    => typeof(VertexColor2Texture2),
+            1    => typeof(VertexColor2Texture1),
+            _    => typeof(VertexColor2)
+        },
+        1 => uvCount switch {
+            >= 4 => typeof(VertexColor1Texture4),
+            3    => typeof(VertexColor1Texture3),
+            2    => typeof(VertexColor1Texture2),
+            1    => typeof(VertexColor1Texture1),
+            _    => typeof(VertexColor1)
+        },
+        _ => uvCount switch {
+            >= 4 => typeof(VertexTexture4),
+            3    => typeof(VertexTexture3),
+            2    => typeof(VertexTexture2),
+            1    => typeof(VertexTexture1),
+            _    => typeof(VertexEmpty)
+        },
+    };
 
   public static Type GetSkinningType(int weightCount)
     => weightCount switch {
