@@ -3,7 +3,8 @@ cli/out/**
 
 cli/roms/*.*
 cli/roms/*/extracted/**
-!cli/roms/*/prereq/**
+cli/roms/*/cache/**
+!cli/roms/*/prereqs/**
 !cli/roms/PUT ROMS HERE.txt
 !KSoft/*/Debug/**
 !KSoft/**/ECF/**

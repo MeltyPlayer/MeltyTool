@@ -15,9 +15,9 @@ namespace uni.games.dead_space_1 {
         return;
       }
 
-      ExtractorUtil.GetOrCreateRomDirectories(
+      ExtractorUtil.GetOrCreateRomDirectoriesWithCache(
           "dead_space_1",
-          out var prereqsDir,
+          out var cacheDir,
           out var extractedDir);
       if (extractedDir.IsEmpty) {
         var strExtractor = new StrExtractor();
@@ -30,13 +30,13 @@ namespace uni.games.dead_space_1 {
       var assetFileHierarchy = ExtractorUtil.GetFileHierarchy("dead_space_1", extractedDir);
       var bnkFileIdsDictionary = new BnkFileIdsDictionary(
           extractedDir,
-          new FinFile(Path.Join(prereqsDir.FullPath, "bnks.ids")));
+          new FinFile(Path.Join(cacheDir.FullPath, "bnks.ids")));
       var mtlbFileIdsDictionary = new MtlbFileIdsDictionary(
           extractedDir,
-          new FinFile(Path.Join(prereqsDir.FullPath, "mtlbs.ids")));
+          new FinFile(Path.Join(cacheDir.FullPath, "mtlbs.ids")));
       var tg4hFileIdDictionary = new Tg4hFileIdDictionary(
           extractedDir,
-          new FinFile(Path.Join(prereqsDir.FullPath, "tg4hs.ids")));
+          new FinFile(Path.Join(cacheDir.FullPath, "tg4hs.ids")));
 
       foreach (var charSubdir in
                new[] { "animated_props", "chars", "weapons" }
