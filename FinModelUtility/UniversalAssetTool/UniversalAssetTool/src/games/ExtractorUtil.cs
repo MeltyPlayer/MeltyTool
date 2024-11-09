@@ -47,10 +47,10 @@ public static class ExtractorUtil {
       string romName,
       ISystemDirectory directory) {
     var romDir = GetOrCreateRomDirectory(romName);
-    var prereqsDir = romDir.GetOrCreateSubdir(PREREQS);
+    var cacheDir = romDir.GetOrCreateSubdir(CACHE);
 
     var cacheFile
-        = new FinFile(Path.Join(prereqsDir.FullPath, "hierarchy.cache"));
+        = new FinFile(Path.Join(cacheDir.FullPath, "hierarchy.cache"));
 
     return FileHierarchy.From(romName, directory, cacheFile);
   }

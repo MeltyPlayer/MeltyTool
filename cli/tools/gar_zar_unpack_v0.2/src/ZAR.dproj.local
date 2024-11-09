@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.711,=C:\Users\Admin\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.474,C:\Users\Admin\Documents\Embarcadero\Studio\Projects\ZAR.dproj=E:\TEMA\Source\ZARZelda\ZAR.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.816,C:\Users\Admin\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\Admin\Documents\Embarcadero\Studio\Projects\ZAR.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.279,=C:\Users\Admin\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-  </Transactions>
-</BorlandProject>
