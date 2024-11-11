@@ -6,32 +6,30 @@ using uni.platforms;
 namespace uni.games;
 
 public static class ExtractorUtil {
+  public const string CACHE = "cache";
   public const string PREREQS = "prereqs";
   public const string EXTRACTED = "extracted";
-
-  public static ISystemDirectory GetOrCreateRomDirectory(
-      IReadOnlyTreeFile romFile)
-    => GetOrCreateRomDirectory(romFile.GetRomName());
 
   public static ISystemDirectory GetOrCreateRomDirectory(
       string romName)
     => DirectoryConstants.ROMS_DIRECTORY.GetOrCreateSubdir(romName);
 
 
-  public static void GetOrCreateRomDirectories(
-      IReadOnlyTreeFile romFile,
-      out ISystemDirectory prereqsDir,
-      out ISystemDirectory extractedDir)
-    => GetOrCreateRomDirectories(romFile.GetRomName(),
-                                 out prereqsDir,
-                                 out extractedDir);
-
-  public static void GetOrCreateRomDirectories(
+  public static void GetOrCreateRomDirectoriesWithPrereqs(
       string romName,
       out ISystemDirectory prereqsDir,
       out ISystemDirectory extractedDir) {
     var romDir = GetOrCreateRomDirectory(romName);
     prereqsDir = romDir.GetOrCreateSubdir(PREREQS);
+    extractedDir = romDir.GetOrCreateSubdir(EXTRACTED);
+  }
+
+  public static void GetOrCreateRomDirectoriesWithCache(
+      string romName,
+      out ISystemDirectory cacheDir,
+      out ISystemDirectory extractedDir) {
+    var romDir = GetOrCreateRomDirectory(romName);
+    cacheDir = romDir.GetOrCreateSubdir(CACHE);
     extractedDir = romDir.GetOrCreateSubdir(EXTRACTED);
   }
 
@@ -49,10 +47,10 @@ public static class ExtractorUtil {
       string romName,
       ISystemDirectory directory) {
     var romDir = GetOrCreateRomDirectory(romName);
-    var prereqsDir = romDir.GetOrCreateSubdir(PREREQS);
+    var cacheDir = romDir.GetOrCreateSubdir(CACHE);
 
     var cacheFile
-        = new FinFile(Path.Join(prereqsDir.FullPath, "hierarchy.cache"));
+        = new FinFile(Path.Join(cacheDir.FullPath, "hierarchy.cache"));
 
     return FileHierarchy.From(romName, directory, cacheFile);
   }

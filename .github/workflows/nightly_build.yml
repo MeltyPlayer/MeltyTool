@@ -20,6 +20,7 @@ jobs:
         name: check latest commit is less than a day
         if: ${{ github.event_name == 'schedule' }}
         run: test -z $(git rev-list  --after="24 hours"  ${{ github.sha }}) && echo "::set-output name=should_run::false"
+
   build:
     needs: check_date
     if: ${{ needs.check_date.outputs.should_run != 'false' }}
@@ -45,12 +46,35 @@ jobs:
       working-directory: bat
       
     - name: Zip files
-      run: Compress-Archive -Path cli/** -Destination fin_model_utility.zip
+      run: Compress-Archive -Path cli/** -DestinationPath fin_model_utility.zip
       
-    - name: Upload
-      uses: andelf/nightly-release@main
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: fin_model_utility
+        path: fin_model_utility.zip
+
+  create_release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.result == 'success' }}
+    steps:
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag: nightly
-        files: fin_model_utility.zip
+        tag_name: nightly-${{ github.sha }}
+        release_name: "Nightly Build ${{ github.sha }}"
+        draft: false
+        prerelease: true
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: fin_model_utility.zip
+        asset_name: fin_model_utility.zip
+        asset_content_type: application/zip
