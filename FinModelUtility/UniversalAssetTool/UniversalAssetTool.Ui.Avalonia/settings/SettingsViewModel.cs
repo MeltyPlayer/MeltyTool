@@ -6,11 +6,16 @@ using ConfigFactory.Core.Attributes;
 
 using uni.config;
 
+
 namespace uni.ui.avalonia.settings;
 
 public class SettingsViewModel
-    : ConfigModule<SettingsViewModel>, IDebugSettings, IExporterGeneralSettings,
-      IExporterThirdPartySettings, IExtractorSettings, IViewerSettings {
+    : ConfigModule<SettingsViewModel>,
+      GeneralSettings.IDebugSettings,
+      ExporterSettings.IExporterGeneralSettings,
+      ExporterSettings.IExporterThirdPartySettings,
+      IExtractorSettings,
+      IViewerSettings {
   private const string CATEGORY_GENERAL = "General";
   private const string GROUP_GENERAL_DEBUG = "Debug";
 

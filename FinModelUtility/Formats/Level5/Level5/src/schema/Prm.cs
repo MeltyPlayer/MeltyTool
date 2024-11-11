@@ -254,6 +254,8 @@ public class Prm {
             case 9: // Color
               vert.Clr = this.ReadAttribute(br, aType[j], aCount[j]).Yzwx();
               break;
+            default:
+              throw new NotImplementedException();
           }
         }
 

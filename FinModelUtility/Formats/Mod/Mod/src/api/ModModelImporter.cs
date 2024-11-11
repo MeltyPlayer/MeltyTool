@@ -393,7 +393,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
       this.AddMesh_(mod,
                     mesh,
-                    modMaterial,
                     finMaterial,
                     model,
                     finBones,
@@ -416,7 +415,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
   private void AddMesh_(
       Mod mod,
       Mesh mesh,
-      Material modMaterial,
       IMaterial finMaterial,
       ModelImpl model,
       IReadOnlyList<IBone> bones,

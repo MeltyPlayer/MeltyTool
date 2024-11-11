@@ -125,7 +125,7 @@ namespace mod.schema {
     public void TestTextureAttributes() {
       var textureAttributes = new TextureAttributes {
           TextureImageIndex = 1,
-          Unk0 = 2,
+          WrapFlags = 2,
           Unk1 = 3,
           WidthPercent = 123f
       };

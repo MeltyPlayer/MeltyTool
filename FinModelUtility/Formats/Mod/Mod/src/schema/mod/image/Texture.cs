@@ -9,6 +9,7 @@ using gx.image;
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace mod.schema.mod {
   [BinarySchema]
   public partial class Texture : IBinaryConvertible {
@@ -52,14 +53,14 @@ namespace mod.schema.mod {
                 this.height >> i,
                 this.format switch {
                     TextureFormat.RGB565 => GxTextureFormat.R5_G6_B5,
-                    TextureFormat.CMPR   => GxTextureFormat.S3TC1,
+                    TextureFormat.CMPR => GxTextureFormat.S3TC1,
                     TextureFormat.RGB5A3 => GxTextureFormat.A3_RGB5,
-                    TextureFormat.I4     => GxTextureFormat.I4,
-                    TextureFormat.I8     => GxTextureFormat.I8,
-                    TextureFormat.IA4    => GxTextureFormat.A4_I4,
-                    TextureFormat.IA8    => GxTextureFormat.A8_I8,
+                    TextureFormat.I4 => GxTextureFormat.I4,
+                    TextureFormat.I8 => GxTextureFormat.I8,
+                    TextureFormat.IA4 => GxTextureFormat.A4_I4,
+                    TextureFormat.IA8 => GxTextureFormat.A8_I8,
                     TextureFormat.RGBA32 => GxTextureFormat.ARGB8,
-                    _                    => throw new ArgumentOutOfRangeException()
+                    _ => throw new ArgumentOutOfRangeException()
                 })
             .ReadImage(br);
       }
@@ -73,16 +74,15 @@ namespace mod.schema.mod {
 
   [BinarySchema]
   public partial class TextureAttributes : IBinaryConvertible {
-    public ushort TextureImageIndex = 0;
+    public ushort TextureImageIndex { get; set; }
     private readonly ushort padding_ = 0;
 
-    [Unknown]
-    public ushort Unk0;
+    public ushort WrapFlags { get; set; }
 
     [Unknown]
-    public ushort Unk1;
+    public ushort Unk1 { get; set; }
 
     [Unknown]
-    public float WidthPercent = 0;
+    public float WidthPercent { get; set; }
   }
 }

@@ -1,11 +1,11 @@
-﻿using AutoInterfaceAttributes;
-
-using fin.config;
+﻿using fin.config;
 using fin.data.dictionaries;
 using fin.io;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+
+using schema.autoInterface;
 
 using uni.platforms;
 
@@ -42,17 +42,17 @@ public class Config {
     => DirectoryConstants.CONFIG_FILE.Serialize(Instance);
 }
 
-public class GeneralSettings {
+public partial class GeneralSettings {
   public DebugSettings Debug { get; } = new();
 
-  [AutoInterface]
-  public class DebugSettings : IDebugSettings {
+  [GenerateInterface]
+  public partial class DebugSettings {
     public bool VerboseConsole { get; set; }
   }
 }
 
-[AutoInterface]
-public class ViewerSettings : IViewerSettings {
+[GenerateInterface]
+public partial class ViewerSettings {
   public bool AutomaticallyPlayGameAudioForModel { get; set; }
 
   public bool ShowGrid { get; set; }
@@ -67,8 +67,8 @@ public class ViewerSettings : IViewerSettings {
     ScaleSourceType.MIN_MAX_BOUNDS;
 }
 
-[AutoInterface]
-public class ExtractorSettings : IExtractorSettings {
+[GenerateInterface]
+public partial class ExtractorSettings {
   public bool CacheFileHierarchies { get; set; }
   public bool ExtractRomsInParallel { get; set; }
 }
@@ -96,12 +96,12 @@ public static class ExportedFormatUtil {
   public static ExportedFormat AsFormat(this string fileType) => map_[fileType];
 }
 
-public class ExporterSettings {
+public partial class ExporterSettings {
   public ExporterGeneralSettings General { get; } = new();
   public ExporterThirdPartySettings ThirdParty { get; } = new();
 
-  [AutoInterface]
-  public class ExporterGeneralSettings : IExporterGeneralSettings {
+  [GenerateInterface]
+  public partial class ExporterGeneralSettings {
     public HashSet<ExportedFormat> ExportedFormats { get; set; } = [];
     public bool ExportAllTextures { get; set; }
 
@@ -110,8 +110,8 @@ public class ExporterSettings {
       ScaleSourceType.NONE;
   }
 
-  [AutoInterface]
-  public class ExporterThirdPartySettings : IExporterThirdPartySettings {
+  [GenerateInterface]
+  public partial class ExporterThirdPartySettings {
     public bool ExportBoneScaleAnimationsSeparately { get; set; }
   }
 }
