@@ -6,6 +6,7 @@ using fin.image;
 using fin.image.formats;
 using fin.image.io;
 using fin.image.io.tile;
+using fin.io;
 
 using level5.decompression;
 
@@ -27,75 +28,73 @@ public class Xi {
 
   private bool SwitchFile { get; set; } = false;
 
-  public void Open(byte[] data) {
-      using (var r =
-             new SchemaBinaryReader(data, Endianness.LittleEndian)) {
-        r.Position = 0x10;
-        this.Width = r.ReadInt16();
-        this.Height = r.ReadInt16();
+  public void Open(IReadOnlyGenericFile xiFile) {
+    using var r = xiFile.OpenReadAsBinary(Endianness.LittleEndian);
+    r.Position = 0x10;
+    this.Width = r.ReadInt16();
+    this.Height = r.ReadInt16();
 
-        r.Position = 0xA;
-        int type = r.ReadByte();
+    r.Position = 0xA;
+    int type = r.ReadByte();
 
-        r.Position = 0x1C;
-        int someTable = r.ReadInt16();
+    r.Position = 0x1C;
+    int someTable = r.ReadInt16();
 
-        r.Position = 0x38;
-        int someTableSize = r.ReadInt32();
+    r.Position = 0x38;
+    int someTableSize = r.ReadInt32();
 
-        int imageDataOffset = someTable + someTableSize;
+    int imageDataOffset = someTable + someTableSize;
 
-        var level5Decompressor = new Level5Decompressor();
-        byte[] tileBytes =
-            level5Decompressor.Decompress(
-                r.SubreadAt((uint) someTable, ser => ser.ReadBytes(someTableSize)));
+    var level5Decompressor = new Level5Decompressor();
+    byte[] tileBytes =
+        level5Decompressor.Decompress(
+            r.SubreadAt((uint) someTable, ser => ser.ReadBytes(someTableSize)));
 
-        if (tileBytes.Length > 2 && tileBytes[0] == 0x53 &&
-            tileBytes[1] == 0x04)
-          this.SwitchFile = true;
+    if (tileBytes.Length > 2 && tileBytes[0] == 0x53 &&
+        tileBytes[1] == 0x04)
+      this.SwitchFile = true;
 
-        using (var tileData =
-               new SchemaBinaryReader(tileBytes, Endianness.LittleEndian)) {
-          int tileCount = 0;
-          while (tileData.Position + 2 <= tileData.Length) {
-            int i = this.SwitchFile ? tileData.ReadInt32() : tileData.ReadInt16();
-            if (i > tileCount) tileCount = i;
-            this.Tiles.Add(i);
-          }
-        }
-
-        switch (type) {
-          case 0x1:
-            type = 0x4;
-            break;
-          case 0x3:
-            type = 0x1;
-            break;
-          case 0x4:
-            type = 0x3;
-            break;
-          case 0x1B:
-            type = 0xC;
-            break;
-          case 0x1C:
-            type = 0xD;
-            break;
-          case 0x1D:
-          case 0x1F:
-            break;
-          default:
-            //File.WriteAllBytes("texture.bin", Decompress.Level5Decom(r.GetSection((uint)imageDataOffset, (int)(r.BaseStream.Length - imageDataOffset))));
-            throw new Exception("Unknown Texture Type " + type.ToString("x"));
-          //break;
-        }
-
-        this.ImageFormat = (byte) type;
-
-        this.ImageData = level5Decompressor.Decompress(
-            r.SubreadAt((uint) imageDataOffset,
-                                ser => ser.ReadBytes((int) (r.Length - imageDataOffset))));
+    using (var tileData =
+           new SchemaBinaryReader(tileBytes, Endianness.LittleEndian)) {
+      int tileCount = 0;
+      while (tileData.Position + 2 <= tileData.Length) {
+        int i = this.SwitchFile ? tileData.ReadInt32() : tileData.ReadInt16();
+        if (i > tileCount) tileCount = i;
+        this.Tiles.Add(i);
       }
     }
+
+    switch (type) {
+      case 0x1:
+        type = 0x4;
+        break;
+      case 0x3:
+        type = 0x1;
+        break;
+      case 0x4:
+        type = 0x3;
+        break;
+      case 0x1B:
+        type = 0xC;
+        break;
+      case 0x1C:
+        type = 0xD;
+        break;
+      case 0x1D:
+      case 0x1F:
+        break;
+      default:
+        //File.WriteAllBytes("texture.bin", Decompress.Level5Decom(r.GetSection((uint)imageDataOffset, (int)(r.BaseStream.Length - imageDataOffset))));
+        throw new Exception("Unknown Texture Type " + type.ToString("x"));
+      //break;
+    }
+
+    this.ImageFormat = (byte) type;
+
+    this.ImageData = level5Decompressor.Decompress(
+        r.SubreadAt((uint) imageDataOffset,
+                    ser => ser.ReadBytes((int) (r.Length - imageDataOffset))));
+  }
     
   /// <summary>
   /// 

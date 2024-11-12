@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.data.dictionaries;
+using fin.io;
 using fin.math.rotations;
 using fin.schema;
 using fin.util.asserts;
@@ -28,87 +29,85 @@ public class Mtn2 {
     public int End { get; set; }
   }
 
-  public void Open(byte[] bytes) {
+  public void Open(IReadOnlyGenericFile mtn2File) {
     var endianness = Endianness.LittleEndian;
-    using (var r =
-           new SchemaBinaryReader(new MemoryStream(bytes), endianness)) {
-      r.Position = 0x08;
-      var decomSize = r.ReadInt32();
-      var nameOffset = r.ReadUInt32();
-      var compDataOffset = r.ReadUInt32();
-      var positionCount = r.ReadInt32();
-      var rotationCount = r.ReadInt32();
-      var scaleCount = r.ReadInt32();
+    using var r = mtn2File.OpenReadAsBinary(endianness);
+    r.Position = 0x08;
+    var decomSize = r.ReadInt32();
+    var nameOffset = r.ReadUInt32();
+    var compDataOffset = r.ReadUInt32();
+    var positionCount = r.ReadInt32();
+    var rotationCount = r.ReadInt32();
+    var scaleCount = r.ReadInt32();
 
-      // This corresponds to PRMs that may be toggled on/off in the animation.
-      var toggledPrmCount = r.ReadInt32();
-      // This corresponds to bones that will be moved in the animation.
-      var boneCount = r.ReadInt32();
+    // This corresponds to PRMs that may be toggled on/off in the animation.
+    var toggledPrmCount = r.ReadInt32();
+    // This corresponds to bones that will be moved in the animation.
+    var boneCount = r.ReadInt32();
 
-      r.Position = 0x54;
-      this.Anim.FrameCount = r.ReadInt32();
+    r.Position = 0x54;
+    this.Anim.FrameCount = r.ReadInt32();
 
-      r.Position = nameOffset;
-      this.Anim.NameHash = r.ReadUInt32();
-      this.Anim.Name = r.ReadStringNT();
+    r.Position = nameOffset;
+    this.Anim.NameHash = r.ReadUInt32();
+    this.Anim.Name = r.ReadStringNT();
 
-      var data = new Level5Decompressor().Decompress(
-          r.SubreadAt(compDataOffset, ser => ser.ReadBytes(
-                          (int)(r.Length - compDataOffset))));
+    var data = new Level5Decompressor().Decompress(
+        r.SubreadAt(compDataOffset, ser => ser.ReadBytes(
+                        (int)(r.Length - compDataOffset))));
 
-      using (var d =
-             new SchemaBinaryReader(new MemoryStream(data), endianness)) {
-        // Header
-        var hashTableOffset = d.ReadUInt32();
-        var trackInfoOffset = d.ReadUInt32();
-        var dataOffset = d.ReadUInt32();
+    using (var d =
+           new SchemaBinaryReader(new MemoryStream(data), endianness)) {
+      // Header
+      var hashTableOffset = d.ReadUInt32();
+      var trackInfoOffset = d.ReadUInt32();
+      var dataOffset = d.ReadUInt32();
 
-        // Bone Hashes
-        List<uint> hashes = [];
-        d.Position = (hashTableOffset);
-        while (d.Position < trackInfoOffset) {
-          hashes.Add(d.ReadUInt32());
-        }
-        Asserts.Equal(toggledPrmCount + boneCount, hashes.Count);
-
-        // Track Information
-        List<AnimTrack> tracks = [];
-        for (int i = 0; i < 4; i++) {
-          d.Position = ((uint)(trackInfoOffset + 2 * i));
-          d.Position = (d.ReadUInt16());
-
-          tracks.Add(new AnimTrack() {
-              Type = d.ReadByte(),
-              DataType = d.ReadByte(),
-              Unk = d.ReadByte(),
-              DataCount = d.ReadByte(),
-              Start = d.ReadUInt16(),
-              End = d.ReadUInt16()
-          });
-        }
-
-        // Data
-
-        foreach (var v in hashes) {
-          var node = new GenericAnimationTransform();
-          node.Hash = v;
-          node.HashType = AnimNodeHashType.CRC32C;
-          this.Anim.TransformNodes.Add(node);
-        }
-
-        var offset = 0;
-        this.ReadFrameData_(d, offset, positionCount, dataOffset, boneCount,
-                            tracks[0]);
-        offset += positionCount;
-        this.ReadFrameData_(d, offset, rotationCount, dataOffset, boneCount,
-                            tracks[1]);
-        offset += rotationCount;
-        this.ReadFrameData_(d, offset, scaleCount, dataOffset, boneCount,
-                            tracks[2]);
-        offset += scaleCount;
-        this.ReadFrameData_(d, offset, toggledPrmCount, dataOffset, boneCount,
-                            tracks[3]);
+      // Bone Hashes
+      List<uint> hashes = [];
+      d.Position = (hashTableOffset);
+      while (d.Position < trackInfoOffset) {
+        hashes.Add(d.ReadUInt32());
       }
+      Asserts.Equal(toggledPrmCount + boneCount, hashes.Count);
+
+      // Track Information
+      List<AnimTrack> tracks = [];
+      for (int i = 0; i < 4; i++) {
+        d.Position = ((uint)(trackInfoOffset + 2 * i));
+        d.Position = (d.ReadUInt16());
+
+        tracks.Add(new AnimTrack() {
+            Type = d.ReadByte(),
+            DataType = d.ReadByte(),
+            Unk = d.ReadByte(),
+            DataCount = d.ReadByte(),
+            Start = d.ReadUInt16(),
+            End = d.ReadUInt16()
+        });
+      }
+
+      // Data
+
+      foreach (var v in hashes) {
+        var node = new GenericAnimationTransform();
+        node.Hash = v;
+        node.HashType = AnimNodeHashType.CRC32C;
+        this.Anim.TransformNodes.Add(node);
+      }
+
+      var offset = 0;
+      this.ReadFrameData_(d, offset, positionCount, dataOffset, boneCount,
+                          tracks[0]);
+      offset += positionCount;
+      this.ReadFrameData_(d, offset, rotationCount, dataOffset, boneCount,
+                          tracks[1]);
+      offset += rotationCount;
+      this.ReadFrameData_(d, offset, scaleCount, dataOffset, boneCount,
+                          tracks[2]);
+      offset += scaleCount;
+      this.ReadFrameData_(d, offset, toggledPrmCount, dataOffset, boneCount,
+                          tracks[3]);
     }
   }
 

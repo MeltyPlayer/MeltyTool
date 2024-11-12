@@ -1,4 +1,5 @@
-﻿using fin.schema;
+﻿using fin.io;
+using fin.schema;
 
 using level5.decompression;
 
@@ -30,7 +31,8 @@ public class Resource {
   }
 
   [Unknown]
-  public Resource(byte[] data) {
+  public Resource(IReadOnlyGenericFile file) {
+    var data = file.ReadAllBytes();
     data = new Level5Decompressor().Decompress(data);
     using (var r = new SchemaBinaryReader(new MemoryStream(data),
                                           Endianness.LittleEndian)) {

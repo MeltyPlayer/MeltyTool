@@ -8,6 +8,7 @@ using uni.platforms.threeDs;
 using uni.platforms.threeDs.tools;
 using uni.util.io;
 
+
 namespace uni.games.professor_layton_vs_phoenix_wright;
 
 public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
@@ -24,9 +25,11 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
     var extractor = new XcArchiveExtractor();
     foreach (var xcFile in
              fileHierarchy.Root.GetFilesWithFileType(".xc", true)) {
-      extractor.ExtractIntoDirectory(xcFile,
-                                     new FinDirectory(
-                                         xcFile.AssertGetParent().FullPath));
+      try {
+        extractor.ExtractIntoDirectory(xcFile,
+                                       new FinDirectory(
+                                           xcFile.AssertGetParent().FullPath));
+      } catch (Exception e) { }
     }
 
     if (new ThreeDsXfsaTool().Extract(fileHierarchy.Root.GetExistingFiles()
@@ -37,9 +40,16 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
     new FileHierarchyAssetBundleSeparator(
         fileHierarchy,
         (directory, organizer) => {
-          var xcFiles = directory.FilesWithExtension(".xc");
+          var xcDirectories
+              = directory
+                .FilesWithExtension(".xc")
+                .Select(f => directory.TryToGetExistingSubdir(
+                            f.NameWithoutExtension,
+                            out var d)
+                            ? d
+                            : null);
 
-          var xcBundles = Array.Empty<IXcFiles>();
+          var xcBundles = Array.Empty<IXcDirectories>();
           if (directory.LocalPath == "\\vs1\\chr") {
             xcBundles = [
                 this.GetSameFile("Emeer Punchenbaug", directory, "c206"),
@@ -66,103 +76,105 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
           }
 
           foreach (var xcBundle in xcBundles) {
-            organizer.Add(new XcModelFileBundle {
+            var bundle = new XcModelFileBundle {
                 GameName = "professor_layton_vs_phoenix_wright",
                 HumanReadableName = xcBundle.Name,
-                ModelXcFile = xcBundle.ModelFile,
-                AnimationXcFiles = xcBundle.AnimationFiles,
-            }.Annotate(xcBundle.ModelFile));
+                ModelDirectory = xcBundle.ModelDirectory,
+                AnimationDirectories = xcBundle.AnimationDirectories,
+            };
+
+            var xcFile =
+                xcBundle.ModelDirectory.Parent.AssertGetExistingFile(
+                    $"{xcBundle.ModelDirectory.Name}.xc");
+            organizer.Add(bundle.Annotate(xcFile));
           }
 
-          foreach (var xcFile in xcFiles) {
+          foreach (var xcDirectory in xcDirectories) {
             if (xcBundles.Any(xcBundle =>
-                                  xcBundle.ModelFile == xcFile)) {
+                                  xcBundle.ModelDirectory == xcDirectory)) {
               continue;
             }
 
-            IFileHierarchyFile[] animationFiles;
-            var name = xcFile.NameWithoutExtension;
+            IFileHierarchyDirectory[] animationDirectories;
+            var name = xcDirectory.Name;
             var underscoreIndex = name.IndexOf('_');
             if (underscoreIndex != -1) {
-              animationFiles = [xcFile];
+              animationDirectories = [xcDirectory];
             } else {
-              animationFiles = xcFiles
-                               .Where(fileWithAnimations
-                                          => fileWithAnimations.Name
-                                              .StartsWith(
-                                                  name))
-                               .ToArray();
+              animationDirectories = xcDirectories
+                                     .Where(fileWithAnimations
+                                                => fileWithAnimations.Name
+                                                    .StartsWith(
+                                                        name))
+                                     .ToArray();
             }
 
+            var xcFile = xcDirectory.Parent.AssertGetExistingFile(
+                $"{xcDirectory.Name}.xc");
             organizer.Add(new XcModelFileBundle {
                 GameName = "professor_layton_vs_phoenix_wright",
-                ModelXcFile = xcFile,
-                AnimationXcFiles = [xcFile],
+                ModelDirectory = xcDirectory,
+                AnimationDirectories = [xcDirectory],
             }.Annotate(xcFile));
           }
         }
     ).GatherFileBundles(organizer, mutablePercentageProgress);
   }
 
-  internal IXcFiles GetModelOnly(string name,
-                                 IFileHierarchyDirectory directory,
-                                 string modelFileName)
-    => new ModelOnly(name,
-                     directory.GetExistingFiles().SingleByName(modelFileName));
+  internal IXcDirectories GetModelOnly(string name,
+                                       IFileHierarchyDirectory directory,
+                                       string modelFileName)
+    => new ModelOnly(
+        name,
+        directory.GetExistingSubdirs().SingleByName(modelFileName));
 
-  internal IXcFiles GetSameFile(string name,
-                                IFileHierarchyDirectory directory,
-                                string modelFileName) {
-    var modelFile =
-        directory.GetExistingFiles()
-                 .Single(file => file.NameWithoutExtension ==
-                                 modelFileName);
+  internal IXcDirectories GetSameFile(string name,
+                                      IFileHierarchyDirectory directory,
+                                      string modelFileName) {
+    var modelFile = directory.AssertGetExistingSubdir(modelFileName);
     var animationFiles =
-        directory.GetExistingFiles()
-                 .Where(
-                     file => file.NameWithoutExtension != modelFileName &&
-                             file.NameWithoutExtension.StartsWith(
-                                 modelFileName));
+        directory.GetExistingSubdirs()
+                 .Where(file => file.Name != modelFileName &&
+                                file.Name.StartsWith(modelFileName));
     return new ModelAndAnimations(
         name,
         modelFile,
-        new[] { modelFile, }.Concat(animationFiles).ToArray());
+        new[] {modelFile}.Concat(animationFiles).ToArray());
   }
 
-  internal IXcFiles GetModelAndAnimations(string name,
-                                          IFileHierarchyDirectory directory,
-                                          string modelFileName,
-                                          params string[] animationFileNames)
+  internal IXcDirectories GetModelAndAnimations(string name,
+                                                IFileHierarchyDirectory
+                                                    directory,
+                                                string modelFileName,
+                                                params string[]
+                                                    animationFileNames)
     => new ModelAndAnimations(
         name,
-        directory.GetExistingFiles()
-                 .Single(file => file.Name == modelFileName),
-        animationFileNames.Select(animationFileName => directory
-                                      .GetExistingFiles()
-                                      .SingleByName(animationFileName))
-                          .ToArray());
+        directory.AssertGetExistingSubdir(modelFileName),
+        animationFileNames.Select(directory.AssertGetExistingSubdir).ToArray());
 
-  internal interface IXcFiles {
+  internal interface IXcDirectories {
     string Name { get; }
-    IFileHierarchyFile ModelFile { get; }
-    IFileHierarchyFile[]? AnimationFiles { get; }
+    IFileHierarchyDirectory ModelDirectory { get; }
+    IFileHierarchyDirectory[]? AnimationDirectories { get; }
   }
 
 
   internal record ModelOnly(
       string Name,
-      IFileHierarchyFile ModelFile) : IXcFiles {
-    public IFileHierarchyFile[]? AnimationFiles => null;
+      IFileHierarchyDirectory ModelDirectory) : IXcDirectories {
+    public IFileHierarchyDirectory[]? AnimationDirectories => null;
   }
 
-  internal record SameFile(
+  internal record SameDirectories(
       string Name,
-      IFileHierarchyFile ModelFile) : IXcFiles {
-    public IFileHierarchyFile[] AnimationFiles { get; } = [ModelFile];
+      IFileHierarchyDirectory ModelDirectory) : IXcDirectories {
+    public IFileHierarchyDirectory[] AnimationDirectories { get; } =
+      [ModelDirectory];
   }
 
   internal record ModelAndAnimations(
       string Name,
-      IFileHierarchyFile ModelFile,
-      params IFileHierarchyFile[] AnimationFiles) : IXcFiles;
+      IFileHierarchyDirectory ModelDirectory,
+      params IFileHierarchyDirectory[] AnimationDirectories) : IXcDirectories;
 }

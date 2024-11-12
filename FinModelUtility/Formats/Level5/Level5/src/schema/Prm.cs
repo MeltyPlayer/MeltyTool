@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.io;
 using fin.math;
 using fin.schema;
 
@@ -21,11 +22,9 @@ public class Prm {
   public List<uint> Triangles { get; set; }
   public List<GenericVertex> Vertices { get; set; }
 
-  public Prm(byte[] data) {
-    using (var r = new SchemaBinaryReader(new MemoryStream(data),
-                                          Endianness.LittleEndian)) {
-      this.Open(r);
-    }
+  public Prm(IReadOnlyGenericFile prmFile) {
+    using var r = prmFile.OpenReadAsBinary(Endianness.LittleEndian);
+    this.Open(r);
   }
 
   [Unknown]
@@ -254,8 +253,6 @@ public class Prm {
             case 9: // Color
               vert.Clr = this.ReadAttribute(br, aType[j], aCount[j]).Yzwx();
               break;
-            default:
-              throw new NotImplementedException();
           }
         }
 
