@@ -21,6 +21,14 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
       return;
     }
 
+    var extractor = new XcArchiveExtractor();
+    foreach (var xcFile in
+             fileHierarchy.Root.GetFilesWithFileType(".xc", true)) {
+      extractor.ExtractIntoDirectory(xcFile,
+                                     new FinDirectory(
+                                         xcFile.AssertGetParent().FullPath));
+    }
+
     if (new ThreeDsXfsaTool().Extract(fileHierarchy.Root.GetExistingFiles()
                                                    .SingleByName("vs1.fa"))) {
       fileHierarchy.Root.Refresh(true);
