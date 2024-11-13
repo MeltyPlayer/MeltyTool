@@ -1,0 +1,93 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+local int C_UNKNOWN = 0xFF00FF;
+local int C_LENGTH = 0x00FFFF;
+local int C_STRING = 0x00FF00;
+
+local int C_PRM = 0xFF0000;
+local int C_HASH = 0xFFFF00;
+local int C_NODE = 0x0000FF;
+
+typedef struct {
+  uint offset;
+  uint length;
+
+  local uint tmp = FTell();
+  FSeek(offset);
+
+  char text[length];
+
+  FSeek(tmp);
+} StringPointer <bgcolor=C_STRING>;
+
+typedef struct {
+  uint offset;
+  uint length;
+
+  local uint tmp = FTell();
+  FSeek(offset);
+
+  char magic[4];
+
+  uint pvbOffset;
+  uint pvbLength;
+
+  uint pviOffset;
+  uint pviLength;
+
+  FSeek(offset + pvbOffset);
+  byte pvbBytes[pvbLength];
+
+  FSeek(offset + pviOffset);
+  byte pviBytes[pviLength];
+
+  FSeek(tmp);
+} Xprm <bgcolor=C_PRM>;
+
+typedef struct {
+  uint offset;
+
+  local uint tmp = FTell();
+  FSeek(offset);
+
+  uint hashes[4];
+
+  FSeek(tmp);
+} HashTable <bgcolor=C_HASH>;
+
+typedef struct {
+  uint offset;
+  uint length;
+
+  local uint tmp = FTell();
+  FSeek(offset);
+
+  uint nodes[length / 4];
+
+  FSeek(tmp);
+} NodeTable <bgcolor=C_NODE>;
+
+char magic[4];
+
+Xprm xprm;
+HashTable hashTable;
+
+uint unk1[6] <bgcolor=C_UNKNOWN>;
+
+NodeTable nodeTable;
+
+StringPointer name;
+StringPointer materialName;
