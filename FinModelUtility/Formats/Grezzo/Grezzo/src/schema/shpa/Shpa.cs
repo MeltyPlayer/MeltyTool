@@ -7,6 +7,7 @@ using grezzo.schema.shpa.posi;
 using schema.binary;
 using schema.binary.attributes;
 
+
 namespace grezzo.schema.shpa;
 
 [BinarySchema]
@@ -24,7 +25,7 @@ public partial class Shpa : IBinaryConvertible {
   public string Name { get; set; }
 
   [Unknown]
-  public uint unk1;
+  public uint IdxsCount { get; private set; }
 
 
   [WPointerTo(nameof(Posi))]
@@ -33,18 +34,28 @@ public partial class Shpa : IBinaryConvertible {
   [WPointerTo(nameof(Norm))]
   private uint normOffset_;
 
-  [WPointerTo(nameof(Idxs))]
+  [WPointerTo(nameof(IdxsSection))]
   private uint idxsOffset_;
 
 
   [RAtPosition(nameof(posiOffset_))]
   public AutoStringMagicUInt32SizedSection<Posi> Posi { get; } =
-    new("posi") { TweakReadSize = -8, };
+    new("posi") {TweakReadSize = -8,};
 
   [RAtPosition(nameof(normOffset_))]
   public AutoStringMagicUInt32SizedSection<Norm> Norm { get; } =
-    new("norm") { TweakReadSize = -8, };
+    new("norm") {TweakReadSize = -8,};
+
+  [ReadLogic]
+  private void FixParent_(IBinaryReader _) {
+    this.IdxsSection.Data.Parent = this;
+  }
 
   [RAtPosition(nameof(idxsOffset_))]
-  public Idxs Idxs { get; } = new();
+  public AutoStringMagicJankSizedSection<Idxs> IdxsSection { get; } =
+    new("idxs") {TweakReadSize = -8};
+
+  [Align(0x10)]
+  [SequenceLengthSource((uint) 0)]
+  private byte[] endAlignment_;
 }

@@ -11,6 +11,7 @@ using schema.text.reader;
 
 using vrml.schema;
 
+
 namespace vrml.api;
 
 public class VrmlParser {
@@ -132,14 +133,14 @@ public class VrmlParser {
     if (UNSUPPORTED_NODES.Contains(nodeType)) {
       tr.ReadUpToAndPastTerminator(["{"]);
       var level = 1;
-      do {
+      while (level > 0 && !tr.Eof) {
         var c = tr.ReadChar();
         if (c is '{') {
           level++;
         } else if (c is '}') {
           level--;
         }
-      } while (level > 0 && !tr.Eof);
+      }
 
       node = default;
       return true;
@@ -262,7 +263,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new ColorNode { Color = color };
+    return new ColorNode {Color = color};
   }
 
   private static ICoordinateNode ReadCoordinateNode_(ITextReader tr) {
@@ -278,7 +279,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new CoordinateNode { Point = point };
+    return new CoordinateNode {Point = point};
   }
 
   private static IFontStyleNode ReadFontStyleNode_(ITextReader tr) {
@@ -335,7 +336,7 @@ public class VrmlParser {
           }
         });
 
-    return new GroupNode { Children = children };
+    return new GroupNode {Children = children};
   }
 
   private static IImageTextureNode ReadImageTextureNode_(
@@ -352,7 +353,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new ImageTextureNode { Url = url };
+    return new ImageTextureNode {Url = url};
   }
 
   private static IIndexedFaceSetNode ReadIndexedFaceSetNode_(
@@ -575,7 +576,7 @@ public class VrmlParser {
           break;
         }
         case IMaterialNode materialNode: {
-          currentAppearance = new AppearanceNode { Material = materialNode };
+          currentAppearance = new AppearanceNode {Material = materialNode};
           break;
         }
         case IndexedFaceSetNode indexedFaceSetNode: {
@@ -594,7 +595,7 @@ public class VrmlParser {
       }
     }
 
-    return new GroupNode { Children = children.ToArray() };
+    return new GroupNode {Children = children.ToArray()};
   }
 
   private static IShapeNode ReadShapeNode_(
@@ -668,7 +669,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new TextureCoordinateNode { Point = point };
+    return new TextureCoordinateNode {Point = point};
   }
 
   private static ITextureTransformNode ReadTextureTransformNode_(
