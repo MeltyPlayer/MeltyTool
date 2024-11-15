@@ -36,7 +36,7 @@
     <PackageReference Include="SubstreamSharp" Version="1.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.10" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.29" />
-    <PackageReference Include="schema" Version="0.5.12" />
+    <PackageReference Include="schema" Version="0.5.14" />
     <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
     <PackageReference Include="ZString" Version="2.6.0" />
   </ItemGroup>
