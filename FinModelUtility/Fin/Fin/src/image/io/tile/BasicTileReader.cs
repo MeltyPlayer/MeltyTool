@@ -4,6 +4,7 @@ using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
+
 namespace fin.image.io.tile;
 
 public class BasicTileReader<TPixel>(
@@ -28,19 +29,27 @@ public class BasicTileReader<TPixel>(
     var xx = tileX * this.TileWidth;
     var yy = tileY * this.TileHeight;
 
+    Span<byte> bytes = stackalloc byte[this.TileWidth * this.TileHeight *
+        pixelReader.BitsPerPixel / 8];
+
+    var bytesPerRead = pixelReader.PixelsPerRead * pixelReader.BitsPerPixel / 8;
+    br.FillBuffer(bytes, bytesPerRead);
+
     Span<TPixel> junk = stackalloc TPixel[pixelReader.PixelsPerRead];
 
-    for (var i = 0;
+    for (int i = 0, b = 0;
          i < this.TileWidth * this.TileHeight;
-         i += pixelReader.PixelsPerRead) {
+         i += pixelReader.PixelsPerRead, b += bytesPerRead) {
       pixelIndexer.GetPixelCoordinates(i, out var x, out var y);
       var outOfBounds = xx + x >= imageWidth || yy + y >= imageHeight;
 
+      var currentBytes = bytes.Slice(b, bytesPerRead);
+
       if (outOfBounds) {
-        pixelReader.Decode(br, junk, 0);
+        pixelReader.Decode(currentBytes, junk, 0);
       } else {
         var dstOffs = (yy + y) * imageWidth + xx + x;
-        pixelReader.Decode(br, scan0, dstOffs);
+        pixelReader.Decode(currentBytes, scan0, dstOffs);
       }
     }
   }

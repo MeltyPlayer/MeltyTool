@@ -1,10 +1,10 @@
 ﻿using System;
 
+using CommunityToolkit.HighPerformance;
+
 using fin.image.formats;
 using fin.math;
 using fin.util.color;
-
-using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -14,8 +14,8 @@ public class Rgba5553PixelReader : IPixelReader<Rgba32> {
   public IImage<Rgba32> CreateImage(int width, int height)
     => new Rgba32Image(PixelFormat.RGBA5553, width, height);
 
-  public void Decode(IBinaryReader br, Span<Rgba32> scan0, int offset) {
-    var pix = br.ReadUInt16();
+  public void Decode(ReadOnlySpan<byte> data, Span<Rgba32> scan0, int offset) {
+    var pix = data.Cast<byte, ushort>()[0];
 
     // Alpha flag
     if (BitLogic.ExtractFromRight(pix, 15, 1) == 1) {
@@ -32,4 +32,6 @@ public class Rgba5553PixelReader : IPixelReader<Rgba32> {
           ColorUtil.ExtractScaled(pix, 12, 3));
     }
   }
+
+  public int BitsPerPixel => 16;
 }

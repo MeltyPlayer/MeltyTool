@@ -6,6 +6,7 @@ using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
+
 namespace fin.image.io.pixel;
 
 /// <summary>
@@ -15,8 +16,8 @@ public class L4PixelReader : IPixelReader<L8> {
   public IImage<L8> CreateImage(int width, int height)
     => new L8Image(PixelFormat.L4, width, height);
 
-  public void Decode(IBinaryReader br, Span<L8> scan0, int offset) {
-    var value = br.ReadByte();
+  public void Decode(ReadOnlySpan<byte> data, Span<L8> scan0, int offset) {
+    var value = data[0];
 
     var upper = (byte) ((value >> 4) * 17);
     var lower = (byte) ((value & 0xF) * 17);
@@ -26,4 +27,5 @@ public class L4PixelReader : IPixelReader<L8> {
   }
 
   public int PixelsPerRead => 2;
+  public int BitsPerPixel => 4;
 }

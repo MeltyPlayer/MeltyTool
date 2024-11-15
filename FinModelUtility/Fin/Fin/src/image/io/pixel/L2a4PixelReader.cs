@@ -16,8 +16,8 @@ public class L2a4PixelReader : IPixelReader<La16> {
   public IImage<La16> CreateImage(int width, int height)
     => new La16Image(PixelFormat.L4, width, height);
 
-  public void Decode(IBinaryReader br, Span<La16> scan0, int offset) {
-    var value = br.ReadByte();
+  public void Decode(ReadOnlySpan<byte> data, Span<La16> scan0, int offset) {
+    var value = data[0];
 
     var upper = (byte) ((value >> 4) * 17);
     var lower = (byte) ((value & 0xF) * 17);
@@ -27,4 +27,5 @@ public class L2a4PixelReader : IPixelReader<La16> {
   }
 
   public int PixelsPerRead => 2;
+  public int BitsPerPixel => 4;
 }

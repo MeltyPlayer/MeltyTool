@@ -10,9 +10,10 @@ public interface IPixelReader<TPixel>
     where TPixel : unmanaged, IPixel<TPixel> {
   IImage<TPixel> CreateImage(int width, int height);
 
-  void Decode(IBinaryReader br, Span<TPixel> scan0, int offset);
+  void Decode(ReadOnlySpan<byte> data, Span<TPixel> scan0, int offset);
 
   int PixelsPerRead => 1;
+  int BitsPerPixel { get; }
 }
 
 public interface IPixelIndexer {

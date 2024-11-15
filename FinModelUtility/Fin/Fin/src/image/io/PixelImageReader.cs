@@ -1,8 +1,12 @@
-﻿using fin.image.io.tile;
+﻿using System;
+using System.Runtime.InteropServices.Marshalling;
+
+using fin.image.io.tile;
 
 using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
+
 
 namespace fin.image.io;
 
@@ -48,12 +52,20 @@ public class PixelImageReader<TPixel>(
     using var imageLock = image.Lock();
     var scan0 = imageLock.Pixels;
 
-    for (var i = 0;
+    Span<byte> bytes =
+        stackalloc byte[width * height * pixelReader.BitsPerPixel / 8];
+
+    var bytesPerRead = pixelReader.PixelsPerRead * pixelReader.BitsPerPixel / 8;
+    br.FillBuffer(bytes, bytesPerRead);
+
+    for (int i = 0, b = 0;
          i < width * height;
-         i += pixelReader.PixelsPerRead) {
+         i += pixelReader.PixelsPerRead, b += bytesPerRead) {
       pixelIndexer.GetPixelCoordinates(i, out var x, out var y);
       var dstOffs = y * width + x;
-      pixelReader.Decode(br, scan0, dstOffs);
+      pixelReader.Decode(bytes.Slice(b, bytesPerRead),
+                         scan0,
+                         dstOffs);
     }
 
     return image;
