@@ -91,9 +91,10 @@ public class Xi {
 
     this.ImageFormat = (byte) type;
 
+    var len = r.Length;
     this.ImageData = level5Decompressor.Decompress(
         r.SubreadAt((uint) imageDataOffset,
-                    ser => ser.ReadBytes((int) (r.Length - imageDataOffset))));
+                    ser => ser.ReadBytes((int) (len - imageDataOffset))));
   }
     
   /// <summary>

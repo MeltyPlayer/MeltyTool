@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 
 using fin.image.formats;
+using fin.math;
 
 using schema.binary;
 
@@ -50,18 +51,33 @@ public readonly struct Etc1TileReader(bool hasAlpha) : ITileReader<Rgba32> {
     var x = tileX * this.TileWidth;
     var y = tileY * this.TileHeight;
 
+    var blockXCount = Math.Min((imageWidth - x) / 4, 2);
+    var blockYCount = Math.Min((imageHeight - y) / 4, 2);
+
     Span<Rgb24> colors = stackalloc Rgb24[4 * 4];
 
     var valuesPerBlock = hasAlpha ? 2 : 1;
-    var valueCount = 2 * 2 * valuesPerBlock;
+    var valueCount = (int) FinMath.Clamp(
+        blockXCount * blockYCount * valuesPerBlock,
+        0,
+        (br.Length - br.Position) / 8);
+    if (valueCount == 0) {
+      return;
+    }
+
     Span<ulong> blocksSpan = stackalloc ulong[valueCount];
     br.ReadUInt64s(blocksSpan);
 
-    for (int by = 0; by < 8; by += 4) {
-      for (int bx = 0; bx < 8; bx += 4) {
+    for (int by = 0; by < 4 * blockXCount; by += 4) {
+      for (int bx = 0; bx < 4 * blockYCount; bx += 4) {
+        if (valueCount-- <= 0) {
+          return;
+        }
+
         var blockSpan =
-            blocksSpan.Slice((2 * (by / 4) + (bx / 4)) * valuesPerBlock,
-                             valuesPerBlock);
+            blocksSpan.Slice(
+                (blockXCount * (by / 4) + (bx / 4)) * valuesPerBlock,
+                valuesPerBlock);
 
         var alpha = 0xFFFFFFFFFFFFFFFF;
         if (hasAlpha) {

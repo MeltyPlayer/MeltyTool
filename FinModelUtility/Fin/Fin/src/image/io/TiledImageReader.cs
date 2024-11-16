@@ -77,12 +77,7 @@ public class TiledImageReader<TPixel>(
 
     for (var tileY = 0; tileY < tileYCount; ++tileY) {
       for (var tileX = 0; tileX < tileXCount; ++tileX) {
-        tileReader.Decode(br,
-                                scan0,
-                                tileX,
-                                tileY,
-                                width,
-                                height);
+        tileReader.Decode(br, scan0, tileX, tileY, width, height);
       }
     }
 
