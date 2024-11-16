@@ -84,6 +84,11 @@ public class VrmlParser {
     var nodes = new LinkedList<INode>();
     while (!tr.Eof) {
       SkipWhitespace_(tr);
+
+      if (tr.Eof) {
+        break;
+      }
+      
       if (tr.Matches(out _, [']'])) {
         break;
       }
