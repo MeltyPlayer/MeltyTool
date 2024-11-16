@@ -56,7 +56,8 @@ public class SuperSmashBrosMeleeFileBundleGatherer
       }
 
       if (datNameWithoutExtension.StartsWith(CHARACTER_PREFIX)) {
-        plFilesByNameWithoutExtension.Add(datNameWithoutExtension, datFile);
+        plFilesByNameWithoutExtension.Add(datNameWithoutExtension.ToString(),
+                                          datFile);
       }
     }
 
@@ -89,7 +90,7 @@ public class SuperSmashBrosMeleeFileBundleGatherer
                        otherPlNameWithoutExtension.Length >
                        plNameWithoutExtension.Length;
               })
-              .ToDictionary(file => file.NameWithoutExtension);
+              .ToDictionary(file => file.NameWithoutExtension.ToString());
 
       foreach (var modelFile in
                plFilesStartingWithName

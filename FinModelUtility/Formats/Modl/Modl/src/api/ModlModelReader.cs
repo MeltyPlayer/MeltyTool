@@ -73,7 +73,7 @@ public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
         // TODO: This is a major, dumb hack to fix alignment of the rig with vertices for a single model.
         // It seems like this might be possible to fix by using the inverse binding matrices from RNOD matrices?
         if (gameVersion == GameVersion.BW2 &&
-            modlFile.Name == "SG_HI_LOD.modl" &&
+            modlFile.Name is "SG_HI_LOD.modl" &&
             modlNodeId == 0) {
           bonePosition.Z = 0;
         }
@@ -257,7 +257,7 @@ public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
     }
 
     var finAnimation = model.AnimationManager.AddAnimation();
-    finAnimation.Name = animFile.NameWithoutExtension;
+    finAnimation.Name = animFile.NameWithoutExtension.ToString();
     finAnimation.FrameRate = 30;
     finAnimation.FrameCount = maxFrameCount;
 

@@ -25,7 +25,8 @@ public static class GoldenAssert {
     var executingAssemblyDir = executingAssemblyDll.AssertGetParent();
 
     var currentDir = executingAssemblyDir;
-    while (currentDir.Name != assemblyName) {
+    while (!currentDir.Name.Equals(assemblyName,
+                                   StringComparison.OrdinalIgnoreCase)) {
       currentDir = currentDir.AssertGetParent();
     }
 
@@ -41,8 +42,7 @@ public static class GoldenAssert {
       ISystemDirectory rootGoldenDirectory) {
     var hierarchy = FileHierarchy.From(rootGoldenDirectory);
     return hierarchy.Root.GetExistingSubdirs()
-                    .Where(
-                        subdir => subdir.Name != TMP_NAME);
+                    .Where(subdir => !subdir.Name.SequenceEqual(TMP_NAME));
   }
 
   public static IEnumerable<IFileHierarchyDirectory>
@@ -68,9 +68,9 @@ public static class GoldenAssert {
       IReadOnlyTreeDirectory lhs,
       IReadOnlyTreeDirectory rhs) {
     var lhsFiles = lhs.GetExistingFiles()
-                      .ToDictionary(file => file.Name);
+                      .ToDictionary(file => file.Name.ToString());
     var rhsFiles = rhs.GetExistingFiles()
-                      .ToDictionary(file => file.Name);
+                      .ToDictionary(file => file.Name.ToString());
 
     Assert.IsTrue(lhsFiles.Keys.ToHashSet()
                           .SetEquals(rhsFiles.Keys.ToHashSet()));

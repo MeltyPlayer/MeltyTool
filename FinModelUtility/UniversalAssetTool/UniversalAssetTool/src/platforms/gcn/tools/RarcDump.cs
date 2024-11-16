@@ -38,10 +38,10 @@ public class RarcDump {
       // Determines final directory path from    var directory = new FinDirectory(directoryPath);
 
       var subdir = directory.GetExistingSubdirs().Single();
-      var subdirName = subdir.Name;
+      var subdirName = subdir.Name.ToString();
       var isSubdirJunk = junkTerms.Contains(subdirName);
 
-      var rarcName = rarcFile.NameWithoutExtension;
+      var rarcName = rarcFile.NameWithoutExtension.ToString();
       var isRarcJunk = junkTerms.Contains(rarcName);
 
       string finalDirectoryName;

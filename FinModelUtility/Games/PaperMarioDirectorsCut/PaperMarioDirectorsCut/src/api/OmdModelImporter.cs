@@ -58,7 +58,7 @@ namespace pmdc.api {
                   files.Add(imageFile);
 
                   var finTexture = finMaterialManager.CreateTexture(image);
-                  finTexture.Name = imageFile.NameWithoutExtension;
+                  finTexture.Name = imageFile.NameWithoutExtension.ToString();
                   finTexture.WrapModeU = WrapMode.REPEAT;
                   finTexture.WrapModeV = WrapMode.REPEAT;
 

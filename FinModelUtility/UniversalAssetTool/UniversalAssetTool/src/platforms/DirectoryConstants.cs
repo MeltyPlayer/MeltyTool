@@ -12,7 +12,7 @@ public static class DirectoryConstants {
   private static ISystemDirectory GetBaseDirectory_() {
     // Launched externally
     var exeDirectory = new FinDirectory(AppContext.BaseDirectory);
-    if (exeDirectory.Name == "universal_asset_tool") {
+    if (exeDirectory.Name is "universal_asset_tool") {
       return exeDirectory.AssertGetParent()  // tools
                          .AssertGetParent()  // cli
                          .AssertGetParent(); // FinModelUtility
@@ -25,9 +25,7 @@ public static class DirectoryConstants {
             .Where(ancestor => {
               var subdirNames = ancestor
                                 .GetExistingSubdirs()
-                                .Select(
-                                    directory
-                                        => directory.Name);
+                                .Select(directory => directory.Name.ToString());
               return subdirNames.Contains("cli") &&
                      subdirNames.Contains("FinModelUtility");
             })

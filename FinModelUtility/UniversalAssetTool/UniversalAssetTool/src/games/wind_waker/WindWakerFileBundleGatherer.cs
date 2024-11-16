@@ -99,17 +99,13 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
     // TODO: What the heck is the difference between these directories?
     // Is there any besides the model type within?
     var bdlSubdir =
-        directory.GetExistingSubdirs()
-                 .SingleOrDefault(subdir => subdir.Name == "bdl");
+        directory.GetExistingSubdirs().SingleOrDefaultByName("bdl");
     var bdlmSubdir =
-        directory.GetExistingSubdirs()
-                 .SingleOrDefault(subdir => subdir.Name == "bdlm");
+        directory.GetExistingSubdirs().SingleOrDefaultByName("bdlm");
     var bmdSubdir =
-        directory.GetExistingSubdirs()
-                 .SingleOrDefault(subdir => subdir.Name == "bmd");
+        directory.GetExistingSubdirs().SingleOrDefaultByName("bmd");
     var bmdcSubdir =
-        directory.GetExistingSubdirs()
-                 .SingleOrDefault(subdir => subdir.Name == "bmdc");
+        directory.GetExistingSubdirs().SingleOrDefaultByName("bmdc");
     var bmdmSubdir
         = directory.GetExistingSubdirs().SingleOrDefaultByName("bmdm");
 
@@ -137,7 +133,8 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
           break;
         }
         case "Oq": {
-          organizeMethod = new NameMatchOrganizeMethod(directory.Name);
+          organizeMethod
+              = new NameMatchOrganizeMethod(directory.Name.ToString());
           break;
         }
         case "Ylesr00": {
@@ -165,18 +162,18 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
     public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
         IFileHierarchyFile bmdFile,
         IReadOnlyList<IFileHierarchyFile> bckFiles) {
-      var prefix = bmdFile.NameWithoutExtension.SubstringUpTo("_");
+      var prefix = bmdFile.NameWithoutExtension.SubstringUpTo('_').ToString();
       return bckFiles.Where(file => file.Name.StartsWith(prefix)).ToArray();
     }
   }
 
   public class NameMatchOrganizeMethod(string name) : IOrganizeMethod {
-    private string name_ = name.ToLower();
-
     public IReadOnlyList<IFileHierarchyFile> GetBcksForBmd(
         IFileHierarchyFile bmdFile,
         IReadOnlyList<IFileHierarchyFile> bckFiles) {
-      if (bmdFile.NameWithoutExtension.ToLower().Contains(this.name_)) {
+      if (bmdFile.NameWithoutExtension.Contains(
+              name,
+              StringComparison.OrdinalIgnoreCase)) {
         return bckFiles;
       }
 
@@ -189,9 +186,10 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
         IFileHierarchyFile bmdFile,
         IReadOnlyList<IFileHierarchyFile> bckFiles) {
       var suffix =
-          bmdFile.NameWithoutExtension.Substring(
-              bmdFile.NameWithoutExtension.Length -
-              suffixLength);
+          bmdFile.NameWithoutExtension.ToString()
+                 .Substring(
+                     bmdFile.NameWithoutExtension.Length -
+                     suffixLength);
 
       return bckFiles.Where(file => file.Name.StartsWith(suffix)).ToArray();
     }
@@ -205,7 +203,7 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
     if (organizeMethod is PrefixOrganizeMethod) {
       bmdFiles.OrderByDescending(
           file => file.NameWithoutExtension
-                      .SubstringUpTo("_")
+                      .SubstringUpTo('_')
                       .Length);
     }
 

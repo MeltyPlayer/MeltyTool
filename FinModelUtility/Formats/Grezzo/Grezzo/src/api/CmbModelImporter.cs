@@ -41,7 +41,7 @@ public class CmbModelImporter : IModelImporter<CmbModelFileBundle> {
               .Select(shpaFile => {
                         var shpa
                             = shpaFile.ReadNew<Shpa>(Endianness.LittleEndian);
-                        return (shpaFile.NameWithoutExtension, shpa);
+                        return (shpaFile.NameWithoutExtension.ToString(), shpa);
                       })
               .ToList();
 
@@ -61,7 +61,7 @@ public class CmbModelImporter : IModelImporter<CmbModelFileBundle> {
         var csabFile = src[i];
         var csab =
             csabFile.ReadNew<Csab>(Endianness.LittleEndian);
-        dst[i] = (csabFile.NameWithoutExtension, csab);
+        dst[i] = (csabFile.NameWithoutExtension.ToString(), csab);
       }
   }
 }

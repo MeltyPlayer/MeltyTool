@@ -44,27 +44,30 @@ public static class FinDirectoryStatic {
     => FinFileSystem.Directory.EnumerateDirectories(fullName);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static string GetSubdir(string fullName,
-                                 string relativePath,
-                                 bool create = false) {
-    var subdirs = relativePath.Split('/', '\\');
+  public static ReadOnlySpan<char> GetSubdir(
+      ReadOnlySpan<char> fullName,
+      ReadOnlySpan<char> relativePath,
+      bool create = false) {
+    var subdirs = relativePath.Split(['/', '\\']);
     var current = fullName;
 
-    foreach (var subdir in subdirs) {
-      if (subdir == "") {
+    foreach (var subdirRange in subdirs) {
+      var subdir = relativePath[subdirRange];
+
+      if (subdir.IsEmpty) {
         continue;
       }
 
-      if (subdir == "..") {
-        current = Asserts.CastNonnull(Path.GetDirectoryName(current));
+      if (subdir is "..") {
+        current = Path.GetDirectoryName(current);
         continue;
       }
-        
+
       current = Path.Join(current, subdir);
     }
 
     if (create) {
-      FinFileSystem.Directory.CreateDirectory(current);
+      FinFileSystem.Directory.CreateDirectory(current.ToString());
     }
 
     return current;
@@ -88,8 +91,8 @@ public static class FinDirectoryStatic {
                : SearchOption.TopDirectoryOnly);
 
   public static bool TryToGetExistingFile(
-      string fullName,
-      string path,
+      ReadOnlySpan<char> fullName,
+      ReadOnlySpan<char> path,
       out string file) {
     var fileInfo = Path.Join(fullName, path);
     if (FinFileSystem.File.Exists(fileInfo)) {
@@ -101,7 +104,8 @@ public static class FinDirectoryStatic {
     return false;
   }
 
-  public static string GetExistingFile(string fullName, string path) {
+  public static string GetExistingFile(ReadOnlySpan<char> fullName,
+                                       ReadOnlySpan<char> path) {
     if (TryToGetExistingFile(fullName, path, out var file)) {
       return file;
     }

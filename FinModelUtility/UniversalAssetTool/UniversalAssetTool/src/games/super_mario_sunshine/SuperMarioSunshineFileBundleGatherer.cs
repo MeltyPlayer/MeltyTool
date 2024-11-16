@@ -55,7 +55,7 @@ public class SuperMarioSunshineFileBundleGatherer
       this.ExtractPrimaryAndSecondaryModels_(
           organizer,
           subdir,
-          file => file.Name.Contains("wg"));
+          file => file.Name.IndexOf("wg") != -1);
     }
   }
 
@@ -92,34 +92,31 @@ public class SuperMarioSunshineFileBundleGatherer
 
       var montemcommon =
           subdir.GetExistingSubdirs()
-                .SingleOrDefault(
-                    subdir => subdir.Name == "montemcommon");
+                .SingleOrDefaultByName("montemcommon");
       var montewcommon =
           subdir.GetExistingSubdirs()
-                .SingleOrDefault(
-                    subdir => subdir.Name == "montewcommon");
+                .SingleOrDefaultByName("montewcommon");
       var hamukurianm =
           subdir.GetExistingSubdirs()
-                .SingleOrDefault(
-                    subdir => subdir.Name == "hamukurianm");
+                .SingleOrDefaultByName("hamukurianm");
 
       foreach (var objectSubdir in subdir.GetExistingSubdirs()) {
         var objName = objectSubdir.Name;
 
         IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>? bundles = null;
-        if (objName.StartsWith("montem") && !objName.Contains("common")) {
+        if (objName.StartsWith("montem") && objName.IndexOf("common") == -1) {
           this.ExtractFromSeparateDirectories_(
               organizer,
               objectSubdir,
               Asserts.CastNonnull(montemcommon));
         } else if (objName.StartsWith("montew") &&
-                   !objName.Contains("common")) {
+                   objName.IndexOf("common") == -1) {
           this.ExtractFromSeparateDirectories_(
               organizer,
               objectSubdir,
               Asserts.CastNonnull(montewcommon));
         } else if (objName.StartsWith("hamukuri")) {
-          if (!objName.Contains("anm")) {
+          if (objName.IndexOf("anm") == -1) {
             this.ExtractFromSeparateDirectories_(
                 organizer,
                 objectSubdir,
@@ -188,13 +185,13 @@ public class SuperMarioSunshineFileBundleGatherer
 
     var specialCase = false;
     if (allBcxFiles.Length == 1 &&
-        allBcxFiles[0].Name == "fish_swim.bck" &&
+        allBcxFiles[0].Name is "fish_swim.bck" &&
         bmdFiles.All(file => file.Name.StartsWith("fish"))) {
       specialCase = true;
     }
 
     if (allBcxFiles.Length == 1 &&
-        allBcxFiles[0].Name == "butterfly_fly.bck" &&
+        allBcxFiles[0].Name is "butterfly_fly.bck" &&
         bmdFiles.All(file => file.Name.StartsWith("butterfly"))) {
       specialCase = true;
     }
@@ -220,7 +217,7 @@ public class SuperMarioSunshineFileBundleGatherer
     var bmdAndBcxFiles =
         new Dictionary<IFileHierarchyFile, IFileHierarchyFile[]>();
     foreach (var bmdFile in bmdFiles) {
-      var prefix = bmdFile.Name;
+      var prefix = bmdFile.Name.ToString();
       prefix = prefix.Substring(0, prefix.Length - ".bmd".Length);
 
       // Blegh. These special cases are gross.

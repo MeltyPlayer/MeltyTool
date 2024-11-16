@@ -22,13 +22,13 @@ public class MeleeModelGoldenTests
     var datFiles = directory.FilesWithExtension(".dat").ToArray();
     if (datFiles.Length == 1) {
       return new MeleeModelFileBundle {
-          GameName = gameName,
+          GameName = gameName.ToString(),
           PrimaryDatFile = datFiles.Single(),
       };
     }
 
     return new MeleeModelFileBundle {
-        GameName = gameName,
+        GameName = gameName.ToString(),
         PrimaryDatFile = datFiles.Single(f => f.Name.EndsWith("Nr.dat")),
         AnimationDatFile = datFiles.Single(f => f.Name.EndsWith("AJ.dat")),
         FighterDatFile = datFiles.Single(f => !f.Name.EndsWith("Nr.dat") &&
@@ -41,7 +41,7 @@ public class MeleeModelGoldenTests
        .GetGoldenDirectories(
            GoldenAssert
                .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
-       .Where(dir => dir.Name == "super_smash_bros_melee")
+       .Where(dir => dir.Name is "super_smash_bros_melee")
        .SelectMany(dir => dir.GetExistingSubdirs())
        .ToArray();
 }

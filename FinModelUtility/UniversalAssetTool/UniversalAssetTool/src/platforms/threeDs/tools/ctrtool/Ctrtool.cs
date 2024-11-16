@@ -20,7 +20,7 @@ public static partial class Ctrtool {
       foreach (var fileToCleanUp in ThreeDsToolsConstants
                                     .CTRTOOL_DIRECTORY.GetExistingFiles()
                                     .Where(file => !EXPECTED_FILE_NAMES
-                                               .Contains(file.Name))) {
+                                               .Contains(file.Name.ToString()))) {
         fileToCleanUp.Delete();
       }
     }

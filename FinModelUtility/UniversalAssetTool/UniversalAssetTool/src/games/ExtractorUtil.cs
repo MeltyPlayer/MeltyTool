@@ -11,12 +11,12 @@ public static class ExtractorUtil {
   public const string EXTRACTED = "extracted";
 
   public static ISystemDirectory GetOrCreateRomDirectory(
-      string romName)
+      ReadOnlySpan<char> romName)
     => DirectoryConstants.ROMS_DIRECTORY.GetOrCreateSubdir(romName);
 
 
   public static void GetOrCreateRomDirectoriesWithPrereqs(
-      string romName,
+      ReadOnlySpan<char> romName,
       out ISystemDirectory prereqsDir,
       out ISystemDirectory extractedDir) {
     var romDir = GetOrCreateRomDirectory(romName);
@@ -25,7 +25,7 @@ public static class ExtractorUtil {
   }
 
   public static void GetOrCreateRomDirectoriesWithCache(
-      string romName,
+      ReadOnlySpan<char> romName,
       out ISystemDirectory cacheDir,
       out ISystemDirectory extractedDir) {
     var romDir = GetOrCreateRomDirectory(romName);
@@ -39,12 +39,12 @@ public static class ExtractorUtil {
     => GetOrCreateExtractedDirectory(romFile.GetRomName());
 
   public static ISystemDirectory GetOrCreateExtractedDirectory(
-      string romName)
+      ReadOnlySpan<char> romName)
     => GetOrCreateRomDirectory(romName).GetOrCreateSubdir(EXTRACTED);
 
 
   public static IFileHierarchy GetFileHierarchy(
-      string romName,
+      ReadOnlySpan<char> romName,
       ISystemDirectory directory) {
     var romDir = GetOrCreateRomDirectory(romName);
     var cacheDir = romDir.GetOrCreateSubdir(CACHE);
@@ -52,7 +52,7 @@ public static class ExtractorUtil {
     var cacheFile
         = new FinFile(Path.Join(cacheDir.FullPath, "hierarchy.cache"));
 
-    return FileHierarchy.From(romName, directory, cacheFile);
+    return FileHierarchy.From(romName.ToString(), directory, cacheFile);
   }
 
 
@@ -62,7 +62,7 @@ public static class ExtractorUtil {
     => HasNotBeenExtractedYet(romFile.GetRomName(), out extractedDir);
 
   public static bool HasNotBeenExtractedYet(
-      string romName,
+      ReadOnlySpan<char> romName,
       out ISystemDirectory extractedDir) {
     extractedDir = GetOrCreateExtractedDirectory(romName);
     return extractedDir.IsEmpty;
@@ -77,6 +77,6 @@ public static class ExtractorUtil {
 }
 
 static file class ExtractorUtilExtensions {
-  public static string GetRomName(this IReadOnlyTreeFile romFile)
+  public static ReadOnlySpan<char> GetRomName(this IReadOnlyTreeFile romFile)
     => romFile.NameWithoutExtension;
 }

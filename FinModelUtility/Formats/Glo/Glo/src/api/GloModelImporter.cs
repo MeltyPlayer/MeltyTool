@@ -41,7 +41,7 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
       foreach (var textureDirectory in textureDirectories) {
         foreach (var textureFile in textureDirectory.GetExistingFiles()) {
           if (FinImage.IsSupportedFileType(textureFile)) {
-            textureFilesByName[textureFile.NameWithoutExtension] =
+            textureFilesByName[textureFile.NameWithoutExtension.ToString()] =
                 textureFile;
           }
         }

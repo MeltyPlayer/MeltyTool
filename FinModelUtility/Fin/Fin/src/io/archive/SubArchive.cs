@@ -46,9 +46,8 @@ public class SubArchiveStream(Stream impl)
 }
 
 public class SubArchiveExtractor : IArchiveExtractor<SubArchiveContentFile> {
-  public ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(IReadOnlyTreeFile archive,
-    ISystemDirectory targetDirectory) where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new()
-    => this.TryToExtractIntoNewDirectory<TArchiveReader>(archive, null, targetDirectory);
+  public ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(IReadOnlyTreeFile archive) where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new()
+    => this.TryToExtractIntoNewDirectory<TArchiveReader>(archive, null);
 
   public ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(Stream archive, ISystemDirectory targetDirectory) where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new()
     => this.TryToExtractIntoNewDirectory<TArchiveReader>(null, archive, null, targetDirectory);
@@ -56,16 +55,20 @@ public class SubArchiveExtractor : IArchiveExtractor<SubArchiveContentFile> {
   public ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
       IReadOnlyTreeFile archive,
       ISystemDirectory rootDirectory,
-      ISystemDirectory targetDirectory,
       IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null)
       where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new() {
-    if (targetDirectory is { Exists: true, IsEmpty: false }) {
+    var targetDirectoryName = archive.NameWithoutExtension.ToString();
+    if (archive.AssertGetParent()
+               .TryToGetExistingSubdir(targetDirectoryName,
+                                       out var readOnlyTargetDirectory) &&
+        !readOnlyTargetDirectory.IsEmpty) {
       return ArchiveExtractionResult.ALREADY_EXISTS;
     }
 
+    var targetDirectory = new FinDirectory(archive.FullNameWithoutExtension);
     using var fs = archive.OpenRead();
     return this.TryToExtractIntoNewDirectory<TArchiveReader>(
-        archive.NameWithoutExtension,
+        targetDirectoryName,
         fs,
         rootDirectory,
         targetDirectory,
@@ -120,7 +123,7 @@ public class SubArchiveExtractor : IArchiveExtractor<SubArchiveContentFile> {
       var dstDir = relativeToRoot ? rootDirectory : targetDirectory;
       var dstFile = new FinFile(Path.Join(dstDir.FullPath, relativeName));
 
-      var dstDirectory = dstFile.GetParentFullPath()!;
+      var dstDirectory = dstFile.GetParentFullPath().ToString();
       if (createdDirectories.Add(dstDirectory)) {
         FinFileSystem.Directory.CreateDirectory(dstDirectory);
       }
@@ -155,7 +158,7 @@ public class SubArchiveExtractor : IArchiveExtractor<SubArchiveContentFile> {
       var dstDir = rootDirectory;
       var dstFile = new FinFile(Path.Join(dstDir.FullPath, relativeName));
 
-      var dstDirectory = dstFile.GetParentFullPath()!;
+      var dstDirectory = dstFile.GetParentFullPath().ToString();
       if (createdDirectories.Add(dstDirectory)) {
         FinFileSystem.Directory.CreateDirectory(dstDirectory);
       }

@@ -22,7 +22,7 @@ public class DatModelGoldenTests
     var datFile = directory.FilesWithExtension(".dat").Single();
 
     return new DatModelFileBundle {
-        GameName = gameName,
+        GameName = gameName.ToString(),
         DatFile = datFile
     };
   }
@@ -32,7 +32,7 @@ public class DatModelGoldenTests
        .GetGoldenDirectories(
            GoldenAssert
                .GetRootGoldensDirectory(Assembly.GetExecutingAssembly()))
-       .Where(dir => dir.Name != "super_smash_bros_melee")
+       .Where(dir => !(dir.Name is "super_smash_bros_melee"))
        .SelectMany(dir => dir.GetExistingSubdirs())
        .ToArray();
 }

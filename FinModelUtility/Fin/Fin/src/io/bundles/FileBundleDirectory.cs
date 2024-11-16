@@ -23,7 +23,7 @@ public class FileBundleDirectory : IFileBundleDirectory {
 
   public FileBundleDirectory(IFileHierarchyDirectory? directory) {
     this.Directory = directory;
-    this.Name = directory.Name;
+    this.Name = directory.Name.ToString();
   }
 
   public FileBundleDirectory(string name) {

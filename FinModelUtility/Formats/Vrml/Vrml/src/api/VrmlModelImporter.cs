@@ -52,7 +52,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var finTexture
               = finModel.MaterialManager.CreateTexture(
                   FinImage.FromFile(imageFile));
-          finTexture.Name = imageFile.NameWithoutExtension;
+          finTexture.Name = imageFile.NameWithoutExtension.ToString();
           finTexture.WrapModeU = finTexture.WrapModeV = WrapMode.REPEAT;
 
           if (transformNode != null) {

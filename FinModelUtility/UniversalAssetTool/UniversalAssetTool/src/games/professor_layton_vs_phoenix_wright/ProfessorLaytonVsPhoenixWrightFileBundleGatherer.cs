@@ -96,7 +96,7 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
             }
 
             IFileHierarchyDirectory[] animationDirectories;
-            var name = xcDirectory.Name;
+            var name = xcDirectory.Name.ToString();
             var underscoreIndex = name.IndexOf('_');
             if (underscoreIndex != -1) {
               animationDirectories = [xcDirectory];
@@ -114,7 +114,7 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
             organizer.Add(new XcModelFileBundle {
                 GameName = "professor_layton_vs_phoenix_wright",
                 ModelDirectory = xcDirectory,
-                AnimationDirectories = [xcDirectory],
+                AnimationDirectories = animationDirectories,
             }.Annotate(xcFile));
           }
         }
@@ -151,7 +151,7 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
     => new ModelAndAnimations(
         name,
         directory.AssertGetExistingSubdir(modelFileName),
-        animationFileNames.Select(directory.AssertGetExistingSubdir).ToArray());
+        animationFileNames.Select(f => directory.AssertGetExistingSubdir(f)).ToArray());
 
   internal interface IXcDirectories {
     string Name { get; }

@@ -23,7 +23,7 @@ public partial interface ITreeIoObject<TIoObject, TDirectory, TFile,
     ITreeDirectory<TIoObject, TDirectory, TFile, TFileType>
     where TFile : ITreeFile<TIoObject, TDirectory, TFile, TFileType> {
   string FullPath { get; }
-  string Name { get; }
+  ReadOnlySpan<char> Name { get; }
 
   [Const]
   TDirectory AssertGetParent();
@@ -50,19 +50,20 @@ public partial interface ITreeDirectory<TIoObject, TDirectory, TFile,
   IEnumerable<TDirectory> GetExistingSubdirs();
 
   [Const]
-  TDirectory AssertGetExistingSubdir(string path);
+  TDirectory AssertGetExistingSubdir(ReadOnlySpan<char> path);
 
   [Const]
-  bool TryToGetExistingSubdir(string path, out TDirectory outDirectory);
+  bool TryToGetExistingSubdir(ReadOnlySpan<char> path,
+                              out TDirectory outDirectory);
 
   [Const]
   IEnumerable<TFile> GetExistingFiles();
 
   [Const]
-  TFile AssertGetExistingFile(string path);
+  TFile AssertGetExistingFile(ReadOnlySpan<char> path);
 
   [Const]
-  bool TryToGetExistingFile(string path, out TFile outFile);
+  bool TryToGetExistingFile(ReadOnlySpan<char> path, out TFile outFile);
 
   [Const]
   bool TryToGetExistingFileWithFileType(string pathWithoutExtension,
@@ -90,9 +91,8 @@ public partial interface ITreeFile<TIoObject, TDirectory, TFile, TFileType>
   TFileType FileType { get; }
 
   string FullNameWithoutExtension { get; }
-  string NameWithoutExtension { get; }
+  ReadOnlySpan<char> NameWithoutExtension { get; }
 }
-
 
 [GenerateReadOnly]
 public partial interface ITreeIoObject

@@ -1,6 +1,8 @@
 ﻿using fin.io;
 using fin.util.asserts;
 
+using static uni.util.bundles.ModelSeparator;
+
 namespace uni.util.bundles;
 
 public interface IModelBundle {
@@ -31,9 +33,12 @@ public interface IModelSeparator {
       IList<IFileHierarchyFile> animationFiles);
 }
 
-public class ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
+public class ModelSeparator(DirectoryToId directoryToId)
     : IModelSeparator {
   private readonly Dictionary<string, IModelSeparatorMethod> impl_ = new();
+
+  public delegate ReadOnlySpan<char> DirectoryToId(
+      IFileHierarchyDirectory directory);
 
   public IModelSeparator Register(
       string directoryId,
@@ -53,7 +58,7 @@ public class ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
   }
 
   public bool Contains(IFileHierarchyDirectory directory)
-    => this.impl_.ContainsKey(directoryToId(directory));
+    => this.impl_.ContainsKey(directoryToId(directory).ToString());
 
   public IEnumerable<IModelBundle> Separate(
       IFileHierarchyDirectory directory,
@@ -69,7 +74,7 @@ public class ModelSeparator(Func<IFileHierarchyDirectory, string> directoryToId)
              .ToArray();
     }
 
-    return this.impl_[directoryToId(directory)]
+    return this.impl_[directoryToId(directory).ToString()]
                .Separate(modelFiles, animationFiles);
   }
 }
@@ -167,12 +172,13 @@ public class ExactCasesMethod : BUnclaimedMatchModelSeparatorMethod {
   public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles) {
-    if (this.impl_.TryGetValue(modelFile.Name, out var animationFileNames)) {
+    if (this.impl_.TryGetValue(modelFile.Name.ToString(),
+                               out var animationFileNames)) {
       return animationFiles
-          .Where(file => animationFileNames.Contains(file.Name));
+          .Where(file => animationFileNames.Contains(file.Name.ToString()));
     }
 
-    return Enumerable.Empty<IFileHierarchyFile>();
+    return [];
   }
 }
 
@@ -198,7 +204,7 @@ public class PrefixCasesMethod : BUnclaimedMatchModelSeparatorMethod {
       }
     }
 
-    return Enumerable.Empty<IFileHierarchyFile>();
+    return [];
   }
 }
 
@@ -260,7 +266,7 @@ public class PrefixModelSeparatorMethod
   public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles) {
-    var prefix = modelFile.NameWithoutExtension;
+    var prefix = modelFile.NameWithoutExtension.ToString();
     return animationFiles.Where(file => file.Name.StartsWith(prefix));
   }
 }
@@ -270,7 +276,7 @@ public class SameNameSeparatorMethod
   public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles) {
-    var prefix = modelFile.NameWithoutExtension;
+    var prefix = modelFile.NameWithoutExtension.ToString();
     return animationFiles
         .Where(file => file.NameWithoutExtension.Equals(prefix));
   }
@@ -283,7 +289,7 @@ public class NameModelSeparatorMethod(string name)
   public override IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles)
-    => modelFile.Name.ToLower().Contains(this.name_)
+    => modelFile.Name.ToString().ToLower().Contains(this.name_)
         ? animationFiles
         : Enumerable.Empty<IFileHierarchyFile>();
 }
@@ -294,7 +300,7 @@ public class SuffixModelSeparatorMethod(int suffixLength)
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles) {
     var suffix =
-        modelFile.NameWithoutExtension.Substring(
+        modelFile.NameWithoutExtension.ToString().Substring(
             modelFile.NameWithoutExtension.Length -
             suffixLength);
 

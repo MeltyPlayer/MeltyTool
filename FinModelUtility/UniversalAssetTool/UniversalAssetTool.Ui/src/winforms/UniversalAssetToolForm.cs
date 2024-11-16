@@ -180,7 +180,7 @@ public partial class UniversalAssetToolForm : Form {
           outputFile.AssertGetParent(),
           new HashSet<ExportedFormat> { outputFile.FileType.AsFormat() },
           true,
-          outputFile.NameWithoutExtension);
+          outputFile.NameWithoutExtension.ToString());
     }
   }
 

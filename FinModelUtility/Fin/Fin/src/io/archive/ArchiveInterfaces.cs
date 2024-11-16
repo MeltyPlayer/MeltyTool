@@ -43,8 +43,7 @@ public interface IArchiveExtractor {
 public interface IArchiveExtractor<TArchiveContentFile>
     where TArchiveContentFile : IArchiveContentFile {
   ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
-      IReadOnlyTreeFile archive,
-      ISystemDirectory targetDirectory)
+      IReadOnlyTreeFile archive)
       where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
 
   ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
@@ -55,7 +54,6 @@ public interface IArchiveExtractor<TArchiveContentFile>
   ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
       IReadOnlyTreeFile archive,
       ISystemDirectory rootDirectory,
-      ISystemDirectory targetDirectory,
       IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null)
       where TArchiveReader : IArchiveReader<TArchiveContentFile>, new();
 

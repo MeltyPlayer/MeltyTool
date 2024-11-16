@@ -31,7 +31,7 @@ public abstract partial class FileTreeView<TFiles>
         if (fileNode is LeafFileNode leafFileNode) {
           var file = leafFileNode.File.FileBundle;
           var fileName = file.RawName;
-          keywords.Add(fileName);
+          keywords.Add(fileName.ToString());
 
           var betterFileName = file.HumanReadableName;
           if (!string.IsNullOrEmpty(betterFileName)) {

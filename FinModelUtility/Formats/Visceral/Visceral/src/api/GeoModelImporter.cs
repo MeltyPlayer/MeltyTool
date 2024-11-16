@@ -60,7 +60,7 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
             bundle => {
               var image = tg4ImageReader.ReadImage(bundle);
               var finTexture = finModel.MaterialManager.CreateTexture(image);
-              finTexture.Name = bundle.Tg4hFile.NameWithoutExtension;
+              finTexture.Name = bundle.Tg4hFile.NameWithoutExtension.ToString();
 
               // TODO: How is this set??
               finTexture.WrapModeU = WrapMode.REPEAT;

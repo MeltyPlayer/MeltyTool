@@ -19,7 +19,7 @@ public class AstGoldenTests
   public override AstAudioFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)
     => new() {
-        GameName = directory.Parent.Parent.Name,
+        GameName = directory.Parent.Parent.Name.ToString(),
         AstFile = directory.FilesWithExtension(".ast").Single(),
     };
 

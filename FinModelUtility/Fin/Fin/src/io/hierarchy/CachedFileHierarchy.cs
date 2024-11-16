@@ -83,10 +83,10 @@ public static partial class FileHierarchy {
       public IEnumerable<IReadOnlyTreeDirectory> GetAncestry()
         => this.Instance.GetAncestry();
 
-      public bool Exists => this.Instance.Exists;
+      public bool Exists => true;
       public string FullPath => this.Instance.FullPath;
 
-      public string Name => this.Parent == null
+      public ReadOnlySpan<char> Name => this.Parent == null
           ? this.Hierarchy.Name
           : this.Instance.Name;
 
@@ -164,7 +164,7 @@ public static partial class FileHierarchy {
       protected override ISystemIoObject Instance => this.Impl;
       public ISystemDirectory Impl { get; }
 
-      public bool IsEmpty => this.Impl.IsEmpty;
+      public bool IsEmpty => this.subdirs_.Count > 0;
 
       public IEnumerable<IFileHierarchyDirectory> GetExistingSubdirs()
         => this.subdirs_;
@@ -228,15 +228,16 @@ public static partial class FileHierarchy {
         }
       }
 
-      public IFileHierarchyFile AssertGetExistingFile(string relativePath) {
+      public IFileHierarchyFile AssertGetExistingFile(
+          ReadOnlySpan<char> relativePath) {
         Asserts.True(
             this.TryToGetExistingFile(relativePath, out var outFile));
         return outFile;
       }
 
-      public bool TryToGetExistingFile(string localPath,
+      public bool TryToGetExistingFile(ReadOnlySpan<char> localPath,
                                        out IFileHierarchyFile outFile)
-        => this.TryToGetExistingFileImpl_(localPath.AsSpan(), out outFile);
+        => this.TryToGetExistingFileImpl_(localPath, out outFile);
 
       private bool TryToGetExistingFileImpl_(
           ReadOnlySpan<char> localPath,
@@ -274,17 +275,16 @@ public static partial class FileHierarchy {
       }
 
       public IFileHierarchyDirectory AssertGetExistingSubdir(
-          string relativePath) {
+          ReadOnlySpan<char> relativePath) {
         Asserts.True(
             this.TryToGetExistingSubdir(relativePath, out var outDir));
         return outDir;
       }
 
       public bool TryToGetExistingSubdir(
-          string localPath,
+          ReadOnlySpan<char> localPath,
           out IFileHierarchyDirectory outDirectory)
-        => this.TryToGetExistingSubdirImpl_(localPath.AsSpan(),
-                                            out outDirectory);
+        => this.TryToGetExistingSubdirImpl_(localPath, out outDirectory);
 
       private readonly char[] pathSeparators_ = ['/', '\\'];
 
@@ -459,7 +459,8 @@ public static partial class FileHierarchy {
       public string FullNameWithoutExtension
         => this.Impl.FullNameWithoutExtension;
 
-      public string NameWithoutExtension => this.Impl.NameWithoutExtension;
+      public ReadOnlySpan<char> NameWithoutExtension
+        => this.Impl.NameWithoutExtension;
 
       public string DisplayFullPath
         => $"//{this.Hierarchy.Name}{this.LocalPath.Replace('\\', '/')}";

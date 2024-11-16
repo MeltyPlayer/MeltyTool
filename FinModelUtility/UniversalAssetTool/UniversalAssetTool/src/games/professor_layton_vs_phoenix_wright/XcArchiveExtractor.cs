@@ -9,12 +9,16 @@ using schema.binary;
 namespace uni.games.professor_layton_vs_phoenix_wright;
 
 internal class XcArchiveExtractor {
+  public const bool RETRY_FAILED = false;
+
   public void ExtractIntoDirectory(IReadOnlyTreeFile xcFile,
                                    ISystemDirectory dstDirectory) {
     dstDirectory = new FinDirectory(
         Path.Join(dstDirectory.FullPath, xcFile.NameWithoutExtension));
-    if (dstDirectory is {Exists: true, IsEmpty: false}) {
-      return;
+    if (dstDirectory.Exists) {
+      if (!RETRY_FAILED || !dstDirectory.IsEmpty) {
+        return;
+      }
     }
 
     dstDirectory.Create();

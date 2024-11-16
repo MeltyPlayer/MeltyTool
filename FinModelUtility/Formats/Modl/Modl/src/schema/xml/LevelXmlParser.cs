@@ -373,7 +373,7 @@ public class LevelXmlParser {
     var task = Parallel.ForEachAsync(
         modelFiles,
         async (modelFile, _) => {
-          var modelId = modelFile.NameWithoutExtension;
+          var modelId = modelFile.NameWithoutExtension.ToString();
 
           IList<IReadOnlyTreeFile>? animFiles = null;
           if (gameVersion == GameVersion.BW1) {

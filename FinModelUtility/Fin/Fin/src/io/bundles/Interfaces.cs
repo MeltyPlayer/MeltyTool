@@ -20,11 +20,13 @@ public interface IFileBundle : IUiFile {
 
 
   IReadOnlyTreeDirectory Directory => this.MainFile.AssertGetParent();
-  string IUiFile.RawName => this.MainFile?.Name ?? "(n/a)";
 
-  string DisplayName => this.HumanReadableName ?? this.RawName;
+  ReadOnlySpan<char> IUiFile.RawName
+    => this.MainFile != null ? this.MainFile.Name : "(n/a)";
 
-  string DisplayFullPath
+  ReadOnlySpan<char> DisplayName => this.HumanReadableName ?? this.RawName;
+
+  ReadOnlySpan<char> DisplayFullPath
     => this.MainFile?.DisplayFullPath ??
        this.HumanReadableName ?? this.RawName;
 

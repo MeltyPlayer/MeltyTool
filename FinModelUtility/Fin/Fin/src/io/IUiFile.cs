@@ -1,6 +1,8 @@
-﻿namespace fin.io;
+﻿using System;
+
+namespace fin.io;
 
 public interface IUiFile {
-  string RawName { get; }
+  ReadOnlySpan<char> RawName { get; }
   string? HumanReadableName => null;
 }

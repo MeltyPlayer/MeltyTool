@@ -46,7 +46,8 @@ public class OutModelImporter : IModelImporter<OutModelFileBundle> {
       GameVersion gameVersion,
       out IBwTerrain bwTerrain,
       float terrainLightScale = 1) {
-    var outName = outFile.Name.Replace(".out.gz", "")
+    var outName = outFile.Name.ToString()
+                         .Replace(".out.gz", "")
                          .Replace(".out", "");
     var outDirectory =
         outFile.AssertGetParent()
@@ -232,8 +233,10 @@ public class OutModelImporter : IModelImporter<OutModelFileBundle> {
             var surfaceTextureUvsFromFirstRow = tile.Schema
                                                     .SurfaceTextureUvsFromFirstRow
                                                     .Select(weirdUv => {
-                                                      var u = LoadUOrV_(weirdUv.U);
-                                                      var v = LoadUOrV_(weirdUv.V);
+                                                      var u = LoadUOrV_(
+                                                          weirdUv.U);
+                                                      var v = LoadUOrV_(
+                                                          weirdUv.V);
                                                       return (u, v);
                                                     })
                                                     .ToArray();

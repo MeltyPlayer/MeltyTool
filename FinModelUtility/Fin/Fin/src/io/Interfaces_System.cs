@@ -17,12 +17,13 @@ using GMSysDir =
         string>;
 using GMSysFile =
     IReadOnlyTreeFile<ISystemIoObject, ISystemDirectory, ISystemFile, string>;
+using System;
 
 // ReadOnly
 public partial interface IReadOnlySystemIoObject
     : IReadOnlyTreeIoObject, GROSysIoObj {
   bool Exists { get; }
-  string? GetParentFullPath();
+  ReadOnlySpan<char> GetParentFullPath();
 }
 
 public partial interface IReadOnlySystemDirectory
@@ -52,7 +53,7 @@ public partial interface ISystemDirectory
 
   void MoveTo(string path);
 
-  ISystemDirectory GetOrCreateSubdir(string relativePath);
+  ISystemDirectory GetOrCreateSubdir(ReadOnlySpan<char> relativePath);
 }
 
 public partial interface ISystemFile

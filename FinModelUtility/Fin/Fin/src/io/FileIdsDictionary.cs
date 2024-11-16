@@ -40,12 +40,12 @@ public partial class FileIdsDictionary : IFileIdsDictionary {
   }
 
   public IEnumerable<IReadOnlyTreeFile> this[uint id]
-    => this.impl_[id].Select(this.baseDirectory_.AssertGetExistingFile);
+    => this.impl_[id].Select(n => this.baseDirectory_.AssertGetExistingFile(n));
 
   public bool TryToLookUpFiles(uint id,
                                out IEnumerable<IReadOnlyTreeFile> files) {
     if (this.impl_.TryGetSet(id, out var set)) {
-      files = set!.Select(this.baseDirectory_.AssertGetExistingFile);
+      files = set!.Select(n => this.baseDirectory_.AssertGetExistingFile(n));
       return true;
     }
 

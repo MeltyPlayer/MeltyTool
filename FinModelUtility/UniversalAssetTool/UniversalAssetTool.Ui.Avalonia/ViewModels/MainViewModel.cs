@@ -99,8 +99,10 @@ public class MainViewModel : ViewModelBase {
         += (_, sceneInstance) => {
           AvaloniaIconUtil.ClearCache();
 
-          this.FileName
-              = sceneInstance.Definition.FileBundle?.DisplayFullPath;
+          var fileBundle = sceneInstance.Definition.FileBundle;
+          this.FileName = fileBundle != null
+                  ? fileBundle.DisplayFullPath.ToString()
+                  : null;
 
           var sceneModelInstances
               = sceneInstance
@@ -234,13 +236,15 @@ public class MainViewModel : ViewModelBase {
       IList<string>? parts = null) {
     counterPercentageProgress.Increment();
 
+    var displayName = fileBundle.FileBundle.DisplayName.ToString();
+
     string? text = null;
     if (parts != null) {
-      parts.Add(fileBundle.FileBundle.DisplayName);
+      parts.Add(displayName);
       text = Path.Join(parts.ToArray());
     }
 
-    var label = text ?? fileBundle.FileBundle.DisplayName;
+    var label = text ?? displayName;
     return new FileBundleLeafNode(label, fileBundle);
   }
 }

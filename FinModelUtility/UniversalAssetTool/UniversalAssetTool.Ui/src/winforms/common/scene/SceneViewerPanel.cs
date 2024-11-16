@@ -18,7 +18,7 @@ public partial class SceneViewerPanel : UserControl, ISceneViewer {
     set {
         var fileBundle = value?.Definition.FileBundle;
         if (fileBundle != null) {
-          this.groupBox_.Text = fileBundle.DisplayFullPath;
+          this.groupBox_.Text = fileBundle.DisplayFullPath.ToString();
         } else {
           this.groupBox_.Text = "(Select a model)";
         }

@@ -8,7 +8,7 @@ public abstract partial class FileTreeView<TFiles> {
     public LeafFileNode(ParentFileNode parent,
                         IAnnotatedFileBundle file,
                         string? text = null) :
-        base(parent, text ?? file.FileBundle.DisplayName) {
+        base(parent, text ?? file.FileBundle.DisplayName.ToString()) {
         this.File = file;
         this.InitializeFilterNode(parent);
 

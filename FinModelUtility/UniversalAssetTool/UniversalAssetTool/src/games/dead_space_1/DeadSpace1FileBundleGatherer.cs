@@ -40,9 +40,9 @@ namespace uni.games.dead_space_1 {
 
       foreach (var charSubdir in
                new[] { "animated_props", "chars", "weapons" }
-                   .Select(assetFileHierarchy.Root.AssertGetExistingSubdir)
+                   .Select(f => assetFileHierarchy.Root.AssertGetExistingSubdir(f))
                    .SelectMany(subdir => subdir.GetExistingSubdirs())) {
-        IFileHierarchyFile[] geoFiles = Array.Empty<IFileHierarchyFile>();
+        IFileHierarchyFile[] geoFiles = [];
         if (charSubdir.TryToGetExistingSubdir("rigged/export",
                                               out var riggedSubdir)) {
           geoFiles =
@@ -52,7 +52,7 @@ namespace uni.games.dead_space_1 {
         }
 
         IFileHierarchyFile? rcbFile = null;
-        IReadOnlyTreeFile[] bnkFiles = Array.Empty<IReadOnlyTreeFile>();
+        IReadOnlyTreeFile[] bnkFiles = [];
         if (charSubdir.TryToGetExistingSubdir("cct/export",
                                               out var cctSubdir)) {
           rcbFile =

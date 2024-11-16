@@ -5,6 +5,7 @@ using GROTreeDir =
         IReadOnlyTreeFile, string>;
 
 using System.Collections.Generic;
+using System;
 
 public partial interface IFileHierarchyIoObject { }
 
@@ -22,21 +23,24 @@ public partial interface IFileHierarchyDirectory {
   new IEnumerable<IFileHierarchyFile> GetExistingFiles();
 
   // AssertGetExistingFile
-  IReadOnlyTreeFile GROTreeDir.AssertGetExistingFile(string localPath)
+  IReadOnlyTreeFile GROTreeDir.AssertGetExistingFile(
+      ReadOnlySpan<char> localPath)
     => this.AssertGetExistingFile(localPath);
 
-  new IFileHierarchyFile AssertGetExistingFile(string localPath);
+  new IFileHierarchyFile AssertGetExistingFile(ReadOnlySpan<char> localPath);
 
   // AssertGetExistingSubdir
-  IReadOnlyTreeDirectory GROTreeDir.AssertGetExistingSubdir(string localPath)
+  IReadOnlyTreeDirectory GROTreeDir.AssertGetExistingSubdir(
+      ReadOnlySpan<char> localPath)
     => this.AssertGetExistingSubdir(localPath);
 
-  new IFileHierarchyDirectory AssertGetExistingSubdir(string localPath);
+  new IFileHierarchyDirectory AssertGetExistingSubdir(
+      ReadOnlySpan<char> localPath);
 
 
   // TryToGetExistingSubdir
   bool GROTreeDir.TryToGetExistingSubdir(
-      string path,
+      ReadOnlySpan<char> path,
       out IReadOnlyTreeDirectory outDirectory) {
     var returnValue =
         this.TryToGetExistingSubdir(path, out var outDir);
@@ -45,13 +49,13 @@ public partial interface IFileHierarchyDirectory {
   }
 
   bool TryToGetExistingSubdir(
-      string path,
+      ReadOnlySpan<char> path,
       out IFileHierarchyDirectory outDirectory);
 
 
   // TryToGetExistingFile
   bool GROTreeDir.TryToGetExistingFile(
-      string path,
+      ReadOnlySpan<char> path,
       out IReadOnlyTreeFile outFile) {
     var returnValue =
         this.TryToGetExistingFile(path, out var oFile);
@@ -60,7 +64,7 @@ public partial interface IFileHierarchyDirectory {
   }
 
   bool TryToGetExistingFile(
-      string path,
+      ReadOnlySpan<char> path,
       out IFileHierarchyFile outFile);
 
   // TryToGetExistingFileWithFileType

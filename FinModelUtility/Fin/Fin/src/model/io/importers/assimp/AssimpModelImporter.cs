@@ -89,7 +89,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
                   assScene.Textures[assTextureSlot.TextureIndex]];
 
           var finTexture = finModel.MaterialManager.CreateTexture(finImage);
-          finTexture.Name = name;
+          finTexture.Name = name.ToString();
 
           finTexture.WrapModeU = ConvertWrapMode_(assTextureSlot.WrapModeU);
           finTexture.WrapModeV = ConvertWrapMode_(assTextureSlot.WrapModeV);

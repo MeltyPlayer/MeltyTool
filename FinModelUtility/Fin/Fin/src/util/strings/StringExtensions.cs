@@ -49,6 +49,14 @@ public static class StringExtensions {
     return indexTo >= 0 ? str[..indexTo] : str;
   }
 
+  public static ReadOnlySpan<char> SubstringUpTo(
+      this ReadOnlySpan<char> str,
+      ReadOnlySpan<char> s) {
+    var indexTo = str.IndexOf(s);
+    return indexTo >= 0 ? str[..indexTo] : str;
+  }
+
+
 
   public static string SubstringUpTo(this string str, string substr) {
     var indexTo = str.IndexOf(substr);

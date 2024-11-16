@@ -69,7 +69,7 @@ public class FileBundleTreeView : FileTreeView<IFileBundleDirectory> {
                               IList<string>? parts = null) {
       string? text = null;
       if (parts != null) {
-        parts.Add(fileBundle.FileBundle.DisplayName);
+        parts.Add(fileBundle.FileBundle.DisplayName.ToString());
         text = Path.Join(parts.ToArray());
       }
 

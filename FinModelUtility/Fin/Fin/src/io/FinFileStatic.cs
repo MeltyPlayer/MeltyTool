@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Abstractions;
 using System.Runtime.CompilerServices;
 
@@ -36,8 +37,8 @@ public static class FinFileStatic {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static string GetNameWithoutExtension(string name)
-    => name.SubstringUpTo(".");
+  public static ReadOnlySpan<char> GetNameWithoutExtension(
+      ReadOnlySpan<char> name) => name.SubstringUpTo('.');
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static FileSystemStream OpenRead(string fullName)

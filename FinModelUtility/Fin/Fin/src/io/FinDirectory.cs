@@ -36,13 +36,13 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
 
 
   // Directory fields
-  public string Name => FinIoStatic.GetName(this.FullPath);
-  public string FullPath { get; } = fullName;
+  public ReadOnlySpan<char> Name => FinIoStatic.GetName(fullName);
+  public string FullPath => fullName;
   public string DisplayFullName => this.FullPath;
 
 
   // Ancestry methods
-  public string? GetParentFullPath()
+  public ReadOnlySpan<char> GetParentFullPath()
     => FinIoStatic.GetParentFullName(this.FullPath);
 
   public ISystemDirectory AssertGetParent() {
@@ -55,8 +55,8 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
 
   public bool TryGetParent(out ISystemDirectory parent) {
     var parentName = this.GetParentFullPath();
-    if (parentName != null) {
-      parent = new FinDirectory(parentName);
+    if (!parentName.IsEmpty) {
+      parent = new FinDirectory(parentName.ToString());
       return true;
     }
 
@@ -116,7 +116,7 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
        .Select(fullName => (ISystemDirectory) new FinDirectory(fullName));
 
   public bool TryToGetExistingSubdir(
-      string path,
+      ReadOnlySpan<char> path,
       out IReadOnlySystemDirectory outDirectory) {
     outDirectory = default;
     return this.TryToGetExistingSubdir(
@@ -126,16 +126,18 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public bool TryToGetExistingSubdir(string relativePath,
+  public bool TryToGetExistingSubdir(ReadOnlySpan<char> relativePath,
                                      out ISystemDirectory subdir) {
-    subdir = new FinDirectory(
-        FinDirectoryStatic.GetSubdir(this.FullPath, relativePath));
+    subdir = new FinDirectory(FinDirectoryStatic
+                              .GetSubdir(this.FullPath, relativePath)
+                              .ToString());
     return subdir.Exists;
   }
 
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public ISystemDirectory AssertGetExistingSubdir(string relativePath) {
+  public ISystemDirectory AssertGetExistingSubdir(
+      ReadOnlySpan<char> relativePath) {
     Asserts.True(
         this.TryToGetExistingSubdir(relativePath,
                                     out ISystemDirectory subdir));
@@ -143,9 +145,10 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public ISystemDirectory GetOrCreateSubdir(string relativePath)
-    => new FinDirectory(
-        FinDirectoryStatic.GetSubdir(this.FullPath, relativePath, true));
+  public ISystemDirectory GetOrCreateSubdir(ReadOnlySpan<char> relativePath)
+    => new FinDirectory(FinDirectoryStatic
+                        .GetSubdir(this.FullPath, relativePath, true)
+                        .ToString());
 
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -162,7 +165,8 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
        .SearchForFiles(this.FullPath, searchPattern, includeSubdirs)
        .Select(fullName => (ISystemFile) new FinFile(fullName));
 
-  public bool TryToGetExistingFile(string path, out ISystemFile outFile) {
+  public bool TryToGetExistingFile(ReadOnlySpan<char> path,
+                                   out ISystemFile outFile) {
     if (FinDirectoryStatic.TryToGetExistingFile(
             this.FullPath,
             path,
@@ -190,16 +194,14 @@ public readonly struct FinDirectory(string fullName) : ISystemDirectory {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public ISystemFile AssertGetExistingFile(string path)
+  public ISystemFile AssertGetExistingFile(ReadOnlySpan<char> path)
     => new FinFile(FinDirectoryStatic.GetExistingFile(this.FullPath, path));
 
   public IEnumerable<ISystemFile> GetFilesWithNameRecursive(
       string name) {
-    name = name.ToLower();
     var stack = new FinStack<ISystemDirectory>(this);
     while (stack.TryPop(out var next)) {
-      var match = next.GetExistingFiles()
-                      .FirstOrDefault(file => file.Name.ToLower() == name);
+      var match = next.GetExistingFiles().SingleOrDefaultByName(name);
       if (match != null) {
         yield return match;
       }

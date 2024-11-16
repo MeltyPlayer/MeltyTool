@@ -13,7 +13,7 @@ public partial class AudioPlayerPanel : UserControl, IAudioPlayerPanel {
       this.impl_.OnChange += audioFileBundle => {
         this.Invoke(() => {
           if (audioFileBundle != null) {
-            this.groupBox_.Text = audioFileBundle.DisplayFullPath;
+            this.groupBox_.Text = audioFileBundle.DisplayFullPath.ToString();
           } else {
             this.groupBox_.Text = "(Select audio)";
           }

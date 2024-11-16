@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace fin.io;
 
@@ -30,8 +31,8 @@ public partial interface IReadOnlySystemIoObject {
   new string FullPath { get; }
 
   // Name
-  string GROSysIoObj.Name => this.Name;
-  new string Name { get; }
+  ReadOnlySpan<char> GROSysIoObj.Name => this.Name;
+  new ReadOnlySpan<char> Name { get; }
 
   // AssertGetParent
   IReadOnlyTreeDirectory GROTreeIoObj.AssertGetParent()
@@ -60,24 +61,26 @@ public partial interface IReadOnlySystemDirectory {
   new IEnumerable<IReadOnlySystemDirectory> GetExistingSubdirs();
 
   // AssertGetExistingSubdir
-  IReadOnlyTreeDirectory GROTreeDir.AssertGetExistingSubdir(string path)
+  IReadOnlyTreeDirectory GROTreeDir.AssertGetExistingSubdir(
+      ReadOnlySpan<char> path)
     => this.AssertGetExistingSubdir(path);
 
-  IReadOnlySystemDirectory GROSysDir.AssertGetExistingSubdir(string path)
+  IReadOnlySystemDirectory GROSysDir.AssertGetExistingSubdir(
+      ReadOnlySpan<char> path)
     => this.AssertGetExistingSubdir(path);
 
-  new IReadOnlySystemDirectory AssertGetExistingSubdir(string path);
+  new IReadOnlySystemDirectory AssertGetExistingSubdir(ReadOnlySpan<char> path);
 
   // TryToGetExistingSubdir
   bool GROTreeDir.TryToGetExistingSubdir(
-      string path,
+      ReadOnlySpan<char> path,
       out IReadOnlyTreeDirectory outDirectory) {
     var returnValue = this.TryToGetExistingSubdir(path, out var outDir);
     outDirectory = outDir;
     return returnValue;
   }
 
-  new bool TryToGetExistingSubdir(string path,
+  new bool TryToGetExistingSubdir(ReadOnlySpan<char> path,
                                   out IReadOnlySystemDirectory outDirectory);
 
   // GetExistingFiles
@@ -90,27 +93,28 @@ public partial interface IReadOnlySystemDirectory {
   new IEnumerable<IReadOnlySystemFile> GetExistingFiles();
 
   // AssertGetExistingFile
-  IReadOnlyTreeFile GROTreeDir.AssertGetExistingFile(string path)
+  IReadOnlyTreeFile GROTreeDir.AssertGetExistingFile(ReadOnlySpan<char> path)
     => this.AssertGetExistingFile(path);
 
-  new IReadOnlySystemFile AssertGetExistingFile(string path);
+  new IReadOnlySystemFile AssertGetExistingFile(ReadOnlySpan<char> path);
 
   // TryToGetExistingFile
-  bool GROTreeDir.TryToGetExistingFile(string path,
+  bool GROTreeDir.TryToGetExistingFile(ReadOnlySpan<char> path,
                                        out IReadOnlyTreeFile outFile) {
     var returnValue = this.TryToGetExistingFile(path, out var oFile);
     outFile = oFile;
     return returnValue;
   }
 
-  bool GROSysDir.TryToGetExistingFile(string path,
+  bool GROSysDir.TryToGetExistingFile(ReadOnlySpan<char> path,
                                       out IReadOnlySystemFile outFile) {
     var returnValue = this.TryToGetExistingFile(path, out var oFile);
     outFile = oFile;
     return returnValue;
   }
 
-  new bool TryToGetExistingFile(string path, out IReadOnlySystemFile outFile);
+  new bool TryToGetExistingFile(ReadOnlySpan<char> path,
+                                out IReadOnlySystemFile outFile);
 
   // GetFilesWithNameRecursive
   IEnumerable<IReadOnlyTreeFile> GROTreeDir.GetFilesWithNameRecursive(
@@ -130,7 +134,6 @@ public partial interface IReadOnlySystemDirectory {
       bool includeSubdirs = false);
 }
 
-
 public partial interface IReadOnlySystemFile {
   // FileType
   string GROTreeFile.FileType => this.FileType;
@@ -145,18 +148,21 @@ public partial interface IReadOnlySystemFile {
   new string FullNameWithoutExtension { get; }
 
   // NameWithoutExtension
-  string GROTreeFile.NameWithoutExtension => this.NameWithoutExtension;
-  string GROSysFile.NameWithoutExtension => this.NameWithoutExtension;
-  new string NameWithoutExtension { get; }
-}
+  ReadOnlySpan<char> GROTreeFile.NameWithoutExtension
+    => this.NameWithoutExtension;
 
+  ReadOnlySpan<char> GROSysFile.NameWithoutExtension
+    => this.NameWithoutExtension;
+
+  new ReadOnlySpan<char> NameWithoutExtension { get; }
+}
 
 // Mutable
 public partial interface ISystemIoObject {
   new string FullPath { get; }
-  new string Name { get; }
+  new ReadOnlySpan<char> Name { get; }
   new bool Exists { get; }
-  new string? GetParentFullPath();
+  new ReadOnlySpan<char> GetParentFullPath();
 
   // AssertGetParent
   IReadOnlySystemDirectory GROSysIoObj.AssertGetParent()
@@ -192,7 +198,6 @@ public partial interface ISystemIoObject {
   new IEnumerable<ISystemDirectory> GetAncestry();
 }
 
-
 public partial interface ISystemDirectory {
   // Overrides
   new bool IsEmpty { get; }
@@ -205,12 +210,12 @@ public partial interface ISystemDirectory {
 
   // AssertGetExistingSubdir
   IReadOnlySystemDirectory IReadOnlySystemDirectory.AssertGetExistingSubdir(
-      string path)
+      ReadOnlySpan<char> path)
     => this.AssertGetExistingSubdir(path);
 
-  new ISystemDirectory AssertGetExistingSubdir(string path);
+  new ISystemDirectory AssertGetExistingSubdir(ReadOnlySpan<char> path);
 
-  new bool TryToGetExistingSubdir(string path,
+  new bool TryToGetExistingSubdir(ReadOnlySpan<char> path,
                                   out ISystemDirectory outDirectory);
 
   // GetExistingFiles
@@ -221,18 +226,17 @@ public partial interface ISystemDirectory {
   new IEnumerable<ISystemFile> GetExistingFiles();
 
   // AssertGetExistingFile
-  IReadOnlySystemFile GROSysDir.AssertGetExistingFile(
-      string path)
+  IReadOnlySystemFile GROSysDir.AssertGetExistingFile(ReadOnlySpan<char> path)
     => this.AssertGetExistingFile(path);
 
   IReadOnlySystemFile IReadOnlySystemDirectory.AssertGetExistingFile(
-      string path)
+      ReadOnlySpan<char> path)
     => this.AssertGetExistingFile(path);
 
-  new ISystemFile AssertGetExistingFile(string path);
+  new ISystemFile AssertGetExistingFile(ReadOnlySpan<char> path);
 
   // TryToGetExistingFile
-  bool IReadOnlySystemDirectory.TryToGetExistingFile(string path,
+  bool IReadOnlySystemDirectory.TryToGetExistingFile(ReadOnlySpan<char> path,
     out IReadOnlySystemFile outFile) {
     var returnValue =
         this.TryToGetExistingFile(path, out var outSystemFile);
@@ -240,7 +244,8 @@ public partial interface ISystemDirectory {
     return returnValue;
   }
 
-  new bool TryToGetExistingFile(string path, out ISystemFile outFile);
+  new bool TryToGetExistingFile(ReadOnlySpan<char> path,
+                                out ISystemFile outFile);
 
   // TryToGetExistingFileWithFileType
   bool GROTreeDir.TryToGetExistingFileWithFileType(
@@ -296,7 +301,6 @@ public partial interface ISystemDirectory {
       bool includeSubdirs = false);
 }
 
-
 public partial interface ISystemFile {
   // FileType
   string GMSysFile.FileType => this.FileType;
@@ -312,10 +316,11 @@ public partial interface ISystemFile {
   new string FullNameWithoutExtension { get; }
 
   // NameWithoutExtension
-  string GMSysFile.NameWithoutExtension => this.NameWithoutExtension;
-
-  string IReadOnlySystemFile.NameWithoutExtension
+  ReadOnlySpan<char> GMSysFile.NameWithoutExtension
     => this.NameWithoutExtension;
 
-  new string NameWithoutExtension { get; }
+  ReadOnlySpan<char> IReadOnlySystemFile.NameWithoutExtension
+    => this.NameWithoutExtension;
+
+  new ReadOnlySpan<char> NameWithoutExtension { get; }
 }

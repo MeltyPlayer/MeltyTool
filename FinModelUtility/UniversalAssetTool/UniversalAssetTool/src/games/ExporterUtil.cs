@@ -14,6 +14,8 @@ using fin.util.asserts;
 using fin.util.linq;
 using fin.util.progress;
 
+using Microsoft.VisualStudio.TextTemplating;
+
 using uni.config;
 using uni.model;
 using uni.msg;
@@ -244,7 +246,7 @@ public static class ExporterUtil {
       string? overrideName = null)
       where T : I3dFileBundle {
     var mainFile = Asserts.CastNonnull(threeDFileBundle.MainFile);
-    var name = overrideName ?? mainFile.NameWithoutExtension;
+    var name = (overrideName ?? mainFile.NameWithoutExtension).ToString();
 
     if (threeDFileBundle.UseLowLevelExporter) {
       formats = [AssimpUtil.GetExportFormatFromExtension(".gltf")];
@@ -271,7 +273,7 @@ public static class ExporterUtil {
       }.ExportFormats(new ModelExporterParams {
                           OutputFile = new FinFile(
                               Path.Join(outputDirectory.FullPath,
-                                        name + ".foo")),
+                                        $"{name}.foo")),
                           Model = model,
                           Scale = new ScaleSource(
                                   Config.Instance.Exporter.General
@@ -285,7 +287,7 @@ public static class ExporterUtil {
                 .ExportBoneScaleAnimationsSeparately) {
         new BoneScaleAnimationExporter().Export(
             new FinFile(Path.Join(outputDirectory.FullPath,
-                                  name + "_bone_scale_animations.lua")),
+                                  $"{name}_bone_scale_animations.lua")),
             model);
       }
     } catch (Exception e) {

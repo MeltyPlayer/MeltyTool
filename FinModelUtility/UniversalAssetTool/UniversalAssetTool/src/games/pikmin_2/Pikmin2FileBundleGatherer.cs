@@ -67,10 +67,7 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       IFileBundleOrganizer organizer,
       IFileHierarchy fileHierarchy) {
     foreach (var subdir in fileHierarchy) {
-      var arcSubdir =
-          subdir.GetExistingSubdirs()
-                .SingleOrDefault(dir => dir.Name == "arc");
-
+      var arcSubdir = subdir.GetExistingSubdirs().SingleOrDefaultByName("arc");
       if (arcSubdir != null &&
           arcSubdir.FilesWithExtension(".bmd").Any()) {
         this.ExtractModelsInDirectoryAutomatically_(organizer, arcSubdir);

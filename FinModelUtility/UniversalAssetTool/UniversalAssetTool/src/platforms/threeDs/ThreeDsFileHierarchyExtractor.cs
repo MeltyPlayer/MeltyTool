@@ -58,7 +58,6 @@ public class ThreeDsFileHierarchyExtractor {
             archiveExtractor.TryToExtractIntoNewDirectory<ZarReader>(
                 zarFile,
                 rootDir,
-                new FinDirectory(zarFile.FullNameWithoutExtension),
                 archiveFileNameProcessor) ==
             ArchiveExtractionResult.NEWLY_EXTRACTED;
       }
@@ -68,7 +67,6 @@ public class ThreeDsFileHierarchyExtractor {
             archiveExtractor.TryToExtractIntoNewDirectory<GarReader>(
                 garFile,
                 rootDir,
-                new FinDirectory(garFile.FullNameWithoutExtension),
                 archiveFileNameProcessor) ==
             ArchiveExtractionResult.NEWLY_EXTRACTED;
       }
@@ -79,8 +77,6 @@ public class ThreeDsFileHierarchyExtractor {
             archiveExtractor.TryToExtractIntoNewDirectory<GarReader>(
                 garFile,
                 rootDir,
-                new FinDirectory(
-                    garFile.FullPath.SubstringUpTo(".gar")),
                 archiveFileNameProcessor) ==
             ArchiveExtractionResult.NEWLY_EXTRACTED;
       }

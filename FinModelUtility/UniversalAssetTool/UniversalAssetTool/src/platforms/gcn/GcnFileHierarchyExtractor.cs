@@ -85,11 +85,11 @@ public class GcnFileHierarchyExtractor {
         var relFiles =
             subdir.GetExistingFiles()
                   .Where(
-                      file => file.Name.Contains(".rel") &&
+                      file => file.Name.IndexOf(".rel") != -1 &&
                               file.FileType == ".rarc")
                   .ToArray();
         foreach (var relFile in relFiles) {
-          var prefix = relFile.Name.SubstringUpTo(".rel");
+          var prefix = relFile.Name.SubstringUpTo(".rel").ToString();
           var mapFile =
               subdir.GetExistingFiles()
                     .Single(

@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace fin.io;
 
 public static class FinIoStatic {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static string GetName(string fullName)
+  public static ReadOnlySpan<char> GetName(ReadOnlySpan<char> fullName)
     => Path.GetFileName(Path.TrimEndingDirectorySeparator(fullName));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static string? GetParentFullName(string fullName) {
-    var parentFullName
-        = Path.GetDirectoryName(Path.TrimEndingDirectorySeparator(fullName));
-    return parentFullName == "" ? null : parentFullName;
-  }
+  public static ReadOnlySpan<char> GetParentFullName(
+      ReadOnlySpan<char> fullName)
+    => Path.GetDirectoryName(Path.TrimEndingDirectorySeparator(fullName));
 }

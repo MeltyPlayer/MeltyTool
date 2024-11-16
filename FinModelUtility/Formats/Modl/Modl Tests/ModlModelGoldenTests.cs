@@ -19,7 +19,7 @@ public class ModlModelGoldenTests
   public override ModlModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)
     => new() {
-        GameName = directory.Parent.Parent.Name,
+        GameName = directory.Parent.Parent.Name.ToString(),
         GameVersion = directory.Parent.Parent.Name switch {
             "battalion_wars_1" => GameVersion.BW1,
             "battalion_wars_2" => GameVersion.BW2,

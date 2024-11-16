@@ -36,13 +36,13 @@ public readonly struct FinFile(string fullName) : ISystemFile {
 
 
   // File fields
-  public string Name => FinIoStatic.GetName(this.FullPath);
+  public ReadOnlySpan<char> Name => FinIoStatic.GetName(this.FullPath);
   public string FullPath { get; } = fullName;
   public string DisplayFullName => this.FullPath;
 
 
   // Ancestry methods
-  public string? GetParentFullPath()
+  public ReadOnlySpan<char> GetParentFullPath()
     => FinIoStatic.GetParentFullName(this.FullPath);
 
   public ISystemDirectory AssertGetParent() {
@@ -55,8 +55,8 @@ public readonly struct FinFile(string fullName) : ISystemFile {
 
   public bool TryGetParent(out ISystemDirectory parent) {
     var parentName = this.GetParentFullPath();
-    if (parentName != null) {
-      parent = new FinDirectory(parentName);
+    if (!parentName.IsEmpty) {
+      parent = new FinDirectory(parentName.ToString());
       return true;
     }
 
@@ -91,9 +91,9 @@ public readonly struct FinFile(string fullName) : ISystemFile {
   public string FileType => FinFileStatic.GetExtension(this.FullPath);
 
   public string FullNameWithoutExtension
-    => FinFileStatic.GetNameWithoutExtension(this.FullPath);
+    => FinFileStatic.GetNameWithoutExtension(this.FullPath).ToString();
 
-  public string NameWithoutExtension
+  public ReadOnlySpan<char> NameWithoutExtension
     => FinFileStatic.GetNameWithoutExtension(this.Name);
 
   public ISystemFile CloneWithFileType(string newExtension) {
