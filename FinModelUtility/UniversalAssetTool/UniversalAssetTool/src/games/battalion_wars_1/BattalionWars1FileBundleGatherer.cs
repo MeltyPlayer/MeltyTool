@@ -182,7 +182,7 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
             }.Annotate(outFile));
           }
 
-          if (directory.Name == "CompoundFiles") {
+          if (directory.Name is "CompoundFiles") {
             var levelXmlFiles = directory
                                 .FilesWithExtension(".xml")
                                 .Where(file =>
