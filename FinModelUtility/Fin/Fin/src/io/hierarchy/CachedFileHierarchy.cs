@@ -349,8 +349,8 @@ public static partial class FileHierarchy {
         var match =
             parentDir.GetExistingFiles()
                      .FirstOrDefault(
-                         file => file.NameWithoutExtension ==
-                                 subdirs.Last() &&
+                         file => file.NameWithoutExtension.SequenceEqual(
+                                     subdirs.Last()) &&
                                  fileTypes.Contains(file.FileType));
         outFile = match;
         return match != null;

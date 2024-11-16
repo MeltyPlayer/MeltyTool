@@ -71,8 +71,10 @@ public static class ExporterUtil {
              .All(extension => outputDirectory
                                .GetExistingFiles()
                                .Where(file => extension == file.FileType)
-                               .Any(file => file.NameWithoutExtension ==
-                                            mainFile.NameWithoutExtension));
+                               .Any(file => file.NameWithoutExtension
+                                                .SequenceEqual(
+                                                    mainFile
+                                                        .NameWithoutExtension)));
     }
 
     return false;
@@ -152,9 +154,9 @@ public static class ExporterUtil {
 
     foreach (var modelFileBundle in bundlesArray) {
       Export(modelFileBundle,
-                          reader,
-                          formats,
-                          overwriteExistingFiles);
+             reader,
+             formats,
+             overwriteExistingFiles);
     }
   }
 
@@ -180,9 +182,9 @@ public static class ExporterUtil {
       progress.Report((i * 1f / fileBundleArray.Length,
                        modelFileBundle.TypedFileBundle));
       Export(modelFileBundle,
-                          reader,
-                          formats,
-                          overwriteExistingFiles);
+             reader,
+             formats,
+             overwriteExistingFiles);
     }
 
     progress.Report((1, default));
@@ -194,10 +196,10 @@ public static class ExporterUtil {
                                bool overwriteExistingFile)
       where T : IModelFileBundle {
     Export(modelFileBundle,
-                        () => reader.Import(
-                            modelFileBundle.TypedFileBundle),
-                        formats,
-                        overwriteExistingFile);
+           () => reader.Import(
+               modelFileBundle.TypedFileBundle),
+           formats,
+           overwriteExistingFile);
   }
 
   public static void Export<T>(IAnnotatedFileBundle<T> threeDFileBundle,

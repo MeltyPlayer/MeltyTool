@@ -44,8 +44,8 @@ public class Pikmin1FileBundleGatherer : IAnnotatedFileBundleGatherer {
       var anmFiles = directory.FilesWithExtension(".anm").ToArray();
       foreach (var modFile in directory.FilesWithExtension(".mod")) {
         var anmFile = anmFiles.FirstOrDefault(
-            anmFile => anmFile.NameWithoutExtension ==
-                       modFile.NameWithoutExtension);
+            anmFile => anmFile.NameWithoutExtension.SequenceEqual(
+                modFile.NameWithoutExtension));
         organizer.Add(new ModModelFileBundle {
             GameName = "pikmin_1",
             ModFile = modFile,
