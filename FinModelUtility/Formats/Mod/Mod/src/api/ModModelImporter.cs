@@ -104,8 +104,13 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           LodBias: textureAttr.WidthPercent);
     }
 
-    var materialAnimation = model.AnimationManager.AddAnimation();
-    materialAnimation.FrameRate = 30;
+    var hasMaterialAnimation = mod.materials.materials.Any(
+        m => m.texInfo.TexturesInMaterial.Any(t => t.AnimationLength > 0));
+    IModelAnimation? materialAnimation = null;
+    if (hasMaterialAnimation) {
+      materialAnimation = model.AnimationManager.AddAnimation();
+      materialAnimation.FrameRate = 30;
+    }
 
     var lazyTextureDictionary = new GxLazyTextureDictionary<Material, string>(
         model,
@@ -116,7 +121,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
               = modMaterial.texInfo.TexturesInMaterial[
                   (int) gxTextureBundle.TexMap];
           var animationLength = modTextureData.AnimationLength;
-          if (animationLength == 0) {
+          if (animationLength == 0 || materialAnimation == null) {
             return;
           }
 

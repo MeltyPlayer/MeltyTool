@@ -84,7 +84,7 @@ public static class AvaloniaIconUtil {
     var pixelSize = new PixelSize((int) (firstImage.Width * 1.5f),
                                   firstImage.Height);
     var dpi = new Vector(96, 96);
-    var stride = pixelSize.Width;
+    var stride = 4 * pixelSize.Width;
     var data = new Rgba32[pixelSize.Width * pixelSize.Height];
 
     var baseDstY = 0;
@@ -92,7 +92,7 @@ public static class AvaloniaIconUtil {
       var baseDstX = i == 0 ? 0 : firstImage.Width;
 
       var mipmapImage = mipmapImages[i];
-      BlitFinImageIntoArray_(mipmapImage, data, baseDstX, baseDstY, stride);
+      BlitFinImageIntoArray_(mipmapImage, data, baseDstX, baseDstY, pixelSize.Width);
 
       if (i >= 1) {
         baseDstY += mipmapImage.Height;
