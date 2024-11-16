@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace fin.data.queues;
@@ -8,7 +9,7 @@ public interface ITuple3Queue<T1, T2, T3> : IEnumerable<(T1, T2, T3)> {
 
   void Clear();
 
-  void Enqueue((T1, T2, T3) first, params (T1, T2, T3)[] rest);
+  void Enqueue((T1, T2, T3) first, params ReadOnlySpan<(T1, T2, T3)> rest);
   void Enqueue(IEnumerable<(T1, T2, T3)> values);
 
   (T1, T2, T3) Dequeue();
@@ -23,7 +24,8 @@ public class FinTuple3Queue<T1, T2, T3> : ITuple3Queue<T1, T2, T3> {
 
   public FinTuple3Queue() { }
 
-  public FinTuple3Queue((T1, T2, T3) first, params (T1, T2, T3)[] rest)
+  public FinTuple3Queue((T1, T2, T3) first,
+                        params ReadOnlySpan<(T1, T2, T3)> rest)
     => this.Enqueue(first, rest);
 
   public FinTuple3Queue(IEnumerable<(T1, T2, T3)> values)
@@ -33,7 +35,8 @@ public class FinTuple3Queue<T1, T2, T3> : ITuple3Queue<T1, T2, T3> {
 
   public void Clear() => this.impl_.Clear();
 
-  public void Enqueue((T1, T2, T3) first, params (T1, T2, T3)[] rest) {
+  public void Enqueue((T1, T2, T3) first,
+                      params ReadOnlySpan<(T1, T2, T3)> rest) {
     this.impl_.Enqueue(first);
     foreach (var value in rest) {
       this.Enqueue(value);
@@ -75,5 +78,7 @@ public class FinTuple3Queue<T1, T2, T3> : ITuple3Queue<T1, T2, T3> {
   }
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
-  public IEnumerator<(T1, T2, T3)> GetEnumerator() => this.impl_.GetEnumerator();
+
+  public IEnumerator<(T1, T2, T3)> GetEnumerator()
+    => this.impl_.GetEnumerator();
 }

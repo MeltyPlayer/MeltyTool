@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace fin.data.queues;
@@ -8,7 +9,7 @@ public class FinQueue<T> : IFinQueue<T> {
 
   public FinQueue() { }
 
-  public FinQueue(T first, params T[] rest)
+  public FinQueue(T first, params ReadOnlySpan<T> rest)
     => this.Enqueue(first, rest);
 
   public FinQueue(IEnumerable<T> values)
@@ -18,7 +19,7 @@ public class FinQueue<T> : IFinQueue<T> {
 
   public void Clear() => this.impl_.Clear();
 
-  public void Enqueue(T first, params T[] rest) {
+  public void Enqueue(T first, params ReadOnlySpan<T> rest) {
     this.impl_.Enqueue(first);
     foreach (var value in rest) {
       this.Enqueue(value);

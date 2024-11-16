@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace fin.data.queues;
@@ -9,7 +10,7 @@ public class DistinctQueue<T> : IFinQueue<T> {
 
   public DistinctQueue() { }
 
-  public DistinctQueue(T first, params T[] rest)
+  public DistinctQueue(T first, params ReadOnlySpan<T> rest)
     => this.Enqueue(first, rest);
 
   public DistinctQueue(IEnumerable<T> values)
@@ -22,7 +23,7 @@ public class DistinctQueue<T> : IFinQueue<T> {
     this.impl_.Clear();
   }
 
-  public void Enqueue(T first, params T[] rest) {
+  public void Enqueue(T first, params ReadOnlySpan<T> rest) {
     this.EnqueueImpl_(first);
     foreach (var value in rest) {
       this.EnqueueImpl_(value);

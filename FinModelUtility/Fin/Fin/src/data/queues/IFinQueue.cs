@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using schema.readOnly;
 
@@ -9,7 +10,7 @@ namespace fin.data.queues;
 /// </summary>
 [GenerateReadOnly]
 public partial interface IFinQueue<T> : IFinCollection<T> {
-  void Enqueue(T first, params T[] rest);
+  void Enqueue(T first, params ReadOnlySpan<T> rest);
   void Enqueue(IEnumerable<T> values);
 
   T Dequeue();
