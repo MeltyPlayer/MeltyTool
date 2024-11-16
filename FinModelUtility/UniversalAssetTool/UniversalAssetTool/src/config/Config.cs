@@ -69,7 +69,10 @@ public partial class ViewerSettings {
 
 [GenerateInterface]
 public partial class ExtractorSettings {
-  public bool CacheFileHierarchies { get; set; }
+  public bool CacheFileHierarchies {
+    get => FinConfig.CacheFileHierarchies;
+    set => FinConfig.CacheFileHierarchies = value;
+  }
   public bool ExtractRomsInParallel { get; set; }
 }
 
