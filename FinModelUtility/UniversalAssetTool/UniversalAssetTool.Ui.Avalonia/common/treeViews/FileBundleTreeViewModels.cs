@@ -39,9 +39,8 @@ public class FileBundleTreeViewModel
     this.FilteredNodes = this.filteredNodes_.ToNotifyCollectionChanged();
   }
 
-  public INotifyCollectionChangedSynchronizedViewList<INode> FilteredNodes {
-    get;
-  }
+  public INotifyCollectionChangedSynchronizedViewList<IFileBundleNode>
+      FilteredNodes { get; }
 
   public event EventHandler<IFileBundleNode>? NodeSelected;
 

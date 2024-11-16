@@ -25,23 +25,25 @@
     </TabItem>
     <TabItem Header="Vertex">
       <avaloniaEdit:TextEditor
-        Name="vertexShaderViewer_"
-        Document="{Binding VertexShaderSource}"
-        ShowLineNumbers="True"
-        FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-        IsReadOnly="True"
-        BorderThickness="1"
-        BorderBrush="{StaticResource BorderBrush}" />
+          Name="vertexShaderViewer_"
+          Document="{Binding VertexShaderSource}"
+          ShowLineNumbers="True"
+          FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+          IsReadOnly="True"
+          BorderThickness="1"
+          BorderBrush="{StaticResource BorderBrush}"
+          WordWrap="True" />
     </TabItem>
     <TabItem Header="Fragment">
       <avaloniaEdit:TextEditor
-        Name="fragmentShaderViewer_"
-        Document="{Binding FragmentShaderSource}"
-        ShowLineNumbers="True"
-        FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-        IsReadOnly="True"
-        BorderThickness="1"
-        BorderBrush="{StaticResource BorderBrush}" />
+          Name="fragmentShaderViewer_"
+          Document="{Binding FragmentShaderSource}"
+          ShowLineNumbers="True"
+          FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+          IsReadOnly="True"
+          BorderThickness="1"
+          BorderBrush="{StaticResource BorderBrush}"
+          WordWrap="True" />
     </TabItem>
   </TabControl>
 </UserControl>
