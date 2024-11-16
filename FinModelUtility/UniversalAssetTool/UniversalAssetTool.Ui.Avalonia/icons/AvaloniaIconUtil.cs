@@ -37,7 +37,7 @@ public static class AvaloniaIconUtil {
 
     var pixelSize = new PixelSize(image.Width, image.Height);
     var dpi = new Vector(96, 96);
-    var stride = image.Width;
+    var stride = 4 * image.Width;
 
     switch (image) {
       case Rgba32Image rgba32Image: {
