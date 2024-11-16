@@ -74,8 +74,12 @@ public class ModelSeparator(DirectoryToId directoryToId)
              .ToArray();
     }
 
-    return this.impl_[directoryToId(directory).ToString()]
-               .Separate(modelFiles, animationFiles);
+    if (this.impl_.TryGetValue(directoryToId(directory).ToString(),
+                               out var separator)) {
+      return separator.Separate(modelFiles, animationFiles);
+    }
+
+    return [];
   }
 }
 
