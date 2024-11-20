@@ -2,6 +2,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
+using fin.math.xyz;
 using fin.model;
 
 using Quaternion = System.Numerics.Quaternion;
@@ -11,9 +12,9 @@ namespace fin.math.rotations;
 public static class QuaternionUtil {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Quaternion Create(IRotation rotation)
-    => CreateZyx(rotation.XRadians,
-                                rotation.YRadians,
-                                rotation.ZRadians);
+    => CreateZyxRadians(rotation.XRadians,
+                        rotation.YRadians,
+                        rotation.ZRadians);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Quaternion CreateXyz(
@@ -26,7 +27,7 @@ public static class QuaternionUtil {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static Quaternion CreateZyx(
+  public static Quaternion CreateZyxRadians(
       float xRadians,
       float yRadians,
       float zRadians) {
@@ -46,7 +47,11 @@ public static class QuaternionUtil {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static Quaternion CreateZyxRadians(in this Vector3 xyzRadians)
-    => CreateZyx(xyzRadians.X, xyzRadians.Y, xyzRadians.Z);
+    => CreateZyxRadians(xyzRadians.X, xyzRadians.Y, xyzRadians.Z);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static Quaternion CreateZyxRadians(this IXyz xyzRadians)
+    => CreateZyxRadians(xyzRadians.X, xyzRadians.Y, xyzRadians.Z);
 
   // TODO: Slow! Figure out how to populate animations with raw quaternions instead
   public static Vector3 ToEulerRadians(in this Quaternion q) {

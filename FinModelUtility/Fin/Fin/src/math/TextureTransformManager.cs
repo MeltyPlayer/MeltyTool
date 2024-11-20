@@ -175,7 +175,7 @@ public class TextureTransformManager : ITextureTransformManager {
 
     Quaternion? rotation = null;
     if (textureRotationRadians != null) {
-      rotation = QuaternionUtil.CreateZyx(textureRotationRadians.Value.X,
+      rotation = QuaternionUtil.CreateZyxRadians(textureRotationRadians.Value.X,
                                           textureRotationRadians.Value.Y,
                                           textureRotationRadians.Value.Z);
     }

@@ -227,10 +227,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                   tObjTranslation.X,
                   tObjTranslation.Y,
                   tObjTranslation.Z);
-              var rawQuaternion = QuaternionUtil.CreateZyx(
-                  tObjRotationRadians.X,
-                  tObjRotationRadians.Y,
-                  tObjRotationRadians.Z);
+              var rawQuaternion = tObjRotationRadians.CreateZyxRadians();
               var rawScale =
                   new Vector3(tObjScale.X, tObjScale.Y, tObjScale.Z);
 

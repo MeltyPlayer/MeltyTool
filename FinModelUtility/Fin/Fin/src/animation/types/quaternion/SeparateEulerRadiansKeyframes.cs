@@ -253,7 +253,7 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
 
   public ISeparateEulerRadiansKeyframes<TKeyframe>.ConvertRadiansToQuaternion
       ConvertRadiansToQuaternionImpl { get; set; } =
-    QuaternionUtil.CreateZyx;
+    QuaternionUtil.CreateZyxRadians;
 
   private static float GetFromValueOrDefault_(
       KeyframesUtil.InterpolationDataType interpolationType,

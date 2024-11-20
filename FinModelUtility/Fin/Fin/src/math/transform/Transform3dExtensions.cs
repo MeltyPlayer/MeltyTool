@@ -50,7 +50,7 @@ public static class Transform3dExtensions {
                                         float x,
                                         float y,
                                         float z)
-    => transform.Rotation = QuaternionUtil.CreateZyx(x, y, z);
+    => transform.Rotation = QuaternionUtil.CreateZyxRadians(x, y, z);
 
   public static void SetRotationDegrees(this ITransform3d transform,
                                         Vector3 xyz)

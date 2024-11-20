@@ -23,7 +23,7 @@ public class QuaternionUtilTests {
                             float expectedQY,
                             float expectedQZ,
                             float expectedQW) {
-    var actualQuaternion = QuaternionUtil.CreateZyx(xRadians, yRadians, zRadians);
+    var actualQuaternion = QuaternionUtil.CreateZyxRadians(xRadians, yRadians, zRadians);
 
     if (!actualQuaternion.X.IsRoughly(expectedQX) ||
         !actualQuaternion.Y.IsRoughly(expectedQY) ||
@@ -41,7 +41,7 @@ public class QuaternionUtilTests {
     var y = 2 * 20 * degToRad;
     var z = 3 * 20 * degToRad;
 
-    var q = QuaternionUtil.CreateZyx(x, y, z);
+    var q = QuaternionUtil.CreateZyxRadians(x, y, z);
 
     var v = QuaternionUtil.ToEulerRadians(q);
 

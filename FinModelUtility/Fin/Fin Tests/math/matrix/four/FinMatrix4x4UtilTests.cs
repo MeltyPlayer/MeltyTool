@@ -26,7 +26,7 @@ public class FinMatrix4x4UtilTests {
 
   [Test]
   public void TestRotation() {
-      var expectedRotation = QuaternionUtil.CreateZyx(1.2f, 2.3f, 3.4f);
+      var expectedRotation = QuaternionUtil.CreateZyxRadians(1.2f, 2.3f, 3.4f);
 
       var matrix = FinMatrix4x4Util.FromRotation(
           expectedRotation);
@@ -55,7 +55,7 @@ public class FinMatrix4x4UtilTests {
   [Test]
   public void TestTrs() {
       var expectedTranslation = new Vector3(2, 3, 4);
-      var expectedRotation = QuaternionUtil.CreateZyx(1.2f, 2.3f, 3.4f);
+      var expectedRotation = QuaternionUtil.CreateZyxRadians(1.2f, 2.3f, 3.4f);
       var expectedScale = new Vector3(3, 4, 5);
 
       var trs = FinMatrix4x4Util.FromTrs(
