@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 using fin.color;
 using fin.math;
@@ -150,18 +151,12 @@ namespace mod.util {
             = material.texInfo.TexturesInMaterial.Select(
                           t => new TextureMatrixInfoImpl(
                               GxTexGenType.Matrix2x4,
-                              new Vector3f {
+                              new Vector3 {
                                   X = t.Center.X,
                                   Y = t.Center.Y
                               },
-                              new Vector2f {
-                                  X = t.Scale.X,
-                                  Y = t.Scale.Y
-                              },
-                              new Vector2f {
-                                  X = t.Translation.X,
-                                  Y = t.Translation.Y
-                              },
+                              t.Scale,
+                              t.Translation,
                               (short) (t.Rotation / MathF.PI * 32768f)
                           ))
                       .ToArray();

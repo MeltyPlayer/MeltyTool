@@ -1,4 +1,6 @@
-﻿using fin.schema.matrix;
+﻿using System.Numerics;
+
+using fin.schema.matrix;
 using fin.schema.vector;
 using fin.util.hash;
 
@@ -10,26 +12,27 @@ using schema.binary;
 namespace jsystem.schema.j3dgraph.bmd.mat3;
 
 [BinarySchema]
-public partial class TextureMatrixInfo : ITextureMatrixInfo,
-                                         IBinaryConvertible {
+public partial class TextureMatrixInfo
+    : ITextureMatrixInfo,
+      IBinaryConvertible {
   public GxTexGenType TexGenType { get; set; }
   public byte info;
   private readonly ushort padding1_ = ushort.MaxValue;
-  public Vector3f Center { get; } = new();
-  public Vector2f Scale { get; } = new();
+  public Vector3 Center { get; private set; }
+  public Vector2 Scale { get; private set; }
   public short Rotation { get; set; }
   public readonly ushort padding2_ = ushort.MaxValue;
-  public Vector2f Translation { get; } = new();
-  public Matrix4x4f Matrix { get; } = new();
+  public Vector2 Translation { get; private set; }
+  public Matrix4x4 Matrix { get; private set; }
 
 
   public override string ToString()
     => $"TextureMatrixInfo<{this.TexGenType}, {this.Center}, {this.Scale}, {this.Translation}, {this.Rotation}, {this.Matrix}>";
 
-  public static bool operator ==(TextureMatrixInfo lhs, TextureMatrixInfo rhs)
+  public static bool operator==(TextureMatrixInfo lhs, TextureMatrixInfo rhs)
     => lhs.Equals(rhs);
 
-  public static bool operator !=(TextureMatrixInfo lhs, TextureMatrixInfo rhs)
+  public static bool operator!=(TextureMatrixInfo lhs, TextureMatrixInfo rhs)
     => !lhs.Equals(rhs);
 
   public override bool Equals(object? obj) {

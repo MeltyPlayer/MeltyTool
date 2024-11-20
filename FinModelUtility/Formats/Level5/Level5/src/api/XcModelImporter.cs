@@ -70,9 +70,7 @@ public class XcModelImporter : IModelImporter<XcModelFileBundle> {
         while (mbnQueue.TryDequeue(out var mbnNode, out var parentBone)) {
           var mbn = mbnNode.Value;
 
-          var position = mbn.Position;
-
-          var bone = parentBone.AddChild(position.X, position.Y, position.Z);
+          var bone = parentBone.AddChild(mbn.Position);
           bone.Name = modelResourceFile.GetResourceName(mbn.Id);
 
           var mat3 = mbn.RotationMatrix3;

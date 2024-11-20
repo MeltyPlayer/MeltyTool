@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 using fin.math;
 using fin.schema;
@@ -296,10 +297,10 @@ public partial class TextureData
   public int AnimationLength = 0;
   public float AnimationSpeed = 0;
 
-  public readonly Vector2f Scale = new();
+  public Vector2 Scale { get; private set; }
   public float Rotation = 0;
-  public readonly Vector2f Translation = new();
-  public readonly Vector2f Center = new();
+  public Vector2 Translation { get; private set; }
+  public Vector2 Center { get; private set; }
 
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public TextureAnimationData[] ScaleAnimationData;

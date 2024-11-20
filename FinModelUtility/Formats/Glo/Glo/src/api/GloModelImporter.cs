@@ -417,10 +417,7 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
         foreach (var gloSprite in idealMesh.Sprites) {
           var gloSpritePosition = gloSprite.SpritePosition;
 
-          var finSpriteBone = finBone.AddChild(
-              gloSpritePosition.X,
-              gloSpritePosition.Y,
-              gloSpritePosition.Z);
+          var finSpriteBone = finBone.AddChild(gloSpritePosition);
           finSpriteBone.AlwaysFaceTowardsCamera(Quaternion.Identity);
           var finSpriteBoneWeights =
               finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,

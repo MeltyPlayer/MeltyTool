@@ -1,4 +1,6 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema.vector;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -40,13 +42,13 @@ public partial class Jnt1Entry : IBinaryConvertible {
 
 
   private readonly byte padding1_ = byte.MaxValue;
-  public Vector3f Scale { get; } = new();
+  public Vector3 Scale { get; private set; }
   public Vector3s Rotation { get; } = new();
 
   private readonly ushort padding2_ = ushort.MaxValue;
-  public Vector3f Translation { get; } = new();
+  public Vector3 Translation { get; private set; }
 
   public float BoundingSphereDiameter { get; set; }
-  public Vector3f BoundingBoxMin { get; } = new();
-  public Vector3f BoundingBoxMax { get; } = new();
+  public Vector3 BoundingBoxMin { get; private set; }
+  public Vector3 BoundingBoxMax { get; private set; }
 }

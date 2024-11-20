@@ -1,4 +1,4 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
 
 using schema.binary;
 
@@ -6,6 +6,6 @@ namespace modl.schema.modl.common;
 
 [BinarySchema]
 public partial class BwTransform : IBinaryConvertible {
-  public Vector3f Position { get; } = new();
-  public Vector4f Rotation { get; } = new();
+  public Vector3 Position { get; private set; }
+  public Vector4 Rotation { get; private set; }
 }

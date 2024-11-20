@@ -70,6 +70,10 @@ public static class Transform3dExtensions {
 
 
   public static void SetScale(this ITransform3d transform,
+                                        Vector3 xyz)
+    => transform.SetScale(xyz.X, xyz.Y, xyz.Z);
+
+  public static void SetScale(this ITransform3d transform,
                               IReadOnlyXyz xyz)
     => transform.SetScale(xyz.X, xyz.Y, xyz.Z);
 

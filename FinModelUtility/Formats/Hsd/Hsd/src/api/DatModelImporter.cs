@@ -223,17 +223,11 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               var tObjRotationRadians = tObj.RotationRadians;
               var tObjScale = tObj.Scale;
 
-              var rawTranslation = new Vector3(
-                  tObjTranslation.X,
-                  tObjTranslation.Y,
-                  tObjTranslation.Z);
-              var rawQuaternion = tObjRotationRadians.CreateZyxRadians();
-              var rawScale =
-                  new Vector3(tObjScale.X, tObjScale.Y, tObjScale.Z);
-
               // This is an absolute nightmare, but it works.
               var uvMatrix = FinMatrix4x4Util
-                             .FromTrs(rawTranslation, rawQuaternion, rawScale)
+                             .FromTrs(tObjTranslation,
+                                      tObjRotationRadians.CreateZyxRadians(),
+                                      tObjScale)
                              .InvertInPlace();
 
               return uv => uvMatrix.TransformPosition(uv) *

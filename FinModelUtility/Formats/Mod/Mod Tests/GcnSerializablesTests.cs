@@ -1,3 +1,5 @@
+using System.Numerics;
+
 using fin.schema.vector;
 
 using mod.schema.mod;
@@ -8,6 +10,7 @@ using NUnit.Framework;
 using schema.binary;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+using Plane = mod.schema.mod.collision.Plane;
 
 namespace mod.schema {
   public class GcnSerializablesTests {
@@ -31,8 +34,8 @@ namespace mod.schema {
     public void TestCollGrid() {
       var collGrid = new CollGrid();
 
-      collGrid.boundsMin.Set(1, 2, 3);
-      collGrid.boundsMax.Set(4, 5, 6);
+      collGrid.boundsMin = new Vector3(1, 2, 3);
+      collGrid.boundsMax = new Vector3(4, 5, 6);
       collGrid.unknown1 = 7;
       collGrid.gridX = 2;
       collGrid.gridY = 3;

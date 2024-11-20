@@ -1,4 +1,6 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema.vector;
 
 using schema.binary;
 
@@ -48,14 +50,14 @@ public class Mtlb : IBinaryDeserializable {
             var unk1 = br.ReadUInt32();
 
             var valueOffset = valuesOffset + br.ReadUInt32();
-            Vector4f? colorValues = null;
+            Vector4? colorValues = null;
             Vector2i? idValues = null;
             if (type.IsSampler()) {
               idValues
                   = br.SubreadAt(valueOffset, sbr => sbr.ReadNew<Vector2i>());
             } else {
               colorValues
-                  = br.SubreadAt(valueOffset, sbr => sbr.ReadNew<Vector4f>());
+                  = br.SubreadAt(valueOffset, sbr => sbr.ReadVector4());
             }
 
             var path = br.SubreadAt(stringsOffset + br.ReadUInt32(),
@@ -144,7 +146,7 @@ internal static class MtlbChannelTypeExtensions {
 public class MtlbChannel {
   public MtlbChannelCategory MtlbChannelCategory { get; set; }
   public MtlbChannelType Type { get; set; }
-  public Vector4f? ColorValues { get; set; }
+  public Vector4? ColorValues { get; set; }
   public Vector2i? IdValues { get; set; }
   public string Path { get; set; }
 }

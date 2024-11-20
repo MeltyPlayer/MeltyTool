@@ -1,4 +1,6 @@
-﻿using fin.image;
+﻿using System.Numerics;
+
+using fin.image;
 using fin.image.formats;
 using fin.schema.vector;
 using fin.util.color;
@@ -143,9 +145,9 @@ public class TObj : IBinaryDeserializable {
 
   public GxTexGenSrc TexGenSrc { get; private set; }
 
-  public Vector3f RotationRadians { get; private set; }
-  public Vector3f Scale { get; private set; }
-  public Vector3f Translation { get; private set; }
+  public Vector3 RotationRadians { get; private set; }
+  public Vector3 Scale { get; private set; }
+  public Vector3 Translation { get; private set; }
 
   public GxWrapMode WrapS { get; private set; }
   public GxWrapMode WrapT { get; private set; }
@@ -176,9 +178,9 @@ public class TObj : IBinaryDeserializable {
 
     this.TexGenSrc = (GxTexGenSrc) br.ReadUInt32();
 
-    this.RotationRadians = br.ReadNew<Vector3f>();
-    this.Scale = br.ReadNew<Vector3f>();
-    this.Translation = br.ReadNew<Vector3f>();
+    this.RotationRadians = br.ReadVector3();
+    this.Scale = br.ReadVector3();
+    this.Translation = br.ReadVector3();
 
     this.WrapS = (GxWrapMode) br.ReadUInt32();
     this.WrapT = (GxWrapMode) br.ReadUInt32();

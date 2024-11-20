@@ -1,5 +1,6 @@
-﻿using fin.schema;
-using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema;
 
 using schema.binary;
 
@@ -14,8 +15,8 @@ public partial class BoundingBox : IBinaryConvertible {
   [Unknown]
   public uint unk1 { get; private set; }
 
-  public Vector3f min { get; } = new();
-  public Vector3f max { get; } = new();
+  public Vector3 min { get; private set; }
+  public Vector3 max { get; private set; }
 
   [Unknown]
   public int unk2 { get; private set; }

@@ -1,18 +1,20 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema.vector;
 
 namespace gx;
 
 public interface ITextureMatrixInfo {
   GxTexGenType TexGenType { get; }
-  Vector3f Center { get; }
-  Vector2f Scale { get; }
-  Vector2f Translation { get; }
+  Vector3 Center { get; }
+  Vector2 Scale { get; }
+  Vector2 Translation { get; }
   short Rotation { get; }
 }
 
 public record TextureMatrixInfoImpl(
     GxTexGenType TexGenType,
-    Vector3f Center,
-    Vector2f Scale,
-    Vector2f Translation,
+    Vector3 Center,
+    Vector2 Scale,
+    Vector2 Translation,
     short Rotation) : ITextureMatrixInfo;

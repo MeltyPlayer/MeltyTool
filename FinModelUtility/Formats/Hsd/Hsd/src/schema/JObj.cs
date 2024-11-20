@@ -1,4 +1,6 @@
-﻿using fin.schema;
+﻿using System.Numerics;
+
+using fin.schema;
 using fin.schema.vector;
 using fin.util.enums;
 
@@ -63,9 +65,9 @@ public partial class JObj : IDatTreeNode<JObj>, IBinaryDeserializable {
   public uint FirstChildBoneOffset { get; set; }
   public uint NextSiblingBoneOffset { get; set; }
   public uint RenderObjOffset { get; set; }
-  public Vector3f RotationRadians { get; } = new();
-  public Vector3f Scale { get; } = new();
-  public Vector3f Position { get; } = new();
+  public Vector3 RotationRadians { get; private set; }
+  public Vector3 Scale { get; private set; }
+  public Vector3 Position { get; private set; }
   public uint InverseBindMatrixOffset { get; set; }
   public uint FirstRObjOffset { get; set; }
 

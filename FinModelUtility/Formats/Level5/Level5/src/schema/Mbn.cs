@@ -1,5 +1,6 @@
-﻿using fin.schema;
-using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema;
 
 using schema.binary;
 
@@ -14,11 +15,11 @@ public partial class Mbn : IBinaryDeserializable {
   [Unknown]
   public int Unknown0 { get; private set; }
 
-  public Vector3f Position { get; } = new();
+  public Vector3 Position { get; private set; }
 
   public float[] RotationMatrix3 { get; } = new float[9];
 
-  public Vector3f Scale { get; } = new();
+  public Vector3 Scale { get; private set; }
 
   public override string ToString() => $"{this.Id}";
 }

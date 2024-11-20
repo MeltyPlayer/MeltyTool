@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 using fin.schema;
 using fin.schema.vector;
@@ -75,9 +76,9 @@ namespace mod.schema.mod.collision {
   [BinarySchema]
   public partial class CollGrid : IBinaryConvertible {
     [Align(0x20)]
-    public readonly Vector3f boundsMin = new();
+    public Vector3 boundsMin { get; set; }
 
-    public readonly Vector3f boundsMax = new();
+    public Vector3 boundsMax { get; set; }
 
     [Unknown]
     public float unknown1 = 0;
