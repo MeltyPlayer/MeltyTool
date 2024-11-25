@@ -68,9 +68,12 @@ public static class Transform3dExtensions {
                                     y * FinTrig.DEG_2_RAD,
                                     z * FinTrig.DEG_2_RAD);
 
+  public static void SetRotation(this ITransform3d transform,
+                                 Quaternion quaternion)
+    => transform.SetRotationRadians(quaternion.ToEulerRadians());
 
   public static void SetScale(this ITransform3d transform,
-                                        Vector3 xyz)
+                              Vector3 xyz)
     => transform.SetScale(xyz.X, xyz.Y, xyz.Z);
 
   public static void SetScale(this ITransform3d transform,

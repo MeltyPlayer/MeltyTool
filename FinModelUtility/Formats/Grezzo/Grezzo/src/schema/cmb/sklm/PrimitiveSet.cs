@@ -20,5 +20,5 @@ public partial class PrimitiveSet : IBinaryConvertible {
   [RSequenceLengthSource(nameof(boneTableCount))]
   public short[] boneTable;
 
-  [Align(4)] public readonly Primitive primitive = new();
+  [AlignStart(4)] public readonly Primitive primitive = new();
 }

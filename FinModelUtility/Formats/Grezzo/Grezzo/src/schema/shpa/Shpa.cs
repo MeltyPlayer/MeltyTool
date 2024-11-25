@@ -12,6 +12,7 @@ namespace grezzo.schema.shpa;
 
 [BinarySchema]
 [Endianness(Endianness.LittleEndian)]
+[AlignEnd(0x10)]
 public partial class Shpa : IBinaryConvertible {
   private readonly string magic_ = "shpa";
   private readonly uint headerLength_ = 48;
@@ -54,8 +55,4 @@ public partial class Shpa : IBinaryConvertible {
   [RAtPosition(nameof(idxsOffset_))]
   public AutoStringMagicJankSizedSection<Idxs> IdxsSection { get; } =
     new("idxs") {TweakReadSize = -8};
-
-  [Align(0x10)]
-  [SequenceLengthSource((uint) 0)]
-  private byte[] endAlignment_;
 }

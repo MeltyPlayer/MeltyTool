@@ -80,7 +80,7 @@ public partial class Sepd : IBinaryConvertible {
   [RSequenceLengthSource(nameof(primSetCount_))]
   private short[] primitiveSetOffsets_;
 
-  [Align(4)]
+  [AlignStart(4)]
   [RSequenceLengthSource(nameof(primSetCount_))]
   public PrimitiveSet[] primitiveSets { get; set; }
 }

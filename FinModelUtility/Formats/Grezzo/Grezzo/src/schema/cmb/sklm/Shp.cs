@@ -20,7 +20,7 @@ public partial class Shp : IBinaryConvertible {
   [RSequenceLengthSource(nameof(shapeCount_))]
   private ushort[] shapeOffsets_;
     
-  [Align(4)]
+  [AlignStart(4)]
   [RSequenceLengthSource(nameof(shapeCount_))]
   public Sepd[] shapes;
 }

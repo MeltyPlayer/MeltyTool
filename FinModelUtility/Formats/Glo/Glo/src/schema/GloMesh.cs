@@ -1,4 +1,6 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema.vector;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -20,7 +22,7 @@ public sealed partial class GloMesh : IBinaryConvertible {
   public GloQuaternionKey[] RotateKeys { get; set; }
 
   [SequenceLengthSource(SchemaIntegerType.UINT16)]
-  public Vector3f[] Vertices { get; set; }
+  public Vector3[] Vertices { get; set; }
 
   [SequenceLengthSource(SchemaIntegerType.UINT16)]
   public GloFace[] Faces { get; set; }

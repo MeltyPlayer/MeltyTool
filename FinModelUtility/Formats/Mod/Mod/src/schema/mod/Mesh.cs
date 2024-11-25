@@ -37,7 +37,7 @@ namespace mod.schema.mod {
     // THANKS: Yoshi2's mod2obj
     public uint cmdCount = 0;
 
-    [Align(0x20)]
+    [AlignStart(0x20)]
     [SequenceLengthSource(SchemaIntegerType.INT32)]
     public byte[] dlistData { get; set; }
   }

@@ -216,8 +216,7 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
           }
 
           var position = gloMesh.MoveKeys[0].Xyz;
-
-          var rotation = gloMesh.RotateKeys[0];
+          var rotation = gloMesh.RotateKeys[0].Quaternion;
           var scale = gloMesh.ScaleKeys[0].Scale;
 
           var finBone = parentFinBone.AddChild(position);
@@ -297,12 +296,7 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
               }
 
               Asserts.True(time >= 0 && time < finAnimation.FrameCount);
-
-              var quaternionKey = new Quaternion(rotateKey.X,
-                                                 rotateKey.Y,
-                                                 rotateKey.Z,
-                                                 rotateKey.W);
-              rotations.SetKeyframe(time, quaternionKey);
+              rotations.SetKeyframe(time, rotateKey.Quaternion);
 
               if (isLast) {
                 break;

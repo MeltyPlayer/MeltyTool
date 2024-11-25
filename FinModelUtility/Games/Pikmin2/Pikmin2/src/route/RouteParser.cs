@@ -1,4 +1,6 @@
-﻿using fin.data.nodes;
+﻿using System.Numerics;
+
+using fin.data.nodes;
 using fin.schema.vector;
 using fin.util.asserts;
 
@@ -51,8 +53,7 @@ public class RouteParser {
                      .ToArray();
         node.Value = new RouteGraphNodeData {
             Index = nodeIndex,
-            Position =
-                new Vector3f { X = floats[0], Y = floats[1], Z = floats[2], },
+            Position = new Vector3(floats.AsSpan(0, 3)),
             Radius = floats[3],
         };
 

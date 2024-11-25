@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Drawing;
 using System.IO.Compression;
+using System.Numerics;
 using System.Xml;
 
 using fin.color;
@@ -167,9 +168,7 @@ public class LevelXmlParser {
                                       out var sunXNormal,
                                       out var sunYNormal,
                                       out var sunZNormal);
-          sunLight.SetNormal(new Vector3f {
-              X = -sunXNormal, Y = -sunYNormal, Z = -sunZNormal,
-          });
+          sunLight.SetNormal(new Vector3(-sunXNormal, -sunYNormal, -sunZNormal));
         }
 
         {
@@ -188,9 +187,8 @@ public class LevelXmlParser {
                                       out var antiSunXNormal,
                                       out var antiSunYNormal,
                                       out var antiSunZNormal);
-          antiSunLight.SetNormal(new Vector3f {
-              X = -antiSunXNormal, Y = -antiSunYNormal, Z = -antiSunZNormal,
-          });
+          antiSunLight.SetNormal(
+              new Vector3(-antiSunXNormal, -antiSunYNormal, -antiSunZNormal));
         }
       }
     }

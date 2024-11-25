@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 
 using fin.color;
 using fin.math.xyz;
@@ -46,9 +47,11 @@ public partial interface ILight {
   LightSourceType SourceType { get; }
 
   IReadOnlyXyz? Position { get; }
+  ILight SetPosition(Vector3 position);
   ILight SetPosition(IReadOnlyXyz position);
 
   IReadOnlyXyz? Normal { get; }
+  ILight SetNormal(Vector3 normal);
   ILight SetNormal(IReadOnlyXyz normal);
 
   float Strength { get; set; }

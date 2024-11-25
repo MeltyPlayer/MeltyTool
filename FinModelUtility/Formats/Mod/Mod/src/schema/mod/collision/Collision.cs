@@ -43,14 +43,14 @@ namespace mod.schema.mod.collision {
     private uint roomInfoCount_;
 
     [RSequenceLengthSource(nameof(roomInfoCount_))]
-    [Align(0x20)]
+    [AlignStart(0x20)]
     public readonly List<BaseRoomInfo> roominfo = [];
 
     [RSequenceLengthSource(nameof(colInfoCount_))]
-    [Align(0x20)]
+    [AlignStart(0x20)]
     public readonly List<BaseCollTriInfo> collinfo = [];
 
-    [Align(0x20)]
+    [AlignStart(0x20)]
     private readonly byte[] empty_ = [];
   }
 
@@ -75,7 +75,7 @@ namespace mod.schema.mod.collision {
 
   [BinarySchema]
   public partial class CollGrid : IBinaryConvertible {
-    [Align(0x20)]
+    [AlignStart(0x20)]
     public Vector3 boundsMin { get; set; }
 
     public Vector3 boundsMax { get; set; }
@@ -96,7 +96,7 @@ namespace mod.schema.mod.collision {
     [RSequenceLengthSource(nameof(gridSize_))]
     public readonly List<int> unknown2 = [];
 
-    [Align(0x20)]
+    [AlignStart(0x20)]
     private readonly byte[] empty_ = [];
   }
 }

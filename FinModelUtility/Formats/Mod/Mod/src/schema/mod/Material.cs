@@ -6,7 +6,6 @@ using System.Numerics;
 using fin.math;
 using fin.schema;
 using fin.schema.color;
-using fin.schema.vector;
 using fin.util.enums;
 
 using gx;
@@ -432,7 +431,7 @@ public partial class TextureInfo : IBinaryConvertible, IEquatable<TextureInfo> {
   public int unknown1 = 0;
 
   [Unknown]
-  public readonly Vector3f unknown2 = new();
+  public Vector3 unknown2;
 
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]

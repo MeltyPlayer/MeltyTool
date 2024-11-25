@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 using fin.schema.color;
@@ -31,11 +32,11 @@ namespace mod.schema.mod {
 
   public class Mod : IBinaryConvertible {
     public readonly ModHeader header = new();
-    public readonly List<Vector3f> vertices = [];
-    public readonly List<Vector3f> vnormals = [];
+    public readonly List<Vector3> vertices = [];
+    public readonly List<Vector3> vnormals = [];
     public readonly List<Nbt> vertexnbt = [];
     public readonly List<Rgba32> vcolours = [];
-    public readonly List<Vector2f>[] texcoords = new List<Vector2f>[8];
+    public readonly List<Vector2>[] texcoords = new List<Vector2>[8];
     public readonly List<Texture> textures = [];
     public readonly List<TextureAttributes> texattrs = [];
     public readonly MaterialContainer materials = new();
@@ -49,7 +50,7 @@ namespace mod.schema.mod {
     public readonly List<byte> eofBytes = [];
     public bool hasNormals = false;
 
-    public Mod() {}
+    public Mod() { }
     public Mod(IBinaryReader reader) => this.Read(reader);
 
     public void Read(IBinaryReader br) {
@@ -95,11 +96,15 @@ namespace mod.schema.mod {
             br.Align(0x20);
             break;
           case ChunkId.VERTICES:
-            Mod.ReadGenericChunk_(br, this.vertices);
+            ReadChunk_(br,
+                       this.vertices,
+                       sbr => sbr.ReadVector3());
             break;
           case ChunkId.VERTEX_NORMALS:
             this.hasNormals = true;
-            Mod.ReadGenericChunk_(br, this.vnormals);
+            ReadChunk_(br,
+                       this.vnormals,
+                       sbr => sbr.ReadVector3());
             break;
           case ChunkId.VERTEX_NBTS:
             Mod.ReadGenericChunk_(br, this.vertexnbt);
@@ -108,13 +113,16 @@ namespace mod.schema.mod {
             Mod.ReadGenericChunk_(br, this.vcolours);
             break;
           case >= ChunkId.TEX_COORD_0 and <= ChunkId.TEX_COORD_7:
-            Mod.ReadGenericChunk_(br, this.texcoords[(uint) chunkId - 0x18]);
+            ReadChunk_(br,
+                       this.texcoords[(uint) chunkId - 0x18],
+                       sbr => sbr.ReadVector2());
             break;
           case ChunkId.TEXTURES:
             Mod.ReadGenericChunk_(br, this.textures);
             for (var i = 0; i < this.textures.Count; ++i) {
               this.textures[i].index = i;
             }
+
             break;
           case ChunkId.TEXTURE_ATTRIBUTES:
             Mod.ReadGenericChunk_(br, this.texattrs);
@@ -137,6 +145,7 @@ namespace mod.schema.mod {
               mat.Read(br);
               this.materials.materials.Add(mat);
             }
+
             br.Align(0x20);
 
             var readLength = br.Position - beforePosition;
@@ -167,6 +176,7 @@ namespace mod.schema.mod {
                 jointNameBuilder.Append(br.ReadChar());
               }
             }
+
             br.Align(0x20);
             break;
           case ChunkId.COLLISION_PRISM:
@@ -195,22 +205,26 @@ namespace mod.schema.mod {
                       afterPosition,
                       $"Read incorrect number of bytes for opcode: {opcodeName}");*/
       }
-
-      ;
     }
 
-    private static void ReadGenericChunk_<T>(
-        IBinaryReader br,
-        List<T> vector) where T : IBinaryDeserializable, new() {
+    private static void ReadChunk_<T>(IBinaryReader br,
+                                      List<T> vector,
+                                      Func<IBinaryReader, T> read) {
       var num = br.ReadUInt32();
       vector.Clear();
 
       br.Align(0x20);
       for (var i = 0; i < num; ++i) {
-        vector.Add(Mod.ReadGeneric_<T>(br));
+        vector.Add(read(br));
       }
+
       br.Align(0x20);
     }
+
+    private static void ReadGenericChunk_<T>(
+        IBinaryReader br,
+        List<T> vector) where T : IBinaryDeserializable, new()
+      => ReadChunk_(br, vector, Mod.ReadGeneric_<T>);
 
     private static T ReadGeneric_<T>(IBinaryReader br)
         where T : IBinaryDeserializable, new() {
