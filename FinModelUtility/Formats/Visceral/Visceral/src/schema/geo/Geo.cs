@@ -71,8 +71,8 @@ public class Geo : IBinaryDeserializable {
       br.Position += 8;
       var someId = br.ReadUInt32();
 
-      var matrix = br.SubreadAt(boneOffset + 16 * (someId - 1),
-                                () => br.ReadNew<Matrix4x4f>());
+      var matrix
+          = br.SubreadAt(boneOffset + 16 * (someId - 1), br.ReadMatrix4x4);
 
       bones.Add(new Bone { Name = boneName, Matrix = matrix, Id = someId, });
     }
@@ -190,7 +190,7 @@ public class Geo : IBinaryDeserializable {
 
   public class Bone {
     public required string Name { get; init; }
-    public required Matrix4x4f Matrix { get; init; }
+    public required Matrix4x4 Matrix { get; init; }
     public required uint Id { get; init; }
   }
 

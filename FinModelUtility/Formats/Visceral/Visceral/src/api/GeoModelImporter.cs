@@ -1,4 +1,6 @@
-﻿using fin.data.dictionaries;
+﻿using Assimp;
+
+using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
@@ -14,6 +16,8 @@ using fin.util.hash;
 using visceral.schema.geo;
 using visceral.schema.mtlb;
 using visceral.schema.rcb;
+
+using Matrix4x4 = System.Numerics.Matrix4x4;
 
 namespace visceral.api;
 
@@ -184,8 +188,7 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
         if (parentId != -1) {
           var rcbParentBone = rcbSkeleton.Bones[parentId];
           var parentMatrix = this.GetMatrixFromBone_(rcbParentBone.Matrix);
-          currentMatrix = parentMatrix.InvertInPlace()
-                                      .CloneAndMultiply(currentMatrix);
+          currentMatrix *= parentMatrix.AssertInvert();
         }
 
         var finBone = finParentBone.AddChild(currentMatrix);
@@ -272,6 +275,6 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
     }
   }
 
-  public IFinMatrix4x4 GetMatrixFromBone_(Matrix4x4f matrix)
-    => new FinMatrix4x4(matrix.Values.AsSpan()).InvertInPlace();
+  public Matrix4x4 GetMatrixFromBone_(Matrix4x4 matrix)
+    => matrix.AssertInvert();
 }

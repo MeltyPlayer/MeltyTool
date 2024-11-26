@@ -1,5 +1,6 @@
-﻿using fin.schema;
-using fin.schema.matrix;
+﻿using System.Numerics;
+
+using fin.schema;
 
 using schema.binary;
 
@@ -79,6 +80,6 @@ public partial class Rcb : IBinaryDeserializable {
 
   [BinarySchema]
   public partial class Bone : IBinaryConvertible {
-    public Matrix4x4f Matrix { get; } = new();
+    public Matrix4x4 Matrix { get; set; }
   }
 }

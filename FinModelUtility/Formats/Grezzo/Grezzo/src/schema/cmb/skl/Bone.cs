@@ -1,4 +1,6 @@
-﻿using fin.math;
+﻿using System.Numerics;
+
+using fin.math;
 using fin.schema;
 using fin.schema.vector;
 
@@ -27,9 +29,9 @@ public partial class Bone : IBinaryConvertible {
 
   public short parentId;
 
-  public Vector3f scale { get; } = new();
-  public Vector3f rotation { get; } = new();
-  public Vector3f translation { get; } = new();
+  public Vector3 scale { get; set; }
+  public Vector3 rotation { get; set; }
+  public Vector3 translation { get; set; }
 
   [Skip]
   private bool HasUnk => CmbHeader.Version > Version.OCARINA_OF_TIME_3D;

@@ -1,4 +1,6 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema.vector;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -14,12 +16,12 @@ namespace mod.schema.mod {
   public partial class Joint : IBinaryConvertible {
     public uint parentIdx = 0;
     public uint flags = 0;
-    public readonly Vector3f boundsMax = new();    
-    public readonly Vector3f boundsMin = new();
+    public Vector3 boundsMax { get; set; }
+    public Vector3 boundsMin { get; set; }
     public float volumeRadius = 0;
-    public readonly Vector3f scale = new();
-    public readonly Vector3f rotation = new();
-    public readonly Vector3f position = new();
+    public Vector3 scale { get; set; }
+    public Vector3 rotation { get; set; }
+    public Vector3 position { get; set; }
 
     [SequenceLengthSource(SchemaIntegerType.UINT32)]
     public JointMatPoly[] matpolys;

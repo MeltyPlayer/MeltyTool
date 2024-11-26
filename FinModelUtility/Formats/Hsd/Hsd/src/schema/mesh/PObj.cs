@@ -3,7 +3,6 @@
 using fin.color;
 using fin.model;
 using fin.util.asserts;
-using fin.util.color;
 using fin.util.enumerables;
 using fin.util.enums;
 

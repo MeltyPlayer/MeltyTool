@@ -1,4 +1,6 @@
-﻿using fin.schema;
+﻿using System.Numerics;
+
+using fin.schema;
 using fin.schema.data;
 using fin.schema.matrix;
 using fin.util.asserts;
@@ -178,11 +180,11 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
   }
 
 
-  public Matrix4x4f[] RnodMatrices { get; set; }
+  public Matrix4x4[] RnodMatrices { get; set; }
 
   private void ReadRnod_(IBinaryReader br) {
     var size = br.ReadInt32();
-    this.RnodMatrices = br.ReadNews<Matrix4x4f>(size);
+    this.RnodMatrices = br.ReadMatrix4x4s(size);
   }
 
 

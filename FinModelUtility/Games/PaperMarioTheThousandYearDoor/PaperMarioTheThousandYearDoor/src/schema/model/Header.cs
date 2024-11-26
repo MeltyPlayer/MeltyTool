@@ -1,4 +1,6 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema.vector;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -23,8 +25,8 @@ public partial class Header : IBinaryDeserializable {
   [SequenceLengthSource(3)]
   public uint[] Unk1 { get; set; }
 
-  public Vector3f BoundingBoxMin { get; } = new();
-  public Vector3f BoundingBoxMax { get; } = new();
+  public Vector3 BoundingBoxMin { get; set; }
+  public Vector3 BoundingBoxMax { get; set;}
 
   [SequenceLengthSource(25)]
   public int[] BlockTypeCounts { get; set; }

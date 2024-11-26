@@ -61,12 +61,12 @@ namespace mod.schema {
 
       joint.parentIdx = 1;
       joint.flags = 2;
-      joint.boundsMin.Set(3.1f, 4.1f, 5.1f);
-      joint.boundsMax.Set(6.1f, 7.1f, 8.1f);
+      joint.boundsMin = new Vector3(3.1f, 4.1f, 5.1f);
+      joint.boundsMax = new Vector3(6.1f, 7.1f, 8.1f);
       joint.volumeRadius = 9.1f;
-      joint.scale.Set(10.1f, 11.1f, 12.1f);
-      joint.rotation.Set(13.1f, 14.1f, 15.1f);
-      joint.position.Set(16.1f, 17.1f, 18.1f);
+      joint.scale = new Vector3(10.1f, 11.1f, 12.1f);
+      joint.rotation = new Vector3(13.1f, 14.1f, 15.1f);
+      joint.position = new Vector3(16.1f, 17.1f, 18.1f);
       joint.matpolys = [
           new JointMatPoly {
               matIdx = 19,
