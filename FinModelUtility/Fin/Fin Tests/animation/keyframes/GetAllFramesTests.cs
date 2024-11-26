@@ -3,6 +3,7 @@ using System.Numerics;
 
 using fin.animation.interpolation;
 using fin.animation.types;
+using fin.animation.types.quaternion;
 using fin.animation.types.single;
 using fin.animation.types.vector3;
 using fin.util.asserts;
@@ -123,6 +124,7 @@ public class GetAllFramesTests {
     AssertGetAllFramesMatchesInterpolated_(impl, 10);
   }
 
+
   [Test]
   public void TestCombinedVector3Nonlooping() {
     var impl = new CombinedVector3Keyframes<Keyframe<Vector3>>(
@@ -137,7 +139,6 @@ public class GetAllFramesTests {
     impl.SetKeyframe(8, new Vector3(6, 7, 8));
 
     AssertGetAllFramesMatchesInterpolated_(impl, 10);
-
   }
 
   [Test]
@@ -152,6 +153,39 @@ public class GetAllFramesTests {
     impl.SetKeyframe(4, new Vector3(4, 2, 3));
     impl.SetKeyframe(6, new Vector3(5, 5, 5));
     impl.SetKeyframe(8, new Vector3(6, 7, 8));
+
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
+  }
+
+
+  [Test]
+  public void TestCombinedQuaternionNonlooping() {
+    var impl = new CombinedQuaternionKeyframes<Keyframe<Quaternion>>(
+        new SharedInterpolationConfig { AnimationLength = 10 },
+        QuaternionKeyframeInterpolator.Instance,
+        new IndividualInterpolationConfig<Quaternion>
+            { DefaultValue = Optional.Of(new Quaternion(-1, -1, -1, -1)) });
+    
+    impl.SetKeyframe(2, new Quaternion(1, 2, 3, 4));
+    impl.SetKeyframe(4, new Quaternion(4, 2, 3, 4));
+    impl.SetKeyframe(6, new Quaternion(5, 5, 5, 5));
+    impl.SetKeyframe(8, new Quaternion(6, 7, 8, 9));
+
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
+  }
+
+  [Test]
+  public void TestCombinedQuaternionLooping() {
+    var impl = new CombinedQuaternionKeyframes<Keyframe<Quaternion>>(
+        new SharedInterpolationConfig { AnimationLength = 10, Looping = true },
+        QuaternionKeyframeInterpolator.Instance,
+        new IndividualInterpolationConfig<Quaternion>
+            { DefaultValue = Optional.Of(new Quaternion(-1, -1, -1, -1)) });
+    
+    impl.SetKeyframe(2, new Quaternion(1, 2, 3, 4));
+    impl.SetKeyframe(4, new Quaternion(4, 2, 3, 4));
+    impl.SetKeyframe(6, new Quaternion(5, 5, 5, 5));
+    impl.SetKeyframe(8, new Quaternion(6, 7, 8, 9));
 
     AssertGetAllFramesMatchesInterpolated_(impl, 10);
   }
