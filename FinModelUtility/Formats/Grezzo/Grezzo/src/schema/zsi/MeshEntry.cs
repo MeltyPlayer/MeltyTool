@@ -26,12 +26,12 @@ public class MeshEntry : IZsiSection, IBinaryDeserializable {
 
       if (this.OpaqueMeshOffset != 0) {
         this.OpaqueMesh
-            = br.SubreadAt(this.OpaqueMeshOffset, sbr => sbr.ReadNew<Cmb>());
+            = br.SubreadAt(this.OpaqueMeshOffset, () => br.ReadNew<Cmb>());
       }
 
       if (this.TranslucentMeshOffset != 0) {
         this.TranslucentMesh
-            = br.SubreadAt(this.TranslucentMeshOffset, sbr => sbr.ReadNew<Cmb>());
+            = br.SubreadAt(this.TranslucentMeshOffset, () => br.ReadNew<Cmb>());
       }
     }
 }

@@ -120,12 +120,12 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
         while ((offset = br.ReadInt32()) != 0) {
           br.SubreadAt(
               offset,
-              sbr => {
+              () => {
                 var weights = new List<PObjWeight>();
 
                 uint jObjOffset;
-                while ((jObjOffset = sbr.ReadUInt32()) != 0) {
-                  var weight = sbr.ReadSingle();
+                while ((jObjOffset = br.ReadUInt32()) != 0) {
+                  var weight = br.ReadSingle();
                   weights.Add(new PObjWeight {
                       JObjOffset = jObjOffset,
                       Weight = weight,
@@ -235,47 +235,47 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
                 case GxVertexAttribute.Position: {
                   position = br.SubreadAt(
                       offset,
-                      sbr => sbr.ReadVector3(vertexDescriptor));
+                      () => br.ReadVector3(vertexDescriptor));
                   break;
                 }
                 case GxVertexAttribute.Normal: {
                   normal = br.SubreadAt(
                       offset,
-                      sbr => Vector3.Normalize(
-                          sbr.ReadVector3(vertexDescriptor)));
+                      () => Vector3.Normalize(
+                          br.ReadVector3(vertexDescriptor)));
                   break;
                 }
                 case GxVertexAttribute.NBT: {
                   br.SubreadAt(
                       offset,
-                      sbr => {
+                      () => {
                         normal = Vector3.Normalize(
-                            sbr.ReadVector3(vertexDescriptor));
+                            br.ReadVector3(vertexDescriptor));
                         binormal = Vector3.Normalize(
-                            sbr.ReadVector3(vertexDescriptor));
+                            br.ReadVector3(vertexDescriptor));
                         tangent = Vector3.Normalize(
-                            sbr.ReadVector3(vertexDescriptor));
+                            br.ReadVector3(vertexDescriptor));
                       });
                   break;
                 }
                 case GxVertexAttribute.Color0: {
                   color = br.SubreadAt(
                       offset,
-                      sbr => GxAttributeUtil.ReadColor(
-                          sbr,
+                      () => GxAttributeUtil.ReadColor(
+                          br,
                           vertexDescriptor.ColorComponentType));
                   break;
                 }
                 case GxVertexAttribute.Tex0Coord: {
                   uv0 = br.SubreadAt(
                       offset,
-                      sbr => sbr.ReadVector2(vertexDescriptor));
+                      () => br.ReadVector2(vertexDescriptor));
                   break;
                 }
                 case GxVertexAttribute.Tex1Coord: {
                   uv1 = br.SubreadAt(
                       offset,
-                      sbr => sbr.ReadVector2(vertexDescriptor));
+                      () => br.ReadVector2(vertexDescriptor));
                   break;
                 }
                 default: {

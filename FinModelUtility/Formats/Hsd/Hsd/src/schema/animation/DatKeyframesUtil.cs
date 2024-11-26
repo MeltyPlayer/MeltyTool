@@ -203,12 +203,12 @@ public static class DatKeyframesUtil {
     br.SubreadAt(
         datKeyframes.DataOffset,
         (int) datKeyframes.DataLength,
-        sbr => {
+        () => {
           // TODO: Will probably need to do something else to handle this
           var clock = 0; //-datKeyframes.StartFrame;
 
-          while (!sbr.Eof) {
-            var type = ReadPacked_(sbr);
+          while (!br.Eof) {
+            var type = ReadPacked_(br);
             var interpolation = (GxInterpolationType) (type & 0x0F);
             int numOfKey = (type >> 4) + 1;
 
@@ -225,19 +225,19 @@ public static class DatKeyframesUtil {
                 case GxInterpolationType.ConstantSection:
                 case GxInterpolationType.LinearSection:
                 case GxInterpolationType.SplineTo0Section:
-                  value = ParseFloat_(sbr, valueFormat, valueScale);
-                  time = ReadPacked_(sbr);
+                  value = ParseFloat_(br, valueFormat, valueScale);
+                  time = ReadPacked_(br);
                   break;
                 case GxInterpolationType.SplineSection:
-                  value = ParseFloat_(sbr, valueFormat, valueScale);
-                  tan = ParseFloat_(sbr, tangentFormat, tangentScale);
-                  time = ReadPacked_(sbr);
+                  value = ParseFloat_(br, valueFormat, valueScale);
+                  tan = ParseFloat_(br, tangentFormat, tangentScale);
+                  time = ReadPacked_(br);
                   break;
                 case GxInterpolationType.FromTangentSetter:
-                  tan = ParseFloat_(sbr, tangentFormat, tangentScale);
+                  tan = ParseFloat_(br, tangentFormat, tangentScale);
                   break;
                 case GxInterpolationType.FromValueSetter:
-                  value = ParseFloat_(sbr, valueFormat, valueScale);
+                  value = ParseFloat_(br, valueFormat, valueScale);
                   break;
                 default:
                   throw new Exception("Unknown Interpolation Type " +

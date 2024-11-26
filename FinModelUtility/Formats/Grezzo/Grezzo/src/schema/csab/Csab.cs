@@ -69,7 +69,7 @@ public class Csab : IBinaryDeserializable {
         var anod = new AnimationNode(this);
 
         var offset = br.ReadUInt32();
-        br.SubreadAt(basePosition + animationOffset + offset, anod.Read);
+        br.SubreadAt(basePosition + animationOffset + offset, () => anod.Read(br));
 
         animationNodes[i] = anod;
       }

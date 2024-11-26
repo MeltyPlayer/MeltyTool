@@ -40,10 +40,10 @@ public class Xc : IBinaryDeserializable {
       size |= sizeExt << 16;
       offset = (uint)(offset * 4 + dataOffset);
 
-      hashToData.Add(nameCrc, br.SubreadAt(offset, ser => ser.ReadBytes((int) size)));
+      hashToData.Add(nameCrc, br.SubreadAt(offset, () => br.ReadBytes((int) size)));
     }
 
-    var inNameTable = br.SubreadAt(fileTableOffset, ser => ser.ReadBytes(filenameTableSize));
+    var inNameTable = br.SubreadAt(fileTableOffset, () => br.ReadBytes(filenameTableSize));
     if (!new ZlibArrayDecompressor().TryDecompress(inNameTable, out var nameTable)) {
       nameTable = new LzssDecompressor().Decompress(inNameTable);
     }

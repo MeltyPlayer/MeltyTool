@@ -53,7 +53,7 @@ public class Mtn2 {
     this.Anim.Name = r.ReadStringNT();
 
     var data = new Level5Decompressor().Decompress(
-        r.SubreadAt(compDataOffset, ser => ser.ReadBytes(
+        r.SubreadAt(compDataOffset, () => r.ReadBytes(
                         (int)(r.Length - compDataOffset))));
 
     using (var d =

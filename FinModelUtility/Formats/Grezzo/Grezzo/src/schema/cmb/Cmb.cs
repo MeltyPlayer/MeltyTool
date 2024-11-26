@@ -76,7 +76,7 @@ public class Cmb : IBinaryDeserializable {
               : this.tex.Data.textures
                     .Select(t => br.SubreadAt(
                                 this.header.textureDataOffset + t.DataOffset,
-                                sbr => t.GetImageReader().ReadImage(sbr)))
+                                () => t.GetImageReader().ReadImage(br)))
                     .ToArray();
 
       br.Position = this.header.sklmOffset;

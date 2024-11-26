@@ -48,7 +48,7 @@ public class Xi {
     var level5Decompressor = new Level5Decompressor();
     byte[] tileBytes =
         level5Decompressor.Decompress(
-            r.SubreadAt((uint) someTable, ser => ser.ReadBytes(someTableSize)));
+            r.SubreadAt((uint) someTable, () => r.ReadBytes(someTableSize)));
 
     if (tileBytes.Length > 2 && tileBytes[0] == 0x53 &&
         tileBytes[1] == 0x04)
@@ -94,7 +94,7 @@ public class Xi {
     var len = r.Length;
     this.ImageData = level5Decompressor.Decompress(
         r.SubreadAt((uint) imageDataOffset,
-                    ser => ser.ReadBytes((int) (len - imageDataOffset))));
+                    () => r.ReadBytes((int) (len - imageDataOffset))));
   }
     
   /// <summary>

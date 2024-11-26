@@ -49,7 +49,7 @@ public partial class Rcb : IBinaryDeserializable {
       this.BnkId = br.ReadUInt32();
 
       this.SkeletonName =
-          br.SubreadAt(br.ReadUInt32(), ser => ser.ReadStringNT());
+          br.SubreadAt(br.ReadUInt32(), () => br.ReadStringNT());
       var boneCount = br.ReadUInt32();
       var boneIdTableOffset = br.ReadUInt32();
       var boneStart = br.ReadUInt32();
@@ -58,13 +58,13 @@ public partial class Rcb : IBinaryDeserializable {
       // Get bone parent table
       br.SubreadAt(
           boneIdTableOffset,
-          ser => {
-            ser.Position = boneIdTableOffset;
+          () => {
+            br.Position = boneIdTableOffset;
 
             var boneParentIdMap = new int[boneCount];
             for (var i = 0; i < boneCount; i++) {
-              boneParentIdMap[i] = ser.ReadInt32();
-              ser.Position += 12;
+              boneParentIdMap[i] = br.ReadInt32();
+              br.Position += 12;
             }
 
             this.BoneParentIdMap = boneParentIdMap;
@@ -73,7 +73,7 @@ public partial class Rcb : IBinaryDeserializable {
       // Read bone matrices
       this.Bones = br.SubreadAt(
           boneStart,
-          sbr => sbr.ReadNews<Bone>((int) boneCount));
+          () => br.ReadNews<Bone>((int) boneCount));
     }
   }
 

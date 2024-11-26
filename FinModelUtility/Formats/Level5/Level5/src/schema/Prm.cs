@@ -42,12 +42,12 @@ public class Prm {
     uint pvbOffset = r.ReadUInt32();
     int pvbSize = r.ReadInt32();
     var polygonVertexBuffer =
-        r.SubreadAt(pvbOffset + prmOffset, ser => ser.ReadBytes(pvbSize));
+        r.SubreadAt(pvbOffset + prmOffset, () => r.ReadBytes(pvbSize));
 
     uint pviOffset = r.ReadUInt32();
     int pviSize = r.ReadInt32();
     var polygonVertexIndexBuffer =
-        r.SubreadAt(pviOffset + prmOffset, ser => ser.ReadBytes(pviSize));
+        r.SubreadAt(pviOffset + prmOffset, () => r.ReadBytes(pviSize));
 
     // node table-------------------------------------------
 
@@ -66,13 +66,13 @@ public class Prm {
 
     var nameOffset = r.ReadUInt32();
     var nameLength = r.ReadUInt32();
-    var name = r.SubreadAt(nameOffset, ser => ser.ReadString(nameLength));
+    var name = r.SubreadAt(nameOffset, () => r.ReadString(nameLength));
     this.Name = name;
 
     var mtlNameOffset = r.ReadUInt32();
     var mtlNameLength = r.ReadUInt32();
     var mtlName
-        = r.SubreadAt(mtlNameOffset, ser => ser.ReadString(mtlNameLength));
+        = r.SubreadAt(mtlNameOffset, () => r.ReadString(mtlNameLength));
     this.MaterialName = mtlName;
 
     this.Triangles = this.ParseIndexBuffer_(polygonVertexIndexBuffer);
@@ -100,7 +100,7 @@ public class Prm {
 
       buffer = new Level5Decompressor().Decompress(
           br.SubreadAt(faceOffset,
-                       ser => ser.ReadBytes((int) (br.Length - faceOffset))));
+                       () => br.ReadBytes((int) (br.Length - faceOffset))));
     }
 
     if (primitiveType != 2 && primitiveType != 0)
@@ -181,10 +181,10 @@ public class Prm {
       var level5Decompressor = new Level5Decompressor();
       attributeBuffer =
           level5Decompressor.Decompress(
-              br.SubreadAt(attOffset, ser => ser.ReadBytes(attSomething)));
+              br.SubreadAt(attOffset, () => br.ReadBytes(attSomething)));
       buffer = level5Decompressor.Decompress(
           br.SubreadAt(verOffset,
-                       ser => ser.ReadBytes((int) (br.Length - verOffset))));
+                       () => br.ReadBytes((int) (br.Length - verOffset))));
     }
 
     int[] aCount = new int[10];

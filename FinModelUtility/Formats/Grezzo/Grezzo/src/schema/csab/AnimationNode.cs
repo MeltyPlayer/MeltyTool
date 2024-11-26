@@ -34,7 +34,7 @@ public class AnimationNode(Csab parent) : IBinaryDeserializable {
       foreach (var translationAxis in this.TranslationAxes) {
         var offset = br.ReadUInt16();
         if (offset != 0) {
-          br.SubreadAt(basePosition + offset, translationAxis.Read);
+          br.SubreadAt(basePosition + offset, () => translationAxis.Read(br));
         }
       }
 
@@ -43,14 +43,14 @@ public class AnimationNode(Csab parent) : IBinaryDeserializable {
 
         var offset = br.ReadUInt16();
         if (offset != 0) {
-          br.SubreadAt(basePosition + offset, rotationAxis.Read);
+          br.SubreadAt(basePosition + offset, () => rotationAxis.Read(br));
         }
       }
 
       foreach (var scaleAxis in this.ScaleAxes) {
         var offset = br.ReadUInt16();
         if (offset != 0) {
-          br.SubreadAt(basePosition + offset, scaleAxis.Read);
+          br.SubreadAt(basePosition + offset, () => scaleAxis.Read(br));
         }
       }
 

@@ -36,7 +36,7 @@ namespace UoT.memory {
           new SchemaBinaryReader(romFile.OpenRead(), Endianness.BigEndian);
 
       for (long i = 0; i < br.Length; i += 16) {
-        var romId = br.SubreadAt(i, ser => ser.ReadString(6));
+        var romId = br.SubreadAt(i, () => br.ReadString(6));
         if (romId != "zelda@") {
           continue;
         }
@@ -50,7 +50,7 @@ namespace UoT.memory {
 
         i = (br.Position -= 1);
 
-        var buildDate = br.SubreadAt(i, ser => ser.ReadString(17));
+        var buildDate = br.SubreadAt(i, () => br.ReadString(17));
         var segmentOffset = (int) (i + 0x20);
 
         int nameOffset;
@@ -135,24 +135,24 @@ namespace UoT.memory {
 
       br.SubreadAt(
           segmentOffset,
-          sbr => {
+          () => {
             while (true) {
-              var startAddress = sbr.ReadUInt32();
-              var endAddress = sbr.ReadUInt32();
+              var startAddress = br.ReadUInt32();
+              var endAddress = br.ReadUInt32();
 
               if (startAddress == 0 && endAddress == 0) {
                 break;
               }
 
-              var unk0 = sbr.ReadUInt32();
-              var unk1 = sbr.ReadUInt32();
+              var unk0 = br.ReadUInt32();
+              var unk1 = br.ReadUInt32();
 
               var fileNameBuilder = new StringBuilder();
-              var pos = sbr.Position;
-              sbr.Position = nameOffset;
+              var pos = br.Position;
+              br.Position = nameOffset;
               var inName = false;
               while (true) {
-                var c = sbr.ReadChar();
+                var c = br.ReadChar();
 
                 if (c == '\0') {
                   if (inName) {
@@ -163,8 +163,8 @@ namespace UoT.memory {
                   fileNameBuilder.Append(c);
                 }
               }
-              nameOffset = sbr.Position;
-              sbr.Position = pos;
+              nameOffset = br.Position;
+              br.Position = pos;
 
               var fileName = fileNameBuilder.ToString();
 

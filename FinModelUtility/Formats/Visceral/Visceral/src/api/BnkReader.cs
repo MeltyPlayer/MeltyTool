@@ -78,7 +78,7 @@ public class BnkReader {
     {
       var animationNameOffset = bnkBr.ReadUInt32();
       finAnimation.Name =
-          bnkBr.SubreadAt(animationNameOffset, ser => ser.ReadStringNT());
+          bnkBr.SubreadAt(animationNameOffset, () => bnkBr.ReadStringNT());
     }
 
     var totalFrames = 1;

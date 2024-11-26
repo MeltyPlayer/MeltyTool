@@ -18,7 +18,7 @@ public class PassThruUInt32SizedSection<T>(T data) : ISizedSection<T>
 
     var tweakedSize = this.Size + this.TweakReadSize;
     var basePosition = br.Position;
-    br.SubreadAt(br.Position, (int) tweakedSize, this.Data.Read);
+    br.SubreadAt(br.Position, (int) tweakedSize, () => this.Data.Read(br));
 
     br.Position = basePosition + tweakedSize;
   }

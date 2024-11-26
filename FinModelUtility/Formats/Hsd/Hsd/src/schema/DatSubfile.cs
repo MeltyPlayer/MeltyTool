@@ -107,7 +107,7 @@ public class DatSubfile : IBinaryDeserializable {
       rootNode.Data.Read(br);
 
       br.SubreadAt(this.stringTableOffset_ + rootNode.Data.StringOffset,
-                   sbr => { rootNode.Name = sbr.ReadStringNT(); });
+                   () => rootNode.Name = br.ReadStringNT());
 
       this.rootNodes_.Add(rootNode);
     }

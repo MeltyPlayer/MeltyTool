@@ -16,7 +16,7 @@ public class HsdNullTerminatedPointerArray<T> : IBinaryDeserializable
         return;
       }
 
-      this.values_.Add(br.SubreadAt(pointer, sbr => sbr.ReadNew<T>()));
+      this.values_.Add(br.SubreadAt(pointer, br.ReadNew<T>));
     }
   }
 }

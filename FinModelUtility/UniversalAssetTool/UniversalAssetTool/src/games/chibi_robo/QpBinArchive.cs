@@ -25,21 +25,21 @@ public class QpBinArchiveExtractor {
     br.Position = header.FileStringTableOffset;
     br.Subread(
         (int) header.FileStringTableSize,
-        sbr => {
-          sbr.AssertByte(1); // isDirectory
-          var root = sbr.ReadNew<FileStringTableDirectory>();
+        () => {
+          br.AssertByte(1); // isDirectory
+          var root = br.ReadNew<FileStringTableDirectory>();
 
           var numEntries = root.NextEntryIndex;
           entries = new IFileStringTableEntry[numEntries];
           entries[0] = root;
           for (var i = 1; i < numEntries; ++i) {
-            var isDirectory = sbr.ReadByte() != 0;
+            var isDirectory = br.ReadByte() != 0;
             entries[i] = isDirectory
-                ? sbr.ReadNew<FileStringTableDirectory>()
-                : sbr.ReadNew<FileStringTableFile>();
+                ? br.ReadNew<FileStringTableDirectory>()
+                : br.ReadNew<FileStringTableFile>();
           }
 
-          stringTableOffset = header.FileStringTableOffset + sbr.Position;
+          stringTableOffset = header.FileStringTableOffset + br.Position;
         });
 
     this.ProcessEntries_(outDirectory,
@@ -76,7 +76,7 @@ public class QpBinArchiveExtractor {
         using var fs = file.OpenWrite();
         br.SubreadAt(dataOffset,
                      (int) dataSize,
-                     sbr => sbr.CopyTo(fs));
+                     () => br.CopyTo(fs));
         break;
       }
       case FileStringTableDirectory directoryEntry: {

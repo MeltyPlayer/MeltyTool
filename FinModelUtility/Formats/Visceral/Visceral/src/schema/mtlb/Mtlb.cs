@@ -33,7 +33,7 @@ public class Mtlb : IBinaryDeserializable {
       var stringsOffset = br.ReadUInt32();
 
       this.Name = br.SubreadAt(stringsOffset + stringsLength,
-                               sbr => sbr.ReadStringNT());
+                               () => br.ReadStringNT());
 
       br.Position = 0x50;
 
@@ -43,7 +43,7 @@ public class Mtlb : IBinaryDeserializable {
             var category = (MtlbChannelCategory) br.ReadUInt32();
 
             var typeString = br.SubreadAt(stringsOffset + br.ReadUInt32(),
-                                          sbr => sbr.ReadStringNT());
+                                          () => br.ReadStringNT());
             var type = typeString.ToMtlbChannelType();
 
             var unk0 = br.ReadUInt32();
@@ -54,14 +54,13 @@ public class Mtlb : IBinaryDeserializable {
             Vector2i? idValues = null;
             if (type.IsSampler()) {
               idValues
-                  = br.SubreadAt(valueOffset, sbr => sbr.ReadNew<Vector2i>());
+                  = br.SubreadAt(valueOffset, () => br.ReadNew<Vector2i>());
             } else {
-              colorValues
-                  = br.SubreadAt(valueOffset, sbr => sbr.ReadVector4());
+              colorValues = br.SubreadAt(valueOffset, br.ReadVector4);
             }
 
             var path = br.SubreadAt(stringsOffset + br.ReadUInt32(),
-                                    sbr => sbr.ReadStringNT());
+                                    br.ReadStringNT);
 
             return new MtlbChannel {
                 MtlbChannelCategory = category,

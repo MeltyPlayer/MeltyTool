@@ -65,12 +65,12 @@ public class BinArchiveExtractor {
     try {
       br.Subread(
           fileSize,
-          sbr => {
+          () => {
             var outFile
                 = new FinFile(
                     Path.Join(outputDirectory.FullPath, $"{name}.dat"));
             using var fs = outFile.OpenWrite();
-            sbr.CopyTo(fs);
+            br.CopyTo(fs);
           });
     } catch (Exception e) {
       ;

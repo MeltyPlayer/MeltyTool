@@ -21,11 +21,11 @@ public class PassThruJankSizedSection<T>(T data) : ISizedSection<T>
     if (this.UseSize) {
       var tweakedSize = this.Size + this.TweakReadSize;
       var basePosition = br.Position;
-      br.SubreadAt(br.Position, (int) tweakedSize, this.Data.Read);
+      br.SubreadAt(br.Position, (int) tweakedSize, () => this.Data.Read(br));
 
       br.Position = basePosition + tweakedSize;
     } else {
-      br.SubreadAt(br.Position, this.Data.Read);
+      br.SubreadAt(br.Position, () => this.Data.Read(br));
     }
   }
 
