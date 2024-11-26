@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Linq;
+using System.Numerics;
 
 using fin.animation.interpolation;
+using fin.animation.types;
 using fin.animation.types.single;
+using fin.animation.types.vector3;
 using fin.util.asserts;
 using fin.util.optional;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using NUnit.Framework;
-
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace fin.animation.keyframes;
 
@@ -27,7 +25,7 @@ public class GetAllFramesTests {
     impl.SetKeyframe(6, 2);
     impl.SetKeyframe(8, 3);
 
-    AssertGetAllFramesMatchesInterpolated_(impl);
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
   }
 
   [Test]
@@ -42,8 +40,9 @@ public class GetAllFramesTests {
     impl.SetKeyframe(6, 2);
     impl.SetKeyframe(8, 3);
 
-    AssertGetAllFramesMatchesInterpolated_(impl);
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
   }
+
 
   [Test]
   public void TestInterpolatedNonlooping() {
@@ -58,7 +57,7 @@ public class GetAllFramesTests {
     impl.SetKeyframe(6, 2);
     impl.SetKeyframe(8, 3);
 
-    AssertGetAllFramesMatchesInterpolated_(impl);
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
   }
 
   [Test]
@@ -74,16 +73,96 @@ public class GetAllFramesTests {
     impl.SetKeyframe(6, 2);
     impl.SetKeyframe(8, 3);
 
-    AssertGetAllFramesMatchesInterpolated_(impl);
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
   }
 
-  private static void AssertGetAllFramesMatchesInterpolated_<T>(
-      IConfiguredInterpolatable<T> impl) where T : unmanaged {
-    var length = impl.SharedConfig.AnimationLength;
 
+  [Test]
+  public void TestSeparateVector3Nonlooping() {
+    var impl = new SeparateVector3Keyframes<Keyframe<float>>(
+        new SharedInterpolationConfig { AnimationLength = 10, },
+        FloatKeyframeInterpolator.Instance,
+        new IndividualInterpolationConfig<float>
+            { DefaultValue = Optional.Of(-1f) });
+
+    impl.SetKeyframe(0, 1, 0);
+    impl.SetKeyframe(1, 2, 1);
+    impl.SetKeyframe(2, 3, 2);
+
+    impl.SetKeyframe(0, 5, 3);
+    impl.SetKeyframe(1, 5, 1);
+    impl.SetKeyframe(2, 5, 2);
+
+    impl.SetKeyframe(0, 7, 4);
+    impl.SetKeyframe(1, 7, 2);
+    impl.SetKeyframe(2, 7, 3);
+
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
+  }
+
+  [Test]
+  public void TestSeparateVector3Looping() {
+    var impl = new SeparateVector3Keyframes<Keyframe<float>>(
+        new SharedInterpolationConfig { AnimationLength = 10, Looping = true},
+        FloatKeyframeInterpolator.Instance,
+        new IndividualInterpolationConfig<float>
+            { DefaultValue = Optional.Of(-1f) });
+
+    impl.SetKeyframe(0, 1, 0);
+    impl.SetKeyframe(1, 2, 1);
+    impl.SetKeyframe(2, 3, 2);
+
+    impl.SetKeyframe(0, 5, 3);
+    impl.SetKeyframe(1, 5, 1);
+    impl.SetKeyframe(2, 5, 2);
+
+    impl.SetKeyframe(0, 7, 4);
+    impl.SetKeyframe(1, 7, 2);
+    impl.SetKeyframe(2, 7, 3);
+
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
+  }
+
+  [Test]
+  public void TestCombinedVector3Nonlooping() {
+    var impl = new CombinedVector3Keyframes<Keyframe<Vector3>>(
+        new SharedInterpolationConfig { AnimationLength = 10 },
+        Vector3KeyframeInterpolator.Instance,
+        new IndividualInterpolationConfig<Vector3>
+            { DefaultValue = Optional.Of(new Vector3(-1, -1, -1)) });
+    
+    impl.SetKeyframe(2, new Vector3(1, 2, 3));
+    impl.SetKeyframe(4, new Vector3(4, 2, 3));
+    impl.SetKeyframe(6, new Vector3(5, 5, 5));
+    impl.SetKeyframe(8, new Vector3(6, 7, 8));
+
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
+
+  }
+
+  [Test]
+  public void TestCombinedVector3Looping() {
+    var impl = new CombinedVector3Keyframes<Keyframe<Vector3>>(
+        new SharedInterpolationConfig { AnimationLength = 10, Looping = true },
+        Vector3KeyframeInterpolator.Instance,
+        new IndividualInterpolationConfig<Vector3>
+            { DefaultValue = Optional.Of(new Vector3(-1, -1, -1)) });
+    
+    impl.SetKeyframe(2, new Vector3(1, 2, 3));
+    impl.SetKeyframe(4, new Vector3(4, 2, 3));
+    impl.SetKeyframe(6, new Vector3(5, 5, 5));
+    impl.SetKeyframe(8, new Vector3(6, 7, 8));
+
+    AssertGetAllFramesMatchesInterpolated_(impl, 10);
+  }
+
+
+  private static void AssertGetAllFramesMatchesInterpolated_<T>(
+      IInterpolatable<T> impl,
+      int length) where T : unmanaged {
     Span<T> interpolatedFrames = stackalloc T[length];
     for (var i = 0; i < length; i++) {
-      Asserts.True(impl.TryGetAtFrameOrDefault(i, out var value));
+      Asserts.True(impl.TryGetAtFrame(i, out var value));
       interpolatedFrames[i] = value;
     }
 

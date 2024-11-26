@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using fin.animation.types;
+using fin.animation.types.vector3;
+
 namespace fin.animation.keyframes;
 
 public static class KeyframesExtensions {
@@ -38,4 +41,13 @@ public static class KeyframesExtensions {
       keyframes.Add(new Keyframe<T>(frame, value));
     }
   }
+
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void SetKeyframe(
+      this ISeparateVector3Keyframes<Keyframe<float>> keyframes,
+      int axis,
+      float frame,
+      float value)
+    => keyframes.Axes[axis].Add(new Keyframe<float>(frame, value));
 }
