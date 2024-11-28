@@ -20,7 +20,7 @@ out vec3 vertexPosition;
 out vec3 vertexNormal;
 out vec3 tangent;
 out vec3 binormal;
-out vec2 linearReflectionUv;
+out vec2 sphericalReflectionUv;
 out vec2 uv0;
 
 void main() {
@@ -28,6 +28,6 @@ void main() {
   vertexNormal = normalize(modelMatrix * vec4(in_Normal, 0)).xyz;
   tangent = normalize(modelMatrix * vec4(in_Tangent)).xyz;
   binormal = cross(vertexNormal, tangent);
-  linearReflectionUv = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;
+  sphericalReflectionUv = asin(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159 + .5;
   uv0 = in_Uvs[0];
 }

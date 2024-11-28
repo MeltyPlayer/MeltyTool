@@ -8,7 +8,7 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = texture(texture0, asin(sphericalReflectionUv) / 3.14159 + 0.5).rgb;
+  vec3 colorComponent = texture(texture0, sphericalReflectionUv).rgb;
 
   float alphaComponent = 1;
 

@@ -163,10 +163,10 @@ out vec3 binormal;");
   binormal = cross(vertexNormal, tangent);");
 
       if (shaderRequirements.UsesSphericalReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy;");
+        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = asin(normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy) / 3.14159 + .5;");
       }
       if (shaderRequirements.UsesLinearReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy;");
+        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
       }
     } else {
       vertexSrc.AppendLine($@"
@@ -176,10 +176,10 @@ out vec3 binormal;");
   binormal = cross(vertexNormal, tangent);");
 
       if (shaderRequirements.UsesSphericalReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;");
+        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = asin(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159 + .5;");
       }
       if (shaderRequirements.UsesLinearReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;");
+        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
       }
     }
 
@@ -429,34 +429,22 @@ out vec3 binormal;");
 
   public static string ReadColorFromTexture(
       string textureName,
-      string rawUvName,
-      IReadOnlyTexture? finTexture,
-      IReadOnlyList<IReadOnlyModelAnimation> animations)
-    => ReadColorFromTexture(textureName,
-                            rawUvName,
-                            t => t,
-                            finTexture,
-                            animations);
-
-  public static string ReadColorFromTexture(
-      string textureName,
-      string rawUvName,
-      Func<string, string> uvConverter,
+      string uvName,
       IReadOnlyTexture? finTexture,
       IReadOnlyList<IReadOnlyModelAnimation> animations) {
     var needsClamp = finTexture.UsesShaderClamping();
     var textureTransformType = finTexture.GetTextureTransformType_(animations);
 
     if (!needsClamp && textureTransformType == TextureTransformType.NONE) {
-      return $"texture({textureName}, {uvConverter(rawUvName)})";
+      return $"texture({textureName}, {uvName})";
     }
 
     var transformedUv = textureTransformType switch {
         TextureTransformType.TWO_D =>
-            $"{textureName}.transform2d * vec3(({uvConverter(rawUvName)}).x, ({uvConverter(rawUvName)}).y, 1)",
+            $"{textureName}.transform2d * vec3(({uvName}).x, ({uvName}).y, 1)",
         TextureTransformType.THREE_D =>
-            $"transformUv3d({textureName}.transform3d, {uvConverter(rawUvName)})",
-        _ => uvConverter(rawUvName)
+            $"transformUv3d({textureName}.transform3d, {uvName})",
+        _ => uvName
     };
 
     if (needsClamp) {

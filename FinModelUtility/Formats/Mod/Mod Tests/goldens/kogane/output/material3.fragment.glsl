@@ -39,7 +39,7 @@ uniform vec3 color_GxColorRegister10;
 uniform vec3 color_GxColorRegister9;
 uniform float scalar_GxMaterialAlpha3;
 uniform float scalar_GxAlphaRegister11;
-in vec2 linearReflectionUv;
+in vec2 sphericalReflectionUv;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -135,7 +135,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(color_GxColorRegister11*(vec3(1) + vec3(-1)*clamp((color_GxMaterialColor3*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor3), 0, 1) + vec3(1) + vec3(-1)*vec3(scalar_GxAlphaRegister11) + texture(texture1, acos(linearReflectionUv) / 3.14159).rgb*vec3(scalar_GxAlphaRegister11) + vec3(-1)*texture(texture1, acos(linearReflectionUv) / 3.14159).rgb*vec3(scalar_GxAlphaRegister11)), 0, 1)) + texture(texture0, uv0).rgb*clamp((color_GxMaterialColor3*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor3), 0, 1) + vec3(1) + vec3(-1)*vec3(scalar_GxAlphaRegister11) + texture(texture1, acos(linearReflectionUv) / 3.14159).rgb*vec3(scalar_GxAlphaRegister11) + vec3(-1)*texture(texture1, acos(linearReflectionUv) / 3.14159).rgb*vec3(scalar_GxAlphaRegister11)), 0, 1) + color_GxColorRegister10*(vec3(1) + vec3(-1)*texture(texture1, acos(linearReflectionUv) / 3.14159).rgb) + color_GxColorRegister9*texture(texture1, acos(linearReflectionUv) / 3.14159).rgb + vec3(-0.5), 0, 1);
+  vec3 colorComponent = clamp(color_GxColorRegister11*(vec3(1) + vec3(-1)*clamp((color_GxMaterialColor3*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor3), 0, 1) + vec3(1) + vec3(-1)*vec3(scalar_GxAlphaRegister11) + texture(texture1, sphericalReflectionUv).rgb*vec3(scalar_GxAlphaRegister11) + vec3(-1)*texture(texture1, sphericalReflectionUv).rgb*vec3(scalar_GxAlphaRegister11)), 0, 1)) + texture(texture0, uv0).rgb*clamp((color_GxMaterialColor3*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor3), 0, 1) + vec3(1) + vec3(-1)*vec3(scalar_GxAlphaRegister11) + texture(texture1, sphericalReflectionUv).rgb*vec3(scalar_GxAlphaRegister11) + vec3(-1)*texture(texture1, sphericalReflectionUv).rgb*vec3(scalar_GxAlphaRegister11)), 0, 1) + color_GxColorRegister10*(vec3(1) + vec3(-1)*texture(texture1, sphericalReflectionUv).rgb) + color_GxColorRegister9*texture(texture1, sphericalReflectionUv).rgb + vec3(-0.5), 0, 1);
 
   float alphaComponent = scalar_GxMaterialAlpha3;
 

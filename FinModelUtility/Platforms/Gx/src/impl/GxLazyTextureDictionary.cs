@@ -70,7 +70,7 @@ public class GxLazyTextureDictionary<TState, TDiscriminator>
               break;
             }
             case GxTexGenSrc.Normal: {
-              texture.UvType = UvType.LINEAR;
+              texture.UvType = UvType.SPHERICAL;
               break;
             }
             default: {

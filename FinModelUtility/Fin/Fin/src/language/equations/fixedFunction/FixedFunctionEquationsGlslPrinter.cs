@@ -832,14 +832,12 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
             => GlslUtil.ReadColorFromTexture(
                 textureName,
                 GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME,
-                uv => $"asin({uv}) / 3.14159 + 0.5",
                 texture,
                 this.animations_),
         UvType.LINEAR
             => GlslUtil.ReadColorFromTexture(
                 textureName,
                 GlslConstants.IN_LINEAR_REFLECTION_UV_NAME,
-                uv => $"acos({uv}) / 3.14159",
                 texture,
                 this.animations_),
     };

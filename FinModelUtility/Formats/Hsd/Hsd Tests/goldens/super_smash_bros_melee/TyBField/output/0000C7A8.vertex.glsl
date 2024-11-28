@@ -29,7 +29,7 @@ void main() {
   vertexNormal = normalize(modelMatrix * vec4(in_Normal, 0)).xyz;
   tangent = normalize(modelMatrix * vec4(in_Tangent)).xyz;
   binormal = cross(vertexNormal, tangent);
-  sphericalReflectionUv = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;
+  sphericalReflectionUv = asin(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159 + .5;
   uv0 = in_Uvs[0];
   uv1 = in_Uvs[1];
 }
