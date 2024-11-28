@@ -52,7 +52,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
          out vec4 fragColor;
 
-         in vec4 vertexColor0;
+         in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;
          """);
 
     if (hasNormals) {
@@ -67,7 +67,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
     fragmentSrc.Append(
         $"""
 
-        in vec2 uv{uvIndex};
+        in vec2 {GlslConstants.IN_UV_NAME}{uvIndex};
         """);
 
     if (hasNormals) {

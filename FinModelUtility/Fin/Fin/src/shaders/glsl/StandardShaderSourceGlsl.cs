@@ -77,7 +77,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
 
          out vec4 fragColor;
 
-         in vec4 vertexColor0;
+         in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;
          
          """);
 
@@ -95,7 +95,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
     var usedUvs = shaderRequirements.UsedUvs;
     for (var i = 0; i < usedUvs.Length; ++i) {
       if (usedUvs[i]) {
-        fragmentShaderSrc.AppendLine($"in vec2 uv{i};");
+        fragmentShaderSrc.AppendLine($"in vec2 {GlslConstants.IN_UV_NAME}{i};");
       }
     }
 
@@ -116,11 +116,11 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
         $$"""
 
           void main() {
-            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{diffuseTexture?.UvIndex ?? 0}", diffuseTexture, animations)}};
-            vec4 ambientOcclusionColor = {{GlslUtil.ReadColorFromTexture("ambientOcclusionTexture", $"uv{ambientOcclusionTexture?.UvIndex ?? 0}", ambientOcclusionTexture, animations)}};
-            vec4 emissiveColor = {{GlslUtil.ReadColorFromTexture("emissiveTexture", $"uv{emissiveTexture?.UvIndex ?? 0}", emissiveTexture, animations)}};
+            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", $"{GlslConstants.IN_UV_NAME}{diffuseTexture?.UvIndex ?? 0}", diffuseTexture, animations)}};
+            vec4 ambientOcclusionColor = {{GlslUtil.ReadColorFromTexture("ambientOcclusionTexture", $"{GlslConstants.IN_UV_NAME}{ambientOcclusionTexture?.UvIndex ?? 0}", ambientOcclusionTexture, animations)}};
+            vec4 emissiveColor = {{GlslUtil.ReadColorFromTexture("emissiveTexture", $"{GlslConstants.IN_UV_NAME}{emissiveTexture?.UvIndex ?? 0}", emissiveTexture, animations)}};
           
-            fragColor = diffuseColor * vertexColor0;
+            fragColor = diffuseColor * {{GlslConstants.IN_VERTEX_COLOR_NAME}}0;
           """);
 
     if (hasNormals) {
@@ -137,7 +137,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
              
                // Have to renormalize because the vertex normals can become distorted when interpolated.
                vec3 fragNormal = normalize(vertexNormal);
-               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"uv{normalTexture?.UvIndex ?? 0}", normalTexture, animations)}.xyz * 2 - 1;
+               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"{GlslConstants.IN_UV_NAME}{normalTexture?.UvIndex ?? 0}", normalTexture, animations)}.xyz * 2 - 1;
                fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
              """);
       }

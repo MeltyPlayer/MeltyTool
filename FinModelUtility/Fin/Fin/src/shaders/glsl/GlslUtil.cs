@@ -121,13 +121,13 @@ out vec2 normalUv;");
 
     for (var i = 0; i < usedUvs.Length; ++i) {
       if (usedUvs[i]) {
-        vertexSrc.AppendLine($"out vec2 uv{i};");
+        vertexSrc.AppendLine($"out vec2 {GlslConstants.IN_UV_NAME}{i};");
       }
     }
 
     for (var i = 0; i < usedColors.Length; ++i) {
       if (usedColors[i]) {
-        vertexSrc.AppendLine($"out vec4 vertexColor{i};");
+        vertexSrc.AppendLine($"out vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}{i};");
       }
     }
 
@@ -165,13 +165,13 @@ out vec2 normalUv;");
 
     for (var i = 0; i < usedUvs.Length; ++i) {
       if (usedUvs[i]) {
-        vertexSrc.AppendLine($"  uv{i} = in_Uvs[{i}];");
+        vertexSrc.AppendLine($"  {GlslConstants.IN_UV_NAME}{i} = in_Uvs[{i}];");
       }
     }
 
     for (var i = 0; i < usedColors.Length; ++i) {
       if (usedColors[i]) {
-        vertexSrc.AppendLine($"  vertexColor{i} = in_Colors[{i}];");
+        vertexSrc.AppendLine($"  {GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Colors[{i}];");
       }
     }
 

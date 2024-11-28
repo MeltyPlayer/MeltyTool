@@ -18,6 +18,11 @@ public static class GlslConstants {
   public const string UNIFORM_USE_LIGHTING_NAME = "useLighting";
   public const string UNIFORM_SHININESS_NAME = "shininess";
 
+  public const string IN_UV_NAME = "uv";
+  public const string IN_VERTEX_COLOR_NAME = "vertexColor";
+  public const string IN_SPHERICAL_REFLECTION_UV_NAME = "sphericalReflectionUv";
+  public const string IN_LINEAR_REFLECTION_UV_NAME = "linearReflectionUv";
+
   public const float MIN_ALPHA_BEFORE_DISCARD = .95f;
   public const string MIN_ALPHA_BEFORE_DISCARD_TEXT = ".95";
 }
