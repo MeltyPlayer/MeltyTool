@@ -1,7 +1,20 @@
 #version 430
 
-uniform sampler2D texture0;
-uniform sampler2D texture1;
+
+struct Texture {
+  sampler2D sampler;
+  mat4 transform3d;
+};
+
+vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
+  vec4 rawTransformedUv = (transform3d * vec4(inUv, 0, 1));
+
+  // We need to manually divide by w for perspective correction!
+  return rawTransformedUv.xy / rawTransformedUv.w;
+}
+
+uniform Texture texture0;
+uniform Texture texture1;
 in vec2 sphericalReflectionUv;
 
 in vec2 uv0;
@@ -10,7 +23,7 @@ in vec2 uv1;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(2)*texture(texture0, uv0).rgb*texture(texture1, sphericalReflectionUv).rgb;
+  vec3 colorComponent = vec3(2)*texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb*texture(texture1.sampler, transformUv3d(texture1.transform3d, sphericalReflectionUv)).rgb;
 
   float alphaComponent = 1;
 
