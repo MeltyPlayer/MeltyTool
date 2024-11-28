@@ -14,15 +14,17 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
   private readonly IReadOnlyList<IReadOnlyModelAnimation> animations_
       = model.AnimationManager.Animations;
 
-  public string Print(IReadOnlyFixedFunctionMaterial material) {
+  public string Print(IReadOnlyFixedFunctionMaterial material,
+                      IShaderRequirements shaderRequirements) {
     var sb = new StringBuilder();
-    this.Print(sb, material);
+    this.Print(sb, material, shaderRequirements);
     return sb.ToString();
   }
 
   public void Print(
       StringBuilder sb,
-      IReadOnlyFixedFunctionMaterial material) {
+      IReadOnlyFixedFunctionMaterial material,
+      IShaderRequirements shaderRequirements) {
     var equations = material.Equations;
     var registers = material.Registers;
     var textures = material.TextureSources;
@@ -133,18 +135,17 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       sb.AppendLine("in vec3 vertexNormal;");
     }
 
-    for (var i = 0; i < MaterialConstants.MAX_COLORS; ++i) {
-      if (equations.DoOutputsDependOn([
-              FixedFunctionSource.VERTEX_COLOR_0 + i,
-              FixedFunctionSource.VERTEX_ALPHA_0 + i
-          ])) {
+    var usedColors = shaderRequirements.UsedColors;
+    for (var i = 0; i < usedColors.Length; ++i) {
+      if (usedColors[i]) {
         AppendLineBetweenUniformsAndIns();
         sb.AppendLine($"in vec4 vertexColor{i};");
       }
     }
 
-    for (var i = 0; i < MaterialConstants.MAX_UVS; ++i) {
-      if (textures.Any(texture => texture?.UvIndex == i)) {
+    var usedUvs = shaderRequirements.UsedUvs;
+    for (var i = 0; i < usedUvs.Length; ++i) {
+      if (usedUvs[i]) {
         AppendLineBetweenUniformsAndIns();
         sb.AppendLine($"in vec2 uv{i};");
       }

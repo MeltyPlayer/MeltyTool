@@ -71,6 +71,9 @@ public static class GlslUtil {
   public static string GetVertexSrc(IReadOnlyModel model,
                                     bool useBoneMatrices,
                                     IShaderRequirements shaderRequirements) {
+    var usedUvs = shaderRequirements.UsedUvs;
+    var usedColors = shaderRequirements.UsedColors;
+
     var location = 0;
 
     var vertexSrc = new StringBuilder();
@@ -106,7 +109,7 @@ public static class GlslUtil {
            """);
     }
 
-    vertexSrc.Append(@$"
+    vertexSrc.AppendLine(@$"
 layout(location = {UseThenAdd(ref location, MaterialConstants.MAX_UVS)}) in vec2 in_Uvs[{MaterialConstants.MAX_UVS}];
 layout(location = {UseThenAdd(ref location, MaterialConstants.MAX_COLORS)}) in vec4 in_Colors[{MaterialConstants.MAX_COLORS}];
 
@@ -116,24 +119,26 @@ out vec3 tangent;
 out vec3 binormal;
 out vec2 normalUv;");
 
-    for (var i = 0; i < MaterialConstants.MAX_UVS; ++i) {
-      vertexSrc.Append($@"
-out vec2 uv{i};");
+    for (var i = 0; i < usedUvs.Length; ++i) {
+      if (usedUvs[i]) {
+        vertexSrc.AppendLine($"out vec2 uv{i};");
+      }
     }
 
-    for (var i = 0; i < MaterialConstants.MAX_COLORS; ++i) {
-      vertexSrc.Append($@"
-out vec4 vertexColor{i};");
+    for (var i = 0; i < usedColors.Length; ++i) {
+      if (usedColors[i]) {
+        vertexSrc.AppendLine($"out vec4 vertexColor{i};");
+      }
     }
 
-    vertexSrc.Append($$"""
+    vertexSrc.Append("""
 
-                       void main() {
-                         mat4 mvpMatrix = {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}} * {{GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME}};
-                       """);
+                     void main() {
+                     """);
 
     if (useBoneMatrices) {
-      vertexSrc.Append($@"
+      vertexSrc.AppendLine($@"
+  mat4 mvpMatrix = {GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME} * {GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME};
   mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
                           {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
                           {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
@@ -150,7 +155,7 @@ out vec4 vertexColor{i};");
   binormal = cross(vertexNormal, tangent);
   normalUv = normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy;");
     } else {
-      vertexSrc.Append($@"
+      vertexSrc.AppendLine($@"
   gl_Position = mvpMatrix * vec4(in_Position, 1);
   vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;
   tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;
@@ -158,20 +163,19 @@ out vec4 vertexColor{i};");
   normalUv = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;");
     }
 
-    for (var i = 0; i < MaterialConstants.MAX_UVS; ++i) {
-      vertexSrc.Append($@"
-  uv{i} = in_Uvs[{i}];");
+    for (var i = 0; i < usedUvs.Length; ++i) {
+      if (usedUvs[i]) {
+        vertexSrc.AppendLine($"  uv{i} = in_Uvs[{i}];");
+      }
     }
 
-    for (var i = 0; i < MaterialConstants.MAX_COLORS; ++i) {
-      vertexSrc.Append($"""
-                        
-                          vertexColor{i} = in_Colors[{i}];
-                        """);
+    for (var i = 0; i < usedColors.Length; ++i) {
+      if (usedColors[i]) {
+        vertexSrc.AppendLine($"  vertexColor{i} = in_Colors[{i}];");
+      }
     }
 
-    vertexSrc.Append(@"
-}");
+    vertexSrc.AppendLine("}");
 
     return vertexSrc.ToString();
   }

@@ -5,7 +5,6 @@ uniform sampler2D texture1;
 
 in vec4 vertexColor0;
 in vec2 uv0;
-in vec2 uv1;
 
 out vec4 fragColor;
 

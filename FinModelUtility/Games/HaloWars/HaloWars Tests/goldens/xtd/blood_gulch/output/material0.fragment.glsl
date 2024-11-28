@@ -41,8 +41,7 @@ in vec4 vertexColor0;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec3 tangent;
-in vec3 binormal;
-in vec2 uv0;
+in vec3 binormal;in vec2 uv0;
 
 void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 normal, out vec3 surfaceToLightNormal, out float attenuation) {
   vec3 surfaceToLight = light.position - position;

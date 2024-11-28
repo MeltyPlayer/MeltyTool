@@ -18,6 +18,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
     var animations = model.AnimationManager.Animations;
 
     var diffuseTexture = material.Textures.FirstOrDefault();
+    var uvIndex = diffuseTexture?.UvIndex ?? 0;
     var hasNormals = model.Skin.HasNormalsForMaterial(material);
 
     var fragmentSrc = new StringBuilder();
@@ -64,9 +65,9 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
     }
 
     fragmentSrc.Append(
-        """
+        $"""
 
-        in vec2 uv0;
+        in vec2 uv{uvIndex};
         """);
 
     if (hasNormals) {
@@ -87,7 +88,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
 
           void main() {
-            fragColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", "uv0", diffuseTexture, animations)}} * vertexColor0{{(material.DiffuseColor != null ? " * diffuseColor" : "")}};
+            fragColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{uvIndex}", diffuseTexture, animations)}} * vertexColor0{{(material.DiffuseColor != null ? " * diffuseColor" : "")}};
           """);
 
     if (hasNormals) {
