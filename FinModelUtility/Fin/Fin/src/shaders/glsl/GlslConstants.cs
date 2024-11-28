@@ -10,7 +10,7 @@ public static class GlslConstants {
   public const string UBO_LIGHTS_NAME = "Lights";
 
   public const string UNIFORM_MODEL_MATRIX_NAME = "modelMatrix";
-  public const string UNIFORM_MODEL_VIEW_MATRIX_NAME = "modelViewMatrix";
+  public const string UNIFORM_VIEW_MATRIX_NAME = "viewMatrix";
   public const string UNIFORM_PROJECTION_MATRIX_NAME = "projectionMatrix";
   public const string UNIFORM_CAMERA_POSITION_NAME = "cameraPosition";
 

@@ -25,14 +25,14 @@ public class MatricesUbo {
 
   public void UpdateData(
       Matrix4x4 modelMatrix,
-      Matrix4x4 modelViewMatrix,
+      Matrix4x4 viewMatrix,
       Matrix4x4 projectionMatrix,
       ReadOnlySpan<Matrix4x4> boneMatrices) {
     var offset = 0;
     Span<byte> buffer = stackalloc byte[this.bufferSize_];
 
     UboUtil.AppendMatrix4x4(buffer, ref offset, modelMatrix);
-    UboUtil.AppendMatrix4x4(buffer, ref offset, modelViewMatrix);
+    UboUtil.AppendMatrix4x4(buffer, ref offset, viewMatrix);
     UboUtil.AppendMatrix4x4(buffer, ref offset, projectionMatrix);
     UboUtil.AppendMatrix4x4s(buffer, ref offset, boneMatrices);
 

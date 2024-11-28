@@ -19,29 +19,19 @@ public enum TransformMatrixMode {
 
 public static class GlTransform {
   private static readonly Matrix4x4Stack modelMatrix_ = new();
-  private static readonly Matrix4x4Stack modelViewMatrix_ = new();
+  private static readonly Matrix4x4Stack viewMatrix_ = new();
   private static readonly Matrix4x4Stack projectionMatrix_ = new();
 
-  private static readonly Matrix4x4Stack[] modelMatrices_ = [
-      modelMatrix_,
-      modelViewMatrix_
-  ];
-
-  private static readonly Matrix4x4Stack[] viewMatrices = [modelViewMatrix_];
-
-  private static readonly Matrix4x4Stack[] projectionMatrices =
-      [projectionMatrix_];
-
-  private static Matrix4x4Stack[] currentMatrices_ = [];
+  private static Matrix4x4Stack currentMatrix_ = modelMatrix_;
 
   public static Matrix4x4 ModelMatrix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     get => modelMatrix_.Top;
   }
 
-  public static Matrix4x4 ModelViewMatrix {
+  public static Matrix4x4 ViewMatrix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => modelViewMatrix_.Top;
+    get => viewMatrix_.Top;
   }
 
   public static Matrix4x4 ProjectionMatrix {
@@ -66,16 +56,12 @@ public static class GlTransform {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void PushMatrix() {
-    foreach (var currentMatrix in currentMatrices_) {
-      currentMatrix.Push();
-    }
+    currentMatrix_.Push();
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void PopMatrix() {
-    foreach (var currentMatrix in currentMatrices_) {
-      currentMatrix.Pop();
-    }
+    currentMatrix_.Pop();
   }
 
   public static unsafe void PassMatricesIntoGl() {
@@ -83,30 +69,26 @@ public static class GlTransform {
     GL.MatrixMode(GlMatrixMode.Projection);
     GL.LoadMatrix(&(projection.M11));
 
-    var modelViewMatrix = ModelViewMatrix;
+    var modelViewMatrix = ModelMatrix * ViewMatrix;
     GL.MatrixMode(GlMatrixMode.Modelview);
     GL.LoadMatrix(&(modelViewMatrix.M11));
   }
 
   public static void MatrixMode(TransformMatrixMode mode)
-    => currentMatrices_ = mode switch {
-        TransformMatrixMode.MODEL      => modelMatrices_,
-        TransformMatrixMode.VIEW       => viewMatrices,
-        TransformMatrixMode.PROJECTION => projectionMatrices,
+    => currentMatrix_ = mode switch {
+        TransformMatrixMode.MODEL      => modelMatrix_,
+        TransformMatrixMode.VIEW       => viewMatrix_,
+        TransformMatrixMode.PROJECTION => projectionMatrix_,
     };
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void LoadIdentity() {
-    foreach (var currentMatrix in currentMatrices_) {
-      currentMatrix.SetIdentity();
-    }
+    currentMatrix_.SetIdentity();
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void MultMatrix(Matrix4x4 matrix) {
-    foreach (var currentMatrix in currentMatrices_) {
-      currentMatrix.MultiplyInPlace(matrix);
-    }
+    currentMatrix_.MultiplyInPlace(matrix);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

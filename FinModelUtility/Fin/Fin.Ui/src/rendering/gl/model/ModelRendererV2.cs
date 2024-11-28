@@ -70,7 +70,7 @@ public class ModelRendererV2(
     this.lightsUbo_ ??= new LightsUbo();
 
     this.matricesUbo_.UpdateData(GlTransform.ModelMatrix,
-                                 GlTransform.ModelViewMatrix,
+                                 GlTransform.ViewMatrix,
                                  GlTransform.ProjectionMatrix,
                                  boneMatrices);
     this.matricesUbo_.Bind();

@@ -83,7 +83,7 @@ public static class GlslUtil {
 
                        layout (std140, binding = {{GlslConstants.UBO_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRICES_NAME}} {
                          mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
-                         mat4 {{GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME}};
+                         mat4 {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}};
                          mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
                          
                          mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
@@ -122,6 +122,7 @@ out vec3 binormal;");
       vertexSrc.AppendLine(
           $"out vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME};");
     }
+
     if (shaderRequirements.UsesLinearReflectionMapping) {
       vertexSrc.AppendLine(
           $"out vec2 {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME};");
@@ -135,25 +136,28 @@ out vec3 binormal;");
 
     for (var i = 0; i < usedColors.Length; ++i) {
       if (usedColors[i]) {
-        vertexSrc.AppendLine($"out vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}{i};");
+        vertexSrc.AppendLine(
+            $"out vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}{i};");
       }
     }
 
-    vertexSrc.Append("""
+    vertexSrc.Append($$"""
 
-                     void main() {
-                     """);
+                       void main() {
+                         mat4 mvMatrix = {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}} * {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
+                         mat4 mvpMatrix = {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}} * mvMatrix;
+                       
+                       """);
 
     if (useBoneMatrices) {
       vertexSrc.AppendLine($@"
-  mat4 mvpMatrix = {GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME} * {GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME};
   mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
                           {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
                           {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
                           {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.w] * in_BoneWeights.w;
 
   mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
-  mat4 projectionVertexModelMatrix = {GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME} * {GlslConstants.UNIFORM_MODEL_VIEW_MATRIX_NAME} * mergedBoneMatrix;
+  mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
 
   gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
 
@@ -163,23 +167,59 @@ out vec3 binormal;");
   binormal = cross(vertexNormal, tangent);");
 
       if (shaderRequirements.UsesSphericalReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = asin(normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy) / 3.14159 + .5;");
+        vertexSrc.AppendLine($"""
+                                // Hi
+                              
+                                vec3 u = normalize( vec3( mvMatrix * mergedBoneMatrix * vec4(in_Position, 1)) );
+                              
+                                mat3 normalMatrix = transpose(inverse(mat3(mvMatrix * mergedBoneMatrix)));
+                                vec3 n = normalize( normalMatrix * in_Normal );
+                                
+                                vec3 r = reflect( u, n );
+                                float m = 2. * sqrt(
+                                  pow( r.x, 2. ) +
+                                  pow( r.y, 2. ) +
+                                  pow( r.z + 1., 2. )
+                                );
+                              
+                                {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = r.xy / m + .5;
+                              """);
       }
+
       if (shaderRequirements.UsesLinearReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
+        vertexSrc.AppendLine(
+            $"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
       }
     } else {
       vertexSrc.AppendLine($@"
   gl_Position = mvpMatrix * vec4(in_Position, 1);
+
+  vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
   vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;
   tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;
   binormal = cross(vertexNormal, tangent);");
 
       if (shaderRequirements.UsesSphericalReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = asin(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159 + .5;");
+        vertexSrc.AppendLine($"""
+                                // Hello
+                              
+                                vec3 e = normalize( vec3( mvMatrix * vec4(in_Position, 1)) );
+                                vec3 n = normalize( vec3( mvMatrix * vec4(in_Normal, 0)) );
+                                
+                                vec3 r = reflect( e, n );
+                                float m = 2. * sqrt(
+                                  pow( r.x, 2. ) +
+                                  pow( r.y, 2. ) +
+                                  pow( r.z + 1., 2. )
+                                );
+                              
+                                {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = r.xy / m + .5;
+                              """);
       }
+
       if (shaderRequirements.UsesLinearReflectionMapping) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
+        vertexSrc.AppendLine(
+            $"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
       }
     }
 
@@ -191,7 +231,8 @@ out vec3 binormal;");
 
     for (var i = 0; i < usedColors.Length; ++i) {
       if (usedColors[i]) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Colors[{i}];");
+        vertexSrc.AppendLine(
+            $"  {GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Colors[{i}];");
       }
     }
 

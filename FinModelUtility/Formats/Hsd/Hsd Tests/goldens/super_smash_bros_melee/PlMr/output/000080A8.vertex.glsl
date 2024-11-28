@@ -2,7 +2,7 @@
 
 layout (std140, binding = 1) uniform Matrices {
   mat4 modelMatrix;
-  mat4 modelViewMatrix;
+  mat4 viewMatrix;
   mat4 projectionMatrix;
   
   mat4 boneMatrices[62];  
@@ -22,7 +22,12 @@ out vec3 tangent;
 out vec3 binormal;
 
 void main() {
+  mat4 mvMatrix = viewMatrix * modelMatrix;
+  mat4 mvpMatrix = projectionMatrix * mvMatrix;
+
   gl_Position = mvpMatrix * vec4(in_Position, 1);
+
+  vertexPosition = vec3(modelMatrix * vec4(in_Position, 1));
   vertexNormal = normalize(modelMatrix * vec4(in_Normal, 0)).xyz;
   tangent = normalize(modelMatrix * vec4(in_Tangent)).xyz;
   binormal = cross(vertexNormal, tangent);

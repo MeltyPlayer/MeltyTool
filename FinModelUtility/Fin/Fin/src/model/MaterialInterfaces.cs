@@ -423,19 +423,33 @@ public partial interface ITexture : IIndexable {
   ITexture SetCenter3d(float x, float y, float z);
 
   Vector3? Translation { get; }
-  ITexture SetTranslation2d(float x, float y);
-  ITexture SetTranslation3d(float x, float y, float z);
+
+  ITexture SetTranslation2d(float x, float y)
+    => SetTranslation2d(new Vector2(x, y));
+
+  ITexture SetTranslation2d(Vector2 xy);
+
+  ITexture SetTranslation3d(float x, float y, float z)
+    => SetTranslation3d(new Vector3(x, y, z));
+
+  ITexture SetTranslation3d(Vector3 xyz);
 
   Vector3? Scale { get; }
-  ITexture SetScale2d(float x, float y);
-  ITexture SetScale3d(float x, float y, float z);
+  ITexture SetScale2d(float x, float y) => SetScale2d(new Vector2(x, y));
+  ITexture SetScale2d(Vector2 xy);
+
+  ITexture SetScale3d(float x, float y, float z)
+    => SetScale3d(new Vector3(x, y, z));
+
+  ITexture SetScale3d(Vector3 xyz);
 
   Vector3? RotationRadians { get; }
   ITexture SetRotationRadians2d(float rotationRadians);
 
-  ITexture SetRotationRadians3d(float xRadians,
-                                float yRadians,
-                                float zRadians);
+  ITexture SetRotationRadians3d(float x, float y, float z)
+    => SetRotationRadians3d(new Vector3(x, y, z));
+
+  ITexture SetRotationRadians3d(Vector3 xyz);
 
   // TODO: Support fixed # of repeats
   // TODO: Support animated textures

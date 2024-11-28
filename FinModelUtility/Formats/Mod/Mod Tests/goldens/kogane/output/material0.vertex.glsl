@@ -2,7 +2,7 @@
 
 layout (std140, binding = 1) uniform Matrices {
   mat4 modelMatrix;
-  mat4 modelViewMatrix;
+  mat4 viewMatrix;
   mat4 projectionMatrix;
   
   mat4 boneMatrices[8];  
@@ -24,10 +24,27 @@ out vec2 sphericalReflectionUv;
 out vec2 uv0;
 
 void main() {
+  mat4 mvMatrix = viewMatrix * modelMatrix;
+  mat4 mvpMatrix = projectionMatrix * mvMatrix;
+
   gl_Position = mvpMatrix * vec4(in_Position, 1);
+
+  vertexPosition = vec3(modelMatrix * vec4(in_Position, 1));
   vertexNormal = normalize(modelMatrix * vec4(in_Normal, 0)).xyz;
   tangent = normalize(modelMatrix * vec4(in_Tangent)).xyz;
   binormal = cross(vertexNormal, tangent);
-  sphericalReflectionUv = asin(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159 + .5;
+  // Hello
+
+  vec3 e = normalize( vec3( mvMatrix * vec4(in_Position, 1)) );
+  vec3 n = normalize( vec3( mvMatrix * vec4(in_Normal, 0)) );
+  
+  vec3 r = reflect( e, n );
+  float m = 2. * sqrt(
+    pow( r.x, 2. ) +
+    pow( r.y, 2. ) +
+    pow( r.z + 1., 2. )
+  );
+
+  sphericalReflectionUv = r.xy / m + .5;
   uv0 = in_Uvs[0];
 }

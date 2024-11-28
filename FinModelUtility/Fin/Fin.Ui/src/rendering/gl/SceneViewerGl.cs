@@ -130,6 +130,11 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
                               1.0 * width / height,
                               this.NearPlane,
                               this.FarPlane);
+    }
+
+    {
+      GlTransform.MatrixMode(TransformMatrixMode.VIEW);
+      GlTransform.LoadIdentity();
       GlTransform.LookAt(this.Camera.X,
                          this.Camera.Y,
                          this.Camera.Z,
@@ -141,8 +146,9 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
                          this.Camera.ZUp);
     }
 
+    GlTransform.MatrixMode(TransformMatrixMode.MODEL);
+
     {
-      GlTransform.MatrixMode(TransformMatrixMode.VIEW);
       GlTransform.LoadIdentity();
 
       var customSkyboxRenderer
@@ -157,7 +163,6 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
                               this.Camera.Z);
       }
 
-      GlTransform.MatrixMode(TransformMatrixMode.MODEL);
       GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
 
       var skyboxRenderer = (IRenderable?) customSkyboxRenderer ??
@@ -166,10 +171,6 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     }
 
     {
-      GlTransform.MatrixMode(TransformMatrixMode.VIEW);
-      GlTransform.LoadIdentity();
-
-      GlTransform.MatrixMode(TransformMatrixMode.MODEL);
       GlTransform.LoadIdentity();
       GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
 

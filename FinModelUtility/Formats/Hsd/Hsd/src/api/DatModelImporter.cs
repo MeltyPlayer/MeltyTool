@@ -210,32 +210,25 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               _                => UvType.STANDARD
           };
 
+          FinMatrix4x4Util.FromTrs(tObj.Translation,
+                                   tObj.RotationRadians.CreateZyxRadians(),
+                                   tObj.Scale)
+                          .InvertInPlace()
+                          .Decompose(out var tObjTranslation,
+                                     out var tObjRotation,
+                                     out var tObjScale);
+          finTexture.SetTranslation3d(tObjTranslation)
+                             .SetRotationRadians3d(tObjRotation.ToEulerRadians())
+                             .SetScale3d(tObjScale *
+                                         new Vector3(
+                                             tObj.RepeatS,
+                                             tObj.RepeatT,
+                                             1));
+
           return finTexture;
         });
-    var finTextureScalerByTObjOffset
-        = new LazyDictionary<uint, Func<Vector2, Vector2>>(
-            tObjOffset => {
-              var tObj = tObjByOffset[tObjOffset];
-
-              // Why tf does Melee have 3D texture transforms......
-              // https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRawViewer/Converters/ModelExporter.cs#L526
-              var tObjTranslation = tObj.Translation;
-              var tObjRotationRadians = tObj.RotationRadians;
-              var tObjScale = tObj.Scale;
-
-              // This is an absolute nightmare, but it works.
-              var uvMatrix = FinMatrix4x4Util
-                             .FromTrs(tObjTranslation,
-                                      tObjRotationRadians.CreateZyxRadians(),
-                                      tObjScale)
-                             .InvertInPlace();
-
-              return uv => uvMatrix.TransformPosition(uv) *
-                           new Vector2(tObj.RepeatS, tObj.RepeatT);
-            });
     var finMaterialsAndTextureMatricesByMObjOffset =
-        new LazyDictionary<(uint, CullingMode), (IMaterial,
-            Func<Vector2, Vector2>[])?>(
+        new LazyDictionary<(uint, CullingMode), IMaterial?>(
             (mObjOffsetAndCullingMode => {
               var (mObjOffset, cullingMode) = mObjOffsetAndCullingMode;
               if (mObjOffset == 0) {
@@ -247,13 +240,10 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
 
               var tObjsAndFinTextures =
                   new (TObj, ITexture)[tObjsAndOffsets.Length];
-              var textureScalers
-                  = new Func<Vector2, Vector2>[tObjsAndFinTextures.Length];
               for (var i = 0; i < tObjsAndOffsets.Length; i++) {
                 var (tObjOffset, tObj) = tObjsAndOffsets[i];
                 tObjsAndFinTextures[i] = (
                     tObj, finTexturesByTObjOffset[tObjOffset]);
-                textureScalers[i] = finTextureScalerByTObjOffset[tObjOffset];
               }
 
               var fixedFunctionMaterial =
@@ -298,7 +288,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               }
 
               fixedFunctionMaterial.Name = mObj.Name ?? mObjOffset.ToHex();
-              return (fixedFunctionMaterial, textureScalers);
+              return fixedFunctionMaterial;
             }));
 
     // Sorts all dObjs so that the opaque ones are rendered first, and then the translucent (XLU) ones
@@ -348,11 +338,9 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                 _             => CullingMode.SHOW_BOTH
             };
 
-        var tuple =
+        var finMaterial =
             finMaterialsAndTextureMatricesByMObjOffset[
                 (mObjOffset, cullingMode)];
-        var finMaterial = tuple?.Item1;
-        var textureScalers = tuple?.Item2;
 
         var vertexSpace = pObj.VertexSpace;
         var finWeights =
@@ -386,12 +374,12 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                     finVertex.SetColor(datVertex.Color);
 
                     if (datVertex.Uv0 != null) {
-                      var uv0 = textureScalers[0](datVertex.Uv0.Value);
+                      var uv0 = datVertex.Uv0.Value;
                       finVertex.SetUv(0, uv0.X, uv0.Y);
                     }
 
                     if (datVertex.Uv1 != null) {
-                      var uv1 = textureScalers[1](datVertex.Uv1.Value);
+                      var uv1 = datVertex.Uv1.Value;
                       finVertex.SetUv(1, uv1.X, uv1.Y);
                     }
 
