@@ -272,6 +272,11 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
         ? toKeyframe.ValueIn
         : defaultValue;
 
-  public void GetAllFrames(Span<Quaternion> dst)
-    => throw new NotImplementedException();
+  public void GetAllFrames(Span<Quaternion> dst) {
+    // TODO: Switch this to use a more optimized approach
+    for (var i = 0; i < dst.Length; ++i) {
+      this.TryGetAtFrame(i, out var rotation);
+      dst[i] = rotation;
+    }
+  }
 }

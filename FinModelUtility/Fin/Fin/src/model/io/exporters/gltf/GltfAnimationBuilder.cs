@@ -50,6 +50,7 @@ public class GltfAnimationBuilder {
 
     Span<Vector3> translationsOrScales
         = stackalloc Vector3[animation.FrameCount];
+    Span<Quaternion> rotations = stackalloc Quaternion[animation.FrameCount];
 
     foreach (var (node, bone) in skinNodesAndBones) {
       if (!animation.BoneTracks.TryGetValue(bone, out var boneTracks)) {
@@ -73,11 +74,10 @@ public class GltfAnimationBuilder {
       var rotationDefined = boneTracks.Rotations?.HasAnyData ?? false;
       if (rotationDefined) {
         rotationKeyframes.Clear();
+        boneTracks.Rotations.GetAllFrames(rotations);
         for (var i = 0; i < animation.FrameCount; ++i) {
           var time = i / fps;
-          if (boneTracks.Rotations.TryGetAtFrame(i, out var rotation)) {
-            rotationKeyframes[time] = rotation;
-          }
+          rotationKeyframes[time] = rotations[i];
         }
 
         gltfAnimation.CreateRotationChannel(node, rotationKeyframes);

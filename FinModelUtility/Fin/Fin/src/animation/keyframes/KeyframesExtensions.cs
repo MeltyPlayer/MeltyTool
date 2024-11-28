@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-using fin.animation.types;
+using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
 
 namespace fin.animation.keyframes;
@@ -46,6 +46,15 @@ public static class KeyframesExtensions {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SetKeyframe(
       this ISeparateVector3Keyframes<Keyframe<float>> keyframes,
+      int axis,
+      float frame,
+      float value)
+    => keyframes.Axes[axis].Add(new Keyframe<float>(frame, value));
+
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void SetKeyframe(
+      this ISeparateEulerRadiansKeyframes<Keyframe<float>> keyframes,
       int axis,
       float frame,
       float value)
