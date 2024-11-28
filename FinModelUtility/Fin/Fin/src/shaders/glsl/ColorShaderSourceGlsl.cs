@@ -9,8 +9,10 @@ namespace fin.shaders.glsl;
 public class ColorShaderSourceGlsl : IShaderSourceGlsl {
   public ColorShaderSourceGlsl(IReadOnlyModel model,
                                IReadOnlyMaterial material,
-                               bool useBoneMatrices) {
-    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);
+                               bool useBoneMatrices,
+                               IShaderRequirements shaderRequirements) {
+    this.VertexShaderSource
+        = GlslUtil.GetVertexSrc(model, useBoneMatrices, shaderRequirements);
 
     var hasNormals = model.Skin.HasNormalsForMaterial(material);
 

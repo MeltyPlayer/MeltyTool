@@ -10,8 +10,10 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
   public StandardShaderSourceGlsl(
       IReadOnlyModel model,
       IReadOnlyStandardMaterial material,
-      bool useBoneMatrices) {
-    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, useBoneMatrices);
+      bool useBoneMatrices,
+      IShaderRequirements shaderRequirements) {
+    this.VertexShaderSource
+        = GlslUtil.GetVertexSrc(model, useBoneMatrices, shaderRequirements);
 
     var animations = model.AnimationManager.Animations;
 

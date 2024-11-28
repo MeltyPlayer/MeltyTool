@@ -69,7 +69,8 @@ public static class GlslUtil {
 
   // TODO: Only include uvs/colors as needed
   public static string GetVertexSrc(IReadOnlyModel model,
-                                    bool useBoneMatrices) {
+                                    bool useBoneMatrices,
+                                    IShaderRequirements shaderRequirements) {
     var location = 0;
 
     var vertexSrc = new StringBuilder();

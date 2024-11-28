@@ -6,10 +6,11 @@ namespace fin.shaders.glsl;
 public class FixedFunctionShaderSourceGlsl(
     IReadOnlyModel model,
     IFixedFunctionMaterial material,
-    bool useBoneMatrices)
+    bool useBoneMatrices,
+    IShaderRequirements shaderRequirements)
     : IShaderSourceGlsl {
   public string VertexShaderSource { get; }
-    = GlslUtil.GetVertexSrc(model, useBoneMatrices);
+    = GlslUtil.GetVertexSrc(model, useBoneMatrices, shaderRequirements);
 
   public string FragmentShaderSource { get; } =
     new FixedFunctionEquationsGlslPrinter(model).Print(material);
