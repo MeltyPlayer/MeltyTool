@@ -42,6 +42,12 @@ public class ShaderRequirements : IShaderRequirements {
         break;
       }
       case IFixedFunctionMaterial fixedFunctionMaterial: {
+        foreach (var texture in fixedFunctionMaterial.TextureSources) {
+          if (texture != null) {
+            this.UsedUvs[texture.UvIndex] = true;
+          }
+        }
+
         var equations = fixedFunctionMaterial.Equations;
         for (var i = 0; i < this.UsedColors.Length; ++i) {
           this.UsedColors[i] = equations.DoOutputsDependOn([

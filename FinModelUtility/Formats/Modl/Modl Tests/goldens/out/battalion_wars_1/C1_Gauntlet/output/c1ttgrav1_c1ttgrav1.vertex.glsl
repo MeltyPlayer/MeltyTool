@@ -21,6 +21,7 @@ out vec3 vertexNormal;
 out vec3 tangent;
 out vec3 binormal;
 out vec2 uv0;
+out vec2 uv1;
 out vec4 vertexColor0;
 
 void main() {
@@ -29,5 +30,6 @@ void main() {
   tangent = normalize(modelMatrix * vec4(in_Tangent)).xyz;
   binormal = cross(vertexNormal, tangent);
   uv0 = in_Uvs[0];
+  uv1 = in_Uvs[1];
   vertexColor0 = in_Colors[0];
 }

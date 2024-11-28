@@ -141,7 +141,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     for (var i = 0; i < usedColors.Length; ++i) {
       if (usedColors[i]) {
         AppendLineBetweenUniformsAndIns();
-        sb.AppendLine($"in vec4 vertexColor{i};");
+        sb.AppendLine($"in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}{i};");
       }
     }
 
@@ -149,7 +149,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     for (var i = 0; i < usedUvs.Length; ++i) {
       if (usedUvs[i]) {
         AppendLineBetweenUniformsAndIns();
-        sb.AppendLine($"in vec2 uv{i};");
+        sb.AppendLine($"in vec2 {GlslConstants.IN_UV_NAME}{i};");
       }
     }
 
@@ -568,8 +568,8 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
         FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.a",
 
-        FixedFunctionSource.VERTEX_ALPHA_0 => "vertexColor0.a",
-        FixedFunctionSource.VERTEX_ALPHA_1 => "vertexColor1.a",
+        FixedFunctionSource.VERTEX_ALPHA_0 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.a",
+        FixedFunctionSource.VERTEX_ALPHA_1 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.a",
 
         FixedFunctionSource.UNDEFINED => "1",
         _                             => throw new ArgumentOutOfRangeException()
@@ -799,11 +799,11 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         FixedFunctionSource.LIGHT_AMBIENT_COLOR => "ambientLightColor.rgb",
         FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.aaa",
 
-        FixedFunctionSource.VERTEX_COLOR_0 => "vertexColor0.rgb",
-        FixedFunctionSource.VERTEX_COLOR_1 => "vertexColor1.rgb",
+        FixedFunctionSource.VERTEX_COLOR_0 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.rgb",
+        FixedFunctionSource.VERTEX_COLOR_1 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.rgb",
 
-        FixedFunctionSource.VERTEX_ALPHA_0 => "vertexColor0.aaa",
-        FixedFunctionSource.VERTEX_ALPHA_1 => "vertexColor1.aaa",
+        FixedFunctionSource.VERTEX_ALPHA_0 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.aaa",
+        FixedFunctionSource.VERTEX_ALPHA_1 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.aaa",
 
         FixedFunctionSource.UNDEFINED => "vec3(1)",
         _                             => throw new ArgumentOutOfRangeException()
@@ -825,7 +825,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     return texture.UvType switch {
         UvType.STANDARD
             => GlslUtil.ReadColorFromTexture(textureName,
-                                             $"uv{texture.UvIndex}",
+                                             $"{GlslConstants.IN_UV_NAME}{texture.UvIndex}",
                                              texture,
                                              this.animations_),
         UvType.SPHERICAL
