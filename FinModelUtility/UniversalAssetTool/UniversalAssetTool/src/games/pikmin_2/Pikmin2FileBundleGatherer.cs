@@ -83,7 +83,7 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     foreach (var abeMapDir in abeMapRootDir.GetExistingSubdirs()) {
       var mapName = abeMapDir.Name;
-      if (mapName == "zukan") {
+      if (mapName.SequenceEqual("zukan")) {
         continue;
       }
 
