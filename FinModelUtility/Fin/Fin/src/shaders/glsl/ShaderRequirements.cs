@@ -36,7 +36,8 @@ public class ShaderRequirements : IShaderRequirements {
       case IColorMaterial
            or INullMaterial
            or ITextureMaterial
-           or IStandardMaterial: {
+           or IStandardMaterial
+           or null: {
         this.UsedColors[0] = true;
         break;
       }
