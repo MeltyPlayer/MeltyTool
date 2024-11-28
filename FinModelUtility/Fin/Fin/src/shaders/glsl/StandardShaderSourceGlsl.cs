@@ -78,13 +78,12 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
          out vec4 fragColor;
 
          in vec4 vertexColor0;
-
+         
          """);
 
     if (hasNormals) {
       fragmentShaderSrc.Append(
           """
-
           in vec3 vertexPosition;
           in vec3 vertexNormal;
           in vec3 tangent;
@@ -109,12 +108,12 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
            {GlslUtil.GetGetMergedLightColorsFunction()}
 
            {GlslUtil.GetApplyMergedLightColorsFunction(true)}
+           
            """);
     }
 
     fragmentShaderSrc.Append(
         $$"""
-
 
           void main() {
             vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{diffuseTexture?.UvIndex ?? 0}", diffuseTexture, animations)}};
