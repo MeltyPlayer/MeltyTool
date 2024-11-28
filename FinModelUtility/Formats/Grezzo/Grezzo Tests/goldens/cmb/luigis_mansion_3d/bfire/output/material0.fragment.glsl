@@ -34,8 +34,8 @@ uniform sampler2D texture1;
 uniform sampler2D texture2;
 uniform float scalar_3dsAlpha0;
 uniform float scalar_3dsAlpha1;
+in vec2 sphericalReflectionUv;
 
-in vec2 normalUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec4 vertexColor0;
@@ -136,7 +136,7 @@ void main() {
   
   vec3 colorComponent = clamp(texture(texture1, uv0).rgb*mergedLightSpecularColor.rgb*vec3(1.4980392158031464) + clamp((ambientLightColor.rgb*vec3(0.800000011920929) + mergedLightDiffuseColor.rgb)*texture(texture1, uv0).rgb, 0, 1), 0, 1);
 
-  float alphaComponent = (vertexColor0.a*texture(texture2, asin(normalUv) / 3.14159 + 0.5).a + scalar_3dsAlpha0)*scalar_3dsAlpha1;
+  float alphaComponent = (vertexColor0.a*texture(texture2, asin(sphericalReflectionUv) / 3.14159 + 0.5).a + scalar_3dsAlpha0)*scalar_3dsAlpha1;
 
   fragColor = vec4(colorComponent, alphaComponent);
 }

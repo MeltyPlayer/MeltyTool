@@ -116,8 +116,16 @@ layout(location = {UseThenAdd(ref location, MaterialConstants.MAX_COLORS)}) in v
 out vec3 vertexPosition;
 out vec3 vertexNormal;
 out vec3 tangent;
-out vec3 binormal;
-out vec2 normalUv;");
+out vec3 binormal;");
+
+    if (shaderRequirements.UsesSphericalReflectionMapping) {
+      vertexSrc.AppendLine(
+          $"out vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME};");
+    }
+    if (shaderRequirements.UsesLinearReflectionMapping) {
+      vertexSrc.AppendLine(
+          $"out vec2 {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME};");
+    }
 
     for (var i = 0; i < usedUvs.Length; ++i) {
       if (usedUvs[i]) {
@@ -152,15 +160,27 @@ out vec2 normalUv;");
   vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
   vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;
   tangent = normalize(vertexModelMatrix * vec4(in_Tangent)).xyz;
-  binormal = cross(vertexNormal, tangent);
-  normalUv = normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy;");
+  binormal = cross(vertexNormal, tangent);");
+
+      if (shaderRequirements.UsesSphericalReflectionMapping) {
+        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy;");
+      }
+      if (shaderRequirements.UsesLinearReflectionMapping) {
+        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy;");
+      }
     } else {
       vertexSrc.AppendLine($@"
   gl_Position = mvpMatrix * vec4(in_Position, 1);
   vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;
   tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;
-  binormal = cross(vertexNormal, tangent); 
-  normalUv = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;");
+  binormal = cross(vertexNormal, tangent);");
+
+      if (shaderRequirements.UsesSphericalReflectionMapping) {
+        vertexSrc.AppendLine($"  {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;");
+      }
+      if (shaderRequirements.UsesLinearReflectionMapping) {
+        vertexSrc.AppendLine($"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;");
+      }
     }
 
     for (var i = 0; i < usedUvs.Length; ++i) {

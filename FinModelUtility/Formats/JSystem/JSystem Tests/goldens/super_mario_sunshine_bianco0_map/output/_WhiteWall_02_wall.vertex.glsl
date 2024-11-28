@@ -20,7 +20,6 @@ out vec3 vertexPosition;
 out vec3 vertexNormal;
 out vec3 tangent;
 out vec3 binormal;
-out vec2 normalUv;
 out vec2 uv0;
 out vec4 vertexColor0;
 
@@ -28,8 +27,7 @@ void main() {
   gl_Position = mvpMatrix * vec4(in_Position, 1);
   vertexNormal = normalize(modelMatrix * vec4(in_Normal, 0)).xyz;
   tangent = normalize(modelMatrix * vec4(in_Tangent)).xyz;
-  binormal = cross(vertexNormal, tangent); 
-  normalUv = normalize(mvpMatrix * vec4(in_Normal, 0)).xy;
+  binormal = cross(vertexNormal, tangent);
   uv0 = in_Uvs[0];
   vertexColor0 = in_Colors[0];
 }

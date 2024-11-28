@@ -121,12 +121,14 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       }
     };
 
-    if (dependsOnAnyTextures &&
-        textures.Any(
-            texture => texture?.UvType is UvType.SPHERICAL
-                                          or UvType.LINEAR)) {
-      AppendLineBetweenUniformsAndIns();
-      sb.AppendLine("in vec2 normalUv;");
+    if (shaderRequirements.UsesSphericalReflectionMapping) {
+      sb.AppendLine(
+          $"in vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME};");
+    }
+
+    if (shaderRequirements.UsesLinearReflectionMapping) {
+      sb.AppendLine(
+          $"in vec2 {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME};");
     }
 
     if (dependsOnLights) {
@@ -829,14 +831,14 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         UvType.SPHERICAL
             => GlslUtil.ReadColorFromTexture(
                 textureName,
-                "normalUv",
+                GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME,
                 uv => $"asin({uv}) / 3.14159 + 0.5",
                 texture,
                 this.animations_),
         UvType.LINEAR
             => GlslUtil.ReadColorFromTexture(
                 textureName,
-                "normalUv",
+                GlslConstants.IN_LINEAR_REFLECTION_UV_NAME,
                 uv => $"acos({uv}) / 3.14159",
                 texture,
                 this.animations_),

@@ -31,8 +31,8 @@ layout (std140, binding = 2) uniform Lights {
 uniform vec3 cameraPosition;
 uniform float shininess;
 uniform sampler2D texture0;
+in vec2 sphericalReflectionUv;
 
-in vec2 normalUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 uv0;
@@ -130,7 +130,7 @@ void main() {
   vec4 mergedLightSpecularColor = vec4(0);
   getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
   
-  vec3 colorComponent = (mergedLightDiffuseColor.rgb*vec3(2)*vec3(0.7019608020782471,0.501960813999176,0) + vec3(1,1,0.5490196347236633)*mergedLightSpecularColor.rgb)*vec3(0.5) + texture(texture0, asin(normalUv) / 3.14159 + 0.5).rgb*vec3(0.5);
+  vec3 colorComponent = (mergedLightDiffuseColor.rgb*vec3(2)*vec3(0.7019608020782471,0.501960813999176,0) + vec3(1,1,0.5490196347236633)*mergedLightSpecularColor.rgb)*vec3(0.5) + texture(texture0, asin(sphericalReflectionUv) / 3.14159 + 0.5).rgb*vec3(0.5);
 
   float alphaComponent = 1;
 

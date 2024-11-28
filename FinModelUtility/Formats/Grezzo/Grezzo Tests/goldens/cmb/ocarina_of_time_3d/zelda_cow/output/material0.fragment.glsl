@@ -32,8 +32,8 @@ uniform vec3 cameraPosition;
 uniform float shininess;
 uniform sampler2D texture0;
 uniform sampler2D texture1;
+in vec2 sphericalReflectionUv;
 
-in vec2 normalUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec4 vertexColor0;
@@ -132,7 +132,7 @@ void main() {
   vec4 mergedLightSpecularColor = vec4(0);
   getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
   
-  vec3 colorComponent = clamp(clamp(vertexColor0.rgb*(ambientLightColor.rgb*vec3(0.4000000059604645) + mergedLightDiffuseColor.rgb*vec3(0.49803921580314636) + mergedLightSpecularColor.rgb)*texture(texture0, uv0).rgb*vec3(2), 0, 1) + texture(texture1, asin(normalUv) / 3.14159 + 0.5).rgb, 0, 1);
+  vec3 colorComponent = clamp(clamp(vertexColor0.rgb*(ambientLightColor.rgb*vec3(0.4000000059604645) + mergedLightDiffuseColor.rgb*vec3(0.49803921580314636) + mergedLightSpecularColor.rgb)*texture(texture0, uv0).rgb*vec3(2), 0, 1) + texture(texture1, asin(sphericalReflectionUv) / 3.14159 + 0.5).rgb, 0, 1);
 
   float alphaComponent = vertexColor0.a*texture(texture0, uv0).a;
 

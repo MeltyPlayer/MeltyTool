@@ -43,8 +43,8 @@ uniform vec3 color_GxMaterialColor0;
 uniform vec3 color_GxAmbientColor0;
 uniform vec3 color_GxColorRegister0;
 uniform float scalar_GxMaterialAlpha0;
+in vec2 linearReflectionUv;
 
-in vec2 normalUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 uv0;
@@ -138,7 +138,7 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(clamp(color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1)*texture(texture1, uv0).rgb*vec3(2), 0, 1) + texture(texture2, uv0).rgb*clamp((color_GxColorRegister0 + texture(texture0.sampler, texture0.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb*(vec3(1) + vec3(-1)*texture(texture0.sampler, texture0.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb) + texture(texture0.sampler, texture0.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb*texture(texture0.sampler, texture0.transform2d * vec3((acos(normalUv) / 3.14159).x, (acos(normalUv) / 3.14159).y, 1)).rgb)*vec3(2), 0, 1)*color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1), 0, 1);
+  vec3 colorComponent = clamp(clamp(color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1)*texture(texture1, uv0).rgb*vec3(2), 0, 1) + texture(texture2, uv0).rgb*clamp((color_GxColorRegister0 + texture(texture0.sampler, texture0.transform2d * vec3((acos(linearReflectionUv) / 3.14159).x, (acos(linearReflectionUv) / 3.14159).y, 1)).rgb*(vec3(1) + vec3(-1)*texture(texture0.sampler, texture0.transform2d * vec3((acos(linearReflectionUv) / 3.14159).x, (acos(linearReflectionUv) / 3.14159).y, 1)).rgb) + texture(texture0.sampler, texture0.transform2d * vec3((acos(linearReflectionUv) / 3.14159).x, (acos(linearReflectionUv) / 3.14159).y, 1)).rgb*texture(texture0.sampler, texture0.transform2d * vec3((acos(linearReflectionUv) / 3.14159).x, (acos(linearReflectionUv) / 3.14159).y, 1)).rgb)*vec3(2), 0, 1)*color_GxMaterialColor0*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + color_GxAmbientColor0), 0, 1), 0, 1);
 
   float alphaComponent = scalar_GxMaterialAlpha0;
 

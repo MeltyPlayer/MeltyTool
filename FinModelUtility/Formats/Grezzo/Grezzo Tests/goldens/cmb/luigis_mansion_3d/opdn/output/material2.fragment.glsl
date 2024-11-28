@@ -36,8 +36,8 @@ uniform sampler2D texture2;
 uniform vec3 color_3dsColor2;
 uniform vec3 color_3dsColor3;
 uniform float scalar_3dsAlpha1;
+in vec2 sphericalReflectionUv;
 
-in vec2 normalUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec4 vertexColor0;
@@ -136,7 +136,7 @@ void main() {
   vec4 mergedLightSpecularColor = vec4(0);
   getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
   
-  vec3 colorComponent = clamp(clamp((color_3dsColor3 + vec3(texture(texture0, uv0).rgb.g)), 0, 1)*clamp(clamp((vec3(texture(texture1, uv0).rgb.b)*texture(texture2, asin(normalUv) / 3.14159 + 0.5).rgb + clamp(color_3dsColor2*vec3(1 + -1*vertexColor0.rgb.r*vertexColor0.rgb.r*2) + clamp(vertexColor0.rgb, 0, 1), 0, 1)), 0, 1)*texture(texture1, uv0).rgb*vec3(2)*(ambientLightColor.rgb + mergedLightDiffuseColor.rgb), 0, 1), 0, 1);
+  vec3 colorComponent = clamp(clamp((color_3dsColor3 + vec3(texture(texture0, uv0).rgb.g)), 0, 1)*clamp(clamp((vec3(texture(texture1, uv0).rgb.b)*texture(texture2, asin(sphericalReflectionUv) / 3.14159 + 0.5).rgb + clamp(color_3dsColor2*vec3(1 + -1*vertexColor0.rgb.r*vertexColor0.rgb.r*2) + clamp(vertexColor0.rgb, 0, 1), 0, 1)), 0, 1)*texture(texture1, uv0).rgb*vec3(2)*(ambientLightColor.rgb + mergedLightDiffuseColor.rgb), 0, 1), 0, 1);
 
   float alphaComponent = vertexColor0.a*texture(texture1, uv0).a*scalar_3dsAlpha1;
 
