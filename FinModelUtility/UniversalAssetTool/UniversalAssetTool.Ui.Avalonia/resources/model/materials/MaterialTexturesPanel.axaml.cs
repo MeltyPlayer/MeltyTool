@@ -37,8 +37,10 @@ namespace uni.ui.avalonia.resources.model.materials {
 
     public TextureListViewModel TextureList {
       get => this.textureListViewModel_;
-      private set
-        => this.RaiseAndSetIfChanged(ref this.textureListViewModel_, value);
+      private set {
+        this.RaiseAndSetIfChanged(ref this.textureListViewModel_, value);
+        this.SelectedTexture = value.TextureViewModels.FirstOrDefault();
+      }
     }
 
     public TextureViewModel? SelectedTexture {
