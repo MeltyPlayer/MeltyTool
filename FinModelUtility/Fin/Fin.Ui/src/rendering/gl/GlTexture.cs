@@ -60,7 +60,7 @@ public class GlTexture : IFinDisposable {
     GL.BindTexture(target, this.id_);
     {
       var mipmapImages = texture.MipmapImages;
-      
+
       this.LoadMipmapImagesIntoTexture_(mipmapImages);
 
       if (mipmapImages.Length == 1 &&
@@ -138,7 +138,7 @@ public class GlTexture : IFinDisposable {
     GL.BindTexture(target, UNDEFINED_ID);
   }
 
-  private static readonly ArrayPool<byte> pool_ = ArrayPool<byte>.Shared;
+  private static readonly MemoryPool<byte> pool_ = MemoryPool<byte>.Shared;
 
   private void LoadMipmapImagesIntoTexture_(IReadOnlyImage[] mipmapImages) {
     for (var i = 0; i < mipmapImages.Length; ++i) {
@@ -146,48 +146,58 @@ public class GlTexture : IFinDisposable {
     }
   }
 
-  private void LoadImageIntoTexture_(IReadOnlyImage image, int level) {
+  private unsafe void LoadImageIntoTexture_(IReadOnlyImage image, int level) {
     var imageWidth = image.Width;
     var imageHeight = image.Height;
 
     PixelInternalFormat pixelInternalFormat;
     PixelFormat pixelFormat;
 
-    byte[] pixelBytes;
     switch (image) {
       case Rgba32Image rgba32Image: {
-        pixelBytes = pool_.Rent(4 * imageWidth * imageHeight);
-        pixelInternalFormat = PixelInternalFormat.Rgba;
-        pixelFormat = PixelFormat.Rgba;
-        rgba32Image.GetRgba32Bytes(pixelBytes.AsSpan().Cast<byte, Rgba32>());
+        using var fastLock = rgba32Image.UnsafeLock();
+        PassBytesIntoImage_(level,
+                            PixelInternalFormat.Rgba,
+                            imageWidth,
+                            imageHeight,
+                            PixelFormat.Rgba,
+                            fastLock.byteScan0);
         break;
       }
       case Rgb24Image rgb24Image: {
-        pixelBytes = pool_.Rent(3 * imageWidth * imageHeight);
-        pixelInternalFormat = PixelInternalFormat.Rgb;
-        pixelFormat = PixelFormat.Rgb;
-        rgb24Image.GetRgb24Bytes(pixelBytes.AsSpan().Cast<byte, Rgb24>());
+        using var fastLock = rgb24Image.UnsafeLock();
+        PassBytesIntoImage_(level,
+                            PixelInternalFormat.Rgb,
+                            imageWidth,
+                            imageHeight,
+                            PixelFormat.Rgb,
+                            fastLock.byteScan0);
         break;
       }
       case La16Image ia16Image: {
-        pixelBytes = pool_.Rent(2 * imageWidth * imageHeight);
-        pixelInternalFormat = PixelInternalFormat.LuminanceAlpha;
-        pixelFormat = PixelFormat.LuminanceAlpha;
-        ia16Image.GetIa16Bytes(pixelBytes.AsSpan().Cast<byte, La16>());
+        using var fastLock = ia16Image.UnsafeLock();
+        PassBytesIntoImage_(level,
+                            PixelInternalFormat.LuminanceAlpha,
+                            imageWidth,
+                            imageHeight,
+                            PixelFormat.LuminanceAlpha,
+                            fastLock.byteScan0);
         break;
       }
       case L8Image i8Image: {
-        pixelBytes = pool_.Rent(imageWidth * imageHeight);
-        pixelInternalFormat = PixelInternalFormat.Luminance;
-        pixelFormat = PixelFormat.Luminance;
-        i8Image.GetI8Bytes(pixelBytes.AsSpan().Cast<byte, L8>());
+        using var fastLock = i8Image.UnsafeLock();
+        PassBytesIntoImage_(level,
+                            PixelInternalFormat.Luminance,
+                            imageWidth,
+                            imageHeight,
+                            PixelFormat.Luminance,
+                            fastLock.byteScan0);
         break;
       }
       default: {
-        pixelBytes = pool_.Rent(4 * imageWidth * imageHeight);
-        pixelInternalFormat = PixelInternalFormat.Rgba;
-        pixelFormat = PixelFormat.Rgba;
+        using var rentedBytes = pool_.Rent(4 * imageWidth * imageHeight);
         image.Access(getHandler => {
+          var pixelBytes = rentedBytes.Memory.Span;
           for (var y = 0; y < imageHeight; y++) {
             for (var x = 0; x < imageWidth; x++) {
               getHandler(x,
@@ -197,7 +207,7 @@ public class GlTexture : IFinDisposable {
                          out var b,
                          out var a);
 
-              var outI = 4 * (y * imageWidth + x);
+              var outI = 4 * (y * imageWidth + x);  
               pixelBytes[outI] = r;
               pixelBytes[outI + 1] = g;
               pixelBytes[outI + 2] = b;
@@ -205,10 +215,24 @@ public class GlTexture : IFinDisposable {
             }
           }
         });
+        PassBytesIntoImage_(level,
+                            PixelInternalFormat.Rgba,
+                            imageWidth,
+                            imageHeight,
+                            PixelFormat.Rgba,
+                            (byte*) rentedBytes.Memory.Pin().Pointer);
         break;
       }
     }
+  }
 
+  private static unsafe void PassBytesIntoImage_(
+      int level,
+      PixelInternalFormat pixelInternalFormat,
+      int imageWidth,
+      int imageHeight,
+      PixelFormat pixelFormat,
+      byte* scan0) {
     // This is required to fix a rare issue with alignment:
     // https://stackoverflow.com/questions/52460143/texture-not-showing-correctly
     GL.PixelStore(PixelStoreParameter.UnpackAlignment, 1);
@@ -220,9 +244,7 @@ public class GlTexture : IFinDisposable {
                   0,
                   pixelFormat,
                   PixelType.UnsignedByte,
-                  pixelBytes);
-
-    pool_.Return(pixelBytes);
+                  (IntPtr) scan0);
   }
 
   ~GlTexture() => this.ReleaseUnmanagedResources_();

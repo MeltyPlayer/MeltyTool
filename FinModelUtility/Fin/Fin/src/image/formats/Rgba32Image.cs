@@ -44,7 +44,4 @@ public class Rgba32Image : BImage<Rgba32> {
         });
 
   public override bool HasAlphaChannel => true;
-
-  public void GetRgba32Bytes(Span<Rgba32> bytes)
-    => this.Impl.CopyPixelDataTo(bytes);
 }

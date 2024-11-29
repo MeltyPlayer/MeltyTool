@@ -37,7 +37,4 @@ public class L8Image : BImage<L8> {
         });
 
   public override bool HasAlphaChannel => false;
-
-  public void GetI8Bytes(Span<L8> dst)
-    => this.Impl.CopyPixelDataTo(dst);
 }

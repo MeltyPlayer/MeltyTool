@@ -36,7 +36,4 @@ public class La16Image : BImage<La16> {
   }
 
   public override bool HasAlphaChannel => true;
-
-  public void GetIa16Bytes(Span<La16> dst)
-    => this.Impl.CopyPixelDataTo(dst);
 }
