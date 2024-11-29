@@ -2,8 +2,6 @@
 
 using fin.math;
 
-using schema.binary;
-
 namespace visceral.api;
 
 public static class PackedVectorUtil {

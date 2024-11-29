@@ -2,7 +2,6 @@
 
 using fin.image;
 using fin.image.formats;
-using fin.schema.vector;
 using fin.util.color;
 
 using gx;

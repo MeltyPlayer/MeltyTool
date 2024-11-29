@@ -3,7 +3,6 @@ using System.Linq;
 
 using fin.image;
 using fin.image.formats;
-using fin.math;
 using fin.schema;
 using fin.util.asserts;
 using fin.util.color;

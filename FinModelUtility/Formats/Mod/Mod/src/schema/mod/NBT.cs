@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.schema.vector;
-
 using schema.binary;
 
 namespace mod.schema.mod {

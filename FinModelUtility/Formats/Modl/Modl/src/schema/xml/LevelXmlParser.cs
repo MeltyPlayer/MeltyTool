@@ -11,7 +11,6 @@ using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model;
 using fin.scene;
-using fin.schema.vector;
 using fin.util.sets;
 
 using modl.api;

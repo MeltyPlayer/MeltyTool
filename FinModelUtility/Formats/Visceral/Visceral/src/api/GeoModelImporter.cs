@@ -1,6 +1,4 @@
-﻿using Assimp;
-
-using fin.data.dictionaries;
+﻿using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
@@ -9,7 +7,6 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.model.util;
-using fin.schema.matrix;
 using fin.util.enumerables;
 using fin.util.hash;
 

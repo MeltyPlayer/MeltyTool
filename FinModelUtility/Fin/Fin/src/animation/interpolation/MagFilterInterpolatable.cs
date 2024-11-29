@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 
 using fin.math.floats;
 using fin.math.interpolation;

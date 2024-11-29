@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Numerics;
+﻿using System.Numerics;
 
-using fin.math;
 using fin.schema;
-using fin.schema.matrix;
 
 using schema.binary;
 

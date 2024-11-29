@@ -2,7 +2,6 @@
 
 using fin.math;
 using fin.schema;
-using fin.schema.vector;
 
 using schema.binary;
 using schema.binary.attributes;

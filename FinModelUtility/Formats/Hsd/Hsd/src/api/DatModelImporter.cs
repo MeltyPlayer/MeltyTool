@@ -2,8 +2,6 @@
 
 using CommunityToolkit.HighPerformance;
 
-using sysdolphin.schema.animation;
-
 using fin.data.lazy;
 using fin.image;
 using fin.image.formats;

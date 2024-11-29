@@ -5,7 +5,6 @@ using System.Numerics;
 
 using fin.color;
 using fin.math;
-using fin.schema.vector;
 using fin.util.asserts;
 using fin.util.enums;
 

@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.schema;
-using fin.schema.vector;
 using fin.util.enums;
 
 using schema.binary;

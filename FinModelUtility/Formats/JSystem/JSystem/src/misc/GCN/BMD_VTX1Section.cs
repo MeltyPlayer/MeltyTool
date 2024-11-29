@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
 
 using fin.color;
 using fin.util.asserts;
-using fin.util.color;
 
 using gx;
 using gx.vertex;
