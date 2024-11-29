@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -15,6 +16,7 @@ using ReactiveUI;
 
 using SixLabors.ImageSharp.PixelFormats;
 
+using uni.ui.avalonia.common.progress;
 using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.model;
 using uni.ui.avalonia.ViewModels;
@@ -30,6 +32,18 @@ public class TexturePreviewViewModelForDesigner : TexturePreviewViewModel {
   }
 }
 
+public class AsyncImageViewModel : ViewModelBase {
+  public Bitmap Image {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
+  public Thickness Margin {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+}
+
 public class TexturePreviewViewModel : ViewModelBase {
   private static readonly Bitmap missingImage_
       = FinImage.Create1x1FromColor(Color.Magenta).AsAvaloniaImage();
@@ -38,11 +52,18 @@ public class TexturePreviewViewModel : ViewModelBase {
     get;
     set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.Image = value?.AsMergedMipmapAvaloniaImage() ?? missingImage_;
+      this.ImageAsyncPanelViewModel = new AsyncPanelViewModel {
+          Progress = AsyncProgress.FromTask(
+              Task.Run(() => new AsyncImageViewModel {
+                  Image = value?.AsMergedMipmapAvaloniaImage() ??
+                          missingImage_, 
+                  Margin = this.ImageMargin
+              }))
+      };
     }
   }
 
-  public Bitmap Image {
+  public AsyncPanelViewModel ImageAsyncPanelViewModel {
     get;
     private set => this.RaiseAndSetIfChanged(ref field, value);
   }

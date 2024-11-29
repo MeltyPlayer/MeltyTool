@@ -14,23 +14,8 @@ namespace uni.ui.avalonia.common.progress;
 public class AsyncPanelViewModelForDesigner
     : AsyncPanelViewModel {
   public AsyncPanelViewModelForDesigner() {
-    this.Progress = new AsyncProgress();
-
-    var secondsToWait = 3;
-    var start = DateTime.Now;
-
-    Task.Run(
-        async () => {
-          DateTime current;
-          double elapsedSeconds;
-          do {
-            current = DateTime.Now;
-            elapsedSeconds = (current - start).TotalSeconds;
-            await Task.Delay(50);
-          } while (elapsedSeconds < secondsToWait);
-
-          this.Progress.ReportCompletion("Hello world!");
-        });
+    this.Progress = AsyncProgress.FromTask(
+        Task.Delay(3000).ContinueWith(_ => Task.FromResult("Hello world!")));
   }
 }
 

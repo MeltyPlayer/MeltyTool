@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:textures="clr-namespace:uni.ui.avalonia.resources.texture"
+             xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
              mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="100"
              x:Class="uni.ui.avalonia.resources.texture.TexturePreview"
              x:DataType="textures:TexturePreviewViewModel">
@@ -23,11 +24,16 @@
             BorderBrush="{StaticResource BorderBrush}"
             Background="{StaticResource ColorControlCheckeredBackgroundBrush}" />
 
-    <Image x:Name="image_"
-           Margin="{Binding ImageMargin}"
-           VerticalAlignment="Stretch"
-           HorizontalAlignment="Stretch"
-           Source="{Binding Image}"
-           RenderOptions.BitmapInterpolationMode="None" />
+    <progress:AsyncPanel DataContext="{Binding ImageAsyncPanelViewModel}">
+      <progress:AsyncPanel.DataTemplate>
+        <DataTemplate x:DataType="progress:AsyncProgress">
+          <Image Margin="{Binding Value.Margin}"
+                 VerticalAlignment="Stretch"
+                 HorizontalAlignment="Stretch"
+                 Source="{Binding Value.Image}"
+                 RenderOptions.BitmapInterpolationMode="None" />
+        </DataTemplate>
+      </progress:AsyncPanel.DataTemplate>
+    </progress:AsyncPanel>
   </Grid>
 </UserControl>

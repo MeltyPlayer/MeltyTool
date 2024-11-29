@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using fin.util.progress;
 
@@ -11,6 +12,21 @@ namespace uni.ui.avalonia.common.progress;
 public class AsyncProgress
     : ViewModelBase, IMutableIndeterminateProgressValue<object> {
   private bool isComplete_;
+
+  public static AsyncProgress FromResult<T>(T t) {
+    var progress = new AsyncProgress();
+    progress.ReportCompletion(t!);
+    return progress;
+  }
+
+  public static AsyncProgress FromTask<T>(Task<T> t) {
+    var progress = new AsyncProgress();
+    Task.Run(() => {
+      t.Wait();
+      progress.ReportCompletion(t.Result!);
+    });
+    return progress;
+  }
 
   public object? Value { get; private set; }
 
