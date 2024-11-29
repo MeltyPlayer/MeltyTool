@@ -38,16 +38,13 @@ public class FloatInterpolatableGraphViewModelForDesigner
 }
 
 public class FloatInterpolatableGraphViewModel : ViewModelBase {
-  private IConfiguredInterpolatable<float> keyframes_;
-  private IPlotModel plotModel_;
-
   public IConfiguredInterpolatable<float> Keyframes {
-    get => this.keyframes_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.keyframes_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
       Func<double, double> graphFunction = frame => {
-        if (this.keyframes_.TryGetAtFrameOrDefault(
+        if (field.TryGetAtFrameOrDefault(
                 (float) frame,
                 out var value)) {
           return value;
@@ -77,8 +74,8 @@ public class FloatInterpolatableGraphViewModel : ViewModelBase {
   }
 
   public IPlotModel PlotModel {
-    get => this.plotModel_;
-    private set => this.RaiseAndSetIfChanged(ref this.plotModel_, value);
+    get;
+    private set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 

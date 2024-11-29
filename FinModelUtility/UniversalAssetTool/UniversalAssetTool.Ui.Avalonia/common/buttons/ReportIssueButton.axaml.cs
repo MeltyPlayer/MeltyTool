@@ -13,11 +13,9 @@ using uni.ui.avalonia.ViewModels;
 namespace uni.ui.avalonia.common.buttons;
 
 public class ReportIssueButtonViewModel : ViewModelBase {
-  private Exception? exception_;
-
   public Exception? Exception {
-    get => this.exception_;
-    set => this.RaiseAndSetIfChanged(ref this.exception_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 

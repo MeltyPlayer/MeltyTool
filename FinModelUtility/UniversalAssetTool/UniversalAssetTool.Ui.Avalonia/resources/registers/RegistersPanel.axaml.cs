@@ -20,10 +20,6 @@ public class RegistersPanelViewModelForDesigner : RegistersPanelViewModel {
 public class RegistersPanelViewModel : ViewModelBase {
   private IFixedFunctionRegisters registers_;
 
-  private int registerCount_;
-  private IReadOnlyList<ColorRegisterPickerViewModel>? colorRegisterPickers_;
-  private IReadOnlyList<ScalarRegisterPickerViewModel>? scalarRegisterPickers_;
-
   public required IFixedFunctionRegisters? Registers {
     get => this.registers_;
     set {
@@ -46,18 +42,18 @@ public class RegistersPanelViewModel : ViewModelBase {
   }
 
   public int RegisterCount {
-    get => this.registerCount_;
-    set => this.RaiseAndSetIfChanged(ref this.registerCount_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public IReadOnlyList<ColorRegisterPickerViewModel>? ColorRegisterPickers {
-    get => this.colorRegisterPickers_;
-    set => this.RaiseAndSetIfChanged(ref this.colorRegisterPickers_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public IReadOnlyList<ScalarRegisterPickerViewModel>? ScalarRegisterPickers {
-    get => this.scalarRegisterPickers_;
-    set => this.RaiseAndSetIfChanged(ref this.scalarRegisterPickers_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 

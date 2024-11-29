@@ -22,13 +22,10 @@ namespace uni.ui.avalonia.resources.model.mesh {
   public record MeshWithName(string Name, IReadOnlyMesh Mesh);
 
   public class MeshListViewModel : ViewModelBase {
-    private IReadOnlyList<IReadOnlyMesh>? meshes_;
-    private IReadOnlyList<MeshWithName>? meshesWithNames_;
-
     public required IReadOnlyList<IReadOnlyMesh>? Meshes {
-      get => this.meshes_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.meshes_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.MeshesWithNames
             = value
               ?.Select(
@@ -39,9 +36,9 @@ namespace uni.ui.avalonia.resources.model.mesh {
     }
 
     public IReadOnlyList<MeshWithName>? MeshesWithNames {
-      get => this.meshesWithNames_;
+      get;
       private set
-        => this.RaiseAndSetIfChanged(ref this.meshesWithNames_, value);
+        => this.RaiseAndSetIfChanged(ref field, value);
     }
   }
 

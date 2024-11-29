@@ -29,14 +29,10 @@ namespace uni.ui.avalonia.resources.animation {
   }
 
   public class AnimationListViewModel : ViewModelBase {
-    private IReadOnlyList<IReadOnlyAnimation>? animations_;
-    private ObservableCollection<AnimationViewModel> animationViewModels_;
-    private AnimationViewModel? selectedAnimationViewModel_;
-
     public required IReadOnlyList<IReadOnlyAnimation>? Animations {
-      get => this.animations_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.animations_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.AnimationViewModels = new ObservableCollection<AnimationViewModel>(
             value?.Select(a => new AnimationViewModel
                               { Animation = a })
@@ -49,30 +45,27 @@ namespace uni.ui.avalonia.resources.animation {
     }
 
     public ObservableCollection<AnimationViewModel> AnimationViewModels {
-      get => this.animationViewModels_;
+      get;
       private set {
-        this.RaiseAndSetIfChanged(ref this.animationViewModels_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.SelectedAnimationViewModel
             = this.AnimationViewModels.FirstOrDefault();
       }
     }
 
     public AnimationViewModel? SelectedAnimationViewModel {
-      get => this.selectedAnimationViewModel_;
+      get;
       set => this.RaiseAndSetIfChanged(
-          ref this.selectedAnimationViewModel_,
+          ref field,
           value);
     }
   }
 
   public class AnimationViewModel : ViewModelBase {
-    private IReadOnlyAnimation animation_;
-    private MaterialIconKind icon_;
-
     public required IReadOnlyAnimation Animation {
-      get => this.animation_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.animation_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
 
         var frameCount = value.FrameCount;
         this.Icon = frameCount switch {
@@ -84,8 +77,8 @@ namespace uni.ui.avalonia.resources.animation {
     }
 
     public MaterialIconKind Icon {
-      get => this.icon_;
-      private set => this.RaiseAndSetIfChanged(ref this.icon_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
   }
 

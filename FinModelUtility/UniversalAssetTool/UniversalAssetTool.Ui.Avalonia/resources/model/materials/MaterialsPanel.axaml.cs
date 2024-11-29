@@ -28,10 +28,6 @@ namespace uni.ui.avalonia.resources.model.materials {
     private (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
         modelAndMaterials_;
 
-    private ObservableCollection<(int, IReadOnlyMaterial?)> materials_;
-    private (int, IReadOnlyMaterial?)? selectedMaterial_;
-    private MaterialPanelViewModel? selectedMaterialPanelViewModel_;
-
     public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
         ModelAndMaterials {
       get => this.modelAndMaterials_;
@@ -49,17 +45,17 @@ namespace uni.ui.avalonia.resources.model.materials {
     }
 
     public ObservableCollection<(int, IReadOnlyMaterial?)> Materials {
-      get => this.materials_;
+      get;
       private set {
-        this.RaiseAndSetIfChanged(ref this.materials_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.SelectedMaterial = this.Materials.FirstOrDefault();
       }
     }
 
     public (int, IReadOnlyMaterial?)? SelectedMaterial {
-      get => this.selectedMaterial_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.selectedMaterial_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.SelectedMaterialPanel
             = value != null
                 ? new MaterialPanelViewModel {
@@ -67,14 +63,14 @@ namespace uni.ui.avalonia.resources.model.materials {
                         this.modelAndMaterials_.Item1, value.Value.Item2),
                 }
                 : null;
-        SelectedMaterialsService.SelectMaterial(this.selectedMaterial_?.Item2);
+        SelectedMaterialsService.SelectMaterial(field?.Item2);
       }
     }
 
     public MaterialPanelViewModel? SelectedMaterialPanel {
-      get => this.selectedMaterialPanelViewModel_;
+      get;
       private set => this.RaiseAndSetIfChanged(
-          ref this.selectedMaterialPanelViewModel_,
+          ref field,
           value);
     }
   }

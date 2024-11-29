@@ -21,16 +21,12 @@ namespace uni.ui.avalonia.resources.model.materials {
   }
 
   public class MaterialShadersPanelViewModel : ViewModelBase {
-    private (IReadOnlyModel, IReadOnlyMaterial?) modelAndMaterial_;
-    private TextDocument vertexShaderSource_;
-    private TextDocument fragmentShaderSource_;
-
     public required (IReadOnlyModel, IReadOnlyMaterial?) ModelAndMaterial {
-      get => this.modelAndMaterial_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
 
-        var (model, material) = this.modelAndMaterial_;
+        var (model, material) = field;
         var shaderSource = material.ToShaderSource(model, true);
         this.VertexShaderSource
             = new TextDocument(shaderSource.VertexShaderSource);
@@ -40,15 +36,15 @@ namespace uni.ui.avalonia.resources.model.materials {
     }
 
     public TextDocument VertexShaderSource {
-      get => this.vertexShaderSource_;
+      get;
       private set
-        => this.RaiseAndSetIfChanged(ref this.vertexShaderSource_, value);
+        => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public TextDocument FragmentShaderSource {
-      get => this.fragmentShaderSource_;
+      get;
       private set
-        => this.RaiseAndSetIfChanged(ref this.fragmentShaderSource_, value);
+        => this.RaiseAndSetIfChanged(ref field, value);
     }
   }
 

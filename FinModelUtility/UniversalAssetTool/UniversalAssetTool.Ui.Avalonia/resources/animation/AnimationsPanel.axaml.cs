@@ -35,28 +35,24 @@ namespace uni.ui.avalonia.resources.animation {
   }
 
   public class AnimationsPanelViewModel : ViewModelBase {
-    private IReadOnlyList<IReadOnlyAnimation>? animations_;
-    private AnimationListViewModel animationListViewModel_;
-    private AnimationViewModel? selectedAnimationViewModel_;
-
     public IReadOnlyList<IReadOnlyAnimation>? Animations {
-      get => this.animations_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.animations_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.AnimationList = new AnimationListViewModel { Animations = value };
       }
     }
 
     public AnimationListViewModel AnimationList {
-      get => this.animationListViewModel_;
+      get;
       private set
-        => this.RaiseAndSetIfChanged(ref this.animationListViewModel_, value);
+        => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public AnimationViewModel? SelectedAnimation {
-      get => this.selectedAnimationViewModel_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.selectedAnimationViewModel_,
+        this.RaiseAndSetIfChanged(ref field,
                                   value);
 
         var animationPlaybackManager = this.AnimationPlaybackManager;

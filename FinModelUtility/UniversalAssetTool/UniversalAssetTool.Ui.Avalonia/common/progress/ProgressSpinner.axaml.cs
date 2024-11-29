@@ -37,11 +37,9 @@ public class ProgressSpinnerViewModelForDesigner
 }
 
 public class ProgressSpinnerViewModel : ViewModelBase {
-  private ValueFractionProgress progress_;
-
   public ValueFractionProgress Progress {
-    get => this.progress_;
-    set => this.RaiseAndSetIfChanged(ref this.progress_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 

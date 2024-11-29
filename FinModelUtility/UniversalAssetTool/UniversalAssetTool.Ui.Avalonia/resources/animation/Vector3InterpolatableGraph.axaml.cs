@@ -50,16 +50,13 @@ public class Vector3InterpolatableGraphViewModelForDesigner
 }
 
 public class Vector3InterpolatableGraphViewModel : ViewModelBase {
-  private IAxesConfiguredInterpolatable<Vector3> keyframes_;
-  private IPlotModel plotModel_;
-
   public IAxesConfiguredInterpolatable<Vector3> Keyframes {
-    get => this.keyframes_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.keyframes_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
       Func<double, Vector3> graphFunction = frame => {
-        if (this.keyframes_.TryGetAtFrameOrDefault(
+        if (field.TryGetAtFrameOrDefault(
                 (float) frame,
                 out var value)) {
           return value;
@@ -106,8 +103,8 @@ public class Vector3InterpolatableGraphViewModel : ViewModelBase {
   }
 
   public IPlotModel PlotModel {
-    get => this.plotModel_;
-    private set => this.RaiseAndSetIfChanged(ref this.plotModel_, value);
+    get;
+    private set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 

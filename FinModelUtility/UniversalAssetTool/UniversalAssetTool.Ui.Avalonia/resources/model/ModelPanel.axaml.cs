@@ -22,19 +22,10 @@ namespace uni.ui.avalonia.resources.model {
   }
 
   public class ModelPanelViewModel : ViewModelBase {
-    private IReadOnlyModel model_;
-    private AnimationsPanelViewModel animationsPanel_;
-    private MaterialsPanelViewModel materialsPanel_;
-    private MeshListViewModel meshList_;
-    private RegistersPanelViewModel registersPanel_;
-    private FilesPanelViewModel filesPanel_;
-    private SkeletonTreeViewModel skeletonTree_;
-    private TexturesPanelViewModel texturesPanel_;
-
     public IReadOnlyModel Model {
-      get => this.model_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.model_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.AnimationsPanel = new AnimationsPanelViewModel {
             Animations = value.AnimationManager.Animations,
             AnimationPlaybackManager = new FrameAdvancer {
@@ -59,39 +50,39 @@ namespace uni.ui.avalonia.resources.model {
     }
 
     public AnimationsPanelViewModel AnimationsPanel {
-      get => this.animationsPanel_;
+      get;
       private set
-        => this.RaiseAndSetIfChanged(ref this.animationsPanel_, value);
+        => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public FilesPanelViewModel FilesPanel {
-      get => this.filesPanel_;
-      private set => this.RaiseAndSetIfChanged(ref this.filesPanel_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public MaterialsPanelViewModel MaterialsPanel {
-      get => this.materialsPanel_;
-      private set => this.RaiseAndSetIfChanged(ref this.materialsPanel_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public MeshListViewModel MeshList {
-      get => this.meshList_;
-      private set => this.RaiseAndSetIfChanged(ref this.meshList_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public RegistersPanelViewModel RegistersPanel {
-      get => this.registersPanel_;
-      private set => this.RaiseAndSetIfChanged(ref this.registersPanel_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public SkeletonTreeViewModel SkeletonTree {
-      get => this.skeletonTree_;
-      private set => this.RaiseAndSetIfChanged(ref this.skeletonTree_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public TexturesPanelViewModel TexturesPanel {
-      get => this.texturesPanel_;
-      private set => this.RaiseAndSetIfChanged(ref this.texturesPanel_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
   }
 

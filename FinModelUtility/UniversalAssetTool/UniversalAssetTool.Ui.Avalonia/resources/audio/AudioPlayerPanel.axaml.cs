@@ -30,16 +30,14 @@ public interface IAudioPlayerPanelViewModel {
 
 public class AudioPlayerPanelViewModelForDesigner
     : ViewModelBase, IAudioPlayerPanelViewModel {
-  private IReadOnlyList<IAudioFileBundle>? audioFileBundles_;
-
   public AudioPlayerPanelViewModelForDesigner() {
     var bundle = new OggAudioFileBundle(new FinFile("//fake/file.ogg"));
     this.AudioFileBundles = [bundle];
   }
 
   public IReadOnlyList<IAudioFileBundle>? AudioFileBundles {
-    get => this.audioFileBundles_;
-    set => this.RaiseAndSetIfChanged(ref this.audioFileBundles_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public IReadOnlyList<ILoadedAudioBuffer<short>>? LoadedAudioBuffers => null;
@@ -53,15 +51,9 @@ public class AudioPlayerPanelViewModel
   private readonly IAudioPlayer<short> audioPlayer_;
   private readonly TimedCallback playNextCallback_;
 
-  private IReadOnlyList<IAudioFileBundle>? audioFileBundles_;
-  private IReadOnlyList<ILoadedAudioBuffer<short>>? loadedAudioBuffers_;
   private ShuffledListView<ILoadedAudioBuffer<short>>? shuffledListView_;
 
-  private ILoadedAudioBuffer<short>? audioBuffer_;
   private IAotAudioPlayback<short>? activePlayback_;
-
-  private bool isPlaying_;
-  private string playButtonTooltip_;
 
   private readonly object playNextLock_ = new();
 
@@ -80,18 +72,18 @@ public class AudioPlayerPanelViewModel
   }
 
   public IReadOnlyList<IAudioFileBundle>? AudioFileBundles {
-    get => this.audioFileBundles_;
+    get;
     set {
       if ((value?.Count ?? 0) == 0) {
         value = null;
       }
 
-      if (this.audioFileBundles_.SequenceEqualOrBothEmpty(value)) {
+      if (field.SequenceEqualOrBothEmpty(value)) {
         return;
       }
 
-      this.RaiseAndSetIfChanged(ref this.audioFileBundles_, value);
-      this.audioFileBundles_ = value;
+      this.RaiseAndSetIfChanged(ref field, value);
+      field = value;
 
       var ar = new GlobalAudioReader();
       this.LoadedAudioBuffers
@@ -101,18 +93,18 @@ public class AudioPlayerPanelViewModel
   }
 
   public IReadOnlyList<ILoadedAudioBuffer<short>>? LoadedAudioBuffers {
-    get => this.loadedAudioBuffers_;
+    get;
     set {
       if ((value?.Count ?? 0) == 0) {
         value = null;
       }
 
-      if (this.loadedAudioBuffers_.SequenceEqualOrBothEmpty(value)) {
+      if (field.SequenceEqualOrBothEmpty(value)) {
         return;
       }
 
-      this.RaiseAndSetIfChanged(ref this.loadedAudioBuffers_, value);
-      this.loadedAudioBuffers_ = value;
+      this.RaiseAndSetIfChanged(ref field, value);
+      field = value;
 
       this.shuffledListView_
           = value != null
@@ -141,9 +133,9 @@ public class AudioPlayerPanelViewModel
   }
 
   public ILoadedAudioBuffer<short>? AudioBuffer {
-    get => this.audioBuffer_;
+    get;
     set {
-      if (value == this.audioBuffer_) {
+      if (value == field) {
         if (value != null) {
           this.activePlayback_.Stop();
           this.activePlayback_.Play();
@@ -152,7 +144,7 @@ public class AudioPlayerPanelViewModel
         return;
       }
 
-      this.RaiseAndSetIfChanged(ref this.audioBuffer_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
       IAotAudioPlayback<short>? newPlayback = null;
       if (value != null) {
@@ -185,12 +177,12 @@ public class AudioPlayerPanelViewModel
   }
 
   public bool IsPlaying {
-    get => this.isPlaying_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.isPlaying_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
       if (this.activePlayback_ != null) {
-        if (this.isPlaying_) {
+        if (field) {
           this.activePlayback_.Play();
         } else {
           this.activePlayback_.Pause();
@@ -202,8 +194,8 @@ public class AudioPlayerPanelViewModel
   }
 
   public string PlayButtonTooltip {
-    get => this.playButtonTooltip_;
-    set => this.RaiseAndSetIfChanged(ref this.playButtonTooltip_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 

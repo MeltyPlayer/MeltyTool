@@ -35,23 +35,18 @@ public class AsyncPanelViewModelForDesigner
 }
 
 public class AsyncPanelViewModel : ViewModelBase {
-  private AsyncProgress progress_;
-  private IDataTemplate dataTemplate_;
-
   public AsyncProgress Progress {
-    get => this.progress_;
-    set => this.RaiseAndSetIfChanged(ref this.progress_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public IDataTemplate DataTemplate {
-    get => this.dataTemplate_;
-    set => this.RaiseAndSetIfChanged(ref this.dataTemplate_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 
 public partial class AsyncPanel : UserControl {
-  private IDataTemplate dataTemplate_;
-
   public AsyncPanel() {
     this.InitializeComponent();
     this.DataContextChanged += (_, _) => {
@@ -75,10 +70,10 @@ public partial class AsyncPanel : UserControl {
               (owner, value) => owner.DataTemplate = value);
 
   public IDataTemplate DataTemplate {
-    get => this.dataTemplate_;
+    get;
     set {
-      this.SetAndRaise(DataTemplateProperty, ref this.dataTemplate_, value);
-      this.dataTemplate_ = value;
+      this.SetAndRaise(DataTemplateProperty, ref field, value);
+      field = value;
 
       if (this.ViewModel_ != null) {
         this.ViewModel_.DataTemplate = value;

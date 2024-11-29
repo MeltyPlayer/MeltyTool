@@ -28,18 +28,6 @@ namespace uni.ui.avalonia.resources.animation {
   public class AnimationPlaybackPanelViewModel : ViewModelBase {
     private IAnimationPlaybackManager? animationPlaybackManager_;
 
-    private bool isPlaying_;
-    private string playButtonTooltip_;
-
-    private bool loopPlayback_;
-    private string loopButtonTooltip_;
-
-    private int frameRate_;
-    private float frame_;
-    private int frameCount_;
-    private float lastFrame_;
-    private int frameTextWidth_;
-
     public IAnimationPlaybackManager? AnimationPlaybackManager {
       get => this.animationPlaybackManager_;
       set {
@@ -59,9 +47,9 @@ namespace uni.ui.avalonia.resources.animation {
     }
 
     public bool IsPlaying {
-      get => this.isPlaying_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.isPlaying_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.IsPlaying = value;
         }
@@ -71,14 +59,14 @@ namespace uni.ui.avalonia.resources.animation {
     }
 
     public string PlayButtonTooltip {
-      get => this.playButtonTooltip_;
-      set => this.RaiseAndSetIfChanged(ref this.playButtonTooltip_, value);
+      get;
+      set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public bool LoopPlayback {
-      get => this.loopPlayback_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.loopPlayback_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.LoopPlayback = value;
         }
@@ -88,14 +76,14 @@ namespace uni.ui.avalonia.resources.animation {
     }
 
     public string LoopButtonTooltip {
-      get => this.loopButtonTooltip_;
-      set => this.RaiseAndSetIfChanged(ref this.loopButtonTooltip_, value);
+      get;
+      set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public int FrameRate {
-      get => this.frameRate_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.frameRate_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.FrameRate = value;
         }
@@ -103,9 +91,9 @@ namespace uni.ui.avalonia.resources.animation {
     }
 
     public float Frame {
-      get => this.frame_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.frame_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         if (this.animationPlaybackManager_ != null) {
           this.animationPlaybackManager_.Frame = value;
         }
@@ -113,24 +101,24 @@ namespace uni.ui.avalonia.resources.animation {
     }
 
     public int FrameCount {
-      get => this.frameCount_;
+      get;
       private set {
-        this.RaiseAndSetIfChanged(ref this.frameCount_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.LastFrame = Math.Max(0, value - .0001f);
 
-        var digitsInFrameCount = this.frameCount_.Base10DigitCount();
+        var digitsInFrameCount = field.Base10DigitCount();
         this.FrameTextWidth = 45 + 10 * digitsInFrameCount;
       }
     }
 
     public float LastFrame {
-      get => this.lastFrame_;
-      private set => this.RaiseAndSetIfChanged(ref this.lastFrame_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public int FrameTextWidth {
-      get => this.frameTextWidth_;
-      private set => this.RaiseAndSetIfChanged(ref this.frameTextWidth_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     private void Update_() {

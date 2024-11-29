@@ -25,12 +25,10 @@ namespace uni.ui.avalonia.common {
   }
 
   public class KeyValueGridViewModel : ViewModelBase {
-    private ObservableCollection<KeyValuePairViewModel> keyValuePairs_ = [];
-
     public ObservableCollection<KeyValuePairViewModel> KeyValuePairs {
-      get => this.keyValuePairs_;
-      set => this.RaiseAndSetIfChanged(ref this.keyValuePairs_, value);
-    }
+      get;
+      set => this.RaiseAndSetIfChanged(ref field, value);
+    } = [];
   }
 
   public class KeyValuePairViewModel(string key, string? value)

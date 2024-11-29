@@ -23,13 +23,10 @@ public class ColorRegisterPickerViewModelForDesigner
 }
 
 public class ColorRegisterPickerViewModel : ViewModelBase {
-  private IColorRegister colorRegister_;
-  private Color color_;
-
   public required IColorRegister ColorRegister {
-    get => this.colorRegister_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.colorRegister_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       this.Color = new Color(value.Value.Ab,
                              value.Value.Rb,
                              value.Value.Gb,
@@ -38,13 +35,13 @@ public class ColorRegisterPickerViewModel : ViewModelBase {
   }
 
   public Color Color {
-    get => this.color_;
+    get;
     set {
-      if (this.color_ == value) {
+      if (field == value) {
         return;
       }
 
-      this.RaiseAndSetIfChanged(ref this.color_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       this.ColorRegister.Value
           = FinColor.FromRgbaBytes(value.R, value.G, value.B, value.A);
     }

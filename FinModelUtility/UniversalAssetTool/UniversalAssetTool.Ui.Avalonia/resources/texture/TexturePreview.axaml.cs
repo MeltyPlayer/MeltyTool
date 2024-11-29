@@ -34,26 +34,22 @@ public class TexturePreviewViewModel : ViewModelBase {
   private static readonly Bitmap missingImage_
       = FinImage.Create1x1FromColor(Color.Magenta).AsAvaloniaImage();
 
-  private IReadOnlyTexture? texture_;
-  private Bitmap image_;
-  private Thickness imageMargin_;
-
   public required IReadOnlyTexture? Texture {
-    get => this.texture_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.texture_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       this.Image = value?.AsMergedMipmapAvaloniaImage() ?? missingImage_;
     }
   }
 
   public Bitmap Image {
-    get => this.image_;
-    private set => this.RaiseAndSetIfChanged(ref this.image_, value);
+    get;
+    private set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public Thickness ImageMargin {
-    get => this.imageMargin_;
-    set => this.RaiseAndSetIfChanged(ref this.imageMargin_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 

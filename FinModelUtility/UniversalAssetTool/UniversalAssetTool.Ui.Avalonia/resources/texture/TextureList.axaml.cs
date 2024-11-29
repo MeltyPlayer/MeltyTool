@@ -31,10 +31,6 @@ public class TextureListViewModel : ViewModelBase {
   private (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)?
       modelAndTextures_;
 
-  private IReadOnlyList<IReadOnlyTexture>? textures_;
-  private ObservableCollection<TextureViewModel> textureViewModels_;
-  private TextureViewModel? selectedTextureViewModel_;
-
   public required (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)?
       ModelAndTextures {
     get => this.modelAndTextures_;
@@ -46,9 +42,9 @@ public class TextureListViewModel : ViewModelBase {
 
 
   public IReadOnlyList<IReadOnlyTexture>? Textures {
-    get => this.textures_;
+    get;
     private set {
-      this.RaiseAndSetIfChanged(ref this.textures_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       this.TextureViewModels = new ObservableCollection<TextureViewModel>(
           value?.Select(texture => new TextureViewModel
                             { Texture = texture })
@@ -61,21 +57,21 @@ public class TextureListViewModel : ViewModelBase {
   }
 
   public ObservableCollection<TextureViewModel> TextureViewModels {
-    get => this.textureViewModels_;
+    get;
     private set {
-      this.RaiseAndSetIfChanged(ref this.textureViewModels_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       this.SelectedTextureViewModel = this.TextureViewModels.FirstOrDefault();
     }
   }
 
   public TextureViewModel? SelectedTextureViewModel {
-    get => this.selectedTextureViewModel_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.selectedTextureViewModel_,
+      this.RaiseAndSetIfChanged(ref field,
                                 value);
 
       var model = this.modelAndTextures_?.Item1;
-      var texture = this.selectedTextureViewModel_?.Texture;
+      var texture = field?.Texture;
       SelectedTextureService.SelectTexture(
           model != null && texture != null ? (model, texture) : null);
     }
@@ -83,13 +79,12 @@ public class TextureListViewModel : ViewModelBase {
 }
 
 public class TextureViewModel : ViewModelBase {
-  private IReadOnlyTexture texture_;
   public TexturePreviewViewModel texturePreviewViewModel_;
 
   public required IReadOnlyTexture Texture {
-    get => this.texture_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.texture_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
       this.TexturePreview = new TexturePreviewViewModel { Texture = value };
 

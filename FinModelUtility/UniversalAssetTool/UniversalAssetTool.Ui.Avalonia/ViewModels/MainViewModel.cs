@@ -61,10 +61,6 @@ public class MainViewModelForDesigner {
 }
 
 public class MainViewModel : ViewModelBase {
-  private ProgressPanelViewModel fileTreeAsyncPanelViewModel_;
-  private string fileName_;
-  private ModelPanelViewModel modelPanel_;
-
   public AudioPlayerPanelViewModel AudioPlayerPanel { get; } = new();
 
   public MainViewModel() {
@@ -136,22 +132,22 @@ public class MainViewModel : ViewModelBase {
   }
 
   public ProgressPanelViewModel FileBundleTreeAsyncPanelViewModel {
-    get => this.fileTreeAsyncPanelViewModel_;
+    get;
     private set
-      => this.RaiseAndSetIfChanged(ref this.fileTreeAsyncPanelViewModel_,
+      => this.RaiseAndSetIfChanged(ref field,
                                    value);
   }
 
   public string FileName {
-    get => this.fileName_;
+    get;
 
-    set => this.RaiseAndSetIfChanged(ref this.fileName_, value);
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public ModelPanelViewModel ModelPanel {
-    get => this.modelPanel_;
+    get;
     private set => this.RaiseAndSetIfChanged(
-        ref this.modelPanel_,
+        ref field,
         value);
   }
 

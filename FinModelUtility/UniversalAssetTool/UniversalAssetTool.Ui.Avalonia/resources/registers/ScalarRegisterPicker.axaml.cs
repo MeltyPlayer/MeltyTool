@@ -20,25 +20,22 @@ public class ScalarRegisterPickerViewModelForDesigner
 }
 
 public class ScalarRegisterPickerViewModel : ViewModelBase {
-  private IScalarRegister scalarRegister_;
-  private float value_;
-
   public required IScalarRegister ScalarRegister {
-    get => this.scalarRegister_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.scalarRegister_, value);
-      this.Value = this.scalarRegister_.Value;
+      this.RaiseAndSetIfChanged(ref field, value);
+      this.Value = field.Value;
     }
   }
 
   public float Value {
-    get => this.value_;
+    get;
     set {
-      if (this.value_.IsRoughly(value)) {
+      if (field.IsRoughly(value)) {
         return;
       }
 
-      this.RaiseAndSetIfChanged(ref this.value_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       this.ScalarRegister.Value = value;
     }
   }

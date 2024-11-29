@@ -22,41 +22,35 @@ namespace uni.ui.avalonia.resources.model.skeleton {
   }
 
   public class SkeletonTreeViewModel : ViewModelBase {
-    private IReadOnlySkeleton? skeleton_;
-    private SkeletonNode? rootNode_;
-    private SkeletonNode? selectedNode_;
-
     public required IReadOnlySkeleton? Skeleton {
-      get => this.skeleton_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.skeleton_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.RootNode = value != null ? new SkeletonNode(value.Root) : null;
       }
     }
 
     public SkeletonNode? RootNode {
-      get => this.rootNode_;
-      private set => this.RaiseAndSetIfChanged(ref this.rootNode_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public SkeletonNode? SelectedNode {
-      get => this.selectedNode_;
-      private set => this.RaiseAndSetIfChanged(ref this.selectedNode_, value);
+      get;
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
   }
 
   public class SkeletonNode(IReadOnlyBone bone) : ViewModelBase {
-    private bool isExpanded_ = true;
-
     public IReadOnlyBone Bone => bone;
 
     public IReadOnlyList<SkeletonNode> Children { get; }
       = bone.Children.Select(b => new SkeletonNode(b)).ToArray();
 
     public bool IsExpanded {
-      get => this.isExpanded_;
-      set => this.RaiseAndSetIfChanged(ref this.isExpanded_, value);
-    }
+      get;
+      set => this.RaiseAndSetIfChanged(ref field, value);
+    } = true;
   }
 
   public partial class SkeletonTree : UserControl {

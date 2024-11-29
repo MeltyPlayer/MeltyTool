@@ -17,14 +17,10 @@ namespace uni.ui.avalonia.resources.model.materials {
   }
 
   public class MaterialPanelViewModel : ViewModelBase {
-    private (IReadOnlyModel, IReadOnlyMaterial?) modelAndMaterial_;
-    private MaterialTexturesPanelViewModel materialTexturesPanelViewModel_;
-    private MaterialShadersPanelViewModel materialShadersPanelViewModel_;
-
     public required (IReadOnlyModel, IReadOnlyMaterial?) ModelAndMaterial {
-      get => this.modelAndMaterial_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.modelAndMaterial_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
 
         var (model, material) = value;
         this.MaterialTexturesPanel = new() {
@@ -39,14 +35,14 @@ namespace uni.ui.avalonia.resources.model.materials {
     }
 
     public MaterialTexturesPanelViewModel MaterialTexturesPanel {
-      get => this.materialTexturesPanelViewModel_;
-      set => this.RaiseAndSetIfChanged(ref this.materialTexturesPanelViewModel_,
+      get;
+      set => this.RaiseAndSetIfChanged(ref field,
                                        value);
     }
 
     public MaterialShadersPanelViewModel MaterialShadersPanel {
-      get => this.materialShadersPanelViewModel_;
-      set => this.RaiseAndSetIfChanged(ref this.materialShadersPanelViewModel_,
+      get;
+      set => this.RaiseAndSetIfChanged(ref field,
                                        value);
     }
   }

@@ -39,14 +39,10 @@ public class ProgressPanelViewModelForDesigner
 }
 
 public class ProgressPanelViewModel : ViewModelBase {
-  private ValueFractionProgress progress_;
-  private ProgressSpinnerViewModel progressSpinner_;
-  private IDataTemplate dataTemplate_;
-
   public ValueFractionProgress Progress {
-    get => this.progress_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.progress_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       this.ProgressSpinner = new ProgressSpinnerViewModel {
           Progress = value
       };
@@ -54,20 +50,18 @@ public class ProgressPanelViewModel : ViewModelBase {
   }
 
   public ProgressSpinnerViewModel ProgressSpinner {
-    get => this.progressSpinner_;
+    get;
     private set
-      => this.RaiseAndSetIfChanged(ref this.progressSpinner_, value);
+      => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public IDataTemplate DataTemplate {
-    get => this.dataTemplate_;
-    set => this.RaiseAndSetIfChanged(ref this.dataTemplate_, value);
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 }
 
 public partial class ProgressPanel : UserControl {
-  private IDataTemplate dataTemplate_;
-
   public ProgressPanel() {
     this.InitializeComponent();
     this.DataContextChanged += (_, _) => {
@@ -91,10 +85,10 @@ public partial class ProgressPanel : UserControl {
               (owner, value) => owner.DataTemplate = value);
 
   public IDataTemplate DataTemplate {
-    get => this.dataTemplate_;
+    get;
     set {
-      this.SetAndRaise(DataTemplateProperty, ref this.dataTemplate_, value);
-      this.dataTemplate_ = value;
+      this.SetAndRaise(DataTemplateProperty, ref field, value);
+      field = value;
 
       if (this.ViewModel_ != null) {
         this.ViewModel_.DataTemplate = value;

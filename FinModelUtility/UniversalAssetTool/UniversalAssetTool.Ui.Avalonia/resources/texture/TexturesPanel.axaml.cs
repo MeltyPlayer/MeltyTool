@@ -46,33 +46,25 @@ namespace uni.ui.avalonia.resources.texture {
   }
 
   public class TexturesPanelViewModel : ViewModelBase {
-    private (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)?
-        modelAndTextures_;
-    private TextureListViewModel textureListViewModel_;
-    private TextureViewModel? selectedTextureViewModel_;
-    private TexturePreviewViewModel? selectedTexturePreviewViewModel_;
-
-    private KeyValueGridViewModel selectedTextureKeyValueGrid_;
-
     public (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)? ModelAndTextures {
-      get => this.modelAndTextures_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.modelAndTextures_, value);
+        this.RaiseAndSetIfChanged(ref field, value);
         this.TextureList = new TextureListViewModel
             { ModelAndTextures = value };
       }
     }
 
     public TextureListViewModel TextureList {
-      get => this.textureListViewModel_;
+      get;
       private set
-        => this.RaiseAndSetIfChanged(ref this.textureListViewModel_, value);
+        => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     public TextureViewModel? SelectedTexture {
-      get => this.selectedTextureViewModel_;
+      get;
       set {
-        this.RaiseAndSetIfChanged(ref this.selectedTextureViewModel_,
+        this.RaiseAndSetIfChanged(ref field,
                                   value);
         this.SelectedTexturePreview = value != null
             ? new TexturePreviewViewModel {
@@ -118,16 +110,16 @@ namespace uni.ui.avalonia.resources.texture {
     }
 
     public TexturePreviewViewModel? SelectedTexturePreview {
-      get => this.selectedTexturePreviewViewModel_;
+      get;
       private set => this.RaiseAndSetIfChanged(
-          ref this.selectedTexturePreviewViewModel_,
+          ref field,
           value);
     }
 
     public KeyValueGridViewModel SelectedTextureKeyValueGrid {
-      get => this.selectedTextureKeyValueGrid_;
+      get;
       private set
-        => this.RaiseAndSetIfChanged(ref this.selectedTextureKeyValueGrid_,
+        => this.RaiseAndSetIfChanged(ref field,
                                      value);
     }
   }
