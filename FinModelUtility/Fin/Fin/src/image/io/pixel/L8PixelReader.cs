@@ -4,8 +4,6 @@ using CommunityToolkit.HighPerformance;
 
 using fin.image.formats;
 
-using schema.binary;
-
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.image.io.pixel;

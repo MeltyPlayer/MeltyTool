@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using Avalonia.Input;
+﻿using Avalonia.Input;
 using Avalonia.Interactivity;
 
 using fin.animation;
@@ -13,8 +12,6 @@ using fin.ui.rendering.gl.model;
 using uni.config;
 using uni.model;
 using uni.ui.avalonia.common.gl;
-
-using Window = Avalonia.Controls.Window;
 
 
 namespace uni.ui.avalonia.resources.scene {

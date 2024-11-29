@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
 using fin.schema.color;
-using fin.schema.vector;
 
 using schema.binary;
 

@@ -5,8 +5,6 @@ using CommunityToolkit.HighPerformance;
 using fin.image.formats;
 using fin.util.color;
 
-using schema.binary;
-
 using SixLabors.ImageSharp.PixelFormats;
 
 

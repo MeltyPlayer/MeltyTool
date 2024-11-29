@@ -4,8 +4,6 @@ using fin.animation.interpolation;
 using fin.util.asserts;
 using fin.util.optional;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using NUnit.Framework;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;

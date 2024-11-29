@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Numerics;
 
-using fin.color;
 using fin.data.indexable;
 using fin.math;
 using fin.model.accessor;

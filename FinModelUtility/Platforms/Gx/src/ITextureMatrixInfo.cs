@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.schema.vector;
-
 namespace gx;
 
 public interface ITextureMatrixInfo {

@@ -14,8 +14,6 @@ using fin.util.asserts;
 using fin.util.linq;
 using fin.util.progress;
 
-using Microsoft.VisualStudio.TextTemplating;
-
 using uni.config;
 using uni.model;
 using uni.msg;

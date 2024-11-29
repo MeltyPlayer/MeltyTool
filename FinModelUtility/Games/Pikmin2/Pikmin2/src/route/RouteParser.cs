@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
 using fin.data.nodes;
-using fin.schema.vector;
 using fin.util.asserts;
 
 namespace games.pikmin2.route;
