@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using fin.math.floats;
+
 
 namespace fin.model.util;
 
@@ -26,6 +28,8 @@ public abstract class BMinMaxBoundsScaleCalculator<T>
   public float CalculateScale(T value)
     => this.ConvertBoundsToScale_(this.CalculateBounds(value));
 
-  private float ConvertBoundsToScale_(Bounds bounds)
-    => 1000 / bounds.Dimensions.Length();
+  private float ConvertBoundsToScale_(Bounds bounds) {
+    var scale = 1000 / bounds.Dimensions.Length();
+    return float.IsInfinity(scale) ? 1 : scale;
+  }
 }
