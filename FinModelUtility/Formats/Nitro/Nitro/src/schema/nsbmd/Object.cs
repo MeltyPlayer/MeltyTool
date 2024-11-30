@@ -1,4 +1,6 @@
-﻿using fin.schema.matrix;
+﻿using System.Numerics;
+
+using fin.schema.matrix;
 using fin.schema.vector;
 using fin.util.enums;
 
@@ -27,7 +29,7 @@ namespace nitro.schema.nsbmd {
 
 
     [RIfBoolean(nameof(HasTranslation))]
-    public Vector3f? Translation { get; set; }
+    public Vector3? Translation { get; set; }
 
     [ReadLogic]
     public void ReadRotation_(IBinaryReader br) {
@@ -49,7 +51,7 @@ namespace nitro.schema.nsbmd {
     }
 
     [RIfBoolean(nameof(HasScale))]
-    public Vector3f? Scale { get; set; }
+    public Vector3? Scale { get; set; }
 
 
     [Skip]
