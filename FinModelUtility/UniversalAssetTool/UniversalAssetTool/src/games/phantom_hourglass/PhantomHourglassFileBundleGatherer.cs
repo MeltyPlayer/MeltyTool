@@ -4,6 +4,7 @@ using fin.util.progress;
 using SceneGate.Ekona.Containers.Rom;
 
 using uni.platforms;
+using uni.platforms.ds;
 
 using Yarhl.FileSystem;
 
@@ -20,13 +21,7 @@ public class PhantomHourglassFileBundleGatherer
       return;
     }
 
-    using var game = NodeFactory.FromFile(phantomHourglassRom.FullPath);
-    game.TransformWith<Binary2NitroRom>();
-
-    var names = new List<string>();
-
-    foreach (var node in Navigator.IterateNodes(game)) {
-      names.Add(node.Name);
-    }
+    var fileHierarchy
+        = new DsFileHierarchyExtractor().ExtractFromRom(phantomHourglassRom);
   }
 }

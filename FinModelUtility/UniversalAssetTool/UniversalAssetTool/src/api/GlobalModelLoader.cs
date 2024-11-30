@@ -18,6 +18,8 @@ using mod.api;
 
 using modl.api;
 
+using nitro.api;
+
 using pmdc.api;
 
 using ttyd.api;
@@ -55,6 +57,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new MeleeModelImporter().Import(meleeModelFileBundle),
         ModModelFileBundle modModelFileBundle
             => new ModModelImporter().Import(modModelFileBundle),
+        NsbmdModelFileBundle nsbmdModelFileBundle
+            => new NsbmdModelImporter().Import(nsbmdModelFileBundle),
         OmdModelFileBundle omdModelFileBundle
             => new OmdModelImporter().Import(omdModelFileBundle),
         OotModelFileBundle ootModelFileBundle
