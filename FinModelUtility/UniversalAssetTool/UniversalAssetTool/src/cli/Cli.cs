@@ -5,6 +5,7 @@ using fin.io;
 using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
+using fin.util.types;
 
 namespace uni.cli;
 
@@ -14,10 +15,8 @@ public static class Cli {
                          Action? runDebug = null) {
     IEnumerable<Error>? errors = null;
 
-    var massExporterOptionTypes =
-        AppDomain.CurrentDomain.GetAssemblies()
-                 .SelectMany(s => s.GetTypes())
-                 .Where(typeof(IMassExporterOptions).IsAssignableFrom);
+    var massExporterOptionTypes
+        = TypesUtil.GetAllImplementationTypes<IMassExporterOptions>();
 
     var plugins = PluginUtil.Plugins;
 
