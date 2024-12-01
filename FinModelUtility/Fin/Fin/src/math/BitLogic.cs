@@ -6,6 +6,13 @@ namespace fin.math;
 public static class BitLogic {
   private static readonly byte[] TEMP_ = new byte[4];
 
+  public static void SplitNibbles(this byte value,
+                                  out byte high,
+                                  out byte low) {
+    high = (byte) (value >> 4);
+    low = (byte) (value & 0xF);
+  }
+
   public static uint ToUint32(byte a, byte b, byte c, byte d) {
     TEMP_[0] = a;
     TEMP_[1] = b;

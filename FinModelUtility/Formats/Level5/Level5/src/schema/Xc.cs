@@ -44,7 +44,7 @@ public class Xc : IBinaryDeserializable {
     }
 
     var inNameTable = br.SubreadAt(fileTableOffset, () => br.ReadBytes(filenameTableSize));
-    if (!new ZlibArrayDecompressor().TryDecompress(inNameTable, out var nameTable)) {
+    if (!new ZlibArrayToArrayDecompressor().TryDecompress(inNameTable, out var nameTable)) {
       nameTable = new LzssDecompressor().Decompress(inNameTable);
     }
 

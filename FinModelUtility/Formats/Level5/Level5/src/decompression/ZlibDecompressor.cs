@@ -4,7 +4,7 @@ using fin.decompression;
 
 namespace level5.decompression;
 
-public class ZlibArrayDecompressor : BArrayDecompressor {
+public class ZlibArrayToArrayDecompressor : BIArrayToArrayDecompressor {
   public override bool TryDecompress(byte[] src, out byte[] dst) {
       var b = src;
       if (b.Length < 6) {

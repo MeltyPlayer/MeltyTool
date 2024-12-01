@@ -63,7 +63,7 @@ public class StrExtractor {
         }
       }
 
-      var refPackDecompressor = new RefPackArrayDecompressor();
+      var refPackDecompressor = new RefPackArrayToArrayDecompressor();
       await Parallel.ForEachAsync(
                         headerBlocks,
                         new ParallelOptions { MaxDegreeOfParallelism = -1, },

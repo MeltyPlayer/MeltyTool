@@ -38,7 +38,7 @@ public interface IN64Memory : IReadOnlyN64Memory {
   void AddSegment(uint segmentIndex,
                   uint offset,
                   uint length,
-                  IArrayDecompressor? decompressor = null);
+                  IArrayToArrayDecompressor? decompressor = null);
 
   void AddSegment(uint segmentIndex, Segment segment);
 }
@@ -128,7 +128,7 @@ public class N64Memory(
   public void AddSegment(uint segmentIndex,
                          uint offset,
                          uint length,
-                         IArrayDecompressor? decompressor = null)
+                         IArrayToArrayDecompressor? decompressor = null)
     => this.AddSegment(segmentIndex,
                        new Segment {
                            Offset = offset,
@@ -162,5 +162,5 @@ public class N64Memory(
 public readonly struct Segment {
   public required uint Offset { get; init; }
   public required uint Length { get; init; }
-  public IArrayDecompressor? Decompressor { get; init; }
+  public IArrayToArrayDecompressor? Decompressor { get; init; }
 }
