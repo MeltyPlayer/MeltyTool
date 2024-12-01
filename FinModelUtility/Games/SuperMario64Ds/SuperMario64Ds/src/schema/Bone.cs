@@ -26,9 +26,7 @@ public partial class Bone : IBinaryConvertible {
 
   public FixedPointVector3 Scale { get; set; }
 
-  public short RotationX { get; set; }
-  public short RotationY { get; set; }
-  public short RotationZ { get; set; }
+  public EulerDegreesVector3 Rotation { get; set; }
   private readonly short padding_ = 0;
 
   public FixedPointVector3 Translation { get; set; }
