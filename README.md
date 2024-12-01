@@ -48,6 +48,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
 - [@M-1-RLG](https://github.com/M-1-RLG), aka M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
 - [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/naclomi/noclip.website) was referenced to add support for importing .csab files and Paper Mario: The Thousand Year Door's animated group models.
+- Mega-Mario, whose [documentation](https://kuribo64.net/get.php?id=KBNyhM0kmNiuUBb3) was referenced to add support for parsing SM64DS models.
 - [@mhvuze](https://github.com/mhvuze), whose [3ds-xfsatool](https://github.com/mhvuze/3ds-xfsatool) is used to extract XFSA archives.
 - [@Nanook](https://github.com/Nanook), whose [NKitv1](https://github.com/Nanook/NKitv1) is used to read NKit ISOs.
 - [@neimod](https://github.com/neimod), who originally created [ctrtool](https://github.com/neimod/ctr), which is used to extract the contents of 3DS .cias.
