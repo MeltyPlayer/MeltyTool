@@ -1,11 +1,13 @@
 ﻿using System.Numerics;
 
+using fin.math.xy;
+
 using schema.readOnly;
 
 namespace fin.model;
 
 [GenerateReadOnly]
-public partial interface IVector2 {
+public partial interface IVector2 : IXy {
   float X { get; set; }
   float Y { get; set; }
 }

@@ -1,4 +1,5 @@
 ﻿using schema.binary;
+using schema.binary.attributes;
 
 namespace sm64ds.schema;
 
@@ -27,4 +28,16 @@ public partial class Bmd : IBinaryConvertible {
 
   public uint TransformAndBoneMapOffset { get; set; }
   public uint TextureAndPaletteDataBlock { get; set; }
+
+  [RAtPosition(nameof(BonesOffset))]
+  [RSequenceLengthSource(nameof(BoneCount))]
+  public Bone[] Bones { get; set; }
+
+  [RAtPosition(nameof(TexturesOffset))]
+  [RSequenceLengthSource(nameof(TextureCount))]
+  public Texture[] Textures { get; set; }
+
+  [RAtPosition(nameof(MaterialsOffset))]
+  [RSequenceLengthSource(nameof(MaterialCount))]
+  public Material[] Materials { get; set; }
 }

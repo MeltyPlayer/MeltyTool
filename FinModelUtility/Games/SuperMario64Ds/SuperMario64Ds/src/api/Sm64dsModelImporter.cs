@@ -7,10 +7,7 @@ using fin.util.sets;
 
 using schema.binary;
 
-using sm64ds.api;
-using sm64ds.schema;
-
-namespace nitro.api;
+namespace sm64ds.api;
 
 public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
   public IModel Import(Sm64dsModelFileBundle fileBundle) {
@@ -22,12 +19,10 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         Files = files,
     };
 
-    var nsbmdData
-        = new Lz77Decompressor().Decompress(bmdFile.OpenReadAsBinary());
-
-    var ms = new MemoryStream(nsbmdData);
+    var ms = new MemoryStream(
+        new Lz77Decompressor().Decompress(bmdFile.OpenReadAsBinary()));
     var br = new SchemaBinaryReader(ms);
-    var bmd = br.ReadNew<Bmd>();
+    //var bmd = br.ReadNew<Bmd>();
 
     return model;
   }

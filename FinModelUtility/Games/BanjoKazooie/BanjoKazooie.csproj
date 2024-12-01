@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.0" />
+    <PackageReference Include="schema" Version="0.6.1" />
   </ItemGroup>
 
   <ItemGroup>
