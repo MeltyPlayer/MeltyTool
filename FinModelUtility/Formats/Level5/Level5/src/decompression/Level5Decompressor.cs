@@ -2,7 +2,7 @@
 
 namespace level5.decompression;
 
-public class Level5Decompressor : BIArrayToArrayDecompressor {
+public class Level5Decompressor : BArrayToArrayDecompressor {
   public override bool TryDecompress(byte[] src, out byte[] dst) {
       int tableType = (src[0] & 0xFF);
 
