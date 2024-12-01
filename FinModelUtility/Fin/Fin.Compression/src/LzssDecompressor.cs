@@ -1,13 +1,12 @@
-using System;
-
 using fin.math;
 using fin.schema;
-using fin.util.asserts;
 using fin.util.strings;
 
 using schema.binary;
 
-namespace fin.decompression;
+using Asserts = fin.util.asserts.Asserts;
+
+namespace fin.compression;
 
 public class LzssDecompressor {
   public bool TryToDecompress(IBinaryReader br, out byte[]? data) {

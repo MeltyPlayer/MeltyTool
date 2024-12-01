@@ -2,7 +2,7 @@
 
 using schema.binary;
 
-namespace fin.decompression;
+namespace fin.compression;
 
 public interface IBinaryReaderToArrayDecompressor {
   bool TryDecompress(IBinaryReader br, out byte[] dst);

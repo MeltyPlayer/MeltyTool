@@ -1,6 +1,6 @@
 ﻿using f3dzex2.io;
 
-using fin.decompression;
+using fin.compression;
 using fin.util.asserts;
 using fin.util.enumerables;
 

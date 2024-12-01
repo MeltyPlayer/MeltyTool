@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace fin.decompression;
+namespace fin.compression;
 
 public interface IArrayToArrayDecompressor {
   bool TryDecompress(byte[] src, out byte[] dst);

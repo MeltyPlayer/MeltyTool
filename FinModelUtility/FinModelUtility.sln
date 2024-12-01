@@ -197,6 +197,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Brres", "Brres", "{6A9BD73D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brres", "Formats\Brres\Brres\Brres.csproj", "{BB25DCC2-44E0-4CD7-B666-3BC2CD3EB650}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin.Compression", "Fin\Fin.Compression\Fin.Compression.csproj", "{01B2C0BD-02AA-4273-8277-8D3016D7A738}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -677,6 +679,14 @@ Global
 		{BB25DCC2-44E0-4CD7-B666-3BC2CD3EB650}.Release|x64.Build.0 = Release|x64
 		{BB25DCC2-44E0-4CD7-B666-3BC2CD3EB650}.Release|x86.ActiveCfg = Release|x86
 		{BB25DCC2-44E0-4CD7-B666-3BC2CD3EB650}.Release|x86.Build.0 = Release|x86
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Debug|x64.ActiveCfg = Debug|x64
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Debug|x64.Build.0 = Debug|x64
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Debug|x86.ActiveCfg = Debug|x86
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Debug|x86.Build.0 = Debug|x86
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Release|x64.ActiveCfg = Release|x64
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Release|x64.Build.0 = Release|x64
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Release|x86.ActiveCfg = Release|x86
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -761,6 +771,7 @@ Global
 		{7E7898D3-BA81-41C8-95F5-C7A5266C1392} = {27A04A78-53EB-4B6A-BE48-8345642D1B52}
 		{6A9BD73D-0443-491E-BC65-9656F197571F} = {F825789E-A737-4B16-AB6B-37342AC56705}
 		{BB25DCC2-44E0-4CD7-B666-3BC2CD3EB650} = {6A9BD73D-0443-491E-BC65-9656F197571F}
+		{01B2C0BD-02AA-4273-8277-8D3016D7A738} = {98E57180-48B9-4648-AE42-7C7C67120471}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}

@@ -1,4 +1,6 @@
-﻿using fin.model;
+﻿using fin.compression;
+using fin.io;
+using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.util.sets;
@@ -14,6 +16,9 @@ public class NsbmdModelImporter : IModelImporter<NsbmdModelFileBundle> {
         FileBundle = fileBundle,
         Files = files,
     };
+
+    var nsbmdData
+        = new Lz77Decompressor().Decompress(nsbmdFile.OpenReadAsBinary());
 
     return model;
   }

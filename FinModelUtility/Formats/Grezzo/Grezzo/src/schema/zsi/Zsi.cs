@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-using fin.decompression;
+using fin.compression;
 
 using schema.binary;
 

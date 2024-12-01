@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace fin.decompression;
+namespace fin.compression;
 
 public interface ISpanDecompressor {
   bool TryToGetLength(ReadOnlySpan<byte> src, out int length);

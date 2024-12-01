@@ -20,7 +20,7 @@
  *    distribution.
  */
 
-using fin.decompression;
+using fin.compression;
 
 namespace visceral.decompression;
 

@@ -1,11 +1,12 @@
-﻿using fin.decompression;
-using fin.io;
+﻿using fin.io;
 using fin.io.archive;
 using fin.util.strings;
 
 using schema.binary;
 
 using uni.platforms.threeDs.tools.gar.schema;
+
+using LzssDecompressor = fin.compression.LzssDecompressor;
 
 namespace uni.platforms.threeDs.tools.gar;
 

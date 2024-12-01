@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
-using System.Text.RegularExpressions;
-
 using fin.math;
-using fin.schema;
 using fin.util.asserts;
-using fin.util.strings;
 
 using schema.binary;
 
-namespace fin.decompression;
+namespace fin.compression;
 
 /// <summary>
 ///   Shamelessly stolen from:
@@ -18,28 +11,48 @@ namespace fin.decompression;
 /// </summary>
 public class Lz77Decompressor : BBinaryReaderToArrayDecompressor {
   public override bool TryDecompress(IBinaryReader br, out byte[] data) {
+    br.PushContainerEndianness(Endianness.LittleEndian);
     br.AssertString("LZ77");
-
     var compressionType = br.ReadByte();
+    var decompressedSize = ReadDecompressedSize_(br);
+    br.PopEndianness();
+
+    br.PushContainerEndianness(Endianness.BigEndian);
     switch (compressionType) {
       case 0x10: {
-        data = Decompress10_(br);
+        data = Decompress10_(br, decompressedSize);
         return true;
       }
       case 0x11: {
-        data = Decompress11_(br);
+        data = Decompress11_(br, decompressedSize);
         return true;
       }
     }
+    br.PopEndianness();
 
     data = default;
     return false;
   }
 
-  private static byte[] Decompress10_(IBinaryReader br) {
-    var decompressedSize = ReadDecompressedSize_(br);
-    var data = new List<byte>((int) decompressedSize);
+  private static uint ReadDecompressedSize_(IBinaryReader br) {
+    var decompressedSize = br.ReadUInt24();
+    if (decompressedSize == 0) {
+      decompressedSize = br.ReadUInt32();
+    }
 
+    if (decompressedSize < 40) {
+      Asserts.Fail($"LZ77 decompressed size is too small: {decompressedSize}");
+    }
+
+    if (decompressedSize > (1 << 19) * 4) {
+      Asserts.Fail($"LZ77 decompressed size is too big: {decompressedSize}");
+    }
+
+    return decompressedSize;
+  }
+
+  private static byte[] Decompress10_(IBinaryReader br, uint decompressedSize) {
+    var data = new List<byte>((int) decompressedSize);
     while (data.Count < decompressedSize) {
       var flags = br.ReadByte();
 
@@ -67,7 +80,7 @@ public class Lz77Decompressor : BBinaryReaderToArrayDecompressor {
             Asserts.Fail("Not enough data!");
           }
 
-          for (var ii = 0; ii < 8; ++ii) {
+          for (var ii = 0; ii < n; ++ii) {
             var x = data[data.Count - ofs];
             data.Add(x);
           }
@@ -82,10 +95,8 @@ public class Lz77Decompressor : BBinaryReaderToArrayDecompressor {
     return data.ToArray();
   }
 
-  private static byte[] Decompress11_(IBinaryReader br) {
-    var decompressedSize = ReadDecompressedSize_(br);
+  private static byte[] Decompress11_(IBinaryReader br, uint decompressedSize) {
     var data = new List<byte>((int) decompressedSize);
-
     while (data.Count < decompressedSize) {
       var flags = br.ReadByte();
       for (var i = 0; i < 8; ++i) {
@@ -158,22 +169,5 @@ public class Lz77Decompressor : BBinaryReaderToArrayDecompressor {
     }
 
     return data.ToArray();
-  }
-
-  private static uint ReadDecompressedSize_(IBinaryReader br) {
-    var decompressedSize = br.ReadUInt24();
-    if (decompressedSize == 0) {
-      decompressedSize = br.ReadUInt32();
-    }
-
-    if (decompressedSize < 40) {
-      Asserts.Fail($"LZ77 decompressed size is too small: {decompressedSize}");
-    }
-
-    if (decompressedSize > (1 << 19) * 4) {
-      Asserts.Fail($"LZ77 decompressed size is too big: {decompressedSize}");
-    }
-
-    return decompressedSize;
   }
 }

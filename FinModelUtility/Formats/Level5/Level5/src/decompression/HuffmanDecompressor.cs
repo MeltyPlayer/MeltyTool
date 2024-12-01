@@ -1,4 +1,4 @@
-﻿using fin.decompression;
+﻿using fin.compression;
 
 namespace level5.decompression;
 
