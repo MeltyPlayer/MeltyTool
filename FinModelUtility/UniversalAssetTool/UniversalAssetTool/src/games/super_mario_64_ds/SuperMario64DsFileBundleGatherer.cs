@@ -1,7 +1,7 @@
 ﻿using fin.io.bundles;
 using fin.util.progress;
 
-using nitro.api;
+using sm64ds.api;
 
 using uni.platforms;
 using uni.platforms.ds;
@@ -23,8 +23,8 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     foreach (var bmdFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".bmd")) {
-      organizer.Add(new NsbmdModelFileBundle {
-          GameName = "super_mario_64_ds", NsbmdFile = bmdFile
+      organizer.Add(new Sm64dsModelFileBundle {
+          GameName = "super_mario_64_ds", BmdFile = bmdFile
       }.Annotate(bmdFile));
     }
   }

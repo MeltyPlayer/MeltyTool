@@ -22,6 +22,8 @@ using nitro.api;
 
 using pmdc.api;
 
+using sm64ds.api;
+
 using ttyd.api;
 
 using UoT.api;
@@ -65,6 +67,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new OotModelImporter().Import(ootModelFileBundle),
         PedModelFileBundle pedModelFileBundle
             => new PedModelImporter().Import(pedModelFileBundle),
+        Sm64dsModelFileBundle sm64dsModelFileBundle
+            => new Sm64dsModelImporter().Import(sm64dsModelFileBundle),
         TtydModelFileBundle ttydModelFileBundle
             => new TtydModelImporter().Import(ttydModelFileBundle),
         VrmlModelFileBundle vrmlModelFileBundle
