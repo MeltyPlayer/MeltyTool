@@ -1,7 +1,7 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace sm64ds.schema;
+namespace sm64ds.schema.bmd;
 
 /// <summary>
 ///   Shamelessly stolen from:

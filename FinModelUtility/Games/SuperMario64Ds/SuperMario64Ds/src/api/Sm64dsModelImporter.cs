@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-
+﻿using fin.animation.keyframes;
 using fin.compression;
 using fin.data.dictionaries;
 using fin.data.queues;
@@ -14,7 +13,8 @@ using fin.util.sets;
 
 using schema.binary;
 
-using sm64ds.schema;
+using sm64ds.schema.bca;
+using sm64ds.schema.bmd;
 
 namespace sm64ds.api;
 
@@ -28,11 +28,13 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         Files = files,
     };
 
-    var ms = new MemoryStream(
-        new Lz77Decompressor().Decompress(bmdFile.OpenReadAsBinary()));
-    var br = new SchemaBinaryReader(ms);
-    var bmd = br.ReadNew<Bmd>();
+    using var bmdRawBr = bmdFile.OpenReadAsBinary();
+    var bmdBr = new SchemaBinaryReader(
+        new Lz77Decompressor().Decompress(bmdRawBr));
+    var bmd = bmdBr.ReadNew<Bmd>();
 
+    // Set up bones
+    var finBones = new IReadOnlyBone[bmd.Bones.Length];
     {
       var bones = bmd.Bones.OrderBy(b => b.Id).ToArray();
       var rootBones = new List<Bone>();
@@ -60,6 +62,8 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         var finBone = parentFinBone.AddChild(bone.Translation);
         finBone.Name = bone.Name;
 
+        finBones[bone.Id] = finBone;
+
         var localTransform = finBone.LocalTransform;
         localTransform.SetRotationDegrees(bone.Rotation);
         localTransform.SetScale(bone.Scale);
@@ -70,6 +74,68 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
                   b => !previousSiblingMap.ContainsKey(b));
           boneQueue.Enqueue(nextSiblingMap.Chain(firstChild)
                                           .Select(b => (b, finBone)));
+        }
+      }
+    }
+
+    // Set up animations
+    if (fileBundle.BcaFiles != null) {
+      foreach (var bcaFile in fileBundle.BcaFiles) {
+        using var bcaRawBr = bcaFile.OpenReadAsBinary();
+        var bcaBr = new SchemaBinaryReader(
+            new Lz77Decompressor().Decompress(bcaRawBr));
+        var bca = bcaBr.ReadNew<Bca>();
+
+        var finAnimation = model.AnimationManager.AddAnimation();
+        finAnimation.Name = bcaFile.NameWithoutExtension.ToString();
+
+        finAnimation.FrameRate = 30;
+        finAnimation.FrameCount = bca.NumFrames;
+        finAnimation.UseLoopingInterpolation = bca.Looped;
+
+        for (var i = 0; i < bca.BoneAnimationData.Length; ++i) {
+          var boneAnimationData = bca.BoneAnimationData[i];
+
+          var boneTracks = finAnimation.AddBoneTracks(finBones[i]);
+
+          (int, float)[][] translationAxes = [
+              boneAnimationData.TranslationXValues,
+              boneAnimationData.TranslationYValues,
+              boneAnimationData.TranslationZValues
+          ];
+          var translations = boneTracks.UseSeparateTranslationKeyframes();
+          for (var a = 0; a < translationAxes.Length; ++a) {
+            var translationAxis = translationAxes[a];
+            foreach (var (f, value) in translationAxis) {
+              translations.SetKeyframe(a, f, value);
+            }
+          }
+
+          (int, float)[][] rotationAxes = [
+              boneAnimationData.TranslationXValues,
+              boneAnimationData.TranslationYValues,
+              boneAnimationData.TranslationZValues
+          ];
+          var rotations = boneTracks.UseSeparateEulerRadiansKeyframes();
+          for (var a = 0; a < rotationAxes.Length; ++a) {
+            var rotationAxis = rotationAxes[a];
+            foreach (var (f, value) in rotationAxis) {
+              rotations.SetKeyframe(a, f, value);
+            }
+          }
+
+          (int, float)[][] scaleAxes = [
+              boneAnimationData.ScaleXValues,
+              boneAnimationData.ScaleYValues,
+              boneAnimationData.ScaleZValues
+          ];
+          var scales = boneTracks.UseSeparateScaleKeyframes();
+          for (var a = 0; a < scaleAxes.Length; ++a) {
+            var scaleAxis = scaleAxes[a];
+            foreach (var (f, value) in scaleAxis) {
+              scales.SetKeyframe(a, f, value);
+            }
+          }
         }
       }
     }

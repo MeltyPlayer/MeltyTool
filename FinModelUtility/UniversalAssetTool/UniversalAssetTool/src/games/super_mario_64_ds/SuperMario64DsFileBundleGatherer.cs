@@ -21,11 +21,28 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var fileHierarchy
         = new DsFileHierarchyExtractor().ExtractFromRom(superMario64DsRom);
 
-    foreach (var bmdFile in
-             fileHierarchy.Root.FilesWithExtensionRecursive(".bmd")) {
-      organizer.Add(new Sm64dsModelFileBundle {
-          GameName = "super_mario_64_ds", BmdFile = bmdFile
-      }.Annotate(bmdFile));
+    foreach (var directory in fileHierarchy) {
+      var bmdFiles = directory.GetFilesWithFileType(".bmd").ToArray();
+      if (bmdFiles.Length == 0) {
+        continue;
+      }
+
+      if (bmdFiles.Length == 1) {
+        var bmdFile = bmdFiles[0];
+        var bcaFiles = directory.GetFilesWithFileType(".bca").ToArray();
+        organizer.Add(new Sm64dsModelFileBundle {
+            GameName = "super_mario_64_ds",
+            BmdFile = bmdFile,
+            BcaFiles = bcaFiles,
+        }.Annotate(bmdFile));
+      } else {
+        foreach (var bmdFile in bmdFiles) {
+          organizer.Add(new Sm64dsModelFileBundle {
+              GameName = "super_mario_64_ds",
+              BmdFile = bmdFile,
+          }.Annotate(bmdFile));
+        }
+      }
     }
   }
 }
