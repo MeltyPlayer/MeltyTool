@@ -112,9 +112,9 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
           }
 
           (int, float)[][] rotationAxes = [
-              boneAnimationData.TranslationXValues,
-              boneAnimationData.TranslationYValues,
-              boneAnimationData.TranslationZValues
+              boneAnimationData.RotationXValues,
+              boneAnimationData.RotationYValues,
+              boneAnimationData.RotationZValues
           ];
           var rotations = boneTracks.UseSeparateEulerRadiansKeyframes();
           for (var a = 0; a < rotationAxes.Length; ++a) {
