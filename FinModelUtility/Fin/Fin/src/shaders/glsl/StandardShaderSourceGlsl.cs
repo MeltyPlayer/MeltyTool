@@ -17,17 +17,22 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
 
     var animations = model.AnimationManager.Animations;
 
-    var hasNormalTexture = material.NormalTexture != null;
+    var fragmentShaderSrc = new StringBuilder();
+    fragmentShaderSrc.AppendLine($"#version {GlslConstants.SHADER_VERSION}");
+
+    var diffuseTexture = material.DiffuseTexture;
+    var hasDiffuseTexture = diffuseTexture != null;
+
+    var normalTexture = material.NormalTexture;
+    var hasNormalTexture = normalTexture != null;
     var hasNormals = hasNormalTexture ||
                      model.Skin.HasNormalsForMaterial(material);
 
-    var fragmentShaderSrc = new StringBuilder();
-    fragmentShaderSrc.Append($"#version {GlslConstants.SHADER_VERSION}");
-
-    var diffuseTexture = material.DiffuseTexture;
-    var normalTexture = material.NormalTexture;
     var ambientOcclusionTexture = material.AmbientOcclusionTexture;
+    var hasAmbientOcclusionTexture = ambientOcclusionTexture != null;
+
     var emissiveTexture = material.EmissiveTexture;
+    var hasEmissiveTexture = emissiveTexture != null;
 
     var specularTexture = material.SpecularTexture;
     var hasSpecularTexture = specularTexture != null;
@@ -45,40 +50,40 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
         material.Textures,
         animations);
 
-    fragmentShaderSrc.Append(
-        $"""
-
-
-         uniform {GlslUtil.GetTypeOfTexture(diffuseTexture, animations)} diffuseTexture;
-         """);
+    if (hasDiffuseTexture) {
+      fragmentShaderSrc.AppendLine(
+          $"uniform {GlslUtil.GetTypeOfTexture(diffuseTexture, animations)} diffuseTexture;");
+    }
 
     if (hasNormalTexture) {
-      fragmentShaderSrc.Append(
-          $"""
-
-           uniform {GlslUtil.GetTypeOfTexture(normalTexture, animations)} normalTexture;
-           """);
+      fragmentShaderSrc.AppendLine(
+          $"uniform {GlslUtil.GetTypeOfTexture(normalTexture, animations)} normalTexture;");
     }
 
     if (hasSpecularTexture) {
-      fragmentShaderSrc.Append(
-          $"""
+      fragmentShaderSrc.AppendLine(
+          $"uniform {GlslUtil.GetTypeOfTexture(specularTexture, animations)} specularTexture;");
+    }
 
-           uniform {GlslUtil.GetTypeOfTexture(specularTexture, animations)} specularTexture;
-           """);
+    if (hasAmbientOcclusionTexture) {
+      fragmentShaderSrc.AppendLine(
+          $"uniform {GlslUtil.GetTypeOfTexture(ambientOcclusionTexture, animations)} ambientOcclusionTexture;");
+    }
+
+    if (hasEmissiveTexture) {
+      fragmentShaderSrc.AppendLine(
+          $"uniform {GlslUtil.GetTypeOfTexture(emissiveTexture, animations)} emissiveTexture;");
     }
 
     fragmentShaderSrc.Append(
         $"""
 
-         uniform {GlslUtil.GetTypeOfTexture(ambientOcclusionTexture, animations)} ambientOcclusionTexture;
-         uniform {GlslUtil.GetTypeOfTexture(emissiveTexture, animations)} emissiveTexture;
          uniform float {GlslConstants.UNIFORM_SHININESS_NAME};
 
          out vec4 fragColor;
 
          in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;
-         
+
          """);
 
     if (hasNormals) {
@@ -88,7 +93,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
           in vec3 vertexNormal;
           in vec3 tangent;
           in vec3 binormal;
-          
+
           """);
     }
 
@@ -108,20 +113,34 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
            {GlslUtil.GetGetMergedLightColorsFunction()}
 
            {GlslUtil.GetApplyMergedLightColorsFunction(true)}
-           
+
            """);
     }
 
-    fragmentShaderSrc.Append(
-        $$"""
+    fragmentShaderSrc.AppendLine(
+        """
 
-          void main() {
-            vec4 diffuseColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", $"{GlslConstants.IN_UV_NAME}{diffuseTexture?.UvIndex ?? 0}", diffuseTexture, animations)}};
-            vec4 ambientOcclusionColor = {{GlslUtil.ReadColorFromTexture("ambientOcclusionTexture", $"{GlslConstants.IN_UV_NAME}{ambientOcclusionTexture?.UvIndex ?? 0}", ambientOcclusionTexture, animations)}};
-            vec4 emissiveColor = {{GlslUtil.ReadColorFromTexture("emissiveTexture", $"{GlslConstants.IN_UV_NAME}{emissiveTexture?.UvIndex ?? 0}", emissiveTexture, animations)}};
-          
-            fragColor = diffuseColor * {{GlslConstants.IN_VERTEX_COLOR_NAME}}0;
-          """);
+        void main() {
+        """
+    );
+
+    if (hasDiffuseTexture) {
+      fragmentShaderSrc.AppendLine(
+          $"  vec4 diffuseColor = {GlslUtil.ReadColorFromTexture("diffuseTexture", $"{GlslConstants.IN_UV_NAME}{diffuseTexture?.UvIndex ?? 0}", diffuseTexture, animations)};");
+    }
+
+    if (hasAmbientOcclusionTexture) {
+      fragmentShaderSrc.AppendLine(
+          $"  vec4 ambientOcclusionColor = {GlslUtil.ReadColorFromTexture("ambientOcclusionTexture", $"{GlslConstants.IN_UV_NAME}{ambientOcclusionTexture?.UvIndex ?? 0}", ambientOcclusionTexture, animations)};");
+    }
+
+    if (hasEmissiveTexture) {
+      fragmentShaderSrc.AppendLine(
+          $"  vec4 emissiveColor = {GlslUtil.ReadColorFromTexture("emissiveTexture", $"{GlslConstants.IN_UV_NAME}{emissiveTexture?.UvIndex ?? 0}", emissiveTexture, animations)};");
+    }
+
+    fragmentShaderSrc.AppendLine(
+        $"  fragColor = {(hasDiffuseTexture ? "diffuseColor * " : "")} {GlslConstants.IN_VERTEX_COLOR_NAME}0;");
 
     if (hasNormals) {
       if (!hasNormalTexture) {
@@ -151,13 +170,14 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
            """);
     }
 
-    // TODO: Is this right?
-    fragmentShaderSrc.Append(
-        """
-        
-          fragColor.rgb += emissiveColor.rgb;
-          fragColor.rgb = min(fragColor.rgb, 1);
-        """);
+    if (hasEmissiveTexture) {
+      fragmentShaderSrc.Append(
+          """
+          
+            fragColor.rgb += emissiveColor.rgb;
+            fragColor.rgb = min(fragColor.rgb, 1);
+          """);
+    }
 
     if (material.TransparencyType == TransparencyType.MASK) {
       fragmentShaderSrc.Append(
@@ -182,5 +202,6 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
   }
 
   public string VertexShaderSource { get; }
+
   public string FragmentShaderSource { get; set; }
 }
