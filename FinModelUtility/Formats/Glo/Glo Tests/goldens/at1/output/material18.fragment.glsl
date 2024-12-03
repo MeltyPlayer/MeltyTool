@@ -6,5 +6,4 @@ in vec4 vertexColor0;
 
 void main() {
   fragColor = vertexColor0;
-
 }

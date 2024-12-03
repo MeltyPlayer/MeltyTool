@@ -141,9 +141,9 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
 
     fragmentShaderSrc.AppendLine(
         $"  fragColor = {(hasDiffuseTexture ? "diffuseColor * " : "")}{GlslConstants.IN_VERTEX_COLOR_NAME}0;");
-    fragmentShaderSrc.AppendLine();
 
     if (hasNormals) {
+      fragmentShaderSrc.AppendLine();
       if (hasAmbientOcclusionTexture) {
         fragmentShaderSrc.AppendLine(
             $"  vec4 ambientOcclusionColor = {GlslUtil.ReadColorFromTexture("ambientOcclusionTexture", $"{GlslConstants.IN_UV_NAME}{ambientOcclusionTexture?.UvIndex ?? 0}", ambientOcclusionTexture, animations)};");
@@ -168,10 +168,10 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
       // TODO: Is this right?
       fragmentShaderSrc.AppendLine(
           $"  fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, {(hasSpecularTexture ? $"{GlslUtil.ReadColorFromTexture("specularTexture", "uv0", specularTexture, animations)}" : "vec4(1)")}{(hasAmbientOcclusionTexture ? ", ambientOcclusionColor.r" : "")}).rgb, {GlslConstants.UNIFORM_USE_LIGHTING_NAME});");
-      fragmentShaderSrc.AppendLine();
     }
 
     if (hasEmissiveTexture) {
+      fragmentShaderSrc.AppendLine();
       fragmentShaderSrc.AppendLine(
           $"  vec4 emissiveColor = {GlslUtil.ReadColorFromTexture("emissiveTexture", $"{GlslConstants.IN_UV_NAME}{emissiveTexture?.UvIndex ?? 0}", emissiveTexture, animations)};");
       fragmentShaderSrc.AppendLine(
@@ -179,10 +179,10 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
             fragColor.rgb += emissiveColor.rgb;
             fragColor.rgb = min(fragColor.rgb, 1);
           """);
-      fragmentShaderSrc.AppendLine();
     }
 
     if (material.TransparencyType == TransparencyType.MASK) {
+      fragmentShaderSrc.AppendLine();
       fragmentShaderSrc.AppendLine(
           $$"""
               if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
