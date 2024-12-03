@@ -17,21 +17,26 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
     var hasNormals = model.Skin.HasNormalsForMaterial(material);
 
     var fragmentSrc = new StringBuilder();
-    fragmentSrc.Append($"#version {GlslConstants.SHADER_VERSION}");
+    fragmentSrc.AppendLine($"#version {GlslConstants.SHADER_VERSION}");
+    fragmentSrc.AppendLine();
 
     if (hasNormals) {
-      fragmentSrc.Append(
+      fragmentSrc.AppendLine(
           $"""
-
            {GlslUtil.GetLightHeader(true)}
+
            """);
     }
 
-    fragmentSrc.Append(
-        $"""
+    fragmentSrc.AppendLine("uniform vec4 diffuseColor;");
 
-         uniform vec4 diffuseColor;
-         uniform float {GlslConstants.UNIFORM_SHININESS_NAME};
+    if (hasNormals) {
+      fragmentSrc.AppendLine(
+          $"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
+    }
+
+    fragmentSrc.AppendLine(
+        $"""
 
          out vec4 fragColor;
 
@@ -39,15 +44,12 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
          """);
 
     if (hasNormals) {
-      fragmentSrc.Append(
+      fragmentSrc.AppendLine(
           """
           in vec3 vertexPosition;
           in vec3 vertexNormal;
           """);
-    }
-
-    if (hasNormals) {
-      fragmentSrc.Append(
+      fragmentSrc.AppendLine(
           $"""
 
            {GlslUtil.GetGetIndividualLightColorsFunction()}
@@ -59,7 +61,7 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
       );
     }
 
-    fragmentSrc.Append(
+    fragmentSrc.AppendLine(
         $$"""
 
           void main() {
@@ -67,20 +69,18 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
           """);
 
     if (hasNormals) {
-      fragmentSrc.Append(
+      fragmentSrc.AppendLine(
           $"""
            
              // Have to renormalize because the vertex normals can become distorted when interpolated.
              vec3 fragNormal = normalize(vertexNormal);
-             fragColor.rgb =
-                 mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
+             fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
            """);
     }
 
     if (material.TransparencyType == TransparencyType.MASK) {
-      fragmentSrc.Append(
+      fragmentSrc.AppendLine(
           $$"""
-            
             
               if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
                 discard;
@@ -88,11 +88,7 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
             """);
     }
 
-    fragmentSrc.Append(
-        """
-
-        }
-        """);
+    fragmentSrc.Append("}");
 
     this.FragmentShaderSource = fragmentSrc.ToString();
   }

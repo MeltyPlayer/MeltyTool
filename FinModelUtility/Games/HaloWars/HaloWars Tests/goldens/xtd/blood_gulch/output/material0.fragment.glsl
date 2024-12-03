@@ -1,6 +1,5 @@
 #version 430
 
-
 struct Light {
   // 0x00 (vec3 needs to be 16-byte aligned)
   vec3 position;
@@ -32,7 +31,6 @@ uniform vec3 cameraPosition;
 
 uniform sampler2D diffuseTexture;
 uniform sampler2D ambientOcclusionTexture;
-uniform sampler2D emissiveTexture;
 uniform float shininess;
 
 out vec4 fragColor;
@@ -139,16 +137,12 @@ vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4
 
 void main() {
   vec4 diffuseColor = texture(diffuseTexture, uv0);
-  vec4 ambientOcclusionColor = texture(ambientOcclusionTexture, uv0);
-  vec4 emissiveColor = texture(emissiveTexture, uv0);
-
   fragColor = diffuseColor * vertexColor0;
+
+  vec4 ambientOcclusionColor = texture(ambientOcclusionTexture, uv0);
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
-
   fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, shininess, fragColor, vec4(1), ambientOcclusionColor.r).rgb, useLighting);
-  fragColor.rgb += emissiveColor.rgb;
-  fragColor.rgb = min(fragColor.rgb, 1);
 
   if (fragColor.a < .95) {
     discard;

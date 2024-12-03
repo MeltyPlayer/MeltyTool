@@ -1,6 +1,5 @@
 #version 430
 
-
 struct Light {
   // 0x00 (vec3 needs to be 16-byte aligned)
   vec3 position;

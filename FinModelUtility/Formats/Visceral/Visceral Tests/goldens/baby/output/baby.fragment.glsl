@@ -1,6 +1,5 @@
 #version 430
 
-
 struct Light {
   // 0x00 (vec3 needs to be 16-byte aligned)
   vec3 position;
@@ -33,8 +32,6 @@ uniform vec3 cameraPosition;
 uniform sampler2D diffuseTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D specularTexture;
-uniform sampler2D ambientOcclusionTexture;
-uniform sampler2D emissiveTexture;
 uniform float shininess;
 
 out vec4 fragColor;
@@ -127,13 +124,13 @@ void getMergedLightColors(vec3 position, vec3 normal, float shininess, out vec4 
   }
 }
 
-vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4 diffuseSurfaceColor, vec4 specularSurfaceColor, float ambientOcclusionAmount) {
+vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4 diffuseSurfaceColor, vec4 specularSurfaceColor) {
   vec4 mergedDiffuseLightColor = vec4(0);
   vec4 mergedSpecularLightColor = vec4(0);
   getMergedLightColors(position, normal, shininess, mergedDiffuseLightColor, mergedSpecularLightColor);
 
   // We double it because all the other kids do. (Other fixed-function games.)
-  vec4 diffuseComponent = 2 * diffuseSurfaceColor * (ambientOcclusionAmount * ambientLightColor + mergedDiffuseLightColor);
+  vec4 diffuseComponent = 2 * diffuseSurfaceColor * (ambientLightColor + mergedDiffuseLightColor);
   vec4 specularComponent = specularSurfaceColor * mergedSpecularLightColor;
   
   return clamp(diffuseComponent + specularComponent, 0, 1);
@@ -141,18 +138,13 @@ vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4
 
 void main() {
   vec4 diffuseColor = texture(diffuseTexture, uv0);
-  vec4 ambientOcclusionColor = texture(ambientOcclusionTexture, uv0);
-  vec4 emissiveColor = texture(emissiveTexture, uv0);
-
   fragColor = diffuseColor * vertexColor0;
+
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
   vec3 textureNormal = texture(normalTexture, uv0).xyz * 2 - 1;
   fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
-
-  fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, shininess, fragColor, texture(specularTexture, uv0), ambientOcclusionColor.r).rgb, useLighting);
-  fragColor.rgb += emissiveColor.rgb;
-  fragColor.rgb = min(fragColor.rgb, 1);
+  fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, shininess, fragColor, texture(specularTexture, uv0)).rgb, useLighting);
 
   if (fragColor.a < .95) {
     discard;

@@ -244,7 +244,6 @@ out vec3 binormal;");
   public static string GetLightHeader(bool withAmbientLight) {
     return
         $$"""
-
           struct Light {
             // 0x00 (vec3 needs to be 16-byte aligned)
             vec3 position;

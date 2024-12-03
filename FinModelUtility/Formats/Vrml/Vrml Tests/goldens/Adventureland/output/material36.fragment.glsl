@@ -28,13 +28,16 @@ layout (std140, binding = 2) uniform Lights {
 };
 
 uniform vec3 cameraPosition;
+
 uniform vec4 diffuseColor;
 uniform float shininess;
 
 out vec4 fragColor;
 
-in vec4 vertexColor0;in vec3 vertexPosition;
+in vec4 vertexColor0;
+in vec3 vertexPosition;
 in vec3 vertexNormal;
+
 void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 normal, out vec3 surfaceToLightNormal, out float attenuation) {
   vec3 surfaceToLight = light.position - position;
   
@@ -127,10 +130,11 @@ vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4
   
   return clamp(diffuseComponent + specularComponent, 0, 1);
 }
+
 void main() {
   fragColor = diffuseColor * vertexColor0;
+
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
-  fragColor.rgb =
-      mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, shininess, fragColor, vec4(1)).rgb,  useLighting);
+  fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, shininess, fragColor, vec4(1)).rgb,  useLighting);
 }
