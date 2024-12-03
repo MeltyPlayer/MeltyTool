@@ -1,13 +1,12 @@
 #version 430
+
 struct Texture {
   sampler2D sampler;
   mat3x2 transform2d;
 };
 
 
-
 uniform Texture diffuseTexture;
-uniform float shininess;
 
 out vec4 fragColor;
 
