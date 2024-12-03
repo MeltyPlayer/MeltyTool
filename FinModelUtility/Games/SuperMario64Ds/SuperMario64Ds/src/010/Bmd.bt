@@ -1,0 +1,60 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+
+typedef struct {
+  uint scaleFactor;
+
+  uint boneCount;
+  uint bonesOffset;
+  
+  uint displayListCount;
+  uint displayListsOffset;
+  
+  uint textureCount;
+  uint texturesOffset;
+  
+  uint texturePaletteCount;
+  uint texturePalettesOffset;
+  
+  uint materialCount;
+  uint materialsOffset;
+  
+  uint transformAndBoneMapOffset;
+  uint textureAndPaletteDataBlock;
+} FileHeader;
+
+FileHeader fileHeader;
+
+
+typedef struct {
+  uint unknown;  
+  uint dataOffset;
+
+  local ulong tmp = FTell();
+  FSeek(dataOffset);
+  
+  uint transformCount;
+  uint transformsOffset;
+  
+  uint opcodesByteLength;
+  uint opcodesOffset;
+
+  FSeek(transformsOffset);
+  byte transforms[transformCount];
+
+  FSeek(tmp);  
+} DisplayList;
+
+FSeek(fileHeader.displayListsOffset);
+DisplayList displayLists[fileHeader.displayListCount] <optimize=false>;

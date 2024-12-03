@@ -33,6 +33,10 @@ public partial class Bmd : IBinaryConvertible {
   [RSequenceLengthSource(nameof(BoneCount))]
   public Bone[] Bones { get; set; }
 
+  [RAtPosition(nameof(DisplayListsOffset))]
+  [RSequenceLengthSource(nameof(DisplayListCount))]
+  public DisplayList[] DisplayLists { get; set; }
+
   [RAtPosition(nameof(TexturesOffset))]
   [RSequenceLengthSource(nameof(TextureCount))]
   public Texture[] Textures { get; set; }

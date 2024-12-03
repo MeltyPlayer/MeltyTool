@@ -29,8 +29,8 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
     };
 
     using var bmdRawBr = bmdFile.OpenReadAsBinary();
-    var bmdBr = new SchemaBinaryReader(
-        new Lz77Decompressor().Decompress(bmdRawBr));
+    var bmdBr
+        = new SchemaBinaryReader(new Lz77Decompressor().Decompress(bmdRawBr));
     var bmd = bmdBr.ReadNew<Bmd>();
 
     // Set up bones
@@ -77,6 +77,9 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         }
       }
     }
+
+    // Set up mesh
+    { }
 
     // Set up animations
     if (fileBundle.BcaFiles != null) {
