@@ -31,15 +31,17 @@ public static class DatKeyframesUtil {
     keyframes.Clear();
 
     var keys = ReadFObjKeys_(br, datKeyframes);
-    var interpolations = GetInterpolationsFromFObjKeys_(keys);
+    Span<InterpolationRegisters> buffer
+        = stackalloc InterpolationRegisters[keys.Count];
+    var interpolations = GetInterpolationsFromFObjKeys_(keys, buffer);
 
-    if (interpolations.Count == 0) {
+    if (interpolations.Length == 0) {
       return;
     }
 
     DatKeyframe? currentKeyframe = null;
 
-    var firstInterpolation = interpolations.First.Value;
+    var firstInterpolation = interpolations[0];
     DatKeyframe nextKeyframe = new() {
         Frame = firstInterpolation.FromFrame,
         IncomingValue = firstInterpolation.FromValue,
@@ -80,7 +82,7 @@ public static class DatKeyframesUtil {
     }
   }
 
-  private class InterpolationRegisters {
+  private readonly struct InterpolationRegisters {
     public required GxInterpolationType InterpolationType { get; init; }
     public required float FromValue { get; init; }
     public required float ToValue { get; init; }
@@ -94,10 +96,11 @@ public static class DatKeyframesUtil {
   ///   Helper method for getting the interpolations between each of the FObj
   ///   keyframes.
   /// </summary>
-  private static LinkedList<InterpolationRegisters>
+  private static ReadOnlySpan<InterpolationRegisters>
       GetInterpolationsFromFObjKeys_(
-          IReadOnlyList<FObjKey> keys) {
-    var registers = new LinkedList<InterpolationRegisters>();
+          IReadOnlyList<FObjKey> keys,
+          Span<InterpolationRegisters> buffer) {
+    var index = 0;
 
     float fromValue = 0;
     float toValue = 0;
@@ -160,7 +163,7 @@ public static class DatKeyframesUtil {
       }
 
       if (timeChanged && fromFrame != toFrame) {
-        registers.AddLast(new InterpolationRegisters {
+        buffer[index++] = new InterpolationRegisters {
             InterpolationType = interpolationType,
             FromValue = fromValue,
             ToValue = toValue,
@@ -168,11 +171,11 @@ public static class DatKeyframesUtil {
             ToTangent = toTangent,
             FromFrame = fromFrame,
             ToFrame = toFrame,
-        });
+        };
       }
     }
 
-    return registers;
+    return buffer[..index];
   }
 
   private class FObjKey {
