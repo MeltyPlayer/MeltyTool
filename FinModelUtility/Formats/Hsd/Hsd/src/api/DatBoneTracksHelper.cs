@@ -63,87 +63,95 @@ public static class DatBoneTracksHelper {
       }
     }
 
-    var translationTrack
-        = boneTracks.UseSeparateTranslationKeyframesWithTangents(
-            translationsX?.Keyframes.Count ?? 0,
-            translationsY?.Keyframes.Count ?? 0,
-            translationsZ?.Keyframes.Count ?? 0);
-    Span<IDatKeyframes?> translationAxes =
-        [translationsX, translationsY, translationsZ];
-    for (var i = 0; i < translationAxes.Length; ++i) {
-      var translationAxis = translationAxes[i];
-      if (translationAxis == null) {
-        continue;
-      }
+    if (translationsX != null ||
+        translationsY != null ||
+        translationsZ != null) {
+      var translationTrack
+          = boneTracks.UseSeparateTranslationKeyframesWithTangents(
+              translationsX?.Keyframes.Count ?? 0,
+              translationsY?.Keyframes.Count ?? 0,
+              translationsZ?.Keyframes.Count ?? 0);
+      Span<IDatKeyframes?> translationAxes =
+          [translationsX, translationsY, translationsZ];
+      for (var i = 0; i < translationAxes.Length; ++i) {
+        var translationAxis = translationAxes[i];
+        if (translationAxis == null) {
+          continue;
+        }
 
-      foreach (var keyframe in translationAxis.Keyframes) {
-        var frame = keyframe.Frame;
-        var incomingValue = keyframe.IncomingValue;
-        var outgoingValue = keyframe.OutgoingValue;
-        var incomingTangent = keyframe.IncomingTangent;
-        var outgoingTangent = keyframe.OutgoingTangent;
+        foreach (var keyframe in translationAxis.Keyframes) {
+          var frame = keyframe.Frame;
+          var incomingValue = keyframe.IncomingValue;
+          var outgoingValue = keyframe.OutgoingValue;
+          var incomingTangent = keyframe.IncomingTangent;
+          var outgoingTangent = keyframe.OutgoingTangent;
 
-        translationTrack.Axes[i]
-                        .Add(new KeyframeWithTangents<float>(frame,
-                               incomingValue,
-                               outgoingValue,
-                               incomingTangent,
-                               outgoingTangent));
-      }
-    }
-
-    var rotationTrack
-        = boneTracks.UseSeparateEulerRadiansKeyframesWithTangents(
-            rotationsX?.Keyframes.Count ?? 0,
-            rotationsY?.Keyframes.Count ?? 0,
-            rotationsZ?.Keyframes.Count ?? 0);
-    Span<IDatKeyframes?> rotationAxes = [rotationsX, rotationsY, rotationsZ];
-    for (var i = 0; i < rotationAxes.Length; ++i) {
-      var rotationAxis = rotationAxes[i];
-      if (rotationAxis == null) {
-        continue;
-      }
-
-      foreach (var keyframe in rotationAxis.Keyframes) {
-        var frame = keyframe.Frame;
-        var incomingValue = keyframe.IncomingValue;
-        var outgoingValue = keyframe.OutgoingValue;
-        var incomingTangent = keyframe.IncomingTangent;
-        var outgoingTangent = keyframe.OutgoingTangent;
-
-        rotationTrack.Axes[i]
-                     .Add(new KeyframeWithTangents<float>(frame,
-                            incomingValue,
-                            outgoingValue,
-                            incomingTangent,
-                            outgoingTangent));
+          translationTrack.Axes[i]
+                          .Add(new KeyframeWithTangents<float>(frame,
+                                 incomingValue,
+                                 outgoingValue,
+                                 incomingTangent,
+                                 outgoingTangent));
+        }
       }
     }
 
-    var scaleTrack = boneTracks.UseSeparateScaleKeyframesWithTangents(
-        scalesX?.Keyframes.Count ?? 0,
-        scalesY?.Keyframes.Count ?? 0,
-        scalesZ?.Keyframes.Count ?? 0);
-    Span<IDatKeyframes?> scaleAxes = [scalesX, scalesX, scalesZ];
-    for (var i = 0; i < scaleAxes.Length; ++i) {
-      var scaleAxis = scaleAxes[i];
-      if (scaleAxis == null) {
-        continue;
+    if (rotationsX != null || rotationsY != null || rotationsZ != null) {
+      var rotationTrack
+          = boneTracks.UseSeparateEulerRadiansKeyframesWithTangents(
+              rotationsX?.Keyframes.Count ?? 0,
+              rotationsY?.Keyframes.Count ?? 0,
+              rotationsZ?.Keyframes.Count ?? 0);
+      Span<IDatKeyframes?> rotationAxes = [rotationsX, rotationsY, rotationsZ];
+      for (var i = 0; i < rotationAxes.Length; ++i) {
+        var rotationAxis = rotationAxes[i];
+        if (rotationAxis == null) {
+          continue;
+        }
+
+        foreach (var keyframe in rotationAxis.Keyframes) {
+          var frame = keyframe.Frame;
+          var incomingValue = keyframe.IncomingValue;
+          var outgoingValue = keyframe.OutgoingValue;
+          var incomingTangent = keyframe.IncomingTangent;
+          var outgoingTangent = keyframe.OutgoingTangent;
+
+          rotationTrack.Axes[i]
+                       .Add(new KeyframeWithTangents<float>(frame,
+                              incomingValue,
+                              outgoingValue,
+                              incomingTangent,
+                              outgoingTangent));
+        }
       }
+    }
 
-      foreach (var keyframe in scaleAxis.Keyframes) {
-        var frame = keyframe.Frame;
-        var incomingValue = keyframe.IncomingValue;
-        var outgoingValue = keyframe.OutgoingValue;
-        var incomingTangent = keyframe.IncomingTangent;
-        var outgoingTangent = keyframe.OutgoingTangent;
+    if (scalesX != null || scalesY != null || scalesZ != null) {
+      var scaleTrack = boneTracks.UseSeparateScaleKeyframesWithTangents(
+          scalesX?.Keyframes.Count ?? 0,
+          scalesY?.Keyframes.Count ?? 0,
+          scalesZ?.Keyframes.Count ?? 0);
+      Span<IDatKeyframes?> scaleAxes = [scalesX, scalesX, scalesZ];
+      for (var i = 0; i < scaleAxes.Length; ++i) {
+        var scaleAxis = scaleAxes[i];
+        if (scaleAxis == null) {
+          continue;
+        }
 
-        scaleTrack.Axes[i]
-                  .Add(new KeyframeWithTangents<float>(frame,
-                         incomingValue,
-                         outgoingValue,
-                         incomingTangent,
-                         outgoingTangent));
+        foreach (var keyframe in scaleAxis.Keyframes) {
+          var frame = keyframe.Frame;
+          var incomingValue = keyframe.IncomingValue;
+          var outgoingValue = keyframe.OutgoingValue;
+          var incomingTangent = keyframe.IncomingTangent;
+          var outgoingTangent = keyframe.OutgoingTangent;
+
+          scaleTrack.Axes[i]
+                    .Add(new KeyframeWithTangents<float>(frame,
+                           incomingValue,
+                           outgoingValue,
+                           incomingTangent,
+                           outgoingTangent));
+        }
       }
     }
   }
