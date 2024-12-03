@@ -16,7 +16,6 @@ namespace sysdolphin.schema;
 /// </summary>
 public class DatSubfile : IBinaryDeserializable {
   private readonly List<RootNode> rootNodes_ = [];
-  private readonly HashSet<uint> validOffsets_ = [];
 
   private uint dataBlockOffset_;
   private uint relocationTableOffset_;
@@ -85,18 +84,6 @@ public class DatSubfile : IBinaryDeserializable {
         this.rootNodeOffset_ + 8 * fileHeader.RootNodeCount;
     this.stringTableOffset_ =
         this.referenceNodeOffset_ + 8 * fileHeader.ReferenceNodeCount;
-
-    // Reads relocation table
-    this.validOffsets_.Clear();
-    for (var i = 0; i < fileHeader.RelocationTableCount; ++i) {
-      br.Position = this.relocationTableOffset_ + 4 * i;
-      var relocationTableEntryOffset = br.ReadUInt32();
-
-      br.Position = this.dataBlockOffset_ + relocationTableEntryOffset;
-      var relocationTableValue = br.ReadUInt32();
-
-      this.validOffsets_.Add(relocationTableValue);
-    }
 
     // Reads root nodes
     this.rootNodes_.Clear();
