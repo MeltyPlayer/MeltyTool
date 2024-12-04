@@ -22,7 +22,6 @@ out vec3 tangent;
 out vec3 binormal;
 out vec2 sphericalReflectionUv;
 out vec2 uv0;
-out vec2 uv1;
 
 void main() {
   mat4 mvMatrix = viewMatrix * modelMatrix;
@@ -48,5 +47,4 @@ void main() {
 
   sphericalReflectionUv = r.xy / m + .5;
   uv0 = in_Uvs[0];
-  uv1 = in_Uvs[1];
 }

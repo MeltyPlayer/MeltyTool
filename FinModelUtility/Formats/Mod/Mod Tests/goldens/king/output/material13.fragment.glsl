@@ -40,10 +40,8 @@ uniform float scalar_GxMaterialAlpha13;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 uv0;
-in vec2 uv1;
 
 out vec4 fragColor;
-
 
 void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 normal, out vec3 surfaceToLightNormal, out float attenuation) {
   vec3 surfaceToLight = light.position - position;
@@ -55,7 +53,6 @@ void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 norm
     attenuation = 1;
     return;
   }
-  
 
   // Attenuation is calculated as a fraction, (cosine attenuation) / (distance attenuation).
 

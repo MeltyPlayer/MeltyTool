@@ -39,7 +39,6 @@ in vec2 uv0;
 
 out vec4 fragColor;
 
-
 void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 normal, out vec3 surfaceToLightNormal, out float attenuation) {
   vec3 surfaceToLight = light.position - position;
   
@@ -50,7 +49,6 @@ void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 norm
     attenuation = 1;
     return;
   }
-  
 
   // Attenuation is calculated as a fraction, (cosine attenuation) / (distance attenuation).
 
@@ -109,7 +107,6 @@ void getIndividualLightColors(Light light, vec3 position, vec3 normal, float shi
   }
 }
 
-
 void getMergedLightColors(vec3 position, vec3 normal, float shininess, out vec4 diffuseColor, out vec4 specularColor) {
   for (int i = 0; i < 8; ++i) {
     vec4 currentDiffuseColor = vec4(0);
@@ -129,7 +126,7 @@ void main() {
   vec4 mergedLightDiffuseColor = vec4(0);
   vec4 mergedLightSpecularColor = vec4(0);
   getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
-  
+
   vec3 colorComponent = clamp((ambientLightColor.rgb*vec3(0.4000000059604645) + mergedLightDiffuseColor.rgb*vec3(0.49803921580314636))*texture(texture0, uv0).rgb*vec3(2), 0, 1);
 
   float alphaComponent = vertexColor0.a*texture(texture0, uv0).a*scalar_3dsAlpha3;

@@ -52,7 +52,6 @@ void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 norm
     attenuation = 1;
     return;
   }
-  
 
   // Attenuation is calculated as a fraction, (cosine attenuation) / (distance attenuation).
 

@@ -1,7 +1,6 @@
 #version 430
 
 in vec4 vertexColor0;
-in vec2 uv0;
 
 out vec4 fragColor;
 

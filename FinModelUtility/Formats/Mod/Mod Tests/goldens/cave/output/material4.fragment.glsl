@@ -8,8 +8,8 @@ struct Texture {
 
 uniform Texture texture0;
 uniform Texture texture1;
-in vec2 sphericalReflectionUv;
 
+in vec2 sphericalReflectionUv;
 in vec2 uv0;
 
 out vec4 fragColor;

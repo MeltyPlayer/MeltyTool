@@ -1,8 +1,8 @@
 #version 430
 
 uniform sampler2D texture0;
-in vec2 sphericalReflectionUv;
 
+in vec2 sphericalReflectionUv;
 in vec2 uv0;
 
 out vec4 fragColor;

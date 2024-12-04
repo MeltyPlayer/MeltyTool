@@ -1,7 +1,6 @@
 #version 430
 
 uniform vec3 color_GxColorRegister7;
-
 out vec4 fragColor;
 
 void main() {

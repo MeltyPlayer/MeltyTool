@@ -2,7 +2,6 @@
 
 uniform vec3 color_GxMaterialColor18;
 uniform float scalar_GxMaterialAlpha18;
-
 out vec4 fragColor;
 
 void main() {

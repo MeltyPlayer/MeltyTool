@@ -290,7 +290,6 @@ out vec3 binormal;");
               attenuation = 1;
               return;
             }
-            
           
             // Attenuation is calculated as a fraction, (cosine attenuation) / (distance attenuation).
           

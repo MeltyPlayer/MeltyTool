@@ -40,15 +40,14 @@ uniform sampler2D texture1;
 uniform Texture texture2;
 uniform vec3 color_GxAmbientColor47;
 uniform float scalar_GxMaterialAlpha47;
-in vec2 sphericalReflectionUv;
 
+in vec2 sphericalReflectionUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec4 vertexColor0;
 in vec2 uv0;
 
 out vec4 fragColor;
-
 
 void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 normal, out vec3 surfaceToLightNormal, out float attenuation) {
   vec3 surfaceToLight = light.position - position;
@@ -60,7 +59,6 @@ void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 norm
     attenuation = 1;
     return;
   }
-  
 
   // Attenuation is calculated as a fraction, (cosine attenuation) / (distance attenuation).
 

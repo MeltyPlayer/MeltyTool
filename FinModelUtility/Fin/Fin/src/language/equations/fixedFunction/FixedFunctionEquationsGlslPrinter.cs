@@ -54,6 +54,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
             FixedFunctionSource.LIGHT_SPECULAR_COLOR_MERGED,
             FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED
         ]);
+
     var dependsOnLights = dependsOnMergedLights || dependsOnAnIndividualLight;
 
     var dependsOnAmbientLight = equations.DoOutputsDependOn(
@@ -71,16 +72,8 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     var dependsOnIndividualTextures =
         Enumerable
             .Range(0, MaterialConstants.MAX_TEXTURES)
-            .Select(
-                i => equations
-                    .DoOutputsDependOn(
-                    [
-                        FixedFunctionSource.TEXTURE_COLOR_0 + i,
-                        FixedFunctionSource.TEXTURE_ALPHA_0 + i
-                    ]))
+            .Select(equations.DoOutputsDependOnTextureSource)
             .ToArray();
-    var dependsOnAnyTextures =
-        dependsOnIndividualTextures.Any(value => value);
 
     sb.AppendTextureStructIfNeeded(
         dependsOnIndividualTextures
@@ -113,8 +106,10 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     }
 
     var hasWrittenLineBetweenUniformsAndIns = false;
+    var hasWrittenAnyIns = false;
 
     Action AppendLineBetweenUniformsAndIns = () => {
+      hasWrittenAnyIns = true;
       if (hadUniform && !hasWrittenLineBetweenUniformsAndIns) {
         hasWrittenLineBetweenUniformsAndIns = true;
         sb.AppendLine();
@@ -122,11 +117,13 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     };
 
     if (shaderRequirements.UsesSphericalReflectionMapping) {
+      AppendLineBetweenUniformsAndIns();
       sb.AppendLine(
           $"in vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME};");
     }
 
     if (shaderRequirements.UsesLinearReflectionMapping) {
+      AppendLineBetweenUniformsAndIns();
       sb.AppendLine(
           $"in vec2 {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME};");
     }
@@ -153,27 +150,28 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       }
     }
 
-    sb.AppendLine();
+    if (hasWrittenAnyIns) {
+      sb.AppendLine();
+    }
+
     sb.AppendLine("out vec4 fragColor;");
-    sb.AppendLine();
 
     if (dependsOnLights) {
       sb.AppendLine(
           $"""
 
            {GlslUtil.GetGetIndividualLightColorsFunction()}
-
            """);
 
       if (dependsOnMergedLights) {
         sb.AppendLine($"""
 
                        {GlslUtil.GetGetMergedLightColorsFunction()}
-
                        """);
       }
     }
 
+    sb.AppendLine();
     sb.AppendLine("void main() {");
 
     // Calculate lighting
@@ -210,7 +208,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
                vec4 mergedLightDiffuseColor = vec4(0);
                vec4 mergedLightSpecularColor = vec4(0);
                getMergedLightColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, mergedLightDiffuseColor, mergedLightSpecularColor);
-               
+            
              """);
       }
     }
@@ -315,7 +313,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       }
     }
 
-    sb.AppendLine("}");
+    sb.Append("}");
   }
 
   private string GetAlphaCompareText_(
@@ -568,8 +566,10 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
         FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.a",
 
-        FixedFunctionSource.VERTEX_ALPHA_0 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.a",
-        FixedFunctionSource.VERTEX_ALPHA_1 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.a",
+        FixedFunctionSource.VERTEX_ALPHA_0 =>
+            $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.a",
+        FixedFunctionSource.VERTEX_ALPHA_1 =>
+            $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.a",
 
         FixedFunctionSource.UNDEFINED => "1",
         _                             => throw new ArgumentOutOfRangeException()
@@ -799,11 +799,15 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         FixedFunctionSource.LIGHT_AMBIENT_COLOR => "ambientLightColor.rgb",
         FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.aaa",
 
-        FixedFunctionSource.VERTEX_COLOR_0 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.rgb",
-        FixedFunctionSource.VERTEX_COLOR_1 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.rgb",
+        FixedFunctionSource.VERTEX_COLOR_0 =>
+            $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.rgb",
+        FixedFunctionSource.VERTEX_COLOR_1 =>
+            $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.rgb",
 
-        FixedFunctionSource.VERTEX_ALPHA_0 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.aaa",
-        FixedFunctionSource.VERTEX_ALPHA_1 => $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.aaa",
+        FixedFunctionSource.VERTEX_ALPHA_0 =>
+            $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.aaa",
+        FixedFunctionSource.VERTEX_ALPHA_1 =>
+            $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.aaa",
 
         FixedFunctionSource.UNDEFINED => "vec3(1)",
         _                             => throw new ArgumentOutOfRangeException()

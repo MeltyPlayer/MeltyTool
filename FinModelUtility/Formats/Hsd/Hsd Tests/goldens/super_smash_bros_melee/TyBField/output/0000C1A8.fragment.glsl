@@ -14,8 +14,8 @@ vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
 }
 
 uniform Texture texture0;
-in vec2 sphericalReflectionUv;
 
+in vec2 sphericalReflectionUv;
 in vec4 vertexColor0;
 in vec2 uv0;
 

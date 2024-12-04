@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 
+using fin.language.equations.fixedFunction;
 using fin.model;
 
 namespace fin.shaders.glsl;
@@ -25,7 +26,7 @@ public class ShaderRequirements : IShaderRequirements {
         = material?.Textures.Any(t => t.UvType is UvType.LINEAR) ?? false;
 
     this.UsedUvs = new bool[MaterialConstants.MAX_UVS];
-    if (material != null) {
+    if (material != null && material is not IFixedFunctionMaterial) {
       foreach (var texture in material.Textures) {
         this.UsedUvs[texture.UvIndex] = true;
       }
@@ -42,13 +43,18 @@ public class ShaderRequirements : IShaderRequirements {
         break;
       }
       case IFixedFunctionMaterial fixedFunctionMaterial: {
-        foreach (var texture in fixedFunctionMaterial.TextureSources) {
-          if (texture != null) {
-            this.UsedUvs[texture.UvIndex] = true;
+        var equations = fixedFunctionMaterial.Equations;
+        for (var i = 0; i < fixedFunctionMaterial.TextureSources.Count; ++i) {
+          var textureSource = fixedFunctionMaterial.TextureSources[i];
+          if (textureSource == null) {
+            continue;
+          }
+
+          if (equations.DoOutputsDependOnTextureSource(i)) {
+            this.UsedUvs[textureSource.UvIndex] = true;
           }
         }
 
-        var equations = fixedFunctionMaterial.Equations;
         for (var i = 0; i < this.UsedColors.Length; ++i) {
           this.UsedColors[i] = equations.DoOutputsDependOn([
               FixedFunctionSource.VERTEX_COLOR_0 + i,

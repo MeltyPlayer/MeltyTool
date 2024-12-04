@@ -4,7 +4,6 @@ uniform sampler2D texture0;
 uniform vec3 color_GxColorRegister21;
 
 in vec2 uv0;
-in vec2 uv1;
 
 out vec4 fragColor;
 
