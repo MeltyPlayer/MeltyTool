@@ -28,8 +28,6 @@ public static partial class GlUtil {
   public static void ResetGl() {
       GL.ShadeModel(ShadingModel.Smooth);
 
-      GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-
       GL.ClearDepth(5.0F);
 
       GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);

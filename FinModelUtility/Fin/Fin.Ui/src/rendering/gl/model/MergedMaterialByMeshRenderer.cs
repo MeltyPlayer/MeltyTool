@@ -128,10 +128,6 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
       foreach (var materialMeshRenderer in materialMeshRenderers) {
         var isSelected = this.selectedMesh_ == mesh;
 
-        if (isSelected) {
-          GlUtil.RenderOutline(materialMeshRenderer.Render);
-        }
-
         materialMeshRenderer.Render();
 
         if (isSelected) {

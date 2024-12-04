@@ -45,10 +45,6 @@ public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
   }
 
   public void Render() {
-    if (this.isSelected_) {
-      GlUtil.RenderOutline(this.RenderImpl_);
-    }
-
     this.RenderImpl_();
 
     if (this.isSelected_) {
