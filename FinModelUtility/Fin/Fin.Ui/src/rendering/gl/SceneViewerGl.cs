@@ -175,7 +175,6 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
       GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
 
       if (this.ShowGrid) {
-        CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
         this.gridRenderer_.Render();
       }
 
