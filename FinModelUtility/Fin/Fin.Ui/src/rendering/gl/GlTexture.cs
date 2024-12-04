@@ -64,7 +64,7 @@ public class GlTexture : IFinDisposable {
                                or FinTextureMinFilter.NEAR_MIPMAP_LINEAR
                                or FinTextureMinFilter.LINEAR_MIPMAP_NEAR
                                or FinTextureMinFilter.LINEAR_MIPMAP_LINEAR) {
-        GL.GenerateTextureMipmap(this.id_);
+        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
       } else {
         GL.TexParameter(target,
                         TextureParameterName.TextureMaxLevel,
