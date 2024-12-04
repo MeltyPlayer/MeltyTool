@@ -38,7 +38,7 @@ public class LightsUbo : IDisposable {
     if (!useLighting || lighting == null) {
       offset += SIZE_OF_LIGHT * MaterialConstants.MAX_LIGHTS +
                 UboUtil.SIZE_OF_VECTOR4;
-      UboUtil.AppendBool(buffer, ref offset, false);
+      UboUtil.AppendFloat(buffer, ref offset, 0);
     } else {
       var lights = lighting.Lights;
       for (var i = 0; i < MaterialConstants.MAX_LIGHTS; ++i) {
@@ -53,7 +53,7 @@ public class LightsUbo : IDisposable {
                                           lighting.AmbientLightColor.Af) *
                               lighting.AmbientLightStrength;
       UboUtil.AppendVector4(buffer, ref offset, ambientLightColor);
-      UboUtil.AppendBool(buffer, ref offset, true);
+      UboUtil.AppendFloat(buffer, ref offset, 1);
     }
 
     this.impl_.UpdateDataIfChanged(buffer);

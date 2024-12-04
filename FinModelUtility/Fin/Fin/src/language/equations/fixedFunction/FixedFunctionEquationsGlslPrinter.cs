@@ -29,7 +29,8 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     var registers = material.Registers;
     var textures = material.TextureSources;
 
-    sb.AppendLine($"#version {GlslConstants.SHADER_VERSION}");
+    sb.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
+    sb.AppendLine(GlslConstants.FLOAT_PRECISION);
     sb.AppendLine();
 
     var hasIndividualLights =
@@ -322,12 +323,12 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       float reference)
     => alphaCompareType switch {
         AlphaCompareType.Never   => "false",
-        AlphaCompareType.Less    => $"{alphaAccessorText} < {reference}",
-        AlphaCompareType.Equal   => $"{alphaAccessorText} == {reference}",
-        AlphaCompareType.LEqual  => $"{alphaAccessorText} <= {reference}",
-        AlphaCompareType.Greater => $"{alphaAccessorText} > {reference}",
-        AlphaCompareType.NEqual  => $"{alphaAccessorText} != {reference}",
-        AlphaCompareType.GEqual  => $"{alphaAccessorText} >= {reference}",
+        AlphaCompareType.Less    => $"{alphaAccessorText} < {reference:0.0###########}",
+        AlphaCompareType.Equal   => $"{alphaAccessorText} == {reference:0.0###########}",
+        AlphaCompareType.LEqual  => $"{alphaAccessorText} <= {reference:0.0###########}",
+        AlphaCompareType.Greater => $"{alphaAccessorText} > {reference:0.0###########}",
+        AlphaCompareType.NEqual  => $"{alphaAccessorText} != {reference:0.0###########}",
+        AlphaCompareType.GEqual  => $"{alphaAccessorText} >= {reference:0.0###########}",
         AlphaCompareType.Always  => "true",
         _ => throw new ArgumentOutOfRangeException(
             nameof(alphaCompareType),
@@ -480,7 +481,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         this.PrintScalarValue_(sb, numerator, textures, true);
       }
     } else {
-      sb.Append(1);
+      PrintDouble_(sb, 1);
     }
 
     if (denominators != null) {
@@ -576,10 +577,11 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     };
   }
 
-  private void PrintScalarConstant_(
-      StringBuilder sb,
-      IScalarConstant constant)
-    => sb.Append(constant.Value);
+  private void PrintScalarConstant_(StringBuilder sb, IScalarConstant constant)
+    => PrintDouble_(sb, constant.Value);
+
+  private static void PrintDouble_(StringBuilder sb, double value)
+    => sb.Append($"{value:0.0###########}");
 
   private enum WrapType {
     NEVER,
@@ -636,7 +638,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     }
 
     if (clamp) {
-      sb.Append(", 0, 1)");
+      sb.Append(", 0.0, 1.0)");
     }
   }
 
@@ -675,7 +677,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         this.PrintColorValue_(sb, numerator, textures, WrapType.EXPRESSIONS);
       }
     } else {
-      sb.Append(1);
+      PrintDouble_(sb, 1);
     }
 
     if (denominators != null) {
@@ -860,7 +862,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         this.PrintScalarValue_(sb, ternaryOperator.Rhs, textures);
         sb.Append(")");
         sb.Append(" < ");
-        sb.Append("(1.0 / 255)");
+        sb.Append("(1.0 / 255.0)");
         break;
       }
       case BoolComparisonType.GREATER_THAN: {

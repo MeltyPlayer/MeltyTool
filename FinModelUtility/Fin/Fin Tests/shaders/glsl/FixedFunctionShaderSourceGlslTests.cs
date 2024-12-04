@@ -21,19 +21,20 @@ public class FixedFunctionShaderSourceGlslTests {
         false,
         false,
         (m, t) => CreateFixedFunctionMaterial_(m, t, false, false, false),
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
 
-        out vec4 fragColor;
+          out vec4 fragColor;
 
-        void main() {
-          vec3 colorComponent = vec3(1);
-        
-          float alphaComponent = 1;
-        
-          fragColor = vec4(colorComponent, alphaComponent);
-        }
-        """);
+          void main() {
+            vec3 colorComponent = vec3(1.0);
+          
+            float alphaComponent = 1.0;
+          
+            fragColor = vec4(colorComponent, alphaComponent);
+          }
+          """);
 
   [Test]
   public void TestWithVertexColorOnly()
@@ -41,21 +42,22 @@ public class FixedFunctionShaderSourceGlslTests {
         false,
         false,
         (m, t) => CreateFixedFunctionMaterial_(m, t, false, false, true),
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
 
-        in vec4 vertexColor0;
+          in vec4 vertexColor0;
 
-        out vec4 fragColor;
+          out vec4 fragColor;
 
-        void main() {
-          vec3 colorComponent = vertexColor0.rgb;
-        
-          float alphaComponent = vertexColor0.a;
-        
-          fragColor = vec4(colorComponent, alphaComponent);
-        }
-        """);
+          void main() {
+            vec3 colorComponent = vertexColor0.rgb;
+          
+            float alphaComponent = vertexColor0.a;
+          
+            fragColor = vec4(colorComponent, alphaComponent);
+          }
+          """);
 
   [Test]
   public void TestWithTextureOnly()
@@ -63,27 +65,28 @@ public class FixedFunctionShaderSourceGlslTests {
         false,
         true,
         (m, t) => CreateFixedFunctionMaterial_(m, t, false, true, false),
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
 
-        uniform sampler2D texture0;
+          uniform sampler2D texture0;
 
-        in vec2 uv0;
+          in vec2 uv0;
 
-        out vec4 fragColor;
+          out vec4 fragColor;
 
-        void main() {
-          vec3 colorComponent = texture(texture0, uv0).rgb;
-        
-          float alphaComponent = texture(texture0, uv0).a;
-        
-          fragColor = vec4(colorComponent, alphaComponent);
-        
-          if (!(alphaComponent > 0.95)) {
-            discard;
+          void main() {
+            vec3 colorComponent = texture(texture0, uv0).rgb;
+          
+            float alphaComponent = texture(texture0, uv0).a;
+          
+            fragColor = vec4(colorComponent, alphaComponent);
+          
+            if (!(alphaComponent > 0.95)) {
+              discard;
+            }
           }
-        }
-        """);
+          """);
 
   [Test]
   public void TestWithLightingAndTextureAndVertexColor()
@@ -92,7 +95,8 @@ public class FixedFunctionShaderSourceGlslTests {
         true,
         (m, t) => CreateFixedFunctionMaterial_(m, t, true, true, true),
         $$"""
-          #version 430
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
 
           {{GlslUtil.GetLightHeader(true)}}
           uniform float shininess;

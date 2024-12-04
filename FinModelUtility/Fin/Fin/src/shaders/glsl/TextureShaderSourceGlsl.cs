@@ -22,7 +22,8 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
     var hasNormals = model.Skin.HasNormalsForMaterial(material);
 
     var fragmentSrc = new StringBuilder();
-    fragmentSrc.AppendLine($"#version {GlslConstants.SHADER_VERSION}");
+    fragmentSrc.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
+    fragmentSrc.AppendLine(GlslConstants.FLOAT_PRECISION);
 
     if (hasNormals) {
       fragmentSrc.AppendLine(
@@ -98,7 +99,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
       fragmentSrc.AppendLine(
           $$"""
             
-              if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
+              if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT:0.0###########}}) {
                 discard;
               }
             """);

@@ -20,17 +20,18 @@ public class StandardShaderSourceGlslTests {
         false,
         false,
         (m, t) => { },
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          out vec4 fragColor;
 
-        out vec4 fragColor;
+          in vec4 vertexColor0;
 
-        in vec4 vertexColor0;
-
-        void main() {
-          fragColor = vertexColor0;
-        }
-        """);
+          void main() {
+            fragColor = vertexColor0;
+          }
+          """);
 
   [Test]
   public void TestWithoutNormalsNoTextures()
@@ -38,21 +39,22 @@ public class StandardShaderSourceGlslTests {
         false,
         true,
         (m, t) => { },
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          out vec4 fragColor;
 
-        out vec4 fragColor;
+          in vec4 vertexColor0;
 
-        in vec4 vertexColor0;
-
-        void main() {
-          fragColor = vertexColor0;
-        
-          if (fragColor.a < .95) {
-            discard;
+          void main() {
+            fragColor = vertexColor0;
+          
+            if (fragColor.a < .95) {
+              discard;
+            }
           }
-        }
-        """);
+          """);
 
   [Test]
   public void TestWithoutNormalsDiffuseOnly()
@@ -60,25 +62,26 @@ public class StandardShaderSourceGlslTests {
         false,
         true,
         (m, t) => m.DiffuseTexture = t,
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          uniform sampler2D diffuseTexture;
 
-        uniform sampler2D diffuseTexture;
+          out vec4 fragColor;
 
-        out vec4 fragColor;
+          in vec4 vertexColor0;
+          in vec2 uv0;
 
-        in vec4 vertexColor0;
-        in vec2 uv0;
-
-        void main() {
-          vec4 diffuseColor = texture(diffuseTexture, uv0);
-          fragColor = diffuseColor * vertexColor0;
-        
-          if (fragColor.a < .95) {
-            discard;
+          void main() {
+            vec4 diffuseColor = texture(diffuseTexture, uv0);
+            fragColor = diffuseColor * vertexColor0;
+          
+            if (fragColor.a < .95) {
+              discard;
+            }
           }
-        }
-        """);
+          """);
 
   [Test]
   public void TestWithoutNormalsEmissiveOnly()
@@ -86,28 +89,29 @@ public class StandardShaderSourceGlslTests {
         false,
         true,
         (m, t) => m.EmissiveTexture = t,
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          uniform sampler2D emissiveTexture;
 
-        uniform sampler2D emissiveTexture;
+          out vec4 fragColor;
 
-        out vec4 fragColor;
+          in vec4 vertexColor0;
+          in vec2 uv0;
 
-        in vec4 vertexColor0;
-        in vec2 uv0;
-
-        void main() {
-          fragColor = vertexColor0;
-        
-          vec4 emissiveColor = texture(emissiveTexture, uv0);
-          fragColor.rgb += emissiveColor.rgb;
-          fragColor.rgb = min(fragColor.rgb, 1);
-        
-          if (fragColor.a < .95) {
-            discard;
+          void main() {
+            fragColor = vertexColor0;
+          
+            vec4 emissiveColor = texture(emissiveTexture, uv0);
+            fragColor.rgb += emissiveColor.rgb;
+            fragColor.rgb = min(fragColor.rgb, 1);
+          
+            if (fragColor.a < .95) {
+              discard;
+            }
           }
-        }
-        """);
+          """);
 
   [Test]
   public void TestWithNormalsNoTextures()
@@ -116,8 +120,9 @@ public class StandardShaderSourceGlslTests {
         true,
         (m, t) => { },
         $$"""
-          #version 430
-
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
           {{GlslUtil.GetLightHeader(true)}}
 
           uniform float shininess;
@@ -156,8 +161,9 @@ public class StandardShaderSourceGlslTests {
         true,
         (m, t) => m.DiffuseTexture = t,
         $$"""
-          #version 430
-
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
           {{GlslUtil.GetLightHeader(true)}}
 
           uniform sampler2D diffuseTexture;
@@ -199,8 +205,9 @@ public class StandardShaderSourceGlslTests {
         true,
         (m, t) => m.EmissiveTexture = t,
         $$"""
-          #version 430
-
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
           {{GlslUtil.GetLightHeader(true)}}
 
           uniform sampler2D emissiveTexture;

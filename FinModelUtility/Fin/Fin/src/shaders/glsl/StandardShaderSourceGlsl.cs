@@ -18,7 +18,8 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
     var animations = model.AnimationManager.Animations;
 
     var fragmentShaderSrc = new StringBuilder();
-    fragmentShaderSrc.AppendLine($"#version {GlslConstants.SHADER_VERSION}");
+    fragmentShaderSrc.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
+    fragmentShaderSrc.AppendLine(GlslConstants.FLOAT_PRECISION);
     fragmentShaderSrc.AppendLine();
 
     var diffuseTexture = material.DiffuseTexture;

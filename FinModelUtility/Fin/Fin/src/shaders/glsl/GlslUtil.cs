@@ -79,7 +79,7 @@ public static class GlslUtil {
     var vertexSrc = new StringBuilder();
 
     vertexSrc.Append($$"""
-                       #version {{GlslConstants.SHADER_VERSION}}
+                       #version {{GlslConstants.VERTEX_SHADER_VERSION}}
 
                        layout (std140, binding = {{GlslConstants.UBO_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRICES_NAME}} {
                          mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
@@ -109,9 +109,17 @@ public static class GlslUtil {
            """);
     }
 
-    vertexSrc.AppendLine(@$"
-layout(location = {UseThenAdd(ref location, MaterialConstants.MAX_UVS)}) in vec2 in_Uvs[{MaterialConstants.MAX_UVS}];
-layout(location = {UseThenAdd(ref location, MaterialConstants.MAX_COLORS)}) in vec4 in_Colors[{MaterialConstants.MAX_COLORS}];
+    for (var i = 0; i < MaterialConstants.MAX_UVS; ++i) {
+      vertexSrc.AppendLine(
+          $"layout(location = {location++}) in vec2 in_Uv{i};");
+    }
+
+    for (var i = 0; i < MaterialConstants.MAX_COLORS; ++i) {
+      vertexSrc.AppendLine(
+          $"layout(location = {location++}) in vec4 in_Color{i};");
+    }
+
+    vertexSrc.AppendLine(@"
 
 out vec3 vertexPosition;
 out vec3 vertexNormal;
@@ -146,7 +154,7 @@ out vec3 binormal;");
                        void main() {
                          mat4 mvMatrix = {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}} * {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
                          mat4 mvpMatrix = {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}} * mvMatrix;
-                       
+
                        """);
 
     if (useBoneMatrices) {
@@ -225,14 +233,14 @@ out vec3 binormal;");
 
     for (var i = 0; i < usedUvs.Length; ++i) {
       if (usedUvs[i]) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_UV_NAME}{i} = in_Uvs[{i}];");
+        vertexSrc.AppendLine($"  {GlslConstants.IN_UV_NAME}{i} = in_Uv{i};");
       }
     }
 
     for (var i = 0; i < usedColors.Length; ++i) {
       if (usedColors[i]) {
         vertexSrc.AppendLine(
-            $"  {GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Colors[{i}];");
+            $"  {GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Color{i};");
       }
     }
 
@@ -268,7 +276,7 @@ out vec3 binormal;");
           layout (std140, binding = {{GlslConstants.UBO_LIGHTS_BINDING_INDEX}}) uniform {{GlslConstants.UBO_LIGHTS_NAME}} {
             Light lights[{{MaterialConstants.MAX_LIGHTS}}];
             vec4 ambientLightColor;
-            int {{GlslConstants.UNIFORM_USE_LIGHTING_NAME}};
+            float {{GlslConstants.UNIFORM_USE_LIGHTING_NAME}};
           };
 
           uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
@@ -287,7 +295,7 @@ out vec3 binormal;");
               ? -light.normal : normalize(surfaceToLight);
           
             if (light.attenuationFunction == {{(int) AttenuationFunction.NONE}}) {
-              attenuation = 1;
+              attenuation = 1.0;
               return;
             }
           
@@ -301,15 +309,15 @@ out vec3 binormal;");
             float attn = dot(attnDotLhs, light.normal);
             vec3 attnPowers = vec3(1, attn, attn*attn);
           
-            float attenuationNumerator = max(0, dot(cosAttn, attnPowers));
+            float attenuationNumerator = max(0.0, dot(cosAttn, attnPowers));
           
             // Denominator (Distance attenuation)
-            float attenuationDenominator = 1;
+            float attenuationDenominator = 1.0;
             if (light.sourceType != {{(int) LightSourceType.LINE}}) {
               vec3 distAttn = light.distanceAttenuation;
               
               if (light.attenuationFunction == {{(int) AttenuationFunction.SPECULAR}}) {
-                float attn = max(0, -dot(normal, light.normal));
+                float attn = max(0.0, -dot(normal, light.normal));
                 if (light.diffuseFunction != {{(int) DiffuseFunction.NONE}}) {
                   distAttn = normalize(distAttn);
                 }
@@ -332,18 +340,18 @@ out vec3 binormal;");
             }
           
             vec3 surfaceToLightNormal = vec3(0);
-            float attenuation = 0;
+            float attenuation = 0.0;
             getSurfaceToLightNormalAndAttenuation(light, position, normal, surfaceToLightNormal, attenuation);
           
-            float diffuseLightAmount = 1;
+            float diffuseLightAmount = 1.0;
             if (light.diffuseFunction == {{(int) DiffuseFunction.SIGNED}} || light.diffuseFunction == {{(int) DiffuseFunction.CLAMP}}) {
-              diffuseLightAmount = max(0, dot(normal, surfaceToLightNormal));
+              diffuseLightAmount = max(0.0, dot(normal, surfaceToLightNormal));
             }
             diffuseColor = light.color * diffuseLightAmount * attenuation;
             
-            if (dot(normal, surfaceToLightNormal) >= 0) {
+            if (dot(normal, surfaceToLightNormal) >= 0.0) {
               vec3 surfaceToCameraNormal = normalize(cameraPosition - position);
-              float specularLightAmount = pow(max(0, dot(reflect(-surfaceToLightNormal, normal), surfaceToCameraNormal)), {{GlslConstants.UNIFORM_SHININESS_NAME}});
+              float specularLightAmount = pow(max(0.0, dot(reflect(-surfaceToLightNormal, normal), surfaceToCameraNormal)), {{GlslConstants.UNIFORM_SHININESS_NAME}});
               specularColor = light.color * specularLightAmount * attenuation;
             }
           }
@@ -377,10 +385,10 @@ out vec3 binormal;");
             getMergedLightColors(position, normal, shininess, mergedDiffuseLightColor, mergedSpecularLightColor);
           
             // We double it because all the other kids do. (Other fixed-function games.)
-            vec4 diffuseComponent = 2 * diffuseSurfaceColor * ({{(withAmbientOcclusion ? "ambientOcclusionAmount * " : "")}}ambientLightColor + mergedDiffuseLightColor);
+            vec4 diffuseComponent = 2.0 * diffuseSurfaceColor * ({{(withAmbientOcclusion ? "ambientOcclusionAmount * " : "")}}ambientLightColor + mergedDiffuseLightColor);
             vec4 specularComponent = specularSurfaceColor * mergedSpecularLightColor;
             
-            return clamp(diffuseComponent + specularComponent, 0, 1);
+            return clamp(diffuseComponent + specularComponent, 0.0, 1.0);
           }
           """;
   }

@@ -17,44 +17,46 @@ public class TextureShaderSourceGlslTests {
     => AssertGlsl_(
         false,
         false,
-        """
-        #version 430
-
-        uniform sampler2D diffuseTexture;
-        
-        out vec4 fragColor;
-        
-        in vec4 vertexColor0;
-        in vec2 uv0;
-        
-        void main() {
-          fragColor = texture(diffuseTexture, uv0) * vertexColor0;
-        }
-        """);
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          uniform sampler2D diffuseTexture;
+          
+          out vec4 fragColor;
+          
+          in vec4 vertexColor0;
+          in vec2 uv0;
+          
+          void main() {
+            fragColor = texture(diffuseTexture, uv0) * vertexColor0;
+          }
+          """);
 
   [Test]
   public void TestWithoutNormalsMasked()
     => AssertGlsl_(
         false,
         true,
-        """
-        #version 430
-
-        uniform sampler2D diffuseTexture;
-        
-        out vec4 fragColor;
-        
-        in vec4 vertexColor0;
-        in vec2 uv0;
-        
-        void main() {
-          fragColor = texture(diffuseTexture, uv0) * vertexColor0;
-        
-          if (fragColor.a < .95) {
-            discard;
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          uniform sampler2D diffuseTexture;
+          
+          out vec4 fragColor;
+          
+          in vec4 vertexColor0;
+          in vec2 uv0;
+          
+          void main() {
+            fragColor = texture(diffuseTexture, uv0) * vertexColor0;
+          
+            if (fragColor.a < .95) {
+              discard;
+            }
           }
-        }
-        """);
+          """);
 
   [Test]
   public void TestWithNormals()
@@ -62,8 +64,9 @@ public class TextureShaderSourceGlslTests {
         true,
         true,
         $$"""
-          #version 430
-
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
           {{GlslUtil.GetLightHeader(true)}}
 
           uniform sampler2D diffuseTexture;

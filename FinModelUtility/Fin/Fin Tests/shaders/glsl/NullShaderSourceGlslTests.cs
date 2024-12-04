@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-
-using fin.image;
-using fin.model.impl;
+﻿using fin.model.impl;
 using fin.model.util;
 using fin.util.image;
 
@@ -17,51 +14,54 @@ public class NullShaderSourceGlslTests {
     => AssertGlsl_(
         false,
         false,
-        """
-        #version 430
-        
-        out vec4 fragColor;
-        
-        in vec4 vertexColor0;
-        
-        void main() {
-          fragColor = vertexColor0;
-        }
-        """);
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          out vec4 fragColor;
+          
+          in vec4 vertexColor0;
+          
+          void main() {
+            fragColor = vertexColor0;
+          }
+          """);
 
   [Test]
   public void TestWithoutNormalsMasked()
     => AssertGlsl_(
         false,
         true,
-        """
-        #version 430
-        
-        out vec4 fragColor;
-        
-        in vec4 vertexColor0;
-        
-        void main() {
-          fragColor = vertexColor0;
-        }
-        """);
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          out vec4 fragColor;
+          
+          in vec4 vertexColor0;
+          
+          void main() {
+            fragColor = vertexColor0;
+          }
+          """);
 
   [Test]
   public void TestWithNormals()
     => AssertGlsl_(
         true,
         true,
-        """
-        #version 430
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+          
+          out vec4 fragColor;
 
-        out vec4 fragColor;
+          in vec4 vertexColor0;
 
-        in vec4 vertexColor0;
-
-        void main() {
-          fragColor = vertexColor0;
-        }
-        """);
+          void main() {
+            fragColor = vertexColor0;
+          }
+          """);
 
   private static void AssertGlsl_(
       bool withNormals,

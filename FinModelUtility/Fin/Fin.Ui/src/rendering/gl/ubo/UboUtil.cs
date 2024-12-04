@@ -23,6 +23,13 @@ public static class UboUtil {
     offset += 4;
   }
 
+  public static void AppendFloat(Span<byte> buffer,
+                                 ref int offset,
+                                 float value) {
+    buffer.Slice(offset, 4).Cast<byte, float>()[0] = value;
+    offset += 4;
+  }
+
   public static void AppendVector3(Span<byte> buffer,
                                    ref int offset,
                                    Vector3? vector3) {

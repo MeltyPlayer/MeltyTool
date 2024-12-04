@@ -12,7 +12,8 @@ public class NullShaderSourceGlsl(
 
   public string FragmentShaderSource
     => $$"""
-         #version {{GlslConstants.SHADER_VERSION}}
+         #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+         {{GlslConstants.FLOAT_PRECISION}}
 
          out vec4 fragColor;
 
