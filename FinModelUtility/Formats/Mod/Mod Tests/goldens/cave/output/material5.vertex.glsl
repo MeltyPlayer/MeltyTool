@@ -1,3 +1,3 @@
-#version 430
+#version 310 es
 
 void main() {}

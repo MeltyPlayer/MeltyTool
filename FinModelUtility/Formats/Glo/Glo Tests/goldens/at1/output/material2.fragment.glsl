@@ -1,4 +1,5 @@
-#version 430
+#version 310 es
+precision mediump float;
 
 struct Texture {
   sampler2D sampler;

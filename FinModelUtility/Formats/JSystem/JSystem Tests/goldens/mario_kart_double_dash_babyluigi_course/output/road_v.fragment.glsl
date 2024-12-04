@@ -1,4 +1,5 @@
-#version 430
+#version 310 es
+precision mediump float;
 
 uniform sampler2D texture0;
 
@@ -10,7 +11,7 @@ out vec4 fragColor;
 void main() {
   vec3 colorComponent = texture(texture0, uv0).rgb*vertexColor0.rgb;
 
-  float alphaComponent = 0;
+  float alphaComponent = 0.0;
 
   fragColor = vec4(colorComponent, alphaComponent);
 }

@@ -1,4 +1,5 @@
-#version 430
+#version 310 es
+precision mediump float;
 
 struct Light {
   // 0x00 (vec3 needs to be 16-byte aligned)
@@ -24,7 +25,7 @@ struct Light {
 layout (std140, binding = 2) uniform Lights {
   Light lights[8];
   vec4 ambientLightColor;
-  int useLighting;
+  float useLighting;
 };
 
 uniform vec3 cameraPosition;
@@ -46,7 +47,7 @@ void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 norm
     ? -light.normal : normalize(surfaceToLight);
 
   if (light.attenuationFunction == 0) {
-    attenuation = 1;
+    attenuation = 1.0;
     return;
   }
 
@@ -60,15 +61,15 @@ void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 norm
   float attn = dot(attnDotLhs, light.normal);
   vec3 attnPowers = vec3(1, attn, attn*attn);
 
-  float attenuationNumerator = max(0, dot(cosAttn, attnPowers));
+  float attenuationNumerator = max(0.0, dot(cosAttn, attnPowers));
 
   // Denominator (Distance attenuation)
-  float attenuationDenominator = 1;
+  float attenuationDenominator = 1.0;
   if (light.sourceType != 3) {
     vec3 distAttn = light.distanceAttenuation;
     
     if (light.attenuationFunction == 1) {
-      float attn = max(0, -dot(normal, light.normal));
+      float attn = max(0.0, -dot(normal, light.normal));
       if (light.diffuseFunction != 0) {
         distAttn = normalize(distAttn);
       }
@@ -91,18 +92,18 @@ void getIndividualLightColors(Light light, vec3 position, vec3 normal, float shi
   }
 
   vec3 surfaceToLightNormal = vec3(0);
-  float attenuation = 0;
+  float attenuation = 0.0;
   getSurfaceToLightNormalAndAttenuation(light, position, normal, surfaceToLightNormal, attenuation);
 
-  float diffuseLightAmount = 1;
+  float diffuseLightAmount = 1.0;
   if (light.diffuseFunction == 1 || light.diffuseFunction == 2) {
-    diffuseLightAmount = max(0, dot(normal, surfaceToLightNormal));
+    diffuseLightAmount = max(0.0, dot(normal, surfaceToLightNormal));
   }
   diffuseColor = light.color * diffuseLightAmount * attenuation;
   
-  if (dot(normal, surfaceToLightNormal) >= 0) {
+  if (dot(normal, surfaceToLightNormal) >= 0.0) {
     vec3 surfaceToCameraNormal = normalize(cameraPosition - position);
-    float specularLightAmount = pow(max(0, dot(reflect(-surfaceToLightNormal, normal), surfaceToCameraNormal)), shininess);
+    float specularLightAmount = pow(max(0.0, dot(reflect(-surfaceToLightNormal, normal), surfaceToCameraNormal)), shininess);
     specularColor = light.color * specularLightAmount * attenuation;
   }
 }
@@ -127,13 +128,13 @@ void main() {
   vec4 mergedLightSpecularColor = vec4(0);
   getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
 
-  vec3 colorComponent = mergedLightDiffuseColor.rgb*vec3(2)*texture(texture0, uv0).rgb + vec3(0.2980392277240753)*texture(texture1, uv1).rgb*mergedLightSpecularColor.rgb;
+  vec3 colorComponent = mergedLightDiffuseColor.rgb*vec3(2.0)*texture(texture0, uv0).rgb + vec3(0.298039227724)*texture(texture1, uv1).rgb*mergedLightSpecularColor.rgb;
 
-  float alphaComponent = 1;
+  float alphaComponent = 1.0;
 
   fragColor = vec4(colorComponent, alphaComponent);
 
-  if (!(alphaComponent > 0)) {
+  if (!(alphaComponent > 0.0)) {
     discard;
   }
 }

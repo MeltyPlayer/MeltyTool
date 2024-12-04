@@ -78,45 +78,47 @@ public static class GlslUtil {
 
     var vertexSrc = new StringBuilder();
 
-    vertexSrc.Append($$"""
-                       #version {{GlslConstants.VERTEX_SHADER_VERSION}}
+    vertexSrc.AppendLine($$"""
+                           #version {{GlslConstants.VERTEX_SHADER_VERSION}}
 
-                       layout (std140, binding = {{GlslConstants.UBO_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRICES_NAME}} {
-                         mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
-                         mat4 {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}};
-                         mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
-                         
-                         mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
-                       };
+                           layout (std140, binding = {{GlslConstants.UBO_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRICES_NAME}} {
+                             mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
+                             mat4 {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}};
+                             mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
+                             
+                             mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
+                           };
 
-                       uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
+                           uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
 
-                       layout(location = {{location++}}) in vec3 in_Position;
-                       layout(location = {{location++}}) in vec3 in_Normal;
-                       layout(location = {{location++}}) in vec4 in_Tangent;
-                       """);
+                           layout(location = {{location++}}) in vec3 in_Position;
+                           layout(location = {{location++}}) in vec3 in_Normal;
+                           layout(location = {{location++}}) in vec4 in_Tangent;
+                           """);
 
     if (useBoneMatrices) {
-      vertexSrc.Append(
-          $"""
-
-           layout(location = {location++}) in ivec4 in_BoneIds;
-           """);
-      vertexSrc.Append(
-          $"""
-
-           layout(location = {location++}) in vec4 in_BoneWeights;
-           """);
+      vertexSrc.AppendLine(
+          $"layout(location = {location++}) in ivec4 in_BoneIds;");
+      vertexSrc.AppendLine(
+          $"layout(location = {location++}) in vec4 in_BoneWeights;");
     }
 
     for (var i = 0; i < MaterialConstants.MAX_UVS; ++i) {
-      vertexSrc.AppendLine(
-          $"layout(location = {location++}) in vec2 in_Uv{i};");
+      if (shaderRequirements.UsedUvs[i]) {
+        vertexSrc.AppendLine(
+            $"layout(location = {location}) in vec2 in_Uv{i};");
+      }
+
+      location++;
     }
 
     for (var i = 0; i < MaterialConstants.MAX_COLORS; ++i) {
-      vertexSrc.AppendLine(
-          $"layout(location = {location++}) in vec4 in_Color{i};");
+      if (shaderRequirements.UsedColors[i]) {
+        vertexSrc.AppendLine(
+            $"layout(location = {location}) in vec4 in_Color{i};");
+      }
+
+      location++;
     }
 
     vertexSrc.AppendLine(@"

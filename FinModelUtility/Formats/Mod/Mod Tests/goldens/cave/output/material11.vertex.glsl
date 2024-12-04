@@ -13,8 +13,9 @@ uniform vec3 cameraPosition;
 layout(location = 0) in vec3 in_Position;
 layout(location = 1) in vec3 in_Normal;
 layout(location = 2) in vec4 in_Tangent;
-layout(location = 3) in vec2 in_Uvs[4];
-layout(location = 7) in vec4 in_Colors[2];
+layout(location = 3) in vec2 in_Uv0;
+layout(location = 4) in vec2 in_Uv1;
+
 
 out vec3 vertexPosition;
 out vec3 vertexNormal;
@@ -33,6 +34,6 @@ void main() {
   vertexNormal = normalize(modelMatrix * vec4(in_Normal, 0)).xyz;
   tangent = normalize(modelMatrix * vec4(in_Tangent)).xyz;
   binormal = cross(vertexNormal, tangent);
-  uv0 = in_Uvs[0];
-  uv1 = in_Uvs[1];
+  uv0 = in_Uv0;
+  uv1 = in_Uv1;
 }

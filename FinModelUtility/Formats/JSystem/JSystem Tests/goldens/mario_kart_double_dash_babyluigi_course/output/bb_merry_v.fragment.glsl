@@ -1,4 +1,5 @@
-#version 430
+#version 310 es
+precision mediump float;
 
 
 struct Texture {
@@ -15,7 +16,7 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = clamp(texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*color_GxMaterialColor0, 0, 1);
+  vec3 colorComponent = clamp(texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*color_GxMaterialColor0, 0.0, 1.0);
 
   float alphaComponent = texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).a*scalar_GxMaterialAlpha0;
 

@@ -1,4 +1,5 @@
-#version 430
+#version 310 es
+precision mediump float;
 
 uniform sampler2D texture0;
 uniform sampler2D texture1;

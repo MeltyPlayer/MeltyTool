@@ -1,4 +1,5 @@
-#version 430
+#version 310 es
+precision mediump float;
 
 
 struct Texture {
@@ -22,13 +23,13 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(2)*vertexColor0.rgb*vec3(0.5) + texture(texture0.sampler, transformUv3d(texture0.transform3d, sphericalReflectionUv)).rgb*vec3(0.5);
+  vec3 colorComponent = vec3(2.0)*vertexColor0.rgb*vec3(0.5) + texture(texture0.sampler, transformUv3d(texture0.transform3d, sphericalReflectionUv)).rgb*vec3(0.5);
 
-  float alphaComponent = 0.3499999940395355*vertexColor0.a;
+  float alphaComponent = 0.34999999404*vertexColor0.a;
 
   fragColor = vec4(colorComponent, alphaComponent);
 
-  if (!(alphaComponent > 0)) {
+  if (!(alphaComponent > 0.0)) {
     discard;
   }
 }

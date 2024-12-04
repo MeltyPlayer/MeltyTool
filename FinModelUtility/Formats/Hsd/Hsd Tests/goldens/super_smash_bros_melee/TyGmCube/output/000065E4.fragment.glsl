@@ -1,15 +1,16 @@
-#version 430
+#version 310 es
+precision mediump float;
 
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(0.062745101749897);
+  vec3 colorComponent = vec3(0.06274510175);
 
-  float alphaComponent = 1;
+  float alphaComponent = 1.0;
 
   fragColor = vec4(colorComponent, alphaComponent);
 
-  if (!(alphaComponent > 0)) {
+  if (!(alphaComponent > 0.0)) {
     discard;
   }
 }
