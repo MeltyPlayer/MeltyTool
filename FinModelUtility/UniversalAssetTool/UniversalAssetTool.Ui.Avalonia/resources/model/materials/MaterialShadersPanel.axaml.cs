@@ -27,7 +27,7 @@ namespace uni.ui.avalonia.resources.model.materials {
         this.RaiseAndSetIfChanged(ref field, value);
 
         var (model, material) = field;
-        var shaderSource = material.ToShaderSource(model, true);
+        var shaderSource = material.ToShaderSource(model);
         this.VertexShaderSource
             = new TextDocument(shaderSource.VertexShaderSource);
         this.FragmentShaderSource

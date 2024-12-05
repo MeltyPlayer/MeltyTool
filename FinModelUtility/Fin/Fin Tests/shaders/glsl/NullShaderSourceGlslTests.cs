@@ -10,50 +10,54 @@ namespace fin.shaders.glsl;
 
 public class NullShaderSourceGlslTests {
   [Test]
-  public void TestWithoutNormalsNotMasked()
+  [TestCase(false, false, false)]
+  [TestCase(false, false, true)]
+  [TestCase(false, true, false)]
+  [TestCase(false, true, true)]
+  [TestCase(true, false, false)]
+  [TestCase(true, false, true)]
+  [TestCase(true, true, false)]
+  [TestCase(true, true, true)]
+  public void TestWithoutColors(bool withNormals, bool withUvs, bool withMask)
     => AssertGlsl_(
-        false,
-        false,
+        new MockMaterialOptions {
+            WithColors = false,
+            Masked = withMask,
+            WithNormals = withNormals,
+            WithUvs = withUvs,
+        },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           out vec4 fragColor;
-          
-          in vec4 vertexColor0;
-          
+
           void main() {
-            fragColor = vertexColor0;
+            fragColor = vec4(1);
           }
           """);
 
   [Test]
-  public void TestWithoutNormalsMasked()
+  [TestCase(false, false, false)]
+  [TestCase(false, false, true)]
+  [TestCase(false, true, false)]
+  [TestCase(false, true, true)]
+  [TestCase(true, false, false)]
+  [TestCase(true, false, true)]
+  [TestCase(true, true, false)]
+  [TestCase(true, true, true)]
+  public void TestWithColors(bool withNormals, bool withUvs, bool withMask)
     => AssertGlsl_(
-        false,
-        true,
+        new MockMaterialOptions {
+            WithColors = true,
+            Masked = withMask,
+            WithNormals = withNormals,
+            WithUvs = withUvs,
+        },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
-          out vec4 fragColor;
-          
-          in vec4 vertexColor0;
-          
-          void main() {
-            fragColor = vertexColor0;
-          }
-          """);
 
-  [Test]
-  public void TestWithNormals()
-    => AssertGlsl_(
-        true,
-        true,
-        $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
-          
           out vec4 fragColor;
 
           in vec4 vertexColor0;
@@ -63,34 +67,12 @@ public class NullShaderSourceGlslTests {
           }
           """);
 
-  private static void AssertGlsl_(
-      bool withNormals,
-      bool masked,
-      string expectedSource) {
-    var model = ModelImpl.CreateForViewer();
-
-    var materialManager = model.MaterialManager;
-    var material = materialManager.AddNullMaterial();
-
-    if (withNormals) {
-      var skin = model.Skin;
-
-      var v = skin.AddVertex(0, 0, 0);
-      v.SetLocalNormal(0, 0, 1);
-
-      skin.AddMesh().AddPoints(v).SetMaterial(material);
-    }
-
-    material.TransparencyType
-        = masked ? TransparencyType.MASK : TransparencyType.OPAQUE;
-
-    var actualSource = new NullShaderSourceGlsl(
-        model,
-        true,
-        ShaderRequirements.FromModelAndMaterial(
-            model,
-            material)).FragmentShaderSource;
-
-    Assert.AreEqual(expectedSource, actualSource);
-  }
+  private static void AssertGlsl_(MockMaterialOptions options,
+                                  string expectedSource)
+    => Assert.AreEqual(
+        expectedSource,
+        MockMaterial.BuildAndGetSource(
+                        options,
+                        mm => mm.AddNullMaterial())
+                    .FragmentShaderSource);
 }

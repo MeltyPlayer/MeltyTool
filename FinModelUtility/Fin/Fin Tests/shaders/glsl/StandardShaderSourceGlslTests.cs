@@ -3,9 +3,6 @@ using System.Drawing;
 
 using fin.image;
 using fin.model;
-using fin.model.impl;
-using fin.model.util;
-using fin.util.image;
 
 using NUnit.Framework;
 
@@ -15,40 +12,37 @@ namespace fin.shaders.glsl;
 
 public class StandardShaderSourceGlslTests {
   [Test]
-  public void TestWithoutNormalsNoMask()
+  public void TestWithoutNothing()
     => AssertGlsl_(
-        false,
-        false,
+        default,
         (m, t) => { },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
-
           void main() {
-            fragColor = vertexColor0;
+            fragColor = vec4(1);
           }
           """);
 
   [Test]
   public void TestWithoutNormalsNoTextures()
     => AssertGlsl_(
-        false,
-        true,
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = false,
+        },
         (m, t) => { },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
-
           void main() {
-            fragColor = vertexColor0;
+            fragColor = vec4(1);
           
             if (fragColor.a < .95) {
               discard;
@@ -57,25 +51,44 @@ public class StandardShaderSourceGlslTests {
           """);
 
   [Test]
-  public void TestWithoutNormalsDiffuseOnly()
+  public void TestWithVertexColor()
     => AssertGlsl_(
-        false,
-        true,
-        (m, t) => m.DiffuseTexture = t,
+        new MockMaterialOptions { WithColors = true, },
+        (m, t) => { },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
-          uniform sampler2D diffuseTexture;
 
           out vec4 fragColor;
 
           in vec4 vertexColor0;
+
+          void main() {
+            fragColor = vertexColor0;
+          }
+          """);
+
+  [Test]
+  public void TestWithoutNormalsDiffuseOnly()
+    => AssertGlsl_(
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = false,
+            WithUvs = true,
+        },
+        (m, t) => m.DiffuseTexture = t,
+        $$"""
+          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
+          {{GlslConstants.FLOAT_PRECISION}}
+
+          uniform sampler2D diffuseTexture;
+
+          out vec4 fragColor;
+
           in vec2 uv0;
 
           void main() {
-            vec4 diffuseColor = texture(diffuseTexture, uv0);
-            fragColor = diffuseColor * vertexColor0;
+            fragColor = texture(diffuseTexture, uv0);
           
             if (fragColor.a < .95) {
               discard;
@@ -86,22 +99,24 @@ public class StandardShaderSourceGlslTests {
   [Test]
   public void TestWithoutNormalsEmissiveOnly()
     => AssertGlsl_(
-        false,
-        true,
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = false,
+            WithUvs = true,
+        },
         (m, t) => m.EmissiveTexture = t,
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           uniform sampler2D emissiveTexture;
 
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
           in vec2 uv0;
 
           void main() {
-            fragColor = vertexColor0;
+            fragColor = vec4(1);
           
             vec4 emissiveColor = texture(emissiveTexture, uv0);
             fragColor.rgb += emissiveColor.rgb;
@@ -116,20 +131,21 @@ public class StandardShaderSourceGlslTests {
   [Test]
   public void TestWithNormalsNoTextures()
     => AssertGlsl_(
-        true,
-        true,
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = true,
+        },
         (m, t) => { },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           {{GlslUtil.GetLightHeader(true)}}
 
           uniform float shininess;
 
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
           in vec3 vertexPosition;
           in vec3 vertexNormal;
           in vec3 tangent;
@@ -142,7 +158,7 @@ public class StandardShaderSourceGlslTests {
           {{GlslUtil.GetApplyMergedLightColorsFunction(false)}}
 
           void main() {
-            fragColor = vertexColor0;
+            fragColor = vec4(1);
           
             // Have to renormalize because the vertex normals can become distorted when interpolated.
             vec3 fragNormal = normalize(vertexNormal);
@@ -157,13 +173,16 @@ public class StandardShaderSourceGlslTests {
   [Test]
   public void TestWithNormalsDiffuseOnly()
     => AssertGlsl_(
-        true,
-        true,
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = true,
+            WithUvs = true,
+        },
         (m, t) => m.DiffuseTexture = t,
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           {{GlslUtil.GetLightHeader(true)}}
 
           uniform sampler2D diffuseTexture;
@@ -171,7 +190,6 @@ public class StandardShaderSourceGlslTests {
 
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
           in vec3 vertexPosition;
           in vec3 vertexNormal;
           in vec3 tangent;
@@ -185,8 +203,7 @@ public class StandardShaderSourceGlslTests {
           {{GlslUtil.GetApplyMergedLightColorsFunction(false)}}
 
           void main() {
-            vec4 diffuseColor = texture(diffuseTexture, uv0);
-            fragColor = diffuseColor * vertexColor0;
+            fragColor = texture(diffuseTexture, uv0);
           
             // Have to renormalize because the vertex normals can become distorted when interpolated.
             vec3 fragNormal = normalize(vertexNormal);
@@ -201,13 +218,16 @@ public class StandardShaderSourceGlslTests {
   [Test]
   public void TestWithNormalsEmissiveOnly()
     => AssertGlsl_(
-        true,
-        true,
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = true,
+            WithUvs = true,
+        },
         (m, t) => m.EmissiveTexture = t,
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           {{GlslUtil.GetLightHeader(true)}}
 
           uniform sampler2D emissiveTexture;
@@ -215,7 +235,6 @@ public class StandardShaderSourceGlslTests {
 
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
           in vec3 vertexPosition;
           in vec3 vertexNormal;
           in vec3 tangent;
@@ -229,7 +248,7 @@ public class StandardShaderSourceGlslTests {
           {{GlslUtil.GetApplyMergedLightColorsFunction(false)}}
 
           void main() {
-            fragColor = vertexColor0;
+            fragColor = vec4(1);
           
             // Have to renormalize because the vertex normals can become distorted when interpolated.
             vec3 fragNormal = normalize(vertexNormal);
@@ -246,38 +265,19 @@ public class StandardShaderSourceGlslTests {
           """);
 
   private static void AssertGlsl_(
-      bool withNormals,
-      bool masked,
+      MockMaterialOptions options,
       Action<IStandardMaterial, IReadOnlyTexture> createMaterial,
-      string expectedSource) {
-    var model = ModelImpl.CreateForViewer();
-
-    var materialManager = model.MaterialManager;
-    var material = materialManager.AddStandardMaterial();
-    var texture = materialManager.CreateTexture(
-        FinImage.Create1x1FromColor(Color.White));
-    createMaterial(material, texture);
-
-    if (withNormals) {
-      var skin = model.Skin;
-
-      var v = skin.AddVertex(0, 0, 0);
-      v.SetLocalNormal(0, 0, 1);
-
-      skin.AddMesh().AddPoints(v).SetMaterial(material);
-    }
-
-    material.TransparencyType
-        = masked ? TransparencyType.MASK : TransparencyType.OPAQUE;
-
-    var actualSource = new StandardShaderSourceGlsl(
-        model,
-        material,
-        true,
-        ShaderRequirements.FromModelAndMaterial(
-            model,
-            material)).FragmentShaderSource;
-
-    Assert.AreEqual(expectedSource, actualSource);
-  }
+      string expectedSource)
+    => Assert.AreEqual(
+        expectedSource,
+        MockMaterial.BuildAndGetSource(
+                        options,
+                        mm => {
+                          var texture = mm.CreateTexture(
+                              FinImage.Create1x1FromColor(Color.White));
+                          var material = mm.AddStandardMaterial();
+                          createMaterial(material, texture);
+                          return material;
+                        })
+                    .FragmentShaderSource);
 }

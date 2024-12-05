@@ -18,8 +18,7 @@ public class FixedFunctionShaderSourceGlslTests {
   [Test]
   public void TestWithNothing()
     => AssertGlsl_(
-        false,
-        false,
+        default,
         (m, t) => CreateFixedFunctionMaterial_(m, t, false, false, false),
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
@@ -39,8 +38,7 @@ public class FixedFunctionShaderSourceGlslTests {
   [Test]
   public void TestWithVertexColorOnly()
     => AssertGlsl_(
-        false,
-        false,
+        new MockMaterialOptions { WithColors = true, },
         (m, t) => CreateFixedFunctionMaterial_(m, t, false, false, true),
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
@@ -62,9 +60,15 @@ public class FixedFunctionShaderSourceGlslTests {
   [Test]
   public void TestWithTextureOnly()
     => AssertGlsl_(
-        false,
-        true,
-        (m, t) => CreateFixedFunctionMaterial_(m, t, false, true, false),
+        new MockMaterialOptions { WithUvs = true, },
+        (m, t) => {
+          CreateFixedFunctionMaterial_(m, t, false, true, false);
+          m.SetAlphaCompare(AlphaOp.Or,
+                            AlphaCompareType.Greater,
+                            .95f,
+                            AlphaCompareType.Never,
+                            0);
+        },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
@@ -91,8 +95,11 @@ public class FixedFunctionShaderSourceGlslTests {
   [Test]
   public void TestWithLightingAndTextureAndVertexColor()
     => AssertGlsl_(
-        true,
-        true,
+        new MockMaterialOptions {
+            WithNormals = true,
+            WithColors = true,
+            WithUvs = true,
+        },
         (m, t) => CreateFixedFunctionMaterial_(m, t, true, true, true),
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
@@ -126,53 +133,25 @@ public class FixedFunctionShaderSourceGlslTests {
             float alphaComponent = vertexColor0.a*texture(texture0, uv0).a;
           
             fragColor = vec4(colorComponent, alphaComponent);
-          
-            if (!(alphaComponent > 0.95)) {
-              discard;
-            }
           }
           """);
 
   private static void AssertGlsl_(
-      bool withNormals,
-      bool masked,
+      MockMaterialOptions options,
       Action<IFixedFunctionMaterial, IReadOnlyTexture> createMaterial,
-      string expectedSource) {
-    var model = ModelImpl.CreateForViewer();
-
-    var materialManager = model.MaterialManager;
-    var material = materialManager.AddFixedFunctionMaterial();
-    var texture = materialManager.CreateTexture(
-        FinImage.Create1x1FromColor(Color.White));
-    createMaterial(material, texture);
-
-    if (withNormals) {
-      var skin = model.Skin;
-
-      var v = skin.AddVertex(0, 0, 0);
-      v.SetLocalNormal(0, 0, 1);
-
-      skin.AddMesh().AddPoints(v).SetMaterial(material);
-    }
-
-    if (masked) {
-      material.SetAlphaCompare(AlphaOp.Or,
-                               AlphaCompareType.Greater,
-                               .95f,
-                               AlphaCompareType.Never,
-                               0);
-    }
-
-    var actualSource = new FixedFunctionShaderSourceGlsl(
-        model,
-        material,
-        true,
-        ShaderRequirements.FromModelAndMaterial(
-            model,
-            material)).FragmentShaderSource;
-
-    Assert.AreEqual(expectedSource, actualSource);
-  }
+      string expectedSource)
+    => Assert.AreEqual(
+        expectedSource,
+        MockMaterial.BuildAndGetSource(
+                        options with { Masked = false, },
+                        mm => {
+                          var texture = mm.CreateTexture(
+                              FinImage.Create1x1FromColor(Color.White));
+                          var material = mm.AddFixedFunctionMaterial();
+                          createMaterial(material, texture);
+                          return material;
+                        })
+                    .FragmentShaderSource);
 
   private static void CreateFixedFunctionMaterial_(
       IFixedFunctionMaterial material,

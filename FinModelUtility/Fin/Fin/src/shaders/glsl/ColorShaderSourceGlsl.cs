@@ -2,6 +2,7 @@
 
 using fin.model;
 using fin.model.extensions;
+using fin.util.enumerables;
 using fin.util.image;
 
 namespace fin.shaders.glsl;
@@ -9,11 +10,10 @@ namespace fin.shaders.glsl;
 public class ColorShaderSourceGlsl : IShaderSourceGlsl {
   public ColorShaderSourceGlsl(IReadOnlyModel model,
                                IReadOnlyMaterial material,
-                               bool useBoneMatrices,
                                IShaderRequirements shaderRequirements) {
-    this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, useBoneMatrices, shaderRequirements);
+    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, shaderRequirements);
 
+    var hasColors = shaderRequirements.UsedColors.AnyTrue();
     var hasNormals = model.Skin.HasNormalsForMaterial(material);
 
     var fragmentSrc = new StringBuilder();
@@ -37,14 +37,20 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
     }
 
     fragmentSrc.AppendLine(
-        $"""
+        """
 
-         out vec4 fragColor;
+        out vec4 fragColor;
 
-         in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;
-         """);
+        """);
+
+    var hadAnyIns = false;
+    if (hasColors) {
+      hadAnyIns = true;
+      fragmentSrc.AppendLine($"in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;");
+    }
 
     if (hasNormals) {
+      hadAnyIns = true;
       fragmentSrc.AppendLine(
           """
           in vec3 vertexPosition;
@@ -62,12 +68,17 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
       );
     }
 
-    fragmentSrc.AppendLine(
-        $$"""
+    if (hadAnyIns) {
+      fragmentSrc.AppendLine();
+    }
 
-          void main() {
-            fragColor = diffuseColor * {{GlslConstants.IN_VERTEX_COLOR_NAME}}0;
-          """);
+    fragmentSrc.AppendLine("void main() {");
+    fragmentSrc.AppendLine(
+        $"  fragColor = diffuseColor{hasColors switch {
+            false => "",
+            true  => $" * {GlslConstants.IN_VERTEX_COLOR_NAME}0",
+        }};");
+
 
     if (hasNormals) {
       fragmentSrc.AppendLine(

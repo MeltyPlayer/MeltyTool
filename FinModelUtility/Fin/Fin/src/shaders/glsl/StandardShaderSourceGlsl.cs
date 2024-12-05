@@ -1,7 +1,9 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 
 using fin.model;
 using fin.model.extensions;
+using fin.util.enumerables;
 using fin.util.image;
 
 namespace fin.shaders.glsl;
@@ -10,17 +12,18 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
   public StandardShaderSourceGlsl(
       IReadOnlyModel model,
       IReadOnlyStandardMaterial material,
-      bool useBoneMatrices,
       IShaderRequirements shaderRequirements) {
-    this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, useBoneMatrices, shaderRequirements);
+    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, shaderRequirements);
 
     var animations = model.AnimationManager.Animations;
 
     var fragmentShaderSrc = new StringBuilder();
-    fragmentShaderSrc.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
+    fragmentShaderSrc.AppendLine(
+        $"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
     fragmentShaderSrc.AppendLine(GlslConstants.FLOAT_PRECISION);
     fragmentShaderSrc.AppendLine();
+
+    var hasColor = shaderRequirements.UsedColors.AnyTrue();
 
     var diffuseTexture = material.DiffuseTexture;
     var hasDiffuseTexture = diffuseTexture != null;
@@ -93,13 +96,21 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
     }
 
     fragmentShaderSrc.AppendLine(
-        $"""
-         out vec4 fragColor;
+        """
+        out vec4 fragColor;
 
-         in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;
-         """);
+        """);
+
+    var needsLineAboveMain = false;
+
+    if (hasColor) {
+      needsLineAboveMain = true;
+      fragmentShaderSrc.AppendLine(
+          $"in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;");
+    }
 
     if (hasNormals) {
+      needsLineAboveMain = true;
       fragmentShaderSrc.AppendLine(
           """
           in vec3 vertexPosition;
@@ -112,14 +123,18 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
     var usedUvs = shaderRequirements.UsedUvs;
     for (var i = 0; i < usedUvs.Length; ++i) {
       if (usedUvs[i]) {
+        needsLineAboveMain = true;
         fragmentShaderSrc.AppendLine($"in vec2 {GlslConstants.IN_UV_NAME}{i};");
       }
     }
 
     if (hasNormals) {
+      if (needsLineAboveMain) {
+        fragmentShaderSrc.AppendLine();
+      }
+
       fragmentShaderSrc.AppendLine(
           $"""
-
            {GlslUtil.GetGetIndividualLightColorsFunction()}
 
            {GlslUtil.GetGetMergedLightColorsFunction()}
@@ -128,20 +143,24 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
            """);
     }
 
-    fragmentShaderSrc.AppendLine(
-        """
-
-        void main() {
-        """
-    );
-
-    if (hasDiffuseTexture) {
-      fragmentShaderSrc.AppendLine(
-          $"  vec4 diffuseColor = {GlslUtil.ReadColorFromTexture("diffuseTexture", $"{GlslConstants.IN_UV_NAME}{diffuseTexture?.UvIndex ?? 0}", diffuseTexture, animations)};");
+    if (needsLineAboveMain) {
+      fragmentShaderSrc.AppendLine();
     }
 
+    fragmentShaderSrc.AppendLine("void main() {");
+
+    var getDiffuseTextureColor = GlslUtil.ReadColorFromTexture(
+        "diffuseTexture",
+        $"{GlslConstants.IN_UV_NAME}{diffuseTexture?.UvIndex ?? 0}",
+        diffuseTexture,
+        animations);
     fragmentShaderSrc.AppendLine(
-        $"  fragColor = {(hasDiffuseTexture ? "diffuseColor * " : "")}{GlslConstants.IN_VERTEX_COLOR_NAME}0;");
+        $"  fragColor = {(hasDiffuseTexture, hasColor) switch {
+            (false, false) => "vec4(1)",
+            (false, true) => $"{GlslConstants.IN_VERTEX_COLOR_NAME}0",
+            (true, false) => getDiffuseTextureColor,
+            (true, true) => $"{getDiffuseTextureColor} * {GlslConstants.IN_VERTEX_COLOR_NAME}0"
+        }};");
 
     if (hasNormals) {
       fragmentShaderSrc.AppendLine();
@@ -161,7 +180,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
             $"""
                // Have to renormalize because the vertex normals can become distorted when interpolated.
                vec3 fragNormal = normalize(vertexNormal);
-               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"{GlslConstants.IN_UV_NAME}{normalTexture?.UvIndex ?? 0}", normalTexture, animations)}.xyz * 2 - 1;
+               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"{GlslConstants.IN_UV_NAME}{normalTexture?.UvIndex ?? 0}", normalTexture, animations)}.xyz * 2.0 - 1.0;
                fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
              """);
       }

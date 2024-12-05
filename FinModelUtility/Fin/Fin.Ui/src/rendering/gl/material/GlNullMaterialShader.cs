@@ -10,7 +10,7 @@ public class GlNullMaterialShader(IReadOnlyModel model)
   protected override IShaderSourceGlsl GenerateShaderSource(
       IReadOnlyModel model,
       IReadOnlyMaterial? material)
-    => new NullShaderSourceGlsl(model, true,
+    => new NullShaderSourceGlsl(model,
                                 ShaderRequirements.FromModelAndMaterial(
                                     model,
                                     material));

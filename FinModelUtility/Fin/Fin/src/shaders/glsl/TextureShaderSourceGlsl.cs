@@ -3,6 +3,7 @@ using System.Text;
 
 using fin.model;
 using fin.model.extensions;
+using fin.util.enumerables;
 using fin.util.image;
 
 namespace fin.shaders.glsl;
@@ -10,15 +11,14 @@ namespace fin.shaders.glsl;
 public class TextureShaderSourceGlsl : IShaderSourceGlsl {
   public TextureShaderSourceGlsl(IReadOnlyModel model,
                                  IReadOnlyTextureMaterial material,
-                                 bool useBoneMatrices,
                                  IShaderRequirements shaderRequirements) {
-    this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, useBoneMatrices, shaderRequirements);
+    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, shaderRequirements);
 
     var animations = model.AnimationManager.Animations;
 
     var diffuseTexture = material.Textures.FirstOrDefault();
     var uvIndex = diffuseTexture?.UvIndex ?? 0;
+    var hasColors = shaderRequirements.UsedColors.AnyTrue();
     var hasNormals = model.Skin.HasNormalsForMaterial(material);
 
     var fragmentSrc = new StringBuilder();
@@ -44,16 +44,20 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
         $"uniform {GlslUtil.GetTypeOfTexture(diffuseTexture, animations)} diffuseTexture;");
 
     if (hasNormals) {
-      fragmentSrc.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
+      fragmentSrc.AppendLine(
+          $"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
     }
 
     fragmentSrc.AppendLine(
-        $"""
+        """
 
-         out vec4 fragColor;
+        out vec4 fragColor;
 
-         in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;
-         """);
+        """);
+
+    if (hasColors) {
+      fragmentSrc.AppendLine($"in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;");
+    }
 
     if (hasNormals) {
       fragmentSrc.AppendLine(
@@ -82,8 +86,13 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
         $$"""
 
           void main() {
-            fragColor = {{GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{uvIndex}", diffuseTexture, animations)}} * vertexColor0{{(material.DiffuseColor != null ? " * diffuseColor" : "")}};
           """);
+
+    fragmentSrc.AppendLine(
+        $"  fragColor = {GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{uvIndex}", diffuseTexture, animations)}" +
+        (hasColors ? $" * vertexColor0" : "") +
+        (material.DiffuseColor != null ? " * diffuseColor" : "") +
+        ";");
 
     if (hasNormals) {
       fragmentSrc.AppendLine(

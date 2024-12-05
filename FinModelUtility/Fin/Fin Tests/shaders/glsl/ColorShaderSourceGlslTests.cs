@@ -1,9 +1,5 @@
 ﻿using System.Drawing;
 
-using fin.model.impl;
-using fin.model.util;
-using fin.util.image;
-
 using NUnit.Framework;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
@@ -14,28 +10,30 @@ public class ColorShaderSourceGlslTests {
   [Test]
   public void TestWithoutNormalsNotMasked()
     => AssertGlsl_(
-        false,
-        false,
+        new MockMaterialOptions {
+            Masked = false,
+            WithNormals = false,
+        },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
-          
+
           uniform vec4 diffuseColor;
 
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
-
           void main() {
-            fragColor = diffuseColor * vertexColor0;
+            fragColor = diffuseColor;
           }
           """);
 
   [Test]
   public void TestWithoutNormalsMasked()
     => AssertGlsl_(
-        false,
-        true,
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = false,
+        },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
@@ -44,10 +42,8 @@ public class ColorShaderSourceGlslTests {
 
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
-
           void main() {
-            fragColor = diffuseColor * vertexColor0;
+            fragColor = diffuseColor;
           
             if (fragColor.a < .95) {
               discard;
@@ -56,10 +52,13 @@ public class ColorShaderSourceGlslTests {
           """);
 
   [Test]
-  public void TestWithNormals()
+  public void TestWithVertexColorAndNormal()
     => AssertGlsl_(
-        true,
-        true,
+        new MockMaterialOptions {
+            Masked = true,
+            WithNormals = true,
+            WithColors = true,
+        },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
@@ -94,35 +93,12 @@ public class ColorShaderSourceGlslTests {
           }
           """);
 
-  private static void AssertGlsl_(
-      bool withNormals,
-      bool masked,
-      string expectedSource) {
-    var model = ModelImpl.CreateForViewer();
-
-    var materialManager = model.MaterialManager;
-    var material = materialManager.AddColorMaterial(Color.Red);
-
-    if (withNormals) {
-      var skin = model.Skin;
-
-      var v = skin.AddVertex(0, 0, 0);
-      v.SetLocalNormal(0, 0, 1);
-
-      skin.AddMesh().AddPoints(v).SetMaterial(material);
-    }
-
-    material.TransparencyType
-        = masked ? TransparencyType.MASK : TransparencyType.OPAQUE;
-
-    var actualSource = new ColorShaderSourceGlsl(
-        model,
-        material,
-        true,
-        ShaderRequirements.FromModelAndMaterial(
-            model,
-            material)).FragmentShaderSource;
-
-    Assert.AreEqual(expectedSource, actualSource);
-  }
+  private static void AssertGlsl_(MockMaterialOptions options,
+                                  string expectedSource)
+    => Assert.AreEqual(
+        expectedSource,
+        MockMaterial.BuildAndGetSource(
+                        options,
+                        mm => mm.AddColorMaterial(Color.Red))
+                    .FragmentShaderSource);
 }

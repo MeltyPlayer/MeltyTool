@@ -1,26 +1,45 @@
-﻿using fin.model;
+﻿using System.Text;
+
+using fin.model;
+using fin.util.enumerables;
 
 namespace fin.shaders.glsl;
 
 public class NullShaderSourceGlsl(
     IReadOnlyModel model,
-    bool useBoneMatrices,
     IShaderRequirements shaderRequirements)
     : IShaderSourceGlsl {
   public string VertexShaderSource { get; } =
-    GlslUtil.GetVertexSrc(model, useBoneMatrices, shaderRequirements);
+    GlslUtil.GetVertexSrc(model, shaderRequirements);
 
-  public string FragmentShaderSource
-    => $$"""
-         #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-         {{GlslConstants.FLOAT_PRECISION}}
+  public string FragmentShaderSource {
+    get {
+      var sb = new StringBuilder();
+      sb.AppendLine(
+          $"""
+           #version {GlslConstants.FRAGMENT_SHADER_VERSION}
+           {GlslConstants.FLOAT_PRECISION}
 
-         out vec4 fragColor;
+           out vec4 fragColor;
+           """);
 
-         in vec4 {{GlslConstants.IN_VERTEX_COLOR_NAME}}0;
+      var hasColors = shaderRequirements.UsedColors.AnyTrue();
+      if (hasColors) {
+        sb.AppendLine(
+            $"""
 
-         void main() {
-           fragColor = {{GlslConstants.IN_VERTEX_COLOR_NAME}}0;
-         }
-         """;
+             in vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}0;
+             """);
+      }
+
+      sb.Append($$"""
+
+                  void main() {
+                    fragColor = {{(hasColors ? $"{GlslConstants.IN_VERTEX_COLOR_NAME}0" : "vec4(1)")}};
+                  }
+                  """);
+
+      return sb.ToString();
+    }
+  }
 }

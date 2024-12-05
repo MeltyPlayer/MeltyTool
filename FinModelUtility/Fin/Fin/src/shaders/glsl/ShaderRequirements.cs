@@ -2,6 +2,7 @@
 
 using fin.language.equations.fixedFunction;
 using fin.model;
+using fin.util.asserts;
 
 namespace fin.shaders.glsl;
 
@@ -20,6 +21,8 @@ public class ShaderRequirements : IShaderRequirements {
 
   private ShaderRequirements(IReadOnlyModel model,
                              IReadOnlyMaterial? material) {
+    var modelRequirements = ModelRequirements.FromModel(model);
+
     this.UsesSphericalReflectionMapping
         = material?.Textures.Any(t => t.UvType is UvType.SPHERICAL) ?? false;
     this.UsesLinearReflectionMapping
@@ -28,7 +31,9 @@ public class ShaderRequirements : IShaderRequirements {
     this.UsedUvs = new bool[MaterialConstants.MAX_UVS];
     if (material != null && material is not IFixedFunctionMaterial) {
       foreach (var texture in material.Textures) {
-        this.UsedUvs[texture.UvIndex] = true;
+        var uvIndex = texture.UvIndex;
+        Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
+        this.UsedUvs[uvIndex] = true;
       }
     }
 
@@ -39,7 +44,7 @@ public class ShaderRequirements : IShaderRequirements {
            or ITextureMaterial
            or IStandardMaterial
            or null: {
-        this.UsedColors[0] = true;
+        this.UsedColors[0] = modelRequirements.NumColors > 0;
         break;
       }
       case IFixedFunctionMaterial fixedFunctionMaterial: {
@@ -51,15 +56,20 @@ public class ShaderRequirements : IShaderRequirements {
           }
 
           if (equations.DoOutputsDependOnTextureSource(i)) {
-            this.UsedUvs[textureSource.UvIndex] = true;
+            var uvIndex = textureSource.UvIndex;
+            Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
+            this.UsedUvs[uvIndex] = true;
           }
         }
 
         for (var i = 0; i < this.UsedColors.Length; ++i) {
-          this.UsedColors[i] = equations.DoOutputsDependOn([
-              FixedFunctionSource.VERTEX_COLOR_0 + i,
-              FixedFunctionSource.VERTEX_ALPHA_0 + i
-          ]);
+          if (equations.DoOutputsDependOn([
+                  FixedFunctionSource.VERTEX_COLOR_0 + i,
+                  FixedFunctionSource.VERTEX_ALPHA_0 + i
+              ])) {
+            Asserts.True(modelRequirements.NumColors >= i + 1);
+            this.UsedColors[i] = true;
+          }
         }
 
         break;

@@ -140,4 +140,6 @@ public static class EnumerableExtensions {
   public static IEnumerable<(int index, T value)> Indexed<T>(
       this IEnumerable<T> impl)
     => impl.Select((v, i) => (i, v));
+
+  public static bool AnyTrue(this IEnumerable<bool> impl) => impl.Any(b => b);
 }

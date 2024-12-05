@@ -6,6 +6,7 @@ using System.Text;
 using fin.data.indexable;
 using fin.math;
 using fin.model;
+using fin.util.asserts;
 using fin.util.enums;
 
 namespace fin.shaders.glsl;
@@ -69,7 +70,6 @@ public static class GlslUtil {
 
   // TODO: Only include uvs/colors as needed
   public static string GetVertexSrc(IReadOnlyModel model,
-                                    bool useBoneMatrices,
                                     IShaderRequirements shaderRequirements) {
     var usedUvs = shaderRequirements.UsedUvs;
     var usedColors = shaderRequirements.UsedColors;
@@ -77,6 +77,12 @@ public static class GlslUtil {
     var location = 0;
 
     var vertexSrc = new StringBuilder();
+
+    var modelRequirements = ModelRequirements.FromModel(model);
+    var hasNormals = modelRequirements.HasNormals;
+    var hasTangents = modelRequirements.HasTangents;
+    var hasBinormals = hasNormals && hasTangents;
+    var numBones = modelRequirements.NumBones;
 
     vertexSrc.AppendLine($$"""
                            #version {{GlslConstants.VERTEX_SHADER_VERSION}}
@@ -92,18 +98,39 @@ public static class GlslUtil {
                            uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
 
                            layout(location = {{location++}}) in vec3 in_Position;
-                           layout(location = {{location++}}) in vec3 in_Normal;
-                           layout(location = {{location++}}) in vec4 in_Tangent;
                            """);
 
-    if (useBoneMatrices) {
+    if (hasNormals) {
       vertexSrc.AppendLine(
-          $"layout(location = {location++}) in ivec4 in_BoneIds;");
-      vertexSrc.AppendLine(
-          $"layout(location = {location++}) in vec4 in_BoneWeights;");
+          $"layout(location = {location++}) in vec3 in_Normal;");
     }
 
-    for (var i = 0; i < MaterialConstants.MAX_UVS; ++i) {
+    if (hasTangents) {
+      vertexSrc.AppendLine(
+          $"layout(location = {location++}) in vec4 in_Tangent;");
+    }
+
+    if (numBones > 0) {
+      var boneIdType = numBones switch {
+          1 => "int",
+          2 => "ivec2",
+          3 => "ivec3",
+          4 => "ivec4",
+      };
+      vertexSrc.AppendLine(
+          $"layout(location = {location++}) in {boneIdType} in_BoneIds;");
+
+      var boneWeightsType = numBones switch {
+          1 => "float",
+          2 => "vec2",
+          3 => "vec3",
+          4 => "vec4",
+      };
+      vertexSrc.AppendLine(
+          $"layout(location = {location++}) in {boneWeightsType} in_BoneWeights;");
+    }
+
+    for (var i = 0; i < modelRequirements.NumUvs; ++i) {
       if (shaderRequirements.UsedUvs[i]) {
         vertexSrc.AppendLine(
             $"layout(location = {location}) in vec2 in_Uv{i};");
@@ -112,21 +139,32 @@ public static class GlslUtil {
       location++;
     }
 
-    for (var i = 0; i < MaterialConstants.MAX_COLORS; ++i) {
+    for (var i = 0; i < modelRequirements.NumColors; ++i) {
       if (shaderRequirements.UsedColors[i]) {
         vertexSrc.AppendLine(
-            $"layout(location = {location}) in vec4 in_Color{i};");
+            $"layout(location = {location++}) in vec4 in_Color{i};");
       }
 
       location++;
     }
 
-    vertexSrc.AppendLine(@"
+    vertexSrc.AppendLine("""
 
-out vec3 vertexPosition;
-out vec3 vertexNormal;
-out vec3 tangent;
-out vec3 binormal;");
+
+                         out vec3 vertexPosition;
+                         """);
+
+    if (hasNormals) {
+      vertexSrc.AppendLine("out vec3 vertexNormal;");
+    }
+
+    if (hasTangents) {
+      vertexSrc.AppendLine("out vec3 tangent;");
+    }
+
+    if (hasBinormals) {
+      vertexSrc.AppendLine("out vec3 binormal;");
+    }
 
     if (shaderRequirements.UsesSphericalReflectionMapping) {
       vertexSrc.AppendLine(
@@ -159,26 +197,71 @@ out vec3 binormal;");
 
                        """);
 
-    if (useBoneMatrices) {
+    if (modelRequirements.NumBones > 0) {
+      switch (numBones) {
+        case 1: {
+          vertexSrc.AppendLine(
+              $"""
+                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds] * in_BoneWeights;
+               """);
+          break;
+        }
+        case 2: {
+          vertexSrc.AppendLine(
+              $"""
+                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y;
+               """);
+          break;
+        }
+        case 3: {
+          vertexSrc.AppendLine(
+              $"""
+                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
+                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z;
+               """);
+          break;
+        }
+        case 4: {
+          vertexSrc.AppendLine(
+              $"""
+                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
+                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
+                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.w] * in_BoneWeights.w;
+               """);
+          break;
+        }
+        default: throw new NotImplementedException();
+      }
+
       vertexSrc.AppendLine($@"
-  mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
-                          {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
-                          {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
-                          {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.w] * in_BoneWeights.w;
 
   mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
   mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
 
   gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
 
-  vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
-  vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;
-  tangent = normalize(vertexModelMatrix * vec4(in_Tangent)).xyz;
-  binormal = cross(vertexNormal, tangent);");
+  vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));");
+
+      if (hasNormals) {
+        vertexSrc.AppendLine(
+            "  vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;");
+      }
+
+      if (hasTangents) {
+        vertexSrc.AppendLine(
+            "  tangent = normalize(vertexModelMatrix * vec4(in_Tangent)).xyz;");
+      }
+
+      if (hasBinormals) {
+        vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
+      }
 
       if (shaderRequirements.UsesSphericalReflectionMapping) {
+        Asserts.True(hasNormals);
         vertexSrc.AppendLine($"""
-                                // Hi
                               
                                 vec3 u = normalize( vec3( mvMatrix * mergedBoneMatrix * vec4(in_Position, 1)) );
                               
@@ -197,6 +280,7 @@ out vec3 binormal;");
       }
 
       if (shaderRequirements.UsesLinearReflectionMapping) {
+        Asserts.True(modelRequirements.HasNormals);
         vertexSrc.AppendLine(
             $"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
       }
@@ -204,14 +288,25 @@ out vec3 binormal;");
       vertexSrc.AppendLine($@"
   gl_Position = mvpMatrix * vec4(in_Position, 1);
 
-  vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
-  vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;
-  tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;
-  binormal = cross(vertexNormal, tangent);");
+  vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));");
+
+      if (hasNormals) {
+        vertexSrc.AppendLine(
+            $"  normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;");
+      }
+
+      if (hasTangents) {
+        vertexSrc.AppendLine(
+            $"  tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;");
+      }
+
+      if (hasBinormals) {
+        vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
+      }
 
       if (shaderRequirements.UsesSphericalReflectionMapping) {
+        Asserts.True(hasNormals);
         vertexSrc.AppendLine($"""
-                                // Hello
                               
                                 vec3 e = normalize( vec3( mvMatrix * vec4(in_Position, 1)) );
                                 vec3 n = normalize( vec3( mvMatrix * vec4(in_Normal, 0)) );
@@ -228,6 +323,7 @@ out vec3 binormal;");
       }
 
       if (shaderRequirements.UsesLinearReflectionMapping) {
+        Asserts.True(modelRequirements.HasNormals);
         vertexSrc.AppendLine(
             $"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
       }
