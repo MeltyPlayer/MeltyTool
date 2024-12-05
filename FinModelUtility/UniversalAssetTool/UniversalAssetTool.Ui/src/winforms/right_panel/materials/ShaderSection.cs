@@ -16,8 +16,7 @@ public partial class ShaderSection : UserControl {
           this.richTextBox_.Text = "(n/a)";
         } else {
           var (model, material) = value.Value;
-          this.richTextBox_.Text =
-              material.ToShaderSource(model, false).FragmentShaderSource;
+          this.richTextBox_.Text = material.ToShaderSource(model).FragmentShaderSource;
         }
       }
   }
