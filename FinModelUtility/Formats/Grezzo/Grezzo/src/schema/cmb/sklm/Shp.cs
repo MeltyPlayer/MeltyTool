@@ -22,5 +22,5 @@ public partial class Shp : IBinaryConvertible {
     
   [AlignStart(4)]
   [RSequenceLengthSource(nameof(shapeCount_))]
-  public Sepd[] shapes;
+  public Sepd[] shapes { get; set; }
 }

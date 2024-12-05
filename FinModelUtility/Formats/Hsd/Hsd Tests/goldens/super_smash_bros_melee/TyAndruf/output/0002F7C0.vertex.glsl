@@ -14,13 +14,11 @@ layout(location = 0) in vec3 in_Position;
 layout(location = 1) in vec3 in_Normal;
 layout(location = 2) in int in_BoneIds;
 layout(location = 3) in float in_BoneWeights;
-layout(location = 4) in vec2 in_Uv0;
 
 
 out vec3 vertexPosition;
 out vec3 vertexNormal;
 out vec2 sphericalReflectionUv;
-out vec2 uv0;
 
 void main() {
   mat4 mvMatrix = viewMatrix * modelMatrix;
@@ -49,5 +47,4 @@ void main() {
   );
 
   sphericalReflectionUv = r.xy / m + .5;
-  uv0 = in_Uv0;
 }

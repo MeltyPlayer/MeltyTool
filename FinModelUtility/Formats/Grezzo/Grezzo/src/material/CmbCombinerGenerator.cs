@@ -6,6 +6,7 @@ using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.model;
 using fin.schema.color;
+using fin.shaders.glsl;
 using fin.util.enumerables;
 
 using grezzo.schema.cmb;
@@ -42,7 +43,10 @@ public class CmbCombinerGenerator {
   private IColorValue? specularLightColor_;
   private IScalarValue? specularLightAlpha_;
 
+  private readonly bool hasVertexColors_;
+
   public CmbCombinerGenerator(mats_Material cmbMaterial,
+                              bool hasVertexColors,
                               IFixedFunctionMaterial finMaterial) {
       this.cmbMaterial_ = cmbMaterial;
       this.equations_ = finMaterial.Equations;
@@ -54,7 +58,9 @@ public class CmbCombinerGenerator {
       this.previousColorBuffer_ =
           new ColorConstant(bufferColor[0], bufferColor[1], bufferColor[2]);
       this.previousAlphaBuffer_ = new ScalarConstant(bufferColor[3]);
-    }
+
+      this.hasVertexColors_ = hasVertexColors;
+  }
 
   // TODO: Color is way too bright in OoT, looks like it expects vertex color
   // based lighting. 
@@ -137,10 +143,10 @@ public class CmbCombinerGenerator {
                 this.sOps_.Add(specularAlpha0, specularAlpha1));
       }
 
-      this.primaryColor_ = this.equations_.CreateOrGetColorInput(
-          FixedFunctionSource.VERTEX_COLOR_0);
-      this.primaryAlpha_ = this.equations_.CreateOrGetScalarInput(
-          FixedFunctionSource.VERTEX_ALPHA_0);
+      this.primaryColor_ = this.hasVertexColors_ ? this.equations_.CreateOrGetColorInput(
+          FixedFunctionSource.VERTEX_COLOR_0) : this.cOps_.One;
+      this.primaryAlpha_ = this.hasVertexColors_ ? this.equations_.CreateOrGetScalarInput(
+          FixedFunctionSource.VERTEX_ALPHA_0) : this.sOps_.One;
 
       if (needsToAddLightingToVertexColor) {
         this.primaryColor_ = this.cOps_.Multiply(

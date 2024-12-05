@@ -25,7 +25,7 @@ public partial class Sepd : IBinaryConvertible {
        HasIndices  : 01000000
        HasWeights  : 10000000
    */
-  public ushort vertFlags;
+  public ushort vertFlags { get; set; }
 
   public float[] meshCenter { get; } = new float[3];
   public float[] positionOffset { get; } = new float[3];
@@ -52,7 +52,7 @@ public partial class Sepd : IBinaryConvertible {
   [RIfBoolean(nameof(hasTangents_))]
   public VertexAttribute? tangents;
 
-  public readonly VertexAttribute color = new();
+  public VertexAttribute color { get; set; } = new();
   public readonly VertexAttribute uv0 = new();
   public readonly VertexAttribute uv1 = new();
   public readonly VertexAttribute uv2 = new();

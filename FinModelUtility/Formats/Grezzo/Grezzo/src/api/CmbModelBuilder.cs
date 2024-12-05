@@ -160,14 +160,12 @@ public class CmbModelBuilder {
             return image;
           });
 
-      var cmbMaterials = cmb.mats.Data.Materials;
-
-      var finMaterials = new LazyArray<IMaterial>(
-          cmbMaterials.Length,
-          index => new CmbFixedFunctionMaterial(
+      var finMaterials = new LazyDictionary<(int, bool hasVertexColors), IMaterial>(
+          indexAndHasVertexColors => new CmbFixedFunctionMaterial(
               finModel,
               cmb,
-              index,
+              indexAndHasVertexColors.Item1,
+              indexAndHasVertexColors.hasVertexColors,
               textureImages).Material);
 
       // Creates meshes
@@ -212,6 +210,8 @@ public class CmbModelBuilder {
         var hasUv2 = shape.vertFlags.GetBit(inc++);
         var hasBi = shape.vertFlags.GetBit(inc++);
         var hasBw = shape.vertFlags.GetBit(inc++);
+
+        var material = finMaterials[(cmbMesh.materialIndex, hasClr)];
 
         var finMesh = finSkin.AddMesh();
 
@@ -329,7 +329,7 @@ public class CmbModelBuilder {
                                .Select(meshIndex => finVertices[meshIndex])
                                .ToArray();
         finMesh.AddTriangles(triangleVertices)
-               .SetMaterial(finMaterials[cmbMesh.materialIndex]);
+               .SetMaterial(material);
       }
 
       // Adds morph targets

@@ -30,6 +30,7 @@ public class CmbFixedFunctionMaterial {
       IModel finModel,
       Cmb cmb,
       int materialIndex,
+      bool hasVertexColors,
       ILazyArray<IImage> textureImages) {
       var mats = cmb.mats.Data;
       var cmbMaterials = mats.Materials;
@@ -199,7 +200,7 @@ public class CmbFixedFunctionMaterial {
         }
 
         var combinerGenerator =
-            new CmbCombinerGenerator(cmbMaterial, finMaterial);
+            new CmbCombinerGenerator(cmbMaterial, hasVertexColors, finMaterial);
 
         var combiners = mats.Combiners;
         var texEnvStages =

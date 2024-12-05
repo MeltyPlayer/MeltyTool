@@ -56,9 +56,11 @@ public class ShaderRequirements : IShaderRequirements {
           }
 
           if (equations.DoOutputsDependOnTextureSource(i)) {
-            var uvIndex = textureSource.UvIndex;
-            Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
-            this.UsedUvs[uvIndex] = true;
+            if (textureSource.UvType == UvType.STANDARD) {
+              var uvIndex = textureSource.UvIndex;
+              Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
+              this.UsedUvs[uvIndex] = true;
+            }
           }
         }
 
