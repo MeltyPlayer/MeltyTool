@@ -2,7 +2,6 @@
 using System.Text;
 
 using fin.model;
-using fin.model.extensions;
 using fin.util.enumerables;
 using fin.util.image;
 
@@ -19,7 +18,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
     var diffuseTexture = material.Textures.FirstOrDefault();
     var uvIndex = diffuseTexture?.UvIndex ?? 0;
     var hasColors = shaderRequirements.UsedColors.AnyTrue();
-    var hasNormals = model.Skin.HasNormalsForMaterial(material);
+    var hasNormals = shaderRequirements.HasNormals;
 
     var fragmentSrc = new StringBuilder();
     fragmentSrc.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");

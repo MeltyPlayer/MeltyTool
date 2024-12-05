@@ -148,8 +148,6 @@ public class StandardShaderSourceGlslTests {
 
           in vec3 vertexPosition;
           in vec3 vertexNormal;
-          in vec3 tangent;
-          in vec3 binormal;
 
           {{GlslUtil.GetGetIndividualLightColorsFunction()}}
 
@@ -192,8 +190,6 @@ public class StandardShaderSourceGlslTests {
 
           in vec3 vertexPosition;
           in vec3 vertexNormal;
-          in vec3 tangent;
-          in vec3 binormal;
           in vec2 uv0;
 
           {{GlslUtil.GetGetIndividualLightColorsFunction()}}
@@ -237,8 +233,6 @@ public class StandardShaderSourceGlslTests {
 
           in vec3 vertexPosition;
           in vec3 vertexNormal;
-          in vec3 tangent;
-          in vec3 binormal;
           in vec2 uv0;
 
           {{GlslUtil.GetGetIndividualLightColorsFunction()}}

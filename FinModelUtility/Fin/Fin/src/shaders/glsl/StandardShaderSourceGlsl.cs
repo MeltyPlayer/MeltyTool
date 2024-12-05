@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 using fin.model;
-using fin.model.extensions;
 using fin.util.enumerables;
 using fin.util.image;
 
@@ -30,8 +28,9 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
 
     var normalTexture = material.NormalTexture;
     var hasNormalTexture = normalTexture != null;
-    var hasNormals = hasNormalTexture ||
-                     model.Skin.HasNormalsForMaterial(material);
+    var hasNormals = shaderRequirements.HasNormals;
+    var hasTangents = shaderRequirements.HasTangents;
+    var hasBinormals = hasNormals && hasTangents;
 
     var ambientOcclusionTexture = material.AmbientOcclusionTexture;
     var hasAmbientOcclusionTexture = ambientOcclusionTexture != null;
@@ -115,7 +114,21 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
           """
           in vec3 vertexPosition;
           in vec3 vertexNormal;
+          """);
+    }
+
+    if (hasTangents) {
+      needsLineAboveMain = true;
+      fragmentShaderSrc.AppendLine(
+          """
           in vec3 tangent;
+          """);
+    }
+
+    if (hasBinormals) {
+      needsLineAboveMain = true;
+      fragmentShaderSrc.AppendLine(
+          """
           in vec3 binormal;
           """);
     }

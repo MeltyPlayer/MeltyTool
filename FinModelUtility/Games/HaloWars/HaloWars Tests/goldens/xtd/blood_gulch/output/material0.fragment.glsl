@@ -38,8 +38,6 @@ out vec4 fragColor;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
-in vec3 tangent;
-in vec3 binormal;
 in vec2 uv0;
 
 void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 normal, out vec3 surfaceToLightNormal, out float attenuation) {

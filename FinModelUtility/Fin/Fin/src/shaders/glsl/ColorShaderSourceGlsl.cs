@@ -1,7 +1,6 @@
 ﻿using System.Text;
 
 using fin.model;
-using fin.model.extensions;
 using fin.util.enumerables;
 using fin.util.image;
 
@@ -14,7 +13,7 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
     this.VertexShaderSource = GlslUtil.GetVertexSrc(model, shaderRequirements);
 
     var hasColors = shaderRequirements.UsedColors.AnyTrue();
-    var hasNormals = model.Skin.HasNormalsForMaterial(material);
+    var hasNormals = shaderRequirements.HasNormals;
 
     var fragmentSrc = new StringBuilder();
     fragmentSrc.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");

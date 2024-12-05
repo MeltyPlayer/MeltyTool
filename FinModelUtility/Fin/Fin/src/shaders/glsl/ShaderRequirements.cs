@@ -10,6 +10,9 @@ public interface IShaderRequirements {
   public bool UsesSphericalReflectionMapping { get; }
   public bool UsesLinearReflectionMapping { get; }
 
+  public bool HasNormals { get; }
+  public bool HasTangents { get; }
+
   public bool[] UsedUvs { get; }
   public bool[] UsedColors { get; }
 }
@@ -27,6 +30,26 @@ public class ShaderRequirements : IShaderRequirements {
         = material?.Textures.Any(t => t.UvType is UvType.SPHERICAL) ?? false;
     this.UsesLinearReflectionMapping
         = material?.Textures.Any(t => t.UvType is UvType.LINEAR) ?? false;
+
+    foreach (var vertex in model.Skin.Meshes
+                                .SelectMany(mesh => mesh.Primitives)
+                                .Where(primitive
+                                           => primitive.Material == material)
+                                .SelectMany(primitive => primitive.Vertices)) {
+      switch (vertex) {
+        case IReadOnlyNormalTangentVertex {
+            LocalNormal: not null, LocalTangent: not null
+        }: {
+          this.HasNormals = true;
+          this.HasTangents = true;
+          break;
+        }
+        case IReadOnlyNormalVertex { LocalNormal: not null }: {
+          this.HasNormals = true;
+          break;
+        }
+      }
+    }
 
     this.UsedUvs = new bool[MaterialConstants.MAX_UVS];
     if (material != null && material is not IFixedFunctionMaterial) {
@@ -81,7 +104,8 @@ public class ShaderRequirements : IShaderRequirements {
 
   public bool UsesSphericalReflectionMapping { get; }
   public bool UsesLinearReflectionMapping { get; }
-
+  public bool HasNormals { get; }
+  public bool HasTangents { get; }
   public bool[] UsedUvs { get; }
   public bool[] UsedColors { get; }
 }
