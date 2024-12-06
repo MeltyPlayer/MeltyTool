@@ -17,7 +17,6 @@ layout(location = 3) in vec2 in_Uv0;
 layout(location = 4) in vec2 in_Uv1;
 layout(location = 5) in vec4 in_Color0;
 
-
 out vec3 vertexPosition;
 out vec2 uv0;
 out vec2 uv1;

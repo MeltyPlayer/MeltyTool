@@ -150,7 +150,6 @@ public static class GlslUtil {
 
     vertexSrc.AppendLine("""
 
-
                          out vec3 vertexPosition;
                          """);
 
@@ -292,7 +291,7 @@ public static class GlslUtil {
 
       if (hasNormals) {
         vertexSrc.AppendLine(
-            $"  normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;");
+            $"  vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;");
       }
 
       if (hasTangents) {

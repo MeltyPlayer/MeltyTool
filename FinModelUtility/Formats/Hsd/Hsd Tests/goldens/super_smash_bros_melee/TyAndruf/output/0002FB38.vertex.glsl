@@ -15,7 +15,6 @@ layout(location = 1) in vec3 in_Normal;
 layout(location = 2) in int in_BoneIds;
 layout(location = 3) in float in_BoneWeights;
 
-
 out vec3 vertexPosition;
 out vec3 vertexNormal;
 

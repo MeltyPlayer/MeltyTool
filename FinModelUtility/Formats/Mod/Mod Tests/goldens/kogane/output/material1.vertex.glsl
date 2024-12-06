@@ -16,7 +16,6 @@ layout(location = 2) in vec4 in_Tangent;
 layout(location = 3) in int in_BoneIds;
 layout(location = 4) in float in_BoneWeights;
 
-
 out vec3 vertexPosition;
 out vec3 vertexNormal;
 out vec3 tangent;

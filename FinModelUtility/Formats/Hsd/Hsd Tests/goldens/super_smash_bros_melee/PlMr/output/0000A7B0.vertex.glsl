@@ -15,7 +15,6 @@ layout(location = 1) in vec3 in_Normal;
 layout(location = 2) in ivec3 in_BoneIds;
 layout(location = 3) in vec3 in_BoneWeights;
 
-
 out vec3 vertexPosition;
 out vec3 vertexNormal;
 out vec2 sphericalReflectionUv;
