@@ -40,11 +40,18 @@ public class SuperMarioSunshineFileBundleGatherer
                               .Where(
                                   file => file.Name.StartsWith("ma_"))
                               .ToArray();
-    var bmdFile = marioSubdir.AssertGetExistingSubdir("bmd")
-                             .GetExistingFiles()
-                             .SingleByName("ma_mdl1.bmd");
 
+    var bmdDir = marioSubdir.AssertGetExistingSubdir("bmd");
+    var bmdFile = bmdDir.AssertGetExistingFile("ma_mdl1.bmd");
     this.ExtractModel_(organizer, bmdFile, bcxFiles);
+
+    var otherBmdFiles = bmdDir.GetExistingFiles()
+                              .Where(f => !f.Name.Equals(
+                                         "ma_mdl1.bmd",
+                                         StringComparison.OrdinalIgnoreCase));
+    foreach (var otherBmdFile in otherBmdFiles) {
+      this.ExtractModel_(organizer, otherBmdFile);
+    }
   }
 
   private void ExtractFludd_(IFileBundleOrganizer organizer,
