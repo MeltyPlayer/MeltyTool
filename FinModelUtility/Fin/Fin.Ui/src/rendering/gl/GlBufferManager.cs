@@ -28,13 +28,15 @@ public interface IGlBufferRenderer : IDisposable, IRenderable;
 
 public class GlBufferManager : IGlBufferManager {
   private readonly IReadOnlyModel model_;
+  private readonly BufferUsageHint bufferType_;
 
   public static IGlBufferManager CreateStatic(IReadOnlyModel model)
-    => new GlBufferManager(model);
+    => new GlBufferManager(model, BufferUsageHint.StaticDraw);
 
-  private GlBufferManager(IReadOnlyModel model) {
+  private GlBufferManager(IReadOnlyModel model, BufferUsageHint bufferType) {
     this.model_ = model;
-    this.vao_ = vaoCache_.GetAndIncrement(this.model_);
+    this.bufferType_ = bufferType;
+    this.vao_ = vaoCache_.GetAndIncrement((this.model_, bufferType));
   }
 
   private class VertexArrayObject : IDisposable {
@@ -62,7 +64,7 @@ public class GlBufferManager : IGlBufferManager {
     private readonly float[][]? uvData_;
     private readonly float[][]? colorData_;
 
-    public VertexArrayObject(IReadOnlyModel model) {
+    public VertexArrayObject(IReadOnlyModel model, BufferUsageHint bufferType) {
       this.vertices_ = model.Skin.Vertices;
       this.vertexAccessor_ =
           ConsistentVertexAccessor.GetAccessorForModel(model);
@@ -115,7 +117,7 @@ public class GlBufferManager : IGlBufferManager {
       this.vboIds_ = new int[vboCount];
       GL.GenBuffers(this.vboIds_.Length, this.vboIds_);
 
-      this.InitializeStatic_(model, modelRequirements);
+      this.InitializeStatic_(model, modelRequirements, bufferType);
     }
 
     ~VertexArrayObject() => this.ReleaseUnmanagedResources_();
@@ -133,7 +135,8 @@ public class GlBufferManager : IGlBufferManager {
     public int VaoId => this.vaoId_;
 
     private void InitializeStatic_(IReadOnlyModel model,
-                                   IModelRequirements modelRequirements) {
+                                   IModelRequirements modelRequirements,
+                                   BufferUsageHint bufferType) {
       var boneTransformManager = new BoneTransformManager();
       boneTransformManager.CalculateStaticMatricesForRendering(model);
 
@@ -234,7 +237,7 @@ public class GlBufferManager : IGlBufferManager {
                                POSITION_SIZE_ *
                                this.positionData_.Length),
                     this.positionData_,
-                    BufferUsageHint.StaticDraw);
+                    bufferType);
       GL.EnableVertexAttribArray(vertexAttribPosition);
       GL.VertexAttribPointer(
           vertexAttribPosition,
@@ -254,7 +257,7 @@ public class GlBufferManager : IGlBufferManager {
                                  NORMAL_SIZE_ *
                                  this.normalData_.Length),
                       this.normalData_,
-                      BufferUsageHint.StaticDraw);
+                      bufferType);
         GL.EnableVertexAttribArray(vertexAttribNormal);
         GL.VertexAttribPointer(
             vertexAttribNormal,
@@ -275,7 +278,7 @@ public class GlBufferManager : IGlBufferManager {
                                  TANGENT_SIZE_ *
                                  this.tangentData_.Length),
                       this.tangentData_,
-                      BufferUsageHint.StaticDraw);
+                      bufferType);
         GL.EnableVertexAttribArray(vertexAttribTangent);
         GL.VertexAttribPointer(
             vertexAttribTangent,
@@ -295,7 +298,7 @@ public class GlBufferManager : IGlBufferManager {
                       new IntPtr(sizeof(int) *
                                  this.boneIdsData_.Length),
                       this.boneIdsData_,
-                      BufferUsageHint.StaticDraw);
+                      bufferType);
         GL.EnableVertexAttribArray(vertexAttribBoneIds);
         GL.VertexAttribIPointer(
             vertexAttribBoneIds,
@@ -312,7 +315,7 @@ public class GlBufferManager : IGlBufferManager {
                       new IntPtr(sizeof(float) *
                                  this.boneWeightsData_.Length),
                       this.boneWeightsData_,
-                      BufferUsageHint.StaticDraw);
+                      bufferType);
         GL.EnableVertexAttribArray(vertexAttribBoneWeights);
         GL.VertexAttribPointer(
             vertexAttribBoneWeights,
@@ -331,7 +334,7 @@ public class GlBufferManager : IGlBufferManager {
           GL.BufferData(BufferTarget.ArrayBuffer,
                         new IntPtr(sizeof(float) * this.uvData_[i].Length),
                         this.uvData_[i],
-                        BufferUsageHint.StaticDraw);
+                        bufferType);
           GL.EnableVertexAttribArray(vertexAttribUv);
           GL.VertexAttribPointer(
               vertexAttribUv,
@@ -353,7 +356,7 @@ public class GlBufferManager : IGlBufferManager {
           GL.BufferData(BufferTarget.ArrayBuffer,
                         new IntPtr(sizeof(float) * this.colorData_[i].Length),
                         this.colorData_[i],
-                        BufferUsageHint.StaticDraw);
+                        bufferType);
           GL.EnableVertexAttribArray(vertexAttribColor);
           GL.VertexAttribPointer(
               vertexAttribColor,
@@ -371,10 +374,12 @@ public class GlBufferManager : IGlBufferManager {
     }
   }
 
-  private static
-      ReferenceCountCacheDictionary<IReadOnlyModel, VertexArrayObject>
-      vaoCache_ = new(model => new VertexArrayObject(model),
-                      (_, vao) => vao.Dispose());
+  private static ReferenceCountCacheDictionary<
+          (IReadOnlyModel, BufferUsageHint), VertexArrayObject>
+      vaoCache_ = new(modelAndBufferType => new VertexArrayObject(
+                          modelAndBufferType.Item1,
+                          modelAndBufferType.Item2),
+                          (_, vao) => vao.Dispose());
 
 
   private readonly VertexArrayObject vao_;
@@ -387,7 +392,7 @@ public class GlBufferManager : IGlBufferManager {
   }
 
   private void ReleaseUnmanagedResources_() {
-    vaoCache_.DecrementAndMaybeDispose(this.model_);
+    vaoCache_.DecrementAndMaybeDispose((this.model_, this.bufferType_));
   }
 
   public IGlBufferRenderer CreateRenderer(
