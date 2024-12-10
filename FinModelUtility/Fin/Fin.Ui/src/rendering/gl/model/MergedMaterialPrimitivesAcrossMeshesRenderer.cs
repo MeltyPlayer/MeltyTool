@@ -5,14 +5,14 @@ using fin.ui.rendering.gl.material;
 namespace fin.ui.rendering.gl.model;
 
 public class MergedMaterialPrimitivesAcrossMeshesRenderer : IDisposable {
-  private readonly GlBufferManager.GlBufferRenderer bufferRenderer_;
+  private readonly IGlBufferRenderer bufferRenderer_;
   private readonly IReadOnlyMaterial? material_;
   private readonly IGlMaterialShader? materialShader_;
   private bool isSelected_;
 
   public MergedMaterialPrimitivesAcrossMeshesRenderer(
       IReadOnlyTextureTransformManager? textureTransformManager,
-      GlBufferManager bufferManager,
+      IGlBufferManager bufferManager,
       IReadOnlyModel model,
       IReadOnlyMaterial? material,
       MergedPrimitive mergedPrimitive) {

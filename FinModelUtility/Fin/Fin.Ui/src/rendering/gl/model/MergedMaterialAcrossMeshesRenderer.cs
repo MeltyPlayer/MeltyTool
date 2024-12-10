@@ -7,7 +7,7 @@ using fin.util.image;
 namespace fin.ui.rendering.gl.model;
 
 public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
-  private GlBufferManager? bufferManager_;
+  private IGlBufferManager? bufferManager_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private IReadOnlyMesh selectedMesh_;
 
@@ -30,7 +30,7 @@ public class MergedMaterialAcrossMeshesRenderer : IModelRenderer {
       return;
     }
 
-    this.bufferManager_ = new GlBufferManager(this.Model);
+    this.bufferManager_ = GlBufferManager.CreateStatic(this.Model);
 
     var primitiveQueue = new PrimitiveRenderPriorityList();
     foreach (var mesh in this.Model.Skin.Meshes) {

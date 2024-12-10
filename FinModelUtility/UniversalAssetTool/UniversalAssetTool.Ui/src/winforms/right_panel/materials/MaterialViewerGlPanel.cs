@@ -28,8 +28,8 @@ public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
   }
 
   private ModelImpl viewerModel_;
-  private GlBufferManager bufferManager_;
-  private GlBufferManager.GlBufferRenderer bufferRenderer_;
+  private IGlBufferManager bufferManager_;
+  private IGlBufferRenderer bufferRenderer_;
 
   protected override void InitGl() {
       this.ResetGl_();
@@ -48,7 +48,7 @@ public class MaterialViewerGlPanel : BGlPanel, IMaterialViewerPanel {
       var lr = this.viewerModel_.Skin.AddVertex(1, 1, 0);
       lr.SetUv(1, 1);
 
-      this.bufferManager_ = new GlBufferManager(this.viewerModel_);
+      this.bufferManager_ = GlBufferManager.CreateStatic(this.viewerModel_);
       this.bufferRenderer_ = this.bufferManager_.CreateRenderer(PrimitiveType.QUADS, [
           ur,
           ul,

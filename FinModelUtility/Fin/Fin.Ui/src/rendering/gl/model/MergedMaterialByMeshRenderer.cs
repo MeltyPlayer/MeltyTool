@@ -8,7 +8,7 @@ using fin.util.image;
 namespace fin.ui.rendering.gl.model;
 
 public class MergedMaterialByMeshRenderer : IModelRenderer {
-  private GlBufferManager? bufferManager_;
+  private IGlBufferManager? bufferManager_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private IReadOnlyMesh selectedMesh_;
 
@@ -31,7 +31,7 @@ public class MergedMaterialByMeshRenderer : IModelRenderer {
       return;
     }
 
-    this.bufferManager_ = new GlBufferManager(this.Model);
+    this.bufferManager_ = GlBufferManager.CreateStatic(this.Model);
 
     var allMaterialMeshRenderers =
         new List<(IReadOnlyMesh, MergedMaterialPrimitivesByMeshRenderer[])>();

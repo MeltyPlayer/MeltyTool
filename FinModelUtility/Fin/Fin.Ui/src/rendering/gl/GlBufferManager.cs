@@ -15,7 +15,28 @@ using PrimitiveType = fin.model.PrimitiveType;
 
 namespace fin.ui.rendering.gl;
 
-public class GlBufferManager(IReadOnlyModel model) : IDisposable {
+public interface IGlBufferManager : IDisposable {
+  IGlBufferRenderer CreateRenderer(
+      PrimitiveType primitiveType,
+      IReadOnlyList<IReadOnlyVertex> triangleVertices,
+      bool isFlipped = false);
+
+  IGlBufferRenderer CreateRenderer(MergedPrimitive mergedPrimitive);
+}
+
+public interface IGlBufferRenderer : IDisposable, IRenderable;
+
+public class GlBufferManager : IGlBufferManager {
+  private readonly IReadOnlyModel model_;
+
+  public static IGlBufferManager CreateStatic(IReadOnlyModel model)
+    => new GlBufferManager(model);
+
+  private GlBufferManager(IReadOnlyModel model) {
+    this.model_ = model;
+    this.vao_ = vaoCache_.GetAndIncrement(this.model_);
+  }
+
   private class VertexArrayObject : IDisposable {
     private const int POSITION_SIZE_ = 3;
     private const int NORMAL_SIZE_ = 3;
@@ -356,7 +377,7 @@ public class GlBufferManager(IReadOnlyModel model) : IDisposable {
                       (_, vao) => vao.Dispose());
 
 
-  private readonly VertexArrayObject vao_ = vaoCache_.GetAndIncrement(model);
+  private readonly VertexArrayObject vao_;
 
   ~GlBufferManager() => this.ReleaseUnmanagedResources_();
 
@@ -366,20 +387,23 @@ public class GlBufferManager(IReadOnlyModel model) : IDisposable {
   }
 
   private void ReleaseUnmanagedResources_() {
-    vaoCache_.DecrementAndMaybeDispose(model);
+    vaoCache_.DecrementAndMaybeDispose(this.model_);
   }
 
-  public GlBufferRenderer CreateRenderer(
+  public IGlBufferRenderer CreateRenderer(
       PrimitiveType primitiveType,
       IReadOnlyList<IReadOnlyVertex> triangleVertices,
       bool isFlipped = false)
-    => new(this.vao_.VaoId, primitiveType, isFlipped, triangleVertices);
+    => new GlBufferRenderer(this.vao_.VaoId,
+                            primitiveType,
+                            isFlipped,
+                            triangleVertices);
 
-  public GlBufferRenderer CreateRenderer(MergedPrimitive mergedPrimitive)
-    => new(this.vao_.VaoId, mergedPrimitive);
+  public IGlBufferRenderer CreateRenderer(MergedPrimitive mergedPrimitive)
+    => new GlBufferRenderer(this.vao_.VaoId, mergedPrimitive);
 
 
-  public class GlBufferRenderer : IDisposable {
+  public class GlBufferRenderer : IGlBufferRenderer {
     private readonly int vaoId_;
     private int eboId_;
     private BeginMode beginMode_;

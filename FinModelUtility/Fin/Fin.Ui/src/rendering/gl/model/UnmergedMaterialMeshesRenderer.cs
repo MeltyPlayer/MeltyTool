@@ -7,7 +7,7 @@ public class UnmergedMaterialMeshesRenderer(
     IReadOnlyModel model,
     IReadOnlyTextureTransformManager? textureTransformManager = null)
     : IModelRenderer {
-  private GlBufferManager? bufferManager_;
+  private IGlBufferManager? bufferManager_;
 
   private readonly
       List<(IReadOnlyMesh, List<MergedMaterialPrimitivesByMeshRenderer>)>
@@ -19,7 +19,7 @@ public class UnmergedMaterialMeshesRenderer(
       return;
     }
 
-    this.bufferManager_ = new GlBufferManager(this.Model);
+    this.bufferManager_ = GlBufferManager.CreateStatic(this.Model);
 
     List<MergedMaterialPrimitivesByMeshRenderer> currentList = null;
     var primitiveMerger = new PrimitiveMerger();
