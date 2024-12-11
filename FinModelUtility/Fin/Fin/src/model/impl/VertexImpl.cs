@@ -572,4 +572,7 @@ public class NormalTangentMultiColorMultiUvVertexImpl
   public Vector2? GetUv() => this.GetUv(0);
 
   public Vector2? GetUv(int uvIndex) => this.uvs_?.Get(uvIndex);
+
+
+  public override string ToString() => $"{this.Index}: {this.LocalPosition}";
 }

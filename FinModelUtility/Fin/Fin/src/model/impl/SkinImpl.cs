@@ -239,7 +239,18 @@ public partial class ModelImpl<TVertex> {
 
       public ILinesPrimitive AddLines(IReadOnlyList<IReadOnlyVertex> lines) {
         Debug.Assert(lines.Count % 2 == 0);
-        var primitive = new LinesPrimitiveImpl(lines);
+        var primitive = new LinesPrimitiveImpl(PrimitiveType.LINES, lines);
+        this.primitives_.Add(primitive);
+        return primitive;
+      }
+
+
+      public ILinesPrimitive AddLineStrip(params IReadOnlyVertex[] lines)
+        => this.AddLineStrip(lines as IReadOnlyList<IReadOnlyVertex>);
+
+      public ILinesPrimitive AddLineStrip(IReadOnlyList<IReadOnlyVertex> lines) {
+        Debug.Assert(lines.Count >= 2);
+        var primitive = new LinesPrimitiveImpl(PrimitiveType.LINE_STRIP, lines);
         this.primitives_.Add(primitive);
         return primitive;
       }
@@ -261,8 +272,10 @@ public partial class ModelImpl<TVertex> {
         IReadOnlyList<IReadOnlyVertex> vertices)
         : BPrimitiveImpl(type, vertices);
 
-    private class LinesPrimitiveImpl(IReadOnlyList<IReadOnlyVertex> vertices)
-        : BPrimitiveImpl(PrimitiveType.LINES, vertices), ILinesPrimitive {
+    private class LinesPrimitiveImpl(
+        PrimitiveType primitiveType,
+        IReadOnlyList<IReadOnlyVertex> vertices)
+        : BPrimitiveImpl(primitiveType, vertices), ILinesPrimitive {
       public float LineWidth { get; private set; }
 
       public ILinesPrimitive SetLineWidth(float width) {

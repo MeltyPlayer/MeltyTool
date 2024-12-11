@@ -170,6 +170,7 @@ public class LowLevelGltfMeshBuilder {
                   .TRIANGLE_STRIP,
               FinPrimitiveType.TRIANGLE_FAN => GltfPrimitiveType.TRIANGLE_FAN,
               FinPrimitiveType.LINES        => GltfPrimitiveType.LINES,
+              FinPrimitiveType.LINE_STRIP   => GltfPrimitiveType.LINE_STRIP,
               FinPrimitiveType.POINTS       => GltfPrimitiveType.POINTS,
           };
 

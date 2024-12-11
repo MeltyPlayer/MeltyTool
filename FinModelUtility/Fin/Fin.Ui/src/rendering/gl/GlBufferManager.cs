@@ -437,6 +437,7 @@ public class GlBufferManager : IGlBufferManager {
       this.beginMode_ = mergedPrimitive.PrimitiveType switch {
           PrimitiveType.POINTS         => BeginMode.Points,
           PrimitiveType.LINES          => BeginMode.Lines,
+          PrimitiveType.LINE_STRIP     => BeginMode.LineStrip,
           PrimitiveType.TRIANGLES      => BeginMode.Triangles,
           PrimitiveType.TRIANGLE_FAN   => BeginMode.TriangleFan,
           PrimitiveType.TRIANGLE_STRIP => BeginMode.TriangleStrip,

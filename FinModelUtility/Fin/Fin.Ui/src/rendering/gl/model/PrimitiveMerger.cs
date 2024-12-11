@@ -36,7 +36,11 @@ public class PrimitiveMerger {
       var primitiveTypes = primitives.Select(primitive => primitive.Type)
                                      .Distinct()
                                      .ToArray();
-      if (primitiveTypes is [PrimitiveType.LINES or PrimitiveType.POINTS]) {
+      if (primitiveTypes is [
+              PrimitiveType.LINES
+              or PrimitiveType.LINE_STRIP
+              or PrimitiveType.POINTS
+          ]) {
         var primitiveType = primitiveTypes.First();
         mergedPrimitive = new MergedPrimitive {
             PrimitiveType = primitiveType,
