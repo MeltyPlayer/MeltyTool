@@ -1,12 +1,20 @@
-﻿using fin.audio;
+﻿using System.Drawing;
+
+using fin.audio;
 using fin.math;
+using fin.model;
+using fin.model.impl;
 
 using OpenTK.Graphics.OpenGL;
+
+using PrimitiveType = fin.model.PrimitiveType;
 
 namespace fin.ui.rendering.gl;
 
 public class AotWaveformRenderer {
-  private readonly float[] points_ = new float[1000];
+  private IReadOnlyList<NormalTangentMultiColorMultiUvVertexImpl> vertices_;
+  private IDynamicGlBufferManager bufferManager_;
+  private IGlBufferRenderer bufferRenderer_;
 
   public IAotAudioPlayback<short>? ActivePlayback { get; set; }
 
@@ -15,75 +23,91 @@ public class AotWaveformRenderer {
   public float Amplitude { get; set; }
 
   public void Render() {
-      if (this.ActivePlayback?.IsDisposed ?? true) {
-        return;
-      }
+    if (this.ActivePlayback?.IsDisposed ?? true) {
+      return;
+    }
 
-      var source = this.ActivePlayback.TypedSource;
+    if (this.vertices_ == null) {
+      var model = ModelImpl.CreateForViewer(1000);
+      var skin = model.Skin;
 
-      GlTransform.PassMatricesIntoGl();
+      this.vertices_ = skin.TypedVertices;
 
-      var samplesPerPoint = 10;
-      var xPerPoint = 1;
-      var pointCount = this.Width / xPerPoint;
-      var points = this.points_.AsSpan(0, pointCount + 1);
+      this.bufferManager_ = GlBufferManager.CreateDynamic(model);
+      this.bufferRenderer_
+          = this.bufferManager_.CreateRenderer(PrimitiveType.LINE_STRIP,
+                                               this.vertices_);
+    }
 
-      var samplesAcrossWidth = samplesPerPoint * pointCount;
-      var baseSampleOffset
-          = this.ActivePlayback.SampleOffset - samplesAcrossWidth / 2;
+    var source = this.ActivePlayback.TypedSource;
 
-      var channelCount = source.AudioChannelsType == AudioChannelsType.STEREO
-          ? 2
-          : 1;
+    var samplesPerPoint = 10;
+    var xPerPoint = 1;
+    var pointCount = Math.Min(this.Width / xPerPoint, this.vertices_.Count - 1);
 
-      for (var i = 0; i <= pointCount; ++i) {
-        var fraction = MathF.Sin(MathF.PI * (1f * i / pointCount));
+    var samplesAcrossWidth = samplesPerPoint * pointCount;
+    var baseSampleOffset
+        = this.ActivePlayback.SampleOffset - samplesAcrossWidth / 2;
 
-        float totalSample = 0;
-        for (var s = 0; s < samplesPerPoint; ++s) {
-          var sampleOffset = baseSampleOffset + i * samplesPerPoint + s;
-          sampleOffset = sampleOffset.ModRange(0, source.LengthInSamples);
+    var channelCount = source.AudioChannelsType == AudioChannelsType.STEREO
+        ? 2
+        : 1;
 
-          while (sampleOffset >= source.LengthInSamples) {
-            sampleOffset -= source.LengthInSamples;
-          }
+    for (var i = 0; i <= pointCount; ++i) {
+      var fraction = MathF.Sin(MathF.PI * (1f * i / pointCount));
 
-          for (var c = 0; c < channelCount; ++c) {
-            var sample = source.GetPcm(AudioChannelType.STEREO_LEFT + c,
-                                       sampleOffset);
-            totalSample += sample;
-          }
+      float totalSample = 0;
+      for (var s = 0; s < samplesPerPoint; ++s) {
+        var sampleOffset = baseSampleOffset + i * samplesPerPoint + s;
+        sampleOffset = sampleOffset.ModRange(0, source.LengthInSamples);
+
+        while (sampleOffset >= source.LengthInSamples) {
+          sampleOffset -= source.LengthInSamples;
         }
 
-        var meanSample = totalSample / (samplesPerPoint * channelCount);
-
-        float shortMin = short.MinValue;
-        float shortMax = short.MaxValue;
-
-        var normalizedShortSample =
-            (meanSample - shortMin) / (shortMax - shortMin);
-
-        var floatMin = -1f;
-        var floatMax = 1f;
-
-        var floatSample =
-            floatMin + normalizedShortSample * (floatMax - floatMin);
-
-        points[i] = fraction *
-                    MathF.Sign(floatSample) *
-                    MathF.Pow(MathF.Abs(floatSample), .8f);
+        for (var c = 0; c < channelCount; ++c) {
+          var sample = source.GetPcm(AudioChannelType.STEREO_LEFT + c,
+                                     sampleOffset);
+          totalSample += sample;
+        }
       }
 
-      GL.Color3(1f, 0, 0);
-      GL.LineWidth(1);
+      var meanSample = totalSample / (samplesPerPoint * channelCount);
 
-      GL.Begin(PrimitiveType.LineStrip);
-      for (var i = 0; i <= pointCount; ++i) {
-        var x = i * xPerPoint;
-        var y = this.MiddleY + this.Amplitude * points[i];
-        GL.Vertex2(x, y);
-      }
+      float shortMin = short.MinValue;
+      float shortMax = short.MaxValue;
 
-      GL.End();
+      var normalizedShortSample =
+          (meanSample - shortMin) / (shortMax - shortMin);
+
+      var floatMin = -1f;
+      var floatMax = 1f;
+
+      var floatSample =
+          floatMin + normalizedShortSample * (floatMax - floatMin);
+
+      var x = i * xPerPoint;
+      var y = this.MiddleY + this.Amplitude * fraction *
+          MathF.Sign(floatSample) *
+          MathF.Pow(MathF.Abs(floatSample), .8f);
+      this.vertices_[i].SetLocalPosition(x, y, 0);
     }
+
+    if (pointCount + 1 < this.vertices_.Count) {
+      var lastY = this.vertices_[pointCount].LocalPosition.Y;
+
+      for (var i = pointCount + 1; i < this.vertices_.Count; ++i) {
+        this.vertices_[i].SetLocalPosition(this.Width, lastY, 0);
+      }
+    }
+
+    GlTransform.PassMatricesIntoGl();
+
+    GL.LineWidth(1);
+    GlUtil.SetBlendColor(Color.Red);
+    GlUtil.SetBlending(BlendEquation.ADD, BlendFactor.CONST_COLOR, BlendFactor.SRC_ALPHA);
+
+    this.bufferManager_.UpdateBuffer();
+    this.bufferRenderer_.Render();
+  }
 }

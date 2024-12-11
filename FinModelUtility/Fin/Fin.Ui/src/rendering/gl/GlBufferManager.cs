@@ -24,14 +24,22 @@ public interface IGlBufferManager : IDisposable {
   IGlBufferRenderer CreateRenderer(MergedPrimitive mergedPrimitive);
 }
 
+public interface IDynamicGlBufferManager : IGlBufferManager {
+  void UpdateBuffer();
+}
+
 public interface IGlBufferRenderer : IDisposable, IRenderable;
 
-public class GlBufferManager : IGlBufferManager {
+public class GlBufferManager : IDynamicGlBufferManager {
   private readonly IReadOnlyModel model_;
   private readonly BufferUsageHint bufferType_;
+  private readonly VertexArrayObject vao_;
 
   public static IGlBufferManager CreateStatic(IReadOnlyModel model)
     => new GlBufferManager(model, BufferUsageHint.StaticDraw);
+
+  public static IDynamicGlBufferManager CreateDynamic(IReadOnlyModel model)
+    => new GlBufferManager(model, BufferUsageHint.DynamicDraw);
 
   private GlBufferManager(IReadOnlyModel model, BufferUsageHint bufferType) {
     this.model_ = model;
@@ -39,7 +47,22 @@ public class GlBufferManager : IGlBufferManager {
     this.vao_ = vaoCache_.GetAndIncrement((this.model_, bufferType));
   }
 
+  ~GlBufferManager() => this.ReleaseUnmanagedResources_();
+
+  public void Dispose() {
+    this.ReleaseUnmanagedResources_();
+    GC.SuppressFinalize(this);
+  }
+
+  private void ReleaseUnmanagedResources_() {
+    vaoCache_.DecrementAndMaybeDispose((this.model_, this.bufferType_));
+  }
+
   private class VertexArrayObject : IDisposable {
+    private readonly IReadOnlyModel model;
+    private readonly IModelRequirements modelRequirements;
+    private readonly BufferUsageHint bufferType;
+
     private const int POSITION_SIZE_ = 3;
     private const int NORMAL_SIZE_ = 3;
     private const int TANGENT_SIZE_ = 4;
@@ -65,6 +88,10 @@ public class GlBufferManager : IGlBufferManager {
     private readonly float[][]? colorData_;
 
     public VertexArrayObject(IReadOnlyModel model, BufferUsageHint bufferType) {
+      this.model = model;
+      this.modelRequirements = ModelRequirements.FromModel(model);
+      this.bufferType = bufferType;
+
       this.vertices_ = model.Skin.Vertices;
       this.vertexAccessor_ =
           ConsistentVertexAccessor.GetAccessorForModel(model);
@@ -117,7 +144,7 @@ public class GlBufferManager : IGlBufferManager {
       this.vboIds_ = new int[vboCount];
       GL.GenBuffers(this.vboIds_.Length, this.vboIds_);
 
-      this.InitializeStatic_(model, modelRequirements, bufferType);
+      this.UpdateBuffer();
     }
 
     ~VertexArrayObject() => this.ReleaseUnmanagedResources_();
@@ -134,9 +161,7 @@ public class GlBufferManager : IGlBufferManager {
 
     public int VaoId => this.vaoId_;
 
-    private void InitializeStatic_(IReadOnlyModel model,
-                                   IModelRequirements modelRequirements,
-                                   BufferUsageHint bufferType) {
+    public void UpdateBuffer() {
       var boneTransformManager = new BoneTransformManager();
       boneTransformManager.CalculateStaticMatricesForRendering(model);
 
@@ -379,21 +404,7 @@ public class GlBufferManager : IGlBufferManager {
       vaoCache_ = new(modelAndBufferType => new VertexArrayObject(
                           modelAndBufferType.Item1,
                           modelAndBufferType.Item2),
-                          (_, vao) => vao.Dispose());
-
-
-  private readonly VertexArrayObject vao_;
-
-  ~GlBufferManager() => this.ReleaseUnmanagedResources_();
-
-  public void Dispose() {
-    this.ReleaseUnmanagedResources_();
-    GC.SuppressFinalize(this);
-  }
-
-  private void ReleaseUnmanagedResources_() {
-    vaoCache_.DecrementAndMaybeDispose((this.model_, this.bufferType_));
-  }
+                      (_, vao) => vao.Dispose());
 
   public IGlBufferRenderer CreateRenderer(
       PrimitiveType primitiveType,
@@ -407,6 +418,7 @@ public class GlBufferManager : IGlBufferManager {
   public IGlBufferRenderer CreateRenderer(MergedPrimitive mergedPrimitive)
     => new GlBufferRenderer(this.vao_.VaoId, mergedPrimitive);
 
+  public void UpdateBuffer() => this.vao_.UpdateBuffer();
 
   public class GlBufferRenderer : IGlBufferRenderer {
     private readonly int vaoId_;
