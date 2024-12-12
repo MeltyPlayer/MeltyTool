@@ -56,57 +56,6 @@ public partial class ModelImpl<TVertex> {
 
     public IReadOnlyTexture? CompiledTexture { get; set; }
 
-    public IFixedFunctionMaterial SetBlending(
-        BlendEquation blendEquation,
-        BlendFactor srcFactor,
-        BlendFactor dstFactor,
-        LogicOp logicOp)
-      => this.SetBlendingSeparate(blendEquation,
-                                  srcFactor,
-                                  dstFactor,
-                                  blendEquation,
-                                  srcFactor,
-                                  dstFactor,
-                                  logicOp);
-
-    public IFixedFunctionMaterial SetBlendingSeparate(
-        BlendEquation colorBlendEquation,
-        BlendFactor colorSrcFactor,
-        BlendFactor colorDstFactor,
-        BlendEquation alphaBlendEquation,
-        BlendFactor alphaSrcFactor,
-        BlendFactor alphaDstFactor,
-        LogicOp logicOp) {
-      this.ColorBlendEquation = colorBlendEquation;
-      this.ColorSrcFactor = colorSrcFactor;
-      this.ColorDstFactor = colorDstFactor;
-      this.AlphaBlendEquation = alphaBlendEquation;
-      this.AlphaSrcFactor = alphaSrcFactor;
-      this.AlphaDstFactor = alphaDstFactor;
-      this.LogicOp = logicOp;
-      return this;
-    }
-
-    public BlendEquation ColorBlendEquation { get; private set; } =
-      BlendEquation.ADD;
-
-    public BlendFactor ColorSrcFactor { get; private set; } =
-      BlendFactor.SRC_ALPHA;
-
-    public BlendFactor ColorDstFactor { get; private set; } =
-      BlendFactor.ONE_MINUS_SRC_ALPHA;
-
-    public BlendEquation AlphaBlendEquation { get; private set; } =
-      BlendEquation.ADD;
-
-    public BlendFactor AlphaSrcFactor { get; private set; } =
-      BlendFactor.ONE;
-
-    public BlendFactor AlphaDstFactor { get; private set; } =
-      BlendFactor.ONE;
-
-    public LogicOp LogicOp { get; private set; } = LogicOp.UNDEFINED;
-
 
     public IFixedFunctionMaterial SetAlphaCompare(
         AlphaOp alphaOp,

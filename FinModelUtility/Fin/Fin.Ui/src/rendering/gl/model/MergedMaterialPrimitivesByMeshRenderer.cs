@@ -63,16 +63,14 @@ public class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
   private void RenderImpl_() {
     this.materialShader_?.Use();
 
-    if (this.material_ is IReadOnlyFixedFunctionMaterial
-        fixedFunctionMaterial) {
-      GlUtil.SetBlendingSeparate(
-          fixedFunctionMaterial.ColorBlendEquation,
-          fixedFunctionMaterial.ColorSrcFactor,
-          fixedFunctionMaterial.ColorDstFactor,
-          fixedFunctionMaterial.AlphaBlendEquation,
-          fixedFunctionMaterial.AlphaSrcFactor,
-          fixedFunctionMaterial.AlphaDstFactor,
-          fixedFunctionMaterial.LogicOp);
+    if (this.material_ != null) {
+      GlUtil.SetBlendingSeparate(this.material_.ColorBlendEquation,
+                                 this.material_.ColorSrcFactor,
+                                 this.material_.ColorDstFactor,
+                                 this.material_.AlphaBlendEquation,
+                                 this.material_.AlphaSrcFactor,
+                                 this.material_.AlphaDstFactor,
+                                 this.material_.LogicOp);
     } else {
       GlUtil.ResetBlending();
     }

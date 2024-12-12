@@ -142,7 +142,6 @@ public class SceneModelRenderer : IRenderable, IDisposable {
     this.modelRenderer_.Render();
 
     if (FinConfig.ShowSkeleton || this.isBoneSelected_) {
-      CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
       this.SkeletonRenderer.Render();
     }
 

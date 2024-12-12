@@ -91,6 +91,30 @@ public partial interface IMaterial {
 
   bool UpdateColorChannel { get; set; }
   bool UpdateAlphaChannel { get; set; }
+
+  // TODO: Merge this into a single type
+  BlendEquation ColorBlendEquation { get; }
+  BlendFactor ColorSrcFactor { get; }
+  BlendFactor ColorDstFactor { get; }
+  BlendEquation AlphaBlendEquation { get; }
+  BlendFactor AlphaSrcFactor { get; }
+  BlendFactor AlphaDstFactor { get; }
+  LogicOp LogicOp { get; }
+
+  IMaterial SetBlending(
+      BlendEquation blendEquation,
+      BlendFactor srcFactor,
+      BlendFactor dstFactor,
+      LogicOp logicOp);
+
+  IMaterial SetBlendingSeparate(
+      BlendEquation colorBlendEquation,
+      BlendFactor colorSrcFactor,
+      BlendFactor colorDstFactor,
+      BlendEquation alphaBlendEquation,
+      BlendFactor alphaSrcFactor,
+      BlendFactor alphaDstFactor,
+      LogicOp logicOp);
 }
 
 [GenerateReadOnly]
@@ -296,31 +320,7 @@ public partial interface IFixedFunctionMaterial : IMaterial {
                                           IReadOnlyTexture texture);
 
   IReadOnlyTexture? CompiledTexture { get; set; }
-
-  // TODO: Merge this into a single type
-  BlendEquation ColorBlendEquation { get; }
-  BlendFactor ColorSrcFactor { get; }
-  BlendFactor ColorDstFactor { get; }
-  BlendEquation AlphaBlendEquation { get; }
-  BlendFactor AlphaSrcFactor { get; }
-  BlendFactor AlphaDstFactor { get; }
-  LogicOp LogicOp { get; }
-
-  IFixedFunctionMaterial SetBlending(
-      BlendEquation blendEquation,
-      BlendFactor srcFactor,
-      BlendFactor dstFactor,
-      LogicOp logicOp);
-
-  IFixedFunctionMaterial SetBlendingSeparate(
-      BlendEquation colorBlendEquation,
-      BlendFactor colorSrcFactor,
-      BlendFactor colorDstFactor,
-      BlendEquation alphaBlendEquation,
-      BlendFactor alphaSrcFactor,
-      BlendFactor alphaDstFactor,
-      LogicOp logicOp);
-
+  
   // TODO: Merge this into a single type
   AlphaOp AlphaOp { get; }
   AlphaCompareType AlphaCompareType0 { get; }
