@@ -14,7 +14,7 @@ public class AsyncPanelViewModelForDesigner
     : AsyncPanelViewModel {
   public AsyncPanelViewModelForDesigner() {
     this.Progress = AsyncProgress.FromTask(
-        Task.Delay(3000).ContinueWith(_ => Task.FromResult("Hello world!")));
+        Task.Delay(3000).ContinueWith(_ => "Hello world!"));
   }
 }
 

@@ -11,24 +11,31 @@
     <progress:AsyncPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <controls:If Condition="{Binding Progress.Value, Converter={x:Static ObjectConverters.IsNotNull}}">
+  <controls:If Condition="{Binding Progress, Converter={x:Static ObjectConverters.IsNotNull}}">
     <controls:If.ContentWhenTrue>
-
-      <controls:If Condition="{Binding DataTemplate, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <controls:If Condition="{Binding Progress.IsComplete}">
         <controls:If.ContentWhenTrue>
-     
-          <ContentControl ContentTemplate="{Binding DataTemplate}"
-                          Content="{Binding Progress}" />
+
+          <controls:If Condition="{Binding DataTemplate, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <controls:If.ContentWhenTrue>
+       
+              <ContentControl ContentTemplate="{Binding DataTemplate}"
+                              Content="{Binding Progress}" />
+
+            </controls:If.ContentWhenTrue>
+            <controls:If.ContentWhenFalse>
+              <TextBlock Text="{Binding Progress.Value}" />
+            </controls:If.ContentWhenFalse>
+          </controls:If>
 
         </controls:If.ContentWhenTrue>
         <controls:If.ContentWhenFalse>
-          <TextBlock Text="{Binding Progress.Value}" />
+          <progress:IndeterminateProgressSpinner />
         </controls:If.ContentWhenFalse>
       </controls:If>
-
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
-      <progress:IndeterminateProgressSpinner />
+      <controls:EmptyState Icon="AlertCircleOutline" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>
