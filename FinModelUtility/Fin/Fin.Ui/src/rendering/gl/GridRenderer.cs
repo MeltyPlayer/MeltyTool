@@ -80,6 +80,6 @@ public class GridRenderer {
       mesh.AddLines([v1Positive, v2Positive]);
     }
 
-    return new ModelRendererV2(model, null);
+    return new ModelRendererV2(model);
   }
 }

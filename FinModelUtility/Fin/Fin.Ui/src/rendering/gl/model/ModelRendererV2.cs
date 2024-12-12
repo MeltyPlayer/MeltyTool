@@ -14,7 +14,7 @@ namespace fin.ui.rendering.gl.model;
 /// </summary>
 public class ModelRendererV2(
     IReadOnlyModel model,
-    IReadOnlyLighting? lighting,
+    IReadOnlyLighting? lighting = null,
     IReadOnlyBoneTransformManager? boneTransformManager = null,
     IReadOnlyTextureTransformManager? textureTransformManager = null)
     : IModelRenderer {

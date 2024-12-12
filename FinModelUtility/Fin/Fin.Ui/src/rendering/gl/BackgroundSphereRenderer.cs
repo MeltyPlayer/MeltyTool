@@ -78,7 +78,7 @@ public class BackgroundSphereRenderer : IRenderable {
       mesh.AddTriangleStrip(triangles.ToArray()).SetMaterial(material);
     }
 
-    return new ModelRendererV2(model, null);
+    return new ModelRendererV2(model);
   }
 }
 
