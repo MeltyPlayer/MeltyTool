@@ -26,6 +26,8 @@
       <gb:GroupBox Classes="h2" Header="GroupBox">
         <TextBlock>Simple text block</TextBlock>
       </gb:GroupBox>
+
+      <Button>Hello</Button>
     </StackPanel>
   </Design.PreviewWith>
 
@@ -58,7 +60,7 @@
     <Setter Property="Padding" Value="0 0 12 0" />
   </Style>
   <Style Selector="TabControl.indented">
-    <Setter Property="Padding" Value="12 0"></Setter>
+    <Setter Property="Padding" Value="12 0" />
   </Style>
 
   <Styles.Resources>
