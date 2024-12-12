@@ -57,8 +57,10 @@ namespace uni.ui.avalonia.resources.texture {
 
     public TextureListViewModel TextureList {
       get;
-      private set
-        => this.RaiseAndSetIfChanged(ref field, value);
+      private set {
+        this.RaiseAndSetIfChanged(ref field, value);
+        this.SelectedTexture = value.TextureViewModels.FirstOrDefault();
+      }
     }
 
     public TextureViewModel? SelectedTexture {
