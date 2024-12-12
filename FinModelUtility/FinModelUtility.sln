@@ -205,6 +205,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SuperMario64Ds", "SuperMari
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMario64Ds", "Games\SuperMario64Ds\SuperMario64Ds\SuperMario64Ds.csproj", "{FCCC4454-013C-46CD-9F7F-49857235286D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalAssetTool.Ui.Avalonia Tests", "UniversalAssetTool\UniversalAssetTool.Ui.Avalonia Tests\UniversalAssetTool.Ui.Avalonia Tests.csproj", "{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -709,6 +711,14 @@ Global
 		{FCCC4454-013C-46CD-9F7F-49857235286D}.Release|x64.Build.0 = Release|x64
 		{FCCC4454-013C-46CD-9F7F-49857235286D}.Release|x86.ActiveCfg = Release|x86
 		{FCCC4454-013C-46CD-9F7F-49857235286D}.Release|x86.Build.0 = Release|x86
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Debug|x64.ActiveCfg = Debug|x64
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Debug|x64.Build.0 = Debug|x64
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Debug|x86.ActiveCfg = Debug|x86
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Debug|x86.Build.0 = Debug|x86
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Release|x64.ActiveCfg = Release|x64
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Release|x64.Build.0 = Release|x64
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Release|x86.ActiveCfg = Release|x86
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -797,6 +807,7 @@ Global
 		{A5BE17A0-2910-4791-90AC-74FA8A924E48} = {98E57180-48B9-4648-AE42-7C7C67120471}
 		{91C3A331-DF44-460C-AAD5-630363481C44} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{FCCC4454-013C-46CD-9F7F-49857235286D} = {91C3A331-DF44-460C-AAD5-630363481C44}
+		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E} = {2490FB17-BB03-4B06-95A2-56BD49921D53}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}

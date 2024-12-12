@@ -11,8 +11,6 @@ namespace uni.ui.avalonia.common.progress;
 
 public class AsyncProgress
     : ViewModelBase, IMutableIndeterminateProgressValue<object> {
-  private bool isComplete_;
-
   public static AsyncProgress FromResult<T>(T t) {
     var progress = new AsyncProgress();
     progress.ReportCompletion(t!);
@@ -21,21 +19,24 @@ public class AsyncProgress
 
   public static AsyncProgress FromTask<T>(Task<T> t) {
     var progress = new AsyncProgress();
-    Task.Run(() => {
-      t.Wait();
+    if (t.IsCompleted) {
       progress.ReportCompletion(t.Result!);
-    });
+    } else {
+      t.ContinueWith(v => { progress.ReportCompletion(v.Result!); });
+    }
+
     return progress;
   }
 
+  public bool IsComplete { get; private set; }
   public object? Value { get; private set; }
 
   public void ReportCompletion(object value) {
-    if (this.isComplete_) {
+    if (this.IsComplete) {
       return;
     }
 
-    this.isComplete_ = true;
+    this.IsComplete = true;
 
     this.Value = value;
     this.OnCompleteValue?.Invoke(this, this.Value);
