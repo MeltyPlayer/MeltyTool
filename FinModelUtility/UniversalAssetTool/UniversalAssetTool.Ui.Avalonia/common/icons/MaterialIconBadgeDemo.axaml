@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:icons="clr-namespace:uni.ui.avalonia.common.icons"
+             mc:Ignorable="d" d:DesignHeight="300">
+  <StackPanel>
+    <icons:MaterialIconBadge Count="1" />
+    <icons:MaterialIconBadge Count="10" />
+    <icons:MaterialIconBadge Count="100" />
+    <icons:MaterialIconBadge Count="1000" />
+  </StackPanel>
+</UserControl>

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             mc:Ignorable="d"
+             x:Class="uni.ui.avalonia.common.icons.MaterialIconBadge"
+             x:CompileBindings="False">
+  <Panel DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}"
+         VerticalAlignment="Center">
+    <avalonia:MaterialIcon
+        Margin="0 6 6 0"
+        Kind="{Binding Kind}"
+        Foreground="{StaticResource ForegroundMediumBrush}" />
+    <Border CornerRadius="4"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Padding="2 0 1.3 0 ">
+      <TextBlock
+            FontSize="10"
+            FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+            FontWeight="Bold"
+            Text="{Binding Count}" />
+    </Border>
+  </Panel>
+</UserControl>
