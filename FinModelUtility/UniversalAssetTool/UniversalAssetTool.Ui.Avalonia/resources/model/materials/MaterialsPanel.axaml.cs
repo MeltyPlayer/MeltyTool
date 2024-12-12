@@ -20,7 +20,7 @@ namespace uni.ui.avalonia.resources.model.materials {
       : MaterialsPanelViewModel {
     public MaterialsPanelViewModelForDesigner() {
       var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
-      this.ModelAndMaterials = (model, new[] { material, material, material });
+      this.ModelAndMaterials = (model, [material, material, material]);
     }
   }
 

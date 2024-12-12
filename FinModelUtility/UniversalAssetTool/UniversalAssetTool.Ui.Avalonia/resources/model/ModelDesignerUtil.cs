@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 
 using fin.image;
 using fin.image.formats;
@@ -24,10 +25,9 @@ public static class ModelDesignerUtil {
         ])
     };
 
+    var materialManager = model.MaterialManager;
+    var material = materialManager.AddStandardMaterial();
     {
-      var materialManager = model.MaterialManager;
-      var material = materialManager.AddStandardMaterial();
-
       {
         var diffuseTexture
             = materialManager.CreateTexture(CreateStubImage(32, 32));
@@ -88,13 +88,18 @@ public static class ModelDesignerUtil {
 
     {
       var skin = model.Skin;
+
+      var vertex = skin.AddVertex(Vector3.Zero);
+      vertex.SetLocalNormal(Vector3.Zero);
+      vertex.SetUv(Vector2.Zero);
+
       var mesh1 = skin.AddMesh();
-      mesh1.AddTriangleStrip();
+      mesh1.AddTriangleStrip([vertex, vertex, vertex]);
 
       var mesh2 = skin.AddMesh();
       mesh2.Name = "foo bar";
-      mesh2.AddPoints();
-      mesh2.AddTriangleFan();
+      mesh2.AddPoints(vertex).SetMaterial(material);
+      mesh2.AddTriangleFan([vertex, vertex, vertex]);
     }
 
     {
