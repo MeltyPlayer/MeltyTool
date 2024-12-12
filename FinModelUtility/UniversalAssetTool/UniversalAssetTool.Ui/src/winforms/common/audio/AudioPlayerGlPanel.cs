@@ -97,7 +97,6 @@ public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
 
       GlUtil.ClearColorAndDepth();
 
-      CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
       this.RenderOrtho_();
     }
 

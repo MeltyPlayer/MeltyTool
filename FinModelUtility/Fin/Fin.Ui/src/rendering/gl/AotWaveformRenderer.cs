@@ -4,17 +4,18 @@ using fin.audio;
 using fin.math;
 using fin.model;
 using fin.model.impl;
+using fin.ui.rendering.gl.model;
 
 using OpenTK.Graphics.OpenGL;
 
+using LogicOp = fin.model.LogicOp;
 using PrimitiveType = fin.model.PrimitiveType;
 
 namespace fin.ui.rendering.gl;
 
 public class AotWaveformRenderer {
   private IReadOnlyList<NormalTangentMultiColorMultiUvVertexImpl> vertices_;
-  private IDynamicGlBufferManager bufferManager_;
-  private IGlBufferRenderer bufferRenderer_;
+  private IDynamicModelRenderer renderer_;
 
   public IAotAudioPlayback<short>? ActivePlayback { get; set; }
 
@@ -29,14 +30,15 @@ public class AotWaveformRenderer {
 
     if (this.vertices_ == null) {
       var model = ModelImpl.CreateForViewer(1000);
+
+      var material = model.MaterialManager.AddColorMaterial(Color.Red);
+
       var skin = model.Skin;
 
       this.vertices_ = skin.TypedVertices;
+      skin.AddMesh().AddLineStrip(this.vertices_).SetMaterial(material);
 
-      this.bufferManager_ = GlBufferManager.CreateDynamic(model);
-      this.bufferRenderer_
-          = this.bufferManager_.CreateRenderer(PrimitiveType.LINE_STRIP,
-                                               this.vertices_);
+      this.renderer_ = ModelRendererV2.CreateDynamic(model);
     }
 
     var source = this.ActivePlayback.TypedSource;
@@ -87,9 +89,11 @@ public class AotWaveformRenderer {
           floatMin + normalizedShortSample * (floatMax - floatMin);
 
       var x = i * xPerPoint;
-      var y = this.MiddleY + this.Amplitude * fraction *
-          MathF.Sign(floatSample) *
-          MathF.Pow(MathF.Abs(floatSample), .8f);
+      var y = this.MiddleY +
+              this.Amplitude *
+              fraction *
+              MathF.Sign(floatSample) *
+              MathF.Pow(MathF.Abs(floatSample), .8f);
       this.vertices_[i].SetLocalPosition(x, y, 0);
     }
 
@@ -101,13 +105,8 @@ public class AotWaveformRenderer {
       }
     }
 
-    GlTransform.PassMatricesIntoGl();
-
     GL.LineWidth(1);
-    GlUtil.SetBlendColor(Color.Red);
-    GlUtil.SetBlending(BlendEquation.ADD, BlendFactor.CONST_COLOR, BlendFactor.SRC_ALPHA);
-
-    this.bufferManager_.UpdateBuffer();
-    this.bufferRenderer_.Render();
+    this.renderer_.UpdateBuffer();
+    this.renderer_.Render();
   }
 }

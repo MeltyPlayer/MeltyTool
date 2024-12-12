@@ -49,8 +49,6 @@ public class AudioWaveformGlPanel : BOpenTkControl {
       GlTransform.LoadIdentity();
     }
 
-    CommonShaderPrograms.TEXTURELESS_SHADER_PROGRAM.Use();
-
     var amplitude = height * .45f;
     this.waveformRenderer_.Width = width;
     this.waveformRenderer_.Amplitude = amplitude;
