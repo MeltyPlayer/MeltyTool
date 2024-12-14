@@ -51,103 +51,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaXaml Update="common\buttons\ExportAssetButton.axaml">
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="**\*.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <AvaloniaResource Include="**\*.xaml">
       <SubType>Designer</SubType>
-    </AvaloniaXaml>
-    <AvaloniaXaml Update="common\IconStyles.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaXaml>
-    <AvaloniaXaml Update="common\progress\IndeterminateProgressSpinner.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaXaml>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="common\buttons\ExportAssetButton.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>ExportAssetButton.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="common\buttons\ImportAssetButton.axaml.cs">
-      <DependentUpon>ImportAssetButton.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="common\icons\MaterialIconBadge.axaml.cs">
-      <DependentUpon>MaterialIconBadge.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="common\progress\IndeterminateProgressSpinner.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>IndeterminateProgressSpinner.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="common\progress\AsyncPanel.axaml.cs">
-      <DependentUpon>AsyncPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\animation\AnimationList.axaml.cs">
-      <DependentUpon>AnimationList.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\animation\Vector3InterpolatableGraph.axaml.cs">
-      <DependentUpon>Vector3InterpolatableGraph.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\animation\FloatInterpolatableGraph.axaml.cs">
-      <DependentUpon>FloatInterpolatableGraph.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\animation\AnimationsPanel.axaml.cs">
-      <DependentUpon>AnimationsPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="common\controls\EmptyState.axaml.cs">
-      <DependentUpon>EmptyState.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="common\progress\ProgressSpinner.axaml.cs">
-      <DependentUpon>ProgressSpinner.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="common\textboxes\AutocompleteTextbox.axaml.cs">
-      <DependentUpon>AutocompleteTextbox.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\audio\AudioPlayerPanel.axaml.cs">
-      <DependentUpon>AudioPlayerPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\model\ModelPanel.axaml.cs">
-      <DependentUpon>ModelPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\model\materials\MaterialsPanel.axaml.cs">
-      <DependentUpon>MaterialsPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\model\materials\MaterialPanel.axaml.cs">
-      <DependentUpon>MaterialPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\model\materials\MaterialTexturesPanel.axaml.cs">
-      <DependentUpon>MaterialTexturesPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\model\materials\MaterialShadersPanel.axaml.cs">
-      <DependentUpon>MaterialShadersPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\model\mesh\MeshList.axaml.cs">
-      <DependentUpon>MeshList.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\model\skeleton\SkeletonTree.axaml.cs">
-      <DependentUpon>SkeletonTree.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\registers\RegistersPanel.axaml.cs">
-      <DependentUpon>RegistersPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\registers\ScalarRegisterPicker.axaml.cs">
-      <DependentUpon>ScalarRegisterPicker.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\registers\ColorRegisterPicker.axaml.cs">
-      <DependentUpon>ColorRegisterPicker.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\FilesPanel.axaml.cs">
-      <DependentUpon>FilesPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\texture\TexturesPanel.axaml.cs">
-      <DependentUpon>TexturesPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\texture\TexturePreview.axaml.cs">
-      <DependentUpon>TexturePreview.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="resources\texture\TextureList.axaml.cs">
-      <DependentUpon>TextureList.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="settings\EnumCheckboxesControl.axaml.cs">
-      <DependentUpon>EnumCheckboxesControl.axaml</DependentUpon>
-    </Compile>
+    </AvaloniaResource>
   </ItemGroup>
 </Project>

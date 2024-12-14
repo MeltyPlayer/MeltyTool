@@ -23,43 +23,44 @@ public static class GitHubUtil {
       return GITHUB_CHOOSE_NEW_ISSUE_URL;
     }
 
-    var description = new StringBuilder();
-    description.AppendLine("**Stack trace**");
-    description.AppendLine(
+    var body = new StringBuilder();
+    body.AppendLine("**Stack trace**");
+    body.AppendLine("```");
+    body.AppendLine(
         $"{exception.GetType().ToString()}: {exception.Message}");
 
     var stackTrace = new StackTrace(exception, true);
     foreach (var frame in stackTrace.GetFrames()) {
       var method = frame.GetMethod();
-      description.Append($"    at {method.DeclaringType}.{method.Name}");
+      body.Append($"    at {method.DeclaringType}.{method.Name}");
 
       if (method.IsGenericMethod) {
-        description.Append('<');
+        body.Append('<');
         var genericArguments = method.GetGenericArguments();
         for (var i = 0; i < genericArguments.Length; ++i) {
           if (i > 0) {
-            description.Append(", ");
+            body.Append(", ");
           }
 
-          description.Append(genericArguments[i].Name);
+          body.Append(genericArguments[i].Name);
         }
 
-        description.Append('>');
+        body.Append('>');
       }
 
       {
-        description.Append('(');
+        body.Append('(');
         var parameters = method.GetParameters();
         for (var i = 0; i < parameters.Length; ++i) {
           if (i > 0) {
-            description.Append(", ");
+            body.Append(", ");
           }
 
           var parameter = parameters[i];
-          description.Append($"{parameter.ParameterType} {parameter.Name}");
+          body.Append($"{parameter.ParameterType} {parameter.Name}");
         }
 
-        description.Append(')');
+        body.Append(')');
       }
 
       var abbreviatedFileName = frame.GetFileName()
@@ -70,12 +71,14 @@ public static class GitHubUtil {
                                         "FinModelUtility")
                                .Replace("Github", "GitHub");
 
-      description.Append(" in //").Append(abbreviatedFileName);
+      body.Append(" in //").Append(abbreviatedFileName);
 
-      description.AppendLine($":line {frame.GetFileLineNumber()}");
+      body.AppendLine($":line {frame.GetFileLineNumber()}");
     }
+    body.AppendLine("```");
 
-    description.Append(
+
+    body.Append(
         """
 
         **To Reproduce**
@@ -91,7 +94,7 @@ public static class GitHubUtil {
         """);
 
     var queryParams = new Dictionary<string, string?> {
-        ["description"] = description.ToString(),
+        ["body"] = body.ToString(),
         ["template"] = "bug_report.md",
         ["title"] = "[Enhancement] (Enter a description)",
     };

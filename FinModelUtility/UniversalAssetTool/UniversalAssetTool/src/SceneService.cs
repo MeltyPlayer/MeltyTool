@@ -19,8 +19,12 @@ public static class SceneService {
     FileBundleService.OnFileBundleOpened
         += (fileTreeLeafNode, fileBundle) => {
           if (fileBundle is ISceneFileBundle sceneFileBundle) {
-            var scene = new GlobalSceneImporter().Import(sceneFileBundle);
-            OpenScene(fileTreeLeafNode, scene);
+            try {
+              var scene = new GlobalSceneImporter().Import(sceneFileBundle);
+              OpenScene(fileTreeLeafNode, scene);
+            } catch (Exception e) {
+              ExceptionService.HandleException(e);
+            }
           }
         };
 

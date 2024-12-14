@@ -1,0 +1,35 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dialogs="clr-namespace:uni.ui.avalonia.common.dialogs"
+        xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
+        mc:Ignorable="d"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Exception"
+        MaxWidth="600"
+        SizeToContent="WidthAndHeight"
+        CanResize="False"
+        ShowInTaskbar="False"
+        x:Class="uni.ui.avalonia.common.dialogs.ExceptionDialog"
+        x:DataType="dialogs:ExceptionDialogViewModel">
+  <Design.DataContext>
+    <dialogs:ExceptionDialogViewModelForDesigner />
+  </Design.DataContext>
+
+  <Border Padding="8">
+    <StackPanel>
+      <TextBlock>Oops, an exception occurred:</TextBlock>
+      <TextBox Text="{Binding Path=Exception}"
+               FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+               IsReadOnly="True"
+               MinHeight="100"
+               TextWrapping="Wrap" />
+
+      <buttons:ReportIssueButton 
+          DataContext="{Binding ReportIssueButton}" 
+          Margin="0 6 0 0"
+          HorizontalAlignment="Center" />
+    </StackPanel>
+  </Border>
+</Window>

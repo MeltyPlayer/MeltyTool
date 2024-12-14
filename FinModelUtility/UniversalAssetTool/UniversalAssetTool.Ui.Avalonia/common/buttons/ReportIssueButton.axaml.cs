@@ -13,6 +13,11 @@ using uni.ui.avalonia.ViewModels;
 namespace uni.ui.avalonia.common.buttons;
 
 public class ReportIssueButtonViewModel : ViewModelBase {
+  public bool ShowText {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
   public Exception? Exception {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);

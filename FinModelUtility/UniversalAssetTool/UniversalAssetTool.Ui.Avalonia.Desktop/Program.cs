@@ -19,11 +19,7 @@ class Program {
               try {
                 BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
               } catch (Exception e) {
-#if DEBUG
-                throw;
-#else
-                ;
-#endif
+                ExceptionService.HandleException(e);
               }
             });
   }

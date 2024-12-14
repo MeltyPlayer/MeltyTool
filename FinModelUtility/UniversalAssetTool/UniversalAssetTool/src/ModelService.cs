@@ -11,8 +11,12 @@ public static class ModelService {
     FileBundleService.OnFileBundleOpened
         += (fileTreeLeafNode, fileBundle) => {
           if (fileBundle is IModelFileBundle modelFileBundle) {
-            var model = new GlobalModelImporter().Import(modelFileBundle);
-            OpenModel(fileTreeLeafNode, model);
+            try {
+              var model = new GlobalModelImporter().Import(modelFileBundle);
+              OpenModel(fileTreeLeafNode, model);
+            } catch (Exception e) {
+              ExceptionService.HandleException(e);
+            }
           }
         };
   }

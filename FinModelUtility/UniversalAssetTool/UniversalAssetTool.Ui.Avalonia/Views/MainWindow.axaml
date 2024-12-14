@@ -6,6 +6,6 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="uni.ui.avalonia.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="UniversalAssetTool.Ui.Avalonia">
+        Title="Fin Model Utility">
   <views:MainView />
 </Window>

@@ -1,7 +1,13 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using System.Threading.Tasks;
+
+using Avalonia.Controls;
 using Avalonia.Threading;
+using ReactiveUI;
 
 using fin.util.time;
+
+using uni.ui.avalonia.common.dialogs;
 
 namespace uni.ui.avalonia.Views;
 
@@ -19,5 +25,14 @@ public partial class MainWindow : Window {
               () => this.Title = FrameTime.FpsString);
         },
         .25f);
+
+    ExceptionService.OnException += e => {
+      var dialog = new ExceptionDialog {
+          DataContext = new ExceptionDialogViewModel { Exception = e },
+          CanResize = false,
+      };
+
+      dialog.ShowDialog(this);
+    };
   }
 }

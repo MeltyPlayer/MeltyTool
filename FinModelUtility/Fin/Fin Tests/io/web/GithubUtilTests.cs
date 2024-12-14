@@ -20,10 +20,12 @@ public class GitHubUtilTests {
       Assert.AreEqual(
           """
           **Stack trace**
+          ```
           System.NotImplementedException: Foobar
               at fin.io.web.GitHubUtilTests.SomeMethod2_(System.String message) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 49
               at fin.io.web.GitHubUtilTests.SomeMethod1_<T>(T value) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 46
               at fin.io.web.GitHubUtilTests.TestGetNewIssueUrl() in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 14
+          ```
           
           **To Reproduce**
           Steps to reproduce the behavior:
@@ -36,7 +38,7 @@ public class GitHubUtilTests {
           Add any other context about the problem here.
 
           """,
-          parsedQueryString["description"]);
+          parsedQueryString["body"]);
       return;
     }
 

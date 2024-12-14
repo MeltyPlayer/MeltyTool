@@ -4,11 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d"
              x:Class="uni.ui.avalonia.common.buttons.ReportIssueButton"
              x:DataType="buttons:ReportIssueButtonViewModel">
   <Button ToolTip.Tip="Report issue via GitHub"
           Click="Button_OnClick">
-    <avalonia:MaterialIcon Kind="Bug" />
+    <StackPanel Orientation="Horizontal">
+      <controls:If Condition="{Binding Path=ShowText}">
+        <controls:If.ContentWhenTrue>
+          <TextBlock Text="Report issue via GitHub" Padding="0 0 4 0" />
+        </controls:If.ContentWhenTrue>
+        <controls:If.ContentWhenFalse>
+          <avalonia:MaterialIcon Kind="Bug" VerticalAlignment="Bottom" />
+        </controls:If.ContentWhenFalse>
+      </controls:If>
+    </StackPanel>
   </Button>
 </UserControl>
