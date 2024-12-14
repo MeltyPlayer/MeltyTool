@@ -51,6 +51,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Update="common\buttons\ExportAssetButton.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
     <AvaloniaXaml Update="common\IconStyles.axaml">
       <SubType>Designer</SubType>
     </AvaloniaXaml>
@@ -60,6 +63,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="common\buttons\ExportAssetButton.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>ExportAssetButton.axaml</DependentUpon>
+    </Compile>
     <Compile Update="common\buttons\ImportAssetButton.axaml.cs">
       <DependentUpon>ImportAssetButton.axaml</DependentUpon>
     </Compile>
