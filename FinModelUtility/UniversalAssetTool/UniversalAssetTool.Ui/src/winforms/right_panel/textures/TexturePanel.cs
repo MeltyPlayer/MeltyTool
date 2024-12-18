@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using fin.model;
+using fin.util.asserts;
 
 using uni.ui.winforms.common;
 
@@ -32,5 +33,5 @@ public partial class TexturePanel : UserControl {
     }
 
   private void CopyImageToClipboard_()
-    => Clipboard.SetImage(this.pictureBox_.Image);
+    => Clipboard.SetImage(this.pictureBox_.Image.AssertNonnull());
 }

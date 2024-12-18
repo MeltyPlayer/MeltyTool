@@ -25,7 +25,7 @@ public static class BetterTreeUtil {
   public static T GetBetterFrom<T, S>(TreeNode node)
       where T : IBetterTreeNode<S>
       where S : class
-    => (T) node.Tag;
+    => (T) node.Tag!;
 }
 
 public interface IBetterTreeView<T> where T : class {
