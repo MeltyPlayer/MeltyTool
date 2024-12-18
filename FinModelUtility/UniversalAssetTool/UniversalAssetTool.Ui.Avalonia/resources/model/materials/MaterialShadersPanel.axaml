@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
              xmlns:materials="clr-namespace:uni.ui.avalonia.resources.model.materials"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.resources.model.materials.MaterialShadersPanel"
              x:DataType="materials:MaterialShadersPanelViewModel">
@@ -24,26 +24,12 @@
       </TabItem.Header>
     </TabItem>
     <TabItem Header="Vertex">
-      <avaloniaEdit:TextEditor
-          Name="vertexShaderViewer_"
-          Document="{Binding VertexShaderSource}"
-          ShowLineNumbers="True"
-          FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-          IsReadOnly="True"
-          BorderThickness="1"
-          BorderBrush="{StaticResource BorderBrush}"
-          WordWrap="True" />
+      <controls:CodeViewer CodeType="GLSL"
+                           Source="{Binding Path=VertexShaderSource}" />
     </TabItem>
     <TabItem Header="Fragment">
-      <avaloniaEdit:TextEditor
-          Name="fragmentShaderViewer_"
-          Document="{Binding FragmentShaderSource}"
-          ShowLineNumbers="True"
-          FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-          IsReadOnly="True"
-          BorderThickness="1"
-          BorderBrush="{StaticResource BorderBrush}"
-          WordWrap="True" />
+      <controls:CodeViewer CodeType="GLSL"
+                           Source="{Binding Path=FragmentShaderSource}" />
     </TabItem>
   </TabControl>
 </UserControl>

@@ -4,13 +4,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dialogs="clr-namespace:uni.ui.avalonia.common.dialogs"
         xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
+        xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
         mc:Ignorable="d"
         Icon="/Assets/avalonia-logo.ico"
         Title="Exception"
-        MaxWidth="600"
-        SizeToContent="WidthAndHeight"
-        CanResize="False"
-        ShowInTaskbar="False"
+        MinWidth="300"
+        MinHeight="100"
+        Width="600"
+        CanResize="True"
+        SizeToContent="Height"
         x:Class="uni.ui.avalonia.common.dialogs.ExceptionDialog"
         x:DataType="dialogs:ExceptionDialogViewModel">
   <Design.DataContext>
@@ -20,12 +22,7 @@
   <Border Padding="8">
     <StackPanel>
       <TextBlock>Oops, an exception occurred:</TextBlock>
-      <TextBox Text="{Binding Path=Exception}"
-               FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-               IsReadOnly="True"
-               MinHeight="100"
-               TextWrapping="Wrap" />
-
+      <controls:CodeViewer Source="{Binding Path=Exception}" />
       <buttons:ReportIssueButton 
           DataContext="{Binding ReportIssueButton}" 
           Margin="0 6 0 0"

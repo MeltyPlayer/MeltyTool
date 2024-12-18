@@ -1,9 +1,5 @@
 using Avalonia.Controls;
 
-using AvaloniaEdit;
-using AvaloniaEdit.Document;
-using AvaloniaEdit.TextMate;
-
 using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
@@ -28,42 +24,25 @@ namespace uni.ui.avalonia.resources.model.materials {
 
         var (model, material) = field;
         var shaderSource = material.ToShaderSource(model);
-        this.VertexShaderSource
-            = new TextDocument(shaderSource.VertexShaderSource);
-        this.FragmentShaderSource
-            = new TextDocument(shaderSource.FragmentShaderSource);
+        this.VertexShaderSource = shaderSource.VertexShaderSource;
+        this.FragmentShaderSource = shaderSource.FragmentShaderSource;
       }
     }
 
-    public TextDocument VertexShaderSource {
+    public string VertexShaderSource {
       get;
-      private set
-        => this.RaiseAndSetIfChanged(ref field, value);
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public TextDocument FragmentShaderSource {
+    public string FragmentShaderSource {
       get;
-      private set
-        => this.RaiseAndSetIfChanged(ref field, value);
+      private set => this.RaiseAndSetIfChanged(ref field, value);
     }
   }
 
   public partial class MaterialShadersPanel : UserControl {
     public MaterialShadersPanel() {
       this.InitializeComponent();
-      this.InitViewer_(this.vertexShaderViewer_);
-      this.InitViewer_(this.fragmentShaderViewer_);
-    }
-
-    private void InitViewer_(TextEditor textEditor) {
-      var registryOptions = new GlslRegistryOptions();
-      var textMateInstallation
-          = textEditor.InstallTextMate(registryOptions, false);
-      textMateInstallation.SetGrammar("source.glsl");
-
-      textEditor.Options = new() {
-          AllowScrollBelowDocument = false
-      };
     }
   }
 }
