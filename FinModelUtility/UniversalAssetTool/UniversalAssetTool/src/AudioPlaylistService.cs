@@ -11,7 +11,7 @@ public static class AudioPlaylistService {
   static AudioPlaylistService() {
     FileBundleService.OnFileBundleOpened
         += (_, fileBundle) => {
-          if (fileBundle is IAudioFileBundle audioFileBundle) {
+          if (fileBundle.FileBundle is IAudioFileBundle audioFileBundle) {
             UpdatePlaylist([audioFileBundle]);
           }
         };

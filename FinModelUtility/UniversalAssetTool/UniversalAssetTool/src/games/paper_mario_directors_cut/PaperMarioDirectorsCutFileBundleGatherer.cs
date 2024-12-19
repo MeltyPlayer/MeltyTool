@@ -25,7 +25,10 @@ public class PaperMarioDirectorsCutFileBundleGatherer
                    ".omd",
                    true)) {
         organizer.Add(new AnnotatedFileBundle<OmdModelFileBundle>(
-                          new OmdModelFileBundle { OmdFile = omdFile },
+                          new OmdModelFileBundle {
+                              GameName = "paper_mario_directors_cut",
+                              OmdFile = omdFile
+                          },
                           omdFile));
       }
 

@@ -3,6 +3,7 @@ using System.Numerics;
 
 using fin.color;
 using fin.data.queues;
+using fin.io.web;
 using fin.model;
 using fin.scene;
 using fin.schema.vector;
@@ -18,12 +19,14 @@ public static class SceneService {
   static SceneService() {
     FileBundleService.OnFileBundleOpened
         += (fileTreeLeafNode, fileBundle) => {
-          if (fileBundle is ISceneFileBundle sceneFileBundle) {
+          if (fileBundle.FileBundle is ISceneFileBundle sceneFileBundle) {
             try {
               var scene = new GlobalSceneImporter().Import(sceneFileBundle);
               OpenScene(fileTreeLeafNode, scene);
             } catch (Exception e) {
-              ExceptionService.HandleException(e);
+              ExceptionService.HandleException(
+                  e,
+                  new FileBundleExceptionContext(fileBundle));
             }
           }
         };

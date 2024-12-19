@@ -2,12 +2,18 @@
 
 namespace fin.io.bundles;
 
-public interface IAnnotatedFileBundle : IComparable<IAnnotatedFileBundle> {
+public interface IGameAndLocalPath {
+  string GameAndLocalPath { get; }
+}
+
+public interface IAnnotatedFileBundle
+    : IGameAndLocalPath, IComparable<IAnnotatedFileBundle> {
   IFileBundle FileBundle { get; }
 
   IFileHierarchyFile File { get; }
   string LocalPath { get; }
-  string GameAndLocalPath { get; }
+
+  string IGameAndLocalPath.GameAndLocalPath => this.GameAndLocalPath;
 
   int IComparable<IAnnotatedFileBundle>.CompareTo(IAnnotatedFileBundle? other) {
     var thisGameName = this.File.Hierarchy.Name;

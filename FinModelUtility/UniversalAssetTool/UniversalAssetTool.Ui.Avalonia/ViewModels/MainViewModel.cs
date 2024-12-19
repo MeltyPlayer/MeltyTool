@@ -172,7 +172,7 @@ public class MainViewModel : ViewModelBase {
     viewModel.NodeSelected
         += (_, node) => {
           if (node is FileBundleLeafNode leafNode) {
-            FileBundleService.OpenFileBundle(null, leafNode.Value.FileBundle);
+            FileBundleService.OpenFileBundle(null, leafNode.Value);
           }
         };
 

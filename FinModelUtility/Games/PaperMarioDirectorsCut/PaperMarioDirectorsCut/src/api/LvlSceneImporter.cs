@@ -7,7 +7,7 @@ using pmdc.schema.lvl;
 
 namespace pmdc.api {
   public class LvlSceneFileBundle : ISceneFileBundle {
-    public string? GameName { get; }
+    public string? GameName => "paper_mario_directors_cut";
 
     public IReadOnlyTreeFile MainFile => this.LvlFile;
 
@@ -34,8 +34,10 @@ namespace pmdc.api {
         files.Add(modelFile);
 
         var finModel
-            = new OmdModelImporter().Import(new OmdModelFileBundle
-                                                { OmdFile = modelFile });
+            = new OmdModelImporter().Import(new OmdModelFileBundle {
+                GameName = "paper_mario_directors_cut",
+                OmdFile = modelFile
+            });
         finArea.AddObject().AddSceneModel(finModel);
       }
 

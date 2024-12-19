@@ -2,6 +2,8 @@ using System;
 
 using Avalonia.Controls;
 
+using fin.io.web;
+
 using ReactiveUI;
 
 using uni.ui.avalonia.common.buttons;
@@ -25,12 +27,30 @@ public class ExceptionDialogViewModel : ViewModelBase {
     get;
     set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.ReportIssueButton = new ReportIssueButtonViewModel {
-          ShowText = true,
-          Exception = value
-      };
+      this.UpdateButton_();
     }
   }
+
+  public IExceptionContext? Context {
+    get;
+    set {
+      this.RaiseAndSetIfChanged(ref field, value); 
+      this.UpdateButton_();
+    }
+  }
+
+  private void UpdateButton_() {
+    if (Exception == null) {
+      return;
+    }
+
+    this.ReportIssueButton = new ReportIssueButtonViewModel {
+        ShowText = true,
+        Exception = Exception,
+        Context = Context
+    };
+  }
+
 
   public ReportIssueButtonViewModel ReportIssueButton {
     get;

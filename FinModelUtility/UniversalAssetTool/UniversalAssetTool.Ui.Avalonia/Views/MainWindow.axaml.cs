@@ -26,9 +26,9 @@ public partial class MainWindow : Window {
         },
         .25f);
 
-    ExceptionService.OnException += e => {
+    ExceptionService.OnException += (e, c) => {
       var dialog = new ExceptionDialog {
-          DataContext = new ExceptionDialogViewModel { Exception = e },
+          DataContext = new ExceptionDialogViewModel { Exception = e, Context = c},
           CanResize = false,
       };
 

@@ -11,7 +11,7 @@ using pmdc.schema.omd;
 
 namespace pmdc.api {
   public class OmdModelFileBundle : IModelFileBundle {
-    public string? GameName { get; }
+    public required string GameName { get; init; }
 
     public required IReadOnlyTreeFile OmdFile { get; init; }
     public IReadOnlyTreeFile MainFile => this.OmdFile;

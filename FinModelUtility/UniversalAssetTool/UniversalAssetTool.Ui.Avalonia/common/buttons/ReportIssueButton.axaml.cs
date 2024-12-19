@@ -22,6 +22,11 @@ public class ReportIssueButtonViewModel : ViewModelBase {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
   }
+
+  public IExceptionContext? Context {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
 }
 
 public partial class ReportIssueButton : UserControl {
@@ -32,5 +37,5 @@ public partial class ReportIssueButton : UserControl {
 
   private void Button_OnClick(object? sender, RoutedEventArgs e)
     => WebBrowserUtil.OpenUrl(
-        GitHubUtil.GetNewIssueUrl(this.ViewModel?.Exception));
+        GitHubUtil.GetNewIssueUrl(this.ViewModel?.Exception, this.ViewModel?.Context));
 }

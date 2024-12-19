@@ -3,11 +3,26 @@ using System;
 using System.Diagnostics;
 using System.Text;
 
+using fin.io.bundles;
 using fin.util.strings;
 
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace fin.io.web;
+
+public interface IExceptionContext {
+  string? Title { get; }
+  string Steps { get; }
+}
+
+public class FileBundleExceptionContext(IGameAndLocalPath fb)
+    : IExceptionContext {
+  public string Title
+    => $"[Bug] Failed to load {fb.GameAndLocalPath}";
+
+  public string Steps
+    => $"1. Attempted to load {fb.GameAndLocalPath}.";
+}
 
 public static class GitHubUtil {
   public const string GITHUB_URL
@@ -18,7 +33,8 @@ public static class GitHubUtil {
   public const string GITHUB_CHOOSE_NEW_ISSUE_URL
       = $"{GITHUB_NEW_ISSUE_URL}/choose";
 
-  public static string GetNewIssueUrl(Exception? exception) {
+  public static string GetNewIssueUrl(Exception? exception,
+                                      IExceptionContext? context) {
     if (exception == null) {
       return GITHUB_CHOOSE_NEW_ISSUE_URL;
     }
@@ -75,28 +91,38 @@ public static class GitHubUtil {
 
       body.AppendLine($":line {frame.GetFileLineNumber()}");
     }
+
     body.AppendLine("```");
 
-
-    body.Append(
+    body.AppendLine(
         """
 
         **To Reproduce**
         Steps to reproduce the behavior:
+
+        """
+    );
+
+    body.AppendLine(
+        context?.Steps ??
+        """
         1. Go to '...'
         2. Click on '....'
         3. Scroll down to '....'
         4. See error
+        """);
+
+    body.Append(
+        """
 
         **Additional context**
         Add any other context about the problem here.
-
         """);
 
     var queryParams = new Dictionary<string, string?> {
         ["body"] = body.ToString(),
         ["template"] = "bug_report.md",
-        ["title"] = "[Enhancement] (Enter a description)",
+        ["title"] = context?.Title ?? "[Enhancement] (Enter a description)",
     };
 
     var baseIssueUrl

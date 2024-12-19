@@ -6,17 +6,14 @@ namespace uni;
 
 public static class FileBundleService {
   static FileBundleService() {
-    FileTreeLeafNodeService.OnFileTreeLeafNodeOpened
-        += fileTreeLeafNode => {
-          var fileBundle = fileTreeLeafNode.File.FileBundle;
-          OpenFileBundle(fileTreeLeafNode, fileBundle);
-        };
+    FileTreeLeafNodeService.OnFileTreeLeafNodeOpened += fileTreeLeafNode
+        => OpenFileBundle(fileTreeLeafNode, fileTreeLeafNode.File);
   }
 
-  public static event Action<IFileTreeLeafNode?, IFileBundle>
+  public static event Action<IFileTreeLeafNode?, IAnnotatedFileBundle>
       OnFileBundleOpened;
 
   public static void OpenFileBundle(IFileTreeLeafNode? fileTreeLeafNode,
-                                    IFileBundle fileBundle)
+                                    IAnnotatedFileBundle fileBundle)
     => OnFileBundleOpened?.Invoke(fileTreeLeafNode, fileBundle);
 }
