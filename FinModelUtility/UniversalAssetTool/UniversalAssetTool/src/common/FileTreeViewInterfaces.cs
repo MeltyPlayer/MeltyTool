@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 
 using fin.io.bundles;
+using fin.util.linq;
 
 namespace uni.ui.winforms.common.fileTreeView;
 
@@ -26,11 +27,26 @@ public interface IFileTreeNode {
 public interface IFileTreeParentNode : IFileTreeNode {
   IEnumerable<IFileTreeNode> ChildNodes { get; }
 
-  IEnumerable<IAnnotatedFileBundle> GetFiles(bool recursive);
+  IEnumerable<IAnnotatedFileBundle> GetFiles(bool recursive) {
+    var children = this.ChildNodes.OfType<IFileTreeLeafNode>()
+                       .Select(fileNode => fileNode.File);
+    return !recursive
+        ? children
+        : children.Concat(
+            this.ChildNodes
+                .OfType<IFileTreeParentNode>()
+                .SelectMany(parentNode
+                                => parentNode
+                                    .GetFiles(
+                                        true)));
+  }
 
-  IEnumerable<IAnnotatedFileBundle<TSpecificFile>>
-      GetFilesOfType<TSpecificFile>(bool recursive)
-      where TSpecificFile : IFileBundle;
+  IEnumerable<IAnnotatedFileBundle<TSpecificFile>> GetFilesOfType<
+      TSpecificFile>(bool recursive) where TSpecificFile : IFileBundle
+    => this.GetFiles(recursive)
+           .SelectWhere<IAnnotatedFileBundle,
+               IAnnotatedFileBundle<TSpecificFile>>(
+               AnnotatedFileBundleExtensions.IsOfType);
 }
 
 public interface IFileTreeLeafNode : IFileTreeNode {

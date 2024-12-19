@@ -42,27 +42,6 @@ public abstract partial class FileTreeView<TFiles> {
     public IEnumerable<IFileTreeNode> ChildNodes
       => this.filterNode.Children.Select(fuzzyNode => fuzzyNode.Data);
 
-    public IEnumerable<IAnnotatedFileBundle> GetFiles(bool recursive) {
-        var children = this.ChildNodes.OfType<IFileTreeLeafNode>()
-                           .Select(fileNode => fileNode.File);
-        return !recursive
-            ? children
-            : children.Concat(
-                this.ChildNodes
-                    .OfType<IFileTreeParentNode>()
-                    .SelectMany(parentNode
-                                    => parentNode
-                                        .GetFiles(
-                                            true)));
-      }
-
-    public IEnumerable<IAnnotatedFileBundle<TSpecificFile>> GetFilesOfType<
-        TSpecificFile>(bool recursive) where TSpecificFile : IFileBundle
-      => this.GetFiles(recursive)
-             .SelectWhere<IAnnotatedFileBundle,
-                 IAnnotatedFileBundle<TSpecificFile>>(
-                 AnnotatedFileBundleExtensions.IsOfType);
-
     public void Expand() => this.treeNode.Expand();
   }
 }

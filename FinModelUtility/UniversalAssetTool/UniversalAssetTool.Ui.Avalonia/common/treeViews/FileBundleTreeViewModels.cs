@@ -10,6 +10,7 @@ using fin.io.bundles;
 using fin.model.io;
 using fin.scene;
 using fin.util.asserts;
+using fin.util.linq;
 
 using grezzo.api;
 
@@ -18,6 +19,7 @@ using Material.Icons;
 using ObservableCollections;
 
 using uni.ui.avalonia.ViewModels;
+using uni.ui.winforms.common.fileTreeView;
 
 namespace uni.ui.avalonia.common.treeViews;
 
@@ -81,13 +83,17 @@ public class FileBundleTreeViewModelForDesigner()
     ]);
 
 // Node types
+public abstract class BFileBundleNode(string text) : ViewModelBase, IFileTreeNode {
+  public string Text => text;
+  public IFileTreeParentNode? Parent => null;
+}
+
 public class FileBundleDirectoryNode
-    : ViewModelBase, IFileBundleNode {
+    : BFileBundleNode, IFileBundleNode, IFileTreeParentNode {
   private readonly IReadOnlyList<IFileBundleNode>? subNodes_;
 
-  private readonly
-      ISynchronizedView<IFileBundleNode,
-          IFileBundleNode>? filteredSubNodes_;
+  private readonly ISynchronizedView<IFileBundleNode,
+      IFileBundleNode>? filteredSubNodes_;
 
   public FileBundleDirectoryNode(
       string label,
@@ -98,7 +104,7 @@ public class FileBundleDirectoryNode
   public FileBundleDirectoryNode(
       string label,
       IReadOnlyList<IFileBundleNode>? subNodes,
-      IReadOnlySet<string> filterTerms) {
+      IReadOnlySet<string> filterTerms) : base(label) {
     this.subNodes_ = subNodes;
     this.Label = label;
     this.FilterTerms = filterTerms;
@@ -141,10 +147,14 @@ public class FileBundleDirectoryNode
   }
 
   public bool InFilter { get; private set; } = true;
+
+  public IEnumerable<IFileTreeNode> ChildNodes
+    => this.subNodes_.Cast<IFileTreeNode>();
 }
 
-public class FileBundleLeafNode(string label, IAnnotatedFileBundle data)
-    : ViewModelBase, IFileBundleNode {
+public class FileBundleLeafNode(string label,
+                                IAnnotatedFileBundle data)
+    : BFileBundleNode(label), IFileBundleNode, IFileTreeLeafNode {
   public INotifyCollectionChangedSynchronizedViewList<
       IFileBundleNode>? FilteredSubNodes => null;
 
@@ -156,7 +166,8 @@ public class FileBundleLeafNode(string label, IAnnotatedFileBundle data)
   };
 
   public IAnnotatedFileBundle Value => data;
-  public string Label { get; } = label;
+  public IAnnotatedFileBundle File => data;
+  public string Label => label;
 
   public IFilter<IAnnotatedFileBundle>? Filter {
     set => this.InFilter = value?.MatchesNode(this) ?? true;
@@ -168,7 +179,7 @@ public class FileBundleLeafNode(string label, IAnnotatedFileBundle data)
 public class FileBundleFilter(IReadOnlySet<string> tokens)
     : IFilter<IAnnotatedFileBundle> {
   public static FileBundleFilter? FromText(string? text) {
-    var tokens = text?.Split(new[] { ' ', '\t', '\n' },
+    var tokens = text?.Split([' ', '\t', '\n'],
                              StringSplitOptions.RemoveEmptyEntries |
                              StringSplitOptions.TrimEntries);
     return tokens?.Length > 0
