@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace fin.io.bundles;
 
@@ -50,5 +51,6 @@ public class AnnotatedFileBundle<TFileBundle>(
   public IFileHierarchyFile File => file;
   public string LocalPath => file.LocalPath;
 
-  public string GameAndLocalPath => $"{file.Hierarchy.Name}/{this.LocalPath}";
+  public string GameAndLocalPath
+    => Path.Join(file.Hierarchy.Name, this.LocalPath);
 }
