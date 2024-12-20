@@ -51,4 +51,6 @@ public interface IPopulatedMaterial {
     => null;
 
   IDepthFunction DepthFunction { get; }
+
+  IIndirectTexture? IndirectTexture { get; }
 }

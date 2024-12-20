@@ -23,7 +23,7 @@ public partial class BMD {
     public ushort NrMaterials;
     public uint[] Offsets;
     public MaterialEntry[] MaterialEntries;
-    public BmdPopulatedMaterial[] PopulatedMaterials;
+    public BmdPopulatedMaterial[] PopulatedMaterials { get; set; }
     public ushort[] MaterialEntryIndieces;
     public short[] TextureIndices;
     public GxCullMode[] CullModes;
@@ -44,8 +44,7 @@ public partial class BMD {
     public TevOrder[] TevOrders;
     public StringTable MaterialNameTable;
 
-    public readonly List<MatIndirectTexturingEntry>
-        MatIndirectTexturingEntries = [];
+    public readonly List<IndirectTexture> IndirectTextures = [];
 
     public MAT3Section(IBinaryReader br, out bool OK) {
       long position1 = br.Position;
@@ -78,10 +77,10 @@ public partial class BMD {
 
         var indirectTexturesOffset =
             br.Position = position1 + this.Offsets[3];
-        this.MatIndirectTexturingEntries.Clear();
+        this.IndirectTextures.Clear();
         while ((br.Position - indirectTexturesOffset) < sectionLengths[3]) {
-          this.MatIndirectTexturingEntries.Add(
-              br.ReadNew<MatIndirectTexturingEntry>());
+          this.IndirectTextures.Add(
+              br.ReadNew<IndirectTexture>());
         }
 
         br.Position = position1 + (long) this.Offsets[4];

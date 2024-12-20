@@ -203,6 +203,8 @@ namespace mod.util {
 
     public IDepthFunction DepthFunction { get; }
 
+    public IIndirectTexture? IndirectTexture { get; }
+
     /// <summary>
     ///   Ripped straight from the decomp.
     /// </summary>

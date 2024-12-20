@@ -70,6 +70,37 @@ public partial class GxFixedFunctionMaterial {
 
     this.Material = material;
 
+    var indirectTexture = populatedMaterial.IndirectTexture;
+    if (indirectTexture != null) {
+      var textureIndex = indirectTexture.TexMap;
+      var gxTexture = textures[(int) textureIndex];
+
+      var texCoordGen
+          = populatedMaterial.TexCoordGens[(int) indirectTexture.TexCoord]!;
+
+      var texMatrixType = texCoordGen.TexMatrix;
+      var texMatrixIndex = (texMatrixType - GxTexMatrix.TexMtx0) / 3;
+      var texMatrix = texMatrixType != GxTexMatrix.Identity
+          ? populatedMaterial.TextureMatrices?[texMatrixIndex]
+          : null;
+      var wrapModeOverrides
+          = populatedMaterial.TextureWrapModeOverrides?[(int) textureIndex];
+      gxTexture = new GxTexture2d(
+          gxTexture.Name,
+          gxTexture.MipmapImages,
+          wrapModeOverrides?.wrapModeS ?? gxTexture.WrapModeS,
+          wrapModeOverrides?.wrapModeT ?? gxTexture.WrapModeT,
+          gxTexture.MinTextureFilter,
+          gxTexture.MagTextureFilter,
+          gxTexture.ColorType);
+
+      var finIndirectTexture = lazyTextureDictionary[
+          new GxTextureBundle(textureIndex,
+                              gxTexture,
+                              texCoordGen,
+                              texMatrix)];
+    }
+
     var colorConstants = new List<Color>();
 
     var equations = material.Equations;

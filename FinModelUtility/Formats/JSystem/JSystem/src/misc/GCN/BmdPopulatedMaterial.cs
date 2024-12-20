@@ -62,6 +62,8 @@ public class BmdPopulatedMaterial : IPopulatedMaterial {
 
   public ITexCoordGen?[] TexCoordGens { get; set; }
 
+  public IIndirectTexture? IndirectTexture { get; set; }
+
   public BmdPopulatedMaterial(BMD.MAT3Section mat3,
                               int index,
                               MaterialEntry entry) {
@@ -152,6 +154,11 @@ public class BmdPopulatedMaterial : IPopulatedMaterial {
 
     this.AlphaCompare = mat3.AlphaCompares[entry.AlphaCompareIndex];
     this.BlendMode = mat3.BlendFunctions[entry.BlendModeIndex];
+
+    if (index < mat3.IndirectTextures.Count) {
+      var indirectTexture = mat3.IndirectTextures[index];
+      this.IndirectTexture = indirectTexture.HasLookup ? indirectTexture : null;
+    }
   }
 
   private class TevOrderWrapper(TevOrder impl) : ITevOrder {

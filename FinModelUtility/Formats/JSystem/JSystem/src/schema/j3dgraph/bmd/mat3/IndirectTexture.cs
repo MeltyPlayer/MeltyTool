@@ -1,5 +1,7 @@
 ﻿using fin.schema;
 
+using gx;
+
 using schema.binary;
 using schema.binary.attributes;
 
@@ -7,12 +9,12 @@ using schema.binary.attributes;
 namespace jsystem.schema.j3dgraph.bmd.mat3;
 
 [BinarySchema]
-public partial class MatIndirectTexturingEntry : IBinaryConvertible {
-  [Unknown]
-  public byte Unknown0 { get; set; }
+public partial class IndirectTexture : IIndirectTexture, IBinaryConvertible {
+  [IntegerFormat(SchemaIntegerType.BYTE)]
+  public bool HasLookup { get; set; }
 
   [Unknown]
-  public byte Unknown1 { get; set; }
+  public byte TevStageNum { get; set; }
 
   private readonly ushort padding_ = ushort.MaxValue;
 
@@ -27,12 +29,18 @@ public partial class MatIndirectTexturingEntry : IBinaryConvertible {
 
   [SequenceLengthSource(16)]
   public TevIndirect[] TevIndirect { get; set; }
+
+  [Skip]
+  public GxTexCoord TexCoord => this.IndTexOrder[0].TexCoord;
+
+  [Skip]
+  public GxTexMap TexMap => this.IndTexOrder[0].TexMap;
 }
 
 [BinarySchema]
 public partial class IndTexOrder : IBinaryConvertible {
-  public sbyte TexCoord { get; set; }
-  public sbyte TexMap { get; set; }
+  public GxTexCoord TexCoord { get; set; }
+  public GxTexMap TexMap { get; set; }
   private ushort Unknown { get; set; }
 }
 
