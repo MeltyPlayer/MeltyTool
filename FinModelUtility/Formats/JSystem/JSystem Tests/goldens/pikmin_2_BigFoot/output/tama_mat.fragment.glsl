@@ -122,8 +122,6 @@ void getIndividualLightColors(Light light, vec3 position, vec3 normal, float shi
 void main() {
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
-  vec3 textureNormal = texture(normalTexture.sampler, normalTexture.transform2d * vec3((uv0).x, (uv0).y, 1)).xyz * 2.0 - 1.0;
-  fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
 
   vec3 Q1 = dFdx(vertexPosition);
   vec3 Q2 = dFdy(vertexPosition);
@@ -131,6 +129,9 @@ void main() {
   vec2 st2 = dFdy(uv0);
   vec3 tangent = normalize(Q1*st2.t - Q2*st1.t);
   vec3 binormal = normalize(-Q1*st2.s + Q2*st1.s);
+
+  vec3 textureNormal = texture(normalTexture.sampler, normalTexture.transform2d * vec3((uv0).x, (uv0).y, 1)).xyz * 2.0 - 1.0;
+  fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
 
   vec4 individualLightDiffuseColors[8];
   vec4 individualLightSpecularColors[8];

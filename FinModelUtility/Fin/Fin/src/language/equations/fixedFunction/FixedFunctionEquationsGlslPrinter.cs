@@ -203,11 +203,9 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
             """);
       } else {
         sb.AppendLine(
-            $"""
+            """
                // Have to renormalize because the vertex normals can become distorted when interpolated.
                vec3 fragNormal = normalize(vertexNormal);
-               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"{GlslConstants.IN_UV_NAME}{normalTexture?.UvIndex ?? 0}", normalTexture, this.animations_)}.xyz * 2.0 - 1.0;
-               fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
 
              """);
 
@@ -227,6 +225,13 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
                """);
         }
+
+        sb.AppendLine(
+            $"""
+               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"{GlslConstants.IN_UV_NAME}{normalTexture?.UvIndex ?? 0}", normalTexture, this.animations_)}.xyz * 2.0 - 1.0;
+               fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
+
+             """);
       }
 
       // TODO: Optimize this if the shader depends on merged lighting as well as individual lights for some reason.
