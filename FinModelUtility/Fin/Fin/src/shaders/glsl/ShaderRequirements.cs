@@ -6,18 +6,12 @@ using fin.util.asserts;
 
 namespace fin.shaders.glsl;
 
-public enum TangentType {
-  NOT_PRESENT,
-  DEFINED,
-  CALCULATED,
-}
-
 public interface IShaderRequirements {
   public bool UsesSphericalReflectionMapping { get; }
   public bool UsesLinearReflectionMapping { get; }
 
   public bool HasNormals { get; }
-  public TangentType TangentType { get; }
+  public bool HasTangents { get; }
 
   public bool[] UsedUvs { get; }
   public bool[] UsedColors { get; }
@@ -37,7 +31,6 @@ public class ShaderRequirements : IShaderRequirements {
     this.UsesLinearReflectionMapping
         = material?.Textures.Any(t => t.UvType is UvType.LINEAR) ?? false;
 
-    this.TangentType = TangentType.NOT_PRESENT;
     foreach (var vertex in model.Skin.Meshes
                                 .SelectMany(mesh => mesh.Primitives)
                                 .Where(primitive
@@ -48,7 +41,7 @@ public class ShaderRequirements : IShaderRequirements {
             LocalNormal: not null, LocalTangent: not null
         }: {
           this.HasNormals = true;
-          this.TangentType = TangentType.CALCULATED;
+          this.HasTangents = true;
           break;
         }
         case IReadOnlyNormalVertex { LocalNormal: not null }: {
@@ -56,12 +49,6 @@ public class ShaderRequirements : IShaderRequirements {
           break;
         }
       }
-    }
-
-    if (this.TangentType is TangentType.NOT_PRESENT &&
-        material is IFixedFunctionMaterial { NormalTexture: not null }
-                    or IStandardMaterial { NormalTexture: not null }) {
-      this.TangentType = TangentType.CALCULATED;
     }
 
     this.UsedUvs = new bool[MaterialConstants.MAX_UVS];
@@ -118,7 +105,7 @@ public class ShaderRequirements : IShaderRequirements {
   public bool UsesSphericalReflectionMapping { get; }
   public bool UsesLinearReflectionMapping { get; }
   public bool HasNormals { get; }
-  public TangentType TangentType { get; }
+  public bool HasTangents { get; }
   public bool[] UsedUvs { get; }
   public bool[] UsedColors { get; }
 }

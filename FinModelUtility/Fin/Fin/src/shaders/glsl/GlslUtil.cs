@@ -80,10 +80,8 @@ public static class GlslUtil {
 
     var modelRequirements = ModelRequirements.FromModel(model);
     var hasNormals = modelRequirements.HasNormals;
-
     var hasTangents = modelRequirements.HasTangents;
     var hasBinormals = hasNormals && hasTangents;
-
     var numBones = modelRequirements.NumBones;
 
     vertexSrc.AppendLine($$"""

@@ -28,8 +28,6 @@ public partial class BMD {
     public ArrayFormat[] ArrayFormats;
     public Vector3[] Positions;
     public Vector3[] Normals;
-    public Vector3[] Tangents;
-    public Vector3[] Binormals;
 
     public VTX1Section(IBinaryReader br, out bool OK) {
       long position1 = br.Position;

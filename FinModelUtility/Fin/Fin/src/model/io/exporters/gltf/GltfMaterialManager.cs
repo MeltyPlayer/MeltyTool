@@ -95,6 +95,14 @@ public class GltfMaterialBuilder {
                                 gltfImageByFinImage[diffuseTexture.Image]);
               }
 
+              var normalTexture = standardMaterial.NormalTexture;
+              if (normalTexture != null) {
+                gltfMaterialBuilder.UseChannel(KnownChannel.Normal)
+                                   .UseTexture(normalTexture,
+                                               gltfImageByFinImage
+                                                   [normalTexture.Image]);
+              }
+
               var emissiveTexture = standardMaterial.EmissiveTexture;
               if (emissiveTexture != null) {
                 gltfMaterialBuilder
@@ -167,7 +175,8 @@ public class GltfMaterialBuilder {
                               ])
                               .ToArray());
 
-              KnownChannel mainTextureChannel;
+              KnownChannel
+                  mainTextureChannel;
               if (usesSpecular) {
                 // TODO: Get specular color
                 gltfMaterialBuilder
@@ -200,14 +209,6 @@ public class GltfMaterialBuilder {
                 gltfMaterialBuilder
                     .UseChannel(mainTextureChannel)
                     .UseTexture(texture, gltfImageByFinImage[texture.Image]);
-              }
-
-              var normalTexture = fixedFunctionMaterial.NormalTexture;
-              if (normalTexture != null) {
-                gltfMaterialBuilder
-                    .UseChannel(KnownChannel.Normal)
-                    .UseTexture(normalTexture,
-                                gltfImageByFinImage[normalTexture.Image]);
               }
 
               break;

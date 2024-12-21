@@ -117,13 +117,6 @@ public partial interface IMaterial {
       LogicOp logicOp);
 }
 
-
-[GenerateReadOnly]
-public partial interface IMaterialWithNormalTexture : IMaterial {
-  IReadOnlyTexture? NormalTexture { get; set; }
-}
-
-
 [GenerateReadOnly]
 public partial interface INullMaterial : IMaterial;
 
@@ -142,9 +135,10 @@ public partial interface IColorMaterial : IMaterial {
 }
 
 [GenerateReadOnly]
-public partial interface IStandardMaterial : IMaterialWithNormalTexture {
+public partial interface IStandardMaterial : IMaterial {
   IReadOnlyTexture? DiffuseTexture { get; set; }
   IReadOnlyTexture? AmbientOcclusionTexture { get; set; }
+  IReadOnlyTexture? NormalTexture { get; set; }
   IReadOnlyTexture? EmissiveTexture { get; set; }
   IReadOnlyTexture? SpecularTexture { get; set; }
 }
@@ -316,7 +310,7 @@ public enum FixedFunctionSource {
 }
 
 [GenerateReadOnly]
-public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
+public partial interface IFixedFunctionMaterial : IMaterial {
   IFixedFunctionEquations<FixedFunctionSource> Equations { get; }
   IFixedFunctionRegisters Registers { get; }
 

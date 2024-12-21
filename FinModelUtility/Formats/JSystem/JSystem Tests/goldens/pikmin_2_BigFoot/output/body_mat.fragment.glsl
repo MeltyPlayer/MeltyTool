@@ -39,7 +39,6 @@ struct Texture {
 uniform sampler2D texture0;
 uniform Texture texture2;
 uniform Texture texture3;
-uniform sampler2D normalTexture;
 uniform vec3 color_GxMaterialColor0;
 uniform vec3 color_GxAmbientColor0;
 uniform float scalar_GxAlphaRegister0;
@@ -122,15 +121,6 @@ void getIndividualLightColors(Light light, vec3 position, vec3 normal, float shi
 void main() {
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
-  vec3 textureNormal = texture(normalTexture, uv0).xyz * 2.0 - 1.0;
-  fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
-
-  vec3 Q1 = dFdx(vertexPosition);
-  vec3 Q2 = dFdy(vertexPosition);
-  vec2 st1 = dFdx(uv0);
-  vec2 st2 = dFdy(uv0);
-  vec3 tangent = normalize(Q1*st2.t - Q2*st1.t);
-  vec3 binormal = normalize(-Q1*st2.s + Q2*st1.s);
 
   vec4 individualLightDiffuseColors[8];
   vec4 individualLightSpecularColors[8];
