@@ -29,7 +29,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
     var normalTexture = material.NormalTexture;
     var hasNormalTexture = normalTexture != null;
     var hasNormals = shaderRequirements.HasNormals;
-    var hasTangents = shaderRequirements.HasTangents;
+    var hasTangents = shaderRequirements.TangentType != TangentType.NOT_PRESENT;
     var hasBinormals = hasNormals && hasTangents;
 
     var ambientOcclusionTexture = material.AmbientOcclusionTexture;

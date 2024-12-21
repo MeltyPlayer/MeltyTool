@@ -82,5 +82,17 @@ public partial class ModelImpl<TVertex> {
       AlphaCompareType.Always;
 
     public float AlphaReference1 { get; private set; }
+
+    private IReadOnlyTexture? normalTexture_;
+
+    public IReadOnlyTexture? NormalTexture {
+      get => this.normalTexture_;
+      set {
+        this.normalTexture_ = value;
+        if (value != null) {
+          this.textures_.Add(value);
+        }
+      }
+    }
   }
 }

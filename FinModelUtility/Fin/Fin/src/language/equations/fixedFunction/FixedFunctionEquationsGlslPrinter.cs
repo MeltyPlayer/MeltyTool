@@ -29,6 +29,9 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     var registers = material.Registers;
     var textures = material.TextureSources;
 
+    var normalTexture = material.NormalTexture;
+    var hasNormalTexture = normalTexture != null;
+
     sb.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
     sb.AppendLine(GlslConstants.FLOAT_PRECISION);
     sb.AppendLine();
@@ -92,6 +95,12 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       }
     }
 
+    if (hasNormalTexture) {
+      sb.AppendLine(
+          $"uniform {GlslUtil.GetTypeOfTexture(normalTexture, this.animations_)} normalTexture;");
+      hadUniform = true;
+    }
+
     foreach (var colorRegister in registers.ColorRegisters) {
       if (equations.DoOutputsDependOn(colorRegister)) {
         hadUniform = true;
@@ -133,6 +142,14 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       AppendLineBetweenUniformsAndIns();
       sb.AppendLine("in vec3 vertexPosition;");
       sb.AppendLine("in vec3 vertexNormal;");
+
+      if (hasNormalTexture &&
+          shaderRequirements.TangentType == TangentType.DEFINED) {
+        sb.AppendLine("""
+                      in vec3 tangent;
+                      in vec3 binormal;
+                      """);
+      }
     }
 
     var usedColors = shaderRequirements.UsedColors;
@@ -177,12 +194,41 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
     // Calculate lighting
     if (dependsOnLights) {
-      sb.AppendLine(
-          $"""
-             // Have to renormalize because the vertex normals can become distorted when interpolated.
-             vec3 fragNormal = normalize(vertexNormal);
+      if (!hasNormalTexture) {
+        sb.AppendLine(
+            """
+              // Have to renormalize because the vertex normals can become distorted when interpolated.
+              vec3 fragNormal = normalize(vertexNormal);
 
-           """);
+            """);
+      } else {
+        sb.AppendLine(
+            $"""
+               // Have to renormalize because the vertex normals can become distorted when interpolated.
+               vec3 fragNormal = normalize(vertexNormal);
+               vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"{GlslConstants.IN_UV_NAME}{normalTexture?.UvIndex ?? 0}", normalTexture, this.animations_)}.xyz * 2.0 - 1.0;
+               fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
+
+             """);
+
+        if (shaderRequirements.TangentType is TangentType.CALCULATED) {
+          // Shamelessly stolen from:
+          // https://community.khronos.org/t/computing-the-tangent-space-in-the-fragment-shader/52861
+          var texCoordName
+              = $"{GlslConstants.IN_UV_NAME}{normalTexture.UvIndex}";
+          sb.AppendLine(
+              $"""
+                 vec3 Q1 = dFdx(vertexPosition);
+                 vec3 Q2 = dFdy(vertexPosition);
+                 vec2 st1 = dFdx({texCoordName});
+                 vec2 st2 = dFdy({texCoordName});
+                 vec3 tangent = normalize(Q1*st2.t - Q2*st1.t);
+                 vec3 binormal = normalize(-Q1*st2.s + Q2*st1.s);
+
+               """);
+        }
+      }
+
       // TODO: Optimize this if the shader depends on merged lighting as well as individual lights for some reason.
       if (dependsOnAnIndividualLight) {
         sb.AppendLine(
@@ -209,7 +255,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
                vec4 mergedLightDiffuseColor = vec4(0);
                vec4 mergedLightSpecularColor = vec4(0);
                getMergedLightColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, mergedLightDiffuseColor, mergedLightSpecularColor);
-            
+
              """);
       }
     }
@@ -322,14 +368,20 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       string alphaAccessorText,
       float reference)
     => alphaCompareType switch {
-        AlphaCompareType.Never   => "false",
-        AlphaCompareType.Less    => $"{alphaAccessorText} < {reference:0.0###########}",
-        AlphaCompareType.Equal   => $"{alphaAccessorText} == {reference:0.0###########}",
-        AlphaCompareType.LEqual  => $"{alphaAccessorText} <= {reference:0.0###########}",
-        AlphaCompareType.Greater => $"{alphaAccessorText} > {reference:0.0###########}",
-        AlphaCompareType.NEqual  => $"{alphaAccessorText} != {reference:0.0###########}",
-        AlphaCompareType.GEqual  => $"{alphaAccessorText} >= {reference:0.0###########}",
-        AlphaCompareType.Always  => "true",
+        AlphaCompareType.Never => "false",
+        AlphaCompareType.Less =>
+            $"{alphaAccessorText} < {reference:0.0###########}",
+        AlphaCompareType.Equal =>
+            $"{alphaAccessorText} == {reference:0.0###########}",
+        AlphaCompareType.LEqual =>
+            $"{alphaAccessorText} <= {reference:0.0###########}",
+        AlphaCompareType.Greater =>
+            $"{alphaAccessorText} > {reference:0.0###########}",
+        AlphaCompareType.NEqual =>
+            $"{alphaAccessorText} != {reference:0.0###########}",
+        AlphaCompareType.GEqual =>
+            $"{alphaAccessorText} >= {reference:0.0###########}",
+        AlphaCompareType.Always => "true",
         _ => throw new ArgumentOutOfRangeException(
             nameof(alphaCompareType),
             alphaCompareType,
