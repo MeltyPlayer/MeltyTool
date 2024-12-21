@@ -1,6 +1,14 @@
 #version 310 es
 precision mediump float;
 
+layout (std140, binding = 1) uniform Matrices {
+  mat4 modelMatrix;
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  
+  mat4 boneMatrices[19];  
+};
+
 struct Light {
   // 0x00 (vec3 needs to be 16-byte aligned)
   vec3 position;
@@ -36,7 +44,6 @@ uniform sampler2D texture2;
 uniform vec3 color_GxAmbientColor27;
 uniform float scalar_GxMaterialAlpha27;
 
-in vec2 sphericalReflectionUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec4 vertexColor0;
@@ -115,6 +122,8 @@ void getIndividualLightColors(Light light, vec3 position, vec3 normal, float shi
 void main() {
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
+
+  vec2 sphericalReflectionUv = acos(normalize(projectionMatrix * viewMatrix * vec4(fragNormal, 0)).xy) / 3.14159;
 
   vec4 individualLightDiffuseColors[8];
   vec4 individualLightSpecularColors[8];

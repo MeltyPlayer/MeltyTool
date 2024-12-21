@@ -345,7 +345,7 @@ public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
 public enum UvType {
   STANDARD,
   SPHERICAL,
-  LINEAR,
+  LINEAR
 }
 
 public enum WrapMode {

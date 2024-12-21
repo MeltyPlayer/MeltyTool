@@ -86,20 +86,14 @@ public static class GlslUtil {
 
     var numBones = modelRequirements.NumBones;
 
-    vertexSrc.AppendLine($$"""
-                           #version {{GlslConstants.VERTEX_SHADER_VERSION}}
+    vertexSrc.AppendLine($"""
+                           #version {GlslConstants.VERTEX_SHADER_VERSION}
 
-                           layout (std140, binding = {{GlslConstants.UBO_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRICES_NAME}} {
-                             mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
-                             mat4 {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}};
-                             mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
-                             
-                             mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
-                           };
+                           {GetMatricesHeader(model)}
 
-                           uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
+                           uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
 
-                           layout(location = {{location++}}) in vec3 in_Position;
+                           layout(location = {location++}) in vec3 in_Position;
                            """);
 
     if (hasNormals) {
@@ -165,16 +159,6 @@ public static class GlslUtil {
 
     if (hasBinormals) {
       vertexSrc.AppendLine("out vec3 binormal;");
-    }
-
-    if (shaderRequirements.UsesSphericalReflectionMapping) {
-      vertexSrc.AppendLine(
-          $"out vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME};");
-    }
-
-    if (shaderRequirements.UsesLinearReflectionMapping) {
-      vertexSrc.AppendLine(
-          $"out vec2 {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME};");
     }
 
     for (var i = 0; i < usedUvs.Length; ++i) {
@@ -259,32 +243,6 @@ public static class GlslUtil {
       if (hasBinormals) {
         vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
       }
-
-      if (shaderRequirements.UsesSphericalReflectionMapping) {
-        Asserts.True(hasNormals);
-        vertexSrc.AppendLine($"""
-                              
-                                vec3 u = normalize( vec3( mvMatrix * mergedBoneMatrix * vec4(in_Position, 1)) );
-                              
-                                mat3 normalMatrix = transpose(inverse(mat3(mvMatrix * mergedBoneMatrix)));
-                                vec3 n = normalize( normalMatrix * in_Normal );
-                                
-                                vec3 r = reflect( u, n );
-                                float m = 2. * sqrt(
-                                  pow( r.x, 2. ) +
-                                  pow( r.y, 2. ) +
-                                  pow( r.z + 1., 2. )
-                                );
-                              
-                                {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = r.xy / m + .5;
-                              """);
-      }
-
-      if (shaderRequirements.UsesLinearReflectionMapping) {
-        Asserts.True(modelRequirements.HasNormals);
-        vertexSrc.AppendLine(
-            $"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(projectionVertexModelMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
-      }
     } else {
       vertexSrc.AppendLine($@"
   gl_Position = mvpMatrix * vec4(in_Position, 1);
@@ -303,30 +261,6 @@ public static class GlslUtil {
 
       if (hasBinormals) {
         vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
-      }
-
-      if (shaderRequirements.UsesSphericalReflectionMapping) {
-        Asserts.True(hasNormals);
-        vertexSrc.AppendLine($"""
-                              
-                                vec3 e = normalize( vec3( mvMatrix * vec4(in_Position, 1)) );
-                                vec3 n = normalize( vec3( mvMatrix * vec4(in_Normal, 0)) );
-                                
-                                vec3 r = reflect( e, n );
-                                float m = 2. * sqrt(
-                                  pow( r.x, 2. ) +
-                                  pow( r.y, 2. ) +
-                                  pow( r.z + 1., 2. )
-                                );
-                              
-                                {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = r.xy / m + .5;
-                              """);
-      }
-
-      if (shaderRequirements.UsesLinearReflectionMapping) {
-        Asserts.True(modelRequirements.HasNormals);
-        vertexSrc.AppendLine(
-            $"  {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize(mvpMatrix * vec4(in_Normal, 0)).xy) / 3.14159;");
       }
     }
 
@@ -348,39 +282,48 @@ public static class GlslUtil {
     return vertexSrc.ToString();
   }
 
-  public static string GetLightHeader(bool withAmbientLight) {
-    return
-        $$"""
-          struct Light {
-            // 0x00 (vec3 needs to be 16-byte aligned)
-            vec3 position;
-            bool enabled;
-          
-            // 0x10 (vec3 needs to be 16-byte aligned)
-            vec3 normal;
-            int sourceType;
-          
-            // 0x20 (vec4 needs to be 16-byte aligned)
-            vec4 color;
-            
-            // 0x30 (vec3 needs to be 16-byte aligned)
-            vec3 cosineAttenuation;
-            int diffuseFunction;
-          
-            // 0x40 (vec3 needs to be 16-byte aligned)
-            vec3 distanceAttenuation;
-            int attenuationFunction;
-          };
+  public static string GetMatricesHeader(IReadOnlyModel model)
+    => $$"""
+         layout (std140, binding = {{GlslConstants.UBO_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_MATRICES_NAME}} {
+           mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
+           mat4 {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}};
+           mat4 {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}};
+           
+           mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
+         };
+         """;
 
-          layout (std140, binding = {{GlslConstants.UBO_LIGHTS_BINDING_INDEX}}) uniform {{GlslConstants.UBO_LIGHTS_NAME}} {
-            Light lights[{{MaterialConstants.MAX_LIGHTS}}];
-            vec4 ambientLightColor;
-            float {{GlslConstants.UNIFORM_USE_LIGHTING_NAME}};
-          };
+  public static string GetLightHeader(bool withAmbientLight)
+    => $$"""
+         struct Light {
+           // 0x00 (vec3 needs to be 16-byte aligned)
+           vec3 position;
+           bool enabled;
+         
+           // 0x10 (vec3 needs to be 16-byte aligned)
+           vec3 normal;
+           int sourceType;
+         
+           // 0x20 (vec4 needs to be 16-byte aligned)
+           vec4 color;
+           
+           // 0x30 (vec3 needs to be 16-byte aligned)
+           vec3 cosineAttenuation;
+           int diffuseFunction;
+         
+           // 0x40 (vec3 needs to be 16-byte aligned)
+           vec3 distanceAttenuation;
+           int attenuationFunction;
+         };
 
-          uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
-          """;
-  }
+         layout (std140, binding = {{GlslConstants.UBO_LIGHTS_BINDING_INDEX}}) uniform {{GlslConstants.UBO_LIGHTS_NAME}} {
+           Light lights[{{MaterialConstants.MAX_LIGHTS}}];
+           vec4 ambientLightColor;
+           float {{GlslConstants.UNIFORM_USE_LIGHTING_NAME}};
+         };
+
+         uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
+         """;
 
   public static string GetGetIndividualLightColorsFunction() {
     // Shamelessly stolen from:

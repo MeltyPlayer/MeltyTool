@@ -85,13 +85,17 @@ public partial class GxFixedFunctionMaterial {
           : null;
       var wrapModeOverrides
           = populatedMaterial.TextureWrapModeOverrides?[(int) textureIndex];
+
+      var wrapModeS = wrapModeOverrides?.wrapModeS ?? gxTexture.WrapModeS;
+      var wrapModeT = wrapModeOverrides?.wrapModeT ?? gxTexture.WrapModeT;
+
       gxTexture = new GxTexture2d(
           gxTexture.Name,
           gxTexture.MipmapImages
-                   .Select(BumpMapUtils.ConvertBumpMapImageToNormalImage)
+                   .Select(i => BumpMapUtils.ConvertBumpMapImageToNormalImage(i, wrapModeS.ToFinWrapMode(), wrapModeT.ToFinWrapMode()))
                    .ToArray<IReadOnlyImage>(),
-          wrapModeOverrides?.wrapModeS ?? gxTexture.WrapModeS,
-          wrapModeOverrides?.wrapModeT ?? gxTexture.WrapModeT,
+          wrapModeS,
+          wrapModeT,
           gxTexture.MinTextureFilter,
           gxTexture.MagTextureFilter,
           gxTexture.ColorType);

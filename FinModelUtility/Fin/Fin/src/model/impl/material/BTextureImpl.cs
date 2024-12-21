@@ -162,7 +162,9 @@ public partial class ModelImpl<TVertex> {
         return this.Name == otherTexture.Name &&
                this.Image == otherTexture.Image &&
                this.WrapModeU == otherTexture.WrapModeU &&
-               this.WrapModeV == otherTexture.WrapModeV;
+               this.WrapModeV == otherTexture.WrapModeV &&
+               this.UvType == otherTexture.UvType &&
+               this.UvIndex == otherTexture.UvIndex;
       }
 
       return false;

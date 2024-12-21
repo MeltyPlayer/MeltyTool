@@ -20,7 +20,6 @@ layout(location = 6) in vec4 in_Color0;
 
 out vec3 vertexPosition;
 out vec3 vertexNormal;
-out vec2 sphericalReflectionUv;
 out vec2 uv0;
 out vec2 uv1;
 out vec4 vertexColor0;
@@ -38,20 +37,6 @@ void main() {
 
   vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
   vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;
-
-  vec3 u = normalize( vec3( mvMatrix * mergedBoneMatrix * vec4(in_Position, 1)) );
-
-  mat3 normalMatrix = transpose(inverse(mat3(mvMatrix * mergedBoneMatrix)));
-  vec3 n = normalize( normalMatrix * in_Normal );
-  
-  vec3 r = reflect( u, n );
-  float m = 2. * sqrt(
-    pow( r.x, 2. ) +
-    pow( r.y, 2. ) +
-    pow( r.z + 1., 2. )
-  );
-
-  sphericalReflectionUv = r.xy / m + .5;
   uv0 = in_Uv0;
   uv1 = in_Uv1;
   vertexColor0 = in_Color0;

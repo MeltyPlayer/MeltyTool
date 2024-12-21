@@ -1,6 +1,14 @@
 #version 310 es
 precision mediump float;
 
+layout (std140, binding = 1) uniform Matrices {
+  mat4 modelMatrix;
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  
+  mat4 boneMatrices[16];  
+};
+
 struct Light {
   // 0x00 (vec3 needs to be 16-byte aligned)
   vec3 position;
@@ -44,7 +52,6 @@ uniform vec3 color_GxMaterialColor0;
 uniform vec3 color_GxAmbientColor0;
 uniform float scalar_GxAlphaRegister0;
 
-in vec2 sphericalReflectionUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 uv0;
@@ -132,6 +139,8 @@ void main() {
 
   vec3 textureNormal = texture(normalTexture, uv0).xyz * 2.0 - 1.0;
   fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
+
+  vec2 sphericalReflectionUv = acos(normalize(projectionMatrix * viewMatrix * vec4(fragNormal, 0)).xy) / 3.14159;
 
   vec4 individualLightDiffuseColors[8];
   vec4 individualLightSpecularColors[8];

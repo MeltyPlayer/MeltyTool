@@ -6,6 +6,7 @@ using System.Text;
 using fin.model;
 using fin.shaders.glsl;
 using fin.util.asserts;
+using fin.util.enumerables;
 using fin.util.image;
 
 namespace fin.language.equations.fixedFunction;
@@ -36,6 +37,13 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     sb.AppendLine(GlslConstants.FLOAT_PRECISION);
     sb.AppendLine();
 
+    var usesSphericalReflectionMapping
+        = shaderRequirements.UsesSphericalReflectionMapping;
+    if (usesSphericalReflectionMapping) {
+      sb.AppendLine(GlslUtil.GetMatricesHeader(model));
+      sb.AppendLine();
+    }
+
     var hasIndividualLights =
         Enumerable
             .Range(0, MaterialConstants.MAX_LIGHTS)
@@ -60,6 +68,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         ]);
 
     var dependsOnLights = dependsOnMergedLights || dependsOnAnIndividualLight;
+    var dependsOnNormals = dependsOnLights || usesSphericalReflectionMapping;
 
     var dependsOnAmbientLight = equations.DoOutputsDependOn(
     [
@@ -83,7 +92,8 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         dependsOnIndividualTextures
             .Select((dependsOnTexture, i) => (i, dependsOnTexture))
             .Where(tuple => tuple.dependsOnTexture)
-            .Select(tuple => textures[tuple.i]),
+            .Select(tuple => textures[tuple.i])
+            .ConcatIfNonnull(material.NormalTexture),
         this.animations_);
 
     var hadUniform = false;
@@ -126,21 +136,13 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       }
     };
 
-    if (shaderRequirements.UsesSphericalReflectionMapping) {
-      AppendLineBetweenUniformsAndIns();
-      sb.AppendLine(
-          $"in vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME};");
-    }
-
-    if (shaderRequirements.UsesLinearReflectionMapping) {
-      AppendLineBetweenUniformsAndIns();
-      sb.AppendLine(
-          $"in vec2 {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME};");
-    }
-
     if (dependsOnLights) {
       AppendLineBetweenUniformsAndIns();
       sb.AppendLine("in vec3 vertexPosition;");
+    }
+
+    if (dependsOnNormals) {
+      AppendLineBetweenUniformsAndIns();
       sb.AppendLine("in vec3 vertexNormal;");
 
       if (hasNormalTexture &&
@@ -193,7 +195,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     sb.AppendLine("void main() {");
 
     // Calculate lighting
-    if (dependsOnLights) {
+    if (dependsOnNormals) {
       if (!hasNormalTexture) {
         sb.AppendLine(
             """
@@ -204,10 +206,10 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       } else {
         sb.AppendLine(
             """
-               // Have to renormalize because the vertex normals can become distorted when interpolated.
-               vec3 fragNormal = normalize(vertexNormal);
+              // Have to renormalize because the vertex normals can become distorted when interpolated.
+              vec3 fragNormal = normalize(vertexNormal);
 
-             """);
+            """);
 
         if (shaderRequirements.TangentType is TangentType.CALCULATED) {
           // Shamelessly stolen from:
@@ -232,6 +234,13 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
                fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
 
              """);
+      }
+
+      if (usesSphericalReflectionMapping) {
+        sb.AppendLine($"""
+                         vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = acos(normalize({GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME} * {GlslConstants.UNIFORM_VIEW_MATRIX_NAME} * vec4(fragNormal, 0)).xy) / 3.14159;
+
+                       """);
       }
 
       // TODO: Optimize this if the shader depends on merged lighting as well as individual lights for some reason.
@@ -895,12 +904,6 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
             => GlslUtil.ReadColorFromTexture(
                 textureName,
                 GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME,
-                texture,
-                this.animations_),
-        UvType.LINEAR
-            => GlslUtil.ReadColorFromTexture(
-                textureName,
-                GlslConstants.IN_LINEAR_REFLECTION_UV_NAME,
                 texture,
                 this.animations_),
     };

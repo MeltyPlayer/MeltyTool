@@ -1,6 +1,14 @@
 #version 310 es
 precision mediump float;
 
+layout (std140, binding = 1) uniform Matrices {
+  mat4 modelMatrix;
+  mat4 viewMatrix;
+  mat4 projectionMatrix;
+  
+  mat4 boneMatrices[11];  
+};
+
 struct Light {
   // 0x00 (vec3 needs to be 16-byte aligned)
   vec3 position;
@@ -34,7 +42,6 @@ uniform sampler2D texture0;
 uniform sampler2D texture1;
 uniform float scalar_3dsAlpha3;
 
-in vec2 sphericalReflectionUv;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 uv0;
@@ -124,6 +131,8 @@ void getMergedLightColors(vec3 position, vec3 normal, float shininess, out vec4 
 void main() {
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
+
+  vec2 sphericalReflectionUv = acos(normalize(projectionMatrix * viewMatrix * vec4(fragNormal, 0)).xy) / 3.14159;
 
   vec4 mergedLightDiffuseColor = vec4(0);
   vec4 mergedLightSpecularColor = vec4(0);

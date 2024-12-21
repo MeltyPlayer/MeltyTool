@@ -1,4 +1,5 @@
 ﻿using fin.image.formats;
+using fin.model;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -10,7 +11,9 @@ public static class BumpMapUtils {
   ///   https://stackoverflow.com/questions/10652797/whats-the-logic-behind-creating-a-normal-map-from-a-texture
   /// </summary>
   public static unsafe Rgb24Image ConvertBumpMapImageToNormalImage(
-      IReadOnlyImage image) {
+      IReadOnlyImage image,
+      WrapMode wrapModeS,
+      WrapMode wrapModeT) {
     var normalImage =
         new Rgb24Image(PixelFormat.RGB888, image.Width, image.Height);
     using var normalImageLock = normalImage.UnsafeLock();
@@ -36,6 +39,14 @@ public static class BumpMapUtils {
                 out _,
                 out _,
                 out _);
+          } else if (wrapModeS is WrapMode.REPEAT) {
+            bumpGetHandler(
+                image.Width - 1,
+                y,
+                out leftIntensity,
+                out _,
+                out _,
+                out _);
           } else {
             leftIntensity = centerIntensity;
           }
@@ -44,6 +55,14 @@ public static class BumpMapUtils {
           if (x < image.Width - 1) {
             bumpGetHandler(
                 x + 1,
+                y,
+                out rightIntensity,
+                out _,
+                out _,
+                out _);
+          } else if (wrapModeS is WrapMode.REPEAT) {
+            bumpGetHandler(
+                0,
                 y,
                 out rightIntensity,
                 out _,
@@ -62,6 +81,14 @@ public static class BumpMapUtils {
                 out _,
                 out _,
                 out _);
+          } else if (wrapModeT is WrapMode.REPEAT) {
+            bumpGetHandler(
+                x,
+                image.Height - 1,
+                out upIntensity,
+                out _,
+                out _,
+                out _);
           } else {
             upIntensity = centerIntensity;
           }
@@ -75,15 +102,23 @@ public static class BumpMapUtils {
                 out _,
                 out _,
                 out _);
+          } else if (wrapModeT is WrapMode.REPEAT) {
+            bumpGetHandler(
+                x,
+                0,
+                out downIntensity,
+                out _,
+                out _,
+                out _);
           } else {
             downIntensity = centerIntensity;
           }
 
           var xIntensity
-              = ((leftIntensity / 255f - rightIntensity / 255f + 1) * .5f) *
+              = ((rightIntensity / 255f - leftIntensity / 255f + 1) * .5f) *
                 255;
           var yIntensity
-              = ((upIntensity / 255f - downIntensity / 255f + 1) * .5f) * 255;
+              = ((downIntensity / 255f - upIntensity / 255f + 1) * .5f) * 255;
 
           normalImageScan0[y * image.Width + x]
               = new Rgb24((byte) xIntensity, (byte) yIntensity, 255);
