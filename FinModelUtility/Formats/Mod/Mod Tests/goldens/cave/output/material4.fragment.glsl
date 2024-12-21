@@ -18,6 +18,7 @@ struct Texture {
 uniform Texture texture0;
 uniform Texture texture1;
 
+in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 uv0;
 

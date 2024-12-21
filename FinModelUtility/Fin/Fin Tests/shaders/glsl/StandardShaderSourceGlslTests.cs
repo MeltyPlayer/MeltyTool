@@ -120,7 +120,7 @@ public class StandardShaderSourceGlslTests {
           
             vec4 emissiveColor = texture(emissiveTexture, uv0);
             fragColor.rgb += emissiveColor.rgb;
-            fragColor.rgb = min(fragColor.rgb, 1);
+            fragColor.rgb = min(fragColor.rgb, 1.0);
           
             if (fragColor.a < .95) {
               discard;
@@ -250,7 +250,7 @@ public class StandardShaderSourceGlslTests {
           
             vec4 emissiveColor = texture(emissiveTexture, uv0);
             fragColor.rgb += emissiveColor.rgb;
-            fragColor.rgb = min(fragColor.rgb, 1);
+            fragColor.rgb = min(fragColor.rgb, 1.0);
           
             if (fragColor.a < .95) {
               discard;

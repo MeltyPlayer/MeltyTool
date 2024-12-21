@@ -136,13 +136,9 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       }
     };
 
-    if (dependsOnLights) {
-      AppendLineBetweenUniformsAndIns();
-      sb.AppendLine("in vec3 vertexPosition;");
-    }
-
     if (dependsOnNormals) {
       AppendLineBetweenUniformsAndIns();
+      sb.AppendLine("in vec3 vertexPosition;");
       sb.AppendLine("in vec3 vertexNormal;");
 
       if (hasNormalTexture &&

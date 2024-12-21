@@ -24,6 +24,7 @@ vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
 
 uniform Texture texture0;
 
+in vec3 vertexPosition;
 in vec3 vertexNormal;
 
 out vec4 fragColor;

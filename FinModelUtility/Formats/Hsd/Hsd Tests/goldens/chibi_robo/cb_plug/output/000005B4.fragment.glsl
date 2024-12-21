@@ -11,6 +11,7 @@ layout (std140, binding = 1) uniform Matrices {
 
 uniform sampler2D texture0;
 
+in vec3 vertexPosition;
 in vec3 vertexNormal;
 
 out vec4 fragColor;

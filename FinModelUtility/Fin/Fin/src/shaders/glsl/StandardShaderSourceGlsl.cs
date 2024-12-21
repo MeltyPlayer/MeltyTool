@@ -210,7 +210,7 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
       fragmentShaderSrc.AppendLine(
           """
             fragColor.rgb += emissiveColor.rgb;
-            fragColor.rgb = min(fragColor.rgb, 1);
+            fragColor.rgb = min(fragColor.rgb, 1.0);
           """);
     }
 
