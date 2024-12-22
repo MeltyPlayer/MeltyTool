@@ -1,7 +1,11 @@
-﻿using fin.animation.keyframes;
+﻿using System.Drawing;
+
+using fin.animation.keyframes;
 using fin.compression;
 using fin.data.dictionaries;
+using fin.data.lazy;
 using fin.data.queues;
+using fin.image;
 using fin.io;
 using fin.math.transform;
 using fin.model;
@@ -75,6 +79,33 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
           boneQueue.Enqueue(nextSiblingMap.Chain(firstChild)
                                           .Select(b => (b, finBone)));
         }
+      }
+    }
+
+    // Set up materials
+    var finMaterialManager = model.MaterialManager;
+    var lazyTextureDictionary
+        = new LazyDictionary<(Texture texture, Palette? palette), ITexture>(
+            textureAndPalette => {
+              var (sm64Texture, sm64Palette) = textureAndPalette;
+
+              var finTexture
+                  = finMaterialManager.CreateTexture(
+                      ImageReader.ReadImage(sm64Texture, sm64Palette));
+              finTexture.Name = sm64Texture.Name;
+
+              return finTexture;
+            });
+
+    foreach (var sm64Material in bmd.Materials) {
+      var textureId = sm64Material.TextureId;
+      var paletteId = sm64Material.TexturePaletteId;
+
+      if (textureId != -1) {
+        var sm64Texture = bmd.Textures[textureId];
+        var sm64Palette = paletteId != -1 ? bmd.Palettes[paletteId] : null;
+
+        var finTexture = lazyTextureDictionary[(sm64Texture, sm64Palette)];
       }
     }
 

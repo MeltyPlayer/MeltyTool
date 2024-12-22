@@ -41,6 +41,10 @@ public partial class Bmd : IBinaryConvertible {
   [RSequenceLengthSource(nameof(TextureCount))]
   public Texture[] Textures { get; set; }
 
+  [RAtPosition(nameof(TexturePalettesOffset))]
+  [RSequenceLengthSource(nameof(TexturePaletteCount))]
+  public Palette[] Palettes { get; set; }
+
   [RAtPosition(nameof(MaterialsOffset))]
   [RSequenceLengthSource(nameof(MaterialCount))]
   public Material[] Materials { get; set; }

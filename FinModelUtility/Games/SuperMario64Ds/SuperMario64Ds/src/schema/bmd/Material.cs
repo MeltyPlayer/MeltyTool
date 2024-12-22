@@ -15,8 +15,8 @@ public partial class Material : IBinaryConvertible {
   [RAtPosition(nameof(nameOffset_))]
   public string Name { get; set; }
 
-  public uint TextureId { get; set; }
-  public uint TexturePaletteId { get; set; }
+  public int TextureId { get; set; }
+  public int TexturePaletteId { get; set; }
 
   public FixedPointVector2 TextureScale { get; set; }
   public uint TextureRotation { get; set; }
