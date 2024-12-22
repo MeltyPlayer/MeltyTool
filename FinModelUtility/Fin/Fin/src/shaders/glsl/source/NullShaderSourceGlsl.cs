@@ -3,8 +3,8 @@
 using fin.model;
 using fin.util.enumerables;
 
-namespace fin.shaders.glsl;
-
+namespace fin.shaders.glsl.source;
+    
 public class NullShaderSourceGlsl(
     IReadOnlyModel model,
     IShaderRequirements shaderRequirements)

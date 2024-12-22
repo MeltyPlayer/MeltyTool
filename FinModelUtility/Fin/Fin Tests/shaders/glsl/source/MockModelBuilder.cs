@@ -6,7 +6,7 @@ using fin.model.impl;
 using fin.model.util;
 using fin.util.image;
 
-namespace fin.shaders.glsl;
+namespace fin.shaders.glsl.source;
 
 public struct MockMaterialOptions {
   public bool Masked { get; init; }

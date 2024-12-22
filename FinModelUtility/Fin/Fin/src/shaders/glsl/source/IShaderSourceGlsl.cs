@@ -1,4 +1,4 @@
-﻿namespace fin.shaders.glsl;
+﻿namespace fin.shaders.glsl.source;
 
 public interface IShaderSourceGlsl {
   string VertexShaderSource { get; }

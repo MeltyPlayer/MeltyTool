@@ -1,4 +1,5 @@
 ﻿using fin.model;
+using fin.shaders.glsl.source;
 using fin.util.asserts;
 
 namespace fin.shaders.glsl;

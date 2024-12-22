@@ -4,7 +4,7 @@ using fin.model;
 using fin.util.enumerables;
 using fin.util.image;
 
-namespace fin.shaders.glsl;
+namespace fin.shaders.glsl.source;
 
 public class StandardShaderSourceGlsl : IShaderSourceGlsl {
   public StandardShaderSourceGlsl(

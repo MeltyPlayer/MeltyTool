@@ -1,49 +1,60 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+
+using fin.image;
+using fin.model;
+using fin.model.impl;
+using fin.model.util;
+using fin.util.image;
 
 using NUnit.Framework;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace fin.shaders.glsl;
+namespace fin.shaders.glsl.source;
 
-public class ColorShaderSourceGlslTests {
+public class TextureShaderSourceGlslTests {
   [Test]
   public void TestWithoutNormalsNotMasked()
     => AssertGlsl_(
-        new MockMaterialOptions {
-            Masked = false,
-            WithNormals = false,
-        },
+        new MockMaterialOptions { WithUvs = true, },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
 
-          uniform vec4 diffuseColor;
+          uniform sampler2D diffuseTexture;
 
           out vec4 fragColor;
 
+          in vec2 uv0;
+
           void main() {
-            fragColor = diffuseColor;
+            fragColor = texture(diffuseTexture, uv0);
           }
           """);
 
   [Test]
-  public void TestWithoutNormalsMasked()
+  public void TestWithColorsWithoutNormalsMasked()
     => AssertGlsl_(
         new MockMaterialOptions {
             Masked = true,
             WithNormals = false,
+            WithColors = true,
+            WithUvs = true,
         },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
 
-          uniform vec4 diffuseColor;
+          uniform sampler2D diffuseTexture;
 
           out vec4 fragColor;
 
+          in vec4 vertexColor0;
+          in vec2 uv0;
+
           void main() {
-            fragColor = diffuseColor;
+            fragColor = texture(diffuseTexture, uv0) * vertexColor0;
           
             if (fragColor.a < .95) {
               discard;
@@ -52,12 +63,12 @@ public class ColorShaderSourceGlslTests {
           """);
 
   [Test]
-  public void TestWithVertexColorAndNormal()
+  public void TestWithNormals()
     => AssertGlsl_(
         new MockMaterialOptions {
             Masked = true,
             WithNormals = true,
-            WithColors = true,
+            WithUvs = true,
         },
         $$"""
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
@@ -65,14 +76,14 @@ public class ColorShaderSourceGlslTests {
 
           {{GlslUtil.GetLightHeader(true)}}
 
-          uniform vec4 diffuseColor;
+          uniform sampler2D diffuseTexture;
           uniform float shininess;
 
           out vec4 fragColor;
 
-          in vec4 vertexColor0;
           in vec3 vertexPosition;
           in vec3 vertexNormal;
+          in vec2 uv0;
 
           {{GlslUtil.GetGetIndividualLightColorsFunction()}}
 
@@ -81,7 +92,7 @@ public class ColorShaderSourceGlslTests {
           {{GlslUtil.GetApplyMergedLightColorsFunction(false)}}
 
           void main() {
-            fragColor = diffuseColor * vertexColor0;
+            fragColor = texture(diffuseTexture, uv0);
           
             // Have to renormalize because the vertex normals can become distorted when interpolated.
             vec3 fragNormal = normalize(vertexNormal);
@@ -93,12 +104,15 @@ public class ColorShaderSourceGlslTests {
           }
           """);
 
-  private static void AssertGlsl_(MockMaterialOptions options,
-                                  string expectedSource)
+  private static void AssertGlsl_(
+      MockMaterialOptions options,
+      string expectedSource)
     => Assert.AreEqual(
         expectedSource,
         MockMaterial.BuildAndGetSource(
                         options,
-                        mm => mm.AddColorMaterial(Color.Red))
+                        mm => mm.AddTextureMaterial(
+                            mm.CreateTexture(
+                                FinImage.Create1x1FromColor(Color.Red))))
                     .FragmentShaderSource);
 }

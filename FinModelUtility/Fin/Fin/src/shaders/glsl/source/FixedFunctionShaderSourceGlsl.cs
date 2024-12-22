@@ -1,7 +1,7 @@
 ﻿using fin.language.equations.fixedFunction;
 using fin.model;
 
-namespace fin.shaders.glsl;
+namespace fin.shaders.glsl.source;
 
 public class FixedFunctionShaderSourceGlsl(
     IReadOnlyModel model,

@@ -3,6 +3,7 @@
 using fin.math;
 using fin.model;
 using fin.shaders.glsl;
+using fin.shaders.glsl.source;
 
 
 namespace fin.ui.rendering.gl.material;

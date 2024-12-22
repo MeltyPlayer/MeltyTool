@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace fin.shaders.glsl;
+namespace fin.shaders.glsl.source;
 
 public class NullShaderSourceGlslTests {
   [Test]

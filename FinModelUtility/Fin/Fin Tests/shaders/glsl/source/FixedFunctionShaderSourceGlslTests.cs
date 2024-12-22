@@ -5,14 +5,12 @@ using fin.image;
 using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.model;
-using fin.model.impl;
-using fin.model.util;
 
 using NUnit.Framework;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace fin.shaders.glsl;
+namespace fin.shaders.glsl.source;
 
 public class FixedFunctionShaderSourceGlslTests {
   [Test]
