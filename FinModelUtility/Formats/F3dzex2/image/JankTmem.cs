@@ -87,9 +87,8 @@ public class JankTmem(IN64Hardware n64Hardware) : ITmem {
                             ushort deltaTPerScanline) {
     if (tileDescriptor == TileDescriptorIndex.TX_LOADTILE) {
       // The lrs field rather seems to be number of pixels to load
-      var wordSizeShift
-          = this.setTextureImageParams_.BitsPerTexel.GetWordShift();
-      var sizeBytes = (uint) ((texels + 1) << wordSizeShift);
+      var sizeBytes
+          = this.setTextureImageParams_.BitsPerTexel.GetByteCount(texels);
       this.loadedTextures_[this.setTextureImageParams_.TileNumber].SizeInBytes =
           sizeBytes;
       this.loadedTextures_[this.setTextureImageParams_.TileNumber]

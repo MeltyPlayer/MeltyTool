@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 
+using Assimp;
+
 using fin.color;
 using fin.image;
 using fin.image.formats;
@@ -58,6 +60,10 @@ public static class BitsPerTexelExtensions {
             bitsPerTexel,
             null)
     };
+
+  public static uint GetByteCount(this BitsPerTexel bitsPerTexel,
+                                 uint texelCount)
+    => texelCount << bitsPerTexel.GetWordShift();
 }
 
 public class N64ImageParser(IN64Hardware n64Hardware) {

@@ -76,10 +76,9 @@ public class DlModelBuilder {
           }
 
           if (br != null) {
-            var imageData =
-                br.ReadBytes(imageParams.Width *
-                             imageParams.Height *
-                             4);
+            var sizeInBytes = imageParams.BitsPerTexel.GetByteCount(
+                    (uint) (imageParams.Width * imageParams.Height));
+            var imageData = br.ReadBytes(sizeInBytes);
             br.Dispose();
             return new N64ImageParser(this.n64Hardware_).Parse(
                 imageParams.ColorFormat,
