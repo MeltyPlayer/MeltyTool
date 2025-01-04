@@ -149,7 +149,7 @@ public class FileBundleDirectoryNode
   public bool InFilter { get; private set; } = true;
 
   public IEnumerable<IFileTreeNode> ChildNodes
-    => this.subNodes_.Cast<IFileTreeNode>();
+    => this.subNodes_?.Cast<IFileTreeNode>() ?? [];
 }
 
 public class FileBundleLeafNode(string label,
