@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using Assimp;
+
+using CommunityToolkit.HighPerformance.Helpers;
 
 using fin.io;
 using fin.model.io.exporters.gltf;
@@ -76,9 +80,8 @@ public class AssimpIndirectModelExporter : IModelExporter {
                          .ToArray();
 
     if (exportAllTextures) {
-      foreach (var texture in model.MaterialManager.Textures) {
-        texture.SaveInDirectory(outputDirectory);
-      }
+      var textures = model.MaterialManager.Textures.DistinctBy(t => t.Name).ToArray();
+      ParallelHelper.For(0, textures.Length, new SaveTextureAction(outputDirectory, textures));
     }
 
     var finMaterials = model.MaterialManager.All;
@@ -193,5 +196,11 @@ public class AssimpIndirectModelExporter : IModelExporter {
         }
       }
     }
+  }
+
+  private readonly struct SaveTextureAction(
+      ISystemDirectory outputDirectory,
+      IReadOnlyList<IReadOnlyTexture> textures) : IAction {
+    public void Invoke(int i) => textures[i].SaveInDirectory(outputDirectory);
   }
 }
