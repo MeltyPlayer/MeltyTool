@@ -15,16 +15,16 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.3.2" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageReference Include="Crayon" Version="2.0.69" />
     <PackageReference Include="FastBitmapLib" Version="2.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="8.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.10.0">
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.12.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NUnit" Version="4.1.0" />
     <PackageReference Include="NVorbis" Version="0.10.5" />
@@ -35,7 +35,7 @@
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
     <PackageReference Include="SubstreamSharp" Version="1.0.3" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
-    <PackageReference Include="System.IO.Abstractions" Version="21.1.3" />
+    <PackageReference Include="System.IO.Abstractions" Version="21.2.1" />
     <PackageReference Include="schema" Version="0.6.2" />
     <PackageReference Include="System.IO.Hashing" Version="9.0.0" />
     <PackageReference Include="ZString" Version="2.6.0" />
