@@ -22,6 +22,7 @@
     <StartupObject>uni.ui.Program</StartupObject>
     <UserSecretsId>7016d56f-b424-467d-8b3a-40e5d0483f29</UserSecretsId>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>$(NoWarn);WFO1000</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
