@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 
 using fin.model;
 using fin.model.accessor;
+using fin.util.enumerables;
 
 namespace fin.shaders.glsl;
 
@@ -19,21 +21,53 @@ public class ModelRequirements : IModelRequirements {
     => new ModelRequirements(model);
 
   private ModelRequirements(IReadOnlyModel model) {
-    var vertexAccessor = MaximalVertexAccessor.GetAccessorForModel(model);
-    foreach (var vertex in model.Skin.Vertices) {
-      vertexAccessor.Target(vertex);
+    var skin = model.Skin;
 
-      this.HasNormals = this.HasNormals || vertexAccessor.LocalNormal != null;
-      this.HasTangents
-          = this.HasTangents || vertexAccessor.LocalTangent != null;
-
-      this.NumBones = Math.Max(
-          this.NumBones,
-          (uint) (vertexAccessor.BoneWeights?.Weights.Count ?? 0));
-      this.NumUvs = Math.Max(this.NumUvs, (uint) vertexAccessor.UvCount);
-      this.NumColors
-          = Math.Max(this.NumColors, (uint) vertexAccessor.ColorCount);
+    switch (skin) {
+      case ISkin<INormalVertex> normalSkin: {
+        this.HasNormals
+            = normalSkin.TypedVertices.Any(v => v.LocalNormal != null);
+        break;
+      }
     }
+
+    switch (skin) {
+      case ISkin<ITangentVertex> tangentSkin: {
+        this.HasTangents
+            = tangentSkin.TypedVertices.Any(v => v.LocalTangent != null);
+        break;
+      }
+    }
+
+    switch (skin) {
+      case ISkin<ISingleColorVertex> singleColorSkin: {
+        this.NumColors
+            = singleColorSkin.TypedVertices.Any(v => v.GetColor() != null)
+                ? (uint) 1
+                : 0;
+        break;
+      }
+      case ISkin<IMultiColorVertex> multiColorSkin: {
+        this.NumColors
+            = (uint) multiColorSkin.TypedVertices.Max(v => v.ColorCount);
+        break;
+      }
+    }
+
+    switch (skin) {
+      case ISkin<ISingleUvVertex> singleUvSkin: {
+        this.NumUvs = singleUvSkin.TypedVertices.Any(v => v.GetUv() != null)
+            ? (uint) 1
+            : 0;
+        break;
+      }
+      case ISkin<IMultiUvVertex> multiUvSkin: {
+        this.NumUvs = (uint) multiUvSkin.TypedVertices.Max(v => v.UvCount);
+        break;
+      }
+    }
+
+    this.NumBones = (uint) skin.BoneWeights.MaxOrDefault(b => b.Weights.Count);
   }
 
   public bool HasNormals { get; }
