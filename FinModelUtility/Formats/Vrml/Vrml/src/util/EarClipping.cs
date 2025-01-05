@@ -13,7 +13,6 @@ public class EarClipping {
   public List<Vector3m> Result { get; private set; }
 
   public void SetPoints(List<Vector3m> points,
-                        List<List<Vector3m>> holes = null,
                         Vector3m normal = null) {
     if (points == null || points.Count < 3) {
       throw new ArgumentException("No list or an empty list passed");
@@ -27,15 +26,6 @@ public class EarClipping {
 
     _mainPointList = new Polygon();
     LinkAndAddToList(_mainPointList, points);
-
-    if (holes != null) {
-      _holes = new List<Polygon>();
-      for (int i = 0; i < holes.Count; i++) {
-        Polygon p = new Polygon();
-        LinkAndAddToList(p, holes[i]);
-        _holes.Add(p);
-      }
-    }
 
     Result = new List<Vector3m>();
   }
@@ -51,43 +41,6 @@ public class EarClipping {
     }
 
     Normal = normal;
-  }
-
-  public static List<Vector3m> GetCoplanarMapping(List<Vector3m> points,
-                                                  out Dictionary<Vector3m,
-                                                          Vector3m>
-                                                      reverseMappingDict) {
-    var normals = points.Select(
-                            (x, i) => (points[
-                                    (i - 1 + points.Count) % points.Count] -
-                                x)
-                                .Cross(points[(i + 1) % points.Count] - x))
-                        .ToList();
-    var averageNormal = normals.Aggregate((x, y) => x + y) / normals.Count;
-    var normalWithAngleClosestToAverage = normals
-                                          .OrderBy(
-                                              x => x.RoughAngleBetween(
-                                                  averageNormal))
-                                          .First();
-    var samplePoint = points[0];
-    var mappedPoints = points
-                       .Select(x => x.ProjectOntoPlane(
-                                   normalWithAngleClosestToAverage,
-                                   samplePoint))
-                       .ToList();
-    reverseMappingDict = points
-                         .Zip(mappedPoints, (x, y) => new { x, y })
-                         .Where(arg => !arg.x.Equals(arg.y))
-                         .ToDictionary(arg => arg.x, arg => arg.y);
-    return mappedPoints;
-  }
-
-  public static List<Vector3m> RevertCoplanarityMapping(
-      List<Vector3m> mappedPoints,
-      Dictionary<Vector3m, Vector3m> mapping) {
-    return mappedPoints
-           .Select(p => mapping.TryGetValue(p, out var mapped) ? mapped : p)
-           .ToList();
   }
 
   private void LinkAndAddToList(Polygon polygon, List<Vector3m> points) {
