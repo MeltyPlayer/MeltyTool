@@ -4,12 +4,18 @@ using fin.shaders.glsl.source;
 
 namespace fin.ui.rendering.gl.material;
 
-public class GlHiddenMaterialShader(IReadOnlyModel model)
-    : BGlMaterialShader<IReadOnlyMaterial?>(model, null, null) {
+public class GlHiddenMaterialShader(
+    IReadOnlyModel model,
+    IModelRequirements modelRequirements)
+    : BGlMaterialShader<IReadOnlyMaterial?>(model,
+                                            modelRequirements,
+                                            null,
+                                            null) {
   protected override void DisposeInternal() { }
 
   protected override IShaderSourceGlsl GenerateShaderSource(
       IReadOnlyModel model,
+      IModelRequirements modelRequirements,
       IReadOnlyMaterial? material)
     => new HiddenShaderSourceGlsl();
 

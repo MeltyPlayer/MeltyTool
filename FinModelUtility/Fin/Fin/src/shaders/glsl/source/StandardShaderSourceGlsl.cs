@@ -9,9 +9,11 @@ namespace fin.shaders.glsl.source;
 public class StandardShaderSourceGlsl : IShaderSourceGlsl {
   public StandardShaderSourceGlsl(
       IReadOnlyModel model,
+      IModelRequirements modelRequirements,
       IReadOnlyStandardMaterial material,
       IShaderRequirements shaderRequirements) {
-    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, shaderRequirements);
+    this.VertexShaderSource
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
     var animations = model.AnimationManager.Animations;
 

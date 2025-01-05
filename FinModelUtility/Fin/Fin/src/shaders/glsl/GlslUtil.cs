@@ -70,6 +70,7 @@ public static class GlslUtil {
 
   // TODO: Only include uvs/colors as needed
   public static string GetVertexSrc(IReadOnlyModel model,
+                                    IModelRequirements modelRequirements,
                                     IShaderRequirements shaderRequirements) {
     var usedUvs = shaderRequirements.UsedUvs;
     var usedColors = shaderRequirements.UsedColors;
@@ -78,7 +79,6 @@ public static class GlslUtil {
 
     var vertexSrc = new StringBuilder();
 
-    var modelRequirements = ModelRequirements.FromModel(model);
     var hasNormals = modelRequirements.HasNormals;
 
     var hasTangents = modelRequirements.HasTangents;

@@ -43,6 +43,6 @@ public static class MockMaterial {
 
     skin.AddMesh().AddPoints(v).SetMaterial(material);
 
-    return material.ToShaderSource(model);
+    return material.ToShaderSource(model, ModelRequirements.FromModel(model));
   }
 }

@@ -1,5 +1,6 @@
 ﻿using fin.math;
 using fin.model;
+using fin.shaders.glsl;
 
 namespace fin.ui.rendering.gl.model;
 
@@ -22,11 +23,14 @@ public partial class ModelRendererV2 {
         return;
       }
 
+      var modelRequirements = ModelRequirements.FromModel(this.Model);
+
       if (!dynamic) {
-        this.bufferManager_ = GlBufferManager.CreateStatic(this.Model);
+        this.bufferManager_
+            = GlBufferManager.CreateStatic(this.Model, modelRequirements);
       } else {
         this.bufferManager_ = this.dynamicBufferManager_
-            = GlBufferManager.CreateDynamic(this.Model);
+            = GlBufferManager.CreateDynamic(this.Model, modelRequirements);
       }
 
       List<MergedMaterialPrimitivesByMeshRenderer> currentList = null;
@@ -39,11 +43,11 @@ public partial class ModelRendererV2 {
                             .OrderBy(primitive => primitive.InversePriority)
                             .ToList(),
                         out var mergedPrimitive)) {
-
                   currentList.Add(new MergedMaterialPrimitivesByMeshRenderer(
                                       textureTransformManager,
                                       this.bufferManager_,
                                       this.Model,
+                                      modelRequirements,
                                       material,
                                       mergedPrimitive));
                 }

@@ -1,5 +1,6 @@
 ﻿using fin.math;
 using fin.model;
+using fin.shaders.glsl;
 using fin.ui.rendering.gl.material;
 
 namespace fin.ui.rendering.gl.model;
@@ -15,11 +16,13 @@ public partial class ModelRendererV2 {
         IReadOnlyTextureTransformManager? textureTransformManager,
         IGlBufferManager bufferManager,
         IReadOnlyModel model,
+        IModelRequirements modelRequirements,
         IReadOnlyMaterial? material,
         MergedPrimitive mergedPrimitive) {
       this.material_ = material;
 
       this.materialShader_ = GlMaterialShader.FromMaterial(model,
+        modelRequirements,
         material,
         textureTransformManager);
 

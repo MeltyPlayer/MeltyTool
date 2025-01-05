@@ -8,9 +8,11 @@ namespace fin.shaders.glsl.source;
 
 public class ColorShaderSourceGlsl : IShaderSourceGlsl {
   public ColorShaderSourceGlsl(IReadOnlyModel model,
+                               IModelRequirements modelRequirements,
                                IReadOnlyMaterial material,
                                IShaderRequirements shaderRequirements) {
-    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, shaderRequirements);
+    this.VertexShaderSource
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
     var hasColors = shaderRequirements.UsedColors.AnyTrue();
     var hasNormals = shaderRequirements.HasNormals;

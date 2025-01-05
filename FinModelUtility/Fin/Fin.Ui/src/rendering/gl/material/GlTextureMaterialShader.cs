@@ -3,15 +3,18 @@
 using fin.math;
 using fin.model;
 using fin.model.util;
+using fin.shaders.glsl;
 
 namespace fin.ui.rendering.gl.material;
 
 public class GlTextureMaterialShader(
     IReadOnlyModel model,
+    IModelRequirements modelRequirements,
     IReadOnlyTextureMaterial material,
     IReadOnlyTextureTransformManager? textureTransformManager)
     : BGlMaterialShader<IReadOnlyTextureMaterial>(
         model,
+        modelRequirements,
         material,
         textureTransformManager) {
   private IShaderUniform<Vector4> diffuseColorUniform_;

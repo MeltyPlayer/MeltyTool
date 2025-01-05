@@ -7,10 +7,11 @@ namespace fin.shaders.glsl.source;
     
 public class NullShaderSourceGlsl(
     IReadOnlyModel model,
+    IModelRequirements modelRequirements,
     IShaderRequirements shaderRequirements)
     : IShaderSourceGlsl {
   public string VertexShaderSource { get; } =
-    GlslUtil.GetVertexSrc(model, shaderRequirements);
+    GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
   public string FragmentShaderSource {
     get {

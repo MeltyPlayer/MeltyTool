@@ -24,21 +24,20 @@ public interface IShaderRequirements {
 
 public class ShaderRequirements : IShaderRequirements {
   public static ShaderRequirements FromModelAndMaterial(IReadOnlyModel model,
+    IModelRequirements modelRequirements,
     IReadOnlyMaterial? material)
-    => new(model, material);
+    => new(model, modelRequirements, material);
 
   private ShaderRequirements(IReadOnlyModel model,
+                             IModelRequirements modelRequirements,
                              IReadOnlyMaterial? material) {
-    var modelRequirements = ModelRequirements.FromModel(model);
-
     this.UsesSphericalReflectionMapping
         = material?.Textures.Any(t => t.UvType is UvType.SPHERICAL) ?? false;
 
     this.TangentType = TangentType.NOT_PRESENT;
     foreach (var vertex in model.Skin.Meshes
                                 .SelectMany(mesh => mesh.Primitives)
-                                .Where(primitive
-                                           => primitive.Material == material)
+                                .Where(primitive => primitive.Material == material)
                                 .SelectMany(primitive => primitive.Vertices)) {
       switch (vertex) {
         case IReadOnlyNormalTangentVertex {

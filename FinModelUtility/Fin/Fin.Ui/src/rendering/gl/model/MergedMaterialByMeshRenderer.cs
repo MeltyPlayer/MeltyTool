@@ -2,6 +2,7 @@
 using fin.math;
 using fin.model;
 using fin.model.util;
+using fin.shaders.glsl;
 using fin.util.image;
 
 
@@ -37,11 +38,14 @@ public partial class ModelRendererV2 {
         return;
       }
 
+      var modelRequirements = ModelRequirements.FromModel(this.Model);
+
       if (!this.dynamic_) {
-        this.bufferManager_ = GlBufferManager.CreateStatic(this.Model);
+        this.bufferManager_
+            = GlBufferManager.CreateStatic(this.Model, modelRequirements);
       } else {
         this.bufferManager_ = this.dynamicBufferManager_
-            = GlBufferManager.CreateDynamic(this.Model);
+            = GlBufferManager.CreateDynamic(this.Model, modelRequirements);
       }
 
       var allMaterialMeshRenderers =
@@ -93,6 +97,7 @@ public partial class ModelRendererV2 {
                   this.textureTransformManager_,
                   this.bufferManager_,
                   this.Model,
+                  modelRequirements,
                   material,
                   mergedPrimitives));
         }

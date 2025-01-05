@@ -10,13 +10,13 @@ public partial class ShaderSection : UserControl {
     this.InitializeComponent();
     }
 
-  public (IReadOnlyModel, IReadOnlyMaterial?)? ModelAndMaterial {
+  public (IReadOnlyModel, IModelRequirements, IReadOnlyMaterial?)? ModelAndMaterial {
     set {
         if (value == null) {
           this.richTextBox_.Text = "(n/a)";
         } else {
-          var (model, material) = value.Value;
-          this.richTextBox_.Text = material.ToShaderSource(model).FragmentShaderSource;
+          var (model, modelRequirements, material) = value.Value;
+          this.richTextBox_.Text = material.ToShaderSource(model, modelRequirements).FragmentShaderSource;
         }
       }
   }

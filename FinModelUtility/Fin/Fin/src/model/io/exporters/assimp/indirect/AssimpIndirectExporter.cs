@@ -52,10 +52,10 @@ public class AssimpIndirectModelExporter : IModelExporter {
     this.ExportFormats(modelExporterParams, exportedFormats, exportAllTextures);
   }
 
-  public void ExportFormats(IModelExporterParams modelExporterParams,
-                            IReadOnlyList<ExportFormatDescription>
-                                exportedFormats,
-                            bool exportAllTextures) {
+  public void ExportFormats(
+      IModelExporterParams modelExporterParams,
+      IReadOnlyList<ExportFormatDescription> exportedFormats,
+      bool exportAllTextures) {
     var outputFile = modelExporterParams.OutputFile;
     var outputDirectory = outputFile.AssertGetParent();
     var model = modelExporterParams.Model;
@@ -80,9 +80,14 @@ public class AssimpIndirectModelExporter : IModelExporter {
                          .ToArray();
 
     if (exportAllTextures) {
-      var textures = model.MaterialManager.Textures.DistinctBy(t => t.Name).ToArray();
-      ParallelHelper.For(0, textures.Length, new SaveTextureAction(outputDirectory, textures));
+      var textures = model.MaterialManager.Textures.DistinctBy(t => t.Name)
+                          .ToArray();
+      ParallelHelper.For(0,
+                         textures.Length,
+                         new SaveTextureAction(outputDirectory, textures));
     }
+
+    var modelRequirements = ModelRequirements.FromModel(model);
 
     var finMaterials = model.MaterialManager.All;
     for (var i = 0; i < finMaterials.Count; ++i) {
@@ -91,7 +96,7 @@ public class AssimpIndirectModelExporter : IModelExporter {
           finMaterial.Name?.ReplaceInvalidFilenameCharacters() ??
           $"material{i}";
 
-      var shaderSource = finMaterial.ToShaderSource(model);
+      var shaderSource = finMaterial.ToShaderSource(model, modelRequirements);
       var vertexShaderFile = new FinFile(
           Path.Combine(outputDirectory.FullPath,
                        $"{materialName}.vertex.glsl"));

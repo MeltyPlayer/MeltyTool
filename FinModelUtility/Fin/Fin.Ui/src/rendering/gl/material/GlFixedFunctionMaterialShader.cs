@@ -1,21 +1,21 @@
 ﻿using System.Numerics;
 
-using Assimp.Unmanaged;
-
 using fin.language.equations.fixedFunction;
 using fin.math;
 using fin.model;
-using fin.util.enumerables;
+using fin.shaders.glsl;
 
 
 namespace fin.ui.rendering.gl.material;
 
 public class GlFixedFunctionMaterialShader(
     IReadOnlyModel model,
+    IModelRequirements modelRequirements,
     IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
     IReadOnlyTextureTransformManager? textureTransformManager)
     : BGlMaterialShader<IReadOnlyFixedFunctionMaterial>(
         model,
+        modelRequirements,
         fixedFunctionMaterial,
         textureTransformManager) {
   private (IColorRegister, IShaderUniform<Vector3>)[]
@@ -54,7 +54,10 @@ public class GlFixedFunctionMaterialShader(
     var normalTexture = material.NormalTexture;
     if (normalTexture != null) {
       var glTexture = GlTexture.FromTexture(normalTexture);
-      this.SetUpTexture("normalTexture", MaterialConstants.MAX_TEXTURES, normalTexture, glTexture);
+      this.SetUpTexture("normalTexture",
+                        MaterialConstants.MAX_TEXTURES,
+                        normalTexture,
+                        glTexture);
     }
 
     var colorRegisterToUniform

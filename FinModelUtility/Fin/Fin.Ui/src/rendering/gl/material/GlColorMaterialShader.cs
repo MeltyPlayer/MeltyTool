@@ -1,14 +1,20 @@
 ﻿using System.Numerics;
 
 using fin.model;
+using fin.shaders.glsl;
 
 
 namespace fin.ui.rendering.gl.material;
 
 public class GlColorMaterialShader(
     IReadOnlyModel model,
+    IModelRequirements modelRequirements,
     IReadOnlyColorMaterial colorMaterial)
-    : BGlMaterialShader<IReadOnlyColorMaterial>(model, colorMaterial, null) {
+    : BGlMaterialShader<IReadOnlyColorMaterial>(
+        model,
+        modelRequirements,
+        colorMaterial,
+        null) {
   private IShaderUniform<Vector4> diffuseLightColorUniform_;
 
   protected override void DisposeInternal() { }

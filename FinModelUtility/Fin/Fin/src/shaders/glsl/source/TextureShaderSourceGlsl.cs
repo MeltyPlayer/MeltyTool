@@ -9,9 +9,11 @@ namespace fin.shaders.glsl.source;
 
 public class TextureShaderSourceGlsl : IShaderSourceGlsl {
   public TextureShaderSourceGlsl(IReadOnlyModel model,
+                                 IModelRequirements modelRequirements,
                                  IReadOnlyTextureMaterial material,
                                  IShaderRequirements shaderRequirements) {
-    this.VertexShaderSource = GlslUtil.GetVertexSrc(model, shaderRequirements);
+    this.VertexShaderSource
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
     var animations = model.AnimationManager.Animations;
 

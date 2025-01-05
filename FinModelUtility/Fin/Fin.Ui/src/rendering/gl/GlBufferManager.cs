@@ -32,19 +32,32 @@ public interface IGlBufferRenderer : IDisposable, IRenderable;
 
 public class GlBufferManager : IDynamicGlBufferManager {
   private readonly IReadOnlyModel model_;
+  private readonly IModelRequirements modelRequirements_;
   private readonly BufferUsageHint bufferType_;
   private readonly VertexArrayObject vao_;
 
-  public static IGlBufferManager CreateStatic(IReadOnlyModel model)
-    => new GlBufferManager(model, BufferUsageHint.StaticDraw);
+  public static IGlBufferManager CreateStatic(
+      IReadOnlyModel model,
+      IModelRequirements modelRequirements)
+    => new GlBufferManager(model,
+                           modelRequirements,
+                           BufferUsageHint.StaticDraw);
 
-  public static IDynamicGlBufferManager CreateDynamic(IReadOnlyModel model)
-    => new GlBufferManager(model, BufferUsageHint.DynamicDraw);
+  public static IDynamicGlBufferManager CreateDynamic(
+      IReadOnlyModel model,
+      IModelRequirements modelRequirements)
+    => new GlBufferManager(model,
+                           modelRequirements,
+                           BufferUsageHint.DynamicDraw);
 
-  private GlBufferManager(IReadOnlyModel model, BufferUsageHint bufferType) {
+  private GlBufferManager(IReadOnlyModel model,
+                          IModelRequirements modelRequirements,
+                          BufferUsageHint bufferType) {
     this.model_ = model;
+    this.modelRequirements_ = modelRequirements;
     this.bufferType_ = bufferType;
-    this.vao_ = vaoCache_.GetAndIncrement((this.model_, bufferType));
+    this.vao_ = vaoCache_.GetAndIncrement(
+        (this.model_, this.modelRequirements_, bufferType));
   }
 
   ~GlBufferManager() => this.ReleaseUnmanagedResources_();
@@ -55,7 +68,9 @@ public class GlBufferManager : IDynamicGlBufferManager {
   }
 
   private void ReleaseUnmanagedResources_() {
-    vaoCache_.DecrementAndMaybeDispose((this.model_, this.bufferType_));
+    vaoCache_.DecrementAndMaybeDispose((this.model_,
+                                        this.modelRequirements_,
+                                        this.bufferType_));
   }
 
   private class VertexArrayObject : IDisposable {
@@ -87,7 +102,9 @@ public class GlBufferManager : IDynamicGlBufferManager {
     private readonly float[][]? uvData_;
     private readonly float[][]? colorData_;
 
-    public VertexArrayObject(IReadOnlyModel model, BufferUsageHint bufferType) {
+    public VertexArrayObject(IReadOnlyModel model,
+                             IModelRequirements modelRequirements,
+                             BufferUsageHint bufferType) {
       this.model = model;
       this.modelRequirements = ModelRequirements.FromModel(model);
       this.bufferType = bufferType;
@@ -95,8 +112,6 @@ public class GlBufferManager : IDynamicGlBufferManager {
       this.vertices_ = model.Skin.Vertices;
       this.vertexAccessor_ =
           ConsistentVertexAccessor.GetAccessorForModel(model);
-
-      var modelRequirements = ModelRequirements.FromModel(model);
 
       var vboCount = 1;
       this.positionData_ = new Vector3[this.vertices_.Count];
@@ -400,10 +415,12 @@ public class GlBufferManager : IDynamicGlBufferManager {
   }
 
   private static ReferenceCountCacheDictionary<
-          (IReadOnlyModel, BufferUsageHint), VertexArrayObject>
+          (IReadOnlyModel, IModelRequirements, BufferUsageHint),
+          VertexArrayObject>
       vaoCache_ = new(modelAndBufferType => new VertexArrayObject(
                           modelAndBufferType.Item1,
-                          modelAndBufferType.Item2),
+                          modelAndBufferType.Item2,
+                          modelAndBufferType.Item3),
                       (_, vao) => vao.Dispose());
 
   public IGlBufferRenderer CreateRenderer(

@@ -22,13 +22,15 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
 
   protected BGlMaterialShader(
       IReadOnlyModel model,
+      IModelRequirements modelRequirements,
       TMaterial material,
       IReadOnlyTextureTransformManager? textureTransformManager) {
     this.model_ = model;
     this.Material = material;
     this.textureTransformManager_ = textureTransformManager;
 
-    var shaderSource = this.GenerateShaderSource(model, material);
+    var shaderSource
+        = this.GenerateShaderSource(model, modelRequirements, material);
     this.impl_ = GlShaderProgram.FromShaders(
         shaderSource.VertexShaderSource,
         shaderSource.FragmentShaderSource);
@@ -67,7 +69,8 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
 
   protected virtual IShaderSourceGlsl GenerateShaderSource(
       IReadOnlyModel model,
-      TMaterial material) => material.ToShaderSource(model);
+      IModelRequirements modelRequirements,
+      TMaterial material) => material.ToShaderSource(model, modelRequirements);
 
   protected abstract void Setup(TMaterial material,
                                 GlShaderProgram shaderProgram);

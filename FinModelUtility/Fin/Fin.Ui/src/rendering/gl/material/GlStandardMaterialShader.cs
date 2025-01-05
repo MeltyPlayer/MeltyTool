@@ -1,13 +1,16 @@
 ﻿using fin.math;
 using fin.model;
+using fin.shaders.glsl;
 
 namespace fin.ui.rendering.gl.material;
 
 public class GlStandardMaterialShader(
     IReadOnlyModel model,
+    IModelRequirements modelRequirements,
     IReadOnlyStandardMaterial standardMaterial,
     IReadOnlyTextureTransformManager? textureTransformManager)
     : BGlMaterialShader<IReadOnlyStandardMaterial>(model,
+                                                   modelRequirements,
                                                    standardMaterial,
                                                    textureTransformManager) {
   protected override void DisposeInternal() { }
