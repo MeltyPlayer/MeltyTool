@@ -6,7 +6,7 @@ class Misc {
                                    Vector3m v2,
                                    Vector3m normal) {
     var res = (v0 - v1).Cross(v2 - v1);
-    if (res.LengthSquared().IsZero)
+    if (res.LengthSquared().ToDouble() == 0)
       return 0;
     if (res.X.Sign != normal.X.Sign ||
         res.Y.Sign != normal.Y.Sign ||

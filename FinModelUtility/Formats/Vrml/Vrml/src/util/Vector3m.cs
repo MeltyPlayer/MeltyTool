@@ -1,4 +1,6 @@
-﻿using PeterO.Numbers;
+﻿using System.Numerics;
+
+using PeterO.Numbers;
 
 namespace vrml.util;
 
@@ -44,13 +46,13 @@ public class Vector3m {
       return false;
     }
 
-    return this.X.CompareTo(other.X) == 0 &&
-           this.Y.CompareTo(other.Y) == 0 &&
-           this.Z.CompareTo(other.Z) == 0;
+    return new Vector3((float) this.X, (float) this.Y, (float) this.Z) ==
+           new Vector3((float) other.X, (float) other.Y, (float) other.Z);
   }
 
   public override int GetHashCode() {
-    return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Z.GetHashCode();
+    return new Vector3((float) this.X, (float) this.Y, (float) this.Z)
+        .GetHashCode();
   }
 
   public static Vector3m operator-(Vector3m a, Vector3m b) {
