@@ -146,9 +146,9 @@ public class EarClipping {
     return orientation == 1;
   }
 
-  private bool IsPointInTriangle_(Vector3 prevPoint,
-                                  Vector3 curPoint,
-                                  Vector3 nextPoint,
+  private bool IsPointInTriangle_(in Vector3 prevPoint,
+                                  in Vector3 curPoint,
+                                  in Vector3 nextPoint,
                                   List<ConnectionEdge> nonConvexPoints) {
     foreach (var nonConvexPoint in nonConvexPoints) {
       if (nonConvexPoint.Origin.Equals(prevPoint) ||

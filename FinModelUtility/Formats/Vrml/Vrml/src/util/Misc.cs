@@ -1,15 +1,14 @@
 ﻿using System.Numerics;
 
 using fin.math.floats;
-using fin.math.matrix.three;
 
 namespace vrml.util;
 
 class Misc {
-  public static int GetOrientation(Vector3 v0,
-                                   Vector3 v1,
-                                   Vector3 v2,
-                                   Vector3 normal) {
+  public static int GetOrientation(in Vector3 v0,
+                                   in Vector3 v1,
+                                   in Vector3 v2,
+                                   in Vector3 normal) {
     var res = Vector3.Cross(v0 - v1, v2 - v1);
     if (res.Length().IsRoughly0()) {
       return 0;
@@ -22,11 +21,11 @@ class Misc {
     return -1;
   }
 
-  public static bool PointInOrOnTriangle(Vector3 prevPoint,
-                                         Vector3 curPoint,
-                                         Vector3 nextPoint,
-                                         Vector3 nonConvexPoint,
-                                         Vector3 normal) {
+  public static bool PointInOrOnTriangle(in Vector3 prevPoint,
+                                         in Vector3 curPoint,
+                                         in Vector3 nextPoint,
+                                         in Vector3 nonConvexPoint,
+                                         in Vector3 normal) {
     var res0 = Misc.GetOrientation(prevPoint, nonConvexPoint, curPoint, normal);
     var res1 = Misc.GetOrientation(curPoint, nonConvexPoint, nextPoint, normal);
     var res2
