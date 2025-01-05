@@ -5,8 +5,8 @@ namespace vrml.util;
 // Implementation of Triangulation by Ear Clipping
 // by David Eberly
 public class EarClipping {
-  private Polygon _mainPointList;
-  private Vector3m Normal;
+  private Polygon mainPointList_;
+  private Vector3m normal_;
   public List<Vector3m> Result { get; private set; }
 
   public void SetPoints(List<Vector3m> points,
@@ -16,19 +16,19 @@ public class EarClipping {
     }
 
     if (normal == null)
-      CalcNormal(points);
+      this.CalcNormal_(points);
     else {
-      Normal = normal;
+      this.normal_ = normal;
     }
 
-    _mainPointList = new Polygon();
-    LinkAndAddToList(_mainPointList, points);
+    this.mainPointList_ = new Polygon();
+    this.LinkAndAddToList_(this.mainPointList_, points);
 
-    Result = new List<Vector3m>();
+    this.Result = new List<Vector3m>();
   }
 
   // calculating normal using Newell's method
-  private void CalcNormal(List<Vector3m> points) {
+  private void CalcNormal_(List<Vector3m> points) {
     Vector3m normal = Vector3m.Zero();
     for (var i = 0; i < points.Count; i++) {
       var j = (i + 1) % (points.Count);
@@ -37,10 +37,10 @@ public class EarClipping {
       normal.Z += (points[i].X - points[j].X) * (points[i].Y + points[j].Y);
     }
 
-    Normal = normal;
+    this.normal_ = normal;
   }
 
-  private void LinkAndAddToList(Polygon polygon, List<Vector3m> points) {
+  private void LinkAndAddToList_(Polygon polygon, List<Vector3m> points) {
     ConnectionEdge prev = null, first = null;
     Dictionary<Vector3m, Vector3m> pointsHashSet
         = new Dictionary<Vector3m, Vector3m>();
@@ -63,63 +63,64 @@ public class EarClipping {
       first = (i == 0) ? current : first; // remember first
 
       if (prev != null) {
-        prev.Next = current;
+        prev.next_ = current;
       }
 
-      current.Prev = prev;
+      current.prev_ = prev;
       prev = current;
     }
 
-    first.Prev = prev;
-    prev.Next = first;
-    polygon.Start = first;
-    polygon.PointCount = pointCount;
+    first.prev_ = prev;
+    prev.next_ = first;
+    polygon.start_ = first;
+    polygon.pointCount_ = pointCount;
   }
 
   public void Triangulate() {
-    if (Normal.Equals(Vector3m.Zero()))
+    if (this.normal_.Equals(Vector3m.Zero()))
       throw new Exception("The input is not a valid polygon");
 
-    List<ConnectionEdge> nonConvexPoints = FindNonConvexPoints(_mainPointList);
+    List<ConnectionEdge> nonConvexPoints
+        = this.FindNonConvexPoints_(this.mainPointList_);
 
-    if (nonConvexPoints.Count == _mainPointList.PointCount)
+    if (nonConvexPoints.Count == this.mainPointList_.pointCount_)
       throw new ArgumentException("The triangle input is not valid");
 
-    while (_mainPointList.PointCount > 2) {
+    while (this.mainPointList_.pointCount_ > 2) {
       bool guard = false;
-      foreach (var cur in _mainPointList.GetPolygonCirculator()) {
-        if (!IsConvex(cur))
+      foreach (var cur in this.mainPointList_.GetPolygonCirculator()) {
+        if (!this.IsConvex_(cur))
           continue;
 
-        if (!IsPointInTriangle(cur.Prev.Origin,
-                               cur.Origin,
-                               cur.Next.Origin,
-                               nonConvexPoints)) {
+        if (!this.IsPointInTriangle_(cur.prev_.Origin,
+                                     cur.Origin,
+                                     cur.next_.Origin,
+                                     nonConvexPoints)) {
           // cut off ear
           guard = true;
-          Result.Add(cur.Prev.Origin);
-          Result.Add(cur.Origin);
-          Result.Add(cur.Next.Origin);
+          this.Result.Add(cur.prev_.Origin);
+          this.Result.Add(cur.Origin);
+          this.Result.Add(cur.next_.Origin);
 
           // Check if prev and next are still nonconvex. If not, then remove from non convex list
-          if (IsConvex(cur.Prev)) {
-            int index = nonConvexPoints.FindIndex(x => x == cur.Prev);
+          if (this.IsConvex_(cur.prev_)) {
+            int index = nonConvexPoints.FindIndex(x => x == cur.prev_);
             if (index >= 0)
               nonConvexPoints.RemoveAt(index);
           }
 
-          if (IsConvex(cur.Next)) {
-            int index = nonConvexPoints.FindIndex(x => x == cur.Next);
+          if (this.IsConvex_(cur.next_)) {
+            int index = nonConvexPoints.FindIndex(x => x == cur.next_);
             if (index >= 0)
               nonConvexPoints.RemoveAt(index);
           }
 
-          _mainPointList.Remove(cur);
+          this.mainPointList_.Remove(cur);
           break;
         }
       }
 
-      if (PointsOnLine(_mainPointList))
+      if (this.PointsOnLine(this.mainPointList_))
         break;
       if (!guard) {
         throw new Exception("No progression. The input must be wrong");
@@ -129,10 +130,10 @@ public class EarClipping {
 
   private bool PointsOnLine(Polygon pointList) {
     foreach (var connectionEdge in pointList.GetPolygonCirculator()) {
-      if (Misc.GetOrientation(connectionEdge.Prev.Origin,
+      if (Misc.GetOrientation(connectionEdge.prev_.Origin,
                               connectionEdge.Origin,
-                              connectionEdge.Next.Origin,
-                              Normal) !=
+                              connectionEdge.next_.Origin,
+                              this.normal_) !=
           0)
         return false;
     }
@@ -140,18 +141,18 @@ public class EarClipping {
     return true;
   }
 
-  private bool IsConvex(ConnectionEdge curPoint) {
-    int orientation = Misc.GetOrientation(curPoint.Prev.Origin,
+  private bool IsConvex_(ConnectionEdge curPoint) {
+    int orientation = Misc.GetOrientation(curPoint.prev_.Origin,
                                           curPoint.Origin,
-                                          curPoint.Next.Origin,
-                                          Normal);
+                                          curPoint.next_.Origin,
+                                          this.normal_);
     return orientation == 1;
   }
 
-  private bool IsPointInTriangle(Vector3m prevPoint,
-                                 Vector3m curPoint,
-                                 Vector3m nextPoint,
-                                 List<ConnectionEdge> nonConvexPoints) {
+  private bool IsPointInTriangle_(Vector3m prevPoint,
+                                  Vector3m curPoint,
+                                  Vector3m nextPoint,
+                                  List<ConnectionEdge> nonConvexPoints) {
     foreach (var nonConvexPoint in nonConvexPoints) {
       if (nonConvexPoint.Origin == prevPoint ||
           nonConvexPoint.Origin == curPoint ||
@@ -161,20 +162,20 @@ public class EarClipping {
                                    curPoint,
                                    nextPoint,
                                    nonConvexPoint.Origin,
-                                   Normal))
+                                   this.normal_))
         return true;
     }
 
     return false;
   }
 
-  private List<ConnectionEdge> FindNonConvexPoints(Polygon p) {
+  private List<ConnectionEdge> FindNonConvexPoints_(Polygon p) {
     List<ConnectionEdge> resultList = new List<ConnectionEdge>();
     foreach (var connectionEdge in p.GetPolygonCirculator()) {
-      if (Misc.GetOrientation(connectionEdge.Prev.Origin,
+      if (Misc.GetOrientation(connectionEdge.prev_.Origin,
                               connectionEdge.Origin,
-                              connectionEdge.Next.Origin,
-                              Normal) !=
+                              connectionEdge.next_.Origin,
+                              this.normal_) !=
           1)
         resultList.Add(connectionEdge);
     }
@@ -185,65 +186,69 @@ public class EarClipping {
 
 internal class ConnectionEdge {
   protected bool Equals(ConnectionEdge other) {
-    return Next.Origin.Equals(other.Next.Origin) && Origin.Equals(other.Origin);
+    return this.next_.Origin.Equals(other.next_.Origin) &&
+           this.Origin.Equals(other.Origin);
   }
 
   public override bool Equals(object obj) {
     if (ReferenceEquals(null, obj)) return false;
     if (ReferenceEquals(this, obj)) return true;
     if (obj.GetType() != this.GetType()) return false;
-    return Equals((ConnectionEdge) obj);
+    return this.Equals((ConnectionEdge) obj);
   }
 
   public override int GetHashCode() {
     unchecked {
-      return ((Next.Origin != null ? Next.Origin.GetHashCode() : 0) * 397) ^
-             (Origin != null ? Origin.GetHashCode() : 0);
+      return ((this.next_.Origin != null
+                  ? this.next_.Origin.GetHashCode()
+                  : 0) *
+              397) ^
+             (this.Origin != null ? this.Origin.GetHashCode() : 0);
     }
   }
 
   internal Vector3m Origin { get; set; }
-  internal ConnectionEdge Prev;
-  internal ConnectionEdge Next;
+  internal ConnectionEdge prev_;
+  internal ConnectionEdge next_;
   internal Polygon Polygon { get; set; }
 
   public ConnectionEdge(Vector3m p0, Polygon parentPolygon) {
-    Origin = p0;
-    Polygon = parentPolygon;
-    AddIncidentEdge(this);
+    this.Origin = p0;
+    this.Polygon = parentPolygon;
+    this.AddIncidentEdge(this);
   }
 
   public override string ToString() {
-    return "Origin: " + Origin + " Next: " + Next.Origin;
+    return "Origin: " + this.Origin + " Next: " + this.next_.Origin;
   }
 
   internal void AddIncidentEdge(ConnectionEdge next) {
     var list
-        = (List<ConnectionEdge>) Origin.DynamicProperties.GetValue(
+        = (List<ConnectionEdge>) this.Origin.DynamicProperties.GetValue(
             PropertyConstants.IncidentEdges);
     list.Add(next);
   }
 }
 
 internal class Polygon {
-  internal ConnectionEdge Start;
-  internal int PointCount = 0;
+  internal ConnectionEdge start_;
+  internal int pointCount_ = 0;
 
   internal IEnumerable<ConnectionEdge> GetPolygonCirculator() {
-    if (Start == null) {
+    if (this.start_ == null) {
       yield break;
     }
 
-    var h = Start;
+    var h = this.start_;
     do {
       yield return h;
-      h = h.Next;
-    } while (h != Start);
+      h = h.next_;
+    } while (h != this.start_);
   }
 
   internal void Remove(ConnectionEdge cur) {
-    cur.Prev.Next = cur.Next;
-    cur.Next.Prev = cur.Prev;
+    cur.prev_.next_ = cur.next_;
+    cur.next_.prev_ = cur.prev_;
     var incidentEdges =
         (List<ConnectionEdge>) cur.Origin.DynamicProperties.GetValue(
             PropertyConstants.IncidentEdges);
@@ -251,13 +256,13 @@ internal class Polygon {
     Debug.Assert(index >= 0);
     incidentEdges.RemoveAt(index);
     if (incidentEdges.Count == 0)
-      PointCount--;
-    if (cur == Start)
-      Start = cur.Prev;
+      this.pointCount_--;
+    if (cur == this.start_)
+      this.start_ = cur.prev_;
   }
 
   public bool Contains(Vector3m vector2M, out Vector3m res) {
-    foreach (var connectionEdge in GetPolygonCirculator()) {
+    foreach (var connectionEdge in this.GetPolygonCirculator()) {
       if (connectionEdge.Origin.Equals(vector2M)) {
         res = connectionEdge.Origin;
         return true;

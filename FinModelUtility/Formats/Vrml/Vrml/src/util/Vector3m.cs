@@ -6,15 +6,15 @@ public class Vector3m : ICloneable {
   internal DynamicProperties DynamicProperties = new DynamicProperties();
 
   public Vector3m(ERational x, ERational y, ERational z) {
-    X = x;
-    Y = y;
-    Z = z;
+    this.X = x;
+    this.Y = y;
+    this.Z = z;
   }
 
   public Vector3m(Vector3m v) {
-    X = v.X;
-    Y = v.Y;
-    Z = v.Z;
+    this.X = v.X;
+    this.Y = v.Y;
+    this.Z = v.Z;
   }
 
   public static Vector3m Zero() {
@@ -26,7 +26,7 @@ public class Vector3m : ICloneable {
   public ERational Z { get; set; }
 
   public object Clone() {
-    return new Vector3m(X, Y, Z);
+    return new Vector3m(this.X, this.Y, this.Z);
   }
 
   public Vector3m Plus(Vector3m a) {
@@ -54,15 +54,15 @@ public class Vector3m : ICloneable {
   }
 
   public double Length() {
-    return System.Math.Sqrt(Dot(this).ToDouble());
+    return System.Math.Sqrt(this.Dot(this).ToDouble());
   }
 
   public (double, double, double) ToDouble() {
-    return (X.ToDouble(), Y.ToDouble(), Z.ToDouble());
+    return (this.X.ToDouble(), this.Y.ToDouble(), this.Z.ToDouble());
   }
 
   public ERational LengthSquared() {
-    return Dot(this);
+    return this.Dot(this);
   }
 
   public Vector3m Cross(Vector3m a) {
@@ -80,9 +80,9 @@ public class Vector3m : ICloneable {
       return false;
     }
 
-    return X.CompareTo(other.X) == 0 &&
-           Y.CompareTo(other.Y) == 0 &&
-           Z.CompareTo(other.Z) == 0;
+    return this.X.CompareTo(other.X) == 0 &&
+           this.Y.CompareTo(other.Y) == 0 &&
+           this.Z.CompareTo(other.Z) == 0;
   }
 
   public override int GetHashCode() {
