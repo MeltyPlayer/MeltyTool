@@ -260,16 +260,4 @@ internal class Polygon {
     if (cur == this.start_)
       this.start_ = cur.prev_;
   }
-
-  public bool Contains(Vector3m vector2M, out Vector3m res) {
-    foreach (var connectionEdge in this.GetPolygonCirculator()) {
-      if (connectionEdge.Origin.Equals(vector2M)) {
-        res = connectionEdge.Origin;
-        return true;
-      }
-    }
-
-    res = null;
-    return false;
-  }
 }

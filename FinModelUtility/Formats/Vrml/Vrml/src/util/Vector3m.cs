@@ -2,19 +2,13 @@
 
 namespace vrml.util;
 
-public class Vector3m : ICloneable {
+public class Vector3m {
   internal DynamicProperties DynamicProperties = new DynamicProperties();
 
   public Vector3m(ERational x, ERational y, ERational z) {
     this.X = x;
     this.Y = y;
     this.Z = z;
-  }
-
-  public Vector3m(Vector3m v) {
-    this.X = v.X;
-    this.Y = v.Y;
-    this.Z = v.Z;
   }
 
   public static Vector3m Zero() {
@@ -25,40 +19,12 @@ public class Vector3m : ICloneable {
   public ERational Y { get; set; }
   public ERational Z { get; set; }
 
-  public object Clone() {
-    return new Vector3m(this.X, this.Y, this.Z);
-  }
-
-  public Vector3m Plus(Vector3m a) {
-    return new Vector3m(this.X + a.X, this.Y + a.Y, this.Z + a.Z);
-  }
-
   public Vector3m Minus(Vector3m a) {
     return new Vector3m(this.X - a.X, this.Y - a.Y, this.Z - a.Z);
   }
 
-  public Vector3m Times(ERational a) {
-    return new Vector3m(this.X * a, this.Y * a, this.Z * a);
-  }
-
-  public Vector3m DividedBy(ERational a) {
-    return new Vector3m(this.X / a, this.Y / a, this.Z / a);
-  }
-
   public ERational Dot(Vector3m a) {
     return this.X * a.X + this.Y * a.Y + this.Z * a.Z;
-  }
-
-  public Vector3m Lerp(Vector3m a, ERational t) {
-    return this.Plus(a.Minus(this).Times(t));
-  }
-
-  public double Length() {
-    return System.Math.Sqrt(this.Dot(this).ToDouble());
-  }
-
-  public (double, double, double) ToDouble() {
-    return (this.X.ToDouble(), this.Y.ToDouble(), this.Z.ToDouble());
   }
 
   public ERational LengthSquared() {
@@ -89,19 +55,7 @@ public class Vector3m : ICloneable {
     return this.X.GetHashCode() ^ this.Y.GetHashCode() ^ this.Z.GetHashCode();
   }
 
-  public static Vector3m operator+(Vector3m a, Vector3m b) {
-    return a.Plus(b);
-  }
-
   public static Vector3m operator-(Vector3m a, Vector3m b) {
     return a.Minus(b);
-  }
-
-  public static Vector3m operator*(Vector3m a, ERational d) {
-    return new Vector3m(a.X * d, a.Y * d, a.Z * d);
-  }
-
-  public static Vector3m operator/(Vector3m a, ERational d) {
-    return a.DividedBy(d);
   }
 }
