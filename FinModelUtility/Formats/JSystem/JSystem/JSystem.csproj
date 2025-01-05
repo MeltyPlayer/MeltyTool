@@ -58,7 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.2" />
+    <PackageReference Include="schema" Version="0.6.3" />
   </ItemGroup>
 
   <ItemGroup>
