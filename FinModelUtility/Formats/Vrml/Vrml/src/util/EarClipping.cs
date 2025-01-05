@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 
 namespace vrml.util;
 
@@ -6,20 +7,15 @@ namespace vrml.util;
 // by David Eberly
 public class EarClipping {
   private Polygon mainPointList_;
-  private Vector3m normal_;
+  private Vector3 normal_;
   public List<Vector3m> Result { get; private set; }
 
-  public void SetPoints(List<Vector3m> points,
-                        Vector3m normal = null) {
+  public void SetPoints(List<Vector3m> points) {
     if (points == null || points.Count < 3) {
       throw new ArgumentException("No list or an empty list passed");
     }
 
-    if (normal == null)
-      this.CalcNormal_(points);
-    else {
-      this.normal_ = normal;
-    }
+    this.CalcNormal_(points);
 
     this.mainPointList_ = new Polygon();
     this.LinkAndAddToList_(this.mainPointList_, points);
@@ -29,7 +25,7 @@ public class EarClipping {
 
   // calculating normal using Newell's method
   private void CalcNormal_(List<Vector3m> points) {
-    Vector3m normal = Vector3m.Zero();
+    Vector3 normal = Vector3.Zero;
     for (var i = 0; i < points.Count; i++) {
       var j = (i + 1) % (points.Count);
       normal.X += (points[i].Y - points[j].Y) * (points[i].Z + points[j].Z);
