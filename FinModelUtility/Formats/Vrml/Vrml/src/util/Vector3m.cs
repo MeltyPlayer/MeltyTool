@@ -5,7 +5,7 @@ using PeterO.Numbers;
 namespace vrml.util;
 
 public class Vector3m {
-  public Vector3m(ERational x, ERational y, ERational z) {
+  public Vector3m(float x, float y, float z) {
     this.X = x;
     this.Y = y;
     this.Z = z;
@@ -15,9 +15,9 @@ public class Vector3m {
     return new Vector3m(0, 0, 0);
   }
 
-  public ERational X { get; set; }
-  public ERational Y { get; set; }
-  public ERational Z { get; set; }
+  public float X { get; set; }
+  public float Y { get; set; }
+  public float Z { get; set; }
 
   public Vector3m Minus(Vector3m a) {
     return new Vector3m(this.X - a.X, this.Y - a.Y, this.Z - a.Z);
@@ -46,13 +46,12 @@ public class Vector3m {
       return false;
     }
 
-    return new Vector3((float) this.X, (float) this.Y, (float) this.Z) ==
-           new Vector3((float) other.X, (float) other.Y, (float) other.Z);
+    return new Vector3(this.X, this.Y, this.Z) ==
+           new Vector3(other.X, other.Y, other.Z);
   }
 
   public override int GetHashCode() {
-    return new Vector3((float) this.X, (float) this.Y, (float) this.Z)
-        .GetHashCode();
+    return new Vector3(this.X, this.Y, this.Z).GetHashCode();
   }
 
   public static Vector3m operator-(Vector3m a, Vector3m b) {

@@ -8,9 +8,9 @@ class Misc {
     var res = (v0 - v1).Cross(v2 - v1);
     if (res.LengthSquared().ToDouble() == 0)
       return 0;
-    if (res.X.Sign != normal.X.Sign ||
-        res.Y.Sign != normal.Y.Sign ||
-        res.Z.Sign != normal.Z.Sign)
+    if (Math.Sign(res.X) != Math.Sign(normal.X) ||
+        Math.Sign(res.Y) != Math.Sign(normal.Y) ||
+        Math.Sign(res.Z) != Math.Sign(normal.Z))
       return 1;
     return -1;
   }
