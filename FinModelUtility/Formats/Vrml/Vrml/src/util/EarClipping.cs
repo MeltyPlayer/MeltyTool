@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Numerics;
 
+using fin.util.hash;
+
 namespace vrml.util;
 
 // Implementation of Triangulation by Ear Clipping
@@ -38,7 +40,8 @@ public class EarClipping {
 
   private void LinkAndAddToList_(Polygon polygon, List<Vector3> points) {
     ConnectionEdge prev = null, first = null;
-    Dictionary<Vector3, (Vector3, int, List<ConnectionEdge>)> pointsHashSet = new();
+    Dictionary<Vector3, (Vector3, int, List<ConnectionEdge>)> pointsHashSet
+        = new();
     int pointCount = 0;
     for (int i = 0; i < points.Count; i++) {
       // we don't wanna have duplicates
@@ -184,11 +187,6 @@ public class EarClipping {
 internal class ConnectionEdge {
   public List<ConnectionEdge> IncidentEdges { get; } = new();
 
-  protected bool Equals(ConnectionEdge other) {
-    return this.next_.Origin.Equals(other.next_.Origin) &&
-           this.Origin.Equals(other.Origin);
-  }
-
   public override bool Equals(object obj) {
     if (ReferenceEquals(null, obj)) return false;
     if (ReferenceEquals(this, obj)) return true;
@@ -196,15 +194,13 @@ internal class ConnectionEdge {
     return this.Equals((ConnectionEdge) obj);
   }
 
-  public override int GetHashCode() {
-    unchecked {
-      return ((this.next_.Origin != null
-                  ? this.next_.Origin.GetHashCode()
-                  : 0) *
-              397) ^
-             (this.Origin != null ? this.Origin.GetHashCode() : 0);
-    }
-  }
+  protected bool Equals(ConnectionEdge other)
+    => this.next_.OriginIndex.Equals(other.next_.OriginIndex) &&
+       this.OriginIndex.Equals(other.OriginIndex);
+
+
+  public override int GetHashCode()
+    => FluentHash.Start().With(this.next_.OriginIndex).With(this.OriginIndex);
 
   internal Vector3 Origin { get; }
   internal int OriginIndex { get; }
@@ -213,7 +209,10 @@ internal class ConnectionEdge {
   internal ConnectionEdge next_;
   internal Polygon Polygon { get; set; }
 
-  public ConnectionEdge(Vector3 p0, int p0Index, Polygon parentPolygon, List<ConnectionEdge> incidentEdges) {
+  public ConnectionEdge(Vector3 p0,
+                        int p0Index,
+                        Polygon parentPolygon,
+                        List<ConnectionEdge> incidentEdges) {
     this.Origin = p0;
     this.OriginIndex = p0Index;
     this.Polygon = parentPolygon;
@@ -246,9 +245,7 @@ internal class Polygon {
     cur.prev_.next_ = cur.next_;
     cur.next_.prev_ = cur.prev_;
     var incidentEdges = cur.IncidentEdges;
-    int index = incidentEdges.FindIndex(x => x.Equals(cur));
-    Debug.Assert(index >= 0);
-    incidentEdges.RemoveAt(index);
+    Debug.Assert(incidentEdges.Remove(cur));
     if (incidentEdges.Count == 0)
       this.pointCount_--;
     if (cur == this.start_)

@@ -14,11 +14,7 @@ class Misc {
       return 0;
     }
 
-    if (Math.Sign(res.X) != Math.Sign(normal.X) ||
-        Math.Sign(res.Y) != Math.Sign(normal.Y) ||
-        Math.Sign(res.Z) != Math.Sign(normal.Z))
-      return 1;
-    return -1;
+    return Vector3.Dot(res, normal) < 0 ? 1 : -1;
   }
 
   public static bool PointInOrOnTriangle(in Vector3 prevPoint,
