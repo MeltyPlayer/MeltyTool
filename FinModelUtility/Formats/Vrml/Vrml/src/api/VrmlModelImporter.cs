@@ -285,12 +285,10 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             points3d.Select(t => t.LocalPosition).ToArray());
 
     try {
-      var indexByVec3m = new Dictionary<Vector3m, int>(new EqualityComparer());
       var vec3msWithIndices = new List<Vector3m>();
       for (var i = 0; i < points2d.Count; ++i) {
         var point2d = points2d[i];
         var vec3m = new Vector3m(point2d.X, point2d.Y, 0);
-        indexByVec3m[vec3m] = i;
         vec3msWithIndices.Add(vec3m);
       }
 
@@ -300,7 +298,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
       return earClipping
              .Result
-             .Select(v => points3d[indexByVec3m[v]])
+             .Select(i => points3d[i])
              .ToArray();
     } catch {
       var delaunator = new Delaunator(

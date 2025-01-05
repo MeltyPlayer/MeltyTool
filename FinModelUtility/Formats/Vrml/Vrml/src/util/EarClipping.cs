@@ -8,7 +8,7 @@ namespace vrml.util;
 public class EarClipping {
   private Polygon mainPointList_;
   private Vector3 normal_;
-  public List<Vector3m> Result { get; private set; }
+  public List<int> Result { get; private set; }
 
   public void SetPoints(List<Vector3m> points) {
     if (points == null || points.Count < 3) {
@@ -20,7 +20,7 @@ public class EarClipping {
     this.mainPointList_ = new Polygon();
     this.LinkAndAddToList_(this.mainPointList_, points);
 
-    this.Result = new List<Vector3m>();
+    this.Result = new List<int>();
   }
 
   // calculating normal using Newell's method
@@ -38,22 +38,24 @@ public class EarClipping {
 
   private void LinkAndAddToList_(Polygon polygon, List<Vector3m> points) {
     ConnectionEdge prev = null, first = null;
-    Dictionary<Vector3m, (Vector3m, List<ConnectionEdge>)> pointsHashSet = new();
+    Dictionary<Vector3m, (Vector3m, int, List<ConnectionEdge>)> pointsHashSet = new();
     int pointCount = 0;
     for (int i = 0; i < points.Count; i++) {
       // we don't wanna have duplicates
       Vector3m p0;
+      int p0Index;
       List<ConnectionEdge> incidentEdges;
       if (pointsHashSet.ContainsKey(points[i])) {
-        (p0, incidentEdges) = pointsHashSet[points[i]];
+        (p0, p0Index, incidentEdges) = pointsHashSet[points[i]];
       } else {
         p0 = points[i];
+        p0Index = i;
         incidentEdges = new List<ConnectionEdge>();
-        pointsHashSet.Add(p0, (p0, incidentEdges));
+        pointsHashSet.Add(p0, (p0, p0Index, incidentEdges));
         pointCount++;
       }
 
-      ConnectionEdge current = new(p0, polygon, incidentEdges);
+      ConnectionEdge current = new(p0, p0Index, polygon, incidentEdges);
 
       first = (i == 0) ? current : first; // remember first
 
@@ -72,7 +74,7 @@ public class EarClipping {
   }
 
   public void Triangulate() {
-    if (this.normal_.Equals(Vector3m.Zero()))
+    if (this.normal_ == Vector3.Zero)
       throw new Exception("The input is not a valid polygon");
 
     List<ConnectionEdge> nonConvexPoints
@@ -93,9 +95,9 @@ public class EarClipping {
                                      nonConvexPoints)) {
           // cut off ear
           guard = true;
-          this.Result.Add(cur.prev_.Origin);
-          this.Result.Add(cur.Origin);
-          this.Result.Add(cur.next_.Origin);
+          this.Result.Add(cur.prev_.OriginIndex);
+          this.Result.Add(cur.OriginIndex);
+          this.Result.Add(cur.next_.OriginIndex);
 
           // Check if prev and next are still nonconvex. If not, then remove from non convex list
           if (this.IsConvex_(cur.prev_)) {
@@ -149,9 +151,9 @@ public class EarClipping {
                                   Vector3m nextPoint,
                                   List<ConnectionEdge> nonConvexPoints) {
     foreach (var nonConvexPoint in nonConvexPoints) {
-      if (nonConvexPoint.Origin == prevPoint ||
-          nonConvexPoint.Origin == curPoint ||
-          nonConvexPoint.Origin == nextPoint)
+      if (nonConvexPoint.Origin.Equals(prevPoint) ||
+          nonConvexPoint.Origin.Equals(curPoint) ||
+          nonConvexPoint.Origin.Equals(nextPoint))
         continue;
       if (Misc.PointInOrOnTriangle(prevPoint,
                                    curPoint,
@@ -205,12 +207,15 @@ internal class ConnectionEdge {
   }
 
   internal Vector3m Origin { get; }
+  internal int OriginIndex { get; }
+
   internal ConnectionEdge prev_;
   internal ConnectionEdge next_;
   internal Polygon Polygon { get; set; }
 
-  public ConnectionEdge(Vector3m p0, Polygon parentPolygon, List<ConnectionEdge> incidentEdges) {
+  public ConnectionEdge(Vector3m p0, int p0Index, Polygon parentPolygon, List<ConnectionEdge> incidentEdges) {
     this.Origin = p0;
+    this.OriginIndex = p0Index;
     this.Polygon = parentPolygon;
     this.IncidentEdges = incidentEdges;
     this.IncidentEdges.Add(this);
