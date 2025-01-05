@@ -42,7 +42,7 @@ public class ModelRequirements : IModelRequirements {
     switch (skin) {
       case ISkin<IMultiColorVertex> multiColorSkin: {
         this.NumColors
-            = (uint) multiColorSkin.TypedVertices.Max(v => v.ColorCount);
+            = (uint) multiColorSkin.TypedVertices.MaxOrDefault(v => v.ColorCount);
         break;
       }
       case ISkin<ISingleColorVertex> singleColorSkin: {
@@ -56,7 +56,7 @@ public class ModelRequirements : IModelRequirements {
 
     switch (skin) {
       case ISkin<IMultiUvVertex> multiUvSkin: {
-        this.NumUvs = (uint) multiUvSkin.TypedVertices.Max(v => v.UvCount);
+        this.NumUvs = (uint) multiUvSkin.TypedVertices.MaxOrDefault(v => v.UvCount);
         break;
       }
       case ISkin<ISingleUvVertex> singleUvSkin: {
