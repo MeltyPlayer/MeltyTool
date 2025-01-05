@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 
 using DelaunatorSharp;
 
-using EarClipperLib;
-
 using fin.color;
 using fin.data.counters;
 using fin.data.lazy;
