@@ -6,11 +6,11 @@ using fin.math.matrix.three;
 namespace vrml.util;
 
 class Misc {
-  public static int GetOrientation(Vector3m v0,
-                                   Vector3m v1,
-                                   Vector3m v2,
+  public static int GetOrientation(Vector3 v0,
+                                   Vector3 v1,
+                                   Vector3 v2,
                                    Vector3 normal) {
-    var res = (Vector3) ((v0 - v1).Cross(v2 - v1));
+    var res = Vector3.Cross(v0 - v1, v2 - v1);
     if (res.Length().IsRoughly0()) {
       return 0;
     }
@@ -22,10 +22,10 @@ class Misc {
     return -1;
   }
 
-  public static bool PointInOrOnTriangle(Vector3m prevPoint,
-                                         Vector3m curPoint,
-                                         Vector3m nextPoint,
-                                         Vector3m nonConvexPoint,
+  public static bool PointInOrOnTriangle(Vector3 prevPoint,
+                                         Vector3 curPoint,
+                                         Vector3 nextPoint,
+                                         Vector3 nonConvexPoint,
                                          Vector3 normal) {
     var res0 = Misc.GetOrientation(prevPoint, nonConvexPoint, curPoint, normal);
     var res1 = Misc.GetOrientation(curPoint, nonConvexPoint, nextPoint, normal);

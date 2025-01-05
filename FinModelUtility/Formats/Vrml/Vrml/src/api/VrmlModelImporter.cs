@@ -285,15 +285,15 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             points3d.Select(t => t.LocalPosition).ToArray());
 
     try {
-      var vec3msWithIndices = new List<Vector3m>();
+      var vec3sWithIndices = new List<Vector3>();
       for (var i = 0; i < points2d.Count; ++i) {
         var point2d = points2d[i];
-        var vec3m = new Vector3m(point2d.X, point2d.Y, 0);
-        vec3msWithIndices.Add(vec3m);
+        var vec3 = new Vector3(point2d.X, point2d.Y, 0);
+        vec3sWithIndices.Add(vec3);
       }
 
       var earClipping = new EarClipping();
-      earClipping.SetPoints(vec3msWithIndices);
+      earClipping.SetPoints(vec3sWithIndices);
       earClipping.Triangulate();
 
       return earClipping
@@ -322,11 +322,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     public double X { get; set; } = x;
     public double Y { get; set; } = y;
     public int Index => index;
-  }
-
-  private class EqualityComparer : IEqualityComparer<Vector3m> {
-    public bool Equals(Vector3m x, Vector3m y) => ReferenceEquals(x, y);
-    public int GetHashCode(Vector3m obj) => RuntimeHelpers.GetHashCode(obj);
   }
 
   private static IEnumerable<IndexedFaceGroup[]> GetIndexFaceSetCoordGroups_(

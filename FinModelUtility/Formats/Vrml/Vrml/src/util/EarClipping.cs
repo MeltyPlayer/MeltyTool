@@ -10,7 +10,7 @@ public class EarClipping {
   private Vector3 normal_;
   public List<int> Result { get; private set; }
 
-  public void SetPoints(List<Vector3m> points) {
+  public void SetPoints(List<Vector3> points) {
     if (points == null || points.Count < 3) {
       throw new ArgumentException("No list or an empty list passed");
     }
@@ -24,7 +24,7 @@ public class EarClipping {
   }
 
   // calculating normal using Newell's method
-  private void CalcNormal_(List<Vector3m> points) {
+  private void CalcNormal_(List<Vector3> points) {
     Vector3 normal = Vector3.Zero;
     for (var i = 0; i < points.Count; i++) {
       var j = (i + 1) % (points.Count);
@@ -36,13 +36,13 @@ public class EarClipping {
     this.normal_ = normal;
   }
 
-  private void LinkAndAddToList_(Polygon polygon, List<Vector3m> points) {
+  private void LinkAndAddToList_(Polygon polygon, List<Vector3> points) {
     ConnectionEdge prev = null, first = null;
-    Dictionary<Vector3m, (Vector3m, int, List<ConnectionEdge>)> pointsHashSet = new();
+    Dictionary<Vector3, (Vector3, int, List<ConnectionEdge>)> pointsHashSet = new();
     int pointCount = 0;
     for (int i = 0; i < points.Count; i++) {
       // we don't wanna have duplicates
-      Vector3m p0;
+      Vector3 p0;
       int p0Index;
       List<ConnectionEdge> incidentEdges;
       if (pointsHashSet.ContainsKey(points[i])) {
@@ -146,9 +146,9 @@ public class EarClipping {
     return orientation == 1;
   }
 
-  private bool IsPointInTriangle_(Vector3m prevPoint,
-                                  Vector3m curPoint,
-                                  Vector3m nextPoint,
+  private bool IsPointInTriangle_(Vector3 prevPoint,
+                                  Vector3 curPoint,
+                                  Vector3 nextPoint,
                                   List<ConnectionEdge> nonConvexPoints) {
     foreach (var nonConvexPoint in nonConvexPoints) {
       if (nonConvexPoint.Origin.Equals(prevPoint) ||
@@ -206,14 +206,14 @@ internal class ConnectionEdge {
     }
   }
 
-  internal Vector3m Origin { get; }
+  internal Vector3 Origin { get; }
   internal int OriginIndex { get; }
 
   internal ConnectionEdge prev_;
   internal ConnectionEdge next_;
   internal Polygon Polygon { get; set; }
 
-  public ConnectionEdge(Vector3m p0, int p0Index, Polygon parentPolygon, List<ConnectionEdge> incidentEdges) {
+  public ConnectionEdge(Vector3 p0, int p0Index, Polygon parentPolygon, List<ConnectionEdge> incidentEdges) {
     this.Origin = p0;
     this.OriginIndex = p0Index;
     this.Polygon = parentPolygon;
