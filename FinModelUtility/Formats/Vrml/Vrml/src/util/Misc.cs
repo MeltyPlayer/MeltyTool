@@ -1,5 +1,8 @@
 ﻿using System.Numerics;
 
+using fin.math.floats;
+using fin.math.matrix.three;
+
 namespace vrml.util;
 
 class Misc {
@@ -7,9 +10,11 @@ class Misc {
                                    Vector3m v1,
                                    Vector3m v2,
                                    Vector3 normal) {
-    var res = (v0 - v1).Cross(v2 - v1);
-    if (res.LengthSquared().ToDouble() == 0)
+    var res = (Vector3) ((v0 - v1).Cross(v2 - v1));
+    if (res.Length().IsRoughly0()) {
       return 0;
+    }
+
     if (Math.Sign(res.X) != Math.Sign(normal.X) ||
         Math.Sign(res.Y) != Math.Sign(normal.Y) ||
         Math.Sign(res.Z) != Math.Sign(normal.Z))

@@ -5,6 +5,12 @@ using PeterO.Numbers;
 namespace vrml.util;
 
 public class Vector3m {
+  public static implicit operator Vector3(Vector3m vec)
+    => new(vec.X, vec.Y, vec.Z);
+
+  public static implicit operator Vector3m(Vector3 vec)
+    => new(vec.X, vec.Y, vec.Z);
+
   public Vector3m(float x, float y, float z) {
     this.X = x;
     this.Y = y;
