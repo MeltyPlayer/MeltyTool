@@ -1,14 +1,11 @@
 ﻿using System.Diagnostics;
 
-using PeterO.Numbers;
-
 namespace vrml.util;
 
 // Implementation of Triangulation by Ear Clipping
 // by David Eberly
 public class EarClipping {
   private Polygon _mainPointList;
-  private List<Polygon> _holes;
   private Vector3m Normal;
   public List<Vector3m> Result { get; private set; }
 
@@ -82,9 +79,6 @@ public class EarClipping {
   public void Triangulate() {
     if (Normal.Equals(Vector3m.Zero()))
       throw new Exception("The input is not a valid polygon");
-    if (_holes != null && _holes.Count > 0) {
-      ProcessHoles();
-    }
 
     List<ConnectionEdge> nonConvexPoints = FindNonConvexPoints(_mainPointList);
 
@@ -154,214 +148,6 @@ public class EarClipping {
     return orientation == 1;
   }
 
-  private void ProcessHoles() {
-    for (int h = 0; h < _holes.Count; h++) {
-      List<Polygon> polygons = new List<Polygon>();
-      polygons.Add(_mainPointList);
-      polygons.AddRange(_holes);
-      ConnectionEdge M, P;
-      GetVisiblePoints(h + 1, polygons, out M, out P);
-      if (M.Origin.Equals(P.Origin))
-        throw new Exception();
-
-      var insertionEdge = P;
-      InsertNewEdges(insertionEdge, M);
-      _holes.RemoveAt(h);
-      h--;
-    }
-  }
-
-  private void InsertNewEdges(ConnectionEdge insertionEdge, ConnectionEdge m) {
-    insertionEdge.Polygon.PointCount += m.Polygon.PointCount;
-    var cur = m;
-    var forwardEdge
-        = new ConnectionEdge(insertionEdge.Origin, insertionEdge.Polygon);
-    forwardEdge.Prev = insertionEdge.Prev;
-    forwardEdge.Prev.Next = forwardEdge;
-    forwardEdge.Next = m;
-    forwardEdge.Next.Prev = forwardEdge;
-    var end = insertionEdge;
-    ConnectionEdge prev = null;
-    do {
-      cur.Polygon = insertionEdge.Polygon;
-      prev = cur;
-      cur = cur.Next;
-    } while (m != cur);
-
-    var backEdge = new ConnectionEdge(cur.Origin, insertionEdge.Polygon);
-    cur = prev;
-    cur.Next = backEdge;
-    backEdge.Prev = cur;
-    backEdge.Next = end;
-    end.Prev = backEdge;
-  }
-
-  private void GetVisiblePoints(int holeIndex,
-                                List<Polygon> polygons,
-                                out ConnectionEdge M,
-                                out ConnectionEdge P) {
-    M = FindLargest(polygons[holeIndex]);
-
-    var direction
-        = (polygons[holeIndex].Start.Next.Origin -
-           polygons[holeIndex].Start.Origin).Cross(Normal);
-    var I = FindPointI(M, polygons, holeIndex, direction);
-
-    Vector3m res;
-    if (polygons[I.PolyIndex].Contains(I.I, out res)) {
-      var incidentEdges =
-          (List<ConnectionEdge>) res.DynamicProperties.GetValue(
-              PropertyConstants.IncidentEdges);
-      foreach (var connectionEdge in incidentEdges) {
-        if (Misc.IsBetween(connectionEdge.Origin,
-                           connectionEdge.Next.Origin,
-                           connectionEdge.Prev.Origin,
-                           M.Origin,
-                           Normal) ==
-            1) {
-          P = connectionEdge;
-          return;
-        }
-      }
-
-      throw new Exception();
-    } else {
-      P = FindVisiblePoint(I, polygons, M, direction);
-    }
-  }
-
-  private ConnectionEdge FindVisiblePoint(Candidate I,
-                                          List<Polygon> polygons,
-                                          ConnectionEdge M,
-                                          Vector3m direction) {
-    ConnectionEdge P = null;
-
-    if (I.Origin.Origin.Dot(direction)
-         .CompareTo(I.Origin.Next.Origin.Dot(direction)) >
-        0) {
-      P = I.Origin;
-    } else {
-      P = I.Origin.Next;
-    }
-
-    List<ConnectionEdge> nonConvexPoints
-        = FindNonConvexPoints(polygons[I.PolyIndex]);
-
-
-    nonConvexPoints.Remove(P);
-
-    var m = M.Origin;
-    var i = I.I;
-    var p = P.Origin;
-    List<ConnectionEdge> candidates = new List<ConnectionEdge>();
-
-    // invert i and p if triangle is oriented CW
-    if (Misc.GetOrientation(m, i, p, Normal) == -1) {
-      var tmp = i;
-      i = p;
-      p = tmp;
-    }
-
-    foreach (var nonConvexPoint in nonConvexPoints) {
-      if (Misc.PointInOrOnTriangle(m, i, p, nonConvexPoint.Origin, Normal)) {
-        candidates.Add(nonConvexPoint);
-      }
-    }
-
-    if (candidates.Count == 0)
-      return P;
-    return FindMinimumAngle(candidates, m, direction);
-  }
-
-  private ConnectionEdge FindMinimumAngle(List<ConnectionEdge> candidates,
-                                          Vector3m M,
-                                          Vector3m direction) {
-    ERational angle = -double.MaxValue;
-    ConnectionEdge result = null;
-    foreach (var R in candidates) {
-      var a = direction;
-      var b = R.Origin - M;
-      var num = a.Dot(b) * a.Dot(b);
-      var denom = b.Dot(b);
-      var res = num / denom;
-      if (res.CompareTo(angle) > 0) {
-        result = R;
-        angle = res;
-      }
-    }
-
-    return result;
-  }
-
-  private Candidate FindPointI(ConnectionEdge M,
-                               List<Polygon> polygons,
-                               int holeIndex,
-                               Vector3m direction) {
-    Candidate candidate = new Candidate();
-    for (int i = 0; i < polygons.Count; i++) {
-      if (i == holeIndex) // Don't test the hole with itself
-        continue;
-      foreach (var connectionEdge in polygons[i].GetPolygonCirculator()) {
-        ERational rayDistanceSquared;
-        Vector3m intersectionPoint;
-
-        if (RaySegmentIntersection(out intersectionPoint,
-                                   out rayDistanceSquared,
-                                   M.Origin,
-                                   direction,
-                                   connectionEdge.Origin,
-                                   connectionEdge.Next.Origin,
-                                   direction)) {
-          if (rayDistanceSquared ==
-              candidate
-                  .currentDistance) // if this is an M/I edge, then both edge and his twin have the same distance; we take the edge where the point is on the left side
-          {
-            if (Misc.GetOrientation(connectionEdge.Origin,
-                                    connectionEdge.Next.Origin,
-                                    M.Origin,
-                                    Normal) ==
-                1) {
-              candidate.currentDistance = rayDistanceSquared;
-              candidate.Origin = connectionEdge;
-              candidate.PolyIndex = i;
-              candidate.I = intersectionPoint;
-            }
-          } else if (rayDistanceSquared.CompareTo(candidate.currentDistance) <
-                     0) {
-            candidate.currentDistance = rayDistanceSquared;
-            candidate.Origin = connectionEdge;
-            candidate.PolyIndex = i;
-            candidate.I = intersectionPoint;
-          }
-        }
-      }
-    }
-
-    return candidate;
-  }
-
-  private ConnectionEdge FindLargest(Polygon testHole) {
-    ERational maximum = 0;
-    ConnectionEdge maxEdge = null;
-    Vector3m v0 = testHole.Start.Origin;
-    Vector3m v1 = testHole.Start.Next.Origin;
-    foreach (var connectionEdge in testHole.GetPolygonCirculator()) {
-      // we take the first two points as a reference line
-
-      if (Misc.GetOrientation(v0, v1, connectionEdge.Origin, Normal) < 0) {
-        var r = Misc.PointLineDistance(v0, v1, connectionEdge.Origin);
-        if (r.CompareTo(maximum) > 0) {
-          maximum = r;
-          maxEdge = connectionEdge;
-        }
-      }
-    }
-
-    if (maxEdge == null)
-      return testHole.Start;
-    return maxEdge;
-  }
-
   private bool IsPointInTriangle(Vector3m prevPoint,
                                  Vector3m curPoint,
                                  Vector3m nextPoint,
@@ -395,59 +181,6 @@ public class EarClipping {
 
     return resultList;
   }
-
-  public bool RaySegmentIntersection(out Vector3m intersection,
-                                     out ERational distanceSquared,
-                                     Vector3m linePoint1,
-                                     Vector3m lineVec1,
-                                     Vector3m linePoint3,
-                                     Vector3m linePoint4,
-                                     Vector3m direction) {
-    var lineVec2 = linePoint4 - linePoint3;
-    Vector3m lineVec3 = linePoint3 - linePoint1;
-    Vector3m crossVec1and2 = lineVec1.Cross(lineVec2);
-    Vector3m crossVec3and2 = lineVec3.Cross(lineVec2);
-
-    var res = Misc.PointLineDistance(linePoint3, linePoint4, linePoint1);
-    if (res.IsZero) // line and ray are collinear
-    {
-      var p = linePoint1 + lineVec1;
-      var res2 = Misc.PointLineDistance(linePoint3, linePoint4, p);
-      if (res2.IsZero) {
-        var s = linePoint3 - linePoint1;
-        if (s.X == direction.X && s.Y == direction.Y && s.Z == direction.Z) {
-          intersection = linePoint3;
-          distanceSquared = s.LengthSquared();
-          return true;
-        }
-      }
-    }
-
-    //is coplanar, and not parallel
-    if ( /*planarFactor == 0.0f && */crossVec1and2.LengthSquared().Sign > 0) {
-      var s = crossVec3and2.Dot(crossVec1and2) / crossVec1and2.LengthSquared();
-      if (s.Sign >= 0) {
-        intersection = linePoint1 + (lineVec1 * s);
-        distanceSquared = (lineVec1 * s).LengthSquared();
-        if (((intersection - linePoint3).LengthSquared() +
-             (intersection - linePoint4).LengthSquared())
-            .CompareTo(lineVec2.LengthSquared()) <=
-            0)
-          return true;
-      }
-    }
-
-    intersection = Vector3m.Zero();
-    distanceSquared = 0;
-    return false;
-  }
-}
-
-internal class Candidate {
-  internal ERational currentDistance = double.MaxValue;
-  internal Vector3m I;
-  internal ConnectionEdge Origin;
-  internal int PolyIndex;
 }
 
 internal class ConnectionEdge {
