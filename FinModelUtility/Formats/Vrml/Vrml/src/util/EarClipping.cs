@@ -42,23 +42,22 @@ public class EarClipping {
 
   private void LinkAndAddToList_(Polygon polygon, List<Vector3m> points) {
     ConnectionEdge prev = null, first = null;
-    Dictionary<Vector3m, Vector3m> pointsHashSet
-        = new Dictionary<Vector3m, Vector3m>();
+    Dictionary<Vector3m, (Vector3m, List<ConnectionEdge>)> pointsHashSet = new();
     int pointCount = 0;
     for (int i = 0; i < points.Count; i++) {
       // we don't wanna have duplicates
       Vector3m p0;
+      List<ConnectionEdge> incidentEdges;
       if (pointsHashSet.ContainsKey(points[i])) {
-        p0 = pointsHashSet[points[i]];
+        (p0, incidentEdges) = pointsHashSet[points[i]];
       } else {
         p0 = points[i];
-        pointsHashSet.Add(p0, p0);
-        List<ConnectionEdge> list = new List<ConnectionEdge>();
-        p0.DynamicProperties.AddProperty(PropertyConstants.IncidentEdges, list);
+        incidentEdges = new List<ConnectionEdge>();
+        pointsHashSet.Add(p0, (p0, incidentEdges));
         pointCount++;
       }
 
-      ConnectionEdge current = new ConnectionEdge(p0, polygon);
+      ConnectionEdge current = new(p0, polygon, incidentEdges);
 
       first = (i == 0) ? current : first; // remember first
 
@@ -185,6 +184,8 @@ public class EarClipping {
 }
 
 internal class ConnectionEdge {
+  public List<ConnectionEdge> IncidentEdges { get; } = new();
+
   protected bool Equals(ConnectionEdge other) {
     return this.next_.Origin.Equals(other.next_.Origin) &&
            this.Origin.Equals(other.Origin);
@@ -207,26 +208,20 @@ internal class ConnectionEdge {
     }
   }
 
-  internal Vector3m Origin { get; set; }
+  internal Vector3m Origin { get; }
   internal ConnectionEdge prev_;
   internal ConnectionEdge next_;
   internal Polygon Polygon { get; set; }
 
-  public ConnectionEdge(Vector3m p0, Polygon parentPolygon) {
+  public ConnectionEdge(Vector3m p0, Polygon parentPolygon, List<ConnectionEdge> incidentEdges) {
     this.Origin = p0;
     this.Polygon = parentPolygon;
-    this.AddIncidentEdge(this);
+    this.IncidentEdges = incidentEdges;
+    this.IncidentEdges.Add(this);
   }
 
   public override string ToString() {
     return "Origin: " + this.Origin + " Next: " + this.next_.Origin;
-  }
-
-  internal void AddIncidentEdge(ConnectionEdge next) {
-    var list
-        = (List<ConnectionEdge>) this.Origin.DynamicProperties.GetValue(
-            PropertyConstants.IncidentEdges);
-    list.Add(next);
   }
 }
 
@@ -249,9 +244,7 @@ internal class Polygon {
   internal void Remove(ConnectionEdge cur) {
     cur.prev_.next_ = cur.next_;
     cur.next_.prev_ = cur.prev_;
-    var incidentEdges =
-        (List<ConnectionEdge>) cur.Origin.DynamicProperties.GetValue(
-            PropertyConstants.IncidentEdges);
+    var incidentEdges = cur.IncidentEdges;
     int index = incidentEdges.FindIndex(x => x.Equals(cur));
     Debug.Assert(index >= 0);
     incidentEdges.RemoveAt(index);

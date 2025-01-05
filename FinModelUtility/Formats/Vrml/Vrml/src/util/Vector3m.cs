@@ -3,8 +3,6 @@
 namespace vrml.util;
 
 public class Vector3m {
-  internal DynamicProperties DynamicProperties = new DynamicProperties();
-
   public Vector3m(ERational x, ERational y, ERational z) {
     this.X = x;
     this.Y = y;
