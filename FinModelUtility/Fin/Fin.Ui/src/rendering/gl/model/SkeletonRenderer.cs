@@ -34,8 +34,8 @@ public class SkeletonRenderer(
     material.DepthMode = DepthMode.WRITE_ONLY;
     material.SetBlending(BlendEquation.ADD,
                          BlendFactor.CONST_COLOR,
-                         BlendFactor.SRC_ALPHA,
-                         LogicOp.SET);
+                         BlendFactor.ONE_MINUS_SRC_ALPHA,
+                         LogicOp.UNDEFINED);
 
     var skin = model.Skin;
 
