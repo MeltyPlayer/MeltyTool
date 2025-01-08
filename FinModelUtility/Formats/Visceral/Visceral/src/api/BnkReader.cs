@@ -7,6 +7,7 @@ using fin.model;
 
 using schema.binary;
 
+
 namespace visceral.api;
 
 public class BnkReader {
@@ -24,6 +25,9 @@ public class BnkReader {
     POS_X,
     POS_Y,
     POS_Z,
+    SCALE_X,
+    SCALE_Y,
+    SCALE_Z,
   }
 
   public enum KeyframeType : byte {
@@ -107,9 +111,10 @@ public class BnkReader {
 
           var unkHash = bnkBr.ReadUInt32();
           var maybeVersion = bnkBr.ReadUInt32();
-          var unk3 = bnkBr.ReadUInt32();
-          var unk4 = bnkBr.ReadUInt32();
-          var unk5 = bnkBr.ReadUInt32();
+          var isLooping = bnkBr.ReadUInt32() != 0;
+          var unk4 = bnkBr.ReadUInt16();
+          var extraAxisCount = bnkBr.ReadUInt16();
+          var unk6 = bnkBr.ReadUInt32();
 
           var someHashFromRcb = bnkBr.ReadUInt32();
           var standaloneCommandPrefix = bnkBr.ReadUInt32();
@@ -144,10 +149,9 @@ public class BnkReader {
             var boneTracks = finAnimation.AddBoneTracks(bones[b]);
             var rotations = boneTracks.UseSeparateQuaternionKeyframes();
             var translations = boneTracks.UseSeparateTranslationKeyframes();
+            var scales = boneTracks.UseSeparateScaleKeyframes();
 
-            for (var a = 0; a < 7; ++a) {
-              var axisType = (AxisType) a;
-
+            void ReadAxis(AxisType axisType) {
               void SetKeyframe(int frame, float value) {
                 totalFrames = Math.Max(totalFrames, frame);
 
@@ -167,7 +171,13 @@ public class BnkReader {
                                 .SetKeyframe(frame, value);
                     break;
                   }
-                  default: throw new Exception();
+                  case AxisType.SCALE_X:
+                  case AxisType.SCALE_Y:
+                  case AxisType.SCALE_Z: {
+                    scales.Axes[axisType - AxisType.SCALE_X]
+                          .SetKeyframe(frame, value);
+                    break;
+                  }
                 }
               }
 
@@ -215,6 +225,16 @@ public class BnkReader {
               } else {
                 throw new NotImplementedException();
               }
+            }
+
+            if (b > 0) {
+              for (var a = 7; a < 7 + extraAxisCount; ++a) {
+                ReadAxis((AxisType) a);
+              }
+            }
+
+            for (var a = 0; a < 7; ++a) {
+              ReadAxis((AxisType) a);
             }
           }
         }

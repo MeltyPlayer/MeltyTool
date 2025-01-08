@@ -77,7 +77,7 @@ typedef struct {
   local ulong endOffset = FTell();
   
   FSeek(boneIdTableOffset);
-  BoneId boneIds[boneCount];
+  BoneId boneIds[boneCount]; 
 
   FSeek(boneMatricesOffset);
   BoneMatrix boneMatrix[boneCount];
@@ -90,7 +90,7 @@ typedef struct {
 
 
 FSeek(fileHeader.skeletonsOffset);
-Skeleton skeleton[fileHeader.skeletonCount];
+Skeleton skeleton[fileHeader.skeletonCount] <optimize=false>;
 
 
 
