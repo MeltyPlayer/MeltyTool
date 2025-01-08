@@ -1,5 +1,5 @@
 #version 310 es
-precision mediump float;
+precision highp float;
 
 uniform vec3 color_GxMaterialColor18;
 uniform float scalar_GxMaterialAlpha18;

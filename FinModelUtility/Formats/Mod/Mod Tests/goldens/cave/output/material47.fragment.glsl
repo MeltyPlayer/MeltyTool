@@ -1,5 +1,5 @@
 #version 310 es
-precision mediump float;
+precision highp float;
 
 layout (std140, binding = 1) uniform Matrices {
   mat4 modelMatrix;

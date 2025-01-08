@@ -1,5 +1,5 @@
 #version 310 es
-precision mediump float;
+precision highp float;
 
 out vec4 fragColor;
 

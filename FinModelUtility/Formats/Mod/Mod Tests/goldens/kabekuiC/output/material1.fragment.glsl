@@ -1,5 +1,5 @@
 #version 310 es
-precision mediump float;
+precision highp float;
 
 uniform sampler2D texture0;
 uniform vec3 color_GxMaterialColor1;
