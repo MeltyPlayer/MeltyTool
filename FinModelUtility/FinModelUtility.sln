@@ -207,6 +207,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMario64Ds", "Games\Sup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalAssetTool.Ui.Avalonia Tests", "UniversalAssetTool\UniversalAssetTool.Ui.Avalonia Tests\UniversalAssetTool.Ui.Avalonia Tests.csproj", "{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalAssetTool.Godot", "UniversalAssetTool\UniversalAssetTool.Godot\UniversalAssetTool.Godot.csproj", "{2914A7A9-1A78-47DD-A758-642A7B176DE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -719,6 +721,14 @@ Global
 		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Release|x64.Build.0 = Release|x64
 		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Release|x86.ActiveCfg = Release|x86
 		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E}.Release|x86.Build.0 = Release|x86
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Debug|x64.ActiveCfg = Debug|x64
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Debug|x64.Build.0 = Debug|x64
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Debug|x86.ActiveCfg = Debug|x86
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Debug|x86.Build.0 = Debug|x86
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Release|x64.ActiveCfg = Release|x64
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Release|x64.Build.0 = Release|x64
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Release|x86.ActiveCfg = Release|x86
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -808,6 +818,7 @@ Global
 		{91C3A331-DF44-460C-AAD5-630363481C44} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{FCCC4454-013C-46CD-9F7F-49857235286D} = {91C3A331-DF44-460C-AAD5-630363481C44}
 		{A63D18F7-8CCC-41FF-99FB-15F4838DF49E} = {2490FB17-BB03-4B06-95A2-56BD49921D53}
+		{2914A7A9-1A78-47DD-A758-642A7B176DE9} = {2490FB17-BB03-4B06-95A2-56BD49921D53}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}
