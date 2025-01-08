@@ -7,6 +7,8 @@ using fin.model;
 
 using schema.binary;
 
+using visceral.schema.bnk;
+
 
 namespace visceral.api;
 
@@ -85,8 +87,6 @@ public class BnkReader {
           bnkBr.SubreadAt(animationNameOffset, () => bnkBr.ReadStringNT());
     }
 
-    var totalFrames = 1;
-
     {
       var rootOffset = bnkBr.ReadUInt32();
       var maybeBoneOffsetQueue = new FinQueue<uint>(rootOffset);
@@ -119,8 +119,13 @@ public class BnkReader {
           var someHashFromRcb = bnkBr.ReadUInt32();
           var standaloneCommandPrefix = bnkBr.ReadUInt32();
 
+          bnkBr.Position += 4;
+
+          var animationType = bnkBr.ReadUInt16();
+          var unk7 = bnkBr.ReadUInt16();
+
           // These are unknown
-          bnkBr.Position += 4 * 5;
+          bnkBr.Position += 4 * 3;
 
           using var rcbEr =
               new SchemaBinaryReader(rcbFile.OpenRead(),
@@ -140,104 +145,127 @@ public class BnkReader {
                   rcbEr.ReadBytes(
                       (int) Math.Ceiling(bitMaskLength / 8f)));
 
-          for (var b = 0; b < bitMaskLength; ++b) {
-            var isActive = bitMaskArray[b];
-            if (!isActive) {
-              continue;
+          if (animationType == 1) {
+            ReadAnimationType1_(finAnimation,
+                                bnkBr,
+                                bones,
+                                bitMaskArray,
+                                bitMaskLength,
+                                standaloneCommandPrefix,
+                                extraAxisCount);
+          } else {
+            
+          }
+        }
+      }
+    }
+  }
+
+  private void ReadAnimationType1_(
+      IModelAnimation finAnimation,
+      IBinaryReader bnkBr,
+      IBone[] bones,
+      BitArray bitMaskArray,
+      uint bitMaskLength,
+      uint standaloneCommandPrefix,
+      ushort extraAxisCount) {
+    var totalFrames = 1;
+
+    for (var b = 0; b < bitMaskLength; ++b) {
+      var isActive = bitMaskArray[b];
+      if (!isActive) {
+        continue;
+      }
+
+      var boneTracks = finAnimation.AddBoneTracks(bones[b]);
+      var rotations = boneTracks.UseSeparateQuaternionKeyframes();
+      var translations = boneTracks.UseSeparateTranslationKeyframes();
+      var scales = boneTracks.UseSeparateScaleKeyframes();
+
+      void ReadAxis(AxisType axisType) {
+        void SetKeyframe(int frame, float value) {
+          totalFrames = Math.Max(totalFrames, frame);
+
+          switch (axisType) {
+            case AxisType.ROT_X:
+            case AxisType.ROT_Y:
+            case AxisType.ROT_Z:
+            case AxisType.ROT_W: {
+              rotations.Axes[axisType - AxisType.ROT_X]
+                       .SetKeyframe(frame, value);
+              break;
             }
-
-            var boneTracks = finAnimation.AddBoneTracks(bones[b]);
-            var rotations = boneTracks.UseSeparateQuaternionKeyframes();
-            var translations = boneTracks.UseSeparateTranslationKeyframes();
-            var scales = boneTracks.UseSeparateScaleKeyframes();
-
-            void ReadAxis(AxisType axisType) {
-              void SetKeyframe(int frame, float value) {
-                totalFrames = Math.Max(totalFrames, frame);
-
-                switch (axisType) {
-                  case AxisType.ROT_X:
-                  case AxisType.ROT_Y:
-                  case AxisType.ROT_Z:
-                  case AxisType.ROT_W: {
-                    rotations.Axes[axisType - AxisType.ROT_X]
-                             .SetKeyframe(frame, value);
-                    break;
-                  }
-                  case AxisType.POS_X:
-                  case AxisType.POS_Y:
-                  case AxisType.POS_Z: {
-                    translations.Axes[axisType - AxisType.POS_X]
-                                .SetKeyframe(frame, value);
-                    break;
-                  }
-                  case AxisType.SCALE_X:
-                  case AxisType.SCALE_Y:
-                  case AxisType.SCALE_Z: {
-                    scales.Axes[axisType - AxisType.SCALE_X]
+            case AxisType.POS_X:
+            case AxisType.POS_Y:
+            case AxisType.POS_Z: {
+              translations.Axes[axisType - AxisType.POS_X]
                           .SetKeyframe(frame, value);
-                    break;
-                  }
-                }
-              }
-
-              var command = bnkBr.ReadUInt16();
-              var upper = command >> 4;
-              var lower = command & 0xF;
-
-              if (upper == standaloneCommandPrefix) {
-                var keyframeType = (KeyframeType) lower;
-                bnkBr.Position -= 1;
-
-                var frame = 0;
-                foreach (var keyframeValue in
-                         this.ReadKeyframeValuesOfType_(
-                             bnkBr,
-                             keyframeType,
-                             (int) standaloneCommandPrefix)) {
-                  SetKeyframe(frame++, keyframeValue);
-                }
-              } else if (lower == 5) {
-                var keyframeCount = upper;
-
-                var frame = 0;
-                for (var k = 0; k < keyframeCount; ++k) {
-                  var lengthAndKeyframeType = bnkBr.ReadUInt16();
-
-                  var keyframeLength = lengthAndKeyframeType >> 4;
-                  var keyframeType =
-                      (KeyframeType) (lengthAndKeyframeType & 0xF);
-
-                  bnkBr.Position -= 1;
-
-                  var startingKeyframe = frame;
-                  foreach (var keyframeValue in
-                           this.ReadKeyframeValuesOfType_(
-                               bnkBr,
-                               keyframeType,
-                               keyframeLength)) {
-                    SetKeyframe(frame++, keyframeValue);
-                  }
-
-                  frame = startingKeyframe + keyframeLength;
-                  totalFrames = Math.Max(totalFrames, frame);
-                }
-              } else {
-                throw new NotImplementedException();
-              }
+              break;
             }
-
-            if (b > 0) {
-              for (var a = 7; a < 7 + extraAxisCount; ++a) {
-                ReadAxis((AxisType) a);
-              }
-            }
-
-            for (var a = 0; a < 7; ++a) {
-              ReadAxis((AxisType) a);
+            case AxisType.SCALE_X:
+            case AxisType.SCALE_Y:
+            case AxisType.SCALE_Z: {
+              scales.Axes[axisType - AxisType.SCALE_X]
+                    .SetKeyframe(frame, value);
+              break;
             }
           }
         }
+
+        var command = bnkBr.ReadUInt16();
+        var upper = command >> 4;
+        var lower = command & 0xF;
+
+        if (upper == standaloneCommandPrefix) {
+          var keyframeType = (KeyframeType) lower;
+          bnkBr.Position -= 1;
+
+          var frame = 0;
+          foreach (var keyframeValue in
+                   this.ReadKeyframeValuesOfType_(
+                       bnkBr,
+                       keyframeType,
+                       (int) standaloneCommandPrefix)) {
+            SetKeyframe(frame++, keyframeValue);
+          }
+        } else if (lower == 5) {
+          var keyframeCount = upper;
+
+          var frame = 0;
+          for (var k = 0; k < keyframeCount; ++k) {
+            var lengthAndKeyframeType = bnkBr.ReadUInt16();
+
+            var keyframeLength = lengthAndKeyframeType >> 4;
+            var keyframeType =
+                (KeyframeType) (lengthAndKeyframeType & 0xF);
+
+            bnkBr.Position -= 1;
+
+            var startingKeyframe = frame;
+            foreach (var keyframeValue in
+                     this.ReadKeyframeValuesOfType_(
+                         bnkBr,
+                         keyframeType,
+                         keyframeLength)) {
+              SetKeyframe(frame++, keyframeValue);
+            }
+
+            frame = startingKeyframe + keyframeLength;
+            totalFrames = Math.Max(totalFrames, frame);
+          }
+        } else {
+          throw new NotImplementedException();
+        }
+      }
+
+      if (b > 0) {
+        for (var a = 7; a < 7 + extraAxisCount; ++a) {
+          ReadAxis((AxisType) a);
+        }
+      }
+
+      for (var a = 0; a < 7; ++a) {
+        ReadAxis((AxisType) a);
       }
     }
 
@@ -281,7 +309,8 @@ public class BnkReader {
           // TODO: Support this as a keyframe type, rather than
           // precalculating them here.
           for (var f = 0; f < keyframeLength; ++f) {
-            yield return ((this.values_[0] * f + this.values_[1]) * f + this.values_[2]) * f + this.values_[3];
+            yield return ((this.values_[0] * f + this.values_[1]) * f +
+                          this.values_[2]) * f + this.values_[3];
           }
         }
 
