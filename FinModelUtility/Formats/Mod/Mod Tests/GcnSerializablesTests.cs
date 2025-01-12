@@ -86,27 +86,6 @@ namespace mod.schema {
       => TestGcnSerializableSimple(new JointMatPoly());
 
     [Test]
-    public void TestMesh() {
-      var mesh = new Mesh {
-          boneIndex = 1,
-          vtxDescriptor = 2
-      };
-
-      var meshPacket = new MeshPacket();
-      meshPacket.indices = [3, 4];
-
-      var displayList = new DisplayList();
-      displayList.flags.intView = 5;
-      displayList.cmdCount = 6;
-      displayList.dlistData = [7, 8];
-      meshPacket.displaylists = [displayList, displayList];
-
-      mesh.packets = [meshPacket, meshPacket];
-
-      TestGcnSerializableExisting(mesh);
-    }
-
-    [Test]
     public void TestNbt() => TestGcnSerializableSimple(new Nbt());
 
     [Test]

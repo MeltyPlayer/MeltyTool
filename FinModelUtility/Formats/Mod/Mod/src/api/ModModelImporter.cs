@@ -37,8 +37,6 @@ using schema.binary;
 namespace mod.api;
 
 public class ModModelImporter : IModelImporter<ModModelFileBundle> {
-  private const bool DEDUPLICATE_MATERIALS = false;
-
   /// <summary>
   ///   GX's active matrices. These are deferred to when a vertex matrix is
   ///   -1, which corresponds to using an active matrix from a previous
@@ -233,64 +231,62 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
         });
 
     // Writes materials
-    Func<int, Material, IMaterial>
-        getFinMaterialFromModMaterial = (i, modMaterial) => {
-          lazyTextureDictionary.State = modMaterial;
-
-          IMaterial finMaterial;
-          if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
-            finMaterial = model.MaterialManager.AddHiddenMaterial();
-          } else if (modMaterial.flags.CheckFlag(MaterialFlags.ENABLED)) {
-            var modPopulatedMaterial =
-                new ModPopulatedMaterial(
-                    i,
-                    modMaterial,
-                    (int) modMaterial.TevGroupId,
-                    mod.materials.texEnvironments[
-                        (int) modMaterial.TevGroupId]);
-
-            finMaterial = new GxFixedFunctionMaterial(
-                model,
-                model.MaterialManager,
-                modPopulatedMaterial,
-                gxTextures,
-                lazyTextureDictionary).Material;
-
-            var flags = modMaterial.flags;
-            finMaterial.TransparencyType
-                = flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)
-                    ? TransparencyType.TRANSPARENT
-                    : flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
-                        ? TransparencyType.MASK
-                        : TransparencyType.OPAQUE;
-          } else {
-            finMaterial = model.MaterialManager.AddNullMaterial();
-          }
-
-          finMaterial.Name = $"material{i}";
-
-          return finMaterial;
-        };
-
-    var finMaterialByModMaterial = new LazyDictionary<Material, IMaterial>(
-        (dict, modMaterial) => {
-          var i = dict.Count;
-          return getFinMaterialFromModMaterial(i, modMaterial);
-        });
-    var modMaterialAndFinMaterialByIndex
-        = new LazyDictionary<int, (Material, IMaterial)>(
-            index => {
-              var modMaterial = mod.materials.materials[index];
+    Func<int, Material, ModCullMode, IMaterial>
+        getFinMaterialFromModMaterial
+            = (materialIndex, modMaterial, modCullMode) => {
+              lazyTextureDictionary.State = modMaterial;
 
               IMaterial finMaterial;
-              if (DEDUPLICATE_MATERIALS) {
-                finMaterial = finMaterialByModMaterial[modMaterial];
+              if (modMaterial.flags.CheckFlag(MaterialFlags.HIDDEN)) {
+                finMaterial = model.MaterialManager.AddHiddenMaterial();
+              } else if (modMaterial.flags.CheckFlag(MaterialFlags.ENABLED)) {
+                var modPopulatedMaterial =
+                    new ModPopulatedMaterial(
+                        materialIndex,
+                        modMaterial,
+                        (int) modMaterial.TevGroupId,
+                        mod.materials.texEnvironments[
+                            (int) modMaterial.TevGroupId]);
+
+                finMaterial = new GxFixedFunctionMaterial(
+                    model,
+                    model.MaterialManager,
+                    modPopulatedMaterial,
+                    gxTextures,
+                    lazyTextureDictionary).Material;
+
+                var flags = modMaterial.flags;
+                finMaterial.TransparencyType
+                    = flags.CheckFlag(MaterialFlags.TRANSPARENT_BLEND)
+                        ? TransparencyType.TRANSPARENT
+                        : flags.CheckFlag(MaterialFlags.ALPHA_CLIP)
+                            ? TransparencyType.MASK
+                            : TransparencyType.OPAQUE;
               } else {
-                finMaterial = getFinMaterialFromModMaterial(index, modMaterial);
+                finMaterial = model.MaterialManager.AddNullMaterial();
               }
 
-              return (modMaterial, finMaterial);
-            });
+              finMaterial.Name = $"material{materialIndex}";
+              finMaterial.CullingMode = modCullMode switch {
+                  ModCullMode.SHOW_FRONT_ONLY => CullingMode.SHOW_FRONT_ONLY,
+                  ModCullMode.SHOW_BACK_ONLY  => CullingMode.SHOW_BACK_ONLY,
+                  ModCullMode.SHOW_BOTH  => CullingMode.SHOW_BOTH,
+                  ModCullMode.SHOW_NEITHER  => CullingMode.SHOW_NEITHER,
+              };
+
+              return finMaterial;
+            };
+
+    var lazyMaterials = new LazyDictionary<(int, ModCullMode), IMaterial>(
+        materialIndexAndCullMode => {
+          var (materialIndex, cullMode) = materialIndexAndCullMode;
+          var modMaterial = mod.materials.materials[materialIndex];
+          var finMaterial
+              = getFinMaterialFromModMaterial(materialIndex,
+                                              modMaterial,
+                                              cullMode);
+          return finMaterial;
+        });
 
     // Writes bones
     // TODO: Simplify these loops
@@ -393,12 +389,11 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
     foreach (var matPoly in sortedMatPolys) {
       var mesh = mod.meshes[matPoly.meshIdx];
-      var (modMaterial, finMaterial)
-          = modMaterialAndFinMaterialByIndex[matPoly.matIdx];
 
       this.AddMesh_(mod,
                     mesh,
-                    finMaterial,
+                    matPoly,
+                    lazyMaterials,
                     model,
                     finBones,
                     envelopeBoneWeights,
@@ -420,7 +415,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
   private void AddMesh_(
       Mod mod,
       Mesh mesh,
-      IMaterial finMaterial,
+      JointMatPoly matPoly,
+      ILazyDictionary<(int, ModCullMode), IMaterial> lazyMaterialDictionary,
       ModelImpl model,
       IReadOnlyList<IBone> bones,
       IBoneWeights[] envelopeBoneWeights,
@@ -435,6 +431,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
     foreach (var meshPacket in mesh.packets) {
       foreach (var dlist in meshPacket.displaylists) {
+        var finMaterial = lazyMaterialDictionary[(matPoly.matIdx, dlist.CullMode)];
+
         var br =
             new SchemaBinaryReader(dlist.dlistData, Endianness.BigEndian);
 
