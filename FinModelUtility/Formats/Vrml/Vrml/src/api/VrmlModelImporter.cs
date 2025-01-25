@@ -112,9 +112,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               : finMaterial.Textures.FirstOrDefault()?.TransparencyType ??
                 TransparencyType.OPAQUE;
 
-          // TODO: Should be show front only, how to get that working?
-          finMaterial.CullingMode = CullingMode.SHOW_BOTH;
-
           return finMaterial;
         });
 
