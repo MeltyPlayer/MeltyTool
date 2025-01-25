@@ -8,9 +8,9 @@ public class TextureId : ITextDeserializable {
   public string Name { get; set; }
 
   public void Read(ITextReader tr) {
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       this.Index = tr.ReadInt32();
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       tr.AssertChar('"');
       this.Name = tr.ReadUpToAndPastTerminator(TextReaderUtils.QUOTE);
     }

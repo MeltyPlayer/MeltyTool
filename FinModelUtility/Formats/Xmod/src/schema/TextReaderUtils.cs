@@ -12,10 +12,10 @@ public static class TextReaderUtils {
   public static string[] QUOTE = ["\""];
 
   public static string ReadKeyValue(ITextReader tr, string prefix) {
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       tr.AssertString(prefix);
       tr.AssertChar(':');
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       return tr.ReadLine();
     }
 
@@ -27,10 +27,10 @@ public static class TextReaderUtils {
 
   public static T ReadKeyValueInstance<T>(ITextReader tr, string prefix)
       where T : ITextDeserializable, new() {
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       tr.AssertString(prefix);
       tr.AssertChar(':');
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       var instance = tr.ReadNew<T>();
       tr.SkipOnceIfPresent(TextReaderConstants.NEWLINE_STRINGS);
       return instance;
@@ -55,9 +55,9 @@ public static class TextReaderUtils {
       where T : ITextDeserializable, new() {
       var values = new T[count];
       for (var i = 0; i < count; ++i) {
-        tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+        tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
         tr.AssertString(prefix);
-        tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+        tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
         values[i] = tr.ReadNew<T>();
         tr.SkipOnceIfPresent(TextReaderConstants.NEWLINE_STRINGS);
       }

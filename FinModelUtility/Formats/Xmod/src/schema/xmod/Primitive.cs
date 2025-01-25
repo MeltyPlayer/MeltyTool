@@ -1,4 +1,6 @@
-﻿using schema.text;
+﻿using fin.schema;
+
+using schema.text;
 using schema.text.reader;
 
 namespace xmod.schema.xmod;
@@ -14,7 +16,7 @@ public class Primitive : ITextDeserializable {
   public IReadOnlyList<int> VertexIndices { get; set; }
 
   public void Read(ITextReader tr) {
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       this.Type = tr.ReadString(3) switch {
         "stp" => PrimitiveType.TRIANGLE_STRIP,
@@ -22,8 +24,8 @@ public class Primitive : ITextDeserializable {
         "tri" => PrimitiveType.TRIANGLES,
       };
 
-      this.VertexIndices = tr.ReadInt32s(TextReaderConstants.WHITESPACE_STRINGS,
+      this.VertexIndices = tr.ReadInt32s(TextReaderConstantsExtra.WHITESPACE_STRINGS,
                                          TextReaderConstants.NEWLINE_STRINGS);
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstantsExtra.WHITESPACE_STRINGS);
     }
 }

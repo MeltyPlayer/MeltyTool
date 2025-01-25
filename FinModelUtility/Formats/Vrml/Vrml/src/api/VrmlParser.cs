@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Numerics;
 using System.Text;
 
+using fin.schema;
 using fin.util.asserts;
 using fin.util.strings;
 
@@ -88,8 +89,8 @@ public class VrmlParser {
       if (tr.Eof) {
         break;
       }
-      
-      if (tr.Matches(out _, [']'])) {
+
+      if (tr.Matches(']')) {
         break;
       }
 
@@ -268,7 +269,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new ColorNode {Color = color};
+    return new ColorNode { Color = color };
   }
 
   private static ICoordinateNode ReadCoordinateNode_(ITextReader tr) {
@@ -284,7 +285,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new CoordinateNode {Point = point};
+    return new CoordinateNode { Point = point };
   }
 
   private static IFontStyleNode ReadFontStyleNode_(ITextReader tr) {
@@ -341,7 +342,7 @@ public class VrmlParser {
           }
         });
 
-    return new GroupNode {Children = children};
+    return new GroupNode { Children = children };
   }
 
   private static IImageTextureNode ReadImageTextureNode_(
@@ -358,7 +359,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new ImageTextureNode {Url = url};
+    return new ImageTextureNode { Url = url };
   }
 
   private static IIndexedFaceSetNode ReadIndexedFaceSetNode_(
@@ -553,7 +554,7 @@ public class VrmlParser {
 
     while (!tr.Eof) {
       SkipWhitespace_(tr);
-      if (tr.Matches(out _, ['}'])) {
+      if (tr.Matches('}')) {
         break;
       }
 
@@ -581,7 +582,7 @@ public class VrmlParser {
           break;
         }
         case IMaterialNode materialNode: {
-          currentAppearance = new AppearanceNode {Material = materialNode};
+          currentAppearance = new AppearanceNode { Material = materialNode };
           break;
         }
         case IndexedFaceSetNode indexedFaceSetNode: {
@@ -600,7 +601,7 @@ public class VrmlParser {
       }
     }
 
-    return new GroupNode {Children = children.ToArray()};
+    return new GroupNode { Children = children.ToArray() };
   }
 
   private static IShapeNode ReadShapeNode_(
@@ -674,7 +675,7 @@ public class VrmlParser {
             default: throw new NotImplementedException();
           }
         });
-    return new TextureCoordinateNode {Point = point};
+    return new TextureCoordinateNode { Point = point };
   }
 
   private static ITextureTransformNode ReadTextureTransformNode_(
@@ -773,7 +774,7 @@ public class VrmlParser {
 
     while (!tr.Eof) {
       SkipWhitespace_(tr);
-      if (tr.Matches(out _, ['}'])) {
+      if (tr.Matches('}')) {
         return;
       }
 
@@ -815,7 +816,7 @@ public class VrmlParser {
   private static IReadOnlyList<int> ReadIndexArray_(ITextReader tr) {
     SkipWhitespace_(tr);
     tr.AssertChar('[');
-    return tr.ReadInt32s(TextReaderConstants.COMMA_STRINGS, ["]"]);
+    return tr.ReadInt32s(TextReaderConstants.COMMA_CHAR, ']');
   }
 
   private static IReadOnlyList<Vector2> ReadVector2Array_(ITextReader tr) {
@@ -882,20 +883,20 @@ public class VrmlParser {
   private static float[] ReadSingles_(ITextReader tr,
                                       int count,
                                       ReadOnlySpan<string> terminators) {
-    var singles
-        = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS, terminators);
+    var singles = tr.ReadSingles(TextReaderConstantsExtra.WHITESPACE_STRINGS,
+                                 terminators);
     Asserts.Equal(count, singles.Length);
     return singles;
   }
 
 
   private static void SkipWhitespace_(ITextReader tr)
-    => tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+    => tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
   private static string ReadString_(ITextReader tr) {
     SkipWhitespace_(tr);
     tr.AssertChar('"');
-    return tr.ReadUpToAndPastTerminator(["\""]);
+    return tr.ReadUpToAndPastTerminator('"');
   }
 
   private static string ReadWord_(ITextReader tr) {

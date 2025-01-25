@@ -1,4 +1,5 @@
-﻿using fin.util.asserts;
+﻿using fin.schema;
+using fin.util.asserts;
 
 using schema.text;
 using schema.text.reader;
@@ -13,10 +14,10 @@ public class Adjunct : ITextDeserializable {
   public int MatrixIndex { get; set; }
 
   public void Read(ITextReader tr) {
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       tr.AssertString("adj");
 
-      var indices = tr.ReadInt32s(TextReaderConstants.WHITESPACE_STRINGS, TextReaderConstants.NEWLINE_STRINGS);
+      var indices = tr.ReadInt32s(TextReaderConstantsExtra.WHITESPACE_STRINGS, TextReaderConstants.NEWLINE_STRINGS);
       Asserts.Equal(6, indices.Length);
 
       this.PositionIndex = indices[0];
@@ -29,6 +30,6 @@ public class Adjunct : ITextDeserializable {
 
       this.MatrixIndex = indices[5];
 
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
     }
 }

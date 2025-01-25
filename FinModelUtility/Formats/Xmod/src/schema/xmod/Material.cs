@@ -28,6 +28,6 @@ public class Material : ITextDeserializable {
       //TextReaderUtils.ReadKeyValueNumber<int>(tr, "attributes");
 
       tr.ReadUpToAndPastTerminator(TextReaderUtils.CLOSING_BRACE);
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
     }
 }

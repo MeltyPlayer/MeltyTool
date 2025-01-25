@@ -1,4 +1,5 @@
 ﻿using fin.model;
+using fin.schema;
 using fin.util.asserts;
 
 using schema.text;
@@ -18,7 +19,7 @@ public class Vector2 : ITextDeserializable, IVector2 {
   public float Y { get; set; }
 
   public void Read(ITextReader tr) {
-      var values = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS,
+      var values = tr.ReadSingles(TextReaderConstantsExtra.WHITESPACE_STRINGS,
                                   TextReaderConstants.NEWLINE_STRINGS);
       Asserts.Equal(2, values.Length);
       this.X = values[0];

@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using fin.schema;
+
 using schema.text;
 using schema.text.reader;
 
@@ -12,7 +14,7 @@ namespace pmdc.schema.omd {
 
     public void Read(ITextReader tr) {
       this.Something = tr.ReadInt32();
-      var singles = tr.ReadSingles(TextReaderConstants.WHITESPACE_STRINGS,
+      var singles = tr.ReadSingles(TextReaderConstantsExtra.WHITESPACE_STRINGS,
                                    TextReaderConstants.NEWLINE_STRINGS);
 
       var i = 0;

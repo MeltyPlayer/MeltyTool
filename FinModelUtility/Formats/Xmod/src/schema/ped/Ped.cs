@@ -10,17 +10,17 @@ public class Ped : ITextDeserializable {
 
   public void Read(ITextReader tr) {
     this.SkelName = TextReaderUtils.ReadKeyValue(tr, "skel").Trim();
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       tr.AssertString("lod 0 {");
       this.XmodName = tr.ReadUpToAndPastTerminator(TextReaderUtils.CLOSING_BRACE)
                         .Trim();
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       this.AnimMap = new Dictionary<string, string>();
       tr.AssertString("anim {");
       while (true) {
-        tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+        tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
         if (tr.Matches(out _, "}")) {
           break;
         }

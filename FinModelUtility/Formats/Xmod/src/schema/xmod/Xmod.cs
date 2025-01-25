@@ -30,23 +30,23 @@ public class Xmod : ITextDeserializable {
       var numMatrices =
           TextReaderUtils.ReadKeyValueNumber<int>(tr, "matrices");
       var numReskins = TextReaderUtils.ReadKeyValueNumber<int>(tr, "reskins");
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       this.Positions = TextReaderUtils.ReadInstances<Vector3>(tr, "v", numVertices);
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       this.Normals = TextReaderUtils.ReadInstances<Vector3>(tr, "n", numNormals);
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       this.Colors = TextReaderUtils.ReadInstances<Vector4>(tr, "c", numColors);
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       this.Uv1s =
           TextReaderUtils.ReadInstances<Vector2>(tr, "t1", numUv1s);
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       var uv2s =
           TextReaderUtils.ReadInstances<Vector2>(tr, "t2", numUv2s);
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
+      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
       this.Materials = tr.ReadNews<Material>(numMaterials);
 
