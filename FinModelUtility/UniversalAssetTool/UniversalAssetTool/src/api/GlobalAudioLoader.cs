@@ -3,6 +3,7 @@
 using fin.audio;
 using fin.audio.io;
 using fin.audio.io.importers;
+using fin.audio.io.importers.midi;
 using fin.audio.io.importers.ogg;
 
 using ssm.api;
@@ -18,6 +19,10 @@ public class GlobalAudioReader : IAudioImporter<IAudioFileBundle> {
             => new AstAudioReader().ImportAudio(
                 audioManager,
                 astAudioFileBundle),
+        MidiAudioFileBundle midiAudioFileBundle
+            => new MidiAudioImporter().ImportAudio(
+                audioManager,
+                midiAudioFileBundle),
         OggAudioFileBundle oggAudioFileBundle
             => new OggAudioImporter().ImportAudio(
                 audioManager,

@@ -1,33 +1,39 @@
 ﻿using System;
 
-using fin.util.asserts;
 using fin.util.sets;
 
-using NVorbis;
+using SimpleSynth.Parameters;
+using SimpleSynth.Parsing;
+using SimpleSynth.Providers;
+using SimpleSynth.Synths;
 
-namespace fin.audio.io.importers.ogg;
+namespace fin.audio.io.importers.midi;
 
-public class OggAudioImporter : IAudioImporter<OggAudioFileBundle> {
+public class MidiAudioImporter : IAudioImporter<MidiAudioFileBundle> {
   public ILoadedAudioBuffer<short>[] ImportAudio(
       IAudioManager<short> audioManager,
-      OggAudioFileBundle audioFileBundle) {
-    var oggFile = audioFileBundle.OggFile;
-    Asserts.SequenceEqual(".ogg", oggFile.FileType.ToLower());
+      MidiAudioFileBundle audioFileBundle) {
+    var midiFile = audioFileBundle.MidiFile;
+    using var ms = midiFile.OpenRead();
+    var midi = new MidiInterpretation(ms, new DefaultNoteSegmentProvider());
 
-    using var ogg = new VorbisReader(oggFile.OpenRead());
+    // Create a new synthesizer with default providers.
+    var synth = new BasicSynth(midi, new DefaultAdsrEnvelopeProvider(AdsrParameters.Short), new DefaultBalanceProvider());
+    var signal = synth.GetSignal();
 
     var mutableBuffer = audioManager.CreateLoadedAudioBuffer(
         audioFileBundle,
-        oggFile.AsFileSet());
-    mutableBuffer.Frequency = ogg.SampleRate;
+        midiFile.AsFileSet());
+
+    mutableBuffer.Frequency = signal.SamplingRate;
 
     {
-      var sampleCount = (int) ogg.TotalSamples;
+      var samples = signal.Samples;
+      var sampleCount = samples.Length;
 
-      var channelCount = ogg.Channels;
+      var channelCount = 1;
       var floatCount = channelCount * sampleCount;
       var floatPcm = new float[floatCount];
-      ogg.ReadSamples(floatPcm);
 
       var channels = new short[channelCount][];
       for (var c = 0; c < channelCount; ++c) {
