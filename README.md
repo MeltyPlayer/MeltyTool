@@ -1,4 +1,4 @@
-# Fin Model Utility
+# FinModelUtility
 
 ![GitHub](https://img.shields.io/github/license/MeltyPlayer/FinModelUtility)
 ![Unit tests](https://github.com/MeltyPlayer/FinModelUtility/actions/workflows/dotnet.yml/badge.svg)
@@ -65,6 +65,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@Sage-of-Mirrors](https://github.com/Sage-of-Mirrors), whose [SuperBMD](https://github.com/Sage-of-Mirrors/SuperBMD) tool was referenced to clean up the .bmd logic and whose [Booldozer](https://github.com/Sage-of-Mirrors/Booldozer) tool was used as the basis for the .mdl importer.
 - [@SceneGate](https://github.com/SceneGate), whose [Yarhl](https://github.com/SceneGate/Yarhl), [Ekona](https://github.com/SceneGate/Ekona), and [Lemon](https://github.com/SceneGate/Lemon) libraries were used to rip files from DS and 3DS ROMs.
 - [@shravan2x](https://github.com/shravan2x), whose [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) library is used to deserialize the contents of Steam's .vdf files.
+- [@sinshu](https://github.com/sinshu), whose [MeltySynth](https://github.com/sinshu/meltysynth) library is used to import and play MIDI files.
 - [@srogee](https://github.com/srogee), as his [HaloWarsTools](https://github.com/srogee/HaloWarsTools) program was used as the basis of the Halo Wars importer.
 - [@TTEMMA](https://github.com/TTEMMA), whose [Gar/Zar UnPacker v0.2](https://gbatemp.net/threads/release-gar-zar-unpacker-v0-1.385264/) tool is used to extract the contents of Ocarina of Time 3D files.
 - [@SuperHackio](https://github.com/SuperHackio), whose [Hack.io](https://github.com/SuperHackio/Hack.io) library was referenced to improve the .bmd parser.
