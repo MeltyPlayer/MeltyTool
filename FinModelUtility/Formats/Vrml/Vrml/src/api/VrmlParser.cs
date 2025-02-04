@@ -15,7 +15,7 @@ using vrml.schema;
 
 namespace vrml.api;
 
-public class VrmlParser {
+public partial class VrmlParser {
   public static IGroupNode Parse(Stream stream) {
     DecompressStreamIfNeeded_(ref stream);
     stream = RemoveComments_(stream);
@@ -168,6 +168,7 @@ public class VrmlParser {
         "Material" => ReadMaterialNode_(tr),
         "Separator" => ReadSeparatorNode_(tr, definitions),
         "Shape" => ReadShapeNode_(tr, definitions),
+        "Sound" => ReadSoundNode_(tr, definitions),
         "Text" => ReadTextNode_(tr, definitions),
         "TextureCoordinate" => ReadTextureCoordinateNode_(tr),
         "TextureTransform" => ReadTextureTransformNode_(tr),
