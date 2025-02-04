@@ -30,7 +30,7 @@ public static class SkinExtensions {
     switch (primitive.Type) {
       case PrimitiveType.TRIANGLES: {
         for (var v = 0; v < pointsCount; v += 3) {
-          if (primitive.VertexOrder == VertexOrder.FLIP) {
+          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
             yield return v + 0;
             yield return v + 2;
             yield return v + 1;
@@ -58,7 +58,7 @@ public static class SkinExtensions {
             v3 = v + 2;
           }
 
-          if (primitive.VertexOrder == VertexOrder.FLIP) {
+          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
             yield return v1;
             yield return v3;
             yield return v2;
@@ -79,7 +79,7 @@ public static class SkinExtensions {
           var v2 = v - 1;
           var v3 = v;
 
-          if (primitive.VertexOrder == VertexOrder.FLIP) {
+          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
             yield return v1;
             yield return v3;
             yield return v2;
@@ -94,7 +94,7 @@ public static class SkinExtensions {
       }
       case PrimitiveType.QUADS: {
         for (var v = 0; v < pointsCount; v += 4) {
-          if (primitive.VertexOrder == VertexOrder.FLIP) {
+          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
             yield return v + 1;
             yield return v + 0;
             yield return v + 2;

@@ -95,7 +95,7 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
             finPrimitive.SetMaterial(finMaterial);
 
             if (primitive.Type == PrimitiveType.TRIANGLES) {
-              finPrimitive.SetVertexOrder(VertexOrder.NORMAL);
+              finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
             }
           }
 

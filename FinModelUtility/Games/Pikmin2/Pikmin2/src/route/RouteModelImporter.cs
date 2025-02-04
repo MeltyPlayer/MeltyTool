@@ -105,7 +105,7 @@ public class RouteModelImporter {
       }
 
       var lines = mesh.AddQuads(lineVertices);
-      lines.SetVertexOrder(VertexOrder.NORMAL)
+      lines.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE)
            .SetMaterial(lineMaterial);
 
       return model;

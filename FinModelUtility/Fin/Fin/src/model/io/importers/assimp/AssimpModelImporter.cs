@@ -330,7 +330,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           Assimp.PrimitiveType.Line     => finMesh.AddLines(faceVertices),
           Assimp.PrimitiveType.Triangle => finMesh.AddTriangles(faceVertices),
       };
-      finPrimitive.SetVertexOrder(VertexOrder.NORMAL)
+      finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE)
                   .SetMaterial(lazyFinMaterials[assMesh.MaterialIndex]);
     }
 

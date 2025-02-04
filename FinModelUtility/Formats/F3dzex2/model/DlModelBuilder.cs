@@ -424,7 +424,7 @@ public class DlModelBuilder {
                   this.vertices_.GetOrCreateVertexAtIndex);
           var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
                               .SetMaterial(material)
-                              .SetVertexOrder(VertexOrder.NORMAL);
+                              .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
 
           if (this.isMaterialTransparent_) {
             triangles.SetInversePriority(1);
@@ -443,7 +443,7 @@ public class DlModelBuilder {
                   .Select(this.vertices_.GetOrCreateVertexAtIndex);
           var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
                               .SetMaterial(material)
-                              .SetVertexOrder(VertexOrder.NORMAL);
+                              .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
 
           if (this.isMaterialTransparent_) {
             triangles.SetInversePriority(1);

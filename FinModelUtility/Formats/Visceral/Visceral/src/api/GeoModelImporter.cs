@@ -268,7 +268,7 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
 
       finMesh.AddTriangles(triangles)
              .SetMaterial(finMaterial)
-             .SetVertexOrder(VertexOrder.NORMAL);
+             .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
     }
   }
 

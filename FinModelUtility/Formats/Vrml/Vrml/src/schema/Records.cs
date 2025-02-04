@@ -79,16 +79,6 @@ public record IsbPictureNode : IIsbPictureNode {
   public IReadOnlyList<IImageTextureNode> Frames { get; init; }
 }
 
-public record IndexedFaceSetNode : IIndexedFaceSetNode {
-  public bool? Convex { get; init; }
-  public bool? ColorPerVertex { get; init; }
-  public IColorNode? Color { get; init; }
-  public required ICoordinateNode Coord { get; init; }
-  public required IReadOnlyList<int> CoordIndex { get; init; }
-  public ITextureCoordinateNode? TexCoord { get; init; }
-  public IReadOnlyList<int>? TexCoordIndex { get; init; }
-}
-
 public record ColorNode : IColorNode {
   public required IReadOnlyList<Vector3> Color { get; init; }
 }
@@ -99,11 +89,6 @@ public record CoordinateNode : ICoordinateNode {
 
 public record TextureCoordinateNode : ITextureCoordinateNode {
   public required IReadOnlyList<Vector2> Point { get; init; }
-}
-
-public record TextNode : ITextNode {
-  public required IReadOnlyList<string> String { get; init; }
-  public required IFontStyleNode FontStyle { get; init; }
 }
 
 public record FontStyleNode : IFontStyleNode {

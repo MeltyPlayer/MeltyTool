@@ -308,7 +308,7 @@ public partial class ModelImpl<TVertex> {
         return this;
       }
 
-      public VertexOrder VertexOrder { get; private set; } = VertexOrder.FLIP;
+      public VertexOrder VertexOrder { get; private set; } = VertexOrder.CLOCKWISE;
 
       public IPrimitive SetVertexOrder(VertexOrder vertexOrder) {
         this.VertexOrder = vertexOrder;

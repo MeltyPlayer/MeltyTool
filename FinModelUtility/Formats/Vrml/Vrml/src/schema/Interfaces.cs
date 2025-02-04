@@ -69,18 +69,6 @@ public interface IIsbMovingTextureTransformNode : ITextureTransformNode {
   Vector2 TranslationStep { get; }
 }
 
-public interface IGeometryNode : INode { }
-
-public interface IIndexedFaceSetNode : IGeometryNode {
-  bool? Convex { get; }
-  bool? ColorPerVertex { get; }
-  IColorNode? Color { get; }
-  ICoordinateNode Coord { get; }
-  IReadOnlyList<int> CoordIndex { get; }
-  ITextureCoordinateNode? TexCoord { get; }
-  IReadOnlyList<int>? TexCoordIndex { get; }
-}
-
 public interface IIsbPictureNode : INode, ITransform {
   IReadOnlyList<IImageTextureNode> Frames { get; }
   bool? Pinned { get; }
@@ -96,11 +84,6 @@ public interface ICoordinateNode : INode {
 
 public interface ITextureCoordinateNode : INode {
   IReadOnlyList<Vector2> Point { get; }
-}
-
-public interface ITextNode : IGeometryNode {
-  IReadOnlyList<string> String { get; }
-  IFontStyleNode FontStyle { get; }
 }
 
 public interface IFontStyleNode : INode {

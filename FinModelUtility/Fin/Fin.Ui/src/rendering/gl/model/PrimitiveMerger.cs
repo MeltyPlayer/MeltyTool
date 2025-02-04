@@ -27,7 +27,7 @@ public class PrimitiveMerger {
         var primitive = primitives[0];
         mergedPrimitive = new MergedPrimitive {
             PrimitiveType = primitive.Type,
-            IsFlipped = primitive.VertexOrder == VertexOrder.FLIP,
+            IsFlipped = primitive.VertexOrder == VertexOrder.CLOCKWISE,
             Vertices = primitive.Vertices.Yield(),
         };
         return true;
@@ -54,7 +54,7 @@ public class PrimitiveMerger {
 
       var flippedType =
           primitives.Select(primitive
-                                => primitive.VertexOrder == VertexOrder.FLIP)
+                                => primitive.VertexOrder == VertexOrder.CLOCKWISE)
                     .Distinct()
                     .ToArray();
       if (primitiveTypes is

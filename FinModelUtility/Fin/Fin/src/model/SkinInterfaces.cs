@@ -145,8 +145,8 @@ public enum PrimitiveType {
 }
 
 public enum VertexOrder {
-  NORMAL,
-  FLIP,
+  COUNTER_CLOCKWISE,
+  CLOCKWISE,
 }
 
 [GenerateReadOnly]

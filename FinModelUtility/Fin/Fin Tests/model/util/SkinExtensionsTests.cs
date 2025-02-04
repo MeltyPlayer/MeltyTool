@@ -32,7 +32,7 @@ public class SkinExtensionsTests {
 
     var primitive = new PrimitiveStub {
         Type = PrimitiveType.TRIANGLES,
-        VertexOrder = VertexOrder.NORMAL,
+        VertexOrder = VertexOrder.COUNTER_CLOCKWISE,
         Vertices = [
             vertexX,
             vertexY,

@@ -123,7 +123,7 @@ namespace HaloWarsTools {
         }
 
         finMesh.AddTriangleStrip(triangleStripVertices)
-               .SetVertexOrder(VertexOrder.NORMAL);
+               .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
       }
 
       return finModel;

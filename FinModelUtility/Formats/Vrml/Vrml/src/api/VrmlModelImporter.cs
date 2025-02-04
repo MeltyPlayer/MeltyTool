@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Numerics;
+﻿using System.Numerics;
 
 using DelaunatorSharp;
 
@@ -20,6 +19,7 @@ using fin.model.util;
 using fin.util.asserts;
 using fin.util.enumerables;
 using fin.util.image;
+using fin.util.linq;
 using fin.util.sets;
 
 using vrml.schema;
@@ -92,6 +92,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var alpha = 1 - vrmlMaterial.Transparency;
 
           var finMaterial = finModel.MaterialManager.AddFixedFunctionMaterial();
+          finMaterial.DepthCompareType = DepthCompareType.Less;
 
           var equations = finMaterial.Equations;
           var colorOps = new ColorFixedFunctionOps(equations);
@@ -163,6 +164,13 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
     var finSkeleton = finModel.Skeleton;
     var finSkin = finModel.Skin;
+
+    var allVrmlNodes = vrmlScene.GetAllChildren();
+    var vertexOrdering
+        = allVrmlNodes.WhereIs<INode, ShapeHintsNode>()
+                      .SingleOrDefault()
+                      ?.VertexOrdering ??
+          VertexOrder.COUNTER_CLOCKWISE;
 
     var nodeQueue
         = new FinTuple2Queue<INode, IBone>(
@@ -242,13 +250,13 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           var finMesh = finSkin.AddMesh();
           var finPrimitive = finMesh.AddQuads([vtx0, vtx1, vtx2, vtx3]);
-          finPrimitive.SetVertexOrder(VertexOrder.NORMAL);
+          finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
           finPrimitive.SetMaterial(finMaterial);
           break;
         }
         case IShapeNode shapeNode: {
           var geometry = shapeNode.Geometry;
-          if (geometry is not IIndexedFaceSetNode indexedFaceSetNode) {
+          if (geometry is not IndexedFaceSetNode indexedFaceSetNode) {
             break;
           }
 
@@ -292,21 +300,21 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             if (finVerticesArray.Length >= 3) {
               IPrimitive finPrimitive;
               if (finVertices.Count == 3) {
-                AddFaceNormal_(finVerticesArray);
+                AddFaceNormal_(finVerticesArray, vertexOrdering);
                 finPrimitive = finMesh.AddTriangles(finVerticesArray);
               } else if (finVertices.Count == 4) {
-                AddFaceNormal_(finVerticesArray);
+                AddFaceNormal_(finVerticesArray, vertexOrdering);
                 finPrimitive = finMesh.AddQuads(finVerticesArray);
               } else {
                 var triangulatedVertices
                     = TriangulateVertices_(finVertices.ToArray());
-                AddFaceNormal_(triangulatedVertices);
+                AddFaceNormal_(triangulatedVertices, vertexOrdering);
 
                 finPrimitive = finMesh.AddTriangles(triangulatedVertices);
               }
 
-              finPrimitive.SetVertexOrder(VertexOrder.NORMAL);
-              finPrimitive.SetMaterial(finMaterial);
+              finPrimitive.SetVertexOrder(vertexOrdering)
+                          .SetMaterial(finMaterial);
             }
           }
 
@@ -370,10 +378,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
   }
 
   private static IEnumerable<IndexedFaceGroup[]> GetIndexFaceSetCoordGroups_(
-      IIndexedFaceSetNode indexedFaceSetNode) {
-    var indexCounts = new CounterSet<int>();
-    var list = new LinkedList<IndexedFaceGroup>();
-
+      IndexedFaceSetNode indexedFaceSetNode) {
     foreach (var indexedFaceSetGroup in GetIndexFaceSetCoords_(
                      indexedFaceSetNode)
                  .SplitByNull()) {
@@ -382,42 +387,11 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       }
 
       yield return indexedFaceSetGroup;
-      continue;
-
-      indexCounts.Clear();
-
-      foreach (var tuple in indexedFaceSetGroup) {
-        indexCounts.Increment(tuple.coordIndex);
-      }
-
-      if (!indexCounts.Any(kvp => kvp.Value > 1)) {
-        yield return indexedFaceSetGroup;
-        continue;
-      }
-
-      indexCounts.Clear();
-      list.Clear();
-      foreach (var tuple in indexedFaceSetGroup) {
-        if (indexCounts.GetCount(tuple.coordIndex) == 1) {
-          yield return list.ToArray();
-
-          indexCounts.Clear();
-          list.Clear();
-          continue;
-        }
-
-        list.AddLast(tuple);
-        indexCounts.Increment(tuple.coordIndex);
-      }
-
-      if (list.Count >= 3) {
-        yield return list.ToArray();
-      }
     }
   }
 
   private static IEnumerable<IndexedFaceGroup?> GetIndexFaceSetCoords_(
-      IIndexedFaceSetNode indexedFaceSetNode) {
+      IndexedFaceSetNode indexedFaceSetNode) {
     var colorPerVertex = indexedFaceSetNode.ColorPerVertex ?? true;
     var coordIndex = indexedFaceSetNode.CoordIndex;
     var texCoordIndex = indexedFaceSetNode.TexCoordIndex;
@@ -435,13 +409,18 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     }
   }
 
-  private static void AddFaceNormal_(IReadOnlyList<INormalVertex> vertices) {
+  private static void AddFaceNormal_(IReadOnlyList<INormalVertex> vertices,
+                                     VertexOrder vertexOrder) {
     var a = vertices[0].LocalPosition;
     var b = vertices[1].LocalPosition;
     var c = vertices[2].LocalPosition;
 
     var normal = Vector3.Cross(b - a, c - a);
     normal = Vector3.Normalize(normal);
+
+    if (vertexOrder == VertexOrder.CLOCKWISE) {
+      normal *= -1;
+    }
 
     foreach (var vertex in vertices) {
       vertex.SetLocalNormal(normal);
