@@ -23,6 +23,17 @@ public record AnchorNode : IAnchorNode {
   public required IReadOnlyList<INode> Children { get; init; }
 }
 
+public record BackgroundNode : IBackgroundNode {
+  public required Vector3 SkyColor { get; init; }
+}
+
+public record DirectionalLightNode : IDirectionalLightNode {
+  public required float AmbientIntensity { get; init; }
+  public required Vector3 Color { get; init; }
+  public required Vector3 Direction { get; init; }
+  public required float Intensity { get; init; }
+}
+
 public record ShapeNode : IShapeNode {
   public required IAppearanceNode Appearance { get; init; }
   public required IGeometryNode Geometry { get; init; }
@@ -35,9 +46,10 @@ public record AppearanceNode : IAppearanceNode {
 }
 
 public record MaterialNode : IMaterialNode {
-  public Vector3? DiffuseColor { get; init; }
-  public float? AmbientIntensity { get; init; }
-  public float? Transparency { get; init; }
+  public Vector3? AmbientColor { get; init; }
+  public float AmbientIntensity { get; init; }
+  public Vector3 DiffuseColor { get; init; }
+  public float Transparency { get; init; }
 }
 
 public record ImageTextureNode : IImageTextureNode {

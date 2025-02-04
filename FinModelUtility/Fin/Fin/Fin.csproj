@@ -6,7 +6,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="src\audio\io\importers\midi\MidiAudioImporter.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpConverter.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpDirectExporter.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpMeshBuilder.cs" />

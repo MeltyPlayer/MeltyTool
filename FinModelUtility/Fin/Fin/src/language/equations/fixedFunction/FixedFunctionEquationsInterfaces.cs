@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace fin.language.equations.fixedFunction;
 
@@ -10,6 +11,10 @@ public interface IFixedFunctionEquations<TIdentifier> {
       double r,
       double g,
       double b);
+
+  IColorConstant CreateColorConstant(Vector3 rgb)
+    => this.CreateColorConstant(rgb.X, rgb.Y, rgb.Z);
+
 
   IColorConstant CreateColorConstant(
       double intensity);

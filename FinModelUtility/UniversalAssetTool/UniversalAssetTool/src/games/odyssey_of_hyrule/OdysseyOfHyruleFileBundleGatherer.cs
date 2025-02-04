@@ -26,6 +26,9 @@ public class OdysseyOfHyruleFileBundleGatherer : IAnnotatedFileBundleGatherer {
         organizer.Add(new VrmlModelFileBundle {
             WrlFile = wrlFile,
         }.Annotate(wrlFile));
+        organizer.Add(new VrmlSceneFileBundle {
+            WrlFile = wrlFile,
+        }.Annotate(wrlFile));
       }
     }
 }

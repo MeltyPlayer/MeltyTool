@@ -16,6 +16,16 @@ public static class LinqExtensions {
     => enumerable.Where(value => value is TTo)
                  .Select(value => (TTo) value!);
 
+  public static bool TryGetWhereIs<TFrom, TTo>(
+      this IEnumerable<TFrom> enumerable,
+      out TTo[] first) where TTo : TFrom
+    => enumerable.WhereIs<TFrom, TTo>().TryGetAny(out first);
+
+  public static bool TryGetFirstWhereIs<TFrom, TTo>(
+      this IEnumerable<TFrom> enumerable,
+      out TTo first) where TTo : TFrom
+    => enumerable.WhereIs<TFrom, TTo>().TryGetFirst(out first);
+
   public delegate bool SelectWhereHandler<in TFrom, TTo>(
       TFrom from,
       out TTo to);
@@ -39,6 +49,18 @@ public static class LinqExtensions {
     => enumerable
        .Select(selectWhereHandler)
        .Nonnull();
+
+  public static bool TryGetAny<T>(this IEnumerable<T> enumerable,
+                                  out T[] values) {
+    var array = enumerable.ToArray();
+    if (array.Length > 0) {
+      values = array;
+      return true;
+    }
+
+    values = default;
+    return false;
+  }
 
   public static bool TryGetFirst<T>(this IEnumerable<T> enumerable,
                                     out T first) {

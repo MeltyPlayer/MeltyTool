@@ -27,6 +27,9 @@ public class VrwdwFileBundleGatherer : IAnnotatedFileBundleGatherer {
       organizer.Add(new VrmlModelFileBundle {
           WrlFile = wrlFile,
       }.Annotate(wrlFile));
+      organizer.Add(new VrmlSceneFileBundle {
+          WrlFile = wrlFile,
+      }.Annotate(wrlFile));
     }
 
     var soundFontFile = fileHierarchy.Root.AssertGetExistingFile("windows.sf2");

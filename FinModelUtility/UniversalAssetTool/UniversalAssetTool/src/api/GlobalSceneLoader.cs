@@ -12,6 +12,8 @@ using pmdc.api;
 
 using sm64.api;
 
+using vrml.api;
+
 
 namespace uni.api;
 
@@ -29,6 +31,8 @@ public class GlobalSceneImporter : ISceneImporter<ISceneFileBundle> {
                 sm64LevelSceneFileBundle),
         VisSceneFileBundle visSceneFileBundle
             => new VisSceneImporter().Import(visSceneFileBundle),
+        VrmlSceneFileBundle vrmlSceneFileBundle
+            => new VrmlSceneImporter().Import(vrmlSceneFileBundle),
         ZsiSceneFileBundle zsiSceneFileBundle
             => new ZsiSceneImporter().Import(zsiSceneFileBundle),
         _ => throw new ArgumentOutOfRangeException(nameof(sceneFileBundle))

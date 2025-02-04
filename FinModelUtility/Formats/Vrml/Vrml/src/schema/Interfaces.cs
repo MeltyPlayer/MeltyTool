@@ -25,6 +25,17 @@ public interface IAnchorNode : IGroupNode {
   IReadOnlyList<string>? Parameter { get; }
 }
 
+public interface IBackgroundNode : INode {
+  Vector3 SkyColor { get; }
+}
+
+public interface IDirectionalLightNode : INode {
+  float AmbientIntensity { get; }
+  Vector3 Color { get; }
+  Vector3 Direction { get; }
+  float Intensity { get; }
+}
+
 public interface IShapeNode : INode {
   IAppearanceNode Appearance { get; }
   IGeometryNode Geometry { get; }
@@ -37,9 +48,10 @@ public interface IAppearanceNode : INode {
 }
 
 public interface IMaterialNode : INode {
-  Vector3? DiffuseColor { get; }
-  float? AmbientIntensity { get; }
-  float? Transparency { get; }
+  Vector3? AmbientColor { get; init; }
+  float AmbientIntensity { get; }
+  Vector3 DiffuseColor { get; }
+  float Transparency { get; }
 }
 
 public interface IImageTextureNode : INode {

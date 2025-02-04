@@ -65,11 +65,11 @@ public class VrmlParser {
 
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
-              "Background", "BackgroundColor", "Collision", "DirectionalLight",
-              "Fog", "Info", "NavigationInfo", "OrientationInterpolator",
-              "PerspectiveCamera", "PositionInterpolator", "PROTO",
-              "ProximitySensor", "ROUTE", "ShapeHints", "Sphere", "Sound",
-              "TimeSensor", "Viewpoint", "WorldInfo", "WWWAnchor",
+              "BackgroundColor", "Collision", "Fog", "Info", "NavigationInfo",
+              "OrientationInterpolator", "PerspectiveCamera",
+              "PositionInterpolator", "PROTO", "ProximitySensor", "ROUTE",
+              "ShapeHints", "Sphere", "Sound", "TimeSensor", "Viewpoint",
+              "WorldInfo", "WWWAnchor",
           }
           .ToImmutableHashSet();
 
@@ -155,8 +155,10 @@ public class VrmlParser {
     node = nodeType switch {
         "Anchor" => ReadAnchorNode_(tr, definitions),
         "Appearance" => ReadAppearanceNode_(tr, definitions),
+        "Background" => ReadBackgroundNode_(tr),
         "Color" => ReadColorNode_(tr),
         "Coordinate" or "Coordinate3" => ReadCoordinateNode_(tr),
+        "DirectionalLight" => ReadDirectionalLightNode_(tr),
         "FontStyle" => ReadFontStyleNode_(tr),
         "Group" => ReadGroupNode_(tr, definitions),
         "ImageTexture" => ReadImageTextureNode_(tr),
@@ -256,6 +258,28 @@ public class VrmlParser {
     };
   }
 
+  private static IBackgroundNode ReadBackgroundNode_(ITextReader tr) {
+    Vector3 skyColor = default;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "skyColor": {
+              var color = ReadColorArray_(tr);
+              Asserts.Equal(1, color.Count);
+              skyColor = color[0];
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new BackgroundNode {
+        SkyColor = skyColor,
+    };
+  }
+
   private static IColorNode ReadColorNode_(ITextReader tr) {
     IReadOnlyList<Vector3> color = default;
     ReadFields_(
@@ -286,6 +310,49 @@ public class VrmlParser {
           }
         });
     return new CoordinateNode { Point = point };
+  }
+
+  private static IDirectionalLightNode
+      ReadDirectionalLightNode_(ITextReader tr) {
+    float ambientIntensity = 0;
+    Vector3 color = Vector3.One;
+    Vector3 direction = -Vector3.UnitZ;
+    float intensity = 1;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "ambientIntensity": {
+              ambientIntensity = tr.ReadSingle();
+              break;
+            }
+            case "color": {
+              color = ReadVector3_(tr);
+              break;
+            }
+            case "direction": {
+              direction = ReadVector3_(tr);
+              break;
+            }
+            case "intensity": {
+              intensity = tr.ReadSingle();
+              break;
+            }
+            case "on": {
+              ReadBool_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new DirectionalLightNode {
+        AmbientIntensity = ambientIntensity,
+        Color = color,
+        Direction = direction,
+        Intensity = intensity,
+    };
   }
 
   private static IFontStyleNode ReadFontStyleNode_(ITextReader tr) {
@@ -509,9 +576,9 @@ public class VrmlParser {
 
   private static IMaterialNode ReadMaterialNode_(ITextReader tr) {
     Vector3? ambientColor = null;
-    float? ambientIntensity = null;
-    Vector3? diffuseColor = null;
-    float? transparency = null;
+    float ambientIntensity = .2f;
+    Vector3 diffuseColor = new(.8f);
+    float transparency = 0;
 
     ReadFields_(
         tr,
@@ -538,6 +605,7 @@ public class VrmlParser {
         });
 
     return new MaterialNode {
+        AmbientColor = ambientColor,
         AmbientIntensity = ambientIntensity,
         DiffuseColor = diffuseColor,
         Transparency = transparency
