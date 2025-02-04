@@ -144,6 +144,12 @@ public static class SceneService {
       light.SetColor(FinColor.FromSystemColor(lightColors[currentIndex]));
       light.Strength = individualStrength;
 
+
+      var defaultAttenuation = new Vector3f { X = 1.075f };
+      light.SetAttenuationFunction(AttenuationFunction.SPECULAR);
+      light.SetCosineAttenuation(defaultAttenuation);
+      light.SetDistanceAttenuation(defaultAttenuation);
+
       var angleInRadians = 2 *
                            MathF.PI *
                            (1f * currentIndex) /

@@ -87,14 +87,14 @@ public static class GlslUtil {
     var numBones = modelRequirements.NumBones;
 
     vertexSrc.AppendLine($"""
-                           #version {GlslConstants.VERTEX_SHADER_VERSION}
+                          #version {GlslConstants.VERTEX_SHADER_VERSION}
 
-                           {GetMatricesHeader(model)}
+                          {GetMatricesHeader(model)}
 
-                           uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
+                          uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
 
-                           layout(location = {location++}) in vec3 in_Position;
-                           """);
+                          layout(location = {location++}) in vec3 in_Position;
+                          """);
 
     if (hasNormals) {
       vertexSrc.AppendLine(
@@ -221,14 +221,17 @@ public static class GlslUtil {
         default: throw new NotImplementedException();
       }
 
-      vertexSrc.AppendLine($@"
-
-  mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
-  mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
-
-  gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
-
-  vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));");
+      vertexSrc.AppendLine(
+          $"""
+           
+           
+             mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
+             mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
+           
+             gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
+           
+             vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
+           """);
 
       if (hasNormals) {
         vertexSrc.AppendLine(
@@ -244,10 +247,13 @@ public static class GlslUtil {
         vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
       }
     } else {
-      vertexSrc.AppendLine($@"
-  gl_Position = mvpMatrix * vec4(in_Position, 1);
-
-  vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));");
+      vertexSrc.AppendLine(
+          $"""
+           
+             gl_Position = mvpMatrix * vec4(in_Position, 1);
+           
+             vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
+           """);
 
       if (hasNormals) {
         vertexSrc.AppendLine(
@@ -391,7 +397,7 @@ public static class GlslUtil {
             }
             diffuseColor = light.color * diffuseLightAmount * attenuation;
             
-            if (dot(normal, surfaceToLightNormal) >= 0.0) {
+            if (light.attenuationFunction != {{(int) AttenuationFunction.NONE}} && dot(normal, surfaceToLightNormal) >= 0.0) {
               vec3 surfaceToCameraNormal = normalize(cameraPosition - position);
               float specularLightAmount = pow(max(0.0, dot(reflect(-surfaceToLightNormal, normal), surfaceToCameraNormal)), {{GlslConstants.UNIFORM_SHININESS_NAME}});
               specularColor = light.color * specularLightAmount * attenuation;
