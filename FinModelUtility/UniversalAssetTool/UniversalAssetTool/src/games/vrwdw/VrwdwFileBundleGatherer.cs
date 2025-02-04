@@ -32,7 +32,7 @@ public class VrwdwFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }.Annotate(wrlFile));
     }
 
-    var soundFontFile = DirectoryConstants.WINDOWS_SOUNDFONT;
+    var soundFontFile = fileHierarchy.Root.AssertGetExistingFile("windows.sf2");
     foreach (var midFile in fileHierarchy.Root.GetFilesWithFileType(".mid")) {
       organizer.Add(
           new MidiAudioFileBundle(midFile, soundFontFile).Annotate(midFile));
