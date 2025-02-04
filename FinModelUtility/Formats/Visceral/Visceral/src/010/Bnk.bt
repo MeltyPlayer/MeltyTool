@@ -264,11 +264,11 @@ struct AnimationData0 {
   Align(align, 2);
   
   // Section 3
-  byte section3Bytes[6 * type2BoneCount] <bgcolor=C_TYPE_2_BONE>;
+  short section3Bytes[3 * type2BoneCount] <bgcolor=C_TYPE_2_BONE>;
   Align(align, 3);
   
   // Section 4
-  byte section4Bytes[unk3_6 * animationLengthTimes2Or0];
+  short section4Bytes[unk3_6 * animationLength];
   Align(align, 4);
   
   // Section 5
@@ -276,32 +276,34 @@ struct AnimationData0 {
   Align(align, 5);
   
   // Section 6
-  local int simpleBoneCount = 0;
-  local int i;
-  for(i = 0; i < boneCount; i++) {
-    if (boneTypes[i] == 1 || boneTypes[i] == 2) {
-      simpleBoneCount++;
-    }
-  } 
-  byte section6Bytes[12 * simpleBoneCount];
+  local ushort simpleBoneCount = type1BoneCount + type2BoneCount - type8BoneCount - type16BoneCount;
+  float section6Bytes[3 * simpleBoneCount];
   Align(align, 6);
   
   // Section 7
-  byte section7Bytes[12 * type8BoneCount] <bgcolor=C_TYPE_8_BONE>;
+  float section7Bytes[3 * type8BoneCount] <bgcolor=C_TYPE_8_BONE>;
   Align(align, 7);
   
   // Section 8
-  byte section8Bytes[12 * type16BoneCount] <bgcolor=C_TYPE_16_BONE>;
+  float section8Bytes[3 * type16BoneCount] <bgcolor=C_TYPE_16_BONE>;
   Align(align, 8);
 
   // Section 9
-  byte section9Bytes[animationLengthTimes2Or0 + 4*unk2_8];
+  local ushort section9IndicesLength = animationLengthTimes2Or0 / 2; 
+  short section9Indices[section9IndicesLength];
+  if (section9IndicesLength > 0) {
+    local ushort gaps[section9IndicesLength - 1];
+    local uint i;
+    for (i = 0; i < section9IndicesLength - 1; ++i) {
+      gaps[i] = section9Indices[i+1] - section9Indices[i];
+    }
+  }
+  byte section9Bytes[4 * unk2_8];
   Align(align, 9);
 };
 
 struct AnimationData1 {
 };
-
 
 
 FSeek(fileHeader.animationDataOffsetTableOffset);

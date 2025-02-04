@@ -33,6 +33,11 @@ public static class DirectoryConstants {
   public static ISystemDirectory CLI_DIRECTORY =
       BASE_DIRECTORY.AssertGetExistingSubdir("cli");
 
+  public static IReadOnlySystemDirectory COMMON_DIRECTORY { get; }
+    = BASE_DIRECTORY.AssertGetExistingSubdir("common");
+
+  public static IReadOnlySystemFile WINDOWS_SOUNDFONT { get; }
+    = COMMON_DIRECTORY.AssertGetExistingFile("windows.sf2");
 
   public static ISystemDirectory GAME_CONFIG_DIRECTORY { get; } =
     CLI_DIRECTORY.AssertGetExistingSubdir("config");
