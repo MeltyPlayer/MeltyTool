@@ -14,7 +14,6 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
 
   private InfiniteGridRenderer infiniteGridRenderer_ = new();
   private BackgroundSphereRenderer backgroundRenderer_ = new();
-  private GridRenderer gridRenderer_ = new();
 
   private ISceneInstance? scene_;
   private SceneRenderer? sceneRenderer_;
