@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
+using System.Numerics;
 
 using fin.color;
+using fin.math;
 using fin.scene;
 using fin.schema.vector;
 using fin.ui;
@@ -67,14 +69,24 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
       if (directionalLightNodes.Length == 1) {
         finLighting.AmbientLightStrength
             = directionalLightNodes[0].AmbientIntensity;
+      } else {
+        var ambientDirectionalLight = directionalLightNodes.SingleOrDefault(d => d.Direction.IsRoughly0());
+        if (ambientDirectionalLight != null) {
+          directionalLightNodes = directionalLightNodes
+                                  .Where(d => d != ambientDirectionalLight)
+                                  .ToArray();
+          finLighting.AmbientLightStrength = ambientDirectionalLight.Intensity;
+          finLighting.AmbientLightColor = FinColor.FromRgb(ambientDirectionalLight.Color);
+        }
       }
+
 
       // TODO: Handle child lights, inherit transforms?
       foreach (var directionalLightNode in directionalLightNodes) {
         var finLight = finLighting.CreateLight();
         finLight.SetColor(FinColor.FromRgb(directionalLightNode.Color));
-        finLight.SetNormal(directionalLightNode.Direction);
-        finLight.Strength = directionalLightNode.Intensity;
+        finLight.SetNormal(Vector3.Normalize(directionalLightNode.Direction));
+        finLight.Strength = directionalLightNode.Intensity / directionalLightNodes.Length;
       }
     }
 
