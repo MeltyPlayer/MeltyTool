@@ -64,6 +64,9 @@ public class FinColor : IColor {
     => FromRgbaFloats(1, 1, 1, af);
 
 
+  public static IColor FromHexString(string hex)
+    => FromSystemColor(ColorTranslator.FromHtml(hex));
+
   public static IColor FromSystemColor(Color color)
     => FromRgbaBytes(color.R, color.G, color.B, color.A);
 
@@ -127,4 +130,9 @@ public class FinColor : IColor {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static int MergeBgra(byte r, byte g, byte b, byte a)
     => b | (g << 8) | (r << 16) | (a << 24);
+}
+
+public static class ColorExtensions {
+  public static string ToGlslVec4(this IColor color)
+    => $"vec4({color.Rf:0.0###########},{color.Gf:0.0###########},{color.Bf:0.0###########},{color.Af:0.0###########})";
 }

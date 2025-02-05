@@ -3,11 +3,12 @@ using fin.model.util;
 using fin.shaders.glsl;
 using fin.ui.rendering.gl.model;
 
-namespace fin.ui.rendering.gl;
+namespace fin.ui.rendering.viewer;
 
 /// <summary>
 ///   Shamelessly stolen from:
-///   https://godotshaders.com/shader/infinite-ground-grid/
+///    - https://godotshaders.com/shader/infinite-ground-grid/
+///    - https://madebyevan.com/shaders/grid/
 /// </summary>
 public class InfiniteGridRenderer : IRenderable {
   private IModelRenderer? impl_;
@@ -51,9 +52,16 @@ public class InfiniteGridRenderer : IRenderable {
 
           // calculate line mask, using a bit of fwidth() magic to make line width not affected by perspective
           vec2 grid(vec2 pos, float unit, float thickness) {
-              vec2 threshold = fwidth(pos) * thickness * .5 / unit;
-              vec2 posWrapped = pos / unit;
-              return step(fract(-posWrapped), threshold) + step(fract(posWrapped), threshold);
+            // Compute anti-aliased world-space grid lines
+            vec2 value = abs(fract(pos / unit - 0.5) * unit - unit * .5) / (fwidth(pos) * .5 * thickness);
+            value = 1.0 - value;
+            
+            value = clamp(value, 0.0, 1.0);
+
+            // Apply gamma correction
+            value = vec2(pow(value.x, 1.0 / 2.2), pow(value.y, 1.0 / 2.2));
+
+            return value;         
           }
 
           void main() {
@@ -77,13 +85,17 @@ public class InfiniteGridRenderer : IRenderable {
             gl_FragDepth = (((far - near) * ndcDepth) + near + far) / 2.0;
             
             // calculate planar distance from camera to fragment (used for fading)
-            float distPlanar = distance(vertexPosition, vec2(0.0, 0.0));
-          
+            float distPlanar = distance(vec3(vertexPosition, 0.0), {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}});
+            float fadeStart = {{ViewerConstants.GRID_FADE_START:0.0###########}};
+            float fadeEnd = {{ViewerConstants.GRID_FADE_END:0.0###########}};
+            float fadeFactor = 1.0 - clamp((distPlanar - fadeStart) / (fadeEnd - fadeStart), 0.0, 1.0);
+            
+            fadeFactor = pow(fadeFactor, {{ViewerConstants.GRID_FADE_FALLOFF_EXPONENT:0.0###########}});
+            float sizeFactor = fadeFactor;
+            
             float unitSize = 1.0;
-            float majorLineThickness = 2.0;
-            float minorLineThickness = 1.0;
-            float fadeStart = 0.0;
-            float fadeEnd = 10.0;
+            float majorLineThickness = 2.0 * sizeFactor;
+            float minorLineThickness = 1.0 * sizeFactor;
             int subdivisions = 8;
             float minorLineAlpha = .3;
             vec4 gridColor = vec4(1.0, 1.0, 1.0, 1.0);
@@ -91,7 +103,6 @@ public class InfiniteGridRenderer : IRenderable {
             // grid
             vec2 line = grid(vertexPosition, unitSize, majorLineThickness);
             line += grid(vertexPosition, unitSize / float(subdivisions), minorLineThickness) * minorLineAlpha;
-            line = clamp(line, 0.0, 1.0);
             
             vec2 lineIndex = abs(vertexPosition / (unitSize / float(subdivisions)));
             vec4 lineColor = gridColor;
@@ -106,9 +117,7 @@ public class InfiniteGridRenderer : IRenderable {
             }
             
             float lineStrength = max(line.x, line.y);
-          
-            // distance fade factor
-            float fadeFactor = 1.0 - clamp((distPlanar - fadeStart) / (fadeEnd - fadeStart), 0.0, 1.0);
+            lineStrength = clamp(lineStrength, 0.0, 1.0);
           
             // final alpha
             float alphaGrid = lineStrength * lineColor.a;

@@ -3,6 +3,7 @@ using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.model;
 using fin.ui.rendering.gl.scene;
+using fin.ui.rendering.viewer;
 using fin.util.time;
 
 using OpenTK.Graphics.OpenGL;
@@ -13,7 +14,7 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
   private float viewerScale_ = 1;
 
   private InfiniteGridRenderer infiniteGridRenderer_ = new();
-  private BackgroundSphereRenderer backgroundRenderer_ = new();
+  private SkyboxRenderer skyboxRenderer_ = new();
 
   private ISceneInstance? scene_;
   private SceneRenderer? sceneRenderer_;
@@ -146,28 +147,28 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
                          this.Camera.ZUp);
     }
 
-    GlTransform.MatrixMode(TransformMatrixMode.MODEL);
-
     {
+      GlTransform.MatrixMode(TransformMatrixMode.MODEL);
       GlTransform.LoadIdentity();
 
       var customSkyboxRenderer
           = this.singleAreaRenderer_?.CustomSkyboxRenderer;
-      if (customSkyboxRenderer == null) {
-        GlTransform.Translate(this.Camera.X,
-                              this.Camera.Y,
-                              this.Camera.Z * .995f);
-      } else {
+      if (customSkyboxRenderer != null) {
         GlTransform.Translate(this.Camera.X,
                               this.Camera.Y,
                               this.Camera.Z);
+        GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
+        customSkyboxRenderer.Render();
+      } else {
+        var hWidth = width / 2f;
+        var hHeight = height / 2f;
+
+        GlTransform.Ortho2d(0, width, height, 0);
+        GlTransform.Translate(hWidth, hHeight, 0);
+        GlTransform.Scale(hWidth, hHeight, 1);
+
+        this.skyboxRenderer_.Render();
       }
-
-      GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
-
-      var skyboxRenderer = (IRenderable?) customSkyboxRenderer ??
-                           this.backgroundRenderer_;
-      skyboxRenderer.Render();
     }
 
     {
@@ -199,7 +200,7 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     GlTransform.LoadIdentity();
 
     GlTransform.Ortho2d(0, width, height, 0);
-    
+
     GlTransform.Translate(hWidth, hHeight, 0);
     GlTransform.Scale(hWidth, hHeight, 1);
 
