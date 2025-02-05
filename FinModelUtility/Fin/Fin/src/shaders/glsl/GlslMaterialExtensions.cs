@@ -31,6 +31,8 @@ public static class GlslMaterialExtensions {
             modelRequirements,
             Asserts.AsA<IColorMaterial>(material),
             shaderRequirements),
+        FinShaderType.SHADER => new ShaderShaderSourceGlsl(
+            Asserts.AsA<IShaderMaterial>(material)),
         FinShaderType.STANDARD => new StandardShaderSourceGlsl(
             model,
             modelRequirements,

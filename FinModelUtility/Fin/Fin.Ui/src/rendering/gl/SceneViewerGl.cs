@@ -1,7 +1,6 @@
 ﻿using fin.animation;
 using fin.model;
 using fin.scene;
-using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
 using fin.ui.rendering.gl.scene;
 using fin.util.time;
@@ -13,6 +12,7 @@ namespace fin.ui.rendering.gl;
 public class SceneViewerGl : ISceneViewer, IRenderable {
   private float viewerScale_ = 1;
 
+  private InfiniteGridRenderer infiniteGridRenderer_ = new();
   private BackgroundSphereRenderer backgroundRenderer_ = new();
   private GridRenderer gridRenderer_ = new();
 
@@ -115,6 +115,7 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     GlUtil.ClearColorAndDepth();
 
     this.RenderPerspective_();
+    this.RenderOrtho_();
 
     FrameTime.MarkEndOfFrameForFpsDisplay();
   }
@@ -171,12 +172,9 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     }
 
     {
+      GlTransform.MatrixMode(TransformMatrixMode.MODEL);
       GlTransform.LoadIdentity();
       GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
-
-      if (this.ShowGrid) {
-        this.gridRenderer_.Render();
-      }
 
       {
         GlTransform.Rotate(90, 1, 0, 0);
@@ -187,5 +185,25 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
 
       this.sceneRenderer_?.Render();
     }
+  }
+
+  private void RenderOrtho_() {
+    var width = this.Width;
+    var height = this.Height;
+
+    var hWidth = this.Width / 2f;
+    var hHeight = this.Height / 2f;
+
+    // Leaves projection/view matrices as-is.
+
+    GlTransform.MatrixMode(TransformMatrixMode.MODEL);
+    GlTransform.LoadIdentity();
+
+    GlTransform.Ortho2d(0, width, height, 0);
+    
+    GlTransform.Translate(hWidth, hHeight, 0);
+    GlTransform.Scale(hWidth, hHeight, 1);
+
+    this.infiniteGridRenderer_.Render();
   }
 }

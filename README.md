@@ -74,6 +74,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@VPenades](https://github.com/vpenades), who created the [SharpGLTF](https://github.com/vpenades/SharpGLTF) library used to write GLTF models.
 - [@Wiimm](https://github.com/Wiimm), who created the [wiimms-iso-tools](https://github.com/Wiimm/wiimms-iso-tools) used to extract the contents of Wii .isos.
 - [@xdanieldzd](https://github.com/xdanieldzd), for reverse-engineering and documenting the .cmb and .csab formats. In addition, their [Scarlet](https://github.com/xdanieldzd/Scarlet) tool was referenced for dumping .gar files.
+- xyz, whose [Infinite Ground Grid shader](https://godotshaders.com/shader/infinite-ground-grid/) was used to render a better-looking grid in the viewer.
 
 ## Supported formats/games
 

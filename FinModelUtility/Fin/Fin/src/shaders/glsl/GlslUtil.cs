@@ -6,7 +6,6 @@ using System.Text;
 using fin.data.indexable;
 using fin.math;
 using fin.model;
-using fin.util.asserts;
 using fin.util.enums;
 
 namespace fin.shaders.glsl;
@@ -15,6 +14,7 @@ public enum FinShaderType {
   FIXED_FUNCTION,
   TEXTURE,
   COLOR,
+  SHADER,
   STANDARD,
   HIDDEN,
   NULL
@@ -42,16 +42,11 @@ public static class GlslUtil {
       return FinShaderType.FIXED_FUNCTION;
     }
 
-    if (material is IStandardMaterial) {
-      return FinShaderType.STANDARD;
-    }
-
-    if (material is IColorMaterial) {
-      return FinShaderType.COLOR;
-    }
-
-    if (material is IHiddenMaterial) {
-      return FinShaderType.HIDDEN;
+    switch (material) {
+      case IStandardMaterial: return FinShaderType.STANDARD;
+      case IColorMaterial:    return FinShaderType.COLOR;
+      case IShaderMaterial:   return FinShaderType.SHADER;
+      case IHiddenMaterial:   return FinShaderType.HIDDEN;
     }
 
     if (material != null && material is not INullMaterial) {

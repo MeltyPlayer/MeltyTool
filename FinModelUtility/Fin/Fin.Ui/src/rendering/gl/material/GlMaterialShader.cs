@@ -24,6 +24,9 @@ public static class GlMaterialShader {
         FinShaderType.COLOR => new GlColorMaterialShader(model,
           modelRequirements,
           Asserts.AsA<IReadOnlyColorMaterial>(material)),
+        FinShaderType.SHADER => new GlShaderMaterialShader(model,
+          modelRequirements,
+          Asserts.AsA<IReadOnlyShaderMaterial>(material)),
         FinShaderType.STANDARD => new GlStandardMaterialShader(model,
           modelRequirements,
           Asserts.AsA<IReadOnlyStandardMaterial>(material),
@@ -31,7 +34,7 @@ public static class GlMaterialShader {
         FinShaderType.HIDDEN => new GlHiddenMaterialShader(
             model,
             modelRequirements),
-        FinShaderType.NULL 
+        FinShaderType.NULL
             => new GlNullMaterialShader(model, modelRequirements),
     };
 }

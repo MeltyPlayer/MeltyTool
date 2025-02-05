@@ -64,16 +64,6 @@ public static class GlTransform {
     currentMatrix_.Pop();
   }
 
-  public static unsafe void PassMatricesIntoGl() {
-    var projection = ProjectionMatrix;
-    GL.MatrixMode(GlMatrixMode.Projection);
-    GL.LoadMatrix(&(projection.M11));
-
-    var modelViewMatrix = ModelMatrix * ViewMatrix;
-    GL.MatrixMode(GlMatrixMode.Modelview);
-    GL.LoadMatrix(&(modelViewMatrix.M11));
-  }
-
   public static void MatrixMode(TransformMatrixMode mode)
     => currentMatrix_ = mode switch {
         TransformMatrixMode.MODEL      => modelMatrix_,

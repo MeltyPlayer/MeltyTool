@@ -166,7 +166,7 @@ public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
       var upwardVector =
           (this.isUpwardDown_ ? 1 : 0) - (this.isDownwardDown_ ? 1 : 0);
 
-      var cameraSpeed = DebugFlags.GLOBAL_SCALE * 15;
+      var cameraSpeed = UiConstants.GLOBAL_SCALE * 15;
       if (this.isSpeedupActive_) {
         cameraSpeed *= 2;
       }
@@ -182,9 +182,9 @@ public class SceneViewerGlPanel : BGlPanel, ISceneViewer {
 
       this.viewerImpl_.Width = this.Width;
       this.viewerImpl_.Height = this.Height;
-      this.viewerImpl_.GlobalScale = DebugFlags.GLOBAL_SCALE;
-      this.viewerImpl_.NearPlane = DebugFlags.NEAR_PLANE;
-      this.viewerImpl_.FarPlane = DebugFlags.FAR_PLANE;
+      this.viewerImpl_.GlobalScale = UiConstants.GLOBAL_SCALE;
+      this.viewerImpl_.NearPlane = UiConstants.NEAR_PLANE;
+      this.viewerImpl_.FarPlane = UiConstants.FAR_PLANE;
       this.viewerImpl_.ShowGrid = Config.Instance.Viewer.ShowGrid;
 
       this.viewerImpl_.Render();

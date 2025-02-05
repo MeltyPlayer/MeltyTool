@@ -25,6 +25,7 @@ public partial interface IMaterialManager {
   IHiddenMaterial AddHiddenMaterial();
   ITextureMaterial AddTextureMaterial(IReadOnlyTexture texture);
   IColorMaterial AddColorMaterial(Color color);
+  IShaderMaterial AddShaderMaterial(string vertexShader, string fragmentShader);
   IStandardMaterial AddStandardMaterial();
   IFixedFunctionMaterial AddFixedFunctionMaterial();
 
@@ -147,6 +148,12 @@ public partial interface IStandardMaterial : IMaterialWithNormalTexture {
   IReadOnlyTexture? AmbientOcclusionTexture { get; set; }
   IReadOnlyTexture? EmissiveTexture { get; set; }
   IReadOnlyTexture? SpecularTexture { get; set; }
+}
+
+[GenerateReadOnly]
+public partial interface IShaderMaterial : IMaterial {
+  string VertexShader { get; set; }
+  string FragmentShader { get; set; }
 }
 
 // TODO: Support empty white materials
