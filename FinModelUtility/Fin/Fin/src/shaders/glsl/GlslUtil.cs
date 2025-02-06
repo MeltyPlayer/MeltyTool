@@ -7,6 +7,7 @@ using fin.data.indexable;
 using fin.math;
 using fin.model;
 using fin.util.enums;
+using fin.util.image;
 
 namespace fin.shaders.glsl;
 
@@ -626,5 +627,31 @@ public static class GlslUtil {
             ? TextureTransformType.THREE_D
             : TextureTransformType.TWO_D)
         : TextureTransformType.NONE;
+  }
+
+  public static void AppendAlphaDiscard(StringBuilder src,
+                                        IReadOnlyMaterial material) {
+    switch (material.TransparencyType) {
+      case TransparencyType.MASK: {
+        src.AppendLine(
+            $$"""
+              
+                if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_MASK_TEXT}}) {
+                  discard;
+                }
+              """);
+        break;
+      }
+      case TransparencyType.TRANSPARENT: {
+        src.AppendLine(
+            $$"""
+              
+                if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TRANSPARENT_TEXT}}) {
+                  discard;
+                }
+              """);
+        break;
+      }
+    }
   }
 }

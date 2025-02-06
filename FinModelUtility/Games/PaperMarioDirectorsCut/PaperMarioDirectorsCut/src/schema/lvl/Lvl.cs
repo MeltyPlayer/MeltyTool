@@ -27,7 +27,7 @@ public class Lvl : ITextDeserializable {
 
       if (line.TryRemoveStart("global.roomIsModel:",
                               out var roomIsModelValue)) {
-        this.HasRoomModel = true;
+        this.HasRoomModel = CoerceStringToBool_(roomIsModelValue);
       } else if (
           line.TryRemoveStart("parCamera.img:", out var backgroundName)) {
         this.BackgroundName = backgroundName.Trim();
@@ -40,4 +40,11 @@ public class Lvl : ITextDeserializable {
       }
     }
   }
+
+  private static bool CoerceStringToBool_(string text) => text switch {
+      "0"     => false,
+      "1"     => true,
+      "false" => false,
+      "true"  => true,
+  };
 }

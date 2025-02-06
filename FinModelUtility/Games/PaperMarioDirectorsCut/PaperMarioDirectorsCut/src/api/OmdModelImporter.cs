@@ -1,6 +1,5 @@
 ﻿using fin.image;
 using fin.io;
-using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io;
@@ -28,16 +27,6 @@ namespace pmdc.api {
           FileBundle = modelFileBundle,
           Files = files
       };
-
-      var finSkeleton = finModel.Skeleton;
-      var finRoot = finSkeleton.Root.AddRoot(0, 0, 0);
-      finRoot.LocalTransform.SetRotationDegrees(-90, 180, 0);
-      finRoot.LocalTransform.SetScale(-1, 1, 1);
-
-      var finSkin = finModel.Skin;
-      var boneWeights = finSkin.GetOrCreateBoneWeights(
-          VertexSpace.RELATIVE_TO_BONE,
-          finRoot);
 
       var finMaterialManager = finModel.MaterialManager;
       var finMaterials =
@@ -72,25 +61,14 @@ namespace pmdc.api {
               })
               .ToArray();
 
+      ModModelImporter.CreateAdjustedRootBone(finModel, out var finRoot);
       foreach (var omdMesh in omd.Meshes) {
-        var finMesh = finSkin.AddMesh();
+        ModModelImporter.AddToModel(omdMesh.Mod,
+                                    finModel,
+                                    finRoot,
+                                    out var finMesh,
+                                    out var finPrimitive);
         finMesh.Name = omdMesh.Name;
-
-        var finVertices =
-            omdMesh
-                .Vertices
-                .Where(omdVertex => omdVertex.Something == 8)
-                .Select(omdVertex => {
-                  var finVertex = finSkin.AddVertex(omdVertex.Position);
-                  finVertex.SetLocalNormal(-omdVertex.Normal);
-                  finVertex.SetUv(omdVertex.Uv);
-                  finVertex.SetBoneWeights(boneWeights);
-
-                  return finVertex;
-                })
-                .ToArray();
-
-        var finPrimitive = finMesh.AddTriangles(finVertices);
         finPrimitive.SetMaterial(finMaterials[omdMesh.MaterialIndex]);
       }
 

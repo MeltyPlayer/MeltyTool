@@ -5,8 +5,8 @@ using fin.schema;
 using schema.text;
 using schema.text.reader;
 
-namespace pmdc.schema.omd {
-  public struct OmdVertex : ITextDeserializable {
+namespace pmdc.schema.mod {
+  public struct ModVertex : ITextDeserializable {
     public int Something { get; private set; }
     public Vector3 Position { get; private set; }
     public Vector3 Normal { get; private set; }

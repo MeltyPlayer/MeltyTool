@@ -215,19 +215,9 @@ public class StandardShaderSourceGlsl : IShaderSourceGlsl {
             fragColor.rgb = min(fragColor.rgb, 1.0);
           """);
     }
-
-    if (material.TransparencyType == TransparencyType.MASK) {
-      fragmentShaderSrc.AppendLine();
-      fragmentShaderSrc.AppendLine(
-          $$"""
-              if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TEXT}}) {
-                discard;
-              }
-            """);
-    }
-
+    
+    GlslUtil.AppendAlphaDiscard(fragmentShaderSrc, material);
     fragmentShaderSrc.Append("}");
-
 
     this.FragmentShaderSource = fragmentShaderSrc.ToString();
   }

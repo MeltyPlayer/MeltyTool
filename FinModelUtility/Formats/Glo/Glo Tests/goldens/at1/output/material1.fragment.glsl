@@ -10,4 +10,8 @@ in vec2 uv0;
 
 void main() {
   fragColor = texture(diffuseTexture, uv0) * vertexColor0;
+
+  if (fragColor.a < .01) {
+    discard;
+  }
 }

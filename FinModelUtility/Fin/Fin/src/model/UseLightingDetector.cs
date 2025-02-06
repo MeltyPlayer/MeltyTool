@@ -1,6 +1,7 @@
-﻿using fin.model;
+﻿using System.Collections.Generic;
+using System.Linq;
 
-namespace fin.ui.rendering.gl.model;
+namespace fin.model;
 
 public class UseLightingDetector {
   public bool ShouldUseLightingFor(IReadOnlyModel model) {

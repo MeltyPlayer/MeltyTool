@@ -133,6 +133,9 @@ public class FinColor : IColor {
 }
 
 public static class ColorExtensions {
+  public static Color ToSystemColor(this IColor color)
+    => Color.FromArgb(color.Ab, color.Rb, color.Gb, color.Bb);
+
   public static string ToGlslVec4(this IColor color)
     => $"vec4({color.Rf:0.0###########},{color.Gf:0.0###########},{color.Bf:0.0###########},{color.Af:0.0###########})";
 }

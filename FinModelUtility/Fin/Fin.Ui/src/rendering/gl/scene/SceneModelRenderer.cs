@@ -6,7 +6,6 @@ using fin.math;
 using fin.math.matrix.four;
 using fin.model;
 using fin.scene;
-using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
 
 namespace fin.ui.rendering.gl.scene;
