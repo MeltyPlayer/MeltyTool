@@ -1,7 +1,6 @@
 ﻿using fin.image;
 using fin.io;
 using fin.model;
-using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
 using fin.util.sets;
@@ -22,11 +21,7 @@ namespace pmdc.api {
       var omd = omdFile.ReadNewFromText<Omd>();
 
       var files = omdFile.AsFileSet();
-      var finModel = new ModelImpl<NormalUvVertexImpl>(
-          (index, position) => new NormalUvVertexImpl(index, position)) {
-          FileBundle = modelFileBundle,
-          Files = files
-      };
+      var (finModel, finRootBone) = ModModelImporter.CreateModel((modelFileBundle, files));
 
       var finMaterialManager = finModel.MaterialManager;
       var finMaterials =
@@ -61,11 +56,10 @@ namespace pmdc.api {
               })
               .ToArray();
 
-      ModModelImporter.CreateAdjustedRootBone(finModel, out var finRoot);
       foreach (var omdMesh in omd.Meshes) {
         ModModelImporter.AddToModel(omdMesh.Mod,
                                     finModel,
-                                    finRoot,
+                                    finRootBone,
                                     out var finMesh,
                                     out var finPrimitive);
         finMesh.Name = omdMesh.Name;

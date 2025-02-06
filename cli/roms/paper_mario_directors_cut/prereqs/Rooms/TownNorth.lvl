@@ -57,50 +57,22 @@ objFloorBlock(288,22,64,340,64,0,bacCrate,"floor-noRepeat;-1")
 
 
 //---HOUSE-----------------------------------------
-objFloorBlock(224,-64,0,480,64,0,bacGrassFloor,"floor-
-2
-;-1")
-objFloorBlock(224,64,0,480,64,96,bacToadTownWall,"wall-
-2
-")
-objFloorBlock(224,64,0,224,288,96,bacToadTownWall,"wall-
-2
-")
-objFloorBlock(224,288,0,309.3,288,96,bacToadTownWall,"wall-
-2
-")
-objFloorBlock(309.3,288,48,330.7,288,96,bacToadTownWall,"wall-
-2
-")
-objFloorBlock(330.7,288,0,480,288,96,bacToadTownWall,"wall-
-2
-")
-objFloorBlock(224,64,96,480,288,96,bacToadTownRoof,"floor-
-2
-;-1")
-objHouseDoor(320,288,0,0,0,0,bacToadTownDoor,"-
-2
-90,320,256,320,304")
+objFloorBlock(224,-64,0,480,64,0,bacGrassFloor,"floor-2;-1")
+objFloorBlock(224,64,0,480,64,96,bacToadTownWall,"wall-2")
+objFloorBlock(224,64,0,224,288,96,bacToadTownWall,"wall-2")
+objFloorBlock(224,288,0,309.3,288,96,bacToadTownWall,"wall-2")
+objFloorBlock(309.3,288,48,330.7,288,96,bacToadTownWall,"wall-2")
+objFloorBlock(330.7,288,0,480,288,96,bacToadTownWall,"wall-2")
+objFloorBlock(224,64,96,480,288,96,bacToadTownRoof,"floor-2;-1")
+objHouseDoor(320,288,0,0,0,0,bacToadTownDoor,"-290,320,256,320,304")
 
-//objFloorBlock(224,224,0,224,288,96,bacToadTownWallCorner,"wall-
-2
-")
+//objFloorBlock(224,224,0,224,288,96,bacToadTownWallCorner,"wall-2")
 
-objFloorBlock(224,64,0,480,288,0,bacToadTownWoodFloor,"floor-
-2
-;-1")
-objFloorBlock(362,65,64,410,65,16,bacToadTownWindowInside,"wall-
-1
--noRepeat-noCollide")
-objFloorBlock(225,96,64,225,144,16,bacToadTownWindowInside,"wall-
-1
--noRepeat-noCollide")
-objFloorBlock(225,208,64,225,256,16,bacToadTownWindowInside,"wall-
-1
--noRepeat-noCollide")
-objFloorBlock(362,287,64,410,287,16,bacToadTownWindowInside,"wall-
-1
--noRepeat-noCollide")
+objFloorBlock(224,64,0,480,288,0,bacToadTownWoodFloor,"floor-2;-1")
+objFloorBlock(362,65,64,410,65,16,bacToadTownWindowInside,"wall-1-noRepeat-noCollide")
+objFloorBlock(225,96,64,225,144,16,bacToadTownWindowInside,"wall-1-noRepeat-noCollide")
+objFloorBlock(225,208,64,225,256,16,bacToadTownWindowInside,"wall-1-noRepeat-noCollide")
+objFloorBlock(362,287,64,410,287,16,bacToadTownWindowInside,"wall-1-noRepeat-noCollide")
 
 objFloorBlock(362,63,64,410,63,16,bacToadTownWindowOutside,"wall-noRepeat-noCollide")
 objFloorBlock(223,96,64,223,144,16,bacToadTownWindowOutside,"wall-noRepeat-noCollide")
@@ -112,9 +84,7 @@ objEventZone(224,64,1000,480,288,-1000,-1,"global.goToDirection=180;global.roomX
 //---HOUSE-----------------------------------------
 
 
-objFloorBlock(224,288,0,480,480,0,bacGrassFloor,"floor-
-2
-;-1")
+objFloorBlock(224,288,0,480,480,0,bacGrassFloor,"floor-2;-1")
 
 
 //objFountain(0,160,-8,128,320,0,bacToadTownStoneWall,"")

@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.data.lazy;
 using fin.image;
 using fin.io;
 using fin.math.transform;
@@ -7,6 +8,7 @@ using fin.model;
 using fin.model.impl;
 using fin.model.util;
 using fin.scene;
+using fin.util.enums;
 using fin.util.sets;
 
 using pmdc.schema.lvl;
@@ -58,6 +60,63 @@ namespace pmdc.api {
         }
       }
 
+      if (lvl.FloorBlocks.Count > 0) {
+        var textureDirectory
+            = sceneFileBundle.RootDirectory.AssertGetExistingSubdir("Textures");
+        var lazyImageMap = new LazyDictionary<string?, IImage?>(
+            imageName => imageName != null &&
+                         textureDirectory.TryToGetExistingFile(
+                             $"{imageName}.png",
+                             out var textureFile)
+                ? FinImage.FromFile(textureFile)
+                : null);
+
+        foreach (var floorBlockParams in lvl.FloorBlocks) {
+          var (start, end, textureName, type, flags) = floorBlockParams;
+
+          var (floorBlockModel, floorBlockRootBone)
+              = ModModelImporter.CreateModel();
+          var floorBlockSkin = floorBlockModel.Skin;
+          var floorBlockMesh = floorBlockSkin.AddMesh();
+
+          var floorBlockMaterialManager = floorBlockModel.MaterialManager;
+          IMaterial? floorBlockMaterial = null;
+          if (flags.CheckFlag(FloorBlockFlags.INVISIBLE)) {
+            floorBlockMaterial = floorBlockMaterialManager.AddHiddenMaterial();
+          } else {
+            var image = lazyImageMap[textureName];
+            if (image != null) {
+              var floorBlockTexture
+                  = floorBlockMaterialManager.CreateTexture(image);
+              floorBlockTexture.Name = textureName;
+              floorBlockMaterial
+                  = floorBlockMaterialManager.AddTextureMaterial(floorBlockTexture);
+            }
+          }
+
+          switch (type) {
+            case FloorBlockType.WALL: {
+              floorBlockMesh.AddSimpleWall(floorBlockSkin,
+                                           start,
+                                           end,
+                                           floorBlockMaterial,
+                                           floorBlockRootBone);
+              break;
+            }
+            case FloorBlockType.FLOOR: {
+              floorBlockMesh.AddSimpleCube(floorBlockSkin,
+                                           start,
+                                           end,
+                                           floorBlockMaterial,
+                                           floorBlockRootBone);
+              break;
+            }
+          }
+
+          finArea.AddObject().AddSceneModel(floorBlockModel);
+        }
+      }
+
       if (lvl.BackgroundName != null) {
         var backgroundImageFile
             = sceneFileBundle
@@ -73,23 +132,15 @@ namespace pmdc.api {
       return finScene;
     }
 
-    private static IModel
-        CreateTreeModel_(IReadOnlyTreeDirectory rootDirectory) {
+    private static IModel CreateTreeModel_(
+      IReadOnlyTreeDirectory rootDirectory) {
       var treeDirectory
           = rootDirectory.AssertGetExistingSubdir(
               "Models/Tree");
 
-      var treeModel = new ModelImpl<NormalUvVertexImpl>(
-          (index, position) => new NormalUvVertexImpl(index, position)) {
-          FileBundle = null,
-          Files = null,
-      };
-
+      var (treeModel, treeRootBone) = ModModelImporter.CreateModel();
       var treeSkin = treeModel.Skin;
       var treeMaterialManager = treeModel.MaterialManager;
-      ModModelImporter.CreateAdjustedRootBone(
-          treeModel,
-          out var treeRootBone);
 
       // Bark
       {

@@ -1,5 +1,6 @@
 ﻿using fin.image;
 using fin.io;
+using fin.io.bundles;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;
@@ -22,24 +23,31 @@ namespace pmdc.api {
       var modFile = modelFileBundle.ModFile;
       var mod = modFile.ReadNewFromText<Mod>();
 
-      var files = modFile.AsFileSet();
-      var finModel = new ModelImpl<NormalUvVertexImpl>(
-          (index, position) => new NormalUvVertexImpl(index, position)) {
-          FileBundle = modelFileBundle,
-          Files = files
-      };
-
-      CreateAdjustedRootBone(finModel, out var finRoot);
-      AddToModel(mod, finModel, finRoot, out _, out _);
+      var (finModel, finRootBone)
+          = CreateModel((modelFileBundle, modFile.AsFileSet()));
+      AddToModel(mod, finModel, finRootBone, out _, out _);
 
       return finModel;
     }
 
-    public static void CreateAdjustedRootBone(IModel finModel, out IBone bone) {
+    public static (IModel<ISkin<NormalUvVertexImpl>>, IBone) CreateModel(
+        (IFileBundle fileBundle, IReadOnlySet<IReadOnlyGenericFile> files)?
+            modelMetadata = null) {
+      var finModel = new ModelImpl<NormalUvVertexImpl>(
+          (index, position) => new NormalUvVertexImpl(index, position)) {
+          FileBundle = modelMetadata?.fileBundle,
+          Files = modelMetadata?.files
+      };
+      var finRootBone = CreateAdjustedRootBone(finModel);
+      return (finModel, finRootBone);
+    }
+
+    public static IBone CreateAdjustedRootBone(IModel finModel) {
       var finSkeleton = finModel.Skeleton;
-      bone = finSkeleton.Root.AddRoot(0, 0, 0);
+      var bone = finSkeleton.Root.AddRoot(0, 0, 0);
       bone.LocalTransform.SetRotationDegrees(-90, 180, 0);
       bone.LocalTransform.SetScale(-1, 1, 1);
+      return bone;
     }
 
     public static void AddToModel(Mod mod,

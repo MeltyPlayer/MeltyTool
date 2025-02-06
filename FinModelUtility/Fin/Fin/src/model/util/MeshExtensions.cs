@@ -7,7 +7,7 @@ using fin.math.floats;
 namespace fin.model.util;
 
 public static class MeshExtensions {
-  public static IPrimitive AddSimpleQuad<TVertex>(
+  public static void AddSimpleQuad<TVertex>(
       this IMesh mesh,
       ISkin<TVertex> skin,
       Vector3 ul,
@@ -49,10 +49,27 @@ public static class MeshExtensions {
       vLl.SetBoneWeights(boneWeights);
     }
 
-    return mesh.AddQuads(vUl, vUr, vLr, vLl).SetMaterial(material);
+    mesh.AddQuads(vUl, vUr, vLr, vLl).SetMaterial(material);
   }
 
-  public static IPrimitive[] AddSimpleCube<TVertex>(
+  public static void AddSimpleWall<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      Vector3 point1,
+      Vector3 point2,
+      IMaterial? material = null,
+      IReadOnlyBone? bone = null)
+      where TVertex : INormalVertex, ISingleUvVertex {
+    var ul = point1;
+    var ur = point1 with { X = point2.X, Y = point2.Y };
+    var lr = point2;
+    var ll = point2 with { X = point1.X, Y = point1.Y };
+
+    mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
+    mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
+  }
+
+  public static void AddSimpleCube<TVertex>(
       this IMesh mesh,
       ISkin<TVertex> skin,
       Vector3 point1,
@@ -74,34 +91,25 @@ public static class MeshExtensions {
     var sameY = point1.Y.IsRoughly(point2.Y);
     var sameZ = point1.Z.IsRoughly(point2.Z);
 
-    var primitives = new LinkedList<IPrimitive>();
     if (!sameX && !sameY) {
       // Top
-      primitives.AddLast(
-          mesh.AddSimpleQuad(skin, tUl, tUr, tLr, tLl, material, bone));
+      mesh.AddSimpleQuad(skin, tUl, tUr, tLr, tLl, material, bone);
       // Bottom
-      primitives.AddLast(
-          mesh.AddSimpleQuad(skin, bUr, bUl, bLl, bLr, material, bone));
+      mesh.AddSimpleQuad(skin, bUr, bUl, bLl, bLr, material, bone);
     }
 
     if (!sameX && !sameZ) {
       // Front
-      primitives.AddLast(
-          mesh.AddSimpleQuad(skin, tLl, tLr, bLr, bLl, material, bone));
+      mesh.AddSimpleQuad(skin, tLl, tLr, bLr, bLl, material, bone);
       // Back
-      primitives.AddLast(
-          mesh.AddSimpleQuad(skin, tUr, tUl, bUl, bUr, material, bone));
+      mesh.AddSimpleQuad(skin, tUr, tUl, bUl, bUr, material, bone);
     }
 
     if (!sameY && !sameZ) {
       // Left
-      primitives.AddLast(
-          mesh.AddSimpleQuad(skin, tUl, tLl, bLl, bUl, material, bone));
+      mesh.AddSimpleQuad(skin, tUl, tLl, bLl, bUl, material, bone);
       // Right
-      primitives.AddLast(
-          mesh.AddSimpleQuad(skin, tLr, tUr, bUr, bLr, material, bone));
+      mesh.AddSimpleQuad(skin, tLr, tUr, bUr, bLr, material, bone);
     }
-
-    return primitives.ToArray();
   }
 }
