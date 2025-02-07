@@ -1,6 +1,9 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
+using fin.math;
 using fin.math.floats;
+using fin.math.matrix.two;
 
 namespace fin.model.util;
 
@@ -85,9 +88,11 @@ public static class MeshExtensions {
       (float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
     var ul = (point1, new Vector2(0, 0));
-    var ur = (point1 with { X = point2.X, Y = point2.Y }, new Vector2(repeat?.Item1 ?? 1, 0));
+    var ur = (point1 with { X = point2.X, Y = point2.Y },
+              new Vector2(repeat?.Item1 ?? 1, 0));
     var lr = (point2, new Vector2(repeat?.Item1 ?? 1, repeat?.Item2 ?? 1));
-    var ll = (point2 with { X = point1.X, Y = point1.Y }, new Vector2(0, repeat?.Item2 ?? 1));
+    var ll = (point2 with { X = point1.X, Y = point1.Y },
+              new Vector2(0, repeat?.Item2 ?? 1));
 
     mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
     mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
@@ -103,9 +108,11 @@ public static class MeshExtensions {
       (float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
     var ul = (point1, new Vector2(0, 0));
-    var ur = (point1 with { X = point2.X, Z = point2.Z }, new Vector2(repeat?.Item1 ?? 1, 0));
+    var ur = (point1 with { X = point2.X, Z = point2.Z },
+              new Vector2(repeat?.Item1 ?? 1, 0));
     var lr = (point2, new Vector2(repeat?.Item1 ?? 1, repeat?.Item2 ?? 1));
-    var ll = (point2 with { X = point1.X, Z = point1.Z }, new Vector2(0, repeat?.Item2 ?? 1));
+    var ll = (point2 with { X = point1.X, Z = point1.Z },
+              new Vector2(0, repeat?.Item2 ?? 1));
 
     mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
     mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
@@ -140,27 +147,112 @@ public static class MeshExtensions {
       var topBottomRepeat = (xRepeat, yRepeat);
 
       // Top
-      mesh.AddSimpleQuad(skin, tUl, tUr, tLr, tLl, material, bone, topBottomRepeat);
+      mesh.AddSimpleQuad(skin,
+                         tUl,
+                         tUr,
+                         tLr,
+                         tLl,
+                         material,
+                         bone,
+                         topBottomRepeat);
       // Bottom
-      mesh.AddSimpleQuad(skin, bUr, bUl, bLl, bLr, material, bone, topBottomRepeat);
+      mesh.AddSimpleQuad(skin,
+                         bUr,
+                         bUl,
+                         bLl,
+                         bLr,
+                         material,
+                         bone,
+                         topBottomRepeat);
     }
 
     if (!sameX && !sameZ) {
       var frontBackRepeat = (xRepeat, zRepeat);
 
       // Front
-      mesh.AddSimpleQuad(skin, tLl, tLr, bLr, bLl, material, bone, frontBackRepeat);
+      mesh.AddSimpleQuad(skin,
+                         tLl,
+                         tLr,
+                         bLr,
+                         bLl,
+                         material,
+                         bone,
+                         frontBackRepeat);
       // Back
-      mesh.AddSimpleQuad(skin, tUr, tUl, bUl, bUr, material, bone, frontBackRepeat);
+      mesh.AddSimpleQuad(skin,
+                         tUr,
+                         tUl,
+                         bUl,
+                         bUr,
+                         material,
+                         bone,
+                         frontBackRepeat);
     }
 
     if (!sameY && !sameZ) {
       var leftRightRepeat = (yRepeat, zRepeat);
 
       // Left
-      mesh.AddSimpleQuad(skin, tUl, tLl, bLl, bUl, material, bone, leftRightRepeat);
+      mesh.AddSimpleQuad(skin,
+                         tUl,
+                         tLl,
+                         bLl,
+                         bUl,
+                         material,
+                         bone,
+                         leftRightRepeat);
       // Right
-      mesh.AddSimpleQuad(skin, tLr, tUr, bUr, bLr, material, bone, leftRightRepeat);
+      mesh.AddSimpleQuad(skin,
+                         tLr,
+                         tUr,
+                         bUr,
+                         bLr,
+                         material,
+                         bone,
+                         leftRightRepeat);
+    }
+  }
+
+  public static void AddSimpleCylinder<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      Vector3 point1,
+      Vector3 point2,
+      int steps,
+      IMaterial? material = null,
+      IReadOnlyBone? bone = null,
+      (float, float)? repeat = null)
+      where TVertex : INormalVertex, ISingleUvVertex {
+    var center = (point1.Xy() + point2.Xy()) / 2;
+    var xRadius = MathF.Abs(point2.X - point1.X) / 2;
+    var yRadius = MathF.Abs(point2.Y - point1.Y) / 2;
+
+    var z1 = point1.Z;
+    var z2 = point2.Z;
+
+    var v1 = 0;
+    var v2 = repeat?.Item2 ?? 1;
+
+    for (var i = 0; i < steps; ++i) {
+      float frac1 = (1f * i / steps);
+      float frac2 = (1f * (i + 1) / steps);
+
+      var angle1 = 2 * MathF.PI * frac1;
+      var angle2 = 2 * MathF.PI * frac2;
+
+      var xy1 = center + SystemVector2Util.FromRadians(angle1) * new Vector2(xRadius, yRadius);
+      var xy2 = center + SystemVector2Util.FromRadians(angle2) * new Vector2(xRadius, yRadius);
+
+      var u1 = frac1 * (repeat?.Item1 ?? 1);
+      var u2 = frac2 * (repeat?.Item1 ?? 1);
+
+      var ul = (new Vector3(xy1, z1), new Vector2(u1, v1));
+      var ur = (new Vector3(xy2, z1), new Vector2(u2, v1));
+      var lr = (new Vector3(xy2, z2), new Vector2(u2, v2));
+      var ll = (new Vector3(xy1, z2), new Vector2(u1, v2));
+
+      mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
+      mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
     }
   }
 }

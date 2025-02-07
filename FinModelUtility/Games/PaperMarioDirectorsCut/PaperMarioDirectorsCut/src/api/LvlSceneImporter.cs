@@ -6,7 +6,6 @@ using fin.io;
 using fin.math;
 using fin.math.transform;
 using fin.model;
-using fin.model.impl;
 using fin.model.util;
 using fin.scene;
 using fin.util.asserts;
@@ -14,7 +13,7 @@ using fin.util.enums;
 using fin.util.sets;
 
 using gm.api;
-using gm.schema.mod;
+using gm.schema.d3d;
 
 using pmdc.schema.lvl;
 
@@ -69,7 +68,7 @@ namespace pmdc.api {
           var (start, end, textureName, type, flags) = floorBlockParams;
 
           var (floorBlockModel, floorBlockRootBone)
-              = ModModelImporter.CreateModel();
+              = D3dModelImporter.CreateModel();
           var floorBlockSkin = floorBlockModel.Skin;
           var floorBlockMesh = floorBlockSkin.AddMesh();
 
@@ -151,7 +150,7 @@ namespace pmdc.api {
                .AddSceneModel(battleWallModel);
 
         var (battleFloorModel, battleFloorRootBone)
-            = ModModelImporter.CreateModel();
+            = D3dModelImporter.CreateModel();
 
         var bfSkin = battleFloorModel.Skin;
         var bfMesh = bfSkin.AddMesh();
@@ -192,7 +191,7 @@ namespace pmdc.api {
     private static IModel CreateBattleWallModel_(
         ILazyDictionary<string?, IImage?> lazyImageMap) {
       var (battleWallModel, battleWallRootBone)
-          = ModModelImporter.CreateModel();
+          = D3dModelImporter.CreateModel();
 
       var battleSkin = battleWallModel.Skin;
       var battleWallMesh = battleSkin.AddMesh();
@@ -241,7 +240,7 @@ namespace pmdc.api {
           = rootDirectory.AssertGetExistingSubdir(
               "Models/Tree");
 
-      var (treeModel, treeRootBone) = ModModelImporter.CreateModel();
+      var (treeModel, treeRootBone) = D3dModelImporter.CreateModel();
       var treeSkin = treeModel.Skin;
       var treeMaterialManager = treeModel.MaterialManager;
 
@@ -251,23 +250,61 @@ namespace pmdc.api {
         barkRootBone.LocalTransform.SetRotationDegrees(0, 0, 45);
         barkRootBone.LocalTransform.SetScale(1.5f, 1.5f, 2);
 
-        ModModelImporter.AddToModel(
-            treeDirectory
-                .AssertGetExistingFile("treemodel1.mod")
-                .ReadNewFromText<Mod>(),
-            treeModel,
-            barkRootBone,
-            out _,
-            out var barkPrimitive);
         var barkTexture = treeMaterialManager.CreateTexture(
             FinImage.FromFile(
                 treeDirectory.AssertGetExistingFile("bacTree.png")));
         var barkMaterial = treeMaterialManager.AddTextureMaterial(barkTexture);
-        barkPrimitive.SetMaterial(barkMaterial);
+        D3dModelImporter.AddToModel(
+            treeDirectory
+                .AssertGetExistingFile("treemodel1.mod")
+                .ReadNewFromText<D3d>(),
+            treeModel,
+            barkRootBone,
+            out _,
+            barkMaterial);
       }
 
-      // Leaves1
-      { }
+      // Leaves
+      {
+        var leavesMesh = treeSkin.AddMesh();
+
+        var leavesTexture = treeMaterialManager.CreateTexture(
+            FinImage.FromFile(
+                treeDirectory.AssertGetExistingFile("bacTreeLeaves1.png")));
+        leavesTexture.WrapModeU = WrapMode.REPEAT;
+        var leavesMaterial
+            = treeMaterialManager.AddTextureMaterial(leavesTexture);
+
+        var leavesRootBone = treeRootBone.AddChild(Vector3.Zero);
+
+        var leavesBone1 = leavesRootBone.AddChild(new Vector3(0, 0, 12));
+        leavesMesh.AddSimpleCylinder(treeSkin,
+                                     new Vector3(-60, -60, 20),
+                                     new Vector3(60, 60, 160),
+                                     8,
+                                     leavesMaterial,
+                                     leavesBone1,
+                                     (2, 1));
+
+        var leavesBone2 = leavesRootBone.AddChild(new Vector3(0, 0, 12));
+        leavesBone2.LocalTransform.EulerRadians = new Vector3(0, 0, MathF.PI / 2);
+        leavesMesh.AddSimpleCylinder(treeSkin,
+                                     new Vector3(-80, -80, 20),
+                                     new Vector3(80, 80, 180),
+                                     8,
+                                     leavesMaterial,
+                                     leavesBone2,
+                                     (2, 1));
+
+        var leavesBone3 = leavesRootBone.AddChild(new Vector3(0, 0, 30));
+        leavesMesh.AddSimpleCylinder(treeSkin,
+                                     new Vector3(-70, -70, 20),
+                                     new Vector3(70, 70, 180),
+                                     8,
+                                     leavesMaterial,
+                                     leavesBone3,
+                                     (2, 1));
+      }
 
       // Shadow
       {

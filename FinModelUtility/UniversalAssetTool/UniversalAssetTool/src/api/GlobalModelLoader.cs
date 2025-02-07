@@ -51,6 +51,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new CmbModelImporter().Import(cmbModelFileBundle),
         DatModelFileBundle datModelFileBundle
             => new DatModelImporter().Import(datModelFileBundle),
+        D3dModelFileBundle modModelFileBundle
+            => new D3dModelImporter().Import(modModelFileBundle),
         GeoModelFileBundle geoModelFileBundle
             => new GeoModelImporter().Import(geoModelFileBundle),
         GloModelFileBundle gloModelFileBundle
@@ -59,10 +61,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new XtdModelImporter().Import(xtdModelFileBundle),
         MeleeModelFileBundle meleeModelFileBundle
             => new MeleeModelImporter().Import(meleeModelFileBundle),
-        gm.api.ModModelFileBundle modModelFileBundle
-            => new gm.api.ModModelImporter().Import(modModelFileBundle),
-        mod.api.ModModelFileBundle modModelFileBundle
-            => new mod.api.ModModelImporter().Import(modModelFileBundle),
+        ModModelFileBundle modModelFileBundle
+            => new ModModelImporter().Import(modModelFileBundle),
         NsbmdModelFileBundle nsbmdModelFileBundle
             => new NsbmdModelImporter().Import(nsbmdModelFileBundle),
         OmdModelFileBundle omdModelFileBundle

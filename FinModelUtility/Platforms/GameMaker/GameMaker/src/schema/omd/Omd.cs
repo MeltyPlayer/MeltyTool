@@ -1,19 +1,19 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace gm.schema.omd {
-  public class Omd : ITextDeserializable {
-    public OmdMaterial[] Materials { get; set; }
-    public OmdMesh[] Meshes { get; set; }
+namespace gm.schema.omd;
 
-    public void Read(ITextReader tr) {
-      var something = tr.ReadInt32();
+public class Omd : ITextDeserializable {
+  public OmdMaterial[] Materials { get; set; }
+  public OmdMesh[] Meshes { get; set; }
 
-      var materialCount = tr.ReadInt32();
-      this.Materials = tr.ReadNews<OmdMaterial>(materialCount);
+  public void Read(ITextReader tr) {
+    var something = tr.ReadInt32();
 
-      var meshCount = tr.ReadInt32();
-      this.Meshes = tr.ReadNews<OmdMesh>(meshCount);
-    }
+    var materialCount = tr.ReadInt32();
+    this.Materials = tr.ReadNews<OmdMaterial>(materialCount);
+
+    var meshCount = tr.ReadInt32();
+    this.Meshes = tr.ReadNews<OmdMesh>(meshCount);
   }
 }

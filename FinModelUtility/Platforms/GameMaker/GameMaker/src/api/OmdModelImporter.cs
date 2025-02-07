@@ -7,66 +7,68 @@ using fin.util.sets;
 
 using gm.schema.omd;
 
-namespace gm.api {
-  public class OmdModelFileBundle : IModelFileBundle {
-    public required string GameName { get; init; }
+namespace gm.api;
 
-    public required IReadOnlyTreeFile OmdFile { get; init; }
-    public IReadOnlyTreeFile MainFile => this.OmdFile;
-  }
+public class OmdModelFileBundle : IModelFileBundle {
+  public required string GameName { get; init; }
+  public required IReadOnlyTreeFile OmdFile { get; init; }
+  public Action<IModel>? Mutator { get; init; }
+  public IReadOnlyTreeFile MainFile => this.OmdFile;
+}
 
-  public class OmdModelImporter : IModelImporter<OmdModelFileBundle> {
-    public IModel Import(OmdModelFileBundle modelFileBundle) {
-      var omdFile = modelFileBundle.OmdFile;
-      var omd = omdFile.ReadNewFromText<Omd>();
+public class OmdModelImporter : IModelImporter<OmdModelFileBundle> {
+  public IModel Import(OmdModelFileBundle modelFileBundle) {
+    var omdFile = modelFileBundle.OmdFile;
+    var omd = omdFile.ReadNewFromText<Omd>();
 
-      var files = omdFile.AsFileSet();
-      var (finModel, finRootBone) = ModModelImporter.CreateModel((modelFileBundle, files));
+    var files = omdFile.AsFileSet();
+    var (finModel, finRootBone)
+        = D3dModelImporter.CreateModel((modelFileBundle, files));
 
-      var finMaterialManager = finModel.MaterialManager;
-      var finMaterials =
-          omd
-              .Materials
-              .Select(omdMaterial => {
-                var texturePath = omdMaterial.TexturePath;
+    var finMaterialManager = finModel.MaterialManager;
+    var finMaterials =
+        omd
+            .Materials
+            .Select(omdMaterial => {
+              var texturePath = omdMaterial.TexturePath;
 
-                IMaterial finMaterial;
-                if (texturePath.Length == 0 ||
-                    !omdFile.AssertGetParent()
-                            .TryToGetExistingFile(
-                                texturePath,
-                                out var imageFile)) {
-                  finMaterial = finMaterialManager.AddNullMaterial();
-                } else {
-                  var image = FinImage.FromFile(imageFile);
-                  files.Add(imageFile);
+              IMaterial finMaterial;
+              if (texturePath.Length == 0 ||
+                  !omdFile.AssertGetParent()
+                          .TryToGetExistingFile(
+                              texturePath,
+                              out var imageFile)) {
+                finMaterial = finMaterialManager.AddNullMaterial();
+              } else {
+                var image = FinImage.FromFile(imageFile);
+                files.Add(imageFile);
 
-                  var finTexture = finMaterialManager.CreateTexture(image);
-                  finTexture.Name = imageFile.NameWithoutExtension.ToString();
-                  finTexture.WrapModeU = WrapMode.REPEAT;
-                  finTexture.WrapModeV = WrapMode.REPEAT;
+                var finTexture = finMaterialManager.CreateTexture(image);
+                finTexture.Name = imageFile.NameWithoutExtension.ToString();
+                finTexture.WrapModeU = WrapMode.REPEAT;
+                finTexture.WrapModeV = WrapMode.REPEAT;
 
-                  finMaterial =
-                      finMaterialManager.AddTextureMaterial(finTexture);
-                }
+                finMaterial =
+                    finMaterialManager.AddTextureMaterial(finTexture);
+              }
 
-                finMaterial.Name = omdMaterial.Name;
+              finMaterial.Name = omdMaterial.Name;
 
-                return finMaterial;
-              })
-              .ToArray();
+              return finMaterial;
+            })
+            .ToArray();
 
-      foreach (var omdMesh in omd.Meshes) {
-        ModModelImporter.AddToModel(omdMesh.Mod,
-                                    finModel,
-                                    finRootBone,
-                                    out var finMesh,
-                                    out var finPrimitive);
-        finMesh.Name = omdMesh.Name;
-        finPrimitive.SetMaterial(finMaterials[omdMesh.MaterialIndex]);
-      }
-
-      return finModel;
+    foreach (var omdMesh in omd.Meshes) {
+      D3dModelImporter.AddToModel(omdMesh.D3d,
+                                  finModel,
+                                  finRootBone,
+                                  out var finMesh,
+                                  finMaterials[omdMesh.MaterialIndex]);
+      finMesh.Name = omdMesh.Name;
     }
+
+    modelFileBundle.Mutator?.Invoke(finModel);
+
+    return finModel;
   }
 }

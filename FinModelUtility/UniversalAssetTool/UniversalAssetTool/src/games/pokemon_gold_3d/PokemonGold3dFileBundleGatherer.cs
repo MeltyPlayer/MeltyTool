@@ -1,4 +1,5 @@
 ﻿using fin.io.bundles;
+using fin.model;
 using fin.util.progress;
 
 using gm.api;
@@ -26,9 +27,17 @@ public class PokemonGold3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
       organizer.Add(new AnnotatedFileBundle<OmdModelFileBundle>(
                         new OmdModelFileBundle {
                             GameName = "pokemon_gold_3d",
-                            OmdFile = omdFile
+                            OmdFile = omdFile,
+                            Mutator = TweakMaterials_,
                         },
                         omdFile));
+    }
+  }
+
+  private static void TweakMaterials_(IModel model) {
+    foreach (var texture in model.MaterialManager.Textures) {
+      texture.MinFilter = TextureMinFilter.NEAR;
+      texture.MagFilter = TextureMagFilter.NEAR;
     }
   }
 }

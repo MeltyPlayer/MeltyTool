@@ -26,8 +26,8 @@ public class PaperMarioDirectorsCutFileBundleGatherer
     foreach (var modFile in fileHierarchy.Root.GetFilesWithFileType(
                  ".mod",
                  true)) {
-      organizer.Add(new AnnotatedFileBundle<ModModelFileBundle>(
-                        new ModModelFileBundle {
+      organizer.Add(new AnnotatedFileBundle<D3dModelFileBundle>(
+                        new D3dModelFileBundle {
                             GameName = "paper_mario_directors_cut",
                             ModFile = modFile
                         },
