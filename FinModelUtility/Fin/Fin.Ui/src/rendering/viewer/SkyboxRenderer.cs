@@ -62,7 +62,7 @@ public class SkyboxRenderer : IRenderable {
             vec4 skyColor1 = {{FinColor.FromSystemColor(Color.AliceBlue).ToGlslVec4()}};
             vec4 skyColor2 = {{FinColor.FromSystemColor(Color.DarkBlue).ToGlslVec4()}};
           
-            if (rayWorld.z > 0) {
+            if (rayWorld.z > 0.0) {
               // calculate fragment position in world space
               float t = -({{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}}.z) / rayWorld.z;
               vec2 vertexPosition = {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}}.xy + t * rayWorld.xy;
