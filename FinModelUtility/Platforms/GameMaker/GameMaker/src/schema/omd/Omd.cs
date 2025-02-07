@@ -1,7 +1,7 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace pmdc.schema.omd {
+namespace gm.schema.omd {
   public class Omd : ITextDeserializable {
     public OmdMaterial[] Materials { get; set; }
     public OmdMesh[] Meshes { get; set; }

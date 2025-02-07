@@ -4,7 +4,7 @@ using fin.io;
 using fin.testing.model;
 using fin.testing;
 
-using pmdc.api;
+using gm.api;
 
 namespace pmdc;
 

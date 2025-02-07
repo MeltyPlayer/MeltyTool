@@ -1,9 +1,9 @@
-﻿using pmdc.schema.mod;
+﻿using gm.schema.mod;
 
 using schema.text;
 using schema.text.reader;
 
-namespace pmdc.schema.omd {
+namespace gm.schema.omd {
   public class OmdMesh : ITextDeserializable {
     public string Name { get; private set; }
     public int MaterialIndex { get; private set; }

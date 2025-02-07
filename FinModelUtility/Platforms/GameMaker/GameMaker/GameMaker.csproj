@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>pmdc</RootNamespace>
+    <RootNamespace>gm</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +12,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\..\..\Platforms\GameMaker\GameMaker\GameMaker.csproj" />
   </ItemGroup>
 </Project>

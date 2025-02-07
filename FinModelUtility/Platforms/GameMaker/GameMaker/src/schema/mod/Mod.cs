@@ -1,9 +1,7 @@
-﻿using pmdc.schema.omd;
-
-using schema.text;
+﻿using schema.text;
 using schema.text.reader;
 
-namespace pmdc.schema.mod {
+namespace gm.schema.mod {
   public class Mod : ITextDeserializable {
     public ModVertex[] Vertices { get; private set; }
 

@@ -3,16 +3,18 @@
 using fin.data.lazy;
 using fin.image;
 using fin.io;
+using fin.math;
 using fin.math.transform;
 using fin.model;
-using fin.model.impl;
 using fin.model.util;
 using fin.scene;
 using fin.util.enums;
 using fin.util.sets;
 
+using gm.api;
+using gm.schema.mod;
+
 using pmdc.schema.lvl;
-using pmdc.schema.mod;
 
 namespace pmdc.api {
   public class LvlSceneFileBundle : ISceneFileBundle {
@@ -79,6 +81,7 @@ namespace pmdc.api {
           var floorBlockSkin = floorBlockModel.Skin;
           var floorBlockMesh = floorBlockSkin.AddMesh();
 
+          var shouldRepeat = !flags.CheckFlag(FloorBlockFlags.NO_REPEAT);
           var floorBlockMaterialManager = floorBlockModel.MaterialManager;
           IMaterial? floorBlockMaterial = null;
           if (flags.CheckFlag(FloorBlockFlags.INVISIBLE)) {
@@ -90,25 +93,43 @@ namespace pmdc.api {
                   = floorBlockMaterialManager.CreateTexture(image);
               floorBlockTexture.Name = textureName;
               floorBlockMaterial
-                  = floorBlockMaterialManager.AddTextureMaterial(floorBlockTexture);
+                  = floorBlockMaterialManager.AddTextureMaterial(
+                      floorBlockTexture);
+
+              if (shouldRepeat) {
+                floorBlockTexture.WrapModeU = WrapMode.REPEAT;
+                floorBlockTexture.WrapModeV = WrapMode.REPEAT;
+              }
             }
           }
 
           switch (type) {
             case FloorBlockType.WALL: {
+              (float, float)? repeat = shouldRepeat
+                  ? ((end.Xy() - start.Xy()).Length() / 64,
+                     Math.Abs(end.Z - start.Z) / 64)
+                  : null;
               floorBlockMesh.AddSimpleWall(floorBlockSkin,
                                            start,
                                            end,
                                            floorBlockMaterial,
-                                           floorBlockRootBone);
+                                           floorBlockRootBone,
+                                           repeat);
               break;
             }
             case FloorBlockType.FLOOR: {
+              (float, float, float)? repeat = shouldRepeat
+                  ? (Math.Abs(end.X - start.X) / 64,
+                     Math.Abs(end.Y - start.Y) / 64,
+                     Math.Abs(end.Z - start.Z) / 64)
+                  : null;
+
               floorBlockMesh.AddSimpleCube(floorBlockSkin,
                                            start,
                                            end,
                                            floorBlockMaterial,
-                                           floorBlockRootBone);
+                                           floorBlockRootBone,
+                                           repeat);
               break;
             }
           }
@@ -133,7 +154,7 @@ namespace pmdc.api {
     }
 
     private static IModel CreateTreeModel_(
-      IReadOnlyTreeDirectory rootDirectory) {
+        IReadOnlyTreeDirectory rootDirectory) {
       var treeDirectory
           = rootDirectory.AssertGetExistingSubdir(
               "Models/Tree");

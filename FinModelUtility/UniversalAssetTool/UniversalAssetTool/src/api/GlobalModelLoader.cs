@@ -8,6 +8,8 @@ using fin.model.io.importers;
 
 using glo.api;
 
+using gm.api;
+
 using hw.api;
 
 using jsystem.api;
@@ -57,10 +59,10 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new XtdModelImporter().Import(xtdModelFileBundle),
         MeleeModelFileBundle meleeModelFileBundle
             => new MeleeModelImporter().Import(meleeModelFileBundle),
+        gm.api.ModModelFileBundle modModelFileBundle
+            => new gm.api.ModModelImporter().Import(modModelFileBundle),
         mod.api.ModModelFileBundle modModelFileBundle
             => new mod.api.ModModelImporter().Import(modModelFileBundle),
-        pmdc.api.ModModelFileBundle modModelFileBundle
-            => new pmdc.api.ModModelImporter().Import(modModelFileBundle),
         NsbmdModelFileBundle nsbmdModelFileBundle
             => new NsbmdModelImporter().Import(nsbmdModelFileBundle),
         OmdModelFileBundle omdModelFileBundle

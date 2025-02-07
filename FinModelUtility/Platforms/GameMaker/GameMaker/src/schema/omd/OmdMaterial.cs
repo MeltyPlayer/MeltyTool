@@ -1,7 +1,7 @@
 ﻿using schema.text;
 using schema.text.reader;
 
-namespace pmdc.schema.omd {
+namespace gm.schema.omd {
   public struct OmdMaterial : ITextDeserializable {
     public string Name { get; private set; }
     public string TexturePath { get; private set; }

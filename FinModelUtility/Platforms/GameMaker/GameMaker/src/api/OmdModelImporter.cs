@@ -5,9 +5,9 @@ using fin.model.io;
 using fin.model.io.importers;
 using fin.util.sets;
 
-using pmdc.schema.omd;
+using gm.schema.omd;
 
-namespace pmdc.api {
+namespace gm.api {
   public class OmdModelFileBundle : IModelFileBundle {
     public required string GameName { get; init; }
 

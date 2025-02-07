@@ -1,5 +1,4 @@
-﻿using fin.image;
-using fin.io;
+﻿using fin.io;
 using fin.io.bundles;
 using fin.math.transform;
 using fin.model;
@@ -8,9 +7,9 @@ using fin.model.io;
 using fin.model.io.importers;
 using fin.util.sets;
 
-using pmdc.schema.mod;
+using gm.schema.mod;
 
-namespace pmdc.api {
+namespace gm.api {
   public class ModModelFileBundle : IModelFileBundle {
     public required string GameName { get; init; }
 
