@@ -6,8 +6,10 @@ using fin.io;
 using fin.math;
 using fin.math.transform;
 using fin.model;
+using fin.model.impl;
 using fin.model.util;
 using fin.scene;
+using fin.util.asserts;
 using fin.util.enums;
 using fin.util.sets;
 
@@ -52,27 +54,17 @@ namespace pmdc.api {
         finArea.AddObject().AddSceneModel(finModel);
       }
 
-      if (lvl.Trees.Count > 0) {
-        var treeModel = CreateTreeModel_(sceneFileBundle.RootDirectory);
-
-        foreach (var treePosition in lvl.Trees) {
-          finArea.AddObject()
-                 .SetPosition(treePosition.X, treePosition.Z, treePosition.Y)
-                 .AddSceneModel(treeModel);
-        }
-      }
+      var textureDirectory
+          = sceneFileBundle.RootDirectory.AssertGetExistingSubdir("Textures");
+      var lazyImageMap = new LazyDictionary<string?, IImage?>(
+          imageName => imageName != null &&
+                       textureDirectory.TryToGetExistingFile(
+                           $"{imageName}.png",
+                           out var textureFile)
+              ? FinImage.FromFile(textureFile)
+              : null);
 
       if (lvl.FloorBlocks.Count > 0) {
-        var textureDirectory
-            = sceneFileBundle.RootDirectory.AssertGetExistingSubdir("Textures");
-        var lazyImageMap = new LazyDictionary<string?, IImage?>(
-            imageName => imageName != null &&
-                         textureDirectory.TryToGetExistingFile(
-                             $"{imageName}.png",
-                             out var textureFile)
-                ? FinImage.FromFile(textureFile)
-                : null);
-
         foreach (var floorBlockParams in lvl.FloorBlocks) {
           var (start, end, textureName, type, flags) = floorBlockParams;
 
@@ -138,6 +130,50 @@ namespace pmdc.api {
         }
       }
 
+      if (lvl.Trees.Count > 0) {
+        var treeModel = CreateTreeModel_(sceneFileBundle.RootDirectory);
+
+        foreach (var treePosition in lvl.Trees) {
+          finArea.AddObject()
+                 .SetPosition(treePosition.X, treePosition.Z, treePosition.Y)
+                 .AddSceneModel(treeModel);
+        }
+      }
+
+      if (sceneFileBundle.LvlFile.Name is "battle.lvl") {
+        var battleWallModel = CreateBattleWallModel_(lazyImageMap);
+
+        finArea.AddObject()
+               .SetPosition(176, 0, 176)
+               .AddSceneModel(battleWallModel);
+        finArea.AddObject()
+               .SetPosition(176, 0, 464)
+               .AddSceneModel(battleWallModel);
+
+        var (battleFloorModel, battleFloorRootBone)
+            = ModModelImporter.CreateModel();
+
+        var bfSkin = battleFloorModel.Skin;
+        var bfMesh = bfSkin.AddMesh();
+        var bfMaterialManager = battleFloorModel.MaterialManager;
+
+        var frontOfFloorImage = lazyImageMap["bacFrontOfFloor"].AssertNonnull();
+        var frontOfFloorTexture
+            = bfMaterialManager.CreateTexture(frontOfFloorImage);
+        frontOfFloorTexture.WrapModeV = WrapMode.REPEAT;
+        var frontOfFloorMaterial
+            = bfMaterialManager.AddTextureMaterial(frontOfFloorTexture);
+
+        bfMesh.AddSimpleFloor(bfSkin,
+                              new Vector3(0, 16, -64),
+                              new Vector3(64, 640, 0),
+                              frontOfFloorMaterial,
+                              battleFloorRootBone,
+                              (1, 10));
+        finArea.AddObject()
+               .AddSceneModel(battleFloorModel);
+      }
+
       if (lvl.BackgroundName != null) {
         var backgroundImageFile
             = sceneFileBundle
@@ -151,6 +187,52 @@ namespace pmdc.api {
       finScene.CreateDefaultLighting(finArea.AddObject());
 
       return finScene;
+    }
+
+    private static IModel CreateBattleWallModel_(
+        ILazyDictionary<string?, IImage?> lazyImageMap) {
+      var (battleWallModel, battleWallRootBone)
+          = ModModelImporter.CreateModel();
+
+      var battleSkin = battleWallModel.Skin;
+      var battleWallMesh = battleSkin.AddMesh();
+      var battleMaterialManager = battleWallModel.MaterialManager;
+
+      var frontOfFloorImage = lazyImageMap["bacFrontOfFloor"].AssertNonnull();
+      var frontOfFloorTexture
+          = battleMaterialManager.CreateTexture(frontOfFloorImage);
+      frontOfFloorTexture.WrapModeU = WrapMode.REPEAT;
+      var frontOfFloorMaterial
+          = battleMaterialManager.AddTextureMaterial(frontOfFloorTexture);
+
+      battleWallMesh.AddSimpleWall(battleSkin,
+                                   new Vector3(-32, -12, 160),
+                                   new Vector3(32, -12, 0),
+                                   frontOfFloorMaterial,
+                                   battleWallRootBone,
+                                   (-1, 1));
+      battleWallMesh.AddSimpleWall(battleSkin,
+                                   new Vector3(-32, 12, 160),
+                                   new Vector3(32, 12, 0),
+                                   frontOfFloorMaterial,
+                                   battleWallRootBone,
+                                   (-1, 1));
+
+      var battleWallImage = lazyImageMap["bacBattleWall"].AssertNonnull();
+      var battleWallTexture
+          = battleMaterialManager.CreateTexture(battleWallImage);
+      battleWallTexture.WrapModeV = WrapMode.REPEAT;
+      var battleWallMaterial
+          = battleMaterialManager.AddTextureMaterial(battleWallTexture);
+
+      battleWallMesh.AddSimpleWall(battleSkin,
+                                   new Vector3(-32, -12, 160),
+                                   new Vector3(-32, 12, 0),
+                                   battleWallMaterial,
+                                   battleWallRootBone,
+                                   (1, 6));
+
+      return battleWallModel;
     }
 
     private static IModel CreateTreeModel_(

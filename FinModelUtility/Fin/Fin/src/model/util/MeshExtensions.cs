@@ -15,7 +15,31 @@ public static class MeshExtensions {
       IMaterial? material = null,
       IReadOnlyBone? bone = null,
       (float, float)? repeat = null)
+      where TVertex : INormalVertex, ISingleUvVertex
+    => mesh.AddSimpleQuad(
+        skin,
+        (ul, new Vector2(0, 0)),
+        (ur, new Vector2(repeat?.Item1 ?? 1, 0)),
+        (lr, new Vector2(repeat?.Item1 ?? 1, repeat?.Item2 ?? 1)),
+        (ll, new Vector2(0, repeat?.Item2 ?? 1)),
+        material,
+        bone);
+
+  public static void AddSimpleQuad<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      (Vector3, Vector2) ulP,
+      (Vector3, Vector2) urP,
+      (Vector3, Vector2) lrP,
+      (Vector3, Vector2) llP,
+      IMaterial? material = null,
+      IReadOnlyBone? bone = null)
       where TVertex : INormalVertex, ISingleUvVertex {
+    var (ul, ulUv) = ulP;
+    var (ur, urUv) = urP;
+    var (lr, lrUv) = lrP;
+    var (ll, llUv) = llP;
+
     var a = ul;
     var b = ur;
     var c = lr;
@@ -23,24 +47,20 @@ public static class MeshExtensions {
     var normal = Vector3.Cross(b - a, c - a);
     normal = Vector3.Normalize(normal);
 
-    // TODO: Support non-rectangular quad UVs
-    float rightU = repeat?.Item1 ?? 1;
-    float lowerV = repeat?.Item2 ?? 1;
-
     var vUl = skin.AddVertex(ul);
-    vUl.SetUv(0, 0);
+    vUl.SetUv(ulUv);
     vUl.SetLocalNormal(normal);
 
     var vUr = skin.AddVertex(ur);
-    vUr.SetUv(rightU, 0);
+    vUr.SetUv(urUv);
     vUr.SetLocalNormal(normal);
 
     var vLr = skin.AddVertex(lr);
-    vLr.SetUv(rightU, lowerV);
+    vLr.SetUv(lrUv);
     vLr.SetLocalNormal(normal);
 
     var vLl = skin.AddVertex(ll);
-    vLl.SetUv(0, lowerV);
+    vLl.SetUv(llUv);
     vLl.SetLocalNormal(normal);
 
     if (bone != null) {
@@ -64,13 +84,31 @@ public static class MeshExtensions {
       IReadOnlyBone? bone = null,
       (float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
-    var ul = point1;
-    var ur = point1 with { X = point2.X, Y = point2.Y };
-    var lr = point2;
-    var ll = point2 with { X = point1.X, Y = point1.Y };
+    var ul = (point1, new Vector2(0, 0));
+    var ur = (point1 with { X = point2.X, Y = point2.Y }, new Vector2(repeat?.Item1 ?? 1, 0));
+    var lr = (point2, new Vector2(repeat?.Item1 ?? 1, repeat?.Item2 ?? 1));
+    var ll = (point2 with { X = point1.X, Y = point1.Y }, new Vector2(0, repeat?.Item2 ?? 1));
 
-    mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone, repeat);
-    mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone, repeat);
+    mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
+    mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
+  }
+
+  public static void AddSimpleFloor<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      Vector3 point1,
+      Vector3 point2,
+      IMaterial? material = null,
+      IReadOnlyBone? bone = null,
+      (float, float)? repeat = null)
+      where TVertex : INormalVertex, ISingleUvVertex {
+    var ul = (point1, new Vector2(0, 0));
+    var ur = (point1 with { X = point2.X, Z = point2.Z }, new Vector2(repeat?.Item1 ?? 1, 0));
+    var lr = (point2, new Vector2(repeat?.Item1 ?? 1, repeat?.Item2 ?? 1));
+    var ll = (point2 with { X = point1.X, Z = point1.Z }, new Vector2(0, repeat?.Item2 ?? 1));
+
+    mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
+    mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
   }
 
   public static void AddSimpleCube<TVertex>(
