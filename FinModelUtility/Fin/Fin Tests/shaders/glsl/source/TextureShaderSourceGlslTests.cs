@@ -30,6 +30,10 @@ public class TextureShaderSourceGlslTests {
 
           void main() {
             fragColor = texture(diffuseTexture, uv0);
+          
+            if (fragColor.a < .01) {
+              discard;
+            }
           }
           """);
 

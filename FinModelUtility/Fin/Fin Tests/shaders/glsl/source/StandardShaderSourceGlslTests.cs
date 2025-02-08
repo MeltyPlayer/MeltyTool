@@ -24,6 +24,10 @@ public class StandardShaderSourceGlslTests {
 
           void main() {
             fragColor = vec4(1);
+          
+            if (fragColor.a < .01) {
+              discard;
+            }
           }
           """);
 
@@ -65,6 +69,10 @@ public class StandardShaderSourceGlslTests {
 
           void main() {
             fragColor = vertexColor0;
+          
+            if (fragColor.a < .01) {
+              discard;
+            }
           }
           """);
 

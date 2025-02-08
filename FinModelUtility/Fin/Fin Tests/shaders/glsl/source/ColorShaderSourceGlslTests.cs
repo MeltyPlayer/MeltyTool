@@ -24,6 +24,10 @@ public class ColorShaderSourceGlslTests {
 
           void main() {
             fragColor = diffuseColor;
+          
+            if (fragColor.a < .01) {
+              discard;
+            }
           }
           """);
 
