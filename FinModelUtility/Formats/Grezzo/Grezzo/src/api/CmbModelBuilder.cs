@@ -43,7 +43,9 @@ public class CmbModelBuilder {
           FileBundle = fileBundle,
           Files = fileBundle.Files.ToHashSet(),
       };
+
       var finSkin = finModel.Skin;
+      var allFinVertices = finSkin.TypedVertices;
 
       // Adds bones
       var cmbBones = cmb.skl.Data.bones;
@@ -171,6 +173,8 @@ public class CmbModelBuilder {
       // Creates meshes
       var verticesByIndex = new ListDictionary<int, IVertex>();
 
+      var currentVertexIndex = 0;
+
       // Adds meshes
       var sklm = cmb.sklm.Data;
       foreach (var cmbMesh in sklm.mshs.Meshes) {
@@ -254,8 +258,10 @@ public class CmbModelBuilder {
         for (var i = 0; i < vertexCount; ++i) {
           var position = positionEnumerator.TryMoveNextAndGetCurrent();
 
-          var finVertex = finSkin.AddVertex(position.X, position.Y, position.Z);
+          var finVertex = allFinVertices[currentVertexIndex++];
           finVertices[i] = finVertex;
+
+          finVertex.SetLocalPosition(position.X, position.Y, position.Z);
 
           var index = (ushort) (shape.position.Start / 3 + i);
           verticesByIndex.Add(index, finVertex);
