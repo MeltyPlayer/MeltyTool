@@ -1,8 +1,9 @@
 name: Nightly build
 
-on:
+on: 
   schedule:
     - cron: "30 01 * * *"
+  workflow_dispatch:
 
 jobs:
   check_date:
