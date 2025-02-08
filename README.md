@@ -90,6 +90,8 @@ If you'd like to vote on new games or features that should be supported, please 
   - Luigi's Mansion 3D (`luigis_mansion_3d.[3ds/cci/cia]`)
   - Majora's Mask 3D (`majoras_mask_3d.[3ds/cci/cia]`)
   - Ocarina of Time 3D (`ocarina_of_time_3d.[3ds/cci/cia]`)
+- .d3d (PC)
+  - Game Maker
 - .geo (PC)
   - Dead Space (Steam/Epic Games)
 - .glo (PC)
