@@ -68,7 +68,7 @@ jobs:
         tag_name: nightly-${{ github.sha }}
         release_name: "Nightly Build ${{ github.sha }}"
         draft: false
-        prerelease: true
+        prerelease: false
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
