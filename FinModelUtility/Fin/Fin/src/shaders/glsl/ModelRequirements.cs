@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using fin.model;
-using fin.model.accessor;
 using fin.util.enumerables;
 
 namespace fin.shaders.glsl;

@@ -335,7 +335,8 @@ public class CmbModelBuilder {
                                .Select(meshIndex => finVertices[meshIndex])
                                .ToArray();
         finMesh.AddTriangles(triangleVertices)
-               .SetMaterial(material);
+               .SetMaterial(material)
+               .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
       }
 
       // Adds morph targets

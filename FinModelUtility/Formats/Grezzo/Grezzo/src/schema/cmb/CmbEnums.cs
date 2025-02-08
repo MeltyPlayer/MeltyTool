@@ -23,10 +23,10 @@ public enum TestFunc {
 }
 
 public enum CullMode {
-  FrontAndBack = 0,
-  Front = 1,
-  BackFace = 2,
-  Never = 3,
+  Never = 0,
+  Back = 1,
+  Front = 2,
+  FrontAndBack = 3,
 }
 
 public enum BumpMode {

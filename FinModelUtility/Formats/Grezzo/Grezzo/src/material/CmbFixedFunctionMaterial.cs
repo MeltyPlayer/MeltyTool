@@ -283,7 +283,7 @@ public class CmbFixedFunctionMaterial {
       this.Material.CullingMode = cmbMaterial.faceCulling switch {
           CullMode.FrontAndBack => CullingMode.SHOW_NEITHER,
           CullMode.Front        => CullingMode.SHOW_BACK_ONLY,
-          CullMode.BackFace     => CullingMode.SHOW_FRONT_ONLY,
+          CullMode.Back         => CullingMode.SHOW_FRONT_ONLY,
           CullMode.Never        => CullingMode.SHOW_BOTH,
       };
     }
