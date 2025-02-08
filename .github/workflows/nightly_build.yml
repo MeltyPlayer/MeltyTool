@@ -50,7 +50,7 @@ jobs:
       run: Compress-Archive -Path cli/** -DestinationPath fin_model_utility.zip
       
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: fin_model_utility
         path: fin_model_utility.zip
