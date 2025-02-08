@@ -37,7 +37,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageReference Include="NaturalSort.Extension" Version="4.3.0" />
     <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0-Avalonia11" />
-    <PackageReference Include="ObservableCollections" Version="3.3.2" />
+    <PackageReference Include="ObservableCollections" Version="3.3.3" />
     <PackageReference Include="TextMateSharp" Version="1.0.65" />
     <PackageReference Include="TextMateSharp.Grammars" Version="1.0.65" />
     <PackageReference Include="UVtools.AvaloniaControls" Version="3.0.5" />

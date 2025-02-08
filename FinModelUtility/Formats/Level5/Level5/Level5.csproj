@@ -12,6 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="schema" Version="0.6.8" />
-    <PackageReference Include="OpenTK" Version="4.8.2" />
+    <PackageReference Include="OpenTK" Version="4.9.3" />
   </ItemGroup>
 </Project>
