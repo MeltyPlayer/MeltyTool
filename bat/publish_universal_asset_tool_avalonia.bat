@@ -17,6 +17,6 @@ cd "FinModelUtility\UniversalAssetTool\UniversalAssetTool.Ui.Avalonia.Desktop\"
 dotnet publish -c Release
 
 echo Copying new universal asset tool...
-move "bin\Release\net8.0\win-x64\publish\*" "!universalAssetToolBasePath!"
+move "bin\Release\net9.0\win-x64\publish\*" "!universalAssetToolBasePath!"
 
 pause
