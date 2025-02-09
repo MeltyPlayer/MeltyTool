@@ -301,9 +301,9 @@ public partial class ModelImpl<TVertex> {
       public PrimitiveType Type { get; } = type;
       public IReadOnlyList<IReadOnlyVertex> Vertices { get; } = vertices;
 
-      public IMaterial Material { get; private set; }
+      public IReadOnlyMaterial Material { get; private set; }
 
-      public IPrimitive SetMaterial(IMaterial material) {
+      public IPrimitive SetMaterial(IReadOnlyMaterial material) {
         this.Material = material;
         return this;
       }

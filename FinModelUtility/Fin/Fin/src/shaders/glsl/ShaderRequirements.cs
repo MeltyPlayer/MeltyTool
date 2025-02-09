@@ -55,13 +55,13 @@ public class ShaderRequirements : IShaderRequirements {
     }
 
     if (this.TangentType is TangentType.NOT_PRESENT &&
-        material is IFixedFunctionMaterial { NormalTexture: not null }
-                    or IStandardMaterial { NormalTexture: not null }) {
+        material is IReadOnlyFixedFunctionMaterial { NormalTexture: not null }
+                    or IReadOnlyStandardMaterial { NormalTexture: not null }) {
       this.TangentType = TangentType.CALCULATED;
     }
 
     this.UsedUvs = new bool[MaterialConstants.MAX_UVS];
-    if (material != null && material is not IFixedFunctionMaterial) {
+    if (material != null && material is not IReadOnlyFixedFunctionMaterial) {
       foreach (var texture in material.Textures) {
         var uvIndex = texture.UvIndex;
         Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
@@ -71,15 +71,15 @@ public class ShaderRequirements : IShaderRequirements {
 
     this.UsedColors = new bool[MaterialConstants.MAX_COLORS];
     switch (material) {
-      case IColorMaterial
-           or INullMaterial
-           or ITextureMaterial
-           or IStandardMaterial
+      case IReadOnlyColorMaterial
+           or IReadOnlyNullMaterial
+           or IReadOnlyTextureMaterial
+           or IReadOnlyStandardMaterial
            or null: {
         this.UsedColors[0] = modelRequirements.NumColors > 0;
         break;
       }
-      case IFixedFunctionMaterial fixedFunctionMaterial: {
+      case IReadOnlyFixedFunctionMaterial fixedFunctionMaterial: {
         var equations = fixedFunctionMaterial.Equations;
         for (var i = 0; i < fixedFunctionMaterial.TextureSources.Count; ++i) {
           var textureSource = fixedFunctionMaterial.TextureSources[i];

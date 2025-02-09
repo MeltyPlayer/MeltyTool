@@ -166,8 +166,8 @@ public partial interface IPrimitive {
   PrimitiveType Type { get; }
   IReadOnlyList<IReadOnlyVertex> Vertices { get; }
 
-  IMaterial? Material { get; }
-  IPrimitive SetMaterial(IMaterial? material);
+  IReadOnlyMaterial? Material { get; }
+  IPrimitive SetMaterial(IReadOnlyMaterial? material);
 
   VertexOrder VertexOrder { get; }
   IPrimitive SetVertexOrder(VertexOrder vertexOrder);

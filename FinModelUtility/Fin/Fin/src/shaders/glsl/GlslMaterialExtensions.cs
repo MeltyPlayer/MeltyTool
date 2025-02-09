@@ -19,24 +19,24 @@ public static class GlslMaterialExtensions {
             => new FixedFunctionShaderSourceGlsl(
                 model,
                 modelRequirements,
-                Asserts.AsA<IFixedFunctionMaterial>(material),
+                Asserts.AsA<IReadOnlyFixedFunctionMaterial>(material),
                 shaderRequirements),
         FinShaderType.TEXTURE => new TextureShaderSourceGlsl(
             model,
             modelRequirements,
-            Asserts.AsA<ITextureMaterial>(material),
+            Asserts.AsA<IReadOnlyTextureMaterial>(material),
             shaderRequirements),
         FinShaderType.COLOR => new ColorShaderSourceGlsl(
             model,
             modelRequirements,
-            Asserts.AsA<IColorMaterial>(material),
+            Asserts.AsA<IReadOnlyColorMaterial>(material),
             shaderRequirements),
         FinShaderType.SHADER => new ShaderShaderSourceGlsl(
-            Asserts.AsA<IShaderMaterial>(material)),
+            Asserts.AsA<IReadOnlyShaderMaterial>(material)),
         FinShaderType.STANDARD => new StandardShaderSourceGlsl(
             model,
             modelRequirements,
-            Asserts.AsA<IStandardMaterial>(material),
+            Asserts.AsA<IReadOnlyStandardMaterial>(material),
             shaderRequirements),
         FinShaderType.HIDDEN => new HiddenShaderSourceGlsl(),
         FinShaderType.NULL => new NullShaderSourceGlsl(model,

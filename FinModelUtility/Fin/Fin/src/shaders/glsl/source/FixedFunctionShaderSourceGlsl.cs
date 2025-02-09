@@ -6,7 +6,7 @@ namespace fin.shaders.glsl.source;
 public class FixedFunctionShaderSourceGlsl(
     IReadOnlyModel model,
     IModelRequirements modelRequirements,
-    IFixedFunctionMaterial material,
+    IReadOnlyFixedFunctionMaterial material,
     IShaderRequirements shaderRequirements)
     : IShaderSourceGlsl {
   public string VertexShaderSource { get; }

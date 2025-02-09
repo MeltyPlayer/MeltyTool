@@ -15,7 +15,7 @@ public static class MeshExtensions {
       Vector3 ur,
       Vector3 lr,
       Vector3 ll,
-      IMaterial? material = null,
+      IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null,
       (float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex
@@ -35,7 +35,7 @@ public static class MeshExtensions {
       (Vector3, Vector2) urP,
       (Vector3, Vector2) lrP,
       (Vector3, Vector2) llP,
-      IMaterial? material = null,
+      IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null)
       where TVertex : INormalVertex, ISingleUvVertex {
     var (ul, ulUv) = ulP;
@@ -83,7 +83,7 @@ public static class MeshExtensions {
       ISkin<TVertex> skin,
       Vector3 point1,
       Vector3 point2,
-      IMaterial? material = null,
+      IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null,
       (float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
@@ -103,7 +103,7 @@ public static class MeshExtensions {
       ISkin<TVertex> skin,
       Vector3 point1,
       Vector3 point2,
-      IMaterial? material = null,
+      IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null,
       (float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
@@ -123,7 +123,7 @@ public static class MeshExtensions {
       ISkin<TVertex> skin,
       Vector3 point1,
       Vector3 point2,
-      IMaterial? material = null,
+      IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null,
       (float, float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
@@ -219,7 +219,7 @@ public static class MeshExtensions {
       Vector3 point1,
       Vector3 point2,
       int steps,
-      IMaterial? material = null,
+      IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null,
       (float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
