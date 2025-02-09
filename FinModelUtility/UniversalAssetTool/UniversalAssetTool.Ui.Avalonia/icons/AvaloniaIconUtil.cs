@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 using Avalonia;
 using Avalonia.Media.Imaging;
@@ -16,7 +16,7 @@ using PixelFormat = Avalonia.Platform.PixelFormat;
 namespace uni.ui.avalonia.icons;
 
 public static class AvaloniaIconUtil {
-  private static readonly Dictionary<IReadOnlyImage, Bitmap>
+  private static readonly ConcurrentDictionary<IReadOnlyImage, Bitmap>
       imageCache_ = new();
 
   public static void ClearCache() => imageCache_.Clear();
