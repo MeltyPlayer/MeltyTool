@@ -57,13 +57,6 @@ public static class GlslUtil {
     return FinShaderType.NULL;
   }
 
-  public static TNumber UseThenAdd<TNumber>(ref TNumber value, TNumber delta)
-      where TNumber : INumber<TNumber> {
-    var initialValue = value;
-    value += delta;
-    return initialValue;
-  }
-
   // TODO: Only include uvs/colors as needed
   public static string GetVertexSrc(IReadOnlyModel model,
                                     IModelRequirements modelRequirements,
