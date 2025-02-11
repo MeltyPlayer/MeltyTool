@@ -1,0 +1,47 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+local int C_PRM = 0xFF0000;
+local int C_HASH = 0xFFFF00;
+local int C_NODE = 0x0000FF;
+
+char magic[6];
+
+ushort unk0;
+
+ushort stringTableOffset;
+ushort unk1;
+
+typedef struct {
+  ushort tableOffset;
+  ushort tableCount;
+  
+  typedef struct {
+    ushort materialOffset;
+    ushort materialCount;
+    ushort unk;
+    ushort size;
+  } Material;
+
+  local uint tmp = FTell();
+  FSeek(tableOffset << 2);
+
+  Material materials[tableCount];
+
+  FSeek(tmp);
+} MaterialTable <bgcolor=C_PRM>;
+
+MaterialTable materialTable;
+
