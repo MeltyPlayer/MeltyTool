@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.8" />
+    <PackageReference Include="schema" Version="0.6.9" />
   </ItemGroup>
 
 </Project>
