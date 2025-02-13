@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -82,6 +81,5 @@ public class FileBundleTreeView : FileTreeView<IFileBundleDirectory> {
         IModelFileBundle => Icons.modelImage,
         IAudioFileBundle => Icons.musicImage,
         ISceneFileBundle => Icons.sceneImage,
-        _                => throw new ArgumentOutOfRangeException(nameof(file), file, null)
     };
 }

@@ -24,7 +24,6 @@ public class OutModelGoldenTests
         GameVersion = directory.Parent.Parent.Name switch {
             "battalion_wars_1" => GameVersion.BW1,
             "battalion_wars_2" => GameVersion.BW2,
-            _                  => throw new ArgumentOutOfRangeException()
         },
         OutFile = directory.FilesWithExtension(".out").Single(),
         TextureDirectories = directory.Yield(),
