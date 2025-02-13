@@ -270,8 +270,9 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
               finMaterial.CullingMode = modCullMode switch {
                   ModCullMode.SHOW_FRONT_ONLY => CullingMode.SHOW_FRONT_ONLY,
                   ModCullMode.SHOW_BACK_ONLY  => CullingMode.SHOW_BACK_ONLY,
-                  ModCullMode.SHOW_BOTH  => CullingMode.SHOW_BOTH,
-                  ModCullMode.SHOW_NEITHER  => CullingMode.SHOW_NEITHER,
+                  ModCullMode.SHOW_BOTH       => CullingMode.SHOW_BOTH,
+                  ModCullMode.SHOW_NEITHER    => CullingMode.SHOW_NEITHER,
+                  _                           => throw new ArgumentOutOfRangeException(nameof(modCullMode), modCullMode, null)
               };
 
               return finMaterial;
@@ -431,7 +432,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
 
     foreach (var meshPacket in mesh.packets) {
       foreach (var dlist in meshPacket.displaylists) {
-        var finMaterial = lazyMaterialDictionary[(matPoly.matIdx, dlist.CullMode)];
+        var finMaterial
+            = lazyMaterialDictionary[(matPoly.matIdx, dlist.CullMode)];
 
         var br =
             new SchemaBinaryReader(dlist.dlistData, Endianness.BigEndian);
@@ -447,6 +449,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
             continue;
           }
 
+          // TODO: I hate this, do this without generating so many lists.
           var faceCount = br.ReadUInt16();
           var positionIndices = new List<ushort>();
           var allVertexWeights = new List<IBoneWeights>();
@@ -532,8 +535,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           var finVertexList = new List<IReadOnlyVertex>();
           for (var v = 0; v < positionIndices.Count; ++v) {
             var position = finModCache.PositionsByIndex[positionIndices[v]];
-            var finVertex =
-                model.Skin.AddVertex(position);
+            var finVertex = model.Skin.AddVertex(position);
 
             if (allVertexWeights.Count > 0) {
               finVertex.SetBoneWeights(allVertexWeights[v]);
@@ -575,19 +577,14 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
           }
 
           var finVertices = finVertexList.ToArray();
-          IPrimitive? primitive = null;
-          if (opcode == GxOpcode.DRAW_TRIANGLE_FAN) {
-            primitive
-                = finMesh.AddTriangleFan(
-                    (IReadOnlyList<IReadOnlyVertex>) finVertices);
-          } else if (opcode == GxOpcode.DRAW_TRIANGLE_STRIP) {
-            primitive = finMesh.AddTriangleStrip(
-                (IReadOnlyList<IReadOnlyVertex>) finVertices);
-          }
+          IPrimitive? primitive = opcode switch {
+              GxOpcode.DRAW_TRIANGLE_FAN => finMesh.AddTriangleFan(finVertices),
+              GxOpcode.DRAW_TRIANGLE_STRIP => finMesh.AddTriangleStrip(
+                  finVertices),
+              _ => throw new ArgumentOutOfRangeException()
+          };
 
-          if (primitive != null) {
-            primitive.SetMaterial(finMaterial);
-          }
+          primitive.SetMaterial(finMaterial);
         }
       }
     }
@@ -633,63 +630,28 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     public Vector2[][] TexCoordsByIndex { get; }
 
     public FinModCache(Mod mod) {
-      this.PositionsByIndex =
-          mod.vertices.Select(
-                 position => new Vector3(
-                     position.X,
-                     position.Y,
-                     position.Z
-                 ))
-             .ToArray();
-      this.NormalsByIndex =
-          mod.vnormals.Select(
-                 vnormals => new Vector3(
-                     vnormals.X,
-                     vnormals.Y,
-                     vnormals.Z
-                 ))
-             .ToArray();
+      this.PositionsByIndex = mod.vertices.ToArray();
+      this.NormalsByIndex = mod.vnormals.ToArray();
       this.NbtNormalsByIndex =
-          mod.vertexnbt.Select(vertexnbt => new Vector3(
-                                   vertexnbt.Normal.X,
-                                   vertexnbt.Normal.Y,
-                                   vertexnbt.Normal.Z
-                               ))
-             .ToArray();
-      this.TangentsByIndex = mod.vertexnbt.Select(
-                                    vertexnbt => new Vector4(
-                                        vertexnbt.Tangent.X,
-                                        vertexnbt.Tangent.Y,
-                                        vertexnbt.Tangent.Z,
-                                        0
-                                    ))
-                                .ToArray();
+          mod.vertexnbt.Select(vertexnbt => vertexnbt.Normal).ToArray();
+      this.TangentsByIndex
+          = mod.vertexnbt.Select(vertexnbt => new Vector4(vertexnbt.Tangent, 0))
+               .ToArray();
       this.ColorsByIndex =
           mod.vcolours.Select(color => (IColor) color).ToArray();
       this.TexCoordsByIndex =
-          mod.texcoords.Select(
-                 texcoords
-                     => texcoords.Select(
-                                     texcoord => new Vector2(
-                                         texcoord.X,
-                                         texcoord.Y))
-                                 .ToArray())
+          mod.texcoords.Select(texcoords => texcoords.ToArray())
              .ToArray();
     }
   }
 
   private static ushort Read_(IBinaryReader br,
                               GxAttributeType? format) {
-    if (format == GxAttributeType.INDEX_16) {
-      return br.ReadUInt16();
-    }
-
-    if (format == GxAttributeType.INDEX_8) {
-      return br.ReadByte();
-    }
-
-    Asserts.Fail($"Unsupported format: {format}");
-    return 0;
+    return format switch {
+        GxAttributeType.INDEX_16 => br.ReadUInt16(),
+        GxAttributeType.INDEX_8 => br.ReadByte(),
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+    };
   }
 
   private readonly struct TextureImageReader(
