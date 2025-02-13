@@ -186,7 +186,7 @@ namespace sm64 {
                                    .getBehaviorNameEntryFromSegAddress(this.m_data.Behaviour)
                                    .Name;
 
-    public string ToString() => this.Behavior_Name;
+    public new string ToString() => this.Behavior_Name;
 
     // default names
     private const string BP1DNAME = "B.Param 1";

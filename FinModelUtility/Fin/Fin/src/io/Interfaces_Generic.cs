@@ -6,10 +6,10 @@ namespace fin.io;
 
 [GenerateReadOnly]
 public partial interface IGenericFile {
-  string DisplayFullPath { get; }
+  new string DisplayFullPath { get; }
 
   [Const]
-  FileSystemStream OpenRead();
+  new FileSystemStream OpenRead();
 
   FileSystemStream OpenWrite();
 }

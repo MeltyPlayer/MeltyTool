@@ -7,7 +7,7 @@ public partial class LabelledProgressBar : UserControl {
     this.InitializeComponent();
     }
 
-  public string Text {
+  public new string Text {
     get => this.label_.Text;
     set => this.label_.Text = value;
   }

@@ -163,27 +163,27 @@ public class ColorExpression(IReadOnlyList<IColorValue> terms)
     : BColorValue, IColorExpression {
   public IReadOnlyList<IColorValue> Terms { get; } = terms;
 
-  public IColorExpression Add(
+  public new IColorExpression Add(
       IColorValue term1,
       params IColorValue[] terms)
     => new ColorExpression(
         ListUtil.ReadonlyConcat(this.Terms, [term1], terms));
 
-  public IColorExpression Subtract(
+  public new IColorExpression Subtract(
       IColorValue term1,
       params IColorValue[] terms)
     => new ColorExpression(
         ListUtil.ReadonlyConcat(this.Terms,
                                 this.NegateTerms(term1, terms)));
 
-  public IColorExpression Add(
+  public new IColorExpression Add(
       IScalarValue term1,
       params IScalarValue[] terms)
     => new ColorExpression(
         ListUtil.ReadonlyConcat(this.Terms,
                                 this.ToColorValues(term1, terms)));
 
-  public IColorExpression Subtract(
+  public new IColorExpression Subtract(
       IScalarValue term1,
       params IScalarValue[] terms)
     => new ColorExpression(
@@ -233,14 +233,14 @@ public class ColorTerm : BColorValue, IColorTerm {
   public IReadOnlyList<IColorValue> NumeratorFactors { get; }
   public IReadOnlyList<IColorValue>? DenominatorFactors { get; }
 
-  public IColorTerm Multiply(
+  public new IColorTerm Multiply(
       IColorValue factor1,
       params IColorValue[] factors)
     => new ColorTerm(ListUtil.ReadonlyConcat(
                          this.NumeratorFactors,
                          ListUtil.ReadonlyFrom(factor1, factors)));
 
-  public IColorTerm Divide(
+  public new IColorTerm Divide(
       IColorValue factor1,
       params IColorValue[] factors)
     => new ColorTerm(this.NumeratorFactors,
@@ -248,14 +248,14 @@ public class ColorTerm : BColorValue, IColorTerm {
                          this.DenominatorFactors,
                          ListUtil.ReadonlyFrom(factor1, factors)));
 
-  public IColorTerm Multiply(
+  public new IColorTerm Multiply(
       IScalarValue factor1,
       params IScalarValue[] factors)
     => new ColorTerm(ListUtil.ReadonlyConcat(
                          this.NumeratorFactors,
                          this.ToColorValues(factor1, factors)));
 
-  public IColorTerm Divide(
+  public new IColorTerm Divide(
       IScalarValue factor1,
       params IScalarValue[] factors)
     => new ColorTerm(this.NumeratorFactors,

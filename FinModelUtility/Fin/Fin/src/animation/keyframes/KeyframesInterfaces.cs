@@ -23,6 +23,6 @@ public interface IKeyframeWithTangents<out T>
 
 [GenerateReadOnly]
 public partial interface IKeyframes<TKeyframe> where TKeyframe : IKeyframe {
-  IReadOnlyList<TKeyframe> Definitions { get; }
+  new IReadOnlyList<TKeyframe> Definitions { get; }
   void Add(TKeyframe keyframe);
 }

@@ -11,13 +11,13 @@ namespace fin.io;
 
 [GenerateReadOnly]
 public partial interface IFileIdsDictionary {
-  IEnumerable<IReadOnlyTreeFile> this[uint id] { get; }
+  new IEnumerable<IReadOnlyTreeFile> this[uint id] { get; }
   bool TryToLookUpFiles(uint id, out IEnumerable<IReadOnlyTreeFile> files);
 
   public void AddFile(uint id, IReadOnlyTreeFile file);
 
   [Const]
-  void Save(IGenericFile fileIdsFile);
+  new void Save(IGenericFile fileIdsFile);
 }
 
 public partial class FileIdsDictionary : IFileIdsDictionary {

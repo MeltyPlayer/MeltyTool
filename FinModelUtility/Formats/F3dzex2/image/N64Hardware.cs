@@ -11,8 +11,8 @@ public interface IN64Hardware {
 public interface IN64Hardware<TMemory> : IN64Hardware
     where TMemory : IN64Memory {
   new TMemory Memory { get; }
-  IRsp Rsp { get; }
-  IRdp Rdp { get; }
+  new IRsp Rsp { get; }
+  new IRdp Rdp { get; }
 }
 
 

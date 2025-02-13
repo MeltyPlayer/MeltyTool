@@ -11,7 +11,7 @@ namespace fin.data.dictionaries;
 public partial interface ISubTypeDictionary<TKey, TValue>
     : IFinCollection<(TKey Key, TValue Value)> {
   [Const]
-  TValueSub Get<TValueSub>(TKey key) where TValueSub : TValue;
+  new TValueSub Get<TValueSub>(TKey key) where TValueSub : TValue;
 
   void Set<TValueSub>(TKey key, TValueSub value) where TValueSub : TValue;
 }

@@ -17,8 +17,8 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface IMaterialManager {
-  IReadOnlyList<IMaterial> All { get; }
-  IFixedFunctionRegisters? Registers { get; }
+  new IReadOnlyList<IMaterial> All { get; }
+  new IFixedFunctionRegisters? Registers { get; }
 
   // TODO: Name is actually required, should be required in the creation scripts?
   INullMaterial AddNullMaterial();
@@ -36,7 +36,7 @@ public partial interface IMaterialManager {
                                            float scrollSpeedX,
                                            float scrollSpeedY);
 
-  IReadOnlyList<ITexture> Textures { get; }
+  new IReadOnlyList<ITexture> Textures { get; }
 }
 
 public enum MaterialType {
@@ -76,31 +76,31 @@ public enum DepthCompareType {
 
 [GenerateReadOnly]
 public partial interface IMaterial {
-  string? Name { get; set; }
+  new string? Name { get; set; }
 
-  IEnumerable<IReadOnlyTexture> Textures { get; }
+  new IEnumerable<IReadOnlyTexture> Textures { get; }
 
-  CullingMode CullingMode { get; set; }
+  new CullingMode CullingMode { get; set; }
 
-  DepthMode DepthMode { get; set; }
-  DepthCompareType DepthCompareType { get; set; }
+  new DepthMode DepthMode { get; set; }
+  new DepthCompareType DepthCompareType { get; set; }
 
-  bool IgnoreLights { get; set; }
-  float Shininess { get; set; }
+  new bool IgnoreLights { get; set; }
+  new float Shininess { get; set; }
 
-  TransparencyType TransparencyType { get; set; }
+  new TransparencyType TransparencyType { get; set; }
 
-  bool UpdateColorChannel { get; set; }
-  bool UpdateAlphaChannel { get; set; }
+  new bool UpdateColorChannel { get; set; }
+  new bool UpdateAlphaChannel { get; set; }
 
   // TODO: Merge this into a single type
-  BlendEquation ColorBlendEquation { get; }
-  BlendFactor ColorSrcFactor { get; }
-  BlendFactor ColorDstFactor { get; }
-  BlendEquation AlphaBlendEquation { get; }
-  BlendFactor AlphaSrcFactor { get; }
-  BlendFactor AlphaDstFactor { get; }
-  LogicOp LogicOp { get; }
+  new BlendEquation ColorBlendEquation { get; }
+  new BlendFactor ColorSrcFactor { get; }
+  new BlendFactor ColorDstFactor { get; }
+  new BlendEquation AlphaBlendEquation { get; }
+  new BlendFactor AlphaSrcFactor { get; }
+  new BlendFactor AlphaDstFactor { get; }
+  new LogicOp LogicOp { get; }
 
   IMaterial SetBlending(
       BlendEquation blendEquation,
@@ -121,7 +121,7 @@ public partial interface IMaterial {
 
 [GenerateReadOnly]
 public partial interface IMaterialWithNormalTexture : IMaterial {
-  IReadOnlyTexture? NormalTexture { get; set; }
+  new IReadOnlyTexture? NormalTexture { get; set; }
 }
 
 
@@ -133,27 +133,27 @@ public partial interface IHiddenMaterial : IMaterial;
 
 [GenerateReadOnly]
 public partial interface ITextureMaterial : IMaterial {
-  IReadOnlyTexture Texture { get; }
-  Color? DiffuseColor { get; set; }
+  new IReadOnlyTexture Texture { get; }
+  new Color? DiffuseColor { get; set; }
 }
 
 [GenerateReadOnly]
 public partial interface IColorMaterial : IMaterial {
-  Color Color { get; set; }
+  new Color Color { get; set; }
 }
 
 [GenerateReadOnly]
 public partial interface IStandardMaterial : IMaterialWithNormalTexture {
-  IReadOnlyTexture? DiffuseTexture { get; set; }
-  IReadOnlyTexture? AmbientOcclusionTexture { get; set; }
-  IReadOnlyTexture? EmissiveTexture { get; set; }
-  IReadOnlyTexture? SpecularTexture { get; set; }
+  new IReadOnlyTexture? DiffuseTexture { get; set; }
+  new IReadOnlyTexture? AmbientOcclusionTexture { get; set; }
+  new IReadOnlyTexture? EmissiveTexture { get; set; }
+  new IReadOnlyTexture? SpecularTexture { get; set; }
 }
 
 [GenerateReadOnly]
 public partial interface IShaderMaterial : IMaterial {
-  string VertexShader { get; set; }
-  string FragmentShader { get; set; }
+  new string VertexShader { get; set; }
+  new string FragmentShader { get; set; }
 }
 
 // TODO: Support empty white materials
@@ -324,22 +324,22 @@ public enum FixedFunctionSource {
 
 [GenerateReadOnly]
 public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
-  IFixedFunctionEquations<FixedFunctionSource> Equations { get; }
-  IFixedFunctionRegisters Registers { get; }
+  new IFixedFunctionEquations<FixedFunctionSource> Equations { get; }
+  new IFixedFunctionRegisters Registers { get; }
 
-  IReadOnlyList<IReadOnlyTexture?> TextureSources { get; }
+  new IReadOnlyList<IReadOnlyTexture?> TextureSources { get; }
 
   IFixedFunctionMaterial SetTextureSource(int textureIndex,
                                           IReadOnlyTexture texture);
 
-  IReadOnlyTexture? CompiledTexture { get; set; }
+  new IReadOnlyTexture? CompiledTexture { get; set; }
   
   // TODO: Merge this into a single type
-  AlphaOp AlphaOp { get; }
-  AlphaCompareType AlphaCompareType0 { get; }
-  float AlphaReference0 { get; }
-  AlphaCompareType AlphaCompareType1 { get; }
-  float AlphaReference1 { get; }
+  new AlphaOp AlphaOp { get; }
+  new AlphaCompareType AlphaCompareType0 { get; }
+  new float AlphaReference0 { get; }
+  new AlphaCompareType AlphaCompareType1 { get; }
+  new float AlphaReference1 { get; }
 
   IFixedFunctionMaterial SetAlphaCompare(
       AlphaOp alphaOp,
@@ -393,49 +393,49 @@ public enum TextureMinFilter {
 
 [GenerateReadOnly]
 public partial interface ITexture : IIndexable {
-  string Name { get; set; }
+  new string Name { get; set; }
 
-  LocalImageFormat BestImageFormat { get; }
-  string ValidFileName { get; }
+  new LocalImageFormat BestImageFormat { get; }
+  new string ValidFileName { get; }
 
-  int UvIndex { get; set; }
-  UvType UvType { get; set; }
-  ColorType ColorType { get; set; }
+  new int UvIndex { get; set; }
+  new UvType UvType { get; set; }
+  new ColorType ColorType { get; set; }
 
-  IReadOnlyImage[] MipmapImages { get; }
-  IReadOnlyImage Image => this.MipmapImages[0];
-  Bitmap ImageData { get; }
+  new IReadOnlyImage[] MipmapImages { get; }
+  new IReadOnlyImage Image => this.MipmapImages[0];
+  new Bitmap ImageData { get; }
 
-
-  [Const]
-  void WriteToStream(Stream stream);
 
   [Const]
-  void SaveInDirectory(ISystemDirectory directory);
+  new void WriteToStream(Stream stream);
 
-  TransparencyType TransparencyType { get; }
+  [Const]
+  new void SaveInDirectory(ISystemDirectory directory);
 
-  WrapMode WrapModeU { get; set; }
-  WrapMode WrapModeV { get; set; }
+  new TransparencyType TransparencyType { get; }
 
-  IColor? BorderColor { get; set; }
+  new WrapMode WrapModeU { get; set; }
+  new WrapMode WrapModeV { get; set; }
 
-  TextureMagFilter MagFilter { get; set; }
-  TextureMinFilter MinFilter { get; set; }
-  float MinLod { get; set; }
-  float MaxLod { get; set; }
-  float LodBias { get; set; }
+  new IColor? BorderColor { get; set; }
 
-  Vector2? ClampS { get; set; }
-  Vector2? ClampT { get; set; }
+  new TextureMagFilter MagFilter { get; set; }
+  new TextureMinFilter MinFilter { get; set; }
+  new float MinLod { get; set; }
+  new float MaxLod { get; set; }
+  new float LodBias { get; set; }
 
-  bool IsTransform3d { get; }
+  new Vector2? ClampS { get; set; }
+  new Vector2? ClampT { get; set; }
 
-  Vector3? Center { get; }
+  new bool IsTransform3d { get; }
+
+  new Vector3? Center { get; }
   ITexture SetCenter2d(float x, float y);
   ITexture SetCenter3d(float x, float y, float z);
 
-  Vector3? Translation { get; }
+  new Vector3? Translation { get; }
 
   ITexture SetTranslation2d(float x, float y)
     => SetTranslation2d(new Vector2(x, y));
@@ -447,7 +447,7 @@ public partial interface ITexture : IIndexable {
 
   ITexture SetTranslation3d(Vector3 xyz);
 
-  Vector3? Scale { get; }
+  new Vector3? Scale { get; }
   ITexture SetScale2d(float x, float y) => SetScale2d(new Vector2(x, y));
   ITexture SetScale2d(Vector2 xy);
 
@@ -456,7 +456,7 @@ public partial interface ITexture : IIndexable {
 
   ITexture SetScale3d(Vector3 xyz);
 
-  Vector3? RotationRadians { get; }
+  new Vector3? RotationRadians { get; }
   ITexture SetRotationRadians2d(float rotationRadians);
 
   ITexture SetRotationRadians3d(float x, float y, float z)

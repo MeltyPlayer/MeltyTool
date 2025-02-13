@@ -14,5 +14,5 @@ public partial interface ICovariantFinSet<T> : IFinCollection<T> {
 [GenerateReadOnly]
 public partial interface IFinSet<T> : ICovariantFinSet<T> {
   [Const]
-  bool Contains(T value);
+  new bool Contains(T value);
 }

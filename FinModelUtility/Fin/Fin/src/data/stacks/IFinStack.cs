@@ -7,7 +7,7 @@ namespace fin.data.stacks;
 /// </summary>
 [GenerateReadOnly]
 public partial interface IFinStack<T> : IFinCollection<T> {
-  T Top { get; set; }
+  new T Top { get; set; }
 
   bool TryPop(out T item);
   T Pop();

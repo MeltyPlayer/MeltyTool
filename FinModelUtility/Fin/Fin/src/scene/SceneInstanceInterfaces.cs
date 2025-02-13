@@ -18,13 +18,13 @@ public interface ITickable {
 
 [GenerateReadOnly]
 public partial interface ISceneInstance : ITickable, IDisposable {
-  IReadOnlyScene Definition { get; }
+  new IReadOnlyScene Definition { get; }
 
-  IReadOnlyList<ISceneAreaInstance> Areas { get; }
+  new IReadOnlyList<ISceneAreaInstance> Areas { get; }
 
-  IReadOnlyLighting? Lighting { get; }
+  new IReadOnlyLighting? Lighting { get; }
 
-  float ViewerScale { get; set; }
+  new float ViewerScale { get; set; }
 }
 
 /// <summary>
@@ -35,14 +35,14 @@ public partial interface ISceneInstance : ITickable, IDisposable {
 /// </summary>
 [GenerateReadOnly]
 public partial interface ISceneAreaInstance : ITickable, IDisposable {
-  IReadOnlySceneArea Definition { get; }
+  new IReadOnlySceneArea Definition { get; }
 
-  IReadOnlyList<ISceneObjectInstance> Objects { get; }
+  new IReadOnlyList<ISceneObjectInstance> Objects { get; }
 
-  float ViewerScale { get; set; }
+  new float ViewerScale { get; set; }
 
-  Color? BackgroundColor { get; }
-  ISceneObjectInstance? CustomSkyboxObject { get; }
+  new Color? BackgroundColor { get; }
+  new ISceneObjectInstance? CustomSkyboxObject { get; }
 }
 
 /// <summary>
@@ -52,11 +52,11 @@ public partial interface ISceneAreaInstance : ITickable, IDisposable {
 /// </summary>
 [GenerateReadOnly]
 public partial interface ISceneObjectInstance : ITickable, IDisposable {
-  IReadOnlySceneObject Definition { get; }
+  new IReadOnlySceneObject Definition { get; }
 
-  Vector3 Position { get; }
-  IRotation Rotation { get; }
-  Vector3 Scale { get; }
+  new Vector3 Position { get; }
+  new IRotation Rotation { get; }
+  new Vector3 Scale { get; }
 
   ISceneObjectInstance SetPosition(float x, float y, float z);
 
@@ -68,9 +68,9 @@ public partial interface ISceneObjectInstance : ITickable, IDisposable {
                                           float yDegrees,
                                           float zDegrees);
 
-  IReadOnlyList<ISceneModelInstance> Models { get; }
+  new IReadOnlyList<ISceneModelInstance> Models { get; }
 
-  float ViewerScale { get; set; }
+  new float ViewerScale { get; set; }
 }
 
 /// <summary>
@@ -80,17 +80,17 @@ public partial interface ISceneObjectInstance : ITickable, IDisposable {
 /// </summary>
 [GenerateReadOnly]
 public partial interface ISceneModelInstance : ITickable, IDisposable {
-  IReadOnlySceneModel Definition { get; }
+  new IReadOnlySceneModel Definition { get; }
 
-  IReadOnlyListDictionary<IReadOnlyBone, ISceneModelInstance> Children { get; }
+  new IReadOnlyListDictionary<IReadOnlyBone, ISceneModelInstance> Children { get; }
 
-  IReadOnlyModel Model { get; }
+  new IReadOnlyModel Model { get; }
 
-  IBoneTransformManager BoneTransformManager { get; }
-  ITextureTransformManager TextureTransformManager { get; }
+  new IBoneTransformManager BoneTransformManager { get; }
+  new ITextureTransformManager TextureTransformManager { get; }
 
-  IReadOnlyModelAnimation? Animation { get; set; }
-  IAnimationPlaybackManager AnimationPlaybackManager { get; }
+  new IReadOnlyModelAnimation? Animation { get; set; }
+  new IAnimationPlaybackManager AnimationPlaybackManager { get; }
 
-  float ViewerScale { get; set; }
+  new float ViewerScale { get; set; }
 }

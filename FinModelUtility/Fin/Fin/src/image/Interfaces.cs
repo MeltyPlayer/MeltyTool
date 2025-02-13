@@ -33,9 +33,9 @@ public static class LocalImageFormatExtensions {
 
 [GenerateReadOnly]
 public partial interface IImage : IDisposable {
-  PixelFormat PixelFormat { get; }
-  int Width { get; }
-  int Height { get; }
+  new PixelFormat PixelFormat { get; }
+  new int Width { get; }
+  new int Height { get; }
 
   delegate void Rgba32GetHandler(int x,
                                  int y,
@@ -47,22 +47,22 @@ public partial interface IImage : IDisposable {
   delegate void AccessHandler(Rgba32GetHandler getHandler);
 
   [Const]
-  void Access(AccessHandler accessHandler);
+  new void Access(AccessHandler accessHandler);
 
-  bool HasAlphaChannel { get; }
-
-  [Const]
-  Bitmap AsBitmap();
+  new bool HasAlphaChannel { get; }
 
   [Const]
-  void ExportToStream(Stream stream, LocalImageFormat imageFormat);
+  new Bitmap AsBitmap();
+
+  [Const]
+  new void ExportToStream(Stream stream, LocalImageFormat imageFormat);
 }
 
 [GenerateReadOnly]
 public partial interface IImage<TPixel> : IImage
     where TPixel : unmanaged, IPixel<TPixel> {
   [Const]
-  IImageLock<TPixel> Lock();
+  new IImageLock<TPixel> Lock();
 
   FinUnsafeImageLock<TPixel> UnsafeLock();
 }
@@ -70,6 +70,6 @@ public partial interface IImage<TPixel> : IImage
 [GenerateReadOnly]
 public partial interface IImageLock<TPixel> : IDisposable
     where TPixel : unmanaged, IPixel<TPixel> {
-  Span<byte> Bytes { get; }
-  Span<TPixel> Pixels { get; }
+  new Span<byte> Bytes { get; }
+  new Span<TPixel> Pixels { get; }
 }

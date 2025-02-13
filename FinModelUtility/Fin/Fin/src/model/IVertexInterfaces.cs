@@ -11,8 +11,8 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface IVertex : IIndexable {
-  IBoneWeights? BoneWeights { get; }
-  Vector3 LocalPosition { get; }
+  new IBoneWeights? BoneWeights { get; }
+  new Vector3 LocalPosition { get; }
 
   void SetBoneWeights(IBoneWeights boneWeights);
 
@@ -23,7 +23,7 @@ public partial interface IVertex : IIndexable {
 
 [GenerateReadOnly]
 public partial interface INormalVertex : IVertex {
-  Vector3? LocalNormal { get; }
+  new Vector3? LocalNormal { get; }
   void SetLocalNormal(Vector3? localNormal);
   void SetLocalNormal(IReadOnlyXyz? localNormal);
   void SetLocalNormal(float x, float y, float z);
@@ -31,7 +31,7 @@ public partial interface INormalVertex : IVertex {
 
 [GenerateReadOnly]
 public partial interface ITangentVertex : IVertex {
-  Vector4? LocalTangent { get; }
+  new Vector4? LocalTangent { get; }
   void SetLocalTangent(Vector4? localTangent);
   void SetLocalTangent(IReadOnlyVector4? localTangent);
   void SetLocalTangent(float x, float y, float z, float w);
@@ -43,7 +43,7 @@ public partial interface INormalTangentVertex : INormalVertex, ITangentVertex;
 [GenerateReadOnly]
 public partial interface ISingleColorVertex : IVertex {
   [Const]
-  IColor? GetColor();
+  new IColor? GetColor();
 
   void SetColor(Color? color);
   void SetColor(IColor? color);
@@ -54,10 +54,10 @@ public partial interface ISingleColorVertex : IVertex {
 
 [GenerateReadOnly]
 public partial interface IMultiColorVertex : IVertex {
-  int ColorCount { get; }
+  new int ColorCount { get; }
 
   [Const]
-  IColor? GetColor(int colorIndex);
+  new IColor? GetColor(int colorIndex);
 
   void SetColor(int colorIndex, IColor? color);
 
@@ -71,7 +71,7 @@ public partial interface IMultiColorVertex : IVertex {
 [GenerateReadOnly]
 public partial interface ISingleUvVertex : IVertex {
   [Const]
-  Vector2? GetUv();
+  new Vector2? GetUv();
 
   void SetUv(Vector2? uv);
   void SetUv(IReadOnlyVector2? uv);
@@ -80,10 +80,10 @@ public partial interface ISingleUvVertex : IVertex {
 
 [GenerateReadOnly]
 public partial interface IMultiUvVertex : IVertex {
-  int UvCount { get; }
+  new int UvCount { get; }
 
   [Const]
-  Vector2? GetUv(int uvIndex);
+  new Vector2? GetUv(int uvIndex);
 
   void SetUv(int uvIndex, Vector2? uv);
   void SetUv(int uvIndex, float u, float v);

@@ -24,10 +24,10 @@ public interface ISceneImporter<in TSceneFileBundle>
 /// </summary>
 [GenerateReadOnly]
 public partial interface IScene : IResource {
-  IReadOnlyList<ISceneArea> Areas { get; }
+  new IReadOnlyList<ISceneArea> Areas { get; }
   ISceneArea AddArea();
 
-  ILighting? Lighting { get; }
+  new ILighting? Lighting { get; }
   ILighting CreateLighting();
 }
 
@@ -39,11 +39,11 @@ public partial interface IScene : IResource {
 /// </summary>
 [GenerateReadOnly]
 public partial interface ISceneArea {
-  IReadOnlyList<ISceneObject> Objects { get; }
+  new IReadOnlyList<ISceneObject> Objects { get; }
   ISceneObject AddObject();
 
-  Color? BackgroundColor { get; set; }
-  ISceneObject? CustomSkyboxObject { get; set; }
+  new Color? BackgroundColor { get; set; }
+  new ISceneObject? CustomSkyboxObject { get; set; }
   ISceneObject CreateCustomSkyboxObject();
 }
 
@@ -54,9 +54,9 @@ public partial interface ISceneArea {
 /// </summary>
 [GenerateReadOnly]
 public partial interface ISceneObject {
-  Vector3 Position { get; }
-  IRotation Rotation { get; }
-  Vector3 Scale { get; }
+  new Vector3 Position { get; }
+  new IRotation Rotation { get; }
+  new Vector3 Scale { get; }
 
   ISceneObject SetPosition(float x, float y, float z);
 
@@ -73,9 +73,9 @@ public partial interface ISceneObject {
   public delegate void OnTick(ISceneObjectInstance self);
 
   ISceneObject SetOnTickHandler(OnTick handler);
-  public OnTick TickHandler { get; }
+  public new OnTick TickHandler { get; }
 
-  IReadOnlyList<ISceneModel> Models { get; }
+  new IReadOnlyList<ISceneModel> Models { get; }
   ISceneModel AddSceneModel(IModel model);
 }
 
@@ -86,8 +86,8 @@ public partial interface ISceneObject {
 /// </summary>
 [GenerateReadOnly]
 public partial interface ISceneModel {
-  IReadOnlyListDictionary<IReadOnlyBone, IReadOnlySceneModel> Children { get; }
+  new IReadOnlyListDictionary<IReadOnlyBone, IReadOnlySceneModel> Children { get; }
   ISceneModel AddModelOntoBone(IReadOnlyModel model, IReadOnlyBone bone);
 
-  IReadOnlyModel Model { get; }
+  new IReadOnlyModel Model { get; }
 }

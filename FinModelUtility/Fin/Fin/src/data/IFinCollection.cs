@@ -6,6 +6,6 @@ namespace fin.data;
 
 [GenerateReadOnly]
 public partial interface IFinCollection<out T> : IEnumerable<T> {
-  int Count { get; }
+  new int Count { get; }
   void Clear();
 }

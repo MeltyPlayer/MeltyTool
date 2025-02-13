@@ -15,14 +15,14 @@ public partial interface IIndexableDictionary<in TIndexable, TValue>
   // aren't allowed to be covariant:
   // https://github.com/dotnet/csharplang/discussions/5623
   [Const]
-  bool ContainsKey(int index);
+  new bool ContainsKey(int index);
 
   [Const]
-  bool ContainsKey(TIndexable key);
+  new bool ContainsKey(TIndexable key);
 
   void Clear();
-  TValue this[int index] { get; set; }
-  TValue this[TIndexable key] { get; set; }
+  new TValue this[int index] { get; set; }
+  new TValue this[TIndexable key] { get; set; }
 }
 
 public static class IndexableDictionaryExtensions {

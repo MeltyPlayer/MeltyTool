@@ -10,29 +10,29 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface ISkeleton : IEnumerable<IReadOnlyBone> {
-  IBone Root { get; }
-  IReadOnlyList<IBone> Bones { get; }
+  new IBone Root { get; }
+  new IReadOnlyList<IBone> Bones { get; }
 }
 
 [GenerateReadOnly]
 public partial interface ILeafBone : IIndexable {
-  string Name { get; set; }
+  new string Name { get; set; }
 
-  IBone Root { get; }
-  IBone? Parent { get; }
+  new IBone Root { get; }
+  new IBone? Parent { get; }
 
-  ITransform3d LocalTransform { get; }
+  new ITransform3d LocalTransform { get; }
 
-  bool IgnoreParentScale { get; set; }
+  new bool IgnoreParentScale { get; set; }
 
   IBone AlwaysFaceTowardsCamera(Quaternion adjustment);
-  bool FaceTowardsCamera { get; }
-  Quaternion FaceTowardsCameraAdjustment { get; }
+  new bool FaceTowardsCamera { get; }
+  new Quaternion FaceTowardsCameraAdjustment { get; }
 }
 
 [GenerateReadOnly]
 public partial interface IBone : ILeafBone {
-  IReadOnlyList<IBone> Children { get; }
+  new IReadOnlyList<IBone> Children { get; }
   IBone AddRoot(float x, float y, float z);
   IBone AddChild(float x, float y, float z);
 }

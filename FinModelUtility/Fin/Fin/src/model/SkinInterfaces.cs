@@ -12,14 +12,14 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface ISkin {
-  IReadOnlyList<IVertex> Vertices { get; }
+  new IReadOnlyList<IVertex> Vertices { get; }
 
-  IReadOnlyList<IMesh> Meshes { get; }
+  new IReadOnlyList<IMesh> Meshes { get; }
   IMesh AddMesh();
-  bool AllowMaterialRendererMerging { get; set; }
+  new bool AllowMaterialRendererMerging { get; set; }
 
-  IReadOnlyFinSet<IReadOnlyBone> BonesUsedByVertices { get; }
-  IReadOnlyList<IBoneWeights> BoneWeights { get; }
+  new IReadOnlyFinSet<IReadOnlyBone> BonesUsedByVertices { get; }
+  new IReadOnlyList<IBoneWeights> BoneWeights { get; }
 
   IBoneWeights GetOrCreateBoneWeights(
       VertexSpace vertexSpace,
@@ -37,17 +37,17 @@ public partial interface ISkin {
 [GenerateReadOnly]
 public partial interface ISkin<out TVertex> : ISkin
     where TVertex : IReadOnlyVertex {
-  IReadOnlyList<TVertex> TypedVertices { get; }
+  new IReadOnlyList<TVertex> TypedVertices { get; }
   TVertex AddVertex(Vector3 position);
 }
 
 [GenerateReadOnly]
 public partial interface IMesh : IIndexable {
-  string Name { get; set; }
+  new string Name { get; set; }
 
-  IReadOnlyList<IPrimitive> Primitives { get; }
+  new IReadOnlyList<IPrimitive> Primitives { get; }
 
-  MeshDisplayState DefaultDisplayState { get; set; }
+  new MeshDisplayState DefaultDisplayState { get; set; }
 
   IPrimitive AddTriangles(
       IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)>
@@ -92,19 +92,19 @@ public partial interface IMesh : IIndexable {
 [GenerateReadOnly]
 public partial interface IBoneWeights
     : IIndexable, IEquatable<IReadOnlyBoneWeights> {
-  VertexSpace VertexSpace { get; }
-  IReadOnlyList<IBoneWeight> Weights { get; }
+  new VertexSpace VertexSpace { get; }
+  new IReadOnlyList<IBoneWeight> Weights { get; }
 
   [Const]
-  bool Equals(VertexSpace vertexSpace,
-              IReadOnlyList<IReadOnlyBoneWeight> weights);
+  new bool Equals(VertexSpace vertexSpace,
+                  IReadOnlyList<IReadOnlyBoneWeight> weights);
 }
 
 [GenerateReadOnly]
 public partial interface IBoneWeight {
-  IReadOnlyBone Bone { get; }
-  IReadOnlyFinMatrix4x4? InverseBindMatrix { get; }
-  float Weight { get; }
+  new IReadOnlyBone Bone { get; }
+  new IReadOnlyFinMatrix4x4? InverseBindMatrix { get; }
+  new float Weight { get; }
 }
 
 public record BoneWeight(
@@ -151,32 +151,32 @@ public enum VertexOrder {
 
 [GenerateReadOnly]
 public partial interface ILinesPrimitive : IPrimitive {
-  float LineWidth { get; }
+  new float LineWidth { get; }
   ILinesPrimitive SetLineWidth(float width);
 }
 
 [GenerateReadOnly]
 public partial interface IPointsPrimitive : IPrimitive {
-  float Radius { get; }
+  new float Radius { get; }
   IPointsPrimitive SetRadius(float radius);
 }
 
 [GenerateReadOnly]
 public partial interface IPrimitive {
-  PrimitiveType Type { get; }
-  IReadOnlyList<IReadOnlyVertex> Vertices { get; }
+  new PrimitiveType Type { get; }
+  new IReadOnlyList<IReadOnlyVertex> Vertices { get; }
 
-  IReadOnlyMaterial? Material { get; }
+  new IReadOnlyMaterial? Material { get; }
   IPrimitive SetMaterial(IReadOnlyMaterial? material);
 
-  VertexOrder VertexOrder { get; }
+  new VertexOrder VertexOrder { get; }
   IPrimitive SetVertexOrder(VertexOrder vertexOrder);
 
   /// <summary>
   ///   Rendering priority when determining what order to draw in. Lower
   ///   values will be prioritized higher.
   /// </summary>
-  uint InversePriority { get; }
+  new uint InversePriority { get; }
 
   IPrimitive SetInversePriority(uint inversePriority);
 }

@@ -13,7 +13,7 @@ public readonly struct FinFile(string fullName) : ISystemFile {
 
 
   // Equality
-  public bool Equals(object? other) {
+  public new bool Equals(object? other) {
     if (ReferenceEquals(this, other)) {
       return true;
     }

@@ -9,21 +9,21 @@ public partial interface IKeyframeDefinitions<T> {
   void SetKeyframe(int frame, T value, string frameType = "");
   void SetAllKeyframes(IEnumerable<T> value);
 
-  bool HasAtLeastOneKeyframe { get; }
+  new bool HasAtLeastOneKeyframe { get; }
 
-  IReadOnlyList<KeyframeDefinition<T>> Definitions { get; }
-
-  [Const]
-  KeyframeDefinition<T> GetKeyframeAtIndex(int index);
+  new IReadOnlyList<KeyframeDefinition<T>> Definitions { get; }
 
   [Const]
-  KeyframeDefinition<T>? GetKeyframeAtFrame(int frame);
+  new KeyframeDefinition<T> GetKeyframeAtIndex(int index);
 
   [Const]
-  KeyframeDefinition<T>? GetKeyframeAtExactFrame(int frame);
+  new KeyframeDefinition<T>? GetKeyframeAtFrame(int frame);
 
   [Const]
-  bool FindIndexOfKeyframe(
+  new KeyframeDefinition<T>? GetKeyframeAtExactFrame(int frame);
+
+  [Const]
+  new bool FindIndexOfKeyframe(
       int frame,
       out int keyframeIndex,
       out KeyframeDefinition<T> keyframe,

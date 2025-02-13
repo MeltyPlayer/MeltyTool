@@ -10,7 +10,7 @@ namespace sm64 {
 
     public BehaviorCommand Command => (BehaviorCommand) this.data[0];
 
-    public string ToString() => this.description;
+    public new string ToString() => this.description;
   }
 
   public class Globals {

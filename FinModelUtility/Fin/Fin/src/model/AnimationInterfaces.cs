@@ -13,11 +13,11 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface IAnimationManager {
-  IReadOnlyList<IModelAnimation> Animations { get; }
+  new IReadOnlyList<IModelAnimation> Animations { get; }
   IModelAnimation AddAnimation();
   void RemoveAnimation(IModelAnimation animation);
 
-  IReadOnlyList<IMorphTarget> MorphTargets { get; }
+  new IReadOnlyList<IMorphTarget> MorphTargets { get; }
   IMorphTarget AddMorphTarget();
 }
 
@@ -30,23 +30,23 @@ public interface IMorphTarget {
 
 [GenerateReadOnly]
 public partial interface IAnimation {
-  string Name { get; set; }
+  new string Name { get; set; }
 
-  int FrameCount { get; set; }
-  float FrameRate { get; set; }
-  bool UseLoopingInterpolation { get; set; }
-  AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
+  new int FrameCount { get; set; }
+  new float FrameRate { get; set; }
+  new bool UseLoopingInterpolation { get; set; }
+  new AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
 }
 
 [GenerateReadOnly]
 public partial interface IModelAnimation : IAnimation {
-  IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks { get; }
+  new IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks { get; }
   IBoneTracks AddBoneTracks(IReadOnlyBone bone);
 
-  IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
+  new IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
   IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
 
-  IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks {
+  new IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks {
     get;
   }
 
@@ -57,16 +57,16 @@ public partial interface IModelAnimation : IAnimation {
 
 [GenerateReadOnly]
 public partial interface IAnimationData {
-  IAnimation Animation { get; }
+  new IAnimation Animation { get; }
 }
 
 [GenerateReadOnly]
 public partial interface IBoneTracks : IAnimationData {
-  IReadOnlyBone Bone { get; }
+  new IReadOnlyBone Bone { get; }
 
-  IVector3Interpolatable? Translations { get; }
-  IQuaternionInterpolatable? Rotations { get; }
-  IVector3Interpolatable? Scales { get; }
+  new IVector3Interpolatable? Translations { get; }
+  new IQuaternionInterpolatable? Rotations { get; }
+  new IVector3Interpolatable? Scales { get; }
 
   // Translation
   ISeparateVector3Keyframes<Keyframe<float>> UseSeparateTranslationKeyframes(
@@ -174,21 +174,21 @@ public enum MeshDisplayState {
 
 [GenerateReadOnly]
 public partial interface IMeshTracks {
-  IReadOnlyMesh Mesh { get; }
-  IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
+  new IReadOnlyMesh Mesh { get; }
+  new IStairStepKeyframes<MeshDisplayState> DisplayStates { get; }
 }
 
 [GenerateReadOnly]
 public partial interface ITextureTracks {
-  IReadOnlyTexture Texture { get; }
+  new IReadOnlyTexture Texture { get; }
 
-  ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Translations { get; }
+  new ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Translations { get; }
 
-  ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>? Rotations {
+  new ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>? Rotations {
     get;
   }
 
-  ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Scales { get; }
+  new ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Scales { get; }
 
   // Translation
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>

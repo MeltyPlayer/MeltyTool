@@ -29,43 +29,43 @@ public enum DiffuseFunction {
 
 [GenerateReadOnly]
 public partial interface ILighting {
-  IReadOnlyList<ILight> Lights { get; }
+  new IReadOnlyList<ILight> Lights { get; }
 
   ILight CreateLight();
 
-  IColor AmbientLightColor { get; set; }
-  float AmbientLightStrength { get; set; }
+  new IColor AmbientLightColor { get; set; }
+  new float AmbientLightStrength { get; set; }
 }
 
 [GenerateReadOnly]
 public partial interface ILight {
-  string Name { get; }
+  new string Name { get; }
   ILight SetName(string name);
 
-  bool Enabled { get; set; }
+  new bool Enabled { get; set; }
 
-  LightSourceType SourceType { get; }
+  new LightSourceType SourceType { get; }
 
-  IReadOnlyXyz? Position { get; }
+  new IReadOnlyXyz? Position { get; }
   ILight SetPosition(Vector3 position);
   ILight SetPosition(IReadOnlyXyz position);
 
-  IReadOnlyXyz? Normal { get; }
+  new IReadOnlyXyz? Normal { get; }
   ILight SetNormal(Vector3 normal);
   ILight SetNormal(IReadOnlyXyz normal);
 
-  float Strength { get; set; }
+  new float Strength { get; set; }
 
-  IColor Color { get; }
+  new IColor Color { get; }
   ILight SetColor(IColor color);
 
-  IReadOnlyXyz? CosineAttenuation { get; }
+  new IReadOnlyXyz? CosineAttenuation { get; }
   ILight SetCosineAttenuation(IReadOnlyXyz cosineAttenuation);
-  IReadOnlyXyz? DistanceAttenuation { get; }
+  new IReadOnlyXyz? DistanceAttenuation { get; }
   ILight SetDistanceAttenuation(IReadOnlyXyz distanceAttenuation);
 
-  AttenuationFunction AttenuationFunction { get; }
+  new AttenuationFunction AttenuationFunction { get; }
   ILight SetAttenuationFunction(AttenuationFunction attenuationFunction);
-  DiffuseFunction DiffuseFunction { get; }
+  new DiffuseFunction DiffuseFunction { get; }
   ILight SetDiffuseFunction(DiffuseFunction diffuseFunction);
 }

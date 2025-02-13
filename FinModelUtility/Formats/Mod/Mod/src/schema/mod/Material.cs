@@ -40,7 +40,7 @@ public partial class KeyInfoU8 : IBinaryConvertible {
   public float StartValue = 0;
   public float EndValue = 0;
 
-  public string? ToString()
+  public new string? ToString()
     => $"{this.Frame} {this.StartValue} {this.EndValue}";
 }
 
@@ -55,7 +55,7 @@ public partial class KeyInfoF32 : IBinaryConvertible {
   [Unknown]
   public float OutTangent = 0;
 
-  public string? ToString()
+  public new string? ToString()
     => $"{this.Value} {this.InTangent} {this.OutTangent}";
 }
 
@@ -68,7 +68,7 @@ public partial class KeyInfoS10 : IBinaryConvertible {
   public float StartValue = 0;
   public float EndValue = 0;
 
-  public string? ToString()
+  public new string? ToString()
     => $"{this.Frame} {this.StartValue} {this.EndValue}";
 };
 
@@ -534,7 +534,7 @@ public partial class TCR_Unk1 : IBinaryConvertible {
   [Unknown]
   public readonly KeyInfoS10 unknown4 = new();
 
-  public string? ToString()
+  public new string? ToString()
     => $"\t\t\tUNK1: {this.unknown1}\n" +
        $"\t\t\tUNK2: {this.unknown2}\n" +
        $"\t\t\tUNK3: {this.unknown3}\n" +

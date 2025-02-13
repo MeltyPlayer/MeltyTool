@@ -10,8 +10,8 @@ namespace fin.math.transform;
 [GenerateReadOnly]
 public partial interface ITransform3d
     : ITransform<Vector3, Quaternion?, Vector3?> {
-  public Matrix4x4 Matrix { get; }
-  public Vector3? EulerRadians { get; set; }
+  public new Matrix4x4 Matrix { get; }
+  public new Vector3? EulerRadians { get; set; }
 }
 
 public class Transform3d : ITransform3d {

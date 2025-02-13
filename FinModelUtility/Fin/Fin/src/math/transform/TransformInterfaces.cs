@@ -4,7 +4,7 @@ namespace fin.math.transform;
 
 [GenerateReadOnly]
 public partial interface ITransform<TTranslation, TRotation, TScale> {
-  TTranslation? Translation { get; set; }
-  TRotation? Rotation { get; set; }
-  TScale? Scale { get; set; }
+  new TTranslation? Translation { get; set; }
+  new TRotation? Rotation { get; set; }
+  new TScale? Scale { get; set; }
 }

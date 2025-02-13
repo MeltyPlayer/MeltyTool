@@ -8,7 +8,7 @@ public partial class CancellableProgressBar : UserControl {
     this.InitializeComponent();
     }
 
-  public string Text {
+  public new string Text {
     get => this.labelledProgressBar_.Text;
     set => this.labelledProgressBar_.Text = value;
   }

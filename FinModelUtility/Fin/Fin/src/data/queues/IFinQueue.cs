@@ -17,8 +17,8 @@ public partial interface IFinQueue<T> : IFinCollection<T> {
   bool TryDequeue(out T value);
 
   [Const]
-  T Peek();
+  new T Peek();
 
   [Const]
-  bool TryPeek(out T value);
+  new bool TryPeek(out T value);
 }

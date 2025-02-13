@@ -6,10 +6,10 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface IModel : IResource {
-  ISkeleton Skeleton { get; }
-  ISkin Skin { get; }
-  IMaterialManager MaterialManager { get; }
-  IAnimationManager AnimationManager { get; }
+  new ISkeleton Skeleton { get; }
+  new ISkin Skin { get; }
+  new IMaterialManager MaterialManager { get; }
+  new IAnimationManager AnimationManager { get; }
 }
 
 [GenerateReadOnly]

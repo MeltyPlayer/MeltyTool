@@ -9,10 +9,10 @@ namespace fin.io;
 
 [GenerateReadOnly]
 public partial interface IFileIdDictionary {
-  IReadOnlyTreeFile this[uint id] { get; set; }
+  new IReadOnlyTreeFile this[uint id] { get; set; }
 
   [Const]
-  void Save(IGenericFile fileIdsFile);
+  new void Save(IGenericFile fileIdsFile);
 }
 
 public partial class FileIdDictionary : IFileIdDictionary {

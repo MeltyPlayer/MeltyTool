@@ -8,16 +8,16 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface IVector2 : IXy {
-  float X { get; set; }
-  float Y { get; set; }
+  new float X { get; set; }
+  new float Y { get; set; }
 }
 
 [GenerateReadOnly]
 public partial interface IVector4 {
-  float X { get; set; }
-  float Y { get; set; }
-  float Z { get; set; }
-  float W { get; set; }
+  new float X { get; set; }
+  new float Y { get; set; }
+  new float Z { get; set; }
+  new float W { get; set; }
 }
 
 public interface IRotation {

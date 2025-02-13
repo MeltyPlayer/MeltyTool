@@ -4,7 +4,7 @@ namespace fin.math.xyz;
 
 [GenerateReadOnly]
 public partial interface IXyz {
-  float X { get; set; }
-  float Y { get; set; }
-  float Z { get; set; }
+  new float X { get; set; }
+  new float Y { get; set; }
+  new float Z { get; set; }
 }

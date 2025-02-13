@@ -9,10 +9,10 @@ namespace fin.data.dictionaries;
 [GenerateReadOnly]
 public partial interface ISetDictionary<TKey, TValue>
     : IFinCollection<(TKey Key, ISet<TValue> Value)> {
-  ISet<TValue> this[TKey key] { get; }
+  new ISet<TValue> this[TKey key] { get; }
 
   [Const]
-  bool TryGetSet(TKey key, out ISet<TValue>? list);
+  new bool TryGetSet(TKey key, out ISet<TValue>? list);
 
   void Add(TKey key, TValue value);
 }

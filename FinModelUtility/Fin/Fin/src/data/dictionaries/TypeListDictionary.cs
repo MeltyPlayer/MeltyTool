@@ -9,10 +9,10 @@ namespace fin.data.dictionaries;
 [GenerateReadOnly]
 public partial interface ITypeListDictionary<TValue> {
   [Const]
-  bool HasList<TKey>() where TKey : TValue;
+  new bool HasList<TKey>() where TKey : TValue;
 
   [Const]
-  IEnumerable<TKey> GetValues<TKey>() where TKey : TValue;
+  new IEnumerable<TKey> GetValues<TKey>() where TKey : TValue;
 
   void Add(Type key, TValue value);
 }

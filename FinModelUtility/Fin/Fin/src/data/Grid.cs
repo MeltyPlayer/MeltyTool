@@ -11,9 +11,9 @@ namespace fin.data;
 
 [GenerateReadOnly]
 public partial interface IGrid<T> : IEnumerable<T> {
-  int Width { get; }
-  int Height { get; }
-  T this[int x, int y] { get; set; }
+  new int Width { get; }
+  new int Height { get; }
+  new T this[int x, int y] { get; set; }
 }
 
 public class Grid<T> : IGrid<T> {

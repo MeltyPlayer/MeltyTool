@@ -7,16 +7,16 @@ namespace fin.data.dictionaries;
 [GenerateReadOnly]
 public partial interface IFinDictionary<TKey, TValue>
     : IFinCollection<(TKey Key, TValue Value)> {
-  IEnumerable<TKey> Keys { get; }
-  IEnumerable<TValue> Values { get; }
+  new IEnumerable<TKey> Keys { get; }
+  new IEnumerable<TValue> Values { get; }
 
   // Have to specify only contains key because "out" method parameters
   // aren't allowed to be covariant:
   // https://github.com/dotnet/csharplang/discussions/5623
   [Const]
-  bool ContainsKey(TKey key);
+  new bool ContainsKey(TKey key);
 
-  TValue this[TKey key] { get; set; }
+  new TValue this[TKey key] { get; set; }
   bool Remove(TKey key);
 }
 

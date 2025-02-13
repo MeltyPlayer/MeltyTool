@@ -8,15 +8,15 @@ namespace fin.data.dictionaries;
 [GenerateReadOnly]
 public partial interface IListDictionary<TKey, TValue> {
   [Const]
-  bool HasList(TKey key);
+  new bool HasList(TKey key);
 
-  IList<TValue> this[TKey key] { get; }
+  new IList<TValue> this[TKey key] { get; }
 
   void ClearList(TKey key);
   void Add(TKey key, TValue value);
 
-  IEnumerable<TKey> Keys { get; }
-  IEnumerable<TValue> Values { get; }
+  new IEnumerable<TKey> Keys { get; }
+  new IEnumerable<TValue> Values { get; }
 }
 
 public static class ListDictionaryExtensions {
