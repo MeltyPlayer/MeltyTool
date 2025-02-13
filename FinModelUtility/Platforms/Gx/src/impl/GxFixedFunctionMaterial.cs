@@ -261,6 +261,7 @@ public partial class GxFixedFunctionMaterial {
                       equations.CreateScalarConstant(
                           ambientColor.A / 255.0)),
                   GxColorSrc.Vertex => vertexAlpha,
+                  _                 => throw new ArgumentOutOfRangeException()
               };
 
           // TODO: Factor in how colors are merged in channel control

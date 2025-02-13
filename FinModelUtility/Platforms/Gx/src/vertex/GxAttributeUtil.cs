@@ -68,6 +68,7 @@ public static class GxAttributeUtil {
         GxAxisComponentType.U16 => br.ReadUInt16(),
         GxAxisComponentType.S16 => br.ReadInt16(),
         GxAxisComponentType.F32 => br.ReadSingle(),
+        _                       => throw new ArgumentOutOfRangeException(nameof(axisComponentType), axisComponentType, null)
     };
 
   public static IColor ReadColor(IBinaryReader br,

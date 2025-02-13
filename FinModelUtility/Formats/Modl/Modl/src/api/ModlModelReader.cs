@@ -43,6 +43,7 @@ public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
     var bwModel = gameVersion switch {
         GameVersion.BW1 => (IModl) br.ReadNew<Bw1Modl>(),
         GameVersion.BW2 => br.ReadNew<Bw2Modl>(),
+        _               => throw new ArgumentOutOfRangeException(nameof(gameVersion), gameVersion, null)
     };
 
     var files = modlFile.Yield()

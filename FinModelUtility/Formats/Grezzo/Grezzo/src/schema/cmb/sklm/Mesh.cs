@@ -1,4 +1,6 @@
-﻿using fin.schema;
+﻿using System;
+
+using fin.schema;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -17,6 +19,7 @@ public partial class Mesh : IBinaryConvertible {
       Version.MAJORAS_MASK_3D    => 0x8,
       Version.EVER_OASIS         => 0xC,
       Version.LUIGIS_MANSION_3D  => 0x54,
+      _                          => throw new ArgumentOutOfRangeException()
   };
 
   [Unknown]

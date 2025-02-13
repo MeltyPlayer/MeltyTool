@@ -69,6 +69,7 @@ namespace mod.schema.mod {
           ChunkId.COLLISION_PRISM => "Collision Prism",
           ChunkId.COLLISION_GRID  => "Collision Grid",
           ChunkId.END_OF_FILE     => "End Of File",
+          _                       => throw new ArgumentOutOfRangeException(nameof(id), id, null)
       };
   }
 

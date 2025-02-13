@@ -110,7 +110,6 @@ public class SuperMarioSunshineFileBundleGatherer
       foreach (var objectSubdir in subdir.GetExistingSubdirs()) {
         var objName = objectSubdir.Name;
 
-        IEnumerable<IAnnotatedFileBundle<BmdModelFileBundle>>? bundles = null;
         if (objName.StartsWith("montem") && objName.IndexOf("common") == -1) {
           this.ExtractFromSeparateDirectories_(
               organizer,

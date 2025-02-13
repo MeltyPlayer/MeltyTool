@@ -116,6 +116,7 @@ public class CmbFixedFunctionMaterial {
                                   .LinearMipmapLinear =>
                               FinTextureMinFilter
                                   .LINEAR_MIPMAP_LINEAR,
+                          _ => throw new ArgumentOutOfRangeException()
                       };
                   finTexture.MagFilter =
                       texMapper.magFilter switch {
@@ -123,6 +124,7 @@ public class CmbFixedFunctionMaterial {
                               FinTextureMagFilter.NEAR,
                           TextureMagFilter.Linear =>
                               FinTextureMagFilter.LINEAR,
+                          _ => throw new ArgumentOutOfRangeException()
                       };
                   finTexture.LodBias = texMapper.lodBias;
                   finTexture.MinLod = texMapper.minLodBias;
@@ -297,6 +299,7 @@ public class CmbFixedFunctionMaterial {
         TextureWrapMode.Repeat        => WrapMode.REPEAT,
         TextureWrapMode.ClampToEdge   => WrapMode.CLAMP,
         TextureWrapMode.Mirror        => WrapMode.MIRROR_REPEAT,
+        _                             => throw new ArgumentOutOfRangeException(nameof(cmbMode), cmbMode, null)
     };
 
   public FinBlendEquation CmbBlendEquationToFin(

@@ -105,6 +105,7 @@ public class CsabTrack : IBinaryDeserializable {
                 => this.ReadKeyframeHermiteFloat_(br, startFrame),
             AnimationTrackType.HERMITE when this.AreRotationsShort
                 => this.ReadKeyframeHermiteShort_(br, startFrame),
+            _ => throw new ArgumentOutOfRangeException()
         };
       }
 

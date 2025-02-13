@@ -146,9 +146,6 @@ public class GlTexture : IFinDisposable {
     var imageWidth = image.Width;
     var imageHeight = image.Height;
 
-    PixelInternalFormat pixelInternalFormat;
-    PixelFormat pixelFormat;
-
     switch (image) {
       case Rgba32Image rgba32Image: {
         using var fastLock = rgba32Image.UnsafeLock();

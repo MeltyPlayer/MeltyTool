@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace fin.language.equations.fixedFunction;
 
 public partial class FixedFunctionEquations<TIdentifier>
-    : IFixedFunctionEquations<TIdentifier> {
+    : IFixedFunctionEquations<TIdentifier> where TIdentifier : notnull {
   private readonly HashSet<IValue> valueDependencies_ = new();
   private readonly HashSet<TIdentifier> identifierDependencies_ = new();
 
