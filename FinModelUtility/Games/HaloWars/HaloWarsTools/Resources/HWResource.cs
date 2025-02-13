@@ -63,11 +63,6 @@ public abstract class HWResource {
   public string AbsolutePath => this.Context.GetAbsoluteScratchPath(this.RelativePath);
   public HWResourceType Type;
 
-  public override string ToString() {
-    return
-        $"{Path.ChangeExtension(this.RelativePath, null)} [{this.Type.ToString().ToUpperInvariant()}]";
-  }
-
   protected static HWResource GetOrCreateFromFile(HWContext? context,
                                                   string filename,
                                                   HWResourceType

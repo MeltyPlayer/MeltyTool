@@ -19,7 +19,7 @@ public class HWVisResource : HWXmlResource {
   public SceneImpl Scene { get; private set; }
   public HWModel[] Models { get; private set; }
 
-  public static new HWVisResource
+  public static HWVisResource
       FromFile(HWContext context, string filename) {
     return (HWVisResource) GetOrCreateFromFile(
         context, filename, HWResourceType.Vis);

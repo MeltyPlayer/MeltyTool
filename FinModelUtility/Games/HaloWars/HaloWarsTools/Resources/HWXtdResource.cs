@@ -21,7 +21,7 @@ public class HWXtdResource : HWBinaryResource {
   public IImage AmbientOcclusionTexture { get; private set; }
   public IImage OpacityTexture { get; private set; }
 
-  public static new HWXtdResource FromFile(HWContext context, string filename)
+  public static HWXtdResource FromFile(HWContext context, string filename)
     => GetOrCreateFromFile(context, filename, HWResourceType.Xtd) as
         HWXtdResource;
 
@@ -62,8 +62,6 @@ public class HWXtdResource : HWBinaryResource {
   }
 
   private IModel ImportMesh(byte[] bytes) {
-    MeshNormalExportMode shadingMode = MeshNormalExportMode.Unchanged;
-
     HWBinaryResourceChunk headerChunk = this.GetFirstChunkOfType(HWBinaryResourceChunkType.XTD_XTDHeader);
     float tileScale =
         BinaryUtils.ReadFloatBigEndian(bytes,

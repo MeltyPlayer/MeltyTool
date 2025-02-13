@@ -7,7 +7,7 @@ namespace HaloWarsTools;
 public class HWXttResource : HWBinaryResource {
   public IImage AlbedoTexture { get; private set; }
 
-  public static new HWXttResource
+  public static HWXttResource
       FromFile(HWContext context, string filename)
     => GetOrCreateFromFile(context, filename, HWResourceType.Xtt) as
         HWXttResource;

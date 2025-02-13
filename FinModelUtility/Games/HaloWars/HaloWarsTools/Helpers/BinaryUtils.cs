@@ -9,17 +9,11 @@ public static class BinaryUtils {
   public static byte ReadByteLittleEndian(byte[] buffer, int startIndex) =>
       ReadByte(buffer, startIndex, BinaryEndianness.LittleEndian);
 
-  public static byte ReadByteBigEndian(byte[] buffer, int startIndex) =>
-      ReadByte(buffer, startIndex, BinaryEndianness.BigEndian);
-
   public static byte ReadByte(byte[] buffer, int startIndex, BinaryEndianness endianness) {
     // I don't think this actually does anything since BinaryPrimitives.ReverseEndianness says it does nothing for bytes?
     byte value = buffer[startIndex];
     return IsAlreadyDesiredEndianness(endianness) ? value : BinaryPrimitives.ReverseEndianness(value);
   }
-
-  public static short ReadInt16LittleEndian(byte[] buffer, int startIndex) =>
-      ReadInt16(buffer, startIndex, BinaryEndianness.LittleEndian);
 
   public static short ReadInt16BigEndian(byte[] buffer, int startIndex) =>
       ReadInt16(buffer, startIndex, BinaryEndianness.BigEndian);
@@ -27,28 +21,6 @@ public static class BinaryUtils {
   public static short ReadInt16(byte[] buffer, int startIndex, BinaryEndianness endianness) {
     short value = BitConverter.ToInt16(buffer, startIndex);
     return IsAlreadyDesiredEndianness(endianness) ? value : BinaryPrimitives.ReverseEndianness(value);
-  }
-
-  public static float ReadFloat16(byte[] buffer, int startIndex) {
-    byte HI = buffer[startIndex + 1];
-    byte LO = buffer[startIndex];
-    // Program assumes ints are at least 16 bits
-    int fullFloat = ((HI << 8) | LO);
-    int exponent = (HI & 0b01111110) >> 1; // minor optimisation can be placed here
-    int mant = fullFloat & 0x01FF;
-
-    // Special values
-    if (exponent == 0b00111111) // If using constants, shift right by 1
-    {
-      // Check for non or inf
-      return mant != 0 ? float.NaN : ((HI & 0x80) == 0 ? float.PositiveInfinity : float.NegativeInfinity);
-    } else // normal/denormal values: pad numbers
-    {
-      exponent = exponent - 31 + 127;
-      mant = mant << 14;
-      int finalFloat = (HI & 0x80) << 24 | (exponent << 23) | mant;
-      return BitConverter.ToSingle(BitConverter.GetBytes(finalFloat), 0);
-    }
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -68,9 +40,6 @@ public static class BinaryUtils {
   public static long ReadInt64LittleEndian(byte[] buffer, int startIndex) =>
       ReadInt64(buffer, startIndex, BinaryEndianness.LittleEndian);
 
-  public static long ReadInt64BigEndian(byte[] buffer, int startIndex) =>
-      ReadInt64(buffer, startIndex, BinaryEndianness.BigEndian);
-
   public static long ReadInt64(byte[] buffer, int startIndex, BinaryEndianness endianness) {
     long value = BitConverter.ToInt64(buffer, startIndex);
     return IsAlreadyDesiredEndianness(endianness) ? value : BinaryPrimitives.ReverseEndianness(value);
@@ -87,10 +56,6 @@ public static class BinaryUtils {
     return IsAlreadyDesiredEndianness(endianness) ? value : BinaryPrimitives.ReverseEndianness(value);
   }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static uint ReadUInt32LittleEndian(byte[] buffer, int startIndex) =>
-      ReadUInt32(buffer, startIndex, BinaryEndianness.LittleEndian);
-
   public static uint ReadUInt32BigEndian(byte[] buffer, int startIndex) =>
       ReadUInt32(buffer, startIndex, BinaryEndianness.BigEndian);
 
@@ -99,9 +64,6 @@ public static class BinaryUtils {
     uint value = BitConverter.ToUInt32(buffer, startIndex);
     return IsAlreadyDesiredEndianness(endianness) ? value : BinaryPrimitives.ReverseEndianness(value);
   }
-
-  public static ulong ReadUInt64LittleEndian(byte[] buffer, int startIndex) =>
-      ReadUInt64(buffer, startIndex, BinaryEndianness.LittleEndian);
 
   public static ulong ReadUInt64BigEndian(byte[] buffer, int startIndex) =>
       ReadUInt64(buffer, startIndex, BinaryEndianness.BigEndian);
@@ -123,22 +85,6 @@ public static class BinaryUtils {
                                               ? value
                                               : BinaryPrimitives.ReverseEndianness(value));
   }
-
-  public static double ReadDoubleLittleEndian(byte[] buffer, int startIndex) =>
-      ReadDouble(buffer, startIndex, BinaryEndianness.LittleEndian);
-
-  public static double ReadDoubleBigEndian(byte[] buffer, int startIndex) =>
-      ReadDouble(buffer, startIndex, BinaryEndianness.BigEndian);
-
-  public static double ReadDouble(byte[] buffer, int startIndex, BinaryEndianness endianness) {
-    long value = BitConverter.ToInt64(buffer, startIndex);
-    return BitConverter.Int64BitsToDouble(IsAlreadyDesiredEndianness(endianness)
-                                              ? value
-                                              : BinaryPrimitives.ReverseEndianness(value));
-  }
-
-  public static Vector3 ReadVector3LittleEndian(byte[] buffer, int startIndex) =>
-      ReadVector3(buffer, startIndex, BinaryEndianness.LittleEndian);
 
   public static Vector3 ReadVector3BigEndian(byte[] buffer, int startIndex) =>
       ReadVector3(buffer, startIndex, BinaryEndianness.BigEndian);
