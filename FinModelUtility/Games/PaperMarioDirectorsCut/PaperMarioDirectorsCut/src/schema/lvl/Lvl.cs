@@ -120,5 +120,6 @@ public class Lvl : ITextDeserializable {
       "1"     => true,
       "false" => false,
       "true"  => true,
+      _       => throw new ArgumentOutOfRangeException(nameof(text), text, null)
   };
 }

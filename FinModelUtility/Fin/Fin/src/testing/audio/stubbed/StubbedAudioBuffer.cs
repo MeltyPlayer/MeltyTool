@@ -65,7 +65,8 @@ public partial class StubbedAudioManager {
       => this.channels_[channelType switch {
           AudioChannelType.MONO         => 0,
           AudioChannelType.STEREO_LEFT  => 0,
-          AudioChannelType.STEREO_RIGHT => 1
+          AudioChannelType.STEREO_RIGHT => 1,
+          _                             => throw new ArgumentOutOfRangeException(nameof(channelType), channelType, null)
       }][sampleOffset];
 
     public IFileBundle FileBundle => fileBundle;

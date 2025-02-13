@@ -108,6 +108,7 @@ public static class TObjFlagsExtensions {
         TObjFlags.COLORMAP_ADD        => ColorMap.ADD,
         TObjFlags.COLORMAP_SUB        => ColorMap.SUB,
         0                             => ColorMap.NONE,
+        _                             => throw new ArgumentOutOfRangeException()
     };
   }
 
@@ -123,6 +124,7 @@ public static class TObjFlagsExtensions {
         TObjFlags.ALPHAMAP_ADD        => AlphaMap.ADD,
         TObjFlags.ALPHAMAP_SUB        => AlphaMap.SUB,
         0                             => AlphaMap.NONE,
+        _                             => throw new ArgumentOutOfRangeException()
     };
   }
 }

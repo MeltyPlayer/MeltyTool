@@ -190,6 +190,7 @@ public partial class GxFixedFunctionMaterial {
                           ambientColor.G / 255.0,
                           ambientColor.B / 255.0)),
                   GxColorSrc.Vertex => vertexColor,
+                  _                 => throw new ArgumentOutOfRangeException()
               };
 
           // TODO: Factor in how colors are merged in channel control
@@ -220,12 +221,14 @@ public partial class GxFixedFunctionMaterial {
             colorIndex switch {
                 0 => GxColorChannel.GX_COLOR0A0,
                 1 => GxColorChannel.GX_COLOR1A1,
+                _ => throw new ArgumentOutOfRangeException()
             },
             color);
         valueManager.UpdateColorChannelColor(
             colorIndex switch {
                 0 => GxColorChannel.GX_COLOR0,
                 1 => GxColorChannel.GX_COLOR1,
+                _ => throw new ArgumentOutOfRangeException()
             },
             color);
       } else {
@@ -289,6 +292,7 @@ public partial class GxFixedFunctionMaterial {
             alphaIndex switch {
                 0 => GxColorChannel.GX_COLOR0A0,
                 1 => GxColorChannel.GX_COLOR1A1,
+                _ => throw new ArgumentOutOfRangeException()
             },
             alpha
         );
@@ -296,6 +300,7 @@ public partial class GxFixedFunctionMaterial {
             alphaIndex switch {
                 0 => GxColorChannel.GX_ALPHA0,
                 1 => GxColorChannel.GX_ALPHA1,
+                _ => throw new ArgumentOutOfRangeException()
             },
             alpha
         );

@@ -18,22 +18,27 @@ public static class GxAttributeUtil {
         GxVertexAttribute.Position => componentCountType switch {
             GxComponentCountType.POS_XY  => 2,
             GxComponentCountType.POS_XYZ => 3,
+            _                            => throw new ArgumentOutOfRangeException(nameof(componentCountType), componentCountType, null)
         },
         GxVertexAttribute.Normal => componentCountType switch {
             GxComponentCountType.NRM_XYZ => 3,
+            _                            => throw new ArgumentOutOfRangeException(nameof(componentCountType), componentCountType, null)
         },
         GxVertexAttribute.NBT => componentCountType switch {
             GxComponentCountType.NRM_NBT => 3,
+            _                            => throw new ArgumentOutOfRangeException(nameof(componentCountType), componentCountType, null)
         },
         GxVertexAttribute.Color0 or GxVertexAttribute.Color1
             => componentCountType switch {
                 GxComponentCountType.CLR_RGB  => 3,
                 GxComponentCountType.CLR_RGBA => 4,
+                _                             => throw new ArgumentOutOfRangeException(nameof(componentCountType), componentCountType, null)
             },
         >= GxVertexAttribute.Tex0Coord and <= GxVertexAttribute.Tex7Coord
             => componentCountType switch {
                 GxComponentCountType.TEX_S  => 1,
                 GxComponentCountType.TEX_ST => 2,
+                _                           => throw new ArgumentOutOfRangeException(nameof(componentCountType), componentCountType, null)
             },
     };
 
@@ -44,6 +49,7 @@ public static class GxAttributeUtil {
         GxAxisComponentType.U16 => 2,
         GxAxisComponentType.S16 => 2,
         GxAxisComponentType.F32 => 4,
+        _                       => throw new ArgumentOutOfRangeException(nameof(axisComponentType), axisComponentType, null)
     };
 
   public static float GetScale(byte decimalPoint)

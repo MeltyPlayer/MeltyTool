@@ -69,6 +69,7 @@ public static class GlTransform {
         TransformMatrixMode.MODEL      => modelMatrix_,
         TransformMatrixMode.VIEW       => viewMatrix_,
         TransformMatrixMode.PROJECTION => projectionMatrix_,
+        _                              => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
     };
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

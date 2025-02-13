@@ -329,6 +329,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           Assimp.PrimitiveType.Point    => finMesh.AddPoints(faceVertices),
           Assimp.PrimitiveType.Line     => finMesh.AddLines(faceVertices),
           Assimp.PrimitiveType.Triangle => finMesh.AddTriangles(faceVertices),
+          _                             => throw new ArgumentOutOfRangeException()
       };
       finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE)
                   .SetMaterial(lazyFinMaterials[assMesh.MaterialIndex]);
@@ -342,5 +343,6 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
         TextureWrapMode.Wrap   => WrapMode.REPEAT,
         TextureWrapMode.Clamp  => WrapMode.CLAMP,
         TextureWrapMode.Mirror => WrapMode.MIRROR_REPEAT,
+        _                      => throw new ArgumentOutOfRangeException(nameof(assWrapMode), assWrapMode, null)
     };
 }

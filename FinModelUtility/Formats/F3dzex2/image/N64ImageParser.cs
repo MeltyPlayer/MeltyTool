@@ -195,6 +195,7 @@ public class N64ImageParser(IN64Hardware n64Hardware) {
         return new IndexedImage8(bitsPerTexel switch {
                                      BitsPerTexel._4BPT => PixelFormat.P4,
                                      BitsPerTexel._8BPT => PixelFormat.P8,
+                                     _                  => throw new ArgumentOutOfRangeException(nameof(bitsPerTexel), bitsPerTexel, null)
                                  },
                                  indexedImage,
                                  palette);

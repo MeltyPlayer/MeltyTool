@@ -14,6 +14,7 @@ public partial class ContentBlock : IBlock {
               ContentType.Header         => new FileInfo(),
               ContentType.Data           => new UncompressedData(),
               ContentType.CompressedData => new RefPackCompressedData(),
+              _                          => throw new ArgumentOutOfRangeException(nameof(magic), magic, null)
           });
 
   [Skip]

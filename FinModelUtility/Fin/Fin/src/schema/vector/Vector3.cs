@@ -18,6 +18,7 @@ public abstract class BVector3<T> {
         0 => this.X,
         1 => this.Y,
         2 => this.Z,
+        _ => throw new ArgumentOutOfRangeException(nameof(index), index, null)
     };
     set {
       switch (index) {

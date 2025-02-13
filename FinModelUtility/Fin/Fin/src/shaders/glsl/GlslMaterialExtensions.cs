@@ -1,4 +1,6 @@
-﻿using fin.model;
+﻿using System;
+
+using fin.model;
 using fin.shaders.glsl.source;
 using fin.util.asserts;
 
@@ -42,6 +44,7 @@ public static class GlslMaterialExtensions {
         FinShaderType.NULL => new NullShaderSourceGlsl(model,
           modelRequirements,
           shaderRequirements),
+        _ => throw new ArgumentOutOfRangeException()
     };
   }
 }

@@ -60,6 +60,7 @@ public partial class AlAudioManager {
               this.CreatePlayback(aotAudioDataSource),
           IJitAudioDataSource<short> jitAudioDataSource =>
               this.CreatePlayback(jitAudioDataSource),
+          _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
       };
 
     public IAotAudioPlayback<short> CreatePlayback(

@@ -153,6 +153,8 @@ public class OpcodeParser : IOpcodeParser {
 
         // 0x0d
         OpcodeType.UNKNOWN_0x0d => 2,
+
+        _                       => throw new ArgumentOutOfRangeException(nameof(opcodeType), opcodeType, null)
     };
     paramsList = new byte[paramsLength];
   }

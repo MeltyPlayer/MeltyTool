@@ -203,10 +203,12 @@ public class CmbCombinerGenerator {
       var newPreviousColorBuffer = cmbCombiner.bufferColor switch {
           TexBufferSource.PreviousBuffer => this.previousColorBuffer_,
           TexBufferSource.Previous       => this.previousColor_,
+          _                              => throw new ArgumentOutOfRangeException()
       };
       var newPreviousAlphaBuffer = cmbCombiner.bufferAlpha switch {
           TexBufferSource.PreviousBuffer => this.previousAlphaBuffer_,
           TexBufferSource.Previous       => this.previousAlpha_,
+          _                              => throw new ArgumentOutOfRangeException()
       };
 
       this.previousColor_ = newPreviousColor;
@@ -269,6 +271,7 @@ public class CmbCombinerGenerator {
         TexCombinerSource.FragmentPrimaryColor => this
             .ambientAndDiffuseLightColor_,
         TexCombinerSource.FragmentSecondaryColor => this.specularLightColor_,
+        _                                        => throw new ArgumentOutOfRangeException(nameof(combinerSource), combinerSource, null)
     };
 
   private IScalarValue? GetScalarValue_(

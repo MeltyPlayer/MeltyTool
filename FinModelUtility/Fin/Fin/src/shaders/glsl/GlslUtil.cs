@@ -101,6 +101,7 @@ public static class GlslUtil {
           2 => "ivec2",
           3 => "ivec3",
           4 => "ivec4",
+          _ => throw new ArgumentOutOfRangeException()
       };
       vertexSrc.AppendLine(
           $"layout(location = {location++}) in {boneIdType} in_BoneIds;");
@@ -110,6 +111,7 @@ public static class GlslUtil {
           2 => "vec2",
           3 => "vec3",
           4 => "vec4",
+          _ => throw new ArgumentOutOfRangeException()
       };
       vertexSrc.AppendLine(
           $"layout(location = {location++}) in {boneWeightsType} in_BoneWeights;");

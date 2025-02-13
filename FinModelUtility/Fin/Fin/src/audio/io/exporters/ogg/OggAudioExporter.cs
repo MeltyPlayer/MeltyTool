@@ -26,8 +26,9 @@ public class OggAudioExporter : IAudioExporter {
     using var outputData = outputFile.OpenWrite();
 
     var channelCount = audioBuffer.AudioChannelsType switch {
-        AudioChannelsType.MONO   => 1,
-        AudioChannelsType.STEREO => 2,
+        AudioChannelsType.MONO      => 1,
+        AudioChannelsType.STEREO    => 2,
+        _                           => throw new ArgumentOutOfRangeException()
     };
 
     var hash = new FluentHash();
@@ -40,8 +41,10 @@ public class OggAudioExporter : IAudioExporter {
           1 => AudioChannelType.MONO,
           2 => c switch {
               0 => AudioChannelType.STEREO_LEFT,
-              1 => AudioChannelType.STEREO_RIGHT
-          }
+              1 => AudioChannelType.STEREO_RIGHT,
+              _ => throw new ArgumentOutOfRangeException()
+          },
+          _ => throw new ArgumentOutOfRangeException()
       };
 
       for (var i = 0; i < lengthInSamples; ++i) {

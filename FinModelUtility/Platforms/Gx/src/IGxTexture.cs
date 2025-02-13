@@ -25,6 +25,7 @@ public static class GxTextureFilterExtensions {
     => gxMagFilter switch {
         GX_MAG_TEXTURE_FILTER.GX_NEAR   => TextureMagFilter.NEAR,
         GX_MAG_TEXTURE_FILTER.GX_LINEAR => TextureMagFilter.LINEAR,
+        _                               => throw new ArgumentOutOfRangeException(nameof(gxMagFilter), gxMagFilter, null)
     };
 
   public static TextureMinFilter ToFinMinFilter(

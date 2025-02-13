@@ -949,6 +949,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         ColorSwizzle.R => 'r',
         ColorSwizzle.G => 'g',
         ColorSwizzle.B => 'b',
+        _              => throw new ArgumentOutOfRangeException()
     });
   }
 

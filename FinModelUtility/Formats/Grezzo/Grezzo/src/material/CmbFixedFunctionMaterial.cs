@@ -285,6 +285,7 @@ public class CmbFixedFunctionMaterial {
           CullMode.Front        => CullingMode.SHOW_BACK_ONLY,
           CullMode.Back         => CullingMode.SHOW_FRONT_ONLY,
           CullMode.Never        => CullingMode.SHOW_BOTH,
+          _                     => throw new ArgumentOutOfRangeException()
       };
     }
 
