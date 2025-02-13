@@ -389,6 +389,7 @@ public class CmbCombinerGenerator {
           TexCombineScale.Four => fixedFunctionOps.MultiplyWithConstant(
               combinedValue,
               4),
+          _ => throw new ArgumentOutOfRangeException(nameof(combineScale), combineScale, null)
       };
     }
 

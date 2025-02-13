@@ -319,7 +319,7 @@ public static partial class FileHierarchy {
           string pathWithoutExtension,
           out IFileHierarchyFile outFile,
           params string[] fileTypes) {
-        outFile = default;
+        outFile = null!;
         var subdirs = pathWithoutExtension.Split('/', '\\');
 
         IFileHierarchyDirectory parentDir;
@@ -338,7 +338,7 @@ public static partial class FileHierarchy {
                          file => file.NameWithoutExtension.SequenceEqual(
                                      subdirs.Last()) &&
                                  fileTypes.Contains(file.FileType));
-        outFile = match;
+        outFile = match!;
         return match != null;
       }
 

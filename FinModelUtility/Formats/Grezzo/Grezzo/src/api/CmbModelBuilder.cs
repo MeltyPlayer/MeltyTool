@@ -343,7 +343,7 @@ public class CmbModelBuilder {
       if (namesAndShpas != null) {
         foreach (var (shpaName, shpa) in namesAndShpas) {
           var shpaIndexToPosi =
-              shpa?.Posi.Data.Values
+              shpa.Posi.Data.Values
                   .Select((posi, i) => (shpa.IdxsSection.Data.Indices[i], posi))
                   .ToDictionary(indexAndPosi => indexAndPosi.Item1,
                                 indexAndPosi => indexAndPosi.posi);

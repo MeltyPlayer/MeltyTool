@@ -120,6 +120,7 @@ public class GlTexture : IFinDisposable {
                                              .Nearest,
               TextureMagFilter.LINEAR => OpenTK.Graphics.OpenGL
                                                .TextureMagFilter.Linear,
+              _ => throw new ArgumentOutOfRangeException()
           }));
       GL.TexParameter(target,
                       TextureParameterName.TextureLodBias,

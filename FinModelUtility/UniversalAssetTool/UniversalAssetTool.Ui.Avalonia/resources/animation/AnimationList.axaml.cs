@@ -72,6 +72,7 @@ namespace uni.ui.avalonia.resources.animation {
             > 1 => MaterialIconKind.AnimationOutline,
             1   => MaterialIconKind.Numeric1BoxOutline,
             0   => MaterialIconKind.Numeric0BoxOutline,
+            _   => throw new ArgumentOutOfRangeException()
         };
       }
     }

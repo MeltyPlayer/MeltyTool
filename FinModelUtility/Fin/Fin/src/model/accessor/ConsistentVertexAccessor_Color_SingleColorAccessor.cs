@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
 using fin.color;
+using fin.util.asserts;
 
 namespace fin.model.accessor;
 
@@ -10,7 +11,7 @@ public partial class ConsistentVertexAccessor {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Target(IReadOnlyVertex vertex) {
-      this.colorVertex_ = vertex as IReadOnlySingleColorVertex;
+      this.colorVertex_ = vertex.AssertAsA<IReadOnlySingleColorVertex>();
     }
 
     public int ColorCount => this.GetColor() != null ? 1 : 0;

@@ -2,7 +2,7 @@
 
 namespace fin.ui.rendering {
   public static class SelectedTextureService {
-    public static event Action<(IReadOnlyModel, IReadOnlyTexture)?>
+    public static event Action<(IReadOnlyModel, IReadOnlyTexture)?>?
         OnTextureSelected;
 
     public static void SelectTexture(

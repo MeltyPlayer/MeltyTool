@@ -902,6 +902,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
                 GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME,
                 texture,
                 this.animations_),
+        _             => throw new ArgumentOutOfRangeException()
     };
   }
 

@@ -17,13 +17,13 @@ public class ConvertOptions {
           HelpText = "Input files to convert.",
           Separator = ',',
           Min = 1)]
-  public IEnumerable<string> Inputs { get; set; }
+  public required IEnumerable<string> Inputs { get; set; }
 
   [Option('o',
           "output",
           Required = true,
           HelpText = "Output file to write.")]
-  public string Output { get; set; }
+  public required string Output { get; set; }
 
   [Option('f',
           "framerate",

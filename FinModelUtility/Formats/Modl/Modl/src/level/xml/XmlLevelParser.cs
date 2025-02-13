@@ -81,6 +81,7 @@ public class XmlLevelParser {
         "sVector4"   => XmlLevelAttributeType.VECTOR_4,
         "sU8Color"   => XmlLevelAttributeType.U8_COLOR,
         "sMatrix4x4" => XmlLevelAttributeType.MATRIX_4X4,
+        _            => throw new ArgumentOutOfRangeException(nameof(attributeType), attributeType, null)
     };
 
   private XmlLevelPointer ParsePointer_(XmlNode pointerNode) {

@@ -24,7 +24,7 @@ public static class InterpolatableExtensions {
       return true;
     }
 
-    value = default;
+    value = default!;
     return false;
   }
 }

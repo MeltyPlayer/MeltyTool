@@ -24,7 +24,7 @@ public static class ModelService {
         };
   }
 
-  public static event Action<IFileTreeLeafNode?, IModel> OnModelOpened;
+  public static event Action<IFileTreeLeafNode?, IModel>? OnModelOpened;
 
   public static void OpenModel(IFileTreeLeafNode? fileTreeLeafNode,
                                IModel model)

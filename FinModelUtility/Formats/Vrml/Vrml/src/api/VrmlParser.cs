@@ -510,7 +510,7 @@ public partial class VrmlParser {
 
     return new IsbPictureNode {
         Center = center,
-        Frames = frames,
+        Frames = frames.AssertNonnull(),
         Rotation = rotation,
         Scale = scale,
         ScaleOrientation = scaleOrientation,
@@ -585,8 +585,8 @@ public partial class VrmlParser {
 
     LinkedList<INode> children = new();
 
-    ICoordinateNode? currentCoord = default;
-    IAppearanceNode? currentAppearance = default;
+    ICoordinateNode? currentCoord = null;
+    IAppearanceNode? currentAppearance = null;
     foreach (var child in rawChildren) {
       switch (child) {
         case ICoordinateNode coordNode: {
@@ -619,8 +619,8 @@ public partial class VrmlParser {
   private static IShapeNode ReadShapeNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
-    IAppearanceNode appearanceNode = default;
-    IGeometryNode geometryNode = default;
+    IAppearanceNode appearanceNode = null!;
+    IGeometryNode geometryNode = null!;
 
     ReadFields_(
         tr,
@@ -640,8 +640,8 @@ public partial class VrmlParser {
         });
 
     return new ShapeNode {
-        Appearance = appearanceNode,
-        Geometry = geometryNode
+        Appearance = appearanceNode.AssertNonnull(),
+        Geometry = geometryNode.AssertNonnull()
     };
   }
 

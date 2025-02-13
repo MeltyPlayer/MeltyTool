@@ -158,12 +158,10 @@ public class OutModelImporter : IModelImporter<OutModelFileBundle> {
 
           var finMaterial =
               finModel.MaterialManager.AddFixedFunctionMaterial();
-          finMaterial.Name = texture2 == null
-              ? texture1.Name
-              : $"{texture1.Name}/{texture2.Name}";
+          finMaterial.Name = $"{texture1.Name}/{texture2.Name}";
 
-          finMaterial.SetTextureSource(0, Asserts.CastNonnull(texture1));
-          finMaterial.SetTextureSource(1, Asserts.CastNonnull(texture2));
+          finMaterial.SetTextureSource(0, texture1);
+          finMaterial.SetTextureSource(1, texture2);
 
           var equations = finMaterial.Equations;
           var scalar1 = equations.CreateScalarConstant(1);

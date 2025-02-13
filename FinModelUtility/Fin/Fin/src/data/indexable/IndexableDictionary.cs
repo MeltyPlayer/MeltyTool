@@ -35,7 +35,7 @@ public static class IndexableDictionaryExtensions {
       return true;
     }
 
-    value = default;
+    value = default!;
     return false;
   }
 }

@@ -28,7 +28,7 @@ public class SettingsViewModel
 
   private static Config Config_ => Config.Instance;
 
-  public event Action OnClose;
+  public event Action? OnClose;
 
 
   public override void Reset() {

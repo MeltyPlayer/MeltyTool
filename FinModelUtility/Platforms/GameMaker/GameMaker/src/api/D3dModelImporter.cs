@@ -37,8 +37,8 @@ public class D3dModelImporter : IModelImporter<D3dModelFileBundle> {
           modelMetadata = null) {
     var finModel = new ModelImpl<NormalUvVertexImpl>(
         (index, position) => new NormalUvVertexImpl(index, position)) {
-        FileBundle = modelMetadata?.fileBundle,
-        Files = modelMetadata?.files
+        FileBundle = modelMetadata?.fileBundle!,
+        Files = modelMetadata?.files!
     };
     var finRootBone = CreateAdjustedRootBone(finModel);
     return (finModel, finRootBone);

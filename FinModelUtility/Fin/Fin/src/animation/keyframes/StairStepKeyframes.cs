@@ -41,7 +41,7 @@ public class StairStepKeyframes<T>(
       return true;
     }
 
-    value = default;
+    value = default!;
     return false;
   }
 

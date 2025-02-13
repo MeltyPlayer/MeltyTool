@@ -14,7 +14,7 @@ public static class Optional {
 
 public readonly struct EmptyOptional<T> : IOptional<T> {
   public bool Try(out T value) {
-    value = default;
+    value = default!;
     return false;
   }
 }

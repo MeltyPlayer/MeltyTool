@@ -27,7 +27,6 @@
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework" Version="3.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NUnit" Version="4.1.0" />
     <PackageReference Include="NVorbis" Version="0.10.5" />
     <PackageReference Include="OggVorbisEncoder" Version="1.2.2" />
     <PackageReference Include="OpenAL.Soft" Version="1.23.1" />
@@ -39,7 +38,6 @@
     <PackageReference Include="System.IO.Abstractions" Version="21.3.1" />
     <PackageReference Include="schema" Version="0.6.8" />
     <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
-    <PackageReference Include="ZString" Version="2.6.0" />
   </ItemGroup>
 
   <ItemGroup>

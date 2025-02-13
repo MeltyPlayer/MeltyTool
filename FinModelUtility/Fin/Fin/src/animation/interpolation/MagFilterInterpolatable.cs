@@ -21,7 +21,7 @@ public class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
 
   public bool TryGetAtFrame(float frame, out T value) {
     if (this.Impl == null) {
-      value = default;
+      value = default!;
       return false;
     }
 
@@ -45,7 +45,7 @@ public class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
       return true;
     }
 
-    value = default;
+    value = default!;
     return false;
   }
 

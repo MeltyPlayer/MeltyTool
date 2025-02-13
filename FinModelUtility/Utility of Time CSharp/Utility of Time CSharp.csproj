@@ -15,9 +15,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.3" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="OpenSpatialLibrary, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\Utility of Time\packages\TheOpenSpatialLibrary.0.5.0\lib\net40\OpenSpatialLibrary.dll</HintPath>
@@ -35,12 +32,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.OpenGl">
-      <HintPath>..\Utility of Time\Tao GL Libs\Tao.OpenGl.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.Platform.Windows">
-      <HintPath>..\Utility of Time\Tao GL Libs\Tao.Platform.Windows.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Formats\F3dzex2\F3dzex2.csproj" />

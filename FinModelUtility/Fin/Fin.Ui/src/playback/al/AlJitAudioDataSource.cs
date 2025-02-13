@@ -42,8 +42,9 @@ public partial class AlAudioManager {
           this.CurrentTimeAndLengthInQueuedSamples_;
 
       var numberOfChannels = this.AudioChannelsType switch {
-          AudioChannelsType.MONO   => 1,
-          AudioChannelsType.STEREO => 2,
+          AudioChannelsType.MONO      => 1,
+          AudioChannelsType.STEREO    => 2,
+          _                           => throw new ArgumentOutOfRangeException()
       };
 
       this.lastQueueTime_ = now;

@@ -40,7 +40,7 @@ public class LazyList<T> : ILazyArray<T> {
       return true;
     }
 
-    value = default;
+    value = default!;
     return false;
   }
 

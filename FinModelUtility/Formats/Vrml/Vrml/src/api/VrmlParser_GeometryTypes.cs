@@ -1,4 +1,6 @@
-﻿using schema.text.reader;
+﻿using fin.util.asserts;
+
+using schema.text.reader;
 
 using vrml.schema;
 
@@ -67,8 +69,8 @@ public partial class VrmlParser {
   private static TextNode ReadTextNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
-    IReadOnlyList<string> @string = default;
-    IFontStyleNode fontStyle = default;
+    IReadOnlyList<string> @string = null!;
+    IFontStyleNode fontStyle = null!;
 
     ReadFields_(
         tr,
@@ -87,8 +89,8 @@ public partial class VrmlParser {
         });
 
     return new TextNode {
-        String = @string,
-        FontStyle = fontStyle,
+        String = @string.AssertNonnull(),
+        FontStyle = fontStyle.AssertNonnull(),
     };
   }
 }

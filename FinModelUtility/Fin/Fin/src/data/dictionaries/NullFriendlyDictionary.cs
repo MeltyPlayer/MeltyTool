@@ -84,7 +84,7 @@ public class NullFriendlyDictionary<TKey, TValue> : IFinDictionary<TKey, TValue>
       value = this.nullValue_;
       this.hasNull_ = false;
     } else {
-      didRemove = this.impl_.Remove(key, out value);
+      didRemove = this.impl_.Remove(key, out value!);
     }
     return didRemove;
   }

@@ -69,6 +69,7 @@ public class Bw1Anim : IAnim, IBinaryDeserializable {
       }
     }
 
+    Span<ushort> shorts = stackalloc ushort[3];
     for (var i = 0; i < boneCount; ++i) {
       var bone = this.AnimBones[i];
 
@@ -80,8 +81,6 @@ public class Bw1Anim : IAnim, IBinaryDeserializable {
           (int) bone.PositionKeyframeCount,
           (int) bone.RotationKeyframeCount);
       this.AnimBoneFrames.Add(animBoneFrames);
-
-      Span<ushort> shorts = stackalloc ushort[3];
 
       for (var p = 0; p < bone.PositionKeyframeCount; ++p) {
         this.Parse3PositionValuesFrom2UShorts_(bone,

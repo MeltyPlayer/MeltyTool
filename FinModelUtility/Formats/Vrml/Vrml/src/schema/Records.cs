@@ -76,7 +76,7 @@ public record IsbPictureNode : IIsbPictureNode {
   public Quaternion? ScaleOrientation { get; init; }
   public Vector3? Scale { get; init; }
   public Vector3 Translation { get; init; }
-  public IReadOnlyList<IImageTextureNode> Frames { get; init; }
+  public required IReadOnlyList<IImageTextureNode> Frames { get; init; }
 }
 
 public record ColorNode : IColorNode {

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using Avalonia.Controls;
 
 using fin.model;
@@ -31,12 +33,14 @@ namespace uni.ui.avalonia.resources.model.materials {
       }
     }
 
-    public string VertexShaderSource {
+    [NotNullIfNotNull(nameof(ModelAndMaterial))]
+    public string? VertexShaderSource {
       get;
       private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public string FragmentShaderSource {
+    [NotNullIfNotNull(nameof(ModelAndMaterial))]
+    public string? FragmentShaderSource {
       get;
       private set => this.RaiseAndSetIfChanged(ref field, value);
     }

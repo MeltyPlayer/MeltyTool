@@ -14,6 +14,7 @@ public class CounterPercentageProgress(int total) : IPercentageProgress {
 
     var current = this.current_++;
     if (current >= total) {
+      this.isComplete_ = true;
       this.OnComplete?.Invoke(this, EventArgs.Empty);
       return;
     }

@@ -226,6 +226,7 @@ public partial class ModelToolStrip : UserControl {
             DialogResult.Yes    => ExporterPromptChoice.OVERWRITE_EXISTING,
             DialogResult.No     => ExporterPromptChoice.SKIP_EXISTING,
             DialogResult.Cancel => ExporterPromptChoice.CANCEL,
+            _                   => throw new ArgumentOutOfRangeException()
         };
       }
     }
