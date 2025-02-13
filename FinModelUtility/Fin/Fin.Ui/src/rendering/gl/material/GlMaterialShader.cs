@@ -36,5 +36,6 @@ public static class GlMaterialShader {
             modelRequirements),
         FinShaderType.NULL
             => new GlNullMaterialShader(model, modelRequirements),
+        _ => throw new ArgumentOutOfRangeException()
     };
 }

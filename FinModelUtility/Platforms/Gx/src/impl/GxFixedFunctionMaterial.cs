@@ -173,6 +173,7 @@ public partial class GxFixedFunctionMaterial {
                         materialColor.B / 255.0)
                 ),
                 GxColorSrc.Vertex => vertexColor,
+                _                 => throw new ArgumentOutOfRangeException()
             };
 
         var colorValue = materialColorRegisterValue;
@@ -246,6 +247,7 @@ public partial class GxFixedFunctionMaterial {
                     equations.CreateScalarConstant(
                         materialColor.A / 255.0)),
                 GxColorSrc.Vertex => vertexAlpha,
+                _                 => throw new ArgumentOutOfRangeException()
             };
 
         var alphaValue = materialAlphaRegisterValue;

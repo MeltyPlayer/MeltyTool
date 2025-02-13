@@ -471,6 +471,7 @@ public class GlBufferManager : IDynamicGlBufferManager {
           PrimitiveType.TRIANGLE_FAN   => BeginMode.TriangleFan,
           PrimitiveType.TRIANGLE_STRIP => BeginMode.TriangleStrip,
           PrimitiveType.QUADS          => BeginMode.Quads,
+          _                            => throw new ArgumentOutOfRangeException()
       };
       this.isFlipped_ = mergedPrimitive.IsFlipped;
 
@@ -482,6 +483,7 @@ public class GlBufferManager : IDynamicGlBufferManager {
               DrawElementsType.UnsignedByte  => byte.MaxValue,
               DrawElementsType.UnsignedShort => ushort.MaxValue,
               DrawElementsType.UnsignedInt   => uint.MaxValue,
+              _                              => throw new ArgumentOutOfRangeException()
           })
       ];
       this.indices_ =

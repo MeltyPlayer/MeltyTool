@@ -14,5 +14,6 @@ public static class GxWrapModeExtensions {
         GxWrapMode.GX_CLAMP  => WrapMode.CLAMP,
         GxWrapMode.GX_REPEAT => WrapMode.REPEAT,
         GxWrapMode.GX_MIRROR => WrapMode.MIRROR_REPEAT,
+        _                    => throw new ArgumentOutOfRangeException(nameof(gxWrapMode), gxWrapMode, null)
     };
 }

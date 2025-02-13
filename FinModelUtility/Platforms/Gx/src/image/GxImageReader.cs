@@ -59,6 +59,7 @@ public class GxImageReader : IImageReader {
             height,
             new Ar88Gb88TileReader()),
         GxTextureFormat.S3TC1 => new CmprImageReader(width, height),
+        _                     => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
   }
 

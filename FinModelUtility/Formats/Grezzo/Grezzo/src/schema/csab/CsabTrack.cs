@@ -28,6 +28,7 @@ public class CsabTrack : IBinaryDeserializable {
           TrackType.POSITION => br => br.ReadUInt16() / 2,
           TrackType.SCALE    => br => br.ReadInt16(),
           TrackType.ROTATION => br => br.ReadInt16(),
+          _                  => throw new ArgumentOutOfRangeException()
       };
       // TODO: Is this right????
       this.readRawLinearShort_ = this.ValueType switch {
@@ -35,6 +36,7 @@ public class CsabTrack : IBinaryDeserializable {
           TrackType.POSITION => br => br.ReadUInt16(),
           TrackType.SCALE    => br => br.ReadInt16(),
           TrackType.ROTATION => br => br.ReadInt16(),
+          _                  => throw new ArgumentOutOfRangeException()
       };
     }
 

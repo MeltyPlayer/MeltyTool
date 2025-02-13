@@ -39,10 +39,12 @@ public class TexrSection : IBinaryConvertible {
     var sectionName = mode switch {
         TexrMode.BW1 => "TEXT",
         TexrMode.BW2 => "GTXD",
+        _            => throw new ArgumentOutOfRangeException()
     };
     var textureNameLength = mode switch {
         TexrMode.BW1 => 0x10,
         TexrMode.BW2 => 0x20,
+        _            => throw new ArgumentOutOfRangeException()
     };
 
     for (var i = 0; i < textureCount; ++i) {

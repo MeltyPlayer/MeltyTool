@@ -45,7 +45,6 @@ public class TwilightPrincessFileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
 
     foreach (var dir in objectDirectory.GetExistingSubdirs()) {
-      var extractedAnything = false;
       if (dir.TryToGetExistingSubdir("bmdr", out var bmdrDirectory)) {
         var bmdFiles = bmdrDirectory.GetExistingFiles().ToArray();
         if (bmdFiles.Length == 1) {

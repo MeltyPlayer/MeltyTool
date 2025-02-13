@@ -286,6 +286,7 @@ public class CmbCombinerGenerator {
             Channel.R => colorValue?.R,
             Channel.G => colorValue?.G,
             Channel.B => colorValue?.B,
+            _         => throw new ArgumentOutOfRangeException()
         };
       } else {
         channelValue = combinerSource switch {
@@ -389,6 +390,7 @@ public class CmbCombinerGenerator {
           TexCombineScale.Four => fixedFunctionOps.MultiplyWithConstant(
               combinedValue,
               4),
+          _ => throw new ArgumentOutOfRangeException(nameof(combineScale), combineScale, null)
       };
     }
 

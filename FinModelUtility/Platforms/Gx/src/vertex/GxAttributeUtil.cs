@@ -40,6 +40,7 @@ public static class GxAttributeUtil {
                 GxComponentCountType.TEX_ST => 2,
                 _                           => throw new ArgumentOutOfRangeException(nameof(componentCountType), componentCountType, null)
             },
+        _ => throw new ArgumentOutOfRangeException(nameof(vertexAttribute), vertexAttribute, null)
     };
 
   public static int GetByteCount(this GxAxisComponentType axisComponentType)

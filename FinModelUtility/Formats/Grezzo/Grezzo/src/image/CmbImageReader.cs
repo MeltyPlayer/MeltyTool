@@ -41,6 +41,7 @@ public class CmbImageReader : IImageReader {
       IPixelReader<Rgb24> pixelReader = format switch {
           GlTextureFormat.RGB8   => new Rgb24PixelReader(),
           GlTextureFormat.RGB565 => new Rgb565PixelReader(),
+          _                      => throw new ArgumentOutOfRangeException(nameof(format), format, null)
       };
 
       return TiledImageReader.New(width,
@@ -74,6 +75,7 @@ public class CmbImageReader : IImageReader {
           GlTextureFormat.Shadow => new L2a8PixelReader(),
           GlTextureFormat.LA4    => new La8PixelReader(),
           GlTextureFormat.LA8    => new La16PixelReader(),
+          _                      => throw new ArgumentOutOfRangeException(nameof(format), format, null)
       };
 
       return TiledImageReader.New(width,
@@ -87,6 +89,7 @@ public class CmbImageReader : IImageReader {
     if (format.IsAlpha()) {
       IPixelReader<La16> pixelReader = format switch {
           GlTextureFormat.A8 => new A8PixelReader(),
+          _                  => throw new ArgumentOutOfRangeException(nameof(format), format, null)
       };
 
       return TiledImageReader.New(width,
