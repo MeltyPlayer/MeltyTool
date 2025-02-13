@@ -3,35 +3,35 @@ using fin.model.io.importers;
 
 using HaloWarsTools;
 
-namespace hw.api {
-  public class XtdModelImporter : IModelImporter<XtdModelFileBundle> {
-    public IModel Import(XtdModelFileBundle modelFileBundle) {
-      var xtdFile = modelFileBundle.XtdFile;
-      var xttFile = modelFileBundle.XttFile;
+namespace hw.api;
 
-      var mapName = xtdFile.AssertGetParent().Name;
+public class XtdModelImporter : IModelImporter<XtdModelFileBundle> {
+  public IModel Import(XtdModelFileBundle modelFileBundle) {
+    var xtdFile = modelFileBundle.XtdFile;
+    var xttFile = modelFileBundle.XttFile;
 
-      var xtd = HWXtdResource.FromFile(null, xtdFile.FullPath);
-      var xtt = HWXttResource.FromFile(null, xttFile.FullPath);
+    var mapName = xtdFile.AssertGetParent().Name;
 
-      var finModel = xtd.Mesh;
-      var xttMaterial = finModel.MaterialManager.AddStandardMaterial();
+    var xtd = HWXtdResource.FromFile(null, xtdFile.FullPath);
+    var xtt = HWXttResource.FromFile(null, xttFile.FullPath);
 
-      var diffuseTexture = finModel.MaterialManager.CreateTexture(
-          xtt.AlbedoTexture);
-      diffuseTexture.Name = $"{mapName}_albedo";
-      xttMaterial.DiffuseTexture = diffuseTexture;
+    var finModel = xtd.Mesh;
+    var xttMaterial = finModel.MaterialManager.AddStandardMaterial();
 
-      var ambientOcclusionTexture = finModel.MaterialManager.CreateTexture(
-          xtd.AmbientOcclusionTexture);
-      ambientOcclusionTexture.Name = $"{mapName}_ao";
-      xttMaterial.AmbientOcclusionTexture = ambientOcclusionTexture;
+    var diffuseTexture = finModel.MaterialManager.CreateTexture(
+        xtt.AlbedoTexture);
+    diffuseTexture.Name = $"{mapName}_albedo";
+    xttMaterial.DiffuseTexture = diffuseTexture;
 
-      foreach (var primitive in finModel.Skin.Meshes[0].Primitives) {
-        primitive.SetMaterial(xttMaterial);
-      }
+    var ambientOcclusionTexture = finModel.MaterialManager.CreateTexture(
+        xtd.AmbientOcclusionTexture);
+    ambientOcclusionTexture.Name = $"{mapName}_ao";
+    xttMaterial.AmbientOcclusionTexture = ambientOcclusionTexture;
 
-      return xtd.Mesh;
+    foreach (var primitive in finModel.Skin.Meshes[0].Primitives) {
+      primitive.SetMaterial(xttMaterial);
     }
+
+    return xtd.Mesh;
   }
 }
