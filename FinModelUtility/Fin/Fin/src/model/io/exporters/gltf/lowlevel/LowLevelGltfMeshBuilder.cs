@@ -172,6 +172,7 @@ public class LowLevelGltfMeshBuilder {
               FinPrimitiveType.LINES        => GltfPrimitiveType.LINES,
               FinPrimitiveType.LINE_STRIP   => GltfPrimitiveType.LINE_STRIP,
               FinPrimitiveType.POINTS       => GltfPrimitiveType.POINTS,
+              _                             => throw new ArgumentOutOfRangeException()
           };
 
           var finPrimitiveVertices = finPrimitive.Vertices;
@@ -280,6 +281,7 @@ public class LowLevelGltfMeshBuilder {
         1 => IndexEncodingType.UNSIGNED_BYTE,
         2 => IndexEncodingType.UNSIGNED_SHORT,
         4 => IndexEncodingType.UNSIGNED_INT,
+        _ => throw new ArgumentOutOfRangeException()
     };
 
     var indexView = gltfModelRoot.CreateBufferView(

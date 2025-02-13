@@ -20,6 +20,7 @@ public partial class VrmlParser {
               vertexOrdering = ReadWord_(tr) switch {
                   "CLOCKWISE"         => VertexOrder.CLOCKWISE,
                   "COUNTER_CLOCKWISE" => VertexOrder.COUNTER_CLOCKWISE,
+                  _                   => throw new ArgumentOutOfRangeException()
               };
               break;
             }

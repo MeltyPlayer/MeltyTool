@@ -240,6 +240,7 @@ public class CmbFixedFunctionMaterial {
                   TestFunc.Less     => AlphaCompareType.Less,
                   TestFunc.Lequal   => AlphaCompareType.LEqual,
                   TestFunc.Notequal => AlphaCompareType.NEqual,
+                  _                 => throw new ArgumentOutOfRangeException()
               },
               cmbMaterial.alphaTestReferenceValue,
               AlphaCompareType.Never,

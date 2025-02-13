@@ -400,7 +400,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                   finMesh.AddTriangles(finVertices),
               GxPrimitiveType.GX_QUADS => finMesh.AddQuads(finVertices),
               GxPrimitiveType.GX_TRIANGLESTRIP => finMesh.AddTriangleStrip(
-                  finVertices)
+                  finVertices),
+              _ => throw new ArgumentOutOfRangeException()
           };
 
           if (finMaterial != null) {

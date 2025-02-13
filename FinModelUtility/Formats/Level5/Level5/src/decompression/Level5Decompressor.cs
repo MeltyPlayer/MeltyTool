@@ -24,6 +24,7 @@ public class Level5Decompressor : BArrayToArrayDecompressor {
             DecompressionType.HUFFMAN_ARRAY_28 => new HuffmanArrayDecompressor(
                 0x28),
             DecompressionType.RLE_ARRAY => new RleArrayDecompressor(),
+            _                           => throw new ArgumentOutOfRangeException()
         };
 
         dst = decompressor.Decompress(src);

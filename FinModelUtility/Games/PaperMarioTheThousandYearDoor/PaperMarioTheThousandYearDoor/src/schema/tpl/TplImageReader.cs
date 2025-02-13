@@ -66,6 +66,7 @@ public class TplImageReader : IImageReader {
           TplImageFormat.CMPR => new CmprImageReader(
               width,
               height),
+          _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
       };
     }
 }

@@ -49,6 +49,7 @@ public class Tg4ImageReader {
         CompressionFormat.Bc1          => PixelFormat.DXT1,
         CompressionFormat.Bc1WithAlpha => PixelFormat.DXT1A,
         CompressionFormat.Bc3          => PixelFormat.DXT5,
+        _                              => throw new ArgumentOutOfRangeException()
     };
 
     var dataFile = bundle.Tg4dFile;

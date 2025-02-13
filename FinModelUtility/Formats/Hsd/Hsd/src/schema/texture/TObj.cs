@@ -92,6 +92,7 @@ public static class TObjFlagsExtensions {
         TObjFlags.COORD_SHADOW     => Coord.SHADOW,
         TObjFlags.COORD_TOON       => Coord.TOON,
         TObjFlags.COORD_GRADATION  => Coord.GRADATION,
+        _                          => throw new ArgumentOutOfRangeException()
     };
   }
 

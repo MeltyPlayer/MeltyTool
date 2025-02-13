@@ -22,6 +22,7 @@ public class Primitive : ITextDeserializable {
         "stp" => PrimitiveType.TRIANGLE_STRIP,
         "str" => PrimitiveType.TRIANGLE_STRIP_REVERSED,
         "tri" => PrimitiveType.TRIANGLES,
+        _   => throw new ArgumentOutOfRangeException()
       };
 
       this.VertexIndices = tr.ReadInt32s(TextReaderConstantsExtra.WHITESPACE_STRINGS,
