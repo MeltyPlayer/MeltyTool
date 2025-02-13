@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Numerics;
 
 namespace HaloWarsTools {
   // TODO put value cache in HWContext
@@ -57,9 +56,6 @@ namespace HaloWarsTools {
           return dictionary;
         });
 
-    protected static Matrix4x4 MeshMatrix =
-        new Matrix4x4(0, -1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1);
-
     protected abstract void Load(byte[] bytes);
 
     public HWContext Context { get; protected set; }
@@ -70,10 +66,6 @@ namespace HaloWarsTools {
     public override string ToString() {
       return
           $"{Path.ChangeExtension(this.RelativePath, null)} [{this.Type.ToString().ToUpperInvariant()}]";
-    }
-
-    public static HWResource FromFile(HWContext context, string filename) {
-      return GetOrCreateFromFile(context, filename);
     }
 
     protected static HWResource GetOrCreateFromFile(HWContext? context,

@@ -11,6 +11,7 @@ using fin.data.dictionaries;
 using fin.io;
 using fin.model;
 using fin.scene;
+using fin.util.asserts;
 
 namespace HaloWarsTools {
   public class HWVisResource : HWXmlResource {
@@ -147,7 +148,7 @@ namespace HaloWarsTools {
             }
 
             foreach (var bone in model.Skeleton) {
-              attachmentPointMap[bone.Name] = (sceneModel, bone);
+              attachmentPointMap[bone.Name.AssertNonnull()] = (sceneModel, bone);
             }
           } catch(Exception e) {
             ;
