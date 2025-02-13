@@ -7,7 +7,7 @@ namespace hw.schema.binary;
 
 [BinarySchema]
 [Endianness(Endianness.BigEndian)]
-public partial class BinaryResource : IBinaryConvertible {
+public partial class BinaryResource : IBinaryDeserializable {
   private uint unk0;
 
   public uint HeaderSize { get; set; }

@@ -1,7 +1,10 @@
-﻿using fin.model;
+﻿using fin.io;
+using fin.model;
 using fin.model.io.importers;
 
 using HaloWarsTools;
+
+using hw.schema.xtt;
 
 namespace hw.api;
 
@@ -13,7 +16,7 @@ public class XtdModelImporter : IModelImporter<XtdModelFileBundle> {
     var mapName = xtdFile.AssertGetParent().Name;
 
     var xtd = HWXtdResource.FromFile(null, xtdFile.FullPath);
-    var xtt = HWXttResource.FromFile(null, xttFile.FullPath);
+    var xtt = xttFile.ReadNew<Xtt>();
 
     var finModel = xtd.Mesh;
     var xttMaterial = finModel.MaterialManager.AddStandardMaterial();

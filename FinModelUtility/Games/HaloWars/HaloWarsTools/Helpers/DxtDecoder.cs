@@ -321,12 +321,10 @@ public static class DxtDecoder {
   private static float GammaToLinear(float gamma)
     => MathF.Pow(gamma, 1 / 2.2f);
 
-  public static IImage DecompressDXT1(
-      byte[] src,
-      int srcOffset,
+  public static IImage DecompressDxt1(
+      IBinaryReader br,
       int width,
       int height) {
-    int offset = srcOffset;
     int bcw = (width + 3) / 4;
     int bch = (height + 3) / 4;
     int clen_last = (width + 3) % 4 + 1;
@@ -339,12 +337,13 @@ public static class DxtDecoder {
     var ptr = imageLock.Pixels;
 
     for (int t = 0; t < bch; t++) {
-      for (int s = 0; s < bcw; s++, offset += 8) {
+      for (int s = 0; s < bcw; s++) {
         var x = s * 4;
 
         byte r0, g0, b0, r1, g1, b1;
-        ushort q0 = (ushort) (src[offset + 0] | src[offset + 1] << 8);
-        ushort q1 = (ushort) (src[offset + 2] | src[offset + 3] << 8);
+
+        var q0 = br.ReadUInt16();
+        var q1 = br.ReadUInt16();
         Rgb565(q0, out r0, out g0, out b0);
         Rgb565(q1, out r1, out g1, out b1);
         colors[0] = new Rgb24(r0, g0, b0);
@@ -362,7 +361,7 @@ public static class DxtDecoder {
                                 (byte) ((b0 + b1) / 2));
         }
 
-        uint d = BitConverter.ToUInt32(src, offset + 4);
+        var d = br.ReadUInt32();
         var clen = (s < bcw - 1 ? 4 : clen_last);
         for (int i = 0, y = t * 4; i < 4 && y < height; i++, y++) {
           for (var c = 0; c < clen; ++c) {

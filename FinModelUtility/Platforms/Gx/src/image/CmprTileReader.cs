@@ -11,6 +11,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace gx.image;
 
+// TODO: This is just DXT1 or something similar? Use a common tile reader implementation
 public readonly struct CmprTileReader(
     int subTileCountInAxis = 2,
     int subTileSizeInAxis = 4,

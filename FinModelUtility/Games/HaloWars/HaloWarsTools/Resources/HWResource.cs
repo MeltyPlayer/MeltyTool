@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using hw.schema.xtt;
+
 namespace HaloWarsTools;
 // TODO put value cache in HWContext
 
@@ -33,7 +35,7 @@ public abstract class HWResource {
               {
                   ".xtt",
                   new HWResourceTypeDefinition(
-                      HWResourceType.Xtt, typeof(HWXttResource))
+                      HWResourceType.Xtt, typeof(Xtt))
               }, {
                   ".xtd",
                   new HWResourceTypeDefinition(

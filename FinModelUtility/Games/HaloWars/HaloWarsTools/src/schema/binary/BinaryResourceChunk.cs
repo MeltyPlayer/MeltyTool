@@ -32,11 +32,18 @@ public enum BinaryResourceChunkType : ulong {
 }
 
 [BinarySchema]
-public partial class BinaryResourceChunk : IBinaryConvertible {
+public partial class BinaryResourceChunk : IBinaryDeserializable {
   public BinaryResourceChunkType Type { get; set; }
-  public uint Offset { get; }
-  public uint Size { get; }
+  public uint Offset { get; set; }
+  public uint Size { get; set;}
 
   [SequenceLengthSource(2)]
   private uint[] unk0;
+
+  [RAtPosition(nameof(Offset))]
+  [RSequenceLengthSource(nameof(Size))]
+  public byte[] Data { get; set; }
+
+  public IBinaryReader GetBinaryReader()
+    => new SchemaBinaryReader(this.Data, Endianness.BigEndian);
 }
