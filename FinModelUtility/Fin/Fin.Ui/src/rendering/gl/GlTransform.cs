@@ -90,6 +90,9 @@ public static class GlTransform {
   public static void Translate(float x, float y, float z)
     => MultMatrix(SystemMatrix4x4Util.FromTranslation(x, y, z));
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Translate(Vector3 xyz) => Translate(xyz.X, xyz.Y, xyz.Z);
+
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Scale(double x, double y, double z)
@@ -146,61 +149,31 @@ public static class GlTransform {
   }
 
   public static void LookAt(
-      double eyeX,
-      double eyeY,
-      double eyeZ,
-      double centerX,
-      double centerY,
-      double centerZ,
-      double upX,
-      double upY,
-      double upZ) {
-    var lookX = centerX - eyeX;
-    var lookY = centerY - eyeY;
-    var lookZ = centerZ - eyeZ;
-    Normalize3(ref lookX, ref lookY, ref lookZ);
-
-    CrossProduct3(
-        lookX,
-        lookY,
-        lookZ,
-        upX,
-        upY,
-        upZ,
-        out var sideX,
-        out var sideY,
-        out var sideZ);
-    Normalize3(ref sideX, ref sideY, ref sideZ);
-
-    CrossProduct3(
-        sideX,
-        sideY,
-        sideZ,
-        lookX,
-        lookY,
-        lookZ,
-        out upX,
-        out upY,
-        out upZ);
+      Vector3 eye,
+      Vector3 center,
+      Vector3 up) {
+    var look = Vector3.Normalize(center - eye);
+    var side = Vector3.Normalize(Vector3.Cross(look, up));
+    var newUp = Vector3.Cross(side, look);
 
     var matrix = new Matrix4x4();
 
-    SetInMatrix(ref matrix, 0, 0, sideX);
-    SetInMatrix(ref matrix, 1, 0, sideY);
-    SetInMatrix(ref matrix, 2, 0, sideZ);
+    SetInMatrix(ref matrix, 0, 0, side.X);
+    SetInMatrix(ref matrix, 1, 0, side.Y);
+    SetInMatrix(ref matrix, 2, 0, side.Z);
 
-    SetInMatrix(ref matrix, 0, 1, upX);
-    SetInMatrix(ref matrix, 1, 1, upY);
-    SetInMatrix(ref matrix, 2, 1, upZ);
+    SetInMatrix(ref matrix, 0, 1, newUp.X);
+    SetInMatrix(ref matrix, 1, 1, newUp.Y);
+    SetInMatrix(ref matrix, 2, 1, newUp.Z);
 
-    SetInMatrix(ref matrix, 0, 2, -lookX);
-    SetInMatrix(ref matrix, 1, 2, -lookY);
-    SetInMatrix(ref matrix, 2, 2, -lookZ);
+    SetInMatrix(ref matrix, 0, 2, -look.X);
+    SetInMatrix(ref matrix, 1, 2, -look.Y);
+    SetInMatrix(ref matrix, 2, 2, -look.Z);
 
     SetInMatrix(ref matrix, 3, 3, 1);
 
     MultMatrix(matrix);
-    Translate(-eyeX, -eyeY, -eyeZ);
+    Translate(-eye);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -209,28 +182,4 @@ public static class GlTransform {
                                  int c,
                                  double value)
     => matrix[r, c] = (float) value;
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void CrossProduct3(
-      double x1,
-      double y1,
-      double z1,
-      double x2,
-      double y2,
-      double z2,
-      out double outX,
-      out double outY,
-      out double outZ) {
-    outX = y1 * z2 - z1 * y2;
-    outY = z1 * x2 - x1 * z2;
-    outZ = x1 * y2 - y1 * x2;
-  }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void Normalize3(ref double x, ref double y, ref double z) {
-    var inverseLength = 1 / Math.Sqrt(x * x + y * y + z * z);
-    x *= inverseLength;
-    y *= inverseLength;
-    z *= inverseLength;
-  }
 }

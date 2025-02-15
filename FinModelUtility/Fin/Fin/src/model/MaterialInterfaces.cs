@@ -154,6 +154,9 @@ public partial interface IStandardMaterial : IMaterialWithNormalTexture {
 public partial interface IShaderMaterial : IMaterial {
   new string VertexShader { get; set; }
   new string FragmentShader { get; set; }
+
+  IReadOnlyDictionary<string, IReadOnlyTexture> TextureByUniform { get; }
+  void AddTexture(string uniformName, IReadOnlyTexture texture);
 }
 
 // TODO: Support empty white materials

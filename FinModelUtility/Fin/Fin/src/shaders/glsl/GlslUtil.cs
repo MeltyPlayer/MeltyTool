@@ -549,7 +549,7 @@ public static class GlslUtil {
 
   public static bool NeedsTextureShaderStruct(
       this IReadOnlyTexture? finTexture,
-      IReadOnlyList<IReadOnlyModelAnimation> animations)
+      IReadOnlyList<IReadOnlyModelAnimation>? animations)
     => finTexture.UsesShaderClamping() ||
        finTexture.GetTextureTransformType_(animations) !=
        TextureTransformType.NONE;
@@ -572,7 +572,7 @@ public static class GlslUtil {
 
   public static TextureTransformType GetTextureTransformType_(
       this IReadOnlyTexture? finTexture,
-      IReadOnlyList<IReadOnlyModelAnimation> animations) {
+      IReadOnlyList<IReadOnlyModelAnimation>? animations) {
     if (finTexture == null) {
       return TextureTransformType.NONE;
     }
@@ -589,12 +589,14 @@ public static class GlslUtil {
       return staticType;
     }
 
-    foreach (var animation in animations) {
-      if (animation.TextureTracks.TryGetValue(finTexture,
-                                              out var textureTracks)) {
-        return finTexture.IsTransform3d
-            ? TextureTransformType.THREE_D
-            : TextureTransformType.TWO_D;
+    if (animations != null) {
+      foreach (var animation in animations) {
+        if (animation.TextureTracks.TryGetValue(finTexture,
+                                                out var textureTracks)) {
+          return finTexture.IsTransform3d
+              ? TextureTransformType.THREE_D
+              : TextureTransformType.TWO_D;
+        }
       }
     }
 

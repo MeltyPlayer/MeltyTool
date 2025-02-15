@@ -87,12 +87,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   public bool DisposeTextures { get; set; } = true;
 
   public void Use() {
-    var cameraPosition = Camera.Instance;
-    var scCamX = cameraPosition.X;
-    var scCamY = cameraPosition.Y;
-    var scCamZ = cameraPosition.Z;
-    this.cameraPositionUniform_.SetAndMaybeMarkDirty(
-        new Vector3(scCamX, scCamY, scCamZ));
+    this.cameraPositionUniform_.SetAndMaybeMarkDirty(Camera.Instance.Position);
 
     this.shininessUniform_.SetAndMaybeMarkDirty(
         this.Material?.Shininess ?? 0);

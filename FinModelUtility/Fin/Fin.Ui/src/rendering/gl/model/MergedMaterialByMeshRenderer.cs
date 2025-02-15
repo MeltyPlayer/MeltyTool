@@ -3,6 +3,7 @@ using fin.math;
 using fin.model;
 using fin.model.util;
 using fin.shaders.glsl;
+using fin.ui.rendering.gl.material;
 using fin.util.image;
 
 
@@ -33,7 +34,7 @@ public partial class ModelRendererV2 {
     }
 
     // Generates buffer manager and model within the current GL context.
-    private void GenerateModelIfNull_() {
+    public void GenerateModelIfNull() {
       if (this.bufferManager_ != null) {
         return;
       }
@@ -135,7 +136,7 @@ public partial class ModelRendererV2 {
     public void UpdateBuffer() => this.dynamicBufferManager_?.UpdateBuffer();
 
     public void Render() {
-      this.GenerateModelIfNull_();
+      this.GenerateModelIfNull();
 
       foreach (var (mesh, materialMeshRenderers) in
                this.materialMeshRenderers_) {
@@ -154,5 +155,11 @@ public partial class ModelRendererV2 {
         }
       }
     }
+
+    public IEnumerable<IGlMaterialShader> GetMaterialShaders(
+        IReadOnlyMaterial material)
+      => this.materialMeshRenderers_.SelectMany(p => p.Item2)
+             .Where(r => r.Material == material)
+             .Select(r => r.MaterialShader);
   }
 }

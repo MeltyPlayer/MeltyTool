@@ -18,7 +18,7 @@ public partial class SceneImpl {
     }
 
     public Color? BackgroundColor { get; set; }
-    public IImage? BackgroundImage { get; set; }
+    public IReadOnlyImage? BackgroundImage { get; set; }
     public ISceneObject? CustomSkyboxObject { get; set; }
 
     public ISceneObject CreateCustomSkyboxObject()

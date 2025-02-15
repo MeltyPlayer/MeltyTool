@@ -1,4 +1,6 @@
-﻿using fin.animation;
+﻿using System.Numerics;
+
+using fin.animation;
 using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.model;
@@ -11,10 +13,9 @@ using OpenTK.Graphics.OpenGL;
 namespace fin.ui.rendering.gl;
 
 public class SceneViewerGl : ISceneViewer, IRenderable {
-  private float viewerScale_ = 1;
-
   private InfiniteGridRenderer infiniteGridRenderer_ = new();
   private SkyboxRenderer skyboxRenderer_ = new();
+  private BackgroundRenderer backgroundRenderer_ = new();
 
   private ISceneInstance? scene_;
   private SceneRenderer? sceneRenderer_;
@@ -32,6 +33,7 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
         this.sceneRenderer_ = null;
         this.singleArea_ = null;
         this.singleAreaRenderer_ = null;
+        this.backgroundRenderer_.BackgroundImage = null;
         this.ViewerScale = 1;
       } else {
         this.scene_ = value;
@@ -45,6 +47,10 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
         this.singleAreaRenderer_ = areaRenderers is { Count: 1 }
             ? areaRenderers[0]
             : null;
+
+        var singleAreaBackgroundImage
+            = this.singleArea_?.Definition?.BackgroundImage;
+        this.backgroundRenderer_.BackgroundImage = singleAreaBackgroundImage;
       }
     }
   }
@@ -85,21 +91,21 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
   public int Height { get; set; }
 
   public float ViewerScale {
-    get => this.viewerScale_;
+    get;
     set {
-      this.viewerScale_ = value;
+      field = value;
       if (this.scene_ != null) {
         this.scene_.ViewerScale = value;
       }
     }
-  }
+  } = 1;
 
   public float GlobalScale { get; set; } = 1;
   public float NearPlane { get; set; }
   public float FarPlane { get; set; }
   public bool ShowGrid { get; set; }
 
-  public unsafe void Render() {
+  public void Render() {
     FrameTime.MarkStartOfFrame();
     this.singleArea_?.CustomSkyboxObject?.Tick();
     this.Scene?.Tick();
@@ -127,15 +133,9 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     {
       GlTransform.MatrixMode(TransformMatrixMode.VIEW);
       GlTransform.LoadIdentity();
-      GlTransform.LookAt(this.Camera.X,
-                         this.Camera.Y,
-                         this.Camera.Z,
-                         this.Camera.X + this.Camera.XNormal,
-                         this.Camera.Y + this.Camera.YNormal,
-                         this.Camera.Z + this.Camera.ZNormal,
-                         this.Camera.XUp,
-                         this.Camera.YUp,
-                         this.Camera.ZUp);
+      GlTransform.LookAt(this.Camera.Position,
+                         this.Camera.Position + this.Camera.Normal,
+                         this.Camera.Up);
     }
 
     this.RenderSkybox_();
@@ -157,10 +157,15 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
 
       var customSkyboxRenderer
           = this.singleAreaRenderer_?.CustomSkyboxRenderer;
-      if (customSkyboxRenderer != null) {
-        GlTransform.Translate(this.Camera.X,
-                              this.Camera.Y,
-                              this.Camera.Z);
+
+      if (this.backgroundRenderer_.IsValid) {
+        GlTransform.Ortho2d(0, width, height, 0);
+        GlTransform.Translate(hWidth, hHeight, 0);
+        GlTransform.Scale(hWidth, hHeight, 1);
+
+        this.backgroundRenderer_.Render();
+      } else if (customSkyboxRenderer != null) {
+        GlTransform.Translate(this.Camera.Position);
         GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
         customSkyboxRenderer.Render();
       } else {

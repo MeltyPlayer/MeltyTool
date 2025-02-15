@@ -47,20 +47,10 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
 
       var camera = Camera.Instance;
 
-      var position = new Vector3f();
-      var normal = new Vector3f();
-
       var lightingOwner = area.AddObject();
       lightingOwner.AddComponent(_ => {
-        position.X = camera.X;
-        position.Y = camera.Y;
-        position.Z = camera.Z;
-        headlight.SetPosition(position);
-
-        normal.X = camera.XNormal;
-        normal.Y = camera.YNormal;
-        normal.Z = camera.ZNormal;
-        headlight.SetNormal(normal);
+        headlight.SetPosition(camera.Position);
+        headlight.SetNormal(camera.Normal);
       });
     }
 

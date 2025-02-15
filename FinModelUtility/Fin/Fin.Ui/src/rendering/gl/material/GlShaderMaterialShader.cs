@@ -16,7 +16,17 @@ public class GlShaderMaterialShader(
   protected override void DisposeInternal() { }
 
   protected override void Setup(IReadOnlyShaderMaterial material,
-                                GlShaderProgram shaderProgram) { }
+                                GlShaderProgram shaderProgram) {
+    this.ShaderProgram = shaderProgram;
+
+    var textureIndex = 0;
+    foreach (var (uniformName, finTexture) in material.TextureByUniform) {
+      var glTexture = GlTexture.FromTexture(finTexture);
+      this.SetUpTexture(uniformName, textureIndex++, finTexture, glTexture);
+    }
+  }
 
   protected override void PassUniformsAndBindTextures(GlShaderProgram impl) { }
+
+  public GlShaderProgram ShaderProgram { get; private set; }
 }

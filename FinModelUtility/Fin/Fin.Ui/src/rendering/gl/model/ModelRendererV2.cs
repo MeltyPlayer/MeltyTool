@@ -2,6 +2,7 @@
 
 using fin.math;
 using fin.model;
+using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.ubo;
 
 
@@ -107,4 +108,9 @@ public partial class ModelRendererV2(
 
     this.impl_.Render();
   }
+
+  public void GenerateModelIfNull() => this.impl_.GenerateModelIfNull();
+
+  public IEnumerable<IGlMaterialShader> GetMaterialShaders(IReadOnlyMaterial material)
+    => this.impl_.GetMaterialShaders(material);
 }

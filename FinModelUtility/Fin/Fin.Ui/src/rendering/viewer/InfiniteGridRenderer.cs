@@ -34,7 +34,7 @@ public class InfiniteGridRenderer : IRenderable {
           out vec2 screenPosition;
             
           void main() {
-            screenPosition = in_Position.xy * vec2(1, -1);
+            screenPosition = in_Position.xy * vec2(1.0, -1.0);
             gl_Position = {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}} * vec4(in_Position, 1.0);
           }
           """,

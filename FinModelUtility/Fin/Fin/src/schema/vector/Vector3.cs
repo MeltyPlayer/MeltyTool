@@ -76,6 +76,12 @@ public sealed partial class Vector3f
   public static explicit operator Vector3(Vector3f value)
     => new(value.X, value.Y, value.Z);
 
+  public void Set(Vector3 xyz) {
+    this.X = xyz.X;
+    this.Y = xyz.Y;
+    this.Z = xyz.Z;
+  }
+
   public override int GetHashCode()
     => FluentHash.Start().With(this.X).With(this.Y).With(this.Z).Hash;
 }

@@ -8,9 +8,10 @@ namespace fin.ui.rendering.gl.model;
 public partial class ModelRendererV2 {
   private class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
     private readonly IGlBufferRenderer bufferRenderer_;
-    private readonly IReadOnlyMaterial? material_;
-    private readonly IGlMaterialShader? materialShader_;
     private bool isSelected_;
+
+    public IReadOnlyMaterial? Material { get; }
+    public IGlMaterialShader MaterialShader { get; }
 
     public MergedMaterialPrimitivesByMeshRenderer(
         IReadOnlyTextureTransformManager? textureTransformManager,
@@ -19,9 +20,9 @@ public partial class ModelRendererV2 {
         IModelRequirements modelRequirements,
         IReadOnlyMaterial? material,
         MergedPrimitive mergedPrimitive) {
-      this.material_ = material;
+      this.Material = material;
 
-      this.materialShader_ = GlMaterialShader.FromMaterial(model,
+      this.MaterialShader = GlMaterialShader.FromMaterial(model,
         modelRequirements,
         material,
         textureTransformManager);
@@ -30,8 +31,8 @@ public partial class ModelRendererV2 {
 
       SelectedMaterialsService.OnMaterialsSelected
           += selectedMaterials =>
-              this.isSelected_ = this.material_ != null &&
-                                 (selectedMaterials?.Contains(this.material_) ??
+              this.isSelected_ = this.Material != null &&
+                                 (selectedMaterials?.Contains(this.Material) ??
                                   false);
     }
 
@@ -44,15 +45,15 @@ public partial class ModelRendererV2 {
     }
 
     private void ReleaseUnmanagedResources_() {
-      this.materialShader_?.Dispose();
+      this.MaterialShader?.Dispose();
       this.bufferRenderer_.Dispose();
     }
 
     public bool UseLighting {
-      get => this.materialShader_?.UseLighting ?? false;
+      get => this.MaterialShader?.UseLighting ?? false;
       set {
-        if (this.materialShader_ != null) {
-          this.materialShader_.UseLighting = value;
+        if (this.MaterialShader != null) {
+          this.MaterialShader.UseLighting = value;
         }
       }
     }
@@ -66,27 +67,27 @@ public partial class ModelRendererV2 {
     }
 
     private void RenderImpl_() {
-      this.materialShader_?.Use();
+      this.MaterialShader?.Use();
 
-      if (this.material_ != null) {
-        GlUtil.SetBlendingSeparate(this.material_.ColorBlendEquation,
-                                   this.material_.ColorSrcFactor,
-                                   this.material_.ColorDstFactor,
-                                   this.material_.AlphaBlendEquation,
-                                   this.material_.AlphaSrcFactor,
-                                   this.material_.AlphaDstFactor,
-                                   this.material_.LogicOp);
+      if (this.Material != null) {
+        GlUtil.SetBlendingSeparate(this.Material.ColorBlendEquation,
+                                   this.Material.ColorSrcFactor,
+                                   this.Material.ColorDstFactor,
+                                   this.Material.AlphaBlendEquation,
+                                   this.Material.AlphaSrcFactor,
+                                   this.Material.AlphaDstFactor,
+                                   this.Material.LogicOp);
       } else {
         GlUtil.ResetBlending();
       }
 
-      GlUtil.SetCulling(this.material_?.CullingMode ?? CullingMode.SHOW_BOTH);
+      GlUtil.SetCulling(this.Material?.CullingMode ?? CullingMode.SHOW_BOTH);
       GlUtil.SetDepth(
-          this.material_?.DepthMode ?? DepthMode.READ_AND_WRITE,
-          this.material_?.DepthCompareType ??
+          this.Material?.DepthMode ?? DepthMode.READ_AND_WRITE,
+          this.Material?.DepthCompareType ??
           DepthCompareType.LEqual);
-      GlUtil.SetChannelUpdateMask(this.material_?.UpdateColorChannel ?? true,
-                                  this.material_?.UpdateAlphaChannel ?? true);
+      GlUtil.SetChannelUpdateMask(this.Material?.UpdateColorChannel ?? true,
+                                  this.Material?.UpdateAlphaChannel ?? true);
 
       this.bufferRenderer_.Render();
     }

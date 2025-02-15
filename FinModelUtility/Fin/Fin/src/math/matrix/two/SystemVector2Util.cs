@@ -24,4 +24,11 @@ public static class SystemVector2Util {
 
     return true;
   }
+
+  public static float ProjectionScalar(this Vector2 a, Vector2 b)
+    => Vector2.Dot(a, b) / Vector2.Dot(b, b);
+
+
+  public static Vector2 Projection(this Vector2 a, Vector2 b)
+    => a.ProjectionScalar(b) * b;
 }

@@ -143,19 +143,9 @@ public static class SceneExtensions {
       var camera = Camera.Instance;
       var firstLight = lighting.Lights[0];
 
-      var position = new Vector3f();
-      var normal = new Vector3f();
-
       lightingOwner.AddComponent(_ => {
-        position.X = camera.X;
-        position.Y = camera.Y;
-        position.Z = camera.Z;
-        firstLight.SetPosition(position);
-
-        normal.X = camera.XNormal;
-        normal.Y = camera.YNormal;
-        normal.Z = camera.ZNormal;
-        firstLight.SetNormal(normal);
+        firstLight.SetPosition(camera.Position);
+        firstLight.SetNormal(camera.Normal);
       });
     }
   }
