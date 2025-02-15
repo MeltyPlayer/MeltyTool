@@ -51,7 +51,7 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
       var normal = new Vector3f();
 
       var lightingOwner = area.AddObject();
-      lightingOwner.SetOnTickHandler(_ => {
+      lightingOwner.AddComponent(_ => {
         position.X = camera.X;
         position.Y = camera.Y;
         position.Z = camera.Z;

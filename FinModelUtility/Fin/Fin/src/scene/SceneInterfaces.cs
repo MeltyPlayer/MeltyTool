@@ -70,13 +70,15 @@ public partial interface ISceneObject {
 
   ISceneObject SetScale(float x, float y, float z);
 
-  public delegate void OnTick(ISceneObjectInstance self);
-
-  ISceneObject SetOnTickHandler(OnTick handler);
-  public new OnTick TickHandler { get; }
-
   new IReadOnlyList<ISceneModel> Models { get; }
   ISceneModel AddSceneModel(IModel model);
+
+  IReadOnlyList<ISceneObjectComponent> Components { get; }
+  ISceneObject AddComponent(ISceneObjectComponent component);
+}
+
+public interface ISceneObjectComponent {
+  void Tick(ISceneObjectInstance self);
 }
 
 /// <summary>

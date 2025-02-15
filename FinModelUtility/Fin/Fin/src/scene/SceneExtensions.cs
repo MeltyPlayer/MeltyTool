@@ -14,6 +14,15 @@ using fin.ui;
 namespace fin.scene;
 
 public static class SceneExtensions {
+  public static void AddComponent(this ISceneObject sceneObject,
+                                  Action<ISceneObjectInstance> handler)
+    => sceneObject.AddComponent(new LambdaSceneObjectComponent(handler));
+
+  private class LambdaSceneObjectComponent(
+      Action<ISceneObjectInstance> handler) : ISceneObjectComponent {
+    public void Tick(ISceneObjectInstance self) => handler(self);
+  }
+
   public static void CreateDefaultLighting(this IScene scene,
                                            ISceneObject lightingOwner) {
     var needsLights = false;
@@ -132,7 +141,7 @@ public static class SceneExtensions {
       var position = new Vector3f();
       var normal = new Vector3f();
 
-      lightingOwner.SetOnTickHandler(_ => {
+      lightingOwner.AddComponent(_ => {
         position.X = camera.X;
         position.Y = camera.Y;
         position.Z = camera.Z;

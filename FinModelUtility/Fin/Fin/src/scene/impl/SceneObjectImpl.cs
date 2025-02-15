@@ -9,6 +9,7 @@ namespace fin.scene;
 public partial class SceneImpl {
   private class SceneObjectImpl : ISceneObject {
     private readonly List<ISceneModel> models_ = [];
+    private readonly List<ISceneObjectComponent> components_ = [];
     public Vector3 Position { get; private set; }
     public IRotation Rotation { get; } = new RotationImpl();
     public Vector3 Scale { get; private set; } = new Vector3(1, 1, 1);
@@ -53,10 +54,10 @@ public partial class SceneImpl {
       return sceneModel;
     }
 
-    public ISceneObject.OnTick? TickHandler { get; private set; }
+    public IReadOnlyList<ISceneObjectComponent> Components => this.components_;
 
-    public ISceneObject SetOnTickHandler(ISceneObject.OnTick handler) {
-      this.TickHandler = handler;
+    public ISceneObject AddComponent(ISceneObjectComponent component) {
+      this.components_.Add(component);
       return this;
     }
   }

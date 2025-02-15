@@ -66,7 +66,11 @@ public partial class SceneInstanceImpl {
                    .Select(m => new SceneModelInstanceImpl(m))
                    .ToArray();
 
-    public void Tick() => sceneObject.TickHandler?.Invoke(this);
+    public void Tick() {
+      foreach (var component in sceneObject.Components) {
+        component.Tick(this);
+      }
+    }
 
 
     private float viewerScale_ = 1;
