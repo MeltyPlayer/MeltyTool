@@ -29,6 +29,7 @@ public class Lvl : ITextDeserializable {
 
   public List<(Vector3 start, Vector3 end, string? textureName, FloorBlockType
       type, FloorBlockFlags flags)> FloorBlocks { get; set; } = [];
+
   public List<Vector3> SaveBlocks { get; set; } = [];
 
   public void Read(ITextReader tr) {
@@ -49,42 +50,48 @@ public class Lvl : ITextDeserializable {
       } else if (
           line.TryRemoveStart("parCamera.img:", out var backgroundName)) {
         this.BackgroundName = backgroundName.Trim();
-      } else if (line.TryRemoveStart("objTree1(", out var treeParamsText)) {
-        var treeParams
-            = treeParamsText.Split(",", StringSplitOptions.TrimEntries);
-        this.Trees.Add(new Vector3(float.Parse(treeParams[0]),
-                                   float.Parse(treeParams[1]),
-                                   float.Parse(treeParams[2])));
-      } else if (line.TryRemoveStart("objFloorBlock(",
-                                     out var floorBlockParamsText)) {
-        var floorBlockParams
-            = floorBlockParamsText.SubstringUpTo(')')
-                                  .Split(',', StringSplitOptions.TrimEntries);
-        var start = new Vector3(float.Parse(floorBlockParams[0]),
-                                float.Parse(floorBlockParams[1]),
-                                float.Parse(floorBlockParams[2]));
-        var end = new Vector3(float.Parse(floorBlockParams[3]),
-                              float.Parse(floorBlockParams[4]),
-                              float.Parse(floorBlockParams[5]));
-        var textureName
-            = floorBlockParams[6] == "-1" ? null : floorBlockParams[6];
+      } else if (TryToParseObj(line, out var objType, out var objParams)) {
+        switch (objType) {
+          case "objTree1": {
+            this.Trees.Add(ParseVector3(objParams));
+            break;
+          }
+          case "objSaveBlock": {
+            this.SaveBlocks.Add(ParseVector3(objParams));
+            break;
+          }
+          case "objFloorBlock": {
+            var start = ParseVector3(objParams);
+            var end = ParseVector3(objParams.AsSpan(3));
+            var textureName = objParams[6] == "-1"
+                ? null
+                : objParams[6];
 
-        var behavior = floorBlockParams[7].Replace(@"""", "");
-        var type = GetFloorBlockType(behavior);
-        var flags = GetFloorBlockFlags(behavior);
+            var behavior = objParams[7].Replace(@"""", "");
+            var type = GetFloorBlockType(behavior);
+            var flags = GetFloorBlockFlags(behavior);
 
-        this.FloorBlocks.Add((start, end, textureName, type, flags));
-      } else if (line.TryRemoveStart("objSaveBlock(",
-                                     out var saveBlockParamsText)) {
-        var saveBlockParams
-            = saveBlockParamsText.SubstringUpTo(')')
-                                 .Split(',', StringSplitOptions.TrimEntries);
-        var position = new Vector3(float.Parse(saveBlockParams[0]),
-                                   float.Parse(saveBlockParams[1]),
-                                   float.Parse(saveBlockParams[2]));
-        this.SaveBlocks.Add(position);
+            this.FloorBlocks.Add((start, end, textureName, type, flags));
+            break;
+          }
+        }
       }
     }
+  }
+
+  public static bool TryToParseObj(string line,
+                                   out string type,
+                                   out string[] prms) {
+    if (line.StartsWith("obj") && line.Contains('(')) {
+      (type, var paramsText) = line.SplitBeforeAndAfterFirst('(');
+      prms = paramsText.SubstringUpTo(')')
+                       .Split(',', StringSplitOptions.TrimEntries);
+      return true;
+    }
+
+    type = null!;
+    prms = null!;
+    return false;
   }
 
   public static FloorBlockType GetFloorBlockType(string behavior) {
@@ -132,4 +139,7 @@ public class Lvl : ITextDeserializable {
       "true"  => true,
       _       => throw new ArgumentOutOfRangeException(nameof(text), text, null)
   };
+
+  public static Vector3 ParseVector3(ReadOnlySpan<string> span)
+    => new(float.Parse(span[0]), float.Parse(span[1]), float.Parse(span[2]));
 }

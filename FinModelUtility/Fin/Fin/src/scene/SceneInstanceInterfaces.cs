@@ -41,7 +41,6 @@ public partial interface ISceneAreaInstance : ITickable, IDisposable {
 
   new float ViewerScale { get; set; }
 
-  new Color? BackgroundColor { get; }
   new ISceneObjectInstance? CustomSkyboxObject { get; }
 }
 

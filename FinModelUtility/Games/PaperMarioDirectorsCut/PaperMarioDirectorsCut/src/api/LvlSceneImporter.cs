@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Numerics;
+﻿using System.Numerics;
 
 using fin.animation.keyframes;
 using fin.color;
@@ -7,7 +6,6 @@ using fin.data.lazy;
 using fin.image;
 using fin.io;
 using fin.math;
-using fin.math.rotations;
 using fin.math.transform;
 using fin.model;
 using fin.model.util;
@@ -147,9 +145,7 @@ public class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
 
       foreach (var saveBlockPosition in lvl.SaveBlocks) {
         finArea.AddObject()
-               .SetPosition(saveBlockPosition.X,
-                            saveBlockPosition.Z,
-                            saveBlockPosition.Y)
+               .SetPosition(saveBlockPosition.X, saveBlockPosition.Z, saveBlockPosition.Y)
                .AddSceneModel(saveBlockModel);
       }
     }
@@ -193,9 +189,8 @@ public class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
           = sceneFileBundle
             .RootDirectory.AssertGetExistingSubdir("Backgrounds")
             .AssertGetExistingFile($"{lvl.BackgroundName}.png");
-
-      var backgroundImage = FinImage.FromFile(backgroundImageFile);
-      var backgroundObject = finArea.CreateCustomSkyboxObject();
+      finArea.BackgroundImage = FinImage.FromFile(backgroundImageFile);
+      finArea.CreateCustomSkyboxObject();
     }
 
     finScene.CreateDefaultLighting(finArea.AddObject());
@@ -369,8 +364,10 @@ public class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
       var starBoneTracks = starAnimation.AddBoneTracks(starBone);
       var starBoneRotations = starBoneTracks.UseSeparateEulerRadiansKeyframes();
       starBoneRotations.Axes[2].Add(new Keyframe<float>(0, 0));
-      starBoneRotations.Axes[2].Add(new Keyframe<float>(frameCount / 2, MathF.PI));
-      starBoneRotations.Axes[2].Add(new Keyframe<float>(frameCount, 2 * MathF.PI));
+      starBoneRotations.Axes[2]
+                       .Add(new Keyframe<float>(frameCount / 2, MathF.PI));
+      starBoneRotations.Axes[2]
+                       .Add(new Keyframe<float>(frameCount, 2 * MathF.PI));
 
       var (starMaterial, _)
           = saveBlockMaterialManager.AddSimpleTextureMaterialFromFile(

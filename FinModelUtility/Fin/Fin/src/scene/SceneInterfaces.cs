@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Numerics;
 
 using fin.data.dictionaries;
+using fin.image;
 using fin.importers;
 using fin.model;
 
@@ -43,6 +44,9 @@ public partial interface ISceneArea {
   ISceneObject AddObject();
 
   new Color? BackgroundColor { get; set; }
+
+  new IImage? BackgroundImage { get; set; }
+
   new ISceneObject? CustomSkyboxObject { get; set; }
   ISceneObject CreateCustomSkyboxObject();
 }

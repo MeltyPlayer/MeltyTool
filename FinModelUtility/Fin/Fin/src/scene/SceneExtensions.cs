@@ -14,6 +14,11 @@ using fin.ui;
 namespace fin.scene;
 
 public static class SceneExtensions {
+  public static ISceneObject SetPosition(this ISceneObject sceneObject,
+                                         Vector3 position)
+    => sceneObject.SetPosition(position.X, position.Y, position.Z);
+
+
   public static void AddComponent(this ISceneObject sceneObject,
                                   Action<ISceneObjectInstance> handler)
     => sceneObject.AddComponent(new LambdaSceneObjectComponent(handler));

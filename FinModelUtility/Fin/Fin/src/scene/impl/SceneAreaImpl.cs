@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
+using fin.image;
+
 namespace fin.scene;
 
 public partial class SceneImpl {
@@ -16,6 +18,7 @@ public partial class SceneImpl {
     }
 
     public Color? BackgroundColor { get; set; }
+    public IImage? BackgroundImage { get; set; }
     public ISceneObject? CustomSkyboxObject { get; set; }
 
     public ISceneObject CreateCustomSkyboxObject()

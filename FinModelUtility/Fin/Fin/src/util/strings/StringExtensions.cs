@@ -34,6 +34,14 @@ public static class StringExtensions {
     return trimmed;
   }
 
+  public static (string, string) SplitBeforeAndAfterFirst(
+      this string text,
+      char separator) {
+    var index = text.IndexOf(separator);
+    Asserts.True(index >= 0);
+    return (text[..index], text[(index + 1)..]);
+  }
+
   public static string[] SplitNewlines(this string text)
     => Regex.Split(text, "\r\n|\r|\n");
 

@@ -484,10 +484,7 @@ public class LevelXmlParser {
                     positionObj.Position.Y,
                     translation.Z);
               } else {
-                sceneObject.SetPosition(
-                    translation.X,
-                    translation.Y,
-                    translation.Z);
+                sceneObject.SetPosition(translation);
               }
 
               if (child.ModelName.Contains("WA20H")) {
