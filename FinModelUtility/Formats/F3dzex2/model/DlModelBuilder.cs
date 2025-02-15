@@ -270,11 +270,8 @@ public class DlModelBuilder {
                                         BlendFactor.ONE_MINUS_SRC_ALPHA,
                                         LogicOp.UNDEFINED);
               } else {
-                finMaterial.SetAlphaCompare(AlphaOp.Or,
-                                            AlphaCompareType.Greater,
-                                            .5f,
-                                            AlphaCompareType.Never,
-                                            0);
+                finMaterial.SetAlphaCompare(AlphaCompareType.Greater,
+                                            .5f);
               }
 
               return finMaterial;

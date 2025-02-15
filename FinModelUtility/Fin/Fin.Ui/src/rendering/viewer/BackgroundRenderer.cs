@@ -64,7 +64,7 @@ public class BackgroundRenderer : IRenderable {
             = SystemVector2Util.FromRadians(cameraYawRadians - MathF.PI / 2);
         var projectionAgainstRight = deltaCameraPosition.ProjectionScalar(right);
 
-        var panSpeed = 50;
+        var panSpeed = 100;
         scrollXDelta += projectionAgainstRight / this.BackgroundImage.Width * panSpeed;
 
         this.prevCameraPosition_ = cameraPosition;

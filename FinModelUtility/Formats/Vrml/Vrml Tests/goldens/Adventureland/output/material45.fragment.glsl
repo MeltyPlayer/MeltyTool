@@ -128,4 +128,8 @@ void main() {
   float alphaComponent = 0.930000007153;
 
   fragColor = vec4(colorComponent, alphaComponent);
+
+  if (!(alphaComponent > 0.01)) {
+    discard;
+  }
 }

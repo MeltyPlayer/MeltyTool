@@ -46,9 +46,12 @@ public record AppearanceNode : IAppearanceNode {
 }
 
 public record MaterialNode : IMaterialNode {
+  public const float DEFAULT_AMBIENT_INTENSITY = .2f;
+  public const float DEFAULT_DIFFUSE_COLOR = .8f;
+
   public Vector3? AmbientColor { get; init; }
-  public float AmbientIntensity { get; init; }
-  public Vector3 DiffuseColor { get; init; }
+  public float AmbientIntensity { get; init; } = DEFAULT_AMBIENT_INTENSITY;
+  public Vector3 DiffuseColor { get; init; } = new(DEFAULT_DIFFUSE_COLOR);
   public float Transparency { get; init; }
 }
 

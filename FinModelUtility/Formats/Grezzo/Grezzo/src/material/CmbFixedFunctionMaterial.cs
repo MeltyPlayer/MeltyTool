@@ -230,7 +230,6 @@ public class CmbFixedFunctionMaterial {
                                       0);
         } else {
           finMaterial.SetAlphaCompare(
-              AlphaOp.Or,
               cmbMaterial.alphaTestFunction switch {
                   TestFunc.Always   => AlphaCompareType.Always,
                   TestFunc.Equal    => AlphaCompareType.Equal,
@@ -242,9 +241,7 @@ public class CmbFixedFunctionMaterial {
                   TestFunc.Notequal => AlphaCompareType.NEqual,
                   _                 => throw new ArgumentOutOfRangeException()
               },
-              cmbMaterial.alphaTestReferenceValue,
-              AlphaCompareType.Never,
-              0);
+              cmbMaterial.alphaTestReferenceValue);
         }
 
         // TODO: How is color blend mode used??? It almost always looks wrong

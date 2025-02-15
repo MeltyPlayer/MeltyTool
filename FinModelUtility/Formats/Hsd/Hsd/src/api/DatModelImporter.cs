@@ -262,10 +262,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               var peDesc = mObj.PeDesc;
               if (peDesc == null) {
                 fixedFunctionMaterial.SetAlphaCompare(
-                    AlphaOp.Or,
                     AlphaCompareType.Greater,
-                    0,
-                    AlphaCompareType.Never,
                     0);
               } else {
                 fixedFunctionMaterial.DepthCompareType =

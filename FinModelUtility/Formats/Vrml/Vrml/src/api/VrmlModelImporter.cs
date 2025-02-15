@@ -2,8 +2,8 @@
 
 using DelaunatorSharp;
 
+using fin.animation.keyframes;
 using fin.color;
-using fin.data.counters;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
@@ -159,18 +159,33 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               : finMaterial.Textures.FirstOrDefault()?.TransparencyType ??
                 TransparencyType.OPAQUE;
 
+          finMaterial.SetDefaultAlphaCompare();
+
           return finMaterial;
         });
 
     var finSkeleton = finModel.Skeleton;
     var finSkin = finModel.Skin;
 
-    var allVrmlNodes = vrmlScene.GetAllChildren();
+    var allVrmlNodes = vrmlScene.GetAllChildren().ToArray();
     var vertexOrdering
         = allVrmlNodes.WhereIs<INode, ShapeHintsNode>()
                       .SingleOrDefault()
                       ?.VertexOrdering ??
           VertexOrder.COUNTER_CLOCKWISE;
+
+    var maxCycleInterval = allVrmlNodes.WhereIs<INode, TimeSensorNode>().Select(t => t.CycleInterval).MaxOrDefault();
+
+    IModelAnimation? animation = null;
+    if (allVrmlNodes.WhereIs<INode, OrientationInterpolatorNode>().Any() ||
+        allVrmlNodes.WhereIs<INode, PositionInterpolatorNode>().Any()) {
+      animation = finModel.AnimationManager.AddAnimation();
+      animation.FrameRate = 30;
+      animation.FrameCount = (int) (animation.FrameRate * maxCycleInterval);
+    }
+
+    OrientationInterpolatorNode? orientationInterpolatorNode = null;
+    PositionInterpolatorNode? positionInterpolatorNode = null;
 
     var nodeQueue
         = new FinTuple2Queue<INode, IBone>(
@@ -181,8 +196,16 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       if (vrmlNode is ITransform transform) {
         // T × C × R × SR × S × -SR × -C
         var translation = transform.Translation;
-        if (!translation.IsRoughly0()) {
-          finBone = finBone.AddChild(transform.Translation);
+        if (!translation.IsRoughly0() || positionInterpolatorNode != null) {
+          var translationBone
+              = finBone = finBone.AddChild(transform.Translation);
+          if (positionInterpolatorNode != null) {
+            var translationTracks = animation.AddBoneTracks(translationBone)
+                                             .UseCombinedTranslationKeyframes();
+            foreach (var (frame, value) in positionInterpolatorNode.Keyframes) {
+              translationTracks.Add(new Keyframe<Vector3>(animation.FrameCount * frame, value));
+            }
+          }
         }
 
         var center = transform.Center;
@@ -191,9 +214,18 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         }
 
         var rotation = transform.Rotation;
-        if (rotation != null && rotation != Quaternion.Identity) {
-          finBone = finBone.AddChild(
-              SystemMatrix4x4Util.FromRotation(rotation.Value));
+        if ((rotation != null && rotation != Quaternion.Identity) ||
+            orientationInterpolatorNode != null) {
+          var rotationBone = finBone = finBone.AddChild(
+              SystemMatrix4x4Util.FromRotation(
+                  rotation ?? Quaternion.Identity));
+          if (orientationInterpolatorNode != null) {
+            var rotationTracks = animation.AddBoneTracks(rotationBone)
+                                             .UseCombinedQuaternionKeyframes();
+            foreach (var (frame, value) in orientationInterpolatorNode.Keyframes) {
+              rotationTracks.Add(new Keyframe<Quaternion>(animation.FrameCount * frame, value));
+            }
+          }
         }
 
         var scaleOrientation = transform.ScaleOrientation;
@@ -219,13 +251,16 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         if (center != null && !center.Value.IsRoughly0()) {
           finBone = finBone.AddChild(-center.Value);
         }
+
+        orientationInterpolatorNode = null;
+        positionInterpolatorNode = null;
       }
 
       switch (vrmlNode) {
         case IIsbPictureNode pictureNode: {
           var image = pictureNode.Frames[0];
           var appearance = new AppearanceNode {
-              Material = new MaterialNode { DiffuseColor = new Vector3(.5f) },
+              Material = new MaterialNode(),
               Texture = image,
           };
 
@@ -252,6 +287,17 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var finPrimitive = finMesh.AddQuads([vtx0, vtx1, vtx2, vtx3]);
           finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
           finPrimitive.SetMaterial(finMaterial);
+
+          AddFaceNormal_([vtx0, vtx1, vtx2, vtx3], finPrimitive.VertexOrder);
+
+          break;
+        }
+        case OrientationInterpolatorNode currentOrientationInterpolatorNode: {
+          orientationInterpolatorNode = currentOrientationInterpolatorNode;
+          break;
+        }
+        case PositionInterpolatorNode currentPositionInterpolatorNode: {
+          positionInterpolatorNode = currentPositionInterpolatorNode;
           break;
         }
         case IShapeNode shapeNode: {

@@ -9,6 +9,7 @@ using fin.data.indexable;
 using fin.image;
 using fin.io;
 using fin.language.equations.fixedFunction;
+using fin.shaders.glsl;
 using fin.util.image;
 
 using schema.readOnly;
@@ -118,12 +119,10 @@ public partial interface IMaterial {
       LogicOp logicOp);
 }
 
-
 [GenerateReadOnly]
 public partial interface IMaterialWithNormalTexture : IMaterial {
   new IReadOnlyTexture? NormalTexture { get; set; }
 }
-
 
 [GenerateReadOnly]
 public partial interface INullMaterial : IMaterial;
@@ -336,7 +335,7 @@ public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
                                           IReadOnlyTexture texture);
 
   new IReadOnlyTexture? CompiledTexture { get; set; }
-  
+
   // TODO: Merge this into a single type
   new AlphaOp AlphaOp { get; }
   new AlphaCompareType AlphaCompareType0 { get; }
@@ -350,6 +349,29 @@ public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
       float reference0,
       AlphaCompareType alphaCompareType1,
       float reference1);
+
+  IFixedFunctionMaterial SetAlphaCompare(AlphaCompareType alphaCompareType,
+                                         float reference)
+    => this.SetAlphaCompare(AlphaOp.Or,
+                            AlphaCompareType.Never,
+                            0,
+                            alphaCompareType,
+                            reference);
+
+  IFixedFunctionMaterial SetDefaultAlphaCompare() {
+    switch (this.TransparencyType) {
+      case TransparencyType.MASK: {
+        this.SetAlphaCompare(AlphaCompareType.Greater, GlslConstants.MIN_ALPHA_BEFORE_DISCARD_MASK);
+        break;
+      }
+      case TransparencyType.TRANSPARENT: {
+        this.SetAlphaCompare(AlphaCompareType.Greater, GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TRANSPARENT);
+        break;
+      }
+    }
+
+    return this;
+  }
 }
 
 public enum UvType {

@@ -89,8 +89,8 @@ public partial class VrmlParser {
         });
 
     return new TextNode {
-        String = @string.AssertNonnull(),
-        FontStyle = fontStyle.AssertNonnull(),
+        String = @string,
+        FontStyle = fontStyle,
     };
   }
 }

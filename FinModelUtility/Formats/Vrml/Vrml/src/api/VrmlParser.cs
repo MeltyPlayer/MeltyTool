@@ -66,10 +66,8 @@ public partial class VrmlParser {
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
               "BackgroundColor", "Collision", "Fog", "Info", "NavigationInfo",
-              "OrientationInterpolator", "PerspectiveCamera",
-              "PositionInterpolator", "PROTO", "ProximitySensor", "ROUTE",
-              "Sphere", "Sound", "TimeSensor", "Viewpoint", "WorldInfo",
-              "WWWAnchor",
+              "PerspectiveCamera", "PROTO", "ProximitySensor", "ROUTE",
+              "Sphere", "Sound", "Viewpoint", "WorldInfo", "WWWAnchor",
           }
           .ToImmutableHashSet();
 
@@ -167,6 +165,8 @@ public partial class VrmlParser {
         "ISBMovingTextureTransform" => ReadIsbMovingTextureTransformNode_(tr),
         "ISBPicture" => ReadIsbPictureNode_(tr, definitions),
         "Material" => ReadMaterialNode_(tr),
+        "OrientationInterpolator" => ReadOrientationInterpolatorNode_(tr),
+        "PositionInterpolator" => ReadPositionInterpolatorNode_(tr),
         "Separator" => ReadSeparatorNode_(tr, definitions),
         "Shape" => ReadShapeNode_(tr, definitions),
         "ShapeHints" => ReadShapeHintsNode_(tr),
@@ -174,6 +174,7 @@ public partial class VrmlParser {
         "Text" => ReadTextNode_(tr, definitions),
         "TextureCoordinate" => ReadTextureCoordinateNode_(tr),
         "TextureTransform" => ReadTextureTransformNode_(tr),
+        "TimeSensor" => ReadTimeSensorNode_(tr),
         "Transform"
             or "ISBLandscape" => ReadTransformNode_(tr, definitions),
         _ => throw new NotImplementedException(),
@@ -520,8 +521,8 @@ public partial class VrmlParser {
 
   private static IMaterialNode ReadMaterialNode_(ITextReader tr) {
     Vector3? ambientColor = null;
-    float ambientIntensity = .2f;
-    Vector3 diffuseColor = new(.8f);
+    float ambientIntensity = MaterialNode.DEFAULT_AMBIENT_INTENSITY;
+    Vector3 diffuseColor = new(MaterialNode.DEFAULT_DIFFUSE_COLOR);
     float transparency = 0;
 
     ReadFields_(
@@ -640,8 +641,8 @@ public partial class VrmlParser {
         });
 
     return new ShapeNode {
-        Appearance = appearanceNode.AssertNonnull(),
-        Geometry = geometryNode.AssertNonnull()
+        Appearance = appearanceNode,
+        Geometry = geometryNode
     };
   }
 
@@ -772,17 +773,20 @@ public partial class VrmlParser {
     }
   }
 
-  private static void ReadArray_(ITextReader tr, Action lineHandler) {
+  private static void ReadArray_(ITextReader tr,
+                                 Action<ITextReader> lineHandler) {
     SkipWhitespace_(tr);
     tr.AssertChar('[');
 
-    while (!tr.Eof) {
-      SkipWhitespace_(tr);
-      if (tr.Matches(out _, [']'])) {
-        return;
-      }
+    var arrayText = tr.ReadUpToAndPastTerminator(']');
 
-      lineHandler();
+    using var ms = new MemoryStream(Encoding.ASCII.GetBytes(arrayText));
+    var subTr = new SchemaTextReader(ms);
+
+    while (!subTr.Eof) {
+      SkipWhitespace_(subTr);
+      lineHandler(subTr);
+      SkipWhitespace_(subTr);
     }
   }
 
@@ -793,7 +797,7 @@ public partial class VrmlParser {
     var nodes = new LinkedList<TNode>();
     ReadArray_(
         tr,
-        () => nodes.AddLast(ParseNodeOfType_<TNode>(tr, definitions)));
+        subTr => nodes.AddLast(ParseNodeOfType_<TNode>(subTr, definitions)));
     return nodes.ToArray();
   }
 
@@ -803,30 +807,52 @@ public partial class VrmlParser {
     return tr.ReadInt32s(TextReaderConstants.COMMA_CHAR, ']');
   }
 
+  private static readonly char[] SEPARATORS_ = TextReaderConstants.WHITESPACE_CHARS
+      .Concat(TextReaderConstants.COMMA_CHARS)
+      .ToArray();
+
+  private static IReadOnlyList<float> ReadSingleArray_(ITextReader tr) {
+    SkipWhitespace_(tr);
+    tr.AssertChar('[');
+    return tr.ReadSingles(SEPARATORS_, [']']);
+  }
+
   private static IReadOnlyList<Vector2> ReadVector2Array_(ITextReader tr) {
     var list = new LinkedList<Vector2>();
     ReadArray_(tr,
-               () => {
-                 tr.Matches(out _, [',']);
+               subTr => {
+                 subTr.Matches(out _, [',']);
                  list.AddLast(
-                     new Vector2(ReadSingles_(tr, 2, [",", "\n", "\r\n"])));
+                     new Vector2(ReadSingles_(subTr, 2, [",", "\n", "\r\n"])));
                });
     return list.ToArray();
   }
 
   private static IReadOnlyList<Vector3> ReadColorArray_(ITextReader tr) {
     var list = new LinkedList<Vector3>();
-    ReadArray_(tr, () => list.AddLast(ReadVector3_(tr)));
+    ReadArray_(tr, subTr => list.AddLast(ReadVector3_(subTr)));
     return list.ToArray();
   }
 
   private static IReadOnlyList<Vector3> ReadVector3Array_(ITextReader tr) {
     var list = new LinkedList<Vector3>();
     ReadArray_(tr,
-               () => {
-                 tr.Matches(out _, [',']);
+               subTr => {
+                 subTr.Matches(out _, [',']);
                  list.AddLast(
-                     new Vector3(ReadSingles_(tr, 3, [",", "\n", "\r\n"])));
+                     new Vector3(ReadSingles_(subTr, 3, [",", "\n", "\r\n", "]"])));
+               });
+    return list.ToArray();
+  }
+
+  private static IReadOnlyList<Quaternion> ReadQuaternionArray_(ITextReader tr) {
+    var list = new LinkedList<Quaternion>();
+    ReadArray_(tr,
+               subTr => {
+                 subTr.Matches(out _, [',']);
+                 var values = ReadSingles_(subTr, 4, [",", "\n", "\r\n", "]"]);
+                 list.AddLast(Quaternion.CreateFromAxisAngle(new Vector3(values.AsSpan(0, 3)),
+                                values[3]));
                });
     return list.ToArray();
   }
@@ -834,9 +860,9 @@ public partial class VrmlParser {
   private static IReadOnlyList<string> ReadStringArray_(ITextReader tr) {
     var list = new LinkedList<string>();
     ReadArray_(tr,
-               () => {
-                 tr.Matches(out _, [',']);
-                 list.AddLast(ReadString_(tr));
+               subTr => {
+                 subTr.Matches(out _, [',']);
+                 list.AddLast(ReadString_(subTr));
                });
     return list.ToArray();
   }
