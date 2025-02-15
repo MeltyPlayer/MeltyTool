@@ -23,8 +23,13 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
     <ProjectReference Include="..\..\..\Formats\Granny3d\Granny3d.csproj" />
-    <ProjectReference Include="..\..\..\Platforms\Gx\Gx.csproj" />
     <ProjectReference Include="..\KSoft\KSoft.Phoenix\KSoft.Phoenix.csproj" />
     <ProjectReference Include="..\KSoft\KSoft\KSoft.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\schema\vis\" />
+    <Folder Include="src\schema\ugx\" />
+    <Folder Include="src\schema\xtd\" />
   </ItemGroup>
 </Project>

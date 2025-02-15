@@ -31,10 +31,10 @@ public static class MeshExtensions {
   public static void AddSimpleQuad<TVertex>(
       this IMesh mesh,
       ISkin<TVertex> skin,
-      (Vector3, Vector2) ulP,
-      (Vector3, Vector2) urP,
-      (Vector3, Vector2) lrP,
-      (Vector3, Vector2) llP,
+      (Vector3 position, Vector2 uv) ulP,
+      (Vector3 position, Vector2 uv) urP,
+      (Vector3 position, Vector2 uv) lrP,
+      (Vector3 position, Vector2 uv) llP,
       IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null)
       where TVertex : INormalVertex, ISingleUvVertex {
@@ -50,21 +50,46 @@ public static class MeshExtensions {
     var normal = Vector3.Cross(b - a, c - a);
     normal = Vector3.Normalize(normal);
 
+    mesh.AddSimpleQuad(
+        skin,
+        (ul, ulUv, normal),
+        (ur, urUv, normal),
+        (lr, lrUv, normal),
+        (ll, llUv, normal),
+        material,
+        bone);
+  }
+
+  public static void AddSimpleQuad<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      (Vector3 position, Vector2 uv, Vector3 normal) ulP,
+      (Vector3 position, Vector2 uv, Vector3 normal) urP,
+      (Vector3 position, Vector2 uv, Vector3 normal) lrP,
+      (Vector3 position, Vector2 uv, Vector3 normal) llP,
+      IReadOnlyMaterial? material = null,
+      IReadOnlyBone? bone = null)
+      where TVertex : INormalVertex, ISingleUvVertex {
+    var (ul, ulUv, ulNormal) = ulP;
+    var (ur, urUv, urNormal) = urP;
+    var (lr, lrUv, lrNormal) = lrP;
+    var (ll, llUv, llNormal) = llP;
+
     var vUl = skin.AddVertex(ul);
     vUl.SetUv(ulUv);
-    vUl.SetLocalNormal(normal);
+    vUl.SetLocalNormal(ulNormal);
 
     var vUr = skin.AddVertex(ur);
     vUr.SetUv(urUv);
-    vUr.SetLocalNormal(normal);
+    vUr.SetLocalNormal(urNormal);
 
     var vLr = skin.AddVertex(lr);
     vLr.SetUv(lrUv);
-    vLr.SetLocalNormal(normal);
+    vLr.SetLocalNormal(lrNormal);
 
     var vLl = skin.AddVertex(ll);
     vLl.SetUv(llUv);
-    vLl.SetLocalNormal(normal);
+    vLl.SetLocalNormal(llNormal);
 
     if (bone != null) {
       var boneWeights
@@ -126,6 +151,24 @@ public static class MeshExtensions {
       IReadOnlyMaterial? material = null,
       IReadOnlyBone? bone = null,
       (float, float, float)? repeat = null)
+      where TVertex : INormalVertex, ISingleUvVertex
+    => mesh.AddSimpleCube(skin,
+                          point1,
+                          point2,
+                          material,
+                          material,
+                          bone,
+                          repeat);
+
+  public static void AddSimpleCube<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      Vector3 point1,
+      Vector3 point2,
+      IReadOnlyMaterial? topBottomMaterial = null,
+      IReadOnlyMaterial? sidesMaterial = null,
+      IReadOnlyBone? bone = null,
+      (float, float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
     var tUl = point1;
     var tUr = point1 with { X = point2.X };
@@ -152,7 +195,7 @@ public static class MeshExtensions {
                          tUr,
                          tLr,
                          tLl,
-                         material,
+                         topBottomMaterial,
                          bone,
                          topBottomRepeat);
       // Bottom
@@ -161,7 +204,7 @@ public static class MeshExtensions {
                          bUl,
                          bLl,
                          bLr,
-                         material,
+                         topBottomMaterial,
                          bone,
                          topBottomRepeat);
     }
@@ -175,7 +218,7 @@ public static class MeshExtensions {
                          tLr,
                          bLr,
                          bLl,
-                         material,
+                         sidesMaterial,
                          bone,
                          frontBackRepeat);
       // Back
@@ -184,7 +227,7 @@ public static class MeshExtensions {
                          tUl,
                          bUl,
                          bUr,
-                         material,
+                         sidesMaterial,
                          bone,
                          frontBackRepeat);
     }
@@ -198,7 +241,7 @@ public static class MeshExtensions {
                          tLl,
                          bLl,
                          bUl,
-                         material,
+                         sidesMaterial,
                          bone,
                          leftRightRepeat);
       // Right
@@ -207,7 +250,7 @@ public static class MeshExtensions {
                          tUr,
                          bUr,
                          bLr,
-                         material,
+                         sidesMaterial,
                          bone,
                          leftRightRepeat);
     }
@@ -240,16 +283,18 @@ public static class MeshExtensions {
       var angle1 = 2 * MathF.PI * frac1;
       var angle2 = 2 * MathF.PI * frac2;
 
-      var xy1 = center + SystemVector2Util.FromRadians(angle1) * new Vector2(xRadius, yRadius);
-      var xy2 = center + SystemVector2Util.FromRadians(angle2) * new Vector2(xRadius, yRadius);
+      var norm1 = SystemVector2Util.FromRadians(angle1);
+      var norm2 = SystemVector2Util.FromRadians(angle2);
+      var xy1 = center + norm1 * new Vector2(xRadius, yRadius);
+      var xy2 = center + norm2 * new Vector2(xRadius, yRadius);
 
       var u1 = frac1 * (repeat?.Item1 ?? 1);
       var u2 = frac2 * (repeat?.Item1 ?? 1);
 
-      var ul = (new Vector3(xy1, z1), new Vector2(u1, v1));
-      var ur = (new Vector3(xy2, z1), new Vector2(u2, v1));
-      var lr = (new Vector3(xy2, z2), new Vector2(u2, v2));
-      var ll = (new Vector3(xy1, z2), new Vector2(u1, v2));
+      var ul = (new Vector3(xy1, z1), new Vector2(u1, v1), new Vector3(norm1, 0));
+      var ur = (new Vector3(xy2, z1), new Vector2(u2, v1), new Vector3(norm2, 0));
+      var lr = (new Vector3(xy2, z2), new Vector2(u2, v2), new Vector3(norm2, 0));
+      var ll = (new Vector3(xy1, z2), new Vector2(u1, v2), new Vector3(norm1, 0));
 
       mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
       mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);

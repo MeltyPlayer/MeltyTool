@@ -21,14 +21,27 @@ public partial class ModelImpl<TVertex> {
       this.Textures
           = new ReadOnlyCollection<IReadOnlyTexture>([texture]);
 
-      if (texture.TransparencyType == TransparencyType.TRANSPARENT) {
-        this.TransparencyType = TransparencyType.TRANSPARENT;
-      }
+      this.UpdateTransparencyType_();
     }
 
     public IReadOnlyTexture Texture { get; }
     public override IEnumerable<IReadOnlyTexture> Textures { get; }
 
-    public Color? DiffuseColor { get; set; }
+    public Color? DiffuseColor {
+      get;
+      set {
+        field = value;
+        this.UpdateTransparencyType_();
+      }
+    }
+
+    private void UpdateTransparencyType_() {
+      if (this.Texture.TransparencyType == TransparencyType.TRANSPARENT ||
+          (this.DiffuseColor?.A ?? 255) < 255) {
+        this.TransparencyType = TransparencyType.TRANSPARENT;
+      } else {
+        this.TransparencyType = this.Texture.TransparencyType;
+      }
+    }
   }
 }

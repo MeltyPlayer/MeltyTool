@@ -29,6 +29,7 @@ public class Lvl : ITextDeserializable {
 
   public List<(Vector3 start, Vector3 end, string? textureName, FloorBlockType
       type, FloorBlockFlags flags)> FloorBlocks { get; set; } = [];
+  public List<Vector3> SaveBlocks { get; set; } = [];
 
   public void Read(ITextReader tr) {
     this.HasRoomModel = false;
@@ -73,6 +74,15 @@ public class Lvl : ITextDeserializable {
         var flags = GetFloorBlockFlags(behavior);
 
         this.FloorBlocks.Add((start, end, textureName, type, flags));
+      } else if (line.TryRemoveStart("objSaveBlock(",
+                                     out var saveBlockParamsText)) {
+        var saveBlockParams
+            = saveBlockParamsText.SubstringUpTo(')')
+                                 .Split(',', StringSplitOptions.TrimEntries);
+        var position = new Vector3(float.Parse(saveBlockParams[0]),
+                                   float.Parse(saveBlockParams[1]),
+                                   float.Parse(saveBlockParams[2]));
+        this.SaveBlocks.Add(position);
       }
     }
   }

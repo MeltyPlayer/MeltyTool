@@ -329,7 +329,6 @@ public static class DxtDecoder {
     int bch = (height + 3) / 4;
     int clen_last = (width + 3) % 4 + 1;
 
-    Span<Rgb24> buffer = stackalloc Rgb24[16];
     Span<Rgb24> colors = stackalloc Rgb24[4];
 
     var bitmap = new Rgb24Image(PixelFormat.DXT1, width, height);
@@ -359,6 +358,7 @@ public static class DxtDecoder {
           colors[2] = new Rgb24((byte) ((r0 + r1) / 2),
                                 (byte) ((g0 + g1) / 2),
                                 (byte) ((b0 + b1) / 2));
+          colors[3] = default;
         }
 
         var d = br.ReadUInt32();
