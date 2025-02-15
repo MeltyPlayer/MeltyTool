@@ -108,21 +108,12 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     var height = this.Height;
     GL.Viewport(0, 0, width, height);
 
-    if (this.singleArea_?.BackgroundColor != null) {
-      GlUtil.SetClearColor(this.singleArea_.BackgroundColor.Value);
+    var singleAreaDefinition = this.singleArea_?.Definition;
+    if (singleAreaDefinition?.BackgroundColor != null) {
+      GlUtil.SetClearColor(singleAreaDefinition.BackgroundColor.Value);
     }
 
     GlUtil.ClearColorAndDepth();
-
-    this.RenderPerspective_();
-    this.RenderOrtho_();
-
-    FrameTime.MarkEndOfFrameForFpsDisplay();
-  }
-
-  private void RenderPerspective_() {
-    var width = this.Width;
-    var height = this.Height;
 
     {
       GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
@@ -147,6 +138,19 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
                          this.Camera.ZUp);
     }
 
+    this.RenderSkybox_();
+    this.RenderScene_();
+
+    FrameTime.MarkEndOfFrameForFpsDisplay();
+  }
+
+  private void RenderSkybox_() {
+    var width = this.Width;
+    var height = this.Height;
+
+    var hWidth = width / 2f;
+    var hHeight = height / 2f;
+
     {
       GlTransform.MatrixMode(TransformMatrixMode.MODEL);
       GlTransform.LoadIdentity();
@@ -160,9 +164,6 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
         GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
         customSkyboxRenderer.Render();
       } else {
-        var hWidth = width / 2f;
-        var hHeight = height / 2f;
-
         GlTransform.Ortho2d(0, width, height, 0);
         GlTransform.Translate(hWidth, hHeight, 0);
         GlTransform.Scale(hWidth, hHeight, 1);
@@ -172,38 +173,24 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     }
 
     {
-      GlTransform.MatrixMode(TransformMatrixMode.MODEL);
       GlTransform.LoadIdentity();
-      GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
+      GlTransform.Ortho2d(0, width, height, 0);
+      GlTransform.Translate(hWidth, hHeight, 0);
+      GlTransform.Scale(hWidth, hHeight, 1);
 
-      {
-        GlTransform.Rotate(90, 1, 0, 0);
-        GlTransform.Scale(this.ViewerScale,
-                          this.ViewerScale,
-                          this.ViewerScale);
-      }
-
-      this.sceneRenderer_?.Render();
+      this.infiniteGridRenderer_.Render();
     }
   }
 
-  private void RenderOrtho_() {
-    var width = this.Width;
-    var height = this.Height;
-
-    var hWidth = this.Width / 2f;
-    var hHeight = this.Height / 2f;
-
-    // Leaves projection/view matrices as-is.
-
+  private void RenderScene_() {
     GlTransform.MatrixMode(TransformMatrixMode.MODEL);
     GlTransform.LoadIdentity();
+    GlTransform.Scale(this.GlobalScale, this.GlobalScale, this.GlobalScale);
+    GlTransform.Rotate(90, 1, 0, 0);
+    GlTransform.Scale(this.ViewerScale,
+                      this.ViewerScale,
+                      this.ViewerScale);
 
-    GlTransform.Ortho2d(0, width, height, 0);
-
-    GlTransform.Translate(hWidth, hHeight, 0);
-    GlTransform.Scale(hWidth, hHeight, 1);
-
-    this.infiniteGridRenderer_.Render();
+    this.sceneRenderer_?.Render();
   }
 }

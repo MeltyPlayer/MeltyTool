@@ -129,6 +129,10 @@ public class InfiniteGridRenderer : IRenderable {
             vec3 color = (1.0 - alphaGrid) + (lineColor.rgb * alphaGrid);
             
             fragColor = vec4(color, alpha);
+            
+            if (alpha == 0) {
+              discard;
+            }
           }
           """);
 
