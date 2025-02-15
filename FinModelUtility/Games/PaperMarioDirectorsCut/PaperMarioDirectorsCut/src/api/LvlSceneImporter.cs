@@ -85,12 +85,10 @@ public class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
         } else {
           var image = lazyImageMap[textureName];
           if (image != null) {
-            var floorBlockTexture
-                = floorBlockMaterialManager.CreateTexture(image);
-            floorBlockTexture.Name = textureName;
-            floorBlockMaterial
-                = floorBlockMaterialManager.AddTextureMaterial(
-                    floorBlockTexture);
+            (floorBlockMaterial, var floorBlockTexture)
+                = floorBlockMaterialManager.AddSimpleTextureMaterialFromImage(
+                    image,
+                    textureName);
 
             if (shouldRepeat) {
               floorBlockTexture.WrapModeU = WrapMode.REPEAT;

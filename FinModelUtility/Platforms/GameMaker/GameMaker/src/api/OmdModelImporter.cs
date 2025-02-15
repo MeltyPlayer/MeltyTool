@@ -3,6 +3,7 @@ using fin.io;
 using fin.model;
 using fin.model.io;
 using fin.model.io.importers;
+using fin.model.util;
 using fin.util.sets;
 
 using gm.schema.omd;
@@ -43,13 +44,10 @@ public class OmdModelImporter : IModelImporter<OmdModelFileBundle> {
                 var image = FinImage.FromFile(imageFile);
                 files.Add(imageFile);
 
-                var finTexture = finMaterialManager.CreateTexture(image);
-                finTexture.Name = imageFile.NameWithoutExtension.ToString();
+                (finMaterial, var finTexture) =
+                    finMaterialManager.AddSimpleTextureMaterialFromFile(imageFile);
                 finTexture.WrapModeU = WrapMode.REPEAT;
                 finTexture.WrapModeV = WrapMode.REPEAT;
-
-                finMaterial =
-                    finMaterialManager.AddTextureMaterial(finTexture);
               }
 
               finMaterial.Name = omdMaterial.Name;

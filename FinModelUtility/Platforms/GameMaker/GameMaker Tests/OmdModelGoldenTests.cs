@@ -6,7 +6,7 @@ using fin.testing;
 
 using gm.api;
 
-namespace pmdc;
+namespace gm;
 
 public class OmdModelGoldenTests
     : BModelGoldenTests<OmdModelFileBundle, OmdModelImporter> {

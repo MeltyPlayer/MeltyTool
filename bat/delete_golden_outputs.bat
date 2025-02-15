@@ -7,7 +7,7 @@ cd ../FinModelUtility
 
 set hierarchyListCmd="dir /b /s /ad | sort"
 
-for /d %%p in (*, Formats/*, Games/*) do ( 
+for /d %%p in (*, Formats/*, Games/*, Platforms/*) do ( 
   pushd "./"
   
   if exist %%p (
