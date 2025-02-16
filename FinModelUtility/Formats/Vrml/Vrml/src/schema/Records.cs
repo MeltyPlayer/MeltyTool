@@ -35,11 +35,11 @@ public record DirectionalLightNode : IDirectionalLightNode {
 }
 
 public record ShapeNode : IShapeNode {
-  public required IAppearanceNode Appearance { get; init; }
+  public required AppearanceNode Appearance { get; init; }
   public required IGeometryNode Geometry { get; init; }
 }
 
-public record AppearanceNode : IAppearanceNode {
+public record AppearanceNode : INode {
   public required IMaterialNode Material { get; init; }
   public IImageTextureNode? Texture { get; init; }
   public ITextureTransformNode? TextureTransform { get; init; }

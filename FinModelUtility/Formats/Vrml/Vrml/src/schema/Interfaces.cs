@@ -37,14 +37,8 @@ public interface IDirectionalLightNode : INode {
 }
 
 public interface IShapeNode : INode {
-  IAppearanceNode Appearance { get; }
+  AppearanceNode Appearance { get; }
   IGeometryNode Geometry { get; }
-}
-
-public interface IAppearanceNode : INode {
-  IMaterialNode Material { get; }
-  IImageTextureNode? Texture { get; }
-  ITextureTransformNode? TextureTransform { get; }
 }
 
 public interface IMaterialNode : INode {

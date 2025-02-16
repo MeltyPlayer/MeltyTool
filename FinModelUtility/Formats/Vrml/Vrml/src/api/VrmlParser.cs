@@ -227,7 +227,7 @@ public partial class VrmlParser {
     };
   }
 
-  private static IAppearanceNode ReadAppearanceNode_(
+  private static AppearanceNode ReadAppearanceNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
     IMaterialNode material = default;
@@ -587,7 +587,7 @@ public partial class VrmlParser {
     LinkedList<INode> children = new();
 
     ICoordinateNode? currentCoord = null;
-    IAppearanceNode? currentAppearance = null;
+    AppearanceNode? currentAppearance = null;
     foreach (var child in rawChildren) {
       switch (child) {
         case ICoordinateNode coordNode: {
@@ -620,7 +620,7 @@ public partial class VrmlParser {
   private static IShapeNode ReadShapeNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
-    IAppearanceNode appearanceNode = null!;
+    AppearanceNode appearanceNode = null!;
     IGeometryNode geometryNode = null!;
 
     ReadFields_(
@@ -629,7 +629,7 @@ public partial class VrmlParser {
           switch (fieldName) {
             case "appearance": {
               appearanceNode
-                  = ParseNodeOfType_<IAppearanceNode>(tr, definitions);
+                  = ParseNodeOfType_<AppearanceNode>(tr, definitions);
               break;
             }
             case "geometry": {

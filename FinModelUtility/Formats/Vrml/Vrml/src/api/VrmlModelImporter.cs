@@ -84,7 +84,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           return finTexture;
         });
-    var lazyMaterialDictionary = new LazyDictionary<IAppearanceNode, IMaterial>(
+    var lazyMaterialDictionary = new LazyDictionary<AppearanceNode, IMaterial>(
         appearanceNode => {
           var vrmlMaterial = appearanceNode.Material;
 
@@ -184,11 +184,10 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       animation.FrameCount = (int) (animation.FrameRate * maxCycleInterval);
     }
 
-    OrientationInterpolatorNode? orientationInterpolatorNode = null;
-    PositionInterpolatorNode? positionInterpolatorNode = null;
+    OrientationInterpolatorNode? currentOrientationInterpolatorNode = null;
+    PositionInterpolatorNode? currentPositionInterpolatorNode = null;
 
-    var nodeQueue
-        = new FinTuple2Queue<INode, IBone>(
+    var nodeQueue = new FinTuple2Queue<INode, IBone>(
             vrmlScene.Children.Select(n => (n, finSkeleton.Root)));
     while (nodeQueue.TryDequeue(out var vrmlNode, out var finParentBone)) {
       var finBone = finParentBone;
@@ -196,13 +195,13 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       if (vrmlNode is ITransform transform) {
         // T × C × R × SR × S × -SR × -C
         var translation = transform.Translation;
-        if (!translation.IsRoughly0() || positionInterpolatorNode != null) {
+        if (!translation.IsRoughly0() || currentPositionInterpolatorNode  != null) {
           var translationBone
               = finBone = finBone.AddChild(transform.Translation);
-          if (positionInterpolatorNode != null) {
+          if (currentPositionInterpolatorNode  != null) {
             var translationTracks = animation.AddBoneTracks(translationBone)
                                              .UseCombinedTranslationKeyframes();
-            foreach (var (frame, value) in positionInterpolatorNode.Keyframes) {
+            foreach (var (frame, value) in currentPositionInterpolatorNode .Keyframes) {
               translationTracks.Add(new Keyframe<Vector3>(animation.FrameCount * frame, value));
             }
           }
@@ -215,14 +214,14 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
         var rotation = transform.Rotation;
         if ((rotation != null && rotation != Quaternion.Identity) ||
-            orientationInterpolatorNode != null) {
+            currentOrientationInterpolatorNode  != null) {
           var rotationBone = finBone = finBone.AddChild(
               SystemMatrix4x4Util.FromRotation(
                   rotation ?? Quaternion.Identity));
-          if (orientationInterpolatorNode != null) {
+          if (currentOrientationInterpolatorNode  != null) {
             var rotationTracks = animation.AddBoneTracks(rotationBone)
                                              .UseCombinedQuaternionKeyframes();
-            foreach (var (frame, value) in orientationInterpolatorNode.Keyframes) {
+            foreach (var (frame, value) in currentOrientationInterpolatorNode .Keyframes) {
               rotationTracks.Add(new Keyframe<Quaternion>(animation.FrameCount * frame, value));
             }
           }
@@ -252,8 +251,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           finBone = finBone.AddChild(-center.Value);
         }
 
-        orientationInterpolatorNode = null;
-        positionInterpolatorNode = null;
+        currentOrientationInterpolatorNode = null;
+        currentPositionInterpolatorNode  = null;
       }
 
       switch (vrmlNode) {
@@ -292,12 +291,12 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           break;
         }
-        case OrientationInterpolatorNode currentOrientationInterpolatorNode: {
-          orientationInterpolatorNode = currentOrientationInterpolatorNode;
+        case OrientationInterpolatorNode orientationInterpolatorNode: {
+          currentOrientationInterpolatorNode  = orientationInterpolatorNode;
           break;
         }
-        case PositionInterpolatorNode currentPositionInterpolatorNode: {
-          positionInterpolatorNode = currentPositionInterpolatorNode;
+        case PositionInterpolatorNode positionInterpolatorNode: {
+          currentPositionInterpolatorNode = positionInterpolatorNode;
           break;
         }
         case IShapeNode shapeNode: {
@@ -385,8 +384,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
     try {
       var vec3sWithIndices = new List<Vector3>();
-      for (var i = 0; i < points2d.Count; ++i) {
-        var point2d = points2d[i];
+      foreach (var point2d in points2d) {
         var vec3 = new Vector3(point2d.X, point2d.Y, 0);
         vec3sWithIndices.Add(vec3);
       }
