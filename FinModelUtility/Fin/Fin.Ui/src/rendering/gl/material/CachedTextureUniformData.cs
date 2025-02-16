@@ -3,6 +3,7 @@
 using fin.math;
 using fin.model;
 using fin.shaders.glsl;
+using fin.ui.rendering.gl.texture;
 
 
 namespace fin.ui.rendering.gl.material;
@@ -13,7 +14,7 @@ public class CachedTextureUniformData {
   public int TextureIndex { get; }
   public IReadOnlyTexture? FinTexture { get; }
   public readonly IReadOnlyTextureTransformManager? textureTransformManager_;
-  public GlTexture GlTexture { get; }
+  public IGlTexture GlTexture { get; }
 
   public IShaderUniform<int> SamplerUniform { get; }
   public IShaderUniform<Vector2> ClampMinUniform { get; }
@@ -27,7 +28,7 @@ public class CachedTextureUniformData {
       IReadOnlyTexture? finTexture,
       IReadOnlyList<IReadOnlyModelAnimation> animations,
       IReadOnlyTextureTransformManager? textureTransformManager,
-      GlTexture glTexture,
+      IGlTexture glTexture,
       GlShaderProgram shaderProgram) {
     this.TextureIndex = textureIndex;
     this.FinTexture = finTexture;

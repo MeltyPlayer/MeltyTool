@@ -1,13 +1,14 @@
 ﻿using System.Drawing;
 
 using fin.image;
+using fin.ui.rendering.gl.texture;
 
 namespace fin.ui.rendering.gl.material;
 
 public static class GlMaterialConstants {
-  public static GlTexture NULL_WHITE_TEXTURE;
-  public static GlTexture NULL_GRAY_TEXTURE;
-  public static GlTexture NULL_BLACK_TEXTURE;
+  public static IGlTexture NULL_WHITE_TEXTURE;
+  public static IGlTexture NULL_GRAY_TEXTURE;
+  public static IGlTexture NULL_BLACK_TEXTURE;
 
   static GlMaterialConstants() {
     NULL_WHITE_TEXTURE ??=
@@ -18,7 +19,7 @@ public static class GlMaterialConstants {
         new GlTexture(FinImage.Create1x1FromColor(Color.Black));
   }
 
-  public static void DisposeIfNotCommon(GlTexture texture) {
+  public static void DisposeIfNotCommon(IGlTexture texture) {
     if (texture != NULL_WHITE_TEXTURE && 
         texture != NULL_GRAY_TEXTURE && 
         texture != NULL_BLACK_TEXTURE) {

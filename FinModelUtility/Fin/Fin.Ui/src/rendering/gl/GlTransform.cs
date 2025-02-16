@@ -6,7 +6,6 @@ using fin.math.rotations;
 
 using OpenTK.Graphics.OpenGL;
 
-using GlMatrixMode = OpenTK.Graphics.OpenGL.MatrixMode;
 using Vector3 = System.Numerics.Vector3;
 
 namespace fin.ui.rendering.gl;

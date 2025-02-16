@@ -4,6 +4,7 @@ using fin.math;
 using fin.model;
 using fin.model.util;
 using fin.shaders.glsl;
+using fin.ui.rendering.gl.texture;
 
 namespace fin.ui.rendering.gl.material;
 

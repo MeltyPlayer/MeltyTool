@@ -4,6 +4,7 @@ using fin.language.equations.fixedFunction;
 using fin.math;
 using fin.model;
 using fin.shaders.glsl;
+using fin.ui.rendering.gl.texture;
 
 
 namespace fin.ui.rendering.gl.material;

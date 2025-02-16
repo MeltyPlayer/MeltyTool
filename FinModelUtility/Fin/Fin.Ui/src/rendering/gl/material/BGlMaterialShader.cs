@@ -4,6 +4,7 @@ using fin.math;
 using fin.model;
 using fin.shaders.glsl;
 using fin.shaders.glsl.source;
+using fin.ui.rendering.gl.texture;
 
 
 namespace fin.ui.rendering.gl.material;
@@ -106,7 +107,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
       string textureName,
       int textureIndex,
       IReadOnlyTexture? finTexture,
-      GlTexture glTexture)
+      IGlTexture glTexture)
     => this.cachedTextureUniformDatas_.AddLast(
         new CachedTextureUniformData(textureName,
                                      textureIndex,

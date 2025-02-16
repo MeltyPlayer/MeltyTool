@@ -1,7 +1,6 @@
 ﻿using System.Buffers;
 using System.Runtime.CompilerServices;
 
-using fin.data.disposables;
 using fin.image;
 using fin.image.formats;
 using fin.model;
@@ -14,9 +13,9 @@ using TextureMagFilter = fin.model.TextureMagFilter;
 using TextureMinFilter = OpenTK.Graphics.OpenGL.TextureMinFilter;
 
 
-namespace fin.ui.rendering.gl;
+namespace fin.ui.rendering.gl.texture;
 
-public class GlTexture : IFinDisposable {
+public class GlTexture : IGlTexture {
   private static readonly Dictionary<IReadOnlyTexture, GlTexture> cache_
       = new();
 
@@ -263,10 +262,6 @@ public class GlTexture : IFinDisposable {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0)
     => GlUtil.BindTexture(textureIndex, this.id_);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void Unbind(int textureIndex = 0)
-    => GlUtil.UnbindTexture(textureIndex);
 
   private static TextureWrapMode ConvertFinWrapToGlWrap_(
       WrapMode wrapMode,
