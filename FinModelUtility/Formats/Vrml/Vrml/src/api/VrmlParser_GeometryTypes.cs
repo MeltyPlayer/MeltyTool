@@ -68,18 +68,23 @@ public partial class VrmlParser {
       ITextReader tr,
       IDictionary<string, INode> definitions) {
     IReadOnlyList<string> @string = null!;
+    IEnumerable<float> length = default;
     IFontStyleNode fontStyle = null!;
 
     ReadFields_(
         tr,
         fieldName => {
           switch (fieldName) {
-            case "string": {
-              @string = ReadStringArray_(tr);
-              break;
-            }
             case "fontStyle": {
               fontStyle = ParseNodeOfType_<IFontStyleNode>(tr, definitions);
+              break;
+            }
+            case "length": {
+              length = ReadSingleArray_(tr);
+              break;
+            }
+            case "string": {
+              @string = ReadStringArray_(tr);
               break;
             }
             default: throw new NotImplementedException();
