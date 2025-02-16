@@ -1,6 +1,4 @@
-﻿using fin.util.asserts;
-
-using schema.text.reader;
+﻿using schema.text.reader;
 
 using vrml.schema;
 

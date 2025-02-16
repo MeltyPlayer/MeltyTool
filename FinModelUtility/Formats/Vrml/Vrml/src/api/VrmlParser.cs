@@ -16,14 +16,14 @@ using vrml.schema;
 namespace vrml.api;
 
 public partial class VrmlParser {
-  public static IGroupNode Parse(Stream stream) {
+  public static (IGroupNode, IReadOnlyDictionary<string, INode>) Parse(Stream stream) {
     DecompressStreamIfNeeded_(ref stream);
     stream = RemoveComments_(stream);
     var tr = new SchemaTextReader(stream);
     var definitions = new Dictionary<string, INode>();
-    return new GroupNode {
+    return (new GroupNode {
         Children = ReadChildren_(tr, definitions, false).ToArray()
-    };
+    }, definitions);
   }
 
   private static void DecompressStreamIfNeeded_(ref Stream stream) {
@@ -45,7 +45,23 @@ public partial class VrmlParser {
     var sb = new StringBuilder();
     while (!sr.EndOfStream) {
       ReadOnlySpan<char> line = sr.ReadLine();
-      line = line.SubstringUpTo('#').Trim();
+
+      var lineLength = 0;
+      var inString = false;
+      foreach (var c in line) {
+        if (c == '\"') {
+          inString = !inString;
+        }
+
+        if (!inString && c == '#') {
+          line = line[..lineLength];
+          break;
+        }
+
+        lineLength++;
+      }
+
+      line = line.Trim();
       if (line.IsEmpty) {
         continue;
       }
@@ -66,7 +82,7 @@ public partial class VrmlParser {
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
               "BackgroundColor", "Collision", "Fog", "Info", "NavigationInfo",
-              "PerspectiveCamera", "PROTO", "ProximitySensor", "ROUTE",
+              "PerspectiveCamera", "PROTO", "ProximitySensor",
               "Sphere", "Sound", "Viewpoint", "WorldInfo", "WWWAnchor",
           }
           .ToImmutableHashSet();
@@ -167,6 +183,7 @@ public partial class VrmlParser {
         "Material" => ReadMaterialNode_(tr),
         "OrientationInterpolator" => ReadOrientationInterpolatorNode_(tr),
         "PositionInterpolator" => ReadPositionInterpolatorNode_(tr),
+        "ROUTE" => ReadRouteNode_(tr),
         "Separator" => ReadSeparatorNode_(tr, definitions),
         "Shape" => ReadShapeNode_(tr, definitions),
         "ShapeHints" => ReadShapeHintsNode_(tr),
@@ -181,6 +198,7 @@ public partial class VrmlParser {
     };
 
     if (definitionName != null) {
+      node.DefName = definitionName;
       definitions.Add(definitionName, node);
     }
 
@@ -751,6 +769,14 @@ public partial class VrmlParser {
         ScaleOrientation = scaleOrientation,
         Translation = translation
     };
+  }
+
+  private static RouteNode ReadRouteNode_(ITextReader tr) {
+    var src = ReadWord_(tr);
+    SkipWhitespace_(tr);
+    tr.AssertString("TO");
+    var dst = ReadWord_(tr);
+    return new RouteNode { Src = src, Dst = dst };
   }
 
   private static void ReadFields_(ITextReader tr, Action<string> fieldHandler) {

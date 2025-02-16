@@ -3,11 +3,15 @@
 
 namespace vrml.schema;
 
-public record GroupNode : IGroupNode {
+public abstract record BNode : INode {
+  public string? DefName { get; set; }
+}
+
+public record GroupNode : BNode, IGroupNode {
   public required IReadOnlyList<INode> Children { get; init; }
 }
 
-public record TransformNode : ITransformNode {
+public record TransformNode : BNode, ITransformNode {
   public Vector3? Center { get; init; }
   public required Vector3 Translation { get; init; }
   public Quaternion? Rotation { get; init; }
@@ -16,36 +20,36 @@ public record TransformNode : ITransformNode {
   public required IReadOnlyList<INode> Children { get; init; }
 }
 
-public record AnchorNode : IAnchorNode {
+public record AnchorNode : BNode, IAnchorNode {
   public required string Url { get; init; }
   public required string Description { get; init; }
   public IReadOnlyList<string>? Parameter { get; init; }
   public required IReadOnlyList<INode> Children { get; init; }
 }
 
-public record BackgroundNode : IBackgroundNode {
+public record BackgroundNode : BNode, IBackgroundNode {
   public required Vector3 SkyColor { get; init; }
 }
 
-public record DirectionalLightNode : IDirectionalLightNode {
+public record DirectionalLightNode : BNode, IDirectionalLightNode {
   public required float AmbientIntensity { get; init; }
   public required Vector3 Color { get; init; }
   public required Vector3 Direction { get; init; }
   public required float Intensity { get; init; }
 }
 
-public record ShapeNode : IShapeNode {
+public record ShapeNode : BNode, IShapeNode {
   public required AppearanceNode Appearance { get; init; }
   public required IGeometryNode Geometry { get; init; }
 }
 
-public record AppearanceNode : INode {
+public record AppearanceNode : BNode {
   public required IMaterialNode Material { get; init; }
   public IImageTextureNode? Texture { get; init; }
   public ITextureTransformNode? TextureTransform { get; init; }
 }
 
-public record MaterialNode : IMaterialNode {
+public record MaterialNode : BNode, IMaterialNode {
   public const float DEFAULT_AMBIENT_INTENSITY = .2f;
   public const float DEFAULT_DIFFUSE_COLOR = .8f;
 
@@ -55,11 +59,11 @@ public record MaterialNode : IMaterialNode {
   public float Transparency { get; init; }
 }
 
-public record ImageTextureNode : IImageTextureNode {
+public record ImageTextureNode : BNode, IImageTextureNode {
   public required string Url { get; init; }
 }
 
-public record TextureTransformNode : ITextureTransformNode {
+public record TextureTransformNode : BNode, ITextureTransformNode {
   public Vector2? Center { get; init; }
   public float? Rotation { get; init; }
   public Vector2? Scale { get; init; }
@@ -72,7 +76,7 @@ public record IsbMovingTextureTransformNode
   public required Vector2 TranslationStep { get; init; }
 }
 
-public record IsbPictureNode : IIsbPictureNode {
+public record IsbPictureNode : BNode, IIsbPictureNode {
   public Vector3? Center { get; init; }
   public bool? Pinned { get; init; }
   public Quaternion? Rotation { get; init; }
@@ -82,21 +86,26 @@ public record IsbPictureNode : IIsbPictureNode {
   public required IReadOnlyList<IImageTextureNode> Frames { get; init; }
 }
 
-public record ColorNode : IColorNode {
+public record ColorNode : BNode, IColorNode {
   public required IReadOnlyList<Vector3> Color { get; init; }
 }
 
-public record CoordinateNode : ICoordinateNode {
+public record CoordinateNode : BNode, ICoordinateNode {
   public required IReadOnlyList<Vector3> Point { get; init; }
 }
 
-public record TextureCoordinateNode : ITextureCoordinateNode {
+public record TextureCoordinateNode : BNode, ITextureCoordinateNode {
   public required IReadOnlyList<Vector2> Point { get; init; }
 }
 
-public record FontStyleNode : IFontStyleNode {
+public record FontStyleNode : BNode, IFontStyleNode {
   public string? Family { get; init; }
   public required IReadOnlyList<string> Justify { get; init; }
   public float? Size { get; init; }
   public required string Style { get; init; }
+}
+
+public record RouteNode : BNode {
+  public required string Src { get; init; }
+  public required string Dst { get; init; }
 }

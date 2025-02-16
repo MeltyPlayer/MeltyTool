@@ -24,7 +24,7 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
     var area = finScene.AddArea();
     var obj = area.AddObject();
 
-    var vrmlScene = VrmlParser.Parse(wrlFileStream);
+    var (vrmlScene, definitions) = VrmlParser.Parse(wrlFileStream);
     var allVrmlNodes = vrmlScene.GetAllChildren();
 
     if (allVrmlNodes.TryGetFirstWhereIs<INode, IBackgroundNode>(
@@ -81,7 +81,7 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
     }
 
     obj.AddSceneModel(
-        new VrmlModelImporter().Import(vrmlScene, fileBundle, fileSet));
+        new VrmlModelImporter().Import(vrmlScene, definitions, fileBundle, fileSet));
 
     return finScene;
   }

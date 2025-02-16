@@ -3,13 +3,15 @@
 
 namespace vrml.schema;
 
-public interface INode;
+public interface INode {
+  string? DefName { get; set; }
+}
 
 public interface IGroupNode : INode {
   IReadOnlyList<INode> Children { get; }
 }
 
-public interface ITransform {
+public interface ITransform : INode {
   Vector3? Center { get; }
   Vector3 Translation { get; }
   Quaternion? Rotation { get; }

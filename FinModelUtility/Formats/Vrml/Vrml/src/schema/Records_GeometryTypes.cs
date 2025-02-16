@@ -2,7 +2,7 @@
 
 public interface IGeometryNode : INode { }
 
-public record IndexedFaceSetNode : IGeometryNode {
+public record IndexedFaceSetNode : BNode, IGeometryNode {
   public bool? Convex { get; init; }
   public bool? ColorPerVertex { get; init; }
   public IColorNode? Color { get; init; }
@@ -12,7 +12,7 @@ public record IndexedFaceSetNode : IGeometryNode {
   public IReadOnlyList<int>? TexCoordIndex { get; init; }
 }
 
-public record TextNode : IGeometryNode {
+public record TextNode : BNode, IGeometryNode {
   public required IReadOnlyList<string> String { get; init; }
   public required IFontStyleNode FontStyle { get; init; }
 }

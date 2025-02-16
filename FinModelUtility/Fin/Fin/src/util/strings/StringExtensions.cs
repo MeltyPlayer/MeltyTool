@@ -34,6 +34,24 @@ public static class StringExtensions {
     return trimmed;
   }
 
+  public static bool TryRemoveEnd(
+      this string str,
+      string end,
+      out string trimmed) {
+    if (str.EndsWith(end)) {
+      trimmed = str[..^end.Length];
+      return true;
+    }
+
+    trimmed = default;
+    return false;
+  }
+
+  public static string AssertRemoveEnd(this string str, string end) {
+    Asserts.True(str.TryRemoveEnd(end, out var trimmed));
+    return trimmed;
+  }
+
   public static (string, string) SplitBeforeAndAfterFirst(
       this string text,
       char separator) {
@@ -63,7 +81,6 @@ public static class StringExtensions {
     var indexTo = str.IndexOf(s);
     return indexTo >= 0 ? str[..indexTo] : str;
   }
-
 
 
   public static string SubstringUpTo(this string str, string substr) {

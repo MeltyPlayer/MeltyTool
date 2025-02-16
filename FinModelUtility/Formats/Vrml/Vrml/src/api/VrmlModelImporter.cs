@@ -21,6 +21,7 @@ using fin.util.enumerables;
 using fin.util.image;
 using fin.util.linq;
 using fin.util.sets;
+using fin.util.strings;
 
 using vrml.schema;
 using vrml.util;
@@ -33,12 +34,13 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
   public IModel Import(VrmlModelFileBundle fileBundle) {
     var wrlFile = fileBundle.WrlFile.Impl;
     using var wrlFileStream = wrlFile.OpenRead();
-    var vrmlScene = VrmlParser.Parse(wrlFileStream);
+    var (vrmlScene, definitions) = VrmlParser.Parse(wrlFileStream);
     var fileSet = fileBundle.WrlFile.AsFileSet();
-    return this.Import(vrmlScene, fileBundle, fileSet);
+    return this.Import(vrmlScene, definitions, fileBundle, fileSet);
   }
 
   public IModel Import(IGroupNode vrmlScene,
+                       IReadOnlyDictionary<string, INode> definitions,
                        IVrmlFileBundle fileBundle,
                        HashSet<IReadOnlyGenericFile> fileSet) {
     var wrlFile = fileBundle.WrlFile;
@@ -174,7 +176,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                       ?.VertexOrdering ??
           VertexOrder.COUNTER_CLOCKWISE;
 
-    var maxCycleInterval = allVrmlNodes.WhereIs<INode, TimeSensorNode>().Select(t => t.CycleInterval).MaxOrDefault();
+    var maxCycleInterval = allVrmlNodes.WhereIs<INode, TimeSensorNode>()
+                                       .Select(t => t.CycleInterval)
+                                       .MaxOrDefault();
 
     IModelAnimation? animation = null;
     if (allVrmlNodes.WhereIs<INode, OrientationInterpolatorNode>().Any() ||
@@ -184,26 +188,37 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       animation.FrameCount = (int) (animation.FrameRate * maxCycleInterval);
     }
 
-    OrientationInterpolatorNode? currentOrientationInterpolatorNode = null;
-    PositionInterpolatorNode? currentPositionInterpolatorNode = null;
+    var translationTracksByName = new Dictionary<string, IBoneTracks>();
+    var rotationTracksByName = new Dictionary<string, IBoneTracks>();
+    var translationBoneNames = new HashSet<string?>();
+    var rotationBoneNames = new HashSet<string?>();
+    foreach (var routeNode in allVrmlNodes.WhereIs<INode, RouteNode>()) {
+      if (routeNode.Dst.TryRemoveEnd(".translation",
+                                     out var translationBoneName)) {
+        translationBoneNames.Add(translationBoneName);
+      }
+
+      if (routeNode.Dst.TryRemoveEnd(".rotation", out var rotationBoneName)) {
+        rotationBoneNames.Add(rotationBoneName);
+      }
+    }
 
     var nodeQueue = new FinTuple2Queue<INode, IBone>(
-            vrmlScene.Children.Select(n => (n, finSkeleton.Root)));
+        vrmlScene.Children.Select(n => (n, finSkeleton.Root)));
     while (nodeQueue.TryDequeue(out var vrmlNode, out var finParentBone)) {
       var finBone = finParentBone;
 
       if (vrmlNode is ITransform transform) {
         // T × C × R × SR × S × -SR × -C
         var translation = transform.Translation;
-        if (!translation.IsRoughly0() || currentPositionInterpolatorNode  != null) {
+        var isTranslationBone
+            = translationBoneNames.Contains(transform.DefName);
+        if (!translation.IsRoughly0() || isTranslationBone) {
           var translationBone
               = finBone = finBone.AddChild(transform.Translation);
-          if (currentPositionInterpolatorNode  != null) {
-            var translationTracks = animation.AddBoneTracks(translationBone)
-                                             .UseCombinedTranslationKeyframes();
-            foreach (var (frame, value) in currentPositionInterpolatorNode .Keyframes) {
-              translationTracks.Add(new Keyframe<Vector3>(animation.FrameCount * frame, value));
-            }
+          if (isTranslationBone) {
+            var translationTracks = animation.AddBoneTracks(translationBone);
+            translationTracksByName[transform.DefName!] = translationTracks;
           }
         }
 
@@ -213,17 +228,16 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         }
 
         var rotation = transform.Rotation;
+        var isRotationBone
+            = rotationBoneNames.Contains(transform.DefName);
         if ((rotation != null && rotation != Quaternion.Identity) ||
-            currentOrientationInterpolatorNode  != null) {
+            isRotationBone) {
           var rotationBone = finBone = finBone.AddChild(
               SystemMatrix4x4Util.FromRotation(
                   rotation ?? Quaternion.Identity));
-          if (currentOrientationInterpolatorNode  != null) {
-            var rotationTracks = animation.AddBoneTracks(rotationBone)
-                                             .UseCombinedQuaternionKeyframes();
-            foreach (var (frame, value) in currentOrientationInterpolatorNode .Keyframes) {
-              rotationTracks.Add(new Keyframe<Quaternion>(animation.FrameCount * frame, value));
-            }
+          if (isRotationBone) {
+            var rotationTracks = animation.AddBoneTracks(rotationBone);
+            rotationTracksByName[transform.DefName!] = rotationTracks;
           }
         }
 
@@ -250,9 +264,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         if (center != null && !center.Value.IsRoughly0()) {
           finBone = finBone.AddChild(-center.Value);
         }
-
-        currentOrientationInterpolatorNode = null;
-        currentPositionInterpolatorNode  = null;
       }
 
       switch (vrmlNode) {
@@ -289,14 +300,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           AddFaceNormal_([vtx0, vtx1, vtx2, vtx3], finPrimitive.VertexOrder);
 
-          break;
-        }
-        case OrientationInterpolatorNode orientationInterpolatorNode: {
-          currentOrientationInterpolatorNode  = orientationInterpolatorNode;
-          break;
-        }
-        case PositionInterpolatorNode positionInterpolatorNode: {
-          currentPositionInterpolatorNode = positionInterpolatorNode;
           break;
         }
         case IShapeNode shapeNode: {
@@ -369,6 +372,35 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
       if (vrmlNode is IGroupNode groupNode) {
         nodeQueue.Enqueue(groupNode.Children.Select(n => (n, finBone)));
+      }
+    }
+
+    foreach (var routeNode in allVrmlNodes.WhereIs<INode, RouteNode>()) {
+      if (!routeNode.Src.TryRemoveEnd(".value_changed", out var srcName)) {
+        continue;
+      }
+
+      var srcNode = definitions[srcName];
+
+      if (routeNode.Dst.TryRemoveEnd(".translation",
+                                     out var translationBoneName)) {
+        var translationTracks = translationTracksByName[translationBoneName]
+            .UseCombinedTranslationKeyframes();
+        var positionInterpolator
+            = srcNode.AssertAsA<PositionInterpolatorNode>();
+        foreach (var (frame, value) in positionInterpolator.Keyframes) {
+          translationTracks.Add(new Keyframe<Vector3>(animation.FrameCount * frame, value));
+        }
+      }
+
+      if (routeNode.Dst.TryRemoveEnd(".rotation", out var rotationBoneName)) {
+        var rotationTracks = rotationTracksByName[rotationBoneName]
+            .UseCombinedQuaternionKeyframes();
+        var orientationInterpolator
+            = srcNode.AssertAsA<OrientationInterpolatorNode>();
+        foreach (var (frame, value) in orientationInterpolator.Keyframes) {
+          rotationTracks.Add(new Keyframe<Quaternion>(animation.FrameCount * frame, value));
+        }
       }
     }
 
