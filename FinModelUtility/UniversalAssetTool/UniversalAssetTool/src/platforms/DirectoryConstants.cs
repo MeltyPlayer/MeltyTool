@@ -46,6 +46,9 @@ public static class DirectoryConstants {
   public static ISystemDirectory TOOLS_DIRECTORY =
       CLI_DIRECTORY.AssertGetExistingSubdir("tools");
 
+  public static ISystemDirectory DLL_DIRECTORY =
+      TOOLS_DIRECTORY.AssertGetExistingSubdir("dll");
+
   public static ISystemDirectory OUT_DIRECTORY =
       CLI_DIRECTORY.AssertGetExistingSubdir("out");
 }

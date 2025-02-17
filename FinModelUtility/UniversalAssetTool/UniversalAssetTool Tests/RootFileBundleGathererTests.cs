@@ -52,6 +52,7 @@ namespace uni {
         mockFileSystem.AddDirectory("cli/config");
         mockFileSystem.AddDirectory("cli/out");
         mockFileSystem.AddDirectory("cli/roms");
+        mockFileSystem.AddDirectory("cli/tools/dll");
         mockFileSystem.AddDirectory("cli/tools/universal_asset_tool");
         mockFileSystem.AddFile("cli/config.json", new MockFileData(CONFIG_JSON_));
 
