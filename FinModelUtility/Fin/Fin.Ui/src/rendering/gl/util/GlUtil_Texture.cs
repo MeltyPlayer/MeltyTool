@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
 using fin.model;
-using fin.shaders.glsl;
 
 using OpenTK.Graphics.OpenGL;
 
