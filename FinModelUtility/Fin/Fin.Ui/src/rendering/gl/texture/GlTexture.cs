@@ -21,7 +21,6 @@ public class GlTexture : IGlTexture {
 
 
   private const int UNDEFINED_ID = -1;
-  private int id_ = UNDEFINED_ID;
   private readonly IReadOnlyTexture texture_;
 
   public static GlTexture FromTexture(IReadOnlyTexture texture) {
@@ -35,10 +34,10 @@ public class GlTexture : IGlTexture {
 
   public GlTexture(IReadOnlyImage image) {
     GL.GenTextures(1, out int id);
-    this.id_ = id;
+    this.Id = id;
 
     var target = TextureTarget.Texture2D;
-    GL.BindTexture(target, this.id_);
+    GL.BindTexture(target, this.Id);
     {
       this.LoadImageIntoTexture_(image, 0);
     }
@@ -49,10 +48,10 @@ public class GlTexture : IGlTexture {
     this.texture_ = texture;
 
     GL.GenTextures(1, out int id);
-    this.id_ = id;
+    this.Id = id;
 
     var target = TextureTarget.Texture2D;
-    GL.BindTexture(target, this.id_);
+    GL.BindTexture(target, this.Id);
     {
       var mipmapImages = texture.MipmapImages;
 
@@ -253,15 +252,20 @@ public class GlTexture : IGlTexture {
     this.IsDisposed = true;
     cache_.Remove(this.texture_);
 
-    var id = this.id_;
+    var id = this.Id;
     GL.DeleteTextures(1, ref id);
 
-    this.id_ = UNDEFINED_ID;
+    this.Id = UNDEFINED_ID;
   }
+
+  public int Width => this.texture_.Image.Width;
+  public int Height => this.texture_.Image.Height;
+
+  public int Id { get; private set; } = UNDEFINED_ID;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0)
-    => GlUtil.BindTexture(textureIndex, this.id_);
+    => GlUtil.BindTexture(textureIndex, this.Id);
 
   private static TextureWrapMode ConvertFinWrapToGlWrap_(
       WrapMode wrapMode,

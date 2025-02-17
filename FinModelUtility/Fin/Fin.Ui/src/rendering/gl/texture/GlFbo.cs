@@ -15,6 +15,9 @@ public class GlFbo : IFinDisposable {
   private int depthTextureId_;
 
   public GlFbo(int width, int height) {
+    this.Width = width;
+    this.Height = height;
+
     // Create Color Tex
     GL.GenTextures(1, out this.colorTextureId_);
     GL.BindTexture(TextureTarget.Texture2D, this.colorTextureId_);
@@ -98,6 +101,10 @@ public class GlFbo : IFinDisposable {
     GL.DeleteTextures(1, ref this.depthTextureId_);
   }
 
+  public int Width { get; }
+  public int Height { get; }
+  public int ColorTextureId => this.colorTextureId_;
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0)
     => GlUtil.BindTexture(textureIndex, this.colorTextureId_);
@@ -105,4 +112,10 @@ public class GlFbo : IFinDisposable {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void BindDepth(int textureIndex = 0)
     => GlUtil.BindTexture(textureIndex, this.depthTextureId_);
+
+  public void TargetFbo()
+    => GL.BindFramebuffer(FramebufferTarget.FramebufferExt, this.fboId_);
+
+  public void UntargetFbo()
+    => GL.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
 }
