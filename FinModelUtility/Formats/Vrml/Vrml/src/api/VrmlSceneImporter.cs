@@ -4,7 +4,6 @@ using System.Numerics;
 using fin.color;
 using fin.math;
 using fin.scene;
-using fin.schema.vector;
 using fin.ui;
 using fin.util.linq;
 using fin.util.sets;

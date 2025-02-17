@@ -5,7 +5,6 @@ using System.Text;
 
 using fin.schema;
 using fin.util.asserts;
-using fin.util.strings;
 
 using schema.binary;
 using schema.text.reader;
