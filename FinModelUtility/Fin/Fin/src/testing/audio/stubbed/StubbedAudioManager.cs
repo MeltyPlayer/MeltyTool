@@ -6,7 +6,6 @@ namespace fin.testing.audio.stubbed;
 
 public partial class StubbedAudioManager : IAudioManager<short> {
   public bool IsDisposed { get; private set; }
-  public IAudioPlayer<short> AudioPlayer { get; }
 
   ~StubbedAudioManager() => this.ReleaseUnmanagedResources_();
 

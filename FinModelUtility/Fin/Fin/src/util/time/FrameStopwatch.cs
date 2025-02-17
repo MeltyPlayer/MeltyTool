@@ -1,5 +1,6 @@
 ﻿using System;
 
+
 namespace fin.util.time;
 
 public interface IStopwatch {
@@ -9,7 +10,6 @@ public interface IStopwatch {
   void Reset();
   void Restart();
 }
-
 
 public class FrameStopwatch : IStopwatch {
   public enum State {
@@ -21,10 +21,17 @@ public class FrameStopwatch : IStopwatch {
   private DateTime start_;
   private TimeSpan elapsed_ = TimeSpan.Zero;
 
-  public TimeSpan Elapsed => this.state_ switch {
-      State.STOPPED => this.elapsed_,
-      State.PLAYING => FrameTime.StartOfFrame - this.start_,
-  };
+  public TimeSpan Elapsed {
+    get => this.state_ switch {
+        State.STOPPED => this.elapsed_,
+        State.PLAYING => FrameTime.StartOfFrame - this.start_,
+        _             => throw new ArgumentOutOfRangeException()
+    };
+    set {
+      this.elapsed_ = value;
+      this.start_ = FrameTime.StartOfFrame - value;
+    }
+  }
 
   public void Start() {
     if (this.state_ == State.STOPPED) {

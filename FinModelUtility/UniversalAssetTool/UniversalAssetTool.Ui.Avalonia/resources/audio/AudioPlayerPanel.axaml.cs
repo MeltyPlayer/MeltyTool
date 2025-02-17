@@ -47,7 +47,8 @@ public class AudioPlayerPanelViewModelForDesigner
 
 public class AudioPlayerPanelViewModel
     : ViewModelBase, IAudioPlayerPanelViewModel {
-  private readonly IAudioManager<short> audioManager_ = new AlAudioManager();
+  private readonly IAudioManager<short> audioManager_ =
+      AlAudioManager.TryToCreateOrStub();
   private readonly IAudioPlayer<short> audioPlayer_;
   private readonly TimedCallback playNextCallback_;
 

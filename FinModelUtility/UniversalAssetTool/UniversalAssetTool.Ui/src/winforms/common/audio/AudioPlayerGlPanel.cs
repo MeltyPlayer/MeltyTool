@@ -6,7 +6,6 @@ using fin.audio.io;
 using fin.data;
 using fin.ui.playback.al;
 using fin.ui.rendering.gl;
-using fin.ui.rendering.gl.material;
 using fin.util.time;
 
 using OpenTK.Graphics.OpenGL;
@@ -18,7 +17,8 @@ namespace uni.ui.winforms.common.audio;
 public class AudioPlayerGlPanel : BGlPanel, IAudioPlayerPanel {
   private IReadOnlyList<IAudioFileBundle>? audioFileBundles_;
   private ShuffledListView<IAudioFileBundle>? shuffledListView_;
-  private readonly IAudioManager<short> audioManager_ = new AlAudioManager();
+  private readonly IAudioManager<short> audioManager_ =
+      AlAudioManager.TryToCreateOrStub();
   private readonly IAudioPlayer<short> audioPlayer_;
 
   private readonly AotWaveformRenderer waveformRenderer_ = new();
