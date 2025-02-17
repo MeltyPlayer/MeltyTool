@@ -130,7 +130,7 @@ public class InfiniteGridRenderer : IRenderable {
             
             fragColor = vec4(color, alpha);
             
-            if (alpha == 0) {
+            if (alpha == 0.0) {
               discard;
             }
           }
