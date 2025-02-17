@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fin\Fin.csproj" />
+    <ProjectReference Include="..\..\QuickFont\QuickFont.csproj" />
     <PackageReference Include="OpenTK" Version="4.8.2" />
-    <PackageReference Include="QuickFont.Desktop" Version="4.5.7053.25687" />
   </ItemGroup>
 </Project>

@@ -19,6 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fin Tests", "Fin\Fin Tests\
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fin.Ui", "Fin\Fin.Ui\Fin.Ui.csproj", "{67376177-19DB-4684-AE31-52E98F62D363}"
+	ProjectSection(ProjectDependencies) = postProject
+		{69C48554-5070-4D02-9BCE-E50200A87112} = {69C48554-5070-4D02-9BCE-E50200A87112}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelPluginWrappers", "ModelPluginWrappers\ModelPluginWrappers.csproj", "{2FC033F8-043D-4175-BA13-B49A4DCD19B4}"
 EndProject
@@ -26,9 +29,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UniversalAssetTool", "Unive
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniversalAssetTool", "UniversalAssetTool\UniversalAssetTool\UniversalAssetTool.csproj", "{C8F325AF-2914-483C-B8A8-CED76E03C31E}"
 	ProjectSection(ProjectDependencies) = postProject
+		{2FE7D88B-9241-44B0-BC25-FE293EADCF59} = {2FE7D88B-9241-44B0-BC25-FE293EADCF59}
 		{48B6183A-CF51-42A4-889E-A75DA704D71D} = {48B6183A-CF51-42A4-889E-A75DA704D71D}
 		{E794C24F-B285-4BBD-9388-35382AB1A1B4} = {E794C24F-B285-4BBD-9388-35382AB1A1B4}
-		{2FE7D88B-9241-44B0-BC25-FE293EADCF59} = {2FE7D88B-9241-44B0-BC25-FE293EADCF59}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility of Time CSharp", "Utility of Time CSharp\Utility of Time CSharp.csproj", "{089C1412-5CCA-4E35-A3A9-13BB34071E8C}"
@@ -95,8 +98,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mod", "Formats\Mod\Mod\Mod.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mod Tests", "Formats\Mod\Mod Tests\Mod Tests.csproj", "{C74782A2-6011-4A13-AC8E-85CCAB05F1C0}"
 	ProjectSection(ProjectDependencies) = postProject
-		{48B6183A-CF51-42A4-889E-A75DA704D71D} = {48B6183A-CF51-42A4-889E-A75DA704D71D}
 		{2FE7D88B-9241-44B0-BC25-FE293EADCF59} = {2FE7D88B-9241-44B0-BC25-FE293EADCF59}
+		{48B6183A-CF51-42A4-889E-A75DA704D71D} = {48B6183A-CF51-42A4-889E-A75DA704D71D}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modl", "Modl", "{CABF7879-B01D-4612-BD24-64D33650F137}"
@@ -214,6 +217,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaker", "Platforms\GameMaker\GameMaker\GameMaker.csproj", "{7B2A0C05-5077-44B0-8AB2-A9CC69B6288B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameMaker Tests", "Platforms\GameMaker\GameMaker Tests\GameMaker Tests.csproj", "{3EF5ACBF-08F7-4240-8891-72D288A956ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickFont", "QuickFont\QuickFont.csproj", "{69C48554-5070-4D02-9BCE-E50200A87112}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -751,6 +756,14 @@ Global
 		{3EF5ACBF-08F7-4240-8891-72D288A956ED}.Release|x64.Build.0 = Release|x64
 		{3EF5ACBF-08F7-4240-8891-72D288A956ED}.Release|x86.ActiveCfg = Release|x86
 		{3EF5ACBF-08F7-4240-8891-72D288A956ED}.Release|x86.Build.0 = Release|x86
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Debug|x64.ActiveCfg = Debug|x64
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Debug|x64.Build.0 = Debug|x64
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Debug|x86.Build.0 = Debug|Any CPU
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Release|x64.ActiveCfg = Release|x64
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Release|x64.Build.0 = Release|x64
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Release|x86.ActiveCfg = Release|Any CPU
+		{69C48554-5070-4D02-9BCE-E50200A87112}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
