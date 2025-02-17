@@ -17,6 +17,7 @@ class Program {
     Cli.Run(args,
             () => {
               try {
+                UiUtil.Init();
                 BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
               } catch (Exception e) {
                 ExceptionService.HandleException(e, null);
