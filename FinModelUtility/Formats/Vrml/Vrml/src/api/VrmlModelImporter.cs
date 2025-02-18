@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 
 using DelaunatorSharp;
 
@@ -96,9 +97,10 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     HeadlessGl.MakeCurrent();
     FreeTypeFontUtil.InitIfNeeded();
 
+    var fontSize = 72f;
     using var qFont = new QFont(
         CommonFiles.SANS_FONT_FILE.FullPath,
-        72,
+        fontSize,
         new QFontBuilderConfiguration(false));
     var lazyTextTextureDictionary = new LazyDictionary<TextNode, ITexture>(
         textNode => {
@@ -110,7 +112,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               Justify.END => QFontAlignment.Right,
           };
 
-          using var glTextTexture = new GlTextTexture(text, qFont, fontAlignment);
+          using var glTextTexture
+              = new GlTextTexture(text, qFont, Color.White, fontAlignment);
           var image = glTextTexture.ConvertToImage();
 
           var finTexture = finModel.MaterialManager.CreateTexture(image);
@@ -413,17 +416,35 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             case TextNode textNode: {
               var finTexture = lazyTextTextureDictionary[textNode];
 
-              var scale = 1 / 72f;
+              var scale = 1 / fontSize;
+              scale *= .75f;
+
               var width = finTexture.Image.Width * scale;
               var height = finTexture.Image.Height * scale;
 
               var depth = .05f;
 
+              var point1 = new Vector3(-width / 2f, -height / 2f, depth);
+              var point2 = new Vector3(width / 2f, height / 2f, depth);
+
+              switch (textNode.FontStyle.Justify) {
+                case Justify.BEGIN: {
+                  point1 += new Vector3(width / 2, 0, 0);
+                  point2 += new Vector3(width / 2, 0, 0);
+                  break;
+                }
+                case Justify.END: {
+                  point1 -= new Vector3(width / 2, 0, 0);
+                  point2 -= new Vector3(width / 2, 0, 0);
+                  break;
+                }
+              }
+
               finMesh.AddSimpleFloor(finSkin,
-                                    new Vector3(-width / 2f, -height / 2f, depth),
-                                    new Vector3(width / 2f, height / 2f, depth),
-                                    finMaterial,
-                                    finBone);
+                                     point1,
+                                     point2,
+                                     finMaterial,
+                                     finBone);
 
               break;
             }

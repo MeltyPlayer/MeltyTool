@@ -13,6 +13,7 @@ public class GlTextTexture : IGlTexture {
 
   public GlTextTexture(string text,
                        QFont font,
+                       Color color,
                        QFontAlignment alignment = QFontAlignment.Left) {
     var size = font.Measure(text);
     var width = (int) MathF.Ceiling(size.Width);
@@ -37,9 +38,7 @@ public class GlTextTexture : IGlTexture {
                     text,
                     new Vector3(x, height, 0),
                     alignment,
-                    new QFontRenderOptions {
-                        Colour = Color.Black,
-                    });
+                    new QFontRenderOptions { Colour = color });
       drawing.ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(
           0,
           width,
