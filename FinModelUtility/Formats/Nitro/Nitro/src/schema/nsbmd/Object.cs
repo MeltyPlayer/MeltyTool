@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-using fin.schema.matrix;
+﻿using fin.schema.matrix;
 using fin.schema.vector;
 using fin.util.enums;
 

@@ -376,43 +376,6 @@ public partial class VrmlParser {
     };
   }
 
-  private static IFontStyleNode ReadFontStyleNode_(ITextReader tr) {
-    string? family = null;
-    IReadOnlyList<string> justify = default;
-    float? size = null;
-    string style = default;
-
-    ReadFields_(
-        tr,
-        fieldName => {
-          switch (fieldName) {
-            case "family": {
-              family = ReadString_(tr);
-              break;
-            }
-            case "justify": {
-              justify = ReadStringArray_(tr);
-              break;
-            }
-            case "size": {
-              size = tr.ReadSingle();
-              break;
-            }
-            case "style": {
-              style = ReadString_(tr);
-              break;
-            }
-            default: throw new NotImplementedException();
-          }
-        });
-    return new FontStyleNode {
-        Family = family,
-        Justify = justify,
-        Size = size,
-        Style = style,
-    };
-  }
-
   private static IGroupNode ReadGroupNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {

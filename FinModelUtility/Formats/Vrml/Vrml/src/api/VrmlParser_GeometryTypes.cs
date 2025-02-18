@@ -69,14 +69,14 @@ public partial class VrmlParser {
       IDictionary<string, INode> definitions) {
     IReadOnlyList<string> @string = null!;
     IEnumerable<float> length = default;
-    IFontStyleNode fontStyle = null!;
+    FontStyleNode fontStyle = null!;
 
     ReadFields_(
         tr,
         fieldName => {
           switch (fieldName) {
             case "fontStyle": {
-              fontStyle = ParseNodeOfType_<IFontStyleNode>(tr, definitions);
+              fontStyle = ParseNodeOfType_<FontStyleNode>(tr, definitions);
               break;
             }
             case "length": {

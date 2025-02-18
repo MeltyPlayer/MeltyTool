@@ -81,10 +81,3 @@ public interface ICoordinateNode : INode {
 public interface ITextureCoordinateNode : INode {
   IReadOnlyList<Vector2> Point { get; }
 }
-
-public interface IFontStyleNode : INode {
-  string? Family { get; }
-  IReadOnlyList<string> Justify { get; }
-  float? Size { get; }
-  string Style { get; }
-}

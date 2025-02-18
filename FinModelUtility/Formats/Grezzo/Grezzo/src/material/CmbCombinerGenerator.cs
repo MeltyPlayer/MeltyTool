@@ -6,7 +6,6 @@ using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.model;
 using fin.schema.color;
-using fin.shaders.glsl;
 using fin.util.enumerables;
 
 using grezzo.schema.cmb;

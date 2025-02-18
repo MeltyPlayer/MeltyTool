@@ -98,13 +98,6 @@ public record TextureCoordinateNode : BNode, ITextureCoordinateNode {
   public required IReadOnlyList<Vector2> Point { get; init; }
 }
 
-public record FontStyleNode : BNode, IFontStyleNode {
-  public string? Family { get; init; }
-  public required IReadOnlyList<string> Justify { get; init; }
-  public float? Size { get; init; }
-  public required string Style { get; init; }
-}
-
 public record RouteNode : BNode {
   public required string Src { get; init; }
   public required string Dst { get; init; }

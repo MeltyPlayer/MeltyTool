@@ -14,5 +14,5 @@ public record IndexedFaceSetNode : BNode, IGeometryNode {
 
 public record TextNode : BNode, IGeometryNode {
   public required IReadOnlyList<string> String { get; init; }
-  public required IFontStyleNode FontStyle { get; init; }
+  public required FontStyleNode FontStyle { get; init; }
 }

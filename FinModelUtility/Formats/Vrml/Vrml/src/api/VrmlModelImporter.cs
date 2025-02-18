@@ -26,11 +26,6 @@ using fin.util.linq;
 using fin.util.sets;
 using fin.util.strings;
 
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Windowing.Common;
-using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-
 using QuickFont;
 using QuickFont.Configuration;
 
@@ -109,7 +104,13 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         textNode => {
           var text = string.Join('\n', textNode.String);
 
-          using var glTextTexture = new GlTextTexture(text, qFont);
+          var fontAlignment = textNode.FontStyle.Justify switch {
+              Justify.BEGIN => QFontAlignment.Left,
+              Justify.MIDDLE => QFontAlignment.Centre,
+              Justify.END => QFontAlignment.Right,
+          };
+
+          using var glTextTexture = new GlTextTexture(text, qFont, fontAlignment);
           var image = glTextTexture.ConvertToImage();
 
           var finTexture = finModel.MaterialManager.CreateTexture(image);

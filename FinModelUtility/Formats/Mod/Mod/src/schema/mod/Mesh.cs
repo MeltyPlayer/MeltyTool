@@ -1,6 +1,4 @@
-﻿using fin.math;
-
-using schema.binary;
+﻿using schema.binary;
 using schema.binary.attributes;
 
 public enum ModCullMode : byte {

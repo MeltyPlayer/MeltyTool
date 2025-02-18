@@ -11,7 +11,9 @@ namespace fin.ui.rendering.gl.texture;
 public class GlTextTexture : IGlTexture {
   private readonly GlFbo impl_;
 
-  public GlTextTexture(string text, QFont font) {
+  public GlTextTexture(string text,
+                       QFont font,
+                       QFontAlignment alignment = QFontAlignment.Left) {
     var size = font.Measure(text);
     var width = (int) MathF.Ceiling(size.Width);
     var height = (int) MathF.Ceiling(size.Height);
@@ -23,14 +25,20 @@ public class GlTextTexture : IGlTexture {
     GL.ClearColor(0, 0, 0, 0);
     GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     {
+      var x = alignment switch {
+          QFontAlignment.Left    => 0,
+          QFontAlignment.Centre  => width / 2,
+          QFontAlignment.Right   => width,
+          _                      => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null)
+      };
+
       using var drawing = new QFontDrawing();
       drawing.Print(font,
                     text,
-                    new Vector3(0, height, 0),
-                    QFontAlignment.Left,
+                    new Vector3(x, height, 0),
+                    alignment,
                     new QFontRenderOptions {
                         Colour = Color.Black,
-                        DropShadowActive = true
                     });
       drawing.ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(
           0,
