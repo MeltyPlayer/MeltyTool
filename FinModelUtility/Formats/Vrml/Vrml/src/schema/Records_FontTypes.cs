@@ -8,7 +8,7 @@ public enum Justify {
 
 public record FontStyleNode : BNode {
   public string? Family { get; init; }
-  public Justify Justify { get; init; }
+  public Justify Justify { get; init; } = Justify.BEGIN;
   public float? Size { get; init; }
   public string Style { get; init; }
 }

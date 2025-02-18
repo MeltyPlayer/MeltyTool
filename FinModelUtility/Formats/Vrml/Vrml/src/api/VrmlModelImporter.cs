@@ -464,12 +464,11 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         continue;
       }
 
-      var srcNode = definitions[srcName];
-
       if (routeNode.Dst.TryRemoveEnd(".translation",
                                      out var translationBoneName)) {
         var translationTracks = translationTracksByName[translationBoneName]
             .UseCombinedTranslationKeyframes();
+        var srcNode = definitions[srcName];
         var positionInterpolator
             = srcNode.AssertAsA<PositionInterpolatorNode>();
         foreach (var (frame, value) in positionInterpolator.Keyframes) {
@@ -481,6 +480,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       if (routeNode.Dst.TryRemoveEnd(".rotation", out var rotationBoneName)) {
         var rotationTracks = rotationTracksByName[rotationBoneName]
             .UseCombinedQuaternionKeyframes();
+        var srcNode = definitions[srcName];
         var orientationInterpolator
             = srcNode.AssertAsA<OrientationInterpolatorNode>();
         foreach (var (frame, value) in orientationInterpolator.Keyframes) {

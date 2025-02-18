@@ -69,7 +69,7 @@ public partial class VrmlParser {
       IDictionary<string, INode> definitions) {
     IReadOnlyList<string> @string = null!;
     IEnumerable<float> length = default;
-    FontStyleNode fontStyle = null!;
+    FontStyleNode fontStyle = new FontStyleNode();
 
     ReadFields_(
         tr,
