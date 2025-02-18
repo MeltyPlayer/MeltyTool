@@ -114,7 +114,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           using var glTextTexture
               = new GlTextTexture(text, qFont, Color.White, fontAlignment);
-          var image = glTextTexture.ConvertToImage();
+          var image = glTextTexture.ConvertToImage(true);
 
           var finTexture = finModel.MaterialManager.CreateTexture(image);
           finTexture.Name = text;
@@ -424,8 +424,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
               var depth = .05f;
 
-              var point1 = new Vector3(-width / 2f, -height / 2f, depth);
-              var point2 = new Vector3(width / 2f, height / 2f, depth);
+              var point1 = new Vector3(-width / 2f, height / 2f, depth);
+              var point2 = new Vector3(width / 2f, -height / 2f, depth);
 
               switch (textNode.FontStyle.Justify) {
                 case Justify.BEGIN: {
