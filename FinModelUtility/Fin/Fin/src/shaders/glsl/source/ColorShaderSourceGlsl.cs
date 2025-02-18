@@ -2,7 +2,6 @@
 
 using fin.model;
 using fin.util.enumerables;
-using fin.util.image;
 
 namespace fin.shaders.glsl.source;
 

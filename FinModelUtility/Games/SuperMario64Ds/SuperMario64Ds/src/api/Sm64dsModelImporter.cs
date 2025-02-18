@@ -1,11 +1,8 @@
-﻿using System.Drawing;
-
-using fin.animation.keyframes;
+﻿using fin.animation.keyframes;
 using fin.compression;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
-using fin.image;
 using fin.io;
 using fin.math.transform;
 using fin.model;

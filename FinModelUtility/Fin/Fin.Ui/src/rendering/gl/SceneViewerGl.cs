@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-using fin.animation;
+﻿using fin.animation;
 using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.model;

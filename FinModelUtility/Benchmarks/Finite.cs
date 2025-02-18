@@ -1,7 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-using fin.math.rotations;
-
 namespace benchmarks {
   public class Finite {
     private const int n = 10000000;

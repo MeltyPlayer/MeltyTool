@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using Assimp;
-
 using fin.color;
 using fin.image;
 using fin.image.formats;

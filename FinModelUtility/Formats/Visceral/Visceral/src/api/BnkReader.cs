@@ -7,8 +7,6 @@ using fin.model;
 
 using schema.binary;
 
-using visceral.schema.bnk;
-
 
 namespace visceral.api;
 

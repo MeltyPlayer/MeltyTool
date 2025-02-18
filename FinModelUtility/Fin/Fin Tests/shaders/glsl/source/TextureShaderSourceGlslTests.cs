@@ -1,11 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 using fin.image;
-using fin.model;
-using fin.model.impl;
-using fin.model.util;
-using fin.util.image;
 
 using NUnit.Framework;
 

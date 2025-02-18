@@ -2,7 +2,6 @@
 
 using fin.audio;
 using fin.ui.rendering.gl;
-using fin.ui.rendering.gl.material;
 
 using OpenTK.Graphics.OpenGL;
 

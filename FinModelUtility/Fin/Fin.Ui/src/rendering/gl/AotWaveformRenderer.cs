@@ -2,14 +2,10 @@
 
 using fin.audio;
 using fin.math;
-using fin.model;
 using fin.model.impl;
 using fin.ui.rendering.gl.model;
 
 using OpenTK.Graphics.OpenGL;
-
-using LogicOp = fin.model.LogicOp;
-using PrimitiveType = fin.model.PrimitiveType;
 
 namespace fin.ui.rendering.gl;
 

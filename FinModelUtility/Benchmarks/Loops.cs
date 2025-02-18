@@ -3,8 +3,6 @@ using System.Runtime.CompilerServices;
 
 using BenchmarkDotNet.Attributes;
 
-using CommandLine;
-
 using CommunityToolkit.HighPerformance;
 
 

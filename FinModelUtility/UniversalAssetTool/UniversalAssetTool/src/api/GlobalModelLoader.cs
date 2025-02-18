@@ -22,8 +22,6 @@ using modl.api;
 
 using nitro.api;
 
-using pmdc.api;
-
 using sm64ds.api;
 
 using ttyd.api;

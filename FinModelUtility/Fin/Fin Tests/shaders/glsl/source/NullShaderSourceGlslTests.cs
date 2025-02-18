@@ -1,8 +1,4 @@
-﻿using fin.model.impl;
-using fin.model.util;
-using fin.util.image;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
