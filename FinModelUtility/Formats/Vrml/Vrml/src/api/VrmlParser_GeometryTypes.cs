@@ -1,10 +1,30 @@
-﻿using schema.text.reader;
+﻿using System.Numerics;
+
+using schema.text.reader;
 
 using vrml.schema;
 
 namespace vrml.api;
 
 public partial class VrmlParser {
+  private static BoxNode ReadBoxNode_(ITextReader tr) {
+    Vector3 size = default;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "size": {
+              size = ReadVector3_(tr);
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new BoxNode { Size = size };
+  }
+
   private static IndexedFaceSetNode ReadIndexedFaceSetNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
@@ -62,6 +82,24 @@ public partial class VrmlParser {
         TexCoord = texCoord,
         TexCoordIndex = texCoordIndex
     };
+  }
+
+  private static SphereNode ReadSphereNode_(ITextReader tr) {
+    float radius = default;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "radius": {
+              radius = tr.ReadSingle();
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new SphereNode { Radius = radius };
   }
 
   private static TextNode ReadTextNode_(

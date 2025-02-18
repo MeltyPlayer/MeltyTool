@@ -1,6 +1,12 @@
-﻿namespace vrml.schema;
+﻿using System.Numerics;
+
+namespace vrml.schema;
 
 public interface IGeometryNode : INode { }
+
+public record BoxNode : BNode, IGeometryNode {
+  public Vector3 Size { get; set; }
+}
 
 public record IndexedFaceSetNode : BNode, IGeometryNode {
   public bool? Convex { get; init; }
@@ -10,6 +16,10 @@ public record IndexedFaceSetNode : BNode, IGeometryNode {
   public required IReadOnlyList<int> CoordIndex { get; init; }
   public ITextureCoordinateNode? TexCoord { get; init; }
   public IReadOnlyList<int>? TexCoordIndex { get; init; }
+}
+
+public record SphereNode : BNode, IGeometryNode {
+  public float Radius { get; set; }
 }
 
 public record TextNode : BNode, IGeometryNode {

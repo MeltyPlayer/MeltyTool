@@ -7,24 +7,12 @@ public interface INode {
   string? DefName { get; set; }
 }
 
-public interface IGroupNode : INode {
-  IReadOnlyList<INode> Children { get; }
-}
-
 public interface ITransform : INode {
   Vector3? Center { get; }
   Vector3 Translation { get; }
   Quaternion? Rotation { get; }
   Quaternion? ScaleOrientation { get; }
   Vector3? Scale { get; }
-}
-
-public interface ITransformNode : IGroupNode, ITransform;
-
-public interface IAnchorNode : IGroupNode {
-  string Url { get; }
-  string Description { get; }
-  IReadOnlyList<string>? Parameter { get; }
 }
 
 public interface IBackgroundNode : INode {

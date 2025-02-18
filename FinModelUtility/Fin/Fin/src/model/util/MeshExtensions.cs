@@ -3,7 +3,9 @@ using System.Numerics;
 
 using fin.math;
 using fin.math.floats;
+using fin.math.matrix.three;
 using fin.math.matrix.two;
+using fin.math.rotations;
 
 namespace fin.model.util;
 
@@ -298,6 +300,57 @@ public static class MeshExtensions {
 
       mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
       mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
+    }
+  }
+
+  public static void AddSimpleSphere<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      Vector3 center,
+      float radius,
+      int steps,
+      IReadOnlyMaterial? material = null,
+      IReadOnlyBone? bone = null,
+      (float, float)? repeat = null)
+      where TVertex : INormalVertex, ISingleUvVertex {
+    for (var vI = 0; vI < steps; ++vI) {
+      float vFrac1 = (1f * vI / steps);
+      float vFrac2 = (1f * (vI + 1) / steps);
+
+      var v1 = vFrac1 * (repeat?.Item2 ?? 1);
+      var v2 = vFrac2 * (repeat?.Item2 ?? 1);
+
+      var pitch1 = MathF.PI * vFrac1 - MathF.PI / 2;
+      var pitch2 = MathF.PI * vFrac2 - MathF.PI / 2;
+
+      for (var hI = 0; hI < steps; ++hI) {
+        float hFrac1 = (1f * hI / steps);
+        float hFrac2 = (1f * (hI + 1) / steps);
+
+        var u1 = hFrac1 * (repeat?.Item1 ?? 1);
+        var u2 = hFrac2 * (repeat?.Item1 ?? 1);
+
+        var yaw1 = 2 * MathF.PI * hFrac1;
+        var yaw2 = 2 * MathF.PI * hFrac2;
+
+        var normUl = SystemVector3Util.FromPitchYawRadians(pitch1, yaw1);
+        var normUr = SystemVector3Util.FromPitchYawRadians(pitch1, yaw2);
+        var normLr = SystemVector3Util.FromPitchYawRadians(pitch2, yaw2);
+        var normLl = SystemVector3Util.FromPitchYawRadians(pitch2, yaw1);
+
+        var xyzUl = center + normUl * radius;
+        var xyzUr = center + normUr * radius;
+        var xyzLr = center + normLr * radius;
+        var xyzLl = center + normLl * radius;
+        
+        var ul = (xyzUl, new Vector2(u1, v1), normUl);
+        var ur = (xyzUr, new Vector2(u2, v1), normUr);
+        var lr = (xyzLr, new Vector2(u2, v2), normLr);
+        var ll = (xyzLl, new Vector2(u1, v2), normLl);
+
+        mesh.AddSimpleQuad(skin, ul, ur, lr, ll, material, bone);
+        mesh.AddSimpleQuad(skin, ur, ul, ll, lr, material, bone);
+      }
     }
   }
 }

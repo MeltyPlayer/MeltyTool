@@ -14,6 +14,7 @@ using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.math;
 using fin.math.matrix.four;
+using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
@@ -107,9 +108,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var text = string.Join('\n', textNode.String);
 
           var fontAlignment = textNode.FontStyle.Justify switch {
-              Justify.BEGIN => QFontAlignment.Left,
+              Justify.BEGIN  => QFontAlignment.Left,
               Justify.MIDDLE => QFontAlignment.Centre,
-              Justify.END => QFontAlignment.Right,
+              Justify.END    => QFontAlignment.Right,
           };
 
           using var glTextTexture
@@ -278,9 +279,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             = rotationBoneNames.Contains(transform.DefName);
         if ((rotation != null && rotation != Quaternion.Identity) ||
             isRotationBone) {
-          var rotationBone = finBone = finBone.AddChild(
-              SystemMatrix4x4Util.FromRotation(
-                  rotation ?? Quaternion.Identity));
+          var rotationBone = finBone = finBone.AddChild(Vector3.Zero);
+          rotationBone.LocalTransform.SetRotation(
+              rotation ?? Quaternion.Identity);
           if (isRotationBone) {
             var rotationTracks = animation.AddBoneTracks(rotationBone);
             rotationTracksByName[transform.DefName!] = rotationTracks;
@@ -355,9 +356,17 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var finMesh = finSkin.AddMesh();
 
           switch (geometry) {
+            case BoxNode boxNode: {
+              finMesh.AddSimpleCube(finSkin,
+                                    -boxNode.Size / 2,
+                                    boxNode.Size / 2,
+                                    finMaterial,
+                                    finBone);
+              break;
+            }
             case IndexedFaceSetNode indexedFaceSetNode: {
               foreach (var faceVertices in GetIndexFaceSetCoordGroups_(
-                       indexedFaceSetNode)) {
+                           indexedFaceSetNode)) {
                 var finVertices = new LinkedList<INormalVertex>();
                 foreach (var vrmlVertex in faceVertices) {
                   var (coordIndex, texCoordIndex, colorIndex) = vrmlVertex;
@@ -411,6 +420,16 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                               .SetMaterial(finMaterial);
                 }
               }
+
+              break;
+            }
+            case SphereNode sphereNode: {
+              finMesh.AddSimpleSphere(finSkin,
+                                      Vector3.Zero,
+                                      sphereNode.Radius,
+                                      8,
+                                      finMaterial,
+                                      finBone);
               break;
             }
             case TextNode textNode: {
@@ -445,7 +464,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                                      point2,
                                      finMaterial,
                                      finBone);
-
               break;
             }
           }

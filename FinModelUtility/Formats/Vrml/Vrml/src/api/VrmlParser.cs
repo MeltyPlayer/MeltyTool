@@ -15,7 +15,8 @@ using vrml.schema;
 namespace vrml.api;
 
 public partial class VrmlParser {
-  public static (IGroupNode, IReadOnlyDictionary<string, INode>) Parse(Stream stream) {
+  public static (IGroupNode, IReadOnlyDictionary<string, INode>) Parse(
+      Stream stream) {
     DecompressStreamIfNeeded_(ref stream);
     stream = RemoveComments_(stream);
     var tr = new SchemaTextReader(stream);
@@ -80,9 +81,9 @@ public partial class VrmlParser {
 
   private static readonly IImmutableSet<string> UNSUPPORTED_NODES
       = new[] {
-              "BackgroundColor", "Collision", "Fog", "Info", "NavigationInfo",
-              "PerspectiveCamera", "PROTO", "ProximitySensor",
-              "Sphere", "Sound", "Viewpoint", "WorldInfo", "WWWAnchor",
+              "BackgroundColor", "ColorInterpolator", "Fog", "Info",
+              "NavigationInfo", "PerspectiveCamera", "PROTO", "ProximitySensor",
+              "Sound", "TouchSensor", "Viewpoint", "WorldInfo", "WWWAnchor",
           }
           .ToImmutableHashSet();
 
@@ -170,6 +171,8 @@ public partial class VrmlParser {
         "Appearance" => ReadAppearanceNode_(tr, definitions),
         "AudioClip" => ReadAudioClipNode_(tr),
         "Background" => ReadBackgroundNode_(tr),
+        "Box" => ReadBoxNode_(tr),
+        "Collision" => ReadCollisionNode_(tr, definitions),
         "Color" => ReadColorNode_(tr),
         "Coordinate" or "Coordinate3" => ReadCoordinateNode_(tr),
         "DirectionalLight" => ReadDirectionalLightNode_(tr),
@@ -187,6 +190,7 @@ public partial class VrmlParser {
         "Shape" => ReadShapeNode_(tr, definitions),
         "ShapeHints" => ReadShapeHintsNode_(tr),
         "Sound" => ReadSoundNode_(tr, definitions),
+        "Sphere" => ReadSphereNode_(tr),
         "Text" => ReadTextNode_(tr, definitions),
         "TextureCoordinate" => ReadTextureCoordinateNode_(tr),
         "TextureTransform" => ReadTextureTransformNode_(tr),
@@ -202,46 +206,6 @@ public partial class VrmlParser {
     }
 
     return true;
-  }
-
-  private static IAnchorNode ReadAnchorNode_(
-      ITextReader tr,
-      IDictionary<string, INode> definitions) {
-    IReadOnlyList<INode> children = [];
-    string description = default;
-    IReadOnlyList<string> parameter = default;
-    string url = default;
-
-    ReadFields_(
-        tr,
-        fieldName => {
-          switch (fieldName) {
-            case "children": {
-              children = ReadChildren_(tr, definitions);
-              break;
-            }
-            case "description": {
-              description = ReadString_(tr);
-              break;
-            }
-            case "parameter": {
-              parameter = ReadStringArray_(tr);
-              break;
-            }
-            case "url": {
-              url = ReadString_(tr);
-              break;
-            }
-            default: throw new NotImplementedException();
-          }
-        });
-
-    return new AnchorNode {
-        Children = children,
-        Description = description,
-        Parameter = parameter,
-        Url = url,
-    };
   }
 
   private static AppearanceNode ReadAppearanceNode_(
@@ -374,26 +338,6 @@ public partial class VrmlParser {
         Direction = direction,
         Intensity = intensity,
     };
-  }
-
-  private static IGroupNode ReadGroupNode_(
-      ITextReader tr,
-      IDictionary<string, INode> definitions) {
-    IReadOnlyList<INode> children = [];
-
-    ReadFields_(
-        tr,
-        fieldName => {
-          switch (fieldName) {
-            case "children": {
-              children = ReadChildren_(tr, definitions);
-              break;
-            }
-            default: throw new NotImplementedException();
-          }
-        });
-
-    return new GroupNode { Children = children };
   }
 
   private static IImageTextureNode ReadImageTextureNode_(
@@ -537,66 +481,6 @@ public partial class VrmlParser {
     };
   }
 
-  private static INode ReadSeparatorNode_(
-      ITextReader tr,
-      IDictionary<string, INode> definitions) {
-    LinkedList<INode> rawChildren = new();
-
-    SkipWhitespace_(tr);
-    tr.AssertChar('{');
-
-    while (!tr.Eof) {
-      SkipWhitespace_(tr);
-      if (tr.Matches('}')) {
-        break;
-      }
-
-      if (tr.Eof) {
-        break;
-      }
-
-      if (TryParseNode_(tr, definitions, out var node)) {
-        if (node != null) {
-          rawChildren.AddLast(node);
-        }
-      } else {
-        break;
-      }
-    }
-
-    LinkedList<INode> children = new();
-
-    ICoordinateNode? currentCoord = null;
-    AppearanceNode? currentAppearance = null;
-    foreach (var child in rawChildren) {
-      switch (child) {
-        case ICoordinateNode coordNode: {
-          currentCoord = coordNode;
-          break;
-        }
-        case IMaterialNode materialNode: {
-          currentAppearance = new AppearanceNode { Material = materialNode };
-          break;
-        }
-        case IndexedFaceSetNode indexedFaceSetNode: {
-          children.AddLast(new ShapeNode {
-              Appearance = Asserts.CastNonnull(currentAppearance),
-              Geometry = indexedFaceSetNode with {
-                  Coord = currentCoord.AssertNonnull()
-              }
-          });
-          break;
-        }
-        default: {
-          children.AddLast(child);
-          break;
-        }
-      }
-    }
-
-    return new GroupNode { Children = children.ToArray() };
-  }
-
   private static IShapeNode ReadShapeNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
@@ -680,59 +564,6 @@ public partial class VrmlParser {
     };
   }
 
-  private static ITransformNode ReadTransformNode_(
-      ITextReader tr,
-      IDictionary<string, INode> definitions) {
-    Vector3? center = null;
-    IReadOnlyList<INode> children = [];
-    Quaternion? rotation = null;
-    Vector3? scale = null;
-    Quaternion? scaleOrientation = null;
-    Vector3 translation = default;
-
-    ReadFields_(
-        tr,
-        fieldName => {
-          switch (fieldName) {
-            case "center": {
-              center = ReadVector3_(tr);
-              break;
-            }
-            case "children": {
-              children = ReadChildren_(tr, definitions);
-              break;
-            }
-            case "rotation": {
-              rotation = ReadQuaternion_(tr);
-              break;
-            }
-            case "scale":
-            case "scaleFactor": {
-              scale = ReadVector3_(tr);
-              break;
-            }
-            case "scaleOrientation": {
-              scaleOrientation = ReadQuaternion_(tr);
-              break;
-            }
-            case "translation": {
-              translation = ReadVector3_(tr);
-              break;
-            }
-            default: throw new NotImplementedException();
-          }
-        });
-
-    return new TransformNode {
-        Center = center,
-        Children = children,
-        Rotation = rotation,
-        Scale = scale,
-        ScaleOrientation = scaleOrientation,
-        Translation = translation
-    };
-  }
-
   private static RouteNode ReadRouteNode_(ITextReader tr) {
     var src = ReadWord_(tr);
     SkipWhitespace_(tr);
@@ -795,9 +626,12 @@ public partial class VrmlParser {
     return tr.ReadInt32s(TextReaderConstants.COMMA_CHAR, ']');
   }
 
-  private static readonly char[] SEPARATORS_ = TextReaderConstants.WHITESPACE_CHARS
-      .Concat(TextReaderConstants.COMMA_CHARS)
-      .ToArray();
+  private static readonly char[] SEPARATORS_ = TextReaderConstants
+                                               .WHITESPACE_CHARS
+                                               .Concat(
+                                                   TextReaderConstants
+                                                       .COMMA_CHARS)
+                                               .ToArray();
 
   private static IReadOnlyList<float> ReadSingleArray_(ITextReader tr) {
     SkipWhitespace_(tr);
@@ -810,8 +644,7 @@ public partial class VrmlParser {
     ReadArray_(tr,
                subTr => {
                  subTr.Matches(out _, [',']);
-                 list.AddLast(
-                     new Vector2(ReadSingles_(subTr, 2, [",", "\n", "\r\n"])));
+                 list.AddLast(new Vector2(ReadSingles_(subTr, 2)));
                });
     return list.ToArray();
   }
@@ -827,20 +660,21 @@ public partial class VrmlParser {
     ReadArray_(tr,
                subTr => {
                  subTr.Matches(out _, [',']);
-                 list.AddLast(
-                     new Vector3(ReadSingles_(subTr, 3, [",", "\n", "\r\n", "]"])));
+                 list.AddLast(new Vector3(ReadSingles_(subTr, 3)));
                });
     return list.ToArray();
   }
 
-  private static IReadOnlyList<Quaternion> ReadQuaternionArray_(ITextReader tr) {
+  private static IReadOnlyList<Quaternion>
+      ReadQuaternionArray_(ITextReader tr) {
     var list = new LinkedList<Quaternion>();
     ReadArray_(tr,
                subTr => {
                  subTr.Matches(out _, [',']);
-                 var values = ReadSingles_(subTr, 4, [",", "\n", "\r\n", "]"]);
-                 list.AddLast(Quaternion.CreateFromAxisAngle(new Vector3(values.AsSpan(0, 3)),
-                                values[3]));
+                 var values = ReadSingles_(subTr, 4);
+                 list.AddLast(Quaternion.CreateFromAxisAngle(
+                                  new Vector3(values.AsSpan(0, 3)),
+                                  values[3]));
                });
     return list.ToArray();
   }
@@ -873,20 +707,11 @@ public partial class VrmlParser {
     var singles = new float[count];
     for (var i = 0; i < count; ++i) {
       singles[i] = float.Parse(ReadWord_(tr));
+      tr.SkipOnceIfPresent(',');
     }
 
     return singles;
   }
-
-  private static float[] ReadSingles_(ITextReader tr,
-                                      int count,
-                                      ReadOnlySpan<string> terminators) {
-    var singles = tr.ReadSingles(TextReaderConstantsExtra.WHITESPACE_STRINGS,
-                                 terminators);
-    Asserts.Equal(count, singles.Length);
-    return singles;
-  }
-
 
   private static void SkipWhitespace_(ITextReader tr)
     => tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
@@ -900,7 +725,7 @@ public partial class VrmlParser {
   private static string ReadWord_(ITextReader tr) {
     SkipWhitespace_(tr);
     var word
-        = tr.ReadUpToStartOfTerminator([" ", "\t", "\n", "\r\n", "{", "["]);
+        = tr.ReadUpToStartOfTerminator([" ", "\t", "\n", "\r\n", ",", "{", "[", "}", "]"]);
     return word;
   }
 }
