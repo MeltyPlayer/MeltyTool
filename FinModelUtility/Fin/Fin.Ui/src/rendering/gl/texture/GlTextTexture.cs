@@ -15,40 +15,45 @@ public class GlTextTexture : IGlTexture {
                        QFont font,
                        Color color,
                        QFontAlignment alignment = QFontAlignment.Left) {
-    var size = font.Measure(text);
-    var width = (int) MathF.Ceiling(size.Width);
-    var height = (int) MathF.Ceiling(size.Height);
+    var roughSize = font.Measure(text);
+    var roughWidth = (int) MathF.Ceiling(roughSize.Width);
+    var roughHeight = (int) MathF.Ceiling(roughSize.Height);
 
+    var x = alignment switch {
+        QFontAlignment.Left   => 0,
+        QFontAlignment.Centre => roughWidth / 2,
+        QFontAlignment.Right  => roughWidth,
+        _ => throw new ArgumentOutOfRangeException(
+            nameof(alignment),
+            alignment,
+            null)
+    };
+
+    using var drawing = new QFontDrawing();
+    var size = drawing.Print(font,
+                             text,
+                             new Vector3(x, roughHeight, 0),
+                             alignment,
+                             new QFontRenderOptions { Colour = color });
+
+    drawing.ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(
+        0,
+        roughWidth,
+        0,
+        roughHeight,
+        -1.0f,
+        1.0f);
+    drawing.RefreshBuffers();
+
+    var width = (int) Math.Ceiling(size.Width);
+    var height = (int) Math.Ceiling(size.Height);
     this.impl_ = new GlFbo(width, height);
 
     this.impl_.TargetFbo();
     GL.Viewport(0, 0, width, height);
     GL.ClearColor(0, 0, 0, 0);
     GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-    {
-      var x = alignment switch {
-          QFontAlignment.Left    => 0,
-          QFontAlignment.Centre  => width / 2,
-          QFontAlignment.Right   => width,
-          _                      => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null)
-      };
-
-      using var drawing = new QFontDrawing();
-      drawing.Print(font,
-                    text,
-                    new Vector3(x, height, 0),
-                    alignment,
-                    new QFontRenderOptions { Colour = color });
-      drawing.ProjectionMatrix = Matrix4.CreateOrthographicOffCenter(
-          0,
-          width,
-          0,
-          height,
-          -1.0f,
-          1.0f);
-      drawing.RefreshBuffers();
-      drawing.Draw();
-    }
+    drawing.Draw();
     GL.Flush();
     this.impl_.UntargetFbo();
   }

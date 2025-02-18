@@ -3,7 +3,6 @@ using System.IO.Compression;
 using System.Numerics;
 using System.Text;
 
-using fin.schema;
 using fin.util.asserts;
 
 using schema.binary;
@@ -83,7 +82,8 @@ public partial class VrmlParser {
       = new[] {
               "BackgroundColor", "ColorInterpolator", "Fog", "Info",
               "NavigationInfo", "PerspectiveCamera", "PROTO", "ProximitySensor",
-              "Sound", "TouchSensor", "Viewpoint", "WorldInfo", "WWWAnchor",
+              "Script", "Sound", "TouchSensor", "Viewpoint", "VisibilitySensor",
+              "WorldInfo", "WWWAnchor",
           }
           .ToImmutableHashSet();
 
@@ -175,6 +175,7 @@ public partial class VrmlParser {
         "Collision" => ReadCollisionNode_(tr, definitions),
         "Color" => ReadColorNode_(tr),
         "Coordinate" or "Coordinate3" => ReadCoordinateNode_(tr),
+        "Cylinder" => ReadCylinderNode_(tr),
         "DirectionalLight" => ReadDirectionalLightNode_(tr),
         "FontStyle" => ReadFontStyleNode_(tr),
         "Group" => ReadGroupNode_(tr, definitions),
@@ -707,7 +708,9 @@ public partial class VrmlParser {
     var singles = new float[count];
     for (var i = 0; i < count; ++i) {
       singles[i] = float.Parse(ReadWord_(tr));
-      tr.SkipOnceIfPresent(',');
+      if (!tr.Eof) {
+        tr.SkipOnceIfPresent(',');
+      }
     }
 
     return singles;
@@ -725,7 +728,9 @@ public partial class VrmlParser {
   private static string ReadWord_(ITextReader tr) {
     SkipWhitespace_(tr);
     var word
-        = tr.ReadUpToStartOfTerminator([" ", "\t", "\n", "\r\n", ",", "{", "[", "}", "]"]);
+        = tr.ReadUpToStartOfTerminator([
+            " ", "\t", "\n", "\r\n", ",", "{", "[", "}", "]"
+        ]);
     return word;
   }
 }

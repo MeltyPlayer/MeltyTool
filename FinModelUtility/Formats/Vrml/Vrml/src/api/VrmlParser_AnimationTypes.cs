@@ -61,8 +61,10 @@ public partial class VrmlParser {
 
   private static TimeSensorNode ReadTimeSensorNode_(ITextReader tr) {
     float cycleInterval = default;
+    bool enabled = true;
     bool loop = false;
     float startTime = default;
+    float stopTime = default;
 
     ReadFields_(
         tr,
@@ -72,12 +74,20 @@ public partial class VrmlParser {
               cycleInterval = tr.ReadSingle();
               break;
             }
+            case "enabled": {
+              enabled = ReadBool_(tr);
+              break;
+            }
             case "loop": {
               loop = ReadBool_(tr);
               break;
             }
             case "startTime": {
               startTime = tr.ReadSingle();
+              break;
+            }
+            case "stopTime": {
+              stopTime = tr.ReadSingle();
               break;
             }
             default: throw new NotImplementedException();

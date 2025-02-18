@@ -99,10 +99,29 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     FreeTypeFontUtil.InitIfNeeded();
 
     var fontSize = 72f;
-    using var qFont = new QFont(
-        CommonFiles.SANS_FONT_FILE.FullPath,
-        fontSize,
-        new QFontBuilderConfiguration(false));
+    var lazyFontDictionary = new LazyDictionary<FontStyleNode, QFont>(
+        fontStyleNode => {
+          var baseFontName = fontStyleNode.Family switch {
+              Family.SANS  => "OpenSans",
+              Family.SERIF => "Merriweather",
+              _            => throw new ArgumentOutOfRangeException()
+          };
+
+          var styleText = fontStyleNode.Style switch {
+              Style.BOLD        => "Bold",
+              Style.BOLD_ITALIC => "BoldItalic",
+              Style.ITALIC      => "Italic",
+              Style.PLAIN       => "Regular",
+          };
+
+          var fontFile = CommonFiles.COMMON_DIRECTORY.AssertGetExistingFile(
+              $"{baseFontName}-{styleText}.ttf");
+
+          return new QFont(
+              fontFile.FullPath,
+              fontSize,
+              new QFontBuilderConfiguration(false));
+        });
     var lazyTextTextureDictionary = new LazyDictionary<TextNode, ITexture>(
         textNode => {
           var text = string.Join('\n', textNode.String);
@@ -113,6 +132,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               Justify.END    => QFontAlignment.Right,
           };
 
+          var qFont = lazyFontDictionary[textNode.FontStyle];
           using var glTextTexture
               = new GlTextTexture(text, qFont, Color.White, fontAlignment);
           var image = glTextTexture.ConvertToImage(true);
@@ -433,18 +453,21 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               break;
             }
             case TextNode textNode: {
-              var finTexture = lazyTextTextureDictionary[textNode];
-
               var scale = 1 / fontSize;
               scale *= .75f;
+              scale *= textNode.FontStyle.Size;
 
-              var width = finTexture.Image.Width * scale;
-              var height = finTexture.Image.Height * scale;
+              var font = lazyFontDictionary[textNode.FontStyle];
+              var text = string.Join('\n', textNode.String);
+              
+              var roughSize = font.Measure(text);
+              var width = roughSize.Width * scale;
+              var height = roughSize.Height * scale;
 
               var depth = .05f;
 
-              var point1 = new Vector3(-width / 2f, height / 2f, depth);
-              var point2 = new Vector3(width / 2f, -height / 2f, depth);
+              var point1 = new Vector3(-width / 2f, height / 2, depth);
+              var point2 = new Vector3(width / 2f, -height / 2, depth);
 
               switch (textNode.FontStyle.Justify) {
                 case Justify.BEGIN: {

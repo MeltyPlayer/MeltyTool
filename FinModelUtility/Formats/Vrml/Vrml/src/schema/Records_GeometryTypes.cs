@@ -8,6 +8,11 @@ public record BoxNode : BNode, IGeometryNode {
   public Vector3 Size { get; set; }
 }
 
+public record CylinderNode : BNode, IGeometryNode {
+  public float Height { get; set; }
+  public float Radius { get; set; }
+}
+
 public record IndexedFaceSetNode : BNode, IGeometryNode {
   public bool? Convex { get; init; }
   public bool? ColorPerVertex { get; init; }

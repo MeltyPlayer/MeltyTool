@@ -25,6 +25,29 @@ public partial class VrmlParser {
     return new BoxNode { Size = size };
   }
 
+  private static CylinderNode ReadCylinderNode_(ITextReader tr) {
+    float height = 2;
+    float radius = 1;
+
+    ReadFields_(
+        tr,
+        fieldName => {
+          switch (fieldName) {
+            case "height": {
+              height = tr.ReadSingle();
+              break;
+            }
+            case "radius": {
+              radius = tr.ReadSingle();
+              break;
+            }
+            default: throw new NotImplementedException();
+          }
+        });
+
+    return new CylinderNode { Height = height, Radius = radius };
+  }
+
   private static IndexedFaceSetNode ReadIndexedFaceSetNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
