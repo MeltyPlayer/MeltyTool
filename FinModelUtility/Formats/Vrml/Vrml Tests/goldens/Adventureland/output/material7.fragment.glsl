@@ -32,6 +32,7 @@ uniform vec3 cameraPosition;
 uniform float shininess;
 in vec3 vertexPosition;
 in vec3 vertexNormal;
+in vec4 vertexColor0;
 
 out vec4 fragColor;
 
@@ -123,7 +124,7 @@ void main() {
   vec4 mergedLightSpecularColor = vec4(0);
   getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
 
-  vec3 colorComponent = (ambientLightColor.rgb + mergedLightDiffuseColor.rgb)*vec3(2.0)*vec3(0.501960992813);
+  vec3 colorComponent = (ambientLightColor.rgb + mergedLightDiffuseColor.rgb)*vec3(2.0)*vec3(0.501960992813)*vertexColor0.rgb;
 
   float alphaComponent = 0.800000011921;
 

@@ -14,9 +14,11 @@ layout(location = 0) in vec3 in_Position;
 layout(location = 1) in vec3 in_Normal;
 layout(location = 2) in int in_BoneIds;
 layout(location = 3) in float in_BoneWeights;
+layout(location = 5) in vec4 in_Color0;
 
 out vec3 vertexPosition;
 out vec3 vertexNormal;
+out vec4 vertexColor0;
 
 void main() {
   mat4 mvMatrix = viewMatrix * modelMatrix;
@@ -31,4 +33,5 @@ void main() {
 
   vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
   vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;
+  vertexColor0 = in_Color0;
 }

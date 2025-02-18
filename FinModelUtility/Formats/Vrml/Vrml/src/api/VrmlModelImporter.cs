@@ -143,9 +143,10 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           return finTexture;
         });
     var lazyMaterialDictionary
-        = new LazyDictionary<(AppearanceNode, TextNode?), IMaterial>(
+        = new LazyDictionary<(AppearanceNode, TextNode?, bool hasVertexColor),
+            IMaterial>(
             tuple => {
-              var (appearanceNode, textNode) = tuple;
+              var (appearanceNode, textNode, hasVertexColor) = tuple;
               var vrmlMaterial = appearanceNode.Material;
 
               var color = vrmlMaterial.DiffuseColor;
@@ -189,6 +190,13 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                     = colorOps.Multiply(diffuseSurfaceColor, textureColor);
                 diffuseSurfaceAlpha
                     = scalarOps.Multiply(diffuseSurfaceAlpha, textureAlpha);
+              }
+
+              if (hasVertexColor) {
+                var vertexColor = equations.CreateOrGetColorInput(
+                    FixedFunctionSource.VERTEX_COLOR_0);
+                diffuseSurfaceColor
+                    = colorOps.Multiply(diffuseSurfaceColor, vertexColor);
               }
 
               var ambientSurfaceColor = vrmlMaterial.AmbientColor != null
@@ -341,7 +349,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               Texture = image,
           };
 
-          var finMaterial = lazyMaterialDictionary[(appearance, null)];
+          var finMaterial = lazyMaterialDictionary[(appearance, null, false)];
 
           var boneWeights = finSkin.GetOrCreateBoneWeights(
               VertexSpace.RELATIVE_TO_BONE,
@@ -371,8 +379,11 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         }
         case IShapeNode shapeNode: {
           var geometry = shapeNode.Geometry;
+          var hasVertexColor
+              = (shapeNode.Geometry as IndexedFaceSetNode)?.Color != null;
           var finMaterial = lazyMaterialDictionary[(shapeNode.Appearance,
-                                                    geometry as TextNode)];
+                                                    geometry as TextNode,
+                                                    hasVertexColor)];
           var finMesh = finSkin.AddMesh();
 
           switch (geometry) {
@@ -395,7 +406,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                   var texCoord = texCoordIndex != null
                       ? indexedFaceSetNode.TexCoord?.Point[texCoordIndex.Value]
                       : null;
-                  var color = texCoordIndex != null
+                  var color = colorIndex != null
                       ? indexedFaceSetNode.Color?.Color[colorIndex.Value]
                       : null;
 
