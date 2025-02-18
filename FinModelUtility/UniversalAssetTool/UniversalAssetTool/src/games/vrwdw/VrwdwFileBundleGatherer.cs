@@ -1,8 +1,7 @@
 ﻿using fin.audio.io.importers.midi;
+using fin.common;
 using fin.io.bundles;
 using fin.util.progress;
-
-using uni.platforms;
 
 using vrml.api;
 
@@ -32,10 +31,10 @@ public class VrwdwFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }.Annotate(wrlFile));
     }
 
-    var soundFontFile = fileHierarchy.Root.AssertGetExistingFile("windows.sf2");
     foreach (var midFile in fileHierarchy.Root.GetFilesWithFileType(".mid")) {
       organizer.Add(
-          new MidiAudioFileBundle(midFile, soundFontFile).Annotate(midFile));
+          new MidiAudioFileBundle(midFile, CommonFiles.WINDOWS_SOUNDFONT_FILE)
+              .Annotate(midFile));
     }
   }
 }

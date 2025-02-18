@@ -4,6 +4,7 @@ using DelaunatorSharp;
 
 using fin.animation.keyframes;
 using fin.color;
+using fin.common;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
@@ -16,12 +17,22 @@ using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.model.util;
+using fin.ui.rendering.gl;
+using fin.ui.rendering.gl.texture;
 using fin.util.asserts;
 using fin.util.enumerables;
 using fin.util.image;
 using fin.util.linq;
 using fin.util.sets;
 using fin.util.strings;
+
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Windowing.Common;
+using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+
+using QuickFont;
+using QuickFont.Configuration;
 
 using vrml.schema;
 using vrml.util;
@@ -44,6 +55,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                        IVrmlFileBundle fileBundle,
                        HashSet<IReadOnlyGenericFile> fileSet) {
     var wrlFile = fileBundle.WrlFile;
+    var wrlDirectory = wrlFile.AssertGetParent();
     var finModel = new ModelImpl { FileBundle = fileBundle, Files = fileSet };
 
     var lazyTextureDictionary
@@ -51,7 +63,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             IReadOnlyTexture>(tuple => {
           var (name, transformNode) = tuple;
 
-          var wrlDirectory = wrlFile.AssertGetParent();
           var imageFile = wrlDirectory.AssertGetExistingFile(name);
           fileSet.Add(imageFile);
 
@@ -86,85 +97,116 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           return finTexture;
         });
-    var lazyMaterialDictionary = new LazyDictionary<AppearanceNode, IMaterial>(
-        appearanceNode => {
-          var vrmlMaterial = appearanceNode.Material;
 
-          var color = vrmlMaterial.DiffuseColor;
-          var alpha = 1 - vrmlMaterial.Transparency;
+    HeadlessGl.MakeCurrent();
+    FreeTypeFontUtil.InitIfNeeded();
 
-          var finMaterial = finModel.MaterialManager.AddFixedFunctionMaterial();
-          finMaterial.DepthCompareType = DepthCompareType.Less;
+    using var qFont = new QFont(
+        CommonFiles.SANS_FONT_FILE.FullPath,
+        72,
+        new QFontBuilderConfiguration(false));
+    var lazyTextTextureDictionary = new LazyDictionary<TextNode, ITexture>(
+        textNode => {
+          var text = string.Join('\n', textNode.String);
 
-          var equations = finMaterial.Equations;
-          var colorOps = new ColorFixedFunctionOps(equations);
-          var scalarOps = new ScalarFixedFunctionOps(equations);
+          using var glTextTexture = new GlTextTexture(text, qFont);
+          var image = glTextTexture.ConvertToImage();
 
-          IColorValue? diffuseSurfaceColor
-              = equations.CreateColorConstant(color);
-          IScalarValue? diffuseSurfaceAlpha
-              = equations.CreateScalarConstant(alpha);
+          var finTexture = finModel.MaterialManager.CreateTexture(image);
+          finTexture.Name = text;
 
-          var vrmlTexture = appearanceNode.Texture;
-          if (vrmlTexture != null) {
-            var finTexture = lazyTextureDictionary[
-                (vrmlTexture.Url.ToLower(), appearanceNode.TextureTransform)];
-
-            finMaterial.Name = finTexture.Name;
-            finMaterial.SetTextureSource(0, finTexture);
-
-            var textureColor
-                = equations.CreateOrGetColorInput(
-                    FixedFunctionSource.TEXTURE_COLOR_0);
-            var textureAlpha
-                = equations.CreateOrGetScalarInput(
-                    FixedFunctionSource.TEXTURE_ALPHA_0);
-
-            diffuseSurfaceColor
-                = colorOps.Multiply(diffuseSurfaceColor, textureColor);
-            diffuseSurfaceAlpha
-                = scalarOps.Multiply(diffuseSurfaceAlpha, textureAlpha);
-          }
-
-          var ambientSurfaceColor = vrmlMaterial.AmbientColor != null
-              ? equations.CreateColorConstant(vrmlMaterial.AmbientColor.Value)
-              : colorOps.One;
-
-          var diffuseLightColor = equations.GetMergedLightDiffuseColor();
-          var ambientLightColor = colorOps.MultiplyWithConstant(
-              equations.CreateOrGetColorInput(
-                  FixedFunctionSource.LIGHT_AMBIENT_COLOR),
-              vrmlMaterial.AmbientIntensity);
-
-          var ambientAndDiffuseLightingColor = colorOps.Add(
-              colorOps.Multiply(ambientSurfaceColor, ambientLightColor),
-              diffuseLightColor);
-
-          // We double it because all the other kids do. (Other fixed-function games.)
-          ambientAndDiffuseLightingColor =
-              colorOps.MultiplyWithConstant(ambientAndDiffuseLightingColor, 2);
-
-          var ambientAndDiffuseComponent = colorOps.Multiply(
-              ambientAndDiffuseLightingColor,
-              diffuseSurfaceColor);
-
-          var outputColor = ambientAndDiffuseComponent;
-          var outputAlpha = diffuseSurfaceAlpha;
-
-          equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
-                                      outputColor ?? colorOps.Zero);
-          equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
-                                       outputAlpha ?? scalarOps.Zero);
-
-          finMaterial.TransparencyType = alpha < 1
-              ? TransparencyType.TRANSPARENT
-              : finMaterial.Textures.FirstOrDefault()?.TransparencyType ??
-                TransparencyType.OPAQUE;
-
-          finMaterial.SetDefaultAlphaCompare();
-
-          return finMaterial;
+          return finTexture;
         });
+    var lazyMaterialDictionary
+        = new LazyDictionary<(AppearanceNode, TextNode?), IMaterial>(
+            tuple => {
+              var (appearanceNode, textNode) = tuple;
+              var vrmlMaterial = appearanceNode.Material;
+
+              var color = vrmlMaterial.DiffuseColor;
+              var alpha = 1 - vrmlMaterial.Transparency;
+
+              var finMaterial
+                  = finModel.MaterialManager.AddFixedFunctionMaterial();
+              finMaterial.DepthCompareType = DepthCompareType.Less;
+
+              var equations = finMaterial.Equations;
+              var colorOps = new ColorFixedFunctionOps(equations);
+              var scalarOps = new ScalarFixedFunctionOps(equations);
+
+              IColorValue? diffuseSurfaceColor
+                  = equations.CreateColorConstant(color);
+              IScalarValue? diffuseSurfaceAlpha
+                  = equations.CreateScalarConstant(alpha);
+
+              IReadOnlyTexture? finTexture = null;
+              var vrmlTexture = appearanceNode.Texture;
+              if (vrmlTexture != null) {
+                finTexture = lazyTextureDictionary[
+                    (vrmlTexture.Url.ToLower(),
+                     appearanceNode.TextureTransform)];
+              } else if (textNode != null) {
+                finTexture = lazyTextTextureDictionary[textNode];
+              }
+
+              if (finTexture != null) {
+                finMaterial.Name = finTexture.Name;
+                finMaterial.SetTextureSource(0, finTexture);
+
+                var textureColor
+                    = equations.CreateOrGetColorInput(
+                        FixedFunctionSource.TEXTURE_COLOR_0);
+                var textureAlpha
+                    = equations.CreateOrGetScalarInput(
+                        FixedFunctionSource.TEXTURE_ALPHA_0);
+
+                diffuseSurfaceColor
+                    = colorOps.Multiply(diffuseSurfaceColor, textureColor);
+                diffuseSurfaceAlpha
+                    = scalarOps.Multiply(diffuseSurfaceAlpha, textureAlpha);
+              }
+
+              var ambientSurfaceColor = vrmlMaterial.AmbientColor != null
+                  ? equations.CreateColorConstant(
+                      vrmlMaterial.AmbientColor.Value)
+                  : colorOps.One;
+
+              var diffuseLightColor = equations.GetMergedLightDiffuseColor();
+              var ambientLightColor = colorOps.MultiplyWithConstant(
+                  equations.CreateOrGetColorInput(
+                      FixedFunctionSource.LIGHT_AMBIENT_COLOR),
+                  vrmlMaterial.AmbientIntensity);
+
+              var ambientAndDiffuseLightingColor = colorOps.Add(
+                  colorOps.Multiply(ambientSurfaceColor, ambientLightColor),
+                  diffuseLightColor);
+
+              // We double it because all the other kids do. (Other fixed-function games.)
+              ambientAndDiffuseLightingColor =
+                  colorOps.MultiplyWithConstant(ambientAndDiffuseLightingColor,
+                                                2);
+
+              var ambientAndDiffuseComponent = colorOps.Multiply(
+                  ambientAndDiffuseLightingColor,
+                  diffuseSurfaceColor);
+
+              var outputColor = ambientAndDiffuseComponent;
+              var outputAlpha = diffuseSurfaceAlpha;
+
+              equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
+                                          outputColor ?? colorOps.Zero);
+              equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
+                                           outputAlpha ?? scalarOps.Zero);
+
+              finMaterial.TransparencyType = alpha < 1
+                  ? TransparencyType.TRANSPARENT
+                  : finMaterial.Textures.FirstOrDefault()?.TransparencyType ??
+                    TransparencyType.OPAQUE;
+
+              finMaterial.SetDefaultAlphaCompare();
+
+              return finMaterial;
+            });
 
     var finSkeleton = finModel.Skeleton;
     var finSkin = finModel.Skin;
@@ -274,7 +316,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               Texture = image,
           };
 
-          var finMaterial = lazyMaterialDictionary[appearance];
+          var finMaterial = lazyMaterialDictionary[(appearance, null)];
 
           var boneWeights = finSkin.GetOrCreateBoneWeights(
               VertexSpace.RELATIVE_TO_BONE,
@@ -304,65 +346,85 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         }
         case IShapeNode shapeNode: {
           var geometry = shapeNode.Geometry;
-          if (geometry is not IndexedFaceSetNode indexedFaceSetNode) {
-            break;
-          }
-
-          var finMaterial = lazyMaterialDictionary[shapeNode.Appearance];
+          var finMaterial = lazyMaterialDictionary[(shapeNode.Appearance,
+                                                    geometry as TextNode)];
           var finMesh = finSkin.AddMesh();
-          foreach (var faceVertices in GetIndexFaceSetCoordGroups_(
+
+          switch (geometry) {
+            case IndexedFaceSetNode indexedFaceSetNode: {
+              foreach (var faceVertices in GetIndexFaceSetCoordGroups_(
                        indexedFaceSetNode)) {
-            var finVertices = new LinkedList<INormalVertex>();
-            foreach (var vrmlVertex in faceVertices) {
-              var (coordIndex, texCoordIndex, colorIndex) = vrmlVertex;
+                var finVertices = new LinkedList<INormalVertex>();
+                foreach (var vrmlVertex in faceVertices) {
+                  var (coordIndex, texCoordIndex, colorIndex) = vrmlVertex;
 
-              var coord = indexedFaceSetNode.Coord.Point[coordIndex];
-              var texCoord = texCoordIndex != null
-                  ? indexedFaceSetNode.TexCoord?.Point[texCoordIndex.Value]
-                  : null;
-              var color = texCoordIndex != null
-                  ? indexedFaceSetNode.Color?.Color[colorIndex.Value]
-                  : null;
+                  var coord = indexedFaceSetNode.Coord.Point[coordIndex];
+                  var texCoord = texCoordIndex != null
+                      ? indexedFaceSetNode.TexCoord?.Point[texCoordIndex.Value]
+                      : null;
+                  var color = texCoordIndex != null
+                      ? indexedFaceSetNode.Color?.Color[colorIndex.Value]
+                      : null;
 
-              var finVertex = finSkin.AddVertex(coord);
-              if (texCoord != null) {
-                finVertex.SetUv(texCoord.Value.X, 1 - texCoord.Value.Y);
+                  var finVertex = finSkin.AddVertex(coord);
+                  if (texCoord != null) {
+                    finVertex.SetUv(texCoord.Value.X, 1 - texCoord.Value.Y);
+                  }
+
+                  if (color != null) {
+                    var finColor = FinColor.FromRgbFloats(color.Value.X,
+                      color.Value.Y,
+                      color.Value.Z);
+                    finVertex.SetColor(finColor);
+                  }
+
+                  finVertex.SetBoneWeights(
+                      finSkin.GetOrCreateBoneWeights(
+                          VertexSpace.RELATIVE_TO_BONE,
+                          finBone));
+
+                  finVertices.AddLast(finVertex);
+                }
+
+                var finVerticesArray = finVertices.ToArray();
+                if (finVerticesArray.Length >= 3) {
+                  IPrimitive finPrimitive;
+                  if (finVertices.Count == 3) {
+                    AddFaceNormal_(finVerticesArray, vertexOrdering);
+                    finPrimitive = finMesh.AddTriangles(finVerticesArray);
+                  } else if (finVertices.Count == 4) {
+                    AddFaceNormal_(finVerticesArray, vertexOrdering);
+                    finPrimitive = finMesh.AddQuads(finVerticesArray);
+                  } else {
+                    var triangulatedVertices
+                        = TriangulateVertices_(finVertices.ToArray());
+                    AddFaceNormal_(triangulatedVertices, vertexOrdering);
+
+                    finPrimitive = finMesh.AddTriangles(triangulatedVertices);
+                  }
+
+                  finPrimitive.SetVertexOrder(vertexOrdering)
+                              .SetMaterial(finMaterial);
+                }
               }
-
-              if (color != null) {
-                var finColor = FinColor.FromRgbFloats(color.Value.X,
-                  color.Value.Y,
-                  color.Value.Z);
-                finVertex.SetColor(finColor);
-              }
-
-              finVertex.SetBoneWeights(
-                  finSkin.GetOrCreateBoneWeights(
-                      VertexSpace.RELATIVE_TO_BONE,
-                      finBone));
-
-              finVertices.AddLast(finVertex);
+              break;
             }
+            case TextNode textNode: {
+              var finTexture = lazyTextTextureDictionary[textNode];
 
-            var finVerticesArray = finVertices.ToArray();
-            if (finVerticesArray.Length >= 3) {
-              IPrimitive finPrimitive;
-              if (finVertices.Count == 3) {
-                AddFaceNormal_(finVerticesArray, vertexOrdering);
-                finPrimitive = finMesh.AddTriangles(finVerticesArray);
-              } else if (finVertices.Count == 4) {
-                AddFaceNormal_(finVerticesArray, vertexOrdering);
-                finPrimitive = finMesh.AddQuads(finVerticesArray);
-              } else {
-                var triangulatedVertices
-                    = TriangulateVertices_(finVertices.ToArray());
-                AddFaceNormal_(triangulatedVertices, vertexOrdering);
+              var scale = 1 / 72f;
+              var width = finTexture.Image.Width * scale;
+              var height = finTexture.Image.Height * scale;
 
-                finPrimitive = finMesh.AddTriangles(triangulatedVertices);
-              }
+              var depth = .05f;
 
-              finPrimitive.SetVertexOrder(vertexOrdering)
-                          .SetMaterial(finMaterial);
+              finMesh.AddSimpleFloor(finSkin,
+                                    new Vector3(-width / 2f, -height / 2f, depth),
+                                    new Vector3(width / 2f, height / 2f, depth),
+                                    finMaterial,
+                                    finBone);
+
+              break;
             }
           }
 
@@ -389,7 +451,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         var positionInterpolator
             = srcNode.AssertAsA<PositionInterpolatorNode>();
         foreach (var (frame, value) in positionInterpolator.Keyframes) {
-          translationTracks.Add(new Keyframe<Vector3>(animation.FrameCount * frame, value));
+          translationTracks.Add(
+              new Keyframe<Vector3>(animation.FrameCount * frame, value));
         }
       }
 
@@ -399,7 +462,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         var orientationInterpolator
             = srcNode.AssertAsA<OrientationInterpolatorNode>();
         foreach (var (frame, value) in orientationInterpolator.Keyframes) {
-          rotationTracks.Add(new Keyframe<Quaternion>(animation.FrameCount * frame, value));
+          rotationTracks.Add(
+              new Keyframe<Quaternion>(animation.FrameCount * frame, value));
         }
       }
     }
