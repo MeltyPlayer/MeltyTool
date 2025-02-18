@@ -8,6 +8,7 @@ public enum Family {
 
 public enum Justify {
   BEGIN,
+  FIRST,
   MIDDLE,
   END
 }
@@ -21,7 +22,8 @@ public enum Style {
 
 public record FontStyleNode : BNode {
   public Family Family { get; set; } = Family.SERIF;
-  public Justify Justify { get; set; } = Justify.BEGIN;
+  public Justify MajorJustify { get; set; } = Justify.BEGIN;
+  public Justify MinorJustify { get; set; } = Justify.FIRST;
   public float Size { get; set; } = 1;
   public Style Style { get; set; } = Style.PLAIN;
 }

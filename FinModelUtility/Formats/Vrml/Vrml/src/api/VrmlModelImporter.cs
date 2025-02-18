@@ -126,8 +126,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         textNode => {
           var text = string.Join('\n', textNode.String);
 
-          var fontAlignment = textNode.FontStyle.Justify switch {
-              Justify.BEGIN  => QFontAlignment.Left,
+          var fontAlignment = textNode.FontStyle.MajorJustify switch {
+              Justify.BEGIN or Justify.FIRST => QFontAlignment.Left,
               Justify.MIDDLE => QFontAlignment.Centre,
               Justify.END    => QFontAlignment.Right,
           };
@@ -454,23 +454,25 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             }
             case TextNode textNode: {
               var scale = 1 / fontSize;
-              scale *= .75f;
+              scale *= .6f; //.75
               scale *= textNode.FontStyle.Size;
 
               var font = lazyFontDictionary[textNode.FontStyle];
+
+              var firstLineHeight = font.Measure(textNode.String[0]).Height * scale;
+
               var text = string.Join('\n', textNode.String);
-              
-              var roughSize = font.Measure(text);
-              var width = roughSize.Width * scale;
-              var height = roughSize.Height * scale;
+              var size = font.Measure(text);
+              var width = size.Width * scale;
+              var height = size.Height * scale;
 
               var depth = .05f;
 
-              var point1 = new Vector3(-width / 2f, height / 2, depth);
-              var point2 = new Vector3(width / 2f, -height / 2, depth);
+              var point1 = new Vector3(-width / 2f, firstLineHeight, depth);
+              var point2 = new Vector3(width / 2f, firstLineHeight - height, depth);
 
-              switch (textNode.FontStyle.Justify) {
-                case Justify.BEGIN: {
+              switch (textNode.FontStyle.MajorJustify) {
+                case Justify.BEGIN or Justify.FIRST: {
                   point1 += new Vector3(width / 2, 0, 0);
                   point2 += new Vector3(width / 2, 0, 0);
                   break;

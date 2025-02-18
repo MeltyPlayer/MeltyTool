@@ -17,7 +17,9 @@ public partial class VrmlParser {
               break;
             }
             case "justify": {
-              fontStyle.Justify = ReadJustify_(tr);
+              var (major, minor) = ReadJustifies_(tr);
+              fontStyle.MajorJustify = major;
+              fontStyle.MinorJustify = minor ?? Justify.FIRST;
               break;
             }
             case "size": {
@@ -43,9 +45,18 @@ public partial class VrmlParser {
         _            => throw new ArgumentOutOfRangeException()
     };
 
-  private static Justify ReadJustify_(ITextReader tr)
-    => ReadStringArray_(tr).Single() switch {
+  private static (Justify major, Justify? minor)
+      ReadJustifies_(ITextReader tr) {
+    var text = ReadStringArray_(tr);
+    var major = ReadJustify_(text[0]);
+    var minor = text.Count > 1 ? ReadJustify_(text[1]) : (Justify?) null;
+    return (major, minor);
+  }
+
+  private static Justify ReadJustify_(string text)
+    => text switch {
         "BEGIN"  => Justify.BEGIN,
+        "FIRST"  => Justify.FIRST,
         "MIDDLE" => Justify.MIDDLE,
         "END"    => Justify.END,
         _        => throw new ArgumentOutOfRangeException()
@@ -53,10 +64,10 @@ public partial class VrmlParser {
 
   private static Style ReadStyle_(ITextReader tr)
     => ReadString_(tr) switch {
-        "BOLD" => Style.BOLD,
+        "BOLD"       => Style.BOLD,
         "BOLDITALIC" => Style.BOLD_ITALIC,
-        "ITALIC" => Style.ITALIC,
-        "PLAIN" => Style.PLAIN,
-        _       => throw new ArgumentOutOfRangeException()
+        "ITALIC"     => Style.ITALIC,
+        "PLAIN"      => Style.PLAIN,
+        _            => throw new ArgumentOutOfRangeException()
     };
 }
