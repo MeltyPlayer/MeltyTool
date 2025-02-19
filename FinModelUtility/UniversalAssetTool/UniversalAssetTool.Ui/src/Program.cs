@@ -13,7 +13,6 @@ public class Program {
             () => {
               DesignModeUtil.InDesignMode = false;
               ApplicationConfiguration.Initialize();
-              UiUtil.Init();
               Application.Run(new UniversalAssetToolForm());
             });
   }
