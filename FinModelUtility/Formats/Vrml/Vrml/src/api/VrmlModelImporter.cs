@@ -1,8 +1,6 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
-using DelaunatorSharp;
-
 using fin.animation.keyframes;
 using fin.color;
 using fin.common;
@@ -28,11 +26,12 @@ using fin.util.linq;
 using fin.util.sets;
 using fin.util.strings;
 
+using LibTessDotNet;
+
 using QuickFont;
 using QuickFont.Configuration;
 
 using vrml.schema;
-using vrml.util;
 
 namespace vrml.api;
 
@@ -128,8 +127,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           var fontAlignment = textNode.FontStyle.MajorJustify switch {
               Justify.BEGIN or Justify.FIRST => QFontAlignment.Left,
-              Justify.MIDDLE => QFontAlignment.Centre,
-              Justify.END    => QFontAlignment.Right,
+              Justify.MIDDLE                 => QFontAlignment.Centre,
+              Justify.END                    => QFontAlignment.Right,
           };
 
           var qFont = lazyFontDictionary[textNode.FontStyle];
@@ -470,7 +469,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
               var font = lazyFontDictionary[textNode.FontStyle];
 
-              var firstLineHeight = font.Measure(textNode.String[0]).Height * scale;
+              var firstLineHeight
+                  = font.Measure(textNode.String[0]).Height * scale;
 
               var text = string.Join('\n', textNode.String);
               var size = font.Measure(text);
@@ -480,7 +480,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               var depth = .05f;
 
               var point1 = new Vector3(-width / 2f, firstLineHeight, depth);
-              var point2 = new Vector3(width / 2f, firstLineHeight - height, depth);
+              var point2
+                  = new Vector3(width / 2f, firstLineHeight - height, depth);
 
               switch (textNode.FontStyle.MajorJustify) {
                 case Justify.BEGIN or Justify.FIRST: {
@@ -549,48 +550,23 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
   private static INormalVertex[] TriangulateVertices_(
       INormalVertex[] finVertices) {
-    var points3d = finVertices;
-    var points2d
-        = CoplanarPointFlattener.FlattenCoplanarPoints(
-            points3d.Select(t => t.LocalPosition).ToArray());
+    var tess = new Tess();
+    tess.AddContour(finVertices.Select(v => {
+                                 var p = v.LocalPosition;
+                                 return new ContourVertex(new Vec3(p.X, p.Y, p.Z), v);
+                               })
+                               .ToArray());
 
-    try {
-      var vec3sWithIndices = new List<Vector3>();
-      foreach (var point2d in points2d) {
-        var vec3 = new Vector3(point2d.X, point2d.Y, 0);
-        vec3sWithIndices.Add(vec3);
-      }
+    tess.Tessellate();
 
-      var earClipping = new EarClipping();
-      earClipping.SetPoints(vec3sWithIndices);
-      earClipping.Triangulate();
-
-      return earClipping
-             .Result
-             .Select(i => points3d[i])
-             .ToArray();
-    } catch {
-      var delaunator = new Delaunator(
-          points2d
-              .Select((p, i) => (IPoint) new PointWithIndex(
-                          p.X,
-                          p.Y,
-                          i))
-              .ToArray());
-      return delaunator
-             .GetTriangles()
-             .SelectMany(t => t.Points.Select(
-                                   p => finVertices[
-                                       p.AssertAsA<PointWithIndex>().Index])
-                               .Reverse())
-             .ToArray();
+    foreach (var finVertex in finVertices) {
+      finVertex.SetLocalNormal(tess.Normal.X, tess.Normal.Y, tess.Normal.Z);
     }
-  }
 
-  private struct PointWithIndex(double x, double y, int index) : IPoint {
-    public double X { get; set; } = x;
-    public double Y { get; set; } = y;
-    public int Index => index;
+    var allVertices = tess.Vertices
+                          .Select(v => v.Data.AssertAsA<INormalVertex>())
+                          .ToArray();
+    return tess.Elements.Select(e => allVertices[e]).ToArray();
   }
 
   private static IEnumerable<IndexedFaceGroup[]> GetIndexFaceSetCoordGroups_(
