@@ -565,10 +565,16 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
       earClipping.SetPoints(vec3sWithIndices);
       earClipping.Triangulate();
 
-      return earClipping
+      var points = earClipping
              .Result
              .Select(i => points3d[i])
              .ToArray();
+
+      if (points.Length == 0) {
+        ;
+      }
+
+      return points;
     } catch {
       var delaunator = new Delaunator(
           points2d
@@ -577,13 +583,19 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                           p.Y,
                           i))
               .ToArray());
-      return delaunator
+      var points = delaunator
              .GetTriangles()
              .SelectMany(t => t.Points.Select(
                                    p => finVertices[
                                        p.AssertAsA<PointWithIndex>().Index])
                                .Reverse())
              .ToArray();
+
+      if (points.Length == 0) {
+        ;
+      }
+
+      return points;
     }
   }
 
