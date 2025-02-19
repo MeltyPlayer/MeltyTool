@@ -43,10 +43,6 @@ public static class DirectoryConstants {
     CLI_DIRECTORY.AssertGetExistingFile("config.json");
 
 
-  public static ISystemDirectory COMMON_DIRECTORY =
-      CLI_DIRECTORY.AssertGetExistingSubdir("common");
-
-
   public static ISystemDirectory ROMS_DIRECTORY =
       CLI_DIRECTORY.AssertGetExistingSubdir("roms");
 

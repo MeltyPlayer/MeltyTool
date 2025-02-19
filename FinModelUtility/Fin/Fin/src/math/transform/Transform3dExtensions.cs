@@ -50,7 +50,7 @@ public static class Transform3dExtensions {
                                         float x,
                                         float y,
                                         float z)
-    => transform.Rotation = QuaternionUtil.CreateZyxRadians(x, y, z);
+    => transform.SetRotation(QuaternionUtil.CreateZyxRadians(x, y, z));
 
   public static void SetRotationDegrees(this ITransform3d transform,
                                         Vector3 xyz)
@@ -70,11 +70,11 @@ public static class Transform3dExtensions {
 
   public static void SetRotation(this ITransform3d transform,
                                  Quaternion quaternion)
-    => transform.SetRotationRadians(quaternion.ToEulerRadians());
+    => transform.Rotation = quaternion;
 
   public static void SetScale(this ITransform3d transform,
                               Vector3 xyz)
-    => transform.SetScale(xyz.X, xyz.Y, xyz.Z);
+    => transform.Scale = xyz;
 
   public static void SetScale(this ITransform3d transform,
                               IReadOnlyXyz xyz)
@@ -84,5 +84,5 @@ public static class Transform3dExtensions {
                               float x,
                               float y,
                               float z)
-    => transform.Scale = new Vector3(x, y, z);
+    => transform.SetScale(new Vector3(x, y, z));
 }
