@@ -1,5 +1,5 @@
 ﻿using fin.audio;
-using fin.testing.audio.stubbed;
+using fin.audio.stubbed;
 
 using OpenTK.Audio.OpenAL;
 

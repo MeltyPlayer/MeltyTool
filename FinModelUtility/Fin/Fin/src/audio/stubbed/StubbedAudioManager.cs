@@ -1,8 +1,6 @@
 ﻿using System;
 
-using fin.audio;
-
-namespace fin.testing.audio.stubbed;
+namespace fin.audio.stubbed;
 
 public partial class StubbedAudioManager : IAudioManager<short> {
   public bool IsDisposed { get; private set; }

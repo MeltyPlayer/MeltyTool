@@ -1,7 +1,7 @@
 ﻿using fin.audio;
 
 
-namespace fin.testing.audio.stubbed;
+namespace fin.audio.stubbed;
 
 public partial class StubbedAudioManager {
   private partial class StubbedAudioPlayer {

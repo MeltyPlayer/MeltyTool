@@ -6,7 +6,7 @@ using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
 
-namespace fin.testing.audio.stubbed;
+namespace fin.audio.stubbed;
 
 public partial class StubbedAudioManager {
   public IAudioBuffer<short> CreateAudioBuffer()
