@@ -8,11 +8,11 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -23,18 +23,19 @@ jobs:
       run: dotnet restore
       working-directory: FinModelUtility
 
+    - name: Build
+      run: dotnet build --no-restore
+      working-directory: FinModelUtility
+
     - name: Install Mesa Windows
       uses: f3d-app/install-mesa-windows-action@v1
       with:
         path: "${{github.workspace}}/FinModelUtility/FinModelUtility/FinModelUtility/Formats/Vrml/Vrml Tests/bin/x64/Debug/net9.0"
 
-    - name: Build
-      run: dotnet build --no-restore
-      working-directory: FinModelUtility
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile="**/Fin.Ui/**/*.cs%2c**/KSoft/**/*.cs%2c**/SceneGate/**/*.cs"
       working-directory: FinModelUtility
-        
+
     - name: Set Up NPM
       uses: actions/setup-node@v2
       with:
