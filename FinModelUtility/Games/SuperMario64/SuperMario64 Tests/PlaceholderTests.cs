@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace mod {
+namespace pikmin1 {
   public class PlaceholderTests {
     [Test]
     public void TestPlaceholder() {

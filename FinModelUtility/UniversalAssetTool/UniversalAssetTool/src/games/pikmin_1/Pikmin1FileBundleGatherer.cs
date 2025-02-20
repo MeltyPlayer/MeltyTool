@@ -2,7 +2,7 @@
 using fin.io.bundles;
 using fin.util.progress;
 
-using mod.api;
+using pikmin1.api;
 
 using uni.platforms.gcn;
 using uni.util.bundles;

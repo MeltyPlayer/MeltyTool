@@ -138,7 +138,6 @@
     <ProjectReference Include="..\..\Formats\Hsd\Hsd\Hsd.csproj" />
     <ProjectReference Include="..\..\Formats\JSystem\JSystem\JSystem.csproj" />
     <ProjectReference Include="..\..\Formats\Level5\Level5\Level5.csproj" />
-    <ProjectReference Include="..\..\Formats\Mod\Mod\Mod.csproj" />
     <ProjectReference Include="..\..\Formats\Modl\Modl\Modl.csproj" />
     <ProjectReference Include="..\..\Formats\Nitro\Nitro\Nitro.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
@@ -149,6 +148,7 @@
     <ProjectReference Include="..\..\Games\HaloWars\HaloWars\HaloWars.csproj" />
     <ProjectReference Include="..\..\Games\PaperMarioDirectorsCut\PaperMarioDirectorsCut\PaperMarioDirectorsCut.csproj" />
     <ProjectReference Include="..\..\Games\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor.csproj" />
+    <ProjectReference Include="..\..\Games\Pikmin1\Pikmin1\Pikmin1.csproj" />
     <ProjectReference Include="..\..\Games\Pikmin2\Pikmin2\Pikmin2.csproj" />
     <ProjectReference Include="..\..\Games\SuperMario64Ds\SuperMario64Ds\SuperMario64Ds.csproj" />
     <ProjectReference Include="..\..\Games\SuperMario64\SuperMario64\SuperMario64.csproj" />

@@ -1,4 +1,4 @@
-﻿using mod.api;
+﻿using pikmin1.api;
 
 namespace uni.games.pikmin_1;
 

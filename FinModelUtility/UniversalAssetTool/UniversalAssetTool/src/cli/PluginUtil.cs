@@ -7,7 +7,7 @@ using glo.api;
 
 using jsystem.api;
 
-using mod.api;
+using pikmin1.api;
 
 namespace uni.cli;
 
