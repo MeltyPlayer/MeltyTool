@@ -33,7 +33,7 @@ jobs:
     - name: Install Mesa Windows
       uses: f3d-app/install-mesa-windows-action@v1
       with:
-        path: "${{github.workspace}}\mesa"
+        path: "${{github.workspace}}\\mesa"
 
     - name: Print mesa files
       run: dir
