@@ -7,7 +7,7 @@ using fin.audio.io;
 using fin.audio.io.exporters.ogg;
 using fin.audio.io.importers;
 using fin.io;
-using fin.testing.audio.stubbed;
+using fin.audio.stubbed;
 
 namespace fin.testing.audio;
 
