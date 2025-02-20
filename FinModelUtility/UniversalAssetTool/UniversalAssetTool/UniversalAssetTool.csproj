@@ -146,7 +146,7 @@
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
     <ProjectReference Include="..\..\Formats\Xmod\Xmod.csproj" />
 
-    <ProjectReference Include="..\..\Games\HaloWars\HaloWarsTools\HaloWarsTools.csproj" />
+    <ProjectReference Include="..\..\Games\HaloWars\HaloWars\HaloWars.csproj" />
     <ProjectReference Include="..\..\Games\PaperMarioDirectorsCut\PaperMarioDirectorsCut\PaperMarioDirectorsCut.csproj" />
     <ProjectReference Include="..\..\Games\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor.csproj" />
     <ProjectReference Include="..\..\Games\Pikmin2\Pikmin2\Pikmin2.csproj" />

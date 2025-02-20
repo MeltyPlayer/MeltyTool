@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\HaloWarsTools\HaloWarsTools.csproj" />
+    <ProjectReference Include="..\HaloWars\HaloWars.csproj" />
   </ItemGroup>
 
 </Project>

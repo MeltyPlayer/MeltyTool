@@ -126,7 +126,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BanjoKazooie", "Games\Banjo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HaloWars", "HaloWars", "{03F66C13-3F83-44C1-8968-CF7589D48D59}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaloWarsTools", "Games\HaloWars\HaloWarsTools\HaloWarsTools.csproj", "{4B38BE06-C129-4406-AAA8-8185249F32C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaloWars", "Games\HaloWars\HaloWars\HaloWars.csproj", "{4B38BE06-C129-4406-AAA8-8185249F32C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HaloWars Tests", "Games\HaloWars\HaloWars Tests\HaloWars Tests.csproj", "{5AB1E50C-65BE-4849-85A1-419A5759CF3B}"
 EndProject
