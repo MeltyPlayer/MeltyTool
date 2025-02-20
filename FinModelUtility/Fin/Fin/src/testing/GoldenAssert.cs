@@ -5,11 +5,15 @@ using System.Reflection;
 
 using CommunityToolkit.HighPerformance;
 
+using fin.image;
 using fin.io;
 using fin.util.asserts;
 using fin.util.strings;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using SixLabors.ImageSharp.PixelFormats;
+
 
 namespace fin.testing;
 
@@ -78,7 +82,16 @@ public static class GoldenAssert {
     foreach (var (name, lhsFile) in lhsFiles) {
       var rhsFile = rhsFiles[name];
       try {
-        AssertFilesAreIdentical_(lhsFile, rhsFile);
+        try {
+          AssertFilesAreIdentical_(lhsFile, rhsFile);
+        } catch {
+          if (lhsFile.FileType.ToLower() is ".bmp" or ".jpg" or ".jpeg" or ".gif"
+                                            or ".png") {
+            AssertImageFilesAreIdentical_(lhsFile, rhsFile);
+          } else {
+            throw;
+          }
+        }
       } catch (Exception ex) {
         throw new Exception($"Found a change in file {name}: ", ex);
       }
@@ -112,5 +125,49 @@ public static class GoldenAssert {
             $"Files with name \"{lhs.Name}\" are different around byte #: {i * bytesToRead}");
       }
     }
+  }
+
+  private static void AssertImageFilesAreIdentical_(
+      IReadOnlyTreeFile lhs,
+      IReadOnlyTreeFile rhs,
+      float allowableError = 1) {
+    using var lhsImage = FinImage.FromFile(lhs);
+    using var rhsImage = FinImage.FromFile(rhs);
+
+    Assert.AreEqual(lhsImage.Width, rhsImage.Width);
+    Assert.AreEqual(lhsImage.Height, rhsImage.Height);
+
+    lhsImage.Access(lhsGet => {
+      rhsImage.Access(rhsGet => {
+        for (var y = 0; y < lhsImage.Height; ++y) {
+          for (var x = 0; x < lhsImage.Width; ++x) {
+            lhsGet(x,
+                   y,
+                   out var lhsR,
+                   out var lhsG,
+                   out var lhsB,
+                   out var lhsA);
+
+            rhsGet(x,
+                   y,
+                   out var rhsR,
+                   out var rhsG,
+                   out var rhsB,
+                   out var rhsA);
+
+            var lPixel = new Rgba32(lhsR, lhsG, lhsB, lhsA);
+            var rPixel = new Rgba32(rhsR, rhsG, rhsB, rhsA);
+
+            if (Math.Abs(lhsR - rhsR) > allowableError ||
+                Math.Abs(lhsG - rhsG) > allowableError ||
+                Math.Abs(lhsB - rhsB) > allowableError ||
+                Math.Abs(lhsA - rhsA) > allowableError) {
+              Asserts.Fail(
+                  $"Files with name \"{lhs.Name}\" are different at pixel ({x},{y}): {lPixel} / {rPixel}");
+            }
+          }
+        }
+      });
+    });
   }
 }
