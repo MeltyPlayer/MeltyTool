@@ -28,16 +28,20 @@ jobs:
       working-directory: FinModelUtility
 
     - name: Create /mesa directory
-      run: mkdir "${{github.workspace}}/mesa/"
+      run: mkdir mesa
 
     - name: Install Mesa Windows
       uses: f3d-app/install-mesa-windows-action@v1
       with:
-        path: "${{github.workspace}}/mesa/"
+        path: "${{github.workspace}}\mesa"
+
+    - name: Print mesa files
+      run: dir
+      working-directory: mesa
 
     - name: Copy Mesa files to VRML test directory
-      shell: cmd
-      run: xcopy /s "${{github.workspace}}/mesa/" "${{github.workspace}}/FinModelUtility/Formats/Vrml/Vrml Tests/bin/x64/Debug/net9.0/" /i
+      run: xcopy . "${{github.workspace}}\FinModelUtility\Formats\Vrml\Vrml Tests\bin\x64\Debug\net9.0"
+      working-directory: mesa
 
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile="**/Fin.Ui/**/*.cs%2c**/KSoft/**/*.cs%2c**/SceneGate/**/*.cs"
