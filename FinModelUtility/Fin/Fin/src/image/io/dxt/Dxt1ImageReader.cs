@@ -1,19 +1,19 @@
-﻿using fin.image;
+﻿using System;
 
 using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace gx.image;
+namespace fin.image.io.dxt;
 
-public class CmprImageReader(
+public class Dxt1ImageReader(
     int width,
     int height,
     int subTileCountInAxis = 2,
     int subTileSizeInAxis = 4,
     bool flipBlocksHorizontally = true)
     : fin.image.io.IImageReader<IImage<Rgba32>> {
-  private readonly CmprTileReader tileReader_
+  private readonly Dxt1TileReader tileReader_
       = new(subTileCountInAxis, subTileSizeInAxis, flipBlocksHorizontally);
 
   public IImage<Rgba32> ReadImage(IBinaryReader br) {

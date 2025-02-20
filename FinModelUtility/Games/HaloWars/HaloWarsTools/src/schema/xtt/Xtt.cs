@@ -1,6 +1,7 @@
 ﻿using Dxt;
 
 using fin.image;
+using fin.image.io.dxt;
 
 using hw.schema.binary;
 
@@ -29,6 +30,6 @@ public class Xtt : IBinaryDeserializable {
     var unk1 = br.ReadUInt32();
 
     br.PushContainerEndianness(Endianness.LittleEndian);
-    return DxtDecoder.DecompressDxt1(br, width, height);
+    return new Dxt1ImageReader(width, height, 1, 4, false).ReadImage(br);
   }
 }

@@ -1,5 +1,6 @@
 ﻿using fin.image;
 using fin.image.io;
+using fin.image.io.dxt;
 using fin.image.io.pixel;
 using fin.image.io.tile;
 
@@ -58,7 +59,7 @@ public class GxImageReader : IImageReader {
             width,
             height,
             new Ar88Gb88TileReader()),
-        GxTextureFormat.S3TC1 => new CmprImageReader(width, height),
+        GxTextureFormat.S3TC1 => new Dxt1ImageReader(width, height),
         _                     => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
   }

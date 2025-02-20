@@ -1,18 +1,16 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
-using fin.image;
 using fin.image.formats;
-using fin.image.io;
 using fin.util.color;
 
 using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace gx.image;
+namespace fin.image.io.dxt;
 
-// TODO: This is just DXT1 or something similar? Use a common tile reader implementation
-public readonly struct CmprTileReader(
+public readonly struct Dxt1TileReader(
     int subTileCountInAxis = 2,
     int subTileSizeInAxis = 4,
     bool flipBlocksHorizontally = true)
@@ -145,8 +143,7 @@ public readonly struct CmprTileReader(
           palette2.R,
           palette2.G,
           palette2.B,
-          0
-      );
+          0);
     }
   }
 

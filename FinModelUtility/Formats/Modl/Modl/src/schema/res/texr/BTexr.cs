@@ -3,10 +3,9 @@ using fin.data;
 using fin.image;
 using fin.image.formats;
 using fin.image.io;
+using fin.image.io.dxt;
 using fin.image.io.pixel;
 using fin.util.color;
-
-using gx.image;
 
 using schema.binary;
 
@@ -80,7 +79,7 @@ public abstract class BTexr {
     var mipSize = width * height >> 1;
     SectionHeaderUtil.AssertNameAndSize(br, "MIP ", mipSize);
 
-    return new CmprImageReader((int) width, (int) height).ReadImage(br);
+    return new Dxt1ImageReader((int) width, (int) height).ReadImage(br);
   }
 
   protected IImage ReadP8_(IBinaryReader br, uint width, uint height) {

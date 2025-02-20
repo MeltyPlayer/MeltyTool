@@ -1,5 +1,6 @@
 ﻿using fin.image;
 using fin.image.io;
+using fin.image.io.dxt;
 using fin.image.io.pixel;
 
 using gx.image;
@@ -63,7 +64,7 @@ public class TplImageReader : IImageReader {
               4,
               4,
               new Rgba32PixelReader()),
-          TplImageFormat.CMPR => new CmprImageReader(
+          TplImageFormat.CMPR => new Dxt1ImageReader(
               width,
               height),
           _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
