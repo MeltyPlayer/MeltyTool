@@ -26,7 +26,7 @@ jobs:
     - name: Install Mesa Windows
       uses: f3d-app/install-mesa-windows-action@v1
       with:
-        path: ${{github.workspace}}/FinModelUtility
+        path: "${{github.workspace}}/FinModelUtility/FinModelUtility/FinModelUtility/Formats/Vrml/Vrml Tests/bin/x64/Debug/net9.0"
 
     - name: Build
       run: dotnet build --no-restore
