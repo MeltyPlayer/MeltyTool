@@ -34,7 +34,7 @@ jobs:
 
     - name: Copy Mesa files to VRML test directory
       shell: cmd
-      run: xcopy "${{github.workspace}}/mesa/*.dll" "${{github.workspace}}/FinModelUtility/Formats/Vrml/Vrml Tests/bin/x64/Debug/net9.0/" /i
+      run: xcopy /s "${{github.workspace}}/mesa" "${{github.workspace}}/FinModelUtility/Formats/Vrml/Vrml Tests/bin/x64/Debug/net9.0/" /i
 
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile="**/Fin.Ui/**/*.cs%2c**/KSoft/**/*.cs%2c**/SceneGate/**/*.cs"
