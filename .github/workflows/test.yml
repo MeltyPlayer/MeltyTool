@@ -30,7 +30,7 @@ jobs:
     - name: Install Mesa Windows
       uses: f3d-app/install-mesa-windows-action@v1
       with:
-        path: "${{github.workspace}}/FinModelUtility/Formats/Vrml/Vrml Tests/bin/x64/Debug/net9.0"
+        path: "${{github.workspace}}/FinModelUtility/Formats/Vrml/Vrml%20Tests/bin/x64/Debug/net9.0"
 
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile="**/Fin.Ui/**/*.cs%2c**/KSoft/**/*.cs%2c**/SceneGate/**/*.cs"
