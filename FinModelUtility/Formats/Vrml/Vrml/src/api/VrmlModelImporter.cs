@@ -11,6 +11,7 @@ using fin.io;
 using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.math;
+using fin.math.geometry;
 using fin.math.matrix.four;
 using fin.math.transform;
 using fin.model;
@@ -607,9 +608,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     var b = vertices[1].LocalPosition;
     var c = vertices[2].LocalPosition;
 
-    var normal = Vector3.Cross(b - a, c - a);
-    normal = Vector3.Normalize(normal);
-
+    var normal = TriangleUtil.CalculateNormal(a, b, c);
     if (vertexOrder == VertexOrder.CLOCKWISE) {
       normal *= -1;
     }

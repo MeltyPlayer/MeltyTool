@@ -3,9 +3,9 @@ using System.Numerics;
 
 using fin.math;
 using fin.math.floats;
+using fin.math.geometry;
 using fin.math.matrix.three;
 using fin.math.matrix.two;
-using fin.math.rotations;
 
 namespace fin.model.util;
 
@@ -49,8 +49,7 @@ public static class MeshExtensions {
     var b = ur;
     var c = lr;
 
-    var normal = Vector3.Cross(b - a, c - a);
-    normal = Vector3.Normalize(normal);
+    var normal = TriangleUtil.CalculateNormal(a, b, c);
 
     mesh.AddSimpleQuad(
         skin,
