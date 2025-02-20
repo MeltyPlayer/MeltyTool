@@ -28,7 +28,7 @@ jobs:
       working-directory: FinModelUtility
 
     - name: Create /mesa directory
-      shell: mkdir "${{github.workspace}}/mesa"
+      run: mkdir "${{github.workspace}}/mesa"
 
     - name: Install Mesa Windows
       uses: f3d-app/install-mesa-windows-action@v1
