@@ -9,7 +9,7 @@ namespace sm64ds.schema.bmd;
 /// </summary>
 [BinarySchema]
 public partial class Bmd : IBinaryConvertible {
-  public uint ScaleFactor { get; set; }
+  public int ScaleFactor { get; set; }
 
   public uint BoneCount { get; set; }
   public uint BonesOffset { get; set; }

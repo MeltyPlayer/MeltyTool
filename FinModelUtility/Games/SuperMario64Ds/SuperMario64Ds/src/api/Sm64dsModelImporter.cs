@@ -125,10 +125,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
           return OpcodeReader.ReadOpcodes(opcodeBr);
         });
 
-    var sm64BoneIdToIndex = bmd.Bones.Select((bone, index) => (bone, index))
-                               .OrderBy(boneAndIndex => boneAndIndex.bone.Id)
-                               .Select(boneAndIndex => boneAndIndex.index)
-                               .ToArray();
+    var scaleFactor = 1 << bmd.ScaleFactor;
     var finSkin = model.Skin;
     foreach (var sm64Bone in sm64Bones) {
       var materialAndDisplayListIds
@@ -182,7 +179,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
               position.Y = vertexOpcode.Y ?? position.Y;
               position.Z = vertexOpcode.Z ?? position.Z;
 
-              var finVertex = finSkin.AddVertex(position);
+              var finVertex = finSkin.AddVertex(position * scaleFactor);
               if (color != null) {
                 finVertex.SetColor(new Vector4(color.Value, 1));
               }
@@ -197,7 +194,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
             case Vertex0x28Opcode vertex0x28Opcode: {
               position += vertex0x28Opcode.DeltaPosition;
 
-              var finVertex = finSkin.AddVertex(position);
+              var finVertex = finSkin.AddVertex(position * scaleFactor);
               if (color != null) {
                 finVertex.SetColor(new Vector4(color.Value, 1));
               }
