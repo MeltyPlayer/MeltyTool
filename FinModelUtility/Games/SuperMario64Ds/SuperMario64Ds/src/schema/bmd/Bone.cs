@@ -1,4 +1,6 @@
-﻿using schema.binary;
+﻿using fin.math;
+
+using schema.binary;
 using schema.binary.attributes;
 
 namespace sm64ds.schema.bmd;
@@ -34,7 +36,11 @@ public partial class Bone : IBinaryConvertible {
   private uint displayListMaterialPairCount_;
   private uint materialIdsOffset_;
   private uint displayListIdsOffset_;
+
   public uint Parameters { get; set; }
+
+  [Skip]
+  public bool Billboard => this.Parameters.GetBit(0);
 
   [RSequenceLengthSource(nameof(displayListMaterialPairCount_))]
   [RAtPosition(nameof(materialIdsOffset_))]

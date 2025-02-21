@@ -20,7 +20,8 @@ public class ImageReader {
   public static IImage ReadImage(Texture texture,
                                  Palette? palette) {
     switch (texture.TextureType) {
-      case TextureType.A3_I5: break;
+      case TextureType.A3_I5: 
+        return ReadA3I5_(texture, palette.AssertNonnull());
       case TextureType.PALETTE_4:
         return ReadPalette4_(texture, palette.AssertNonnull());
       case TextureType.PALETTE_16:
@@ -29,12 +30,12 @@ public class ImageReader {
         return ReadPalette256_(texture, palette.AssertNonnull());
       case TextureType.TEX_4X4:
         return ReadTex4x4_(texture, palette.AssertNonnull());
-      case TextureType.A5_I3:  break;
-      case TextureType.DIRECT: break;
-      default:                 throw new ArgumentOutOfRangeException();
+      case TextureType.A5_I3:
+        return ReadA5I3_(texture, palette.AssertNonnull());
+      case TextureType.DIRECT:
+        return ReadDirect_(texture);
+      default: throw new ArgumentOutOfRangeException();
     }
-
-    return FinImage.Create1x1FromColor(Color.Red);
   }
 
   private static IImage ReadPalette4_(Texture texture, Palette palette) {
@@ -137,13 +138,13 @@ public class ImageReader {
                 case 1: {
                   Rgba32 c0 = paletteColors[pal_offset];
                   Rgba32 c1 = paletteColors[pal_offset + 1];
-                  color = MixColors(c0, 1, c1, 1);
+                  color = MixColors_(c0, 1, c1, 1);
                 }
                   break;
                 case 3: {
                   Rgba32 c0 = paletteColors[pal_offset];
                   Rgba32 c1 = paletteColors[pal_offset + 1];
-                  color = MixColors(c0, 5, c1, 3);
+                  color = MixColors_(c0, 5, c1, 3);
                 }
                   break;
               }
@@ -158,7 +159,7 @@ public class ImageReader {
                 case 3: {
                   Rgba32 c0 = paletteColors[pal_offset];
                   Rgba32 c1 = paletteColors[pal_offset + 1];
-                  color = MixColors(c0, 3, c1, 5);
+                  color = MixColors_(c0, 3, c1, 5);
                 }
                   break;
               }
@@ -177,8 +178,84 @@ public class ImageReader {
     return image;
   }
 
+  private static IImage ReadA3I5_(Texture texture, Palette palette) {
+    var paletteColors = GetPaletteColors_(texture, palette);
+
+    var width = texture.Width;
+    var image = new Rgba32Image(width, texture.Height);
+    var fastLock = image.Lock();
+    var dst = fastLock.Pixels;
+
+    using var textureBr = new SchemaBinaryReader(texture.Data);
+    for (var y = 0; y < texture.Height; ++y) {
+      for (var x = 0; x < texture.Width; ++x) {
+        var texel = textureBr.ReadByte();
+
+        var paletteIndex = texel & 0x1F;
+        var alpha = (byte)(((texel & 0xE0) >> 3) + ((texel & 0xE0) >> 6));
+        alpha = (byte)((alpha << 3) | (alpha >> 2));
+        var color = paletteColors[paletteIndex] with {
+            A = alpha
+        };
+
+        dst[y * width + x] = color;
+      }
+    }
+
+    return image;
+  }
+
+  private static IImage ReadA5I3_(Texture texture, Palette palette) {
+    var paletteColors = GetPaletteColors_(texture, palette);
+
+    var width = texture.Width;
+    var image = new Rgba32Image(width, texture.Height);
+    var fastLock = image.Lock();
+    var dst = fastLock.Pixels;
+
+    using var textureBr = new SchemaBinaryReader(texture.Data);
+    for (var y = 0; y < texture.Height; ++y) {
+      for (var x = 0; x < texture.Width; ++x) {
+        var texel = textureBr.ReadByte();
+
+        var paletteIndex = texel & 0x07;
+        var color = paletteColors[paletteIndex] with {
+            A = (byte) ((texel & 0xF8) | ((texel & 0xF8) >> 5))
+        };
+
+        dst[y * width + x] = color;
+      }
+    }
+
+    return image;
+  }
+
+  private static IImage ReadDirect_(Texture texture) {
+    var width = texture.Width;
+    var image = new Rgba32Image(width, texture.Height);
+    var fastLock = image.Lock();
+    var dst = fastLock.Pixels;
+
+    using var textureBr = new SchemaBinaryReader(texture.Data);
+    for (var y = 0; y < texture.Height; ++y) {
+      for (var x = 0; x < texture.Width; ++x) {
+        var texel = textureBr.ReadUInt16();
+
+        ColorUtil.SplitRgb5A1(texel,
+                              out var b,
+                              out var g,
+                              out var r,
+                              out var a);
+
+        dst[y * width + x] = new Rgba32(r, g, b, a);
+      }
+    }
+
+    return image;
+  }
+
   // TODO: Optimize this to use stackalloc instead
-  public static Rgba32[] GetPaletteColors_(Texture texture, Palette palette) {
+  private static Rgba32[] GetPaletteColors_(Texture texture, Palette palette) {
     using var paletteBr = new SchemaBinaryReader(palette.Data);
 
     var paletteColors = new Rgba32[palette.Data.Length >> 1];
@@ -196,10 +273,10 @@ public class ImageReader {
     return paletteColors;
   }
 
-  public static Rgba32 MixColors(Rgba32 color1,
-                                 float w1,
-                                 Rgba32 color2,
-                                 float w2) {
+  private static Rgba32 MixColors_(Rgba32 color1,
+                                   float w1,
+                                   Rgba32 color2,
+                                   float w2) {
     var r1 = color1.R;
     var g1 = color1.G;
     var b1 = color1.B;

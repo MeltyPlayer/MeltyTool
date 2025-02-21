@@ -74,6 +74,13 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         localTransform.SetRotationDegrees(bone.Rotation);
         localTransform.SetScale(bone.Scale);
 
+        // Maybe this is for the mesh(es) instead?
+        /*if (bone.Billboard) {
+          var rotateYaw =
+              Quaternion.CreateFromYawPitchRoll(MathF.PI / 2, 0, 0);
+          finBone.AlwaysFaceTowardsCamera(rotateYaw);
+        }*/
+        
         if (boneToChildMap.TryGetSet(bone, out var unorderedChildren)) {
           var firstChild
               = unorderedChildren!.Single(
