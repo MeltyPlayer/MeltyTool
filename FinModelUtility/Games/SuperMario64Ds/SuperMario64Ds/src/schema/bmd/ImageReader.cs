@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Numerics;
 
 using fin.image;
 using fin.image.formats;
@@ -16,19 +17,21 @@ namespace sm64ds.schema.bmd;
 ///   https://github.com/Arisotura/SM64DSe/blob/master/SM64DSFormats/BMD.NitroTexture.cs
 /// </summary>
 public class ImageReader {
-  public static IImage ReadImage(Texture texture, Palette? palette) {
+  public static IImage ReadImage(Texture texture,
+                                 Palette? palette) {
     switch (texture.TextureType) {
-      case TextureType.A3_I5:      break;
+      case TextureType.A3_I5: break;
       case TextureType.PALETTE_4:
         return ReadPalette4_(texture, palette.AssertNonnull());
       case TextureType.PALETTE_16:
         return ReadPalette16_(texture, palette.AssertNonnull());
       case TextureType.PALETTE_256:
         return ReadPalette256_(texture, palette.AssertNonnull());
-      case TextureType.TEX_4X4: break;
-      case TextureType.A5_I3:   break;
-      case TextureType.DIRECT:  break;
-      default:                  throw new ArgumentOutOfRangeException();
+      case TextureType.TEX_4X4:
+        return ReadTex4x4_(texture, palette.AssertNonnull());
+      case TextureType.A5_I3:  break;
+      case TextureType.DIRECT: break;
+      default:                 throw new ArgumentOutOfRangeException();
     }
 
     return FinImage.Create1x1FromColor(Color.Red);
@@ -93,51 +96,54 @@ public class ImageReader {
     return image;
   }
 
-  /*private static IImage ReadTex4x4_(Texture texture, Palette palette) {
+  private static IImage ReadTex4x4_(Texture texture, Palette palette) {
     var paletteColors = GetPaletteColors_(texture, palette);
-
-    int yOut = 0, xOut = 0;
 
     var width = texture.Width;
     var image = new Rgba32Image(width, texture.Height);
     var fastLock = image.Lock();
     var dst = fastLock.Pixels;
 
+    var blockSize = 4;
+    var blockXCount = width / blockSize;
+
+    var blockCount = texture.Data.Length / 6;
     using var textureBr = new SchemaBinaryReader(texture.Data);
+    var blocks = textureBr.ReadUInt32s(blockCount);
+    var palIndices = textureBr.ReadUInt16s(blockCount);
 
-    while (!textureBr.Eof) {
-      uint blox = Helper.BytesToUInt32(tex, _in);
-      ushort palidx_data = texture.
-          = Helper.BytesToUShort16(tex, m_TextureDataLength + (_in >> 1));
+    foreach (var (i, (blox0, palidx_data)) in blocks.Zip(palIndices).Index()) {
+      var blockX = i % blockXCount;
+      var blockY = (i - blockX) / blockXCount;
 
-      for (int y = 0; y < 4; y++) {
-        for (int x = 0; x < 4; x++) {
+      var blox = blox0;
+
+      for (int subY = 0; subY < blockSize; subY++) {
+        for (int subX = 0; subX < blockSize; subX++) {
           byte texel = (byte) (blox & 0x3);
           blox >>= 2;
 
-          int pal_offset = (int) ((palidx_data & 0x3FFF) << 2);
+          int pal_offset = (int) ((palidx_data & 0x3FFF) << 1);
           ushort color_mode = (ushort) (palidx_data >> 14);
-          uint color = 0xFFFFFFFF;
 
+          Rgba32? color = null;
           switch (texel) {
-            case 0: color = Helper.BytesToUShort16(pal, pal_offset, 0); break;
-            case 1:
-              color = Helper.BytesToUShort16(pal, pal_offset + 2, 0); break;
+            case 0: color = paletteColors[pal_offset]; break;
+            case 1: color = paletteColors[pal_offset + 1]; break;
             case 2: {
               switch (color_mode) {
                 case 0:
-                case 2:
-                  color = Helper.BytesToUShort16(pal, pal_offset + 4, 0); break;
+                case 2: color = paletteColors[pal_offset + 2]; break;
                 case 1: {
-                  ushort c0 = Helper.BytesToUShort16(pal, pal_offset, 0);
-                  ushort c1 = Helper.BytesToUShort16(pal, pal_offset + 2, 0);
-                  color = Helper.BlendColorsBGR15(c0, 1, c1, 1);
+                  Rgba32 c0 = paletteColors[pal_offset];
+                  Rgba32 c1 = paletteColors[pal_offset + 1];
+                  color = MixColors(c0, 1, c1, 1);
                 }
                   break;
                 case 3: {
-                  ushort c0 = Helper.BytesToUShort16(pal, pal_offset, 0);
-                  ushort c1 = Helper.BytesToUShort16(pal, pal_offset + 2, 0);
-                  color = Helper.BlendColorsBGR15(c0, 5, c1, 3);
+                  Rgba32 c0 = paletteColors[pal_offset];
+                  Rgba32 c1 = paletteColors[pal_offset + 1];
+                  color = MixColors(c0, 5, c1, 3);
                 }
                   break;
               }
@@ -146,13 +152,13 @@ public class ImageReader {
             case 3: {
               switch (color_mode) {
                 case 0:
-                case 1: color = 0xFFFFFFFF; break;
+                case 1: color = null; break;
                 case 2:
-                  color = Helper.BytesToUShort16(pal, pal_offset + 6, 0); break;
+                  color = paletteColors[pal_offset + 3]; break;
                 case 3: {
-                  ushort c0 = Helper.BytesToUShort16(pal, pal_offset, 0);
-                  ushort c1 = Helper.BytesToUShort16(pal, pal_offset + 2, 0);
-                  color = Helper.BlendColorsBGR15(c0, 3, c1, 5);
+                  Rgba32 c0 = paletteColors[pal_offset];
+                  Rgba32 c1 = paletteColors[pal_offset + 1];
+                  color = MixColors(c0, 3, c1, 5);
                 }
                   break;
               }
@@ -160,37 +166,16 @@ public class ImageReader {
               break;
           }
 
-          int _out = (int) (((y * width) + x) * 4);
-          int yoff = (int) (y * width * 4);
-          int xoff = (int) (x * 4);
-
-          var dstI = _out + yoff + xoff;
-
-          if (color == 0xFFFFFFFF) {
-            dst[dstI] = default;
-          } else {
-            dst[dstI] = ;
-            byte red = (byte) ((color & 0x001F) << 3);
-            byte green = (byte) ((color & 0x03E0) >> 2);
-            byte blue = (byte) ((color & 0x7C00) >> 7);
-
-            m_ARGB[_out + yoff + xoff] = blue;
-            m_ARGB[_out + yoff + xoff + 1] = green;
-            m_ARGB[_out + yoff + xoff + 2] = red;
-            m_ARGB[_out + yoff + xoff + 3] = 0xFF;
-          }
+          var y = (blockY * blockSize) + subY;
+          var x = (blockX * blockSize) + subX;
+          var dstI = y * width + x;
+          dst[dstI] = color ?? default;
         }
-      }
-
-      xOut += 4;
-      if (xOut >= width) {
-        xOut = 0;
-        yOut += 4;
       }
     }
 
     return image;
-  }*/
+  }
 
   // TODO: Optimize this to use stackalloc instead
   public static Rgba32[] GetPaletteColors_(Texture texture, Palette palette) {
@@ -209,5 +194,27 @@ public class ImageReader {
     }
 
     return paletteColors;
+  }
+
+  public static Rgba32 MixColors(Rgba32 color1,
+                                 float w1,
+                                 Rgba32 color2,
+                                 float w2) {
+    var r1 = color1.R;
+    var g1 = color1.G;
+    var b1 = color1.B;
+    var a1 = color1.A;
+
+    var r2 = color2.R;
+    var g2 = color2.G;
+    var b2 = color2.B;
+    var a2 = color2.A;
+
+    var rf = ((r1 * w1) + (r2 * w2)) / (w1 + w2);
+    var gf = ((g1 * w1) + (g2 * w2)) / (w1 + w2);
+    var bf = ((b1 * w1) + (b2 * w2)) / (w1 + w2);
+    var af = ((a1 * w1) + (a2 * w2)) / (w1 + w2);
+
+    return new Rgba32((byte) rf, (byte) gf, (byte) bf, (byte) af);
   }
 }

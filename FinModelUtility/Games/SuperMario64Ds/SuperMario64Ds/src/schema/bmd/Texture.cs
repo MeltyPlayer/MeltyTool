@@ -1,4 +1,5 @@
-﻿using fin.math;
+﻿using fin.image;
+using fin.math;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -28,11 +29,7 @@ public partial class Texture : IBinaryConvertible {
   public string Name { get; set; }
 
   private uint dataOffset_;
-  private uint dataLength_;
-
-  [RAtPosition(nameof(dataOffset_))]
-  [RSequenceLengthSource(nameof(dataLength_))]
-  public byte[] Data { get; set; }
+  private uint rawDataLength_;
 
   public ushort Width { get; set; }
   public ushort Height { get; set; }
@@ -45,4 +42,20 @@ public partial class Texture : IBinaryConvertible {
 
   [Skip]
   public bool UseTransparentColor0 => this.Parameters.GetBit(29);
+
+  [Skip]
+  private uint TrueDataLength_ {
+    get {
+      if (this.TextureType == TextureType.TEX_4X4) {
+        var blockCount = this.rawDataLength_ / 4;
+        return blockCount * 4 + blockCount * 2;
+      }
+
+      return this.rawDataLength_;
+    }
+  }
+
+  [RAtPosition(nameof(dataOffset_))]
+  [RSequenceLengthSource(nameof(TrueDataLength_))]
+  public byte[] Data { get; set; }
 }
