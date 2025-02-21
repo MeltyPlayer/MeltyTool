@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <RootNamespace>mod</RootNamespace>
+    <RootNamespace>pikmin1</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

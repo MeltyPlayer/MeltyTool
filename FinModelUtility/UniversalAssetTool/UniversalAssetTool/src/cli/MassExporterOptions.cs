@@ -114,7 +114,7 @@ public class ProfessorLaytonVsPhoenixWrightOptions
 [Verb("super_mario_64_ds",
       HelpText = "Export models en-masse from Super Mario 64 DS.")]
 public class SuperMario64DsOptions
-    : IMassExporterOptions<SuperMario64DsMassExporter>;
+      : IMassExporterOptions<SuperMario64DsMassExporter>;
 
 [Verb("super_mario_sunshine",
       HelpText = "Export models en-masse from Super Mario Sunshine.")]

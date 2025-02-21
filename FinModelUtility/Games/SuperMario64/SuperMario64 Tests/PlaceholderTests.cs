@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace pikmin1 {
+namespace sm64 {
   public class PlaceholderTests {
     [Test]
     public void TestPlaceholder() {
