@@ -228,6 +228,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonicAdventure", "SonicAdve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonicAdventure", "Games\SonicAdventure\SonicAdventure\SonicAdventure.csproj", "{815F39C9-75EB-40E9-A798-86DBE370B0E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperMario64Ds Tests", "Games\SuperMario64Ds\SuperMario64Ds Tests\SuperMario64Ds Tests.csproj", "{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -780,6 +782,14 @@ Global
 		{815F39C9-75EB-40E9-A798-86DBE370B0E3}.Release|x64.Build.0 = Release|x64
 		{815F39C9-75EB-40E9-A798-86DBE370B0E3}.Release|x86.ActiveCfg = Release|x86
 		{815F39C9-75EB-40E9-A798-86DBE370B0E3}.Release|x86.Build.0 = Release|x86
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Debug|x64.ActiveCfg = Debug|x64
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Debug|x64.Build.0 = Debug|x64
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Debug|x86.ActiveCfg = Debug|x86
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Debug|x86.Build.0 = Debug|x86
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Release|x64.ActiveCfg = Release|x64
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Release|x64.Build.0 = Release|x64
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Release|x86.ActiveCfg = Release|x86
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -877,6 +887,7 @@ Global
 		{36AF0D2C-60C6-42C4-BD56-682C2728A07C} = {10A1E3E0-0E8F-495E-B38B-B678BFBBF043}
 		{86432717-40F7-43A7-BFD4-5CFEF93DFD26} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{815F39C9-75EB-40E9-A798-86DBE370B0E3} = {86432717-40F7-43A7-BFD4-5CFEF93DFD26}
+		{6FF7BA9D-9FEA-4968-B9BA-243353B40CC8} = {91C3A331-DF44-460C-AAD5-630363481C44}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}
