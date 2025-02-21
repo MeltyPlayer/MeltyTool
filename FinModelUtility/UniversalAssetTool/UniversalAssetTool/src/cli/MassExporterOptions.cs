@@ -17,6 +17,7 @@ using uni.games.paper_mario_the_thousand_year_door;
 using uni.games.pikmin_1;
 using uni.games.pikmin_2;
 using uni.games.professor_layton_vs_phoenix_wright;
+using uni.games.super_mario_64_ds;
 using uni.games.super_mario_sunshine;
 using uni.games.super_smash_bros_melee;
 using uni.games.wind_waker;
@@ -109,6 +110,11 @@ public class Pikmin2Options : IMassExporterOptions<Pikmin2MassExporter>;
           = "Export models en-masse from Professor Layton vs. Phoenix Wright.")]
 public class ProfessorLaytonVsPhoenixWrightOptions
     : IMassExporterOptions<ProfessorLaytonVsPhoenixWrightMassExporter>;
+
+[Verb("super_mario_64_ds",
+      HelpText = "Export models en-masse from Super Mario 64 DS.")]
+public class SuperMario64DsOptions
+    : IMassExporterOptions<SuperMario64DsMassExporter>;
 
 [Verb("super_mario_sunshine",
       HelpText = "Export models en-masse from Super Mario Sunshine.")]

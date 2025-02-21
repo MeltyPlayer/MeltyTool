@@ -1,0 +1,3 @@
+tools\universal_asset_tool\universal_asset_tool.exe super_mario_64_ds
+
+pause
