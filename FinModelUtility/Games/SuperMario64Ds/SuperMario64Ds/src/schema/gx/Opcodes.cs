@@ -46,7 +46,7 @@ public class ColorOpcode : IOpcode {
     var r = (byte) ((raw << 3) & 0xF8);
     var g = (byte) ((raw >> 2) & 0xF8);
     var b = (byte) ((raw >> 7) & 0xF8);
-    this.Color = new Vector3(r, g, b);
+    this.Color = new Vector3(r, g, b) / 255;
   }
 }
 

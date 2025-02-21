@@ -32,8 +32,6 @@ uniform vec3 cameraPosition;
 
 struct Texture {
   sampler2D sampler;
-  vec2 clampMin;
-  vec2 clampMax;
   mat3x2 transform2d;
 };
 
@@ -140,7 +138,7 @@ vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4
 }
 
 void main() {
-  fragColor = texture(diffuseTexture.sampler, clamp(diffuseTexture.transform2d * vec3((uv0).x, (uv0).y, 1), diffuseTexture.clampMin, diffuseTexture.clampMax));
+  fragColor = texture(diffuseTexture.sampler, diffuseTexture.transform2d * vec3((uv0).x, (uv0).y, 1));
 
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);

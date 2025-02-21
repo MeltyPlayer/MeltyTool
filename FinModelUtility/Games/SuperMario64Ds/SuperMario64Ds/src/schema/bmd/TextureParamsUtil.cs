@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.math;
 using fin.model;
 
 namespace sm64ds.schema.bmd;
@@ -15,7 +16,7 @@ public class TextureParams {
 
 public static class TextureParamsUtil {
   public static TextureParams GetParams(Material material,
-                                            Texture texture) {
+                                        Texture texture) {
     var mergedTextureParamsValue
         = material.TextureParameters | texture.Parameters;
 
@@ -38,17 +39,20 @@ public static class TextureParamsUtil {
       }
     }
 
-    textureParams.WrapModeS = (mergedTextureParamsValue & 0x10000) == 0x10000
-        ? (mergedTextureParamsValue & 0x40000) == 0x40000
-            ? WrapMode.MIRROR_CLAMP
-            : WrapMode.REPEAT
-        : WrapMode.CLAMP;
-    textureParams.WrapModeT = (mergedTextureParamsValue & 0x20000) == 0x20000
-        ? (mergedTextureParamsValue & 0x80000) == 0x80000
-            ? WrapMode.MIRROR_CLAMP
-            : WrapMode.REPEAT
-        : WrapMode.CLAMP;
+    textureParams.WrapModeS = GetWrapMode_(mergedTextureParamsValue, 16);
+    textureParams.WrapModeT = GetWrapMode_(mergedTextureParamsValue, 17);
 
     return textureParams;
+  }
+
+  private static WrapMode GetWrapMode_(uint prms, int offset) {
+    var repeat = prms.GetBit(offset);
+    var mirror = prms.GetBit(offset + 2);
+    return (mirror, repeat) switch {
+        (true, true)   => WrapMode.MIRROR_REPEAT,
+        (true, false)  => WrapMode.MIRROR_CLAMP,
+        (false, true)  => WrapMode.REPEAT,
+        (false, false) => WrapMode.CLAMP,
+    };
   }
 }
