@@ -101,15 +101,20 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
           var textureId = sm64Material.TextureId;
           var paletteId = sm64Material.TexturePaletteId;
 
+          IMaterial finMaterial;
           if (textureId != -1) {
             var sm64Texture = bmd.Textures[textureId];
             var sm64Palette = paletteId != -1 ? bmd.Palettes[paletteId] : null;
 
             var finTexture = lazyTextureDictionary[(sm64Texture, sm64Palette)];
-            return finMaterialManager.AddTextureMaterial(finTexture);
+            finMaterial = finMaterialManager.AddTextureMaterial(finTexture);
+          } else {
+            finMaterial = finMaterialManager.AddNullMaterial();
           }
 
-          return null;
+          finMaterial.CullingMode = sm64Material.CullMode;
+
+          return finMaterial;
         });
 
     // Set up mesh
@@ -120,6 +125,10 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
           return OpcodeReader.ReadOpcodes(opcodeBr);
         });
 
+    var sm64BoneIdToIndex = bmd.Bones.Select((bone, index) => (bone, index))
+                               .OrderBy(boneAndIndex => boneAndIndex.bone.Id)
+                               .Select(boneAndIndex => boneAndIndex.index)
+                               .ToArray();
     var finSkin = model.Skin;
     foreach (var sm64Bone in sm64Bones) {
       var materialAndDisplayListIds
@@ -133,19 +142,24 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         var sm64Material = bmd.Materials[materialId];
         var displayList = bmd.DisplayLists[displayListId];
 
-        var finBonesForMesh = displayList.Data.TransformIds
-                                         .Select(id => finBones[id])
-                                         .ToArray();
+        var finBoneByTransformId
+            = displayList.Data.TransformIds
+                         .Select(transformId
+                                     => bmd.TransformToBoneMap[transformId])
+                         .Select(boneId => finBones[boneId])
+                         .ToArray();
 
         var finMaterial = lazyMaterialDictionary[sm64Material];
         var opcodes = lazyOpcodeMap[displayList];
 
         PolygonType polygonType = default;
-        Vector3 position;
-        Vector3 color = default;
+        Vector3 position = default;
+        Vector3 color = Vector3.One;
         Vector3 normal = default;
         Vector2 uv = default;
-        IBoneWeights? boneWeights = null;
+        IBoneWeights boneWeights
+            = finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
+                                             finBoneByTransformId[0]);
 
         var finVertices = new LinkedList<IVertex>();
 
@@ -164,25 +178,37 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
               break;
             }
             case IVertexOpcode vertexOpcode: {
-              position = vertexOpcode.Position;
+              position.X = vertexOpcode.X ?? position.X;
+              position.Y = vertexOpcode.Y ?? position.Y;
+              position.Z = vertexOpcode.Z ?? position.Z;
 
               var finVertex = finSkin.AddVertex(position);
               finVertex.SetColor(new Vector4(color, 1));
               finVertex.SetLocalNormal(normal);
               finVertex.SetUv(uv);
+              finVertex.SetBoneWeights(boneWeights);
 
-              if (boneWeights != null) {
-                finVertex.SetBoneWeights(boneWeights);
-              }
+              finVertices.AddLast(finVertex);
+              break;
+            }
+            case Vertex0x28Opcode vertex0x28Opcode: {
+              position += vertex0x28Opcode.DeltaPosition;
+
+              var finVertex = finSkin.AddVertex(position);
+              finVertex.SetColor(new Vector4(color, 1));
+              finVertex.SetLocalNormal(normal);
+              finVertex.SetUv(uv);
+              finVertex.SetBoneWeights(boneWeights);
 
               finVertices.AddLast(finVertex);
               break;
             }
             case MatrixRestoreOpcode matrixRestoreOpcode: {
-              var finBone = finBonesForMesh[matrixRestoreOpcode.MatrixId];
+              var finBone
+                  = finBoneByTransformId[matrixRestoreOpcode.TransformId];
               boneWeights = finSkin.GetOrCreateBoneWeights(
-                      VertexSpace.RELATIVE_TO_BONE,
-                      finBone);
+                  VertexSpace.RELATIVE_TO_BONE,
+                  finBone);
               break;
             }
             case BeginVertexListOpcode beginVertexListOpcode: {
@@ -191,15 +217,19 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
             }
             case EndVertexListOpcode: {
               var finPrimitive = polygonType switch {
-                  PolygonType.TRIANGLES      => finMesh.AddTriangles(finVertices.ToArray()),
-                  PolygonType.QUADS          => finMesh.AddQuads(finVertices.ToArray()),
-                  PolygonType.TRIANGLE_STRIP => finMesh.AddTriangleStrip(finVertices.ToArray()),
-                  PolygonType.QUAD_STRIP     => finMesh.AddQuadStrip(finVertices.ToArray()),
-                  _                          => throw new ArgumentOutOfRangeException()
+                  PolygonType.TRIANGLES => finMesh.AddTriangles(
+                      finVertices.ToArray()),
+                  PolygonType.QUADS => finMesh.AddQuads(finVertices.ToArray()),
+                  PolygonType.TRIANGLE_STRIP => finMesh.AddTriangleStrip(
+                      finVertices.ToArray()),
+                  PolygonType.QUAD_STRIP => finMesh.AddQuadStrip(
+                      finVertices.ToArray()),
+                  _ => throw new ArgumentOutOfRangeException()
               };
               finVertices.Clear();
 
-              finPrimitive?.SetMaterial(finMaterial);
+              finPrimitive.SetMaterial(finMaterial);
+              finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
 
               break;
             }

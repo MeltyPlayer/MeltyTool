@@ -46,7 +46,6 @@ public enum OpcodeType : byte {
 
   BEGIN_VERTEX_LIST = 0x40,
   END_VERTEX_LIST = 0x41,
-  VERTEX_0x40 = 0x40,
 
   UNK_0x50 = 0x50,
   UNK_0x60 = 0x60,

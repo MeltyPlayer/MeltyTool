@@ -26,7 +26,7 @@ public partial class Bmd : IBinaryConvertible {
   public uint MaterialCount { get; set; }
   public uint MaterialsOffset { get; set; }
 
-  public uint TransformAndBoneMapOffset { get; set; }
+  private uint boneMapOffset_;
   public uint TextureAndPaletteDataBlock { get; set; }
 
   [RAtPosition(nameof(BonesOffset))]
@@ -48,4 +48,8 @@ public partial class Bmd : IBinaryConvertible {
   [RAtPosition(nameof(MaterialsOffset))]
   [RSequenceLengthSource(nameof(MaterialCount))]
   public Material[] Materials { get; set; }
+
+  [RAtPosition(nameof(boneMapOffset_))]
+  [RSequenceLengthSource(nameof(BoneCount))]
+  public short[] TransformToBoneMap { get; set; }
 }

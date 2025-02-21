@@ -29,10 +29,10 @@ public class UnhandledOpcode(OpcodeType type) : IOpcode {
 
 public class MatrixRestoreOpcode : IOpcode {
   public OpcodeType Type => OpcodeType.MATRIX_RESTORE;
-  public byte MatrixId { get; set; }
+  public byte TransformId { get; set; }
 
   public void Read(IBinaryReader br) {
-    this.MatrixId = (byte) (br.ReadUInt32() & 0x1F);
+    this.TransformId = (byte) (br.ReadUInt32() & 0x1F);
   }
 }
 
@@ -76,12 +76,17 @@ public class TexCoordOpcode : IOpcode {
 }
 
 public interface IVertexOpcode : IOpcode {
-  Vector3 Position { get; set; }
+  float? X { get; set; }
+  float? Y { get; set; }
+  float? Z { get; set; }
 }
 
 public class Vertex0x23Opcode : IVertexOpcode {
   public OpcodeType Type => OpcodeType.VERTEX_0x23;
-  public Vector3 Position { get; set; }
+
+  public float? X { get; set; }
+  public float? Y { get; set; }
+  public float? Z { get; set; }
 
   public void Read(IBinaryReader br) {
     uint param1 = br.ReadUInt32();
@@ -91,7 +96,9 @@ public class Vertex0x23Opcode : IVertexOpcode {
     short y = (short) (param1 >> 16);
     short z = (short) (param2 & 0xFFFF);
 
-    this.Position = new Vector3(x, y, z) / 4096;
+    this.X = x / 4096f;
+    this.Y = y / 4096f;
+    this.Z = z / 4096f;
   }
 }
 
@@ -99,6 +106,10 @@ public class Vertex0x24Opcode : IVertexOpcode {
   public OpcodeType Type => OpcodeType.VERTEX_0x24;
   public Vector3 Position { get; set; }
 
+  public float? X { get; set; }
+  public float? Y { get; set; }
+  public float? Z { get; set; }
+
   public void Read(IBinaryReader br) {
     uint param = br.ReadUInt32();
 
@@ -106,13 +117,18 @@ public class Vertex0x24Opcode : IVertexOpcode {
     short y = (short) ((param >> 4) & 0xFFC0);
     short z = (short) ((param >> 14) & 0xFFC0);
 
-    this.Position = new Vector3(x, y, z) / 4096;
+    this.X = x / 4096f;
+    this.Y = y / 4096f;
+    this.Z = z / 4096f;
   }
 }
 
 public class Vertex0x25Opcode : IVertexOpcode {
   public OpcodeType Type => OpcodeType.VERTEX_0x25;
-  public Vector3 Position { get; set; }
+
+  public float? X { get; set; }
+  public float? Y { get; set; }
+  public float? Z { get; set; }
 
   public void Read(IBinaryReader br) {
     uint param = br.ReadUInt32();
@@ -120,13 +136,17 @@ public class Vertex0x25Opcode : IVertexOpcode {
     short x = (short) (param & 0xFFFF);
     short y = (short) (param >> 16);
 
-    this.Position = new Vector3(x, y, 0) / 4096;
+    this.X = x / 4096f;
+    this.Y = y / 4096f;
   }
 }
 
 public class Vertex0x26Opcode : IVertexOpcode {
   public OpcodeType Type => OpcodeType.VERTEX_0x26;
-  public Vector3 Position { get; set; }
+
+  public float? X { get; set; }
+  public float? Y { get; set; }
+  public float? Z { get; set; }
 
   public void Read(IBinaryReader br) {
     uint param = br.ReadUInt32();
@@ -134,7 +154,8 @@ public class Vertex0x26Opcode : IVertexOpcode {
     short x = (short) (param & 0xFFFF);
     short z = (short) (param >> 16);
 
-    this.Position = new Vector3(x, 0, z) / 4096;
+    this.X = x / 4096f;
+    this.Z = z / 4096f;
   }
 }
 
@@ -142,19 +163,25 @@ public class Vertex0x27Opcode : IVertexOpcode {
   public OpcodeType Type => OpcodeType.VERTEX_0x27;
   public Vector3 Position { get; set; }
 
+  public float? X { get; set; }
+  public float? Y { get; set; }
+  public float? Z { get; set; }
+
   public void Read(IBinaryReader br) {
     uint param = br.ReadUInt32();
 
     short y = (short) (param & 0xFFFF);
     short z = (short) (param >> 16);
 
-    this.Position = new Vector3(0, y, z) / 4096;
+    this.Y = y / 4096f;
+    this.Z = z / 4096f;
   }
 }
 
-public class Vertex0x28Opcode : IVertexOpcode {
+public class Vertex0x28Opcode : IOpcode {
   public OpcodeType Type => OpcodeType.VERTEX_0x28;
-  public Vector3 Position { get; set; }
+
+  public Vector3 DeltaPosition { get; set; }
 
   public void Read(IBinaryReader br) {
     uint param = br.ReadUInt32();
@@ -163,7 +190,7 @@ public class Vertex0x28Opcode : IVertexOpcode {
     short y = (short) ((param >> 4) & 0xFFC0);
     short z = (short) ((param >> 14) & 0xFFC0);
 
-    this.Position = new Vector3(x, y, z) / 262144;
+    this.DeltaPosition = new Vector3(x, y, z) / 262144;
   }
 }
 
