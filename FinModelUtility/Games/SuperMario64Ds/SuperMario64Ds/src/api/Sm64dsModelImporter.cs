@@ -5,7 +5,9 @@ using fin.compression;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
+using fin.image;
 using fin.io;
+using fin.math.matrix.three;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;
@@ -84,17 +86,11 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
     // Set up materials
     var finMaterialManager = model.MaterialManager;
-    var lazyTextureDictionary
-        = new LazyDictionary<(Texture texture, Palette? palette), ITexture>(
+    var lazyImageDictionary
+        = new LazyDictionary<(Texture texture, Palette? palette), IImage>(
             textureAndPalette => {
               var (sm64Texture, sm64Palette) = textureAndPalette;
-
-              var finTexture
-                  = finMaterialManager.CreateTexture(
-                      ImageReader.ReadImage(sm64Texture, sm64Palette));
-              finTexture.Name = sm64Texture.Name;
-
-              return finTexture;
+              return ImageReader.ReadImage(sm64Texture, sm64Palette);
             });
     var lazyMaterialDictionary = new LazyDictionary<Material, IMaterial?>(
         sm64Material => {
@@ -106,8 +102,44 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
             var sm64Texture = bmd.Textures[textureId];
             var sm64Palette = paletteId != -1 ? bmd.Palettes[paletteId] : null;
 
-            var finTexture = lazyTextureDictionary[(sm64Texture, sm64Palette)];
+            var finImage = lazyImageDictionary[(sm64Texture, sm64Palette)];
+
+            var finTexture = finMaterialManager.CreateTexture(finImage);
+            finTexture.Name = sm64Texture.Name;
+
+            var sm64TextureParams
+                = TextureParamsUtil.GetParams(sm64Material, sm64Texture);
+
+            var translationMatrix = SystemMatrix3x2Util.FromCtrss(
+                null,
+                sm64TextureParams.Translation,
+                sm64TextureParams.Rotation,
+                sm64TextureParams.Scale,
+                null);
+            var resolutionScaleMatrix
+                = SystemMatrix3x2Util.FromScale(1f / sm64Texture.Width,
+                                                1f / sm64Texture.Height);
+
+            var textureMatrix = translationMatrix * resolutionScaleMatrix;
+
+            SystemMatrix3x2Util.Decompose(textureMatrix,
+                                          out var texTranslation,
+                                          out var texRotation,
+                                          out var texScale,
+                                          out _);
+
+            finTexture.SetTranslation2d(texTranslation)
+                      .SetRotationRadians2d(texRotation)
+                      .SetScale2d(texScale);
+
+            finTexture.WrapModeU = sm64TextureParams.WrapModeS;
+            finTexture.WrapModeV = sm64TextureParams.WrapModeT;
+
+            finTexture.MinFilter = TextureMinFilter.NEAR;
+            finTexture.MagFilter = TextureMagFilter.NEAR;
+
             finMaterial = finMaterialManager.AddTextureMaterial(finTexture);
+            finMaterial.Name = sm64Texture.Name;
           } else {
             finMaterial = finMaterialManager.AddNullMaterial();
           }
