@@ -138,7 +138,7 @@ public class GltfSkinBuilder {
             // https://edeleastar.github.io/opengl-programming/topic06/pdf/1.Polygons.pdf
             var firstVertex = 0;
             var secondVertex = 1;
-            for (var v = 4; v < verticesInPrimitive.Count; v += 2) {
+            for (var v = 3; v < verticesInPrimitive.Count; v += 2) {
               var a = firstVertex;
               var b = secondVertex;
               var c = v - 1;

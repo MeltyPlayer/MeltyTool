@@ -154,8 +154,8 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
         PolygonType polygonType = default;
         Vector3 position = default;
-        Vector3 color = Vector3.One;
-        Vector3 normal = default;
+        Vector3? color = null;
+        Vector3? normal = null;
         Vector2 uv = default;
         IBoneWeights boneWeights
             = finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
@@ -183,7 +183,10 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
               position.Z = vertexOpcode.Z ?? position.Z;
 
               var finVertex = finSkin.AddVertex(position);
-              finVertex.SetColor(new Vector4(color, 1));
+              if (color != null) {
+                finVertex.SetColor(new Vector4(color.Value, 1));
+              }
+
               finVertex.SetLocalNormal(normal);
               finVertex.SetUv(uv);
               finVertex.SetBoneWeights(boneWeights);
@@ -195,7 +198,10 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
               position += vertex0x28Opcode.DeltaPosition;
 
               var finVertex = finSkin.AddVertex(position);
-              finVertex.SetColor(new Vector4(color, 1));
+              if (color != null) {
+                finVertex.SetColor(new Vector4(color.Value, 1));
+              }
+
               finVertex.SetLocalNormal(normal);
               finVertex.SetUv(uv);
               finVertex.SetBoneWeights(boneWeights);
