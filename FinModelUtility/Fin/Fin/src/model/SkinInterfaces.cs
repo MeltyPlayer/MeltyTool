@@ -75,6 +75,8 @@ public partial interface IMesh : IIndexable {
   IPrimitive AddQuads(IReadOnlyList<IReadOnlyVertex> vertices);
   IPrimitive AddQuads(params IReadOnlyVertex[] vertices);
 
+  IPrimitive AddQuadStrip(IReadOnlyList<IReadOnlyVertex> vertices);
+
   ILinesPrimitive AddLines(
       IReadOnlyList<(IReadOnlyVertex, IReadOnlyVertex)> lines);
 
@@ -138,6 +140,7 @@ public enum PrimitiveType {
   TRIANGLE_STRIP,
   TRIANGLE_FAN,
   QUADS,
+  QUAD_STRIP,
   LINES,
   LINE_STRIP,
   POINTS,

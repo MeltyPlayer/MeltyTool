@@ -217,6 +217,14 @@ public partial class ModelImpl<TVertex> {
       }
 
 
+      public IPrimitive AddQuadStrip(IReadOnlyList<IReadOnlyVertex> vertices) {
+        var primitive = new PrimitiveImpl(PrimitiveType.QUAD_STRIP, vertices);
+        this.primitives_.Add(primitive);
+        return primitive;
+      }
+
+
+
       public ILinesPrimitive AddLines(
           params (IReadOnlyVertex, IReadOnlyVertex)[] lines)
         => this.AddLines(

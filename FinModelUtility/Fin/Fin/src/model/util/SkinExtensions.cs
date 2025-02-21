@@ -115,6 +115,45 @@ public static class SkinExtensions {
 
         break;
       }
+      case PrimitiveType.QUAD_STRIP: {
+        // https://edeleastar.github.io/opengl-programming/topic06/pdf/1.Polygons.pdf
+        var firstVertex = 0;
+        var secondVertex = 1;
+        for (var v = 4; v < pointsCount; v += 2) {
+          var a = firstVertex;
+          var b = secondVertex;
+          var c = v - 1;
+          var d = v;
+
+          var v0 = a;
+          var v1 = b;
+          var v2 = d;
+          var v3 = c;
+
+          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
+            yield return v1;
+            yield return v0;
+            yield return v2;
+
+            yield return v3;
+            yield return v2;
+            yield return v0;
+          } else {
+            yield return v0;
+            yield return v1;
+            yield return v2;
+
+            yield return v2;
+            yield return v3;
+            yield return v0;
+          }
+
+          firstVertex = c;
+          secondVertex = d;
+        }
+
+        break;
+      }
       default: throw new NotImplementedException();
     }
   }

@@ -131,6 +131,35 @@ public class GltfSkinBuilder {
 
             break;
           }
+          case PrimitiveType.QUAD_STRIP: {
+            var quads = gltfMeshBuilder.UsePrimitive(materialBuilder);
+            var verticesInPrimitive = primitive.Vertices;
+
+            // https://edeleastar.github.io/opengl-programming/topic06/pdf/1.Polygons.pdf
+            var firstVertex = 0;
+            var secondVertex = 1;
+            for (var v = 4; v < verticesInPrimitive.Count; v += 2) {
+              var a = firstVertex;
+              var b = secondVertex;
+              var c = v - 1;
+              var d = v;
+
+              var v0 = a;
+              var v1 = b;
+              var v2 = d;
+              var v3 = c;
+
+              quads.AddQuadrangle(vertexToBuilder[verticesInPrimitive[v0]],
+                                  vertexToBuilder[verticesInPrimitive[v1]],
+                                  vertexToBuilder[verticesInPrimitive[v2]],
+                                  vertexToBuilder[verticesInPrimitive[v3]]);
+
+              firstVertex = c;
+              secondVertex = d;
+            }
+
+            break;
+          }
           case PrimitiveType.POINTS: {
             var pointPrimitive
                 = gltfMeshBuilder.UsePrimitive(materialBuilder, 1);

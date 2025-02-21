@@ -470,6 +470,7 @@ public class GlBufferManager : IDynamicGlBufferManager {
           PrimitiveType.TRIANGLES      => BeginMode.Triangles,
           PrimitiveType.TRIANGLE_FAN   => BeginMode.TriangleFan,
           PrimitiveType.TRIANGLE_STRIP => BeginMode.TriangleStrip,
+          PrimitiveType.QUAD_STRIP     => BeginMode.QuadStrip,
           PrimitiveType.QUADS          => BeginMode.Quads,
           _                            => throw new ArgumentOutOfRangeException()
       };

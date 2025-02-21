@@ -31,8 +31,16 @@ public partial class Bone : IBinaryConvertible {
 
   public FixedPointVector3 Translation { get; set; }
 
-  public uint DisplayListMaterialPairCount { get; set; }
-  public uint MaterialIdsOffset { get; set; }
-  public uint DisplayListIdsOffset { get; set; }
+  private uint displayListMaterialPairCount_;
+  private uint materialIdsOffset_;
+  private uint displayListIdsOffset_;
   public uint Parameters { get; set; }
+
+  [RSequenceLengthSource(nameof(displayListMaterialPairCount_))]
+  [RAtPosition(nameof(materialIdsOffset_))]
+  public byte[] MaterialIds { get; set; }
+
+  [RSequenceLengthSource(nameof(displayListMaterialPairCount_))]
+  [RAtPosition(nameof(displayListIdsOffset_))]
+  public byte[] DisplayListIds { get; set; }
 }

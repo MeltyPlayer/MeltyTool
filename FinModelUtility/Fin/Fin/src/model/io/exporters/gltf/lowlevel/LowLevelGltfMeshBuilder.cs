@@ -163,6 +163,7 @@ public class LowLevelGltfMeshBuilder {
         gltfPrimitive.SetVertexAccessor("NORMAL", normalAccessor);
 
         if (finPrimitive.Type != FinPrimitiveType.QUADS &&
+            finPrimitive.Type != FinPrimitiveType.QUAD_STRIP &&
             finPrimitive.VertexOrder == VertexOrder.COUNTER_CLOCKWISE) {
           gltfPrimitive.DrawPrimitiveType = finPrimitive.Type switch {
               FinPrimitiveType.TRIANGLES => GltfPrimitiveType.TRIANGLES,

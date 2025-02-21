@@ -27,4 +27,8 @@ public partial class DisplayListData : IBinaryConvertible {
   [RAtPosition(nameof(TransformsOffset))]
   [RSequenceLengthSource(nameof(TransformCount))]
   public byte[] TransformIds { get; set; }
+
+  [RAtPosition(nameof(OpcodesOffset))]
+  [RSequenceLengthSource(nameof(OpcodesByteLength))]
+  public byte[] OpcodeBytes { get; set; }
 }
