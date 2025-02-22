@@ -189,15 +189,11 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                   ambientColor,
                   vrmlMaterial.AmbientIntensity);
 
-              var (outputColor, outputAlpha)
-                  = equations.GenerateLighting(
-                      (diffuseSurfaceColor, diffuseSurfaceAlpha),
-                      ambientColor);
+              var outputColorAlpha = equations.GenerateLighting(
+                  (diffuseSurfaceColor, diffuseSurfaceAlpha),
+                  ambientColor);
 
-              equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
-                                          outputColor ?? colorOps.Zero);
-              equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
-                                           outputAlpha ?? scalarOps.Zero);
+              equations.SetOutputColorAlpha(outputColorAlpha);
 
               finMaterial.TransparencyType = alpha < 1
                   ? TransparencyType.TRANSPARENT

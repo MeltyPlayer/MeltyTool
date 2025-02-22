@@ -589,10 +589,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     var outputColor = extLightingColor;
     var outputAlpha = diffuseSurfaceAlpha;
 
-    equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
-                                outputColor ?? colorOps.Zero);
-    equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
-                                 outputAlpha ?? scalarOps.Zero);
+    equations.SetOutputColorAlpha((outputColor, outputAlpha));
   }
 
   private void PerformTextureLightingPass_(

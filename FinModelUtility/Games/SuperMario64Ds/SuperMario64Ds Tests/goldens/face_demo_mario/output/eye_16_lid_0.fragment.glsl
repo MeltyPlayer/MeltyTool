@@ -29,21 +29,20 @@ layout (std140, binding = 2) uniform Lights {
 };
 
 uniform vec3 cameraPosition;
+uniform float shininess;
 
 struct Texture {
   sampler2D sampler;
   mat3x2 transform2d;
 };
 
-
-uniform Texture diffuseTexture;
-uniform float shininess;
-
-out vec4 fragColor;
+uniform Texture texture0;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec2 uv0;
+
+out vec4 fragColor;
 
 void getSurfaceToLightNormalAndAttenuation(Light light, vec3 position, vec3 normal, out vec3 surfaceToLightNormal, out float attenuation) {
   vec3 surfaceToLight = light.position - position;
@@ -125,26 +124,21 @@ void getMergedLightColors(vec3 position, vec3 normal, float shininess, out vec4 
   }
 }
 
-vec4 applyMergedLightingColors(vec3 position, vec3 normal, float shininess, vec4 diffuseSurfaceColor, vec4 specularSurfaceColor) {
-  vec4 mergedDiffuseLightColor = vec4(0);
-  vec4 mergedSpecularLightColor = vec4(0);
-  getMergedLightColors(position, normal, shininess, mergedDiffuseLightColor, mergedSpecularLightColor);
-
-  // We double it because all the other kids do. (Other fixed-function games.)
-  vec4 diffuseComponent = 2.0 * diffuseSurfaceColor * (ambientLightColor + mergedDiffuseLightColor);
-  vec4 specularComponent = specularSurfaceColor * mergedSpecularLightColor;
-  
-  return clamp(diffuseComponent + specularComponent, 0.0, 1.0);
-}
-
 void main() {
-  fragColor = texture(diffuseTexture.sampler, diffuseTexture.transform2d * vec3((uv0).x, (uv0).y, 1));
-
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
-  fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, shininess, fragColor, vec4(1)).rgb,  useLighting);
 
-  if (fragColor.a < .95) {
+  vec4 mergedLightDiffuseColor = vec4(0);
+  vec4 mergedLightSpecularColor = vec4(0);
+  getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
+
+  vec3 colorComponent = (ambientLightColor.rgb + mergedLightDiffuseColor.rgb)*vec3(2.0)*texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb + mergedLightSpecularColor.rgb;
+
+  float alphaComponent = texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).a;
+
+  fragColor = vec4(colorComponent, 1);
+
+  if (!(alphaComponent > 0.95)) {
     discard;
   }
 }

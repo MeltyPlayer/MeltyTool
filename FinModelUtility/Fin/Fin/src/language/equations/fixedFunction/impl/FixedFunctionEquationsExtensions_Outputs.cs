@@ -3,6 +3,15 @@
 namespace fin.language.equations.fixedFunction;
 
 public static partial class FixedFunctionEquationsExtensions {
+  public static void SetOutputColorAlpha(
+      this IFixedFunctionEquations<FixedFunctionSource> equations,
+      (IColorValue? color, IScalarValue? alpha) output) {
+    equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
+                                output.color ?? equations.ColorOps.Zero);
+    equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
+                                 output.alpha ?? equations.ScalarOps.Zero);
+  }
+
   public static IColorValue GetMergedLightDiffuseColor(
       this IFixedFunctionEquations<FixedFunctionSource> equations)
     => equations.CreateOrGetColorInput(
