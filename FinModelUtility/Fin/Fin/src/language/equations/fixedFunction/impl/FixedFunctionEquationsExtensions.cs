@@ -3,6 +3,45 @@
 namespace fin.language.equations.fixedFunction;
 
 public static partial class FixedFunctionEquationsExtensions {
+  public static (IColorValue?, IScalarValue?) GenerateDiffuse(
+      this IFixedFunctionMaterial material,
+      (IColorValue? color, IScalarValue? alpha) diffuse,
+      IReadOnlyTexture? finTexture,
+      (bool color, bool alpha) hasVertexColorAlpha0) {
+    var equations = material.Equations;
+    var colorOps = equations.ColorOps;
+    var scalarOps = equations.ScalarOps;
+
+    IColorValue? diffuseSurfaceColor = diffuse.color;
+    IScalarValue? diffuseSurfaceAlpha = diffuse.alpha;
+
+    if (finTexture != null) {
+      var (textureColor, textureAlpha)
+          = material.AddTextureSourceColorAlpha(finTexture);
+
+      diffuseSurfaceColor
+          = colorOps.Multiply(diffuseSurfaceColor, textureColor);
+      diffuseSurfaceAlpha
+          = scalarOps.Multiply(diffuseSurfaceAlpha, textureAlpha);
+    }
+
+    if (hasVertexColorAlpha0.color) {
+      var vertexColor = equations.CreateOrGetColorInput(
+          FixedFunctionSource.VERTEX_COLOR_0);
+      diffuseSurfaceColor
+          = colorOps.Multiply(diffuseSurfaceColor, vertexColor);
+    }
+
+    if (hasVertexColorAlpha0.alpha) {
+      var vertexAlpha = equations.CreateOrGetScalarInput(
+          FixedFunctionSource.VERTEX_ALPHA_0);
+      diffuseSurfaceAlpha
+          = scalarOps.Multiply(diffuseSurfaceAlpha, vertexAlpha);
+    }
+
+    return (diffuseSurfaceColor, diffuseSurfaceAlpha);
+  }
+
   public static (IColorValue?, IScalarValue?) GenerateLighting(
       this IFixedFunctionEquations<FixedFunctionSource> equations,
       (IColorValue? color, IScalarValue? alpha) diffuse,

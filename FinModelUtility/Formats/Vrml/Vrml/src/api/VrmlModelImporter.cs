@@ -160,11 +160,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               var colorOps = equations.ColorOps;
               var scalarOps = equations.ScalarOps;
 
-              IColorValue? diffuseSurfaceColor
-                  = equations.CreateColorConstant(color);
-              IScalarValue? diffuseSurfaceAlpha
-                  = equations.CreateScalarConstant(alpha);
-
               IReadOnlyTexture? finTexture = null;
               var vrmlTexture = appearanceNode.Texture;
               if (vrmlTexture != null) {
@@ -177,22 +172,14 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
               if (finTexture != null) {
                 finMaterial.Name = finTexture.Name;
-
-                var (textureColor, textureAlpha)
-                    = finMaterial.AddTextureSourceColorAlpha(finTexture);
-
-                diffuseSurfaceColor
-                    = colorOps.Multiply(diffuseSurfaceColor, textureColor);
-                diffuseSurfaceAlpha
-                    = scalarOps.Multiply(diffuseSurfaceAlpha, textureAlpha);
               }
 
-              if (hasVertexColor) {
-                var vertexColor = equations.CreateOrGetColorInput(
-                    FixedFunctionSource.VERTEX_COLOR_0);
-                diffuseSurfaceColor
-                    = colorOps.Multiply(diffuseSurfaceColor, vertexColor);
-              }
+              var (diffuseSurfaceColor, diffuseSurfaceAlpha)
+                  = finMaterial.GenerateDiffuse(
+                      (equations.CreateColorConstant(color),
+                       equations.CreateScalarConstant(alpha)),
+                      finTexture,
+                      (hasVertexColor, false));
 
               IColorValue? ambientColor = vrmlMaterial.AmbientColor != null
                   ? equations.CreateColorConstant(

@@ -216,12 +216,12 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                                      out var tObjRotation,
                                      out var tObjScale);
           finTexture.SetTranslation3d(tObjTranslation)
-                             .SetRotationRadians3d(tObjRotation.ToEulerRadians())
-                             .SetScale3d(tObjScale *
-                                         new Vector3(
-                                             tObj.RepeatS,
-                                             tObj.RepeatT,
-                                             1));
+                    .SetRotationRadians3d(tObjRotation.ToEulerRadians())
+                    .SetScale3d(tObjScale *
+                                new Vector3(
+                                    tObj.RepeatS,
+                                    tObj.RepeatT,
+                                    1));
 
           return finTexture;
         });
@@ -429,41 +429,25 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       fixedFunctionMaterial.SetTextureSource(i, finTexture);
     }
 
-    var vertexColor = equations.CreateOrGetColorInput(
-        FixedFunctionSource.VERTEX_COLOR_0);
-    var vertexAlpha = equations.CreateOrGetScalarInput(
-        FixedFunctionSource.VERTEX_ALPHA_0);
-
     var renderMode = mObj.RenderMode;
     var material = mObj.Material;
-
-    IColorValue? diffuseSurfaceColor = colorOps.One;
-    IScalarValue? diffuseSurfaceAlpha = scalarOps.One;
 
     var hasConstantRenderMode = renderMode.CheckFlag(RenderMode.CONSTANT);
     var hasDiffuseRenderMode = renderMode.CheckFlag(RenderMode.DIFFUSE);
     var hasSpecularRenderMode = renderMode.CheckFlag(RenderMode.SPECULAR);
 
-    var hasLighting = hasDiffuseRenderMode || hasSpecularRenderMode;
-
-    // Constant color
+    // Diffuse
     var diffuseRgba = material.DiffuseColor;
-    diffuseSurfaceColor = equations.CreateColorConstant(
-        diffuseRgba.Rf,
-        diffuseRgba.Gf,
-        diffuseRgba.Bf);
-    diffuseSurfaceAlpha = scalarOps.MultiplyWithConstant(
-        diffuseSurfaceAlpha,
-        material.DiffuseColor.Af * material!.Alpha);
+    var hasVertexColorAlpha = renderMode.CheckFlag(RenderMode.VERTEX); 
+    var (diffuseSurfaceColor, diffuseSurfaceAlpha)
+        = fixedFunctionMaterial.GenerateDiffuse(
+            (equations.CreateColorConstant(diffuseRgba.Rf, diffuseRgba.Gf, diffuseRgba.Bf),
+             equations.CreateScalarConstant(
+                 material.DiffuseColor.Af * material!.Alpha)),
+            null,
+            (hasVertexColorAlpha, hasVertexColorAlpha));
 
-    // Vertex color
-    if (renderMode.CheckFlag(RenderMode.VERTEX)) {
-      diffuseSurfaceColor =
-          colorOps.Multiply(diffuseSurfaceColor, vertexColor);
-      diffuseSurfaceAlpha =
-          scalarOps.Multiply(diffuseSurfaceAlpha, vertexAlpha);
-    }
-
+    // Ambient
     IColorValue? ambientSurfaceColor = equations.CreateColorConstant(
         material.AmbientColor.Rf,
         material.AmbientColor.Gf,
@@ -472,6 +456,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     IScalarValue? ambientSurfaceAlpha = equations.CreateScalarConstant(
         material.AmbientColor.Af);
 
+    // Specular
     IColorValue? specularSurfaceColor = equations.CreateColorConstant(
         material.SpecularColor.Rf,
         material.SpecularColor.Gf,
