@@ -17,6 +17,8 @@ public interface IColor {
   byte Gb { get; }
   byte Bb { get; }
   byte Ab { get; }
+
+  Vector3 Rgbf => new(this.Rf, this.Gf, this.Bf);
 }
 
 public class FinColor : IColor {

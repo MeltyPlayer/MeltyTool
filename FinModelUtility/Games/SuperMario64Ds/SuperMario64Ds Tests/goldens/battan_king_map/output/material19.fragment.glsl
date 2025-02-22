@@ -4,7 +4,7 @@ precision highp float;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(1.0);
+  vec3 colorComponent = vec3(0.780392169952,0.749019622803,0.0);
 
   float alphaComponent = 1.0;
 

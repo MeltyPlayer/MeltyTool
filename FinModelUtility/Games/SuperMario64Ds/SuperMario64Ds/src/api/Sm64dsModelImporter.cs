@@ -372,15 +372,18 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
     var scalarOps = equations.ScalarOps;
 
     var diffuseColorAlpha = finMaterial.GenerateDiffuse(
-        (colorOps.One, scalarOps.One),
+        (equations.CreateColorConstant(sm64Material.DiffuseColor.Rgbf),
+         equations.CreateScalarConstant(sm64Material.DiffuseColor.Af)),
         texture,
         (hasVertexColor, hasVertexColor));
 
     var outputColorAlpha
         = hasNormals
-            ? equations.GenerateLighting(diffuseColorAlpha,
-                                         colorOps.One,
-                                         colorOps.One)
+            ? equations.GenerateLighting(
+                diffuseColorAlpha,
+                equations.CreateColorConstant(sm64Material.AmbientColor.Rgbf),
+                equations.CreateColorConstant(sm64Material.SpecularColor.Rgbf),
+                equations.CreateColorConstant(sm64Material.EmissionColor.Rgbf))
             : diffuseColorAlpha;
 
     equations.SetOutputColorAlpha(outputColorAlpha);

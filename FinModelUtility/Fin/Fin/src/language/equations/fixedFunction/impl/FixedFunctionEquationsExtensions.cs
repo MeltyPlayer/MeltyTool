@@ -46,13 +46,18 @@ public static partial class FixedFunctionEquationsExtensions {
       this IFixedFunctionEquations<FixedFunctionSource> equations,
       (IColorValue? color, IScalarValue? alpha) diffuse,
       IColorValue? ambient)
-    => GenerateLighting(equations, diffuse, ambient, equations.ColorOps.Zero);
+    => GenerateLighting(equations,
+                        diffuse,
+                        ambient,
+                        equations.ColorOps.Zero,
+                        equations.ColorOps.Zero);
 
   public static (IColorValue?, IScalarValue?) GenerateLighting(
       this IFixedFunctionEquations<FixedFunctionSource> equations,
       (IColorValue? color, IScalarValue? alpha) diffuse,
       IColorValue? ambient,
-      IColorValue? specular) {
+      IColorValue? specular,
+      IColorValue? emission) {
     var colorOps = equations.ColorOps;
 
     // Light colors
@@ -76,7 +81,9 @@ public static partial class FixedFunctionEquationsExtensions {
         diffuse.color);
 
     // Performs ext lighting pass
-    var outColor = colorOps.Add(ambientAndDiffuseComponent, specularLightColor);
+    var outColor = colorOps.Add(
+        colorOps.Add(ambientAndDiffuseComponent, specularLightColor),
+        emission);
     var outAlpha = diffuse.alpha;
 
     return (outColor, outAlpha);

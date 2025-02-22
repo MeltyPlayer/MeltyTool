@@ -1,4 +1,6 @@
-﻿using fin.model;
+﻿using fin.color;
+using fin.model;
+using fin.util.color;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -25,7 +27,7 @@ public partial class Material : IBinaryConvertible {
   public FixedPointVector2 TextureTranslation { get; set; }
 
   public uint TextureParameters { get; set; }
-  
+
   public uint PolygonAttributes { get; set; }
 
   [Skip]
@@ -37,7 +39,24 @@ public partial class Material : IBinaryConvertible {
         0xC0 => CullingMode.SHOW_BOTH,
     };
 
+  private uint diffuseAmbientColors_;
+  private uint specularEmissionColors_;
 
-  public uint DiffuseAmbientParameters { get; set; }
-  public uint SpecularEmissionParameters { get; set; }
+  [Skip]
+  public IColor DiffuseColor
+    => ColorUtil.ParseBgr5A1((ushort) this.diffuseAmbientColors_);
+
+  [Skip]
+  public IColor AmbientColor
+    => ColorUtil.ParseBgr5A1((ushort) (this.diffuseAmbientColors_ >> 16));
+
+
+  [Skip]
+  public IColor SpecularColor
+    => ColorUtil.ParseBgr5A1((ushort) this.specularEmissionColors_);
+
+
+  [Skip]
+  public IColor EmissionColor
+    => ColorUtil.ParseBgr5A1((ushort) (this.specularEmissionColors_ >> 16));
 }

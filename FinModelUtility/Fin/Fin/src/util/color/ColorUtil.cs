@@ -87,6 +87,16 @@ public static class ColorUtil {
     }
   }
 
+  public static IColor ParseRgb5A1(ushort color) {
+    SplitRgb5A1(color, out var r, out var g, out var b, out var a);
+    return FinColor.FromRgbaBytes(r, g, b, a);
+  }
+
+  public static IColor ParseBgr5A1(ushort color) {
+    SplitRgb5A1(color, out var b, out var g, out var r, out var a);
+    return FinColor.FromRgbaBytes(r, g, b, a);
+  }
+
   public static void SplitArgb1555(
       ushort color,
       out byte r,
