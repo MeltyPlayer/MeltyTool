@@ -194,32 +194,18 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                     = colorOps.Multiply(diffuseSurfaceColor, vertexColor);
               }
 
-              var ambientSurfaceColor = vrmlMaterial.AmbientColor != null
+              IColorValue? ambientColor = vrmlMaterial.AmbientColor != null
                   ? equations.CreateColorConstant(
                       vrmlMaterial.AmbientColor.Value)
                   : colorOps.One;
-
-              var diffuseLightColor = equations.GetMergedLightDiffuseColor();
-              var ambientLightColor = colorOps.MultiplyWithConstant(
-                  equations.CreateOrGetColorInput(
-                      FixedFunctionSource.LIGHT_AMBIENT_COLOR),
+              ambientColor = colorOps.MultiplyWithConstant(
+                  ambientColor,
                   vrmlMaterial.AmbientIntensity);
 
-              var ambientAndDiffuseLightingColor = colorOps.Add(
-                  colorOps.Multiply(ambientSurfaceColor, ambientLightColor),
-                  diffuseLightColor);
-
-              // We double it because all the other kids do. (Other fixed-function games.)
-              ambientAndDiffuseLightingColor =
-                  colorOps.MultiplyWithConstant(ambientAndDiffuseLightingColor,
-                                                2);
-
-              var ambientAndDiffuseComponent = colorOps.Multiply(
-                  ambientAndDiffuseLightingColor,
-                  diffuseSurfaceColor);
-
-              var outputColor = ambientAndDiffuseComponent;
-              var outputAlpha = diffuseSurfaceAlpha;
+              var (outputColor, outputAlpha)
+                  = equations.GenerateLighting(
+                      (diffuseSurfaceColor, diffuseSurfaceAlpha),
+                      ambientColor);
 
               equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,
                                           outputColor ?? colorOps.Zero);
@@ -549,7 +535,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
     var tess = new Tess();
     tess.AddContour(finVertices.Select(v => {
                                  var p = v.LocalPosition;
-                                 return new ContourVertex(new Vec3(p.X, p.Y, p.Z), v);
+                                 return new ContourVertex(
+                                     new Vec3(p.X, p.Y, p.Z),
+                                     v);
                                })
                                .ToArray());
 

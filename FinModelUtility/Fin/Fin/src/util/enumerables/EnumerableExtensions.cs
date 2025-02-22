@@ -20,12 +20,24 @@ public static class EnumerableExtensions {
     return index;
   }
 
-  public static int IndexOfOrNegativeOne<T>(
-      this IEnumerable<T> enumerable,
-      T value) {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static int IndexOf<T>(this IEnumerable<T> enumerable,
+                               Func<T, bool> handler) {
+    var index = enumerable.IndexOfOrNegativeOne(handler);
+    Asserts.True(index > -1);
+    return index;
+  }
+
+  public static int IndexOfOrNegativeOne<T>(this IEnumerable<T> enumerable,
+                                            T value)
+    => enumerable.IndexOfOrNegativeOne(
+        item => value?.Equals(item) ?? (value == null && item == null));
+
+  public static int IndexOfOrNegativeOne<T>(this IEnumerable<T> enumerable,
+                                            Func<T, bool> handler) {
     var index = 0;
     foreach (var item in enumerable) {
-      if (value?.Equals(item) ?? (value == null && item == null)) {
+      if (handler(item)) {
         return index;
       }
 

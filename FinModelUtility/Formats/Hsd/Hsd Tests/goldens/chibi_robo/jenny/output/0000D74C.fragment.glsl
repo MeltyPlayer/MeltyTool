@@ -1,6 +1,35 @@
 #version 310 es
 precision highp float;
 
+struct Light {
+  // 0x00 (vec3 needs to be 16-byte aligned)
+  vec3 position;
+  bool enabled;
+
+  // 0x10 (vec3 needs to be 16-byte aligned)
+  vec3 normal;
+  int sourceType;
+
+  // 0x20 (vec4 needs to be 16-byte aligned)
+  vec4 color;
+  
+  // 0x30 (vec3 needs to be 16-byte aligned)
+  vec3 cosineAttenuation;
+  int diffuseFunction;
+
+  // 0x40 (vec3 needs to be 16-byte aligned)
+  vec3 distanceAttenuation;
+  int attenuationFunction;
+};
+
+layout (std140, binding = 2) uniform Lights {
+  Light lights[8];
+  vec4 ambientLightColor;
+  float useLighting;
+};
+
+uniform vec3 cameraPosition;
+uniform float shininess;
 
 struct Texture {
   sampler2D sampler;
@@ -22,7 +51,7 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(2.0)*vec3(1.0,0.20000000298,0.0)*vertexColor0.rgb*texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb;
+  vec3 colorComponent = (vec3(0.501960813999)*ambientLightColor.rgb + vec3(1.0))*vec3(2.0)*vec3(1.0,0.20000000298,0.0)*vertexColor0.rgb*texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb;
 
   float alphaComponent = vertexColor0.a;
 

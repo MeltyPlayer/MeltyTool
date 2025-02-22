@@ -1,11 +1,12 @@
 ﻿using fin.model;
+using fin.util.enumerables;
 
 namespace fin.language.equations.fixedFunction;
 
 public static partial class FixedFunctionEquationsExtensions {
   public static int AddTextureSource(this IFixedFunctionMaterial material,
                                      IReadOnlyTexture texture) {
-    var index = material.TextureSources.Count;
+    var index = material.TextureSources.IndexOf(t => t == null);
     material.SetTextureSource(index, texture);
     return index;
   }

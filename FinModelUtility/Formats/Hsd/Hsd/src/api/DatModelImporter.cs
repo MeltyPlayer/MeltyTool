@@ -492,7 +492,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     // https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRawViewer/Shader/gx_material.frag#L81
     if (!(hasConstantRenderMode && !hasDiffuseRenderMode)) {
       lightingPasses.AddFirst(TObjFlags.LIGHTMAP_AMBIENT);
-      ambientSurfaceColor = equations.CreateOrGetColorInput(
+      ambientLightColor = equations.CreateOrGetColorInput(
           FixedFunctionSource.LIGHT_AMBIENT_COLOR);
 
       if (hasDiffuseRenderMode) {
