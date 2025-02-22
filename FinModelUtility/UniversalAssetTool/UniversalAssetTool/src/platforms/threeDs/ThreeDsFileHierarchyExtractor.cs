@@ -55,7 +55,7 @@ public class ThreeDsFileHierarchyExtractor {
       var didChange = false;
       foreach (var zarFile in directory.FilesWithExtension(".zar")) {
         didChange |=
-            archiveExtractor.TryToExtractIntoNewDirectory<ZarReader>(
+            archiveExtractor.TryToExtractRelativeToRoot<ZarReader>(
                 zarFile,
                 rootDir,
                 archiveFileNameProcessor) ==
@@ -64,7 +64,7 @@ public class ThreeDsFileHierarchyExtractor {
 
       foreach (var garFile in directory.FilesWithExtension(".gar")) {
         didChange |=
-            archiveExtractor.TryToExtractIntoNewDirectory<GarReader>(
+            archiveExtractor.TryToExtractRelativeToRoot<GarReader>(
                 garFile,
                 rootDir,
                 archiveFileNameProcessor) ==
@@ -74,7 +74,7 @@ public class ThreeDsFileHierarchyExtractor {
       foreach (var garFile in directory.GetExistingFiles().Where(
                    file => file.Name.EndsWith(".gar.lzs"))) {
         didChange |=
-            archiveExtractor.TryToExtractIntoNewDirectory<GarReader>(
+            archiveExtractor.TryToExtractRelativeToRoot<GarReader>(
                 garFile,
                 rootDir,
                 archiveFileNameProcessor) ==

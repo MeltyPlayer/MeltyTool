@@ -26,7 +26,7 @@ public class SubArchiveStream(Stream impl)
   public Stream GetContentFileStream(
       SubArchiveContentFile archiveContentFile)
     => impl.Substream(archiveContentFile.Position,
-                            archiveContentFile.Length);
+                      archiveContentFile.Length);
 
   public void CopyContentFileInto(SubArchiveContentFile archiveContentFile,
                                   Stream dstStream) {
@@ -46,13 +46,19 @@ public class SubArchiveStream(Stream impl)
 }
 
 public class SubArchiveExtractor : IArchiveExtractor<SubArchiveContentFile> {
-  public ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(IReadOnlyTreeFile archive) where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new()
-    => this.TryToExtractIntoNewDirectory<TArchiveReader>(archive, null);
-
-  public ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(Stream archive, ISystemDirectory targetDirectory) where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new()
-    => this.TryToExtractIntoNewDirectory<TArchiveReader>(null, archive, null, targetDirectory);
-
   public ArchiveExtractionResult TryToExtractIntoNewDirectory<TArchiveReader>(
+      IReadOnlyTreeFile archive,
+      ISystemDirectory dst)
+      where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new() {
+    using var fs = archive.OpenRead();
+    return this.TryToExtractIntoNewDirectory<TArchiveReader>(
+        archive.NameWithoutExtension.ToString(),
+        fs,
+        dst,
+        dst);
+  }
+
+  public ArchiveExtractionResult TryToExtractRelativeToRoot<TArchiveReader>(
       IReadOnlyTreeFile archive,
       ISystemDirectory rootDirectory,
       IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null)
@@ -117,7 +123,9 @@ public class SubArchiveExtractor : IArchiveExtractor<SubArchiveContentFile> {
 
       var relativeName = archiveContentFile.RelativeName;
       if (archiveFileNameProcessor != null) {
-        archiveFileNameProcessor(archiveName, ref relativeName, out relativeToRoot);
+        archiveFileNameProcessor(archiveName,
+                                 ref relativeName,
+                                 out relativeToRoot);
       }
 
       var dstDir = relativeToRoot ? rootDirectory : targetDirectory;
