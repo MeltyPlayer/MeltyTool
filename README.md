@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 # FinModelUtility
 
 ![GitHub](https://img.shields.io/github/license/MeltyPlayer/FinModelUtility)
@@ -55,6 +46,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@kornman00](https://github.com/kornman00), aka [@KornnerStudios](https://github.com/KornnerStudios), for documenting the Halo Wars formats in [HaloWarsDocs](https://github.com/HaloMods/HaloWarsDocs) and providing the [KSoft suite](https://github.com/KornnerStudios/KSoft) to extract the contents of the game.
 - [@leftp](https://github.com/leftp), whose [SharpDirLister](https://github.com/EncodeGroup/SharpDirLister) API was used to dramatically improve listing out the file hierarchy.
 - [@LordNed](https://github.com/LordNed), whose [J3D-Model-Viewer](https://github.com/LordNed/J3D-Model-Viewer) tool and [JStudio](https://github.com/LordNed/JStudio) library were referenced to fix bugs in the J3dGraph .bmd importer.
+- [@Gota7](https://github.com/Gota7), whose [SM64DSe-Ultimate](https://github.com/Gota7/SM64DSe-Ultimate) tool was heavily referenced to add support for extracting Super Mario 64 DS .bmd files.
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
 - [@M-1-RLG](https://github.com/M-1-RLG), aka M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
 - [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/naclomi/noclip.website) was referenced to add support for importing .csab files and Paper Mario: The Thousand Year Door's animated group models.
