@@ -132,10 +132,8 @@ public class DlModelBuilder {
               var scalar1 = equations.CreateScalarConstant(1);
               var scalar0 = equations.CreateScalarConstant(0);
 
-              var colorFixedFunctionOps =
-                  new ColorFixedFunctionOps(equations);
-              var scalarFixedFunctionOps =
-                  new ScalarFixedFunctionOps(equations);
+              var colorOps = equations.ColorOps;
+              var scalarOps = equations.ScalarOps;
 
               var rsp = this.n64Hardware_.Rsp;
               var environmentColor = equations.CreateColorConstant(
@@ -230,24 +228,24 @@ public class DlModelBuilder {
                 var cC = getColorValue(combinerCycleParams.ColorMuxC);
                 var cD = getColorValue(combinerCycleParams.ColorMuxD);
 
-                combinedColor = colorFixedFunctionOps.Add(
-                                    colorFixedFunctionOps.Multiply(
-                                        colorFixedFunctionOps.Subtract(cA, cB),
+                combinedColor = colorOps.Add(
+                                    colorOps.Multiply(
+                                        colorOps.Subtract(cA, cB),
                                         cC),
                                     cD) ??
-                                colorFixedFunctionOps.Zero;
+                                colorOps.Zero;
 
                 var aA = getAlphaValue(combinerCycleParams.AlphaMuxA);
                 var aB = getAlphaValue(combinerCycleParams.AlphaMuxB);
                 var aC = getAlphaValue(combinerCycleParams.AlphaMuxC);
                 var aD = getAlphaValue(combinerCycleParams.AlphaMuxD);
 
-                combinedAlpha = scalarFixedFunctionOps.Add(
-                                    scalarFixedFunctionOps.Multiply(
-                                        scalarFixedFunctionOps.Subtract(aA, aB),
+                combinedAlpha = scalarOps.Add(
+                                    scalarOps.Multiply(
+                                        scalarOps.Subtract(aA, aB),
                                         aC),
                                     aD) ??
-                                scalarFixedFunctionOps.Zero;
+                                scalarOps.Zero;
               }
 
               equations.CreateColorOutput(FixedFunctionSource.OUTPUT_COLOR,

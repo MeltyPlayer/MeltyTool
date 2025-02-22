@@ -22,8 +22,8 @@ public class CmbCombinerGenerator {
   private readonly mats_Material cmbMaterial_;
   private readonly IFixedFunctionEquations<FixedFunctionSource> equations_;
   private readonly IFixedFunctionRegisters registers_;
-  private readonly ColorFixedFunctionOps cOps_;
-  private readonly ScalarFixedFunctionOps sOps_;
+  private readonly IColorOps cOps_;
+  private readonly IScalarOps sOps_;
 
   private int constColorIndex_;
   private Rgba32 constColor_;
@@ -50,8 +50,9 @@ public class CmbCombinerGenerator {
       this.cmbMaterial_ = cmbMaterial;
       this.equations_ = finMaterial.Equations;
       this.registers_ = finMaterial.Registers;
-      this.cOps_ = new ColorFixedFunctionOps(this.equations_);
-      this.sOps_ = new ScalarFixedFunctionOps(this.equations_);
+
+      this.cOps_ = this.equations_.ColorOps;
+      this.sOps_ = this.equations_.ScalarOps;
 
       var bufferColor = cmbMaterial.bufferColor;
       this.previousColorBuffer_ =

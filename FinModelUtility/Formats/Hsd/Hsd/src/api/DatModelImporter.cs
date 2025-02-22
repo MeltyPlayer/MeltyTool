@@ -421,8 +421,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       IFixedFunctionMaterial fixedFunctionMaterial) {
     var equations = fixedFunctionMaterial.Equations;
 
-    var colorOps = new ColorFixedFunctionOps(equations);
-    var scalarOps = new ScalarFixedFunctionOps(equations);
+    var colorOps = equations.ColorOps;
+    var scalarOps = equations.ScalarOps;
 
     for (var i = 0; i < tObjsAndFinTextures.Count; ++i) {
       var (_, finTexture) = tObjsAndFinTextures[i];
@@ -614,8 +614,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       TObj tObj,
       int textureIndex,
       IFixedFunctionEquations<FixedFunctionSource> equations,
-      ColorFixedFunctionOps colorOps,
-      ScalarFixedFunctionOps scalarOps,
+      IColorOps colorOps,
+      IScalarOps scalarOps,
       ref IColorValue? color,
       ref IScalarValue? alpha
   ) {

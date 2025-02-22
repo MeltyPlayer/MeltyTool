@@ -1,12 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using fin.language.equations.fixedFunction.impl;
+
 namespace fin.language.equations.fixedFunction;
 
 public partial class FixedFunctionEquations<TIdentifier>
     : IFixedFunctionEquations<TIdentifier> where TIdentifier : notnull {
   private readonly HashSet<IValue> valueDependencies_ = new();
   private readonly HashSet<TIdentifier> identifierDependencies_ = new();
+
+  public IColorOps ColorOps { get; }
+  public IScalarOps ScalarOps { get; }
+
+  public FixedFunctionEquations() {
+    this.ColorOps = new ColorFixedFunctionOps<TIdentifier>(this);
+    this.ScalarOps = new ScalarFixedFunctionOps<TIdentifier>(this);
+  }
 
   public bool HasInput(TIdentifier identifier)
     => this.ColorInputs.ContainsKey(identifier) ||

@@ -157,8 +157,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
               finMaterial.DepthCompareType = DepthCompareType.Less;
 
               var equations = finMaterial.Equations;
-              var colorOps = new ColorFixedFunctionOps(equations);
-              var scalarOps = new ScalarFixedFunctionOps(equations);
+              var colorOps = equations.ColorOps;
+              var scalarOps = equations.ScalarOps;
 
               IColorValue? diffuseSurfaceColor
                   = equations.CreateColorConstant(color);

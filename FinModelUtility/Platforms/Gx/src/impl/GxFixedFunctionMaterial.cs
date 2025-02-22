@@ -3,7 +3,6 @@
 using fin.data.lazy;
 using fin.image;
 using fin.language.equations.fixedFunction;
-using fin.language.equations.fixedFunction.impl;
 using fin.model;
 using fin.util.asserts;
 
@@ -125,8 +124,8 @@ public partial class GxFixedFunctionMaterial {
     var sc255 = equations.CreateScalarConstant(255);
     var sc255Sqr = equations.CreateScalarConstant(256 * 255);
 
-    var colorFixedFunctionOps = new ColorFixedFunctionOps(equations);
-    var scalarFixedFunctionOps = new ScalarFixedFunctionOps(equations);
+    var colorOps = equations.ColorOps;
+    var scalarOps = equations.ScalarOps;
 
     var valueManager = new ValueManager(equations, registers);
 
@@ -200,20 +199,20 @@ public partial class GxFixedFunctionMaterial {
           foreach (var activeLight in activeLights) {
             var lightSrc = FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0 +
                            activeLight;
-            mergedLightColor = colorFixedFunctionOps.Add(
+            mergedLightColor = colorOps.Add(
                 mergedLightColor,
                 equations.CreateOrGetColorInput(lightSrc));
           }
 
           var illuminationColor =
-              colorFixedFunctionOps.Add(mergedLightColor,
+              colorOps.Add(mergedLightColor,
                                         ambientColorRegisterValue);
           if (illuminationColor != null) {
             illuminationColor.Clamp = true;
           }
 
           colorValue =
-              colorFixedFunctionOps.Multiply(materialColorRegisterValue,
+              colorOps.Multiply(materialColorRegisterValue,
                                              illuminationColor);
         }
 
@@ -272,20 +271,20 @@ public partial class GxFixedFunctionMaterial {
           foreach (var activeLight in activeLights) {
             var lightSrc = FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0 +
                            activeLight;
-            mergedLightAlpha = scalarFixedFunctionOps.Add(
+            mergedLightAlpha = scalarOps.Add(
                 mergedLightAlpha,
                 equations.CreateOrGetScalarInput(lightSrc));
           }
 
           var illuminationAlpha =
-              scalarFixedFunctionOps.Add(mergedLightAlpha,
+              scalarOps.Add(mergedLightAlpha,
                                          ambientAlphaRegisterValue);
           if (illuminationAlpha != null) {
             illuminationAlpha.Clamp = true;
           }
 
           alphaValue =
-              scalarFixedFunctionOps.Multiply(
+              scalarOps.Multiply(
                   materialAlphaRegisterValue,
                   illuminationAlpha);
         }
@@ -395,7 +394,7 @@ public partial class GxFixedFunctionMaterial {
             };
 
             colorValue =
-                colorFixedFunctionOps.AddOrSubtractOp(
+                colorOps.AddOrSubtractOp(
                     colorOp == TevOp.GX_TEV_ADD,
                     colorA,
                     colorB,
@@ -412,7 +411,7 @@ public partial class GxFixedFunctionMaterial {
           }
 
           case TevOp.GX_TEV_COMP_R8_GT: {
-            colorValue = colorFixedFunctionOps.Add(
+            colorValue = colorOps.Add(
                 colorD,
                 colorA.R.TernaryOperator(
                     BoolComparisonType.GREATER_THAN,
@@ -422,7 +421,7 @@ public partial class GxFixedFunctionMaterial {
             break;
           }
           case TevOp.GX_TEV_COMP_R8_EQ: {
-            colorValue = colorFixedFunctionOps.Add(
+            colorValue = colorOps.Add(
                 colorD,
                 colorA.R.TernaryOperator(
                     BoolComparisonType.EQUAL_TO,
@@ -433,20 +432,20 @@ public partial class GxFixedFunctionMaterial {
           }
 
           case TevOp.GX_TEV_COMP_GR16_GT: {
-            var valueA = scalarFixedFunctionOps.Add(
-                             scalarFixedFunctionOps.Multiply(colorA.G,
+            var valueA = scalarOps.Add(
+                             scalarOps.Multiply(colorA.G,
                                sc255Sqr),
-                             scalarFixedFunctionOps.Multiply(colorA.R,
+                             scalarOps.Multiply(colorA.R,
                                sc255)) ??
                          scZero;
-            var valueB = scalarFixedFunctionOps.Add(
-                             scalarFixedFunctionOps.Multiply(colorB.G,
+            var valueB = scalarOps.Add(
+                             scalarOps.Multiply(colorB.G,
                                sc255Sqr),
-                             scalarFixedFunctionOps.Multiply(colorB.R,
+                             scalarOps.Multiply(colorB.R,
                                sc255)) ??
                          scZero;
 
-            colorValue = colorFixedFunctionOps.Add(
+            colorValue = colorOps.Add(
                 colorD,
                 valueA.TernaryOperator(
                     BoolComparisonType.GREATER_THAN,
@@ -504,7 +503,7 @@ public partial class GxFixedFunctionMaterial {
             };
 
             alphaValue =
-                scalarFixedFunctionOps.AddOrSubtractOp(
+                scalarOps.AddOrSubtractOp(
                     alphaOp == TevOp.GX_TEV_ADD,
                     alphaA,
                     alphaB,

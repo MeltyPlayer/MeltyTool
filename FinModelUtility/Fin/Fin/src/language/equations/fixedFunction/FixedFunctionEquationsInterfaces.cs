@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Numerics;
 
+using fin.language.equations.fixedFunction.impl;
+
 namespace fin.language.equations.fixedFunction;
 
 public interface IFixedFunctionEquations<TIdentifier> {
+  IColorOps ColorOps { get; }
+  IScalarOps ScalarOps { get; }
+
   IScalarConstant CreateScalarConstant(double v);
 
   IColorConstant CreateColorConstant(
