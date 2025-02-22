@@ -9,6 +9,7 @@ using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.image;
 using fin.io;
+using fin.language.equations.fixedFunction;
 using fin.math;
 using fin.model;
 using fin.model.impl;
@@ -159,19 +160,14 @@ public class OutModelImporter : IModelImporter<OutModelFileBundle> {
               finModel.MaterialManager.AddFixedFunctionMaterial();
           finMaterial.Name = $"{texture1.Name}/{texture2.Name}";
 
-          finMaterial.SetTextureSource(0, texture1);
-          finMaterial.SetTextureSource(1, texture2);
-
           var equations = finMaterial.Equations;
           var scalar1 = equations.CreateScalarConstant(1);
 
           var vertexColor0 = equations.CreateOrGetColorInput(
               FixedFunctionSource.VERTEX_COLOR_0);
 
-          var textureColor1 = equations.CreateOrGetColorInput(
-              FixedFunctionSource.TEXTURE_COLOR_0);
-          var textureColor2 = equations.CreateOrGetColorInput(
-              FixedFunctionSource.TEXTURE_COLOR_1);
+          var textureColor1 = finMaterial.AddTextureSourceColor(texture1);
+          var textureColor2 = finMaterial.AddTextureSourceColor(texture2);
 
           var vertexAlpha0 =
               equations.CreateOrGetScalarInput(

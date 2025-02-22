@@ -177,14 +177,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
               if (finTexture != null) {
                 finMaterial.Name = finTexture.Name;
-                finMaterial.SetTextureSource(0, finTexture);
 
-                var textureColor
-                    = equations.CreateOrGetColorInput(
-                        FixedFunctionSource.TEXTURE_COLOR_0);
-                var textureAlpha
-                    = equations.CreateOrGetScalarInput(
-                        FixedFunctionSource.TEXTURE_ALPHA_0);
+                var (textureColor, textureAlpha)
+                    = finMaterial.AddTextureSourceColorAlpha(finTexture);
 
                 diffuseSurfaceColor
                     = colorOps.Multiply(diffuseSurfaceColor, textureColor);

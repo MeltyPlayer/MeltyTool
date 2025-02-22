@@ -34,11 +34,7 @@ public class GlFixedFunctionMaterialShader(
 
     var equations = material.Equations;
     for (var i = 0; i < MaterialConstants.MAX_TEXTURES; ++i) {
-      if (!equations.DoOutputsDependOn(
-          [
-              FixedFunctionSource.TEXTURE_COLOR_0 + i,
-              FixedFunctionSource.TEXTURE_ALPHA_0 + i
-          ])) {
+      if (!equations.DoOutputsDependOnTextureSource(i)) {
         continue;
       }
 

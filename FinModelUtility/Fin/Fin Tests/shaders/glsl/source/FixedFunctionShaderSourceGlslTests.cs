@@ -161,8 +161,8 @@ public class FixedFunctionShaderSourceGlslTests {
 
     var equations = material.Equations;
 
-    var colorOps = new ColorFixedFunctionOps(equations);
-    var scalarOps = new ScalarFixedFunctionOps(equations);
+    var colorOps = equations.ColorOps;
+    var scalarOps = equations.ScalarOps;
 
     IColorValue? outputColor = colorOps.One;
     IScalarValue? outputAlpha = scalarOps.One;
