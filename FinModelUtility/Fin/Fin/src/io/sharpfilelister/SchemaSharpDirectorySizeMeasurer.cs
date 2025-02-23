@@ -18,12 +18,15 @@ public class SchemaSharpDirectorySizeMeasurer {
     Span<char> pathSpan = stackalloc char[PATH_SPAN_LENGTH];
     fullPath.CopyTo(pathSpan);
 
+    Interop.WIN32_FIND_DATAW findData;
+
     var totalSize = 0L;
     fixed (char* pathPtr = &MemoryMarshal.GetReference(pathSpan)) {
       FindNextFilePInvoke_(
           pathPtr,
           (uint) fullPath.Length,
-          ref totalSize);
+          ref totalSize,
+          &findData);
     }
 
     return totalSize;
@@ -33,7 +36,8 @@ public class SchemaSharpDirectorySizeMeasurer {
   private static unsafe void FindNextFilePInvoke_(
       char* pathPtr,
       uint parentLength,
-      ref long totalSize) {
+      ref long totalSize,
+      Interop.WIN32_FIND_DATAW* findDataPtr) {
     IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
     try {
       pathPtr[parentLength] = '\\';
@@ -44,9 +48,10 @@ public class SchemaSharpDirectorySizeMeasurer {
       var subFilePtr = pathPtr + parentLength + 1;
       var remainingLength = PATH_SPAN_LENGTH - parentLength;
 
-      fileSearchHandle = FindFirstFileW((IntPtr) pathPtr, out var findData);
+      fileSearchHandle = FindFirstFileW((IntPtr) pathPtr, (IntPtr) findDataPtr);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
+          var findData = *findDataPtr;
           if (findData.cFileName[0] == '.') {
             continue;
           }
@@ -59,9 +64,10 @@ public class SchemaSharpDirectorySizeMeasurer {
             var subDirLength = Length_(findData.cFileName);
             FindNextFilePInvoke_(pathPtr,
                                  parentLength + 1 + subDirLength,
-                                 ref totalSize);
+                                 ref totalSize,
+                                 findDataPtr);
           }
-        } while (FindNextFile(fileSearchHandle, out findData));
+        } while (FindNextFile(fileSearchHandle, (IntPtr) findDataPtr));
       }
     } finally {
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
