@@ -8,6 +8,7 @@ using fin.data.queues;
 using fin.image;
 using fin.io;
 using fin.language.equations.fixedFunction;
+using fin.math.floats;
 using fin.math.matrix.three;
 using fin.math.transform;
 using fin.model;
@@ -191,7 +192,10 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
         var opcodes = lazyOpcodeMap[displayList];
         var hasNormals = opcodes.Any(o => o is NormalOpcode);
-        var hasVertexColor = opcodes.Any(o => o is ColorOpcode);
+        
+        var alpha = sm64Material.Alpha;
+        var hasVertexColor
+            = opcodes.Any(o => o is ColorOpcode) || !alpha.IsRoughly1();
 
         var finMaterial
             = lazyMaterialDictionary[(sm64Material, hasNormals,
@@ -199,7 +203,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
         PolygonType polygonType = default;
         Vector3 position = default;
-        Vector3? color = null;
+        Vector4? color = hasVertexColor ? new Vector4(1, 1, 1, alpha) : null;
         Vector3? normal = null;
         Vector2 uv = default;
         IBoneWeights boneWeights
@@ -215,7 +219,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
               break;
             }
             case ColorOpcode colorOpcode: {
-              color = colorOpcode.Color;
+              color = new Vector4(colorOpcode.Color, alpha);
               break;
             }
             case NormalOpcode normalOpcode: {
@@ -229,7 +233,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
               var finVertex = finSkin.AddVertex(position * scaleFactor);
               if (color != null) {
-                finVertex.SetColor(new Vector4(color.Value, 1));
+                finVertex.SetColor(color.Value);
               }
 
               finVertex.SetLocalNormal(normal);
@@ -244,7 +248,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
               var finVertex = finSkin.AddVertex(position * scaleFactor);
               if (color != null) {
-                finVertex.SetColor(new Vector4(color.Value, 1));
+                finVertex.SetColor(color.Value);
               }
 
               finVertex.SetLocalNormal(normal);
@@ -368,8 +372,6 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
     finMaterial.CullingMode = sm64Material.CullMode;
 
     var equations = finMaterial.Equations;
-    var colorOps = equations.ColorOps;
-    var scalarOps = equations.ScalarOps;
 
     var diffuseColorAlpha = finMaterial.GenerateDiffuse(
         (equations.CreateColorConstant(sm64Material.DiffuseColor.Rgbf),

@@ -39,6 +39,15 @@ public partial class Material : IBinaryConvertible {
         0xC0 => CullingMode.SHOW_BOTH,
     };
 
+  [Skip]
+  public float Alpha {
+    get {
+      byte alpha = (byte) ((this.PolygonAttributes >> 13) & 0xF8);
+      alpha |= (byte) (alpha >> 5);
+      return alpha / 255f;
+    }
+  }
+
   private uint diffuseAmbientColors_;
   private uint specularEmissionColors_;
 

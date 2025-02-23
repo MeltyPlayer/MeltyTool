@@ -13,8 +13,10 @@ uniform vec3 cameraPosition;
 layout(location = 0) in vec3 in_Position;
 layout(location = 1) in int in_BoneIds;
 layout(location = 2) in float in_BoneWeights;
+layout(location = 4) in vec4 in_Color0;
 
 out vec3 vertexPosition;
+out vec4 vertexColor0;
 
 void main() {
   mat4 mvMatrix = viewMatrix * modelMatrix;
@@ -28,4 +30,5 @@ void main() {
   gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
 
   vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
+  vertexColor0 = in_Color0;
 }
