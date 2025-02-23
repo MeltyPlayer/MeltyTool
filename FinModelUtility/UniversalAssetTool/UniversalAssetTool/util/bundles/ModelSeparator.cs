@@ -17,6 +17,12 @@ public interface IModelSeparatorMethod {
 }
 
 public interface IModelSeparator {
+  IModelSeparator Register<TMethod>(string directoryId)
+      where TMethod : IModelSeparatorMethod, new();
+
+  IModelSeparator Register<TMethod>(params string[] directoryIds)
+      where TMethod : IModelSeparatorMethod, new();
+
   IModelSeparator Register(
       string directoryId,
       IModelSeparatorMethod method);
@@ -39,6 +45,14 @@ public class ModelSeparator(DirectoryToId directoryToId)
 
   public delegate ReadOnlySpan<char> DirectoryToId(
       IFileHierarchyDirectory directory);
+
+  public IModelSeparator Register<TMethod>(string directoryId)
+      where TMethod : IModelSeparatorMethod, new()
+    => this.Register(directoryId, new TMethod());
+
+  public IModelSeparator Register<TMethod>(params string[] directoryIds)
+      where TMethod : IModelSeparatorMethod, new()
+    => this.Register(new TMethod(), directoryIds);
 
   public IModelSeparator Register(
       string directoryId,
@@ -304,9 +318,10 @@ public class SuffixModelSeparatorMethod(int suffixLength)
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles) {
     var suffix =
-        modelFile.NameWithoutExtension.ToString().Substring(
-            modelFile.NameWithoutExtension.Length -
-            suffixLength);
+        modelFile.NameWithoutExtension.ToString()
+                 .Substring(
+                     modelFile.NameWithoutExtension.Length -
+                     suffixLength);
 
     return animationFiles.Where(file => file.Name.StartsWith(suffix));
   }

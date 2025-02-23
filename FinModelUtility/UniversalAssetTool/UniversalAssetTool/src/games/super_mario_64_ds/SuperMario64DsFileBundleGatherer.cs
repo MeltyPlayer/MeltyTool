@@ -1,14 +1,26 @@
 ﻿using fin.common;
+using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
 
 using sm64ds.api;
 
 using uni.platforms.ds;
+using uni.util.bundles;
+using uni.util.io;
 
 namespace uni.games.super_mario_64_ds;
 
 public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
+  private readonly IModelSeparator modelSeparator_
+      = new ModelSeparator(directory => directory.Name)
+        .Register(
+            "basabasa",
+            new ExactCasesMethod()
+                .Case("basabasa.bmd", "basabasa_fly.bca")
+                .Case("basabasa_wait.bmd", "basabasa_wait.bca"))
+        .Register<AllAnimationsModelSeparatorMethod>("bombhei");
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
@@ -21,7 +33,22 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var fileHierarchy
         = new DsFileHierarchyExtractor().ExtractFromRom(superMario64DsRom);
 
+    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+            fileHierarchy)
+        .Add(this.GetAutomaticModels_)
+        .Add(GetDsmtModels_)
+        .Add(this.GetViaSeparator_)
+        .GatherFileBundles(organizer, mutablePercentageProgress);
+  }
+
+  private void GetAutomaticModels_(IFileBundleOrganizer organizer,
+                                   IFileHierarchy fileHierarchy) {
     foreach (var directory in fileHierarchy) {
+      if (directory.Name is "DSMT" ||
+          this.modelSeparator_.Contains(directory)) {
+        continue;
+      }
+
       var bmdFiles = directory.GetFilesWithFileType(".bmd").ToArray();
       if (bmdFiles.Length == 0) {
         continue;
@@ -45,4 +72,81 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
   }
+
+  private static void GetDsmtModels_(IFileBundleOrganizer organizer,
+                                     IFileHierarchy fileHierarchy) {
+    var dsmtDirectory
+        = fileHierarchy.Root.AssertGetExistingSubdir("data/data/DSMT");
+
+    var dsmtBcas = dsmtDirectory.FilesWithExtension(".bca").ToArray();
+
+    // Mario
+    {
+      var marioBmd = dsmtDirectory.AssertGetExistingFile("face_demo_mario.bmd");
+      organizer.Add(new Sm64dsModelFileBundle {
+          GameName = "super_mario_64_ds",
+          BmdFile = marioBmd,
+          BcaFiles = dsmtBcas
+                     .Where(f => f.NameWithoutExtension.EndsWith("mario"))
+                     .ToArray(),
+      }.Annotate(marioBmd));
+    }
+
+    // Star
+    {
+      var marioBmd
+          = dsmtDirectory.AssertGetExistingFile("face_demo_mariostar.bmd");
+      organizer.Add(new Sm64dsModelFileBundle {
+          GameName = "super_mario_64_ds",
+          BmdFile = marioBmd,
+          BcaFiles = dsmtBcas
+                     .Where(f => f.NameWithoutExtension.EndsWith("star"))
+                     .ToArray(),
+      }.Annotate(marioBmd));
+    }
+
+    // Yoshi
+    {
+      var marioBmd = dsmtDirectory.AssertGetExistingFile("face_demo_yoshi.bmd");
+      organizer.Add(new Sm64dsModelFileBundle {
+          GameName = "super_mario_64_ds",
+          BmdFile = marioBmd,
+          BcaFiles = dsmtBcas
+                     .Where(f => f.NameWithoutExtension.EndsWith("yoshi"))
+                     .ToArray(),
+      }.Annotate(marioBmd));
+    }
+  }
+
+  private void GetViaSeparator_(IFileBundleOrganizer tOrganizer,
+                                IMutablePercentageProgress progress,
+                                IFileHierarchy fileHierarchy)
+    => new FileHierarchyAssetBundleSeparator(
+        fileHierarchy,
+        (subdir, organizer) => {
+          if (!this.modelSeparator_.Contains(subdir)) {
+            return;
+          }
+
+          var bmdFiles = subdir.FilesWithExtensionsRecursive(".bmd").ToArray();
+          if (bmdFiles.Length == 0) {
+            return;
+          }
+
+          var bcaFiles = subdir.FilesWithExtensionsRecursive(".bca").ToArray();
+
+          try {
+            foreach (var bundle in this.modelSeparator_.Separate(
+                         subdir,
+                         bmdFiles,
+                         bcaFiles)) {
+              organizer.Add(new Sm64dsModelFileBundle {
+                  GameName = "super_mario_64_ds",
+                  BmdFile = bundle.ModelFile,
+                  BcaFiles = bundle.AnimationFiles.ToArray(),
+              }.Annotate(bundle.ModelFile));
+            }
+          } catch { }
+        }
+    ).GatherFileBundles(tOrganizer, progress);
 }
