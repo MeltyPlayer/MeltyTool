@@ -23,7 +23,7 @@ public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var qpDir = fileHierarchy.Root.Impl.GetOrCreateSubdir("qpBin");
     if (qpDir.IsEmpty) {
       new QpBinArchiveExtractor().Extract(qpBinFile, qpDir);
-      fileHierarchy.Root.Refresh(true);
+      fileHierarchy.RefreshRootAndUpdateCache();
     }
 
     foreach (var datFile in

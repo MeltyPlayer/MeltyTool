@@ -22,6 +22,11 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
       return;
     }
 
+    if (new ThreeDsXfsaTool().Extract(fileHierarchy.Root.GetExistingFiles()
+                                                   .SingleByName("vs1.fa"))) {
+      fileHierarchy.RefreshRootAndUpdateCache();
+    }
+
     var extractor = new XcArchiveExtractor();
     foreach (var xcFile in
              fileHierarchy.Root.GetFilesWithFileType(".xc", true)) {
@@ -30,11 +35,6 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
                                        new FinDirectory(
                                            xcFile.AssertGetParent().FullPath));
       } catch (Exception e) { }
-    }
-
-    if (new ThreeDsXfsaTool().Extract(fileHierarchy.Root.GetExistingFiles()
-                                                   .SingleByName("vs1.fa"))) {
-      fileHierarchy.Root.Refresh(true);
     }
 
     new FileHierarchyAssetBundleSeparator(

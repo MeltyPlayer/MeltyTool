@@ -15,10 +15,13 @@ namespace fin.io;
 
 public static partial class FileHierarchy {
   private class CachedFileHierarchy : IFileHierarchy {
+    private readonly ISystemFile cacheFile_;
+
     public CachedFileHierarchy(string name,
                                ISystemDirectory directory,
                                ISystemFile cacheFile) {
       this.Name = name;
+      this.cacheFile_ = cacheFile;
 
       var useCaching = FinConfig.CacheFileHierarchies;
 
@@ -44,6 +47,15 @@ public static partial class FileHierarchy {
     public string Name { get; }
     public IFileHierarchyDirectory Root { get; }
 
+    public void RefreshRootAndUpdateCache() {
+      this.Root.Refresh(true);
+
+      if (FinConfig.CacheFileHierarchies) {
+        var populatedSubdirs = new SchemaSharpFileLister()
+            .FindNextFilePInvoke(this.Root.FullPath, "");
+        this.cacheFile_.Write(populatedSubdirs);
+      }
+    }
 
     private abstract class BFileHierarchyIoObject : IFileHierarchyIoObject {
       protected BFileHierarchyIoObject(IFileHierarchy hierarchy) {

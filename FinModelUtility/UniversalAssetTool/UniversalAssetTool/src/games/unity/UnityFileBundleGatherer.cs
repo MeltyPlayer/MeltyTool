@@ -12,7 +12,7 @@ public class UnityFileBundleGatherer : IAnnotatedFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
-    var knownUnityGames = new string[] {
+    var knownUnityGames = new[] {
         "DoronkoWanko",
         "HyperBowl",
         "LittleKittyBigCity",
@@ -26,8 +26,7 @@ public class UnityFileBundleGatherer : IAnnotatedFileBundleGatherer {
         return;
       }
 
-      if (!TryToFindDataDirectory_(steamDirectory,
-                                   out var dataDirectory)) {
+      if (!TryToFindDataDirectory_(steamDirectory, out var dataDirectory)) {
         return;
       }
 

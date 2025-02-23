@@ -51,7 +51,7 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
 
       if (didDump) {
-        objectDirectory.Refresh(true);
+        fileHierarchy.RefreshRootAndUpdateCache();
       }
     }
 

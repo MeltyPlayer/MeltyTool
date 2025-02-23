@@ -25,7 +25,8 @@ public class OcarinaOfTimeFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var ocarinaOfTimeDirectory =
         ExtractorUtil.GetOrCreateExtractedDirectory("ocarina_of_time");
     var fileHierarchy
-        = ExtractorUtil.GetFileHierarchy("ocarina_of_time", ocarinaOfTimeDirectory);
+        = ExtractorUtil.GetFileHierarchy("ocarina_of_time",
+                                         ocarinaOfTimeDirectory);
     var root = fileHierarchy.Root;
 
     var rootSysDir = root.Impl;
@@ -50,7 +51,8 @@ public class OcarinaOfTimeFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-    root.Refresh(true);
+    fileHierarchy.RefreshRootAndUpdateCache();
+
     foreach (var (zObject, path) in zObjectsAndPaths) {
       var zObjectFile = root.AssertGetExistingFile(path);
       organizer.Add(new OotModelFileBundle(

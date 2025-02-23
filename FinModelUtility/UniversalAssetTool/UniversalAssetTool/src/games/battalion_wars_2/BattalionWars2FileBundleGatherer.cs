@@ -25,18 +25,23 @@ public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
         new WiiFileHierarchyExtractor().ExtractFromRom(
             battalionWarsRom);
 
+    var didUpdateAny = false;
     foreach (var directory in fileHierarchy) {
       var didUpdate = false;
       var resFiles =
           directory.GetExistingFiles()
                    .Where(file => file.Name.EndsWith(".res.gz"));
       foreach (var resFile in resFiles) {
-        didUpdate |= new ResDump().Run(resFile);
+        didUpdateAny |= didUpdate |= new ResDump().Run(resFile);
       }
 
       if (didUpdate) {
         directory.Refresh();
       }
+    }
+
+    if (didUpdateAny) {
+      fileHierarchy.RefreshRootAndUpdateCache();
     }
 
     new FileHierarchyAssetBundleSeparator(

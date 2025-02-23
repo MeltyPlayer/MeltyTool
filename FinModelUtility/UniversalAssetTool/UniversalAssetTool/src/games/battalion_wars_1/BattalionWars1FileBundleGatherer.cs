@@ -19,16 +19,21 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
       return;
     }
 
+    var didUpdateAny = false;
     foreach (var directory in fileHierarchy) {
       var didUpdate = false;
       var resFiles = directory.FilesWithExtension(".res");
       foreach (var resFile in resFiles) {
-        didUpdate |= new ResDump().Run(resFile);
+        didUpdateAny |= didUpdate |= new ResDump().Run(resFile);
       }
 
       if (didUpdate) {
         directory.Refresh();
       }
+    }
+
+    if (didUpdateAny) {
+      fileHierarchy.RefreshRootAndUpdateCache();
     }
 
     new FileHierarchyAssetBundleSeparator(

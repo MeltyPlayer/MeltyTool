@@ -40,7 +40,7 @@ public class TwilightPrincessFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
 
       if (didDump) {
-        objectDirectory.Refresh(true);
+        fileHierarchy.RefreshRootAndUpdateCache();
       }
     }
 
