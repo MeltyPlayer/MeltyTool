@@ -5,7 +5,7 @@ namespace fin.io;
 public interface IFileHierarchy : IEnumerable<IFileHierarchyDirectory> {
   string Name { get; }
   IFileHierarchyDirectory Root { get; }
-  void RefreshRootAndUpdateCache() => this.Root.Refresh(true);
+  void RefreshRoot() => this.Root.Refresh(true);
 }
 
 public partial interface IFileHierarchyIoObject : IReadOnlyTreeIoObject {

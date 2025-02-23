@@ -124,7 +124,7 @@ public class GcnFileHierarchyExtractor {
       }
 
       if (hasChanged) {
-        fileHierarchy.RefreshRootAndUpdateCache();
+        fileHierarchy.RefreshRoot();
       }
 
       return fileHierarchy;

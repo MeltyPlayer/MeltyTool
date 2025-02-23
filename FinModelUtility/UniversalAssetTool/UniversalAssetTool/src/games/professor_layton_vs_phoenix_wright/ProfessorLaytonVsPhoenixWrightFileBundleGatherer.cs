@@ -24,7 +24,7 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
 
     if (new ThreeDsXfsaTool().Extract(fileHierarchy.Root.GetExistingFiles()
                                                    .SingleByName("vs1.fa"))) {
-      fileHierarchy.RefreshRootAndUpdateCache();
+      fileHierarchy.RefreshRoot();
     }
 
     var extractor = new XcArchiveExtractor();

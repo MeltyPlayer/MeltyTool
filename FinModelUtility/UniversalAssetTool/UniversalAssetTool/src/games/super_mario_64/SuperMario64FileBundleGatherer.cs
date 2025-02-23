@@ -40,7 +40,7 @@ public class SuperMario64FileBundleGatherer : IAnnotatedFileBundleGatherer {
       FinFileSystem.File.Create(zObjectFile.FullPath);
     }
 
-    fileHierarchy.RefreshRootAndUpdateCache();
+    fileHierarchy.RefreshRoot();
     foreach (var (levelId, path) in levelIdsAndPaths) {
       var levelFile = root.AssertGetExistingFile(path);
       organizer.Add(new Sm64LevelSceneFileBundle(

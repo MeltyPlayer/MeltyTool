@@ -51,7 +51,7 @@ public class OcarinaOfTimeFileBundleGatherer : IAnnotatedFileBundleGatherer {
       }
     }
 
-    fileHierarchy.RefreshRootAndUpdateCache();
+    fileHierarchy.RefreshRoot();
 
     foreach (var (zObject, path) in zObjectsAndPaths) {
       var zObjectFile = root.AssertGetExistingFile(path);

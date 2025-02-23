@@ -4,6 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using fin.io.sharpDirLister;
+
+using Scripting;
+
+using Directory = Alphaleonis.Win32.Filesystem.Directory;
+
 namespace fin.io;
 
 public static class FinDirectoryStatic {
@@ -123,4 +129,14 @@ public static class FinDirectoryStatic {
         includeSubdirs
             ? SearchOption.AllDirectories
             : SearchOption.TopDirectoryOnly);
+
+  public static long GetTotalSize(string fullName) {
+    return new SchemaSharpDirectorySizeMeasurer().MeasureSizeOfDirectory(
+        fullName);
+
+    /*var fso = new FileSystemObject();
+    var folder = fso.GetFolder(fullName);*/
+    //return (ulong) folder.Size;
+    return Directory.GetSize(fullName, false, true);
+  }
 }

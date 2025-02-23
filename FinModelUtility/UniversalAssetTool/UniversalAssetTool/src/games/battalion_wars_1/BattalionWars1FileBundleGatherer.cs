@@ -33,7 +33,7 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
 
     if (didUpdateAny) {
-      fileHierarchy.RefreshRootAndUpdateCache();
+      fileHierarchy.RefreshRoot();
     }
 
     new FileHierarchyAssetBundleSeparator(

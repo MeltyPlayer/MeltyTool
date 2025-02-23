@@ -11,51 +11,68 @@ using fin.io.sharpDirLister;
 using fin.util.asserts;
 using fin.util.lists;
 
+using schema.binary;
+
 namespace fin.io;
 
 public static partial class FileHierarchy {
-  private class CachedFileHierarchy : IFileHierarchy {
-    private readonly ISystemFile cacheFile_;
+  [BinarySchema]
+  private partial class CachedFileHierarchyDataHeader : IBinaryConvertible {
+    public const uint CURRENT_VERSION = 0;
+    public uint Version { get; set; } = CURRENT_VERSION;
+    public long Size { get; set; }
+  }
 
+  [BinarySchema]
+  private partial class CachedFileHierarchyData : IBinaryConvertible {
+    public CachedFileHierarchyDataHeader Header { get; set; } = new();
+    public SchemaDirectoryInformation Root { get; set; } = new();
+  }
+
+  private class CachedFileHierarchy : IFileHierarchy {
     public CachedFileHierarchy(string name,
                                ISystemDirectory directory,
                                ISystemFile cacheFile) {
       this.Name = name;
-      this.cacheFile_ = cacheFile;
 
+      SchemaDirectoryInformation? populatedSubdirs = null;
       var useCaching = FinConfig.CacheFileHierarchies;
-
-      SchemaDirectoryInformation populatedSubdirs;
-      if (!cacheFile.Exists || !useCaching) {
-        populatedSubdirs
-            = new SchemaSharpFileLister().FindNextFilePInvoke(
-                directory.FullPath,
-                "");
-
-        if (useCaching) {
-          cacheFile.Write(populatedSubdirs);
+      if (useCaching) {
+        var actualSize = FinDirectoryStatic.GetTotalSize(directory.FullPath);
+        if (cacheFile.Exists) {
+          var header = cacheFile.ReadNew<CachedFileHierarchyDataHeader>();
+          if (header.Version == CachedFileHierarchyDataHeader.CURRENT_VERSION &&
+              header.Size == actualSize) {
+            var data = cacheFile.ReadNew<CachedFileHierarchyData>();
+            populatedSubdirs = data.Root;
+          }
         }
-      } else {
-        populatedSubdirs = cacheFile.ReadNew<SchemaDirectoryInformation>();
+
+        if (populatedSubdirs == null) {
+          populatedSubdirs = GetInfo_(directory);
+
+          var data = new CachedFileHierarchyData {
+              Header = new CachedFileHierarchyDataHeader { Size = actualSize },
+              Root = populatedSubdirs,
+          };
+          cacheFile.Write(data);
+        }
       }
+
+      populatedSubdirs ??= GetInfo_(directory);
 
       this.Root = new FileHierarchyDirectory(this,
                                              directory,
                                              populatedSubdirs);
     }
 
+    private static SchemaDirectoryInformation GetInfo_(
+        IReadOnlyTreeDirectory directory)
+      => new SchemaSharpFileLister()
+          .FindNextFilePInvoke(directory.FullPath, "");
+
     public string Name { get; }
     public IFileHierarchyDirectory Root { get; }
-
-    public void RefreshRootAndUpdateCache() {
-      this.Root.Refresh(true);
-
-      if (FinConfig.CacheFileHierarchies) {
-        var populatedSubdirs = new SchemaSharpFileLister()
-            .FindNextFilePInvoke(this.Root.FullPath, "");
-        this.cacheFile_.Write(populatedSubdirs);
-      }
-    }
 
     private abstract class BFileHierarchyIoObject : IFileHierarchyIoObject {
       protected BFileHierarchyIoObject(IFileHierarchy hierarchy) {
@@ -104,7 +121,6 @@ public static partial class FileHierarchy {
 
       public override string ToString() => this.LocalPath;
     }
-
 
     private class FileHierarchyDirectory
         : BFileHierarchyIoObject,
