@@ -19,7 +19,8 @@
   },
   "Extractor": {
     "CacheFileHierarchies": true,
-    "ExtractRomsInParallel": true
+    "ExtractRomsInParallel": true,
+    "VerifyCachedFileHierarchySize": false
   },
   "Viewer": {
     "AutomaticallyPlayGameAudioForModel": false,

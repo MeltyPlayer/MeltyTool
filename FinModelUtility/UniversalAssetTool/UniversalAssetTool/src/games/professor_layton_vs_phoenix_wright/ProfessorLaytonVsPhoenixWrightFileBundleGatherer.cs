@@ -24,17 +24,24 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
 
     if (new ThreeDsXfsaTool().Extract(fileHierarchy.Root.GetExistingFiles()
                                                    .SingleByName("vs1.fa"))) {
-      fileHierarchy.RefreshRoot();
+      fileHierarchy.Root.Refresh(true);
     }
 
+    var didUpdateAny = false;
     var extractor = new XcArchiveExtractor();
     foreach (var xcFile in
              fileHierarchy.Root.GetFilesWithFileType(".xc", true)) {
       try {
-        extractor.ExtractIntoDirectory(xcFile,
-                                       new FinDirectory(
-                                           xcFile.AssertGetParent().FullPath));
+        if (extractor.TryToExtractIntoDirectory(
+                xcFile,
+                new FinDirectory(xcFile.AssertGetParent().FullPath))) {
+          didUpdateAny = true;
+        }
       } catch (Exception e) { }
+    }
+
+    if (didUpdateAny) {
+      fileHierarchy.RefreshRootAndUpdateCache();
     }
 
     new FileHierarchyAssetBundleSeparator(
@@ -139,7 +146,7 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
     return new ModelAndAnimations(
         name,
         modelFile,
-        new[] {modelFile}.Concat(animationFiles).ToArray());
+        new[] { modelFile }.Concat(animationFiles).ToArray());
   }
 
   internal IXcDirectories GetModelAndAnimations(string name,
@@ -151,7 +158,8 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
     => new ModelAndAnimations(
         name,
         directory.AssertGetExistingSubdir(modelFileName),
-        animationFileNames.Select(f => directory.AssertGetExistingSubdir(f)).ToArray());
+        animationFileNames.Select(f => directory.AssertGetExistingSubdir(f))
+                          .ToArray());
 
   internal interface IXcDirectories {
     string Name { get; }

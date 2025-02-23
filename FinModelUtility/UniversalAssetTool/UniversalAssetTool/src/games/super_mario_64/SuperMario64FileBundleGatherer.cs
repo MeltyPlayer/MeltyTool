@@ -18,9 +18,10 @@ public class SuperMario64FileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
 
     ExtractorUtil.GetOrCreateRomDirectoriesWithPrereqs("super_mario_64",
-                                            out var prereqsDir,
-                                            out var extractedDir);
-    var fileHierarchy = ExtractorUtil.GetFileHierarchy("super_mario_64", extractedDir);
+      out var prereqsDir,
+      out var extractedDir);
+    var fileHierarchy
+        = ExtractorUtil.GetFileHierarchy("super_mario_64", extractedDir);
     var root = fileHierarchy.Root;
 
     var rootSysDir = root.Impl;
@@ -33,14 +34,21 @@ public class SuperMario64FileBundleGatherer : IAnnotatedFileBundleGatherer {
       return (levelId, path);
     });
 
+    var didWriteAny = false;
     foreach (var (_, path) in levelIdsAndPaths) {
       var zObjectFile = new FinFile(Path.Join(rootSysDir.FullPath, path));
 
       // TODO: Write the actual data here
-      FinFileSystem.File.Create(zObjectFile.FullPath);
+      if (!zObjectFile.Exists) {
+        FinFileSystem.File.Create(zObjectFile.FullPath);
+        didWriteAny = true;
+      }
     }
 
-    fileHierarchy.RefreshRoot();
+    if (didWriteAny) {
+      fileHierarchy.RefreshRootAndUpdateCache();
+    }
+
     foreach (var (levelId, path) in levelIdsAndPaths) {
       var levelFile = root.AssertGetExistingFile(path);
       organizer.Add(new Sm64LevelSceneFileBundle(

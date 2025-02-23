@@ -41,17 +41,21 @@ public class OcarinaOfTimeFileBundleGatherer : IAnnotatedFileBundleGatherer {
     {
       var n64Memory = new N64Memory(ocarinaOfTimeRom);
 
+      var didWriteAny = false;
       foreach (var (zObject, path) in zObjectsAndPaths) {
         var zObjectFile = new FinFile(Path.Join(rootSysDir.FullPath, path));
         if (!zObjectFile.Exists) {
+          didWriteAny = true;
           using var fw = zObjectFile.OpenWrite();
           using var br = n64Memory.OpenSegment(zObject.Segment);
           br.CopyTo(fw);
         }
       }
-    }
 
-    fileHierarchy.RefreshRoot();
+      if (didWriteAny) {
+        fileHierarchy.RefreshRootAndUpdateCache();
+      }
+    }
 
     foreach (var (zObject, path) in zObjectsAndPaths) {
       var zObjectFile = root.AssertGetExistingFile(path);

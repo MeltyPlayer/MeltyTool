@@ -104,7 +104,10 @@ public class SettingsViewModel
       Category = GROUP_EXTRACTOR,
       Header = "Cache File Hierarchies",
       Description
-          = "Whether to cache extracted file hierarchies. Reading the file hierarchy from a structure is faster than querying the file system, so this will speed up future launches.")]
+          = "Whether to cache extracted file hierarchies. Reading the file " +
+            "hierarchy from a cache file is significantly faster than " +
+            "querying the file system, so this will decrease the time the " +
+            "UI takes to start up.")]
   public bool CacheFileHierarchies {
     get => Config_.Extractor.CacheFileHierarchies;
     set => Config_.Extractor.CacheFileHierarchies = value;
@@ -118,6 +121,19 @@ public class SettingsViewModel
   public bool ExtractRomsInParallel {
     get => Config_.Extractor.ExtractRomsInParallel;
     set => Config_.Extractor.ExtractRomsInParallel = value;
+  }
+
+  [property: Config(
+      Category = GROUP_EXTRACTOR,
+      Header = "Verify Cached File Hierarchy Size",
+      Description
+          = "Whether to verify the total directory size of cached file " +
+            "hierarchies. This will allow the UI to automatically " +
+            "regenerate out-of-date cached file hierarchies, but will " +
+            "increase the time the UI takes to start up.")]
+  public bool VerifyCachedFileHierarchySize {
+    get => Config_.Extractor.VerifyCachedFileHierarchySize;
+    set => Config_.Extractor.VerifyCachedFileHierarchySize = value;
   }
 
   // Viewer Settings

@@ -41,7 +41,7 @@ public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
 
     if (didUpdateAny) {
-      fileHierarchy.RefreshRoot();
+      fileHierarchy.RefreshRootAndUpdateCache();
     }
 
     new FileHierarchyAssetBundleSeparator(

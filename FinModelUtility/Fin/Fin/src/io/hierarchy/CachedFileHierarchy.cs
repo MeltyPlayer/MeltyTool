@@ -30,33 +30,33 @@ public static partial class FileHierarchy {
   }
 
   private class CachedFileHierarchy : IFileHierarchy {
+    private readonly ISystemDirectory directory_;
+    private readonly ISystemFile cacheFile_;
+
     public CachedFileHierarchy(string name,
                                ISystemDirectory directory,
                                ISystemFile cacheFile) {
       this.Name = name;
+      this.directory_ = directory;
+      this.cacheFile_ = cacheFile;
 
       SchemaDirectoryInformation? populatedSubdirs = null;
       var useCaching = FinConfig.CacheFileHierarchies;
       if (useCaching) {
-        var actualSize = FinDirectoryStatic.GetTotalSize(directory.FullPath);
+        long? actualSize = FinConfig.VerifyCachedFileHierarchySize
+            ? FinDirectoryStatic.GetTotalSize(directory.FullPath)
+            : null;
         if (cacheFile.Exists) {
           var header = cacheFile.ReadNew<CachedFileHierarchyDataHeader>();
           if (header.Version == CachedFileHierarchyDataHeader.CURRENT_VERSION &&
-              header.Size == actualSize) {
+              (!FinConfig.VerifyCachedFileHierarchySize ||
+               header.Size == actualSize)) {
             var data = cacheFile.ReadNew<CachedFileHierarchyData>();
             populatedSubdirs = data.Root;
           }
         }
 
-        if (populatedSubdirs == null) {
-          populatedSubdirs = GetInfo_(directory);
-
-          var data = new CachedFileHierarchyData {
-              Header = new CachedFileHierarchyDataHeader { Size = actualSize },
-              Root = populatedSubdirs,
-          };
-          cacheFile.Write(data);
-        }
+        populatedSubdirs ??= this.UpdateCacheFile_(actualSize);
       }
 
       populatedSubdirs ??= GetInfo_(directory);
@@ -71,8 +71,28 @@ public static partial class FileHierarchy {
       => new SchemaSharpFileLister()
           .FindNextFilePInvoke(directory.FullPath, "");
 
+    private SchemaDirectoryInformation UpdateCacheFile_(
+        long? actualSize = null) {
+      actualSize
+          ??= FinDirectoryStatic.GetTotalSize(this.directory_.FullPath);
+      var populatedSubdirs = GetInfo_(this.directory_);
+
+      var data = new CachedFileHierarchyData { Root = populatedSubdirs };
+      this.cacheFile_.Write(data);
+
+      return populatedSubdirs;
+    }
+
     public string Name { get; }
     public IFileHierarchyDirectory Root { get; }
+
+    public void RefreshRootAndUpdateCache() {
+      this.Root.Refresh(true);
+
+      if (FinConfig.CacheFileHierarchies) {
+        this.UpdateCacheFile_();
+      }
+    }
 
     private abstract class BFileHierarchyIoObject : IFileHierarchyIoObject {
       protected BFileHierarchyIoObject(IFileHierarchy hierarchy) {

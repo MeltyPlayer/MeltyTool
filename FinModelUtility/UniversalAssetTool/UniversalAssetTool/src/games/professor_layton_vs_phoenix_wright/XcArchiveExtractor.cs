@@ -11,13 +11,13 @@ namespace uni.games.professor_layton_vs_phoenix_wright;
 internal class XcArchiveExtractor {
   public const bool RETRY_FAILED = false;
 
-  public void ExtractIntoDirectory(IReadOnlyTreeFile xcFile,
-                                   ISystemDirectory dstDirectory) {
+  public bool TryToExtractIntoDirectory(IReadOnlyTreeFile xcFile,
+                                        ISystemDirectory dstDirectory) {
     dstDirectory = new FinDirectory(
         Path.Join(dstDirectory.FullPath, xcFile.NameWithoutExtension));
     if (dstDirectory.Exists) {
       if (!RETRY_FAILED || !dstDirectory.IsEmpty) {
-        return;
+        return false;
       }
     }
 
@@ -30,5 +30,7 @@ internal class XcArchiveExtractor {
         dstFile.WriteAllBytes(file.Data);
       }
     }
+
+    return true;
   }
 }

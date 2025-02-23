@@ -87,7 +87,7 @@ public class ThreeDsFileHierarchyExtractor {
     }
 
     if (didDecompress) {
-      fileHierarchy.RefreshRoot();
+      fileHierarchy.RefreshRootAndUpdateCache();
     }
 
     return fileHierarchy;

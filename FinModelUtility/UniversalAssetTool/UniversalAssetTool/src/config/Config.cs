@@ -73,6 +73,11 @@ public partial class ExtractorSettings {
     set => FinConfig.CacheFileHierarchies = value;
   }
   public bool ExtractRomsInParallel { get; set; }
+
+  public bool VerifyCachedFileHierarchySize {
+    get => FinConfig.VerifyCachedFileHierarchySize;
+    set => FinConfig.VerifyCachedFileHierarchySize = value;
+  }
 }
 
 [JsonConverter(typeof(StringEnumConverter))]
