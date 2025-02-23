@@ -2,9 +2,11 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Security;
 
 namespace fin.io.sharpfilelister;
 
+[SuppressUnmanagedCodeSecurity]
 public class Interop {
   [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
   public unsafe struct WIN32_FIND_DATAW {

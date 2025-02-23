@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace fin.io.sharpfilelister;
 
+[SuppressUnmanagedCodeSecurity]
 public class Interop2 {
   [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
   public static extern IntPtr FindFirstFileW(
