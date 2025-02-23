@@ -244,18 +244,38 @@ public class CmbFixedFunctionMaterial {
               cmbMaterial.alphaTestReferenceValue);
         }
 
-        // TODO: How is color blend mode used??? It almost always looks wrong
-        if (cmbMaterial.blendMode == 0) {
-          finMaterial.SetBlending(
-              FinBlendEquation.ADD,
-              FinBlendFactor.ONE,
-              FinBlendFactor.ZERO,
-              LogicOp.UNDEFINED);
-        } else {
-          finMaterial.SetBlending(this.CmbBlendEquationToFin(cmbMaterial.alphaEquation),
-                                  this.CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
-                                  this.CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
-              LogicOp.UNDEFINED);
+        finMaterial.UpdateAlphaChannel = false;
+
+        // TODO: Fix these
+        switch (cmbMaterial.blendMode) {
+          case BlendMode.BlendNone: {
+            finMaterial.SetBlending(FinBlendEquation.ADD,
+                                    FinBlendFactor.ONE,
+                                    FinBlendFactor.ZERO,
+                                    LogicOp.UNDEFINED);
+            break;
+          }
+          case BlendMode.Blend: {
+            finMaterial.SetBlending(
+                this.CmbBlendEquationToFin(cmbMaterial.colorEquation),
+                this.CmbBlendFactorToFin(cmbMaterial.colorSrcFunc),
+                this.CmbBlendFactorToFin(cmbMaterial.colorDstFunc),
+                LogicOp.UNDEFINED);
+            break;
+          }
+          case BlendMode.LogicalOp:
+          case BlendMode.BlendSeparate: {
+            finMaterial.SetBlendingSeparate(
+                this.CmbBlendEquationToFin(cmbMaterial.colorEquation),
+                this.CmbBlendFactorToFin(cmbMaterial.colorSrcFunc),
+                this.CmbBlendFactorToFin(cmbMaterial.colorDstFunc),
+                this.CmbBlendEquationToFin(cmbMaterial.alphaEquation),
+                this.CmbBlendFactorToFin(cmbMaterial.alphaSrcFunc),
+                this.CmbBlendFactorToFin(cmbMaterial.alphaDstFunc),
+                LogicOp.UNDEFINED);
+            break;
+          }
+          default:                      throw new ArgumentOutOfRangeException();
         }
 
         finMaterial.DepthCompareType = cmbMaterial.depthTestFunction switch {

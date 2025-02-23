@@ -44,7 +44,8 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
       IFileHierarchy fileHierarchy) {
     var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
     foreach (var actorDir in actorsDir.GetExistingSubdirs()) {
-      if (actorDir.Name.StartsWith("zelda2_link_")) {
+      if (actorDir.Name.StartsWith("zelda2_link_") ||
+                                   this.separator_.Contains(actorDir)) {
         continue;
       }
 
@@ -58,6 +59,15 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                             "majoras_mask_3d",
                             model,
                             animations,
+                            null,
+                            null).Annotate(model));
+        }
+      } else {
+        foreach (var model in models) {
+          organizer.Add(new CmbModelFileBundle(
+                            "majoras_mask_3d",
+                            model,
+                            null,
                             null,
                             null).Annotate(model));
         }

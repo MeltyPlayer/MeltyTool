@@ -68,12 +68,12 @@ public class Material : IBinaryConvertible {
   public bool LogicOpEnabled { get; set; }
   public ushort LogicOp { get; set; }
 
-  public BlendFactor alphaSrcFunc;
-  public BlendFactor alphaDstFunc;
-  public BlendEquation alphaEquation;
   public BlendFactor colorSrcFunc;
   public BlendFactor colorDstFunc;
   public BlendEquation colorEquation;
+  public BlendFactor alphaSrcFunc;
+  public BlendFactor alphaDstFunc;
+  public BlendEquation alphaEquation;
   public readonly float[] blendColor = new float[4];
 
   public bool stencilEnabled;
@@ -169,12 +169,12 @@ public class Material : IBinaryConvertible {
       this.LogicOpEnabled = br.ReadByte() != 0;
       this.LogicOp = br.ReadUInt16();
 
-      this.alphaSrcFunc = (BlendFactor) (br.ReadUInt16());
-      this.alphaDstFunc = (BlendFactor) (br.ReadUInt16());
-      this.alphaEquation = (BlendEquation) (br.ReadUInt32());
       this.colorSrcFunc = (BlendFactor) (br.ReadUInt16());
       this.colorDstFunc = (BlendFactor) (br.ReadUInt16());
       this.colorEquation = (BlendEquation) (br.ReadUInt32());
+      this.alphaSrcFunc = (BlendFactor) (br.ReadUInt16());
+      this.alphaDstFunc = (BlendFactor) (br.ReadUInt16());
+      this.alphaEquation = (BlendEquation) (br.ReadUInt32());
       br.ReadSingles(this.blendColor);
 
       if (CmbHeader.Version.SupportsStencilBuffer()) {
