@@ -4,7 +4,10 @@ using fin.util.progress;
 
 using uni.util.io;
 
+using visceral.api;
+
 using xmod.api;
+
 
 namespace uni.games.midnight_club_2;
 
@@ -13,13 +16,13 @@ public class MidnightClub2FileBundleGatherer : IAnnotatedFileBundleGatherer {
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
-            "midnight_club_2",
-            out var midnightClub2Directory)) {
+            Path.Join("midnight_club_2", ExtractorUtil.EXTRACTED),
+            out var extractedDir)) {
       return;
     }
 
     var fileHierarchy = ExtractorUtil.GetFileHierarchy("midnight_club_2",
-      midnightClub2Directory);
+      extractedDir);
 
     var textureDirectory =
         fileHierarchy.Root.AssertGetExistingSubdir("texture_x");
