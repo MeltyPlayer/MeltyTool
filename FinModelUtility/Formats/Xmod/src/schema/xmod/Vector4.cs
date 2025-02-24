@@ -5,6 +5,7 @@ using fin.util.asserts;
 using schema.text;
 using schema.text.reader;
 
+
 namespace xmod.schema.xmod;
 
 public class Vector4 : ITextDeserializable, IVector4 {
@@ -15,7 +16,7 @@ public class Vector4 : ITextDeserializable, IVector4 {
     this.Y = y;
     this.Z = z;
     this.W = w;
-    }
+  }
 
   public float X { get; set; }
   public float Y { get; set; }
@@ -23,12 +24,12 @@ public class Vector4 : ITextDeserializable, IVector4 {
   public float W { get; set; }
 
   public void Read(ITextReader tr) {
-      var values = tr.ReadSingles(TextReaderConstantsExtra.WHITESPACE_STRINGS,
-                                  TextReaderConstants.NEWLINE_STRINGS);
-      Asserts.Equal(4, values.Length);
-      this.X = values[0];
-      this.Y = values[1];
-      this.Z = values[2];
-      this.W = values[2];
-    }
+    var values = tr.ReadSingles(TextReaderConstantsExtra.WHITESPACE_STRINGS,
+                                TextReaderConstants.NEWLINE_STRINGS);
+    Asserts.Equal(4, values.Length);
+    this.X = values[0];
+    this.Y = values[1];
+    this.Z = values[2];
+    this.W = values[2];
+  }
 }

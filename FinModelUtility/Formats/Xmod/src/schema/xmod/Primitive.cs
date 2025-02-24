@@ -3,6 +3,7 @@
 using schema.text;
 using schema.text.reader;
 
+
 namespace xmod.schema.xmod;
 
 public enum PrimitiveType {
@@ -16,17 +17,18 @@ public class Primitive : ITextDeserializable {
   public IReadOnlyList<int> VertexIndices { get; set; }
 
   public void Read(ITextReader tr) {
-      tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
+    tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
 
-      this.Type = tr.ReadString(3) switch {
+    this.Type = tr.ReadString(3) switch {
         "stp" => PrimitiveType.TRIANGLE_STRIP,
         "str" => PrimitiveType.TRIANGLE_STRIP_REVERSED,
         "tri" => PrimitiveType.TRIANGLES,
-        _   => throw new ArgumentOutOfRangeException()
-      };
+        _     => throw new ArgumentOutOfRangeException()
+    };
 
-      this.VertexIndices = tr.ReadInt32s(TextReaderConstantsExtra.WHITESPACE_STRINGS,
-                                         TextReaderConstants.NEWLINE_STRINGS);
-      tr.SkipManyIfPresent(TextReaderConstantsExtra.WHITESPACE_STRINGS);
-    }
+    this.VertexIndices = tr.ReadInt32s(
+        TextReaderConstantsExtra.WHITESPACE_STRINGS,
+        TextReaderConstants.NEWLINE_STRINGS);
+    tr.SkipManyIfPresent(TextReaderConstantsExtra.WHITESPACE_STRINGS);
+  }
 }
