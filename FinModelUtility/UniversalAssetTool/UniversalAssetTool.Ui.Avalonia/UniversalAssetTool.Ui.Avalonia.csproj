@@ -3,6 +3,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>uni.ui.avalonia</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
 

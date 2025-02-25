@@ -6,7 +6,8 @@
              xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
              mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="100"
              x:Class="uni.ui.avalonia.resources.texture.TexturePreview"
-             x:DataType="textures:TexturePreviewViewModel">
+             x:DataType="textures:TexturePreviewViewModel"
+             x:CompileBindings="False">
   <Design.DataContext>
     <textures:TexturePreviewViewModelForDesigner />
   </Design.DataContext>
