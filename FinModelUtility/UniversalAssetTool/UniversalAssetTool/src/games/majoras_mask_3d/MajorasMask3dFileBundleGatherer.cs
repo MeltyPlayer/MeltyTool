@@ -19,7 +19,31 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                   "zelda2_jso")
         .Register(new SameNameSeparatorMethod(), "zelda2_zoraband")
         .Register(new PrimaryModelSeparatorMethod("eyegoal.cmb"),
-                  "zelda2_eg");
+                  "zelda2_eg")
+        .Register("zelda2_boss_hakugin",
+                  new PrefixCasesMethod()
+                      .Case("goat", "iceb_")
+                      .Case("boss_hakugin_lightball_",
+                            "boss_hakugin_lightball_"))
+        .Register("zelda2_boss01",
+                  new PrefixCasesMethod()
+                      .Case("mbug", "mbug_")
+                      .Case("moth", "moth_")
+                      .Case("weakpoint", "weakpoint_")
+                      .Rest("odoruwa.cmb"))
+        .Register("zelda2_boss02",
+                  new PrefixCasesMethod()
+                      .Case("sand_shape01", "sand_shape01")
+                      .Case("sand_shape02", "sand_shape02")
+                      .Rest("minimold"))
+        .Register("zelda2_boss03",
+                  new PrefixCasesMethod()
+                      .Case("boss03_spike_2", "boss03_spike_2")
+                      .Case("boss03_wave", "boss03_wave")
+                      .Case("minibus", "minibus_")
+                      .Case("sand_shape02", "sand_shape02")
+                      .Rest("gujorg"))
+        .Register("zelda2_boss04", new PrimaryModelSeparatorMethod("wort.cmb"));
 
 
   public void GatherFileBundles(
@@ -36,6 +60,7 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
         .Add(this.GetAutomaticModels_)
         .Add(this.GetModelsViaSeparator_)
         .Add(this.GetLinkModels_)
+        .Add(this.GetTwinmoldModels_)
         .GatherFileBundles(organizer, mutablePercentageProgress);
   }
 
@@ -44,8 +69,10 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
       IFileHierarchy fileHierarchy) {
     var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
     foreach (var actorDir in actorsDir.GetExistingSubdirs()) {
-      if (actorDir.Name.StartsWith("zelda2_link_") ||
-                                   this.separator_.Contains(actorDir)) {
+      var actorDirName = actorDir.Name;
+      if (actorDirName.StartsWith("zelda2_link_") ||
+          actorDirName.StartsWith("zelda2_boss02_") ||
+          this.separator_.Contains(actorDir)) {
         continue;
       }
 
@@ -148,6 +175,32 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                         csabFiles,
                         null,
                         null).Annotate(cmbFile));
+    }
+  }
+
+  private void GetTwinmoldModels_(IFileBundleOrganizer organizer,
+                                  IFileHierarchy fileHierarchy) {
+    var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
+
+    var models = new[] {
+        actorsDir.AssertGetExistingSubdir("zelda2_boss02_blue")
+                 .FilesWithExtensionRecursive(".cmb")
+                 .Single(),
+        actorsDir.AssertGetExistingSubdir("zelda2_boss02_red")
+                 .FilesWithExtensionRecursive(".cmb")
+                 .Single()
+    };
+    var animations = actorsDir.AssertGetExistingSubdir("zelda2_boss02_anim")
+                              .FilesWithExtensionRecursive(".csab")
+                              .ToArray();
+
+    foreach (var model in models) {
+      organizer.Add(new CmbModelFileBundle(
+                        "majoras_mask_3d",
+                        model,
+                        animations,
+                        null,
+                        null).Annotate(model));
     }
   }
 }

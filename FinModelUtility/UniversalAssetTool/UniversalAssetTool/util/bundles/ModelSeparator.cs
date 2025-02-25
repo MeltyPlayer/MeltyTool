@@ -131,9 +131,7 @@ public class PrimaryModelSeparatorMethod(string primaryModelName)
                         animationFiles)
     }.Concat(modelFiles
              .Where(file => file.Name != primaryModelName)
-             .Select(modelFile
-                         => new ModelBundle(modelFile,
-                                            [])));
+             .Select(modelFile => new ModelBundle(modelFile, [])));
   }
 }
 
@@ -166,7 +164,18 @@ public abstract class BUnclaimedMatchModelSeparatorMethod
       }
     }
 
-    Asserts.Equal(0, unclaimedAnimationFiles.Count);
+    var modelsThatTakeRest
+        = processedModelFiles.Where(this.IsModelThatTakesRest).ToArray();
+    if (modelsThatTakeRest.Length == 0) {
+      Asserts.Equal(0, unclaimedAnimationFiles.Count);
+    } else {
+      Asserts.True(unclaimedAnimationFiles.Count > 0);
+
+      var unclaimedAnimations = unclaimedAnimationFiles.ToArray();
+      foreach (var modelFile in modelsThatTakeRest) {
+        modelFilesToAnimationFiles[modelFile] = unclaimedAnimations;
+      }
+    }
 
     return modelFilesToAnimationFiles
         .Select(kvp => new ModelBundle(kvp.Key, kvp.Value));
@@ -175,15 +184,23 @@ public abstract class BUnclaimedMatchModelSeparatorMethod
   public abstract IEnumerable<IFileHierarchyFile> GetAnimationsForModel(
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles);
+
+  protected abstract bool IsModelThatTakesRest(IFileHierarchyFile modelFile);
 }
 
 public class ExactCasesMethod : BUnclaimedMatchModelSeparatorMethod {
   private Dictionary<string, ISet<string>> impl_ = new();
+  private HashSet<string>? rest_;
 
   public ExactCasesMethod Case(
       string modelFileName,
       params string[] animationFileNames) {
     this.impl_[modelFileName] = animationFileNames.ToHashSet();
+    return this;
+  }
+
+  public ExactCasesMethod Rest(params string[] modelFileNames) {
+    this.rest_ = [..modelFileNames];
     return this;
   }
 
@@ -198,15 +215,24 @@ public class ExactCasesMethod : BUnclaimedMatchModelSeparatorMethod {
 
     return [];
   }
+
+  protected override bool IsModelThatTakesRest(IFileHierarchyFile modelFile)
+    => this.rest_?.Contains(modelFile.Name.ToString()) ?? false;
 }
 
 public class PrefixCasesMethod : BUnclaimedMatchModelSeparatorMethod {
   private Dictionary<string, IList<string>> impl_ = new();
+  private HashSet<string>? rest_;
 
   public PrefixCasesMethod Case(
       string modelFilePrefix,
       params string[] animationFilePrefixes) {
     this.impl_[modelFilePrefix] = animationFilePrefixes;
+    return this;
+  }
+
+  public PrefixCasesMethod Rest(params string[] modelFilePrefixes) {
+    this.rest_ = [..modelFilePrefixes];
     return this;
   }
 
@@ -224,6 +250,9 @@ public class PrefixCasesMethod : BUnclaimedMatchModelSeparatorMethod {
 
     return [];
   }
+
+  protected override bool IsModelThatTakesRest(IFileHierarchyFile modelFile)
+    => this.rest_?.Any(modelFile.Name.ToString().StartsWith) ?? false;
 }
 
 /*public class BoneCountMethod : BUnclaimedMatchModelSeparatorMethod {
@@ -287,6 +316,9 @@ public class PrefixModelSeparatorMethod
     var prefix = modelFile.NameWithoutExtension.ToString();
     return animationFiles.Where(file => file.Name.StartsWith(prefix));
   }
+
+  protected override bool IsModelThatTakesRest(IFileHierarchyFile modelFile)
+    => false;
 }
 
 public class SameNameSeparatorMethod
@@ -298,6 +330,9 @@ public class SameNameSeparatorMethod
     return animationFiles
         .Where(file => file.NameWithoutExtension.Equals(prefix));
   }
+
+  protected override bool IsModelThatTakesRest(IFileHierarchyFile modelFile)
+    => false;
 }
 
 public class NameModelSeparatorMethod(string name)
@@ -310,6 +345,9 @@ public class NameModelSeparatorMethod(string name)
     => modelFile.Name.ToString().ToLower().Contains(this.name_)
         ? animationFiles
         : Enumerable.Empty<IFileHierarchyFile>();
+
+  protected override bool IsModelThatTakesRest(IFileHierarchyFile modelFile)
+    => false;
 }
 
 public class SuffixModelSeparatorMethod(int suffixLength)
@@ -325,6 +363,9 @@ public class SuffixModelSeparatorMethod(int suffixLength)
 
     return animationFiles.Where(file => file.Name.StartsWith(suffix));
   }
+
+  protected override bool IsModelThatTakesRest(IFileHierarchyFile modelFile)
+    => false;
 }
 
 public class ModelBundle(
