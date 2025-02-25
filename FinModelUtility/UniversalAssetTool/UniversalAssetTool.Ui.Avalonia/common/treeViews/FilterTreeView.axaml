@@ -15,13 +15,25 @@
 
   <!-- Overrides expander styles in tree view. -->
   <UserControl.Styles>
-    <Style Selector="TreeViewItem /template/ ToggleButton">
+    <Style Selector="TreeDataGridTemplateCell">
+      <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+
+    <Style Selector="TreeDataGridExpanderCell /template/ DockPanel Border">
+      <Setter Property="MinWidth" Value="28" />
+    </Style>
+
+    <Style Selector="TreeDataGridExpanderCell /template/ DockPanel Border ToggleButton">
       <Setter Property="Width" Value="16" />
       <Setter Property="Height" Value="16" />
       <Setter Property="Margin" Value="0 0 -4 0" />
     </Style>
 
-    <Style Selector="TreeViewItem /template/ ToggleButton[IsChecked=false]">
+    <Style Selector="TreeDataGridExpanderCell /template/ ToggleButton:pointerover">
+      <Setter Property="Foreground" Value="{StaticResource ForegroundMediumBrush}" />
+    </Style>
+
+    <Style Selector="TreeDataGridExpanderCell /template/ ToggleButton[IsChecked=false]">
       <Setter Property="Template">
         <ControlTemplate>
           <avalonia:MaterialIcon Kind="Folder" />
@@ -29,7 +41,7 @@
       </Setter>
     </Style>
 
-    <Style Selector="TreeViewItem /template/ ToggleButton[IsChecked=true]">
+    <Style Selector="TreeDataGridExpanderCell /template/ ToggleButton[IsChecked=true]">
       <Setter Property="Template">
         <ControlTemplate>
           <avalonia:MaterialIcon Kind="FolderOpen" />
@@ -37,8 +49,12 @@
       </Setter>
     </Style>
 
-    <Style Selector="TreeViewItem">
-      <Setter Property="MinHeight" Value="{StaticResource RegularHeight}" />
+    <Style Selector="TreeDataGridRow">
+      <Setter Property="Height" Value="{StaticResource RegularHeight}" />
+    </Style>
+
+    <Style Selector="TreeDataGridRow TextBlock">
+      <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
   </UserControl.Styles>
 
@@ -50,27 +66,10 @@
         Icon="Search"
         Placeholder="Search file bundles..." />
 
-    <controls:If Condition="{Binding FilteredNodes, Converter={x:Static ObjectConverters.IsNotNull}}">
-      <TreeView ItemsSource="{Binding FilteredNodes}"
-                SelectionChanged="TreeView_OnSelectionChanged_"
-                Margin="-4 0">
-        <TreeView.ItemTemplate>
-          <TreeDataTemplate ItemsSource="{Binding FilteredSubNodes}">
-            <StackPanel Orientation="Horizontal">
-              <controls:If Condition="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}">
-                <avalonia:MaterialIcon
-                    Kind="{Binding Icon}"
-                    Margin="-24 0 4 0"
-                    Height="16"
-                    Width="16" />
-              </controls:If>
-              <TextBlock
-                  Classes="regular"
-                  Text="{Binding Label}" />
-            </StackPanel>
-          </TreeDataTemplate>
-        </TreeView.ItemTemplate>
-      </TreeView>
+    <controls:If Condition="{Binding Source, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TreeDataGrid Source="{Binding Source}"
+                    Margin="-4 0"
+                    ShowColumnHeaders="False" />
     </controls:If>
   </DockPanel>
 </UserControl>

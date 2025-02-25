@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Models.TreeDataGrid;
+using Avalonia.Controls.Templates;
+using Avalonia.Layout;
+using Avalonia.Threading;
+
 using fin.audio.io;
 using fin.audio.io.importers.ogg;
 using fin.image;
@@ -14,11 +21,13 @@ using fin.util.asserts;
 using grezzo.api;
 
 using Material.Icons;
+using Material.Icons.Avalonia;
 
 using ObservableCollections;
 
 using uni.ui.avalonia.ViewModels;
 using uni.ui.winforms.common.fileTreeView;
+
 
 namespace uni.ui.avalonia.common.treeViews;
 
@@ -37,11 +46,59 @@ public class FileBundleTreeViewModel
 
     var obsList = new ObservableList<IFileBundleNode>(nodes);
     this.filteredNodes_ = obsList.CreateView(t => t);
-    this.FilteredNodes = this.filteredNodes_.ToNotifyCollectionChanged();
+
+    this.Source = new HierarchicalTreeDataGridSource<IFileBundleNode>(this.filteredNodes_) {
+        Columns = {
+            new HierarchicalExpanderColumn<IFileBundleNode>(
+                new TemplateColumn<IFileBundleNode>(
+                    "Name",
+                    new FuncDataTemplate<IFileBundleNode>(
+                        (x, _) => {
+                          if (x == null) {
+                            return null;
+                          }
+
+                          var textBlock = new TextBlock {
+                              Text = x.Label,
+                              Classes = {"regular"}
+                          };
+
+                          if (x.Icon == null) {
+                            return textBlock;
+                          }
+
+                          var icon = new MaterialIcon {
+                              Kind = x.Icon.Value,
+                              Margin = new Thickness(-24, 0, 4, 0),
+                              Height = 16,
+                              Width = 16
+                          };
+
+                          var stackPanel = new StackPanel {
+                              Orientation = Orientation.Horizontal,
+                          };
+                          stackPanel.Children.AddRange([icon, textBlock]);
+
+                          return stackPanel;
+                        })),
+                x => x.FilteredSubNodes)
+        }
+    };
+
+    Dispatcher.UIThread.Invoke(() => {
+      var rowSelection = this.Source.RowSelection!;
+      rowSelection.SelectionChanged += (_, e) => {
+        var selectedItems = e.SelectedItems;
+        if (selectedItems.Count == 0) {
+          return;
+        }
+
+        this.ChangeSelection(selectedItems[0]!);
+      };
+    });
   }
 
-  public INotifyCollectionChangedSynchronizedViewList<IFileBundleNode>
-      FilteredNodes { get; }
+  public HierarchicalTreeDataGridSource<IFileBundleNode> Source { get; }
 
   public event EventHandler<IFileBundleNode>? NodeSelected;
 
@@ -57,10 +114,11 @@ public class FileBundleTreeViewModel
 
     if (filter == null) {
       this.filteredNodes_.ResetFilter();
-      return;
+    } else {
+      this.filteredNodes_.AttachFilter(n => n.InFilter);
     }
 
-    this.filteredNodes_.AttachFilter(n => n.InFilter);
+    this.Source.Items = this.filteredNodes_.Where(i => i.InFilter);
   }
 }
 
@@ -82,7 +140,8 @@ public class FileBundleTreeViewModelForDesigner()
     ]);
 
 // Node types
-public abstract class BFileBundleNode(string text) : ViewModelBase, IFileTreeNode {
+public abstract class BFileBundleNode(string text)
+    : ViewModelBase, IFileTreeNode {
   public string Text => text;
   public IFileTreeParentNode? Parent => null;
 }
@@ -107,7 +166,6 @@ public class FileBundleDirectoryNode
     this.subNodes_ = subNodes;
     this.Label = label;
     this.FilterTerms = filterTerms;
-
     var obsList = subNodes != null
         ? new ObservableList<IFileBundleNode>(subNodes)
         : null;
@@ -151,8 +209,9 @@ public class FileBundleDirectoryNode
     => this.subNodes_?.Cast<IFileTreeNode>() ?? [];
 }
 
-public class FileBundleLeafNode(string label,
-                                IAnnotatedFileBundle data)
+public class FileBundleLeafNode(
+    string label,
+    IAnnotatedFileBundle data)
     : BFileBundleNode(label), IFileBundleNode, IFileTreeLeafNode {
   public INotifyCollectionChangedSynchronizedViewList<
       IFileBundleNode>? FilteredSubNodes => null;
