@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Numerics;
-
+﻿using fin.data.lists;
 using fin.image;
 using fin.image.formats;
 using fin.util.asserts;
@@ -98,7 +96,9 @@ public class ImageReader {
   }
 
   private static IImage ReadTex4x4_(Texture texture, Palette palette) {
-    var paletteColors = GetPaletteColors_(texture, palette);
+    var paletteColors
+        = new ForgivingArrayView<Rgba32>(GetPaletteColors_(texture, palette),
+                                         new Rgba32(0, 0, 0));
 
     var width = texture.Width;
     var image = new Rgba32Image(width, texture.Height);
