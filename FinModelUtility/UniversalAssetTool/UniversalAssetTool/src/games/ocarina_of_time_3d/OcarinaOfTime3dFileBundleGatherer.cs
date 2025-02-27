@@ -55,6 +55,9 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                             "tentacle_motion_test01.csab",
                             "baarm_death.csab")
                       .Case("balinadetrap.cmb", "balinadetrap.csab"))
+        .Register("zelda_owl",
+                  new PrefixCasesMethod().Case("kaeporagaebora1", "owl_wait")
+                                         .Rest("kaeporagaebora2"))
         // TODO: Figure these all out
         .Register("zelda_dekubaba",
                   new PrimaryModelSeparatorMethod("dekubaba.cmb"))
@@ -135,7 +138,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
         .Add(this.GetModelsViaSeparator_)
         .Add(this.GetLinkModels_)
         .Add(this.GetGanondorfModels_)
-        .Add(this.GetOwlModels_)
         .Add(this.GetVolvagiaModels_)
         .Add(this.GetMoblinModels_)
         .Add(this.GetBongoBongoModels_)
@@ -252,38 +254,13 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     foreach (var otherModel in modelDir.GetExistingFiles()
                                        .Where(
-                                           file => file.Name !=
+                                           file => file.Name is not
                                                    "ganondorf.cmb" &&
-                                                   file.Name !=
+                                                   file.Name is not
                                                    "ganon_mant_model.cmb")) {
       organizer.Add(new CmbModelFileBundle(otherModel)
                         .Annotate(otherModel));
     }
-  }
-
-  private void GetOwlModels_(IFileBundleOrganizer organizer,
-                             IFileHierarchy fileHierarchy) {
-    var owlDir =
-        fileHierarchy.Root.AssertGetExistingSubdir("actor/zelda_owl");
-
-    // Waiting
-    var waitingModel =
-        owlDir.AssertGetExistingFile("Model/kaeporagaebora1.cmb");
-    organizer.Add(new CmbModelFileBundle(
-                          waitingModel,
-                          owlDir.AssertGetExistingFile("Anim/owl_wait.csab")
-                                .AsList())
-                      .Annotate(waitingModel));
-
-    // Flying
-    var flyingModel =
-        owlDir.AssertGetExistingFile("Model/kaeporagaebora2.cmb");
-    organizer.Add(new CmbModelFileBundle(
-                      flyingModel,
-                      owlDir.AssertGetExistingSubdir("Anim")
-                            .FilesWithExtension(".csab")
-                            .Where(file => file.Name != "owl_wait.csab")
-                            .ToArray()).Annotate(flyingModel));
   }
 
   private void GetVolvagiaModels_(IFileBundleOrganizer organizer,
@@ -366,13 +343,10 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                              .ToList()).Annotate(rightHandModel));
 
     foreach (var otherModel in modelDir.GetExistingFiles()
-                                       .Where(
-                                           file => file.Name !=
-                                                   "bongobongo.cmb" &&
-                                                   file.Name !=
-                                                   "bongolhand.cmb" &&
-                                                   file.Name !=
-                                                   "bongorhand.cmb")) {
+                                       .Where(file => file.Name is not
+                                                  ("bongobongo.cmb"
+                                                   or "bongolhand.cmb"
+                                                   or "bongorhand.cmb"))) {
       organizer.Add(new CmbModelFileBundle(otherModel)
                         .Annotate(otherModel));
     }
