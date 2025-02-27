@@ -21,6 +21,16 @@ namespace uni.ui.avalonia.common.textboxes {
       remove => this.impl_.TextChanged -= value;
     }
 
+    public static readonly StyledProperty<string[]> ItemsSourceProperty =
+        AvaloniaProperty.Register<AutocompleteTextbox, string[]>(
+            nameof(ItemsSource),
+            defaultValue: []);
+
+    public string[] ItemsSource {
+      get => this.GetValue(ItemsSourceProperty);
+      set => this.SetValue(ItemsSourceProperty, value);
+    }
+
     public static readonly StyledProperty<MaterialIconKind?> IconProperty =
         AvaloniaProperty.Register<AutocompleteTextbox, MaterialIconKind?>(
             nameof(Icon),

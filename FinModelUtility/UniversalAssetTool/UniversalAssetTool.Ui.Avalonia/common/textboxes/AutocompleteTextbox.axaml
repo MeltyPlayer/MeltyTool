@@ -21,11 +21,21 @@
         </Template>
       </Setter>
     </Style>
+
+    <Style Selector="textboxes|AutocompleteTextbox Popup ListBoxItem">
+      <Setter Property="Height" Value="{StaticResource RegularHeight}" />
+    </Style>
+
+    <Style Selector="textboxes|AutocompleteTextbox Popup TextBlock">
+      <Setter Property="Height" Value="{StaticResource RegularHeight}" />
+      <Setter Property="FontSize" Value="{StaticResource RegularFontSize}" />
+    </Style>
   </UserControl.Styles>
 
   <AutoCompleteBox
       x:Name="impl_"
       DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}"
+      ItemsSource="{Binding ItemsSource}"
       FilterMode="{Binding FilterMode}"
       Watermark="{Binding Placeholder}" />
 </UserControl>
