@@ -57,7 +57,6 @@ public class EverOasisFileBundleGatherer : IAnnotatedFileBundleGatherer {
           if (cmbFiles.Length == 1 || (csabFiles?.Length ?? 0) == 0) {
             foreach (var cmbFile in cmbFiles) {
               organizer.Add(new CmbModelFileBundle(
-                                "ever_oasis",
                                 cmbFile,
                                 csabFiles,
                                 ctxbFiles,

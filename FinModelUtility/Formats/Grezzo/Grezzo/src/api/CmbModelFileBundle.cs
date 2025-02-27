@@ -7,22 +7,17 @@ using fin.util.enumerables;
 namespace grezzo.api;
 
 public class CmbModelFileBundle(
-    string gameName,
     IReadOnlyTreeFile cmbFile,
     IReadOnlyList<IReadOnlyTreeFile>? csabFiles,
     IReadOnlyList<IReadOnlyTreeFile>? ctxbFiles,
     IReadOnlyList<IReadOnlyTreeFile>? shpaFiles)
     : IModelFileBundle {
-  public CmbModelFileBundle(string gameName,
-                            IReadOnlyTreeFile cmbFile) :
-      this(gameName, cmbFile, null, null, null) { }
+  public CmbModelFileBundle(IReadOnlyTreeFile cmbFile) :
+      this(cmbFile, null, null, null) { }
 
-  public CmbModelFileBundle(string gameName,
-                            IReadOnlyTreeFile cmbFile,
+  public CmbModelFileBundle(IReadOnlyTreeFile cmbFile,
                             IReadOnlyList<IReadOnlyTreeFile>? csabFiles) :
-      this(gameName, cmbFile, csabFiles, null, null) { }
-
-  public string GameName { get; } = gameName;
+      this(cmbFile, csabFiles, null, null) { }
 
   public IReadOnlyTreeFile MainFile => this.CmbFile;
 

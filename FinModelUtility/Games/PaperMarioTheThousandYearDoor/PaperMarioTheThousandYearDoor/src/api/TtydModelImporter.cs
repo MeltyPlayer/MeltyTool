@@ -25,8 +25,6 @@ using ttyd.schema.tpl;
 namespace ttyd.api;
 
 public class TtydModelFileBundle : IModelFileBundle {
-  public string GameName => "paper_mario_the_thousand_year_door";
-
   public required IReadOnlyTreeFile ModelFile { get; init; }
   public IReadOnlyTreeFile MainFile => this.ModelFile;
 }

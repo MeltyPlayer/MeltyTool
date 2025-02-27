@@ -6,9 +6,8 @@ using fin.util.enumerables;
 
 namespace grezzo.api;
 
-public class ZsiSceneFileBundle(string gameName, IReadOnlyTreeFile zsiFile)
+public class ZsiSceneFileBundle(IReadOnlyTreeFile zsiFile)
     : ISceneFileBundle {
-  public string GameName => gameName;
   public IReadOnlyTreeFile MainFile => zsiFile;
   public IEnumerable<IReadOnlyGenericFile> Files => zsiFile.Yield();
   public IReadOnlyTreeFile ZsiFile => zsiFile;

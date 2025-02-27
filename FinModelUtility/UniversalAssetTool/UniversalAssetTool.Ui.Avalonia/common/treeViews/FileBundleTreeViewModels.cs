@@ -150,7 +150,6 @@ public class FileBundleTreeViewModelForDesigner()
             [
                 new FileBundleLeafNode("Lion",
                                        new CmbModelFileBundle(
-                                           "foo",
                                            new FinFile()).Annotate(null)),
                 new FileBundleLeafNode("Cat",
                                        new OggAudioFileBundle(new FinFile())

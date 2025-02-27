@@ -8,8 +8,6 @@ namespace UoT.api {
       IReadOnlyTreeDirectory directory,
       IReadOnlyTreeFile ootRom,
       IZFile zFile) : IModelFileBundle {
-    public string GameName => "ocarina_of_time";
-
     public IReadOnlyTreeFile? MainFile => null;
     public IReadOnlyTreeDirectory Directory { get; } = directory;
 

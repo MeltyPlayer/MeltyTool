@@ -48,7 +48,6 @@ public class LuigisMansion3dFileBundleGatherer
                      cmbFiles,
                      csabFiles)) {
           organizer.Add(new CmbModelFileBundle(
-                            "luigis_mansion_3d",
                             bundle.ModelFile,
                             bundle.AnimationFiles.ToArray(),
                             ctxbFiles,

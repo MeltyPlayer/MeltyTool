@@ -37,7 +37,6 @@ public class CmbModelImporterPlugin : IModelImporterPlugin {
       var shpaFiles = filesArray.WithFileType(".shpa").ToArray();
 
       var cmbBundle = new CmbModelFileBundle(
-          "",
           cmbFile,
           csabFiles,
           ctxbFiles,

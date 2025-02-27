@@ -169,7 +169,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                          cmbFiles,
                          csabFiles)) {
               organizer.Add(new CmbModelFileBundle(
-                                "ocarina_of_time_3d",
                                 bundle.ModelFile,
                                 bundle.AnimationFiles.ToArray(),
                                 ctxbFiles,
@@ -191,7 +190,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
       if (models.Length == 1 || animations.Length == 0) {
         foreach (var model in models) {
           organizer.Add(new CmbModelFileBundle(
-                            "ocarina_of_time_3d",
                             model,
                             animations).Annotate(model));
         }
@@ -200,7 +198,7 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var sceneDir = fileHierarchy.Root.AssertGetExistingSubdir("scene");
     foreach (var zsiFile in sceneDir.GetFilesWithFileType(".zsi")) {
-      organizer.Add(new ZsiSceneFileBundle("ocarina_of_time_3d", zsiFile)
+      organizer.Add(new ZsiSceneFileBundle(zsiFile)
                         .Annotate(zsiFile));
     }
   }
@@ -214,7 +212,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var childModel =
         childDir.AssertGetExistingFile("model/childlink_v2.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       childModel,
                       childDir.AssertGetExistingSubdir("anim")
                               .FilesWithExtension(".csab")
@@ -224,7 +221,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
         actorsDir.AssertGetExistingSubdir("zelda_link_boy_new/boy");
     var adultModel = adultDir.AssertGetExistingFile("model/link_v2.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       adultModel,
                       adultDir.AssertGetExistingSubdir("anim")
                               .FilesWithExtension(".csab")
@@ -247,12 +243,10 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var ganondorfModel = modelDir.AssertGetExistingFile("ganondorf.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       ganondorfModel,
                       ganondorfAnimations.ToArray()).Annotate(ganondorfModel));
     var ganonModel = modelDir.AssertGetExistingFile("ganon_mant_model.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       ganonModel,
                       capeAnimations.ToArray()).Annotate(ganonModel));
 
@@ -262,7 +256,7 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                                                    "ganondorf.cmb" &&
                                                    file.Name !=
                                                    "ganon_mant_model.cmb")) {
-      organizer.Add(new CmbModelFileBundle("ocarina_of_time_3d", otherModel)
+      organizer.Add(new CmbModelFileBundle(otherModel)
                         .Annotate(otherModel));
     }
   }
@@ -276,7 +270,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var waitingModel =
         owlDir.AssertGetExistingFile("Model/kaeporagaebora1.cmb");
     organizer.Add(new CmbModelFileBundle(
-                          "ocarina_of_time_3d",
                           waitingModel,
                           owlDir.AssertGetExistingFile("Anim/owl_wait.csab")
                                 .AsList())
@@ -286,7 +279,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var flyingModel =
         owlDir.AssertGetExistingFile("Model/kaeporagaebora2.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       flyingModel,
                       owlDir.AssertGetExistingSubdir("Anim")
                             .FilesWithExtension(".csab")
@@ -304,7 +296,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     // Body in ground
     var inGroundModel = modelDir.AssertGetExistingFile("valbasiagnd.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       inGroundModel,
                       animDir.FilesWithExtension(".csab")
                              .Where(file => file.Name.StartsWith("vba_"))
@@ -314,7 +305,7 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                                        .Where(
                                            file => file.Name is not
                                                "valbasiagnd.cmb")) {
-      organizer.Add(new CmbModelFileBundle("ocarina_of_time_3d", otherModel)
+      organizer.Add(new CmbModelFileBundle(otherModel)
                         .Annotate(otherModel));
     }
 
@@ -330,7 +321,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var moblinModel = modelDir.AssertGetExistingFile("molblin.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       moblinModel,
                       animDir.FilesWithExtension(".csab")
                              .Where(file => file.Name.StartsWith("mn_"))
@@ -338,7 +328,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var bossMoblinModel = modelDir.AssertGetExistingFile("bossblin.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       bossMoblinModel,
                       animDir.FilesWithExtension(".csab")
                              .Where(file => file.Name.StartsWith("mbV_"))
@@ -355,7 +344,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     // Body
     var bodyModel = modelDir.AssertGetExistingFile("bongobongo.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       bodyModel,
                       animDir.FilesWithExtension(".csab")
                              .Where(file => file.Name.StartsWith("ss_"))
@@ -364,7 +352,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     // Left hand
     var leftHandModel = modelDir.AssertGetExistingFile("bongolhand.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       leftHandModel,
                       animDir.FilesWithExtension(".csab")
                              .Where(file => file.Name.StartsWith("slh_"))
@@ -373,7 +360,6 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     // Right hand
     var rightHandModel = modelDir.AssertGetExistingFile("bongorhand.cmb");
     organizer.Add(new CmbModelFileBundle(
-                      "ocarina_of_time_3d",
                       rightHandModel,
                       animDir.FilesWithExtension(".csab")
                              .Where(file => file.Name.StartsWith("srh_"))
@@ -387,7 +373,7 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                                                    "bongolhand.cmb" &&
                                                    file.Name !=
                                                    "bongorhand.cmb")) {
-      organizer.Add(new CmbModelFileBundle("ocarina_of_time_3d", otherModel)
+      organizer.Add(new CmbModelFileBundle(otherModel)
                         .Annotate(otherModel));
     }
   }

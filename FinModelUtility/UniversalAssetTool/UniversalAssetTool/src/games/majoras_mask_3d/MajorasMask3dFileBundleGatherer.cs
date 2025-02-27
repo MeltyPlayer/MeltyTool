@@ -83,7 +83,6 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
       if (models.Length == 1 || animations.Length == 0) {
         foreach (var model in models) {
           organizer.Add(new CmbModelFileBundle(
-                            "majoras_mask_3d",
                             model,
                             animations,
                             null,
@@ -92,7 +91,6 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
       } else {
         foreach (var model in models) {
           organizer.Add(new CmbModelFileBundle(
-                            "majoras_mask_3d",
                             model,
                             null,
                             null,
@@ -103,7 +101,7 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var sceneDir = fileHierarchy.Root.AssertGetExistingSubdir("scenes");
     foreach (var zsiFile in sceneDir.GetFilesWithFileType(".zsi")) {
-      organizer.Add(new ZsiSceneFileBundle("majoras_mask_3d", zsiFile)
+      organizer.Add(new ZsiSceneFileBundle(zsiFile)
                         .Annotate(zsiFile));
     }
   }
@@ -136,7 +134,6 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                          cmbFiles,
                          csabFiles)) {
               organizer.Add(new CmbModelFileBundle(
-                                "majoras_mask_3d",
                                 bundle.ModelFile,
                                 bundle.AnimationFiles.ToArray(),
                                 ctxbFiles,
@@ -170,11 +167,8 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                       .ToArray();
 
       organizer.Add(new CmbModelFileBundle(
-                        "majoras_mask_3d",
                         cmbFile,
-                        csabFiles,
-                        null,
-                        null).Annotate(cmbFile));
+                        csabFiles).Annotate(cmbFile));
     }
   }
 
@@ -196,11 +190,8 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     foreach (var model in models) {
       organizer.Add(new CmbModelFileBundle(
-                        "majoras_mask_3d",
                         model,
-                        animations,
-                        null,
-                        null).Annotate(model));
+                        animations).Annotate(model));
     }
   }
 }
