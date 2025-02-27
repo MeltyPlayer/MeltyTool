@@ -6,6 +6,8 @@ using grezzo.api;
 
 using hw.api;
 
+using mkdd.api;
+
 using modl.api;
 
 using pmdc.api;
@@ -20,6 +22,8 @@ namespace uni.api;
 public class GlobalSceneImporter : ISceneImporter<ISceneFileBundle> {
   public IScene Import(ISceneFileBundle sceneFileBundle)
     => sceneFileBundle switch {
+        BolSceneFileBundle bolSceneFileBundle
+            => new BolSceneImporter().Import(bolSceneFileBundle),
         BwSceneFileBundle bwSceneFileBundle
             => new BwSceneImporter().Import(bwSceneFileBundle),
         LvlSceneFileBundle lvlSceneFileBundle

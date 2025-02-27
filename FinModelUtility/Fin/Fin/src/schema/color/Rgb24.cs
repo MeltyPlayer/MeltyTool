@@ -6,7 +6,7 @@ using schema.binary.attributes;
 namespace fin.schema.color;
 
 [BinarySchema]
-public partial class Rgb24 : IColor, IBinaryConvertible {
+public partial struct Rgb24 : IColor, IBinaryConvertible {
   public byte Rb { get; set; }
   public byte Gb { get; set; }
   public byte Bb { get; set; }

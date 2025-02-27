@@ -7,7 +7,7 @@ using schema.binary.attributes;
 namespace grezzo.schema.zsi;
 
 [BinarySchema]
-public partial class LightNormal : IReadOnlyXyz, IBinaryConvertible {
+public partial struct LightNormal : IReadOnlyXyz, IBinaryConvertible {
   [NumberFormat(SchemaNumberType.SN8)]
   public float X { get; set; }
 
@@ -38,7 +38,8 @@ public interface IEnvironmentSettings : IZsiSection {
 }
 
 [BinarySchema]
-public partial class EnvironmentSettingsOot3d : IEnvironmentSettings, IBinaryConvertible {
+public partial class EnvironmentSettingsOot3d
+    : IEnvironmentSettings, IBinaryConvertible {
   public float DrawDistance { get; set; }
   public float FogEnd { get; set; }
 
@@ -50,7 +51,7 @@ public partial class EnvironmentSettingsOot3d : IEnvironmentSettings, IBinaryCon
   [Skip]
   public float BlendRate => (this.Flags >> 10) * 4;
 
-  public Rgb24 AmbientColor { get; } = new();
+  public Rgb24 AmbientColor { get; set; }
 
   [Skip]
   public Rgb24 SceneAmbientColor => this.AmbientColor;
@@ -58,27 +59,28 @@ public partial class EnvironmentSettingsOot3d : IEnvironmentSettings, IBinaryCon
   [Skip]
   public Rgb24 ActorAmbientColor => this.AmbientColor;
 
-  public Rgb24 LightColor0 { get; } = new();
-  public LightNormal LightNormal0 { get; } = new();
+  public Rgb24 LightColor0 { get; set; }
+  public LightNormal LightNormal0 { get; set; }
 
-  public Rgb24 LightColor1 { get; } = new();
-  public LightNormal LightNormal1 { get; } = new();
+  public Rgb24 LightColor1 { get; set; }
+  public LightNormal LightNormal1 { get; set; }
 
-  public Rgb24 FogColor { get; } = new();
+  public Rgb24 FogColor { get; set; }
 }
 
 [BinarySchema]
-public partial class EnvironmentSettingsMm3d : IEnvironmentSettings, IBinaryConvertible {
-  public Rgb24 ActorAmbientColor { get; } = new();
-  public Rgb24 SceneAmbientColor { get; } = new();
+public partial class EnvironmentSettingsMm3d
+    : IEnvironmentSettings, IBinaryConvertible {
+  public Rgb24 ActorAmbientColor { get; set; }
+  public Rgb24 SceneAmbientColor { get; set; }
 
-  public LightNormal LightNormal0 { get; } = new();
-  public Rgb24 LightColor0 { get; } = new();
+  public LightNormal LightNormal0 { get; set; }
+  public Rgb24 LightColor0 { get; set; }
 
-  public LightNormal LightNormal1 { get; } = new();
-  public Rgb24 LightColor1 { get; } = new();
+  public LightNormal LightNormal1 { get; set; }
+  public Rgb24 LightColor1 { get; set; }
 
-  public Rgb24 FogColor { get; } = new();
+  public Rgb24 FogColor { get; set; }
 
   private byte unk_;
 

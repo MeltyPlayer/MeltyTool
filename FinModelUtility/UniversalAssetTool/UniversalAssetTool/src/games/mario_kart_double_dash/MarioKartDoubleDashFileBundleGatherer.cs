@@ -7,6 +7,8 @@ using fin.util.progress;
 
 using jsystem.api;
 
+using mkdd.api;
+
 using uni.platforms.gcn;
 
 namespace uni.games.mario_kart_double_dash;
@@ -54,7 +56,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       var plumberSubdirs =
           mramSubdir.GetExistingSubdirs()
                     .Where(
-                        subdir => plumberNames.Contains(subdir.Name.ToString()));
+                        subdir => plumberNames.Contains(
+                            subdir.Name.ToString()));
       var plumberCommon = mramSubdir.AssertGetExistingSubdir("cmn_hige");
       foreach (var plumberSubdir in plumberSubdirs) {
         this.ExtractFromSeparateDriverDirectories_(organizer,
@@ -88,7 +91,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       var princessSubdirs =
           mramSubdir.GetExistingSubdirs()
                     .Where(
-                        subdir => princessNames.Contains(subdir.Name.ToString()));
+                        subdir => princessNames.Contains(
+                            subdir.Name.ToString()));
       var princessCommon = mramSubdir.AssertGetExistingSubdir("cmn_hime");
       foreach (var princessSubdir in princessSubdirs) {
         this.ExtractFromSeparateDriverDirectories_(organizer,
@@ -142,7 +146,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       var standaloneSubdirs =
           mramSubdir.GetExistingSubdirs()
                     .Where(
-                        subdir => standaloneNames.Contains(subdir.Name.ToString()));
+                        subdir => standaloneNames.Contains(
+                            subdir.Name.ToString()));
       foreach (var standaloneSubdir in standaloneSubdirs) {
         this.ExtractFromDriverDirectory_(organizer, standaloneSubdir);
       }
@@ -197,8 +202,10 @@ public class MarioKartDoubleDashFileBundleGatherer
                                IFileHierarchy fileHierarchy) {
     var courseSubdir = fileHierarchy.Root.AssertGetExistingSubdir("Course");
     foreach (var subdir in courseSubdir.GetExistingSubdirs()) {
-      var bmdFiles = subdir.FilesWithExtension(".bmd")
-                           .ToArray();
+      var bolFile = subdir.FilesWithExtension(".bol").Single();
+      organizer.Add(new BolSceneFileBundle(bolFile).Annotate(bolFile));
+
+      var bmdFiles = subdir.FilesWithExtension(".bmd").ToArray();
       if (bmdFiles.Length == 0) {
         continue;
       }
