@@ -11,7 +11,6 @@ using ssm.schema;
 namespace ssm.api;
 
 public class SsmAudioFileBundle : IAudioFileBundle {
-  public required string GameName { get; init; }
   public IReadOnlyTreeFile MainFile => this.SsmFile;
   public required IReadOnlyTreeFile SsmFile { get; init; }
 }

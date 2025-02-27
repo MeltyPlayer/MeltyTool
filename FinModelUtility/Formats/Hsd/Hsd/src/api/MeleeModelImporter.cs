@@ -15,7 +15,6 @@ namespace sysdolphin.api;
 public class MeleeModelImporter : IModelImporter<MeleeModelFileBundle> {
   public IModel Import(MeleeModelFileBundle modelFileBundle) {
     var datModelFileBundle = new DatModelFileBundle {
-        GameName = modelFileBundle.GameName,
         DatFile = modelFileBundle.PrimaryDatFile,
     };
 

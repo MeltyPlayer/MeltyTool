@@ -5,8 +5,6 @@ using fin.util.enumerables;
 namespace sysdolphin.api;
 
 public class MeleeModelFileBundle : IModelFileBundle {
-  public required string GameName { get; init; }
-
   public IReadOnlyTreeFile MainFile => this.PrimaryDatFile;
   public required IReadOnlyTreeFile PrimaryDatFile { get; init; }
   public IReadOnlyTreeFile? AnimationDatFile { get; init; }

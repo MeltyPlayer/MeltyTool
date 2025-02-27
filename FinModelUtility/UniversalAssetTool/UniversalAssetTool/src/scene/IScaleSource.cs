@@ -54,7 +54,7 @@ public class GameConfigScaleSource : IScaleSource {
 
   private bool TryToGetScaleFromGameConfig_(IFileBundle? fileBundle,
                                             out float scale) {
-    var gameName = fileBundle?.GameName;
+    var gameName = (fileBundle as IAnnotatedFileBundle)?.GameName;
     if (gameName != null &&
         DirectoryConstants.GAME_CONFIG_DIRECTORY.TryToGetExistingFile(
             $"{gameName}.json",

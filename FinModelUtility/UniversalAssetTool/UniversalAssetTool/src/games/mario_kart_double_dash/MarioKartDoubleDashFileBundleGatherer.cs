@@ -229,7 +229,6 @@ public class MarioKartDoubleDashFileBundleGatherer
                    .FilesWithExtension(".ast");
     foreach (var astFile in astFiles) {
       organizer.Add(new AstAudioFileBundle {
-          GameName = "mario_kart_double_dash",
           AstFile = astFile,
       }.Annotate(astFile));
     }
@@ -315,7 +314,6 @@ public class MarioKartDoubleDashFileBundleGatherer
                              IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
                              IReadOnlyList<IFileHierarchyFile>? btiFiles = null)
     => organizer.Add(new BmdModelFileBundle {
-        GameName = "mario_kart_double_dash",
         BmdFile = bmdFile,
         BcxFiles = bcxFiles,
         BtiFiles = btiFiles,

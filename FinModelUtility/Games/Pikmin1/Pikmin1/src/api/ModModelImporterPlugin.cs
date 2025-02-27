@@ -30,7 +30,7 @@ namespace pikmin1.api {
       var modFile = filesArray.WithFileType(".mod").Single();
 
       var modBundle = new ModModelFileBundle {
-          GameName = "", AnmFile = anmFile, ModFile = modFile,
+          AnmFile = anmFile, ModFile = modFile,
       };
 
       var modImporter = new ModModelImporter();

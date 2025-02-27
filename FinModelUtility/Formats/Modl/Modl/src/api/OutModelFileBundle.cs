@@ -3,8 +3,6 @@
 namespace modl.api;
 
 public class OutModelFileBundle : IBattalionWarsModelFileBundle {
-  public required string GameName { get; init; }
-
   public IReadOnlyTreeFile MainFile => this.OutFile;
 
   public required GameVersion GameVersion { get; init; }

@@ -47,7 +47,6 @@ public class Pikmin1FileBundleGatherer : IAnnotatedFileBundleGatherer {
             anmFile => anmFile.NameWithoutExtension.SequenceEqual(
                 modFile.NameWithoutExtension));
         organizer.Add(new ModModelFileBundle {
-            GameName = "pikmin_1",
             ModFile = modFile,
             AnmFile = anmFile,
         }.Annotate(modFile));
@@ -81,7 +80,6 @@ public class Pikmin1FileBundleGatherer : IAnnotatedFileBundleGatherer {
                          modFiles,
                          anmFiles)) {
               organizer.Add(new ModModelFileBundle {
-                  GameName = "pikmin_1",
                   ModFile = bundle.ModelFile,
                   AnmFile = bundle.AnimationFiles.SingleOrDefault(),
               }.Annotate(bundle.ModelFile));

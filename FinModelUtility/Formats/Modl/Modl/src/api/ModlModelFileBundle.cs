@@ -4,8 +4,6 @@ using fin.util.enumerables;
 namespace modl.api;
 
 public class ModlModelFileBundle : IBattalionWarsModelFileBundle {
-  public required string GameName { get; init; }
-
   public IReadOnlyTreeFile MainFile => this.ModlFile;
   public IEnumerable<IReadOnlyGenericFile> Files
     => this.ModlFile.Yield().ConcatIfNonnull(this.AnimFiles);

@@ -21,7 +21,7 @@ public class Pikmin2SceneImporter : ISceneImporter<Pikmin2SceneFileBundle> {
       var mapObj = sceneArea.AddObject();
       mapObj.AddSceneModel(
           new BmdModelImporter().Import(new BmdModelFileBundle {
-              GameName = "pikmin_2", BmdFile = levelBmd
+              BmdFile = levelBmd
           }));
 
       var routeObj = sceneArea.AddObject();

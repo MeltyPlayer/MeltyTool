@@ -4,22 +4,21 @@ using System.IO;
 namespace fin.io.bundles;
 
 public interface IGameAndLocalPath {
-  string GameAndLocalPath { get; }
+  string GameName { get; }
+  string LocalPath { get; }
+  string GameAndLocalPath => Path.Join(this.GameName, this.LocalPath);
 }
 
 public interface IAnnotatedFileBundle
-    : IGameAndLocalPath, IComparable<IAnnotatedFileBundle> {
+    : IGameAndLocalPath, IComparable<IAnnotatedFileBundle>, IFileBundle {
   IFileBundle FileBundle { get; }
 
   IFileHierarchyFile File { get; }
-  string LocalPath { get; }
 
   string IGameAndLocalPath.GameAndLocalPath => this.GameAndLocalPath;
 
   int IComparable<IAnnotatedFileBundle>.CompareTo(IAnnotatedFileBundle? other) {
-    var thisGameName = this.File.Hierarchy.Name;
-    var otherGameName = other.File.Hierarchy.Name;
-    var gameNameComparison = thisGameName.CompareTo(otherGameName);
+    var gameNameComparison = this.GameName.CompareTo(other.GameName);
     if (gameNameComparison != 0) {
       return gameNameComparison;
     }
@@ -49,8 +48,8 @@ public class AnnotatedFileBundle<TFileBundle>(
   public TFileBundle TypedFileBundle { get; } = fileBundle;
 
   public IFileHierarchyFile File => file;
-  public string LocalPath => file.LocalPath;
+  public IReadOnlyTreeFile MainFile => file;
 
-  public string GameAndLocalPath
-    => Path.Join(file.Hierarchy.Name, this.LocalPath);
+  public string GameName => file.Hierarchy.Name;
+  public string LocalPath => file.LocalPath;
 }

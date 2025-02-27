@@ -98,7 +98,6 @@ public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
           foreach (var (currModlFiles, currAnimFiles) in allModlsAndAnims) {
             foreach (var modlFile in currModlFiles) {
               organizer.Add(new ModlModelFileBundle {
-                  GameName = "battalion_wars_2",
                   ModlFile = modlFile,
                   GameVersion = GameVersion.BW2,
                   AnimFiles = currAnimFiles
@@ -110,7 +109,6 @@ public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
                                            .Where(file => file.Name.EndsWith(
                                                       ".out.gz"))) {
             organizer.Add(new OutModelFileBundle {
-                GameName = "battalion_wars_2",
                 OutFile = outFile,
                 GameVersion = GameVersion.BW2,
             }.Annotate(outFile));
@@ -127,7 +125,6 @@ public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
                                                 .EndsWith("_preload"));
             foreach (var levelXmlFile in levelXmlFiles) {
               organizer.Add(new BwSceneFileBundle {
-                  GameName = "battalion_wars_2",
                   MainXmlFile = levelXmlFile,
                   GameVersion = GameVersion.BW2,
               }.Annotate(levelXmlFile));

@@ -321,7 +321,6 @@ public class LevelXmlParser {
              .AddSceneModel(
                  new OutModelImporter().ImportModel(
                      new OutModelFileBundle {
-                         GameName = sceneFileBundle.GameName,
                          GameVersion = sceneFileBundle.GameVersion,
                          OutFile = outFile
                      },

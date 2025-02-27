@@ -171,7 +171,6 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
           foreach (var (currModlFiles, currAnimFiles) in allModlsAndAnims) {
             foreach (var modlFile in currModlFiles) {
               organizer.Add(new ModlModelFileBundle {
-                  GameName = "battalion_wars_1",
                   ModlFile = modlFile,
                   GameVersion = GameVersion.BW1,
                   AnimFiles = currAnimFiles
@@ -181,7 +180,6 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
 
           foreach (var outFile in directory.FilesWithExtension(".out")) {
             organizer.Add(new OutModelFileBundle {
-                GameName = "battalion_wars_1",
                 OutFile = outFile,
                 GameVersion = GameVersion.BW1,
             }.Annotate(outFile));
@@ -199,7 +197,6 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
 
             foreach (var levelXmlFile in levelXmlFiles) {
               organizer.Add(new BwSceneFileBundle {
-                  GameName = "battalion_wars_1",
                   MainXmlFile = levelXmlFile,
                   GameVersion = GameVersion.BW1,
               }.Annotate(levelXmlFile));

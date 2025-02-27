@@ -32,7 +32,6 @@ public class MidnightClub2FileBundleGatherer : IAnnotatedFileBundleGatherer {
             (subdir, organizer) => {
               foreach (var xmodFile in subdir.FilesWithExtension(".xmod")) {
                 organizer.Add(new XmodModelFileBundle {
-                    GameName = "midnight_club_2",
                     XmodFile = xmodFile,
                     TextureDirectory = textureDirectory,
                 }.Annotate(xmodFile));

@@ -29,7 +29,6 @@ public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
     foreach (var datFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".dat")) {
       organizer.Add(new DatModelFileBundle {
-          GameName = "chibi_robo",
           DatFile = datFile
       }.Annotate(datFile));
     }
@@ -37,7 +36,6 @@ public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
     foreach (var ssmFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
       organizer.Add(new SsmAudioFileBundle {
-          GameName = "chibi_robo",
           SsmFile = ssmFile,
       }.Annotate(ssmFile));
     }

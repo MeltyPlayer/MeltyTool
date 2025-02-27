@@ -7,7 +7,6 @@ namespace level5.api;
 
 public class XcModelFileBundle : IModelFileBundle {
   public string? HumanReadableName { get; set; }
-  public required string GameName { get; init; }
 
   public IReadOnlyTreeFile MainFile
     => new FinFile(this.ModelDirectory.FullPath + ".xc");

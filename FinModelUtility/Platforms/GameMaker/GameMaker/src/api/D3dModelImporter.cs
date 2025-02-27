@@ -14,8 +14,6 @@ using gm.schema.d3d;
 namespace gm.api;
 
 public class D3dModelFileBundle : IModelFileBundle {
-  public required string GameName { get; init; }
-
   public required IReadOnlyTreeFile ModFile { get; init; }
   public IReadOnlyTreeFile MainFile => this.ModFile;
 }

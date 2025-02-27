@@ -5,9 +5,6 @@ using fin.util.enumerables;
 namespace visceral.api;
 
 public class GeoModelFileBundle : IModelFileBundle {
-  // TODO: Is there a better thing to rely on?
-  public required string GameName { get; init; }
-
   public IReadOnlyTreeFile? MainFile
     => this.RcbFile ?? this.GeoFiles.First();
 

@@ -7,7 +7,6 @@ public class XtdModelFileBundle(
     IReadOnlyTreeFile xtdFile,
     IReadOnlyTreeFile xttFile)
     : IHaloWarsFileBundle, IModelFileBundle {
-  public string GameName => "halo_wars";
   public IReadOnlyTreeFile MainFile => this.XtdFile;
   public IReadOnlyTreeFile XttFile { get; } = xttFile;
   public IReadOnlyTreeFile XtdFile { get; } = xtdFile;

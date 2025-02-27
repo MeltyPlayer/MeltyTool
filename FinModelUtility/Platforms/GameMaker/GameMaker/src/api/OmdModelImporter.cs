@@ -11,7 +11,6 @@ using gm.schema.omd;
 namespace gm.api;
 
 public class OmdModelFileBundle : IModelFileBundle {
-  public required string GameName { get; init; }
   public required IReadOnlyTreeFile OmdFile { get; init; }
   public Action<IModel>? Mutator { get; init; }
   public IReadOnlyTreeFile MainFile => this.OmdFile;

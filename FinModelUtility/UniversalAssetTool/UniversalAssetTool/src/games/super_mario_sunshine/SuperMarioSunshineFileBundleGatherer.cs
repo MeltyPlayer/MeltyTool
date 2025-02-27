@@ -316,7 +316,6 @@ public class SuperMarioSunshineFileBundleGatherer
       IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
       IReadOnlyList<IFileHierarchyFile>? btiFiles = null
   ) => organizer.Add(new BmdModelFileBundle {
-      GameName = "super_mario_sunshine",
       BmdFile = bmdFile,
       BcxFiles = bcxFiles,
       BtiFiles = btiFiles,

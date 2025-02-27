@@ -50,7 +50,6 @@ public class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
 
       var finModel
           = new OmdModelImporter().Import(new OmdModelFileBundle {
-              GameName = sceneFileBundle.GameName,
               OmdFile = modelFile
           });
       finArea.AddObject().AddSceneModel(finModel);

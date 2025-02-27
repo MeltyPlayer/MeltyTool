@@ -267,14 +267,14 @@ public class FileBundleFilter(IReadOnlySet<string> tokens)
 
   public bool MatchesNode(IFileBundleNode node) {
     foreach (var token in tokens) {
-      var fileBundle = node.Value.FileBundle;
+      var annotatedFileBundle = node.Value;
+      var fileBundle = annotatedFileBundle.FileBundle;
 
       if (this.ContainsToken_(node.Label, token)) {
         goto FoundMatch;
       }
 
-      if (fileBundle.GameName != null &&
-          this.ContainsToken_(fileBundle.GameName, token)) {
+      if (this.ContainsToken_(annotatedFileBundle.GameName, token)) {
         goto FoundMatch;
       }
 

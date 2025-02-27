@@ -27,7 +27,6 @@ public class PaperMarioDirectorsCutFileBundleGatherer
                  true)) {
       organizer.Add(new AnnotatedFileBundle<D3dModelFileBundle>(
                         new D3dModelFileBundle {
-                            GameName = "paper_mario_directors_cut",
                             ModFile = modFile
                         },
                         modFile));
@@ -38,7 +37,6 @@ public class PaperMarioDirectorsCutFileBundleGatherer
                  true)) {
       organizer.Add(new AnnotatedFileBundle<OmdModelFileBundle>(
                         new OmdModelFileBundle {
-                            GameName = "paper_mario_directors_cut",
                             OmdFile = omdFile
                         },
                         omdFile));

@@ -84,7 +84,6 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
 
           foreach (var xcBundle in xcBundles) {
             var bundle = new XcModelFileBundle {
-                GameName = "professor_layton_vs_phoenix_wright",
                 HumanReadableName = xcBundle.Name,
                 ModelDirectory = xcBundle.ModelDirectory,
                 AnimationDirectories = xcBundle.AnimationDirectories,
@@ -119,7 +118,6 @@ public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
             var xcFile = xcDirectory.Parent.AssertGetExistingFile(
                 $"{xcDirectory.Name}.xc");
             organizer.Add(new XcModelFileBundle {
-                GameName = "professor_layton_vs_phoenix_wright",
                 ModelDirectory = xcDirectory,
                 AnimationDirectories = animationDirectories,
             }.Annotate(xcFile));

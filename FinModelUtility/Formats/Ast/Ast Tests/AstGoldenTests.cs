@@ -18,10 +18,7 @@ public class AstGoldenTests
 
   public override AstAudioFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)
-    => new() {
-        GameName = directory.Parent.Parent.Name.ToString(),
-        AstFile = directory.FilesWithExtension(".ast").Single(),
-    };
+    => new() { AstFile = directory.FilesWithExtension(".ast").Single() };
 
   private static IFileHierarchyDirectory[] GetGoldenDirectories_()
     => GoldenAssert

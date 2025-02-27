@@ -20,7 +20,6 @@ public class CustomRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
     foreach (var ssmFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
       organizer.Add(new SsmAudioFileBundle {
-          GameName = "custom_robo",
           SsmFile = ssmFile,
       }.Annotate(ssmFile));
     }

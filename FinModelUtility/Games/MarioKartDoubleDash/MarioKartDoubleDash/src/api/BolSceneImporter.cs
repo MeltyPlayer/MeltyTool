@@ -37,7 +37,6 @@ public class BolSceneImporter : ISceneImporter<BolSceneFileBundle> {
     fileSet.Add(courseBmd);
     finArea.AddObject()
            .AddSceneModel(bmdModelImporter.Import(new BmdModelFileBundle {
-               GameName = fileBundle.GameName,
                BmdFile = courseBmd
            }));
 
@@ -47,7 +46,6 @@ public class BolSceneImporter : ISceneImporter<BolSceneFileBundle> {
       fileSet.Add(skyBmd);
 
       var skyModel = bmdModelImporter.Import(new BmdModelFileBundle {
-          GameName = fileBundle.GameName,
           BmdFile = skyBmd
       });
       foreach (var finMaterial in skyModel.MaterialManager.All) {

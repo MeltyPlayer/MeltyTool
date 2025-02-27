@@ -25,7 +25,6 @@ public class PokemonGold3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                  true)) {
       organizer.Add(new AnnotatedFileBundle<OmdModelFileBundle>(
                         new OmdModelFileBundle {
-                            GameName = "pokemon_gold_3d",
                             OmdFile = omdFile,
                             Mutator = TweakMaterials_,
                         },

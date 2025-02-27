@@ -37,8 +37,7 @@ public class SuperSmashBrosMeleeFileBundleGatherer
     foreach (var ssmFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
       organizer.Add(new SsmAudioFileBundle {
-          GameName = "super_smash_bros_melee",
-          SsmFile = ssmFile,
+         SsmFile = ssmFile,
       }.Annotate(ssmFile));
     }
 
@@ -63,7 +62,6 @@ public class SuperSmashBrosMeleeFileBundleGatherer
 
     foreach (var stageOrTrophyFile in stageFiles.Concat(trophyFiles)) {
       organizer.Add(new MeleeModelFileBundle {
-          GameName = "super_smash_bros_melee",
           PrimaryDatFile = stageOrTrophyFile,
       }.Annotate(stageOrTrophyFile));
     }
@@ -97,7 +95,6 @@ public class SuperSmashBrosMeleeFileBundleGatherer
                    .Where(pair => !pair.Key.EndsWith(ANIMATION_SUFFIX))
                    .Select(pair => pair.Value)) {
         organizer.Add(new MeleeModelFileBundle {
-            GameName = "super_smash_bros_melee",
             PrimaryDatFile = modelFile,
             AnimationDatFile = animationFile,
             FighterDatFile = fighterFile,

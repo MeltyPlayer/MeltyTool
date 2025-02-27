@@ -62,7 +62,6 @@ namespace uni.games.dead_space_1 {
 
         if (geoFiles.Length > 0 || rcbFile != null) {
           organizer.Add(new GeoModelFileBundle {
-              GameName = "dead_space_1",
               GeoFiles = geoFiles,
               RcbFile = rcbFile,
               BnkFileIdsDictionary = bnkFileIdsDictionary,

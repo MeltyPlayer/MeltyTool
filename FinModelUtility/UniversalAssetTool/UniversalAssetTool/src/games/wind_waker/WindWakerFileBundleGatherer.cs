@@ -246,7 +246,6 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
       IReadOnlyList<IFileHierarchyFile>? btiFiles = null
   ) {
     organizer.Add(new BmdModelFileBundle {
-        GameName = "wind_waker",
         BmdFile = bmdFile,
         BcxFiles = bcxFiles,
         BtiFiles = btiFiles,

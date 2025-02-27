@@ -169,7 +169,6 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
                    .FilesWithExtension(".ast");
     foreach (var astFile in astFiles) {
       organizer.Add(new AstAudioFileBundle {
-          GameName = "pikmin_2",
           AstFile = astFile
       }.Annotate(astFile));
     }
@@ -200,7 +199,6 @@ public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
   ) {
     foreach (var bmdFile in bmdFiles) {
       organizer.Add(new BmdModelFileBundle {
-          GameName = "pikmin_2",
           BmdFile = bmdFile,
           BcxFiles = bcxFiles,
           BtiFiles = btiFiles,

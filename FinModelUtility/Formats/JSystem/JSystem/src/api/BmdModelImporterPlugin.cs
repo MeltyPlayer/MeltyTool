@@ -36,7 +36,6 @@ public class BmdModelImporterPlugin : IModelImporterPlugin {
     var btiFiles = filesArray.WithFileType(".bti").ToArray();
 
     var bmdBundle = new BmdModelFileBundle {
-        GameName = "",
         BmdFile = bmdFile,
         BcxFiles = bcxFiles,
         BtiFiles = btiFiles,

@@ -50,7 +50,6 @@ public class TwilightPrincessFileBundleGatherer : IAnnotatedFileBundleGatherer {
         if (bmdFiles.Length == 1) {
           var animations = dir.FilesWithExtensionsRecursive([".bca", ".bck"]);
           organizer.Add(new BmdModelFileBundle {
-              GameName = "twilight_princess",
               BmdFile = bmdFiles[0],
               BcxFiles = animations.ToArray(),
               FrameRate = 30
@@ -59,7 +58,6 @@ public class TwilightPrincessFileBundleGatherer : IAnnotatedFileBundleGatherer {
       } else {
         foreach (var bmdFile in dir.GetFilesWithFileType(".bmd", true)) {
           organizer.Add(new BmdModelFileBundle {
-              GameName = "twilight_princess",
               BmdFile = bmdFile,
           }.Annotate(bmdFile));
         }

@@ -22,7 +22,6 @@ public class KirbyAirRideFileBundleGatherer : IAnnotatedFileBundleGatherer {
     foreach (var ssmFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
       organizer.Add(new SsmAudioFileBundle {
-          GameName = "kirby_air_ride",
           SsmFile = ssmFile,
       }.Annotate(ssmFile));
     }

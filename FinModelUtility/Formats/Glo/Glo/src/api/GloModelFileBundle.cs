@@ -7,7 +7,6 @@ public class GloModelFileBundle(
     IReadOnlyTreeFile gloFile,
     IReadOnlyList<IReadOnlyTreeDirectory> textureDirectories)
     : IModelFileBundle {
-  public string GameName => "glover";
   public IReadOnlyTreeFile MainFile => this.GloFile;
 
   public IReadOnlyTreeFile GloFile { get; } = gloFile;
