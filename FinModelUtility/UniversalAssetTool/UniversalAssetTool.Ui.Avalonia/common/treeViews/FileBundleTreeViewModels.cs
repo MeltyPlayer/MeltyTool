@@ -11,12 +11,14 @@ using Avalonia.Threading;
 
 using fin.audio.io;
 using fin.audio.io.importers.ogg;
+using fin.data.queues;
 using fin.image;
 using fin.io;
 using fin.io.bundles;
 using fin.model.io;
 using fin.scene;
 using fin.util.asserts;
+using fin.util.sets;
 
 using grezzo.api;
 
@@ -43,6 +45,22 @@ public class FileBundleTreeViewModel
 
   public FileBundleTreeViewModel(IReadOnlyList<IFileBundleNode> nodes) {
     this.nodes_ = nodes;
+
+    var autoCompleteItems = new HashSet<string>();
+    var nodeQueue = new FinQueue<IFileBundleNode>(nodes);
+    while (nodeQueue.TryDequeue(out IFileBundleNode node)) {
+      var file = node.Value;
+      if (file != null) {
+        autoCompleteItems.Add(file.FileBundle.DisplayFullPath.ToString());
+      } else {
+        autoCompleteItems.Add(node.Label);
+      }
+
+      if (node.FilteredSubNodes != null) {
+        nodeQueue.Enqueue(node.FilteredSubNodes);
+      }
+    }
+    this.AutoCompleteItems = autoCompleteItems.ToArray();
 
     var obsList = new ObservableList<IFileBundleNode>(nodes);
     this.filteredNodes_ = obsList.CreateView(t => t);
@@ -99,6 +117,8 @@ public class FileBundleTreeViewModel
   }
 
   public HierarchicalTreeDataGridSource<IFileBundleNode> Source { get; }
+
+  public string[] AutoCompleteItems { get; }
 
   public event EventHandler<IFileBundleNode>? NodeSelected;
 

@@ -63,6 +63,7 @@
     <textboxes:AutocompleteTextbox
         x:Name="autocompleteTextbox_"
         DockPanel.Dock="Top"
+        ItemsSource="{Binding AutoCompleteItems}"
         Icon="Search"
         Placeholder="Search file bundles..." />
 
