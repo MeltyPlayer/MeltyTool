@@ -58,9 +58,9 @@ public class BolSceneImporter : ISceneImporter<BolSceneFileBundle> {
       var skyObject = finArea.CreateCustomSkyboxObject();
       skyObject.AddSceneModel(skyModel);
 
-      var scale = .5f;
+      var scale = .05f;
       skyObject.SetScale(scale, scale, scale);
-      //skyObject.Rotation.SetDegrees(90, 0, 0);
+      skyObject.Rotation.SetDegrees(90, 0, 0);
     }
 
     return finScene;
