@@ -1,4 +1,5 @@
-﻿using fin.io;
+﻿using fin.data.lazy;
+using fin.io;
 using fin.model;
 using fin.scene;
 using fin.util.sets;
@@ -59,6 +60,30 @@ public class BolSceneImporter : ISceneImporter<BolSceneFileBundle> {
       var scale = .05f;
       skyObject.SetScale(scale, scale, scale);
       skyObject.Rotation.SetDegrees(90, 0, 0);
+    }
+
+    var objectsDir = courseDirectory.AssertGetExistingSubdir("objects");
+    var bmdPlugin = new BmdModelImporterPlugin();
+    var lazyObjectModels = new LazyDictionary<ushort, IReadOnlyModel[]?>(
+        objId => ObjectIdUtil
+                 .GetFileNames(objId)
+                 ?.Select(modelPaths => {
+                   var modelFiles = modelPaths.Select(
+                       p => objectsDir.AssertGetExistingFile(p));
+                   return bmdPlugin.Import(modelFiles, 60);
+                 })
+                 .ToArray());
+
+    foreach (var bolObj in bol.Objects) {
+      var objModels = lazyObjectModels[bolObj.ObjectId];
+      if (objModels != null) {
+        var finObj = finArea.AddObject();
+        finObj.SetPosition(bolObj.Position);
+
+        foreach (var objModel in objModels) {
+          finObj.AddSceneModel(objModel);
+        }
+      }
     }
 
     return finScene;

@@ -28,7 +28,7 @@ public class CmbModelImporterPlugin : IModelImporterPlugin {
   public IReadOnlyList<string> FileExtensions { get; } =
     [".cmb", ".csab", ".ctxb", ".shpa"];
 
-  public IModel Import(IEnumerable<IReadOnlySystemFile> files,
+  public IModel Import(IEnumerable<IReadOnlyTreeFile> files,
                        float frameRate = 30) {
       var filesArray = files.ToArray();
       var csabFiles = filesArray.WithFileType(".csab").ToArray();

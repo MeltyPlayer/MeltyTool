@@ -19,7 +19,7 @@ public interface IModelPlugin {
 }
 
 public interface IModelImporterPlugin : IModelPlugin {
-  bool SupportsFiles(IEnumerable<IReadOnlySystemFile> files) {
+  bool SupportsFiles(IEnumerable<IReadOnlyTreeFile> files) {
     var fileTypes = files.Select(file => file.FileType).ToArray();
 
     if (!fileTypes.All(this.FileExtensions.Contains)) {
@@ -29,7 +29,7 @@ public interface IModelImporterPlugin : IModelPlugin {
     return fileTypes.Where(this.MainFileExtensions.Contains).Count() == 1;
   }
 
-  IModel Import(IEnumerable<IReadOnlySystemFile> files, float frameRate = 30);
+  IModel Import(IEnumerable<IReadOnlyTreeFile> files, float frameRate = 30);
 }
 
 public interface IModelExporterPlugin : IModelPlugin {

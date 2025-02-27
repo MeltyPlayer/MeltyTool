@@ -75,7 +75,7 @@ public partial interface ISceneObject {
   ISceneObject SetScale(float x, float y, float z);
 
   new IReadOnlyList<ISceneModel> Models { get; }
-  ISceneModel AddSceneModel(IModel model);
+  ISceneModel AddSceneModel(IReadOnlyModel model);
 
   IReadOnlyList<ISceneObjectComponent> Components { get; }
   ISceneObject AddComponent(ISceneObjectComponent component);

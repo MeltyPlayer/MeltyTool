@@ -48,7 +48,7 @@ public partial class SceneImpl {
 
     public IReadOnlyList<ISceneModel> Models => this.models_;
 
-    public ISceneModel AddSceneModel(IModel model) {
+    public ISceneModel AddSceneModel(IReadOnlyModel model) {
       var sceneModel = new SceneModelImpl(model);
       this.models_.Add(sceneModel);
       return sceneModel;

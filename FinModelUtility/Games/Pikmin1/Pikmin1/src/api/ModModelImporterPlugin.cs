@@ -22,9 +22,8 @@ namespace pikmin1.api {
     public IReadOnlyList<string> FileExtensions { get; } =
       [".anm", ".mod"];
 
-    public IModel Import(
-        IEnumerable<IReadOnlySystemFile> files,
-        float frameRate = 30) {
+    public IModel Import(IEnumerable<IReadOnlyTreeFile> files,
+                         float frameRate = 30) {
       var filesArray = files.ToArray();
       var anmFile = filesArray.WithFileType(".anm").SingleOrDefault();
       var modFile = filesArray.WithFileType(".mod").Single();

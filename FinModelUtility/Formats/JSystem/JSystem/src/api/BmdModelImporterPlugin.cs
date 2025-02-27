@@ -27,7 +27,7 @@ public class BmdModelImporterPlugin : IModelImporterPlugin {
     [".bca", ".bck", ".bmd", ".bti"];
 
   public IModel Import(
-      IEnumerable<IReadOnlySystemFile> files,
+      IEnumerable<IReadOnlyTreeFile> files,
       float frameRate = 30) {
     var filesArray = files.ToArray();
 

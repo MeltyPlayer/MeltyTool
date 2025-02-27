@@ -17,7 +17,7 @@ public class AssimpModelImporterPlugin : IModelImporterPlugin {
 
   public IReadOnlyList<string> FileExtensions => this.MainFileExtensions;
 
-  public IModel Import(IEnumerable<IReadOnlySystemFile> files,
+  public IModel Import(IEnumerable<IReadOnlyTreeFile> files,
                        float frameRate = 30) {
     var assimpBundle = new AssimpModelFileBundle {
         MainFile = files.Single(),
