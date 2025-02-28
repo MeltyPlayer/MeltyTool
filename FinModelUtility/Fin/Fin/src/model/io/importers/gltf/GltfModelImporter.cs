@@ -111,34 +111,33 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
 
     // Adds rig
     var finSkeleton = finModel.Skeleton;
-    var finBoneByNode = new Dictionary<Node, IReadOnlyBone>();
+    var finBoneByNode = new Dictionary<Node, IBone>();
 
     var logicalIndexToJointIndex = new Dictionary<int, int>();
     var finBoneByJointIndex = new Dictionary<int, IReadOnlyBone>();
 
     foreach (var gltfSkin in gltf.LogicalSkins) {
+      // TODO: Better way to get this?
+      var gltfRootNode = gltfSkin.Joints[0].VisualParent;
+
       for (var i = 0; i < gltfSkin.Joints.Count; ++i) {
         logicalIndexToJointIndex[gltfSkin.Joints[i].LogicalIndex] = i;
       }
 
-      var nodeAndBoneQueue
-          = new FinTuple2Queue<Node, IBone?>((gltfSkin.Joints[0], null));
+      var nodeAndBoneQueue = new FinTuple2Queue<Node, IBone?>(
+          gltfSkin.Joints.Where(j => j.VisualParent == gltfRootNode)
+                  .Select(j => (j, (IBone?) null)));
       while (nodeAndBoneQueue.TryDequeue(out var gltfNode,
                                          out var parentFinBone)) {
-        var gltfTransform = gltfNode.LocalTransform;
-
-        var finBone = (parentFinBone ?? finSkeleton.Root).AddChild(
-            gltfTransform.Translation);
-        finBone.LocalTransform.SetRotation(gltfTransform.Rotation);
-        finBone.LocalTransform.SetScale(gltfTransform.Scale);
+        var finBone
+            = AddChildBone_(parentFinBone ?? finSkeleton.Root, gltfNode);
 
         finBoneByNode[gltfNode] = finBone;
 
-        var name = gltfNode.Name;
-        finBone.Name = name;
-
-        finBoneByJointIndex[logicalIndexToJointIndex[gltfNode.LogicalIndex]]
-            = finBone;
+        if (logicalIndexToJointIndex.TryGetValue(gltfNode.LogicalIndex,
+                                                 out var jointIndex)) {
+          finBoneByJointIndex[jointIndex] = finBone;
+        }
 
         nodeAndBoneQueue.Enqueue(
             gltfNode.VisualChildren.Select(childNode => (childNode, finBone)));
@@ -151,7 +150,8 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
       finAnimation.Name = gltfAnimation.Name;
 
       var frameRate = finAnimation.FrameRate = 30;
-      finAnimation.FrameCount = (int) (gltfAnimation.Duration * frameRate);
+      finAnimation.FrameCount
+          = Math.Max(1, (int) (gltfAnimation.Duration * frameRate));
 
       foreach (var gltfAnimationChannel in gltfAnimation.Channels) {
         if (finBoneByNode.TryGetValue(gltfAnimationChannel.TargetNode,
@@ -173,7 +173,13 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
         continue;
       }
 
-      var gltfNodeTransform = gltfNode.LocalTransform.Matrix;
+      var finBone = AddChildBone_(
+          (gltfNode.VisualParent != null &&
+           finBoneByNode.TryGetValue(gltfNode.VisualParent,
+                                     out var parentFinBone))
+              ? parentFinBone
+              : finSkeleton.Root,
+          gltfNode);
 
       var finMesh = finSkin.AddMesh();
       finMesh.Name = gltfMesh.Name;
@@ -201,8 +207,6 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
                 var i = (int) index;
 
                 var gltfPosition = positionAccessor[i];
-                gltfPosition = Vector3.Transform(gltfPosition, gltfNodeTransform);
-
                 var finVertex = finSkin.AddVertex(gltfPosition);
 
                 if (normalAccessor != null) {
@@ -213,8 +217,12 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
                   finVertex.SetUv(0, texCoord0Accessor[i]);
                 }
 
-                if (joints0Accessor != null &&
-                    weights0Accessor != null) {
+                if (joints0Accessor == null || weights0Accessor == null) {
+                  finVertex.SetBoneWeights(
+                      finSkin.GetOrCreateBoneWeights(
+                          VertexSpace.RELATIVE_TO_BONE,
+                          finBone));
+                } else {
                   var joints0 = joints0Accessor[i];
                   var weights0 = weights0Accessor[i];
 
@@ -260,6 +268,18 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
     }
 
     return finModel;
+  }
+
+  private static IBone AddChildBone_(IBone parentFinBone, Node gltfNode) {
+    var gltfTransform = gltfNode.LocalTransform;
+
+    var finBone = parentFinBone.AddChild(gltfTransform.Translation);
+    finBone.LocalTransform.SetRotation(gltfTransform.Rotation);
+    finBone.LocalTransform.SetScale(gltfTransform.Scale);
+
+    finBone.Name = gltfNode.Name;
+
+    return finBone;
   }
 
   private static WrapMode ConvertWrapMode_(TextureWrapMode gltfWrapMode)
