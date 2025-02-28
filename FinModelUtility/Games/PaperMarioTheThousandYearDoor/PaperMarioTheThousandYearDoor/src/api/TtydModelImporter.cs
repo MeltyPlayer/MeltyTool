@@ -384,20 +384,20 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
                       ICombinedQuaternionKeyframes<Keyframe<Quaternion>>> {
                       Translation
                           = finAnimation
-                            .AddBoneTracks(jointData.Translation)
+                            .GetOrCreateBoneTracks(jointData.Translation)
                             .UseCombinedTranslationKeyframes(),
                       UndoParentScale
                           = finAnimation
-                            .AddBoneTracks(jointData.UndoParentScale)
+                            .GetOrCreateBoneTracks(jointData.UndoParentScale)
                             .UseCombinedScaleKeyframes(),
                       Rotation1 = finAnimation
-                                  .AddBoneTracks(jointData.Rotation1)
+                                  .GetOrCreateBoneTracks(jointData.Rotation1)
                                   .UseCombinedQuaternionKeyframes(),
                       Rotation2 = finAnimation
-                                  .AddBoneTracks(jointData.Rotation2)
+                                  .GetOrCreateBoneTracks(jointData.Rotation2)
                                   .UseCombinedQuaternionKeyframes(),
                       Scale = finAnimation
-                              .AddBoneTracks(jointData.Scale)
+                              .GetOrCreateBoneTracks(jointData.Scale)
                               .UseCombinedScaleKeyframes(),
                   }
           };
@@ -414,31 +414,31 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
                       ICombinedQuaternionKeyframes<Keyframe<Quaternion>>> {
                       Translation
                           = finAnimation
-                            .AddBoneTracks(nonJointData.Translation)
+                            .GetOrCreateBoneTracks(nonJointData.Translation)
                             .UseCombinedTranslationKeyframes(),
                       ApplyRotationCenterAndTranslation
                           = finAnimation
-                            .AddBoneTracks(
+                            .GetOrCreateBoneTracks(
                                 nonJointData.ApplyRotationCenterAndTranslation)
                             .UseCombinedTranslationKeyframes(),
                       Rotation = finAnimation
-                                 .AddBoneTracks(nonJointData.Rotation)
+                                 .GetOrCreateBoneTracks(nonJointData.Rotation)
                                  .UseCombinedQuaternionKeyframes(),
                       UndoRotationCenter
                           = finAnimation
-                            .AddBoneTracks(nonJointData.UndoRotationCenter)
+                            .GetOrCreateBoneTracks(nonJointData.UndoRotationCenter)
                             .UseCombinedTranslationKeyframes(),
                       ApplyScaleCenterAndTranslation
                           = finAnimation
-                            .AddBoneTracks(
+                            .GetOrCreateBoneTracks(
                                 nonJointData.ApplyScaleCenterAndTranslation)
                             .UseCombinedTranslationKeyframes(),
                       Scale = finAnimation
-                              .AddBoneTracks(nonJointData.Scale)
+                              .GetOrCreateBoneTracks(nonJointData.Scale)
                               .UseCombinedScaleKeyframes(),
                       UndoScaleCenter
                           = finAnimation
-                            .AddBoneTracks(nonJointData.UndoScaleCenter)
+                            .GetOrCreateBoneTracks(nonJointData.UndoScaleCenter)
                             .UseCombinedTranslationKeyframes(),
                   }
           };

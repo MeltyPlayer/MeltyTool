@@ -87,7 +87,7 @@ public class CmbModelBuilder {
           finAnimation.FrameRate = fps;
 
           foreach (var (boneIndex, anod) in csab.BoneIndexToAnimationNode) {
-            var boneTracks = finAnimation.AddBoneTracks(
+            var boneTracks = finAnimation.GetOrCreateBoneTracks(
                 finBones[boneIndex]);
 
             var translationsTrack =

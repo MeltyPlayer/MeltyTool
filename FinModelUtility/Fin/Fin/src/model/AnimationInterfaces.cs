@@ -35,20 +35,29 @@ public partial interface IAnimation {
   new int FrameCount { get; set; }
   new float FrameRate { get; set; }
   new bool UseLoopingInterpolation { get; set; }
-  new AnimationInterpolationMagFilter AnimationInterpolationMagFilter { get; set; }
+
+  new AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
+    get;
+    set;
+  }
 }
 
 [GenerateReadOnly]
 public partial interface IModelAnimation : IAnimation {
-  new IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks { get; }
-  IBoneTracks AddBoneTracks(IReadOnlyBone bone);
-
-  new IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks { get; }
-  IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
-
-  new IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks> TextureTracks {
+  new IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks {
     get;
   }
+
+  IBoneTracks GetOrCreateBoneTracks(IReadOnlyBone bone);
+
+  new IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks {
+    get;
+  }
+
+  IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
+
+  new IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks>
+      TextureTracks { get; }
 
   ITextureTracks AddTextureTracks(IReadOnlyTexture texture);
 
@@ -110,6 +119,19 @@ public partial interface IBoneTracks : IAnimationData {
                                      int initialYCapacity,
                                      int initialZCapacity,
                                      int initialWCapacity);
+
+  ISeparateQuaternionKeyframes<KeyframeWithTangents<float>>
+      UseSeparateQuaternionKeyframesWithTangents(int initialCapacity = 0)
+    => this.UseSeparateQuaternionKeyframesWithTangents(initialCapacity,
+      initialCapacity,
+      initialCapacity,
+      initialCapacity);
+
+  ISeparateQuaternionKeyframes<KeyframeWithTangents<float>>
+      UseSeparateQuaternionKeyframesWithTangents(int initialXCapacity,
+                                                 int initialYCapacity,
+                                                 int initialZCapacity,
+                                                 int initialWCapacity);
 
   ICombinedQuaternionKeyframes<Keyframe<Quaternion>>
       UseCombinedQuaternionKeyframes(int initialCapacity = 0);
@@ -182,7 +204,9 @@ public partial interface IMeshTracks {
 public partial interface ITextureTracks {
   new IReadOnlyTexture Texture { get; }
 
-  new ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Translations { get; }
+  new ISeparateVector3Keyframes<KeyframeWithTangents<float>>? Translations {
+    get;
+  }
 
   new ISeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>? Rotations {
     get;

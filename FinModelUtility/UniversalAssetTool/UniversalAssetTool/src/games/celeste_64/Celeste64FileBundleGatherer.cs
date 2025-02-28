@@ -1,7 +1,6 @@
-﻿using fin.audio.io.importers.midi;
-using fin.common;
+﻿using fin.common;
 using fin.io.bundles;
-using fin.model.io.importers.assimp;
+using fin.model.io.importers.gltf;
 using fin.util.progress;
 
 namespace uni.games.celeste_64;
@@ -21,9 +20,7 @@ public class Celeste64FileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     foreach (var glbFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".glb")) {
-      organizer.Add(new AssimpModelFileBundle {
-          MainFile = glbFile
-      }.Annotate(glbFile));
+      organizer.Add(new GltfModelFileBundle(glbFile).Annotate(glbFile));
     }
   }
 }

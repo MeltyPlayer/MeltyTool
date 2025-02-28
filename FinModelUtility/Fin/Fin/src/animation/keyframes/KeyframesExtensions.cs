@@ -42,6 +42,17 @@ public static class KeyframesExtensions {
     }
   }
 
+  public static void SetAllStepKeyframes<T>(
+      this IKeyframes<Keyframe<T>> keyframes,
+      IReadOnlyList<(float frame, T value)> values) {
+    for (var i = 0; i < values.Count; ++i) {
+      var (frame, outValue) = values[i];
+      var inValue = i == 0 ? values[^1].value : values[i - 1].value;
+
+      keyframes.Add(new Keyframe<T>(frame, inValue, outValue));
+    }
+  }
+
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SetKeyframe(

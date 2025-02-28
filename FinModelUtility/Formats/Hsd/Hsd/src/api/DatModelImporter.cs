@@ -126,7 +126,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               = Math.Max(finAnimation.FrameCount, (int) aObj.EndFrame);
 
           var finBone = finBoneByJObj[jObj];
-          var boneTracks = finAnimation.AddBoneTracks(finBone);
+          var boneTracks = finAnimation.GetOrCreateBoneTracks(finBone);
 
           DatBoneTracksHelper.AddDatKeyframesToBoneTracks(
               aObj.FObjs,

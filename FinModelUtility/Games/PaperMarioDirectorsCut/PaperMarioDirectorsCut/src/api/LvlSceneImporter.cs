@@ -360,7 +360,7 @@ public class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
       var frameCount = 64;
       starAnimation.FrameCount = frameCount;
 
-      var starBoneTracks = starAnimation.AddBoneTracks(starBone);
+      var starBoneTracks = starAnimation.GetOrCreateBoneTracks(starBone);
       var starBoneRotations = starBoneTracks.UseSeparateEulerRadiansKeyframes();
       starBoneRotations.Axes[2].Add(new Keyframe<float>(0, 0));
       starBoneRotations.Axes[2]

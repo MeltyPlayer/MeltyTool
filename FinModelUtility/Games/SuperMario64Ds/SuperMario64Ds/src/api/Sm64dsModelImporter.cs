@@ -315,7 +315,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         for (var i = 0; i < bca.BoneAnimationData.Length; ++i) {
           var boneAnimationData = bca.BoneAnimationData[i];
 
-          var boneTracks = finAnimation.AddBoneTracks(finBones[i]);
+          var boneTracks = finAnimation.GetOrCreateBoneTracks(finBones[i]);
 
           (int, float)[][] translationAxes = [
               boneAnimationData.TranslationXValues,

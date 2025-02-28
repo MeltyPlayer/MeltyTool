@@ -23,7 +23,7 @@ namespace pikmin1.schema.anm {
       foreach (var jointData in dcxAnimationData.JointDataList) {
         var jointIndex = jointData.JointIndex;
 
-        var jointKeyframes = animation.AddBoneTracks(bones[jointIndex]);
+        var jointKeyframes = animation.GetOrCreateBoneTracks(bones[jointIndex]);
 
         KeyframeDefinition<ValueAndTangents<float>>[][] frames;
 

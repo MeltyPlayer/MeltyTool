@@ -27,11 +27,11 @@ public partial interface ISkin {
 
   IBoneWeights GetOrCreateBoneWeights(
       VertexSpace vertexSpace,
-      params IBoneWeight[] weights);
+      params IReadOnlyBoneWeight[] weights);
 
   IBoneWeights CreateBoneWeights(
       VertexSpace vertexSpace,
-      params IBoneWeight[] weights);
+      params IReadOnlyBoneWeight[] weights);
 }
 
 [GenerateReadOnly]
@@ -95,7 +95,7 @@ public partial interface IMesh : IIndexable {
 public partial interface IBoneWeights
     : IIndexable, IEquatable<IReadOnlyBoneWeights> {
   new VertexSpace VertexSpace { get; }
-  new IReadOnlyList<IBoneWeight> Weights { get; }
+  new IReadOnlyList<IReadOnlyBoneWeight> Weights { get; }
 
   [Const]
   new bool Equals(VertexSpace vertexSpace,

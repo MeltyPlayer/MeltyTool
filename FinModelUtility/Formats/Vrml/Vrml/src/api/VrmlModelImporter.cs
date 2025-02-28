@@ -256,7 +256,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var translationBone
               = finBone = finBone.AddChild(transform.Translation);
           if (isTranslationBone) {
-            var translationTracks = animation.AddBoneTracks(translationBone);
+            var translationTracks = animation.GetOrCreateBoneTracks(translationBone);
             translationTracksByName[transform.DefName!] = translationTracks;
           }
         }
@@ -275,7 +275,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           rotationBone.LocalTransform.SetRotation(
               rotation ?? Quaternion.Identity);
           if (isRotationBone) {
-            var rotationTracks = animation.AddBoneTracks(rotationBone);
+            var rotationTracks = animation.GetOrCreateBoneTracks(rotationBone);
             rotationTracksByName[transform.DefName!] = rotationTracks;
           }
         }

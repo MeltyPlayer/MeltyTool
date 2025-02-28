@@ -12,13 +12,13 @@ public class BoneWeightsSet {
 
   public bool TryGetExisting(
       VertexSpace vertexSpace,
-      IReadOnlyList<IBoneWeight> weights,
+      IReadOnlyList<IReadOnlyBoneWeight> weights,
       out IBoneWeights boneWeights) {
     var hashcode = GetHashCode(vertexSpace, weights);
     return this.boneWeightsByHashcode_.TryGetValue(hashcode, out boneWeights);
   }
 
   public static int GetHashCode(VertexSpace vertexSpace,
-                                IEnumerable<IBoneWeight> weights)
+                                IEnumerable<IReadOnlyBoneWeight> weights)
     => FluentHash.Start().With(vertexSpace).With(weights);
 }

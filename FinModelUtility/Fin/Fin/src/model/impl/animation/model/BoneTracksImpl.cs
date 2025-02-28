@@ -11,9 +11,14 @@ public partial class ModelImpl<TVertex> {
     public IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks>
         BoneTracks => this.boneTracks_;
 
-    public IBoneTracks AddBoneTracks(IReadOnlyBone bone)
-      => this.boneTracks_[bone]
-          = new BoneTracksImpl(this, this.sharedInterpolationConfig_, bone);
+    public IBoneTracks GetOrCreateBoneTracks(IReadOnlyBone bone) {
+      if (!this.boneTracks_.TryGetValue(bone, out var boneTracks)) {
+        this.boneTracks_[bone] = boneTracks
+            = new BoneTracksImpl(this, this.sharedInterpolationConfig_, bone);
+      }
+
+      return boneTracks;
+    }
   }
 
   private partial class BoneTracksImpl(

@@ -168,7 +168,7 @@ namespace UoT.api {
 
             finAnimation.Name = $"Animation {animationIndex++}";
 
-            var rootAnimationTracks = finAnimation.AddBoneTracks(rootBone);
+            var rootAnimationTracks = finAnimation.GetOrCreateBoneTracks(rootBone);
             var positions
                 = rootAnimationTracks.UseCombinedTranslationKeyframes(
                     frameCount);
@@ -181,7 +181,7 @@ namespace UoT.api {
               var finBone = finBones[i];
               var animationTracks = i == 0
                   ? rootAnimationTracks
-                  : finAnimation.AddBoneTracks(finBone);
+                  : finAnimation.GetOrCreateBoneTracks(finBone);
               var rotations
                   = animationTracks
                       .UseSeparateEulerRadiansKeyframes(frameCount);

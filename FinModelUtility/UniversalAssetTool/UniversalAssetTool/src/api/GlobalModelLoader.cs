@@ -34,6 +34,7 @@ using vrml.api;
 
 using xmod.api;
 using fin.model.io.importers.assimp;
+using fin.model.io.importers.gltf;
 
 
 namespace uni.api;
@@ -58,6 +59,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new GeoModelImporter().Import(geoModelFileBundle),
         GloModelFileBundle gloModelFileBundle
             => new GloModelImporter().Import(gloModelFileBundle),
+        GltfModelFileBundle gltfModelFileBundle
+            => new GltfModelImporter().Import(gltfModelFileBundle),
         XtdModelFileBundle xtdModelFileBundle
             => new XtdModelImporter().Import(xtdModelFileBundle),
         MeleeModelFileBundle meleeModelFileBundle

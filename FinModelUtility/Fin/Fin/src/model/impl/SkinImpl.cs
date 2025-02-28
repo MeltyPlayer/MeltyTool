@@ -87,8 +87,9 @@ public partial class ModelImpl<TVertex> {
       return boneWeights;
     }
 
-    public IBoneWeights GetOrCreateBoneWeights(VertexSpace vertexSpace,
-                                               params IBoneWeight[] weights) {
+    public IBoneWeights GetOrCreateBoneWeights(
+        VertexSpace vertexSpace,
+        params IReadOnlyBoneWeight[] weights) {
       var boneWeights
           = this.boneWeightsDictionary_.GetOrCreate(
               vertexSpace,
@@ -103,8 +104,9 @@ public partial class ModelImpl<TVertex> {
       return boneWeights;
     }
 
-    public IBoneWeights CreateBoneWeights(VertexSpace vertexSpace,
-                                          params IBoneWeight[] weights) {
+    public IBoneWeights CreateBoneWeights(
+        VertexSpace vertexSpace,
+        params IReadOnlyBoneWeight[] weights) {
       foreach (var boneWeight in weights) {
         this.bonesUsedByVertices_.Add(boneWeight.Bone);
       }
@@ -224,7 +226,6 @@ public partial class ModelImpl<TVertex> {
       }
 
 
-
       public ILinesPrimitive AddLines(
           params (IReadOnlyVertex, IReadOnlyVertex)[] lines)
         => this.AddLines(
@@ -256,7 +257,8 @@ public partial class ModelImpl<TVertex> {
       public ILinesPrimitive AddLineStrip(params IReadOnlyVertex[] lines)
         => this.AddLineStrip(lines as IReadOnlyList<IReadOnlyVertex>);
 
-      public ILinesPrimitive AddLineStrip(IReadOnlyList<IReadOnlyVertex> lines) {
+      public ILinesPrimitive
+          AddLineStrip(IReadOnlyList<IReadOnlyVertex> lines) {
         Debug.Assert(lines.Count >= 2);
         var primitive = new LinesPrimitiveImpl(PrimitiveType.LINE_STRIP, lines);
         this.primitives_.Add(primitive);
@@ -316,7 +318,8 @@ public partial class ModelImpl<TVertex> {
         return this;
       }
 
-      public VertexOrder VertexOrder { get; private set; } = VertexOrder.CLOCKWISE;
+      public VertexOrder VertexOrder { get; private set; }
+        = VertexOrder.CLOCKWISE;
 
       public IPrimitive SetVertexOrder(VertexOrder vertexOrder) {
         this.VertexOrder = vertexOrder;

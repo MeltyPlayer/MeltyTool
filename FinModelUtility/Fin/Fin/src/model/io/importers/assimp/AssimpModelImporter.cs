@@ -169,7 +169,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
         foreach (var assNodeAnimationChannel in assAnimation
                      .NodeAnimationChannels) {
           var finBone = finBoneByName[assNodeAnimationChannel.NodeName];
-          var finBoneTracks = finAnimation.AddBoneTracks(finBone);
+          var finBoneTracks = finAnimation.GetOrCreateBoneTracks(finBone);
 
           if (assNodeAnimationChannel.HasPositionKeys) {
             var translationTrack

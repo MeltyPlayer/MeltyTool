@@ -178,7 +178,7 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
 
         var bcxJoint = bcx.Anx1.Joints[jointIndex];
 
-        var boneTracks = animation.AddBoneTracks(bone);
+        var boneTracks = animation.GetOrCreateBoneTracks(bone);
 
         // TODO: Handle mirrored animations
         var positions = boneTracks.UseSeparateTranslationKeyframesWithTangents(

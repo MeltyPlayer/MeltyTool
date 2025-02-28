@@ -67,7 +67,7 @@ public class MeleeModelImporter : IModelImporter<MeleeModelFileBundle> {
 
           foreach (var (jObj, trackNode) in jObjs.Zip(figaTree.TrackNodes)) {
             var finBone = finBoneByJObj[jObj];
-            var boneTracks = finAnimation.AddBoneTracks(finBone);
+            var boneTracks = finAnimation.GetOrCreateBoneTracks(finBone);
 
             DatBoneTracksHelper.AddDatKeyframesToBoneTracks(trackNode,
               boneTracks);

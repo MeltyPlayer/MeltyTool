@@ -242,7 +242,7 @@ public class GloModelImporter : IModelImporter<GloModelFileBundle> {
 
           foreach (var (finAnimation, startFrame, endFrame) in
                    finAndGloAnimations) {
-            var finBoneTracks = finAnimation.AddBoneTracks(finBone);
+            var finBoneTracks = finAnimation.GetOrCreateBoneTracks(finBone);
 
             var positions
                 = finBoneTracks.UseCombinedTranslationKeyframes(

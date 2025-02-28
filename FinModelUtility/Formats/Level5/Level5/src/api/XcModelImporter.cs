@@ -262,7 +262,7 @@ public class XcModelImporter : IModelImporter<XcModelFileBundle> {
                 continue;
               }
 
-              var finBoneTracks = finAnimation.AddBoneTracks(finBone);
+              var finBoneTracks = finAnimation.GetOrCreateBoneTracks(finBone);
               var positions = finBoneTracks
                   .UseSeparateTranslationKeyframesWithTangents();
               var rotations = finBoneTracks

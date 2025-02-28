@@ -20,7 +20,7 @@ public class BoneWeightsDictionary {
   public IBoneWeights GetOrCreate(
       VertexSpace vertexSpace,
       out bool newlyCreated,
-      params IBoneWeight[] weights
+      params IReadOnlyBoneWeight[] weights
   ) {
     if (weights.Length > 1) {
       weights = weights.Where(boneWeight => boneWeight.Weight > MIN_WEIGHT)
@@ -47,8 +47,7 @@ public class BoneWeightsDictionary {
                                                 out var boneWeights)) {
       newlyCreated = true;
       allBoneWeightsWithCount.Add(
-          boneWeights = this.CreateInstance_(vertexSpace,
-                                             weights));
+          boneWeights = this.CreateInstance_(vertexSpace, weights));
     }
 
     return boneWeights;
@@ -56,7 +55,7 @@ public class BoneWeightsDictionary {
 
   public IBoneWeights Create(
       VertexSpace vertexSpace,
-      params IBoneWeight[] weights
+      params IReadOnlyBoneWeight[] weights
   ) {
     if (weights.Length > 1) {
       weights = weights.Where(boneWeight => boneWeight.Weight > MIN_WEIGHT)
@@ -85,7 +84,7 @@ public class BoneWeightsDictionary {
 
   private IBoneWeights CreateInstance_(
       VertexSpace vertexSpace,
-      params IBoneWeight[] weights) {
+      params IReadOnlyBoneWeight[] weights) {
     if (weights.Length > 1) {
       weights = weights.Where(boneWeight => boneWeight.Weight > MIN_WEIGHT)
                        .ToArray();
@@ -106,7 +105,7 @@ public class BoneWeightsDictionary {
   }
 
   public static int GetHashCode(VertexSpace vertexSpace,
-                                IReadOnlyList<IBoneWeight> weights) {
+                                IReadOnlyList<IReadOnlyBoneWeight> weights) {
     int hash = 216613626;
     var sub = 16780669;
     hash = hash * sub ^ vertexSpace.GetHashCode();
@@ -120,7 +119,7 @@ public class BoneWeightsDictionary {
   private class BoneWeightsImpl : IBoneWeights {
     public int Index { get; init; }
     public VertexSpace VertexSpace { get; init; }
-    public IReadOnlyList<IBoneWeight> Weights { get; init; }
+    public IReadOnlyList<IReadOnlyBoneWeight> Weights { get; init; }
 
     public override int GetHashCode()
       => BoneWeightsSet.GetHashCode(this.VertexSpace, this.Weights);

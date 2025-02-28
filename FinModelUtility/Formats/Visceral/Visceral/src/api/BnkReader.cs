@@ -175,7 +175,7 @@ public class BnkReader {
         continue;
       }
 
-      var boneTracks = finAnimation.AddBoneTracks(bones[b]);
+      var boneTracks = finAnimation.GetOrCreateBoneTracks(bones[b]);
       var rotations = boneTracks.UseSeparateQuaternionKeyframes();
       var translations = boneTracks.UseSeparateTranslationKeyframes();
       var scales = boneTracks.UseSeparateScaleKeyframes();

@@ -289,7 +289,7 @@ public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
         }
       }
 
-      var finBoneTracks = finAnimation.AddBoneTracks(
+      var finBoneTracks = finAnimation.GetOrCreateBoneTracks(
           finBone!);
 
       var fbtPositions =
