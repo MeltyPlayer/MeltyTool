@@ -83,8 +83,9 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           var file = new FinFile(fileName);
           var name = file.NameWithoutExtension;
 
-          var finImage = assTextureSlot.FilePath != null
-              ? lazyFinSatelliteImages[assTextureSlot.FilePath]
+          var filePath = assTextureSlot.FilePath;
+          var finImage = filePath != null && !filePath.StartsWith('*')
+              ? lazyFinSatelliteImages[filePath]
               : lazyFinEmbeddedImages[
                   assScene.Textures[assTextureSlot.TextureIndex]];
 

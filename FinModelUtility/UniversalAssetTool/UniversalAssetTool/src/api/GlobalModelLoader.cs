@@ -33,6 +33,7 @@ using visceral.api;
 using vrml.api;
 
 using xmod.api;
+using fin.model.io.importers.assimp;
 
 
 namespace uni.api;
@@ -40,6 +41,8 @@ namespace uni.api;
 public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
   public IModel Import(IModelFileBundle modelFileBundle)
     => modelFileBundle switch {
+        AssimpModelFileBundle assimpModelFileBundle
+            => new AssimpModelImporter().Import(assimpModelFileBundle),
         IBattalionWarsModelFileBundle battalionWarsModelFileBundle
             => new BattalionWarsModelImporter().Import(
                 battalionWarsModelFileBundle),

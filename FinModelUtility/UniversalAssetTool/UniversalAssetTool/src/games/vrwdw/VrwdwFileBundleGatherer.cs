@@ -9,8 +9,6 @@ using vrml.api;
 namespace uni.games.vrwdw;
 
 public class VrwdwFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public string Name => "vrwdw";
-
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
