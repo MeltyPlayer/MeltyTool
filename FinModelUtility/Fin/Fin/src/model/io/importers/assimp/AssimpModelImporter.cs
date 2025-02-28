@@ -319,7 +319,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
           finVertices[i]
               .SetBoneWeights(
                   finSkin.GetOrCreateBoneWeights(
-                      VertexSpace.RELATIVE_TO_WORLD,
+                      VertexSpace.RELATIVE_TO_BONE,
                       boneWeights.ToArray()));
         }
       }
