@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 
 using fin.animation.keyframes;
 using fin.data.lazy;
@@ -17,6 +18,9 @@ using SharpGLTF.Memory;
 using SharpGLTF.Schema2;
 
 using GltfPrimitiveType = SharpGLTF.Schema2.PrimitiveType;
+using Material = SharpGLTF.Schema2.Material;
+using Node = SharpGLTF.Schema2.Node;
+using TextureWrapMode = SharpGLTF.Schema2.TextureWrapMode;
 
 namespace fin.model.io.importers.gltf;
 
@@ -163,7 +167,14 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
     // Adds skin
     var finSkin = finModel.Skin;
 
-    foreach (var gltfMesh in gltf.LogicalMeshes) {
+    foreach (var gltfNode in gltf.LogicalNodes) {
+      var gltfMesh = gltfNode.Mesh;
+      if (gltfMesh == null) {
+        continue;
+      }
+
+      var gltfNodeTransform = gltfNode.LocalTransform.Matrix;
+
       var finMesh = finSkin.AddMesh();
       finMesh.Name = gltfMesh.Name;
 
@@ -189,7 +200,10 @@ public class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
               .Select((index) => {
                 var i = (int) index;
 
-                var finVertex = finSkin.AddVertex(positionAccessor[i]);
+                var gltfPosition = positionAccessor[i];
+                gltfPosition = Vector3.Transform(gltfPosition, gltfNodeTransform);
+
+                var finVertex = finSkin.AddVertex(gltfPosition);
 
                 if (normalAccessor != null) {
                   finVertex.SetLocalNormal(normalAccessor[i]);
