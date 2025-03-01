@@ -1,4 +1,6 @@
-﻿using grezzo.api;
+﻿using Celeste64;
+
+using grezzo.api;
 
 using sysdolphin.api;
 
@@ -33,6 +35,7 @@ using visceral.api;
 using vrml.api;
 
 using xmod.api;
+
 using fin.model.io.importers.assimp;
 using fin.model.io.importers.gltf;
 
@@ -49,6 +52,9 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
                 battalionWarsModelFileBundle),
         BmdModelFileBundle bmdModelFileBundle
             => new BmdModelImporter().Import(bmdModelFileBundle),
+        Celeste64MapModelFileBundle celeste64MapModelFileBundle
+            => new Celeste64MapModelImporter().Import(
+                celeste64MapModelFileBundle),
         CmbModelFileBundle cmbModelFileBundle
             => new CmbModelImporter().Import(cmbModelFileBundle),
         DatModelFileBundle datModelFileBundle

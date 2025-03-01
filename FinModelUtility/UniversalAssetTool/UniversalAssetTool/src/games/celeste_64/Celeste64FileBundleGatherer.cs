@@ -1,4 +1,6 @@
-﻿using fin.common;
+﻿using Celeste64;
+
+using fin.common;
 using fin.io.bundles;
 using fin.model.io.importers.gltf;
 using fin.util.progress;
@@ -17,10 +19,19 @@ public class Celeste64FileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var fileHierarchy
         = ExtractorUtil.GetFileHierarchy("celeste_64", celeste64Dir);
+    var root = fileHierarchy.Root;
 
-    foreach (var glbFile in
-             fileHierarchy.Root.FilesWithExtensionRecursive(".glb")) {
+    foreach (var glbFile in root.FilesWithExtensionRecursive(".glb")) {
       organizer.Add(new GltfModelFileBundle(glbFile).Annotate(glbFile));
+    }
+
+    var textureDirectory = root.AssertGetExistingSubdir("Textures");
+    foreach (var mapFile in root.AssertGetExistingSubdir("Maps")
+                                .GetExistingFiles()) {
+      organizer.Add(new Celeste64MapModelFileBundle {
+          MapFile = mapFile,
+          TextureDirectory = textureDirectory,
+      }.Annotate(mapFile));
     }
   }
 }

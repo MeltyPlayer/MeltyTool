@@ -144,6 +144,7 @@
     <ProjectReference Include="..\..\Formats\Visceral\Visceral\Visceral.csproj" />
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
     <ProjectReference Include="..\..\Formats\Xmod\Xmod.csproj" />
+    <ProjectReference Include="..\..\Games\Celeste64\Celeste64\Celeste64.csproj" />
 
     <ProjectReference Include="..\..\Games\HaloWars\HaloWars\HaloWars.csproj" />
 
