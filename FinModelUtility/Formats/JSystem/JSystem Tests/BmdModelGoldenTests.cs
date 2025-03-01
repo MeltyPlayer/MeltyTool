@@ -45,7 +45,6 @@ namespace jsystem {
     public override BmdModelFileBundle GetFileBundleFromDirectory(
         IFileHierarchyDirectory directory)
       => new() {
-          GameName = "foobar",
           BmdFile = directory.FilesWithExtension(".bmd").Single(),
           BcxFiles = directory.FilesWithExtensions(".bca", ".bck").ToArray(),
           BtiFiles = directory.FilesWithExtension(".bti").ToArray(),

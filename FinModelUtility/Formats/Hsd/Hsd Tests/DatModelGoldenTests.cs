@@ -22,7 +22,6 @@ public class DatModelGoldenTests
     var datFile = directory.FilesWithExtension(".dat").Single();
 
     return new DatModelFileBundle {
-        GameName = gameName.ToString(),
         DatFile = datFile
     };
   }

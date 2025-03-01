@@ -19,7 +19,6 @@ public class OmdModelGoldenTests
   public override OmdModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)
     => new() {
-        GameName = "paper_mario_directors_cut",
         OmdFile = directory.GetFilesWithFileType(".omd").Single()
     };
 

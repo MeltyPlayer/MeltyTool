@@ -20,7 +20,6 @@ namespace pikmin1 {
     public override ModModelFileBundle GetFileBundleFromDirectory(
         IFileHierarchyDirectory directory) {
       return new ModModelFileBundle {
-          GameName = "pikmin_1",
           ModFile = directory.FilesWithExtension(".mod").Single(),
           AnmFile = directory.FilesWithExtension(".anm").SingleOrDefault(),
       };

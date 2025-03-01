@@ -22,13 +22,11 @@ public class MeleeModelGoldenTests
     var datFiles = directory.FilesWithExtension(".dat").ToArray();
     if (datFiles.Length == 1) {
       return new MeleeModelFileBundle {
-          GameName = gameName.ToString(),
           PrimaryDatFile = datFiles.Single(),
       };
     }
 
     return new MeleeModelFileBundle {
-        GameName = gameName.ToString(),
         PrimaryDatFile = datFiles.Single(f => f.Name.EndsWith("Nr.dat")),
         AnimationDatFile = datFiles.Single(f => f.Name.EndsWith("AJ.dat")),
         FighterDatFile = datFiles.Single(f => !f.Name.EndsWith("Nr.dat") &&

@@ -19,7 +19,6 @@ namespace grezzo {
         IFileHierarchyDirectory directory) {
       var cmbFile = directory.FilesWithExtension(".cmb").Single();
       return new CmbModelFileBundle(
-          directory.Parent.Name.ToString(),
           cmbFile,
           directory.FilesWithExtension(".csab").ToArray(),
           null,

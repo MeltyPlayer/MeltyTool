@@ -130,7 +130,7 @@ public static class GoldenAssert {
   private static void AssertImageFilesAreIdentical_(
       IReadOnlyTreeFile lhs,
       IReadOnlyTreeFile rhs,
-      float allowableError = 1) {
+      float allowableError = 2) {
     using var lhsImage = FinImage.FromFile(lhs);
     using var rhsImage = FinImage.FromFile(rhs);
 

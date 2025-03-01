@@ -5,7 +5,7 @@ layout (std140, binding = 1) uniform Matrices {
   mat4 viewMatrix;
   mat4 projectionMatrix;
   
-  mat4 boneMatrices[149];  
+  mat4 boneMatrices[148];  
 };
 
 uniform vec3 cameraPosition;

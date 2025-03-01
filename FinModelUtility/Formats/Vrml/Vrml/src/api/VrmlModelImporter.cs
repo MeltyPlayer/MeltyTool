@@ -1,6 +1,8 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
+using DelaunatorSharp;
+
 using fin.animation.keyframes;
 using fin.color;
 using fin.common;
@@ -11,8 +13,10 @@ using fin.io;
 using fin.language.equations.fixedFunction;
 using fin.language.equations.fixedFunction.impl;
 using fin.math;
+using fin.math.floats;
 using fin.math.geometry;
 using fin.math.matrix.four;
+using fin.math.matrix.three;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;
@@ -33,6 +37,8 @@ using QuickFont;
 using QuickFont.Configuration;
 
 using vrml.schema;
+using vrml.util;
+
 
 namespace vrml.api;
 
@@ -53,7 +59,7 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                        HashSet<IReadOnlyGenericFile> fileSet) {
     var wrlFile = fileBundle.WrlFile;
     var wrlDirectory = wrlFile.AssertGetParent();
-    var finModel = new ModelImpl { FileBundle = fileBundle, Files = fileSet };
+    var finModel = new ModelImpl {FileBundle = fileBundle, Files = fileSet};
 
     var lazyTextureDictionary
         = new LazyDictionary<(string, ITextureTransformNode?),
@@ -256,7 +262,8 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           var translationBone
               = finBone = finBone.AddChild(transform.Translation);
           if (isTranslationBone) {
-            var translationTracks = animation.GetOrCreateBoneTracks(translationBone);
+            var translationTracks =
+                animation.GetOrCreateBoneTracks(translationBone);
             translationTracksByName[transform.DefName!] = translationTracks;
           }
         }
@@ -315,22 +322,25 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
           var finMaterial = lazyMaterialDictionary[(appearance, null, false)];
 
-          var boneWeights = finSkin.GetOrCreateBoneWeights(
-              VertexSpace.RELATIVE_TO_BONE,
-              finBone);
-
           var vtx0 = finSkin.AddVertex(0, 0, 1);
           vtx0.SetUv(0, 1 - 0);
-          vtx0.SetBoneWeights(boneWeights);
           var vtx1 = finSkin.AddVertex(1, 0, 1);
           vtx1.SetUv(1, 1 - 0);
-          vtx1.SetBoneWeights(boneWeights);
           var vtx2 = finSkin.AddVertex(1, 1, 1);
           vtx2.SetUv(1, 1 - 1);
-          vtx2.SetBoneWeights(boneWeights);
           var vtx3 = finSkin.AddVertex(0, 1, 1);
           vtx3.SetUv(0, 1 - 1);
-          vtx3.SetBoneWeights(boneWeights);
+
+          if (finBone != finSkeleton.Root) {
+            var boneWeights = finSkin.GetOrCreateBoneWeights(
+                VertexSpace.RELATIVE_TO_BONE,
+                finBone);
+
+            vtx0.SetBoneWeights(boneWeights);
+            vtx1.SetBoneWeights(boneWeights);
+            vtx2.SetBoneWeights(boneWeights);
+            vtx3.SetBoneWeights(boneWeights);
+          }
 
           var finMesh = finSkin.AddMesh();
           var finPrimitive = finMesh.AddQuads([vtx0, vtx1, vtx2, vtx3]);
@@ -362,6 +372,12 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
             case IndexedFaceSetNode indexedFaceSetNode: {
               foreach (var faceVertices in GetIndexFaceSetCoordGroups_(
                            indexedFaceSetNode)) {
+                var boneWeights = finBone != finSkeleton.Root
+                    ? finSkin.GetOrCreateBoneWeights(
+                        VertexSpace.RELATIVE_TO_BONE,
+                        finBone)
+                    : null;
+
                 var finVertices = new LinkedList<INormalVertex>();
                 foreach (var vrmlVertex in faceVertices) {
                   var (coordIndex, texCoordIndex, colorIndex) = vrmlVertex;
@@ -386,10 +402,9 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                     finVertex.SetColor(finColor);
                   }
 
-                  finVertex.SetBoneWeights(
-                      finSkin.GetOrCreateBoneWeights(
-                          VertexSpace.RELATIVE_TO_BONE,
-                          finBone));
+                  if (boneWeights != null) {
+                    finVertex.SetBoneWeights(boneWeights);
+                  }
 
                   finVertices.AddLast(finVertex);
                 }
@@ -523,18 +538,63 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
                                      v);
                                })
                                .ToArray());
-
     tess.Tessellate();
 
     foreach (var finVertex in finVertices) {
       finVertex.SetLocalNormal(tess.Normal.X, tess.Normal.Y, tess.Normal.Z);
     }
 
-    var allVertices = tess.Vertices
-                          .Select(v => v.Data.AssertAsA<INormalVertex>())
-                          .ToArray();
-    return tess.Elements.Select(e => allVertices[e]).ToArray();
+    if (tess.Vertices.All(v => v.Data != null)) {
+      var allVertices = tess.Vertices
+                            .Select(v => v.Data.AssertAsA<INormalVertex>())
+                            .ToArray();
+      return tess.Elements.Select(e => allVertices[e]).ToArray();
+    }
+
+    var points3d = finVertices;
+    var points2d
+        = CoplanarPointFlattener.FlattenCoplanarPoints(
+            points3d.Select(t => t.LocalPosition).ToArray());
+
+    try {
+      var vec3sWithIndices = new List<Vector3>();
+      foreach (var point2d in points2d) {
+        var vec3 = new Vector3(point2d.X, point2d.Y, 0);
+        vec3sWithIndices.Add(vec3);
+      }
+
+      var earClipping = new EarClipping();
+      earClipping.SetPoints(vec3sWithIndices);
+      earClipping.Triangulate();
+
+      return earClipping
+             .Result
+             .Select(i => points3d[i])
+             .ToArray();
+    } catch {
+      var delaunator = new Delaunator(
+          points2d
+              .Select((p, i) => (IPoint) new PointWithIndex(
+                          p.X,
+                          p.Y,
+                          i))
+              .ToArray());
+      return delaunator
+             .GetTriangles()
+             .SelectMany(t => t.Points.Select(
+                                   p => finVertices[
+                                       p.AssertAsA<PointWithIndex>().Index])
+                               .Reverse())
+             .ToArray();
+    }
   }
+
+  private struct PointWithIndex(double x, double y, int index) : IPoint {
+    public double X { get; set; } = x;
+    public double Y { get; set; } = y;
+    public int Index => index;
+  }
+
 
   private static IEnumerable<IndexedFaceGroup[]> GetIndexFaceSetCoordGroups_(
       IndexedFaceSetNode indexedFaceSetNode) {

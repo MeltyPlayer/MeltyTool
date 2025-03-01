@@ -19,7 +19,6 @@ public class GeoModelGoldenTests
   public override GeoModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)
     => new() {
-        GameName = directory.Parent.Parent.Name.ToString(),
         GeoFiles = directory.FilesWithExtension(".geo").ToArray(),
         RcbFile = directory.GetExistingFiles()
                            .SingleOrDefault(f => f.Name.EndsWith(".rcb.WIN")),

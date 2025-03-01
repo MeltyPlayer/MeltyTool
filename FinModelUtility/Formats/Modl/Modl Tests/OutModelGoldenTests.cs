@@ -20,7 +20,6 @@ public class OutModelGoldenTests
   public override OutModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)
     => new() {
-        GameName = directory.Parent.Parent.Name.ToString(),
         GameVersion = directory.Parent.Parent.Name switch {
             "battalion_wars_1" => GameVersion.BW1,
             "battalion_wars_2" => GameVersion.BW2,
