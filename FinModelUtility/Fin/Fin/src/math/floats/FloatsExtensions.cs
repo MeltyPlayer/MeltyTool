@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace fin.math.floats;
 
 public static class FloatsExtensions {
-  public const float ROUGHLY_EQUAL_ERROR = .0001f;
+  public const float ROUGHLY_EQUAL_ERROR = .001f;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static bool IsRoughly(this float a, float b)

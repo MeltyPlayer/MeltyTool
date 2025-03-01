@@ -30,20 +30,7 @@ layout (std140, binding = 2) uniform Lights {
 
 uniform vec3 cameraPosition;
 uniform float shininess;
-
-struct Texture {
-  sampler2D sampler;
-  mat4 transform3d;
-};
-
-vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
-  vec4 rawTransformedUv = (transform3d * vec4(inUv, 0, 1));
-
-  // We need to manually divide by w for perspective correction!
-  return rawTransformedUv.xy / rawTransformedUv.w;
-}
-
-uniform Texture texture0;
+uniform sampler2D texture0;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -139,7 +126,7 @@ void main() {
   vec4 mergedLightSpecularColor = vec4(0);
   getMergedLightColors(vertexPosition, fragNormal, shininess, mergedLightDiffuseColor, mergedLightSpecularColor);
 
-  vec3 colorComponent = (vec3(0.501960813999)*ambientLightColor.rgb + mergedLightDiffuseColor.rgb)*vec3(2.0)*texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb;
+  vec3 colorComponent = (vec3(0.501960813999)*ambientLightColor.rgb + mergedLightDiffuseColor.rgb)*vec3(2.0)*texture(texture0, uv0).rgb;
 
   float alphaComponent = 1.0;
 
