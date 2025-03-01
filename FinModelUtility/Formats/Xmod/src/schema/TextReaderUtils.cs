@@ -7,10 +7,10 @@ using schema.text.reader;
 namespace xmod.schema;
 
 public static class TextReaderUtils {
-  public static string[] OPEN_BRACE = [" {"];
-  public static string[] CLOSING_BRACE = ["}"];
-  public static string[] COLON = [":"];
-  public static string[] QUOTE = ["\""];
+  public static char OPEN_BRACE = '{';
+  public static char CLOSING_BRACE = '}';
+  public static char COLON = ':';
+  public static char QUOTE = '"';
 
   public static string ReadKeyValue(ITextReader tr, string prefix) {
     tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
