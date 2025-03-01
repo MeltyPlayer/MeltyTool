@@ -1,6 +1,7 @@
 ﻿using fin.data.lazy;
 using fin.io;
 using fin.model;
+using fin.model.util;
 using fin.scene;
 using fin.util.sets;
 
@@ -49,10 +50,7 @@ public class BolSceneImporter : ISceneImporter<BolSceneFileBundle> {
       var skyModel = bmdModelImporter.Import(new BmdModelFileBundle {
           BmdFile = skyBmd
       });
-      foreach (var finMaterial in skyModel.MaterialManager.All) {
-        finMaterial.DepthMode = DepthMode.NONE;
-        finMaterial.DepthCompareType = DepthCompareType.Always;
-      }
+      skyModel.DisableDepthOnAllMaterials();
 
       var skyObject = finArea.CreateCustomSkyboxObject();
       skyObject.AddSceneModel(skyModel);

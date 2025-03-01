@@ -10,6 +10,7 @@ using fin.io;
 using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model;
+using fin.model.util;
 using fin.scene;
 using fin.util.sets;
 
@@ -410,10 +411,7 @@ public class LevelXmlParser {
             sceneArea.BackgroundColor = Color.Black;
 
             var skydomeModel = modelMap[skyboxObj.ModelName];
-            foreach (var finMaterial in skydomeModel.MaterialManager.All) {
-              finMaterial.DepthMode = DepthMode.NONE;
-              finMaterial.DepthCompareType = DepthCompareType.Always;
-            }
+            skydomeModel.DisableDepthOnAllMaterials();
 
             var skydomeObject = sceneArea.CreateCustomSkyboxObject();
             skydomeObject.AddSceneModel(skydomeModel);
