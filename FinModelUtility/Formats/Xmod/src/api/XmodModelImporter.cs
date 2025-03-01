@@ -75,6 +75,10 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
         foreach (var primitive in packet.Primitives) {
           var primitiveVertices =
               primitive.VertexIndices
+                       .Skip(primitive.Type switch {
+                           PrimitiveType.TRIANGLES => 0,
+                           _                       => 1,
+                       })
                        .Select(vertexIndex => packetVertices[vertexIndex])
                        .ToArray();
           var finPrimitive = primitive.Type switch {
