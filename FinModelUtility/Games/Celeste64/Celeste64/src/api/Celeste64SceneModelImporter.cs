@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Drawing.Drawing2D;
+using System.Numerics;
 
 using Celeste64.map;
 
@@ -13,6 +14,7 @@ using fin.model.util;
 using fin.scene;
 using fin.util.enumerables;
 using fin.util.sets;
+using fin.util.time;
 
 using Sledge.Formats.Map.Objects;
 
@@ -153,15 +155,39 @@ public class Celeste64MapSceneImporter
       }
 
       var origin = entity.GetVectorProperty("origin", Vector3.Zero);
+      origin = new Vector3(-origin.X, origin.Z, origin.Y);
+
       var angleRadians =
           entity.GetIntProperty("angle", 0) * FinTrig.DEG_2_RAD + MathF.PI;
 
       var finObj = finArea.AddObject();
-      finObj.SetPosition(-origin.X, origin.Z, origin.Y);
+      finObj.SetPosition(origin);
       finObj.SetRotationRadians(0, angleRadians, 0);
       finObj.SetScale(modelScale, modelScale, modelScale);
       foreach (var finModel in finModels) {
         finObj.AddSceneModel(finModel);
+      }
+
+      switch (actorType) {
+        case ActorType.CASSETTE
+             or ActorType.COIN
+             or ActorType.FEATHER
+             or ActorType.REFILL
+             or ActorType.STRAWBERRY: {
+          finObj.AddComponent(instance => {
+            var totalSeconds
+                = (float) FrameTime.ElapsedTimeSinceApplicationOpened
+                                   .TotalSeconds;
+
+            instance.SetPosition(origin +
+                                 Vector3.UnitY *
+                                 MathF.Sin(totalSeconds * 2) *
+                                 2);
+            instance.SetRotationRadians(0, totalSeconds * 3, 0);
+          });
+
+          break;
+        }
       }
     }
 

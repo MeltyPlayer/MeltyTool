@@ -58,6 +58,9 @@ public partial interface ISceneObjectInstance : ITickable, IDisposable {
 
   ISceneObjectInstance SetPosition(float x, float y, float z);
 
+  ISceneObjectInstance SetPosition(Vector3 position)
+    => this.SetPosition(position.X, position.Y, position.Z);
+
   ISceneObjectInstance SetRotationRadians(float xRadians,
                                           float yRadians,
                                           float zRadians);
