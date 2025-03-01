@@ -170,6 +170,32 @@ public static class MeshExtensions {
       IReadOnlyMaterial? sidesMaterial = null,
       IReadOnlyBone? bone = null,
       (float, float, float)? repeat = null)
+      where TVertex : INormalVertex, ISingleUvVertex
+    => mesh.AddSimpleCube(skin,
+                          point1,
+                          point2,
+                          topBottomMaterial,
+                          sidesMaterial,
+                          sidesMaterial,
+                          sidesMaterial,
+                          sidesMaterial,
+                          topBottomMaterial,
+                          bone,
+                          repeat);
+
+  public static void AddSimpleCube<TVertex>(
+      this IMesh mesh,
+      ISkin<TVertex> skin,
+      Vector3 point1,
+      Vector3 point2,
+      IReadOnlyMaterial? topMaterial = null,
+      IReadOnlyMaterial? frontMaterial = null,
+      IReadOnlyMaterial? leftMaterial = null,
+      IReadOnlyMaterial? backMaterial = null,
+      IReadOnlyMaterial? rightMaterial = null,
+      IReadOnlyMaterial? bottomMaterial = null,
+      IReadOnlyBone? bone = null,
+      (float, float, float)? repeat = null)
       where TVertex : INormalVertex, ISingleUvVertex {
     var tUl = point1;
     var tUr = point1 with { X = point2.X };
@@ -196,7 +222,7 @@ public static class MeshExtensions {
                          tUr,
                          tLr,
                          tLl,
-                         topBottomMaterial,
+                         topMaterial,
                          bone,
                          topBottomRepeat);
       // Bottom
@@ -205,7 +231,7 @@ public static class MeshExtensions {
                          bUl,
                          bLl,
                          bLr,
-                         topBottomMaterial,
+                         bottomMaterial,
                          bone,
                          topBottomRepeat);
     }
@@ -219,7 +245,7 @@ public static class MeshExtensions {
                          tLr,
                          bLr,
                          bLl,
-                         sidesMaterial,
+                         frontMaterial,
                          bone,
                          frontBackRepeat);
       // Back
@@ -228,7 +254,7 @@ public static class MeshExtensions {
                          tUl,
                          bUl,
                          bUr,
-                         sidesMaterial,
+                         backMaterial,
                          bone,
                          frontBackRepeat);
     }
@@ -242,7 +268,7 @@ public static class MeshExtensions {
                          tLl,
                          bLl,
                          bUl,
-                         sidesMaterial,
+                         leftMaterial,
                          bone,
                          leftRightRepeat);
       // Right
@@ -251,7 +277,7 @@ public static class MeshExtensions {
                          tUr,
                          bUr,
                          bLr,
-                         sidesMaterial,
+                         rightMaterial,
                          bone,
                          leftRightRepeat);
     }

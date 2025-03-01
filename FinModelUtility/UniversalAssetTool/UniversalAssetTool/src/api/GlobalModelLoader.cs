@@ -1,4 +1,4 @@
-﻿using Celeste64;
+﻿using Celeste64.api;
 
 using grezzo.api;
 

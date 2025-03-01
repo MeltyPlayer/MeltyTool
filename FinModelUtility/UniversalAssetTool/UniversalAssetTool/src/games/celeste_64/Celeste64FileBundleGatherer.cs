@@ -1,4 +1,4 @@
-﻿using Celeste64;
+﻿using Celeste64.api;
 
 using fin.common;
 using fin.io.bundles;
@@ -21,7 +21,9 @@ public class Celeste64FileBundleGatherer : IAnnotatedFileBundleGatherer {
         = ExtractorUtil.GetFileHierarchy("celeste_64", celeste64Dir);
     var root = fileHierarchy.Root;
 
-    foreach (var glbFile in root.FilesWithExtensionRecursive(".glb")) {
+    var modelDirectory = root.AssertGetExistingSubdir("Models");
+    foreach (var glbFile in
+             modelDirectory.FilesWithExtensionRecursive(".glb")) {
       organizer.Add(new GltfModelFileBundle(glbFile).Annotate(glbFile));
     }
 
@@ -30,6 +32,11 @@ public class Celeste64FileBundleGatherer : IAnnotatedFileBundleGatherer {
                                 .GetExistingFiles()) {
       organizer.Add(new Celeste64MapModelFileBundle {
           MapFile = mapFile,
+          TextureDirectory = textureDirectory,
+      }.Annotate(mapFile));
+      organizer.Add(new Celeste64MapSceneFileBundle {
+          MapFile = mapFile,
+          ModelDirectory = modelDirectory,
           TextureDirectory = textureDirectory,
       }.Annotate(mapFile));
     }

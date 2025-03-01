@@ -23,6 +23,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 using Color = System.Drawing.Color;
 using Image = SixLabors.ImageSharp.Image;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace fin.image;
 
@@ -48,6 +49,28 @@ public static class FinImage {
     return await FromStreamAsync(stream);
   }
 
+  public static IImage SubImage(this IReadOnlyImage src, Rectangle region) {
+    var dst = new Rgba32Image(src.PixelFormat, region.Width, region.Height);
+
+    var dstLock = dst.Lock();
+
+    src.Access(getHandler => {
+      for (var dstY = 0; dstY < dst.Height; ++dstY) {
+        var srcY = region.Y + dstY;
+
+        for (var dstX = 0; dstX < dst.Width; ++dstX) {
+          var srcX = region.X + dstX;
+
+          getHandler(srcX, srcY, out var r, out var g, out var b, out var a);
+
+          var dstI = dstY * dst.Width + dstX;
+          dstLock.Pixels[dstI] = new Rgba32(r, g, b, a);
+        }
+      }
+    });
+
+    return dst;
+  }
 
   public static Configuration ImageSharpConfig { get; }
 

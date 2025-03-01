@@ -1,4 +1,6 @@
-﻿using fin.scene;
+﻿using Celeste64.api;
+
+using fin.scene;
 
 using games.pikmin2.api;
 
@@ -26,6 +28,9 @@ public class GlobalSceneImporter : ISceneImporter<ISceneFileBundle> {
             => new BolSceneImporter().Import(bolSceneFileBundle),
         BwSceneFileBundle bwSceneFileBundle
             => new BwSceneImporter().Import(bwSceneFileBundle),
+        Celeste64MapSceneFileBundle celeste64MapSceneFileBundle
+            => new Celeste64MapSceneImporter().Import(
+                celeste64MapSceneFileBundle),
         LvlSceneFileBundle lvlSceneFileBundle
             => new LvlSceneImporter().Import(lvlSceneFileBundle),
         Pikmin2SceneFileBundle pikmin2SceneFileBundle

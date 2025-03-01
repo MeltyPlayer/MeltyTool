@@ -1,10 +1,10 @@
 ﻿using System.Numerics;
 using System.Runtime.CompilerServices;
 
+using Celeste64.map;
+
 using fin.color;
 using fin.data.lazy;
-using fin.data.queues;
-using fin.image;
 using fin.io;
 using fin.math.rotations;
 using fin.math.transform;
@@ -15,13 +15,9 @@ using fin.model.io.importers;
 using fin.model.util;
 using fin.util.sets;
 
-using Sledge.Formats.Map.Formats;
-
 using SledgeFace = Sledge.Formats.Map.Objects.Face;
-using SledgeMapObject = Sledge.Formats.Map.Objects.MapObject;
-using SledgeSolid = Sledge.Formats.Map.Objects.Solid;
 
-namespace Celeste64;
+namespace Celeste64.api;
 
 public class Celeste64MapModelFileBundle : IModelFileBundle {
   public required IReadOnlyTreeFile MapFile { get; init; }
@@ -38,8 +34,12 @@ public class Celeste64MapModelImporter
     : IModelImporter<Celeste64MapModelFileBundle> {
   public IModel Import(Celeste64MapModelFileBundle fileBundle) {
     using var s = fileBundle.MapFile.OpenRead();
-    var celeste64Map = new QuakeMapFormat().Read(s);
+    var celeste64Map = new Map(s);
+    return this.Import(fileBundle, celeste64Map);
+  }
 
+  public IModel Import(Celeste64MapModelFileBundle fileBundle,
+                       Map celeste64Map) {
     var fileSet = fileBundle.MapFile.AsFileSet();
     var finModel = new ModelImpl {
         FileBundle = fileBundle,
@@ -49,6 +49,13 @@ public class Celeste64MapModelImporter
     var lazyMaterialAndTextureMap
         = new LazyCaseInvariantStringDictionary<(IMaterial, ITexture?)>(
             textureName => {
+              if (textureName is "TB_empty" or "__TB_empty" or "invisible") {
+                var hiddenMaterial
+                    = finModel.MaterialManager.AddHiddenMaterial();
+                hiddenMaterial.Name = textureName;
+                return (hiddenMaterial, null);
+              }
+
               if (fileBundle.TextureDirectory.TryToGetExistingFile(
                       $"{textureName}.png",
                       out var textureFile)) {
@@ -77,14 +84,7 @@ public class Celeste64MapModelImporter
         VertexSpace.RELATIVE_TO_BONE,
         finRootBone);
 
-    var mapObjectQueue = new FinQueue<SledgeMapObject>(celeste64Map.Worldspawn);
-    while (mapObjectQueue.TryDequeue(out var mapObj)) {
-      mapObjectQueue.Enqueue(mapObj.Children);
-
-      if (mapObj is not SledgeSolid solid) {
-        continue;
-      }
-
+    foreach (var solid in celeste64Map.Solids) {
       var finMesh = finSkin.AddMesh();
 
       var color = FinColor.FromSystemColor(solid.Color);
