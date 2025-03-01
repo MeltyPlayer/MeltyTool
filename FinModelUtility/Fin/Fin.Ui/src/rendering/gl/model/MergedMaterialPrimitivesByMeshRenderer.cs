@@ -49,15 +49,6 @@ public partial class ModelRendererV2 {
       this.bufferRenderer_.Dispose();
     }
 
-    public bool UseLighting {
-      get => this.MaterialShader?.UseLighting ?? false;
-      set {
-        if (this.MaterialShader != null) {
-          this.MaterialShader.UseLighting = value;
-        }
-      }
-    }
-
     public void Render() {
       this.RenderImpl_();
 

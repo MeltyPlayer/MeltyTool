@@ -55,12 +55,9 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   private void ReleaseUnmanagedResources_() {
     this.impl_.Dispose();
 
-    if (this.DisposeTextures) {
-      foreach (var cachedTextureUniformData in
-               this.cachedTextureUniformDatas_) {
-        GlMaterialConstants.DisposeIfNotCommon(
-            cachedTextureUniformData.GlTexture);
-      }
+    foreach (var cachedTextureUniformData in this.cachedTextureUniformDatas_) {
+      GlMaterialConstants.DisposeIfNotCommon(
+          cachedTextureUniformData.GlTexture);
     }
 
     this.DisposeInternal();
@@ -79,13 +76,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   protected abstract void PassUniformsAndBindTextures(
       GlShaderProgram shaderProgram);
 
-  public string VertexShaderSource => this.impl_.VertexShaderSource;
-  public string FragmentShaderSource => this.impl_.FragmentShaderSource;
-
   public IReadOnlyMaterial? Material { get; }
-
-  public bool UseLighting { get; set; }
-  public bool DisposeTextures { get; set; } = true;
 
   public void Use() {
     this.cameraPositionUniform_.SetAndMaybeMarkDirty(Camera.Instance.Position);
