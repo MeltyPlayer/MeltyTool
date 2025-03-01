@@ -185,7 +185,7 @@ public class Celeste64MapSceneImporter
     GATE_BLOCK,
     GRANNY,
     MOVING_BLOCK,
-    PLAYER,
+    PLAYER_SPAWN,
     REFILL,
     SIGN_POST,
     SPIKE_BLOCK,
@@ -204,7 +204,7 @@ public class Celeste64MapSceneImporter
         "Feather"     => ActorType.FEATHER,
         "Granny"      => ActorType.GRANNY,
         "IntroCar"    => ActorType.CAR,
-        "PlayerSpawn" => ActorType.PLAYER,
+        "PlayerSpawn" => ActorType.PLAYER_SPAWN,
         "Refill"      => ActorType.REFILL,
         "SignPost"    => ActorType.SIGN_POST,
         "Spring"      => ActorType.SPRING,
@@ -218,13 +218,16 @@ public class Celeste64MapSceneImporter
       ActorType actorType,
       Entity entity)
     => actorType switch {
-        ActorType.BADELINE  => (["badeline"], 12),
-        ActorType.CASSETTE  => (["tape_1"], 12),
-        ActorType.COIN      => (["coin"], 12),
-        ActorType.CAR       => (["car_mirrors", "car_top", "car_wheels"], 36),
-        ActorType.FEATHER   => (["feather"], 12),
-        ActorType.GRANNY    => (["granny"], 12),
-        ActorType.PLAYER    => (["player"], 12),
+        ActorType.BADELINE => (["badeline"], 12),
+        ActorType.CASSETTE => (["tape_1"], 12),
+        ActorType.COIN     => (["coin"], 12),
+        ActorType.CAR      => (["car_mirrors", "car_top", "car_wheels"], 36),
+        ActorType.FEATHER  => (["feather"], 12),
+        ActorType.GRANNY   => (["granny"], 12),
+        ActorType.PLAYER_SPAWN =>
+            entity.GetStringProperty("name", "Start") is "Start"
+                ? (["player"], 12)
+                : (["flag_off"], 1),
         ActorType.REFILL    => (["refill_gem"], 12),
         ActorType.SIGN_POST => (["sign"], 12),
         ActorType.SPRING    => (["spring_board"], 36),
