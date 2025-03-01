@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using fin.color;
+using fin.model.impl.material;
 using fin.util.image;
 
 namespace fin.model.impl;
@@ -26,6 +28,19 @@ public partial class ModelImpl<TVertex> {
 
     public bool UpdateColorChannel { get; set; } = true;
     public bool UpdateAlphaChannel { get; set; } = true;
+
+    public IFogParams? FogParams { get; private set; }
+
+    public IMaterial SetFog(float nearDistance,
+                            float farDistance,
+                            IColor color) {
+      this.FogParams = new FogParams {
+          NearDistance = nearDistance,
+          FarDistance = farDistance,
+          Color = color
+      };
+      return this;
+    }
 
     public IMaterial SetBlending(
         BlendEquation blendEquation,

@@ -94,6 +94,9 @@ public partial interface IMaterial {
   new bool UpdateColorChannel { get; set; }
   new bool UpdateAlphaChannel { get; set; }
 
+  new IFogParams? FogParams { get; }
+  IMaterial SetFog(float nearDistance, float farDistance, IColor color);
+
   // TODO: Merge this into a single type
   new BlendEquation ColorBlendEquation { get; }
   new BlendFactor ColorSrcFactor { get; }
@@ -361,11 +364,14 @@ public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
   IFixedFunctionMaterial SetDefaultAlphaCompare() {
     switch (this.TransparencyType) {
       case TransparencyType.MASK: {
-        this.SetAlphaCompare(AlphaCompareType.Greater, GlslConstants.MIN_ALPHA_BEFORE_DISCARD_MASK);
+        this.SetAlphaCompare(AlphaCompareType.Greater,
+                             GlslConstants.MIN_ALPHA_BEFORE_DISCARD_MASK);
         break;
       }
       case TransparencyType.TRANSPARENT: {
-        this.SetAlphaCompare(AlphaCompareType.Greater, GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TRANSPARENT);
+        this.SetAlphaCompare(AlphaCompareType.Greater,
+                             GlslConstants
+                                 .MIN_ALPHA_BEFORE_DISCARD_TRANSPARENT);
         break;
       }
     }

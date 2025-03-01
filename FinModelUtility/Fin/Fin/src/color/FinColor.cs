@@ -7,6 +7,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.color;
 
+// TODO: Split this out to RGB/RGBA
 public interface IColor {
   float Rf { get; }
   float Gf { get; }
