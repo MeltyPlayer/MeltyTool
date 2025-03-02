@@ -18,6 +18,5 @@
 
   <ItemGroup>
     <Folder Include="src\schema\anim\" />
-    <Folder Include="src\schema\skel\" />
   </ItemGroup>
 </Project>
