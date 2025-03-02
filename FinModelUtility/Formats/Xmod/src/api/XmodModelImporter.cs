@@ -20,7 +20,7 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
         Files = files
     };
 
-    this.ImportInto(modelFileBundle, finModel, files);
+    this.ImportInto(modelFileBundle, finModel, files, null);
 
     return finModel;
   }
@@ -28,15 +28,14 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
   public void ImportInto(
       XmodModelFileBundle modelFileBundle,
       ModelImpl finModel,
-      ISet<IReadOnlyGenericFile> files) {
+      ISet<IReadOnlyGenericFile> files,
+      IReadOnlyDictionary<int, IReadOnlyBone>? finBoneById) {
     var xmod = modelFileBundle.XmodFile.ReadNewFromText<Xmod>();
 
     var finMaterialManager = finModel.MaterialManager;
 
     var finSkin = finModel.Skin;
     var finMesh = finSkin.AddMesh();
-
-    var finBones = finModel.Skeleton.Bones;
 
     var vertexBoneIndices = new List<int>(xmod.Positions.Count);
     for (var i = 0; i < xmod.Mtxv.Count; ++i) {
@@ -82,13 +81,11 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
                       vertex.SetColor(color);
                       vertex.SetUv(uv1);
 
-                      if (finBones.Count > 1) {
-                        /*var mappedMatrixIndex
-                            = packet.MatrixTable[adjunct.MatrixIndex];*/
+                      if (finBoneById != null) {
                         var mappedMatrixIndex
                             = vertexBoneIndices[adjunct.PositionIndex];
 
-                        var finBone = finBones[1 + mappedMatrixIndex];
+                        var finBone = finBoneById[mappedMatrixIndex];
                         var boneWeights
                             = finSkin.GetOrCreateBoneWeights(
                                 VertexSpace.RELATIVE_TO_BONE,
@@ -122,6 +119,8 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
 
           if (primitive.Type is PrimitiveType.TRIANGLES
                                 or PrimitiveType.TRIANGLE_STRIP) {
+            finPrimitive.SetVertexOrder(VertexOrder.CLOCKWISE);
+          } else {
             finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
           }
         }

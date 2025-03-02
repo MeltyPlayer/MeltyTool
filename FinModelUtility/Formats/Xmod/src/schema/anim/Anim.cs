@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using fin.math.rotations;
+
 using schema.binary;
 
 
@@ -13,7 +15,7 @@ public class Anim : IBinaryDeserializable {
   public int FrameCount { get; set; }
 
   public IReadOnlyList<Vector3> RootPositions { get; set; }
-  public IReadOnlyList<IReadOnlyList<Vector3>> BoneEulerRotations { get; set; }
+  public IReadOnlyList<IReadOnlyList<Quaternion>> BoneEulerRotations { get; set; }
 
   public void Read(IBinaryReader br) {
     var isOldAnimation = true;
@@ -29,15 +31,22 @@ public class Anim : IBinaryDeserializable {
 
     var rootPositions = new LinkedList<Vector3>();
     var boneEulerRotations = Enumerable.Range(0, boneCount)
-                                       .Select(_ => new LinkedList<Vector3>())
+                                       .Select(_ => new LinkedList<Quaternion>())
                                        .ToArray();
 
     for (var i = 0; i < this.FrameCount; ++i) {
       rootPositions.AddLast(br.ReadVector3());
 
       for (var b = 0; b < boneCount; ++b) {
-        var (r, p, h) = (br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
-        boneEulerRotations[b].AddLast(new Vector3(h, r, p));
+        var r = br.ReadSingle();
+        var p = br.ReadSingle();
+        var h = br.ReadSingle();
+
+        var x = h;
+        var y = r;
+        var z = p;
+
+        boneEulerRotations[b].AddLast(QuaternionUtil.CreateXyz(x, y, z));
       }
     }
 

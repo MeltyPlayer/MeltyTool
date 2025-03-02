@@ -34,6 +34,7 @@ public class PedModelImporter : IModelImporter<PedModelFileBundle> {
 
     var finRootBone = finModel.Skeleton.Root;
     var boneQueue = new FinTuple2Queue<SkelBone, IBone?>((skel.Root, null));
+    var finBoneById = new Dictionary<int, IReadOnlyBone>();
     while (boneQueue.TryDequeue(out var skelBone, out var parentFinBone)) {
       var offset = skelBone.Offset;
       var finBone = (parentFinBone ?? finRootBone).AddChild(
@@ -41,6 +42,7 @@ public class PedModelImporter : IModelImporter<PedModelFileBundle> {
           offset.Y,
           offset.Z);
       finBone.Name = skelBone.Name;
+      finBoneById[skelBone.Id] = finBone;
 
       boneQueue.Enqueue(skelBone.Children.Select(child => (child, finBone)));
     }
@@ -71,9 +73,7 @@ public class PedModelImporter : IModelImporter<PedModelFileBundle> {
             = finAnimation.GetOrCreateBoneTracks(finBonesFromSkel[i]);
 
         var rotationTrack = finBoneTracks.UseCombinedQuaternionKeyframes();
-        rotationTrack.SetAllKeyframes(
-            boneEulerRotations.Select(
-                eulerRotation => eulerRotation.CreateZyxRadians()));
+        rotationTrack.SetAllKeyframes(boneEulerRotations);
       }
     }
 
@@ -85,7 +85,8 @@ public class PedModelImporter : IModelImporter<PedModelFileBundle> {
             TextureDirectory = modelFileBundle.TextureDirectory,
         },
         finModel,
-        files);
+        files,
+        finBoneById);
 
     return finModel;
   }

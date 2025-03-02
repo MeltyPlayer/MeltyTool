@@ -6,7 +6,15 @@ using schema.text.reader;
 
 namespace xmod.schema.skel;
 
-public class SkelBone : ITextDeserializable {
+public class BoneCounter {
+  private int currentId_;
+  public int GetAndIncrement() => this.currentId_++;
+}
+
+public class SkelBone(BoneCounter boneCounter) : ITextDeserializable {
+
+
+  public int Id { get; set; }
   public string Name { get; set; }
   public Vector3 Offset { get; set; }
   public LinkedList<SkelBone> Children { get; } = new();
@@ -15,6 +23,7 @@ public class SkelBone : ITextDeserializable {
     {
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       tr.AssertString("bone");
+      this.Id = boneCounter.GetAndIncrement();
 
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
       this.Name
@@ -38,7 +47,9 @@ public class SkelBone : ITextDeserializable {
 
     this.Children.Clear();
     while (!tr.Matches('}')) {
-      this.Children.AddLast(tr.ReadNew<SkelBone>());
+      var child = new SkelBone(boneCounter);
+      child.Read(tr);
+      this.Children.AddLast(child);
 
       tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
     }
@@ -58,6 +69,8 @@ public class Skel : ITextDeserializable {
     tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
     tr.ReadUInt32();
 
-    this.Root = tr.ReadNew<SkelBone>();
+    var root = new SkelBone(new BoneCounter());
+    root.Read(tr);
+    this.Root = root;
   }
 }

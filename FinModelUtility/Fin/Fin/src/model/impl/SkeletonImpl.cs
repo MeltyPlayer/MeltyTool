@@ -66,7 +66,7 @@ public partial class ModelImpl<TVertex> {
       public string Name { get; set; }
       public int Index { get; set; }
 
-      public override string ToString() => this.Name;
+      public override string ToString() => $"{this.Name} <{this.Index}>";
 
       public IBone Root { get; }
       public IBone? Parent { get; }
