@@ -2,7 +2,6 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-using fin.math.xyz;
 using fin.model;
 
 using Quaternion = System.Numerics.Quaternion;

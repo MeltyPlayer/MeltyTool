@@ -1,4 +1,6 @@
-﻿using BCnEncoder.Decoder;
+﻿using System.Drawing;
+
+using BCnEncoder.Decoder;
 using BCnEncoder.Shared;
 
 using fin.image;
@@ -70,7 +72,7 @@ public class TexImageReader {
         break;
       }
       default:
-        throw new NotImplementedException();
+        return FinImage.Create1x1FromColor(Color.Magenta);
     }
 
     var rgbaImage = new Rgba32Image(pixelFormat, width, height);

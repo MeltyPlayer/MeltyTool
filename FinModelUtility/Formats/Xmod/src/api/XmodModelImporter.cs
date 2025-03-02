@@ -117,12 +117,11 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
 
           finPrimitive.SetMaterial(finMaterial);
 
-          if (primitive.Type is PrimitiveType.TRIANGLES
-                                or PrimitiveType.TRIANGLE_STRIP) {
-            finPrimitive.SetVertexOrder(VertexOrder.CLOCKWISE);
-          } else {
-            finPrimitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
-          }
+          finPrimitive.SetVertexOrder(
+              primitive.Type is PrimitiveType.TRIANGLES
+                                or PrimitiveType.TRIANGLE_STRIP
+                  ? VertexOrder.CLOCKWISE
+                  : VertexOrder.COUNTER_CLOCKWISE);
         }
 
         ++packetIndex;

@@ -66,14 +66,18 @@ public class PedModelImporter : IModelImporter<PedModelFileBundle> {
       rootBoneTracks.UseCombinedTranslationKeyframes()
                     .SetAllKeyframes(anim.RootPositions);
 
-      var finBonesFromSkel = finModel.Skeleton.Bones.Skip(1).ToArray();
-      for (var i = 0; i < finBonesFromSkel.Length; ++i) {
+      for (var i = 0; i < anim.BoneEulerRotations.Count; ++i) {
         var boneEulerRotations = anim.BoneEulerRotations[i];
-        var finBoneTracks
-            = finAnimation.GetOrCreateBoneTracks(finBonesFromSkel[i]);
+        var finBoneTracks = finAnimation.GetOrCreateBoneTracks(finBoneById[i]);
 
-        var rotationTrack = finBoneTracks.UseCombinedQuaternionKeyframes();
-        rotationTrack.SetAllKeyframes(boneEulerRotations);
+        var rotationTrack = finBoneTracks.UseSeparateEulerRadiansKeyframes();
+        for (var f = 0; f < anim.FrameCount; ++f) {
+          var eulerRotation = boneEulerRotations[f];
+
+          rotationTrack.Axes[0].SetKeyframe(f, eulerRotation.X);
+          rotationTrack.Axes[1].SetKeyframe(f, eulerRotation.Y);
+          rotationTrack.Axes[2].SetKeyframe(f, eulerRotation.Z);
+        }
       }
     }
 
