@@ -30,13 +30,23 @@ public class PedModelImporter : IModelImporter<PedModelFileBundle> {
     while (boneQueue.TryDequeue(out var skelBone, out var parentFinBone)) {
       var offset = skelBone.Offset;
       var finBone = (parentFinBone ?? finModel.Skeleton.Root).AddChild(
-              offset.X,
-              offset.Y,
-              offset.Z);
+          offset.X,
+          offset.Y,
+          offset.Z);
       finBone.Name = skelBone.Name;
 
       boneQueue.Enqueue(skelBone.Children.Select(child => (child, finBone)));
     }
+
+    var xmodFile = modelFileBundle.ModelDirectory.AssertGetExistingFile(
+        $"{ped.XmodNames[0]}.xmod");
+    new XmodModelImporter().ImportInto(
+        new XmodModelFileBundle {
+            XmodFile = xmodFile,
+            TextureDirectory = modelFileBundle.TextureDirectory,
+        },
+        finModel,
+        files);
 
     return finModel;
   }

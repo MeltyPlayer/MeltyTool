@@ -24,6 +24,8 @@ public class MidnightClub2FileBundleGatherer : IAnnotatedFileBundleGatherer {
     var fileHierarchy = ExtractorUtil.GetFileHierarchy("midnight_club_2",
       extractedDir);
 
+    var modelDirectory =
+        fileHierarchy.Root.AssertGetExistingSubdir("model");
     var textureDirectory =
         fileHierarchy.Root.AssertGetExistingSubdir("texture_x");
 
@@ -40,6 +42,8 @@ public class MidnightClub2FileBundleGatherer : IAnnotatedFileBundleGatherer {
               foreach (var pedFile in subdir.FilesWithExtension(".ped")) {
                 organizer.Add(new PedModelFileBundle {
                     PedFile = pedFile,
+                    ModelDirectory = modelDirectory,
+                    TextureDirectory = textureDirectory,
                 }.Annotate(pedFile));
               }
             })

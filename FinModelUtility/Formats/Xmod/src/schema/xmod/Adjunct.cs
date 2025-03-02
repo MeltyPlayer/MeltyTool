@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-using fin.schema;
+﻿using fin.schema;
 using fin.util.asserts;
 
 using schema.text;

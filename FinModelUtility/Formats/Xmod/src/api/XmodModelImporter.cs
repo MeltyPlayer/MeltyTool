@@ -1,10 +1,9 @@
-﻿using fin.model;
+﻿using fin.io;
+using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
 using fin.model.util;
 using fin.util.sets;
-
-using schema.text.reader;
 
 using xmod.schema.xmod;
 
@@ -15,21 +14,29 @@ namespace xmod.api;
 
 public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
   public IModel Import(XmodModelFileBundle modelFileBundle) {
-    using var tr = new SchemaTextReader(modelFileBundle.XmodFile.OpenRead());
-
-    var xmod = new Xmod();
-    xmod.Read(tr);
-
     var files = modelFileBundle.XmodFile.AsFileSet();
     var finModel = new ModelImpl {
         FileBundle = modelFileBundle,
         Files = files
     };
 
+    this.ImportInto(modelFileBundle, finModel, files);
+
+    return finModel;
+  }
+
+  public void ImportInto(
+      XmodModelFileBundle modelFileBundle,
+      ModelImpl finModel,
+      ISet<IReadOnlyGenericFile> files) {
+    var xmod = modelFileBundle.XmodFile.ReadNewFromText<Xmod>();
+
     var finMaterialManager = finModel.MaterialManager;
 
     var finSkin = finModel.Skin;
     var finMesh = finSkin.AddMesh();
+
+    var finBones = finModel.Skeleton.Bones;
 
     var packetIndex = 0;
     foreach (var material in xmod.Materials) {
@@ -49,8 +56,8 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
         files.Add(texFile);
         var image = new TexImageReader().ReadImage(texFile);
 
-        var finTexture = finMaterialManager.CreateTexture(image);
-        finMaterial = finMaterialManager.AddTextureMaterial(finTexture);
+        (finMaterial, _) = finMaterialManager
+            .AddSimpleTextureMaterialFromImage(image, textureName);
       }
 
       for (var i = 0; i < material.NumPackets; ++i) {
@@ -68,6 +75,15 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
                       vertex.SetColor(color);
                       vertex.SetUv(uv1);
 
+                      if (finBones.Count > 1) {
+                        var finBone = finBones[adjunct.MatrixIndex];
+                        var boneWeights
+                            = finSkin.GetOrCreateBoneWeights(
+                                VertexSpace.RELATIVE_TO_BONE,
+                                finBone);
+                        vertex.SetBoneWeights(boneWeights);
+                      }
+
                       return vertex;
                     })
                     .ToArray();
@@ -82,11 +98,11 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
                        .Select(vertexIndex => packetVertices[vertexIndex])
                        .ToArray();
           var finPrimitive = primitive.Type switch {
-              PrimitiveType.TRIANGLE_STRIP 
+              PrimitiveType.TRIANGLE_STRIP
                   => finMesh.AddTriangleStrip(primitiveVertices),
-              PrimitiveType.TRIANGLE_STRIP_REVERSED 
+              PrimitiveType.TRIANGLE_STRIP_REVERSED
                   => finMesh.AddTriangleStrip(primitiveVertices),
-              PrimitiveType.TRIANGLES 
+              PrimitiveType.TRIANGLES
                   => finMesh.AddTriangles(primitiveVertices),
           };
 
@@ -101,7 +117,5 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
         ++packetIndex;
       }
     }
-
-    return finModel;
   }
 }
