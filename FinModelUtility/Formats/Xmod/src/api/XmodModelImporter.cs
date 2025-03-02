@@ -38,6 +38,13 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
 
     var finBones = finModel.Skeleton.Bones;
 
+    var vertexBoneIndices = new List<int>(xmod.Positions.Count);
+    for (var i = 0; i < xmod.Mtxv.Count; ++i) {
+      for (var m = 0; m < xmod.Mtxv[i]; ++m) {
+        vertexBoneIndices.Add(i);
+      }
+    }
+
     var packetIndex = 0;
     foreach (var material in xmod.Materials) {
       IMaterial finMaterial;
@@ -76,7 +83,12 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
                       vertex.SetUv(uv1);
 
                       if (finBones.Count > 1) {
-                        var finBone = finBones[adjunct.MatrixIndex];
+                        /*var mappedMatrixIndex
+                            = packet.MatrixTable[adjunct.MatrixIndex];*/
+                        var mappedMatrixIndex
+                            = vertexBoneIndices[adjunct.PositionIndex];
+
+                        var finBone = finBones[1 + mappedMatrixIndex];
                         var boneWeights
                             = finSkin.GetOrCreateBoneWeights(
                                 VertexSpace.RELATIVE_TO_BONE,

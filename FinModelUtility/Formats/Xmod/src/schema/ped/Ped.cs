@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-using schema.text;
+﻿using schema.text;
 using schema.text.reader;
 
 

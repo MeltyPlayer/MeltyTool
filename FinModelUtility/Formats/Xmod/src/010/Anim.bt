@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+local int isOldAnimation = true;
+
+int magic;
+local int frameCount = magic;
+if (frameCount == 0) {
+  int realFrameCount;
+  frameCount = realFrameCount;
+  isOldAnimation = false;
+}
+
+local int boneCount;
+if (isOldAnimation) {
+  int trueBoneCount;
+  boneCount = trueBoneCount;
+} else {
+  int channelCount;
+  boneCount = channelCount / 3 - 1;
+}
+
+float eulerRotationValues[3 * frameCount * (1 + boneCount)] <bgcolor=ff0000>;

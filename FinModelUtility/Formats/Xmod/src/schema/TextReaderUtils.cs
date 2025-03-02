@@ -15,7 +15,7 @@ public static class TextReaderUtils {
   public static string ReadKeyValue(ITextReader tr, string prefix) {
     tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
     tr.AssertString(prefix);
-    tr.AssertChar(':');
+    tr.Matches(':');
     tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
     return tr.ReadLine();
   }

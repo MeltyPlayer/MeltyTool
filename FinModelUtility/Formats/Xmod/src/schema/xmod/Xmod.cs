@@ -12,6 +12,8 @@ public class Xmod : ITextDeserializable {
   public IReadOnlyList<Material> Materials { get; set; }
   public IReadOnlyList<Packet> Packets { get; set; }
 
+  public IReadOnlyList<int> Mtxv { get; set; }
+
   public void Read(ITextReader tr) {
     var version = TextReaderUtils.ReadKeyValue(tr, "version");
 
@@ -55,5 +57,12 @@ public class Xmod : ITextDeserializable {
     var numPackets =
         this.Materials.Select(material => material.NumPackets).Sum();
     this.Packets = tr.ReadNews<Packet>(numPackets);
+
+    this.Mtxv = TextReaderUtils.ReadKeyValue(tr, "mtxv")
+                               .Split(' ',
+                                      StringSplitOptions.RemoveEmptyEntries |
+                                      StringSplitOptions.TrimEntries)
+                               .Select(int.Parse)
+                               .ToArray();
   }
 }
