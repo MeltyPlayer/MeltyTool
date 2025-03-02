@@ -28,8 +28,10 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@Cuyler36](https://github.com/Cuyler36), aka CulyerAC, whose [RELDumper](https://github.com/Cuyler36/RELDumper) is used to extract the contents of .rel/.map files.
 - [@DavidSM64](https://github.com/DavidSM64), whose [Quad64](https://github.com/DavidSM64/Quad64) is used as the base for the SM64 importer.
 - [@DickBlackshack](https://github.com/DickBlackshack), aka Rich Whitehouse, whose [Noesis](https://richwhitehouse.com/index.php?content=inc_projects.php&showproject=91) model viewer's plugins were leveraged to add support for various formats.
+- [@Dummiesman](https://github.com/Dummiesman), whose [AngelStudiosBlenderAddon](https://github.com/Dummiesman/AngelStudiosBlenderAddon) Blender plugin was heavily referenced to import Midnight Club 2 assets.
 - [@Emill](https://github.com/Emill), whose [Nintendo 64 Fast3D renderer](https://github.com/Emill/n64-fast3d-engine) was heavily referenced to vastly improve TMEM emulation.
 - [@EstevanBR](https://github.com/EstevanBR), whose [DATReaderC](https://github.com/EstevanBR/DATReaderC) was referenced as the starting point for the .dat importer.
+- [@EXOK](https://github.com/EXOK), whose [Celeste64](https://github.com/EXOK/Celeste64) source was heavily referenced to add support for Celeste 64 maps.
 - [@follyfoxe](https://github.com/follyfoxe), whose [SpmViewer](https://github.com/follyfoxe/SpmViewer) was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - [@Gericom](https://github.com/Gericom), whose [MKDS Course Modifier](https://www.romhacking.net/utilities/1285/) program was used as the basis for the J3dGraph .bmd importer.
 - [@gibbed](https://github.com/gibbed), whose [Gibbed.Visceral](https://github.com/gibbed/Gibbed.Visceral) library was used as the base of the .str extractor.
@@ -46,6 +48,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@KillzXGaming](https://github.com/KillzXGaming), whose [Switch-Toolbox](https://github.com/KillzXGaming/Switch-Toolbox) was referenced to add support for LZSS decompression.
 - [@kornman00](https://github.com/kornman00), aka [@KornnerStudios](https://github.com/KornnerStudios), for documenting the Halo Wars formats in [HaloWarsDocs](https://github.com/HaloMods/HaloWarsDocs) and providing the [KSoft suite](https://github.com/KornnerStudios/KSoft) to extract the contents of the game.
 - [@leftp](https://github.com/leftp), whose [SharpDirLister](https://github.com/EncodeGroup/SharpDirLister) API was used to dramatically improve listing out the file hierarchy.
+- [@LogicAndTrick](https://github.com/LogicAndTrick), whose [sledge-formats](https://github.com/LogicAndTrick/sledge-formats) library was used to parse Celeste 64 map files.
 - [@LordNed](https://github.com/LordNed), whose [J3D-Model-Viewer](https://github.com/LordNed/J3D-Model-Viewer) tool and [JStudio](https://github.com/LordNed/JStudio) library were referenced to fix bugs in the J3dGraph .bmd importer.
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
 - [@M-1-RLG](https://github.com/M-1-RLG), aka M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
