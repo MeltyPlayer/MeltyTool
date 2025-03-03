@@ -26,7 +26,7 @@ public class Packet : ITextDeserializable {
 
     tr.AssertString("mtx");
     this.MatrixTable = tr.ReadInt32s(
-        TextReaderConstantsExtra.WHITESPACE_STRINGS,
+        TextReaderConstants.WHITESPACE_STRINGS,
         TextReaderConstants.NEWLINE_STRINGS);
 
     tr.ReadUpToAndPastTerminator(TextReaderUtils.CLOSING_BRACE);

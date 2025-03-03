@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.schema;
 using fin.util.asserts;
 
 using schema.text.reader;
@@ -104,11 +105,11 @@ public partial class VrmlParser {
       IDictionary<string, INode> definitions) {
     LinkedList<INode> rawChildren = new();
 
-    SkipWhitespace_(tr);
+    tr.SkipWhitespace();
     tr.AssertChar('{');
 
     while (!tr.Eof) {
-      SkipWhitespace_(tr);
+      tr.SkipWhitespace();
       if (tr.Matches('}')) {
         break;
       }

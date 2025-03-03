@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Numerics;
 using System.Text;
 
+using fin.schema;
 using fin.util.asserts;
 
 using schema.binary;
@@ -92,13 +93,13 @@ public partial class VrmlParser {
       IDictionary<string, INode> definitions,
       bool useBrackets = true) {
     if (useBrackets) {
-      SkipWhitespace_(tr);
+      tr.SkipWhitespace();
       tr.AssertChar('[');
     }
 
     var nodes = new LinkedList<INode>();
     while (!tr.Eof) {
-      SkipWhitespace_(tr);
+      tr.SkipWhitespace();
 
       if (tr.Eof) {
         break;
@@ -136,18 +137,18 @@ public partial class VrmlParser {
       ITextReader tr,
       IDictionary<string, INode> definitions,
       out INode? node) {
-    var nodeType = ReadWord_(tr);
+    var nodeType = tr.ReadWord();
 
     if (nodeType is "USE") {
-      var usedName = ReadWord_(tr);
+      var usedName = tr.ReadWord();
       node = definitions[usedName];
       return true;
     }
 
     string? definitionName = null;
     if (nodeType is "DEF") {
-      definitionName = ReadWord_(tr);
-      nodeType = ReadWord_(tr);
+      definitionName = tr.ReadWord();
+      nodeType = tr.ReadWord();
     }
 
     if (UNSUPPORTED_NODES.Contains(nodeType)) {
@@ -397,7 +398,7 @@ public partial class VrmlParser {
               break;
             }
             case "frameCount": {
-              var frameCount = ReadWord_(tr);
+              var frameCount = tr.ReadWord();
               break;
             }
             case "frames": {
@@ -411,7 +412,7 @@ public partial class VrmlParser {
               break;
             }
             case "playOrder": {
-              var playOrder = ReadWord_(tr);
+              var playOrder = tr.ReadWord();
               break;
             }
             case "rotation": {
@@ -566,19 +567,19 @@ public partial class VrmlParser {
   }
 
   private static RouteNode ReadRouteNode_(ITextReader tr) {
-    var src = ReadWord_(tr);
-    SkipWhitespace_(tr);
+    var src = tr.ReadWord();
+    tr.SkipWhitespace();
     tr.AssertString("TO");
-    var dst = ReadWord_(tr);
+    var dst = tr.ReadWord();
     return new RouteNode { Src = src, Dst = dst };
   }
 
   private static void ReadFields_(ITextReader tr, Action<string> fieldHandler) {
-    SkipWhitespace_(tr);
+    tr.SkipWhitespace();
     tr.AssertChar('{');
 
     while (!tr.Eof) {
-      SkipWhitespace_(tr);
+      tr.SkipWhitespace();
       if (tr.Matches('}')) {
         return;
       }
@@ -588,14 +589,14 @@ public partial class VrmlParser {
         continue;
       }
 
-      var fieldName = ReadWord_(tr);
+      var fieldName = tr.ReadWord();
       fieldHandler(fieldName);
     }
   }
 
   private static void ReadArray_(ITextReader tr,
                                  Action<ITextReader> lineHandler) {
-    SkipWhitespace_(tr);
+    tr.SkipWhitespace();
     tr.AssertChar('[');
 
     var arrayText = tr.ReadUpToAndPastTerminator(']');
@@ -604,9 +605,9 @@ public partial class VrmlParser {
     var subTr = new SchemaTextReader(ms);
 
     while (!subTr.Eof) {
-      SkipWhitespace_(subTr);
+      subTr.SkipWhitespace();
       lineHandler(subTr);
-      SkipWhitespace_(subTr);
+      subTr.SkipWhitespace();
     }
   }
 
@@ -622,7 +623,7 @@ public partial class VrmlParser {
   }
 
   private static IReadOnlyList<int> ReadIndexArray_(ITextReader tr) {
-    SkipWhitespace_(tr);
+    tr.SkipWhitespace();
     tr.AssertChar('[');
     return tr.ReadInt32s(TextReaderConstants.COMMA_CHAR, ']');
   }
@@ -635,7 +636,7 @@ public partial class VrmlParser {
                                                .ToArray();
 
   private static IReadOnlyList<float> ReadSingleArray_(ITextReader tr) {
-    SkipWhitespace_(tr);
+    tr.SkipWhitespace();
     tr.AssertChar('[');
     return tr.ReadSingles(SEPARATORS_, [']']);
   }
@@ -690,7 +691,7 @@ public partial class VrmlParser {
     return list.ToArray();
   }
 
-  private static bool ReadBool_(ITextReader tr) => ReadWord_(tr) == "TRUE";
+  private static bool ReadBool_(ITextReader tr) => tr.ReadWord() == "TRUE";
 
   private static Vector2 ReadVector2_(ITextReader tr)
     => new(ReadSingles_(tr, 2));
@@ -707,7 +708,7 @@ public partial class VrmlParser {
   private static float[] ReadSingles_(ITextReader tr, int count) {
     var singles = new float[count];
     for (var i = 0; i < count; ++i) {
-      singles[i] = float.Parse(ReadWord_(tr));
+      singles[i] = float.Parse(tr.ReadWord());
       if (!tr.Eof) {
         tr.SkipOnceIfPresent(',');
       }
@@ -716,21 +717,9 @@ public partial class VrmlParser {
     return singles;
   }
 
-  private static void SkipWhitespace_(ITextReader tr)
-    => tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
-
   private static string ReadString_(ITextReader tr) {
-    SkipWhitespace_(tr);
+    tr.SkipWhitespace();
     tr.AssertChar('"');
     return tr.ReadUpToAndPastTerminator('"');
-  }
-
-  private static string ReadWord_(ITextReader tr) {
-    SkipWhitespace_(tr);
-    var word
-        = tr.ReadUpToStartOfTerminator([
-            " ", "\t", "\n", "\r\n", ",", "{", "[", "}", "]"
-        ]);
-    return word;
   }
 }

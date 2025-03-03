@@ -27,8 +27,8 @@ public class Primitive : ITextDeserializable {
     };
 
     this.VertexIndices = tr.ReadInt32s(
-        TextReaderConstantsExtra.WHITESPACE_STRINGS,
+        TextReaderConstants.WHITESPACE_STRINGS,
         TextReaderConstants.NEWLINE_STRINGS);
-    tr.SkipManyIfPresent(TextReaderConstantsExtra.WHITESPACE_STRINGS);
+    tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_STRINGS);
   }
 }

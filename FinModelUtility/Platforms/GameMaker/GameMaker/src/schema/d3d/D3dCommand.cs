@@ -40,7 +40,7 @@ public struct D3dCommand : ITextDeserializable {
   public void Read(ITextReader tr) {
     this.CommandType = (D3dCommandType) tr.ReadInt32();
     this.Parameters = tr.ReadSingles(
-        TextReaderConstantsExtra.WHITESPACE_STRINGS,
+        TextReaderConstants.WHITESPACE_STRINGS,
         TextReaderConstants.NEWLINE_STRINGS);
   }
 }

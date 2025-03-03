@@ -1,4 +1,5 @@
 ﻿using fin.model;
+using fin.schema;
 
 using schema.text.reader;
 
@@ -17,7 +18,7 @@ public partial class VrmlParser {
         fieldName => {
           switch (fieldName) {
             case "vertexOrdering": {
-              vertexOrdering = ReadWord_(tr) switch {
+              vertexOrdering = tr.ReadWord() switch {
                   "CLOCKWISE"         => VertexOrder.CLOCKWISE,
                   "COUNTER_CLOCKWISE" => VertexOrder.COUNTER_CLOCKWISE,
                   _                   => throw new ArgumentOutOfRangeException()
@@ -25,7 +26,7 @@ public partial class VrmlParser {
               break;
             }
             case "shapeType": {
-              shapeType = ReadWord_(tr);
+              shapeType = tr.ReadWord();
               break;
             }
             default: throw new NotImplementedException();

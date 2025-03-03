@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
+    <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageReference Include="Crayon" Version="2.0.69" />
     <PackageReference Include="FastBitmapLib" Version="2.1.0" />

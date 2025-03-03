@@ -18,7 +18,7 @@ public class Adjunct : ITextDeserializable {
     tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
     tr.AssertString("adj");
 
-    var indices = tr.ReadInt32s(TextReaderConstantsExtra.WHITESPACE_STRINGS,
+    var indices = tr.ReadInt32s(TextReaderConstants.WHITESPACE_STRINGS,
                                 TextReaderConstants.NEWLINE_STRINGS);
     Asserts.Equal(6, indices.Length);
 
