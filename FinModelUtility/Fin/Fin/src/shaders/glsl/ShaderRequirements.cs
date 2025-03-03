@@ -34,24 +34,25 @@ public class ShaderRequirements : IShaderRequirements {
     this.UsesSphericalReflectionMapping
         = material?.Textures.Any(t => t.UvType is UvType.SPHERICAL) ?? false;
 
-    this.TangentType = TangentType.NOT_PRESENT;
-    foreach (var vertex in model.Skin.Meshes
-                                .SelectMany(mesh => mesh.Primitives)
-                                .Where(primitive => primitive.Material == material)
-                                .SelectMany(primitive => primitive.Vertices)) {
-      switch (vertex) {
-        case IReadOnlyNormalTangentVertex {
-            LocalNormal: not null, LocalTangent: not null
-        }: {
-          this.HasNormals = true;
-          this.TangentType = TangentType.CALCULATED;
-          break;
-        }
-        case IReadOnlyNormalVertex { LocalNormal: not null }: {
-          this.HasNormals = true;
-          break;
-        }
-      }
+    if (modelRequirements.HasNormals) {
+      this.HasNormals = model.Skin.Meshes
+                             .SelectMany(mesh => mesh.Primitives)
+                             .Where(primitive => primitive.Material == material)
+                             .SelectMany(primitive => primitive.Vertices)
+                             .OfType<IReadOnlyNormalVertex>()
+                             .Any(v => v.LocalNormal != null);
+    }
+
+    if (modelRequirements.HasTangents) {
+      this.TangentType
+          = model.Skin.Meshes
+                 .SelectMany(mesh => mesh.Primitives)
+                 .Where(primitive => primitive.Material == material)
+                 .SelectMany(primitive => primitive.Vertices)
+                 .OfType<IReadOnlyTangentVertex>()
+                 .Any(v => v.LocalTangent != null)
+              ? TangentType.DEFINED
+              : TangentType.NOT_PRESENT;
     }
 
     if (this.TangentType is TangentType.NOT_PRESENT &&
