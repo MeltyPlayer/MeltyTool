@@ -12,6 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\..\..\Platforms\GameMaker\GameMaker\GameMaker.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\GameMaker\GameMaker\GameMaker.csproj" />
   </ItemGroup>
 </Project>

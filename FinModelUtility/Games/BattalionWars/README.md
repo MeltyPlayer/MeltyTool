@@ -1,4 +1,4 @@
-# Modl
+# Battalion Wars
 
 Library for extracting models from the .modl model format, which was used in Battalion Wars 1 and 2 for the GameCube and Wii.
 

@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\..\..\Formats\Granny3d\Granny3d.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\Granny3d\Granny3d.csproj" />
     <ProjectReference Include="..\KSoft\KSoft.Phoenix\KSoft.Phoenix.csproj" />
     <ProjectReference Include="..\KSoft\KSoft\KSoft.csproj" />
   </ItemGroup>

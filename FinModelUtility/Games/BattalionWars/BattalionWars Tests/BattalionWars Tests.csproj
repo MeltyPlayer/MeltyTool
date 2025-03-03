@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Visceral_Tests</RootNamespace>
+    <RootNamespace>modl</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\Visceral\Visceral.csproj" />
+    <ProjectReference Include="..\BattalionWars\BattalionWars.csproj" />
   </ItemGroup>
-
 </Project>

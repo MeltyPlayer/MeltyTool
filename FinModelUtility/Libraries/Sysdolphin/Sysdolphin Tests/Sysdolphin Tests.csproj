@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\Hsd\Hsd.csproj" />
+    <ProjectReference Include="..\Sysdolphin\Sysdolphin.csproj" />
   </ItemGroup>
 
 </Project>

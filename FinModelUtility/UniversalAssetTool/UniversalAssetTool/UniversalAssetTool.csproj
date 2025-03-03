@@ -132,22 +132,22 @@
     <ProjectReference Include="..\..\Fin\Fin.Ui\Fin.Ui.csproj" />
 
     <ProjectReference Include="..\..\Formats\Ast\Ast\Ast.csproj" />
-    <ProjectReference Include="..\..\Formats\Grezzo\Grezzo\Grezzo.csproj" />
-    <ProjectReference Include="..\..\Formats\F3dzex2\F3dzex2.csproj" />
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
-    <ProjectReference Include="..\..\Formats\Hsd\Hsd\Hsd.csproj" />
-    <ProjectReference Include="..\..\Formats\JSystem\JSystem\JSystem.csproj" />
-    <ProjectReference Include="..\..\Formats\Level5\Level5\Level5.csproj" />
-    <ProjectReference Include="..\..\Formats\Modl\Modl\Modl.csproj" />
-    <ProjectReference Include="..\..\Formats\Nitro\Nitro\Nitro.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
-    <ProjectReference Include="..\..\Formats\Visceral\Visceral\Visceral.csproj" />
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
-    <ProjectReference Include="..\..\Formats\Xmod\Xmod.csproj" />
+
+    <ProjectReference Include="..\..\Libraries\AngelStudios\AngelStudios.csproj" />
+    <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2.csproj" />
+    <ProjectReference Include="..\..\Libraries\Grezzo\Grezzo\Grezzo.csproj" />
+    <ProjectReference Include="..\..\Libraries\JSystem\JSystem\JSystem.csproj" />
+    <ProjectReference Include="..\..\Libraries\Level5\Level5\Level5.csproj" />
+    <ProjectReference Include="..\..\Libraries\Nitro\Nitro\Nitro.csproj" />
+    <ProjectReference Include="..\..\Libraries\Sysdolphin\Sysdolphin\Sysdolphin.csproj" />
+    <ProjectReference Include="..\..\Libraries\VisceralGames\VisceralGames\VisceralGames.csproj" />
+
+    <ProjectReference Include="..\..\Games\BattalionWars\BattalionWars\BattalionWars.csproj" />
     <ProjectReference Include="..\..\Games\Celeste64\Celeste64\Celeste64.csproj" />
-
     <ProjectReference Include="..\..\Games\HaloWars\HaloWars\HaloWars.csproj" />
-
     <ProjectReference Include="..\..\Games\MarioKartDoubleDash\MarioKartDoubleDash\MarioKartDoubleDash.csproj" />
     <ProjectReference Include="..\..\Games\PaperMarioDirectorsCut\PaperMarioDirectorsCut\PaperMarioDirectorsCut.csproj" />
     <ProjectReference Include="..\..\Games\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor.csproj" />
