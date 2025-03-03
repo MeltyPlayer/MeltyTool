@@ -3,6 +3,8 @@
 using BCnEncoder.Decoder;
 using BCnEncoder.Shared;
 
+using CommunityToolkit.HighPerformance;
+
 using fin.image;
 using fin.image.formats;
 using fin.io;
@@ -78,16 +80,7 @@ public class TexImageReader {
     var rgbaImage = new Rgba32Image(pixelFormat, width, height);
     image = rgbaImage;
     using var imageLock = rgbaImage.Lock();
-    var ptr = imageLock.Pixels;
-
-    for (var y = 0; y < height; y++) {
-      for (var x = 0; x < width; ++x) {
-        var i = y * width + x;
-
-        var src = loadedDxt[i];
-        ptr[i] = new Rgba32(src.r, src.g, src.b, src.a);
-      }
-    }
+    loadedDxt.AsSpan().Cast<ColorRgba32, Rgba32>().CopyTo(imageLock.Pixels);
 
     return image;
   }
