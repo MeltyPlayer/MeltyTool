@@ -20,6 +20,7 @@ public enum ObjectFlags : uint {
 }
 
 [BinarySchema]
+[Endianness(Endianness.LittleEndian)]
 public partial class Object : IBinaryDeserializable {
   public ObjectFlags Flags { get; set; }
   private uint attachPointer_;
