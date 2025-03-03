@@ -45,28 +45,37 @@ public class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
     }
 
     var packetIndex = 0;
-    foreach (var material in xmod.Materials) {
+    foreach (var xmodMaterial in xmod.Materials) {
       IMaterial finMaterial;
 
-      var textureIds = material.TextureIds;
-      if (textureIds.Count == 0) {
-        finMaterial = finMaterialManager.AddNullMaterial();
-      } else {
+      IReadOnlyTreeFile? textureFile = null;
+      var textureIds = xmodMaterial.TextureIds;
+      if (textureIds.Count > 0) {
         var textureId = textureIds[0];
         var textureName = textureId.Name;
-
-        var texFile =
-            modelFileBundle.TextureDirectory.GetFilesWithNameRecursive(
-                               $"{textureName}.tex")
-                           .First();
-        files.Add(texFile);
-        var image = new TexImageReader().ReadImage(texFile);
-
-        (finMaterial, _) = finMaterialManager
-            .AddSimpleTextureMaterialFromImage(image, textureName);
+        textureFile = modelFileBundle
+                      .TextureDirectory.GetFilesWithNameRecursive(
+                          $"{textureName}.tex")
+                      .FirstOrDefault();
       }
 
-      for (var i = 0; i < material.NumPackets; ++i) {
+      if (textureFile == null) {
+        finMaterial = finMaterialManager.AddNullMaterial();
+      } else {
+        files.Add(textureFile);
+        var image = new TexImageReader().ReadImage(textureFile);
+
+        (finMaterial, var finTexture) = finMaterialManager
+            .AddSimpleTextureMaterialFromImage(
+                image,
+                textureFile.NameWithoutExtension.ToString());
+
+        finTexture.WrapModeU = finTexture.WrapModeV = WrapMode.REPEAT;
+
+        // finMaterial.Shininess = xmodMaterial.Shininess;
+      }
+
+      for (var i = 0; i < xmodMaterial.NumPackets; ++i) {
         var packet = xmod.Packets[packetIndex];
 
         var packetVertices

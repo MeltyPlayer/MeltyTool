@@ -1,5 +1,10 @@
 ﻿using System.Numerics;
 
+using CommunityToolkit.Diagnostics;
+
+using fin.schema;
+using fin.util.asserts;
+
 using schema.text;
 using schema.text.reader;
 
@@ -12,12 +17,18 @@ public static class TextReaderUtils {
   public static char COLON = ':';
   public static char QUOTE = '"';
 
-  public static string ReadKeyValue(ITextReader tr, string prefix) {
-    tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
-    tr.AssertString(prefix);
+  public static string ReadKeyValue(ITextReader tr, string expectedKey) {
+    var (key, value) = ReadKeyValue(tr);
+    Guard.IsEqualTo(key, expectedKey);
+    return value;
+  }
+
+  public static (string key, string value) ReadKeyValue(ITextReader tr) {
+    var key = tr.ReadWord();
     tr.Matches(':');
-    tr.SkipManyIfPresent(TextReaderConstants.WHITESPACE_CHARS);
-    return tr.ReadLine();
+    tr.SkipWhitespace();
+    var value = tr.ReadLine();
+    return (key, value);
   }
 
   public static TNumber ReadKeyValueNumber<TNumber>(

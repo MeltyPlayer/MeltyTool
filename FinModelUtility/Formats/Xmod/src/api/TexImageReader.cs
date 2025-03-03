@@ -7,6 +7,9 @@ using CommunityToolkit.HighPerformance;
 
 using fin.image;
 using fin.image.formats;
+using fin.image.io;
+using fin.image.io.pixel;
+using fin.image.io.tile;
 using fin.io;
 
 using schema.binary;
@@ -21,13 +24,23 @@ public class TexImageReader {
     using var br = new SchemaBinaryReader(texFile.OpenRead());
     var width = br.ReadUInt16();
     var height = br.ReadUInt16();
-    var dxtType = br.ReadUInt16();
+    var imageType = br.ReadUInt16();
+    var mipmapCount = br.ReadUInt16();
+    var unk = br.ReadUInt16();
+    var flags = br.ReadUInt32();
 
+    // Tries to read the simple formats first.
+    switch (imageType) {
+      case 18:
+        return PixelImageReader.New(width, height, new Rgba32PixelReader())
+                               .ReadImage(br);
+    }
+
+    // Otherwise, this is DXT.
     ColorRgba32[] loadedDxt;
-
     IImage image;
     PixelFormat pixelFormat;
-    switch (dxtType) {
+    switch (imageType) {
       // DXT1
       case 22: {
         pixelFormat = PixelFormat.DXT1;
