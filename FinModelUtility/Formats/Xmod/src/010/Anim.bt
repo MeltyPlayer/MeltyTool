@@ -30,4 +30,6 @@ if (isOldAnimation) {
   boneCount = channelCount / 3 - 1;
 }
 
-float eulerRotationValues[3 * frameCount * (1 + boneCount)] <bgcolor=ff0000>;
+byte unknown[5];
+
+float eulerRotationValues[3 * frameCount * (1 + boneCount)] <bgcolor=0xff0000>;
