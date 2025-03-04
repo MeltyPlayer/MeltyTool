@@ -11,7 +11,15 @@ namespace gx;
 public class GxDisplayListReader {
   public GxPrimitive? Read(IBinaryReader br,
                            IVertexDescriptor vertexDescriptor) {
+    this.ReadOpcode(br, vertexDescriptor, out var primitive);
+    return primitive;
+  }
+
+  public GxOpcode ReadOpcode(IBinaryReader br,
+                             IVertexDescriptor vertexDescriptor,
+                             out GxPrimitive? primitive) {
     var opcode = (GxOpcode) br.ReadByte();
+    primitive = null;
 
     switch (opcode) {
       case GxOpcode.NOP: break;
@@ -53,7 +61,8 @@ public class GxDisplayListReader {
         for (var i = 0; i < vertices.Length; ++i) {
           var vertex = vertices[i] = new GxVertex();
 
-          foreach (var (vertexAttribute, vertexFormat, colorComponentType) in vertexDescriptor) {
+          foreach (var (vertexAttribute, vertexFormat, colorComponentType) in
+                   vertexDescriptor) {
             if (vertexAttribute == GxVertexAttribute.Color0 &&
                 vertexFormat == GxAttributeType.DIRECT) {
               Asserts.True(colorComponentType.HasValue);
@@ -141,13 +150,15 @@ public class GxDisplayListReader {
           }
         }
 
-        return new GxPrimitive((GxPrimitiveType) opcode, vertices);
+        primitive = new GxPrimitive((GxPrimitiveType) opcode, vertices);
+        break;
       }
+
       default: {
         throw new NotImplementedException();
       }
     }
 
-    return null;
+    return opcode;
   }
 }
