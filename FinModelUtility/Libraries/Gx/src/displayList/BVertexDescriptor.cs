@@ -3,7 +3,7 @@
 namespace gx.displayList;
 
 public abstract class BVertexDescriptor(uint value) : IVertexDescriptor {
-  private IEnumerable<(GxVertexAttribute, GxAttributeType?)>?
+  private IEnumerable<(GxVertexAttribute, GxAttributeType?, GxColorComponentType?)>?
       cachedEnumerable_;
 
   public uint Value {
@@ -16,11 +16,11 @@ public abstract class BVertexDescriptor(uint value) : IVertexDescriptor {
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-  public IEnumerator<(GxVertexAttribute, GxAttributeType?)> GetEnumerator() {
+  public IEnumerator<(GxVertexAttribute, GxAttributeType?, GxColorComponentType?)> GetEnumerator() {
     this.cachedEnumerable_ ??= this.GetEnumerator(this.Value);
     return this.cachedEnumerable_.GetEnumerator();
   }
 
-  protected abstract IEnumerable<(GxVertexAttribute, GxAttributeType?)>
+  protected abstract IEnumerable<(GxVertexAttribute, GxAttributeType?, GxColorComponentType?)>
       GetEnumerator(uint value);
 }

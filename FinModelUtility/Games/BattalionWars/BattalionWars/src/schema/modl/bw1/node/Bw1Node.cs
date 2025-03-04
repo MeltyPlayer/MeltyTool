@@ -97,7 +97,7 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
 
     br.PopEndianness();
 
-    var vertexDescriptor = new GxVertexDescriptor(0);
+    var vertexDescriptor = new BattalionWarsVertexDescriptor(0);
     while (br.Position < expectedNodeEnd) {
       SectionHeaderUtil.ReadNameAndSize(br,
                                         out sectionName,
@@ -221,7 +221,7 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
 
   private void ReadOpcodes_(IBinaryReader br,
                             uint sectionSize,
-                            GxVertexDescriptor vertexDescriptor) {
+                            BattalionWarsVertexDescriptor vertexDescriptor) {
     var start = br.Position;
     var expectedEnd = start + sectionSize;
 
