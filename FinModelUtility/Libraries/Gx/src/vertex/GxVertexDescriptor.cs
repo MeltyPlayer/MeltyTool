@@ -9,7 +9,13 @@ public struct GxVertexDescriptor(uint value)
   private IEnumerable<(GxVertexAttribute, GxAttributeType?)>?
       cachedEnumerable_;
 
-  public uint Value { get; } = value;
+  public uint Value {
+    get;
+    set {
+      field = value;
+      this.cachedEnumerable_ = null;
+    }
+  } = value;
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 

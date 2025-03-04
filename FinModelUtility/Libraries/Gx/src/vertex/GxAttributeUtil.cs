@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.color;
+using fin.schema.color;
 using fin.util.color;
 
 using schema.binary;
@@ -72,7 +73,7 @@ public static class GxAttributeUtil {
         _                       => throw new ArgumentOutOfRangeException(nameof(axisComponentType), axisComponentType, null)
     };
 
-  public static IColor ReadColor(IBinaryReader br,
+  public static Rgba32 ReadColor(IBinaryReader br,
                                  GxColorComponentType colorComponentType) {
     switch (colorComponentType) {
       case GxColorComponentType.RGB565: {
@@ -80,19 +81,17 @@ public static class GxAttributeUtil {
                               out var r,
                               out var g,
                               out var b);
-        return FinColor.FromRgbBytes(r, g, b);
+        return new Rgba32(r, g, b);
       }
       case GxColorComponentType.RGB8: {
-        return FinColor.FromRgbBytes(br.ReadByte(),
-                                     br.ReadByte(),
-                                     br.ReadByte());
+        return new Rgba32(br.ReadByte(), br.ReadByte(), br.ReadByte());
       }
       case GxColorComponentType.RGBX8:
       case GxColorComponentType.RGBA8: {
-        return FinColor.FromRgbaBytes(br.ReadByte(),
-                                      br.ReadByte(),
-                                      br.ReadByte(),
-                                      br.ReadByte());
+        return new Rgba32(br.ReadByte(),
+                          br.ReadByte(),
+                          br.ReadByte(),
+                          br.ReadByte());
       }
       case GxColorComponentType.RGBA4: {
         ColorUtil.SplitRgba4444(
@@ -101,22 +100,15 @@ public static class GxAttributeUtil {
             out var g,
             out var b,
             out var a);
-        return FinColor.FromRgbaBytes(r, g, b, a);
+        return new Rgba32(r, g, b, a);
       }
       case GxColorComponentType.RGBA6: {
         var c = br.ReadUInt24();
-        var r = ((((c >> 18) & 0x3F) << 2) |
-                 (((c >> 18) & 0x3F) >> 4)) /
-                (float) 0xFF;
-        var g = ((((c >> 12) & 0x3F) << 2) |
-                 (((c >> 12) & 0x3F) >> 4)) /
-                (float) 0xFF;
-        var b = ((((c >> 6) & 0x3F) << 2) |
-                 (((c >> 6) & 0x3F) >> 4)) /
-                (float) 0xFF;
-        var a = ((((c) & 0x3F) << 2) | (((c) & 0x3F) >> 4)) /
-                (float) 0xFF;
-        return FinColor.FromRgbaFloats(r, g, b, a);
+        var r = (byte) ((((c >> 18) & 0x3F) << 2) | (((c >> 18) & 0x3F) >> 4));
+        var g = (byte) ((((c >> 12) & 0x3F) << 2) | (((c >> 12) & 0x3F) >> 4));
+        var b = (byte) ((((c >> 6) & 0x3F) << 2) | (((c >> 6) & 0x3F) >> 4));
+        var a = (byte) (((c & 0x3F) << 2) | ((c & 0x3F) >> 4));
+        return new Rgba32(r, g, b, a);
       }
       default: throw new ArgumentOutOfRangeException();
     }

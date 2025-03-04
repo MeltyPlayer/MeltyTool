@@ -6,11 +6,14 @@ using schema.binary.attributes;
 namespace fin.schema.color;
 
 [BinarySchema]
-public partial struct Rgba32 : IColor, IBinaryConvertible {
-  public byte Rb { get; private set; }
-  public byte Gb { get; private set; }
-  public byte Bb { get; private set; }
-  public byte Ab { get; private set; }
+public partial struct Rgba32(byte r, byte g, byte b, byte a)
+    : IColor, IBinaryConvertible {
+  public Rgba32(byte r, byte g, byte b) : this(r, g, b, 255) { }
+
+  public byte Rb { get; private set; } = r;
+  public byte Gb { get; private set; } = g;
+  public byte Bb { get; private set; } = b;
+  public byte Ab { get; private set; } = a;
 
   [Skip]
   public float Rf => this.Rb / 255f;
