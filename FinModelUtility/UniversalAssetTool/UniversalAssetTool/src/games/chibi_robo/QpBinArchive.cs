@@ -39,7 +39,7 @@ public class QpBinArchiveExtractor {
                 : br.ReadNew<FileStringTableFile>();
           }
 
-          stringTableOffset = header.FileStringTableOffset + br.Position;
+          stringTableOffset = br.Position;
         });
 
     this.ProcessEntries_(outDirectory,
