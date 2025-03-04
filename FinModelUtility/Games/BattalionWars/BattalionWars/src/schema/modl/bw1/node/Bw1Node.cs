@@ -146,7 +146,7 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
           break;
         }
         case "XBST": {
-          this.ReadOpcodes_(br, sectionSize, ref vertexDescriptor);
+          this.ReadOpcodes_(br, sectionSize, vertexDescriptor);
           break;
         }
         case "SCNT": {
@@ -219,7 +219,7 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
 
   private void ReadOpcodes_(IBinaryReader br,
                             uint sectionSize,
-                            ref GxVertexDescriptor vertexDescriptor) {
+                            GxVertexDescriptor vertexDescriptor) {
     var start = br.Position;
     var expectedEnd = start + sectionSize;
 
@@ -245,15 +245,12 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
         var value = br.ReadUInt32();
 
         if (command == 0x50) {
-          vertexDescriptor =
-              new GxVertexDescriptor(
-                  (vertexDescriptor.Value & ~((uint) 0x1FFFF)) |
-                  value);
+          vertexDescriptor.Value
+              = (vertexDescriptor.Value & ~((uint) 0x1FFFF)) |
+                value;
         } else if (command == 0x60) {
-          vertexDescriptor =
-              new GxVertexDescriptor(
-                  (vertexDescriptor.Value & 0x1FFFF) |
-                  (value << 17));
+          vertexDescriptor.Value
+              = (vertexDescriptor.Value & 0x1FFFF) | (value << 17);
         } else {
           throw new NotImplementedException();
         }
