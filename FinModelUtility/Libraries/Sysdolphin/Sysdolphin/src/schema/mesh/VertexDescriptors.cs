@@ -12,8 +12,8 @@ public partial class VertexDescriptors
     : IVertexDescriptor, IBinaryConvertible {
   private readonly Dictionary<GxVertexAttribute, VertexDescriptor> map_ = new();
 
-  private IEnumerator<(GxVertexAttribute, GxAttributeType?, GxColorComponentType
-      ?)> cachedEnumerator_;
+  private IEnumerable<(GxVertexAttribute, GxAttributeType?, GxColorComponentType
+      ?)> cachedEnumerable_;
 
   public uint Value { get; set; }
 
@@ -21,7 +21,7 @@ public partial class VertexDescriptors
 
   public IEnumerator<(GxVertexAttribute, GxAttributeType?, GxColorComponentType?
       )> GetEnumerator()
-    => this.cachedEnumerator_;
+    => this.cachedEnumerable_.GetEnumerator();
 
   public void Read(IBinaryReader br) {
     var impl = new LinkedList<VertexDescriptor>();
@@ -37,13 +37,12 @@ public partial class VertexDescriptors
       this.map_[vertexDescriptor.Attribute] = vertexDescriptor;
     }
 
-    this.cachedEnumerator_
+    this.cachedEnumerable_
         = impl.Select(v => (
                           v.Attribute,
                           (GxAttributeType?) v.AttributeType,
                           (GxColorComponentType?) v.ColorComponentType)
-              )
-              .GetEnumerator();
+              );
   }
 
   public VertexDescriptor? this[GxVertexAttribute attribute] {

@@ -59,7 +59,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
   public PObjHeader Header { get; } = new();
   public PObj? NextSibling { get; private set; }
 
-  public List<VertexDescriptor> VertexDescriptors { get; } = new();
+  public VertexDescriptors VertexDescriptors { get; } = new();
   public List<DatPrimitive> Primitives { get; } = [];
 
   public VertexSpace VertexSpace { get; private set; }
@@ -73,18 +73,7 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
 
     if (this.Header.VertexDescriptorListOffset != 0) {
       br.Position = this.Header.VertexDescriptorListOffset;
-      // Reads vertex descriptors
-      while (true) {
-        var vertexDescriptor = new VertexDescriptor();
-        vertexDescriptor.Read(br);
-
-        if (vertexDescriptor.Attribute == GxVertexAttribute.NULL) {
-          break;
-        }
-
-        this.VertexDescriptors.Add(vertexDescriptor);
-      }
-      //this.VertexDescriptors.Read(br);
+      this.VertexDescriptors.Read(br);
     }
 
     this.ReadDisplayList_(br);
@@ -148,165 +137,89 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
 
     // Reads display list
     var gxDisplayListReader = new GxDisplayListReader();
-    /*var positionAttr = this.VertexDescriptors[GxVertexAttribute.Position];
+    var positionAttr = this.VertexDescriptors[GxVertexAttribute.Position];
     var normalAttr = this.VertexDescriptors[GxVertexAttribute.Normal];
     var nbtAttr = this.VertexDescriptors[GxVertexAttribute.NBT];
     var uv0Attr = this.VertexDescriptors[GxVertexAttribute.Tex0Coord];
     var uv1Attr = this.VertexDescriptors[GxVertexAttribute.Tex1Coord];
-    var color0Attr = this.VertexDescriptors[GxVertexAttribute.Color0];*/
+    var color0Attr = this.VertexDescriptors[GxVertexAttribute.Color0];
 
     br.Position = this.Header.DisplayListOffset;
     for (var d = 0; d < this.Header.DisplayListSize; ++d) {
-      var opcode = (GxOpcode) br.ReadByte();
+      var opcode
+          = gxDisplayListReader.ReadOpcode(br,
+                                           this.VertexDescriptors,
+                                           out var gxPrimitive);
 
       // TODO: Is this correct, or should it just skip this instead?
       if (opcode == GxOpcode.NOP) {
         break;
       }
 
-      switch (opcode) {
-        case GxOpcode.LOAD_CP_REG: {
-          var command = br.ReadByte();
-          var value = br.ReadUInt32();
-
-          // TODO: Is this actually needed???
-          if (command == 0x50) {
-            //this.dat_.VertexDescriptorValue &= ~((uint) 0x1FFFF);
-            //this.dat_.VertexDescriptorValue |= value;
-          } else if (command == 0x60) {
-            value <<= 17;
-            //this.dat_.VertexDescriptorValue &= 0x1FFFF;
-            // this.dat_.VertexDescriptorValue |= value;
-          } else {
-            throw new NotImplementedException();
-          }
-
-          break;
-        }
-        case GxOpcode.LOAD_XF_REG: {
-          var lengthMinusOne = br.ReadUInt16();
-          var length = lengthMinusOne + 1;
-
-          // http://hitmen.c02.at/files/yagcd/yagcd/chap5.html#sec5.11.4
-          var firstXfRegisterAddress = br.ReadUInt16();
-
-          var values = br.ReadUInt32s(length);
-          // TODO: Implement
-          break;
-        }
-        case GxOpcode.DRAW_TRIANGLES:
-        case GxOpcode.DRAW_QUADS:
-        case GxOpcode.DRAW_TRIANGLE_STRIP: {
-          var vertexCount = br.ReadUInt16();
-          var vertices = new DatVertex[vertexCount];
-
-          for (var i = 0; i < vertexCount; ++i) {
-            int? weightId = null;
-            Vector3? position = null;
-            Vector3? normal = null;
-            Vector3? binormal = null;
-            Vector3? tangent = null;
-            Vector2? uv0 = null;
-            Vector2? uv1 = null;
-            IColor? color = null;
-
-            foreach (var vertexDescriptor in this.VertexDescriptors) {
-              var vertexAttribute = vertexDescriptor.Attribute;
-              var vertexFormat = vertexDescriptor.AttributeType;
-              if (vertexAttribute == GxVertexAttribute.Color0 &&
-                  vertexFormat == GxAttributeType.DIRECT) {
-                color = GxAttributeUtil.ReadColor(
-                    br,
-                    vertexDescriptor.ColorComponentType);
-                continue;
-              }
-
-              if (vertexAttribute == GxVertexAttribute.PosMatIdx &&
-                  vertexFormat == GxAttributeType.DIRECT) {
-                weightId = br.ReadByte() / 3;
-                continue;
-              }
-
-              var value = vertexFormat switch {
-                  GxAttributeType.DIRECT => br.ReadByte(),
-                  GxAttributeType.INDEX_8 => br.ReadByte(),
-                  GxAttributeType.INDEX_16 => br.ReadUInt16(),
-                  _ => throw new NotImplementedException(),
-              };
-
-              var offset = vertexDescriptor.ArrayOffset +
-                           vertexDescriptor.Stride * value;
-
-              switch (vertexAttribute) {
-                case GxVertexAttribute.Position: {
-                  position = br.ReadVector3(value, vertexDescriptor);
-                  break;
-                }
-                case GxVertexAttribute.Normal: {
-                  normal = Vector3.Normalize(
-                      br.ReadVector3(value, vertexDescriptor));
-                  break;
-                }
-                case GxVertexAttribute.NBT: {
-                  br.SubreadAt(
-                      vertexDescriptor.GetOffset(value),
-                      () => {
-                        normal = Vector3.Normalize(
-                            br.ReadVector3(vertexDescriptor));
-                        binormal = Vector3.Normalize(
-                            br.ReadVector3(vertexDescriptor));
-                        tangent = Vector3.Normalize(
-                            br.ReadVector3(vertexDescriptor));
-                      });
-                  break;
-                }
-                case GxVertexAttribute.Color0: {
-                  color = br.SubreadAt(vertexDescriptor.GetOffset(value),
-                                       () => GxAttributeUtil.ReadColor(
-                                           br,
-                                           vertexDescriptor
-                                               .ColorComponentType));
-                  break;
-                }
-                case GxVertexAttribute.Tex0Coord: {
-                  uv0 = br.ReadVector2(value, vertexDescriptor);
-                  break;
-                }
-                case GxVertexAttribute.Tex1Coord: {
-                  uv1 = br.ReadVector2(value, vertexDescriptor);
-                  break;
-                }
-                default: {
-                  break;
-                  //throw new NotImplementedException();
-                }
-              }
-            }
-
-            if (position != null) {
-              vertices[i] = new DatVertex {
-                  WeightId = weightId,
-                  Position = position.Value,
-                  Normal = normal,
-                  Binormal = binormal,
-                  Tangent = tangent,
-                  Uv0 = uv0,
-                  Uv1 = uv1,
-                  Color = color,
-              };
-            }
-          }
-
-          this.Primitives.Add(new DatPrimitive {
-              Type = (GxPrimitiveType) opcode,
-              Vertices = vertices
-          });
-          break;
-        }
-        default: {
-          break;
-        }
+      if (gxPrimitive == null) {
+        continue;
       }
+
+      var datVertices
+          = gxPrimitive
+            .Vertices
+            .Select(v => {
+              var position = br.ReadVector3(v.PositionIndex, positionAttr!);
+              var datVertex = new DatVertex {
+                  Position = position,
+                  WeightId = v.JointIndex
+              };
+
+              var normalIndex = v.NormalIndex;
+              if (normalIndex != null) {
+                datVertex.Normal = Vector3.Normalize(
+                        br.ReadVector3(normalIndex.Value, normalAttr!));
+              }
+
+              var nbtIndex = v.NbtIndex;
+              if (nbtIndex != null) {
+                datVertex.Normal
+                    = Vector3.Normalize(
+                        br.ReadVector3(nbtIndex.Value, nbtAttr!));
+                datVertex.Binormal
+                    = Vector3.Normalize(
+                        br.ReadVector3(nbtIndex.Value, nbtAttr!));
+                datVertex.Tangent
+                    = Vector3.Normalize(
+                        br.ReadVector3(nbtIndex.Value, nbtAttr!));
+              }
+
+              var uv0Index = v.TexCoord0Index;
+              if (uv0Index != null) {
+                datVertex.Uv0 = br.ReadVector2(uv0Index.Value, uv0Attr!);
+              }
+
+              var uv1Index = v.TexCoord1Index;
+              if (uv1Index != null) {
+                datVertex.Uv1 = br.ReadVector2(uv1Index.Value, uv1Attr!);
+              }
+
+              var color0IndexOrValue = v.Color0IndexOrValue;
+              color0IndexOrValue?
+                  .Switch(index => {
+                            var offset = color0Attr!.GetOffset(index);
+                            var originalPos = br.Position;
+                            br.Position = offset;
+                            datVertex.Color = GxAttributeUtil.ReadColor(
+                                br,
+                                color0Attr!.ColorComponentType);
+                            br.Position = originalPos;
+                          },
+                          color => datVertex.Color = color);
+
+              return datVertex;
+            })
+            .ToArray();
+
+      this.Primitives.Add(new DatPrimitive {
+          Type = gxPrimitive.PrimitiveType,
+          Vertices = datVertices
+      });
     }
   }
 }
@@ -318,14 +231,6 @@ public static class BinaryReaderExtensions {
     var vec2 = new Vector2();
     br.ReadIntoVector(descriptor,
                       index,
-                      new Span<Vector2>(ref vec2).Cast<Vector2, float>());
-    return vec2;
-  }
-
-  public static Vector2 ReadVector2(this IBinaryReader br,
-                                    VertexDescriptor descriptor) {
-    var vec2 = new Vector2();
-    br.ReadIntoVector(descriptor,
                       new Span<Vector2>(ref vec2).Cast<Vector2, float>());
     return vec2;
   }
