@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
+using gx;
 using gx.displayList;
 
 using schema.binary;
@@ -8,17 +9,17 @@ using schema.binary;
 
 namespace jsystem.schema.j3dgraph.bmd.shp1;
 
-public partial class BatchAttributes
-    : IVertexDescriptor, IBinaryDeserializable {
-  private readonly LinkedList<(GxVertexAttribute, GxAttributeType?)> impl_
+public class BatchAttributes : IVertexDescriptor, IBinaryDeserializable {
+  private readonly LinkedList<(GxVertexAttribute, GxAttributeType?,
+      GxColorComponentType?)> impl_
       = new();
 
   public uint Value { get; set; }
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-  public IEnumerator<(GxVertexAttribute, GxAttributeType?)> GetEnumerator()
-    => this.impl_.GetEnumerator();
+  public IEnumerator<(GxVertexAttribute, GxAttributeType?, GxColorComponentType?
+      )> GetEnumerator() => this.impl_.GetEnumerator();
 
   public void Read(IBinaryReader br) {
     this.impl_.Clear();
@@ -28,7 +29,7 @@ public partial class BatchAttributes
       attribute = (GxVertexAttribute) br.ReadUInt32();
       var dataType = (GxAttributeType) br.ReadUInt32();
 
-      this.impl_.AddLast((attribute, dataType));
+      this.impl_.AddLast((attribute, dataType, null));
     } while ((byte) attribute != byte.MaxValue);
 
     this.impl_.RemoveLast();
