@@ -33,10 +33,7 @@ public partial class VertexDescriptor : IBinaryConvertible {
 
 
   public byte Scale { get; set; }
-
   public byte Padding { get; set; }
-
   public ushort Stride { get; set; }
-
   public uint ArrayOffset { get; set; }
 }
