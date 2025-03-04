@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using CommunityToolkit.Diagnostics;
+
 using fin.schema;
 using fin.schema.data;
 using fin.util.asserts;
@@ -236,99 +238,38 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
     };
     this.Meshes.Add(mesh);
 
+    var gxDisplayListReader = new GxDisplayListReader();
     while (br.Position < expectedEnd) {
-      var opcode = br.ReadByte();
-      var opcodeEnum = (GxOpcode) opcode;
-
-      if (opcodeEnum == GxOpcode.LOAD_CP_REG) {
-        var command = br.ReadByte();
-        var value = br.ReadUInt32();
-
-        if (command == 0x50) {
-          vertexDescriptor.Value
-              = (vertexDescriptor.Value & ~((uint) 0x1FFFF)) |
-                value;
-        } else if (command == 0x60) {
-          vertexDescriptor.Value
-              = (vertexDescriptor.Value & 0x1FFFF) | (value << 17);
-        } else {
-          throw new NotImplementedException();
-        }
-      } else if (opcodeEnum == GxOpcode.LOAD_XF_REG) {
-        var lengthMinusOne = br.ReadUInt16();
-        var length = lengthMinusOne + 1;
-
-        // http://hitmen.c02.at/files/yagcd/yagcd/chap5.html#sec5.11.4
-        var firstXfRegisterAddress = br.ReadUInt16();
-
-        var values = br.ReadUInt32s(length);
-        // TODO: Implement
-      } else if (opcodeEnum == GxOpcode.DRAW_TRIANGLE_STRIP) {
-        var vertexCount = br.ReadUInt16();
-        var vertexAttributeIndicesList =
-            new List<BwVertexAttributeIndices>(vertexCount);
-
-        var triangleStrip = new BwTriangleStrip {
-            VertexAttributeIndicesList = vertexAttributeIndicesList,
-        };
-        triangleStrips.Add(triangleStrip);
-
-        for (var i = 0; i < vertexCount; ++i) {
-          var vertexAttributeIndices = new BwVertexAttributeIndices {
-              TexCoordIndices = new ushort?[8],
-          };
-
-          foreach (var (vertexAttribute, vertexFormat) in
-                   vertexDescriptor) {
-            var value = vertexFormat switch {
-                null                     => br.ReadByte(),
-                GxAttributeType.INDEX_8  => br.ReadByte(),
-                GxAttributeType.INDEX_16 => br.ReadUInt16(),
-                _                        => throw new NotImplementedException(),
-            };
-
-            switch (vertexAttribute) {
-              case GxVertexAttribute.PosMatIdx: {
-                Asserts.Equal(0, value % 3);
-                value /= 3;
-                vertexAttributeIndices.NodeIndex = posMatIdxMap[value];
-                break;
-              }
-              case GxVertexAttribute.Position: {
-                vertexAttributeIndices.PositionIndex = value;
-                break;
-              }
-              case GxVertexAttribute.Normal: {
-                vertexAttributeIndices.NormalIndex = value;
-                break;
-              }
-              case GxVertexAttribute.Tex0Coord:
-              case GxVertexAttribute.Tex1Coord:
-              case GxVertexAttribute.Tex2Coord:
-              case GxVertexAttribute.Tex3Coord:
-              case GxVertexAttribute.Tex4Coord:
-              case GxVertexAttribute.Tex5Coord:
-              case GxVertexAttribute.Tex6Coord:
-              case GxVertexAttribute.Tex7Coord: {
-                var index = vertexAttribute - GxVertexAttribute.Tex0Coord;
-                vertexAttributeIndices.TexCoordIndices[index] = value;
-                break;
-              }
-              case GxVertexAttribute.Color0:
-              case GxVertexAttribute.Color1: {
-                break;
-              }
-              default: {
-                throw new NotImplementedException();
-              }
-            }
-          }
-
-          vertexAttributeIndicesList.Add(vertexAttributeIndices);
-        }
-      } else if (opcodeEnum == GxOpcode.NOP) { } else {
-        throw new NotImplementedException();
+      var gxPrimitive = gxDisplayListReader.Read(br, vertexDescriptor);
+      if (gxPrimitive == null) {
+        continue;
       }
+
+      Asserts.Equal(GxPrimitiveType.GX_TRIANGLESTRIP, gxPrimitive.PrimitiveType);
+      triangleStrips.Add(new BwTriangleStrip {
+          VertexAttributeIndicesList
+              = gxPrimitive
+                .Vertices
+                .Select(
+                    v => new BwVertexAttributeIndices {
+                        PositionIndex = v.PositionIndex,
+                        NormalIndex = v.NormalIndex,
+                        NodeIndex = v.JointIndex != null
+                            ? posMatIdxMap[v.JointIndex.Value]
+                            : null,
+                        TexCoordIndices = [
+                            v.TexCoord0Index, 
+                            v.TexCoord1Index,
+                            v.TexCoord2Index,
+                            v.TexCoord3Index,
+                            v.TexCoord4Index,
+                            v.TexCoord5Index,
+                            v.TexCoord6Index,
+                            v.TexCoord7Index,
+                        ],
+                    })
+                .ToArray(),
+      });
     }
 
     Asserts.Equal(expectedEnd, br.Position);

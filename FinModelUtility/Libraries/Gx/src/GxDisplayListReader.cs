@@ -73,12 +73,6 @@ public class GxDisplayListReader {
               continue;
             }
 
-            if (vertexAttribute == GxVertexAttribute.PosMatIdx &&
-                vertexFormat == GxAttributeType.DIRECT) {
-              vertex.JointIndex = (ushort) (br.ReadByte() / 3);
-              continue;
-            }
-
             var value = vertexFormat switch {
                 GxAttributeType.DIRECT or null => br.ReadByte(),
                 GxAttributeType.INDEX_8 => br.ReadByte(),
@@ -87,6 +81,11 @@ public class GxDisplayListReader {
             };
 
             switch (vertexAttribute) {
+              case GxVertexAttribute.PosMatIdx: {
+                Asserts.Equal(0, value % 3);
+                vertex.JointIndex = (ushort) (value / 3);
+                break;
+              }
               case GxVertexAttribute.Position: {
                 vertex.PositionIndex = value;
                 break;
@@ -143,7 +142,7 @@ public class GxDisplayListReader {
           }
         }
 
-        break;
+        return new GxPrimitive((GxPrimitiveType) opcode, vertices);
       }
       default: {
         throw new NotImplementedException();
