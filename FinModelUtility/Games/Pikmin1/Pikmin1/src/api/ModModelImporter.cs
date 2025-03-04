@@ -422,8 +422,8 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
       IReadOnlyList<IBone> bones,
       IBoneWeights[] envelopeBoneWeights,
       FinModCache finModCache) {
-    var vertexDescriptor = new VertexDescriptor();
-    vertexDescriptor.FromPikmin1(mesh.vtxDescriptor, mod.hasNormals);
+    var vertexDescriptor
+        = new Pikmin1VertexDescriptor(mesh.vtxDescriptor, mod.hasNormals);
 
     var vertexDescriptorValues = vertexDescriptor.ToArray();
 
@@ -547,7 +547,7 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
             if (normalIndices.Count > 0 && mod.vnormals.Count > 0) {
               var normalIndex = normalIndices[v];
 
-              if (!vertexDescriptor.useNbt) {
+              if (!vertexDescriptor.UseNbt) {
                 var normal = finModCache.NormalsByIndex[normalIndex];
                 finVertex.SetLocalNormal(normal);
               } else {
