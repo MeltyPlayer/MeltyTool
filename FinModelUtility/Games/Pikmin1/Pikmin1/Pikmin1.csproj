@@ -56,7 +56,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="schema" Version="0.6.9" />
+    <PackageReference Include="schema" Version="0.6.11" />
   </ItemGroup>
 
   <ItemGroup>

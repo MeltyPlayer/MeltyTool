@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="schema" Version="0.6.9" />
+    <PackageReference Include="schema" Version="0.6.11" />
   </ItemGroup>
 
   <ItemGroup>
