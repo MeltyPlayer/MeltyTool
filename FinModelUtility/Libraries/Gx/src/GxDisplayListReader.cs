@@ -68,7 +68,7 @@ public class GxDisplayListReader {
               Asserts.True(colorComponentType.HasValue);
               vertex.Color0IndexOrValue = GxAttributeUtil.ReadColor(
                   br,
-                  colorComponentType.Value);
+                  colorComponentType!.Value);
               continue;
             }
 
@@ -77,7 +77,7 @@ public class GxDisplayListReader {
               Asserts.True(colorComponentType.HasValue);
               vertex.Color1IndexOrValue = GxAttributeUtil.ReadColor(
                   br,
-                  colorComponentType.Value);
+                  colorComponentType!.Value);
               continue;
             }
 
