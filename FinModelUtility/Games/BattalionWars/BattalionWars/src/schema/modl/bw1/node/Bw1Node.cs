@@ -6,7 +6,7 @@ using fin.util.asserts;
 using fin.util.strings;
 
 using gx;
-using gx.vertex;
+using gx.displayList;
 
 using modl.schema.modl.common;
 
@@ -95,7 +95,7 @@ public class Bw1Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
 
     br.PopEndianness();
 
-    var vertexDescriptor = new GxVertexDescriptor();
+    var vertexDescriptor = new GxVertexDescriptor(0);
     while (br.Position < expectedNodeEnd) {
       SectionHeaderUtil.ReadNameAndSize(br,
                                         out sectionName,
