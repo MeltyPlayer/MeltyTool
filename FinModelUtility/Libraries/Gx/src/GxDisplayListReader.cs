@@ -10,8 +10,7 @@ namespace gx;
 
 public class GxDisplayListReader {
   public GxPrimitive? Read(IBinaryReader br,
-                           IVertexDescriptor vertexDescriptor,
-                           GxColorComponentType? colorComponentType = null) {
+                           IVertexDescriptor vertexDescriptor) {
     var opcode = (GxOpcode) br.ReadByte();
 
     switch (opcode) {
@@ -54,7 +53,7 @@ public class GxDisplayListReader {
         for (var i = 0; i < vertices.Length; ++i) {
           var vertex = vertices[i] = new GxVertex();
 
-          foreach (var (vertexAttribute, vertexFormat) in vertexDescriptor) {
+          foreach (var (vertexAttribute, vertexFormat, colorComponentType) in vertexDescriptor) {
             if (vertexAttribute == GxVertexAttribute.Color0 &&
                 vertexFormat == GxAttributeType.DIRECT) {
               Asserts.True(colorComponentType.HasValue);
