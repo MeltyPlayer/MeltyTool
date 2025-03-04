@@ -23,7 +23,7 @@ public class GxVertex {
   public ushort? TexCoord6Index { get; set; }
   public ushort? TexCoord7Index { get; set; }
 
-  public ushort? GetTexCoord(int i) 
+  public ushort? GetTexCoord(int i)
     => i switch {
         0 => this.TexCoord0Index,
         1 => this.TexCoord1Index,
@@ -34,4 +34,20 @@ public class GxVertex {
         6 => this.TexCoord6Index,
         7 => this.TexCoord7Index,
     };
+
+  public ushort?[] ColorIndices => [
+      this.Color0IndexOrValue?.AsT0,
+      this.Color1IndexOrValue?.AsT0,
+  ];
+
+  public ushort?[] TexCoordIndices => [
+      this.TexCoord0Index,
+      this.TexCoord1Index,
+      this.TexCoord2Index,
+      this.TexCoord3Index,
+      this.TexCoord4Index,
+      this.TexCoord5Index,
+      this.TexCoord6Index,
+      this.TexCoord7Index,
+  ];
 }

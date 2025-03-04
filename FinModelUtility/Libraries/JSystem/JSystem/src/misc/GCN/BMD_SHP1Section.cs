@@ -4,6 +4,7 @@ using System.Linq;
 
 using fin.schema;
 
+using gx;
 using gx.displayList;
 
 using jsystem.G3D_Binary_File_Format;
@@ -75,8 +76,6 @@ public partial class BMD {
     }
 
     public partial class Batch {
-      public bool[] HasColors = new bool[2];
-      public bool[] HasTexCoords = new bool[8];
       public MatrixType MatrixType;
 
       [Unknown]
@@ -93,10 +92,6 @@ public partial class BMD {
       public float BoundingSphereReadius;
       public float[] BoundingBoxMin;
       public float[] BoundingBoxMax;
-      public BatchAttribute[] BatchAttributes;
-      public bool HasMatrixIndices;
-      public bool HasPositions;
-      public bool HasNormals;
       public PacketLocation[] PacketLocations;
       public Packet[] Packets;
 
@@ -118,43 +113,8 @@ public partial class BMD {
         br.Position = baseoffset +
                       (long) Parent.BatchAttribsOffset +
                       (long) this.AttribsOffset;
-        List<BatchAttribute> source = [];
-        {
-          BatchAttribute entry;
-          do {
-            entry = br.ReadNew<BatchAttribute>();
-            source.Add(entry);
-          } while ((uint) entry.Attribute != byte.MaxValue);
-        }
 
-        source.Remove(source.Last<BatchAttribute>());
-        this.BatchAttributes = source.ToArray();
-        foreach (var t in this.BatchAttributes) {
-          if (t.DataType != GxAttributeType.DIRECT &&
-              t.DataType != GxAttributeType.INDEX_16)
-            throw new Exception();
-          switch (t.Attribute) {
-            case GxVertexAttribute.PosMatIdx:
-              this.HasMatrixIndices = true;
-              break;
-            case GxVertexAttribute.Position:
-              this.HasPositions = true;
-              break;
-            case GxVertexAttribute.Normal:
-              this.HasNormals = true;
-              break;
-            case GxVertexAttribute.Color0 or GxVertexAttribute.Color1:
-              this.HasColors[t.Attribute -
-                             GxVertexAttribute.Color0] =
-                  true;
-              break;
-            case >= GxVertexAttribute.Tex0Coord
-                 and <= GxVertexAttribute.Tex7Coord:
-              this.HasTexCoords[t.Attribute -
-                                GxVertexAttribute.Tex0Coord] = true;
-              break;
-          }
-        }
+        var batchAttributes = br.ReadNew<BatchAttributes>();
 
         this.Packets = new Packet[(int) this.NrPacket];
         this.PacketLocations = new PacketLocation[(int) this.NrPacket];
@@ -172,7 +132,7 @@ public partial class BMD {
           this.Packets[index] = new Packet(br,
                                            (int) this.PacketLocations[index]
                                                .Size,
-                                           this.BatchAttributes);
+                                           batchAttributes);
           br.Position = baseoffset +
                         (long) Parent.MatrixDataOffset +
                         (long) (((int) this.FirstMatrixData + index) * 8);
@@ -197,63 +157,40 @@ public partial class BMD {
         public Packet(
             IBinaryReader br,
             int Length,
-            BatchAttribute[] Attributes) {
+            IVertexDescriptor vertexDescriptor) {
           List<Primitive> primitiveList = [];
-          bool flag = false;
-          int num1 = 0;
-          while (!flag) {
-            Primitive primitive = new Primitive();
-            primitive.Type = (GxPrimitiveType) br.ReadByte();
-            ++num1;
-            if (primitive.Type == 0 || num1 >= Length) {
-              flag = true;
-            } else {
-              ushort num2 = br.ReadUInt16();
-              num1 += 2;
-              primitive.Points = new Primitive.Index[(int) num2];
-              for (int index1 = 0; index1 < (int) num2; ++index1) {
-                var point = primitive.Points[index1] = new Primitive.Index();
-                foreach (var attribute in Attributes) {
-                  ushort num3 = 0;
-                  switch (attribute.DataType) {
-                    case GxAttributeType.DIRECT:
-                      num3 = (ushort) br.ReadByte();
-                      ++num1;
-                      break;
-                    case GxAttributeType.INDEX_16:
-                      num3 = br.ReadUInt16();
-                      num1 += 2;
-                      break;
+          var gxDisplayListReader = new GxDisplayListReader();
+          br.Subread(
+              Length,
+              () => {
+                while (!br.Eof) {
+                  var gxPrimitive
+                      = gxDisplayListReader.Read(br, vertexDescriptor);
+                  if (gxPrimitive == null) {
+                    continue;
                   }
 
-                  switch (attribute.Attribute) {
-                    case GxVertexAttribute.PosMatIdx:
-                      point.MatrixIndex = num3;
-                      break;
-                    case GxVertexAttribute.Position:
-                      point.PosIndex = num3;
-                      break;
-                    case GxVertexAttribute.Normal:
-                      point.NormalIndex = num3;
-                      break;
-                    case GxVertexAttribute.Color0 or GxVertexAttribute.Color1:
-                      point.ColorIndex[
-                          (attribute.Attribute -
-                           GxVertexAttribute.Color0)] = num3;
-                      break;
-                    case >= GxVertexAttribute.Tex0Coord
-                         and <= GxVertexAttribute.Tex7Coord:
-                      point.TexCoordIndex[
-                          (attribute.Attribute -
-                           GxVertexAttribute.Tex0Coord)] = num3;
-                      break;
-                  }
+                  var primitive = new Primitive();
+                  primitive.Type = gxPrimitive.PrimitiveType;
+                  primitive.Points
+                      = gxPrimitive
+                        .Vertices
+                        .Select(v => {
+                          var index = new Primitive.Index();
+
+                          index.PosIndex = v.PositionIndex;
+                          index.MatrixIndex = v.JointIndex;
+                          index.NormalIndex = v.NormalIndex;
+                          index.ColorIndices = v.ColorIndices;
+                          index.TexCoordIndices = v.TexCoordIndices;
+
+                          return index;
+                        })
+                        .ToArray();
+
+                  primitiveList.Add(primitive);
                 }
-              }
-
-              primitiveList.Add(primitive);
-            }
-          }
+              });
 
           this.Primitives = primitiveList.ToArray();
         }
@@ -263,11 +200,11 @@ public partial class BMD {
           public Index[] Points;
 
           public class Index {
-            public ushort[] ColorIndex = new ushort[2];
-            public ushort[] TexCoordIndex = new ushort[8];
-            public ushort MatrixIndex;
+            public ushort?[] ColorIndices;
+            public ushort?[] TexCoordIndices;
+            public ushort? MatrixIndex;
             public ushort PosIndex;
-            public ushort NormalIndex;
+            public ushort? NormalIndex;
           }
         }
       }

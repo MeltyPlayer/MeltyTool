@@ -375,32 +375,30 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
               for (var p = 0; p < pointsCount; ++p) {
                 var point = points[p];
 
-                if (!batch.HasPositions) {
-                  throw new Exception(
-                      "How can a point not have a position??");
-                }
-
                 var position = vertexPositions[point.PosIndex];
                 var vertex =
                     finSkin.AddVertex(position.X, position.Y, position.Z);
                 vertices[p] = vertex;
 
-                if (batch.HasNormals) {
-                  var normal = vertexNormals[point.NormalIndex];
-                  vertex.SetLocalNormal(normal.X, normal.Y, normal.Z);
+                var normalIndex = point.NormalIndex;
+                if (normalIndex != null) {
+                  vertex.SetLocalNormal(vertexNormals[normalIndex.Value]);
                 }
 
-                var matrixIndex = point.MatrixIndex / 3;
-                var weights = weightsTable[matrixIndex];
-                if (weights != null) {
-                  weightsUsedByPrimitive.Add(weights);
-                  vertex.SetBoneWeights(weights);
+                var matrixIndex = point.MatrixIndex;
+                if (matrixIndex != null) {
+                  var weights = weightsTable[matrixIndex.Value];
+                  if (weights != null) {
+                    weightsUsedByPrimitive.Add(weights);
+                    vertex.SetBoneWeights(weights);
+                  }
                 }
 
+                var colorIndices = point.ColorIndices;
                 for (var c = 0; c < 2; ++c) {
-                  if (batch.HasColors[c]) {
-                    var colorIndex = point.ColorIndex[c];
-                    var color = vertexColors[c][colorIndex];
+                  var colorIndex = colorIndices[c];
+                  if (colorIndex != null) {
+                    var color = vertexColors[c][colorIndex.Value];
                     vertex.SetColorBytes(c,
                                          color.Rb,
                                          color.Gb,
@@ -409,9 +407,11 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
                   }
                 }
 
+                var texCoordIndices = point.TexCoordIndices;
                 for (var i = 0; i < 8; ++i) {
-                  if (batch.HasTexCoords[i]) {
-                    vertex.SetUv(i, vertexUvs[i][point.TexCoordIndex[i]]);
+                  var texCoordIndex = texCoordIndices[i];
+                  if (texCoordIndex != null) {
+                    vertex.SetUv(i, vertexUvs[i][texCoordIndex.Value]);
                   }
                 }
               }
