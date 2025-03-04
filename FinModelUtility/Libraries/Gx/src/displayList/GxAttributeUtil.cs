@@ -1,12 +1,11 @@
 ﻿using System.Numerics;
 
-using fin.color;
 using fin.schema.color;
 using fin.util.color;
 
 using schema.binary;
 
-namespace gx.vertex;
+namespace gx.displayList;
 
 public static class GxAttributeUtil {
   public static int GetColorComponentCount(

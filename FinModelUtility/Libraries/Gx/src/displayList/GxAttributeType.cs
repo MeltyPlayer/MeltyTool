@@ -1,4 +1,4 @@
-﻿namespace gx.vertex;
+﻿namespace gx.displayList;
 
 public enum GxAttributeType {
   NOT_PRESENT = 0,

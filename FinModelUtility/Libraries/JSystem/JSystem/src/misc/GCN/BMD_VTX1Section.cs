@@ -5,7 +5,7 @@ using fin.color;
 using fin.util.asserts;
 
 using gx;
-using gx.vertex;
+using gx.displayList;
 
 using jsystem.G3D_Binary_File_Format;
 using jsystem.schema.j3dgraph.bmd.vtx1;

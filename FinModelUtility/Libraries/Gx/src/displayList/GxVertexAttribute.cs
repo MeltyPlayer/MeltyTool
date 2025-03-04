@@ -1,4 +1,4 @@
-﻿namespace gx.vertex;
+﻿namespace gx.displayList;
 
 public enum GxVertexAttribute : uint {
   PosMatIdx,

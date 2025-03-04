@@ -4,7 +4,7 @@ using fin.schema;
 using fin.util.asserts;
 
 using gx;
-using gx.vertex;
+using gx.displayList;
 
 using modl.schema.modl.common;
 
@@ -109,7 +109,7 @@ public class Bw2Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
       this.Materials.Add(br.ReadNew<Bw2Material>());
     }
 
-    var vertexDescriptor = new GxVertexDescriptor();
+    var vertexDescriptor = new GxVertexDescriptor(0);
     while (br.Position < expectedNodeEnd) {
       SectionHeaderUtil.ReadNameAndSize(br, out sectionName, out sectionSize);
       var expectedSectionEnd = br.Position + sectionSize;

@@ -1,6 +1,4 @@
-﻿using gx.vertex;
-
-namespace gx.displayList;
+﻿namespace gx.displayList;
 
 public record GxPrimitive(
     GxPrimitiveType PrimitiveType,

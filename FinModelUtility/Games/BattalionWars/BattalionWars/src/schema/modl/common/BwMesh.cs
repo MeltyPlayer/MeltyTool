@@ -7,7 +7,7 @@ public class BwMesh {
 }
 
 public class BwTriangleStrip {
-  public List<BwVertexAttributeIndices> VertexAttributeIndicesList {
+  public IReadOnlyList<BwVertexAttributeIndices> VertexAttributeIndicesList {
     get;
     set;
   }

@@ -1,16 +1,17 @@
-﻿using gx.displayList;
-using gx.vertex;
+﻿using fin.util.asserts;
+
+using gx.displayList;
 
 using schema.binary;
 
-using GxPrimitive = gx.vertex.GxPrimitive;
+using GxPrimitive = gx.displayList.GxPrimitive;
 
 namespace gx;
 
 public class GxDisplayListReader {
   public GxPrimitive? Read(IBinaryReader br,
-                           GxVertexDescriptor vertexDescriptor,
-                           GxColorComponentType colorComponentType) {
+                           IVertexDescriptor vertexDescriptor,
+                           GxColorComponentType? colorComponentType = null) {
     var opcode = (GxOpcode) br.ReadByte();
 
     switch (opcode) {
@@ -56,17 +57,19 @@ public class GxDisplayListReader {
           foreach (var (vertexAttribute, vertexFormat) in vertexDescriptor) {
             if (vertexAttribute == GxVertexAttribute.Color0 &&
                 vertexFormat == GxAttributeType.DIRECT) {
+              Asserts.True(colorComponentType.HasValue);
               vertex.Color0IndexOrValue = GxAttributeUtil.ReadColor(
                   br,
-                  colorComponentType);
+                  colorComponentType.Value);
               continue;
             }
 
             if (vertexAttribute == GxVertexAttribute.Color1 &&
                 vertexFormat == GxAttributeType.DIRECT) {
+              Asserts.True(colorComponentType.HasValue);
               vertex.Color1IndexOrValue = GxAttributeUtil.ReadColor(
                   br,
-                  colorComponentType);
+                  colorComponentType.Value);
               continue;
             }
 
@@ -77,10 +80,10 @@ public class GxDisplayListReader {
             }
 
             var value = vertexFormat switch {
-                GxAttributeType.DIRECT   => br.ReadByte(),
-                GxAttributeType.INDEX_8  => br.ReadByte(),
+                GxAttributeType.DIRECT or null => br.ReadByte(),
+                GxAttributeType.INDEX_8 => br.ReadByte(),
                 GxAttributeType.INDEX_16 => br.ReadUInt16(),
-                _                        => throw new NotImplementedException(),
+                _ => throw new NotImplementedException(),
             };
 
             switch (vertexAttribute) {
@@ -136,15 +139,14 @@ public class GxDisplayListReader {
                 vertex.TexCoord7Index = value;
                 break;
               }
-              default: {
-                break;
-                //throw new NotImplementedException();
-              }
             }
           }
         }
 
         break;
+      }
+      default: {
+        throw new NotImplementedException();
       }
     }
 

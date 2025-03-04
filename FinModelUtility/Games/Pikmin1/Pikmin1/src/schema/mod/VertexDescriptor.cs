@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using fin.util.asserts;
 
-using gx.vertex;
+using gx.displayList;
 
 namespace pikmin1.schema.mod {
   public class VertexDescriptor

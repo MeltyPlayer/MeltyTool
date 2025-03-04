@@ -1,4 +1,4 @@
-﻿namespace gx.vertex;
+﻿namespace gx.displayList;
 
 public enum GxPrimitiveType {
   GX_QUADS = GxOpcode.DRAW_QUADS,

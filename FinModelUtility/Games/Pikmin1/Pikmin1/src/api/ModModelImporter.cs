@@ -25,7 +25,7 @@ using fin.util.lists;
 
 using gx;
 using gx.impl;
-using gx.vertex;
+using gx.displayList;
 
 using pikmin1.schema.anm;
 using pikmin1.schema.mod;

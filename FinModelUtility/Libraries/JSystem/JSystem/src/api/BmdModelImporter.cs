@@ -18,7 +18,7 @@ using fin.schema.matrix;
 using fin.util.asserts;
 
 using gx;
-using gx.vertex;
+using gx.displayList;
 
 using jsystem._3D_Formats;
 using jsystem.exporter;

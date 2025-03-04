@@ -19,7 +19,7 @@ using fin.util.enums;
 using fin.util.hex;
 
 using gx;
-using gx.vertex;
+using gx.displayList;
 
 using schema.binary;
 

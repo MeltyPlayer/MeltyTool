@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-
-using fin.color;
-using fin.schema.color;
+﻿using fin.schema.color;
 
 using OneOf;
 
@@ -11,7 +8,7 @@ namespace gx.displayList;
 public partial class IndexOrColor : OneOfBase<ushort, Rgba32>;
 
 public class GxVertex {
-  public ushort? PositionIndex { get; set; }
+  public ushort PositionIndex { get; set; }
   public ushort? JointIndex { get; set; }
   public ushort? NormalIndex { get; set; }
   public ushort? NbtIndex { get; set; }
