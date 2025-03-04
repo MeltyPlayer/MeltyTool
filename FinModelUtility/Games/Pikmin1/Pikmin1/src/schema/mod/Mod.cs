@@ -10,231 +10,231 @@ using pikmin1.schema.mod.collision;
 
 using schema.binary;
 
-namespace pikmin1.schema.mod {
-  [BinarySchema]
-  public partial class DateTime : IBinaryConvertible {
-    public ushort year { get; set; } = 2021;
-    public byte month { get; set; } = 9;
-    public byte day { get; set; } = 18;
-  }
+namespace pikmin1.schema.mod;
 
-  [BinarySchema]
-  public partial class ModHeader : IBinaryConvertible {
-    public readonly DateTime dateTime = new();
+[BinarySchema]
+public partial class DateTime : IBinaryConvertible {
+  public ushort year { get; set; } = 2021;
+  public byte month { get; set; } = 9;
+  public byte day { get; set; } = 18;
+}
 
-    public uint flags { get; set; }
-  }
+[BinarySchema]
+public partial class ModHeader : IBinaryConvertible {
+  public readonly DateTime dateTime = new();
 
-  public enum ModFlags {
-    UseNBT = 0x01
-  }
+  public uint flags { get; set; }
+}
 
-  public class Mod : IBinaryConvertible {
-    public readonly ModHeader header = new();
-    public readonly List<Vector3> vertices = [];
-    public readonly List<Vector3> vnormals = [];
-    public readonly List<Nbt> vertexnbt = [];
-    public readonly List<Rgba32> vcolours = [];
-    public readonly List<Vector2>[] texcoords = new List<Vector2>[8];
-    public readonly List<Texture> textures = [];
-    public readonly List<TextureAttributes> texattrs = [];
-    public readonly MaterialContainer materials = new();
-    public readonly List<VtxMatrix> vtxMatrix = [];
-    public readonly List<Envelope> envelopes = [];
-    public readonly List<Mesh> meshes = [];
-    public readonly List<Joint> joints = [];
-    public readonly List<string> jointNames = [];
-    public readonly CollTriInfo colltris = new();
-    public readonly CollGrid collgrid = new();
-    public readonly List<byte> eofBytes = [];
-    public bool hasNormals = false;
+public enum ModFlags {
+  UseNBT = 0x01
+}
 
-    public Mod() { }
-    public Mod(IBinaryReader reader) => this.Read(reader);
+public class Mod : IBinaryConvertible {
+  public readonly ModHeader header = new();
+  public readonly List<Vector3> vertices = [];
+  public readonly List<Vector3> vnormals = [];
+  public readonly List<Nbt> vertexnbt = [];
+  public readonly List<Rgba32> vcolours = [];
+  public readonly List<Vector2>[] texcoords = new List<Vector2>[8];
+  public readonly List<Texture> textures = [];
+  public readonly List<TextureAttributes> texattrs = [];
+  public readonly MaterialContainer materials = new();
+  public readonly List<VtxMatrix> vtxMatrix = [];
+  public readonly List<Envelope> envelopes = [];
+  public readonly List<Mesh> meshes = [];
+  public readonly List<Joint> joints = [];
+  public readonly List<string> jointNames = [];
+  public readonly CollTriInfo colltris = new();
+  public readonly CollGrid collgrid = new();
+  public readonly List<byte> eofBytes = [];
+  public bool hasNormals = false;
 
-    public void Read(IBinaryReader br) {
-      this.hasNormals = false;
+  public Mod() { }
+  public Mod(IBinaryReader reader) => this.Read(reader);
 
-      for (var i = 0; i < 8; ++i) {
-        this.texcoords[i] = [];
+  public void Read(IBinaryReader br) {
+    this.hasNormals = false;
+
+    for (var i = 0; i < 8; ++i) {
+      this.texcoords[i] = [];
+    }
+
+    bool stopRead = false;
+    while (!stopRead) {
+      var position = br.Position;
+
+      var chunkId = (ChunkId) br.ReadUInt32();
+      var chunkName = Chunk.GetName(chunkId);
+
+      var length = br.ReadUInt32();
+
+      if ((position & 0x1F) != 0) {
+        Asserts.Fail("Error in chunk " +
+                     chunkId +
+                     ", offset " +
+                     position +
+                     ", chunk start isn't aligned to 0x20, this means an improper read occured.");
+        return;
       }
 
-      bool stopRead = false;
-      while (!stopRead) {
-        var position = br.Position;
+      /*std::cout <<
+          "Reading 0x" <<
+          std::hex <<
+          opcode <<
+          std::dec <<
+          ", " <<
+          (ocString.has_value() ? ocString.value() : "Unknown chunk") <<
+          std::endl;*/
 
-        var chunkId = (ChunkId) br.ReadUInt32();
-        var chunkName = Chunk.GetName(chunkId);
+      var beforePosition = br.Position;
 
-        var length = br.ReadUInt32();
+      switch (chunkId) {
+        case ChunkId.HEADER:
+          br.Align(0x20);
+          this.header.Read(br);
+          br.Align(0x20);
+          break;
+        case ChunkId.VERTICES:
+          ReadChunk_(br,
+                     this.vertices,
+                     sbr => sbr.ReadVector3());
+          break;
+        case ChunkId.VERTEX_NORMALS:
+          this.hasNormals = true;
+          ReadChunk_(br,
+                     this.vnormals,
+                     sbr => sbr.ReadVector3());
+          break;
+        case ChunkId.VERTEX_NBTS:
+          Mod.ReadGenericChunk_(br, this.vertexnbt);
+          break;
+        case ChunkId.VERTEX_COLOURS:
+          Mod.ReadGenericChunk_(br, this.vcolours);
+          break;
+        case >= ChunkId.TEX_COORD_0 and <= ChunkId.TEX_COORD_7:
+          ReadChunk_(br,
+                     this.texcoords[(uint) chunkId - 0x18],
+                     sbr => sbr.ReadVector2());
+          break;
+        case ChunkId.TEXTURES:
+          Mod.ReadGenericChunk_(br, this.textures);
+          for (var i = 0; i < this.textures.Count; ++i) {
+            this.textures[i].index = i;
+          }
 
-        if ((position & 0x1F) != 0) {
-          Asserts.Fail("Error in chunk " +
-                       chunkId +
-                       ", offset " +
-                       position +
-                       ", chunk start isn't aligned to 0x20, this means an improper read occured.");
-          return;
-        }
+          break;
+        case ChunkId.TEXTURE_ATTRIBUTES:
+          Mod.ReadGenericChunk_(br, this.texattrs);
+          break;
+        case ChunkId.MATERIALS:
+          var numMaterials = br.ReadUInt32();
+          var numTexEnvironments = br.ReadUInt32();
 
-        /*std::cout <<
-            "Reading 0x" <<
-            std::hex <<
-            opcode <<
-            std::dec <<
-            ", " <<
-            (ocString.has_value() ? ocString.value() : "Unknown chunk") <<
-            std::endl;*/
+          br.Align(0x20);
+          this.materials.texEnvironments.Clear();
+          for (var i = 0; i < numTexEnvironments; ++i) {
+            var texEnvironment = new TEVInfo();
+            texEnvironment.Read(br);
+            this.materials.texEnvironments.Add(texEnvironment);
+          }
 
-        var beforePosition = br.Position;
+          this.materials.materials.Clear();
+          for (var i = 0; i < numMaterials; ++i) {
+            var mat = new Material();
+            mat.Read(br);
+            this.materials.materials.Add(mat);
+          }
 
-        switch (chunkId) {
-          case ChunkId.HEADER:
-            br.Align(0x20);
-            this.header.Read(br);
-            br.Align(0x20);
-            break;
-          case ChunkId.VERTICES:
-            ReadChunk_(br,
-                       this.vertices,
-                       sbr => sbr.ReadVector3());
-            break;
-          case ChunkId.VERTEX_NORMALS:
-            this.hasNormals = true;
-            ReadChunk_(br,
-                       this.vnormals,
-                       sbr => sbr.ReadVector3());
-            break;
-          case ChunkId.VERTEX_NBTS:
-            Mod.ReadGenericChunk_(br, this.vertexnbt);
-            break;
-          case ChunkId.VERTEX_COLOURS:
-            Mod.ReadGenericChunk_(br, this.vcolours);
-            break;
-          case >= ChunkId.TEX_COORD_0 and <= ChunkId.TEX_COORD_7:
-            ReadChunk_(br,
-                       this.texcoords[(uint) chunkId - 0x18],
-                       sbr => sbr.ReadVector2());
-            break;
-          case ChunkId.TEXTURES:
-            Mod.ReadGenericChunk_(br, this.textures);
-            for (var i = 0; i < this.textures.Count; ++i) {
-              this.textures[i].index = i;
+          br.Align(0x20);
+
+          var readLength = br.Position - beforePosition;
+
+          ;
+          break;
+        case ChunkId.VERTEX_MATRIX:
+          Mod.ReadGenericChunk_(br, this.vtxMatrix);
+          break;
+        case ChunkId.MATRIX_ENVELOPE:
+          Mod.ReadGenericChunk_(br, this.envelopes);
+          break;
+        case ChunkId.MESH:
+          Mod.ReadGenericChunk_(br, this.meshes);
+          break;
+        case ChunkId.JOINTS:
+          Mod.ReadGenericChunk_(br, this.joints);
+          break;
+        case ChunkId.JOINT_NAMES:
+          var numJointNames = br.ReadUInt32();
+          this.jointNames.Clear();
+          br.Align(0x20);
+          for (var i = 0; i < numJointNames; ++i) {
+            var jointNameLength = br.ReadUInt32();
+
+            var jointNameBuilder = new StringBuilder((int) jointNameLength);
+            for (var c = 0; c < jointNameLength; ++c) {
+              jointNameBuilder.Append(br.ReadChar());
             }
+          }
 
-            break;
-          case ChunkId.TEXTURE_ATTRIBUTES:
-            Mod.ReadGenericChunk_(br, this.texattrs);
-            break;
-          case ChunkId.MATERIALS:
-            var numMaterials = br.ReadUInt32();
-            var numTexEnvironments = br.ReadUInt32();
+          br.Align(0x20);
+          break;
+        case ChunkId.COLLISION_PRISM:
+          this.colltris.Read(br);
+          break;
+        case ChunkId.COLLISION_GRID:
+          this.collgrid.Read(br);
+          break;
+        case ChunkId.END_OF_FILE:
+          br.Position += length;
 
-            br.Align(0x20);
-            this.materials.texEnvironments.Clear();
-            for (var i = 0; i < numTexEnvironments; ++i) {
-              var texEnvironment = new TEVInfo();
-              texEnvironment.Read(br);
-              this.materials.texEnvironments.Add(texEnvironment);
-            }
+          while (!br.Eof) {
+            this.eofBytes.Add(br.ReadByte());
+          }
 
-            this.materials.materials.Clear();
-            for (var i = 0; i < numMaterials; ++i) {
-              var mat = new Material();
-              mat.Read(br);
-              this.materials.materials.Add(mat);
-            }
-
-            br.Align(0x20);
-
-            var readLength = br.Position - beforePosition;
-
-            ;
-            break;
-          case ChunkId.VERTEX_MATRIX:
-            Mod.ReadGenericChunk_(br, this.vtxMatrix);
-            break;
-          case ChunkId.MATRIX_ENVELOPE:
-            Mod.ReadGenericChunk_(br, this.envelopes);
-            break;
-          case ChunkId.MESH:
-            Mod.ReadGenericChunk_(br, this.meshes);
-            break;
-          case ChunkId.JOINTS:
-            Mod.ReadGenericChunk_(br, this.joints);
-            break;
-          case ChunkId.JOINT_NAMES:
-            var numJointNames = br.ReadUInt32();
-            this.jointNames.Clear();
-            br.Align(0x20);
-            for (var i = 0; i < numJointNames; ++i) {
-              var jointNameLength = br.ReadUInt32();
-
-              var jointNameBuilder = new StringBuilder((int) jointNameLength);
-              for (var c = 0; c < jointNameLength; ++c) {
-                jointNameBuilder.Append(br.ReadChar());
-              }
-            }
-
-            br.Align(0x20);
-            break;
-          case ChunkId.COLLISION_PRISM:
-            this.colltris.Read(br);
-            break;
-          case ChunkId.COLLISION_GRID:
-            this.collgrid.Read(br);
-            break;
-          case ChunkId.END_OF_FILE:
-            br.Position += length;
-
-            while (!br.Eof) {
-              this.eofBytes.Add(br.ReadByte());
-            }
-
-            stopRead = true;
-            break;
-          default:
-            br.Position += length;
-            break;
-        }
-
-        var afterPosition = br.Position;
-
-        /*Asserts.Equal(beforePosition + length,
-                      afterPosition,
-                      $"Read incorrect number of bytes for opcode: {opcodeName}");*/
-      }
-    }
-
-    private static void ReadChunk_<T>(IBinaryReader br,
-                                      List<T> vector,
-                                      Func<IBinaryReader, T> read) {
-      var num = br.ReadUInt32();
-      vector.Clear();
-
-      br.Align(0x20);
-      for (var i = 0; i < num; ++i) {
-        vector.Add(read(br));
+          stopRead = true;
+          break;
+        default:
+          br.Position += length;
+          break;
       }
 
-      br.Align(0x20);
+      var afterPosition = br.Position;
+
+      /*Asserts.Equal(beforePosition + length,
+                    afterPosition,
+                    $"Read incorrect number of bytes for opcode: {opcodeName}");*/
+    }
+  }
+
+  private static void ReadChunk_<T>(IBinaryReader br,
+                                    List<T> vector,
+                                    Func<IBinaryReader, T> read) {
+    var num = br.ReadUInt32();
+    vector.Clear();
+
+    br.Align(0x20);
+    for (var i = 0; i < num; ++i) {
+      vector.Add(read(br));
     }
 
-    private static void ReadGenericChunk_<T>(
-        IBinaryReader br,
-        List<T> vector) where T : IBinaryDeserializable, new()
-      => ReadChunk_(br, vector, Mod.ReadGeneric_<T>);
+    br.Align(0x20);
+  }
 
-    private static T ReadGeneric_<T>(IBinaryReader br)
-        where T : IBinaryDeserializable, new() {
-      var instance = new T();
-      instance.Read(br);
-      return instance;
-    }
+  private static void ReadGenericChunk_<T>(
+      IBinaryReader br,
+      List<T> vector) where T : IBinaryDeserializable, new()
+    => ReadChunk_(br, vector, Mod.ReadGeneric_<T>);
 
-    public void Write(IBinaryWriter bw) {
-      throw new NotImplementedException();
-    }
+  private static T ReadGeneric_<T>(IBinaryReader br)
+      where T : IBinaryDeserializable, new() {
+    var instance = new T();
+    instance.Read(br);
+    return instance;
+  }
+
+  public void Write(IBinaryWriter bw) {
+    throw new NotImplementedException();
   }
 }
 
@@ -242,24 +242,24 @@ namespace pikmin1.schema.mod {
 /*static inline void writeGenericChunk(util::fstream_writer
 &writer, auto & vector,
 u32 chunkIdentifier) {
-  std::cout <<
-      "Writing 0x" <<
-      std::hex <<
-      chunkIdentifier <<
-      std::dec <<
-      ", " <<
-      MOD::getChunkName(chunkIdentifier).value() <<
-      std::endl;
+std::cout <<
+    "Writing 0x" <<
+    std::hex <<
+    chunkIdentifier <<
+    std::dec <<
+    ", " <<
+    MOD::getChunkName(chunkIdentifier).value() <<
+    std::endl;
 
-  u32 subchunkPos = startChunk(writer, chunkIdentifier);
-  writer.writeU32(vector.size());
+u32 subchunkPos = startChunk(writer, chunkIdentifier);
+writer.writeU32(vector.size());
 
-  writer.align(0x20);
-  for (auto & contents : vector)
-  {
-    contents.write(writer);
-  }
-  finishChunk(writer, subchunkPos);
+writer.align(0x20);
+for (auto & contents : vector)
+{
+  contents.write(writer);
+}
+finishChunk(writer, subchunkPos);
 }
 }*/
 

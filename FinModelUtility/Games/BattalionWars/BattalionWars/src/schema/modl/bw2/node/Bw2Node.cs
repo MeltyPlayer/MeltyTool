@@ -265,7 +265,7 @@ public class Bw2Node(int additionalDataCount) : IBwNode, IBinaryDeserializable {
         continue;
       }
 
-      Asserts.Equal(GxPrimitiveType.GX_TRIANGLESTRIP, gxPrimitive.PrimitiveType);
+      Asserts.Equal(GxPrimitiveType.GX_TRIANGLE_STRIP, gxPrimitive.PrimitiveType);
       triangleStrips.Add(new BwTriangleStrip {
           VertexAttributeIndicesList
               = gxPrimitive

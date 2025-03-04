@@ -423,9 +423,9 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
               var finPrimitive = gxPrimitiveType switch {
                   GxPrimitiveType.GX_TRIANGLES
                       => finMesh.AddTriangles(vertices),
-                  GxPrimitiveType.GX_TRIANGLESTRIP
+                  GxPrimitiveType.GX_TRIANGLE_STRIP
                       => finMesh.AddTriangleStrip(vertices),
-                  GxPrimitiveType.GX_TRIANGLEFAN
+                  GxPrimitiveType.GX_TRIANGLE_FAN
                       => finMesh.AddTriangleFan(vertices),
                   GxPrimitiveType.GX_QUADS
                       => finMesh.AddQuads(vertices),

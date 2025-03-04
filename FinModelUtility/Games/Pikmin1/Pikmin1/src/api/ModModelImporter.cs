@@ -272,7 +272,10 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
                   ModCullMode.SHOW_BACK_ONLY  => CullingMode.SHOW_BACK_ONLY,
                   ModCullMode.SHOW_BOTH       => CullingMode.SHOW_BOTH,
                   ModCullMode.SHOW_NEITHER    => CullingMode.SHOW_NEITHER,
-                  _                           => throw new ArgumentOutOfRangeException(nameof(modCullMode), modCullMode, null)
+                  _ => throw new ArgumentOutOfRangeException(
+                      nameof(modCullMode),
+                      modCullMode,
+                      null)
               };
 
               return finMaterial;
@@ -425,10 +428,10 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     var vertexDescriptor
         = new Pikmin1VertexDescriptor(mesh.vtxDescriptor, mod.hasNormals);
 
-    var vertexDescriptorValues = vertexDescriptor.ToArray();
-
     var finSkin = model.Skin;
     var finMesh = finSkin.AddMesh();
+
+    var gxDisplayListReader = new GxDisplayListReader();
 
     foreach (var meshPacket in mesh.packets) {
       foreach (var dlist in meshPacket.displaylists) {
@@ -439,152 +442,94 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
             new SchemaBinaryReader(dlist.dlistData, Endianness.BigEndian);
 
         while (!br.Eof) {
-          var opcode = (GxOpcode) br.ReadByte();
-          if (opcode == GxOpcode.NOP) {
-            continue;
-          }
+          var gxPrimitive = gxDisplayListReader.Read(br, vertexDescriptor);
+          if (gxPrimitive != null) {
+            var finVertexList = new List<IReadOnlyVertex>();
 
-          if (opcode != GxOpcode.DRAW_TRIANGLE_STRIP &&
-              opcode != GxOpcode.DRAW_TRIANGLE_FAN) {
-            continue;
-          }
+            foreach (var gxVertex in gxPrimitive.Vertices) {
+              var position
+                  = finModCache.PositionsByIndex[gxVertex.PositionIndex];
+              
+              var finVertex = model.Skin.AddVertex(position);
+              finVertexList.Add(finVertex);
 
-          // TODO: I hate this, do this without generating so many lists.
-          var faceCount = br.ReadUInt16();
-          var positionIndices = new List<ushort>();
-          var allVertexWeights = new List<IBoneWeights>();
-          var normalIndices = new List<ushort>();
-          var color0Indices = new List<ushort>();
+              var jointIndex = gxVertex.JointIndex;
+              if (jointIndex != null) {
+                // This represents which vertex matrix the active matrix is
+                // sourced from.
+                var vertexMatrixIndex = meshPacket.indices[jointIndex.Value];
 
-          var texCoordIndices = new List<ushort>[8];
-          for (var t = 0; t < 8; ++t) {
-            texCoordIndices[t] = [];
-          }
-
-          for (var f = 0; f < faceCount; f++) {
-            foreach (var (attr, format) in vertexDescriptorValues) {
-              if (format == null) {
-                var unused = br.ReadByte();
-
-                if (attr == GxVertexAttribute.PosMatIdx) {
-                  // Internally, this represents which of the 10 active
-                  // matrices to bind to.
-                  var activeMatrixIndex = unused / 3;
-
-                  Asserts.Equal(0, unused % 3);
-
-                  // This represents which vertex matrix the active matrix is
-                  // sourced from.
-                  var vertexMatrixIndex =
-                      meshPacket.indices[activeMatrixIndex];
-
-                  // -1 means no active matrix set by this display list,
-                  // defers to whatever the existing matrix is in this slot.
-                  if (vertexMatrixIndex == -1) {
-                    vertexMatrixIndex =
-                        this.activeMatrices_[activeMatrixIndex];
-                    Asserts.False(vertexMatrixIndex == -1);
-                  }
-
-                  this.activeMatrices_[activeMatrixIndex] = vertexMatrixIndex;
-
-                  // TODO: Is there a real name for this?
-                  // Remaps from vertex matrix to "attachment" index.
-                  var attachmentIndex =
-                      mod.vtxMatrix[vertexMatrixIndex].index;
-
-                  // Positive indices refer to joints/bones.
-                  if (attachmentIndex >= 0) {
-                    var boneIndex = attachmentIndex;
-                    allVertexWeights.Add(
-                        finSkin.GetOrCreateBoneWeights(
-                            VertexSpace.RELATIVE_TO_BONE,
-                            bones[boneIndex]));
-                  }
-                  // Negative indices refer to envelopes.
-                  else {
-                    var envelopeIndex = -1 - attachmentIndex;
-                    allVertexWeights.Add(envelopeBoneWeights[envelopeIndex]);
-                  }
-                } else {
-                  ;
+                // -1 means no active matrix set by this display list,
+                // defers to whatever the existing matrix is in this slot.
+                if (vertexMatrixIndex == -1) {
+                  vertexMatrixIndex = this.activeMatrices_[jointIndex.Value];
+                  Asserts.False(vertexMatrixIndex == -1);
                 }
 
-                continue;
+                this.activeMatrices_[jointIndex.Value] = vertexMatrixIndex;
+
+                // TODO: Is there a real name for this?
+                // Remaps from vertex matrix to "attachment" index.
+                var attachmentIndex =
+                    mod.vtxMatrix[vertexMatrixIndex].index;
+
+                // Positive indices refer to joints/bones.
+                IBoneWeights boneWeights;
+                if (attachmentIndex >= 0) {
+                  var boneIndex = attachmentIndex;
+                  boneWeights = finSkin.GetOrCreateBoneWeights(
+                          VertexSpace.RELATIVE_TO_BONE,
+                          bones[boneIndex]);
+                }
+                // Negative indices refer to envelopes.
+                else {
+                  var envelopeIndex = -1 - attachmentIndex;
+                  boneWeights = envelopeBoneWeights[envelopeIndex];
+                }
+                finVertex.SetBoneWeights(boneWeights);
               }
 
-              if (attr == GxVertexAttribute.Position) {
-                positionIndices.Add(Read_(br, format));
-              } else if (attr == GxVertexAttribute.Normal) {
-                normalIndices.Add(Read_(br, format));
-              } else if (attr == GxVertexAttribute.Color0) {
-                color0Indices.Add(Read_(br, format));
-              } else if (attr is >= GxVertexAttribute.Tex0Coord
-                                 and <= GxVertexAttribute.Tex7Coord) {
-                texCoordIndices[attr - GxVertexAttribute.Tex0Coord]
-                    .Add(Read_(br, format));
-              } else if (format == GxAttributeType.INDEX_16) {
-                br.ReadUInt16();
-              } else {
-                Asserts.Fail(
-                    $"Unexpected attribute/format ({attr}/{format})");
+              var normalIndex = gxVertex.NormalIndex;
+              // TODO: For collision models, there can be normal indices when
+              // there are 0 normals. What does this mean? Is this how surface
+              // types are defined?
+              if (normalIndex != null && mod.vnormals.Count > 0) {
+                if (!vertexDescriptor.UseNbt) {
+                  var normal = finModCache.NormalsByIndex[normalIndex.Value];
+                  finVertex.SetLocalNormal(normal);
+                } else {
+                  var normal = finModCache.NbtNormalsByIndex[normalIndex.Value];
+                  var tangent = finModCache.TangentsByIndex[normalIndex.Value];
+                  finVertex.SetLocalNormal(normal);
+                  finVertex.SetLocalTangent(tangent);
+                }
+              }
+
+              var colorIndex = gxVertex.Color0IndexOrValue?.AsT0;
+              if (colorIndex != null) {
+                var color = finModCache.ColorsByIndex[colorIndex.Value];
+                finVertex.SetColor(color);
+              }
+
+              for (var t = 0; t < 8; ++t) {
+                var texCoordIndex = gxVertex.GetTexCoord(t);
+                if (texCoordIndex != null) {
+                  var texCoord
+                      = finModCache.TexCoordsByIndex[t][texCoordIndex.Value];
+                  finVertex.SetUv(t, texCoord);
+                }
               }
             }
+
+            var finVertices = finVertexList.ToArray();
+            IPrimitive? primitive = gxPrimitive.PrimitiveType switch {
+                GxPrimitiveType.GX_TRIANGLE_FAN => finMesh.AddTriangleFan(finVertices),
+                GxPrimitiveType.GX_TRIANGLE_STRIP => finMesh.AddTriangleStrip(
+                    finVertices),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            primitive.SetMaterial(finMaterial);
           }
-
-          var finVertexList = new List<IReadOnlyVertex>();
-          for (var v = 0; v < positionIndices.Count; ++v) {
-            var position = finModCache.PositionsByIndex[positionIndices[v]];
-            var finVertex = model.Skin.AddVertex(position);
-
-            if (allVertexWeights.Count > 0) {
-              finVertex.SetBoneWeights(allVertexWeights[v]);
-            }
-
-            // TODO: For collision models, there can be normal indices when
-            // there are 0 normals. What does this mean? Is this how surface
-            // types are defined?
-            if (normalIndices.Count > 0 && mod.vnormals.Count > 0) {
-              var normalIndex = normalIndices[v];
-
-              if (!vertexDescriptor.UseNbt) {
-                var normal = finModCache.NormalsByIndex[normalIndex];
-                finVertex.SetLocalNormal(normal);
-              } else {
-                var normal = finModCache.NbtNormalsByIndex[normalIndex];
-                var tangent = finModCache.TangentsByIndex[normalIndex];
-                finVertex.SetLocalNormal(normal);
-                finVertex.SetLocalTangent(tangent);
-              }
-            }
-
-            if (color0Indices.Count > 0) {
-              var color = finModCache.ColorsByIndex[color0Indices[v]];
-              finVertex.SetColor(color);
-            } else {
-              finVertex.SetColor(finModCache.Default);
-            }
-
-            for (var t = 0; t < 8; ++t) {
-              if (texCoordIndices[t].Count > 0) {
-                var texCoord =
-                    finModCache.TexCoordsByIndex[t][texCoordIndices[t][v]];
-                finVertex.SetUv(t, texCoord);
-              }
-            }
-
-            finVertexList.Add(finVertex);
-          }
-
-          var finVertices = finVertexList.ToArray();
-          IPrimitive? primitive = opcode switch {
-              GxOpcode.DRAW_TRIANGLE_FAN => finMesh.AddTriangleFan(finVertices),
-              GxOpcode.DRAW_TRIANGLE_STRIP => finMesh.AddTriangleStrip(
-                  finVertices),
-              _ => throw new ArgumentOutOfRangeException()
-          };
-
-          primitive.SetMaterial(finMaterial);
         }
       }
     }
@@ -623,9 +568,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     public Vector4[] TangentsByIndex { get; }
 
     public IColor[] ColorsByIndex { get; }
-
-    public IColor Default { get; } =
-      FinColor.FromRgbaBytes(255, 255, 255, 255);
 
     public Vector2[][] TexCoordsByIndex { get; }
 

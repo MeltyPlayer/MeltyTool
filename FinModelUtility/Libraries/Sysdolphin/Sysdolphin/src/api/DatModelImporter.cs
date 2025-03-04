@@ -396,7 +396,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               GxPrimitiveType.GX_TRIANGLES =>
                   finMesh.AddTriangles(finVertices),
               GxPrimitiveType.GX_QUADS => finMesh.AddQuads(finVertices),
-              GxPrimitiveType.GX_TRIANGLESTRIP => finMesh.AddTriangleStrip(
+              GxPrimitiveType.GX_TRIANGLE_STRIP => finMesh.AddTriangleStrip(
                   finVertices),
               _ => throw new ArgumentOutOfRangeException()
           };
