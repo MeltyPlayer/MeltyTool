@@ -1,10 +1,8 @@
-﻿using System.Drawing.Drawing2D;
-using System.Numerics;
+﻿using System.Numerics;
 
 using Celeste64.map;
 
 using fin.data.lazy;
-using fin.image;
 using fin.io;
 using fin.math.rotations;
 using fin.model;

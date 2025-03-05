@@ -3,8 +3,6 @@ using fin.image.io;
 using fin.image.io.dxt;
 using fin.image.io.pixel;
 
-using gx.image;
-
 using schema.binary;
 
 namespace ttyd.schema.tpl;

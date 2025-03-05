@@ -1,5 +1,4 @@
 ﻿using fin.model;
-using fin.schema;
 using fin.util.asserts;
 
 using schema.text;

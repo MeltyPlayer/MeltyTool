@@ -1,13 +1,9 @@
-﻿using System.Numerics;
-
-using fin.animation.keyframes;
+﻿using fin.animation.keyframes;
 using fin.data.queues;
 using fin.io;
-using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
-using fin.util.enumerables;
 using fin.util.sets;
 
 using xmod.schema.anim;

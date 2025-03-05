@@ -4,8 +4,6 @@ using fin.io;
 using fin.testing;
 using fin.testing.model;
 
-using NUnit.Framework;
-
 using sm64ds.api;
 
 namespace sm64ds;

@@ -1,5 +1,4 @@
-﻿using fin.image;
-using fin.math;
+﻿using fin.math;
 
 using schema.binary;
 using schema.binary.attributes;

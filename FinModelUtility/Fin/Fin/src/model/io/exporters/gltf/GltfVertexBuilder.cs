@@ -3,7 +3,6 @@ using System.Linq;
 using System.Numerics;
 
 using fin.data.indexable;
-using fin.math;
 using fin.model.accessor;
 using fin.model.util;
 

@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
 using fin.data;
-using fin.math;
 using fin.model;
 using fin.model.accessor;
 using fin.model.util;

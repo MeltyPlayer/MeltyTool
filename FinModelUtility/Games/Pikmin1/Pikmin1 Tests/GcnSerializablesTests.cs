@@ -10,7 +10,6 @@ using pikmin1.schema.mod.collision;
 using schema.binary;
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
-using Plane = pikmin1.schema.mod.collision.Plane;
 
 namespace pikmin1.schema {
   using Plane = mod.collision.Plane;

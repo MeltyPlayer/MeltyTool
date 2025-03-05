@@ -9,14 +9,10 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Threading;
 
-using fin.audio.io;
 using fin.audio.io.importers.ogg;
 using fin.data.queues;
-using fin.image;
 using fin.io;
 using fin.io.bundles;
-using fin.model.io;
-using fin.scene;
 using fin.util.asserts;
 
 using grezzo.api;

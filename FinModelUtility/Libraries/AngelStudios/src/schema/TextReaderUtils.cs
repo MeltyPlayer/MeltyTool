@@ -3,7 +3,6 @@
 using CommunityToolkit.Diagnostics;
 
 using fin.schema;
-using fin.util.asserts;
 
 using schema.text;
 using schema.text.reader;

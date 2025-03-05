@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using fin.color;
 using fin.model;
 using fin.util.linq;
-using fin.util.strings;
 
 using NaturalSort.Extension;
 

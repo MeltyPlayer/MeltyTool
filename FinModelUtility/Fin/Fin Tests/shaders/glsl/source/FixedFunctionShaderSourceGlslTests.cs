@@ -3,7 +3,6 @@ using System.Drawing;
 
 using fin.image;
 using fin.language.equations.fixedFunction;
-using fin.language.equations.fixedFunction.impl;
 using fin.model;
 
 using NUnit.Framework;

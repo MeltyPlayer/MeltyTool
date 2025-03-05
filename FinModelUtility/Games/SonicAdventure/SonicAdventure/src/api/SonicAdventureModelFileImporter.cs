@@ -1,5 +1,4 @@
-﻿using fin.io;
-using fin.model;
+﻿using fin.model;
 using fin.model.io.importers;
 
 using schema.binary;

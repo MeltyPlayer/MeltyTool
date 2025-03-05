@@ -9,7 +9,6 @@ using fin.image;
 using fin.image.formats;
 using fin.image.io;
 using fin.image.io.pixel;
-using fin.image.io.tile;
 using fin.io;
 
 using schema.binary;
