@@ -16,7 +16,7 @@ public static class FinMatrix4x4Util {
 
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static IFinMatrix4x4 FromTranslation(Vector3 translation)
+  public static IFinMatrix4x4 FromTranslation(in Vector3 translation)
     => FromTranslation(
         translation.X,
         translation.Y,
@@ -32,12 +32,11 @@ public static class FinMatrix4x4Util {
     => FromRotation(QuaternionUtil.Create(rotation));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static IFinMatrix4x4 FromRotation(Quaternion rotation)
+  public static IFinMatrix4x4 FromRotation(in Quaternion rotation)
     => new FinMatrix4x4(SystemMatrix4x4Util.FromRotation(rotation));
 
-
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static IFinMatrix4x4 FromScale(Vector3 scale)
+  public static IFinMatrix4x4 FromScale(in Vector3 scale)
     => FromScale(scale.X, scale.Y, scale.Z);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -51,39 +50,20 @@ public static class FinMatrix4x4Util {
     => new FinMatrix4x4(
         SystemMatrix4x4Util.FromScale(scaleX, scaleY, scaleZ));
 
-
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix4x4 FromTrs(
-      Vector3? translation,
-      IRotation? rotation,
-      Vector3? scale)
-    => FromTrs(
-        translation,
-        rotation != null ? QuaternionUtil.Create(rotation) : null,
-        scale);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static IFinMatrix4x4 FromTrs(
-      Vector3? translation,
-      Quaternion? rotation,
-      Vector3? scale)
+      in Vector3? translation,
+      in Quaternion? rotation,
+      in Vector3? scale)
     => FromTrs(translation, rotation, scale, new FinMatrix4x4());
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static IFinMatrix4x4 FromTrs(
-      Vector3? translation,
-      Quaternion? rotation,
-      Vector3? scale,
+      in Vector3? translation,
+      in Quaternion? rotation,
+      in Vector3? scale,
       IFinMatrix4x4 dst) {
     dst.CopyFrom(SystemMatrix4x4Util.FromTrs(translation, rotation, scale));
     return dst;
   }
-
-  public static Vector3 TransformPosition(this IReadOnlyFinMatrix4x4 matrix,
-                                          in Vector3 position)
-    => Vector3.Transform(position, matrix.Impl);
-
-  public static Vector2 TransformPosition(this IReadOnlyFinMatrix4x4 matrix,
-                                          in Vector2 position)
-    => Vector2.Transform(position, matrix.Impl);
 }

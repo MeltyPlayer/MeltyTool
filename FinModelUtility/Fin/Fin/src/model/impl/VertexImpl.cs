@@ -6,10 +6,9 @@ using fin.math.xyz;
 
 namespace fin.model.impl;
 
-public class OneColor2UvVertexImpl
-    : IVertex,
-      ISingleColorVertex,
-      IMultiUvVertex {
+public class OneColor2UvVertexImpl : IVertex,
+                                     ISingleColorVertex,
+                                     IMultiUvVertex {
   private IColor? color_;
   private Vector2[] uv_ = new Vector2[2];
 
@@ -38,7 +37,7 @@ public class OneColor2UvVertexImpl
 
   public Vector3 LocalPosition { get; private set; }
 
-  public void SetLocalPosition(Vector3 localPosition)
+  public void SetLocalPosition(in Vector3 localPosition)
     => this.LocalPosition = localPosition;
 
   public void SetLocalPosition(IReadOnlyXyz localPosition)
@@ -91,10 +90,9 @@ public class OneColor2UvVertexImpl
 }
 
 
-public class NormalUvVertexImpl
-    : IVertex,
-      INormalVertex,
-      ISingleUvVertex {
+public class NormalUvVertexImpl : IVertex,
+                                  INormalVertex,
+                                  ISingleUvVertex {
   private Vector2? uv_;
 
   public NormalUvVertexImpl(int index, Vector3 position) {
@@ -121,7 +119,7 @@ public class NormalUvVertexImpl
 
   public Vector3 LocalPosition { get; private set; }
 
-  public void SetLocalPosition(Vector3 localPosition) {
+  public void SetLocalPosition(in Vector3 localPosition) {
     this.LocalPosition = localPosition;
   }
 
@@ -164,11 +162,9 @@ public class NormalUvVertexImpl
 }
 
 
-public class Normal1Color1UvVertexImpl
-    : IVertex,
-      INormalVertex,
-      ISingleColorVertex,
-      ISingleUvVertex {
+public class Normal1Color1UvVertexImpl : INormalVertex,
+                                         ISingleColorVertex,
+                                         ISingleUvVertex {
   private IColor? color_;
   private Vector2? uv_;
 
@@ -195,7 +191,7 @@ public class Normal1Color1UvVertexImpl
 
   public Vector3 LocalPosition { get; private set; }
 
-  public void SetLocalPosition(Vector3 localPosition)
+  public void SetLocalPosition(in Vector3 localPosition)
     => this.LocalPosition = localPosition;
 
   public void SetLocalPosition(IReadOnlyXyz localPosition)
@@ -265,11 +261,9 @@ public class Normal1Color1UvVertexImpl
   public Vector2? GetUv() => this.uv_;
 }
 
-public class NormalTangent1Color1UvVertexImpl
-    : IVertex,
-      INormalTangentVertex,
-      ISingleColorVertex,
-      ISingleUvVertex {
+public class NormalTangent1Color1UvVertexImpl : INormalTangentVertex,
+                                                ISingleColorVertex,
+                                                ISingleUvVertex {
   private IColor? color_;
   private Vector2? uv_;
 
@@ -297,7 +291,7 @@ public class NormalTangent1Color1UvVertexImpl
 
   public Vector3 LocalPosition { get; private set; }
 
-  public void SetLocalPosition(Vector3 localPosition)
+  public void SetLocalPosition(in Vector3 localPosition)
     => this.LocalPosition = localPosition;
 
   public void SetLocalPosition(IReadOnlyXyz localPosition)
@@ -383,8 +377,7 @@ public class NormalTangent1Color1UvVertexImpl
 }
 
 public class NormalTangentMultiColorMultiUvVertexImpl
-    : IVertex,
-      INormalTangentVertex,
+    : INormalTangentVertex,
       ISingleColorVertex,
       IMultiColorVertex,
       ISingleUvVertex,
@@ -419,7 +412,7 @@ public class NormalTangentMultiColorMultiUvVertexImpl
 
   public Vector3 LocalPosition { get; private set; }
 
-  public void SetLocalPosition(Vector3 localPosition)
+  public void SetLocalPosition(in Vector3 localPosition)
     => this.LocalPosition = localPosition;
 
   public void SetLocalPosition(IReadOnlyXyz localPosition)

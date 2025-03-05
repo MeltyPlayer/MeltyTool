@@ -5,47 +5,19 @@ namespace fin.math.interpolation;
 
 public readonly struct SimpleQuaternionInterpolator
     : IInterpolator<Quaternion> {
+  // TODO: Might need to negate q2 if Quaternion.Dot(q1, q2) < 0?
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Quaternion Interpolate(
-      Quaternion q1,
-      Quaternion q2,
-      float progress)
+  public Quaternion Interpolate(in Quaternion q1,
+                                in Quaternion q2,
+                                float progress)
     => Quaternion.Slerp(q1, q2, progress);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Quaternion Interpolate(float fromTime,
-                                Quaternion fromValue,
+                                in Quaternion fromValue,
                                 float fromTangent,
                                 float toTime,
-                                Quaternion toValue,
-                                float toTangent,
-                                float time) {
-    // TODO: Figure out how to use tangents here
-    var t = (time - fromTime) / (toTime - fromTime);
-    return this.Interpolate(fromValue, toValue, t);
-  }
-}
-
-public readonly struct QuaternionInterpolator : IInterpolator<Quaternion> {
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Quaternion Interpolate(
-      Quaternion q1,
-      Quaternion q2,
-      float progress) {
-    if (Quaternion.Dot(q1, q2) < 0) {
-      q2 = -q2;
-    }
-
-    var interp = Quaternion.Slerp(q1, q2, progress);
-    return Quaternion.Normalize(interp);
-  }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Quaternion Interpolate(float fromTime,
-                                Quaternion fromValue,
-                                float fromTangent,
-                                float toTime,
-                                Quaternion toValue,
+                                in Quaternion toValue,
                                 float toTangent,
                                 float time) {
     // TODO: Figure out how to use tangents here

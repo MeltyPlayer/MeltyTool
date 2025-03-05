@@ -38,7 +38,7 @@ public partial interface ISkin {
 public partial interface ISkin<out TVertex> : ISkin
     where TVertex : IReadOnlyVertex {
   new IReadOnlyList<TVertex> TypedVertices { get; }
-  TVertex AddVertex(Vector3 position);
+  TVertex AddVertex(in Vector3 position);
 }
 
 [GenerateReadOnly]

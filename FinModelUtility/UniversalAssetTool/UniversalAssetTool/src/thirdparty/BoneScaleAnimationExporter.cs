@@ -1,7 +1,6 @@
-﻿using System.Numerics;
-
-using fin.data.indexable;
+﻿using fin.data.indexable;
 using fin.io;
+using fin.math;
 using fin.model;
 
 namespace uni.thirdparty;
@@ -34,7 +33,7 @@ public class BoneScaleAnimationExporter {
           for (var f = 0; f < animation.FrameCount; ++f) {
             scales.TryGetAtFrame(f, out var scale);
 
-            if (!IsScaleOne(scale)) {
+            if (!scale.IsRoughly1()) {
               definedBones[bone] = boneTracks;
               break;
             }
@@ -55,7 +54,7 @@ public class BoneScaleAnimationExporter {
           for (var f = 0; f < animation.FrameCount; ++f) {
             scales.TryGetAtFrame(f, out var scale);
 
-            if (IsScaleOne(scale)) {
+            if (scale.IsRoughly1()) {
               fw.WriteLine("      defScale,");
             } else {
               fw.WriteLine(
@@ -71,9 +70,4 @@ public class BoneScaleAnimationExporter {
 
       fw.WriteLine("}");
     }
-
-  private static bool IsScaleOne(Vector3 scale)
-    => Math.Abs(scale.X - 1) < .001
-       && Math.Abs(scale.Y - 1) < .001
-       && Math.Abs(scale.Z - 1) < .001;
 }

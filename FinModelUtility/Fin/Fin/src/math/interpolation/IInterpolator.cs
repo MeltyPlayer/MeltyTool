@@ -2,15 +2,15 @@
 
 public interface IInterpolator<T> : IInterpolator<T, T>;
 
-public interface IInterpolator<in TIn, out TOut> {
-  public TOut Interpolate(TIn fromValue, TIn toValue, float progress);
+public interface IInterpolator<TIn, out TOut> {
+  public TOut Interpolate(in TIn fromValue, in TIn toValue, float progress);
 
   public TOut Interpolate(
       float fromTime,
-      TIn fromValue,
+      in TIn fromValue,
       float fromTangent,
       float toTime,
-      TIn toValue,
+      in TIn toValue,
       float toTangent,
       float time);
 }

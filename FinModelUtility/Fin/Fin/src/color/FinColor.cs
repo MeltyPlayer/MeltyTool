@@ -33,20 +33,20 @@ public class FinColor : IColor {
   public static IColor FromRgbBytes(byte rb, byte gb, byte bb)
     => FromRgbaBytes(rb, gb, bb, 255);
 
-  public static IColor FromRgba(Rgba32 rgba)
+  public static IColor FromRgba(in Rgba32 rgba)
     => new FinColor(rgba.R, rgba.G, rgba.B, rgba.A);
 
   public static IColor FromRgbaBytes(byte rb, byte gb, byte bb, byte ab)
     => new FinColor(rb, gb, bb, ab);
 
 
-  public static IColor FromRgb(Vector3 rgb)
+  public static IColor FromRgb(in Vector3 rgb)
     => FromRgbFloats(rgb.X, rgb.Y, rgb.Z);
 
   public static IColor FromRgbFloats(float rf, float gf, float bf)
     => FromRgbaFloats(rf, gf, bf, 1);
 
-  public static IColor FromRgba(Vector4 rgba)
+  public static IColor FromRgba(in Vector4 rgba)
     => FromRgbaFloats(rgba.X, rgba.Y, rgba.Z, rgba.W);
 
   public static IColor FromRgbaFloats(float rf, float gf, float bf, float af)

@@ -9,8 +9,8 @@ using NUnit.Framework;
 namespace fin.model.util;
 
 public class SkinExtensionsTests {
-  private record
-      VertexStub(int Index, Vector3 LocalPosition) : IReadOnlyVertex {
+  private record VertexStub(int Index, Vector3 LocalPosition)
+      : IReadOnlyVertex {
     public IReadOnlyBoneWeights? BoneWeights
       => throw new NotImplementedException();
   }

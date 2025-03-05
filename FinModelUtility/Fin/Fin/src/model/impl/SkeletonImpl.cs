@@ -89,7 +89,7 @@ public partial class ModelImpl<TVertex> {
       public bool IgnoreParentScale { get; set; }
 
 
-      public IBone AlwaysFaceTowardsCamera(Quaternion adjustment) {
+      public IBone AlwaysFaceTowardsCamera(in Quaternion adjustment) {
         this.FaceTowardsCamera = true;
         this.FaceTowardsCameraAdjustment = adjustment;
         return this;

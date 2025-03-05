@@ -5,17 +5,17 @@ namespace fin.math.interpolation;
 
 public readonly struct Vector3Interpolator : IInterpolator<Vector3> {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public Vector3 Interpolate(Vector3 lhs, Vector3 rhs, float progress)
+  public Vector3 Interpolate(in Vector3 lhs, in Vector3 rhs, float progress)
     => Vector3.Lerp(lhs, rhs, progress);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Vector3 Interpolate(float fromTime,
-                             Vector3 p1,
+                             in Vector3 p1,
                              float fromTangent,
                              float toTime,
-                             Vector3 p2,
+                             in Vector3 p2,
                              float toTangent,
-                             float time) 
+                             float time)
     => new(
         HermiteInterpolationUtil.InterpolateFloats(
             fromTime,

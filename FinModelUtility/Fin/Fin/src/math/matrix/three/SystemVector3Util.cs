@@ -10,13 +10,14 @@ namespace fin.math.matrix.three;
 
 public static class SystemVector3Util {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static unsafe bool IsRoughly(this Vector3 lhs, Vector3 rhs) {
-    float* lhsPtr = &lhs.X;
-    float* rhsPtr = &rhs.X;
-
-    for (var i = 0; i < 3; ++i) {
-      if (!lhsPtr[i].IsRoughly(rhsPtr[i])) {
-        return false;
+  public static unsafe bool IsRoughly(this in Vector3 lhs, in Vector3 rhs) {
+    fixed (float* lhsPtr = &lhs.X) {
+      fixed (float* rhsPtr = &rhs.X) {
+        for (var i = 0; i < 3; ++i) {
+          if (!lhsPtr[i].IsRoughly(rhsPtr[i])) {
+            return false;
+          }
+        }
       }
     }
 
@@ -24,7 +25,7 @@ public static class SystemVector3Util {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static int GetRoughHashCode(this Vector3 v)
+  public static int GetRoughHashCode(this in Vector3 v)
     => FluentHash.Start()
                  .With(v.X.GetRoughHashCode())
                  .With(v.Y.GetRoughHashCode())

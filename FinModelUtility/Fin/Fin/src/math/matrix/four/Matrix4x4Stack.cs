@@ -8,11 +8,11 @@ public interface IMatrix4x4Stack {
   Matrix4x4 Top { get; set; }
 
   Matrix4x4 Pop();
-  void Push(Matrix4x4 value);
+  void Push(in Matrix4x4 value);
   void Push();
 
   void SetIdentity();
-  void MultiplyInPlace(Matrix4x4 other);
+  void MultiplyInPlace(in Matrix4x4 other);
 }
 
 public class Matrix4x4Stack : IMatrix4x4Stack {
@@ -32,7 +32,7 @@ public class Matrix4x4Stack : IMatrix4x4Stack {
   public Matrix4x4 Pop() => this.impl_.Pop();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void Push(Matrix4x4 value) => this.impl_.Push(value);
+  public void Push(in Matrix4x4 value) => this.impl_.Push(value);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Push() => this.impl_.Push(this.impl_.Peek());
@@ -41,5 +41,5 @@ public class Matrix4x4Stack : IMatrix4x4Stack {
   public void SetIdentity() => this.Top = Matrix4x4.Identity;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public void MultiplyInPlace(Matrix4x4 other) => this.Top = other * this.Top;
+  public void MultiplyInPlace(in Matrix4x4 other) => this.Top = other * this.Top;
 }

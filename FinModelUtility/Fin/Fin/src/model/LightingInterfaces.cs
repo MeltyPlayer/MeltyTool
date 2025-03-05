@@ -47,11 +47,11 @@ public partial interface ILight {
   new LightSourceType SourceType { get; }
 
   new IReadOnlyXyz? Position { get; }
-  ILight SetPosition(Vector3 position);
+  ILight SetPosition(in Vector3 position);
   ILight SetPosition(IReadOnlyXyz position);
 
   new IReadOnlyXyz? Normal { get; }
-  ILight SetNormal(Vector3 normal);
+  ILight SetNormal(in Vector3 normal);
   ILight SetNormal(IReadOnlyXyz normal);
 
   new float Strength { get; set; }

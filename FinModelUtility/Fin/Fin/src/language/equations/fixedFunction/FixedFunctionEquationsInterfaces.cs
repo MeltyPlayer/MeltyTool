@@ -17,7 +17,7 @@ public interface IFixedFunctionEquations<TIdentifier> {
       double g,
       double b);
 
-  IColorConstant CreateColorConstant(Vector3 rgb)
+  IColorConstant CreateColorConstant(in Vector3 rgb)
     => this.CreateColorConstant(rgb.X, rgb.Y, rgb.Z);
 
 

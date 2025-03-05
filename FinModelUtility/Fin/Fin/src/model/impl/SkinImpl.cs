@@ -46,7 +46,7 @@ public partial class ModelImpl<TVertex> {
     public IReadOnlyList<IVertex> Vertices => this.vertices_;
     public IReadOnlyList<TVertex> TypedVertices => this.typedVertices_;
 
-    public TVertex AddVertex(Vector3 position) {
+    public TVertex AddVertex(in Vector3 position) {
       lock (this.typedVertices_) {
         lock (this.vertices_) {
           var vertex = this.vertexCreator_(this.vertices_.Count, position);

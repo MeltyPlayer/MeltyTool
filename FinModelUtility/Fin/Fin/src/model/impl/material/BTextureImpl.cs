@@ -106,12 +106,12 @@ public partial class ModelImpl<TVertex> {
 
     public Vector3? Translation { get; private set; }
 
-    public ITexture SetTranslation2d(Vector2 xy) {
+    public ITexture SetTranslation2d(in Vector2 xy) {
       this.Translation = new Vector3(xy.X, xy.Y, 0);
       return this;
     }
 
-    public ITexture SetTranslation3d(Vector3 xyz) {
+    public ITexture SetTranslation3d(in Vector3 xyz) {
       this.Translation = xyz;
       this.IsTransform3d = true;
       return this;
@@ -120,12 +120,12 @@ public partial class ModelImpl<TVertex> {
 
     public Vector3? Scale { get; private set; }
 
-    public ITexture SetScale2d(Vector2 xy) {
+    public ITexture SetScale2d(in Vector2 xy) {
       this.Scale = new Vector3(xy.X, xy.Y, 0);
       return this;
     }
 
-    public ITexture SetScale3d(Vector3 xyz) {
+    public ITexture SetScale3d(in Vector3 xyz) {
       this.Scale = xyz;
       this.IsTransform3d = true;
       return this;
@@ -139,7 +139,7 @@ public partial class ModelImpl<TVertex> {
       return this;
     }
 
-    public ITexture SetRotationRadians3d(Vector3 xyz) {
+    public ITexture SetRotationRadians3d(in Vector3 xyz) {
       this.RotationRadians = xyz;
       this.IsTransform3d = true;
       return this;

@@ -31,5 +31,5 @@ public interface IRotation {
   float ZRadians { get; }
   IRotation SetRadians(float x, float y, float z);
 
-  IRotation SetQuaternion(Quaternion q);
+  IRotation SetQuaternion(in Quaternion q);
 }

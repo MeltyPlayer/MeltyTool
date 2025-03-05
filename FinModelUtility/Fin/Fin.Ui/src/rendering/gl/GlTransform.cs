@@ -39,15 +39,15 @@ public static class GlTransform {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static unsafe void UniformMatrix4(int location, Matrix4x4 matrix) {
-    var ptr = &(matrix.M11);
-    GL.UniformMatrix4(location, 1, false, ptr);
+  public static unsafe void UniformMatrix4(int location, in Matrix4x4 matrix) {
+    fixed (float* ptr = &matrix.M11) {
+      GL.UniformMatrix4(location, 1, false, ptr);
+    }
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static unsafe void UniformMatrix4s(int location,
-                                            ReadOnlySpan<Matrix4x4>
-                                                matrices) {
+                                            ReadOnlySpan<Matrix4x4> matrices) {
     fixed (float* ptr = &(matrices[0].M11)) {
       GL.UniformMatrix4(location, matrices.Length, false, ptr);
     }
@@ -65,10 +65,10 @@ public static class GlTransform {
 
   public static void MatrixMode(TransformMatrixMode mode)
     => currentMatrix_ = mode switch {
-        TransformMatrixMode.MODEL      => modelMatrix_,
-        TransformMatrixMode.VIEW       => viewMatrix_,
+        TransformMatrixMode.MODEL => modelMatrix_,
+        TransformMatrixMode.VIEW => viewMatrix_,
         TransformMatrixMode.PROJECTION => projectionMatrix_,
-        _                              => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+        _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
     };
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -77,7 +77,7 @@ public static class GlTransform {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void MultMatrix(Matrix4x4 matrix) {
+  public static void MultMatrix(in Matrix4x4 matrix) {
     currentMatrix_.MultiplyInPlace(matrix);
   }
 
@@ -90,7 +90,8 @@ public static class GlTransform {
     => MultMatrix(SystemMatrix4x4Util.FromTranslation(x, y, z));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void Translate(Vector3 xyz) => Translate(xyz.X, xyz.Y, xyz.Z);
+  public static void Translate(in Vector3 xyz)
+    => Translate(xyz.X, xyz.Y, xyz.Z);
 
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -147,10 +148,9 @@ public static class GlTransform {
     MultMatrix(matrix);
   }
 
-  public static void LookAt(
-      Vector3 eye,
-      Vector3 center,
-      Vector3 up) {
+  public static void LookAt(in Vector3 eye,
+                            in Vector3 center,
+                            in Vector3 up) {
     var look = Vector3.Normalize(center - eye);
     var side = Vector3.Normalize(Vector3.Cross(look, up));
     var newUp = Vector3.Cross(side, look);

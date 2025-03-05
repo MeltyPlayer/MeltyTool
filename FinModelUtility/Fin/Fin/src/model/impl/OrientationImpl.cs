@@ -31,7 +31,7 @@ public class RotationImpl : IRotation {
     return this;
   }
 
-  public IRotation SetQuaternion(Quaternion q) {
+  public IRotation SetQuaternion(in Quaternion q) {
     var eulerRadians = QuaternionUtil.ToEulerRadians(q);
     return this.SetRadians(eulerRadians.X, eulerRadians.Y, eulerRadians.Z);
   }

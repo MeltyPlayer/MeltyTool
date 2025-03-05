@@ -76,7 +76,7 @@ public sealed partial class Vector3f
   public static explicit operator Vector3(Vector3f value)
     => new(value.X, value.Y, value.Z);
 
-  public void Set(Vector3 xyz) {
+  public void Set(in Vector3 xyz) {
     this.X = xyz.X;
     this.Y = xyz.Y;
     this.Z = xyz.Z;

@@ -16,7 +16,7 @@ public partial interface IVertex : IIndexable {
 
   void SetBoneWeights(IBoneWeights boneWeights);
 
-  void SetLocalPosition(Vector3 localPosition);
+  void SetLocalPosition(in Vector3 localPosition);
   void SetLocalPosition(IReadOnlyXyz localPosition);
   void SetLocalPosition(float x, float y, float z);
 }

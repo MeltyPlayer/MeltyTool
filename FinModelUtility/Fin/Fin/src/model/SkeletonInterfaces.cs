@@ -25,7 +25,7 @@ public partial interface ILeafBone : IIndexable {
 
   new bool IgnoreParentScale { get; set; }
 
-  IBone AlwaysFaceTowardsCamera(Quaternion adjustment);
+  IBone AlwaysFaceTowardsCamera(in Quaternion adjustment);
   new bool FaceTowardsCamera { get; }
   new Quaternion FaceTowardsCameraAdjustment { get; }
 }

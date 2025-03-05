@@ -151,10 +151,9 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
     return finModel;
   }
 
-  private void AddRcbFileToModel_(
-      IModel finModel,
-      Rcb rcb,
-      out IBone[] finBones) {
+  private void AddRcbFileToModel_(IModel finModel,
+                                  Rcb rcb,
+                                  out IBone[] finBones) {
     finBones = Array.Empty<IBone>();
 
     foreach (var rcbSkeleton in rcb.Skeletons) {
@@ -272,6 +271,6 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
     }
   }
 
-  public Matrix4x4 GetMatrixFromBone_(Matrix4x4 matrix)
+  public Matrix4x4 GetMatrixFromBone_(in Matrix4x4 matrix)
     => matrix.AssertInvert();
 }
