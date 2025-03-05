@@ -18,7 +18,6 @@ using fin.io.bundles;
 using fin.model.io;
 using fin.scene;
 using fin.util.asserts;
-using fin.util.sets;
 
 using grezzo.api;
 
@@ -235,11 +234,11 @@ public class FileBundleLeafNode(
   public INotifyCollectionChangedSynchronizedViewList<
       IFileBundleNode>? FilteredSubNodes => null;
 
-  public MaterialIconKind? Icon => data.FileBundle switch {
-      IAudioFileBundle => MaterialIconKind.VolumeHigh,
-      IImageFileBundle => MaterialIconKind.ImageOutline,
-      IModelFileBundle => MaterialIconKind.CubeOutline,
-      ISceneFileBundle => MaterialIconKind.Web,
+  public MaterialIconKind? Icon => data.FileBundle.Type switch {
+    FileBundleType.AUDIO => MaterialIconKind.VolumeHigh,
+    FileBundleType.IMAGE => MaterialIconKind.ImageOutline,
+    FileBundleType.MODEL => MaterialIconKind.CubeOutline,
+    FileBundleType.SCENE => MaterialIconKind.Web,
   };
 
   public IAnnotatedFileBundle Value => data;

@@ -3,10 +3,13 @@ using System.Linq;
 
 using fin.importers;
 using fin.io;
+using fin.io.bundles;
 
 namespace fin.model.io;
 
-public interface IModelFileBundle : I3dFileBundle;
+public interface IModelFileBundle : I3dFileBundle {
+  FileBundleType IFileBundle.Type => FileBundleType.MODEL;
+}
 
 public interface IModelPlugin {
   string DisplayName { get; }

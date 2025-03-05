@@ -5,13 +5,16 @@ using System.Numerics;
 using fin.data.dictionaries;
 using fin.image;
 using fin.importers;
+using fin.io.bundles;
 using fin.model;
 
 using schema.readOnly;
 
 namespace fin.scene;
 
-public interface ISceneFileBundle : I3dFileBundle;
+public interface ISceneFileBundle : I3dFileBundle {
+  FileBundleType IFileBundle.Type => FileBundleType.SCENE;
+}
 
 public interface ISceneImporter<in TSceneFileBundle>
     : I3dImporter<IScene, TSceneFileBundle>

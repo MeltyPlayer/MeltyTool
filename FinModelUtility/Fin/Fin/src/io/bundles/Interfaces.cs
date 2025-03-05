@@ -7,6 +7,8 @@ using fin.util.progress;
 namespace fin.io.bundles;
 
 public interface IFileBundle : IUiFile {
+  FileBundleType Type { get; }
+
   IReadOnlyTreeFile? MainFile { get; }
 
   IEnumerable<IReadOnlyGenericFile> Files {

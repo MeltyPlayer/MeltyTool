@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using fin.util.strings;
+
 namespace fin.io.bundles;
 
 public interface IGameAndLocalPath {
@@ -15,15 +17,25 @@ public interface IAnnotatedFileBundle
 
   IFileHierarchyFile File { get; }
 
+  FileBundleType IFileBundle.Type => this.FileBundle.Type;
+
   string IGameAndLocalPath.GameAndLocalPath => this.GameAndLocalPath;
 
   int IComparable<IAnnotatedFileBundle>.CompareTo(IAnnotatedFileBundle? other) {
-    var gameNameComparison = this.GameName.CompareTo(other.GameName);
+    var naturalSort = StringUtil.NaturalSortInstance;
+
+    var gameNameComparison = naturalSort.Compare(this.GameName, other.GameName);
     if (gameNameComparison != 0) {
       return gameNameComparison;
     }
 
-    return this.LocalPath.CompareTo(other.LocalPath);
+    var localPathComparison
+        = naturalSort.Compare(this.LocalPath, other.LocalPath);
+    if (localPathComparison != 0) {
+      return localPathComparison;
+    }
+
+    return this.FileBundle.Type - other.FileBundle.Type;
   }
 }
 
