@@ -1,3 +1,3 @@
 ﻿namespace modl.xml.level;
 
-internal class XmlLevelPointer : BXmlLevelTypedItem, IXmlLevelObjectField { }
+internal class XmlLevelPointer : BXmlLevelTypedItem, IXmlLevelObjectField;

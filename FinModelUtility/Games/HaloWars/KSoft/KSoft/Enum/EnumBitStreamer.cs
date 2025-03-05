@@ -320,21 +320,15 @@ namespace KSoft.IO
 	/// <remarks>Uses the default options in <see cref="EnumBitStreamerOptions"/></remarks>
 	public class EnumBitStreamer<TEnum, TStreamType> : EnumBitStreamer<TEnum, TStreamType, EnumBitStreamerOptions>
 		where TEnum : struct, IComparable, IFormattable, IConvertible
-		where TStreamType : struct
-	{
-	};
+		where TStreamType : struct;
 
 	/// <summary>Utility for auto-generating methods for streaming enum types to/from bitstreams</summary>
 	/// <typeparam name="TEnum">Enum type to stream</typeparam>
 	/// <remarks>Implicitly uses the Enum's underlying type for the stream type</remarks>
 	public sealed class EnumBitStreamer<TEnum> : EnumBitStreamer<TEnum, EnumBinaryStreamerUseUnderlyingType>
-		where TEnum : struct, IComparable, IFormattable, IConvertible
-	{
-	};
+		where TEnum : struct, IComparable, IFormattable, IConvertible;
 
 	public sealed class EnumBitStreamerWithOptions<TEnum, TOptions> : EnumBitStreamer<TEnum, EnumBinaryStreamerUseUnderlyingType, TOptions>
 		where TEnum : struct, IComparable, IFormattable, IConvertible
-		where TOptions : EnumBitStreamerOptions, new()
-	{
-	};
+		where TOptions : EnumBitStreamerOptions, new();
 }

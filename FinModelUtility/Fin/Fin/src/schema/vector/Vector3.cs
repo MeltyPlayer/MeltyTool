@@ -87,11 +87,11 @@ public sealed partial class Vector3f
 }
 
 [BinarySchema]
-public sealed partial class Vector3i : BVector3<int>, IBinaryConvertible { }
+public sealed partial class Vector3i : BVector3<int>, IBinaryConvertible;
 
 [BinarySchema]
-public sealed partial class Vector3s : BVector3<short>, IBinaryConvertible { }
+public sealed partial class Vector3s : BVector3<short>, IBinaryConvertible;
 
 [BinarySchema]
 public sealed partial class
-    Vector3d : BVector3<double>, IBinaryConvertible { }
+    Vector3d : BVector3<double>, IBinaryConvertible;

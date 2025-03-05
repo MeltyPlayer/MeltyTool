@@ -11,4 +11,4 @@ namespace jsystem.schema.j3dgraph.btp;
 /// </summary>
 [Endianness(Endianness.BigEndian)]
 [BinarySchema]
-public partial class Btp : IBinaryConvertible { }
+public partial class Btp : IBinaryConvertible;

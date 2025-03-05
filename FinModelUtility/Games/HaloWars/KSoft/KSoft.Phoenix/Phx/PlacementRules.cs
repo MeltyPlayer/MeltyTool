@@ -34,7 +34,5 @@ namespace KSoft.Phoenix.Phx
 	#region Xml constants
 	#endregion
   };
-	/*public*/ sealed class BPlacementRules
-	{
-	};
+	/*public*/ sealed class BPlacementRules;
 }

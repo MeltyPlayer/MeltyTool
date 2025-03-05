@@ -6,9 +6,7 @@ namespace KSoft.Collections
 	using PhxUtil = Phoenix.PhxUtil;
 
 	public sealed class BListAutoIdParams
-		: BListParams
-	{
-	};
+		: BListParams;
 
 	public sealed class BListAutoId<T>
 		: BListBase<T>

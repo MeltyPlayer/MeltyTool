@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class WeaponBase : BLevelObject {
-}
+public class WeaponBase : BLevelObject;

@@ -8,9 +8,7 @@ using Contract = System.Diagnostics.Contracts.Contract; // SHIM'D
 namespace KSoft.Bitwise
 {
 	/// <summary>Static class for manipulating integer bit-vectors</summary>
-	public static partial class Flags
-	{
-	};
+	public static partial class Flags;
 
 	/// <summary>Encases a 32-bit bit-vector into a reference object, with bit-manipulator methods</summary>
 	/// <remarks>

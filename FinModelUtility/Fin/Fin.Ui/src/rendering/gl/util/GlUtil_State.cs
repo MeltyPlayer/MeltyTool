@@ -4,7 +4,7 @@ using OpenTK.Windowing.Common;
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState { }
+public partial class GlState;
 
 public static partial class GlUtil {
   private static NullFriendlyDictionary<object?, GlState>

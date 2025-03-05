@@ -430,13 +430,11 @@ namespace KSoft.IO
 		#endregion
 	};
 
-	public struct EnumBinaryStreamerUseUnderlyingType {};
+	public struct EnumBinaryStreamerUseUnderlyingType;
 
 	/// <summary>Utility for auto-generating methods for streaming enum types to/from binary streams</summary>
 	/// <typeparam name="TEnum">Enum type to stream</typeparam>
 	/// <remarks>Implicitly uses the Enum's underlying type for the stream type</remarks>
 	public sealed class EnumBinaryStreamer<TEnum> : EnumBinaryStreamer<TEnum, EnumBinaryStreamerUseUnderlyingType>
-		where TEnum : struct, IComparable, IFormattable, IConvertible
-	{
-	};
+		where TEnum : struct, IComparable, IFormattable, IConvertible;
 }

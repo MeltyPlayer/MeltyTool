@@ -2,4 +2,4 @@
 
 namespace fin.image;
 
-public interface IImageFileBundle : IFileBundle { }
+public interface IImageFileBundle : IFileBundle;

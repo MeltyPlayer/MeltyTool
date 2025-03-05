@@ -7,26 +7,11 @@ namespace fin.math;
 
 public static class FinMath {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static TNumber Sqr<TNumber>(this TNumber value)
-      where TNumber : INumber<TNumber>
-    => value * value;
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static bool IsInRange<TNumber>(this TNumber value,
                                         TNumber min,
                                         TNumber max)
       where TNumber : INumber<TNumber>
     => min <= value && value <= max;
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static bool IsInArea<TNumber>(this TNumber valueX,
-                                       TNumber valueY,
-                                       TNumber minX,
-                                       TNumber minY,
-                                       TNumber maxX,
-                                       TNumber maxY)
-      where TNumber : INumber<TNumber>
-    => IsInRange(valueX, minX, maxX) && IsInRange(valueY, minY, maxY);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static TNumber MapRange<TNumber>(this TNumber value,

@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class TerrainParticleAnimationBase : BLevelObject {
-}
+public class TerrainParticleAnimationBase : BLevelObject;

@@ -7,7 +7,7 @@ using GROTreeDir =
 using System.Collections.Generic;
 using System;
 
-public partial interface IFileHierarchyIoObject { }
+public partial interface IFileHierarchyIoObject;
 
 public partial interface IFileHierarchyDirectory {
   // GetExistingSubdirs
@@ -102,4 +102,4 @@ public partial interface IFileHierarchyDirectory {
       bool includeSubdirs = false);
 }
 
-public partial interface IFileHierarchyFile { }
+public partial interface IFileHierarchyFile;

@@ -30,15 +30,15 @@ public interface IScalarValue
 
 public interface IScalarTerm
     : IScalarValue,
-      ITerm<IScalarValue, IScalarConstant, IScalarTerm, IScalarExpression> { }
+      ITerm<IScalarValue, IScalarConstant, IScalarTerm, IScalarExpression>;
 
 public interface IScalarExpression
     : IScalarValue,
       IExpression<IScalarValue, IScalarConstant, IScalarTerm,
-          IScalarExpression> { }
+          IScalarExpression>;
 
 
-public interface IScalarFactor : IScalarValue { }
+public interface IScalarFactor : IScalarValue;
 
 public interface IScalarConstant
     : IScalarFactor,

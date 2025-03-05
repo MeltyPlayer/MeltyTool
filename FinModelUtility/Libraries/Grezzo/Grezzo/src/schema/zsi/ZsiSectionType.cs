@@ -29,4 +29,4 @@ public enum ZsiSectionType : byte {
   MISC_SETTINGS,
 }
 
-public interface IZsiSection { }
+public interface IZsiSection;

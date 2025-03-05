@@ -1,7 +1,5 @@
 ﻿
 namespace KSoft
 {
-	public static partial class TypeExtensionsSecurity
-	{
-	};
+	public static partial class TypeExtensionsSecurity;
 }

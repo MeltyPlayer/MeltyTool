@@ -45,14 +45,14 @@ public interface IColorValue
 
 public interface IColorTerm
     : IColorValue,
-      ITerm<IColorValue, IColorConstant, IColorTerm, IColorExpression> { }
+      ITerm<IColorValue, IColorConstant, IColorTerm, IColorExpression>;
 
 public interface IColorExpression
     : IColorValue,
       IExpression<IColorValue, IColorConstant, IColorTerm,
-          IColorExpression> { }
+          IColorExpression>;
 
-public interface IColorFactor : IColorValue { }
+public interface IColorFactor : IColorValue;
 
 public interface IColorConstant
     : IColorFactor,

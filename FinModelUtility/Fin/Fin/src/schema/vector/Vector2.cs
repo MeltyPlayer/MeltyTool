@@ -66,7 +66,7 @@ public sealed partial class Vector2f
 }
 
 [BinarySchema]
-public sealed partial class Vector2i : BVector2<int>, IBinaryConvertible { }
+public sealed partial class Vector2i : BVector2<int>, IBinaryConvertible;
 
 [BinarySchema]
-public sealed partial class Vector2s : BVector2<short>, IBinaryConvertible { }
+public sealed partial class Vector2s : BVector2<short>, IBinaryConvertible;

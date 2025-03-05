@@ -30,11 +30,11 @@ namespace granny3d {
   }
 
 
-  public interface IGrannyMesh { }
+  public interface IGrannyMesh;
 
-  public interface IGrannyModel { }
+  public interface IGrannyModel;
 
-  public interface IGrannyTrackGroup { }
+  public interface IGrannyTrackGroup;
 
   public interface IGrannyAnimation {
     string Name { get; }

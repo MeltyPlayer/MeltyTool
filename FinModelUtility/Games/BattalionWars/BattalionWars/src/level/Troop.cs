@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class Troop : BLevelObject {
-}
+public class Troop : BLevelObject;

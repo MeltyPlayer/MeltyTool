@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class ProjectileBase : BLevelObject {
-}
+public class ProjectileBase : BLevelObject;

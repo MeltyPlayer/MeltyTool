@@ -3,5 +3,4 @@
 namespace sonicadventure.schema.model;
 
 [BinarySchema]
-public partial class Mesh : IBinaryConvertible {
-}
+public partial class Mesh : IBinaryConvertible;

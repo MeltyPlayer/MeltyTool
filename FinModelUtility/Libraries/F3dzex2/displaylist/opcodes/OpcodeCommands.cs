@@ -10,7 +10,7 @@ using fin.util.enums;
 
 namespace f3dzex2.displaylist.opcodes;
 
-public class NoopOpcodeCommand : IOpcodeCommand { }
+public class NoopOpcodeCommand : IOpcodeCommand;
 
 public class DlOpcodeCommand : IOpcodeCommand {
   public IReadOnlyList<IDisplayList> PossibleBranches { get; set; }
@@ -20,7 +20,7 @@ public class DlOpcodeCommand : IOpcodeCommand {
 /// <summary>
 ///   Stops executing current DL and returns to one at top of stack.
 /// </summary>
-public class EndDlOpcodeCommand : IOpcodeCommand { }
+public class EndDlOpcodeCommand : IOpcodeCommand;
 
 
 public class MtxOpcodeCommand : IOpcodeCommand {
@@ -48,7 +48,7 @@ public class VtxOpcodeCommand : IOpcodeCommand {
   public byte IndexToBeginStoringVertices { get; set; }
 }
 
-public class ModifyVtxOpcodeCommand : IOpcodeCommand { }
+public class ModifyVtxOpcodeCommand : IOpcodeCommand;
 
 
 public enum TriVertexOrder {

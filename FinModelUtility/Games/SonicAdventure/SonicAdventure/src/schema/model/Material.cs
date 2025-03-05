@@ -5,7 +5,7 @@ using schema.binary;
 namespace sonicadventure.schema.model;
 
 [Flags]
-public enum MaterialFlags : uint { }
+public enum MaterialFlags : uint;
 
 [BinarySchema]
 public partial class Material : IBinaryConvertible {

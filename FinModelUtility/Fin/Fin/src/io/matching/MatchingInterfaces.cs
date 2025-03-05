@@ -17,9 +17,7 @@ public interface IPatternMatcher {
   IReadOnlyList<IMatchSegment> Text { get; }
 }
 
-public interface IMatchSegment {
-
-}
+public interface IMatchSegment;
 
 // Directory matchers
 public interface IDirectoryMatcher<TDirectory, TFile>
@@ -34,19 +32,19 @@ public interface IDirectoryMatcher<TDirectory, TFile>
 
 public interface IExactDirectoryMatcher
     : IDirectoryMatcher<IExactDirectoryMatcher, IExactFileMatcher>,
-      IExactMatcher { }
+      IExactMatcher;
 
 public interface IPatternDirectoryMatcher
-    : IDirectoryMatcher<IPatternDirectoryMatcher, IPatternFileMatcher> { }
+    : IDirectoryMatcher<IPatternDirectoryMatcher, IPatternFileMatcher>;
 
 // File matchers
 public interface IFileMatcher<TDirectory, TFile>
     where TDirectory : IDirectoryMatcher<TDirectory, TFile>
-    where TFile : IFileMatcher<TDirectory, TFile> { }
+    where TFile : IFileMatcher<TDirectory, TFile>;
 
 public interface IExactFileMatcher
     : IFileMatcher<IExactDirectoryMatcher, IExactFileMatcher>,
-      IExactMatcher { }
+      IExactMatcher;
 
 public interface IPatternFileMatcher
-    : IFileMatcher<IPatternDirectoryMatcher, IPatternFileMatcher> { }
+    : IFileMatcher<IPatternDirectoryMatcher, IPatternFileMatcher>;

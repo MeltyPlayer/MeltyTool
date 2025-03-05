@@ -6,7 +6,5 @@ namespace KSoft.Collections
 	/// <see cref="Engine.BProtoTechEffect"/>
 	public sealed class BListArray<T>
 		: BListBase<T>
-		where T : IO.ITagElementStringNameStreamable, new()
-	{
-	};
+		where T : IO.ITagElementStringNameStreamable, new();
 }

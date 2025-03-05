@@ -63,7 +63,5 @@ namespace KSoft.IO
 		}
 	};
 
-	static partial class TagElementTextStreamUtils
-	{
-	};
+	static partial class TagElementTextStreamUtils;
 }

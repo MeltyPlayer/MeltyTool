@@ -97,14 +97,10 @@ namespace KSoft.Granny3D
 	};
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_pixel_layout
-	{
-	};
+	public struct granny_pixel_layout;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_texture_image
-	{
-	};
+	public struct granny_texture_image;
 	#endregion
 
 	#region granny_material
@@ -118,9 +114,7 @@ namespace KSoft.Granny3D
 	};
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_material_map
-	{
-	};
+	public struct granny_material_map;
 	#endregion
 
 	#region granny_skeleton
@@ -166,14 +160,10 @@ namespace KSoft.Granny3D
 		public ArrayPtr<granny_vertex_annotation_set> VertexAnnotationSets;
 	};
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_vertex_annotation_set
-	{
-	};
+	public struct granny_vertex_annotation_set;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_morph_target
-	{
-	};
+	public struct granny_morph_target;
 
 	[StructLayout(LayoutKind.Sequential, Pack=Granny2DLL.kAssumedPointerSize)]
 	public struct granny_tri_topology
@@ -269,23 +259,23 @@ namespace KSoft.Granny3D
 	#endregion
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_model_instance { };
+	public struct granny_model_instance;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_control { };
+	public struct granny_control;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_model_control_binding { };
+	public struct granny_model_control_binding;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_world_pose { };
+	public struct granny_world_pose;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_mesh_binding { };
+	public struct granny_mesh_binding;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_mesh_deformer { };
+	public struct granny_mesh_deformer;
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct granny_local_pose { };
+	public struct granny_local_pose;
 }

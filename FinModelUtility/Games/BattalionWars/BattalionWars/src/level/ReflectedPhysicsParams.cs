@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class ReflectedPhysicsParams : BLevelObject {
-}
+public class ReflectedPhysicsParams : BLevelObject;

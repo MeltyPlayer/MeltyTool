@@ -29,7 +29,7 @@ public partial interface IReadOnlySystemIoObject
 public partial interface IReadOnlySystemDirectory
     : IReadOnlySystemIoObject,
       IReadOnlyTreeDirectory,
-      GROSysDir { }
+      GROSysDir;
 
 public partial interface IReadOnlySystemFile
     : IReadOnlySystemIoObject,
@@ -42,7 +42,7 @@ public partial interface IReadOnlySystemFile
 // Mutable
 
 public partial interface ISystemIoObject
-    : IReadOnlySystemIoObject, GMSysIoObj { }
+    : IReadOnlySystemIoObject, GMSysIoObj;
 
 public partial interface ISystemDirectory
     : ISystemIoObject, IReadOnlySystemDirectory, GMSysDir {

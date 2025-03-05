@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class AirVehicle : BLevelObject {
-}
+public class AirVehicle : BLevelObject;

@@ -7,9 +7,7 @@ namespace KSoft.Collections
 	public interface IBTypeNames
 		: IBList
 		, IProtoEnum
-		, IHasUndefinedProtoMemberInterface
-	{
-	};
+		, IHasUndefinedProtoMemberInterface;
 
 	public class BTypeNames
 		: BListBase<string>

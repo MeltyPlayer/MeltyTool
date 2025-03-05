@@ -13,15 +13,15 @@ public interface IVertexAccessor
 }
 
 public interface IVertexNormalAccessor : IVertexTargeter,
-                                         IReadOnlyNormalVertex { }
+                                         IReadOnlyNormalVertex;
 
 public interface IVertexTangentAccessor : IVertexTargeter,
-                                          IReadOnlyTangentVertex { }
+                                          IReadOnlyTangentVertex;
 
 public interface IVertexColorAccessor : IVertexTargeter,
                                         IReadOnlySingleColorVertex,
-                                        IReadOnlyMultiColorVertex { }
+                                        IReadOnlyMultiColorVertex;
 
 public interface IVertexUvAccessor : IVertexTargeter,
                                      IReadOnlySingleUvVertex,
-                                     IReadOnlyMultiUvVertex { }
+                                     IReadOnlyMultiUvVertex;

@@ -6,5 +6,5 @@ namespace KSoft
 	/// Apply to enumerations which are invalid with the <see cref="EnumBitEncoderBase">EnumBitEncoder</see> classes
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Enum, AllowMultiple=false)]
-	public sealed class EnumBitEncoderDisableAttribute : Attribute	{};
+	public sealed class EnumBitEncoderDisableAttribute : Attribute;
 }

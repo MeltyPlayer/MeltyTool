@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class Hud : BLevelObject {
-}
+public class Hud : BLevelObject;

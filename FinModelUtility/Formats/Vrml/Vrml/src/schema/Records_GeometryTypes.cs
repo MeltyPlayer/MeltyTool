@@ -2,7 +2,7 @@
 
 namespace vrml.schema;
 
-public interface IGeometryNode : INode { }
+public interface IGeometryNode : INode;
 
 public record BoxNode : BNode, IGeometryNode {
   public Vector3 Size { get; set; }

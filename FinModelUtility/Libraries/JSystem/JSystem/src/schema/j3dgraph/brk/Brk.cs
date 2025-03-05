@@ -9,4 +9,4 @@ namespace jsystem.schema.j3dgraph.brk;
 ///   https://wiki.cloudmodding.com/tww/BRK
 /// </summary>
 [BinarySchema]
-public partial class Brk : IBinaryConvertible { }
+public partial class Brk : IBinaryConvertible;

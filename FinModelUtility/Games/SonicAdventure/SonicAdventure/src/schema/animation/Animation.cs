@@ -3,6 +3,4 @@
 namespace sonicadventure.schema.animation;
 
 [BinarySchema]
-public partial class Animation : IBinaryConvertible {
-
-}
+public partial class Animation : IBinaryConvertible;

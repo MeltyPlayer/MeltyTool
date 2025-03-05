@@ -1,3 +1,3 @@
 ﻿namespace KSoft.Math {
-	public static class Program { }
+	public static class Program;
 }

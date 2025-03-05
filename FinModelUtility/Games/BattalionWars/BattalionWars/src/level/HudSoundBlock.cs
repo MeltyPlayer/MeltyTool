@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-internal class HudSoundBlock : BLevelObject {
-}
+internal class HudSoundBlock : BLevelObject;

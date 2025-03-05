@@ -16,7 +16,7 @@ public interface ISelectorPanel<T> where T : notnull {
   delegate void OnSelectedDelegate(T selected);
 }
 
-public record SelectorPanelKey<T> { }
+public record SelectorPanelKey<T>;
 
 public static class SelectorPanels {
   private static readonly SortedSetDictionary<object, object> panelsByKey_ =

@@ -37,9 +37,7 @@ namespace KSoft.Phoenix.Phx.Meta
 
 	/// <summary>Localized string reference</summary>
 	[AttributeUsage(ProtoDataReferenceAttribute.kValidOn, AllowMultiple=false)]
-	public sealed class LocStringReferenceAttribute : Attribute
-	{
-	};
+	public sealed class LocStringReferenceAttribute : Attribute;
 
 	#region ProtoFileReferences
 	[AttributeUsage(ProtoDataReferenceAttribute.kValidOn, AllowMultiple=false)]
@@ -78,29 +76,19 @@ namespace KSoft.Phoenix.Phx.Meta
 	#endregion
 
 	[AttributeUsage(ProtoDataReferenceAttribute.kValidOn, AllowMultiple = false)]
-	public sealed class SoundCueReferenceAttribute : Attribute
-	{
-	};
+	public sealed class SoundCueReferenceAttribute : Attribute;
 
 	[AttributeUsage(ProtoDataReferenceAttribute.kValidOn, AllowMultiple = false)]
-	public sealed class BAnimTypeReferenceAttribute : Attribute
-	{
-	};
+	public sealed class BAnimTypeReferenceAttribute : Attribute;
 	[AttributeUsage(ProtoDataReferenceAttribute.kValidOn, AllowMultiple = false)]
-	public sealed class AttachmentTypeReferenceAttribute : Attribute
-	{
-	};
+	public sealed class AttachmentTypeReferenceAttribute : Attribute;
 
 	[AttributeUsage(ProtoDataReferenceAttribute.kValidOn, AllowMultiple = false)]
-	public sealed class CameraEffectReferenceAttribute : Attribute
-	{
-	};
+	public sealed class CameraEffectReferenceAttribute : Attribute;
 
 	/// <summary>Reference to an Action in a Tactic</summary>
 	[AttributeUsage(ProtoDataReferenceAttribute.kValidOn, AllowMultiple = false)]
-	public sealed class BProtoActionReferenceAttribute : Attribute
-	{
-	};
+	public sealed class BProtoActionReferenceAttribute : Attribute;
 
 	#region GameData
 	[AttributeUsage(kValidOn, AllowMultiple = false)]

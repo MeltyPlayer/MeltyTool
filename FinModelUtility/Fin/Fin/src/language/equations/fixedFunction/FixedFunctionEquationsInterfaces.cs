@@ -76,13 +76,13 @@ public interface INamedValue : IValue {
 }
 
 // Simple 
-public interface IValue { }
+public interface IValue;
 
-public interface IConstant : IValue { }
+public interface IConstant : IValue;
 
-public interface ITerm : IValue { }
+public interface ITerm : IValue;
 
-public interface IExpression : IValue { }
+public interface IExpression : IValue;
 
 // Typed
 public interface IValue<in TValue, TConstant, out TTerm, out TExpression>

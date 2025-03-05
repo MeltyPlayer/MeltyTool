@@ -26,7 +26,5 @@ namespace KSoft.IO
 	};
 
 
-	public interface ITagElementStringNameStreamable : ITagElementStreamable<string>
-	{
-	};
+	public interface ITagElementStringNameStreamable : ITagElementStreamable<string>;
 }

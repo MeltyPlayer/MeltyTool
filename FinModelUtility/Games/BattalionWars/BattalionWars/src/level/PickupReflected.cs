@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class PickupReflected : BLevelObject {
-}
+public class PickupReflected : BLevelObject;

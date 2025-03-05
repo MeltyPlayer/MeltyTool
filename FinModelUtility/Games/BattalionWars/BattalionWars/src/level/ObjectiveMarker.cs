@@ -1,4 +1,3 @@
 ﻿namespace modl.level;
 
-public class ObjectiveMarker : BLevelObject {
-}
+public class ObjectiveMarker : BLevelObject;

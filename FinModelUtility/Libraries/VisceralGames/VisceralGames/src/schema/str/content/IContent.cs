@@ -2,4 +2,4 @@
 
 namespace visceral.schema.str.content;
 
-public interface IContent : IBinaryConvertible { }
+public interface IContent : IBinaryConvertible;

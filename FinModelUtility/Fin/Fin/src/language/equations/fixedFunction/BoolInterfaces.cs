@@ -20,4 +20,4 @@ public interface ITernaryOperator<out TOut> {
 
 public interface IColorValueTernaryOperator :
     ITernaryOperator<IColorValue>,
-    IColorValue { }
+    IColorValue;
