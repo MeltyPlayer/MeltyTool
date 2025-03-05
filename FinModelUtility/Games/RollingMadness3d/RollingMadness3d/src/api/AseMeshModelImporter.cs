@@ -43,6 +43,7 @@ public class AseMeshModelImporter : IModelImporter<AseMeshModelFileBundle> {
 
               var finTexture = finMaterialManager.CreateTexture(finImage);
               finTexture.Name = imageFile.NameWithoutExtension.ToString();
+              finTexture.MinFilter = TextureMinFilter.LINEAR;
 
               if (isLightmap) {
                 finTexture.UvIndex = 1;
