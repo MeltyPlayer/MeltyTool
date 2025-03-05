@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-using CommunityToolkit.HighPerformance;
+﻿using CommunityToolkit.HighPerformance;
 
 using fin.color;
 using fin.model;
@@ -173,20 +171,21 @@ public partial class PObj : IDatLinkedListNode<PObj>, IBinaryDeserializable {
               var normalIndex = v.NormalIndex;
               if (normalIndex != null) {
                 datVertex.Normal = Vector3.Normalize(
-                        br.ReadVector3(normalIndex.Value, normalAttr!));
+                    br.ReadVector3(normalIndex.Value, normalAttr!));
               }
 
               var nbtIndex = v.NbtIndex;
               if (nbtIndex != null) {
-                datVertex.Normal
-                    = Vector3.Normalize(
-                        br.ReadVector3(nbtIndex.Value, nbtAttr!));
-                datVertex.Binormal
-                    = Vector3.Normalize(
-                        br.ReadVector3(nbtIndex.Value, nbtAttr!));
-                datVertex.Tangent
-                    = Vector3.Normalize(
-                        br.ReadVector3(nbtIndex.Value, nbtAttr!));
+                br.SubreadAt(
+                    nbtAttr!.GetOffset(nbtIndex.Value),
+                    () => {
+                      datVertex.Normal
+                          = Vector3.Normalize(br.ReadVector3(nbtAttr!));
+                      datVertex.Binormal
+                          = Vector3.Normalize(br.ReadVector3(nbtAttr!));
+                      datVertex.Tangent
+                          = Vector3.Normalize(br.ReadVector3(nbtAttr!));
+                    });
               }
 
               var uv0Index = v.TexCoord0Index;
