@@ -246,6 +246,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
 
               var fixedFunctionMaterial =
                   finMaterialManager.AddFixedFunctionMaterial();
+              fixedFunctionMaterial.Name = mObj.Name ?? mObjOffset.ToHex();
               fixedFunctionMaterial.CullingMode = cullingMode;
 
               var mObjMaterial = mObj.Material;
@@ -282,7 +283,6 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                     peDesc.AlphaRef1);
               }
 
-              fixedFunctionMaterial.Name = mObj.Name ?? mObjOffset.ToHex();
               return fixedFunctionMaterial;
             }));
 
@@ -437,7 +437,9 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     var hasSpecularRenderMode = renderMode.CheckFlag(RenderMode.SPECULAR);
 
     // Diffuse
-    var diffuseRgba = material.DiffuseColor;
+    var diffuseRgba = hasConstantRenderMode || hasDiffuseRenderMode
+        ? material.DiffuseColor
+        : fin.schema.color.Rgba32.WHITE;
     var hasVertexColorAlpha = renderMode.CheckFlag(RenderMode.VERTEX); 
     var (diffuseSurfaceColor, diffuseSurfaceAlpha)
         = fixedFunctionMaterial.GenerateDiffuse(
@@ -553,8 +555,10 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
         diffuseLightColor);
 
     // We double it because all the other kids do. (Other fixed-function games.)
-    ambientAndDiffuseLightingColor =
-        colorOps.MultiplyWithConstant(ambientAndDiffuseLightingColor, 2);
+    if (hasDiffuseRenderMode) {
+      ambientAndDiffuseLightingColor =
+          colorOps.MultiplyWithConstant(ambientAndDiffuseLightingColor, 2);
+    }
 
     var ambientAndDiffuseComponent = colorOps.Multiply(
         ambientAndDiffuseLightingColor,

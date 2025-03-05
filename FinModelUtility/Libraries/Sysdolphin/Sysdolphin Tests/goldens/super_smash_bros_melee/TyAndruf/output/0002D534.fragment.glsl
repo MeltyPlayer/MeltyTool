@@ -8,7 +8,7 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(2.0)*texture(texture0, uv0).rgb;
+  vec3 colorComponent = vec3(1.0)*texture(texture0, uv0).rgb;
 
   float alphaComponent = texture(texture0, uv0).a;
 
