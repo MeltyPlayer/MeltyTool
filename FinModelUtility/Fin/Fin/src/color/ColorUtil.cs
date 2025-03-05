@@ -128,41 +128,4 @@ public static class ColorUtil {
     b = ExtractScaled(color, 4, 4);
     a = ExtractScaled(color, 0, 4);
   }
-
-  public static IColor Interpolate(IColor from, IColor to, double amt) {
-    Interpolate(from.Rb,
-                          from.Gb,
-                          from.Bb,
-                          from.Ab,
-                          to.Rb,
-                          to.Gb,
-                          to.Bb,
-                          to.Ab,
-                          amt,
-                          out var r,
-                          out var g,
-                          out var b,
-                          out var a);
-    return FinColor.FromRgbaBytes(r, g, b, a);
-  }
-
-  public static void Interpolate(
-      byte fromR,
-      byte fromG,
-      byte fromB,
-      byte fromA,
-      byte toR,
-      byte toG,
-      byte toB,
-      byte toA,
-      double amt,
-      out byte outR,
-      out byte outG,
-      out byte outB,
-      out byte outA) {
-    outR = (byte) Math.Round(fromR * (1 - amt) + toR * amt);
-    outG = (byte) Math.Round(fromG * (1 - amt) + toG * amt);
-    outB = (byte) Math.Round(fromB * (1 - amt) + toB * amt);
-    outA = (byte) Math.Round(fromA * (1 - amt) + toA * amt);
-  }
 }
