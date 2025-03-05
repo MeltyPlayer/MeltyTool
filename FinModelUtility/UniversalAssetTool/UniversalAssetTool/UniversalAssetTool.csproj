@@ -130,6 +130,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Fin\Fin\Fin.csproj" />
     <ProjectReference Include="..\..\Fin\Fin.Ui\Fin.Ui.csproj" />
+    <ProjectReference Include="..\..\Formats\Ase\Ase\RollingMadness3d.csproj" />
 
     <ProjectReference Include="..\..\Formats\Ast\Ast\Ast.csproj" />
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />

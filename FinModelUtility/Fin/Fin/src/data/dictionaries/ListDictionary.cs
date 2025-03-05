@@ -19,43 +19,6 @@ public partial interface IListDictionary<TKey, TValue> {
   new IEnumerable<TValue> Values { get; }
 }
 
-public static class ListDictionaryExtensions {
-  public static bool TryGetList<TKey, TValue>(
-      this IListDictionary<TKey, TValue> impl,
-      TKey key,
-      out IList<TValue> list) {
-    if (impl.HasList(key)) {
-      list = impl[key];
-      return true;
-    }
-
-    list = default;
-    return false;
-  }
-
-  public static bool TryGetList<TKey, TValue>(
-      this IReadOnlyListDictionary<TKey, TValue> impl,
-      TKey key,
-      out IReadOnlyList<TValue> list) {
-    if (impl.HasList(key)) {
-      list = impl[key];
-      return true;
-    }
-
-    list = default;
-    return false;
-  }
-
-  public static IEnumerable<(TKey key, IList<TValue> value)> GetPairs<
-      TKey, TValue>(this IListDictionary<TKey, TValue> impl)
-    => impl.Keys.Select(key => (key, impl[key]));
-
-  public static IEnumerable<(TKey key, IReadOnlyList<TValue> value)> GetPairs<
-      TKey, TValue>(this IReadOnlyListDictionary<TKey, TValue> impl)
-    => impl.Keys.Select(key => (key, impl[key]));
-}
-
-
 /// <summary>
 ///   An implementation for a dictionary of lists. Each value added for a key
 ///   will be stored in that key's corresponding list.

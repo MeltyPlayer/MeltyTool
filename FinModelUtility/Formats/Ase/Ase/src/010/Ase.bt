@@ -38,19 +38,23 @@ uint unk0;
 uint unkId0;
 
 typedef struct {
+  float position[3];
+  float normal[3];
+} Vertex;
+
+uint vertexCount <bgcolor=UNK1_COLOR>;
+Vertex vertices[vertexCount] <bgcolor=UNK1_COLOR>;
+
+typedef struct {
   float unk0;
   float unk1;
   float unk2;
   float unk3;
-  float unk4;
-  float unk5;
-} Unk1;
+  float uv[2];
+} UvData;
 
-uint unk1Count <bgcolor=UNK1_COLOR>;
-Unk1 unk1Values[unk1Count] <bgcolor=UNK1_COLOR>;
-
-uint unk2Count <bgcolor=UNK2_COLOR>;
-Unk1 unk2Values[unk2Count] <bgcolor=UNK2_COLOR>;
+uint uvDataCount <bgcolor=UNK2_COLOR>;
+UvData uvDatas[uvDataCount] <bgcolor=UNK2_COLOR>;
 
 typedef struct {
   uint unk0;

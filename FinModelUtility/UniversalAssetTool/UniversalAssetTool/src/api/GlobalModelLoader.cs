@@ -39,12 +39,16 @@ using xmod.api;
 using fin.model.io.importers.assimp;
 using fin.model.io.importers.gltf;
 
+using rollingMadness.api;
+
 
 namespace uni.api;
 
 public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
   public IModel Import(IModelFileBundle modelFileBundle)
     => modelFileBundle switch {
+        AseMeshModelFileBundle aseMeshModelFileBundle
+            => new AseMeshModelImporter().Import(aseMeshModelFileBundle),
         AssimpModelFileBundle assimpModelFileBundle
             => new AssimpModelImporter().Import(assimpModelFileBundle),
         IBattalionWarsModelFileBundle battalionWarsModelFileBundle
