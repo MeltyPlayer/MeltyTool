@@ -5,7 +5,7 @@ using fin.data.lazy;
 using fin.image;
 using fin.image.formats;
 using fin.model;
-using fin.util.image;
+using fin.image.util;
 
 using grezzo.schema.cmb;
 

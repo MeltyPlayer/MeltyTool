@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.model.util;
 

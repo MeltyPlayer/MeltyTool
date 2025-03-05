@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.model.impl;
 

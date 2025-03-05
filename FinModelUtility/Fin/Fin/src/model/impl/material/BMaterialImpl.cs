@@ -2,7 +2,7 @@
 
 using fin.color;
 using fin.model.impl.material;
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.model.impl;
 

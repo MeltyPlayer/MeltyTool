@@ -1,8 +1,7 @@
-﻿using fin.image;
-using fin.image.formats;
+﻿using fin.image.formats;
 using fin.math.floats;
 
-namespace fin.util.image;
+namespace fin.image.util;
 
 public enum TransparencyType {
   OPAQUE,

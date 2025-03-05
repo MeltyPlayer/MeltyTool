@@ -7,7 +7,7 @@ using fin.color;
 using fin.image;
 using fin.io;
 using fin.util.hash;
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.model.impl;
 

@@ -14,14 +14,6 @@ public static class EnumerableExtensions {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static int IndexOf<T>(this IEnumerable<T> enumerable,
-                               T value) {
-    var index = enumerable.IndexOfOrNegativeOne(value);
-    Asserts.True(index > -1);
-    return index;
-  }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static int IndexOf<T>(this IEnumerable<T> enumerable,
                                Func<T, bool> handler) {
     var index = enumerable.IndexOfOrNegativeOne(handler);
     Asserts.True(index > -1);
@@ -148,10 +140,6 @@ public static class EnumerableExtensions {
 
     yield return current.ToArray();
   }
-
-  public static IEnumerable<(int index, T value)> Indexed<T>(
-      this IEnumerable<T> impl)
-    => impl.Select((v, i) => (i, v));
 
   public static bool AnyTrue(this IEnumerable<bool> impl) => impl.Any(b => b);
 }

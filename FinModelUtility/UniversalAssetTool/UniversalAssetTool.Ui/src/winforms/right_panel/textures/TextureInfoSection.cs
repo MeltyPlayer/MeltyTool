@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 using fin.image;
 using fin.model;
-using fin.util.image;
+using fin.image.util;
 
 namespace uni.ui.winforms.right_panel.textures;
 

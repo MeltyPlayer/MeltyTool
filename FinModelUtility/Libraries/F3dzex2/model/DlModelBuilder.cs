@@ -16,7 +16,7 @@ using fin.language.equations.fixedFunction.impl;
 using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
-using fin.util.image;
+using fin.image.util;
 
 using schema.binary;
 

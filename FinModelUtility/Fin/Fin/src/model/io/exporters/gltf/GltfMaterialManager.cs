@@ -9,7 +9,7 @@ using CommunityToolkit.HighPerformance.Helpers;
 
 using fin.image;
 using fin.model.util;
-using fin.util.image;
+using fin.image.util;
 
 using SharpGLTF.Materials;
 using SharpGLTF.Memory;

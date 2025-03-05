@@ -7,7 +7,7 @@ using fin.data.indexable;
 using fin.math;
 using fin.model;
 using fin.util.enums;
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.shaders.glsl;
 

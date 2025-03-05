@@ -3,7 +3,7 @@ using fin.model;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace fin.image;
+namespace fin.image.util;
 
 public static class BumpMapUtils {
   /// <summary>

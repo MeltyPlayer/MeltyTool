@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <Folder Include="src\image\io\image\" />
+    <Folder Include="src\util\image\" />
     <Folder Include="src\util\streams\" />
   </ItemGroup>
 </Project>

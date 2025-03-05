@@ -18,7 +18,7 @@ public interface IMemoryEnumerator<TValue> {
     var didRead = false;
     for (var i = 0; i < dst.Length; ++i) {
       if (this.TryMoveNext()) {
-        didRead = didRead || true;
+        didRead = true;
       }
 
       dst[i] = this.Current;
@@ -55,15 +55,6 @@ public class MemoryEnumerator<TEnumerated, TValue>(
 }
 
 public static class MemoryEnumeratorExtensions {
-  public static IMemoryEnumerator<TValue>
-      ToMemoryEnumerator<TEnumerated, TValue>(
-          this IEnumerable<TEnumerated> enumerable,
-          MemoryEnumerator<TEnumerated, TValue>.TryMoveNextDelegate
-              tryMoveNextDelegate)
-    => new MemoryEnumerator<TEnumerated, TValue>(
-        enumerable.GetEnumerator(),
-        tryMoveNextDelegate);
-
   public static IMemoryEnumerator<T> ToMemoryEnumerator<T>(
       this IEnumerable<T> enumerable)
     => new MemoryEnumerator<T>(

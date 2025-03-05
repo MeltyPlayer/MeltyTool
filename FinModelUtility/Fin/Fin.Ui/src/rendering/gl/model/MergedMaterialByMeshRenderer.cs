@@ -4,7 +4,7 @@ using fin.model;
 using fin.model.util;
 using fin.shaders.glsl;
 using fin.ui.rendering.gl.material;
-using fin.util.image;
+using fin.image.util;
 
 
 namespace fin.ui.rendering.gl.model;

@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Drawing;
 
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.model.impl;
 

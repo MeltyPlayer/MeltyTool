@@ -4,7 +4,7 @@ using System.Drawing;
 using fin.model;
 using fin.model.impl;
 using fin.model.util;
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.shaders.glsl.source;
 

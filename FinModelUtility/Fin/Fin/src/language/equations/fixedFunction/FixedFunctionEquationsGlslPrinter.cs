@@ -7,7 +7,7 @@ using fin.model;
 using fin.shaders.glsl;
 using fin.util.asserts;
 using fin.util.enumerables;
-using fin.util.image;
+using fin.image.util;
 
 namespace fin.language.equations.fixedFunction;
 

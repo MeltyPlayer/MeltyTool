@@ -10,7 +10,7 @@ using fin.image;
 using fin.io;
 using fin.language.equations.fixedFunction;
 using fin.shaders.glsl;
-using fin.util.image;
+using fin.image.util;
 
 using schema.readOnly;
 
