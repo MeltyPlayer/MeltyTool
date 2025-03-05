@@ -192,7 +192,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vrml Tests", "Formats\Vrml\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{10A1E3E0-0E8F-495E-B38B-B678BFBBF043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RollingMadness3d", "Formats\Ase\Ase\RollingMadness3d.csproj", "{7E7898D3-BA81-41C8-95F5-C7A5266C1392}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RollingMadness3d", "Games\RollingMadness3d\RollingMadness3d\RollingMadness3d.csproj", "{7E7898D3-BA81-41C8-95F5-C7A5266C1392}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Brres", "Brres", "{6A9BD73D-0443-491E-BC65-9656F197571F}"
 EndProject

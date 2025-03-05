@@ -130,7 +130,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Fin\Fin\Fin.csproj" />
     <ProjectReference Include="..\..\Fin\Fin.Ui\Fin.Ui.csproj" />
-    <ProjectReference Include="..\..\Formats\Ase\Ase\RollingMadness3d.csproj" />
 
     <ProjectReference Include="..\..\Formats\Ast\Ast\Ast.csproj" />
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
@@ -154,6 +153,7 @@
     <ProjectReference Include="..\..\Games\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor\PaperMarioTheThousandYearDoor.csproj" />
     <ProjectReference Include="..\..\Games\Pikmin1\Pikmin1\Pikmin1.csproj" />
     <ProjectReference Include="..\..\Games\Pikmin2\Pikmin2\Pikmin2.csproj" />
+    <ProjectReference Include="..\..\Games\RollingMadness3d\RollingMadness3d\RollingMadness3d.csproj" />
     <ProjectReference Include="..\..\Games\SonicAdventure\SonicAdventure\SonicAdventure.csproj" />
     <ProjectReference Include="..\..\Games\SuperMario64Ds\SuperMario64Ds\SuperMario64Ds.csproj" />
     <ProjectReference Include="..\..\Games\SuperMario64\SuperMario64\SuperMario64.csproj" />
