@@ -11,14 +11,80 @@
 //   History: 
 //------------------------------------------------
 
+const uint IMAGE_COLOR = 0xff0000;
+
+const uint UNK1_COLOR = 0x00ff00;
+const uint UNK2_COLOR = 0x0000ff;
+const uint UNK3_COLOR = 0xff00ff;
+const uint UNK4_COLOR = 0x00ffff;
+
 LittleEndian();
 
 typedef struct {
-  string value;
+  char openQuote;
+  
+  do {
+    char fileName;
+  } while (fileName != '"');
 } String;
 
-uint imgCount0;
-String imgs0[imgCount0] <optimize=false>;
+uint imgCount0 <bgcolor=IMAGE_COLOR>;
+String imgs0[imgCount0] <optimize=false,bgcolor=IMAGE_COLOR>;
 
-uint imgCount1;
-String imgs1[imgCount1] <optimize=false>;
+uint imgCount1 <bgcolor=IMAGE_COLOR>;
+String imgs1[imgCount1] <optimize=false,bgcolor=IMAGE_COLOR>;
+
+uint unk0;
+uint unkId0;
+
+typedef struct {
+  float unk0;
+  float unk1;
+  float unk2;
+  float unk3;
+  float unk4;
+  float unk5;
+} Unk1;
+
+uint unk1Count <bgcolor=UNK1_COLOR>;
+Unk1 unk1Values[unk1Count] <bgcolor=UNK1_COLOR>;
+
+uint unk2Count <bgcolor=UNK2_COLOR>;
+Unk1 unk2Values[unk2Count] <bgcolor=UNK2_COLOR>;
+
+typedef struct {
+  uint unk0;
+  uint unk1;
+  uint unk2;
+  uint unk3;
+  uint unk4;
+  uint unk5;
+  uint unk6;
+} Unk3;
+
+uint unk3Count <bgcolor=UNK3_COLOR>;
+Unk3 unk3Values[unk3Count] <bgcolor=UNK3_COLOR>;
+
+typedef struct {
+  uint unk0;
+  
+  typedef struct {
+    float unk0;
+  } Unk4a;
+
+  byte unk4aCount;
+  byte unk4aSomethings[3]; 
+   
+  Unk4a unk4aValues[unk4aCount];
+
+} Unk4;
+
+uint unk4Count <bgcolor=UNK4_COLOR>;
+Unk4 unk4Values[1] <optimize=false,bgcolor=UNK4_COLOR>;
+
+// ...
+
+
+
+//uint someCount;
+//uint someValues[someCount];
