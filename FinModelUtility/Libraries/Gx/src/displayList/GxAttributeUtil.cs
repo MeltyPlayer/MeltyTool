@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.schema.color;
-using fin.util.color;
+using fin.color;
 
 using schema.binary;
 

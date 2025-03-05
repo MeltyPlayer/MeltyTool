@@ -5,7 +5,7 @@ using fin.image;
 using fin.image.formats;
 using fin.schema;
 using fin.util.asserts;
-using fin.util.color;
+using fin.color;
 
 using gx;
 using gx.image;

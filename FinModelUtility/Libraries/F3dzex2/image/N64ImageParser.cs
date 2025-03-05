@@ -7,7 +7,6 @@ using fin.image.formats;
 using fin.image.io;
 using fin.image.io.pixel;
 using fin.math;
-using fin.util.color;
 
 using schema.binary;
 

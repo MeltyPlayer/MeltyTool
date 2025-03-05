@@ -2,7 +2,7 @@
 
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
-namespace fin.util.color;
+namespace fin.color;
 
 public class ColorUtilTests {
   [Test]
@@ -14,15 +14,19 @@ public class ColorUtilTests {
   [TestCase((ushort) 32767, 120, 252, 248)]
   [TestCase((ushort) 49151, 184, 252, 248)]
   [TestCase(ushort.MaxValue, 248, 252, 248)]
-  public void TestSplitRgb565(ushort value,
-                              byte expectedR,
-                              byte expectedG,
-                              byte expectedB) {
+  public void TestRgb565(ushort value,
+                         byte expectedR,
+                         byte expectedG,
+                         byte expectedB) {
     ColorUtil.SplitRgb565(value,
                           out var actualR,
                           out var actualG,
                           out var actualB);
     Assert.AreEqual((expectedR, expectedG, expectedB),
+                    (actualR, actualG, actualB));
+
+    var color = ColorUtil.ParseRgb565(value);
+    Assert.AreEqual((color.Rb, color.Gb, color.Bb),
                     (actualR, actualG, actualB));
   }
 }

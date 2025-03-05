@@ -5,7 +5,6 @@ using fin.image.formats;
 using fin.image.io;
 using fin.image.io.dxt;
 using fin.image.io.pixel;
-using fin.util.color;
 
 using schema.binary;
 

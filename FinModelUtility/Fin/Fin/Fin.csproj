@@ -41,10 +41,4 @@
     <PackageReference Include="schema" Version="0.6.11" />
     <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="src\image\io\image\" />
-    <Folder Include="src\util\image\" />
-    <Folder Include="src\util\streams\" />
-  </ItemGroup>
 </Project>

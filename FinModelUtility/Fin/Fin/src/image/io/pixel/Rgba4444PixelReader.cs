@@ -3,7 +3,7 @@
 using CommunityToolkit.HighPerformance;
 
 using fin.image.formats;
-using fin.util.color;
+using fin.color;
 
 using SixLabors.ImageSharp.PixelFormats;
 

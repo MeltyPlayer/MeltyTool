@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 
 using fin.image.formats;
-using fin.util.color;
+using fin.color;
 
 using schema.binary;
 

@@ -2,7 +2,7 @@
 using fin.image;
 using fin.image.formats;
 using fin.util.asserts;
-using fin.util.color;
+using fin.color;
 
 using schema.binary;
 

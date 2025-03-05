@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-using fin.color;
 using fin.math;
 
-namespace fin.util.color;
+namespace fin.color;
 
 public static class ColorUtil {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46,7 +45,7 @@ public static class ColorUtil {
       out byte g,
       out byte b,
       out byte a) {
-    var alphaFlag = BitLogic.ExtractFromRight(color, 15, 1);
+    var alphaFlag = color.ExtractFromRight(15, 1);
 
     if (alphaFlag == 1) {
       a = 255;
