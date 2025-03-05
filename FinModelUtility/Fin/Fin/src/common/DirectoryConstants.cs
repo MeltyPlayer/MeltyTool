@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 
 using fin.io;
@@ -15,43 +16,45 @@ public static class DirectoryConstants {
     var exeDirectory = new FinDirectory(AppContext.BaseDirectory);
     if (exeDirectory.Name is "universal_asset_tool") {
       return exeDirectory.AssertGetParent()  // tools
-                         .AssertGetParent()  // cli
-                         .AssertGetParent(); // FinModelUtility
+                         .AssertGetParent(); // cli
     }
 
-    // Launched via Visual Studio
-    return
-        Asserts
-            .CastNonnull(Files.GetCwd().GetAncestry())
-            .Where(ancestor => {
-              var subdirNames = ancestor
-                                .GetExistingSubdirs()
-                                .Select(directory => directory.Name.ToString());
-              return subdirNames.Contains("cli") &&
-                     subdirNames.Contains("FinModelUtility");
-            })
-            .Single();
+    foreach (var ancestor in Files.GetCwd().GetAncestry()) {
+      var subdirByName = ancestor
+                         .GetExistingSubdirs()
+                         .ToDictionary(d => d.Name.ToString(), d => d);
+
+      // Launched via Visual Studio
+      if (subdirByName.ContainsKey("cli") &&
+          subdirByName.ContainsKey("FinModelUtility")) {
+        return subdirByName["cli"];
+      }
+
+      if (subdirByName.ContainsKey("roms") &&
+          subdirByName.ContainsKey("tools")) {
+        return ancestor;
+      }
+    }
+
+    throw new DirectoryNotFoundException("Failed to find the base directory.");
   }
 
-  public static ISystemDirectory CLI_DIRECTORY =
-      BASE_DIRECTORY.AssertGetExistingSubdir("cli");
-
   public static ISystemDirectory GAME_CONFIG_DIRECTORY { get; } =
-    CLI_DIRECTORY.AssertGetExistingSubdir("config");
+    BASE_DIRECTORY.AssertGetExistingSubdir("config");
 
   public static ISystemFile CONFIG_FILE { get; } =
-    CLI_DIRECTORY.AssertGetExistingFile("config.json");
+    BASE_DIRECTORY.AssertGetExistingFile("config.json");
 
 
   public static ISystemDirectory ROMS_DIRECTORY =
-      CLI_DIRECTORY.AssertGetExistingSubdir("roms");
+      BASE_DIRECTORY.AssertGetExistingSubdir("roms");
 
   public static ISystemDirectory TOOLS_DIRECTORY =
-      CLI_DIRECTORY.AssertGetExistingSubdir("tools");
+      BASE_DIRECTORY.AssertGetExistingSubdir("tools");
 
   public static ISystemDirectory DLL_DIRECTORY =
       TOOLS_DIRECTORY.AssertGetExistingSubdir("dll");
 
   public static ISystemDirectory OUT_DIRECTORY =
-      CLI_DIRECTORY.AssertGetExistingSubdir("out");
+      BASE_DIRECTORY.AssertGetExistingSubdir("out");
 }

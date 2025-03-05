@@ -44,7 +44,7 @@ namespace uni {
 }";
 
     [Test]
-    public void TestEmpty() {
+    public void TestEmptyFromVisualStudio() {
       {
         var mockFileSystem = new MockFileSystem();
 
@@ -56,7 +56,55 @@ namespace uni {
         mockFileSystem.AddDirectory("cli/tools/universal_asset_tool");
         mockFileSystem.AddFile("cli/config.json", new MockFileData(CONFIG_JSON_));
 
+        mockFileSystem.Directory.SetCurrentDirectory("FinModelUtility/some/game");
+
+        FinFileSystem.FileSystem = mockFileSystem;
+      }
+
+      var percentageProgress = new PercentageProgress();
+      var root
+          = new RootFileBundleGatherer().GatherAllFiles(percentageProgress);
+      Assert.AreEqual(0, root.Subdirs.Count);
+      Assert.AreEqual(0, root.FileBundles.Count);
+    }
+
+    [Test]
+    public void TestEmptyFromBundled() {
+      {
+        var mockFileSystem = new MockFileSystem();
+
+        mockFileSystem.AddDirectory("cli/config");
+        mockFileSystem.AddDirectory("cli/out");
+        mockFileSystem.AddDirectory("cli/roms");
+        mockFileSystem.AddDirectory("cli/tools/dll");
+        mockFileSystem.AddDirectory("cli/tools/universal_asset_tool");
+        mockFileSystem.AddFile("cli/config.json", new MockFileData(CONFIG_JSON_));
+
         mockFileSystem.Directory.SetCurrentDirectory("cli/tools/universal_asset_tool");
+
+        FinFileSystem.FileSystem = mockFileSystem;
+      }
+
+      var percentageProgress = new PercentageProgress();
+      var root
+          = new RootFileBundleGatherer().GatherAllFiles(percentageProgress);
+      Assert.AreEqual(0, root.Subdirs.Count);
+      Assert.AreEqual(0, root.FileBundles.Count);
+    }
+
+    [Test]
+    public void TestEmptyFromGithub() {
+      {
+        var mockFileSystem = new MockFileSystem();
+
+        mockFileSystem.AddDirectory("config");
+        mockFileSystem.AddDirectory("out");
+        mockFileSystem.AddDirectory("roms");
+        mockFileSystem.AddDirectory("tools/dll");
+        mockFileSystem.AddDirectory("tools/universal_asset_tool");
+        mockFileSystem.AddFile("config.json", new MockFileData(CONFIG_JSON_));
+
+        mockFileSystem.Directory.SetCurrentDirectory("tools/universal_asset_tool");
 
         FinFileSystem.FileSystem = mockFileSystem;
       }
