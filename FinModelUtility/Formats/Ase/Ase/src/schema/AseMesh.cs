@@ -9,10 +9,10 @@ namespace rollingMadness.schema;
 [BinarySchema]
 public partial class AseMesh : IBinaryConvertible {
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
-  public AseString[] ImageNames0 { get; set; }
+  public AseString[] ImageNames { get; set; }
 
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
-  public AseString[] ImageNames1 { get; set; }
+  public AseString[] LightmapNames { get; set; }
 
   public uint Unk0 { get; set; }
   public uint Unk1 { get; set; }
@@ -76,6 +76,6 @@ public partial class Triangle : IBinaryConvertible {
   public uint Vertex3 { get; set; }
   public uint MaterialIndex { get; set; }
   public int Unk1 { get; set; }
-  public int Unk2 { get; set; }
+  public int LightmapIndex { get; set; }
   public int Unk3 { get; set; }
 }

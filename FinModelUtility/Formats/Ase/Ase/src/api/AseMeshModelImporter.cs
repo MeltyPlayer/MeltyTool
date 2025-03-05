@@ -2,6 +2,7 @@
 
 using fin.data.dictionaries;
 using fin.data.lazy;
+using fin.image;
 using fin.io;
 using fin.model;
 using fin.model.impl;
@@ -31,16 +32,50 @@ public class AseMeshModelImporter : IModelImporter<AseMeshModelFileBundle> {
     };
 
     var finMaterialManager = finModel.MaterialManager;
-    var lazyMaterialMap = new LazyDictionary<uint, IReadOnlyMaterial>(
-        aseMaterialIndex => {
-          var aseImageName = aseMesh.ImageNames0[aseMaterialIndex].Value;
-          var imageFile
-              = fileBundle.TextureDirectory.AssertGetExistingFile(aseImageName);
-          var (finMaterial, finTexture)
-              = finMaterialManager.AddSimpleTextureMaterialFromFile(imageFile);
-          finTexture.WrapModeU = finTexture.WrapModeV = WrapMode.REPEAT;
-          return finMaterial;
-        });
+    var lazyTextureMap
+        = new LazyDictionary<(string aseImageName, bool isLightmap),
+            ITexture>(
+            tuple => {
+              var (aseImageName, isLightmap) = tuple;
+
+              var imageFile = fileBundle.TextureDirectory.AssertGetExistingFile(
+                  aseImageName);
+              var finImage = FinImage.FromFile(imageFile);
+
+              var finTexture = finMaterialManager.CreateTexture(finImage);
+              finTexture.Name = imageFile.NameWithoutExtension.ToString();
+
+              if (isLightmap) {
+                finTexture.UvIndex = 1;
+              } else {
+                finTexture.WrapModeU = finTexture.WrapModeV = WrapMode.REPEAT;
+              }
+
+              return finTexture;
+            });
+    var lazyMaterialMap
+        = new LazyDictionary<(uint aseMaterialIndex, int aseLightmapIndex),
+            IReadOnlyMaterial>(
+            tuple => {
+              var (aseMaterialIndex, aseLightmapIndex) = tuple;
+
+              var aseImageName = aseMesh.ImageNames[aseMaterialIndex].Value;
+              var finTexture = lazyTextureMap[(aseImageName, false)];
+
+              var finMaterial = finMaterialManager.AddStandardMaterial();
+              finMaterial.Name = finTexture.Name;
+              finMaterial.DiffuseTexture = finTexture;
+
+              if (aseLightmapIndex >= 0) {
+                var aseLightmapName
+                    = aseMesh.LightmapNames[aseLightmapIndex].Value;
+                var lightmapTexture = lazyTextureMap[(aseLightmapName, true)];
+                finMaterial.Name += $"/{lightmapTexture.Name}";
+                finMaterial.AmbientOcclusionTexture = lightmapTexture;
+              }
+
+              return finMaterial;
+            });
 
     var finSkin = finModel.Skin;
     var finMesh = finSkin.AddMesh();
@@ -61,10 +96,12 @@ public class AseMeshModelImporter : IModelImporter<AseMeshModelFileBundle> {
                     .ToArray();
 
     var trianglesByMaterialIndex
-        = aseMesh.Triangles.ToListDictionary(t => t.MaterialIndex);
-    foreach (var (materialIndex, aseTriangles) in trianglesByMaterialIndex
-                 .GetPairs()) {
-      var finMaterial = lazyMaterialMap[materialIndex];
+        = aseMesh.Triangles.ToListDictionary(
+            t => (t.MaterialIndex, t.LightmapIndex));
+    foreach (var (materialAndLightmapIndex, aseTriangles) in
+             trianglesByMaterialIndex.GetPairs()) {
+      var (materialIndex, lightmapIndex) = materialAndLightmapIndex;
+      var finMaterial = lazyMaterialMap[(materialIndex, lightmapIndex)];
       var triangleVertices = aseTriangles.Select(t => (
                                                      finVertices[t.Vertex1],
                                                      finVertices[t.Vertex2],
