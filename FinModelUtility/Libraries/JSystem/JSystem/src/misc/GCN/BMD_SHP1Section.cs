@@ -179,7 +179,7 @@ public partial class BMD {
                           var index = new Primitive.Index();
 
                           index.PosIndex = v.PositionIndex;
-                          index.MatrixIndex = v.JointIndex;
+                          index.MatrixIndex = v.JointIndex ?? 0;
                           index.NormalIndex = v.NormalIndex;
                           index.ColorIndices = v.ColorIndices;
                           index.TexCoordIndices = v.TexCoordIndices;
@@ -202,7 +202,7 @@ public partial class BMD {
           public class Index {
             public ushort?[] ColorIndices;
             public ushort?[] TexCoordIndices;
-            public ushort? MatrixIndex;
+            public ushort MatrixIndex;
             public ushort PosIndex;
             public ushort? NormalIndex;
           }

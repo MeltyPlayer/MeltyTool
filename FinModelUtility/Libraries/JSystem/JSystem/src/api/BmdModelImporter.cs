@@ -255,8 +255,6 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
       (MkdsNode, IBone)[] jointsAndBones,
       BmdMaterialManager materialManager) {
     var finSkin = model.Skin;
-    // TODO: Actually split this up
-    var finMesh = finSkin.AddMesh();
 
     var joints = bmd.GetJoints();
 
@@ -307,9 +305,14 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
           break;
 
         case Inf1EntryType.SHAPE:
-          var batch = batches[(int) entry.Index];
+          var batchIndex = entry.Index;
+          var batch = batches[batchIndex];
+
+          var finMesh = finSkin.AddMesh();
+          finMesh.Name = $"batch {batchIndex}";
 
           // TODO: Pass matrix type into joint (how?)
+          // TODO: Implement this instead of hardcoding billboards for Pikmin 2
           var matrixType = batch.MatrixType;
 
           foreach (var packet in batch.Packets) {
@@ -371,7 +374,6 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
               var pointsCount = points.Length;
               var vertices = new IVertex[pointsCount];
 
-              var weightsUsedByPrimitive = new HashSet<IBoneWeights>();
               for (var p = 0; p < pointsCount; ++p) {
                 var point = points[p];
 
@@ -387,9 +389,8 @@ public class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
 
                 var matrixIndex = point.MatrixIndex;
                 if (matrixIndex != null) {
-                  var weights = weightsTable[matrixIndex.Value];
+                  var weights = weightsTable[matrixIndex];
                   if (weights != null) {
-                    weightsUsedByPrimitive.Add(weights);
                     vertex.SetBoneWeights(weights);
                   }
                 }
