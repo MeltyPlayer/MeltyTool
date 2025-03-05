@@ -6,6 +6,7 @@ using fin.animation;
 using fin.data.dictionaries;
 using fin.math;
 using fin.model;
+using fin.model.util;
 
 using schema.readOnly;
 

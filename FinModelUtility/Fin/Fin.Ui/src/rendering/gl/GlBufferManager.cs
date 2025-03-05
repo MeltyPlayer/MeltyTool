@@ -4,6 +4,7 @@ using fin.data;
 using fin.math;
 using fin.model;
 using fin.model.accessor;
+using fin.model.util;
 using fin.shaders.glsl;
 using fin.ui.rendering.gl.model;
 using fin.util.enumerables;

@@ -9,6 +9,7 @@ using System.Numerics;
 using System;
 using System.Drawing;
 
+using fin.model.util;
 using fin.ui;
 
 namespace fin.scene;

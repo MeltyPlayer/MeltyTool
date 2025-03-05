@@ -5,6 +5,7 @@ using fin.data.dictionaries;
 using fin.math;
 using fin.math.matrix.four;
 using fin.model;
+using fin.model.util;
 using fin.scene;
 using fin.ui.rendering.gl.model;
 

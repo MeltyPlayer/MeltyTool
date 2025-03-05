@@ -2,6 +2,7 @@
 
 using fin.math;
 using fin.model;
+using fin.model.util;
 
 using glo.schema;
 

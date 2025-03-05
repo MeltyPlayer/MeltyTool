@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace fin.model;
+namespace fin.model.util;
 
 public class UseLightingDetector {
   public bool ShouldUseLightingFor(IReadOnlyModel model) {

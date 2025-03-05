@@ -2,6 +2,7 @@
 
 using fin.math;
 using fin.model;
+using fin.model.util;
 using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.ubo;
 

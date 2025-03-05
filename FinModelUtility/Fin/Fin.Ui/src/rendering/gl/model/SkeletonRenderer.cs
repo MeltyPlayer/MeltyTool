@@ -4,6 +4,7 @@ using System.Numerics;
 using fin.math;
 using fin.model;
 using fin.model.impl;
+using fin.model.util;
 
 using OpenTK.Graphics.OpenGL;
 
