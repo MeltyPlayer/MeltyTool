@@ -18,6 +18,7 @@ const uint VERTEX_COLOR = 0x00ff00;
 const uint UVDATA_COLOR = 0x0000ff;
 const uint TRIANGLE_COLOR = 0xff00ff;
 const uint UNK4_COLOR = 0x00ffff;
+const uint UNK5_COLOR = 0xffff00;
 
 LittleEndian();
 
@@ -57,12 +58,10 @@ uint uvDataCount <bgcolor=COUNT_COLOR>;
 UvData uvDatas[uvDataCount] <bgcolor=UVDATA_COLOR>;
 
 typedef struct {
-  uint unk0;
-  uint unk1;
-  uint unk2;
-  uint unk3;
+  uint vertices[3];
+  uint materialIndex;
   uint unk4;
-  uint unk5;
+  int lightmapIndex;
   uint unk6;
 } Triangle;
 
@@ -70,20 +69,24 @@ uint triangleCount <bgcolor=COUNT_COLOR>;
 Triangle triangles[triangleCount] <bgcolor=TRIANGLE_COLOR>;
 
 typedef struct {
-  uint unk0;
-  
-  typedef struct {
-    float unk0;
-  } Unk4a;
-
-  ubyte unk4aCount;
-  byte unk4aSomethings[3]; 
+  uint section0Count0;
+  uint section0Count1;
+  int section0Count2;
+  int section0Count3;
    
-  Unk4a unk4aValues[unk4aCount];
-
+  float unk5[30];
+   
+  uint unk6Count0; 
+  uint unk6Count1; 
+  int unk6Count2;
+  int unk6Count3;
+  uint unk6Count4;
+ 
+  uint unk7Count <bgcolor=COUNT_COLOR>;
+  uint unk7s[unk7Count] <optimize=false,bgcolor=UNK5_COLOR>;
 } Unk4;
 
-uint unk4Count <bgcolor=UNK4_COLOR>;
+uint unk4Count <bgcolor=COUNT_COLOR>;
 Unk4 unk4Values[1] <optimize=false,bgcolor=UNK4_COLOR>;
 
 // ...
