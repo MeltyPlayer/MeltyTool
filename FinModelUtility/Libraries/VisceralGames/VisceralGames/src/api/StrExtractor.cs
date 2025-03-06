@@ -36,103 +36,121 @@ namespace visceral.api;
 public class StrExtractor {
   private readonly ILogger logger_ = Logging.Create<StrExtractor>();
 
-  public void Extract(IReadOnlyGenericFile strFile, ISystemDirectory outputDir) {
-      var task = this.ExtractAsync(strFile, outputDir);
-      task.Wait();
-    }
+  public void Extract(
+      ISystemFile strFile,
+      ISystemDirectory outputDir) {
+    var task = this.ExtractAsync(strFile, outputDir, false);
+    task.Wait();
+  }
 
-  public async Task ExtractAsync(IReadOnlyGenericFile strFile,
-                                 ISystemDirectory outputDir) {
-      this.logger_.LogInformation($"Extracting {strFile.DisplayFullPath}...");
+  public void ExtractAndDelete(
+      ISystemFile strFile,
+      ISystemDirectory outputDir) {
+    var task = this.ExtractAsync(strFile, outputDir, true);
+    task.Wait();
+  }
 
-      ContentBlock[] contentBlocks;
-      var headerBlocks = new LinkedList<(FileInfo fileInfo, int index)>();
-      {
-        var set = strFile.ReadNew<StreamSetFile>();
-        contentBlocks =
-            set.Contents
-               .Select(block => block.Impl.Data)
-               .WhereIs<IBlock, ContentBlock>()
-               .ToArray();
+  public async Task ExtractAsync(ISystemFile strFile,
+                                 ISystemDirectory outputDir,
+                                 bool deleteArchive) {
+    this.logger_.LogInformation($"Extracting {strFile.DisplayFullPath}...");
 
-        for (var i = 0; i < contentBlocks.Length; ++i) {
-          var block = contentBlocks[i];
-          if (block.Impl.Magic == ContentType.Header) {
-            headerBlocks.AddLast(((FileInfo) block.Impl.Data, i));
-          }
+    ContentBlock[] contentBlocks;
+    var headerBlocks = new LinkedList<(FileInfo fileInfo, int index)>();
+    {
+      var set = strFile.ReadNew<StreamSetFile>();
+      contentBlocks =
+          set.Contents
+             .Select(block => block.Impl.Data)
+             .WhereIs<IBlock, ContentBlock>()
+             .ToArray();
+
+      for (var i = 0; i < contentBlocks.Length; ++i) {
+        var block = contentBlocks[i];
+        if (block.Impl.Magic == ContentType.Header) {
+          headerBlocks.AddLast(((FileInfo) block.Impl.Data, i));
         }
       }
-
-      var refPackDecompressor = new RefPackArrayToArrayDecompressor();
-      await Parallel.ForEachAsync(
-                        headerBlocks,
-                        new ParallelOptions { MaxDegreeOfParallelism = -1, },
-                        async (tuple, cancellationToken) => {
-                          var (fileInfo, initialIndex) = tuple;
-
-                          var i = initialIndex + 1;
-                          ISystemFile outputFile =
-                              new FinFile(
-                                  Path.Join(outputDir.FullPath, fileInfo.FileName));
-                          if (outputFile.Exists) {
-                            return;
-                          }
-
-                          outputFile.AssertGetParent().Create();
-
-                          await using var output = FinFileSystem.File.Open(
-                              outputFile.FullPath,
-                              new FileStreamOptions {
-                                  Mode = FileMode.Create,
-                                  Access = FileAccess.Write,
-                                  BufferSize = 0,
-                                  PreallocationSize = fileInfo.TotalSize,
-                                  Options = FileOptions.SequentialScan |
-                                            FileOptions.Asynchronous |
-                                            FileOptions.WriteThrough,
-                              });
-
-                          var readSize = 0L;
-                          while (readSize < fileInfo.TotalSize) {
-                            var leftSize = fileInfo.TotalSize - readSize;
-
-                            var dataInfo = contentBlocks[i];
-                            switch (dataInfo.Impl.Data) {
-                              case UncompressedData uncompressedData: {
-                                var data = uncompressedData.Bytes;
-                                var writeSize = Math.Min(leftSize, data.Length);
-                                await output.WriteAsync(data,
-                                  0,
-                                  (int) writeSize,
-                                  cancellationToken);
-                                readSize += writeSize;
-
-                                break;
-                              }
-                              case RefPackCompressedData compressedData: {
-                                Asserts.True(
-                                    refPackDecompressor.TryDecompress(
-                                        compressedData.RawBytes,
-                                        out var data));
-                                var writeSize = Math.Min(leftSize,
-                                  (uint) data.Length);
-                                await output.WriteAsync(data,
-                                  0,
-                                  (int) writeSize,
-                                  cancellationToken);
-                                readSize += writeSize;
-
-                                break;
-                              }
-                              default:
-                                throw new InvalidOperationException();
-                            }
-
-                            ++i;
-                          }
-
-                          await output.FlushAsync(cancellationToken);
-                        })
-                    .ConfigureAwait(false);
     }
+
+    var uniqueHeaderBlocks
+        = headerBlocks.DistinctBy(h => h.fileInfo.FileName.ToLowerInvariant());
+
+    var refPackDecompressor = new RefPackArrayToArrayDecompressor();
+    await Parallel.ForEachAsync(
+                      uniqueHeaderBlocks,
+                      new ParallelOptions { MaxDegreeOfParallelism = -1, },
+                      async (tuple, cancellationToken) => {
+                        var (fileInfo, initialIndex) = tuple;
+
+                        var i = initialIndex + 1;
+                        ISystemFile outputFile =
+                            new FinFile(
+                                Path.Join(outputDir.FullPath,
+                                          fileInfo.FileName));
+                        if (outputFile.Exists) {
+                          return;
+                        }
+
+                        outputFile.AssertGetParent().Create();
+
+                        await using var output = FinFileSystem.File.Open(
+                            outputFile.FullPath,
+                            new FileStreamOptions {
+                                Mode = FileMode.Create,
+                                Access = FileAccess.Write,
+                                BufferSize = 0,
+                                PreallocationSize = fileInfo.TotalSize,
+                                Options = FileOptions.SequentialScan |
+                                          FileOptions.Asynchronous |
+                                          FileOptions.WriteThrough,
+                            });
+
+                        var readSize = 0L;
+                        while (readSize < fileInfo.TotalSize) {
+                          var leftSize = fileInfo.TotalSize - readSize;
+
+                          var dataInfo = contentBlocks[i];
+                          switch (dataInfo.Impl.Data) {
+                            case UncompressedData uncompressedData: {
+                              var data = uncompressedData.Bytes;
+                              var writeSize = Math.Min(leftSize, data.Length);
+                              await output.WriteAsync(data,
+                                0,
+                                (int) writeSize,
+                                cancellationToken);
+                              readSize += writeSize;
+
+                              break;
+                            }
+                            case RefPackCompressedData compressedData: {
+                              Asserts.True(
+                                  refPackDecompressor.TryDecompress(
+                                      compressedData.RawBytes,
+                                      out var data));
+                              var writeSize = Math.Min(leftSize,
+                                (uint) data.Length);
+                              await output.WriteAsync(data,
+                                0,
+                                (int) writeSize,
+                                cancellationToken);
+                              readSize += writeSize;
+
+                              break;
+                            }
+                            default:
+                              throw new InvalidOperationException();
+                          }
+
+                          ++i;
+                        }
+
+                        await output.FlushAsync(cancellationToken);
+                      })
+                  .ConfigureAwait(false);
+
+    if (deleteArchive) {
+      strFile.Delete();
+    }
+  }
 }

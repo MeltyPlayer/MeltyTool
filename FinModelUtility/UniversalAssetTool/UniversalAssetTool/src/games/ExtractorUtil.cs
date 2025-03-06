@@ -13,6 +13,16 @@ public static class ExtractorUtil {
       ReadOnlySpan<char> romName)
     => DirectoryConstants.ROMS_DIRECTORY.GetOrCreateSubdir(romName);
 
+  public static void GetOrCreateRomDirectoriesWithPrereqsAndCache(
+      ReadOnlySpan<char> romName,
+      out ISystemDirectory prereqsDir,
+      out ISystemDirectory cacheDir,
+      out ISystemDirectory extractedDir) {
+    var romDir = GetOrCreateRomDirectory(romName);
+    prereqsDir = romDir.GetOrCreateSubdir(PREREQS);
+    cacheDir = romDir.GetOrCreateSubdir(CACHE);
+    extractedDir = romDir.GetOrCreateSubdir(EXTRACTED);
+  }
 
   public static void GetOrCreateRomDirectoriesWithPrereqs(
       ReadOnlySpan<char> romName,
