@@ -50,6 +50,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@leftp](https://github.com/leftp), whose [SharpDirLister](https://github.com/EncodeGroup/SharpDirLister) API was used to dramatically improve listing out the file hierarchy.
 - [@LogicAndTrick](https://github.com/LogicAndTrick), whose [sledge-formats](https://github.com/LogicAndTrick/sledge-formats) library was used to parse Celeste 64 map files.
 - [@LordNed](https://github.com/LordNed), whose [J3D-Model-Viewer](https://github.com/LordNed/J3D-Model-Viewer) tool and [JStudio](https://github.com/LordNed/JStudio) library were referenced to fix bugs in the J3dGraph .bmd importer.
+- Luca Elia, whose [Rolling Madness 3D](http://www.lucaelia.com/games.php) was bundled in the viewer for the sake of preservation.
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
 - [@M-1-RLG](https://github.com/M-1-RLG), aka M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
 - [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/naclomi/noclip.website) was referenced to add support for importing .csab files and Paper Mario: The Thousand Year Door's animated group models.
@@ -88,6 +89,8 @@ If you'd like to vote on new games or features that should be supported, please 
 
 - /a (Animated group models) (GCN)
   - Paper Mario: The Thousand Year Door (`paper_mario_the_thousand_year_door.[ciso/gcm/iso/nkit.iso]`)
+- .ase.mesh (PC)
+  - [Rolling Madness 3D](http://www.lucaelia.com/games.php)
 - J3dGraph (.bmd/.bdl) (GCN)
   - Mario Kart: Double Dash (`mario_kart_double_dash.[ciso/gcm/iso/nkit.iso]`)
   - Pikmin 2 (`pikmin_2.[ciso/gcm/iso/nkit.iso]`)
@@ -107,6 +110,8 @@ If you'd like to vote on new games or features that should be supported, please 
 - HSD, aka HAL sysdolphin (.dat) (GCN)
   - Chibi-Robo! (`chibi_robo.[ciso/gcm/iso/nkit.iso]`)
   - Super Smash Bros. Melee (`super_smash_bros_melee.[ciso/gcm/iso/nkit.iso]`)
+- .map (PC)
+  - Celeste 64 
 - .mod (GCN)
   - Pikmin 1 (`pikmin_1.[ciso/gcm/iso/nkit.iso]`)
 - .modl/.out (GCN/WII)
