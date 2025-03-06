@@ -80,7 +80,7 @@ public partial class FileIdsDictionary : IFileIdsDictionary {
   private partial class FileIdsPair : IBinaryConvertible {
     public uint Id { get; set; }
 
-    [SequenceLengthSource(SchemaIntegerType.BYTE)]
+    [SequenceLengthSource(SchemaIntegerType.UINT16)]
     public SizedString[] FilePaths { get; set; }
   }
 
