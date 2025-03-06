@@ -7,6 +7,8 @@ using CommunityToolkit.HighPerformance;
 
 using fin.image;
 using fin.image.formats;
+using fin.image.io;
+using fin.image.io.pixel;
 using fin.io;
 
 using schema.binary;
@@ -23,13 +25,34 @@ public record Tg4ImageFileBundle {
 public class Tg4ImageReader {
   public IImage ReadImage(Tg4ImageFileBundle bundle) {
     var headerFile = bundle.Tg4hFile;
+    var dataFile = bundle.Tg4dFile;
+
     using var headerEr =
         new SchemaBinaryReader(headerFile.OpenRead(),
                                Endianness.LittleEndian);
-    headerEr.Position = 0x20;
+
+    var directoryOffset = headerEr.ReadUInt32();
+
+    headerEr.Position = 0x18;
+    var fileNameOffset = headerEr.ReadUInt32();
+    var fileSize = headerEr.ReadUInt32();
     var width = headerEr.ReadUInt16();
     var height = headerEr.ReadUInt16();
-    var format = headerEr.SubreadStringNTAt(0x4b);
+
+    headerEr.Position = 0x2C;
+    var formatOffsetOffset = headerEr.ReadUInt32();
+    headerEr.Position = formatOffsetOffset + 1;
+    var formatOffset = headerEr.ReadUInt32();
+    headerEr.Position = formatOffset;
+    var format = headerEr.ReadStringNT();
+
+    // Try to handle easy formats first.
+    switch (format) {
+      case "L8A8": {
+        return PixelImageReader.New(width, height, new La16PixelReader())
+                               .ReadImage(dataFile.OpenReadAsBinary());
+      }
+    }
 
     CompressionFormat? compressionFormat = format switch {
         "DXT1c"   => CompressionFormat.Bc1,
@@ -51,8 +74,6 @@ public class Tg4ImageReader {
         CompressionFormat.Bc3          => PixelFormat.DXT5,
         _                              => throw new ArgumentOutOfRangeException()
     };
-
-    var dataFile = bundle.Tg4dFile;
 
     var bcDecoder = new BcDecoder();
     bcDecoder.Options.IsParallel = true;
