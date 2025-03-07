@@ -45,6 +45,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - jdh, whose [Virtual Reality Walt Disney World](https://web.archive.org/web/20040608032334/https://vrwdw.tripod.com/) was bundled in the viewer for the sake of preservation.
 - [@Julgodis](https://github.com/Julgodis), whose [picori](https://github.com/Julgodis/picori) library was referenced to implement parsing .ciso files. 
 - [@Justin Aquadro](https://github.com/jaquadro), aka [Retriever II](https://www.mfgg.net/index.php?act=user&param=01&uid=2), whose [documentation](https://www.emutalk.net/threads/pm-ttyd-model-file-format-pet-project.27613/) was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
+- Killa B, who [documented](https://www.zophar.net/fileuploads/3/21546xutra/picrossleveldata.txt) the Mario Picross format.
 - [@KillzXGaming](https://github.com/KillzXGaming), whose [Switch-Toolbox](https://github.com/KillzXGaming/Switch-Toolbox) was referenced to add support for LZSS decompression.
 - [@kornman00](https://github.com/kornman00), aka [@KornnerStudios](https://github.com/KornnerStudios), for documenting the Halo Wars formats in [HaloWarsDocs](https://github.com/HaloMods/HaloWarsDocs) and providing the [KSoft suite](https://github.com/KornnerStudios/KSoft) to extract the contents of the game.
 - [@leftp](https://github.com/leftp), whose [SharpDirLister](https://github.com/EncodeGroup/SharpDirLister) API was used to dramatically improve listing out the file hierarchy.
@@ -72,6 +73,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@SceneGate](https://github.com/SceneGate), whose [Yarhl](https://github.com/SceneGate/Yarhl), [Ekona](https://github.com/SceneGate/Ekona), and [Lemon](https://github.com/SceneGate/Lemon) libraries were used to rip files from DS and 3DS ROMs.
 - [@shravan2x](https://github.com/shravan2x), whose [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) library is used to deserialize the contents of Steam's .vdf files.
 - [@sinshu](https://github.com/sinshu), whose [MeltySynth](https://github.com/sinshu/meltysynth) library is used to import and play MIDI files.
+- [@sopoforic](https://github.com/sopoforic), whose [cgrr-mariospicross](https://github.com/sopoforic/cgrr-mariospicross) tool was referenced for ripping Mario Picross puzzles.
 - [@speps](https://github.com/speps), whose [LibTessDotNet](https://github.com/speps/LibTessDotNet) library is used to triangulate VRML polygons.
 - [@srogee](https://github.com/srogee), as his [HaloWarsTools](https://github.com/srogee/HaloWarsTools) program was used as the basis of the Halo Wars importer.
 - [@SuperHackio](https://github.com/SuperHackio), whose [Hack.io](https://github.com/SuperHackio/Hack.io) library was referenced to improve the J3dGraph .bmd parser.

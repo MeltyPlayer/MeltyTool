@@ -26,6 +26,11 @@ public class PuzzleDefinitionReader {
   }
 }
 
+/// <summary>
+///   Shamelessly stolen from:
+///   https://www.zophar.net/fileuploads/3/21546xutra/picrossleveldata.txt
+///   https://github.com/sopoforic/cgrr-mariospicross/blob/master/mariospicross.py
+/// </summary>
 [BinarySchema]
 public partial class PuzzleDefinition : IBinaryConvertible {
   [SequenceLengthSource(15)]
