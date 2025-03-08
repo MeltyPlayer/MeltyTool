@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
+using fin.data.indexable;
 using fin.model;
 using fin.model.impl;
 using fin.model.util;
@@ -26,6 +27,10 @@ public class SkeletonRenderer(
     : ISkeletonRenderer {
   private static readonly IModelRenderer BONE_RENDERER_;
   private static float BONE_SCALE_ = 5;
+
+  private static readonly Color UNSELECTED_BONE = Color.Blue;
+  private static readonly Color SELECTED_BONE = Color.White;
+  private static readonly Color SELECTED_CHILD = Color.CornflowerBlue;
 
   static SkeletonRenderer() {
     var model = ModelImpl.CreateForViewer();
@@ -67,12 +72,26 @@ public class SkeletonRenderer(
             middle4, to,
         ])
         .SetMaterial(material);
-        
+
     BONE_RENDERER_ = new ModelRendererV2(model);
   }
 
   public IReadOnlySkeleton Skeleton { get; } = skeleton;
-  public IReadOnlyBone? SelectedBone { get; set; }
+
+  public IReadOnlyBone? SelectedBone {
+    get;
+    set {
+      field = value;
+
+      this.selectedChildren_.Clear();
+      if (value != null) {
+        AddChildrenToSet_(value, this.selectedChildren_);
+      }
+    }
+  }
+
+  private readonly IndexableSet<IReadOnlyBone> selectedChildren_ = new();
+
   public float Scale { get; set; } = 1;
 
   public void Render() {
@@ -86,14 +105,25 @@ public class SkeletonRenderer(
 
     if (skeleton.Root != bone) {
       GlUtil.SetBlendColor(bone == this.SelectedBone
-                               ? Color.White
-                               : Color.Blue);
+                               ? SELECTED_BONE
+                               : this.selectedChildren_.Contains(bone)
+                                   ? SELECTED_CHILD
+                                   : UNSELECTED_BONE);
       BONE_RENDERER_.Render();
     }
+
     GlTransform.PopMatrix();
 
     foreach (var child in bone.Children) {
       this.RenderBone_(child, skeleton);
+    }
+  }
+
+  private static void AddChildrenToSet_(IReadOnlyBone bone,
+                                        IIndexableSet<IReadOnlyBone> set) {
+    foreach (var child in bone.Children) {
+      set.Add(child);
+      AddChildrenToSet_(child, set);
     }
   }
 }
