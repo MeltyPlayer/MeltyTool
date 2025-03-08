@@ -56,27 +56,8 @@ public static class TtydGroupTransformUtils {
     var deg2Rad = MathF.PI / 180;
     var rotationRadians1
         = new Vector3(groupTransforms.Slice(6, 3)) * 2 * deg2Rad;
-
-    if (group.IsJoint) {
-      var rotationRadians2
-          = new Vector3(groupTransforms.Slice(9, 3)) * deg2Rad;
-
-      return new TtydTransformData<Vector3, Vector3> {
-          IsJoint = true,
-          JointData = new TtydTransformJointData<Vector3, Vector3> {
-              Translation = translation,
-              UndoParentScale = parentGroupScale != null
-                  ? new Vector3(1 / parentGroupScale.Value.X,
-                                1 / parentGroupScale.Value.Y,
-                                1 / parentGroupScale.Value.Z)
-                  : Vector3.One,
-              Rotation1 = rotationRadians1,
-              Rotation2 = rotationRadians2,
-              Scale = scale,
-          },
-          NonJointData = default,
-      };
-    }
+    var rotationRadians2
+        = new Vector3(groupTransforms.Slice(9, 3)) * deg2Rad;
 
     var rotationCenter
         = new Vector3(groupTransforms.Slice(12, 3));
@@ -88,18 +69,15 @@ public static class TtydGroupTransformUtils {
         = new Vector3(groupTransforms.Slice(21, 3));
 
     return new TtydTransformData<Vector3, Vector3> {
-        IsJoint = false,
-        JointData = default,
-        NonJointData = new TtydTransformNonJointData<Vector3, Vector3> {
-            Translation = translation,
-            ApplyRotationCenterAndTranslation
-                = rotationCenter + rotationTranslation,
-            Rotation = rotationRadians1,
-            UndoRotationCenter = -rotationCenter,
-            ApplyScaleCenterAndTranslation = scaleCenter + scaleTranslation,
-            Scale = scale,
-            UndoScaleCenter = -scaleCenter,
-        },
+        Translation = translation,
+        ApplyRotationCenterAndTranslation
+            = rotationCenter + rotationTranslation,
+        Rotation1 = rotationRadians1,
+        Rotation2 = rotationRadians2,
+        UndoRotationCenter = -rotationCenter,
+        ApplyScaleCenterAndTranslation = scaleCenter + scaleTranslation,
+        Scale = scale,
+        UndoScaleCenter = -scaleCenter,
     };
   }
 }

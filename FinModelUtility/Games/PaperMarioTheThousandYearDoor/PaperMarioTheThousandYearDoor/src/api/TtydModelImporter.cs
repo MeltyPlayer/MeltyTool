@@ -140,110 +140,65 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
 
       IBone finBone;
       {
-        if (transformData.IsJoint) {
-          var jointData = transformData.JointData;
+        var translationBone
+            = parentFinBone.AddChild(
+                Matrix4x4.CreateTranslation(transformData.Translation));
+        translationBone.IgnoreParentScale = true;
+        translationBone.Name = $"{ttydGroup.Name}_translation";
 
-          var translationBone
-              = parentFinBone.AddChild(
-                  Matrix4x4.CreateTranslation(jointData.Translation));
-          translationBone.Name = $"{ttydGroup.Name}_translation";
+        var applyRotationCenterAndTranslationBone
+            = translationBone.AddChild(
+                Matrix4x4.CreateTranslation(
+                    transformData.ApplyRotationCenterAndTranslation));
+        applyRotationCenterAndTranslationBone.Name
+            = $"{ttydGroup.Name}_applyRotationCenterAndTranslation";
 
-          var undoParentScaleBone
-              = translationBone.AddChild(
-                  Matrix4x4.CreateScale(jointData.UndoParentScale));
-          undoParentScaleBone.Name = $"{ttydGroup.Name}_undoParentScale";
+        var rotation2Bone
+            = applyRotationCenterAndTranslationBone.AddChild(
+                Matrix4x4.CreateFromQuaternion(
+                    transformData.Rotation2.CreateZyxRadians()));
+        rotation2Bone.Name = $"{ttydGroup.Name}_rotation2";
 
-          var rotation2Bone
-              = undoParentScaleBone.AddChild(
-                  Matrix4x4.CreateFromQuaternion(
-                      jointData.Rotation2.CreateZyxRadians()));
-          rotation2Bone.Name = $"{ttydGroup.Name}_rotation2";
+        var rotation1Bone
+            = rotation2Bone.AddChild(
+                Matrix4x4.CreateFromQuaternion(
+                    transformData.Rotation1.CreateZyxRadians()));
+        rotation1Bone.Name = $"{ttydGroup.Name}_rotation1";
 
-          var rotation1Bone
-              = rotation2Bone.AddChild(
-                  Matrix4x4.CreateFromQuaternion(
-                      jointData.Rotation1.CreateZyxRadians()));
-          rotation1Bone.Name = $"{ttydGroup.Name}_rotation1";
+        var undoRotationCenterBone = rotation1Bone.AddChild(
+            Matrix4x4.CreateTranslation(transformData.UndoRotationCenter));
+        undoRotationCenterBone.Name = $"{ttydGroup.Name}_undoRotationCenter";
 
-          var scaleBone
-              = rotation1Bone.AddChild(Matrix4x4.CreateScale(jointData.Scale));
-          scaleBone.Name = $"{ttydGroup.Name}_scale";
+        var applyScaleCenterAndTranslationBone
+            = undoRotationCenterBone.AddChild(
+                Matrix4x4.CreateTranslation(
+                    transformData.ApplyScaleCenterAndTranslation));
+        applyScaleCenterAndTranslationBone.Name
+            = $"{ttydGroup.Name}_applyRotationCenterAndTranslation";
 
-          groupsAndBoneSets[ttydGroupIndex] = (
-              ttydGroup, new TtydTransformData<IReadOnlyBone, IReadOnlyBone> {
-                  IsJoint = true,
-                  JointData
-                      = new TtydTransformJointData<IReadOnlyBone, IReadOnlyBone> {
-                          Translation = translationBone,
-                          UndoParentScale = undoParentScaleBone,
-                          Rotation1 = rotation1Bone,
-                          Rotation2 = rotation2Bone,
-                          Scale = scaleBone,
-                      },
-                  NonJointData = default,
-              });
-          finBone = scaleBone;
-        } else {
-          var nonJointData = transformData.NonJointData;
+        var scaleBone
+            = applyScaleCenterAndTranslationBone.AddChild(
+                Matrix4x4.CreateScale(transformData.Scale));
+        scaleBone.Name = $"{ttydGroup.Name}_scale";
 
-          var translationBone
-              = parentFinBone.AddChild(
-                  Matrix4x4.CreateTranslation(nonJointData.Translation));
-          translationBone.Name = $"{ttydGroup.Name}_translation";
+        var undoScaleCenterBone = scaleBone.AddChild(
+            Matrix4x4.CreateTranslation(transformData.UndoScaleCenter));
+        undoScaleCenterBone.Name = $"{ttydGroup.Name}_undoScaleCenter";
 
-          var applyRotationCenterAndTranslationBone
-              = translationBone.AddChild(
-                  Matrix4x4.CreateTranslation(
-                      nonJointData.ApplyRotationCenterAndTranslation));
-          applyRotationCenterAndTranslationBone.Name
-              = $"{ttydGroup.Name}_applyRotationCenterAndTranslation";
-
-          var rotationBone
-              = applyRotationCenterAndTranslationBone.AddChild(
-                  Matrix4x4.CreateFromQuaternion(
-                      nonJointData.Rotation.CreateZyxRadians()));
-          rotationBone.Name = $"{ttydGroup.Name}_rotation";
-
-          var undoRotationCenterBone = rotationBone.AddChild(
-              Matrix4x4.CreateTranslation(nonJointData.UndoRotationCenter));
-          undoRotationCenterBone.Name = $"{ttydGroup.Name}_undoRotationCenter";
-
-          var applyScaleCenterAndTranslationBone
-              = undoRotationCenterBone.AddChild(
-                  Matrix4x4.CreateTranslation(
-                      nonJointData.ApplyScaleCenterAndTranslation));
-          applyScaleCenterAndTranslationBone.Name
-              = $"{ttydGroup.Name}_applyRotationCenterAndTranslation";
-
-          var scaleBone
-              = applyScaleCenterAndTranslationBone.AddChild(
-                  Matrix4x4.CreateScale(nonJointData.Scale));
-          scaleBone.Name = $"{ttydGroup.Name}_scale";
-
-          var undoScaleCenterBone = scaleBone.AddChild(
-              Matrix4x4.CreateTranslation(nonJointData.UndoScaleCenter));
-          undoScaleCenterBone.Name = $"{ttydGroup.Name}_undoScaleCenter";
-
-          groupsAndBoneSets[ttydGroupIndex] = (
-              ttydGroup, new TtydTransformData<IReadOnlyBone, IReadOnlyBone> {
-                  IsJoint = false,
-                  JointData = default,
-                  NonJointData
-                      = new TtydTransformNonJointData<IReadOnlyBone,
-                          IReadOnlyBone> {
-                          Translation = translationBone,
-                          ApplyRotationCenterAndTranslation
-                              = applyRotationCenterAndTranslationBone,
-                          Rotation = rotationBone,
-                          UndoRotationCenter = undoRotationCenterBone,
-                          ApplyScaleCenterAndTranslation
-                              = applyScaleCenterAndTranslationBone,
-                          Scale = scaleBone,
-                          UndoScaleCenter = undoScaleCenterBone
-                      },
-              });
-          finBone = undoScaleCenterBone;
-        }
+        groupsAndBoneSets[ttydGroupIndex] = (
+            ttydGroup, new TtydTransformData<IReadOnlyBone, IReadOnlyBone> {
+                Translation = translationBone,
+                ApplyRotationCenterAndTranslation
+                    = applyRotationCenterAndTranslationBone,
+                Rotation2 = rotation2Bone,
+                Rotation1 = rotation1Bone,
+                UndoRotationCenter = undoRotationCenterBone,
+                ApplyScaleCenterAndTranslation
+                    = applyScaleCenterAndTranslationBone,
+                Scale = scaleBone,
+                UndoScaleCenter = undoScaleCenterBone
+            });
+        finBone = undoScaleCenterBone;
       }
 
       groupsAndLastBones[ttydGroupIndex] = (ttydGroup, finBone);
@@ -371,78 +326,42 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
               ICombinedVector3Keyframes<Keyframe<Vector3>>,
               ICombinedQuaternionKeyframes<Keyframe<Quaternion>>>>();
       foreach (var (group, transformData) in groupsAndBoneSets) {
-        if (transformData.IsJoint) {
-          var jointData = transformData.JointData;
-          boneTrackDataByGroup[group] = new TtydTransformData<
-              ICombinedVector3Keyframes<Keyframe<Vector3>>,
-              ICombinedQuaternionKeyframes<Keyframe<Quaternion>>> {
-              IsJoint = true,
-              NonJointData = default,
-              JointData
-                  = new TtydTransformJointData<
-                      ICombinedVector3Keyframes<Keyframe<Vector3>>,
-                      ICombinedQuaternionKeyframes<Keyframe<Quaternion>>> {
-                      Translation
-                          = finAnimation
-                            .GetOrCreateBoneTracks(jointData.Translation)
-                            .UseCombinedTranslationKeyframes(),
-                      UndoParentScale
-                          = finAnimation
-                            .GetOrCreateBoneTracks(jointData.UndoParentScale)
-                            .UseCombinedScaleKeyframes(),
-                      Rotation1 = finAnimation
-                                  .GetOrCreateBoneTracks(jointData.Rotation1)
-                                  .UseCombinedQuaternionKeyframes(),
-                      Rotation2 = finAnimation
-                                  .GetOrCreateBoneTracks(jointData.Rotation2)
-                                  .UseCombinedQuaternionKeyframes(),
-                      Scale = finAnimation
-                              .GetOrCreateBoneTracks(jointData.Scale)
-                              .UseCombinedScaleKeyframes(),
-                  }
-          };
-        } else {
-          var nonJointData = transformData.NonJointData;
-          boneTrackDataByGroup[group] = new TtydTransformData<
-              ICombinedVector3Keyframes<Keyframe<Vector3>>,
-              ICombinedQuaternionKeyframes<Keyframe<Quaternion>>> {
-              IsJoint = false,
-              JointData = default,
-              NonJointData
-                  = new TtydTransformNonJointData<
-                      ICombinedVector3Keyframes<Keyframe<Vector3>>,
-                      ICombinedQuaternionKeyframes<Keyframe<Quaternion>>> {
-                      Translation
-                          = finAnimation
-                            .GetOrCreateBoneTracks(nonJointData.Translation)
-                            .UseCombinedTranslationKeyframes(),
-                      ApplyRotationCenterAndTranslation
-                          = finAnimation
-                            .GetOrCreateBoneTracks(
-                                nonJointData.ApplyRotationCenterAndTranslation)
-                            .UseCombinedTranslationKeyframes(),
-                      Rotation = finAnimation
-                                 .GetOrCreateBoneTracks(nonJointData.Rotation)
-                                 .UseCombinedQuaternionKeyframes(),
-                      UndoRotationCenter
-                          = finAnimation
-                            .GetOrCreateBoneTracks(nonJointData.UndoRotationCenter)
-                            .UseCombinedTranslationKeyframes(),
-                      ApplyScaleCenterAndTranslation
-                          = finAnimation
-                            .GetOrCreateBoneTracks(
-                                nonJointData.ApplyScaleCenterAndTranslation)
-                            .UseCombinedTranslationKeyframes(),
-                      Scale = finAnimation
-                              .GetOrCreateBoneTracks(nonJointData.Scale)
-                              .UseCombinedScaleKeyframes(),
-                      UndoScaleCenter
-                          = finAnimation
-                            .GetOrCreateBoneTracks(nonJointData.UndoScaleCenter)
-                            .UseCombinedTranslationKeyframes(),
-                  }
-          };
-        }
+        boneTrackDataByGroup[group] = new TtydTransformData<
+            ICombinedVector3Keyframes<Keyframe<Vector3>>,
+            ICombinedQuaternionKeyframes<Keyframe<Quaternion>>> {
+            Translation
+                = finAnimation
+                  .GetOrCreateBoneTracks(transformData.Translation)
+                  .UseCombinedTranslationKeyframes(),
+            ApplyRotationCenterAndTranslation
+                = finAnimation
+                  .GetOrCreateBoneTracks(
+                      transformData.ApplyRotationCenterAndTranslation)
+                  .UseCombinedTranslationKeyframes(),
+            Rotation1 = finAnimation
+                        .GetOrCreateBoneTracks(transformData.Rotation1)
+                        .UseCombinedQuaternionKeyframes(),
+            Rotation2 = finAnimation
+                        .GetOrCreateBoneTracks(transformData.Rotation2)
+                        .UseCombinedQuaternionKeyframes(),
+            UndoRotationCenter
+                = finAnimation
+                  .GetOrCreateBoneTracks(
+                      transformData.UndoRotationCenter)
+                  .UseCombinedTranslationKeyframes(),
+            ApplyScaleCenterAndTranslation
+                = finAnimation
+                  .GetOrCreateBoneTracks(
+                      transformData.ApplyScaleCenterAndTranslation)
+                  .UseCombinedTranslationKeyframes(),
+            Scale = finAnimation
+                    .GetOrCreateBoneTracks(transformData.Scale)
+                    .UseCombinedScaleKeyframes(),
+            UndoScaleCenter
+                = finAnimation
+                  .GetOrCreateBoneTracks(transformData.UndoScaleCenter)
+                  .UseCombinedTranslationKeyframes(),
+        };
       }
 
       var allFinMeshTracks
@@ -499,56 +418,33 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
       var bakedKeyframes = keyframes.BakeTransformsAtFrames();
 
       foreach (var (ttydGroup, boneTrackData) in boneTrackDataByGroup) {
-        if (boneTrackData.IsJoint) {
-          var jointData = boneTrackData.JointData;
-          for (var i = 0; i < finAnimation.FrameCount; ++i) {
-            var transformData = TtydGroupTransformUtils.GetTransformData(
-                    ttydGroup,
-                    ttydGroupToParent,
-                    bakedKeyframes,
-                    i)
-                .JointData;
+        for (var i = 0; i < finAnimation.FrameCount; ++i) {
+          var transformData = TtydGroupTransformUtils.GetTransformData(
+                  ttydGroup,
+                  ttydGroupToParent,
+                  bakedKeyframes,
+                  i);
 
-            jointData.Translation.SetKeyframe(i, transformData.Translation);
-            jointData.UndoParentScale.SetKeyframe(
-                i,
-                transformData.UndoParentScale);
-            jointData.Rotation1.SetKeyframe(i,
-                                            transformData.Rotation1
-                                                .CreateZyxRadians());
-            jointData.Rotation2.SetKeyframe(i,
-                                            transformData.Rotation2
-                                                .CreateZyxRadians());
-            jointData.Scale.SetKeyframe(i, transformData.Scale);
-          }
-        } else {
-          var nonJointData = boneTrackData.NonJointData;
-          for (var i = 0; i < finAnimation.FrameCount; ++i) {
-            var transformData = TtydGroupTransformUtils.GetTransformData(
-                    ttydGroup,
-                    ttydGroupToParent,
-                    bakedKeyframes,
-                    i)
-                .NonJointData;
-
-            nonJointData.Translation.SetKeyframe(i, transformData.Translation);
-            nonJointData.ApplyRotationCenterAndTranslation.SetKeyframe(
-                i,
-                transformData.ApplyRotationCenterAndTranslation);
-            nonJointData.Rotation.SetKeyframe(
-                i,
-                transformData.Rotation.CreateZyxRadians());
-            nonJointData.UndoRotationCenter.SetKeyframe(
-                i,
-                transformData.UndoRotationCenter);
-            nonJointData.ApplyScaleCenterAndTranslation.SetKeyframe(
-                i,
-                transformData.ApplyScaleCenterAndTranslation);
-            nonJointData.Scale.SetKeyframe(i, transformData.Scale);
-            nonJointData.UndoScaleCenter.SetKeyframe(
-                i,
-                transformData.UndoScaleCenter);
-          }
+          boneTrackData.Translation.SetKeyframe(i, transformData.Translation);
+          boneTrackData.ApplyRotationCenterAndTranslation.SetKeyframe(
+              i,
+              transformData.ApplyRotationCenterAndTranslation);
+          boneTrackData.Rotation1.SetKeyframe(i,
+                                             transformData.Rotation1
+                                                 .CreateZyxRadians());
+          boneTrackData.Rotation2.SetKeyframe(i,
+                                             transformData.Rotation2
+                                                 .CreateZyxRadians());
+          boneTrackData.UndoRotationCenter.SetKeyframe(
+              i,
+              transformData.UndoRotationCenter);
+          boneTrackData.ApplyScaleCenterAndTranslation.SetKeyframe(
+              i,
+              transformData.ApplyScaleCenterAndTranslation);
+          boneTrackData.Scale.SetKeyframe(i, transformData.Scale);
+          boneTrackData.UndoScaleCenter.SetKeyframe(
+              i,
+              transformData.UndoScaleCenter);
         }
       }
     }
