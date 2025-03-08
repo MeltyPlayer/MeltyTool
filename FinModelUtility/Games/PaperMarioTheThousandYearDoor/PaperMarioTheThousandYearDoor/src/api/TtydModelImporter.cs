@@ -99,9 +99,8 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
     // Sets up meshes for each group visibility
     var finGroupVisibilityMeshes
         = ttydModel.GroupVisibilities
-                   .Select((visible, i) => {
+                   .Select(visible => {
                      var finMesh = finModel.Skin.AddMesh();
-                     finMesh.Name = ttydGroups[i].Name;
                      finMesh.DefaultDisplayState = visible
                          ? MeshDisplayState.VISIBLE
                          : MeshDisplayState.HIDDEN;
