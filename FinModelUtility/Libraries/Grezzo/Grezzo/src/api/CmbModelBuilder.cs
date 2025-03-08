@@ -347,6 +347,11 @@ public class CmbModelBuilder {
                   .Select((posi, i) => (shpa.IdxsSection.Data.Indices[i], posi))
                   .ToDictionary(indexAndPosi => indexAndPosi.Item1,
                                 indexAndPosi => indexAndPosi.posi);
+          var shpaIndexToNorm =
+              shpa.Norm.Data.Values
+                  .Select((norm, i) => (shpa.IdxsSection.Data.Indices[i], norm))
+                  .ToDictionary(indexAndNorm => indexAndNorm.Item1,
+                                indexAndNorm => indexAndNorm.norm);
 
           var morphTarget = finModel.AnimationManager.AddMorphTarget();
           morphTarget.Name = shpaName;
@@ -357,10 +362,18 @@ public class CmbModelBuilder {
             }
 
             foreach (var finVertex in finVertices) {
-              morphTarget.MoveTo(finVertex,
-                                 new Vector3(position.X,
-                                             position.Y,
-                                             position.Z));
+              morphTarget.SetNewLocalPosition(finVertex, position);
+            }
+          }
+
+          foreach (var (index, normal) in shpaIndexToNorm) {
+            if (!verticesByIndex.TryGetList(index, out var finVertices)) {
+              continue;
+            }
+
+            foreach (var finVertex in finVertices) {
+              morphTarget.SetNewLocalNormal(
+                finVertex, new Vector3(normal.X, normal.Y, normal.Z));
             }
           }
         }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 
+using fin.data.indexable;
+
 namespace fin.model.impl;
 
 public partial class ModelImpl<TVertex> {
@@ -17,13 +19,27 @@ public partial class ModelImpl<TVertex> {
   }
 
   private class MorphTargetImpl : IMorphTarget {
-    private readonly Dictionary<IReadOnlyVertex, Vector3> morphs_ = new();
+    private readonly IndexableDictionary<IReadOnlyVertex, Vector3>
+        positionMorphs_ = new();
+
+    private readonly IndexableDictionary<IReadOnlyVertex, Vector3> normalMorphs_
+        = new();
 
     public string Name { get; set; }
-    public IReadOnlyDictionary<IReadOnlyVertex, Vector3> Morphs => this.morphs_;
 
-    public IMorphTarget MoveTo(IReadOnlyVertex vertex, Vector3 position) {
-      this.morphs_[vertex] = position;
+    public IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs
+      => this.positionMorphs_;
+
+    public IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs
+      => this.normalMorphs_;
+
+    public IMorphTarget SetNewLocalPosition(IReadOnlyVertex vertex, Vector3 position) {
+      this.positionMorphs_[vertex] = position;
+      return this;
+    }
+
+    public IMorphTarget SetNewLocalNormal(IReadOnlyVertex vertex, Vector3 normal) {
+      this.normalMorphs_[vertex] = normal;
       return this;
     }
   }

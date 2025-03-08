@@ -24,8 +24,11 @@ public partial interface IAnimationManager {
 public interface IMorphTarget {
   string Name { get; set; }
 
-  IReadOnlyDictionary<IReadOnlyVertex, Vector3> Morphs { get; }
-  IMorphTarget MoveTo(IReadOnlyVertex vertex, Vector3 position);
+  IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs { get; }
+  IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs { get; }
+
+  IMorphTarget SetNewLocalPosition(IReadOnlyVertex vertex, Vector3 position);
+  IMorphTarget SetNewLocalNormal(IReadOnlyVertex vertex, Vector3 normal);
 }
 
 [GenerateReadOnly]
