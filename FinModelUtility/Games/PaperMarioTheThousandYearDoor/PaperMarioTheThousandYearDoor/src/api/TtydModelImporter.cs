@@ -148,9 +148,7 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
                   Matrix4x4.CreateTranslation(jointData.Translation));
           translationBone.Name = $"{ttydGroup.Name}_translation";
 
-          var undoParentScaleBone
-              = translationBone.AddChild(
-                  Matrix4x4.CreateScale(jointData.UndoParentScale));
+          var undoParentScaleBone = translationBone.AddChild(Vector3.Zero);
           undoParentScaleBone.Name = $"{ttydGroup.Name}_undoParentScale";
 
           var rotation2Bone
@@ -165,8 +163,7 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
                       jointData.Rotation1.CreateZyxRadians()));
           rotation1Bone.Name = $"{ttydGroup.Name}_rotation1";
 
-          var scaleBone
-              = rotation1Bone.AddChild(Matrix4x4.CreateScale(jointData.Scale));
+          var scaleBone = rotation1Bone.AddChild(Vector3.Zero);
           scaleBone.Name = $"{ttydGroup.Name}_scale";
 
           groupsAndBoneSets[ttydGroupIndex] = (
@@ -216,8 +213,7 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
               = $"{ttydGroup.Name}_applyRotationCenterAndTranslation";
 
           var scaleBone
-              = applyScaleCenterAndTranslationBone.AddChild(
-                  Matrix4x4.CreateScale(nonJointData.Scale));
+              = applyScaleCenterAndTranslationBone.AddChild(Vector3.Zero);
           scaleBone.Name = $"{ttydGroup.Name}_scale";
 
           var undoScaleCenterBone = scaleBone.AddChild(
