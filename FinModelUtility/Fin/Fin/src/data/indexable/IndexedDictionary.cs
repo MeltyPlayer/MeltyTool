@@ -8,21 +8,21 @@ using schema.readOnly;
 namespace fin.data.indexable;
 
 [GenerateReadOnly]
-public partial interface IIndexableDictionary<in TIndexable, TValue>
-    : IIndexedDictionary<TValue>
-    where TIndexable : IIndexable {
+public partial interface IIndexedDictionary<TValue> : IEnumerable<TValue> {
   [Const]
-  new bool ContainsKey(TIndexable key);
-  new TValue this[TIndexable key] { get; set; }
+  new bool ContainsKey(int index);
+
+  void Clear();
+  new TValue this[int index] { get; set; }
 }
 
-public static class IndexableDictionaryExtensions {
-  public static bool TryGetValue<TKey, TValue>(
-      this IReadOnlyIndexableDictionary<TKey, TValue> impl,
-      TKey key,
-      out TValue value) where TKey : IIndexable {
-    if (impl.ContainsKey(key)) {
-      value = impl[key];
+public static class IndexedDictionaryExtensions {
+  public static bool TryGetValue<TValue>(
+      this IReadOnlyIndexedDictionary<TValue> impl,
+      int index,
+      out TValue value) {
+    if (impl.ContainsKey(index)) {
+      value = impl[index];
       return true;
     }
 
@@ -31,12 +31,11 @@ public static class IndexableDictionaryExtensions {
   }
 }
 
-public class IndexableDictionary<TIndexable, TValue>(int capacity)
-    : IIndexableDictionary<TIndexable, TValue>
-    where TIndexable : IIndexable {
+public class IndexedDictionary<TValue>(int capacity)
+    : IIndexedDictionary<TValue> {
   private readonly List<(bool hasValue, TValue value)> impl_ = new(capacity);
 
-  public IndexableDictionary() : this(0) { }
+  public IndexedDictionary() : this(0) { }
 
   public void Clear() => this.impl_.Clear();
 
@@ -54,15 +53,6 @@ public class IndexableDictionary<TIndexable, TValue>(int capacity)
       this.impl_[index] = (true, value);
     }
   }
-
-  public TValue this[TIndexable key] {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => this[key.Index];
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    set => this[key.Index] = value;
-  }
-
-  public bool ContainsKey(TIndexable key) => this.ContainsKey(key.Index);
 
   public bool ContainsKey(int index) {
     if (index >= this.impl_.Count) {
