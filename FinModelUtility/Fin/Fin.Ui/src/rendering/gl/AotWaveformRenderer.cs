@@ -34,7 +34,7 @@ public class AotWaveformRenderer {
       this.vertices_ = skin.TypedVertices;
       skin.AddMesh().AddLineStrip(this.vertices_).SetMaterial(material);
 
-      this.renderer_ = ModelRendererV2.CreateDynamic(model);
+      this.renderer_ = ModelRenderer.CreateDynamic(model);
     }
 
     var source = this.ActivePlayback.TypedSource;

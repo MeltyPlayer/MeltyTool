@@ -9,7 +9,7 @@ using fin.image.util;
 
 namespace fin.ui.rendering.gl.model;
 
-public partial class ModelRendererV2 {
+public partial class ModelRenderer {
   private class MergedMaterialByMeshRenderer : IDynamicModelRenderer {
     private readonly bool dynamic_;
     private readonly IReadOnlyTextureTransformManager? textureTransformManager_;

@@ -73,7 +73,7 @@ public class SkeletonRenderer(
         ])
         .SetMaterial(material);
 
-    BONE_RENDERER_ = new ModelRendererV2(model);
+    BONE_RENDERER_ = new ModelRenderer(model);
   }
 
   public IReadOnlySkeleton Skeleton { get; } = skeleton;

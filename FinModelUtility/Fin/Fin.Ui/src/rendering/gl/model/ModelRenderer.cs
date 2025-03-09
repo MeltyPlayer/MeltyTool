@@ -14,7 +14,7 @@ namespace fin.ui.rendering.gl.model;
 ///
 ///   NOTE: This will only be valid in the GL context this was first rendered in!
 /// </summary>
-public partial class ModelRendererV2(
+public partial class ModelRenderer(
     IReadOnlyModel model,
     IReadOnlyLighting? lighting = null,
     IReadOnlyBoneTransformManager? boneTransformManager = null,
@@ -35,7 +35,7 @@ public partial class ModelRendererV2(
       IReadOnlyLighting? lighting = null,
       IReadOnlyBoneTransformManager? boneTransformManager = null,
       IReadOnlyTextureTransformManager? textureTransformManager = null)
-    => new ModelRendererV2(model,
+    => new ModelRenderer(model,
                            lighting,
                            boneTransformManager,
                            textureTransformManager);
@@ -45,7 +45,7 @@ public partial class ModelRendererV2(
       IReadOnlyLighting? lighting = null,
       IReadOnlyBoneTransformManager? boneTransformManager = null,
       IReadOnlyTextureTransformManager? textureTransformManager = null)
-    => new ModelRendererV2(model,
+    => new ModelRenderer(model,
                            lighting,
                            boneTransformManager,
                            textureTransformManager,
@@ -55,7 +55,7 @@ public partial class ModelRendererV2(
   private MatricesUbo? matricesUbo_;
   private LightsUbo? lightsUbo_;
 
-  ~ModelRendererV2() => this.ReleaseUnmanagedResources_();
+  ~ModelRenderer() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
     this.ReleaseUnmanagedResources_();

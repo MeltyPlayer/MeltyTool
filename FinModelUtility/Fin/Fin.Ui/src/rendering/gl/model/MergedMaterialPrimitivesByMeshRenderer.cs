@@ -5,7 +5,7 @@ using fin.ui.rendering.gl.material;
 
 namespace fin.ui.rendering.gl.model;
 
-public partial class ModelRendererV2 {
+public partial class ModelRenderer {
   private class MergedMaterialPrimitivesByMeshRenderer : IDisposable {
     private readonly IGlBufferRenderer bufferRenderer_;
     private bool isSelected_;

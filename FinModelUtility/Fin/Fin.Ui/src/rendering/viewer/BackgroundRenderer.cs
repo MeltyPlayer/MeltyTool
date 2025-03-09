@@ -144,7 +144,7 @@ public class BackgroundRenderer : IRenderable {
 
     mesh.AddQuads(v0, v1, v2, v3).SetMaterial(material);
 
-    var modelRenderer = new ModelRendererV2(model);
+    var modelRenderer = new ModelRenderer(model);
     modelRenderer.GenerateModelIfNull();
 
     var shaders = modelRenderer

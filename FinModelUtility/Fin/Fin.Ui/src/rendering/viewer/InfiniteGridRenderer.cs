@@ -143,6 +143,6 @@ public class InfiniteGridRenderer : IRenderable {
 
     mesh.AddQuads(v0, v1, v2, v3).SetMaterial(material);
 
-    return new ModelRendererV2(model);
+    return new ModelRenderer(model);
   }
 }

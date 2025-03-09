@@ -27,7 +27,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
 
     var model = sceneModel.Model;
     this.modelRenderer_ =
-        new ModelRendererV2(model,
+        new ModelRenderer(model,
                             lighting,
                             sceneModel.BoneTransformManager,
                             sceneModel.TextureTransformManager) {
