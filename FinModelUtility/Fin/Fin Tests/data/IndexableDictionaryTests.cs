@@ -87,7 +87,7 @@ public class IndexableDictionaryTests {
     dict[index5] = "string5";
     dict[index1] = "string1";
 
-    var values = dict.Values.ToArray();
+    var values = dict.ToArray();
     Asserts.SequenceEqual(
         ["string1", "string3", "string5"],
         values);
@@ -105,7 +105,7 @@ public class IndexableDictionaryTests {
     dict[index5] = "string5";
     dict[index1] = "string1";
 
-    var enumerator = ((IEnumerable) dict.Values).GetEnumerator();
+    var enumerator = ((IEnumerable) dict).GetEnumerator();
 
     Assert.AreEqual(true, enumerator.MoveNext());
     Assert.AreEqual("string1", enumerator.Current);
