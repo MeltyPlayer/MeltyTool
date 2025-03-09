@@ -9,11 +9,19 @@ namespace fin.data.indexable;
 
 [GenerateReadOnly]
 public partial interface IIndexableDictionary<in TIndexable, TValue>
-    : IIndexedDictionary<TValue>
+    : IEnumerable<TValue>
     where TIndexable : IIndexable {
+  // Have to specify only contains key because "out" method parameters
+  // aren't allowed to be covariant:
+  // https://github.com/dotnet/csharplang/discussions/5623
+  [Const]
+  new bool ContainsKey(int index);
+  
   [Const]
   new bool ContainsKey(TIndexable key);
 
+  void Clear();
+  new TValue this[int index] { get; set; }
   new TValue this[TIndexable key] { get; set; }
 }
 
@@ -76,13 +84,8 @@ public class IndexableDictionary<TIndexable, TValue>(int capacity)
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-  public IEnumerator<(int, TValue)> GetEnumerator()
-    => this
-       .impl_.Index()
-       .Where(pairAndIndex => pairAndIndex.Item.hasValue)
-       .Select(pairAndIndex => (pairAndIndex.Index, pairAndIndex.Item.value))
-       .GetEnumerator();
-
-  public IEnumerable<TValue> Values => this.impl_.Where(pair => pair.hasValue)
-                                           .Select(pair => pair.value);
+  public IEnumerator<TValue> GetEnumerator()
+    => this.impl_.Where(pair => pair.hasValue)
+           .Select(pair => pair.value)
+           .GetEnumerator();
 }
