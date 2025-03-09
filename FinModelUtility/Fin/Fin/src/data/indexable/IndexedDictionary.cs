@@ -8,12 +8,15 @@ using schema.readOnly;
 namespace fin.data.indexable;
 
 [GenerateReadOnly]
-public partial interface IIndexedDictionary<TValue> : IEnumerable<TValue> {
+public partial interface IIndexedDictionary<TValue>
+    : IEnumerable<(int, TValue)> {
   [Const]
   new bool ContainsKey(int index);
 
   void Clear();
   new TValue this[int index] { get; set; }
+
+  IEnumerable<TValue> Values { get; }
 }
 
 public static class IndexedDictionaryExtensions {
@@ -65,8 +68,13 @@ public class IndexedDictionary<TValue>(int capacity)
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-  public IEnumerator<TValue> GetEnumerator()
-    => this.impl_.Where(pair => pair.hasValue)
-           .Select(pair => pair.value)
-           .GetEnumerator();
+  public IEnumerator<(int, TValue)> GetEnumerator()
+    => this
+       .impl_.Index()
+       .Where(pairAndIndex => pairAndIndex.Item.hasValue)
+       .Select(pairAndIndex => (pairAndIndex.Index, pairAndIndex.Item.value))
+       .GetEnumerator();
+
+  public IEnumerable<TValue> Values => this.impl_.Where(pair => pair.hasValue)
+                                           .Select(pair => pair.value);
 }

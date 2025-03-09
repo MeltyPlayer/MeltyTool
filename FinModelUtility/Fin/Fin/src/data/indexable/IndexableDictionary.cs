@@ -13,6 +13,7 @@ public partial interface IIndexableDictionary<in TIndexable, TValue>
     where TIndexable : IIndexable {
   [Const]
   new bool ContainsKey(TIndexable key);
+
   new TValue this[TIndexable key] { get; set; }
 }
 
@@ -75,8 +76,13 @@ public class IndexableDictionary<TIndexable, TValue>(int capacity)
 
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
-  public IEnumerator<TValue> GetEnumerator()
-    => this.impl_.Where(pair => pair.hasValue)
-           .Select(pair => pair.value)
-           .GetEnumerator();
+  public IEnumerator<(int, TValue)> GetEnumerator()
+    => this
+       .impl_.Index()
+       .Where(pairAndIndex => pairAndIndex.Item.hasValue)
+       .Select(pairAndIndex => (pairAndIndex.Index, pairAndIndex.Item.value))
+       .GetEnumerator();
+
+  public IEnumerable<TValue> Values => this.impl_.Where(pair => pair.hasValue)
+                                           .Select(pair => pair.value);
 }

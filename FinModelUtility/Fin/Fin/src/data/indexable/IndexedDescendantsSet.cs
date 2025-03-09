@@ -7,7 +7,7 @@ namespace fin.data.indexable;
 
 public interface IIndexedDescendantsSet {
   void AddChild(int parent, int child);
-  bool TryGetDescendants(int parent, out IReadOnlySet<int> descendants);
+  bool TryGetDescendants(int parent, out HashSet<int> descendants);
 }
 
 public class IndexedDescendantsSet : IIndexedDescendantsSet {
@@ -30,6 +30,6 @@ public class IndexedDescendantsSet : IIndexedDescendantsSet {
     } while (this.parents_.TryGetValue(parent, out parent));
   }
 
-  public bool TryGetDescendants(int parent, out IReadOnlySet<int> descendants)
+  public bool TryGetDescendants(int parent, out HashSet<int> descendants)
     => this.descendants_.TryGetSet(parent, out descendants);
 }
