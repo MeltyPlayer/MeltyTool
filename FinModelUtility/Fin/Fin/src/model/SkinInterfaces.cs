@@ -45,6 +45,10 @@ public partial interface ISkin<out TVertex> : ISkin
 public partial interface IMesh : IIndexable {
   new string Name { get; set; }
 
+  bool IsSubMesh { get; }
+  new IReadOnlyList<IMesh> SubMeshes { get; }
+  IMesh AddSubMesh();
+
   new IReadOnlyList<IPrimitive> Primitives { get; }
 
   new MeshDisplayState DefaultDisplayState { get; set; }

@@ -3,6 +3,7 @@
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
+using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.nodes;
 using fin.data.queues;
@@ -96,35 +97,26 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
               return finMaterial;
             });
 
-    // Sets up meshes for each group visibility
-    var finGroupVisibilityMeshes
-        = ttydModel.GroupVisibilities
-                   .Select(visible => {
-                     var finMesh = finModel.Skin.AddMesh();
-                     finMesh.DefaultDisplayState = visible
-                         ? MeshDisplayState.VISIBLE
-                         : MeshDisplayState.HIDDEN;
-                     return finMesh;
-                   })
-                   .ToArray();
 
     // Adds bones/meshes
     var groupsAndBoneSets
         = new (Group, TtydTransformData<IReadOnlyBone, IReadOnlyBone>)
             [ttydGroups.Length];
-    var groupsAndLastBones = new (Group, IReadOnlyBone)[ttydGroups.Length];
+    var groupBoneMeshTuples
+        = new (Group, IReadOnlyBone, IMesh)[ttydGroups.Length];
     var groupTreeRoot = new TreeNode<Group>();
 
     var groupAndBoneQueue
-        = new FinTuple3Queue<int, Group?, (IBone, TreeNode<Group>)>(
+        = new FinTuple3Queue<int, Group?, (IBone, IMesh?, TreeNode<Group>)>(
             (ttydGroups.Length - 1, null,
-             (finModel.Skeleton.Root, groupTreeRoot)));
+             (finModel.Skeleton.Root, null, groupTreeRoot)));
     while (groupAndBoneQueue.TryDequeue(
                out var ttydGroupIndex,
                out var ttydParentGroup,
-               out var parentFinBoneAndTreeNode)) {
+               out var parentBoneMeshNodeTuple)) {
       var ttydGroup = ttydGroups[ttydGroupIndex];
-      var (parentFinBone, parentTreeNode) = parentFinBoneAndTreeNode;
+      var (parentFinBone, parentFinMesh, parentTreeNode)
+          = parentBoneMeshNodeTuple;
 
       var treeNode = new TreeNode<Group> { Value = ttydGroup };
       parentTreeNode.AddChild(treeNode);
@@ -242,33 +234,41 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
         }
       }
 
-      groupsAndLastBones[ttydGroupIndex] = (ttydGroup, finBone);
+      var finMesh = parentFinMesh?.AddSubMesh() ?? finModel.Skin.AddMesh();
+
+      groupBoneMeshTuples[ttydGroupIndex] = (ttydGroup, finBone, finMesh);
       if (ttydGroup.NextGroupIndex != -1) {
         groupAndBoneQueue.Enqueue(
             (ttydGroup.NextGroupIndex, ttydParentGroup,
-             (parentFinBone, parentTreeNode)));
+             (parentFinBone, parentFinMesh, parentTreeNode)));
       }
 
       if (ttydGroup.ChildGroupIndex != -1) {
         groupAndBoneQueue.Enqueue((ttydGroup.ChildGroupIndex, ttydGroup,
-                                   (finBone, treeNode)));
+                                   (finBone, finMesh, treeNode)));
       }
     }
 
     // Sets up meshes
-    foreach (var (ttydGroup, finBone) in groupsAndLastBones) {
+    var groupMeshesByVisibilityIndex
+        = new IndexedSetDictionary<IReadOnlyMesh>();
+    foreach (var (ttydGroup, finBone, finMesh) in groupBoneMeshTuples) {
       if (ttydGroup.SceneGraphObjectIndex == -1) {
         continue;
       }
+
+      var visibilityIndex = ttydGroup.VisibilityGroupIndex;
+      groupMeshesByVisibilityIndex.Add(visibilityIndex, finMesh);
+      finMesh.DefaultDisplayState = ttydModel.GroupVisibilities[visibilityIndex]
+          ? MeshDisplayState.VISIBLE
+          : MeshDisplayState.HIDDEN;
 
       var boneWeights = finModel.Skin.GetOrCreateBoneWeights(
           VertexSpace.RELATIVE_TO_BONE,
           finBone);
 
-      var ttydSceneGraphObject
-          = ttydModel.SceneGraphObjects[
-              ttydGroup.SceneGraphObjectIndex];
-      var finMesh = finGroupVisibilityMeshes[ttydGroup.VisibilityGroupIndex];
+      var ttydSceneGraphObject = ttydModel.SceneGraphObjects[
+          ttydGroup.SceneGraphObjectIndex];
 
       var objectPositions = ttydModel.Vertices.AsSpan(
           ttydSceneGraphObject.VertexPosition.BaseIndex);
@@ -422,7 +422,8 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
                                  .UseCombinedQuaternionKeyframes(),
                       UndoRotationCenter
                           = finAnimation
-                            .GetOrCreateBoneTracks(nonJointData.UndoRotationCenter)
+                            .GetOrCreateBoneTracks(
+                                nonJointData.UndoRotationCenter)
                             .UseCombinedTranslationKeyframes(),
                       ApplyScaleCenterAndTranslation
                           = finAnimation
@@ -441,10 +442,16 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
         }
       }
 
-      var allFinMeshTracks
-          = finGroupVisibilityMeshes
-            .Select(finAnimation.AddMeshTracks)
-            .ToArray();
+      var groupMeshTracksByVisibilityIndex
+          = new IndexedSetDictionary<IMeshTracks>();
+      foreach (var (visibilityIndex, groupMeshes) in
+               groupMeshesByVisibilityIndex) {
+        foreach (var groupMesh in groupMeshes) {
+          groupMeshTracksByVisibilityIndex.Add(
+              visibilityIndex,
+              finAnimation.AddMeshTracks(groupMesh));
+        }
+      }
 
       var keyframes
           = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms,
@@ -481,13 +488,17 @@ public class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
             visibilityIndexAccumulator
                 += visibilityGroupDelta.VisibilityGroupId;
 
-            var finMeshTracks
-                = allFinMeshTracks[visibilityIndexAccumulator];
-            finMeshTracks.DisplayStates.SetKeyframe(
-                keyframe,
-                visibilityGroupDelta.Visible == 1
-                    ? MeshDisplayState.VISIBLE
-                    : MeshDisplayState.HIDDEN);
+            if (groupMeshTracksByVisibilityIndex.TryGetSet(
+                    visibilityIndexAccumulator,
+                    out var groupMeshTracksWithVisibilityIndex)) {
+              foreach (var groupMeshTracks in groupMeshTracksWithVisibilityIndex) {
+                groupMeshTracks.DisplayStates.SetKeyframe(
+                    keyframe,
+                    visibilityGroupDelta.Visible == 1
+                        ? MeshDisplayState.VISIBLE
+                        : MeshDisplayState.HIDDEN);
+              }
+            }
           }
         }
       }

@@ -14,9 +14,8 @@ public partial class ModelRenderer {
     private IGlBufferManager? bufferManager_;
     private IDynamicGlBufferManager? dynamicBufferManager_;
 
-    private readonly
-        List<(IReadOnlyMesh, List<MergedMaterialPrimitivesByMeshRenderer>)>
-        materialMeshRenderers_ = new();
+    private readonly List<(IReadOnlyMesh, UnmergedMaterialMeshRenderer)>
+        meshRenderers_ = new();
 
     // Generates buffer manager and model within the current GL context.
     public void GenerateModelIfNull() {
@@ -34,51 +33,14 @@ public partial class ModelRenderer {
             = GlBufferManager.CreateDynamic(this.Model, modelRequirements);
       }
 
-      List<MergedMaterialPrimitivesByMeshRenderer> currentList = null;
-      var primitiveMerger = new PrimitiveMerger();
-      Action<IReadOnlyMesh, IReadOnlyMaterial?, IEnumerable<IReadOnlyPrimitive>>
-          addPrimitivesRenderer =
-              (mesh, material, primitives) => {
-                if (primitiveMerger.TryToMergePrimitives(
-                        primitives
-                            .OrderBy(primitive => primitive.InversePriority)
-                            .ToList(),
-                        out var mergedPrimitive)) {
-                  currentList.Add(new MergedMaterialPrimitivesByMeshRenderer(
-                                      textureTransformManager,
-                                      this.bufferManager_,
-                                      this.Model,
-                                      modelRequirements,
-                                      material,
-                                      mergedPrimitive));
-                }
-              };
-
       foreach (var mesh in this.Model.Skin.Meshes) {
-        currentList = new List<MergedMaterialPrimitivesByMeshRenderer>();
-        this.materialMeshRenderers_.Add((mesh, currentList));
-
-        IReadOnlyMaterial? currentMaterial = null;
-        var currentPrimitives = new LinkedList<IReadOnlyPrimitive>();
-
-        foreach (var primitive in mesh.Primitives) {
-          var material = primitive.Material;
-
-          if (currentMaterial != material) {
-            if (currentPrimitives.Count > 0) {
-              addPrimitivesRenderer(mesh, currentMaterial, currentPrimitives);
-              currentPrimitives.Clear();
-            }
-
-            currentMaterial = material;
-          }
-
-          currentPrimitives.AddLast(primitive);
-        }
-
-        if (currentPrimitives.Count > 0) {
-          addPrimitivesRenderer(mesh, currentMaterial, currentPrimitives);
-        }
+        this.meshRenderers_.Add(
+            (mesh,
+             new UnmergedMaterialMeshRenderer(model,
+                                              mesh,
+                                              modelRequirements,
+                                              this.bufferManager_,
+                                              textureTransformManager)));
       }
     }
 
@@ -90,13 +52,11 @@ public partial class ModelRenderer {
     }
 
     private void ReleaseUnmanagedResources_() {
-      foreach (var (_, materialMeshRenderers) in this.materialMeshRenderers_) {
-        foreach (var materialMeshRenderer in materialMeshRenderers) {
-          materialMeshRenderer.Dispose();
-        }
+      foreach (var (_, meshRenderer) in this.meshRenderers_) {
+        meshRenderer.Dispose();
       }
 
-      this.materialMeshRenderers_.Clear();
+      this.meshRenderers_.Clear();
       this.bufferManager_?.Dispose();
     }
 
@@ -109,23 +69,19 @@ public partial class ModelRenderer {
     public void Render() {
       this.GenerateModelIfNull();
 
-      foreach (var (mesh, materialMeshRenderers) in
-               this.materialMeshRenderers_) {
+      foreach (var (mesh, meshRenderer) in
+               this.meshRenderers_) {
         if (this.HiddenMeshes?.Contains(mesh) ?? false) {
           continue;
         }
 
-        foreach (var materialMeshRenderer in materialMeshRenderers) {
-          materialMeshRenderer.Render();
-        }
+        meshRenderer.Render();
       }
     }
 
     public IEnumerable<IGlMaterialShader> GetMaterialShaders(
         IReadOnlyMaterial material)
-      => this.materialMeshRenderers_.SelectMany(p => p.Item2)
-             .Where(r => r.Material == material)
-             .Select(r => r.MaterialShader);
-
+      => this.meshRenderers_.SelectMany(
+          p => p.Item2.GetMaterialShaders(material));
   }
 }

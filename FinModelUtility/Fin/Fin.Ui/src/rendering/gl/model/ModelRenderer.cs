@@ -22,7 +22,7 @@ public partial class ModelRenderer(
     bool dynamic = false)
     : IDynamicModelRenderer {
   private readonly IDynamicModelRenderer impl_ = (model.Skin.AllowMaterialRendererMerging)
-      ? new MergedMaterialByMeshRenderer(model,
+      ? new MergedMaterialMeshesRenderer(model,
                                          textureTransformManager,
                                          dynamic)
       : new UnmergedMaterialMeshesRenderer(
