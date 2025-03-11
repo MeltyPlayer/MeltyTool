@@ -95,6 +95,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new XcModelImporter().Import(xcModelFileBundle),
         XmodModelFileBundle xmodModelFileBundle
             => new XmodModelImporter().Import(xmodModelFileBundle),
-        _ => throw new ArgumentOutOfRangeException(nameof(modelFileBundle))
+        ZsiModelFileBundle zsiModelFileBundle
+            => new ZsiModelImporter().Import(zsiModelFileBundle),
+      _ => throw new ArgumentOutOfRangeException(nameof(modelFileBundle))
     };
 }

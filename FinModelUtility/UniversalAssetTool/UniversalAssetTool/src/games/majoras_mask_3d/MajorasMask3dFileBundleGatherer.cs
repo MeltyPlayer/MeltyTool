@@ -104,6 +104,8 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     foreach (var zsiFile in sceneDir.GetFilesWithFileType(".zsi")) {
       organizer.Add(new ZsiSceneFileBundle(zsiFile)
                         .Annotate(zsiFile));
+      organizer.Add(new ZsiModelFileBundle(zsiFile)
+                        .Annotate(zsiFile));
     }
   }
 
