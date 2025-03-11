@@ -9,6 +9,7 @@ using uni.util.io;
 
 using fin.util.progress;
 
+
 namespace uni.games.majoras_mask_3d;
 
 public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
@@ -149,21 +150,22 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var actorsDir = fileHierarchy.Root.AssertGetExistingSubdir("actors");
 
     var modelsAndAnimations = new[] {
-        ("zelda2_link_boy_new/boy/model/link_demon.cmb", "boy"),
-        ("zelda2_link_child_new/child/model/link_child.cmb", "child"),
-        ("zelda2_link_goron_new/goron/model/link_goron.cmb", "goron"),
-        ("zelda2_link_nuts_new/nuts/model/link_deknuts.cmb", "nuts"),
-        ("zelda2_link_zora_new/zora/model/link_zora.cmb", "zora"),
+        ("zelda2_link_boy_new/boy/model/link_demon.cmb", ["boy"]),
+        ("zelda2_link_child_new/child/model/link_child.cmb", new[] {"boy", "child"}),
+        ("zelda2_link_goron_new/goron/model/link_goron.cmb", ["goron"]),
+        ("zelda2_link_nuts_new/nuts/model/link_deknuts.cmb", ["nuts"]),
+        ("zelda2_link_zora_new/zora/model/link_zora.cmb", ["zora"]),
     };
 
-    foreach (var (modelPath, animationDir) in modelsAndAnimations) {
+    foreach (var (modelPath, animationDirs) in modelsAndAnimations) {
       var cmbFile
           = actorsDir.AssertGetExistingFile(
               modelPath);
-      var csabFiles = fileHierarchy
+      var csabFiles =
+          animationDirs.SelectMany(animationDir => fileHierarchy
                       .Root.AssertGetExistingSubdir(
                           $"actors/zelda2_link_new/{animationDir}/anim")
-                      .FilesWithExtension(".csab")
+                      .FilesWithExtension(".csab"))
                       .ToArray();
 
       organizer.Add(new CmbModelFileBundle(
