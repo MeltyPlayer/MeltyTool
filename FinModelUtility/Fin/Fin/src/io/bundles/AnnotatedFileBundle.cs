@@ -19,8 +19,6 @@ public interface IAnnotatedFileBundle
 
   FileBundleType IFileBundle.Type => this.FileBundle.Type;
 
-  string IGameAndLocalPath.GameAndLocalPath => this.GameAndLocalPath;
-
   int IComparable<IAnnotatedFileBundle>.CompareTo(IAnnotatedFileBundle? other) {
     var naturalSort = StringUtil.NaturalSortInstance;
 
