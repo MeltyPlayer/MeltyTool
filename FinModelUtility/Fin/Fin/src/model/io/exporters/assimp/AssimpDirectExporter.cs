@@ -9,6 +9,7 @@ using fin.exporter.gltf;
 using fin.io;
 using fin.log;
 using fin.model;
+using fin.model.io.exporters;
 using fin.util.asserts;
 
 using WrapMode = fin.model.WrapMode;
@@ -16,12 +17,12 @@ using WrapMode = fin.model.WrapMode;
 namespace fin.exporter.assimp {
   using FinBlendMode = fin.model.BlendMode;
 
-  public class AssimpDirectExporter : IExporter {
+  public class AssimpDirectExporter : IModelExporter {
     // You can bet your ass I'm gonna prefix everything with ass.
 
-    public void Export(IFile outputFile, IModel model) {
-      var outputPath = outputFile.FullName;
-      var outputExtension = outputFile.Extension;
+    public void Export(ITreeFile outputFile, IModel model) {
+      var outputPath = outputFile.FullPath;
+      var outputExtension = outputFile.FileType;
 
       using var ctx = new AssimpContext();
 
