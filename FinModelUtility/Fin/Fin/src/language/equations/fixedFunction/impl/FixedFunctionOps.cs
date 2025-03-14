@@ -1,4 +1,6 @@
-﻿namespace fin.language.equations.fixedFunction.impl;
+﻿using fin.language.equations.fixedFunction.util;
+
+namespace fin.language.equations.fixedFunction.impl;
 
 public class FixedFunctionOpsConstants {
   public const bool SIMPLIFY = true;
@@ -47,8 +49,6 @@ public abstract class BFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
   public abstract TConstant Zero { get; }
   public abstract TConstant Half { get; }
   public abstract TConstant One { get; }
-
-  public bool IsZero(TValue? value) => value?.Equals(this.Zero) ?? true;
 
   public abstract TValue? Add(TValue? lhs, TValue? rhs);
   public abstract TValue? AddWithScalar(TValue? lhs, IScalarValue? rhs);
@@ -131,8 +131,8 @@ public class ColorFixedFunctionOps<TIdentifier>(
         return this.AddWithScalar(lhs, rhsScalar);
       }
 
-      var lhsIsZero = this.IsZero(lhs);
-      var rhsIsZero = this.IsZero(rhs);
+      var lhsIsZero = lhs.IsZero();
+      var rhsIsZero = rhs.IsZero();
 
       if (lhsIsZero && rhsIsZero) {
         return null;
@@ -156,7 +156,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
       lhs ??= this.Zero;
       rhs ??= this.ScalarOps_.Zero;
     } else {
-      var lhsIsZero = this.IsZero(lhs);
+      var lhsIsZero = lhs.IsZero();
       var rhsIsZero = this.ScalarOps_.IsZero(rhs);
 
       if (lhsIsZero && rhsIsZero) {
@@ -184,8 +184,8 @@ public class ColorFixedFunctionOps<TIdentifier>(
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
-      var lhsIsZero = this.IsZero(lhs);
-      var rhsIsZero = this.IsZero(rhs);
+      var lhsIsZero = lhs.IsZero();
+      var rhsIsZero = rhs.IsZero();
 
       if ((lhsIsZero && rhsIsZero) || (lhs?.Equals(rhs) ?? false)) {
         return null;
@@ -212,7 +212,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
         return this.MultiplyWithScalar(lhs, rhsScalar);
       }
 
-      if (this.IsZero(lhs) || this.IsZero(rhs)) {
+      if (lhs.IsZero() || rhs.IsZero()) {
         return null;
       }
 
@@ -242,7 +242,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
       lhs ??= this.Zero;
       rhs ??= this.ScalarOps_.Zero;
     } else {
-      if (this.IsZero(lhs) || this.ScalarOps_.IsZero(rhs)) {
+      if (lhs.IsZero() || this.ScalarOps_.IsZero(rhs)) {
         return null;
       }
 
@@ -272,11 +272,11 @@ public class ColorFixedFunctionOps<TIdentifier>(
   public override IColorValue? MixWithScalar(IColorValue? lhs,
                                              IColorValue? rhs,
                                              IScalarValue? mixAmount) {
-    if (this.IsZero(lhs)) {
+    if (lhs.IsZero()) {
       lhs = null;
     }
 
-    if (this.IsZero(rhs)) {
+    if (rhs.IsZero()) {
       rhs = null;
     }
 
@@ -342,8 +342,8 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
-      var lhsIsZero = this.IsZero(lhs);
-      var rhsIsZero = this.IsZero(rhs);
+      var lhsIsZero = lhs.IsZero();
+      var rhsIsZero = rhs.IsZero();
 
       if (lhsIsZero && rhsIsZero) {
         return null;
@@ -372,8 +372,8 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
-      var lhsIsZero = this.IsZero(lhs);
-      var rhsIsZero = this.IsZero(rhs);
+      var lhsIsZero = lhs.IsZero();
+      var rhsIsZero = rhs.IsZero();
 
       if ((lhsIsZero && rhsIsZero) || (lhs?.Equals(rhs) ?? false)) {
         return null;
@@ -407,7 +407,7 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
-      if (this.IsZero(lhs) || this.IsZero(rhs)) {
+      if (lhs.IsZero() || rhs.IsZero()) {
         return null;
       }
 
