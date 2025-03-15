@@ -11,7 +11,7 @@ public abstract class BColorValue : IColorValue {
                          params IEnumerable<IColorValue> terms) {
     var nonZeroTerms = this.AsTerms()
                            .Concat(term1)
-                           .Concat(terms.ToArray())
+                           .Concat(terms)
                            .RemoveZeroes()
                            .ToArray();
     if (!nonZeroTerms.Any()) {
