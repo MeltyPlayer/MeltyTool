@@ -92,7 +92,10 @@ public partial class GxFixedFunctionMaterial {
       gxTexture = new GxTexture2d(
           gxTexture.Name,
           gxTexture.MipmapImages
-                   .Select(i => BumpMapUtils.ConvertBumpMapImageToNormalImage(i, wrapModeS.ToFinWrapMode(), wrapModeT.ToFinWrapMode()))
+                   .Select(i => BumpMapUtils.ConvertBumpMapImageToNormalImage(
+                               i,
+                               wrapModeS.ToFinWrapMode(),
+                               wrapModeT.ToFinWrapMode()))
                    .ToArray<IReadOnlyImage>(),
           wrapModeS,
           wrapModeT,
@@ -195,7 +198,7 @@ public partial class GxFixedFunctionMaterial {
               };
 
           // TODO: Factor in how colors are merged in channel control
-          IColorValue? mergedLightColor = null;
+          IColorValue mergedLightColor = ColorConstant.ZERO;
           // TODO: Should these be averaged?
           foreach (var activeLight in activeLights) {
             var lightSrc = FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0 +
@@ -205,16 +208,13 @@ public partial class GxFixedFunctionMaterial {
                 equations.CreateOrGetColorInput(lightSrc));
           }
 
-          var illuminationColor =
-              colorOps.Add(mergedLightColor,
-                                        ambientColorRegisterValue);
-          if (illuminationColor != null) {
-            illuminationColor.Clamp = true;
-          }
+          var illuminationColor = colorOps.Add(mergedLightColor,
+                                               ambientColorRegisterValue);
+          illuminationColor.Clamp = true;
 
           colorValue =
               colorOps.Multiply(materialColorRegisterValue,
-                                             illuminationColor);
+                                illuminationColor);
         }
 
         var color = colorValue ?? colorZero;
@@ -267,7 +267,7 @@ public partial class GxFixedFunctionMaterial {
               };
 
           // TODO: Factor in how colors are merged in channel control
-          IScalarValue? mergedLightAlpha = null;
+          IScalarValue mergedLightAlpha = ScalarConstant.ZERO;
           // TODO: Should these be averaged?
           foreach (var activeLight in activeLights) {
             var lightSrc = FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0 +
@@ -279,10 +279,8 @@ public partial class GxFixedFunctionMaterial {
 
           var illuminationAlpha =
               scalarOps.Add(mergedLightAlpha,
-                                         ambientAlphaRegisterValue);
-          if (illuminationAlpha != null) {
-            illuminationAlpha.Clamp = true;
-          }
+                            ambientAlphaRegisterValue);
+          illuminationAlpha.Clamp = true;
 
           alphaValue =
               scalarOps.Multiply(
@@ -290,7 +288,7 @@ public partial class GxFixedFunctionMaterial {
                   illuminationAlpha);
         }
 
-        var alpha = alphaValue ?? scZero;
+        var alpha = alphaValue;
         valueManager.UpdateColorChannelAlpha(
             alphaIndex switch {
                 0 => GxColorChannel.GX_COLOR0A0,
@@ -370,7 +368,7 @@ public partial class GxFixedFunctionMaterial {
         var colorC = valueManager.GetColor(tevStage.color_c);
         var colorD = valueManager.GetColor(tevStage.color_d);
 
-        IColorValue? colorValue = null;
+        IColorValue colorValue;
 
         var colorOp = tevStage.color_op;
         switch (colorOp) {
@@ -378,7 +376,7 @@ public partial class GxFixedFunctionMaterial {
           case TevOp.GX_TEV_ADD:
           case TevOp.GX_TEV_SUB: {
             var bias = tevStage.color_bias switch {
-                TevBias.GX_TB_ZERO    => null,
+                TevBias.GX_TB_ZERO    => ScalarConstant.ZERO,
                 TevBias.GX_TB_ADDHALF => scHalf,
                 TevBias.GX_TB_SUBHALF => scMinusHalf,
                 _ => throw new ArgumentOutOfRangeException(
@@ -405,7 +403,6 @@ public partial class GxFixedFunctionMaterial {
                     scale
                 );
 
-            colorValue ??= colorZero;
             colorValue.Clamp = tevStage.color_clamp;
 
             break;
@@ -435,15 +432,15 @@ public partial class GxFixedFunctionMaterial {
           case TevOp.GX_TEV_COMP_GR16_GT: {
             var valueA = scalarOps.Add(
                              scalarOps.Multiply(colorA.G,
-                               sc255Sqr),
+                                                sc255Sqr),
                              scalarOps.Multiply(colorA.R,
-                               sc255)) ??
+                                                sc255)) ??
                          scZero;
             var valueB = scalarOps.Add(
                              scalarOps.Multiply(colorB.G,
-                               sc255Sqr),
+                                                sc255Sqr),
                              scalarOps.Multiply(colorB.R,
-                               sc255)) ??
+                                                sc255)) ??
                          scZero;
 
             colorValue = colorOps.Add(
@@ -487,7 +484,7 @@ public partial class GxFixedFunctionMaterial {
           case TevOp.GX_TEV_ADD:
           case TevOp.GX_TEV_SUB: {
             var bias = tevStage.alpha_bias switch {
-                TevBias.GX_TB_ZERO    => null,
+                TevBias.GX_TB_ZERO    => ScalarConstant.ZERO,
                 TevBias.GX_TB_ADDHALF => scHalf,
                 TevBias.GX_TB_SUBHALF => scMinusHalf,
                 _ => throw new ArgumentOutOfRangeException(
@@ -514,7 +511,6 @@ public partial class GxFixedFunctionMaterial {
                     scale
                 );
 
-            alphaValue ??= scZero;
             alphaValue.Clamp = tevStage.alpha_clamp;
 
             break;

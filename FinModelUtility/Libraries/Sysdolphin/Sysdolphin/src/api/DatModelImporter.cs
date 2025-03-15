@@ -468,9 +468,9 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
         material.SpecularColor.Af);
 
     // Lighting passes
-    IColorValue? ambientLightColor = null;
-    IColorValue diffuseLightColor = colorOps.One;
-    IColorValue? specularLightColor = null;
+    IColorValue ambientLightColor = ColorConstant.ZERO;
+    IColorValue diffuseLightColor = ColorConstant.ONE;
+    IColorValue specularLightColor = ColorConstant.ZERO;
 
     var lightingPasses = new LinkedList<TObjFlags>();
     lightingPasses.AddLast(TObjFlags.LIGHTMAP_DIFFUSE);
@@ -602,8 +602,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
       IFixedFunctionEquations<FixedFunctionSource> equations,
       IColorOps colorOps,
       IScalarOps scalarOps,
-      ref IColorValue? color,
-      ref IScalarValue? alpha
+      ref IColorValue color,
+      ref IScalarValue alpha
   ) {
     var textureColor = equations.CreateOrGetColorInput(
         FixedFunctionSource.TEXTURE_COLOR_0 + textureIndex);

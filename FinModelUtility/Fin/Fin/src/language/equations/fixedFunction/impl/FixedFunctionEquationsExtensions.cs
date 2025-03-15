@@ -52,7 +52,7 @@ public static partial class FixedFunctionEquationsExtensions {
                         equations.ColorOps.Zero,
                         equations.ColorOps.Zero);
 
-  public static (IColorValue?, IScalarValue?) GenerateLighting(
+  public static (IColorValue, IScalarValue) GenerateLighting(
       this IFixedFunctionEquations<FixedFunctionSource> equations,
       (IColorValue color, IScalarValue alpha) diffuse,
       IColorValue ambient,
