@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 using fin.util.asserts;
-using fin.util.lists;
 
 namespace fin.language.equations.fixedFunction;
 
@@ -90,6 +87,8 @@ public class ScalarTerm(
 
 public class ScalarConstant(double value) : BScalarValue, IScalarConstant {
   public static readonly ScalarConstant ONE = new(1);
+  public static readonly ScalarConstant[] ONE_ARRAY = [ONE];
+  public static readonly ScalarConstant ZERO = new(0);
   public static readonly ScalarConstant NEGATIVE_ONE = new(-1);
 
   public double Value { get; } = value;

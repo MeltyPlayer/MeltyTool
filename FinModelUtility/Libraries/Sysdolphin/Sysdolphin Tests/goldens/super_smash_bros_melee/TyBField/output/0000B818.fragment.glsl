@@ -21,7 +21,7 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(1.0)*texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb;
+  vec3 colorComponent = texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb;
 
   float alphaComponent = 1.0;
 

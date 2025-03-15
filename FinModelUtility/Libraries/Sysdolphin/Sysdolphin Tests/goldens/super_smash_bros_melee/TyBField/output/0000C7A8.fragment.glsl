@@ -37,7 +37,7 @@ void main() {
 
   vec2 sphericalReflectionUv = acos(normalize(projectionMatrix * viewMatrix * vec4(fragNormal, 0)).xy) / 3.14159;
 
-  vec3 colorComponent = vec3(1.0)*texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb*texture(texture1.sampler, transformUv3d(texture1.transform3d, sphericalReflectionUv)).rgb;
+  vec3 colorComponent = texture(texture0.sampler, transformUv3d(texture0.transform3d, uv0)).rgb*texture(texture1.sampler, transformUv3d(texture1.transform3d, sphericalReflectionUv)).rgb;
 
   float alphaComponent = 1.0;
 

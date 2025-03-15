@@ -5,9 +5,18 @@ using schema.util.enumerables;
 
 namespace fin.language.equations.fixedFunction.util;
 
-using UScalarRatio = (IEnumerable<IScalarValue> numerators, IEnumerable<IScalarValue> denominators);
+using UScalarRatio = (IEnumerable<IScalarValue> numerators,
+    IEnumerable<IScalarValue>denominators);
 
 public static class ScalarValueExtensions {
+  public static IEnumerable<IScalarValue> RemoveZeroes(
+      this IEnumerable<IScalarValue> values)
+    => values.Where(v => !v.IsZero());
+
+  public static IEnumerable<IScalarValue> RemoveOnes(
+      this IEnumerable<IScalarValue> values)
+    => values.Where(v => !v.IsOne());
+
   public static IScalarValue Negate(this IScalarValue value)
     => new ScalarTerm([ScalarConstant.NEGATIVE_ONE, value]);
 

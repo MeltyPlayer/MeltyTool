@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using fin.util.asserts;
-using fin.util.lists;
 
 namespace fin.language.equations.fixedFunction;
 
@@ -196,7 +195,7 @@ public class ColorTerm : BColorValue, IColorTerm {
 
   public ColorTerm(
       IReadOnlyList<IColorValue> numeratorFactors,
-      IReadOnlyList<IColorValue> denominatorFactors) {
+      IReadOnlyList<IColorValue>? denominatorFactors) {
     this.NumeratorFactors = numeratorFactors;
     this.DenominatorFactors = denominatorFactors;
   }
@@ -279,6 +278,8 @@ public static class FixedFunctionUtils {
 
 public class ColorConstant : BColorValue, IColorConstant {
   public static readonly ColorConstant ONE = new(1);
+  public static readonly ColorConstant[] ONE_ARRAY = [ONE];
+  public static readonly ColorConstant ZERO = new(0);
   public static readonly ColorConstant NEGATIVE_ONE = new(-1);
 
   public ColorConstant(double r, double g, double b) {
