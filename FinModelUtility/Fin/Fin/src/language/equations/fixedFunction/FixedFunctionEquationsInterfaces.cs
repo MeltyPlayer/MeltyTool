@@ -85,49 +85,29 @@ public interface ITerm : IValue;
 public interface IExpression : IValue;
 
 // Typed
-public interface IValue<in TValue, TConstant, out TTerm, out TExpression>
-    : IValue
-    where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>, TValue
-    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-    TValue {
-  TExpression Add(TValue term1, params TValue[] terms);
-  TExpression Subtract(TValue term1, params TValue[] terms);
-  TTerm Multiply(TValue factor1, params TValue[] factors);
-  TTerm Divide(TValue factor1, params TValue[] factors);
+public interface IValue<TValue> : IValue where TValue : IValue<TValue> {
+  TValue Add(TValue term1, params TValue[] terms);
+  TValue Subtract(TValue term1, params TValue[] terms);
+  TValue Multiply(TValue factor1, params TValue?[] factors);
+  TValue Divide(TValue factor1, params TValue[] factors);
 
-  TExpression Add(IScalarValue term1, params IScalarValue[] terms);
-  TExpression Subtract(IScalarValue term1, params IScalarValue[] terms);
-  TTerm Multiply(IScalarValue factor1, params IScalarValue[] factors);
-  TTerm Divide(IScalarValue factor1, params IScalarValue[] factors);
+  TValue Add(IScalarValue term1, params IScalarValue[] terms);
+  TValue Subtract(IScalarValue term1, params IScalarValue[] terms);
+  TValue Multiply(IScalarValue factor1, params IScalarValue[] factors);
+  TValue Divide(IScalarValue factor1, params IScalarValue[] factors);
 }
 
-public interface IConstant<in TValue, TConstant, out TTerm, out TExpression>
-    : IConstant, IValue<TValue, TConstant, TTerm, TExpression>
-    where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>, TValue
-    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-    TValue;
+public interface IConstant<TValue> : IConstant, IValue<TValue>
+    where TValue : IValue<TValue>;
 
-public interface ITerm<TValue, TConstant, out TTerm, out TExpression>
-    : ITerm, IValue<TValue, TConstant, TTerm, TExpression>
-    where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>, TValue
-    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-    TValue {
+public interface ITerm<TValue> : ITerm, IValue<TValue>
+    where TValue : IValue<TValue> {
   IReadOnlyList<TValue> NumeratorFactors { get; }
   IReadOnlyList<TValue>? DenominatorFactors { get; }
 }
 
-public interface IExpression<TValue, TConstant, out TTerm, out TExpression>
-    : IExpression, IValue<TValue, TConstant, TTerm, TExpression>
-    where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>, TValue
-    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-    TValue {
+public interface IExpression<TValue> : IExpression, IValue<TValue>
+    where TValue : IValue<TValue>
+ {
   IReadOnlyList<TValue> Terms { get; }
 }

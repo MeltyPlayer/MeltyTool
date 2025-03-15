@@ -3,8 +3,8 @@
 namespace fin.language.equations.fixedFunction;
 
 public static class FixedFunctionOpsExtensions {
-  public static TValue? AddOrSubtractOp<TValue, TConstant, TTerm, TExpression>(
-      this IFixedFunctionOps<TValue, TConstant, TTerm, TExpression> ops,
+  public static TValue? AddOrSubtractOp<TValue, TConstant>(
+      this IFixedFunctionOps<TValue, TConstant> ops,
       bool isAdd,
       TValue? a,
       TValue? b,
@@ -12,11 +12,8 @@ public static class FixedFunctionOpsExtensions {
       TValue? d,
       IScalarValue? bias,
       IScalarValue? scale)
-      where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-      where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>, TValue
-      where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-      where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-      TValue {
+      where TValue : IValue<TValue>
+      where TConstant : IConstant<TValue>, TValue {
     var aTimesOneMinusC = ops.Multiply(
         a,
         ops.Subtract(ops.One, c));

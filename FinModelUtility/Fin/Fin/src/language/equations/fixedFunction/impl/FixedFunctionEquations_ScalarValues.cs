@@ -73,12 +73,12 @@ public partial class FixedFunctionEquations<TIdentifier> {
 
 
 public abstract class BScalarValue : IScalarValue {
-  public virtual IScalarExpression Add(
+  public virtual IScalarValue Add(
       IScalarValue term1,
       params IScalarValue[] terms)
     => new ScalarExpression(ListUtil.ReadonlyFrom(this, term1, terms));
 
-  public virtual IScalarExpression Subtract(
+  public virtual IScalarValue Subtract(
       IScalarValue term1,
       params IScalarValue[] terms)
     => new ScalarExpression(
@@ -86,12 +86,12 @@ public abstract class BScalarValue : IScalarValue {
             this,
             this.NegateTerms(term1, terms)));
 
-  public virtual IScalarTerm Multiply(
+  public virtual IScalarValue Multiply(
       IScalarValue factor1,
       params IScalarValue[] factors)
     => new ScalarTerm(ListUtil.ReadonlyFrom(this, factor1, factors));
 
-  public virtual IScalarTerm Divide(
+  public virtual IScalarValue Divide(
       IScalarValue factor1,
       params IScalarValue[] factors)
     => new ScalarTerm(ListUtil.ReadonlyFrom(this),

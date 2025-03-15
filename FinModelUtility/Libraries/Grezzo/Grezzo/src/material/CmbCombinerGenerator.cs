@@ -344,18 +344,13 @@ public class CmbCombinerGenerator {
         TexCombinerAlphaOp.OneMinusAlpha => (Channel.A, true),
     };
 
-  private TValue? Combine_<TValue, TConstant, TTerm, TExpression>(
-      IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
-          fixedFunctionOps,
+  private TValue? Combine_<TValue, TConstant>(
+      IFixedFunctionOps<TValue, TConstant> fixedFunctionOps,
       IReadOnlyList<TValue?> sources,
       TexCombineMode combineMode,
       TexCombineScale combineScale)
-      where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-      where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>,
-      TValue
-      where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-      where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-      TValue {
+      where TValue : IValue<TValue>
+      where TConstant : IConstant<TValue>, TValue {
       // TODO: Implement dot-product ones
       var combinedValue = combineMode switch {
           TexCombineMode.Replace => sources[0],
@@ -394,16 +389,11 @@ public class CmbCombinerGenerator {
       };
     }
 
-  private TValue? AddMult_<TValue, TConstant, TTerm, TExpression>(
-      IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
-          fixedFunctionOps,
+  private TValue? AddMult_<TValue, TConstant>(
+      IFixedFunctionOps<TValue, TConstant> fixedFunctionOps,
       IReadOnlyList<TValue?> sources
-  ) where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>,
-    TValue
-    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-    TValue {
+  ) where TValue : IValue<TValue>
+    where TConstant : IConstant<TValue>, TValue {
       var addedValue = fixedFunctionOps.Add(sources[0], sources[1]);
       if (addedValue is IColorValue colorValue) {
         colorValue.Clamp = true;

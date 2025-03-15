@@ -6,12 +6,12 @@ using fin.util.lists;
 namespace fin.language.equations.fixedFunction;
 
 public abstract class BColorValue : IColorValue {
-  public IColorExpression Add(
+  public IColorValue Add(
       IColorValue term1,
       params IColorValue[] terms)
     => new ColorExpression(ListUtil.ReadonlyFrom(this, term1, terms));
 
-  public IColorExpression Subtract(
+  public IColorValue Subtract(
       IColorValue term1,
       params IColorValue[] terms)
     => new ColorExpression(
@@ -19,12 +19,12 @@ public abstract class BColorValue : IColorValue {
             this,
             this.NegateTerms(term1, terms)));
 
-  public IColorTerm Multiply(
+  public IColorValue Multiply(
       IColorValue factor1,
       params IColorValue[] factors)
     => new ColorTerm(ListUtil.ReadonlyFrom(this, factor1, factors));
 
-  public IColorTerm Divide(
+  public IColorValue Divide(
       IColorValue factor1,
       params IColorValue[] factors)
     => new ColorTerm(ListUtil.ReadonlyFrom(this),
@@ -45,13 +45,13 @@ public abstract class BColorValue : IColorValue {
             .ToArray();
 
 
-  public IColorExpression Add(
+  public IColorValue Add(
       IScalarValue term1,
       params IScalarValue[] terms)
     => new ColorExpression(
         ListUtil.ReadonlyFrom(this, this.ToColorValues(term1, terms)));
 
-  public IColorExpression Subtract(
+  public IColorValue Subtract(
       IScalarValue term1,
       params IScalarValue[] terms)
     => new ColorExpression(
@@ -59,13 +59,13 @@ public abstract class BColorValue : IColorValue {
             this,
             this.ToColorValues(this.NegateTerms(term1, terms))));
 
-  public IColorTerm Multiply(
+  public IColorValue Multiply(
       IScalarValue factor1,
       params IScalarValue[] factors)
     => new ColorTerm(
         ListUtil.ReadonlyFrom(this, this.ToColorValues(factor1, factors)));
 
-  public IColorTerm Divide(
+  public IColorValue Divide(
       IScalarValue factor1,
       params IScalarValue[] factors)
     => new ColorTerm(ListUtil.ReadonlyFrom(this),

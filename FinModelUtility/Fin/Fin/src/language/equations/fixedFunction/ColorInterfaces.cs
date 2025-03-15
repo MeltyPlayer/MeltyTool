@@ -32,9 +32,7 @@ public interface IColorValueSwizzle : IScalarFactor {
   ColorSwizzle SwizzleType { get; }
 }
 
-
-public interface IColorValue
-    : IValue<IColorValue, IColorConstant, IColorTerm, IColorExpression> {
+public interface IColorValue : IValue<IColorValue> {
   IScalarValue? Intensity { get; }
   IScalarValue R { get; }
   IScalarValue G { get; }
@@ -43,20 +41,13 @@ public interface IColorValue
   bool Clamp { get; set; }
 }
 
-public interface IColorTerm
-    : IColorValue,
-      ITerm<IColorValue, IColorConstant, IColorTerm, IColorExpression>;
+public interface IColorTerm : IColorValue, ITerm<IColorValue>;
 
-public interface IColorExpression
-    : IColorValue,
-      IExpression<IColorValue, IColorConstant, IColorTerm,
-          IColorExpression>;
+public interface IColorExpression : IColorValue, IExpression<IColorValue>;
 
 public interface IColorFactor : IColorValue;
 
-public interface IColorConstant
-    : IColorFactor,
-      IConstant<IColorValue, IColorConstant, IColorTerm, IColorExpression> {
+public interface IColorConstant : IColorFactor, IConstant<IColorValue> {
   double? IntensityValue { get; }
   double RValue { get; }
   double GValue { get; }

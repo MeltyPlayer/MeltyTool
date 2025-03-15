@@ -2,12 +2,10 @@
 
 namespace fin.language.equations.fixedFunction.impl;
 
-public interface IFixedFunctionOps<TValue, out TConstant, TTerm, TExpression>
-    where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>, TValue
-    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-    TValue {
+// TODO: Merge this back into the main value type logic
+public interface IFixedFunctionOps<TValue, out TConstant>
+    where TValue : IValue<TValue>
+    where TConstant : IConstant<TValue>, TValue {
   TConstant Zero { get; }
   TConstant Half { get; }
   TConstant One { get; }
@@ -27,21 +25,14 @@ public interface IFixedFunctionOps<TValue, out TConstant, TTerm, TExpression>
   TValue? MixWithScalar(TValue? lhs, TValue? rhs, IScalarValue? mixAmount);
 }
 
-public interface IColorOps
-    : IFixedFunctionOps<IColorValue, IColorConstant, IColorTerm,
-        IColorExpression>;
+public interface IColorOps : IFixedFunctionOps<IColorValue, IColorConstant>;
 
-public interface IScalarOps
-    : IFixedFunctionOps<IScalarValue, IScalarConstant, IScalarTerm,
-        IScalarExpression>;
+public interface IScalarOps : IFixedFunctionOps<IScalarValue, IScalarConstant>;
 
-public abstract class BFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
-    : IFixedFunctionOps<TValue, TConstant, TTerm, TExpression>
-    where TValue : IValue<TValue, TConstant, TTerm, TExpression>
-    where TConstant : IConstant<TValue, TConstant, TTerm, TExpression>, TValue
-    where TTerm : ITerm<TValue, TConstant, TTerm, TExpression>, TValue
-    where TExpression : IExpression<TValue, TConstant, TTerm, TExpression>,
-    TValue {
+public abstract class BFixedFunctionOps<TValue, TConstant>
+    : IFixedFunctionOps<TValue, TConstant>
+    where TValue : IValue<TValue>
+    where TConstant : IConstant<TValue>, TValue {
   public abstract TConstant Zero { get; }
   public abstract TConstant Half { get; }
   public abstract TConstant One { get; }
@@ -82,8 +73,7 @@ public static class ColorWrapperExtensions {
 
 public class ColorFixedFunctionOps<TIdentifier>(
     IFixedFunctionEquations<TIdentifier> equations)
-    : BFixedFunctionOps<IColorValue, IColorConstant, IColorTerm,
-          IColorExpression>, IColorOps
+    : BFixedFunctionOps<IColorValue, IColorConstant>, IColorOps
     where TIdentifier : notnull {
   private IScalarOps ScalarOps_ => equations.ScalarOps;
 
@@ -302,8 +292,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
 
 public class ScalarFixedFunctionOps<TIdentifier>(
     IFixedFunctionEquations<TIdentifier> equations)
-    : BFixedFunctionOps<IScalarValue, IScalarConstant, IScalarTerm,
-          IScalarExpression>,
+    : BFixedFunctionOps<IScalarValue, IScalarConstant>,
       IScalarOps
     where TIdentifier : notnull {
   private readonly IScalarValue

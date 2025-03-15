@@ -146,8 +146,7 @@ public partial class FixedFunctionEquations<TIdentifier> {
       IColorIdentifiedValue<TIdentifier> source,
       ColorSwizzle swizzleType)
       : BScalarValue,
-        IColorNamedValueSwizzle<
-            TIdentifier> {
+        IColorNamedValueSwizzle<TIdentifier> {
     public IColorIdentifiedValue<TIdentifier> Source { get; } = source;
     public ColorSwizzle SwizzleType { get; } = swizzleType;
   }
@@ -162,34 +161,6 @@ public class ColorValueSwizzle(IColorValue source, ColorSwizzle swizzleType)
 public class ColorExpression(IReadOnlyList<IColorValue> terms)
     : BColorValue, IColorExpression {
   public IReadOnlyList<IColorValue> Terms { get; } = terms;
-
-  public new IColorExpression Add(
-      IColorValue term1,
-      params IColorValue[] terms)
-    => new ColorExpression(
-        ListUtil.ReadonlyConcat(this.Terms, [term1], terms));
-
-  public new IColorExpression Subtract(
-      IColorValue term1,
-      params IColorValue[] terms)
-    => new ColorExpression(
-        ListUtil.ReadonlyConcat(this.Terms,
-                                this.NegateTerms(term1, terms)));
-
-  public new IColorExpression Add(
-      IScalarValue term1,
-      params IScalarValue[] terms)
-    => new ColorExpression(
-        ListUtil.ReadonlyConcat(this.Terms,
-                                this.ToColorValues(term1, terms)));
-
-  public new IColorExpression Subtract(
-      IScalarValue term1,
-      params IScalarValue[] terms)
-    => new ColorExpression(
-        ListUtil.ReadonlyConcat(this.Terms,
-                                this.ToColorValues(
-                                    this.NegateTerms(term1, terms))));
 
   public override IScalarValue? Intensity {
     get {
@@ -233,7 +204,7 @@ public class ColorTerm : BColorValue, IColorTerm {
   public IReadOnlyList<IColorValue> NumeratorFactors { get; }
   public IReadOnlyList<IColorValue>? DenominatorFactors { get; }
 
-  public new IColorTerm Multiply(
+  public new IColorValue? Multiply(
       IColorValue factor1,
       params IColorValue[] factors)
     => new ColorTerm(ListUtil.ReadonlyConcat(
