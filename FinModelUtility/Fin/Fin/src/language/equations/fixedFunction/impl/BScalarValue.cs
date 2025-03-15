@@ -2,7 +2,7 @@
 
 using fin.util.lists;
 
-namespace fin.language.equations.fixedFunction.impl;
+namespace fin.language.equations.fixedFunction;
 
 public abstract class BScalarValue : IScalarValue {
   public virtual IScalarValue Add(
