@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using fin.util.asserts;
@@ -77,13 +78,13 @@ public class ScalarExpression(IReadOnlyList<IScalarValue> terms)
 
   public override IScalarExpression Add(
       IScalarValue term1,
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => new ScalarExpression(
-        ListUtil.ReadonlyConcat(this.Terms, [term1], terms));
+        ListUtil.ReadonlyConcat(this.Terms, [term1], terms.ToArray()));
 
   public override IScalarExpression Subtract(
       IScalarValue term1,
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => new ScalarExpression(
         ListUtil.ReadonlyConcat(this.Terms,
                                 this.NegateTerms(term1, terms)));
@@ -93,19 +94,22 @@ public class ScalarTerm(
     IReadOnlyList<IScalarValue> numeratorFactors,
     IReadOnlyList<IScalarValue>? denominatorFactors = null)
     : BScalarValue, IScalarTerm {
-  public IReadOnlyList<IScalarValue> NumeratorFactors { get; } = numeratorFactors;
-  public IReadOnlyList<IScalarValue>? DenominatorFactors { get; } = denominatorFactors;
+  public IReadOnlyList<IScalarValue> NumeratorFactors { get; }
+    = numeratorFactors;
+
+  public IReadOnlyList<IScalarValue>? DenominatorFactors { get; }
+    = denominatorFactors;
 
   public override IScalarTerm Multiply(
       IScalarValue factor1,
-      params IScalarValue[] factors)
+      params ReadOnlySpan<IScalarValue> factors)
     => new ScalarTerm(ListUtil.ReadonlyConcat(
                           this.NumeratorFactors,
                           ListUtil.ReadonlyFrom(factor1, factors)));
 
   public override IScalarTerm Divide(
       IScalarValue factor1,
-      params IScalarValue[] factors)
+      params ReadOnlySpan<IScalarValue> factors)
     => new ScalarTerm(this.NumeratorFactors,
                       ListUtil.ReadonlyConcat(
                           this.DenominatorFactors,

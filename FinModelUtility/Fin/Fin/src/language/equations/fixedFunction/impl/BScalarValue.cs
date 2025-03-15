@@ -1,41 +1,46 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+
+using CommunityToolkit.HighPerformance;
 
 using fin.util.lists;
+
+using NoAlloq;
 
 namespace fin.language.equations.fixedFunction;
 
 public abstract class BScalarValue : IScalarValue {
   public virtual IScalarValue Add(
       IScalarValue term1,
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => new ScalarExpression(ListUtil.ReadonlyFrom(this, term1, terms));
 
   public virtual IScalarValue Subtract(
       IScalarValue term1,
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => new ScalarExpression(
         ListUtil.ReadonlyFrom(
-            this,
-            this.NegateTerms(term1, terms)));
+  this,
+            (ReadOnlySpan<IScalarValue>) this.NegateTerms(term1, terms)));
 
   public virtual IScalarValue Multiply(
       IScalarValue factor1,
-      params IScalarValue[] factors)
+      params ReadOnlySpan<IScalarValue> factors)
     => new ScalarTerm(ListUtil.ReadonlyFrom(this, factor1, factors));
 
   public virtual IScalarValue Divide(
       IScalarValue factor1,
-      params IScalarValue[] factors)
+      params ReadOnlySpan<IScalarValue> factors)
     => new ScalarTerm(ListUtil.ReadonlyFrom(this),
                       ListUtil.ReadonlyFrom(factor1, factors));
 
   protected IScalarValue[] NegateTerms(
       IScalarValue term1,
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => this.NegateTerms(ListUtil.From(term1, terms).ToArray());
 
   protected IScalarValue[] NegateTerms(
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => terms.Select(
                 term => new ScalarTerm(
                     ListUtil.ReadonlyFrom(

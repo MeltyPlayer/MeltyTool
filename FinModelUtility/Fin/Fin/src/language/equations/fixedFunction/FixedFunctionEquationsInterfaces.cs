@@ -86,15 +86,19 @@ public interface IExpression : IValue;
 
 // Typed
 public interface IValue<TValue> : IValue where TValue : IValue<TValue> {
-  TValue Add(TValue term1, params TValue[] terms);
-  TValue Subtract(TValue term1, params TValue[] terms);
-  TValue Multiply(TValue factor1, params TValue?[] factors);
-  TValue Divide(TValue factor1, params TValue[] factors);
+  TValue Add(TValue term1, params ReadOnlySpan<TValue> terms);
+  TValue Subtract(TValue term1, params ReadOnlySpan<TValue> terms);
+  TValue Multiply(TValue factor1, params ReadOnlySpan<TValue> factors);
+  TValue Divide(TValue factor1, params ReadOnlySpan<TValue> factors);
 
-  TValue Add(IScalarValue term1, params IScalarValue[] terms);
-  TValue Subtract(IScalarValue term1, params IScalarValue[] terms);
-  TValue Multiply(IScalarValue factor1, params IScalarValue[] factors);
-  TValue Divide(IScalarValue factor1, params IScalarValue[] factors);
+  TValue Add(IScalarValue term1, params ReadOnlySpan<IScalarValue> terms);
+  TValue Subtract(IScalarValue term1, params ReadOnlySpan<IScalarValue> terms);
+
+  TValue Multiply(IScalarValue factor1,
+                  params ReadOnlySpan<IScalarValue> factors);
+
+  TValue Divide(IScalarValue factor1,
+                params ReadOnlySpan<IScalarValue> factors);
 }
 
 public interface IConstant<TValue> : IConstant, IValue<TValue>
@@ -107,7 +111,6 @@ public interface ITerm<TValue> : ITerm, IValue<TValue>
 }
 
 public interface IExpression<TValue> : IExpression, IValue<TValue>
-    where TValue : IValue<TValue>
- {
+    where TValue : IValue<TValue> {
   IReadOnlyList<TValue> Terms { get; }
 }

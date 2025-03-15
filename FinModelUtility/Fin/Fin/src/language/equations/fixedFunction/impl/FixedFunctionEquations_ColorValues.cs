@@ -164,27 +164,27 @@ public class ColorExpression(IReadOnlyList<IColorValue> terms)
 
   public new IColorValue Add(
       IColorValue term1,
-      params IColorValue[] terms)
+      params ReadOnlySpan<IColorValue> terms)
     => new ColorExpression(
-        ListUtil.ReadonlyConcat(this.Terms, [term1], terms));
+        ListUtil.ReadonlyConcat(this.Terms, [term1], terms.ToArray()));
 
   public new IColorValue Subtract(
       IColorValue term1,
-      params IColorValue[] terms)
+      params ReadOnlySpan<IColorValue> terms)
     => new ColorExpression(
         ListUtil.ReadonlyConcat(this.Terms,
                                 this.NegateTerms(term1, terms)));
 
   public new IColorValue Add(
       IScalarValue term1,
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => new ColorExpression(
         ListUtil.ReadonlyConcat(this.Terms,
                                 this.ToColorValues(term1, terms)));
 
   public new IColorValue Subtract(
       IScalarValue term1,
-      params IScalarValue[] terms)
+      params ReadOnlySpan<IScalarValue> terms)
     => new ColorExpression(
         ListUtil.ReadonlyConcat(this.Terms,
                                 this.ToColorValues(
@@ -234,14 +234,14 @@ public class ColorTerm : BColorValue, IColorTerm {
 
   public new IColorValue Multiply(
       IColorValue factor1,
-      params IColorValue[] factors)
+      params ReadOnlySpan<IColorValue> factors)
     => new ColorTerm(ListUtil.ReadonlyConcat(
                          this.NumeratorFactors,
                          ListUtil.ReadonlyFrom(factor1, factors)));
 
   public new IColorValue Divide(
       IColorValue factor1,
-      params IColorValue[] factors)
+      params ReadOnlySpan<IColorValue> factors)
     => new ColorTerm(this.NumeratorFactors,
                      ListUtil.ReadonlyConcat(
                          this.DenominatorFactors,
@@ -249,14 +249,14 @@ public class ColorTerm : BColorValue, IColorTerm {
 
   public new IColorValue Multiply(
       IScalarValue factor1,
-      params IScalarValue[] factors)
+      params ReadOnlySpan<IScalarValue> factors)
     => new ColorTerm(ListUtil.ReadonlyConcat(
                          this.NumeratorFactors,
                          this.ToColorValues(factor1, factors)));
 
   public new IColorValue Divide(
       IScalarValue factor1,
-      params IScalarValue[] factors)
+      params ReadOnlySpan<IScalarValue> factors)
     => new ColorTerm(this.NumeratorFactors,
                      ListUtil.ReadonlyConcat(
                          this.DenominatorFactors,
@@ -419,7 +419,10 @@ public class ColorWrapper(
     IScalarValue g,
     IScalarValue b)
     : BColorValue, IColorFactor {
-  public ColorWrapper(IScalarValue intensity) : this(intensity, intensity, intensity) {
+  public ColorWrapper(IScalarValue intensity) : this(
+      intensity,
+      intensity,
+      intensity) {
     this.Intensity = intensity;
   }
 
@@ -429,7 +432,9 @@ public class ColorWrapper(
   public override IScalarValue B { get; } = b;
 
   public override string ToString()
-    => this.Intensity != null ? $"{this.Intensity}" : $"<{this.R}, {this.G}, {this.B}>";
+    => this.Intensity != null
+        ? $"{this.Intensity}"
+        : $"<{this.R}, {this.G}, {this.B}>";
 
   public override bool Equals(object? other) {
     if (ReferenceEquals(this, other)) {
@@ -446,8 +451,9 @@ public class ColorWrapper(
   }
 }
 
-public class ColorValueTernaryOperator : BColorValue,
-                                         IColorValueTernaryOperator {
+public class ColorValueTernaryOperator
+    : BColorValue,
+      IColorValueTernaryOperator {
   public BoolComparisonType ComparisonType { get; set; }
   public IScalarValue Lhs { get; set; }
   public IScalarValue Rhs { get; set; }

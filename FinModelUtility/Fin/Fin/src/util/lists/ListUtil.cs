@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using fin.language.equations.fixedFunction;
+
 namespace fin.util.lists;
 
 public static class ListUtil {
@@ -57,14 +59,16 @@ public static class ListUtil {
     return indices.Count > 0;
   }
 
-  public static IList<T> FromParams<T>(params T[] data) => data;
+  public static IList<T> FromParams<T>(params ReadOnlySpan<T> data)
+    => data.ToArray();
 
-  public static IList<T> From<T>(T first, params T[] rest) {
+  public static IList<T> From<T>(T first, params ReadOnlySpan<T> rest) {
     var all = new T[1 + rest.Length];
     all[0] = first;
     for (var i = 0; i < rest.Length; ++i) {
       all[1 + i] = rest[i];
     }
+
     return all;
   }
 
@@ -72,25 +76,23 @@ public static class ListUtil {
   public static IReadOnlyList<T> ReadonlyFromParams<T>(params T[] data)
     => data;
 
-  public static IReadOnlyList<T> ReadonlyFrom<T>(T first, params T[] rest) {
+  public static IReadOnlyList<T> ReadonlyFrom<T>(
+      T first,
+      params ReadOnlySpan<T> rest) {
     var all = new T[1 + rest.Length];
     all[0] = first;
-    for (var i = 0; i < rest.Length; ++i) {
-      all[1 + i] = rest[i];
-    }
+    rest.CopyTo(all.AsSpan(1));
     return all;
   }
 
   public static IReadOnlyList<T> ReadonlyFrom<T>(
       T first,
       T second,
-      params T[] rest) {
+      params ReadOnlySpan<T> rest) {
     var all = new T[2 + rest.Length];
     all[0] = first;
     all[1] = second;
-    for (var i = 0; i < rest.Length; ++i) {
-      all[2 + i] = rest[i];
-    }
+    rest.CopyTo(all.AsSpan(2));
     return all;
   }
 
