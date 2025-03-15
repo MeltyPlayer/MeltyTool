@@ -3,17 +3,17 @@
 namespace fin.language.equations.fixedFunction;
 
 public static partial class FixedFunctionEquationsExtensions {
-  public static (IColorValue?, IScalarValue?) GenerateDiffuse(
+  public static (IColorValue, IScalarValue) GenerateDiffuse(
       this IFixedFunctionMaterial material,
-      (IColorValue? color, IScalarValue? alpha) diffuse,
+      (IColorValue color, IScalarValue alpha) diffuse,
       IReadOnlyTexture? finTexture,
       (bool color, bool alpha) hasVertexColorAlpha0) {
     var equations = material.Equations;
     var colorOps = equations.ColorOps;
     var scalarOps = equations.ScalarOps;
 
-    IColorValue? diffuseSurfaceColor = diffuse.color;
-    IScalarValue? diffuseSurfaceAlpha = diffuse.alpha;
+    IColorValue diffuseSurfaceColor = diffuse.color;
+    IScalarValue diffuseSurfaceAlpha = diffuse.alpha;
 
     if (finTexture != null) {
       var (textureColor, textureAlpha)
@@ -42,10 +42,10 @@ public static partial class FixedFunctionEquationsExtensions {
     return (diffuseSurfaceColor, diffuseSurfaceAlpha);
   }
 
-  public static (IColorValue?, IScalarValue?) GenerateLighting(
+  public static (IColorValue, IScalarValue) GenerateLighting(
       this IFixedFunctionEquations<FixedFunctionSource> equations,
-      (IColorValue? color, IScalarValue? alpha) diffuse,
-      IColorValue? ambient)
+      (IColorValue color, IScalarValue alpha) diffuse,
+      IColorValue ambient)
     => GenerateLighting(equations,
                         diffuse,
                         ambient,
@@ -54,10 +54,10 @@ public static partial class FixedFunctionEquationsExtensions {
 
   public static (IColorValue?, IScalarValue?) GenerateLighting(
       this IFixedFunctionEquations<FixedFunctionSource> equations,
-      (IColorValue? color, IScalarValue? alpha) diffuse,
-      IColorValue? ambient,
-      IColorValue? specular,
-      IColorValue? emission) {
+      (IColorValue color, IScalarValue alpha) diffuse,
+      IColorValue ambient,
+      IColorValue specular,
+      IColorValue emission) {
     var colorOps = equations.ColorOps;
 
     // Light colors

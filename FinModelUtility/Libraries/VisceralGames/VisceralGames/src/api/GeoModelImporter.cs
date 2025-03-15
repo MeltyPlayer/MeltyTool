@@ -29,7 +29,7 @@ public class GeoModelImporter : IModelImporter<GeoModelFileBundle> {
     };
 
     // Builds skeletons
-    IBone[] finBones = Array.Empty<IBone>();
+    IBone[] finBones = [];
     var rcbFile = modelFileBundle.RcbFile;
     if (rcbFile != null) {
       var rcb = rcbFile.ReadNew<Rcb>();

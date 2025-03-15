@@ -28,19 +28,19 @@ public class CmbCombinerGenerator {
   private int constColorIndex_;
   private Rgba32 constColor_;
 
-  private IColorValue? previousColor_;
-  private IColorValue? previousColorBuffer_;
-  private IScalarValue? previousAlpha_;
-  private IScalarValue? previousAlphaBuffer_;
+  private IColorValue previousColor_;
+  private IColorValue previousColorBuffer_;
+  private IScalarValue previousAlpha_;
+  private IScalarValue previousAlphaBuffer_;
 
-  private IColorValue? primaryColor_;
-  private IScalarValue? primaryAlpha_;
+  private IColorValue primaryColor_;
+  private IScalarValue primaryAlpha_;
 
-  private IColorValue? ambientAndDiffuseLightColor_;
-  private IScalarValue? ambientAndDiffuseLightAlpha_;
+  private IColorValue ambientAndDiffuseLightColor_;
+  private IScalarValue ambientAndDiffuseLightAlpha_;
 
-  private IColorValue? specularLightColor_;
-  private IScalarValue? specularLightAlpha_;
+  private IColorValue specularLightColor_;
+  private IScalarValue specularLightAlpha_;
 
   private readonly bool hasVertexColors_;
 
@@ -221,7 +221,7 @@ public class CmbCombinerGenerator {
       this.previousAlphaBuffer_ = newPreviousAlphaBuffer;
     }
 
-  private IColorValue? GetOppedSourceColor_(
+  private IColorValue GetOppedSourceColor_(
       (TexCombinerSource combinerSource, TexCombinerColorOp colorOp) input) {
       var (combinerSource, colorOp) = input;
 
@@ -240,15 +240,15 @@ public class CmbCombinerGenerator {
           combinerSource,
           this.GetChannelAndIsOneMinus_(
               (TexCombinerAlphaOp) colorOp));
-      return channelValue != null ? new ColorWrapper(channelValue) : null;
+      return new ColorWrapper(channelValue);
     }
 
-  private IScalarValue? GetOppedSourceAlpha_(
+  private IScalarValue GetOppedSourceAlpha_(
       (TexCombinerSource combinerSource, TexCombinerAlphaOp alphaOp) input)
     => this.GetScalarValue_(input.combinerSource,
                             this.GetChannelAndIsOneMinus_(input.alphaOp));
 
-  private IColorValue? GetColorValue_(TexCombinerSource combinerSource)
+  private IColorValue GetColorValue_(TexCombinerSource combinerSource)
     => combinerSource switch {
         TexCombinerSource.Texture0 => this.equations_.CreateOrGetColorInput(
             FixedFunctionSource.TEXTURE_COLOR_0),
@@ -274,18 +274,18 @@ public class CmbCombinerGenerator {
         _                                        => throw new ArgumentOutOfRangeException(nameof(combinerSource), combinerSource, null)
     };
 
-  private IScalarValue? GetScalarValue_(
+  private IScalarValue GetScalarValue_(
       TexCombinerSource combinerSource,
       (Channel, bool) channelAndIsOneMinus) {
-      IScalarValue? channelValue;
+      IScalarValue channelValue;
 
       var (channel, isOneMinus) = channelAndIsOneMinus;
       if (channel != Channel.A) {
         var colorValue = this.GetColorValue_(combinerSource);
         channelValue = channel switch {
-            Channel.R => colorValue?.R,
-            Channel.G => colorValue?.G,
-            Channel.B => colorValue?.B,
+            Channel.R => colorValue.R,
+            Channel.G => colorValue.G,
+            Channel.B => colorValue.B,
             _         => throw new ArgumentOutOfRangeException()
         };
       } else {
@@ -344,9 +344,9 @@ public class CmbCombinerGenerator {
         TexCombinerAlphaOp.OneMinusAlpha => (Channel.A, true),
     };
 
-  private TValue? Combine_<TValue, TConstant>(
+  private TValue Combine_<TValue, TConstant>(
       IFixedFunctionOps<TValue, TConstant> fixedFunctionOps,
-      IReadOnlyList<TValue?> sources,
+      IReadOnlyList<TValue> sources,
       TexCombineMode combineMode,
       TexCombineScale combineScale)
       where TValue : IValue<TValue>
@@ -389,9 +389,9 @@ public class CmbCombinerGenerator {
       };
     }
 
-  private TValue? AddMult_<TValue, TConstant>(
+  private TValue AddMult_<TValue, TConstant>(
       IFixedFunctionOps<TValue, TConstant> fixedFunctionOps,
-      IReadOnlyList<TValue?> sources
+      IReadOnlyList<TValue> sources
   ) where TValue : IValue<TValue>
     where TConstant : IConstant<TValue>, TValue {
       var addedValue = fixedFunctionOps.Add(sources[0], sources[1]);
