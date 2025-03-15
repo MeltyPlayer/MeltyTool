@@ -2,49 +2,42 @@
 using System.Linq;
 
 using fin.language.equations.fixedFunction.util;
-
 using fin.util.enumerables;
 
 namespace fin.language.equations.fixedFunction;
 
 public abstract class BScalarValue : IScalarValue {
-  public IScalarValue? Add(IScalarValue? term1,
-                           params IEnumerable<IScalarValue?> terms) {
-    return new ScalarExpression(
+  public IScalarValue Add(IScalarValue term1,
+                          params IEnumerable<IScalarValue> terms)
+    => new ScalarExpression(
         this.AsTerms()
             .Concat(term1)
             .Concat(terms.ToArray())
-            .WhereNonnull()
             .ToArray());
-  }
 
-  public IScalarValue? Subtract(IScalarValue? term1,
-                                params IEnumerable<IScalarValue?> terms)
+  public IScalarValue Subtract(IScalarValue term1,
+                               params IEnumerable<IScalarValue> terms)
     => this.Add(term1.Negate(), terms.Select(v => v.Negate()));
 
-  public IScalarValue? Multiply(IScalarValue? factor1,
-                               params IEnumerable<IScalarValue?> factors) {
+  public IScalarValue Multiply(IScalarValue factor1,
+                               params IEnumerable<IScalarValue> factors) {
     var (numerators, denominators) = this.AsRatio();
     return new ScalarTerm(numerators
                           .Concat(factor1)
-                          .Concat(factors)  
-                          .WhereNonnull()
+                          .Concat(factors)
                           .ToArray(),
                           denominators
-                              .WhereNonnull()
                               .ToArray());
   }
 
-  public IScalarValue? Divide(IScalarValue? factor1,
-                              params IEnumerable<IScalarValue?> factors) {
+  public IScalarValue Divide(IScalarValue factor1,
+                             params IEnumerable<IScalarValue> factors) {
     var (numerators, denominators) = this.AsRatio();
     return new ScalarTerm(numerators
-                          .WhereNonnull()
-                          .ToArray(),
+                              .ToArray(),
                           denominators
                               .Concat(factor1)
                               .Concat(factors)
-                              .WhereNonnull()
                               .ToArray());
   }
 

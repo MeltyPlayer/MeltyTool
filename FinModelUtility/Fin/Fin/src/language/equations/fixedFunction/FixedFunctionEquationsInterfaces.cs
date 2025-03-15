@@ -86,21 +86,18 @@ public interface IExpression : IValue;
 
 // Typed
 public interface IValue<TValue> : IValue where TValue : IValue<TValue> {
-  TValue? Add(TValue? term1, params IEnumerable<TValue?> terms);
-  TValue? Subtract(TValue? term1, params IEnumerable<TValue?> terms);
-  TValue? Multiply(TValue? factor1, params IEnumerable<TValue?> factors);
-  TValue? Divide(TValue? factor1, params IEnumerable<TValue?> factors);
+  TValue Add(TValue term1, params IEnumerable<TValue> terms);
+  TValue Subtract(TValue term1, params IEnumerable<TValue> terms);
+  TValue Multiply(TValue factor1, params IEnumerable<TValue> factors);
+  TValue Divide(TValue factor1, params IEnumerable<TValue> factors);
 
-  TValue? Add(IScalarValue? term1, params IEnumerable<IScalarValue?> terms);
+  TValue Add(IScalarValue term1, params IEnumerable<IScalarValue> terms);
+  TValue Subtract(IScalarValue term1, params IEnumerable<IScalarValue> terms);
 
-  TValue? Subtract(IScalarValue? term1,
-                   params IEnumerable<IScalarValue?> terms);
+  TValue Multiply(IScalarValue factor1,
+                  params IEnumerable<IScalarValue> factors);
 
-  TValue? Multiply(IScalarValue? factor1,
-                   params IEnumerable<IScalarValue?> factors);
-
-  TValue? Divide(IScalarValue? factor1,
-                 params IEnumerable<IScalarValue?> factors);
+  TValue Divide(IScalarValue factor1, params IEnumerable<IScalarValue> factors);
 }
 
 public interface IConstant<TValue> : IConstant, IValue<TValue>
