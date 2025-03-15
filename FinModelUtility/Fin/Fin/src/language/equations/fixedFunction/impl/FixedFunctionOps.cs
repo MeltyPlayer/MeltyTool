@@ -10,19 +10,17 @@ public interface IFixedFunctionOps<TValue, out TConstant>
   TConstant Half { get; }
   TConstant One { get; }
 
-  bool IsZero(TValue? value) => value == null || value.Equals(this.Zero);
+  TValue Add(TValue lhs, TValue rhs);
+  TValue AddWithScalar(TValue lhs, IScalarValue rhs);
+  TValue Subtract(TValue lhs, TValue rhs);
+  TValue Multiply(TValue lhs, TValue rhs);
+  TValue MultiplyWithScalar(TValue lhs, IScalarValue rhs);
 
-  TValue? Add(TValue? lhs, TValue? rhs);
-  TValue? AddWithScalar(TValue? lhs, IScalarValue? rhs);
-  TValue? Subtract(TValue? lhs, TValue? rhs);
-  TValue? Multiply(TValue? lhs, TValue? rhs);
-  TValue? MultiplyWithScalar(TValue? lhs, IScalarValue? rhs);
+  TValue AddWithConstant(TValue lhs, double constant);
+  TValue MultiplyWithConstant(TValue lhs, double constant);
 
-  TValue? AddWithConstant(TValue? lhs, double constant);
-  TValue? MultiplyWithConstant(TValue? lhs, double constant);
-
-  TValue? MixWithConstant(TValue? lhs, TValue? rhs, double mixAmount);
-  TValue? MixWithScalar(TValue? lhs, TValue? rhs, IScalarValue? mixAmount);
+  TValue MixWithConstant(TValue lhs, TValue rhs, double mixAmount);
+  TValue MixWithScalar(TValue lhs, TValue rhs, IScalarValue mixAmount);
 }
 
 public interface IColorOps : IFixedFunctionOps<IColorValue, IColorConstant>;
@@ -37,23 +35,23 @@ public abstract class BFixedFunctionOps<TValue, TConstant>
   public abstract TConstant Half { get; }
   public abstract TConstant One { get; }
 
-  public abstract TValue? Add(TValue? lhs, TValue? rhs);
-  public abstract TValue? AddWithScalar(TValue? lhs, IScalarValue? rhs);
+  public abstract TValue Add(TValue lhs, TValue rhs);
+  public abstract TValue AddWithScalar(TValue lhs, IScalarValue rhs);
 
-  public abstract TValue? Subtract(TValue? lhs, TValue? rhs);
+  public abstract TValue Subtract(TValue lhs, TValue rhs);
 
-  public abstract TValue? Multiply(TValue? lhs, TValue? rhs);
-  public abstract TValue? MultiplyWithScalar(TValue? lhs, IScalarValue? rhs);
+  public abstract TValue Multiply(TValue lhs, TValue rhs);
+  public abstract TValue MultiplyWithScalar(TValue lhs, IScalarValue rhs);
 
-  public TValue? AddWithConstant(TValue? lhs, double constant)
+  public TValue AddWithConstant(TValue lhs, double constant)
     => this.AddWithScalar(lhs, new ScalarConstant(constant));
 
-  public TValue? MultiplyWithConstant(TValue? lhs, double constant)
+  public TValue MultiplyWithConstant(TValue lhs, double constant)
     => this.MultiplyWithScalar(lhs, new ScalarConstant(constant));
 
-  public TValue? MixWithConstant(
-      TValue? lhs,
-      TValue? rhs,
+  public TValue MixWithConstant(
+      TValue lhs,
+      TValue rhs,
       double mixAmount) {
     lhs = this.MultiplyWithConstant(lhs, 1 - mixAmount);
     rhs = this.MultiplyWithConstant(rhs, mixAmount);
@@ -61,14 +59,14 @@ public abstract class BFixedFunctionOps<TValue, TConstant>
     return this.Add(lhs, rhs);
   }
 
-  public abstract TValue? MixWithScalar(TValue? lhs,
-                                        TValue? rhs,
-                                        IScalarValue? mixAmount);
+  public abstract TValue MixWithScalar(TValue lhs,
+                                       TValue rhs,
+                                       IScalarValue mixAmount);
 }
 
 public static class ColorWrapperExtensions {
-  public static ColorWrapper? Wrap(this IScalarValue? scalarValue)
-    => scalarValue != null ? new ColorWrapper(scalarValue) : null;
+  public static ColorWrapper Wrap(this IScalarValue scalarValue)
+    => new(scalarValue);
 }
 
 public class ColorFixedFunctionOps<TIdentifier>(
@@ -90,7 +88,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
     = equations.CreateColorConstant(1);
 
   public bool IsSingleScalarValue(
-      IColorValue? value,
+      IColorValue value,
       out IScalarValue scalarValue) {
     if (value is IColorConstant {
             Intensity: IScalarConstant scalarConstant
@@ -108,7 +106,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
     return false;
   }
 
-  public override IColorValue? Add(IColorValue? lhs, IColorValue? rhs) {
+  public override IColorValue Add(IColorValue lhs, IColorValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
@@ -121,7 +119,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
       var rhsIsZero = rhs.IsZero();
 
       if (lhsIsZero && rhsIsZero) {
-        return null;
+        return ColorConstant.ZERO;
       }
 
       if (lhsIsZero) {
@@ -133,24 +131,24 @@ public class ColorFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Add(rhs!);
+    return lhs.Add(rhs);
   }
 
-  public override IColorValue? AddWithScalar(IColorValue? lhs,
-                                             IScalarValue? rhs) {
+  public override IColorValue AddWithScalar(IColorValue lhs,
+                                            IScalarValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.ScalarOps_.Zero;
     } else {
       var lhsIsZero = lhs.IsZero();
-      var rhsIsZero = this.ScalarOps_.IsZero(rhs);
+      var rhsIsZero = rhs.IsZero();
 
       if (lhsIsZero && rhsIsZero) {
-        return null;
+        return ColorConstant.ZERO;
       }
 
       if (lhsIsZero) {
-        return equations.CreateColor(rhs!);
+        return equations.CreateColor(rhs);
       }
 
       if (rhsIsZero) {
@@ -162,10 +160,10 @@ public class ColorFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Add(rhs!);
+    return lhs.Add(rhs);
   }
 
-  public override IColorValue? Subtract(IColorValue? lhs, IColorValue? rhs) {
+  public override IColorValue Subtract(IColorValue lhs, IColorValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
@@ -173,12 +171,12 @@ public class ColorFixedFunctionOps<TIdentifier>(
       var lhsIsZero = lhs.IsZero();
       var rhsIsZero = rhs.IsZero();
 
-      if ((lhsIsZero && rhsIsZero) || (lhs?.Equals(rhs) ?? false)) {
-        return null;
+      if ((lhsIsZero && rhsIsZero) || lhs.Equals(rhs)) {
+        return ColorConstant.ZERO;
       }
 
       if (lhsIsZero) {
-        return rhs?.Multiply(this.scMinusOne_);
+        return rhs.Multiply(this.scMinusOne_);
       }
 
       if (rhsIsZero) {
@@ -186,10 +184,10 @@ public class ColorFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Subtract(rhs!);
+    return lhs.Subtract(rhs);
   }
 
-  public override IColorValue? Multiply(IColorValue? lhs, IColorValue? rhs) {
+  public override IColorValue Multiply(IColorValue lhs, IColorValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
@@ -199,14 +197,14 @@ public class ColorFixedFunctionOps<TIdentifier>(
       }
 
       if (lhs.IsZero() || rhs.IsZero()) {
-        return null;
+        return ColorConstant.ZERO;
       }
 
-      var lhsIsOne = lhs?.Equals(this.One) ?? false;
-      var rhsIsOne = rhs?.Equals(this.One) ?? false;
+      var lhsIsOne = lhs.IsOne();
+      var rhsIsOne = rhs.IsOne();
 
       if (lhsIsOne && rhsIsOne) {
-        return this.One;
+        return ColorConstant.ONE;
       }
 
       if (lhsIsOne) {
@@ -218,29 +216,29 @@ public class ColorFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Multiply(rhs!);
+    return lhs.Multiply(rhs);
   }
 
-  public override IColorValue? MultiplyWithScalar(
-      IColorValue? lhs,
-      IScalarValue? rhs) {
+  public override IColorValue MultiplyWithScalar(
+      IColorValue lhs,
+      IScalarValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.ScalarOps_.Zero;
     } else {
-      if (lhs.IsZero() || this.ScalarOps_.IsZero(rhs)) {
-        return null;
+      if (lhs.IsZero() || rhs.IsZero()) {
+        return ColorConstant.ZERO;
       }
 
-      var lhsIsOne = lhs?.Equals(this.One) ?? false;
-      var rhsIsOne = rhs?.Equals(this.ScalarOps_.One) ?? false;
+      var lhsIsOne = lhs.IsOne();
+      var rhsIsOne = rhs.IsOne();
 
       if (lhsIsOne && rhsIsOne) {
-        return this.One;
+        return ColorConstant.ONE;
       }
 
       if (lhsIsOne) {
-        return equations.CreateColor(rhs!);
+        return equations.CreateColor(rhs);
       }
 
       if (rhsIsOne) {
@@ -252,31 +250,31 @@ public class ColorFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Multiply(rhs!);
+    return lhs.Multiply(rhs);
   }
 
-  public override IColorValue? MixWithScalar(IColorValue? lhs,
-                                             IColorValue? rhs,
-                                             IScalarValue? mixAmount) {
+  public override IColorValue MixWithScalar(IColorValue lhs,
+                                            IColorValue rhs,
+                                            IScalarValue mixAmount) {
     if (lhs.IsZero()) {
-      lhs = null;
+      lhs = ColorConstant.ZERO;
     }
 
     if (rhs.IsZero()) {
-      rhs = null;
+      rhs = ColorConstant.ZERO;
     }
 
-    if (lhs == null && rhs == null) {
-      return null;
+    if (lhs.IsZero() && rhs.IsZero()) {
+      return ColorConstant.ZERO;
     }
 
     // No progress, so return starting value
-    if (this.ScalarOps_.IsZero(mixAmount)) {
+    if (mixAmount.IsZero()) {
       return lhs;
     }
 
     // Fully progressed, return final value
-    if (mixAmount?.Equals(this.ScalarOps_.One) ?? false) {
+    if (mixAmount.IsOne()) {
       return rhs;
     }
 
@@ -307,12 +305,12 @@ public class ScalarFixedFunctionOps<TIdentifier>(
   public override IScalarConstant One { get; }
     = equations.CreateScalarConstant(1);
 
-  public override IScalarValue? AddWithScalar(
-      IScalarValue? lhs,
-      IScalarValue? rhs)
+  public override IScalarValue AddWithScalar(
+      IScalarValue lhs,
+      IScalarValue rhs)
     => this.Add(lhs, rhs);
 
-  public override IScalarValue? Add(IScalarValue? lhs, IScalarValue? rhs) {
+  public override IScalarValue Add(IScalarValue lhs, IScalarValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
@@ -321,7 +319,7 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       var rhsIsZero = rhs.IsZero();
 
       if (lhsIsZero && rhsIsZero) {
-        return null;
+        return ScalarConstant.ZERO;
       }
 
       if (lhsIsZero) {
@@ -338,11 +336,11 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Add(rhs!);
+    return lhs.Add(rhs);
   }
 
-  public override IScalarValue? Subtract(IScalarValue? lhs,
-                                         IScalarValue? rhs) {
+  public override IScalarValue Subtract(IScalarValue lhs,
+                                        IScalarValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
@@ -350,12 +348,12 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       var lhsIsZero = lhs.IsZero();
       var rhsIsZero = rhs.IsZero();
 
-      if ((lhsIsZero && rhsIsZero) || (lhs?.Equals(rhs) ?? false)) {
-        return null;
+      if ((lhsIsZero && rhsIsZero) || lhs.Equals(rhs)) {
+        return ScalarConstant.ZERO;
       }
 
       if (lhsIsZero) {
-        return rhs?.Multiply(this.scMinusOne_);
+        return rhs.Multiply(this.scMinusOne_);
       }
 
       if (rhsIsZero) {
@@ -368,29 +366,29 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Subtract(rhs!);
+    return lhs.Subtract(rhs);
   }
 
-  public override IScalarValue? MultiplyWithScalar(
-      IScalarValue? lhs,
-      IScalarValue? rhs)
+  public override IScalarValue MultiplyWithScalar(
+      IScalarValue lhs,
+      IScalarValue rhs)
     => this.Multiply(lhs, rhs);
 
-  public override IScalarValue? Multiply(IScalarValue? lhs,
-                                         IScalarValue? rhs) {
+  public override IScalarValue Multiply(IScalarValue lhs,
+                                        IScalarValue rhs) {
     if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
       if (lhs.IsZero() || rhs.IsZero()) {
-        return null;
+        return ScalarConstant.ZERO;
       }
 
-      var lhsIsOne = lhs?.Equals(this.One) ?? false;
-      var rhsIsOne = rhs?.Equals(this.One) ?? false;
+      var lhsIsOne = lhs.IsOne();
+      var rhsIsOne = rhs.IsOne();
 
       if (lhsIsOne && rhsIsOne) {
-        return this.One;
+        return ScalarConstant.ONE;
       }
 
       if (lhsIsOne) {
@@ -407,13 +405,13 @@ public class ScalarFixedFunctionOps<TIdentifier>(
       }
     }
 
-    return lhs!.Multiply(rhs!);
+    return lhs.Multiply(rhs);
   }
 
-  public override IScalarValue? MixWithScalar(IScalarValue? lhs,
-                                              IScalarValue? rhs,
-                                              IScalarValue? mixAmount) {
-    lhs = this.Multiply(lhs, this.Subtract(this.One, mixAmount));
+  public override IScalarValue MixWithScalar(IScalarValue lhs,
+                                             IScalarValue rhs,
+                                             IScalarValue mixAmount) {
+    lhs = this.Multiply(lhs, this.Subtract(ScalarConstant.ONE, mixAmount));
     rhs = this.Multiply(rhs, mixAmount);
 
     return this.Add(lhs, rhs);

@@ -25,10 +25,10 @@ public static class ValueExtensions {
     => value switch {
         IColorConstant colorConstant
             => (colorConstant.IntensityValue != null &&
-                ((float) colorConstant.IntensityValue).IsRoughly(intensity)) ||
-               (((float) colorConstant.RValue).IsRoughly(intensity) &&
-                ((float) colorConstant.GValue).IsRoughly(intensity) &&
-                ((float) colorConstant.BValue).IsRoughly(intensity)),
+                colorConstant.IntensityValue.Value.IsRoughly_(intensity)) ||
+               (colorConstant.RValue.IsRoughly_(intensity) &&
+                colorConstant.GValue.IsRoughly_(intensity) &&
+                colorConstant.BValue.IsRoughly_(intensity)),
         ColorWrapper colorWrapper
             => (colorWrapper.Intensity != null &&
                 colorWrapper.Intensity.IsRoughly(intensity)) ||
@@ -42,8 +42,13 @@ public static class ValueExtensions {
   public static bool IsRoughly(this IScalarValue? value, float intensity)
     => value switch {
         IScalarConstant scalarConstant
-            => ((float) scalarConstant.Value).IsRoughly(intensity),
+            => scalarConstant.Value.IsRoughly_(intensity),
         null => intensity.IsRoughly0(),
         _    => false
     };
+
+  public const float TOLERANCE = 1 / 255f;
+
+  private static bool IsRoughly_(this double actual, float expected)
+    => Math.Abs(actual - expected) < TOLERANCE;
 }
