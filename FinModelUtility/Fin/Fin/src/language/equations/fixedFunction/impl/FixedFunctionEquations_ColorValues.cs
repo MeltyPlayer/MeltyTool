@@ -188,20 +188,12 @@ public class ColorExpression(IReadOnlyList<IColorValue> terms)
                                 .ToArray());
 }
 
-public class ColorTerm : BColorValue, IColorTerm {
-  public ColorTerm(IReadOnlyList<IColorValue> numeratorFactors) {
-    this.NumeratorFactors = numeratorFactors;
-  }
-
-  public ColorTerm(
-      IReadOnlyList<IColorValue> numeratorFactors,
-      IReadOnlyList<IColorValue>? denominatorFactors) {
-    this.NumeratorFactors = numeratorFactors;
-    this.DenominatorFactors = denominatorFactors;
-  }
-
-  public IReadOnlyList<IColorValue> NumeratorFactors { get; }
-  public IReadOnlyList<IColorValue>? DenominatorFactors { get; }
+public class ColorTerm(
+    IReadOnlyList<IColorValue> numeratorFactors,
+    IReadOnlyList<IColorValue>? denominatorFactors = null)
+    : BColorValue, IColorTerm {
+  public IReadOnlyList<IColorValue> NumeratorFactors { get; } = numeratorFactors;
+  public IReadOnlyList<IColorValue>? DenominatorFactors { get; } = denominatorFactors;
 
   public override IScalarValue? Intensity {
     get {

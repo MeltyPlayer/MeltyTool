@@ -34,4 +34,15 @@ public static class ScalarValueExtensions {
 
     return ([value], []);
   }
+
+  public static bool IsConstant(this IScalarValue? value,
+                                out double constantValue) {
+    if (value is IScalarConstant scalarConstant) {
+      constantValue = scalarConstant.Value;
+      return true;
+    }
+
+    constantValue = default;
+    return false;
+  }
 }

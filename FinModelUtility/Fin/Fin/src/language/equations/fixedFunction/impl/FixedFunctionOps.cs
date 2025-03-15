@@ -307,16 +307,6 @@ public class ScalarFixedFunctionOps<TIdentifier>(
   public override IScalarConstant One { get; }
     = equations.CreateScalarConstant(1);
 
-  public bool IsConstant(IScalarValue? value, out double constantValue) {
-    if (value is IScalarConstant scalarConstant) {
-      constantValue = scalarConstant.Value;
-      return true;
-    }
-
-    constantValue = default;
-    return false;
-  }
-
   public override IScalarValue? AddWithScalar(
       IScalarValue? lhs,
       IScalarValue? rhs)
@@ -342,8 +332,8 @@ public class ScalarFixedFunctionOps<TIdentifier>(
         return lhs;
       }
 
-      if (this.IsConstant(lhs, out var lhsConstant) &&
-          this.IsConstant(rhs, out var rhsConstant)) {
+      if (lhs.IsConstant(out var lhsConstant) &&
+          rhs.IsConstant(out var rhsConstant)) {
         return new ScalarConstant(lhsConstant + rhsConstant);
       }
     }
@@ -372,8 +362,8 @@ public class ScalarFixedFunctionOps<TIdentifier>(
         return lhs;
       }
 
-      if (this.IsConstant(lhs, out var lhsConstant) &&
-          this.IsConstant(rhs, out var rhsConstant)) {
+      if (lhs.IsConstant(out var lhsConstant) &&
+          rhs.IsConstant(out var rhsConstant)) {
         return new ScalarConstant(lhsConstant - rhsConstant);
       }
     }
@@ -411,8 +401,8 @@ public class ScalarFixedFunctionOps<TIdentifier>(
         return lhs;
       }
 
-      if (this.IsConstant(lhs, out var lhsConstant) &&
-          this.IsConstant(rhs, out var rhsConstant)) {
+      if (lhs.IsConstant(out var lhsConstant) &&
+          rhs.IsConstant(out var rhsConstant)) {
         return new ScalarConstant(lhsConstant * rhsConstant);
       }
     }
