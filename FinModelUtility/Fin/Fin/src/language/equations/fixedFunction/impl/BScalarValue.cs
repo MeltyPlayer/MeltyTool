@@ -18,6 +18,10 @@ public abstract class BScalarValue : IScalarValue {
       return ScalarConstant.ZERO;
     }
 
+    if (nonZeroTerms.Length == 1) {
+      return nonZeroTerms[0];
+    }
+
     return new ScalarExpression(nonZeroTerms);
   }
 
@@ -57,6 +61,10 @@ public abstract class BScalarValue : IScalarValue {
 
     if (nonOneDenominators.Length == 0) {
       nonOneDenominators = null;
+    }
+    
+    if (nonOneNumerators.Length == 1 && nonOneDenominators == null) {
+      return nonOneNumerators[0];
     }
 
     return new ScalarTerm(nonOneNumerators, nonOneDenominators);
