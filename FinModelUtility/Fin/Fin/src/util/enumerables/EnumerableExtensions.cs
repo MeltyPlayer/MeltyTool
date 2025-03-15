@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 
 using fin.util.asserts;
 
+using schema.util.enumerables;
+
 namespace fin.util.enumerables;
 
 public static class EnumerableExtensions {
@@ -60,6 +62,12 @@ public static class EnumerableExtensions {
   public static IEnumerable<T> Concat<T>(this IEnumerable<T> enumerable,
                                          T item)
     => enumerable.Concat(item.Yield());
+
+  public static IEnumerable<T> WhereNonnull<T>(
+      this IEnumerable<T?> enumerable)
+    => enumerable.Select(v => (v != null, v))
+                 .Where(pair => pair.Item1)
+                 .Select(pair => pair.v!);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static List<T> AsList<T>(this T item)

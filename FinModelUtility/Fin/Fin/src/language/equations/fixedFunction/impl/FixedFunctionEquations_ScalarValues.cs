@@ -75,19 +75,6 @@ public partial class FixedFunctionEquations<TIdentifier> {
 public class ScalarExpression(IReadOnlyList<IScalarValue> terms)
     : BScalarValue, IScalarExpression {
   public IReadOnlyList<IScalarValue> Terms { get; } = terms;
-
-  public override IScalarExpression Add(
-      IScalarValue term1,
-      params ReadOnlySpan<IScalarValue> terms)
-    => new ScalarExpression(
-        ListUtil.ReadonlyConcat(this.Terms, [term1], terms.ToArray()));
-
-  public override IScalarExpression Subtract(
-      IScalarValue term1,
-      params ReadOnlySpan<IScalarValue> terms)
-    => new ScalarExpression(
-        ListUtil.ReadonlyConcat(this.Terms,
-                                this.NegateTerms(term1, terms)));
 }
 
 public class ScalarTerm(
@@ -99,21 +86,6 @@ public class ScalarTerm(
 
   public IReadOnlyList<IScalarValue>? DenominatorFactors { get; }
     = denominatorFactors;
-
-  public override IScalarTerm Multiply(
-      IScalarValue factor1,
-      params ReadOnlySpan<IScalarValue> factors)
-    => new ScalarTerm(ListUtil.ReadonlyConcat(
-                          this.NumeratorFactors,
-                          ListUtil.ReadonlyFrom(factor1, factors)));
-
-  public override IScalarTerm Divide(
-      IScalarValue factor1,
-      params ReadOnlySpan<IScalarValue> factors)
-    => new ScalarTerm(this.NumeratorFactors,
-                      ListUtil.ReadonlyConcat(
-                          this.DenominatorFactors,
-                          ListUtil.ReadonlyFrom(factor1, factors)));
 }
 
 public class ScalarConstant(double value) : BScalarValue, IScalarConstant {

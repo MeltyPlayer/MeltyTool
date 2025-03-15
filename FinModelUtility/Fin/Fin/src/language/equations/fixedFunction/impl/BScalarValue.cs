@@ -1,52 +1,52 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-using CommunityToolkit.HighPerformance;
+using fin.language.equations.fixedFunction.util;
 
-using fin.util.lists;
-
-using NoAlloq;
+using fin.util.enumerables;
 
 namespace fin.language.equations.fixedFunction;
 
 public abstract class BScalarValue : IScalarValue {
-  public virtual IScalarValue Add(
-      IScalarValue term1,
-      params ReadOnlySpan<IScalarValue> terms)
-    => new ScalarExpression(ListUtil.ReadonlyFrom(this, term1, terms));
+  public IScalarValue? Add(IScalarValue? term1,
+                           params IEnumerable<IScalarValue?> terms) {
+    return new ScalarExpression(
+        this.AsTerms()
+            .Concat(term1)
+            .Concat(terms.ToArray())
+            .WhereNonnull()
+            .ToArray());
+  }
 
-  public virtual IScalarValue Subtract(
-      IScalarValue term1,
-      params ReadOnlySpan<IScalarValue> terms)
-    => new ScalarExpression(
-        ListUtil.ReadonlyFrom(
-  this,
-            (ReadOnlySpan<IScalarValue>) this.NegateTerms(term1, terms)));
+  public IScalarValue? Subtract(IScalarValue? term1,
+                                params IEnumerable<IScalarValue?> terms)
+    => this.Add(term1.Negate(), terms.Select(v => v.Negate()));
 
-  public virtual IScalarValue Multiply(
-      IScalarValue factor1,
-      params ReadOnlySpan<IScalarValue> factors)
-    => new ScalarTerm(ListUtil.ReadonlyFrom(this, factor1, factors));
+  public IScalarValue? Multiply(IScalarValue? factor1,
+                               params IEnumerable<IScalarValue?> factors) {
+    var (numerators, denominators) = this.AsRatio();
+    return new ScalarTerm(numerators
+                          .Concat(factor1)
+                          .Concat(factors)  
+                          .WhereNonnull()
+                          .ToArray(),
+                          denominators
+                              .WhereNonnull()
+                              .ToArray());
+  }
 
-  public virtual IScalarValue Divide(
-      IScalarValue factor1,
-      params ReadOnlySpan<IScalarValue> factors)
-    => new ScalarTerm(ListUtil.ReadonlyFrom(this),
-                      ListUtil.ReadonlyFrom(factor1, factors));
-
-  protected IScalarValue[] NegateTerms(
-      IScalarValue term1,
-      params ReadOnlySpan<IScalarValue> terms)
-    => this.NegateTerms(ListUtil.From(term1, terms).ToArray());
-
-  protected IScalarValue[] NegateTerms(
-      params ReadOnlySpan<IScalarValue> terms)
-    => terms.Select(
-                term => new ScalarTerm(
-                    ListUtil.ReadonlyFrom(
-                        ScalarConstant.NEGATIVE_ONE,
-                        term)))
-            .ToArray();
+  public IScalarValue? Divide(IScalarValue? factor1,
+                              params IEnumerable<IScalarValue?> factors) {
+    var (numerators, denominators) = this.AsRatio();
+    return new ScalarTerm(numerators
+                          .WhereNonnull()
+                          .ToArray(),
+                          denominators
+                              .Concat(factor1)
+                              .Concat(factors)
+                              .WhereNonnull()
+                              .ToArray());
+  }
 
   public bool Clamp { get; set; }
 
