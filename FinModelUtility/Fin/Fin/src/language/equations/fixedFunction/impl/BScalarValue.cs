@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 
-using fin.language.equations.fixedFunction;
 using fin.util.lists;
 
-namespace fin.src.language.equations.fixedFunction.impl;
+namespace fin.language.equations.fixedFunction.impl;
+
 public abstract class BScalarValue : IScalarValue {
   public virtual IScalarValue Add(
       IScalarValue term1,
