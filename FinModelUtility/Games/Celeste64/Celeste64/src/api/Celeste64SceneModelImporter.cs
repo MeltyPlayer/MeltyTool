@@ -252,9 +252,11 @@ public class Celeste64MapSceneImporter
             entity.GetStringProperty("name", "Start") is "Start"
                 ? (["player"], 12)
                 : (["flag_off"], 1),
-        ActorType.REFILL    => (["refill_gem"], 12),
-        ActorType.SIGN_POST => (["sign"], 12),
-        ActorType.SPRING    => (["spring_board"], 36),
+        ActorType.REFILL => entity.GetIntProperty("double", 0) > 0
+            ? (["refill_gem"], 12)
+            : (["refill_gem_double"], 12),
+        ActorType.SIGN_POST   => (["sign"], 12),
+        ActorType.SPRING      => (["spring_board"], 36),
         ActorType.STATIC_PROP => ([
             entity.GetStringProperty("model", "")[
                 "Models/".Length..^".glb".Length]
