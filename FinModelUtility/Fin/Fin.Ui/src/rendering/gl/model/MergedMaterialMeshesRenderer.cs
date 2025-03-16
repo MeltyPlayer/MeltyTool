@@ -67,12 +67,14 @@ public partial class ModelRenderer {
       }
 
       foreach (var mesh in meshQueue) {
-        allMaterialMeshRenderers.Add(new MergedMaterialMeshRenderer(
+        var materialMeshRenderer = new MergedMaterialMeshRenderer(
                                          this.Model,
                                          mesh,
                                          modelRequirements,
                                          this.bufferManager_,
-                                         this.textureTransformManager_));
+                                         this.textureTransformManager_);
+        materialMeshRenderer.GenerateModelIfNull();
+        allMaterialMeshRenderers.Add(materialMeshRenderer);
       }
 
       this.materialMeshRenderers_ = allMaterialMeshRenderers.ToArray();

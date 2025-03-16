@@ -29,7 +29,7 @@ public partial class ModelRenderer {
               .ToArray();
 
     // Generates buffer manager and model within the current GL context.
-    private void GenerateModelIfNull_() {
+    public void GenerateModelIfNull() {
       if (this.materialMeshRenderers_ != null) {
         return;
       }
@@ -91,7 +91,7 @@ public partial class ModelRenderer {
         return;
       }
       
-      this.GenerateModelIfNull_();
+      this.GenerateModelIfNull();
 
       var isSelected = selectedMesh == mesh;
       foreach (var materialMeshRenderer in this.materialMeshRenderers_!) {
