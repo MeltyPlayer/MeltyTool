@@ -6,6 +6,8 @@ using fin.audio.io.importers;
 using fin.audio.io.importers.midi;
 using fin.audio.io.importers.ogg;
 
+using fmod.api;
+
 using ssm.api;
 
 namespace uni.api;
@@ -19,6 +21,10 @@ public class GlobalAudioReader : IAudioImporter<IAudioFileBundle> {
             => new AstAudioReader().ImportAudio(
                 audioManager,
                 astAudioFileBundle),
+        BankAudioFileBundle bankAudioFileBundle
+            => new BankAudioImporter().ImportAudio(
+                audioManager,
+                bankAudioFileBundle),
         MidiAudioFileBundle midiAudioFileBundle
             => new MidiAudioImporter().ImportAudio(
                 audioManager,
