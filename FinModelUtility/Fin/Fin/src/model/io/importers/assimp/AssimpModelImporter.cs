@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 using Assimp;
 
@@ -146,8 +145,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
       finBone.Name = name;
       finBoneByName[name] = finBone;
 
-      finBone.LocalTransform.SetMatrix(
-          Matrix4x4ConversionUtil.ConvertAssimpToFin(assNode.Transform));
+      finBone.LocalTransform.SetMatrix(assNode.Transform);
 
       nodeAndBoneQueue.Enqueue(
           assNode.Children.Select(childNode
@@ -239,11 +237,6 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
         }
       }
 
-      var usesColorBytes = assMesh.VertexColorChannels
-                                  .Where((_, i) => assMesh.HasVertexColors(i))
-                                  .SelectMany(a => a)
-                                  .Any(c => float.IsNaN(c.R));
-
       // TODO: Add support for colors
       for (var colorIndex = 0;
            colorIndex < assMesh.VertexColorChannelCount;
@@ -255,29 +248,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
         var assColors = assMesh.VertexColorChannels[colorIndex];
         for (var i = 0; i < finVertices.Length; ++i) {
           var assColor = assColors[i];
-
-          // This is so janky, what the heck is wrong with Assimp???
-          if (usesColorBytes) {
-            var floatValue = assColor.R;
-
-            var intValue = Unsafe.As<float, int>(ref floatValue);
-            FinColor.SplitRgba(intValue,
-                               out var r,
-                               out var g,
-                               out var b,
-                               out var a);
-
-            finVertices[i]
-                .SetColor(colorIndex, FinColor.FromRgbaBytes(r, g, b, a));
-          } else {
-            finVertices[i]
-                .SetColor(colorIndex,
-                          FinColor.FromRgbaFloats(
-                              assColor.R,
-                              assColor.G,
-                              assColor.B,
-                              assColor.A));
-          }
+          finVertices[i].SetColor(colorIndex, FinColor.FromRgba(assColor));
         }
       }
 
@@ -304,8 +275,7 @@ public class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
               if (vertexWeight.VertexID == i && vertexWeight.Weight > 0) {
                 var finBone = finBoneByName[assBone.Name];
 
-                var offsetMatrix = Matrix4x4ConversionUtil.ConvertAssimpToFin(
-                        assBone.OffsetMatrix)
+                var offsetMatrix = new FinMatrix4x4(assBone.OffsetMatrix)
                     .TransposeInPlace();
                 IFinMatrix4x4 finInverseBindMatrix = offsetMatrix;
 

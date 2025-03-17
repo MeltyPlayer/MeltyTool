@@ -19,8 +19,8 @@ public class AssimpIndirectUvFixer {
     var colorCount = vertexAccessor.ColorCount;
 
     // Has to have a value or it will get deleted. 
-    var nullUv = new Vector3D(0, 0, 0);
-    var nullColor = new Color4D(1, 1, 1, 1);
+    var nullUv = new Vector3(0, 0, 0);
+    var nullColor = new Vector4(1, 1, 1, 1);
 
     // Fix the UVs.
     var assMeshes = sc.Meshes;
@@ -51,7 +51,7 @@ public class AssimpIndirectUvFixer {
 
           if (uv != null) {
             hadUv[t] = true;
-            assUvs[t].Add(new Vector3D(uv.Value.X, 1 - uv.Value.Y, 0));
+            assUvs[t].Add(new Vector3(uv.Value.X, 1 - uv.Value.Y, 0));
           } else {
             assUvs[t].Add(nullUv);
           }
@@ -78,11 +78,10 @@ public class AssimpIndirectUvFixer {
 
           if (finColor != null) {
             hadColor[c] = true;
-            assColors[c]
-                .Add(new Color4D(finColor.Rf,
-                                 finColor.Gf,
-                                 finColor.Bf,
-                                 finColor.Af));
+            assColors[c].Add(new Vector4(finColor.Rf,
+                                         finColor.Gf,
+                                         finColor.Bf,
+                                         finColor.Af));
           } else {
             assColors[c].Add(nullColor);
           }
