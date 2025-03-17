@@ -33,7 +33,6 @@ uniform float shininess;
 uniform sampler2D texture0;
 uniform sampler2D texture1;
 uniform vec3 color_GxAmbientColor20;
-uniform float scalar_GxMaterialAlpha20;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -130,7 +129,7 @@ void main() {
   
   vec3 colorComponent = clamp(vertexColor0.rgb*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor20), 0.0, 1.0)*texture(texture1, uv1).rgb*texture(texture0, uv0).rgb, 0.0, 1.0);
 
-  float alphaComponent = (texture(texture0, uv0).a*0.498039215686 + texture(texture1, uv1).a*0.501960784314)*scalar_GxMaterialAlpha20;
+  float alphaComponent = (texture(texture0, uv0).a*0.498039215686 + texture(texture1, uv1).a*0.501960784314)*vertexColor0.a;
 
   fragColor = vec4(colorComponent, 1);
 }

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using fin.language.equations.fixedFunction.impl;
+
 using schema.util.enumerables;
 
 namespace fin.language.equations.fixedFunction.util;
@@ -10,7 +12,7 @@ using UColorRatio = (IEnumerable<IColorValue> numerators, IEnumerable<IColorValu
 public static class ColorValueExtensions {
   public static IEnumerable<IColorValue> RemoveZeroes(
       this IEnumerable<IColorValue> values)
-    => values.Where(v => !v.IsZero());
+    => values.Where(v => !FixedFunctionConstants.SIMPLIFY || !v.IsZero());
 
   public static IEnumerable<IColorValue> RemoveOnes(
       this IEnumerable<IColorValue> values)

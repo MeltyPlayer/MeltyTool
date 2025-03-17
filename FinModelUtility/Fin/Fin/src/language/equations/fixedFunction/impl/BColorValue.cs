@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using fin.language.equations.fixedFunction.impl;
 using fin.language.equations.fixedFunction.util;
 using fin.util.enumerables;
 
@@ -51,7 +52,7 @@ public abstract class BColorValue : IColorValue {
       return ColorConstant.ONE;
     }
 
-    if (nonOneNumerators.Any(v => v.IsZero())) {
+    if (FixedFunctionConstants.SIMPLIFY && nonOneNumerators.Any(v => v.IsZero())) {
       return ColorConstant.ZERO;
     }
 

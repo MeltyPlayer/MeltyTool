@@ -107,7 +107,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
   }
 
   public override IColorValue Add(IColorValue lhs, IColorValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
@@ -136,7 +136,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
 
   public override IColorValue AddWithScalar(IColorValue lhs,
                                             IScalarValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.ScalarOps_.Zero;
     } else {
@@ -164,7 +164,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
   }
 
   public override IColorValue Subtract(IColorValue lhs, IColorValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
@@ -188,7 +188,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
   }
 
   public override IColorValue Multiply(IColorValue lhs, IColorValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
@@ -222,7 +222,7 @@ public class ColorFixedFunctionOps<TIdentifier>(
   public override IColorValue MultiplyWithScalar(
       IColorValue lhs,
       IScalarValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.ScalarOps_.Zero;
     } else {
@@ -256,26 +256,28 @@ public class ColorFixedFunctionOps<TIdentifier>(
   public override IColorValue MixWithScalar(IColorValue lhs,
                                             IColorValue rhs,
                                             IScalarValue mixAmount) {
-    if (lhs.IsZero()) {
-      lhs = ColorConstant.ZERO;
-    }
+    if (FixedFunctionConstants.SIMPLIFY) {
+      if (lhs.IsZero()) {
+        lhs = ColorConstant.ZERO;
+      }
 
-    if (rhs.IsZero()) {
-      rhs = ColorConstant.ZERO;
-    }
+      if (rhs.IsZero()) {
+        rhs = ColorConstant.ZERO;
+      }
 
-    if (lhs.IsZero() && rhs.IsZero()) {
-      return ColorConstant.ZERO;
-    }
+      if (lhs.IsZero() && rhs.IsZero()) {
+        return ColorConstant.ZERO;
+      }
 
-    // No progress, so return starting value
-    if (mixAmount.IsZero()) {
-      return lhs;
-    }
+      // No progress, so return starting value
+      if (mixAmount.IsZero()) {
+        return lhs;
+      }
 
-    // Fully progressed, return final value
-    if (mixAmount.IsOne()) {
-      return rhs;
+      // Fully progressed, return final value
+      if (mixAmount.IsOne()) {
+        return rhs;
+      }
     }
 
     // Some combination
@@ -311,7 +313,7 @@ public class ScalarFixedFunctionOps<TIdentifier>(
     => this.Add(lhs, rhs);
 
   public override IScalarValue Add(IScalarValue lhs, IScalarValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
@@ -341,7 +343,7 @@ public class ScalarFixedFunctionOps<TIdentifier>(
 
   public override IScalarValue Subtract(IScalarValue lhs,
                                         IScalarValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {
@@ -376,7 +378,7 @@ public class ScalarFixedFunctionOps<TIdentifier>(
 
   public override IScalarValue Multiply(IScalarValue lhs,
                                         IScalarValue rhs) {
-    if (!FixedFunctionConstants.REMOVE_ZERO_TERMS) {
+    if (!FixedFunctionConstants.SIMPLIFY) {
       lhs ??= this.Zero;
       rhs ??= this.Zero;
     } else {

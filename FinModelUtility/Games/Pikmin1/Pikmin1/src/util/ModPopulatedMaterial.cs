@@ -12,6 +12,7 @@ using gx;
 
 using pikmin1.schema.mod;
 
+
 namespace pikmin1.util {
   internal class ModPopulatedMaterial : IPopulatedMaterial {
     public ModPopulatedMaterial(int materialIndex,
@@ -19,7 +20,6 @@ namespace pikmin1.util {
                                 int tevInfoIndex,
                                 TEVInfo tevInfo) {
       // TODO: Where does this come from?
-
       this.CullMode = GxCullMode.Back;
 
       this.KonstColors =
@@ -122,8 +122,7 @@ namespace pikmin1.util {
                                   })
                                   .ToArray();
 
-      this.ColorChannelControls
-          = GetColorChannelControls_(material.lightingInfo);
+      this.ColorChannelControls = GetColorChannelControls_(material.lightingInfo);
 
       {
         this.TextureIndices = material.texInfo.TexturesInMaterial
@@ -335,8 +334,8 @@ namespace pikmin1.util {
 
       ccc0 = new ColorChannelControlImpl {
           LightingEnabled = lightingInfo.LightingEnabledForChannelControl0,
-          MaterialSrc = lightingInfo.MaterialColorSrcForChannel0,
-          AmbientSrc = lightingInfo.AmbientColorSrcForChannel0,
+          MaterialSrc = lightingInfo.MaterialColorSrcForChannel01,
+          AmbientSrc = lightingInfo.AmbientColorSrcForChannel01,
           LitMask = litMask,
           DiffuseFunction = lightingInfo.DiffuseFunctionForChannel0,
           AttenuationFunction
@@ -346,8 +345,8 @@ namespace pikmin1.util {
       };
       ccc2 = new ColorChannelControlImpl {
           LightingEnabled = lightingInfo.LightingEnabledForChannelControl2,
-          MaterialSrc = lightingInfo.MaterialColorSrcForChannel2,
-          AmbientSrc = lightingInfo.AmbientColorSrcForChannel2,
+          MaterialSrc = lightingInfo.MaterialColorSrcForChannel23,
+          AmbientSrc = lightingInfo.AmbientColorSrcForChannel23,
           LitMask = litMask,
           DiffuseFunction = lightingInfo.DiffuseFunctionForChannel2,
           AttenuationFunction
@@ -361,26 +360,35 @@ namespace pikmin1.util {
         ccc1 = new ColorChannelControlImpl {
             LightingEnabled
                 = lightingInfo.LightingEnabledForChannelControl1,
-            MaterialSrc = GxColorSrc.Register,
-            AmbientSrc = GxColorSrc.Register,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel01,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel01,
             LitMask = litMask,
             DiffuseFunction = lightingInfo.DiffuseFunctionForChannel1,
             AttenuationFunction = GxAttenuationFunction.Spec,
         };
         ccc3 = new ColorChannelControlImpl {
             LightingEnabled = false,
-            MaterialSrc = GxColorSrc.Register,
-            AmbientSrc = GxColorSrc.Register,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel23,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel23,
             LitMask = litMask,
             DiffuseFunction = GxDiffuseFunction.Clamp,
             AttenuationFunction = GxAttenuationFunction.None,
             VertexColorIndex = 0,
         };
       } else {
-        ccc1 = ccc3 = new ColorChannelControlImpl {
+        ccc1 = new ColorChannelControlImpl {
             LightingEnabled = false,
-            MaterialSrc = GxColorSrc.Register,
-            AmbientSrc = GxColorSrc.Register,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel01,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel01,
+            LitMask = 0,
+            DiffuseFunction = GxDiffuseFunction.None,
+            AttenuationFunction = GxAttenuationFunction.None,
+            VertexColorIndex = 0,
+        };
+        ccc3 = new ColorChannelControlImpl {
+            LightingEnabled = false,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel23,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel23,
             LitMask = 0,
             DiffuseFunction = GxDiffuseFunction.None,
             AttenuationFunction = GxAttenuationFunction.None,

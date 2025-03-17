@@ -39,7 +39,6 @@ struct Texture {
 uniform Texture texture0;
 uniform Texture texture1;
 uniform vec3 color_GxAmbientColor85;
-uniform float scalar_GxMaterialAlpha85;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -135,7 +134,7 @@ void main() {
   
   vec3 colorComponent = vertexColor0.rgb*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor85), 0.0, 1.0)*(vec3(1.0) + vec3(-1.0)*texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*vec3(0.5)*texture(texture1.sampler, texture1.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb)*vec3(0.5);
 
-  float alphaComponent = texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).a*scalar_GxMaterialAlpha85*texture(texture1.sampler, texture1.transform2d * vec3((uv0).x, (uv0).y, 1)).a;
+  float alphaComponent = texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).a*vertexColor0.a*texture(texture1.sampler, texture1.transform2d * vec3((uv0).x, (uv0).y, 1)).a;
 
   fragColor = vec4(colorComponent, alphaComponent);
 

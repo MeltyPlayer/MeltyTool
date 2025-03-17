@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using fin.language.equations.fixedFunction.impl;
+
 using schema.util.enumerables;
 
 namespace fin.language.equations.fixedFunction.util;
@@ -11,7 +13,7 @@ using UScalarRatio = (IEnumerable<IScalarValue> numerators,
 public static class ScalarValueExtensions {
   public static IEnumerable<IScalarValue> RemoveZeroes(
       this IEnumerable<IScalarValue> values)
-    => values.Where(v => !v.IsZero());
+    => values.Where(v => !FixedFunctionConstants.SIMPLIFY || !v.IsZero());
 
   public static IEnumerable<IScalarValue> RemoveOnes(
       this IEnumerable<IScalarValue> values)
