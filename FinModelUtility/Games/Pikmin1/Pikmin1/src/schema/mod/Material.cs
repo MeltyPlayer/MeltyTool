@@ -177,19 +177,19 @@ public partial record LightingInfo : IBinaryConvertible {
     => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(7, 2);
 
   [Skip]
-  public GxColorSrc AmbientColorSrcForChannel01
+  public GxColorSrc AmbientColorSrcForChannel02
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(9, 1);
 
   [Skip]
-  public GxColorSrc AmbientColorSrcForChannel23
+  public GxColorSrc AmbientColorSrcForChannel13
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(10, 1);
 
   [Skip]
-  public GxColorSrc MaterialColorSrcForChannel01
+  public GxColorSrc MaterialColorSrcForChannel02
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(11, 1);
 
   [Skip]
-  public GxColorSrc MaterialColorSrcForChannel23
+  public GxColorSrc MaterialColorSrcForChannel13
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(12, 1);
 
   [Unknown]

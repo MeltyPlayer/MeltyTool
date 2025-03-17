@@ -5,6 +5,7 @@
              xmlns:materials="clr-namespace:uni.ui.avalonia.resources.model.materials"
              xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
+             xmlns:common="clr-namespace:uni.ui.avalonia.common"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
              x:Class="uni.ui.avalonia.resources.model.materials.MaterialPanel"
              x:DataType="materials:MaterialPanelViewModel">
@@ -12,13 +13,16 @@
     <materials:MaterialPanelViewModelForDesigner />
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto *">
+  <Grid RowDefinitions="Auto * *">
     <controls:If Condition="{Binding MaterialTexturesPanel.TextureList.TextureViewModels.Count, Converter={x:Static converters:IntConverters.IsNot0}}">
       <materials:MaterialTexturesPanel
-        DataContext="{Binding MaterialTexturesPanel}" />
+          DataContext="{Binding MaterialTexturesPanel}" />
     </controls:If>
     <materials:MaterialShadersPanel
-      Grid.Row="1"
-      DataContext="{Binding MaterialShadersPanel}" />
+        Grid.Row="1"
+        DataContext="{Binding MaterialShadersPanel}" />
+    <common:KeyValueGrid
+        Grid.Row="2"
+        DataContext="{Binding MaterialKeyValueGrid}" />
   </Grid>
 </UserControl>

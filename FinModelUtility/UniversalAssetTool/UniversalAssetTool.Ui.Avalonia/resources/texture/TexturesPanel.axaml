@@ -29,11 +29,11 @@
             </Grid.RowDefinitions>
 
             <textures:TexturePreview
-              DockPanel.Dock="Top"
-              DataContext="{Binding SelectedTexturePreview}" />
+                DockPanel.Dock="Top"
+                DataContext="{Binding SelectedTexturePreview}" />
             <common:KeyValueGrid
-              Grid.Row="1"
-              DataContext="{Binding SelectedTextureKeyValueGrid}" />
+                Grid.Row="1"
+                DataContext="{Binding SelectedTextureKeyValueGrid}" />
           </Grid>
         </gb:GroupBox>
       </Grid>

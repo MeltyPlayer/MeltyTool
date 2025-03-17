@@ -6,7 +6,9 @@ using fin.model;
 
 using ReactiveUI;
 
+using uni.ui.avalonia.common;
 using uni.ui.avalonia.ViewModels;
+
 
 namespace uni.ui.avalonia.resources.model.materials {
   public class MaterialPanelViewModelForDesigner
@@ -31,6 +33,22 @@ namespace uni.ui.avalonia.resources.model.materials {
         this.MaterialShadersPanel = new() {
             ModelAndMaterial = value,
         };
+
+        this.MaterialKeyValueGrid = new KeyValueGridViewModel {
+            KeyValuePairs = [
+                ("Transparency type", material?.TransparencyType),
+                ("Culling Mode", material?.CullingMode),
+                ("Depth Compare Type", material?.DepthCompareType),
+                ("Depth Mode", material?.DepthMode),
+                ("Alpha Blend Equation", material?.AlphaBlendEquation),
+                ("Alpha Dst Factor", material?.AlphaDstFactor),
+                ("Alpha Src Factor", material?.AlphaSrcFactor),
+                ("Color Blend Equation", material?.ColorBlendEquation),
+                ("Color Dst Factor", material?.ColorDstFactor),
+                ("Color Src Factor", material?.ColorSrcFactor),
+                ("Logic Op", material?.LogicOp),
+            ]
+        };
       }
     }
 
@@ -44,6 +62,13 @@ namespace uni.ui.avalonia.resources.model.materials {
       get;
       set => this.RaiseAndSetIfChanged(ref field,
                                        value);
+    }
+
+    public KeyValueGridViewModel MaterialKeyValueGrid {
+      get;
+      private set
+        => this.RaiseAndSetIfChanged(ref field,
+                                     value);
     }
   }
 

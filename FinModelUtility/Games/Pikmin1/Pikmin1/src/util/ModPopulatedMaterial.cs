@@ -334,8 +334,8 @@ namespace pikmin1.util {
 
       ccc0 = new ColorChannelControlImpl {
           LightingEnabled = lightingInfo.LightingEnabledForChannelControl0,
-          MaterialSrc = lightingInfo.MaterialColorSrcForChannel01,
-          AmbientSrc = lightingInfo.AmbientColorSrcForChannel01,
+          MaterialSrc = lightingInfo.MaterialColorSrcForChannel02,
+          AmbientSrc = lightingInfo.AmbientColorSrcForChannel02,
           LitMask = litMask,
           DiffuseFunction = lightingInfo.DiffuseFunctionForChannel0,
           AttenuationFunction
@@ -345,8 +345,8 @@ namespace pikmin1.util {
       };
       ccc2 = new ColorChannelControlImpl {
           LightingEnabled = lightingInfo.LightingEnabledForChannelControl2,
-          MaterialSrc = lightingInfo.MaterialColorSrcForChannel23,
-          AmbientSrc = lightingInfo.AmbientColorSrcForChannel23,
+          MaterialSrc = lightingInfo.MaterialColorSrcForChannel02,
+          AmbientSrc = lightingInfo.AmbientColorSrcForChannel02,
           LitMask = litMask,
           DiffuseFunction = lightingInfo.DiffuseFunctionForChannel2,
           AttenuationFunction
@@ -360,16 +360,16 @@ namespace pikmin1.util {
         ccc1 = new ColorChannelControlImpl {
             LightingEnabled
                 = lightingInfo.LightingEnabledForChannelControl1,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel01,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel01,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
             LitMask = litMask,
             DiffuseFunction = lightingInfo.DiffuseFunctionForChannel1,
             AttenuationFunction = GxAttenuationFunction.Spec,
         };
         ccc3 = new ColorChannelControlImpl {
             LightingEnabled = false,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel23,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel23,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
             LitMask = litMask,
             DiffuseFunction = GxDiffuseFunction.Clamp,
             AttenuationFunction = GxAttenuationFunction.None,
@@ -378,8 +378,8 @@ namespace pikmin1.util {
       } else {
         ccc1 = new ColorChannelControlImpl {
             LightingEnabled = false,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel01,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel01,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
             LitMask = 0,
             DiffuseFunction = GxDiffuseFunction.None,
             AttenuationFunction = GxAttenuationFunction.None,
@@ -387,8 +387,8 @@ namespace pikmin1.util {
         };
         ccc3 = new ColorChannelControlImpl {
             LightingEnabled = false,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel23,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel23,
+            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
+            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
             LitMask = 0,
             DiffuseFunction = GxDiffuseFunction.None,
             AttenuationFunction = GxAttenuationFunction.None,
