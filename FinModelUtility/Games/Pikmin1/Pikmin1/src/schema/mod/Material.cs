@@ -169,11 +169,11 @@ public partial record LightingInfo : IBinaryConvertible {
     => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(3, 2);
 
   [Skip]
-  public GxDiffuseFunction DiffuseFunctionForChannel2
+  public GxDiffuseFunction DiffuseFunctionForChannel1
     => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(5, 2);
 
   [Skip]
-  public GxDiffuseFunction DiffuseFunctionForChannel1
+  public GxDiffuseFunction DiffuseFunctionForChannel2
     => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(7, 2);
 
   [Skip]

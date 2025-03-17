@@ -587,15 +587,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     }
   }
 
-  private static ushort Read_(IBinaryReader br,
-                              GxAttributeType? format) {
-    return format switch {
-        GxAttributeType.INDEX_16 => br.ReadUInt16(),
-        GxAttributeType.INDEX_8 => br.ReadByte(),
-        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
-    };
-  }
-
   private readonly struct TextureImageReader(
       IList<Texture> srcTextures,
       IList<IReadOnlyImage[]> dstImages)
