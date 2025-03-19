@@ -18,7 +18,7 @@ public static class SceneService {
             } catch (Exception e) {
               ExceptionService.HandleException(
                   e,
-                  new FileBundleExceptionContext(fileBundle));
+                  new LoadFileBundleExceptionContext(fileBundle));
             }
           }
         };

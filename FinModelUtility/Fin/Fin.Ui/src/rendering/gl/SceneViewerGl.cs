@@ -199,8 +199,8 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     try {
       this.sceneRenderer_?.Render();
     } catch (Exception e) {
+      ExceptionService.HandleException(e, new RenderFileBundleExceptionContext(this.Scene!.Definition.FileBundle));
       this.sceneRenderer_ = null;
-      ExceptionService.HandleException(e, null);
     }
   }
 }

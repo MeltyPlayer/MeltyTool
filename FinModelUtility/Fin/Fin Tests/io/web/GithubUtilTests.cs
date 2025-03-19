@@ -66,7 +66,7 @@ public class GitHubUtilTests {
       var issueUrl
           = GitHubUtil.GetNewIssueUrl(
               e,
-              new FileBundleExceptionContext(
+              new LoadFileBundleExceptionContext(
                   new MockGameAndLocalPath("mario_game", @"foo\bar\file.txt")));
       var parsedQueryString
           = HttpUtility.ParseQueryString(issueUrl.Split('?')[1]);

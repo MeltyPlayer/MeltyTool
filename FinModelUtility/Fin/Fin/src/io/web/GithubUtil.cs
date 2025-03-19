@@ -15,13 +15,22 @@ public interface IExceptionContext {
   string Steps { get; }
 }
 
-public class FileBundleExceptionContext(IGameAndLocalPath fb)
+public class LoadFileBundleExceptionContext(IGameAndLocalPath fb)
     : IExceptionContext {
   public string Title
     => $"[Bug] Failed to load {fb.GameAndLocalPath}";
 
   public string Steps
     => $"1. Attempted to load {fb.GameAndLocalPath}.";
+}
+
+public class RenderFileBundleExceptionContext(IFileBundle fb)
+    : IExceptionContext {
+  public string Title
+    => $"[Bug] Failed to render {fb.TrueFullPath}";
+
+  public string Steps
+    => $"1. Attempted to render {fb.TrueFullPath}.";
 }
 
 public static class GitHubUtil {
