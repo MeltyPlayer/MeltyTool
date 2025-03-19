@@ -10,7 +10,7 @@ public enum GxColorChannel : byte {
   GX_COLORZERO,
   GX_BUMP,
   GX_BUMPN,
-  GX_COLORNULL,
+  GX_COLOR_NULL = 0xff,
 }
 
 public interface ITevOrder {

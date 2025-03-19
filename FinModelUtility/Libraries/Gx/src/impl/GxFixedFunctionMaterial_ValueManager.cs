@@ -161,13 +161,26 @@ public partial class GxFixedFunctionMaterial {
     }
 
     private readonly Dictionary<GxColorChannel, IColorValue>
-        colorChannelColorColors_ = new();
+        colorChannelColorColors_
+            = new([
+                new KeyValuePair<GxColorChannel, IColorValue>(
+                    GxColorChannel.GX_COLOR_NULL,
+                    ColorConstant.ZERO)
+            ]);
 
     private readonly Dictionary<GxColorChannel, IColorValue>
-        colorChannelColorAlphas_ = new();
+        colorChannelColorAlphas_ = new([
+            new KeyValuePair<GxColorChannel, IColorValue>(
+                GxColorChannel.GX_COLOR_NULL,
+                ColorConstant.ZERO)
+        ]);
 
     private readonly Dictionary<GxColorChannel, IScalarValue>
-        colorChannelAlphas_ = new();
+        colorChannelAlphas_ = new([
+            new KeyValuePair<GxColorChannel, IScalarValue>(
+                GxColorChannel.GX_COLOR_NULL,
+                ScalarConstant.ZERO)
+        ]);
 
     public void UpdateColorChannelColor(
         GxColorChannel colorChannel,
@@ -432,9 +445,10 @@ public partial class GxFixedFunctionMaterial {
         var color = colorRegister.Color;
         var index = colorRegister.Index;
 
-        return this.registers_.GetOrCreateScalarRegister($"GxAlphaRegister{index}",
-          this.equations_.CreateScalarConstant(
-              color.A / 255f));
+        return this.registers_.GetOrCreateScalarRegister(
+            $"GxAlphaRegister{index}",
+            this.equations_.CreateScalarConstant(
+                color.A / 255f));
       }
 
       if (!STRICT) {

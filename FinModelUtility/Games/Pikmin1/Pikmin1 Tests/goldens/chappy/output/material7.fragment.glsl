@@ -31,10 +31,11 @@ layout (std140, binding = 2) uniform Lights {
 uniform vec3 cameraPosition;
 uniform float shininess;
 uniform sampler2D texture0;
-uniform vec3 color_GxMaterialColor12345;
+uniform vec3 color_GxMaterialColor123;
+uniform vec3 color_GxAmbientColor1234;
 uniform vec3 color_GxMaterialColor7;
 uniform vec3 color_GxAmbientColor7;
-uniform float scalar_GxMaterialAlpha12345;
+uniform float scalar_GxMaterialAlpha123;
 
 in vec3 vertexPosition;
 in vec3 vertexNormal;
@@ -127,9 +128,9 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp(clamp(texture(texture0, uv0).rgb*color_GxMaterialColor7*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor7), 0.0, 1.0), 0.0, 1.0) + color_GxMaterialColor12345, 0.0, 1.0);
+  vec3 colorComponent = clamp(clamp(texture(texture0, uv0).rgb*color_GxMaterialColor7*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor7), 0.0, 1.0), 0.0, 1.0) + color_GxMaterialColor123*clamp((individualLightDiffuseColors[7].rgb + color_GxAmbientColor1234), 0.0, 1.0), 0.0, 1.0);
 
-  float alphaComponent = scalar_GxMaterialAlpha12345;
+  float alphaComponent = scalar_GxMaterialAlpha123;
 
   fragColor = vec4(colorComponent, 1);
 }

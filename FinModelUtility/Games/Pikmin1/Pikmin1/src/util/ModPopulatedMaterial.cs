@@ -43,7 +43,8 @@ namespace pikmin1.util {
         // Not sure where this comes from, used for various things:
         //   - Pikmin color
         //   - Armored cannon beetle eye color
-        var unkColor = (12345, Color.FromArgb(255, 0, 0, 0));
+        var unkMatColor = (123, Color.White);
+        var unkAmbColor = (1234, Color.FromArgb(0, 0, 0, 0));
 
         var materialColor = (materialIndex,
                              FinColor.ToSystemColor(
@@ -51,8 +52,8 @@ namespace pikmin1.util {
         var ambientColor
             = (materialIndex,
                FinColor.ToSystemColor(FinColor.FromIntensityFloat(.1f)));
-        this.MaterialColors = [materialColor, unkColor];
-        this.AmbientColors = [ambientColor, unkColor];
+        this.MaterialColors = [materialColor, unkMatColor];
+        this.AmbientColors = [ambientColor, unkAmbColor];
       }
 
       this.TevStageInfos = tevInfo.TevStages.Select(tevStage => {
@@ -102,16 +103,10 @@ namespace pikmin1.util {
                                       texCoordId = tevStage.TexCoord;
                                     }
 
-                                    var colorChannel = tevStage.ColorChannel;
-                                    if ((byte) colorChannel == 255) {
-                                      colorChannel
-                                          = GxColorChannel.GX_COLOR0A0;
-                                    }
-
                                     var tevOrderImpl = new TevOrderImpl {
                                         TexMap = texMap,
                                         TexCoordId = texCoordId,
-                                        ColorChannelId = colorChannel,
+                                        ColorChannelId = tevStage.ColorChannel,
                                         KonstColorSel
                                             = tevStage.KonstColorSelection,
                                         KonstAlphaSel
@@ -122,7 +117,8 @@ namespace pikmin1.util {
                                   })
                                   .ToArray();
 
-      this.ColorChannelControls = GetColorChannelControls_(material.lightingInfo);
+      this.ColorChannelControls
+          = GetColorChannelControls_(material.LightingInfo);
 
       {
         this.TextureIndices = material.texInfo.TexturesInMaterial
@@ -323,7 +319,7 @@ namespace pikmin1.util {
     }
 
     private static IColorChannelControl[] GetColorChannelControls_(
-        LightingInfo lightingInfo) {
+        LightingInfo? lightingInfo) {
       IColorChannelControl ccc0, ccc1, ccc2, ccc3;
 
       // In the game, it only ever uses lights 0 and 1.
@@ -332,65 +328,64 @@ namespace pikmin1.util {
                     GxLightMask.Light1 |
                     GxLightMask.Light2;
 
-      ccc0 = new ColorChannelControlImpl {
-          LightingEnabled = lightingInfo.LightingEnabledForChannelControl0,
-          MaterialSrc = lightingInfo.MaterialColorSrcForChannel02,
-          AmbientSrc = lightingInfo.AmbientColorSrcForChannel02,
-          LitMask = litMask,
-          DiffuseFunction = lightingInfo.DiffuseFunctionForChannel0,
-          AttenuationFunction
-              = lightingInfo.LightingEnabledForChannelControl0
-                  ? GxAttenuationFunction.Spot
-                  : GxAttenuationFunction.None,
-      };
-      ccc2 = new ColorChannelControlImpl {
-          LightingEnabled = lightingInfo.LightingEnabledForChannelControl2,
-          MaterialSrc = lightingInfo.MaterialColorSrcForChannel02,
-          AmbientSrc = lightingInfo.AmbientColorSrcForChannel02,
-          LitMask = litMask,
-          DiffuseFunction = lightingInfo.DiffuseFunctionForChannel2,
-          AttenuationFunction
-              = lightingInfo.LightingEnabledForChannelControl2
-                  ? GxAttenuationFunction.Spot
-                  : GxAttenuationFunction.None,
-          VertexColorIndex = 0,
-      };
-
-      if (lightingInfo.LightingEnabledForChannelControl1) {
-        ccc1 = new ColorChannelControlImpl {
-            LightingEnabled
-                = lightingInfo.LightingEnabledForChannelControl1,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
-            LitMask = litMask,
-            DiffuseFunction = lightingInfo.DiffuseFunctionForChannel1,
-            AttenuationFunction = GxAttenuationFunction.Spec,
-        };
-        ccc3 = new ColorChannelControlImpl {
-            LightingEnabled = false,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
+      if (lightingInfo == null) {
+        ccc0 = ccc1 = new ColorChannelControlImpl {
+            LightingEnabled = true,
+            AmbientSrc = GxColorSrc.Register,
+            MaterialSrc = GxColorSrc.Register,
             LitMask = litMask,
             DiffuseFunction = GxDiffuseFunction.Clamp,
+            AttenuationFunction = GxAttenuationFunction.None,
+        };
+      } else {
+        ccc0 = new ColorChannelControlImpl {
+            LightingEnabled = lightingInfo.LightingEnabledForColor0,
+            AmbientSrc = lightingInfo.AmbientColorSrcForColor0,
+            MaterialSrc = lightingInfo.MaterialColorSrcForColor0,
+            LitMask = litMask,
+            DiffuseFunction = lightingInfo.DiffuseFunctionForColor0,
+            AttenuationFunction = lightingInfo.LightingEnabledForColor0
+                ? GxAttenuationFunction.Spot
+                : GxAttenuationFunction.None,
+        };
+        ccc1 = new ColorChannelControlImpl {
+            LightingEnabled = lightingInfo.LightingEnabledForAlpha0,
+            MaterialSrc = lightingInfo.MaterialColorSrcForAlpha0,
+            AmbientSrc = lightingInfo.AmbientColorSrcForAlpha0,
+            LitMask = litMask,
+            DiffuseFunction = lightingInfo.DiffuseFunctionForAlpha0,
+            AttenuationFunction = lightingInfo.LightingEnabledForAlpha0
+                ? GxAttenuationFunction.Spot
+                : GxAttenuationFunction.None,
+        };
+      }
+
+      if (lightingInfo is not { LightingEnabledForColor1: true }) {
+        ccc2 = ccc3 = new ColorChannelControlImpl {
+            LightingEnabled = false,
+            AmbientSrc = GxColorSrc.Register,
+            MaterialSrc = GxColorSrc.Register,
+            DiffuseFunction = GxDiffuseFunction.None,
             AttenuationFunction = GxAttenuationFunction.None,
             VertexColorIndex = 0,
         };
       } else {
-        ccc1 = new ColorChannelControlImpl {
-            LightingEnabled = false,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
-            LitMask = 0,
-            DiffuseFunction = GxDiffuseFunction.None,
-            AttenuationFunction = GxAttenuationFunction.None,
+        var colorAlpha1LitMask = (GxLightMask) 0x80;
+        ccc2 = new ColorChannelControlImpl {
+            LightingEnabled = true,
+            MaterialSrc = GxColorSrc.Register,
+            AmbientSrc = GxColorSrc.Register,
+            LitMask = colorAlpha1LitMask,
+            DiffuseFunction = lightingInfo.DiffuseFunctionForColor1,
+            AttenuationFunction = GxAttenuationFunction.Spec,
             VertexColorIndex = 0,
         };
         ccc3 = new ColorChannelControlImpl {
             LightingEnabled = false,
-            MaterialSrc = lightingInfo.MaterialColorSrcForChannel13,
-            AmbientSrc = lightingInfo.AmbientColorSrcForChannel13,
-            LitMask = 0,
-            DiffuseFunction = GxDiffuseFunction.None,
+            MaterialSrc = GxColorSrc.Register,
+            AmbientSrc = GxColorSrc.Register,
+            LitMask = colorAlpha1LitMask,
+            DiffuseFunction = GxDiffuseFunction.Clamp,
             AttenuationFunction = GxAttenuationFunction.None,
             VertexColorIndex = 0,
         };

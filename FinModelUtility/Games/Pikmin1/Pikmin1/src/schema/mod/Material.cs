@@ -93,7 +93,7 @@ public partial class AlphaAnimationInfo : IBinaryConvertible {
 [BinarySchema]
 public partial class PolygonColorInfo
     : IBinaryConvertible, IEquatable<PolygonColorInfo> {
-  public Rgba32 DiffuseColour;
+  public Rgba32 DiffuseColour { get; set; }
 
   [Unknown]
   public int AnimationLength = 0;
@@ -153,43 +153,43 @@ public partial record LightingInfo : IBinaryConvertible {
   public uint lightingInfoFlags;
 
   [Skip]
-  public bool LightingEnabledForChannelControl0
+  public bool LightingEnabledForColor0
     => this.lightingInfoFlags.GetBit(0);
 
   [Skip]
-  public bool LightingEnabledForChannelControl1
+  public bool LightingEnabledForColor1
     => this.lightingInfoFlags.GetBit(1);
 
   [Skip]
-  public bool LightingEnabledForChannelControl2
+  public bool LightingEnabledForAlpha0
     => this.lightingInfoFlags.GetBit(2);
 
   [Skip]
-  public GxDiffuseFunction DiffuseFunctionForChannel0
+  public GxDiffuseFunction DiffuseFunctionForColor0
     => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(3, 2);
 
   [Skip]
-  public GxDiffuseFunction DiffuseFunctionForChannel1
+  public GxDiffuseFunction DiffuseFunctionForAlpha0
     => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(5, 2);
 
   [Skip]
-  public GxDiffuseFunction DiffuseFunctionForChannel2
+  public GxDiffuseFunction DiffuseFunctionForColor1
     => (GxDiffuseFunction) this.lightingInfoFlags.ExtractFromRight(7, 2);
 
   [Skip]
-  public GxColorSrc AmbientColorSrcForChannel02
+  public GxColorSrc AmbientColorSrcForColor0
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(9, 1);
 
   [Skip]
-  public GxColorSrc AmbientColorSrcForChannel13
+  public GxColorSrc AmbientColorSrcForAlpha0
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(10, 1);
 
   [Skip]
-  public GxColorSrc MaterialColorSrcForChannel02
+  public GxColorSrc MaterialColorSrcForColor0
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(11, 1);
 
   [Skip]
-  public GxColorSrc MaterialColorSrcForChannel13
+  public GxColorSrc MaterialColorSrcForAlpha0
     => (GxColorSrc) this.lightingInfoFlags.ExtractFromRight(12, 1);
 
   [Unknown]
@@ -395,23 +395,21 @@ public record Material : IBinaryConvertible {
   [Unknown]
   public int unknown1 = 0;
 
-  public Rgba32 SomeColor;
-
   public uint TevGroupId = 0;
   public readonly PolygonColorInfo ColorInfo = new();
-  public readonly LightingInfo lightingInfo = new();
+  public LightingInfo? LightingInfo { get; private set; }
   public readonly PeInfo peInfo = new();
   public readonly TextureInfo texInfo = new();
 
   public void Read(IBinaryReader br) {
     this.flags = (MaterialFlags) br.ReadUInt32();
     this.unknown1 = br.ReadInt32();
-    this.SomeColor.Read(br);
+    this.ColorInfo.DiffuseColour.Read(br);
 
     if (this.flags.CheckFlag(MaterialFlags.ENABLED)) {
       this.TevGroupId = br.ReadUInt32();
       this.ColorInfo.Read(br);
-      this.lightingInfo.Read(br);
+      this.LightingInfo = br.ReadNew<LightingInfo>();
       this.peInfo.Read(br);
       this.texInfo.Read(br);
     }
@@ -422,7 +420,7 @@ public record Material : IBinaryConvertible {
   }
 
   public override string ToString()
-    => $"[{this.flags}] --> lightingFlags:{this.lightingInfo.lightingInfoFlags}, peFlags:{this.peInfo.Flags}, writeDepth:{this.peInfo.WriteNewIntoBuffer}, priority:{this.unknown1}";
+    => $"[{this.flags}] --> lightingFlags:{this.LightingInfo.lightingInfoFlags}, peFlags:{this.peInfo.Flags}, writeDepth:{this.peInfo.WriteNewIntoBuffer}, priority:{this.unknown1}";
 }
 
 [BinarySchema]
@@ -563,8 +561,7 @@ public partial class TEVStage : IBinaryConvertible {
   public GxKonstColorSel KonstColorSelection { get; set; }
   public GxKonstAlphaSel KonstAlphaSelection { get; set; }
 
-  [Unknown]
-  public ushort unknown65 = 0;
+  private ushort padding_ = 0;
 
   public ColorCombiner ColorCombiner { get; } = new();
   public AlphaCombiner AlphaCombiner { get; } = new();
