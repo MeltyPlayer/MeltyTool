@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -70,16 +71,6 @@ public class ModModelImporter : IModelImporter<ModModelFileBundle> {
     if (!hasVertices && !hasNormals && !hasFaces) {
       Asserts.Fail("Loaded file has nothing to export!");
     }
-
-    /*var colInfos = mod.colltris.collinfo;
-    if (colInfos.Count != 0) {
-      os.WriteLine();
-      os.WriteLine("o collision mesh");
-      foreach (var colInfo in colInfos) {
-        os.WriteLine(
-            $"f ${colInfo.indice.X + 1} ${colInfo.indice.Y + 1} ${colInfo.indice.Z + 1}");
-      }
-    }*/
 
     var textureImages = new IReadOnlyImage[mod.textures.Count][];
     ParallelHelper.For(0,

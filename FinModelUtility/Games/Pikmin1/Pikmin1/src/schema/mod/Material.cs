@@ -516,6 +516,8 @@ public partial class TEVColReg : IBinaryConvertible {
   [Unknown]
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public TCR_Unk2[] unknown5;
+
+  public override string ToString() => $"TEVColReg({this.Color})";
 }
 
 [BinarySchema]
