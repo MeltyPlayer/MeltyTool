@@ -40,7 +40,7 @@ public static class GxTextureFilterExtensions {
         GX_MIN_TEXTURE_FILTER.GX_NEAR_MIP_LIN => TextureMinFilter
             .NEAR_MIPMAP_LINEAR,
         GX_MIN_TEXTURE_FILTER.GX_LIN_MIP_LIN => TextureMinFilter
-            .LINEAR_MIPMAP_NEAR,
+            .LINEAR_MIPMAP_LINEAR,
         GX_MIN_TEXTURE_FILTER.GX_NEAR2 => TextureMinFilter.NEAR,
         GX_MIN_TEXTURE_FILTER.GX_NEAR3 => TextureMinFilter.NEAR,
     };
