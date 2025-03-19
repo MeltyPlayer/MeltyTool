@@ -51,8 +51,12 @@ public static partial class FileHierarchy {
           if (header.Version == CachedFileHierarchyDataHeader.CURRENT_VERSION &&
               (!FinConfig.VerifyCachedFileHierarchySize ||
                header.Size == actualSize)) {
-            var data = cacheFile.ReadNew<CachedFileHierarchyData>();
-            populatedSubdirs = data.Root;
+            try {
+              var data = cacheFile.ReadNew<CachedFileHierarchyData>();
+              populatedSubdirs = data.Root;
+            } catch {
+              // TODO: Log error
+            }
           }
         }
 
@@ -77,7 +81,12 @@ public static partial class FileHierarchy {
           ??= FinDirectoryStatic.GetTotalSize(this.directory_.FullPath);
       var populatedSubdirs = GetInfo_(this.directory_);
 
-      var data = new CachedFileHierarchyData { Root = populatedSubdirs };
+      var data = new CachedFileHierarchyData {
+          Header = new CachedFileHierarchyDataHeader {
+              Size = actualSize.Value
+          },
+          Root = populatedSubdirs
+      };
       this.cacheFile_.Write(data);
 
       return populatedSubdirs;
