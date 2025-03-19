@@ -114,6 +114,23 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
     var height = this.Height;
     GL.Viewport(0, 0, width, height);
 
+    // Dynamically update the near/far planes when far away to prevent clipping.
+    var glNearPlane = this.NearPlane;
+    var glFarPlane = this.FarPlane;
+    {
+      var distanceFromOrigin = this.Camera.Position.Length();
+      var maxDistance = 10;
+      if (distanceFromOrigin > maxDistance) {
+        glNearPlane += distanceFromOrigin - maxDistance;
+        glFarPlane += distanceFromOrigin - maxDistance;
+      }
+
+      this.skyboxRenderer_.NearPlane
+          = this.infiniteGridRenderer_.NearPlane = glNearPlane;
+      this.skyboxRenderer_.FarPlane
+          = this.infiniteGridRenderer_.FarPlane = glFarPlane;
+    }
+
     var singleAreaDefinition = this.singleArea_?.Definition;
     if (singleAreaDefinition?.BackgroundColor != null) {
       GlUtil.SetClearColor(singleAreaDefinition.BackgroundColor.Value);
@@ -126,8 +143,8 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
       GlTransform.LoadIdentity();
       GlTransform.Perspective(this.FovY,
                               1.0 * width / height,
-                              this.NearPlane,
-                              this.FarPlane);
+                              glNearPlane,
+                              glFarPlane);
     }
 
     {

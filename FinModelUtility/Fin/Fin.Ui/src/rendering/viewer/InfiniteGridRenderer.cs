@@ -1,7 +1,10 @@
 ﻿using fin.model.impl;
 using fin.model.util;
 using fin.shaders.glsl;
+using fin.ui.rendering.gl;
+using fin.ui.rendering.gl.material;
 using fin.ui.rendering.gl.model;
+using fin.util.linq;
 
 namespace fin.ui.rendering.viewer;
 
@@ -13,8 +16,18 @@ namespace fin.ui.rendering.viewer;
 public class InfiniteGridRenderer : IRenderable {
   private IModelRenderer? impl_;
 
+  private IShaderUniform<float> nearPlaneUniform_;
+  private IShaderUniform<float> farPlaneUniform_;
+
+  public float NearPlane { get; set; }
+  public float FarPlane { get; set; }
+
   public void Render() {
     this.impl_ ??= this.GenerateModel_();
+
+    this.nearPlaneUniform_.SetAndMaybeMarkDirty(this.NearPlane);
+    this.farPlaneUniform_.SetAndMaybeMarkDirty(this.FarPlane);
+
     this.impl_.Render();
   }
 
@@ -43,11 +56,14 @@ public class InfiniteGridRenderer : IRenderable {
           {{GlslConstants.FLOAT_PRECISION}}
 
           {{GlslUtil.GetMatricesHeader(model)}}
-          
+
           uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
+
+          uniform float nearPlane;
+          uniform float farPlane;
           
           in vec2 screenPosition;
-          
+
           out vec4 fragColor;
 
           // calculate line mask, using a bit of fwidth() magic to make line width not affected by perspective
@@ -57,20 +73,17 @@ public class InfiniteGridRenderer : IRenderable {
             value = 1.0 - value;
             
             value = clamp(value, 0.0, 1.0);
-
+          
             // Apply gamma correction
             value = vec2(pow(value.x, 1.0 / 2.2), pow(value.y, 1.0 / 2.2));
-
+          
             return value;         
           }
 
           void main() {
-            float near = {{UiConstants.NEAR_PLANE:0.0###########}};
-            float far = {{UiConstants.FAR_PLANE:0.0###########}};
-          
             // ray from camera to fragment in world space
             mat4 invProjectionViewMatrix = inverse({{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}} * {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}});
-            vec3 rayWorld = (invProjectionViewMatrix * vec4(screenPosition * (far - near), far + near, far - near)).xyz;
+            vec3 rayWorld = (invProjectionViewMatrix * vec4(screenPosition * (farPlane - nearPlane), farPlane + nearPlane, farPlane - nearPlane)).xyz;
             rayWorld = -normalize(rayWorld);
             
             // calculate fragment position in world space
@@ -80,8 +93,8 @@ public class InfiniteGridRenderer : IRenderable {
             vec4 pp = {{GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME}} * {{GlslConstants.UNIFORM_VIEW_MATRIX_NAME}} * vec4(vertexPosition, 0.0, 1.0);
             float ndcDepth = pp.z / pp.w;
             
-            near = gl_DepthRange.near;
-            far = gl_DepthRange.far;
+            float near = gl_DepthRange.near;
+            float far = gl_DepthRange.far;
             gl_FragDepth = (((far - near) * ndcDepth) + near + far) / 2.0;
             
             // calculate planar distance from camera to fragment (used for fading)
@@ -143,6 +156,18 @@ public class InfiniteGridRenderer : IRenderable {
 
     mesh.AddQuads(v0, v1, v2, v3).SetMaterial(material);
 
-    return new ModelRenderer(model);
+    var modelRenderer = new ModelRenderer(model);
+    modelRenderer.GenerateModelIfNull();
+
+    var shaders = modelRenderer
+                  .GetMaterialShaders(material)
+                  .ToArray();
+    var shader = shaders.WhereIs<IGlMaterialShader, GlShaderMaterialShader>()
+                        .Single();
+    var shaderProgram = shader.ShaderProgram;
+    this.nearPlaneUniform_ = shaderProgram.GetUniformFloat("nearPlane");
+    this.farPlaneUniform_ = shaderProgram.GetUniformFloat("farPlane");
+
+    return modelRenderer;
   }
 }
