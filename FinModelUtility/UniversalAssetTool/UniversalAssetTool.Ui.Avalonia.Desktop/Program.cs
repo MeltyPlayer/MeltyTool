@@ -4,6 +4,8 @@ using Avalonia;
 using Avalonia.OpenGL;
 using Avalonia.ReactiveUI;
 
+using fin.services;
+
 using uni.cli;
 
 namespace uni.ui.avalonia.desktop;

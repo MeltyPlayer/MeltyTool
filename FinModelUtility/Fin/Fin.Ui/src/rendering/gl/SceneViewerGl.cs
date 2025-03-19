@@ -1,6 +1,8 @@
 ﻿using fin.animation;
+using fin.io.web;
 using fin.model;
 using fin.scene;
+using fin.services;
 using fin.ui.rendering.gl.model;
 using fin.ui.rendering.gl.scene;
 using fin.ui.rendering.viewer;
@@ -194,6 +196,11 @@ public class SceneViewerGl : ISceneViewer, IRenderable {
                       this.ViewerScale,
                       this.ViewerScale);
 
-    this.sceneRenderer_?.Render();
+    try {
+      this.sceneRenderer_?.Render();
+    } catch (Exception e) {
+      this.sceneRenderer_ = null;
+      ExceptionService.HandleException(e, null);
+    }
   }
 }

@@ -46,7 +46,7 @@ public partial class ModelRenderer {
 
     private void ReleaseUnmanagedResources_() {
       this.MaterialShader?.Dispose();
-      this.bufferRenderer_.Dispose();
+      this.bufferRenderer_?.Dispose();
     }
 
     public void Render() {

@@ -1,6 +1,8 @@
-﻿using fin.io.web;
+﻿using System;
 
-namespace uni;
+using fin.io.web;
+
+namespace fin.services;
 
 public static class ExceptionService {
   public static void HandleException(Exception e, IExceptionContext? c)

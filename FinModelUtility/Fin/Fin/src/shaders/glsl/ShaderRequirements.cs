@@ -65,7 +65,8 @@ public class ShaderRequirements : IShaderRequirements {
     if (material != null && material is not IReadOnlyFixedFunctionMaterial) {
       foreach (var texture in material.Textures) {
         var uvIndex = texture.UvIndex;
-        Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
+        Asserts.True(modelRequirements.NumUvs >= uvIndex + 1,
+                     $"Expected material mesh to have at least {uvIndex} UVs!");
         this.UsedUvs[uvIndex] = true;
       }
     }
@@ -91,7 +92,8 @@ public class ShaderRequirements : IShaderRequirements {
           if (equations.DoOutputsDependOnTextureSource(i)) {
             if (textureSource.UvType == UvType.STANDARD) {
               var uvIndex = textureSource.UvIndex;
-              Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
+              Asserts.True(modelRequirements.NumUvs >= uvIndex + 1,
+                           $"Expected material mesh to have at least {uvIndex} UVs!");
               this.UsedUvs[uvIndex] = true;
             }
           }
@@ -100,7 +102,8 @@ public class ShaderRequirements : IShaderRequirements {
         var normalTexture = fixedFunctionMaterial.NormalTexture;
         if (normalTexture != null) {
           var uvIndex = normalTexture.UvIndex;
-          Asserts.True(modelRequirements.NumUvs >= uvIndex + 1);
+          Asserts.True(modelRequirements.NumUvs >= uvIndex + 1,
+                       $"Expected material mesh to have at least {uvIndex} UVs!");
           this.UsedUvs[uvIndex] = true;
         }
 
@@ -109,7 +112,8 @@ public class ShaderRequirements : IShaderRequirements {
                   FixedFunctionSource.VERTEX_COLOR_0 + i,
                   FixedFunctionSource.VERTEX_ALPHA_0 + i
               ])) {
-            Asserts.True(modelRequirements.NumColors >= i + 1);
+            Asserts.True(modelRequirements.NumColors >= i + 1,
+                         $"Expected material mesh to have at least {i} vertex colors!");
             this.UsedColors[i] = true;
           }
         }
