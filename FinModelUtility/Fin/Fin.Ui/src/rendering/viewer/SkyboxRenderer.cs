@@ -59,6 +59,7 @@ public class SkyboxRenderer : IRenderable {
           uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
 
           uniform float nearPlane;
+          uniform float farPlane;
           
           in vec2 screenPosition;
 
