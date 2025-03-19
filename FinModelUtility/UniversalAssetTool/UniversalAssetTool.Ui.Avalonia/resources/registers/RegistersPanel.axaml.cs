@@ -4,6 +4,7 @@ using System.Linq;
 using Avalonia.Controls;
 
 using fin.language.equations.fixedFunction;
+using fin.util.strings;
 
 using ReactiveUI;
 
@@ -32,11 +33,13 @@ public class RegistersPanelViewModel : ViewModelBase {
           = value?.ColorRegisters
                  .Select(r => new ColorRegisterPickerViewModel
                              { ColorRegister = r })
+                 .OrderBy(p => p.ColorRegister.Name, StringUtil.NaturalSortInstance)
                  .ToArray();
       this.ScalarRegisterPickers
           = value?.ScalarRegisters
                  .Select(r => new ScalarRegisterPickerViewModel
                              { ScalarRegister = r })
+                 .OrderBy(p => p.ScalarRegister.Name, StringUtil.NaturalSortInstance)
                  .ToArray();
     }
   }
