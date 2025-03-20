@@ -6,7 +6,16 @@ using System.Runtime.CompilerServices;
 namespace fin.data.dictionaries;
 
 public class CaseInvariantStringDictionary<T> : IFinDictionary<string, T> {
-  private readonly Dictionary<string, T> impl_ = new(StringComparer.OrdinalIgnoreCase);
+  private readonly Dictionary<string, T> impl_
+      = new(StringComparer.OrdinalIgnoreCase);
+
+  private readonly Dictionary<string, T>.AlternateLookup<ReadOnlySpan<char>>
+      spanImpl_;
+
+  public CaseInvariantStringDictionary() {
+    this.impl_ = new Dictionary<string, T>(StringComparer.OrdinalIgnoreCase);
+    this.spanImpl_ = this.impl_.GetAlternateLookup<ReadOnlySpan<char>>();
+  }
 
   public void Clear() => this.impl_.Clear();
 
@@ -23,6 +32,11 @@ public class CaseInvariantStringDictionary<T> : IFinDictionary<string, T> {
     set => this.impl_[key] = value;
   }
 
+  public T this[ReadOnlySpan<char> key] {
+    get => this.spanImpl_[key];
+    set => this.spanImpl_[key] = value;
+  }
+
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
   public IEnumerator<(string Key, T Value)> GetEnumerator() {
@@ -30,5 +44,4 @@ public class CaseInvariantStringDictionary<T> : IFinDictionary<string, T> {
       yield return (key, value);
     }
   }
-
 }
