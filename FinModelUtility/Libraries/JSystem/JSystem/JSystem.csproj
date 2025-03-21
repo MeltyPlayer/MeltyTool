@@ -63,7 +63,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\..\Gx\Gx.csproj" />
+    <ProjectReference Include="..\..\Gx\Gx\Gx.csproj" />
   </ItemGroup>
 
 </Project>
