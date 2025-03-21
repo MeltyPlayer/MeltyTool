@@ -1,4 +1,6 @@
-﻿namespace fin.io;
+﻿using fin.io.hierarchy;
+
+namespace fin.io;
 
 public static partial class FileHierarchy {
   public static IFileHierarchy From(ISystemDirectory directory)
