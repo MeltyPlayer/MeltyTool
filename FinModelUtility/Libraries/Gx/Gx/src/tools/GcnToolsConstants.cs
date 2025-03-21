@@ -1,7 +1,7 @@
 ﻿using fin.common;
 using fin.io;
 
-namespace uni.platforms.gcn.tools;
+namespace gx.tools;
 
 public static class GcnToolsConstants {
   public static IReadOnlySystemDirectory SZSTOOLS_DIRECTORY { get; } =

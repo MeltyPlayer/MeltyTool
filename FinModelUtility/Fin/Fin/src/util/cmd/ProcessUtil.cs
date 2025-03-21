@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 using fin.io;
 using fin.log;
 using fin.util.asserts;
 
-namespace uni.util.cmd;
+namespace fin.util.cmd;
 
 public class ProcessUtil {
   public static Process ExecuteBlocking(

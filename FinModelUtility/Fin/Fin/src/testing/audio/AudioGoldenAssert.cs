@@ -12,46 +12,6 @@ using fin.audio.stubbed;
 namespace fin.testing.audio;
 
 public static class AudioGoldenAssert {
-  public static IEnumerable<TAudioBundle> GetGoldenAudioBundles<TAudioBundle>(
-      ISystemDirectory rootGoldenDirectory,
-      Func<IFileHierarchyDirectory, TAudioBundle>
-          gatherAudioBundleFromInputDirectory)
-      where TAudioBundle : IAudioFileBundle {
-    foreach (var goldenSubdir in
-             GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)) {
-      var inputDirectory = goldenSubdir.AssertGetExistingSubdir("input");
-      var audioBundle = gatherAudioBundleFromInputDirectory(inputDirectory);
-
-      yield return audioBundle;
-    }
-  }
-
-  /// <summary>
-  ///   Asserts model goldens. Assumes that directories will be stored as the following:
-  ///
-  ///   - {goldenDirectory}
-  ///     - {goldenName1}
-  ///       - input
-  ///         - {raw golden files}
-  ///       - output
-  ///         - {exported files}
-  ///     - {goldenName2}
-  ///       ... 
-  /// </summary>
-  public static void AssertExportGoldens<TAudioBundle>(
-      ISystemDirectory rootGoldenDirectory,
-      IAudioImporter<TAudioBundle> audioImporter,
-      Func<IFileHierarchyDirectory, TAudioBundle>
-          gatherAudioBundleFromInputDirectory)
-      where TAudioBundle : IAudioFileBundle {
-    foreach (var goldenSubdir in
-             GoldenAssert.GetGoldenDirectories(rootGoldenDirectory)) {
-      AssertGolden(goldenSubdir,
-                                     audioImporter,
-                                     gatherAudioBundleFromInputDirectory);
-    }
-  }
-
   private static string EXTENSION = ".ogg";
 
   public static void AssertGolden<TAudioBundle>(
@@ -60,21 +20,11 @@ public static class AudioGoldenAssert {
       Func<IFileHierarchyDirectory, TAudioBundle>
           gatherAudioBundleFromInputDirectory)
       where TAudioBundle : IAudioFileBundle {
-    using var audioManager = new StubbedAudioManager();
-
-    var inputDirectory = goldenSubdir.AssertGetExistingSubdir("input");
-    var audioBundle = gatherAudioBundleFromInputDirectory(inputDirectory);
-
-    var outputDirectory = goldenSubdir.AssertGetExistingSubdir("output");
-    var hasGoldenExport =
-        outputDirectory.GetFilesWithFileType(EXTENSION).Any();
-
-    GoldenAssert.RunInTestDirectory(
+    GoldenAssert.AssertGoldenFiles(
         goldenSubdir,
-        tmpDirectory => {
-          var targetDirectory =
-              hasGoldenExport ? tmpDirectory : outputDirectory.Impl;
-
+        (inputDirectory, targetDirectory) => {
+          using var audioManager = new StubbedAudioManager();
+          var audioBundle = gatherAudioBundleFromInputDirectory(inputDirectory);
           var audioBuffer
               = audioImporter.ImportAudio(audioManager, audioBundle);
           new OggAudioExporter()
@@ -83,12 +33,6 @@ public static class AudioGoldenAssert {
                   new FinFile(
                       Path.Combine(targetDirectory.FullPath,
                                    $"{audioBundle.MainFile.NameWithoutExtension}{EXTENSION}")));
-
-          if (hasGoldenExport) {
-            GoldenAssert.AssertFilesInDirectoriesAreIdentical(
-                tmpDirectory,
-                outputDirectory.Impl);
-          }
         });
   }
 }

@@ -49,10 +49,28 @@ public static class GoldenAssert {
                     .Where(subdir => !subdir.Name.SequenceEqual(TMP_NAME));
   }
 
-  public static IEnumerable<IFileHierarchyDirectory>
-      GetGoldenInputDirectories(ISystemDirectory rootGoldenDirectory)
-    => GetGoldenDirectories(rootGoldenDirectory)
-        .Select(subdir => subdir.AssertGetExistingSubdir("input"));
+  public static void AssertGoldenFiles(
+      IFileHierarchyDirectory goldenSubdir,
+      Action<IFileHierarchyDirectory, ISystemDirectory> handler) {
+    var inputDirectory = goldenSubdir.AssertGetExistingSubdir("input");
+    var outputDirectory = goldenSubdir.AssertGetExistingSubdir("output");
+    var hasGoldenExport = !outputDirectory.IsEmpty;
+
+    GoldenAssert.RunInTestDirectory(
+        goldenSubdir,
+        tmpDirectory => {
+          var targetDirectory =
+              hasGoldenExport ? tmpDirectory : outputDirectory.Impl;
+
+          handler(inputDirectory, targetDirectory);
+
+          if (hasGoldenExport) {
+            GoldenAssert.AssertFilesInDirectoriesAreIdentical(
+                tmpDirectory,
+                outputDirectory.Impl);
+          }
+        });
+  }
 
   public static void RunInTestDirectory(
       IFileHierarchyDirectory goldenSubdir,
@@ -85,7 +103,10 @@ public static class GoldenAssert {
         try {
           AssertFilesAreIdentical_(lhsFile, rhsFile);
         } catch {
-          if (lhsFile.FileType.ToLower() is ".bmp" or ".jpg" or ".jpeg" or ".gif"
+          if (lhsFile.FileType.ToLower() is ".bmp"
+                                            or ".jpg"
+                                            or ".jpeg"
+                                            or ".gif"
                                             or ".png") {
             AssertImageFilesAreIdentical_(lhsFile, rhsFile);
           } else {

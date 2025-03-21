@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+
+namespace fin.util.cmd;
 
 /// <summary>
 /// Allows processes to be automatically killed if this parent process unexpectedly quits.

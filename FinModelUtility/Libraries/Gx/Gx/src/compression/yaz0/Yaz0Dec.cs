@@ -1,10 +1,11 @@
 ﻿using fin.io;
 using fin.log;
 using fin.util.asserts;
+using fin.util.cmd;
 
-using uni.util.cmd;
+using gx.tools;
 
-namespace uni.platforms.gcn.tools;
+namespace gx.compression.yaz0;
 
 public class Yaz0Dec {
   public bool Run(IFileHierarchyFile file, bool cleanup) {
