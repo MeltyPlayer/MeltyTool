@@ -3,6 +3,10 @@ using fin.io;
 using fin.io.archive;
 using fin.util.strings;
 
+using gx.archives.rarc;
+using gx.compression.yay0;
+using gx.compression.yaz0;
+
 using uni.games;
 using uni.platforms.gcn.tools;
 
@@ -65,7 +69,9 @@ public class GcnFileHierarchyExtractor {
         foreach (var file in subdir.FilesWithExtensions(
                      options.Yay0DecExtensions)) {
           didDecompress |=
-              this.yay0Dec_.Run(file, options.ContainerCleanupEnabled);
+              this.yay0Dec_.Run(file,
+                                file.Impl.CloneWithFileType(".rarc"),
+                                options.ContainerCleanupEnabled);
         }
 
         foreach (var file in subdir.FilesWithExtensions(

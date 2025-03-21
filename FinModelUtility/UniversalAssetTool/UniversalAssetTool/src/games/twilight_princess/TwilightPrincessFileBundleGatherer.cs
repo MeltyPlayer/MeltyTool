@@ -1,6 +1,9 @@
 ﻿using fin.io.bundles;
 using fin.util.progress;
 
+using gx.archives.rarc;
+using gx.compression.yaz0;
+
 using jsystem.api;
 
 using uni.platforms.gcn;

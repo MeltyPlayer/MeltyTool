@@ -2,11 +2,13 @@
 using fin.log;
 using fin.schema;
 using fin.util.asserts;
+using fin.util.cmd;
+
+using gx.archives.rarc;
+using gx.tools;
 
 using schema.binary;
 using schema.binary.attributes;
-
-using uni.util.cmd;
 
 namespace uni.platforms.gcn.tools {
   public class RarcDump2 {

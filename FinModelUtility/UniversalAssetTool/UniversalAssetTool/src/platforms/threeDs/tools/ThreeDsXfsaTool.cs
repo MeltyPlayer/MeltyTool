@@ -1,9 +1,9 @@
 ﻿using fin.io;
 using fin.log;
 using fin.util.asserts;
+using fin.util.cmd;
 
 using uni.platforms.gcn.tools;
-using uni.util.cmd;
 
 namespace uni.platforms.threeDs.tools;
 

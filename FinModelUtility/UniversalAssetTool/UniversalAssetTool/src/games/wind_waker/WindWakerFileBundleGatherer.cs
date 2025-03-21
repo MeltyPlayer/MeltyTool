@@ -6,10 +6,12 @@ using fin.util.lists;
 using fin.util.progress;
 using fin.util.strings;
 
+using gx.archives.rarc;
+using gx.compression.yaz0;
+
 using jsystem.api;
 
 using uni.platforms.gcn;
-using uni.platforms.gcn.tools;
 
 #pragma warning disable CS8604
 
