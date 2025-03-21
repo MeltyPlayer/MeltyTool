@@ -8,6 +8,5 @@ public static class GcnToolsConstants {
     DirectoryConstants.TOOLS_DIRECTORY.AssertGetExistingSubdir("szstools");
 
   public static IReadOnlySystemFile RARCDUMP_EXE { get; } =
-    SZSTOOLS_DIRECTORY
-                     .AssertGetExistingFile("rarcdump.exe");
+    SZSTOOLS_DIRECTORY.AssertGetExistingFile("rarcdump.exe");
 }
