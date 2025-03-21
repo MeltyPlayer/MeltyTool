@@ -1,5 +1,6 @@
 ﻿using fin.io;
 using fin.util.asserts;
+using fin.util.streams;
 
 using schema.binary;
 
@@ -17,6 +18,10 @@ public class Yay0Dec {
       return false;
     }
 
+    if (!MagicTextUtil.Verify(srcFile, "Yay0")) {
+      return false;
+    }
+
     using var src = srcFile.OpenRead();
     using var dst = dstFile.OpenWrite();
     Decompress_(src, dst);
@@ -28,6 +33,10 @@ public class Yay0Dec {
     return true;
   }
 
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://github.com/LagoLunatic/gclib/blob/3a8a9339cc63c1d57490e9c094b0a50daa7ba736/gclib/yaz0_yay0.py#L252
+  /// </summary>
   private static void Decompress_(Stream src, Stream dst) {
     using var srcBr = new SchemaBinaryReader(src, Endianness.BigEndian);
 
@@ -39,10 +48,9 @@ public class Yay0Dec {
 
     var dstBuffer = new MemoryStream((int) uncompSize);
 
-    uint outputLen = 0;
     var maskBitsLeft = 0;
     uint mask = 0;
-    while (outputLen < uncompSize) {
+    while (dstBuffer.Length < uncompSize) {
       if (maskBitsLeft == 0) {
         mask = srcBr.ReadUInt32();
         maskBitsLeft = 32;
@@ -54,7 +62,6 @@ public class Yay0Dec {
 
         dstBuffer.WriteByte(srcBr.ReadByte());
         ++chunkOffset;
-        ++outputLen;
 
         srcBr.Position = tmp;
       } else {
@@ -67,23 +74,22 @@ public class Yay0Dec {
         srcBr.Position = tmp;
 
         var dist = link & 0x0FFF;
-        uint copy_src_offset = (uint) (outputLen - (dist + 1));
-        var num_bytes = link >> 12;
+        uint copySrcOffset = (uint) (dstBuffer.Length - (dist + 1));
+        var numBytes = link >> 12;
 
-        if (num_bytes == 0) {
+        if (numBytes == 0) {
           var chunkTmp = srcBr.Position;
           srcBr.Position = chunkOffset;
 
-          num_bytes = srcBr.ReadByte() + 0x12;
+          numBytes = srcBr.ReadByte() + 0x12;
           ++chunkOffset;
 
           srcBr.Position = chunkTmp;
         } else {
-          num_bytes += 2;
+          numBytes += 2;
         }
 
-        CopyFromEarlierInStream_(dstBuffer, copy_src_offset, num_bytes);
-        outputLen += (uint) num_bytes;
+        dstBuffer.CopyFromMiddleToEnd(copySrcOffset, numBytes);
       }
 
       mask <<= 1;
@@ -92,19 +98,5 @@ public class Yay0Dec {
 
     dstBuffer.Position = 0;
     dstBuffer.CopyTo(dst);
-  }
-
-  private static void CopyFromEarlierInStream_(
-      Stream stream,
-      uint srcOffset,
-      int srcLength) {
-    Span<byte> buffer = stackalloc byte[srcLength];
-
-    var tmp = stream.Position;
-    stream.Position = srcOffset;
-    stream.Read(buffer);
-    stream.Position = tmp;
-
-    stream.Write(buffer);
   }
 }
