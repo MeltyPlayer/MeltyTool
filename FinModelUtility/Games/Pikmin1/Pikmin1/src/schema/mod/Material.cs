@@ -501,7 +501,7 @@ public partial class TEVInfo : IBinaryConvertible {
 [BinarySchema]
 public partial class TEVColReg : IBinaryConvertible {
   [Unknown]
-  public readonly Rgba64 Color = new();
+  public readonly RgbaS10 Color = new();
 
   [Unknown]
   public int unknown2 = 0;

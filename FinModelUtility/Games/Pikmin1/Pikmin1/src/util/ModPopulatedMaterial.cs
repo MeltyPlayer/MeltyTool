@@ -10,6 +10,8 @@ using fin.util.enums;
 
 using gx;
 
+using modl.schema.anim;
+
 using pikmin1.schema.mod;
 
 
@@ -19,6 +21,10 @@ namespace pikmin1.util {
                                 Material material,
                                 int tevInfoIndex,
                                 TEVInfo tevInfo) {
+      if (materialIndex == 45) {
+        ;
+      }
+
       // TODO: Where does this come from?
       this.CullMode = GxCullMode.Back;
 
@@ -29,11 +35,7 @@ namespace pikmin1.util {
                  .Select(reg => reg.Color)
                  .Select((rgba, i) => (IColorRegister) new GxColorRegister {
                      // TODO: Support nonclipped colors
-                     Color = Color.FromArgb(
-                         rgba.A.Clamp((ushort) 0, (ushort) 255),
-                         rgba.R.Clamp((ushort) 0, (ushort) 255),
-                         rgba.G.Clamp((ushort) 0, (ushort) 255),
-                         rgba.B.Clamp((ushort) 0, (ushort) 255)),
+                     Color = rgba.ToColor(),
                      Index = 3 * tevInfoIndex + i,
                  })
                  .ToArray();
