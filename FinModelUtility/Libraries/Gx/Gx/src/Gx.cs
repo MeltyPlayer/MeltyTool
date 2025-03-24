@@ -1,21 +1,15 @@
 ﻿namespace gx;
 
 /// <summary>
-///   Shamelessly copied from https://github.com/magcius/noclip.website/blob/1fa39ab5d9d014095c77a8509bf6ba87d3296200/src/gx/gx_enum.ts
+///   Shamelessly copied from:
+///   https://github.com/magcius/noclip.website/blob/1fa39ab5d9d014095c77a8509bf6ba87d3296200/src/gx/gx_enum.ts#L33
+///   https://github.com/RenaKunisaki/SFA-Amethyst/blob/7844a5fe15485bf79fe672ef7d47f44d76b98b0f/include/sfa/gx/opcodes.h
 /// </summary>
 public enum GxOpcode : byte {
   NOP = 0x0,
 
-  DRAW_QUADS = 0x80,
-
-  // Early code for GX_DRAW_QUADS? Seen in Luigi's Mansion.
-  DRAW_QUADS_2 = 0x88,
-  DRAW_TRIANGLES = 0x90,
-  DRAW_TRIANGLE_STRIP = 0x98,
-  DRAW_TRIANGLE_FAN = 0xA0,
-  DRAW_LINES = 0xA8,
-  DRAW_LINE_STRIP = 0xB0,
-  DRAW_POINTS = 0xB8,
+  LOAD_CP_REG = 0x08,
+  LOAD_XF_REG = 0x10,
 
   LOAD_INDX_A = 0x20,
   LOAD_INDX_B = 0x28,
@@ -23,8 +17,14 @@ public enum GxOpcode : byte {
   LOAD_INDX_D = 0x38,
 
   LOAD_BP_REG = 0x61,
-  LOAD_CP_REG = 0x08,
-  LOAD_XF_REG = 0x10,
+
+  DRAW_QUADS = 0x80,
+  DRAW_TRIANGLES = 0x90,
+  DRAW_TRIANGLE_STRIP = 0x98,
+  DRAW_TRIANGLE_FAN = 0xA0,
+  DRAW_LINES = 0xA8,
+  DRAW_LINE_STRIP = 0xB0,
+  DRAW_POINTS = 0xB8,
 }
 
 public enum GxComponentCountType {

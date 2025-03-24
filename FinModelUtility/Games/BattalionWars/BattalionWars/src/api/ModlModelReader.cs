@@ -1,9 +1,11 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 
 using fin.animation.keyframes;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
+using fin.image;
 using fin.io;
 using fin.model;
 using fin.model.impl;
@@ -21,6 +23,7 @@ using modl.schema.modl.bw2;
 using modl.schema.res.texr;
 
 using schema.binary;
+
 
 namespace modl.api;
 
@@ -118,20 +121,25 @@ public class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
       var textureDictionary = new LazyCaseInvariantStringDictionary<Task<ITexture>>(
           async textureNameWithoutExtension => {
             var textureName = $"{textureNameWithoutExtension}.texr";
-            IReadOnlyTreeFile textureFile;
+            IReadOnlyTreeFile? textureFile;
             if (!levelDir.TryToGetExistingFile(
                     textureName,
                     out textureFile)) {
               textureFile = baseLevelDir
                             .GetFilesWithNameRecursive(textureName)
-                            .First();
+                            .FirstOrDefault();
             }
 
-            files.Add(textureFile);
-            var texr = gameVersion == GameVersion.BW2
-                ? (ITexr) textureFile.ReadNew<Gtxd>()
-                : textureFile.ReadNew<Text>();
-            var image = texr.Image;
+            IImage image;
+            if (textureFile != null) {
+              files.Add(textureFile);
+              var texr = gameVersion == GameVersion.BW2
+                  ? (ITexr) textureFile.ReadNew<Gtxd>()
+                  : textureFile.ReadNew<Text>();
+              image = texr.Image;
+            } else {
+              image = FinImage.Create1x1FromColor(Color.Magenta);
+            }
 
             var finTexture =
                 model.MaterialManager.CreateTexture(image);

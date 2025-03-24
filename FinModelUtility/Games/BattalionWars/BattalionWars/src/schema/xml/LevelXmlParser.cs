@@ -17,6 +17,7 @@ using fin.util.sets;
 using modl.api;
 using modl.schema.terrain;
 
+
 namespace modl.schema.xml;
 
 public interface IBwObject {
@@ -168,7 +169,8 @@ public class LevelXmlParser {
                                       out var sunXNormal,
                                       out var sunYNormal,
                                       out var sunZNormal);
-          sunLight.SetNormal(new Vector3(-sunXNormal, -sunYNormal, -sunZNormal));
+          sunLight.SetNormal(
+              new Vector3(-sunXNormal, -sunYNormal, -sunZNormal));
         }
 
         {
@@ -244,12 +246,12 @@ public class LevelXmlParser {
               }
 
               isUsefulNode = true;
-              node ??= new LevelObject { Id = objId };
+              node ??= new LevelObject {Id = objId};
               node.Matrix = new FinMatrix4x4(floats.AsSpan());
             } else if (objectType is "cNodeHierarchyResource" &&
                        childNameAttribute is "mName") {
               isUsefulNode = true;
-              node ??= new LevelObject { Id = objId };
+              node ??= new LevelObject {Id = objId};
               node.ModelName = childTag["Item"].InnerText;
             }
 
@@ -257,7 +259,7 @@ public class LevelXmlParser {
           }
           case "Enum": {
             if (childNameAttribute is "mStickToFloor") {
-              node ??= new LevelObject { Id = objId };
+              node ??= new LevelObject {Id = objId};
               node.StickToFloor = childTag["Item"].InnerText == "eTrue";
             }
 
@@ -266,14 +268,14 @@ public class LevelXmlParser {
           case "Pointer": {
             if (childNameAttribute is "mBase") {
               isUsefulNode = true;
-              node ??= new LevelObject { Id = objId };
+              node ??= new LevelObject {Id = objId};
               node.AddChild(childTag["Item"].InnerText);
             }
 
             if (childNameAttribute is "NextLinkObject") {
               var nextLinkId = childTag["Item"].InnerText;
               if (nextLinkId != "0") {
-                node ??= new LevelObject { Id = objId };
+                node ??= new LevelObject {Id = objId};
                 node.NextLinkId = nextLinkId;
               }
             }
@@ -286,11 +288,11 @@ public class LevelXmlParser {
                                       or "Model"
                                       or "model") {
               isUsefulNode = true;
-              node ??= new LevelObject { Id = objId };
+              node ??= new LevelObject {Id = objId};
               node.AddChild(childTag["Item"].InnerText);
             } else if (childNameAttribute is "Element") {
               isUsefulNode = true;
-              node ??= new LevelObject { Id = objId };
+              node ??= new LevelObject {Id = objId};
               var itemNodes = childTag.ChildNodes;
               for (var itemI = 0; itemI < itemNodes.Count; ++itemI) {
                 node.AddChild(itemNodes[itemI].InnerText);
@@ -474,18 +476,16 @@ public class LevelXmlParser {
                                  translation.X,
                                  translation.Z),
                     translation.Z);
-              } else if (nextLinkId != null) {
-                var positionObj = levelObjMap[nextLinkId];
+              } else if (nextLinkId != null &&
+                         levelObjMap.TryGetValue(
+                             nextLinkId,
+                             out var positionObj)) {
                 sceneObject.SetPosition(
                     translation.X,
                     positionObj.Position.Y,
                     translation.Z);
               } else {
                 sceneObject.SetPosition(translation);
-              }
-
-              if (child.ModelName.Contains("WA20H")) {
-                ;
               }
 
               levelObjMap[levelObj.Id] = sceneObject;
