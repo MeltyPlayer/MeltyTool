@@ -4,13 +4,10 @@ using System.Linq;
 using System.Numerics;
 
 using fin.color;
-using fin.math;
 using fin.util.asserts;
 using fin.util.enums;
 
 using gx;
-
-using modl.schema.anim;
 
 using pikmin1.schema.mod;
 

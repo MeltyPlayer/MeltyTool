@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using fin.language.equations.fixedFunction;
 
 namespace fin.util.lists;
 

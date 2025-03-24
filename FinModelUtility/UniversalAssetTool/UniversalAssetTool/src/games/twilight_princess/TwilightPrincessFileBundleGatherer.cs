@@ -7,7 +7,7 @@ using gx.compression.yaz0;
 using jsystem.api;
 
 using uni.platforms.gcn;
-using uni.platforms.gcn.tools;
+
 
 namespace uni.games.twilight_princess;
 
