@@ -62,4 +62,10 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="resources\model\mesh\MeshTree.axaml.cs">
+      <DependentUpon>MeshTree.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

@@ -35,7 +35,7 @@ namespace uni.ui.avalonia.resources.model {
         this.MaterialsPanel = new MaterialsPanelViewModel {
             ModelAndMaterials = (value, value.MaterialManager.All)
         };
-        this.MeshList = new MeshListViewModel { Meshes = value.Skin.Meshes };
+        this.MeshTree = new MeshTreeViewModel { Meshes = value.Skin.Meshes };
         this.FilesPanel = new FilesPanelViewModel(value);
         this.RegistersPanel = new RegistersPanelViewModel() {
             Registers = value.MaterialManager.Registers,
@@ -65,7 +65,7 @@ namespace uni.ui.avalonia.resources.model {
       private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public MeshListViewModel MeshList {
+    public MeshTreeViewModel MeshTree {
       get;
       private set => this.RaiseAndSetIfChanged(ref field, value);
     }
