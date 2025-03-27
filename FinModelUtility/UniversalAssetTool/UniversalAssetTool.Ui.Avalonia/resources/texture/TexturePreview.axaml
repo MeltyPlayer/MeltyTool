@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:textures="clr-namespace:uni.ui.avalonia.resources.texture"
              xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="100"
              x:Class="uni.ui.avalonia.resources.texture.TexturePreview"
              x:DataType="textures:TexturePreviewViewModel"
@@ -15,7 +17,11 @@
   <Grid>
     <Grid.ContextMenu>
       <ContextMenu>
-        <MenuItem Header="Copy" Click="CopyToClipboard_" />
+        <MenuItem Header="Copy" Click="CopyToClipboard_">
+          <MenuItem.Icon>
+            <avalonia:MaterialIcon Kind="ContentCopy" />
+          </MenuItem.Icon>
+        </MenuItem>
       </ContextMenu>
     </Grid.ContextMenu>
 
@@ -25,16 +31,17 @@
             BorderBrush="{StaticResource BorderBrush}"
             Background="{StaticResource ColorControlCheckeredBackgroundBrush}" />
 
-    <progress:AsyncPanel DataContext="{Binding ImageAsyncPanelViewModel}">
-      <progress:AsyncPanel.DataTemplate>
-        <DataTemplate x:DataType="progress:AsyncProgress">
-          <Image Margin="{Binding Value.Margin}"
-                 VerticalAlignment="Stretch"
-                 HorizontalAlignment="Stretch"
-                 Source="{Binding Value.Image}"
-                 RenderOptions.BitmapInterpolationMode="None" />
-        </DataTemplate>
-      </progress:AsyncPanel.DataTemplate>
-    </progress:AsyncPanel>
+    <controls:If Condition="{Binding Image, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <controls:If.ContentWhenTrue>
+        <Image Margin="{Binding Margin}"
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch"
+               Source="{Binding Image}"
+               RenderOptions.BitmapInterpolationMode="None" />
+      </controls:If.ContentWhenTrue>
+      <controls:If.ContentWhenFalse>
+        <progress:IndeterminateProgressSpinner />
+      </controls:If.ContentWhenFalse>
+    </controls:If>
   </Grid>
 </UserControl>
