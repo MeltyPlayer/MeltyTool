@@ -392,6 +392,8 @@ public static class GlslUtil {
               vec3 surfaceToCameraNormal = normalize(cameraPosition - position);
               float specularLightAmount = pow(max(0.0, dot(reflect(-surfaceToLightNormal, normal), surfaceToCameraNormal)), {{GlslConstants.UNIFORM_SHININESS_NAME}});
               specularColor = light.color * specularLightAmount * attenuation;
+            } else {
+              specularColor = vec4(0);
             }
           }
           """;

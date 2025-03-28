@@ -113,6 +113,8 @@ void getIndividualLightColors(Light light, vec3 position, vec3 normal, float shi
     vec3 surfaceToCameraNormal = normalize(cameraPosition - position);
     float specularLightAmount = pow(max(0.0, dot(reflect(-surfaceToLightNormal, normal), surfaceToCameraNormal)), shininess);
     specularColor = light.color * specularLightAmount * attenuation;
+  } else {
+    specularColor = vec4(0);
   }
 }
 
