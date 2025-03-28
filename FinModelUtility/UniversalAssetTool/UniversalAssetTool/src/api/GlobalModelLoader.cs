@@ -89,6 +89,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new Sm64dsModelImporter().Import(sm64dsModelFileBundle),
         TtydModelFileBundle ttydModelFileBundle
             => new TtydModelImporter().Import(ttydModelFileBundle),
+        VbModelFileBundle vbModelFileBundle
+            => new VbModelImporter().Import(vbModelFileBundle),
         VrmlModelFileBundle vrmlModelFileBundle
             => new VrmlModelImporter().Import(vrmlModelFileBundle),
         XcModelFileBundle xcModelFileBundle
