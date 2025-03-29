@@ -4,13 +4,13 @@ using ICSharpCode.SharpZipLib.BZip2;
 
 using schema.binary;
 
-namespace gm.schema.dataWin;
+namespace gm.schema.dataWin.chunk.txtr;
 
 /// <summary>
 ///   Shamelessly stolen from:
-///   https://github.com/puggsoy/GMS-Explorer/blob/master/GMS%20Explorer/ChunkItems/Spritesheet.cs#L11
+///   https://github.com/puggsoy/GMS-Explorer/blob/master/GMS%20Explorer/ChunkItems/SpriteSheet.cs#L11
 /// </summary>
-public class TextureFile : IBinaryDeserializable {
+public class SpriteSheet : IBinaryDeserializable {
   public IImage Image { get; set; }
 
   public void Read(IBinaryReader br) {

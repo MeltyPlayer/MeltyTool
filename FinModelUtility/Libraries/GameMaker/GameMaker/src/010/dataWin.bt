@@ -11,10 +11,6 @@
 //   History: 
 //------------------------------------------------
 
-FSeek(0x327188);
-
-uint addressCount;
-
 typedef struct {
   uint address <bgcolor=0xffffff>;
   
@@ -27,4 +23,41 @@ typedef struct {
   FSeek(tmp);  
 } TextureFile;
 
-TextureFile textureFiles[addressCount] <optimize=false>;
+FSeek(0x327188);
+uint txtrAddressCount;
+TextureFile textureFiles[txtrAddressCount] <optimize=false>;
+
+typedef struct {
+  uint address <bgcolor=0xffffff>;
+  
+  local uint tmp = FTell();
+  FSeek(address);
+  
+  uint nameOffset <bgcolor=0xff0000>;
+
+  uint width <bgcolor=0xffff00>;
+  uint height <bgcolor=0xffff00>;
+  
+  uint marginLeft <bgcolor=0xff00ff>;
+  uint marginRight <bgcolor=0xff00ff>;
+  uint marginBottom <bgcolor=0xff00ff>;
+  uint marginTop <bgcolor=0xff00ff>;
+  
+  uint unk0[7];
+  
+  uint negativeOne <bgcolor=0x00ffff>;
+  uint version <bgcolor=0x00ffff>;
+  
+  uint unk1[2];
+  
+  uint sequenceOffset  <bgcolor=0x00ffff>;
+  uint nineSliceOffset <bgcolor=0x00ffff>;
+  
+  uint textureCount;
+  
+  FSeek(tmp);  
+} Sprite;
+
+FSeek(0x88f8);
+uint sprtAddressCount;
+Sprite sprites[sprtAddressCount] <optimize=false>;
