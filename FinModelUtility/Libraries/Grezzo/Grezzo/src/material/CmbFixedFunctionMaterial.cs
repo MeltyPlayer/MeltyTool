@@ -351,6 +351,8 @@ public class CmbFixedFunctionMaterial {
         BlendFactor.DestinationAlpha => FinBlendFactor.DST_ALPHA,
         BlendFactor.OneMinusDestinationAlpha => FinBlendFactor
             .ONE_MINUS_DST_ALPHA,
+        BlendFactor.ConstantAlpha => FinBlendFactor.CONST_ALPHA,
+        BlendFactor.OneMinusConstantAlpha => FinBlendFactor.ONE_MINUS_CONST_ALPHA,
         _ => throw new NotSupportedException(),
     };
 }
