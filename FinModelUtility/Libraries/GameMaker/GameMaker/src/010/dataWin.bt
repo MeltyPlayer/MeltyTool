@@ -1,0 +1,30 @@
+//------------------------------------------------
+//--- 010 Editor v14.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+FSeek(0x327188);
+
+uint addressCount;
+
+typedef struct {
+  uint address <bgcolor=0xffffff>;
+  
+  local uint tmp = FTell();
+  FSeek(address);
+  
+  uint unk0 <bgcolor=0xcccccc>;
+  uint pngOffset <bgcolor=0xff0000>;
+  
+  FSeek(tmp);  
+} TextureFile;
+
+TextureFile textureFiles[addressCount] <optimize=false>;

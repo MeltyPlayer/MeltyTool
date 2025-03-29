@@ -19,8 +19,13 @@ public class VictoryHeatRallyBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var fileHierarchy =
         ExtractorUtil.GetFileHierarchy("victory_heat_rally", vhrSteamDirectory);
-
     var dataWin = fileHierarchy.Root.AssertGetExistingFile("data.win");
+
+    var scratchDirectory =
+        ExtractorUtil.GetOrCreateExtractedDirectory("victory_heat_rally");
+    new DataWinExtractor().Extract(
+        dataWin,
+        scratchDirectory.GetOrCreateSubdir("dataWin"));
 
     foreach (var vbuffFile in fileHierarchy.Root.AssertGetExistingSubdir(
                                                "data\\TRK\\MODEL")
