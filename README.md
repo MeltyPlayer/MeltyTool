@@ -80,6 +80,8 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@SuperHackio](https://github.com/SuperHackio), whose [Hack.io](https://github.com/SuperHackio/Hack.io) library was referenced to improve the J3dGraph .bmd parser.
 - [@TTEMMA](https://github.com/TTEMMA), whose [Gar/Zar UnPacker v0.2](https://gbatemp.net/threads/release-gar-zar-unpacker-v0-1.385264/) tool is used to extract the contents of Ocarina of Time 3D files.
 - Twili, for reverse-engineering and documenting the .zar archive format and various additional research.
+- [@puggsoy](https://github.com/puggsoy), whose [GMS-Explorer](https://github.com/puggsoy/GMS-Explorer) was heavily referenced to parse GameMaker's data.win files.
+- [@UnderminersTeam](https://github.com/UnderminersTeam), whose [UndertaleModTool](https://github.com/UnderminersTeam/UndertaleModTool) was heavily referenced to parse GameMaker images.
 - [@vgmstream](https://github.com/vgmstream), whose [https://github.com/vgmstream/vgmstream](https://github.com/vgmstream/vgmstream) tool was ported to add support for parsing .ast ADPCM data.
 - [@VPenades](https://github.com/vpenades), whose [SharpGLTF](https://github.com/vpenades/SharpGLTF) library is used to write GLTF models.
 - [@Wiimm](https://github.com/Wiimm), who created the [wiimms-iso-tools](https://github.com/Wiimm/wiimms-iso-tools) used to extract the contents of Wii .isos.
