@@ -165,7 +165,7 @@ public class DatSubfile : IBinaryDeserializable {
             foreach (var jObjDesc in jObjDescs) {
               var rootJObj = jObjDesc.RootJObj;
               if (rootJObj != null) {
-                jObjQueue.Enqueue((jObjDesc.RootJObjOffset, jObjDesc.RootJObj));
+                jObjQueue.Enqueue((jObjDesc.RootJObjOffset, rootJObj));
               }
             }
           }

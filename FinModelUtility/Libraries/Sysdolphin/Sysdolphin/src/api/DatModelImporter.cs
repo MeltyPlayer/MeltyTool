@@ -107,24 +107,29 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
           = datSubfile
             .GetRootNodesOfType<SObj>()
             .SelectMany(sObj => sObj.JObjDescs?.Values ?? [])
-            .SelectMany(jObjDesc => jObjDesc.JointAnimations?.Values ?? []);
+            .SelectMany(jObjDesc => jObjDesc.JointAnimations?.Values.Select(
+                                        a => (jObjDesc.RootJObj, a)) ??
+                                    []);
       var gObjAnimations
           = datSubfile
             .GetRootNodesOfType<GrMapHead>()
             .SelectMany(mapHead => mapHead.ModelGroups ?? [])
-            .SelectMany(gObj => gObj.JointAnimations?.Values ?? []);
+            .SelectMany(gObj => gObj.JointAnimations?.Values.Select(
+                                    a => (gObj.RootJObj, a)) ??
+                                []);
       var rootJointAnims
           = sObjAnimations.Concat(gObjAnimations);
 
       var i = 0;
-      var jObjs = datSubfile.JObjs.ToArray();
-      foreach (var rootJointAnim in rootJointAnims) {
+      foreach (var (rootJObj, rootJointAnim) in rootJointAnims) {
         var finAnimation = finModel.AnimationManager.AddAnimation();
         finAnimation.Name = $"animation {i++}";
         finAnimation.FrameRate = 30;
 
-        foreach (var (jObj, jointAnim) in jObjs.Zip(
-                     rootJointAnim.GetSelfAndChildrenAndSiblings())) {
+        foreach (var (jObj, jointAnim)
+                 in rootJObj
+                    .GetSelfAndChildrenAndSiblings()
+                    .Zip(rootJointAnim.GetSelfAndChildrenAndSiblings())) {
           var aObj = jointAnim.AObj;
           if (aObj == null) {
             continue;
@@ -406,6 +411,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
               GxPrimitiveType.GX_QUADS => finMesh.AddQuads(finVertices),
               GxPrimitiveType.GX_TRIANGLE_STRIP => finMesh.AddTriangleStrip(
                   finVertices),
+              GxPrimitiveType.GX_POINTS => finMesh.AddPoints(finVertices),
               _ => throw new ArgumentOutOfRangeException()
           };
 
