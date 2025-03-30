@@ -27,6 +27,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 using sysdolphin.schema;
 using sysdolphin.schema.material;
+using sysdolphin.schema.melee;
 using sysdolphin.schema.mesh;
 using sysdolphin.schema.texture;
 
@@ -102,11 +103,18 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
 
     // Adds animations
     {
-      var rootJointAnims
+      var sObjAnimations
           = datSubfile
             .GetRootNodesOfType<SObj>()
             .SelectMany(sObj => sObj.JObjDescs?.Values ?? [])
             .SelectMany(jObjDesc => jObjDesc.JointAnimations?.Values ?? []);
+      var gObjAnimations
+          = datSubfile
+            .GetRootNodesOfType<GrMapHead>()
+            .SelectMany(mapHead => mapHead.ModelGroups ?? [])
+            .SelectMany(gObj => gObj.JointAnimations?.Values ?? []);
+      var rootJointAnims
+          = sObjAnimations.Concat(gObjAnimations);
 
       var i = 0;
       var jObjs = datSubfile.JObjs.ToArray();
@@ -440,7 +448,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
     var diffuseRgba = hasConstantRenderMode || hasDiffuseRenderMode
         ? material.DiffuseColor
         : fin.schema.color.Rgba32.WHITE;
-    var hasVertexColorAlpha = renderMode.CheckFlag(RenderMode.VERTEX); 
+    var hasVertexColorAlpha = renderMode.CheckFlag(RenderMode.VERTEX);
     var (diffuseSurfaceColor, diffuseSurfaceAlpha)
         = fixedFunctionMaterial.GenerateDiffuse(
             (equations.CreateColorConstant(diffuseRgba.Rf, diffuseRgba.Gf, diffuseRgba.Bf),

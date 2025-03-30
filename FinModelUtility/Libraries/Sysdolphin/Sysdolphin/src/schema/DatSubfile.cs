@@ -62,6 +62,10 @@ public class DatSubfile : IBinaryDeserializable {
                            sObj => sObj.JObjDescs?.Values.Select(
                                        jObjDesc => jObjDesc.RootJObj) ??
                                    [])
+                       .WhereNonnull())
+           .Concat(this.GetRootNodesOfType<GrMapHead>()
+                       .SelectMany(mapHead => mapHead.ModelGroups ?? [])
+                       .Select(gObj => gObj.RootJObj)
                        .WhereNonnull());
 
   private readonly Dictionary<uint, JObj> jObjByOffset_ = new();
@@ -119,6 +123,14 @@ public class DatSubfile : IBinaryDeserializable {
 
       IDatNode? node = null;
       switch (rootNode.Type) {
+        case RootNodeType.FIGATREE: {
+          node = br.ReadNew<FigaTree>();
+          break;
+        }
+        case RootNodeType.FIGHTER_DATA: {
+          node = br.ReadNew<MeleeFighterData>();
+          break;
+        }
         case RootNodeType.JOBJ: {
           var jObj = br.ReadNew<JObj>();
           node = jObj;
@@ -126,16 +138,22 @@ public class DatSubfile : IBinaryDeserializable {
           jObjQueue.Enqueue((rootNodeOffset, jObj));
           break;
         }
+        case RootNodeType.MAP_HEAD: {
+          var mapHead = br.ReadNew<GrMapHead>();
+          node = mapHead;
+
+          var gObjs = mapHead.ModelGroups ?? [];
+          foreach (var gObj in gObjs) {
+            var rootJObj = gObj.RootJObj;
+            if (rootJObj != null) {
+              jObjQueue.Enqueue((gObj.RootJObjOffset, rootJObj));
+            }
+          }
+
+          break;
+        }
         case RootNodeType.MATANIM_JOINT: {
           node = br.ReadNew<MatAnimJoint>();
-          break;
-        }
-        case RootNodeType.FIGATREE: {
-          node = br.ReadNew<FigaTree>();
-          break;
-        }
-        case RootNodeType.FIGHTER_DATA: {
-          node = br.ReadNew<MeleeFighterData>();
           break;
         }
         case RootNodeType.SCENE_DATA: {
@@ -261,15 +279,16 @@ public partial class RootNodeData : IBinaryConvertible {
 
 public enum RootNodeType {
   UNDEFINED,
-  JOBJ,
-  MATANIM_JOINT,
-  FIGATREE,
   IMAGE,
+  JOBJ,
+  FIGATREE,
+  FIGHTER_DATA,
+  MAP_HEAD,
+  MATANIM_JOINT,
   SCENE_DATA,
   SCENE_MODELSET,
   TLUT,
   TLUT_DESC,
-  FIGHTER_DATA
 }
 
 public class RootNode {
@@ -294,10 +313,6 @@ public class RootNode {
       return RootNodeType.JOBJ;
     }
 
-    if (name.EndsWith("_matanim_joint")) {
-      return RootNodeType.MATANIM_JOINT;
-    }
-
     if (name.EndsWith("_figatree")) {
       return RootNodeType.FIGATREE;
     }
@@ -308,6 +323,14 @@ public class RootNode {
 
     if (name.EndsWith("_image")) {
       return RootNodeType.IMAGE;
+    }
+
+    if (name.EndsWith("_matanim_joint")) {
+      return RootNodeType.MATANIM_JOINT;
+    }
+
+    if (name.StartsWith("map_head")) {
+      return RootNodeType.MAP_HEAD;
     }
 
     if (name.EndsWith("scene_data")) {

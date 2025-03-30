@@ -61,8 +61,8 @@ public class SuperSmashBrosMeleeFileBundleGatherer
     }
 
     foreach (var stageOrTrophyFile in stageFiles.Concat(trophyFiles)) {
-      organizer.Add(new MeleeModelFileBundle {
-          PrimaryDatFile = stageOrTrophyFile,
+      organizer.Add(new DatModelFileBundle {
+          DatFile = stageOrTrophyFile,
       }.Annotate(stageOrTrophyFile));
     }
 
