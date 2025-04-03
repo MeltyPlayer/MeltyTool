@@ -5,6 +5,8 @@ using gm.api;
 
 using uni.platforms.desktop;
 
+using vhr.api;
+
 
 namespace uni.games.victory_heat_rally;
 
@@ -27,10 +29,20 @@ public class VictoryHeatRallyBundleGatherer : IAnnotatedFileBundleGatherer {
         dataWin,
         scratchDirectory.GetOrCreateSubdir("dataWin"));
 
-    foreach (var vbuffFile in fileHierarchy.Root.AssertGetExistingSubdir(
-                                               "data\\TRK\\MODEL")
-                                           .GetExistingFiles()) {
+    var dataDirectory = fileHierarchy.Root.AssertGetExistingSubdir("data");
+    foreach (var vbuffFile in dataDirectory
+                              .AssertGetExistingSubdir("TRK\\MODEL")
+                              .GetExistingFiles()) {
       organizer.Add(new VbModelFileBundle(vbuffFile).Annotate(vbuffFile));
+    }
+
+    foreach (var jsonFile in dataDirectory.AssertGetExistingSubdir("TRK")
+                                          .GetExistingFiles()) {
+      organizer.Add(new VictoryHeatRallyTrackSceneFileBundle {
+          TrackJsonFile = jsonFile,
+          ExtractedDirectory = scratchDirectory,
+          DataDirectory = dataDirectory,
+      }.Annotate(jsonFile));
     }
   }
 }

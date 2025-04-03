@@ -135,6 +135,7 @@
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
+    <ProjectReference Include="..\..\Games\VictoryHeatRally\VictoryHeatRally\VictoryHeatRally.csproj" />
 
     <ProjectReference Include="..\..\Libraries\AngelStudios\AngelStudios.csproj" />
     <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2.csproj" />

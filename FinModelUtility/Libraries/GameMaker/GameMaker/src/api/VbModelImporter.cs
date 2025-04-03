@@ -1,5 +1,9 @@
-﻿using fin.io;
+﻿using System.Numerics;
+
+using fin.io;
+using fin.math.transform;
 using fin.model;
+using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
 using fin.util.sets;
@@ -18,8 +22,13 @@ public class VbModelImporter : IModelImporter<VbModelFileBundle> {
     var vbFile = modelFileBundle.VbFile;
     var vb = vbFile.ReadNew<Vb>();
 
-    var (finModel, finRootBone) =
-        D3dModelImporter.CreateModel((modelFileBundle, vbFile.AsFileSet()));
+    var finModel = new ModelImpl {
+        FileBundle = modelFileBundle,
+        Files = vbFile.AsFileSet(),
+    };
+
+    var finRootBone = finModel.Skeleton.Root.AddChild(0, 0, 0);
+    finRootBone.LocalTransform.SetRotationDegrees(90, 0, 0);
 
     var finSkin = finModel.Skin;
     var weights =
@@ -27,7 +36,7 @@ public class VbModelImporter : IModelImporter<VbModelFileBundle> {
                                        finRootBone);
 
     var finMesh = finSkin.AddMesh();
-    finMesh.AddTriangles(
+    var triangles = finMesh.AddTriangles(
         vb.Vertices.Select(v => {
             var finVertex = finSkin.AddVertex(v.Position);
             finVertex.SetUv(v.Uv);
@@ -35,6 +44,7 @@ public class VbModelImporter : IModelImporter<VbModelFileBundle> {
             return finVertex;
           })
           .ToArray());
+    triangles.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
 
     return finModel;
   }

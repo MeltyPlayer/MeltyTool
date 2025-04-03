@@ -16,6 +16,8 @@ using pmdc.api;
 
 using sm64.api;
 
+using vhr.api;
+
 using vrml.api;
 
 
@@ -38,6 +40,9 @@ public class GlobalSceneImporter : ISceneImporter<ISceneFileBundle> {
         Sm64LevelSceneFileBundle sm64LevelSceneFileBundle
             => new Sm64LevelSceneImporter().Import(
                 sm64LevelSceneFileBundle),
+        VictoryHeatRallyTrackSceneFileBundle vhrSceneFileBundle
+            => new VictoryHeatRallyTrackSceneImporter().Import(
+                vhrSceneFileBundle),
         VisSceneFileBundle visSceneFileBundle
             => new VisSceneImporter().Import(visSceneFileBundle),
         VrmlSceneFileBundle vrmlSceneFileBundle
