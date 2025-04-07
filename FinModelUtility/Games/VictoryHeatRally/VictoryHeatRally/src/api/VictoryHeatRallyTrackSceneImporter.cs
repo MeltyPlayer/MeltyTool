@@ -2,12 +2,15 @@
 using System.Numerics;
 using System.Text.Json;
 
+using fin.data.lazy;
+using fin.image;
 using fin.io;
 using fin.math.splines;
 using fin.model;
 using fin.model.impl;
 using fin.model.util;
 using fin.scene;
+using fin.util.asserts;
 using fin.util.sets;
 
 using gm.api;
@@ -43,6 +46,18 @@ public class VictoryHeatRallyTrackSceneImporter
     var spriteDirectory =
         fileBundle.ExtractedDirectory.AssertGetExistingSubdir("dataWin\\sprt");
 
+    var lazySpriteImages = new LazyCaseInvariantStringDictionary<IImage>(
+        spriteName => {
+          if (!spriteDirectory.TryToGetExistingFile(
+                  $"{spriteName}.png",
+                  out var spriteFile)) {
+            spriteFile =
+                spriteDirectory.AssertGetExistingFile($"{spriteName}_0.png");
+          }
+
+          return FinImage.FromFile(spriteFile);
+        });
+
     {
       var vbFile = dataDirectory.AssertGetExistingFile(
           Path.Join("TRK\\MODEL",
@@ -67,7 +82,10 @@ public class VictoryHeatRallyTrackSceneImporter
     var rawJsonLines = trackJsonFile.ReadAllLines();
     var validJson = $"[{string.Join(',', rawJsonLines)}]";
 
-    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson)!;
+    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson,
+      new JsonSerializerSettings {
+          Converters = [new SingleOrArrayConverter<string>()]
+      })!;
 
     var nodes = trackItems.Where(i => i.type is "Node").ToArray();
     var nodePositions = nodes.Select(n => new Vector3(
@@ -97,7 +115,7 @@ public class VictoryHeatRallyTrackSceneImporter
         trackItems.Where(i => i.type is "Model" or "Object" or "Sprite");
     foreach (var trackItem in visibleItems) {
       var position =
-          nodesSpline.GetPositionAtOffset(trackItem.my_struct!.position!.Value);
+          nodesSpline.GetPositionAtOffset(trackItem.my_struct!.position!.Value * 32);
 
       switch (trackItem.type) {
         case "Model": {
@@ -110,21 +128,30 @@ public class VictoryHeatRallyTrackSceneImporter
           var spriteModel = new ModelImpl
               {FileBundle = fileBundle, Files = fileSet};
 
-          var nodesMaterial = spriteModel.MaterialManager.AddNullMaterial();
-          nodesMaterial.DepthMode = DepthMode.NONE;
-          nodesMaterial.DepthCompareType = DepthCompareType.Always;
+          var spriteIndex = trackItem.my_struct.sprite_index.AssertNonnull();
+          var spriteImage = lazySpriteImages[spriteIndex];
 
-          spriteModel.Skeleton.Root
-                     .AlwaysFaceTowardsCamera(Quaternion.Identity);
+          var (spriteMaterial, _) = spriteModel.MaterialManager
+                                               .AddSimpleTextureMaterialFromImage(
+                                                   spriteImage);
 
-          var pt = new Vector3(32, 0, 32);
+          var spriteRootBone = spriteModel.Skeleton.Root;
+          spriteRootBone.AlwaysFaceTowardsCamera(Quaternion.Identity);
+
+          var adjBone = spriteRootBone.AddChild(0, 0, 0);
+          adjBone.LocalTransform.EulerRadians = new Vector3(MathF.PI / 2, 0, 0);
 
           var spriteSkin = spriteModel.Skin;
           var spriteMesh = spriteSkin.AddMesh();
           spriteMesh.AddSimpleWall(spriteSkin,
-                                   -pt,
-                                   pt,
-                                   nodesMaterial);
+                                   new Vector3(0,
+                                               -spriteImage.Width / 2f,
+                                               -spriteImage.Height),
+                                   new Vector3(0,
+                                               spriteImage.Width / 2f, 
+                                               0),
+                                   spriteMaterial,
+                                   adjBone);
 
           var spriteObject = finArea.AddObject();
           spriteObject.SetPosition(position);
@@ -191,8 +218,8 @@ public class VictoryHeatRallyTrackSceneImporter
     public TrackItemCmesh? cmesh;
     public string? model;
 
-    [JsonConverter(typeof(SingleOrArrayCollectionConverter<string[], string>))]
-    public string[]? sprite;
+    [JsonConverter(typeof(SingleOrArrayConverter<string>))]
+    public List<string>? sprite;
 
     public int? subdiv;
     public int? tilt;
