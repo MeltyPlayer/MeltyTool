@@ -13,6 +13,7 @@ using fin.model.io.importers;
 using fin.util.asserts;
 using fin.util.linq;
 using fin.util.progress;
+using fin.util.strings;
 
 using uni.config;
 using uni.model;
@@ -78,9 +79,27 @@ public static class ExporterUtil {
     return false;
   }
 
+  public static ExportedFormat[] SupportedExportFormats { get; } = [
+      ExportedFormat.DAE,
+      ExportedFormat.FBX,
+      ExportedFormat.GLB,
+      ExportedFormat.GLTF,
+      ExportedFormat.OBJ,
+  ];
+
   public static IEnumerable<string> AsFileExtensions(
       this IEnumerable<ExportedFormat> formats)
     => formats.Select(AsFileExtension);
+
+  public static string GetName(this ExportedFormat format)
+    => format switch {
+        ExportedFormat.DAE => "COLLADA",
+        ExportedFormat.FBX => "FilmBox",
+        ExportedFormat.GLB => "GL Transmission Format (binary)",
+        ExportedFormat.GLTF => "GL Transmission Format (text)",
+        ExportedFormat.OBJ => "Wavefront",
+        _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
+    };
 
   public static string AsFileExtension(this ExportedFormat format)
     => format switch {
@@ -91,6 +110,9 @@ public static class ExporterUtil {
         ExportedFormat.OBJ => ".obj",
         _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
+
+  public static string AsPattern(this ExportedFormat format)
+    => $"*{format.AsFileExtension()}";
 
   public enum ExporterPromptChoice {
     CANCEL,

@@ -67,5 +67,8 @@
     <Compile Update="resources\model\mesh\MeshTree.axaml.cs">
       <DependentUpon>MeshTree.axaml</DependentUpon>
     </Compile>
+    <Compile Update="toolbars\FileBundleToolbar.axaml.cs">
+      <DependentUpon>FileBundleToolbar.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

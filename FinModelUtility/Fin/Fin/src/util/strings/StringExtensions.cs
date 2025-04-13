@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -47,9 +48,19 @@ public static class StringExtensions {
     return false;
   }
 
-  public static string AssertRemoveEnd(this string str, string end) {
-    Asserts.True(str.TryRemoveEnd(end, out var trimmed));
-    return trimmed;
+  public static string ReplaceFirst(this string str,
+                                    char target,
+                                    char replacement) {
+    var index = str.IndexOf(target);
+    if (index < 0) {
+      return str;
+    }
+
+    var sb = new StringBuilder(str.Length);
+    sb.Append(str[..index]);
+    sb.Append(replacement);
+    sb.Append(str[(index + 1)..]);
+    return sb.ToString();
   }
 
   public static (string, string) SplitBeforeAndAfterFirst(
@@ -91,22 +102,5 @@ public static class StringExtensions {
   public static string SubstringAfter(this string str, string substr) {
     var indexTo = str.IndexOf(substr);
     return indexTo >= 0 ? str[(indexTo + substr.Length)..] : str;
-  }
-
-  public static string Repeat(this string str, int times) {
-    if (times == 0) {
-      return "";
-    }
-
-    if (times == 1) {
-      return str;
-    }
-
-    var builder = new StringBuilder();
-    for (var i = 0; i < times; ++i) {
-      builder.Append(str);
-    }
-
-    return builder.ToString();
   }
 }

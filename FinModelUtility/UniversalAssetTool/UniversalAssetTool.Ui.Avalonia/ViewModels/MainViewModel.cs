@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using fin.io.bundles;
 using fin.model;
+using fin.model.io;
 using fin.util.progress;
 
 using ReactiveUI;
@@ -17,6 +18,7 @@ using uni.ui.avalonia.common.treeViews;
 using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.audio;
 using uni.ui.avalonia.resources.model;
+using uni.ui.avalonia.toolbars;
 
 namespace uni.ui.avalonia.ViewModels;
 
@@ -28,7 +30,8 @@ public class MainViewModelForDesigner {
   public ModelPanelViewModel ModelPanel { get; }
     = new ModelPanelViewModelForDesigner();
 
-  public string FileName => "//foo/bar.mod";
+  public FileBundleToolbarModel FileBundleToolbar { get; }
+    = new FileBundleToolbarModelForDesigner();
 
   public MainViewModelForDesigner() {
     var progress = new ValueFractionProgress();
@@ -96,9 +99,10 @@ public class MainViewModel : ViewModelBase {
           AvaloniaIconUtil.ClearCache();
 
           var fileBundle = sceneInstance.Definition.FileBundle;
-          this.FileName = fileBundle != null
-                  ? fileBundle.DisplayFullPath.ToString()
-                  : null;
+          this.FileBundleToolbar = new FileBundleToolbarModel {
+              FileName = fileBundle?.DisplayFullPath.ToString(),
+              FileBundle = fileBundle,
+          };
 
           var sceneModelInstances
               = sceneInstance
@@ -138,7 +142,7 @@ public class MainViewModel : ViewModelBase {
                                    value);
   }
 
-  public string FileName {
+  public FileBundleToolbarModel FileBundleToolbar {
     get;
 
     set => this.RaiseAndSetIfChanged(ref field, value);

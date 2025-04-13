@@ -24,7 +24,7 @@ public static class AssimpUtil {
   public static ExportFormatDescription GetExportFormatFromExtension(
       string extension)
     => extension switch {
-        ".dae"  => ExportFormatsById["dae"],
+        ".dae"  => ExportFormatsById["collada"],
         ".fbx"  => ExportFormatsById["fbx"],
         ".gltf" => ExportFormatsById["gltf2"],
         ".glb"  => ExportFormatsById["glb2"],

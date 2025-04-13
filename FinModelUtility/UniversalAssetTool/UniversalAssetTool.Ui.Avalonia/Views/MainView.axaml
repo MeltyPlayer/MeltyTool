@@ -79,26 +79,9 @@
     </SplitView>
 
     <Grid ZIndex="-5">
-      <TextBlock
-          Classes="h1 spaceFirst"
-          Foreground="White"
-          Text="{Binding FileName}"
+      <toolbars:FileBundleToolbar
           Margin="40 8"
-          ZIndex="1">
-        <!-- DropShadowEffect has a pretty bad memory leak when rendering -->
-        <!--<TextBlock.Effect>
-          <DropShadowEffect
-              OffsetX="1"
-              OffsetY="1"
-              BlurRadius="5" />
-        </TextBlock.Effect>-->
-      </TextBlock>
-      <TextBlock
-          Classes="h1 spaceFirst"
-          Foreground="#8000"
-          Text="{Binding FileName}"
-          Margin="41 9">
-      </TextBlock>
+          DataContext="{Binding FileBundleToolbar}"/>
 
       <toolbars:TopToolbar 
           Margin="41 9"
