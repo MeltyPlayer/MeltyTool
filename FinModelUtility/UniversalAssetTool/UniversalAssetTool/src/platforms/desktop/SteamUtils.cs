@@ -62,11 +62,14 @@ internal static class SteamUtils {
 
   private static ISystemDirectory[] CommonDirectories_ { get; } =
     Libraries_
-        .SelectMany(libraryFolder
-                        => libraryFolder.GetExistingSubdirs()
-                                        .ByName("steamapps"))
-        .SelectMany(
-            steamApps => steamApps.GetExistingSubdirs().ByName("common"))
+        .Select(
+            dir => dir.TryToGetExistingSubdir("steamapps", out var steamappsDir)
+                ? steamappsDir
+                : dir)
+        .Select(
+            dir => dir.TryToGetExistingSubdir("common", out var commonDir)
+                ? commonDir
+                : dir)
         .ToArray();
 
   public static ISystemDirectory[] GameDirectories { get; }
