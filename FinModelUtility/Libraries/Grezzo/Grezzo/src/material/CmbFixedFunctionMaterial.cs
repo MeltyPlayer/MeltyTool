@@ -129,10 +129,6 @@ public class CmbFixedFunctionMaterial {
                   finTexture.LodBias = texMapper.lodBias;
                   finTexture.MinLod = texMapper.minLodBias;
                   finTexture.UvIndex = cmbTexCoord.coordinateIndex;
-
-                  if (finTexture.UvIndex == 1) {
-                    ;
-                  }
                   finTexture.BorderColor = texMapper.BorderColor;
 
                   finTexture.UvType =
