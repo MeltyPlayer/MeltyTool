@@ -242,6 +242,9 @@ public class CmbModelBuilder {
       var hasBw = shape.vertFlags.GetBit(inc++);
 
       var material = finMaterials[(cmbMesh.materialIndex, hasClr)];
+      var needsUv0 = material?.Textures.Any(t => t.UvIndex == 0) ?? false;
+      var needsUv1 = material?.Textures.Any(t => t.UvIndex == 1) ?? false;
+      var needsUv2 = material?.Textures.Any(t => t.UvIndex == 2) ?? false;
 
       var finMesh = finSkin.AddMesh();
 
@@ -303,16 +306,22 @@ public class CmbModelBuilder {
         if (hasUv0) {
           var uv0 = uv0Enumerator.TryMoveNextAndGetCurrent();
           finVertex.SetUv(0, uv0.X, 1 - uv0.Y);
+        } else if (needsUv0) {
+          finVertex.SetUv(0, Vector2.Zero);
         }
 
         if (hasUv1) {
           var uv1 = uv1Enumerator.TryMoveNextAndGetCurrent();
           finVertex.SetUv(1, uv1.X, 1 - uv1.Y);
+        } else if (needsUv1) {
+          finVertex.SetUv(1, Vector2.Zero);
         }
 
         if (hasUv2) {
           var uv2 = uv2Enumerator.TryMoveNextAndGetCurrent();
           finVertex.SetUv(2, uv2.X, 1 - uv2.Y);
+        } else if (needsUv2) {
+          finVertex.SetUv(2, Vector2.Zero);
         }
 
         var preprojectMode = preproject[i].Value
@@ -401,7 +410,7 @@ public class CmbModelBuilder {
           foreach (var finVertex in finVertices) {
             morphTarget.SetNewLocalNormal(
                 finVertex,
-                new Vector3(normal.X, normal.Y, normal.Z));
+                new Vector3(normal.NrmX, normal.NrmY, normal.NrmZ));
           }
         }
       }

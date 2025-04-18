@@ -21,8 +21,8 @@ namespace grezzo {
       return new CmbModelFileBundle(
           cmbFile,
           directory.FilesWithExtension(".csab").ToArray(),
-          null,
-          null);
+          directory.FilesWithExtension(".ctxb").ToArray(),
+          directory.FilesWithExtension(".shpa").ToArray());
     }
 
     private static IFileHierarchyDirectory[] GetGoldenDirectories_() {

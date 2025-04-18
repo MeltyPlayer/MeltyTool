@@ -3,6 +3,7 @@
 using fin.config;
 using fin.data.dictionaries;
 using fin.math.matrix.four;
+using fin.math.rotations;
 using fin.model;
 using fin.model.util;
 using fin.scene;
@@ -87,7 +88,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
     var rootBone = skeleton.Root;
     if (rootBone.FaceTowardsCamera) {
       var camera = Camera.Instance;
-      var angle = camera.YawDegrees / 180f * MathF.PI;
+      var angle = camera.YawDegrees * FinTrig.DEG_2_RAD;
       var rotateYaw =
           Quaternion.CreateFromYawPitchRoll(angle, 0, 0);
 

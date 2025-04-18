@@ -62,7 +62,7 @@ public partial class CtxbTexEntry : IBinaryConvertible {
   [StringLengthSource(16)]
   public string Name { get; private set; }
 
-  private readonly uint padding_ = 0;
+  private uint padding_;
 
   [Skip]
   private bool includeExtraPadding_ 

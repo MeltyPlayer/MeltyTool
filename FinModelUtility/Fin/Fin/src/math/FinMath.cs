@@ -63,4 +63,8 @@ public static class FinMath {
 
   public static int Base10DigitCount(this int value)
     => (int) Math.Max(1, 1 + Math.Log10(value));
+
+  public static bool IsTruthy<TNumber>(this TNumber? number)
+      where TNumber : struct, INumber<TNumber>
+    => (number ?? default) != default;
 }
