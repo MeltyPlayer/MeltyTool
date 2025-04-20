@@ -231,8 +231,8 @@ namespace sm64.scripts {
     public GeoTranslateAndRotateFormat Format
       => GeoUtils.GetTranslateAndRotateFormat(this.Params);
 
-    public Vector3s Translation => new();
-    public Vector3s Rotation => new();
+    public Vector3s Translation { get; } = new();
+    public Vector3s Rotation { get; } = new();
 
     public uint? DisplayListSegmentedAddress { get; set; }
   }
@@ -250,7 +250,7 @@ namespace sm64.scripts {
     public GeoDrawingLayer DrawingLayer
       => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
-    public Vector3s Translation => new();
+    public Vector3s Translation { get; } = new();
 
     [Skip]
     public bool HasDisplayList
@@ -273,7 +273,7 @@ namespace sm64.scripts {
     public GeoDrawingLayer DrawingLayer
       => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
-    public Vector3s Rotation => new();
+    public Vector3s Rotation { get; } = new();
 
     [Skip]
     public bool HasDisplayList
@@ -287,10 +287,10 @@ namespace sm64.scripts {
   public partial class GeoAnimatedPartCommand
       : IGeoCommand, IBinaryDeserializable {
     public GeoCommandId Id => GeoCommandId.ANIMATED_PART;
-
+    
     public GeoDrawingLayer DrawingLayer { get; set; }
 
-    public Vector3s Offset => new();
+    public Vector3s Offset { get; } = new();
 
     public uint DisplayListSegmentedAddress { get; set; }
   }
@@ -308,7 +308,7 @@ namespace sm64.scripts {
     public GeoDrawingLayer DrawingLayer
       => GeoUtils.GetDrawingLayerFromParams(this.Params);
 
-    public Vector3s Translation => new();
+    public Vector3s Translation { get; } = new();
 
     [Skip]
     public bool HasDisplayList

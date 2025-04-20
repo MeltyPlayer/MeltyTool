@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 using f3dzex2.combiner;
 using f3dzex2.displaylist;
@@ -121,6 +122,7 @@ public class DlModelBuilder {
 
               finMaterial.Name = $"[{texture0.Name}]/[{texture1.Name}]";
               finMaterial.CullingMode = materialParams.CullingMode;
+              finMaterial.UpdateAlphaChannel = false;
 
               finMaterial.SetTextureSource(0, texture0);
               finMaterial.SetTextureSource(1, texture1);

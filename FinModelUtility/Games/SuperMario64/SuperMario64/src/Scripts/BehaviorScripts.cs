@@ -281,7 +281,7 @@
             break;
           case 0x2D:
             desc =
-                "Set inital position. (Used in Dorrie, Fly guys, etc. to determine in which range they can move)";
+                "Set home position. (Used in Dorrie, Fly guys, etc. to determine in which range they can move)";
             break;
           case 0x2E:
             desc = "obj->_0x200 = (float)" +

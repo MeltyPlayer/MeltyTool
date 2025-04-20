@@ -17,7 +17,7 @@ namespace sm64.Scripts {
 
       var current = this;
       while (current != null) {
-        matrices.AddFirst(current.matrix);
+        matrices.AddLast(current.matrix);
         current = current.parent;
       }
 

@@ -273,5 +273,11 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public override int GetHashCode() => this.impl_.GetRoughHashCode();
 
-  public override string ToString() => this.impl_.ToString();
+  public override string ToString() {
+    if (this.Impl.IsIdentity) {
+      return "IDENTITY";
+    }
+    
+    return this.impl_.ToString();
+  }
 }
