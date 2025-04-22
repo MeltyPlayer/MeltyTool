@@ -5,6 +5,8 @@ using fin.schema.vector;
 using schema.binary;
 using schema.binary.attributes;
 
+using sonicadventure.util;
+
 namespace sonicadventure.schema.model;
 
 [Flags]
@@ -21,21 +23,32 @@ public enum ObjectFlags : uint {
 
 [BinarySchema]
 [Endianness(Endianness.LittleEndian)]
-public partial class Object : IBinaryDeserializable {
+public partial class Object(uint key) : IKeyedInstance<Object> {
+  public static Object New(uint key) => new(key);
+
   public ObjectFlags Flags { get; set; }
   private uint attachPointer_;
-  private Vector3 Position { get; set; }
-  private Vector3i Rotation { get; set; }
-  private Vector3 Scale { get; set; }
+  
+  public Vector3 Position { get; set; }
+  public Vector3i Rotation { get; } = new();
+  public Vector3 Scale { get; set; }
+
   private uint childPointer_;
   private uint relatePointer_;
 
-  [RAtPositionOrNull(nameof(attachPointer_))]
+  [Skip]
   public Attach? Attach { get; set; }
 
-  [RAtPositionOrNull(nameof(childPointer_))]
-  public Object? Child { get; set; }
+  [Skip]
+  public Object? FirstChild { get; set; }
 
-  [RAtPositionOrNull(nameof(relatePointer_))]
-  public Object? Relate { get; set; }
+  [Skip]
+  public Object? NextSibling { get; set; }
+
+  [ReadLogic]
+  private void ReadObjects_(IBinaryReader br) {
+    this.Attach = br.ReadAtPointerOrNull<Attach>(this.attachPointer_, key);
+    this.FirstChild = br.ReadAtPointerOrNull<Object>(this.childPointer_, key);
+    this.NextSibling = br.ReadAtPointerOrNull<Object>(this.relatePointer_, key);
+  }
 }
