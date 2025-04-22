@@ -1,4 +1,6 @@
 ﻿using fin.math;
+using fin.schema.color;
+using fin.schema.vector;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -40,6 +42,12 @@ public partial class Mesh(uint key) : IKeyedInstance<Mesh> {
   [Skip]
   public IPoly[] Polys { get; private set; }
 
+  [Skip]
+  public Argb32[]? VertexColors { get; private set; }
+
+  [Skip]
+  public Vector2s[]? Uvs { get; private set; }
+
   [ReadLogic]
   private void ReadPolys_(IBinaryReader br) {
     this.Polys = br.ReadAtPointerOrNull(
@@ -53,5 +61,21 @@ public partial class Mesh(uint key) : IKeyedInstance<Mesh> {
             PolyType.TRIANGLE_STRIP1 or PolyType.TRIANGLE_STRIP2
                 => br.ReadNews<TriangleStripPoly>(this.PolyCount),
         });
+
+    var vertexCount = this.Polys switch {
+        TrianglesPoly[] => 3 * this.PolyCount,
+        QuadsPoly[]     => 4 * this.PolyCount,
+        TriangleStripPoly[] triangleStripPolys => triangleStripPolys.Sum(
+            t => t.NumStrips),
+    };
+
+    this.VertexColors = br.ReadAtPointerOrNull(
+        this.vertexColorsOffset_,
+        key,
+        () => br.ReadNews<Argb32>(vertexCount));
+    this.Uvs = br.ReadAtPointerOrNull(
+        this.uvsOffset_,
+        key,
+        () => br.ReadNews<Vector2s>(vertexCount));
   }
 }

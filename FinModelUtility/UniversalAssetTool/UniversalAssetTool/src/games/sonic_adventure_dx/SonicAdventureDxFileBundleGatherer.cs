@@ -50,6 +50,12 @@ public class SonicAdventureDxFileBundleGatherer : IAnnotatedFileBundleGatherer {
     }
   }
 
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://info.sonicretro.org/SCHG:Sonic_Adventure_DX:_PC/Model_Locations
+  ///
+  ///   TODO: Store this in a CSV file or something
+  /// </summary>
   private IEnumerable<(string name, IFileHierarchyFile modelFile,
       uint modelFileKey,
       uint modelFileOffset,
@@ -59,6 +65,14 @@ public class SonicAdventureDxFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     yield return this.SonicExeModel_("Eggman", 0x49C830, "EGGMAN.PVM");
     yield return this.SonicExeModel_("Ring", 0x4B4834, "OBJ_REGULAR.PVM");
+    yield return this.SonicExeModel_("Spring from Sonic Jam",
+                                     0x4B50C4,
+                                     "OBJ_REGULAR.PVM");
+    yield return this.SonicExeModel_("Air Spring", 0x4B5C3C, "OBJ_REGULAR.PVM");
+    yield return this.SonicExeModel_("Ground Spring",
+                                     0x4B67C8,
+                                     "OBJ_REGULAR.PVM");
+    yield return this.SonicExeModel_("Spike Ball", 0x4B7A04, "OBJ_REGULAR.PVM");
   }
 
   private SadxFiles SonicExeModel_(string name,
