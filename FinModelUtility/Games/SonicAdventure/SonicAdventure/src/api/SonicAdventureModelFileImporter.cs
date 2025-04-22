@@ -51,7 +51,7 @@ public class SonicAdventureModelFileImporter
 
       var saAttach = saObj.Attach;
       if (saAttach != null) {
-        this.AddAttach_(finSkin, saAttach);
+        this.AddAttach_(finBone, finSkin, saAttach);
       }
 
       if (saObj.NextSibling != null) {
@@ -67,38 +67,67 @@ public class SonicAdventureModelFileImporter
   }
 
   private void AddAttach_(
+      IBone finBone,
       ISkin<NormalTangentMultiColorMultiUvVertexImpl> finSkin,
       Attach saAttach) {
-    var finVertices = saAttach.Vertices
-                              .Select(saVertex => (IReadOnlyVertex) finSkin.AddVertex(saVertex))
-                              .ToArray();
+    var saVertices = saAttach.Vertices;
+    var saNormals = saAttach.Normals;
+
+    var finBoneWeights
+        = finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE, finBone);
+
     foreach (var saMesh in saAttach.Meshes) {
       var finMesh = finSkin.AddMesh();
       switch (saMesh.PolyType) {
         case PolyType.TRIANGLES: {
-          var trianglePolys = saMesh.Polys.AssertAsA<TrianglesPoly[]>();
-          finMesh.AddTriangles(
-              trianglePolys.Select(t => (finVertices[t.VertexIndices[0]],
-                                         finVertices[t.VertexIndices[1]],
-                                         finVertices[t.VertexIndices[2]]))
-                           .ToArray());
+          var finVertices
+              = saMesh.Polys.AssertAsA<TrianglesPoly[]>()
+                      .SelectMany(t => t.VertexIndices)
+                      .Select(v => {
+                        var finVertex = finSkin.AddVertex(saVertices[v]);
+                        if (saNormals != null) {
+                          finVertex.SetLocalNormal(saNormals[v]);
+                        }
+                        finVertex.SetBoneWeights(finBoneWeights);
+                        return finVertex;
+                      })
+                      .ToArray();
+          finMesh.AddTriangles(finVertices);
           break;
         }
         case PolyType.QUADS: {
-          var quadPolys = saMesh.Polys.AssertAsA<QuadsPoly[]>();
-          finMesh.AddQuads(
-              quadPolys.Select(t => (finVertices[t.VertexIndices[0]],
-                                     finVertices[t.VertexIndices[1]],
-                                     finVertices[t.VertexIndices[2]],
-                                     finVertices[t.VertexIndices[3]]))
-                       .ToArray());
+          var finVertices
+              = saMesh.Polys.AssertAsA<QuadsPoly[]>()
+                      .SelectMany(t => t.VertexIndices)
+                      .Select(v => {
+                        var finVertex = finSkin.AddVertex(saVertices[v]);
+                        if (saNormals != null) {
+                          finVertex.SetLocalNormal(saNormals[v]);
+                        }
+                        finVertex.SetBoneWeights(finBoneWeights);
+                        return finVertex;
+                      })
+                      .ToArray();
+          finMesh.AddQuads(finVertices);
           break;
         }
         case PolyType.TRIANGLE_STRIP1 or PolyType.TRIANGLE_STRIP2: {
-          foreach (var triangleStripPoly in saMesh.Polys.AssertAsA<TriangleStripPoly[]>()) {
-            finMesh.AddTriangleStrip(triangleStripPoly.VertexIndices
-                                         .Select(v => finVertices[v])
-                                         .ToArray());
+          foreach (var triangleStripPoly in saMesh
+                                            .Polys
+                                            .AssertAsA<TriangleStripPoly[]>()) {
+            var finVertices
+                = triangleStripPoly
+                  .VertexIndices
+                  .Select(v => {
+                    var finVertex = finSkin.AddVertex(saVertices[v]);
+                    if (saNormals != null) {
+                      finVertex.SetLocalNormal(saNormals[v]);
+                    }
+                    finVertex.SetBoneWeights(finBoneWeights);
+                    return finVertex;
+                  })
+                  .ToArray();
+            finMesh.AddTriangleStrip(finVertices);
           }
           break;
         }

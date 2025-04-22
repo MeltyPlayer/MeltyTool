@@ -26,7 +26,7 @@ public partial class Attach(uint key) : IKeyedInstance<Attach> {
   public Vector3[] Vertices { get; set; }
 
   [Skip]
-  public Vector3[] Normals { get; set; }
+  public Vector3[]? Normals { get; set; }
 
   [Skip]
   public Mesh[] Meshes { get; set; }
