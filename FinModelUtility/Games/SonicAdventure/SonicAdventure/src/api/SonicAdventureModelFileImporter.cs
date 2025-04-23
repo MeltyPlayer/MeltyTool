@@ -28,7 +28,7 @@ public class SonicAdventureModelFileImporter
     var br = new SchemaBinaryReader(fs, Endianness.LittleEndian);
 
     var key = fileBundle.ModelFileKey;
-    var saRootObj = new Object(key);
+    var saRootObj = new Object(fileBundle.ModelFileOffset + key, key);
     saRootObj.Read(br);
 
     var files = fileBundle.ModelFile.AsFileSet();

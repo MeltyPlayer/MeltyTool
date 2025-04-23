@@ -57,7 +57,7 @@ public partial class Attach(uint keyedPointer, uint key)
         () => {
           var meshes = new Mesh[this.meshTotal_];
           for (var i = 0; i < meshes.Length; ++i) {
-            var mesh = new Mesh(key);
+            var mesh = new Mesh((uint) (br.Position + key), key);
             mesh.Read(br);
             meshes[i] = mesh;
           }
