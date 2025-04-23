@@ -7,9 +7,15 @@ using sonicadventure.util;
 
 namespace sonicadventure.schema.model;
 
+/// <summary>
+///   Shamelessly stolen from:
+///   https://info.sonicretro.org/SCHG:Sonic_Adventure/Model_Format
+/// </summary>
 [BinarySchema]
-public partial class Attach(uint key) : IKeyedInstance<Attach> {
-  public static Attach New(uint key) => new(key);
+public partial class Attach(uint keyedPointer, uint key)
+    : IKeyedInstance<Attach> {
+  public static Attach New(uint keyedPointer, uint key)
+    => new(keyedPointer, key);
 
   private uint verticesPointer_;
   private uint normalsPointer_;
@@ -62,6 +68,5 @@ public partial class Attach(uint key) : IKeyedInstance<Attach> {
         this.materialsPointer_,
         key,
         () => br.ReadNews<Material>(this.materialTotal_));
-
   }
 }

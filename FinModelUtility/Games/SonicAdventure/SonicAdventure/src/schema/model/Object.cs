@@ -21,10 +21,14 @@ public enum ObjectFlags : uint {
   DISABLE_MORPHS = 1 << 7,
 }
 
+/// <summary>
+///   Shamelessly stolen from:
+///   https://info.sonicretro.org/SCHG:Sonic_Adventure/Model_Format
+/// </summary>
 [BinarySchema]
 [Endianness(Endianness.LittleEndian)]
-public partial class Object(uint key) : IKeyedInstance<Object> {
-  public static Object New(uint key) => new(key);
+public partial class Object(uint keyedPointer, uint key) : IKeyedInstance<Object> {
+  public static Object New(uint keyedPointer, uint key) => new(keyedPointer, key);
 
   public ObjectFlags Flags { get; set; }
   private uint attachPointer_;

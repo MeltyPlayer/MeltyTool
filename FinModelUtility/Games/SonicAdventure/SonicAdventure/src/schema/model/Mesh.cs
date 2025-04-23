@@ -16,9 +16,13 @@ public enum PolyType {
   TRIANGLE_STRIP2 = 3,
 }
 
+/// <summary>
+///   Shamelessly stolen from:
+///   https://info.sonicretro.org/SCHG:Sonic_Adventure/Model_Format
+/// </summary>
 [BinarySchema]
-public partial class Mesh(uint key) : IKeyedInstance<Mesh> {
-  public static Mesh New(uint key) => new(key);
+public partial class Mesh(uint keyedPointer, uint key) : IKeyedInstance<Mesh> {
+  public static Mesh New(uint keyedPointer, uint key) => new(keyedPointer, key);
 
   public ushort PolyTypeAndMaterialId { get; set; }
 

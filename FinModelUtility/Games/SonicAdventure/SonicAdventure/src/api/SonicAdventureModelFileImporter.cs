@@ -13,8 +13,6 @@ using fin.util.sets;
 
 using schema.binary;
 
-using SharpGLTF.Geometry;
-
 using sonicadventure.schema.model;
 
 using Object = sonicadventure.schema.model.Object;
