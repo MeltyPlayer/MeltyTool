@@ -14,6 +14,6 @@ public interface IArchive : IResource, IDisposable {
   IReadOnlyTreeDirectory Root { get; }
 }
 
-public interface IArchiveImporter<in TArchiveBundle>
-    : IImporter<IArchive, TArchiveBundle>
-    where TArchiveBundle : IArchiveBundle;
+public interface IArchiveImporter<in TBundle>
+    : IImporter<IArchive, TBundle>
+    where TBundle : IArchiveBundle;

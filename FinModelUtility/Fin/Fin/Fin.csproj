@@ -6,6 +6,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="src\archives\BUncompressedArchiveImporter.cs" />
+    <Compile Remove="src\io\tree\StubTree.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpConverter.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpDirectExporter.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpMeshBuilder.cs" />
@@ -41,5 +43,9 @@
     <PackageReference Include="System.IO.Abstractions" Version="21.3.1" />
     <PackageReference Include="schema" Version="0.6.12" />
     <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\io\tree\" />
   </ItemGroup>
 </Project>
