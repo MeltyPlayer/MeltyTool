@@ -40,7 +40,7 @@ jobs:
       working-directory: mesa
 
     - name: Copy Mesa files to VRML test directory
-      run: xcopy . "${{github.workspace}}\FinModelUtility\Formats\Vrml\Vrml Tests\bin\x64\Debug\net9.0"
+      run: xcopy . "${{github.workspace}}\FinModelUtility\Formats\Vrml\Vrml Tests\bin\x64\Debug\net10.0"
       working-directory: mesa
 
     - name: Test
