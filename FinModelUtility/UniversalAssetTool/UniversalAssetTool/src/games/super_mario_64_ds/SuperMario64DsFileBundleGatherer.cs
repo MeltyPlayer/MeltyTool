@@ -1,5 +1,6 @@
 ﻿using fin.archives;
 using fin.common;
+using fin.data.sets;
 using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
@@ -36,15 +37,19 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
                 .Case("boss_donketu", "donketu_")
                 .Case("donketu", "donketu_")
                 .Case("ice_donketu", "ice_donketu"))
-        .Register("obj_hatena_box", new PrimaryModelSeparatorMethod("hatena_karabox.bmd"))
+        .Register("obj_hatena_box",
+                  new PrimaryModelSeparatorMethod("hatena_karabox.bmd"))
         .Register(
             "nokonoko",
             new PrefixCasesMethod()
                 .Case("nokonoko", "")
                 .Case("nokonoko_red", ""))
-        .Register("snowman", new PrimaryModelSeparatorMethod("snowman_model.bmd"))
+        .Register("snowman",
+                  new PrimaryModelSeparatorMethod("snowman_model.bmd"))
+        .Register("star", new PrefixCasesMethod().Case("obj_star", ""))
         .Register("togezo", new PrimaryModelSeparatorMethod("togezo.bmd"))
-        .Register("yurei_mucho", new PrimaryModelSeparatorMethod("yurei_mucho.bmd"));
+        .Register("yurei_mucho",
+                  new PrimaryModelSeparatorMethod("yurei_mucho.bmd"));
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
@@ -237,27 +242,75 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var playerDirectory
         = fileHierarchy.Root.AssertGetExistingSubdir("data/data/player");
 
-    var bmdFiles
-        = playerDirectory.FilesWithExtension(".bmd")
-                         .Where(f => f.NameWithoutExtension is not
-                                    ("wario_metal_model"));
-    var bcaFiles = playerDirectory.FilesWithExtension(".bca").ToArray();
+    var bcaSplitter = playerDirectory.FilesWithExtension(".bca").SplitByName();
+    var bmdSplitter = playerDirectory.FilesWithExtension(".bmd").SplitByName();
 
-    foreach (var bmdFile in bmdFiles) {
-      organizer.Add(new Sm64dsModelFileBundle {
-          GameName = "super_mario_64_ds",
-          BmdFile = bmdFile,
-      }.Annotate(bmdFile));
+    var balloonMarioBmd = bmdSplitter.Matching("b_mario_all.bmd");
+    organizer.Add(new Sm64dsModelFileBundle {
+        GameName = "super_mario_64_ds",
+        BmdFile = balloonMarioBmd,
+        BcaFiles = [bcaSplitter.Matching("b_mario_start.bca")],
+    }.Annotate(balloonMarioBmd));
+
+    var wingBmd = bmdSplitter.Matching("wing_model.bmd");
+    organizer.Add(new Sm64dsModelFileBundle {
+        GameName = "super_mario_64_ds",
+        BmdFile = wingBmd,
+        BcaFiles = [bcaSplitter.Matching("wing_flutter.bca")],
+    }.Annotate(wingBmd));
+
+    var luigiBcas = bcaSplitter.StartsWith("L_");
+    var marioBcas = bcaSplitter.StartsWith("M_");
+    var warioBcas = bcaSplitter.StartsWith("W_");
+    var yoshiBcas = bcaSplitter.StartsWith("Y_");
+    var commonBcas = bcaSplitter.Remaining();
+
+    var luigiBmd = bmdSplitter.Matching("luigi_model.bmd");
+    var marioBmd = bmdSplitter.Matching("mario_model.bmd");
+    var warioBmds = new[] {
+        bmdSplitter.Matching("wario_model.bmd"),
+        bmdSplitter.Matching("wario_metal_model.bmd")
+    };
+    var yoshiBmd = bmdSplitter.Matching("yoshi_model.bmd");
+
+    // Luigi
+    organizer.Add(new Sm64dsModelFileBundle {
+        GameName = "super_mario_64_ds",
+        BmdFile = luigiBmd,
+        BcaFiles = luigiBcas.Concat(commonBcas).ToArray(),
+    }.Annotate(luigiBmd));
+
+    // Mario
+    organizer.Add(new Sm64dsModelFileBundle {
+        GameName = "super_mario_64_ds",
+        BmdFile = marioBmd,
+        BcaFiles = marioBcas.Concat(commonBcas).ToArray(),
+    }.Annotate(marioBmd));
+
+    // Wario
+    {
+      var allWarioBcas = warioBcas.Concat(commonBcas).ToArray();
+      foreach (var warioBmd in warioBmds) {
+        organizer.Add(new Sm64dsModelFileBundle {
+            GameName = "super_mario_64_ds",
+            BmdFile = warioBmd,
+            BcaFiles = allWarioBcas,
+        }.Annotate(warioBmd));
+      }
     }
 
-    // wario_metal_model
-    {
-      var bmdFile
-          = playerDirectory.AssertGetExistingFile("wario_metal_model.bmd");
+    // Yoshi
+    organizer.Add(new Sm64dsModelFileBundle {
+        GameName = "super_mario_64_ds",
+        BmdFile = yoshiBmd,
+        BcaFiles = yoshiBcas.Concat(commonBcas).ToArray(),
+    }.Annotate(yoshiBmd));
+
+    // Other models
+    foreach (var bmdFile in bmdSplitter.Remaining()) {
       organizer.Add(new Sm64dsModelFileBundle {
           GameName = "super_mario_64_ds",
           BmdFile = bmdFile,
-          BcaFiles = bcaFiles,
       }.Annotate(bmdFile));
     }
   }
