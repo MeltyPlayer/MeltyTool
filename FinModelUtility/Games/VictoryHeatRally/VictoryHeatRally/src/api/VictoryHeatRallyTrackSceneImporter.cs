@@ -5,6 +5,7 @@ using System.Text.Json;
 using fin.data.lazy;
 using fin.image;
 using fin.io;
+using fin.math;
 using fin.math.splines;
 using fin.model;
 using fin.model.impl;
@@ -70,6 +71,7 @@ public class VictoryHeatRallyTrackSceneImporter
       var (textureMaterial, texture) =
           trackModel.MaterialManager.AddSimpleTextureMaterialFromFile(
               spriteDirectory.AssertGetExistingFile("spr_roadtex_0.png"));
+      textureMaterial.CullingMode = CullingMode.SHOW_BOTH;
       texture.MinFilter = TextureMinFilter.NEAR;
       texture.MagFilter = TextureMagFilter.NEAR;
 
@@ -114,8 +116,24 @@ public class VictoryHeatRallyTrackSceneImporter
     var visibleItems =
         trackItems.Where(i => i.type is "Model" or "Object" or "Sprite");
     foreach (var trackItem in visibleItems) {
+      var myStruct = trackItem.my_struct;
+
       var position =
-          nodesSpline.GetPositionAtOffset(trackItem.my_struct!.position!.Value * 32);
+          myStruct != null
+              ? myStruct.follow.IsTruthy()
+                  ? nodesSpline.GetPositionAtOffset(
+                      myStruct!.position!.Value * 32)
+                  : new Vector3(myStruct.x ?? 0,
+                                myStruct.y ?? 0,
+                                myStruct.z ?? 0)
+              : Vector3.Zero;
+
+      var xScale = (myStruct?.scale ?? 1) *
+                   (myStruct?.image_xscale ?? 1) *
+                   (myStruct?.xscale ?? 1);
+      var yScale = (myStruct?.scale ?? 1) *
+                   (myStruct?.image_yscale ?? 1) *
+                   (myStruct?.yscale ?? 1);
 
       switch (trackItem.type) {
         case "Model": {
@@ -141,15 +159,14 @@ public class VictoryHeatRallyTrackSceneImporter
           var adjBone = spriteRootBone.AddChild(0, 0, 0);
           adjBone.LocalTransform.EulerRadians = new Vector3(MathF.PI / 2, 0, 0);
 
+          var width = spriteImage.Width * xScale;
+          var height = spriteImage.Height * yScale;
+
           var spriteSkin = spriteModel.Skin;
           var spriteMesh = spriteSkin.AddMesh();
           spriteMesh.AddSimpleWall(spriteSkin,
-                                   new Vector3(0,
-                                               -spriteImage.Width / 2f,
-                                               -spriteImage.Height),
-                                   new Vector3(0,
-                                               spriteImage.Width / 2f, 
-                                               0),
+                                   new Vector3(0, -width / 2f, -height),
+                                   new Vector3(0, width / 2f, 0),
                                    spriteMaterial,
                                    adjBone);
 
