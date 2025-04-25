@@ -1,4 +1,5 @@
-﻿using fin.io;
+﻿using fin.data.sets;
+using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
 
@@ -39,115 +40,39 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
     new FileHierarchyAssetBundleSeparator(
         fileHierarchy,
         (directory, organizer) => {
-          var modlFiles = directory.FilesWithExtension(".modl");
-          var animFiles = directory.FilesWithExtension(".anim");
+          var modlSplitter
+              = directory.FilesWithExtension(".modl").SplitByName();
 
-          var svetModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "SVET")
-                       .ToHashSet();
-          var sgruntModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "SGRUNT")
-                       .ToHashSet();
+          var svetModlFile = modlSplitter.StartsWith("SVET.modl");
+          var sgruntModlFile = modlSplitter.StartsWith("SGRUNT.modl");
 
-          var tvetModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "TVET")
-                       .ToHashSet();
-          var tgruntModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "TGRUNT")
-                       .ToHashSet();
+          var tvetModlFile = modlSplitter.StartsWith("TVET.modl");
+          var tgruntModlFile = modlSplitter.StartsWith("TGRUNT.modl");
 
-          var uvetModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "UVET")
-                       .ToHashSet();
-          var ugruntModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "UGRUNT")
-                       .ToHashSet();
+          var uvetModlFile = modlSplitter.StartsWith("UVET.modl");
+          var ugruntModlFile = modlSplitter.StartsWith("UGRUNT.modl");
 
-          var wvetModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "WVET")
-                       .ToHashSet();
-          var wgruntModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "WGRUNT")
-                       .ToHashSet();
+          var wvetModlFile = modlSplitter.StartsWith("WVET.modl");
+          var wgruntModlFile = modlSplitter.StartsWith("WGRUNT.modl");
 
-          var xvetModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "XVET")
-                       .ToHashSet();
-          var xgruntModlFile =
-              modlFiles.Where(modlFile =>
-                                  modlFile.NameWithoutExtension is "XGRUNT")
-                       .ToHashSet();
+          var xvetModlFile = modlSplitter.StartsWith("XVET.modl");
+          var xgruntModlFile = modlSplitter.StartsWith("XGRUNT.modl");
 
+          var animSplitter
+              = directory.FilesWithExtension(".anim").SplitByName();
 
-          var fvAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith("FV"))
-                       .ToArray();
-          var fgAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith("FG"))
-                       .ToArray();
+          var fvAnimFiles = animSplitter.StartsWith("FV");
+          var fgAnimFiles = animSplitter.StartsWith("FG");
+          
+          var sgAnimFiles = animSplitter.StartsWith("SG");
+          var uvAnimFiles = animSplitter.StartsWith("UV");
 
-          var sgAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith(
-                                   "SG"))
-                       .ToArray();
-          var uvAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith(
-                                   "UV"))
-                       .ToArray();
-          var wgruntAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith(
-                                   "WGRUNT"))
-                       .ToArray();
-          var xgAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith(
-                                   "XG"))
-                       .ToArray();
-          var xvAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith(
-                                   "XV"))
-                       .ToArray();
-
-          var otherModlFiles =
-              modlFiles.Where(
-                           modlFile =>
-                               !sgruntModlFile.Contains(modlFile) &&
-                               !svetModlFile.Contains(modlFile) &&
-                               !tgruntModlFile.Contains(modlFile) &&
-                               !tvetModlFile.Contains(modlFile) &&
-                               !ugruntModlFile.Contains(modlFile) &&
-                               !uvetModlFile.Contains(modlFile) &&
-                               !wgruntModlFile.Contains(modlFile) &&
-                               !wvetModlFile.Contains(modlFile) &&
-                               !xgruntModlFile.Contains(modlFile) &&
-                               !xvetModlFile.Contains(modlFile)
-                       )
-                       .ToArray();
+          var wgruntAnimFiles = animSplitter.StartsWith("WGRUNT");
+          var xgAnimFiles = animSplitter.StartsWith("XG");
+          var xvAnimFiles = animSplitter.StartsWith("XV");
 
           var allModlsAndAnims =
-              new (IEnumerable<IFileHierarchyFile>, IList<IReadOnlyTreeFile>?
+              new (IEnumerable<IFileHierarchyFile>, IReadOnlyList<IReadOnlyTreeFile>?
                   )
                   [] {
                       (sgruntModlFile,
@@ -165,7 +90,7 @@ public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
                        fgAnimFiles.Concat(xgAnimFiles).ToArray()),
                       (xvetModlFile,
                        fvAnimFiles.Concat(xvAnimFiles).ToArray()),
-                      (otherModlFiles, null),
+                      (modlSplitter.Remaining(), null),
                   };
 
           foreach (var (currModlFiles, currAnimFiles) in allModlsAndAnims) {

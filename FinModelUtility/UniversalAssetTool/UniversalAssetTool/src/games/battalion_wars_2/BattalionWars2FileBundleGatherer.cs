@@ -86,7 +86,7 @@ public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
                        .ToArray();
 
           var allModlsAndAnims =
-              new (IEnumerable<IFileHierarchyFile>, IList<IReadOnlyTreeFile>?
+              new (IEnumerable<IFileHierarchyFile>, IReadOnlyList<IReadOnlyTreeFile>?
                   )
                   [] {
                       (svetModlFile, fvAnimFiles),

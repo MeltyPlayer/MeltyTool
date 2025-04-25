@@ -11,5 +11,5 @@ public class ModlModelFileBundle : IBattalionWarsModelFileBundle {
   public required GameVersion GameVersion { get; init; }
   public required IReadOnlyTreeFile ModlFile { get; init; }
 
-  public required IList<IReadOnlyTreeFile>? AnimFiles { get; init; }
+  public required IReadOnlyList<IReadOnlyTreeFile>? AnimFiles { get; init; }
 }
