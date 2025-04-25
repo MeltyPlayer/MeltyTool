@@ -426,7 +426,7 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
   }
 
   /// <summary>
-  ///   Shamelessly copied from:
+  ///   Shamelessly stolen from:
   ///   https://github.com/Ploaj/HSDLib/blob/93a906444f34951c6eed4d8c6172bba43d4ada98/HSDRawViewer/Shader/gx_lightmap.frag
   /// </summary>
   private void PopulateFixedFunctionMaterial_(

@@ -6,7 +6,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="src\archives\BUncompressedArchiveImporter.cs" />
     <Compile Remove="src\io\tree\StubTree.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpConverter.cs" />
     <Compile Remove="src\model\io\exporters\assimp\AssimpDirectExporter.cs" />

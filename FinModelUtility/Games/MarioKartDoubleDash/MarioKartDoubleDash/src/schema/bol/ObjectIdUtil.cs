@@ -2,7 +2,7 @@
 
 public static class ObjectIdUtil {
   /// <summary>
-  ///   Shamelessly copied from => 
+  ///   Shamelessly stolen from => 
   ///   https => //github.com/magcius/noclip.website/blob/main/src/j3d/mkdd_scenes.ts
   /// </summary>
   public static string[][]? GetFileNames(ushort objectId) {

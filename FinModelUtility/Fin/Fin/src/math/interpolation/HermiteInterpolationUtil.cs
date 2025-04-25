@@ -4,7 +4,7 @@ namespace fin.math.interpolation;
 
 public static class HermiteInterpolationUtil {
   /// <summary>
-  ///   Shamelessly copied from:
+  ///   Shamelessly stolen from:
   ///   https://answers.unity.com/questions/464782/t-is-the-math-behind-animationcurveevaluate.html
   /// </summary>
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

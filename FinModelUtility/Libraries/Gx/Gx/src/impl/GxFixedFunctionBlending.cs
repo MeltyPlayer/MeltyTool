@@ -8,7 +8,7 @@ public class GxFixedFunctionBlending {
                             GxBlendFactor srcFactor,
                             GxBlendFactor dstFactor,
                             GxLogicOp logicOp) {
-      // Shamelessly copied from:
+      // Shamelessly stolen from:
       // https://github.com/magcius/noclip.website/blob/c5a6d0137128065068b5842ffa9dff04f03eefdb/src/gx/gx_render.ts#L405-L423
       switch (blendMode) {
         case GxBlendMode.NONE: {

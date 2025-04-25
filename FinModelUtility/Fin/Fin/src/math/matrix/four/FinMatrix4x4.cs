@@ -223,7 +223,7 @@ public sealed class FinMatrix4x4 : IFinMatrix4x4 {
   public void TransposeIntoBuffer(IFinMatrix4x4 buffer)
     => buffer.Impl = SystemMatrix.Transpose(this.impl_);
 
-  // Shamelessly copied from https://math.stackexchange.com/a/1463487
+  // Shamelessly stolen from https://math.stackexchange.com/a/1463487
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void CopyTranslationInto(out Vector3 dst)
     => dst = this.impl_.Translation;

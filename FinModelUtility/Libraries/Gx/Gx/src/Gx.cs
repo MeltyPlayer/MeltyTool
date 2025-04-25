@@ -1,7 +1,7 @@
 ﻿namespace gx;
 
 /// <summary>
-///   Shamelessly copied from:
+///   Shamelessly stolen from:
 ///   https://github.com/magcius/noclip.website/blob/1fa39ab5d9d014095c77a8509bf6ba87d3296200/src/gx/gx_enum.ts#L33
 ///   https://github.com/RenaKunisaki/SFA-Amethyst/blob/7844a5fe15485bf79fe672ef7d47f44d76b98b0f/include/sfa/gx/opcodes.h
 /// </summary>

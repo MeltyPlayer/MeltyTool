@@ -130,7 +130,7 @@ public class PrimaryModelSeparatorMethod(string primaryModelName)
         new ModelBundle(modelFiles.SingleByName(primaryModelName),
                         animationFiles)
     }.Concat(modelFiles
-             .Where(file => file.Name != primaryModelName)
+             .NotByName(primaryModelName)
              .Select(modelFile => new ModelBundle(modelFile, [])));
   }
 }

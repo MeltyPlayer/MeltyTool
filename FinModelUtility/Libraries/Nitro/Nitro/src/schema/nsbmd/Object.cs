@@ -15,7 +15,7 @@ namespace nitro.schema.nsbmd {
   }
 
   /// <summary>
-  ///   Shamelessly copied from:
+  ///   Shamelessly stolen from:
   ///   https://github.com/scurest/apicula/blob/07c4d8facdcb015d118bf26a29d37c8b41021bfd/src/nitro/model.rs#L329
   /// </summary>
   [BinarySchema]

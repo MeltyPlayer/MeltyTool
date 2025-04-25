@@ -16,7 +16,7 @@ using mats_Material = grezzo.schema.cmb.mats.Material;
 namespace grezzo.material;
 
 /// <summary>
-///   Shamelessly copied from https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/oot3d/render.ts
+///   Shamelessly stolen from https://github.com/naclomi/noclip.website/blob/8b0de601d6d8f596683f0bdee61a9681a42512f9/src/oot3d/render.ts
 /// </summary>
 public class CmbCombinerGenerator {
   private readonly mats_Material cmbMaterial_;

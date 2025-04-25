@@ -11,6 +11,12 @@ public static class FinIoLinq {
     => objects.Where(
         o => o.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
+  public static IEnumerable<T> NotByName<T>(this IEnumerable<T> objects,
+                                         string name)
+      where T : IReadOnlyTreeIoObject
+    => objects.Where(
+        o => !o.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
   public static T SingleByName<T>(this IEnumerable<T> objects, string name)
       where T : IReadOnlyTreeIoObject
     => objects.ByName(name).Single();

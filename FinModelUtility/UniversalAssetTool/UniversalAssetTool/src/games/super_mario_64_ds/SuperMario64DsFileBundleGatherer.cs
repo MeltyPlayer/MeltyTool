@@ -1,7 +1,10 @@
-﻿using fin.common;
+﻿using fin.archives;
+using fin.common;
 using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
+
+using nitro.api;
 
 using sm64ds.api;
 
@@ -22,7 +25,26 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
         .Register<AllAnimationsModelSeparatorMethod>(
             "bombhei",
             "fish",
-            "peach");
+            "kuribo",
+            "peach",
+            "penguin")
+        .Register("book", new PrimaryModelSeparatorMethod("book.bmd"))
+        .Register("choropu", new PrimaryModelSeparatorMethod("choropu.bmd"))
+        .Register(
+            "donketu",
+            new PrefixCasesMethod()
+                .Case("boss_donketu", "donketu_")
+                .Case("donketu", "donketu_")
+                .Case("ice_donketu", "ice_donketu"))
+        .Register("obj_hatena_box", new PrimaryModelSeparatorMethod("hatena_karabox.bmd"))
+        .Register(
+            "nokonoko",
+            new PrefixCasesMethod()
+                .Case("nokonoko", "")
+                .Case("nokonoko_red", ""))
+        .Register("snowman", new PrimaryModelSeparatorMethod("snowman_model.bmd"))
+        .Register("togezo", new PrimaryModelSeparatorMethod("togezo.bmd"))
+        .Register("yurei_mucho", new PrimaryModelSeparatorMethod("yurei_mucho.bmd"));
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
@@ -35,6 +57,16 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var fileHierarchy
         = new DsFileHierarchyExtractor().ExtractFromRom(superMario64DsRom);
+
+    var dataDir = fileHierarchy.Root.Impl.AssertGetExistingSubdir("data");
+    var narcImporter = new NarcArchiveImporter();
+    foreach (var narcFile in fileHierarchy.Root.GetFilesWithFileType(
+                 ".narc",
+                 true)) {
+      narcImporter.ImportAndExtractRelativeTo(
+          new NarcArchiveBundle(narcFile),
+          dataDir);
+    }
 
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
@@ -207,8 +239,8 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     var bmdFiles
         = playerDirectory.FilesWithExtension(".bmd")
-                     .Where(f => f.NameWithoutExtension is not
-                                ("wario_metal_model"));
+                         .Where(f => f.NameWithoutExtension is not
+                                    ("wario_metal_model"));
     var bcaFiles = playerDirectory.FilesWithExtension(".bca").ToArray();
 
     foreach (var bmdFile in bmdFiles) {
@@ -220,7 +252,8 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     // wario_metal_model
     {
-      var bmdFile = playerDirectory.AssertGetExistingFile("wario_metal_model.bmd");
+      var bmdFile
+          = playerDirectory.AssertGetExistingFile("wario_metal_model.bmd");
       organizer.Add(new Sm64dsModelFileBundle {
           GameName = "super_mario_64_ds",
           BmdFile = bmdFile,

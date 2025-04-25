@@ -23,8 +23,8 @@ public static class EnumerableExtensions {
 
   public static int IndexOfOrNegativeOne<T>(this IEnumerable<T> enumerable,
                                             T value)
-    => enumerable.IndexOfOrNegativeOne(
-        item => value?.Equals(item) ?? (value == null && item == null));
+    => enumerable.IndexOfOrNegativeOne(item => value?.Equals(item) ??
+                                               (value == null && item == null));
 
   public static int IndexOfOrNegativeOne<T>(this IEnumerable<T> enumerable,
                                             Func<T, bool> handler) {
@@ -122,31 +122,39 @@ public static class EnumerableExtensions {
   }
 
 
-  public static bool SequenceEqualOrBothEmpty<T>(
-      this IEnumerable<T>? lhs,
-      IEnumerable<T>? rhs) {
-    if (lhs == null && rhs == null) {
-      return true;
+  public static void AddTo<T>(this IEnumerable<T> src,
+                              ICollection<T> dst) {
+    foreach (var value in src) {
+      dst.Add(value);
     }
-
-    return (lhs ?? []).SequenceEqual(rhs ?? []);
   }
 
-  public static IEnumerable<T[]> SplitByNull<T>(
-      this IEnumerable<Nullable<T>> impl) where T : struct {
-    var current = new LinkedList<T>();
-    foreach (var value in impl) {
-      if (value == null) {
-        yield return current.ToArray();
-        current.Clear();
-        continue;
+
+  public static bool SequenceEqualOrBothEmpty<T>(
+        this IEnumerable<T>? lhs,
+        IEnumerable<T>? rhs) {
+      if (lhs == null && rhs == null) {
+        return true;
       }
 
-      current.AddLast(value.Value);
+      return (lhs ?? []).SequenceEqual(rhs ?? []);
     }
 
-    yield return current.ToArray();
-  }
+    public static IEnumerable<T[]> SplitByNull<T>(
+        this IEnumerable<Nullable<T>> impl) where T : struct {
+      var current = new LinkedList<T>();
+      foreach (var value in impl) {
+        if (value == null) {
+          yield return current.ToArray();
+          current.Clear();
+          continue;
+        }
 
-  public static bool AnyTrue(this IEnumerable<bool> impl) => impl.Any(b => b);
-}
+        current.AddLast(value.Value);
+      }
+
+      yield return current.ToArray();
+    }
+
+    public static bool AnyTrue(this IEnumerable<bool> impl) => impl.Any(b => b);
+  }
