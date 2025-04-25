@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Drawing.Drawing2D;
+using System.Numerics;
 
 using f3dzex2.io;
 
@@ -13,14 +14,6 @@ using sm64.scripts.geo;
 
 namespace sm64.Scripts {
   public class GeoScriptsV2 : IGeoScripts {
-    private GeoScriptNode rootNode;
-    private GeoScriptNode nodeCurrent;
-
-    public GeoScriptsV2() {
-      this.rootNode = new GeoScriptNode(null);
-      this.nodeCurrent = this.rootNode;
-    }
-
     public void parse(
         IReadOnlySm64Memory n64Memory,
         Model3DLods mdlLods,
@@ -34,131 +27,90 @@ namespace sm64.Scripts {
         return;
       }
 
-      mdlLods.Node = this.nodeCurrent;
+      var root = new GeoScriptNode(null, FinMatrix4x4.IDENTITY);
+      mdlLods.Node = root;
 
-      this.Add_(mdlLods, lvl, commandList);
+      this.Add_(mdlLods, lvl, commandList, root);
     }
 
     private void Add_(
         Model3DLods mdlLods,
         Level lvl,
-        IGeoCommandList commandList) {
+        IGeoCommandList commandList,
+        GeoScriptNode root) {
+      GeoScriptNode parent = root;
+
+      var matrixStack = new Matrix4x4Stack();
+      matrixStack.Push(parent.matrix.Impl);
+
+      var id = 0;
+
       foreach (var command in commandList.Commands) {
+        var mulMatrix = command switch {
+            GeoAnimatedPartCommand geoAnimatedPartCommand
+                => this.CreateTranslationMatrix_(
+                    geoAnimatedPartCommand.Translation),
+            GeoBillboardCommand geoBillboardCommand
+                => this.CreateTranslationMatrix_(
+                    geoBillboardCommand.Translation),
+            GeoRotationCommand geoRotationCommand
+                => this.CreateRotationMatrix_(geoRotationCommand.Rotation),
+            GeoScaleCommand geoScaleCommand
+                => FinMatrix4x4Util.FromScale(geoScaleCommand.Scale / 65536.0f),
+            GeoTranslateAndRotateCommand geoTranslateAndRotateCommand
+                => this.CreateTranslationAndRotationMatrix_(
+                    geoTranslateAndRotateCommand.Translation,
+                    geoTranslateAndRotateCommand.Rotation),
+            GeoTranslationCommand geoTranslationCommand
+                => this.CreateTranslationMatrix_(
+                    geoTranslationCommand.Translation),
+            _ => FinMatrix4x4.IDENTITY,
+        };
+
+        matrixStack.Top *= mulMatrix.Impl;
+
+        var current = new GeoScriptNode(parent,
+                                        new FinMatrix4x4(matrixStack.Top));
+        current.ID = id++;
+        current.parent = parent;
+
+        mdlLods.Node = current;
+
+        if (command is IGeoCommandWithBranch commandWithBranch) {
+          if (commandWithBranch.GeoCommandList != null) {
+            this.Add_(mdlLods,
+                      lvl,
+                      commandWithBranch.GeoCommandList,
+                      current);
+          }
+
+          if (!commandWithBranch.StoreReturnAddress) {
+            return;
+          }
+        }
+
         switch (command) {
-          case GeoAnimatedPartCommand geoAnimatedPartCommand: {
-            var translation = geoAnimatedPartCommand.Offset;
-            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateTranslationMatrix_(translation));
-            this.AddDisplayList(
-                mdlLods,
-                lvl,
-                geoAnimatedPartCommand.DisplayListSegmentedAddress);
-            break;
-          }
-          case GeoBillboardCommand geoBillboardCommand: break;
-          case GeoBranchAndStoreCommand geoBranchAndStoreCommand: {
-            if (geoBranchAndStoreCommand.GeoCommandList != null) {
-              var currentNode = this.nodeCurrent;
-              this.Add_(mdlLods,
-                        lvl,
-                        geoBranchAndStoreCommand.GeoCommandList);
-              mdlLods.Node = currentNode;
-            }
-
-            break;
-          }
-          case GeoBranchCommand geoBranchCommand: {
-            if (geoBranchCommand.GeoCommandList != null) {
-              var currentNode = this.nodeCurrent;
-              this.Add_(mdlLods, lvl, geoBranchCommand.GeoCommandList);
-              if (geoBranchCommand.StoreReturnAddress) {
-                mdlLods.Node = currentNode;
-              }
-            }
-
+          case GeoOpenNodeCommand geoOpenNodeCommand: {
+            parent = current;
+            matrixStack.Push();
             break;
           }
           case GeoCloseNodeCommand: {
-            if (this.nodeCurrent != this.rootNode) {
-              this.nodeCurrent = this.nodeCurrent.parent;
-              mdlLods.Node = this.nodeCurrent;
-            }
-
-            break;
-          }
-          case GeoDisplayListCommand geoDisplayListCommand: {
-            this.AddDisplayList(
-                mdlLods,
-                lvl,
-                geoDisplayListCommand.DisplayListSegmentedAddress);
-            break;
-          }
-          case GeoDisplayListFromAsm geoDisplayListFromAsm: break;
-          case GeoHeldObjectCommand geoHeldObjectCommand:   break;
-          case GeoObjectListCommand geoObjectListCommand:   break;
-          case GeoOpenNodeCommand geoOpenNodeCommand: {
-            GeoScriptNode newNode = new GeoScriptNode(this.nodeCurrent);
-            newNode.ID = this.nodeCurrent.ID + 1;
-            newNode.parent = this.nodeCurrent;
-            this.nodeCurrent = newNode;
-            mdlLods.Node = this.nodeCurrent;
-            break;
-          }
-          case GeoRotationCommand geoRotationCommand: {
-            var rotation = geoRotationCommand.Rotation;
-            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateRotationMatrix_(rotation));
-            this.AddDisplayList(
-                mdlLods,
-                lvl,
-                geoRotationCommand.DisplayListSegmentedAddress);
-            break;
-          }
-          case GeoScaleCommand geoScaleCommand: {
-            var scale = (geoScaleCommand.Scale / 65536.0f);
-            this.nodeCurrent.matrix.MultiplyInPlace(
-                FinMatrix4x4Util.FromScale(scale));
-            this.AddDisplayList(
-                mdlLods,
-                lvl,
-                geoScaleCommand.DisplayListSegmentedAddress);
+            parent = current.parent;
+            matrixStack.Pop();
             break;
           }
           case GeoSetRenderRangeCommand geoSetRenderRangeCommand: {
-            mdlLods.AddLod(this.nodeCurrent!);
+            mdlLods.AddLod(current);
             break;
           }
-          case GeoShadowCommand geoShadowCommand: break;
-          case GeoSwitchCommand geoSwitchCommand: break;
-          case GeoTranslateAndRotateCommand geoTranslateAndRotateCommand: {
-            var translation = geoTranslateAndRotateCommand.Translation;
-            var rotation = geoTranslateAndRotateCommand.Rotation;
-            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateTranslationAndRotationMatrix_(translation, rotation));
-            this.AddDisplayList(
-                mdlLods,
-                lvl,
-                geoTranslateAndRotateCommand.DisplayListSegmentedAddress);
-            break;
-          }
-          case GeoTranslationCommand geoTranslationCommand: {
-            var translation = geoTranslationCommand.Translation;
-            this.nodeCurrent.matrix.MultiplyInPlace(this.CreateTranslationMatrix_(translation));
-            this.AddDisplayList(
-                mdlLods,
-                lvl,
-                geoTranslationCommand.DisplayListSegmentedAddress);
-            break;
-          }
-          case GeoBackgroundCommand geoBackgroundCommand: break;
-          case GeoCameraFrustumCommand geoCameraFrustumCommand: break;
-          case GeoCameraLookAtCommand geoCameraLookAtCommand: break;
-          case GeoCullingRadiusCommand geoCullingRadiusCommand: break;
-          case GeoNoopCommand geoNoopCommand: break;
-          case GeoOrthoMatrixCommand geoOrthoMatrixCommand: break;
-          case GeoReturnFromBranchCommand geoReturnFromBranchCommand: break;
-          case GeoStartLayoutCommand geoStartLayoutCommand: break;
-          case GeoTerminateCommand geoTerminateCommand: break;
-          case GeoToggleDepthBufferCommand geoToggleDepthBufferCommand: break;
-          case GeoViewportCommand geoViewportCommand: break;
-          default: throw new ArgumentOutOfRangeException(nameof(command));
+        }
+
+        if (command is IGeoCommandWithDisplayList commandWithDisplayList) {
+          this.AddDisplayList(
+              mdlLods,
+              lvl,
+              commandWithDisplayList.DisplayListSegmentedAddress);
         }
       }
     }

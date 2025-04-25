@@ -5,4 +5,5 @@ public enum FileBundleType {
   MODEL,
   AUDIO,
   IMAGE,
+  ARCHIVE,
 }

@@ -41,6 +41,8 @@ using fin.model.io.importers.gltf;
 
 using rollingMadness.api;
 
+using sonicadventure.api;
+
 
 namespace uni.api;
 
@@ -87,6 +89,9 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new PedModelImporter().Import(pedModelFileBundle),
         Sm64dsModelFileBundle sm64dsModelFileBundle
             => new Sm64dsModelImporter().Import(sm64dsModelFileBundle),
+        SonicAdventureModelFileBundle sonicAdventureModelFileBundle
+            => new SonicAdventureModelFileImporter().Import(
+                sonicAdventureModelFileBundle),
         TtydModelFileBundle ttydModelFileBundle
             => new TtydModelImporter().Import(ttydModelFileBundle),
         VbModelFileBundle vbModelFileBundle
@@ -99,6 +104,6 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new XmodModelImporter().Import(xmodModelFileBundle),
         ZsiModelFileBundle zsiModelFileBundle
             => new ZsiModelImporter().Import(zsiModelFileBundle),
-      _ => throw new ArgumentOutOfRangeException(nameof(modelFileBundle))
+        _ => throw new ArgumentOutOfRangeException(nameof(modelFileBundle))
     };
 }

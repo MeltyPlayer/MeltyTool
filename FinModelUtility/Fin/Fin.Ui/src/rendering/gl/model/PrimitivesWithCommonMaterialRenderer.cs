@@ -78,7 +78,7 @@ public partial class ModelRenderer {
           this.Material?.DepthCompareType ??
           DepthCompareType.LEqual);
       GlUtil.SetChannelUpdateMask(this.Material?.UpdateColorChannel ?? true,
-                                  this.Material?.UpdateAlphaChannel ?? true);
+                                  this.Material?.UpdateAlphaChannel ?? false);
 
       this.bufferRenderer_.Render();
     }

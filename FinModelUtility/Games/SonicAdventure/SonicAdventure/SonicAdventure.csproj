@@ -1,17 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>sonicadventure</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.11" />
+    <PackageReference Include="schema" Version="0.6.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\schema\pvr\" />
+    <Folder Include="src\schema\pvm\" />
   </ItemGroup>
 </Project>

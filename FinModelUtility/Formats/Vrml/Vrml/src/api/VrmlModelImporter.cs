@@ -155,7 +155,6 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
 
               var finMaterial
                   = finModel.MaterialManager.AddFixedFunctionMaterial();
-              finMaterial.DepthCompareType = DepthCompareType.Less;
 
               var equations = finMaterial.Equations;
               var colorOps = equations.ColorOps;
