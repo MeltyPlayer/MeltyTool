@@ -1,7 +1,7 @@
 ﻿using fin.animation.interpolation;
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
-using fin.animation.types.single;
+using fin.animation.types.radians;
 using fin.util.optional;
 
 namespace fin.model.impl;
@@ -20,7 +20,7 @@ public partial class ModelImpl<TVertex> {
       var keyframes
           = new SeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>(
               sharedConfig,
-              FloatKeyframeWithTangentsInterpolator.Instance,
+              RadiansKeyframeWithTangentsInterpolator.Instance,
               new IndividualInterpolationConfig<float> {
                   AnimationLength = animationLength,
                   InitialCapacity = initialXCapacity,

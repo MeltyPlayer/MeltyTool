@@ -4,6 +4,7 @@ using System.Numerics;
 
 using fin.animation.interpolation;
 using fin.animation.keyframes;
+using fin.animation.types.radians;
 using fin.math;
 using fin.math.floats;
 using fin.math.rotations;
@@ -14,7 +15,7 @@ namespace fin.animation.types.quaternion;
 // TODO: Add support for tangents in quaternions
 public class SeparateEulerRadiansKeyframes<TKeyframe>(
     ISharedInterpolationConfig sharedConfig,
-    IKeyframeInterpolator<TKeyframe, float> interpolator,
+    IRadiansKeyframeInterpolator<TKeyframe> interpolator,
     IndividualInterpolationConfig<float> individualConfigX,
     IndividualInterpolationConfig<float> individualConfigY,
     IndividualInterpolationConfig<float> individualConfigZ)
@@ -22,23 +23,14 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
     where TKeyframe : IKeyframe<float> {
   private readonly IReadOnlyList<InterpolatedKeyframes<TKeyframe, float>> axes_
       = [
-          new InterpolatedKeyframes<TKeyframe, float>(
-              sharedConfig,
-              interpolator,
-              individualConfigX),
-          new InterpolatedKeyframes<TKeyframe, float>(
-              sharedConfig,
-              interpolator,
-              individualConfigY),
-          new InterpolatedKeyframes<TKeyframe, float>(
-              sharedConfig,
-              interpolator,
-              individualConfigZ),
+          new (sharedConfig, interpolator, individualConfigX),
+          new (sharedConfig, interpolator, individualConfigY),
+          new (sharedConfig, interpolator, individualConfigZ),
       ];
 
   public SeparateEulerRadiansKeyframes(
       ISharedInterpolationConfig sharedConfig,
-      IKeyframeInterpolator<TKeyframe, float> interpolator,
+      IRadiansKeyframeInterpolator<TKeyframe> interpolator,
       IndividualInterpolationConfig<float> individualConfig = default)
       : this(sharedConfig,
              interpolator,
@@ -254,6 +246,8 @@ public class SeparateEulerRadiansKeyframes<TKeyframe>(
   public ISeparateEulerRadiansKeyframes<TKeyframe>.ConvertRadiansToQuaternion
       ConvertRadiansToQuaternionImpl { get; set; } =
     QuaternionUtil.CreateZyxRadians;
+
+  public IRadiansKeyframeInterpolator<TKeyframe> Interpolator => interpolator;
 
   private static float GetFromValueOrDefault_(
       KeyframesUtil.InterpolationDataType interpolationType,

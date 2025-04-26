@@ -54,6 +54,11 @@ public partial class ModelImpl<TVertex> {
       set => this.sharedInterpolationConfig_.Looping = value;
     }
 
+    public bool DisableNearestRotationFix {
+      get => this.sharedInterpolationConfig_.DisableNearestRotationFix;
+      set => this.sharedInterpolationConfig_.DisableNearestRotationFix = value;
+    }
+
     public AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
       get;
       set;

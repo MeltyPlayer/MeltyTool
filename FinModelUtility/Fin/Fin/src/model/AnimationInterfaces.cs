@@ -38,6 +38,7 @@ public partial interface IAnimation {
   new int FrameCount { get; set; }
   new float FrameRate { get; set; }
   new bool UseLoopingInterpolation { get; set; }
+  new bool DisableNearestRotationFix { get; set; }
 
   new AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
     get;

@@ -3,6 +3,7 @@
 using fin.animation.interpolation;
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
+using fin.animation.types.radians;
 using fin.animation.types.single;
 using fin.util.optional;
 
@@ -106,7 +107,7 @@ public partial class ModelImpl<TVertex> {
             int initialZCapacity) {
       var keyframes = new SeparateEulerRadiansKeyframes<Keyframe<float>>(
           sharedConfig,
-          FloatKeyframeInterpolator.Instance,
+          RadiansKeyframeInterpolator.Instance,
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialXCapacity,
               DefaultValue
@@ -136,7 +137,7 @@ public partial class ModelImpl<TVertex> {
       var keyframes
           = new SeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>(
               sharedConfig,
-              FloatKeyframeWithTangentsInterpolator.Instance,
+              RadiansKeyframeWithTangentsInterpolator.Instance,
               new IndividualInterpolationConfig<float> {
                   InitialCapacity = initialXCapacity,
                   DefaultValue = Optional.Of(

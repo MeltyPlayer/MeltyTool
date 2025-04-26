@@ -50,6 +50,7 @@ public class MeleeModelImporter : IModelImporter<MeleeModelFileBundle> {
 
         finAnimation.FrameRate = 60;
         finAnimation.UseLoopingInterpolation = false;
+        finAnimation.DisableNearestRotationFix = true;
 
         return finAnimation;
       });

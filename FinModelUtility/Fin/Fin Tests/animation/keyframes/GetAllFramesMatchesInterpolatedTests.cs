@@ -3,6 +3,7 @@ using System.Numerics;
 
 using fin.animation.interpolation;
 using fin.animation.types.quaternion;
+using fin.animation.types.radians;
 using fin.animation.types.single;
 using fin.animation.types.vector3;
 using fin.util.asserts;
@@ -161,7 +162,7 @@ public class GetAllFramesMatchesInterpolatedTests {
   public void TestSeparateEulerRadiansNonlooping() {
     var impl = new SeparateEulerRadiansKeyframes<Keyframe<float>>(
         new SharedInterpolationConfig { AnimationLength = 10, },
-        FloatKeyframeInterpolator.Instance,
+        RadiansKeyframeInterpolator.Instance,
         new IndividualInterpolationConfig<float>
             { DefaultValue = Optional.Of(-1f) });
 
@@ -184,7 +185,7 @@ public class GetAllFramesMatchesInterpolatedTests {
   public void TestSeparateEulerRadiansLooping() {
     var impl = new SeparateEulerRadiansKeyframes<Keyframe<float>>(
         new SharedInterpolationConfig { AnimationLength = 10, Looping = true },
-        FloatKeyframeInterpolator.Instance,
+        RadiansKeyframeInterpolator.Instance,
         new IndividualInterpolationConfig<float>
             { DefaultValue = Optional.Of(-1f) });
 

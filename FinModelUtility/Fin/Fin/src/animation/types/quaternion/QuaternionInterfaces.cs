@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.animation.keyframes;
+using fin.animation.types.radians;
 
 namespace fin.animation.types.quaternion;
 
@@ -24,4 +25,6 @@ public interface ISeparateEulerRadiansKeyframes<TKeyframe>
   delegate Quaternion ConvertRadiansToQuaternion(float xRadians,
                                                  float yRadians,
                                                  float zRadians);
+
+  IRadiansKeyframeInterpolator<TKeyframe> Interpolator { get; }
 }

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Formats\F3dzex2\F3dzex2.csproj" />
+    <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2.csproj" />
     <ProjectReference Include="..\..\Fin\Fin\Fin.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,6 @@
-﻿using fin.animation.interpolation;
+﻿using System.Runtime.CompilerServices;
+
+using fin.animation.interpolation;
 using fin.animation.keyframes;
 
 namespace fin.animation.types.single;
@@ -24,6 +26,10 @@ public class FloatKeyframeInterpolator<TKeyframe>
                                       out var t,
                                       out _);
 
-    return from.ValueOut * (1 - t) + to.ValueIn * t;
+    return Interpolate(from.ValueOut, to.ValueIn, t);
   }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static float Interpolate(float fromValue, float toValue, float t)
+    => fromValue * (1 - t) + toValue * t;
 }
