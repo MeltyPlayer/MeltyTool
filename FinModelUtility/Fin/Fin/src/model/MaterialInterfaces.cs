@@ -460,44 +460,49 @@ public partial interface ITexture : IIndexable {
   new Vector2? ClampS { get; set; }
   new Vector2? ClampT { get; set; }
 
-  new bool IsTransform3d { get; }
-
-  new Vector3? Center { get; }
-  ITexture SetCenter2d(float x, float y);
-  ITexture SetCenter3d(float x, float y, float z);
-
-  new Vector3? Translation { get; }
-
-  ITexture SetTranslation2d(float x, float y)
-    => SetTranslation2d(new Vector2(x, y));
-
-  ITexture SetTranslation2d(in Vector2 xy);
-
-  ITexture SetTranslation3d(float x, float y, float z)
-    => SetTranslation3d(new Vector3(x, y, z));
-
-  ITexture SetTranslation3d(in Vector3 xyz);
-
-  new Vector3? Scale { get; }
-  ITexture SetScale2d(float x, float y) => SetScale2d(new Vector2(x, y));
-  ITexture SetScale2d(in Vector2 xy);
-
-  ITexture SetScale3d(float x, float y, float z)
-    => SetScale3d(new Vector3(x, y, z));
-
-  ITexture SetScale3d(in Vector3 xyz);
-
-  new Vector3? RotationRadians { get; }
-  ITexture SetRotationRadians2d(float rotationRadians);
-
-  ITexture SetRotationRadians3d(float x, float y, float z)
-    => SetRotationRadians3d(new Vector3(x, y, z));
-
-  ITexture SetRotationRadians3d(in Vector3 xyz);
+  new ITextureTransform TextureTransform { get; }
 
   // TODO: Support fixed # of repeats
   // TODO: Support animated textures
   // TODO: Support animated texture index param
+}
+
+[GenerateReadOnly]
+public partial interface ITextureTransform {
+  new bool IsTransform3d { get; }
+
+  new Vector3? Center { get; }
+  ITextureTransform SetCenter2d(float x, float y);
+  ITextureTransform SetCenter3d(float x, float y, float z);
+
+  new Vector3? Translation { get; }
+
+  ITextureTransform SetTranslation2d(float x, float y)
+    => SetTranslation2d(new Vector2(x, y));
+
+  ITextureTransform SetTranslation2d(in Vector2 xy);
+
+  ITextureTransform SetTranslation3d(float x, float y, float z)
+    => SetTranslation3d(new Vector3(x, y, z));
+
+  ITextureTransform SetTranslation3d(in Vector3 xyz);
+
+  new Vector3? Scale { get; }
+  ITextureTransform SetScale2d(float x, float y) => SetScale2d(new Vector2(x, y));
+  ITextureTransform SetScale2d(in Vector2 xy);
+
+  ITextureTransform SetScale3d(float x, float y, float z)
+    => SetScale3d(new Vector3(x, y, z));
+
+  ITextureTransform SetScale3d(in Vector3 xyz);
+
+  new Vector3? RotationRadians { get; }
+  ITextureTransform SetRotationRadians2d(float rotationRadians);
+
+  ITextureTransform SetRotationRadians3d(float x, float y, float z)
+    => SetRotationRadians3d(new Vector3(x, y, z));
+
+  ITextureTransform SetRotationRadians3d(in Vector3 xyz);
 }
 
 public interface IScrollingTexture : ITexture {

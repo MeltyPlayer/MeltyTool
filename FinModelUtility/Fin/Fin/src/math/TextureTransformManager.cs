@@ -72,12 +72,13 @@ public class TextureTransformManager : ITextureTransformManager {
       }
 
       // Uses the animation pose instead of the root pose when available.
-      var center = texture.Center;
-      var translation = animationTranslation ?? texture.Translation;
-      var rotation = animationRotation ?? texture.RotationRadians;
-      var scale = animationScale ?? texture.Scale;
+      var transform = texture.TextureTransform;
+      var center = transform.Center;
+      var translation = animationTranslation ?? transform.Translation;
+      var rotation = animationRotation ?? transform.RotationRadians;
+      var scale = animationScale ?? transform.Scale;
 
-      var isTransform3d = texture.IsTransform3d;
+      var isTransform3d = transform.IsTransform3d;
 
       if (isTransform3d) {
         this.texturesToMatrices_[texture] = (

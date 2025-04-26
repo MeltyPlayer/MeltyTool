@@ -70,25 +70,27 @@ public class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
           finTexture.Name = imageFile.NameWithoutExtension.ToString();
           finTexture.WrapModeU = finTexture.WrapModeV = WrapMode.REPEAT;
 
+          var transform = finTexture.TextureTransform;
+
           if (transformNode != null) {
             var center = transformNode.Center;
             if (center != null) {
-              finTexture.SetCenter2d(center.Value.X, center.Value.Y);
+              transform.SetCenter2d(center.Value.X, center.Value.Y);
             }
 
             var rotation = transformNode.Rotation;
             if (rotation != null) {
-              finTexture.SetRotationRadians2d(rotation.Value);
+              transform.SetRotationRadians2d(rotation.Value);
             }
 
             var scale = transformNode.Scale;
             if (scale != null) {
-              finTexture.SetScale2d(scale.Value.X, scale.Value.Y);
+              transform.SetScale2d(scale.Value.X, scale.Value.Y);
             }
 
             var translation = transformNode.Translation;
             if (translation != null) {
-              finTexture.SetTranslation2d(translation.Value.X,
+              transform.SetTranslation2d(translation.Value.X,
                                           translation.Value.Y);
             }
           }

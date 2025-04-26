@@ -88,68 +88,18 @@ public partial class ModelImpl<TVertex> {
     public Vector2? ClampS { get; set; }
     public Vector2? ClampT { get; set; }
 
-
-    public bool IsTransform3d { get; private set; }
-
-    public Vector3? Center { get; private set; }
-
-    public ITexture SetCenter2d(float x, float y) {
-      this.Center = new Vector3(x, y, 0);
-      return this;
-    }
-
-    public ITexture SetCenter3d(float x, float y, float z) {
-      this.Center = new Vector3(x, y, z);
-      this.IsTransform3d = true;
-      return this;
-    }
-
-    public Vector3? Translation { get; private set; }
-
-    public ITexture SetTranslation2d(in Vector2 xy) {
-      this.Translation = new Vector3(xy.X, xy.Y, 0);
-      return this;
-    }
-
-    public ITexture SetTranslation3d(in Vector3 xyz) {
-      this.Translation = xyz;
-      this.IsTransform3d = true;
-      return this;
-    }
-
-
-    public Vector3? Scale { get; private set; }
-
-    public ITexture SetScale2d(in Vector2 xy) {
-      this.Scale = new Vector3(xy.X, xy.Y, 0);
-      return this;
-    }
-
-    public ITexture SetScale3d(in Vector3 xyz) {
-      this.Scale = xyz;
-      this.IsTransform3d = true;
-      return this;
-    }
-
-
-    public Vector3? RotationRadians { get; private set; }
-
-    public ITexture SetRotationRadians2d(float rotationRadians) {
-      this.RotationRadians = new Vector3 { Z = rotationRadians };
-      return this;
-    }
-
-    public ITexture SetRotationRadians3d(in Vector3 xyz) {
-      this.RotationRadians = xyz;
-      this.IsTransform3d = true;
-      return this;
-    }
+    public ITextureTransform TextureTransform { get; }
+      = new TextureTransformImpl();
 
     public override int GetHashCode()
       => new FluentHash()
+         .With(this.Name)
          .With(this.Image)
          .With(this.WrapModeU)
-         .With(this.WrapModeV);
+         .With(this.WrapModeV)
+         .With(this.UvType)
+         .With(this.UvIndex)
+         .With(this.TextureTransform);
 
     public override bool Equals(object? other) {
       if (ReferenceEquals(null, other)) {
@@ -166,7 +116,8 @@ public partial class ModelImpl<TVertex> {
                this.WrapModeU == otherTexture.WrapModeU &&
                this.WrapModeV == otherTexture.WrapModeV &&
                this.UvType == otherTexture.UvType &&
-               this.UvIndex == otherTexture.UvIndex;
+               this.UvIndex == otherTexture.UvIndex &&
+               this.TextureTransform == otherTexture.TextureTransform;
       }
 
       return false;

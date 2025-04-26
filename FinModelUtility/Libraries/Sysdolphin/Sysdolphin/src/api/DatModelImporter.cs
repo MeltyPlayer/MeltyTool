@@ -228,7 +228,8 @@ public class DatModelImporter : IModelImporter<DatModelFileBundle> {
                           .Decompose(out var tObjTranslation,
                                      out var tObjRotation,
                                      out var tObjScale);
-          finTexture.SetTranslation3d(tObjTranslation)
+          finTexture.TextureTransform
+                    .SetTranslation3d(tObjTranslation)
                     .SetRotationRadians3d(tObjRotation.ToEulerRadians())
                     .SetScale3d(tObjScale *
                                 new Vector3(

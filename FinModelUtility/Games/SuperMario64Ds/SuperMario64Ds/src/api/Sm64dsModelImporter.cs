@@ -143,7 +143,8 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
                                               out var texScale,
                                               out _);
 
-                finTexture.SetTranslation2d(texTranslation)
+                finTexture.TextureTransform
+                          .SetTranslation2d(texTranslation)
                           .SetRotationRadians2d(texRotation)
                           .SetScale2d(texScale);
 

@@ -76,6 +76,7 @@ namespace uni.ui.avalonia.resources.texture {
             : null;
 
         var texture = value?.Texture;
+        var transform = texture?.TextureTransform;
         this.SelectedTextureKeyValueGrid = new KeyValueGridViewModel {
             KeyValuePairs = [
                 ("Pixel format", texture?.Image.PixelFormat),
@@ -91,21 +92,21 @@ namespace uni.ui.avalonia.resources.texture {
                 ("UV index", texture?.UvIndex),
                 ("UV type", texture?.UvType),
                 ("UV center",
-                 texture?.IsTransform3d ?? false
-                     ? texture.Center
-                     : texture?.Center?.Xy()),
+                 transform?.IsTransform3d ?? false
+                     ? transform.Center
+                     : transform?.Center?.Xy()),
                 ("UV translation",
-                 texture?.IsTransform3d ?? false
-                     ? texture.Translation
-                     : texture?.Translation?.Xy()),
+                 transform?.IsTransform3d ?? false
+                     ? transform.Translation
+                     : transform?.Translation?.Xy()),
                 ("UV rotation (radians)",
-                 texture?.IsTransform3d ?? false
-                     ? texture.RotationRadians
-                     : texture?.RotationRadians?.X),
+                 transform?.IsTransform3d ?? false
+                     ? transform.RotationRadians
+                     : transform?.RotationRadians?.X),
                 ("UV scale",
-                 texture?.IsTransform3d ?? false
-                     ? texture.Scale
-                     : texture?.Scale?.Xy()),
+                 transform?.IsTransform3d ?? false
+                     ? transform.Scale
+                     : transform?.Scale?.Xy()),
             ]
         };
       }

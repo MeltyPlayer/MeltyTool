@@ -17,6 +17,7 @@ public partial class ModelImpl<TVertex> {
             int initialYCapacity,
             int initialZCapacity,
             int? animationLength = null) {
+      var transform = texture.TextureTransform;
       var keyframes
           = new SeparateEulerRadiansKeyframes<KeyframeWithTangents<float>>(
               sharedConfig,
@@ -25,19 +26,19 @@ public partial class ModelImpl<TVertex> {
                   AnimationLength = animationLength,
                   InitialCapacity = initialXCapacity,
                   DefaultValue
-                      = Optional.Of(() => texture.RotationRadians?.X ?? 0),
+                      = Optional.Of(() => transform.RotationRadians?.X ?? 0),
               },
               new IndividualInterpolationConfig<float> {
                   AnimationLength = animationLength,
                   InitialCapacity = initialYCapacity,
                   DefaultValue
-                      = Optional.Of(() => texture.RotationRadians?.Y ?? 0),
+                      = Optional.Of(() => transform.RotationRadians?.Y ?? 0),
               },
               new IndividualInterpolationConfig<float> {
                   AnimationLength = animationLength,
                   InitialCapacity = initialZCapacity,
                   DefaultValue
-                      = Optional.Of(() => texture.RotationRadians?.Z ?? 0),
+                      = Optional.Of(() => transform.RotationRadians?.Z ?? 0),
               });
 
       this.Rotations = keyframes;

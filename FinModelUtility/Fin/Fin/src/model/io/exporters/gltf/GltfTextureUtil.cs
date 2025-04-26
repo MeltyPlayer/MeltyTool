@@ -21,10 +21,12 @@ public static class GltfTextureUtil {
             ConvertMinFilter_(finTexture.MinFilter),
             ConvertMagFilter_(finTexture.MagFilter));
 
+    var transform = finTexture.TextureTransform;
+
     textureBuilder.WithTransform(
-        new Vector2(finTexture.Translation?.X ?? 0, finTexture.Translation?.Y ?? 0),
-        new Vector2(finTexture.Scale?.X ?? 1, finTexture.Scale?.Y ?? 1),
-        finTexture.RotationRadians?.Z ?? 0);
+        new Vector2(transform.Translation?.X ?? 0, transform.Translation?.Y ?? 0),
+        new Vector2(transform.Scale?.X ?? 1, transform.Scale?.Y ?? 1),
+        transform.RotationRadians?.Z ?? 0);
 
     return textureBuilder;
   }

@@ -579,14 +579,16 @@ public static class GlslUtil {
       return TextureTransformType.NONE;
     }
 
-    var isTransform3d = finTexture.IsTransform3d;
+    var transform = finTexture.TextureTransform;
+
+    var isTransform3d = transform.IsTransform3d;
     var isScrollingTexture = finTexture is IScrollingTexture;
 
     var staticType = GetTextureTransformType_(isTransform3d,
                                               isScrollingTexture,
-                                              finTexture.Translation,
-                                              finTexture.RotationRadians,
-                                              finTexture.Scale);
+                                              transform.Translation,
+                                              transform.RotationRadians,
+                                              transform.Scale);
     if (staticType != TextureTransformType.NONE) {
       return staticType;
     }
@@ -595,7 +597,7 @@ public static class GlslUtil {
       foreach (var animation in animations) {
         if (animation.TextureTracks.TryGetValue(finTexture,
                                                 out var textureTracks)) {
-          return finTexture.IsTransform3d
+          return transform.IsTransform3d
               ? TextureTransformType.THREE_D
               : TextureTransformType.TWO_D;
         }

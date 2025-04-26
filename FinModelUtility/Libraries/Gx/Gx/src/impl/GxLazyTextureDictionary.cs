@@ -90,7 +90,7 @@ public class GxLazyTextureDictionary<TState, TDiscriminator>
             var texRotationRadians =
                 texMatrix.Rotation / 32768f * MathF.PI;
 
-            texture
+            texture.TextureTransform
                 .SetCenter2d(texCenter.X, texCenter.Y)
                 .SetTranslation2d(texTranslation.X, texTranslation.Y)
                 .SetScale2d(texScale.X, texScale.Y)
