@@ -1,13 +1,7 @@
 #version 310 es
 precision highp float;
 
-
-struct Texture {
-  sampler2D sampler;
-  mat3x2 transform2d;
-};
-
-uniform Texture texture0;
+uniform sampler2D texture0;
 
 in vec4 vertexColor0;
 in vec2 uv0;
@@ -15,9 +9,9 @@ in vec2 uv0;
 out vec4 fragColor;
 
 void main() {
-  vec3 colorComponent = vec3(0.96862745285)*texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).rgb*vertexColor0.rgb;
+  vec3 colorComponent = vec3(0.96862745285)*texture(texture0, uv0).rgb*vertexColor0.rgb;
 
-  float alphaComponent = texture(texture0.sampler, texture0.transform2d * vec3((uv0).x, (uv0).y, 1)).a*vertexColor0.a;
+  float alphaComponent = texture(texture0, uv0).a*vertexColor0.a;
 
   fragColor = vec4(colorComponent, alphaComponent);
 

@@ -86,8 +86,8 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
         if (boneToChildMap.TryGetSet(bone, out var unorderedChildren)) {
           var firstChild
-              = unorderedChildren!.Single(
-                  b => !previousSiblingMap.ContainsKey(b));
+              = unorderedChildren!.Single(b => !previousSiblingMap.ContainsKey(
+                                              b));
           boneQueue.Enqueue(nextSiblingMap.Chain(firstChild)
                                           .Select(b => (b, finBone)));
         }
@@ -97,74 +97,56 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
     // Set up materials
     var finMaterialManager = model.MaterialManager;
     var lazyImageDictionary
-        = new LazyDictionary<(Texture texture, Palette? palette), IImage>(
-            textureAndPalette => {
+        = new
+            LazyDictionary<(Texture texture, Palette? palette),
+                IImage>(textureAndPalette => {
               var (sm64Texture, sm64Palette) = textureAndPalette;
               return ImageReader.ReadImage(sm64Texture, sm64Palette);
             });
     var lazyMaterialDictionary
         = new LazyDictionary<(Material, bool hasNormals, bool hasVertexColor),
-            IMaterial?>(
-            tuple => {
-              var (sm64Material, hasNormals, hasVertexColor) = tuple;
+            (IReadOnlyMaterial?, IReadOnlyTexture?)>(tuple => {
+          var (sm64Material, hasNormals, hasVertexColor) = tuple;
 
-              var textureId = sm64Material.TextureId;
-              var paletteId = sm64Material.TexturePaletteId;
+          var textureId = sm64Material.TextureId;
+          var paletteId = sm64Material.TexturePaletteId;
 
-              ITexture? finTexture = null;
-              if (textureId != -1) {
-                var sm64Texture = bmd.Textures[textureId];
-                var sm64Palette
-                    = paletteId != -1 ? bmd.Palettes[paletteId] : null;
+          ITexture? finTexture = null;
+          if (textureId != -1) {
+            var sm64Texture = bmd.Textures[textureId];
+            var sm64Palette
+                = paletteId != -1 ? bmd.Palettes[paletteId] : null;
 
-                var finImage = lazyImageDictionary[(sm64Texture, sm64Palette)];
+            var finImage = lazyImageDictionary[(sm64Texture, sm64Palette)];
 
-                finTexture = finMaterialManager.CreateTexture(finImage);
-                finTexture.Name = sm64Texture.Name;
+            finTexture = finMaterialManager.CreateTexture(finImage);
+            finTexture.Name = sm64Texture.Name;
 
-                var sm64TextureParams
-                    = TextureParamsUtil.GetParams(sm64Material, sm64Texture);
+            var sm64TextureParams
+                = TextureParamsUtil.GetParams(sm64Material, sm64Texture);
 
-                var translationMatrix = SystemMatrix3x2Util.FromCtrss(
-                    null,
-                    sm64TextureParams.Translation,
-                    sm64TextureParams.Rotation,
-                    sm64TextureParams.Scale,
-                    null);
-                var resolutionScaleMatrix
-                    = SystemMatrix3x2Util.FromScale(1f / sm64Texture.Width,
-                                                    1f / sm64Texture.Height);
+            finTexture.TextureTransform
+                      .SetTranslation2d(sm64TextureParams.Translation)
+                      .SetRotationRadians2d(sm64TextureParams.Rotation)
+                      .SetScale2d(sm64TextureParams.Scale);
 
-                var textureMatrix = translationMatrix * resolutionScaleMatrix;
+            finTexture.WrapModeU = sm64TextureParams.WrapModeS;
+            finTexture.WrapModeV = sm64TextureParams.WrapModeT;
 
-                SystemMatrix3x2Util.Decompose(textureMatrix,
-                                              out var texTranslation,
-                                              out var texRotation,
-                                              out var texScale,
-                                              out _);
+            finTexture.MinFilter = TextureMinFilter.NEAR;
+            finTexture.MagFilter = TextureMagFilter.NEAR;
+          }
 
-                finTexture.TextureTransform
-                          .SetTranslation2d(texTranslation)
-                          .SetRotationRadians2d(texRotation)
-                          .SetScale2d(texScale);
-
-                finTexture.WrapModeU = sm64TextureParams.WrapModeS;
-                finTexture.WrapModeV = sm64TextureParams.WrapModeT;
-
-                finTexture.MinFilter = TextureMinFilter.NEAR;
-                finTexture.MagFilter = TextureMagFilter.NEAR;
-              }
-
-              return CreateMaterial_(sm64Material,
-                                     hasVertexColor,
-                                     hasNormals,
-                                     finMaterialManager,
-                                     finTexture);
-            });
+          return (CreateMaterial_(sm64Material,
+                                  hasVertexColor,
+                                  hasNormals,
+                                  finMaterialManager,
+                                  finTexture), finTexture);
+        });
 
     // Set up mesh
-    var lazyOpcodeMap = new LazyDictionary<DisplayList, IOpcode[]>(
-        sm64DisplayList => {
+    var lazyOpcodeMap
+        = new LazyDictionary<DisplayList, IOpcode[]>(sm64DisplayList => {
           using var opcodeBr
               = new SchemaBinaryReader(sm64DisplayList.Data.OpcodeBytes);
           return OpcodeReader.ReadOpcodes(opcodeBr);
@@ -193,14 +175,18 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
 
         var opcodes = lazyOpcodeMap[displayList];
         var hasNormals = opcodes.Any(o => o is NormalOpcode);
-        
+
         var alpha = sm64Material.Alpha;
         var hasVertexColor
             = opcodes.Any(o => o is ColorOpcode) || !alpha.IsRoughly1();
 
-        var finMaterial
+        var (finMaterial, finTexture)
             = lazyMaterialDictionary[(sm64Material, hasNormals,
                                       hasVertexColor)];
+        var uvMultiplier = finTexture != null
+            ? new Vector2(1f / finTexture.Image.Width,
+                          1f / finTexture.Image.Height)
+            : Vector2.One;
 
         PolygonType polygonType = default;
         Vector3 position = default;
@@ -216,7 +202,7 @@ public class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
         foreach (var opcode in opcodes) {
           switch (opcode) {
             case TexCoordOpcode texCoordOpcode: {
-              uv = texCoordOpcode.TexCoord;
+              uv = texCoordOpcode.TexCoord * uvMultiplier;
               break;
             }
             case ColorOpcode colorOpcode: {
