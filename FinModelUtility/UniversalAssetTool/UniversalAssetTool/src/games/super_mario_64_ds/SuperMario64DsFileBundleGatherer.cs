@@ -25,6 +25,7 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
                 .Case("basabasa_wait.bmd", "basabasa_wait.bca"))
         .Register<AllAnimationsModelSeparatorMethod>(
             "bombhei",
+            "door",
             "fish",
             "kuribo",
             "peach",
