@@ -89,7 +89,7 @@ public partial class ModelImpl<TVertex> {
     public Vector2? ClampT { get; set; }
 
     public ITextureTransform TextureTransform { get; }
-      = new TextureTransformImpl();
+      = new TextureTransform();
 
     public override int GetHashCode()
       => new FluentHash()

@@ -4,6 +4,7 @@ using fin.io;
 using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
+using fin.model.processing;
 using fin.util.types;
 
 
@@ -121,6 +122,8 @@ public static class Cli {
             var model = bestMatch!.Import(
                 inputFiles,
                 frameRate);
+
+            ModelProcessing.ApplyAll(model);
 
             Console.WriteLine("Writing the output file...");
             var exporter =

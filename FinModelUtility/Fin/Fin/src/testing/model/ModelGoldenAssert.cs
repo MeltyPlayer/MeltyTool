@@ -6,6 +6,7 @@ using fin.model.io.exporters.assimp.indirect;
 using fin.io;
 using fin.model.io;
 using fin.model.io.importers;
+using fin.model.processing;
 
 namespace fin.testing.model;
 
@@ -22,7 +23,10 @@ public static class ModelGoldenAssert {
         goldenSubdir,
         (inputDirectory, targetDirectory) => {
           var modelBundle = gatherModelBundleFromInputDirectory(inputDirectory);
+
           var model = modelImporter.Import(modelBundle);
+          ModelProcessing.ApplyAll(model);
+          
           new AssimpIndirectModelExporter() {
               LowLevel = modelBundle.UseLowLevelExporter,
               ForceGarbageCollection = modelBundle.ForceGarbageCollection,

@@ -503,6 +503,9 @@ public partial interface ITextureTransform {
     => SetRotationRadians3d(new Vector3(x, y, z));
 
   ITextureTransform SetRotationRadians3d(in Vector3 xyz);
+
+  [Const]
+  Matrix4x4 AsMatrix();
 }
 
 public interface IScrollingTexture : ITexture {

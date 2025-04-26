@@ -10,10 +10,10 @@ using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
 using fin.model.io.importers;
+using fin.model.processing;
 using fin.util.asserts;
 using fin.util.linq;
 using fin.util.progress;
-using fin.util.strings;
 
 using uni.config;
 using uni.model;
@@ -244,7 +244,7 @@ public static class ExporterUtil {
   }
 
   public static void Export<T>(T threeDFileBundle,
-                               Func<IReadOnlyModel> loaderHandler,
+                               Func<IModel> loaderHandler,
                                ISystemDirectory outputDirectory,
                                IReadOnlySet<ExportedFormat> formats,
                                bool overwriteExistingFile,
@@ -261,7 +261,7 @@ public static class ExporterUtil {
 
   public static void Export<T>(
       T threeDFileBundle,
-      Func<IReadOnlyModel> loaderHandler,
+      Func<IModel> loaderHandler,
       ISystemDirectory outputDirectory,
       IReadOnlyList<ExportFormatDescription> formats,
       bool overwriteExistingFile,
@@ -288,6 +288,7 @@ public static class ExporterUtil {
 
     try {
       var model = loaderHandler();
+      ModelProcessing.ApplyAll(model);
 
       new AssimpIndirectModelExporter {
           LowLevel = threeDFileBundle.UseLowLevelExporter,
