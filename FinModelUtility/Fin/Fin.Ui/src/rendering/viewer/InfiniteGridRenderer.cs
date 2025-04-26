@@ -1,4 +1,5 @@
-﻿using fin.model.impl;
+﻿using fin.model;
+using fin.model.impl;
 using fin.model.util;
 using fin.shaders.glsl;
 using fin.ui.rendering.gl;
@@ -148,6 +149,7 @@ public class InfiniteGridRenderer : IRenderable {
             }
           }
           """);
+    material.DepthCompareType = DepthCompareType.LEqual;
 
     var v0 = model.Skin.AddVertex(-1, -1, 0);
     var v1 = model.Skin.AddVertex(1, -1, 0);
