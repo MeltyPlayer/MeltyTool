@@ -18,6 +18,8 @@ using uni.cli;
 using uni.config;
 using uni.games;
 using uni.ui.winforms.common.fileTreeView;
+using uni.api;
+using uni.util.bundles;
 
 namespace uni.ui.winforms;
 
@@ -144,12 +146,12 @@ public partial class UniversalAssetToolForm : Form {
   private void exportAsToolStripMenuItem_Click(object sender, EventArgs e) {
     var scene = this.sceneViewerPanel_.Scene;
     var fileBundle = scene?.Definition.FileBundle;
-    if (fileBundle is not I3dFileBundle threeDFileBundle) {
+    if (fileBundle is not IModelFileBundle modelBundle) {
       return;
     }
 
     // TODO: Merge models in a scene instead!
-    var model = this.sceneViewerPanel_.FirstSceneModel!.Model;
+    var model = new GlobalModelImporter().Import(modelBundle);
 
     var allSupportedExportFormats = AssimpUtil.SupportedExportFormats
                                               .OrderBy(ef => ef.Description)
@@ -175,7 +177,7 @@ public partial class UniversalAssetToolForm : Form {
     if (result == DialogResult.OK) {
       var outputFile = new FinFile(saveFileDialog.FileName);
       ExporterUtil.Export(
-          threeDFileBundle,
+          modelBundle,
           () => model,
           outputFile.AssertGetParent(),
           new HashSet<ExportedFormat> { outputFile.FileType.AsFormat() },
