@@ -1,4 +1,5 @@
 ﻿using fin.archives;
+using fin.config;
 using fin.io;
 
 using nitro.schema.narc;
@@ -18,4 +19,25 @@ public class NarcArchiveImporter
       IBinaryReader archiveBr,
       NarcArchiveBundle bundle)
     => archiveBr.ReadNew<Narc>().FileEntries;
+
+  public static void ImportAndExtractAll(
+      IFileHierarchy fileHierarchy,
+      bool cleanUp = false) {
+    var narcFiles = fileHierarchy.Root.GetFilesWithFileType(".narc", true)
+                                 .ToArray();
+    if (narcFiles.Length == 0) {
+      return;
+    }
+
+    var dataDir = fileHierarchy.Root.Impl.AssertGetExistingSubdir("data");
+    var narcImporter = new NarcArchiveImporter();
+    foreach (var narcFile in narcFiles) {
+      narcImporter.ImportAndExtractRelativeTo(
+          new NarcArchiveBundle(narcFile),
+          dataDir,
+          FinConfig.CleanUpArchives);
+    }
+
+    fileHierarchy.RefreshRootAndUpdateCache();
+  }
 }

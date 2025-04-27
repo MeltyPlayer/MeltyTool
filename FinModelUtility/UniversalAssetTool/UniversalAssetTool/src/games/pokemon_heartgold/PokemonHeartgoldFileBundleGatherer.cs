@@ -1,6 +1,10 @@
-﻿using fin.common;
+﻿using fin.archives;
+using fin.common;
+using fin.config;
 using fin.io.bundles;
 using fin.util.progress;
+
+using nitro.api;
 
 using uni.platforms.ds;
 
@@ -19,5 +23,7 @@ public class PokemonHeartgoldFileBundleGatherer
 
     var fileHierarchy
         = new DsFileHierarchyExtractor().ExtractFromRom(pokemonHeartgoldRom);
+
+    //NarcArchiveImporter.ImportAndExtractAll(fileHierarchy);
   }
 }

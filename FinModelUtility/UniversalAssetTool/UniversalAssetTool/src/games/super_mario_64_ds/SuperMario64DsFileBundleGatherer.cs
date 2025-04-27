@@ -1,5 +1,6 @@
 ﻿using fin.archives;
 using fin.common;
+using fin.config;
 using fin.data.sets;
 using fin.io;
 using fin.io.bundles;
@@ -64,15 +65,9 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
     var fileHierarchy
         = new DsFileHierarchyExtractor().ExtractFromRom(superMario64DsRom);
 
-    var dataDir = fileHierarchy.Root.Impl.AssertGetExistingSubdir("data");
-    var narcImporter = new NarcArchiveImporter();
-    foreach (var narcFile in fileHierarchy.Root.GetFilesWithFileType(
-                 ".narc",
-                 true)) {
-      narcImporter.ImportAndExtractRelativeTo(
-          new NarcArchiveBundle(narcFile),
-          dataDir);
-    }
+    NarcArchiveImporter.ImportAndExtractAll(
+        fileHierarchy,
+        FinConfig.CleanUpArchives);
 
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)

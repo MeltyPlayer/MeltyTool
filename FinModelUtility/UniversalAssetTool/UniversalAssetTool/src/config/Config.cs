@@ -72,6 +72,12 @@ public partial class ExtractorSettings {
     get => FinConfig.CacheFileHierarchies;
     set => FinConfig.CacheFileHierarchies = value;
   }
+
+  public bool CleanUpArchives {
+    get => FinConfig.CleanUpArchives;
+    set => FinConfig.CleanUpArchives = value;
+  }
+
   public bool ExtractRomsInParallel { get; set; }
 
   public bool VerifyCachedFileHierarchySize {

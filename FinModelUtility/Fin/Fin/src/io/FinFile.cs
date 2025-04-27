@@ -9,6 +9,8 @@ using fin.util.asserts;
 namespace fin.io;
 
 public readonly struct FinFile(string fullName) : ISystemFile {
+  public FinFile(IReadOnlyTreeFile treeFile) : this(treeFile.FullPath) {}
+
   public override string ToString() => this.DisplayFullName;
 
 

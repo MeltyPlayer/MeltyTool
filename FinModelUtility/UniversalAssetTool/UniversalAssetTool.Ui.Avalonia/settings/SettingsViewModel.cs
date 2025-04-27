@@ -115,6 +115,18 @@ public class SettingsViewModel
 
   [property: Config(
       Category = GROUP_EXTRACTOR,
+      Header = "Clean Up Archives",
+      Description
+          = "Whether to clean up archives after extracting them. This helps " +
+            "reduce memory usage and prevents redundant work the next time " +
+            "the UI starts up.")]
+  public bool CleanUpArchives {
+    get => Config_.Extractor.CleanUpArchives;
+    set => Config_.Extractor.CleanUpArchives = value;
+  }
+
+  [property: Config(
+      Category = GROUP_EXTRACTOR,
       Header = "Extract ROMs in Parallel",
       Description
           = "Whether to extract ROMs in parallel using multithreading.")]

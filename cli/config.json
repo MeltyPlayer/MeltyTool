@@ -19,6 +19,7 @@
   },
   "Extractor": {
     "CacheFileHierarchies": true,
+    "CleanUpArchives": true,
     "ExtractRomsInParallel": true,
     "VerifyCachedFileHierarchySize": false
   },

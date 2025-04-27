@@ -70,7 +70,7 @@ public class DeadSpace3FileBundleGatherer : IAnnotatedFileBundleGatherer {
                                             out var cctSubdir)) {
         rcbFile =
             cctSubdir.GetExistingFiles()
-                     .Single(file => file.Name.EndsWith(".rcb.win"));
+                     .SingleOrDefault(file => file.Name.EndsWith(".rcb.win"));
       }
 
       if (geoFiles.Length > 0 || rcbFile != null) {
