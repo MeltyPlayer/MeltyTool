@@ -34,9 +34,8 @@ public class AnnotatedFileBundleGathererAccumulator<TSelf>
         = mutablePercentageProgress.Split(this.gatherers_.Count);
 
     for (var i = 0; i < this.gatherers_.Count; ++i) {
-      var splitProgress = splitProgresses[i];
-      this.gatherers_[i].GatherFileBundles(organizer, splitProgress);
-      splitProgress.ReportProgressAndCompletion();
+      this.gatherers_[i]
+          .TryToGatherAndReportCompletion(organizer, splitProgresses[i]);
     }
   }
 }

@@ -33,7 +33,6 @@ public class ParallelAnnotatedFileBundleGathererAccumulator
     var splitProgresses = mutablePercentageProgress.Split(2);
     var gathererProgresses = splitProgresses[0].Split(this.gatherers_.Count);
 
-    var results = new IEnumerable<IAnnotatedFileBundle>[this.gatherers_.Count];
     ParallelHelper.For(
         0,
         this.gatherers_.Count,
@@ -48,15 +47,8 @@ public class ParallelAnnotatedFileBundleGathererAccumulator
       IReadOnlyList<IAnnotatedFileBundleGatherer> gatherers,
       SplitPercentageProgress splitProgresses) : IAction {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Invoke(int i) {
-      var splitProgress = splitProgresses[i];
-      try {
-        gatherers[i].GatherFileBundles(organizer, splitProgress);
-      } catch (Exception e) {
-        Console.Error.WriteLine(e.ToString());
-      } finally {
-        splitProgress.ReportProgressAndCompletion();
-      }
-    }
+    public void Invoke(int i)
+      => gatherers[i]
+          .TryToGatherAndReportCompletion(organizer, splitProgresses[i]);
   }
 }
