@@ -35,26 +35,22 @@ public class SingleVertexAttribute<T> : IVertexAttributeArray<T>
 
 public class SparseVertexAttributeArray<T> : IVertexAttributeArray<T>
     where T : notnull {
-  private IList<T?>? impl_;
+  private List<T?>? impl_;
 
-  public int Count { get; private set; }
+  public int Count => this.impl_?.Count ?? 0;
 
   public T? this[int index] {
     get => index < (this.impl_?.Count ?? 0) ? this.impl_[index] : default;
     set {
-      this.impl_ ??= new List<T?>();
-      if (this.impl_?.Count < index && this.impl_[index] != null) {
-        --this.Count;
-      }
+      this.impl_ ??= new List<T?>(index);
 
-      while (this.impl_?.Count <= index) {
-        this.impl_.Add(default);
+      if (this.impl_.Count <= index) {
+        this.impl_.EnsureCapacity(index + 1);
+        while (this.impl_.Count <= index) {
+          this.impl_.Add(default);
+        }
       }
-      this.impl_![index] = value;
-
-      if (value != null) {
-        ++this.Count;
-      }
+      this.impl_[index] = value;
     }
   }
 
