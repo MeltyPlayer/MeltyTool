@@ -8,15 +8,18 @@ namespace fin.model.processing;
 
 public static class TextureTransformBaking {
   public static bool TryToBakeTextureTransforms(IModel model) {
+    var skin = model.Skin;
+    var vertices = skin.Vertices;
+
     var textureTransformByVertex
         = new IndexableDictionary<IReadOnlyVertex, IReadOnlyTextureTransform
-            ?>();
+            ?>(vertices.Count);
 
     var transforms = new HashSet<ITextureTransform>();
 
     // Gathers all transforms, makes sure each vertex only ever needs one.
     // Otherwise, fail early.
-    foreach (var mesh in model.Skin.Meshes) {
+    foreach (var mesh in skin.Meshes) {
       foreach (var primitive in mesh.Primitives) {
         var material = primitive.Material;
 
@@ -41,7 +44,7 @@ public static class TextureTransformBaking {
     }
 
     // Applies transforms to all UVs.
-    foreach (var vertex in model.Skin.Vertices) {
+    foreach (var vertex in vertices) {
       if (!textureTransformByVertex.TryGetValue(vertex, out var transform)) {
         continue;
       }
