@@ -216,8 +216,7 @@ public static class ExporterUtil {
                                bool overwriteExistingFile)
       where T : IModelFileBundle {
     Export(modelFileBundle,
-           () => reader.Import(
-               modelFileBundle.TypedFileBundle),
+           () => reader.ImportAndProcess(modelFileBundle.TypedFileBundle),
            formats,
            overwriteExistingFile);
   }
@@ -288,7 +287,6 @@ public static class ExporterUtil {
 
     try {
       var model = loaderHandler();
-      ModelProcessing.ApplyAll(model);
 
       new AssimpIndirectModelExporter {
           LowLevel = threeDFileBundle.UseLowLevelExporter,

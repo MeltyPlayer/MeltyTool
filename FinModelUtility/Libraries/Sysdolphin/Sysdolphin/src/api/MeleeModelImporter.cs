@@ -46,7 +46,6 @@ public class MeleeModelImporter : IModelImporter<MeleeModelFileBundle> {
     if (animationDat != null) {
       var lazyFinAnimations = new LazyList<IModelAnimation>(i => {
         var finAnimation = finModel.AnimationManager.AddAnimation();
-        finAnimation.Name = $"Animation {i}";
 
         finAnimation.FrameRate = 60;
         finAnimation.UseLoopingInterpolation = false;

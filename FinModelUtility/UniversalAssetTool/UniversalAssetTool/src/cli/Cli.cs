@@ -119,11 +119,9 @@ public static class Cli {
             Console.WriteLine(
                 "Importing the model with the following plugin: ");
             PrintPluginInfo_(bestMatch!);
-            var model = bestMatch!.Import(
+            var model = bestMatch!.ImportAndProcess(
                 inputFiles,
                 frameRate);
-
-            ModelProcessing.ApplyAll(model);
 
             Console.WriteLine("Writing the output file...");
             var exporter =

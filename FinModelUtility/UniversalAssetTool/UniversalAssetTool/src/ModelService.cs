@@ -1,6 +1,7 @@
 ﻿using fin.io.web;
 using fin.model;
 using fin.model.io;
+using fin.model.processing;
 using fin.services;
 
 using uni.api;
@@ -14,7 +15,8 @@ public static class ModelService {
         += (fileTreeLeafNode, fileBundle) => {
           if (fileBundle.FileBundle is IModelFileBundle modelFileBundle) {
             try {
-              var model = new GlobalModelImporter().Import(modelFileBundle);
+              var model
+                  = new GlobalModelImporter().ImportAndProcess(modelFileBundle);
               OpenModel(fileTreeLeafNode, model);
             } catch (Exception e) {
               ExceptionService.HandleException(

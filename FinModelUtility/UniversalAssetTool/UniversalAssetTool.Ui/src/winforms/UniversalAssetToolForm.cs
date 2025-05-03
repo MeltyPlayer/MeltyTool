@@ -8,6 +8,7 @@ using fin.model.io.exporters.assimp;
 using fin.io;
 using fin.math.floats;
 using fin.model.io;
+using fin.model.processing;
 using fin.scene;
 using fin.util.enumerables;
 using fin.util.io;
@@ -136,7 +137,7 @@ public partial class UniversalAssetToolForm : Form {
         return;
       }
 
-      var finModel = bestMatch.Import(inputFiles);
+      var finModel = bestMatch.ImportAndProcess(inputFiles);
       ModelService.OpenModel(null, finModel);
     };
 
@@ -151,7 +152,7 @@ public partial class UniversalAssetToolForm : Form {
     }
 
     // TODO: Merge models in a scene instead!
-    var model = new GlobalModelImporter().Import(modelBundle);
+    var model = new GlobalModelImporter().ImportAndProcess(modelBundle);
 
     var allSupportedExportFormats = AssimpUtil.SupportedExportFormats
                                               .OrderBy(ef => ef.Description)

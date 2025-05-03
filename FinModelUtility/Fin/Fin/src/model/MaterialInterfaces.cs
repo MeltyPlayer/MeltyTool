@@ -76,9 +76,7 @@ public enum DepthCompareType {
 }
 
 [GenerateReadOnly]
-public partial interface IMaterial {
-  new string? Name { get; set; }
-
+public partial interface IMaterial : INamed {
   new IEnumerable<IReadOnlyTexture> Textures { get; }
 
   new CullingMode CullingMode { get; set; }
@@ -423,7 +421,7 @@ public enum TextureMinFilter {
 }
 
 [GenerateReadOnly]
-public partial interface ITexture : IIndexable {
+public partial interface ITexture : IIndexable, INamed {
   new string Name { get; set; }
 
   new LocalImageFormat BestImageFormat { get; }

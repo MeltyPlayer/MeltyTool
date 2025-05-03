@@ -42,9 +42,7 @@ public partial interface ISkin<out TVertex> : ISkin
 }
 
 [GenerateReadOnly]
-public partial interface IMesh : IIndexable {
-  new string Name { get; set; }
-
+public partial interface IMesh : IIndexable, INamed {
   bool IsSubMesh { get; }
   new IReadOnlyList<IMesh> SubMeshes { get; }
   IMesh AddSubMesh();

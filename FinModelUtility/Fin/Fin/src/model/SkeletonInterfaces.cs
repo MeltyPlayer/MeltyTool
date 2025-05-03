@@ -15,9 +15,7 @@ public partial interface ISkeleton : IEnumerable<IReadOnlyBone> {
 }
 
 [GenerateReadOnly]
-public partial interface ILeafBone : IIndexable {
-  new string? Name { get; set; }
-
+public partial interface ILeafBone : IIndexable, INamed {
   new IBone Root { get; }
   new IBone? Parent { get; }
 

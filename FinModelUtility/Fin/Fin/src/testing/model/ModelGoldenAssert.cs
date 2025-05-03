@@ -24,8 +24,7 @@ public static class ModelGoldenAssert {
         (inputDirectory, targetDirectory) => {
           var modelBundle = gatherModelBundleFromInputDirectory(inputDirectory);
 
-          var model = modelImporter.Import(modelBundle);
-          ModelProcessing.ApplyAll(model);
+          var model = modelImporter.ImportAndProcess(modelBundle);
           
           new AssimpIndirectModelExporter() {
               LowLevel = modelBundle.UseLowLevelExporter,

@@ -12,7 +12,7 @@ public class VrmlModelGoldenTests
     : BModelGoldenTests<VrmlModelFileBundle, VrmlModelImporter> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
-  public void TestExportsGoldenAsExpected(
+    public void TestExportsGoldenAsExpected(
       IFileHierarchyDirectory goldenDirectory)
     => this.AssertGolden(goldenDirectory);
 

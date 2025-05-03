@@ -34,7 +34,7 @@ public partial class MaterialSelector : UserControl {
         comboBoxItems.Clear();
         for (var i = 0; i < this.materials_.Count; ++i) {
           var material = this.materials_[i];
-          comboBoxItems.Add($"{i}: \"{material.Name ?? "(null)"}\"");
+          comboBoxItems.Add($"{i}: \"{material.Name}\"");
         }
 
         this.SelectedMaterial =

@@ -6,7 +6,7 @@ using fin.io;
 using fin.testing.model;
 using fin.testing;
 
-namespace ttyd;
+namespace Celeste64;
 
 public class Celeste64MapModelGoldenTests
     : BModelGoldenTests<Celeste64MapModelFileBundle,

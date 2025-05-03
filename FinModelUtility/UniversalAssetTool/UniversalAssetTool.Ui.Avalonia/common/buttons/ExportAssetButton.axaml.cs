@@ -10,6 +10,7 @@ using fin.common;
 using fin.io;
 using fin.io.bundles;
 using fin.model.io;
+using fin.model.processing;
 using fin.util.sets;
 using fin.util.strings;
 
@@ -91,7 +92,7 @@ public partial class ExportAssetButton : UserControl {
 
     ExporterUtil.Export(
         modelFileBundle,
-        () => new GlobalModelImporter().Import(modelFileBundle),
+        () => new GlobalModelImporter().ImportAndProcess(modelFileBundle),
         outputDirectory,
         outputExportFormat.AsSet(),
         true,

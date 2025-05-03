@@ -6,6 +6,7 @@ using Avalonia.Platform.Storage;
 
 using fin.common;
 using fin.io;
+using fin.model.processing;
 
 using uni.cli;
 
@@ -57,7 +58,7 @@ public partial class ImportAssetButton : UserControl {
       return;
     }
 
-    var finModel = bestMatch.Import(inputFiles);
+    var finModel = bestMatch.ImportAndProcess(inputFiles);
     ModelService.OpenModel(null, finModel);
   }
 }

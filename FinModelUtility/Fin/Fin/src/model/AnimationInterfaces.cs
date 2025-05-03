@@ -21,9 +21,7 @@ public partial interface IAnimationManager {
   IMorphTarget AddMorphTarget();
 }
 
-public interface IMorphTarget {
-  string Name { get; set; }
-
+public interface IMorphTarget : INamed {
   IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs { get; }
   IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs { get; }
 
@@ -32,9 +30,7 @@ public interface IMorphTarget {
 }
 
 [GenerateReadOnly]
-public partial interface IAnimation {
-  new string Name { get; set; }
-
+public partial interface IAnimation : INamed {
   new int FrameCount { get; set; }
   new float FrameRate { get; set; }
   new bool UseLoopingInterpolation { get; set; }

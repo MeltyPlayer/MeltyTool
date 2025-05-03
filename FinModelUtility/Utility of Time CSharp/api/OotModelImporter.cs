@@ -166,8 +166,6 @@ namespace UoT.api {
             finAnimation.FrameRate = 20;
             var frameCount = finAnimation.FrameCount = ootAnimation.FrameCount;
 
-            finAnimation.Name = $"Animation {animationIndex++}";
-
             var rootAnimationTracks = finAnimation.GetOrCreateBoneTracks(rootBone);
             var positions
                 = rootAnimationTracks.UseCombinedTranslationKeyframes(
