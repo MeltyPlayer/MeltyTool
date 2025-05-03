@@ -10,6 +10,10 @@ public interface IResource {
   IReadOnlySet<IReadOnlyGenericFile> Files { get; }
 }
 
+public interface IResourceCreator<out TResource> where TResource : IResource {
+  TResource Create(IFileBundle fileBundle, ISet<IReadOnlyGenericFile> files);
+}
+
 public interface IImporter<out TResource, in TFileBundle>
     where TResource : IResource
     where TFileBundle : IFileBundle {
