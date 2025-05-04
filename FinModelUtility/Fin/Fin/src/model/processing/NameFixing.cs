@@ -11,7 +11,9 @@ public static class NameFixing {
     FixNamedInstances_(model.MaterialManager.All, "material");
     FixNamedInstances_(model.Skin.Meshes, "mesh");
     FixNamedInstances_(model.AnimationManager.MorphTargets, "morphTarget");
-    FixNamedInstances_(model.MaterialManager.Textures, "texture");
+    // TODO: Split this out into textures and images, so duplicate images are
+    // not exported.
+    //FixNamedInstances_(model.MaterialManager.Textures, "texture");
   }
 
   private static void FixNamedInstances_<T>(IReadOnlyList<T> instances,
