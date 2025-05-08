@@ -300,7 +300,4 @@
       <LastGenOutput>HandleBitEncoderT4.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft.T4\KSoft.T4.csproj" />
-  </ItemGroup>
 </Project>

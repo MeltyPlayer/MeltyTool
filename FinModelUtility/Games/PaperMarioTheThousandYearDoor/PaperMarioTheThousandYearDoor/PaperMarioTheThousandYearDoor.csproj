@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
-    <ProjectReference Include="..\..\..\Libraries\Gx\Gx\Gx.csproj" />
   </ItemGroup>
 
 </Project>

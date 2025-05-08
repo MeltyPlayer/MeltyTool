@@ -10,7 +10,6 @@
     <ProjectReference Include="$(VitaRootDir)KSoft\KSoft.Compression\KSoft.Compression.csproj" />
     <ProjectReference Include="$(VitaRootDir)KSoft\KSoft.IO.TagElementStreams\KSoft.IO.TagElementStreams.csproj" />
     <ProjectReference Include="$(VitaRootDir)KSoft\KSoft.Security\KSoft.Security.csproj" />
-    <ProjectReference Include="$(VitaRootDir)KSoft\KSoft.Wwise\KSoft.Wwise.csproj" />
     <ProjectReference Include="$(VitaRootDir)KSoft\KSoft.Math\KSoft.Math.csproj" />
   </ItemGroup>
   <ItemGroup>

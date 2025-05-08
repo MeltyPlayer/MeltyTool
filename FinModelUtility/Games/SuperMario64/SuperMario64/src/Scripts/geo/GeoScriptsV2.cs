@@ -1,5 +1,4 @@
-﻿using System.Drawing.Drawing2D;
-using System.Numerics;
+﻿using System.Numerics;
 
 using f3dzex2.io;
 

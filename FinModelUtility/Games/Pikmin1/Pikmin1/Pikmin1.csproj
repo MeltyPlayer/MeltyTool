@@ -62,7 +62,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
     <ProjectReference Include="..\..\..\Libraries\Gx\Gx\Gx.csproj" />
-    <ProjectReference Include="..\..\BattalionWars\BattalionWars\BattalionWars.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2.csproj" />
-    <ProjectReference Include="..\..\Fin\Fin\Fin.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="schema" Version="0.6.12" />
   </ItemGroup>
 

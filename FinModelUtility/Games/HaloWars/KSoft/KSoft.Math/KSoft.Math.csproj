@@ -6,6 +6,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildProjectDirectory)\..\KSoft.BCL.props" />
   <ItemGroup>
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="$(VitaRootDir)KSoft\KSoft\KSoft.csproj" />
   </ItemGroup>
 </Project>

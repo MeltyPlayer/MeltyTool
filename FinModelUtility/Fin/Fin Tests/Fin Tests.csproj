@@ -14,7 +14,6 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fin.Ui\Fin.Ui.csproj" />
     <ProjectReference Include="..\Fin\Fin.csproj" />
   </ItemGroup>
 </Project>
