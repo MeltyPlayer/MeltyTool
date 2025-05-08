@@ -39,7 +39,7 @@ public class SubArchiveStream(Stream impl)
           ? buffer
           : buffer[..remaining];
 
-      impl.ReadExactly(target);
+      impl.Read(target);
       dstStream.Write(target);
     }
   }

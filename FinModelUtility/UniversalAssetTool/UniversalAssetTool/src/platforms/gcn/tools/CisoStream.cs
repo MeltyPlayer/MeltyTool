@@ -34,7 +34,7 @@ public class CisoStream : Stream {
     }
 
     Span<byte> value = stackalloc byte[1];
-    this.ReadExactly(value);
+    this.Read(value);
     return value[0];
   }
 
@@ -51,7 +51,7 @@ public class CisoStream : Stream {
       if (this.GetCisoPosition_(this.Position,
                                 out var cisoPosition)) {
         this.impl_.Position = cisoPosition;
-        this.impl_.ReadExactly(currentSlice);
+        this.impl_.Read(currentSlice);
       }
       // Otherwise, fills block with 0s.
       else {
