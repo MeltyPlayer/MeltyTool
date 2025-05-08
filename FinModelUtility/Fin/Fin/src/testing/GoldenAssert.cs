@@ -138,8 +138,8 @@ public static class GoldenAssert {
     var rhsSpan = new Span<long>(ref rhsLong).AsBytes();
 
     for (int i = 0; i < iterations; i++) {
-      lhsStream.Read(lhsSpan);
-      rhsStream.Read(rhsSpan);
+      lhsStream.ReadExactly(lhsSpan);
+      rhsStream.ReadExactly(rhsSpan);
 
       if (lhsLong != rhsLong) {
         Asserts.Fail(

@@ -23,7 +23,7 @@ namespace benchmarks {
 
     public unsafe T ReversingWithManualSizeImpl<T>(int size) {
       Span<byte> span = stackalloc byte[size];
-      this.ms.Read(span);
+      this.ms.ReadExactly(span);
 
       fixed (byte* ptr = span) {
         span.Reverse();
@@ -41,7 +41,7 @@ namespace benchmarks {
 
     public unsafe T ReversingWithGenericSizeImpl<T>() {
       Span<byte> span = stackalloc byte[sizeof(T)];
-      this.ms.Read(span);
+      this.ms.ReadExactly(span);
       span.Reverse();
 
       fixed (byte* ptr = span) {
@@ -60,7 +60,7 @@ namespace benchmarks {
     public unsafe T ReversingWithSpansImpl<T>() where T : unmanaged {
       Span<T> tSpan = stackalloc T[1];
       var bSpan = MemoryMarshal.Cast<T, byte>(tSpan);
-      this.ms.Read(bSpan);
+      this.ms.ReadExactly(bSpan);
       bSpan.Reverse();
       return tSpan[0];
     }
@@ -77,7 +77,7 @@ namespace benchmarks {
       T value;
       T* ptr = &value;
       var bSpan = new Span<byte>(ptr, sizeof(T));
-      this.ms.Read(bSpan);
+      this.ms.ReadExactly(bSpan);
       bSpan.Reverse();
       return value;
     }
@@ -94,7 +94,7 @@ namespace benchmarks {
     public unsafe void ReversingDirectlyImpl<T>(out T val) where T : unmanaged {
       fixed (T* ptr = &val) {
         var bSpan = new Span<byte>(ptr, sizeof(T));
-        this.ms.Read(bSpan);
+        this.ms.ReadExactly(bSpan);
         bSpan.Reverse();
       }
     }

@@ -38,14 +38,14 @@ public static class QoiConverter {
   /// <exception cref="Exception">If there is an invalid QOIF magic header or there was an error with stride width.</exception>
   public static IImage GetImageFromStream(Stream s) {
     Span<byte> header = stackalloc byte[12];
-    s.Read(header);
+    s.ReadExactly(header);
     int length = header[8] +
                  (header[9] << 8) +
                  (header[10] << 16) +
                  (header[11] << 24);
     byte[] bytes = new byte[12 + length];
     s.Position -= 12;
-    s.Read(bytes, 0, bytes.Length);
+    s.ReadExactly(bytes, 0, bytes.Length);
     return GetImageFromSpan(bytes);
   }
 
