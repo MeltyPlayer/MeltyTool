@@ -19,7 +19,7 @@ namespace benchmarks {
     public void UsingIndexOfAndSubstring() {
       for (var i = 0; i < this.n_; ++i) {
         var substring =
-            TEXT.Substring(TEXT.IndexOf('\0'));
+            TEXT[TEXT.IndexOf('\0')..];
       }
     }
   }

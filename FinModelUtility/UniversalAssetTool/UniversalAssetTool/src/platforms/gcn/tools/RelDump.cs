@@ -57,7 +57,7 @@ namespace uni.platforms.gcn.tools {
             string Section_Name =
                 Regex.Match(Section_Info, @"^[^ ]*").Value;
             string Section_Offsets =
-                Section_Info.Substring(Section_Name.Length + 11);
+                Section_Info[(Section_Name.Length + 11)..];
             string Section_Size =
                 Regex.Match(Section_Offsets, @"^[^ ]*").Value;
             string Section_Offset =

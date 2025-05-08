@@ -31,7 +31,7 @@ public class ZlibArrayToArrayDecompressor : BArrayToArrayDecompressor {
       while (true) {
         int size = zlibStream.Read(buffer);
         if (size > 0)
-          stream.Write(buffer.Slice(0, size));
+          stream.Write(buffer[..size]);
         else
           break;
       }

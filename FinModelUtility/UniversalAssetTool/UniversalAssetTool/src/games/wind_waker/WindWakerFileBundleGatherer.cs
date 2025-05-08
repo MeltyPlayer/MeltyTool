@@ -188,10 +188,8 @@ public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
         IFileHierarchyFile bmdFile,
         IReadOnlyList<IFileHierarchyFile> bckFiles) {
       var suffix =
-          bmdFile.NameWithoutExtension.ToString()
-                 .Substring(
-                     bmdFile.NameWithoutExtension.Length -
-                     suffixLength);
+          bmdFile.NameWithoutExtension.ToString()[(bmdFile.NameWithoutExtension.Length -
+                                                   suffixLength)..];
 
       return bckFiles.Where(file => file.Name.StartsWith(suffix)).ToArray();
     }

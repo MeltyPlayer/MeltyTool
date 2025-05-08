@@ -400,10 +400,10 @@ label_10:
             switch (alignment)
             {
               case QFontAlignment.Right:
-                num -= this.MeasureNextlineLength(text.Substring(index + 1));
+                num -= this.MeasureNextlineLength(text[(index + 1)..]);
                 continue;
               case QFontAlignment.Centre:
-                num -= (float) (int) (0.5 * (double) this.MeasureNextlineLength(text.Substring(index + 1)));
+                num -= (float) (int) (0.5 * (double) this.MeasureNextlineLength(text[(index + 1)..]));
                 continue;
               default:
                 continue;

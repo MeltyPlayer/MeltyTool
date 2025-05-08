@@ -7,10 +7,10 @@ namespace sm64.JSON {
     private static byte parseByte(string str) {
       bool isHex = false;
       if (str.StartsWith("0x")) {
-        str = str.Substring(2);
+        str = str[2..];
         isHex = true;
       } else if (str.StartsWith("$")) {
-        str = str.Substring(1);
+        str = str[1..];
         isHex = true;
       }
       if (!isHex)
@@ -22,10 +22,10 @@ namespace sm64.JSON {
     private static uint parseUInt(string str) {
       bool isHex = false;
       if (str.StartsWith("0x")) {
-        str = str.Substring(2);
+        str = str[2..];
         isHex = true;
       } else if (str.StartsWith("$")) {
-        str = str.Substring(1);
+        str = str[1..];
         isHex = true;
       }
       if (!isHex)

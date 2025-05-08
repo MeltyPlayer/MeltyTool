@@ -22,7 +22,7 @@ public static class StringExtensions {
       string start,
       out string trimmed) {
     if (str.StartsWith(start)) {
-      trimmed = str.Substring(start.Length);
+      trimmed = str[start.Length..];
       return true;
     }
 

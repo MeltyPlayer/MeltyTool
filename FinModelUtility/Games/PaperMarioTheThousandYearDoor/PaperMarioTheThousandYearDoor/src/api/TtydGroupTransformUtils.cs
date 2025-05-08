@@ -50,7 +50,7 @@ public static class TtydGroupTransformUtils {
       Group group,
       ReadOnlySpan<float> groupTransforms,
       Vector3? parentGroupScale) {
-    var translation = new Vector3(groupTransforms.Slice(0, 3));
+    var translation = new Vector3(groupTransforms[..3]);
     var scale = new Vector3(groupTransforms.Slice(3, 3));
 
     var deg2Rad = MathF.PI / 180;

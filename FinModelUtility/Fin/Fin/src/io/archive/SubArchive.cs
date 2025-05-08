@@ -37,7 +37,7 @@ public class SubArchiveStream(Stream impl)
       var remaining = archiveContentFile.Length - i;
       var target = remaining > buffer.Length
           ? buffer
-          : buffer.Slice(0, remaining);
+          : buffer[..remaining];
 
       impl.Read(target);
       dstStream.Write(target);

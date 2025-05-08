@@ -85,7 +85,7 @@ public class D3dModelImporter : IModelImporter<D3dModelFileBundle> {
         case D3dCommandType.VERTEX_NORMAL_TEXTURE: {
           var d3dParams = d3dCommand.Parameters.AsSpan();
 
-          var finVertex = finSkin.AddVertex(new Vector3(d3dParams.Slice(0, 3)));
+          var finVertex = finSkin.AddVertex(new Vector3(d3dParams[..3]));
           finVertex.SetLocalNormal(-new Vector3(d3dParams.Slice(3, 3)));
           finVertex.SetUv(new Vector2(d3dParams.Slice(6, 2)));
           finVertex.SetBoneWeights(boneWeights);

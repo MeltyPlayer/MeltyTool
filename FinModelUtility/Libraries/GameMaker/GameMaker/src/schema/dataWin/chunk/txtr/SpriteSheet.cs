@@ -34,7 +34,7 @@ public class SpriteSheet : IBinaryDeserializable {
     var header = br.ReadChars(8);
     br.Position -= 8;
 
-    if (header.AsSpan().Slice(0, 4) is "2zoq") {
+    if (header.AsSpan()[..4] is "2zoq") {
       return ReadBz2QoiImage_(br, fileLength);
     }
 

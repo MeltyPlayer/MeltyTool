@@ -84,7 +84,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
 
     var from = this.impl_[0];
     if (!sharedConfig.Looping) {
-      dst.Slice((int) MathF.Ceiling(from.Frame)).Fill(from.ValueOut);
+      dst[(int) MathF.Ceiling(from.Frame)..].Fill(from.ValueOut);
     }
 
     for (var k = 1; k < this.impl_.Count; ++k) {
@@ -99,7 +99,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
       var last = this.impl_[^1];
       var lastFrame = (int) MathF.Ceiling(last.Frame);
       if (lastFrame < dst.Length) {
-        dst.Slice(lastFrame).Fill(last.ValueOut);
+        dst[lastFrame..].Fill(last.ValueOut);
       }
     }
   }

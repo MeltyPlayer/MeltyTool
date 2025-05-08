@@ -224,18 +224,18 @@ public class SuperMarioSunshineFileBundleGatherer
         new Dictionary<IFileHierarchyFile, IFileHierarchyFile[]>();
     foreach (var bmdFile in bmdFiles) {
       var prefix = bmdFile.Name.ToString();
-      prefix = prefix.Substring(0, prefix.Length - ".bmd".Length);
+      prefix = prefix[..^".bmd".Length];
 
       // Blegh. These special cases are gross.
       {
         var modelIndex = prefix.IndexOf("_model");
         if (modelIndex != -1) {
-          prefix = prefix.Substring(0, modelIndex);
+          prefix = prefix[..modelIndex];
         }
 
         var bodyIndex = prefix.IndexOf("_body");
         if (bodyIndex != -1) {
-          prefix = prefix.Substring(0, bodyIndex);
+          prefix = prefix[..bodyIndex];
         }
 
         prefix = prefix.Replace("peach_hair_ponytail", "peach_hair_pony");

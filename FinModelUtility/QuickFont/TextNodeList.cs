@@ -115,7 +115,7 @@ namespace QuickFont
       if (node.Type != TextNodeType.Word)
         throw new Exception("Cannot slit text node of type: " + node.Type.ToString());
       int num = node.Text.Length / 2;
-      string text1 = node.Text.Substring(0, num);
+      string text1 = node.Text[..num];
       string text2 = node.Text.Substring(num, node.Text.Length - num);
       TextNode textNode1 = new TextNode(TextNodeType.Word, text1);
       TextNode textNode2 = new TextNode(TextNodeType.Word, text2);

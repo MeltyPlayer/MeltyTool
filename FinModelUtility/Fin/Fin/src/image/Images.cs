@@ -29,7 +29,7 @@ namespace fin.image;
 
 public static class FinImage {
   public static bool IsSupportedFileType(IReadOnlyTreeFile file) {
-    var extension = file.FileType.ToLower().Substring(1);
+    var extension = file.FileType.ToLower()[1..];
     return ImageSharpConfig.ImageFormats.Any(
         format => format.FileExtensions.Any(otherExtension =>
                                                 extension == otherExtension));

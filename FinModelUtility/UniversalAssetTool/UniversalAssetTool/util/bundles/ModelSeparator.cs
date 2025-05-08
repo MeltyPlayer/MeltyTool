@@ -356,10 +356,8 @@ public class SuffixModelSeparatorMethod(int suffixLength)
       IFileHierarchyFile modelFile,
       IList<IFileHierarchyFile> animationFiles) {
     var suffix =
-        modelFile.NameWithoutExtension.ToString()
-                 .Substring(
-                     modelFile.NameWithoutExtension.Length -
-                     suffixLength);
+        modelFile.NameWithoutExtension.ToString()[(modelFile.NameWithoutExtension.Length -
+                                                   suffixLength)..];
 
     return animationFiles.Where(file => file.Name.StartsWith(suffix));
   }

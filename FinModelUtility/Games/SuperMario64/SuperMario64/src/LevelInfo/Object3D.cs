@@ -168,7 +168,7 @@ namespace sm64 {
       get => "0x" + this.m_data.Behaviour.ToString("X8");
       set {
         this.m_data.Behaviour =
-            uint.Parse(value.Substring(2), NumberStyles.HexNumber);
+            uint.Parse(value[2..], NumberStyles.HexNumber);
       }
     }
 
@@ -306,11 +306,11 @@ namespace sm64 {
     private ushort presetID;
 
     public int getROMAddress() {
-      return int.Parse(this.Address.Substring(2), NumberStyles.HexNumber);
+      return int.Parse(this.Address[2..], NumberStyles.HexNumber);
     }
 
     public uint getROMUnsignedAddress() {
-      return uint.Parse(this.Address.Substring(2), NumberStyles.HexNumber);
+      return uint.Parse(this.Address[2..], NumberStyles.HexNumber);
     }
 
     public void setPresetID(ushort ID) {

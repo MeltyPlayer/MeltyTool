@@ -45,7 +45,7 @@ public static partial class FileHierarchy {
         this.Parent = parent;
 
         this.LocalPath =
-            instance.FullPath.Substring(root.FullPath.Length);
+            instance.FullPath[root.FullPath.Length..];
       }
 
       protected abstract ISystemIoObject Instance { get; }
@@ -238,7 +238,7 @@ public static partial class FileHierarchy {
 
           var lastSubdirRange = subdirRanges[^1];
           var parentDirPath
-              = localPath.Slice(0, lastSubdirRange.Start.Value - 1);
+              = localPath[..(lastSubdirRange.Start.Value - 1)];
           if (!this.TryToGetExistingSubdirImpl_(parentDirPath, out parentDir)) {
             outFile = default;
             return false;

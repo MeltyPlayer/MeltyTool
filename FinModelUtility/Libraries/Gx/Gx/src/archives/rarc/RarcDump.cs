@@ -64,14 +64,14 @@ public class RarcDump {
         // just collapses them with the parent name.
         else if ((subdirName.Length <= rarcName.Length &&
                   subdirName.ToLower() ==
-                  rarcName.Substring(0, subdirName.Length).ToLower()) ||
+                  rarcName[..subdirName.Length].ToLower()) ||
                  (junkTerms?.Contains(subdirName) ?? false)) {
           finalDirectoryName = rarcName;
         }
         // If parent has same name or is an abbreviation of the subdir,
         // just collapses them with the subdir name.
         else if (subdirName.Length >= rarcName.Length &&
-                 subdirName.Substring(0, rarcName.Length).ToLower() ==
+                 subdirName[..rarcName.Length].ToLower() ==
                  rarcName.ToLower()) {
           finalDirectoryName = subdirName;
         }

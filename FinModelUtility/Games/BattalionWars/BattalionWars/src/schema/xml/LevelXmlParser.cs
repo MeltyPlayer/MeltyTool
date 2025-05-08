@@ -239,7 +239,7 @@ public class LevelXmlParser {
                     nextCommaIndex > 0
                         ? floatsText.Substring(currentIndex,
                                                nextCommaIndex - currentIndex)
-                        : floatsText.Substring(currentIndex);
+                        : floatsText[currentIndex..];
                 floats[fI] = float.Parse(subText);
 
                 currentIndex = nextCommaIndex + 1;
@@ -377,14 +377,14 @@ public class LevelXmlParser {
           IList<IReadOnlyTreeFile>? animFiles = null;
           if (gameVersion == GameVersion.BW1) {
             if (modelId.Length == 4 && modelId.EndsWith("VET")) {
-              var firstTwoCharactersInModelId = modelId.Substring(0, 2);
+              var firstTwoCharactersInModelId = modelId[..2];
               animFiles = fvAnimFiles
                           .Concat(animationFiles.Where(
                                       file => file.Name.StartsWith(
                                           firstTwoCharactersInModelId)))
                           .ToArray();
             } else if (modelId.Length == 6 && modelId.EndsWith("GRUNT")) {
-              var firstTwoCharactersInModelId = modelId.Substring(0, 2);
+              var firstTwoCharactersInModelId = modelId[..2];
               animFiles = fgAnimFiles
                           .Concat(animationFiles.Where(
                                       file => file.Name.StartsWith(
