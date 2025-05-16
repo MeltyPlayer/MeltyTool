@@ -1,4 +1,6 @@
 ﻿using System.IO.Hashing;
+using System.Runtime.InteropServices;
+using System.Text;
 
 using CommunityToolkit.Diagnostics;
 
@@ -14,15 +16,94 @@ public class PuzzleDefinitionReader {
   public PuzzleDefinition[]? Read(IReadOnlyGenericFile romFile) {
     var romData = romFile.ReadAllBytes();
     var romCrc32 = Crc32.HashToUInt32(romData);
-    if (!Constants.ENTRY_OFFSET_BY_FILE_CRC_32.TryGetValue(
+    if (!Constants.OFFSETS_BY_FILE_CRC_32.TryGetValue(
             romCrc32,
-            out var entryOffset)) {
+            out var offsets)) {
       return null;
     }
 
-    using var br = new SchemaBinaryReader(romData);
-    br.Position = entryOffset;
-    return br.ReadNews<PuzzleDefinition>(255);
+    using var br = new SchemaBinaryReader(romData, Endianness.BigEndian);
+
+    br.Position = offsets.puzzleOffset;
+    var puzzleDefinitions = br.ReadNews<PuzzleDefinition>(255);
+
+    br.Position = offsets.nameOffset;
+    ReadNames_(br, puzzleDefinitions);
+
+    return puzzleDefinitions.Where(p => p.Name != "").ToArray();
+  }
+
+  private static void ReadNames_(
+      IBinaryReader br,
+      PuzzleDefinition[] puzzleDefinitions) {
+    var textBytes = br.ReadBytes(br.Length - br.Position).AsSpan();
+    var textShorts = MemoryMarshal.Cast<byte, ushort>(textBytes);
+
+    Func<ReadOnlySpan<ushort>, ushort, string> getStrAt = (values, diff) => {
+      var weirdStuff = false;
+      var sb = new StringBuilder();
+      foreach (var v in values) {
+        var c = (char) (v - diff);
+
+        if (c is >= 'G' and <= (char) ('Z' + ('G' - 'A'))) {
+          c = (char) (c - 'G' + 'a');
+        }
+
+        if (c is >= 'a' and <= 'z') {
+          if (weirdStuff && sb.Length > 0) {
+            sb.Append(' ');
+          }
+
+          if (c is >= 'G' and <= (char) ('Z' + ('G' - 'A'))) {
+            sb.Append((char) (c - 'G' + 'a'));
+          } else {
+            sb.Append(c);
+          }
+
+          weirdStuff = false;
+        } else {
+          weirdStuff = true;
+        }
+      }
+
+      return sb.ToString();
+    };
+
+
+    List<string> puzzleNames = [
+        "n", "l", "e", "t", "s", "w", "o", "r", "k"
+    ];
+
+    for (var i = puzzleNames.Count; i < puzzleDefinitions.Length; ++i) {
+      var isNewWord = false;
+      var currentWord = "";
+      while (!isNewWord) {
+        var endIndex = textShorts.IndexOf((ushort) 65535);
+        var values = textShorts.Slice(0, endIndex);
+
+        if (currentWord.Length > 0) {
+          currentWord += " ";
+        }
+
+        currentWord += getStrAt(values, 100);
+
+        var bytesEndIndex = 2 * (endIndex + 1);
+        while (textBytes[bytesEndIndex] == 0) {
+          isNewWord = true;
+          bytesEndIndex++;
+        }
+
+        textBytes = textBytes.Slice(bytesEndIndex);
+        textShorts = MemoryMarshal.Cast<byte, ushort>(textBytes);
+      }
+
+      puzzleNames.Add(currentWord);
+    }
+
+    foreach (var (puzzleDefinition, puzzleName) in puzzleDefinitions.Zip(
+                 puzzleNames)) {
+      puzzleDefinition.Name = puzzleName;
+    }
   }
 }
 
@@ -33,6 +114,9 @@ public class PuzzleDefinitionReader {
 /// </summary>
 [BinarySchema]
 public partial class PuzzleDefinition : IBinaryConvertible {
+  [Skip]
+  public string Name { get; set; }
+
   [SequenceLengthSource(15)]
   public ushort[] Rows { get; set; }
 

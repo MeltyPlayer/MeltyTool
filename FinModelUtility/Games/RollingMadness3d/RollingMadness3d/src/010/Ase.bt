@@ -30,11 +30,11 @@ typedef struct {
   } while (fileName != '"');
 } String;
 
-uint imgCount0 <bgcolor=COUNT_COLOR>;
-String imgs0[imgCount0] <optimize=false,bgcolor=IMAGE_COLOR>;
+uint imgCount <bgcolor=COUNT_COLOR>;
+String imgs[imgCount] <optimize=false,bgcolor=IMAGE_COLOR>;
 
-uint imgCount1 <bgcolor=COUNT_COLOR>;
-String imgs1[imgCount1] <optimize=false,bgcolor=IMAGE_COLOR>;
+uint lightmapCount <bgcolor=COUNT_COLOR>;
+String lightmaps[lightmapCount] <optimize=false,bgcolor=IMAGE_COLOR>;
 
 uint unk0;
 uint unkId0;
