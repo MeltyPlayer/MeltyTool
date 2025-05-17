@@ -75,7 +75,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@SceneGate](https://github.com/SceneGate), whose [Yarhl](https://github.com/SceneGate/Yarhl), [Ekona](https://github.com/SceneGate/Ekona), and [Lemon](https://github.com/SceneGate/Lemon) libraries were used to rip files from DS and 3DS ROMs.
 - [@shravan2x](https://github.com/shravan2x), whose [Gameloop.Vdf](https://github.com/shravan2x/Gameloop.Vdf) library is used to deserialize the contents of Steam's .vdf files.
 - [@sinshu](https://github.com/sinshu), whose [MeltySynth](https://github.com/sinshu/meltysynth) library is used to import and play MIDI files.
-- [@sopoforic](https://github.com/sopoforic), whose [cgrr-mariospicross](https://github.com/sopoforic/cgrr-mariospicross) tool was referenced for ripping Mario Picross puzzles.
+- [@sopoforic](https://github.com/sopoforic), whose [cgrr-mariospicross](https://github.com/sopoforic/cgrr-mariospicross) tool was referenced for ripping Mario's Picross puzzles.
 - [@speps](https://github.com/speps), whose [LibTessDotNet](https://github.com/speps/LibTessDotNet) library is used to triangulate VRML polygons.
 - [@srogee](https://github.com/srogee), as his [HaloWarsTools](https://github.com/srogee/HaloWarsTools) program was used as the basis of the Halo Wars importer.
 - [@SuperHackio](https://github.com/SuperHackio), whose [Hack.io](https://github.com/SuperHackio/Hack.io) library was referenced to improve the J3dGraph .bmd parser.
@@ -119,10 +119,13 @@ If you'd like to vote on new games or features that should be supported, please 
 - .map (PC)
   - Celeste 64 
 - .mod (GCN)
-  - Pikmin 1 (`pikmin_1.[ciso/gcm/iso/nkit.iso]`)
+  - Pikmin (`pikmin_1.[ciso/gcm/iso/nkit.iso]`)
 - .modl/.out (GCN/WII)
-  - Battalion Wars 1 (`battalion_wars_1.[ciso/gcm/iso/nkit.iso]`)
+  - Battalion Wars (`battalion_wars_1.[ciso/gcm/iso/nkit.iso]`)
   - Battalion Wars 2 (`battalion_wars_2.iso`)
+- (Picross puzzles)
+  - Mario's Picross (`marios_picross_1.gb`)
+  - Picross 2 (AKA Mario's Picross 2) (`marios_picross_2.gb`)
 - .vis/.xtd (PC)
   - Halo Wars (Steam)
 - VRML (.wrl)
