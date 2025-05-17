@@ -252,9 +252,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Celeste64 Tests", "Games\Ce
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RollingMadness3d", "RollingMadness3d", "{E28FE767-CBCA-4505-97DD-9E28910DADD2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MarioPicross", "MarioPicross", "{C9B82CCD-EA7B-41F2-AEFB-A6D42B86D0FF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MariosPicross", "MariosPicross", "{C9B82CCD-EA7B-41F2-AEFB-A6D42B86D0FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarioPicross", "Games\MarioPicross\MarioPicross\MarioPicross.csproj", "{694F125D-43A2-4139-A3AC-DE5E36CE9E78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MariosPicross", "Games\MarioPicross\MarioPicross\MariosPicross.csproj", "{694F125D-43A2-4139-A3AC-DE5E36CE9E78}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fmod", "Fmod", "{FC4C0A30-6505-4A04-BA64-3DCFFBB55060}"
 EndProject

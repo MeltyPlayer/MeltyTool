@@ -10,10 +10,10 @@ using fin.math;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace MarioPicross;
+namespace MariosPicross;
 
 public class PuzzleDefinitionReader {
-  public PuzzleDefinition[]? Read(IReadOnlyGenericFile romFile) {
+  public IPuzzleDefinition[]? Read(IReadOnlyGenericFile romFile) {
     var romData = romFile.ReadAllBytes();
     var romCrc32 = Crc32.HashToUInt32(romData);
     if (!Constants.OFFSETS_BY_FILE_CRC_32.TryGetValue(
@@ -25,17 +25,37 @@ public class PuzzleDefinitionReader {
     using var br = new SchemaBinaryReader(romData, Endianness.BigEndian);
 
     br.Position = offsets.puzzleOffset;
-    var puzzleDefinitions = br.ReadNews<PuzzleDefinition>(255);
+    var puzzleDefinitions = new IPuzzleDefinition[offsets.puzzleCount];
+    for (var i = 0; i < offsets.puzzleCount; ++i) {
+      puzzleDefinitions[i] = br.ReadNew<PuzzleDefinition>();
+    }
 
-    br.Position = offsets.nameOffset;
-    ReadNames_(br, puzzleDefinitions);
+    if (offsets.merge) {
+      var unmergedPuzzleDefinitions = puzzleDefinitions.AsSpan();
+      puzzleDefinitions = new IPuzzleDefinition[unmergedPuzzleDefinitions.Length / 4];
+      for (var i = 0; i < unmergedPuzzleDefinitions.Length - 3; i += 4) {
+        puzzleDefinitions[i / 4]
+            = new PuzzleDefinition30x30(unmergedPuzzleDefinitions.Slice(i, 4));
+      }
+    }
 
-    return puzzleDefinitions.Where(p => p.Name != "").ToArray();
+    var nameOffset = offsets.nameOffset;
+    if (nameOffset != null) {
+      br.Position = nameOffset.Value;
+      ReadNames_(br, puzzleDefinitions);
+      puzzleDefinitions = puzzleDefinitions.Where(p => p.Name != "").ToArray();
+    } else {
+      for (var i = 0; i < puzzleDefinitions.Length; ++i) {
+        puzzleDefinitions[i].Name = $"{i}";
+      }
+    }
+
+    return puzzleDefinitions;
   }
 
   private static void ReadNames_(
       IBinaryReader br,
-      PuzzleDefinition[] puzzleDefinitions) {
+      IPuzzleDefinition[] puzzleDefinitions) {
     var textBytes = br.ReadBytes(br.Length - br.Position).AsSpan();
     var textShorts = MemoryMarshal.Cast<byte, ushort>(textBytes);
 
@@ -68,7 +88,6 @@ public class PuzzleDefinitionReader {
 
       return sb.ToString();
     };
-
 
     List<string> puzzleNames = [
         "n", "l", "e", "t", "s", "w", "o", "r", "k"
@@ -113,7 +132,7 @@ public class PuzzleDefinitionReader {
 ///   https://github.com/sopoforic/cgrr-mariospicross/blob/master/mariospicross.py
 /// </summary>
 [BinarySchema]
-public partial class PuzzleDefinition : IBinaryConvertible {
+public partial class PuzzleDefinition : IPuzzleDefinition, IBinaryConvertible {
   [Skip]
   public string Name { get; set; }
 
@@ -123,11 +142,11 @@ public partial class PuzzleDefinition : IBinaryConvertible {
   public byte Width { get; set; }
   public byte Height { get; set; }
 
-  public bool this[byte x, byte y] {
+  public bool this[int x, int y] {
     get {
       Guard.IsLessThan(x, this.Width);
       Guard.IsLessThan(y, this.Height);
-      return this.Rows[y].GetBit(x);
+      return this.Rows[y].GetBit(15 - x);
     }
     set {
       Guard.IsLessThan(x, this.Width);
