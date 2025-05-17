@@ -18,39 +18,57 @@ public class PuzzleDefinitionReader {
     var romCrc32 = Crc32.HashToUInt32(romData);
     if (!Constants.OFFSETS_BY_FILE_CRC_32.TryGetValue(
             romCrc32,
-            out var offsets)) {
+            out var allOffsets)) {
       return null;
     }
 
     using var br = new SchemaBinaryReader(romData, Endianness.BigEndian);
 
-    br.Position = offsets.puzzleOffset;
-    var puzzleDefinitions = new IPuzzleDefinition[offsets.puzzleCount];
-    for (var i = 0; i < offsets.puzzleCount; ++i) {
-      puzzleDefinitions[i] = br.ReadNew<PuzzleDefinition>();
-    }
+    var allPuzzleDefinitions = new List<IPuzzleDefinition>();
+    for (var offsetsI = 0; offsetsI < allOffsets.Length; ++offsetsI) {
+      var offsets = allOffsets[offsetsI];
 
-    if (offsets.merge) {
-      var unmergedPuzzleDefinitions = puzzleDefinitions.AsSpan();
-      puzzleDefinitions = new IPuzzleDefinition[unmergedPuzzleDefinitions.Length / 4];
-      for (var i = 0; i < unmergedPuzzleDefinitions.Length - 3; i += 4) {
-        puzzleDefinitions[i / 4]
-            = new PuzzleDefinition30x30(unmergedPuzzleDefinitions.Slice(i, 4));
+      br.Position = offsets.puzzleOffset;
+      var puzzleDefinitions = new IPuzzleDefinition[offsets.puzzleCount];
+      for (var i = 0; i < offsets.puzzleCount; ++i) {
+        puzzleDefinitions[i] = br.ReadNew<PuzzleDefinition>();
       }
-    }
 
-    var nameOffset = offsets.nameOffset;
-    if (nameOffset != null) {
-      br.Position = nameOffset.Value;
-      ReadNames_(br, puzzleDefinitions);
-      puzzleDefinitions = puzzleDefinitions.Where(p => p.Name != "").ToArray();
-    } else {
-      for (var i = 0; i < puzzleDefinitions.Length; ++i) {
-        puzzleDefinitions[i].Name = $"{i}";
+      if (offsets.merge != PuzzleMergeType.UNMERGED) {
+        var unmergedPuzzleDefinitions = puzzleDefinitions.AsSpan();
+        var puzzleDefinitions30x30 = new IPuzzleDefinition[unmergedPuzzleDefinitions.Length / 4];
+        for (var i = 0; i < unmergedPuzzleDefinitions.Length - 3; i += 4) {
+          puzzleDefinitions30x30[i / 4]
+              = new PuzzleDefinition30x30(unmergedPuzzleDefinitions.Slice(i, 4));
+        }
+
+        if (offsets.merge == PuzzleMergeType.MERGE_30) {
+          puzzleDefinitions = puzzleDefinitions30x30;
+        } else {
+          var puzzleDefinitions60x60 = new IPuzzleDefinition[puzzleDefinitions30x30.Length / 4];
+          for (var i = 0; i < puzzleDefinitions30x30.Length - 3; i += 4) {
+            puzzleDefinitions60x60[i / 4]
+                = new PuzzleDefinition60x60(puzzleDefinitions30x30.AsSpan(i, 4));
+          }
+          puzzleDefinitions = puzzleDefinitions60x60;
+        }
       }
+
+      var nameOffset = offsets.nameOffset;
+      if (nameOffset != null) {
+        br.Position = nameOffset.Value;
+        ReadNames_(br, puzzleDefinitions);
+        puzzleDefinitions = puzzleDefinitions.Where(p => p.Name != "").ToArray();
+      } else {
+        for (var i = 0; i < puzzleDefinitions.Length; ++i) {
+          puzzleDefinitions[i].Name = $"{offsetsI}_{i}";
+        }
+      }
+
+      allPuzzleDefinitions.AddRange(puzzleDefinitions);
     }
 
-    return puzzleDefinitions;
+    return allPuzzleDefinitions.ToArray();
   }
 
   private static void ReadNames_(
