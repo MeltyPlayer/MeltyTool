@@ -12,11 +12,11 @@ using schema.binary.attributes;
 
 namespace MariosPicross;
 
-public class PuzzleDefinitionReader {
-  public IPuzzleDefinition[]? Read(IReadOnlyGenericFile romFile) {
+public class PicrossDefinitionReader {
+  public IPicrossDefinition[]? Read(IReadOnlyGenericFile romFile) {
     var romData = romFile.ReadAllBytes();
     var romCrc32 = Crc32.HashToUInt32(romData);
-    if (!Constants.OFFSETS_BY_FILE_CRC_32.TryGetValue(
+    if (!Constants.CONSTANTS_BY_FILE_CRC_32.TryGetValue(
             romCrc32,
             out var allOffsets)) {
       return null;
@@ -24,56 +24,62 @@ public class PuzzleDefinitionReader {
 
     using var br = new SchemaBinaryReader(romData, Endianness.BigEndian);
 
-    var allPuzzleDefinitions = new List<IPuzzleDefinition>();
+    var allPicrossDefinitions = new List<IPicrossDefinition>();
     for (var offsetsI = 0; offsetsI < allOffsets.Length; ++offsetsI) {
       var offsets = allOffsets[offsetsI];
 
       br.Position = offsets.puzzleOffset;
-      var puzzleDefinitions = new IPuzzleDefinition[offsets.puzzleCount];
+      var picrossDefinitions = new IPicrossDefinition[offsets.puzzleCount];
       for (var i = 0; i < offsets.puzzleCount; ++i) {
-        puzzleDefinitions[i] = br.ReadNew<PuzzleDefinition>();
+        picrossDefinitions[i] = br.ReadNew<PicrossDefinition>();
       }
 
       if (offsets.merge != PuzzleMergeType.UNMERGED) {
-        var unmergedPuzzleDefinitions = puzzleDefinitions.AsSpan();
-        var puzzleDefinitions30x30 = new IPuzzleDefinition[unmergedPuzzleDefinitions.Length / 4];
-        for (var i = 0; i < unmergedPuzzleDefinitions.Length - 3; i += 4) {
-          puzzleDefinitions30x30[i / 4]
-              = new PuzzleDefinition30x30(unmergedPuzzleDefinitions.Slice(i, 4));
+        var unmergedPicrossDefinitions = picrossDefinitions.AsSpan();
+        var picrossDefinitions30x30
+            = new IPicrossDefinition[unmergedPicrossDefinitions.Length / 4];
+        for (var i = 0; i < unmergedPicrossDefinitions.Length - 3; i += 4) {
+          picrossDefinitions30x30[i / 4]
+              = new PicrossDefinition30X30(
+                  unmergedPicrossDefinitions.Slice(i, 4));
         }
 
         if (offsets.merge == PuzzleMergeType.MERGE_30) {
-          puzzleDefinitions = puzzleDefinitions30x30;
+          picrossDefinitions = picrossDefinitions30x30;
         } else {
-          var puzzleDefinitions60x60 = new IPuzzleDefinition[puzzleDefinitions30x30.Length / 4];
-          for (var i = 0; i < puzzleDefinitions30x30.Length - 3; i += 4) {
-            puzzleDefinitions60x60[i / 4]
-                = new PuzzleDefinition60x60(puzzleDefinitions30x30.AsSpan(i, 4));
+          var picrossDefinitions60x60
+              = new IPicrossDefinition[picrossDefinitions30x30.Length / 4];
+          for (var i = 0; i < picrossDefinitions30x30.Length - 3; i += 4) {
+            picrossDefinitions60x60[i / 4]
+                = new PicrossDefinition60X60(
+                    picrossDefinitions30x30.AsSpan(i, 4));
           }
-          puzzleDefinitions = puzzleDefinitions60x60;
+
+          picrossDefinitions = picrossDefinitions60x60;
         }
       }
 
       var nameOffset = offsets.nameOffset;
       if (nameOffset != null) {
         br.Position = nameOffset.Value;
-        ReadNames_(br, puzzleDefinitions);
-        puzzleDefinitions = puzzleDefinitions.Where(p => p.Name != "").ToArray();
+        ReadNames_(br, picrossDefinitions);
+        picrossDefinitions
+            = picrossDefinitions.Where(p => p.Name != "").ToArray();
       } else {
-        for (var i = 0; i < puzzleDefinitions.Length; ++i) {
-          puzzleDefinitions[i].Name = $"{offsetsI}_{i}";
+        for (var i = 0; i < picrossDefinitions.Length; ++i) {
+          picrossDefinitions[i].Name = $"{offsetsI}_{i}";
         }
       }
 
-      allPuzzleDefinitions.AddRange(puzzleDefinitions);
+      allPicrossDefinitions.AddRange(picrossDefinitions);
     }
 
-    return allPuzzleDefinitions.ToArray();
+    return allPicrossDefinitions.ToArray();
   }
 
   private static void ReadNames_(
       IBinaryReader br,
-      IPuzzleDefinition[] puzzleDefinitions) {
+      IPicrossDefinition[] picrossDefinitions) {
     var textBytes = br.ReadBytes(br.Length - br.Position).AsSpan();
     var textShorts = MemoryMarshal.Cast<byte, ushort>(textBytes);
 
@@ -111,7 +117,7 @@ public class PuzzleDefinitionReader {
         "n", "l", "e", "t", "s", "w", "o", "r", "k"
     ];
 
-    for (var i = puzzleNames.Count; i < puzzleDefinitions.Length; ++i) {
+    for (var i = puzzleNames.Count; i < picrossDefinitions.Length; ++i) {
       var isNewWord = false;
       var currentWord = "";
       while (!isNewWord) {
@@ -137,7 +143,7 @@ public class PuzzleDefinitionReader {
       puzzleNames.Add(currentWord);
     }
 
-    foreach (var (puzzleDefinition, puzzleName) in puzzleDefinitions.Zip(
+    foreach (var (puzzleDefinition, puzzleName) in picrossDefinitions.Zip(
                  puzzleNames)) {
       puzzleDefinition.Name = puzzleName;
     }
@@ -150,7 +156,8 @@ public class PuzzleDefinitionReader {
 ///   https://github.com/sopoforic/cgrr-mariospicross/blob/master/mariospicross.py
 /// </summary>
 [BinarySchema]
-public partial class PuzzleDefinition : IPuzzleDefinition, IBinaryConvertible {
+public partial class PicrossDefinition 
+    : IPicrossDefinition, IBinaryConvertible {
   [Skip]
   public string Name { get; set; }
 

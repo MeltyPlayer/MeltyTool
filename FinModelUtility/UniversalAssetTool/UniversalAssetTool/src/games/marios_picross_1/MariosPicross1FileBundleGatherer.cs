@@ -6,14 +6,14 @@ using fin.util.progress;
 
 using MariosPicross;
 
-namespace uni.games.marios_picross;
+namespace uni.games.marios_picross_1;
 
-public class MariosPicrossFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class MariosPicross1FileBundleGatherer : IAnnotatedFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-            "marios_picross.gb",
+            "marios_picross_1.gb",
             out var romFile)) {
       return;
     }
@@ -22,8 +22,8 @@ public class MariosPicrossFileBundleGatherer : IAnnotatedFileBundleGatherer {
         = ExtractorUtil.GetOrCreateExtractedDirectory(romFile);
 
     if (extractedDirectory.IsEmpty) {
-      var puzzleDefinitionImageConverter = new PuzzleDefinitionImageConverter();
-      var puzzleDefinitions = new PuzzleDefinitionReader().Read(romFile);
+      var puzzleDefinitionImageConverter = new PicrossDefinitionImageConverter();
+      var puzzleDefinitions = new PicrossDefinitionReader().Read(romFile);
       foreach (var puzzleDefinition in puzzleDefinitions) {
         var name = puzzleDefinition.Name;
         if (name == "") {

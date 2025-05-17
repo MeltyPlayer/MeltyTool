@@ -9,9 +9,9 @@ public enum PuzzleMergeType {
 public static class Constants {
   public static readonly Dictionary<uint, (uint puzzleOffset, uint? nameOffset,
           int puzzleCount, PuzzleMergeType merge)[]>
-      OFFSETS_BY_FILE_CRC_32
+      CONSTANTS_BY_FILE_CRC_32
           = new() {
-              // Mario's Picross
+              // Mario's Picross 1
               [0xF2D652AD] = [(0x92b0, 0xd934, 255, PuzzleMergeType.UNMERGED)],
               // Mario's Picross 2
               [0xF5AA5902] = [

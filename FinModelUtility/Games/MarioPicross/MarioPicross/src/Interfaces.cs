@@ -1,6 +1,6 @@
 ﻿namespace MariosPicross;
 
-public interface IPuzzleDefinition {
+public interface IPicrossDefinition {
   string Name { get; set; }
 
   byte Width { get; }
