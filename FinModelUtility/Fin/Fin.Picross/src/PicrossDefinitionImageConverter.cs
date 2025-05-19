@@ -3,7 +3,7 @@ using fin.image.formats;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace MariosPicross;
+namespace fin.picross;
 
 public class PicrossDefinitionImageConverter {
   public IImage ConvertToImage(IPicrossDefinition picrossDefinition) {

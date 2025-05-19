@@ -1,4 +1,4 @@
-﻿namespace MariosPicross;
+﻿namespace fin.picross;
 
 public interface IPicrossDefinition {
   string Name { get; set; }

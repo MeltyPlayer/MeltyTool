@@ -6,6 +6,7 @@ using CommunityToolkit.Diagnostics;
 
 using fin.io;
 using fin.math;
+using fin.picross;
 
 using schema.binary;
 using schema.binary.attributes;

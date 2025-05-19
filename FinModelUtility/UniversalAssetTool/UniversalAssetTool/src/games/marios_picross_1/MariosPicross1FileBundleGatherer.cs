@@ -2,6 +2,7 @@
 using fin.image;
 using fin.io;
 using fin.io.bundles;
+using fin.picross;
 using fin.util.progress;
 
 using MariosPicross;

@@ -3,15 +3,14 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>fin.picross</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.12" />
+    <ProjectReference Include="..\Fin\Fin.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Fin\Fin.Picross\Fin.Picross.csproj" />
-    <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
   </ItemGroup>
-
 </Project>
