@@ -24,7 +24,7 @@ public class MariosPicross1FileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     if (extractedDirectory.IsEmpty) {
       var puzzleDefinitionImageConverter = new PicrossDefinitionImageConverter();
-      var puzzleDefinitions = new PicrossDefinitionReader().Read(romFile);
+      var puzzleDefinitions = new GameBoyPicrossDefinitionReader().Read(romFile);
       foreach (var puzzleDefinition in puzzleDefinitions) {
         var name = puzzleDefinition.Name;
         if (name == "") {

@@ -61,6 +61,14 @@ public class Grid<T> : IGrid<T> {
 }
 
 public static class GridExtensions {
+  public static void Fill<T>(this IGrid<T> grid, T value) {
+    for (var y = 0; y < grid.Height; ++y) {
+      for (var x = 0; x < grid.Width; ++x) {
+        grid[x, y] = value;
+      }
+    }
+  }
+
   public static IEnumerable<T> GetColumn<T>(this IReadOnlyGrid<T> grid, int x) {
     for (var y = 0; y < grid.Height; ++y) {
       yield return grid[x, y];

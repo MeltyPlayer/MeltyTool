@@ -8,7 +8,8 @@ public interface IPicrossClues {
 }
 
 public class PicrossCluesGenerator {
-  public IPicrossClues GenerateClues(IPicrossDefinition picrossDefinition) {
+  public IPicrossClues GenerateClues(
+      IReadOnlyPicrossDefinition picrossDefinition) {
     var width = picrossDefinition.Width;
     var height = picrossDefinition.Height;
 
@@ -37,7 +38,7 @@ public class PicrossCluesGenerator {
       }
     }
 
-    if (length != 0) {
+    if (lengths.Count == 0 || length != 0) {
       lengths.AddLast(length);
     }
 

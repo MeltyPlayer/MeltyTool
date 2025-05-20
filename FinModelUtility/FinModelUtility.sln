@@ -268,6 +268,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VictoryHeatRally", "Games\V
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin.Picross", "Fin\Fin.Picross\Fin.Picross.csproj", "{BABF281F-D990-412D-A4C4-B9678910B103}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin.Picross Tests", "Fin\Fin.Picross Tests\Fin.Picross Tests.csproj", "{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -900,6 +902,14 @@ Global
 		{BABF281F-D990-412D-A4C4-B9678910B103}.Release|x64.Build.0 = Release|x64
 		{BABF281F-D990-412D-A4C4-B9678910B103}.Release|x86.ActiveCfg = Release|x86
 		{BABF281F-D990-412D-A4C4-B9678910B103}.Release|x86.Build.0 = Release|x86
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Debug|x64.ActiveCfg = Debug|x64
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Debug|x64.Build.0 = Debug|x64
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Debug|x86.ActiveCfg = Debug|x86
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Debug|x86.Build.0 = Debug|x86
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Release|x64.ActiveCfg = Release|x64
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Release|x64.Build.0 = Release|x64
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Release|x86.ActiveCfg = Release|x86
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1017,6 +1027,7 @@ Global
 		{39826A04-75C8-4CC0-96F2-D0BA235F2064} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{D2820CD6-A44A-45F7-8CF3-3C18431734D2} = {39826A04-75C8-4CC0-96F2-D0BA235F2064}
 		{BABF281F-D990-412D-A4C4-B9678910B103} = {98E57180-48B9-4648-AE42-7C7C67120471}
+		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E} = {98E57180-48B9-4648-AE42-7C7C67120471}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}

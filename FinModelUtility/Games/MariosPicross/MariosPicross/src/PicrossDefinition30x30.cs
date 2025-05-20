@@ -34,6 +34,16 @@ public class PicrossDefinition30X30 : IPicrossDefinition {
           out var picrossY);
       return this.picrossDefinitions_[picrossDefinitionIndex][picrossX, picrossY];
     }
+    set {
+      GetPicrossDefinitionIndexAndCoords_(
+          x,
+          y,
+          out var picrossDefinitionIndex,
+          out var picrossX,
+          out var picrossY);
+      this.picrossDefinitions_[picrossDefinitionIndex][picrossX, picrossY]
+          = value;
+    }
   }
 
   private static void GetPicrossDefinitionIndexAndCoords_(

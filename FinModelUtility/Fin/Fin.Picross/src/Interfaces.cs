@@ -1,7 +1,10 @@
 ﻿using fin.data;
 
+using schema.readOnly;
+
 namespace fin.picross;
 
-public interface IPicrossDefinition : IReadOnlyGrid<bool> {
+[GenerateReadOnly]
+public partial interface IPicrossDefinition : IGrid<bool> {
   string Name { get; set; }
 }
