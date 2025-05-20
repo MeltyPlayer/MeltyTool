@@ -165,8 +165,14 @@ public partial class PicrossDefinition
   [SequenceLengthSource(15)]
   public ushort[] Rows { get; set; }
 
-  public byte Width { get; set; }
-  public byte Height { get; set; }
+  private byte width_;
+  private byte height_;
+
+  [Skip]
+  public int Width => this.width_;
+
+  [Skip]
+  public int Height => this.height_;
 
   public bool this[int x, int y] {
     get {

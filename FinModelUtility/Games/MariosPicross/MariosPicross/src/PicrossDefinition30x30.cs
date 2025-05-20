@@ -21,8 +21,8 @@ public class PicrossDefinition30X30 : IPicrossDefinition {
   }
 
   public string Name { get; set; }
-  public byte Width => 30;
-  public byte Height => 30;
+  public int Width => 30;
+  public int Height => 30;
 
   public bool this[int x, int y] {
     get {

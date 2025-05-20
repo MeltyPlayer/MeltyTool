@@ -10,7 +10,7 @@ using schema.readOnly;
 namespace fin.data;
 
 [GenerateReadOnly]
-public partial interface IGrid<T> : IEnumerable<T> {
+public partial interface IGrid<T> {
   new int Width { get; }
   new int Height { get; }
   new T this[int x, int y] { get; set; }
@@ -58,10 +58,18 @@ public class Grid<T> : IGrid<T> {
 
     return y * this.Width + x;
   }
+}
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+public static class GridExtensions {
+  public static IEnumerable<T> GetColumn<T>(this IReadOnlyGrid<T> grid, int x) {
+    for (var y = 0; y < grid.Height; ++y) {
+      yield return grid[x, y];
+    }
+  }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public IEnumerator<T> GetEnumerator() => this.impl_.GetEnumerator();
+  public static IEnumerable<T> GetRow<T>(this IReadOnlyGrid<T> grid, int y) {
+    for (var x = 0; x < grid.Width; ++x) {
+      yield return grid[x, y];
+    }
+  }
 }

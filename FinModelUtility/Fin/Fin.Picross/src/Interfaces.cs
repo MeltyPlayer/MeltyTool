@@ -1,10 +1,7 @@
-﻿namespace fin.picross;
+﻿using fin.data;
 
-public interface IPicrossDefinition {
+namespace fin.picross;
+
+public interface IPicrossDefinition : IReadOnlyGrid<bool> {
   string Name { get; set; }
-
-  byte Width { get; }
-  byte Height { get; }
-
-  bool this[int x, int y] { get; }
 }
