@@ -16,16 +16,17 @@ public class PicrossDefinition(int width, int height) : IPicrossDefinition {
     set => this.impl_[y * width + x] = value;
   }
 
-  public static IPicrossDefinition FromImageFile(
-      IReadOnlyGenericFile imageFile) {
+  public static IPicrossDefinition FromImageFile(IReadOnlyTreeFile imageFile) {
     using var image = FinImage.FromFile(imageFile);
+
     var picrossDefinition = new PicrossDefinition(image.Width, image.Height);
+    picrossDefinition.Name = imageFile.NameWithoutExtension.ToString();
 
     image.Access(getHandler => {
       for (var y = 0; y < picrossDefinition.Height; ++y) {
         for (var x = 0; x < picrossDefinition.Width; ++x) {
-          getHandler(x, y, out var r, out var g, out var b, out var a);
-          picrossDefinition[x, y] = r > 128;
+          getHandler(x, y, out var r, out _, out _, out _);
+          picrossDefinition[x, y] = r < 128;
         }
       }
     });

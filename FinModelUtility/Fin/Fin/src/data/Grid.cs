@@ -90,8 +90,8 @@ public static class GridExtensions {
   }
 
   public static void GetRow<T>(this IReadOnlyGrid<T> grid,
-                                         int y,
-                                         Span<T> dst) {
+                               int y,
+                               Span<T> dst) {
     for (var x = 0; x < grid.Width; ++x) {
       dst[x] = grid[x, y];
     }

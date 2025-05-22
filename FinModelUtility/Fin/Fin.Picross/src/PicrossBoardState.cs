@@ -28,29 +28,26 @@ public class PicrossBoardState(
 
   public PicrossCellState this[int x, int y] => states[y * this.Width + x];
 
-  public PicrossBoardState ApplyMoves(IReadOnlySet<PicrossMove> moveSet) {
+  public void ApplyMoves(IReadOnlySet<PicrossMove> moveSet) {
     var width = this.Width;
-    var newStates = states.ToArray();
     foreach (var move in moveSet) {
-      var (moveType, _, x, y) = move;
+      var (moveType, moveSource, x, y) = move;
 
       // Verifies the board didn't already have a move at this location.
-      Asserts.Equal(PicrossCellState.UNKNOWN, states[y * width + x]);
+      Asserts.Equal(PicrossCellState.UNKNOWN,
+                    states[y * width + x],
+                    $"Got a duplicate move of source {moveSource}");
 
       // Applies the move to the cell.
-      newStates[y * width + x] = moveType switch {
+      states[y * width + x] = moveType switch {
           PicrossMoveType.MARK_EMPTY  => PicrossCellState.KNOWN_EMPTY,
           PicrossMoveType.MARK_FILLED => PicrossCellState.KNOWN_FILLED,
           _                           => throw new ArgumentOutOfRangeException()
       };
     }
-
-    return new PicrossBoardState(picrossDefinition, newStates);
   }
 
   public PicrossCompletionState GetCompletionState() {
-    var state = PicrossCompletionState.CORRECT;
-
     var incorrectCells = new HashSet<(int, int)>();
     var missingCells = new HashSet<(int, int)>();
 
