@@ -75,9 +75,25 @@ public static class GridExtensions {
     }
   }
 
+  public static void GetColumn<T>(this IReadOnlyGrid<T> grid,
+                                  int x,
+                                  Span<T> dst) {
+    for (var y = 0; y < grid.Height; ++y) {
+      dst[y] = grid[x, y];
+    }
+  }
+
   public static IEnumerable<T> GetRow<T>(this IReadOnlyGrid<T> grid, int y) {
     for (var x = 0; x < grid.Width; ++x) {
       yield return grid[x, y];
+    }
+  }
+
+  public static void GetRow<T>(this IReadOnlyGrid<T> grid,
+                                         int y,
+                                         Span<T> dst) {
+    for (var x = 0; x < grid.Width; ++x) {
+      dst[x] = grid[x, y];
     }
   }
 }

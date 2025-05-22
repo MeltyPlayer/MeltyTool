@@ -9,6 +9,12 @@ public enum PicrossCellState {
   KNOWN_FILLED,
 }
 
+public enum PicrossCompletionState {
+  INCOMPLETE,
+  INCORRECT,
+  CORRECT,
+}
+
 public class PicrossBoardState(
     IPicrossDefinition picrossDefinition,
     PicrossCellState[] states) : IReadOnlyGrid<PicrossCellState> {
@@ -42,20 +48,29 @@ public class PicrossBoardState(
     return new PicrossBoardState(picrossDefinition, newStates);
   }
 
-  public bool IsSolved() {
-    var width = this.Width;
+  public PicrossCompletionState GetCompletionState() {
+    var state = PicrossCompletionState.CORRECT;
+
+    var incorrectCells = new HashSet<(int, int)>();
+    var missingCells = new HashSet<(int, int)>();
+
     for (var y = 0; y < this.Height; ++y) {
-      for (var x = 0; x < width; ++x) {
-        if (!picrossDefinition[x, y]) {
-          continue;
+      for (var x = 0; x < this.Width; ++x) {
+        var expectedCell = picrossDefinition[x, y];
+        var actualCell = this[x, y];
+
+        if (expectedCell && actualCell != PicrossCellState.KNOWN_FILLED) {
+          missingCells.Add((x, y));
         }
 
-        if (states[y * width + x] != PicrossCellState.KNOWN_FILLED) {
-          return false;
+        if (!expectedCell && actualCell == PicrossCellState.KNOWN_FILLED) {
+          incorrectCells.Add((x, y));
         }
       }
     }
 
-    return true;
+    return incorrectCells.Count > 0 ? PicrossCompletionState.INCORRECT :
+        missingCells.Count > 0 ? PicrossCompletionState.INCOMPLETE :
+        PicrossCompletionState.CORRECT;
   }
 }

@@ -1,4 +1,7 @@
-﻿namespace fin.picross;
+﻿using fin.image;
+using fin.io;
+
+namespace fin.picross;
 
 public class PicrossDefinition(int width, int height) : IPicrossDefinition {
   private readonly bool[] impl_ = new bool[width * height];
@@ -11,5 +14,22 @@ public class PicrossDefinition(int width, int height) : IPicrossDefinition {
   public bool this[int x, int y] {
     get => this.impl_[y * width + x];
     set => this.impl_[y * width + x] = value;
+  }
+
+  public static IPicrossDefinition FromImageFile(
+      IReadOnlyGenericFile imageFile) {
+    using var image = FinImage.FromFile(imageFile);
+    var picrossDefinition = new PicrossDefinition(image.Width, image.Height);
+
+    image.Access(getHandler => {
+      for (var y = 0; y < picrossDefinition.Height; ++y) {
+        for (var x = 0; x < picrossDefinition.Width; ++x) {
+          getHandler(x, y, out var r, out var g, out var b, out var a);
+          picrossDefinition[x, y] = r > 128;
+        }
+      }
+    });
+
+    return picrossDefinition;
   }
 }
