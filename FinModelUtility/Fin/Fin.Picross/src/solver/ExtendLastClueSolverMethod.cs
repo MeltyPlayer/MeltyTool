@@ -1,0 +1,75 @@
+﻿using fin.math;
+using fin.util.enumerables;
+
+namespace fin.picross.solver;
+
+public class ExtendLastClueSolverMethod : BBidirectionalSolverMethod {
+  public override IEnumerable<PicrossMove1d> TryToFindMoves(
+      IPicrossLineState lineState,
+      int iStart,
+      int iEnd,
+      int clueStart,
+      int clueEnd,
+      int increment) {
+    var clues = lineState.Clues;
+    var cellStates = lineState.CellStates;
+    var length = cellStates.Count;
+
+    if (clues.Count(c => !c.Used) != 1) {
+      yield break;
+    }
+
+    var unsolvedClueI = clues.IndexOf(c => !c.Used);
+    if (unsolvedClueI != clueEnd - increment) {
+      yield break;
+    }
+
+    var unsolvedClue = clues[unsolvedClueI];
+    var previousEmptyI = iStart;
+
+    var inClue = false;
+    var clueI = clueStart - increment;
+    for (var i = iStart; i != iEnd; i += increment) {
+      var cell = cellStates[i].Status == PicrossCellStatus.KNOWN_FILLED;
+
+      var newlyInClue = cell && !inClue;
+      if (newlyInClue) {
+        clueI += increment;
+      }
+
+      var newlyOutOfClue = !cell && inClue;
+      if (newlyOutOfClue ||
+          cellStates[i].Status == PicrossCellStatus.KNOWN_EMPTY) {
+        previousEmptyI = i + increment;
+      }
+
+      inClue = cell;
+
+      // TODO: Not working?
+      if (clueI + increment != unsolvedClueI &&
+          cellStates[i].Status == PicrossCellStatus.UNKNOWN) {
+        yield return new PicrossMove1d(
+            PicrossMoveType.MARK_EMPTY,
+            PicrossMoveSource.EMPTY_BETWEEN_CLUES,
+            i);
+      }
+
+      if (clueI == unsolvedClueI && newlyInClue) {
+        var distanceToPreviousEmpty = increment * (i - previousEmptyI);
+        var remainingLength = unsolvedClue.Length - distanceToPreviousEmpty;
+        for (var clueCellI = 0; clueCellI < remainingLength; ++clueCellI) {
+          var ii = i + increment * clueCellI;
+          if (ii.IsInRange(0, length - 1) &&
+              cellStates[ii].Status == PicrossCellStatus.UNKNOWN) {
+            yield return new PicrossMove1d(
+                PicrossMoveType.MARK_FILLED,
+                PicrossMoveSource.NOWHERE_ELSE_TO_GO,
+                ii);
+          }
+        }
+
+        yield break;
+      }
+    }
+  }
+}

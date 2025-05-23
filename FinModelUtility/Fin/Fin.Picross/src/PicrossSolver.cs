@@ -78,11 +78,12 @@ public class PicrossSolver {
     return moveSets;
   }
 
-  private static readonly AlreadySolvedPicrossSolverMethod
-      ALREADY_SOLVED_PICROSS_SOLVER_METHOD_ = new();
-
-  private static readonly GapsAroundBiggestSolverMethod
-      GAPS_AROUND_BIGGEST_SOLVER_METHOD_ = new();
+  private static readonly IReadOnlyList<IPicrossSolverMethod> SOLVER_METHODS_
+      = [
+          new AlreadySolvedPicrossSolverMethod(),
+          new ExtendLastClueSolverMethod(),
+          new GapsAroundBiggestSolverMethod(),
+      ];
 
   private static IEnumerable<PicrossMove1d> CheckClues_(
       bool isFirstPass,
@@ -141,12 +142,6 @@ public class PicrossSolver {
       yield break;
     }
 
-    // Checks if already solved...
-    foreach (var move in ALREADY_SOLVED_PICROSS_SOLVER_METHOD_.TryToFindMoves(
-                 lineState)) {
-      yield return move;
-    }
-
     // Checks line forward and backward.
     var forwardMoves1d
         = TryToFitCluesIntoGaps_(lineState, clueIndicesForward, true);
@@ -178,15 +173,17 @@ public class PicrossSolver {
       }
     }
 
-    foreach (var move in GAPS_AROUND_BIGGEST_SOLVER_METHOD_.TryToFindMoves(
-                 lineState)) {
-      yield return move;
-    }
+    foreach (var solverMethod in SOLVER_METHODS_) {
+      var hadAnyOfMethod = false;
+      foreach (var move in solverMethod.TryToFindMoves(lineState)) {
+        hadAnyOfMethod = true;
+        yield return move;
+      }
 
-    /*foreach (var move in TryToExtendLastClue_(lineState, true)
-                 .Concat(TryToExtendLastClue_(lineState, false))) {
-      yield return move;
-    }*/
+      if (hadAnyOfMethod) {
+        yield break;
+      }
+    }
   }
 
   private static IReadOnlyList<IReadOnlyList<PicrossClueState>> ToMutableClues_(
