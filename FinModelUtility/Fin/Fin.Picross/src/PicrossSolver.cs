@@ -82,6 +82,7 @@ public class PicrossSolver {
       = [
           new AlreadySolvedPicrossSolverMethod(),
           new ExtendLastClueSolverMethod(),
+          new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundBiggestSolverMethod(),
       ];
 
@@ -241,7 +242,7 @@ public class PicrossSolver {
                  ++badClueCellI) {
               yield return new PicrossMove1d(
                   PicrossMoveType.MARK_EMPTY,
-                  PicrossMoveSource.END_DOESNT_FIT,
+                  PicrossMoveSource.NO_CLUES_FIT,
                   i + increment * badClueCellI);
             }
           }
@@ -331,76 +332,6 @@ public class PicrossSolver {
       i = afterClueI + increment;
     }
   }
-
-  /*private static IEnumerable<PicrossMove1d> TryToExtendLastClue_(
-      IPicrossLineState lineState,
-      bool forward) {
-    var clues = lineState.Clues;
-    var cellStates = lineState.CellStates;
-    var length = cellStates.Count;
-
-    if (clues.Count(c => !c.Used) != 1) {
-      yield break;
-    }
-
-    GetStepValues_(forward,
-                   length,
-                   out var startI,
-                   out var endI,
-                   out var increment);
-    GetStepValues_(forward,
-                   clues.Count,
-                   out var clueStart,
-                   out _,
-                   out _);
-
-    var unsolvedClueI = clues.IndexOf(c => !c.Used);
-    var unsolvedClue = clues[unsolvedClueI];
-    var previousEmptyI = startI;
-
-    var inClue = false;
-    var clueI = clueStart - increment;
-    for (var i = startI; i != endI; i += increment) {
-      var cell = cellStates[i].Status == PicrossCellStatus.KNOWN_FILLED;
-
-      var newlyInClue = cell && !inClue;
-      if (newlyInClue) {
-        clueI += increment;
-      }
-
-      var newlyOutOfClue = !cell && inClue;
-      if (newlyOutOfClue ||
-          cellStates[i].Status == PicrossCellStatus.KNOWN_EMPTY) {
-        previousEmptyI = i + increment;
-      }
-
-      inClue = cell;
-
-      // TODO: Not working?
-      if (clueI + increment != unsolvedClueI &&
-          cellStates[i].Status == PicrossCellStatus.UNKNOWN) {
-        yield return (PicrossMoveType.MARK_EMPTY,
-                      PicrossMoveSource.EMPTY_BETWEEN_CLUES,
-                      i);
-      }
-
-      if (clueI == unsolvedClueI && newlyInClue) {
-        var distanceToPreviousEmpty = increment * (i - previousEmptyI);
-        var remainingLength = unsolvedClue.Length - distanceToPreviousEmpty;
-        for (var clueCellI = 0; clueCellI < remainingLength; ++clueCellI) {
-          var ii = i + increment * clueCellI;
-          if (ii.IsInRange(0, length - 1) &&
-              cellStates[ii].Status == PicrossCellStatus.UNKNOWN) {
-            yield return (PicrossMoveType.MARK_FILLED,
-                          PicrossMoveSource.NOWHERE_ELSE_TO_GO,
-                          ii);
-          }
-        }
-
-        yield break;
-      }
-    }
-  }*/
 
   private static void GetStepValues_(bool forward,
                                      int length,
