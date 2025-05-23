@@ -13,6 +13,8 @@ public static class Constants {
           = new() {
               // Mario's Picross 1
               [0xF2D652AD] = [(0x92b0, 0xd934, 255, PuzzleMergeType.UNMERGED)],
+              // Mario's Picross X
+              [0x65FFC6C4] = [(0x92b0, 0xd934, 255, PuzzleMergeType.UNMERGED)],
               // Mario's Picross 2
               [0xF5AA5902] = [
                   // Easy Picross

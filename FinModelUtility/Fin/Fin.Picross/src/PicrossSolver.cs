@@ -81,9 +81,11 @@ public class PicrossSolver {
   private static readonly IReadOnlyList<IPicrossSolverMethod> SOLVER_METHODS_
       = [
           new AlreadySolvedPicrossSolverMethod(),
+          new ExtendFirstClueSolverMethod(),
           new ExtendLastClueSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundBiggestSolverMethod(),
+          new GapsBetweenNeighboringShortCluesSolverMethod(),
       ];
 
   private static IEnumerable<PicrossMove1d> CheckClues_(

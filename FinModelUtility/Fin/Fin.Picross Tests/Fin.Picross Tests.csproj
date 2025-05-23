@@ -23,5 +23,4 @@
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
-
 </Project>

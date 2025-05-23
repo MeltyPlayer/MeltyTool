@@ -25,6 +25,10 @@ public class MariosPicross1FileBundleGatherer : IAnnotatedFileBundleGatherer {
     if (extractedDirectory.IsEmpty) {
       var puzzleDefinitionImageConverter = new PicrossDefinitionImageConverter();
       var puzzleDefinitions = new GameBoyPicrossDefinitionReader().Read(romFile);
+      if (puzzleDefinitions == null) {
+        return;
+      }
+
       foreach (var puzzleDefinition in puzzleDefinitions) {
         var name = puzzleDefinition.Name;
         if (name == "") {
