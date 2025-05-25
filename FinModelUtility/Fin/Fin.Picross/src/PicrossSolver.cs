@@ -11,13 +11,13 @@ public class PicrossSolver {
     var boardState = new PicrossBoardState(picrossDefinition);
     var clues = new PicrossCluesGenerator().GenerateClues(picrossDefinition);
 
-    var columnLineStates = ToMutableClues_(clues.Columns)
+    var columnLineStates = ToClueStates(clues.Columns)
                            .Select((clues, x) => new PicrossLineState {
                                Clues = clues,
                                CellStates = boardState.GetColumn(x).ToArray(),
                            })
                            .ToArray();
-    var rowLineStates = ToMutableClues_(clues.Rows)
+    var rowLineStates = ToClueStates(clues.Rows)
                         .Select((clues, y) => new PicrossLineState {
                             Clues = clues,
                             CellStates = boardState.GetRow(y).ToArray(),
@@ -190,8 +190,8 @@ public class PicrossSolver {
     }
   }
 
-  private static IReadOnlyList<IReadOnlyList<PicrossClueState>> ToMutableClues_(
-      IReadOnlyList<IReadOnlyList<byte>> clues)
+  private static IReadOnlyList<IReadOnlyList<PicrossClueState>> ToClueStates(
+      IReadOnlyList<IReadOnlyList<IPicrossClue>> clues)
     => clues.Select(t => t.Select(v => new PicrossClueState(v)).ToArray())
             .ToArray();
 
