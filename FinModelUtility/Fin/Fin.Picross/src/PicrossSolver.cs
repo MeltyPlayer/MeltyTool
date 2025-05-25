@@ -85,6 +85,7 @@ public class PicrossSolver {
           new ExtendLastClueSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundBiggestSolverMethod(),
+          new GapsBetweenNeighboringCluesSolverMethod(),
           new GapsBetweenNeighboringShortCluesSolverMethod(),
       ];
 
