@@ -18,6 +18,7 @@ public enum PicrossCellMoveSource {
   ALL_CLUES_SOLVED,
   EMPTY_BETWEEN_CLUES,
   EMPTY_AROUND_KNOWN_CLUE,
+  EMPTY_UP_TO_FIRST_CLUE,
 }
 
 [Equatable]
