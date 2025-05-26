@@ -13,4 +13,5 @@ public enum PicrossClueMoveSource {
 [Equatable]
 public partial record PicrossClueMove(
     PicrossClueMoveSource MoveSource,
-    IPicrossClue Clue) : IPicrossMove1d, IPicrossMove;
+    IPicrossClue Clue,
+    int StartIndex) : IPicrossMove1d, IPicrossMove;

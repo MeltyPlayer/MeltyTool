@@ -6,10 +6,11 @@ namespace fin.picross.solver;
 public partial interface IPicrossClueState {
   IPicrossClue Clue { get; }
   byte Length { get; }
-  bool Used { get; set; }
+  bool Used => this.StartIndex != null;
+  int? StartIndex { get; set; }
 }
 
 public record PicrossClueState(IPicrossClue Clue) : IPicrossClueState {
   public byte Length => this.Clue.Length;
-  public bool Used { get; set; }
+  public int? StartIndex { get; set; }
 }

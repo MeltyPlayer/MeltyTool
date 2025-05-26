@@ -20,11 +20,28 @@ public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
     }
 
     if (alreadySolved) {
-      foreach (var clueState in clueStates) {
-        if (!clueState.Used) {
-          yield return new PicrossClueMove(
-              PicrossClueMoveSource.ALL_CLUES_SOLVED,
-              clueState.Clue);
+      if (clueStates is [{ Length: 0 }]) {
+        yield return new PicrossClueMove(
+            PicrossClueMoveSource.ALL_CLUES_SOLVED,
+            clueStates[0].Clue,
+            0
+        );
+      } else {
+        var cellI = 0;
+        foreach (var clueState in clueStates) {
+          while (cellStates[cellI].Status != PicrossCellStatus.KNOWN_FILLED) {
+            ++cellI;
+          }
+
+          if (!clueState.Used) {
+            yield return new PicrossClueMove(
+                PicrossClueMoveSource.ALL_CLUES_SOLVED,
+                clueState.Clue,
+                cellI
+            );
+          }
+
+          cellI += clueState.Length;
         }
       }
 

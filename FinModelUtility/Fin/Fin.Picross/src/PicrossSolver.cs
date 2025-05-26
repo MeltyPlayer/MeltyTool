@@ -130,7 +130,8 @@ public class PicrossSolver {
               isEmpty
                   ? PicrossClueMoveSource.FREEBIE_EMPTY
                   : PicrossClueMoveSource.FREEBIE_FULL_LENGTH,
-              clueState.Clue);
+              clueState.Clue,
+              0);
           for (var i = 0; i < length; ++i) {
             yield return new PicrossCellMove1d(
                 moveType,
@@ -155,7 +156,8 @@ public class PicrossSolver {
           var clueState = clueStates[c];
           yield return new PicrossClueMove(
               PicrossClueMoveSource.FREEBIE_PERFECT_FIT,
-              clueState.Clue);
+              clueState.Clue,
+              lineI);
           for (var clueI = 0; clueI < clueState.Length; ++clueI) {
             yield return new PicrossCellMove1d(
                 PicrossCellMoveType.MARK_FILLED,
@@ -343,7 +345,8 @@ public class PicrossSolver {
       if (isFirstClue && clueUnknownCount == 0) {
         yield return new PicrossClueMove(
             PicrossClueMoveSource.FIRST_CLUE,
-            clueState.Clue);
+            clueState.Clue,
+            Math.Min(i, i + increment * clueLength));
       }
 
       totalUnknownCount += clueUnknownCount;
