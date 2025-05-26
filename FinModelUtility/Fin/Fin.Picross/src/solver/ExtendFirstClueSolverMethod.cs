@@ -1,7 +1,9 @@
-﻿namespace fin.picross.solver;
+﻿using fin.picross.moves;
+
+namespace fin.picross.solver;
 
 public class ExtendFirstClueSolverMethod : BBidirectionalSolverMethod {
-  public override IEnumerable<PicrossMove1d> TryToFindMoves(
+  public override IEnumerable<PicrossCellMove1d> TryToFindMoves(
       IPicrossLineState lineState,
       int iStart,
       int iEnd,
@@ -34,9 +36,9 @@ public class ExtendFirstClueSolverMethod : BBidirectionalSolverMethod {
 
     for (var i = iStart; i != endOfClue; i += increment) {
       if (cellStates[i].Status == PicrossCellStatus.UNKNOWN) {
-        yield return new PicrossMove1d(
-            PicrossMoveType.MARK_FILLED,
-            PicrossMoveSource.NOWHERE_ELSE_TO_GO,
+        yield return new PicrossCellMove1d(
+            PicrossCellMoveType.MARK_FILLED,
+            PicrossCellMoveSource.NOWHERE_ELSE_TO_GO,
             i);
         break;
       }

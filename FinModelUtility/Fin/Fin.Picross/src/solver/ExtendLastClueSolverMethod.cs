@@ -1,10 +1,11 @@
 ﻿using fin.math;
+using fin.picross.moves;
 using fin.util.enumerables;
 
 namespace fin.picross.solver;
 
 public class ExtendLastClueSolverMethod : BBidirectionalSolverMethod {
-  public override IEnumerable<PicrossMove1d> TryToFindMoves(
+  public override IEnumerable<PicrossCellMove1d> TryToFindMoves(
       IPicrossLineState lineState,
       int iStart,
       int iEnd,
@@ -48,9 +49,9 @@ public class ExtendLastClueSolverMethod : BBidirectionalSolverMethod {
       // TODO: Not working?
       if (clueI + increment != unsolvedClueI &&
           cellStates[i].Status == PicrossCellStatus.UNKNOWN) {
-        yield return new PicrossMove1d(
-            PicrossMoveType.MARK_EMPTY,
-            PicrossMoveSource.EMPTY_BETWEEN_CLUES,
+        yield return new PicrossCellMove1d(
+            PicrossCellMoveType.MARK_EMPTY,
+            PicrossCellMoveSource.EMPTY_BETWEEN_CLUES,
             i);
       }
 
@@ -61,9 +62,9 @@ public class ExtendLastClueSolverMethod : BBidirectionalSolverMethod {
           var ii = i + increment * clueCellI;
           if (ii.IsInRange(0, length - 1) &&
               cellStates[ii].Status == PicrossCellStatus.UNKNOWN) {
-            yield return new PicrossMove1d(
-                PicrossMoveType.MARK_FILLED,
-                PicrossMoveSource.NOWHERE_ELSE_TO_GO,
+            yield return new PicrossCellMove1d(
+                PicrossCellMoveType.MARK_FILLED,
+                PicrossCellMoveSource.NOWHERE_ELSE_TO_GO,
                 ii);
           }
         }

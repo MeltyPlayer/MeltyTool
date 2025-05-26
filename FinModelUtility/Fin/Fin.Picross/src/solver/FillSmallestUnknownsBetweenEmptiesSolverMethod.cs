@@ -1,8 +1,10 @@
-﻿namespace fin.picross.solver;
+﻿using fin.picross.moves;
+
+namespace fin.picross.solver;
 
 public class FillSmallestUnknownsBetweenEmptiesSolverMethod
     : IPicrossSolverMethod {
-  public IEnumerable<PicrossMove1d> TryToFindMoves(
+  public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState) {
     var clues = lineState.Clues;
     var cellStates = lineState.CellStates;
@@ -33,9 +35,9 @@ public class FillSmallestUnknownsBetweenEmptiesSolverMethod
           if (unknownLength < smallestClueLength) {
             for (var ii = firstUnknownIndex.Value; ii < i; ++ii) {
               if (cellStates[ii].Status == PicrossCellStatus.UNKNOWN) {
-                yield return new PicrossMove1d(
-                    PicrossMoveType.MARK_EMPTY,
-                    PicrossMoveSource.NO_CLUES_FIT,
+                yield return new PicrossCellMove1d(
+                    PicrossCellMoveType.MARK_EMPTY,
+                    PicrossCellMoveSource.NO_CLUES_FIT,
                     ii);
               }
             }

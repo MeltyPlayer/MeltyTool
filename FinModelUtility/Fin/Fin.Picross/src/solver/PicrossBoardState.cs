@@ -1,4 +1,5 @@
 ﻿using fin.data;
+using fin.picross.moves;
 using fin.util.asserts;
 
 using schema.readOnly;
@@ -24,7 +25,7 @@ public partial interface IPicrossCellState {
 
 public class PicrossCellState : IPicrossCellState {
   public PicrossCellStatus Status { get; set; }
-  public PicrossMoveSource MoveSource { get; set; }
+  public PicrossCellMoveSource MoveSource { get; set; }
 }
 
 public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
@@ -44,27 +45,39 @@ public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
   public int Width => this.definition_.Width;
   public int Height => this.definition_.Height;
 
-  public IReadOnlyPicrossCellState this[int x, int y] 
+  public IReadOnlyPicrossCellState this[int x, int y]
     => this.cellStates_[y * this.Width + x];
 
-  public void ApplyMoves(IReadOnlySet<PicrossMove> moveSet) {
+  public void ApplyMoves(IReadOnlySet<IPicrossMove> moveSet) {
     var width = this.Width;
     foreach (var move in moveSet) {
-      var (moveType, moveSource, x, y) = move;
+      switch (move) {
+        case PicrossCellMove picrossCellMove: {
+          var (moveType, moveSource, x, y) = picrossCellMove;
 
-      var cellState = this.cellStates_[y * width + x];
+          var cellState = this.cellStates_[y * width + x];
 
-      // Verifies the board didn't already have a move at this location.
-      Asserts.Equal(PicrossCellStatus.UNKNOWN,
-                    cellState.Status,
-                    $"Got a duplicate move of source {moveSource}");
+          // Verifies the board didn't already have a move at this location.
+          Asserts.Equal(PicrossCellStatus.UNKNOWN,
+                        cellState.Status,
+                        $"Got a duplicate move of source {moveSource}");
 
-      // Applies the move to the cell.
-      cellState.Status = moveType switch {
-          PicrossMoveType.MARK_EMPTY  => PicrossCellStatus.KNOWN_EMPTY,
-          PicrossMoveType.MARK_FILLED => PicrossCellStatus.KNOWN_FILLED,
-          _                           => throw new ArgumentOutOfRangeException()
-      };
+          // Verifies moves are correct against the existing board.
+          var expected = moveType == PicrossCellMoveType.MARK_FILLED;
+          Asserts.Equal(expected,
+                        this.definition_[x, y],
+                        $"Incorrect move of source {moveSource}.");
+
+          // Applies the move to the cell.
+          cellState.Status = moveType switch {
+              PicrossCellMoveType.MARK_EMPTY  => PicrossCellStatus.KNOWN_EMPTY,
+              PicrossCellMoveType.MARK_FILLED => PicrossCellStatus.KNOWN_FILLED,
+              _                           => throw new ArgumentOutOfRangeException()
+          };
+
+          break;
+        }
+      }
     }
   }
 

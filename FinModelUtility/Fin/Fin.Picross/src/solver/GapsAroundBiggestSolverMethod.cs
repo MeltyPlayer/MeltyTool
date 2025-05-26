@@ -1,7 +1,9 @@
-﻿namespace fin.picross.solver;
+﻿using fin.picross.moves;
+
+namespace fin.picross.solver;
 
 public class GapsAroundBiggestSolverMethod : IPicrossSolverMethod {
-  public IEnumerable<PicrossMove1d> TryToFindMoves(
+  public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState) {
     var clues = lineState.Clues;
     var cellStates = lineState.CellStates;
@@ -25,17 +27,17 @@ public class GapsAroundBiggestSolverMethod : IPicrossSolverMethod {
           var beforeI = startIndex - 1;
           if (beforeI >= 0 &&
               cellStates[beforeI].Status == PicrossCellStatus.UNKNOWN) {
-            yield return new PicrossMove1d(
-                PicrossMoveType.MARK_EMPTY,
-                PicrossMoveSource.EMPTY_AROUND_KNOWN_CLUE,
+            yield return new PicrossCellMove1d(
+                PicrossCellMoveType.MARK_EMPTY,
+                PicrossCellMoveSource.EMPTY_AROUND_KNOWN_CLUE,
                 beforeI);
           }
 
           var afterI = i;
           if (cellStates[afterI].Status == PicrossCellStatus.UNKNOWN) {
-            yield return new PicrossMove1d(
-                PicrossMoveType.MARK_EMPTY,
-                PicrossMoveSource.EMPTY_AROUND_KNOWN_CLUE,
+            yield return new PicrossCellMove1d(
+                PicrossCellMoveType.MARK_EMPTY,
+                PicrossCellMoveSource.EMPTY_AROUND_KNOWN_CLUE,
                 afterI);
           }
         }

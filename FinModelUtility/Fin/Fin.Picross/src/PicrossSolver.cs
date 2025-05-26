@@ -1,11 +1,12 @@
 ﻿using fin.data;
 using fin.math;
+using fin.picross.moves;
 using fin.util.asserts;
 
 namespace fin.picross.solver;
 
 public class PicrossSolver {
-  public IReadOnlyList<IReadOnlySet<PicrossMove>> Solve(
+  public IReadOnlyList<IReadOnlySet<IPicrossMove>> Solve(
       IPicrossDefinition picrossDefinition,
       out PicrossBoardState finalBoardState) {
     var boardState = new PicrossBoardState(picrossDefinition);
@@ -32,42 +33,46 @@ public class PicrossSolver {
     var yClueIndicesForward = new int[height];
     var yClueIndicesBackward = new int[height];
 
-    var moveSets = new List<IReadOnlySet<PicrossMove>>();
+    var moveSets = new List<IReadOnlySet<IPicrossMove>>();
     while (true) {
       var isFirstPass = moveSets.Count == 0;
-      var moveSet = new HashSet<PicrossMove>();
+      var moveSet = new HashSet<IPicrossMove>();
 
       for (var x = 0; x < width; ++x) {
-        foreach (var (moveType, moveSource, y) in CheckClues_(
+        foreach (var picrossMove1d in CheckClues_(
                      isFirstPass,
                      columnLineStates[x],
                      yClueIndicesForward,
                      yClueIndicesBackward)) {
-          moveSet.Add(new PicrossMove(moveType, moveSource, x, y));
+          switch (picrossMove1d) {
+            case PicrossCellMove1d picrossCellMove1d: {
+              var (moveType, moveSource, y) = picrossCellMove1d;
+              moveSet.Add(new PicrossCellMove(moveType, moveSource, x, y));
+              break;
+            }
+          }
         }
       }
 
       for (var y = 0; y < height; ++y) {
-        foreach (var (moveType, moveSource, x) in CheckClues_(
+        foreach (var picrossMove1d in CheckClues_(
                      isFirstPass,
                      rowLineStates[y],
                      xClueIndicesForward,
                      xClueIndicesBackward)) {
-          moveSet.Add(new PicrossMove(moveType, moveSource, x, y));
+          switch (picrossMove1d) {
+            case PicrossCellMove1d picrossCellMove1d: {
+              var (moveType, moveSource, x) = picrossCellMove1d;
+              moveSet.Add(new PicrossCellMove(moveType, moveSource, x, y));
+              break;
+            }
+          }
         }
       }
 
       // If no more moves, then nothing else to do... either complete or stuck.
       if (!isFirstPass && moveSet.Count == 0) {
         break;
-      }
-
-      // Verifies moves are correct against the existing board.
-      foreach (var (moveType, moveSource, x, y) in moveSet) {
-        var expected = moveType == PicrossMoveType.MARK_FILLED;
-        Asserts.Equal(expected,
-                      picrossDefinition[x, y],
-                      $"Incorrect move of source {moveSource}.");
       }
 
       boardState.ApplyMoves(moveSet);
@@ -89,7 +94,7 @@ public class PicrossSolver {
           new GapsBetweenNeighboringShortCluesSolverMethod(),
       ];
 
-  private static IEnumerable<PicrossMove1d> CheckClues_(
+  private static IEnumerable<IPicrossMove1d> CheckClues_(
       bool isFirstPass,
       IPicrossLineState lineState,
       int[] clueIndicesForward,
@@ -106,14 +111,14 @@ public class PicrossSolver {
         var isEmpty = clueLength == 0;
         if (isEmpty || clueLength == length) {
           var moveType = isEmpty
-              ? PicrossMoveType.MARK_EMPTY
-              : PicrossMoveType.MARK_FILLED;
+              ? PicrossCellMoveType.MARK_EMPTY
+              : PicrossCellMoveType.MARK_FILLED;
           var moveSource = isEmpty
-              ? PicrossMoveSource.FREEBIE_EMPTY
-              : PicrossMoveSource.FREEBIE_FULL_LENGTH;
+              ? PicrossCellMoveSource.FREEBIE_EMPTY
+              : PicrossCellMoveSource.FREEBIE_FULL_LENGTH;
           clue.Used = true;
           for (var i = 0; i < length; ++i) {
-            yield return new PicrossMove1d(
+            yield return new PicrossCellMove1d(
                 moveType,
                 moveSource,
                 i);
@@ -126,18 +131,18 @@ public class PicrossSolver {
         var lineI = 0;
         for (var c = 0; c < clues.Count; c++) {
           if (c > 0) {
-            yield return new PicrossMove1d(
-                PicrossMoveType.MARK_EMPTY,
-                PicrossMoveSource.FREEBIE_PERFECT_FIT,
+            yield return new PicrossCellMove1d(
+                PicrossCellMoveType.MARK_EMPTY,
+                PicrossCellMoveSource.FREEBIE_PERFECT_FIT,
                 lineI++);
           }
 
           var clue = clues[c];
           clue.Used = true;
           for (var clueI = 0; clueI < clue.Length; ++clueI) {
-            yield return new PicrossMove1d(
-                PicrossMoveType.MARK_FILLED,
-                PicrossMoveSource.FREEBIE_PERFECT_FIT,
+            yield return new PicrossCellMove1d(
+                PicrossCellMoveType.MARK_FILLED,
+                PicrossCellMoveSource.FREEBIE_PERFECT_FIT,
                 lineI++);
           }
         }
@@ -164,14 +169,14 @@ public class PicrossSolver {
           clueIndexForward == clueIndexBackward &&
           cellStates[i].Status == PicrossCellStatus.UNKNOWN) {
         if (clueIndexForward % 2 == 0) {
-          yield return new PicrossMove1d(
-              PicrossMoveType.MARK_FILLED,
-              PicrossMoveSource.FORWARD_BACKWARD_OVERLAP,
+          yield return new PicrossCellMove1d(
+              PicrossCellMoveType.MARK_FILLED,
+              PicrossCellMoveSource.FORWARD_BACKWARD_OVERLAP,
               i);
         } else {
-          yield return new PicrossMove1d(
-              PicrossMoveType.MARK_EMPTY,
-              PicrossMoveSource.EMPTY_BETWEEN_CLUES,
+          yield return new PicrossCellMove1d(
+              PicrossCellMoveType.MARK_EMPTY,
+              PicrossCellMoveSource.EMPTY_BETWEEN_CLUES,
               i);
         }
       }
@@ -195,7 +200,7 @@ public class PicrossSolver {
     => clues.Select(t => t.Select(v => new PicrossClueState(v)).ToArray())
             .ToArray();
 
-  private static IEnumerable<PicrossMove1d> TryToFitCluesIntoGaps_(
+  private static IEnumerable<PicrossCellMove1d> TryToFitCluesIntoGaps_(
       IPicrossLineState lineState,
       int[] clueIndices,
       bool forward) {
@@ -243,9 +248,9 @@ public class PicrossSolver {
             for (var badClueCellI = 0;
                  badClueCellI < clueCellI - 1;
                  ++badClueCellI) {
-              yield return new PicrossMove1d(
-                  PicrossMoveType.MARK_EMPTY,
-                  PicrossMoveSource.NO_CLUES_FIT,
+              yield return new PicrossCellMove1d(
+                  PicrossCellMoveType.MARK_EMPTY,
+                  PicrossCellMoveSource.NO_CLUES_FIT,
                   i + increment * badClueCellI);
             }
           }
@@ -268,9 +273,9 @@ public class PicrossSolver {
       var isAfterClueIOnBoard = afterClueI.IsInRange(0, length - 1);
       if (clueI == clueStart && isAfterClueIOnBoard) {
         if (cellStates[afterClueI].Status == PicrossCellStatus.KNOWN_FILLED) {
-          yield return new PicrossMove1d(
-              PicrossMoveType.MARK_EMPTY,
-              PicrossMoveSource.TOO_FAR_FROM_KNOWN,
+          yield return new PicrossCellMove1d(
+              PicrossCellMoveType.MARK_EMPTY,
+              PicrossCellMoveSource.TOO_FAR_FROM_KNOWN,
               i);
           i += increment;
           goto RetryClue;
@@ -285,9 +290,9 @@ public class PicrossSolver {
           for (var ii = hitKnownFilledI.Value; ii < clueLength; ++ii) {
             var cellI = i + increment * ii;
             if (cellStates[cellI].Status == PicrossCellStatus.UNKNOWN) {
-              yield return new PicrossMove1d(
-                  PicrossMoveType.MARK_FILLED,
-                  PicrossMoveSource.NOWHERE_ELSE_TO_GO,
+              yield return new PicrossCellMove1d(
+                  PicrossCellMoveType.MARK_FILLED,
+                  PicrossCellMoveSource.NOWHERE_ELSE_TO_GO,
                   cellI);
             }
           }
@@ -299,9 +304,9 @@ public class PicrossSolver {
                  ii != iEnd && ii.IsInRange(0, length - 1);
                  ii += increment) {
               if (cellStates[ii].Status == PicrossCellStatus.UNKNOWN) {
-                yield return new PicrossMove1d(
-                    PicrossMoveType.MARK_EMPTY,
-                    PicrossMoveSource.TOO_FAR_FROM_KNOWN,
+                yield return new PicrossCellMove1d(
+                    PicrossCellMoveType.MARK_EMPTY,
+                    PicrossCellMoveSource.TOO_FAR_FROM_KNOWN,
                     ii);
               }
             }
@@ -310,9 +315,9 @@ public class PicrossSolver {
 
         if (clueUnknownCount == 0 && isAfterClueIOnBoard) {
           if (cellStates[afterClueI].Status == PicrossCellStatus.UNKNOWN) {
-            yield return new PicrossMove1d(
-                PicrossMoveType.MARK_EMPTY,
-                PicrossMoveSource.EMPTY_BETWEEN_CLUES,
+            yield return new PicrossCellMove1d(
+                PicrossCellMoveType.MARK_EMPTY,
+                PicrossCellMoveSource.EMPTY_BETWEEN_CLUES,
                 afterClueI);
           }
         }

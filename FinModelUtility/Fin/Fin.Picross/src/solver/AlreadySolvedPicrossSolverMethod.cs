@@ -1,7 +1,9 @@
-﻿namespace fin.picross.solver;
+﻿using fin.picross.moves;
+
+namespace fin.picross.solver;
 
 public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
-  public IEnumerable<PicrossMove1d> TryToFindMoves(
+  public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState) {
     var clues = lineState.Clues;
     var cellStates = lineState.CellStates;
@@ -24,9 +26,9 @@ public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
 
       for (var i = 0; i < length; ++i) {
         if (cellStates[i].Status == PicrossCellStatus.UNKNOWN) {
-          yield return new PicrossMove1d(
-              PicrossMoveType.MARK_EMPTY,
-              PicrossMoveSource.ALL_CLUES_SOLVED,
+          yield return new PicrossCellMove1d(
+              PicrossCellMoveType.MARK_EMPTY,
+              PicrossCellMoveSource.ALL_CLUES_SOLVED,
               i);
         }
       }

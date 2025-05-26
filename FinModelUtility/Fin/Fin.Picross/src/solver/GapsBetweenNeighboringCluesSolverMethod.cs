@@ -1,7 +1,9 @@
-﻿namespace fin.picross.solver;
+﻿using fin.picross.moves;
+
+namespace fin.picross.solver;
 
 public class GapsBetweenNeighboringCluesSolverMethod : IPicrossSolverMethod {
-  public IEnumerable<PicrossMove1d> TryToFindMoves(
+  public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState) {
     var clues = lineState.Clues;
     var cellStates = lineState.CellStates;
@@ -37,9 +39,9 @@ public class GapsBetweenNeighboringCluesSolverMethod : IPicrossSolverMethod {
         }
 
         if (lengthLhs + 1 + lengthRhs > biggestLength) {
-          yield return new PicrossMove1d(
-              PicrossMoveType.MARK_EMPTY,
-              PicrossMoveSource.EMPTY_BETWEEN_CLUES,
+          yield return new PicrossCellMove1d(
+              PicrossCellMoveType.MARK_EMPTY,
+              PicrossCellMoveSource.EMPTY_BETWEEN_CLUES,
               i - 1);
         }
       }

@@ -1,7 +1,9 @@
-﻿namespace fin.picross.solver;
+﻿using fin.picross.moves;
+
+namespace fin.picross.solver;
 
 public abstract class BBidirectionalSolverMethod : IPicrossSolverMethod {
-  public abstract IEnumerable<PicrossMove1d> TryToFindMoves(
+  public abstract IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState,
       int iStart,
       int iEnd,
@@ -9,7 +11,7 @@ public abstract class BBidirectionalSolverMethod : IPicrossSolverMethod {
       int clueEnd,
       int increment);
 
-  public IEnumerable<PicrossMove1d> TryToFindMoves(
+  public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState) {
     var clues = lineState.Clues;
     var cellStates = lineState.CellStates;
