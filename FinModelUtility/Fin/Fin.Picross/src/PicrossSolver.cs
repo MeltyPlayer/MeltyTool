@@ -1,7 +1,7 @@
 ﻿using fin.data;
+using fin.data.indexable;
 using fin.math;
 using fin.picross.moves;
-using fin.util.asserts;
 
 namespace fin.picross.solver;
 
@@ -12,18 +12,27 @@ public class PicrossSolver {
     var boardState = new PicrossBoardState(picrossDefinition);
     var clues = new PicrossCluesGenerator().GenerateClues(picrossDefinition);
 
-    var columnLineStates = ToClueStates_(clues.Columns)
+    var columnClueStates = ToClueStates_(clues.Columns);
+    var columnLineStates = columnClueStates
                            .Select((clues, x) => new PicrossLineState {
-                               Clues = clues,
+                               ClueStates = clues,
                                CellStates = boardState.GetColumn(x).ToArray(),
                            })
                            .ToArray();
-    var rowLineStates = ToClueStates_(clues.Rows)
+    var rowClueStates = ToClueStates_(clues.Rows);
+    var rowLineStates = rowClueStates
                         .Select((clues, y) => new PicrossLineState {
-                            Clues = clues,
+                            ClueStates = clues,
                             CellStates = boardState.GetRow(y).ToArray(),
                         })
                         .ToArray();
+
+    var clueStatesByClue
+        = new IndexableDictionary<IPicrossClue, IPicrossClueState>();
+    foreach (var clueState in columnClueStates.Concat(rowClueStates)
+                                              .SelectMany(c => c)) {
+      clueStatesByClue[clueState.Clue] = clueState;
+    }
 
     var width = picrossDefinition.Width;
     var height = picrossDefinition.Height;
@@ -100,15 +109,15 @@ public class PicrossSolver {
       IPicrossLineState lineState,
       int[] clueIndicesForward,
       int[] clueIndicesBackward) {
-    var clues = lineState.Clues;
+    var clueStates = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
     if (isFirstPass) {
       // Freebie (0 or full length)
-      if (clues.Count == 1) {
-        var clue = clues[0];
-        var clueLength = clue.Length;
+      if (clueStates.Count == 1) {
+        var clueState = clueStates[0];
+        var clueLength = clueState.Length;
         var isEmpty = clueLength == 0;
         if (isEmpty || clueLength == length) {
           var moveType = isEmpty
@@ -117,7 +126,11 @@ public class PicrossSolver {
           var moveSource = isEmpty
               ? PicrossCellMoveSource.FREEBIE_EMPTY
               : PicrossCellMoveSource.FREEBIE_FULL_LENGTH;
-          clue.Used = true;
+          yield return new PicrossClueMove(
+              isEmpty
+                  ? PicrossClueMoveSource.FREEBIE_EMPTY
+                  : PicrossClueMoveSource.FREEBIE_FULL_LENGTH,
+              clueState.Clue);
           for (var i = 0; i < length; ++i) {
             yield return new PicrossCellMove1d(
                 moveType,
@@ -128,9 +141,10 @@ public class PicrossSolver {
       }
 
       // Freebie (adds up to full width)
-      else if ((clues.Sum(c => c.Length) + clues.Count - 1) == length) {
+      else if ((clueStates.Sum(c => c.Length) + clueStates.Count - 1) ==
+               length) {
         var lineI = 0;
-        for (var c = 0; c < clues.Count; c++) {
+        for (var c = 0; c < clueStates.Count; c++) {
           if (c > 0) {
             yield return new PicrossCellMove1d(
                 PicrossCellMoveType.MARK_EMPTY,
@@ -138,9 +152,11 @@ public class PicrossSolver {
                 lineI++);
           }
 
-          var clue = clues[c];
-          clue.Used = true;
-          for (var clueI = 0; clueI < clue.Length; ++clueI) {
+          var clueState = clueStates[c];
+          yield return new PicrossClueMove(
+              PicrossClueMoveSource.FREEBIE_PERFECT_FIT,
+              clueState.Clue);
+          for (var clueI = 0; clueI < clueState.Length; ++clueI) {
             yield return new PicrossCellMove1d(
                 PicrossCellMoveType.MARK_FILLED,
                 PicrossCellMoveSource.FREEBIE_PERFECT_FIT,
@@ -201,11 +217,11 @@ public class PicrossSolver {
     => clues.Select(t => t.Select(v => new PicrossClueState(v)).ToArray())
             .ToArray();
 
-  private static IEnumerable<PicrossCellMove1d> TryToFitCluesIntoGaps_(
+  private static IEnumerable<IPicrossMove1d> TryToFitCluesIntoGaps_(
       IPicrossLineState lineState,
       int[] clueIndices,
       bool forward) {
-    var clues = lineState.Clues;
+    var clueStates = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
@@ -217,7 +233,7 @@ public class PicrossSolver {
                    out var iEnd,
                    out var increment);
     GetStepValues_(forward,
-                   clues.Count,
+                   clueStates.Count,
                    out var clueStart,
                    out var clueEnd,
                    out _);
@@ -226,18 +242,18 @@ public class PicrossSolver {
 
     PicrossClueState? currentClue = null;
 
-    var isOnlyClue = clues.Count == 1;
+    var isOnlyClue = clueStates.Count == 1;
 
     var i = iStart;
     for (var clueI = clueStart; clueI != clueEnd; clueI += increment) {
-      var clue = clues[clueI];
+      var clueState = clueStates[clueI];
 
       var isFirstClue = clueI == clueStart;
 
       RetryClue:
       var clueUnknownCount = 0;
       int? hitKnownFilledI = null;
-      var clueLength = clue.Length;
+      var clueLength = clueState.Length;
       for (var clueCellI = 0; clueCellI < clueLength; ++clueCellI) {
         var cellState = cellStates[i + increment * clueCellI].Status;
 
@@ -325,7 +341,9 @@ public class PicrossSolver {
       }
 
       if (isFirstClue && clueUnknownCount == 0) {
-        clue.Used = true;
+        yield return new PicrossClueMove(
+            PicrossClueMoveSource.FIRST_CLUE,
+            clueState.Clue);
       }
 
       totalUnknownCount += clueUnknownCount;

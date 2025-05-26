@@ -2,7 +2,7 @@
 
 public interface IPicrossLineState {
   IReadOnlyList<IReadOnlyPicrossCellState> CellStates { get; }
-  IReadOnlyList<IPicrossClueState> Clues { get; }
+  IReadOnlyList<IReadOnlyPicrossClueState> ClueStates { get; }
 }
 
 public class PicrossLineState : IPicrossLineState {
@@ -11,5 +11,5 @@ public class PicrossLineState : IPicrossLineState {
     init;
   }
 
-  public required IReadOnlyList<IPicrossClueState> Clues { get; init; }
+  public required IReadOnlyList<IReadOnlyPicrossClueState> ClueStates { get; init; }
 }

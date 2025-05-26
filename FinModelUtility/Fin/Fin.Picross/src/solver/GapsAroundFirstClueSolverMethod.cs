@@ -1,6 +1,4 @@
-﻿using fin.math;
-using fin.picross.moves;
-using fin.util.enumerables;
+﻿using fin.picross.moves;
 
 namespace fin.picross.solver;
 
@@ -12,7 +10,7 @@ public class GapsAroundFirstClueSolverMethod : BBidirectionalSolverMethod {
       int clueStart,
       int clueEnd,
       int increment) {
-    var clues = lineState.Clues;
+    var clues = lineState.ClueStates;
     var cellStates = lineState.CellStates;
 
     if (clues.Count != 2 || clues.Any(c => c.Used)) {

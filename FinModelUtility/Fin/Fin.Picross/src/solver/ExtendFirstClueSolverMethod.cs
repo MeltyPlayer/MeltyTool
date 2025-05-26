@@ -10,7 +10,7 @@ public class ExtendFirstClueSolverMethod : BBidirectionalSolverMethod {
       int clueStart,
       int clueEnd,
       int increment) {
-    var clues = lineState.Clues;
+    var clues = lineState.ClueStates;
     var cellStates = lineState.CellStates;
 
     var clue = clues[clueStart];

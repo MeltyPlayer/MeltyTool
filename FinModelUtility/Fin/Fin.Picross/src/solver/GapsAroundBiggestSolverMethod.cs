@@ -5,7 +5,7 @@ namespace fin.picross.solver;
 public class GapsAroundBiggestSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState) {
-    var clues = lineState.Clues;
+    var clues = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 

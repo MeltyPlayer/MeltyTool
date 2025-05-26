@@ -5,13 +5,13 @@ namespace fin.picross.solver;
 public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossLineState lineState) {
-    var clues = lineState.Clues;
+    var clueStates = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
-    var alreadySolved = clues.All(c => c.Used);
+    var alreadySolved = clueStates.All(c => c.Used);
     if (!alreadySolved) {
-      var expectedCount = clues.Sum(c => c.Length);
+      var expectedCount = clueStates.Sum(c => c.Length);
       var actualCount
           = cellStates.Sum(c => c.Status == PicrossCellStatus.KNOWN_FILLED
                                ? 1
@@ -20,8 +20,12 @@ public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
     }
 
     if (alreadySolved) {
-      foreach (var clue in clues) {
-        clue.Used = true;
+      foreach (var clueState in clueStates) {
+        if (!clueState.Used) {
+          yield return new PicrossClueMove(
+              PicrossClueMoveSource.ALL_CLUES_SOLVED,
+              clueState.Clue);
+        }
       }
 
       for (var i = 0; i < length; ++i) {

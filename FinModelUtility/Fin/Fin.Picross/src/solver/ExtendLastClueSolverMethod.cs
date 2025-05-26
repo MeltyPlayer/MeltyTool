@@ -12,20 +12,20 @@ public class ExtendLastClueSolverMethod : BBidirectionalSolverMethod {
       int clueStart,
       int clueEnd,
       int increment) {
-    var clues = lineState.Clues;
+    var clueStates = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
-    if (clues.Count(c => !c.Used) != 1) {
+    if (clueStates.Count(c => !c.Used) != 1) {
       yield break;
     }
 
-    var unsolvedClueI = clues.IndexOf(c => !c.Used);
+    var unsolvedClueI = clueStates.IndexOf(c => !c.Used);
     if (unsolvedClueI != clueEnd - increment) {
       yield break;
     }
 
-    var unsolvedClue = clues[unsolvedClueI];
+    var unsolvedClue = clueStates[unsolvedClueI];
     var previousEmptyI = iStart;
 
     var inClue = false;
