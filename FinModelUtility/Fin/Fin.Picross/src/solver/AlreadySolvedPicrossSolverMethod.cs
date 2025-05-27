@@ -9,7 +9,7 @@ public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
-    var alreadySolved = clueStates.All(c => c.Used);
+    var alreadySolved = clueStates.All(c => c.Solved);
     if (!alreadySolved) {
       var expectedCount = clueStates.Sum(c => c.Length);
       var actualCount
@@ -33,7 +33,7 @@ public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
             ++cellI;
           }
 
-          if (!clueState.Used) {
+          if (!clueState.Solved) {
             yield return new PicrossClueMove(
                 PicrossClueMoveSource.ALL_CLUES_SOLVED,
                 clueState.Clue,

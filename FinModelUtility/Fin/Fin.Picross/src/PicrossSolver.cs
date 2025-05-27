@@ -251,6 +251,18 @@ public class PicrossSolver {
     for (var clueI = clueStart; clueI != clueEnd; clueI += increment) {
       var clueState = clueStates[clueI];
 
+      // If already solved, skip to the location of this clue.
+      if (clueState.Solved) {
+        var clueStartI = clueState.StartIndex.Value;
+
+        var targetI
+            = forward ? clueStartI : (clueStartI + clueState.Length - 1);
+        while (i != targetI) {
+          clueIndices[i] = 2 * (clueI - 1) + increment;
+          i += increment;
+        }
+      }
+
       var isFirstClue = clueI == clueStart;
 
       RetryClue:

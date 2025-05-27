@@ -16,11 +16,11 @@ public class ExtendLastClueSolverMethod : BBidirectionalSolverMethod {
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
-    if (clueStates.Count(c => !c.Used) != 1) {
+    if (clueStates.Count(c => !c.Solved) != 1) {
       yield break;
     }
 
-    var unsolvedClueI = clueStates.IndexOf(c => !c.Used);
+    var unsolvedClueI = clueStates.IndexOf(c => !c.Solved);
     if (unsolvedClueI != clueEnd - increment) {
       yield break;
     }

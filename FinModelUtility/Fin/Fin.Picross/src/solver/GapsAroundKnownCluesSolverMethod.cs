@@ -10,7 +10,7 @@ public class GapsAroundKnownCluesSolverMethod : IPicrossSolverMethod {
     var length = cellStates.Count;
 
     foreach (var clueState in clueStates) {
-      if (!clueState.Used) {
+      if (!clueState.Solved) {
         continue;
       }
 

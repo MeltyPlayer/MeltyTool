@@ -6,7 +6,7 @@ namespace fin.picross.solver;
 public partial interface IPicrossClueState {
   IPicrossClue Clue { get; }
   byte Length { get; }
-  bool Used => this.StartIndex != null;
+  bool Solved => this.StartIndex != null;
   int? StartIndex { get; set; }
 }
 

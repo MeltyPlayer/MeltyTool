@@ -13,7 +13,7 @@ public class GapsAroundFirstClueSolverMethod : BBidirectionalSolverMethod {
     var clues = lineState.ClueStates;
     var cellStates = lineState.CellStates;
 
-    if (clues.Count != 2 || clues.Any(c => c.Used)) {
+    if (clues.Count != 2 || clues.Any(c => c.Solved)) {
       yield break;
     }
 
