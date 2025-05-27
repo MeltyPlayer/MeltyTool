@@ -22,13 +22,15 @@ public enum PicrossCompletionState {
 public partial interface IPicrossCellState {
   PicrossCellStatus Status { get; set; }
   PicrossCellMoveSource MoveSource { get; set; }
-  IPicrossClue? Clue { get; set; }
+  IPicrossClue? ColumnClue { get; set; }
+  IPicrossClue? RowClue { get; set; }
 }
 
 public class PicrossCellState : IPicrossCellState {
   public PicrossCellStatus Status { get; set; }
   public PicrossCellMoveSource MoveSource { get; set; }
-  public IPicrossClue? Clue { get; set; }
+  public IPicrossClue? ColumnClue { get; set; }
+  public IPicrossClue? RowClue { get; set; }
 }
 
 public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
@@ -84,16 +86,15 @@ public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
         case PicrossClueMove picrossClueMove: {
           var (_, clue, startI) = picrossClueMove;
           for (var i = startI; i < startI + clue.Length; ++i) {
-            int x, y;
             if (clue.IsForColumn) {
-              x = clue.ColumnOrRowIndex;
-              y = i;
+              var x = clue.ColumnOrRowIndex;
+              var y = i;
+              this.cellStates_[y * width + x].ColumnClue = clue;
             } else {
-              x = i;
-              y = clue.ColumnOrRowIndex;
+              var x = i;
+              var y = clue.ColumnOrRowIndex;
+              this.cellStates_[y * width + x].RowClue = clue;
             }
-
-            this.cellStates_[y * width + x].Clue = clue;
           }
 
           break;

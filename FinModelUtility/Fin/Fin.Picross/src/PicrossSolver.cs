@@ -126,6 +126,7 @@ public class PicrossSolver {
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundFirstClueSolverMethod(),
           new GapsAroundKnownCluesSolverMethod(),
+          new GapsBetweenKnownCluesSolverMethod(),
           new GapsBetweenNeighboringCluesSolverMethod(),
           new GapsBetweenNeighboringShortCluesSolverMethod(),
           new MatchingBiggestOrUniqueLengthSolverMethod(),
