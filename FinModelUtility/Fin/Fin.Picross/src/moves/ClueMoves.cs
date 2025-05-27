@@ -15,4 +15,7 @@ public enum PicrossClueMoveSource {
 public partial record PicrossClueMove(
     PicrossClueMoveSource MoveSource,
     IPicrossClue Clue,
-    int StartIndex) : IPicrossMove1d, IPicrossMove;
+    int StartIndex) : IPicrossMove1d, IPicrossMove {
+  [IgnoreEquality]
+  public PicrossClueMoveSource MoveSource { get; } = MoveSource;
+}
