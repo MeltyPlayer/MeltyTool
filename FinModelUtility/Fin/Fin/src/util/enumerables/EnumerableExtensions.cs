@@ -131,30 +131,50 @@ public static class EnumerableExtensions {
 
 
   public static bool SequenceEqualOrBothEmpty<T>(
-        this IEnumerable<T>? lhs,
-        IEnumerable<T>? rhs) {
-      if (lhs == null && rhs == null) {
-        return true;
-      }
-
-      return (lhs ?? []).SequenceEqual(rhs ?? []);
+      this IEnumerable<T>? lhs,
+      IEnumerable<T>? rhs) {
+    if (lhs == null && rhs == null) {
+      return true;
     }
 
-    public static IEnumerable<T[]> SplitByNull<T>(
-        this IEnumerable<Nullable<T>> impl) where T : struct {
-      var current = new LinkedList<T>();
-      foreach (var value in impl) {
-        if (value == null) {
-          yield return current.ToArray();
-          current.Clear();
-          continue;
-        }
-
-        current.AddLast(value.Value);
-      }
-
-      yield return current.ToArray();
-    }
-
-    public static bool AnyTrue(this IEnumerable<bool> impl) => impl.Any(b => b);
+    return (lhs ?? []).SequenceEqual(rhs ?? []);
   }
+
+  public static IEnumerable<T[]> SplitByNull<T>(
+      this IEnumerable<Nullable<T>> impl) where T : struct {
+    var current = new LinkedList<T>();
+    foreach (var value in impl) {
+      if (value == null) {
+        yield return current.ToArray();
+        current.Clear();
+        continue;
+      }
+
+      current.AddLast(value.Value);
+    }
+
+    yield return current.ToArray();
+  }
+
+  public static bool AnyTrue(this IEnumerable<bool> impl) => impl.Any(b => b);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static T? FirstOrDefaultAndCount<T>(this IEnumerable<T> enumerable,
+                                             Func<T, bool> selector,
+                                             out int count)
+    => enumerable.Where(selector).FirstOrDefaultAndCount(out count);
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static T? FirstOrDefaultAndCount<T>(this IEnumerable<T> enumerable,
+                                             out int count) {
+    T? firstValue = default!;
+    count = 0;
+    foreach (var value in enumerable) {
+      if (count++ == 0) {
+        firstValue = value;
+      }
+    }
+
+    return firstValue;
+  }
+}

@@ -16,7 +16,7 @@ public class CluesTests {
     for (var x = 0; x < picrossDefinition.Width; x++) {
       var column = columns[x];
       Assert.AreEqual(1, column.Count);
-      Assert.AreEqual(0, column[0]);
+      Assert.AreEqual(0, column[0].Length);
     }
 
     var rows = clues.Rows;
@@ -24,7 +24,7 @@ public class CluesTests {
     for (var y = 0; y < picrossDefinition.Height; y++) {
       var row = rows[y];
       Assert.AreEqual(1, row.Count);
-      Assert.AreEqual(0, row[0]);
+      Assert.AreEqual(0, row[0].Length);
     }
   }
 
@@ -40,7 +40,7 @@ public class CluesTests {
     for (var x = 0; x < picrossDefinition.Width; x++) {
       var column = columns[x];
       Assert.AreEqual(1, column.Count);
-      Assert.AreEqual(picrossDefinition.Height, column[0]);
+      Assert.AreEqual(picrossDefinition.Height, column[0].Length);
     }
 
     var rows = clues.Rows;
@@ -48,7 +48,7 @@ public class CluesTests {
     for (var y = 0; y < picrossDefinition.Height; y++) {
       var row = rows[y];
       Assert.AreEqual(1, row.Count);
-      Assert.AreEqual(picrossDefinition.Width, row[0]);
+      Assert.AreEqual(picrossDefinition.Width, row[0].Length);
     }
   }
 }

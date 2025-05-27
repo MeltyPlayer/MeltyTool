@@ -99,9 +99,10 @@ public class PicrossSolver {
           new ExtendLastClueSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundFirstClueSolverMethod(),
-          new GapsAroundBiggestSolverMethod(),
+          new GapsAroundKnownCluesSolverMethod(),
           new GapsBetweenNeighboringCluesSolverMethod(),
           new GapsBetweenNeighboringShortCluesSolverMethod(),
+          new MatchingBiggestOrUniqueLengthSolverMethod(),
       ];
 
   private static IEnumerable<IPicrossMove1d> CheckClues_(

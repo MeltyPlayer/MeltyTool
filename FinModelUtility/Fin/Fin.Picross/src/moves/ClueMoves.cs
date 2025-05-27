@@ -8,6 +8,7 @@ public enum PicrossClueMoveSource {
   FREEBIE_PERFECT_FIT,
   FIRST_CLUE,
   ALL_CLUES_SOLVED,
+  ONLY_MATCHING_CLUE,
 }
 
 [Equatable]
