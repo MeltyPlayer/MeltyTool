@@ -2,6 +2,7 @@
 using fin.data.indexable;
 using fin.math;
 using fin.picross.moves;
+using fin.util.asserts;
 
 namespace fin.picross.solver;
 
@@ -59,6 +60,10 @@ public class PicrossSolver {
               moveSet.Add(new PicrossCellMove(moveType, moveSource, x, y));
               break;
             }
+            case PicrossClueMove picrossClueMove: {
+              moveSet.Add(picrossClueMove);
+              break;
+            }
           }
         }
       }
@@ -75,6 +80,10 @@ public class PicrossSolver {
               moveSet.Add(new PicrossCellMove(moveType, moveSource, x, y));
               break;
             }
+            case PicrossClueMove picrossClueMove: {
+              moveSet.Add(picrossClueMove);
+              break;
+            }
           }
         }
       }
@@ -85,6 +94,23 @@ public class PicrossSolver {
       }
 
       boardState.ApplyMoves(moveSet);
+      foreach (var move in moveSet) {
+        if (move is PicrossClueMove clueMove) {
+          var clueState = clueStatesByClue[clueMove.Clue];
+
+          // Verifies clue is at the correct location.
+          Asserts.Equal(clueState.Clue.CorrectStartIndex,
+                        clueMove.StartIndex,
+                        $"Incorrect clue move of source {clueMove.MoveSource}; marked as starting at {clueMove.StartIndex} but should actually be {clueState.Clue.CorrectStartIndex}");
+
+          // Verifies we didn't already mark this clue as solved.
+          Asserts.False(clueState.Solved,
+                        $"Got duplicate clue solution of source {clueMove.MoveSource}");
+
+          clueState.StartIndex = clueMove.StartIndex;
+        }
+      }
+
       moveSets.Add(moveSet);
     }
 
@@ -355,11 +381,12 @@ public class PicrossSolver {
         }
       }
 
-      if (isFirstClue && clueUnknownCount == 0) {
+      if (isFirstClue && clueUnknownCount == 0 && !clueState.Solved) {
+        var clueStartI = forward ? i : i + increment * (clueLength - 1);
         yield return new PicrossClueMove(
             PicrossClueMoveSource.FIRST_CLUE,
             clueState.Clue,
-            Math.Min(i, i + increment * clueLength));
+            clueStartI);
       }
 
       totalUnknownCount += clueUnknownCount;

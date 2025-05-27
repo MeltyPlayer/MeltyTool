@@ -9,7 +9,11 @@ public class GapsBetweenNeighboringCluesSolverMethod : IPicrossSolverMethod {
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
-    var biggestLength = clues.Max(c => c.Length);
+    if (clues.All(c => c.Solved)) {
+      yield break;
+    }
+
+    var biggestLength = clues.Where(c => !c.Solved).Max(c => c.Length);
 
     var cell0 = cellStates[0].Status;
     var cell1 = cellStates[1].Status;

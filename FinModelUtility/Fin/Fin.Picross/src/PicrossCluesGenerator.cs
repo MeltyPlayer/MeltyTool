@@ -54,7 +54,11 @@ public class PicrossCluesGenerator {
         ++length;
       } else if (length > 0) {
         clues.AddLast(
-            new PicrossClue(index++, isForColumn, columnOrRowIndex, (byte) (i - length), length));
+            new PicrossClue(index++,
+                            isForColumn,
+                            columnOrRowIndex,
+                            (byte) (i - length),
+                            length));
         length = 0;
       }
 
@@ -63,7 +67,11 @@ public class PicrossCluesGenerator {
 
     if (clues.Count == 0 || length != 0) {
       clues.AddLast(
-          new PicrossClue(index++, isForColumn, columnOrRowIndex, (byte) (i - length), length));
+          new PicrossClue(index++,
+                          isForColumn,
+                          columnOrRowIndex,
+                          length == 0 ? (byte) 0 : (byte) (i - length),
+                          length));
     }
 
     return clues.ToArray();

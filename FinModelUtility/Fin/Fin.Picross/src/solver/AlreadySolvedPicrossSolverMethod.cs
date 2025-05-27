@@ -20,13 +20,7 @@ public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
     }
 
     if (alreadySolved) {
-      if (clueStates is [{ Length: 0 }]) {
-        yield return new PicrossClueMove(
-            PicrossClueMoveSource.ALL_CLUES_SOLVED,
-            clueStates[0].Clue,
-            0
-        );
-      } else {
+      if (clueStates is not [{ Length: 0 }]) {
         var cellI = 0;
         foreach (var clueState in clueStates) {
           while (cellStates[cellI].Status != PicrossCellStatus.KNOWN_FILLED) {

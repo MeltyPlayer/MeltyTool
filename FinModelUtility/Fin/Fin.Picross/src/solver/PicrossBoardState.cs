@@ -21,11 +21,14 @@ public enum PicrossCompletionState {
 [GenerateReadOnly]
 public partial interface IPicrossCellState {
   PicrossCellStatus Status { get; set; }
+  PicrossCellMoveSource MoveSource { get; set; }
+  IPicrossClue? Clue { get; set; }
 }
 
 public class PicrossCellState : IPicrossCellState {
   public PicrossCellStatus Status { get; set; }
   public PicrossCellMoveSource MoveSource { get; set; }
+  public IPicrossClue? Clue { get; set; }
 }
 
 public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
@@ -57,23 +60,41 @@ public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
 
           var cellState = this.cellStates_[y * width + x];
 
-          // Verifies the board didn't already have a move at this location.
-          Asserts.Equal(PicrossCellStatus.UNKNOWN,
-                        cellState.Status,
-                        $"Got a duplicate move of source {moveSource}");
-
           // Verifies moves are correct against the existing board.
           var expected = moveType == PicrossCellMoveType.MARK_FILLED;
           Asserts.Equal(expected,
                         this.definition_[x, y],
                         $"Incorrect move of source {moveSource}.");
 
+          // Verifies the board didn't already have a move at this location.
+          Asserts.Equal(PicrossCellStatus.UNKNOWN,
+                        cellState.Status,
+                        $"Got a duplicate move of source {moveSource}");
+
           // Applies the move to the cell.
           cellState.Status = moveType switch {
-              PicrossCellMoveType.MARK_EMPTY  => PicrossCellStatus.KNOWN_EMPTY,
+              PicrossCellMoveType.MARK_EMPTY => PicrossCellStatus.KNOWN_EMPTY,
               PicrossCellMoveType.MARK_FILLED => PicrossCellStatus.KNOWN_FILLED,
-              _                           => throw new ArgumentOutOfRangeException()
+              _ => throw new ArgumentOutOfRangeException()
           };
+          cellState.MoveSource = moveSource;
+
+          break;
+        }
+        case PicrossClueMove picrossClueMove: {
+          var (_, clue, startI) = picrossClueMove;
+          for (var i = startI; i < startI + clue.Length; ++i) {
+            int x, y;
+            if (clue.IsForColumn) {
+              x = clue.ColumnOrRowIndex;
+              y = i;
+            } else {
+              x = i;
+              y = clue.ColumnOrRowIndex;
+            }
+
+            this.cellStates_[y * width + x].Clue = clue;
+          }
 
           break;
         }

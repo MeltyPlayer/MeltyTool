@@ -10,7 +10,12 @@ public class MatchingBiggestOrUniqueLengthSolverMethod : IPicrossSolverMethod {
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
 
-    var biggestUnusedLength = clueStates.Where(c => !c.Solved).Max(c => c.Length);
+    if (clueStates.All(c => c.Solved)) {
+      yield break;
+    }
+
+    var biggestUnusedLength
+        = clueStates.Where(c => !c.Solved).Max(c => c.Length);
 
     int startIndex = -1;
     var inClue = false;
@@ -67,6 +72,10 @@ public class MatchingBiggestOrUniqueLengthSolverMethod : IPicrossSolverMethod {
       int clueLength,
       bool knownEmptyBefore,
       bool knownEmptyAfter) {
+    if (clueStates.Any(c => c.StartIndex == startI)) {
+      yield break;
+    }
+
     var firstClueWithExactLength
         = clueStates.Where(c => !c.Solved)
                     .FirstOrDefaultAndCount(c => c.Length == clueLength,
@@ -79,6 +88,11 @@ public class MatchingBiggestOrUniqueLengthSolverMethod : IPicrossSolverMethod {
 
     if (matchingClueCount == 1 &&
         (isBiggest || (knownEmptyBefore && knownEmptyAfter))) {
+      if (clueStates is [{ Length: 2 }, { Length: 2 }, { Length: 1 }] &&
+          startI == 2) {
+        ;
+      }
+
       yield return new PicrossClueMove(
           PicrossClueMoveSource.ONLY_MATCHING_CLUE,
           firstClueWithExactLength.Clue,
