@@ -20,6 +20,7 @@ public enum PicrossCellMoveSource {
   EMPTY_AROUND_KNOWN_CLUE,
   EMPTY_UP_TO_FIRST_CLUE,
   WITHIN_LAST_CLUE,
+  SINGLE_AFTER_BIG_CLUE,
 }
 
 [Equatable]

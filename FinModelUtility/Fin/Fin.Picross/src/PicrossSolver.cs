@@ -123,6 +123,7 @@ public class PicrossSolver {
   private static readonly IReadOnlyList<IPicrossSolverMethod> SOLVER_METHODS_
       = [
           new AlreadySolvedPicrossSolverMethod(),
+          new BigThenSinglesSolverMethod(),
           new ExtendFirstClueSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundFirstClueSolverMethod(),
