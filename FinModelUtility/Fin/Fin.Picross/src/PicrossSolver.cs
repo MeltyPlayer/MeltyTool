@@ -124,8 +124,6 @@ public class PicrossSolver {
       = [
           new AlreadySolvedPicrossSolverMethod(),
           new ExtendFirstClueSolverMethod(),
-          // TODO: Get rid of this
-          new ExtendLastClueSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundFirstClueSolverMethod(),
           new GapsAroundKnownCluesSolverMethod(),

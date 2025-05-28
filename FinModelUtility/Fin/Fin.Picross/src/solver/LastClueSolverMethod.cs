@@ -70,6 +70,7 @@ public class LastClueSolverMethod : IPicrossSolverMethod {
     var remainingClueLength = clueLength - filledLength;
 
     var remainingClueLengthBefore = remainingClueLength;
+    var knownCellsAfter = 0;
     for (var i = firstUnclaimedFilledCellIndex.Value - 1; i >= 0; --i) {
       var cellStatus = cellStates[i].Status;
       if (cellStatus == PicrossCellStatus.UNKNOWN) {
@@ -80,11 +81,21 @@ public class LastClueSolverMethod : IPicrossSolverMethod {
               i);
         }
       } else {
+        if (remainingClueLengthBefore > 0) {
+          knownCellsAfter = remainingClueLengthBefore;
+        }
+
         remainingClueLengthBefore = 0;
       }
     }
 
+    if (remainingClueLengthBefore > 0) {
+      knownCellsAfter = remainingClueLengthBefore;
+    }
+
+
     var remainingClueLengthAfter = remainingClueLength;
+    var knownCellsBefore = 0;
     for (var i = lastUnclaimedFilledCellIndex.Value + 1; i < length; ++i) {
       var cellStatus = cellStates[i].Status;
       if (cellStatus == PicrossCellStatus.UNKNOWN) {
@@ -95,7 +106,37 @@ public class LastClueSolverMethod : IPicrossSolverMethod {
               i);
         }
       } else {
+        if (remainingClueLengthAfter > 0) {
+          knownCellsBefore = remainingClueLengthAfter;
+        }
+
         remainingClueLengthAfter = 0;
+      }
+    }
+
+    if (remainingClueLengthAfter > 0) {
+      knownCellsBefore = remainingClueLengthAfter;
+    }
+
+    // If not enough gap before/after, we can fill cells in on the other side
+    for (var ii = 0; ii < knownCellsBefore; ++ii) {
+      var i = firstUnclaimedFilledCellIndex.Value - 1 - ii;
+      if (cellStates[i].Status == PicrossCellStatus.UNKNOWN) {
+        yield return new PicrossCellMove1d(
+            PicrossCellMoveType.MARK_FILLED,
+            PicrossCellMoveSource.NOWHERE_ELSE_TO_GO,
+            i);
+      }
+    }
+
+    for (var ii = 0; ii < knownCellsAfter; ++ii) {
+      var i = lastUnclaimedFilledCellIndex.Value + 1 + ii;
+      var cellStatus = cellStates[i].Status;
+      if (cellStatus == PicrossCellStatus.UNKNOWN) {
+        yield return new PicrossCellMove1d(
+            PicrossCellMoveType.MARK_FILLED,
+            PicrossCellMoveSource.NOWHERE_ELSE_TO_GO,
+            i);
       }
     }
   }
