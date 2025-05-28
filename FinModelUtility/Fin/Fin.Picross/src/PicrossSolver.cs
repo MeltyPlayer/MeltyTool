@@ -16,6 +16,7 @@ public class PicrossSolver {
     var columnClueStates = ToClueStates_(clues.Columns);
     var columnLineStates = columnClueStates
                            .Select((clues, x) => new PicrossLineState {
+                               IsColumn = true,
                                ClueStates = clues,
                                CellStates = boardState.GetColumn(x).ToArray(),
                            })
@@ -23,6 +24,7 @@ public class PicrossSolver {
     var rowClueStates = ToClueStates_(clues.Rows);
     var rowLineStates = rowClueStates
                         .Select((clues, y) => new PicrossLineState {
+                            IsColumn = false,
                             ClueStates = clues,
                             CellStates = boardState.GetRow(y).ToArray(),
                         })
@@ -122,6 +124,7 @@ public class PicrossSolver {
       = [
           new AlreadySolvedPicrossSolverMethod(),
           new ExtendFirstClueSolverMethod(),
+          // TODO: Get rid of this
           new ExtendLastClueSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundFirstClueSolverMethod(),
@@ -129,6 +132,7 @@ public class PicrossSolver {
           new GapsBetweenKnownCluesSolverMethod(),
           new GapsBetweenNeighboringCluesSolverMethod(),
           new GapsBetweenNeighboringShortCluesSolverMethod(),
+          new LastClueSolverMethod(),
           new MatchingBiggestOrUniqueLengthSolverMethod(),
       ];
 
@@ -385,7 +389,7 @@ public class PicrossSolver {
       if (isFirstClue && clueUnknownCount == 0 && !clueState.Solved) {
         var clueStartI = forward ? i : i + increment * (clueLength - 1);
         yield return new PicrossClueMove(
-            PicrossClueMoveSource.FIRST_CLUE,
+            PicrossClueMoveSource.FIRST_CLUE_IN_LINE,
             clueState.Clue,
             clueStartI);
       }
