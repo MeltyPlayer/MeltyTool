@@ -132,6 +132,7 @@ public class PicrossSolver {
           new GapsBetweenNeighboringShortCluesSolverMethod(),
           new LastClueSolverMethod(),
           new MatchingBiggestOrUniqueLengthSolverMethod(),
+          new TwoSeparatedCluesSolverMethod(),
       ];
 
   private static IEnumerable<IPicrossMove1d> CheckClues_(
