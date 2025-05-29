@@ -3,7 +3,7 @@ using fin.util.enumerables;
 
 namespace fin.picross.solver;
 
-public class LastClueSolverMethod : IPicrossSolverMethod {
+public class ExpandFinalUnsolvedClueSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d>
       TryToFindMoves(IPicrossLineState lineState) {
     // Make sure we only run this solver if there's a single unsolved clue
@@ -20,7 +20,7 @@ public class LastClueSolverMethod : IPicrossSolverMethod {
 
     foreach (var move in PicrossMultiMoveUtil.AlignGapToClue(
                  lineState,
-                 lastUnsolvedClue,
+                 lastUnsolvedClue.Length,
                  0,
                  length)) {
       yield return move;

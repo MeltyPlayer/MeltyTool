@@ -5,7 +5,7 @@ namespace fin.picross.solver;
 public static class PicrossMultiMoveUtil {
   public static IEnumerable<IPicrossMove1d> AlignGapToClue(
       IPicrossLineState lineState,
-      IReadOnlyPicrossClueState clueState,
+      int clueLength,
       int startIndex,
       int length) {
     var cellStates = lineState.CellStates;
@@ -47,7 +47,6 @@ public static class PicrossMultiMoveUtil {
     }
 
     // Get the total accounted for length of the clue
-    var clueLength = clueState.Length;
     var filledLength = lastUnclaimedFilledCellIndex.Value -
                        firstUnclaimedFilledCellIndex.Value +
                        1;

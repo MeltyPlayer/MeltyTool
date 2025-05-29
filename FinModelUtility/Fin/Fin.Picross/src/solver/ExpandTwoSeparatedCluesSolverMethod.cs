@@ -2,7 +2,7 @@
 
 namespace fin.picross.solver;
 
-public class TwoSeparatedCluesSolverMethod : IPicrossSolverMethod {
+public class ExpandTwoSeparatedCluesSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d>
       TryToFindMoves(IPicrossLineState lineState) {
     var clueStates = lineState.ClueStates;
@@ -61,7 +61,7 @@ public class TwoSeparatedCluesSolverMethod : IPicrossSolverMethod {
 
     foreach (var move in PicrossMultiMoveUtil.AlignGapToClue(
                  lineState,
-                 firstClue,
+                 firstClue.Length,
                  0,
                  firstEmptyCellOfGap.Value)) {
       yield return move;
@@ -69,7 +69,7 @@ public class TwoSeparatedCluesSolverMethod : IPicrossSolverMethod {
 
     foreach (var move in PicrossMultiMoveUtil.AlignGapToClue(
                  lineState,
-                 secondClue,
+                 secondClue.Length,
                  lastEmptyCellOfGap.Value + 1,
                  length)) {
       yield return move;

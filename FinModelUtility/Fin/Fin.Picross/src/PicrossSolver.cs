@@ -125,17 +125,17 @@ public class PicrossSolver {
           new AlreadySolvedPicrossSolverMethod(),
           new BigThenSinglesSolverMethod(),
           new ExtendFirstClueSolverMethod(),
+          new ExpandFinalUnsolvedClueSolverMethod(),
+          new ExpandTwoSeparatedCluesSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
           new GapsAroundFirstClueSolverMethod(),
           new GapsAroundKnownCluesSolverMethod(),
           new GapsBetweenKnownCluesSolverMethod(),
           new GapsBetweenNeighboringCluesSolverMethod(),
           new GapsBetweenNeighboringShortCluesSolverMethod(),
-          new LastClueSolverMethod(),
           new MatchingBiggestOrUniqueLengthSolverMethod(),
           new OnlyClueLengthInReachSolverMethod(),
           new SingleNextToEdgeSolverMethod(),
-          new TwoSeparatedCluesSolverMethod(),
       ];
 
   private static IEnumerable<IPicrossMove1d> CheckClues_(
