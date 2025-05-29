@@ -125,6 +125,7 @@ public class PicrossSolver {
           new AlreadySolvedPicrossSolverMethod(),
           new BigThenSinglesSolverMethod(),
           new ExtendFirstClueSolverMethod(),
+          new ExpandFirstClueWhenPerfectFitSolverMethod(),
           new ExpandFinalUnsolvedClueSolverMethod(),
           new ExpandTwoSeparatedCluesSolverMethod(),
           new FillSmallestUnknownsBetweenEmptiesSolverMethod(),

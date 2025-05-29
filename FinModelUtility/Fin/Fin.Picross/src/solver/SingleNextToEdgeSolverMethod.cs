@@ -17,17 +17,11 @@ public class SingleNextToEdgeSolverMethod : BBidirectionalSolverMethod {
       yield break;
     }
 
-    // Move past all starting solved clues in line
-    while (clues[clueStart].Solved) {
-      var clue = clues[clueStart];
-      clueStart += increment;
-
-      if (increment == 1) {
-        iStart = clue.StartIndex.Value + clue.Length;
-      } else {
-        iStart = clue.StartIndex.Value + increment;
-      }
-    }
+    PicrossSkipUtil.SkipSolvedClues(
+        lineState,
+        increment,
+        ref clueStart,
+        ref iStart);
 
     var unsolvedClue = clues[clueStart];
     if (unsolvedClue.Length != 1) {
