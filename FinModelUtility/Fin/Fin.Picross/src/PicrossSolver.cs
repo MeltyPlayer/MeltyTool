@@ -133,6 +133,7 @@ public class PicrossSolver {
           new GapsBetweenNeighboringShortCluesSolverMethod(),
           new LastClueSolverMethod(),
           new MatchingBiggestOrUniqueLengthSolverMethod(),
+          new OnlyClueLengthInReachSolverMethod(),
           new SingleNextToEdgeSolverMethod(),
           new TwoSeparatedCluesSolverMethod(),
       ];
