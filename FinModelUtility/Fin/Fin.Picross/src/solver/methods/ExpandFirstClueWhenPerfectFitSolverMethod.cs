@@ -5,6 +5,7 @@ namespace fin.picross.solver.methods;
 public class ExpandFirstClueWhenPerfectFitSolverMethod
     : BBidirectionalSolverMethod {
   public override IEnumerable<IPicrossMove1d> TryToFindMoves(
+      IPicrossBoardState _,
       IPicrossLineState lineState,
       int iStart,
       int iEnd,

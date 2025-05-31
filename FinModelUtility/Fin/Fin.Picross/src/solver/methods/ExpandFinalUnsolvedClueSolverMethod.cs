@@ -4,8 +4,9 @@ using fin.util.enumerables;
 namespace fin.picross.solver.methods;
 
 public class ExpandFinalUnsolvedClueSolverMethod : IPicrossSolverMethod {
-  public IEnumerable<IPicrossMove1d>
-      TryToFindMoves(IPicrossLineState lineState) {
+  public IEnumerable<IPicrossMove1d> TryToFindMoves(
+      IPicrossBoardState _,
+      IPicrossLineState lineState) {
     // Make sure we only run this solver if there's a single unsolved clue
     var clueStates = lineState.ClueStates;
     var lastUnsolvedClue

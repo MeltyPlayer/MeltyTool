@@ -5,6 +5,7 @@ namespace fin.picross.solver.methods;
 
 public class MatchingBiggestOrUniqueLengthSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
+      IPicrossBoardState _,
       IPicrossLineState lineState) {
     var clueStates = lineState.ClueStates;
     var cellStates = lineState.CellStates;

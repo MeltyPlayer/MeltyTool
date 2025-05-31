@@ -3,8 +3,9 @@
 namespace fin.picross.solver.methods;
 
 public class ExpandTwoSeparatedCluesSolverMethod : IPicrossSolverMethod {
-  public IEnumerable<IPicrossMove1d>
-      TryToFindMoves(IPicrossLineState lineState) {
+  public IEnumerable<IPicrossMove1d> TryToFindMoves(
+      IPicrossBoardState _,
+      IPicrossLineState lineState) {
     var clueStates = lineState.ClueStates;
     if (clueStates is not [
             { Solved: false } firstClue,

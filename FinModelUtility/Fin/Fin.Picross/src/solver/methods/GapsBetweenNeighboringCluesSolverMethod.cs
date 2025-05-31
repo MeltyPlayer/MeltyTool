@@ -4,6 +4,7 @@ namespace fin.picross.solver.methods;
 
 public class GapsBetweenNeighboringCluesSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
+      IPicrossBoardState _,
       IPicrossLineState lineState) {
     var clues = lineState.ClueStates;
     var cellStates = lineState.CellStates;

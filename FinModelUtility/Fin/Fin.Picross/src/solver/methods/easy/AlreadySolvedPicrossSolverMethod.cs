@@ -4,6 +4,7 @@ namespace fin.picross.solver.methods.easy;
 
 public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
+      IPicrossBoardState _,
       IPicrossLineState lineState) {
     var clueStates = lineState.ClueStates;
     var cellStates = lineState.CellStates;

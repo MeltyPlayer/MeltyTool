@@ -37,9 +37,11 @@ public class PicrossCellState : IPicrossCellState {
 public interface IPicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
   IReadOnlyList<IPicrossLineState> ColumnLineStates { get; }
   IReadOnlyList<IPicrossLineState> RowLineStates { get; }
+
+  PicrossCompletionState GetCompletionState();
 }
 
-public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
+public class PicrossBoardState : IPicrossBoardState {
   private readonly IPicrossDefinition definition_;
   private readonly IReadOnlyList<IPicrossCellState> cellStates_;
 
@@ -102,6 +104,7 @@ public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
 
   public IReadOnlyList<IPicrossLineState> ColumnLineStates
     => this.columnLineStates_;
+
   public IReadOnlyList<IPicrossLineState> RowLineStates => this.rowLineStates_;
 
   public void ApplyMoves(IReadOnlySet<IPicrossMove> moveSet) {

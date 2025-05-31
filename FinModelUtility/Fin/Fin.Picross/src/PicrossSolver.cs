@@ -1,18 +1,15 @@
-﻿using fin.data;
-using fin.data.indexable;
-using fin.math;
+﻿using fin.math;
 using fin.picross.moves;
 using fin.picross.solver.methods;
 using fin.picross.solver.methods.easy;
 using fin.picross.solver.methods.hard;
-using fin.util.asserts;
 
 namespace fin.picross.solver;
 
 public class PicrossSolver {
   public IReadOnlyList<IReadOnlySet<IPicrossMove>> Solve(
       IPicrossDefinition picrossDefinition,
-      out PicrossBoardState finalBoardState) {
+      out IPicrossBoardState finalBoardState) {
     var boardState = new PicrossBoardState(picrossDefinition);
 
     var width = picrossDefinition.Width;
@@ -34,6 +31,7 @@ public class PicrossSolver {
       for (var x = 0; x < width; ++x) {
         foreach (var picrossMove1d in CheckClues_(
                      isFirstPass,
+                     boardState,
                      columnLineStates[x],
                      yClueIndicesForward,
                      yClueIndicesBackward)) {
@@ -54,6 +52,7 @@ public class PicrossSolver {
       for (var y = 0; y < height; ++y) {
         foreach (var picrossMove1d in CheckClues_(
                      isFirstPass,
+                     boardState,
                      rowLineStates[y],
                      xClueIndicesForward,
                      xClueIndicesBackward)) {
@@ -120,6 +119,7 @@ public class PicrossSolver {
 
   private static IEnumerable<IPicrossMove1d> CheckClues_(
       bool isFirstPass,
+      IPicrossBoardState boardState,
       IPicrossLineState lineState,
       int[] clueIndicesForward,
       int[] clueIndicesBackward) {
@@ -217,7 +217,9 @@ public class PicrossSolver {
 
     foreach (var solverMethod in SOLVER_METHODS_) {
       var hadAnyOfMethod = false;
-      foreach (var move in solverMethod.TryToFindMoves(lineState)) {
+      foreach (var move in solverMethod.TryToFindMoves(
+                   boardState,
+                   lineState)) {
         hadAnyOfMethod = true;
         yield return move;
       }
