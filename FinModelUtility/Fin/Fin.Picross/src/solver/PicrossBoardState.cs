@@ -1,4 +1,5 @@
 ﻿using fin.data;
+using fin.data.indexable;
 using fin.picross.moves;
 using fin.util.asserts;
 
@@ -33,25 +34,75 @@ public class PicrossCellState : IPicrossCellState {
   public IPicrossClue? RowClue { get; set; }
 }
 
+public interface IPicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
+  IReadOnlyList<IPicrossLineState> ColumnLineStates { get; }
+  IReadOnlyList<IPicrossLineState> RowLineStates { get; }
+}
+
 public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
   private readonly IPicrossDefinition definition_;
-  private readonly IPicrossCellState[] cellStates_;
+  private readonly IReadOnlyList<IPicrossCellState> cellStates_;
+
+  private readonly IReadOnlyIndexableDictionary<IPicrossClue, IPicrossClueState>
+      clueStateByClue_;
+
+  private readonly IReadOnlyList<IPicrossLineState> columnLineStates_;
+  private readonly IReadOnlyList<IPicrossLineState> rowLineStates_;
 
   public PicrossBoardState(IPicrossDefinition definition) {
     this.definition_ = definition;
 
-    this.cellStates_
+    var cellStates
         = new IPicrossCellState[definition.Width * definition.Height];
-    for (var i = 0; i < this.cellStates_.Length; ++i) {
-      this.cellStates_[i] = new PicrossCellState();
+    this.cellStates_ = cellStates;
+    for (var i = 0; i < cellStates.Length; ++i) {
+      cellStates[i] = new PicrossCellState();
+    }
+
+    var clues = new PicrossCluesGenerator().GenerateClues(definition);
+
+    var columnClueStates = ToClueStates_(clues.Columns);
+    this.columnLineStates_
+        = columnClueStates
+          .Select((clues, x) => new PicrossLineState {
+              IsColumn = true,
+              ClueStates = clues,
+              CellStates = this.GetColumn(x).ToArray(),
+          })
+          .ToArray();
+    var rowClueStates = ToClueStates_(clues.Rows);
+    this.rowLineStates_
+        = rowClueStates
+          .Select((clues, y) => new PicrossLineState {
+              IsColumn = false,
+              ClueStates = clues,
+              CellStates = this.GetRow(y).ToArray(),
+          })
+          .ToArray();
+
+    var clueStatesByClue
+        = new IndexableDictionary<IPicrossClue, IPicrossClueState>();
+    this.clueStateByClue_ = clueStatesByClue;
+    foreach (var clueState in columnClueStates.Concat(rowClueStates)
+                                              .SelectMany(c => c)) {
+      clueStatesByClue[clueState.Clue] = clueState;
     }
   }
+
+  private static IReadOnlyList<IReadOnlyList<IPicrossClueState>> ToClueStates_(
+      IReadOnlyList<IReadOnlyList<IPicrossClue>> clues)
+    => clues.Select(t => t.Select(v => new PicrossClueState(v)).ToArray())
+            .ToArray();
 
   public int Width => this.definition_.Width;
   public int Height => this.definition_.Height;
 
   public IReadOnlyPicrossCellState this[int x, int y]
     => this.cellStates_[y * this.Width + x];
+
+  public IReadOnlyList<IPicrossLineState> ColumnLineStates
+    => this.columnLineStates_;
+  public IReadOnlyList<IPicrossLineState> RowLineStates => this.rowLineStates_;
 
   public void ApplyMoves(IReadOnlySet<IPicrossMove> moveSet) {
     var width = this.Width;
@@ -84,7 +135,20 @@ public class PicrossBoardState : IReadOnlyGrid<IReadOnlyPicrossCellState> {
           break;
         }
         case PicrossClueMove picrossClueMove: {
-          var (_, clue, startI) = picrossClueMove;
+          var (clueMoveSource, clue, startI) = picrossClueMove;
+          var clueState = this.clueStateByClue_[clue];
+
+          // Verifies clue is at the correct location.
+          Asserts.Equal(clue.CorrectStartIndex,
+                        startI,
+                        $"Incorrect clue move of source {clueMoveSource}; marked as starting at {startI} but should actually be {clue.CorrectStartIndex}");
+
+          // Verifies we didn't already mark this clue as solved.
+          Asserts.False(clueState.Solved,
+                        $"Got duplicate clue solution of source {clueMoveSource}");
+
+          clueState.StartIndex = startI;
+
           for (var i = startI; i < startI + clue.Length; ++i) {
             if (clue.IsForColumn) {
               var x = clue.ColumnOrRowIndex;

@@ -14,31 +14,6 @@ public class PicrossSolver {
       IPicrossDefinition picrossDefinition,
       out PicrossBoardState finalBoardState) {
     var boardState = new PicrossBoardState(picrossDefinition);
-    var clues = new PicrossCluesGenerator().GenerateClues(picrossDefinition);
-
-    var columnClueStates = ToClueStates_(clues.Columns);
-    var columnLineStates = columnClueStates
-                           .Select((clues, x) => new PicrossLineState {
-                               IsColumn = true,
-                               ClueStates = clues,
-                               CellStates = boardState.GetColumn(x).ToArray(),
-                           })
-                           .ToArray();
-    var rowClueStates = ToClueStates_(clues.Rows);
-    var rowLineStates = rowClueStates
-                        .Select((clues, y) => new PicrossLineState {
-                            IsColumn = false,
-                            ClueStates = clues,
-                            CellStates = boardState.GetRow(y).ToArray(),
-                        })
-                        .ToArray();
-
-    var clueStatesByClue
-        = new IndexableDictionary<IPicrossClue, IPicrossClueState>();
-    foreach (var clueState in columnClueStates.Concat(rowClueStates)
-                                              .SelectMany(c => c)) {
-      clueStatesByClue[clueState.Clue] = clueState;
-    }
 
     var width = picrossDefinition.Width;
     var height = picrossDefinition.Height;
@@ -47,6 +22,9 @@ public class PicrossSolver {
     var xClueIndicesBackward = new int[width];
     var yClueIndicesForward = new int[height];
     var yClueIndicesBackward = new int[height];
+
+    var columnLineStates = boardState.ColumnLineStates;
+    var rowLineStates = boardState.RowLineStates;
 
     var moveSets = new List<IReadOnlySet<IPicrossMove>>();
     while (true) {
@@ -99,23 +77,6 @@ public class PicrossSolver {
       }
 
       boardState.ApplyMoves(moveSet);
-      foreach (var move in moveSet) {
-        if (move is PicrossClueMove clueMove) {
-          var clueState = clueStatesByClue[clueMove.Clue];
-
-          // Verifies clue is at the correct location.
-          Asserts.Equal(clueState.Clue.CorrectStartIndex,
-                        clueMove.StartIndex,
-                        $"Incorrect clue move of source {clueMove.MoveSource}; marked as starting at {clueMove.StartIndex} but should actually be {clueState.Clue.CorrectStartIndex}");
-
-          // Verifies we didn't already mark this clue as solved.
-          Asserts.False(clueState.Solved,
-                        $"Got duplicate clue solution of source {clueMove.MoveSource}");
-
-          clueState.StartIndex = clueMove.StartIndex;
-        }
-      }
-
       moveSets.Add(moveSet);
     }
 
@@ -266,11 +227,6 @@ public class PicrossSolver {
       }
     }
   }
-
-  private static IReadOnlyList<IReadOnlyList<IPicrossClueState>> ToClueStates_(
-      IReadOnlyList<IReadOnlyList<IPicrossClue>> clues)
-    => clues.Select(t => t.Select(v => new PicrossClueState(v)).ToArray())
-            .ToArray();
 
   private static IEnumerable<IPicrossMove1d> TryToFitCluesIntoGaps_(
       IPicrossLineState lineState,
