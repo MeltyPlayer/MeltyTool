@@ -1,6 +1,6 @@
 ﻿using fin.picross.moves;
 
-namespace fin.picross.solver;
+namespace fin.picross.solver.methods;
 
 public static class PicrossMultiMoveUtil {
   public static IEnumerable<IPicrossMove1d> AlignGapToClue(

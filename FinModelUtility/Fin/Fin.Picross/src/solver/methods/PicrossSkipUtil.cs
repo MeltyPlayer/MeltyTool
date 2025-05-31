@@ -1,4 +1,4 @@
-﻿namespace fin.picross.solver;
+﻿namespace fin.picross.solver.methods;
 
 public static class PicrossSkipUtil {
   public static void SkipSolvedClues(

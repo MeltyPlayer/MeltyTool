@@ -1,6 +1,6 @@
 ﻿using fin.picross.moves;
 
-namespace fin.picross.solver;
+namespace fin.picross.solver.methods.easy;
 
 public class AlreadySolvedUpToPicrossSolverMethod : BBidirectionalSolverMethod {
   public override IEnumerable<IPicrossMove1d> TryToFindMoves(

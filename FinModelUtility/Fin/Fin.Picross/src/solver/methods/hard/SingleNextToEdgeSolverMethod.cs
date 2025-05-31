@@ -1,6 +1,6 @@
 ﻿using fin.picross.moves;
 
-namespace fin.picross.solver;
+namespace fin.picross.solver.methods.hard;
 
 public class SingleNextToEdgeSolverMethod : BBidirectionalSolverMethod {
   public override IEnumerable<IPicrossMove1d> TryToFindMoves(

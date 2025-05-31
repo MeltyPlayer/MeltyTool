@@ -1,6 +1,6 @@
 ﻿using fin.picross.moves;
 
-namespace fin.picross.solver;
+namespace fin.picross.solver.methods.easy;
 
 public class GapsAroundKnownCluesSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(

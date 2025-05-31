@@ -2,6 +2,9 @@
 using fin.data.indexable;
 using fin.math;
 using fin.picross.moves;
+using fin.picross.solver.methods;
+using fin.picross.solver.methods.easy;
+using fin.picross.solver.methods.hard;
 using fin.util.asserts;
 
 namespace fin.picross.solver;
@@ -120,25 +123,39 @@ public class PicrossSolver {
     return moveSets;
   }
 
+  private static readonly IReadOnlyList<IPicrossSolverMethod>
+      EASY_SOLVER_METHODS_
+          = [
+              new AlreadySolvedPicrossSolverMethod(),
+              new AlreadySolvedUpToPicrossSolverMethod(),
+              new GapsAroundKnownCluesSolverMethod(),
+          ];
+
+  private static readonly IReadOnlyList<IPicrossSolverMethod>
+      HARD_SOLVER_METHODS_
+          = EASY_SOLVER_METHODS_
+            .Concat([
+                new SingleNextToEdgeSolverMethod(),
+            ])
+            .ToArray();
+
   private static readonly IReadOnlyList<IPicrossSolverMethod> SOLVER_METHODS_
-      = [
-          new AlreadySolvedPicrossSolverMethod(),
-          new AlreadySolvedUpToPicrossSolverMethod(),
-          new BigThenSinglesSolverMethod(),
-          new ExtendFirstClueSolverMethod(),
-          new ExpandFirstClueWhenPerfectFitSolverMethod(),
-          new ExpandFinalUnsolvedClueSolverMethod(),
-          new ExpandTwoSeparatedCluesSolverMethod(),
-          new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
-          new GapsAroundFirstClueSolverMethod(),
-          new GapsAroundKnownCluesSolverMethod(),
-          new GapsBetweenKnownCluesSolverMethod(),
-          new GapsBetweenNeighboringCluesSolverMethod(),
-          new GapsBetweenNeighboringShortCluesSolverMethod(),
-          new MatchingBiggestOrUniqueLengthSolverMethod(),
-          new OnlyClueLengthInReachSolverMethod(),
-          new SingleNextToEdgeSolverMethod(),
-      ];
+      = HARD_SOLVER_METHODS_
+        .Concat([
+            new BigThenSinglesSolverMethod(),
+            new ExtendFirstClueSolverMethod(),
+            new ExpandFirstClueWhenPerfectFitSolverMethod(),
+            new ExpandFinalUnsolvedClueSolverMethod(),
+            new ExpandTwoSeparatedCluesSolverMethod(),
+            new FillSmallestUnknownsBetweenEmptiesSolverMethod(),
+            new GapsAroundFirstClueSolverMethod(),
+            new GapsBetweenKnownCluesSolverMethod(),
+            new GapsBetweenNeighboringCluesSolverMethod(),
+            new GapsBetweenNeighboringShortCluesSolverMethod(),
+            new MatchingBiggestOrUniqueLengthSolverMethod(),
+            new OnlyClueLengthInReachSolverMethod(),
+        ])
+        .ToArray();
 
   private static IEnumerable<IPicrossMove1d> CheckClues_(
       bool isFirstPass,
