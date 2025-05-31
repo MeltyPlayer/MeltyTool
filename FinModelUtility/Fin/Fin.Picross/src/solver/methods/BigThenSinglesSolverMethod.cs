@@ -12,13 +12,13 @@ public class BigThenSinglesSolverMethod : BBidirectionalSolverMethod {
       int clueStart,
       int clueEnd,
       int increment) {
+    if (lineState.IsSolved) {
+      yield break;
+    }
+    
     var clues = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
-
-    if (clues.All(c => c.Solved)) {
-      yield break;
-    }
 
     PicrossSkipUtil.SkipSolvedClues(
         lineState,

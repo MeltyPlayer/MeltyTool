@@ -6,13 +6,13 @@ public class GapsBetweenNeighboringCluesSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossBoardState _,
       IPicrossLineState lineState) {
+    if (lineState.IsSolved) {
+      yield break;
+    }
+
     var clues = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
-
-    if (clues.All(c => c.Solved)) {
-      yield break;
-    }
 
     var biggestLength = clues.Where(c => !c.Solved).Max(c => c.Length);
 

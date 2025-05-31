@@ -12,12 +12,12 @@ public class ExpandFirstClueWhenPerfectFitSolverMethod
       int clueStart,
       int clueEnd,
       int increment) {
-    var clues = lineState.ClueStates;
-    var cellStates = lineState.CellStates;
-
-    if (clues.All(c => c.Solved)) {
+    if (lineState.IsSolved) {
       yield break;
     }
+
+    var clues = lineState.ClueStates;
+    var cellStates = lineState.CellStates;
 
     PicrossSkipUtil.SkipSolvedClues(
         lineState,

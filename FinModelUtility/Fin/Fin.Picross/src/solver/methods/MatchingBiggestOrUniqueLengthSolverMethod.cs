@@ -7,13 +7,13 @@ public class MatchingBiggestOrUniqueLengthSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossBoardState _,
       IPicrossLineState lineState) {
+    if (lineState.IsSolved) {
+      yield break;
+    }
+
     var clueStates = lineState.ClueStates;
     var cellStates = lineState.CellStates;
     var length = cellStates.Count;
-
-    if (clueStates.All(c => c.Solved)) {
-      yield break;
-    }
 
     var biggestUnusedLength
         = clueStates.Where(c => !c.Solved).Max(c => c.Length);
