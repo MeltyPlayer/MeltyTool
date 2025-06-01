@@ -2,7 +2,7 @@
 
 namespace fin.picross.solver.methods.easy;
 
-public class AlreadySolvedPicrossSolverMethod : IPicrossSolverMethod {
+public class AlreadySolvedSolverMethod : IPicrossSolverMethod {
   public IEnumerable<IPicrossMove1d> TryToFindMoves(
       IPicrossBoardState _,
       IPicrossLineState lineState) {

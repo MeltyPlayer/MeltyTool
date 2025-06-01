@@ -86,8 +86,9 @@ public class PicrossSolver {
   private static readonly IReadOnlyList<IPicrossSolverMethod>
       EASY_SOLVER_METHODS_
           = [
-              new AlreadySolvedPicrossSolverMethod(),
-              new AlreadySolvedUpToPicrossSolverMethod(),
+              new AlreadySolvedSolverMethod(),
+              new AlreadySolvedUpToSolverMethod(),
+              new FirstGapTooSmallSolverMethod(),
               new GapsAroundKnownCluesSolverMethod(),
           ];
 
@@ -284,19 +285,6 @@ public class PicrossSolver {
 
         // Uh oh, not expecting to reach a known empty cell. Can't start here.
         if (cellState == PicrossCellStatus.KNOWN_EMPTY) {
-          // If this was the first clue and there's no room, we need to mark as
-          // empty.
-          if (isFirstClue) {
-            for (var badClueCellI = 0;
-                 badClueCellI < clueCellI - 1;
-                 ++badClueCellI) {
-              yield return new PicrossCellMove1d(
-                  PicrossCellMoveType.MARK_EMPTY,
-                  PicrossCellMoveSource.NO_CLUES_FIT,
-                  i + increment * badClueCellI);
-            }
-          }
-
           // Skip ahead.
           i += increment * (clueCellI + 1);
           goto RetryClue;

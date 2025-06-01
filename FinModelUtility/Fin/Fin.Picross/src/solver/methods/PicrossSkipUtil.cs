@@ -1,4 +1,6 @@
-﻿namespace fin.picross.solver.methods;
+﻿using fin.math;
+
+namespace fin.picross.solver.methods;
 
 public static class PicrossSkipUtil {
   public static void SkipSolvedClues(
@@ -21,13 +23,37 @@ public static class PicrossSkipUtil {
     }
   }
 
-  public static void SkipEmpty(
+  public static int SkipEmpty(
       IPicrossLineState lineState,
       int increment,
       ref int iStart) {
+    var count = 0;
+
     var cellStates = lineState.CellStates;
-    while (cellStates[iStart].Status == PicrossCellStatus.KNOWN_EMPTY) {
+    var length = cellStates.Count;
+    while (iStart.IsInRange(0, length - 1) &&
+           cellStates[iStart].Status == PicrossCellStatus.KNOWN_EMPTY) {
       iStart += increment;
+      ++count;
     }
+
+    return count;
+  }
+
+  public static int SkipNonEmpty(
+      IPicrossLineState lineState,
+      int increment,
+      ref int iStart) {
+    var count = 0;
+
+    var cellStates = lineState.CellStates;
+    var length = cellStates.Count;
+    while (iStart.IsInRange(0, length - 1) &&
+           cellStates[iStart].Status != PicrossCellStatus.KNOWN_EMPTY) {
+      iStart += increment;
+      ++count;
+    }
+
+    return count;
   }
 }
