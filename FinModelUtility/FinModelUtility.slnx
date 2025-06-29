@@ -1,0 +1,413 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Fin/">
+    <Project Path="Fin/Fin Tests/Fin Tests.csproj">
+      <BuildDependency Project="Fin/Fin/Fin.csproj" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Fin/Fin.Compression Tests/Fin.Compression Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Fin/Fin.Compression/Fin.Compression.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Fin/Fin.Picross Tests/Fin.Picross Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Fin/Fin.Picross/Fin.Picross.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Fin/Fin.Ui/Fin.Ui.csproj">
+      <BuildDependency Project="QuickFont/QuickFont.csproj" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Fin/Fin/Fin.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Formats/" />
+  <Folder Name="/Formats/Ast/">
+    <Project Path="Formats/Ast/Ast Tests/Ast Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Formats/Ast/Ast/Ast.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Formats/Brres/">
+    <Project Path="Formats/Brres/Brres/Brres.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Formats/Glo/">
+    <Project Path="Formats/Glo/Glo Tests/Glo Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Formats/Glo/Glo/Glo.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Formats/Mdl/">
+    <Project Path="Formats/Mdl/Mdl/Mdl.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Formats/Ssm/">
+    <Project Path="Formats/Ssm/Ssm/Ssm.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Formats/Vrml/">
+    <Project Path="Formats/Vrml/Vrml Tests/Vrml Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Formats/Vrml/Vrml/Vrml.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/">
+    <Project Path="Games/BanjoKazooie/BanjoKazooie.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Utility of Time CSharp/Utility of Time CSharp.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/BattalionWars/">
+    <Project Path="Games/BattalionWars/BattalionWars Tests/BattalionWars Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/BattalionWars/BattalionWars/BattalionWars.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/Celeste64/">
+    <Project Path="Games/Celeste64/Celeste64 Tests/Celeste64 Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/Celeste64/Celeste64/Celeste64.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/HaloWars/">
+    <Project Path="Games/HaloWars/HaloWars Tests/HaloWars Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/HaloWars/HaloWars.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/HaloWars/KSoft/">
+    <Project Path="Games/HaloWars/KSoft/KSoft.Compression/KSoft.Compression.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/KSoft/KSoft.IO.TagElementStreams/KSoft.IO.TagElementStreams.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/KSoft/KSoft.Math/KSoft.Math.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/KSoft/KSoft.Phoenix/KSoft.Phoenix.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/KSoft/KSoft.Security/KSoft.Security.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/KSoft/KSoft.T4/KSoft.T4.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/KSoft/KSoft.Wwise/KSoft.Wwise.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/HaloWars/KSoft/KSoft/KSoft.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/MarioKartDoubleDash/">
+    <Project Path="Games/MarioKartDoubleDash/MarioKartDoubleDash/MarioKartDoubleDash.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/MariosPicross/">
+    <Project Path="Games/MariosPicross/MariosPicross/MariosPicross.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/PaperMarioDirectorsCut/">
+    <Project Path="Games/PaperMarioDirectorsCut/PaperMarioDirectorsCut Tests/PaperMarioDirectorsCut Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/PaperMarioDirectorsCut/PaperMarioDirectorsCut/PaperMarioDirectorsCut.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/PaperMarioTheThousandYearDoor/">
+    <Project Path="Games/PaperMarioTheThousandYearDoor/PaperMarioTheThousandYearDoor Tests/PaperMarioTheThousandYearDoor Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/PaperMarioTheThousandYearDoor/PaperMarioTheThousandYearDoor/PaperMarioTheThousandYearDoor.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/Pikmin1/">
+    <Project Path="Games/Pikmin1/Pikmin1 Tests/Pikmin1 Tests.csproj">
+      <BuildDependency Project="Fin/Fin/Fin.csproj" />
+      <BuildDependency Project="Games/Pikmin1/Pikmin1/Pikmin1.csproj" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/Pikmin1/Pikmin1/Pikmin1.csproj">
+      <BuildDependency Project="Fin/Fin/Fin.csproj" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/Pikmin2/">
+    <Project Path="Games/Pikmin2/Pikmin2/Pikmin2.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/RollingMadness3d/">
+    <Project Path="Games/RollingMadness3d/RollingMadness3d/RollingMadness3d.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/SonicAdventure/">
+    <Project Path="Games/SonicAdventure/SonicAdventure/SonicAdventure.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/SuperMario64/">
+    <Project Path="Games/SuperMario64/SuperMario64 Tests/SuperMario64 Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/SuperMario64/SuperMario64/SuperMario64.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/SuperMario64Ds/">
+    <Project Path="Games/SuperMario64Ds/SuperMario64Ds Tests/SuperMario64Ds Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Games/SuperMario64Ds/SuperMario64Ds/SuperMario64Ds.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/TimeSplitters2/">
+    <Project Path="Games/TimeSplitters2/TimeSplitters2/TimeSplitters2.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Games/VictoryHeatRally/">
+    <Project Path="Games/VictoryHeatRally/VictoryHeatRally/VictoryHeatRally.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/" />
+  <Folder Name="/Libraries/AngelStudios/">
+    <Project Path="Libraries/AngelStudios/AngelStudios.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/F3dzex2/">
+    <Project Path="Libraries/F3dzex2/F3dzex2.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Fmod/">
+    <Project Path="Libraries/Fmod/Fmod/Fmod.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/FromSoftware/">
+    <Project Path="Libraries/FromSoftware/FromSoftware/FromSoftware.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/GameMaker/">
+    <Project Path="Libraries/GameMaker/GameMaker Tests/GameMaker Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Libraries/GameMaker/GameMaker/GameMaker.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Godot/" />
+  <Folder Name="/Libraries/Granny3d/">
+    <Project Path="Libraries/Granny3d/Granny3d.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Grezzo/">
+    <Project Path="Libraries/Grezzo/Grezzo Tests/Grezzo Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Libraries/Grezzo/Grezzo/Grezzo.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Gx/">
+    <Project Path="Libraries/Gx/Gx Tests/Gx Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Libraries/Gx/Gx/Gx.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/JSystem/">
+    <Project Path="Libraries/JSystem/JSystem Tests/JSystem Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Libraries/JSystem/JSystem/JSystem.csproj">
+      <BuildDependency Project="Fin/Fin/Fin.csproj" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Level5/">
+    <Project Path="Libraries/Level5/Level5 Tests/Level5 Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Libraries/Level5/Level5/Level5.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Nitro/">
+    <Project Path="Libraries/Nitro/Nitro/Nitro.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Sysdolphin/">
+    <Project Path="Libraries/Sysdolphin/Sysdolphin Tests/Sysdolphin Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Libraries/Sysdolphin/Sysdolphin/Sysdolphin.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Libraries/Unity/" />
+  <Folder Name="/Libraries/VisceralGames/">
+    <Project Path="Libraries/VisceralGames/VisceralGames Tests/VisceralGames Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="Libraries/VisceralGames/VisceralGames/VisceralGames.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Folder Name="/UniversalAssetTool/">
+    <Project Path="UniversalAssetTool/UniversalAssetTool Tests/UniversalAssetTool Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="UniversalAssetTool/UniversalAssetTool.Godot/UniversalAssetTool.Godot.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="UniversalAssetTool/UniversalAssetTool.Ui.Avalonia Tests/UniversalAssetTool.Ui.Avalonia Tests.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="UniversalAssetTool/UniversalAssetTool.Ui.Avalonia.Desktop/UniversalAssetTool.Ui.Avalonia.Desktop.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="UniversalAssetTool/UniversalAssetTool.Ui.Avalonia/UniversalAssetTool.Ui.Avalonia.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="UniversalAssetTool/UniversalAssetTool.Ui/UniversalAssetTool.Ui.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="UniversalAssetTool/UniversalAssetTool/UniversalAssetTool.csproj">
+      <BuildDependency Project="Fin/Fin/Fin.csproj" />
+      <BuildDependency Project="Games/Pikmin1/Pikmin1/Pikmin1.csproj" />
+      <BuildDependency Project="Libraries/JSystem/JSystem/JSystem.csproj" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Project Path="Benchmarks/Benchmarks.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+  </Project>
+  <Project Path="ModelPluginWrappers/ModelPluginWrappers.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+  </Project>
+  <Project Path="QuickFont/QuickFont.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+</Solution>
