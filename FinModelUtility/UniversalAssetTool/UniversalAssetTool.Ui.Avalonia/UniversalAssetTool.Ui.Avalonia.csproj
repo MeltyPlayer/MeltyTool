@@ -77,6 +77,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="common\buttons\ContrastableIconButton.axaml.cs">
+      <DependentUpon>ContrastableIconButton.axaml</DependentUpon>
+    </Compile>
     <Compile Update="io\ExportProgressWindow.axaml.cs">
       <DependentUpon>ExportProgressWindow.axaml</DependentUpon>
     </Compile>

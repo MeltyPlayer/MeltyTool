@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             mc:Ignorable="d"
+             x:Class="uni.ui.avalonia.common.buttons.ContrastableIconButton"
+             x:CompileBindings="False">
+  <Button DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}"
+          ToolTip.Tip="{Binding Tooltip}"
+          IsEnabled="{Binding IsEnabled}"
+          Click="Button_OnClick">
+    <controls:If Condition="{Binding HighContrast}">
+      <controls:If.ContentWhenFalse>
+        <avalonia:MaterialIcon Kind="{Binding Icon}" />
+      </controls:If.ContentWhenFalse>
+      <controls:If.ContentWhenTrue>
+        <Grid>
+          <avalonia:MaterialIcon
+              Kind="{Binding Icon}" 
+              Foreground="White"
+              ZIndex="1" />
+          <avalonia:MaterialIcon 
+              Kind="{Binding Icon}"
+              Foreground="#8000"
+              Margin=".5 .5 -.5 -.5"  />
+        </Grid>
+      </controls:If.ContentWhenTrue>
+    </controls:If>
+  </Button>
+</UserControl>

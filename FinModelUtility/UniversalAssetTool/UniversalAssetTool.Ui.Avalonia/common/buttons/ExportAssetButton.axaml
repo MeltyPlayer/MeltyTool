@@ -2,14 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
              mc:Ignorable="d"
              x:Class="uni.ui.avalonia.common.buttons.ExportAssetButton"
              x:CompileBindings="False">
-  <Button DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = UserControl}}"
-          ToolTip.Tip="Export asset"
-          Click="Button_OnClick"
-          IsEnabled="{Binding FileBundle, Converter={x:Static ObjectConverters.IsNotNull}}">
-    <avalonia:MaterialIcon Kind="FileExport" />
-  </Button>
+  <buttons:ContrastibleIconButton
+      Tooltip="Export asset"
+      Icon="FileExport"
+      Click="Button_OnClick" />
 </UserControl>

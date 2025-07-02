@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
+             xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
              xmlns:model="clr-namespace:uni.ui.avalonia.resources.model"
              xmlns:scene="clr-namespace:uni.ui.avalonia.resources.scene"
              xmlns:views="clr-namespace:uni.ui.avalonia.Views"
@@ -44,6 +45,10 @@
     <Style Selector="views|MainView:infoPanelHover > Grid > SplitView > SplitView">
       <Setter Property="IsPaneOpen" Value="True" />
     </Style>
+
+    <Style Selector="#Toolbars buttons|ContrastibleIconButton">
+      <Setter Property="HighContrast" Value="True" />
+    </Style>
   </UserControl.Styles>
 
   <Grid>
@@ -79,14 +84,16 @@
     </SplitView>
 
     <Grid ZIndex="-5">
-      <toolbars:FileBundleToolbar
-          Margin="40 8"
-          DataContext="{Binding FileBundleToolbar}"/>
+      <Grid x:Name="Toolbars">
+        <toolbars:FileBundleToolbar
+            Margin="40 8"
+            DataContext="{Binding FileBundleToolbar}"/>
 
-      <toolbars:TopToolbar 
-          Margin="41 9"
-          HorizontalAlignment="Right"
-          VerticalAlignment="Top" />
+        <toolbars:TopToolbar 
+            Margin="41 9"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top" />
+      </Grid>
 
       <Grid ZIndex="-5">
         <Grid Background="{StaticResource ColorControlCheckeredBackgroundBrush}">
