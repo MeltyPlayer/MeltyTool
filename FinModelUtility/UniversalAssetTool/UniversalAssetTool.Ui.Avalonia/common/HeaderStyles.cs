@@ -25,6 +25,7 @@ namespace uni.ui.avalonia.common {
                     childSelector)
                     [] {
                         (Selectors.OfType<TextBlock>, x => x),
+                        (Selectors.OfType<SelectableTextBlock>, x => x),
                         (Selectors.OfType<TabControl>,
                          x => x.ChildOfType<TabItem>()
                                .Template()

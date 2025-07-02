@@ -46,7 +46,7 @@
       <Setter Property="IsPaneOpen" Value="True" />
     </Style>
 
-    <Style Selector="#Toolbars buttons|ContrastibleIconButton">
+    <Style Selector="#Toolbars buttons|ContrastableIconButton">
       <Setter Property="HighContrast" Value="True" />
     </Style>
   </UserControl.Styles>

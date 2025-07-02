@@ -43,7 +43,8 @@
     <Setter Property="FontSize" Value="{StaticResource RegularFontSize}" />
   </Style>
 
-  <Style Selector="TextBlock.caption">
+  <Style Selector="TextBlock.caption,
+                   SelectableTextBlock.caption">
     <Setter Property="FontSize" Value="10" />
     <Setter Property="FontWeight" Value="Light" />
     <Setter Property="Foreground" Value="{StaticResource ForegroundMediumBrush}" />

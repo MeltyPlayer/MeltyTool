@@ -5,7 +5,7 @@
              xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
              mc:Ignorable="d"
              x:Class="uni.ui.avalonia.common.buttons.ImportAssetButton">
-  <buttons:ContrastibleIconButton
+  <buttons:ContrastableIconButton
       Tooltip="Import asset"
       Icon="FileImport"
       Click="Button_OnClick" />

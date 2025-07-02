@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              x:Class="uni.ui.avalonia.common.buttons.ExportAssetButton"
              x:CompileBindings="False">
-  <buttons:ContrastibleIconButton
+  <buttons:ContrastableIconButton
       Tooltip="Export asset"
       Icon="FileExport"
       Click="Button_OnClick" />

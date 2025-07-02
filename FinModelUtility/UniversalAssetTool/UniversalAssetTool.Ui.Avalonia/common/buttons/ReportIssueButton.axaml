@@ -14,7 +14,7 @@
       </Button>
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
-      <buttons:ContrastibleIconButton
+      <buttons:ContrastableIconButton
           Tooltip="Report issue via GitHub"
           Icon="Bug"
           Click="Button_OnClick" />
