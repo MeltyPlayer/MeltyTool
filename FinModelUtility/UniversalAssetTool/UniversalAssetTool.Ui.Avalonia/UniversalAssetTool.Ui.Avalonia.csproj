@@ -64,6 +64,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Remove="io\NewFolder\**" />
+    <AvaloniaResource Remove="NewFolder\**" />
+    <AvaloniaXaml Remove="io\NewFolder\**" />
+    <AvaloniaXaml Remove="NewFolder\**" />
+    <Compile Remove="io\NewFolder\**" />
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="io\NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="io\NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="io\ExportProgressWindow.axaml.cs">
+      <DependentUpon>ExportProgressWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="io\FileBundleGatherersProgressWindow.axaml.cs">
+      <DependentUpon>FileBundleGatherersProgressWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="resources\model\mesh\MeshTree.axaml.cs">
       <DependentUpon>MeshTree.axaml</DependentUpon>
     </Compile>
