@@ -34,6 +34,11 @@ public interface IFileBundle : IUiFile {
   string TrueFullPath => Asserts.CastNonnull(this.MainFile.FullPath);
 }
 
+public interface INamedAnnotatedFileBundleGatherer
+    : IAnnotatedFileBundleGatherer {
+  string Name { get; }
+}
+
 public interface IAnnotatedFileBundleGatherer {
   void GatherFileBundles(IFileBundleOrganizer organizer,
                          IMutablePercentageProgress mutablePercentageProgress);
