@@ -18,19 +18,13 @@ using uni.platforms.gcn;
 
 namespace uni.games.wind_waker;
 
-public class WindWakerFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  private readonly ILogger logger_ =
-      Logging.Create<WindWakerFileBundleGatherer>();
+public class WindWakerFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "wind_waker";
 
-  public void GatherFileBundles(
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "wind_waker",
-            out var fileHierarchy)) {
-      return;
-    }
-
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     var objectDirectory
         = fileHierarchy.Root.AssertGetExistingSubdir(@"res\Object");
     {

@@ -1,4 +1,5 @@
 ﻿using fin.common;
+using fin.io;
 using fin.io.bundles;
 using fin.model;
 using fin.util.progress;
@@ -7,19 +8,13 @@ using gm.api;
 
 namespace uni.games.pokemon_gold_3d;
 
-public class PokemonGold3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
+public class PokemonGold3dFileBundleGatherer : BPrereqsFileBundleGatherer {
+  public override string Name => "pokemon_gold_3d";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
-            Path.Join("pokemon_gold_3d", ExtractorUtil.PREREQS),
-            out var pg3dDir)) {
-      return;
-    }
-
-    var fileHierarchy
-        = ExtractorUtil.GetFileHierarchy("pokemon_gold_3d", pg3dDir);
-
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     foreach (var omdFile in fileHierarchy.Root.GetFilesWithFileType(
                  ".omd",
                  true)) {
