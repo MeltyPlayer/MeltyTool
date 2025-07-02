@@ -1,4 +1,4 @@
-﻿using fin.common;
+﻿using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
 
@@ -9,19 +9,13 @@ using pmdc.api;
 namespace uni.games.paper_mario_directors_cut;
 
 public class PaperMarioDirectorsCutFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
+    : BPrereqsFileBundleGatherer {
+  public override string Name => "paper_mario_directors_cut";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
-            Path.Join("paper_mario_directors_cut", ExtractorUtil.PREREQS),
-            out var pmdcDir)) {
-      return;
-    }
-
-    var fileHierarchy
-        = ExtractorUtil.GetFileHierarchy("paper_mario_directors_cut", pmdcDir);
-
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     foreach (var modFile in fileHierarchy.Root.GetFilesWithFileType(
                  ".mod",
                  true)) {

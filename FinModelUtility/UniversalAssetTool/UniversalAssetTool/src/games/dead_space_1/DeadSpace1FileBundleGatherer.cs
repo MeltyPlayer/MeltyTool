@@ -2,32 +2,29 @@
 using fin.io.bundles;
 using fin.util.progress;
 
-using uni.platforms.desktop;
-
 using visceral.api;
 
 namespace uni.games.dead_space_1 {
-  public class DeadSpace1FileBundleGatherer : IAnnotatedFileBundleGatherer {
-    public void GatherFileBundles(
-        IFileBundleOrganizer organizer,
-        IMutablePercentageProgress mutablePercentageProgress) {
-      if (!SteamUtils.TryGetGameDirectory("Dead Space", out var deadSpaceDir)) {
-        return;
-      }
+  public class DeadSpace1FileBundleGatherer : BDesktopFileBundleGatherer {
+    public override string Name => "dead_space_1";
+    public override string SteamName => "Dead Space";
+    public override string EpicName => "Dead Space";
 
-      ExtractorUtil.GetOrCreateRomDirectoriesWithCache(
-          "dead_space_1",
-          out var cacheDir,
-          out var extractedDir);
+    protected override void GatherFileBundlesImpl(
+        IFileBundleOrganizer organizer,
+        IMutablePercentageProgress mutablePercentageProgress,
+        ISystemDirectory gameDir,
+        ISystemDirectory cacheDir,
+        ISystemDirectory extractedDir) {
       if (extractedDir.IsEmpty) {
         var strExtractor = new StrExtractor();
-        foreach (var strFile in
-                 deadSpaceDir.GetFilesWithFileType(".str", true)) {
+        foreach (var strFile in gameDir.GetFilesWithFileType(".str", true)) {
           strExtractor.Extract(strFile, extractedDir);
         }
       }
 
-      var assetFileHierarchy = ExtractorUtil.GetFileHierarchy("dead_space_1", extractedDir);
+      var assetFileHierarchy
+          = ExtractorUtil.GetFileHierarchy("dead_space_1", extractedDir);
       var bnkFileIdsDictionary = new BnkFileIdsDictionary(
           extractedDir,
           new FinFile(Path.Join(cacheDir.FullPath, "bnks.ids")));
@@ -40,7 +37,8 @@ namespace uni.games.dead_space_1 {
 
       foreach (var charSubdir in
                new[] { "animated_props", "chars", "weapons" }
-                   .Select(f => assetFileHierarchy.Root.AssertGetExistingSubdir(f))
+                   .Select(f => assetFileHierarchy.Root.AssertGetExistingSubdir(
+                               f))
                    .SelectMany(subdir => subdir.GetExistingSubdirs())) {
         IFileHierarchyFile[] geoFiles = [];
         if (charSubdir.TryToGetExistingSubdir("rigged/export",

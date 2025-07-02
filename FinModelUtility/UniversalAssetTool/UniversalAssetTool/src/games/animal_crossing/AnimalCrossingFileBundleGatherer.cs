@@ -1,18 +1,14 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
-
-using uni.platforms.gcn;
 
 namespace uni.games.animal_crossing;
 
-public class AnimalCrossingFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
+public class AnimalCrossingFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "animal_crossing";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "animal_crossing",
-            out var fileHierarchy)) {
-      return;
-    }
-  }
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) { }
 }

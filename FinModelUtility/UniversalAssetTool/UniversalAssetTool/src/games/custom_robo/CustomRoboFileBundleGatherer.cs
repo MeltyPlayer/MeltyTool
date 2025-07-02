@@ -1,22 +1,18 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
 
 using ssm.api;
 
-using uni.platforms.gcn;
-
 namespace uni.games.custom_robo;
 
-public class CustomRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "custom_robo",
-            out var fileHierarchy)) {
-      return;
-    }
+public class CustomRoboFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "custom_robo";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     foreach (var ssmFile in
              fileHierarchy.Root.FilesWithExtensionRecursive(".ssm")) {
       organizer.Add(new SsmAudioFileBundle {

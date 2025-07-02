@@ -1,22 +1,18 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
 
 using ssm.api;
 
-using uni.platforms.gcn;
-
 namespace uni.games.kirby_air_ride;
 
-public class KirbyAirRideFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "kirby_air_ride",
-            out var fileHierarchy)) {
-      return;
-    }
+public class KirbyAirRideFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "kirby_air_ride";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     // TODO: Support dat files, appear to be similar to Custom Robo?
 
     foreach (var ssmFile in

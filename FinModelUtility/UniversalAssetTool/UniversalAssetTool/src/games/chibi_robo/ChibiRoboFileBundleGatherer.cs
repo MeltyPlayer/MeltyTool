@@ -5,20 +5,17 @@ using fin.util.progress;
 
 using ssm.api;
 
-using uni.platforms.gcn;
+using fin.io;
 
 namespace uni.games.chibi_robo;
 
-public class ChibiRoboFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "chibi_robo",
-            out var fileHierarchy)) {
-      return;
-    }
+public class ChibiRoboFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "chibi_robo";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     var qpBinFile = fileHierarchy.Root.AssertGetExistingFile("qp.bin");
     var qpDir = fileHierarchy.Root.Impl.GetOrCreateSubdir("qpBin");
     if (qpDir.IsEmpty) {

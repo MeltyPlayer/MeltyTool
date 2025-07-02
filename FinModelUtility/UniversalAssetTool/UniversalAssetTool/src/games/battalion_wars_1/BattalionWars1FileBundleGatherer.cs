@@ -10,16 +10,13 @@ using uni.util.io;
 
 namespace uni.games.battalion_wars_1;
 
-public class BattalionWars1FileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "battalion_wars_1",
-            out var fileHierarchy)) {
-      return;
-    }
+public class BattalionWars1FileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "battalion_wars_1";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     var didUpdateAny = false;
     foreach (var directory in fileHierarchy) {
       var didUpdate = false;
