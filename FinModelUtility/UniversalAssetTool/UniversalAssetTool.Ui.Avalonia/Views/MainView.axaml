@@ -38,77 +38,84 @@
       <Setter Property="Opacity" Value=".25" />
     </Style>
 
-    <Style Selector="views|MainView:fileSelectorHover > Grid > SplitView">
+    <Style Selector="views|MainView:fileSelectorHover > Grid > DockPanel > Grid > SplitView">
       <Setter Property="IsPaneOpen" Value="True" />
     </Style>
 
-    <Style Selector="views|MainView:infoPanelHover > Grid > SplitView > SplitView">
+    <Style Selector="views|MainView:infoPanelHover > Grid > DockPanel > Grid > SplitView > SplitView">
       <Setter Property="IsPaneOpen" Value="True" />
     </Style>
 
-    <Style Selector="#Toolbars buttons|ContrastableIconButton">
+    <Style Selector=".Toolbars buttons|ContrastableIconButton">
       <Setter Property="HighContrast" Value="True" />
     </Style>
   </UserControl.Styles>
 
   <Grid>
-    <SplitView DisplayMode="CompactInline"
-               OpenPaneLength="300"
-               CompactPaneLength="32">
-      <SplitView.Pane>
-        <Border x:Name="FileSelectorPanel"
-                Background="Transparent"
-                BoxShadow="0 0 10 0 Black">
-          <progress:ProgressPanel DataContext="{Binding FileBundleTreeAsyncPanelViewModel}">
-            <progress:ProgressPanel.DataTemplate>
-              <DataTemplate x:DataType="progress:ValueFractionProgress">
-                <treeViews:FilterTreeView DataContext="{Binding Value}" />
-              </DataTemplate>
-            </progress:ProgressPanel.DataTemplate>
-          </progress:ProgressPanel>
-        </Border>
-      </SplitView.Pane>
-
-      <SplitView DisplayMode="CompactInline"
-                 PanePlacement="Right"
-                 OpenPaneLength="400"
-                 CompactPaneLength="32"
-                 Margin="-32 0 0 0">
-        <SplitView.Pane>
-          <Border x:Name="InfoPanel" BoxShadow="0 0 10 0 Black">
-            <model:ModelPanel
-                DataContext="{Binding ModelPanel}" />
-          </Border>
-        </SplitView.Pane>
-      </SplitView>
-    </SplitView>
-
-    <Grid ZIndex="-5">
-      <Grid x:Name="Toolbars">
-        <toolbars:FileBundleToolbar
-            Margin="40 8"
-            DataContext="{Binding FileBundleToolbar}"/>
+    <DockPanel>
+      <Panel Classes="Toolbars"
+             DockPanel.Dock="Top">
+        <toolbars:TopMenu />
 
         <toolbars:TopToolbar 
-            Margin="41 9"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top" />
+            DataContext="{Binding TopToolbar}"
+            Margin="2"
+            HorizontalAlignment="Right" />
+      </Panel>
+
+      <Grid>
+        <SplitView DisplayMode="CompactInline"
+                   OpenPaneLength="300"
+                   CompactPaneLength="32">
+          <SplitView.Pane>
+            <Border x:Name="FileSelectorPanel"
+                    Background="Transparent"
+                    BoxShadow="0 0 10 0 Black">
+              <progress:ProgressPanel DataContext="{Binding FileBundleTreeAsyncPanelViewModel}">
+                <progress:ProgressPanel.DataTemplate>
+                  <DataTemplate x:DataType="progress:ValueFractionProgress">
+                    <treeViews:FilterTreeView DataContext="{Binding Value}" />
+                  </DataTemplate>
+                </progress:ProgressPanel.DataTemplate>
+              </progress:ProgressPanel>
+            </Border>
+          </SplitView.Pane>
+
+          <SplitView DisplayMode="CompactInline"
+                     PanePlacement="Right"
+                     OpenPaneLength="400"
+                     CompactPaneLength="32"
+                     Margin="-32 0 0 0">
+            <SplitView.Pane>
+              <Border x:Name="InfoPanel" BoxShadow="0 0 10 0 Black">
+                <model:ModelPanel
+                    DataContext="{Binding ModelPanel}" />
+              </Border>
+            </SplitView.Pane>
+          </SplitView>
+        </SplitView>
+
+        <Grid ZIndex="-5">
+          <toolbars:FileBundleToolbar
+              DataContext="{Binding FileBundleToolbar}"
+              Margin="40 8" />
+        </Grid>
+      </Grid>
+    </DockPanel>
+
+    <Grid ZIndex="-5">
+      <Grid Background="{StaticResource ColorControlCheckeredBackgroundBrush}">
+        <scene:SceneInstanceViewerGlPanel
+            x:Name="SceneViewerGlPanel"
+            IsTabStop="True"
+            TabIndex="0"
+            Focusable="True" />
       </Grid>
 
-      <Grid ZIndex="-5">
-        <Grid Background="{StaticResource ColorControlCheckeredBackgroundBrush}">
-          <scene:SceneInstanceViewerGlPanel
-              x:Name="SceneViewerGlPanel"
-              IsTabStop="True"
-              TabIndex="0"
-              Focusable="True" />
-        </Grid>
-
-        <Grid MaxWidth="500"
-              VerticalAlignment="Bottom"
-              Margin="0 32">
-          <audio:AudioPlayerPanel DataContext="{Binding AudioPlayerPanel}" />
-        </Grid>
+      <Grid MaxWidth="500"
+            VerticalAlignment="Bottom"
+            Margin="0 32">
+        <audio:AudioPlayerPanel DataContext="{Binding AudioPlayerPanel}" />
       </Grid>
     </Grid>
   </Grid>

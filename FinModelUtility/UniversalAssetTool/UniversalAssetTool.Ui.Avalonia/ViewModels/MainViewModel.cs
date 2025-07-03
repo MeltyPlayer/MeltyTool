@@ -33,29 +33,31 @@ public class MainViewModelForDesigner {
   public FileBundleToolbarModel FileBundleToolbar { get; }
     = new FileBundleToolbarModelForDesigner();
 
+  public TopToolbarModel TopToolbar { get; }
+    = new TopToolbarModelForDesigner();
+
   public MainViewModelForDesigner() {
     var progress = new ValueFractionProgress();
 
     var secondsToWait = 3;
     var start = DateTime.Now;
 
-    Task.Run(
-        async () => {
-          DateTime current;
-          double elapsedSeconds;
-          do {
-            current = DateTime.Now;
-            elapsedSeconds = (current - start).TotalSeconds;
-            progress.ReportProgress(
-                100 *
-                Math.Clamp((float) (elapsedSeconds / secondsToWait), 0, 1));
+    Task.Run(async () => {
+      DateTime current;
+      double elapsedSeconds;
+      do {
+        current = DateTime.Now;
+        elapsedSeconds = (current - start).TotalSeconds;
+        progress.ReportProgress(
+            100 *
+            Math.Clamp((float) (elapsedSeconds / secondsToWait), 0, 1));
 
-            await Task.Delay(50);
-          } while (elapsedSeconds < secondsToWait);
+        await Task.Delay(50);
+      } while (elapsedSeconds < secondsToWait);
 
-          var fileTreeViewModel = new FileBundleTreeViewModelForDesigner();
-          progress.ReportCompletion(fileTreeViewModel);
-        });
+      var fileTreeViewModel = new FileBundleTreeViewModelForDesigner();
+      progress.ReportCompletion(fileTreeViewModel);
+    });
 
     this.FileBundleTreeAsyncPanelViewModel = new ProgressPanelViewModel
         { Progress = progress };
@@ -101,6 +103,8 @@ public class MainViewModel : ViewModelBase {
           var fileBundle = sceneInstance.Definition.FileBundle;
           this.FileBundleToolbar = new FileBundleToolbarModel {
               FileName = fileBundle?.DisplayFullPath.ToString(),
+          };
+          this.TopToolbar = new TopToolbarModel {
               FileBundle = fileBundle,
           };
 
@@ -144,7 +148,11 @@ public class MainViewModel : ViewModelBase {
 
   public FileBundleToolbarModel FileBundleToolbar {
     get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
 
+  public TopToolbarModel TopToolbar {
+    get;
     set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
@@ -219,15 +227,13 @@ public class MainViewModel : ViewModelBase {
         new ObservableCollection<INode<IAnnotatedFileBundle>>(
             directory
                 .Subdirs
-                .Select(
-                    d => this.CreateDirectoryNode_(
-                        d,
-                        counterPercentageProgress))
+                .Select(d => this.CreateDirectoryNode_(
+                            d,
+                            counterPercentageProgress))
                 .Concat(
-                    directory.FileBundles.Select(
-                        f => this.CreateFileNode_(
-                            f,
-                            counterPercentageProgress)))));
+                    directory.FileBundles.Select(f => this.CreateFileNode_(
+                                                     f,
+                                                     counterPercentageProgress)))));
   }
 
   private INode<IAnnotatedFileBundle> CreateFileNode_(

@@ -28,6 +28,13 @@
       </gb:GroupBox>
 
       <Button>Hello</Button>
+
+      <Menu>
+        <MenuItem Header="Foo">
+          <MenuItem Header="Child" />
+        </MenuItem>
+        <MenuItem Header="Bar" />
+      </Menu>
     </StackPanel>
   </Design.PreviewWith>
 
@@ -52,6 +59,34 @@
 
   <Style Selector="gb|GroupBox">
     <Setter Property="Padding" Value="0" />
+  </Style>
+
+  <Style Selector="Menu > MenuItem">
+    <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+    <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Margin" Value="2" />
+
+    <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
+      <Setter Property="Effect">
+        <DropShadowEffect
+          OffsetX="1"
+          OffsetY="1"
+          BlurRadius="0"
+          Color="{DynamicResource SystemBaseHighColor}" />
+      </Setter>
+    </Style>
+
+    <Style Selector="^:pointerover /template/ ContentPresenter#PART_HeaderPresenter,
+                     ^:selected /template/ ContentPresenter#PART_HeaderPresenter">
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="^:pressed">
+      <Setter Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="RenderTransform" Value="scale(0.98)" />
+    </Style>
   </Style>
 
   <Style Selector="TabControl:not(.indented)">

@@ -11,31 +11,16 @@
     <toolbars:FileBundleToolbarModelForDesigner />
   </Design.DataContext>
 
-  <StackPanel Orientation="Vertical">
-    <Grid Height="30">
-      <SelectableTextBlock
-        Classes="h1 spaceFirst"
-        Foreground="White"
-        Text="{Binding FileName}"
-        ZIndex="1">
-        <!-- DropShadowEffect has a pretty bad memory leak when rendering -->
-        <!--<TextBlock.Effect>
-          <DropShadowEffect
-              OffsetX="1"
-              OffsetY="1"
-              BlurRadius="5" />
-        </TextBlock.Effect>-->
-      </SelectableTextBlock>
-      <TextBlock
-        Classes="h1 spaceFirst"
-        Foreground="#8000"
-        Text="{Binding FileName}"
-        Margin="1 1">
-      </TextBlock>
-    </Grid>
-
-    <StackPanel Orientation="Horizontal">
-      <buttons:ExportAssetButton FileBundle="{Binding FileBundle}" />
-    </StackPanel>
-  </StackPanel>
+  <SelectableTextBlock
+    Classes="h1 spaceFirst"
+    Foreground="White"
+    Text="{Binding FileName}"
+    ZIndex="1">
+    <SelectableTextBlock.Effect>
+      <DropShadowEffect
+          OffsetX="1"
+          OffsetY="1"
+          BlurRadius="0" />
+    </SelectableTextBlock.Effect>
+  </SelectableTextBlock>
 </UserControl>
