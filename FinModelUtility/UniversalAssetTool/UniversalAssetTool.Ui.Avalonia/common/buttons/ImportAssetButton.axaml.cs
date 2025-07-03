@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
@@ -16,12 +17,15 @@ namespace uni.ui.avalonia.common.buttons;
 public partial class ImportAssetButton : UserControl {
   public ImportAssetButton() => this.InitializeComponent();
 
-  private async void Button_OnClick(object? sender, RoutedEventArgs e) {
+  private void Button_OnClick(object? sender, RoutedEventArgs e)
+    => Task.Run(() => OpenFileWindowAndTryToImportAsset(this));
+
+  public static async Task OpenFileWindowAndTryToImportAsset(Visual visual) {
     var plugins = PluginUtil.Plugins;
     var supportedExtensions =
         plugins.SelectMany(plugin => plugin.FileExtensions).ToHashSet();
 
-    var storageProvider = TopLevel.GetTopLevel(this)?.StorageProvider;
+    var storageProvider = TopLevel.GetTopLevel(visual)?.StorageProvider;
     if (storageProvider == null) {
       return;
     }

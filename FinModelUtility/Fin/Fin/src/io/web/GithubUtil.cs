@@ -88,15 +88,18 @@ public static class GitHubUtil {
         body.Append(')');
       }
 
-      var abbreviatedFileName = frame.GetFileName()
-                                     .Replace('\\', '/')
-                                     .SubstringAfter("FinModelUtility/");
-      abbreviatedFileName
-          = abbreviatedFileName.Replace("FinModelUtility/FinModelUtility",
-                                        "FinModelUtility")
-                               .Replace("Github", "GitHub");
+      var fileName = frame.GetFileName();
+      if (fileName != null) {
+        var abbreviatedFileName = fileName
+                                  .Replace('\\', '/')
+                                  .SubstringAfter("FinModelUtility/");
+        abbreviatedFileName
+            = abbreviatedFileName.Replace("FinModelUtility/FinModelUtility",
+                                          "FinModelUtility")
+                                 .Replace("Github", "GitHub");
 
-      body.Append(" in //").Append(abbreviatedFileName);
+        body.Append(" in //").Append(abbreviatedFileName);
+      }
 
       body.AppendLine($":line {frame.GetFileLineNumber()}");
     }

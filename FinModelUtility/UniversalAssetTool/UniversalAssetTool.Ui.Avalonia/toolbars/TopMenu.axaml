@@ -6,14 +6,19 @@
              x:Class="uni.ui.avalonia.toolbars.TopMenu">
   <Menu>
     <MenuItem Header="_File">
-      <MenuItem Header="Import single asset from files" />
+      <MenuItem Header="Import single asset from files"
+                Click="OpenFileWindowAndTryToImportAsset_"/>
       <Separator />
       <MenuItem Header="Export asset to..." />
       <MenuItem Header="Export asset to out/" />
       <MenuItem Header="Export X assets in selected directory to out/" />
+      <Separator />
+      <MenuItem Header="Settings"
+                Click="OpenSettingsWindow_"/>
     </MenuItem>
     <MenuItem Header="_Help">
-      <MenuItem Header="Report issue via GitHub" />
+      <MenuItem Header="Report issue via GitHub"
+                Click="OpenGithubInBrowser_"/>
     </MenuItem>
   </Menu>
 </UserControl>
