@@ -2,8 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:toolbars="clr-namespace:uni.ui.avalonia.toolbars"
+             xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="uni.ui.avalonia.toolbars.TopMenu">
+             x:Class="uni.ui.avalonia.toolbars.TopMenu"
+             x:DataType="toolbars:TopMenuModel">
+  <Design.DataContext>
+    <toolbars:TopMenuModelForDesigner />
+  </Design.DataContext>
+
   <Menu>
     <MenuItem Header="_File">
       <MenuItem Header="Import single asset from files"
@@ -11,7 +18,8 @@
       <Separator />
       <MenuItem Header="Export asset to..." />
       <MenuItem Header="Export asset to out/" />
-      <MenuItem Header="Export X assets in selected directory to out/" />
+      <MenuItem IsEnabled="{Binding ExportInDirectoryButtonEnabled}"
+                Header="{Binding ExportInDirectoryText}" />
       <Separator />
       <MenuItem Header="Settings"
                 Click="OpenSettingsWindow_"/>

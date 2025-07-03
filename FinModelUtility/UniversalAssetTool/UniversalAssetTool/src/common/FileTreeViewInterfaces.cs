@@ -52,3 +52,18 @@ public interface IFileTreeParentNode : IFileTreeNode {
 public interface IFileTreeLeafNode : IFileTreeNode {
   IAnnotatedFileBundle File { get; }
 }
+
+public static class FileTreeExtensions {
+  public static string GetLocalPath(this IFileTreeNode node) {
+    var localPath = "";
+    while (node != null) {
+      localPath = node is IFileTreeLeafNode
+          ? node.Text
+          : $"{node.Text}/{localPath}";
+
+      node = node.Parent;
+    }
+
+    return $"//{localPath}";
+  }
+}

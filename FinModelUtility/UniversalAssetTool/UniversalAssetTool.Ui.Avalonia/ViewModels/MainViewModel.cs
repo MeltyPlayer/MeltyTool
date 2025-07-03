@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using fin.io.bundles;
 using fin.model;
 using fin.model.io;
+using fin.util.asserts;
 using fin.util.progress;
 
 using ReactiveUI;
@@ -19,6 +20,7 @@ using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.audio;
 using uni.ui.avalonia.resources.model;
 using uni.ui.avalonia.toolbars;
+using uni.ui.winforms.common.fileTreeView;
 
 namespace uni.ui.avalonia.ViewModels;
 
@@ -183,8 +185,18 @@ public class MainViewModel : ViewModelBase {
 
     viewModel.NodeSelected
         += (_, node) => {
-          if (node is FileBundleLeafNode leafNode) {
-            FileBundleService.OpenFileBundle(null, leafNode.Value);
+          switch (node) {
+            case FileBundleLeafNode leafNode: {
+              SelectedFileTreeDirectoryService.SelectFileTreeDirectory(
+                  leafNode.Parent.AssertNonnull());
+              FileBundleService.OpenFileBundle(null, leafNode.Value);
+              break;
+            }
+            case IFileTreeParentNode parentNode: {
+              SelectedFileTreeDirectoryService.SelectFileTreeDirectory(
+                  parentNode);
+              break;
+            }
           }
         };
 
@@ -219,7 +231,7 @@ public class MainViewModel : ViewModelBase {
     string text = directory.Name;
     if (parts != null) {
       parts.Add(text);
-      text = Path.Join(parts.ToArray());
+      text = string.Join('/', parts.ToArray());
     }
 
     return new FileBundleDirectoryNode(
@@ -247,7 +259,7 @@ public class MainViewModel : ViewModelBase {
     string? text = null;
     if (parts != null) {
       parts.Add(displayName);
-      text = Path.Join(parts.ToArray());
+      text = string.Join('/', parts.ToArray());
     }
 
     var label = text ?? displayName;

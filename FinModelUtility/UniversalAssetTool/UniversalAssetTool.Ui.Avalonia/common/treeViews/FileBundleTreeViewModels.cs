@@ -157,7 +157,7 @@ public class FileBundleTreeViewModelForDesigner()
 public abstract class BFileBundleNode(string text)
     : ViewModelBase, IFileTreeNode {
   public string Text => text;
-  public IFileTreeParentNode? Parent => null;
+  public IFileTreeParentNode? Parent { get; set; }
 }
 
 public class FileBundleDirectoryNode
@@ -178,6 +178,12 @@ public class FileBundleDirectoryNode
       IReadOnlyList<IFileBundleNode>? subNodes,
       IReadOnlySet<string> filterTerms) : base(label) {
     this.subNodes_ = subNodes;
+    foreach (var subNode in this.subNodes_) {
+      if (subNode is BFileBundleNode bNode) {
+        bNode.Parent = this;
+      }
+    }
+
     this.Label = label;
     this.FilterTerms = filterTerms;
     var obsList = subNodes != null
