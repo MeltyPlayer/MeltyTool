@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using fin.util.progress;
 
@@ -44,4 +45,31 @@ public class ValueFractionProgress
   public event EventHandler<float>? OnProgressChanged;
   public event EventHandler<object>? OnCompleteValue;
   public event EventHandler? OnComplete;
+
+
+  public static ValueFractionProgress FromTimer(
+      float secondsToWait,
+      object value) {
+    var progress = new ValueFractionProgress();
+
+    var start = DateTime.Now;
+
+    Task.Run(async () => {
+      DateTime current;
+      double elapsedSeconds;
+      do {
+        current = DateTime.Now;
+        elapsedSeconds = (current - start).TotalSeconds;
+        progress.ReportProgress(
+            100 *
+            Math.Clamp((float) (elapsedSeconds / secondsToWait), 0, 1));
+
+        await Task.Delay(50);
+      } while (elapsedSeconds < secondsToWait);
+
+      progress.ReportCompletion("Hello world!");
+    });
+
+    return progress;
+  }
 }

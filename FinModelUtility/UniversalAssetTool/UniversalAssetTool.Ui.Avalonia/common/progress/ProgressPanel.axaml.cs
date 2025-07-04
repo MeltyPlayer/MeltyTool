@@ -14,27 +14,7 @@ namespace uni.ui.avalonia.common.progress;
 public class ProgressPanelViewModelForDesigner
     : ProgressPanelViewModel {
   public ProgressPanelViewModelForDesigner() {
-    this.Progress = new ValueFractionProgress();
-
-    var secondsToWait = 3;
-    var start = DateTime.Now;
-
-    Task.Run(
-        async () => {
-          DateTime current;
-          double elapsedSeconds;
-          do {
-            current = DateTime.Now;
-            elapsedSeconds = (current - start).TotalSeconds;
-            this.Progress.ReportProgress(
-                100 *
-                Math.Clamp((float) (elapsedSeconds / secondsToWait), 0, 1));
-
-            await Task.Delay(50);
-          } while (elapsedSeconds < secondsToWait);
-
-          this.Progress.ReportCompletion("Hello world!");
-        });
+    this.Progress = ValueFractionProgress.FromTimer(3, "Hello world!");
   }
 }
 
