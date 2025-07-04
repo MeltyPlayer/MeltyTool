@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Avalonia;
@@ -14,6 +15,7 @@ using fin.data.queues;
 using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
+using fin.util.io;
 
 using grezzo.api;
 
@@ -55,25 +57,27 @@ public class FileBundleTreeViewModel
         nodeQueue.Enqueue(node.FilteredSubNodes);
       }
     }
+
     this.AutoCompleteItems = autoCompleteItems.ToArray();
 
     var obsList = new ObservableList<IFileBundleNode>(nodes);
     this.filteredNodes_ = obsList.CreateView(t => t);
 
-    this.Source = new HierarchicalTreeDataGridSource<IFileBundleNode>(this.filteredNodes_) {
-        Columns = {
-            new HierarchicalExpanderColumn<IFileBundleNode>(
-                new TemplateColumn<IFileBundleNode>(
-                    "Name",
-                    new FuncDataTemplate<IFileBundleNode>(
-                        (x, _) => {
+    this.Source
+        = new HierarchicalTreeDataGridSource<IFileBundleNode>(
+            this.filteredNodes_) {
+            Columns = {
+                new HierarchicalExpanderColumn<IFileBundleNode>(
+                    new TemplateColumn<IFileBundleNode>(
+                        "Name",
+                        new FuncDataTemplate<IFileBundleNode>((x, _) => {
                           if (x == null) {
                             return null;
                           }
 
                           var textBlock = new TextBlock {
                               Text = x.Label,
-                              Classes = {"regular"}
+                              Classes = { "regular" }
                           };
 
                           if (x.Icon == null) {
@@ -92,11 +96,28 @@ public class FileBundleTreeViewModel
                           };
                           stackPanel.Children.AddRange([icon, textBlock]);
 
+                          var annotatedFileBundle = x.Value;
+                          var contextMenu = new ContextMenu();
+                          {
+                            var openInExplorerItem = new MenuItem {
+                                Header = "Show in Explorer",
+                                IsEnabled = annotatedFileBundle.MainFile != null
+                            };
+                            openInExplorerItem.Click += (_, _) => {
+                              if (annotatedFileBundle.MainFile != null) {
+                                ExplorerUtil.OpenInExplorer(
+                                    annotatedFileBundle.MainFile);
+                              }
+                            };
+                            contextMenu.Items.Add(openInExplorerItem);
+                          }
+                          stackPanel.ContextMenu = contextMenu;
+
                           return stackPanel;
                         })),
-                x => x.FilteredSubNodes)
-        }
-    };
+                    x => x.FilteredSubNodes)
+            }
+        };
 
     Dispatcher.UIThread.Invoke(() => {
       var rowSelection = this.Source.RowSelection!;
@@ -237,10 +258,10 @@ public class FileBundleLeafNode(
       IFileBundleNode>? FilteredSubNodes => null;
 
   public MaterialIconKind? Icon => data.FileBundle.Type switch {
-    FileBundleType.AUDIO => MaterialIconKind.VolumeHigh,
-    FileBundleType.IMAGE => MaterialIconKind.ImageOutline,
-    FileBundleType.MODEL => MaterialIconKind.CubeOutline,
-    FileBundleType.SCENE => MaterialIconKind.Web,
+      FileBundleType.AUDIO => MaterialIconKind.VolumeHigh,
+      FileBundleType.IMAGE => MaterialIconKind.ImageOutline,
+      FileBundleType.MODEL => MaterialIconKind.CubeOutline,
+      FileBundleType.SCENE => MaterialIconKind.Web,
   };
 
   public IAnnotatedFileBundle Value => data;
