@@ -24,7 +24,7 @@ namespace uni.games.dead_space_1 {
       }
 
       var assetFileHierarchy
-          = ExtractorUtil.GetFileHierarchy("dead_space_1", extractedDir);
+          = ExtractorUtil.GetFileHierarchy(this.Name, extractedDir);
       var bnkFileIdsDictionary = new BnkFileIdsDictionary(
           extractedDir,
           new FinFile(Path.Join(cacheDir.FullPath, "bnks.ids")));

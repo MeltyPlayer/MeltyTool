@@ -1,25 +1,15 @@
-﻿using fin.common;
+﻿using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
-
-using uni.platforms.ds;
 
 namespace uni.games.pokemon_diamond;
 
 public class PokemonDiamondFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
+    : BDsFileBundleGatherer {
+  public override string Name => "pokemon_diamond";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-            "pokemon_diamond.nds",
-            out var pokemonDiamondRom)) {
-      return;
-    }
-
-    var fileHierarchy
-        = new DsFileHierarchyExtractor().ExtractFromRom(pokemonDiamondRom);
-
-    //NarcArchiveImporter.ImportAndExtractAll(fileHierarchy);
-  }
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) { }
 }

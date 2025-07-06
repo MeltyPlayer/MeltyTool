@@ -5,7 +5,6 @@ using fin.util.progress;
 
 using modl.api;
 
-using uni.platforms.gcn;
 using uni.util.io;
 
 namespace uni.games.battalion_wars_1;

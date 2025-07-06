@@ -1,5 +1,4 @@
-﻿using fin.common;
-using fin.config;
+﻿using fin.config;
 using fin.data.sets;
 using fin.io;
 using fin.io.bundles;
@@ -9,13 +8,12 @@ using nitro.api;
 
 using sm64ds.api;
 
-using uni.platforms.ds;
 using uni.util.bundles;
 using uni.util.io;
 
 namespace uni.games.super_mario_64_ds;
 
-public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class SuperMario64DsFileBundleGatherer : BDsFileBundleGatherer {
   private readonly IModelSeparator modelSeparator_
       = new ModelSeparator(directory => directory.Name)
         .Register(
@@ -52,18 +50,12 @@ public class SuperMario64DsFileBundleGatherer : IAnnotatedFileBundleGatherer {
         .Register("yurei_mucho",
                   new PrimaryModelSeparatorMethod("yurei_mucho.bmd"));
 
-  public void GatherFileBundles(
+  public override string Name => "super_mario_64_ds";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-            "super_mario_64_ds.nds",
-            out var superMario64DsRom)) {
-      return;
-    }
-
-    var fileHierarchy
-        = new DsFileHierarchyExtractor().ExtractFromRom(superMario64DsRom);
-
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     NarcArchiveImporter.ImportAndExtractAll(
         fileHierarchy,
         FinConfig.CleanUpArchives);

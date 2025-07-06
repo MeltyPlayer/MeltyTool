@@ -1,4 +1,5 @@
-﻿using fin.data.queues;
+﻿using fin.common;
+using fin.data.queues;
 using fin.io;
 
 using SceneGate.Ekona.Containers.Rom;
@@ -10,6 +11,25 @@ using Yarhl.FileSystem;
 namespace uni.platforms.ds;
 
 internal class DsFileHierarchyExtractor {
+  public bool TryToExtractFromGame(
+      string gameName,
+      out IFileHierarchy fileHierarchy) {
+    if (!this.TryToFindRom_(gameName, out var romFile)) {
+      fileHierarchy = default;
+      return false;
+    }
+
+    fileHierarchy = this.ExtractFromRom(romFile);
+    return true;
+  }
+
+  private bool TryToFindRom_(string gameName, out ISystemFile romFile)
+    => DirectoryConstants.ROMS_DIRECTORY
+                         .TryToGetExistingFileWithFileType(
+                             gameName,
+                             out romFile,
+                             ".nds");
+
   public IFileHierarchy ExtractFromRom(
       IReadOnlySystemFile romFile) {
       if (ExtractorUtil.HasNotBeenExtractedYet(romFile, out var outDir)) {
