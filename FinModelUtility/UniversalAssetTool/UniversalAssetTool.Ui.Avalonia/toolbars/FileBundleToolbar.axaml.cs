@@ -1,7 +1,5 @@
 using Avalonia.Controls;
 
-using fin.io.bundles;
-
 using ReactiveUI;
 
 using uni.ui.avalonia.ViewModels;

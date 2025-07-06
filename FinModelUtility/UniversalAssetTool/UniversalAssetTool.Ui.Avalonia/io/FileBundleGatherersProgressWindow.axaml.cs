@@ -1,16 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 using Avalonia.Controls;
 
-using fin.io.bundles;
-using fin.model;
-using fin.ui.rendering;
 using fin.util.progress;
-
-using NaturalSort.Extension;
 
 using ReactiveUI;
 

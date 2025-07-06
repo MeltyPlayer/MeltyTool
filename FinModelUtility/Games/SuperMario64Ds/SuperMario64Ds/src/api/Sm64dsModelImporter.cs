@@ -9,7 +9,6 @@ using fin.image;
 using fin.io;
 using fin.language.equations.fixedFunction;
 using fin.math.floats;
-using fin.math.matrix.three;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;

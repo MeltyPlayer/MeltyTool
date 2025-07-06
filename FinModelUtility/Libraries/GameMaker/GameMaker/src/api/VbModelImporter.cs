@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-using fin.io;
+﻿using fin.io;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;

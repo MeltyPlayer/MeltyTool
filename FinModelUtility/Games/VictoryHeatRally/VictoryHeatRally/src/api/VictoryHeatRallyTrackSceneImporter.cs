@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Numerics;
+﻿using System.Numerics;
 
 using fin.data.lazy;
 using fin.image;
@@ -16,10 +15,6 @@ using fin.util.sets;
 using gm.api;
 
 using Newtonsoft.Json;
-
-using static vhr.api.VictoryHeatRallyTrackSceneImporter;
-
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 
 namespace vhr.api;

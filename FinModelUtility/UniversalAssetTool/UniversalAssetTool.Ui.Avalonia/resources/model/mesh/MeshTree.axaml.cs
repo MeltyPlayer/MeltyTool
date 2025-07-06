@@ -6,7 +6,6 @@ using Avalonia.Controls;
 
 using fin.model;
 using fin.ui.rendering;
-using fin.util.asserts;
 
 using Material.Icons;
 

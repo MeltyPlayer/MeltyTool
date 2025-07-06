@@ -1,6 +1,4 @@
-﻿using schema.binary;
-
-namespace gm.schema.dataWin.chunk.txtr;
+﻿namespace gm.schema.dataWin.chunk.txtr;
 
 /// <summary>
 ///   Shamelessly stolen from:

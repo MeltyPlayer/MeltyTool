@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Numerics;
 
 using f3dzex2.combiner;
 using f3dzex2.displaylist;

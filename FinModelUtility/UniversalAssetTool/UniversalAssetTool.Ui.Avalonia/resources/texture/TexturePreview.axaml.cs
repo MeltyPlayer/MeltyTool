@@ -1,6 +1,5 @@
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -17,7 +16,6 @@ using ReactiveUI;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-using uni.ui.avalonia.common.progress;
 using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.model;
 using uni.ui.avalonia.ViewModels;

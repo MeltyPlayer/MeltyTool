@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-using fin.math.matrix.four;
+﻿using fin.math.matrix.four;
 
 namespace sm64.Scripts {
   public class GeoScriptNode {
