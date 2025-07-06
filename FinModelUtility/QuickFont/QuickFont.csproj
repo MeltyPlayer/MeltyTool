@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Melville.SharpFont" Version="0.4.8" />
     <PackageReference Include="OpenTK" Version="4.8.2" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Wayfinder\QuickFont\Shaders\simple.fs" />

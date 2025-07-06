@@ -37,12 +37,12 @@
     <PackageReference Include="OpenAL.Soft" Version="1.23.1" />
     <PackageReference Include="Pfim" Version="0.11.3" />
     <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.4" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
     <PackageReference Include="SubstreamSharp" Version="1.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.3" />
-    <PackageReference Include="System.IO.Abstractions" Version="21.3.1" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
+    <PackageReference Include="System.IO.Abstractions" Version="22.0.14" />
     <PackageReference Include="schema" Version="0.6.12" />
-    <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
+    <PackageReference Include="System.IO.Hashing" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>

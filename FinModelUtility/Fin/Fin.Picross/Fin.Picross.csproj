@@ -12,6 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="Generator.Equals" Version="3.2.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
   </ItemGroup>
 </Project>
