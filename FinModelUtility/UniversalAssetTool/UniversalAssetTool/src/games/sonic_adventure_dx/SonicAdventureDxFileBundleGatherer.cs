@@ -13,10 +13,12 @@ using SadxFiles = (string name, IFileHierarchyFile modelFile,
     uint modelFileOffset,
     IReadOnlyTreeFile textureFile);
 
-public class SonicAdventureDxFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class SonicAdventureDxFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
   private IFileHierarchyFile sonicExe_;
   private IFileHierarchyFile chrModelsDll_;
   private IFileHierarchyDirectory systemDir_;
+
+  public string Name => "sonic_adventure_dx";
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

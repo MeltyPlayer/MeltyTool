@@ -10,7 +10,9 @@ using fin.util.progress;
 
 namespace uni.games.ever_oasis;
 
-public class EverOasisFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class EverOasisFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+  public string Name => "ever_oasis";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

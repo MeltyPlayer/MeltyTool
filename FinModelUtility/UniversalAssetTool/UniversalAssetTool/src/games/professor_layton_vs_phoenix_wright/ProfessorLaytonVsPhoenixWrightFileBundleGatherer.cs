@@ -12,16 +12,13 @@ using uni.util.io;
 namespace uni.games.professor_layton_vs_phoenix_wright;
 
 public class ProfessorLaytonVsPhoenixWrightFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
-            "professor_layton_vs_phoenix_wright",
-            out var fileHierarchy)) {
-      return;
-    }
+    : B3dsFileBundleGatherer {
+  public override string Name => "professor_layton_vs_phoenix_wright";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     if (new ThreeDsXfsaTool().Extract(fileHierarchy.Root.GetExistingFiles()
                                                    .SingleByName("vs1.fa"))) {
       fileHierarchy.Root.Refresh(true);

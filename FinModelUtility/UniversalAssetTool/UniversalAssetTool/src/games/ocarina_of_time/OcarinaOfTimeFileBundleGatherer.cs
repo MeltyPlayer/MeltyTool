@@ -12,7 +12,9 @@ using UoT.memory;
 
 namespace uni.games.ocarina_of_time;
 
-public class OcarinaOfTimeFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class OcarinaOfTimeFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+  public string Name => "ocarina_of_time";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

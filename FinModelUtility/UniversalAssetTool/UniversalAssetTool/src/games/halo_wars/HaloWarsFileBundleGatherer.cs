@@ -11,7 +11,9 @@ using uni.platforms.desktop;
 
 namespace uni.games.halo_wars;
 
-public class HaloWarsFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class HaloWarsFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+  public string Name => "halo_wars";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

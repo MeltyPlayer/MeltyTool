@@ -9,7 +9,9 @@ using MariosPicross;
 
 namespace uni.games.marios_picross_1;
 
-public class MariosPicross1FileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class MariosPicross1FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+  public string Name => "marios_picross_1";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

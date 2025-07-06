@@ -11,7 +11,10 @@ using uni.util.io;
 
 namespace uni.games.battalion_wars_2;
 
-public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class BattalionWars2FileBundleGatherer
+    : INamedAnnotatedFileBundleGatherer {
+  public string Name => "battalion_wars_2";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
@@ -65,28 +68,27 @@ public class BattalionWars2FileBundleGatherer : IAnnotatedFileBundleGatherer {
                        .ToHashSet();
 
           var fvAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith("FV"))
+              animFiles.Where(animFile =>
+                                  animFile.NameWithoutExtension
+                                          .StartsWith("FV"))
                        .ToArray();
           var wgruntAnimFiles =
-              animFiles.Where(
-                           animFile =>
-                               animFile.NameWithoutExtension.StartsWith(
-                                   "WG"))
+              animFiles.Where(animFile =>
+                                  animFile.NameWithoutExtension.StartsWith(
+                                      "WG"))
                        .ToArray();
 
           var otherModlFiles =
-              modlFiles.Where(
-                           modlFile =>
-                               !svetModlFile.Contains(modlFile) &&
-                               !gruntModlFiles.Contains(modlFile) &&
-                               !vetModlFiles.Contains(modlFile)
+              modlFiles.Where(modlFile =>
+                                  !svetModlFile.Contains(modlFile) &&
+                                  !gruntModlFiles.Contains(modlFile) &&
+                                  !vetModlFiles.Contains(modlFile)
                        )
                        .ToArray();
 
           var allModlsAndAnims =
-              new (IEnumerable<IFileHierarchyFile>, IReadOnlyList<IReadOnlyTreeFile>?
+              new (IEnumerable<IFileHierarchyFile>,
+                  IReadOnlyList<IReadOnlyTreeFile>?
                   )
                   [] {
                       (svetModlFile, fvAnimFiles),

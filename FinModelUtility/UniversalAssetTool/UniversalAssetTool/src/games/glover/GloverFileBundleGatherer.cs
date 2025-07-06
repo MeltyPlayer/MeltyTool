@@ -9,7 +9,9 @@ using uni.platforms.desktop;
 
 namespace uni.games.glover;
 
-public class GloverFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class GloverFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+  public string Name => "glover";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

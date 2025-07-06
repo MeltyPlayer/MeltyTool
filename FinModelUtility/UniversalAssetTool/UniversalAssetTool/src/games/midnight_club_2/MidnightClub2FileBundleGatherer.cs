@@ -9,7 +9,9 @@ using xmod.api;
 
 namespace uni.games.midnight_club_2;
 
-public class MidnightClub2FileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class MidnightClub2FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+  public string Name => "midnight_club_2";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

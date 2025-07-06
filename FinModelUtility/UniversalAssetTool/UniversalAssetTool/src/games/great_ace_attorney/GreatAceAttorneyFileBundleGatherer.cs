@@ -1,19 +1,15 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
-
-using uni.platforms.threeDs;
 
 namespace uni.games.great_ace_attorney;
 
 public class GreatAceAttorneyFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
+    : B3dsFileBundleGatherer {
+  public override string Name => "great_ace_attorney";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-      if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
-              "great_ace_attorney",
-              out var fileHierarchy)) {
-        return;
-      }
-    }
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) { }
 }

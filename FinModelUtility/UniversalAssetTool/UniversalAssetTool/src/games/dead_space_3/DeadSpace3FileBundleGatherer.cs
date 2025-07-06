@@ -8,7 +8,9 @@ using visceral.api;
 
 namespace uni.games.dead_space_3;
 
-public class DeadSpace3FileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class DeadSpace3FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+  public string Name => "dead_space_3";
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
@@ -54,7 +56,8 @@ public class DeadSpace3FileBundleGatherer : IAnnotatedFileBundleGatherer {
 
     foreach (var charSubdir in
              new[] { "animated_props", "chars", "weapons" }
-                 .Select(f => assetFileHierarchy.Root.AssertGetExistingSubdir(f))
+                 .Select(f => assetFileHierarchy.Root
+                                                .AssertGetExistingSubdir(f))
                  .SelectMany(subdir => subdir.GetExistingSubdirs())) {
       IFileHierarchyFile[] geoFiles = [];
       if (charSubdir.TryToGetExistingSubdir("rigged/export",
