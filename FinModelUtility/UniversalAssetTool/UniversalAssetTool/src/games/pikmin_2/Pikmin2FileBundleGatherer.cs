@@ -12,18 +12,17 @@ using uni.platforms.gcn;
 
 namespace uni.games.pikmin_2;
 
-public class Pikmin2FileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "pikmin_2",
-            GcnFileHierarchyExtractor.Options.Standard()
-                                     .PruneRarcDumpNames("arc", "data"),
-            out var fileHierarchy)) {
-      return;
-    }
+public class Pikmin2FileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "pikmin_2";
 
+  public override GcnFileHierarchyExtractor.Options Options 
+    => GcnFileHierarchyExtractor.Options.Standard()
+                                .PruneRarcDumpNames("arc", "data");
+
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.ExtractPikminAndCaptainModels_)

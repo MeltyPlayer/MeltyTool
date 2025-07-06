@@ -1,18 +1,14 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
-
-using uni.platforms.gcn;
 
 namespace uni.games.doshin_the_giant;
 
-public class DoshinTheGiantFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
+public class DoshinTheGiantFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "doshin_the_giant";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-      if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-              "doshin_the_giant",
-              out var fileHierarchy)) {
-        return;
-      }
-    }
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) { }
 }

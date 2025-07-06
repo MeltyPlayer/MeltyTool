@@ -10,22 +10,21 @@ using uni.util.io;
 
 namespace uni.games.pikmin_1;
 
-public class Pikmin1FileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class Pikmin1FileBundleGatherer : BGameCubeFileBundleGatherer {
   private readonly IModelSeparator separator_
       = new ModelSeparator(directory => directory.LocalPath)
           .Register(new AllAnimationsModelSeparatorMethod(),
                     @"\dataDir\pikis");
 
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "pikmin_1",
-            GcnFileHierarchyExtractor.Options.Empty(),
-            out var fileHierarchy)) {
-      return;
-    }
+  public override string Name => "pikmin_1";
 
+  public override GcnFileHierarchyExtractor.Options Options
+    => GcnFileHierarchyExtractor.Options.Empty();
+
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.GetAutomaticModels_)

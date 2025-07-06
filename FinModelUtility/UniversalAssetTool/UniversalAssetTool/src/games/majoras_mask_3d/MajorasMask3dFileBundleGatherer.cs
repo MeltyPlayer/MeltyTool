@@ -3,7 +3,6 @@
 using fin.io;
 using fin.io.bundles;
 
-using uni.platforms.threeDs;
 using uni.util.bundles;
 using uni.util.io;
 
@@ -12,7 +11,7 @@ using fin.util.progress;
 
 namespace uni.games.majoras_mask_3d;
 
-public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class MajorasMask3dFileBundleGatherer : B3dsFileBundleGatherer {
   private readonly IModelSeparator separator_
       = new ModelSeparator(directory => directory.Name)
         .Register(new AllAnimationsModelSeparatorMethod(),
@@ -46,16 +45,12 @@ public class MajorasMask3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
                       .Rest("gujorg"))
         .Register("zelda2_boss04", new PrimaryModelSeparatorMethod("wort.cmb"));
 
+  public override string Name => "majoras_mask_3d";
 
-  public void GatherFileBundles(
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
-            "majoras_mask_3d",
-            out var fileHierarchy)) {
-      return;
-    }
-
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.GetAutomaticModels_)

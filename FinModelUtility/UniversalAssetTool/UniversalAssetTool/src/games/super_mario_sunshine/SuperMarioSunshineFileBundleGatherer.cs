@@ -10,18 +10,17 @@ using uni.platforms.gcn;
 namespace uni.games.super_mario_sunshine;
 
 public class SuperMarioSunshineFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "super_mario_sunshine",
-            GcnFileHierarchyExtractor.Options.Standard()
-                                     .PruneRarcDumpNames("scene"),
-            out var fileHierarchy)) {
-      return;
-    }
+    : BGameCubeFileBundleGatherer {
+  public override string Name => "super_mario_sunshine";
 
+  public override GcnFileHierarchyExtractor.Options Options 
+    => GcnFileHierarchyExtractor.Options.Standard()
+                                .PruneRarcDumpNames("scene");
+
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.ExtractMario_)

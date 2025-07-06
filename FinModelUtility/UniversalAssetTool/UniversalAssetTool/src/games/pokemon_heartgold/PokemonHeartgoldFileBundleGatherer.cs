@@ -1,25 +1,15 @@
-﻿using fin.common;
+﻿using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
-
-using uni.platforms.ds;
 
 namespace uni.games.pokemon_heartgold;
 
 public class PokemonHeartgoldFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
+    : BDsFileBundleGatherer {
+  public override string Name => "pokemon_heartgold";
+
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-            "pokemon_heartgold.nds",
-            out var pokemonHeartgoldRom)) {
-      return;
-    }
-
-    var fileHierarchy
-        = new DsFileHierarchyExtractor().ExtractFromRom(pokemonHeartgoldRom);
-
-    //NarcArchiveImporter.ImportAndExtractAll(fileHierarchy);
-  }
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) { }
 }

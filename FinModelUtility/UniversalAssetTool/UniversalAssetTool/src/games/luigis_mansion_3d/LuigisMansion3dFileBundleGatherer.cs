@@ -1,8 +1,9 @@
-﻿using grezzo.api;
+﻿using fin.io;
+
+using grezzo.api;
 
 using fin.io.bundles;
 
-using uni.platforms.threeDs;
 using uni.util.bundles;
 
 using fin.util.progress;
@@ -10,7 +11,7 @@ using fin.util.progress;
 namespace uni.games.luigis_mansion_3d;
 
 public class LuigisMansion3dFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
+    : B3dsFileBundleGatherer {
   private readonly IModelSeparator separator_ =
       new ModelSeparator(directory => directory.LocalPath)
           .Register(@"\effect\effect_mdl", new PrefixModelSeparatorMethod())
@@ -23,15 +24,12 @@ public class LuigisMansion3dFileBundleGatherer
           .Register(@"\model\luige",
                     new NameModelSeparatorMethod("Luigi.cmb"));
 
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
-            "luigis_mansion_3d",
-            out var fileHierarchy)) {
-      return;
-    }
+  public override string Name => "luigis_mansion_3d";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     foreach (var subdir in fileHierarchy) {
       var cmbFiles = subdir.FilesWithExtension(".cmb").ToArray();
       if (cmbFiles.Length == 0) {

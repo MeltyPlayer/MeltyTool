@@ -3,7 +3,6 @@
 using fin.io;
 using fin.io.bundles;
 
-using uni.platforms.threeDs;
 using uni.util.bundles;
 
 using fin.util.progress;
@@ -12,7 +11,7 @@ using uni.util.io;
 
 namespace uni.games.ocarina_of_time_3d;
 
-public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
+public class OcarinaOfTime3dFileBundleGatherer : B3dsFileBundleGatherer {
   // TODO: Add support for Link
   // TODO: Add support for faceb
   // TODO: Add support for cmab
@@ -122,15 +121,12 @@ public class OcarinaOfTime3dFileBundleGatherer : IAnnotatedFileBundleGatherer {
         .Register("zelda_wm2", new NoAnimationsModelSeparatorMethod())
         .Register("zelda_xc", new NoAnimationsModelSeparatorMethod());
 
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
-            "ocarina_of_time_3d",
-            out var fileHierarchy)) {
-      return;
-    }
+  public override string Name => "ocarina_of_time_3d";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.GetAutomaticModels_)
