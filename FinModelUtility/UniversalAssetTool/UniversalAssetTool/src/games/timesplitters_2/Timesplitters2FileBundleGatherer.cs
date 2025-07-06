@@ -1,23 +1,17 @@
-﻿using fin.io.archive;
+﻿using fin.io;
+using fin.io.archive;
 using fin.io.bundles;
 using fin.util.progress;
 
-using uni.platforms.gcn;
-
 namespace uni.games.timesplitters_2;
 
-public class Timesplitters2FileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public string Name => "timesplitters_2";
+public class Timesplitters2FileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "timesplitters_2";
 
-  public void GatherFileBundles(
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "timesplitters_2",
-            out var fileHierarchy)) {
-      return;
-    }
-
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     var extractor = new SubArchiveExtractor();
     var pakFiles = fileHierarchy.Root.GetFilesWithFileType(".pak", true)
                                 .ToArray();

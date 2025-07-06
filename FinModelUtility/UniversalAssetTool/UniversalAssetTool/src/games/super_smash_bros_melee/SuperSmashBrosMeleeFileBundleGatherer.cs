@@ -6,29 +6,22 @@ using fin.util.progress;
 
 using ssm.api;
 
-using uni.platforms.gcn;
-
 namespace uni.games.super_smash_bros_melee;
 
 public class SuperSmashBrosMeleeFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public string Name => "super_smash_bros_melee";
-
+    : BGameCubeFileBundleGatherer {
   private const string STAGE_PREFIX = "Gr";
   private const string TROPHY_PREFIX = "Ty";
 
   private const string CHARACTER_PREFIX = "Pl";
   private const string ANIMATION_SUFFIX = "AJ";
 
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "super_smash_bros_melee",
-            out var fileHierarchy)) {
-      return;
-    }
+  public override string Name => "super_smash_bros_melee";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     var stageFiles = new LinkedList<IFileHierarchyFile>();
     var trophyFiles = new LinkedList<IFileHierarchyFile>();
     var plFilesByNameWithoutExtension =

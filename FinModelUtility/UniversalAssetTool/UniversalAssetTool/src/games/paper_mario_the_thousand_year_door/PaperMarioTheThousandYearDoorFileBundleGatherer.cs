@@ -1,23 +1,19 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
 
 using ttyd.api;
 
-using uni.platforms.gcn;
-
 namespace uni.games.paper_mario_the_thousand_year_door;
 
 public class PaperMarioTheThousandYearDoorFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "paper_mario_the_thousand_year_door",
-            out var fileHierarchy)) {
-      return;
-    }
+    : BGameCubeFileBundleGatherer {
+  public override string Name => "paper_mario_the_thousand_year_door";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     var modelFiles
         = fileHierarchy
           .Root

@@ -14,18 +14,18 @@ using uni.platforms.gcn;
 namespace uni.games.mario_kart_double_dash;
 
 public class MarioKartDoubleDashFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "mario_kart_double_dash",
-            GcnFileHierarchyExtractor.Options.Standard()
-                                     .UseRarcDumpForExtensions(".arc"),
-            out var fileHierarchy)) {
-      return;
-    }
+    : BGameCubeFileBundleGatherer {
+  public override string Name => "mario_kart_double_dash";
 
+  public override GcnFileHierarchyExtractor.Options Options
+    => GcnFileHierarchyExtractor
+       .Options.Standard()
+       .UseRarcDumpForExtensions(".arc");
+
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     // TODO: Extract "enemies"
     // TODO: Extract "objects"
     new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
@@ -43,8 +43,8 @@ public class MarioKartDoubleDashFileBundleGatherer
         organizer,
         fileHierarchy.Root.AssertGetExistingSubdir(@"MRAM\kart")
                      .GetExistingSubdirs()
-                     .SelectMany(
-                         subdir => subdir.FilesWithExtension(".bmd")));
+                     .SelectMany(subdir => subdir
+                                     .FilesWithExtension(".bmd")));
 
   private void ExtractDrivers_(IFileBundleOrganizer organizer,
                                IFileHierarchy fileHierarchy) {
@@ -55,9 +55,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       var plumberNames = new[] { "mario", "luigi", };
       var plumberSubdirs =
           mramSubdir.GetExistingSubdirs()
-                    .Where(
-                        subdir => plumberNames.Contains(
-                            subdir.Name.ToString()));
+                    .Where(subdir => plumberNames.Contains(
+                               subdir.Name.ToString()));
       var plumberCommon = mramSubdir.AssertGetExistingSubdir("cmn_hige");
       foreach (var plumberSubdir in plumberSubdirs) {
         this.ExtractFromSeparateDriverDirectories_(organizer,
@@ -76,8 +75,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       };
       var babySubdirs =
           mramSubdir.GetExistingSubdirs()
-                    .Where(
-                        subdir => babyNames.Contains(subdir.Name.ToString()));
+                    .Where(subdir => babyNames.Contains(
+                               subdir.Name.ToString()));
       var babyCommon = mramSubdir.AssertGetExistingSubdir("cmn_baby");
       foreach (var babySubdir in babySubdirs) {
         this.ExtractFromSeparateDriverDirectories_(organizer,
@@ -90,9 +89,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       var princessNames = new[] { "daisy", "peach" };
       var princessSubdirs =
           mramSubdir.GetExistingSubdirs()
-                    .Where(
-                        subdir => princessNames.Contains(
-                            subdir.Name.ToString()));
+                    .Where(subdir => princessNames.Contains(
+                               subdir.Name.ToString()));
       var princessCommon = mramSubdir.AssertGetExistingSubdir("cmn_hime");
       foreach (var princessSubdir in princessSubdirs) {
         this.ExtractFromSeparateDriverDirectories_(organizer,
@@ -105,8 +103,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       var lizardNames = new[] { "catherine", "yoshi" };
       var lizardSubdirs =
           mramSubdir.GetExistingSubdirs()
-                    .Where(
-                        subdir => lizardNames.Contains(subdir.Name.ToString()));
+                    .Where(subdir => lizardNames.Contains(
+                               subdir.Name.ToString()));
       var lizardCommon = mramSubdir.AssertGetExistingSubdir("cmn_liz");
       foreach (var lizardSubdir in lizardSubdirs) {
         this.ExtractFromSeparateDriverDirectories_(organizer,
@@ -121,8 +119,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       var koopaNames = new[] { "patapata", "nokonoko" };
       var koopaSubdirs =
           mramSubdir.GetExistingSubdirs()
-                    .Where(
-                        subdir => koopaNames.Contains(subdir.Name.ToString()));
+                    .Where(subdir => koopaNames.Contains(
+                               subdir.Name.ToString()));
       var koopaCommon = mramSubdir.AssertGetExistingSubdir("cmn_zako");
       foreach (var koopaSubdir in koopaSubdirs) {
         this.ExtractFromSeparateDriverDirectories_(
@@ -145,9 +143,8 @@ public class MarioKartDoubleDashFileBundleGatherer
       };
       var standaloneSubdirs =
           mramSubdir.GetExistingSubdirs()
-                    .Where(
-                        subdir => standaloneNames.Contains(
-                            subdir.Name.ToString()));
+                    .Where(subdir => standaloneNames.Contains(
+                               subdir.Name.ToString()));
       foreach (var standaloneSubdir in standaloneSubdirs) {
         this.ExtractFromDriverDirectory_(organizer, standaloneSubdir);
       }
@@ -155,7 +152,8 @@ public class MarioKartDoubleDashFileBundleGatherer
   }
 
   private void ExtractFromDriverDirectory_(IFileBundleOrganizer organizer,
-                                           IFileHierarchyDirectory directory) {
+                                           IFileHierarchyDirectory
+                                               directory) {
     var bmdFiles = directory.FilesWithExtension(".bmd")
                             .ToArray();
     var bcxFiles = directory.FilesWithExtensions(".bca", ".bck")
@@ -238,15 +236,13 @@ public class MarioKartDoubleDashFileBundleGatherer
       IFileBundleOrganizer organizer,
       IFileHierarchyDirectory directory) {
     var bmdFiles = directory.GetExistingFiles()
-                            .Where(
-                                file => file.FileType == ".bmd")
+                            .Where(file => file.FileType == ".bmd")
                             .OrderByDescending(file => file.Name.Length)
                             .ToArray();
     var allBcxFiles = directory
                       .GetExistingFiles()
-                      .Where(
-                          file => file.FileType == ".bck" ||
-                                  file.FileType == ".bca")
+                      .Where(file => file.FileType == ".bck" ||
+                                     file.FileType == ".bca")
                       .ToArray();
     var btiFiles = directory.FilesWithExtension(".bti")
                             .ToArray();
@@ -311,8 +307,10 @@ public class MarioKartDoubleDashFileBundleGatherer
 
   private void ExtractModel_(IFileBundleOrganizer organizer,
                              IFileHierarchyFile bmdFile,
-                             IReadOnlyList<IFileHierarchyFile>? bcxFiles = null,
-                             IReadOnlyList<IFileHierarchyFile>? btiFiles = null)
+                             IReadOnlyList<IFileHierarchyFile>? bcxFiles
+                                 = null,
+                             IReadOnlyList<IFileHierarchyFile>? btiFiles
+                                 = null)
     => organizer.Add(new BmdModelFileBundle {
         BmdFile = bmdFile,
         BcxFiles = bcxFiles,

@@ -10,6 +10,9 @@ public abstract class BGameCubeFileBundleGatherer
     : INamedAnnotatedFileBundleGatherer {
   public abstract string Name { get; }
 
+  public virtual GcnFileHierarchyExtractor.Options Options
+    => GcnFileHierarchyExtractor.Options.Standard();
+
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,
@@ -20,6 +23,7 @@ public abstract class BGameCubeFileBundleGatherer
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
             this.Name,
+            this.Options,
             out var fileHierarchy)) {
       return;
     }

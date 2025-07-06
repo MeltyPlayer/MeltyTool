@@ -1,20 +1,14 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
-
-using uni.platforms.gcn;
 
 namespace uni.games.soulcalibur_ii;
 
-public class SoulcaliburIIFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public string Name => "soulcalibur_ii";
+public class SoulcaliburIIFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "soulcalibur_ii";
 
-  public void GatherFileBundles(
+  protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-      if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-              "soulcalibur_ii",
-              out var fileHierarchy)) {
-        return;
-      }
-    }
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) { }
 }

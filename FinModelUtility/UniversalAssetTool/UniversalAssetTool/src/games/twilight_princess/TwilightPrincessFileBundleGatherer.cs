@@ -1,4 +1,5 @@
-﻿using fin.io.bundles;
+﻿using fin.io;
+using fin.io.bundles;
 using fin.util.progress;
 
 using gx.archives.rarc;
@@ -6,21 +7,16 @@ using gx.compression.yaz0;
 
 using jsystem.api;
 
-using uni.platforms.gcn;
-
 
 namespace uni.games.twilight_princess;
 
-public class TwilightPrincessFileBundleGatherer : IAnnotatedFileBundleGatherer {
-  public void GatherFileBundles(
-      IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
-            "twilight_princess",
-            out var fileHierarchy)) {
-      return;
-    }
+public class TwilightPrincessFileBundleGatherer : BGameCubeFileBundleGatherer {
+  public override string Name => "twilight_princess";
 
+  protected override void GatherFileBundlesFromHierarchy(
+      IFileBundleOrganizer organizer,
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
     var objectDirectory
         = fileHierarchy.Root.AssertGetExistingSubdir(@"res\Object");
     {
