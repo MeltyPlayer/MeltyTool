@@ -136,7 +136,6 @@ public enum VertexSpace {
   RELATIVE_TO_BONE,
 }
 
-
 public enum PrimitiveType {
   TRIANGLES,
   TRIANGLE_STRIP,
@@ -147,6 +146,11 @@ public enum PrimitiveType {
   LINE_STRIP,
   POINTS,
   // TODO: Other types.
+}
+
+public static class PrimitiveTypeExtensions {
+  public static bool IsSupportedByOpenGl(this PrimitiveType primitiveType)
+    => primitiveType is not (PrimitiveType.QUADS or PrimitiveType.QUAD_STRIP);
 }
 
 public enum VertexOrder {

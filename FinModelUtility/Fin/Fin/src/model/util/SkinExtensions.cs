@@ -23,14 +23,20 @@ public static class SkinExtensions {
       where TVertex : IReadOnlyVertex
     => skin.AddVertex(position.X, position.Y, position.Z);
 
+  public static IEnumerable<int> GetOrderedTriangleVertexIndices(
+      this IReadOnlyPrimitive primitive)
+    => GetOrderedTriangleVertexIndices(primitive.Type,
+                                       primitive.VertexOrder,
+                                       primitive.Vertices.Count);
 
   public static IEnumerable<int> GetOrderedTriangleVertexIndices(
-      this IReadOnlyPrimitive primitive) {
-    var pointsCount = primitive.Vertices.Count;
-    switch (primitive.Type) {
+      PrimitiveType primitiveType,
+      VertexOrder vertexOrder,
+      int pointsCount) {
+    switch (primitiveType) {
       case PrimitiveType.TRIANGLES: {
         for (var v = 0; v < pointsCount; v += 3) {
-          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
+          if (vertexOrder == VertexOrder.CLOCKWISE) {
             yield return v + 0;
             yield return v + 2;
             yield return v + 1;
@@ -58,7 +64,7 @@ public static class SkinExtensions {
             v3 = v + 2;
           }
 
-          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
+          if (vertexOrder == VertexOrder.CLOCKWISE) {
             yield return v1;
             yield return v3;
             yield return v2;
@@ -79,7 +85,7 @@ public static class SkinExtensions {
           var v2 = v - 1;
           var v3 = v;
 
-          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
+          if (vertexOrder == VertexOrder.CLOCKWISE) {
             yield return v1;
             yield return v3;
             yield return v2;
@@ -94,7 +100,7 @@ public static class SkinExtensions {
       }
       case PrimitiveType.QUADS: {
         for (var v = 0; v < pointsCount; v += 4) {
-          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
+          if (vertexOrder == VertexOrder.CLOCKWISE) {
             yield return v + 1;
             yield return v + 0;
             yield return v + 2;
@@ -130,7 +136,7 @@ public static class SkinExtensions {
           var v2 = d;
           var v3 = c;
 
-          if (primitive.VertexOrder == VertexOrder.CLOCKWISE) {
+          if (vertexOrder == VertexOrder.CLOCKWISE) {
             yield return v1;
             yield return v0;
             yield return v2;

@@ -23,8 +23,8 @@ public class PrimitiveMerger {
         return false;
       }
 
-      if (primitives.Count == 1) {
-        var primitive = primitives[0];
+      if (primitives is [IReadOnlyPrimitive primitive] &&
+          primitive.Type.IsSupportedByOpenGl()) {
         mergedPrimitive = new MergedPrimitive {
             PrimitiveType = primitive.Type,
             IsFlipped = primitive.VertexOrder == VertexOrder.CLOCKWISE,
