@@ -5,6 +5,7 @@ using Avalonia.OpenGL.Controls;
 using Avalonia.Rendering;
 using Avalonia.Threading;
 
+using fin.ui;
 using fin.ui.rendering.gl;
 using fin.util.time;
 
@@ -37,10 +38,12 @@ namespace uni.ui.avalonia.common.gl {
       this.renderCallback_ = TimedCallback.WithFrequency(
           () => Dispatcher.UIThread.Post(this.RequestNextFrameRendering,
                                          DispatcherPriority.Background),
-          60);
+          UiConstants.FPS);
     }
 
     protected override void OnOpenGlRender(GlInterface gl, int fb) {
+      this.RequestNextFrameRendering();
+
       GlUtil.SwitchContext(this);
       this.RenderGl();
     }

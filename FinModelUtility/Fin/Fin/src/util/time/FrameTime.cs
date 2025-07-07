@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq;
 
+using fin.ui;
+
 namespace fin.util.time;
 
 public static class FrameTime {
   private static readonly DateTime firstFrameStart_ = DateTime.Now;
   private static DateTime previousFrameStart_;
 
-  private const int SMOOTH_COUNT = 60;
+  private const int SMOOTH_COUNT = UiConstants.FPS;
 
   private static readonly float[] frameTimesForSmoothedActualFps_
       = new float[SMOOTH_COUNT];

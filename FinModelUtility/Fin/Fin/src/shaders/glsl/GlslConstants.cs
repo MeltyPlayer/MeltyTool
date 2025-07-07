@@ -1,7 +1,7 @@
 ﻿namespace fin.shaders.glsl;
 
 public static class GlslConstants {
-  public const string VERTEX_SHADER_VERSION = "430";
+  public const string VERTEX_SHADER_VERSION = "310 es";
   public const string FRAGMENT_SHADER_VERSION = "310 es";
 
   public const string FLOAT_PRECISION = "precision highp float;";

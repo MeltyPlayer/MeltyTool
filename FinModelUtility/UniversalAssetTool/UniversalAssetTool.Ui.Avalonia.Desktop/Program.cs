@@ -3,6 +3,7 @@
 using Avalonia;
 using Avalonia.OpenGL;
 using Avalonia.ReactiveUI;
+using Avalonia.Win32;
 
 using fin.services;
 
@@ -30,12 +31,13 @@ class Program {
   public static AppBuilder BuildAvaloniaApp()
     => AppBuilder.Configure<App>()
                  .UsePlatformDetect()
+                 .With(new AngleOptions {
+                     GlProfiles = [
+                         new GlVersion(GlProfileType.OpenGLES, 3, 1, true)
+                     ],
+                 })
                  .With(new Win32PlatformOptions {
-                     // TODO: Locks framerate to 60fps
-                     RenderingMode = [Win32RenderingMode.Wgl],
-                     // TODO: Allows GL.Begin to work
-                     WglProfiles
-                         = [new GlVersion(GlProfileType.OpenGL, 3, 1)],
+                     RenderingMode = [Win32RenderingMode.AngleEgl]
                  })
                  .WithInterFont()
                  .UseReactiveUI();
