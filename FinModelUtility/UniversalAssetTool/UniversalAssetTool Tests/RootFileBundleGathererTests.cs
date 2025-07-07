@@ -54,16 +54,19 @@ namespace uni {
         mockFileSystem.AddDirectory("cli/roms");
         mockFileSystem.AddDirectory("cli/tools/dll");
         mockFileSystem.AddDirectory("cli/tools/universal_asset_tool");
-        mockFileSystem.AddFile("cli/config.json", new MockFileData(CONFIG_JSON_));
+        mockFileSystem.AddFile("cli/config.json",
+                               new MockFileData(CONFIG_JSON_));
 
-        mockFileSystem.Directory.SetCurrentDirectory("FinModelUtility/some/game");
+        mockFileSystem.Directory.SetCurrentDirectory(
+            "FinModelUtility/some/game");
 
         FinFileSystem.FileSystem = mockFileSystem;
       }
 
       var percentageProgress = new PercentageProgress();
-      var root
-          = new RootFileBundleGatherer().GatherAllFiles(percentageProgress);
+      var root = new RootFileBundleGatherer().GatherAllFiles(
+          percentageProgress,
+          out _);
       Assert.AreEqual(0, root.Subdirs.Count);
       Assert.AreEqual(0, root.FileBundles.Count);
     }
@@ -78,16 +81,19 @@ namespace uni {
         mockFileSystem.AddDirectory("cli/roms");
         mockFileSystem.AddDirectory("cli/tools/dll");
         mockFileSystem.AddDirectory("cli/tools/universal_asset_tool");
-        mockFileSystem.AddFile("cli/config.json", new MockFileData(CONFIG_JSON_));
+        mockFileSystem.AddFile("cli/config.json",
+                               new MockFileData(CONFIG_JSON_));
 
-        mockFileSystem.Directory.SetCurrentDirectory("cli/tools/universal_asset_tool");
+        mockFileSystem.Directory.SetCurrentDirectory(
+            "cli/tools/universal_asset_tool");
 
         FinFileSystem.FileSystem = mockFileSystem;
       }
 
       var percentageProgress = new PercentageProgress();
-      var root
-          = new RootFileBundleGatherer().GatherAllFiles(percentageProgress);
+      var root = new RootFileBundleGatherer().GatherAllFiles(
+          percentageProgress,
+          out _);
       Assert.AreEqual(0, root.Subdirs.Count);
       Assert.AreEqual(0, root.FileBundles.Count);
     }
@@ -104,14 +110,16 @@ namespace uni {
         mockFileSystem.AddDirectory("tools/universal_asset_tool");
         mockFileSystem.AddFile("config.json", new MockFileData(CONFIG_JSON_));
 
-        mockFileSystem.Directory.SetCurrentDirectory("tools/universal_asset_tool");
+        mockFileSystem.Directory.SetCurrentDirectory(
+            "tools/universal_asset_tool");
 
         FinFileSystem.FileSystem = mockFileSystem;
       }
 
       var percentageProgress = new PercentageProgress();
-      var root
-          = new RootFileBundleGatherer().GatherAllFiles(percentageProgress);
+      var root = new RootFileBundleGatherer().GatherAllFiles(
+              percentageProgress,
+              out _);
       Assert.AreEqual(0, root.Subdirs.Count);
       Assert.AreEqual(0, root.FileBundles.Count);
     }

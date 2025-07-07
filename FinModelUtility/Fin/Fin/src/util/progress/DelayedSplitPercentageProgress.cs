@@ -1,25 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace fin.util.progress;
 
-public class SplitPercentageProgress : IPercentageProgress {
+public class DelayedSplitPercentageProgress(int capacity = 0)
+    : IPercentageProgress {
   private bool isComplete_;
-  private readonly PercentageProgress[] progresses_;
-  private readonly bool[] eachIsComplete_;
+  private readonly List<PercentageProgress> progresses_ = new(capacity);
+  private readonly List<bool> eachIsComplete_ = new();
 
-  public SplitPercentageProgress(int numBuckets) {
-    this.progresses_ = new PercentageProgress[numBuckets];
-    this.eachIsComplete_ = new bool[numBuckets];
+  public PercentageProgress this[int index] => this.progresses_[index];
 
-    for (var i = 0; i < numBuckets; i++) {
-      var progress = this.progresses_[i] = new PercentageProgress();
+  public IPercentageProgress Add() {
+    var currentIndex = this.progresses_.Count;
 
-      var currentIndex = i;
+    var progress = new PercentageProgress();
+    this.progresses_.Add(progress);
+    this.eachIsComplete_.Add(false);
 
-      progress.OnProgressChanged += (_, _) => this.ReportProgressChanged_();
-      progress.OnComplete += (_, _) => this.ReportComplete_(currentIndex);
-    }
+    progress.OnProgressChanged += (_, _) => this.ReportProgressChanged_();
+    progress.OnComplete += (_, _) => this.ReportComplete_(currentIndex);
+
+    return progress;
   }
 
   private void ReportProgressChanged_() {
@@ -33,7 +36,7 @@ public class SplitPercentageProgress : IPercentageProgress {
       totalProgress += progress.Progress;
     }
 
-    this.Progress = totalProgress / this.progresses_.Length;
+    this.Progress = totalProgress / this.progresses_.Count;
     this.OnProgressChanged?.Invoke(this, this.Progress);
   }
 
@@ -52,6 +55,4 @@ public class SplitPercentageProgress : IPercentageProgress {
   public float Progress { get; private set; }
   public event EventHandler<float>? OnProgressChanged;
   public event EventHandler? OnComplete;
-
-  public PercentageProgress this[int index] => this.progresses_[index];
 }

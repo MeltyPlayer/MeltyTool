@@ -50,6 +50,15 @@ public interface IAnnotatedFileBundleGathererAccumulator<out TSelf>
   TSelf Add(IAnnotatedFileBundleGatherer gatherer);
   TSelf Add(Action<IFileBundleOrganizer, IMutablePercentageProgress> handler);
   TSelf Add(Action<IFileBundleOrganizer> handler);
+
+  TSelf Add(IAnnotatedFileBundleGatherer gatherer,
+            out IPercentageProgress progress);
+
+  TSelf Add(Action<IFileBundleOrganizer, IMutablePercentageProgress> handler,
+            out IPercentageProgress progress);
+
+  TSelf Add(Action<IFileBundleOrganizer> handler,
+            out IPercentageProgress progress);
 }
 
 public interface IAnnotatedFileBundleGathererAccumulatorWithInput<
@@ -57,5 +66,7 @@ public interface IAnnotatedFileBundleGathererAccumulatorWithInput<
     : IAnnotatedFileBundleGathererAccumulator<TSelf>
     where TSelf : IAnnotatedFileBundleGathererAccumulatorWithInput<T, TSelf> {
   TSelf Add(Action<IFileBundleOrganizer, T> handler);
-  TSelf Add(Action<IFileBundleOrganizer, IMutablePercentageProgress, T> handler);
+
+  TSelf Add(
+      Action<IFileBundleOrganizer, IMutablePercentageProgress, T> handler);
 }

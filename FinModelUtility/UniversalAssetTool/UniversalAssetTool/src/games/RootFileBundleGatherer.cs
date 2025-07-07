@@ -8,22 +8,36 @@ namespace uni.games;
 
 public class RootFileBundleGatherer {
   public IFileBundleDirectory GatherAllFiles(
-      IMutablePercentageProgress mutablePercentageProgress) {
+      IMutablePercentageProgress mutablePercentageProgress,
+      out IReadOnlyList<(INamedAnnotatedFileBundleGatherer gatherer,
+          IPercentageProgress progress)> gatherersAndProgresses) {
     var gatherers
-        = TypesUtil.InstantiateAllImplementationsWithDefaultConstructor<IAnnotatedFileBundleGatherer>();
+        = TypesUtil.InstantiateAllImplementationsWithDefaultConstructor<
+                       INamedAnnotatedFileBundleGatherer>()
+                   .OrderBy(g => g.Name)
+                   .ToArray();
+
+    var mutableGatherersAndProgresses
+        = new (INamedAnnotatedFileBundleGatherer, IPercentageProgress)[gatherers
+            .Length];
+    gatherersAndProgresses = mutableGatherersAndProgresses;
 
     IAnnotatedFileBundleGatherer rootGatherer;
     if (Config.Instance.Extractor.ExtractRomsInParallel) {
       var accumulator = new ParallelAnnotatedFileBundleGathererAccumulator();
-      foreach (var gatherer in gatherers) {
-        accumulator.Add(gatherer);
+      for (var i = 0; i < gatherers.Length; i++) {
+        var gatherer = gatherers[i];
+        accumulator.Add(gatherer, out var progress);
+        mutableGatherersAndProgresses[i] = (gatherer, progress);
       }
 
       rootGatherer = accumulator;
     } else {
       var accumulator = new AnnotatedFileBundleGathererAccumulator();
-      foreach (var gatherer in gatherers) {
-        accumulator.Add(gatherer);
+      for (var i = 0; i < gatherers.Length; i++) {
+        var gatherer = gatherers[i];
+        accumulator.Add(gatherer, out var progress);
+        mutableGatherersAndProgresses[i] = (gatherer, progress);
       }
 
       rootGatherer = accumulator;

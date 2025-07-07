@@ -17,9 +17,10 @@ public static class SplitPercentageProgressExtensions {
     return percentageProgress;
   }
 
-  public static SplitPercentageProgress Split(this IMutablePercentageProgress p,
-                                              int numBuckets) {
-    var impl = new SplitPercentageProgress(numBuckets);
+  public static UpFrontSplitPercentageProgress Split(
+      this IMutablePercentageProgress p,
+      int numBuckets) {
+    var impl = new UpFrontSplitPercentageProgress(numBuckets);
 
     impl.OnProgressChanged += (_, progress) => p.ReportProgress(progress);
     impl.OnComplete += (_, _) => p.ReportCompletion();

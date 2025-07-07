@@ -23,6 +23,8 @@
       <Separator />
       <MenuItem Header="Settings"
                 Click="OpenSettingsWindow_"/>
+      <MenuItem Header="Show extraction progress"
+                Click="OpenExtractionProgressWindow_"/>
     </MenuItem>
     <MenuItem Header="_Help">
       <MenuItem Header="Report issue via GitHub"

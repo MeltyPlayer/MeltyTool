@@ -66,7 +66,7 @@ public partial class UniversalAssetToolForm : Form {
   private void UniversalAssetToolForm_Load(object sender, EventArgs e) {
     var progress = new PercentageProgress();
     this.fileBundleTreeView_.Populate(
-        new RootFileBundleGatherer().GatherAllFiles(progress));
+        new RootFileBundleGatherer().GatherAllFiles(progress, out _));
 
     this.fpsCallback_ =
         TimedCallback.WithPeriod(

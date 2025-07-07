@@ -12,30 +12,43 @@ public class AnnotatedFileBundleGathererAccumulator
 public class AnnotatedFileBundleGathererAccumulator<TSelf>
     : IAnnotatedFileBundleGathererAccumulator<TSelf>
     where TSelf : AnnotatedFileBundleGathererAccumulator<TSelf> {
+  private readonly DelayedSplitPercentageProgress progress_ = new();
   private readonly List<IAnnotatedFileBundleGatherer> gatherers_ = [];
 
-  public TSelf Add(IAnnotatedFileBundleGatherer gatherer) {
+  public TSelf Add(IAnnotatedFileBundleGatherer gatherer)
+    => this.Add(gatherer, out _);
+
+  public TSelf Add(
+      Action<IFileBundleOrganizer, IMutablePercentageProgress> handler)
+    => this.Add(handler, out _);
+
+  public TSelf Add(Action<IFileBundleOrganizer> handler)
+    => this.Add(handler, out _);
+
+  public TSelf Add(IAnnotatedFileBundleGatherer gatherer,
+                   out IPercentageProgress progress) {
+    progress = this.progress_.Add();
     this.gatherers_.Add(gatherer);
     return (TSelf) this;
   }
 
   public TSelf Add(
-      Action<IFileBundleOrganizer, IMutablePercentageProgress> handler)
-    => this.Add(new AnnotatedFileBundleHandlerGatherer(handler));
+      Action<IFileBundleOrganizer, IMutablePercentageProgress> handler,
+      out IPercentageProgress progress)
+    => this.Add(new AnnotatedFileBundleHandlerGatherer(handler), out progress);
 
   public TSelf Add(
-      Action<IFileBundleOrganizer> handler)
-    => this.Add(new AnnotatedFileBundleHandlerGathererWithoutProgress(handler));
+      Action<IFileBundleOrganizer> handler,
+      out IPercentageProgress progress)
+    => this.Add(new AnnotatedFileBundleHandlerGathererWithoutProgress(handler),
+                out progress);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
-    var splitProgresses
-        = mutablePercentageProgress.Split(this.gatherers_.Count);
-
     for (var i = 0; i < this.gatherers_.Count; ++i) {
       this.gatherers_[i]
-          .TryToGatherAndReportCompletion(organizer, splitProgresses[i]);
+          .TryToGatherAndReportCompletion(organizer, this.progress_[i]);
     }
   }
 }

@@ -10,7 +10,9 @@ using fin.util.io;
 using ReactiveUI;
 
 using uni.ui.avalonia.common.buttons;
+using uni.ui.avalonia.io;
 using uni.ui.avalonia.settings;
+using uni.ui.avalonia.util;
 using uni.ui.avalonia.ViewModels;
 using uni.ui.winforms.common.fileTreeView;
 
@@ -62,17 +64,13 @@ public partial class TopMenu : UserControl {
     => Task.Run(() => ImportAssetButton
                     .OpenFileWindowAndTryToImportAsset(this));
 
-  private void OpenSettingsWindow_(object? sender, RoutedEventArgs e) {
-    var parentWindow = TopLevel.GetTopLevel(this) as Window;
-
-    var settingsWindow = new SettingsWindow();
-    if (parentWindow != null) {
-      settingsWindow.Show(parentWindow);
-    } else {
-      settingsWindow.Show();
-    }
-  }
+  private void OpenSettingsWindow_(object? sender, RoutedEventArgs e)
+    => this.ShowNewWindow(() => new SettingsWindow());
 
   private void OpenGithubInBrowser_(object? sender, RoutedEventArgs e)
     => WebBrowserUtil.OpenUrl(GitHubUtil.GITHUB_CHOOSE_NEW_ISSUE_URL);
+
+  private void OpenExtractionProgressWindow_(object? sender,
+                                             RoutedEventArgs e)
+    => FileBundleGatherersService.ShowExtractorProgressWindow(this);
 }

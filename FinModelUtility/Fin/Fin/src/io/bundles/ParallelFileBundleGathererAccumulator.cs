@@ -11,41 +11,56 @@ namespace fin.io.bundles;
 public class ParallelAnnotatedFileBundleGathererAccumulator
     : IAnnotatedFileBundleGathererAccumulator<
         ParallelAnnotatedFileBundleGathererAccumulator> {
+  private readonly DelayedSplitPercentageProgress progress_ = new();
   private readonly List<IAnnotatedFileBundleGatherer> gatherers_ = [];
 
   public ParallelAnnotatedFileBundleGathererAccumulator Add(
-      IAnnotatedFileBundleGatherer gatherer) {
+      IAnnotatedFileBundleGatherer gatherer)
+    => this.Add(gatherer, out _);
+
+  public ParallelAnnotatedFileBundleGathererAccumulator Add(
+      Action<IFileBundleOrganizer, IMutablePercentageProgress> handler)
+    => this.Add(handler, out _);
+
+  public ParallelAnnotatedFileBundleGathererAccumulator Add(
+      Action<IFileBundleOrganizer> handler)
+    => this.Add(handler, out _);
+
+  public ParallelAnnotatedFileBundleGathererAccumulator Add(
+      IAnnotatedFileBundleGatherer gatherer,
+      out IPercentageProgress progress) {
+    progress = this.progress_.Add();
     this.gatherers_.Add(gatherer);
     return this;
   }
 
   public ParallelAnnotatedFileBundleGathererAccumulator Add(
-      Action<IFileBundleOrganizer, IMutablePercentageProgress> handler)
-    => this.Add(new AnnotatedFileBundleHandlerGatherer(handler));
+      Action<IFileBundleOrganizer, IMutablePercentageProgress> handler,
+      out IPercentageProgress progress)
+    => this.Add(new AnnotatedFileBundleHandlerGatherer(handler), out progress);
 
   public ParallelAnnotatedFileBundleGathererAccumulator Add(
-      Action<IFileBundleOrganizer> handler)
-    => this.Add(new AnnotatedFileBundleHandlerGathererWithoutProgress(handler));
+      Action<IFileBundleOrganizer> handler,
+      out IPercentageProgress progress)
+    => this.Add(new AnnotatedFileBundleHandlerGathererWithoutProgress(handler),
+                out progress);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
-    var splitProgresses = mutablePercentageProgress.Split(2);
-    var gathererProgresses = splitProgresses[0].Split(this.gatherers_.Count);
-
     ParallelHelper.For(
         0,
         this.gatherers_.Count,
         new GathererRunner(
             organizer,
             this.gatherers_,
-            gathererProgresses));
+            this.progress_));
   }
 
   private readonly struct GathererRunner(
       IFileBundleOrganizer organizer,
       IReadOnlyList<IAnnotatedFileBundleGatherer> gatherers,
-      SplitPercentageProgress splitProgresses) : IAction {
+      DelayedSplitPercentageProgress splitProgresses) : IAction {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Invoke(int i)
       => gatherers[i]
