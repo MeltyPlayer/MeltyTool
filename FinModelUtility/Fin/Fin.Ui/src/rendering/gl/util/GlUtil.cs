@@ -26,15 +26,7 @@ public static partial class GlUtil {
 
 
   public static void ResetGl() {
-    GL.ShadeModel(ShadingModel.Smooth);
-
     GL.ClearDepth(5.0F);
-
-    GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
-
-    GL.Enable(EnableCap.Normalize);
-
-    GL.Enable(EnableCap.PrimitiveRestart);
     GL.Enable(EnableCap.PrimitiveRestartFixedIndex);
 
     ResetBlending();

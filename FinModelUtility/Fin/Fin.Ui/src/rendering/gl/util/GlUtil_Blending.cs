@@ -31,7 +31,7 @@ public static partial class GlUtil {
   public static bool DisableChangingBlending { get; set; }
 
   public static void SetBlendColor(Color color) {
-    GL.BlendColor(color);
+     GL.BlendColor(color);
   }
 
   public static void ResetBlending() => SetBlending(
@@ -111,9 +111,7 @@ public static partial class GlUtil {
                            alphaDstFactorGl);
     }
 
-    if (logicOp == FinLogicOp.UNDEFINED) {
-      GL.Disable(EnableCap.ColorLogicOp);
-    } else {
+    if (logicOp != FinLogicOp.UNDEFINED) {
       GL.Enable(EnableCap.ColorLogicOp);
       GL.LogicOp(ConvertFinLogicOpToGl_(logicOp));
     }
