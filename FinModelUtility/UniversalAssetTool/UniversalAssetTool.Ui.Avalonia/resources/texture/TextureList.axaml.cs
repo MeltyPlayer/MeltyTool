@@ -119,12 +119,11 @@ public partial class TextureList : UserControl {
   protected void SelectingItemsControl_OnSelectionChanged(
       object? sender,
       SelectionChangedEventArgs e) {
-    if (e.AddedItems.Count == 0) {
+    if (e.AddedItems.Count == 0 ||
+        e.AddedItems[0] is not TextureViewModel selectedTextureViewModel) {
       return;
     }
 
-    var selectedTextureViewModel
-        = Asserts.AsA<TextureViewModel>(e.AddedItems[0]);
     this.RaiseEvent(new TextureSelectedEventArgs {
         RoutedEvent = TextureSelectedEvent,
         Texture = selectedTextureViewModel

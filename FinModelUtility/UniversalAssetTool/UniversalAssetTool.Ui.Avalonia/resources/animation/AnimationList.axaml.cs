@@ -102,12 +102,12 @@ namespace uni.ui.avalonia.resources.animation {
     protected void SelectingItemsControl_OnSelectionChanged(
         object? sender,
         SelectionChangedEventArgs e) {
-      if (e.AddedItems.Count == 0) {
+      if (e.AddedItems.Count == 0 ||
+          e.AddedItems[0] is not AnimationViewModel
+              selectedAnimationViewModel) {
         return;
       }
 
-      var selectedAnimationViewModel
-          = Asserts.AsA<AnimationViewModel>(e.AddedItems[0]);
       this.RaiseEvent(new AnimationSelectedEventArgs {
           RoutedEvent = AnimationSelectedEvent,
           Animation = selectedAnimationViewModel
