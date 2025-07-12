@@ -1,4 +1,4 @@
-#version 430
+#version 310 es
 
 layout (std140, binding = 1) uniform Matrices {
   mat4 modelMatrix;
