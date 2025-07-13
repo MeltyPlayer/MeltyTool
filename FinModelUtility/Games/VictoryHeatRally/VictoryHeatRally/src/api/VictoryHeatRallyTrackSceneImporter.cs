@@ -53,10 +53,10 @@ public class VictoryHeatRallyTrackSceneImporter
           return FinImage.FromFile(spriteFile);
         });
 
-    {
-      var vbFile = dataDirectory.AssertGetExistingFile(
-          Path.Join("TRK\\MODEL",
-                    $"{trackJsonFile.NameWithoutExtension}.vbuff"));
+    if (dataDirectory.TryToGetExistingFile(
+            Path.Join("TRK\\MODEL",
+                      $"{trackJsonFile.NameWithoutExtension}.vbuff"),
+            out var vbFile)) {
       fileSet.Add(vbFile);
 
       var trackModel =
@@ -148,7 +148,8 @@ public class VictoryHeatRallyTrackSceneImporter
                                                    spriteImage);
 
           var spriteRootBone = spriteModel.Skeleton.Root;
-          spriteRootBone.AlwaysFaceTowardsCamera(Quaternion.Identity);
+          spriteRootBone.AlwaysFaceTowardsCamera(
+              Quaternion.Identity);
 
           var adjBone = spriteRootBone.AddChild(0, 0, 0);
           adjBone.LocalTransform.EulerRadians = new Vector3(MathF.PI / 2, 0, 0);
@@ -234,7 +235,9 @@ public class VictoryHeatRallyTrackSceneImporter
 
     public int? subdiv;
     public int? tilt;
-    public string? texture;
+
+    [JsonConverter(typeof(SingleOrArrayConverter<string>))]
+    public List<string>? texture;
   }
 
   private class TrackItemCmesh {
