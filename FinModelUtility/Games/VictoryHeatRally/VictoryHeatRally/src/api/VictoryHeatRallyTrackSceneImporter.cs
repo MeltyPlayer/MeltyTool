@@ -118,8 +118,8 @@ public class VictoryHeatRallyTrackSceneImporter
                   ? nodesSpline.GetPositionAtOffset(
                       myStruct!.position!.Value * 32)
                   : new Vector3(myStruct.x ?? 0,
-                                myStruct.y ?? 0,
-                                myStruct.z ?? 0)
+                                myStruct.z ?? 0,
+                                myStruct.y ?? 0)
               : Vector3.Zero;
 
       var xScale = (myStruct?.scale ?? 1) *

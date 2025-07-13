@@ -28,6 +28,7 @@ public class Celeste64FileBundleGatherer : BPrereqsFileBundleGatherer {
       organizer.Add(new GltfModelFileBundle(glbFile).Annotate(glbFile));
     }
 
+    var spritesDirectory = root.AssertGetExistingSubdir("Sprites");
     var textureDirectory = root.AssertGetExistingSubdir("Textures");
     foreach (var mapFile in root.AssertGetExistingSubdir("Maps")
                                 .GetExistingFiles()) {
@@ -38,6 +39,7 @@ public class Celeste64FileBundleGatherer : BPrereqsFileBundleGatherer {
       organizer.Add(new Celeste64MapSceneFileBundle {
           MapFile = mapFile,
           ModelDirectory = modelDirectory,
+          SpritesDirectory = spritesDirectory,
           TextureDirectory = textureDirectory,
       }.Annotate(mapFile));
     }

@@ -251,7 +251,8 @@ public class BoneTransformManager : IBoneTransformManager {
         boneToWorldMatrix.ApplyTrsWithFancyBoneEffects(bone,
           localTranslation,
           localRotation,
-          localScale);
+          localScale,
+          isFirstPass);
       }
 
       if (isFirstPass) {
@@ -421,7 +422,8 @@ public static class BoneTransformManagerExtensions {
       IReadOnlyBone bone,
       in Vector3 localPosition,
       in Quaternion? localRotation,
-      in Vector3? localScale) {
+      in Vector3? localScale,
+      bool isFirstPass) {
     if (matrix == null) {
       return;
     }
@@ -434,7 +436,7 @@ public static class BoneTransformManagerExtensions {
     // Extracts translation/rotation/scale.
     matrix.CopyTranslationInto(out var translationBuffer);
     Quaternion rotationBuffer;
-    if (bone.FaceTowardsCamera) {
+    if (bone.FaceTowardsCamera && !isFirstPass) {
       var camera = Camera.Instance;
       var yawDegrees = camera?.YawDegrees ?? 0;
       var yawRadians = yawDegrees * FinTrig.DEG_2_RAD;

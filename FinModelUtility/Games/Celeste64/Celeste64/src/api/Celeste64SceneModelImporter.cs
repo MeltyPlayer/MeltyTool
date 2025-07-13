@@ -1,7 +1,9 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 
 using Celeste64.map;
 
+using fin.color;
 using fin.data.lazy;
 using fin.io;
 using fin.math.rotations;
@@ -21,6 +23,7 @@ namespace Celeste64.api;
 public class Celeste64MapSceneFileBundle : ISceneFileBundle {
   public required IReadOnlyTreeFile MapFile { get; init; }
   public required IReadOnlyTreeDirectory ModelDirectory { get; init; }
+  public required IReadOnlyTreeDirectory SpritesDirectory { get; init; }
   public required IReadOnlyTreeDirectory TextureDirectory { get; init; }
 
   public IReadOnlyTreeFile MainFile => this.MapFile;
@@ -54,14 +57,16 @@ public class Celeste64MapSceneImporter
             celeste64Map));
 
     var gltfModelImporter = new GltfModelImporter();
-    var lazyModelMap = new LazyCaseInvariantStringDictionary<IReadOnlyModel?>(
-        modelName => gltfModelImporter.Import(
-            new GltfModelFileBundle(
-                fileBundle.ModelDirectory
-                          .AssertGetExistingFile($"{modelName}.glb"))));
+    var lazyModelMap
+        = new LazyCaseInvariantStringDictionary<IReadOnlyModel?>(modelName
+            => gltfModelImporter.Import(
+                new GltfModelFileBundle(
+                    fileBundle.ModelDirectory
+                              .AssertGetExistingFile($"{modelName}.glb"))));
 
-    var worldSpawn = celeste64Map.Entities.SingleOrDefault(
-        e => e.ClassName == "worldspawn");
+    var worldSpawn
+        = celeste64Map.Entities.SingleOrDefault(e => e.ClassName ==
+                                                    "worldspawn");
     if (worldSpawn != null) {
       if (worldSpawn.Properties.TryGetValue("skybox",
                                             out var skyboxTextureName)) {
@@ -133,6 +138,27 @@ public class Celeste64MapSceneImporter
       }
     }
 
+    var glowModel = ModelImpl.CreateForViewer();
+    {
+      var glowSize = 4;
+
+      var (glowTextureMaterial, _)
+          = glowModel.MaterialManager.AddSimpleTextureMaterialFromFile(
+              fileBundle.SpritesDirectory.AssertGetExistingFile("gradient.png"));
+      glowTextureMaterial.DiffuseColor = Color.Yellow;
+
+      var glowBone = glowModel.Skeleton.Root;
+      glowBone.AlwaysFaceTowardsCamera(Quaternion.Identity);
+
+      var glowSkin = glowModel.Skin;
+      glowSkin.AddMesh()
+              .AddSimpleWall(glowSkin,
+                             new Vector3(0, -glowSize, -glowSize),
+                             new Vector3(0, glowSize, glowSize),
+                             glowTextureMaterial,
+                             glowBone);
+    }
+
     foreach (var entity in celeste64Map.Entities) {
       var actorType = GetActorType_(entity.ClassName);
       if (actorType == null) {
@@ -186,6 +212,10 @@ public class Celeste64MapSceneImporter
 
           break;
         }
+      }
+
+      if (actorType is ActorType.STRAWBERRY) {
+        finObj.AddSceneModel(glowModel);
       }
     }
 
@@ -255,8 +285,8 @@ public class Celeste64MapSceneImporter
         ActorType.REFILL => entity.GetIntProperty("double", 0) > 0
             ? (["refill_gem"], 12)
             : (["refill_gem_double"], 12),
-        ActorType.SIGN_POST   => (["sign"], 12),
-        ActorType.SPRING      => (["spring_board"], 36),
+        ActorType.SIGN_POST => (["sign"], 12),
+        ActorType.SPRING    => (["spring_board"], 36),
         ActorType.STATIC_PROP => ([
             entity.GetStringProperty("model", "")[
                 "Models/".Length..^".glb".Length]
