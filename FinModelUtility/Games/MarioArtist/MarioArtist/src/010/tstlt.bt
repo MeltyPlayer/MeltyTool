@@ -1,0 +1,183 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+local uint COLOR_IMAGE = 0x0000ff;
+local uint COLOR_COUNT = 0x00ff00;
+local uint COLOR_OFFSET = 0xff0000;
+local uint COLOR_HEADER = 0xffffff;
+local uint COLOR_UNK = 0xffff00;
+
+short thumbnail[24 * 24] <bgcolor=COLOR_IMAGE>;
+
+typedef struct {
+  uint unk0;
+  uint unk1;
+  uint magic[2];
+  
+  uint unk2;
+  uint fileSize;
+  uint unk3;
+  uint unk4;
+
+  uint unk5;
+  uint unk6;
+  uint unk7;
+  uint unk8;
+} Header <bgcolor=COLOR_HEADER>;
+
+Header header;
+
+short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
+
+typedef struct {
+  /*uint unk0; */
+  ubyte unkByte0[4];
+  uint totalSize <bgcolor=COLOR_COUNT>;
+
+  uint imageSize <bgcolor=COLOR_COUNT>;
+  uint section0Size <bgcolor=COLOR_COUNT>;
+  uint section1Size <bgcolor=COLOR_COUNT>;
+  uint section2Size <bgcolor=COLOR_COUNT>;
+   
+  ubyte unkByte1[4 * 1];
+  
+  uint imageOffset <bgcolor=COLOR_OFFSET>;
+  uint section0Offset <bgcolor=COLOR_OFFSET>;
+  uint section1Offset <bgcolor=COLOR_OFFSET>;
+  uint section2Offset <bgcolor=COLOR_OFFSET>;
+
+  ubyte unkByte2[4 * 3];
+  
+  ushort imageCountCount <bgcolor=COLOR_COUNT>;
+  ushort unkValue0sCount <bgcolor=COLOR_COUNT>;
+  
+  ubyte unkByte3[4];
+  
+  short unk2[6];
+
+  ubyte unkByte4[4 * 5];
+  
+  byte imageData[imageSize] <bgcolor=COLOR_IMAGE>;
+  
+  uint unkValue0s[4 * unkValue0sCount] <bgcolor=COLOR_UNK>;
+} Image <bgcolor=COLOR_HEADER>;
+
+FSeek(0x1a770);
+Image image;
+
+FSeek(0x1E240);
+Image image;
+
+FSeek(0x1eca0);
+Image image;
+
+FSeek(0x1f700);
+Image image;
+
+FSeek(0x1fd70);
+Image image;
+
+FSeek(0x202e0);
+Image image;
+
+FSeek(0x28860);
+Image image;
+
+FSeek(0x295d0);
+Image image;
+
+FSeek(0x2b120);
+Image image16x16;
+
+FSeek(0x2b380);
+Image image;
+
+FSeek(0x2c850);
+Image image;
+
+FSeek(0x2d460);
+Image image16x16;
+
+FSeek(0x2d680);
+Image image;
+
+FSeek(0x2e280);
+Image image16x16;
+
+FSeek(0x2e4c0);
+Image image;
+
+FSeek(0x2ece0);
+Image image;
+
+FSeek(0x2f440);
+Image image;
+
+FSeek(0x2fa70);
+Image image;
+
+FSeek(0x30270);
+Image image16x16;
+
+FSeek(0x30470);
+Image image;
+
+FSeek(0x317c0);
+Image image;
+
+FSeek(0x322c0);
+Image image16x16;
+
+FSeek(0x324d0);
+Image image;
+
+FSeek(0x33340);
+Image image16x16;
+
+FSeek(0x33580);
+Image image;
+
+FSeek(0x34140);
+Image image;
+
+FSeek(0x349a0);
+Image image;
+
+FSeek(0x35230);
+Image image;
+
+FSeek(0x35b00);
+Image image;
+
+FSeek(0x361e0);
+Image image;
+
+FSeek(0x36420);
+Image image;
+
+FSeek(0x36f70);
+Image image;
+
+FSeek(0x37b60);
+Image image;
+
+FSeek(0x38610);
+Image image;
+
+FSeek(0x390a0);
+Image image;
+
+FSeek(0x39b00);
+Image image;

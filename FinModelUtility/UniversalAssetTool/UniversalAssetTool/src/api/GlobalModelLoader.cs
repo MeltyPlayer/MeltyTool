@@ -39,6 +39,8 @@ using xmod.api;
 using fin.model.io.importers.assimp;
 using fin.model.io.importers.gltf;
 
+using marioartist.schema;
+
 using rollingMadness.api;
 
 using sonicadventure.api;
@@ -92,6 +94,8 @@ public class GlobalModelImporter : IModelImporter<IModelFileBundle> {
         SonicAdventureModelFileBundle sonicAdventureModelFileBundle
             => new SonicAdventureModelFileImporter().Import(
                 sonicAdventureModelFileBundle),
+        TstltModelFileBundle tstltModelFileBundle
+            => new TstltModelLoader().Import(tstltModelFileBundle),
         TtydModelFileBundle ttydModelFileBundle
             => new TtydModelImporter().Import(ttydModelFileBundle),
         VbModelFileBundle vbModelFileBundle

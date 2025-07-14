@@ -134,6 +134,7 @@
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
+    <ProjectReference Include="..\..\Games\MarioArtist\MarioArtist\MarioArtist.csproj" />
     <ProjectReference Include="..\..\Games\MariosPicross\MariosPicross\MariosPicross.csproj" />
     <ProjectReference Include="..\..\Games\VictoryHeatRally\VictoryHeatRally\VictoryHeatRally.csproj" />
 
