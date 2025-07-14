@@ -42,6 +42,9 @@ Header header;
 short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
 
 typedef struct {
+  // Notes:
+  // - This is probably a textured mesh definition
+    
   /*uint unk0; */
   ubyte unkByte0[4];
   uint totalSize <bgcolor=COLOR_COUNT>;
@@ -60,7 +63,7 @@ typedef struct {
 
   ubyte unkByte2[4 * 3];
   
-  ushort imageCountCount <bgcolor=COLOR_COUNT>;
+  ushort imageCount <bgcolor=COLOR_COUNT>;
   ushort unkValue0sCount <bgcolor=COLOR_COUNT>;
   
   ubyte unkByte3[4];
@@ -69,10 +72,17 @@ typedef struct {
 
   ubyte unkByte4[4 * 5];
   
+  // Where are width/height defined?
   byte imageData[imageSize] <bgcolor=COLOR_IMAGE>;
   
+  // Probably vertices?
   uint unkValue0s[4 * unkValue0sCount] <bgcolor=COLOR_UNK>;
+
+  // Probably faces after this?
+
 } Image <bgcolor=COLOR_HEADER>;
+
+// Offsets are for Alphys file
 
 FSeek(0x1a770);
 Image image;
