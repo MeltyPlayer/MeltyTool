@@ -58,6 +58,10 @@ typedef struct {
 
 Bio bio;
 
+FSeek(0x16770);
+
+short paletteImages[8 * 32 * 32] <bgcolor=COLOR_IMAGE>;
+
 typedef struct {
   ubyte unkByte0[4];
   uint totalSize <bgcolor=COLOR_COUNT>;
