@@ -12,6 +12,11 @@ namespace f3dzex2.displaylist.opcodes;
 
 public class NoopOpcodeCommand : IOpcodeCommand;
 
+public class SimpleDlOpcodeCommand : IOpcodeCommand {
+  public uint SegmentedAddress { get; set; }
+  public bool PushCurrentDlToStack { get; set; }
+}
+
 public class DlOpcodeCommand : IOpcodeCommand {
   public IReadOnlyList<IDisplayList> PossibleBranches { get; set; }
   public bool PushCurrentDlToStack { get; set; }
@@ -42,6 +47,12 @@ public class PopMtxOpcodeCommand : IOpcodeCommand {
   public uint NumberOfMatrices { get; set; }
 }
 
+
+public class SimpleVtxOpcodeCommand : IOpcodeCommand {
+  public byte NumVerticesToLoad { get; set; }
+  public byte IndexToBeginStoringVertices { get; set; }
+  public uint SegmentedAddress { get; set; }
+}
 
 public class VtxOpcodeCommand : IOpcodeCommand {
   public IReadOnlyList<F3dVertex> Vertices { get; set; }

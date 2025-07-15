@@ -85,14 +85,17 @@ typedef struct {
 
   ubyte unkByte4[4 * 5];
   
-  // Where are width/height defined?
   byte imageSectionData[imageSectionSize] <bgcolor=COLOR_IMAGE>;
   
   uint vertices[4 * vertexCount] <bgcolor=COLOR_SECTION0>;
 
-  // Seems to be Fast3DEX2
+  // The bulk of the logic is here...
+  // - Fast3DEX2 opcodes
+  // - Handles texture setup (width/format/clamp are defined here)
+  // - Handles calling child display lists at their offset in RAM (how to get that from a file???)
   byte opcodeSectionData[opcodeSectionSize] <bgcolor=COLOR_SECTION1>;
 
+  // No idea what this is, but its size seems to always be a multiple of 0xc.
   byte unkValue2s[section2Size] <bgcolor=COLOR_SECTION2>;
 } Mesh <bgcolor=COLOR_HEADER>;
 
