@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\F3dzex2\F3dzex2.csproj" />
   </ItemGroup>
 
 </Project>

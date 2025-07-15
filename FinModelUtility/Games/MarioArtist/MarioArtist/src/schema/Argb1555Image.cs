@@ -8,7 +8,7 @@ using schema.binary.attributes;
 namespace marioartist.schema;
 
 [BinarySchema]
-public partial class Image(int width, int height) : IBinaryDeserializable {
+public partial class Argb1555Image(int width, int height) : IBinaryDeserializable {
   [Skip]
   private int Length => 2 * width * height;
 
