@@ -43,6 +43,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@IronLanguages](https://github.com/IronLanguages), whose [IronPython](https://github.com/IronLanguages/ironpython3) was used to add support for calling Python plugins from C#.
 - [@jam1garner](https://github.com/jam1garner), whose [Smash-Forge](https://github.com/jam1garner/Smash-Forge) tool was referenced to add support for Melee models.
 - jdh, whose [Virtual Reality Walt Disney World](https://web.archive.org/web/20040608032334/https://vrwdw.tripod.com/) was bundled in the viewer for the sake of preservation.
+- [@jkbenaim](https://github.com/jkbenaim), whose [leotools](https://github.com/jkbenaim/leotools) library was heavily referenced to add support for Mario Artist.
 - [@Julgodis](https://github.com/Julgodis), whose [picori](https://github.com/Julgodis/picori) library was referenced to implement parsing .ciso files. 
 - [@Justin Aquadro](https://github.com/jaquadro), aka [Retriever II](https://www.mfgg.net/index.php?act=user&param=01&uid=2), whose [documentation](https://www.emutalk.net/threads/pm-ttyd-model-file-format-pet-project.27613/) was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - Killa B, who [documented](https://www.zophar.net/fileuploads/3/21546xutra/picrossleveldata.txt) the Mario Picross format.
