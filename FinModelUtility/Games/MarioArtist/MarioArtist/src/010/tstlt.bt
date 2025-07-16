@@ -24,7 +24,8 @@ local uint COLOR_SECTION2 = 0x880088;
 short thumbnail[24 * 24] <bgcolor=COLOR_IMAGE>;
 
 uint CeilAlign(uint x, uint align) {
-    float fraction = (x / (1f * align))
+  local float fraction = (x / (1. * align));
+  return Ceil(fraction) * align;  
 }
 
 typedef struct {
@@ -49,17 +50,46 @@ short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
 
 typedef struct {
   uint unkCount0 <bgcolor=COLOR_COUNT>;
-  uint unkCount1 <bgcolor=COLOR_COUNT>;   
+  uint unkCount1 <bgcolor=COLOR_COUNT>;
+  
+  uint unk2[6]; 
 } AnotherHeader;
-
 AnotherHeader anotherHeader;
 
-FSeek(0x16680);
+typedef struct {
+  float unk0[6];
+  uint unk1[4];
+} UnkSection0 <bgcolor=COLOR_HEADER>;
+UnkSection0 unkSection0s[9] <optimize=false>;
 
+FSeek(0x9340);
+float unkFloats0[0x57D];
+
+FSeek(0xa990);
+typedef struct {
+  byte unk0[0x60];
+} UnkSection1 <bgcolor=COLOR_HEADER>;
+UnkSection1 unkSection1s[0x1e] <optimize=false>;
+
+FSeek(0xc538);
+float unkFloats1[0x5A];
+
+FSeek(0xeb7c);
+typedef struct {
+  byte unk0[0xb8];
+} UnkSection2 <bgcolor=COLOR_HEADER>;
+UnkSection2 unkSection2s[0x11] <optimize=false>;
+
+FSeek(0xf968);
+typedef struct {
+  byte unk0[0xa8];
+} UnkSection3 <bgcolor=COLOR_HEADER>;
+UnkSection3 unkSection3s[0x4c] <optimize=false>;
+
+FSeek(0x16680);
 typedef struct {
   string name;
 } Bio;
-
 Bio bio;
 
 typedef struct {
@@ -104,7 +134,7 @@ typedef struct {
   // No idea what this is, but its size seems to always be a multiple of 0xc.
   byte unkValue2s[section2Size] <bgcolor=COLOR_SECTION2>;
   
-  FSeek(baseOffset + 
+  FSeek(baseOffset + CeilAlign(totalSize, 0x10));
 } Mesh <bgcolor=COLOR_HEADER>;
 
 typedef struct {
@@ -112,7 +142,7 @@ typedef struct {
   
   short images[32 * 32 * 8] <bgcolor=COLOR_IMAGE>;
   
-  Mesh mesh;
+  Mesh mesh[2] <optimize=false>;
 } MeshGroup;
 
 // Or maybe this starts at 0x16770?
