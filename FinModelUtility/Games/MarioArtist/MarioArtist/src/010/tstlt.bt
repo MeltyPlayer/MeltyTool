@@ -23,6 +23,10 @@ local uint COLOR_SECTION2 = 0x880088;
 
 short thumbnail[24 * 24] <bgcolor=COLOR_IMAGE>;
 
+uint CeilAlign(uint x, uint align) {
+    float fraction = (x / (1f * align))
+}
+
 typedef struct {
   uint unk0;
   uint unk1;
@@ -58,11 +62,9 @@ typedef struct {
 
 Bio bio;
 
-FSeek(0x16770);
-
-short paletteImages[8 * 32 * 32] <bgcolor=COLOR_IMAGE>;
-
 typedef struct {
+  local uint baseOffset = FTell();
+    
   ubyte unkByte0[4];
   uint totalSize <bgcolor=COLOR_COUNT>;
 
@@ -101,11 +103,25 @@ typedef struct {
 
   // No idea what this is, but its size seems to always be a multiple of 0xc.
   byte unkValue2s[section2Size] <bgcolor=COLOR_SECTION2>;
+  
+  FSeek(baseOffset + 
 } Mesh <bgcolor=COLOR_HEADER>;
+
+typedef struct {
+  byte UnkHeader[0xf0] <bgcolor=COLOR_HEADER>;
+  
+  short images[32 * 32 * 8] <bgcolor=COLOR_IMAGE>;
+  
+  Mesh mesh;
+} MeshGroup;
+
+// Or maybe this starts at 0x16770?
+FSeek(0x16680);
+MeshGroup meshGroup;
 
 // Offsets are for Alphys file
 
-FSeek(0x1a770);
+/*FSeek(0x1a770);
 Mesh mesh;
 
 FSeek(0x1E240);
@@ -211,4 +227,4 @@ FSeek(0x390a0);
 Mesh mesh;
 
 FSeek(0x39b00);
-Mesh mesh;
+Mesh mesh;*/

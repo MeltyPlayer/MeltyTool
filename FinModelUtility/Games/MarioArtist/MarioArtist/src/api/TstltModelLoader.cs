@@ -132,7 +132,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
               finVertex.SetUv(floatU, floatV);
 
-              finVertex.SetLocalNormal(v.NormalX, v.NormalY, v.NormalZ);
+              finVertex.SetLocalNormal(
+                  Vector3.Normalize(
+                      new Vector3(v.NormalX, v.NormalY, v.NormalZ)));
 
               return finVertex;
             });
