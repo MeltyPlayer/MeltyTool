@@ -289,6 +289,7 @@ public class SimpleF3dzex2OpcodeParser {
       case F3dzex2Opcode.G_RDPTILESYNC:
       case F3dzex2Opcode.G_RDPFULLSYNC:
       case F3dzex2Opcode.G_RDPLOADSYNC:
+        return new NoopOpcodeCommand();
       case F3dzex2Opcode.G_SETENVCOLOR:
         return new NoopOpcodeCommand();
       default:

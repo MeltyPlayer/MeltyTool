@@ -29,16 +29,28 @@ uint CeilAlign(uint x, uint align) {
 }
 
 typedef struct {
-  uint unk0;
+  ubyte r;
+  ubyte g;
+  ubyte b;
+  ubyte a;
+  
+  local uint color=(((uint) b) << 16) | (((uint) g) << 8) | r;
+  
+  FSeek(FTell() - 4);
+  uint rgba <bgcolor=color>;
+} Rgba32;
+
+typedef struct {
+  uint checksum;
   uint unk1;
   uint magic[2];
   
   uint unk2;
   uint fileSize <bgcolor=COLOR_COUNT>;
   uint unk3;
-  uint unk4;
+  uint headSectionLength; // Starts at 0x16770
 
-  uint unk5;
+  uint bodySectionLength; // Starts immediately after headSection
   uint unk6;
   uint unk7;
   uint unk8;
@@ -49,10 +61,13 @@ Header header;
 short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
 
 typedef struct {
-  uint unkCount0 <bgcolor=COLOR_COUNT>;
+  uint sometimesJointCount <bgcolor=COLOR_COUNT>;
   uint unkCount1 <bgcolor=COLOR_COUNT>;
   
-  uint unk2[6]; 
+  uint unk2; 
+  Rgba32 skinColor;
+  
+  uint unk3[4]; 
 } AnotherHeader;
 AnotherHeader anotherHeader;
 
@@ -62,23 +77,33 @@ typedef struct {
 } UnkSection0 <bgcolor=COLOR_HEADER>;
 UnkSection0 unkSection0s[9] <optimize=false>;
 
+// - These store x/y coordinates
+// - Probably are a bunch of expressions right in a row
 FSeek(0x9340);
-float unkFloats0[0x57D];
+float expressionPins[0x57D];
 
-FSeek(0xa990);
+FSeek(0xa940);
 typedef struct {
-  byte unk0[0x60];
-} UnkSection1 <bgcolor=COLOR_HEADER>;
-UnkSection1 unkSection1s[0x1e] <optimize=false>;
+  byte unkIndex;
+  byte unk0;
+  ushort unk1;
+  uint unk2;
+    
+  float matrix[4 * 4];
+    
+  byte unk3[24];
+} Joint <bgcolor=COLOR_HEADER>;
+Joint joints[0x1F] <optimize=false>;
 
 FSeek(0xc538);
 float unkFloats1[0x5A];
 
-FSeek(0xeb7c);
+//FSeek(0xeb7c);
+FSeek(0xc698);
 typedef struct {
   byte unk0[0xb8];
 } UnkSection2 <bgcolor=COLOR_HEADER>;
-UnkSection2 unkSection2s[0x11] <optimize=false>;
+UnkSection2 unkSection2s[0x35] <optimize=false>;
 
 FSeek(0xf968);
 typedef struct {
@@ -127,6 +152,8 @@ typedef struct {
 
   // The bulk of the logic is here...
   // - Fast3DEX2 opcodes
+  // - Handles vertex setup by loading from a specific address (relative to 0x16770)
+  //   - Vertices can be fetched from other meshes...
   // - Handles texture setup (width/format/clamp are defined here)
   // - Handles calling child display lists at their offset in RAM (how to get that from a file???)
   byte opcodeSectionData[opcodeSectionSize] <bgcolor=COLOR_SECTION1>;
