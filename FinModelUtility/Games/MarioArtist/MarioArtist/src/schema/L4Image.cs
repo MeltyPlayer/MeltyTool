@@ -8,15 +8,15 @@ using schema.binary.attributes;
 namespace marioartist.schema;
 
 [BinarySchema]
-public partial class Argb1555Image(int width, int height) : IMarioArtistImage {
+public partial class L4Image(int width, int height) : IMarioArtistImage {
   [Skip]
-  private int Length => 2 * width * height;
+  private int Length => width * height / 2;
 
   [RSequenceLengthSource(nameof(this.Length))]
   public byte[] Data { get; private set; }
 
   public IImage ToImage()
     => PixelImageReader
-       .New(width, height, new Argb1555PixelReader())
+       .New(width, height, new L4PixelReader())
        .ReadImage(this.Data, Endianness.BigEndian);
 }

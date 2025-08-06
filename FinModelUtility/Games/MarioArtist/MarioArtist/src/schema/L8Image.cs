@@ -7,8 +7,12 @@ using schema.binary.attributes;
 
 namespace marioartist.schema;
 
+public interface IMarioArtistImage : IBinaryDeserializable {
+  IImage ToImage();
+}
+
 [BinarySchema]
-public partial class L8Image(int width, int height) : IBinaryDeserializable {
+public partial class L8Image(int width, int height) : IMarioArtistImage {
   [Skip]
   private int Length => width * height;
 
