@@ -41,6 +41,19 @@ typedef struct {
 } Rgba32;
 
 typedef struct {
+  ubyte l;
+  
+  local uint color=(((uint) l) << 16) | (((uint) l) << 8) | l;
+  
+  FSeek(FTell() - 1);
+  byte pixel <bgcolor=color>;
+} L8;
+
+typedef struct L8Image(int size) {
+  L8 pixels[size];
+};
+
+typedef struct {
   uint checksum;
   uint unk1;
   uint magic[2];
@@ -58,6 +71,10 @@ typedef struct {
 
 Header header;
 
+local uint headOffset = 0x16770;
+local uint bodyOffset = headOffset + header.headSectionLength;
+local uint thirdOffset = headOffset + header.unk3;
+
 short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
 
 typedef struct {
@@ -66,14 +83,12 @@ typedef struct {
   
   uint unk2; 
   Rgba32 skinColor;
-  
-  uint unk3[4]; 
 } AnotherHeader;
 AnotherHeader anotherHeader;
 
 typedef struct {
-  float unk0[6];
   uint unk1[4];
+  float unk0[6];
 } UnkSection0 <bgcolor=COLOR_HEADER>;
 UnkSection0 unkSection0s[9] <optimize=false>;
 
@@ -82,40 +97,69 @@ UnkSection0 unkSection0s[9] <optimize=false>;
 FSeek(0x9340);
 float expressionPins[0x57D];
 
-FSeek(0xa940);
+FSeek(0xa938);
 typedef struct {
-  byte unkIndex;
-  byte unk0;
+  ushort unkIndex0;
+  ushort unk0;
+
   ushort unk1;
-  uint unk2;
+  ushort unk2;
+  
+  ushort unk3;
+  ushort unk4;
+  uint unk5;
     
   float matrix[4 * 4];
     
-  byte unk3[24];
+  byte unk6[16];
 } Joint <bgcolor=COLOR_HEADER>;
 Joint joints[0x1F] <optimize=false>;
+
+/*FSeek(0xB4A8);
+typedef struct {
+  byte unk0[0x50];
+} UnkSection4 <bgcolor=COLOR_HEADER>;
+UnkSection4 unkSection4s[0x35] <optimize=false>;*/
+
+FSeek(0xB6B8);
+L8Image someImage(16 * 24);
+
+// These seem like they might all be different sizes...
+FSeek(0xB8D0);
+typedef struct {
+  ushort someIndex0;
+  ushort someIndex1;
+  uint chosenModelIndex;
+  uint chosenColorIndex; 
+  Rgba32 color;
+  uint unk;
+} ChosenPart <bgcolor=COLOR_HEADER>;
+ChosenPart chosenParts[0x30] <optimize=false>;
 
 FSeek(0xc538);
 float unkFloats1[0x5A];
 
-//FSeek(0xeb7c);
-FSeek(0xc698);
 typedef struct {
-  byte unk0[0xb8];
+  uint unk0[3];
+  byte unk1[0x6c];
+  float unk2[13];
+  uint unk3[3];
 } UnkSection2 <bgcolor=COLOR_HEADER>;
-UnkSection2 unkSection2s[0x35] <optimize=false>;
 
+FSeek(0xc6c8);
+uint headUnkSection2Count <bgcolor=COLOR_COUNT>;
+UnkSection2 headUnkSection2s[headUnkSection2Count];
+
+FSeek(0xeb00);
+uint bodyUnkSection2Count <bgcolor=COLOR_COUNT>;
+UnkSection2 bodyUnkSection2s[bodyUnkSection2Count];
+
+// contains RAM addresses that point to display lists
 FSeek(0xf968);
 typedef struct {
   byte unk0[0xa8];
 } UnkSection3 <bgcolor=COLOR_HEADER>;
-UnkSection3 unkSection3s[0x4c] <optimize=false>;
-
-FSeek(0x16680);
-typedef struct {
-  string name;
-} Bio;
-Bio bio;
+//UnkSection3 unkSection3s[0x4c] <optimize=false>;
 
 typedef struct {
   local uint baseOffset = FTell();
@@ -155,7 +199,6 @@ typedef struct {
   // - Handles vertex setup by loading from a specific address (relative to 0x16770)
   //   - Vertices can be fetched from other meshes...
   // - Handles texture setup (width/format/clamp are defined here)
-  // - Handles calling child display lists at their offset in RAM (how to get that from a file???)
   byte opcodeSectionData[opcodeSectionSize] <bgcolor=COLOR_SECTION1>;
 
   // No idea what this is, but its size seems to always be a multiple of 0xc.
@@ -164,124 +207,78 @@ typedef struct {
   FSeek(baseOffset + CeilAlign(totalSize, 0x10));
 } Mesh <bgcolor=COLOR_HEADER>;
 
+{
+    typedef struct (uint baseOffset) {
+      uint meshSegmentedAddress <bgcolor=COLOR_OFFSET>;
+      
+      local uint meshOffset = (meshSegmentedAddress & 0xffffff) + baseOffset;
+      local uint tempOffset = FTell();
+      FSeek(meshOffset);
+      Mesh mesh;
+      FSeek(tempOffset);
+      
+      uint unk0[3];
+      uint unk1[5];
+      float unk2[6];
+      
+      uint unk3[0x1B];
+    } MeshDefinition <bgcolor=COLOR_HEADER>;
+    
+    FSeek(0xda70);
+    MeshDefinition headMeshDefinition(headOffset);
+
+    FSeek(0xe4f0);
+    MeshDefinition headMeshDefinition(headOffset);
+
+    FSeek(0xf968);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+    
+    FSeek(0xfc08);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+    
+    FSeek(0xfea8);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+
+    FSeek(0x10e68);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+
+    FSeek(0x11108);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+
+    FSeek(0x11b88);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+
+    FSeek(0x11e28);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+    
+    FSeek(0x120c8);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+
+    FSeek(0x12368);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+
+    FSeek(0x12608);
+    MeshDefinition bodyMeshDefinition(bodyOffset);
+}
+
+
+FSeek(0x16680);
 typedef struct {
-  byte UnkHeader[0xf0] <bgcolor=COLOR_HEADER>;
+  string name;
+} Bio;
+Bio bio;
+
+typedef struct (int imageCount) { 
+  short images[32 * 32 * imageCount] <bgcolor=COLOR_IMAGE>;
   
-  short images[32 * 32 * 8] <bgcolor=COLOR_IMAGE>;
-  
-  Mesh mesh[2] <optimize=false>;
+  Mesh mesh[3] <optimize=false>;
 } MeshGroup;
 
-// Or maybe this starts at 0x16770?
-FSeek(0x16680);
-MeshGroup meshGroup;
-
-// Offsets are for Alphys file
-
-/*FSeek(0x1a770);
+FSeek(0x36040);
 Mesh mesh;
 
-FSeek(0x1E240);
-Mesh mesh;
+FSeek(headOffset);
+MeshGroup headMeshGroup(8);
 
-FSeek(0x1eca0);
-Mesh mesh;
-
-FSeek(0x1f700);
-Mesh mesh;
-
-FSeek(0x1fd70);
-Mesh mesh;
-
-FSeek(0x202e0);
-Mesh mesh;
-
-FSeek(0x28860);
-Mesh mesh;
-
-FSeek(0x295d0);
-Mesh mesh;
-
-FSeek(0x2b120);
-Mesh mesh16x16;
-
-FSeek(0x2b380);
-Mesh mesh;
-
-FSeek(0x2c850);
-Mesh mesh;
-
-FSeek(0x2d460);
-Mesh mesh16x16;
-
-FSeek(0x2d680);
-Mesh mesh;
-
-FSeek(0x2e280);
-Mesh mesh16x16;
-
-FSeek(0x2e4c0);
-Mesh mesh;
-
-FSeek(0x2ece0);
-Mesh mesh;
-
-FSeek(0x2f440);
-Mesh mesh;
-
-FSeek(0x2fa70);
-Mesh mesh;
-
-FSeek(0x30270);
-Mesh mesh16x16;
-
-FSeek(0x30470);
-Mesh mesh;
-
-FSeek(0x317c0);
-Mesh mesh;
-
-FSeek(0x322c0);
-Mesh mesh16x16;
-
-FSeek(0x324d0);
-Mesh mesh;
-
-FSeek(0x33340);
-Mesh mesh16x16;
-
-FSeek(0x33580);
-Mesh mesh;
-
-FSeek(0x34140);
-Mesh mesh;
-
-FSeek(0x349a0);
-Mesh mesh;
-
-FSeek(0x35230);
-Mesh mesh;
-
-FSeek(0x35b00);
-Mesh mesh;
-
-FSeek(0x361e0);
-Mesh mesh;
-
-FSeek(0x36420);
-Mesh mesh;
-
-FSeek(0x36f70);
-Mesh mesh;
-
-FSeek(0x37b60);
-Mesh mesh;
-
-FSeek(0x38610);
-Mesh mesh;
-
-FSeek(0x390a0);
-Mesh mesh;
-
-FSeek(0x39b00);
-Mesh mesh;*/
+FSeek(bodyOffset);
+MeshGroup bodyMeshGroup(16);
