@@ -6,6 +6,7 @@ using f3dzex2.io;
 using f3dzex2.model;
 
 using fin.math;
+using fin.math.fixedPoint;
 using fin.schema;
 
 using schema.binary;
@@ -223,15 +224,31 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
         var first = br.ReadUInt32();
         var second = br.ReadUInt32();
 
-        var uls = (ushort) first.ExtractFromRight(12, 12);
-        var ult = (ushort) first.ExtractFromRight(0, 12);
+        var uls = FixedPointFloatUtil.Convert16(
+            (ushort) first.ExtractFromRight(12, 12),
+            false,
+            10,
+            2);
+        var ult = FixedPointFloatUtil.Convert16(
+            (ushort) first.ExtractFromRight(0, 12),
+            false,
+            10,
+            2);
 
         var tileDescriptor
             = (TileDescriptorIndex) second.ExtractFromRight(24, 4);
-        var lrs = (ushort) second.ExtractFromRight(12, 12);
-        var lrt = (ushort) second.ExtractFromRight(0, 12);
+        var lrs = FixedPointFloatUtil.Convert16(
+            (ushort) second.ExtractFromRight(12, 12),
+            false,
+            10,
+            2);
+        var lrt = FixedPointFloatUtil.Convert16(
+            (ushort) second.ExtractFromRight(0, 12),
+            false,
+            10,
+            2);
 
-        return new SetTileSizeOpcodeCommand {
+          return new SetTileSizeOpcodeCommand {
             TileDescriptorIndex = tileDescriptor,
             Uls = uls,
             Ult = ult,
@@ -245,10 +262,18 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
         var first = br.ReadUInt32();
         var second = br.ReadUInt32();
 
-        var uls = (ushort) first.ExtractFromRight(12, 12);
-        var ult = (ushort) first.ExtractFromRight(0, 12);
+        var uls = FixedPointFloatUtil.Convert16(
+            (ushort) first.ExtractFromRight(12, 12),
+            false,
+            10,
+            2);
+        var ult = FixedPointFloatUtil.Convert16(
+            (ushort) first.ExtractFromRight(0, 12),
+            false,
+            10,
+            2);
 
-        var tileDescriptor = (TileDescriptorIndex) second.ExtractFromRight(24, 4);
+          var tileDescriptor = (TileDescriptorIndex) second.ExtractFromRight(24, 4);
         var texels = (ushort) second.ExtractFromRight(12, 12);
 
         return new LoadBlockOpcodeCommand {

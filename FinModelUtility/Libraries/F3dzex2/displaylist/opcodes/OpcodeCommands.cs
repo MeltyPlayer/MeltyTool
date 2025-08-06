@@ -303,10 +303,10 @@ public class SetTileOpcodeCommand : IOpcodeCommand {
 
 public class SetTileSizeOpcodeCommand : IOpcodeCommand {
   public TileDescriptorIndex TileDescriptorIndex { get; set; }
-  public ushort Uls { get; set; }
-  public ushort Ult { get; set; }
-  public ushort Lrs { get; set; }
-  public ushort Lrt { get; set; }
+  public float Uls { get; set; }
+  public float Ult { get; set; }
+  public float Lrs { get; set; }
+  public float Lrt { get; set; }
 }
 
 public class SetCombineOpcodeCommand : IOpcodeCommand {
@@ -317,8 +317,8 @@ public class SetCombineOpcodeCommand : IOpcodeCommand {
 public class LoadBlockOpcodeCommand : IOpcodeCommand {
   public required TileDescriptorIndex TileDescriptorIndex { get; init; }
   public required ushort Texels { get; init; }
-  public ushort Uls { get; set; }
-  public ushort Ult { get; set; }
+  public float Uls { get; set; }
+  public float Ult { get; set; }
 }
 
 public class LoadTlutOpcodeCommand : IOpcodeCommand {

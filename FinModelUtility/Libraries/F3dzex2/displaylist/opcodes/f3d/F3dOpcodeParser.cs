@@ -9,6 +9,7 @@ using fin.math;
 
 using schema.binary;
 
+
 namespace f3dzex2.displaylist.opcodes.f3d;
 
 public class F3dOpcodeParser : IOpcodeParser {
@@ -40,7 +41,7 @@ public class F3dOpcodeParser : IOpcodeParser {
       case F3dOpcode.G_POPMTX: {
         br.AssertUInt24(0);
         br.AssertUInt32(0);
-        return new PopMtxOpcodeCommand { NumberOfMatrices = 1 };
+        return new PopMtxOpcodeCommand {NumberOfMatrices = 1};
       }
       case F3dOpcode.G_VTX: {
         var numVerticesMinusOneAndWriteOffset = br.ReadByte();
@@ -183,24 +184,23 @@ public class F3dOpcodeParser : IOpcodeParser {
         };
       }
       case F3dOpcode.G_SETTILESIZE: {
-        br.Position += 3;
+        br.Position--;
 
-        var tileDescriptor = (TileDescriptorIndex) br.ReadByte();
+        var first = br.ReadUInt32();
+        var second = br.ReadUInt32();
 
-        var widthAndHeight = br.ReadUInt24();
-        var width =
-            (ushort) (widthAndHeight >>
-                      12); // (ushort) (((widthAndHeight >> 12) >> 2) + 1);
-        var height =
-            (ushort) (widthAndHeight &
-                      0xFFF); // (ushort) (((widthAndHeight & 0xFFF) >> 2) + 1);
+        var ul = TmemUtil.ParseCoordAxes(first);
+
+        var tileDescriptor
+            = (TileDescriptorIndex) second.ExtractFromRight(24, 4);
+        var lr = TmemUtil.ParseCoordAxes(second);
 
         return new SetTileSizeOpcodeCommand {
             TileDescriptorIndex = tileDescriptor,
-            Ult = 0,
-            Uls = 0,
-            Lrs = width,
-            Lrt = height,
+            Uls = ul.X,
+            Ult = ul.Y,
+            Lrs = lr.X,
+            Lrt = lr.Y,
         };
       }
       case F3dOpcode.G_SETCOMBINE: {
@@ -226,7 +226,7 @@ public class F3dOpcodeParser : IOpcodeParser {
         var h = BitLogic.ExtractFromRight(second, 9, 3);
         var l = BitLogic.ExtractFromRight(second, 6, 3);
         var n = BitLogic.ExtractFromRight(second, 3, 3);
-        var p = BitLogic.ExtractFromRight(second, 0, 3);  
+        var p = BitLogic.ExtractFromRight(second, 0, 3);
 
         return new SetCombineOpcodeCommand {
             CombinerCycleParams0 = new CombinerCycleParams {
@@ -349,42 +349,42 @@ public class F3dOpcodeParser : IOpcodeParser {
   ///   http://ultra64.ca/files/documentation/online-manuals/man/pro-man/pro12/index12.6.html#:~:text=Color%20Combiner%20(CC)%20can%20perform,in%20one%2Dcycle%20mode).
   /// </summary>
   private GenericColorMux GetColorMuxA_(uint value) => value switch {
-      0              => GenericColorMux.G_CCMUX_COMBINED,
-      1              => GenericColorMux.G_CCMUX_TEXEL0,
-      2              => GenericColorMux.G_CCMUX_TEXEL1,
-      3              => GenericColorMux.G_CCMUX_PRIMITIVE,
-      4              => GenericColorMux.G_CCMUX_SHADE,
-      5              => GenericColorMux.G_CCMUX_ENVIRONMENT,
-      6              => GenericColorMux.G_CCMUX_1,
-      7              => GenericColorMux.G_CCMUX_NOISE,
+      0 => GenericColorMux.G_CCMUX_COMBINED,
+      1 => GenericColorMux.G_CCMUX_TEXEL0,
+      2 => GenericColorMux.G_CCMUX_TEXEL1,
+      3 => GenericColorMux.G_CCMUX_PRIMITIVE,
+      4 => GenericColorMux.G_CCMUX_SHADE,
+      5 => GenericColorMux.G_CCMUX_ENVIRONMENT,
+      6 => GenericColorMux.G_CCMUX_1,
+      7 => GenericColorMux.G_CCMUX_NOISE,
       >= 8 and <= 15 => GenericColorMux.G_CCMUX_0,
-      _              => throw new ArgumentOutOfRangeException(nameof(value), value, null)
+      _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
   };
 
   private GenericColorMux GetColorMuxB_(uint value) => value switch {
-      0              => GenericColorMux.G_CCMUX_COMBINED,
-      1              => GenericColorMux.G_CCMUX_TEXEL0,
-      2              => GenericColorMux.G_CCMUX_TEXEL1,
-      3              => GenericColorMux.G_CCMUX_PRIMITIVE,
-      4              => GenericColorMux.G_CCMUX_SHADE,
-      5              => GenericColorMux.G_CCMUX_ENVIRONMENT,
-      6              => GenericColorMux.G_CCMUX_CENTER,
-      7              => GenericColorMux.G_CCMUX_K4,
+      0 => GenericColorMux.G_CCMUX_COMBINED,
+      1 => GenericColorMux.G_CCMUX_TEXEL0,
+      2 => GenericColorMux.G_CCMUX_TEXEL1,
+      3 => GenericColorMux.G_CCMUX_PRIMITIVE,
+      4 => GenericColorMux.G_CCMUX_SHADE,
+      5 => GenericColorMux.G_CCMUX_ENVIRONMENT,
+      6 => GenericColorMux.G_CCMUX_CENTER,
+      7 => GenericColorMux.G_CCMUX_K4,
       >= 8 and <= 15 => GenericColorMux.G_CCMUX_0,
       _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
   };
 
   private GenericColorMux GetColorMuxC_(uint value) => value switch {
-      0  => GenericColorMux.G_CCMUX_COMBINED,
-      1  => GenericColorMux.G_CCMUX_TEXEL0,
-      2  => GenericColorMux.G_CCMUX_TEXEL1,
-      3  => GenericColorMux.G_CCMUX_PRIMITIVE,
-      4  => GenericColorMux.G_CCMUX_SHADE,
-      5  => GenericColorMux.G_CCMUX_ENVIRONMENT,
-      6  => GenericColorMux.G_CCMUX_SCALE,
-      7  => GenericColorMux.G_CCMUX_COMBINED_ALPHA,
-      8  => GenericColorMux.G_CCMUX_TEXEL0_ALPHA,
-      9  => GenericColorMux.G_CCMUX_TEXEL1_ALPHA,
+      0 => GenericColorMux.G_CCMUX_COMBINED,
+      1 => GenericColorMux.G_CCMUX_TEXEL0,
+      2 => GenericColorMux.G_CCMUX_TEXEL1,
+      3 => GenericColorMux.G_CCMUX_PRIMITIVE,
+      4 => GenericColorMux.G_CCMUX_SHADE,
+      5 => GenericColorMux.G_CCMUX_ENVIRONMENT,
+      6 => GenericColorMux.G_CCMUX_SCALE,
+      7 => GenericColorMux.G_CCMUX_COMBINED_ALPHA,
+      8 => GenericColorMux.G_CCMUX_TEXEL0_ALPHA,
+      9 => GenericColorMux.G_CCMUX_TEXEL1_ALPHA,
       10 => GenericColorMux.G_CCMUX_PRIMITIVE_ALPHA,
       11 => GenericColorMux.G_CCMUX_SHADE_ALPHA,
       12 => GenericColorMux.G_CCMUX_ENV_ALPHA,

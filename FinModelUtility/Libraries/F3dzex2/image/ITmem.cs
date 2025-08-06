@@ -19,8 +19,8 @@ namespace f3dzex2.image;
 ///   http://ultra64.ca/files/documentation/online-manuals/man/pro-man/pro13/13-09.html#:~:text=Internally%2C%20the%20RDP%20treats%20loading,the%20tile%20to%20be%20rendered.
 /// </summary>
 public interface ITmem {
-  void GsDpLoadBlock(ushort uls,
-                     ushort ult,
+  void GsDpLoadBlock(float uls,
+                     float ult,
                      TileDescriptorIndex tileDescriptor,
                      ushort texels,
                      ushort deltaTPerScanline);
@@ -36,11 +36,11 @@ public interface ITmem {
                    F3dWrapMode wrapModeS,
                    F3dWrapMode wrapModeT);
 
-  void GsDpSetTileSize(ushort uls,
-                       ushort ult,
+  void GsDpSetTileSize(float uls,
+                       float ult,
                        TileDescriptorIndex tileDescriptor,
-                       ushort width,
-                       ushort height);
+                       float width,
+                       float height);
 
   void GsSpTexture(
       ushort scaleS,

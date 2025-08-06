@@ -4,8 +4,10 @@ using f3dzex2.combiner;
 using f3dzex2.image;
 
 using fin.math;
+using fin.math.fixedPoint;
 
 using schema.binary;
+
 
 namespace f3dzex2.displaylist.opcodes.f3dzex2;
 
@@ -18,7 +20,8 @@ public class SimpleF3dzex2OpcodeParser {
     return opcodeCommand;
   }
 
-  private IOpcodeCommand ParseOpcodeCommand_(IBinaryReader br, F3dzex2Opcode opcode) {
+  private IOpcodeCommand ParseOpcodeCommand_(IBinaryReader br,
+                                             F3dzex2Opcode opcode) {
     switch (opcode) {
       case F3dzex2Opcode.G_NOOP:
         return new NoopOpcodeCommand();
@@ -102,7 +105,7 @@ public class SimpleF3dzex2OpcodeParser {
         br.AssertByte(2);
 
         var numMatrices = br.ReadUInt32() / 64;
-        return new PopMtxOpcodeCommand { NumberOfMatrices = numMatrices };
+        return new PopMtxOpcodeCommand {NumberOfMatrices = numMatrices};
       }
       case F3dzex2Opcode.G_SETCOMBINE: {
         //           aaaa cccc ceee gggi iiik kkkk 
@@ -212,20 +215,18 @@ public class SimpleF3dzex2OpcodeParser {
         var first = br.ReadUInt32();
         var second = br.ReadUInt32();
 
-        var uls = (ushort) first.ExtractFromRight(12, 12);
-        var ult = (ushort) first.ExtractFromRight(0, 12);
+        var ul = TmemUtil.ParseCoordAxes(first);
 
         var tileDescriptor
             = (TileDescriptorIndex) second.ExtractFromRight(24, 4);
-        var lrs = (ushort) second.ExtractFromRight(12, 12);
-        var lrt = (ushort) second.ExtractFromRight(0, 12);
+        var lr = TmemUtil.ParseCoordAxes(second);
 
         return new SetTileSizeOpcodeCommand {
             TileDescriptorIndex = tileDescriptor,
-            Uls = uls,
-            Ult = ult,
-            Lrs = lrs,
-            Lrt = lrt,
+            Uls = ul.X,
+            Ult = ul.Y,
+            Lrs = lr.X,
+            Lrt = lr.Y,
         };
       }
       case F3dzex2Opcode.G_LOADBLOCK: {
@@ -234,17 +235,17 @@ public class SimpleF3dzex2OpcodeParser {
         var first = br.ReadUInt32();
         var second = br.ReadUInt32();
 
-        var uls = (ushort) first.ExtractFromRight(12, 12);
-        var ult = (ushort) first.ExtractFromRight(0, 12);
+        var ul = TmemUtil.ParseCoordAxes(first);
 
-        var tileDescriptor = (TileDescriptorIndex) second.ExtractFromRight(24, 4);
+        var tileDescriptor =
+            (TileDescriptorIndex) second.ExtractFromRight(24, 4);
         var texels = (ushort) second.ExtractFromRight(12, 12);
 
         return new LoadBlockOpcodeCommand {
             TileDescriptorIndex = tileDescriptor,
             Texels = texels,
-            Uls = uls,
-            Ult = ult,
+            Uls = ul.X,
+            Ult = ul.Y,
         };
       }
       case F3dzex2Opcode.G_GEOMETRYMODE: {

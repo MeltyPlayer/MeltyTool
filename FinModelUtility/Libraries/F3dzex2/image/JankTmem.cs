@@ -63,10 +63,10 @@ public class JankTmem(IN64Hardware n64Hardware) : ITmem {
     public BitsPerTexel BitsPerTexel { get; set; }
     public F3dWrapMode WrapModeS { get; set; }
     public F3dWrapMode WrapModeT { get; set; }
-    public ushort Uls { get; set; }
-    public ushort Ult { get; set; }
-    public ushort Lrs { get; set; }
-    public ushort Lrt { get; set; }
+    public float Uls { get; set; }
+    public float Ult { get; set; }
+    public float Lrs { get; set; }
+    public float Lrt { get; set; }
     public uint LineSizeBytes { get; set; }
   }
 
@@ -80,8 +80,8 @@ public class JankTmem(IN64Hardware n64Hardware) : ITmem {
   private readonly TextureParams[] textureParams_ = new TextureParams[2];
   private readonly bool[] texturesChanged_ = [true, true];
 
-  public void GsDpLoadBlock(ushort uls,
-                            ushort ult,
+  public void GsDpLoadBlock(float uls,
+                            float ult,
                             TileDescriptorIndex tileDescriptor,
                             ushort texels,
                             ushort deltaTPerScanline) {
@@ -128,11 +128,11 @@ public class JankTmem(IN64Hardware n64Hardware) : ITmem {
     }
   }
 
-  public void GsDpSetTileSize(ushort uls,
-                              ushort ult,
+  public void GsDpSetTileSize(float uls,
+                              float ult,
                               TileDescriptorIndex tileDescriptor,
-                              ushort lrs,
-                              ushort lrt) {
+                              float lrs,
+                              float lrt) {
     if (tileDescriptor == TileDescriptorIndex.TX_RENDERTILE) {
       this.textureTile_.Uls = uls;
       this.textureTile_.Ult = ult;
@@ -202,8 +202,8 @@ public class JankTmem(IN64Hardware n64Hardware) : ITmem {
     var lrs = this.textureTile_.Lrs;
     var lrt = this.textureTile_.Lrt;
 
-    var width = (lrs >> 2) - (uls >> 2) + 1;
-    var height = (lrt >> 2) - (ult >> 2) + 1;
+    var width = lrs - uls + 1;
+    var height = lrt - ult + 1;
 
     textureParams.Width = (ushort) width;
     textureParams.Height = (ushort) height;
