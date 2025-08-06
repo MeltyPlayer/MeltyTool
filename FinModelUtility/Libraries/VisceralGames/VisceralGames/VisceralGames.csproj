@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCnEncoder.Net" Version="2.2.1" />
-    <PackageReference Include="schema" Version="0.6.12" />
+    <PackageReference Include="schema" Version="0.6.13" />
   </ItemGroup>
 
   <ItemGroup>
