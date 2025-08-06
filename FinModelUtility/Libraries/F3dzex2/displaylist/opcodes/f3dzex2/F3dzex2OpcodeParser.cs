@@ -380,11 +380,11 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
       case F3dzex2Opcode.G_SETTIMG:
       case F3dzex2Opcode.G_SETZIMG:
       case F3dzex2Opcode.G_SETCIMG:
+      case F3dzex2Opcode.G_SETTILE:
         return 1 * 2 * 4;
       case F3dzex2Opcode.G_BRANCH_Z:
       case F3dzex2Opcode.G_LOAD_UCODE:
       case F3dzex2Opcode.G_SETCONVERT:
-      case F3dzex2Opcode.G_SETTILE:
       case F3dzex2Opcode.G_SETCOMBINE:
         return 2 * 2 * 4;
       case F3dzex2Opcode.G_TEXRECT:
