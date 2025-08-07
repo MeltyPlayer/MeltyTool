@@ -210,97 +210,14 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         )
     };
 
-    var skin = model.Skin;
-
     foreach (var (meshGroupOffset, meshGroupLength, meshOffsets) in
              meshGroupOffsets) {
       n64Memory.SetSegment(0xF, (uint) meshGroupOffset, (uint) meshGroupLength);
 
-      var lazyVertices =
-          new LazyDictionary<(uint segmentedAddress, (int width, int height)?),
-              IReadOnlyVertex>(tuple => {
-            var (segmentedAddress, textureResolution) = tuple;
-
-            var fileAddress = segmentedAddress - 0x0f000000 + meshGroupOffset;
-            var v = defaultBr.SubreadAt(fileAddress,
-                                        () => defaultBr.ReadNew<Vertex>());
-
-            var finVertex =
-                skin.AddVertex(v.Position.X, v.Position.Y, v.Position.Z);
-
-            var floatU = v.U / ((textureResolution?.width ?? 32) * 32f);
-            var floatV = v.V / ((textureResolution?.height ?? 32) * 32f);
-
-            finVertex.SetUv(floatU, floatV);
-
-            finVertex.SetLocalNormal(
-                Vector3.Normalize(
-                    new Vector3(v.NormalX, v.NormalY, v.NormalZ)));
-
-            return finVertex;
-          });
-
-      var lazyMaterials =
-          new LazyDictionary<(uint segmentedAddress, (int width, int height,
-              WrapMode, WrapMode, N64ColorFormat)?),
-              (IReadOnlyMaterial, ITexture)>(tuple => {
-            var (segmentedAddress, textureResolutionAndColorFormat) = tuple;
-
-            IoUtils.SplitSegmentedAddress(segmentedAddress,
-                                          out var segment,
-                                          out var address);
-            var fileAddress = segment switch {
-                0x0f => meshGroupOffset + address,
-            };
-
-            var (textureWidth, textureHeight, wrapModeU, wrapModeV, colorFormat
-                    ) =
-                textureResolutionAndColorFormat ?? (
-                    32, 32, WrapMode.CLAMP, WrapMode.CLAMP, N64ColorFormat.L);
-
-            var image = defaultBr.SubreadAt(
-                fileAddress,
-                () => {
-                  var image = colorFormat switch {
-                      N64ColorFormat.L => (IMarioArtistImage) new L8Image(
-                          textureWidth,
-                          textureHeight),
-                      N64ColorFormat.RGBA => new Argb1555Image(
-                          textureWidth,
-                          textureHeight),
-                  };
-
-                  image.Read(defaultBr);
-
-                  return image.ToImage();
-                });
-
-
-            var (finMaterial, finTexture) = model.MaterialManager
-                                                 .AddSimpleTextureMaterialFromImage(
-                                                     image,
-                                                     tuple.segmentedAddress
-                                                         .ToHexString());
-
-            finTexture.WrapModeU = wrapModeU;
-            finTexture.WrapModeV = wrapModeV;
-
-            // TODO: How do we know when *not* to use the skin color?
-            finMaterial.DiffuseColor =
-                tstlt.AnotherHeader.SkinColor.ToSystemColor();
-
-            return (finMaterial, finTexture);
-          });
-
       foreach (var meshOffset in meshOffsets) {
         try {
           defaultBr.Position = meshOffset;
-          AddMesh_(tstlt,
-                   meshGroupOffset,
-                   model,
-                   defaultBr,
-                   lazyVertices,
-                   lazyMaterials,
+          AddMesh_(defaultBr,
                    n64Hardware,
                    dlModelBuilder);
         } catch (Exception e) {
@@ -313,15 +230,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
   }
 
   private static void AddMesh_(
-      Tstlt tstlt,
-      long meshGroupOffset,
-      ModelImpl model,
       IBinaryReader br,
-      ILazyDictionary<(uint, (int, int)?), IReadOnlyVertex> lazyVertices,
-      ILazyDictionary<(uint, (int, int, WrapMode, WrapMode, N64ColorFormat)?), (
-              IReadOnlyMaterial,
-              ITexture)>
-          lazyMaterials,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder) {
     var baseOffset = br.Position;
@@ -338,17 +247,12 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     br.Position = baseOffset + 4 * 14;
     var imageCount = br.ReadUInt16();
-    var vertexCount = br.ReadUInt16();
 
     n64Hardware.Memory.SetSegment(0xE,
                                   (uint) (baseOffset + vertexSectionOffset),
                                   (uint) vertexSectionSize);
 
-    br.Position = baseOffset + imageSectionOffset;
-
-    var singleImageSize = imageCount > 0 ? imageSectionSize / imageCount : 0;
-
-    br.Position = baseOffset + opcodeSectionOffset;
+    // TODO: Factor in skin color via prim or env color
 
     if (imageCount > 0) {
       n64Hardware.Rdp.CombinerCycleParams0 =
@@ -368,6 +272,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                                        TileDescriptorState.DISABLED);
     }
 
+    br.Position = baseOffset + opcodeSectionOffset;
     var parser = new SimpleF3dzex2OpcodeParser();
     var rawOpcodes = br.Subread(
         opcodeSectionSize,
@@ -384,13 +289,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                   .Where(o => o is not EndDlOpcodeCommand)
                   .Select(o => {
                     if (o is SimpleVtxOpcodeCommand simpleVtxOpcodeCommand) {
-                      var baseRamAddress =
-                          simpleVtxOpcodeCommand.SegmentedAddress;
-                      IoUtils.SplitSegmentedAddress(
-                          baseRamAddress,
-                          out var segment,
-                          out var offset);
-
                       var numVerticesToLoad =
                           simpleVtxOpcodeCommand.NumVerticesToLoad;
                       var indexToBeginStoringVertices = simpleVtxOpcodeCommand
@@ -401,8 +299,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                       return new VtxOpcodeCommand {
                           IndexToBeginStoringVertices =
                               indexToBeginStoringVertices,
-                          Vertices =
-                              sbr.ReadNews<F3dVertex>(numVerticesToLoad),
+                          Vertices = sbr.ReadNews<F3dVertex>(numVerticesToLoad),
                       };
                     }
 
@@ -415,116 +312,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     };
 
     dlModelBuilder.AddDl(displayList);
-    return;
-
-    var mesh = model.Skin.AddMesh();
-    mesh.Name = baseOffset.ToHexString();
-
-    var activeVertices = new IReadOnlyVertex[0x20];
-    (IReadOnlyMaterial, ITexture)? currentTextureAndMaterial = null;
-    SetTimgOpcodeCommand? timgOpcodeCommand = null;
-    SetTileOpcodeCommand? tileOpcodeCommand = null;
-    LoadBlockOpcodeCommand blockOpcodeCommand = null;
-    foreach (var opcode in rawOpcodes) {
-      switch (opcode) {
-        case SetTileOpcodeCommand setTileOpcodeCommand: {
-          tileOpcodeCommand = setTileOpcodeCommand;
-          break;
-        }
-        case SetTimgOpcodeCommand setTimgOpcodeCommand: {
-          timgOpcodeCommand = setTimgOpcodeCommand;
-          break;
-        }
-        case SetTileSizeOpcodeCommand setTileSizeOpcodeCommand: {
-          var width = (int) (setTileSizeOpcodeCommand.Lrs + 1);
-          var height = (int) (setTileSizeOpcodeCommand.Lrt + 1);
-
-          var format = N64ColorFormat.L;
-
-          var wrapModeU = tileOpcodeCommand.WrapModeS.AsFinWrapMode();
-          var wrapModeV = tileOpcodeCommand.WrapModeT.AsFinWrapMode();
-
-          currentTextureAndMaterial =
-              lazyMaterials[
-                  (timgOpcodeCommand.TextureSegmentedAddress,
-                   (width, height, wrapModeU, wrapModeV, format))];
-          break;
-        }
-        case LoadBlockOpcodeCommand loadBlockOpcodeCommand: {
-          blockOpcodeCommand = loadBlockOpcodeCommand;
-          break;
-        }
-        case SimpleVtxOpcodeCommand vtxOpcodeCommand: {
-          var currentTexture = currentTextureAndMaterial?.Item2;
-
-          var baseRamAddress = vtxOpcodeCommand.SegmentedAddress;
-          var segment = baseRamAddress >> 24;
-          switch (segment) {
-            case 0xE: {
-              var address = baseRamAddress & 0xFFFFFF;
-
-              var vertexAddress = baseOffset + vertexSectionOffset;
-              var ramVertexAddress =
-                  vertexAddress - meshGroupOffset + 0x0f000000;
-
-              baseRamAddress = (uint) (ramVertexAddress + address);
-              break;
-            }
-            case 0xF: {
-              break;
-            }
-            default:
-              throw new NotSupportedException(
-                  "Unsupported segment for vertex address: " + segment.ToHex());
-          }
-
-          for (var i = 0; i < vtxOpcodeCommand.NumVerticesToLoad; ++i) {
-            activeVertices[vtxOpcodeCommand.IndexToBeginStoringVertices + i] =
-                lazyVertices[(baseRamAddress + (uint) (i * 0x10),
-                              currentTexture != null
-                                  ? (currentTexture.Image.Width,
-                                     currentTexture.Image.Height)
-                                  : null)];
-          }
-
-          break;
-        }
-        case Tri1OpcodeCommand tri1OpcodeCommand: {
-          var material = currentTextureAndMaterial?.Item1;
-
-          var triangleVertices =
-              tri1OpcodeCommand.VertexIndicesInOrder
-                               .Select(i => activeVertices[i])
-                               .ToArray();
-          var triangle = mesh.AddTriangles(triangleVertices);
-          triangle.SetMaterial(material);
-          triangle.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
-
-          break;
-        }
-        case Tri2OpcodeCommand tri2OpcodeCommand: {
-          var material = currentTextureAndMaterial?.Item1;
-
-          var triangle0Vertices =
-              tri2OpcodeCommand.VertexIndicesInOrder0
-                               .Select(i => activeVertices[i])
-                               .ToArray();
-          var triangle0 = mesh.AddTriangles(triangle0Vertices);
-          triangle0.SetMaterial(material);
-          triangle0.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
-
-          var triangle1Vertices =
-              tri2OpcodeCommand.VertexIndicesInOrder1
-                               .Select(i => activeVertices[i])
-                               .ToArray();
-          var triangle1 = mesh.AddTriangles(triangle1Vertices);
-          triangle1.SetMaterial(material);
-          triangle1.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
-
-          break;
-        }
-      }
-    }
   }
 }
 
