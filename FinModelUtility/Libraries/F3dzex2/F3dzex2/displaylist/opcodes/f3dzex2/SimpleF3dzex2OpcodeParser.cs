@@ -1,6 +1,7 @@
 ﻿using System;
 
 using f3dzex2.combiner;
+using f3dzex2.displaylist.opcodes.f3d;
 using f3dzex2.image;
 
 using fin.math;
@@ -46,32 +47,10 @@ public class SimpleF3dzex2OpcodeParser {
             SegmentedAddress = segmentedAddress,
         };
       }
-      case F3dzex2Opcode.G_TRI1: {
-        return new Tri1OpcodeCommand {
-            VertexIndexA = (byte) (br.ReadByte() >> 1),
-            VertexIndexB = (byte) (br.ReadByte() >> 1),
-            VertexIndexC = (byte) (br.ReadByte() >> 1),
-        };
-      }
-      case F3dzex2Opcode.G_TRI2: {
-        var a0 = (byte) (br.ReadByte() >> 1);
-        var b0 = (byte) (br.ReadByte() >> 1);
-        var c0 = (byte) (br.ReadByte() >> 1);
-
-        var unk0 = br.ReadByte();
-        var a1 = (byte) (br.ReadByte() >> 1);
-        var b1 = (byte) (br.ReadByte() >> 1);
-        var c1 = (byte) (br.ReadByte() >> 1);
-
-        return new Tri2OpcodeCommand {
-            VertexIndexA0 = a0,
-            VertexIndexB0 = b0,
-            VertexIndexC0 = c0,
-            VertexIndexA1 = a1,
-            VertexIndexB1 = b1,
-            VertexIndexC1 = c1,
-        };
-      }
+      case F3dzex2Opcode.G_TRI1:
+        return F3dzex2Util.ParseTri1OpcodeCommand(br);
+      case F3dzex2Opcode.G_TRI2:
+        return F3dzex2Util.ParseTri2OpcodeCommand(br);
       case F3dzex2Opcode.G_TEXTURE: {
         br.AssertByte(0);
 
@@ -169,36 +148,8 @@ public class SimpleF3dzex2OpcodeParser {
             TextureSegmentedAddress = br.ReadUInt32(),
         };
       }
-      case F3dzex2Opcode.G_SETTILE: {
-        br.Position -= 1;
-        var first = br.ReadUInt32();
-        var second = br.ReadUInt32();
-
-        var colorFormat =
-            (N64ColorFormat) BitLogic.ExtractFromRight(first, 21, 3);
-        var bitSize =
-            (BitsPerTexel) BitLogic.ExtractFromRight(first, 19, 2);
-        var num64BitValuesPerRow =
-            (ushort) BitLogic.ExtractFromRight(first, 9, 9);
-        var offsetOfTextureInTmem =
-            (ushort) BitLogic.ExtractFromRight(first, 0, 9);
-
-        var tileDescriptor =
-            (TileDescriptorIndex) BitLogic.ExtractFromRight(second, 24, 3);
-        var wrapModeT =
-            (F3dWrapMode) BitLogic.ExtractFromRight(second, 18, 2);
-        var wrapModeS = (F3dWrapMode) BitLogic.ExtractFromRight(second, 8, 2);
-
-        return new SetTileOpcodeCommand {
-            TileDescriptorIndex = tileDescriptor,
-            ColorFormat = colorFormat,
-            BitsPerTexel = bitSize,
-            WrapModeT = wrapModeT,
-            WrapModeS = wrapModeS,
-            Num64BitValuesPerRow = num64BitValuesPerRow,
-            OffsetOfTextureInTmem = offsetOfTextureInTmem,
-        };
-      }
+      case F3dzex2Opcode.G_SETTILE:
+        return F3dUtil.ParseSetTileOpcodeCommand(br);
       case F3dzex2Opcode.G_SETPRIMCOLOR: {
         var lodInfo = br.ReadUInt24();
         return new SetPrimColorOpcodeCommand {
@@ -228,25 +179,8 @@ public class SimpleF3dzex2OpcodeParser {
             Lrt = lr.Y,
         };
       }
-      case F3dzex2Opcode.G_LOADBLOCK: {
-        br.Position -= 1;
-
-        var first = br.ReadUInt32();
-        var second = br.ReadUInt32();
-
-        var ul = TmemUtil.ParseCoordAxes(first);
-
-        var tileDescriptor =
-            (TileDescriptorIndex) second.ExtractFromRight(24, 4);
-        var texels = (ushort) second.ExtractFromRight(12, 12);
-
-        return new LoadBlockOpcodeCommand {
-            TileDescriptorIndex = tileDescriptor,
-            Texels = texels,
-            Uls = ul.X,
-            Ult = ul.Y,
-        };
-      }
+      case F3dzex2Opcode.G_LOADBLOCK:
+        return F3dUtil.ParseLoadBlockOpcodeCommand(br);
       case F3dzex2Opcode.G_GEOMETRYMODE: {
         return new GeometryModeOpcodeCommand {
             FlagsToDisable = (GeometryMode) ((~br.ReadUInt24()) & 0xFFFFFF),
@@ -276,12 +210,14 @@ public class SimpleF3dzex2OpcodeParser {
       }
       case F3dzex2Opcode.G_MODIFYVTX:
         return new ModifyVtxOpcodeCommand();
+      case F3dzex2Opcode.G_SETOTHERMODE_L:
+        return F3dzex2Util.ParseSetOtherModeLOpcodeCommand(br);
+      case F3dzex2Opcode.G_SETOTHERMODE_H:
+        return F3dzex2Util.ParseSetOtherModeHOpcodeCommand(br);
       // TODO: Especially implement these
       case F3dzex2Opcode.G_SETCIMG:
       case F3dzex2Opcode.G_SETZIMG:
       // TODO: Implement these
-      case F3dzex2Opcode.G_SETOTHERMODE_L:
-      case F3dzex2Opcode.G_SETOTHERMODE_H:
       case F3dzex2Opcode.G_CULLDL:
       case F3dzex2Opcode.G_BRANCH_Z:
         return new NoopOpcodeCommand();

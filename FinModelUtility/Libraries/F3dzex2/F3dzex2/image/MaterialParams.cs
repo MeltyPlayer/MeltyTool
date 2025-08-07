@@ -8,8 +8,8 @@ namespace f3dzex2.image;
 public struct MaterialParams {
   public MaterialParams() { }
 
-  public TextureParams TextureParams0 { get; set; } = new();
-  public TextureParams TextureParams1 { get; set; } = new();
+  public TextureParams? TextureParams0 { get; set; } = new();
+  public TextureParams? TextureParams1 { get; set; } = new();
 
   public CombinerCycleParams CombinerCycleParams0 { get; set; }
   public CombinerCycleParams CombinerCycleParams1 { get; set; }
@@ -17,8 +17,8 @@ public struct MaterialParams {
   public CullingMode CullingMode { get; set; }
 
   public override int GetHashCode() => FluentHash.Start()
-                                                 .With(this.TextureParams0)
-                                                 .With(this.TextureParams1)
+                                                 .With(this.TextureParams0 ?? default)
+                                                 .With(this.TextureParams1 ?? default)
                                                  .With(this.CombinerCycleParams0)
                                                  .With(this.CombinerCycleParams1)
                                                  .With(this.CullingMode);

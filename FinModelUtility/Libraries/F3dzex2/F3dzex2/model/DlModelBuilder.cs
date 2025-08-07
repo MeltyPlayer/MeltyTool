@@ -19,6 +19,7 @@ using fin.image.util;
 
 using schema.binary;
 
+
 namespace f3dzex2.model;
 
 public class DlModelBuilder {
@@ -28,7 +29,7 @@ public class DlModelBuilder {
   private readonly LazyDictionary<ImageParams, IImage>
       lazyImageDictionary_;
 
-  private readonly LazyDictionary<TextureParams, ITexture>
+  private readonly LazyDictionary<TextureParams?, ITexture?>
       lazyTextureDictionary_;
 
   private readonly LazyDictionary<MaterialParams, IMaterial>
@@ -76,7 +77,7 @@ public class DlModelBuilder {
 
           if (br != null) {
             var sizeInBytes = imageParams.BitsPerTexel.GetByteCount(
-                    (uint) (imageParams.Width * imageParams.Height));
+                (uint) (imageParams.Width * imageParams.Height));
             var imageData = br.ReadBytes(sizeInBytes);
             br.Dispose();
             return new N64ImageParser(this.n64Hardware_).Parse(
@@ -91,22 +92,26 @@ public class DlModelBuilder {
         });
 
     this.lazyTextureDictionary_ =
-        new(textureParams
-                => {
-              var imageParams = textureParams.ImageParams;
-              var texture = this.Model.MaterialManager.CreateTexture(
-                  this.lazyImageDictionary_[imageParams]);
+        new(textureParamsOrNull => {
+          if (textureParamsOrNull == null) {
+            return null;
+          }
 
-              var color = this.vertices_.DiffuseColor;
-              texture.Name = !imageParams.IsInvalid
-                  ? String.Format("0x{0:X8}", textureParams.SegmentedAddress)
-                  : $"rgb({color.R}, {color.G}, {color.B})";
+          var textureParams = textureParamsOrNull.Value;
+          var imageParams = textureParams.ImageParams;
+          var texture = this.Model.MaterialManager.CreateTexture(
+              this.lazyImageDictionary_[imageParams]);
 
-              texture.WrapModeU = textureParams.WrapModeS.AsFinWrapMode();
-              texture.WrapModeV = textureParams.WrapModeT.AsFinWrapMode();
-              texture.UvType = textureParams.UvType;
-              return texture;
-            });
+          var color = this.vertices_.DiffuseColor;
+          texture.Name = !imageParams.IsInvalid
+              ? String.Format("0x{0:X8}", textureParams.SegmentedAddress)
+              : $"rgb({color.R}, {color.G}, {color.B})";
+
+          texture.WrapModeU = textureParams.WrapModeS.AsFinWrapMode();
+          texture.WrapModeV = textureParams.WrapModeT.AsFinWrapMode();
+          texture.UvType = textureParams.UvType;
+          return texture;
+        });
 
     this.lazyMaterialDictionary_ =
         new(materialParams
@@ -119,12 +124,21 @@ public class DlModelBuilder {
               var finMaterial = this.Model.MaterialManager
                                     .AddFixedFunctionMaterial();
 
-              finMaterial.Name = $"[{texture0.Name}]/[{texture1.Name}]";
+              finMaterial.Name = (texture0 == null, texture1 == null) switch {
+                  (false, false) => $"[{texture0.Name}]/[{texture1.Name}]",
+                  (false, true)  => $"[{texture0.Name}]",
+                  (true, true)   => $"{materialParams.GetHashCode()}",
+              };
               finMaterial.CullingMode = materialParams.CullingMode;
               finMaterial.UpdateAlphaChannel = false;
 
-              finMaterial.SetTextureSource(0, texture0);
-              finMaterial.SetTextureSource(1, texture1);
+              if (texture0 != null) {
+                finMaterial.SetTextureSource(0, texture0);
+                finMaterial.SetTextureSource(1, texture0);
+              }
+              if (texture1 != null) {
+                finMaterial.SetTextureSource(1, texture1);
+              }
 
               var equations = finMaterial.Equations;
               var color0 = equations.CreateColorConstant(0);
@@ -253,11 +267,12 @@ public class DlModelBuilder {
               equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
                                            combinedAlpha);
 
-              if (finMaterial.Textures.Any(
-                      texture
-                          => TransparencyTypeUtil.GetTransparencyType(
-                                 texture.Image) ==
-                             TransparencyType.TRANSPARENT)) {
+              if (finMaterial.Textures.Any(texture
+                                               => TransparencyTypeUtil
+                                                      .GetTransparencyType(
+                                                          texture.Image) ==
+                                                  TransparencyType
+                                                      .TRANSPARENT)) {
                 finMaterial.SetAlphaCompare(AlphaOp.Or,
                                             AlphaCompareType.Always,
                                             .5f,
@@ -368,8 +383,13 @@ public class DlModelBuilder {
               setTileOpcodeCommand.Num64BitValuesPerRow,
               setTileOpcodeCommand.OffsetOfTextureInTmem,
               setTileOpcodeCommand.TileDescriptorIndex,
+              setTileOpcodeCommand.Palette,
               setTileOpcodeCommand.WrapModeS,
-              setTileOpcodeCommand.WrapModeT);
+              setTileOpcodeCommand.MaskS,
+              setTileOpcodeCommand.ShiftS,
+              setTileOpcodeCommand.WrapModeT,
+              setTileOpcodeCommand.MaskT,
+              setTileOpcodeCommand.ShiftT);
           break;
         }
         case SetTileSizeOpcodeCommand setTileSizeOpcodeCommand: {
@@ -448,13 +468,35 @@ public class DlModelBuilder {
 
           break;
         }
+        case SetOtherModeHOpcodeCommand setOtherModeHOpcodeCommand: {
+          var rdp = this.n64Hardware_.Rdp;
+
+          var length = setOtherModeHOpcodeCommand.Length;
+          var shift = setOtherModeHOpcodeCommand.Shift;
+          var data = setOtherModeHOpcodeCommand.Data;
+
+          var mask = ((1 << length) - 1) << shift;
+          rdp.OtherModeH = (uint) ((rdp.OtherModeH & ~mask) | (data & mask));
+          break;
+        }
+        case SetOtherModeLOpcodeCommand setOtherModeLOpcodeCommand: {
+          var rdp = this.n64Hardware_.Rdp;
+
+          var length = setOtherModeLOpcodeCommand.Length;
+          var shift = setOtherModeLOpcodeCommand.Shift;
+          var data = setOtherModeLOpcodeCommand.Data;
+
+          var mask = ((1 << length) - 1) << shift;
+          rdp.OtherModeL = (uint) ((rdp.OtherModeL & ~mask) | (data & mask));
+          break;
+        }
         case LoadBlockOpcodeCommand loadBlockOpcodeCommand: {
           this.n64Hardware_.Rdp.Tmem.GsDpLoadBlock(
               loadBlockOpcodeCommand.Uls,
               loadBlockOpcodeCommand.Ult,
               loadBlockOpcodeCommand.TileDescriptorIndex,
               loadBlockOpcodeCommand.Texels,
-              0);
+              loadBlockOpcodeCommand.Dxt);
           break;
         }
         case LoadTlutOpcodeCommand loadTlutOpcodeCommand: {
@@ -528,10 +570,11 @@ public class DlModelBuilder {
     if (!this.cachedMaterialParams_.Equals(newMaterialParams)) {
       this.cachedMaterialParams_ = newMaterialParams;
       this.cachedMaterial_ = this.lazyMaterialDictionary_[newMaterialParams];
+
+      var textures = this.cachedMaterial_.Textures;
       this.isMaterialTransparent_ =
-          TransparencyTypeUtil.GetTransparencyType(
-              this.cachedMaterial_.Textures.First().Image) ==
-          TransparencyType.TRANSPARENT;
+          textures.Any(t => TransparencyTypeUtil.GetTransparencyType(t.Image) ==
+                            TransparencyType.TRANSPARENT);
     }
 
     return this.cachedMaterial_;

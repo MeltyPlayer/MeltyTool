@@ -41,6 +41,13 @@ public enum GenericAlphaMux {
   G_ACMUX_LOD_FRACTION,
 }
 
+public enum CycleType : byte {
+  ONE_CYCLE,
+  TWO_CYCLE,
+  COPY,
+  FILL
+}
+
 public struct CombinerCycleParams {
   public GenericColorMux ColorMuxA { get; set; }
   public GenericColorMux ColorMuxB { get; set; }

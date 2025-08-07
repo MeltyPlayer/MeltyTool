@@ -40,7 +40,7 @@ namespace UoT.api {
 
       var n64Hardware = new N64Hardware<N64Memory>();
       n64Hardware.Memory = n64Memory;
-      n64Hardware.Rdp = new Rdp { Tmem = new JankTmem(n64Hardware) };
+      n64Hardware.Rdp = new Rdp { Tmem = new NoclipTmem(n64Hardware) };
       n64Hardware.Rsp = new Rsp();
 
       n64Hardware.Rsp.GeometryMode = (GeometryMode) 0x22405;

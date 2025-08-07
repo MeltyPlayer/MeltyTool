@@ -1,6 +1,7 @@
 ﻿using System;
 
 using f3dzex2.combiner;
+using f3dzex2.displaylist.opcodes.f3dzex2;
 using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;
@@ -153,36 +154,8 @@ public class F3dOpcodeParser : IOpcodeParser {
             MaximumNumberOfMipmaps = maximumNumberOfMipmaps,
         };
       }
-      case F3dOpcode.G_SETTILE: {
-        br.Position -= 1;
-        var first = br.ReadUInt32();
-        var second = br.ReadUInt32();
-
-        var colorFormat =
-            (N64ColorFormat) BitLogic.ExtractFromRight(first, 21, 3);
-        var bitSize =
-            (BitsPerTexel) BitLogic.ExtractFromRight(first, 19, 2);
-        var num64BitValuesPerRow =
-            (ushort) BitLogic.ExtractFromRight(first, 9, 9);
-        var offsetOfTextureInTmem =
-            (ushort) BitLogic.ExtractFromRight(first, 0, 9);
-
-        var tileDescriptor =
-            (TileDescriptorIndex) BitLogic.ExtractFromRight(second, 24, 3);
-        var wrapModeT =
-            (F3dWrapMode) BitLogic.ExtractFromRight(second, 18, 2);
-        var wrapModeS = (F3dWrapMode) BitLogic.ExtractFromRight(second, 8, 2);
-
-        return new SetTileOpcodeCommand {
-            TileDescriptorIndex = tileDescriptor,
-            ColorFormat = colorFormat,
-            BitsPerTexel = bitSize,
-            WrapModeT = wrapModeT,
-            WrapModeS = wrapModeS,
-            Num64BitValuesPerRow = num64BitValuesPerRow,
-            OffsetOfTextureInTmem = offsetOfTextureInTmem,
-        };
-      }
+      case F3dOpcode.G_SETTILE:
+        return F3dUtil.ParseSetTileOpcodeCommand(br);
       case F3dOpcode.G_SETTILESIZE: {
         br.Position--;
 
@@ -251,17 +224,8 @@ public class F3dOpcodeParser : IOpcodeParser {
             }
         };
       }
-      case F3dOpcode.G_LOADBLOCK: {
-        br.Position += 3;
-
-        var tileDescriptor = (TileDescriptorIndex) br.ReadByte();
-        var texelsAndDxt = br.ReadUInt24();
-        var texels = texelsAndDxt >> 12;
-
-        return new LoadBlockOpcodeCommand {
-            TileDescriptorIndex = tileDescriptor, Texels = (ushort) texels,
-        };
-      }
+      case F3dOpcode.G_LOADBLOCK:
+        return F3dUtil.ParseLoadBlockOpcodeCommand(br);
       case F3dOpcode.G_MOVEMEM: {
         var commandType = (DmemAddress) br.ReadByte();
         var sizeInBytes = br.ReadUInt16();

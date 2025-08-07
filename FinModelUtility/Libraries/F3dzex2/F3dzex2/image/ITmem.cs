@@ -2,6 +2,7 @@
 
 using fin.model;
 
+
 namespace f3dzex2.image;
 
 /// <summary>
@@ -33,8 +34,13 @@ public interface ITmem {
                    uint num64BitValuesPerRow,
                    uint offsetOfTextureInTmem,
                    TileDescriptorIndex tileDescriptor,
+                   ushort palette,
                    F3dWrapMode wrapModeS,
-                   F3dWrapMode wrapModeT);
+                   ushort maskS,
+                   ushort shiftS,
+                   F3dWrapMode wrapModeT,
+                   ushort maskT,
+                   ushort shiftT);
 
   void GsDpSetTileSize(float uls,
                        float ult,

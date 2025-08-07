@@ -8,6 +8,7 @@ using f3dzex2.model;
 using fin.model;
 using fin.util.enums;
 
+
 namespace f3dzex2.displaylist.opcodes;
 
 public class NoopOpcodeCommand : IOpcodeCommand;
@@ -26,7 +27,6 @@ public class DlOpcodeCommand : IOpcodeCommand {
 ///   Stops executing current DL and returns to one at top of stack.
 /// </summary>
 public class EndDlOpcodeCommand : IOpcodeCommand;
-
 
 public class MtxOpcodeCommand : IOpcodeCommand {
   public uint RamAddress { get; set; }
@@ -47,7 +47,6 @@ public class PopMtxOpcodeCommand : IOpcodeCommand {
   public uint NumberOfMatrices { get; set; }
 }
 
-
 public class SimpleVtxOpcodeCommand : IOpcodeCommand {
   public byte NumVerticesToLoad { get; set; }
   public byte IndexToBeginStoringVertices { get; set; }
@@ -60,7 +59,6 @@ public class VtxOpcodeCommand : IOpcodeCommand {
 }
 
 public class ModifyVtxOpcodeCommand : IOpcodeCommand;
-
 
 public enum TriVertexOrder {
   ABC = 0,
@@ -76,23 +74,23 @@ public class Tri1OpcodeCommand : IOpcodeCommand {
 
   public IEnumerable<byte> VertexIndicesInOrder {
     get {
-        var startOffset = this.VertexOrder switch {
-            TriVertexOrder.ABC => 0,
-            TriVertexOrder.BCA => 1,
-            TriVertexOrder.CAB => 2,
-            _                  => throw new ArgumentOutOfRangeException()
-        };
+      var startOffset = this.VertexOrder switch {
+          TriVertexOrder.ABC => 0,
+          TriVertexOrder.BCA => 1,
+          TriVertexOrder.CAB => 2,
+          _                  => throw new ArgumentOutOfRangeException()
+      };
 
-        for (var i = 0; i < 3; ++i) {
-          var current = (startOffset + i) % 3;
-          yield return current switch {
-              0 => this.VertexIndexA,
-              1 => this.VertexIndexB,
-              2 => this.VertexIndexC,
-              _ => throw new ArgumentOutOfRangeException()
-          };
-        }
+      for (var i = 0; i < 3; ++i) {
+        var current = (startOffset + i) % 3;
+        yield return current switch {
+            0 => this.VertexIndexA,
+            1 => this.VertexIndexB,
+            2 => this.VertexIndexC,
+            _ => throw new ArgumentOutOfRangeException()
+        };
       }
+    }
   }
 }
 
@@ -109,44 +107,44 @@ public class Tri2OpcodeCommand : IOpcodeCommand {
 
   public IEnumerable<byte> VertexIndicesInOrder0 {
     get {
-        var startOffset = this.VertexOrder0 switch {
-            TriVertexOrder.ABC => 0,
-            TriVertexOrder.BCA => 1,
-            TriVertexOrder.CAB => 2,
-            _                  => throw new ArgumentOutOfRangeException()
-        };
+      var startOffset = this.VertexOrder0 switch {
+          TriVertexOrder.ABC => 0,
+          TriVertexOrder.BCA => 1,
+          TriVertexOrder.CAB => 2,
+          _                  => throw new ArgumentOutOfRangeException()
+      };
 
-        for (var i = 0; i < 3; ++i) {
-          var current = (startOffset + i) % 3;
-          yield return current switch {
-              0 => this.VertexIndexA0,
-              1 => this.VertexIndexB0,
-              2 => this.VertexIndexC0,
-              _ => throw new ArgumentOutOfRangeException()
-          };
-        }
+      for (var i = 0; i < 3; ++i) {
+        var current = (startOffset + i) % 3;
+        yield return current switch {
+            0 => this.VertexIndexA0,
+            1 => this.VertexIndexB0,
+            2 => this.VertexIndexC0,
+            _ => throw new ArgumentOutOfRangeException()
+        };
       }
+    }
   }
 
   public IEnumerable<byte> VertexIndicesInOrder1 {
     get {
-        var startOffset = this.VertexOrder1 switch {
-            TriVertexOrder.ABC => 0,
-            TriVertexOrder.BCA => 1,
-            TriVertexOrder.CAB => 2,
-            _                  => throw new ArgumentOutOfRangeException()
-        };
+      var startOffset = this.VertexOrder1 switch {
+          TriVertexOrder.ABC => 0,
+          TriVertexOrder.BCA => 1,
+          TriVertexOrder.CAB => 2,
+          _                  => throw new ArgumentOutOfRangeException()
+      };
 
-        for (var i = 0; i < 3; ++i) {
-          var current = (startOffset + i) % 3;
-          yield return current switch {
-              0 => this.VertexIndexA1,
-              1 => this.VertexIndexB1,
-              2 => this.VertexIndexC1,
-              _ => throw new ArgumentOutOfRangeException()
-          };
-        }
+      for (var i = 0; i < 3; ++i) {
+        var current = (startOffset + i) % 3;
+        yield return current switch {
+            0 => this.VertexIndexA1,
+            1 => this.VertexIndexB1,
+            2 => this.VertexIndexC1,
+            _ => throw new ArgumentOutOfRangeException()
+        };
       }
+    }
   }
 }
 
@@ -164,7 +162,6 @@ public class SetFogColorOpcodeCommand : IOpcodeCommand {
   public byte A { get; set; }
 }
 
-
 public class SetPrimColorOpcodeCommand : IOpcodeCommand {
   public byte R { get; set; }
   public byte G { get; set; }
@@ -173,7 +170,6 @@ public class SetPrimColorOpcodeCommand : IOpcodeCommand {
 
   // TODO: Handle LOD values
 }
-
 
 public enum TileDescriptorState {
   DISABLED = 0,
@@ -236,13 +232,13 @@ public static class GeometryModeExtensions {
         geometryMode.CheckFlag(GeometryMode.G_CULL_FRONT_EX2));
 
   private static CullingMode GetCullingMode_(bool cullBack, bool cullFront) {
-      return (cullBack, cullFront) switch {
-          (false, false) => CullingMode.SHOW_BOTH,
-          (false, true)  => CullingMode.SHOW_BACK_ONLY,
-          (true, false)  => CullingMode.SHOW_FRONT_ONLY,
-          (true, true)   => CullingMode.SHOW_NEITHER,
-      };
-    }
+    return (cullBack, cullFront) switch {
+        (false, false) => CullingMode.SHOW_BOTH,
+        (false, true)  => CullingMode.SHOW_BACK_ONLY,
+        (true, false)  => CullingMode.SHOW_FRONT_ONLY,
+        (true, true)   => CullingMode.SHOW_NEITHER,
+    };
+  }
 
 
   public static UvType GetUvType(this GeometryMode geometryMode)
@@ -291,9 +287,15 @@ public class SetTileOpcodeCommand : IOpcodeCommand {
   public TileDescriptorIndex TileDescriptorIndex { get; set; }
   public N64ColorFormat ColorFormat { get; set; }
   public BitsPerTexel BitsPerTexel { get; set; }
+  public ushort Palette { get; set; }
+
+  public F3dWrapMode WrapModeS { get; set; }
+  public ushort MaskS { get; set; }
+  public ushort ShiftS { get; set; }
 
   public F3dWrapMode WrapModeT { get; set; }
-  public F3dWrapMode WrapModeS { get; set; }
+  public ushort MaskT { get; set; }
+  public ushort ShiftT { get; set; }
 
   public ushort Num64BitValuesPerRow { get; set; }
   public ushort OffsetOfTextureInTmem { get; set; }
@@ -319,13 +321,13 @@ public class LoadBlockOpcodeCommand : IOpcodeCommand {
   public required ushort Texels { get; init; }
   public float Uls { get; set; }
   public float Ult { get; set; }
+  public ushort Dxt { get; init; }
 }
 
 public class LoadTlutOpcodeCommand : IOpcodeCommand {
   public required TileDescriptorIndex TileDescriptorIndex { get; init; }
   public required ushort NumColorsToLoad { get; init; }
 }
-
 
 public enum DmemAddress {
   G_MV_L0 = 0x86,
@@ -336,4 +338,16 @@ public class MoveMemOpcodeCommand : IOpcodeCommand {
   public DmemAddress DmemAddress { get; set; }
 
   public uint SegmentedAddress { get; set; }
+}
+
+public class SetOtherModeHOpcodeCommand : IOpcodeCommand {
+  public ushort Shift { get; set; }
+  public ushort Length { get; set; }
+  public uint Data { get; set; }
+}
+
+public class SetOtherModeLOpcodeCommand : IOpcodeCommand {
+  public ushort Shift { get; set; }
+  public ushort Length { get; set; }
+  public uint Data { get; set; }
 }

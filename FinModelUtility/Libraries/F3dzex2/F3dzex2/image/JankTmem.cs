@@ -111,8 +111,13 @@ public class JankTmem(IN64Hardware n64Hardware) : ITmem {
                           uint num64BitValuesPerRow,
                           uint offsetOfTextureInTmem,
                           TileDescriptorIndex tileDescriptor,
+                          ushort palette,
                           F3dWrapMode wrapModeS,
-                          F3dWrapMode wrapModeT) {
+                          ushort maskS,
+                          ushort shiftS,
+                          F3dWrapMode wrapModeT,
+                          ushort maskT,
+                          ushort shiftT) {
     if (tileDescriptor == TileDescriptorIndex.TX_RENDERTILE) {
       this.textureTile_.ColorFormat = colorFormat;
       this.textureTile_.BitsPerTexel = bitsPerTexel;

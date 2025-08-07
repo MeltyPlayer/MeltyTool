@@ -50,7 +50,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var defaultBr = new SchemaBinaryReader(fs, Endianness.BigEndian);
 
     var n64Hardware = new N64Hardware<N64Memory>();
-    n64Hardware.Rdp = new Rdp {Tmem = new JankTmem(n64Hardware)};
+    n64Hardware.Rdp = new Rdp {Tmem = new NoclipTmem(n64Hardware)};
     n64Hardware.Rsp = new Rsp();
     var n64Memory = n64Hardware.Memory = new N64Memory(defaultFile);
     n64Memory.SetSegment(0, 0, (uint) defaultBr.Length);

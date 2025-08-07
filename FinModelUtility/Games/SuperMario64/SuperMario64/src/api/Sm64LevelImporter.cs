@@ -35,7 +35,7 @@ public static class Sm64LevelImporter {
 
     var sm64Hardware = new N64Hardware<ISm64Memory>();
     sm64Hardware.Memory = new Sm64Memory();
-    sm64Hardware.Rdp = new Rdp { Tmem = new JankTmem(sm64Hardware) };
+    sm64Hardware.Rdp = new Rdp { Tmem = new NoclipTmem(sm64Hardware) };
     sm64Hardware.Rsp = new Rsp();
 
     var level = new Level((ushort) levelFileBundle.LevelId, 1);

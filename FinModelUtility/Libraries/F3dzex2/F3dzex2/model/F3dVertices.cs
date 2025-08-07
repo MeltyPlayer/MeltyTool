@@ -66,8 +66,8 @@ public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
 
       var textureParams = n64Hardware.Rdp.Tmem.GetMaterialParams()
                     .TextureParams0;
-      var bmpWidth = Math.Max(textureParams.Width, (ushort) 0);
-      var bmpHeight = Math.Max(textureParams.Height, (ushort) 0);
+      var bmpWidth = Math.Max(textureParams?.Width ?? 0, (ushort) 0);
+      var bmpHeight = Math.Max(textureParams?.Height ?? 0, (ushort) 0);
 
       var newVertex = model.Skin.AddVertex(position);
       newVertex.SetUv(definition.GetUv(

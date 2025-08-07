@@ -66,6 +66,18 @@ public static class BitsPerTexelExtensions {
         ? texelCount << wordShift
         : texelCount >> -wordShift;
   }
+
+  public static uint GetBitCount(this BitsPerTexel bitsPerTexel)
+    => bitsPerTexel switch {
+        BitsPerTexel._4BPT  => 4,
+        BitsPerTexel._8BPT  => 8,
+        BitsPerTexel._16BPT => 16,
+        BitsPerTexel._32BPT => 32,
+        _ => throw new ArgumentOutOfRangeException(
+            nameof(bitsPerTexel),
+            bitsPerTexel,
+            null)
+    };
 }
 
 public class N64ImageParser(IN64Hardware n64Hardware) {
