@@ -4,15 +4,21 @@ using System.Numerics;
 
 using CommunityToolkit.Diagnostics;
 
+using f3dzex2.displaylist;
 using f3dzex2.displaylist.opcodes;
 using f3dzex2.displaylist.opcodes.f3dzex2;
+using f3dzex2.image;
+using f3dzex2.io;
+using f3dzex2.model;
 
+using fin.color;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
 using fin.math.fixedPoint;
 using fin.math.matrix.four;
+using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
 using fin.model.io;
@@ -25,6 +31,8 @@ using fin.util.sets;
 using schema.binary;
 using schema.binary.attributes;
 
+using WrapMode = fin.model.WrapMode;
+
 
 namespace marioartist.schema;
 
@@ -36,10 +44,21 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     using var br = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
     var tstlt = br.ReadNew<Tstlt>();
 
-    var model = new ModelImpl {
-        Files = fileBundle.MainFile.AsFileSet(),
-        FileBundle = fileBundle,
-    };
+    var defaultFile = new FinFile(
+        "C:\\Users\\Ryan\\Desktop\\Mario Artist Experiments\\files\\DEFAULT.TSTLT");
+    using var fs = defaultFile.OpenRead();
+    var defaultBr = new SchemaBinaryReader(fs, Endianness.BigEndian);
+
+    var n64Hardware = new N64Hardware<N64Memory>();
+    n64Hardware.Rdp = new Rdp {Tmem = new JankTmem(n64Hardware)};
+    n64Hardware.Rsp = new Rsp();
+    var n64Memory = n64Hardware.Memory = new N64Memory(defaultFile);
+    n64Memory.SetSegment(0, 0, (uint) defaultBr.Length);
+
+    var dlModelBuilder = new DlModelBuilder(n64Hardware);
+
+    var model = dlModelBuilder.Model;
+    n64Hardware.Rsp.ActiveBone = model.Skeleton.Root;
 
     var materialManager = model.MaterialManager;
     var thumbnailTexture =
@@ -50,6 +69,20 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         materialManager.CreateTexture(tstlt.FaceTextures.ToImage());
     faceTextures.Name = "face";
 
+    br.Position = 0x12e80;
+    var image1 = new L8Image(32, 32 * 16);
+    image1.Read(br);
+    var image1Texture =
+        materialManager.CreateTexture(image1.ToImage());
+    image1Texture.Name = "image1";
+
+    br.Position = 0x1bef0;
+    var image3 = new Argb1555Image(32, 32 * 16);
+    image3.Read(br);
+    var image3Texture =
+        materialManager.CreateTexture(image3.ToImage());
+    image3Texture.Name = "image3";
+
     br.Position = 0x16770;
     var image2 = new Argb1555Image(32, 32 * 8);
     image2.Read(br);
@@ -57,19 +90,14 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         materialManager.CreateTexture(image2.ToImage());
     image2Texture.Name = "palette";
 
-    using var fs =
-        new FinFile(
-                "C:\\Users\\Ryan\\Desktop\\Mario Artist Experiments\\files\\DEFAULT.TSTLT")
-            .OpenRead();
-    var defaultBr = new SchemaBinaryReader(fs, Endianness.BigEndian);
-
     defaultBr.Position = 0x49C;
     var headSectionLength = defaultBr.ReadUInt32();
 
     defaultBr.Position = 0xa938;
-    
+
     var joints = defaultBr.ReadNews<Joint>(0x1F);
-    var jointsByParent = new BidirectionalDictionary<Joint?, List<(Joint joint, int index)>>();
+    var jointsByParent =
+        new BidirectionalDictionary<Joint?, List<(Joint joint, int index)>>();
     for (var i = 0; i < joints.Length; ++i) {
       var joint = joints[i];
       var parentIndex = joint.parentIndex;
@@ -81,11 +109,48 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       if (jointsByParent.ContainsKey(parentJoint)) {
         parentChildren = jointsByParent[parentJoint];
       } else {
-        parentChildren = jointsByParent[parentJoint] = new List<(Joint joint, int index)>();
+        parentChildren = jointsByParent[parentJoint] =
+            new List<(Joint joint, int index)>();
       }
 
       parentChildren.Add((joint, i));
     }
+
+    var translations = new Vector3[joints.Length];
+    var rotations = new Vector3[joints.Length];
+    var quaternions = new Quaternion[joints.Length];
+    var scales = new Vector3[joints.Length];
+
+    for (var i = 0; i < joints.Length; ++i) {
+      var joint = joints[i];
+      var worldMatrix = Matrix4x4.Transpose(joint.matrix);
+
+      var bone = model.Skeleton.Root.AddChild(worldMatrix);
+      bone.Name = $"bone {i}";
+
+      Matrix4x4.Decompose(worldMatrix,
+                          out var scale,
+                          out var quaternion,
+                          out var translation);
+
+      translations[i] = translation;
+      quaternions[i] = quaternion;
+      scales[i] = scale;
+      rotations[i] = quaternion.ToEulerRadians();
+    }
+
+    ;
+
+    /*var jointsAndTransformStuff =
+        joints.Select(j => {
+          var matrix = Matrix4x4.Transpose(j.matrix);
+          Matrix4x4.Decompose(matrix,
+                              out var scale,
+                              out var rotation,
+                              out var translation);
+
+          return (j, matrix, translation, rotation, scale);
+        }).ToArray();
 
     var finBonesAndWorldMatrices = new IBone[joints.Length];
     var jointQueue = new FinTuple3Queue<(Joint joint, int index), Matrix4x4, IBone>(
@@ -106,7 +171,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         jointQueue.Enqueue(jointsByParent[joint]
                                .Select(childJoint => (childJoint, worldMatrix, bone)));
       }
-    }
+    }*/
 
     var headSectionOffset = 0x16770;
     var bodySectionOffset = headSectionOffset + headSectionLength;
@@ -114,6 +179,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var meshGroupOffsets = new[] {
         (
             headSectionOffset,
+            headSectionLength,
             new[] {
                 0x1a770,
                 0x1cca0,
@@ -124,7 +190,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         ),
         (
             bodySectionOffset,
-            new [] {
+            defaultBr.Length - bodySectionOffset,
+            new[] {
                 0x290f0,
                 0x2ab90,
                 0x2b780,
@@ -147,14 +214,17 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     };
 
     var skin = model.Skin;
-    
-    foreach (var (meshGroupOffset, meshOffsets) in meshGroupOffsets) {
-      var lazyVertices =
-          new LazyDictionary<(uint ramAddress, (int width, int height)?),
-              IReadOnlyVertex>(tuple => {
-            var (ramAddress, textureResolution) = tuple;
 
-            var fileAddress = ramAddress - 0x0f000000 + meshGroupOffset;
+    foreach (var (meshGroupOffset, meshGroupLength, meshOffsets) in
+             meshGroupOffsets) {
+      n64Memory.SetSegment(0xF, (uint) meshGroupOffset, (uint) meshGroupLength);
+
+      var lazyVertices =
+          new LazyDictionary<(uint segmentedAddress, (int width, int height)?),
+              IReadOnlyVertex>(tuple => {
+            var (segmentedAddress, textureResolution) = tuple;
+
+            var fileAddress = segmentedAddress - 0x0f000000 + meshGroupOffset;
             var v = defaultBr.SubreadAt(fileAddress,
                                         () => defaultBr.ReadNew<Vertex>());
 
@@ -173,12 +243,71 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
             return finVertex;
           });
 
+      var lazyMaterials =
+          new LazyDictionary<(uint segmentedAddress, (int width, int height,
+              WrapMode, WrapMode, N64ColorFormat)?),
+              (IReadOnlyMaterial, ITexture)>(tuple => {
+            var (segmentedAddress, textureResolutionAndColorFormat) = tuple;
+
+            IoUtils.SplitSegmentedAddress(segmentedAddress,
+                                          out var segment,
+                                          out var address);
+            var fileAddress = segment switch {
+                0x0f => meshGroupOffset + address,
+            };
+
+            var (textureWidth, textureHeight, wrapModeU, wrapModeV, colorFormat
+                    ) =
+                textureResolutionAndColorFormat ?? (
+                    32, 32, WrapMode.CLAMP, WrapMode.CLAMP, N64ColorFormat.L);
+
+            var image = defaultBr.SubreadAt(
+                fileAddress,
+                () => {
+                  var image = colorFormat switch {
+                      N64ColorFormat.L => (IMarioArtistImage) new L8Image(
+                          textureWidth,
+                          textureHeight),
+                      N64ColorFormat.RGBA => new Argb1555Image(
+                          textureWidth,
+                          textureHeight),
+                  };
+
+                  image.Read(defaultBr);
+
+                  return image.ToImage();
+                });
+
+
+            var (finMaterial, finTexture) = model.MaterialManager
+                                                 .AddSimpleTextureMaterialFromImage(
+                                                     image,
+                                                     tuple.segmentedAddress
+                                                         .ToHexString());
+
+            finTexture.WrapModeU = wrapModeU;
+            finTexture.WrapModeV = wrapModeV;
+
+            // TODO: How do we know when *not* to use the skin color?
+            finMaterial.DiffuseColor =
+                tstlt.AnotherHeader.SkinColor.ToSystemColor();
+
+            return (finMaterial, finTexture);
+          });
+
       foreach (var meshOffset in meshOffsets) {
         try {
           defaultBr.Position = meshOffset;
-          AddMesh_(tstlt, meshGroupOffset, model, defaultBr, lazyVertices);
+          AddMesh_(tstlt,
+                   meshGroupOffset,
+                   model,
+                   defaultBr,
+                   lazyVertices,
+                   lazyMaterials,
+                   n64Memory,
+                   dlModelBuilder);
         } catch (Exception e) {
-
+          ;
         }
       }
     }
@@ -191,7 +320,13 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       long meshGroupOffset,
       ModelImpl model,
       IBinaryReader br,
-      ILazyDictionary<(uint, (int, int)?), IReadOnlyVertex> lazyVertices) {
+      ILazyDictionary<(uint, (int, int)?), IReadOnlyVertex> lazyVertices,
+      ILazyDictionary<(uint, (int, int, WrapMode, WrapMode, N64ColorFormat)?), (
+              IReadOnlyMaterial,
+              ITexture)>
+          lazyMaterials,
+      N64Memory n64Memory,
+      DlModelBuilder dlModelBuilder) {
     var baseOffset = br.Position;
 
     br.Position = baseOffset + 4 * 2;
@@ -208,45 +343,24 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var imageCount = br.ReadUInt16();
     var vertexCount = br.ReadUInt16();
 
+    n64Memory.SetSegment(0xE,
+                         (uint) (baseOffset + vertexSectionOffset),
+                         (uint) vertexSectionSize);
+
     br.Position = baseOffset + imageSectionOffset;
 
     var singleImageSize = imageCount > 0 ? imageSectionSize / imageCount : 0;
-    var imageWidth = 16;
-    var imageHeight = (int) (singleImageSize / imageWidth);
-
-    var texturesAndMaterialAndSegmentedAddresses =
-        Enumerable.Range(0, imageCount)
-                  .Select(_ => {
-                    var offset = br.Position;
-                    var segmentedAddress =
-                        (uint) (offset - meshGroupOffset + 0x0f000000);
-
-                    var image = new L8Image(imageWidth, imageHeight);
-                    image.Read(br);
-                    return (image.ToImage(), segmentedAddress);
-                  })
-                  .Select(tuple => (
-                              model.MaterialManager
-                                   .AddSimpleTextureMaterialFromImage(
-                                       tuple.Item1,
-                                       $"{tuple.segmentedAddress}"),
-                              tuple.segmentedAddress))
-                  .ToArray();
-
-    // TODO: How do we know when *not* to use the skin color?
-    var skinColor = tstlt.AnotherHeader.SkinColor;
-    foreach (var ((textureMaterial, _), _) in
-             texturesAndMaterialAndSegmentedAddresses) {
-      textureMaterial.DiffuseColor =
-          Color.FromArgb(skinColor.Rb, skinColor.Gb, skinColor.Bb);
-    }
-
-    var textureAndMaterialBySegmentedAddress =
-        texturesAndMaterialAndSegmentedAddresses.ToDictionary(
-            t => t.segmentedAddress,
-            t => t.Item1);
 
     br.Position = baseOffset + opcodeSectionOffset;
+
+    var displayList =
+        new DisplayListReader().ReadDisplayList(
+            n64Memory,
+            new F3dzex2OpcodeParser(),
+            (uint) (baseOffset + opcodeSectionOffset));
+
+    //dlModelBuilder.AddDl(displayList);
+
     var parser = new SimpleF3dzex2OpcodeParser();
     var opcodes = br.Subread(
         opcodeSectionSize,
@@ -263,20 +377,36 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     var activeVertices = new IReadOnlyVertex[0x20];
     (IReadOnlyMaterial, ITexture)? currentTextureAndMaterial = null;
+    SetTimgOpcodeCommand? timgOpcodeCommand = null;
+    SetTileOpcodeCommand? tileOpcodeCommand = null;
+    LoadBlockOpcodeCommand blockOpcodeCommand = null;
     foreach (var opcode in opcodes) {
       switch (opcode) {
         case SetTileOpcodeCommand setTileOpcodeCommand: {
-          var currentTexture = currentTextureAndMaterial.Value.Item2;
-          currentTexture.WrapModeU =
-              setTileOpcodeCommand.WrapModeS.AsFinWrapMode();
-          currentTexture.WrapModeV =
-              setTileOpcodeCommand.WrapModeT.AsFinWrapMode();
+          tileOpcodeCommand = setTileOpcodeCommand;
           break;
         }
         case SetTimgOpcodeCommand setTimgOpcodeCommand: {
+          timgOpcodeCommand = setTimgOpcodeCommand;
+          break;
+        }
+        case SetTileSizeOpcodeCommand setTileSizeOpcodeCommand: {
+          var width = (int) (setTileSizeOpcodeCommand.Lrs + 1);
+          var height = (int) (setTileSizeOpcodeCommand.Lrt + 1);
+
+          var format = N64ColorFormat.L;
+
+          var wrapModeU = tileOpcodeCommand.WrapModeS.AsFinWrapMode();
+          var wrapModeV = tileOpcodeCommand.WrapModeT.AsFinWrapMode();
+
           currentTextureAndMaterial =
-              textureAndMaterialBySegmentedAddress[
-                  setTimgOpcodeCommand.TextureSegmentedAddress];
+              lazyMaterials[
+                  (timgOpcodeCommand.TextureSegmentedAddress,
+                   (width, height, wrapModeU, wrapModeV, format))];
+          break;
+        }
+        case LoadBlockOpcodeCommand loadBlockOpcodeCommand: {
+          blockOpcodeCommand = loadBlockOpcodeCommand;
           break;
         }
         case SimpleVtxOpcodeCommand vtxOpcodeCommand: {
@@ -289,13 +419,18 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
               var address = baseRamAddress & 0xFFFFFF;
 
               var vertexAddress = baseOffset + vertexSectionOffset;
-              var ramVertexAddress = vertexAddress - meshGroupOffset + 0x0f000000;
+              var ramVertexAddress =
+                  vertexAddress - meshGroupOffset + 0x0f000000;
 
               baseRamAddress = (uint) (ramVertexAddress + address);
               break;
             }
-            case 0xF:  { break; }
-            default: throw new NotSupportedException("Unsupported segment for vertex address: " + segment.ToHex());
+            case 0xF: {
+              break;
+            }
+            default:
+              throw new NotSupportedException(
+                  "Unsupported segment for vertex address: " + segment.ToHex());
           }
 
           for (var i = 0; i < vtxOpcodeCommand.NumVerticesToLoad; ++i) {
@@ -353,7 +488,7 @@ public partial class Joint : IBinaryDeserializable {
   public short parentIndex;
   public short unk5;
   public uint unk6;
-  
+
   public byte index;
   public byte unk0;
   public ushort unk1;

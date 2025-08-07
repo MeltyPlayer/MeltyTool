@@ -58,7 +58,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sysdolphin", "Libraries\Sys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sysdolphin Tests", "Libraries\Sysdolphin\Sysdolphin Tests\Sysdolphin Tests.csproj", "{272EA254-6413-4CB0-9A7A-937167BEBE3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F3dzex2", "Libraries\F3dzex2\F3dzex2.csproj", "{439E4AFB-51BD-4F54-B6FA-E20A06E29D6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "F3dzex2", "Libraries\F3dzex2\F3dzex2\F3dzex2.csproj", "{439E4AFB-51BD-4F54-B6FA-E20A06E29D6F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Glo", "Glo", "{7E57743A-6B22-4706-80F6-A0A0B6D0F64A}"
 EndProject
@@ -273,6 +273,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MarioArtist", "MarioArtist", "{31EA5809-EC91-478E-B98B-941A2830439F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarioArtist", "Games\MarioArtist\MarioArtist\MarioArtist.csproj", "{F67B03CD-06FD-4E36-A86C-DB70B1B5AD58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "F3dzex2 Tests", "Libraries\F3dzex2\F3dzex2 Tests\F3dzex2 Tests.csproj", "{DC624D12-0767-4683-8D3F-BF4DDAE9668B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -922,6 +924,14 @@ Global
 		{F67B03CD-06FD-4E36-A86C-DB70B1B5AD58}.Release|x64.Build.0 = Release|x64
 		{F67B03CD-06FD-4E36-A86C-DB70B1B5AD58}.Release|x86.ActiveCfg = Release|x86
 		{F67B03CD-06FD-4E36-A86C-DB70B1B5AD58}.Release|x86.Build.0 = Release|x86
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Debug|x64.ActiveCfg = Debug|x64
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Debug|x64.Build.0 = Debug|x64
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Debug|x86.ActiveCfg = Debug|x86
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Debug|x86.Build.0 = Debug|x86
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Release|x64.ActiveCfg = Release|x64
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Release|x64.Build.0 = Release|x64
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Release|x86.ActiveCfg = Release|x86
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1042,6 +1052,7 @@ Global
 		{82BAFE75-14F6-495A-B11B-DBB59CB7E10E} = {98E57180-48B9-4648-AE42-7C7C67120471}
 		{31EA5809-EC91-478E-B98B-941A2830439F} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{F67B03CD-06FD-4E36-A86C-DB70B1B5AD58} = {31EA5809-EC91-478E-B98B-941A2830439F}
+		{DC624D12-0767-4683-8D3F-BF4DDAE9668B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}

@@ -139,7 +139,7 @@
     <ProjectReference Include="..\..\Games\VictoryHeatRally\VictoryHeatRally\VictoryHeatRally.csproj" />
 
     <ProjectReference Include="..\..\Libraries\AngelStudios\AngelStudios.csproj" />
-    <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2.csproj" />
+    <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2\F3dzex2.csproj" />
     <ProjectReference Include="..\..\Libraries\Fmod\Fmod\Fmod.csproj" />
     <ProjectReference Include="..\..\Libraries\Grezzo\Grezzo\Grezzo.csproj" />
     <ProjectReference Include="..\..\Libraries\JSystem\JSystem\JSystem.csproj" />

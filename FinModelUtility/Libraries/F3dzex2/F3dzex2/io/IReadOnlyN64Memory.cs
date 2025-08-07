@@ -41,6 +41,13 @@ public interface IN64Memory : IReadOnlyN64Memory {
                   IArrayToArrayDecompressor? decompressor = null);
 
   void AddSegment(uint segmentIndex, Segment segment);
+
+  void SetSegment(uint segmentIndex,
+                  uint offset,
+                  uint length,
+                  IArrayToArrayDecompressor? decompressor = null);
+
+  void SetSegment(uint segmentIndex, Segment segment);
 }
 
 public class N64Memory(
@@ -138,6 +145,22 @@ public class N64Memory(
 
   public void AddSegment(uint segmentIndex, Segment segment)
     => this.segments_.Add(segmentIndex, segment);
+
+  public void SetSegment(uint segmentIndex,
+                         uint offset,
+                         uint length,
+                         IArrayToArrayDecompressor? decompressor = null)
+    => this.SetSegment(segmentIndex,
+                       new Segment {
+                           Offset = offset,
+                           Length = length,
+                           Decompressor = decompressor,
+                       });
+
+  public void SetSegment(uint segmentIndex, Segment segment) {
+    this.segments_.ClearList(segmentIndex);
+    this.segments_.Add(segmentIndex, segment);
+  }
 
   private bool TryToGetSegmentsAtSegmentedAddress_(
       uint segmentedAddress,

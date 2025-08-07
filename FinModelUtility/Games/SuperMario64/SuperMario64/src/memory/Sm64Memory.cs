@@ -78,5 +78,16 @@ namespace sm64.memory {
     public void AddSegment(uint segmentIndex, Segment segment) {
       throw new NotImplementedException();
     }
+
+    public void SetSegment(uint segmentIndex,
+                           uint offset,
+                           uint length,
+                           IArrayToArrayDecompressor? decompressor = null) {
+      throw new NotImplementedException();
+    }
+
+    public void SetSegment(uint segmentIndex, Segment segment) {
+      throw new NotImplementedException();
+    }
   }
 }
