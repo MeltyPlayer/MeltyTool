@@ -76,13 +76,13 @@ public class DisplayListReader : IDisplayListReader {
           OpcodeCommands = opcodeCommands.ToArray(), Type = opcodeParser.Type,
       };
     }
+}
 
-  private class DisplayList : IDisplayList {
-    public required IReadOnlyList<IOpcodeCommand> OpcodeCommands {
-      get;
-      init;
-    }
-
-    public required DisplayListType Type { get; init; }
+public class DisplayList : IDisplayList {
+  public required IReadOnlyList<IOpcodeCommand> OpcodeCommands {
+    get;
+    init;
   }
+
+  public required DisplayListType Type { get; init; }
 }

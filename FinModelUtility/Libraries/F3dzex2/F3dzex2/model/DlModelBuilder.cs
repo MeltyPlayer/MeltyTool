@@ -17,6 +17,8 @@ using fin.model;
 using fin.model.impl;
 using fin.image.util;
 
+using NoAlloq;
+
 using schema.binary;
 
 
@@ -233,10 +235,35 @@ public class DlModelBuilder {
                           null)
                   };
 
-              foreach (var combinerCycleParams in new[] {
-                           materialParams.CombinerCycleParams0,
-                           materialParams.CombinerCycleParams1
-                       }) {
+              var cycleParams0 = materialParams.CombinerCycleParams0;
+              var cycleParams1 = materialParams.CombinerCycleParams1;
+              ReadOnlySpan<CombinerCycleParams> cycleParams =
+                  cycleParams1 != null
+                      ? [
+                          cycleParams0,
+                          cycleParams1.Value
+                      ]
+                      : [cycleParams0];
+
+              if (cycleParams
+                  .Any(c
+                           => c.ColorMuxA
+                                  is GenericColorMux.G_CCMUX_TEXEL0
+                                     or GenericColorMux.G_CCMUX_TEXEL1 ||
+                              c.ColorMuxB
+                                  is GenericColorMux.G_CCMUX_TEXEL0
+                                     or GenericColorMux.G_CCMUX_TEXEL1 ||
+                              c.ColorMuxC
+                                  is GenericColorMux.G_CCMUX_TEXEL0
+                                     or GenericColorMux.G_CCMUX_TEXEL1 ||
+                              c.ColorMuxD
+                                  is GenericColorMux.G_CCMUX_TEXEL0
+                                     or GenericColorMux.G_CCMUX_TEXEL1)
+                  && texture0 == null) {
+                ;
+              }
+
+              foreach (var combinerCycleParams in cycleParams) {
                 var cA = getColorValue(combinerCycleParams.ColorMuxA);
                 var cB = getColorValue(combinerCycleParams.ColorMuxB);
                 var cC = getColorValue(combinerCycleParams.ColorMuxC);

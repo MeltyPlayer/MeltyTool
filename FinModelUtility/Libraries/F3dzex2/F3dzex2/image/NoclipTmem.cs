@@ -258,7 +258,9 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
         TextureParams0 = this.GetOrCreateTextureParamsForTile_(0),
         TextureParams1 = this.GetOrCreateTextureParamsForTile_(1),
         CombinerCycleParams0 = n64Hardware.Rdp.CombinerCycleParams0,
-        CombinerCycleParams1 = n64Hardware.Rdp.CombinerCycleParams1,
+        CombinerCycleParams1 = n64Hardware.Rdp.CycleType == CycleType.TWO_CYCLE
+            ? n64Hardware.Rdp.CombinerCycleParams1
+            : null,
         CullingMode = this.cullingMode_
     };
   }

@@ -62,6 +62,20 @@ public static class EnumerableExtensions {
                                          T item)
     => enumerable.Concat(item.Yield());
 
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static IEnumerable<T> UpToFirstMatchExclusive<T>(
+      this IEnumerable<T> enumerable,
+      Predicate<T> predicate) {
+    foreach (var value in enumerable) {
+      if (!predicate(value)) {
+        yield return value;
+      } else {
+        yield break;
+      }
+    }
+  }
+
   public static IEnumerable<T> WhereNonnull<T>(
       this IEnumerable<T?> enumerable)
     => enumerable.Select(v => (v != null, v))

@@ -12,7 +12,7 @@ public struct MaterialParams {
   public TextureParams? TextureParams1 { get; set; } = new();
 
   public CombinerCycleParams CombinerCycleParams0 { get; set; }
-  public CombinerCycleParams CombinerCycleParams1 { get; set; }
+  public CombinerCycleParams? CombinerCycleParams1 { get; set; }
 
   public CullingMode CullingMode { get; set; }
 
@@ -20,7 +20,7 @@ public struct MaterialParams {
                                                  .With(this.TextureParams0 ?? default)
                                                  .With(this.TextureParams1 ?? default)
                                                  .With(this.CombinerCycleParams0)
-                                                 .With(this.CombinerCycleParams1)
+                                                 .With(this.CombinerCycleParams1 ?? default)
                                                  .With(this.CullingMode);
 
   public override bool Equals(object? other) {

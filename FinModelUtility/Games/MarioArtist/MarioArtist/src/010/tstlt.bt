@@ -277,6 +277,9 @@ typedef struct (int imageCount) {
 FSeek(0x36040);
 Mesh mesh;
 
+FSeek(0x1e6b0);
+Mesh hmmmMesh;
+
 FSeek(headOffset);
 MeshGroup headMeshGroup(8);
 

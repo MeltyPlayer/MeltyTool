@@ -1,5 +1,6 @@
 ﻿using fin.util.hash;
 
+
 namespace f3dzex2.combiner;
 
 public enum GenericColorMux {
@@ -49,6 +50,30 @@ public enum CycleType : byte {
 }
 
 public struct CombinerCycleParams {
+  public static CombinerCycleParams FromTexture0AndVertexColor()
+    => new() {
+        ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
+        ColorMuxB = GenericColorMux.G_CCMUX_0,
+        ColorMuxC = GenericColorMux.G_CCMUX_SHADE,
+        ColorMuxD = GenericColorMux.G_CCMUX_0,
+        AlphaMuxA = GenericAlphaMux.G_ACMUX_TEXEL0,
+        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxC = GenericAlphaMux.G_ACMUX_SHADE,
+        AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+    };
+
+  public static CombinerCycleParams FromVertexColor()
+    => new() {
+        ColorMuxA = GenericColorMux.G_CCMUX_SHADE,
+        ColorMuxB = GenericColorMux.G_CCMUX_0,
+        ColorMuxC = GenericColorMux.G_CCMUX_1,
+        ColorMuxD = GenericColorMux.G_CCMUX_0,
+        AlphaMuxA = GenericAlphaMux.G_ACMUX_SHADE,
+        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxC = GenericAlphaMux.G_ACMUX_1,
+        AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+    };
+
   public GenericColorMux ColorMuxA { get; set; }
   public GenericColorMux ColorMuxB { get; set; }
   public GenericColorMux ColorMuxC { get; set; }

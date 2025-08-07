@@ -1,9 +1,8 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Numerics;
+﻿using System.Numerics;
 
 using CommunityToolkit.Diagnostics;
 
+using f3dzex2.combiner;
 using f3dzex2.displaylist;
 using f3dzex2.displaylist.opcodes;
 using f3dzex2.displaylist.opcodes.f3dzex2;
@@ -14,10 +13,7 @@ using f3dzex2.model;
 using fin.color;
 using fin.data.dictionaries;
 using fin.data.lazy;
-using fin.data.queues;
 using fin.io;
-using fin.math.fixedPoint;
-using fin.math.matrix.four;
 using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
@@ -25,8 +21,8 @@ using fin.model.io;
 using fin.model.io.importers;
 using fin.model.util;
 using fin.schema.vector;
+using fin.util.enumerables;
 using fin.util.hex;
-using fin.util.sets;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -50,7 +46,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var defaultBr = new SchemaBinaryReader(fs, Endianness.BigEndian);
 
     var n64Hardware = new N64Hardware<N64Memory>();
-    n64Hardware.Rdp = new Rdp {Tmem = new NoclipTmem(n64Hardware)};
+    n64Hardware.Rdp = new Rdp {
+        Tmem = new NoclipTmem(n64Hardware),
+    };
     n64Hardware.Rsp = new Rsp();
     var n64Memory = n64Hardware.Memory = new N64Memory(defaultFile);
     n64Memory.SetSegment(0, 0, (uint) defaultBr.Length);
@@ -184,7 +182,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                 0x1a770,
                 0x1cca0,
                 0x1e6b0,
-                0x1e6b0,
                 0x1f0c0,
             }
         ),
@@ -304,7 +301,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                    defaultBr,
                    lazyVertices,
                    lazyMaterials,
-                   n64Memory,
+                   n64Hardware,
                    dlModelBuilder);
         } catch (Exception e) {
           ;
@@ -325,7 +322,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
               IReadOnlyMaterial,
               ITexture)>
           lazyMaterials,
-      N64Memory n64Memory,
+      N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder) {
     var baseOffset = br.Position;
 
@@ -343,9 +340,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var imageCount = br.ReadUInt16();
     var vertexCount = br.ReadUInt16();
 
-    n64Memory.SetSegment(0xE,
-                         (uint) (baseOffset + vertexSectionOffset),
-                         (uint) vertexSectionSize);
+    n64Hardware.Memory.SetSegment(0xE,
+                                  (uint) (baseOffset + vertexSectionOffset),
+                                  (uint) vertexSectionSize);
 
     br.Position = baseOffset + imageSectionOffset;
 
@@ -353,16 +350,26 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     br.Position = baseOffset + opcodeSectionOffset;
 
-    var displayList =
-        new DisplayListReader().ReadDisplayList(
-            n64Memory,
-            new F3dzex2OpcodeParser(),
-            (uint) (baseOffset + opcodeSectionOffset));
-
-    //dlModelBuilder.AddDl(displayList);
+    if (imageCount > 0) {
+      n64Hardware.Rdp.CombinerCycleParams0 =
+          CombinerCycleParams.FromTexture0AndVertexColor();
+      n64Hardware.Rdp.Tmem.GsSpTexture(1,
+                                       1,
+                                       0,
+                                       TileDescriptorIndex.TX_LOADTILE,
+                                       TileDescriptorState.ENABLED);
+    } else {
+      n64Hardware.Rdp.CombinerCycleParams0 =
+          CombinerCycleParams.FromVertexColor();
+      n64Hardware.Rdp.Tmem.GsSpTexture(1,
+                                       1,
+                                       0,
+                                       TileDescriptorIndex.TX_LOADTILE,
+                                       TileDescriptorState.DISABLED);
+    }
 
     var parser = new SimpleF3dzex2OpcodeParser();
-    var opcodes = br.Subread(
+    var rawOpcodes = br.Subread(
         opcodeSectionSize,
         () => {
           var opcodes = new LinkedList<IOpcodeCommand>();
@@ -372,6 +379,44 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
           return opcodes;
         });
 
+    var processedOpcodes =
+        rawOpcodes.UpToFirstMatchExclusive(o => o is SimpleDlOpcodeCommand)
+                  .Where(o => o is not EndDlOpcodeCommand)
+                  .Select(o => {
+                    if (o is SimpleVtxOpcodeCommand simpleVtxOpcodeCommand) {
+                      var baseRamAddress =
+                          simpleVtxOpcodeCommand.SegmentedAddress;
+                      IoUtils.SplitSegmentedAddress(
+                          baseRamAddress,
+                          out var segment,
+                          out var offset);
+
+                      var numVerticesToLoad =
+                          simpleVtxOpcodeCommand.NumVerticesToLoad;
+                      var indexToBeginStoringVertices = simpleVtxOpcodeCommand
+                          .IndexToBeginStoringVertices;
+
+                      using var sbr = n64Hardware.Memory.OpenAtSegmentedAddress(
+                              simpleVtxOpcodeCommand.SegmentedAddress);
+                      return new VtxOpcodeCommand {
+                          IndexToBeginStoringVertices =
+                              indexToBeginStoringVertices,
+                          Vertices =
+                              sbr.ReadNews<F3dVertex>(numVerticesToLoad),
+                      };
+                    }
+
+                    return o;
+                  });
+
+    var displayList = new DisplayList {
+        OpcodeCommands = processedOpcodes.ToArray(),
+        Type = DisplayListType.F3DZEX2
+    };
+
+    dlModelBuilder.AddDl(displayList);
+    return;
+
     var mesh = model.Skin.AddMesh();
     mesh.Name = baseOffset.ToHexString();
 
@@ -380,7 +425,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     SetTimgOpcodeCommand? timgOpcodeCommand = null;
     SetTileOpcodeCommand? tileOpcodeCommand = null;
     LoadBlockOpcodeCommand blockOpcodeCommand = null;
-    foreach (var opcode in opcodes) {
+    foreach (var opcode in rawOpcodes) {
       switch (opcode) {
         case SetTileOpcodeCommand setTileOpcodeCommand: {
           tileOpcodeCommand = setTileOpcodeCommand;
