@@ -17,6 +17,7 @@ local uint COLOR_IMAGE = 0x0000ff;
 local uint COLOR_COUNT = 0x00ff00;
 local uint COLOR_OFFSET = 0xff0000;
 local uint COLOR_HEADER = 0xffffff;
+local uint COLOR_INDEX = 0x00ffff;
 local uint COLOR_SECTION0 = 0xffff00;
 local uint COLOR_SECTION1 = 0xff00ff;
 local uint COLOR_SECTION2 = 0x880088;
@@ -97,21 +98,26 @@ UnkSection0 unkSection0s[9] <optimize=false>;
 FSeek(0x9340);
 float expressionPins[0x57D];
 
-FSeek(0xa938);
+FSeek(0xa934);
 typedef struct {
-  ushort unkIndex0;
   ushort unk0;
-
   ushort unk1;
+
+  ushort unkIndex0;
   ushort unk2;
-  
   ushort unk3;
   ushort unk4;
-  uint unk5;
+  
+  ushort unk5;
+  ushort unk6;
+  ushort unk7;
+  
+  byte previousIndex;
+  byte nextIndex;
     
   float matrix[4 * 4];
     
-  byte unk6[16];
+  byte unk8[12];
 } Joint <bgcolor=COLOR_HEADER>;
 Joint joints[0x1F] <optimize=false>;
 
@@ -125,7 +131,7 @@ FSeek(0xB6B8);
 L8Image someImage(16 * 24);
 
 // These seem like they might all be different sizes...
-FSeek(0xB8D0);
+/*FSeek(0xB8D0);
 typedef struct {
   ushort someIndex0;
   ushort someIndex1;
@@ -134,7 +140,40 @@ typedef struct {
   Rgba32 color;
   uint unk;
 } ChosenPart <bgcolor=COLOR_HEADER>;
-ChosenPart chosenParts[0x30] <optimize=false>;
+ChosenPart chosenParts[0x30] <optimize=false>;*/
+
+typedef struct {
+  uint unk0[2];
+
+  uint chosenColorIndex0 <bgcolor=COLOR_INDEX>; 
+  Rgba32 chosenColor0;
+
+  uint chosenColorIndex1 <bgcolor=COLOR_INDEX>; 
+  Rgba32 chosenColor1;
+
+  uint unk1[2];
+  uint address0 <bgcolor=COLOR_OFFSET>;
+
+  uint unk2[3];
+  uint address1 <bgcolor=COLOR_OFFSET>;
+  
+  uint unk3[3];
+  uint address1 <bgcolor=COLOR_OFFSET>;
+
+  uint unk4;
+} ChosenPart1 <bgcolor=COLOR_HEADER>;
+
+typedef struct {
+  byte unk0[0x50];
+} UnkSection5 <bgcolor=COLOR_HEADER>;
+
+FSeek(0xB840);
+ChosenPart1 chosenParts1[5] <optimize=false>;
+
+FSeek(0xBD08);
+ChosenPart1 chosenParts1[8] <optimize=false>;
+
+UnkSection5 unkSection5s[19];
 
 FSeek(0xc538);
 float unkFloats1[0x5A];
