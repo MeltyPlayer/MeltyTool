@@ -51,7 +51,7 @@ typedef struct {
 } L8;
 
 typedef struct L8Image(int size) {
-  L8 pixels[size];
+  L8 pixels[size] <optimize=false>;
 };
 
 typedef struct {
@@ -173,25 +173,27 @@ ChosenPart1 chosenParts1[5] <optimize=false>;
 FSeek(0xBD08);
 ChosenPart1 chosenParts1[8] <optimize=false>;
 
-UnkSection5 unkSection5s[19];
+UnkSection5 unkSection5s[19] <optimize=false>;
 
 FSeek(0xc538);
 float unkFloats1[0x5A];
 
 typedef struct {
   uint unk0[3];
-  byte unk1[0x6c];
-  float unk2[13];
-  uint unk3[3];
+  uint unk1;
+  uint unkSegmentedAddresses[5] <bgcolor=COLOR_OFFSET>;  
+  byte unk2[0x54];
+  float unk3[13];
+  uint unk4[3];
 } UnkSection2 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xc6c8);
 uint headUnkSection2Count <bgcolor=COLOR_COUNT>;
-UnkSection2 headUnkSection2s[headUnkSection2Count];
+UnkSection2 headUnkSection2s[headUnkSection2Count] <optimize=false>;
 
 FSeek(0xeb00);
 uint bodyUnkSection2Count <bgcolor=COLOR_COUNT>;
-UnkSection2 bodyUnkSection2s[bodyUnkSection2Count];
+UnkSection2 bodyUnkSection2s[bodyUnkSection2Count] <optimize=false>;
 
 // contains RAM addresses that point to display lists
 FSeek(0xf968);
@@ -248,56 +250,38 @@ typedef struct {
 
 {
     typedef struct (uint baseOffset) {
-      uint meshSegmentedAddress <bgcolor=COLOR_OFFSET>;
+      uint meshSegmentedAddresses[4] <bgcolor=COLOR_OFFSET>;
       
-      local uint meshOffset = (meshSegmentedAddress & 0xffffff) + baseOffset;
-      local uint tempOffset = FTell();
-      FSeek(meshOffset);
-      Mesh mesh;
-      FSeek(tempOffset);
+      local uint firstMeshSegmentedAddress = meshSegmentedAddresses[0];
+      if (firstMeshSegmentedAddress != 0) {
+          local uint meshOffset = (firstMeshSegmentedAddress & 0xffffff) + baseOffset;
+          local uint tempOffset = FTell();
+          FSeek(meshOffset);
+          uint firstMeshUint;
+          if (firstMeshUint == 0) {
+              FSeek(meshOffset);
+              Mesh mesh;
+          }
+          FSeek(tempOffset);          
+      }
       
-      uint unk0[3];
       uint unk1[5];
       float unk2[6];
       
-      uint unk3[0x1B];
+      uint unk3;
+
+      uint primitiveDl <bgcolor=COLOR_OFFSET>;
+      uint unk4[0xC];
+      
+      uint vertexDl <bgcolor=COLOR_OFFSET>;
+      uint unk5[0xC];
     } MeshDefinition <bgcolor=COLOR_HEADER>;
     
-    FSeek(0xda70);
-    MeshDefinition headMeshDefinition(headOffset);
-
-    FSeek(0xe4f0);
-    MeshDefinition headMeshDefinition(headOffset);
+    FSeek(0xd530);
+    MeshDefinition headMeshDefinition(headOffset)[0x20] <optimize=false>;
 
     FSeek(0xf968);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-    
-    FSeek(0xfc08);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-    
-    FSeek(0xfea8);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-
-    FSeek(0x10e68);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-
-    FSeek(0x11108);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-
-    FSeek(0x11b88);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-
-    FSeek(0x11e28);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-    
-    FSeek(0x120c8);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-
-    FSeek(0x12368);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
-
-    FSeek(0x12608);
-    MeshDefinition bodyMeshDefinition(bodyOffset);
+    MeshDefinition bodyMeshDefinitions(bodyOffset)[0x4C] <optimize=false>;
 }
 
 

@@ -2,11 +2,14 @@
 using System.IO;
 using System.Linq;
 
+using CommunityToolkit.Diagnostics;
+
 using fin.data.dictionaries;
 using fin.compression;
 using fin.io;
 using fin.util.asserts;
 using fin.util.hex;
+using fin.util.linq;
 
 using schema.binary;
 
@@ -62,7 +65,8 @@ public class N64Memory(
   public Endianness Endianness { get; } = endianness;
 
   public SchemaBinaryReader OpenAtSegmentedAddress(uint segmentedAddress)
-    => this.OpenPossibilitiesAtSegmentedAddress(segmentedAddress).Single();
+    => this.OpenPossibilitiesAtSegmentedAddress(segmentedAddress)
+           .Single($"Expected to have a single possibility for {segmentedAddress.ToHexString()}");
 
   public IEnumerable<SchemaBinaryReader> OpenPossibilitiesAtSegmentedAddress(
       uint segmentedAddress) {

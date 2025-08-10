@@ -26,7 +26,7 @@ namespace f3dzex2.model;
 
 public class DlModelBuilder {
   private readonly IN64Hardware n64Hardware_;
-  private IMesh currentMesh_;
+  private IMesh? currentMesh_;
 
   private readonly LazyDictionary<ImageParams, IImage>
       lazyImageDictionary_;
@@ -55,7 +55,6 @@ public class DlModelBuilder {
         Files = new HashSet<IReadOnlyGenericFile>(),
     };
 
-    this.currentMesh_ = this.Model.Skin.AddMesh();
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);
 
     this.lazyImageDictionary_ =
@@ -246,19 +245,19 @@ public class DlModelBuilder {
                       : [cycleParams0];
 
               if (cycleParams
-                  .Any(c
-                           => c.ColorMuxA
-                                  is GenericColorMux.G_CCMUX_TEXEL0
-                                     or GenericColorMux.G_CCMUX_TEXEL1 ||
-                              c.ColorMuxB
-                                  is GenericColorMux.G_CCMUX_TEXEL0
-                                     or GenericColorMux.G_CCMUX_TEXEL1 ||
-                              c.ColorMuxC
-                                  is GenericColorMux.G_CCMUX_TEXEL0
-                                     or GenericColorMux.G_CCMUX_TEXEL1 ||
-                              c.ColorMuxD
-                                  is GenericColorMux.G_CCMUX_TEXEL0
-                                     or GenericColorMux.G_CCMUX_TEXEL1)
+                      .Any(c
+                               => c.ColorMuxA
+                                      is GenericColorMux.G_CCMUX_TEXEL0
+                                         or GenericColorMux.G_CCMUX_TEXEL1 ||
+                                  c.ColorMuxB
+                                      is GenericColorMux.G_CCMUX_TEXEL0
+                                         or GenericColorMux.G_CCMUX_TEXEL1 ||
+                                  c.ColorMuxC
+                                      is GenericColorMux.G_CCMUX_TEXEL0
+                                         or GenericColorMux.G_CCMUX_TEXEL1 ||
+                                  c.ColorMuxD
+                                      is GenericColorMux.G_CCMUX_TEXEL0
+                                         or GenericColorMux.G_CCMUX_TEXEL1)
                   && texture0 == null) {
                 ;
               }
@@ -323,6 +322,13 @@ public class DlModelBuilder {
   public IReadOnlyFinMatrix4x4 Matrix {
     set => this.n64Hardware_.Rsp.Matrix = value;
   }
+
+  public void StartNewMesh(string name) {
+    this.currentMesh_ = this.Model.Skin.AddMesh();
+    this.currentMesh_.Name = name;
+  }
+
+  private IMesh CurrentMesh => this.currentMesh_ ??= this.Model.Skin.AddMesh();
 
   public int GetNumberOfTriangles() =>
       this.Model.Skin.Meshes
@@ -464,7 +470,7 @@ public class DlModelBuilder {
           var vertices =
               tri1OpcodeCommand.VertexIndicesInOrder.Select(
                   this.vertices_.GetOrCreateVertexAtIndex);
-          var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
+          var triangles = this.CurrentMesh.AddTriangles(vertices.ToArray())
                               .SetMaterial(material)
                               .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
 
@@ -483,7 +489,7 @@ public class DlModelBuilder {
                   .VertexIndicesInOrder0
                   .Concat(tri2OpcodeCommand.VertexIndicesInOrder1)
                   .Select(this.vertices_.GetOrCreateVertexAtIndex);
-          var triangles = this.currentMesh_.AddTriangles(vertices.ToArray())
+          var triangles = this.CurrentMesh.AddTriangles(vertices.ToArray())
                               .SetMaterial(material)
                               .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
 

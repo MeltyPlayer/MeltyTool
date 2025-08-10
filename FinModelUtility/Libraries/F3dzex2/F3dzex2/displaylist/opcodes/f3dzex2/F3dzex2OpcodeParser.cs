@@ -243,6 +243,15 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
         return F3dzex2Util.ParseSetOtherModeLOpcodeCommand(br);
       case F3dzex2Opcode.G_SETOTHERMODE_H:
         return F3dzex2Util.ParseSetOtherModeHOpcodeCommand(br);
+      case F3dzex2Opcode.G_TEXRECT:
+      case F3dzex2Opcode.G_TEXRECTFLIP: {
+        br.Position -= 1;
+
+        var first = br.ReadUInt32();
+        var second = br.ReadUInt32();
+
+        return new NoopOpcodeCommand();
+      }
       // TODO: Especially implement these
       case F3dzex2Opcode.G_SETCIMG:
       case F3dzex2Opcode.G_SETZIMG:

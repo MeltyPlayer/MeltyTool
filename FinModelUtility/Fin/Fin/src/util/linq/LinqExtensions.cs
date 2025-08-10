@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using fin.data.sets;
 using fin.util.enumerables;
 
 namespace fin.util.linq;
@@ -95,6 +96,15 @@ public static class LinqExtensions {
     }
   }
 
+  public static T Single<T>(this IEnumerable<T> enumerable,
+                            string errorMessage) {
+    try {
+      var single = enumerable.Single();
+      return single;
+    } catch {
+      throw new Exception(errorMessage);
+    }
+  }
   public static T First<T>(this IEnumerable<T> enumerable,
                            Func<T, bool> predicate,
                            string errorMessage) {
