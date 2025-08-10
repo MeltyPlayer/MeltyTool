@@ -303,7 +303,21 @@ typedef struct {
 
 FSeek(0x16680);
 typedef struct {
-  string name;
+  char name[21];
+  char job[21];
+  
+  ushort gender;
+  
+  byte birthMonth;
+  byte birthDay;
+  ushort age;
+  
+  char catchphrase[21];
+
+  char descriptionLine0[41];
+  char descriptionLine1[41];
+  char descriptionLine2[41];
+  char descriptionLine3[41];
 } Bio;
 Bio bio;
 
