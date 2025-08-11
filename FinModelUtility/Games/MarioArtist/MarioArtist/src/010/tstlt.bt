@@ -16,6 +16,7 @@ BigEndian();
 local uint COLOR_IMAGE = 0x0000ff;
 local uint COLOR_COUNT = 0x00ff00;
 local uint COLOR_OFFSET = 0xff0000;
+local uint COLOR_ORIENTATION = 0x888800;
 local uint COLOR_HEADER = 0xffffff;
 local uint COLOR_INDEX = 0x00ffff;
 local uint COLOR_SECTION0 = 0xffff00;
@@ -25,49 +26,49 @@ local uint COLOR_SECTION2 = 0x880088;
 short thumbnail[24 * 24] <bgcolor=COLOR_IMAGE>;
 
 uint CeilAlign(uint x, uint align) {
-  local float fraction = (x / (1. * align));
-  return Ceil(fraction) * align;  
+    local float fraction = (x / (1. * align));
+    return Ceil(fraction) * align;  
 }
 
 typedef struct {
-  ubyte r;
-  ubyte g;
-  ubyte b;
-  ubyte a;
-  
-  local uint color=(((uint) b) << 16) | (((uint) g) << 8) | r;
-  
-  FSeek(FTell() - 4);
-  uint rgba <bgcolor=color>;
+    ubyte r;
+    ubyte g;
+    ubyte b;
+    ubyte a;
+    
+    local uint color=(((uint) b) << 16) | (((uint) g) << 8) | r;
+    
+    FSeek(FTell() - 4);
+    uint rgba <bgcolor=color>;
 } Rgba32;
 
 typedef struct {
-  ubyte l;
-  
-  local uint color=(((uint) l) << 16) | (((uint) l) << 8) | l;
-  
-  FSeek(FTell() - 1);
-  byte pixel <bgcolor=color>;
+    ubyte l;
+    
+    local uint color=(((uint) l) << 16) | (((uint) l) << 8) | l;
+    
+    FSeek(FTell() - 1);
+    byte pixel <bgcolor=color>;
 } L8;
 
 typedef struct L8Image(int size) {
-  L8 pixels[size] <optimize=false>;
+    L8 pixels[size] <optimize=false>;
 };
 
 typedef struct {
-  uint checksum;
-  uint unk1;
-  uint magic[2];
-  
-  uint unk2;
-  uint fileSize <bgcolor=COLOR_COUNT>;
-  uint unk3;
-  uint headSectionLength; // Starts at 0x16770
-
-  uint bodySectionLength; // Starts immediately after headSection
-  uint unk6;
-  uint unk7;
-  uint unk8;
+    uint checksum;
+    uint unk1;
+    uint magic[2];
+    
+    uint unk2;
+    uint fileSize <bgcolor=COLOR_COUNT>;
+    uint unk3;
+    uint headSectionLength; // Starts at 0x16770
+    
+    uint bodySectionLength; // Starts immediately after headSection
+    uint unk6;
+    uint unk7;
+    uint unk8;
 } Header <bgcolor=COLOR_HEADER>;
 
 Header header;
@@ -81,35 +82,71 @@ short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
 typedef struct {
   float x;
   float y;
-} Vec2;
+} Vec2f;
 
 typedef struct {
-  uint sometimesJointCount <bgcolor=COLOR_COUNT>;
-  uint unkCount1 <bgcolor=COLOR_COUNT>;
-  
-  uint unk2; 
-  Rgba32 skinColor;
-} AnotherHeader;
-AnotherHeader anotherHeader;
+  uint x;
+  uint y;
+} Vec2i;
 
 typedef struct {
-  uint unk1[4];
-  Vec2 position;
-  float unk0[4];
-} ChosenFacePart <bgcolor=COLOR_HEADER>;
-ChosenFacePart chosenFacePart;
-ChosenFacePart leftEye;
-ChosenFacePart rightEye;
-ChosenFacePart chosenFacePart[6] <optimize=false>;
+  float x;
+  float y;
+  float z;
+} Vec3f;
 
-// float expressionPins[0x57D];
-
-FSeek(0x9344);
-typedef struct {   
-  // Sorted in terms of columns rather than rows, i.e. first column, then second column, etc.
-  Vec2 pins[13 * 9];
-} Expression;
-Expression expressions[6];
+typedef struct {
+    Vec2i nosePosition <bgcolor=COLOR_ORIENTATION>;
+    uint unk0;
+    Rgba32 skinColor;
+    
+    typedef struct {
+        typedef struct {
+            ushort isLeft;
+    
+            enum <ushort> InclusionType { 
+                IS_OMITTED = 0,
+                IS_PRESENT = 3
+            } inclusionType;    
+      
+            uint unk0[2];
+            
+            uint selectedImage <bgcolor=COLOR_INDEX>;
+    
+            Vec2f position <bgcolor=COLOR_ORIENTATION>;
+            float unk1;
+            Vec2f scale <bgcolor=COLOR_ORIENTATION>;
+            float rotationDegrees <bgcolor=COLOR_ORIENTATION>;
+        } ChosenFacePart;
+        
+        ChosenFacePart chosenFacePart;
+        
+        ChosenFacePart leftEye;
+        ChosenFacePart rightEye;
+        
+        ChosenFacePart leftEyeBrow;
+        ChosenFacePart rightEyeBrow;
+        
+        ChosenFacePart mouth;
+        
+        ChosenFacePart chosenFacePart[3] <optimize=false>;
+    } ChosenFaceParts;   
+    ChosenFaceParts chosenFaceParts;
+        
+    Vec3f unkVec3;
+    
+    Vec2i nosePosition <bgcolor=COLOR_ORIENTATION>;
+    
+    Rgba32 skinColor;
+    uint unk1;
+    
+    typedef struct {   
+      // Sorted in terms of columns rather than rows, i.e. first column, then second column, etc.
+      Vec2f pins[13 * 9] <bgcolor=COLOR_ORIENTATION>;
+    } Expression;
+    Expression expressions[6];
+} FaceHeader <bgcolor=COLOR_HEADER>;
+FaceHeader faceHeader;
 
 FSeek(0xa934);
 typedef struct {
@@ -121,14 +158,15 @@ typedef struct {
   ushort unk3;
   ushort unk4;
   
-  ushort unk5;
+  byte index <bgcolor=COLOR_INDEX>;
+  byte unk5;
   ushort unk6;
   ushort unk7;
   
-  byte previousIndex;
-  byte nextIndex;
+  byte previousIndex <bgcolor=COLOR_INDEX>;
+  byte nextIndex <bgcolor=COLOR_INDEX>;
     
-  float matrix[4 * 4];
+  float matrix[4 * 4] <bgcolor=COLOR_ORIENTATION>;
     
   byte unk8[12];
 } Joint <bgcolor=COLOR_HEADER>;
@@ -139,9 +177,6 @@ typedef struct {
   byte unk0[0x50];
 } UnkSection4 <bgcolor=COLOR_HEADER>;
 UnkSection4 unkSection4s[0x35] <optimize=false>;*/
-
-FSeek(0xB6B8);
-L8Image someImage(16 * 24);
 
 // These seem like they might all be different sizes...
 /*FSeek(0xB8D0);
@@ -156,13 +191,15 @@ typedef struct {
 ChosenPart chosenParts[0x30] <optimize=false>;*/
 
 typedef struct {
+  uint chosenColorIndex <bgcolor=COLOR_INDEX>; 
+  Rgba32 chosenColor;
+} ChosenColor <bgcolor=COLOR_HEADER>;
+
+typedef struct {
   uint unk0[2];
 
-  uint chosenColorIndex0 <bgcolor=COLOR_INDEX>; 
-  Rgba32 chosenColor0;
-
-  uint chosenColorIndex1 <bgcolor=COLOR_INDEX>; 
-  Rgba32 chosenColor1;
+  ChosenColor chosenColor0;
+  ChosenColor chosenColor1;
 
   uint unk1[2];
   uint address0 <bgcolor=COLOR_OFFSET>;
@@ -181,15 +218,20 @@ typedef struct {
 } UnkSection5 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xB840);
-ChosenPart1 chosenParts1[5] <optimize=false>;
+ChosenPart1 headChosenParts1[5] <optimize=false>;
+
+UnkSection5 headUnkSection5s[8] <optimize=false>;
 
 FSeek(0xBD08);
-ChosenPart1 chosenParts1[8] <optimize=false>;
+ChosenPart1 bodyChosenParts1[8] <optimize=false>;
 
-UnkSection5 unkSection5s[19] <optimize=false>;
+UnkSection5 bodyUnkSection5s[0x13] <optimize=false>;
 
 FSeek(0xc538);
 float unkFloats1[0x5A];
+
+Rgba32 unkColor0;
+Rgba32 skinColor;
 
 typedef struct {
   uint unk0[3];
@@ -268,14 +310,16 @@ typedef struct {
       local uint firstMeshSegmentedAddress = meshSegmentedAddresses[0];
       if (firstMeshSegmentedAddress != 0) {
           local uint meshOffset = (firstMeshSegmentedAddress & 0xffffff) + baseOffset;
-          local uint tempOffset = FTell();
-          FSeek(meshOffset);
-          uint firstMeshUint;
-          if (firstMeshUint == 0) {
+          if (meshOffset < FileSize()) {
+              local uint tempOffset = FTell();
               FSeek(meshOffset);
-              Mesh mesh;
+              uint firstMeshUint;
+              if (firstMeshUint == 0) {
+                  FSeek(meshOffset);
+                  Mesh mesh;
+              }
+              FSeek(tempOffset);          
           }
-          FSeek(tempOffset);          
       }
       
       uint unk1[5];
