@@ -79,6 +79,11 @@ local uint thirdOffset = headOffset + header.unk3;
 short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
 
 typedef struct {
+  float x;
+  float y;
+} Vec2;
+
+typedef struct {
   uint sometimesJointCount <bgcolor=COLOR_COUNT>;
   uint unkCount1 <bgcolor=COLOR_COUNT>;
   
@@ -89,14 +94,22 @@ AnotherHeader anotherHeader;
 
 typedef struct {
   uint unk1[4];
-  float unk0[6];
-} UnkSection0 <bgcolor=COLOR_HEADER>;
-UnkSection0 unkSection0s[9] <optimize=false>;
+  Vec2 position;
+  float unk0[4];
+} ChosenFacePart <bgcolor=COLOR_HEADER>;
+ChosenFacePart chosenFacePart;
+ChosenFacePart leftEye;
+ChosenFacePart rightEye;
+ChosenFacePart chosenFacePart[6] <optimize=false>;
 
-// - These store x/y coordinates
-// - Probably are a bunch of expressions right in a row
-FSeek(0x9340);
-float expressionPins[0x57D];
+// float expressionPins[0x57D];
+
+FSeek(0x9344);
+typedef struct {   
+  // Sorted in terms of columns rather than rows, i.e. first column, then second column, etc.
+  Vec2 pins[13 * 9];
+} Expression;
+Expression expressions[6];
 
 FSeek(0xa934);
 typedef struct {
