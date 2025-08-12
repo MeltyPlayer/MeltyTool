@@ -77,8 +77,6 @@ local uint headOffset = 0x16770;
 local uint bodyOffset = headOffset + header.headSectionLength;
 local uint thirdOffset = headOffset + header.unk3;
 
-short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
-
 typedef struct {
   float x;
   float y;
@@ -96,6 +94,8 @@ typedef struct {
 } Vec3f;
 
 typedef struct {
+    short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
+    
     Vec2i nosePosition <bgcolor=COLOR_ORIENTATION>;
     uint unk0;
     Rgba32 skinColor;
@@ -153,13 +153,13 @@ typedef struct {
   ushort unk0;
   ushort unk1;
 
-  ushort unkIndex0;
+  ushort maybeMeshIndex;
   ushort unk2;
   ushort unk3;
   ushort unk4;
   
   byte index <bgcolor=COLOR_INDEX>;
-  byte unk5;
+  byte isLeft;
   ushort unk6;
   ushort unk7;
   
@@ -214,7 +214,10 @@ typedef struct {
 } ChosenPart1 <bgcolor=COLOR_HEADER>;
 
 typedef struct {
-  byte unk0[0x50];
+    // These addresses are apart by 0x2A0, seem to point towards UnkSection3
+    uint someAddress;
+    
+    byte unk0[0x4C];
 } UnkSection5 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xB840);
@@ -238,13 +241,29 @@ typedef struct {
   uint unk1;
   uint unkSegmentedAddresses[5] <bgcolor=COLOR_OFFSET>;  
   byte unk2[0x54];
-  float unk3[13];
+
+  Vec3f unkVec3a <bgcolor=COLOR_ORIENTATION>;
+  Vec3f unkVec3b <bgcolor=COLOR_ORIENTATION>;
+
+  uint unk3;
+
+  Vec3f unkVec3c <bgcolor=COLOR_ORIENTATION>;
+  Vec3f unkVec3d <bgcolor=COLOR_ORIENTATION>;
+
   uint unk4[3];
 } UnkSection2 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xc6c8);
 uint headUnkSection2Count <bgcolor=COLOR_COUNT>;
 UnkSection2 headUnkSection2s[headUnkSection2Count] <optimize=false>;
+
+FSeek(0xeae0);
+typedef struct {
+    Vec2i nosePosition;
+    
+    uint dlSegmentedAddresses[6] <bgcolor=COLOR_OFFSET>;
+} NoseHeader <bgcolor=COLOR_HEADER>;
+NoseHeader noseHeader;
 
 FSeek(0xeb00);
 uint bodyUnkSection2Count <bgcolor=COLOR_COUNT>;

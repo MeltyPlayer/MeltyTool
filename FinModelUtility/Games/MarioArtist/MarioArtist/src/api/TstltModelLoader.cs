@@ -11,6 +11,7 @@ using f3dzex2.io;
 using f3dzex2.model;
 
 using fin.data.dictionaries;
+using fin.data.queues;
 using fin.io;
 using fin.math.rotations;
 using fin.model;
@@ -19,6 +20,8 @@ using fin.model.io.importers;
 using fin.model.util;
 using fin.schema.vector;
 using fin.util.enumerables;
+using fin.util.linq;
+using fin.util.sets;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -28,6 +31,31 @@ namespace marioartist.schema;
 
 public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle;
+
+public enum JointIndex {
+  HEAD = 15,
+
+  TORSO = 16,
+  HIP = 17,
+
+  UPPER_ARM_0 = 18,
+  UPPER_ARM_1 = 19,
+
+  FOREARM_0 = 20,
+  FOREARM_1 = 21,
+
+  HAND_0 = 22,
+  HAND_1 = 23,
+
+  UPPER_LEG_0 = 24,
+  UPPER_LEG_1 = 25,
+
+  LOWER_LEG_0 = 26,
+  LOWER_LEG_1 = 27,
+
+  FOOT_0 = 28,
+  FOOT_1 = 29,
+}
 
 public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
   public IModel Import(TstltModelFileBundle fileBundle) {
@@ -42,10 +70,25 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var n64Memory = n64Hardware.Memory = new N64Memory(fileBundle.MainFile);
     n64Memory.SetSegment(0, 0, (uint) br.Length);
 
-    var dlModelBuilder = new DlModelBuilder(n64Hardware);
+    var dlModelBuilder =
+        new DlModelBuilder(n64Hardware,
+                           fileBundle,
+                           fileBundle.MainFile.AsFileSet());
 
     var model = dlModelBuilder.Model;
     n64Hardware.Rsp.ActiveBone = model.Skeleton.Root;
+
+    var headSectionOffset = 0x16770;
+    br.Position = 0x49C;
+    var headSectionLength = br.ReadUInt32();
+    var bodySectionOffset = headSectionOffset + headSectionLength;
+    var bodySectionLength = br.Length - bodySectionOffset;
+
+    var headMeshDefinitions0Offset = 0xc6c8;
+    var headMeshDefinitions1Offset = 0xd530;
+
+    var bodyMeshDefinitions0Offset = 0xeb00;
+    var bodyMeshDefinitions1Offset = 0xf968;
 
     var materialManager = model.MaterialManager;
     var thumbnailTexture =
@@ -56,24 +99,44 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         materialManager.CreateTexture(tstlt.FaceTextures.ToImage());
     faceTextures.Name = "face";
 
-    br.Position = 0x16770;
+    br.Position = headSectionOffset;
     var image2 = new Argb1555Image(32, 32 * 8);
     image2.Read(br);
     var image2Texture =
         materialManager.CreateTexture(image2.ToImage());
     image2Texture.Name = "palette";
 
-    br.Position = 0x49C;
-    var headSectionLength = br.ReadUInt32();
-
-    br.Position = 0xa938;
-
+    br.Position = 0xa934;
     var joints = br.ReadNews<Joint>(0x1F);
     var jointsByParent =
         new BidirectionalDictionary<Joint?, List<(Joint joint, int index)>>();
     for (var i = 0; i < joints.Length; ++i) {
       var joint = joints[i];
-      var parentIndex = joint.parentIndex;
+
+      // Is this in the file somewhere???
+      var jointIndex = (JointIndex) i;
+      var parentIndex = (int) (jointIndex switch {
+          JointIndex.UPPER_LEG_0 => JointIndex.HIP,
+          JointIndex.UPPER_LEG_1 => JointIndex.HIP,
+
+          JointIndex.LOWER_LEG_0 => JointIndex.UPPER_LEG_0,
+          JointIndex.LOWER_LEG_1 => JointIndex.UPPER_LEG_1,
+
+          JointIndex.FOOT_0 => JointIndex.LOWER_LEG_0,
+          JointIndex.FOOT_1 => JointIndex.LOWER_LEG_1,
+
+          JointIndex.UPPER_ARM_0 => JointIndex.TORSO,
+          JointIndex.UPPER_ARM_1 => JointIndex.TORSO,
+
+          JointIndex.FOREARM_0 => JointIndex.UPPER_ARM_0,
+          JointIndex.FOREARM_1 => JointIndex.UPPER_ARM_1,
+
+          JointIndex.HAND_0 => JointIndex.FOREARM_0,
+          JointIndex.HAND_1 => JointIndex.FOREARM_1,
+
+          _ => (JointIndex) (-1),
+      });
+
       var parentJoint = parentIndex < 0 || parentIndex >= joints.Length
           ? null
           : joints[parentIndex];
@@ -89,133 +152,134 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       parentChildren.Add((joint, i));
     }
 
-    var translations = new Vector3[joints.Length];
-    var rotations = new Vector3[joints.Length];
-    var quaternions = new Quaternion[joints.Length];
-    var scales = new Vector3[joints.Length];
-
-    for (var i = 0; i < joints.Length; ++i) {
-      var joint = joints[i];
-      var worldMatrix = Matrix4x4.Transpose(joint.matrix);
-
-      var bone = model.Skeleton.Root.AddChild(worldMatrix);
-      bone.Name = $"bone {i}";
-
-      Matrix4x4.Decompose(worldMatrix,
-                          out var scale,
-                          out var quaternion,
-                          out var translation);
-
-      translations[i] = translation;
-      quaternions[i] = quaternion;
-      scales[i] = scale;
-      rotations[i] = quaternion.ToEulerRadians();
+    var meshDefinitionsIndicesByIndex = new SetDictionary<uint, uint>();
+    for (var i = 0; i < 76; ++i) {
+      br.Position = bodyMeshDefinitions1Offset + 0xA8 * i;
+      br.Position += 20;
+      var mapTo = br.ReadByte();
+      meshDefinitionsIndicesByIndex.Add(mapTo, (uint) i);
     }
-
-    /*var jointsAndTransformStuff =
-        joints.Select(j => {
-          var matrix = Matrix4x4.Transpose(j.matrix);
-          Matrix4x4.Decompose(matrix,
-                              out var scale,
-                              out var rotation,
-                              out var translation);
-
-          return (j, matrix, translation, rotation, scale);
-        }).ToArray();
 
     var finBonesAndWorldMatrices = new IBone[joints.Length];
     var jointQueue = new FinTuple3Queue<(Joint joint, int index), Matrix4x4, IBone>(
         jointsByParent[(Joint?) null]
             .Select(rootJoint => (rootJoint, Matrix4x4.Identity,
                                   model.Skeleton.Root)));
-    while (jointQueue.TryDequeue(out var jointAndIndex, out var parentMatrix, out var parentBone)) {
+    while (jointQueue.TryDequeue(out var jointAndIndex, out var parentMatrix, out var parentFinBone)) {
       Matrix4x4.Invert(parentMatrix, out var invertedParentMatrix);
 
       var (joint, index) = jointAndIndex;
       var worldMatrix = Matrix4x4.Transpose(joint.matrix);
       var localMatrix = worldMatrix * invertedParentMatrix;
 
-      var bone = parentBone.AddChild(localMatrix);
-      finBonesAndWorldMatrices[index] = bone;
+      var finBone = parentFinBone.AddChild(localMatrix);
+      finBone.Name = $"bone {index}";
+      finBonesAndWorldMatrices[index] = finBone;
 
-      if (jointsByParent.ContainsKey(joint)) {
-        jointQueue.Enqueue(jointsByParent[joint]
-                               .Select(childJoint => (childJoint, worldMatrix, bone)));
-      }
-    }*/
+      var meshIndex = joint.meshIndex;
+      n64Hardware.Rsp.ActiveBone = finBone;
 
-    var headSectionOffset = 0x16770;
-    var bodySectionOffset = headSectionOffset + headSectionLength;
-
-    var meshGroupOffsets = new[] {
-        (
-            headSectionOffset,
-            headSectionLength,
-            0xc6c8,
-            0xd530,
-            0x20
-        ),
-        (
-            bodySectionOffset,
-            br.Length - bodySectionOffset,
-            0xeb00,
-            0xf968,
-            0x4C
-        )
-    };
-
-    foreach (var (meshGroupOffset,
-                 meshGroupLength,
-                 meshDefinitions0Offset,
-                 meshDefinitions1Offset,
-                 meshDefinition1Count) in
-             meshGroupOffsets) {
-      n64Memory.SetSegment(0xF, (uint) meshGroupOffset, (uint) meshGroupLength);
-
-      br.Position = meshDefinitions0Offset;
-      var meshDefinition0Count = br.ReadUInt32();
-
-      for (var i = 0; i < meshDefinition0Count; ++i) {
-        br.Position = meshDefinitions0Offset + 4 + i * 0xb8;
-
-        try {
-          TryToAddMeshDefinition0_((uint) meshGroupOffset,
+      if (meshDefinitionsIndicesByIndex.TryGetSet(
+              meshIndex,
+              out var meshDefinitionIndices)) {
+        foreach (var meshDefinitionIndex in meshDefinitionIndices) {
+          TryToAddMeshDefinition1_((uint) bodySectionOffset,
+                                   (uint) bodySectionLength,
+                                   (uint) bodyMeshDefinitions1Offset,
+                                   (int) meshDefinitionIndex,
                                    br,
                                    n64Hardware,
                                    dlModelBuilder);
-        } catch (Exception e) {
-          ;
         }
       }
 
-      for (var i = 0; i < meshDefinition1Count; ++i) {
-        br.Position = meshDefinitions1Offset + i * 0xa8;
+      if (jointsByParent.ContainsKey(joint)) {
+        jointQueue.Enqueue(jointsByParent[joint]
+                               .Select(childJoint => (childJoint, worldMatrix, bone: finBone)));
+      }
+    }
+
+    // Adds face
+    {
+      n64Memory.SetSegment(0xF,
+                           (uint) headSectionOffset,
+                           (uint) headSectionLength);
+
+      n64Hardware.Rdp.CombinerCycleParams0 =
+          CombinerCycleParams.FromTexture0AndVertexColor();
+      n64Hardware.Rdp.Tmem.GsSpTexture(1,
+                                       1,
+                                       0,
+                                       TileDescriptorIndex.TX_LOADTILE,
+                                       TileDescriptorState.ENABLED);
+
+      dlModelBuilder.StartNewMesh("face");
+
+      br.Position = 0xeae0;
+      br.Position += 4 * 2; // Nose position
+      foreach (var dlSegmentedAddress in br.ReadUInt32s(6)) {
+        if (dlSegmentedAddress == 0) {
+          continue;
+        }
 
         try {
-          TryToAddMeshDefinition1_((uint) meshGroupOffset,
-                                   br,
-                                   n64Hardware,
-                                   dlModelBuilder);
-        } catch (Exception e) {
+          var dl = new DisplayListReader().ReadDisplayList(
+              n64Hardware.Memory,
+              new F3dzex2OpcodeParser(),
+              dlSegmentedAddress);
+          dlModelBuilder.AddDl(dl);
+        } catch (Exception ex) {
           ;
         }
       }
     }
 
+    var finModel = dlModelBuilder.Model;
+
+    foreach (var m in finModel.Skin.Meshes) {
+      foreach (var p in m.Primitives) {
+        p.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
+      }
+    }
+
+    foreach (var w in finModel.Skin.BoneWeights) {
+      ;
+    }
+
     return model;
   }
 
-  private static void TryToAddMeshDefinition0_(
+  private static void TryToAddMeshDefinition1Group_(
       uint meshGroupOffset,
-      IBinaryReader br,
-      N64Hardware<N64Memory> n64Hardware,
-      DlModelBuilder dlModelBuilder) { }
-
-  private static void TryToAddMeshDefinition1_(
-      uint meshGroupOffset,
+      uint meshGroupLength,
+      uint meshDefinitionsOffset,
+      int index,
       IBinaryReader br,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder) {
+    for (var i = 0; i < 4; ++i) {
+      TryToAddMeshDefinition1_(
+          meshGroupOffset,
+          meshGroupLength,
+          meshDefinitionsOffset,
+          4 * index + i,
+          br,
+          n64Hardware,
+          dlModelBuilder);
+    }
+  }
+
+  private static void TryToAddMeshDefinition1_(
+      uint meshGroupOffset,
+      uint meshGroupLength,
+      uint meshDefinitionsOffset,
+      int index,
+      IBinaryReader br,
+      N64Hardware<N64Memory> n64Hardware,
+      DlModelBuilder dlModelBuilder) {
+    br.Position = meshDefinitionsOffset + 0xA8 * index;
+    n64Hardware.Memory.SetSegment(0xF, meshGroupOffset, meshGroupLength);
+
     /*var meshSegmentedAddress = br.ReadUInt32();
     if (meshSegmentedAddress != 0) {
       using var sbr =
@@ -244,7 +308,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       return;
     }
 
-    var sbr = possibilities.First();
+    if (!possibilities.TryGetFirst(out var sbr)) {
+      return;
+    }
 
     var meshBaseOffset = sbr.Position;
     if (sbr.ReadUInt32() != 0) {
@@ -410,21 +476,24 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
 [BinarySchema]
 public partial class Joint : IBinaryDeserializable {
-  public short parentIndex;
-  public short unk5;
-  public uint unk6;
-
-  public byte index;
-  public byte unk0;
+  public ushort unk0;
   public ushort unk1;
 
-  public ushort unk3;
+  public ushort meshIndex;
+  public short unk2;
+  public uint unk3;
+
+  public byte index;
+  public byte isLeft;
+  public ushort unk6;
+  public ushort unk7;
+
   public byte previousIndex;
   public byte nextIndex;
 
   public Matrix4x4 matrix;
 
-  [SequenceLengthSource(16)]
+  [SequenceLengthSource(12)]
   public byte[] unk4;
 }
 

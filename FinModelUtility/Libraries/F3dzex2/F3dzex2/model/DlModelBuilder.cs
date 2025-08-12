@@ -16,6 +16,7 @@ using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
 using fin.image.util;
+using fin.io.bundles;
 
 using NoAlloq;
 
@@ -47,12 +48,13 @@ public class DlModelBuilder {
   ///   the same N64 hardware state (RSP/RDP). If they don't, you'll run into
   ///   weird graphical bugs that you'll spend ages debugging. :(
   /// </summary>
-  public DlModelBuilder(IN64Hardware n64Hardware) {
+  public DlModelBuilder(IN64Hardware n64Hardware,
+                        IFileBundle? fileBundle = null,
+                        IReadOnlySet<IReadOnlyGenericFile>? files = null) {
     this.n64Hardware_ = n64Hardware;
     this.Model = new ModelImpl {
-        // TODO: Fix this
-        FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>(),
+        FileBundle = fileBundle,
+        Files = files ?? new HashSet<IReadOnlyGenericFile>(),
     };
 
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);
