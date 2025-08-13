@@ -13,7 +13,6 @@ using f3dzex2.model;
 using fin.data.dictionaries;
 using fin.data.queues;
 using fin.io;
-using fin.math.rotations;
 using fin.model;
 using fin.model.io;
 using fin.model.io.importers;
@@ -23,11 +22,13 @@ using fin.util.enumerables;
 using fin.util.linq;
 using fin.util.sets;
 
+using marioartist.schema;
+
 using schema.binary;
 using schema.binary.attributes;
 
 
-namespace marioartist.schema;
+namespace marioartist.api;
 
 public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle;
@@ -84,11 +85,28 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var bodySectionOffset = headSectionOffset + headSectionLength;
     var bodySectionLength = br.Length - bodySectionOffset;
 
-    var headMeshDefinitions0Offset = 0xc6c8;
-    var headMeshDefinitions1Offset = 0xd530;
+    var headSegment = new Segment {
+        Offset = (uint) headSectionOffset, Length = headSectionLength
+    };
+    var bodySegment = new Segment {
+        Offset = (uint) bodySectionOffset, Length = (uint) bodySectionLength
+    };
 
-    var bodyMeshDefinitions0Offset = 0xeb00;
-    var bodyMeshDefinitions1Offset = 0xf968;
+    br.Position = 0xd530;
+    var headMeshDefinitions = br.ReadNews<MeshDefinition>(0x20);
+
+    br.Position = 0xf968;
+    var bodyMeshDefinitions = br.ReadNews<MeshDefinition>(0x4C);
+
+    var meshDefinitionAndSegmentsByMeshSetId =
+        new SetDictionary<uint, (MeshDefinition, Segment)>();
+    foreach (var tuple in headMeshDefinitions.Select(m => (m, headSegment))
+                                             .Concat(
+                                                 bodyMeshDefinitions
+                                                     .Select(m => (
+                                                           m, bodySegment)))) {
+      meshDefinitionAndSegmentsByMeshSetId.Add(tuple.Item1.MeshSetId, tuple);
+    }
 
     var materialManager = model.MaterialManager;
     var thumbnailTexture =
@@ -152,20 +170,15 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       parentChildren.Add((joint, i));
     }
 
-    var meshDefinitionsIndicesByIndex = new SetDictionary<uint, uint>();
-    for (var i = 0; i < 76; ++i) {
-      br.Position = bodyMeshDefinitions1Offset + 0xA8 * i;
-      br.Position += 20;
-      var mapTo = br.ReadByte();
-      meshDefinitionsIndicesByIndex.Add(mapTo, (uint) i);
-    }
-
     var finBonesAndWorldMatrices = new IBone[joints.Length];
-    var jointQueue = new FinTuple3Queue<(Joint joint, int index), Matrix4x4, IBone>(
-        jointsByParent[(Joint?) null]
-            .Select(rootJoint => (rootJoint, Matrix4x4.Identity,
-                                  model.Skeleton.Root)));
-    while (jointQueue.TryDequeue(out var jointAndIndex, out var parentMatrix, out var parentFinBone)) {
+    var jointQueue =
+        new FinTuple3Queue<(Joint joint, int index), Matrix4x4, IBone>(
+            jointsByParent[(Joint?) null]
+                .Select(rootJoint => (rootJoint, Matrix4x4.Identity,
+                                      model.Skeleton.Root)));
+    while (jointQueue.TryDequeue(out var jointAndIndex,
+                                 out var parentMatrix,
+                                 out var parentFinBone)) {
       Matrix4x4.Invert(parentMatrix, out var invertedParentMatrix);
 
       var (joint, index) = jointAndIndex;
@@ -176,34 +189,40 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       finBone.Name = $"bone {index}";
       finBonesAndWorldMatrices[index] = finBone;
 
-      var meshIndex = joint.meshIndex;
+      var meshSetId = joint.MeshSetId;
       n64Hardware.Rsp.ActiveBone = finBone;
 
-      if (meshDefinitionsIndicesByIndex.TryGetSet(
-              meshIndex,
-              out var meshDefinitionIndices)) {
-        foreach (var meshDefinitionIndex in meshDefinitionIndices) {
-          TryToAddMeshDefinition1_((uint) bodySectionOffset,
-                                   (uint) bodySectionLength,
-                                   (uint) bodyMeshDefinitions1Offset,
-                                   (int) meshDefinitionIndex,
-                                   br,
-                                   n64Hardware,
-                                   dlModelBuilder);
+      if (meshDefinitionAndSegmentsByMeshSetId.TryGetSet(
+              meshSetId,
+              out var meshDefinitionAndSegments)) {
+        foreach (var (meshDefinition, segment) in meshDefinitionAndSegments) {
+          var mesh = TryToAddMeshDefinition_(segment,
+                                             meshDefinition,
+                                             n64Hardware,
+                                             dlModelBuilder);
+          if (mesh == null) {
+            continue;
+          }
+
+          foreach (var p in mesh.Primitives) {
+            p.SetVertexOrder(joint.isLeft
+                                 ? VertexOrder.CLOCKWISE
+                                 : VertexOrder.COUNTER_CLOCKWISE);
+          }
         }
       }
 
       if (jointsByParent.ContainsKey(joint)) {
         jointQueue.Enqueue(jointsByParent[joint]
-                               .Select(childJoint => (childJoint, worldMatrix, bone: finBone)));
+                               .Select(childJoint => (
+                                           childJoint, worldMatrix,
+                                           bone: finBone)));
       }
     }
 
     // Adds face
     {
-      n64Memory.SetSegment(0xF,
-                           (uint) headSectionOffset,
-                           (uint) headSectionLength);
+      n64Memory.SetSegment(0xF, headSegment);
 
       n64Hardware.Rdp.CombinerCycleParams0 =
           CombinerCycleParams.FromTexture0AndVertexColor();
@@ -234,87 +253,34 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    var finModel = dlModelBuilder.Model;
-
-    foreach (var m in finModel.Skin.Meshes) {
-      foreach (var p in m.Primitives) {
-        p.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
-      }
-    }
-
-    foreach (var w in finModel.Skin.BoneWeights) {
-      ;
-    }
-
     return model;
   }
 
-  private static void TryToAddMeshDefinition1Group_(
-      uint meshGroupOffset,
-      uint meshGroupLength,
-      uint meshDefinitionsOffset,
-      int index,
-      IBinaryReader br,
+  private static IMesh? TryToAddMeshDefinition_(
+      Segment segment,
+      MeshDefinition meshDefinition,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder) {
-    for (var i = 0; i < 4; ++i) {
-      TryToAddMeshDefinition1_(
-          meshGroupOffset,
-          meshGroupLength,
-          meshDefinitionsOffset,
-          4 * index + i,
-          br,
-          n64Hardware,
-          dlModelBuilder);
-    }
-  }
+    n64Hardware.Memory.SetSegment(0xF, segment);
 
-  private static void TryToAddMeshDefinition1_(
-      uint meshGroupOffset,
-      uint meshGroupLength,
-      uint meshDefinitionsOffset,
-      int index,
-      IBinaryReader br,
-      N64Hardware<N64Memory> n64Hardware,
-      DlModelBuilder dlModelBuilder) {
-    br.Position = meshDefinitionsOffset + 0xA8 * index;
-    n64Hardware.Memory.SetSegment(0xF, meshGroupOffset, meshGroupLength);
-
-    /*var meshSegmentedAddress = br.ReadUInt32();
-    if (meshSegmentedAddress != 0) {
-      using var sbr =
-          n64Hardware.Memory.OpenAtSegmentedAddress(
-              meshSegmentedAddress);
-
-      var baseOffset = sbr.Position;
-      if (sbr.ReadUInt32() == 0) {
-        dlModelBuilder.StartNewMesh(meshSegmentedAddress.ToHexString());
-
-        sbr.Position = baseOffset;
-        AddMesh_(meshGroupOffset, sbr, n64Hardware, dlModelBuilder);
-      }
-    }*/
-
-    var baseOffset = br.Position;
-
-    var meshSegmentedAddress = br.ReadUInt32();
+    var meshSegmentedAddress = meshDefinition.MeshSegmentedAddresses[0];
     if (meshSegmentedAddress == 0) {
-      return;
+      return null;
     }
 
     if (!n64Hardware.Memory.TryToOpenPossibilitiesAtSegmentedAddress(
             meshSegmentedAddress,
             out var possibilities)) {
-      return;
+      return null;
     }
 
     if (!possibilities.TryGetFirst(out var sbr)) {
-      return;
+      return null;
     }
 
     var meshBaseOffset = sbr.Position;
     if (sbr.ReadUInt32() != 0) {
-      return;
+      return null;
     }
 
     sbr.Position = meshBaseOffset;
@@ -330,21 +296,20 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     sbr.Position = meshBaseOffset + 4 * 14;
     var imageCount = sbr.ReadUInt16();
 
-    n64Hardware.Memory.SetSegment(0xE,
-                                  (uint) (meshGroupOffset + meshBaseOffset +
-                                          vertexSectionOffset),
-                                  (uint) vertexSectionSize);
+    n64Hardware.Memory.SetSegment(
+        0xE,
+        (uint) (segment.Offset + meshBaseOffset + vertexSectionOffset),
+        (uint) vertexSectionSize);
 
-    br.Position = baseOffset + 0x74;
-    var vertexDlSegmentedAddress = br.ReadUInt32();
-
-    br.Position = baseOffset + 0x40;
-    var primitiveDlSegmentedAddress = br.ReadUInt32();
+    var vertexDlSegmentedAddress =
+        meshDefinition.VertexDisplayListSegmentedAddress;
+    var primitiveDlSegmentedAddress =
+        meshDefinition.PrimitiveDisplayListSegmentedAddress;
 
     // TODO: What does it mean if only primitive DL is present?
     if (vertexDlSegmentedAddress == 0 ||
         primitiveDlSegmentedAddress == 0) {
-      return;
+      return null;
     }
 
     // TODO: Factor in skin color via prim or env color
@@ -367,134 +332,28 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                                        TileDescriptorState.DISABLED);
     }
 
-    var vertexDl =
-        new DisplayListReader().ReadDisplayList(
-            n64Hardware.Memory,
-            new F3dzex2OpcodeParser(),
-            vertexDlSegmentedAddress);
-    dlModelBuilder.AddDl(vertexDl);
+    try {
+      var vertexDl =
+          new DisplayListReader().ReadDisplayList(
+              n64Hardware.Memory,
+              new F3dzex2OpcodeParser(),
+              vertexDlSegmentedAddress);
+      dlModelBuilder.AddDl(vertexDl);
+    } catch (Exception e) {
+      return null;
+    }
 
     var primitiveDl =
         new DisplayListReader().ReadDisplayList(
             n64Hardware.Memory,
             new F3dzex2OpcodeParser(),
             primitiveDlSegmentedAddress);
-    dlModelBuilder.StartNewMesh(
+    var mesh = dlModelBuilder.StartNewMesh(
         primitiveDlSegmentedAddress.ToHexString());
     dlModelBuilder.AddDl(primitiveDl);
+
+    return mesh;
   }
-
-  private static void AddMesh_(
-      uint meshGroupOffset,
-      IBinaryReader br,
-      N64Hardware<N64Memory> n64Hardware,
-      DlModelBuilder dlModelBuilder) {
-    var baseOffset = br.Position;
-
-    br.Position = baseOffset + 4 * 2;
-    var imageSectionSize = br.ReadUInt32();
-    var vertexSectionSize = br.ReadUInt32();
-    var opcodeSectionSize = br.ReadUInt32();
-
-    br.Position = baseOffset + 4 * 7;
-    var imageSectionOffset = br.ReadUInt32();
-    var vertexSectionOffset = br.ReadUInt32();
-    var opcodeSectionOffset = br.ReadUInt32();
-
-    br.Position = baseOffset + 4 * 14;
-    var imageCount = br.ReadUInt16();
-
-    n64Hardware.Memory.SetSegment(0xE,
-                                  (uint) (meshGroupOffset + baseOffset +
-                                          vertexSectionOffset),
-                                  (uint) vertexSectionSize);
-
-    // TODO: Factor in skin color via prim or env color
-
-    if (imageCount > 0) {
-      n64Hardware.Rdp.CombinerCycleParams0 =
-          CombinerCycleParams.FromTexture0AndVertexColor();
-      n64Hardware.Rdp.Tmem.GsSpTexture(1,
-                                       1,
-                                       0,
-                                       TileDescriptorIndex.TX_LOADTILE,
-                                       TileDescriptorState.ENABLED);
-    } else {
-      n64Hardware.Rdp.CombinerCycleParams0 =
-          CombinerCycleParams.FromVertexColor();
-      n64Hardware.Rdp.Tmem.GsSpTexture(1,
-                                       1,
-                                       0,
-                                       TileDescriptorIndex.TX_LOADTILE,
-                                       TileDescriptorState.DISABLED);
-    }
-
-    br.Position = baseOffset + opcodeSectionOffset;
-    var parser = new SimpleF3dzex2OpcodeParser();
-    var rawOpcodes = br.Subread(
-        opcodeSectionSize,
-        () => {
-          var opcodes = new LinkedList<IOpcodeCommand>();
-          while (!br.Eof) {
-            opcodes.AddLast(parser.Parse(br));
-          }
-          return opcodes;
-        });
-
-    var processedOpcodes =
-        rawOpcodes.UpToFirstMatchExclusive(o => o is SimpleDlOpcodeCommand)
-                  .Where(o => o is not EndDlOpcodeCommand)
-                  .Select(o => {
-                    if (o is SimpleVtxOpcodeCommand simpleVtxOpcodeCommand) {
-                      var numVerticesToLoad =
-                          simpleVtxOpcodeCommand.NumVerticesToLoad;
-                      var indexToBeginStoringVertices = simpleVtxOpcodeCommand
-                          .IndexToBeginStoringVertices;
-
-                      using var sbr =
-                          n64Hardware.Memory.OpenAtSegmentedAddress(
-                              simpleVtxOpcodeCommand.SegmentedAddress);
-                      return new VtxOpcodeCommand {
-                          IndexToBeginStoringVertices =
-                              indexToBeginStoringVertices,
-                          Vertices =
-                              sbr.ReadNews<F3dVertex>(numVerticesToLoad),
-                      };
-                    }
-
-                    return o;
-                  });
-
-    var displayList = new DisplayList {
-        OpcodeCommands = processedOpcodes.ToArray(),
-        Type = DisplayListType.F3DZEX2
-    };
-
-    dlModelBuilder.AddDl(displayList);
-  }
-}
-
-[BinarySchema]
-public partial class Joint : IBinaryDeserializable {
-  public ushort unk0;
-  public ushort unk1;
-
-  public ushort meshIndex;
-  public short unk2;
-  public uint unk3;
-
-  public byte index;
-  public byte isLeft;
-  public ushort unk6;
-  public ushort unk7;
-
-  public byte previousIndex;
-  public byte nextIndex;
-
-  public Matrix4x4 matrix;
-
-  [SequenceLengthSource(12)]
-  public byte[] unk4;
 }
 
 // https://wiki.cloudmodding.com/oot/F3DZEX2#Vertex_Structure

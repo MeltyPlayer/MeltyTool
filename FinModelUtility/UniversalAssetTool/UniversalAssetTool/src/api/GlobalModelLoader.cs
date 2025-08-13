@@ -39,7 +39,7 @@ using xmod.api;
 using fin.model.io.importers.assimp;
 using fin.model.io.importers.gltf;
 
-using marioartist.schema;
+using marioartist.api;
 
 using rollingMadness.api;
 

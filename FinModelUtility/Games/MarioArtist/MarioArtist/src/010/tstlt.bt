@@ -153,7 +153,7 @@ typedef struct {
   ushort unk0;
   ushort unk1;
 
-  ushort maybeMeshIndex;
+  ushort meshSetId;
   ushort unk2;
   ushort unk3;
   ushort unk4;
@@ -217,16 +217,28 @@ typedef struct {
     // These addresses are apart by 0x2A0, seem to point towards UnkSection3
     uint someAddress;
     
-    byte unk0[0x4C];
+    uint chosenPartIndex;
+    
+    byte unk0[0x48];
 } UnkSection5 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xB840);
-ChosenPart1 headChosenParts1[5] <optimize=false>;
+struct ChosenHeadParts {
+    ChosenPart1 headChosenParts[2] <optimize=false>;
+    ChosenPart1 hair;
+    ChosenPart1 headChosenParts[2] <optimize=false>;
+} chosenHeadParts;
 
 UnkSection5 headUnkSection5s[8] <optimize=false>;
 
 FSeek(0xBD08);
-ChosenPart1 bodyChosenParts1[8] <optimize=false>;
+struct ChosenBodyParts {
+    ChosenPart1 bodyChosenParts[4] <optimize=false>;
+    ChosenPart1 shirt;
+    ChosenPart1 bodyChosenParts;
+    ChosenPart1 shoes;
+    ChosenPart1 bodyChosenParts;
+} chosenBodyParts;
 
 UnkSection5 bodyUnkSection5s[0x13] <optimize=false>;
 
@@ -341,16 +353,22 @@ typedef struct {
           }
       }
       
-      uint unk1[5];
-      float unk2[6];
+      byte unk1[4];
+      byte meshSetId;
+      byte unkSection5Index;
       
-      uint unk3;
+      ushort unk3;
+      
+      uint unk4[3];
+      
+      float unk5[6];
+      uint unk6;
 
       uint primitiveDl <bgcolor=COLOR_OFFSET>;
-      uint unk4[0xC];
+      uint unk7[0xC];
       
       uint vertexDl <bgcolor=COLOR_OFFSET>;
-      uint unk5[0xC];
+      uint unk8[0xC];
     } MeshDefinition <bgcolor=COLOR_HEADER>;
     
     FSeek(0xd530);

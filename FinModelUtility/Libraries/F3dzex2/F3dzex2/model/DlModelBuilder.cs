@@ -325,9 +325,10 @@ public class DlModelBuilder {
     set => this.n64Hardware_.Rsp.Matrix = value;
   }
 
-  public void StartNewMesh(string name) {
+  public IMesh StartNewMesh(string name) {
     this.currentMesh_ = this.Model.Skin.AddMesh();
     this.currentMesh_.Name = name;
+    return this.currentMesh_;
   }
 
   private IMesh CurrentMesh => this.currentMesh_ ??= this.Model.Skin.AddMesh();
