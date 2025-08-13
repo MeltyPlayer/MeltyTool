@@ -215,7 +215,9 @@ typedef struct {
 } ChosenColor <bgcolor=COLOR_HEADER>;
 
 typedef struct {
-  uint unk0[2];
+  uint chosenPartId;
+  
+  uint unk0;
 
   ChosenColor chosenColor0;
   ChosenColor chosenColor1;
@@ -230,33 +232,33 @@ typedef struct {
   uint address1 <bgcolor=COLOR_OFFSET>;
 
   uint unk4;
-} ChosenPart1 <bgcolor=COLOR_HEADER>;
+} ChosenPart <bgcolor=COLOR_HEADER>;
 
 typedef struct {
     // These addresses are apart by 0x2A0, seem to point towards UnkSection3
     uint someAddress;
     
-    uint chosenPartIndex;
+    uint chosenPartId;
     
     byte unk0[0x48];
 } UnkSection5 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xB840);
 struct ChosenHeadParts {
-    ChosenPart1 headChosenParts[2] <optimize=false>;
-    ChosenPart1 hair;
-    ChosenPart1 headChosenParts[2] <optimize=false>;
+    ChosenPart headChosenParts[2] <optimize=false>;
+    ChosenPart hair;
+    ChosenPart headChosenParts[2] <optimize=false>;
 } chosenHeadParts;
 
 UnkSection5 headUnkSection5s[8] <optimize=false>;
 
 FSeek(0xBD08);
 struct ChosenBodyParts {
-    ChosenPart1 bodyChosenParts[4] <optimize=false>;
-    ChosenPart1 shirt;
-    ChosenPart1 bodyChosenParts;
-    ChosenPart1 shoes;
-    ChosenPart1 bodyChosenParts;
+    ChosenPart bodyChosenParts[4] <optimize=false>;
+    ChosenPart shirt;
+    ChosenPart bodyChosenParts;
+    ChosenPart shoes;
+    ChosenPart bodyChosenParts;
 } chosenBodyParts;
 
 UnkSection5 bodyUnkSection5s[0x13] <optimize=false>;
