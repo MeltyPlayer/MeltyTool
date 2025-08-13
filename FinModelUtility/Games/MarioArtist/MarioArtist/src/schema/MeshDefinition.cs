@@ -13,7 +13,7 @@ public partial class MeshDefinition : IBinaryDeserializable {
   public byte[] Unk0 { get; set; }
 
   public byte MeshSetId { get; set; }
-  public byte Unk1 { get; set; }
+  public byte UnkSection5Index { get; set; }
 
   public ushort Unk2 { get; set; }
 

@@ -10,6 +10,7 @@ using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;
 
+using fin.color;
 using fin.data.dictionaries;
 using fin.data.queues;
 using fin.io;
@@ -17,6 +18,7 @@ using fin.model;
 using fin.model.io;
 using fin.model.io.importers;
 using fin.model.util;
+using fin.schema.color;
 using fin.schema.vector;
 using fin.util.enumerables;
 using fin.util.linq;
@@ -29,6 +31,10 @@ using schema.binary.attributes;
 
 
 namespace marioartist.api;
+
+using MeshDefinitionTuple =
+    (Segment segment, MeshDefinition meshDefinition, UnkSection5 unkSection5,
+    ChosenPart chosenPart);
 
 public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle;
@@ -92,20 +98,53 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         Offset = (uint) bodySectionOffset, Length = (uint) bodySectionLength
     };
 
+    br.Position = 0x91bc;
+    var skinColor = br.ReadNew<Rgba32>();
+
+    br.Position = 0xb840;
+    var headChosenParts = br.ReadNews<ChosenPart>(5);
+    var headUnkSection5s = br.ReadNews<UnkSection5>(8);
+
+    br.Position = 0xbd08;
+    var bodyChosenParts = br.ReadNews<ChosenPart>(8);
+    var bodyUnkSection5s = br.ReadNews<UnkSection5>(19);
+
     br.Position = 0xd530;
     var headMeshDefinitions = br.ReadNews<MeshDefinition>(0x20);
 
     br.Position = 0xf968;
     var bodyMeshDefinitions = br.ReadNews<MeshDefinition>(0x4C);
 
-    var meshDefinitionAndSegmentsByMeshSetId =
-        new SetDictionary<uint, (MeshDefinition, Segment)>();
-    foreach (var tuple in headMeshDefinitions.Select(m => (m, headSegment))
-                                             .Concat(
-                                                 bodyMeshDefinitions
-                                                     .Select(m => (
-                                                           m, bodySegment)))) {
-      meshDefinitionAndSegmentsByMeshSetId.Add(tuple.Item1.MeshSetId, tuple);
+    var skinChosenPart = new ChosenPart();
+    skinChosenPart.ChosenColor0.Color = skinColor;
+
+    var headBundles = headMeshDefinitions.Select(meshDefinition => {
+      var segment = headSegment;
+      var unkSection5 = headUnkSection5s[meshDefinition.UnkSection5Index];
+      var chosenPart = unkSection5.ChosenPartIndex < headChosenParts.Length
+          ? headChosenParts[unkSection5.ChosenPartIndex]
+          : skinChosenPart;
+      return (segment, meshDefinition, unkSection5, chosenPart);
+    });
+    var bodyBundles = bodyMeshDefinitions.Select(meshDefinition => {
+      var segment = bodySegment;
+      var unkSection5 = bodyUnkSection5s[meshDefinition.UnkSection5Index];
+      var chosenPart = unkSection5.ChosenPartIndex < bodyChosenParts.Length
+          ? bodyChosenParts[unkSection5.ChosenPartIndex]
+          : skinChosenPart;
+
+      if (meshDefinition.UnkSection5Index == 18) {
+        ;
+      }
+
+      return (segment, meshDefinition, unkSection5, chosenPart);
+    });
+
+    var meshDefinitionTuplesByMeshSetId =
+        new SetDictionary<uint, (Segment, MeshDefinition, UnkSection5,
+            ChosenPart)>();
+    foreach (var tuple in headBundles.Concat(bodyBundles)) {
+      meshDefinitionTuplesByMeshSetId.Add(tuple.meshDefinition.MeshSetId, tuple);
     }
 
     var materialManager = model.MaterialManager;
@@ -192,12 +231,11 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       var meshSetId = joint.MeshSetId;
       n64Hardware.Rsp.ActiveBone = finBone;
 
-      if (meshDefinitionAndSegmentsByMeshSetId.TryGetSet(
+      if (meshDefinitionTuplesByMeshSetId.TryGetSet(
               meshSetId,
-              out var meshDefinitionAndSegments)) {
-        foreach (var (meshDefinition, segment) in meshDefinitionAndSegments) {
-          var mesh = TryToAddMeshDefinition_(segment,
-                                             meshDefinition,
+              out var meshDefinitionTuples)) {
+        foreach (var meshDefinitionTuple in meshDefinitionTuples) {
+          var mesh = TryToAddMeshDefinition_(meshDefinitionTuple,
                                              n64Hardware,
                                              dlModelBuilder);
           if (mesh == null) {
@@ -257,10 +295,12 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
   }
 
   private static IMesh? TryToAddMeshDefinition_(
-      Segment segment,
-      MeshDefinition meshDefinition,
+      MeshDefinitionTuple meshDefinitionTuple,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder) {
+    var (segment, meshDefinition, unkSection5, chosenPart) =
+        meshDefinitionTuple;
+
     n64Hardware.Memory.SetSegment(0xF, segment);
 
     var meshSegmentedAddress = meshDefinition.MeshSegmentedAddresses[0];
@@ -314,22 +354,27 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     // TODO: Factor in skin color via prim or env color
 
+    var color0 = chosenPart.ChosenColor0.Color;
+
+    var rdp = n64Hardware.Rdp;
     if (imageCount > 0) {
-      n64Hardware.Rdp.CombinerCycleParams0 =
-          CombinerCycleParams.FromTexture0AndVertexColor();
-      n64Hardware.Rdp.Tmem.GsSpTexture(1,
-                                       1,
-                                       0,
-                                       TileDescriptorIndex.TX_LOADTILE,
-                                       TileDescriptorState.ENABLED);
+      rdp.CycleType = CycleType.TWO_CYCLE;
+      (rdp.CombinerCycleParams0, rdp.CombinerCycleParams1) =
+          CombinerCycleParams.FromTexture0AndLightingAndPrimitive();
+      n64Hardware.Rsp.PrimColor = color0.ToSystemColor();
+      rdp.Tmem.GsSpTexture(1,
+                           1,
+                           0,
+                           TileDescriptorIndex.TX_LOADTILE,
+                           TileDescriptorState.ENABLED);
     } else {
-      n64Hardware.Rdp.CombinerCycleParams0 =
-          CombinerCycleParams.FromVertexColor();
-      n64Hardware.Rdp.Tmem.GsSpTexture(1,
-                                       1,
-                                       0,
-                                       TileDescriptorIndex.TX_LOADTILE,
-                                       TileDescriptorState.DISABLED);
+      rdp.CycleType = CycleType.ONE_CYCLE;
+      rdp.CombinerCycleParams0 = CombinerCycleParams.FromVertexColor();
+      rdp.Tmem.GsSpTexture(1,
+                           1,
+                           0,
+                           TileDescriptorIndex.TX_LOADTILE,
+                           TileDescriptorState.DISABLED);
     }
 
     try {

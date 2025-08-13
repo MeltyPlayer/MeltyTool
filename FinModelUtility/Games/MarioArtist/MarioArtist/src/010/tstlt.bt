@@ -42,6 +42,25 @@ typedef struct {
     uint rgba <bgcolor=color>;
 } Rgba32;
 
+
+typedef struct {
+    ushort rgba;
+
+    local ubyte r = (ubyte) (((rgba >> 11) & 0x1F) / 31.0 * 255);
+    local ubyte g = (ubyte) (((rgba >> 6) & 0x1F) / 31.0 * 255);
+    local ubyte b = (ubyte) (((rgba >> 1) & 0x1F) / 31.0 * 255);
+    local ubyte a = (rgba & 1) ? 255 : 0;
+    
+    local uint color=(((uint) b) << 16) | (((uint) g) << 8) | r;
+    
+    FSeek(FTell() - 2);
+    ushort rgba <bgcolor=color>;
+} Argb1555;
+
+struct Argb1555Image(uint width, uint height) {
+    Argb1555 pixels[width * height] <optimize=false>;
+};
+
 typedef struct {
     ubyte l;
     
@@ -400,19 +419,11 @@ typedef struct {
 Bio bio;
 
 typedef struct (int imageCount) { 
-  short images[32 * 32 * imageCount] <bgcolor=COLOR_IMAGE>;
-  
-  Mesh mesh[3] <optimize=false>;
-} MeshGroup;
-
-FSeek(0x36040);
-Mesh mesh;
-
-FSeek(0x1e6b0);
-Mesh hmmmMesh;
+  Argb1555Image images(32, 32)[imageCount] <bgcolor=COLOR_IMAGE, optimize=false>;
+} PaletteImages;
 
 FSeek(headOffset);
-MeshGroup headMeshGroup(8);
+PaletteImages headPaletteImages(8);
 
 FSeek(bodyOffset);
-MeshGroup bodyMeshGroup(16);
+PaletteImages bodyPaletteImages(16);

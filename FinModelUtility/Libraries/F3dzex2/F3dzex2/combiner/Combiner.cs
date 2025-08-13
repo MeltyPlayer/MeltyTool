@@ -50,6 +50,28 @@ public enum CycleType : byte {
 }
 
 public struct CombinerCycleParams {
+  public static (CombinerCycleParams, CombinerCycleParams) FromTexture0AndLightingAndPrimitive()
+    => (new() {
+        ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
+        ColorMuxB = GenericColorMux.G_CCMUX_0,
+        ColorMuxC = GenericColorMux.G_CCMUX_SHADE,
+        ColorMuxD = GenericColorMux.G_CCMUX_0,
+        AlphaMuxA = GenericAlphaMux.G_ACMUX_TEXEL0,
+        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxC = GenericAlphaMux.G_ACMUX_SHADE,
+        AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+    },
+    new() {
+        ColorMuxA = GenericColorMux.G_CCMUX_COMBINED,
+        ColorMuxB = GenericColorMux.G_CCMUX_0,
+        ColorMuxC = GenericColorMux.G_CCMUX_PRIMITIVE,
+        ColorMuxD = GenericColorMux.G_CCMUX_0,
+        AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxD = GenericAlphaMux.G_ACMUX_COMBINED,
+    });
+
   public static CombinerCycleParams FromTexture0AndVertexColor()
     => new() {
         ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
