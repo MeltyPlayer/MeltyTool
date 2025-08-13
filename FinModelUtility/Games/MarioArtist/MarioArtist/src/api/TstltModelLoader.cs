@@ -20,7 +20,6 @@ using fin.model.io.importers;
 using fin.model.util;
 using fin.schema.color;
 using fin.schema.vector;
-using fin.util.enumerables;
 using fin.util.linq;
 using fin.util.sets;
 
@@ -73,7 +72,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     n64Hardware.Rdp = new Rdp {
         Tmem = new NoclipTmem(n64Hardware),
     };
-    n64Hardware.Rsp = new Rsp();
+    n64Hardware.Rsp = new Rsp {
+      GeometryMode = GeometryMode.G_LIGHTING
+    };
     var n64Memory = n64Hardware.Memory = new N64Memory(fileBundle.MainFile);
     n64Memory.SetSegment(0, 0, (uint) br.Length);
 
@@ -103,10 +104,12 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     br.Position = 0xb840;
     var headChosenParts = br.ReadNews<ChosenPart>(5);
+    var headChosenPartsById = headChosenParts.ToDictionary(p => p.Id);
     var headUnkSection5s = br.ReadNews<UnkSection5>(8);
 
     br.Position = 0xbd08;
     var bodyChosenParts = br.ReadNews<ChosenPart>(8);
+    var bodyChosenPartsById = bodyChosenParts.ToDictionary(p => p.Id);
     var bodyUnkSection5s = br.ReadNews<UnkSection5>(19);
 
     br.Position = 0xd530;
@@ -121,22 +124,13 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var headBundles = headMeshDefinitions.Select(meshDefinition => {
       var segment = headSegment;
       var unkSection5 = headUnkSection5s[meshDefinition.UnkSection5Index];
-      var chosenPart = unkSection5.ChosenPartIndex < headChosenParts.Length
-          ? headChosenParts[unkSection5.ChosenPartIndex]
-          : skinChosenPart;
+      var chosenPart = headChosenPartsById.GetValueOrDefault(unkSection5.ChosenPartId, skinChosenPart);
       return (segment, meshDefinition, unkSection5, chosenPart);
     });
     var bodyBundles = bodyMeshDefinitions.Select(meshDefinition => {
       var segment = bodySegment;
       var unkSection5 = bodyUnkSection5s[meshDefinition.UnkSection5Index];
-      var chosenPart = unkSection5.ChosenPartIndex < bodyChosenParts.Length
-          ? bodyChosenParts[unkSection5.ChosenPartIndex]
-          : skinChosenPart;
-
-      if (meshDefinition.UnkSection5Index == 18) {
-        ;
-      }
-
+      var chosenPart = bodyChosenPartsById.GetValueOrDefault(unkSection5.ChosenPartId, skinChosenPart);
       return (segment, meshDefinition, unkSection5, chosenPart);
     });
 

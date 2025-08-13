@@ -17,6 +17,7 @@ using fin.model;
 using fin.model.impl;
 using fin.image.util;
 using fin.io.bundles;
+using fin.util.enums;
 
 using NoAlloq;
 
@@ -116,6 +117,7 @@ public class DlModelBuilder {
           return texture;
         });
 
+    var rsp = n64Hardware.Rsp;
     this.lazyMaterialDictionary_ =
         new(materialParams
                 => {
@@ -166,6 +168,12 @@ public class DlModelBuilder {
               var primAlpha = equations.CreateScalarConstant(
                   rsp.PrimColor.A / 255.0);
 
+              var shadeColor =
+                  rsp.GeometryMode.CheckFlag(GeometryMode.G_LIGHTING)
+                      ? equations.GetMergedLightDiffuseColor()
+                      : equations.CreateOrGetColorInput(
+                          FixedFunctionSource.VERTEX_COLOR_0);
+
               IColorValue combinedColor = color0;
               IScalarValue combinedAlpha = scalar0;
 
@@ -178,10 +186,8 @@ public class DlModelBuilder {
                       GenericColorMux.G_CCMUX_TEXEL1
                           => equations.CreateOrGetColorInput(
                               FixedFunctionSource.TEXTURE_COLOR_1),
-                      GenericColorMux.G_CCMUX_PRIMITIVE => primColor,
-                      GenericColorMux.G_CCMUX_SHADE
-                          => equations.CreateOrGetColorInput(
-                              FixedFunctionSource.VERTEX_COLOR_0),
+                      GenericColorMux.G_CCMUX_PRIMITIVE   => primColor,
+                      GenericColorMux.G_CCMUX_SHADE       => shadeColor,
                       GenericColorMux.G_CCMUX_ENVIRONMENT => environmentColor,
                       GenericColorMux.G_CCMUX_1           => color1,
                       GenericColorMux.G_CCMUX_0           => color0,
@@ -245,24 +251,6 @@ public class DlModelBuilder {
                           cycleParams1.Value
                       ]
                       : [cycleParams0];
-
-              if (cycleParams
-                      .Any(c
-                               => c.ColorMuxA
-                                      is GenericColorMux.G_CCMUX_TEXEL0
-                                         or GenericColorMux.G_CCMUX_TEXEL1 ||
-                                  c.ColorMuxB
-                                      is GenericColorMux.G_CCMUX_TEXEL0
-                                         or GenericColorMux.G_CCMUX_TEXEL1 ||
-                                  c.ColorMuxC
-                                      is GenericColorMux.G_CCMUX_TEXEL0
-                                         or GenericColorMux.G_CCMUX_TEXEL1 ||
-                                  c.ColorMuxD
-                                      is GenericColorMux.G_CCMUX_TEXEL0
-                                         or GenericColorMux.G_CCMUX_TEXEL1)
-                  && texture0 == null) {
-                ;
-              }
 
               foreach (var combinerCycleParams in cycleParams) {
                 var cA = getColorValue(combinerCycleParams.ColorMuxA);

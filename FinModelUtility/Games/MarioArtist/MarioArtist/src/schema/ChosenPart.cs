@@ -14,8 +14,8 @@ public partial class ChosenColor : IBinaryDeserializable {
 
 [BinarySchema]
 public partial class ChosenPart : IBinaryDeserializable {
-  [SequenceLengthSource(2)]
-  public uint[] Unk0 { get; set; }
+  public uint Id { get; set; }
+  public uint Unk0 { get; set; }
 
   public ChosenColor ChosenColor0 { get; } = new();
   public ChosenColor ChosenColor1 { get; } = new();

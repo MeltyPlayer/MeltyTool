@@ -8,7 +8,7 @@ namespace marioartist.schema;
 public partial class UnkSection5 : IBinaryDeserializable {
   public uint UnkAddress { get; set; }
 
-  public uint ChosenPartIndex { get; set; }
+  public uint ChosenPartId { get; set; }
 
   [SequenceLengthSource(0x48)]
   public byte[] Unk0 { get; set; }
