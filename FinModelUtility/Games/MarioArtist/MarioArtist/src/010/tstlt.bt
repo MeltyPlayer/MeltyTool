@@ -11,6 +11,8 @@
 //   History: 
 //------------------------------------------------
 
+// This file format is super tricky! Previous contents are not cleared when saving, so some bytes are literally just junk data.
+
 BigEndian();
 
 local uint COLOR_IMAGE = 0x0000ff;
@@ -232,7 +234,7 @@ typedef struct {
   uint address1 <bgcolor=COLOR_OFFSET>;
 
   uint unk4;
-} ChosenPart <bgcolor=COLOR_HEADER>;
+} ChosenPart0 <bgcolor=COLOR_HEADER>;
 
 typedef struct {
     // These addresses are apart by 0x2A0, seem to point towards UnkSection3
@@ -244,22 +246,22 @@ typedef struct {
 } UnkSection5 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xB840);
-struct ChosenHeadParts {
-    ChosenPart headChosenParts[2] <optimize=false>;
-    ChosenPart hair;
-    ChosenPart headChosenParts[2] <optimize=false>;
-} chosenHeadParts;
+struct ChosenHeadPart0s {
+    ChosenPart0 headChosenParts[2] <optimize=false>;
+    ChosenPart0 hair;
+    ChosenPart0 headChosenParts[2] <optimize=false>;
+} chosenHeadPart0s;
 
 UnkSection5 headUnkSection5s[8] <optimize=false>;
 
 FSeek(0xBD08);
-struct ChosenBodyParts {
-    ChosenPart bodyChosenParts[4] <optimize=false>;
-    ChosenPart shirt;
-    ChosenPart bodyChosenParts;
-    ChosenPart shoes;
-    ChosenPart bodyChosenParts;
-} chosenBodyParts;
+struct ChosenBodyPart0s {
+    ChosenPart0 bodyChosenParts[4] <optimize=false>;
+    ChosenPart0 shirt;
+    ChosenPart0 bodyChosenParts;
+    ChosenPart0 shoes;
+    ChosenPart0 bodyChosenParts;
+} chosenBodyPart0s;
 
 UnkSection5 bodyUnkSection5s[0x13] <optimize=false>;
 
@@ -269,26 +271,33 @@ float unkFloats1[0x5A];
 Rgba32 unkColor0;
 Rgba32 skinColor;
 
+// Examples
+// - earrings, maybe are type 9?
 typedef struct {
-  uint unk0[3];
-  uint unk1;
+  uint chosenPartId;
+  uint maybeFileIndex <bgcolor=COLOR_INDEX>;
+  
+  // The current model to render
+  uint chosenModelIndex <bgcolor=COLOR_INDEX>; 
+  uint isLeft;
+
   uint unkSegmentedAddresses[5] <bgcolor=COLOR_OFFSET>;  
   byte unk2[0x54];
 
   Vec3f unkVec3a <bgcolor=COLOR_ORIENTATION>;
   Vec3f unkVec3b <bgcolor=COLOR_ORIENTATION>;
 
-  uint unk3;
+  uint unkRamAddress;
 
   Vec3f unkVec3c <bgcolor=COLOR_ORIENTATION>;
   Vec3f unkVec3d <bgcolor=COLOR_ORIENTATION>;
 
   uint unk4[3];
-} UnkSection2 <bgcolor=COLOR_HEADER>;
+} ChosenPart1 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xc6c8);
-uint headUnkSection2Count <bgcolor=COLOR_COUNT>;
-UnkSection2 headUnkSection2s[headUnkSection2Count] <optimize=false>;
+uint headChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
+ChosenPart1 headChosenHeadPart1s[headChosenHeadPart1Count] <optimize=false>;
 
 FSeek(0xeae0);
 typedef struct {
@@ -299,60 +308,57 @@ typedef struct {
 NoseHeader noseHeader;
 
 FSeek(0xeb00);
-uint bodyUnkSection2Count <bgcolor=COLOR_COUNT>;
-UnkSection2 bodyUnkSection2s[bodyUnkSection2Count] <optimize=false>;
-
-// contains RAM addresses that point to display lists
-FSeek(0xf968);
-typedef struct {
-  byte unk0[0xa8];
-} UnkSection3 <bgcolor=COLOR_HEADER>;
-//UnkSection3 unkSection3s[0x4c] <optimize=false>;
+uint bodyChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
+ChosenPart1 bodyChosenHeadPart1s[bodyChosenHeadPart1Count] <optimize=false>;
 
 typedef struct {
-  local uint baseOffset = FTell();
+    local uint baseOffset = FTell();
     
-  ubyte unkByte0[4];
-  uint totalSize <bgcolor=COLOR_COUNT>;
-
-  uint imageSectionSize <bgcolor=COLOR_COUNT>;
-  uint vertexSectionSize <bgcolor=COLOR_COUNT>;
-  uint opcodeSectionSize <bgcolor=COLOR_COUNT>;
-  uint section2Size <bgcolor=COLOR_COUNT>;
-   
-  ubyte unkByte1[4 * 1];
-  
-  uint imageSectionOffset <bgcolor=COLOR_OFFSET>;
-  uint vertexSectionOffset <bgcolor=COLOR_OFFSET>;
-  uint opcodeSectionOffset <bgcolor=COLOR_OFFSET>;
-  uint section2Offset <bgcolor=COLOR_OFFSET>;
-
-  ubyte unkByte2[4 * 3];
-  
-  ushort imageCount <bgcolor=COLOR_COUNT>;
-  ushort vertexCount <bgcolor=COLOR_COUNT>;
-  ushort unkCount <bgcolor=COLOR_COUNT>;
-  ushort triangleCount <bgcolor=COLOR_COUNT>;
-  
-  short unk2[6];
-
-  ubyte unkByte4[4 * 5];
-  
-  byte imageSectionData[imageSectionSize] <bgcolor=COLOR_IMAGE>;
-  
-  uint vertices[4 * vertexCount] <bgcolor=COLOR_SECTION0>;
-
-  // The bulk of the logic is here...
-  // - Fast3DEX2 opcodes
-  // - Handles vertex setup by loading from a specific address (relative to 0x16770)
-  //   - Vertices can be fetched from other meshes...
-  // - Handles texture setup (width/format/clamp are defined here)
-  byte opcodeSectionData[opcodeSectionSize] <bgcolor=COLOR_SECTION1>;
-
-  // No idea what this is, but its size seems to always be a multiple of 0xc.
-  byte unkValue2s[section2Size] <bgcolor=COLOR_SECTION2>;
-  
-  FSeek(baseOffset + CeilAlign(totalSize, 0x10));
+    ubyte unkByte0[4];
+    uint totalSize <bgcolor=COLOR_COUNT>;
+    
+    uint imageSectionSize <bgcolor=COLOR_COUNT>;
+    uint vertexSectionSize <bgcolor=COLOR_COUNT>;
+    uint opcodeSectionSize <bgcolor=COLOR_COUNT>;
+    uint imageMetadataSectionSize <bgcolor=COLOR_COUNT>;
+    
+    ubyte unkByte1[4 * 1];
+    
+    uint imageSectionOffset <bgcolor=COLOR_OFFSET>;
+    uint vertexSectionOffset <bgcolor=COLOR_OFFSET>;
+    uint opcodeSectionOffset <bgcolor=COLOR_OFFSET>;
+    uint imageMetadataSectionOffset <bgcolor=COLOR_OFFSET>;
+    uint displayListOffsets[3] <bgcolor=COLOR_OFFSET>;
+    
+    ushort imageCount <bgcolor=COLOR_COUNT>;
+    ushort vertexCount <bgcolor=COLOR_COUNT>;
+    ushort unkCount <bgcolor=COLOR_COUNT>;
+    ushort triangleCount <bgcolor=COLOR_COUNT>;
+    
+    short unk2[6];
+    
+    ubyte unkByte4[4 * 5];
+    
+    byte imageSectionData[imageSectionSize] <bgcolor=COLOR_IMAGE>;
+    
+    uint vertices[4 * vertexCount] <bgcolor=COLOR_SECTION0>;
+    
+    // The bulk of the logic is here...
+    // - Fast3DEX2 opcodes
+    // - Handles vertex setup by loading from a specific address (relative to 0x16770)
+    //   - Vertices can be fetched from other meshes...
+    // - Handles texture setup (width/format/clamp are defined here)
+    byte opcodeSectionData[opcodeSectionSize] <bgcolor=COLOR_SECTION1>;
+    
+    struct ImageMetadata {
+        uint offset;
+        ushort maybeColorFormat;
+        ushort maybeBitsPerTexel;
+        ushort width;
+        ushort height;
+    } imageMetadata[imageCount] <bgcolor=COLOR_SECTION2>;
+    
+    FSeek(baseOffset + CeilAlign(totalSize, 0x10));
 } Mesh <bgcolor=COLOR_HEADER>;
 
 {
@@ -376,7 +382,7 @@ typedef struct {
       
       byte unk1[4];
       byte meshSetId;
-      byte unkSection5Index;
+      byte unkSection5Index <bgcolor=COLOR_INDEX>;
       
       ushort unk3;
       

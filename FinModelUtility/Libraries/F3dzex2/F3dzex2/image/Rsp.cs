@@ -22,7 +22,7 @@ public interface IRsp {
   IReadOnlyFinMatrix4x4 Matrix { get; set; }
 
   IBoneMapper BoneMapper { get; }
-  IBone? ActiveBone { get; set; }
+  IReadOnlyBoneWeights? ActiveBoneWeights { get; set; }
 
   Color EnvironmentColor { get; set; }
   Color PrimColor { get; set; }
@@ -59,7 +59,7 @@ public class Rsp : IRsp {
 
   public IReadOnlyFinMatrix4x4 Matrix { get; set; } = FinMatrix4x4.IDENTITY;
   public IBoneMapper BoneMapper { get; } = new BoneMapper();
-  public IBone? ActiveBone { get; set; }
+  public IReadOnlyBoneWeights? ActiveBoneWeights { get; set; }
 
   public Color EnvironmentColor { get; set; }
   public Color PrimColor { get; set; }

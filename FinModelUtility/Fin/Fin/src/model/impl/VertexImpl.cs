@@ -28,9 +28,9 @@ public class OneColor2UvVertexImpl : IVertex,
 
   public int Index { get; }
 
-  public IBoneWeights? BoneWeights { get; private set; }
+  public IReadOnlyBoneWeights? BoneWeights { get; private set; }
 
-  public void SetBoneWeights(IBoneWeights boneWeights) {
+  public void SetBoneWeights(IReadOnlyBoneWeights boneWeights) {
     this.BoneWeights = boneWeights;
   }
 
@@ -110,9 +110,9 @@ public class NormalUvVertexImpl : IVertex,
 
   public int Index { get; }
 
-  public IBoneWeights? BoneWeights { get; private set; }
+  public IReadOnlyBoneWeights? BoneWeights { get; private set; }
 
-  public void SetBoneWeights(IBoneWeights boneWeights) {
+  public void SetBoneWeights(IReadOnlyBoneWeights boneWeights) {
     this.BoneWeights = boneWeights;
   }
 
@@ -183,9 +183,9 @@ public class Normal1Color1UvVertexImpl : INormalVertex,
 
   public int Index { get; }
 
-  public IBoneWeights? BoneWeights { get; private set; }
+  public IReadOnlyBoneWeights? BoneWeights { get; private set; }
 
-  public void SetBoneWeights(IBoneWeights boneWeights)
+  public void SetBoneWeights(IReadOnlyBoneWeights boneWeights)
     => this.BoneWeights = boneWeights;
 
 
@@ -282,9 +282,9 @@ public class NormalTangent1Color1UvVertexImpl : INormalTangentVertex,
 
   public int Index { get; }
 
-  public IBoneWeights? BoneWeights { get; private set; }
+  public IReadOnlyBoneWeights? BoneWeights { get; private set; }
 
-  public void SetBoneWeights(IBoneWeights boneWeights) {
+  public void SetBoneWeights(IReadOnlyBoneWeights boneWeights) {
     this.BoneWeights = boneWeights;
   }
 
@@ -403,9 +403,9 @@ public class NormalTangentMultiColorMultiUvVertexImpl
 
   public int Index { get; }
 
-  public IBoneWeights? BoneWeights { get; private set; }
+  public IReadOnlyBoneWeights? BoneWeights { get; private set; }
 
-  public void SetBoneWeights(IBoneWeights boneWeights) {
+  public void SetBoneWeights(IReadOnlyBoneWeights boneWeights) {
     this.BoneWeights = boneWeights;
   }
 

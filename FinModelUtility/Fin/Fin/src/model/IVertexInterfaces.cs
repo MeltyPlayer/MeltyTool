@@ -11,10 +11,10 @@ namespace fin.model;
 
 [GenerateReadOnly]
 public partial interface IVertex : IIndexable {
-  new IBoneWeights? BoneWeights { get; }
+  new IReadOnlyBoneWeights? BoneWeights { get; }
   new Vector3 LocalPosition { get; }
 
-  void SetBoneWeights(IBoneWeights boneWeights);
+  void SetBoneWeights(IReadOnlyBoneWeights boneWeights);
 
   void SetLocalPosition(in Vector3 localPosition);
   void SetLocalPosition(IReadOnlyXyz localPosition);

@@ -122,7 +122,10 @@ namespace UoT.api {
         }
 
         foreach (var (finBone, ootLimb) in visibleFinBonesAndOotLimbs) {
-          n64Hardware.Rsp.ActiveBone = finBone;
+          n64Hardware.Rsp.ActiveBoneWeights =
+              finModel.Skin.GetOrCreateBoneWeights(
+                  VertexSpace.RELATIVE_TO_BONE,
+                  finBone);
 
           var displayList =
               new DisplayListReader().ReadDisplayList(

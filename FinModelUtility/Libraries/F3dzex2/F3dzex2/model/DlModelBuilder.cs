@@ -352,7 +352,12 @@ public class DlModelBuilder {
                     .TryToGetBoneAtSegmentedAddress(
                         mtxOpcodeCommand.RamAddress,
                         out var bone)) {
-              this.n64Hardware_.Rsp.ActiveBone = bone;
+              this.n64Hardware_.Rsp.ActiveBoneWeights =
+                  bone != null
+                      ? this.Model.Skin.GetOrCreateBoneWeights(
+                          VertexSpace.RELATIVE_TO_BONE,
+                          bone)
+                      : null;
             }
           }
 

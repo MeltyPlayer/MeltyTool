@@ -31,7 +31,7 @@ public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
 
   private readonly IVertex?[] vertices_ = new IVertex?[VERTEX_COUNT];
 
-  private readonly IBone?[] bones_ = new IBone?[VERTEX_COUNT];
+  private readonly IReadOnlyBoneWeights?[] boneWeights_ = new IReadOnlyBoneWeights?[VERTEX_COUNT];
 
   private Color diffuseColor_ = Color.White;
 
@@ -44,7 +44,7 @@ public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
         var index = startIndex + i;
         this.vertexDefinitions_[index] = newVertices[i];
         this.vertices_[index] = null;
-        this.bones_[index] = n64Hardware.Rsp.ActiveBone;
+        this.boneWeights_[index] = n64Hardware.Rsp.ActiveBoneWeights;
       }
     }
 
@@ -76,12 +76,9 @@ public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
                           n64Hardware.Rsp.TexScaleYFloat /
                           (bmpHeight * 32)));
 
-      var activeBone = this.bones_[index];
-      if (activeBone != null) {
-        newVertex.SetBoneWeights(
-            model.Skin.GetOrCreateBoneWeights(
-                VertexSpace.RELATIVE_TO_BONE,
-                activeBone));
+      var activeBoneWeights = this.boneWeights_[index];
+      if (activeBoneWeights != null) {
+        newVertex.SetBoneWeights(activeBoneWeights);
       }
 
       if (n64Hardware.Rsp.GeometryMode.CheckFlag(
