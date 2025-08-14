@@ -14,6 +14,7 @@ using fin.color;
 using fin.data.dictionaries;
 using fin.data.queues;
 using fin.io;
+using fin.math;
 using fin.model;
 using fin.model.io;
 using fin.model.io.importers;
@@ -33,7 +34,7 @@ namespace marioartist.api;
 
 using MeshDefinitionTuple =
     (Segment segment, MeshDefinition meshDefinition, UnkSection5 unkSection5,
-    ChosenPart chosenPart);
+    ChosenPart0 chosenPart);
 
 public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle;
@@ -69,10 +70,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var tstlt = br.ReadNew<Tstlt>();
 
     var n64Hardware = new N64Hardware<N64Memory>();
-    n64Hardware.Rdp = new Rdp {
+    var rdp = n64Hardware.Rdp = new Rdp {
         Tmem = new NoclipTmem(n64Hardware),
     };
-    n64Hardware.Rsp = new Rsp {
+    var rsp = n64Hardware.Rsp = new Rsp {
         GeometryMode = GeometryMode.G_LIGHTING
     };
     var n64Memory = n64Hardware.Memory = new N64Memory(fileBundle.MainFile);
@@ -101,14 +102,22 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var skinColor = br.ReadNew<Rgba32>();
 
     br.Position = 0xb840;
-    var headChosenParts = br.ReadNews<ChosenPart>(5);
-    var headChosenPartsById = headChosenParts.ToDictionary(p => p.Id);
+    var headChosenPart0s = br.ReadNews<ChosenPart0>(5);
+    var headChosenPart0sById = headChosenPart0s.ToDictionary(p => p.Id);
     var headUnkSection5s = br.ReadNews<UnkSection5>(8);
 
     br.Position = 0xbd08;
-    var bodyChosenParts = br.ReadNews<ChosenPart>(8);
-    var bodyChosenPartsById = bodyChosenParts.ToDictionary(p => p.Id);
+    var bodyChosenPart0s = br.ReadNews<ChosenPart0>(8);
+    var bodyChosenPart0sById = bodyChosenPart0s.ToDictionary(p => p.Id);
     var bodyUnkSection5s = br.ReadNews<UnkSection5>(19);
+
+    br.Position = 0xc6c8;
+    var headChosenPart1Count = br.ReadInt32();
+    var headChosenPart1s = br.ReadNews<ChosenPart1>(headChosenPart1Count);
+
+    br.Position = 0xeb00;
+    var bodyChosenPart1Count = br.ReadInt32();
+    var bodyChosenPart1s = br.ReadNews<ChosenPart1>(bodyChosenPart1Count);
 
     br.Position = 0xd530;
     var headMeshDefinitions = br.ReadNews<MeshDefinition>(0x20);
@@ -116,29 +125,29 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     br.Position = 0xf968;
     var bodyMeshDefinitions = br.ReadNews<MeshDefinition>(0x4C);
 
-    var skinChosenPart = new ChosenPart();
+    var skinChosenPart = new ChosenPart0();
     skinChosenPart.ChosenColor0.Color = skinColor;
 
     var headBundles = headMeshDefinitions.Select(meshDefinition => {
       var segment = headSegment;
       var unkSection5 = headUnkSection5s[meshDefinition.UnkSection5Index];
       var chosenPart =
-          headChosenPartsById.GetValueOrDefault(unkSection5.ChosenPartId,
-                                                skinChosenPart);
+          headChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
+                                                 skinChosenPart);
       return (segment, meshDefinition, unkSection5, chosenPart);
     });
     var bodyBundles = bodyMeshDefinitions.Select(meshDefinition => {
       var segment = bodySegment;
       var unkSection5 = bodyUnkSection5s[meshDefinition.UnkSection5Index];
       var chosenPart =
-          bodyChosenPartsById.GetValueOrDefault(unkSection5.ChosenPartId,
-                                                skinChosenPart);
+          bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
+                                                 skinChosenPart);
       return (segment, meshDefinition, unkSection5, chosenPart);
     });
 
     var meshDefinitionTuplesByMeshSetId =
         new SetDictionary<uint, (Segment, MeshDefinition, UnkSection5,
-            ChosenPart)>();
+            ChosenPart0)>();
     foreach (var tuple in headBundles.Concat(bodyBundles)) {
       meshDefinitionTuplesByMeshSetId.Add(tuple.meshDefinition.MeshSetId,
                                           tuple);
@@ -258,33 +267,55 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     // Adds face
     {
+      var headBone = finBonesAndWorldMatrices[14];
+      rsp.ActiveBoneWeights =
+          model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
+                                            headBone);
+
       n64Memory.SetSegment(0xF, headSegment);
 
-      n64Hardware.Rdp.CombinerCycleParams0 =
-          CombinerCycleParams.FromTexture0AndVertexColor();
-      n64Hardware.Rdp.Tmem.GsSpTexture(1,
-                                       1,
-                                       0,
-                                       TileDescriptorIndex.TX_LOADTILE,
-                                       TileDescriptorState.ENABLED);
+      rdp.SetCombinerCycleParams(CombinerCycleParams.FromTexture0AndVertexColor());
 
-      dlModelBuilder.StartNewMesh("face");
+      var faceMeshes = new List<IMesh>();
 
       br.Position = 0xeae0;
       br.Position += 4 * 2; // Nose position
-      foreach (var dlSegmentedAddress in br.ReadUInt32s(6)) {
-        if (dlSegmentedAddress == 0) {
-          continue;
-        }
 
-        try {
-          var dl = new DisplayListReader().ReadDisplayList(
-              n64Hardware.Memory,
-              new F3dzex2OpcodeParser(),
-              dlSegmentedAddress);
-          dlModelBuilder.AddDl(dl);
-        } catch (Exception ex) {
-          ;
+      var faceDlSegmentedAddresses = br.ReadUInt32s(3);
+
+      br.Position += 8;
+      var noseDlSegmentedAddress = br.ReadUInt32();
+
+      for (var i = 0; i < 3; ++i) {
+        var offset = 0x4b0 + (uint) (i * 2 * 64 * 32);
+        rdp.Tmem.SetImage(offset,
+                          N64ColorFormat.RGBA,
+                          BitsPerTexel._16BPT,
+                          64,
+                          32,
+                          F3dWrapMode.CLAMP,
+                          F3dWrapMode.CLAMP);
+
+        var faceDlSegmentedAddress = faceDlSegmentedAddresses[i];
+        var faceMesh = dlModelBuilder.StartNewMesh($"face {i}/3: {faceDlSegmentedAddress.ToHexString()}");
+        faceMeshes.Add(faceMesh);
+
+        dlModelBuilder.AddDl(new DisplayListReader().ReadDisplayList(
+                                 n64Hardware.Memory,
+                                 new F3dzex2OpcodeParser(),
+                                 faceDlSegmentedAddress));
+      }
+
+      var noseMesh = dlModelBuilder.StartNewMesh(noseDlSegmentedAddress.ToHexString());
+      faceMeshes.Add(noseMesh);
+      dlModelBuilder.AddDl(new DisplayListReader().ReadDisplayList(
+                               n64Hardware.Memory,
+                               new F3dzex2OpcodeParser(),
+                               noseDlSegmentedAddress));
+
+      foreach (var faceMesh in faceMeshes) {
+        foreach (var p in faceMesh.Primitives) {
+          p.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
         }
       }
     }
@@ -360,9 +391,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var rsp = n64Hardware.Rsp;
     var rdp = n64Hardware.Rdp;
     if (imageCount > 0) {
-      rdp.CycleType = CycleType.TWO_CYCLE;
-      (rdp.CombinerCycleParams0, rdp.CombinerCycleParams1) =
-          CombinerCycleParams.FromTexture0AndLightingAndPrimitive();
+      rdp.SetCombinerCycleParams(CombinerCycleParams
+                                     .FromTexture0AndLightingAndPrimitive());
       n64Hardware.Rsp.PrimColor = color0.ToSystemColor();
       rdp.Tmem.GsSpTexture(1,
                            1,
@@ -370,8 +400,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                            TileDescriptorIndex.TX_LOADTILE,
                            TileDescriptorState.ENABLED);
     } else {
-      rdp.CycleType = CycleType.ONE_CYCLE;
-      rdp.CombinerCycleParams0 = CombinerCycleParams.FromVertexColor();
+      rdp.SetCombinerCycleParams(CombinerCycleParams.FromVertexColor());
       rdp.Tmem.GsSpTexture(1,
                            1,
                            0,
@@ -405,10 +434,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var mesh = dlModelBuilder.StartNewMesh(
         primitiveDlSegmentedAddress.ToHexString());
     dlModelBuilder.AddDl(primitiveDl);
-
-    if (meshDefinition.MeshSetId == 0x18) {
-      ;
-    }
 
     return mesh;
   }

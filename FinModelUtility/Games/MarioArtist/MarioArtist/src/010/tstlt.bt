@@ -114,7 +114,7 @@ typedef struct {
   float z;
 } Vec3f;
 
-typedef struct {
+typedef struct {   
     short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
     
     Vec2i nosePosition <bgcolor=COLOR_ORIENTATION>;
@@ -237,7 +237,7 @@ typedef struct {
 } ChosenPart0 <bgcolor=COLOR_HEADER>;
 
 typedef struct {
-    // These addresses are apart by 0x2A0, seem to point towards UnkSection3
+    // These addresses are apart by 0x2A0, seem to point towards MeshDefinition
     uint someAddress;
     
     uint chosenPartId;
@@ -272,7 +272,8 @@ Rgba32 unkColor0;
 Rgba32 skinColor;
 
 // Examples
-// - earrings, maybe are type 9?
+// - nose is type 5
+// - earrings are type 9
 typedef struct {
   uint chosenPartId;
   uint maybeFileIndex <bgcolor=COLOR_INDEX>;

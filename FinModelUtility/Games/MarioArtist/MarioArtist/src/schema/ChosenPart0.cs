@@ -13,7 +13,7 @@ public partial class ChosenColor : IBinaryDeserializable {
 }
 
 [BinarySchema]
-public partial class ChosenPart : IBinaryDeserializable {
+public partial class ChosenPart0 : IBinaryDeserializable {
   public uint Id { get; set; }
   public uint Unk0 { get; set; }
 

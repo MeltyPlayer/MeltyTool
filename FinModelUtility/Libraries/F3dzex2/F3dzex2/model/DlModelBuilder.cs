@@ -103,8 +103,8 @@ public class DlModelBuilder {
 
           var textureParams = textureParamsOrNull.Value;
           var imageParams = textureParams.ImageParams;
-          var texture = this.Model.MaterialManager.CreateTexture(
-              this.lazyImageDictionary_[imageParams]);
+          var image = this.lazyImageDictionary_[imageParams];
+          var texture = this.Model.MaterialManager.CreateTexture(image);
 
           var color = this.vertices_.DiffuseColor;
           texture.Name = !imageParams.IsInvalid
@@ -117,7 +117,6 @@ public class DlModelBuilder {
           return texture;
         });
 
-    var rsp = n64Hardware.Rsp;
     this.lazyMaterialDictionary_ =
         new(materialParams
                 => {
