@@ -15,6 +15,7 @@ using fin.data.dictionaries;
 using fin.data.queues;
 using fin.io;
 using fin.math;
+using fin.math.matrix.four;
 using fin.model;
 using fin.model.io;
 using fin.model.io.importers;
@@ -40,7 +41,22 @@ public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle;
 
 public enum JointIndex {
-  HEAD = 15,
+  // Head bones
+  HEAD_ROOT = 0,
+  FACE = 1,
+  NOSE = 5,
+
+  EAR_0 = 6,
+  EAR_1 = 7,
+
+  EARRING_0 = 10,
+  EARRING_1 = 11,
+
+  // Body bones
+  BODY_ROOT = 13,
+
+  // Connects head bones to body
+  NECK = 14,
 
   TORSO = 16,
   HIP = 17,
@@ -158,10 +174,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         materialManager.CreateTexture(tstlt.Thumbnail.ToImage());
     thumbnailTexture.Name = "thumbnail";
 
-    var faceTextures =
-        materialManager.CreateTexture(tstlt.FaceTextures.ToImage());
-    faceTextures.Name = "face";
-
     br.Position = headSectionOffset;
     var image2 = new Argb1555Image(32, 32 * 8);
     image2.Read(br);
@@ -171,14 +183,51 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     br.Position = 0xa934;
     var joints = br.ReadNews<Joint>(0x1F);
+    foreach (var joint in joints) {
+      joint.matrix = Matrix4x4.Transpose(joint.matrix);
+    }
+
+    var neckJoint = joints[(int) JointIndex.NECK];
+    Matrix4x4.Decompose(neckJoint.matrix,
+                        out var neckScale,
+                        out var neckRotation,
+                        out var neckTranslation);
+    var neckScaleMatrix = Matrix4x4.CreateScale(neckScale);
+    Matrix4x4.Invert(neckScaleMatrix, out var neckScaleMatrixInverse);
+    var neckTrMatrix =
+        SystemMatrix4x4Util.FromTrs(neckTranslation, neckRotation, null);
+
     var jointsByParent =
         new BidirectionalDictionary<Joint?, List<(Joint joint, int index)>>();
     for (var i = 0; i < joints.Length; ++i) {
       var joint = joints[i];
 
+      if (i < 13) {
+        Matrix4x4.Decompose(joint.matrix,
+                            out var jointScale,
+                            out var jointRotation,
+                            out var jointTranslation);
+
+        var scaledJointMatrix =
+            SystemMatrix4x4Util.FromTrs(jointTranslation * neckScale,
+                                        jointRotation,
+                                        jointScale * neckScale);
+
+        // TODO: Hmm.... not right. How to put head bones in the right place?
+        //joint.matrix = neckTrMatrix * scaledJointMatrix;
+      }
+
       // Is this in the file somewhere???
       var jointIndex = (JointIndex) i;
       var parentIndex = (int) (jointIndex switch {
+          JointIndex.HEAD_ROOT   => JointIndex.NECK,
+          < JointIndex.BODY_ROOT => JointIndex.HEAD_ROOT,
+
+          JointIndex.HIP   => JointIndex.BODY_ROOT,
+          JointIndex.TORSO => JointIndex.BODY_ROOT,
+
+          JointIndex.NECK => JointIndex.TORSO,
+
           JointIndex.UPPER_LEG_0 => JointIndex.HIP,
           JointIndex.UPPER_LEG_1 => JointIndex.HIP,
 
@@ -227,11 +276,11 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       Matrix4x4.Invert(parentMatrix, out var invertedParentMatrix);
 
       var (joint, index) = jointAndIndex;
-      var worldMatrix = Matrix4x4.Transpose(joint.matrix);
+      var worldMatrix = joint.matrix;
       var localMatrix = worldMatrix * invertedParentMatrix;
 
       var finBone = parentFinBone.AddChild(localMatrix);
-      finBone.Name = $"bone {index}";
+      finBone.Name = $"{(JointIndex) index}: {index}";
       finBonesAndWorldMatrices[index] = finBone;
 
       var meshSetId = joint.MeshSetId;
@@ -267,14 +316,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     // Adds face
     {
-      var headBone = finBonesAndWorldMatrices[14];
-      rsp.ActiveBoneWeights =
-          model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
-                                            headBone);
-
       n64Memory.SetSegment(0xF, headSegment);
 
-      rdp.SetCombinerCycleParams(CombinerCycleParams.FromTexture0AndVertexColor());
+      rdp.SetCombinerCycleParams(
+          CombinerCycleParams.FromTexture0AndVertexColor());
 
       var faceMeshes = new List<IMesh>();
 
@@ -282,9 +327,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       br.Position += 4 * 2; // Nose position
 
       var faceDlSegmentedAddresses = br.ReadUInt32s(3);
-
-      br.Position += 8;
-      var noseDlSegmentedAddress = br.ReadUInt32();
+      rsp.ActiveBoneWeights =
+          model.Skin.GetOrCreateBoneWeights(
+              VertexSpace.RELATIVE_TO_BONE,
+              finBonesAndWorldMatrices[(int) JointIndex.FACE]);
 
       for (var i = 0; i < 3; ++i) {
         var offset = 0x4b0 + (uint) (i * 2 * 64 * 32);
@@ -297,7 +343,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                           F3dWrapMode.CLAMP);
 
         var faceDlSegmentedAddress = faceDlSegmentedAddresses[i];
-        var faceMesh = dlModelBuilder.StartNewMesh($"face {i}/3: {faceDlSegmentedAddress.ToHexString()}");
+        var faceMesh =
+            dlModelBuilder.StartNewMesh(
+                $"face {i}/3: {faceDlSegmentedAddress.ToHexString()}");
         faceMeshes.Add(faceMesh);
 
         dlModelBuilder.AddDl(new DisplayListReader().ReadDisplayList(
@@ -306,7 +354,16 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                                  faceDlSegmentedAddress));
       }
 
-      var noseMesh = dlModelBuilder.StartNewMesh(noseDlSegmentedAddress.ToHexString());
+      br.Position += 8;
+      var noseDlSegmentedAddress = br.ReadUInt32();
+      rsp.ActiveBoneWeights =
+          model.Skin.GetOrCreateBoneWeights(
+              VertexSpace.RELATIVE_TO_BONE,
+              finBonesAndWorldMatrices[(int) JointIndex.NOSE]);
+
+      var noseMesh =
+          dlModelBuilder.StartNewMesh(
+              $"nose: {noseDlSegmentedAddress.ToHexString()}");
       faceMeshes.Add(noseMesh);
       dlModelBuilder.AddDl(new DisplayListReader().ReadDisplayList(
                                n64Hardware.Memory,
