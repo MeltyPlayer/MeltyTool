@@ -15,6 +15,14 @@ public class BitLogicTests {
   }
 
   [Test]
+  public void SetFromRight() {
+    Assert.AreEqual((uint) 0b11000011,
+                    BitLogic.SetFromRight(0b11111111, 2, 4, 0));
+    Assert.AreEqual((uint) 0b00111100,
+                    BitLogic.SetFromRight(0b00000000, 2, 4, 0b1111));
+  }
+
+  [Test]
   [TestCase(1, 0, ExpectedResult = true)]
   [TestCase(2, 0, ExpectedResult = false)]
   [TestCase(2, 1, ExpectedResult = true)]

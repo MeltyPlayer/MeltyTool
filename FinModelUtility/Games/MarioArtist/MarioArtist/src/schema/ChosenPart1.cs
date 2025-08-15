@@ -8,7 +8,7 @@ namespace marioartist.schema;
 
 [BinarySchema]
 public partial class ChosenPart1 : IBinaryDeserializable {
-  public uint Id { get; set; }
+  public uint MeshSetId { get; set; }
   public uint MaybeFileIndex { get; set; }
   public uint ChosenModelIndex { get; set; }
 
@@ -30,5 +30,5 @@ public partial class ChosenPart1 : IBinaryDeserializable {
   public Vector3 UnkVec3d { get; set; }
 
   [SequenceLengthSource(3)]
-  public byte[] Unk4 { get; set; }
+  public uint[] Unk4 { get; set; }
 }

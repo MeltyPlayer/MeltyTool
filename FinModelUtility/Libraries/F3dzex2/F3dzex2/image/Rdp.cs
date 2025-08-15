@@ -16,18 +16,10 @@ public interface IRdp {
   uint PaletteSegmentedAddress { get; set; }
 
   uint OtherModeH { get; set; }
+
   CycleType CycleType {
     get => (CycleType) this.OtherModeH.ExtractFromRight(20, 2);
-    set {
-      var bit0 = ((uint) value).GetBit(0);
-      var bit1 = ((uint) value).GetBit(1);
-
-      var otherModeH = this.OtherModeH;
-      otherModeH.SetBit(20, bit0);
-      otherModeH.SetBit(21, bit1);
-
-      this.OtherModeH = otherModeH;
-    }
+    set => this.OtherModeH = this.OtherModeH.SetFromRight(20, 2, (uint) value);
   }
 
   uint OtherModeL { get; set; }

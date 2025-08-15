@@ -10,6 +10,12 @@ using fin.model;
 
 namespace f3dzex2.image;
 
+public enum N64UvType : byte {
+  STANDARD,
+  SPHERICAL,
+  LINEAR
+}
+
 public interface IRsp {
   GeometryMode GeometryMode { get; set; }
 
@@ -26,6 +32,11 @@ public interface IRsp {
 
   Color EnvironmentColor { get; set; }
   Color PrimColor { get; set; }
+
+  N64UvType UvType {
+    get => (N64UvType) ((uint) this.GeometryMode).ExtractFromRight(18, 2);
+    set => this.GeometryMode = (GeometryMode) ((uint) this.GeometryMode).SetFromRight(18, 2, (uint) value);
+  }
 }
 
 public class Rsp : IRsp {

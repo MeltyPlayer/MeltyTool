@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+
 namespace fin.math;
 
 public static partial class BitLogic {
@@ -55,6 +56,20 @@ public static partial class BitLogic {
                                         int offset,
                                         int count)
     => (ushort) ((number >> offset) & GetMask(count));
+
+  /// </summary>
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static uint SetFromRight(this uint input,
+                                  int offset,
+                                  int count,
+                                  uint value) {
+    var mask = GetMask(count);
+    value &= mask;
+
+    var invertedMask = ~(mask << offset);
+
+    return (input & invertedMask) | (value << offset);
+  }
 
   public static double ConvertBinaryFractionToDouble(ushort binaryFraction)
     => binaryFraction / (ushort.MaxValue + 1.0);

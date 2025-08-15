@@ -72,7 +72,7 @@ public struct CombinerCycleParams {
         AlphaMuxD = GenericAlphaMux.G_ACMUX_COMBINED,
     });
 
-  public static CombinerCycleParams FromTexture0AndVertexColor()
+  public static CombinerCycleParams FromTexture0AndLighting()
     => new() {
         ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
         ColorMuxB = GenericColorMux.G_CCMUX_0,

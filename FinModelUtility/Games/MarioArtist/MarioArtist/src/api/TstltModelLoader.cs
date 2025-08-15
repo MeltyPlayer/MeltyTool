@@ -1,4 +1,7 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
+
+using Assimp.Unmanaged;
 
 using CommunityToolkit.Diagnostics;
 
@@ -14,8 +17,8 @@ using fin.color;
 using fin.data.dictionaries;
 using fin.data.queues;
 using fin.io;
-using fin.math;
 using fin.math.matrix.four;
+using fin.math.rotations;
 using fin.model;
 using fin.model.io;
 using fin.model.io.importers;
@@ -30,12 +33,15 @@ using marioartist.schema;
 using schema.binary;
 using schema.binary.attributes;
 
+using SharpGLTF.Schema2;
+
 
 namespace marioartist.api;
 
-using MeshDefinitionTuple =
+using ChosenPart0Tuple =
     (Segment segment, MeshDefinition meshDefinition, UnkSection5 unkSection5,
     ChosenPart0 chosenPart);
+using ChosenPart1Tuple = (Segment segment, ChosenPart1 chosenPart, IBone bone);
 
 public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle;
@@ -43,7 +49,7 @@ public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
 public enum JointIndex {
   // Head bones
   HEAD_ROOT = 0,
-  FACE = 1,
+  HAIR = 2,
   NOSE = 5,
 
   EAR_0 = 6,
@@ -144,31 +150,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var skinChosenPart = new ChosenPart0();
     skinChosenPart.ChosenColor0.Color = skinColor;
 
-    var headBundles = headMeshDefinitions.Select(meshDefinition => {
-      var segment = headSegment;
-      var unkSection5 = headUnkSection5s[meshDefinition.UnkSection5Index];
-      var chosenPart =
-          headChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
-                                                 skinChosenPart);
-      return (segment, meshDefinition, unkSection5, chosenPart);
-    });
-    var bodyBundles = bodyMeshDefinitions.Select(meshDefinition => {
-      var segment = bodySegment;
-      var unkSection5 = bodyUnkSection5s[meshDefinition.UnkSection5Index];
-      var chosenPart =
-          bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
-                                                 skinChosenPart);
-      return (segment, meshDefinition, unkSection5, chosenPart);
-    });
-
-    var meshDefinitionTuplesByMeshSetId =
-        new SetDictionary<uint, (Segment, MeshDefinition, UnkSection5,
-            ChosenPart0)>();
-    foreach (var tuple in headBundles.Concat(bodyBundles)) {
-      meshDefinitionTuplesByMeshSetId.Add(tuple.meshDefinition.MeshSetId,
-                                          tuple);
-    }
-
     var materialManager = model.MaterialManager;
     var thumbnailTexture =
         materialManager.CreateTexture(tstlt.Thumbnail.ToImage());
@@ -190,12 +171,11 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var neckJoint = joints[(int) JointIndex.NECK];
     Matrix4x4.Decompose(neckJoint.matrix,
                         out var neckScale,
-                        out var neckRotation,
+                        out _,
                         out var neckTranslation);
-    var neckScaleMatrix = Matrix4x4.CreateScale(neckScale);
-    Matrix4x4.Invert(neckScaleMatrix, out var neckScaleMatrixInverse);
-    var neckTrMatrix =
-        SystemMatrix4x4Util.FromTrs(neckTranslation, neckRotation, null);
+    var forwardRotation =
+        QuaternionUtil.CreateZyxRadians(MathF.PI / 2, 0, MathF.PI / 2);
+    var neckTMatrix = Matrix4x4.CreateTranslation(neckTranslation);
 
     var jointsByParent =
         new BidirectionalDictionary<Joint?, List<(Joint joint, int index)>>();
@@ -205,16 +185,30 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       if (i < 13) {
         Matrix4x4.Decompose(joint.matrix,
                             out var jointScale,
-                            out var jointRotation,
+                            out _,
                             out var jointTranslation);
+
+        // What is going on???
+        switch ((JointIndex) i) {
+          case JointIndex.NOSE: {
+            jointTranslation = joint.matrix.Translation with {
+                Z = 0
+            };
+            break;
+          }
+          // Doesn't always seem to be right...
+          case JointIndex.HAIR: {
+            jointTranslation = Vector3.Zero;
+            break;
+          }
+        }
 
         var scaledJointMatrix =
             SystemMatrix4x4Util.FromTrs(jointTranslation * neckScale,
-                                        jointRotation,
+                                        forwardRotation,
                                         jointScale * neckScale);
 
-        // TODO: Hmm.... not right. How to put head bones in the right place?
-        //joint.matrix = neckTrMatrix * scaledJointMatrix;
+        joint.matrix = scaledJointMatrix * neckTMatrix;
       }
 
       // Is this in the file somewhere???
@@ -264,7 +258,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       parentChildren.Add((joint, i));
     }
 
-    var finBonesAndWorldMatrices = new IBone[joints.Length];
+    var finBonesAndJoints = new (IBone, Joint)[joints.Length];
     var jointQueue =
         new FinTuple3Queue<(Joint joint, int index), Matrix4x4, IBone>(
             jointsByParent[(Joint?) null]
@@ -281,19 +275,76 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
       var finBone = parentFinBone.AddChild(localMatrix);
       finBone.Name = $"{(JointIndex) index}: {index}";
-      finBonesAndWorldMatrices[index] = finBone;
+      finBonesAndJoints[index] = (finBone, joint);
 
+      if (jointsByParent.ContainsKey(joint)) {
+        jointQueue.Enqueue(jointsByParent[joint]
+                               .Select(childJoint => (
+                                           childJoint, worldMatrix,
+                                           bone: finBone)));
+      }
+    }
+
+    var headChosenPart0Tuples = headMeshDefinitions.Select(meshDefinition => {
+      var segment = headSegment;
+      var unkSection5 = headUnkSection5s[meshDefinition.UnkSection5Index];
+      var chosenPart =
+          headChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
+                                                 skinChosenPart);
+      return (segment, meshDefinition, unkSection5, chosenPart);
+    });
+    var bodyChosenPart0Tuples = bodyMeshDefinitions.Select(meshDefinition => {
+      var segment = bodySegment;
+      var unkSection5 = bodyUnkSection5s[meshDefinition.UnkSection5Index];
+      var chosenPart =
+          bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
+                                                 skinChosenPart);
+      return (segment, meshDefinition, unkSection5, chosenPart);
+    });
+
+    var chosenPart0TuplesByMeshSetId =
+        new SetDictionary<uint, ChosenPart0Tuple>();
+    foreach (var chosenPart0Tuple in headChosenPart0Tuples.Concat(
+                 bodyChosenPart0Tuples)) {
+      chosenPart0TuplesByMeshSetId.Add(
+          chosenPart0Tuple.meshDefinition.MeshSetId,
+          chosenPart0Tuple);
+    }
+
+    var headChosenPart1Tuples = headChosenPart1s.Select(chosenPart => {
+      var segment = headSegment;
+      return (segment, chosenPart,
+              finBonesAndJoints[(uint) JointIndex.NECK].Item1);
+    });
+    var bodyChosenPart1Tuples = bodyChosenPart1s.Select(chosenPart => {
+      var segment = bodySegment;
+      return (segment, chosenPart,
+              finBonesAndJoints[(uint) JointIndex.BODY_ROOT].Item1);
+    });
+
+    var chosenPart1TuplesByMeshSetId =
+        new SetDictionary<uint, ChosenPart1Tuple>();
+    foreach (var chosenPart1Tuple in headChosenPart1Tuples.Concat(
+                 bodyChosenPart1Tuples)) {
+      chosenPart1TuplesByMeshSetId.Add(
+          chosenPart1Tuple.chosenPart.MeshSetId,
+          chosenPart1Tuple);
+    }
+
+    foreach (var (bone, joint) in finBonesAndJoints) {
       var meshSetId = joint.MeshSetId;
-      if (meshDefinitionTuplesByMeshSetId.TryGetSet(
+      if (chosenPart0TuplesByMeshSetId.TryGetSet(
               meshSetId,
-              out var meshDefinitionTuples)) {
-        foreach (var meshDefinitionTuple in meshDefinitionTuples) {
-          var mesh = TryToAddMeshDefinition_(model,
-                                             meshDefinitionTuple,
-                                             n64Hardware,
-                                             dlModelBuilder,
-                                             parentFinBone,
-                                             finBone);
+              out var chosenPart0Tuples)) {
+        foreach (var chosenPart0Tuple in chosenPart0Tuples) {
+          var mesh = TryToAddChosenPart0Tuple_(
+              model,
+              chosenPart0Tuple,
+              n64Hardware,
+              dlModelBuilder,
+              joint,
+              bone.Parent!,
+              bone);
           if (mesh == null) {
             continue;
           }
@@ -306,11 +357,19 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         }
       }
 
-      if (jointsByParent.ContainsKey(joint)) {
-        jointQueue.Enqueue(jointsByParent[joint]
-                               .Select(childJoint => (
-                                           childJoint, worldMatrix,
-                                           bone: finBone)));
+      if (chosenPart1TuplesByMeshSetId.TryGetSet(
+              meshSetId,
+              out var chosenPart1Tuples)) {
+        foreach (var chosenPart1Tuple in chosenPart1Tuples) {
+          TryToAddChosenPart1Tuple_(
+              model,
+              chosenPart1Tuple,
+              n64Hardware,
+              dlModelBuilder,
+              joint,
+              chosenPart1Tuple.bone // bone
+          );
+        }
       }
     }
 
@@ -318,19 +377,20 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     {
       n64Memory.SetSegment(0xF, headSegment);
 
-      rdp.SetCombinerCycleParams(
-          CombinerCycleParams.FromTexture0AndVertexColor());
+      SetCombiner_(n64Hardware, true);
 
       var faceMeshes = new List<IMesh>();
 
       br.Position = 0xeae0;
-      br.Position += 4 * 2; // Nose position
-
+      br.Position += 2 * 4;
       var faceDlSegmentedAddresses = br.ReadUInt32s(3);
+
+      var headRootBone = finBonesAndJoints[(int) JointIndex.HEAD_ROOT].Item1;
+      var noseBone = finBonesAndJoints[(int) JointIndex.NOSE].Item1;
+
       rsp.ActiveBoneWeights =
-          model.Skin.GetOrCreateBoneWeights(
-              VertexSpace.RELATIVE_TO_BONE,
-              finBonesAndWorldMatrices[(int) JointIndex.FACE]);
+          model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
+                                            headRootBone);
 
       for (var i = 0; i < 3; ++i) {
         var offset = 0x4b0 + (uint) (i * 2 * 64 * 32);
@@ -357,9 +417,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       br.Position += 8;
       var noseDlSegmentedAddress = br.ReadUInt32();
       rsp.ActiveBoneWeights =
-          model.Skin.GetOrCreateBoneWeights(
-              VertexSpace.RELATIVE_TO_BONE,
-              finBonesAndWorldMatrices[(int) JointIndex.NOSE]);
+          model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
+                                            noseBone);
 
       var noseMesh =
           dlModelBuilder.StartNewMesh(
@@ -380,15 +439,16 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     return model;
   }
 
-  private static IMesh? TryToAddMeshDefinition_(
+  private static IMesh? TryToAddChosenPart0Tuple_(
       IModel model,
-      MeshDefinitionTuple meshDefinitionTuple,
+      ChosenPart0Tuple chosenPart0Tuple,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder,
+      Joint joint,
       IBone parentBone,
       IBone childBone) {
-    var (segment, meshDefinition, unkSection5, chosenPart) =
-        meshDefinitionTuple;
+    var (segment, meshDefinition, unkSection5, chosenPart0) =
+        chosenPart0Tuple;
 
     n64Hardware.Memory.SetSegment(0xF, segment);
 
@@ -443,56 +503,121 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     // TODO: Factor in skin color via prim or env color
 
-    var color0 = chosenPart.ChosenColor0.Color;
+    var color0 = chosenPart0.ChosenColor0.Color;
+    SetCombiner_(n64Hardware, imageCount > 0, color0.ToSystemColor());
+
+    return TryToAddDisplayLists_(
+        model,
+        segment,
+        n64Hardware,
+        dlModelBuilder,
+        $"chosenPart0({meshDefinition.MeshSetId}): {meshSegmentedAddress.ToHexString()}",
+        joint.isLeft,
+        [
+            (vertexDlSegmentedAddress, childBone),
+            (primitiveDlSegmentedAddress, childBone)
+        ]);
+  }
+
+  private static IMesh? TryToAddChosenPart1Tuple_(
+      IModel model,
+      ChosenPart1Tuple chosenPart1Tuple,
+      N64Hardware<N64Memory> n64Hardware,
+      DlModelBuilder dlModelBuilder,
+      Joint joint,
+      IBone bone) {
+    var (segment, chosenPart1, _) = chosenPart1Tuple;
+
+    n64Hardware.Memory.SetSegment(0xF, segment);
+
+    SetCombiner_(n64Hardware, true);
+
+    return TryToAddDisplayLists_(
+        model,
+        segment,
+        n64Hardware,
+        dlModelBuilder,
+        $"chosenPart1({chosenPart1.MeshSetId})",
+        joint.isLeft,
+        chosenPart1.DisplayListSegmentedAddresses
+                   .Where(dlSegmentedAddress => dlSegmentedAddress != 0)
+                   .Select(dlSegmentedAddress => (dlSegmentedAddress, bone)));
+  }
+
+  private static IMesh TryToAddDisplayLists_(
+      IModel model,
+      Segment segment,
+      N64Hardware<N64Memory> n64Hardware,
+      DlModelBuilder dlModelBuilder,
+      string meshName,
+      bool isLeft,
+      IEnumerable<(uint, IBone)> displayListSegmentedOffsetAndBones) {
+    var mesh = dlModelBuilder.StartNewMesh(meshName);
+
+    n64Hardware.Memory.SetSegment(0xF, segment);
 
     var rsp = n64Hardware.Rsp;
-    var rdp = n64Hardware.Rdp;
-    if (imageCount > 0) {
-      rdp.SetCombinerCycleParams(CombinerCycleParams
-                                     .FromTexture0AndLightingAndPrimitive());
-      n64Hardware.Rsp.PrimColor = color0.ToSystemColor();
-      rdp.Tmem.GsSpTexture(1,
-                           1,
-                           0,
-                           TileDescriptorIndex.TX_LOADTILE,
-                           TileDescriptorState.ENABLED);
-    } else {
-      rdp.SetCombinerCycleParams(CombinerCycleParams.FromVertexColor());
-      rdp.Tmem.GsSpTexture(1,
-                           1,
-                           0,
-                           TileDescriptorIndex.TX_LOADTILE,
-                           TileDescriptorState.DISABLED);
-    }
 
-    IDisplayList vertexDl;
-    rsp.ActiveBoneWeights =
-        model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
-                                          childBone);
-    try {
-      vertexDl =
-          new DisplayListReader().ReadDisplayList(
-              n64Hardware.Memory,
-              new F3dzex2OpcodeParser(),
-              vertexDlSegmentedAddress);
-      dlModelBuilder.AddDl(vertexDl);
-    } catch (Exception e) {
-      return null;
-    }
+    var displayListReader = new DisplayListReader();
+    var f3dzex2OpcodeParser = new F3dzex2OpcodeParser();
 
-    rsp.ActiveBoneWeights =
-        model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
-                                          childBone);
-    var primitiveDl =
-        new DisplayListReader().ReadDisplayList(
+    foreach (var (displayListSegmentedOffset, bone) in
+             displayListSegmentedOffsetAndBones) {
+      rsp.ActiveBoneWeights = model.Skin.GetOrCreateBoneWeights(
+          VertexSpace.RELATIVE_TO_BONE,
+          bone);
+
+      try {
+        var displayList = displayListReader.ReadDisplayList(
             n64Hardware.Memory,
-            new F3dzex2OpcodeParser(),
-            primitiveDlSegmentedAddress);
-    var mesh = dlModelBuilder.StartNewMesh(
-        primitiveDlSegmentedAddress.ToHexString());
-    dlModelBuilder.AddDl(primitiveDl);
+            f3dzex2OpcodeParser,
+            displayListSegmentedOffset);
+        dlModelBuilder.AddDl(displayList);
+      } catch (Exception e) { }
+    }
+
+    foreach (var p in mesh.Primitives) {
+      p.SetVertexOrder(isLeft
+                           ? VertexOrder.CLOCKWISE
+                           : VertexOrder.COUNTER_CLOCKWISE);
+    }
 
     return mesh;
+  }
+
+  private static void SetCombiner_(
+      IN64Hardware<N64Memory> n64Hardware,
+      bool withTexture,
+      Color? color = null) {
+    var rdp = n64Hardware.Rdp;
+    var rsp = n64Hardware.Rsp;
+
+    rsp.UvType = N64UvType.STANDARD;
+    rdp.Tmem.GsSpTexture(1,
+                         1,
+                         0,
+                         TileDescriptorIndex.TX_LOADTILE,
+                         withTexture
+                             ? TileDescriptorState.ENABLED
+                             : TileDescriptorState.DISABLED);
+
+    switch ((withTexture, color)) {
+      case (true, not null): {
+        rdp.SetCombinerCycleParams(
+            CombinerCycleParams.FromTexture0AndLightingAndPrimitive());
+        rsp.PrimColor = color.Value;
+        break;
+      }
+      case (true, null): {
+        rdp.SetCombinerCycleParams(
+            CombinerCycleParams.FromTexture0AndLighting());
+        break;
+      }
+      default: {
+        rdp.SetCombinerCycleParams(CombinerCycleParams.FromVertexColor());
+        break;
+      }
+    }
   }
 }
 
