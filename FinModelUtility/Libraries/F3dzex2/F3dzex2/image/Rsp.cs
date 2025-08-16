@@ -25,8 +25,6 @@ public interface IRsp {
   float TexScaleXFloat { get; }
   float TexScaleYFloat { get; }
 
-  IReadOnlyFinMatrix4x4 Matrix { get; set; }
-
   IBoneMapper BoneMapper { get; }
   IReadOnlyBoneWeights? ActiveBoneWeights { get; set; }
 
@@ -68,7 +66,6 @@ public class Rsp : IRsp {
   public float TexScaleXFloat => this.texScaleXFloat_;
   public float TexScaleYFloat => this.texScaleYFloat_;
 
-  public IReadOnlyFinMatrix4x4 Matrix { get; set; } = FinMatrix4x4.IDENTITY;
   public IBoneMapper BoneMapper { get; } = new BoneMapper();
   public IReadOnlyBoneWeights? ActiveBoneWeights { get; set; }
 

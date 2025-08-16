@@ -1,7 +1,7 @@
-﻿using f3dzex2.image;
-using f3dzex2.model;
+﻿using System.Numerics;
 
-using fin.math.matrix.four;
+using f3dzex2.image;
+using f3dzex2.model;
 
 using sm64.memory;
 using sm64.Scripts;
@@ -35,7 +35,7 @@ namespace sm64 {
     public void AddDl(uint address,
                       int currentDepth = 0) {
       var displayList = new F3dParser().Parse(this.sm64Hardware_.Memory, address);
-      this.Current2.Matrix = this.Node?.matrix ?? FinMatrix4x4.IDENTITY;
+      this.Current2.Matrix = this.Node?.matrix.Impl ?? Matrix4x4.Identity;
       this.Current2.AddDl(displayList);
     }
   }

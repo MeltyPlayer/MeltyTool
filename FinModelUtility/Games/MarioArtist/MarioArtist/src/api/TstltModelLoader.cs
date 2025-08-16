@@ -25,6 +25,7 @@ using fin.model.io.importers;
 using fin.model.util;
 using fin.schema.color;
 using fin.schema.vector;
+using fin.util.enumerables;
 using fin.util.linq;
 using fin.util.sets;
 
@@ -63,6 +64,8 @@ public enum JointIndex {
 
   // Connects head bones to body
   NECK = 14,
+
+  CLAVICLE = 15,
 
   TORSO = 16,
   HIP = 17,
@@ -217,8 +220,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
           JointIndex.HEAD_ROOT   => JointIndex.NECK,
           < JointIndex.BODY_ROOT => JointIndex.HEAD_ROOT,
 
-          JointIndex.HIP   => JointIndex.BODY_ROOT,
-          JointIndex.TORSO => JointIndex.BODY_ROOT,
+          JointIndex.HIP      => JointIndex.BODY_ROOT,
+          JointIndex.TORSO    => JointIndex.HIP,
+          JointIndex.CLAVICLE => JointIndex.TORSO,
 
           JointIndex.NECK => JointIndex.TORSO,
 
@@ -258,7 +262,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       parentChildren.Add((joint, i));
     }
 
-    var finBonesAndJoints = new (IBone, Joint)[joints.Length];
+    var finBonesAndJoints = new (IBone, Joint, int)[joints.Length];
     var jointQueue =
         new FinTuple3Queue<(Joint joint, int index), Matrix4x4, IBone>(
             jointsByParent[(Joint?) null]
@@ -275,7 +279,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
       var finBone = parentFinBone.AddChild(localMatrix);
       finBone.Name = $"{(JointIndex) index}: {index}";
-      finBonesAndJoints[index] = (finBone, joint);
+      finBonesAndJoints[index] = (finBone, joint, index);
 
       if (jointsByParent.ContainsKey(joint)) {
         jointQueue.Enqueue(jointsByParent[joint]
@@ -303,7 +307,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     });
 
     var chosenPart0TuplesByMeshSetId =
-        new SetDictionary<uint, ChosenPart0Tuple>();
+        new ListDictionary<uint, ChosenPart0Tuple>();
     foreach (var chosenPart0Tuple in headChosenPart0Tuples.Concat(
                  bodyChosenPart0Tuples)) {
       chosenPart0TuplesByMeshSetId.Add(
@@ -323,7 +327,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     });
 
     var chosenPart1TuplesByMeshSetId =
-        new SetDictionary<uint, ChosenPart1Tuple>();
+        new ListDictionary<uint, ChosenPart1Tuple>();
     foreach (var chosenPart1Tuple in headChosenPart1Tuples.Concat(
                  bodyChosenPart1Tuples)) {
       chosenPart1TuplesByMeshSetId.Add(
@@ -331,33 +335,34 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
           chosenPart1Tuple);
     }
 
-    foreach (var (bone, joint) in finBonesAndJoints) {
+    foreach (var (bone, joint, jointIndex) in finBonesAndJoints) {
       var meshSetId = joint.MeshSetId;
-      if (chosenPart0TuplesByMeshSetId.TryGetSet(
+      if (chosenPart0TuplesByMeshSetId.TryGetList(
               meshSetId,
               out var chosenPart0Tuples)) {
-        foreach (var chosenPart0Tuple in chosenPart0Tuples) {
-          var mesh = TryToAddChosenPart0Tuple_(
-              model,
-              chosenPart0Tuple,
-              n64Hardware,
-              dlModelBuilder,
-              joint,
-              bone.Parent!,
-              bone);
-          if (mesh == null) {
-            continue;
-          }
+        var chosenPart0TuplesInOrder = jointIndex != (uint) JointIndex.TORSO
+            ? chosenPart0Tuples.AsEnumerable()
+            : chosenPart0Tuples.Reverse();
 
-          foreach (var p in mesh.Primitives) {
-            p.SetVertexOrder(joint.isLeft
-                                 ? VertexOrder.CLOCKWISE
-                                 : VertexOrder.COUNTER_CLOCKWISE);
+        var isFirst = true;
+
+        foreach (var chosenPart0Tuple in chosenPart0TuplesInOrder) {
+          if (TryToAddChosenPart0Tuple_(
+                  model,
+                  chosenPart0Tuple,
+                  n64Hardware,
+                  dlModelBuilder,
+                  joint,
+                  jointIndex,
+                  isFirst,
+                  bone.Parent!,
+                  bone)) {
+            isFirst = false;
           }
         }
       }
 
-      if (chosenPart1TuplesByMeshSetId.TryGetSet(
+      if (chosenPart1TuplesByMeshSetId.TryGetList(
               meshSetId,
               out var chosenPart1Tuples)) {
         foreach (var chosenPart1Tuple in chosenPart1Tuples) {
@@ -425,7 +430,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
               $"nose: {noseDlSegmentedAddress.ToHexString()}");
       faceMeshes.Add(noseMesh);
       dlModelBuilder.AddDl(new DisplayListReader().ReadDisplayList(
-                               n64Hardware.Memory,
+                               n64Hardware.Memory,  
                                new F3dzex2OpcodeParser(),
                                noseDlSegmentedAddress));
 
@@ -439,12 +444,14 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     return model;
   }
 
-  private static IMesh? TryToAddChosenPart0Tuple_(
+  private static bool TryToAddChosenPart0Tuple_(
       IModel model,
       ChosenPart0Tuple chosenPart0Tuple,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder,
       Joint joint,
+      int jointIndex,
+      bool isFirst,
       IBone parentBone,
       IBone childBone) {
     var (segment, meshDefinition, unkSection5, chosenPart0) =
@@ -454,22 +461,22 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     var meshSegmentedAddress = meshDefinition.MeshSegmentedAddresses[0];
     if (meshSegmentedAddress == 0) {
-      return null;
+      return false;
     }
 
     if (!n64Hardware.Memory.TryToOpenPossibilitiesAtSegmentedAddress(
             meshSegmentedAddress,
             out var possibilities)) {
-      return null;
+      return false;
     }
 
     if (!possibilities.TryGetFirst(out var sbr)) {
-      return null;
+      return false;
     }
 
     var meshBaseOffset = sbr.Position;
     if (sbr.ReadUInt32() != 0) {
-      return null;
+      return false;
     }
 
     sbr.Position = meshBaseOffset;
@@ -496,9 +503,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         meshDefinition.PrimitiveDisplayListSegmentedAddress;
 
     // TODO: What does it mean if only primitive DL is present?
-    if (vertexDlSegmentedAddress == 0 ||
-        primitiveDlSegmentedAddress == 0) {
-      return null;
+    if (primitiveDlSegmentedAddress == 0) {
+      return false;
     }
 
     // TODO: Factor in skin color via prim or env color
@@ -506,20 +512,55 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var color0 = chosenPart0.ChosenColor0.Color;
     SetCombiner_(n64Hardware, imageCount > 0, color0.ToSystemColor());
 
+    var primitiveDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+        VertexSpace.RELATIVE_TO_BONE,
+        childBone);
+
+    // What a fucking nightmare. Why does being first impact this????
+    Matrix4x4? vertexMatrix = null;
+    IBoneWeights vertexDlBoneWeights;
+    if (!isFirst) {
+      vertexDlBoneWeights = primitiveDlBoneWeights;
+    } else if (!joint.isLeft) {
+      vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+          VertexSpace.RELATIVE_TO_BONE,
+          parentBone);
+    } else {
+      // Still need to handle this case... the left side gets mapped to the right
+      vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+          VertexSpace.RELATIVE_TO_BONE,
+          parentBone);
+
+      /*var parentWorldMatrix = parentBone.GetWorldMatrix();
+
+      vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+          VertexSpace.RELATIVE_TO_WORLD,
+          parentBone);
+
+      vertexMatrix = Matrix4x4.CreateScale(-1, 1, 1) * parentWorldMatrix;*/
+    }
+
+    (uint, Matrix4x4?, IBoneWeights)[] displayLists
+        = vertexDlSegmentedAddress == 0
+            ? [
+                (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
+            ]
+            : [
+                (vertexDlSegmentedAddress, vertexMatrix, vertexDlBoneWeights),
+                (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
+            ];
+
     return TryToAddDisplayLists_(
         model,
         segment,
         n64Hardware,
         dlModelBuilder,
-        $"chosenPart0({meshDefinition.MeshSetId}): {meshSegmentedAddress.ToHexString()}",
+        $"joint({(JointIndex) jointIndex}): chosenPart0({meshDefinition.MeshSetId}): {meshSegmentedAddress.ToHexString()}",
         joint.isLeft,
-        [
-            (vertexDlSegmentedAddress, childBone),
-            (primitiveDlSegmentedAddress, childBone)
-        ]);
+        displayLists);
   }
 
-  private static IMesh? TryToAddChosenPart1Tuple_(
+  private static void TryToAddChosenPart1Tuple_(
       IModel model,
       ChosenPart1Tuple chosenPart1Tuple,
       N64Hardware<N64Memory> n64Hardware,
@@ -532,7 +573,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     SetCombiner_(n64Hardware, true);
 
-    return TryToAddDisplayLists_(
+    var boneWeights
+        = model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE, bone);
+    TryToAddDisplayLists_(
         model,
         segment,
         n64Hardware,
@@ -541,40 +584,58 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         joint.isLeft,
         chosenPart1.DisplayListSegmentedAddresses
                    .Where(dlSegmentedAddress => dlSegmentedAddress != 0)
-                   .Select(dlSegmentedAddress => (dlSegmentedAddress, bone)));
+                   .Select(dlSegmentedAddress
+                               => (dlSegmentedAddress, 
+                                   (Matrix4x4?) null,
+                                   boneWeights)));
   }
 
-  private static IMesh TryToAddDisplayLists_(
+  private static bool TryToAddDisplayLists_(
       IModel model,
       Segment segment,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder,
       string meshName,
       bool isLeft,
-      IEnumerable<(uint, IBone)> displayListSegmentedOffsetAndBones) {
-    var mesh = dlModelBuilder.StartNewMesh(meshName);
-
+      IEnumerable<(uint, Matrix4x4?, IBoneWeights)> displayListSegmentedOffsetAndBones) {
     n64Hardware.Memory.SetSegment(0xF, segment);
-
-    var rsp = n64Hardware.Rsp;
 
     var displayListReader = new DisplayListReader();
     var f3dzex2OpcodeParser = new F3dzex2OpcodeParser();
+    var displayListTuples = displayListSegmentedOffsetAndBones.Select(t => {
+          try {
+            var displayList = displayListReader.ReadDisplayList(
+                n64Hardware.Memory,
+                f3dzex2OpcodeParser,
+                t.Item1);
+            return (displayList, t.Item2, t.Item3) as 
+                (IDisplayList, Matrix4x4?, IBoneWeights)?;
+          } catch (Exception e) {
+            return null;
+          }
+        })
+        .WhereNonnull()
+        .Select(t => t.Value)
+        .ToArray();
 
-    foreach (var (displayListSegmentedOffset, bone) in
-             displayListSegmentedOffsetAndBones) {
-      rsp.ActiveBoneWeights = model.Skin.GetOrCreateBoneWeights(
-          VertexSpace.RELATIVE_TO_BONE,
-          bone);
+    if (!displayListTuples.Any()) {
+      return false;
+    }
+
+    var mesh = dlModelBuilder.StartNewMesh(meshName);
+
+    var rsp = n64Hardware.Rsp;
+    foreach (var (displayList, matrix, boneWeights) in displayListTuples) {
+      dlModelBuilder.Matrix = matrix ?? Matrix4x4.Identity;
+
+      rsp.ActiveBoneWeights = boneWeights;
 
       try {
-        var displayList = displayListReader.ReadDisplayList(
-            n64Hardware.Memory,
-            f3dzex2OpcodeParser,
-            displayListSegmentedOffset);
         dlModelBuilder.AddDl(displayList);
       } catch (Exception e) { }
     }
+
+    dlModelBuilder.Matrix = Matrix4x4.Identity;
 
     foreach (var p in mesh.Primitives) {
       p.SetVertexOrder(isLeft
@@ -582,7 +643,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                            : VertexOrder.COUNTER_CLOCKWISE);
     }
 
-    return mesh;
+    return true;
   }
 
   private static void SetCombiner_(

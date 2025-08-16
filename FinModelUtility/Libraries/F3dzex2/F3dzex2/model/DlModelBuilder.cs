@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 using f3dzex2.combiner;
 using f3dzex2.displaylist;
@@ -12,14 +13,11 @@ using fin.data.lazy;
 using fin.image;
 using fin.io;
 using fin.language.equations.fixedFunction;
-using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
 using fin.image.util;
 using fin.io.bundles;
 using fin.util.enums;
-
-using NoAlloq;
 
 using schema.binary;
 
@@ -63,7 +61,8 @@ public class DlModelBuilder {
     this.lazyImageDictionary_ =
         new(imageParams => {
           if (imageParams.IsInvalid) {
-            return FinImage.Create1x1FromColor(this.vertices_.DiffuseColor);
+            return FinImage.Create1x1FromColor(
+                this.vertices_.OverrideVertexColor);
           }
 
           SchemaBinaryReader? br = null;
@@ -106,7 +105,7 @@ public class DlModelBuilder {
           var image = this.lazyImageDictionary_[imageParams];
           var texture = this.Model.MaterialManager.CreateTexture(image);
 
-          var color = this.vertices_.DiffuseColor;
+          var color = this.vertices_.OverrideVertexColor;
           texture.Name = !imageParams.IsInvalid
               ? String.Format("0x{0:X8}", textureParams.SegmentedAddress)
               : $"rgb({color.R}, {color.G}, {color.B})";
@@ -140,6 +139,7 @@ public class DlModelBuilder {
                 finMaterial.SetTextureSource(0, texture0);
                 finMaterial.SetTextureSource(1, texture0);
               }
+
               if (texture1 != null) {
                 finMaterial.SetTextureSource(1, texture1);
               }
@@ -307,10 +307,6 @@ public class DlModelBuilder {
   }
 
   public ModelImpl Model { get; }
-
-  public IReadOnlyFinMatrix4x4 Matrix {
-    set => this.n64Hardware_.Rsp.Matrix = value;
-  }
 
   public IMesh StartNewMesh(string name) {
     this.currentMesh_ = this.Model.Skin.AddMesh();
@@ -548,7 +544,7 @@ public class DlModelBuilder {
 
               // TODO: Support normalized light direction
 
-              this.vertices_.DiffuseColor = Color.FromArgb(r, g, b);
+              this.vertices_.OverrideVertexColor = Color.FromArgb(r, g, b);
 
               break;
             }
@@ -606,5 +602,15 @@ public class DlModelBuilder {
     }
 
     return this.cachedMaterial_;
+  }
+
+  public Color OverrideVertexColor {
+    get => this.vertices_.OverrideVertexColor;
+    set => this.vertices_.OverrideVertexColor = value;
+  }
+
+  public Matrix4x4 Matrix {
+    get => this.vertices_.Matrix;
+    set => this.vertices_.Matrix = value;
   }
 }

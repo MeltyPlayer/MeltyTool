@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 
 using f3dzex2.displaylist.opcodes;
 using f3dzex2.image;
@@ -19,7 +20,8 @@ public interface IF3dVertices {
   F3dVertex GetVertexDefinition(int index);
   IVertex GetOrCreateVertexAtIndex(byte index);
 
-  Color DiffuseColor { get; set; }
+  Color OverrideVertexColor { get; set; }
+  Matrix4x4 Matrix { get; set; }
 }
 
 public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
@@ -31,74 +33,82 @@ public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
 
   private readonly IVertex?[] vertices_ = new IVertex?[VERTEX_COUNT];
 
-  private readonly IReadOnlyBoneWeights?[] boneWeights_ = new IReadOnlyBoneWeights?[VERTEX_COUNT];
+  private readonly IReadOnlyBoneWeights?[] boneWeights_
+      = new IReadOnlyBoneWeights?[VERTEX_COUNT];
 
-  private Color diffuseColor_ = Color.White;
+  private readonly Color[] overrideVertexColors_ = new Color[VERTEX_COUNT];
+
+  private readonly Matrix4x4[] matrices_ = new Matrix4x4[VERTEX_COUNT];
 
 
-  public void ClearVertices() => Array.Fill(this.vertices_, null);
+  public void ClearVertices() {
+    Array.Fill(this.vertices_, null);
+    Array.Fill(this.boneWeights_, null);
+    Array.Fill(this.overrideVertexColors_, Color.White);
+    Array.Fill(this.matrices_, Matrix4x4.Identity);
+  }
 
   public void LoadVertices(IReadOnlyList<F3dVertex> newVertices,
                            int startIndex) {
-      for (var i = 0; i < newVertices.Count; ++i) {
-        var index = startIndex + i;
-        this.vertexDefinitions_[index] = newVertices[i];
-        this.vertices_[index] = null;
-        this.boneWeights_[index] = n64Hardware.Rsp.ActiveBoneWeights;
-      }
+    for (var i = 0; i < newVertices.Count; ++i) {
+      var index = startIndex + i;
+      this.vertexDefinitions_[index] = newVertices[i];
+      this.vertices_[index] = null;
+      this.boneWeights_[index] = n64Hardware.Rsp.ActiveBoneWeights;
+      this.overrideVertexColors_[index] = this.OverrideVertexColor;
+      this.matrices_[index] = this.Matrix;
     }
+  }
 
 
   public F3dVertex GetVertexDefinition(int index)
     => this.vertexDefinitions_[index];
 
   public IVertex GetOrCreateVertexAtIndex(byte index) {
-      var existing = this.vertices_[index];
-      if (existing != null) {
-        return existing;
-      }
-
-      var definition = this.vertexDefinitions_[index];
-
-      var position = definition.GetPosition();
-      ProjectionUtil.ProjectPosition(n64Hardware.Rsp.Matrix.Impl,
-                                   ref position);
-
-      var textureParams = n64Hardware.Rdp.Tmem.GetMaterialParams()
-                    .TextureParams0;
-      var bmpWidth = Math.Max(textureParams?.Width ?? 0, (ushort) 0);
-      var bmpHeight = Math.Max(textureParams?.Height ?? 0, (ushort) 0);
-
-      var newVertex = model.Skin.AddVertex(position);
-      newVertex.SetUv(definition.GetUv(
-                          n64Hardware.Rsp.TexScaleXFloat /
-                          (bmpWidth * 32),
-                          n64Hardware.Rsp.TexScaleYFloat /
-                          (bmpHeight * 32)));
-
-      var activeBoneWeights = this.boneWeights_[index];
-      if (activeBoneWeights != null) {
-        newVertex.SetBoneWeights(activeBoneWeights);
-      }
-
-      if (n64Hardware.Rsp.GeometryMode.CheckFlag(
-              GeometryMode.G_LIGHTING)) {
-        var normal = definition.GetNormal();
-        ProjectionUtil.ProjectNormal(n64Hardware.Rsp.Matrix.Impl,
-                                   ref normal);
-        newVertex.SetLocalNormal(normal);
-        // TODO: Get rid of this, seems to come from combiner instead
-        newVertex.SetColor(this.DiffuseColor);
-      } else {
-        newVertex.SetColor(definition.GetColor());
-      }
-
-      this.vertices_[index] = newVertex;
-      return newVertex;
+    var existing = this.vertices_[index];
+    if (existing != null) {
+      return existing;
     }
 
-  public Color DiffuseColor {
-    get => this.diffuseColor_;
-    set => this.diffuseColor_ = value;
+    var definition = this.vertexDefinitions_[index];
+
+    var matrix = this.matrices_[index];
+
+    var position = definition.GetPosition();
+    ProjectionUtil.ProjectPosition(matrix, ref position);
+
+    var textureParams = n64Hardware.Rdp.Tmem.GetMaterialParams()
+                                   .TextureParams0;
+    var bmpWidth = Math.Max(textureParams?.Width ?? 0, (ushort) 0);
+    var bmpHeight = Math.Max(textureParams?.Height ?? 0, (ushort) 0);
+
+    var newVertex = model.Skin.AddVertex(position);
+    newVertex.SetUv(definition.GetUv(
+                        n64Hardware.Rsp.TexScaleXFloat /
+                        (bmpWidth * 32),
+                        n64Hardware.Rsp.TexScaleYFloat /
+                        (bmpHeight * 32)));
+
+    var activeBoneWeights = this.boneWeights_[index];
+    if (activeBoneWeights != null) {
+      newVertex.SetBoneWeights(activeBoneWeights);
+    }
+
+    if (n64Hardware.Rsp.GeometryMode.CheckFlag(
+            GeometryMode.G_LIGHTING)) {
+      var normal = definition.GetNormal();
+      ProjectionUtil.ProjectNormal(matrix, ref normal);
+      newVertex.SetLocalNormal(normal);
+      // TODO: Get rid of this, seems to come from combiner instead
+      newVertex.SetColor(this.overrideVertexColors_[index]);
+    } else {
+      newVertex.SetColor(definition.GetColor());
+    }
+
+    this.vertices_[index] = newVertex;
+    return newVertex;
   }
+
+  public Color OverrideVertexColor { get; set; } = Color.White;
+  public Matrix4x4 Matrix { get; set; } = Matrix4x4.Identity;
 }
