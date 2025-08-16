@@ -266,7 +266,7 @@ struct ChosenBodyPart0s {
 UnkSection5 bodyUnkSection5s[0x13] <optimize=false>;
 
 FSeek(0xc538);
-float unkFloats1[0x5A];
+Vec3f unkScales[30];
 
 Rgba32 unkColor0;
 Rgba32 skinColor;
@@ -296,22 +296,6 @@ typedef struct {
   uint unk4[3];
 } ChosenPart1 <bgcolor=COLOR_HEADER>;
 
-FSeek(0xc6c8);
-uint headChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
-ChosenPart1 headChosenHeadPart1s[headChosenHeadPart1Count] <optimize=false>;
-
-FSeek(0xeae0);
-typedef struct {
-    Vec2i nosePosition;
-    
-    uint dlSegmentedAddresses[6] <bgcolor=COLOR_OFFSET>;
-} NoseHeader <bgcolor=COLOR_HEADER>;
-NoseHeader noseHeader;
-
-FSeek(0xeb00);
-uint bodyChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
-ChosenPart1 bodyChosenHeadPart1s[bodyChosenHeadPart1Count] <optimize=false>;
-
 typedef struct {
     local uint baseOffset = FTell();
     
@@ -336,6 +320,7 @@ typedef struct {
     ushort unkCount <bgcolor=COLOR_COUNT>;
     ushort triangleCount <bgcolor=COLOR_COUNT>;
     
+    // These shorts are the same values as the floats in the mesh definition
     short unk2[6];
     
     ubyte unkByte4[4 * 5];
@@ -362,50 +347,68 @@ typedef struct {
     FSeek(baseOffset + CeilAlign(totalSize, 0x10));
 } Mesh <bgcolor=COLOR_HEADER>;
 
-{
-    typedef struct (uint baseOffset) {
-      uint meshSegmentedAddresses[4] <bgcolor=COLOR_OFFSET>;
-      
-      local uint firstMeshSegmentedAddress = meshSegmentedAddresses[0];
-      if (firstMeshSegmentedAddress != 0) {
-          local uint meshOffset = (firstMeshSegmentedAddress & 0xffffff) + baseOffset;
-          if (meshOffset < FileSize()) {
-              local uint tempOffset = FTell();
-              FSeek(meshOffset);
-              uint firstMeshUint;
-              if (firstMeshUint == 0) {
-                  FSeek(meshOffset);
-                  Mesh mesh;
-              }
-              FSeek(tempOffset);          
-          }
-      }
-      
-      byte unk1[4];
-      byte meshSetId;
-      byte unkSection5Index <bgcolor=COLOR_INDEX>;
-      
-      ushort unk3;
-      
-      uint unk4[3];
-      
-      float unk5[6];
-      uint unk6;
-
-      uint primitiveDl <bgcolor=COLOR_OFFSET>;
-      uint unk7[0xC];
-      
-      uint vertexDl <bgcolor=COLOR_OFFSET>;
-      uint unk8[0xC];
-    } MeshDefinition <bgcolor=COLOR_HEADER>;
+typedef struct (uint baseOffset) {
+    uint meshSegmentedAddresses[4] <bgcolor=COLOR_OFFSET>;
     
-    FSeek(0xd530);
-    MeshDefinition headMeshDefinition(headOffset)[0x20] <optimize=false>;
+    local uint firstMeshSegmentedAddress = meshSegmentedAddresses[0];
+    if (firstMeshSegmentedAddress != 0) {
+        local uint meshOffset = (firstMeshSegmentedAddress & 0xffffff) + baseOffset;
+        if (meshOffset < FileSize()) {
+            local uint tempOffset = FTell();
+            FSeek(meshOffset);
+            uint firstMeshUint;
+            if (firstMeshUint == 0) {
+                FSeek(meshOffset);
+                Mesh mesh;
+            }
+            FSeek(tempOffset);          
+        }
+    }
+    
+    byte unk1[4];
+    byte meshSetId;
+    byte unkSection5Index <bgcolor=COLOR_INDEX>;
+    
+    ushort unk3;
+    
+    uint unk4[3];
+    
+    // These floats are the same values as the sborts in the mesh
+    float unk5[6];
+    uint unk6;
+    
+    // First sets up the vertices via vertexDl, then renders primitiveDl.
+    // Annoying thing is that the first MeshDefinition in a given meshSet uses the
+    // parent joint for the vertexDl, the rest use the current joint.
+    
+    uint primitiveDl <bgcolor=COLOR_OFFSET>;
+    uint unk7[0xC];
+    
+    uint vertexDl <bgcolor=COLOR_OFFSET>;
+    uint unk8[0xC];
+} MeshDefinition <bgcolor=COLOR_HEADER>;
 
-    FSeek(0xf968);
-    MeshDefinition bodyMeshDefinitions(bodyOffset)[0x4C] <optimize=false>;
-}
+FSeek(0xc6c8);
+uint headChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
+ChosenPart1 headChosenHeadPart1s[headChosenHeadPart1Count] <optimize=false>;
 
+FSeek(0xd530);
+MeshDefinition headMeshDefinition(headOffset)[0x20] <optimize=false>;
+
+FSeek(0xeae0);
+typedef struct {
+    Vec2i nosePosition;
+    
+    uint dlSegmentedAddresses[6] <bgcolor=COLOR_OFFSET>;
+} NoseHeader <bgcolor=COLOR_HEADER>;
+NoseHeader noseHeader;
+
+FSeek(0xeb00);
+uint bodyChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
+ChosenPart1 bodyChosenHeadPart1s[bodyChosenHeadPart1Count] <optimize=false>;
+    
+FSeek(0xf968);
+MeshDefinition bodyMeshDefinitions(bodyOffset)[0x4C] <optimize=false>;
 
 FSeek(0x16680);
 typedef struct {
