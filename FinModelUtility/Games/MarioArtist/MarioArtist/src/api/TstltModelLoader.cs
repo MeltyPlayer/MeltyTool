@@ -34,13 +34,11 @@ using marioartist.schema;
 using schema.binary;
 using schema.binary.attributes;
 
-using SharpGLTF.Schema2;
-
 
 namespace marioartist.api;
 
 using ChosenPart0Tuple =
-    (Segment segment, MeshDefinition meshDefinition, UnkSection5 unkSection5,
+    (Segment segment, MeshDefinition meshDefinition, SubUnkSection5 unkSection5,
     ChosenPart0 chosenPart);
 using ChosenPart1Tuple = (Segment segment, ChosenPart1 chosenPart, IBone bone);
 
@@ -126,6 +124,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     br.Position = 0x91bc;
     var skinColor = br.ReadNew<Rgba32>();
 
+    var skinChosenPart = new ChosenPart0();
+    skinChosenPart.ChosenColor0.Color = skinColor;
+
     br.Position = 0xb840;
     var headChosenPart0s = br.ReadNews<ChosenPart0>(5);
     var headChosenPart0sById = headChosenPart0s.ToDictionary(p => p.Id);
@@ -134,6 +135,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     br.Position = 0xbd08;
     var bodyChosenPart0s = br.ReadNews<ChosenPart0>(8);
     var bodyChosenPart0sById = bodyChosenPart0s.ToDictionary(p => p.Id);
+    bodyChosenPart0sById[0] = skinChosenPart;
     var bodyUnkSection5s = br.ReadNews<UnkSection5>(19);
 
     br.Position = 0xc6c8;
@@ -149,9 +151,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     br.Position = 0xf968;
     var bodyMeshDefinitions = br.ReadNews<MeshDefinition>(0x4C);
-
-    var skinChosenPart = new ChosenPart0();
-    skinChosenPart.ChosenColor0.Color = skinColor;
 
     var materialManager = model.MaterialManager;
     var thumbnailTexture =
@@ -192,6 +191,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                             out var jointTranslation);
 
         // What is going on???
+        // TODO: These only sometimes work
         switch ((JointIndex) i) {
           case JointIndex.NOSE: {
             jointTranslation = joint.matrix.Translation with {
@@ -214,7 +214,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         joint.matrix = scaledJointMatrix * neckTMatrix;
       }
 
-      // Is this in the file somewhere???
       var jointIndex = (JointIndex) i;
       var parentIndex = (int) (jointIndex switch {
           JointIndex.HEAD_ROOT   => JointIndex.NECK,
@@ -289,22 +288,25 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    var headChosenPart0Tuples = headMeshDefinitions.Select(meshDefinition => {
-      var segment = headSegment;
-      var unkSection5 = headUnkSection5s[meshDefinition.UnkSection5Index];
-      var chosenPart =
-          headChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
-                                                 skinChosenPart);
-      return (segment, meshDefinition, unkSection5, chosenPart);
-    });
-    var bodyChosenPart0Tuples = bodyMeshDefinitions.Select(meshDefinition => {
-      var segment = bodySegment;
-      var unkSection5 = bodyUnkSection5s[meshDefinition.UnkSection5Index];
-      var chosenPart =
-          bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
-                                                 skinChosenPart);
-      return (segment, meshDefinition, unkSection5, chosenPart);
-    });
+    var headChosenPart0Tuples = headMeshDefinitions
+        .Select((meshDefinition, i) => {
+          var segment = headSegment;
+          var unkSection5 = headUnkSection5s[i / 4].Subs[i % 4];
+          var chosenPart =
+              headChosenPart0sById.GetValueOrDefault(
+                  unkSection5.ChosenPartId,
+                  skinChosenPart);
+          return (segment, meshDefinition, unkSection5, chosenPart);
+        });
+    var bodyChosenPart0Tuples = bodyMeshDefinitions
+        .Select((meshDefinition, i) => {
+          var segment = bodySegment;
+          var unkSection5 = bodyUnkSection5s[i / 4].Subs[i % 4];
+          var chosenPart =
+              bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
+                skinChosenPart);
+          return (segment, meshDefinition, unkSection5, chosenPart);
+        });
 
     var chosenPart0TuplesByMeshSetId =
         new ListDictionary<uint, ChosenPart0Tuple>();
@@ -340,6 +342,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       if (chosenPart0TuplesByMeshSetId.TryGetList(
               meshSetId,
               out var chosenPart0Tuples)) {
+        // TODO: This only sometimes works
         var chosenPart0TuplesInOrder = jointIndex != (uint) JointIndex.TORSO
             ? chosenPart0Tuples.AsEnumerable()
             : chosenPart0Tuples.Reverse();
@@ -430,7 +433,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
               $"nose: {noseDlSegmentedAddress.ToHexString()}");
       faceMeshes.Add(noseMesh);
       dlModelBuilder.AddDl(new DisplayListReader().ReadDisplayList(
-                               n64Hardware.Memory,  
+                               n64Hardware.Memory,
                                new F3dzex2OpcodeParser(),
                                noseDlSegmentedAddress));
 
@@ -526,7 +529,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
           VertexSpace.RELATIVE_TO_BONE,
           parentBone);
     } else {
-      // Still need to handle this case... the left side gets mapped to the right
+      // TODO: Still need to handle this case... the left side gets mapped to the right
       vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
           VertexSpace.RELATIVE_TO_BONE,
           parentBone);
@@ -585,7 +588,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         chosenPart1.DisplayListSegmentedAddresses
                    .Where(dlSegmentedAddress => dlSegmentedAddress != 0)
                    .Select(dlSegmentedAddress
-                               => (dlSegmentedAddress, 
+                               => (dlSegmentedAddress,
                                    (Matrix4x4?) null,
                                    boneWeights)));
   }
@@ -597,7 +600,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       DlModelBuilder dlModelBuilder,
       string meshName,
       bool isLeft,
-      IEnumerable<(uint, Matrix4x4?, IBoneWeights)> displayListSegmentedOffsetAndBones) {
+      IEnumerable<(uint, Matrix4x4?, IBoneWeights)>
+          displayListSegmentedOffsetAndBones) {
     n64Hardware.Memory.SetSegment(0xF, segment);
 
     var displayListReader = new DisplayListReader();
@@ -608,7 +612,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                 n64Hardware.Memory,
                 f3dzex2OpcodeParser,
                 t.Item1);
-            return (displayList, t.Item2, t.Item3) as 
+            return (displayList, t.Item2, t.Item3) as
                 (IDisplayList, Matrix4x4?, IBoneWeights)?;
           } catch (Exception e) {
             return null;

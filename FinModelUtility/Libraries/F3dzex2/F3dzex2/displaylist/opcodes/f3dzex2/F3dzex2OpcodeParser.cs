@@ -211,12 +211,9 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
       case F3dzex2Opcode.G_LOADBLOCK:
         return F3dUtil.ParseLoadBlockOpcodeCommand(br);
       case F3dzex2Opcode.G_GEOMETRYMODE: {
-        var flagsToDisable = (GeometryMode) ((~br.ReadUInt24()) & 0xFFFFFF);
-        var flagsToEnable = (GeometryMode) br.ReadUInt32();
-
         return new GeometryModeOpcodeCommand {
-            FlagsToDisable = flagsToDisable,
-            FlagsToEnable = flagsToEnable,
+            FlagsToDisable = (GeometryMode) (~br.ReadUInt24() & 0xFFFFFF),
+            FlagsToEnable = (GeometryMode) br.ReadUInt32(),
         };
       }
       case F3dzex2Opcode.G_MTX: {
