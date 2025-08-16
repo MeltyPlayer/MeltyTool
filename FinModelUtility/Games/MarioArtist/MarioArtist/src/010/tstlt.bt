@@ -163,9 +163,9 @@ typedef struct {
     
     typedef struct {   
       // Sorted in terms of columns rather than rows, i.e. first column, then second column, etc.
-      Vec2f pins[13 * 9] <bgcolor=COLOR_ORIENTATION>;
+      Vec2f pins[13 * 9] <bgcolor=COLOR_ORIENTATION, optimize=false>;
     } Expression;
-    Expression expressions[6];
+    Expression expressions[6] <optimize=false>;
 } FaceHeader <bgcolor=COLOR_HEADER>;
 FaceHeader faceHeader;
 
@@ -237,12 +237,11 @@ typedef struct {
 } ChosenPart0 <bgcolor=COLOR_HEADER>;
 
 typedef struct {
-    // These addresses are apart by 0x2A0, seem to point towards MeshDefinition
-    uint someAddress;
-    
-    uint chosenPartId;
-    
-    byte unk0[0x48];
+    struct SubUnkSection5 {
+        uint someAddress;    
+        uint chosenPartId;
+        uint unk0[3];
+    } subs[4] <optimize=false>;
 } UnkSection5 <bgcolor=COLOR_HEADER>;
 
 FSeek(0xB840);
@@ -342,11 +341,14 @@ typedef struct {
         ushort maybeBitsPerTexel;
         ushort width;
         ushort height;
-    } imageMetadata[imageCount] <bgcolor=COLOR_SECTION2>;
+    } imageMetadata[imageCount] <bgcolor=COLOR_SECTION2, optimize=false>;
     
     FSeek(baseOffset + CeilAlign(totalSize, 0x10));
 } Mesh <bgcolor=COLOR_HEADER>;
 
+// There will be the same number of MeshDefinitions as SubUnkSection5s,
+// the MeshDefinition at a given index uses the SubUnkSection5 at the
+// same index.
 typedef struct (uint baseOffset) {
     uint meshSegmentedAddresses[4] <bgcolor=COLOR_OFFSET>;
     
@@ -367,7 +369,7 @@ typedef struct (uint baseOffset) {
     
     byte unk1[4];
     byte meshSetId;
-    byte unkSection5Index <bgcolor=COLOR_INDEX>;
+    byte unkIndex <bgcolor=COLOR_INDEX>;
     
     ushort unk3;
     
@@ -380,6 +382,7 @@ typedef struct (uint baseOffset) {
     // First sets up the vertices via vertexDl, then renders primitiveDl.
     // Annoying thing is that the first MeshDefinition in a given meshSet uses the
     // parent joint for the vertexDl, the rest use the current joint.
+    // (At least, this is usually true.)
     
     uint primitiveDl <bgcolor=COLOR_OFFSET>;
     uint unk7[0xC];
