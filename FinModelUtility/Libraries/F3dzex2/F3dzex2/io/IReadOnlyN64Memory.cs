@@ -32,6 +32,7 @@ public interface IReadOnlyN64Memory {
   IEnumerable<SchemaBinaryReader> OpenPossibilitiesForSegment(
       uint segmentIndex);
 
+  Segment GetSegment(uint segmentIndex);
   bool IsValidSegment(uint segmentIndex);
   bool IsValidSegmentedAddress(uint segmentedAddress);
   bool IsSegmentCompressed(uint segmentIndex);
@@ -117,6 +118,9 @@ public class N64Memory(
        .segments_[segmentIndex]
        .Select(segment => this.OpenSegment(segment));
 
+
+  public Segment GetSegment(uint segmentIndex)
+    => this.segments_[segmentIndex].Single();
 
   public bool IsValidSegment(uint segmentIndex)
     => this.segments_.HasList(segmentIndex);

@@ -68,6 +68,9 @@ namespace sm64.memory {
       throw new NotImplementedException();
     }
 
+    public Segment GetSegment(uint segmentAddress)
+      => new() { Offset = 0, Length = 0 };
+
     public void AddSegment(uint segmentIndex,
                            uint offset,
                            uint length,

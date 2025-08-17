@@ -8,6 +8,7 @@ using f3dzex2.combiner;
 using f3dzex2.displaylist;
 using f3dzex2.displaylist.opcodes;
 using f3dzex2.image;
+using f3dzex2.io;
 
 using fin.data.lazy;
 using fin.image;
@@ -28,10 +29,10 @@ public class DlModelBuilder {
   private readonly IN64Hardware n64Hardware_;
   private IMesh? currentMesh_;
 
-  private readonly LazyDictionary<ImageParams, IImage>
+  private readonly LazyDictionary<(Segment, ImageParams), IImage>
       lazyImageDictionary_;
 
-  private readonly LazyDictionary<TextureParams?, ITexture?>
+  private readonly LazyDictionary<(Segment, TextureParams)?, ITexture?>
       lazyTextureDictionary_;
 
   private readonly LazyDictionary<MaterialParams, IMaterial>
@@ -59,7 +60,8 @@ public class DlModelBuilder {
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);
 
     this.lazyImageDictionary_ =
-        new(imageParams => {
+        new(segmentAndImageParams => {
+          var (_, imageParams) = segmentAndImageParams;
           if (imageParams.IsInvalid) {
             return FinImage.Create1x1FromColor(
                 this.vertices_.OverrideVertexColor);  
@@ -82,6 +84,7 @@ public class DlModelBuilder {
             var sizeInBytes = imageParams.BitsPerTexel.GetByteCount(
                 (uint) (imageParams.Width * imageParams.Height));
             var imageData = br.ReadBytes(sizeInBytes);
+
             br.Dispose();
             return new N64ImageParser(this.n64Hardware_).Parse(
                 imageParams.ColorFormat,
@@ -95,14 +98,15 @@ public class DlModelBuilder {
         });
 
     this.lazyTextureDictionary_ =
-        new(textureParamsOrNull => {
-          if (textureParamsOrNull == null) {
+        new(segmentAndTextureParamsOrNull => {
+          if (segmentAndTextureParamsOrNull == null) {
             return null;
           }
 
-          var textureParams = textureParamsOrNull.Value;
+          var (segment, textureParams) = segmentAndTextureParamsOrNull.Value;
+
           var imageParams = textureParams.ImageParams;
-          var image = this.lazyImageDictionary_[imageParams];
+          var image = this.lazyImageDictionary_[(segment, imageParams)];
           var texture = this.Model.MaterialManager.CreateTexture(image);
 
           var color = this.vertices_.OverrideVertexColor;
@@ -120,10 +124,24 @@ public class DlModelBuilder {
     this.lazyMaterialDictionary_ =
         new(materialParams
                 => {
+             (Segment, TextureParams)? segmentAndTextureParams0
+                  = materialParams.TextureParams0 != null
+                      ? (n64Hardware.Memory.GetSegment(
+                          materialParams.TextureParams0.Value
+                                        .SegmentedAddress >> 24),
+                          materialParams.TextureParams0.Value) 
+                      : null;
+             (Segment, TextureParams)? segmentAndTextureParams1
+                 = materialParams.TextureParams1 != null
+                     ? (n64Hardware.Memory.GetSegment(
+                            materialParams.TextureParams1.Value
+                                          .SegmentedAddress >> 24),
+                        materialParams.TextureParams1.Value) 
+                     : null;
               var texture0 =
-                  this.lazyTextureDictionary_[materialParams.TextureParams0];
+                  this.lazyTextureDictionary_[segmentAndTextureParams0];
               var texture1 =
-                  this.lazyTextureDictionary_[materialParams.TextureParams1];
+                  this.lazyTextureDictionary_[segmentAndTextureParams1];
 
               var finMaterial = this.Model.MaterialManager
                                     .AddFixedFunctionMaterial();
