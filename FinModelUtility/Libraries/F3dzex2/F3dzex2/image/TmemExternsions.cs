@@ -12,7 +12,8 @@ public static class TmemExtensions {
       ushort width,
       ushort height,
       F3dWrapMode wrapModeS,
-      F3dWrapMode wrapModeT) {
+      F3dWrapMode wrapModeT,
+      uint tileDescriptorIndex = 0) {
     --width;
     --height;
 
@@ -29,7 +30,7 @@ public static class TmemExtensions {
     tmem.GsDpSetTile(colorFormat,
                      bitsPerTexel,
                      default,
-                     0,
+                     tileDescriptorIndex,
                      TileDescriptorIndex.TX_LOADTILE,
                      default,
                      wrapModeS,
@@ -46,8 +47,8 @@ public static class TmemExtensions {
     tmem.GsDpSetTile(colorFormat,
                      bitsPerTexel,
                      default,
-                     0,
-                     TileDescriptorIndex.TX_RENDERTILE,
+                     tileDescriptorIndex,
+                     (TileDescriptorIndex) tileDescriptorIndex,
                      default,
                      wrapModeS,
                      default,
@@ -57,7 +58,7 @@ public static class TmemExtensions {
                      default);
     tmem.GsDpSetTileSize(0,
                          0,
-                         TileDescriptorIndex.TX_RENDERTILE,
+                         (TileDescriptorIndex) tileDescriptorIndex,
                          width,
                          height);
   }

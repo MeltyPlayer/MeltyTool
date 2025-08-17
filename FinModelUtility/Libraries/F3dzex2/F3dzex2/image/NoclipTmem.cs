@@ -279,6 +279,9 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
     var tile = this.dpTileStates_[index];
 
     var textureParams = new TextureParams();
+
+    textureParams.Index = index;
+
     textureParams.ColorFormat = tile.fmt;
     textureParams.BitsPerTexel = tile.siz;
 

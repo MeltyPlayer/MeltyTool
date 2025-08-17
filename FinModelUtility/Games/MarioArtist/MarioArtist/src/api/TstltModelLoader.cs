@@ -1,13 +1,12 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
-using Assimp.Unmanaged;
-
 using CommunityToolkit.Diagnostics;
 
 using f3dzex2.combiner;
 using f3dzex2.displaylist;
 using f3dzex2.displaylist.opcodes;
+using f3dzex2.displaylist.opcodes.f3d;
 using f3dzex2.displaylist.opcodes.f3dzex2;
 using f3dzex2.image;
 using f3dzex2.io;
@@ -30,6 +29,8 @@ using fin.util.linq;
 using fin.util.sets;
 
 using marioartist.schema;
+
+using OneOf;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -352,6 +353,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         foreach (var chosenPart0Tuple in chosenPart0TuplesInOrder) {
           if (TryToAddChosenPart0Tuple_(
                   model,
+                  skinChosenPart,
                   chosenPart0Tuple,
                   n64Hardware,
                   dlModelBuilder,
@@ -449,6 +451,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
   private static bool TryToAddChosenPart0Tuple_(
       IModel model,
+      ChosenPart0 skinChosenPart,
       ChosenPart0Tuple chosenPart0Tuple,
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder,
@@ -512,8 +515,13 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     // TODO: Factor in skin color via prim or env color
 
-    var color0 = chosenPart0.ChosenColor0.Color;
-    SetCombiner_(n64Hardware, imageCount > 0, color0.ToSystemColor());
+    SetCombiner_(n64Hardware,
+                 imageCount > 0,
+                 chosenPart0 != skinChosenPart
+                     ? OneOf<uint, Color>.FromT0(
+                         chosenPart0.Pattern0SegmentedAddress)
+                     : OneOf<uint, Color>.FromT1(
+                         chosenPart0.ChosenColor0.Color.ToSystemColor()));
 
     var primitiveDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
         VertexSpace.RELATIVE_TO_BONE,
@@ -652,8 +660,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
   private static void SetCombiner_(
       IN64Hardware<N64Memory> n64Hardware,
-      bool withTexture,
-      Color? color = null) {
+      bool withTexture0,
+      OneOf<uint, Color>? patternSegmentedOffsetOrColor = null) {
     var rdp = n64Hardware.Rdp;
     var rsp = n64Hardware.Rsp;
 
@@ -662,24 +670,40 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                          1,
                          0,
                          TileDescriptorIndex.TX_LOADTILE,
-                         withTexture
+                         withTexture0
                              ? TileDescriptorState.ENABLED
                              : TileDescriptorState.DISABLED);
 
-    switch ((withTexture, color)) {
+    switch (withTexture0, patternSegmentedOffsetOrColor) {
       case (true, not null): {
-        rdp.SetCombinerCycleParams(
-            CombinerCycleParams.FromTexture0AndLightingAndPrimitive());
-        rsp.PrimColor = color.Value;
+        if (patternSegmentedOffsetOrColor.Value.TryPickT0(
+                out var patternSegmentedOffset,
+                out var color)) {
+          rdp.SetCombinerCycleParams(
+              CombinerCycleParams.FromBlendingTexture0AndTexture1WithEnvColorAndShade());
+          rdp.Tmem.SetImage(patternSegmentedOffset,
+                            N64ColorFormat.RGBA,
+                            BitsPerTexel._16BPT,
+                            32,
+                            32,
+                            F3dWrapMode.REPEAT,
+                            F3dWrapMode.REPEAT,
+                            1);
+          rsp.EnvironmentColor = Color.FromArgb(0xff, 0xc8, 0xc8, 0xc8);
+        } else {
+          rdp.SetCombinerCycleParams(
+              CombinerCycleParams.FromTexture0AndLightingAndPrimitive());
+          rsp.PrimColor = color;
+        }
+
         break;
       }
       case (true, null): {
-        rdp.SetCombinerCycleParams(
-            CombinerCycleParams.FromTexture0AndLighting());
+        rdp.SetCombinerCycleParams(CombinerCycleParams.FromTexture0AndShade());
         break;
       }
       default: {
-        rdp.SetCombinerCycleParams(CombinerCycleParams.FromVertexColor());
+        rdp.SetCombinerCycleParams(CombinerCycleParams.FromShade());
         break;
       }
     }

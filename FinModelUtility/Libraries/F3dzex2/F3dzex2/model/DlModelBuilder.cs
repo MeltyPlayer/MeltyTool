@@ -62,7 +62,7 @@ public class DlModelBuilder {
         new(imageParams => {
           if (imageParams.IsInvalid) {
             return FinImage.Create1x1FromColor(
-                this.vertices_.OverrideVertexColor);
+                this.vertices_.OverrideVertexColor);  
           }
 
           SchemaBinaryReader? br = null;
@@ -113,6 +113,7 @@ public class DlModelBuilder {
           texture.WrapModeU = textureParams.WrapModeS.AsFinWrapMode();
           texture.WrapModeV = textureParams.WrapModeT.AsFinWrapMode();
           texture.UvType = textureParams.UvType;
+          texture.UvIndex = textureParams.Index;
           return texture;
         });
 

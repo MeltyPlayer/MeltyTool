@@ -77,17 +77,25 @@ public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
     var position = definition.GetPosition();
     ProjectionUtil.ProjectPosition(matrix, ref position);
 
-    var textureParams = n64Hardware.Rdp.Tmem.GetMaterialParams()
-                                   .TextureParams0;
-    var bmpWidth = Math.Max(textureParams?.Width ?? 0, (ushort) 0);
-    var bmpHeight = Math.Max(textureParams?.Height ?? 0, (ushort) 0);
+    var materialParams = n64Hardware.Rdp.Tmem.GetMaterialParams();
+    var textureParams0 = materialParams.TextureParams0;
+    var textureParams1 = materialParams.TextureParams1;
+    var bmpWidth0 = Math.Max(textureParams0?.Width ?? 0, (ushort) 0);
+    var bmpHeight0 = Math.Max(textureParams0?.Height ?? 0, (ushort) 0);
+    var bmpWidth1 = Math.Max(textureParams1?.Width ?? 0, (ushort) 0);
+    var bmpHeight1 = Math.Max(textureParams1?.Height ?? 0, (ushort) 0);
 
     var newVertex = model.Skin.AddVertex(position);
-    newVertex.SetUv(definition.GetUv(
+    newVertex.SetUv(0, definition.GetUv(
                         n64Hardware.Rsp.TexScaleXFloat /
-                        (bmpWidth * 32),
+                        (bmpWidth0 * 32),
                         n64Hardware.Rsp.TexScaleYFloat /
-                        (bmpHeight * 32)));
+                        (bmpHeight0 * 32)));
+    newVertex.SetUv(1, definition.GetUv(
+                        n64Hardware.Rsp.TexScaleXFloat /
+                        (bmpWidth1 * 32),
+                        n64Hardware.Rsp.TexScaleYFloat /
+                        (bmpHeight1 * 32)));
 
     var activeBoneWeights = this.boneWeights_[index];
     if (activeBoneWeights != null) {

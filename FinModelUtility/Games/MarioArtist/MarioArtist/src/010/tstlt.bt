@@ -25,8 +25,6 @@ local uint COLOR_SECTION0 = 0xffff00;
 local uint COLOR_SECTION1 = 0xff00ff;
 local uint COLOR_SECTION2 = 0x880088;
 
-short thumbnail[24 * 24] <bgcolor=COLOR_IMAGE>;
-
 uint CeilAlign(uint x, uint align) {
     local float fraction = (x / (1. * align));
     return Ceil(fraction) * align;  
@@ -62,6 +60,8 @@ typedef struct {
 struct Argb1555Image(uint width, uint height) {
     Argb1555 pixels[width * height] <optimize=false>;
 };
+
+Argb1555Image thumbnail(24, 24);
 
 typedef struct {
     ubyte l;
@@ -193,24 +193,6 @@ typedef struct {
 } Joint <bgcolor=COLOR_HEADER>;
 Joint joints[0x1F] <optimize=false>;
 
-/*FSeek(0xB4A8);
-typedef struct {
-  byte unk0[0x50];
-} UnkSection4 <bgcolor=COLOR_HEADER>;
-UnkSection4 unkSection4s[0x35] <optimize=false>;*/
-
-// These seem like they might all be different sizes...
-/*FSeek(0xB8D0);
-typedef struct {
-  ushort someIndex0;
-  ushort someIndex1;
-  uint chosenModelIndex;
-  uint chosenColorIndex; 
-  Rgba32 color;
-  uint unk;
-} ChosenPart <bgcolor=COLOR_HEADER>;
-ChosenPart chosenParts[0x30] <optimize=false>;*/
-
 typedef struct {
   uint chosenColorIndex <bgcolor=COLOR_INDEX>; 
   Rgba32 chosenColor;
@@ -224,7 +206,7 @@ typedef struct {
   ChosenColor chosenColor0;
   ChosenColor chosenColor1;
 
-  uint unk1[2];
+  uint unkForChosenPattern[2];
   uint address0 <bgcolor=COLOR_OFFSET>;
 
   uint unk2[3];
@@ -238,7 +220,7 @@ typedef struct {
 
 typedef struct {
     struct SubUnkSection5 {
-        uint someAddress;    
+        uint meshDefinitionRamAddress;    
         uint chosenPartId;
         uint unk0[3];
     } subs[4] <optimize=false>;
@@ -255,7 +237,8 @@ UnkSection5 headUnkSection5s[8] <optimize=false>;
 
 FSeek(0xBD08);
 struct ChosenBodyPart0s {
-    ChosenPart0 bodyChosenParts[4] <optimize=false>;
+    ChosenPart0 bodyChosenParts[3] <optimize=false>;
+    ChosenPart0 pants;
     ChosenPart0 shirt;
     ChosenPart0 bodyChosenParts;
     ChosenPart0 shoes;
@@ -434,7 +417,7 @@ typedef struct {
 Bio bio;
 
 typedef struct (int imageCount) { 
-  Argb1555Image images(32, 32)[imageCount] <bgcolor=COLOR_IMAGE, optimize=false>;
+  Argb1555Image images(32, 32)[imageCount] <optimize=false>;
 } PaletteImages;
 
 FSeek(headOffset);

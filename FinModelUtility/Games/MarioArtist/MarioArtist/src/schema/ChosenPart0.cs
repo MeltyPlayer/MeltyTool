@@ -21,9 +21,9 @@ public partial class ChosenPart0 : IBinaryDeserializable {
   public ChosenColor ChosenColor1 { get; } = new();
 
   [SequenceLengthSource(2)]
-  public uint[] Unk1 { get; set; }
+  public uint[] UnkForPattern0 { get; set; }
 
-  public uint UnkSegmentedAddress0 { get; set; }
+  public uint Pattern0SegmentedAddress { get; set; }
 
   [SequenceLengthSource(3)]
   public uint[] Unk2 { get; set; }
