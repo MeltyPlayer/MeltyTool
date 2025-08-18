@@ -388,7 +388,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     // HACK: Fixes hair texture so that it actually wraps. For some reason,
     // this is set to clamp in the display list.
     var hairTexture
-        = model.MaterialManager.Textures.SingleOrDefault(t => t.Name == "0x0F004060");
+        = model.MaterialManager.Textures.SingleOrDefault(t => t.Name ==
+              "0x0F004060");
     if (hairTexture != null) {
       hairTexture.WrapModeU = hairTexture.WrapModeV = WrapMode.REPEAT;
     }
@@ -591,7 +592,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                 (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
             ];
 
-    return TryToAddDisplayLists_(
+    var addedDisplayList = TryToAddDisplayLists_(
         model,
         segment,
         n64Hardware,
@@ -599,6 +600,12 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         $"joint({(JointIndex) jointIndex}): chosenPart0({meshDefinition.MeshSetId}): {meshSegmentedAddress.ToHexString()}",
         joint.isLeft,
         displayLists);
+
+    var rsp = n64Hardware.Rsp;
+    rsp.EnvironmentColor = Color.White;
+    rsp.PrimColor = Color.White;
+
+    return addedDisplayList;
   }
 
   private static void TryToAddChosenPart1Tuple_(
@@ -617,22 +624,15 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     switch (isHead, chosenPart1Tuple.chosenPart.MeshSetId) {
       // Ear
       case (true, 6): {
-        // HACK: Uses skin color for the ear. Due to combiner nonsense, we have
-        // to subtract it from one.
-        var oneMinusSkinColor = Color.FromArgb(
-            0xFF,
-            0xFF - skinColor.Rb,
-            0xFF - skinColor.Gb,
-            0xFF - skinColor.Bb);
-        rsp.EnvironmentColor = oneMinusSkinColor;
-
-        // Primitive alpha is used for blending for some reason.
-        rsp.PrimColor = Color.FromArgb(0xD2, 0xFF, 0xFF, 0xFF);
+        // HACK: Hardcodes ear color to skin color.
+        SetCombiner_(
+            n64Hardware,
+            true,
+            OneOf<uint, Color>.FromT1(skinColor.ToSystemColor()));
         break;
       }
       default: {
         SetCombiner_(n64Hardware, true);
-        rsp.EnvironmentColor = Color.White;
         break;
       }
     }
@@ -647,11 +647,16 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         $"chosenPart1({chosenPart1.MeshSetId})",
         joint.isLeft,
         chosenPart1.DisplayListSegmentedAddresses
+                   // HACK: For some reason, the other ones are hard-coded to render as black?
+                   .Where((_, i) => i == 2)
                    .Where(dlSegmentedAddress => dlSegmentedAddress != 0)
                    .Select(dlSegmentedAddress
-                               => (dlSegmentedAddress,
-                                   (Matrix4x4?) null,
+                               => (dlSegmentedAddress, (Matrix4x4?) null,
                                    boneWeights)));
+
+    rsp.UvType = N64UvType.LINEAR;
+    rsp.EnvironmentColor = Color.White;
+    rsp.PrimColor = Color.White;
   }
 
   private static bool TryToAddDisplayLists_(
@@ -667,21 +672,23 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     var displayListReader = new DisplayListReader();
     var f3dzex2OpcodeParser = new F3dzex2OpcodeParser();
-    var displayListTuples = displayListSegmentedOffsetAndBones.Select(t => {
-          try {
-            var displayList = displayListReader.ReadDisplayList(
-                n64Hardware.Memory,
-                f3dzex2OpcodeParser,
-                t.Item1);
-            return (displayList, t.Item2, t.Item3) as
-                (IDisplayList, Matrix4x4?, IBoneWeights)?;
-          } catch (Exception e) {
-            return null;
-          }
-        })
-        .WhereNonnull()
-        .Select(t => t.Value)
-        .ToArray();
+    var displayListTuples = displayListSegmentedOffsetAndBones
+                            .Select((t, i) => {
+                              try {
+                                var displayList
+                                    = displayListReader.ReadDisplayList(
+                                        n64Hardware.Memory,
+                                        f3dzex2OpcodeParser,
+                                        t.Item1);
+                                return (displayList, t.Item2, t.Item3) as
+                                    (IDisplayList, Matrix4x4?, IBoneWeights)?;
+                              } catch (Exception e) {
+                                return null;
+                              }
+                            })
+                            .WhereNonnull()
+                            .Select(t => t.Value)
+                            .ToArray();
 
     if (!displayListTuples.Any()) {
       return false;
@@ -697,7 +704,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
       try {
         dlModelBuilder.AddDl(displayList);
-      } catch (Exception e) { }
+      } catch (Exception e) {
+        ;
+      }
     }
 
     dlModelBuilder.Matrix = Matrix4x4.Identity;

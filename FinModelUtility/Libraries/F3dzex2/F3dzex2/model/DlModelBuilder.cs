@@ -29,10 +29,10 @@ public class DlModelBuilder {
   private readonly IN64Hardware n64Hardware_;
   private IMesh? currentMesh_;
 
-  private readonly LazyDictionary<(Segment, ImageParams), IImage>
+  private readonly LazyDictionary<(Segment?, ImageParams), IImage>
       lazyImageDictionary_;
 
-  private readonly LazyDictionary<(Segment, TextureParams)?, ITexture?>
+  private readonly LazyDictionary<(Segment?, TextureParams)?, ITexture?>
       lazyTextureDictionary_;
 
   private readonly LazyDictionary<MaterialParams, IMaterial>
@@ -156,17 +156,17 @@ public class DlModelBuilder {
     this.lazyMaterialDictionary_ =
         new(materialParams
                 => {
-              (Segment, TextureParams)? segmentAndTextureParams0
+              (Segment?, TextureParams)? segmentAndTextureParams0
                   = materialParams.TextureParams0 != null
-                      ? (n64Hardware.Memory.GetSegment(
+                      ? (n64Hardware.Memory.GetSegmentOrNull(
                              materialParams.TextureParams0.Value
                                            .SegmentedAddress >>
                              24),
                          materialParams.TextureParams0.Value)
                       : null;
-              (Segment, TextureParams)? segmentAndTextureParams1
+              (Segment?, TextureParams)? segmentAndTextureParams1
                   = materialParams.TextureParams1 != null
-                      ? (n64Hardware.Memory.GetSegment(
+                      ? (n64Hardware.Memory.GetSegmentOrNull(
                              materialParams.TextureParams1.Value
                                            .SegmentedAddress >>
                              24),

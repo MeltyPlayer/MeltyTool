@@ -170,6 +170,13 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
             A = br.ReadByte(),
         };
       }
+      case F3dzex2Opcode.G_SETENVCOLOR:
+        return new SetEnvColorOpcodeCommand {
+            R = br.ReadByte(),
+            G = br.ReadByte(),
+            B = br.ReadByte(),
+            A = br.ReadByte(),
+        };
       case F3dzex2Opcode.G_SETTILESIZE: {
         br.Position -= 1;
 
@@ -252,19 +259,6 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
 
         return new NoopOpcodeCommand();
       }
-      // TODO: Especially implement these
-      case F3dzex2Opcode.G_SETCIMG:
-      case F3dzex2Opcode.G_SETZIMG:
-      // TODO: Implement these
-      case F3dzex2Opcode.G_CULLDL:
-      case F3dzex2Opcode.G_BRANCH_Z:
-        return new NoopOpcodeCommand();
-      case F3dzex2Opcode.G_RDPPIPESYNC:
-      case F3dzex2Opcode.G_RDPTILESYNC:
-      case F3dzex2Opcode.G_RDPFULLSYNC:
-      case F3dzex2Opcode.G_RDPLOADSYNC:
-      case F3dzex2Opcode.G_SETENVCOLOR:
-        return new NoopOpcodeCommand();
       case F3dzex2Opcode.G_LOADTILE: {
         var first = br.ReadUInt24();
         var second = br.ReadUInt32();
@@ -301,6 +295,18 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
             Lrt = lrt,
         };
       }
+      // TODO: Especially implement these
+      case F3dzex2Opcode.G_SETCIMG:
+      case F3dzex2Opcode.G_SETZIMG:
+      // TODO: Implement these
+      case F3dzex2Opcode.G_CULLDL:
+      case F3dzex2Opcode.G_BRANCH_Z:
+        return new NoopOpcodeCommand();
+      case F3dzex2Opcode.G_RDPPIPESYNC:
+      case F3dzex2Opcode.G_RDPTILESYNC:
+      case F3dzex2Opcode.G_RDPFULLSYNC:
+      case F3dzex2Opcode.G_RDPLOADSYNC:
+        return new NoopOpcodeCommand();
 
       default:
         throw new ArgumentOutOfRangeException(nameof(opcode), opcode, null);

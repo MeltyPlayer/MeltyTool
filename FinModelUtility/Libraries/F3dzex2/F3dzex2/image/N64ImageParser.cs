@@ -118,6 +118,11 @@ public class N64ImageParser(IN64Hardware n64Hardware) {
                                         imageHeight,
                                         new Argb1555PixelReader())
                                    .ReadImage(data, Endianness.BigEndian);
+          case BitsPerTexel._32BPT:
+            return PixelImageReader.New(imageWidth,
+                                        imageHeight,
+                                        new Rgba32PixelReader())
+                                   .ReadImage(data, Endianness.BigEndian);
           default:
             throw new ArgumentOutOfRangeException(
                 nameof(bitsPerTexel),

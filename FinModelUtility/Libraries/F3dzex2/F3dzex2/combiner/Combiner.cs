@@ -128,6 +128,18 @@ public struct CombinerCycleParams {
         AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
     };
 
+  public static CombinerCycleParams FromTexture0()
+    => new() {
+        ColorMuxA = GenericColorMux.G_CCMUX_0,
+        ColorMuxB = GenericColorMux.G_CCMUX_0,
+        ColorMuxC = GenericColorMux.G_CCMUX_0,
+        ColorMuxD = GenericColorMux.G_CCMUX_TEXEL0,
+        AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxD = GenericAlphaMux.G_ACMUX_TEXEL0,
+    };
+
   public static CombinerCycleParams FromShade()
     => new() {
         ColorMuxA = GenericColorMux.G_CCMUX_SHADE,
