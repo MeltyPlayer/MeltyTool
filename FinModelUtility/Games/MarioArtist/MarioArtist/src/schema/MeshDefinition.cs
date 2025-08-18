@@ -25,13 +25,15 @@ public partial class MeshDefinition : IBinaryDeserializable {
 
   public uint Unk5 { get; set; }
 
-  public uint PrimitiveDisplayListSegmentedAddress { get; set; }
+  [SequenceLengthSource(4)]
+  public uint[] PrimitiveDisplayListSegmentedAddresses { get; set; }
 
-  [SequenceLengthSource(12)]
+  [SequenceLengthSource(9)]
   public uint[] Unk6 { get; set; }
 
-  public uint VertexDisplayListSegmentedAddress { get; set; }
+  [SequenceLengthSource(4)]
+  public uint[] VertexDisplayListSegmentedAddresses { get; set; }
 
-  [SequenceLengthSource(12)]
+  [SequenceLengthSource(9)]
   public uint[] Unk7 { get; set; }
 }

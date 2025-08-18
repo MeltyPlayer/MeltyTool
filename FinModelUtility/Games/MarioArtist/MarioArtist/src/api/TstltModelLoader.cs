@@ -50,6 +50,7 @@ public enum JointIndex {
   // Head bones
   HEAD_ROOT = 0,
   HAIR = 2,
+  HAT = 3,
   NOSE = 5,
 
   EAR_0 = 6,
@@ -201,8 +202,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
             };
             break;
           }
-          // Doesn't always seem to be right...
-          case JointIndex.HAIR: {
+          case JointIndex.HAIR:
+          case JointIndex.HAT: {
             jointTranslation = Vector3.Zero;
             break;
           }
@@ -496,114 +497,116 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     n64Hardware.Memory.SetSegment(0xF, segment);
 
-    var meshSegmentedAddress = meshDefinition.MeshSegmentedAddresses[0];
-    if (meshSegmentedAddress == 0) {
-      return false;
-    }
+    var tuples = meshDefinition.MeshSegmentedAddresses.Zip(
+        meshDefinition.VertexDisplayListSegmentedAddresses,
+        meshDefinition.PrimitiveDisplayListSegmentedAddresses);
 
-    if (!n64Hardware.Memory.TryToOpenPossibilitiesAtSegmentedAddress(
-            meshSegmentedAddress,
-            out var possibilities)) {
-      return false;
-    }
+    var addedDisplayList = false;
+    foreach (var (meshSegmentedAddress,
+                 vertexDlSegmentedAddress,
+                 primitiveDlSegmentedAddress) in tuples) {
+      if (meshSegmentedAddress == 0) {
+        continue;
+      }
 
-    if (!possibilities.TryGetFirst(out var sbr)) {
-      return false;
-    }
+      if (!n64Hardware.Memory.TryToOpenPossibilitiesAtSegmentedAddress(
+              meshSegmentedAddress,
+              out var possibilities)) {
+        continue;
+      }
 
-    var meshBaseOffset = sbr.Position;
-    if (sbr.ReadUInt32() != 0) {
-      return false;
-    }
+      if (!possibilities.TryGetFirst(out var sbr)) {
+        continue;
+      }
 
-    sbr.Position = meshBaseOffset;
+      var meshBaseOffset = sbr.Position;
+      if (sbr.ReadUInt32() != 0) {
+        continue;
+      }
 
-    sbr.Position = meshBaseOffset + 4 * 2;
-    var imageSectionSize = sbr.ReadUInt32();
-    var vertexSectionSize = sbr.ReadUInt32();
+      sbr.Position = meshBaseOffset;
 
-    sbr.Position = meshBaseOffset + 4 * 7;
-    var imageSectionOffset = sbr.ReadUInt32();
-    var vertexSectionOffset = sbr.ReadUInt32();
+      sbr.Position = meshBaseOffset + 4 * 2;
+      var imageSectionSize = sbr.ReadUInt32();
+      var vertexSectionSize = sbr.ReadUInt32();
 
-    sbr.Position = meshBaseOffset + 4 * 14;
-    var imageCount = sbr.ReadUInt16();
+      sbr.Position = meshBaseOffset + 4 * 7;
+      var imageSectionOffset = sbr.ReadUInt32();
+      var vertexSectionOffset = sbr.ReadUInt32();
 
-    n64Hardware.Memory.SetSegment(
-        0xE,
-        (uint) (segment.Offset + meshBaseOffset + vertexSectionOffset),
-        (uint) vertexSectionSize);
+      sbr.Position = meshBaseOffset + 4 * 14;
+      var imageCount = sbr.ReadUInt16();
 
-    var vertexDlSegmentedAddress =
-        meshDefinition.VertexDisplayListSegmentedAddress;
-    var primitiveDlSegmentedAddress =
-        meshDefinition.PrimitiveDisplayListSegmentedAddress;
+      n64Hardware.Memory.SetSegment(
+          0xE,
+          (uint) (segment.Offset + meshBaseOffset + vertexSectionOffset),
+          (uint) vertexSectionSize);
 
-    // TODO: What does it mean if only primitive DL is present?
-    if (primitiveDlSegmentedAddress == 0) {
-      return false;
-    }
+      if (primitiveDlSegmentedAddress == 0) {
+        continue;
+      }
 
-    // TODO: Factor in skin color via prim or env color
+      SetCombiner_(n64Hardware,
+                   imageCount > 0,
+                   chosenPart0 != skinChosenPart
+                       ? OneOf<uint, Color>.FromT0(
+                           chosenPart0.Pattern0SegmentedAddress)
+                       : OneOf<uint, Color>.FromT1(
+                           chosenPart0.ChosenColor0.Color.ToSystemColor()));
 
-    SetCombiner_(n64Hardware,
-                 imageCount > 0,
-                 chosenPart0 != skinChosenPart
-                     ? OneOf<uint, Color>.FromT0(
-                         chosenPart0.Pattern0SegmentedAddress)
-                     : OneOf<uint, Color>.FromT1(
-                         chosenPart0.ChosenColor0.Color.ToSystemColor()));
-
-    var primitiveDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
-        VertexSpace.RELATIVE_TO_BONE,
-        childBone);
-
-    // HACK: What a fucking nightmare. Why does being first impact this????
-    Matrix4x4? vertexMatrix = null;
-    IBoneWeights vertexDlBoneWeights;
-    if (!isFirst) {
-      vertexDlBoneWeights = primitiveDlBoneWeights;
-    } else if (!joint.isLeft) {
-      vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+      var primitiveDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
           VertexSpace.RELATIVE_TO_BONE,
-          parentBone);
-    } else {
-      // TODO: Still need to handle this case... the left side gets mapped to the right
-      vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
-          VertexSpace.RELATIVE_TO_BONE,
-          parentBone);
+          childBone);
 
-      /*var parentWorldMatrix = parentBone.GetWorldMatrix();
+      // HACK: What a fucking nightmare. Why does being first impact this????
+      Matrix4x4? vertexMatrix = null;
+      IBoneWeights vertexDlBoneWeights;
+      if (!isFirst) {
+        vertexDlBoneWeights = primitiveDlBoneWeights;
+      } else if (!joint.isLeft) {
+        vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+            VertexSpace.RELATIVE_TO_BONE,
+            parentBone);
+      } else {
+        // TODO: Still need to handle this case... the left side gets mapped to the right
+        vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+            VertexSpace.RELATIVE_TO_BONE,
+            parentBone);
 
-      vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
-          VertexSpace.RELATIVE_TO_WORLD,
-          parentBone);
+        /*var parentWorldMatrix = parentBone.GetWorldMatrix();
 
-      vertexMatrix = Matrix4x4.CreateScale(-1, 1, 1) * parentWorldMatrix;*/
+        vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
+            VertexSpace.RELATIVE_TO_WORLD,
+            parentBone);
+
+        vertexMatrix = Matrix4x4.CreateScale(-1, 1, 1) * parentWorldMatrix;*/
+      }
+
+      (uint, Matrix4x4?, IBoneWeights)[] displayLists
+          = vertexDlSegmentedAddress == 0
+              ? [
+                  (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
+              ]
+              : [
+                  (vertexDlSegmentedAddress, vertexMatrix, vertexDlBoneWeights),
+                (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
+              ];
+
+      if (TryToAddDisplayLists_(
+              model,
+              segment,
+              n64Hardware,
+              dlModelBuilder,
+              $"joint({(JointIndex) jointIndex}): chosenPart0({meshDefinition.MeshSetId}): {meshSegmentedAddress.ToHexString()}",
+              joint.isLeft,
+              displayLists)) {
+        addedDisplayList = true;
+      }
+
+      var rsp = n64Hardware.Rsp;
+      rsp.EnvironmentColor = Color.White;
+      rsp.PrimColor = Color.White;
     }
-
-    (uint, Matrix4x4?, IBoneWeights)[] displayLists
-        = vertexDlSegmentedAddress == 0
-            ? [
-                (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
-            ]
-            : [
-                (vertexDlSegmentedAddress, vertexMatrix, vertexDlBoneWeights),
-                (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
-            ];
-
-    var addedDisplayList = TryToAddDisplayLists_(
-        model,
-        segment,
-        n64Hardware,
-        dlModelBuilder,
-        $"joint({(JointIndex) jointIndex}): chosenPart0({meshDefinition.MeshSetId}): {meshSegmentedAddress.ToHexString()}",
-        joint.isLeft,
-        displayLists);
-
-    var rsp = n64Hardware.Rsp;
-    rsp.EnvironmentColor = Color.White;
-    rsp.PrimColor = Color.White;
 
     return addedDisplayList;
   }
@@ -629,6 +632,15 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
             n64Hardware,
             true,
             OneOf<uint, Color>.FromT1(skinColor.ToSystemColor()));
+        break;
+      }
+      // Beard
+      case (true, 7): {
+        // HACK: Hardcodes pattern 7.
+        SetCombiner_(
+            n64Hardware,
+            true,
+            OneOf<uint, Color>.FromT0(0x0F003800));
         break;
       }
       default: {

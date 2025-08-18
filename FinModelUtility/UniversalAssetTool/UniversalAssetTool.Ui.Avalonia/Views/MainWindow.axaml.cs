@@ -18,8 +18,10 @@ public partial class MainWindow : Window {
 
     this.fpsCallback_ = TimedCallback.WithPeriod(
         () => {
-          Dispatcher.UIThread.Invoke(
-              () => this.Title = FrameTime.FpsString);
+          try {
+            Dispatcher.UIThread.Invoke(
+                () => this.Title = FrameTime.FpsString);
+          } catch {}
         },
         .25f);
 
