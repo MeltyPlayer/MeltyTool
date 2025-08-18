@@ -314,7 +314,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var chosenPart0TuplesByMeshSetId =
         new ListDictionary<uint, ChosenPart0Tuple>();
     foreach (var chosenPart0Tuple in headChosenPart0Tuples.Concat(
-                 bodyChosenPart0Tuples)) {
+                 bodyChosenPart0Tuples)
+                 .Where(tuple => tuple.unkSection5.UnkAddress != 0)) {
       chosenPart0TuplesByMeshSetId.Add(
           chosenPart0Tuple.meshDefinition.MeshSetId,
           chosenPart0Tuple);
@@ -386,13 +387,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    // HACK: Fixes hair texture so that it actually wraps. For some reason,
-    // this is set to clamp in the display list.
-    var hairTexture
-        = model.MaterialManager.Textures.SingleOrDefault(t => t.Name ==
-              "0x0F004060");
-    if (hairTexture != null) {
-      hairTexture.WrapModeU = hairTexture.WrapModeV = WrapMode.REPEAT;
+    // HACK: Fixes textures so that they actually wrap. For some reason,
+    // a lot of these are incorrectly set to clamp (e.g. hair).
+    foreach (var texture in model.MaterialManager.Textures) {
+      texture.WrapModeU = texture.WrapModeV = WrapMode.REPEAT;
     }
 
     // Adds face
