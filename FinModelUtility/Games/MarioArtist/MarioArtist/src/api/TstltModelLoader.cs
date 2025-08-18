@@ -388,8 +388,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     // HACK: Fixes hair texture so that it actually wraps. For some reason,
     // this is set to clamp in the display list.
     var hairTexture
-        = model.MaterialManager.Textures.Single(t => t.Name == "0x0F004060");
-    hairTexture.WrapModeU = hairTexture.WrapModeV = WrapMode.REPEAT;
+        = model.MaterialManager.Textures.SingleOrDefault(t => t.Name == "0x0F004060");
+    if (hairTexture != null) {
+      hairTexture.WrapModeU = hairTexture.WrapModeV = WrapMode.REPEAT;
+    }
 
     // Adds face
     {
