@@ -94,7 +94,7 @@ public class DlModelBuilder {
 
               var fullLineSizeInBytes
                   = (int) imageParams.BitsPerTexel.GetByteCount(
-                      fullWidth);
+                      (uint) (fullWidth + 1));
               var lineOffsetInBytes
                   = (int) imageParams.BitsPerTexel.GetByteCount(
                       uls);

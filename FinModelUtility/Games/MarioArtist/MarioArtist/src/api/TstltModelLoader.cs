@@ -6,7 +6,6 @@ using CommunityToolkit.Diagnostics;
 using f3dzex2.combiner;
 using f3dzex2.displaylist;
 using f3dzex2.displaylist.opcodes;
-using f3dzex2.displaylist.opcodes.f3d;
 using f3dzex2.displaylist.opcodes.f3dzex2;
 using f3dzex2.image;
 using f3dzex2.io;
@@ -41,7 +40,8 @@ namespace marioartist.api;
 using ChosenPart0Tuple =
     (Segment segment, MeshDefinition meshDefinition, SubUnkSection5 unkSection5,
     ChosenPart0 chosenPart);
-using ChosenPart1Tuple = (Segment segment, ChosenPart1 chosenPart, IBone bone);
+using ChosenPart1Tuple
+    = (Segment segment, ChosenPart1 chosenPart, IBone bone, bool isHead);
 
 public record TstltModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle;
@@ -192,6 +192,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                             out var jointTranslation);
 
         // What is going on???
+        // HACK: Fixes position of head meshes
         // TODO: These only sometimes work
         switch ((JointIndex) i) {
           case JointIndex.NOSE: {
@@ -321,12 +322,12 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var headChosenPart1Tuples = headChosenPart1s.Select(chosenPart => {
       var segment = headSegment;
       return (segment, chosenPart,
-              finBonesAndJoints[(uint) JointIndex.NECK].Item1);
+              finBonesAndJoints[(uint) JointIndex.NECK].Item1, true);
     });
     var bodyChosenPart1Tuples = bodyChosenPart1s.Select(chosenPart => {
       var segment = bodySegment;
       return (segment, chosenPart,
-              finBonesAndJoints[(uint) JointIndex.BODY_ROOT].Item1);
+              finBonesAndJoints[(uint) JointIndex.BODY_ROOT].Item1, false);
     });
 
     var chosenPart1TuplesByMeshSetId =
@@ -377,11 +378,18 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
               n64Hardware,
               dlModelBuilder,
               joint,
-              chosenPart1Tuple.bone // bone
+              chosenPart1Tuple.bone,
+              skinColor
           );
         }
       }
     }
+
+    // HACK: Fixes hair texture so that it actually wraps. For some reason,
+    // this is set to clamp in the display list.
+    var hairTexture
+        = model.MaterialManager.Textures.Single(t => t.Name == "0x0F004060");
+    hairTexture.WrapModeU = hairTexture.WrapModeV = WrapMode.REPEAT;
 
     // Adds face
     {
@@ -432,11 +440,13 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
       var noseX = nosePosition[0];
       var noseY = nosePosition[1];
+      // These values look super random, but they come from digging into what
+      // the game does--it generates a display list like this at runtime.
       var noseUls = (ushort) (noseX - 15);
       var noseUlt = (ushort) (noseY - 22);
       var noseLrs = (ushort) (noseX + 16);
       var noseLrt = (ushort) (noseY + 9);
-      
+
       rdp.Tmem.SetImage(0x4b0,
                         N64ColorFormat.RGBA,
                         BitsPerTexel._16BPT,
@@ -545,7 +555,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         VertexSpace.RELATIVE_TO_BONE,
         childBone);
 
-    // What a fucking nightmare. Why does being first impact this????
+    // HACK: What a fucking nightmare. Why does being first impact this????
     Matrix4x4? vertexMatrix = null;
     IBoneWeights vertexDlBoneWeights;
     if (!isFirst) {
@@ -595,12 +605,35 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       N64Hardware<N64Memory> n64Hardware,
       DlModelBuilder dlModelBuilder,
       Joint joint,
-      IBone bone) {
-    var (segment, chosenPart1, _) = chosenPart1Tuple;
+      IBone bone,
+      Rgba32 skinColor) {
+    var (segment, chosenPart1, _, isHead) = chosenPart1Tuple;
 
     n64Hardware.Memory.SetSegment(0xF, segment);
 
-    SetCombiner_(n64Hardware, true);
+    var rsp = n64Hardware.Rsp;
+    switch (isHead, chosenPart1Tuple.chosenPart.MeshSetId) {
+      // Ear
+      case (true, 6): {
+        // HACK: Uses skin color for the ear. Due to combiner nonsense, we have
+        // to subtract it from one.
+        var oneMinusSkinColor = Color.FromArgb(
+            0xFF,
+            0xFF - skinColor.Rb,
+            0xFF - skinColor.Gb,
+            0xFF - skinColor.Bb);
+        rsp.EnvironmentColor = oneMinusSkinColor;
+
+        // Primitive alpha is used for blending for some reason.
+        rsp.PrimColor = Color.FromArgb(0xD2, 0xFF, 0xFF, 0xFF);
+        break;
+      }
+      default: {
+        SetCombiner_(n64Hardware, true);
+        rsp.EnvironmentColor = Color.White;
+        break;
+      }
+    }
 
     var boneWeights
         = model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE, bone);
@@ -698,7 +731,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                 out var patternSegmentedOffset,
                 out var color)) {
           rdp.SetCombinerCycleParams(
-              CombinerCycleParams.FromBlendingTexture0AndTexture1WithEnvColorAndShade());
+              CombinerCycleParams
+                  .FromBlendingTexture0AndTexture1WithEnvColorAndShade());
           rdp.Tmem.SetImage(patternSegmentedOffset,
                             N64ColorFormat.RGBA,
                             BitsPerTexel._16BPT,

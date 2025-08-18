@@ -299,8 +299,6 @@ public class SetTileOpcodeCommand : IOpcodeCommand {
 
   public ushort Num64BitValuesPerRow { get; set; }
   public ushort OffsetOfTextureInTmem { get; set; }
-
-  // TODO: Support the rest
 }
 
 public class SetTileSizeOpcodeCommand : IOpcodeCommand {
