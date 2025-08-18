@@ -211,7 +211,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         var scaledJointMatrix =
             SystemMatrix4x4Util.FromTrs(jointTranslation * neckScale,
                                         forwardRotation,
-                                        jointScale * neckScale);
+                                        neckScale);
 
         joint.matrix = scaledJointMatrix * neckTMatrix;
       }
