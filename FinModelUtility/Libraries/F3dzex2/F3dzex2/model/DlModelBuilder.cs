@@ -64,7 +64,7 @@ public class DlModelBuilder {
           var (_, imageParams) = segmentAndImageParams;
           if (imageParams.IsInvalid) {
             return FinImage.Create1x1FromColor(
-                this.vertices_.OverrideVertexColor);  
+                this.vertices_.OverrideVertexColor);
           }
 
           SchemaBinaryReader? br = null;
@@ -81,9 +81,41 @@ public class DlModelBuilder {
           }
 
           if (br != null) {
+            var loadTileParams = imageParams.LoadTileParams;
+
             var sizeInBytes = imageParams.BitsPerTexel.GetByteCount(
                 (uint) (imageParams.Width * imageParams.Height));
-            var imageData = br.ReadBytes(sizeInBytes);
+
+            byte[] imageData;
+            if (loadTileParams == null) {
+              imageData = br.ReadBytes(sizeInBytes);
+            } else {
+              var (fullWidth, uls, ult) = loadTileParams.Value;
+
+              var fullLineSizeInBytes
+                  = (int) imageParams.BitsPerTexel.GetByteCount(
+                      fullWidth);
+              var lineOffsetInBytes
+                  = (int) imageParams.BitsPerTexel.GetByteCount(
+                      uls);
+              var usedLineSizeInBytes
+                  = (int) imageParams.BitsPerTexel.GetByteCount(
+                      imageParams.Width);
+
+              imageData = new byte[sizeInBytes];
+
+              Span<byte> fullLineSpan = stackalloc byte[fullLineSizeInBytes];
+              for (var i = 0; i < ult; ++i) {
+                br.ReadBytes(fullLineSpan);
+              }
+              for (var i = 0; i < imageParams.Height; ++i) {
+                br.ReadBytes(fullLineSpan);
+                fullLineSpan.Slice(lineOffsetInBytes, usedLineSizeInBytes)
+                            .CopyTo(imageData.AsSpan()
+                                             .Slice(usedLineSizeInBytes * i,
+                                                    usedLineSizeInBytes));
+              }
+            }
 
             br.Dispose();
             return new N64ImageParser(this.n64Hardware_).Parse(
@@ -124,20 +156,22 @@ public class DlModelBuilder {
     this.lazyMaterialDictionary_ =
         new(materialParams
                 => {
-             (Segment, TextureParams)? segmentAndTextureParams0
+              (Segment, TextureParams)? segmentAndTextureParams0
                   = materialParams.TextureParams0 != null
                       ? (n64Hardware.Memory.GetSegment(
-                          materialParams.TextureParams0.Value
-                                        .SegmentedAddress >> 24),
-                          materialParams.TextureParams0.Value) 
+                             materialParams.TextureParams0.Value
+                                           .SegmentedAddress >>
+                             24),
+                         materialParams.TextureParams0.Value)
                       : null;
-             (Segment, TextureParams)? segmentAndTextureParams1
-                 = materialParams.TextureParams1 != null
-                     ? (n64Hardware.Memory.GetSegment(
-                            materialParams.TextureParams1.Value
-                                          .SegmentedAddress >> 24),
-                        materialParams.TextureParams1.Value) 
-                     : null;
+              (Segment, TextureParams)? segmentAndTextureParams1
+                  = materialParams.TextureParams1 != null
+                      ? (n64Hardware.Memory.GetSegment(
+                             materialParams.TextureParams1.Value
+                                           .SegmentedAddress >>
+                             24),
+                         materialParams.TextureParams1.Value)
+                      : null;
               var texture0 =
                   this.lazyTextureDictionary_[segmentAndTextureParams0];
               var texture1 =
@@ -540,6 +574,15 @@ public class DlModelBuilder {
               loadBlockOpcodeCommand.TileDescriptorIndex,
               loadBlockOpcodeCommand.Texels,
               loadBlockOpcodeCommand.Dxt);
+          break;
+        }
+        case LoadTileOpcodeCommand loadTileOpcodeCommand: {
+          this.n64Hardware_.Rdp.Tmem.GsDpLoadTile(
+              loadTileOpcodeCommand.TileDescriptorIndex,
+              loadTileOpcodeCommand.Uls,
+              loadTileOpcodeCommand.Ult,
+              loadTileOpcodeCommand.Lrs,
+              loadTileOpcodeCommand.Lrt);
           break;
         }
         case LoadTlutOpcodeCommand loadTlutOpcodeCommand: {

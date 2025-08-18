@@ -1,4 +1,6 @@
-﻿using f3dzex2.displaylist.opcodes;
+﻿using System;
+
+using f3dzex2.displaylist.opcodes;
 
 using fin.model;
 using fin.util.hash;
@@ -97,6 +99,14 @@ public class JankTmem(IN64Hardware n64Hardware) : ITmem {
       this.texturesChanged_[this.setTextureImageParams_.TileNumber] = true;
     }
   }
+
+  public void GsDpLoadTile(
+      TileDescriptorIndex tileDescriptor,
+      float uls,
+      float ult,
+      float lrs,
+      float lrt)
+    => throw new NotImplementedException();
 
   public void GsDpLoadTlut(TileDescriptorIndex tileDescriptor,
                            uint numColorsToLoad) {

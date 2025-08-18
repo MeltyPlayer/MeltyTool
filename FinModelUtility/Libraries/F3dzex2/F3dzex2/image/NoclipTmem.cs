@@ -31,6 +31,8 @@ public class TileState {
   public float lrs;
   public float lrt;
 
+  public ushort fullWidth;
+
   public void Set(
       N64ColorFormat fmt,
       BitsPerTexel siz,
@@ -57,11 +59,16 @@ public class TileState {
     this.shiftT = shiftT;
   }
 
-  public void SetSize(float uls, float ult, float lrs, float lrt) {
+  public void SetSize(float uls,
+                      float ult,
+                      float lrs,
+                      float lrt,
+                      ushort fullWidth) {
     this.uls = uls;
     this.ult = ult;
     this.lrs = lrs;
     this.lrt = lrt;
+    this.fullWidth = fullWidth;
   }
 
   public void Copy(TileState o) {
@@ -76,7 +83,7 @@ public class TileState {
              o.wrapModeT,
              o.maskT,
              o.shiftT);
-    this.SetSize(o.uls, o.ult, o.lrs, o.lrt);
+    this.SetSize(o.uls, o.ult, o.lrs, o.lrt, o.fullWidth);
     this.cacheKey = o.cacheKey;
   }
 
@@ -149,7 +156,7 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
   private bool stateChanged_;
   private TextureState spTextureState_ = new();
 
-  private TextureImageState dpTextureImageState_ = new();
+  private readonly TextureImageState dpTextureImageState_ = new();
 
   private readonly TileState[] dpTileStates_ =
       Enumerable.Range(0, 8).Select(_ => new TileState()).ToArray();
@@ -176,7 +183,31 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
     tile.lrt = (((numWordsTotal / numWordsInLine) / 4) - 1) << 2;
 
     // Track the TMEM destination back to the originating DRAM address.
-    this.dpTmemTracker_[tile.offsetOfTextureInTmem] = this.dpTextureImageState_.imageSegmentedAddress;
+    this.dpTmemTracker_[tile.offsetOfTextureInTmem]
+        = this.dpTextureImageState_.imageSegmentedAddress;
+    this.stateChanged_ = true;
+  }
+
+  public void GsDpLoadTile(
+      TileDescriptorIndex tileDescriptor,
+      float uls,
+      float ult,
+      float lrs,
+      float lrt) {
+    // Verify that we're loading into LOADTILE.
+    Asserts.True(tileDescriptor == TileDescriptorIndex.TX_LOADTILE);
+
+    var tile = this.dpTileStates_[(byte) tileDescriptor];
+    tile.SetSize(
+        uls,
+        ult,
+        lrs,
+        lrt,
+        this.dpTextureImageState_.width);
+
+    // Track the TMEM destination back to the originating DRAM address.
+    this.dpTmemTracker_[tile.offsetOfTextureInTmem]
+        = this.dpTextureImageState_.imageSegmentedAddress;
     this.stateChanged_ = true;
   }
 
@@ -227,7 +258,12 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
                               TileDescriptorIndex tileDescriptor,
                               float lrs,
                               float lrt)
-    => this.dpTileStates_[(byte) tileDescriptor].SetSize(uls, ult, lrs, lrt);
+    => this.dpTileStates_[(byte) tileDescriptor]
+           .SetSize(uls,
+                    ult,
+                    lrs,
+                    lrt,
+                    this.dpTextureImageState_.width);
 
   public void GsSpTexture(ushort scaleS,
                           ushort scaleT,
@@ -286,13 +322,19 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
     textureParams.BitsPerTexel = tile.siz;
 
     textureParams.UvType = n64Hardware.Rsp.GeometryMode.GetUvType();
-    textureParams.SegmentedAddress = this.dpTmemTracker_[tile.offsetOfTextureInTmem];
+    textureParams.SegmentedAddress
+        = this.dpTmemTracker_[tile.offsetOfTextureInTmem];
 
     textureParams.WrapModeS = tile.wrapModeS;
     textureParams.WrapModeT = tile.wrapModeT;
 
     textureParams.Width = (ushort) tile.GetTileWidth();
     textureParams.Height = (ushort) tile.GetTileHeight();
+
+    if (tile.uls != 0 || tile.ult != 0) {
+      textureParams.LoadTileParams = (
+          (ushort) (tile.fullWidth + 1), (ushort) tile.uls, (ushort) tile.ult);
+    }
 
     return textureParams;
   }

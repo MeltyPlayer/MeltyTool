@@ -324,6 +324,14 @@ public class LoadBlockOpcodeCommand : IOpcodeCommand {
   public ushort Dxt { get; init; }
 }
 
+public class LoadTileOpcodeCommand : IOpcodeCommand {
+  public required TileDescriptorIndex TileDescriptorIndex { get; init; }
+  public float Uls { get; set; }
+  public float Ult { get; set; }
+  public float Lrs { get; init; }
+  public float Lrt { get; init; }
+}
+
 public class LoadTlutOpcodeCommand : IOpcodeCommand {
   public required TileDescriptorIndex TileDescriptorIndex { get; init; }
   public required ushort NumColorsToLoad { get; init; }

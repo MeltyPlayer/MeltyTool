@@ -265,6 +265,43 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
       case F3dzex2Opcode.G_RDPLOADSYNC:
       case F3dzex2Opcode.G_SETENVCOLOR:
         return new NoopOpcodeCommand();
+      case F3dzex2Opcode.G_LOADTILE: {
+        var first = br.ReadUInt24();
+        var second = br.ReadUInt32();
+
+        var uls = FixedPointFloatUtil.Convert16(
+            (ushort) first.ExtractFromRight(12, 12),
+            false,
+            10,
+            2);
+        var ult = FixedPointFloatUtil.Convert16(
+            (ushort) first.ExtractFromRight(0, 12),
+            false,
+            10,
+            2);
+
+        var tileDescriptor =
+            (TileDescriptorIndex) second.ExtractFromRight(24, 4);
+        var lrs = FixedPointFloatUtil.Convert16(
+            (ushort) second.ExtractFromRight(12, 12),
+            false,
+            10,
+            2);
+        var lrt = FixedPointFloatUtil.Convert16(
+            (ushort) second.ExtractFromRight(0, 12),
+            false,
+            10,
+            2);
+
+        return new LoadTileOpcodeCommand {
+            TileDescriptorIndex = tileDescriptor,
+            Uls = uls,
+            Ult = ult,
+            Lrs = lrs,
+            Lrt = lrt,
+        };
+      }
+
       default:
         throw new ArgumentOutOfRangeException(nameof(opcode), opcode, null);
     }

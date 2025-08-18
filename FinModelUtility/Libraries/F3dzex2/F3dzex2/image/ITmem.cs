@@ -26,6 +26,13 @@ public interface ITmem {
                      ushort texels,
                      ushort deltaTPerScanline);
 
+  void GsDpLoadTile(
+      TileDescriptorIndex tileDescriptor,
+      float uls,
+      float ult,
+      float lrs,
+      float lrt);
+
   void GsDpLoadTlut(TileDescriptorIndex tileDescriptor,
                     uint numColorsToLoad);
 

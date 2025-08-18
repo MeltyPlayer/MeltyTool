@@ -392,7 +392,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       var faceMeshes = new List<IMesh>();
 
       br.Position = 0xeae0;
-      br.Position += 2 * 4;
+      var nosePosition = br.ReadUInt32s(2);
       var faceDlSegmentedAddresses = br.ReadUInt32s(3);
 
       var headRootBone = finBonesAndJoints[(int) JointIndex.HEAD_ROOT].Item1;
@@ -429,6 +429,24 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       rsp.ActiveBoneWeights =
           model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
                                             noseBone);
+
+      var noseX = nosePosition[0];
+      var noseY = nosePosition[1];
+      var noseUls = (ushort) (noseX - 15);
+      var noseUlt = (ushort) (noseY - 22);
+      var noseLrs = (ushort) (noseX + 16);
+      var noseLrt = (ushort) (noseY + 9);
+      
+      rdp.Tmem.SetImage(0x4b0,
+                        N64ColorFormat.RGBA,
+                        BitsPerTexel._16BPT,
+                        63,
+                        noseUls,
+                        noseUlt,
+                        noseLrs,
+                        noseLrt,
+                        F3dWrapMode.CLAMP,
+                        F3dWrapMode.CLAMP);
 
       var noseMesh =
           dlModelBuilder.StartNewMesh(

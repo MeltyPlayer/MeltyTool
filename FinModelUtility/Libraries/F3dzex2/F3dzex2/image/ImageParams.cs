@@ -8,6 +8,11 @@ public struct ImageParams {
   public N64ColorFormat ColorFormat { get; set; } = N64ColorFormat.RGBA;
   public BitsPerTexel BitsPerTexel { get; set; } = BitsPerTexel._16BPT;
 
+  public (ushort fullWidth, ushort uls, ushort ult)? LoadTileParams {
+    get;
+    set;
+  }
+
   public ushort Width { get; set; }
   public ushort Height { get; set; }
   public uint SegmentedAddress { get; set; }

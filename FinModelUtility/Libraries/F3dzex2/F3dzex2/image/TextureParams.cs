@@ -62,12 +62,23 @@ public struct TextureParams {
 
   public UvType UvType { get; set; } = UvType.STANDARD;
 
-  public override int GetHashCode() => FluentHash.Start()
-                                                 .With(this.Index)
-                                                 .With(this.ImageParams)
-                                                 .With(this.WrapModeT)
-                                                 .With(this.WrapModeS)
-                                                 .With(this.UvType);
+  public (ushort fullWidth, ushort uls, ushort ult)? LoadTileParams {
+    get => this.ImageParams.LoadTileParams;
+    set {
+      ImageParams imageParams = this.ImageParams;
+      imageParams.LoadTileParams = value;
+      this.ImageParams = imageParams;
+    }
+  }
+
+  public override int GetHashCode()
+    => FluentHash.Start()
+                 .With(this.Index)
+                 .With(this.ImageParams)
+                 .With(this.WrapModeT)
+                 .With(this.WrapModeS)
+                 .With(this.UvType)
+                 .With(this.LoadTileParams ?? default);
 
   public override bool Equals(object? other) {
     if (ReferenceEquals(this, other)) {
@@ -79,7 +90,8 @@ public struct TextureParams {
              this.ImageParams.Equals(otherTextureParams.ImageParams) &&
              this.WrapModeT == otherTextureParams.WrapModeT &&
              this.WrapModeS == otherTextureParams.WrapModeS &&
-             this.UvType == otherTextureParams.UvType;
+             this.UvType == otherTextureParams.UvType &&
+             this.LoadTileParams.Equals(otherTextureParams.LoadTileParams);
     }
 
     return false;
