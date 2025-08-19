@@ -36,7 +36,7 @@ public class GxImageReader : IImageReader {
             height,
             8,
             4,
-            new Al8PixelReader()),
+            new La8PixelReader()),
         GxTextureFormat.A8_I8 => TiledImageReader.New(
             width,
             height,
