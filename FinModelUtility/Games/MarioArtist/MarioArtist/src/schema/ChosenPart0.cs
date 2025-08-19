@@ -28,7 +28,7 @@ public partial class ChosenPart0 : IBinaryDeserializable {
   [SequenceLengthSource(3)]
   public uint[] Unk2 { get; set; }
 
-  public uint UnkSegmentedAddress1 { get; set; }
+  public uint Pattern1SegmentedAddress { get; set; }
 
   [SequenceLengthSource(3)]
   public uint[] Unk3 { get; set; }

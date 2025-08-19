@@ -160,11 +160,18 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     thumbnailTexture.Name = "thumbnail";
 
     br.Position = headSectionOffset;
-    var image2 = new Argb1555Image(32, 32 * 8);
-    image2.Read(br);
-    var image2Texture =
-        materialManager.CreateTexture(image2.ToImage());
-    image2Texture.Name = "palette";
+    var headPaletteImage = new Argb1555Image(32, 32 * 8);
+    headPaletteImage.Read(br);
+    var headPaletteTexture =
+        materialManager.CreateTexture(headPaletteImage.ToImage());
+    headPaletteTexture.Name = "headPalette";
+
+    br.Position = bodySectionOffset;
+    var bodyPaletteImage = new Argb1555Image(32, 32 * 16);
+    bodyPaletteImage.Read(br);
+    var bodyPaletteTexture =
+        materialManager.CreateTexture(bodyPaletteImage.ToImage());
+    bodyPaletteTexture.Name = "bodyPalette";
 
     br.Position = 0xa934;
     var joints = br.ReadNews<Joint>(0x1F);
@@ -194,7 +201,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
         // What is going on???
         // HACK: Fixes position of head meshes
-        // TODO: These only sometimes work
         switch ((JointIndex) i) {
           case JointIndex.NOSE: {
             jointTranslation = joint.matrix.Translation with {
@@ -529,21 +535,23 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     var tuples = meshDefinition.MeshSegmentedAddresses.Zip(
         meshDefinition.VertexDisplayListSegmentedAddresses,
-        meshDefinition.PrimitiveDisplayListSegmentedAddresses);
+        meshDefinition.PrimitiveDisplayListSegmentedAddresses)
+                               .ToArray();
 
     var addedDisplayList = false;
-    foreach (var (meshSegmentedAddress,
-                 vertexDlSegmentedAddress,
-                 primitiveDlSegmentedAddress) in tuples) {
+    for (var i = 0; i < 4; ++i) {
+      var (meshSegmentedAddress,
+          vertexDlSegmentedAddress,
+          primitiveDlSegmentedAddress) = tuples[i];
       if (primitiveDlSegmentedAddress == 0) {
         continue;
       }
 
       if (meshSegmentedAddress != 0 &&
           n64Hardware.Memory
-                      .TryToOpenPossibilitiesAtSegmentedAddress(
-                          meshSegmentedAddress,
-                          out var possibilities) &&
+                     .TryToOpenPossibilitiesAtSegmentedAddress(
+                         meshSegmentedAddress,
+                         out var possibilities) &&
           possibilities.TryGetFirst(out var sbr)) {
         var meshBaseOffset = sbr.Position;
         if (sbr.ReadUInt32() != 0) {
@@ -568,13 +576,20 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
             (uint) (segment.Offset + meshBaseOffset + vertexSectionOffset),
             (uint) vertexSectionSize);
 
-        SetCombiner_(n64Hardware,
-                     imageCount > 0,
-                     chosenPart0 != skinChosenPart
-                         ? OneOf<uint, Color>.FromT0(
-                             chosenPart0.Pattern0SegmentedAddress)
-                         : OneOf<uint, Color>.FromT1(
-                             chosenPart0.ChosenColor0.Color.ToSystemColor()));
+        var withTexture = imageCount > 0;
+        if (chosenPart0 == skinChosenPart) {
+          SetCombiner_(n64Hardware,
+                       withTexture,
+                       OneOf<uint, Color>.FromT1(
+                           chosenPart0.ChosenColor0.Color.ToSystemColor()));
+        } else {
+          SetCombiner_(n64Hardware,
+                       withTexture,
+                       OneOf<uint, Color>.FromT0(
+                           i == 1
+                               ? chosenPart0.Pattern1SegmentedAddress 
+                               : chosenPart0.Pattern0SegmentedAddress));
+        }
       } else {
         SetCombiner_(n64Hardware, true);
       }
