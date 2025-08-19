@@ -6,7 +6,9 @@
 
 ## Overview
 
-Model viewer and command-line tools for extracting models from games en-masse. Separate batch scripts are provided for each supported game in order to simplify the process.
+Multitool for viewing/extracting assets from various N64/GCN/3DS/PC games en-masse.
+
+Separate batch scripts are provided for each supported game in order to simplify the process.
 
 ![image](https://user-images.githubusercontent.com/15970939/204156969-084cc1a4-1824-45c9-becc-e44ad69668d6.png)
 
@@ -127,6 +129,8 @@ If you'd like to vote on new games or features that should be supported, please 
 - (Picross puzzles)
   - Mario's Picross (`marios_picross_1.gb`)
   - Picross 2 (AKA Mario's Picross 2) (`marios_picross_2.gb`)
+- .tstlt (N64)
+  - Mario Artist: Talent Studio (rip these first with [mfs_manager](https://github.com/LuigiBlood/mfs_manager) and include them in `roms/mario_artist/prereqs`)
 - .vis/.xtd (PC)
   - Halo Wars (Steam)
 - VRML (.wrl)
