@@ -171,6 +171,7 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
         };
       }
       case F3dzex2Opcode.G_SETENVCOLOR:
+        br.Position += 3;
         return new SetEnvColorOpcodeCommand {
             R = br.ReadByte(),
             G = br.ReadByte(),
@@ -298,6 +299,7 @@ public class F3dzex2OpcodeParser : IOpcodeParser {
       // TODO: Especially implement these
       case F3dzex2Opcode.G_SETCIMG:
       case F3dzex2Opcode.G_SETZIMG:
+        return new NoopOpcodeCommand();
       // TODO: Implement these
       case F3dzex2Opcode.G_CULLDL:
       case F3dzex2Opcode.G_BRANCH_Z:

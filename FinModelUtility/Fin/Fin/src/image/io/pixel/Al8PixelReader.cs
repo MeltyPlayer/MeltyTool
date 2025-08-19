@@ -16,8 +16,8 @@ public class Al8PixelReader : IPixelReader<La16> {
   public void Decode(ReadOnlySpan<byte> data, Span<La16> scan0, int offset) {
     var value = data[0];
 
-    var alpha = (byte) ((value >> 4) * 17);
-    var luminance = (byte) ((value & 0xF) * 17);
+    var luminance = (byte) ((value >> 4) * 17);
+    var alpha = (byte) ((value & 0xF) * 17);
 
     scan0[offset] = new La16(luminance, alpha);
   }

@@ -297,112 +297,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    var headChosenPart0Tuples = headMeshDefinitions
-        .Select((meshDefinition, i) => {
-          var segment = headSegment;
-          var unkSection5 = headUnkSection5s[i / 4].Subs[i % 4];
-          var chosenPart =
-              headChosenPart0sById.GetValueOrDefault(
-                  unkSection5.ChosenPartId,
-                  skinChosenPart);
-          return (segment, meshDefinition, unkSection5, chosenPart);
-        });
-    var bodyChosenPart0Tuples = bodyMeshDefinitions
-        .Select((meshDefinition, i) => {
-          var segment = bodySegment;
-          var unkSection5 = bodyUnkSection5s[i / 4].Subs[i % 4];
-          var chosenPart =
-              bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
-                skinChosenPart);
-          return (segment, meshDefinition, unkSection5, chosenPart);
-        });
-
-    var chosenPart0TuplesByMeshSetId =
-        new ListDictionary<uint, ChosenPart0Tuple>();
-    foreach (var chosenPart0Tuple in headChosenPart0Tuples.Concat(
-                     bodyChosenPart0Tuples)
-                 .Where(tuple => tuple.unkSection5.UnkAddress != 0)) {
-      chosenPart0TuplesByMeshSetId.Add(
-          chosenPart0Tuple.meshDefinition.MeshSetId,
-          chosenPart0Tuple);
-    }
-
-    var headChosenPart1Tuples = headChosenPart1s.Select(chosenPart => {
-      var segment = headSegment;
-      return (segment, chosenPart,
-              finBonesAndJoints[(uint) JointIndex.NECK].Item1, true);
-    });
-    var bodyChosenPart1Tuples = bodyChosenPart1s.Select(chosenPart => {
-      var segment = bodySegment;
-      return (segment, chosenPart,
-              finBonesAndJoints[(uint) JointIndex.BODY_ROOT].Item1, false);
-    });
-
-    var chosenPart1TuplesByMeshSetId =
-        new ListDictionary<uint, ChosenPart1Tuple>();
-    foreach (var chosenPart1Tuple in headChosenPart1Tuples.Concat(
-                 bodyChosenPart1Tuples)) {
-      chosenPart1TuplesByMeshSetId.Add(
-          chosenPart1Tuple.chosenPart.MeshSetId,
-          chosenPart1Tuple);
-    }
-
-    foreach (var (bone, joint, jointIndex) in finBonesAndJoints) {
-      var meshSetId = joint.MeshSetId;
-      if (chosenPart0TuplesByMeshSetId.TryGetList(
-              meshSetId,
-              out var chosenPart0Tuples)) {
-        // TODO: This only sometimes works
-        var chosenPart0TuplesInOrder = jointIndex != (uint) JointIndex.TORSO
-            ? chosenPart0Tuples.AsEnumerable()
-            : chosenPart0Tuples.Reverse();
-
-        var isFirst = true;
-
-        foreach (var chosenPart0Tuple in chosenPart0TuplesInOrder) {
-          if (TryToAddChosenPart0Tuple_(
-                  model,
-                  skinChosenPart,
-                  chosenPart0Tuple,
-                  n64Hardware,
-                  dlModelBuilder,
-                  joint,
-                  jointIndex,
-                  isFirst,
-                  bone.Parent!,
-                  bone)) {
-            isFirst = false;
-          }
-        }
-      }
-
-      if (chosenPart1TuplesByMeshSetId.TryGetList(
-              meshSetId,
-              out var chosenPart1Tuples)) {
-        foreach (var chosenPart1Tuple in chosenPart1Tuples) {
-          TryToAddChosenPart1Tuple_(
-              model,
-              chosenPart1Tuple,
-              n64Hardware,
-              dlModelBuilder,
-              joint,
-              chosenPart1Tuple.bone,
-              skinColor
-          );
-        }
-      }
-    }
-
-    // HACK: Fixes textures so that they actually wrap. For some reason,
-    // a lot of these are incorrectly set to clamp (e.g. hair).
-    foreach (var texture in model.MaterialManager.Textures) {
-      if (texture.WrapModeU == WrapMode.CLAMP) {
-        texture.WrapModeU = WrapMode.REPEAT;
-      }
-      if (texture.WrapModeV == WrapMode.CLAMP) {
-        texture.WrapModeV = WrapMode.REPEAT;
-      }
-    }
 
     // Adds face
     {
@@ -511,6 +405,113 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         foreach (var p in faceMesh.Primitives) {
           p.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
         }
+      }
+    }
+
+    var headChosenPart0Tuples = headMeshDefinitions
+        .Select((meshDefinition, i) => {
+          var segment = headSegment;
+          var unkSection5 = headUnkSection5s[i / 4].Subs[i % 4];
+          var chosenPart =
+              headChosenPart0sById.GetValueOrDefault(
+                  unkSection5.ChosenPartId,
+                  skinChosenPart);
+          return (segment, meshDefinition, unkSection5, chosenPart);
+        });
+    var bodyChosenPart0Tuples = bodyMeshDefinitions
+        .Select((meshDefinition, i) => {
+          var segment = bodySegment;
+          var unkSection5 = bodyUnkSection5s[i / 4].Subs[i % 4];
+          var chosenPart =
+              bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
+                skinChosenPart);
+          return (segment, meshDefinition, unkSection5, chosenPart);
+        });
+
+    var chosenPart0TuplesByMeshSetId =
+        new ListDictionary<uint, ChosenPart0Tuple>();
+    foreach (var chosenPart0Tuple in headChosenPart0Tuples.Concat(
+                     bodyChosenPart0Tuples)
+                 .Where(tuple => tuple.unkSection5.UnkAddress != 0)) {
+      chosenPart0TuplesByMeshSetId.Add(
+          chosenPart0Tuple.meshDefinition.MeshSetId,
+          chosenPart0Tuple);
+    }
+
+    var headChosenPart1Tuples = headChosenPart1s.Select(chosenPart => {
+      var segment = headSegment;
+      return (segment, chosenPart,
+              finBonesAndJoints[(uint) JointIndex.NECK].Item1, true);
+    });
+    var bodyChosenPart1Tuples = bodyChosenPart1s.Select(chosenPart => {
+      var segment = bodySegment;
+      return (segment, chosenPart,
+              finBonesAndJoints[(uint) JointIndex.BODY_ROOT].Item1, false);
+    });
+
+    var chosenPart1TuplesByMeshSetId =
+        new ListDictionary<uint, ChosenPart1Tuple>();
+    foreach (var chosenPart1Tuple in headChosenPart1Tuples.Concat(
+                 bodyChosenPart1Tuples)) {
+      chosenPart1TuplesByMeshSetId.Add(
+          chosenPart1Tuple.chosenPart.MeshSetId,
+          chosenPart1Tuple);
+    }
+
+    foreach (var (bone, joint, jointIndex) in finBonesAndJoints) {
+      var meshSetId = joint.MeshSetId;
+      if (chosenPart0TuplesByMeshSetId.TryGetList(
+              meshSetId,
+              out var chosenPart0Tuples)) {
+        // TODO: This only sometimes works
+        var chosenPart0TuplesInOrder = jointIndex != (uint) JointIndex.TORSO
+            ? chosenPart0Tuples.AsEnumerable()
+            : chosenPart0Tuples.Reverse();
+
+        var isFirst = true;
+
+        foreach (var chosenPart0Tuple in chosenPart0TuplesInOrder) {
+          if (TryToAddChosenPart0Tuple_(
+                  model,
+                  skinChosenPart,
+                  chosenPart0Tuple,
+                  n64Hardware,
+                  dlModelBuilder,
+                  joint,
+                  jointIndex,
+                  isFirst,
+                  bone.Parent!,
+                  bone)) {
+            isFirst = false;
+          }
+        }
+      }
+
+      if (chosenPart1TuplesByMeshSetId.TryGetList(
+              meshSetId,
+              out var chosenPart1Tuples)) {
+        foreach (var chosenPart1Tuple in chosenPart1Tuples) {
+          TryToAddChosenPart1Tuple_(
+              model,
+              chosenPart1Tuple,
+              n64Hardware,
+              dlModelBuilder,
+              joint,
+              chosenPart1Tuple.bone,
+              skinColor
+          );
+        }
+      }
+    }
+
+    // HACK: Fixes textures so that they actually wrap. For some reason,
+    // a lot of these are incorrectly set to clamp (e.g. hair).
+    foreach (var texture in model.MaterialManager.Textures) {
+      if (texture.WrapModeU == WrapMode.CLAMP) {
+        texture.WrapModeU = WrapMode.REPEAT;
+      }
+      if (texture.WrapModeV == WrapMode.CLAMP) {
+        texture.WrapModeV = WrapMode.REPEAT;
       }
     }
 
@@ -645,6 +646,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       var rsp = n64Hardware.Rsp;
       rsp.EnvironmentColor = Color.White;
       rsp.PrimColor = Color.White;
+      dlModelBuilder.TransparentCutoff = .5f;
     }
 
     return addedDisplayList;
@@ -661,6 +663,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var (segment, chosenPart1, _, isHead) = chosenPart1Tuple;
 
     n64Hardware.Memory.SetSegment(0xF, segment);
+
+    var dlIndex = 2;
 
     var rsp = n64Hardware.Rsp;
     switch (isHead, chosenPart1Tuple.chosenPart.MeshSetId) {
@@ -682,6 +686,13 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
             OneOf<uint, Color>.FromT0(0x0F003800));
         break;
       }
+      // Glasses
+      case (true, 8): {
+        // HACK: Hardcodes using DL at index 3 for glasses.
+        dlIndex = 3;
+        dlModelBuilder.TransparentCutoff = .5f;
+        break;
+      }
       default: {
         SetCombiner_(n64Hardware, true);
         break;
@@ -699,7 +710,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         joint.isLeft,
         chosenPart1.DisplayListSegmentedAddresses
                    // HACK: For some reason, the other ones are hard-coded to render as black?
-                   .Where((_, i) => i == 2)
+                   .Where((_, i) => i == dlIndex)
                    .Where(dlSegmentedAddress => dlSegmentedAddress != 0)
                    .Select(dlSegmentedAddress
                                => (dlSegmentedAddress, (Matrix4x4?) null,
@@ -708,6 +719,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     rsp.UvType = N64UvType.LINEAR;
     rsp.EnvironmentColor = Color.White;
     rsp.PrimColor = Color.White;
+    dlModelBuilder.TransparentCutoff = .5f;
   }
 
   private static bool TryToAddDisplayLists_(

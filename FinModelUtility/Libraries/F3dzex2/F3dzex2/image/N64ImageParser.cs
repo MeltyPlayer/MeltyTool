@@ -152,14 +152,14 @@ public class N64ImageParser(IN64Hardware n64Hardware) {
       case N64ColorFormat.LA: {
         switch (bitsPerTexel) {
           case BitsPerTexel._8BPT:
-            return PixelImageReader.New(imageWidth,
-                                        imageHeight,
-                                        new La8PixelReader())
+              return PixelImageReader.New(imageWidth,
+                                          imageHeight,
+                                          new Al8PixelReader())
                                    .ReadImage(data, Endianness.BigEndian);
           case BitsPerTexel._16BPT:
             return PixelImageReader.New(imageWidth,
                                         imageHeight,
-                                        new La16PixelReader())
+                                        new Al16PixelReader())
                                    .ReadImage(data, Endianness.BigEndian);
           default:
             throw new ArgumentOutOfRangeException(

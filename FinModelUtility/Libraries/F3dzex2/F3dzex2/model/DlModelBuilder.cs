@@ -18,6 +18,7 @@ using fin.model;
 using fin.model.impl;
 using fin.image.util;
 using fin.io.bundles;
+using fin.math;
 using fin.util.enums;
 
 using schema.binary;
@@ -42,6 +43,8 @@ public class DlModelBuilder {
   private IMaterial cachedMaterial_;
   private readonly IF3dVertices vertices_;
   private bool isMaterialTransparent_ = false;
+
+  public float TransparentCutoff { get; set; } = .5f;
 
   /// <summary>
   ///   Each model gets its own DlModelBuilder, but they all need to share
@@ -335,15 +338,16 @@ public class DlModelBuilder {
               equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
                                            combinedAlpha);
 
-              if (finMaterial.Textures.Any(texture
-                                               => TransparencyTypeUtil
-                                                      .GetTransparencyType(
-                                                          texture.Image) ==
-                                                  TransparencyType
-                                                      .TRANSPARENT)) {
+
+              if (finMaterial
+                         .Textures
+                         .Any(texture
+                                  => TransparencyTypeUtil.GetTransparencyType(
+                                         texture.Image) ==
+                                     TransparencyType.TRANSPARENT)) {
                 finMaterial.SetAlphaCompare(AlphaOp.Or,
                                             AlphaCompareType.Always,
-                                            .5f,
+                                            this.TransparentCutoff,
                                             AlphaCompareType.Always,
                                             0);
                 finMaterial.SetBlending(BlendEquation.ADD,
@@ -352,7 +356,7 @@ public class DlModelBuilder {
                                         LogicOp.UNDEFINED);
               } else {
                 finMaterial.SetAlphaCompare(AlphaCompareType.Greater,
-                                            .5f);
+                                            this.TransparentCutoff);
               }
 
               return finMaterial;
