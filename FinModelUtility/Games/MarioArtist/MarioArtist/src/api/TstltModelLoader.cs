@@ -534,8 +534,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     n64Hardware.Memory.SetSegment(0xF, segment);
 
     var tuples = meshDefinition.MeshSegmentedAddresses.Zip(
-        meshDefinition.VertexDisplayListSegmentedAddresses,
-        meshDefinition.PrimitiveDisplayListSegmentedAddresses)
+                                   meshDefinition
+                                       .VertexDisplayListSegmentedAddresses,
+                                   meshDefinition
+                                       .PrimitiveDisplayListSegmentedAddresses)
                                .ToArray();
 
     var addedDisplayList = false;
@@ -587,7 +589,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                        withTexture,
                        OneOf<uint, Color>.FromT0(
                            i == 1
-                               ? chosenPart0.Pattern1SegmentedAddress 
+                               ? chosenPart0.Pattern1SegmentedAddress
                                : chosenPart0.Pattern0SegmentedAddress));
         }
       } else {
@@ -603,23 +605,20 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       IBoneWeights vertexDlBoneWeights;
       if (!isFirst) {
         vertexDlBoneWeights = primitiveDlBoneWeights;
-      } else if (!joint.isLeft) {
+      } else if (!joint.isLeft ||
+                 jointIndex is not ((int) JointIndex.UPPER_ARM_1
+                               or (int) JointIndex.UPPER_LEG_1))
+      {
         vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
             VertexSpace.RELATIVE_TO_BONE,
             parentBone);
       } else {
-        // TODO: Still need to handle this case... the left side gets mapped to the right
+        // HACK: Flips shoulder/hip across the axis.
         vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
             VertexSpace.RELATIVE_TO_BONE,
             parentBone);
 
-        /*var parentWorldMatrix = parentBone.GetWorldMatrix();
-
-        vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
-            VertexSpace.RELATIVE_TO_WORLD,
-            parentBone);
-
-        vertexMatrix = Matrix4x4.CreateScale(-1, 1, 1) * parentWorldMatrix;*/
+        vertexMatrix = Matrix4x4.CreateScale(1, -1, 1);
       }
 
       (uint, Matrix4x4?, IBoneWeights)[] displayLists
