@@ -314,7 +314,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var chosenPart0TuplesByMeshSetId =
         new ListDictionary<uint, ChosenPart0Tuple>();
     foreach (var chosenPart0Tuple in headChosenPart0Tuples.Concat(
-                 bodyChosenPart0Tuples)
+                     bodyChosenPart0Tuples)
                  .Where(tuple => tuple.unkSection5.UnkAddress != 0)) {
       chosenPart0TuplesByMeshSetId.Add(
           chosenPart0Tuple.meshDefinition.MeshSetId,
@@ -508,54 +508,49 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     foreach (var (meshSegmentedAddress,
                  vertexDlSegmentedAddress,
                  primitiveDlSegmentedAddress) in tuples) {
-      if (meshSegmentedAddress == 0) {
-        continue;
-      }
-
-      if (!n64Hardware.Memory.TryToOpenPossibilitiesAtSegmentedAddress(
-              meshSegmentedAddress,
-              out var possibilities)) {
-        continue;
-      }
-
-      if (!possibilities.TryGetFirst(out var sbr)) {
-        continue;
-      }
-
-      var meshBaseOffset = sbr.Position;
-      if (sbr.ReadUInt32() != 0) {
-        continue;
-      }
-
-      sbr.Position = meshBaseOffset;
-
-      sbr.Position = meshBaseOffset + 4 * 2;
-      var imageSectionSize = sbr.ReadUInt32();
-      var vertexSectionSize = sbr.ReadUInt32();
-
-      sbr.Position = meshBaseOffset + 4 * 7;
-      var imageSectionOffset = sbr.ReadUInt32();
-      var vertexSectionOffset = sbr.ReadUInt32();
-
-      sbr.Position = meshBaseOffset + 4 * 14;
-      var imageCount = sbr.ReadUInt16();
-
-      n64Hardware.Memory.SetSegment(
-          0xE,
-          (uint) (segment.Offset + meshBaseOffset + vertexSectionOffset),
-          (uint) vertexSectionSize);
-
       if (primitiveDlSegmentedAddress == 0) {
         continue;
       }
 
-      SetCombiner_(n64Hardware,
-                   imageCount > 0,
-                   chosenPart0 != skinChosenPart
-                       ? OneOf<uint, Color>.FromT0(
-                           chosenPart0.Pattern0SegmentedAddress)
-                       : OneOf<uint, Color>.FromT1(
-                           chosenPart0.ChosenColor0.Color.ToSystemColor()));
+      if (meshSegmentedAddress != 0 &&
+          n64Hardware.Memory
+                      .TryToOpenPossibilitiesAtSegmentedAddress(
+                          meshSegmentedAddress,
+                          out var possibilities) &&
+          possibilities.TryGetFirst(out var sbr)) {
+        var meshBaseOffset = sbr.Position;
+        if (sbr.ReadUInt32() != 0) {
+          continue;
+        }
+
+        sbr.Position = meshBaseOffset;
+
+        sbr.Position = meshBaseOffset + 4 * 2;
+        var imageSectionSize = sbr.ReadUInt32();
+        var vertexSectionSize = sbr.ReadUInt32();
+
+        sbr.Position = meshBaseOffset + 4 * 7;
+        var imageSectionOffset = sbr.ReadUInt32();
+        var vertexSectionOffset = sbr.ReadUInt32();
+
+        sbr.Position = meshBaseOffset + 4 * 14;
+        var imageCount = sbr.ReadUInt16();
+
+        n64Hardware.Memory.SetSegment(
+            0xE,
+            (uint) (segment.Offset + meshBaseOffset + vertexSectionOffset),
+            (uint) vertexSectionSize);
+
+        SetCombiner_(n64Hardware,
+                     imageCount > 0,
+                     chosenPart0 != skinChosenPart
+                         ? OneOf<uint, Color>.FromT0(
+                             chosenPart0.Pattern0SegmentedAddress)
+                         : OneOf<uint, Color>.FromT1(
+                             chosenPart0.ChosenColor0.Color.ToSystemColor()));
+      } else {
+        SetCombiner_(n64Hardware, true);
+      }
 
       var primitiveDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
           VertexSpace.RELATIVE_TO_BONE,
@@ -592,7 +587,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
               ]
               : [
                   (vertexDlSegmentedAddress, vertexMatrix, vertexDlBoneWeights),
-                (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
+                  (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
               ];
 
       if (TryToAddDisplayLists_(
