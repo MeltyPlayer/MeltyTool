@@ -439,7 +439,34 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                                  faceDlSegmentedAddress));
       }
 
-      br.Position += 8;
+      // Top of head (for bald characters)
+      {
+        var headDlSegmentedAddresses = br.ReadUInt32s(2);
+        rdp.Tmem.SetImage(0x4b0,
+                          N64ColorFormat.RGBA,
+                          BitsPerTexel._16BPT,
+                          64,
+                          32,
+                          F3dWrapMode.CLAMP,
+                          F3dWrapMode.CLAMP);
+        for (var i = 1; i >= 0; --i) {
+          var headDlSegmentedAddress = headDlSegmentedAddresses[i];
+          if (headDlSegmentedAddress == 0) {
+            continue;
+          }
+
+          var headMesh =
+              dlModelBuilder.StartNewMesh(
+                  $"head {i}/2: {headDlSegmentedAddress.ToHexString()}");
+          faceMeshes.Add(headMesh);
+
+          dlModelBuilder.AddDl(new DisplayListReader().ReadDisplayList(
+                                   n64Hardware.Memory,
+                                   new F3dzex2OpcodeParser(),
+                                   headDlSegmentedAddress));
+        }
+      }
+
       var noseDlSegmentedAddress = br.ReadUInt32();
       rsp.ActiveBoneWeights =
           model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
