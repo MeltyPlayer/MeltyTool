@@ -240,7 +240,7 @@ struct ChosenBodyPart0s {
     ChosenPart0 bodyChosenParts[3] <optimize=false>;
     ChosenPart0 pants;
     ChosenPart0 shirt;
-    ChosenPart0 bodyChosenParts;
+    ChosenPart0 back;
     ChosenPart0 shoes;
     ChosenPart0 bodyChosenParts;
 } chosenBodyPart0s;

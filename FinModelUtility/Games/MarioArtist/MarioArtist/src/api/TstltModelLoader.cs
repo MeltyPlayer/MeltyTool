@@ -390,7 +390,12 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     // HACK: Fixes textures so that they actually wrap. For some reason,
     // a lot of these are incorrectly set to clamp (e.g. hair).
     foreach (var texture in model.MaterialManager.Textures) {
-      texture.WrapModeU = texture.WrapModeV = WrapMode.REPEAT;
+      if (texture.WrapModeU == WrapMode.CLAMP) {
+        texture.WrapModeU = WrapMode.REPEAT;
+      }
+      if (texture.WrapModeV == WrapMode.CLAMP) {
+        texture.WrapModeV = WrapMode.REPEAT;
+      }
     }
 
     // Adds face
