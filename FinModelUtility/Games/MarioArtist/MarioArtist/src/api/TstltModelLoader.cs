@@ -346,7 +346,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                           N64ColorFormat.RGBA,
                           BitsPerTexel._16BPT,
                           64,
-                          32,
+                          1,
                           F3dWrapMode.CLAMP,
                           F3dWrapMode.CLAMP);
         for (var i = 1; i >= 0; --i) {
