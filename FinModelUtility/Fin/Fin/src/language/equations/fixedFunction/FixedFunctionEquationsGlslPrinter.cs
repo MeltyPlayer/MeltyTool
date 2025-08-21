@@ -39,7 +39,9 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
     var usesSphericalReflectionMapping
         = shaderRequirements.UsesSphericalReflectionMapping;
-    if (usesSphericalReflectionMapping) {
+    var usesLinearReflectionMapping
+        = shaderRequirements.UsesLinearReflectionMapping;
+    if (usesSphericalReflectionMapping || usesLinearReflectionMapping) {
       sb.AppendLine(GlslUtil.GetMatricesHeader(model));
       sb.AppendLine();
     }
@@ -68,7 +70,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         ]);
 
     var dependsOnLights = dependsOnMergedLights || dependsOnAnIndividualLight;
-    var dependsOnNormals = dependsOnLights || usesSphericalReflectionMapping;
+    var dependsOnNormals = dependsOnLights || usesSphericalReflectionMapping || usesLinearReflectionMapping;
 
     var dependsOnAmbientLight = equations.DoOutputsDependOn(
     [
@@ -235,6 +237,13 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       if (usesSphericalReflectionMapping) {
         sb.AppendLine($"""
                          vec2 {GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME} = acos(normalize({GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME} * {GlslConstants.UNIFORM_VIEW_MATRIX_NAME} * vec4(fragNormal, 0)).xy) / 3.14159;
+
+                       """);
+      }
+
+      if (usesLinearReflectionMapping) {
+        sb.AppendLine($"""
+                         vec2 {GlslConstants.IN_LINEAR_REFLECTION_UV_NAME} = acos(normalize({GlslConstants.UNIFORM_PROJECTION_MATRIX_NAME} * {GlslConstants.UNIFORM_VIEW_MATRIX_NAME} * vec4(fragNormal, 0)).xy) / 3.14159;
 
                        """);
       }
@@ -902,7 +911,14 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
                 GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME,
                 texture,
                 this.animations_),
-        _             => throw new ArgumentOutOfRangeException()
+        // TODO: Support linear UVs
+        UvType.LINEAR
+            => GlslUtil.ReadColorFromTexture(
+                textureName,
+                GlslConstants.IN_LINEAR_REFLECTION_UV_NAME,
+                texture,
+                this.animations_),
+      _             => throw new ArgumentOutOfRangeException()
     };
   }
 
