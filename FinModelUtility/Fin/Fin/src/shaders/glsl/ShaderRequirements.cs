@@ -14,6 +14,7 @@ public enum TangentType {
 
 public interface IShaderRequirements {
   public bool UsesSphericalReflectionMapping { get; }
+  public bool UsesLinearReflectionMapping { get; }
 
   public bool HasNormals { get; }
   public TangentType TangentType { get; }
@@ -33,6 +34,8 @@ public class ShaderRequirements : IShaderRequirements {
                              IReadOnlyMaterial? material) {
     this.UsesSphericalReflectionMapping
         = material?.Textures.Any(t => t.UvType is UvType.SPHERICAL) ?? false;
+    this.UsesLinearReflectionMapping
+        = material?.Textures.Any(t => t.UvType is UvType.LINEAR) ?? false;
 
     if (modelRequirements.HasNormals) {
       this.HasNormals = model.Skin.Meshes
@@ -124,6 +127,7 @@ public class ShaderRequirements : IShaderRequirements {
   }
 
   public bool UsesSphericalReflectionMapping { get; }
+  public bool UsesLinearReflectionMapping { get; }
   public bool HasNormals { get; }
   public TangentType TangentType { get; }
   public bool[] UsedUvs { get; }

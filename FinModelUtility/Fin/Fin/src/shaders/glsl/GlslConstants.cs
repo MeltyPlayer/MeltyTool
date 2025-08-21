@@ -24,6 +24,7 @@ public static class GlslConstants {
   public const string IN_UV_NAME = "uv";
   public const string IN_VERTEX_COLOR_NAME = "vertexColor";
   public const string IN_SPHERICAL_REFLECTION_UV_NAME = "sphericalReflectionUv";
+  public const string IN_LINEAR_REFLECTION_UV_NAME = "linearReflectionUv";
 
   public const float MIN_ALPHA_BEFORE_DISCARD_MASK = .95f;
   public const string MIN_ALPHA_BEFORE_DISCARD_MASK_TEXT = ".95";
