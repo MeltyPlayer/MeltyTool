@@ -7,6 +7,7 @@ using f3dzex2.model;
 
 using fin.model;
 using fin.util.enums;
+using fin.util.hex;
 
 
 namespace f3dzex2.displaylist.opcodes;
@@ -19,14 +20,19 @@ public class SimpleDlOpcodeCommand : IOpcodeCommand {
 }
 
 public class DlOpcodeCommand : IOpcodeCommand {
-  public IReadOnlyList<IDisplayList> PossibleBranches { get; set; }
-  public bool PushCurrentDlToStack { get; set; }
+  public required uint SegmentedAddress { get; set; }
+  public required IReadOnlyList<IDisplayList> PossibleBranches { get; set; }
+  public required bool PushCurrentDlToStack { get; set; }
+
+  public override string ToString() => $"0xDE / G_DL: Addresses: 0x{this.SegmentedAddress.ToHex()}, Branches: {this.PossibleBranches.Count}, PushToStack: {this.PushCurrentDlToStack}";
 }
 
 /// <summary>
 ///   Stops executing current DL and returns to one at top of stack.
 /// </summary>
-public class EndDlOpcodeCommand : IOpcodeCommand;
+public class EndDlOpcodeCommand : IOpcodeCommand {
+  public override string ToString() => "0xDF / G_ENDDL";
+}
 
 public class MtxOpcodeCommand : IOpcodeCommand {
   public uint RamAddress { get; set; }

@@ -69,6 +69,7 @@ public class F3dOpcodeParser : IOpcodeParser {
         br.AssertUInt16(0);
         var address = br.ReadUInt32();
         return new DlOpcodeCommand {
+            SegmentedAddress = address,
             PossibleBranches =
                 dlr.ReadPossibleDisplayLists(n64Memory, this, address),
             PushCurrentDlToStack = storeReturnAddress
