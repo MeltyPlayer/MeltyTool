@@ -22,15 +22,18 @@ local uint COLOR_ORIENTATION = 0x888800;
 local uint COLOR_HEADER = 0xffffff;
 local uint COLOR_INDEX = 0x00ffff;
 local uint COLOR_SECTION0 = 0xffff00;
-local uint COLOR_SECTION1 = 0xff00ff;
 local uint COLOR_SECTION2 = 0x880088;
+
+local uint COLOR_DISPLAY_LIST = 0xff00ff;
+local uint COLOR_DISPLAY_LIST_OPCODE = 0xff00bb;
+local uint COLOR_DISPLAY_LIST_TERMINATOR = 0xff0088;
 
 uint CeilAlign(uint x, uint align) {
     local float fraction = (x / (1. * align));
     return Ceil(fraction) * align;  
 }
 
-typedef struct {
+struct Rgba32 {
     ubyte r;
     ubyte g;
     ubyte b;
@@ -40,8 +43,7 @@ typedef struct {
     
     FSeek(FTell() - 4);
     uint rgba <bgcolor=color>;
-} Rgba32;
-
+};
 
 typedef struct {
     ushort rgba;
@@ -63,20 +65,52 @@ struct Argb1555Image(uint width, uint height) {
 
 Argb1555Image thumbnail(24, 24);
 
-typedef struct {
+struct L8 {
     ubyte l;
     
     local uint color=(((uint) l) << 16) | (((uint) l) << 8) | l;
     
     FSeek(FTell() - 1);
     byte pixel <bgcolor=color>;
-} L8;
+};
 
-typedef struct L8Image(int size) {
+struct L8Image(int size) {
     L8 pixels[size] <optimize=false>;
 };
 
-typedef struct {
+struct DisplayList(uint fSegmentOffset) {  
+    struct DisplayListOpcode(uint fSegmentOffset) {
+        byte opcode <bgcolor=COLOR_DISPLAY_LIST_OPCODE>;       
+        
+        if (opcode == (byte) 0xDF) {
+            byte data[7] <bgcolor=COLOR_DISPLAY_LIST_TERMINATOR>;
+        } else if (opcode == (byte) 0xDE) {
+            byte data[3] <bgcolor=COLOR_DISPLAY_LIST>;
+            uint childSegmentedAddress <bgcolor=COLOR_DISPLAY_LIST>;
+            
+            local uint childBaseOffset = fSegmentOffset + (childSegmentedAddress & 0xffffff);
+            
+            local uint tmp = FTell();
+            FSeek(childBaseOffset);
+
+            struct DisplayList childDisplayList(fSegmentOffset);
+            
+            FSeek(tmp);
+        } else if (opcode == (byte) 0xF9 || opcode == (byte) 0xFA || opcode == (byte) 0xFB) {
+            byte data[3] <bgcolor=COLOR_DISPLAY_LIST>;
+            Rgba32 color;
+        } else {
+            byte data[7] <bgcolor=COLOR_DISPLAY_LIST>;
+        }
+    };
+
+    do {
+        DisplayListOpcode opcodes(fSegmentOffset);
+    } while (opcodes.opcode != (byte) 0xDF);
+};
+
+
+struct Header {
     uint checksum;
     uint unk1;
     uint magic[2];
@@ -90,9 +124,7 @@ typedef struct {
     uint unk6;
     uint unk7;
     uint unk8;
-} Header <bgcolor=COLOR_HEADER>;
-
-Header header;
+} header <bgcolor=COLOR_HEADER>;
 
 local uint headOffset = 0x16770;
 local uint bodyOffset = headOffset + header.headSectionLength;
@@ -114,6 +146,13 @@ typedef struct {
   float z;
 } Vec3f;
 
+enum <byte> MeshSet {
+    NOSE = 0x5,
+    BEARD = 0x7,
+    GLASSES = 0x8,
+    EARRINGS = 0x9,    
+};
+
 typedef struct {   
     short faceImages[128 * 141] <bgcolor=COLOR_IMAGE>;
     
@@ -123,6 +162,8 @@ typedef struct {
     
     typedef struct {
         typedef struct {
+            // Whether this is on the left side of character viewing them head-on.
+            // This means the this part will be scaled by -1 horizontally.
             ushort isLeft;
     
             enum <ushort> InclusionType { 
@@ -162,8 +203,8 @@ typedef struct {
     uint unk1;
     
     typedef struct {   
-      // Sorted in terms of columns rather than rows, i.e. first column, then second column, etc.
-      Vec2f pins[13 * 9] <bgcolor=COLOR_ORIENTATION, optimize=false>;
+        // Sorted in terms of columns rather than rows, i.e. first column, then second column, etc.
+        Vec2f pins[13 * 9] <bgcolor=COLOR_ORIENTATION, optimize=false>;
     } Expression;
     Expression expressions[6] <optimize=false>;
 } FaceHeader <bgcolor=COLOR_HEADER>;
@@ -174,12 +215,17 @@ typedef struct {
   ushort unk0;
   ushort unk1;
 
-  ushort meshSetId;
+  // Used to attach ChosenPart1s and MeshDefinitions to this joint.
+  byte padding;
+  MeshSet meshSet;
   ushort unk2;
   ushort unk3;
   ushort unk4;
   
   byte index <bgcolor=COLOR_INDEX>;
+  // Whether this is on the left side of character viewing them head-on.
+  // This means the model will be scaled by -1 horizontally, so it will be inside-out.
+  // (i.e. the vertices need to be used in the reverse order)
   byte isLeft;
   ushort unk6;
   ushort unk7;
@@ -221,6 +267,7 @@ typedef struct {
 typedef struct {
     struct SubUnkSection5 {
         uint meshDefinitionRamAddress;    
+        // Renders with styles from the chosenPart0 with the corresponding chosenPartId.
         uint chosenPartId;
         uint unk0[3];
     } subs[4] <optimize=false>;
@@ -255,16 +302,41 @@ Rgba32 skinColor;
 
 // Examples
 // - nose is type 5
+// - beard is type 7
+// - glasses are type 8
 // - earrings are type 9
-typedef struct {
-  uint chosenPartId;
+typedef struct (uint fSegmentOffset) {
+  // Attached to the joint with the same meshSet.
+  byte padding[3];
+  MeshSet meshSet;
   uint maybeFileIndex <bgcolor=COLOR_INDEX>;
   
   // The current model to render
   uint chosenModelIndex <bgcolor=COLOR_INDEX>; 
+  // Whether this is on the left side of character viewing them head-on.
+  // This means the model will be scaled by -1 horizontally, so it will be inside-out.
+  // (i.e. the vertices need to be used in the reverse order)
   uint isLeft;
 
-  uint unkSegmentedAddresses[5] <bgcolor=COLOR_OFFSET>;  
+  
+    // 0: ?
+    // 1: ?
+    // 2: very abbreviated version of 0
+    // 3: appears to be used to render the shadow in the background
+    // 4: ?
+    uint dlSegmentedAddresses[5] <bgcolor=COLOR_OFFSET>; 
+  
+    local uint tmp = FTell();
+    for (int i = 0; i < 5; ++i) {
+        if (dlSegmentedAddresses[i] != 0) {
+            FSeek(fSegmentOffset + (dlSegmentedAddresses[i] & 0xffffff));
+
+            DisplayList displayList(fSegmentOffset);
+         }
+    }
+           
+    FSeek(tmp);
+    
   byte unk2[0x54];
 
   Vec3f unkVec3a <bgcolor=COLOR_ORIENTATION>;
@@ -278,7 +350,7 @@ typedef struct {
   uint unk4[3];
 } ChosenPart1 <bgcolor=COLOR_HEADER>;
 
-typedef struct {
+typedef struct (uint fSegmentOffset) {
     local uint baseOffset = FTell();
     
     ubyte unkByte0[4];
@@ -295,7 +367,10 @@ typedef struct {
     uint vertexSectionOffset <bgcolor=COLOR_OFFSET>;
     uint opcodeSectionOffset <bgcolor=COLOR_OFFSET>;
     uint imageMetadataSectionOffset <bgcolor=COLOR_OFFSET>;
-    uint displayListOffsets[3] <bgcolor=COLOR_OFFSET>;
+    uint unkOffset <bgcolor=COLOR_OFFSET>;
+    
+    // First is primitive, second is vertices.
+    uint displayListOffsets[2] <bgcolor=COLOR_OFFSET>;
     
     ushort imageCount <bgcolor=COLOR_COUNT>;
     ushort vertexCount <bgcolor=COLOR_COUNT>;
@@ -311,13 +386,18 @@ typedef struct {
     
     uint vertices[4 * vertexCount] <bgcolor=COLOR_SECTION0>;
     
-    // The bulk of the logic is here...
-    // - Fast3DEX2 opcodes
-    // - Handles vertex setup by loading from a specific address (relative to 0x16770)
-    //   - Vertices can be fetched from other meshes...
-    // - Handles texture setup (width/format/clamp are defined here)
-    byte opcodeSectionData[opcodeSectionSize] <bgcolor=COLOR_SECTION1>;
-    
+    local uint tmp;
+    for (int i = 0; i < 2; ++i) {
+        if (displayListOffsets[i] != 0) {
+            tmp = FTell();
+            FSeek(baseOffset + displayListOffsets[i]);
+
+            DisplayList displayList(fSegmentOffset);
+            
+            FSeek(tmp);
+        }
+    }
+   
     struct ImageMetadata {
         uint offset;
         ushort maybeColorFormat;
@@ -332,72 +412,98 @@ typedef struct {
 // There will be the same number of MeshDefinitions as SubUnkSection5s,
 // the MeshDefinition at a given index uses the SubUnkSection5 at the
 // same index.
-typedef struct (uint baseOffset) {
+//
+// The MeshDefinition at that index will only be rendered if the
+// corresponding SubUnkSection5 has a nonzero meshDefinitionRamAddress.
+typedef struct (uint fSegmentOffset) {
     uint meshSegmentedAddresses[4] <bgcolor=COLOR_OFFSET>;
     
     local uint firstMeshSegmentedAddress = meshSegmentedAddresses[0];
     if (firstMeshSegmentedAddress != 0) {
-        local uint meshOffset = (firstMeshSegmentedAddress & 0xffffff) + baseOffset;
+        local uint meshOffset = fSegmentOffset + (firstMeshSegmentedAddress & 0xffffff);
         if (meshOffset < FileSize()) {
             local uint tempOffset = FTell();
             FSeek(meshOffset);
             uint firstMeshUint;
             if (firstMeshUint == 0) {
                 FSeek(meshOffset);
-                Mesh mesh;
+                Mesh mesh(fSegmentOffset);
             }
             FSeek(tempOffset);          
         }
     }
     
     byte unk1[4];
-    byte meshSetId;
+    // Attached to the joint with the same meshSet.
+    MeshSet meshSet;
     byte unkIndex <bgcolor=COLOR_INDEX>;
     
     ushort unk3;
     
     uint unk4[3];
     
-    // These floats are the same values as the sborts in the mesh
+    // These floats are the same values as the shorts in the mesh
     float unk5[6];
     uint unk6;
     
     // First sets up the vertices via vertexDl, then renders primitiveDl.
     // Annoying thing is that the first MeshDefinition in a given meshSet uses the
     // parent joint for the vertexDl, the rest use the current joint.
-    // (At least, this is usually true.)
+    // (At least, this is usually true?)
+    //
+    // This is done for each triplet (meshSegmentedAddress, primitiveDl, vertexDl).
     
-    uint primitiveDl <bgcolor=COLOR_OFFSET>;
-    uint unk7[0xC];
+    uint primitiveDl[4] <bgcolor=COLOR_OFFSET>;
+    uint unk7[9];
     
-    uint vertexDl <bgcolor=COLOR_OFFSET>;
-    uint unk8[0xC];
+    uint vertexDl[4] <bgcolor=COLOR_OFFSET>;
+    uint unk8[9];
 } MeshDefinition <bgcolor=COLOR_HEADER>;
 
 FSeek(0xc6c8);
 uint headChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
-ChosenPart1 headChosenHeadPart1s[headChosenHeadPart1Count] <optimize=false>;
+ChosenPart1 headChosenHeadPart1s(headOffset)[headChosenHeadPart1Count] <optimize=false>;
 
 FSeek(0xd530);
 MeshDefinition headMeshDefinition(headOffset)[0x20] <optimize=false>;
 
 FSeek(0xeae0);
-typedef struct {
+struct FaceDisplayListHeader {
     Vec2i nosePosition;
+
+    uint faceDlSegmentedAddresses[3] <bgcolor=COLOR_OFFSET>;
+    uint baldHeadDlSegmentedAddresses[2] <bgcolor=COLOR_OFFSET>;
+    uint noseDlSegmentedAddresses <bgcolor=COLOR_OFFSET>;
     
-    uint dlSegmentedAddresses[6] <bgcolor=COLOR_OFFSET>;
-} NoseHeader <bgcolor=COLOR_HEADER>;
-NoseHeader noseHeader;
+    local uint tmp = FTell();
+
+    for (int i = 0; i < 3; ++i) {
+        FSeek(headOffset + (faceDlSegmentedAddresses[i] & 0xffffff));
+        DisplayList faceDl(headOffset);
+    }
+
+    for (int i = 0; i < 2; ++i) {
+        if (baldHeadDlSegmentedAddresses[i] != 0) {
+            FSeek(headOffset + (baldHeadDlSegmentedAddresses[i] & 0xffffff));
+            DisplayList baldHeadDl(headOffset);
+        }
+    }
+
+    FSeek(headOffset + (noseDlSegmentedAddresses & 0xffffff));
+    DisplayList noseDl(headOffset);
+    
+    FSeek(tmp);
+} faceDisplayListHeader <bgcolor=COLOR_HEADER>;
 
 FSeek(0xeb00);
 uint bodyChosenHeadPart1Count <bgcolor=COLOR_COUNT>;
-ChosenPart1 bodyChosenHeadPart1s[bodyChosenHeadPart1Count] <optimize=false>;
+ChosenPart1 bodyChosenHeadPart1s(bodyOffset)[bodyChosenHeadPart1Count] <optimize=false>;
     
 FSeek(0xf968);
 MeshDefinition bodyMeshDefinitions(bodyOffset)[0x4C] <optimize=false>;
 
 FSeek(0x16680);
-typedef struct {
+struct Bio {
   char name[21];
   char job[21];
   
@@ -413,8 +519,7 @@ typedef struct {
   char descriptionLine1[41];
   char descriptionLine2[41];
   char descriptionLine3[41];
-} Bio;
-Bio bio;
+} bio;
 
 typedef struct (int imageCount) { 
   Argb1555Image images(32, 32)[imageCount] <optimize=false>;
