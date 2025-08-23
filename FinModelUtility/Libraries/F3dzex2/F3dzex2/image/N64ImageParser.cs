@@ -135,12 +135,12 @@ public class N64ImageParser(IN64Hardware n64Hardware) {
           case BitsPerTexel._4BPT:
             return PixelImageReader.New(imageWidth,
                                         imageHeight,
-                                        new L4PixelReader())
+                                        new L2a4PixelReader())
                                    .ReadImage(data, Endianness.BigEndian);
           case BitsPerTexel._8BPT:
             return PixelImageReader.New(imageWidth,
                                         imageHeight,
-                                        new L8PixelReader())
+                                        new L2a8PixelReader())
                                    .ReadImage(data, Endianness.BigEndian);
           default:
             throw new ArgumentOutOfRangeException(
