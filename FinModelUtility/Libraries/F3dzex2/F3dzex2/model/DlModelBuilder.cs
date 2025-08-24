@@ -379,6 +379,7 @@ public class DlModelBuilder {
 
               // TODO: I'm not sure if alpha compare is ever used on the N64
               finMaterial.DisableAlphaCompare();
+              finMaterial.TransparencyType = TransparencyType.OPAQUE;
               if (!doBlend) {
                 finMaterial.SetBlending(BlendEquation.ADD,
                                         BlendFactor.ONE,
@@ -421,6 +422,7 @@ public class DlModelBuilder {
                                         blendSrcFactor,
                                         blendDstFactor,
                                         LogicOp.UNDEFINED);
+                finMaterial.TransparencyType = TransparencyType.TRANSPARENT;
               }
 
               // Shamelessly stolen from:
@@ -748,10 +750,8 @@ public class DlModelBuilder {
       this.cachedMaterialParams_ = newMaterialParams;
       this.cachedMaterial_ = this.lazyMaterialDictionary_[newMaterialParams];
 
-      var textures = this.cachedMaterial_.Textures;
-      this.isMaterialTransparent_ =
-          textures.Any(t => TransparencyTypeUtil.GetTransparencyType(t.Image) ==
-                            TransparencyType.TRANSPARENT);
+      this.isMaterialTransparent_ = this.cachedMaterial_.TransparencyType ==
+                                    TransparencyType.TRANSPARENT;
     }
 
     return this.cachedMaterial_;

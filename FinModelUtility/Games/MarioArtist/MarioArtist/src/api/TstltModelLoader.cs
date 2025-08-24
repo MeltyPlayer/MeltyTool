@@ -51,6 +51,7 @@ public enum JointIndex {
   HEAD_ROOT = 0,
   HAIR = 2,
   HAT = 3,
+  HELMET = 4,
   NOSE = 5,
 
   EAR_0 = 6,
@@ -212,7 +213,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
             break;
           }
           case JointIndex.HAIR:
-          case JointIndex.HAT: {
+          case JointIndex.HAT:
+          case JointIndex.HELMET: {
             jointTranslation = Vector3.Zero;
             break;
           }
