@@ -161,7 +161,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     var materialManager = model.MaterialManager;
     var thumbnailTexture =
-        materialManager.CreateTexture(tstlt.Thumbnail.ToImage());
+        materialManager.CreateTexture(tstlt.Thumbnail.Image.ToImage());
     thumbnailTexture.Name = "thumbnail";
 
     br.Position = headSectionOffset;
