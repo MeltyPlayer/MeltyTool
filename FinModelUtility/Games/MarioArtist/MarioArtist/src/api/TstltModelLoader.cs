@@ -90,6 +90,9 @@ public enum JointIndex {
 }
 
 public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
+  public const int HARDCODED_MESH_SET_ID = -1;
+  public const bool INCLUDE_FACE = true;
+
   public IModel Import(TstltModelFileBundle fileBundle) {
     using var br = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
     var tstlt = br.ReadNew<Tstlt>();
@@ -299,12 +302,11 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
 
     // Adds face
-    {
+    var faceMeshes = new List<IMesh>();
+    if (INCLUDE_FACE) {
       n64Memory.SetSegment(0xF, headSegment);
 
-      SetCombiner_(n64Hardware, true);
-
-      var faceMeshes = new List<IMesh>();
+      SetCombiner_(n64Hardware, true, false);
 
       br.Position = 0xeae0;
       var nosePosition = br.ReadUInt32s(2);
@@ -407,6 +409,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         }
       }
     }
+
+    var faceTextures = faceMeshes.SelectMany(m => m.Primitives)
+                                 .SelectMany(p => p.Material?.Textures ?? [])
+                                 .ToHashSet();
 
     var headChosenPart0Tuples = headUnkSection5s
         .Select((unkSection5, unkSection5I) => {
@@ -522,7 +528,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
     // HACK: Fixes textures so that they actually wrap. For some reason,
     // a lot of these are incorrectly set to clamp (e.g. hair).
-    foreach (var texture in model.MaterialManager.Textures) {
+    foreach (var texture in
+             model.MaterialManager.Textures
+                  .Where(t => !faceTextures.Contains(t))) {
       if (texture.WrapModeU == WrapMode.CLAMP) {
         texture.WrapModeU = WrapMode.REPEAT;
       }
@@ -548,6 +556,11 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var (segment, meshDefinition, unkSection5, chosenPart0, unkSection5I,
             subUnkSection5I) =
         chosenPart0Tuple;
+
+    if (HARDCODED_MESH_SET_ID != -1 &&
+        meshDefinition.MeshSetId != HARDCODED_MESH_SET_ID) {
+      return;
+    }
 
     n64Hardware.Memory.SetSegment(0xF, segment);
 
@@ -596,22 +609,26 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
             (uint) (segment.Offset + meshBaseOffset + vertexSectionOffset),
             (uint) vertexSectionSize);
 
+        ResetRspAndRdp_(n64Hardware);
+
         var withTexture = imageCount > 0;
         if (chosenPart0 == skinChosenPart) {
           SetCombiner_(n64Hardware,
                        withTexture,
+                       false,
                        OneOf<uint, Color>.FromT1(
                            chosenPart0.ChosenColor0.Color.ToSystemColor()));
         } else {
           SetCombiner_(n64Hardware,
                        withTexture,
+                       false,
                        OneOf<uint, Color>.FromT0(
                            i == 1
                                ? chosenPart0.Pattern1SegmentedAddress
                                : chosenPart0.Pattern0SegmentedAddress));
         }
       } else {
-        SetCombiner_(n64Hardware, true);
+        SetCombiner_(n64Hardware, true, false);
       }
 
       var primitiveDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
@@ -657,9 +674,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
           joint.isLeft,
           displayLists);
 
-      var rsp = n64Hardware.Rsp;
-      rsp.EnvironmentColor = Color.White;
-      rsp.PrimColor = Color.White;
+      ResetRspAndRdp_(n64Hardware);
       dlModelBuilder.TransparentCutoff = .5f;
     }
   }
@@ -674,19 +689,34 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       Rgba32 skinColor) {
     var (segment, chosenPart1, _, isHead) = chosenPart1Tuple;
 
+    if (HARDCODED_MESH_SET_ID != -1 &&
+        chosenPart1.MeshSetId != HARDCODED_MESH_SET_ID) {
+      return;
+    }
+
     n64Hardware.Memory.SetSegment(0xF, segment);
 
-    var dlIndex = 2;
+    // TODO: Is this correct??
+    var dlIndex = 3;
+    var dlCount = 2;
 
-    var rsp = n64Hardware.Rsp;
+    ResetRspAndRdp_(n64Hardware);
+
     switch (isHead, chosenPart1Tuple.chosenPart.MeshSetId) {
       // Ear
       case (true, 6): {
-        // HACK: Hardcodes ear color to skin color.
-        SetCombiner_(
-            n64Hardware,
-            true,
-            OneOf<uint, Color>.FromT1(skinColor.ToSystemColor()));
+          // HACK: Hardcodes ear color to skin color.
+          SetCombiner_(
+              n64Hardware,
+              true,
+              false,
+              OneOf<uint, Color>.FromT1(skinColor.ToSystemColor()));
+          n64Hardware.Rsp.EnvironmentColor = Color.FromArgb(
+            0xFF,
+            (byte) (0xFF - skinColor.Rb),
+            (byte) (0xFF - skinColor.Gb),
+            (byte) (0xFF - skinColor.Bb));
+        n64Hardware.Rsp.PrimColor = Color.FromArgb(0xD2, 0, 0, 0);
         break;
       }
       // Beard
@@ -695,18 +725,14 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         SetCombiner_(
             n64Hardware,
             true,
+            false,
             OneOf<uint, Color>.FromT0(0x0F003800));
         break;
       }
       // Glasses
       case (true, 8): {
-        // HACK: Hardcodes using DL at index 3 for glasses.
-        dlIndex = 3;
-        dlModelBuilder.TransparentCutoff = .5f;
-        break;
-      }
-      default: {
-        SetCombiner_(n64Hardware, true);
+        // HACK: Hardcodes cycle count to 2.
+        n64Hardware.Rdp.CycleType = CycleType.TWO_CYCLE;
         break;
       }
     }
@@ -721,17 +747,36 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         $"chosenPart1({chosenPart1.MeshSetId})",
         joint.isLeft,
         chosenPart1.DisplayListSegmentedAddresses
-                   // HACK: For some reason, the other ones are hard-coded to render as black?
-                   .Where((_, i) => i == dlIndex)
+                   .Skip(dlIndex)
+                   .Take(dlCount)
                    .Where(dlSegmentedAddress => dlSegmentedAddress != 0)
                    .Select(dlSegmentedAddress
                                => (dlSegmentedAddress, (Matrix4x4?) null,
                                    boneWeights)));
 
+    ResetRspAndRdp_(n64Hardware);
+
+    dlModelBuilder.TransparentCutoff = .5f;
+  }
+
+  private static void ResetRspAndRdp_(IN64Hardware n64Hardware) {
+    // TODO: The way these are reset in the original game is actually really, really, really complicated
+    var rsp = n64Hardware.Rsp;
     rsp.UvType = N64UvType.LINEAR;
     rsp.EnvironmentColor = Color.White;
     rsp.PrimColor = Color.White;
-    dlModelBuilder.TransparentCutoff = .5f;
+
+    var rdp = n64Hardware.Rdp;
+    rdp.ForceBlending = false;
+    rdp.P0 = BlenderPm.G_BL_CLR_MEM;
+    rdp.A0 = BlenderA.G_BL_0;
+    rdp.M0 = BlenderPm.G_BL_CLR_IN;
+    rdp.B0 = BlenderB.G_BL_1;
+    rdp.P1 = BlenderPm.G_BL_CLR_MEM;
+    rdp.A1 = BlenderA.G_BL_0;
+    rdp.M1 = BlenderPm.G_BL_CLR_IN;
+    rdp.B1 = BlenderB.G_BL_1;
+    rdp.CycleType = CycleType.TWO_CYCLE;
   }
 
   private static bool TryToAddDisplayLists_(
@@ -798,6 +843,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
   private static void SetCombiner_(
       IN64Hardware<N64Memory> n64Hardware,
       bool withTexture0,
+      bool withAlpha,
       OneOf<uint, Color>? patternSegmentedOffsetOrColor = null) {
     var rdp = n64Hardware.Rdp;
     var rsp = n64Hardware.Rsp;
@@ -818,7 +864,8 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                 out var color)) {
           rdp.SetCombinerCycleParams(
               CombinerCycleParams
-                  .FromBlendingTexture0AndTexture1WithEnvColorAndShade());
+                  .FromBlendingTexture0AndTexture1WithEnvColorAndShade(
+                      withAlpha));
           rdp.Tmem.SetImage(patternSegmentedOffset,
                             N64ColorFormat.RGBA,
                             BitsPerTexel._16BPT,
@@ -830,18 +877,20 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
           rsp.EnvironmentColor = Color.FromArgb(0xff, 0xc8, 0xc8, 0xc8);
         } else {
           rdp.SetCombinerCycleParams(
-              CombinerCycleParams.FromTexture0AndLightingAndPrimitive());
+              CombinerCycleParams
+                  .FromTexture0AndLightingAndPrimitive(withAlpha));
           rsp.PrimColor = color;
         }
 
         break;
       }
       case (true, null): {
-        rdp.SetCombinerCycleParams(CombinerCycleParams.FromTexture0AndShade());
+        rdp.SetCombinerCycleParams(
+            CombinerCycleParams.FromTexture0AndShade(withAlpha));
         break;
       }
       default: {
-        rdp.SetCombinerCycleParams(CombinerCycleParams.FromShade());
+        rdp.SetCombinerCycleParams(CombinerCycleParams.FromShade(withAlpha));
         break;
       }
     }

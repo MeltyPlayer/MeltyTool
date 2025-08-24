@@ -50,29 +50,33 @@ public enum CycleType : byte {
 }
 
 public struct CombinerCycleParams {
-  public static (CombinerCycleParams, CombinerCycleParams) FromTexture0AndLightingAndPrimitive()
+  public static (CombinerCycleParams, CombinerCycleParams)
+      FromTexture0AndLightingAndPrimitive(bool withAlpha)
     => (new() {
-        ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
-        ColorMuxB = GenericColorMux.G_CCMUX_0,
-        ColorMuxC = GenericColorMux.G_CCMUX_SHADE,
-        ColorMuxD = GenericColorMux.G_CCMUX_0,
-        AlphaMuxA = GenericAlphaMux.G_ACMUX_TEXEL0,
-        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
-        AlphaMuxC = GenericAlphaMux.G_ACMUX_SHADE,
-        AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+            ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
+            ColorMuxB = GenericColorMux.G_CCMUX_0,
+            ColorMuxC = GenericColorMux.G_CCMUX_SHADE,
+            ColorMuxD = GenericColorMux.G_CCMUX_0,
+            AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
+            AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+            AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
+            AlphaMuxD = withAlpha
+                ? GenericAlphaMux.G_ACMUX_TEXEL0
+                : GenericAlphaMux.G_ACMUX_1,
     },
-    new() {
-        ColorMuxA = GenericColorMux.G_CCMUX_COMBINED,
-        ColorMuxB = GenericColorMux.G_CCMUX_0,
-        ColorMuxC = GenericColorMux.G_CCMUX_PRIMITIVE,
-        ColorMuxD = GenericColorMux.G_CCMUX_0,
-        AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
-        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
-        AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
-        AlphaMuxD = GenericAlphaMux.G_ACMUX_COMBINED,
-    });
+        new() {
+            ColorMuxA = GenericColorMux.G_CCMUX_COMBINED,
+            ColorMuxB = GenericColorMux.G_CCMUX_0,
+            ColorMuxC = GenericColorMux.G_CCMUX_PRIMITIVE,
+            ColorMuxD = GenericColorMux.G_CCMUX_0,
+            AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
+            AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+            AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
+            AlphaMuxD = GenericAlphaMux.G_ACMUX_COMBINED,
+        });
 
-  public static (CombinerCycleParams, CombinerCycleParams) FromBlendingTexture0AndTexture1WithEnvColorAndShade()
+  public static (CombinerCycleParams, CombinerCycleParams)
+      FromBlendingTexture0AndTexture1WithEnvColorAndShade(bool withAlpha)
     => (new() {
             ColorMuxA = GenericColorMux.G_CCMUX_TEXEL1,
             ColorMuxB = GenericColorMux.G_CCMUX_ENVIRONMENT,
@@ -81,7 +85,9 @@ public struct CombinerCycleParams {
             AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
             AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
             AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
-            AlphaMuxD = GenericAlphaMux.G_ACMUX_TEXEL0,
+            AlphaMuxD = withAlpha
+                ? GenericAlphaMux.G_ACMUX_TEXEL0
+                : GenericAlphaMux.G_ACMUX_1,
         },
         new() {
             ColorMuxA = GenericColorMux.G_CCMUX_COMBINED,
@@ -94,62 +100,32 @@ public struct CombinerCycleParams {
             AlphaMuxD = GenericAlphaMux.G_ACMUX_COMBINED,
         });
 
-  public static (CombinerCycleParams, CombinerCycleParams) FromTexture0AndPrimitiveAndShade()
-    => (new() {
-            ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
-            ColorMuxB = GenericColorMux.G_CCMUX_0,
-            ColorMuxC = GenericColorMux.G_CCMUX_PRIMITIVE,
-            ColorMuxD = GenericColorMux.G_CCMUX_0,
-            AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
-            AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
-            AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
-            AlphaMuxD = GenericAlphaMux.G_ACMUX_1,
-        },
-        new() {
-            ColorMuxA = GenericColorMux.G_CCMUX_COMBINED,
-            ColorMuxB = GenericColorMux.G_CCMUX_0,
-            ColorMuxC = GenericColorMux.G_CCMUX_SHADE,
-            ColorMuxD = GenericColorMux.G_CCMUX_0,
-            AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
-            AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
-            AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
-            AlphaMuxD = GenericAlphaMux.G_ACMUX_1,
-        });
-
-  public static CombinerCycleParams FromTexture0AndShade()
+  public static CombinerCycleParams FromTexture0AndShade(bool withAlpha)
     => new() {
         ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
         ColorMuxB = GenericColorMux.G_CCMUX_0,
         ColorMuxC = GenericColorMux.G_CCMUX_SHADE,
         ColorMuxD = GenericColorMux.G_CCMUX_0,
-        AlphaMuxA = GenericAlphaMux.G_ACMUX_TEXEL0,
+        AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
         AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
-        AlphaMuxC = GenericAlphaMux.G_ACMUX_SHADE,
-        AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxD = withAlpha
+            ? GenericAlphaMux.G_ACMUX_TEXEL0
+            : GenericAlphaMux.G_ACMUX_1,
     };
 
-  public static CombinerCycleParams FromTexture0()
+  public static CombinerCycleParams FromShade(bool withAlpha)
     => new() {
         ColorMuxA = GenericColorMux.G_CCMUX_0,
         ColorMuxB = GenericColorMux.G_CCMUX_0,
         ColorMuxC = GenericColorMux.G_CCMUX_0,
-        ColorMuxD = GenericColorMux.G_CCMUX_TEXEL0,
+        ColorMuxD = GenericColorMux.G_CCMUX_SHADE,
         AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
         AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
         AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
-        AlphaMuxD = GenericAlphaMux.G_ACMUX_TEXEL0,
-    };
-
-  public static CombinerCycleParams FromShade()
-    => new() {
-        ColorMuxA = GenericColorMux.G_CCMUX_SHADE,
-        ColorMuxB = GenericColorMux.G_CCMUX_0,
-        ColorMuxC = GenericColorMux.G_CCMUX_1,
-        ColorMuxD = GenericColorMux.G_CCMUX_0,
-        AlphaMuxA = GenericAlphaMux.G_ACMUX_SHADE,
-        AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
-        AlphaMuxC = GenericAlphaMux.G_ACMUX_1,
-        AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+        AlphaMuxD = withAlpha
+            ? GenericAlphaMux.G_ACMUX_SHADE
+            : GenericAlphaMux.G_ACMUX_1,
     };
 
   public GenericColorMux ColorMuxA { get; set; }

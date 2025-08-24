@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
@@ -12,16 +11,17 @@ using f3dzex2.io;
 
 using fin.data.lazy;
 using fin.image;
+using fin.image.util;
 using fin.io;
+using fin.io.bundles;
 using fin.language.equations.fixedFunction;
 using fin.model;
 using fin.model.impl;
-using fin.image.util;
-using fin.io.bundles;
-using fin.math;
 using fin.util.enums;
 
 using schema.binary;
+
+using Color = System.Drawing.Color;
 
 
 namespace f3dzex2.model;
@@ -65,6 +65,13 @@ public class DlModelBuilder {
     this.lazyImageDictionary_ =
         new(segmentAndImageParams => {
           var (_, imageParams) = segmentAndImageParams;
+
+          if (!TmemUtil.AreColorFormatAndBitsPerTexelValid(
+                  imageParams.ColorFormat,
+                  imageParams.BitsPerTexel)) {
+            return FinImage.Create1x1FromColor(Color.Magenta);
+          }
+
           if (imageParams.IsInvalid) {
             return FinImage.Create1x1FromColor(
                 this.vertices_.OverrideVertexColor);
@@ -338,26 +345,98 @@ public class DlModelBuilder {
               equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
                                            combinedAlpha);
 
+              var rdp = n64Hardware.Rdp;
 
-              if (finMaterial
-                         .Textures
-                         .Any(texture
-                                  => TransparencyTypeUtil.GetTransparencyType(
-                                         texture.Image) ==
-                                     TransparencyType.TRANSPARENT)) {
-                finMaterial.SetAlphaCompare(AlphaOp.Or,
-                                            AlphaCompareType.Always,
-                                            this.TransparentCutoff,
-                                            AlphaCompareType.Always,
-                                            0);
+              // TODO: Handle shade case by writing lighting to alpha
+
+              // Shamelessly stolen from:
+              // https://github.com/magcius/noclip.website/blob/main/src/zelview/f3dzex.ts#L135
+
+              BlenderPm srcColor, dstColor;
+              BlenderA srcFactor;
+              BlenderB dstFactor;
+
+              var doBlend = true;
+              if (rdp.ForceBlending) {
+                if (cycleParams1 != null) {
+                  srcColor = rdp.P1;
+                  srcFactor = rdp.A1;
+                  dstColor = rdp.M1;
+                  dstFactor = rdp.B1;
+                } else {
+                  srcColor = rdp.P0;
+                  srcFactor = rdp.A0;
+                  dstColor = rdp.M0;
+                  dstFactor = rdp.B0;
+                }
+              } else {
+                doBlend = cycleParams1 != null;
+                srcColor = rdp.P0;
+                srcFactor = rdp.A0;
+                dstColor = rdp.M0;
+                dstFactor = rdp.B0;
+              }
+
+              // TODO: I'm not sure if alpha compare is ever used on the N64
+              finMaterial.DisableAlphaCompare();
+              if (!doBlend) {
                 finMaterial.SetBlending(BlendEquation.ADD,
-                                        BlendFactor.SRC_ALPHA,
-                                        BlendFactor.ONE_MINUS_SRC_ALPHA,
+                                        BlendFactor.ONE,
+                                        BlendFactor.ZERO,
+                                        LogicOp.UNDEFINED);
+              }
+              if (srcFactor == BlenderA.G_BL_0 &&
+                  dstFactor == BlenderB.G_BL_1) {
+                finMaterial.SetBlending(BlendEquation.ADD,
+                                        BlendFactor.ONE,
+                                        BlendFactor.ZERO,
+                                        LogicOp.UNDEFINED);
+              } else if (
+                  srcColor == dstColor &&
+                  srcFactor == BlenderA.G_BL_A_IN &&
+                  dstFactor == BlenderB.G_BL_1MA) {
+                finMaterial.SetBlending(BlendEquation.ADD,
+                                        BlendFactor.ONE,
+                                        BlendFactor.ZERO,
                                         LogicOp.UNDEFINED);
               } else {
-                finMaterial.SetAlphaCompare(AlphaCompareType.Greater,
-                                            this.TransparentCutoff);
+                BlendFactor blendSrcFactor;
+                if (srcFactor == BlenderA.G_BL_0) {
+                  blendSrcFactor = BlendFactor.ZERO;
+                } else if
+                    (rdp is {
+                         UseCoverageForAlpha: true,
+                         MultiplyCoverageWithAlpha: false
+                     }) {
+                  // this is technically "coverage", admitting blending on edges
+                  blendSrcFactor = BlendFactor.ONE;
+                } else {
+                  blendSrcFactor = BlendFactor.SRC_ALPHA;
+                }
+
+                var blendDstFactor =
+                    TranslateBlendParamB_(dstFactor, blendSrcFactor);
+
+                finMaterial.SetBlending(BlendEquation.ADD,
+                                        blendSrcFactor,
+                                        blendDstFactor,
+                                        LogicOp.UNDEFINED);
               }
+
+              // Shamelessly stolen from:
+              // https://github.com/magcius/noclip.website/blob/main/src/zelview/f3dzex.ts#L109
+              /*if (!rdp.ZCompare) {
+                finMaterial.DepthCompareType = DepthCompareType.Always;
+              } else {
+                finMaterial.DepthCompareType = rdp.ZMode switch {
+                    ZMode.ZMODE_DEC => DepthCompareType.GEqual,
+                    _               => DepthCompareType.Greater,
+                };
+              }
+
+              finMaterial.DepthMode = rdp.ZUpdate
+                  ? DepthMode.READ_AND_WRITE
+                  : DepthMode.READ_ONLY;*/
 
               return finMaterial;
             });
@@ -556,8 +635,8 @@ public class DlModelBuilder {
           var shift = setOtherModeHOpcodeCommand.Shift;
           var data = setOtherModeHOpcodeCommand.Data;
 
-          var mask = ((1 << length) - 1) << shift;
-          rdp.OtherModeH = (uint) ((rdp.OtherModeH & ~mask) | (data & mask));
+          rdp.OtherModeH =
+              ApplyDataToOtherMode_(rdp.OtherModeH, length, shift, data);
           break;
         }
         case SetOtherModeLOpcodeCommand setOtherModeLOpcodeCommand: {
@@ -567,8 +646,8 @@ public class DlModelBuilder {
           var shift = setOtherModeLOpcodeCommand.Shift;
           var data = setOtherModeLOpcodeCommand.Data;
 
-          var mask = ((1 << length) - 1) << shift;
-          rdp.OtherModeL = (uint) ((rdp.OtherModeL & ~mask) | (data & mask));
+          rdp.OtherModeL =
+              ApplyDataToOtherMode_(rdp.OtherModeL, length, shift, data);
           break;
         }
         case LoadBlockOpcodeCommand loadBlockOpcodeCommand: {
@@ -631,6 +710,14 @@ public class DlModelBuilder {
     }
   }
 
+  private static uint ApplyDataToOtherMode_(uint otherMode,
+                                            ushort length,
+                                            ushort shift,
+                                            uint data) {
+    var mask = ~(((1 << length) - 1) << shift);
+    return (uint) ((otherMode & mask) | data);
+  }
+
   private void UpdateGeometryMode_(
       DisplayListType displayListType,
       GeometryMode flagsToDisable,
@@ -668,6 +755,22 @@ public class DlModelBuilder {
     }
 
     return this.cachedMaterial_;
+  }
+
+  private static BlendFactor TranslateBlendParamB_(
+      BlenderB paramB,
+      BlendFactor srcParam) {
+    return paramB switch {
+        BlenderB.G_BL_1MA => srcParam switch {
+            BlendFactor.SRC_ALPHA => BlendFactor.ONE_MINUS_SRC_ALPHA,
+            BlendFactor.ONE       => BlendFactor.ZERO,
+            _                     => BlendFactor.ONE
+        },
+        BlenderB.G_BL_A_MEM => BlendFactor.DST_ALPHA,
+        BlenderB.G_BL_1 => BlendFactor.ONE,
+        BlenderB.G_BL_0 => BlendFactor.ZERO,
+        _ => throw new ArgumentOutOfRangeException(nameof(paramB), paramB, null)
+    };
   }
 
   public Color OverrideVertexColor {

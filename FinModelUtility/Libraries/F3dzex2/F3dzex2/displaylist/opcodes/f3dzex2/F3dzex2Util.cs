@@ -1,4 +1,6 @@
-﻿using fin.math;
+﻿using System;
+
+using fin.math;
 using fin.math.fixedPoint;
 
 using schema.binary;
@@ -42,7 +44,7 @@ public static class F3dzex2Util {
     var word1 = br.ReadUInt32();
 
     var len = (ushort) (word0.ExtractFromRight(0, 8) + 1);
-    var sft = (ushort) (32 - len - word0.ExtractFromRight(8, 8));
+    var sft = (ushort) Math.Max(0, 32 - len - word0.ExtractFromRight(8, 8));
 
     return new SetOtherModeHOpcodeCommand {
         Length = len,
@@ -59,7 +61,7 @@ public static class F3dzex2Util {
     var word1 = br.ReadUInt32();
 
     var len = (ushort) (word0.ExtractFromRight(0, 8) + 1);
-    var sft = (ushort) (32 - len - word0.ExtractFromRight(8, 8));
+    var sft = (ushort) Math.Max(0, 32 - len - word0.ExtractFromRight(8, 8));
 
     return new SetOtherModeLOpcodeCommand {
         Length = len,
