@@ -28,6 +28,7 @@ using fin.util.linq;
 using fin.util.sets;
 
 using marioartist.schema;
+using marioartist.schema.talent_studio;
 
 using OneOf;
 

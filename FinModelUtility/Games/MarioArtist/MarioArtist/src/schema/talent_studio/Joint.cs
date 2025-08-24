@@ -4,7 +4,7 @@ using schema.binary;
 using schema.binary.attributes;
 
 
-namespace marioartist.schema;
+namespace marioartist.schema.talent_studio;
 
 [BinarySchema]
 public partial class Joint : IBinaryDeserializable {
