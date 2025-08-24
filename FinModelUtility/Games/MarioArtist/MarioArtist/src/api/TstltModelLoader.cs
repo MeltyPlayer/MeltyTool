@@ -564,6 +564,9 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       return;
     }
 
+    // TODO: This still doesn't properly set when materials are shiny. Where
+    // the heck does this come from???
+
     n64Hardware.Memory.SetSegment(0xF, segment);
 
     var tuples = meshDefinition.MeshSegmentedAddresses.Zip(
@@ -735,6 +738,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       case (true, 8): {
         // HACK: Hardcodes cycle count to 2.
         n64Hardware.Rdp.CycleType = CycleType.TWO_CYCLE;
+        // TODO: This still isn't quite right because in-game, glasses catch
+        // the light and reflect white. Currently, this just renders as the
+        // frame with no reflection, though. Reflections are probably done with
+        // blend mode nonsense?
         break;
       }
     }
