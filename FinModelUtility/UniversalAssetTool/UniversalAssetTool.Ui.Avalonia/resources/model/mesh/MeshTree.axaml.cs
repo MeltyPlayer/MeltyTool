@@ -76,7 +76,7 @@ namespace uni.ui.avalonia.resources.model.mesh {
     public bool IsExpanded {
       get;
       set => this.RaiseAndSetIfChanged(ref field, value);
-    } = true;
+    }
   }
 
   public partial class MeshTree : UserControl {
