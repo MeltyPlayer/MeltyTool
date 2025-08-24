@@ -359,6 +359,9 @@ public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
                             alphaCompareType,
                             reference);
 
+  IFixedFunctionMaterial DisableAlphaCompare()
+    => this.SetAlphaCompare(AlphaCompareType.Always, 0);
+
   IFixedFunctionMaterial SetDefaultAlphaCompare() {
     switch (this.TransparencyType) {
       case TransparencyType.MASK: {

@@ -39,7 +39,7 @@ namespace marioartist.api;
 
 using ChosenPart0Tuple =
     (Segment segment, MeshDefinition meshDefinition, SubUnkSection5 unkSection5,
-    ChosenPart0 chosenPart);
+    ChosenPart0 chosenPart, int unkSection5I, int subUnkSection5I);
 using ChosenPart1Tuple
     = (Segment segment, ChosenPart1 chosenPart, IBone bone, bool isHead);
 
@@ -408,31 +408,46 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    var headChosenPart0Tuples = headMeshDefinitions
-        .Select((meshDefinition, i) => {
+    var headChosenPart0Tuples = headUnkSection5s
+        .Select((unkSection5, unkSection5I) => {
           var segment = headSegment;
-          var unkSection5 = headUnkSection5s[i / 4].Subs[i % 4];
-          var chosenPart =
-              headChosenPart0sById.GetValueOrDefault(
-                  unkSection5.ChosenPartId,
-                  skinChosenPart);
-          return (segment, meshDefinition, unkSection5, chosenPart);
+          return (segment, unkSection5, headMeshDefinitions,
+                  headChosenPart0sById, unkSection5I);
         });
-    var bodyChosenPart0Tuples = bodyMeshDefinitions
-        .Select((meshDefinition, i) => {
+    var bodyChosenPart0Tuples = bodyUnkSection5s
+        .Select((unkSection5, unkSection5I) => {
           var segment = bodySegment;
-          var unkSection5 = bodyUnkSection5s[i / 4].Subs[i % 4];
-          var chosenPart =
-              bodyChosenPart0sById.GetValueOrDefault(unkSection5.ChosenPartId,
-                skinChosenPart);
-          return (segment, meshDefinition, unkSection5, chosenPart);
+          return (segment, unkSection5, bodyMeshDefinitions,
+                  bodyChosenPart0sById, unkSection5I);
         });
+
+    var headAndBodyChosenPart0Tuples =
+        headChosenPart0Tuples
+            .Concat(bodyChosenPart0Tuples)
+            .SelectMany(t => {
+              var (segment, unkSection5, meshDefinitions, chosenPart0sById,
+                  unkSection5I) = t;
+
+              return unkSection5
+                     .Subs
+                     .Select((subUnkSection5, subUnkSection5I) => {
+                       var meshDefinitionI = 4 * unkSection5I + subUnkSection5I;
+                       var meshDefinition = meshDefinitions[meshDefinitionI];
+
+                       var chosenPart = chosenPart0sById.GetValueOrDefault(
+                           subUnkSection5.ChosenPartId,
+                           skinChosenPart);
+
+                       return (segment, meshDefinition, subUnkSection5,
+                               chosenPart, unkSection5I, subUnkSection5I);
+                     })
+                     .Where(t => t.subUnkSection5.IsEnabled)
+                     .Reverse();
+            });
 
     var chosenPart0TuplesByMeshSetId =
         new ListDictionary<uint, ChosenPart0Tuple>();
-    foreach (var chosenPart0Tuple in headChosenPart0Tuples.Concat(
-                     bodyChosenPart0Tuples)
-                 .Where(tuple => tuple.unkSection5.UnkAddress != 0)) {
+    foreach (var chosenPart0Tuple in headAndBodyChosenPart0Tuples) {
       chosenPart0TuplesByMeshSetId.Add(
           chosenPart0Tuple.meshDefinition.MeshSetId,
           chosenPart0Tuple);
@@ -464,26 +479,27 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
               meshSetId,
               out var chosenPart0Tuples)) {
         // TODO: This only sometimes works
-        var chosenPart0TuplesInOrder = jointIndex != (uint) JointIndex.TORSO
-            ? chosenPart0Tuples.AsEnumerable()
-            : chosenPart0Tuples.Reverse();
+        var chosenPart0TuplesInOrder =
+            jointIndex is not (int) JointIndex.TORSO
+                ? chosenPart0Tuples.AsEnumerable()
+                : chosenPart0Tuples.Reverse();
 
-        var isFirst = true;
-
+        var firstChosenPart0Tuple = chosenPart0TuplesInOrder.First();
         foreach (var chosenPart0Tuple in chosenPart0TuplesInOrder) {
-          if (TryToAddChosenPart0Tuple_(
-                  model,
-                  skinChosenPart,
-                  chosenPart0Tuple,
-                  n64Hardware,
-                  dlModelBuilder,
-                  joint,
-                  jointIndex,
-                  isFirst,
-                  bone.Parent!,
-                  bone)) {
-            isFirst = false;
-          }
+          var isFirst = chosenPart0Tuple.unkSection5I ==
+                        firstChosenPart0Tuple.unkSection5I;
+
+          TryToAddChosenPart0Tuple_(
+              model,
+              skinChosenPart,
+              chosenPart0Tuple,
+              n64Hardware,
+              dlModelBuilder,
+              joint,
+              jointIndex,
+              isFirst,
+              bone.Parent!,
+              bone);
         }
       }
 
@@ -518,7 +534,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     return model;
   }
 
-  private static bool TryToAddChosenPart0Tuple_(
+  private static void TryToAddChosenPart0Tuple_(
       IModel model,
       ChosenPart0 skinChosenPart,
       ChosenPart0Tuple chosenPart0Tuple,
@@ -526,10 +542,11 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       DlModelBuilder dlModelBuilder,
       Joint joint,
       int jointIndex,
-      bool isFirst,
+      bool useParentBone,
       IBone parentBone,
       IBone childBone) {
-    var (segment, meshDefinition, unkSection5, chosenPart0) =
+    var (segment, meshDefinition, unkSection5, chosenPart0, unkSection5I,
+            subUnkSection5I) =
         chosenPart0Tuple;
 
     n64Hardware.Memory.SetSegment(0xF, segment);
@@ -604,12 +621,11 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
       // HACK: What a fucking nightmare. Why does being first impact this????
       Matrix4x4? vertexMatrix = null;
       IBoneWeights vertexDlBoneWeights;
-      if (!isFirst) {
+      if (!useParentBone) {
         vertexDlBoneWeights = primitiveDlBoneWeights;
       } else if (!joint.isLeft ||
                  jointIndex is not ((int) JointIndex.UPPER_ARM_1
-                               or (int) JointIndex.UPPER_LEG_1))
-      {
+                                    or (int) JointIndex.UPPER_LEG_1)) {
         vertexDlBoneWeights = model.Skin.GetOrCreateBoneWeights(
             VertexSpace.RELATIVE_TO_BONE,
             parentBone);
@@ -632,24 +648,20 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
                   (primitiveDlSegmentedAddress, null, primitiveDlBoneWeights)
               ];
 
-      if (TryToAddDisplayLists_(
-              model,
-              segment,
-              n64Hardware,
-              dlModelBuilder,
-              $"joint({(JointIndex) jointIndex}): chosenPart0({meshDefinition.MeshSetId}): {meshSegmentedAddress.ToHexString()}",
-              joint.isLeft,
-              displayLists)) {
-        addedDisplayList = true;
-      }
+      TryToAddDisplayLists_(
+          model,
+          segment,
+          n64Hardware,
+          dlModelBuilder,
+          $"joint({(JointIndex) jointIndex}): chosenPart0(meshSetId: {meshDefinition.MeshSetId}, unkSection5: {unkSection5I}, subUnkSection5: {subUnkSection5I}): {meshSegmentedAddress.ToHexString()}",
+          joint.isLeft,
+          displayLists);
 
       var rsp = n64Hardware.Rsp;
       rsp.EnvironmentColor = Color.White;
       rsp.PrimColor = Color.White;
       dlModelBuilder.TransparentCutoff = .5f;
     }
-
-    return addedDisplayList;
   }
 
   private static void TryToAddChosenPart1Tuple_(

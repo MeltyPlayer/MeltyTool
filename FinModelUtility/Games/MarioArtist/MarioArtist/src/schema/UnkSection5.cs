@@ -15,6 +15,9 @@ public partial class SubUnkSection5 : IBinaryDeserializable {
   public uint UnkAddress { get; set; }
   public uint ChosenPartId { get; set; }
 
-  [SequenceLengthSource(3)]
+  [IntegerFormat(SchemaIntegerType.UINT32)]
+  public bool IsEnabled { get; set; }
+
+  [SequenceLengthSource(2)]
   public uint[] Unk0 { get; set; }
 }
