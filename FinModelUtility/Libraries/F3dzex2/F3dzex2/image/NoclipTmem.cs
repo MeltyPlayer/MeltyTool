@@ -8,6 +8,7 @@ using f3dzex2.displaylist.opcodes;
 using fin.model;
 using fin.util.asserts;
 
+
 namespace f3dzex2.image;
 
 public class TileState {
@@ -87,20 +88,21 @@ public class TileState {
     this.cacheKey = o.cacheKey;
   }
 
-  public float GetTileWidth() {
-    var coordWidth = this.lrs - this.uls + 1;
-    if (this.maskS != 0)
-      return Math.Min(1 << this.maskS, coordWidth);
-    else
-      return coordWidth;
-  }
+  public float GetFullWidth()
+    => this.GetAdjustedSize_(this.fullWidth, this.maskS);
 
-  public float GetTileHeight() {
-    var coordHeight = this.lrt - this.ult + 1;
-    if (this.maskT != 0)
-      return Math.Min(1 << this.maskT, coordHeight);
+  public float GetTileWidth()
+    => this.GetAdjustedSize_(this.lrs - this.uls, this.maskS);
+
+  public float GetTileHeight()
+    => GetAdjustedSize_(this.lrt - this.ult, this.maskT);
+
+  private float GetAdjustedSize_(float rawSize, ushort mask) {
+    rawSize++;
+    if (mask != 0)
+      return Math.Min(1 << mask, rawSize);
     else
-      return coordHeight;
+      return rawSize;
   }
 }
 
@@ -179,8 +181,9 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
     var numWordsTotal = texels + 1;
     var numWordsInLine = (1 << 11) / dxt;
     var numPixelsInLine = (numWordsInLine * 8 * 8) / tile.siz.GetBitCount();
-    tile.lrs = (numPixelsInLine - 1) << 2;
-    tile.lrt = (((numWordsTotal / numWordsInLine) / 4) - 1) << 2;
+    var lrs = (numPixelsInLine - 1) << 2;
+    var lrt = (((numWordsTotal / numWordsInLine) / 4) - 1) << 2;
+    tile.SetSize(uls, ult, lrs, lrt, (ushort) lrs);
 
     // Track the TMEM destination back to the originating DRAM address.
     this.dpTmemTracker_[tile.offsetOfTextureInTmem]
@@ -331,9 +334,11 @@ public class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
     textureParams.Width = (ushort) tile.GetTileWidth();
     textureParams.Height = (ushort) tile.GetTileHeight();
 
-    if (tile.uls != 0 || tile.ult != 0) {
+    var fullWidth = tile.GetFullWidth();
+
+    if ((tile.uls != 0 || tile.ult != 0) && fullWidth >= textureParams.Width) {
       textureParams.LoadTileParams = (
-          (ushort) (tile.fullWidth + 1), (ushort) tile.uls, (ushort) tile.ult);
+          (ushort) fullWidth, (ushort) tile.uls, (ushort) tile.ult);
     }
 
     return textureParams;
