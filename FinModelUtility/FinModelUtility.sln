@@ -282,7 +282,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarioArtistTool", "MarioArt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarioArtistTool.Desktop", "MarioArtistTool\MarioArtistTool.Desktop\MarioArtistTool.Desktop.csproj", "{FF73A183-ABD8-C2F8-3A31-8D7B7EFBAF2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin.Avalonia", "Fin\Fin.Avalonia\Fin.Avalonia.csproj", "{0B842313-3FC7-407D-B201-7BD692517EE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin.Ui.Avalonia", "Fin\Fin.Ui.Avalonia\Fin.Ui.Avalonia.csproj", "{0B842313-3FC7-407D-B201-7BD692517EE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

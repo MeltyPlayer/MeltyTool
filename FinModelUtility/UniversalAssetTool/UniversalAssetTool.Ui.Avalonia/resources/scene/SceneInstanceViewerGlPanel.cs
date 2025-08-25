@@ -5,14 +5,13 @@ using fin.animation;
 using fin.model;
 using fin.scene;
 using fin.ui;
+using fin.ui.avalonia.gl;
 using fin.ui.rendering;
 using fin.ui.rendering.gl;
 using fin.ui.rendering.gl.model;
 
 using uni.config;
 using uni.model;
-using uni.ui.avalonia.common.gl;
-
 
 namespace uni.ui.avalonia.resources.scene {
   public class SceneInstanceViewerGlPanel : BOpenTkControl, ISceneViewer {

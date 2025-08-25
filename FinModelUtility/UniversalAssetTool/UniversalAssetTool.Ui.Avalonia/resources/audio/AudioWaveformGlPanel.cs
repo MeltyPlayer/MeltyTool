@@ -1,11 +1,10 @@
 ﻿using Avalonia;
 
 using fin.audio;
+using fin.ui.avalonia.gl;
 using fin.ui.rendering.gl;
 
 using OpenTK.Graphics.OpenGL;
-
-using uni.ui.avalonia.common.gl;
 
 namespace uni.ui.avalonia.resources.audio;
 

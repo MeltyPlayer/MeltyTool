@@ -4,7 +4,7 @@ using Avalonia.OpenGL;
 
 using OpenTK;
 
-namespace uni.ui.avalonia.common.gl {
+namespace fin.ui.avalonia.gl {
   public class
       AvaloniaOpenTkContext(GlInterface glInterface) : IBindingsContext {
     public IntPtr GetProcAddress(string procName)

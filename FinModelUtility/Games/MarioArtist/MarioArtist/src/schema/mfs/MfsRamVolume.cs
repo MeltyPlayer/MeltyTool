@@ -40,8 +40,9 @@ public partial class MfsRamVolume : IBinaryDeserializable {
   public uint Unk8 { get; set; }
 
   [SequenceLengthSource(Mfs.FAT_MAX)]
-  public ushort FatEntries { get; set; }
+  public ushort[] FatEntries { get; set; }
 
+  [Skip]
   public IMfsEntry[] MfsEntries { get; private set; }
 
   [ReadLogic]
