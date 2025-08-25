@@ -229,7 +229,7 @@ public class LeoDisk {
     //Read Block
     byte[] output = new byte[Leo.LBAToByte(this.DiskType, lba, 1)];
     if (this.Format == DiskFormat.MAME) {
-      int sourceOffset = Leo.LBAToMAMEOffset(lba, this.GetSystemData());
+      int sourceOffset = Leo.LBAToMAMEOffset(lba, this.GetSystemData().AssertNonnull());
       Array.Copy(this.Data, sourceOffset, output, 0, output.Length);
     } else {
       if (this.OffsetToRamArea < 0) return null;
@@ -260,7 +260,7 @@ public class LeoDisk {
     List<byte> array = new List<byte>();
 
     for (int lba = Leo.RamStartLBA[this.DiskType]; lba <= Leo.MAX_LBA; lba++) {
-      array.AddRange(this.ReadLBA(lba));
+      array.AddRange(this.ReadLBA(lba).AssertNonnull());
     }
 
     return array.ToArray();

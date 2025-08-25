@@ -7,25 +7,8 @@
 
   <Application.Styles>
     <FluentTheme />
-
-    <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
-    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
-    <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
-    <StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/>
-    <StyleInclude Source="avares://ConfigFactory.Avalonia/Themes/Fluent/ConfigFactory.Avalonia.axaml" />
     <avalonia:MaterialIconStyles />
-    <StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml" />
-    <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
-
     <StyleInclude Source="avares://Fin.Ui.Avalonia/styles/CommonStyles.axaml" />
     <StyleInclude Source="avares://Fin.Ui.Avalonia/styles/IconStyles.axaml" />
   </Application.Styles>
-
-  <Application.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="avares://LoadingIndicators.Avalonia/LoadingIndicators.axaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </Application.Resources>
 </Application>

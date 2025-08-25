@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 
+using fin.services;
 using fin.ui.avalonia.styles;
 
 using marioartisttool.ViewModels;
