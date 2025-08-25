@@ -2,7 +2,8 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-using uni.ui.avalonia.common;
+using fin.ui.avalonia.styles;
+
 using uni.ui.avalonia.ViewModels;
 using uni.ui.avalonia.Views;
 

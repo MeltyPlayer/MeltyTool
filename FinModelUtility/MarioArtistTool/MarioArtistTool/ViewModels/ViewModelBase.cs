@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace MarioArtistTool.ViewModels;
+namespace marioartisttool.ViewModels;
 
 public class ViewModelBase : ObservableObject
 {

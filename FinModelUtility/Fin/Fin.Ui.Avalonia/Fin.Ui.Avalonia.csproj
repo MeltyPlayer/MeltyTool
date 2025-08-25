@@ -51,4 +51,8 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="scene\" />
+  </ItemGroup>
 </Project>

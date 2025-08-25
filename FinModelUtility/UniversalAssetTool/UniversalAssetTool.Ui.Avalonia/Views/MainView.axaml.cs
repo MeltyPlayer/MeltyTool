@@ -1,6 +1,9 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 
+using uni.config;
+using uni.model;
+
 namespace uni.ui.avalonia.Views;
 
 public partial class MainView : UserControl {
@@ -18,10 +21,20 @@ public partial class MainView : UserControl {
   public MainView() {
     this.InitializeComponent();
 
+    // TODO: Handle config changes, update ShowGrid automatically
+
     SceneInstanceService.OnSceneInstanceOpened
         += (_, sceneInstance) => {
-             this.SceneViewerGlPanel.Scene = sceneInstance;
-           };
+          this.SceneViewerGlPanel.Scene = sceneInstance;
+
+          if (sceneInstance == null) {
+            this.SceneViewerGlPanel.ViewerScale = 1;
+          } else {
+            this.SceneViewerGlPanel.ViewerScale =
+                new ScaleSource(Config.Instance.Viewer.ViewerModelScaleSource)
+                    .GetScale(sceneInstance);
+          }
+        };
 
     this.RegisterPanel_(this.SceneViewerGlPanel, PanelType.NEITHER);
     this.RegisterPanel_(this.FileSelectorPanel, PanelType.FILE_SELECTOR);

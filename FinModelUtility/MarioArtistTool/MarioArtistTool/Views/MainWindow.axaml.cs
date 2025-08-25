@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace MarioArtistTool.Views;
+namespace marioartisttool.Views;
 
 public partial class MainWindow : Window
 {

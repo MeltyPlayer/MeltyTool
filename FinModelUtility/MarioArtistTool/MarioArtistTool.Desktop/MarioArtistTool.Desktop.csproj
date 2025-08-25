@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Namespace>marioartisttool.desktop</Namespace>
   </PropertyGroup>
 
   <ItemGroup>

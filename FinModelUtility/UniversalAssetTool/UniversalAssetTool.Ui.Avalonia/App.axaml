@@ -17,8 +17,8 @@
     <StyleInclude Source="avares://OxyPlot.Avalonia/Themes/Default.axaml" />
     <StyleInclude Source="avares://UVtools.AvaloniaControls/Controls.axaml" />
 
-    <StyleInclude Source="common/CommonStyles.axaml" />
-    <StyleInclude Source="common/IconStyles.axaml" />
+    <StyleInclude Source="avares://Fin.Ui.Avalonia/styles/CommonStyles.axaml" />
+    <StyleInclude Source="avares://Fin.Ui.Avalonia/styles/IconStyles.axaml" />
   </Application.Styles>
 
   <Application.Resources>
