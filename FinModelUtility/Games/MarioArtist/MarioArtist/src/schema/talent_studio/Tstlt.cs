@@ -9,7 +9,7 @@ namespace marioartist.schema.talent_studio;
 [BinarySchema]
 [Endianness(Endianness.BigEndian)]
 public partial class Tstlt : IBinaryDeserializable {
-  public Thumbnail Thumbnail { get; } = new();
+  public MfsThumbnail Thumbnail { get; } = new();
 
   [SequenceLengthSource(12)]
   public uint[] Unk { get; private set; }
