@@ -7,13 +7,13 @@ using Avalonia.Controls;
 
 using fin.math;
 using fin.model;
+using fin.ui.avalonia;
 using fin.util.asserts;
 
 using ReactiveUI;
 
 using uni.ui.avalonia.common;
 using uni.ui.avalonia.resources.model;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.texture {
   public class NullTexturesPanelViewModelForDesigner

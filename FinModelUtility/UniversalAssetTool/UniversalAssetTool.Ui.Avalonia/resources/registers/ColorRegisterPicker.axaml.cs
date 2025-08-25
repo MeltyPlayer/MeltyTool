@@ -3,10 +3,9 @@ using Avalonia.Media;
 
 using fin.color;
 using fin.language.equations.fixedFunction;
+using fin.ui.avalonia;
 
 using ReactiveUI;
-
-using uni.ui.avalonia.ViewModels;
 
 using IColorRegister = fin.language.equations.fixedFunction.IColorRegister;
 

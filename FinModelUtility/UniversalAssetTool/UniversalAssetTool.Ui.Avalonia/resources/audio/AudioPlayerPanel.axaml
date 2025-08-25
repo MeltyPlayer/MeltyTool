@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:audio="clr-namespace:uni.ui.avalonia.resources.audio"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400"
              x:Class="uni.ui.avalonia.resources.audio.AudioPlayerPanel"
              x:DataType="audio:AudioPlayerPanelViewModel">

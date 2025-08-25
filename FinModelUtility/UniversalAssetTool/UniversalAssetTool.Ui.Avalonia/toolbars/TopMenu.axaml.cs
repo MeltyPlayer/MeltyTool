@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using fin.io.web;
+using fin.ui.avalonia;
 using fin.util.io;
 
 using ReactiveUI;
@@ -13,7 +14,6 @@ using uni.ui.avalonia.common.buttons;
 using uni.ui.avalonia.io;
 using uni.ui.avalonia.settings;
 using uni.ui.avalonia.util;
-using uni.ui.avalonia.ViewModels;
 using uni.ui.winforms.common.fileTreeView;
 
 namespace uni.ui.avalonia.toolbars;

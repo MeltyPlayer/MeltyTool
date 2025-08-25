@@ -5,9 +5,9 @@ using System.Linq;
 using Avalonia.Controls;
 
 using fin.data.sets;
+using fin.ui.avalonia;
 
 using uni.config;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.settings;
 

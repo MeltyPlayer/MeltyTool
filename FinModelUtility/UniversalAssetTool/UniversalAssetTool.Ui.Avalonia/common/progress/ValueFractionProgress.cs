@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using fin.ui.avalonia;
 using fin.util.progress;
 
 using ReactiveUI;
-
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.common.progress;
 

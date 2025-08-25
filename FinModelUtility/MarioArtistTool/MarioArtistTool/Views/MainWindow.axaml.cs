@@ -1,11 +1,65 @@
-﻿using Avalonia.Controls;
+﻿using System.Threading.Tasks;
+
+using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+
+using fin.io;
+using fin.services;
+using fin.ui.avalonia.dialogs;
+
+using marioartist.schema.mfs;
+
+using schema.binary;
 
 namespace marioartisttool.Views;
 
-public partial class MainWindow : Window
-{
-    public MainWindow()
-    {
-        InitializeComponent();
+public partial class MainWindow : Window {
+  public MainWindow() {
+    InitializeComponent();
+
+    ExceptionService.OnException += (e, c) => {
+      var dialog = new ExceptionDialog {
+          DataContext = new ExceptionDialogViewModel { Exception = e, Context = c},
+          CanResize = false,
+      };
+
+      dialog.ShowDialog(this);
+    };
+
+    Task.Run(this.AskUserForDiskFile_);
+  }
+
+  private async Task AskUserForDiskFile_() {
+    var storageProvider = TopLevel.GetTopLevel(this)?.StorageProvider;
+    if (storageProvider == null) {
+      return;
     }
+
+    var startLocation = await storageProvider.TryGetFolderFromPathAsync("./");
+
+    var selectedStorageFile
+        = await storageProvider
+            .OpenFilePickerAsync(new FilePickerOpenOptions {
+                SuggestedStartLocation = startLocation,
+                Title = "Select 64DD disk file",
+                FileTypeFilter = [
+                    new FilePickerFileType("All supported files") {
+                        Patterns = [
+                            "*.ndd", "*.ndr", "*.ram", "*.n64", "*.z64",
+                            "*.disk"
+                        ],
+                    }
+                ]
+            });
+    if (selectedStorageFile is not { Count: 1 }) {
+      return;
+    }
+
+    var diskFile = new FinFile(selectedStorageFile[0].Path.AbsolutePath);
+    using var br = diskFile.OpenReadAsBinary(Endianness.BigEndian);
+
+    var mfsDisk = br.ReadNew<MfsDisk>();
+
+    ;
+  }
 }

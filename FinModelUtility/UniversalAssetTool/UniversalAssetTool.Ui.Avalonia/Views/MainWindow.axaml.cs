@@ -2,9 +2,8 @@
 using Avalonia.Threading;
 
 using fin.services;
+using fin.ui.avalonia.dialogs;
 using fin.util.time;
-
-using uni.ui.avalonia.common.dialogs;
 
 namespace uni.ui.avalonia.Views;
 

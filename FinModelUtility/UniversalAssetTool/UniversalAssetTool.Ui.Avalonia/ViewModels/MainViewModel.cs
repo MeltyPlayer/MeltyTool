@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-using fin.io.bundles;
 using fin.model;
-using fin.util.asserts;
-using fin.util.progress;
+using fin.ui.avalonia;
 
 using ReactiveUI;
 
-using uni.games;
 using uni.ui.avalonia.common.progress;
 using uni.ui.avalonia.common.treeViews;
 using uni.ui.avalonia.icons;
@@ -19,8 +14,6 @@ using uni.ui.avalonia.io;
 using uni.ui.avalonia.resources.audio;
 using uni.ui.avalonia.resources.model;
 using uni.ui.avalonia.toolbars;
-using uni.ui.avalonia.util;
-using uni.ui.winforms.common.fileTreeView;
 
 namespace uni.ui.avalonia.ViewModels;
 

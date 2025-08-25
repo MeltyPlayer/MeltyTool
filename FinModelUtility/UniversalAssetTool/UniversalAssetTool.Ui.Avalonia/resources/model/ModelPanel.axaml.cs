@@ -2,6 +2,7 @@ using Avalonia.Controls;
 
 using fin.animation;
 using fin.model;
+using fin.ui.avalonia;
 using fin.ui.rendering;
 
 using ReactiveUI;
@@ -12,7 +13,6 @@ using uni.ui.avalonia.resources.model.materials;
 using uni.ui.avalonia.resources.model.mesh;
 using uni.ui.avalonia.resources.model.skeleton;
 using uni.ui.avalonia.resources.texture;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.model {
   public class ModelPanelViewModelForDesigner : ModelPanelViewModel {

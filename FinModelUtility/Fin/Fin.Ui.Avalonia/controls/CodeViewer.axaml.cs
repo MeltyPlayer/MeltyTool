@@ -4,9 +4,7 @@ using Avalonia.Controls;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.TextMate;
 
-using uni.ui.avalonia.resources.model.materials;
-
-namespace uni.ui.avalonia.common.controls;
+namespace fin.ui.avalonia.controls;
 
 public enum CodeType {
   UNDEFINED,

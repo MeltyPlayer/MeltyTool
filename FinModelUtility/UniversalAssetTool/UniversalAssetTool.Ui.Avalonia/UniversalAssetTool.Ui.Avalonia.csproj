@@ -27,7 +27,6 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
     <PackageReference Include="AvaloniaControlsToolBar" Version="0.0.1" />
-    <PackageReference Include="AvaloniaEdit.TextMate" Version="11.3.0" />
     <PackageReference Include="AvaloniaUIRibbon" Version="1.1.0-beta" />
     <PackageReference Include="BinToss.GroupBox.Avalonia" Version="1.0.0" />
     <PackageReference Include="ConfigFactory" Version="0.4.3" />
@@ -78,9 +77,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="common\buttons\ContrastableIconButton.axaml.cs">
-      <DependentUpon>ContrastableIconButton.axaml</DependentUpon>
-    </Compile>
     <Compile Update="io\ExportProgressWindow.axaml.cs">
       <DependentUpon>ExportProgressWindow.axaml</DependentUpon>
     </Compile>

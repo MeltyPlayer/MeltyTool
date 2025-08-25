@@ -5,10 +5,9 @@ using Avalonia.Controls;
 using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
+using fin.ui.avalonia;
 
 using ReactiveUI;
-
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.model.materials {
   public class MaterialShadersPanelViewModelForDesigner

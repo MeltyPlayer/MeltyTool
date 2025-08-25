@@ -4,9 +4,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 
-using ReactiveUI;
+using fin.ui.avalonia;
 
-using uni.ui.avalonia.ViewModels;
+using ReactiveUI;
 
 namespace uni.ui.avalonia.common.progress;
 

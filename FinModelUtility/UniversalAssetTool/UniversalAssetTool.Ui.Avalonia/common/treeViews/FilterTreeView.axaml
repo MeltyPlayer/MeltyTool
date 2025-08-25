@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:textboxes="clr-namespace:uni.ui.avalonia.common.textboxes"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
              mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="200"
              x:Class="uni.ui.avalonia.common.treeViews.FilterTreeView"
              x:DataType="treeViews:FileBundleTreeViewModelForDesigner">

@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 using Avalonia.Controls;
 
+using fin.ui.avalonia;
 using fin.util.progress;
 
 using ReactiveUI;
 
 using uni.ui.avalonia.common.progress;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.io;
 

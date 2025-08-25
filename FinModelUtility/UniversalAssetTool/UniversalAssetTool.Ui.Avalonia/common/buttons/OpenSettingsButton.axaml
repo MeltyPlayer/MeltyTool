@@ -1,6 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
+             xmlns:buttons="clr-namespace:fin.ui.avalonia.buttons;assembly=Fin.Ui.Avalonia"
              x:Class="uni.ui.avalonia.common.buttons.OpenSettingsButton">
   <buttons:ContrastableIconButton
       Tooltip="Edit settings"

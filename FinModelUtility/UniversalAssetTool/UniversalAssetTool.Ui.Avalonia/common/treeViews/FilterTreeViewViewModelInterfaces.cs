@@ -1,10 +1,10 @@
 ﻿using System;
 
+using fin.ui.avalonia;
+
 using Material.Icons;
 
 using ObservableCollections;
-
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.common.treeViews;
 

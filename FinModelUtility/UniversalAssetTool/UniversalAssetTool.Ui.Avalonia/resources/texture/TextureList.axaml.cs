@@ -7,15 +7,14 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using fin.model;
+using fin.ui.avalonia;
 using fin.ui.rendering;
-using fin.util.asserts;
 
 using NaturalSort.Extension;
 
 using ReactiveUI;
 
 using uni.ui.avalonia.resources.model;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.texture;
 

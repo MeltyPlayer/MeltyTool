@@ -3,9 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:skeleton="clr-namespace:uni.ui.avalonia.resources.model.skeleton"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
+             xmlns:controls1="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.resources.model.skeleton.SkeletonTree"
              x:DataType="skeleton:SkeletonTreeViewModel">
@@ -66,7 +67,7 @@
       </Border>
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
-      <controls:EmptyState
+      <controls1:EmptyState
           Text="No bones to display."
           Icon="{StaticResource BoneIcon}" />
     </controls:If.ContentWhenFalse>

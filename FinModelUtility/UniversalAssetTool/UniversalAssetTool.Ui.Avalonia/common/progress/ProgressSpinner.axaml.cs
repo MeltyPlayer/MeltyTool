@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 using Avalonia.Controls;
 
-using ReactiveUI;
+using fin.ui.avalonia;
 
-using uni.ui.avalonia.ViewModels;
+using ReactiveUI;
 
 namespace uni.ui.avalonia.common.progress;
 

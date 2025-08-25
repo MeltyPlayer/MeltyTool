@@ -7,13 +7,12 @@ using Avalonia.Controls;
 using Avalonia.Data.Converters;
 
 using fin.model;
+using fin.ui.avalonia;
 using fin.ui.rendering;
 
 using NaturalSort.Extension;
 
 using ReactiveUI;
-
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.model.materials {
   public class MaterialsPanelViewModelForDesigner

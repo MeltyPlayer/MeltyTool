@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
              xmlns:toolbars="clr-namespace:uni.ui.avalonia.toolbars"
+             xmlns:buttons1="clr-namespace:fin.ui.avalonia.buttons;assembly=Fin.Ui.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="40"
              x:Class="uni.ui.avalonia.toolbars.TopToolbar"
              x:DataType="toolbars:TopToolbarModel">
@@ -15,6 +16,6 @@
     <buttons:ImportAssetButton />
     <buttons:ExportAssetButton FileBundle="{Binding FileBundle}" />
     <buttons:OpenSettingsButton />
-    <buttons:ReportIssueButton />
+    <buttons1:ReportIssueButton />
   </StackPanel>
 </UserControl>

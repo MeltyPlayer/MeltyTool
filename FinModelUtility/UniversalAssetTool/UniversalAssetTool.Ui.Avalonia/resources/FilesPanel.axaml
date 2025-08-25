@@ -3,8 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:resource="clr-namespace:uni.ui.avalonia.resources"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
+             xmlns:controls1="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.resources.FilesPanel"
              x:DataType="resource:FilesPanelViewModel">
@@ -74,7 +75,7 @@
       </Border>
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
-      <controls:EmptyState
+      <controls1:EmptyState
           Text="No files to display."
           Icon="FileOutline" />
     </controls:If.ContentWhenFalse>

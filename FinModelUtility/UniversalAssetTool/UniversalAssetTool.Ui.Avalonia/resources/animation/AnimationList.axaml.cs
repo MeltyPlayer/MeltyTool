@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using fin.model;
-using fin.util.asserts;
+using fin.ui.avalonia;
 
 using Material.Icons;
 
@@ -16,7 +16,6 @@ using NaturalSort.Extension;
 using ReactiveUI;
 
 using uni.ui.avalonia.resources.model;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.animation {
   public class AnimationListViewModelForDesigner

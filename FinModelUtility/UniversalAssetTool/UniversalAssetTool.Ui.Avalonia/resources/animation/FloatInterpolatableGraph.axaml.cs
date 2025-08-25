@@ -5,14 +5,13 @@ using Avalonia.Controls;
 using fin.animation.interpolation;
 using fin.animation.keyframes;
 using fin.animation.types.single;
+using fin.ui.avalonia;
 
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 
 using ReactiveUI;
-
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.animation;
 

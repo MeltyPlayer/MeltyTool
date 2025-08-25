@@ -2,10 +2,9 @@ using Avalonia.Controls;
 
 using fin.language.equations.fixedFunction;
 using fin.math.floats;
+using fin.ui.avalonia;
 
 using ReactiveUI;
-
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.registers;
 

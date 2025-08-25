@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materials="clr-namespace:uni.ui.avalonia.resources.model.materials"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.resources.model.materials.MaterialShadersPanel"
              x:DataType="materials:MaterialShadersPanelViewModel">

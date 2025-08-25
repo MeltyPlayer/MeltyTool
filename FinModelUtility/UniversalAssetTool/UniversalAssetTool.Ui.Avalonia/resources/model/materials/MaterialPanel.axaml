@@ -3,9 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:materials="clr-namespace:uni.ui.avalonia.resources.model.materials"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
              xmlns:common="clr-namespace:uni.ui.avalonia.common"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
              x:Class="uni.ui.avalonia.resources.model.materials.MaterialPanel"
              x:DataType="materials:MaterialPanelViewModel">

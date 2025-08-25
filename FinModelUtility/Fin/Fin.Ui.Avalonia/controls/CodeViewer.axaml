@@ -3,9 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="900"
-             x:Class="uni.ui.avalonia.common.controls.CodeViewer">
+             x:Class="fin.ui.avalonia.controls.CodeViewer">
   <avaloniaEdit:TextEditor DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType = controls:CodeViewer}}"
                            Name="impl_"
                            Document="{Binding Path=Source}"

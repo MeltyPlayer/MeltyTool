@@ -3,11 +3,11 @@ using System.Linq;
 using Avalonia.Controls;
 
 using fin.model;
+using fin.ui.avalonia;
 
 using ReactiveUI;
 
 using uni.ui.avalonia.common;
-using uni.ui.avalonia.ViewModels;
 
 
 namespace uni.ui.avalonia.resources.model.materials {

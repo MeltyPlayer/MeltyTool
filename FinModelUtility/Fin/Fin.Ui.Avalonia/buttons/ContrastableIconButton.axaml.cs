@@ -6,11 +6,11 @@ using Avalonia.Interactivity;
 
 using Material.Icons;
 
-namespace uni.ui.avalonia.common.buttons;
+namespace fin.ui.avalonia.buttons;
 
 public partial class ContrastableIconButton : UserControl {
   public static readonly StyledProperty<MaterialIconKind> IconProperty =
-      AvaloniaProperty.Register<ExportAssetButton, MaterialIconKind>(
+      AvaloniaProperty.Register<ContrastableIconButton, MaterialIconKind>(
           nameof(Icon));
 
   public MaterialIconKind Icon {
@@ -20,7 +20,7 @@ public partial class ContrastableIconButton : UserControl {
 
 
   public static readonly StyledProperty<string> TooltipProperty =
-      AvaloniaProperty.Register<ExportAssetButton, string>(
+      AvaloniaProperty.Register<ContrastableIconButton, string>(
           nameof(Tooltip));
 
   public string Tooltip {
@@ -30,7 +30,7 @@ public partial class ContrastableIconButton : UserControl {
 
 
   public static readonly StyledProperty<bool> IsEnabledProperty =
-      AvaloniaProperty.Register<ExportAssetButton, bool>(
+      AvaloniaProperty.Register<ContrastableIconButton, bool>(
           nameof(IsEnabled));
 
   public bool IsEnabled {
@@ -40,7 +40,7 @@ public partial class ContrastableIconButton : UserControl {
 
 
   public static readonly StyledProperty<bool> HighContrastProperty =
-      AvaloniaProperty.Register<ExportAssetButton, bool>(
+      AvaloniaProperty.Register<ContrastableIconButton, bool>(
           nameof(HighContrast));
 
   public bool HighContrast {

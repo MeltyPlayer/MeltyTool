@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:buttons="clr-namespace:fin.ui.avalonia.buttons"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls"
              mc:Ignorable="d"
-             x:Class="uni.ui.avalonia.common.buttons.ReportIssueButton"
+             x:Class="fin.ui.avalonia.buttons.ReportIssueButton"
              x:DataType="buttons:ReportIssueButtonViewModel">
   <controls:If Condition="{Binding Path=ShowText}">
     <controls:If.ContentWhenTrue>

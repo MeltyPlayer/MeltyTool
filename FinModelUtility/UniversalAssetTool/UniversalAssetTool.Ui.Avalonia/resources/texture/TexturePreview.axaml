@@ -5,7 +5,7 @@
              xmlns:textures="clr-namespace:uni.ui.avalonia.resources.texture"
              xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
              mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="100"
              x:Class="uni.ui.avalonia.resources.texture.TexturePreview"
              x:DataType="textures:TexturePreviewViewModel"

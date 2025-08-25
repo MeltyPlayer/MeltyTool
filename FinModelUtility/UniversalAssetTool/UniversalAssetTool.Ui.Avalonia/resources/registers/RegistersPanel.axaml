@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:gb="clr-namespace:GroupBox.Avalonia.Controls;assembly=GroupBox.Avalonia"
              xmlns:registers="clr-namespace:uni.ui.avalonia.resources.registers"
-             xmlns:controls="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
+             xmlns:controls1="clr-namespace:uni.ui.avalonia.common.controls"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="300"
              x:Class="uni.ui.avalonia.resources.registers.RegistersPanel"
              x:DataType="registers:RegistersPanelViewModel">
@@ -44,7 +45,7 @@
       </ScrollViewer>
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
-      <controls:EmptyState
+      <controls1:EmptyState
           Text="No registers to display."
           Icon="{StaticResource RegisterIcon}" />
     </controls:If.ContentWhenFalse>

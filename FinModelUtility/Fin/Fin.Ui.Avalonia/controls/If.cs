@@ -4,13 +4,13 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Metadata;
 
-namespace uni.ui.avalonia.common.controls;
+namespace fin.ui.avalonia.controls;
 
 public class If : Control {
   private object contentWhenTrue_;
   private object? contentWhenFalse_;
   private bool? renderedValue_;
-  
+
   private Control? control_;
 
   public static readonly StyledProperty<bool> ConditionProperty
@@ -46,12 +46,11 @@ public class If : Control {
   public Control? Control => this.control_;
 
   static If() {
-    ConditionProperty.Changed.AddClassHandler<If>(
-        (c, e) => {
-          if (e.NewValue is bool v) {
-            c.DoLoad_(v, false);
-          }
-        });
+    ConditionProperty.Changed.AddClassHandler<If>((c, e) => {
+      if (e.NewValue is bool v) {
+        c.DoLoad_(v, false);
+      }
+    });
   }
 
   protected override Size MeasureOverride(Size availableSize)

@@ -3,13 +3,11 @@ using System;
 using Avalonia.Controls;
 
 using fin.io.web;
+using fin.ui.avalonia.buttons;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.common.buttons;
-using uni.ui.avalonia.ViewModels;
-
-namespace uni.ui.avalonia.common.dialogs;
+namespace fin.ui.avalonia.dialogs;
 
 public class ExceptionDialogViewModelForDesigner : ExceptionDialogViewModel {
   public ExceptionDialogViewModelForDesigner() {

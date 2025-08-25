@@ -1,6 +1,5 @@
-﻿namespace marioartisttool.ViewModels;
+﻿using fin.ui.avalonia;
 
-public partial class MainViewModel : ViewModelBase
-{
-    public string Greeting => "Welcome to Avalonia!";
-}
+namespace marioartisttool.ViewModels;
+
+public partial class MainViewModel : ViewModelBase { }

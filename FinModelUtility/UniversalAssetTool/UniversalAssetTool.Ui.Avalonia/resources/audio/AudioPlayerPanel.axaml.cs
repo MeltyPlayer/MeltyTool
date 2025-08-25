@@ -9,6 +9,7 @@ using fin.audio.io;
 using fin.audio.io.importers.ogg;
 using fin.data;
 using fin.io;
+using fin.ui.avalonia;
 using fin.ui.playback.al;
 using fin.util.asserts;
 using fin.util.enumerables;
@@ -17,7 +18,6 @@ using fin.util.time;
 using ReactiveUI;
 
 using uni.api;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.audio;
 

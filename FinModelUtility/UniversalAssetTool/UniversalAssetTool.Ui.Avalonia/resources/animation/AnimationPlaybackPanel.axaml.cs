@@ -5,12 +5,12 @@ using Avalonia.Interactivity;
 
 using fin.animation;
 using fin.math;
+using fin.ui.avalonia;
 using fin.util.asserts;
 
 using ReactiveUI;
 
 using uni.ui.avalonia.resources.model;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.animation {
   public class AnimationPlaybackPanelViewModelForDesigner

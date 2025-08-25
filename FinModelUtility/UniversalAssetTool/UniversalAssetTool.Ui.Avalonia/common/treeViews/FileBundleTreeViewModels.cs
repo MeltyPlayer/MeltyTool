@@ -13,6 +13,7 @@ using fin.audio.io.importers.ogg;
 using fin.data.queues;
 using fin.io;
 using fin.io.bundles;
+using fin.ui.avalonia;
 using fin.util.asserts;
 using fin.util.io;
 
@@ -23,7 +24,6 @@ using Material.Icons.Avalonia;
 
 using ObservableCollections;
 
-using uni.ui.avalonia.ViewModels;
 using uni.ui.winforms.common.fileTreeView;
 
 

@@ -10,6 +10,7 @@ using Avalonia.Threading;
 using fin.image;
 using fin.image.formats;
 using fin.model;
+using fin.ui.avalonia;
 using fin.util.asserts;
 
 using ReactiveUI;
@@ -18,7 +19,6 @@ using SixLabors.ImageSharp.PixelFormats;
 
 using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.model;
-using uni.ui.avalonia.ViewModels;
 
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
 

@@ -5,12 +5,12 @@ using Avalonia;
 using Avalonia.Controls;
 
 using fin.model;
+using fin.ui.avalonia;
 using fin.util.asserts;
 
 using ReactiveUI;
 
 using uni.ui.avalonia.resources.texture;
-using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.resources.model.materials {
   public class MaterialTexturesPanelViewModelForDesigner

@@ -8,9 +8,7 @@ using fin.util.io;
 
 using ReactiveUI;
 
-using uni.ui.avalonia.ViewModels;
-
-namespace uni.ui.avalonia.common.buttons;
+namespace fin.ui.avalonia.buttons;
 
 public class ReportIssueButtonViewModel : ViewModelBase {
   public bool ShowText {
@@ -37,5 +35,6 @@ public partial class ReportIssueButton : UserControl {
 
   private void Button_OnClick(object? sender, RoutedEventArgs e)
     => WebBrowserUtil.OpenUrl(
-        GitHubUtil.GetNewIssueUrl(this.ViewModel?.Exception, this.ViewModel?.Context));
+        GitHubUtil.GetNewIssueUrl(this.ViewModel?.Exception,
+                                  this.ViewModel?.Context));
 }
