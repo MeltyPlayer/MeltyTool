@@ -6,15 +6,6 @@
 /// </summary>
 public static class Mfs {
   //MFS Volume
-  public struct VolumeAttr {
-    public bool isWriteProtected; //Filesystem is Write Protected
-
-    public bool
-        isVolumeWriteProtected; //Cannot be written by other applications
-
-    public bool isVolumeReadProtected; //Cannot be read by other applications
-  }
-
   public const string ROM_ID = "64dd-Multi0201";
   public const string RAM_ID = "64dd-Multi0101";
 

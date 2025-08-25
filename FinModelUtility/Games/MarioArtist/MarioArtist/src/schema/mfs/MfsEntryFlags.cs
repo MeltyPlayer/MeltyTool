@@ -1,5 +1,6 @@
 ﻿namespace marioartist.schema.mfs;
 
+[Flags]
 public enum MfsEntryFlags : ushort {
   COPY_LIMIT = 1 << 9,
   ENCODE = 1 << 10,

@@ -18,8 +18,10 @@ using GMSysDir =
 using GMSysFile =
     IReadOnlyTreeFile<ISystemIoObject, ISystemDirectory, ISystemFile, string>;
 using System;
+using fin.util.types;
 
 // ReadOnly
+[UnionCandidate]
 public partial interface IReadOnlySystemIoObject
     : IReadOnlyTreeIoObject, GROSysIoObj {
   bool Exists { get; }
@@ -41,6 +43,7 @@ public partial interface IReadOnlySystemFile
 
 // Mutable
 
+[UnionCandidate]
 public partial interface ISystemIoObject
     : IReadOnlySystemIoObject, GMSysIoObj;
 

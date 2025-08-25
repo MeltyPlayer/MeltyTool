@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using fin.util.types;
+
 using schema.readOnly;
 
 namespace fin.io;
@@ -13,6 +15,7 @@ namespace fin.io;
 // - system files refer to real files that exist within the file system
 //   - these can be readonly or mutable
 
+[UnionCandidate]
 [GenerateReadOnly]
 public partial interface ITreeIoObject<TIoObject, TDirectory, TFile,
                                        TFileType>

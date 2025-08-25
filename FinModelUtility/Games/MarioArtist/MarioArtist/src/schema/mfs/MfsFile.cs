@@ -8,7 +8,7 @@ namespace marioartist.schema.mfs;
 ///   https://github.com/LuigiBlood/mfs_manager/blob/master/mfs_library/MFS/MFSDef.cs#L107
 /// </summary>
 [BinarySchema]
-public partial class MfsFile : IBinaryDeserializable {
+public partial class MfsFile : IBinaryDeserializable, IMfsEntry {
   public MfsEntryFlags Flags { get; set; }
   public ushort ParentDirectoryIndex { get; set; }
 
@@ -34,5 +34,5 @@ public partial class MfsFile : IBinaryDeserializable {
   public byte Renewal { get; set; }
   public byte Unk3 { get; set; }
 
-  public MfsDate Date { get; set; }
+  public MfsDate Date { get; } = new();
 }
