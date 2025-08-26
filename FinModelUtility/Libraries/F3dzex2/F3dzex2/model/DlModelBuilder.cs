@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Hashing;
 using System.Linq;
 using System.Numerics;
 
@@ -30,10 +31,12 @@ public class DlModelBuilder {
   private readonly IN64Hardware n64Hardware_;
   private IMesh? currentMesh_;
 
-  private readonly LazyDictionary<(Segment?, ImageParams), IImage>
+  public const bool DEDUPLICATE_TEXTURES = true;
+
+  private readonly LazyDictionary<(Segment?, ImageParams), IReadOnlyImage>
       lazyImageDictionary_;
 
-  private readonly LazyDictionary<(Segment?, TextureParams)?, ITexture?>
+  private readonly LazyDictionary<(Segment?, TextureParams)?, IReadOnlyTexture?>
       lazyTextureDictionary_;
 
   private readonly LazyDictionary<MaterialParams, IMaterial>
@@ -61,6 +64,8 @@ public class DlModelBuilder {
     };
 
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);
+
+    var imageByDataCrc32 = new Dictionary<uint, IReadOnlyImage>();
 
     this.lazyImageDictionary_ =
         new(segmentAndImageParams => {
@@ -118,6 +123,7 @@ public class DlModelBuilder {
               for (var i = 0; i < ult; ++i) {
                 br.ReadBytes(fullLineSpan);
               }
+
               for (var i = 0; i < imageParams.Height; ++i) {
                 br.ReadBytes(fullLineSpan);
                 fullLineSpan.Slice(lineOffsetInBytes, usedLineSizeInBytes)
@@ -128,16 +134,29 @@ public class DlModelBuilder {
             }
 
             br.Dispose();
-            return new N64ImageParser(this.n64Hardware_).Parse(
-                imageParams.ColorFormat,
-                imageParams.BitsPerTexel,
-                imageData,
-                imageParams.Width,
-                imageParams.Height);
-          } else {
-            return FinImage.Create1x1FromColor(Color.Magenta);
+
+            var crc32 = Crc32.HashToUInt32(imageData);
+            if (DEDUPLICATE_TEXTURES) {
+              if (imageByDataCrc32.TryGetValue(crc32, out var image)) {
+                return image;
+              }
+            }
+
+            return imageByDataCrc32[crc32]
+                = new N64ImageParser(this.n64Hardware_).Parse(
+                    imageParams.ColorFormat,
+                    imageParams.BitsPerTexel,
+                    imageData,
+                    imageParams.Width,
+                    imageParams.Height);
           }
+
+          return FinImage.Create1x1FromColor(Color.Magenta);
         });
+
+    var textureByImageAndParams
+        = new Dictionary<(IReadOnlyImage, WrapMode wrapModeU, WrapMode wrapModeV
+            , UvType uvType, int uvIndex), IReadOnlyTexture>();
 
     this.lazyTextureDictionary_ =
         new(segmentAndTextureParamsOrNull => {
@@ -149,6 +168,21 @@ public class DlModelBuilder {
 
           var imageParams = textureParams.ImageParams;
           var image = this.lazyImageDictionary_[(segment, imageParams)];
+
+          var wrapModeU = textureParams.WrapModeS.AsFinWrapMode();
+          var wrapModeV = textureParams.WrapModeT.AsFinWrapMode();
+          var uvType = textureParams.UvType;
+          var uvIndex = textureParams.Index;
+
+          // Reuse existing texture if possible.
+          if (DEDUPLICATE_TEXTURES) {
+            if (textureByImageAndParams.TryGetValue(
+                    (image, wrapModeU, wrapModeV, uvType, uvIndex),
+                    out var readOnlyTexture)) {
+              return readOnlyTexture;
+            }
+          }
+
           var texture = this.Model.MaterialManager.CreateTexture(image);
 
           var color = this.vertices_.OverrideVertexColor;
@@ -156,10 +190,14 @@ public class DlModelBuilder {
               ? String.Format("0x{0:X8}", textureParams.SegmentedAddress)
               : $"rgb({color.R}, {color.G}, {color.B})";
 
-          texture.WrapModeU = textureParams.WrapModeS.AsFinWrapMode();
-          texture.WrapModeV = textureParams.WrapModeT.AsFinWrapMode();
-          texture.UvType = textureParams.UvType;
-          texture.UvIndex = textureParams.Index;
+          texture.WrapModeU = wrapModeU;
+          texture.WrapModeV = wrapModeV;
+          texture.UvType = uvType;
+          texture.UvIndex = uvIndex;
+
+          textureByImageAndParams[
+              (image, wrapModeU, wrapModeV, uvType, uvIndex)] = texture;
+
           return texture;
         });
 
@@ -386,6 +424,7 @@ public class DlModelBuilder {
                                         BlendFactor.ZERO,
                                         LogicOp.UNDEFINED);
               }
+
               if (srcFactor == BlenderA.G_BL_0 &&
                   dstFactor == BlenderB.G_BL_1) {
                 finMaterial.SetBlending(BlendEquation.ADD,

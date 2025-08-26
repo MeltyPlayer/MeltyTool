@@ -159,25 +159,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     br.Position = 0xf968;
     var bodyMeshDefinitions = br.ReadNews<MeshDefinition>(0x4C);
 
-    var materialManager = model.MaterialManager;
-    var thumbnailTexture =
-        materialManager.CreateTexture(tstlt.Thumbnail.Image.ToImage());
-    thumbnailTexture.Name = "thumbnail";
-
-    br.Position = headSectionOffset;
-    var headPaletteImage = new Argb1555Image(32, 32 * 8);
-    headPaletteImage.Read(br);
-    var headPaletteTexture =
-        materialManager.CreateTexture(headPaletteImage.ToImage());
-    headPaletteTexture.Name = "headPalette";
-
-    br.Position = bodySectionOffset;
-    var bodyPaletteImage = new Argb1555Image(32, 32 * 16);
-    bodyPaletteImage.Read(br);
-    var bodyPaletteTexture =
-        materialManager.CreateTexture(bodyPaletteImage.ToImage());
-    bodyPaletteTexture.Name = "bodyPalette";
-
     br.Position = 0xa934;
     var joints = br.ReadNews<Joint>(0x1F);
     foreach (var joint in joints) {
