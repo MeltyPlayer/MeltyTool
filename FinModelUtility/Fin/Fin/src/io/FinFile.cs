@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -107,12 +108,9 @@ public readonly struct FinFile(string fullName) : ISystemFile {
 
   // Read methods
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public FileSystemStream OpenRead()
-    => FinFileStatic.OpenRead(this.FullPath);
-
+  public Stream OpenRead() => FinFileStatic.OpenRead(this.FullPath);
 
   // Write methods
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public FileSystemStream OpenWrite()
-    => FinFileStatic.OpenWrite(this.FullPath);
+  public Stream OpenWrite() => FinFileStatic.OpenWrite(this.FullPath);
 }

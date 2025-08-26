@@ -1,4 +1,5 @@
-﻿using System.IO.Abstractions;
+﻿using System.IO;
+using System.IO.Abstractions;
 
 using schema.readOnly;
 
@@ -9,7 +10,7 @@ public partial interface IGenericFile {
   new string DisplayFullPath { get; }
 
   [Const]
-  new FileSystemStream OpenRead();
+  new Stream OpenRead();
 
-  FileSystemStream OpenWrite();
+  Stream OpenWrite();
 }

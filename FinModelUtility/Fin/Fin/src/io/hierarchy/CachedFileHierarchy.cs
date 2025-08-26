@@ -522,7 +522,7 @@ public partial class CachedFileHierarchy : IFileHierarchy {
     public string DisplayFullPath
       => $"//{this.Hierarchy.Name}{this.LocalPath.Replace('\\', '/')}";
 
-    public FileSystemStream OpenRead() => this.Impl.OpenRead();
+    public Stream OpenRead() => this.Impl.OpenRead();
   }
 
   public IEnumerator<IFileHierarchyDirectory> GetEnumerator() {

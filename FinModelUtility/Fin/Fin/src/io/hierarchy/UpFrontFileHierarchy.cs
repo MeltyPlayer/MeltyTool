@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 
@@ -440,7 +441,7 @@ public static partial class FileHierarchy {
       public string DisplayFullPath
         => $"//{this.Hierarchy.Name}{this.LocalPath.Replace('\\', '/')}";
 
-      public FileSystemStream OpenRead() => this.Impl.OpenRead();
+      public Stream OpenRead() => this.Impl.OpenRead();
     }
 
     public IEnumerator<IFileHierarchyDirectory> GetEnumerator() {
