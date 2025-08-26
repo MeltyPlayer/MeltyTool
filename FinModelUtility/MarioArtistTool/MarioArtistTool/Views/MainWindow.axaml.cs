@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 
+using fin.data.dictionaries;
 using fin.io;
 using fin.io.web;
 using fin.services;
@@ -64,13 +67,35 @@ public partial class MainWindow : Window {
     var selectedStorageFile = selectedStorageFiles[0];
     var diskFile = new FinFile(selectedStorageFile.Path.LocalPath);
 
+    MfsDisk mfsDisk;
     try {
       using var br = diskFile.OpenReadAsBinary(Endianness.BigEndian);
-      var mfsDisk = br.ReadNew<MfsDisk>();
-
-      ;
+      mfsDisk = br.ReadNew<MfsDisk>();
     } catch (Exception e) {
       ExceptionService.HandleException(e, new LoadFileException(diskFile));
+      return;
     }
+
+    if (mfsDisk.Volume == null) {
+      return;
+    }
+
+    var mfsDirectoryById = new Dictionary<ushort, MfsDirectory>();
+    var mfsEntryByParentId = new ListDictionary<ushort, IMfsEntry>();
+    foreach (var mfsEntry in mfsDisk.Volume.MfsEntries) {
+      mfsEntryByParentId.Add(mfsEntry.ParentDirectoryIndex, mfsEntry);
+
+      switch (mfsEntry) {
+        case MfsDirectory mfsDirectory: {
+          mfsDirectoryById[mfsDirectory.DirectoryId] = mfsDirectory;
+          break;
+        }
+        case MfsFile mfsFile: {
+          break;
+        }
+      }
+    }
+
+    var mfsDirectoryTo
   }
 }
