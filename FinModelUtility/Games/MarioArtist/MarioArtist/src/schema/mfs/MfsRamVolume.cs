@@ -16,10 +16,10 @@ public enum VolumeFlags : byte {
 /// </summary>
 [BinarySchema]
 public partial class MfsRamVolume : IBinaryDeserializable {
-  public uint Unk0 { get; }
-  public uint Unk1 { get; }
-  public uint Unk2 { get; }
-  public ushort Unk3 { get; }
+  public uint Unk0 { get; set; }
+  public uint Unk1 { get; set; }
+  public uint Unk2 { get; set; }
+  public ushort Unk3 { get; set; }
 
   public VolumeFlags Flags { get; set; }
   public byte DiskType { get; set; }
@@ -51,7 +51,7 @@ public partial class MfsRamVolume : IBinaryDeserializable {
 
     var entryLimit = Mfs.EntryLimit[this.DiskType];
     for (int i = 0; i < entryLimit; ++i) {
-      var baseOffset = br.Position = i + 0x16B0 + (i * 0x30);
+      var baseOffset = br.Position = 0x16B0 + (i * 0x30);
       var firstByte = br.ReadByte();
       br.Position = baseOffset;
 

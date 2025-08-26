@@ -12,22 +12,33 @@ public partial class MfsFile : IBinaryDeserializable, IMfsEntry {
   public MfsEntryFlags Flags { get; set; }
   public ushort ParentDirectoryIndex { get; set; }
 
-  [StringLengthSource(2)]
+  [Skip]
   public string CompanyCode { get; set; }
 
-  [StringLengthSource(4)]
+  [Skip]
   public string GameCode { get; set; }
+
+  [ReadLogic]
+  private void ReadCompanyCodeAndGameCode_(IBinaryReader br) {
+    this.CompanyCode = SjisUtil.ReadString(br, 2);
+    this.GameCode = SjisUtil.ReadString(br, 4);
+  }
 
   public ushort FatEntry { get; set; }
 
   public uint Size { get; set; }
 
-  [StringEncoding(StringEncodingType.UTF8)]
-  [StringLengthSource(20)]
+  [Skip]
   public string Name { get; set; }
 
-  [StringLengthSource(5)]
+  [Skip]
   public string Ext { get; set; }
+
+  [ReadLogic]
+  private void ReadNameAndExt_(IBinaryReader br) {
+    this.Name = SjisUtil.ReadString(br, 20);
+    this.Ext = SjisUtil.ReadString(br, 5);
+  }
 
   public byte CopyNb { get; set; }
 

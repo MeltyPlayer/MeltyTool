@@ -1,4 +1,6 @@
-﻿using marioartist.schema.leo;
+﻿using fin.util.asserts;
+
+using marioartist.schema.leo;
 
 using schema.binary;
 
@@ -19,6 +21,9 @@ public class MfsDisk : IBinaryDeserializable {
       return;
     }
 
-    this.Volume = br.ReadNew<MfsRamVolume>();
+    using var ramAreaReader = new SchemaBinaryReader(
+        leoDisk.GetRAMAreaArray().AssertNonnull(),
+        Endianness.BigEndian);
+    this.Volume = ramAreaReader.ReadNew<MfsRamVolume>();
   }
 }

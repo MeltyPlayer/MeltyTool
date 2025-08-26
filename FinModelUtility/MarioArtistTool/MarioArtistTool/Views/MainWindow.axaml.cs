@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
@@ -44,7 +43,7 @@ public partial class MainWindow : Window {
 
     var startLocation = await storageProvider.TryGetFolderFromPathAsync("./");
 
-    var selectedStorageFile
+    var selectedStorageFiles
         = await storageProvider
             .OpenFilePickerAsync(new FilePickerOpenOptions {
                 SuggestedStartLocation = startLocation,
@@ -58,11 +57,12 @@ public partial class MainWindow : Window {
                     }
                 ]
             });
-    if (selectedStorageFile is not { Count: 1 }) {
+    if (selectedStorageFiles is not { Count: 1 }) {
       return;
     }
 
-    var diskFile = new FinFile(selectedStorageFile[0].Path.AbsolutePath);
+    var selectedStorageFile = selectedStorageFiles[0];
+    var diskFile = new FinFile(selectedStorageFile.Path.LocalPath);
 
     try {
       using var br = diskFile.OpenReadAsBinary(Endianness.BigEndian);

@@ -12,19 +12,29 @@ public partial class MfsDirectory : IBinaryDeserializable, IMfsEntry {
   public MfsEntryFlags Flags { get; set; }
   public ushort ParentDirectoryIndex { get; set; }
 
-  [StringLengthSource(2)]
+  [Skip]
   public string CompanyCode { get; set; }
 
-  [StringLengthSource(4)]
+  [Skip]
   public string GameCode { get; set; }
+
+  [ReadLogic]
+  private void ReadCompanyCodeAndGameCode_(IBinaryReader br) {
+    this.CompanyCode = SjisUtil.ReadString(br, 2);
+    this.GameCode = SjisUtil.ReadString(br, 4);
+  }
 
   public ushort DirectoryId { get; set; }
 
   public uint Unk0 { get; set; }
 
-  [StringEncoding(StringEncodingType.UTF8)]
-  [StringLengthSource(20)]
+  [Skip]
   public string Name { get; set; }
+
+  [ReadLogic]
+  private void ReadName_(IBinaryReader br) {
+    this.Name = SjisUtil.ReadString(br, 20);
+  }
 
   public uint Unk1 { get; set; }
   public ushort Unk2 { get; set; }
