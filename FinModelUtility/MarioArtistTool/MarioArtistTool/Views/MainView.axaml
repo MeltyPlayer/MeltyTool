@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:marioartisttool.ViewModels"
              xmlns:scene="clr-namespace:fin.ui.avalonia.scene;assembly=Fin.Ui.Avalonia"
+             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="marioartisttool.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -13,10 +14,22 @@
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <scene:SceneInstanceViewerGlPanel
-      x:Name="ViewerGlPanel"
-      IsTabStop="True"
-      TabIndex="0"
-      Focusable="True"
-      ShowGrid="True" />
+  <DockPanel>
+    <Panel Width="200"
+           DockPanel.Dock="Left">
+      <controls:If Condition="{Binding FileSystemTreeSource, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <TreeDataGrid Source="{Binding FileSystemTreeSource}"
+                      Margin="-4 0"
+                      ShowColumnHeaders="False" />
+      </controls:If>
+    </Panel>
+    
+    <scene:SceneInstanceViewerGlPanel
+        DockPanel.Dock="Right"
+        x:Name="ViewerGlPanel"
+        IsTabStop="True"
+        TabIndex="0"
+        Focusable="True"
+        ShowGrid="True" />
+  </DockPanel>
 </UserControl>

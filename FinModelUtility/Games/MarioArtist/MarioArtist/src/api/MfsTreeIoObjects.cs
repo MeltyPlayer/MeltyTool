@@ -4,16 +4,19 @@ using fin.data.dictionaries;
 using fin.data.queues;
 using fin.io;
 using fin.util.asserts;
+using fin.util.linq;
 
 using marioartist.schema.leo;
 using marioartist.schema.mfs;
 
 namespace marioartist.api;
 
-public abstract class MfsIoObject(IReadOnlyTreeDirectory? parent)
+public abstract class MfsTreeIoObject(IReadOnlyTreeDirectory? parent)
     : IReadOnlyTreeIoObject {
   public abstract string FullPath { get; }
   public ReadOnlySpan<char> Name => FinIoStatic.GetName(this.FullPath);
+
+  public abstract IEnumerable<MfsTreeIoObject> Children { get; }
 
   public IReadOnlyTreeDirectory AssertGetParent() {
     Asserts.True(parent != null);
@@ -39,7 +42,7 @@ public class MfsTreeDirectory(
     MfsDirectory impl,
     LinkedList<MfsTreeDirectory> subdirs,
     LinkedList<MfsTreeFile> files)
-    : MfsIoObject(parent), IReadOnlyTreeDirectory {
+    : MfsTreeIoObject(parent), IReadOnlyTreeDirectory {
   public static MfsTreeDirectory CreateTreeFromMfsDisk(MfsDisk mfsDisk) {
     if (mfsDisk.Volume == null) {
       throw mfsDisk.Error switch {
@@ -77,7 +80,11 @@ public class MfsTreeDirectory(
     while (directoryQueue.TryDequeue(out var tuple)) {
       var (directory, treeDirectory, subdirs, files) = tuple;
 
-      var childEntries = mfsEntryByParentId[directory.DirectoryId];
+      if (!mfsEntryByParentId.TryGetList(directory.DirectoryId,
+                                         out var childEntries)) {
+        continue;
+      }
+
       foreach (var childEntry in childEntries) {
         switch (childEntry) {
           case MfsDirectory childDirectory: {
@@ -108,6 +115,9 @@ public class MfsTreeDirectory(
 
   public override string FullPath { get; }
     = Path.Join(parent?.FullPath ?? "", impl.Name);
+
+  public override IEnumerable<MfsTreeIoObject> Children
+    => subdirs.CastTo<MfsTreeDirectory, MfsTreeIoObject>().Concat(files);
 
   public bool IsEmpty => subdirs.Count == 0 && files.Count == 0;
 
@@ -158,11 +168,11 @@ public class MfsTreeFile(
     LeoDisk disk,
     MfsRamVolume volume,
     MfsFile impl)
-    : MfsIoObject(parent), IReadOnlyTreeFile {
-  private readonly MfsFile impl_ = impl;
+    : MfsTreeIoObject(parent), IReadOnlyTreeFile {
+  public override IEnumerable<MfsTreeIoObject> Children => [];
 
   public override string FullPath { get; }
-    = Path.Join(parent.FullPath, impl.Name);
+    = Path.Join(parent.FullPath, $"{impl.Name}.{impl.Ext}");
 
   public string DisplayFullPath => this.FullPath;
 

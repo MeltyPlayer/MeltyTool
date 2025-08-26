@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1" />
     <PackageReference Include="TextMateSharp" Version="1.0.70" />
     <PackageReference Include="TextMateSharp.Grammars" Version="1.0.70" />
   </ItemGroup>

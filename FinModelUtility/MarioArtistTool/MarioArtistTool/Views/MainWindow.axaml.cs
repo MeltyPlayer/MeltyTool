@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
@@ -13,7 +12,10 @@ using fin.io.web;
 using fin.services;
 using fin.ui.avalonia.dialogs;
 
+using marioartist.api;
 using marioartist.schema.mfs;
+
+using marioartisttool.services;
 
 using schema.binary;
 
@@ -71,31 +73,10 @@ public partial class MainWindow : Window {
     try {
       using var br = diskFile.OpenReadAsBinary(Endianness.BigEndian);
       mfsDisk = br.ReadNew<MfsDisk>();
+      var mfsRootDirectory = MfsTreeDirectory.CreateTreeFromMfsDisk(mfsDisk);
+      MfsFileSystemService.LoadFileSystem(mfsRootDirectory);
     } catch (Exception e) {
       ExceptionService.HandleException(e, new LoadFileException(diskFile));
-      return;
     }
-
-    if (mfsDisk.Volume == null) {
-      return;
-    }
-
-    var mfsDirectoryById = new Dictionary<ushort, MfsDirectory>();
-    var mfsEntryByParentId = new ListDictionary<ushort, IMfsEntry>();
-    foreach (var mfsEntry in mfsDisk.Volume.MfsEntries) {
-      mfsEntryByParentId.Add(mfsEntry.ParentDirectoryIndex, mfsEntry);
-
-      switch (mfsEntry) {
-        case MfsDirectory mfsDirectory: {
-          mfsDirectoryById[mfsDirectory.DirectoryId] = mfsDirectory;
-          break;
-        }
-        case MfsFile mfsFile: {
-          break;
-        }
-      }
-    }
-
-    var mfsDirectoryTo
   }
 }

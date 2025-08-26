@@ -15,8 +15,7 @@ public interface IExceptionContext {
   string Steps { get; }
 }
 
-public class LoadFileException(IReadOnlySystemFile file)
-    : IExceptionContext {
+public class LoadFileException(IReadOnlyTreeFile file) : IExceptionContext {
   public string Title
     => $"[Bug] Failed to load {file.FullPath}";
 
