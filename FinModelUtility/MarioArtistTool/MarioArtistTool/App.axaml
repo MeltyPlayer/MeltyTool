@@ -7,7 +7,9 @@
 
   <Application.Styles>
     <FluentTheme />
+    <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     <avalonia:MaterialIconStyles />
+    
     <StyleInclude Source="avares://Fin.Ui.Avalonia/styles/CommonStyles.axaml" />
     <StyleInclude Source="avares://Fin.Ui.Avalonia/styles/IconStyles.axaml" />
   </Application.Styles>

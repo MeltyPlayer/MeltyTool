@@ -15,6 +15,15 @@ public interface IExceptionContext {
   string Steps { get; }
 }
 
+public class LoadFileException(IReadOnlySystemFile file)
+    : IExceptionContext {
+  public string Title
+    => $"[Bug] Failed to load {file.FullPath}";
+
+  public string Steps
+    => $"1. Attempted to load {file.FullPath}.";
+}
+
 public class LoadFileBundleExceptionContext(IGameAndLocalPath fb)
     : IExceptionContext {
   public string Title

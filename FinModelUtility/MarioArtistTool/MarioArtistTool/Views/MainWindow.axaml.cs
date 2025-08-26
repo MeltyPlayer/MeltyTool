@@ -1,9 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 
 using fin.io;
+using fin.io.web;
 using fin.services;
 using fin.ui.avalonia.dialogs;
 
@@ -18,12 +22,15 @@ public partial class MainWindow : Window {
     InitializeComponent();
 
     ExceptionService.OnException += (e, c) => {
-      var dialog = new ExceptionDialog {
-          DataContext = new ExceptionDialogViewModel { Exception = e, Context = c},
-          CanResize = false,
-      };
+      Dispatcher.UIThread.Invoke(() => {
+        var dialog = new ExceptionDialog {
+            DataContext = new ExceptionDialogViewModel
+                { Exception = e, Context = c },
+            CanResize = false,
+        };
 
-      dialog.ShowDialog(this);
+        dialog.ShowDialog(this);
+      });
     };
 
     Task.Run(this.AskUserForDiskFile_);
@@ -56,10 +63,14 @@ public partial class MainWindow : Window {
     }
 
     var diskFile = new FinFile(selectedStorageFile[0].Path.AbsolutePath);
-    using var br = diskFile.OpenReadAsBinary(Endianness.BigEndian);
 
-    var mfsDisk = br.ReadNew<MfsDisk>();
+    try {
+      using var br = diskFile.OpenReadAsBinary(Endianness.BigEndian);
+      var mfsDisk = br.ReadNew<MfsDisk>();
 
-    ;
+      ;
+    } catch (Exception e) {
+      ExceptionService.HandleException(e, new LoadFileException(diskFile));
+    }
   }
 }
