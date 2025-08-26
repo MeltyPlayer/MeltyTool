@@ -30,7 +30,7 @@ public interface IDynamicGlBufferManager : IGlBufferManager {
 
 public interface IGlBufferRenderer : IDisposable, IRenderable;
 
-public class GlBufferManager : IDynamicGlBufferManager {
+public sealed class GlBufferManager : IDynamicGlBufferManager {
   private readonly IReadOnlyModel model_;
   private readonly IModelRequirements modelRequirements_;
   private readonly BufferUsageHint bufferType_;

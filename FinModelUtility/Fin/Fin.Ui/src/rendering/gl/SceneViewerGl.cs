@@ -12,7 +12,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace fin.ui.rendering.gl;
 
-public class SceneViewerGl : ISceneViewer, IRenderable {
+public sealed class SceneViewerGl : ISceneViewer, IRenderable {
   private InfiniteGridRenderer infiniteGridRenderer_ = new();
   private SkyboxRenderer skyboxRenderer_ = new();
   private BackgroundRenderer backgroundRenderer_ = new();

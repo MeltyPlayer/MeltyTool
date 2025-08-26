@@ -49,7 +49,7 @@ public static class TiledImageReader {
            tileReader);
 }
 
-public class TiledImageReader<TPixel>(
+public sealed class TiledImageReader<TPixel>(
     int width,
     int height,
     ITileReader<TPixel> tileReader,

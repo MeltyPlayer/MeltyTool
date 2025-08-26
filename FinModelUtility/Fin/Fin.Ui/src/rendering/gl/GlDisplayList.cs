@@ -2,7 +2,7 @@
 
 namespace fin.ui.rendering.gl;
 
-public class GlDisplayList(Action compile) : IDisposable {
+public sealed class GlDisplayList(Action compile) : IDisposable {
   private readonly int displayListId_ = GL.GenLists(1);
   private bool valid_ = false;
 

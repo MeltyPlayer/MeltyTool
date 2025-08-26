@@ -6,7 +6,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlShaderProgram : IShaderProgram {
+public sealed partial class GlShaderProgram : IShaderProgram {
   private bool isDisposed_;
   private readonly CachedShaderProgram cachedShaderProgram_;
 

@@ -11,7 +11,7 @@ namespace fin.image.io.pixel;
 /// <summary>
 ///   Helper class for reading 16-bit luminance/alpha pixels.
 /// </summary>
-public class Al16PixelReader : IPixelReader<La16> {
+public sealed class Al16PixelReader : IPixelReader<La16> {
   public IImage<La16> CreateImage(int width, int height)
     => new La16Image(PixelFormat.LA88, width, height);
 

@@ -9,7 +9,7 @@ namespace fin.image.io.pixel;
 /// <summary>
 ///   Helper class for reading 8-bit luminance/alpha pixels.
 /// </summary>
-public class Al8PixelReader : IPixelReader<La16> {
+public sealed class Al8PixelReader : IPixelReader<La16> {
   public IImage<La16> CreateImage(int width, int height)
     => new La16Image(PixelFormat.LA44, width, height);
 

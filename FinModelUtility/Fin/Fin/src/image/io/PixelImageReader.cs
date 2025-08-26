@@ -32,7 +32,7 @@ public static class PixelImageReader {
            pixelReader);
 }
 
-public class PixelImageReader<TPixel>(
+public sealed class PixelImageReader<TPixel>(
     int width,
     int height,
     IPixelIndexer pixelIndexer,

@@ -7,7 +7,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.image.io.tile;
 
-public class BasicTileReader<TPixel>(
+public sealed class BasicTileReader<TPixel>(
     int tileWidth,
     int tileHeight,
     IPixelIndexer pixelIndexer,

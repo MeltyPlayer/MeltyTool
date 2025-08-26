@@ -6,7 +6,7 @@ namespace fin.image.io.tile;
 ///   Stolen from:
 ///   https://github.com/magcius/noclip.website/blob/master/src/oot3d/pica_texture.ts
 /// </summary>
-public class MortonPixelIndexer : IPixelIndexer {
+public sealed class MortonPixelIndexer : IPixelIndexer {
   public void GetPixelCoordinates(int index, out int x, out int y) {
     x = this.Morton7_(index);
     y = this.Morton7_(index >>> 1);

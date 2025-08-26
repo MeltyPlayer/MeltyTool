@@ -9,7 +9,7 @@ namespace fin.image.io.pixel;
 /// <summary>
 ///   Helper class for reading 4-bit luminance pixels.
 /// </summary>
-public class A4PixelReader : IPixelReader<La16> {
+public sealed class A4PixelReader : IPixelReader<La16> {
   public IImage<La16> CreateImage(int width, int height)
     => new La16Image(PixelFormat.A4, width, height);
 
