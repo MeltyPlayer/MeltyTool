@@ -14,8 +14,6 @@ public partial class Tstlt : IBinaryDeserializable {
   [SequenceLengthSource(12)]
   public uint[] Unk { get; private set; }
 
-  public Argb1555Image FaceTextures { get; } = new(128, 141);
-
   public AnotherHeader AnotherHeader { get; } = new();
 }
 

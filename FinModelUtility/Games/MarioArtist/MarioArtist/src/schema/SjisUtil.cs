@@ -42,54 +42,7 @@ public static class SjisUtil {
            .TrimEnd('\x00');
   }
 
-  public static byte[] EncodeStringToSJIS(string str) {
-    PrepareMapping();
-
-    Encoding encode
-        = Encoding.GetEncoding(932,
-                               new EncoderExceptionFallback(),
-                               new CustomDecoder());
-    List<byte> output = new List<byte>();
-
-    foreach (char c in str) {
-      byte[] byt = { };
-
-      try {
-        byt = encode.GetBytes(c.ToString());
-      } catch (EncoderFallbackException e) {
-        //Any invalid chars will dealt with here
-        ushort[] keys = leoMapping.Keys.ToArray();   //SJIS
-        char[] values = leoMapping.Values.ToArray(); //Unicode
-
-        Debug.Assert(keys.Length == values.Length);
-
-        //Reverse Search
-        for (int i = 0; i < keys.Length; i++) {
-          if (values[i] == e.CharUnknown) {
-            byt = BitConverter.GetBytes(keys[i]).Reverse().ToArray();
-            break;
-          }
-        }
-      }
-
-      foreach (byte b in byt)
-        output.Add(b);
-    }
-
-    return output.ToArray();
-  }
-
   //Decoder
-  public class NullEncodingProvider : EncodingProvider {
-    public override Encoding? GetEncoding(int codepage) {
-      return null;
-    }
-
-    public override Encoding? GetEncoding(string name) {
-      return null;
-    }
-  }
-
   public class CustomDecoder : DecoderFallback {
     public string DefaultString;
     internal Dictionary<ushort, char> mapping;
@@ -100,7 +53,6 @@ public static class SjisUtil {
       this.DefaultString = defaultString;
 
       // Create table of mappings
-      PrepareMapping();
       mapping = leoMapping;
     }
 

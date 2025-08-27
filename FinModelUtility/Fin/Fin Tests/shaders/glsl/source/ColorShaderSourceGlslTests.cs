@@ -67,7 +67,7 @@ public class ColorShaderSourceGlslTests {
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
 
-          {{GlslUtil.GetLightHeader(true)}}
+          {{GlslUtil.LIGHT_HEADER}}
 
           uniform vec4 diffuseColor;
           uniform float shininess;

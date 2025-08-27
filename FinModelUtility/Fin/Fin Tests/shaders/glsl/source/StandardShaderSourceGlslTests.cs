@@ -189,7 +189,7 @@ public class StandardShaderSourceGlslTests {
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
 
-          {{GlslUtil.GetLightHeader(true)}}
+          {{GlslUtil.LIGHT_HEADER}}
 
           uniform sampler2D diffuseTexture;
           uniform float shininess;
@@ -232,7 +232,7 @@ public class StandardShaderSourceGlslTests {
           #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
           {{GlslConstants.FLOAT_PRECISION}}
 
-          {{GlslUtil.GetLightHeader(true)}}
+          {{GlslUtil.LIGHT_HEADER}}
 
           uniform sampler2D emissiveTexture;
           uniform float shininess;
