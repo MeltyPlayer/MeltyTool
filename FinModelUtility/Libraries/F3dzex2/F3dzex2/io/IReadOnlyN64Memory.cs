@@ -65,52 +65,62 @@ public class N64Memory(
 
   public Endianness Endianness { get; } = endianness;
 
-  public SchemaBinaryReader OpenAtSegmentedAddress(uint segmentedAddress)
-    => this.OpenPossibilitiesAtSegmentedAddress(segmentedAddress)
-           .Single($"Expected to have a single possibility for {segmentedAddress.ToHexString()}");
+  public SchemaBinaryReader OpenAtSegmentedAddress(uint segmentedAddress) {
+    var possibilities
+        = this.OpenPossibilitiesAtSegmentedAddress(segmentedAddress);
+
+    if (!possibilities.TryGetSingle(out var single)) {
+      Asserts.Fail(
+          $"Expected to have a single possibility for {segmentedAddress.ToHexString()}");
+    }
+
+    return single;
+  }
 
   public IEnumerable<SchemaBinaryReader> OpenPossibilitiesAtSegmentedAddress(
       uint segmentedAddress) {
-      Asserts.True(
-          this.TryToOpenPossibilitiesAtSegmentedAddress(
-              segmentedAddress,
-              out var possibilities),
+    if (!this.TryToOpenPossibilitiesAtSegmentedAddress(
+            segmentedAddress,
+            out var possibilities)) {
+      Asserts.Fail(
           $"Expected 0x{segmentedAddress.ToHex()} to be a valid segmented address.");
-      return possibilities;
     }
+
+    return possibilities;
+  }
 
   public bool TryToOpenPossibilitiesAtSegmentedAddress(
       uint segmentedAddress,
       out IEnumerable<SchemaBinaryReader> possibilities) {
-      if (!this.TryToGetSegmentsAtSegmentedAddress_(
-              segmentedAddress,
-              out var offset,
-              out var validSegments)) {
-        possibilities = default;
-        return false;
-      }
-
-      possibilities =
-          validSegments.Select(segment => this.OpenSegment(segment, offset));
-      return true;
+    if (!this.TryToGetSegmentsAtSegmentedAddress_(
+            segmentedAddress,
+            out var offset,
+            out var validSegments)) {
+      possibilities = default;
+      return false;
     }
+
+    possibilities =
+        validSegments.Select(segment => this.OpenSegment(segment, offset));
+    return true;
+  }
 
   public SchemaBinaryReader OpenSegment(uint segmentIndex)
     => this.OpenPossibilitiesForSegment(segmentIndex).Single();
 
   public SchemaBinaryReader OpenSegment(Segment segment,
                                         uint? offset = null) {
-      var br = new SchemaBinaryReader(
-          new MemoryStream(data,
-                           (int) segment.Offset,
-                           (int) segment.Length),
-          this.Endianness);
-      if (offset != null) {
-        br.Position = offset.Value;
-      }
-
-      return br;
+    var br = new SchemaBinaryReader(
+        new MemoryStream(data,
+                         (int) segment.Offset,
+                         (int) segment.Length),
+        this.Endianness);
+    if (offset != null) {
+      br.Position = offset.Value;
     }
+
+    return br;
+  }
 
   public IEnumerable<SchemaBinaryReader> OpenPossibilitiesForSegment(
       uint segmentIndex)
@@ -126,16 +136,16 @@ public class N64Memory(
     => this.segments_.HasList(segmentIndex);
 
   public bool IsValidSegmentedAddress(uint segmentedAddress) {
-      IoUtils.SplitSegmentedAddress(segmentedAddress,
-                                    out var segmentIndex,
-                                    out var offset);
-      if (!this.segments_.TryGetList(segmentIndex, out var segments)) {
-        return false;
-      }
-
-      var offsetInSegment = offset;
-      return segments!.Any(segment => offsetInSegment < segment.Length);
+    IoUtils.SplitSegmentedAddress(segmentedAddress,
+                                  out var segmentIndex,
+                                  out var offset);
+    if (!this.segments_.TryGetList(segmentIndex, out var segments)) {
+      return false;
     }
+
+    var offsetInSegment = offset;
+    return segments!.Any(segment => offsetInSegment < segment.Length);
+  }
 
   public bool IsSegmentCompressed(uint segmentIndex)
     => this.segments_[segmentIndex].Single().Decompressor != null;
@@ -174,20 +184,20 @@ public class N64Memory(
       uint segmentedAddress,
       out uint offset,
       out IEnumerable<Segment> validSegments) {
-      IoUtils.SplitSegmentedAddress(segmentedAddress,
-                                    out var segmentIndex,
-                                    out offset);
-      var offsetInSegment = offset;
+    IoUtils.SplitSegmentedAddress(segmentedAddress,
+                                  out var segmentIndex,
+                                  out offset);
+    var offsetInSegment = offset;
 
-      if (!this.segments_.TryGetList(segmentIndex, out var segments)) {
-        validSegments = default;
-        return false;
-      }
-
-      validSegments =
-          segments!.Where(segment => offsetInSegment < segment.Length);
-      return segments!.Any();
+    if (!this.segments_.TryGetList(segmentIndex, out var segments)) {
+      validSegments = default;
+      return false;
     }
+
+    validSegments =
+        segments!.Where(segment => offsetInSegment < segment.Length);
+    return segments!.Any();
+  }
 }
 
 public readonly struct Segment {

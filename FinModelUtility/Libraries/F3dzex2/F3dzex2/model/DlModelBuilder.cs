@@ -59,10 +59,14 @@ public class DlModelBuilder {
                         IFileBundle? fileBundle = null,
                         IReadOnlySet<IReadOnlyGenericFile>? files = null) {
     this.n64Hardware_ = n64Hardware;
-    this.Model = new ModelImpl {
-        FileBundle = fileBundle,
-        Files = files ?? new HashSet<IReadOnlyGenericFile>(),
-    };
+    this.Model
+        = new ModelImpl<Normal1Color2UvVertexImpl>((index, position) => new
+                                                       Normal1Color2UvVertexImpl(
+                                                           index,
+                                                           position)) {
+            FileBundle = fileBundle,
+            Files = files ?? new HashSet<IReadOnlyGenericFile>(),
+        };
 
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);
 
@@ -508,7 +512,7 @@ public class DlModelBuilder {
             });
   }
 
-  public ModelImpl Model { get; }
+  public ModelImpl<Normal1Color2UvVertexImpl> Model { get; }
 
   public IMesh StartNewMesh(string name) {
     this.currentMesh_ = this.Model.Skin.AddMesh();

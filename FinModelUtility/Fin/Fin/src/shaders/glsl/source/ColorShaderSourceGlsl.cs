@@ -24,7 +24,7 @@ public class ColorShaderSourceGlsl : IShaderSourceGlsl {
     if (hasNormals) {
       fragmentSrc.AppendLine(
           $"""
-           {GlslUtil.GetLightHeader(true)}
+           {GlslUtil.LIGHT_HEADER}
 
            """);
     }

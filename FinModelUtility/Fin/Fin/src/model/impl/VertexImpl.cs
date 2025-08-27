@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Numerics;
 
 using fin.color;
@@ -6,9 +7,10 @@ using fin.math.xyz;
 
 namespace fin.model.impl;
 
-public class OneColor2UvVertexImpl : IVertex,
-                                     ISingleColorVertex,
-                                     IMultiUvVertex {
+public class OneColor2UvVertexImpl
+    : IVertex,
+      ISingleColorVertex,
+      IMultiUvVertex {
   private IColor? color_;
   private Vector2[] uv_ = new Vector2[2];
 
@@ -89,10 +91,10 @@ public class OneColor2UvVertexImpl : IVertex,
     => this.uv_[uvIndex] = new Vector2(u, v);
 }
 
-
-public class NormalUvVertexImpl : IVertex,
-                                  INormalVertex,
-                                  ISingleUvVertex {
+public class NormalUvVertexImpl
+    : IVertex,
+      INormalVertex,
+      ISingleUvVertex {
   private Vector2? uv_;
 
   public NormalUvVertexImpl(int index, Vector3 position) {
@@ -161,10 +163,10 @@ public class NormalUvVertexImpl : IVertex,
   public Vector2? GetUv() => this.uv_;
 }
 
-
-public class Normal1Color1UvVertexImpl : INormalVertex,
-                                         ISingleColorVertex,
-                                         ISingleUvVertex {
+public class Normal1Color1UvVertexImpl
+    : INormalVertex,
+      ISingleColorVertex,
+      ISingleUvVertex {
   private IColor? color_;
   private Vector2? uv_;
 
@@ -261,9 +263,127 @@ public class Normal1Color1UvVertexImpl : INormalVertex,
   public Vector2? GetUv() => this.uv_;
 }
 
-public class NormalTangent1Color1UvVertexImpl : INormalTangentVertex,
-                                                ISingleColorVertex,
-                                                ISingleUvVertex {
+public class Normal1Color2UvVertexImpl
+    : INormalVertex,
+      ISingleColorVertex,
+      IMultiUvVertex {
+  private IColor? color_;
+  private Vector2? uv0_;
+  private Vector2? uv1_;
+
+  public Normal1Color2UvVertexImpl(int index, Vector3 position) {
+    this.Index = index;
+    this.SetLocalPosition(position);
+  }
+
+  public Normal1Color2UvVertexImpl(int index, float x, float y, float z) {
+    this.Index = index;
+    this.SetLocalPosition(x, y, z);
+  }
+
+  public int Index { get; }
+
+  public IReadOnlyBoneWeights? BoneWeights { get; private set; }
+
+  public void SetBoneWeights(IReadOnlyBoneWeights boneWeights)
+    => this.BoneWeights = boneWeights;
+
+
+  public Vector3 LocalPosition { get; private set; }
+
+  public void SetLocalPosition(in Vector3 localPosition)
+    => this.LocalPosition = localPosition;
+
+  public void SetLocalPosition(IReadOnlyXyz localPosition)
+    => this.SetLocalPosition(new Vector3(localPosition.X,
+                                         localPosition.Y,
+                                         localPosition.Z));
+
+
+  public void SetLocalPosition(float x, float y, float z)
+    => this.SetLocalPosition(new Vector3(x, y, z));
+
+
+  public Vector3? LocalNormal { get; private set; }
+
+  public void SetLocalNormal(Vector3? localNormal)
+    => this.LocalNormal = localNormal;
+
+  public void SetLocalNormal(IReadOnlyXyz? localNormal)
+    => this.SetLocalNormal(localNormal != null
+                               ? new Vector3(localNormal.X,
+                                             localNormal.Y,
+                                             localNormal.Z)
+                               : null);
+
+  public void SetLocalNormal(float x, float y, float z)
+    => this.SetLocalNormal(new Vector3(x, y, z));
+
+
+  public void SetColor(Color? color)
+    => this.SetColor(color != null
+                         ? FinColor.FromSystemColor(color.Value)
+                         : null);
+
+  public void SetColor(IColor? color) => this.color_ = color;
+
+  public void SetColor(Vector4? color)
+    => this.SetColor(color != null
+                         ? FinColor.FromRgbaFloats(
+                             color.Value.X,
+                             color.Value.Y,
+                             color.Value.Z,
+                             color.Value.W)
+                         : null);
+
+  public void SetColor(IReadOnlyVector4? color)
+    => this.SetColor(color != null
+                         ? FinColor.FromRgbaFloats(
+                             color.X,
+                             color.Y,
+                             color.Z,
+                             color.W)
+                         : null);
+
+  public void SetColorBytes(byte r, byte g, byte b, byte a)
+    => this.SetColor(FinColor.FromRgbaBytes(r, g, b, a));
+
+  public IColor? GetColor() => this.color_;
+
+
+  public void SetUv(Vector2? uv) => this.uv0_ = uv;
+
+  public void SetUv(IReadOnlyVector2? uv)
+    => this.SetUv(uv != null ? new Vector2(uv.X, uv.Y) : null);
+
+  public void SetUv(float u, float v) => this.SetUv(new Vector2(u, v));
+
+  public Vector2? GetUv() => this.uv0_;
+  public int UvCount => this.uv1_ != null ? 2 : this.uv0_ != null ? 1 : 0;
+
+  public Vector2? GetUv(int uvIndex) => uvIndex switch {
+      0 => this.uv0_,
+      1 => this.uv1_,
+      _ => throw new ArgumentOutOfRangeException(nameof(uvIndex), uvIndex, null)
+  };
+
+  public void SetUv(int uvIndex, Vector2? uv) => _ = uvIndex switch {
+      0 => this.uv0_ = uv,
+      1 => this.uv1_ = uv,
+      _ => throw new ArgumentOutOfRangeException(
+          nameof(uvIndex),
+          uvIndex,
+          null)
+  };
+
+  public void SetUv(int uvIndex, float u, float v)
+    => this.SetUv(uvIndex, new Vector2(u, v));
+}
+
+public class NormalTangent1Color1UvVertexImpl
+    : INormalTangentVertex,
+      ISingleColorVertex,
+      ISingleUvVertex {
   private IColor? color_;
   private Vector2? uv_;
 

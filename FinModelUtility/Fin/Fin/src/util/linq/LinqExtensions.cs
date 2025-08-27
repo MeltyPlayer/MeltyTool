@@ -105,6 +105,19 @@ public static class LinqExtensions {
       throw new Exception(errorMessage);
     }
   }
+
+  public static bool TryGetSingle<T>(
+      this IEnumerable<T> enumerable,
+      out T single) {
+    try {
+      single = enumerable.Single();
+      return true;
+    } catch {
+      single = default;
+      return false;
+    }
+  }
+
   public static T First<T>(this IEnumerable<T> enumerable,
                            Func<T, bool> predicate,
                            string errorMessage) {

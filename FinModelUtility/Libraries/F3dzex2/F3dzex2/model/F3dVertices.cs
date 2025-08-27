@@ -24,8 +24,9 @@ public interface IF3dVertices {
   Matrix4x4 Matrix { get; set; }
 }
 
-public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
-    : IF3dVertices {
+public class F3dVertices(
+    IN64Hardware n64Hardware,
+    ModelImpl<Normal1Color2UvVertexImpl> model) : IF3dVertices {
   private const int VERTEX_COUNT = 32;
 
   private readonly F3dVertex[] vertexDefinitions_ =
@@ -86,12 +87,14 @@ public class F3dVertices(IN64Hardware n64Hardware, ModelImpl model)
     var bmpHeight1 = Math.Max(textureParams1?.Height ?? 0, (ushort) 0);
 
     var newVertex = model.Skin.AddVertex(position);
-    newVertex.SetUv(0, definition.GetUv(
+    newVertex.SetUv(0,
+                    definition.GetUv(
                         n64Hardware.Rsp.TexScaleXFloat /
                         (bmpWidth0 * 32),
                         n64Hardware.Rsp.TexScaleYFloat /
                         (bmpHeight0 * 32)));
-    newVertex.SetUv(1, definition.GetUv(
+    newVertex.SetUv(1,
+                    definition.GetUv(
                         n64Hardware.Rsp.TexScaleXFloat /
                         (bmpWidth1 * 32),
                         n64Hardware.Rsp.TexScaleYFloat /

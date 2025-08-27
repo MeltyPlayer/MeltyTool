@@ -214,13 +214,13 @@ public static class GlslUtil {
 
       vertexSrc.AppendLine(
           $"""
-           
-           
+
+
              mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
              mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
-           
+
              gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
-           
+
              vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
            """);
 
@@ -240,9 +240,9 @@ public static class GlslUtil {
     } else {
       vertexSrc.AppendLine(
           $"""
-           
+
              gl_Position = mvpMatrix * vec4(in_Position, 1);
-           
+
              vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
            """);
 
@@ -290,37 +290,37 @@ public static class GlslUtil {
          };
          """;
 
-  public static string GetLightHeader(bool withAmbientLight)
-    => $$"""
-         struct Light {
-           // 0x00 (vec3 needs to be 16-byte aligned)
-           vec3 position;
-           bool enabled;
-         
-           // 0x10 (vec3 needs to be 16-byte aligned)
-           vec3 normal;
-           int sourceType;
-         
-           // 0x20 (vec4 needs to be 16-byte aligned)
-           vec4 color;
-           
-           // 0x30 (vec3 needs to be 16-byte aligned)
-           vec3 cosineAttenuation;
-           int diffuseFunction;
-         
-           // 0x40 (vec3 needs to be 16-byte aligned)
-           vec3 distanceAttenuation;
-           int attenuationFunction;
-         };
+  public static string LIGHT_HEADER { get; }
+    = $$"""
+        struct Light {
+          // 0x00 (vec3 needs to be 16-byte aligned)
+          vec3 position;
+          bool enabled;
 
-         layout (std140, binding = {{GlslConstants.UBO_LIGHTS_BINDING_INDEX}}) uniform {{GlslConstants.UBO_LIGHTS_NAME}} {
-           Light lights[{{MaterialConstants.MAX_LIGHTS}}];
-           vec4 ambientLightColor;
-           float {{GlslConstants.UNIFORM_USE_LIGHTING_NAME}};
-         };
+          // 0x10 (vec3 needs to be 16-byte aligned)
+          vec3 normal;
+          int sourceType;
 
-         uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
-         """;
+          // 0x20 (vec4 needs to be 16-byte aligned)
+          vec4 color;
+          
+          // 0x30 (vec3 needs to be 16-byte aligned)
+          vec3 cosineAttenuation;
+          int diffuseFunction;
+
+          // 0x40 (vec3 needs to be 16-byte aligned)
+          vec3 distanceAttenuation;
+          int attenuationFunction;
+        };
+
+        layout (std140, binding = {{GlslConstants.UBO_LIGHTS_BINDING_INDEX}}) uniform {{GlslConstants.UBO_LIGHTS_NAME}} {
+          Light lights[{{MaterialConstants.MAX_LIGHTS}}];
+          vec4 ambientLightColor;
+          float {{GlslConstants.UNIFORM_USE_LIGHTING_NAME}};
+        };
+
+        uniform vec3 {{GlslConstants.UNIFORM_CAMERA_POSITION_NAME}};
+        """;
 
   public static string GetGetIndividualLightColorsFunction() {
     // Shamelessly stolen from:
@@ -332,14 +332,14 @@ public static class GlslUtil {
             
             surfaceToLightNormal = (light.sourceType == {{(int) LightSourceType.LINE}})
               ? -light.normal : normalize(surfaceToLight);
-          
+
             if (light.attenuationFunction == {{(int) AttenuationFunction.NONE}}) {
               attenuation = 1.0;
               return;
             }
-          
+
             // Attenuation is calculated as a fraction, (cosine attenuation) / (distance attenuation).
-          
+
             // Numerator (Cosine attenuation)
             vec3 cosAttn = light.cosineAttenuation;
             
@@ -347,9 +347,9 @@ public static class GlslUtil {
               ? normal : surfaceToLightNormal;
             float attn = dot(attnDotLhs, light.normal);
             vec3 attnPowers = vec3(1, attn, attn*attn);
-          
+
             float attenuationNumerator = max(0.0, dot(cosAttn, attnPowers));
-          
+
             // Denominator (Distance attenuation)
             float attenuationDenominator = 1.0;
             if (light.sourceType != {{(int) LightSourceType.LINE}}) {
@@ -368,7 +368,7 @@ public static class GlslUtil {
                 attenuationDenominator = dot(distAttn, vec3(1, dist, dist2));
               }
             }
-          
+
             attenuation = attenuationNumerator / attenuationDenominator;
           }
 
@@ -377,11 +377,11 @@ public static class GlslUtil {
                diffuseColor = specularColor = vec4(0);
                return;
             }
-          
+
             vec3 surfaceToLightNormal = vec3(0);
             float attenuation = 0.0;
             getSurfaceToLightNormalAndAttenuation(light, position, normal, surfaceToLightNormal, attenuation);
-          
+
             float diffuseLightAmount = 1.0;
             if (light.diffuseFunction == {{(int) DiffuseFunction.SIGNED}} || light.diffuseFunction == {{(int) DiffuseFunction.CLAMP}}) {
               diffuseLightAmount = max(0.0, dot(normal, surfaceToLightNormal));
@@ -408,7 +408,7 @@ public static class GlslUtil {
               vec4 currentSpecularColor = vec4(0);
             
               getIndividualLightColors(lights[i], position, normal, shininess, currentDiffuseColor, currentSpecularColor);
-          
+
               diffuseColor += currentDiffuseColor;
               specularColor += currentSpecularColor;
             }
@@ -424,7 +424,7 @@ public static class GlslUtil {
             vec4 mergedDiffuseLightColor = vec4(0);
             vec4 mergedSpecularLightColor = vec4(0);
             getMergedLightColors(position, normal, shininess, mergedDiffuseLightColor, mergedSpecularLightColor);
-          
+
             // We double it because all the other kids do. (Other fixed-function games.)
             vec4 diffuseComponent = 2.0 * diffuseSurfaceColor * ({{(withAmbientOcclusion ? "ambientOcclusionAmount * " : "")}}ambientLightColor + mergedDiffuseLightColor);
             vec4 specularComponent = specularSurfaceColor * mergedSpecularLightColor;
@@ -498,7 +498,7 @@ public static class GlslUtil {
           """
           vec2 transformUv3d(mat4 transform3d, vec2 inUv) {
             vec4 rawTransformedUv = (transform3d * vec4(inUv, 0, 1));
-          
+
             // We need to manually divide by w for perspective correction!
             return rawTransformedUv.xy / rawTransformedUv.w;
           }
@@ -636,7 +636,7 @@ public static class GlslUtil {
       case TransparencyType.MASK: {
         src.AppendLine(
             $$"""
-              
+
                 if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_MASK_TEXT}}) {
                   discard;
                 }
@@ -646,7 +646,7 @@ public static class GlslUtil {
       case TransparencyType.TRANSPARENT: {
         src.AppendLine(
             $$"""
-              
+
                 if (fragColor.a < {{GlslConstants.MIN_ALPHA_BEFORE_DISCARD_TRANSPARENT_TEXT}}) {
                   discard;
                 }

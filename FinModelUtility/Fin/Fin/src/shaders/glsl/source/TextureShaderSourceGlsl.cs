@@ -29,7 +29,7 @@ public class TextureShaderSourceGlsl : IShaderSourceGlsl {
       fragmentSrc.AppendLine(
           $"""
 
-           {GlslUtil.GetLightHeader(true)}
+           {GlslUtil.LIGHT_HEADER}
            """);
     }
 
