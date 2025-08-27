@@ -32,6 +32,7 @@ public class DlModelBuilder {
   private IMesh? currentMesh_;
 
   public const bool DEDUPLICATE_TEXTURES = true;
+  public const bool DEDUPLICATE_MATERIALS = true;
 
   private readonly LazyDictionary<(Segment?, ImageParams), IReadOnlyImage>
       lazyImageDictionary_;
@@ -39,11 +40,11 @@ public class DlModelBuilder {
   private readonly LazyDictionary<(Segment?, TextureParams)?, IReadOnlyTexture?>
       lazyTextureDictionary_;
 
-  private readonly LazyDictionary<MaterialParams, IMaterial>
+  private readonly LazyDictionary<MaterialParams, IReadOnlyMaterial>
       lazyMaterialDictionary_;
 
   private MaterialParams cachedMaterialParams_;
-  private IMaterial cachedMaterial_;
+  private IReadOnlyMaterial cachedMaterial_;
   private readonly IF3dVertices vertices_;
   private bool isMaterialTransparent_ = false;
 
@@ -178,8 +179,8 @@ public class DlModelBuilder {
           if (DEDUPLICATE_TEXTURES) {
             if (textureByImageAndParams.TryGetValue(
                     (image, wrapModeU, wrapModeV, uvType, uvIndex),
-                    out var readOnlyTexture)) {
-              return readOnlyTexture;
+                    out var existingTexture)) {
+              return existingTexture;
             }
           }
 
@@ -200,6 +201,11 @@ public class DlModelBuilder {
 
           return texture;
         });
+
+    var materialByTexturesAndParams
+        = new Dictionary<(IReadOnlyTexture? texture0, IReadOnlyTexture? texture1
+            , GeometryMode geometryMode, uint otherModeH, uint otherModeL),
+            IReadOnlyMaterial>();
 
     this.lazyMaterialDictionary_ =
         new(materialParams
@@ -225,8 +231,30 @@ public class DlModelBuilder {
               var texture1 =
                   this.lazyTextureDictionary_[segmentAndTextureParams1];
 
+              var rsp = this.n64Hardware_.Rsp;
+              var rdp = n64Hardware.Rdp;
+
+              var geometryMode = rsp.GeometryMode;
+              var otherModeH = rdp.OtherModeH;
+              var otherModeL = rdp.OtherModeL;
+
+              if (DEDUPLICATE_MATERIALS) {
+                if (materialByTexturesAndParams.TryGetValue((
+                          texture0,
+                          texture1,
+                          geometryMode,
+                          otherModeH,
+                          otherModeL),
+                      out var existingMaterial)) {
+                  return existingMaterial;
+                }
+              }
+
               var finMaterial = this.Model.MaterialManager
                                     .AddFixedFunctionMaterial();
+              materialByTexturesAndParams[(texture0, texture1, geometryMode,
+                                           otherModeH, otherModeL)]
+                  = finMaterial;
 
               finMaterial.Name = (texture0 == null, texture1 == null) switch {
                   (false, false) => $"[{texture0.Name}]/[{texture1.Name}]",
@@ -254,7 +282,6 @@ public class DlModelBuilder {
               var colorOps = equations.ColorOps;
               var scalarOps = equations.ScalarOps;
 
-              var rsp = this.n64Hardware_.Rsp;
               var environmentColor = equations.CreateColorConstant(
                   rsp.EnvironmentColor.R / 255.0,
                   rsp.EnvironmentColor.G / 255.0,
@@ -382,8 +409,6 @@ public class DlModelBuilder {
                                           combinedColor);
               equations.CreateScalarOutput(FixedFunctionSource.OUTPUT_ALPHA,
                                            combinedAlpha);
-
-              var rdp = n64Hardware.Rdp;
 
               // TODO: Handle shade case by writing lighting to alpha
 
@@ -783,7 +808,7 @@ public class DlModelBuilder {
         _ => this.n64Hardware_.Rsp.GeometryMode.GetCullingModeNonEx2()
     };
 
-  private IMaterial GetOrCreateMaterial_() {
+  private IReadOnlyMaterial GetOrCreateMaterial_() {
     var newMaterialParams = this.n64Hardware_.Rdp.Tmem.GetMaterialParams();
     if (!this.cachedMaterialParams_.Equals(newMaterialParams)) {
       this.cachedMaterialParams_ = newMaterialParams;
