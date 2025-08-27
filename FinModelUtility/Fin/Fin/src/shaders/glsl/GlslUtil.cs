@@ -520,11 +520,23 @@ public static class GlslUtil {
       string uvName,
       IReadOnlyTexture? finTexture,
       IReadOnlyList<IReadOnlyModelAnimation> animations) {
+    var sb = new StringBuilder();
+    AppendReadColorFromTexture(sb, textureName, uvName, finTexture, animations);
+    return sb.ToString();
+  }
+
+  public static void AppendReadColorFromTexture(
+      StringBuilder sb,
+      string textureName,
+      string uvName,
+      IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations) {
     var needsClamp = finTexture.UsesShaderClamping();
     var textureTransformType = finTexture.GetTextureTransformType_(animations);
 
     if (!needsClamp && textureTransformType == TextureTransformType.NONE) {
-      return $"texture({textureName}, {uvName})";
+      sb.Append($"texture({textureName}, {uvName})");
+      return;
     }
 
     var transformedUv = textureTransformType switch {
@@ -536,17 +548,14 @@ public static class GlslUtil {
     };
 
     if (needsClamp) {
-      return
-          $"texture({textureName}.sampler, " +
-          "clamp(" +
-          $"{transformedUv}, " +
-          $"{textureName}.clampMin, " +
-          $"{textureName}.clampMax" +
-          ")" + // clamp
-          ")";  // texture
-    } else {
-      return $"texture({textureName}.sampler, {transformedUv})";
+      sb.Append($"texture({textureName}.sampler, ")
+        .Append(
+            $"clamp({transformedUv}, {textureName}.clampMin, {textureName}.clampMax)")
+        .Append(')');
+      return;
     }
+
+    sb.Append($"texture({textureName}.sampler, {transformedUv})");
   }
 
   public static bool NeedsTextureShaderStruct(

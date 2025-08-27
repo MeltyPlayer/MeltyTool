@@ -49,14 +49,13 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     var hasIndividualLights =
         Enumerable
             .Range(0, MaterialConstants.MAX_LIGHTS)
-            .Select(
-                i => equations.DoOutputsDependOn(
-                [
-                    FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0 + i,
-                    FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0 + i,
-                    FixedFunctionSource.LIGHT_SPECULAR_COLOR_0 + i,
-                    FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0 + i
-                ]))
+            .Select(i => equations.DoOutputsDependOn(
+            [
+                FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0 + i,
+                FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0 + i,
+                FixedFunctionSource.LIGHT_SPECULAR_COLOR_0 + i,
+                FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0 + i
+            ]))
             .ToArray();
     var dependsOnAnIndividualLight =
         hasIndividualLights.Any(value => value);
@@ -70,7 +69,9 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         ]);
 
     var dependsOnLights = dependsOnMergedLights || dependsOnAnIndividualLight;
-    var dependsOnNormals = dependsOnLights || usesSphericalReflectionMapping || usesLinearReflectionMapping;
+    var dependsOnNormals = dependsOnLights ||
+                           usesSphericalReflectionMapping ||
+                           usesLinearReflectionMapping;
 
     var dependsOnAmbientLight = equations.DoOutputsDependOn(
     [
@@ -610,10 +611,11 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       var textureIndex =
           (int) id - (int) FixedFunctionSource.TEXTURE_ALPHA_0;
 
-      var textureText = this.GetTextureValue_(textureIndex, textures);
-      var textureValueText = $"{textureText}.a";
+      var sb = new StringBuilder();
+      this.AppendTextureValue_(sb, textureIndex, textures);
+      sb.Append(".a");
 
-      return textureValueText;
+      return sb.ToString();
     }
 
     if (this.IsInRange_(id,
@@ -801,14 +803,15 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       StringBuilder sb,
       IColorIdentifiedValue<FixedFunctionSource> identifiedValue,
       IReadOnlyList<IReadOnlyTexture> textures)
-    => sb.Append(this.GetColorNamedValue_(identifiedValue, textures));
+    => this.GetColorNamedValue_(sb, identifiedValue, textures);
 
   private void PrintColorNamedValue_(
       StringBuilder sb,
       IColorNamedValue namedValue)
     => sb.Append($"color_{namedValue.Name}");
 
-  private string GetColorNamedValue_(
+  private void GetColorNamedValue_(
+      StringBuilder sb,
       IColorIdentifiedValue<FixedFunctionSource> identifiedValue,
       IReadOnlyList<IReadOnlyTexture> textures) {
     var id = identifiedValue.Identifier;
@@ -823,68 +826,88 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
               ? (int) id - (int) FixedFunctionSource.TEXTURE_COLOR_0
               : (int) id - (int) FixedFunctionSource.TEXTURE_ALPHA_0;
 
-      var textureText = this.GetTextureValue_(textureIndex, textures);
-      var textureValueText = isTextureColor
-          ? $"{textureText}.rgb"
-          : $"vec3({textureText}.a)";
+      if (isTextureColor) {
+        this.AppendTextureValue_(sb, textureIndex, textures);
+        sb.Append(".rgb");
+      } else {
+        sb.Append("vec3(");
+        this.AppendTextureValue_(sb, textureIndex, textures);
+        sb.Append(".a)");
+      }
 
-      return textureValueText;
+      return;
     }
 
     if (this.IsInRange_(id,
                         FixedFunctionSource.LIGHT_DIFFUSE_COLOR_0,
                         FixedFunctionSource.LIGHT_DIFFUSE_COLOR_7,
                         out var globalDiffuseColorIndex)) {
-      return $"individualLightDiffuseColors[{globalDiffuseColorIndex}].rgb";
+      sb.Append($"individualLightDiffuseColors[{globalDiffuseColorIndex}].rgb");
+      return;
     }
 
     if (this.IsInRange_(id,
                         FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_0,
                         FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_7,
                         out var globalDiffuseAlphaIndex)) {
-      return $"individualLightDiffuseColors[{globalDiffuseAlphaIndex}].aaa";
+      sb.Append($"individualLightDiffuseColors[{globalDiffuseAlphaIndex}].aaa");
+      return;
     }
 
     if (this.IsInRange_(id,
                         FixedFunctionSource.LIGHT_SPECULAR_COLOR_0,
                         FixedFunctionSource.LIGHT_SPECULAR_COLOR_7,
                         out var globalSpecularColorIndex)) {
-      return $"individualLightSpecularColors[{globalSpecularColorIndex}].rgb";
+      sb.Append(
+          $"individualLightSpecularColors[{globalSpecularColorIndex}].rgb");
+      return;
     }
 
     if (this.IsInRange_(id,
                         FixedFunctionSource.LIGHT_SPECULAR_ALPHA_0,
                         FixedFunctionSource.LIGHT_SPECULAR_ALPHA_7,
                         out var globalSpecularAlphaIndex)) {
-      return $"individualLightSpecularColors[{globalSpecularAlphaIndex}].aaa";
+      sb.Append(
+          $"individualLightSpecularColors[{globalSpecularAlphaIndex}].aaa");
+      return;
     }
 
-    return identifiedValue.Identifier switch {
-        FixedFunctionSource.LIGHT_DIFFUSE_COLOR_MERGED =>
-            "mergedLightDiffuseColor.rgb",
-        FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_MERGED =>
-            "mergedLightDiffuseColor.aaa",
-        FixedFunctionSource.LIGHT_SPECULAR_COLOR_MERGED =>
-            "mergedLightSpecularColor.rgb",
-        FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED =>
-            "mergedLightSpecularColor.aaa",
-
-        FixedFunctionSource.LIGHT_AMBIENT_COLOR => "ambientLightColor.rgb",
-        FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.aaa",
-
-        FixedFunctionSource.VERTEX_COLOR_0 =>
-            $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.rgb",
-        FixedFunctionSource.VERTEX_COLOR_1 =>
-            $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.rgb",
-
-        FixedFunctionSource.VERTEX_ALPHA_0 =>
-            $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.aaa",
-        FixedFunctionSource.VERTEX_ALPHA_1 =>
-            $"{GlslConstants.IN_VERTEX_COLOR_NAME}1.aaa",
-
-        FixedFunctionSource.UNDEFINED => "vec3(1)",
-        _                             => throw new ArgumentOutOfRangeException()
-    };
+    switch (identifiedValue.Identifier) {
+      case FixedFunctionSource.LIGHT_DIFFUSE_COLOR_MERGED:
+        sb.Append("mergedLightDiffuseColor.rgb");
+        break;
+      case FixedFunctionSource.LIGHT_DIFFUSE_ALPHA_MERGED:
+        sb.Append("mergedLightDiffuseColor.aaa");
+        break;
+      case FixedFunctionSource.LIGHT_SPECULAR_COLOR_MERGED:
+        sb.Append("mergedLightSpecularColor.rgb");
+        break;
+      case FixedFunctionSource.LIGHT_SPECULAR_ALPHA_MERGED:
+        sb.Append("mergedLightSpecularColor.aaa");
+        break;
+      case FixedFunctionSource.LIGHT_AMBIENT_COLOR:
+        sb.Append("ambientLightColor.rgb");
+        break;
+      case FixedFunctionSource.LIGHT_AMBIENT_ALPHA:
+        sb.Append("ambientLightColor.aaa");
+        break;
+      case FixedFunctionSource.VERTEX_COLOR_0:
+        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}0.rgb");
+        break;
+      case FixedFunctionSource.VERTEX_COLOR_1:
+        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}1.rgb");
+        break;
+      case FixedFunctionSource.VERTEX_ALPHA_0:
+        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}0.aaa");
+        break;
+      case FixedFunctionSource.VERTEX_ALPHA_1:
+        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}1.aaa");
+        break;
+      case FixedFunctionSource.UNDEFINED:
+        sb.Append("vec3(1)");
+        break;
+      default: throw new ArgumentOutOfRangeException();
+    }
   }
 
   private bool IsInRange_(FixedFunctionSource value,
@@ -895,31 +918,40 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
     return value >= min && value <= max;
   }
 
-  private string GetTextureValue_(int textureIndex,
-                                  IReadOnlyList<IReadOnlyTexture> textures) {
+  private void AppendTextureValue_(
+      StringBuilder sb,
+      int textureIndex,
+      IReadOnlyList<IReadOnlyTexture> textures) {
     var texture = textures[textureIndex];
     var textureName = $"texture{textureIndex}";
-    return texture.UvType switch {
-        UvType.STANDARD
-            => GlslUtil.ReadColorFromTexture(textureName,
-                                             $"{GlslConstants.IN_UV_NAME}{texture.UvIndex}",
-                                             texture,
-                                             this.animations_),
-        UvType.SPHERICAL
-            => GlslUtil.ReadColorFromTexture(
-                textureName,
-                GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME,
-                texture,
-                this.animations_),
-        // TODO: Support linear UVs
-        UvType.LINEAR
-            => GlslUtil.ReadColorFromTexture(
-                textureName,
-                GlslConstants.IN_LINEAR_REFLECTION_UV_NAME,
-                texture,
-                this.animations_),
-      _             => throw new ArgumentOutOfRangeException()
-    };
+    switch (texture.UvType) {
+      case UvType.STANDARD:
+        GlslUtil.AppendReadColorFromTexture(
+            sb,
+            textureName,
+            $"{GlslConstants.IN_UV_NAME}{texture.UvIndex}",
+            texture,
+            this.animations_);
+        break;
+      case UvType.SPHERICAL:
+        GlslUtil.AppendReadColorFromTexture(
+            sb,
+            textureName,
+            GlslConstants.IN_SPHERICAL_REFLECTION_UV_NAME,
+            texture,
+            this.animations_);
+        break;
+      // TODO: Support linear UVs
+      case UvType.LINEAR:
+        GlslUtil.AppendReadColorFromTexture(
+            sb,
+            textureName,
+            GlslConstants.IN_LINEAR_REFLECTION_UV_NAME,
+            texture,
+            this.animations_);
+        break;
+      default: throw new ArgumentOutOfRangeException();
+    }
   }
 
   private void PrintColorTernaryOperator_(
