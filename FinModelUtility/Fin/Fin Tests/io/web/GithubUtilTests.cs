@@ -35,9 +35,9 @@ public class GitHubUtilTests {
           **Stack trace**
           ```
           System.NotImplementedException: Foobar
-              at fin.io.web.GitHubUtilTests.SomeMethod2_(System.String message) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 20
-              at fin.io.web.GitHubUtilTests.SomeMethod1_<T>(T value) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 17
-              at fin.io.web.GitHubUtilTests.TestGetNewIssueUrlWithoutContext() in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 25
+              at fin.io.web.GitHubUtilTests.SomeMethod2_(System.String message) in //Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 20
+              at fin.io.web.GitHubUtilTests.SomeMethod1_<T>(T value) in //Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 17
+              at fin.io.web.GitHubUtilTests.TestGetNewIssueUrlWithoutContext() in //Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 25
           ```
 
           **To Reproduce**
@@ -78,9 +78,9 @@ public class GitHubUtilTests {
           **Stack trace**
           ```
           System.NotImplementedException: Foobar
-              at fin.io.web.GitHubUtilTests.SomeMethod2_(System.String message) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 20
-              at fin.io.web.GitHubUtilTests.SomeMethod1_<T>(T value) in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 17
-              at fin.io.web.GitHubUtilTests.TestGetNewIssueUrlWithContext() in //FinModelUtility/Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 64
+              at fin.io.web.GitHubUtilTests.SomeMethod2_(System.String message) in //Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 20
+              at fin.io.web.GitHubUtilTests.SomeMethod1_<T>(T value) in //Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 17
+              at fin.io.web.GitHubUtilTests.TestGetNewIssueUrlWithContext() in //Fin/Fin Tests/io/web/GitHubUtilTests.cs:line 64
           ```
 
           **To Reproduce**

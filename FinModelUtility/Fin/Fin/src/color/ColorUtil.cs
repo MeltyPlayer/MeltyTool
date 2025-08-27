@@ -95,27 +95,20 @@ public static class ColorUtil {
     return FinColor.FromRgbaBytes(r, g, b, a);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SplitArgb1555(
       ushort color,
       out byte r,
       out byte g,
       out byte b,
       out byte a) {
-    var alphaFlag = BitLogic.ExtractFromRight(color, 0, 1);
-
-    if (alphaFlag == 1) {
-      a = 255;
-      r = ExtractScaled(color, 11, 5);
-      g = ExtractScaled(color, 6, 5);
-      b = ExtractScaled(color, 1, 5);
-    } else {
-      a = 0;
-      r = ExtractScaled(color, 11, 5);
-      g = ExtractScaled(color, 6, 5);
-      b = ExtractScaled(color, 1, 5);
-    }
+    a = (byte) ((color & 1) == 1 ? 255 : 0);
+    r = (byte) ((color & 0xF800) >> 8);
+    g = (byte) ((color & 0x07C0) >> 3);
+    b = (byte) ((color & 0x003E) << 2);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SplitRgba4444(
       ushort color,
       out byte r,
