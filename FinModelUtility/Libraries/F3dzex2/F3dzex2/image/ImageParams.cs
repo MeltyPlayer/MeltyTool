@@ -1,8 +1,10 @@
-﻿using fin.util.hash;
+﻿using System;
+
+using fin.util.hash;
 
 namespace f3dzex2.image;
 
-public struct ImageParams {
+public struct ImageParams : IEquatable<ImageParams> {
   public ImageParams() { }
 
   public N64ColorFormat ColorFormat { get; set; } = N64ColorFormat.RGBA;
@@ -28,19 +30,10 @@ public struct ImageParams {
                            this.Height < 1 ||
                            this.SegmentedAddress == 0;
 
-  public override bool Equals(object? other) {
-    if (ReferenceEquals(this, other)) {
-      return true;
-    }
-
-    if (other is ImageParams otherImageParams) {
-      return this.ColorFormat == otherImageParams.ColorFormat &&
-             this.BitsPerTexel == otherImageParams.BitsPerTexel &&
-             this.Width == otherImageParams.Width &&
-             this.Height == otherImageParams.Height &&
-             this.SegmentedAddress == otherImageParams.SegmentedAddress;
-    }
-
-    return false;
-  }
+  public bool Equals(ImageParams other)
+    => this.ColorFormat == other.ColorFormat &&
+       this.BitsPerTexel == other.BitsPerTexel &&
+       this.Width == other.Width &&
+       this.Height == other.Height &&
+       this.SegmentedAddress == other.SegmentedAddress;
 }

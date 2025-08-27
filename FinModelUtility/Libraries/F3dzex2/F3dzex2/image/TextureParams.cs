@@ -1,11 +1,13 @@
-﻿using f3dzex2.displaylist.opcodes;
+﻿using System;
+
+using f3dzex2.displaylist.opcodes;
 
 using fin.model;
 using fin.util.hash;
 
 namespace f3dzex2.image;
 
-public struct TextureParams {
+public struct TextureParams : IEquatable<TextureParams> {
   public TextureParams() { }
 
   public ImageParams ImageParams { get; private set; } = new();
@@ -80,20 +82,11 @@ public struct TextureParams {
                  .With(this.UvType)
                  .With(this.LoadTileParams ?? default);
 
-  public override bool Equals(object? other) {
-    if (ReferenceEquals(this, other)) {
-      return true;
-    }
-
-    if (other is TextureParams otherTextureParams) {
-      return this.Index.Equals(otherTextureParams.Index) &&
-             this.ImageParams.Equals(otherTextureParams.ImageParams) &&
-             this.WrapModeT == otherTextureParams.WrapModeT &&
-             this.WrapModeS == otherTextureParams.WrapModeS &&
-             this.UvType == otherTextureParams.UvType &&
-             this.LoadTileParams.Equals(otherTextureParams.LoadTileParams);
-    }
-
-    return false;
-  }
+  public bool Equals(TextureParams other)
+    => this.Index.Equals(other.Index) &&
+       this.ImageParams.Equals(other.ImageParams) &&
+       this.WrapModeT == other.WrapModeT &&
+       this.WrapModeS == other.WrapModeS &&
+       this.UvType == other.UvType &&
+       this.LoadTileParams.Equals(other.LoadTileParams);
 }
