@@ -109,7 +109,8 @@
             x:Name="SceneViewerGlPanel"
             IsTabStop="True"
             TabIndex="0"
-            Focusable="True" />
+            Focusable="True"
+            ShowGrid="True" />
       </Grid>
 
       <Grid MaxWidth="500"
