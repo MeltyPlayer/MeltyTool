@@ -41,7 +41,6 @@ public class GlTexture : IGlTexture {
     {
       this.LoadImageIntoTexture_(image, 0);
     }
-    GL.BindTexture(target, UNDEFINED_ID);
   }
 
   private GlTexture(IReadOnlyTexture texture) {
@@ -130,7 +129,6 @@ public class GlTexture : IGlTexture {
                       TextureParameterName.TextureMaxLod,
                       texture.MaxLod);
     }
-    GL.BindTexture(target, UNDEFINED_ID);
   }
 
   private static readonly MemoryPool<byte> pool_ = MemoryPool<byte>.Shared;
