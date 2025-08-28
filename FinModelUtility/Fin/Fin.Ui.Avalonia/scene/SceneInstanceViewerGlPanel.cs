@@ -184,26 +184,28 @@ public class SceneInstanceViewerGlPanel : BOpenTkControl, ISceneViewer {
   protected override void TeardownGl() { }
 
   protected override void RenderGl() {
-    var forwardVector =
-        (this.isForwardDown_ ? 1 : 0) - (this.isBackwardDown_ ? 1 : 0);
-    var rightwardVector =
-        (this.isRightwardDown_ ? 1 : 0) - (this.isLeftwardDown_ ? 1 : 0);
-    var upwardVector =
-        (this.isUpwardDown_ ? 1 : 0) - (this.isDownwardDown_ ? 1 : 0);
+    if (this.AllowMovingCamera) {
+      var forwardVector =
+          (this.isForwardDown_ ? 1 : 0) - (this.isBackwardDown_ ? 1 : 0);
+      var rightwardVector =
+          (this.isRightwardDown_ ? 1 : 0) - (this.isLeftwardDown_ ? 1 : 0);
+      var upwardVector =
+          (this.isUpwardDown_ ? 1 : 0) - (this.isDownwardDown_ ? 1 : 0);
 
-    var cameraSpeed = UiConstants.GLOBAL_SCALE * 15;
-    if (this.isSpeedupActive_) {
-      cameraSpeed *= 2;
+      var cameraSpeed = UiConstants.GLOBAL_SCALE * 15;
+      if (this.isSpeedupActive_) {
+        cameraSpeed *= 2;
+      }
+
+      if (this.isSlowdownActive_) {
+        cameraSpeed /= 2;
+      }
+
+      this.Camera.Move(forwardVector,
+                       rightwardVector,
+                       upwardVector,
+                       cameraSpeed);
     }
-
-    if (this.isSlowdownActive_) {
-      cameraSpeed /= 2;
-    }
-
-    this.Camera.Move(forwardVector,
-                     rightwardVector,
-                     upwardVector,
-                     cameraSpeed);
 
     this.GetBoundsForGlViewport(out var width, out var height);
     this.viewerImpl_.Width = width;
@@ -245,5 +247,12 @@ public class SceneInstanceViewerGlPanel : BOpenTkControl, ISceneViewer {
   public float ViewerScale {
     get => this.viewerImpl_.ViewerScale;
     set => this.viewerImpl_.ViewerScale = value;
+  }
+
+  public bool AllowMovingCamera { get; set; } = true;
+
+  public bool UseOrthoCamera {
+    get => this.viewerImpl_.UseOrthoCamera;
+    set => this.viewerImpl_.UseOrthoCamera = value;
   }
 }

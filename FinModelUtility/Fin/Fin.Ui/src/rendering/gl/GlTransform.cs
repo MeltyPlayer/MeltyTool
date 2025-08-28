@@ -131,10 +131,18 @@ public static class GlTransform {
     MultMatrix(matrix);
   }
 
-  public static void Ortho2d(int left, int right, int bottom, int top) {
-    var near = -1;
-    var far = 1;
+  public static void Ortho2d(int left,
+                             int right,
+                             int bottom,
+                             int top)
+    => Ortho2d(left, right, bottom, top, -1, 1);
 
+  public static void Ortho2d(int left,
+                             int right,
+                             int bottom,
+                             int top,
+                             float near,
+                             float far) {
     var matrix = new Matrix4x4();
 
     SetInMatrix(ref matrix, 0, 0, 2f / (right - left));

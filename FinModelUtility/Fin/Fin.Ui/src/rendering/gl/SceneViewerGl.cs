@@ -87,6 +87,8 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
   public Camera Camera { get; } =
     Camera.NewLookingAt(0, 0, 0, 45, -10, 1.5f);
 
+  public bool UseOrthoCamera { get; set; } = false;
+
   public float FovY => 30;
 
   public int Width { get; set; }
@@ -143,10 +145,20 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
     {
       GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
       GlTransform.LoadIdentity();
-      GlTransform.Perspective(this.FovY,
-                              1.0 * width / height,
-                              glNearPlane,
-                              glFarPlane);
+
+      if (!this.UseOrthoCamera) {
+        GlTransform.Perspective(this.FovY,
+                                1.0 * width / height,
+                                glNearPlane,
+                                glFarPlane);
+      } else {
+        GlTransform.Ortho2d(-1,
+                            1,
+                            -1,
+                            1,
+                            glNearPlane,
+                            glFarPlane);
+      }
     }
 
     {
