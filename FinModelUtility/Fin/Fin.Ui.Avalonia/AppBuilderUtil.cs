@@ -18,6 +18,8 @@ public static class AppBuilderUtil {
                      RenderingMode = [Win32RenderingMode.AngleEgl]
                  })
                  .With(new SkiaOptions {
+                     // Use as much memory as available, similar to WPF. This
+                     // massively improves performance.
                      MaxGpuResourceSizeBytes = long.MaxValue
                  })
                  .WithInterFont()
