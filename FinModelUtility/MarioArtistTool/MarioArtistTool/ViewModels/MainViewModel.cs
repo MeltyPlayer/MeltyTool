@@ -1,7 +1,13 @@
-﻿using Avalonia.Controls;
+﻿using System;
+
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Threading;
 
 using fin.ui.avalonia;
@@ -15,6 +21,9 @@ using ReactiveUI;
 namespace marioartisttool.ViewModels;
 
 public partial class MainViewModel : ViewModelBase {
+  public Cursor Cursor { get; }
+    = LoadCursorFromAsset_("cursor_thumb_in.png", new PixelPoint(2, 2));
+
   public HierarchicalTreeDataGridSource<MfsTreeIoObject>? FileSystemTreeSource {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
@@ -78,5 +87,14 @@ public partial class MainViewModel : ViewModelBase {
         };
       });
     };
+  }
+
+  private static Cursor LoadCursorFromAsset_(string cursorImageName,
+                                             PixelPoint pixelPoint) {
+    using var s
+        = AssetLoader.Open(
+            new Uri($"avares://MarioArtistTool/Assets/{cursorImageName}"));
+    var bitmap = new Bitmap(s);
+    return new Cursor(bitmap, pixelPoint);
   }
 }
