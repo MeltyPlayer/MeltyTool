@@ -217,18 +217,17 @@ public class DlModelBuilder {
               (Segment?, TextureParams)? segmentAndTextureParams0
                   = materialParams.TextureParams0 != null
                       ? (n64Hardware.Memory.GetSegmentOrNull(
-                             materialParams.TextureParams0.Value
+                             materialParams.TextureParams0
                                            .SegmentedAddress >>
                              24),
-                         materialParams.TextureParams0.Value)
+                         materialParams.TextureParams0)
                       : null;
               (Segment?, TextureParams)? segmentAndTextureParams1
                   = materialParams.TextureParams1 != null
                       ? (n64Hardware.Memory.GetSegmentOrNull(
-                             materialParams.TextureParams1.Value
-                                           .SegmentedAddress >>
+                             materialParams.TextureParams1.SegmentedAddress >>
                              24),
-                         materialParams.TextureParams1.Value)
+                         materialParams.TextureParams1)
                       : null;
               var texture0 =
                   this.lazyTextureDictionary_[segmentAndTextureParams0];
@@ -814,7 +813,8 @@ public class DlModelBuilder {
 
   private IReadOnlyMaterial GetOrCreateMaterial_() {
     var newMaterialParams = this.n64Hardware_.Rdp.Tmem.GetMaterialParams();
-    if (!this.cachedMaterialParams_.Equals(newMaterialParams)) {
+    if (this.cachedMaterialParams_ == null ||
+        !this.cachedMaterialParams_.Equals(newMaterialParams)) {
       this.cachedMaterialParams_ = newMaterialParams;
       this.cachedMaterial_ = this.lazyMaterialDictionary_[newMaterialParams];
 
