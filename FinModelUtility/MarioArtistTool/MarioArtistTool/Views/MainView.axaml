@@ -30,6 +30,7 @@
         x:Name="ViewerGlPanel"
         IsTabStop="True"
         TabIndex="0"
-        Focusable="True" />
+        Focusable="True"
+        ShowGrid="False" />
   </DockPanel>
 </UserControl>

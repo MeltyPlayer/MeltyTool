@@ -59,7 +59,6 @@ public partial class MainView : UserControl {
 
       var sceneInstance = new SceneInstanceImpl(scene);
       this.ViewerGlPanel.Scene = sceneInstance;
-      this.ViewerGlPanel.ShowGrid = false;
     };
 
     this.ViewerGlPanel.OnInit += () => MfsFileSystemService.SelectFile(null);
