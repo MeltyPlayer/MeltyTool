@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 
 using fin.model;
 using fin.ui.avalonia;
+using fin.ui.avalonia.images;
 
 using ReactiveUI;
 
 using uni.ui.avalonia.common.progress;
 using uni.ui.avalonia.common.treeViews;
-using uni.ui.avalonia.icons;
 using uni.ui.avalonia.io;
 using uni.ui.avalonia.resources.audio;
 using uni.ui.avalonia.resources.model;
@@ -71,7 +71,7 @@ public class MainViewModel : ViewModelBase {
     this.ModelPanel = new ModelPanelViewModel();
     SceneInstanceService.OnSceneInstanceOpened
         += (_, sceneInstance) => {
-          AvaloniaIconUtil.ClearCache();
+          AvaloniaBitmapUtil.ClearCache();
 
           var fileBundle = sceneInstance.Definition.FileBundle;
           this.FileBundleToolbar = new FileBundleToolbarModel {

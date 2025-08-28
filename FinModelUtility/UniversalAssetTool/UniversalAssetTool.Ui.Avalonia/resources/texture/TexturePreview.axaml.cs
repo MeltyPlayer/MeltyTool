@@ -11,13 +11,13 @@ using fin.image;
 using fin.image.formats;
 using fin.model;
 using fin.ui.avalonia;
+using fin.ui.avalonia.images;
 using fin.util.asserts;
 
 using ReactiveUI;
 
 using SixLabors.ImageSharp.PixelFormats;
 
-using uni.ui.avalonia.icons;
 using uni.ui.avalonia.resources.model;
 
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
