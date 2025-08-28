@@ -94,9 +94,7 @@ namespace uni.ui.avalonia.resources.animation {
       get;
       set {
         this.RaiseAndSetIfChanged(ref field, value);
-        if (this.animationPlaybackManager_ != null) {
-          this.animationPlaybackManager_.Frame = value;
-        }
+        this.animationPlaybackManager_?.Frame = value;
       }
     }
 

@@ -6,6 +6,7 @@ using Avalonia.ReactiveUI;
 using Avalonia.Win32;
 
 using fin.services;
+using fin.ui.avalonia;
 
 using uni.cli;
 
@@ -29,16 +30,5 @@ class Program {
 
   // Avalonia configuration, don't remove; also used by visual designer.
   public static AppBuilder BuildAvaloniaApp()
-    => AppBuilder.Configure<App>()
-                 .UsePlatformDetect()
-                 .With(new AngleOptions {
-                     GlProfiles = [
-                         new GlVersion(GlProfileType.OpenGLES, 3, 1, true)
-                     ],
-                 })
-                 .With(new Win32PlatformOptions {
-                     RenderingMode = [Win32RenderingMode.AngleEgl]
-                 })
-                 .WithInterFont()
-                 .UseReactiveUI();
+    => AppBuilderUtil.CreateFor<App>();
 }
