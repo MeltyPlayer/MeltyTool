@@ -49,6 +49,7 @@ public partial interface ISceneArea {
   new Color? BackgroundColor { get; set; }
 
   new IReadOnlyImage? BackgroundImage { get; set; }
+  new float BackgroundImageScale { get; set; }
 
   new ISceneObject? CustomSkyboxObject { get; set; }
   ISceneObject CreateCustomSkyboxObject();

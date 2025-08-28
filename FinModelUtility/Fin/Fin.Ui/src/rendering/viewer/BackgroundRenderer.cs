@@ -2,6 +2,7 @@
 
 using fin.image;
 using fin.math;
+using fin.math.floats;
 using fin.math.matrix.two;
 using fin.math.rotations;
 using fin.model;
@@ -33,6 +34,14 @@ public class BackgroundRenderer : IRenderable {
     }
   }
 
+  public float BackgroundImageScale {
+    get;
+    set {
+      this.textureDirty_ = true;
+      field = value;
+    }
+  } = 1;
+
   public bool IsValid => this.BackgroundImage != null;
 
   public void Render() {
@@ -48,10 +57,16 @@ public class BackgroundRenderer : IRenderable {
       var camera = Camera.Instance;
       var cameraYawRadians = camera.YawDegrees / 180 * MathF.PI;
       {
-        var deltaCameraYawRadians = RadiansUtil.CalculateRadiansTowards(this.prevCameraYawRadians_, cameraYawRadians);
+        var deltaCameraYawRadians
+            = RadiansUtil.CalculateRadiansTowards(
+                this.prevCameraYawRadians_,
+                cameraYawRadians);
 
         var rotationSpeed = 5;
-        scrollXDelta += -deltaCameraYawRadians / MathF.Tau * rotationSpeed;
+        scrollXDelta += -deltaCameraYawRadians /
+                        MathF.Tau *
+                        rotationSpeed /
+                        this.BackgroundImageScale;
 
         this.prevCameraYawRadians_ = cameraYawRadians;
       }
@@ -62,10 +77,14 @@ public class BackgroundRenderer : IRenderable {
 
         var right
             = SystemVector2Util.FromRadians(cameraYawRadians - MathF.PI / 2);
-        var projectionAgainstRight = deltaCameraPosition.ProjectionScalar(right);
+        var projectionAgainstRight
+            = deltaCameraPosition.ProjectionScalar(right);
 
         var panSpeed = 100;
-        scrollXDelta += projectionAgainstRight / this.BackgroundImage.Width * panSpeed;
+        scrollXDelta += projectionAgainstRight /
+                        this.BackgroundImage.Width *
+                        this.BackgroundImageScale *
+                        panSpeed;
 
         this.prevCameraPosition_ = cameraPosition;
       }
@@ -73,7 +92,6 @@ public class BackgroundRenderer : IRenderable {
       this.scrollX_ = (this.scrollX_ + scrollXDelta) % 1;
 
       this.scrollXUniform_.SetAndMarkDirty(this.scrollX_);
-
     }
 
     this.impl_?.Render();
@@ -129,6 +147,9 @@ public class BackgroundRenderer : IRenderable {
 
     var texture = model.MaterialManager.CreateTexture(this.BackgroundImage);
     texture.WrapModeU = WrapMode.REPEAT;
+    texture.WrapModeV = this.BackgroundImageScale.IsRoughly1()
+        ? WrapMode.CLAMP
+        : WrapMode.REPEAT;
 
     material.AddTexture("diffuseTexture", texture);
 
@@ -137,10 +158,11 @@ public class BackgroundRenderer : IRenderable {
     var v2 = model.Skin.AddVertex(1, 1, 0);
     var v3 = model.Skin.AddVertex(-1, 1, 0);
 
+    var uvValue = 1 / this.BackgroundImageScale;
     v0.SetUv(0, 0);
-    v1.SetUv(1, 0);
-    v2.SetUv(1, 1);
-    v3.SetUv(0, 1);
+    v1.SetUv(uvValue, 0);
+    v2.SetUv(uvValue, uvValue);
+    v3.SetUv(0, uvValue);
 
     mesh.AddQuads(v0, v1, v2, v3).SetMaterial(material);
 

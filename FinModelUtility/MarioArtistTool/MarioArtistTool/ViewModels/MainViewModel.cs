@@ -1,13 +1,9 @@
-﻿using System;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Avalonia.Threading;
 
 using fin.ui.avalonia;
@@ -15,6 +11,7 @@ using fin.ui.avalonia;
 using marioartist.api;
 
 using marioartisttool.services;
+using marioartisttool.util;
 
 using ReactiveUI;
 
@@ -90,11 +87,6 @@ public partial class MainViewModel : ViewModelBase {
   }
 
   private static Cursor LoadCursorFromAsset_(string cursorImageName,
-                                             PixelPoint pixelPoint) {
-    using var s
-        = AssetLoader.Open(
-            new Uri($"avares://MarioArtistTool/Assets/{cursorImageName}"));
-    var bitmap = new Bitmap(s);
-    return new Cursor(bitmap, pixelPoint);
-  }
+                                             PixelPoint pixelPoint)
+    => new(AssetLoaderUtil.LoadBitmap(cursorImageName), pixelPoint);
 }

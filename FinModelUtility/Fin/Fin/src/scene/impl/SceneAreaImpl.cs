@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Numerics;
 
 using fin.image;
 
@@ -19,6 +20,7 @@ public partial class SceneImpl {
 
     public Color? BackgroundColor { get; set; }
     public IReadOnlyImage? BackgroundImage { get; set; }
+    public float BackgroundImageScale { get; set; } = 1;
     public ISceneObject? CustomSkyboxObject { get; set; }
 
     public ISceneObject CreateCustomSkyboxObject()

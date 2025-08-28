@@ -48,9 +48,11 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
             ? areaRenderers[0]
             : null;
 
-        var singleAreaBackgroundImage
-            = this.singleArea_?.Definition?.BackgroundImage;
-        this.backgroundRenderer_.BackgroundImage = singleAreaBackgroundImage;
+        var singleAreaDefinition = this.singleArea_?.Definition;
+        this.backgroundRenderer_.BackgroundImage
+            = singleAreaDefinition?.BackgroundImage;
+        this.backgroundRenderer_.BackgroundImageScale
+            = singleAreaDefinition?.BackgroundImageScale ?? 1;
       }
     }
   }
@@ -194,7 +196,7 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
       }
     }
 
-    {
+    if (this.ShowGrid) {
       GlTransform.LoadIdentity();
       GlTransform.Ortho2d(0, width, height, 0);
       GlTransform.Translate(hWidth, hHeight, 0);
@@ -216,7 +218,9 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
     try {
       this.sceneRenderer_?.Render();
     } catch (Exception e) {
-      ExceptionService.HandleException(e, new RenderFileBundleExceptionContext(this.Scene!.Definition.FileBundle));
+      ExceptionService.HandleException(e,
+                                       new RenderFileBundleExceptionContext(
+                                           this.Scene!.Definition.FileBundle));
       this.sceneRenderer_ = null;
     }
   }

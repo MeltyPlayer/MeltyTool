@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 
-using fin.data.dictionaries;
 using fin.io;
 using fin.io.web;
 using fin.services;

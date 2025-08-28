@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using System;
+
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Controls;
@@ -17,6 +19,8 @@ public abstract class BOpenTkControl
   private AvaloniaOpenTkContext? avaloniaTkContext_;
   private TimedCallback renderCallback_;
 
+  public event Action? OnInit;
+
   protected abstract void InitGl();
   protected abstract void RenderGl();
   protected abstract void TeardownGl();
@@ -34,6 +38,7 @@ public abstract class BOpenTkControl
 
     GlUtil.SwitchContext(this);
     this.InitGl();
+    this.OnInit?.Invoke();
 
     this.renderCallback_ = TimedCallback.WithFrequency(
         () => Dispatcher.UIThread.Post(this.RequestNextFrameRendering,
