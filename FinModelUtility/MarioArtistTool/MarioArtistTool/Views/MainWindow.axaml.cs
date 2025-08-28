@@ -13,6 +13,8 @@ using fin.ui.avalonia.dialogs;
 using marioartist.api;
 using marioartist.schema.mfs;
 
+using MarioArtistTool.config;
+
 using marioartisttool.services;
 
 using schema.binary;
@@ -44,28 +46,47 @@ public partial class MainWindow : Window {
       return;
     }
 
-    var startLocation = await storageProvider.TryGetFolderFromPathAsync("./");
+    var config = Config.INSTANCE;
 
-    var selectedStorageFiles
-        = await storageProvider
-            .OpenFilePickerAsync(new FilePickerOpenOptions {
-                SuggestedStartLocation = startLocation,
-                Title = "Select 64DD disk file",
-                FileTypeFilter = [
-                    new FilePickerFileType("All supported files") {
-                        Patterns = [
-                            "*.ndd", "*.ndr", "*.ram", "*.n64", "*.z64",
-                            "*.disk"
-                        ],
-                    }
-                ]
-            });
-    if (selectedStorageFiles is not { Count: 1 }) {
-      return;
+    string mostRecentDirectory = "./";
+    ISystemFile? diskFile = null;
+    if (config.MostRecentDiskFile != null) {
+      diskFile = new FinFile(config.MostRecentDiskFile);
+      mostRecentDirectory = diskFile.AssertGetParent().FullPath;
+      if (!diskFile.Exists) {
+        diskFile = null;
+      }
     }
 
-    var selectedStorageFile = selectedStorageFiles[0];
-    var diskFile = new FinFile(selectedStorageFile.Path.LocalPath);
+    if (diskFile == null) {
+      var startLocation
+          = await storageProvider
+              .TryGetFolderFromPathAsync(mostRecentDirectory);
+
+      var selectedStorageFiles
+          = await storageProvider
+              .OpenFilePickerAsync(new FilePickerOpenOptions {
+                  SuggestedStartLocation = startLocation,
+                  Title = "Select 64DD disk file",
+                  FileTypeFilter = [
+                      new FilePickerFileType("All supported files") {
+                          Patterns = [
+                              "*.ndd", "*.ndr", "*.ram", "*.n64", "*.z64",
+                              "*.disk"
+                          ],
+                      }
+                  ]
+              });
+      if (selectedStorageFiles is not { Count: 1 }) {
+        return;
+      }
+
+      var selectedStorageFile = selectedStorageFiles[0];
+      diskFile = new FinFile(selectedStorageFile.Path.LocalPath);
+
+      config.MostRecentDiskFile = diskFile.FullPath;
+      config.Save();
+    }
 
     MfsDisk mfsDisk;
     try {
@@ -73,6 +94,12 @@ public partial class MainWindow : Window {
       mfsDisk = br.ReadNew<MfsDisk>();
       var mfsRootDirectory = MfsTreeDirectory.CreateTreeFromMfsDisk(mfsDisk);
       MfsFileSystemService.LoadFileSystem(mfsRootDirectory);
+
+      if (mfsRootDirectory.TryToGetExistingFile(config.MostRecentFileName,
+                                                out var mostRecentFile) &&
+          mostRecentFile is MfsTreeFile) {
+        MfsFileSystemService.SelectFile(mostRecentFile as MfsTreeFile);
+      }
     } catch (Exception e) {
       ExceptionService.HandleException(e, new LoadFileException(diskFile));
     }

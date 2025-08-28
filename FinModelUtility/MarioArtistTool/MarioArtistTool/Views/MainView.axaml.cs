@@ -11,6 +11,8 @@ using fin.ui.rendering.gl;
 
 using marioartist.api;
 
+using MarioArtistTool.config;
+
 using marioartisttool.services;
 using marioartisttool.util;
 
@@ -38,13 +40,12 @@ public partial class MainView : UserControl {
             var bundle = new TstltModelFileBundle(file);
             var model = new TstltModelLoader().Import(bundle);
 
+            var config = Config.INSTANCE;
+            config.MostRecentFileName = file.FullPath;
+            config.Save();
+
             var characterObj = area.AddObject();
             characterObj.AddSceneModel(model);
-
-            var shadowObj = area.AddObject();
-            shadowObj.AddSceneModel(model);
-            shadowObj.SetPosition(new Vector3(50, 0, -300));
-            shadowObj.SetScale(1, 1, .0001f);
 
             var lightingObj = area.AddObject();
             scene.CreateDefaultLighting(lightingObj);
@@ -62,5 +63,10 @@ public partial class MainView : UserControl {
     };
 
     this.ViewerGlPanel.OnInit += () => MfsFileSystemService.SelectFile(null);
+
+    var camera = this.ViewerGlPanel.Camera;
+    camera.Position = new Vector3(0, -1.35f, .3f);
+    camera.PitchDegrees = 0;
+    camera.YawDegrees = 90;
   }
 }

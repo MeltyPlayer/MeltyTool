@@ -1,16 +1,19 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+
 using fin.data.dictionaries;
 using fin.data.queues;
 using fin.io;
 using fin.util.asserts;
 using fin.util.linq;
+
 using marioartist.schema.leo;
 using marioartist.schema.mfs;
 
 namespace marioartist.api;
 
 public abstract class MfsTreeIoObject(IReadOnlyTreeDirectory? parent)
-  : IReadOnlyTreeIoObject {
+    : IReadOnlyTreeIoObject {
   public abstract string FullPath { get; }
   public ReadOnlySpan<char> Name => FinIoStatic.GetName(this.FullPath);
 
@@ -36,19 +39,22 @@ public abstract class MfsTreeIoObject(IReadOnlyTreeDirectory? parent)
 }
 
 public class MfsTreeDirectory(
-  IReadOnlyTreeDirectory? parent,
-  MfsDirectory impl,
-  LinkedList<MfsTreeDirectory> subdirs,
-  LinkedList<MfsTreeFile> files)
-  : MfsTreeIoObject(parent), IReadOnlyTreeDirectory {
+    IReadOnlyTreeDirectory? parent,
+    MfsDirectory impl,
+    LinkedList<MfsTreeDirectory> subdirs,
+    LinkedList<MfsTreeFile> files)
+    : MfsTreeIoObject(parent), IReadOnlyTreeDirectory {
+  private readonly LinkedList<MfsTreeDirectory> subdirs_ = subdirs;
+  private readonly LinkedList<MfsTreeFile> files_ = files;
+
   public static MfsTreeDirectory CreateTreeFromMfsDisk(MfsDisk mfsDisk) {
     if (mfsDisk.Volume == null) {
       throw mfsDisk.Error switch {
-        MfsDiskError.INVALID
-          => new InvalidDataException("Disk data is invalid"),
-        MfsDiskError.NOT_MFS
-          => new NotSupportedException("Disk is not an MFS filesystem"),
-        _ => new Exception("Unknown error")
+          MfsDiskError.INVALID
+              => new InvalidDataException("Disk data is invalid"),
+          MfsDiskError.NOT_MFS
+              => new NotSupportedException("Disk is not an MFS filesystem"),
+          _ => new Exception("Unknown error")
       };
     }
 
@@ -69,12 +75,12 @@ public class MfsTreeDirectory(
     var rootSubdirs = new LinkedList<MfsTreeDirectory>();
     var rootFiles = new LinkedList<MfsTreeFile>();
     var rootTreeDirectory
-      = new MfsTreeDirectory(null, rootDirectory, rootSubdirs, rootFiles);
+        = new MfsTreeDirectory(null, rootDirectory, rootSubdirs, rootFiles);
 
     var directoryQueue
-      = new FinQueue<(MfsDirectory, MfsTreeDirectory,
-        LinkedList<MfsTreeDirectory>, LinkedList<MfsTreeFile>)>(
-        (rootDirectory, rootTreeDirectory, rootSubdirs, rootFiles));
+        = new FinQueue<(MfsDirectory, MfsTreeDirectory,
+            LinkedList<MfsTreeDirectory>, LinkedList<MfsTreeFile>)>(
+            (rootDirectory, rootTreeDirectory, rootSubdirs, rootFiles));
     while (directoryQueue.TryDequeue(out var tuple)) {
       var (directory, treeDirectory, subdirs, files) = tuple;
 
@@ -96,12 +102,12 @@ public class MfsTreeDirectory(
             subdirs.AddLast(childTreeDirectory);
 
             directoryQueue.Enqueue((childDirectory, childTreeDirectory,
-                                     childSubdirs, childFiles));
+                                    childSubdirs, childFiles));
             break;
           }
           case MfsFile childFile: {
             files.AddLast(
-              new MfsTreeFile(treeDirectory, disk, volume, childFile));
+                new MfsTreeFile(treeDirectory, disk, volume, childFile));
             break;
           }
         }
@@ -130,20 +136,48 @@ public class MfsTreeDirectory(
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IReadOnlyTreeDirectory AssertGetExistingSubdir(
-    ReadOnlySpan<char> relativePath)
+      ReadOnlySpan<char> relativePath)
     => throw new NotImplementedException();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IEnumerable<IReadOnlyTreeFile> GetExistingFiles() => files;
 
   public bool TryToGetExistingFile(ReadOnlySpan<char> path,
-                                   out IReadOnlyTreeFile outFile)
-    => throw new NotImplementedException();
+                                   out IReadOnlyTreeFile outFile) {
+    var current = this;
+
+    foreach (var section in path.SplitAny('/', '\\')) {
+      if (section.Start.Value == section.End.Value) {
+        continue;
+      }
+
+      var sectionSpan = path[section];
+
+      if (section.End.Value == path.Length) {
+        var matchingFile = current.files_.FirstOrDefaultByName(sectionSpan);
+        if (matchingFile != null) {
+          outFile = matchingFile;
+          return true;
+        }
+
+        outFile = default;
+        return false;
+      }
+
+      var matchingSubdir = current.subdirs_.FirstOrDefaultByName(sectionSpan);
+      if (matchingSubdir != null) {
+        current = matchingSubdir;
+      }
+    }
+
+    outFile = default;
+    return false;
+  }
 
   public bool TryToGetExistingFileWithFileType(
-    string pathWithoutExtension,
-    out IReadOnlyTreeFile outFile,
-    params string[] extensions)
+      string pathWithoutExtension,
+      out IReadOnlyTreeFile outFile,
+      params string[] extensions)
     => throw new NotImplementedException();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -151,22 +185,22 @@ public class MfsTreeDirectory(
     => throw new NotImplementedException();
 
   public IEnumerable<IReadOnlyTreeFile> GetFilesWithNameRecursive(
-    string name)
+      string name)
     => throw new NotImplementedException();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public IEnumerable<IReadOnlyTreeFile> GetFilesWithFileType(
-    string extension,
-    bool includeSubdirs = false)
+      string extension,
+      bool includeSubdirs = false)
     => throw new NotImplementedException();
 }
 
 public class MfsTreeFile(
-  IReadOnlyTreeDirectory parent,
-  LeoDisk disk,
-  MfsRamVolume volume,
-  MfsFile impl)
-  : MfsTreeIoObject(parent), IReadOnlyTreeFile {
+    IReadOnlyTreeDirectory parent,
+    LeoDisk disk,
+    MfsRamVolume volume,
+    MfsFile impl)
+    : MfsTreeIoObject(parent), IReadOnlyTreeFile {
   public override IEnumerable<MfsTreeIoObject> Children => [];
 
   public override string FullPath { get; }
@@ -193,7 +227,7 @@ public class MfsTreeFile(
     //Recursively copy blocks
     do {
       var blockdata
-        = disk.ReadLBA(Leo.RamStartLBA[volume.DiskType] + nextblock);
+          = disk.ReadLBA(Leo.RamStartLBA[volume.DiskType] + nextblock);
       int blocksize = blockdata.Length;
 
       var dst = filedata.AsSpan((int) offset, (int) Math.Min(blocksize, size));
