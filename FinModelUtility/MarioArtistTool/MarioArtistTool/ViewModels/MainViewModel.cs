@@ -4,8 +4,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Threading;
 
-using fin.model;
-using fin.scene;
 using fin.ui.avalonia;
 
 using marioartist.api;
