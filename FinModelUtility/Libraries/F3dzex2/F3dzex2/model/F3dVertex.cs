@@ -1,11 +1,13 @@
 ﻿using System.Numerics;
+using System.Runtime.InteropServices;
+
+using CommunityToolkit.HighPerformance;
 
 using schema.binary;
 
 namespace f3dzex2.model;
 
-[BinarySchema]
-public partial record struct F3dVertex : IBinaryConvertible {
+public record struct F3dVertex : IBinaryDeserializable {
   public short X { get; set; }
   public short Y { get; set; }
   public short Z { get; set; }
@@ -33,5 +35,14 @@ public partial record struct F3dVertex : IBinaryConvertible {
     => ((sbyte) value) / (byte.MaxValue * .5f);
 
   public Vector4 GetColor()
-    => new(this.NormalXOrR / 255f, this.NormalYOrG / 255f, this.NormalZOrB / 255f, this.A / 255f);
+    => new(this.NormalXOrR / 255f,
+           this.NormalYOrG / 255f,
+           this.NormalZOrB / 255f,
+           this.A / 255f);
+
+  public void Read(IBinaryReader br) {
+    var bytes = MemoryMarshal.CreateSpan(ref this, 1).AsBytes();
+    br.ReadUInt16s(bytes.Cast<byte, ushort>()[..6]);
+    br.ReadBytes(bytes[(6 * 2)..]);
+  }
 }
