@@ -7,7 +7,6 @@ using fin.io.web;
 using fin.scene;
 using fin.scene.instance;
 using fin.services;
-using fin.ui.rendering.gl;
 
 using marioartist.api;
 

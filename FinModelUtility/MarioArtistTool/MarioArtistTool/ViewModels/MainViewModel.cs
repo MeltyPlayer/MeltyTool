@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using System;
+
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Templates;
@@ -6,14 +8,19 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Threading;
 
+using fin.io;
 using fin.ui.avalonia;
+using fin.ui.avalonia.images;
 
 using marioartist.api;
+using marioartist.schema;
 
 using marioartisttool.services;
 using marioartisttool.util;
 
 using ReactiveUI;
+
+using schema.binary;
 
 namespace marioartisttool.ViewModels;
 
@@ -45,24 +52,34 @@ public partial class MainViewModel : ViewModelBase {
                               return null;
                             }
 
-                            var textBlock = new TextBlock {
-                                Text = x.Name.ToString(),
-                                Classes = { "regular" }
-                            };
-
-                            // TODO: Load image from file
-                            /*var icon = new MaterialIcon {
-                                Kind = x.Icon.Value,
-                                Margin = new Thickness(-24, 0, 4, 0),
-                                Height = 16,
-                                Width = 16
-                            };*/
-
                             var stackPanel = new StackPanel {
                                 Orientation = Orientation.Horizontal,
                             };
-                            // TODO: Add icon here
-                            stackPanel.Children.AddRange([textBlock]);
+
+                            if (x is MfsTreeFile mfsTreeFile) {
+                              using var br
+                                  = mfsTreeFile.OpenReadAsBinary(
+                                      Endianness.BigEndian);
+
+                              var thumbnail = new Argb1555Image(24, 24);
+                              thumbnail.Read(br);
+
+                              var finImage = thumbnail.ToImage();
+                              var avaloniaImage = finImage.AsAvaloniaImage();
+
+                              var icon = new Image {
+                                  Source = avaloniaImage,
+                              };
+
+                              stackPanel.Children.Add(icon);
+                            }
+
+                            var textBlock = new TextBlock {
+                                Text = x.Name.ToString(),
+                                Classes = { "regular" },
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
+                            stackPanel.Children.Add(textBlock);
 
                             return stackPanel;
                           })),
