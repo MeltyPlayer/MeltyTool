@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GodotSharp" Version="4.3.0" />
-    <PackageReference Include="GodotSharpEditor" Version="4.3.0" />
+    <PackageReference Include="GodotSharp" Version="4.4.1" />
+    <PackageReference Include="GodotSharpEditor" Version="4.4.1" />
   </ItemGroup>
 
 </Project>
