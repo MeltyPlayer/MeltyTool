@@ -284,6 +284,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarioArtistTool.Desktop", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin.Ui.Avalonia", "Fin\Fin.Ui.Avalonia\Fin.Ui.Avalonia.csproj", "{0B842313-3FC7-407D-B201-7BD692517EE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin.Testing", "Fin\Fin.Testing\Fin.Testing.csproj", "{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -964,6 +966,14 @@ Global
 		{0B842313-3FC7-407D-B201-7BD692517EE1}.Release|x64.Build.0 = Release|x64
 		{0B842313-3FC7-407D-B201-7BD692517EE1}.Release|x86.ActiveCfg = Release|x86
 		{0B842313-3FC7-407D-B201-7BD692517EE1}.Release|x86.Build.0 = Release|x86
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Debug|x64.ActiveCfg = Debug|x64
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Debug|x64.Build.0 = Debug|x64
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Debug|x86.ActiveCfg = Debug|x86
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Debug|x86.Build.0 = Debug|x86
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Release|x64.ActiveCfg = Release|x64
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Release|x64.Build.0 = Release|x64
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Release|x86.ActiveCfg = Release|x86
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1088,6 +1098,7 @@ Global
 		{9D6ED1EB-723D-AF83-8B48-756CFD87DC11} = {5C38743E-8E71-4E1C-985D-E99E7F405D22}
 		{FF73A183-ABD8-C2F8-3A31-8D7B7EFBAF2D} = {5C38743E-8E71-4E1C-985D-E99E7F405D22}
 		{0B842313-3FC7-407D-B201-7BD692517EE1} = {98E57180-48B9-4648-AE42-7C7C67120471}
+		{AD51D0F1-70FD-4F2D-BA67-CDFDD8FDC694} = {98E57180-48B9-4648-AE42-7C7C67120471}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}

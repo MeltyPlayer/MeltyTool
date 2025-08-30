@@ -25,6 +25,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+	
+    <ProjectReference Include="$(SolutionDir)/Fin/Fin.Testing/Fin.Testing.csproj" />
   </ItemGroup>
   
   <PropertyGroup>
