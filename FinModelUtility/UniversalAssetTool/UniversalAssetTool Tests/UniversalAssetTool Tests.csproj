@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.0.14" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.0.15" />
   </ItemGroup>
 
   <ItemGroup>

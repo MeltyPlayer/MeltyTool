@@ -22,7 +22,7 @@
     <PackageReference Include="AvaloniaControlsToolBar" Version="0.0.1" />
     <PackageReference Include="AvaloniaUIRibbon" Version="1.1.0-beta" />
     <PackageReference Include="ConfigFactory" Version="0.4.3" />
-    <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.2" />
+    <PackageReference Include="ConfigFactory.Avalonia" Version="0.4.3" />
     <PackageReference Include="LoadingIndicators.Avalonia" Version="11.0.11.1" />
     <PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />

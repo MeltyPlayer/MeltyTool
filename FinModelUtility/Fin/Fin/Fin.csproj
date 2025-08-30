@@ -15,14 +15,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AssimpNetter" Version="5.4.3.3" />
-    <PackageReference Include="Autofac" Version="8.3.0" />
+    <PackageReference Include="AssimpNetter" Version="6.0.2" />
+    <PackageReference Include="Autofac" Version="8.4.0" />
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageReference Include="Crayon" Version="2.0.69" />
     <PackageReference Include="FastBitmapLib" Version="2.1.0" />
     <PackageReference Include="MeltySynth" Version="2.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
     <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.13.0">
       <PrivateAssets>all</PrivateAssets>
@@ -38,12 +38,12 @@
     <PackageReference Include="OpenAL.Soft" Version="1.23.1" />
     <PackageReference Include="Pfim" Version="0.11.3" />
     <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.4" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
     <PackageReference Include="SubstreamSharp" Version="1.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.6" />
-    <PackageReference Include="System.IO.Abstractions" Version="22.0.14" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.8" />
+    <PackageReference Include="System.IO.Abstractions" Version="22.0.15" />
     <PackageReference Include="schema" Version="0.6.13" />
-    <PackageReference Include="System.IO.Hashing" Version="9.0.6" />
+    <PackageReference Include="System.IO.Hashing" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>
