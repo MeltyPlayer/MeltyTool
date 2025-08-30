@@ -13,6 +13,19 @@
     <CoverletOutput>TestResults/</CoverletOutput>
     <CoverletOutputFormat>lcov</CoverletOutputFormat>
   </PropertyGroup>
+  <ItemGroup Condition="$(MSBuildProjectName.Contains('Tests'))">
+	<PackageReference Include="coverlet.msbuild" Version="6.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+	<PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.6.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
   
   <PropertyGroup>
 	<NoWarn>MSB3243;MSB3539;NETSDK1206;NU1504;NU1701;NU1902;NU1903</NoWarn>
