@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -6,6 +7,7 @@ using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 
 using fin.io;
@@ -14,6 +16,7 @@ using fin.ui.avalonia.images;
 
 using marioartist.api;
 using marioartist.schema;
+using marioartist.schema.mfs;
 
 using marioartisttool.services;
 using marioartisttool.util;
@@ -24,7 +27,36 @@ using schema.binary;
 
 namespace marioartisttool.ViewModels;
 
-public partial class MainViewModel : ViewModelBase {
+public class MainViewModelForDesigner : MainViewModel {
+  public MainViewModelForDesigner() {
+    var rootSubdirs = new LinkedList<MfsTreeDirectory>();
+    var root
+        = new MfsTreeDirectory(null,
+                               new MfsDirectory { Name = "/" },
+                               rootSubdirs,
+                               []);
+
+    var subdir1Files = new LinkedList<MfsTreeFile>();
+    var subdir1
+        = new MfsTreeDirectory(root,
+                               new MfsDirectory { Name = "subdir1" },
+                               [],
+                               subdir1Files);
+    rootSubdirs.AddLast(subdir1);
+
+    var subdir2Files = new LinkedList<MfsTreeFile>();
+    var subdir2
+        = new MfsTreeDirectory(root,
+                               new MfsDirectory { Name = "subdir2" },
+                               [],
+                               subdir2Files);
+    rootSubdirs.AddLast(subdir2);
+
+    MfsFileSystemService.LoadFileSystem(root);
+  }
+}
+
+public class MainViewModel : ViewModelBase {
   public Cursor Cursor { get; }
     = LoadCursorFromAsset_("cursor_thumb_in.png", new PixelPoint(2, 2));
 
@@ -77,11 +109,42 @@ public partial class MainViewModel : ViewModelBase {
                             var textBlock = new TextBlock {
                                 Text = x.Name.ToString(),
                                 Classes = { "regular" },
-                                VerticalAlignment = VerticalAlignment.Center
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Foreground
+                                    = new SolidColorBrush(
+                                        Color.FromRgb(255, 255, 255))
                             };
                             stackPanel.Children.Add(textBlock);
 
-                            return stackPanel;
+                            Color borderColor;
+                            uint marginTop, marginBottom;
+                            if (x.Children.Any()) {
+                              borderColor = Color.FromRgb(245, 181, 0);
+                              marginTop = 4;
+                              marginBottom = marginTop / 2;
+                            } else {
+                              borderColor = Color.FromRgb(255, 255, 255);
+                              marginTop = 2;
+                              marginBottom = marginTop / 2;
+                            }
+
+                            var border = new Border {
+                                Child = stackPanel,
+                                Padding = new Thickness(2),
+                                BorderThickness = new Thickness(3),
+                                CornerRadius = new CornerRadius(4),
+                                Background
+                                    = new SolidColorBrush(
+                                        Color.FromRgb(33, 33, 33)),
+                                BorderBrush = new SolidColorBrush(borderColor),
+                                Margin = new Thickness(
+                                    0,
+                                    marginTop,
+                                    0,
+                                    marginBottom)
+                            };
+
+                            return border;
                           })),
                       x => x.Children)
               }
