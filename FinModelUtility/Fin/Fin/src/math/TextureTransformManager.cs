@@ -36,7 +36,9 @@ public class TextureTransformManager : ITextureTransformManager {
     var animation = animationAndFrame?.Item1;
     var frame = animationAndFrame?.Item2;
 
-    foreach (var texture in textures) {
+    // Intentionally looping by index to avoid allocating an enumerator.
+    for (var i = 0; i < textures.Count; ++i) {
+      var texture = textures[i];
       Vector3? animationTranslation = null;
       Vector3? animationRotation = null;
       Vector3? animationScale = null;

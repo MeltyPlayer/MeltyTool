@@ -14,21 +14,13 @@ namespace fin.ui.rendering.gl.model;
 ///
 ///   NOTE: This will only be valid in the GL context this was first rendered in!
 /// </summary>
-public partial class ModelRenderer(
-    IReadOnlyModel model,
-    IReadOnlyLighting? lighting = null,
-    IReadOnlyBoneTransformManager? boneTransformManager = null,
-    IReadOnlyTextureTransformManager? textureTransformManager = null,
-    bool dynamic = false)
+public partial class ModelRenderer
     : IDynamicModelRenderer {
-  private readonly IDynamicModelRenderer impl_ = (model.Skin.AllowMaterialRendererMerging)
-      ? new MergedMaterialMeshesRenderer(model,
-                                         textureTransformManager,
-                                         dynamic)
-      : new UnmergedMaterialMeshesRenderer(
-          model,
-          textureTransformManager,
-          dynamic);
+  private readonly IReadOnlyList<IReadOnlyBone> bonesUsedByVertices_;
+
+  private readonly Matrix4x4[] boneMatrices_;
+
+  private readonly IDynamicModelRenderer impl_;
 
   public static IModelRenderer CreateStatic(
       IReadOnlyModel model,
@@ -54,6 +46,37 @@ public partial class ModelRenderer(
 
   private MatricesUbo? matricesUbo_;
   private LightsUbo? lightsUbo_;
+  private readonly IReadOnlyModel model_;
+  private readonly IReadOnlyLighting? lighting_;
+  private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
+
+  /// <summary>
+  ///   A renderer for a Fin model.
+  ///
+  ///   NOTE: This will only be valid in the GL context this was first rendered in!
+  /// </summary>
+  public ModelRenderer(IReadOnlyModel model,
+                       IReadOnlyLighting? lighting = null,
+                       IReadOnlyBoneTransformManager? boneTransformManager = null,
+                       IReadOnlyTextureTransformManager? textureTransformManager = null,
+                       bool dynamic = false) {
+    this.model_ = model;
+    this.lighting_ = lighting;
+    this.boneTransformManager_ = boneTransformManager;
+    
+    this.bonesUsedByVertices_ = model.Skin.BonesUsedByVertices.ToArray();
+    this.boneMatrices_ = new Matrix4x4[1 + this.bonesUsedByVertices_.Count];
+    this.boneMatrices_[0] = Matrix4x4.Identity;
+
+    this.impl_ = (model.Skin.AllowMaterialRendererMerging)
+        ? new MergedMaterialMeshesRenderer(model,
+                                           textureTransformManager,
+                                           dynamic)
+        : new UnmergedMaterialMeshesRenderer(
+            model,
+            textureTransformManager,
+            dynamic);
+  }
 
   ~ModelRenderer() => this.ReleaseUnmanagedResources_();
 
@@ -80,31 +103,29 @@ public partial class ModelRenderer(
   public void UpdateBuffer() => this.impl_.UpdateBuffer();
 
   public void Render() {
-    var bonesUsedByVertices = model.Skin.BonesUsedByVertices;
-    Span<Matrix4x4> boneMatrices
-        = stackalloc Matrix4x4[1 + bonesUsedByVertices.Count];
-    boneMatrices[0] = Matrix4x4.Identity;
     var boneIndex = 1;
-    foreach (var bone in bonesUsedByVertices) {
+    // Intentionally looping by index to avoid allocating an enumerator.
+    for (var i = 0; i < this.bonesUsedByVertices_.Count; ++i) {
+      var bone = this.bonesUsedByVertices_[i];
       var localToWorldMatrix =
-          boneTransformManager?.GetLocalToWorldMatrix(bone).Impl ??
+          this.boneTransformManager_?.GetLocalToWorldMatrix(bone).Impl ??
           Matrix4x4.Identity;
       var inverseMatrix =
-          boneTransformManager?.GetInverseBindMatrix(bone).Impl ??
+          this.boneTransformManager_?.GetInverseBindMatrix(bone).Impl ??
           Matrix4x4.Identity;
-      boneMatrices[boneIndex++] = inverseMatrix * localToWorldMatrix;
+      this.boneMatrices_[boneIndex++] = inverseMatrix * localToWorldMatrix;
     }
 
-    this.matricesUbo_ ??= new(model.Skin.BonesUsedByVertices.Count);
+    this.matricesUbo_ ??= new(this.model_.Skin.BonesUsedByVertices.Count);
     this.lightsUbo_ ??= new LightsUbo();
 
     this.matricesUbo_.UpdateData(GlTransform.ModelMatrix,
                                  GlTransform.ViewMatrix,
                                  GlTransform.ProjectionMatrix,
-                                 boneMatrices);
+                                 this.boneMatrices_);
     this.matricesUbo_.Bind();
 
-    this.lightsUbo_.UpdateData(this.UseLighting, lighting);
+    this.lightsUbo_.UpdateData(this.UseLighting, this.lighting_);
     this.lightsUbo_.Bind();
 
     this.impl_.Render();

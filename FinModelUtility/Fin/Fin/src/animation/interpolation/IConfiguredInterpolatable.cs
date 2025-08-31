@@ -34,7 +34,7 @@ public interface IIndividualInterpolationConfig {
   int InitialCapacity { get; }
 }
 
-public readonly struct IndividualInterpolationConfig<T>()
+public class IndividualInterpolationConfig<T>()
     : IIndividualInterpolationConfig {
   public int? AnimationLength { get; init; }
   public int InitialCapacity { get; init; } = 0;

@@ -120,17 +120,19 @@ public class SceneModelRenderer : IRenderable, IDisposable {
           model.MaterialManager.Textures,
           (animation, frame));
 
-      foreach (var meshTracks in animation.MeshTracks) {
-        if (!meshTracks.DisplayStates.TryGetAtFrame(
-                frame,
-                out var displayState)) {
-          continue;
-        }
+      if (animation.HasAnyMeshTracks) {
+        foreach (var meshTracks in animation.MeshTracks) {
+          if (!meshTracks.DisplayStates.TryGetAtFrame(
+                  frame,
+                  out var displayState)) {
+            continue;
+          }
 
-        if (displayState == MeshDisplayState.HIDDEN) {
-          this.hiddenMeshes_.Add(meshTracks.Mesh);
-        } else {
-          this.hiddenMeshes_.Remove(meshTracks.Mesh);
+          if (displayState == MeshDisplayState.HIDDEN) {
+            this.hiddenMeshes_.Add(meshTracks.Mesh);
+          } else {
+            this.hiddenMeshes_.Remove(meshTracks.Mesh);
+          }
         }
       }
     } else {

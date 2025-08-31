@@ -10,12 +10,16 @@ public partial class ModelImpl<TVertex> {
     private readonly IndexableDictionary<IReadOnlyMesh, IMeshTracks>
         meshTracks_ = new();
 
+    public bool HasAnyMeshTracks { get; private set; }
+
     public IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks
       => this.meshTracks_;
 
-    public IMeshTracks AddMeshTracks(IReadOnlyMesh mesh)
-      => this.meshTracks_[mesh]
+    public IMeshTracks AddMeshTracks(IReadOnlyMesh mesh) {
+      this.HasAnyMeshTracks = true;
+      return this.meshTracks_[mesh]
           = new MeshTracksImpl(mesh, this.sharedInterpolationConfig_);
+    }
   }
 
   private class MeshTracksImpl(
