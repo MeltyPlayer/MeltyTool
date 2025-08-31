@@ -1,4 +1,6 @@
-﻿using fin.data;
+﻿using CommunityToolkit.HighPerformance;
+
+using fin.data;
 using fin.schema.color;
 
 using schema.binary;
@@ -160,21 +162,22 @@ public partial class HeightmapParser : IBwHeightmap {
   }
 
   [BinarySchema]
-  public partial struct SchemaTile : IBinaryConvertible {
-    public SchemaTile() {}
-      
+  public partial class SchemaTile : IBinaryConvertible {
     public ushort[] Heights { get; } = new ushort[16];
-
-    [SequenceLengthSource(16)]
-    public Rgba32[] LightColors { get; set; }
-
-    [SequenceLengthSource(4)]
-    public TileUvs[] SurfaceTextureUvsFromFirstRow { get; set; }
-
-    [SequenceLengthSource(16)]
-    public TileUvs[] DetailTextureUvs { get; set; }
-
+    public Rgba32[] LightColors { get; } = new Rgba32[16];
+    public TileUvs[] SurfaceTextureUvsFromFirstRow { get; } = new TileUvs[4];
+    public TileUvs[] DetailTextureUvs { get; } = new TileUvs[16];
     public uint MatlIndex { get; private set; }
+
+    public void Read(IBinaryReader br) {
+      br.ReadUInt16s(this.Heights);
+      br.ReadBytes(this.LightColors.AsSpan().Cast<Rgba32, byte>());
+      br.ReadUInt16s(this.SurfaceTextureUvsFromFirstRow.AsSpan()
+                         .Cast<TileUvs, ushort>());
+      br.ReadUInt16s(this.DetailTextureUvs.AsSpan()
+                         .Cast<TileUvs, ushort>());
+      this.MatlIndex = br.ReadUInt32();
+    }
   }
 
   [BinarySchema]
