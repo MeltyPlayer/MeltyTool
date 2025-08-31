@@ -72,14 +72,14 @@ public static class GlTransform {
     };
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void LoadIdentity() {
-    currentMatrix_.SetIdentity();
-  }
+  public static void LoadIdentity() => currentMatrix_.SetIdentity();
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void MultMatrix(in Matrix4x4 matrix) {
-    currentMatrix_.MultiplyInPlace(matrix);
-  }
+  public static void Set(in Matrix4x4 matrix) => currentMatrix_.Top = matrix;
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void MultMatrix(in Matrix4x4 matrix)
+    => currentMatrix_.MultiplyInPlace(matrix);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Translate(double x, double y, double z)
