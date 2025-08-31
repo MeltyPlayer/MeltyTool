@@ -8,10 +8,9 @@ public partial class GlState {
 
 public static partial class GlUtil {
   public static void BindVao(int vaoId) {
-    // TODO: Fix this optimization??
-    /*if (currentState_.CurrentVaoId == vaoId) {
+    if (currentState_.CurrentVaoId == vaoId) {
       return;
-    }*/
+    }
 
     GL.BindVertexArray(currentState_.CurrentVaoId = vaoId);
   }
