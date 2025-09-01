@@ -52,8 +52,10 @@ public class CachedTextureUniformData {
     }
   }
 
-  public void BindTextureAndPassInUniforms() {
-    this.GlTexture.Bind(this.TextureIndex);
+  public void PassInUniforms() {
+    if (!GlUtil.USE_MULTIBIND_TEXTURES) {
+      this.GlTexture.Bind(this.TextureIndex);
+    }
     this.SamplerUniform.SetAndMaybeMarkDirty(this.TextureIndex);
 
     if (this.needsStruct_) {
