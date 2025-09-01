@@ -49,7 +49,7 @@ public enum CycleType : byte {
   FILL
 }
 
-public struct CombinerCycleParams {
+public class CombinerCycleParams {
   public static (CombinerCycleParams, CombinerCycleParams)
       FromTexture0AndLightingAndPrimitive(bool withAlpha)
     => (new() {
@@ -63,7 +63,7 @@ public struct CombinerCycleParams {
             AlphaMuxD = withAlpha
                 ? GenericAlphaMux.G_ACMUX_TEXEL0
                 : GenericAlphaMux.G_ACMUX_1,
-    },
+        },
         new() {
             ColorMuxA = GenericColorMux.G_CCMUX_COMBINED,
             ColorMuxB = GenericColorMux.G_CCMUX_0,
@@ -138,16 +138,19 @@ public struct CombinerCycleParams {
   public GenericAlphaMux AlphaMuxC { get; set; }
   public GenericAlphaMux AlphaMuxD { get; set; }
 
+  private int? hashCode_;
+
   public override int GetHashCode()
-    => FluentHash.Start()
-                 .With(this.ColorMuxA)
-                 .With(this.ColorMuxB)
-                 .With(this.ColorMuxC)
-                 .With(this.ColorMuxD)
-                 .With(this.AlphaMuxA)
-                 .With(this.AlphaMuxB)
-                 .With(this.AlphaMuxC)
-                 .With(this.AlphaMuxD);
+    => this.hashCode_ ??=
+        FluentHash.Start()
+                  .With(this.ColorMuxA)
+                  .With(this.ColorMuxB)
+                  .With(this.ColorMuxC)
+                  .With(this.ColorMuxD)
+                  .With(this.AlphaMuxA)
+                  .With(this.AlphaMuxB)
+                  .With(this.AlphaMuxC)
+                  .With(this.AlphaMuxD);
 
   public override bool Equals(object? other) {
     if (ReferenceEquals(this, other)) {

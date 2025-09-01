@@ -71,14 +71,17 @@ public class TextureParams : IEquatable<TextureParams> {
     }
   }
 
+  private int? hashCode_;
+
   public override int GetHashCode()
-    => FluentHash.Start()
-                 .With(this.Index)
-                 .With(this.ImageParams)
-                 .With(this.WrapModeT)
-                 .With(this.WrapModeS)
-                 .With(this.UvType)
-                 .With(this.LoadTileParams ?? default);
+    => this.hashCode_ ??=
+        FluentHash.Start()
+                  .With(this.Index)
+                  .With(this.ImageParams)
+                  .With(this.WrapModeT)
+                  .With(this.WrapModeS)
+                  .With(this.UvType)
+                  .With(this.LoadTileParams ?? default);
 
   public bool Equals(TextureParams other)
     => this.Index.Equals(other.Index) &&

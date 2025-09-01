@@ -16,13 +16,16 @@ public class MaterialParams : IEquatable<MaterialParams> {
 
   public CullingMode CullingMode { get; set; }
 
+  private int? hashCode_;
+
   public override int GetHashCode()
-    => FluentHash.Start()
-                 .With(this.TextureParams0)
-                 .With(this.TextureParams1)
-                 .With(this.CombinerCycleParams0)
-                 .With(this.CombinerCycleParams1)
-                 .With(this.CullingMode);
+    => this.hashCode_ ??=
+        FluentHash.Start()
+                  .With(this.TextureParams0)
+                  .With(this.TextureParams1)
+                  .With(this.CombinerCycleParams0)
+                  .With(this.CombinerCycleParams1)
+                  .With(this.CullingMode);
 
   public bool Equals(MaterialParams other)
     => IEquatable<TextureParams>.Equals(this.TextureParams0,

@@ -59,7 +59,7 @@ public static class RdpExtensions {
 
     rdp.CombinerCycleParams0 = combinerCycleParams0;
     if (combinerCycleParams1 != null) {
-      rdp.CombinerCycleParams1 = combinerCycleParams1.Value;
+      rdp.CombinerCycleParams1 = combinerCycleParams1;
     }
   }
 }

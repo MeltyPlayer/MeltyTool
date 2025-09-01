@@ -378,7 +378,7 @@ public class DlModelBuilder {
                   cycleParams1 != null
                       ? [
                           cycleParams0,
-                          cycleParams1.Value
+                          cycleParams1
                       ]
                       : [cycleParams0];
 
