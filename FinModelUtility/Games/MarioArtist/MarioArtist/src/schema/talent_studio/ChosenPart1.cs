@@ -15,11 +15,8 @@ public partial class ChosenPart1 : IBinaryDeserializable {
   [IntegerFormat(SchemaIntegerType.UINT32)]
   public bool IsLeft { get; set; }
 
-  [SequenceLengthSource(5)]
-  public uint[] DisplayListSegmentedAddresses { get; set; }
-
-  [SequenceLengthSource(0x54)]
-  public byte[] Unk2 { get; set; }
+  public uint[] DisplayListSegmentedAddresses { get; } = new uint[5];
+  public byte[] Unk2 { get; } = new byte[0x54];
 
   public Vector3 UnkVec3a { get; set; }
   public Vector3 UnkVec3b { get; set; }
@@ -29,6 +26,5 @@ public partial class ChosenPart1 : IBinaryDeserializable {
   public Vector3 UnkVec3c { get; set; }
   public Vector3 UnkVec3d { get; set; }
 
-  [SequenceLengthSource(3)]
-  public uint[] Unk4 { get; set; }
+  public uint[] Unk4 { get; } = new uint[3];
 }

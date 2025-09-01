@@ -6,6 +6,10 @@ using schema.binary;
 
 namespace marioartist.schema;
 
+public interface IMarioArtistImage : IBinaryDeserializable {
+  IImage ToImage();
+}
+
 [BinarySchema]
 public partial class Argb1555Image(int width, int height) : IMarioArtistImage {
   public byte[] Data { get; } = new byte[2 * width * height];

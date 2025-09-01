@@ -1,7 +1,6 @@
 ﻿using fin.schema.color;
 
 using schema.binary;
-using schema.binary.attributes;
 
 
 namespace marioartist.schema.talent_studio;
@@ -20,18 +19,15 @@ public partial class ChosenPart0 : IBinaryDeserializable {
   public ChosenColor ChosenColor0 { get; } = new();
   public ChosenColor ChosenColor1 { get; } = new();
 
-  [SequenceLengthSource(2)]
-  public uint[] UnkForPattern0 { get; set; }
+  public uint[] UnkForPattern0 { get; } = new uint[2];
 
   public uint Pattern0SegmentedAddress { get; set; }
 
-  [SequenceLengthSource(3)]
-  public uint[] Unk2 { get; set; }
+  public uint[] Unk2 { get; } = new uint[3];
 
   public uint Pattern1SegmentedAddress { get; set; }
 
-  [SequenceLengthSource(3)]
-  public uint[] Unk3 { get; set; }
+  public uint[] Unk3 { get; } = new uint[3];
 
   public uint UnkSegmentedAddress2 { get; set; }
 
