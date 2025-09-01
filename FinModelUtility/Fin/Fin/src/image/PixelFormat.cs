@@ -10,6 +10,9 @@ public enum PixelFormat {
   LA44,
   LA88,
 
+  I4,
+  I8,
+
   RGB565,
   RGB888,
 

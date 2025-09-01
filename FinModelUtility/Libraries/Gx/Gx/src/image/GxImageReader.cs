@@ -24,13 +24,13 @@ public class GxImageReader : IImageReader {
             height,
             8,
             8,
-            new L2a4PixelReader()),
+            new I4PixelReader()),
         GxTextureFormat.I8 => TiledImageReader.New(
             width,
             height,
             8,
             4,
-            new L2a8PixelReader()),
+            new I8PixelReader()),
         GxTextureFormat.A4_I4 => TiledImageReader.New(
             width,
             height,

@@ -164,8 +164,8 @@ public class GlTexture : IGlTexture {
                             fastLock.byteScan0);
         break;
       }
-      case La16Image ia16Image: {
-        using var fastLock = ia16Image.UnsafeLock();
+      case La16Image la16Image: {
+        using var fastLock = la16Image.UnsafeLock();
         PassBytesIntoImage_(level,
                             PixelInternalFormat.LuminanceAlpha,
                             imageWidth,
@@ -174,13 +174,23 @@ public class GlTexture : IGlTexture {
                             fastLock.byteScan0);
         break;
       }
-      case L8Image i8Image: {
-        using var fastLock = i8Image.UnsafeLock();
+      case L8Image l8Image: {
+        using var fastLock = l8Image.UnsafeLock();
         PassBytesIntoImage_(level,
                             PixelInternalFormat.Luminance,
                             imageWidth,
                             imageHeight,
                             PixelFormat.Luminance,
+                            fastLock.byteScan0);
+        break;
+      }
+      case I8Image i8Image: {
+        using var fastLock = i8Image.UnsafeLock();
+        PassBytesIntoImage_(level,
+                            PixelInternalFormat.LuminanceAlpha,
+                            imageWidth,
+                            imageHeight,
+                            PixelFormat.LuminanceAlpha,
                             fastLock.byteScan0);
         break;
       }

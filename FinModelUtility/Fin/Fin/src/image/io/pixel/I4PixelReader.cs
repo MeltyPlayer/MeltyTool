@@ -7,12 +7,11 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace fin.image.io.pixel;
 
 /// <summary>
-///   Helper class for reading 4-bit luminance pixels to both luminance and
-///   alpha channels.
+///   Helper class for reading 4-bit intensity pixels.
 /// </summary>
-public class L2a4PixelReader : IPixelReader<La16> {
+public class I4PixelReader : IPixelReader<La16> {
   public IImage<La16> CreateImage(int width, int height)
-    => new La16Image(PixelFormat.L4, width, height);
+    => new I8Image(PixelFormat.I4, width, height);
 
   public void Decode(ReadOnlySpan<byte> data, Span<La16> scan0, int offset) {
     var value = data[0];
