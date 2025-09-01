@@ -13,6 +13,8 @@ public static class ModelService {
   static ModelService() {
     FileBundleService.OnFileBundleOpened
         += (fileTreeLeafNode, fileBundle) => {
+          LoadingStatusService.IsLoading = true;
+
           if (fileBundle.FileBundle is IModelFileBundle modelFileBundle) {
             try {
               var model
@@ -24,6 +26,8 @@ public static class ModelService {
                   new LoadFileBundleExceptionContext(fileBundle));
             }
           }
+
+          LoadingStatusService.IsLoading = false;
         };
   }
 

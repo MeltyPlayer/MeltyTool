@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using fin.animation;
 using fin.model;
 using fin.scene;
+using fin.services;
 using fin.ui.avalonia.gl;
 using fin.ui.rendering;
 using fin.ui.rendering.gl;
@@ -184,6 +185,10 @@ public class SceneInstanceViewerGlPanel : BOpenTkControl, ISceneViewer {
   protected override void TeardownGl() { }
 
   protected override void RenderGl() {
+    if (LoadingStatusService.IsLoading) {
+      return;
+    }
+
     if (this.AllowMovingCamera) {
       var forwardVector =
           (this.isForwardDown_ ? 1 : 0) - (this.isBackwardDown_ ? 1 : 0);

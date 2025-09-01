@@ -12,6 +12,8 @@ public static class SceneService {
     FileBundleService.OnFileBundleOpened
         += (fileTreeLeafNode, fileBundle) => {
           if (fileBundle.FileBundle is ISceneFileBundle sceneFileBundle) {
+            LoadingStatusService.IsLoading = true;
+
             try {
               var scene = new GlobalSceneImporter().Import(sceneFileBundle);
               OpenScene(fileTreeLeafNode, scene);
@@ -20,6 +22,8 @@ public static class SceneService {
                   e,
                   new LoadFileBundleExceptionContext(fileBundle));
             }
+
+            LoadingStatusService.IsLoading = false;
           }
         };
 
