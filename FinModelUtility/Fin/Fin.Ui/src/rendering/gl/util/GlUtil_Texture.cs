@@ -14,8 +14,6 @@ public partial class GlState {
 }
 
 public static partial class GlUtil {
-  public const bool USE_MULTIBIND_TEXTURES = false;
-
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void BindTexture(int textureIndex, int value) {
     if (currentState_.CurrentTextureBindings[textureIndex] == value) {
@@ -30,18 +28,6 @@ public static partial class GlUtil {
     GL.BindTexture(TextureTarget.Texture2D,
                    currentState_.CurrentTextureBindings[textureIndex]
                        = value);
-  }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static void BindTextures(int[] textureIds) {
-    var currentTextureBindings
-        = currentState_.CurrentTextureBindings.AsSpan(0, textureIds.Length);
-    if (textureIds.SequenceEqual(currentTextureBindings)) {
-      return;
-    }
-
-    textureIds.CopyTo(currentTextureBindings);
-    GL.BindTextures(0, textureIds.Length, textureIds);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

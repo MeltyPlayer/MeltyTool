@@ -18,8 +18,6 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
   private readonly GlShaderProgram impl_;
 
-  private int[] textureIds_;
-
   private readonly IShaderUniform<Vector3> cameraPositionUniform_;
   private readonly IShaderUniform<float> shininessUniform_;
 
@@ -86,21 +84,9 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
     this.shininessUniform_.SetAndMaybeMarkDirty(
         this.Material?.Shininess ?? 0);
 
-    if (this.textureIds_ == null) {
-      var maxTextureIndex = this.cachedTextureUniformDatas_.Max(t => t.TextureIndex);
-      this.textureIds_ = new int[maxTextureIndex + 1];
-      foreach (var cachedTextureUniformData in this.cachedTextureUniformDatas_) {
-        this.textureIds_[cachedTextureUniformData.TextureIndex]
-            = cachedTextureUniformData.GlTexture.Id;
-      }
-    }
-
-    if (GlUtil.USE_MULTIBIND_TEXTURES) {
-      GlUtil.BindTextures(this.textureIds_);
-    }
     foreach (var cachedTextureUniformData in
              this.cachedTextureUniformDatas_) {
-      cachedTextureUniformData.PassInUniforms();
+      cachedTextureUniformData.BindTextureAndPassInUniforms();
     }
 
     this.PassUniformsAndBindTextures(this.impl_);
