@@ -16,7 +16,7 @@
   </Design.DataContext>
 
   <DockPanel>
-    <Panel Width="200"
+    <Panel Width="250"
            DockPanel.Dock="Left">
       <controls:If Condition="{Binding FileSystemTreeSource, Converter={x:Static ObjectConverters.IsNotNull}}">
         <DockPanel>

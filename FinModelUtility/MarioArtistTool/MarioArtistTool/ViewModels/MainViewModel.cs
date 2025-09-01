@@ -106,24 +106,29 @@ public class MainViewModel : ViewModelBase {
                               stackPanel.Children.Add(icon);
                             }
 
+                            var brushWhite
+                                = new SolidColorBrush(
+                                    Color.FromRgb(255, 255, 255));
+                            var brushYellow
+                                = new SolidColorBrush(
+                                    Color.FromRgb(245, 181, 0));
+
                             var textBlock = new TextBlock {
                                 Text = x.Name.ToString(),
                                 Classes = { "regular" },
                                 VerticalAlignment = VerticalAlignment.Center,
-                                Foreground
-                                    = new SolidColorBrush(
-                                        Color.FromRgb(255, 255, 255))
+                                Foreground = brushWhite
                             };
                             stackPanel.Children.Add(textBlock);
 
-                            Color borderColor;
+                            Brush borderBrush;
                             uint marginTop, marginBottom;
                             if (x.Children.Any()) {
-                              borderColor = Color.FromRgb(245, 181, 0);
+                              borderBrush = brushYellow;
                               marginTop = 4;
                               marginBottom = marginTop / 2;
                             } else {
-                              borderColor = Color.FromRgb(255, 255, 255);
+                              borderBrush = brushWhite;
                               marginTop = 2;
                               marginBottom = marginTop / 2;
                             }
@@ -136,16 +141,18 @@ public class MainViewModel : ViewModelBase {
                                 Background
                                     = new SolidColorBrush(
                                         Color.FromRgb(33, 33, 33)),
-                                BorderBrush = new SolidColorBrush(borderColor),
+                                BorderBrush = borderBrush,
                                 Margin = new Thickness(
                                     0,
                                     marginTop,
-                                    0,
-                                    marginBottom)
+                                    2,
+                                    marginBottom),
                             };
 
                             return border;
-                          })),
+                          }),
+                          null,
+                          GridLength.Star),
                       x => x.Children)
               }
           };

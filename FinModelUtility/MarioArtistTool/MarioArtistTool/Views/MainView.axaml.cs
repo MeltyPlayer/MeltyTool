@@ -12,7 +12,6 @@ using fin.scene.instance;
 using fin.services;
 using fin.ui.rendering.gl;
 using fin.ui.rendering.gl.model;
-using fin.ui.rendering.gl.scene;
 
 using marioartist.api;
 
