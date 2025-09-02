@@ -8,10 +8,10 @@ public static class RegistersDesignerUtil {
 
     registers.GetOrCreateColorRegister(
         "color constant a",
-        new ColorConstant(.3, .4, .5));
+        new ColorConstant(.3f, .4f, .5f));
     registers.GetOrCreateScalarRegister(
         "scalar constant 1",
-        new ScalarConstant(.3));
+        new ScalarConstant(.3f));
 
     return registers;
   }

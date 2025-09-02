@@ -10,19 +10,14 @@ public interface IFixedFunctionEquations<TIdentifier> {
   IColorOps ColorOps { get; }
   IScalarOps ScalarOps { get; }
 
-  IScalarConstant CreateScalarConstant(double v);
-
-  IColorConstant CreateColorConstant(
-      double r,
-      double g,
-      double b);
+  IScalarConstant CreateScalarConstant(float v);
+  IColorConstant CreateColorConstant(float r, float g, float b);
 
   IColorConstant CreateColorConstant(in Vector3 rgb)
     => this.CreateColorConstant(rgb.X, rgb.Y, rgb.Z);
 
 
-  IColorConstant CreateColorConstant(
-      double intensity);
+  IColorConstant CreateColorConstant(float intensity);
 
   IColorFactor CreateColor(IScalarValue r,
                            IScalarValue g,

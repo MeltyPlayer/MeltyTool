@@ -286,17 +286,17 @@ public class DlModelBuilder {
               var scalarOps = equations.ScalarOps;
 
               var environmentColor = equations.CreateColorConstant(
-                  rsp.EnvironmentColor.R / 255.0,
-                  rsp.EnvironmentColor.G / 255.0,
-                  rsp.EnvironmentColor.B / 255.0);
+                  rsp.EnvironmentColor.R / 255f,
+                  rsp.EnvironmentColor.G / 255f,
+                  rsp.EnvironmentColor.B / 255f);
               var environmentAlpha = equations.CreateScalarConstant(
-                  rsp.EnvironmentColor.A / 255.0);
+                  rsp.EnvironmentColor.A / 255f);
               var primColor = equations.CreateColorConstant(
-                  rsp.PrimColor.R / 255.0,
-                  rsp.PrimColor.G / 255.0,
-                  rsp.PrimColor.B / 255.0);
+                  rsp.PrimColor.R / 255f,
+                  rsp.PrimColor.G / 255f,
+                  rsp.PrimColor.B / 255f);
               var primAlpha = equations.CreateScalarConstant(
-                  rsp.PrimColor.A / 255.0);
+                  rsp.PrimColor.A / 255f);
 
               var shadeColor =
                   rsp.GeometryMode.CheckFlag(GeometryMode.G_LIGHTING)

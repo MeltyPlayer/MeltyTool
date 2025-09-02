@@ -16,10 +16,10 @@ public interface IFixedFunctionOps<TValue, out TConstant>
   TValue Multiply(TValue lhs, TValue rhs);
   TValue MultiplyWithScalar(TValue lhs, IScalarValue rhs);
 
-  TValue AddWithConstant(TValue lhs, double constant);
-  TValue MultiplyWithConstant(TValue lhs, double constant);
+  TValue AddWithConstant(TValue lhs, float constant);
+  TValue MultiplyWithConstant(TValue lhs, float constant);
 
-  TValue MixWithConstant(TValue lhs, TValue rhs, double mixAmount);
+  TValue MixWithConstant(TValue lhs, TValue rhs, float mixAmount);
   TValue MixWithScalar(TValue lhs, TValue rhs, IScalarValue mixAmount);
 }
 
@@ -43,16 +43,13 @@ public abstract class BFixedFunctionOps<TValue, TConstant>
   public abstract TValue Multiply(TValue lhs, TValue rhs);
   public abstract TValue MultiplyWithScalar(TValue lhs, IScalarValue rhs);
 
-  public TValue AddWithConstant(TValue lhs, double constant)
+  public TValue AddWithConstant(TValue lhs, float constant)
     => this.AddWithScalar(lhs, new ScalarConstant(constant));
 
-  public TValue MultiplyWithConstant(TValue lhs, double constant)
+  public TValue MultiplyWithConstant(TValue lhs, float constant)
     => this.MultiplyWithScalar(lhs, new ScalarConstant(constant));
 
-  public TValue MixWithConstant(
-      TValue lhs,
-      TValue rhs,
-      double mixAmount) {
+  public TValue MixWithConstant(TValue lhs, TValue rhs, float mixAmount) {
     lhs = this.MultiplyWithConstant(lhs, 1 - mixAmount);
     rhs = this.MultiplyWithConstant(rhs, mixAmount);
 

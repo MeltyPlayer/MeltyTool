@@ -130,9 +130,9 @@ void main() {
     individualLightSpecularColors[i] = specularLightColor;
   }
   
-  vec3 colorComponent = clamp((texture(texture0, uv0).rgb*vec3(0.498039215686) + texture(texture1, uv1).rgb*(vec3(1.0) + vec3(-1.0)*vec3(0.498039215686)))*color_GxMaterialColor2*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor2), 0.0, 1.0), 0.0, 1.0);
+  vec3 colorComponent = clamp((texture(texture0, uv0).rgb*vec3(0.4980392) + texture(texture1, uv1).rgb*(vec3(1.0) + vec3(-1.0)*vec3(0.4980392)))*color_GxMaterialColor2*clamp((individualLightDiffuseColors[0].rgb + individualLightDiffuseColors[1].rgb + individualLightDiffuseColors[2].rgb + color_GxAmbientColor2), 0.0, 1.0), 0.0, 1.0);
 
-  float alphaComponent = (texture(texture0, uv0).a*0.498039215686 + texture(texture1, uv1).a*0.501960784314)*scalar_GxMaterialAlpha2;
+  float alphaComponent = (texture(texture0, uv0).a*0.4980392 + texture(texture1, uv1).a*0.5019608)*scalar_GxMaterialAlpha2;
 
   fragColor = vec4(colorComponent, alphaComponent);
 }

@@ -14,7 +14,7 @@ public class ScalarRegisterPickerViewModelForDesigner
     this.ScalarRegister
         = new FixedFunctionRegisters().GetOrCreateScalarRegister(
             "foobar",
-            new ScalarConstant(.3));
+            new ScalarConstant(.3f));
   }
 }
 

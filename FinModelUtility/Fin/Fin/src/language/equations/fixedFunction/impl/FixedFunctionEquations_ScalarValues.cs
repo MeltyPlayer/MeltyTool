@@ -6,8 +6,7 @@ namespace fin.language.equations.fixedFunction;
 
 // TODO: Optimize this.
 public partial class FixedFunctionEquations<TIdentifier> {
-  private readonly Dictionary<double, IScalarConstant> scalarConstants_ =
-      new();
+  private readonly Dictionary<float, IScalarConstant> scalarConstants_ = new();
 
   private readonly Dictionary<TIdentifier, IScalarInput<TIdentifier>>
       scalarInputs_ = new();
@@ -21,7 +20,7 @@ public partial class FixedFunctionEquations<TIdentifier> {
   public IReadOnlyDictionary<TIdentifier, IScalarOutput<TIdentifier>>
       ScalarOutputs => this.scalarOutputs_;
 
-  public IScalarConstant CreateScalarConstant(double v) {
+  public IScalarConstant CreateScalarConstant(float v) {
     if (this.scalarConstants_.TryGetValue(
             v,
             out var scalarConstant)) {
@@ -85,13 +84,13 @@ public class ScalarTerm(
     = denominatorFactors;
 }
 
-public class ScalarConstant(double value) : BScalarValue, IScalarConstant {
+public class ScalarConstant(float value) : BScalarValue, IScalarConstant {
   public static readonly ScalarConstant ONE = new(1);
   public static readonly ScalarConstant[] ONE_ARRAY = [ONE];
   public static readonly ScalarConstant ZERO = new(0);
   public static readonly ScalarConstant NEGATIVE_ONE = new(-1);
 
-  public double Value { get; } = value;
+  public float Value { get; } = value;
 
   public override string ToString() => $"{this.Value}";
 

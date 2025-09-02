@@ -33,5 +33,5 @@ public interface IScalarExpression : IScalarValue, IExpression<IScalarValue>;
 public interface IScalarFactor : IScalarValue;
 
 public interface IScalarConstant : IScalarFactor, IConstant<IScalarValue> {
-  double Value { get; }
+  float Value { get; }
 }

@@ -12,8 +12,8 @@ public partial class FixedFunctionEquations<TIdentifier> {
           ColorWrapper>
       scalarValueColorConstants_ = new();
 
-  private readonly Dictionary<(double, double, double), IColorConstant>
-      doubleColorConstants_ = new();
+  private readonly Dictionary<(float, float, float), IColorConstant>
+      floatColorConstants_ = new();
 
   private readonly Dictionary<TIdentifier, IColorInput<TIdentifier>>
       colorInputs_ = new();
@@ -29,29 +29,28 @@ public partial class FixedFunctionEquations<TIdentifier> {
       ColorOutputs => this.colorOutputs_;
 
   public IColorConstant CreateColorConstant(
-      double r,
-      double g,
-      double b) {
+      float r,
+      float g,
+      float b) {
     var key = (r, g, b);
-    if (this.doubleColorConstants_.TryGetValue(
+    if (this.floatColorConstants_.TryGetValue(
             key,
             out var colorConstant)) {
       return colorConstant;
     }
 
-    return this.doubleColorConstants_[key] = new ColorConstant(r, g, b);
+    return this.floatColorConstants_[key] = new ColorConstant(r, g, b);
   }
 
-  public IColorConstant CreateColorConstant(
-      double intensity) {
+  public IColorConstant CreateColorConstant(float intensity) {
     var key = (intensity, intensity, intensity);
-    if (this.doubleColorConstants_.TryGetValue(
+    if (this.floatColorConstants_.TryGetValue(
             key,
             out var colorConstant)) {
       return colorConstant;
     }
 
-    return this.doubleColorConstants_[key] = new ColorConstant(intensity);
+    return this.floatColorConstants_[key] = new ColorConstant(intensity);
   }
 
   public IColorFactor CreateColor(
@@ -274,7 +273,7 @@ public class ColorConstant : BColorValue, IColorConstant {
   public static readonly ColorConstant ZERO = new(0);
   public static readonly ColorConstant NEGATIVE_ONE = new(-1);
 
-  public ColorConstant(double r, double g, double b) {
+  public ColorConstant(float r, float g, float b) {
     if (Math.Abs(r - g) < FixedFunctionUtils.TOLERANCE &&
         Math.Abs(r - b) < FixedFunctionUtils.TOLERANCE) {
       this.IntensityValue = r;
@@ -290,7 +289,7 @@ public class ColorConstant : BColorValue, IColorConstant {
     this.B = new ScalarConstant(b);
   }
 
-  public ColorConstant(double intensity) {
+  public ColorConstant(float intensity) {
     this.IntensityValue = intensity;
     this.RValue = intensity;
     this.GValue = intensity;
@@ -303,10 +302,10 @@ public class ColorConstant : BColorValue, IColorConstant {
   }
 
 
-  public double? IntensityValue { get; }
-  public double RValue { get; }
-  public double GValue { get; }
-  public double BValue { get; }
+  public float? IntensityValue { get; }
+  public float RValue { get; }
+  public float GValue { get; }
+  public float BValue { get; }
 
   public override IScalarValue? Intensity { get; }
   public override IScalarValue R { get; }

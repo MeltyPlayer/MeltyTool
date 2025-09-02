@@ -17,7 +17,7 @@ public class ColorRegisterPickerViewModelForDesigner
     this.ColorRegister
         = new FixedFunctionRegisters().GetOrCreateColorRegister(
             "foobar",
-            new ColorConstant(.3, .4, .5));
+            new ColorConstant(.3f, .4f, .5f));
   }
 }
 

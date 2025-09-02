@@ -48,8 +48,8 @@ public interface IColorExpression : IColorValue, IExpression<IColorValue>;
 public interface IColorFactor : IColorValue;
 
 public interface IColorConstant : IColorFactor, IConstant<IColorValue> {
-  double? IntensityValue { get; }
-  double RValue { get; }
-  double GValue { get; }
-  double BValue { get; }
+  float? IntensityValue { get; }
+  float RValue { get; }
+  float GValue { get; }
+  float BValue { get; }
 }

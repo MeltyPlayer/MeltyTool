@@ -123,8 +123,8 @@ public partial class GxFixedFunctionMaterial {
     var scOne = equations.CreateScalarConstant(1);
     var scTwo = equations.CreateScalarConstant(2);
     var scFour = equations.CreateScalarConstant(4);
-    var scHalf = equations.CreateScalarConstant(.5);
-    var scMinusHalf = equations.CreateScalarConstant(-.5);
+    var scHalf = equations.CreateScalarConstant(.5f);
+    var scMinusHalf = equations.CreateScalarConstant(-.5f);
     var sc255 = equations.CreateScalarConstant(255);
     var sc255Sqr = equations.CreateScalarConstant(256 * 255);
 
@@ -171,9 +171,9 @@ public partial class GxFixedFunctionMaterial {
                 GxColorSrc.Register => registers.GetOrCreateColorRegister(
                     $"GxMaterialColor{materialColorIndex}",
                     equations.CreateColorConstant(
-                        materialColor.R / 255.0,
-                        materialColor.G / 255.0,
-                        materialColor.B / 255.0)
+                        materialColor.R / 255f,
+                        materialColor.G / 255f,
+                        materialColor.B / 255f)
                 ),
                 GxColorSrc.Vertex => vertexColor,
                 _                 => throw new ArgumentOutOfRangeException()
@@ -190,9 +190,9 @@ public partial class GxFixedFunctionMaterial {
                   GxColorSrc.Register => registers.GetOrCreateColorRegister(
                       $"GxAmbientColor{ambientColorIndex}",
                       equations.CreateColorConstant(
-                          ambientColor.R / 255.0,
-                          ambientColor.G / 255.0,
-                          ambientColor.B / 255.0)),
+                          ambientColor.R / 255f,
+                          ambientColor.G / 255f,
+                          ambientColor.B / 255f)),
                   GxColorSrc.Vertex => vertexColor,
                   _                 => throw new ArgumentOutOfRangeException()
               };
@@ -245,7 +245,7 @@ public partial class GxFixedFunctionMaterial {
                 GxColorSrc.Register => registers.GetOrCreateScalarRegister(
                     $"GxMaterialAlpha{materialColorIndex}",
                     equations.CreateScalarConstant(
-                        materialColor.A / 255.0)),
+                        materialColor.A / 255f)),
                 GxColorSrc.Vertex => vertexAlpha,
                 _                 => throw new ArgumentOutOfRangeException()
             };
@@ -261,7 +261,7 @@ public partial class GxFixedFunctionMaterial {
                   GxColorSrc.Register => registers.GetOrCreateScalarRegister(
                       $"GxAmbientAlpha{ambientColorIndex}",
                       equations.CreateScalarConstant(
-                          ambientColor.A / 255.0)),
+                          ambientColor.A / 255f)),
                   GxColorSrc.Vertex => vertexAlpha,
                   _                 => throw new ArgumentOutOfRangeException()
               };

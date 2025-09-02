@@ -49,6 +49,6 @@ public static class ValueExtensions {
 
   public const float TOLERANCE = 1 / 255f;
 
-  private static bool IsRoughly_(this double actual, float expected)
+  private static bool IsRoughly_(this float actual, float expected)
     => Math.Abs(actual - expected) < TOLERANCE;
 }

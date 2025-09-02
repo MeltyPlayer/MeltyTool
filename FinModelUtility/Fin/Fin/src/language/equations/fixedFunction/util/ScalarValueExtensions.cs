@@ -38,7 +38,7 @@ public static class ScalarValueExtensions {
   }
 
   public static bool IsConstant(this IScalarValue? value,
-                                out double constantValue) {
+                                out float constantValue) {
     if (value is IScalarConstant scalarConstant) {
       constantValue = scalarConstant.Value;
       return true;

@@ -553,7 +553,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         this.PrintScalarValue_(sb, numerator, textures, true);
       }
     } else {
-      PrintDouble_(sb, 1);
+      PrintFloat_(sb, 1);
     }
 
     if (denominators != null) {
@@ -651,10 +651,10 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
   }
 
   private void PrintScalarConstant_(StringBuilder sb, IScalarConstant constant)
-    => PrintDouble_(sb, constant.Value);
+    => PrintFloat_(sb, constant.Value);
 
-  private static void PrintDouble_(StringBuilder sb, double value)
-    => sb.Append($"{value:0.0###########}");
+  private static void PrintFloat_(StringBuilder sb, float value)
+    => sb.Append($"{value:0.0######}");
 
   private enum WrapType {
     NEVER,
@@ -750,7 +750,7 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
         this.PrintColorValue_(sb, numerator, textures, WrapType.EXPRESSIONS);
       }
     } else {
-      PrintDouble_(sb, 1);
+      PrintFloat_(sb, 1);
     }
 
     if (denominators != null) {
