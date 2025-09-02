@@ -1,15 +1,14 @@
 ﻿using System.Drawing;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 using FinLogicOp = fin.model.LogicOp;
-using GlLogicOp = OpenTK.Graphics.OpenGL.LogicOp;
 using FinBlendEquation = fin.model.BlendEquation;
-using GlBlendEquation = OpenTK.Graphics.OpenGL.BlendEquationMode;
+using GlBlendEquation = OpenTK.Graphics.ES30.BlendEquationMode;
 using FinBlendFactor = fin.model.BlendFactor;
-using GlBlendFactor = OpenTK.Graphics.OpenGL.BlendingFactor;
-using GlBlendFactorSrc = OpenTK.Graphics.OpenGL.BlendingFactorSrc;
-using GlBlendFactorDst = OpenTK.Graphics.OpenGL.BlendingFactorDest;
+using GlBlendFactor = OpenTK.Graphics.ES30.BlendingFactor;
+using GlBlendFactorSrc = OpenTK.Graphics.ES30.BlendingFactorSrc;
+using GlBlendFactorDst = OpenTK.Graphics.ES30.BlendingFactorDest;
 
 
 namespace fin.ui.rendering.gl;
@@ -31,7 +30,7 @@ public static partial class GlUtil {
   public static bool DisableChangingBlending { get; set; }
 
   public static void SetBlendColor(Color color) {
-     GL.BlendColor(color);
+    GL.BlendColor(color);
   }
 
   public static void ResetBlending() => SetBlending(
@@ -80,7 +79,8 @@ public static partial class GlUtil {
     if (isColorNone && isAlphaNone) {
       GL.Disable(EnableCap.Blend);
       GL.BlendEquation(GlBlendEquation.FuncAdd);
-      GL.BlendFunc(GlBlendFactor.SrcAlpha, GlBlendFactor.OneMinusSrcAlpha);
+      GL.BlendFunc(BlendingFactorSrc.SrcAlpha,
+                   BlendingFactorDest.OneMinusSrcAlpha);
     } else {
       GL.Enable(EnableCap.Blend);
 
@@ -113,7 +113,6 @@ public static partial class GlUtil {
 
     if (logicOp != FinLogicOp.UNDEFINED) {
       GL.Enable(EnableCap.ColorLogicOp);
-      GL.LogicOp(ConvertFinLogicOpToGl_(logicOp));
     }
 
     return true;
@@ -186,31 +185,6 @@ public static partial class GlUtil {
         _ => throw new ArgumentOutOfRangeException(
             nameof(finBlendFactor),
             finBlendFactor,
-            null)
-    };
-
-
-  private static GlLogicOp ConvertFinLogicOpToGl_(FinLogicOp finLogicOp)
-    => finLogicOp switch {
-        FinLogicOp.CLEAR         => GlLogicOp.Clear,
-        FinLogicOp.AND           => GlLogicOp.And,
-        FinLogicOp.AND_REVERSE   => GlLogicOp.AndReverse,
-        FinLogicOp.COPY          => GlLogicOp.Copy,
-        FinLogicOp.AND_INVERTED  => GlLogicOp.AndInverted,
-        FinLogicOp.NOOP          => GlLogicOp.Noop,
-        FinLogicOp.XOR           => GlLogicOp.Xor,
-        FinLogicOp.OR            => GlLogicOp.Or,
-        FinLogicOp.NOR           => GlLogicOp.Nor,
-        FinLogicOp.EQUIV         => GlLogicOp.Equiv,
-        FinLogicOp.INVERT        => GlLogicOp.Invert,
-        FinLogicOp.OR_REVERSE    => GlLogicOp.OrReverse,
-        FinLogicOp.COPY_INVERTED => GlLogicOp.CopyInverted,
-        FinLogicOp.OR_INVERTED   => GlLogicOp.OrInverted,
-        FinLogicOp.NAND          => GlLogicOp.Nand,
-        FinLogicOp.SET           => GlLogicOp.Set,
-        _ => throw new ArgumentOutOfRangeException(
-            nameof(finLogicOp),
-            finLogicOp,
             null)
     };
 }

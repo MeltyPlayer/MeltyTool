@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using fin.math.matrix.four;
 using fin.math.rotations;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 using Vector3 = System.Numerics.Vector3;
 

@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 namespace fin.ui.rendering.gl;
 

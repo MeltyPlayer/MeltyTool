@@ -1,11 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 
 using fin.data.disposables;
+using fin.image;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
-using TextureMagFilter = OpenTK.Graphics.OpenGL.TextureMagFilter;
-using TextureMinFilter = OpenTK.Graphics.OpenGL.TextureMinFilter;
+using PixelFormat = OpenTK.Graphics.ES30.PixelFormat;
+using TextureMagFilter = OpenTK.Graphics.ES30.TextureMagFilter;
+using TextureMinFilter = OpenTK.Graphics.ES30.TextureMinFilter;
 
 namespace fin.ui.rendering.gl.texture;
 
@@ -21,9 +23,9 @@ public class GlFbo : IFinDisposable {
     // Create Color Tex
     GL.GenTextures(1, out this.colorTextureId_);
     GL.BindTexture(TextureTarget.Texture2D, this.colorTextureId_);
-    GL.TexImage2D(TextureTarget.Texture2D,
+    GL.TexImage2D(TextureTarget2d.Texture2D,
                   0,
-                  PixelInternalFormat.Rgba8,
+                  TextureComponentCount.Rgba8,
                   width,
                   height,
                   0,
@@ -46,9 +48,9 @@ public class GlFbo : IFinDisposable {
     // Create Depth Tex
     GL.GenTextures(1, out this.depthTextureId_);
     GL.BindTexture(TextureTarget.Texture2D, this.depthTextureId_);
-    GL.TexImage2D(TextureTarget.Texture2D,
+    GL.TexImage2D(TextureTarget2d.Texture2D,
                   0,
-                  (PixelInternalFormat) All.DepthComponent32,
+                  TextureComponentCount.DepthComponent32f,
                   width,
                   height,
                   0,
@@ -71,15 +73,15 @@ public class GlFbo : IFinDisposable {
 
     // Create a FBO and attach the textures
     GL.GenFramebuffers(1, out this.fboId_);
-    GL.BindFramebuffer(FramebufferTarget.FramebufferExt, this.fboId_);
-    GL.FramebufferTexture2D(FramebufferTarget.FramebufferExt,
+    GL.BindFramebuffer(FramebufferTarget.Framebuffer, this.fboId_);
+    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer,
                             FramebufferAttachment.ColorAttachment0Ext,
-                            TextureTarget.Texture2D,
+                            TextureTarget2d.Texture2D,
                             this.colorTextureId_,
                             0);
-    GL.FramebufferTexture2D(FramebufferTarget.FramebufferExt,
+    GL.FramebufferTexture2D(FramebufferTarget.Framebuffer,
                             FramebufferAttachment.DepthAttachmentExt,
-                            TextureTarget.Texture2D,
+                            TextureTarget2d.Texture2D,
                             this.depthTextureId_,
                             0);
   }
@@ -114,8 +116,8 @@ public class GlFbo : IFinDisposable {
     => GlUtil.BindTexture(textureIndex, this.depthTextureId_);
 
   public void TargetFbo()
-    => GL.BindFramebuffer(FramebufferTarget.FramebufferExt, this.fboId_);
+    => GL.BindFramebuffer(FramebufferTarget.Framebuffer, this.fboId_);
 
   public void UntargetFbo()
-    => GL.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
+    => GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
 }

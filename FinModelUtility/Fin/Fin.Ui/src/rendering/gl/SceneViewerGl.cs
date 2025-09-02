@@ -8,7 +8,7 @@ using fin.ui.rendering.gl.scene;
 using fin.ui.rendering.viewer;
 using fin.util.time;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 namespace fin.ui.rendering.gl;
 

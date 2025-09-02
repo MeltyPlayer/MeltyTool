@@ -2,7 +2,7 @@
 
 using fin.util.asserts;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 
 namespace fin.ui.rendering.gl;

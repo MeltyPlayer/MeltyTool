@@ -6,7 +6,7 @@ using fin.model;
 using fin.model.impl;
 using fin.model.util;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 using LogicOp = fin.model.LogicOp;
 

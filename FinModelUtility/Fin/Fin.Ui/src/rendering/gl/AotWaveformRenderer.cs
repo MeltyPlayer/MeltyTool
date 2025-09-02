@@ -5,7 +5,7 @@ using fin.math;
 using fin.model.impl;
 using fin.ui.rendering.gl.model;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 namespace fin.ui.rendering.gl;
 

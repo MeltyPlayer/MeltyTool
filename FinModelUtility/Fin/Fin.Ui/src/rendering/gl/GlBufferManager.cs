@@ -9,15 +9,16 @@ using fin.ui.rendering.gl.model;
 using fin.util.enumerables;
 using fin.util.linq;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
-using PrimitiveType = fin.model.PrimitiveType;
+using FinPrimitiveType = fin.model.PrimitiveType;
+using PrimitiveType = OpenTK.Graphics.ES30.PrimitiveType;
 
 namespace fin.ui.rendering.gl;
 
 public interface IGlBufferManager : IDisposable {
   IGlBufferRenderer CreateRenderer(
-      PrimitiveType primitiveType,
+      FinPrimitiveType primitiveType,
       IReadOnlyList<IReadOnlyVertex> triangleVertices,
       bool isFlipped = false);
 
@@ -343,7 +344,7 @@ public sealed class GlBufferManager : IDynamicGlBufferManager {
         GL.VertexAttribIPointer(
             vertexAttribBoneIds,
             numBones,
-            VertexAttribIPointerType.Int,
+            All.Int,
             0,
             0);
 
@@ -424,7 +425,7 @@ public sealed class GlBufferManager : IDynamicGlBufferManager {
                       (_, vao) => vao.Dispose());
 
   public IGlBufferRenderer CreateRenderer(
-      PrimitiveType primitiveType,
+      FinPrimitiveType primitiveType,
       IReadOnlyList<IReadOnlyVertex> triangleVertices,
       bool isFlipped = false)
     => new GlBufferRenderer(this.vao_.VaoId,
@@ -440,7 +441,7 @@ public sealed class GlBufferManager : IDynamicGlBufferManager {
   public class GlBufferRenderer : IGlBufferRenderer {
     private readonly int vaoId_;
     private int eboId_;
-    private BeginMode beginMode_;
+    private PrimitiveType beginMode_;
     private readonly bool isFlipped_;
 
     private readonly int[] indices_;
@@ -449,7 +450,7 @@ public sealed class GlBufferManager : IDynamicGlBufferManager {
 
     public GlBufferRenderer(
         int vaoId,
-        PrimitiveType primitiveType,
+        FinPrimitiveType primitiveType,
         bool isFlipped,
         IEnumerable<IReadOnlyVertex> vertices) : this(
         vaoId,
@@ -464,14 +465,12 @@ public sealed class GlBufferManager : IDynamicGlBufferManager {
         MergedPrimitive mergedPrimitive) {
       this.vaoId_ = vaoId;
       this.beginMode_ = mergedPrimitive.PrimitiveType switch {
-          PrimitiveType.POINTS         => BeginMode.Points,
-          PrimitiveType.LINES          => BeginMode.Lines,
-          PrimitiveType.LINE_STRIP     => BeginMode.LineStrip,
-          PrimitiveType.TRIANGLES      => BeginMode.Triangles,
-          PrimitiveType.TRIANGLE_FAN   => BeginMode.TriangleFan,
-          PrimitiveType.TRIANGLE_STRIP => BeginMode.TriangleStrip,
-          PrimitiveType.QUAD_STRIP     => BeginMode.QuadStrip,
-          PrimitiveType.QUADS          => BeginMode.Quads,
+          FinPrimitiveType.POINTS         => PrimitiveType.Points,
+          FinPrimitiveType.LINES          => PrimitiveType.Lines,
+          FinPrimitiveType.LINE_STRIP     => PrimitiveType.LineStrip,
+          FinPrimitiveType.TRIANGLES      => PrimitiveType.Triangles,
+          FinPrimitiveType.TRIANGLE_FAN   => PrimitiveType.TriangleFan,
+          FinPrimitiveType.TRIANGLE_STRIP => PrimitiveType.TriangleStrip,
           _                            => throw new ArgumentOutOfRangeException()
       };
       this.isFlipped_ = mergedPrimitive.IsFlipped;
@@ -526,7 +525,7 @@ public sealed class GlBufferManager : IDynamicGlBufferManager {
           this.beginMode_,
           this.indices_.Length,
           INDEX_TYPE,
-          0);
+          IntPtr.Zero);
     }
   }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
 using System.Runtime.CompilerServices;
 
-using OpenTK.Graphics.OpenGL;
+using fin.image;
+
+using OpenTK.Graphics.ES30;
 using OpenTK.Mathematics;
 
 using QuickFont;
@@ -78,4 +80,7 @@ public class GlTextTexture : IGlTexture {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0) => this.impl_.Bind();
+
+  public IImage ConvertToImage(bool flipVertical = false)
+    => this.impl_.ConvertToImage(flipVertical);
 }

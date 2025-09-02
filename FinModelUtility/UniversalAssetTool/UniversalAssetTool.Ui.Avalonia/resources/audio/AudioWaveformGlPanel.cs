@@ -4,7 +4,7 @@ using fin.audio;
 using fin.ui.avalonia.gl;
 using fin.ui.rendering.gl;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 namespace uni.ui.avalonia.resources.audio;
 

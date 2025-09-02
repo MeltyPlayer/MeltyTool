@@ -10,7 +10,7 @@ using Avalonia.Threading;
 using fin.ui.rendering.gl;
 using fin.util.time;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 
 namespace fin.ui.avalonia.gl;
 
