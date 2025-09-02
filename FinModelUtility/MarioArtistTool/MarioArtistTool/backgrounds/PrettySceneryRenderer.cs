@@ -60,7 +60,7 @@ public class PrettySceneryRenderer : IRenderable {
             (equations.CreateOrGetColorInput(FixedFunctionSource.BLEND_COLOR),
              equations.CreateOrGetScalarInput(FixedFunctionSource.BLEND_ALPHA)),
             backgroundFlowerTexture,
-            (0xC8) / 255f,
+            0xc8 / 255f,
             (false, false)));
     backgroundFlowerModelMaterial.CullingMode = CullingMode.SHOW_BOTH;
 
@@ -76,9 +76,6 @@ public class PrettySceneryRenderer : IRenderable {
   }
 
   public void Render() {
-    // TODO: Set color
-    // TODO: Set alpha
-
     var timeSeconds
         = (float) (6 + FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds);
 

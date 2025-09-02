@@ -115,15 +115,43 @@ public class MainViewModel : ViewModelBase {
 
                             var textBlock = new TextBlock {
                                 Text = x.Name.ToString(),
-                                Classes = { "regular" },
+                                Classes = {
+                                    x is MfsTreeDirectory ? "h3" : "h4"
+                                },
+                                Padding = new Thickness(0),
                                 VerticalAlignment = VerticalAlignment.Center,
                                 Foreground = brushWhite
                             };
                             stackPanel.Children.Add(textBlock);
 
+                            Control borderChild = stackPanel;
+                            if (x is MfsTreeDirectory) {
+                              var childCount = x.Children.Count();
+                              var childIcon
+                                  = AssetLoaderUtil.LoadBitmap("icon_file.png");
+
+                              var childPanel = new WrapPanel();
+                              for (var i = 0; i < childCount; ++i) {
+                                childPanel.Children.Add(new Image {
+                                    Source = childIcon,
+                                    Width = 8,
+                                    Height = 8,
+                                    Margin = new Thickness(1),
+                                });
+                              }
+
+                              borderChild = new StackPanel {
+                                  Orientation = Orientation.Vertical,
+                                  Children = {
+                                      stackPanel,
+                                      childPanel,
+                                  }
+                              };
+                            }
+
                             Brush borderBrush;
                             uint marginTop, marginBottom;
-                            if (x.Children.Any()) {
+                            if (x is MfsTreeDirectory) {
                               borderBrush = brushYellow;
                               marginTop = 4;
                               marginBottom = marginTop / 2;
@@ -134,7 +162,7 @@ public class MainViewModel : ViewModelBase {
                             }
 
                             var border = new Border {
-                                Child = stackPanel,
+                                Child = borderChild,
                                 Padding = new Thickness(2),
                                 BorderThickness = new Thickness(3),
                                 CornerRadius = new CornerRadius(4),
