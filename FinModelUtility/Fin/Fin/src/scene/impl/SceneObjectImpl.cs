@@ -9,7 +9,7 @@ namespace fin.scene;
 public partial class SceneImpl {
   private class SceneObjectImpl : ISceneObject {
     private readonly List<ISceneModel> models_ = [];
-    private readonly List<ISceneObjectComponent> components_ = [];
+    private readonly List<ISceneNodeComponent> components_ = [];
     public Vector3 Position { get; private set; }
     public IRotation Rotation { get; } = new RotationImpl();
     public Vector3 Scale { get; private set; } = new Vector3(1, 1, 1);
@@ -54,9 +54,9 @@ public partial class SceneImpl {
       return sceneModel;
     }
 
-    public IReadOnlyList<ISceneObjectComponent> Components => this.components_;
+    public IReadOnlyList<ISceneNodeComponent> Components => this.components_;
 
-    public ISceneObject AddComponent(ISceneObjectComponent component) {
+    public ISceneObject AddComponent(ISceneNodeComponent component) {
       this.components_.Add(component);
       return this;
     }

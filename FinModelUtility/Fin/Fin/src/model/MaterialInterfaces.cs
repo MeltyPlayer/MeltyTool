@@ -274,6 +274,9 @@ public enum FixedFunctionSource {
   VERTEX_ALPHA_0,
   VERTEX_ALPHA_1,
 
+  BLEND_COLOR,
+  BLEND_ALPHA,
+
   OUTPUT_COLOR,
   OUTPUT_ALPHA,
 

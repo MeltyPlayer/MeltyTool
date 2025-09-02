@@ -114,6 +114,15 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       hadUniform = true;
     }
 
+    var dependsOnBlendColor = equations.DoOutputsDependOn(
+    [
+        FixedFunctionSource.BLEND_COLOR,
+        FixedFunctionSource.BLEND_ALPHA
+    ]);
+    if (dependsOnBlendColor) {
+      sb.AppendLine($"uniform vec4 blendColor;");
+    }
+
     foreach (var colorRegister in registers.ColorRegisters) {
       if (equations.DoOutputsDependOn(colorRegister)) {
         hadUniform = true;
@@ -640,6 +649,8 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
         FixedFunctionSource.LIGHT_AMBIENT_ALPHA => "ambientLightColor.a",
 
+        FixedFunctionSource.BLEND_ALPHA => "blendColor.a",
+
         FixedFunctionSource.VERTEX_ALPHA_0 =>
             $"{GlslConstants.IN_VERTEX_COLOR_NAME}0.a",
         FixedFunctionSource.VERTEX_ALPHA_1 =>
@@ -891,17 +902,23 @@ public class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
       case FixedFunctionSource.LIGHT_AMBIENT_ALPHA:
         sb.Append("ambientLightColor.aaa");
         break;
+      case FixedFunctionSource.BLEND_COLOR:
+        sb.Append("blendColor.rgb");
+        break;
+      case FixedFunctionSource.BLEND_ALPHA:
+        sb.Append("blendColor.aaa");
+        break;
       case FixedFunctionSource.VERTEX_COLOR_0:
-        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}0.rgb");
+        sb.Append(GlslConstants.IN_VERTEX_COLOR_NAME).Append("0.rgb");
         break;
       case FixedFunctionSource.VERTEX_COLOR_1:
-        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}1.rgb");
+        sb.Append(GlslConstants.IN_VERTEX_COLOR_NAME).Append("1.rgb");
         break;
       case FixedFunctionSource.VERTEX_ALPHA_0:
-        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}0.aaa");
+        sb.Append(GlslConstants.IN_VERTEX_COLOR_NAME).Append("0.aaa");
         break;
       case FixedFunctionSource.VERTEX_ALPHA_1:
-        sb.Append($"{GlslConstants.IN_VERTEX_COLOR_NAME}1.aaa");
+        sb.Append(GlslConstants.IN_VERTEX_COLOR_NAME).Append("1.aaa");
         break;
       case FixedFunctionSource.UNDEFINED:
         sb.Append("vec3(1)");

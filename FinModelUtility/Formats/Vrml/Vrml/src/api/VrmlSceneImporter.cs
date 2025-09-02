@@ -47,7 +47,7 @@ public class VrmlSceneImporter : ISceneImporter<VrmlSceneFileBundle> {
       var camera = Camera.Instance;
 
       var lightingOwner = area.AddObject();
-      lightingOwner.AddComponent(_ => {
+      lightingOwner.AddTickComponent(_ => {
         headlight.SetPosition(camera.Position);
         headlight.SetNormal(camera.Normal);
       });

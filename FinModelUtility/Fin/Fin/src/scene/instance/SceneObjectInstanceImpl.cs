@@ -68,7 +68,9 @@ public partial class SceneInstanceImpl {
 
     public void Tick() {
       foreach (var component in sceneObject.Components) {
-        component.Tick(this);
+        if (component is ISceneNodeTickComponent tickComponent) {
+          tickComponent.Tick(this);
+        }
       }
     }
 

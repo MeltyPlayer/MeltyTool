@@ -19,6 +19,8 @@ public class GlFixedFunctionMaterialShader(
         modelRequirements,
         fixedFunctionMaterial,
         textureTransformManager) {
+  private IShaderUniform<Vector4>? blendColorUniform_;
+
   private (IColorRegister, IShaderUniform<Vector3>)[]
       colorRegistersAndUniforms_;
 
@@ -30,9 +32,16 @@ public class GlFixedFunctionMaterialShader(
   protected override void Setup(
       IReadOnlyFixedFunctionMaterial material,
       GlShaderProgram impl) {
-    var finTextures = material.TextureSources;
-
     var equations = material.Equations;
+
+    if (equations.DoOutputsDependOn([
+            FixedFunctionSource.BLEND_COLOR,
+            FixedFunctionSource.BLEND_ALPHA
+        ])) {
+      this.blendColorUniform_ = impl.GetUniformVec4("blendColor");
+    }
+
+    var finTextures = material.TextureSources;
     for (var i = 0; i < MaterialConstants.MAX_TEXTURES; ++i) {
       if (!equations.DoOutputsDependOnTextureSource(i)) {
         continue;
@@ -83,6 +92,15 @@ public class GlFixedFunctionMaterialShader(
 
   protected override void PassUniformsAndBindTextures(
       GlShaderProgram shaderProgram) {
+    if (this.blendColorUniform_ != null) {
+      var blendColor = GlUtil.GetBlendColor();
+      this.blendColorUniform_.SetAndMarkDirty(
+          new Vector4(blendColor.R / 255f,
+                      blendColor.G / 255f,
+                      blendColor.B / 255f,
+                      blendColor.A / 255f));
+    }
+
     foreach (var (register, uniform) in this.colorRegistersAndUniforms_) {
       uniform.SetAndMaybeMarkDirty(new Vector3(register.Value.Rf,
                                                register.Value.Gf,

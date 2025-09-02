@@ -11,6 +11,7 @@ using System.Drawing;
 
 using fin.model.util;
 using fin.ui;
+using fin.ui.rendering;
 
 namespace fin.scene;
 
@@ -20,13 +21,26 @@ public static class SceneExtensions {
     => sceneObject.SetPosition(position.X, position.Y, position.Z);
 
 
-  public static void AddComponent(this ISceneObject sceneObject,
-                                  Action<ISceneObjectInstance> handler)
-    => sceneObject.AddComponent(new LambdaSceneObjectComponent(handler));
+  public static void AddTickComponent(this ISceneObject sceneObject,
+                                      Action<ISceneObjectInstance> handler)
+    => sceneObject.AddComponent(new LambdaSceneNodeTickComponent(handler));
 
-  private class LambdaSceneObjectComponent(
-      Action<ISceneObjectInstance> handler) : ISceneObjectComponent {
+  private class LambdaSceneNodeTickComponent(
+      Action<ISceneObjectInstance> handler) : ISceneNodeTickComponent {
     public void Tick(ISceneObjectInstance self) => handler(self);
+  }
+
+  public static void AddRenderable(this ISceneObject sceneObject,
+                                   IRenderable renderable)
+    => sceneObject.AddRenderComponent(_ => renderable.Render());
+
+  public static void AddRenderComponent(this ISceneObject sceneObject,
+                                        Action<ISceneObjectInstance> handler)
+    => sceneObject.AddComponent(new LambdaSceneNodeRenderComponent(handler));
+
+  private class LambdaSceneNodeRenderComponent(
+      Action<ISceneObjectInstance> handler) : ISceneNodeRenderComponent {
+    public void Render(ISceneObjectInstance self) => handler(self);
   }
 
   public static void CreateDefaultLighting(this IScene scene,
@@ -35,8 +49,9 @@ public static class SceneExtensions {
     var neededLightIndices = new HashSet<int>();
 
     var sceneModelQueue = new FinQueue<IReadOnlySceneModel>(
-        scene.Areas.SelectMany(
-            area => area.Objects.SelectMany(obj => obj.Models)));
+        scene.Areas.SelectMany(area
+                                   => area.Objects
+                                          .SelectMany(obj => obj.Models)));
     while (sceneModelQueue.TryDequeue(out var sceneModel)) {
       sceneModelQueue.Enqueue(sceneModel.Children.Values);
 
@@ -144,7 +159,7 @@ public static class SceneExtensions {
       var camera = Camera.Instance;
       var firstLight = lighting.Lights[0];
 
-      lightingOwner.AddComponent(_ => {
+      lightingOwner.AddTickComponent(_ => {
         firstLight.SetPosition(camera.Position);
         firstLight.SetNormal(camera.Normal);
       });

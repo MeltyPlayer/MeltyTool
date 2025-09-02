@@ -13,6 +13,8 @@ using GlBlendFactorDst = OpenTK.Graphics.ES30.BlendingFactorDest;
 namespace fin.ui.rendering.gl;
 
 public partial class GlState {
+  public Color BlendColor { get; set; }
+
   public (FinBlendEquation colorBlendEquation, FinBlendFactor colorSrcFactor,
       FinBlendFactor colorDstFactor,
       FinBlendEquation alphaBlendEquation, FinBlendFactor alphaSrcFactor,
@@ -28,9 +30,16 @@ public partial class GlState {
 public static partial class GlUtil {
   public static bool DisableChangingBlending { get; set; }
 
-  public static void SetBlendColor(Color color) {
+  public static void SetBlendColor(in Color color) {
+    if (currentState_.BlendColor == color) {
+      return;
+    }
+
+    currentState_.BlendColor = color;
     GL.BlendColor(color);
   }
+
+  public static Color GetBlendColor() => currentState_.BlendColor;
 
   public static void ResetBlending() => SetBlending(
       FinBlendEquation.ADD,

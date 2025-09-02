@@ -197,7 +197,7 @@ public class Celeste64MapSceneImporter
              or ActorType.FEATHER
              or ActorType.REFILL
              or ActorType.STRAWBERRY: {
-          finObj.AddComponent(instance => {
+          finObj.AddTickComponent(instance => {
             var totalSeconds
                 = (float) FrameTime.ElapsedTimeSinceApplicationOpened
                                    .TotalSeconds;

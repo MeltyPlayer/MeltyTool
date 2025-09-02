@@ -7,6 +7,7 @@ using fin.image;
 using fin.importers;
 using fin.io.bundles;
 using fin.model;
+using fin.util.types;
 
 using schema.readOnly;
 
@@ -19,7 +20,6 @@ public interface ISceneFileBundle : I3dFileBundle {
 public interface ISceneImporter<in TSceneFileBundle>
     : I3dImporter<IScene, TSceneFileBundle>
     where TSceneFileBundle : ISceneFileBundle;
-
 
 // Scene
 /// <summary>
@@ -81,12 +81,19 @@ public partial interface ISceneObject {
   new IReadOnlyList<ISceneModel> Models { get; }
   ISceneModel AddSceneModel(IReadOnlyModel model);
 
-  IReadOnlyList<ISceneObjectComponent> Components { get; }
-  ISceneObject AddComponent(ISceneObjectComponent component);
+  IReadOnlyList<ISceneNodeComponent> Components { get; }
+  ISceneObject AddComponent(ISceneNodeComponent component);
 }
 
-public interface ISceneObjectComponent {
+[UnionCandidate]
+public interface ISceneNodeComponent;
+
+public interface ISceneNodeTickComponent : ISceneNodeComponent {
   void Tick(ISceneObjectInstance self);
+}
+
+public interface ISceneNodeRenderComponent : ISceneNodeComponent {
+  void Render(ISceneObjectInstance self);
 }
 
 /// <summary>
@@ -96,7 +103,10 @@ public interface ISceneObjectComponent {
 /// </summary>
 [GenerateReadOnly]
 public partial interface ISceneModel {
-  new IReadOnlyListDictionary<IReadOnlyBone, IReadOnlySceneModel> Children { get; }
+  new IReadOnlyListDictionary<IReadOnlyBone, IReadOnlySceneModel> Children {
+    get;
+  }
+
   ISceneModel AddModelOntoBone(IReadOnlyModel model, IReadOnlyBone bone);
 
   new IReadOnlyModel Model { get; }
