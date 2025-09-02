@@ -27,6 +27,8 @@ public partial class MainView : UserControl {
     InitializeComponent();
 
     MfsFileSystemService.OnFileSelected += file => {
+      LoadingStatusService.IsLoading = true;
+      
       var scene = new SceneImpl {
           FileBundle = default,
           Files = default
@@ -62,6 +64,8 @@ public partial class MainView : UserControl {
 
       var sceneInstance = new SceneInstanceImpl(scene);
       this.ViewerGlPanel.Scene = sceneInstance;
+
+      LoadingStatusService.IsLoading = false;
     };
 
     this.ViewerGlPanel.OnInit += () => MfsFileSystemService.SelectFile(null);
