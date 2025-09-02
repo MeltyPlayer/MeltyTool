@@ -102,6 +102,8 @@ public class BackgroundRenderer : IRenderable {
       return;
     }
 
+    this.textureDirty_ = false;
+
     this.impl_?.Dispose();
     if (this.BackgroundImage == null) {
       return;
