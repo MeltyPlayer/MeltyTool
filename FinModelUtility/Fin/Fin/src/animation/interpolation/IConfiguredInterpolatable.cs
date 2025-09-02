@@ -36,6 +36,8 @@ public interface IIndividualInterpolationConfig {
 
 public class IndividualInterpolationConfig<T>()
     : IIndividualInterpolationConfig {
+  public static IndividualInterpolationConfig<T> DEFAULT { get; } = new();
+
   public int? AnimationLength { get; init; }
   public int InitialCapacity { get; init; } = 0;
   public IOptional<T>? DefaultValue { get; init; } = null;

@@ -15,14 +15,16 @@ public interface IInterpolatableKeyframes<TKeyframe, T>
 public class InterpolatedKeyframes<TKeyframe, T>(
     ISharedInterpolationConfig sharedConfig,
     IKeyframeInterpolator<TKeyframe, T> interpolator,
-    IndividualInterpolationConfig<T> individualConfig = default)
+    IndividualInterpolationConfig<T>? individualConfig = null)
     : IInterpolatableKeyframes<TKeyframe, T>
     where TKeyframe : IKeyframe<T> {
-  private readonly List<TKeyframe>
-      impl_ = new(individualConfig.InitialCapacity);
+  private readonly List<TKeyframe> impl_
+      = new(individualConfig?.InitialCapacity ?? 0);
 
   public ISharedInterpolationConfig SharedConfig => sharedConfig;
-  public IndividualInterpolationConfig<T> IndividualConfig => individualConfig;
+
+  public IndividualInterpolationConfig<T> IndividualConfig
+    => individualConfig ?? IndividualInterpolationConfig<T>.DEFAULT;
 
   public IReadOnlyList<TKeyframe> Definitions => this.impl_;
   public bool HasAnyData => this.Definitions.Count > 0;
@@ -34,7 +36,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
     switch (this.impl_.TryGetPrecedingAndFollowingKeyframes(
                 frame,
                 sharedConfig,
-                individualConfig,
+                this.IndividualConfig,
                 out var precedingKeyframe,
                 out var followingKeyframe,
                 out var normalizedFrame)) {
@@ -51,7 +53,7 @@ public class InterpolatedKeyframes<TKeyframe, T>(
 
       default:
       case InterpolationDataType.NONE:
-        if (individualConfig.DefaultValue?.Try(out value) ?? false) {
+        if (this.IndividualConfig.DefaultValue?.Try(out value) ?? false) {
           return true;
         }
 
@@ -69,14 +71,14 @@ public class InterpolatedKeyframes<TKeyframe, T>(
     => this.impl_.TryGetPrecedingAndFollowingKeyframes(
         frame,
         sharedConfig,
-        individualConfig,
+        this.IndividualConfig,
         out precedingKeyframe,
         out followingKeyframe,
         out normalizedFrame);
 
   public void GetAllFrames(Span<T> dst) {
     T defaultValue = default!;
-    individualConfig.DefaultValue?.Try(out defaultValue);
+    this.IndividualConfig.DefaultValue?.Try(out defaultValue);
     dst.Fill(defaultValue);
     if (this.impl_.Count == 0) {
       return;

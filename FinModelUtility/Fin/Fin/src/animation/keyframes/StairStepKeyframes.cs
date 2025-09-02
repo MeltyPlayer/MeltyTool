@@ -13,13 +13,14 @@ public partial interface IStairStepKeyframes<T>
 
 public class StairStepKeyframes<T>(
     ISharedInterpolationConfig sharedConfig,
-    IndividualInterpolationConfig<T> individualConfig = default)
+    IndividualInterpolationConfig<T>? individualConfig = null)
     : IStairStepKeyframes<T> {
   private readonly List<Keyframe<T>> impl_
-      = new(individualConfig.InitialCapacity);
+      = new(individualConfig?.InitialCapacity ?? 0);
 
   public ISharedInterpolationConfig SharedConfig => sharedConfig;
-  public IndividualInterpolationConfig<T> IndividualConfig => individualConfig;
+  public IndividualInterpolationConfig<T> IndividualConfig
+    => individualConfig ?? IndividualInterpolationConfig<T>.DEFAULT;
 
   public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
   public bool HasAnyData => this.Definitions.Count > 0;
@@ -29,7 +30,7 @@ public class StairStepKeyframes<T>(
   public bool TryGetAtFrame(float frame, out T value) {
     if (this.impl_.TryGetPrecedingKeyframe(frame,
                                            sharedConfig,
-                                           individualConfig,
+                                           this.IndividualConfig,
                                            out var keyframe,
                                            out _,
                                            out _)) {
@@ -37,7 +38,7 @@ public class StairStepKeyframes<T>(
       return true;
     }
 
-    if (individualConfig.DefaultValue?.Try(out value) ?? false) {
+    if (this.IndividualConfig.DefaultValue?.Try(out value) ?? false) {
       return true;
     }
 
@@ -47,7 +48,7 @@ public class StairStepKeyframes<T>(
 
   public void GetAllFrames(Span<T> dst) {
     T defaultValue = default!;
-    individualConfig.DefaultValue?.Try(out defaultValue);
+    this.IndividualConfig.DefaultValue?.Try(out defaultValue);
     if (sharedConfig.Looping) {
       defaultValue = this.impl_[^1].ValueOut;
     }
