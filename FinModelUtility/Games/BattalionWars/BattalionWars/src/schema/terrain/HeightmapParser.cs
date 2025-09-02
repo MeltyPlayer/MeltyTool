@@ -4,7 +4,6 @@ using fin.data;
 using fin.schema.color;
 
 using schema.binary;
-using schema.binary.attributes;
 
 namespace modl.schema.terrain;
 

@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.HighPerformance;
-
-using schema.binary;
+﻿using schema.binary;
 using schema.binary.attributes;
 
 

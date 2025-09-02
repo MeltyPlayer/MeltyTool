@@ -1,6 +1,4 @@
-﻿using fin.schema.color;
-
-using schema.binary;
+﻿using schema.binary;
 namespace marioartist.schema;
 
 [BinarySchema]

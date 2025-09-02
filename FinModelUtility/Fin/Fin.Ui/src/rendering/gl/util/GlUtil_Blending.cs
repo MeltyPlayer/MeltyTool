@@ -6,7 +6,6 @@ using FinLogicOp = fin.model.LogicOp;
 using FinBlendEquation = fin.model.BlendEquation;
 using GlBlendEquation = OpenTK.Graphics.ES30.BlendEquationMode;
 using FinBlendFactor = fin.model.BlendFactor;
-using GlBlendFactor = OpenTK.Graphics.ES30.BlendingFactor;
 using GlBlendFactorSrc = OpenTK.Graphics.ES30.BlendingFactorSrc;
 using GlBlendFactorDst = OpenTK.Graphics.ES30.BlendingFactorDest;
 

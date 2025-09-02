@@ -1,7 +1,6 @@
 ﻿using System;
 
 using fin.math;
-using fin.math.fixedPoint;
 
 using schema.binary;
 

@@ -1,7 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
 using fin.data.disposables;
-using fin.image;
 
 using OpenTK.Graphics.ES30;
 

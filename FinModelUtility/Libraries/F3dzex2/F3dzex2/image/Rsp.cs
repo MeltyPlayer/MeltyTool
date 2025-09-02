@@ -5,7 +5,6 @@ using f3dzex2.displaylist.opcodes;
 using f3dzex2.rsp;
 
 using fin.math;
-using fin.math.matrix.four;
 using fin.model;
 
 namespace f3dzex2.image;

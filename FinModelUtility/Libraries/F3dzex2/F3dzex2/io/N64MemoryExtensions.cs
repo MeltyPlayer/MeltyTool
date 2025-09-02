@@ -1,6 +1,4 @@
-﻿using fin.compression;
-
-namespace f3dzex2.io;
+﻿namespace f3dzex2.io;
 
 public static class N64MemoryExtensions {
   public static Segment? GetSegmentOrNull(

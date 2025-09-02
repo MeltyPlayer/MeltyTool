@@ -1,9 +1,6 @@
 ﻿using System;
 
 using Avalonia;
-using Avalonia.OpenGL;
-using Avalonia.ReactiveUI;
-using Avalonia.Win32;
 
 using fin.services;
 using fin.ui.avalonia;

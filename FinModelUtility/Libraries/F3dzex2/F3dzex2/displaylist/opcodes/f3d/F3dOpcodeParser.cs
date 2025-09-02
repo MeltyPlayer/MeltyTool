@@ -1,7 +1,6 @@
 ﻿using System;
 
 using f3dzex2.combiner;
-using f3dzex2.displaylist.opcodes.f3dzex2;
 using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;

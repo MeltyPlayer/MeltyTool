@@ -1,5 +1,4 @@
 ﻿using schema.binary;
-using schema.binary.attributes;
 
 
 namespace marioartist.schema.talent_studio;

@@ -3,7 +3,6 @@ using System.Numerics;
 
 using Celeste64.map;
 
-using fin.color;
 using fin.data.lazy;
 using fin.io;
 using fin.math.rotations;

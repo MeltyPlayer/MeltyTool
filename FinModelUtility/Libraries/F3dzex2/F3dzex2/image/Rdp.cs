@@ -2,8 +2,6 @@
 
 using fin.math;
 
-using Tedd;
-
 
 namespace f3dzex2.image;
 
