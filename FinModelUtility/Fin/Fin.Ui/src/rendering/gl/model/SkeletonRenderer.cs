@@ -130,16 +130,6 @@ public class SkeletonRenderer
               ref localPosition);
         }
 
-        Matrix4x4.Decompose(
-            boneTransformManager.GetWorldMatrix(boneWeights).Impl,
-            out var boneWeightsScale,
-            out _,
-            out _);
-
-        /*ProjectionUtil.ProjectPosition(
-            SystemMatrix4x4Util.FromScale(boneWeightsScale),
-            ref localPosition);*/
-
         maxLength = Math.Max(maxLength, localPosition.X);
       }
 
