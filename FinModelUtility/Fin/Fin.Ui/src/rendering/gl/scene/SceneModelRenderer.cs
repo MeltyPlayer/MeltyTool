@@ -37,8 +37,7 @@ public class SceneModelRenderer : IRenderable, IDisposable {
         };
 
     this.SkeletonRenderer =
-        new SkeletonRenderer(model.Skeleton,
-                             this.sceneModel_.BoneTransformManager) {
+        new SkeletonRenderer(model, this.sceneModel_.BoneTransformManager) {
             Scale = this.sceneModel_.ViewerScale
         };
 

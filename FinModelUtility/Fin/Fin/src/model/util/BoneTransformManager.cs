@@ -44,9 +44,12 @@ public interface IReadOnlyBoneTransformManager : IVertexProjector {
   (IReadOnlyBoneTransformManager, IReadOnlyBone)? Parent { get; }
 
   IReadOnlyFinMatrix4x4 GetWorldMatrix(IReadOnlyBone bone);
+  IReadOnlyFinMatrix4x4 GetWorldMatrix(IReadOnlyBoneWeights bone);
+
+  IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IReadOnlyBone bone);
+  IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IReadOnlyBoneWeights boneWeights);
 
   IReadOnlyFinMatrix4x4 GetLocalToWorldMatrix(IReadOnlyBone bone);
-  IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IReadOnlyBone bone);
 }
 
 public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
@@ -311,18 +314,21 @@ public class BoneTransformManager : IBoneTransformManager {
   public IReadOnlyFinMatrix4x4 GetWorldMatrix(IReadOnlyBone bone)
     => this.bonesToWorldMatrices_[bone];
 
-  public IReadOnlyFinMatrix4x4? GetTransformMatrix(IReadOnlyVertex vertex)
-    => this.verticesToWorldMatrices_[vertex];
-
-  public IReadOnlyFinMatrix4x4 GetTransformMatrix(
-      IReadOnlyBoneWeights boneWeights)
+  public IReadOnlyFinMatrix4x4 GetWorldMatrix(IReadOnlyBoneWeights boneWeights)
     => this.boneWeightsToWorldMatrices_[boneWeights];
 
   public IReadOnlyFinMatrix4x4 GetInverseBindMatrix(IReadOnlyBone bone)
     => this.bonesToInverseWorldMatrices_[bone];
 
+  public IReadOnlyFinMatrix4x4 GetInverseBindMatrix(
+      IReadOnlyBoneWeights boneWeights)
+    => this.boneWeightsInverseMatrices_[boneWeights];
+
   public IReadOnlyFinMatrix4x4 GetLocalToWorldMatrix(IReadOnlyBone bone)
     => this.bonesToWorldMatrices_[bone];
+
+  public IReadOnlyFinMatrix4x4? GetTransformMatrix(IReadOnlyVertex vertex)
+    => this.verticesToWorldMatrices_[vertex];
 
   private IReadOnlyFinMatrix4x4? DetermineTransformMatrix_(
       IReadOnlyBoneWeights? boneWeights,

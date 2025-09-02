@@ -2,9 +2,12 @@
 using System.Numerics;
 
 using fin.data.indexable;
+using fin.math.floats;
+using fin.math.matrix.four;
 using fin.model;
 using fin.model.impl;
 using fin.model.util;
+using fin.util.asserts;
 
 using OpenTK.Graphics.ES30;
 
@@ -21,12 +24,9 @@ public interface ISkeletonRenderer : IRenderable {
 /// <summary>
 ///   A renderer for a Fin model's skeleton.
 /// </summary>
-public class SkeletonRenderer(
-    IReadOnlySkeleton skeleton,
-    IReadOnlyBoneTransformManager boneTransformManager)
+public class SkeletonRenderer
     : ISkeletonRenderer {
   private static readonly IModelRenderer BONE_RENDERER_;
-  private static float BONE_SCALE_ = 5;
 
   private static readonly Color UNSELECTED_BONE = Color.Blue;
   private static readonly Color SELECTED_BONE = Color.White;
@@ -45,10 +45,10 @@ public class SkeletonRenderer(
     var skin = model.Skin;
 
     var from = skin.AddVertex(new Vector3(0, 0, 0));
-    var to = skin.AddVertex(new Vector3(BONE_SCALE_, 0, 0));
+    var to = skin.AddVertex(new Vector3(1, 0, 0));
 
-    var midpoint = .25f * BONE_SCALE_;
-    var radius = .2f * BONE_SCALE_;
+    var midpoint = .25f;
+    var radius = .2f;
     var middle1 = skin.AddVertex(new Vector3(midpoint, -radius, 0));
     var middle2 = skin.AddVertex(new Vector3(midpoint, 0, -radius));
     var middle3 = skin.AddVertex(new Vector3(midpoint, radius, 0));
@@ -76,7 +76,7 @@ public class SkeletonRenderer(
     BONE_RENDERER_ = new ModelRenderer(model);
   }
 
-  public IReadOnlySkeleton Skeleton { get; } = skeleton;
+  public IReadOnlySkeleton Skeleton { get; }
 
   public IReadOnlyBone? SelectedBone {
     get;
@@ -91,6 +91,67 @@ public class SkeletonRenderer(
   }
 
   private readonly IndexableSet<IReadOnlyBone> selectedChildren_ = new();
+  private readonly IReadOnlyBoneTransformManager boneTransformManager_;
+
+  private readonly IReadOnlyIndexableDictionary<IReadOnlyBone, Vector3>
+      scaleByBone_;
+
+  public SkeletonRenderer(IReadOnlyModel model,
+                          IReadOnlyBoneTransformManager boneTransformManager) {
+    var skeleton = model.Skeleton;
+
+    this.boneTransformManager_ = boneTransformManager;
+    this.Skeleton = skeleton;
+
+    var scaleByBone
+        = new IndexableDictionary<IReadOnlyBone, Vector3>(skeleton.Bones.Count);
+    this.scaleByBone_ = scaleByBone;
+    foreach (var bone in skeleton.Bones) {
+      if (bone.Children is [var childBone]) {
+        var length = childBone.LocalTransform.Translation.X;
+        scaleByBone[bone] = new Vector3(length);
+        continue;
+      }
+
+      var maxLength = -1f;
+      var verticesDependentOnThisBone
+          = model.Skin
+                 .Vertices
+                 .Where(v => v.BoneWeights?.Weights
+                              .Any(w => w.Bone == bone) ??
+                             false);
+      foreach (var vertex in verticesDependentOnThisBone) {
+        var localPosition = vertex.LocalPosition;
+
+        var boneWeights = vertex.BoneWeights.AssertNonnull();
+        if (boneWeights.VertexSpace == VertexSpace.RELATIVE_TO_WORLD) {
+          ProjectionUtil.ProjectPosition(
+              boneTransformManager.GetInverseBindMatrix(boneWeights).Impl,
+              ref localPosition);
+        }
+
+        Matrix4x4.Decompose(
+            boneTransformManager.GetWorldMatrix(boneWeights).Impl,
+            out var boneWeightsScale,
+            out _,
+            out _);
+
+        /*ProjectionUtil.ProjectPosition(
+            SystemMatrix4x4Util.FromScale(boneWeightsScale),
+            ref localPosition);*/
+
+        maxLength = Math.Max(maxLength, localPosition.X);
+      }
+
+      if (!maxLength.IsRoughly(-1f)) {
+        scaleByBone[bone] = new Vector3(maxLength);
+        continue;
+      }
+
+      // TODO: What to do in case where there's no vertices??
+      scaleByBone[bone] = Vector3.One;
+    }
+  }
 
   public float Scale { get; set; } = 1;
 
@@ -101,9 +162,11 @@ public class SkeletonRenderer(
 
   private void RenderBone_(IReadOnlyBone bone, IReadOnlySkeleton skeleton) {
     GlTransform.PushMatrix();
-    GlTransform.MultMatrix(boneTransformManager.GetWorldMatrix(bone).Impl);
+    GlTransform.MultMatrix(this.boneTransformManager_.GetWorldMatrix(bone)
+                               .Impl);
 
     if (skeleton.Root != bone) {
+      GlTransform.Scale(this.scaleByBone_[bone]);
       GlUtil.SetBlendColor(bone == this.SelectedBone
                                ? SELECTED_BONE
                                : this.selectedChildren_.Contains(bone)

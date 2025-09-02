@@ -102,6 +102,9 @@ public static class GlTransform {
   public static void Scale(float x, float y, float z)
     => MultMatrix(SystemMatrix4x4Util.FromScale(x, y, z));
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void Scale(Vector3 scale)
+    => MultMatrix(SystemMatrix4x4Util.FromScale(scale));
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Rotate(double degrees, double x, double y, double z)
