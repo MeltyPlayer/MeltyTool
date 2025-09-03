@@ -130,7 +130,7 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
         Offset = (uint) bodySectionOffset, Length = (uint) bodySectionLength
     };
 
-    br.Position = 0x116ab;
+    br.Position = 0x166ab;
     var selectedGenderIndex = br.ReadByte();
     gender = selectedGenderIndex < 8
         ? (selectedGenderIndex % 2 == 1 ? Gender.GIRL : Gender.BOY)
