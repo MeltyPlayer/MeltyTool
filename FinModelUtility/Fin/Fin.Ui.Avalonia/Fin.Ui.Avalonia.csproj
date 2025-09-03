@@ -38,6 +38,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaResource Remove="NewFolder\**" />
+    <AvaloniaXaml Remove="NewFolder\**" />
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="scene\" />
   </ItemGroup>
 </Project>

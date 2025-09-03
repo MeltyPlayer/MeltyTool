@@ -13,6 +13,7 @@ using Avalonia.Threading;
 using fin.io;
 using fin.ui.avalonia;
 using fin.ui.avalonia.images;
+using fin.ui.avalonia.observables;
 
 using marioartist.api;
 using marioartist.schema;
@@ -58,7 +59,7 @@ public class MainViewModelForDesigner : MainViewModel {
 
 public class MainViewModel : ViewModelBase {
   public Cursor Cursor { get; }
-    = LoadCursorFromAsset_("cursor_thumb_in.png", new PixelPoint(2, 2));
+    = LoadCursorFromAsset_("thumb_in.png", new PixelPoint(2, 2));
 
   public HierarchicalTreeDataGridSource<MfsTreeIoObject>? FileSystemTreeSource {
     get;
@@ -71,6 +72,11 @@ public class MainViewModel : ViewModelBase {
         this.FileSystemTreeSource = null;
         return;
       }
+
+      var fileCursorObservable = new CircularObservable<Cursor>(.1f,
+        LoadCursorFromAsset_("file_1.png", PixelPoint.Origin),
+        LoadCursorFromAsset_("file_2.png", PixelPoint.Origin),
+        LoadCursorFromAsset_("file_3.png", PixelPoint.Origin));
 
       this.FileSystemTreeSource
           = new HierarchicalTreeDataGridSource<MfsTreeIoObject>(
@@ -177,6 +183,11 @@ public class MainViewModel : ViewModelBase {
                                     marginBottom),
                             };
 
+                            if (x is MfsTreeFile) {
+                              border.Bind(Border.CursorProperty,
+                                          fileCursorObservable);
+                            }
+
                             return border;
                           }),
                           null,
@@ -203,5 +214,6 @@ public class MainViewModel : ViewModelBase {
 
   private static Cursor LoadCursorFromAsset_(string cursorImageName,
                                              PixelPoint pixelPoint)
-    => new(AssetLoaderUtil.LoadBitmap(cursorImageName), pixelPoint);
+    => new(AssetLoaderUtil.LoadBitmap($"cursors/{cursorImageName}"),
+           pixelPoint);
 }
