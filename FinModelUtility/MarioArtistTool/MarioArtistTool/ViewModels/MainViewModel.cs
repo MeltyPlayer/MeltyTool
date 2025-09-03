@@ -59,7 +59,7 @@ public class MainViewModelForDesigner : MainViewModel {
 
 public class MainViewModel : ViewModelBase {
   public Cursor Cursor { get; }
-    = LoadCursorFromAsset_("thumb_in.png", new PixelPoint(2, 2));
+    = LoadCursorFromAsset_("thumb_in.png", new PixelPoint(2, 2), 2);
 
   public HierarchicalTreeDataGridSource<MfsTreeIoObject>? FileSystemTreeSource {
     get;
@@ -73,10 +73,11 @@ public class MainViewModel : ViewModelBase {
         return;
       }
 
+      var fileCursorScale = 3;
       var fileCursorObservable = new CircularObservable<Cursor>(.1f,
-        LoadCursorFromAsset_("file_1.png", PixelPoint.Origin),
-        LoadCursorFromAsset_("file_2.png", PixelPoint.Origin),
-        LoadCursorFromAsset_("file_3.png", PixelPoint.Origin));
+        LoadCursorFromAsset_("file_1.png", PixelPoint.Origin, fileCursorScale),
+        LoadCursorFromAsset_("file_2.png", PixelPoint.Origin, fileCursorScale),
+        LoadCursorFromAsset_("file_3.png", PixelPoint.Origin, fileCursorScale));
 
       this.FileSystemTreeSource
           = new HierarchicalTreeDataGridSource<MfsTreeIoObject>(
@@ -213,7 +214,8 @@ public class MainViewModel : ViewModelBase {
   }
 
   private static Cursor LoadCursorFromAsset_(string cursorImageName,
-                                             PixelPoint pixelPoint)
-    => new(AssetLoaderUtil.LoadBitmap($"cursors/{cursorImageName}"),
-           pixelPoint);
+                                             PixelPoint pixelPoint,
+                                             int scale = 1)
+    => new(AssetLoaderUtil.LoadBitmap($"cursors/{cursorImageName}", scale),
+           new PixelPoint(pixelPoint.X * scale, pixelPoint.Y * scale));
 }

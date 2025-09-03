@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 
+using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
@@ -13,9 +14,18 @@ public static class AssetLoaderUtil {
     => AssetLoader.Open(
         new Uri(Path.Join("avares://MarioArtistTool/Assets", assetPath)));
 
-  public static Bitmap LoadBitmap(string imagePath) {
+  public static Bitmap LoadBitmap(string imagePath, int scale = 1) {
     using var s = Open(imagePath);
-    return new Bitmap(s);
+
+    var bitmap = new Bitmap(s);
+    if (scale == 1) {
+      return bitmap;
+    }
+
+    var size = bitmap.PixelSize;
+    return bitmap.CreateScaledBitmap(
+        new PixelSize(size.Width * scale, size.Height * scale),
+        BitmapInterpolationMode.None);
   }
 
   public static IImage LoadImage(string imagePath) {
