@@ -42,23 +42,20 @@ public partial class MainView : UserControl {
         case ".tstlt": {
           try {
             var bundle = new TstltModelFileBundle(file);
-            var model = new TstltModelLoader().Import(bundle);
-
-            var tstlt = bundle.MainFile.ReadNew<Tstlt>(Endianness.BigEndian);
-            var gender = tstlt.Header.Gender;
+            var model = new TstltModelLoader().Import(bundle, out var gender);
 
             switch (gender) {
+              case Gender.BOY: {
+                area.BackgroundImage
+                    = AssetLoaderUtil.LoadImage("background_boy.png");
+                area.BackgroundImageScale = .3f;
+                break;
+              }
               case Gender.GIRL: {
                 area.BackgroundImage
                     = AssetLoaderUtil.LoadImage("background_girl.png");
                 area.BackgroundImageScale = .3f;
                 sceneryRenderer = new GirlSceneryRenderer();
-                break;
-              }
-              case Gender.BOY: {
-                area.BackgroundImage
-                    = AssetLoaderUtil.LoadImage("background_boy.png");
-                area.BackgroundImageScale = .3f;
                 break;
               }
               case Gender.OTHER: {

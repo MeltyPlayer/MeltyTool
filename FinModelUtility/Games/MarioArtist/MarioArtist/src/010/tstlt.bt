@@ -123,16 +123,7 @@ struct Header {
     uint bodySectionLength; // Starts immediately after headSection
     uint unk6;
     uint unk7;
-
-    // TODO: This is wrong
-    enum <ushort> Gender {
-        GIRL,
-        BOY,
-        OTHER,
-    };
-    
-    Gender gender;
-    ushort unk8;
+    uint unk8;
 } header <bgcolor=COLOR_HEADER>;
 
 local uint headOffset = 0x16770;

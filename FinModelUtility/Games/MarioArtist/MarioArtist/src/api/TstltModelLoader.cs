@@ -95,7 +95,10 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
   public const int HARDCODED_MESH_SET_ID = -1;
   public const bool INCLUDE_FACE = true;
 
-  public IModel Import(TstltModelFileBundle fileBundle) {
+  public IModel Import(TstltModelFileBundle fileBundle)
+    => this.Import(fileBundle, out _);
+
+  public IModel Import(TstltModelFileBundle fileBundle, out Gender gender) {
     using var br = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
 
     var n64Hardware = new N64Hardware<N64Memory>();
@@ -126,6 +129,12 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
     var bodySegment = new Segment {
         Offset = (uint) bodySectionOffset, Length = (uint) bodySectionLength
     };
+
+    br.Position = 0x116ab;
+    var selectedGenderIndex = br.ReadByte();
+    gender = selectedGenderIndex < 8
+        ? (selectedGenderIndex % 2 == 1 ? Gender.GIRL : Gender.BOY)
+        : Gender.OTHER;
 
     br.Position = 0x91bc;
     var skinColor = br.ReadNew<Rgba32>();

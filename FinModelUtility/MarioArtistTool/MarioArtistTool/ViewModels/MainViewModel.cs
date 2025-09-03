@@ -59,7 +59,7 @@ public class MainViewModelForDesigner : MainViewModel {
 
 public class MainViewModel : ViewModelBase {
   public Cursor Cursor { get; }
-    = LoadCursorFromAsset_("thumb_in.png", new PixelPoint(2, 2), 2);
+    = LoadCursorFromAsset_("thumb_in.png", new PixelPoint(2, 2));
 
   public HierarchicalTreeDataGridSource<MfsTreeIoObject>? FileSystemTreeSource {
     get;
@@ -73,8 +73,10 @@ public class MainViewModel : ViewModelBase {
         return;
       }
 
-      var fileCursorScale = 3;
-      var fileCursorObservable = new CircularObservable<Cursor>(.1f,
+      var bucketImage = AssetLoaderUtil.LoadBitmap("bucket/idle.png");
+
+      var fileCursorScale = 1;
+      var fileCursorObservable = new LoopingObservable<Cursor>(.1f,
         LoadCursorFromAsset_("file_1.png", PixelPoint.Origin, fileCursorScale),
         LoadCursorFromAsset_("file_2.png", PixelPoint.Origin, fileCursorScale),
         LoadCursorFromAsset_("file_3.png", PixelPoint.Origin, fileCursorScale));
@@ -111,6 +113,13 @@ public class MainViewModel : ViewModelBase {
                               };
 
                               stackPanel.Children.Add(icon);
+                            } else if (x is MfsTreeDirectory) {
+                              var icon = new Image {
+                                  Source = bucketImage,
+                                  Margin = new Thickness(0, -20, -16, 0),
+                              };
+
+                              stackPanel.Children.Add(icon);
                             }
 
                             var brushWhite
@@ -129,31 +138,47 @@ public class MainViewModel : ViewModelBase {
                                 VerticalAlignment = VerticalAlignment.Center,
                                 Foreground = brushWhite
                             };
-                            stackPanel.Children.Add(textBlock);
 
-                            Control borderChild = stackPanel;
-                            if (x is MfsTreeDirectory) {
+                            if (x is MfsTreeFile) {
+                              stackPanel.Children.Add(textBlock);
+                            } else if (x is MfsTreeDirectory) {
                               var childCount = x.Children.Count();
-                              var childIcon
+
+                              var manyFilesImage
+                                  = AssetLoaderUtil.LoadBitmap("icon_many_files.png");
+                              var fileImage
                                   = AssetLoaderUtil.LoadBitmap("icon_file.png");
 
+                              var fileCount = childCount % 7;
+                              var manyFilesCount = (childCount - fileCount) / 7;
+
                               var childPanel = new WrapPanel();
-                              for (var i = 0; i < childCount; ++i) {
+                              for (var i = 0; i < manyFilesCount; ++i) {
                                 childPanel.Children.Add(new Image {
-                                    Source = childIcon,
+                                    Source = manyFilesImage,
+                                    Margin = new Thickness(1, 1 + 1, 1, 1),
+                                    Width = 11,
+                                    Height = 12,
+                                });
+                              }
+                              for (var i = 0; i < fileCount; ++i) {
+                                childPanel.Children.Add(new Image {
+                                    Source = fileImage,
+                                    Margin = new Thickness(1, 1 + 4, 1, 1),
                                     Width = 8,
                                     Height = 8,
-                                    Margin = new Thickness(1),
                                 });
                               }
 
-                              borderChild = new StackPanel {
-                                  Orientation = Orientation.Vertical,
-                                  Children = {
-                                      stackPanel,
-                                      childPanel,
-                                  }
-                              };
+                              stackPanel.Children.Add(
+                                  new StackPanel {
+                                      Orientation = Orientation.Vertical,
+                                      Margin = new Thickness(6, 0, 0, 0),
+                                      Children = {
+                                          textBlock,
+                                          childPanel,
+                                      },
+                                  });
                             }
 
                             Brush borderBrush;
@@ -169,7 +194,7 @@ public class MainViewModel : ViewModelBase {
                             }
 
                             var border = new Border {
-                                Child = borderChild,
+                                Child = stackPanel,
                                 Padding = new Thickness(2),
                                 BorderThickness = new Thickness(3),
                                 CornerRadius = new CornerRadius(4),
