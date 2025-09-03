@@ -14,9 +14,9 @@ using fin.util.time;
 
 using marioartisttool.util;
 
-namespace MarioArtistTool.backgrounds;
+namespace MarioArtistTool.scenery;
 
-public class PrettySceneryRenderer : IRenderable {
+public class GirlSceneryRenderer : IRenderable {
   private readonly IModelRenderer flowerRenderer_;
 
   private readonly Matrix4x4 topLeftMatrix_
@@ -43,11 +43,11 @@ public class PrettySceneryRenderer : IRenderable {
       = GetMergedMatrix_(
           GetCenterAndSize_(new Vector2(365, 236), new Vector2(519, 387)));
 
-  public PrettySceneryRenderer() {
+  public GirlSceneryRenderer() {
     var backgroundFlowerModel = ModelImpl.CreateForViewer(4);
 
     var backgroundFlowerImage
-        = AssetLoaderUtil.LoadImage("background_flower.png");
+        = AssetLoaderUtil.LoadImage("scenery_flower.png");
     var backgroundFlowerTexture
         = backgroundFlowerModel.MaterialManager.CreateTexture(
             backgroundFlowerImage);

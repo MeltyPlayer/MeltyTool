@@ -97,7 +97,6 @@ public partial class TstltModelLoader : IModelImporter<TstltModelFileBundle> {
 
   public IModel Import(TstltModelFileBundle fileBundle) {
     using var br = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
-    var tstlt = br.ReadNew<Tstlt>();
 
     var n64Hardware = new N64Hardware<N64Memory>();
     var rdp = n64Hardware.Rdp = new Rdp {

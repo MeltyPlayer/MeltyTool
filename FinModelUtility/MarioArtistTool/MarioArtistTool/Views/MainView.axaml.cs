@@ -3,6 +3,7 @@ using System.Numerics;
 
 using Avalonia.Controls;
 
+using fin.io;
 using fin.io.web;
 using fin.scene;
 using fin.scene.instance;
@@ -10,12 +11,15 @@ using fin.services;
 using fin.ui.rendering;
 
 using marioartist.api;
+using marioartist.schema.talent_studio;
 
-using MarioArtistTool.backgrounds;
 using MarioArtistTool.config;
+using MarioArtistTool.scenery;
 
 using marioartisttool.services;
 using marioartisttool.util;
+
+using schema.binary;
 
 namespace marioartisttool.Views;
 
@@ -40,12 +44,29 @@ public partial class MainView : UserControl {
             var bundle = new TstltModelFileBundle(file);
             var model = new TstltModelLoader().Import(bundle);
 
-            // TODO: Decide which to render based on gender.
-            {
-              area.BackgroundImage
-                  = AssetLoaderUtil.LoadImage("background_pretty.png");
-              area.BackgroundImageScale = .3f;
-              sceneryRenderer = new PrettySceneryRenderer();
+            var tstlt = bundle.MainFile.ReadNew<Tstlt>(Endianness.BigEndian);
+            var gender = tstlt.Header.Gender;
+
+            switch (gender) {
+              case Gender.GIRL: {
+                area.BackgroundImage
+                    = AssetLoaderUtil.LoadImage("background_girl.png");
+                area.BackgroundImageScale = .3f;
+                sceneryRenderer = new GirlSceneryRenderer();
+                break;
+              }
+              case Gender.BOY: {
+                area.BackgroundImage
+                    = AssetLoaderUtil.LoadImage("background_boy.png");
+                area.BackgroundImageScale = .3f;
+                break;
+              }
+              case Gender.OTHER: {
+                area.BackgroundImage
+                    = AssetLoaderUtil.LoadImage("background_other.png");
+                area.BackgroundImageScale = .3f;
+                break;
+              }
             }
 
             var config = Config.INSTANCE;
@@ -66,10 +87,11 @@ public partial class MainView : UserControl {
         }
       }
 
-      if (sceneryRenderer != null) {
+      if (area.BackgroundImage != null) {
         // Hides the default skybox.
         area.CreateCustomSkyboxObject();
-
+      }
+      if (sceneryRenderer != null) {
         var backgroundObj = area.AddObject();
         backgroundObj.AddRenderable(sceneryRenderer);
       }

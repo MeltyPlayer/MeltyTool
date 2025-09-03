@@ -123,7 +123,16 @@ struct Header {
     uint bodySectionLength; // Starts immediately after headSection
     uint unk6;
     uint unk7;
-    uint unk8;
+
+    // TODO: This is wrong
+    enum <ushort> Gender {
+        GIRL,
+        BOY,
+        OTHER,
+    };
+    
+    Gender gender;
+    ushort unk8;
 } header <bgcolor=COLOR_HEADER>;
 
 local uint headOffset = 0x16770;
@@ -282,9 +291,9 @@ struct ChosenHeadPart0s {
 
 UnkSection5 headUnkSection5s[8] <optimize=false>;
 
-FSeek(0xBD08);
+FSeek(0xBCC0);
 struct ChosenBodyPart0s {
-    ChosenPart0 bodyChosenParts[3] <optimize=false>;
+    ChosenPart0 bodyChosenParts[4] <optimize=false>;
     ChosenPart0 pants;
     ChosenPart0 shirt;
     ChosenPart0 back;
