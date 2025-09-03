@@ -50,12 +50,13 @@
       </controls:If>
     </Panel>
     
-    <scene:SceneInstanceViewerGlPanel
-        DockPanel.Dock="Right"
+    <Panel>
+      <scene:SceneInstanceViewerGlPanel
         x:Name="ViewerGlPanel"
         IsTabStop="True"
         TabIndex="0"
         Focusable="True"
         ShowGrid="False" />
+    </Panel>
   </DockPanel>
 </UserControl>
