@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Subjects;
 
 using fin.util.time;
 
 namespace fin.ui.avalonia.observables;
 
 public class LoopingObservable<T> : IObservable<T> {
-  private readonly HashSet<IObserver<T>> observers_ = new();
+  private readonly ReplaySubject<T> impl_ = new(1);
 
-  private T currentValue_;
   private TimedCallback timedCallback_;
 
   public LoopingObservable(
@@ -20,28 +20,19 @@ public class LoopingObservable<T> : IObservable<T> {
       float periodSeconds,
       int resetOffset,
       params T[] values) {
-    this.currentValue_ = values[0];
-
     var index = 0;
     this.timedCallback_ = TimedCallback.WithPeriod(
         () => {
+          var currentValue = values[index];
           if (++index >= values.Length) {
             index = resetOffset;
           }
 
-          this.currentValue_ = values[index];
-          foreach (var observer in this.observers_) {
-            observer.OnNext(this.currentValue_);
-          }
+          this.impl_.OnNext(currentValue);
         },
         periodSeconds);
   }
 
-  public IDisposable Subscribe(IObserver<T> observer) {
-    if (this.observers_.Add(observer)) {
-      observer.OnNext(this.currentValue_);
-    }
-
-    return Disposable.Create(() => this.observers_.Remove(observer));
-  }
+  public IDisposable Subscribe(IObserver<T> observer)
+    => this.impl_.Subscribe(observer);
 }

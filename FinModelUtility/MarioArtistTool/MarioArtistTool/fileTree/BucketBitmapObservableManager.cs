@@ -77,6 +77,7 @@ public class BucketBitmapObservableManager {
                    from,
                    to,
                    newCancellationTokenSource.Token)) {
+        this.CurrentState = next;
         var nextBucketImage = next switch {
             BucketBitmapState.IDLE => IDLE_IMAGE_,
             BucketBitmapState.WAVE_1_IN or BucketBitmapState.WAVE_1_OUT
@@ -91,7 +92,6 @@ public class BucketBitmapObservableManager {
 
         this.BucketImage.OnNext(nextBucketImage);
       }
-    },
-    newCancellationTokenSource.Token);
+    });
   }
 }

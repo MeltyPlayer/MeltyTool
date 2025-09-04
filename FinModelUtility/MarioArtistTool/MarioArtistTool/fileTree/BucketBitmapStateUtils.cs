@@ -12,8 +12,8 @@ public enum BucketBitmapState {
   WAVE_3_IN,
   WAVE_4_IN,
   WAVE_4_OUT,
-  WAVE_2_OUT,
   WAVE_3_OUT,
+  WAVE_2_OUT,
   WAVE_1_OUT,
   WAVING,
 }
@@ -32,7 +32,7 @@ public static class BucketBitmapStateExtensions {
 }
 
 public static class BucketBitmapStateUtils {
-  private const float STATE_TIME = .1f;
+  private const float STATE_TIME = .05f;
 
   public static async IAsyncEnumerable<BucketBitmapState> GetPath(
       BucketBitmapState from,
@@ -41,7 +41,7 @@ public static class BucketBitmapStateUtils {
     while (!cancellationToken.IsCancellationRequested &&
            TryGetNextState_(from, to, out var next)) {
       yield return next;
-      await Task.Delay((int) (STATE_TIME * 1000), cancellationToken);
+      await Task.Delay((int) (STATE_TIME * 1000));
       from = next;
     }
   }
@@ -58,10 +58,12 @@ public static class BucketBitmapStateUtils {
     if (from.IsWaving() && to.IsWaving()) {
       if (from == BucketBitmapState.WAVE_1_OUT) {
         next = BucketBitmapState.WAVE_1_IN;
+      } else if (from == BucketBitmapState.WAVE_2_OUT) {
+        next = BucketBitmapState.WAVE_2_IN;
       } else {
         next = from + 1;
       }
-       
+
       return true;
     }
 

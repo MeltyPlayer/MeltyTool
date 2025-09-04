@@ -144,7 +144,7 @@ public class MainViewModel : ViewModelBase {
                                     Height = 8,
                                     ZIndex = 2,
                                     VerticalAlignment = VerticalAlignment.Top,
-                                    Margin = new Thickness(0, -4, -5, 0),
+                                    Margin = new Thickness(0, -3, -6, 0),
                                 };
                                 hat.Bind(Image.SourceProperty, hatImage);
                                 bucketPanel.Children.Add(hat);
