@@ -105,6 +105,7 @@ public class MainViewModel : ViewModelBase {
                                 Orientation = Orientation.Horizontal,
                             };
 
+                            BucketBitmapObservableManager? bbom = null;
                             if (x is MfsTreeFile mfsTreeFile) {
                               using var br
                                   = mfsTreeFile.OpenReadAsBinary(
@@ -122,7 +123,7 @@ public class MainViewModel : ViewModelBase {
 
                               stackPanel.Children.Add(icon);
                             } else if (x is MfsTreeDirectory d) {
-                              var bbom = new BucketBitmapObservableManager();
+                              bbom = new BucketBitmapObservableManager();
                               var bucketImage = bbom.BucketImage;
                               var hatImage = bbom.HatImage;
 
@@ -246,6 +247,15 @@ public class MainViewModel : ViewModelBase {
                             if (x is MfsTreeFile) {
                               border.Bind(Border.CursorProperty,
                                           fileCursorObservable);
+                            } else {
+                              if (bbom != null) {
+                                border.PointerEntered += 
+                                    (_, _) => bbom.IsMouseOver = true;
+                                border.PointerExited += 
+                                    (_, _) => bbom.IsMouseOver = false;
+
+
+                              }
                             }
 
                             return border;
