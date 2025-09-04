@@ -3,11 +3,15 @@ using System.Threading;
 
 namespace fin.util.time;
 
-public class TimedCallback(Action callback, float periodSeconds) : IDisposable {
-  private readonly Timer impl_ = new(_ => callback(),
-                                     null,
-                                     0,
-                                     (long) (periodSeconds * 1000));
+public class TimedCallback : IDisposable {
+  private readonly Action callback_;
+  private Timer? impl_;
+
+  public TimedCallback(Action callback, float periodSeconds) {
+    this.callback_ = callback;
+    this.PeriodSeconds = periodSeconds;
+    this.Active = true;
+  }
 
   ~TimedCallback() => this.Dispose();
   public void Dispose() => this.impl_.Dispose();
@@ -25,8 +29,24 @@ public class TimedCallback(Action callback, float periodSeconds) : IDisposable {
   }
 
   public float PeriodSeconds {
-    get => periodSeconds;
-    set =>
-        this.impl_.Change(0, (long) ((periodSeconds = value) * 1000));
+    get;
+    set => this.impl_?.Change(0, (long) ((field = value) * 1000));
+  }
+
+  public bool Active {
+    get;
+    set {
+      if (field && !value) {
+        this.impl_?.Dispose();
+        this.impl_ = null;
+      } else if (!field && value) {
+        this.impl_ = new Timer(_ => this.callback_(),
+                               null,
+                               0,
+                               (long) (this.PeriodSeconds * 1000));
+      } 
+
+      field = value;
+    }
   }
 }

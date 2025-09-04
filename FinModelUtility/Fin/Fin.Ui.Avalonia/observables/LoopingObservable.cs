@@ -13,11 +13,11 @@ public class LoopingObservable<T> : IObservable<T> {
   private TimedCallback timedCallback_;
 
   public LoopingObservable(
-      float seconds,
-      params T[] values) : this(seconds, 0, values) { }
+      float periodSeconds,
+      params T[] values) : this(periodSeconds, 0, values) { }
 
   public LoopingObservable(
-      float seconds,
+      float periodSeconds,
       int resetOffset,
       params T[] values) {
     this.currentValue_ = values[0];
@@ -34,7 +34,7 @@ public class LoopingObservable<T> : IObservable<T> {
             observer.OnNext(this.currentValue_);
           }
         },
-        seconds);
+        periodSeconds);
   }
 
   public IDisposable Subscribe(IObserver<T> observer) {

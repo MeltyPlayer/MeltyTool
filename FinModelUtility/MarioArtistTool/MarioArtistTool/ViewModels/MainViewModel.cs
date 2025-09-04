@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reactive.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -19,12 +23,18 @@ using marioartist.api;
 using marioartist.schema;
 using marioartist.schema.mfs;
 
+using MarioArtistTool.fileTree;
+
 using marioartisttool.services;
 using marioartisttool.util;
 
 using ReactiveUI;
 
 using schema.binary;
+
+using Brush = Avalonia.Media.Brush;
+using Color = Avalonia.Media.Color;
+using Image = Avalonia.Controls.Image;
 
 namespace marioartisttool.ViewModels;
 
@@ -73,8 +83,6 @@ public class MainViewModel : ViewModelBase {
         return;
       }
 
-      var bucketImage = AssetLoaderUtil.LoadBitmap("bucket/idle.png");
-
       var fileCursorScale = 1;
       var fileCursorObservable = new LoopingObservable<Cursor>(.1f,
         LoadCursorFromAsset_("file_1.png", PixelPoint.Origin, fileCursorScale),
@@ -113,13 +121,37 @@ public class MainViewModel : ViewModelBase {
                               };
 
                               stackPanel.Children.Add(icon);
-                            } else if (x is MfsTreeDirectory) {
-                              var icon = new Image {
-                                  Source = bucketImage,
+                            } else if (x is MfsTreeDirectory d) {
+                              var bbom = new BucketBitmapObservableManager();
+                              var bucketImage = bbom.BucketImage;
+                              var hatImage = bbom.HatImage;
+
+                              var bucket = new Image {
                                   Margin = new Thickness(0, -20, -16, 0),
                               };
+                              bucket.Bind(Image.SourceProperty, bucketImage);
 
-                              stackPanel.Children.Add(icon);
+                              if (d.Children.Any()) {
+                                var bucketPanel = new Grid {
+                                    Width = 32,
+                                    Height = 32
+                                };
+                                bucketPanel.Children.Add(bucket);
+
+                                var hat = new Image {
+                                    Width = 16,
+                                    Height = 8,
+                                    ZIndex = 2,
+                                    VerticalAlignment = VerticalAlignment.Top,
+                                    Margin = new Thickness(0, -4, -5, 0),
+                                };
+                                hat.Bind(Image.SourceProperty, hatImage);
+                                bucketPanel.Children.Add(hat);
+
+                                stackPanel.Children.Add(bucketPanel);
+                              } else {
+                                stackPanel.Children.Add(bucket);
+                              }
                             }
 
                             var brushWhite
@@ -145,7 +177,8 @@ public class MainViewModel : ViewModelBase {
                               var childCount = x.Children.Count();
 
                               var manyFilesImage
-                                  = AssetLoaderUtil.LoadBitmap("icon_many_files.png");
+                                  = AssetLoaderUtil.LoadBitmap(
+                                      "icon_many_files.png");
                               var fileImage
                                   = AssetLoaderUtil.LoadBitmap("icon_file.png");
 
@@ -161,6 +194,7 @@ public class MainViewModel : ViewModelBase {
                                     Height = 12,
                                 });
                               }
+
                               for (var i = 0; i < fileCount; ++i) {
                                 childPanel.Children.Add(new Image {
                                     Source = fileImage,
