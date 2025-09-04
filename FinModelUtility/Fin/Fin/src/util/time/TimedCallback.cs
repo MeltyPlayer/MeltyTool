@@ -30,7 +30,10 @@ public class TimedCallback : IDisposable {
 
   public float PeriodSeconds {
     get;
-    set => this.impl_?.Change(0, (long) ((field = value) * 1000));
+    set {
+      field = value;
+      this.impl_?.Change(0, (long) (this.PeriodSeconds * 1000));
+    }
   }
 
   public bool Active {
