@@ -9,8 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="OpenTK" Version="$(OpenGlVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Fin\Fin.csproj" />
     <ProjectReference Include="..\..\QuickFont\QuickFont.csproj" />
-    <PackageReference Include="OpenTK" Version="4.8.2" />
   </ItemGroup>
 </Project>

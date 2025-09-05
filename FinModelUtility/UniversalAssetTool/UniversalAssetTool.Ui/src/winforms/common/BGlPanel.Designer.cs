@@ -2,7 +2,7 @@
 
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using OpenTK.WinForms;
+using OpenTK.GLControl;
 
 namespace uni.ui.winforms.common {
   abstract partial class BGlPanel {

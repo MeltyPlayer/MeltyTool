@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenTK.WinForms" Version="4.0.0-pre.7" />
+    <PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
   </ItemGroup>
 
   <ItemGroup>

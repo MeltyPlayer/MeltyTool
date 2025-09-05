@@ -15,7 +15,7 @@ public static class AppBuilderUtil {
                      ],
                  })
                  .With(new Win32PlatformOptions {
-                     RenderingMode = [Win32RenderingMode.AngleEgl]
+                     RenderingMode = [Win32RenderingMode.AngleEgl],
                  })
                  .With(new SkiaOptions {
                      // Use as much memory as available, similar to WPF. This

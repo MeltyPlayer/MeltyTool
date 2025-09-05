@@ -74,12 +74,12 @@ public class GlFbo : IFinDisposable {
     GL.GenFramebuffers(1, out this.fboId_);
     GL.BindFramebuffer(FramebufferTarget.Framebuffer, this.fboId_);
     GL.FramebufferTexture2D(FramebufferTarget.Framebuffer,
-                            FramebufferAttachment.ColorAttachment0Ext,
+                            FramebufferAttachment.ColorAttachment0,
                             TextureTarget2d.Texture2D,
                             this.colorTextureId_,
                             0);
     GL.FramebufferTexture2D(FramebufferTarget.Framebuffer,
-                            FramebufferAttachment.DepthAttachmentExt,
+                            FramebufferAttachment.DepthAttachment,
                             TextureTarget2d.Texture2D,
                             this.depthTextureId_,
                             0);

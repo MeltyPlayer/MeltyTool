@@ -344,7 +344,7 @@ public sealed class GlBufferManager : IDynamicGlBufferManager {
         GL.VertexAttribIPointer(
             vertexAttribBoneIds,
             numBones,
-            All.Int,
+            VertexAttribIntegerType.Int,
             0,
             0);
 
