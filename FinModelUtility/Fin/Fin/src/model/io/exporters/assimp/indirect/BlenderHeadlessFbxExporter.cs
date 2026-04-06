@@ -17,6 +17,7 @@ internal static class BlenderHeadlessFbxExporter {
   private const string AXIS_FORWARD_ENV_ = "MELTYTOOL_BLENDER_AXIS_FORWARD";
   private const string AXIS_UP_ENV_ = "MELTYTOOL_BLENDER_AXIS_UP";
   private const string EMBED_TEXTURES_ENV_ = "MELTYTOOL_BLENDER_EMBED_TEXTURES";
+  private const string UV_INDICES_ENV_ = "MELTYTOOL_BLENDER_UV_INDICES";
 
   public static bool IsConfigured()
     => TryGetBlenderExe_(out _);
@@ -44,7 +45,7 @@ internal static class BlenderHeadlessFbxExporter {
                                                     "meltytool_glb_to_fbx.py"));
 
       new GltfModelExporter {
-          UvIndices = true,
+          UvIndices = GetFlagFromEnvironment_(UV_INDICES_ENV_),
           Embedded = true,
       }.ExportModel(new ModelExporterParams {
           OutputFile = tempInputFile,
