@@ -158,8 +158,6 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
       if (!this.AnimationOnly) {
         AssimpIndirectUvFixer.Fix(model, assScene);
         AssimpIndirectTextureFixer.Fix(model, assScene);
-      } else {
-        StripSceneForAnimationOnly_(assScene);
       }
 
       foreach (var nonGltfFormat in nonGltfFormats) {
@@ -185,24 +183,6 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
           GcUtil.ForceCollectEverything();
         }
       }
-    }
-  }
-
-  private static void StripSceneForAnimationOnly_(Scene assScene) {
-    assScene.Meshes.Clear();
-    assScene.Materials.Clear();
-    assScene.Textures.Clear();
-    ClearNodeMeshes_(assScene.RootNode);
-  }
-
-  private static void ClearNodeMeshes_(Node? node) {
-    if (node == null) {
-      return;
-    }
-
-    node.MeshIndices.Clear();
-    foreach (var child in node.Children) {
-      ClearNodeMeshes_(child);
     }
   }
 
