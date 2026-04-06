@@ -1,5 +1,7 @@
 ﻿using Assimp;
 
+using grezzo.api;
+
 using fin.importers;
 using fin.model.io.exporters.assimp;
 using fin.io;
@@ -213,6 +215,72 @@ public static class ExporterUtil {
            () => reader.ImportAndProcess(modelFileBundle),
            formats,
            overwriteExistingFile);
+
+    if (modelFileBundle is CmbModelFileBundle cmbModelFileBundle &&
+        reader is IModelImporter<CmbModelFileBundle> cmbReader) {
+      ExportAnimationsForCmb_(cmbModelFileBundle,
+                              cmbReader,
+                              formats,
+                              overwriteExistingFile);
+    }
+  }
+
+  private static void ExportAnimationsForCmb_(
+      CmbModelFileBundle modelFileBundle,
+      IModelImporter<CmbModelFileBundle> reader,
+      IReadOnlySet<ExportedFormat> formats,
+      bool overwriteExistingFile) {
+    if (modelFileBundle.CsabFiles == null || modelFileBundle.CsabFiles.Count == 0) {
+      return;
+    }
+
+    if (!formats.Contains(ExportedFormat.FBX)) {
+      return;
+    }
+
+    var mainFile = modelFileBundle.MainFile;
+    var parentOutputDirectory =
+        ExtractorUtil.GetOutputDirectoryForFileBundle(modelFileBundle);
+    var outputDirectory = new FinDirectory(
+        Path.Join(parentOutputDirectory.FullPath,
+                  mainFile.NameWithoutExtension));
+
+    var fbxFormat = AssimpUtil.GetExportFormatFromExtension(".fbx");
+
+    foreach (var csabFile in modelFileBundle.CsabFiles) {
+      var animationName = csabFile.NameWithoutExtension.ToString();
+      var animationOutput = new FinFile(
+          Path.Join(outputDirectory.FullPath,
+                    $"{animationName}.foo"));
+
+      var expectedOutput = animationOutput.CloneWithFileType(".fbx");
+      if (!overwriteExistingFile && expectedOutput.Exists) {
+        continue;
+      }
+
+      var singleAnimationBundle = new CmbModelFileBundle(
+          modelFileBundle.CmbFile,
+          [csabFile],
+          modelFileBundle.CtxbFiles,
+          modelFileBundle.ShpaFiles);
+
+      var animationModel = reader.ImportAndProcess(singleAnimationBundle);
+      var animationScale =
+          new ScaleSource(
+                  Config.Instance.Exporter.General.ExportedModelScaleSource)
+              .GetScale(animationModel);
+
+      new AssimpIndirectModelExporter {
+          AnimationOnly = true,
+      }.ExportFormats(
+          new ModelExporterParams {
+              OutputFile = animationOutput,
+              Model = animationModel,
+              Scale = animationScale,
+          },
+          [fbxFormat],
+          false);
+    }
   }
 
   public static void Export<T>(T threeDFileBundle,

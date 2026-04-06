@@ -220,6 +220,28 @@ public static class GltfMaterialBuilder {
                                 gltfImageByFinImage[normalTexture.Image]);
               }
 
+              var extraTextures =
+                  fixedFunctionMaterial.Textures
+                                       .Where(extraTexture =>
+                                                  extraTexture != texture &&
+                                                  extraTexture != normalTexture)
+                                       .DistinctBy(extraTexture => extraTexture.Name)
+                                       .ToArray();
+
+              if (extraTextures.Length > 0) {
+                gltfMaterialBuilder
+                    .UseChannel(KnownChannel.Emissive)
+                    .UseTexture(extraTextures[0],
+                                gltfImageByFinImage[extraTextures[0].Image]);
+              }
+
+              if (extraTextures.Length > 1) {
+                gltfMaterialBuilder
+                    .UseChannel(KnownChannel.Occlusion)
+                    .UseTexture(extraTextures[1],
+                                gltfImageByFinImage[extraTextures[1].Image]);
+              }
+
               break;
             }
             default: {
@@ -241,6 +263,26 @@ public static class GltfMaterialBuilder {
                     .UseTexture(
                         texture,
                         gltfImageByFinImage[texture.Image]);
+
+                var extraTextures =
+                    finMaterial.Textures
+                               .Where(extraTexture => extraTexture != texture)
+                               .DistinctBy(extraTexture => extraTexture.Name)
+                               .ToArray();
+
+                if (extraTextures.Length > 0) {
+                  gltfMaterialBuilder
+                      .UseChannel(KnownChannel.Emissive)
+                      .UseTexture(extraTextures[0],
+                                  gltfImageByFinImage[extraTextures[0].Image]);
+                }
+
+                if (extraTextures.Length > 1) {
+                  gltfMaterialBuilder
+                      .UseChannel(KnownChannel.Occlusion)
+                      .UseTexture(extraTextures[1],
+                                  gltfImageByFinImage[extraTextures[1].Image]);
+                }
               }
 
               break;

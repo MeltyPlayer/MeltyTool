@@ -56,24 +56,60 @@ public static class AssimpIndirectTextureFixer {
 
       var assMaterial = new Material { Name = finMaterial.Name };
 
-      var finTexture = PrimaryTextureFinder.GetFor(finMaterial);
-      if (finTexture != null) {
-        var assTextureSlot = new TextureSlot {
-            FilePath = finTexture.ValidFileName,
-            // TODO: FBX doesn't support mirror. Blegh
-            WrapModeU = ConvertWrapMode_(finTexture.WrapModeU),
-            WrapModeV = ConvertWrapMode_(finTexture.WrapModeV),
-            TextureType = TextureType.Diffuse,
-            UVIndex = finTexture.UvIndex
+      var primaryTexture = PrimaryTextureFinder.GetFor(finMaterial);
+      if (primaryTexture != null) {
+        assMaterial.AddMaterialTexture(CreateTextureSlot_(
+            primaryTexture,
+            TextureType.Diffuse));
+      }
+
+      if (finMaterial is IStandardMaterial standardMaterial &&
+          standardMaterial.NormalTexture != null) {
+        assMaterial.AddMaterialTexture(CreateTextureSlot_(
+            standardMaterial.NormalTexture,
+            TextureType.Normals));
+      } else if (finMaterial is IFixedFunctionMaterial fixedFunctionMaterial &&
+                 fixedFunctionMaterial.NormalTexture != null) {
+        assMaterial.AddMaterialTexture(CreateTextureSlot_(
+            fixedFunctionMaterial.NormalTexture,
+            TextureType.Normals));
+      }
+
+      var extraTextures =
+          finMaterial.Textures
+                     .Where(finTexture => finTexture != primaryTexture)
+                     .DistinctBy(finTexture => finTexture.ValidFileName)
+                     .ToArray();
+
+      for (var i = 0; i < extraTextures.Length; ++i) {
+        var textureType = i switch {
+            0 => TextureType.Emissive,
+            1 => TextureType.Specular,
+            2 => TextureType.Lightmap,
+            _ => TextureType.Unknown
         };
 
-        assMaterial.AddMaterialTexture(assTextureSlot);
+        assMaterial.AddMaterialTexture(CreateTextureSlot_(
+            extraTextures[i],
+            textureType));
       }
 
       // Meshes should already have material indices set.
       sc.Materials[m] = assMaterial;
     }
   }
+
+  private static TextureSlot CreateTextureSlot_(
+      IReadOnlyTexture finTexture,
+      TextureType textureType)
+    => new() {
+        FilePath = finTexture.ValidFileName,
+        // TODO: FBX doesn't support mirror. Blegh
+        WrapModeU = ConvertWrapMode_(finTexture.WrapModeU),
+        WrapModeV = ConvertWrapMode_(finTexture.WrapModeV),
+        TextureType = textureType,
+        UVIndex = finTexture.UvIndex
+    };
 
   private static TextureWrapMode ConvertWrapMode_(WrapMode wrapMode)
     => wrapMode switch {

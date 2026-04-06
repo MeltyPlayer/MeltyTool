@@ -21,6 +21,7 @@ namespace fin.model.io.exporters.assimp.indirect;
 public sealed class AssimpIndirectModelExporter : IModelExporter {
   // You can bet your ass I'm gonna prefix everything with ass.
 
+  public bool AnimationOnly { get; set; }
   public bool LowLevel { get; set; }
   public bool ForceGarbageCollection { get; set; }
 
@@ -77,7 +78,7 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
                                     !isGltfFormat(exportedFormat))
                          .ToArray();
 
-    if (exportAllTextures) {
+    if (!this.AnimationOnly && exportAllTextures) {
       var textures = model.MaterialManager.Textures.DistinctBy(t => t.Name)
                           .ToArray();
       ParallelHelper.For(0,
@@ -87,25 +88,27 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
 
     var modelRequirements = ModelRequirements.FromModel(model);
 
-    var finMaterials = model.MaterialManager.All;
-    for (var i = 0; i < finMaterials.Count; ++i) {
-      var finMaterial = finMaterials[i];
-      var materialName =
-          finMaterial.Name?.ReplaceInvalidFilenameCharacters() ??
-          $"material{i}";
+    if (!this.AnimationOnly) {
+      var finMaterials = model.MaterialManager.All;
+      for (var i = 0; i < finMaterials.Count; ++i) {
+        var finMaterial = finMaterials[i];
+        var materialName =
+            finMaterial.Name?.ReplaceInvalidFilenameCharacters() ??
+            $"material{i}";
 
-      var shaderSource = finMaterial.ToShaderSource(model, modelRequirements);
-      var vertexShaderFile = new FinFile(
-          Path.Combine(outputDirectory.FullPath,
-                       $"{materialName}.vertex.glsl"));
-      var fragmentShaderFile = new FinFile(
-          Path.Combine(outputDirectory.FullPath,
-                       $"{materialName}.fragment.glsl"));
-      vertexShaderFile.WriteAllText(shaderSource.VertexShaderSource);
-      fragmentShaderFile.WriteAllText(shaderSource.FragmentShaderSource);
+        var shaderSource = finMaterial.ToShaderSource(model, modelRequirements);
+        var vertexShaderFile = new FinFile(
+            Path.Combine(outputDirectory.FullPath,
+                         $"{materialName}.vertex.glsl"));
+        var fragmentShaderFile = new FinFile(
+            Path.Combine(outputDirectory.FullPath,
+                         $"{materialName}.fragment.glsl"));
+        vertexShaderFile.WriteAllText(shaderSource.VertexShaderSource);
+        fragmentShaderFile.WriteAllText(shaderSource.FragmentShaderSource);
+      }
     }
 
-    if (gltfFormats.Length > 0) {
+    if (!this.AnimationOnly && gltfFormats.Length > 0) {
       gltfModelExporter.UvIndices = false;
       gltfModelExporter.Embedded = false;
 
@@ -152,17 +155,18 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
       // "Automatic Bone Orientation" if importing in Blender.
 
       AssimpIndirectAnimationFixer.Fix(model, assScene);
-      AssimpIndirectUvFixer.Fix(model, assScene);
-      AssimpIndirectTextureFixer.Fix(model, assScene);
+      if (!this.AnimationOnly) {
+        AssimpIndirectUvFixer.Fix(model, assScene);
+        AssimpIndirectTextureFixer.Fix(model, assScene);
+      } else {
+        StripSceneForAnimationOnly_(assScene);
+      }
 
       foreach (var nonGltfFormat in nonGltfFormats) {
         var nonGltfOutputFile =
             outputFile.CloneWithFileType($".{nonGltfFormat.FileExtension}");
 
         var outputPath = nonGltfOutputFile.FullPath;
-        var outputExtension = nonGltfOutputFile.FileType;
-
-        var supportedExportFormats = ctx.GetSupportedExportFormats();
 
         // TODO: Are these all safe to include?
         var preProcessing =
@@ -181,6 +185,24 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
           GcUtil.ForceCollectEverything();
         }
       }
+    }
+  }
+
+  private static void StripSceneForAnimationOnly_(Scene assScene) {
+    assScene.Meshes.Clear();
+    assScene.Materials.Clear();
+    assScene.Textures.Clear();
+    ClearNodeMeshes_(assScene.RootNode);
+  }
+
+  private static void ClearNodeMeshes_(Node? node) {
+    if (node == null) {
+      return;
+    }
+
+    node.MeshIndices.Clear();
+    foreach (var child in node.Children) {
+      ClearNodeMeshes_(child);
     }
   }
 
