@@ -33,15 +33,15 @@ internal static class BlenderHeadlessFbxExporter {
     var tempRoot = new FinDirectory(
         Path.Combine(Path.GetTempPath(),
                      "meltytool_blender_fbx",
-                     GUid.NewGuid().ToString("N")));
+                     Guid.NewGuid().ToString("N")));
     tempRoot.Create();
 
     try {
       var stem = outputFile.NameWithoutExtension.ToString();
       var tempInputFile = new FinFile(Path.Combine(tempRoot.FullPath,
-                                           ${"{stem}.glb"));
+                                                   $"{stem}.glb"));
       var tempScriptFile = new FinFile(Path.Combine(tempRoot.FullPath,
-                                            "meltytool_glb_to_fbx.py"));
+                                                    "meltytool_glb_to_fbx.py"));
 
       new GltfModelExporter {
           UvIndices = false,
@@ -62,11 +62,11 @@ internal static class BlenderHeadlessFbxExporter {
       RunBlender_(blenderExe,
                   tempScriptFile,
                   tempInputFile,
-                   outputFbx,
-                   animationOnly);
+                  outputFbx,
+                  animationOnly);
 
       Asserts.True(outputFbx.Exists,
-                   $Liender did not produce the expected FBX file: {outputFbx.FullPath}");
+                   $"Blender did not produce the expected FBX file: {outputFbx.FullPath}");
     } finally {
       if (!GetFlagFromEnvironment_(KEEP_TEMP_ENV_)) {
         try {
@@ -118,15 +118,22 @@ internal static class BlenderHeadlessFbxExporter {
     startInfo.ArgumentList.Add("--embed-textures");
     startInfo.ArgumentList.Add(GetFlagFromEnvironment_(EMBED_TEXTURES_ENV_, true)
                                    ? "true"
-                                  : "false");
+                                   : "false");
 
     using var process = Process.Start(startInfo);
     Asserts.True(process != null,
-                 $Liender FBX export failed with exit code {process.ExitCode}.\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}");
+                 $"Failed to launch Blender: {blenderExe}");
+
+    var stdout = process.StandardOutput.ReadToEnd();
+    var stderr = process.StandardError.ReadToEnd();
+    process.WaitForExit();
+
+    Asserts.True(process.ExitCode == 0,
+                 $"Blender FBX export failed with exit code {process.ExitCode}.\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}");
   }
 
   private static string GetEnvironmentOrDefault_(string key,
-                                         string defaultValue)
+                                                 string defaultValue)
     => Environment.GetEnvironmentVariable(key) is { Length: > 0 } value
         ? value
         : defaultValue;
@@ -143,9 +150,9 @@ internal static class BlenderHeadlessFbxExporter {
     }
 
     if (double.TryParse(raw,
-                                NumberStyles.Float,
-                                CultureInfo.InvariantCulture,
-                                out var numericValue)) {
+                        NumberStyles.Float,
+                        CultureInfo.InvariantCulture,
+                        out var numericValue)) {
       return numericValue != 0;
     }
 
@@ -153,7 +160,6 @@ internal static class BlenderHeadlessFbxExporter {
   }
 
   private const string BLENDER_SCRIPT_ = """
-"";
 from __future__ import annotations
 
 import argparse
@@ -233,7 +239,6 @@ def export_model(args: argparse.Namespace) -> None:
     )
 
 
-
 def export_animation(args: argparse.Namespace) -> None:
     remove_meshes()
     select_exportable({"ARMATURE"})
@@ -250,7 +255,6 @@ def export_animation(args: argparse.Namespace) -> None:
         axis_forward=args.axis_forward,
         axis_up=args.axis_up,
     )
-
 
 
 def main() -> int:
