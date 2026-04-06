@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -131,7 +131,37 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
       }
     }
 
-    if (!this.LowLevel && nonGltfFormats.Length > 0) {
+    var blenderFbxFormats = !this.LowLevel
+        ? nonGltfFormats
+              .Where(format => format.FileExtension.Equals("fbx",
+                                                           StringComparison.OrdinalIgnoreCase))
+              .ToArray()
+        : Array.Empty<ExportFormatDescription>();
+    var assimpFormats = nonGltfFormats
+                        .Where(format => !format.FileExtension.Equals("fbx",
+                                                                      StringComparison.OrdinalIgnoreCase) ||
+                                         !BlenderHeadlessFbxExporter.IsConfigured())
+                        .ToArray();
+
+    if (blenderFbxFormats.Length > 0 &&
+        BlenderHeadlessFbxExporter.IsConfigured()) {
+      foreach (var blenderFbxFormat in blenderFbxFormats) {
+        BlenderHeadlessFbxExporter.ExportFbx(
+            new ModelExporterParams {
+                OutputFile = outputFile.CloneWithFileType(
+                    $".{blenderFbxFormat.FileExtension}"),
+                Model = model,
+                Scale = scale,
+            },
+            this.AnimationOnly);
+
+        if (this.ForceGarbageCollection) {
+          GcUtil.ForceCollectEverything();
+        }
+      }
+    }
+
+    if (!this.LowLevel && assimpFormats.Length > 0) {
       gltfModelExporter.UvIndices = true;
       gltfModelExporter.Embedded = true;
 
@@ -160,11 +190,11 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
         AssimpIndirectTextureFixer.Fix(model, assScene);
       }
 
-      foreach (var nonGltfFormat in nonGltfFormats) {
-        var nonGltfOutputFile =
-            outputFile.CloneWithFileType($".{nonGltfFormat.FileExtension}");
+      foreach (var assimpFormat in assimpFormats) {
+        var assimpOutputFile =
+            outputFile.CloneWithFileType($".{assimpFormat.FileExtension}");
 
-        var outputPath = nonGltfOutputFile.FullPath;
+        var outputPath = assimpOutputFile.FullPath;
 
         // TODO: Are these all safe to include?
         var preProcessing =
@@ -175,7 +205,7 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
         var success =
             ctx.ExportFile(assScene,
                            outputPath,
-                           nonGltfFormat.FormatId,
+                           assimpFormat.FormatId,
                            preProcessing);
         Asserts.True(success, "Failed to export model.");
 
