@@ -39,12 +39,12 @@ internal static class BlenderHeadlessFbxExporter {
     try {
       var stem = outputFile.NameWithoutExtension.ToString();
       var tempInputFile = new FinFile(Path.Combine(tempRoot.FullPath,
-                                                   $"{stem}.glb"));
+                                           ${"{stem}.glb"));
       var tempScriptFile = new FinFile(Path.Combine(tempRoot.FullPath,
-                                                    "meltytool_glb_to_fbx.py"));
+                                            "meltytool_glb_to_fbx.py"));
 
       new GltfModelExporter {
-          UvIndices = false,
+          UvIndices = true,
           Embedded = true,
       }.ExportModel(new ModelExporterParams {
           OutputFile = tempInputFile,
@@ -55,7 +55,7 @@ internal static class BlenderHeadlessFbxExporter {
       tempScriptFile.WriteAllText(BLENDER_SCRIPT_);
 
       var outputFbx = outputFile.FileType.Equals(".fbx",
-                                                 StringComparison.OrdinalIgnoreCase)
+                                               StringComparison.OrdinalIgnoreCase)
           ? outputFile
           : outputFile.CloneWithFileType(".fbx");
 
