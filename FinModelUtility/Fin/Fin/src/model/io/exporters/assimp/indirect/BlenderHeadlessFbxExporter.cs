@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 
 using fin.io;
-using fin.model.io.exporters.gltf;
 using fin.util.asserts;
 
 namespace fin.model.io.exporters.assimp.indirect;
@@ -17,7 +16,6 @@ internal static class BlenderHeadlessFbxExporter {
   private const string AXIS_FORWARD_ENV_ = "MELTYTOOL_BLENDER_AXIS_FORWARD";
   private const string AXIS_UP_ENV_ = "MELTYTOOL_BLENDER_AXIS_UP";
   private const string EMBED_TEXTURES_ENV_ = "MELTYTOOL_BLENDER_EMBED_TEXTURES";
-  private const string UV_INDICES_ENV_ = "MELTYTOOL_BLENDER_UV_INDICES";
 
   public static bool IsConfigured()
     => TryGetBlenderExe_(out _);
@@ -38,20 +36,10 @@ internal static class BlenderHeadlessFbxExporter {
     tempRoot.Create();
 
     try {
-      var stem = outputFile.NameWithoutExtension.ToString();
-      var tempInputFile = new FinFile(Path.Combine(tempRoot.FullPath,
-                                                   $"{stem}.glb"));
       var tempScriptFile = new FinFile(Path.Combine(tempRoot.FullPath,
-                                                    "meltytool_glb_to_fbx.py"));
-
-      new GltfModelExporter {
-          UvIndices = GetFlagFromEnvironment_(UV_INDICES_ENV_),
-          Embedded = true,
-      }.ExportModel(new ModelExporterParams {
-          OutputFile = tempInputFile,
-          Model = modelExporterParams.Model,
-          Scale = modelExporterParams.Scale,
-      });
+                                                    "meltytool_manifest_to_fbx.py"));
+      var manifestFile = BlenderIntermediateExporter.ExportPackage(tempRoot,
+                                                                   modelExporterParams);
 
       tempScriptFile.WriteAllText(BLENDER_SCRIPT_);
 
@@ -62,7 +50,7 @@ internal static class BlenderHeadlessFbxExporter {
 
       RunBlender_(blenderExe,
                   tempScriptFile,
-                  tempInputFile,
+                  manifestFile,
                   outputFbx,
                   animationOnly);
 
@@ -91,7 +79,7 @@ internal static class BlenderHeadlessFbxExporter {
 
   private static void RunBlender_(string blenderExe,
                                   ISystemFile scriptFile,
-                                  ISystemFile inputFile,
+                                  ISystemFile manifestFile,
                                   ISystemFile outputFile,
                                   bool animationOnly) {
     var startInfo = new ProcessStartInfo {
@@ -106,8 +94,8 @@ internal static class BlenderHeadlessFbxExporter {
     startInfo.ArgumentList.Add("--python");
     startInfo.ArgumentList.Add(scriptFile.FullPath);
     startInfo.ArgumentList.Add("--");
-    startInfo.ArgumentList.Add("--input");
-    startInfo.ArgumentList.Add(inputFile.FullPath);
+    startInfo.ArgumentList.Add("--manifest");
+    startInfo.ArgumentList.Add(manifestFile.FullPath);
     startInfo.ArgumentList.Add("--output");
     startInfo.ArgumentList.Add(outputFile.FullPath);
     startInfo.ArgumentList.Add("--animation-only");
@@ -164,10 +152,12 @@ internal static class BlenderHeadlessFbxExporter {
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
 import bpy
+import mathutils
 
 
 def parse_args() -> argparse.Namespace:
@@ -178,7 +168,7 @@ def parse_args() -> argparse.Namespace:
     argv = argv[argv.index("--") + 1 :]
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", required=True)
+    parser.add_argument("--manifest", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--animation-only", required=True)
     parser.add_argument("--global-scale", type=float, default=1.0)
@@ -196,8 +186,9 @@ def reset_scene() -> None:
     bpy.ops.wm.read_factory_settings(use_empty=True)
 
 
-def import_glb(path: Path) -> None:
-    bpy.ops.import_scene.gltf(filepath=str(path))
+def load_manifest(path: Path) -> dict:
+    with path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def remove_non_exportable() -> None:
@@ -222,6 +213,296 @@ def select_exportable(types: set[str]) -> None:
                 active = obj
     if active is not None:
         bpy.context.view_layer.objects.active = active
+
+
+def alpha_mode_to_blend_method(alpha_mode: str | None) -> str:
+    if alpha_mode is None:
+        return "OPAQUE"
+    alpha_mode = str(alpha_mode).upper()
+    if alpha_mode == "TRANSPARENT":
+        return "BLEND"
+    if alpha_mode == "MASK":
+        return "CLIP"
+    return "OPAQUE"
+
+
+def wrap_mode_to_extension(wrap_mode_u: str | None, wrap_mode_v: str | None) -> str:
+    modes = {str(wrap_mode_u).upper(), str(wrap_mode_v).upper()}
+    if "REPEAT" in modes or "MIRROR_REPEAT" in modes:
+        return "REPEAT"
+    return "EXTEND"
+
+
+def ensure_uv_layer(mesh_data: bpy.types.Mesh, index: int) -> bpy.types.MeshUVLoopLayer:
+    layer_name = f"UV{index}"
+    existing = mesh_data.uv_layers.get(layer_name)
+    if existing is not None:
+        return existing
+    return mesh_data.uv_layers.new(name=layer_name)
+
+
+def build_materials(package: dict, package_root: Path) -> dict[str, bpy.types.Material]:
+    materials: dict[str, bpy.types.Material] = {}
+
+    for material_data in package.get("materials", []):
+        name = material_data["name"]
+        material = bpy.data.materials.new(name=name)
+        material.use_nodes = True
+        material.use_backface_culling = not material_data.get("doubleSided", True)
+        material.blend_method = alpha_mode_to_blend_method(material_data.get("alphaMode"))
+
+        node_tree = material.node_tree
+        for node in list(node_tree.nodes):
+            node_tree.nodes.remove(node)
+
+        output_node = node_tree.nodes.new("ShaderNodeOutputMaterial")
+        output_node.location = (500, 0)
+        bsdf_node = node_tree.nodes.new("ShaderNodeBsdfPrincipled")
+        bsdf_node.location = (200, 0)
+        node_tree.links.new(bsdf_node.outputs["BSDF"], output_node.inputs["Surface"])
+
+        primary = material_data.get("primaryTexture")
+        if primary:
+            image_node = node_tree.nodes.new("ShaderNodeTexImage")
+            image_node.location = (-250, 50)
+            image_path = package_root / primary["path"]
+            image_node.image = bpy.data.images.load(str(image_path), check_existing=True)
+            image_node.extension = wrap_mode_to_extension(primary.get("wrapModeU"),
+                                                          primary.get("wrapModeV"))
+
+            uv_node = node_tree.nodes.new("ShaderNodeUVMap")
+            uv_node.location = (-500, 50)
+            uv_node.uv_map = f"UV{int(primary.get('uvIndex', 0))}"
+            node_tree.links.new(uv_node.outputs["UV"], image_node.inputs["Vector"])
+            node_tree.links.new(image_node.outputs["Color"], bsdf_node.inputs["Base Color"])
+
+            if material.blend_method != "OPAQUE":
+                node_tree.links.new(image_node.outputs["Alpha"], bsdf_node.inputs["Alpha"])
+
+        normal_texture = material_data.get("normalTexture")
+        if normal_texture:
+            normal_image_node = node_tree.nodes.new("ShaderNodeTexImage")
+            normal_image_node.location = (-250, -250)
+            normal_image = bpy.data.images.load(str(package_root / normal_texture["path"]),
+                                                check_existing=True)
+            normal_image.colorspace_settings.name = "Non-Color"
+            normal_image_node.image = normal_image
+            normal_image_node.extension = wrap_mode_to_extension(normal_texture.get("wrapModeU"),
+                                                                 normal_texture.get("wrapModeV"))
+
+            normal_uv_node = node_tree.nodes.new("ShaderNodeUVMap")
+            normal_uv_node.location = (-500, -250)
+            normal_uv_node.uv_map = f"UV{int(normal_texture.get('uvIndex', 0))}"
+
+            normal_map_node = node_tree.nodes.new("ShaderNodeNormalMap")
+            normal_map_node.location = (-25, -250)
+
+            node_tree.links.new(normal_uv_node.outputs["UV"], normal_image_node.inputs["Vector"])
+            node_tree.links.new(normal_image_node.outputs["Color"], normal_map_node.inputs["Color"])
+            node_tree.links.new(normal_map_node.outputs["Normal"], bsdf_node.inputs["Normal"])
+
+        materials[name] = material
+
+    return materials
+
+
+def build_armature(package: dict) -> bpy.types.Object:
+    armature_data = bpy.data.armatures.new(f"{package.get('name', 'model')}_Armature")
+    armature_object = bpy.data.objects.new(armature_data.name, armature_data)
+    bpy.context.scene.collection.objects.link(armature_object)
+    bpy.context.view_layer.objects.active = armature_object
+    armature_object.select_set(True)
+
+    bpy.ops.object.mode_set(mode="EDIT")
+
+    edit_bones: dict[str, bpy.types.EditBone] = {}
+    bone_data_by_name: dict[str, dict] = {}
+    world_matrix_by_name: dict[str, mathutils.Matrix] = {}
+
+    for bone_data in package.get("bones", []):
+        bone_name = bone_data["name"]
+        edit_bone = armature_data.edit_bones.new(bone_name)
+        edit_bone.head = (0.0, 0.0, 0.0)
+        edit_bone.tail = (0.0, max(float(bone_data.get("length", 0.05)), 0.01), 0.0)
+        edit_bones[bone_name] = edit_bone
+        bone_data_by_name[bone_name] = bone_data
+
+    unresolved = set(edit_bones.keys())
+    while unresolved:
+        progress = False
+        for bone_name in list(unresolved):
+            bone_data = bone_data_by_name[bone_name]
+            parent_name = bone_data.get("parentName")
+            if parent_name and parent_name not in world_matrix_by_name:
+                continue
+
+            translation = mathutils.Vector(bone_data.get("translation", [0.0, 0.0, 0.0]))
+            rotation_values = bone_data.get("rotation", [0.0, 0.0, 0.0, 1.0])
+            rotation = mathutils.Quaternion((rotation_values[3],
+                                             rotation_values[0],
+                                             rotation_values[1],
+                                             rotation_values[2]))
+            scale = mathutils.Vector(bone_data.get("scale", [1.0, 1.0, 1.0]))
+
+            local_matrix = (
+                mathutils.Matrix.Translation(translation)
+                @ rotation.to_matrix().to_4x4()
+                @ mathutils.Matrix.Diagonal((scale.x, scale.y, scale.z, 1.0))
+            )
+
+            parent_matrix = world_matrix_by_name[parent_name] if parent_name else mathutils.Matrix.Identity(4)
+            world_matrix = parent_matrix @ local_matrix
+
+            edit_bone = edit_bones[bone_name]
+            if parent_name:
+                edit_bone.parent = edit_bones[parent_name]
+                edit_bone.use_connect = False
+
+            edit_bone.matrix = world_matrix
+            edit_bone.length = max(float(bone_data.get("length", 0.05)), 0.01)
+
+            world_matrix_by_name[bone_name] = world_matrix
+            unresolved.remove(bone_name)
+            progress = True
+
+        if not progress:
+            raise RuntimeError("Failed to resolve armature hierarchy from manifest")
+
+    bpy.ops.object.mode_set(mode="OBJECT")
+    for pose_bone in armature_object.pose.bones:
+        pose_bone.rotation_mode = "QUATERNION"
+
+    return armature_object
+
+
+def build_meshes(package: dict,
+                 materials_by_name: dict[str, bpy.types.Material],
+                 armature_object: bpy.types.Object) -> list[bpy.types.Object]:
+    mesh_objects: list[bpy.types.Object] = []
+
+    for mesh_data in package.get("meshes", []):
+        vertices = [tuple(vertex["position"]) for vertex in mesh_data.get("vertices", [])]
+        faces = [tuple(face["indices"]) for face in mesh_data.get("faces", [])]
+
+        blender_mesh = bpy.data.meshes.new(mesh_data["name"])
+        blender_mesh.from_pydata(vertices, [], faces)
+        blender_mesh.update()
+
+        max_uv_count = 0
+        for vertex_data in mesh_data.get("vertices", []):
+            max_uv_count = max(max_uv_count, len(vertex_data.get("uvs", [])))
+
+        for uv_index in range(max_uv_count):
+            ensure_uv_layer(blender_mesh, uv_index)
+
+        mesh_object = bpy.data.objects.new(mesh_data["name"], blender_mesh)
+        bpy.context.scene.collection.objects.link(mesh_object)
+
+        material_slot_by_name: dict[str, int] = {}
+        for material_name in mesh_data.get("materialNames", []):
+            material = materials_by_name.get(material_name)
+            if material is None:
+                continue
+            material_slot_by_name[material_name] = len(mesh_object.data.materials)
+            mesh_object.data.materials.append(material)
+
+        for polygon_index, face_data in enumerate(mesh_data.get("faces", [])):
+            material_index = material_slot_by_name.get(face_data.get("materialName", ""))
+            if material_index is not None:
+                blender_mesh.polygons[polygon_index].material_index = material_index
+
+        for uv_index in range(max_uv_count):
+            uv_layer = blender_mesh.uv_layers.get(f"UV{uv_index}")
+            if uv_layer is None:
+                continue
+
+            for loop_index, loop in enumerate(blender_mesh.loops):
+                vertex_data = mesh_data["vertices"][loop.vertex_index]
+                uvs = vertex_data.get("uvs", [])
+                if uv_index < len(uvs):
+                    uv_layer.data[loop_index].uv = tuple(uvs[uv_index])
+                else:
+                    uv_layer.data[loop_index].uv = (0.0, 0.0)
+
+        modifier = mesh_object.modifiers.new(name="Armature", type="ARMATURE")
+        modifier.object = armature_object
+
+        for bone in package.get("bones", []):
+            mesh_object.vertex_groups.new(name=bone["name"])
+
+        for vertex_index, vertex_data in enumerate(mesh_data.get("vertices", [])):
+            for weight_data in vertex_data.get("boneWeights", []):
+                group = mesh_object.vertex_groups.get(weight_data["boneName"])
+                if group is not None:
+                    group.add([vertex_index], float(weight_data["weight"]), "REPLACE")
+
+        mesh_object.parent = armature_object
+        mesh_objects.append(mesh_object)
+
+    return mesh_objects
+
+
+def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.types.Action]:
+    actions: list[bpy.types.Action] = []
+    armature_object.animation_data_create()
+
+    for animation_data in package.get("animations", []):
+        action = bpy.data.actions.new(animation_data["name"])
+        action.use_fake_user = True
+        armature_object.animation_data.action = action
+
+        frame_rate = float(animation_data.get("frameRate", 20.0))
+        bpy.context.scene.render.fps = max(1, int(round(frame_rate)))
+
+        for bone_data in animation_data.get("bones", []):
+            pose_bone = armature_object.pose.bones.get(bone_data["boneName"])
+            if pose_bone is None:
+                continue
+
+            pose_bone.rotation_mode = "QUATERNION"
+            translations = bone_data.get("translations")
+            rotations = bone_data.get("rotations")
+            scales = bone_data.get("scales")
+
+            frame_count = 0
+            if translations is not None:
+                frame_count = max(frame_count, len(translations))
+            if rotations is not None:
+                frame_count = max(frame_count, len(rotations))
+            if scales is not None:
+                frame_count = max(frame_count, len(scales))
+
+            for frame_index in range(frame_count):
+                frame_number = frame_index + 1
+
+                if translations is not None and frame_index < len(translations):
+                    pose_bone.location = tuple(translations[frame_index])
+                    pose_bone.keyframe_insert(data_path="location", frame=frame_number)
+
+                if rotations is not None and frame_index < len(rotations):
+                    rotation = rotations[frame_index]
+                    pose_bone.rotation_quaternion = (rotation[3], rotation[0], rotation[1], rotation[2])
+                    pose_bone.keyframe_insert(data_path="rotation_quaternion", frame=frame_number)
+
+                if scales is not None and frame_index < len(scales):
+                    pose_bone.scale = tuple(scales[frame_index])
+                    pose_bone.keyframe_insert(data_path="scale", frame=frame_number)
+
+        actions.append(action)
+
+    if actions:
+        armature_object.animation_data.action = actions[0]
+
+    return actions
+
+
+def build_scene(package: dict, package_root: Path) -> bpy.types.Object:
+    materials_by_name = build_materials(package, package_root)
+    armature_object = build_armature(package)
+    build_meshes(package, materials_by_name, armature_object)
+    build_actions(package, armature_object)
+    remove_non_exportable()
+    return armature_object
 
 
 def export_model(args: argparse.Namespace) -> None:
@@ -250,6 +531,7 @@ def export_animation(args: argparse.Namespace) -> None:
         add_leaf_bones=False,
         bake_anim=True,
         bake_anim_use_all_bones=True,
+        bake_anim_use_all_actions=False,
         bake_anim_simplify_factor=0.0,
         path_mode="AUTO",
         global_scale=args.global_scale,
@@ -260,13 +542,13 @@ def export_animation(args: argparse.Namespace) -> None:
 
 def main() -> int:
     args = parse_args()
-    input_path = Path(args.input)
+    manifest_path = Path(args.manifest)
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     reset_scene()
-    import_glb(input_path)
-    remove_non_exportable()
+    package = load_manifest(manifest_path)
+    build_scene(package, manifest_path.parent)
 
     if as_bool(args.animation_only):
         export_animation(args)
