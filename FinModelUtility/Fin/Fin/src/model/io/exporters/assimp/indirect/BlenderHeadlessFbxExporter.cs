@@ -8,7 +8,7 @@ using fin.util.asserts;
 
 namespace fin.model.io.exporters.assimp.indirect;
 
-internal static class BlenderHeadlessFbxExporter {
+public static class BlenderHeadlessFbxExporter {
   private const string BLENDER_EXE_ENV_ = "MELTYTOOL_BLENDER_EXE";
   private const string DEFAULT_BLENDER_EXE_PATH_ = @"F:\Blender 5\Blender.exe";
   private const string KEEP_TEMP_ENV_ = "MELTYTOOL_BLENDER_KEEP_TEMP";
@@ -359,7 +359,7 @@ def build_armature(package: dict) -> bpy.types.Object:
                 edit_bone.use_connect = False
 
             edit_bone.matrix = world_matrix
-            edit_bone.length = max(float(bone_data.get("length", 0.05)), 0.01)
+            edit_bone.length = max(float(bone_data.get('length', 0.05)), 0.01)
 
             world_matrix_by_name[bone_name] = world_matrix
             unresolved.remove(bone_name)
