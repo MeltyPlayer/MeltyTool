@@ -48,6 +48,7 @@ internal static class BlenderIntermediateExporter {
         package,
         new JsonSerializerOptions {
             WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         });
     manifestFile.WriteAllText(json);
