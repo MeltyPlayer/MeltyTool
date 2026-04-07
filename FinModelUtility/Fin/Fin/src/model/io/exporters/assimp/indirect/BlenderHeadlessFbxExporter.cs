@@ -420,7 +420,8 @@ def build_meshes(package: dict,
                 vertex_data = mesh_data["vertices"][loop.vertex_index]
                 uvs = vertex_data.get("uvs", [])
                 if uv_index < len(uvs):
-                    uv_layer.data[loop_index].uv = tuple(uvs[uv_index])
+                    uv = uvs[uv_index]
+                    uv_layer.data[loop_index].uv = (float(uv[0]), 1.0 - float(uv[1]))
                 else:
                     uv_layer.data[loop_index].uv = (0.0, 0.0)
 
@@ -496,11 +497,12 @@ def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.
     return actions
 
 
-def build_scene(package: dict, package_root: Path) -> bpy.types.Object:
+def build_scene(package: dict, package_root: Path, include_actions: bool) -> bpy.types.Object:
     materials_by_name = build_materials(package, package_root)
     armature_object = build_armature(package)
     build_meshes(package, materials_by_name, armature_object)
-    build_actions(package, armature_object)
+    if include_actions:
+        build_actions(package, armature_object)
     remove_non_exportable()
     return armature_object
 
@@ -546,11 +548,13 @@ def main() -> int:
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    animation_only = as_bool(args.animation_only)
+
     reset_scene()
     package = load_manifest(manifest_path)
-    build_scene(package, manifest_path.parent)
+    build_scene(package, manifest_path.parent, include_actions=animation_only)
 
-    if as_bool(args.animation_only):
+    if animation_only:
         export_animation(args)
     else:
         export_model(args)
