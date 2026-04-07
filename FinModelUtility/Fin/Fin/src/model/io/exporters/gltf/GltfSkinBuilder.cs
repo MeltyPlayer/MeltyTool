@@ -40,9 +40,7 @@ public sealed class GltfSkinBuilder {
                                    .WithSpecularGlossiness();
 
     var vertexAccessor = MaximalVertexAccessor.GetAccessorForModel(model);
-    var vertexToBuilder
-        = new IndexableDictionary<IReadOnlyVertex, IVertexBuilder>(
-            skin.Vertices.Count);
+    var vertexToBuilder = new Dictionary<(IReadOnlyVertex, int), IVertexBuilder>();
 
     var gltfVertexBuilder = new GltfVertexBuilder(model, boneToIndex) {
         UvIndices = this.UvIndices
@@ -71,10 +69,16 @@ public sealed class GltfSkinBuilder {
                                0);
       }
 
-      foreach (var finVertex in verticesInMesh) {
+      IVertexBuilder GetVertexBuilder_(IReadOnlyVertex finVertex,
+                                       int primaryUvIndex) {
+        var key = (finVertex, primaryUvIndex);
+        if (vertexToBuilder.TryGetValue(key, out var vertexBuilder)) {
+          return vertexBuilder;
+        }
+
         vertexAccessor.Target(finVertex);
 
-        var vertexBuilder = gltfVertexBuilder.CreateVertexBuilder(
+        vertexBuilder = gltfVertexBuilder.CreateVertexBuilder(
             boneTransformManager,
             vertexAccessor,
             scale,
@@ -82,9 +86,20 @@ public sealed class GltfSkinBuilder {
             hasTangents,
             colorCount,
             uvCount,
-            weightCount);
+            weightCount,
+            primaryUvIndex);
 
-        vertexToBuilder[finVertex] = vertexBuilder;
+        vertexToBuilder[key] = vertexBuilder;
+        return vertexBuilder;
+      }
+
+      int GetPrimaryUvIndex_(IReadOnlyMaterial? finMaterial) {
+        if (finMaterial == null) {
+          return 0;
+        }
+
+        var primaryTexture = PrimaryTextureFinder.GetFor(finMaterial);
+        return primaryTexture?.UvIndex ?? 0;
       }
 
       IGltfMeshBuilder gltfMeshBuilder
@@ -104,6 +119,8 @@ public sealed class GltfSkinBuilder {
           materialBuilder = nullMaterialBuilder;
         }
 
+        var primaryUvIndex = GetPrimaryUvIndex_(primitive.Material);
+
         switch (primitive.Type) {
           case PrimitiveType.TRIANGLES:
           case PrimitiveType.TRIANGLE_STRIP:
@@ -112,7 +129,7 @@ public sealed class GltfSkinBuilder {
 
             foreach (var (v1, v2, v3) in primitive
                                          .GetOrderedTriangleVertices()
-                                         .Select(v => vertexToBuilder[v])
+                                         .Select(v => GetVertexBuilder_(v, primaryUvIndex))
                                          .SeparateTriplets()) {
               triangles.AddTriangle(v1, v2, v3);
             }
@@ -123,10 +140,10 @@ public sealed class GltfSkinBuilder {
             var quads = gltfMeshBuilder.UsePrimitive(materialBuilder);
             var verticesInPrimitive = primitive.Vertices;
             for (var v = 0; v < verticesInPrimitive.Count; v += 4) {
-              quads.AddQuadrangle(vertexToBuilder[verticesInPrimitive[v + 0]],
-                                  vertexToBuilder[verticesInPrimitive[v + 1]],
-                                  vertexToBuilder[verticesInPrimitive[v + 2]],
-                                  vertexToBuilder[verticesInPrimitive[v + 3]]);
+              quads.AddQuadrangle(GetVertexBuilder_(verticesInPrimitive[v + 0], primaryUvIndex),
+                                  GetVertexBuilder_(verticesInPrimitive[v + 1], primaryUvIndex),
+                                  GetVertexBuilder_(verticesInPrimitive[v + 2], primaryUvIndex),
+                                  GetVertexBuilder_(verticesInPrimitive[v + 3], primaryUvIndex));
             }
 
             break;
@@ -149,10 +166,10 @@ public sealed class GltfSkinBuilder {
               var v2 = d;
               var v3 = c;
 
-              quads.AddQuadrangle(vertexToBuilder[verticesInPrimitive[v0]],
-                                  vertexToBuilder[verticesInPrimitive[v1]],
-                                  vertexToBuilder[verticesInPrimitive[v2]],
-                                  vertexToBuilder[verticesInPrimitive[v3]]);
+              quads.AddQuadrangle(GetVertexBuilder_(verticesInPrimitive[v0], primaryUvIndex),
+                                  GetVertexBuilder_(verticesInPrimitive[v1], primaryUvIndex),
+                                  GetVertexBuilder_(verticesInPrimitive[v2], primaryUvIndex),
+                                  GetVertexBuilder_(verticesInPrimitive[v3], primaryUvIndex));
 
               firstVertex = c;
               secondVertex = d;
@@ -165,7 +182,7 @@ public sealed class GltfSkinBuilder {
                 = gltfMeshBuilder.UsePrimitive(materialBuilder, 1);
             var verticesInPrimitive = primitive.Vertices;
             for (var v = 0; v < verticesInPrimitive.Count; v += 4) {
-              pointPrimitive.AddPoint(vertexToBuilder[verticesInPrimitive[v]]);
+              pointPrimitive.AddPoint(GetVertexBuilder_(verticesInPrimitive[v], primaryUvIndex));
             }
 
             break;

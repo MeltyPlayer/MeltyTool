@@ -13,10 +13,14 @@ public static class AssimpIndirectUvFixer {
   public static void Fix(IReadOnlyModel model, Scene sc) {
     var finVertices = model.Skin.Vertices;
 
-    var vertexAccessor = ConsistentVertexAccessor.GetAccessorForModel(model);
-    vertexAccessor.Target(finVertices[0]);
-    var uvCount = vertexAccessor.UvCount;
-    var colorCount = vertexAccessor.ColorCount;
+    var vertexAccessor = MaximalVertexAccessor.GetAccessorForModel(model);
+    var uvCount = 0;
+    var colorCount = 0;
+    foreach (var finVertex in finVertices) {
+      vertexAccessor.Target(finVertex);
+      uvCount = Math.Max(uvCount, vertexAccessor.UvCount);
+      colorCount = Math.Max(colorCount, vertexAccessor.ColorCount);
+    }
 
     // Has to have a value or it will get deleted. 
     var nullUv = new Vector3(0, 0, 0);
