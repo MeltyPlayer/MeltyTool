@@ -6,6 +6,8 @@ using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using fin.data.indexable;
+using fin.image;
 using fin.image.util;
 using fin.io;
 using fin.model.accessor;
