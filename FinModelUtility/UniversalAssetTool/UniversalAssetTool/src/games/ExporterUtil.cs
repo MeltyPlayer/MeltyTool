@@ -313,9 +313,9 @@ public static class ExporterUtil {
     => Export(threeDFileBundle,
               loaderHandler,
               outputDirectory,
-              formats.AsFileExtensions()
-                     .Select(AssimpUtil.GetExportFormatFromExtension)
-                     .ToArray(),
+              FilterFormatsForConfiguredExporter_(formats.AsFileExtensions()
+                                                         .Select(AssimpUtil.GetExportFormatFromExtension)
+                                                         .ToArray()),
               overwriteExistingFile,
               overrideName);
 
@@ -333,6 +333,8 @@ public static class ExporterUtil {
     if (threeDFileBundle.UseLowLevelExporter) {
       formats = [AssimpUtil.GetExportFormatFromExtension(".gltf")];
     }
+
+    formats = FilterFormatsForConfiguredExporter_(formats);
 
     var targetFiles = formats.Select(format => new FinFile(
                                          Path.Join(outputDirectory.FullPath,
@@ -377,5 +379,22 @@ public static class ExporterUtil {
     }
 
     logger_.LogInformation(" ");
+  }
+
+  private static IReadOnlyList<ExportFormatDescription> FilterFormatsForConfiguredExporter_(
+      IReadOnlyList<ExportFormatDescription> formats) {
+    if (!BlenderHeadlessFbxExporter.IsConfigured()) {
+      return formats;
+    }
+
+    var hasFbx = formats.Any(format => format.FileExtension.Equals("fbx",
+                                                                   StringComparison.OrdinalIgnoreCase));
+    if (!hasFbx) {
+      return formats;
+    }
+
+    return formats.Where(format => !format.FileExtension.Equals("glb",
+                                                                StringComparison.OrdinalIgnoreCase))
+                  .ToArray();
   }
 }
