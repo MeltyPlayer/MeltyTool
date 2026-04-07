@@ -465,8 +465,9 @@ def local_matrix_from_bone_data(bone_data: dict,
     )
 
 
-def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.types.Action]:
+def build_actions(package: dict, armature_object: bpy.types.Object) -> tuple[list[bpy.types.Action], int]:
     actions: list[bpy.types.Action] = []
+    max_frame_number = 1
     armature_object.animation_data_create()
 
     bone_data_by_name = {bone_data["name"]: bone_data for bone_data in package.get("bones", [])}
@@ -482,6 +483,9 @@ def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.
 
         frame_rate = float(animation_data.get("frameRate", 20.0))
         bpy.context.scene.render.fps = max(1, int(round(frame_rate)))
+
+        animation_frame_count = int(animation_data.get("frameCount", 1))
+        max_frame_number = max(max_frame_number, animation_frame_count)
 
         for bone_animation_data in animation_data.get("bones", []):
             bone_name = bone_animation_data["boneName"]
@@ -531,18 +535,21 @@ def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.
 
     if actions:
         armature_object.animation_data.action = actions[0]
+        bpy.context.scene.frame_start = 1
+        bpy.context.scene.frame_end = max_frame_number
 
-    return actions
+    return actions, max_frame_number
 
 
-def build_scene(package: dict, package_root: Path, include_actions: bool) -> bpy.types.Object:
+def build_scene(package: dict, package_root: Path, include_actions: bool) -> tuple[bpy.types.Object, int]:
     materials_by_name = build_materials(package, package_root)
     armature_object = build_armature(package)
     build_meshes(package, materials_by_name, armature_object)
+    max_frame_number = 1
     if include_actions:
-        build_actions(package, armature_object)
+        _, max_frame_number = build_actions(package, armature_object)
     remove_non_exportable()
-    return armature_object
+    return armature_object, max_frame_number
 
 
 def export_model(args: argparse.Namespace) -> None:
@@ -571,7 +578,10 @@ def export_animation(args: argparse.Namespace) -> None:
         add_leaf_bones=False,
         bake_anim=True,
         bake_anim_use_all_bones=True,
-        bake_anim_use_all_actions=False,
+        bake_anim_use_nla_strips=False,
+        bake_anim_use_all_actions=True,
+        bake_anim_force_startend_keying=True,
+        bake_anim_step=1.0,
         bake_anim_simplify_factor=0.0,
         path_mode="AUTO",
         global_scale=args.global_scale,
@@ -590,7 +600,7 @@ def main() -> int:
 
     reset_scene()
     package = load_manifest(manifest_path)
-    build_scene(package, manifest_path.parent, include_actions=animation_only)
+    _, _ = build_scene(package, manifest_path.parent, include_actions=animation_only)
 
     if animation_only:
         export_animation(args)
