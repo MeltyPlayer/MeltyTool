@@ -443,9 +443,37 @@ def build_meshes(package: dict,
     return mesh_objects
 
 
+def local_matrix_from_bone_data(bone_data: dict,
+                                translation: list[float] | None = None,
+                                rotation: list[float] | None = None,
+                                scale: list[float] | None = None) -> mathutils.Matrix:
+    translation_values = translation if translation is not None else bone_data.get("translation", [0.0, 0.0, 0.0])
+    rotation_values = rotation if rotation is not None else bone_data.get("rotation", [0.0, 0.0, 0.0, 1.0])
+    scale_values = scale if scale is not None else bone_data.get("scale", [1.0, 1.0, 1.0])
+
+    translation_vec = mathutils.Vector(translation_values)
+    rotation_quat = mathutils.Quaternion((rotation_values[3],
+                                          rotation_values[0],
+                                          rotation_values[1],
+                                          rotation_values[2]))
+    scale_vec = mathutils.Vector(scale_values)
+
+    return (
+        mathutils.Matrix.Translation(translation_vec)
+        @ rotation_quat.to_matrix().to_4x4()
+        @ mathutils.Matrix.Diagonal((scale_vec.x, scale_vec.y, scale_vec.z, 1.0))
+    )
+
+
 def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.types.Action]:
     actions: list[bpy.types.Action] = []
     armature_object.animation_data_create()
+
+    bone_data_by_name = {bone_data["name"]: bone_data for bone_data in package.get("bones", [])}
+    rest_local_matrix_by_name = {
+        bone_name: local_matrix_from_bone_data(bone_data)
+        for bone_name, bone_data in bone_data_by_name.items()
+    }
 
     for animation_data in package.get("animations", []):
         action = bpy.data.actions.new(animation_data["name"])
@@ -455,15 +483,18 @@ def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.
         frame_rate = float(animation_data.get("frameRate", 20.0))
         bpy.context.scene.render.fps = max(1, int(round(frame_rate)))
 
-        for bone_data in animation_data.get("bones", []):
-            pose_bone = armature_object.pose.bones.get(bone_data["boneName"])
-            if pose_bone is None:
+        for bone_animation_data in animation_data.get("bones", []):
+            bone_name = bone_animation_data["boneName"]
+            pose_bone = armature_object.pose.bones.get(bone_name)
+            bone_data = bone_data_by_name.get(bone_name)
+            rest_local_matrix = rest_local_matrix_by_name.get(bone_name)
+            if pose_bone is None or bone_data is None or rest_local_matrix is None:
                 continue
 
             pose_bone.rotation_mode = "QUATERNION"
-            translations = bone_data.get("translations")
-            rotations = bone_data.get("rotations")
-            scales = bone_data.get("scales")
+            translations = bone_animation_data.get("translations")
+            rotations = bone_animation_data.get("rotations")
+            scales = bone_animation_data.get("scales")
 
             frame_count = 0
             if translations is not None:
@@ -475,19 +506,26 @@ def build_actions(package: dict, armature_object: bpy.types.Object) -> list[bpy.
 
             for frame_index in range(frame_count):
                 frame_number = frame_index + 1
+                bpy.context.scene.frame_set(frame_number)
 
-                if translations is not None and frame_index < len(translations):
-                    pose_bone.location = tuple(translations[frame_index])
-                    pose_bone.keyframe_insert(data_path="location", frame=frame_number)
+                translation = translations[frame_index] if translations is not None and frame_index < len(translations) else None
+                rotation = rotations[frame_index] if rotations is not None and frame_index < len(rotations) else None
+                scale = scales[frame_index] if scales is not None and frame_index < len(scales) else None
 
-                if rotations is not None and frame_index < len(rotations):
-                    rotation = rotations[frame_index]
-                    pose_bone.rotation_quaternion = (rotation[3], rotation[0], rotation[1], rotation[2])
-                    pose_bone.keyframe_insert(data_path="rotation_quaternion", frame=frame_number)
+                animated_local_matrix = local_matrix_from_bone_data(bone_data,
+                                                                    translation=translation,
+                                                                    rotation=rotation,
+                                                                    scale=scale)
+                basis_matrix = rest_local_matrix.inverted() @ animated_local_matrix
+                basis_location, basis_rotation, basis_scale = basis_matrix.decompose()
 
-                if scales is not None and frame_index < len(scales):
-                    pose_bone.scale = tuple(scales[frame_index])
-                    pose_bone.keyframe_insert(data_path="scale", frame=frame_number)
+                pose_bone.location = basis_location
+                pose_bone.rotation_quaternion = basis_rotation
+                pose_bone.scale = basis_scale
+
+                pose_bone.keyframe_insert(data_path="location", frame=frame_number)
+                pose_bone.keyframe_insert(data_path="rotation_quaternion", frame=frame_number)
+                pose_bone.keyframe_insert(data_path="scale", frame=frame_number)
 
         actions.append(action)
 
