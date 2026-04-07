@@ -28,9 +28,14 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
   public void ExportModel(IModelExporterParams modelExporterParams)
     => this.ExportExtensions(modelExporterParams,
                              !this.LowLevel
-                                 ? [".fbx", ".glb"]
+                                 ? GetDefaultExtensions_()
                                  : new[] { ".gltf" },
                              false);
+
+  private static IReadOnlyList<string> GetDefaultExtensions_()
+    => BlenderHeadlessFbxExporter.IsConfigured()
+        ? [".fbx"]
+        : [".fbx", ".glb"];
 
   public void ExportExtensions(IModelExporterParams modelExporterParams,
                                IReadOnlyList<string> exportedExtensions,
