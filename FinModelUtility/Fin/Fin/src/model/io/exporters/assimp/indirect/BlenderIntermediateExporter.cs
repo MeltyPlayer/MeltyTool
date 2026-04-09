@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,21 +59,34 @@ internal static class BlenderIntermediateExporter {
       IReadOnlyModel model,
       ISystemDirectory texturesDirectory) {
     var texturePathByTexture = new Dictionary<IReadOnlyTexture, string>();
+    var relativePathByTextureFileName =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     var textures = model.MaterialManager.All
                         .SelectMany(material => material.Textures)
-                        .DistinctBy(texture => texture.ValidFileName)
                         .ToArray();
 
-    for (var i = 0; i < textures.Length; ++i) {
-      var texture = textures[i];
-      var stem = Path.GetFileNameWithoutExtension(texture.ValidFileName);
-      var fileName = $"{i:D4}_{SanitizeFileName_(stem)}.png";
-      var relativePath = Path.Combine("textures", fileName).Replace('\\', '/');
-      var file = new FinFile(Path.Combine(texturesDirectory.FullPath, fileName));
+    var exportedTextureCount = 0;
+    foreach (var texture in textures) {
+      var textureFileName =
+          texture.ValidFileName ?? texture.Name ?? $"texture_{exportedTextureCount:D4}";
+      if (!relativePathByTextureFileName.TryGetValue(textureFileName,
+                                                     out var relativePath)) {
+        var stem = Path.GetFileNameWithoutExtension(textureFileName);
+        if (string.IsNullOrWhiteSpace(stem)) {
+          stem = $"texture_{exportedTextureCount:D4}";
+        }
 
-      using var stream = new MemoryStream();
-      texture.Image.ExportToStream(stream, LocalImageFormat.PNG);
-      file.WriteAllBytes(stream.ToArray());
+        var fileName = $"{exportedTextureCount:D4}_{SanitizeFileName_(stem)}.png";
+        relativePath = Path.Combine("textures", fileName).Replace('\\', '/');
+        var file = new FinFile(Path.Combine(texturesDirectory.FullPath, fileName));
+
+        using var stream = new MemoryStream();
+        texture.Image.ExportToStream(stream, LocalImageFormat.PNG);
+        file.WriteAllBytes(stream.ToArray());
+
+        relativePathByTextureFileName[textureFileName] = relativePath;
+        ++exportedTextureCount;
+      }
 
       texturePathByTexture[texture] = relativePath;
     }
@@ -98,18 +111,13 @@ internal static class BlenderIntermediateExporter {
           },
       };
 
-      var primaryTexture = PrimaryTextureFinder.GetFor(finMaterial);
+      var normalTexture = GetNormalTexture_(finMaterial);
+      var primaryTexture = ChoosePrimaryTextureForBlender_(finMaterial, normalTexture);
       if (primaryTexture != null &&
           texturePathByTexture.TryGetValue(primaryTexture, out var primaryPath)) {
         material.PrimaryTexture = CreateTextureSlotData_(primaryTexture, primaryPath);
         material.AlphaMode = primaryTexture.TransparencyType.ToString();
       }
-
-      IReadOnlyTexture? normalTexture = finMaterial switch {
-          IStandardMaterial standardMaterial => standardMaterial.NormalTexture,
-          IFixedFunctionMaterial fixedFunctionMaterial => fixedFunctionMaterial.NormalTexture,
-          _ => null,
-      };
 
       if (normalTexture != null &&
           texturePathByTexture.TryGetValue(normalTexture, out var normalPath)) {
@@ -120,6 +128,75 @@ internal static class BlenderIntermediateExporter {
     }
 
     return materials;
+  }
+
+
+
+  private static IReadOnlyTexture? GetNormalTexture_(IReadOnlyMaterial finMaterial)
+    => finMaterial switch {
+        IStandardMaterial standardMaterial => standardMaterial.NormalTexture,
+        IFixedFunctionMaterial fixedFunctionMaterial => fixedFunctionMaterial.NormalTexture,
+        _ => null,
+    };
+
+  private static IReadOnlyTexture? ChoosePrimaryTextureForBlender_(
+      IReadOnlyMaterial finMaterial,
+      IReadOnlyTexture? normalTexture) {
+    var preferredTexture = PrimaryTextureFinder.GetFor(finMaterial);
+    if (preferredTexture != null &&
+        GetPrimaryTextureScore_(preferredTexture, normalTexture) >= 0) {
+      return preferredTexture;
+    }
+
+    return finMaterial.Textures
+                      .Where(texture => texture != normalTexture)
+                      .Select(texture => (texture,
+                                          score: GetPrimaryTextureScore_(texture,
+                                                                         normalTexture)))
+                      .OrderByDescending(tuple => tuple.score)
+                      .ThenBy(tuple => tuple.texture.UvIndex)
+                      .Select(tuple => tuple.texture)
+                      .FirstOrDefault();
+  }
+
+  private static int GetPrimaryTextureScore_(IReadOnlyTexture texture,
+                                             IReadOnlyTexture? normalTexture) {
+    if (texture == normalTexture) {
+      return int.MinValue;
+    }
+
+    var score = 0;
+    var textureName =
+        Path.GetFileNameWithoutExtension(texture.ValidFileName ?? texture.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+    if (texture.UvIndex == 0) {
+      score += 100;
+    } else {
+      score -= 25 * texture.UvIndex;
+    }
+
+    if (texture.TransparencyType == TransparencyType.OPAQUE) {
+      score += 20;
+    }
+
+    if (textureName.Contains("decal")) {
+      score -= 1000;
+    }
+
+    if (textureName.Contains("_ev") || textureName.EndsWith("ev")) {
+      score -= 500;
+    }
+
+    if (textureName.Contains("eff") || textureName.Contains("effect")) {
+      score -= 250;
+    }
+
+    if (textureName.Contains("shadow") || textureName.Contains("mask")) {
+      score -= 150;
+    }
+
+    return score;
   }
 
   private static BlenderTextureSlotData CreateTextureSlotData_(IReadOnlyTexture texture,

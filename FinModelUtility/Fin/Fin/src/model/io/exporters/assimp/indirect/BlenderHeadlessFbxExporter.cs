@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -157,6 +157,7 @@ import sys
 from pathlib import Path
 
 import bpy
+import math
 import mathutils
 
 
@@ -552,6 +553,13 @@ def build_scene(package: dict, package_root: Path, include_actions: bool) -> tup
     return armature_object, max_frame_number
 
 
+def apply_export_transform() -> None:
+    select_exportable({"MESH", "ARMATURE"})
+    bpy.ops.transform.resize(value=(0.5, 0.5, 0.5), orient_type="GLOBAL")
+    bpy.ops.transform.rotate(value=math.radians(90.0), orient_axis='X', orient_type='GLOBAL')
+    bpy.ops.transform.rotate(value=math.radians(90.0), orient_axis='Z', orient_type='GLOBAL')
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
+
 def export_model(args: argparse.Namespace) -> None:
     select_exportable({"MESH", "ARMATURE"})
     bpy.ops.export_scene.fbx(
@@ -601,6 +609,7 @@ def main() -> int:
     reset_scene()
     package = load_manifest(manifest_path)
     _, _ = build_scene(package, manifest_path.parent, include_actions=animation_only)
+    apply_export_transform()
 
     if animation_only:
         export_animation(args)
