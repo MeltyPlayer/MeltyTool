@@ -116,7 +116,7 @@ internal static class BlenderIntermediateExporter {
       if (primaryTexture != null &&
           texturePathByTexture.TryGetValue(primaryTexture, out var primaryPath)) {
         material.PrimaryTexture = CreateTextureSlotData_(primaryTexture, primaryPath);
-        material.AlphaMode = primaryTexture.TransparencyType.ToString();
+        material.AlphaMode = finMaterial.GetTransparencyType().ToString();
       }
 
       if (normalTexture != null &&

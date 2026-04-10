@@ -11,6 +11,11 @@ public sealed class ListPluginOptions;
 
 [Verb("convert", HelpText = "Converts model(s) from one format to another. The best plugin will automatically be detected based on the list of input files.")]
 public sealed class ConvertOptions {
+  [Option("animation-only",
+          Default = false,
+          HelpText = "Export animation-only FBX output when supported (armature only).")]
+  public bool AnimationOnly { get; set; }
+
   [Option('i',
           "inputs",
           Required = true,

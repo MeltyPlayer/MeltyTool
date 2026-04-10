@@ -187,6 +187,13 @@ def reset_scene() -> None:
     bpy.ops.wm.read_factory_settings(use_empty=True)
 
 
+def configure_scene_units() -> None:
+    scene = bpy.context.scene
+    scene.unit_settings.system = "METRIC"
+    scene.unit_settings.scale_length = 0.01
+    scene.unit_settings.length_unit = "CENTIMETERS"
+
+
 def load_manifest(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -571,6 +578,9 @@ def export_model(args: argparse.Namespace) -> None:
         path_mode="COPY" if as_bool(args.embed_textures) else "AUTO",
         embed_textures=as_bool(args.embed_textures),
         global_scale=args.global_scale,
+        apply_unit_scale=True,
+        apply_scale_options="FBX_SCALE_UNITS",
+        bake_space_transform=False,
         axis_forward=args.axis_forward,
         axis_up=args.axis_up,
     )
@@ -593,6 +603,9 @@ def export_animation(args: argparse.Namespace) -> None:
         bake_anim_simplify_factor=0.0,
         path_mode="AUTO",
         global_scale=args.global_scale,
+        apply_unit_scale=True,
+        apply_scale_options="FBX_SCALE_UNITS",
+        bake_space_transform=False,
         axis_forward=args.axis_forward,
         axis_up=args.axis_up,
     )
@@ -607,6 +620,7 @@ def main() -> int:
     animation_only = as_bool(args.animation_only)
 
     reset_scene()
+    configure_scene_units()
     package = load_manifest(manifest_path)
     _, _ = build_scene(package, manifest_path.parent, include_actions=animation_only)
     apply_export_transform()

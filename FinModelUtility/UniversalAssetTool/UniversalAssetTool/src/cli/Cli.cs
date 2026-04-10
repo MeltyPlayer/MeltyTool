@@ -125,7 +125,9 @@ public static class Cli {
 
             Console.WriteLine("Writing the output file...");
             var exporter =
-                new AssimpIndirectModelExporter();
+                new AssimpIndirectModelExporter {
+                    AnimationOnly = convertOptions.AnimationOnly,
+                };
             exporter.ExportExtensions(new ModelExporterParams {
                                         Model = model,
                                         OutputFile = outputFile,

@@ -159,7 +159,7 @@ public static class FinImage {
         LocalImageFormat.BMP => new BmpEncoder(),
         LocalImageFormat.PNG => new PngEncoder {
             SkipMetadata = true,
-            TransparentColorMode = PngTransparentColorMode.Clear,
+            TransparentColorMode = PngTransparentColorMode.Preserve,
         },
         LocalImageFormat.JPEG => new JpegEncoder() {
             SkipMetadata = true,
