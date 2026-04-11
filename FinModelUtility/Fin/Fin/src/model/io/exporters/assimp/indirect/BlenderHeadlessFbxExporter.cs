@@ -48,14 +48,14 @@ public static class BlenderHeadlessFbxExporter {
           ? outputFile
           : outputFile.CloneWithFileType(".fbx");
 
-      RunBlender_(blenderExe,
-                  tempScriptFile,
-                  manifestFile,
-                  outputFbx,
-                  animationOnly);
+      var (stdout, stderr) = RunBlender_(blenderExe,
+                                         tempScriptFile,
+                                         manifestFile,
+                                         outputFbx,
+                                         animationOnly);
 
       Asserts.True(outputFbx.Exists,
-                   $"Blender did not produce the expected FBX file: {outputFbx.FullPath}");
+                   $"Blender did not produce the expected FBX file: {outputFbx.FullPath}\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}");
     } finally {
       if (!GetFlagFromEnvironment_(KEEP_TEMP_ENV_)) {
         try {
@@ -77,11 +77,11 @@ public static class BlenderHeadlessFbxExporter {
     return File.Exists(blenderExe);
   }
 
-  private static void RunBlender_(string blenderExe,
-                                  ISystemFile scriptFile,
-                                  ISystemFile manifestFile,
-                                  ISystemFile outputFile,
-                                  bool animationOnly) {
+  private static (string stdout, string stderr) RunBlender_(string blenderExe,
+                                                          ISystemFile scriptFile,
+                                                          ISystemFile manifestFile,
+                                                          ISystemFile outputFile,
+                                                          bool animationOnly) {
     var startInfo = new ProcessStartInfo {
         FileName = blenderExe,
         UseShellExecute = false,
@@ -119,6 +119,8 @@ public static class BlenderHeadlessFbxExporter {
 
     Asserts.True(process.ExitCode == 0,
                  $"Blender FBX export failed with exit code {process.ExitCode}.\nSTDOUT:\n{stdout}\nSTDERR:\n{stderr}");
+
+    return (stdout, stderr);
   }
 
   private static string GetEnvironmentOrDefault_(string key,
@@ -562,14 +564,14 @@ def build_scene(package: dict, package_root: Path, include_actions: bool) -> tup
 
 def apply_export_transform() -> None:
     select_exportable({"MESH", "ARMATURE"})
-    bpy.ops.transform.resize(value=(0.5, 0.5, 0.5), orient_type="GLOBAL")
+    # legacy half-scale removed for normalization test
     bpy.ops.transform.rotate(value=math.radians(90.0), orient_axis='X', orient_type='GLOBAL')
     bpy.ops.transform.rotate(value=math.radians(90.0), orient_axis='Z', orient_type='GLOBAL')
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
 
 def export_model(args: argparse.Namespace) -> None:
     select_exportable({"MESH", "ARMATURE"})
-    bpy.ops.export_scene.fbx(
+    result = bpy.ops.export_scene.fbx(
         filepath=str(Path(args.output)),
         use_selection=True,
         object_types={"MESH", "ARMATURE"},
@@ -584,12 +586,15 @@ def export_model(args: argparse.Namespace) -> None:
         axis_forward=args.axis_forward,
         axis_up=args.axis_up,
     )
+    print(f"export_model result: {result}")
+    if "FINISHED" not in result:
+        raise RuntimeError(f"FBX export_model failed: {result}")
 
 
 def export_animation(args: argparse.Namespace) -> None:
     remove_meshes()
     select_exportable({"ARMATURE"})
-    bpy.ops.export_scene.fbx(
+    result = bpy.ops.export_scene.fbx(
         filepath=str(Path(args.output)),
         use_selection=True,
         object_types={"ARMATURE"},
@@ -609,6 +614,9 @@ def export_animation(args: argparse.Namespace) -> None:
         axis_forward=args.axis_forward,
         axis_up=args.axis_up,
     )
+    print(f"export_animation result: {result}")
+    if "FINISHED" not in result:
+        raise RuntimeError(f"FBX export_animation failed: {result}")
 
 
 def main() -> int:
@@ -624,6 +632,7 @@ def main() -> int:
     package = load_manifest(manifest_path)
     _, _ = build_scene(package, manifest_path.parent, include_actions=animation_only)
     apply_export_transform()
+    print("Exportable objects:", [(obj.name, obj.type) for obj in bpy.data.objects if obj.type in {"MESH", "ARMATURE"}])
 
     if animation_only:
         export_animation(args)

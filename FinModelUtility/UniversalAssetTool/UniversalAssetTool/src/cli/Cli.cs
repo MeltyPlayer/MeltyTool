@@ -1,11 +1,18 @@
 ﻿using CommandLine;
 
+using fin.model;
+
+using System.Text.Json;
+
+using System.IO;
+
 using fin.io;
 using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
 using fin.model.processing;
 using fin.util.types;
+using System.Linq;
 
 
 namespace uni.cli;
@@ -123,6 +130,8 @@ public static class Cli {
                 inputFiles,
                 frameRate);
 
+            WriteMaterialDebugSidecar_(model, outputFile);
+
             Console.WriteLine("Writing the output file...");
             var exporter =
                 new AssimpIndirectModelExporter {
@@ -136,6 +145,87 @@ public static class Cli {
                                     true);
           })
           .WithParsed((DebugOptions _) => runDebug?.Invoke());
+  }
+
+
+  private static void WriteMaterialDebugSidecar_(IReadOnlyModel model,
+                                                 IReadOnlySystemFile outputFile) {
+    try {
+      var outputDirectory = outputFile.AssertGetParent();
+      var sidecarPath = Path.Combine(
+          outputDirectory.FullPath,
+          $"{Path.GetFileNameWithoutExtension(outputFile.FullPath)}.materials.debug.json");
+      var sidecarFile = new FinFile(sidecarPath);
+
+      object CreateTextureData(IReadOnlyTexture texture, int slotIndex) => new {
+          SlotIndex = slotIndex,
+          Name = texture.Name,
+          ValidFileName = texture.ValidFileName,
+          UvIndex = texture.UvIndex,
+          UvType = texture.UvType.ToString(),
+          WrapModeU = texture.WrapModeU.ToString(),
+          WrapModeV = texture.WrapModeV.ToString(),
+          MinFilter = texture.MinFilter.ToString(),
+          MagFilter = texture.MagFilter.ToString(),
+          LodBias = texture.LodBias,
+          MinLod = texture.MinLod,
+          TransparencyType = texture.TransparencyType.ToString(),
+          BorderColor = new {
+              R = texture.BorderColor.Rb,
+              G = texture.BorderColor.Gb,
+              B = texture.BorderColor.Bb,
+              A = texture.BorderColor.Ab,
+          },
+          Image = new {
+              Width = texture.Image?.Width,
+              Height = texture.Image?.Height,
+              PixelFormat = texture.Image?.PixelFormat.ToString(),
+          },
+          TextureTransform = texture.TextureTransform?.ToString(),
+      };
+
+      var materials = model.MaterialManager.All
+                           .Select((material, materialIndex) => new {
+                               MaterialIndex = materialIndex,
+                               Name = material.Name,
+                               MaterialType =
+                                   material is IFixedFunctionMaterial
+                                       ? "FixedFunction"
+                                       : material is IStandardMaterial
+                                           ? "Standard"
+                                           : material.GetType().Name,
+                               CullingMode = material.CullingMode.ToString(),
+                               TextureCount = material.Textures.Count(),
+                               Textures = material.Textures
+                                                  .Select((texture, slotIndex) =>
+                                                              CreateTextureData(texture, slotIndex))
+                                                  .ToArray(),
+                               NormalTexture = material switch {
+                                   IStandardMaterial standardMaterial when standardMaterial.NormalTexture != null
+                                       => CreateTextureData(standardMaterial.NormalTexture, -1),
+                                   IFixedFunctionMaterial fixedFunctionMaterial when fixedFunctionMaterial.NormalTexture != null
+                                       => CreateTextureData(fixedFunctionMaterial.NormalTexture, -1),
+                                   _ => null,
+                               },
+                           })
+                           .ToArray();
+
+      var payload = new {
+          OutputFile = outputFile.FullPath,
+          MaterialCount = materials.Length,
+          Materials = materials,
+      };
+
+      var json = JsonSerializer.Serialize(
+          payload,
+          new JsonSerializerOptions {
+              WriteIndented = true,
+          });
+      sidecarFile.WriteAllText(json);
+      Console.WriteLine($"Wrote material debug sidecar: {sidecarPath}");
+    } catch (Exception e) {
+      Console.WriteLine($"Failed to write material debug sidecar: {e}");
+    }
   }
 
   private static void PrintPluginInfo_(IModelImporterPlugin plugin) {

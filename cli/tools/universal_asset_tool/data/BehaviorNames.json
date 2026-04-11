@@ -1,0 +1,2076 @@
+{
+  "BehaviorNames": [
+	 {
+	   "Name": "Sliding star door",
+	   "Behavior": "0x13000000"
+	 },
+	 {
+	   "Name": "Mr. I (grouped object)",
+	   "Behavior": "0x13000054"
+	 },
+	 {
+	   "Name": "Mr. I pupil",
+	   "Behavior": "0x1300008C"
+	 },
+	 {
+	   "Name": "Mr. I particle",
+	   "Behavior": "0x130000AC"
+	 },
+	 {
+	   "Name": "Piranha Plant particle",
+	   "Behavior": "0x130000F8"
+	 },
+	 {
+	   "Name": "Giant Pole (Whomp's Fortress)",
+	   "Behavior": "0x13000118"
+	 },
+	 {
+	   "Name": "Pole (scalable by parameter 2)",
+	   "Behavior": "0x13000144"
+	 },
+	 {
+	   "Name": "Disable if behavior 0x13000194 is pounded",
+	   "Behavior": "0x13000174"
+	 },
+	 {
+	   "Name": "Explode when pounded, disable behavior 0x13000174",
+	   "Behavior": "0x13000194"
+	 },
+	 {
+	   "Name": "Cap Switch (grouped object)",
+	   "Behavior": "0x130001CC"
+	 },
+	 {
+	   "Name": "King Bob-omb",
+	   "Behavior": "0x130001F4"
+	 },
+	 {
+	   "Name": "Anchor Mario (King Bob-omb)",
+	   "Behavior": "0x13000254"
+	 },
+	 {
+	   "Name": "Bubble (Mario)",
+	   "Behavior": "0x130002B8"
+	 },
+	 {
+	   "Name": "Small water wave (Mario)",
+	   "Behavior": "0x13000338"
+	 },
+	 {
+	   "Name": "Bubbles spawn (Mario)",
+	   "Behavior": "0x13000398"
+	 },
+	 {
+	   "Name": "Water particles",
+	   "Behavior": "0x13000400"
+	 },
+	 {
+	   "Name": "Water waves",
+	   "Behavior": "0x13000428"
+	 },
+	 {
+	   "Name": "Snow particle",
+	   "Behavior": "0x13000444"
+	 },
+	 {
+	   "Name": "Snow particle",
+	   "Behavior": "0x1300046C"
+	 },
+	 {
+	   "Name": "Fish group (in Aquarium)",
+	   "Behavior": "0x13000494"
+	 },
+	 {
+	   "Name": "Open cannon (grouped object)",
+	   "Behavior": "0x130004A8"
+	 },
+	 {
+	   "Name": "Cannon barrel",
+	   "Behavior": "0x130004E4"
+	 },
+	 {
+	   "Name": "Cannon base",
+	   "Behavior": "0x13000500"
+	 },
+	 {
+	   "Name": "Chuckya",
+	   "Behavior": "0x13000528"
+	 },
+	 {
+	   "Name": "Anchor Mario (Chuckya)",
+	   "Behavior": "0x13000584"
+	 },
+	 {
+	   "Name": "Rotating platform (param1 = speed, param2 = collision",
+	   "Behavior": "0x130005B4"
+	 },
+	 {
+	   "Name": "Solid object (Whomp's Fortress tower)",
+	   "Behavior": "0x130005D8"
+	 },
+	 {
+	   "Name": "Solid object (Bullet Bill cannon collision)",
+	   "Behavior": "0x13000600"
+	 },
+	 {
+	   "Name": "Breakable Wall Corner (plays \"correct solution\" track",
+	   "Behavior": "0x13000624"
+	 },
+	 {
+	   "Name": "Breakable Wall Corner",
+	   "Behavior": "0x13000638"
+	 },
+	 {
+	   "Name": "Wall corner in Whomp's Fortress",
+	   "Behavior": "0x13000644"
+	 },
+	 {
+	   "Name": "Kickable Giant Wooden Board",
+	   "Behavior": "0x1300066C"
+	 },
+	 {
+	   "Name": "Explodes when punched (Whomp's Fortress tower door)",
+	   "Behavior": "0x130006A4"
+	 },
+	 {
+	   "Name": "Rotating counter-clockwise (bridge in Whomp's Fortress)",
+	   "Behavior": "0x130006D8"
+	 },
+	 {
+	   "Name": "Rotating counter-clockwise (bridge in Whomp's Fortress)",
+	   "Behavior": "0x130006E0"
+	 },
+	 {
+	   "Name": "Koopa Shell",
+	   "Behavior": "0x13000708"
+	 },
+	 {
+	   "Name": "Tall Tall Slide Exit Podium",
+	   "Behavior": "0x13000720"
+	 },
+	 {
+	   "Name": "Warp (Fading)",
+	   "Behavior": "0x1300075C"
+	 },
+	 {
+	   "Name": "Warp Hole",
+	   "Behavior": "0x13000780"
+	 },
+	 {
+	   "Name": "Warp Pipe",
+	   "Behavior": "0x130007A0"
+	 },
+	 {
+	   "Name": "White puffs spawn (from ground-pound, clamshells etc.)",
+	   "Behavior": "0x130007DC"
+	 },
+	 {
+	   "Name": "Spawned star (no coordinates)",
+	   "Behavior": "0x130007F8"
+	 },
+	 {
+	   "Name": "Sparkles (from stars, etc.)",
+	   "Behavior": "0x13000814"
+	 },
+	 {
+	   "Name": "Blue coin from Mr.I",
+	   "Behavior": "0x13000830"
+	 },
+	 {
+	   "Name": "Coin inside of Boo",
+	   "Behavior": "0x13000888"
+	 },
+	 {
+	   "Name": "Coin group (param2 = formation type)",
+	   "Behavior": "0x130008EC"
+	 },
+	 {
+	   "Name": "Coin (type 1)",
+	   "Behavior": "0x1300090C"
+	 },
+	 {
+	   "Name": "Coin (type 2)",
+	   "Behavior": "0x1300091C"
+	 },
+	 {
+	   "Name": "Coin (type 3)",
+	   "Behavior": "0x13000920"
+	 },
+	 {
+	   "Name": "Three coins spawn",
+	   "Behavior": "0x13000964"
+	 },
+	 {
+	   "Name": "Peach (awakening)",
+	   "Behavior": "0x1300097C"
+	 },
+	 {
+	   "Name": "Ten coins spawn",
+	   "Behavior": "0x13000984"
+	 },
+	 {
+	   "Name": "One coin spawn",
+	   "Behavior": "0x130009A4"
+	 },
+	 {
+	   "Name": "Sparkles (from all types of coins)",
+	   "Behavior": "0x130009E0"
+	 },
+	 {
+	   "Name": "Sparkles (from golden coins)",
+	   "Behavior": "0x13000A14"
+	 },
+	 {
+	   "Name": "Tiny star particle (when Mario bumps a wall)",
+	   "Behavior": "0x13000A34"
+	 },
+	 {
+	   "Name": "Tiny star particle spawn (when Mario bumps a wall)",
+	   "Behavior": "0x13000A54"
+	 },
+	 {
+	   "Name": "Tiny star particle (from ground pound)",
+	   "Behavior": "0x13000A78"
+	 },
+	 {
+	   "Name": "Tiny star particle spawn (from ground pound)",
+	   "Behavior": "0x13000A98"
+	 },
+	 {
+	   "Name": "Tiny triangle (punching something)",
+	   "Behavior": "0x13000ABC"
+	 },
+	 {
+	   "Name": "Tiny triangle spawn (punching something)",
+	   "Behavior": "0x13000AD8"
+	 },
+	 {
+	   "Name": "Door",
+	   "Behavior": "0x13000AFC"
+	 },
+	 {
+	   "Name": "Door",
+	   "Behavior": "0x13000B0C"
+	 },
+	 {
+	   "Name": "Door (warping)",
+	   "Behavior": "0x13000B14"
+	 },
+	 {
+	   "Name": "Grindel",
+	   "Behavior": "0x13000B58"
+	 },
+	 {
+	   "Name": "Twhomp 2",
+	   "Behavior": "0x13000B8C"
+	 },
+	 {
+	   "Name": "Twhomp",
+	   "Behavior": "0x13000BC8"
+	 },
+	 {
+	   "Name": "Used by all tumbling bridge platforms",
+	   "Behavior": "0x13000C04"
+	 },
+	 {
+	   "Name": "Tumbling platform group (Whomp's Fortress)",
+	   "Behavior": "0x13000C28"
+	 },
+	 {
+	   "Name": "Tumbling platform group (Big Boo's Haunt)",
+	   "Behavior": "0x13000C44"
+	 },
+	 {
+	   "Name": "Tumbling platform",
+	   "Behavior": "0x13000C64"
+	 },
+	 {
+	   "Name": "Flame (static)",
+	   "Behavior": "0x13000C84"
+	 },
+	 {
+	   "Name": "Another elevator (re-check)",
+	   "Behavior": "0x13000CC8"
+	 },
+	 {
+	   "Name": "Elevator platform in RR (param2 = track#)",
+	   "Behavior": "0x13000CFC"
+	 },
+	 {
+	   "Name": "Elevator platform in HMC (param2 = track#)",
+	   "Behavior": "0x13000D30"
+	 },
+	 {
+	   "Name": "White puff ??",
+	   "Behavior": "0x13000D6C"
+	 },
+	 {
+	   "Name": "Spawn behavior 0x13000D6C",
+	   "Behavior": "0x13000D98"
+	 },
+	 {
+	   "Name": "Particles (stars, triangles, dirt, etc.)",
+	   "Behavior": "0x13000DB4"
+	 },
+	 {
+	   "Name": "Animated water mist (Castle Grounds waterfall)",
+	   "Behavior": "0x13000DD8"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13000DFC"
+	 },
+	 {
+	   "Name": "White puffs (from ground pound)",
+	   "Behavior": "0x13000E24"
+	 },
+	 {
+	   "Name": "Sand (from ground)",
+	   "Behavior": "0x13000E3C"
+	 },
+	 {
+	   "Name": "Snow (from ground)",
+	   "Behavior": "0x13000E58"
+	 },
+	 {
+	   "Name": "Wind (from collision mapped areas)",
+	   "Behavior": "0x13000E70"
+	 },
+	 {
+	   "Name": "Toad at end",
+	   "Behavior": "0x13000E88"
+	 },
+	 {
+	   "Name": "Peach at end",
+	   "Behavior": "0x13000EAC"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13000ED0"
+	 },
+	 {
+	   "Name": "Ukiki the monkey",
+	   "Behavior": "0x13000F08"
+	 },
+	 {
+	   "Name": "Little Cage",
+	   "Behavior": "0x13000F48"
+	 },
+	 {
+	   "Name": "Sinking Platforms (Bowser's Fire Sea)",
+	   "Behavior": "0x13000F9C"
+	 },
+	 {
+	   "Name": "Sinking Cage Platform (Bowser's Fire Sea)",
+	   "Behavior": "0x13000FC8"
+	 },
+	 {
+	   "Name": "Moving pole (Dire, Dire Docks)",
+	   "Behavior": "0x13001000"
+	 },
+	 {
+	   "Name": "Tilting Inverted Pyramid",
+	   "Behavior": "0x13001030"
+	 },
+	 {
+	   "Name": "Squishable Platform",
+	   "Behavior": "0x13001064"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13001098"
+	 },
+	 {
+	   "Name": "Flame moving back and forth (unused)",
+	   "Behavior": "0x130010B8"
+	 },
+	 {
+	   "Name": "Rotating platform with fire (Rainbow Ride) (param2 = red/blue flame)",
+	   "Behavior": "0x130010D8"
+	 },
+	 {
+	   "Name": "Flame Thrower",
+	   "Behavior": "0x13001108"
+	 },
+	 {
+	   "Name": "Flame (from flame thrower)",
+	   "Behavior": "0x13001124"
+	 },
+	 {
+	   "Name": "Flame (jumping fireball)",
+	   "Behavior": "0x13001168"
+	 },
+	 {
+	   "Name": "Flame (from jumping fireballs)",
+	   "Behavior": "0x13001184"
+	 },
+	 {
+	   "Name": "Bowser shock wave",
+	   "Behavior": "0x130011D0"
+	 },
+	 {
+	   "Name": "Flame (from Mario)",
+	   "Behavior": "0x130011EC"
+	 },
+	 {
+	   "Name": "Black smoke (from Mario)",
+	   "Behavior": "0x13001214"
+	 },
+	 {
+	   "Name": "Black smoke (from Bowser flames)",
+	   "Behavior": "0x13001254"
+	 },
+	 {
+	   "Name": "Black smoke (moving upward)",
+	   "Behavior": "0x1300127C"
+	 },
+	 {
+	   "Name": "Coins",
+	   "Behavior": "0x13001298"
+	 },
+	 {
+	   "Name": "Spindrift",
+	   "Behavior": "0x130012B4"
+	 },
+	 {
+	   "Name": "Tower Platform Group (also disables collision type 0x65 camera settings)",
+	   "Behavior": "0x130012F4"
+	 },
+	 {
+	   "Name": "Whomp's Fortress sliding platforms",
+	   "Behavior": "0x13001318"
+	 },
+	 {
+	   "Name": "Whomp's Fortress elevator platform",
+	   "Behavior": "0x13001340"
+	 },
+	 {
+	   "Name": "Whomp's Fortress solid platform",
+	   "Behavior": "0x13001368"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13001390"
+	 },
+	 {
+	   "Name": "Snow from tree",
+	   "Behavior": "0x130013A8"
+	 },
+	 {
+	   "Name": "Leaves from tree",
+	   "Behavior": "0x130013C4"
+	 },
+	 {
+	   "Name": "Another tilting platform",
+	   "Behavior": "0x130013DC"
+	 },
+	 {
+	   "Name": "Moving Pyramid Platform",
+	   "Behavior": "0x13001408"
+	 },
+	 {
+	   "Name": "Bubble from Piranha Plant",
+	   "Behavior": "0x1300142C"
+	 },
+	 {
+	   "Name": "Bubbles (after waking Piranha Plant)",
+	   "Behavior": "0x13001448"
+	 },
+	 {
+	   "Name": "Purple switch (Bowser staircase)",
+	   "Behavior": "0x13001468"
+	 },
+	 {
+	   "Name": "Purple switch (grills)",
+	   "Behavior": "0x13001478"
+	 },
+	 {
+	   "Name": "Purple switch",
+	   "Behavior": "0x13001484"
+	 },
+	 {
+	   "Name": "Floor Switch (hidden objects)",
+	   "Behavior": "0x130014AC"
+	 },
+	 {
+	   "Name": "Hidden object (param2 = object#)",
+	   "Behavior": "0x130014BC"
+	 },
+	 {
+	   "Name": "Breakable Box (Big)",
+	   "Behavior": "0x130014E0"
+	 },
+	 {
+	   "Name": "Pushable Metal Box",
+	   "Behavior": "0x13001518"
+	 },
+	 {
+	   "Name": "Heave-Ho",
+	   "Behavior": "0x13001548"
+	 },
+	 {
+	   "Name": "Unknown, GFX 78/64?",
+	   "Behavior": "0x130015A4"
+	 },
+	 {
+	   "Name": "Cabin Door?",
+	   "Behavior": "0x130015C0"
+	 },
+	 {
+	   "Name": "Explodes when pounded (unused ice square in Snowman's Land)",
+	   "Behavior": "0x130015E4"
+	 },
+	 {
+	   "Name": "Beta trampoline",
+	   "Behavior": "0x13001608"
+	 },
+	 {
+	   "Name": "Beta trampoline child animation",
+	   "Behavior": "0x13001634"
+	 },
+	 {
+	   "Name": "Jumping Box",
+	   "Behavior": "0x13001650"
+	 },
+	 {
+	   "Name": "Cage (inside of Boo)",
+	   "Behavior": "0x1300167C"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x130016AC"
+	 },
+	 {
+	   "Name": "Igloo Thing",
+	   "Behavior": "0x130016B8"
+	 },
+	 {
+	   "Name": "Key from Bowser",
+	   "Behavior": "0x130016E4"
+	 },
+	 {
+	   "Name": "Giant Star from Bowser",
+	   "Behavior": "0x13001714"
+	 },
+	 {
+	   "Name": "Beta Boo key (inside of Boo)",
+	   "Behavior": "0x13001744"
+	 },
+	 {
+	   "Name": "Beta Boo key (outside of Boo)",
+	   "Behavior": "0x13001778"
+	 },
+	 {
+	   "Name": "Bullet Bill generator",
+	   "Behavior": "0x1300179C"
+	 },
+	 {
+	   "Name": "White puff / smoke type",
+	   "Behavior": "0x130017F4"
+	 },
+	 {
+	   "Name": "Bowser tail anchor",
+	   "Behavior": "0x13001828"
+	 },
+	 {
+	   "Name": "Bowser",
+	   "Behavior": "0x13001850"
+	 },
+	 {
+	   "Name": "Bowser body anchor",
+	   "Behavior": "0x130018CC"
+	 },
+	 {
+	   "Name": "Bowser flame spawn",
+	   "Behavior": "0x13001904"
+	 },
+	 {
+	   "Name": "Bowser Battle 2 platform",
+	   "Behavior": "0x13001920"
+	 },
+	 {
+	   "Name": "Bowser Platform Part (falls when Bowser jumps)",
+	   "Behavior": "0x13001958"
+	 },
+	 {
+	   "Name": "Blue flame (from Bowser)",
+	   "Behavior": "0x13001984"
+	 },
+	 {
+	   "Name": "Flame (floating and landing)",
+	   "Behavior": "0x130019C8"
+	 },
+	 {
+	   "Name": "Blue flames group (x3)",
+	   "Behavior": "0x13001A0C"
+	 },
+	 {
+	   "Name": "Flame (bouncing) unused?",
+	   "Behavior": "0x13001A30"
+	 },
+	 {
+	   "Name": "Flame (moving forward growing)",
+	   "Behavior": "0x13001A74"
+	 },
+	 {
+	   "Name": "Flame (from Bowser)",
+	   "Behavior": "0x13001AA4"
+	 },
+	 {
+	   "Name": "Flame (large and burning out)",
+	   "Behavior": "0x13001AE8"
+	 },
+	 {
+	   "Name": "Blue fish",
+	   "Behavior": "0x13001B2C"
+	 },
+	 {
+	   "Name": "Fish groups in castle tanks",
+	   "Behavior": "0x13001B54"
+	 },
+	 {
+	   "Name": "Checkerboard elevators group",
+	   "Behavior": "0x13001B70"
+	 },
+	 {
+	   "Name": "Rotating checkered platform (unused?)",
+	   "Behavior": "0x13001B88"
+	 },
+	 {
+	   "Name": "Bowser key (going into hole and turning) 1",
+	   "Behavior": "0x13001BB4"
+	 },
+	 {
+	   "Name": "Bowser key (going into hole and turning) 2",
+	   "Behavior": "0x13001BD4"
+	 },
+	 {
+	   "Name": "Invisible object underneath castle bridge ??",
+	   "Behavior": "0x13001BF4"
+	 },
+	 {
+	   "Name": "Water Level Pillar",
+	   "Behavior": "0x13001C04"
+	 },
+	 {
+	   "Name": "Dire, Dire Docks warp",
+	   "Behavior": "0x13001C34"
+	 },
+	 {
+	   "Name": "Moat grills (disable if water is drained)",
+	   "Behavior": "0x13001C58"
+	 },
+	 {
+	   "Name": "Clock Big Arm",
+	   "Behavior": "0x13001C7C"
+	 },
+	 {
+	   "Name": "Clock Small Arm",
+	   "Behavior": "0x13001C8C"
+	 },
+	 {
+	   "Name": "Sparkle (from golden coin)",
+	   "Behavior": "0x13001C94"
+	 },
+	 {
+	   "Name": "Ukiki the monkey (opens cage)",
+	   "Behavior": "0x13001CB0"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13001D0C"
+	 },
+	 {
+	   "Name": "Y-rotation (LLL hexagonal platform)",
+	   "Behavior": "0x13001D14"
+	 },
+	 {
+	   "Name": "Sinking Lava Rock Block",
+	   "Behavior": "0x13001D40"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13001D70"
+	 },
+	 {
+	   "Name": "Moving platform (LLL mesh rafts)",
+	   "Behavior": "0x13001D78"
+	 },
+	 {
+	   "Name": "Snow Ball",
+	   "Behavior": "0x13001DA4"
+	 },
+	 {
+	   "Name": "Rotating Hexa Block With Fire Bars",
+	   "Behavior": "0x13001DA8"
+	 },
+	 {
+	   "Name": "Flame (on rotating hexagon in LLL)",
+	   "Behavior": "0x13001DCC"
+	 },
+	 {
+	   "Name": "Piece of wood (LLL)",
+	   "Behavior": "0x13001E04"
+	 },
+	 {
+	   "Name": "Floating wood bridge (LLL)",
+	   "Behavior": "0x13001E30"
+	 },
+	 {
+	   "Name": "Flames (from volcano)",
+	   "Behavior": "0x13001E4C"
+	 },
+	 {
+	   "Name": "Rotating platform (stops and produces fire if stepped on) (LLL)",
+	   "Behavior": "0x13001E6C"
+	 },
+	 {
+	   "Name": "Slow and minimal tilting movement (LLL)",
+	   "Behavior": "0x13001E94"
+	 },
+	 {
+	   "Name": "Slow and minimal up-down movement (LLL)",
+	   "Behavior": "0x13001EC4"
+	 },
+	 {
+	   "Name": "Tilts if Mario is stepping on it (LLL)",
+	   "Behavior": "0x13001EF8"
+	 },
+	 {
+	   "Name": "Koopa shell",
+	   "Behavior": "0x13001F3C"
+	 },
+	 {
+	   "Name": "Flame (Koopa shell in lava)",
+	   "Behavior": "0x13001F68"
+	 },
+	 {
+	   "Name": "Tox Box",
+	   "Behavior": "0x13001F90"
+	 },
+	 {
+	   "Name": "Piranha Plant",
+	   "Behavior": "0x13001FBC"
+	 },
+	 {
+	   "Name": "Solid object (LLL hexagonal mesh)",
+	   "Behavior": "0x13002018"
+	 },
+	 {
+	   "Name": "Bowser puzzle piece",
+	   "Behavior": "0x13002038"
+	 },
+	 {
+	   "Name": "Bowser Puzzle (Only in Lethal Lava Land)",
+	   "Behavior": "0x13002068"
+	 },
+	 {
+	   "Name": "Penguin mother",
+	   "Behavior": "0x13002088"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x130020D8"
+	 },
+	 {
+	   "Name": "Penguin baby",
+	   "Behavior": "0x130020E8"
+	 },
+	 {
+	   "Name": "Fish 2",
+	   "Behavior": "0x1300213C"
+	 },
+	 {
+	   "Name": "Fish 3",
+	   "Behavior": "0x1300214C"
+	 },
+	 {
+	   "Name": "Fish",
+	   "Behavior": "0x1300215C"
+	 },
+	 {
+	   "Name": "Large group of fish",
+	   "Behavior": "0x13002160"
+	 },
+	 {
+	   "Name": "Group of fish",
+	   "Behavior": "0x13002178"
+	 },
+	 {
+	   "Name": "Moves down when stepped on, and then back to initial position (WDW \"express elevators\")",
+	   "Behavior": "0x13002194"
+	 },
+	 {
+	   "Name": "Solid object (WDW express elevator platform)",
+	   "Behavior": "0x130021C0"
+	 },
+	 {
+	   "Name": "Chirp Chirp (In Water Levels only)",
+	   "Behavior": "0x130021E4"
+	 },
+	 {
+	   "Name": "Group of fish",
+	   "Behavior": "0x130021F4"
+	 },
+	 {
+	   "Name": "Cheep-cheep",
+	   "Behavior": "0x1300220C"
+	 },
+	 {
+	   "Name": "[!] Box",
+	   "Behavior": "0x13002250"
+	 },
+	 {
+	   "Name": "Rotating exclamation mark",
+	   "Behavior": "0x1300227C"
+	 },
+	 {
+	   "Name": "Called by some spawned objects",
+	   "Behavior": "0x1300229C"
+	 },
+	 {
+	   "Name": "Solid object (JRB rocks)",
+	   "Behavior": "0x130022B8"
+	 },
+	 {
+	   "Name": "Disable if first star is complete (Bowser Sub Door)",
+	   "Behavior": "0x130022D8"
+	 },
+	 {
+	   "Name": "Disable if first star is complete (Bowser Sub)",
+	   "Behavior": "0x13002308"
+	 },
+	 {
+	   "Name": "Sushi the shark",
+	   "Behavior": "0x13002338"
+	 },
+	 {
+	   "Name": "Sushi the shark collision child",
+	   "Behavior": "0x13002388"
+	 },
+	 {
+	   "Name": "Sliding box (Jolly Roger Bay)",
+	   "Behavior": "0x130023A4"
+	 },
+	 {
+	   "Name": "Ship Half",
+	   "Behavior": "0x130023D0"
+	 },
+	 {
+	   "Name": "In Sunken Ship 3?",
+	   "Behavior": "0x130023EC"
+	 },
+	 {
+	   "Name": "Sunken Ship",
+	   "Behavior": "0x1300241C"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x1300243C"
+	 },
+	 {
+	   "Name": "Sunken Ship Half",
+	   "Behavior": "0x1300244C"
+	 },
+	 {
+	   "Name": "In Sunken Ship?",
+	   "Behavior": "0x1300246C"
+	 },
+	 {
+	   "Name": "In Sunken Ship 2?",
+	   "Behavior": "0x13002480"
+	 },
+	 {
+	   "Name": "Warp to inside of sunken ship",
+	   "Behavior": "0x1300248C"
+	 },
+	 {
+	   "Name": "White puff generator",
+	   "Behavior": "0x130024AC"
+	 },
+	 {
+	   "Name": "White puff (from Mario)",
+	   "Behavior": "0x130024DC"
+	 },
+	 {
+	   "Name": "White puff from Mario 2",
+	   "Behavior": "0x13002500"
+	 },
+	 {
+	   "Name": "White puff / smoke type",
+	   "Behavior": "0x13002528"
+	 },
+	 {
+	   "Name": "Purple switch (for hidden boxes)",
+	   "Behavior": "0x13002558"
+	 },
+	 {
+	   "Name": "Blue Coins Switch",
+	   "Behavior": "0x13002568"
+	 },
+	 {
+	   "Name": "Coin (Blue)",
+	   "Behavior": "0x13002588"
+	 },
+	 {
+	   "Name": "Cage door (BOB & HMC)",
+	   "Behavior": "0x130025C0"
+	 },
+	 {
+	   "Name": "Openable Grills",
+	   "Behavior": "0x130025E0"
+	 },
+	 {
+	   "Name": "Crystal Tap (modifies water level in WDW)",
+	   "Behavior": "0x130025F8"
+	 },
+	 {
+	   "Name": "Initialize behavior 0x130025F8",
+	   "Behavior": "0x13002620"
+	 },
+	 {
+	   "Name": "Sand particle from Tweester",
+	   "Behavior": "0x13002634"
+	 },
+	 {
+	   "Name": "Tweester",
+	   "Behavior": "0x13002650"
+	 },
+	 {
+	   "Name": "Spawn ghosts (spawn Big Boo when all are destroyed)",
+	   "Behavior": "0x13002684"
+	 },
+	 {
+	   "Name": "Animated texture ??",
+	   "Behavior": "0x1300269C"
+	 },
+	 {
+	   "Name": "Boo in Castle",
+	   "Behavior": "0x130026D4"
+	 },
+	 {
+	   "Name": "Boo Buddy With Cage",
+	   "Behavior": "0x13002710"
+	 },
+	 {
+	   "Name": "Boo Buddy",
+	   "Behavior": "0x13002768"
+	 },
+	 {
+	   "Name": "Boo Buddy",
+	   "Behavior": "0x13002790"
+	 },
+	 {
+	   "Name": "Big Boo on balcony",
+	   "Behavior": "0x13002794"
+	 },
+	 {
+	   "Name": "Boo Buddy group (x3)",
+	   "Behavior": "0x130027D0"
+	 },
+	 {
+	   "Name": "Boo Buddy 3",
+	   "Behavior": "0x130027E4"
+	 },
+	 {
+	   "Name": "Boo Buddy 2",
+	   "Behavior": "0x13002804"
+	 },
+	 {
+	   "Name": "Hidden Staircase Step",
+	   "Behavior": "0x1300286C"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13002898"
+	 },
+	 {
+	   "Name": "Tilts on z-axis when stepped on (Haunted House floor platforms)",
+	   "Behavior": "0x130028CC"
+	 },
+	 {
+	   "Name": "Bookshelf",
+	   "Behavior": "0x130028FC"
+	 },
+	 {
+	   "Name": "Mesh Elevator",
+	   "Behavior": "0x1300292C"
+	 },
+	 {
+	   "Name": "Merry-Go-Round",
+	   "Behavior": "0x13002968"
+	 },
+	 {
+	   "Name": "Plays music track when touched (used along with penguin shortcut)",
+	   "Behavior": "0x13002998"
+	 },
+	 {
+	   "Name": "Inside Cannon",
+	   "Behavior": "0x130029B0"
+	 },
+	 {
+	   "Name": "Static checkered platform (unused?)",
+	   "Behavior": "0x130029E4"
+	 },
+	 {
+	   "Name": "Billboarded object ??",
+	   "Behavior": "0x13002A10"
+	 },
+	 {
+	   "Name": "Star ??",
+	   "Behavior": "0x13002A20"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13002A38"
+	 },
+	 {
+	   "Name": "Static object",
+	   "Behavior": "0x13002A48"
+	 },
+	 {
+	   "Name": "Castle Floor Trap",
+	   "Behavior": "0x13002A5C"
+	 },
+	 {
+	   "Name": "Floor trap in castle",
+	   "Behavior": "0x13002A7C"
+	 },
+	 {
+	   "Name": "Tree",
+	   "Behavior": "0x13002AA4"
+	 },
+	 {
+	   "Name": "Sparkles (power-ups)",
+	   "Behavior": "0x13002AD0"
+	 },
+	 {
+	   "Name": "Sparkles (power-ups)",
+	   "Behavior": "0x13002AF0"
+	 },
+	 {
+	   "Name": "Sparkles (from special triple jump)",
+	   "Behavior": "0x13002B08"
+	 },
+	 {
+	   "Name": "Scuttlebug",
+	   "Behavior": "0x13002B5C"
+	 },
+	 {
+	   "Name": "Scuttlebug spawn",
+	   "Behavior": "0x13002BA0"
+	 },
+	 {
+	   "Name": "Whomp King",
+	   "Behavior": "0x13002BB8"
+	 },
+	 {
+	   "Name": "Small Whomp",
+	   "Behavior": "0x13002BCC"
+	 },
+	 {
+	   "Name": "Whomp King",
+	   "Behavior": "0x13002BD4"
+	 },
+	 {
+	   "Name": "Water splash",
+	   "Behavior": "0x13002C14"
+	 },
+	 {
+	   "Name": "Water drops",
+	   "Behavior": "0x13002C64"
+	 },
+	 {
+	   "Name": "White wave on water surface",
+	   "Behavior": "0x13002C7C"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13002CB0"
+	 },
+	 {
+	   "Name": "Waves on surface",
+	   "Behavior": "0x13002CE0"
+	 },
+	 {
+	   "Name": "White wave on water surface 2",
+	   "Behavior": "0x13002D28"
+	 },
+	 {
+	   "Name": "Waves generator",
+	   "Behavior": "0x13002D50"
+	 },
+	 {
+	   "Name": "Wave on surface (shrinking)",
+	   "Behavior": "0x13002D7C"
+	 },
+	 {
+	   "Name": "Wave type",
+	   "Behavior": "0x13002DB0"
+	 },
+	 {
+	   "Name": "Wave trail on surface",
+	   "Behavior": "0x13002DC0"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13002DD0"
+	 },
+	 {
+	   "Name": "Tiny white particles from wind generators",
+	   "Behavior": "0x13002E04"
+	 },
+	 {
+	   "Name": "Wind particle (blows Mario away)",
+	   "Behavior": "0x13002E20"
+	 },
+	 {
+	   "Name": "Wind Blowing",
+	   "Behavior": "0x13002E3C"
+	 },
+	 {
+	   "Name": "Penguin Crossing Bridge",
+	   "Behavior": "0x13002E58"
+	 },
+	 {
+	   "Name": "Yellow Ball (Pole in WF)",
+	   "Behavior": "0x13002EA8"
+	 },
+	 {
+	   "Name": "Mario",
+	   "Behavior": "0x13002EC0"
+	 },
+	 {
+	   "Name": "Toad",
+	   "Behavior": "0x13002EF8"
+	 },
+	 {
+	   "Name": "Star (held up when opening a sealed door)",
+	   "Behavior": "0x13002F40"
+	 },
+	 {
+	   "Name": "Warp 12128",
+	   "Behavior": "0x13002F60"
+	 },
+	 {
+	   "Name": "Warp (Mario Start 2)",
+	   "Behavior": "0x13002F64"
+	 },
+	 {
+	   "Name": "Warp 12136",
+	   "Behavior": "0x13002F68"
+	 },
+	 {
+	   "Name": "Warp (Mario Start 3)",
+	   "Behavior": "0x13002F6C"
+	 },
+	 {
+	   "Name": "Warp (Level Exit Recovering Life)",
+	   "Behavior": "0x13002F70"
+	 },
+	 {
+	   "Name": "Warp (Mario Start 1)",
+	   "Behavior": "0x13002F74"
+	 },
+	 {
+	   "Name": "Warp (Mario Start 5)",
+	   "Behavior": "0x13002F78"
+	 },
+	 {
+	   "Name": "Warp Painting Exit (Success)",
+	   "Behavior": "0x13002F7C"
+	 },
+	 {
+	   "Name": "Warp Painting Exit (Failure)",
+	   "Behavior": "0x13002F80"
+	 },
+	 {
+	   "Name": "Warp 12164",
+	   "Behavior": "0x13002F84"
+	 },
+	 {
+	   "Name": "Warp (Level Exit Ceiling)",
+	   "Behavior": "0x13002F88"
+	 },
+	 {
+	   "Name": "Warp (Level Exit)",
+	   "Behavior": "0x13002F8C"
+	 },
+	 {
+	   "Name": "Warp (Level Exit From Hole)",
+	   "Behavior": "0x13002F90"
+	 },
+	 {
+	   "Name": "Warp (to level)",
+	   "Behavior": "0x13002F94"
+	 },
+	 {
+	   "Name": "Yellow background",
+	   "Behavior": "0x13002FC0"
+	 },
+	 {
+	   "Name": "Growing button (as in, after it is selected)",
+	   "Behavior": "0x13002FE4"
+	 },
+	 {
+	   "Name": "Gray button",
+	   "Behavior": "0x13003008"
+	 },
+	 {
+	   "Name": "Star",
+	   "Behavior": "0x1300302C"
+	 },
+	 {
+	   "Name": "Star selector",
+	   "Behavior": "0x13003048"
+	 },
+	 {
+	   "Name": "Coin inside of formation",
+	   "Behavior": "0x13003068"
+	 },
+	 {
+	   "Name": "Moving Blue Coin",
+	   "Behavior": "0x130030A4"
+	 },
+	 {
+	   "Name": "Blue coin (sliding)",
+	   "Behavior": "0x130030D4"
+	 },
+	 {
+	   "Name": "Blue coin (jumping)",
+	   "Behavior": "0x13003104"
+	 },
+	 {
+	   "Name": "Seaweed",
+	   "Behavior": "0x13003134"
+	 },
+	 {
+	   "Name": "Bubbles?",
+	   "Behavior": "0x13003158"
+	 },
+	 {
+	   "Name": "Bob-Omb",
+	   "Behavior": "0x13003174"
+	 },
+	 {
+	   "Name": "Smoke spawned from Bob-omb",
+	   "Behavior": "0x130031AC"
+	 },
+	 {
+	   "Name": "Pink Bob-omb (Generates Message)",
+	   "Behavior": "0x130031DC"
+	 },
+	 {
+	   "Name": "Pink Bob-omb (Opens Cannons)",
+	   "Behavior": "0x13003228"
+	 },
+	 {
+	   "Name": "Cannon (Closed)",
+	   "Behavior": "0x13003274"
+	 },
+	 {
+	   "Name": "Whirlpool death",
+	   "Behavior": "0x130032A8"
+	 },
+	 {
+	   "Name": "Bubbles",
+	   "Behavior": "0x130032C8"
+	 },
+	 {
+	   "Name": "Wooden Signpost",
+	   "Behavior": "0x130032E0"
+	 },
+	 {
+	   "Name": "Sign On Wall",
+	   "Behavior": "0x13003324"
+	 },
+	 {
+	   "Name": "Amp 2",
+	   "Behavior": "0x13003354"
+	 },
+	 {
+	   "Name": "Amp",
+	   "Behavior": "0x13003388"
+	 },
+	 {
+	   "Name": "Butterfly",
+	   "Behavior": "0x130033BC"
+	 },
+	 {
+	   "Name": "Hoot the Owl",
+	   "Behavior": "0x130033EC"
+	 },
+	 {
+	   "Name": "Can be picked up (unused)",
+	   "Behavior": "0x13003420"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13003454"
+	 },
+	 {
+	   "Name": "Water wave ??",
+	   "Behavior": "0x130034C4"
+	 },
+	 {
+	   "Name": "Explosion",
+	   "Behavior": "0x13003510"
+	 },
+	 {
+	   "Name": "Large white smoke cloud",
+	   "Behavior": "0x13003558"
+	 },
+	 {
+	   "Name": "Smoke from Bob-omb",
+	   "Behavior": "0x13003588"
+	 },
+	 {
+	   "Name": "White particle / water drop",
+	   "Behavior": "0x130035B0"
+	 },
+	 {
+	   "Name": "Unkown",
+	   "Behavior": "0x13003600"
+	 },
+	 {
+	   "Name": "Small Bully",
+	   "Behavior": "0x1300362C"
+	 },
+	 {
+	   "Name": "Big Bully Boss",
+	   "Behavior": "0x13003660"
+	 },
+	 {
+	   "Name": "Bully group (spawn Big Bully when all 3 are destroyed)",
+	   "Behavior": "0x13003694"
+	 },
+	 {
+	   "Name": "Small Chill Bully (unused)",
+	   "Behavior": "0x130036C8"
+	 },
+	 {
+	   "Name": "Big Chill Bully",
+	   "Behavior": "0x13003700"
+	 },
+	 {
+	   "Name": "Manta Rings (In Water Levels only)",
+	   "Behavior": "0x13003738"
+	 },
+	 {
+	   "Name": "Water rings",
+	   "Behavior": "0x13003750"
+	 },
+	 {
+	   "Name": "Water rings",
+	   "Behavior": "0x13003798"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x130037E0"
+	 },
+	 {
+	   "Name": "Spikey Bowser bomb",
+	   "Behavior": "0x130037EC"
+	 },
+	 {
+	   "Name": "Explosion (from spikey bombs) pt.1",
+	   "Behavior": "0x1300381C"
+	 },
+	 {
+	   "Name": "Explosion (from spikey bombs) pt.2",
+	   "Behavior": "0x13003840"
+	 },
+	 {
+	   "Name": "Star (held up after collecting star)",
+	   "Behavior": "0x13003868"
+	 },
+	 {
+	   "Name": "Sparkles (when Mario grabs a key)",
+	   "Behavior": "0x13003888"
+	 },
+	 {
+	   "Name": "White puff type",
+	   "Behavior": "0x130038B0"
+	 },
+	 {
+	   "Name": "Bascule Bridge",
+	   "Behavior": "0x130038D0"
+	 },
+	 {
+	   "Name": "Tilting bridge part (LLL)",
+	   "Behavior": "0x130038E8"
+	 },
+	 {
+	   "Name": "Rock Formation with eyes",
+	   "Behavior": "0x13003910"
+	 },
+	 {
+	   "Name": "Large Rock With Eyes",
+	   "Behavior": "0x13003940"
+	 },
+	 {
+	   "Name": "Sliding Brick Platform",
+	   "Behavior": "0x13003970"
+	 },
+	 {
+	   "Name": "Moneybag transforming",
+	   "Behavior": "0x130039A0"
+	 },
+	 {
+	   "Name": "Moneybag (with coin)",
+	   "Behavior": "0x130039D4"
+	 },
+	 {
+	   "Name": "Metal Balls",
+	   "Behavior": "0x13003A08"
+	 },
+	 {
+	   "Name": "Rolling metal ball",
+	   "Behavior": "0x13003A30"
+	 },
+	 {
+	   "Name": "Tiny metal ball",
+	   "Behavior": "0x13003A58"
+	 },
+	 {
+	   "Name": "Metal Ball Generator 2",
+	   "Behavior": "0x13003A80"
+	 },
+	 {
+	   "Name": "Metal Ball Generator",
+	   "Behavior": "0x13003AA4"
+	 },
+	 {
+	   "Name": "Mini Metal Balls Generator",
+	   "Behavior": "0x13003AC8"
+	 },
+	 {
+	   "Name": "Flying Ship Wing",
+	   "Behavior": "0x13003AE0"
+	 },
+	 {
+	   "Name": "Spindel",
+	   "Behavior": "0x13003B00"
+	 },
+	 {
+	   "Name": "Moving up and down (pyramid platforms)",
+	   "Behavior": "0x13003B30"
+	 },
+	 {
+	   "Name": "Pyramid Elevator Case",
+	   "Behavior": "0x13003B60"
+	 },
+	 {
+	   "Name": "Metal balls for pyramid elevator",
+	   "Behavior": "0x13003B98"
+	 },
+	 {
+	   "Name": "Pyramid Top",
+	   "Behavior": "0x13003BB4"
+	 },
+	 {
+	   "Name": "Pyramid top explosion",
+	   "Behavior": "0x13003BEC"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13003C0C"
+	 },
+	 {
+	   "Name": "PlaySound loop (waterfall)",
+	   "Behavior": "0x13003C30"
+	 },
+	 {
+	   "Name": "PlaySound loop (volcano)",
+	   "Behavior": "0x13003C44"
+	 },
+	 {
+	   "Name": "Castle Flag",
+	   "Behavior": "0x13003C58"
+	 },
+	 {
+	   "Name": "PlaySound loop (birds)",
+	   "Behavior": "0x13003C7C"
+	 },
+	 {
+	   "Name": "Ambient Sounds?",
+	   "Behavior": "0x13003C90"
+	 },
+	 {
+	   "Name": "PlaySound loop (sand)",
+	   "Behavior": "0x13003CA4"
+	 },
+	 {
+	   "Name": "Cannon Grill (disable if stars == 120)",
+	   "Behavior": "0x13003CB8"
+	 },
+	 {
+	   "Name": "Big snowman bottom",
+	   "Behavior": "0x13003CE4"
+	 },
+	 {
+	   "Name": "Big snowman head",
+	   "Behavior": "0x13003D0C"
+	 },
+	 {
+	   "Name": "Checkpoint for big snowman's body",
+	   "Behavior": "0x13003D34"
+	 },
+	 {
+	   "Name": "Big snowman (whole body)",
+	   "Behavior": "0x13003D4C"
+	 },
+	 {
+	   "Name": "Big boulder",
+	   "Behavior": "0x13003D74"
+	 },
+	 {
+	   "Name": "Boulder spawn (Hazy Maze Cave)",
+	   "Behavior": "0x13003DA0"
+	 },
+	 {
+	   "Name": "Wing Cap",
+	   "Behavior": "0x13003DB8"
+	 },
+	 {
+	   "Name": "Metal Cap",
+	   "Behavior": "0x13003DD8"
+	 },
+	 {
+	   "Name": "Normal Cap",
+	   "Behavior": "0x13003DF8"
+	 },
+	 {
+	   "Name": "Vanish Cap",
+	   "Behavior": "0x13003E1C"
+	 },
+	 {
+	   "Name": "Star",
+	   "Behavior": "0x13003E3C"
+	 },
+	 {
+	   "Name": "Star spawn (with coordinates)",
+	   "Behavior": "0x13003E64"
+	 },
+	 {
+	   "Name": "Star For Red Coins (Hidden)",
+	   "Behavior": "0x13003E8C"
+	 },
+	 {
+	   "Name": "Coin (Red)",
+	   "Behavior": "0x13003EAC"
+	 },
+	 {
+	   "Name": "Wind?",
+	   "Behavior": "0x13003EE4"
+	 },
+	 {
+	   "Name": "Star (Hidden)",
+	   "Behavior": "0x13003EFC"
+	 },
+	 {
+	   "Name": "Secret numbers (touch 5 to get a star)",
+	   "Behavior": "0x13003F1C"
+	 },
+	 {
+	   "Name": "Rolling Wooden Log",
+	   "Behavior": "0x13003F40"
+	 },
+	 {
+	   "Name": "Falling block inside volcano",
+	   "Behavior": "0x13003F78"
+	 },
+	 {
+	   "Name": "Rolling log",
+	   "Behavior": "0x13003FA4"
+	 },
+	 {
+	   "Name": "1-up spawn (from box)",
+	   "Behavior": "0x13003FDC"
+	 },
+	 {
+	   "Name": "1-up spawn (moving away)",
+	   "Behavior": "0x13004010"
+	 },
+	 {
+	   "Name": "1-up (Sliding)",
+	   "Behavior": "0x13004044"
+	 },
+	 {
+	   "Name": "1-up mushroom",
+	   "Behavior": "0x1300407C"
+	 },
+	 {
+	   "Name": "1-up (jumps when approached)",
+	   "Behavior": "0x130040B4"
+	 },
+	 {
+	   "Name": "1-up mushroom (enable when behavior 0x13004124 is touched)",
+	   "Behavior": "0x130040EC"
+	 },
+	 {
+	   "Name": "Trigger for hidden 1-up",
+	   "Behavior": "0x13004124"
+	 },
+	 {
+	   "Name": "1-up (hidden in tree/pole)",
+	   "Behavior": "0x13004148"
+	 },
+	 {
+	   "Name": "Unused collectible item",
+	   "Behavior": "0x13004180"
+	 },
+	 {
+	   "Name": "1-up (hidden in tree or pole)",
+	   "Behavior": "0x130041A4"
+	 },
+	 {
+	   "Name": "Hovering Metal Platform",
+	   "Behavior": "0x130041BC"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x130041F0"
+	 },
+	 {
+	   "Name": "Breakable Box (Small)",
+	   "Behavior": "0x13004218"
+	 },
+	 {
+	   "Name": "Sliding snow mound",
+	   "Behavior": "0x13004244"
+	 },
+	 {
+	   "Name": "Snow mound spawn (Only in Snow Man's Land)",
+	   "Behavior": "0x13004270"
+	 },
+	 {
+	   "Name": "Platform floating on water (square)",
+	   "Behavior": "0x13004284"
+	 },
+	 {
+	   "Name": "Platform floating on water (rectangular)",
+	   "Behavior": "0x130042B4"
+	 },
+	 {
+	   "Name": "Platform floating on water (Jolly Roger Bay)",
+	   "Behavior": "0x130042E4"
+	 },
+	 {
+	   "Name": "Arrow Lift",
+	   "Behavior": "0x13004314"
+	 },
+	 {
+	   "Name": "Orange number",
+	   "Behavior": "0x13004348"
+	 },
+	 {
+	   "Name": "Manta Ray",
+	   "Behavior": "0x13004370"
+	 },
+	 {
+	   "Name": "Falling Pillar",
+	   "Behavior": "0x130043A0"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x130043C4"
+	 },
+	 {
+	   "Name": "Falling Pillar Base",
+	   "Behavior": "0x130043E0"
+	 },
+	 {
+	   "Name": "Floating Jolly Roger box (unused)",
+	   "Behavior": "0x13004400"
+	 },
+	 {
+	   "Name": "Clock Pendulum",
+	   "Behavior": "0x1300442C"
+	 },
+	 {
+	   "Name": "Treasure chest group (sunken ship)",
+	   "Behavior": "0x1300444C"
+	 },
+	 {
+	   "Name": "Star (Hidden for Treasure Chests?)",
+	   "Behavior": "0x13004470"
+	 },
+	 {
+	   "Name": "Treasure chest group (DDD)",
+	   "Behavior": "0x13004494"
+	 },
+	 {
+	   "Name": "Treasure chest",
+	   "Behavior": "0x130044B8"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x130044E0"
+	 },
+	 {
+	   "Name": "MIPS the Rabbit",
+	   "Behavior": "0x130044FC"
+	 },
+	 {
+	   "Name": "Yoshi",
+	   "Behavior": "0x13004538"
+	 },
+	 {
+	   "Name": "Koopa",
+	   "Behavior": "0x13004580"
+	 },
+	 {
+	   "Name": "Koopa Flag (Only in Levels with Koopas)",
+	   "Behavior": "0x130045D0"
+	 },
+	 {
+	   "Name": "Koopa flag (not actual goal)",
+	   "Behavior": "0x130045F8"
+	 },
+	 {
+	   "Name": "Pokey (Only use in SSL)",
+	   "Behavior": "0x13004634"
+	 },
+	 {
+	   "Name": "Pokey head",
+	   "Behavior": "0x13004668"
+	 },
+	 {
+	   "Name": "Swoop (Bat)",
+	   "Behavior": "0x13004698"
+	 },
+	 {
+	   "Name": "Fly Guy",
+	   "Behavior": "0x130046DC"
+	 },
+	 {
+	   "Name": "Goomba",
+	   "Behavior": "0x1300472C"
+	 },
+	 {
+	   "Name": "Goomba group (x3)",
+	   "Behavior": "0x13004770"
+	 },
+	 {
+	   "Name": "Chain Chomp",
+	   "Behavior": "0x1300478C"
+	 },
+	 {
+	   "Name": "Chain-Chomp chains",
+	   "Behavior": "0x130047E4"
+	 },
+	 {
+	   "Name": "Poundable Wooden Log",
+	   "Behavior": "0x1300481C"
+	 },
+	 {
+	   "Name": "Explodes when Chain-Chomp is freed",
+	   "Behavior": "0x13004868"
+	 },
+	 {
+	   "Name": "Wiggler Boss",
+	   "Behavior": "0x13004898"
+	 },
+	 {
+	   "Name": "Wiggler body parts",
+	   "Behavior": "0x130048E0"
+	 },
+	 {
+	   "Name": "Lakitu (throws Spinies)",
+	   "Behavior": "0x13004918"
+	 },
+	 {
+	   "Name": "Lakitu (behind mirror)",
+	   "Behavior": "0x13004954"
+	 },
+	 {
+	   "Name": "Fwoosh (cloud enemy)",
+	   "Behavior": "0x13004988"
+	 },
+	 {
+	   "Name": "Fwoosh (cloud enemy) face",
+	   "Behavior": "0x130049AC"
+	 },
+	 {
+	   "Name": "Spiny",
+	   "Behavior": "0x130049C8"
+	 },
+	 {
+	   "Name": "Monty Mole",
+	   "Behavior": "0x13004A00"
+	 },
+	 {
+	   "Name": "Monty Mole in Hole",
+	   "Behavior": "0x13004A58"
+	 },
+	 {
+	   "Name": "Monty Mole rock",
+	   "Behavior": "0x13004A78"
+	 },
+	 {
+	   "Name": "Platform on tracks (param1 = collision pointer, param2 = track#)",
+	   "Behavior": "0x13004AB0"
+	 },
+	 {
+	   "Name": "Metal Balls for elevators (not actual paths)",
+	   "Behavior": "0x13004AF4"
+	 },
+	 {
+	   "Name": "Tilting Bridge",
+	   "Behavior": "0x13004B1C"
+	 },
+	 {
+	   "Name": "Four Rotating Platforms",
+	   "Behavior": "0x13004B44"
+	 },
+	 {
+	   "Name": "Ferris Wheel Platform",
+	   "Behavior": "0x13004B6C"
+	 },
+	 {
+	   "Name": "Water Bubble Drop",
+	   "Behavior": "0x13004B8C"
+	 },
+	 {
+	   "Name": "Water bomb",
+	   "Behavior": "0x13004BA8"
+	 },
+	 {
+	   "Name": "Water bomb shadow",
+	   "Behavior": "0x13004BD4"
+	 },
+	 {
+	   "Name": "Rotating Cube",
+	   "Behavior": "0x13004BF0"
+	 },
+	 {
+	   "Name": "Pendulum",
+	   "Behavior": "0x13004C24"
+	 },
+	 {
+	   "Name": "Metal Platform",
+	   "Behavior": "0x13004C5C"
+	 },
+	 {
+	   "Name": "Moving Platforms",
+	   "Behavior": "0x13004C94"
+	 },
+	 {
+	   "Name": "Rotating Platforms",
+	   "Behavior": "0x13004CCC"
+	 },
+	 {
+	   "Name": "Box Platform",
+	   "Behavior": "0x13004CF8"
+	 },
+	 {
+	   "Name": "Clock Platform",
+	   "Behavior": "0x13004D28"
+	 },
+	 {
+	   "Name": "Clock Big Hand Rotating",
+	   "Behavior": "0x13004D64"
+	 },
+	 {
+	   "Name": "Rotating Clockwork Gear",
+	   "Behavior": "0x13004D90"
+	 },
+	 {
+	   "Name": "Mr. Blizzard",
+	   "Behavior": "0x13004DBC"
+	 },
+	 {
+	   "Name": "Snowball from Snowman",
+	   "Behavior": "0x13004E08"
+	 },
+	 {
+	   "Name": "Sliding back and forth (param1 = collision pointer, param2 = movement length)",
+	   "Behavior": "0x13004E4C"
+	 },
+	 {
+	   "Name": "Octogonal Platform Rotating",
+	   "Behavior": "0x13004E78"
+	 },
+	 {
+	   "Name": "Pyramidal Platforms",
+	   "Behavior": "0x13004EA0"
+	 },
+	 {
+	   "Name": "Climbable Cage",
+	   "Behavior": "0x13004ECC"
+	 },
+	 {
+	   "Name": "Recovery Heart",
+	   "Behavior": "0x13004EF8"
+	 },
+	 {
+	   "Name": "Cannon",
+	   "Behavior": "0x13004F10"
+	 },
+	 {
+	   "Name": "Cannon barrel (shoots bubbles)",
+	   "Behavior": "0x13004F28"
+	 },
+	 {
+	   "Name": "Unagi the eel (swimming)",
+	   "Behavior": "0x13004F40"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13004F78"
+	 },
+	 {
+	   "Name": "Dorrie",
+	   "Behavior": "0x13004F90"
+	 },
+	 {
+	   "Name": "Haunted Chair",
+	   "Behavior": "0x13004FD4"
+	 },
+	 {
+	   "Name": "Mad Piano",
+	   "Behavior": "0x13005024"
+	 },
+	 {
+	   "Name": "Bookend",
+	   "Behavior": "0x1300506C"
+	 },
+	 {
+	   "Name": "BookShelf Check?",
+	   "Behavior": "0x130050B4"
+	 },
+	 {
+	   "Name": "Bookshelf Thing",
+	   "Behavior": "0x130050D4"
+	 },
+	 {
+	   "Name": "Book switch (Big Boo's Haunt)",
+	   "Behavior": "0x130050F4"
+	 },
+	 {
+	   "Name": "Piranha Plant",
+	   "Behavior": "0x13005120"
+	 },
+	 {
+	   "Name": "Flame (spawned from small Piranha Plant)",
+	   "Behavior": "0x13005158"
+	 },
+	 {
+	   "Name": "Fire Spewer",
+	   "Behavior": "0x1300518C"
+	 },
+	 {
+	   "Name": "Flame (spawned from Fly Guys)",
+	   "Behavior": "0x130051AC"
+	 },
+	 {
+	   "Name": "Snufit",
+	   "Behavior": "0x130051E0"
+	 },
+	 {
+	   "Name": "Snufit bullet",
+	   "Behavior": "0x1300521C"
+	 },
+	 {
+	   "Name": "Grindel",
+	   "Behavior": "0x1300525C"
+	 },
+	 {
+	   "Name": "Eyerok Boss",
+	   "Behavior": "0x130052B4"
+	 },
+	 {
+	   "Name": "Eyerok hand",
+	   "Behavior": "0x130052D0"
+	 },
+	 {
+	   "Name": "Klepto",
+	   "Behavior": "0x13005310"
+	 },
+	 {
+	   "Name": "Bird Flock",
+	   "Behavior": "0x13005354"
+	 },
+	 {
+	   "Name": "Penguin (Racing)",
+	   "Behavior": "0x13005380"
+	 },
+	 {
+	   "Name": "Finishing Line Check",
+	   "Behavior": "0x130053C4"
+	 },
+	 {
+	   "Name": "Shortcut Check (penguin won't give a star if touched)",
+	   "Behavior": "0x130053DC"
+	 },
+	 {
+	   "Name": "Haunted Room Check?",
+	   "Behavior": "0x130053F4"
+	 },
+	 {
+	   "Name": "Unknown",
+	   "Behavior": "0x13005414"
+	 },
+	 {
+	   "Name": "Clam Shell",
+	   "Behavior": "0x13005440"
+	 },
+	 {
+	   "Name": "Skeeter",
+	   "Behavior": "0x13005468"
+	 },
+	 {
+	   "Name": "Water wave type?",
+	   "Behavior": "0x130054A0"
+	 },
+	 {
+	   "Name": "Pendulum Platform",
+	   "Behavior": "0x130054B8"
+	 },
+	 {
+	   "Name": "Donut platform group",
+	   "Behavior": "0x130054EC"
+	 },
+	 {
+	   "Name": "Donut platform (falls and explodes when stepped on)",
+	   "Behavior": "0x13005504"
+	 },
+	 {
+	   "Name": "Yellow Poles (Dire, Dire Docks)",
+	   "Behavior": "0x13005528"
+	 },
+	 {
+	   "Name": "Flat blue star for red coins",
+	   "Behavior": "0x1300556C"
+	 },
+	 {
+	   "Name": "Three butterflies group (2 turn into bombs, 1 gives a mushroom)",
+	   "Behavior": "0x13005598"
+	 },
+	 {
+	   "Name": "Bubba",
+	   "Behavior": "0x130055DC"
+	 },
+	 {
+	   "Name": "Lakitu at the beginning",
+	   "Behavior": "0x13005610"
+	 },
+	 {
+	   "Name": "Peach at the beginning",
+	   "Behavior": "0x13005638"
+	 },
+	 {
+	   "Name": "Birds at end 1",
+	   "Behavior": "0x1300565C"
+	 },
+	 {
+	   "Name": "Birds at end 2",
+	   "Behavior": "0x13005680"
+	 },
+	 {
+	   "Name": "Calls intro scene stuff (Lakitu, Peach, etc.)",
+	   "Behavior": "0x130056A4"
+	 }
+	]
+}
