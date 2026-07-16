@@ -261,7 +261,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
           < JointIndex.BODY_ROOT => JointIndex.HEAD_ROOT,
 
           JointIndex.HIP   => JointIndex.BODY_ROOT,
-          JointIndex.TORSO => JointIndex.HIP,
+          JointIndex.TORSO => JointIndex.BODY_ROOT,
           JointIndex.NECK  => JointIndex.TORSO,
 
           JointIndex.BODY_HEAD_ADAPTER => JointIndex.NECK,
@@ -332,7 +332,11 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);
+    MocapAnimationsUtil.TryToAddAnimations(
+        model,
+        finBonesAndJoints,
+        fileBundle.AnimationsDirectory);
+    //TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);
 
     // Adds face
     if (INCLUDE_FACE) {
@@ -1060,13 +1064,13 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                               MathF.PI / 2),
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitX,
-                              -MathF.PI / 2) * 
+                              -MathF.PI / 2) *
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitZ,
                               MathF.PI),
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitX,
-                              -MathF.PI / 2) * 
+                              -MathF.PI / 2) *
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitZ,
                               MathF.PI),
