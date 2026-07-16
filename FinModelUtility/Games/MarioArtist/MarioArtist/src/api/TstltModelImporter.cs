@@ -26,7 +26,6 @@ using fin.schema.color;
 using fin.schema.vector;
 using fin.util.linq;
 using fin.util.sets;
-using fin.util.time;
 
 using marioartist.schema;
 using marioartist.schema.talent_studio;
@@ -50,6 +49,7 @@ using ChosenPart1Tuple
 
 public record TstltModelFileBundle(
     IReadOnlyTreeFile MainFile,
+    IReadOnlyTreeDirectory? AnimationsDirectory = null,
     IReadOnlyTreeFile? RomFile = null)
     : IModelFileBundle;
 
