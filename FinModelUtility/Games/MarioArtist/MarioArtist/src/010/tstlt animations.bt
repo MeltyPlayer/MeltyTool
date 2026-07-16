@@ -19,6 +19,7 @@ local uint COLOR_OFFSET = 0xff0000;
 local uint COLOR_INDEX = 0x00ffff;
 local uint COLOR_ORIENTATION = 0x888800;
 local uint COLOR_UNKNOWN = 0xffff00;
+local uint COLOR_ARCHIVE = 0xff00ff;
 
 uint GetFileAddress(uint maybeSegmentedAddress) {
     // 0x0401DDF4 is start of animations, same as 0x1DEAC4
@@ -154,11 +155,59 @@ struct GenderAnimations {
     AnimationHeader pokeLeftLeg_angry;
 };
 
+// These are the simple, interpolated animations.
 FSeek(0x1DEAC4);
 AnimationHeader animationHeaders0[3] <optimize=false>;
-
 GenderAnimations boyOrOtherAnimations <optimize=false>;
-
 AnimationHeader animationHeaders1[3] <optimize=false>;
-
 GenderAnimations girlAnimations <optimize=false>;
+
+
+typedef struct {
+    uint segmentedAddress <bgcolor=COLOR_OFFSET>;    
+        
+    local uint fileAddress = segmentedAddress - 0x38327A8;
+    local uint ramAddress = 0x7FCE0F60 + fileAddress;  
+
+    local uint trueFileAddress = fileAddress - 0x193C;
+    local uint trueRamAddress = 0x7FCE0F60 + trueFileAddress;
+    
+
+    local uint temp = FTell();
+    {        
+        FSeek(trueFileAddress);
+        byte unkScales[19] <bgcolor=COLOR_UNKNOWN>;
+
+        FSeek(fileAddress);
+        byte unk0[0x5b8 / 4] <bgcolor=COLOR_UNKNOWN>;
+        byte unk1[0x5b8 / 4] <bgcolor=COLOR_UNKNOWN>;
+        byte unk2[0x5b8 / 4] <bgcolor=COLOR_UNKNOWN>;
+        
+        float unk3[8] <bgcolor=COLOR_UNKNOWN>;
+        uint unk4[8] <bgcolor=COLOR_UNKNOWN>;
+    }
+    FSeek(temp);
+} MocapAnimation <bgcolor=COLOR_HEADER>;
+
+// These are the mocap animations.
+//FSeek(0x1A2E8C);
+//MocapAnimation mocapAnimations[4] <bgcolor=COLOR_OFFSET, optimize=false>;
+
+// These are the archives.
+typedef struct(uint address) {
+    local uint temp = FTell();
+    {        
+        FSeek(address);
+        
+        uint magic;
+        uint decompressedSize;
+        uint size;
+        uint unk;
+        
+        byte data[size - 0x10];
+    }
+    FSeek(temp);
+} Yay1 <bgcolor=COLOR_ARCHIVE>;
+
+Yay1 archive0(0xd4e48);
+Yay1 archive1(0x1A8BA8);

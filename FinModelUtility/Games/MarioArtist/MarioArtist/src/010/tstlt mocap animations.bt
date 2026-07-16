@@ -1,0 +1,124 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+local uint COLOR_HEADER = 0x0000ff;
+local uint COLOR_COUNT = 0x00ff00;
+local uint COLOR_OFFSET = 0xff0000;
+local uint COLOR_INDEX = 0x00ffff;
+local uint COLOR_ORIENTATION = 0x888800;
+local uint COLOR_UNKNOWN = 0xffff00;
+local uint COLOR_ARCHIVE = 0xff00ff;
+
+uint GetFileAddress(uint segmentedAddress) {
+    return segmentedAddress & 0xFFFFFF;
+}
+
+uint Sum(uint counts[], int length) {
+    local uint total;
+    
+    local uint i;
+    for (i = 0; i < length; ++i) {
+        total += counts[i];
+    }
+    
+    return total;
+}
+
+struct Vec3s {
+    short x;
+    short y;
+    short z;
+};
+
+
+typedef struct {
+    float unkFloats[8] <bgcolor=COLOR_ORIENTATION>;
+    uint frameCount0 <bgcolor=COLOR_COUNT>;
+    
+    uint currentAnimationSegmentedAddress <bgcolor=COLOR_OFFSET>; 
+    uint unkCounts[14] <bgcolor=COLOR_COUNT>;
+    local uint unkCountTotal = Sum(unkCounts, 14);
+
+    ushort frameCount1 <bgcolor=COLOR_COUNT>;
+    ushort unkAlways3d;
+    
+    uint weirdScaleSegmentedAddress <bgcolor=COLOR_OFFSET>;
+    uint weirdIndices0SegmentedAddress <bgcolor=COLOR_OFFSET>;
+    uint unkShorts0SegmentedAddress <bgcolor=COLOR_OFFSET>;
+    uint weirdIndices1SegmentedAddress <bgcolor=COLOR_OFFSET>;
+    uint unkShorts1SegmentedAddress <bgcolor=COLOR_OFFSET>;
+    uint weirdIndices2SegmentedAddress <bgcolor=COLOR_OFFSET>;
+    
+    local uint weirdScaleFileAddress = GetFileAddress(weirdScaleSegmentedAddress);
+
+    local uint tmp = FTell();
+    {
+        FSeek(weirdScaleFileAddress);
+
+        local uint weirdScaleSize = unkShorts0SegmentedAddress - weirdScaleSegmentedAddress;
+        local uint unkShorts0Size = unkShorts1SegmentedAddress - unkShorts0SegmentedAddress;
+        local uint unkShorts1Size = weirdIndices0SegmentedAddress - unkShorts1SegmentedAddress;
+        local uint weirdIndices0Size = weirdIndices1SegmentedAddress - weirdIndices0SegmentedAddress;
+        local uint weirdIndices1Size = weirdIndices2SegmentedAddress - weirdIndices1SegmentedAddress;
+        local uint weirdIndices2Size = currentAnimationSegmentedAddress - weirdIndices2SegmentedAddress;
+        
+        local uint expectedWeirdScaleCount = 19;
+        local uint expectedWeirdIndexCount = 6 * unkAlways3d;
+        
+        local float actualWeirdScaleCount = weirdScaleSize / 4;
+        local float actualUnkShort0Count = unkShorts0Size / 2;
+        local float actualUnkShort1Count = unkShorts1Size / 2;
+        local float actualWeirdIndex0Count = weirdIndices0Size / 4;
+        local float actualWeirdIndex1Count = weirdIndices1Size / 4;
+        local float actualWeirdIndex2Count = weirdIndices2Size / 4;
+                
+        float weirdScales[actualWeirdScaleCount];
+
+        ushort unkShorts0[actualUnkShort0Count];
+        ushort unkShorts1[actualUnkShort1Count];
+
+        uint weirdIndices0[actualWeirdIndex0Count];
+        uint weirdIndices1[actualWeirdIndex1Count];
+        uint weirdIndices2[actualWeirdIndex2Count];
+    }
+    FSeek(tmp);
+    
+    uint unkIndices;    
+} MocapAnimation <bgcolor=COLOR_HEADER>;
+
+switch (FileSize()) {
+    case 84976: {
+        FSeek(0x12e44);
+        MocapAnimation unkAnimation0;
+
+        break;
+    }
+    // 0x00A1F3B8
+    case 111680: {
+        FSeek(0x12e44);
+        MocapAnimation unkAnimation0;
+        
+        FSeek(0x15ce4);
+        MocapAnimation unkAnimation1;
+        
+        FSeek(0x187c4);
+        MocapAnimation sportAnimation;
+        
+        FSeek(0x1b3bc);
+        MocapAnimation unkAnimation2;
+        
+        break;
+    }
+}
