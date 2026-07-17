@@ -26,6 +26,8 @@ public static class MocapAnimationsUtil {
       return;
     }
 
+    finModel.AnimationManager.AddAnimation();
+
     var mocapAnimationFiles = animationsDirectory
                               .AssertGetExistingSubdir("mocap")
                               .GetExistingFiles();

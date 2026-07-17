@@ -337,6 +337,30 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
 
     // Adds face
     if (INCLUDE_FACE) {
+      var n64ImageReader = new N64ImageParser(n64Hardware);
+      var faceTextures
+          = br.SubreadAt(
+              0x4b0,
+              () => Enumerable.Range(0, 3)
+                              .Select(i => {
+                                var faceImage
+                                    = n64ImageReader.Parse(
+                                        N64ColorFormat.RGBA,
+                                        BitsPerTexel._16BPT,
+                                        br.ReadBytes(
+                                            2 * 64 * 94),
+                                        64,
+                                        94);
+
+                                var faceTexture
+                                    = model.MaterialManager
+                                           .CreateTexture(faceImage);
+                                faceTexture.Name = $"face{i}";
+
+                                return faceTexture;
+                              })
+                              .ToArray());
+
       var faceMeshes = new List<IMesh>();
       if (!USE_GRANULAR_MESHES) {
         faceMeshes.Add(dlModelBuilder.StartNewMesh("face"));
@@ -353,15 +377,24 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
           model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
                                             headRootBone);
 
+      var tmem = rdp.Tmem;
+      tmem.HardcodedTexture0 = faceTextures[0];
+
       for (var i = 0; i < 3; ++i) {
-        var offset = 0x4b0 + (uint) (i * 2 * 64 * 32);
-        rdp.Tmem.SetImageSimple(offset,
-                                N64ColorFormat.RGBA,
-                                BitsPerTexel._16BPT,
-                                64,
-                                32,
-                                F3dWrapMode.CLAMP,
-                                F3dWrapMode.CLAMP);
+        var offset = (uint) 0x4b0;
+        var top = (ushort) (i * 31);
+        var bottom = (ushort) (top + 31);
+
+        rdp.Tmem.SetImage(offset,
+                          N64ColorFormat.RGBA,
+                          BitsPerTexel._16BPT,
+                          63,
+                          0,
+                          top,
+                          63,
+                          bottom,
+                          F3dWrapMode.CLAMP,
+                          F3dWrapMode.CLAMP);
 
         var faceDlSegmentedAddress = faceDlSegmentedAddresses[i];
         if (USE_GRANULAR_MESHES) {
@@ -435,6 +468,8 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                                n64Hardware.Memory,
                                new F3dzex2OpcodeParser(),
                                noseDlSegmentedAddress));
+
+      tmem.HardcodedTexture0 = null;
 
       foreach (var faceMesh in faceMeshes) {
         foreach (var p in faceMesh.Primitives) {

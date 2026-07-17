@@ -2,6 +2,7 @@
 
 using f3dzex2.displaylist.opcodes;
 
+using fin.image;
 using fin.model;
 using fin.util.hash;
 
@@ -226,6 +227,9 @@ public sealed class JankTmem(IN64Hardware n64Hardware) : ITmem {
     this.texturesChanged_[index] = false;
     return this.textureParams_[index] = textureParams;
   }
+
+  public IReadOnlyTexture? HardcodedTexture0 { get; set; }
+  public IReadOnlyTexture? HardcodedTexture1 { get; set; }
 
   private CullingMode cullingMode_;
 

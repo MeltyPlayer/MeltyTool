@@ -237,41 +237,53 @@ public sealed partial class DlModelBuilder {
     this.lazyMaterialDictionary_ =
         new(materialParams
                 => {
-              (ISegment?, TextureParams)? segmentAndTextureParams0
-                  = materialParams.TextureParams0 != null
-                      ? (n64Hardware.Memory.GetSegmentOrNull(
-                             materialParams.TextureParams0
-                                           .SegmentedAddress >>
-                             24),
-                         materialParams.TextureParams0)
-                      : null;
-              (ISegment?, TextureParams)? segmentAndTextureParams1
-                  = materialParams.TextureParams1 != null
-                      ? (n64Hardware.Memory.GetSegmentOrNull(
-                             materialParams.TextureParams1.SegmentedAddress >>
-                             24),
-                         materialParams.TextureParams1)
-                      : null;
-
               var cycleParams0 = materialParams.CombinerCycleParams0;
               var cycleParams1 = materialParams.CombinerCycleParams1;
 
-              var usesTexel0 = cycleParams0.DependsOnTexel(0) ||
-                               (cycleParams1?.DependsOnTexel(1) ?? false);
-              var usesTexel1 = cycleParams0.DependsOnTexel(1) ||
-                               (cycleParams1?.DependsOnTexel(0) ?? false);
+              IReadOnlyTexture? texture0;
+              IReadOnlyTexture? texture1;
 
-              if (!usesTexel0) {
-                segmentAndTextureParams0 = null;
-              }
-              if (!usesTexel1) {
-                segmentAndTextureParams1 = null;
+              if (materialParams.HardcodedTexture0 != null) {
+                texture0 = materialParams.HardcodedTexture0;
+              } else {
+                (ISegment?, TextureParams)? segmentAndTextureParams0
+                    = materialParams.TextureParams0 != null
+                        ? (n64Hardware.Memory.GetSegmentOrNull(
+                               materialParams.TextureParams0
+                                             .SegmentedAddress >>
+                               24),
+                           materialParams.TextureParams0)
+                        : null;
+               
+                var usesTexel0 = cycleParams0.DependsOnTexel(0) ||
+                                 (cycleParams1?.DependsOnTexel(1) ?? false);
+                if (!usesTexel0) {
+                  segmentAndTextureParams0 = null;
+                }
+
+                texture0 = this.lazyTextureDictionary_[segmentAndTextureParams0];
               }
 
-              var texture0 =
-                  this.lazyTextureDictionary_[segmentAndTextureParams0];
-              var texture1 =
-                  this.lazyTextureDictionary_[segmentAndTextureParams1];
+              if (materialParams.HardcodedTexture1 != null) {
+                texture1 = materialParams.HardcodedTexture1;
+              } else {
+                (ISegment?, TextureParams)? segmentAndTextureParams1
+                    = materialParams.TextureParams1 != null
+                        ? (n64Hardware.Memory.GetSegmentOrNull(
+                               materialParams.TextureParams1.SegmentedAddress >>
+                               24),
+                           materialParams.TextureParams1)
+                        : null;
+
+                var usesTexel1 = cycleParams0.DependsOnTexel(1) ||
+                                 (cycleParams1?.DependsOnTexel(0) ?? false);
+
+                if (!usesTexel1) {
+                  segmentAndTextureParams1 = null;
+                }
+
+                texture1 = this.lazyTextureDictionary_[segmentAndTextureParams1];
+              }
 
               var rsp = this.n64Hardware_.Rsp;
               var rdp = n64Hardware.Rdp;
