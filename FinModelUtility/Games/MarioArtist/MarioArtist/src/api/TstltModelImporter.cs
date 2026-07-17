@@ -191,19 +191,16 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
 
     foreach (var joint in joints) {
       var matrix = Matrix4x4.Transpose(joint.matrix);
-      matrix.AssertDecompose(out var translation,
-                             out var rotation,
-                             out var scale);
-
+      
+      // Have to do this to flip the scale correctly. Decomposing, replacing
+      // the rotation, and then recomposing does not preserve the rotation.
+      var scaleX = joint.isFlipped ? -1 : 1;
       originalFlipByJoint[joint] = new Vector3(
-          Math.Sign(scale.X),
-          Math.Sign(scale.Y),
-          Math.Sign(scale.Z));
+          scaleX,
+          1,
+          1);
 
-      joint.matrix = SystemMatrix4x4Util.FromTrs(
-          translation,
-          rotation,
-          new Vector3(Math.Abs(scale.X), Math.Abs(scale.Y), Math.Abs(scale.Z)));
+      joint.matrix = Matrix4x4.CreateScale(scaleX, 1, 1) * matrix;
     }
 
     var neckJoint = joints[(int) JointIndex.BODY_HEAD_ADAPTER];
@@ -261,7 +258,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
           < JointIndex.BODY_ROOT => JointIndex.HEAD_ROOT,
 
           JointIndex.HIP   => JointIndex.BODY_ROOT,
-          JointIndex.TORSO => JointIndex.BODY_ROOT,
+          JointIndex.TORSO => JointIndex.HIP,
           JointIndex.NECK  => JointIndex.TORSO,
 
           JointIndex.BODY_HEAD_ADAPTER => JointIndex.NECK,
@@ -786,7 +783,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
         if (!useParentBone) {
           vertexMatrix = primitiveDlVertexMatrix;
           vertexDlBoneWeights = primitiveDlBoneWeights;
-        } else if (!joint.isLeft ||
+        } else if (!joint.isFlipped ||
                    jointIndex is not ((int) JointIndex.UPPER_ARM_1
                                       or (int) JointIndex.UPPER_LEG_1)) {
           vertexMatrix
@@ -824,7 +821,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
             n64Hardware,
             dlModelBuilder,
             $"joint({(JointIndex) jointIndex}): chosenPart0(id: {chosenPart0.Id}, meshSetId: {meshDefinition.MeshSetId}, unkSection5: {unkSection5I}, subUnkSection5: {subUnkSection5I}, patternIndex: {patternIndex})",
-            joint.isLeft,
+            joint.isFlipped,
             displayLists);
 
         dlModelBuilder.TransparentCutoff = .5f;
@@ -901,7 +898,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
         n64Hardware,
         dlModelBuilder,
         $"chosenPart1({chosenPart1.MeshSetId})",
-        joint.isLeft,
+        joint.isFlipped,
         chosenPart1.DisplayListSegmentedAddresses
                    .Skip(dlIndex)
                    .Take(dlCount)

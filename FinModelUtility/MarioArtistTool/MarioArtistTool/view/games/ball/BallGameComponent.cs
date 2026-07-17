@@ -89,7 +89,7 @@ public class BallGameComponent
           = this.leftUpperArmBone_.Transform.LocalTranslation.X;
 
       var minBallDistance = totalArmLength * .32f;
-      var maxBallDistance = totalArmLength * .76f;
+      var maxBallDistance = totalArmLength * .9f;
 
       this.ballDistances_
           = Enumerable.Range(0, (int) ballCount)
@@ -115,7 +115,7 @@ public class BallGameComponent
       var minMaxBoundsCalculator = new ModelMinMaxBoundsScaleCalculator();
       var bounds = minMaxBoundsCalculator.CalculateBounds(model);
 
-      this.minBallArcY_ = bounds.MaxY;
+      this.minBallArcY_ = bounds.MaxY + 64;
       this.maxBallArcY_ = this.minBallArcY_ +
                           this.ballDistances_.Last() -
                           this.ballDistances_.First();
@@ -189,70 +189,19 @@ public class BallGameComponent
     }
 
     var leftArmAngles = this.armAngles_[gameState.LeftHandPosition];
-
-    // TODO: Is all of this nonsense really necessary????
-    var upperWeirdState = false;
-    this.boneTransformView_.ClearWorldRotationOverride(this.leftUpperArmBone_);
-    this.boneTransformView_.TargetBone(this.leftUpperArmBone_);
-    if (this.boneTransformView_.TryGetLocalRotation(
-            out var defaultUpperArmRotation)) {
-      var upperArmRotationRadians = defaultUpperArmRotation.ToEulerRadians();
-      upperWeirdState = upperArmRotationRadians.Y < 0;
-    }
-
-    var upperXRotation = upperWeirdState ? MathF.PI : 0;
-    var upperYSign = upperWeirdState ? -1 : 1;
-    var upperZRotation = upperWeirdState ? 0 : MathF.PI;
-
     this.boneTransformView_.OverrideWorldRotation(
         this.leftUpperArmBone_,
         QuaternionUtil.CreateZyxRadians(
-            upperXRotation,
-            leftArmAngles.upperArmRadians * upperYSign,
-            upperZRotation)
+            MathF.PI,
+            -leftArmAngles.upperArmRadians,
+            0)
     );
-
-    var forearmWeirdState = false;
-    this.boneTransformView_.ClearWorldRotationOverride(this.leftForearmBone_);
-    this.boneTransformView_.TargetBone(this.leftForearmBone_);
-    if (this.boneTransformView_.TryGetLocalRotation(
-            out var defaultForearmRotation)) {
-      var forearmRotationRadians = defaultForearmRotation.ToEulerRadians();
-      forearmWeirdState = forearmRotationRadians.Z < 0;
-    }
-
-    var forearmXRotation = forearmWeirdState ? MathF.PI : 0;
-    var forearmYSign = forearmWeirdState ? -1 : 1;
-    var forearmZRotation = forearmWeirdState ? MathF.PI : 0;
-
     this.boneTransformView_.OverrideWorldRotation(
         this.leftForearmBone_,
-        QuaternionUtil.CreateZyxRadians(
-            forearmXRotation,
-            leftArmAngles.forearmRadians * forearmYSign,
-            forearmZRotation));
-
-    var handWeirdState = false;
-    this.boneTransformView_.ClearWorldRotationOverride(this.leftHandBone_);
-    this.boneTransformView_.TargetBone(this.leftHandBone_);
-    if (this.boneTransformView_.TryGetLocalRotation(
-            out var defaultHandRotation)) {
-      var handRotationRadians = defaultHandRotation.ToEulerRadians();
-      handWeirdState = handRotationRadians.X < 0;
-    }
-
-    var nanosPerRotation = 5 * 1000 * 1000;
-    var timeRotation
-        = (FrameTime.StartOfFrame.ToFileTimeUtc() % nanosPerRotation) /
-          (1f * nanosPerRotation) * 2 * MathF.PI; 
-
-    var handXRotation = handWeirdState ? MathF.PI / 2 : -MathF.PI / 2;
-    var handYRotation = handWeirdState ? timeRotation : 0;
-    var handZRotation = handWeirdState ? MathF.PI : 0;
-
+        QuaternionUtil.CreateZyxRadians(0, leftArmAngles.forearmRadians, 0));
     this.boneTransformView_.OverrideWorldRotation(
         this.leftHandBone_,
-        QuaternionUtil.CreateZyxRadians(handXRotation, handYRotation, handZRotation));
+        QuaternionUtil.CreateZyxRadians(-MathF.PI / 2, 0, 0));
 
     var rightArmAngles = this.armAngles_[gameState.RightHandPosition];
     this.boneTransformView_.OverrideWorldRotation(
