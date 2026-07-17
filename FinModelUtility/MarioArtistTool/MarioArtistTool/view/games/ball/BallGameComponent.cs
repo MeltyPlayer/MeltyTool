@@ -192,13 +192,13 @@ public class BallGameComponent
     this.boneTransformView_.OverrideWorldRotation(
         this.leftUpperArmBone_,
         QuaternionUtil.CreateZyxRadians(
-            MathF.PI,
+            MathF.PI / 2,
             -leftArmAngles.upperArmRadians,
             0)
     );
     this.boneTransformView_.OverrideWorldRotation(
         this.leftForearmBone_,
-        QuaternionUtil.CreateZyxRadians(0, leftArmAngles.forearmRadians, 0));
+        QuaternionUtil.CreateZyxRadians(MathF.PI / 2, leftArmAngles.forearmRadians, 0));
     this.boneTransformView_.OverrideWorldRotation(
         this.leftHandBone_,
         QuaternionUtil.CreateZyxRadians(-MathF.PI / 2, 0, 0));
@@ -206,10 +206,10 @@ public class BallGameComponent
     var rightArmAngles = this.armAngles_[gameState.RightHandPosition];
     this.boneTransformView_.OverrideWorldRotation(
         this.rightUpperArmBone_,
-        QuaternionUtil.CreateZyxRadians(0, rightArmAngles.upperArmRadians, 0));
+        QuaternionUtil.CreateZyxRadians(MathF.PI / 2, rightArmAngles.upperArmRadians, 0));
     this.boneTransformView_.OverrideWorldRotation(
         this.rightForearmBone_,
-        QuaternionUtil.CreateZyxRadians(0, -rightArmAngles.forearmRadians, 0));
+        QuaternionUtil.CreateZyxRadians(MathF.PI / 2, -rightArmAngles.forearmRadians, 0));
     this.boneTransformView_.OverrideWorldRotation(
         this.rightHandBone_,
         QuaternionUtil.CreateZyxRadians(-MathF.PI / 2, 0, 0));
