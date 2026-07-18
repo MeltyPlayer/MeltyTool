@@ -5,6 +5,9 @@ using CommunityToolkit.Diagnostics;
 using f3dzex2.io;
 
 using fin.animation.keyframes;
+using fin.animation.types.quaternion;
+using fin.data.lazy;
+using fin.data.queues;
 using fin.io;
 using fin.math.matrix.four;
 using fin.model;
@@ -18,6 +21,105 @@ namespace marioartist.api;
 using BoneTuple = (IReadOnlyBone bone, Joint joint, int jointIndex);
 
 public static class MocapAnimationsUtil {
+  // From decomp, at 0x801978ec
+  private static readonly short[] jointIndexByMocapIndex_ = [
+      -1, -1, -1, -1,
+      -1, -1, -1, -1,
+      -1, 0x12, -1, -1,
+      -1, 0x1D, -1, 0x1E,
+      -1, -1, -1, 0x1F,
+      -1, -1, -1, 0x16,
+      -1, 0x17, -1, -1,
+      -1, 0x18, -1, -1,
+      -1, 0x11, -1, -1,
+      -1, 0xF, -1, -1,
+      -1, 0x1A, -1, 0x1B,
+      -1, -1, -1, 0x1C,
+      -1, -1, -1, 0x13,
+      -1, 0x14, -1, -1,
+      -1, 0x15, -1, -1,
+      -1,
+  ];
+
+  // From decomp, at 0x8022eef0
+  private static readonly (uint nextSibling, uint firstChild)[]
+      nextSiblingAndFirstChild_ = [
+          // 0
+          (0, 0),
+          (0x0200fbd0, 0),
+          (0, 0),
+          (0x0200fc60, 0),
+          (0, 0x0200fca8),
+          // 5
+          (0, 0x0200fcf0),
+          (0, 0x0200fd38),
+          (0x0200fd80, 0),
+          (0, 0x0200fdc8),
+          (0x0200fe10, 0),
+          // 10
+          (0, 0x0200fe58),
+          (0, 0x0200fea0),
+          (0, 0),
+          (0x0200ff30, 0),
+          (0, 0x0200ff78),
+          // 15
+          (0, 0x0200ffc0),
+          (0, 0x02010008),
+          (0x02010050, 0),
+          (0, 0x02010098),
+          (0x020100e0, 0),
+          // 20
+          (0, 0x02010128),
+          (0x0200fee8, 0x02010170),
+          (0, 0),
+          (0x02010200, 0),
+          (0, 0x02010248),
+          // 25
+          (0x020101b8, 0x02010290),
+          (0, 0x020102d8),
+          (0x02010320, 0),
+          (0, 0x02010368),
+          (0, 0x020103b0),
+          // 30
+          (0, 0),
+          (0x02010440, 0),
+          (0, 0x02010488),
+          (0, 0x020104d0),
+          (0, 0x02010518),
+          // 35
+          (0x02010560, 0),
+          (0, 0x020105a8),
+          (0x020105f0, 0),
+          (0, 0x02010638),
+          (0, 0x02010680),
+          // 40
+          (0, 0),
+          (0x02010710, 0),
+          (0, 0x02010758),
+          (0, 0x020107a0),
+          (0, 0x020107e8),
+          // 45
+          (0x02010830, 0),
+          (0, 0x02010878),
+          (0x020108c0, 0),
+          (0, 0x02010908),
+          (0x020106c8, 0x02010950),
+          // 50
+          (0, 0x02010998),
+          (0x020109e0, 0),
+          (0, 0x02010a28),
+          (0x020103f8, 0x02010a70),
+          (0x0200fc18, 0x02010ab8),
+          // 55
+          (0x02010b00, 0),
+          (0x02010b48, 0),
+          (0x02010b90, 0),
+          (0x02010bd8, 0),
+          (0x02010c20, 0),
+          // 60
+          (0, 0x02010c68)
+      ];
+
   public static void TryToAddAnimations(
       IModel finModel,
       BoneTuple[] finBonesAndJoints,
@@ -26,7 +128,7 @@ public static class MocapAnimationsUtil {
       return;
     }
 
-    finModel.AnimationManager.AddAnimation();
+    //finModel.AnimationManager.AddAnimation();
 
     var mocapAnimationFiles = animationsDirectory
                               .AssertGetExistingSubdir("mocap")
@@ -117,72 +219,119 @@ public static class MocapAnimationsUtil {
         finAnimation.FrameCount = (int) frameCount;
         finAnimation.FrameRate = 30;
 
-        for (var jointI = 0; jointI < jointCount; ++jointI) {
-          // From the decomp, 0x8010e9c8
-          IReadOnlyBone? finBone = jointI switch {
-              0 => finModel.Skeleton.Root,
-              6 => bones[JointIndex.BODY_ROOT],
+        var lazyBoneTracks = new LazyDictionary<JointIndex, 
+            ICombinedQuaternionKeyframes<Keyframe<Quaternion>>>(jointId
+              => {
+            var finBone = bones[jointId];
+            var boneTracks = finAnimation.GetOrCreateBoneTracks(finBone);
+            return boneTracks.UseCombinedQuaternionKeyframes();
+          });
 
-              // 7 and 8, and 10?
-              8 => bones[JointIndex.HIP],
+        for (var f = 0; f < frameCount; ++f) {
+          var globalMatrixByBone = new Dictionary<IReadOnlyBone, Matrix4x4>();
 
-              // 9 is just hip, without affecting children?
+          var jointQueue = new FinTuple2Queue<int, Matrix4x4>(
+                  (0x3d - 1, Matrix4x4.Identity));
 
-              // 11 and 12?
-              11  => bones[JointIndex.UPPER_LEG_1],
-              // 13 is just self without affecting children
+          while (jointQueue.TryDequeue(out var offset, out var matrix)) {
+            var index = 0x3d - 1 - offset;
 
-              14  => bones[JointIndex.LOWER_LEG_1],
-              // 15 is just self without affecting children
+            // From the decomp, 0x8010e9c8
+            JointIndex? transformJointId = index switch {
+                10 or 0xb or 0x15    => JointIndex.HIP,
+                0xe                  => JointIndex.UPPER_LEG_1,
+                0x10                 => JointIndex.LOWER_LEG_1,
+                0x14                 => JointIndex.FOOT_1,
+                0x18                 => JointIndex.UPPER_LEG_0,
+                0x1a                 => JointIndex.LOWER_LEG_0,
+                0x1e                 => JointIndex.FOOT_0,
+                0x22 or 0x27 or 0x31 => JointIndex.TORSO,
+                0x26                 => JointIndex.NECK,
+                0x2a                 => JointIndex.UPPER_ARM_1,
+                0x2c                 => JointIndex.FOREARM_1,
+                0x30                 => JointIndex.HAND_1,
+                0x34                 => JointIndex.UPPER_ARM_0,
+                0x36                 => JointIndex.FOREARM_0,
+                0x3a                 => JointIndex.HAND_0,
+                _                    => null,
+            };
 
-              // 16 and 17 and 18?
-              16  => bones[JointIndex.FOOT_1],
+            var transform = transformJointId == null
+                ? null
+                : bones[transformJointId.Value].Transform;
 
-              19  => bones[JointIndex.UPPER_LEG_0],
+            {
+              var jointMocapRotation = jointMocapRotations[index];
 
-              _    => null,
-          };
+              // Based on decomp, at 0x80118fa4
+              var xRotationShort = f < jointMocapRotation.XFrameCount
+                  ? rotationValues[jointMocapRotation.XOffset + f]
+                  : rotationValues[jointMocapRotation.XOffset +
+                                   jointMocapRotation.XFrameCount -
+                                   1];
+              var yRotationShort = f < jointMocapRotation.YFrameCount
+                  ? rotationValues[jointMocapRotation.YOffset + f]
+                  : rotationValues[jointMocapRotation.YOffset +
+                                   jointMocapRotation.YFrameCount -
+                                   1];
+              var zRotationShort = f < jointMocapRotation.ZFrameCount
+                  ? rotationValues[jointMocapRotation.ZOffset + f]
+                  : rotationValues[jointMocapRotation.ZOffset +
+                                   jointMocapRotation.ZFrameCount -
+                                   1];
 
-          if (finBone == null) {
-            continue;
+              var axis0 = ConvertShortToRadians_(xRotationShort);
+              var axis1 = ConvertShortToRadians_(yRotationShort);
+              var axis2 = ConvertShortToRadians_(zRotationShort);
+
+              var rotation = ConvertRadiansToQuaternion_(
+                  axis0,
+                  axis1,
+                  axis2);
+
+              matrix = SystemMatrix4x4Util.FromTrs(
+                           transform?.LocalTranslation ?? Vector3.Zero,
+                           rotation,
+                           transform?.LocalScale ?? Vector3.One) *
+                       matrix;
+            }
+
+            var jointIdShort = jointIndexByMocapIndex_[index];
+            if (jointIdShort != -1 && jointIdShort <= 29) {
+              var jointId = (JointIndex) jointIdShort;
+              globalMatrixByBone[bones[jointId]] = matrix;
+            }
+
+            var (nextSiblingSegmentedAddress, firstChildSegmentedAddress)
+                = nextSiblingAndFirstChild_[offset];
+            if (nextSiblingSegmentedAddress != 0) {
+              var nextSiblingOffset
+                  = GetOffsetFromSegmentedAddress_(nextSiblingSegmentedAddress);
+              jointQueue.Enqueue((nextSiblingOffset, matrix));
+            }
+
+            if (firstChildSegmentedAddress != 0) {
+              var firstChildOffset
+                  = GetOffsetFromSegmentedAddress_(firstChildSegmentedAddress);
+              jointQueue.Enqueue((firstChildOffset, matrix));
+            }
           }
 
-          var boneTracks = finAnimation.GetOrCreateBoneTracks(finBone);
+          foreach (var (jointId, finBone) in bones) {
+            if (!globalMatrixByBone.TryGetValue(finBone, out var matrix)) {
+              continue;
+            }
 
-          var rotations = boneTracks.UseCombinedQuaternionKeyframes();
+            if (finBone.Parent != null &&
+                globalMatrixByBone.TryGetValue(finBone.Parent,
+                                               out var parentMatrix)) {
+              matrix *= parentMatrix.AssertInvert();
+            }
 
-          var jointMocapRotation = jointMocapRotations[jointI];
+            matrix.AssertDecompose(out _, out var rotation, out _);
 
-          // TODO: Optimize this so each channel is only as long as needed
-          for (var f = 0; f < frameCount; ++f) {
-            // Based on decomp, at 0x80118fa4
-            var xRotationShort = f < jointMocapRotation.XFrameCount
-                ? rotationValues[jointMocapRotation.XOffset + f]
-                : rotationValues[jointMocapRotation.XOffset +
-                                 jointMocapRotation.XFrameCount -
-                                 1];
-            var yRotationShort = f < jointMocapRotation.YFrameCount
-                ? rotationValues[jointMocapRotation.YOffset + f]
-                : rotationValues[jointMocapRotation.YOffset +
-                                 jointMocapRotation.YFrameCount -
-                                 1];
-            var zRotationShort = f < jointMocapRotation.ZFrameCount
-                ? rotationValues[jointMocapRotation.ZOffset + f]
-                : rotationValues[jointMocapRotation.ZOffset +
-                                 jointMocapRotation.ZFrameCount -
-                                 1];
-
-            var axis0 = ConvertShortToRadians_(xRotationShort);
-            var axis1 = ConvertShortToRadians_(yRotationShort);
-            var axis2 = ConvertShortToRadians_(zRotationShort);
-
-            rotations.SetKeyframe(
-                f,
-                ConvertRadiansToQuaternion_(
-                    axis0,
-                    axis1,
-                    axis2,
-                    finBone.Transform.LocalRotation ?? Quaternion.Identity));
+            var rotationTracks = lazyBoneTracks[jointId];
+            rotationTracks.SetKeyframe(f, rotation);
           }
         }
       }
@@ -202,8 +351,7 @@ public static class MocapAnimationsUtil {
   private static Quaternion ConvertRadiansToQuaternion_(
       float xRadians,
       float yRadians,
-      float zRadians,
-      Quaternion rootPose) {
+      float zRadians) {
     // From decomp: 0x80117df4
 
     var (fVar3, fVar4) = MathF.SinCos(xRadians);
@@ -227,6 +375,9 @@ public static class MocapAnimationsUtil {
 
     return rotation;
   }
+
+  private static int GetOffsetFromSegmentedAddress_(uint segmentedAddress)
+    => (int) ((segmentedAddress - 0x0200FB88) / 0x48) - 1;
 }
 
 [BinarySchema]
