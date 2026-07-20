@@ -52,7 +52,7 @@ typedef struct {
     local uint unkCountTotal = Sum(unkCounts, 14);
 
     ushort frameCount1 <bgcolor=COLOR_COUNT>;
-    ushort unkAlways3d;
+    ushort jointCount;
     
     uint weirdScaleSegmentedAddress <bgcolor=COLOR_OFFSET>;
     uint weirdIndices0SegmentedAddress <bgcolor=COLOR_OFFSET>;
@@ -74,8 +74,7 @@ typedef struct {
         local uint weirdIndices1Size = weirdIndices2SegmentedAddress - weirdIndices1SegmentedAddress;
         local uint weirdIndices2Size = currentAnimationSegmentedAddress - weirdIndices2SegmentedAddress;
         
-        local uint expectedWeirdScaleCount = 19;
-        local uint expectedWeirdIndexCount = 6 * unkAlways3d;
+        local uint expectedWeirdIndexCount = 6 * jointCount;
         
         local float actualWeirdScaleCount = weirdScaleSize / 4;
         local float actualUnkShort0Count = unkShorts0Size / 2;
@@ -99,12 +98,14 @@ typedef struct {
 } MocapAnimation <bgcolor=COLOR_HEADER>;
 
 switch (FileSize()) {
-    case 84976: {
-        FSeek(0x12e44);
-        MocapAnimation unkAnimation0;
+    // 0x00D0D618    
+    case 262208: {
+        FSeek(0x3e210);
+        MocapAnimation unkAnimation1;
 
         break;
     }
+
     // 0x00A1F3B8
     case 111680: {
         FSeek(0x12e44);

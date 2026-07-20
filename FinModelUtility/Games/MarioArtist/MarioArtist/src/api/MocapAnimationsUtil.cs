@@ -8,10 +8,8 @@ using fin.animation.keyframes;
 using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
 using fin.data.lazy;
-using fin.data.queues;
 using fin.io;
 using fin.math.matrix.four;
-using fin.math.rotations;
 using fin.model;
 
 using marioartist.schema.talent_studio;
@@ -47,15 +45,15 @@ public static class MocapAnimationsUtil {
       null, null, null, null,
       null, null, null, null,
       null, JointIndex.UPPER_LEG_0, null, null,
-      null, JointIndex.HAND_1, null, (JointIndex) 0x1E,
+      null, JointIndex.HAND_0, null, (JointIndex) 0x1E,
       null, null, null, (JointIndex) 0x1F,
       null, null, null, JointIndex.FOOT_0,
       null, JointIndex.FOOT_1, null, null,
-      null, JointIndex.UPPER_ARM_0, null, null,
+      null, JointIndex.UPPER_ARM_1, null, null,
       null, JointIndex.HIP, null, null,
       null, JointIndex.NECK, null, null,
       null, JointIndex.FOREARM_0, null, JointIndex.FOREARM_1,
-      null, null, null, JointIndex.HAND_0,
+      null, null, null, JointIndex.HAND_1,
       null, null, null, JointIndex.UPPER_LEG_1,
       null, JointIndex.LOWER_LEG_0, null, null,
       null, JointIndex.LOWER_LEG_1, null, null,
@@ -166,10 +164,49 @@ public static class MocapAnimationsUtil {
                               .GetExistingFiles();
 
     foreach (var mocapAnimationFile in mocapAnimationFiles) {
-      int[] animationOffsets = mocapAnimationFile.NameWithoutExtension switch {
-          "00A1F3B8" => [0x12e44, 0x15ce4, 0x187c4, 0x1b3bc],
-          _          => [],
-      };
+      (string name, int animationOffset, bool extraFloat)[] animationNameAndOffsets
+          = mocapAnimationFile.NameWithoutExtension switch {
+              "001A8BA8" => [("1", 0x2d0c4, true)],
+              "00A1F3B8" => [
+                  ("Life", 0x12e44, true),
+                  ("Dance", 0x15ce4, true),
+                  ("Sports", 0x187c4, true),
+                  ("Variety", 0x1b3bc, true)
+              ],
+              "00A7A688" => [
+                  ("1", 0x1d5e0, false),
+                  ("2", 0x1f090, true)
+              ],
+              "00A96AA8" => [("1", 0x1add0, false)],
+              "00C140C8" => [("1", 0x1abfc, false)],
+              "00C2DCC8" => [("1", 0x1a460, false)],
+              "00C48208" => [("1", 0x1ef98, false)],
+              "00C63E88" => [
+                  ("1", 0x1da78, true),
+                  ("2", 0x1efb0, true)
+              ],
+              "00C7CC88" => [("1", 0x247ec, false)],
+              "00C9A138" => [("1", 0x185b4, false)],
+              "00CB1C38" => [("1", 0x2013c, false)],
+              "00CD0D38" => [
+                  ("1", 0x256cc, false),
+                  ("2", 0x26fac, true)
+              ],
+              "00CEF618" => [
+                  ("1", 0x1bccc, false),
+                  ("2", 0x3d058, true),
+              ],
+              "00D0D618" => [
+                  ("1", 0x2f404, false),
+                  ("2", 0x3e210, true)
+              ],
+              "00D36478" => [("1", 0x19668, false)],
+              "00F371E8" => [
+                  ("1", 0x37f4, true),
+                  ("2", 0x5738, true)
+              ],
+              _          => [],
+          };
 
       using var br = mocapAnimationFile.OpenReadAsBinary(Endianness.BigEndian);
 
@@ -178,137 +215,187 @@ public static class MocapAnimationsUtil {
         bones[(JointIndex) index] = bone;
       }
 
-      foreach (var animationFileAddress in animationOffsets) {
-        br.Position = animationFileAddress;
+      foreach (var (name, animationOffset, extraFloat) in animationNameAndOffsets) {
+        try {
+          br.Position = animationOffset;
 
-        var unkFloats = br.ReadSingles(8);
-        var frameCount = br.ReadUInt32();
+          var unkFloats = br.ReadSingles(extraFloat ? 8 : 7);
+          var frameCount = br.ReadUInt32();
 
-        var expectedAnimationSegmentedAddress
-            = (0x04 << 24) | animationFileAddress;
-        br.AssertInt32(expectedAnimationSegmentedAddress);
+          // Segment will be random, we don't really care.
+          br.ReadByte();
+          br.AssertInt24(animationOffset);
 
-        var unkCounts = br.ReadUInt32s(14);
+          var unkCounts = br.ReadUInt32s(14);
 
-        br.AssertUInt16((ushort) frameCount);
+          br.AssertUInt16((ushort) frameCount);
 
-        var jointCount = 0x3d;
-        br.AssertUInt16((ushort) jointCount);
+          // This is usually 0x3d, but can be less.
+          var jointCount = br.ReadUInt16();
 
-        var weirdScalesSegmentedAddress = br.ReadUInt32();
-        var weirdIndices0SegmentedAddress = br.ReadUInt32();
-        var unkShorts0SegmentedAddress = br.ReadUInt32();
-        var weirdIndices1SegmentedAddress = br.ReadUInt32();
-        var unkShorts1SegmentedAddress = br.ReadUInt32();
-        var weirdIndices2SegmentedAddress = br.ReadUInt32();
+          var weirdScalesSegmentedAddress = br.ReadUInt32();
+          var weirdIndices0SegmentedAddress = br.ReadUInt32();
+          var unkShorts0SegmentedAddress = br.ReadUInt32();
+          var weirdIndices1SegmentedAddress = br.ReadUInt32();
+          var unkShorts1SegmentedAddress = br.ReadUInt32();
+          var weirdIndices2SegmentedAddress = br.ReadUInt32();
 
-        var weirdScaleSize
-            = unkShorts0SegmentedAddress - weirdScalesSegmentedAddress;
-        var unkShorts0Size
-            = unkShorts1SegmentedAddress - unkShorts0SegmentedAddress;
-        var unkShorts1Size
-            = weirdIndices0SegmentedAddress - unkShorts1SegmentedAddress;
-        var weirdIndices0Size = weirdIndices1SegmentedAddress -
-                                weirdIndices0SegmentedAddress;
-        var weirdIndices1Size = weirdIndices2SegmentedAddress -
-                                weirdIndices1SegmentedAddress;
-        var weirdIndices2Size = expectedAnimationSegmentedAddress -
-                                weirdIndices2SegmentedAddress;
+          IoUtils.SplitSegmentedAddress(
+              weirdScalesSegmentedAddress,
+              out _,
+              out var weirdScalesOffset);
+          IoUtils.SplitSegmentedAddress(
+              unkShorts0SegmentedAddress,
+              out _,
+              out var unkShorts0Offset);
+          IoUtils.SplitSegmentedAddress(
+              unkShorts1SegmentedAddress,
+              out _,
+              out var unkShorts1Offset);
+          IoUtils.SplitSegmentedAddress(
+              weirdIndices0SegmentedAddress,
+              out _,
+              out var weirdIndices0Offset);
+          IoUtils.SplitSegmentedAddress(
+              weirdIndices1SegmentedAddress,
+              out _,
+              out var weirdIndices1Offset);
+          IoUtils.SplitSegmentedAddress(
+              weirdIndices2SegmentedAddress,
+              out _,
+              out var weirdIndices2Offset);
 
-        var actualScaleValueCount = weirdScaleSize / 4;
-        var actualRotationValueCount = unkShorts0Size / 2;
-        var actualUnkShort1Count = unkShorts1Size / 2;
-        var actualJointMocapScaleCount = weirdIndices0Size / 24;
-        var actualJointMocapRotationCount = weirdIndices1Size / 24;
-        var actualJointMocapData2Count = weirdIndices2Size / 24;
+          var weirdScaleSize = unkShorts0Offset - weirdScalesOffset;
+          var unkShorts0Size = unkShorts1Offset - unkShorts0Offset;
+          var unkShorts1Size = weirdIndices0Offset - unkShorts1Offset;
+          var weirdIndices0Size = weirdIndices1Offset - weirdIndices0Offset;
+          var weirdIndices1Size = weirdIndices2Offset - weirdIndices1Offset;
+          var weirdIndices2Size = animationOffset - weirdIndices2Offset;
 
-        Guard.IsEqualTo(actualScaleValueCount, 19);
-        Guard.IsEqualTo(actualJointMocapScaleCount, jointCount);
-        Guard.IsEqualTo(actualJointMocapRotationCount, jointCount);
-        Guard.IsEqualTo(actualJointMocapData2Count, jointCount);
+          var actualScaleValueCount = weirdScaleSize / 4;
+          var actualRotationValueCount = unkShorts0Size / 2;
+          var actualUnkShort1Count = unkShorts1Size / 2;
+          var actualJointMocapScaleCount = weirdIndices0Size / 24;
+          var actualJointMocapRotationCount = weirdIndices1Size / 24;
+          var actualJointMocapData2Count = weirdIndices2Size / 24;
 
-        IoUtils.SplitSegmentedAddress(
-            weirdScalesSegmentedAddress,
-            out _,
-            out var weirdScalesFileAddress);
+          Guard.IsEqualTo(actualJointMocapScaleCount, jointCount);
+          Guard.IsEqualTo(actualJointMocapRotationCount, jointCount);
+          Guard.IsEqualTo(actualJointMocapData2Count, jointCount);
 
-        br.Position = weirdScalesFileAddress;
+          br.Position = weirdScalesOffset;
 
-        var scaleValues = br.ReadSingles(actualScaleValueCount);
-        var rotationValues = br.ReadInt16s(actualRotationValueCount);
-        var values2 = br.ReadInt16s(actualUnkShort1Count);
+          var scaleValues = br.ReadSingles(actualScaleValueCount);
+          var rotationValues = br.ReadInt16s(actualRotationValueCount);
+          var values2 = br.ReadInt16s(actualUnkShort1Count);
 
-        var jointMocapScales
-            = br.ReadNews<JointMocapData>((int) actualJointMocapScaleCount);
-        var jointMocapRotations
-            = br.ReadNews<JointMocapData>((int) actualJointMocapRotationCount);
-        var jointMocapData2
-            = br.ReadNews<JointMocapData>((int) actualJointMocapData2Count);
+          var jointMocapScales
+              = br.ReadNews<JointMocapData>((int) actualJointMocapScaleCount);
+          var jointMocapRotations
+              = br.ReadNews<JointMocapData>(
+                  (int) actualJointMocapRotationCount);
+          var jointMocapData2
+              = br.ReadNews<JointMocapData>((int) actualJointMocapData2Count);
 
-        var finAnimation = finModel.AnimationManager.AddAnimation();
-        finAnimation.Name = $"{mocapAnimationFile.NameWithoutExtension}_{animationFileAddress.ToHexString()}";
-        finAnimation.FrameCount = (int) frameCount;
-        finAnimation.FrameRate = 30;
+          var finAnimation = finModel.AnimationManager.AddAnimation();
+          finAnimation.Name
+              = $"{mocapAnimationFile.NameWithoutExtension}_{name}";
+          finAnimation.FrameCount = (int) frameCount;
+          finAnimation.FrameRate = 30;
 
-        var lazyBoneTracks = new LazyDictionary<JointIndex, 
-            ICombinedQuaternionKeyframes<Keyframe<Quaternion>>>(jointId
-              => {
-            var boneTracks = finAnimation.GetOrCreateBoneTracks(bones[jointId]);
-            return boneTracks.UseCombinedQuaternionKeyframes();
-          });
+          var lazyBoneTracks = new LazyDictionary<JointIndex,
+              ICombinedQuaternionKeyframes<Keyframe<Quaternion>>>(jointId
+                => {
+              var boneTracks
+                  = finAnimation.GetOrCreateBoneTracks(bones[jointId]);
+              return boneTracks.UseCombinedQuaternionKeyframes();
+            });
 
-        var lazyMocapBoneTracks = new LazyDictionary<int, 
-            (ICombinedVector3Keyframes<Keyframe<Vector3>>,
-            ICombinedQuaternionKeyframes<Keyframe<Quaternion>>)>(mocapIndex
-            => {
-          var mocapBoneTracks = finAnimation.GetOrCreateBoneTracks(mocapBones[mocapIndex]);
-          return (mocapBoneTracks.UseCombinedTranslationKeyframes(),
-                  mocapBoneTracks.UseCombinedQuaternionKeyframes());
-        });
+          var lazyMocapBoneTracks = new LazyDictionary<int,
+              (ICombinedVector3Keyframes<Keyframe<Vector3>>,
+              ICombinedQuaternionKeyframes<Keyframe<Quaternion>>)>(mocapIndex
+                => {
+              var mocapBoneTracks
+                  = finAnimation.GetOrCreateBoneTracks(mocapBones[mocapIndex]);
+              return (mocapBoneTracks.UseCombinedTranslationKeyframes(),
+                      mocapBoneTracks.UseCombinedQuaternionKeyframes());
+            });
 
-        for (var f = 0; f < frameCount; ++f) {
-          var globalMatrixByBone = new Dictionary<IReadOnlyBone, Matrix4x4>();
+          for (var f = 0; f < frameCount; ++f) {
+            var globalMatrixByBone = new Dictionary<IReadOnlyBone, Matrix4x4>();
 
-          var mocapJointAnimationIndex = 0;
-          PopulateGlobalMatricesRecursively_(
-              60,
-              ref mocapJointAnimationIndex,
-              (uint) animationFileAddress,
-              f,
-              Matrix4x4.Identity,
-              rotationValues,
-              jointMocapRotations,
-              lazyMocapBoneTracks,
-              globalMatrixByBone,
-              bones);
+            var currentJointCount = jointCount;
 
-          foreach (var (jointId, finBone) in bones) {
-            if (!globalMatrixByBone.TryGetValue(finBone, out var matrix)) {
-              continue;
-            }
+            var mocapJointAnimationIndex = 0;
+            PopulateGlobalMatricesRecursively_(
+                60,
+                ref currentJointCount,
+                ref mocapJointAnimationIndex,
+                (uint) animationOffset,
+                f,
+                Matrix4x4.Identity,
+                rotationValues,
+                jointMocapRotations,
+                lazyMocapBoneTracks,
+                globalMatrixByBone,
+                bones);
 
-            if (finBone.Parent != null) {
-              if (!globalMatrixByBone.TryGetValue(finBone.Parent,
-                                                  out var parentMatrix)) {
-                parentMatrix = finBone.Parent.Transform.WorldMatrix;
+            foreach (var (jointId, finBone) in bones) {
+              if (!globalMatrixByBone.TryGetValue(finBone, out var matrix)) {
+                continue;
               }
 
-              matrix *= parentMatrix.AssertInvert();
-            }
+              if (finBone.Parent != null) {
+                if (!globalMatrixByBone.TryGetValue(finBone.Parent,
+                                                    out var parentMatrix)) {
+                  parentMatrix = finBone.Parent.Transform.WorldMatrix;
+                }
 
-            switch (jointId) {
-              case JointIndex.HIP: {
-                matrix = Matrix4x4.CreateFromYawPitchRoll(MathF.PI, MathF.PI, 0) *
-                         matrix;
-                break;
+                matrix *= parentMatrix.AssertInvert();
               }
+
+              switch (jointId) {
+                case JointIndex.HIP: {
+                  matrix
+                      = Matrix4x4.CreateFromYawPitchRoll(
+                            MathF.PI,
+                            MathF.PI,
+                            0) *
+                        matrix;
+                  break;
+                }
+                case JointIndex.UPPER_LEG_0: {
+                  matrix = Matrix4x4.CreateFromYawPitchRoll(
+                               MathF.PI,
+                               MathF.PI / 2,
+                               0) *
+                           matrix;
+                  break;
+                }
+                case JointIndex.LOWER_LEG_0: {
+                  var preMatrix
+                      = Matrix4x4.CreateFromYawPitchRoll(0, 0, -MathF.PI);
+
+                  matrix = preMatrix *
+                           Matrix4x4.CreateFromYawPitchRoll(
+                               0,
+                               0,
+                               -MathF.PI / 2) *
+                           matrix *
+                           preMatrix.AssertInvert();
+                  break;
+                }
+              }
+
+              matrix.AssertDecompose(out _, out var rotation, out _);
+
+              var rotationTracks = lazyBoneTracks[jointId];
+              rotationTracks.SetKeyframe(f, rotation);
             }
-
-            matrix.AssertDecompose(out _, out var rotation, out _);
-
-            var rotationTracks = lazyBoneTracks[jointId];
-            rotationTracks.SetKeyframe(f, rotation);
           }
+        } catch (Exception e) {
+          Console.Error.WriteLine(
+              $"Failed to load animation {animationOffset.ToHexString()} in file {mocapAnimationFile.NameWithoutExtension}:\n{e}");
         }
       }
     }
@@ -353,15 +440,17 @@ public static class MocapAnimationsUtil {
 
   private static void PopulateGlobalMatricesRecursively_(
       int mocapJointOffset,
+      ref ushort jointCount,
       ref int mocapJointAnimationIndex,
       uint animationFileAddress,
       int f,
       Matrix4x4 matrix,
       short[] rotationValues,
       JointMocapData[] jointMocapRotations,
-      ILazyDictionary<int, 
-          (ICombinedVector3Keyframes<Keyframe<Vector3>>,
-          ICombinedQuaternionKeyframes<Keyframe<Quaternion>>)> lazyMocapBoneTracks,
+      ILazyDictionary<int,
+              (ICombinedVector3Keyframes<Keyframe<Vector3>>,
+              ICombinedQuaternionKeyframes<Keyframe<Quaternion>>)>
+          lazyMocapBoneTracks,
       IDictionary<IReadOnlyBone, Matrix4x4> globalMatrixByBone,
       IReadOnlyDictionary<JointIndex, IReadOnlyBone> bones) {
     var jointMocapRotation = jointMocapRotations[mocapJointAnimationIndex];
@@ -387,8 +476,8 @@ public static class MocapAnimationsUtil {
     };
 
     var translation = transformJointId != null
-        ? bones[transformJointId.Value].Transform.LocalTranslation :
-          Vector3.Zero;
+        ? bones[transformJointId.Value].Transform.LocalTranslation
+        : Vector3.Zero;
 
     // Based on decomp, at 0x80118fa4
     var xRotationShort = f < jointMocapRotation.XFrameCount
@@ -414,7 +503,8 @@ public static class MocapAnimationsUtil {
 
     localMatrix.AssertDecompose(out _, out var rotation, out _);
 
-    var (translationKeyframes, rotationKeyframes) = lazyMocapBoneTracks[mocapJointAnimationIndex];
+    var (translationKeyframes, rotationKeyframes)
+        = lazyMocapBoneTracks[mocapJointAnimationIndex];
     translationKeyframes.SetKeyframe(f, translation);
     rotationKeyframes.SetKeyframe(f, rotation);
 
@@ -426,6 +516,11 @@ public static class MocapAnimationsUtil {
     }
 
     ++mocapJointAnimationIndex;
+    --jointCount;
+
+    if (jointCount == 0) {
+      return;
+    }
 
     var (nextSiblingSegmentedAddress, firstChildSegmentedAddress)
         = nextSiblingAndFirstChild_[mocapJointOffset];
@@ -435,6 +530,7 @@ public static class MocapAnimationsUtil {
           = GetOffsetFromSegmentedAddress_(firstChildSegmentedAddress);
       PopulateGlobalMatricesRecursively_(
           firstChildOffset,
+          ref jointCount,
           ref mocapJointAnimationIndex,
           animationFileAddress,
           f,
@@ -446,11 +542,16 @@ public static class MocapAnimationsUtil {
           bones);
     }
 
+    if (jointCount == 0) {
+      return;
+    }
+
     if (nextSiblingSegmentedAddress != 0) {
       var nextSiblingOffset
           = GetOffsetFromSegmentedAddress_(nextSiblingSegmentedAddress);
       PopulateGlobalMatricesRecursively_(
           nextSiblingOffset,
+          ref jointCount,
           ref mocapJointAnimationIndex,
           animationFileAddress,
           f,
@@ -470,6 +571,7 @@ public static class MocapAnimationsUtil {
     if (step3 < 0) {
       step3 += 0x1000;
     }
+
     return step3;
   }
 
