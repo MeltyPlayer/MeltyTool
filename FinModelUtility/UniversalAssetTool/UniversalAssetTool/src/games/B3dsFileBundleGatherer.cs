@@ -7,7 +7,7 @@ using uni.platforms.threeDs;
 namespace uni.games;
 
 public abstract class B3dsFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
   protected abstract void GatherFileBundlesFromHierarchy(

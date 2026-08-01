@@ -21,7 +21,7 @@ namespace uni.ui.avalonia.io;
 
 public static class FileBundleGatherersService {
   private static
-      IReadOnlyList<(INamedAnnotatedFileBundleGatherer gatherer,
+      IReadOnlyList<(INamedFileBundleGatherer gatherer,
           IPercentageProgress progress)> gatherersAndProgresses_;
 
   public static ValueFractionProgress StartExtracting() {

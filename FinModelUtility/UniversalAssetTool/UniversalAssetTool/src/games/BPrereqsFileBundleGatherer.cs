@@ -6,7 +6,7 @@ using fin.util.progress;
 namespace uni.games;
 
 public abstract class BPrereqsFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
   protected abstract void GatherFileBundlesFromHierarchy(

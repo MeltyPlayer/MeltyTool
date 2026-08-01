@@ -7,7 +7,7 @@ using uni.platforms.desktop;
 namespace uni.games;
 
 public abstract class BDesktopFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
   public abstract string SteamName { get; }

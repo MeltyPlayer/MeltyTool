@@ -11,7 +11,7 @@ public sealed class MeltyPlayerFileBundleGatherer : BPrereqsFileBundleGatherer {
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,
       IFileHierarchy fileHierarchy) {
-    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+    new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(_ => {
           Earthbound3dUtil.GatherFileBundlesFromHierarchy(

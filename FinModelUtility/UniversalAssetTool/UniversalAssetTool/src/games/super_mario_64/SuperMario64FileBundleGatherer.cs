@@ -7,7 +7,7 @@ using sm64.api;
 
 namespace uni.games.super_mario_64;
 
-public sealed class SuperMario64FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class SuperMario64FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "super_mario_64";
 
   public void GatherFileBundles(

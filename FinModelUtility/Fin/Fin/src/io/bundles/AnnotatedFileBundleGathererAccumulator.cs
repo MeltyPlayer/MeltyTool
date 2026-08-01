@@ -5,17 +5,17 @@ using fin.util.progress;
 
 namespace fin.io.bundles;
 
-public sealed class AnnotatedFileBundleGathererAccumulator
-    : AnnotatedFileBundleGathererAccumulator<
-        AnnotatedFileBundleGathererAccumulator>;
+public sealed class FileBundleGathererAccumulator
+    : FileBundleGathererAccumulator<
+        FileBundleGathererAccumulator>;
 
-public class AnnotatedFileBundleGathererAccumulator<TSelf>
-    : IAnnotatedFileBundleGathererAccumulator<TSelf>
-    where TSelf : AnnotatedFileBundleGathererAccumulator<TSelf> {
+public class FileBundleGathererAccumulator<TSelf>
+    : IFileBundleGathererAccumulator<TSelf>
+    where TSelf : FileBundleGathererAccumulator<TSelf> {
   private readonly DelayedSplitPercentageProgress progress_ = new();
-  private readonly List<IAnnotatedFileBundleGatherer> gatherers_ = [];
+  private readonly List<IFileBundleGatherer> gatherers_ = [];
 
-  public TSelf Add(IAnnotatedFileBundleGatherer gatherer)
+  public TSelf Add(IFileBundleGatherer gatherer)
     => this.Add(gatherer, out _);
 
   public TSelf Add(
@@ -25,7 +25,7 @@ public class AnnotatedFileBundleGathererAccumulator<TSelf>
   public TSelf Add(Action<IFileBundleOrganizer> handler)
     => this.Add(handler, out _);
 
-  public TSelf Add(IAnnotatedFileBundleGatherer gatherer,
+  public TSelf Add(IFileBundleGatherer gatherer,
                    out IPercentageProgress progress) {
     progress = this.progress_.Add();
     this.gatherers_.Add(gatherer);
@@ -35,12 +35,12 @@ public class AnnotatedFileBundleGathererAccumulator<TSelf>
   public TSelf Add(
       Action<IFileBundleOrganizer, IMutablePercentageProgress> handler,
       out IPercentageProgress progress)
-    => this.Add(new AnnotatedFileBundleHandlerGatherer(handler), out progress);
+    => this.Add(new FileBundleHandlerGatherer(handler), out progress);
 
   public TSelf Add(
       Action<IFileBundleOrganizer> handler,
       out IPercentageProgress progress)
-    => this.Add(new AnnotatedFileBundleHandlerGathererWithoutProgress(handler),
+    => this.Add(new FileBundleHandlerGathererWithoutProgress(handler),
                 out progress);
 
   public void GatherFileBundles(
@@ -58,20 +58,20 @@ public class AnnotatedFileBundleGathererAccumulator<TSelf>
   }
 }
 
-public sealed class AnnotatedFileBundleGathererAccumulatorWithInput<T>(T input)
-    : AnnotatedFileBundleGathererAccumulator<
-          AnnotatedFileBundleGathererAccumulatorWithInput<T>>,
-      IAnnotatedFileBundleGathererAccumulatorWithInput<T,
-          AnnotatedFileBundleGathererAccumulatorWithInput<T>> {
-  public AnnotatedFileBundleGathererAccumulatorWithInput<T> Add(
+public sealed class FileBundleGathererAccumulatorWithInput<T>(T input)
+    : FileBundleGathererAccumulator<
+          FileBundleGathererAccumulatorWithInput<T>>,
+      IFileBundleGathererAccumulatorWithInput<T,
+          FileBundleGathererAccumulatorWithInput<T>> {
+  public FileBundleGathererAccumulatorWithInput<T> Add(
       Action<IFileBundleOrganizer, IMutablePercentageProgress, T> handler)
     => this.Add(
-        new AnnotatedFileBundleHandlerGathererWithInput<T>(handler, input));
+        new FileBundleHandlerGathererWithInput<T>(handler, input));
 
-  public AnnotatedFileBundleGathererAccumulatorWithInput<T> Add(
+  public FileBundleGathererAccumulatorWithInput<T> Add(
       Action<IFileBundleOrganizer, T> handler)
     => this.Add(
-        new AnnotatedFileBundleHandlerGathererWithoutProgressWithInput<T>(
+        new FileBundleHandlerGathererWithoutProgressWithInput<T>(
             handler,
             input));
 }

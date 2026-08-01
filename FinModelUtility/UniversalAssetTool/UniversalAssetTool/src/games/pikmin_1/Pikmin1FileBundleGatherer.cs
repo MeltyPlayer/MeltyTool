@@ -25,7 +25,7 @@ public sealed class Pikmin1FileBundleGatherer : BGameCubeFileBundleGatherer {
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,
       IFileHierarchy fileHierarchy) {
-    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+    new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.GetAutomaticModels_)
         .Add(this.GetModelsViaSeparator_)

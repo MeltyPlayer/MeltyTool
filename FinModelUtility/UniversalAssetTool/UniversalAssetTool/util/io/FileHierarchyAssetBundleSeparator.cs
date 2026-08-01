@@ -7,7 +7,7 @@ namespace uni.util.io;
 public sealed class FileHierarchyAssetBundleSeparator(
     IFileHierarchy fileHierarchy,
     Action<IFileHierarchyDirectory, IFileBundleOrganizer> handler)
-    : IAnnotatedFileBundleGatherer {
+    : IFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

@@ -6,7 +6,7 @@ namespace fin.io.bundles;
 
 public static class AnnotatedFileBundleGathererExtensions {
   public static void TryToGatherAndReportCompletion(
-      this IAnnotatedFileBundleGatherer gatherer,
+      this IFileBundleGatherer gatherer,
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress splitProgress) {
     try {

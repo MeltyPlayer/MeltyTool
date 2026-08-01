@@ -21,7 +21,7 @@ public sealed class SuperMarioSunshineFileBundleGatherer
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,
       IFileHierarchy fileHierarchy) {
-    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+    new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.ExtractMario_)
         .Add(this.ExtractFludd_)

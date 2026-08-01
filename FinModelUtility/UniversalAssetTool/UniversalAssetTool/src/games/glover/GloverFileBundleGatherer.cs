@@ -9,7 +9,7 @@ using uni.platforms.desktop;
 
 namespace uni.games.glover;
 
-public sealed class GloverFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class GloverFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "glover";
 
   public void GatherFileBundles(

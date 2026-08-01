@@ -7,7 +7,7 @@ using uni.platforms.ds;
 namespace uni.games;
 
 public abstract class BDsFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
   protected abstract void GatherFileBundlesFromHierarchy(

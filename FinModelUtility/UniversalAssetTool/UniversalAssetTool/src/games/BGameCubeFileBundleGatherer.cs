@@ -7,7 +7,7 @@ using uni.platforms.gcn;
 namespace uni.games;
 
 public abstract class BGameCubeFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
   public virtual GcnFileHierarchyExtractor.Options Options

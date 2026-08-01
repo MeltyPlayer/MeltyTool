@@ -12,7 +12,7 @@ namespace uni.games;
 
 public static partial class GatherersExtensions {
   [GenerateServiceRegistrations(AssignableTo
-                                    = typeof(INamedAnnotatedFileBundleGatherer),
+                                    = typeof(INamedFileBundleGatherer),
                                 Lifetime = ServiceLifetime.Transient)]
   public static partial IServiceCollection AddGatherers(
       this IServiceCollection services);
@@ -21,24 +21,24 @@ public static partial class GatherersExtensions {
 public sealed class RootFileBundleGatherer {
   public IFileBundleDirectory GatherAllFiles(
       IMutablePercentageProgress mutablePercentageProgress,
-      out IReadOnlyList<(INamedAnnotatedFileBundleGatherer gatherer,
+      out IReadOnlyList<(INamedFileBundleGatherer gatherer,
           IPercentageProgress progress)> gatherersAndProgresses) {
     var gathererCollection = new ServiceCollection();
     gathererCollection.AddGatherers();
 
     using var gathererProvider = gathererCollection.BuildServiceProvider();
-    var gatherers = gathererProvider.GetServices<INamedAnnotatedFileBundleGatherer>()
+    var gatherers = gathererProvider.GetServices<INamedFileBundleGatherer>()
                     .OrderBy(g => g.Name)
                     .ToArray();
 
     var mutableGatherersAndProgresses
-        = new (INamedAnnotatedFileBundleGatherer, IPercentageProgress)[gatherers
+        = new (INamedFileBundleGatherer, IPercentageProgress)[gatherers
             .Length];
     gatherersAndProgresses = mutableGatherersAndProgresses;
 
-    IAnnotatedFileBundleGatherer rootGatherer;
+    IFileBundleGatherer rootGatherer;
     if (Config.Instance.Extractor.ExtractRomsInParallel) {
-      var accumulator = new ParallelAnnotatedFileBundleGathererAccumulator();
+      var accumulator = new ParallelFileBundleGathererAccumulator();
       for (var i = 0; i < gatherers.Length; i++) {
         var gatherer = gatherers[i];
         accumulator.Add(gatherer, out var progress);
@@ -47,7 +47,7 @@ public sealed class RootFileBundleGatherer {
 
       rootGatherer = accumulator;
     } else {
-      var accumulator = new AnnotatedFileBundleGathererAccumulator();
+      var accumulator = new FileBundleGathererAccumulator();
       for (var i = 0; i < gatherers.Length; i++) {
         var gatherer = gatherers[i];
         accumulator.Add(gatherer, out var progress);

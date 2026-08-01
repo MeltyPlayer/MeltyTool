@@ -10,7 +10,7 @@ using vhr.api;
 
 namespace uni.games.victory_heat_rally;
 
-public sealed class VictoryHeatRallyBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class VictoryHeatRallyBundleGatherer : INamedFileBundleGatherer {
   public string Name => "victory_heat_rally";
 
   public void GatherFileBundles(

@@ -9,7 +9,7 @@ using MariosPicross;
 
 namespace uni.games.marios_picross_2;
 
-public sealed class MariosPicross2FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class MariosPicross2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "marios_picross_2";
 
   public void GatherFileBundles(

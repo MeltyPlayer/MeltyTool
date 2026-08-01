@@ -7,7 +7,7 @@ using uni.platforms.wii;
 namespace uni.games;
 
 public abstract class BWiiFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
   protected abstract void GatherFileBundlesFromHierarchy(

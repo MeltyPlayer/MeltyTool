@@ -6,7 +6,7 @@ using fin.util.progress;
 namespace uni.games;
 
 public abstract class BN64FileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
   protected abstract void ExtractFilesFromRom(

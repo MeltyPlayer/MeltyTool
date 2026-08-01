@@ -8,7 +8,7 @@ using visceral.api;
 
 namespace uni.games.dead_space_3;
 
-public sealed class DeadSpace3FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class DeadSpace3FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "dead_space_3";
 
   public void GatherFileBundles(

@@ -5,7 +5,7 @@ using uni.platforms.desktop;
 
 namespace uni.games.dead_space_2;
 
-public sealed class DeadSpace2FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class DeadSpace2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "dead_space_2";
 
   public void GatherFileBundles(

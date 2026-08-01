@@ -60,7 +60,7 @@ public sealed class SuperMario64DsFileBundleGatherer : BDsFileBundleGatherer {
         fileHierarchy,
         FinConfig.CleanUpArchives);
 
-    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+    new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.GetAutomaticModels_)
         .Add(GetDsmtModels_)

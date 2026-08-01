@@ -10,7 +10,7 @@ using fin.util.progress;
 
 namespace uni.games.ever_oasis;
 
-public sealed class EverOasisFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class EverOasisFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "ever_oasis";
 
   public void GatherFileBundles(
@@ -24,7 +24,7 @@ public sealed class EverOasisFileBundleGatherer : INamedAnnotatedFileBundleGathe
         return;
       }
 
-      new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+      new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
               fileHierarchy)
           .Add(this.GetAutomaticModels_)
           .GatherFileBundles(organizer, mutablePercentageProgress);
