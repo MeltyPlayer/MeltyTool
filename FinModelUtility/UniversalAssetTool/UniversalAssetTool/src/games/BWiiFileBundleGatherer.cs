@@ -10,6 +10,9 @@ public abstract class BWiiFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
+  public bool IsAvailable
+    => WiiFileHierarchyExtractor.TryToFindRom(this.Name, out _);
+
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

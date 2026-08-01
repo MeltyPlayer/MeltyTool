@@ -13,6 +13,9 @@ namespace uni.games.victory_heat_rally;
 public sealed class VictoryHeatRallyBundleGatherer : INamedFileBundleGatherer {
   public string Name => "victory_heat_rally";
 
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory("Victory Heat Rally", out _);
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

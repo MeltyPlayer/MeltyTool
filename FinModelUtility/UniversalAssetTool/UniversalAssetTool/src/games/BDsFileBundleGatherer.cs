@@ -10,6 +10,10 @@ public abstract class BDsFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
+  public virtual bool IsListed => true;
+  public bool IsAvailable
+    => DsFileHierarchyExtractor.TryToFindRom(this.Name, out _);
+
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

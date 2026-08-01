@@ -10,6 +10,10 @@ public abstract class BGameCubeFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
+  public virtual bool IsListed => true;
+  public bool IsAvailable
+    => GcnFileHierarchyExtractor.TryToFindRom(this.Name, out _);
+
   public virtual GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Standard();
 

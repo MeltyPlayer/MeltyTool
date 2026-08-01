@@ -12,7 +12,7 @@ public sealed class ThreeDsFileHierarchyExtractor {
   public bool TryToExtractFromGame(string gameName,
                                    out IFileHierarchy fileHierarchy,
                                    IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null) {
-    if (!TryToFindRom_(gameName, out var romFile)) {
+    if (!TryToFindRom(gameName, out var romFile)) {
       fileHierarchy = null;
       return false;
     }
@@ -21,7 +21,7 @@ public sealed class ThreeDsFileHierarchyExtractor {
     return true;
   }
 
-  private static bool TryToFindRom_(string gameName, out IReadOnlySystemFile romFile)
+  public static bool TryToFindRom(string gameName, out IReadOnlySystemFile romFile)
     => DirectoryConstants.ROMS_DIRECTORY
                          .TryToGetExistingFileWithFileType(
                              gameName,

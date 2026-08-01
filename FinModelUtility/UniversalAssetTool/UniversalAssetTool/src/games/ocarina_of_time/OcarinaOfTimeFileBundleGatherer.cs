@@ -15,11 +15,16 @@ namespace uni.games.ocarina_of_time;
 public sealed class OcarinaOfTimeFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "ocarina_of_time";
 
+  public bool IsAvailable
+    => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
+        $"{this.Name}.z64",
+        out _);
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-            "ocarina_of_time.z64",
+            $"{this.Name}.z64",
             out var ocarinaOfTimeRom)) {
       return;
     }

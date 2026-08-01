@@ -8,16 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="src\api\**" />
-    <Compile Remove="src\schema\NewFolder\**" />
-    <EmbeddedResource Remove="src\api\**" />
-    <EmbeddedResource Remove="src\schema\NewFolder\**" />
-    <None Remove="src\api\**" />
-    <None Remove="src\schema\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="schema" Version="0.6.15" />
   </ItemGroup>
-
 </Project>

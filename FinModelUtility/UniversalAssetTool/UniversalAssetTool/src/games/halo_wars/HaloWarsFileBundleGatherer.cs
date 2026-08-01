@@ -14,6 +14,9 @@ namespace uni.games.halo_wars;
 public sealed class HaloWarsFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "halo_wars";
 
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory("HaloWarsDE", out _);
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

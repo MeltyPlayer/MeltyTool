@@ -41,6 +41,9 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
 
 public interface INamedFileBundleGatherer : IFileBundleGatherer {
   string Name { get; }
+
+  bool IsListed => true;
+  bool IsAvailable { get; }
 }
 
 public interface IFileBundleGatherer {

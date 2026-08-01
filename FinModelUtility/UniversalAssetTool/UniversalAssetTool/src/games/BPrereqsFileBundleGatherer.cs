@@ -9,6 +9,12 @@ public abstract class BPrereqsFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
+  public bool IsAvailable
+    => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
+           Path.Join(this.Name, ExtractorUtil.PREREQS),
+           out var prereqsDir) &&
+       !prereqsDir.IsEmpty;
+
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

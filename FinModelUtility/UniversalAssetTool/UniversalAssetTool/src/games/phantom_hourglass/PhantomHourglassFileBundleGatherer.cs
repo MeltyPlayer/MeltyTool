@@ -8,6 +8,8 @@ public sealed class PhantomHourglassFileBundleGatherer
     : BDsFileBundleGatherer {
   public override string Name => "phantom_hourglass";
 
+  public override bool IsListed => false;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

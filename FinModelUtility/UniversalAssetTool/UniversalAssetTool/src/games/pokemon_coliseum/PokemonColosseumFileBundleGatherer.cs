@@ -10,6 +10,8 @@ public sealed class PokemonColosseumFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "pokemon_colosseum";
 
+  public override bool IsListed => false;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

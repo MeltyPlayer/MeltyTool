@@ -13,6 +13,9 @@ namespace uni.games.ever_oasis;
 public sealed class EverOasisFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "ever_oasis";
 
+  public bool IsListed => false;
+  public bool IsAvailable => false;
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

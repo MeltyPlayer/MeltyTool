@@ -9,6 +9,8 @@ namespace uni.games.custom_robo;
 public sealed class CustomRoboFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "custom_robo";
 
+  public override bool IsListed => false;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

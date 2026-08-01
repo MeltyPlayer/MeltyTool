@@ -9,6 +9,11 @@ public abstract class BN64FileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
 
+  public bool IsAvailable
+    => DirectoryConstants
+       .ROMS_DIRECTORY
+       .TryToGetExistingFileWithFileType(this.Name, out _, ".z64");
+
   protected abstract void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,
       ISystemDirectory extractedDir);

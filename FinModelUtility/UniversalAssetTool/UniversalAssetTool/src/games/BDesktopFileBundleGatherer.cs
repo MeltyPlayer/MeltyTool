@@ -13,6 +13,12 @@ public abstract class BDesktopFileBundleGatherer
   public abstract string SteamName { get; }
   public abstract string? EpicName { get; }
 
+  public virtual bool IsListed => true;
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory(this.SteamName, out _) ||
+       (this.EpicName != null &&
+        EaUtils.TryGetGameDirectory(this.EpicName, out _));
+
   protected abstract void GatherFileBundlesImpl(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

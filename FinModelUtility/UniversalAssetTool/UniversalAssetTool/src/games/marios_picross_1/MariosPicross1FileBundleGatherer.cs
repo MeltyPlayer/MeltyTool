@@ -12,11 +12,16 @@ namespace uni.games.marios_picross_1;
 public sealed class MariosPicross1FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "marios_picross_1";
 
+  public bool IsAvailable
+    => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
+        $"{this.Name}.gb",
+        out _);
+
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-            "marios_picross_1.gb",
+            $"{this.Name}.gb",
             out var romFile)) {
       return;
     }

@@ -13,23 +13,26 @@ using SadxFiles = (string name, IFileHierarchyFile modelFile,
     uint modelFileOffset,
     IReadOnlyTreeFile textureFile);
 
-public sealed class SonicAdventureDxFileBundleGatherer : INamedFileBundleGatherer {
+public sealed class SonicAdventureDxFileBundleGatherer : BDesktopFileBundleGatherer {
   private IFileHierarchyFile sonicExe_;
   private IFileHierarchyFile chrModelsDll_;
   private IFileHierarchyDirectory systemDir_;
 
-  public string Name => "sonic_adventure_dx";
+  public override string Name => "sonic_adventure_dx";
 
-  public void GatherFileBundles(
+  public override string SteamName => "Sonic Adventure DX";
+  public override string? EpicName => null;
+
+  public override bool IsListed => false;
+
+  protected override void GatherFileBundlesImpl(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress mutablePercentageProgress) {
-    if (!SteamUtils.TryGetGameDirectory("Sonic Adventure DX",
-                                        out var sadxDir)) {
-      return;
-    }
-
+      IMutablePercentageProgress mutablePercentageProgress,
+      ISystemDirectory gameDir,
+      ISystemDirectory cacheDir,
+      ISystemDirectory extractedDir) {
     var fileHierarchy
-        = ExtractorUtil.GetFileHierarchy("sonic_adventure_dx", sadxDir);
+        = ExtractorUtil.GetFileHierarchy("sonic_adventure_dx", extractedDir);
 
     var root = fileHierarchy.Root;
     this.sonicExe_ = root.AssertGetExistingFile("sonic.exe");
