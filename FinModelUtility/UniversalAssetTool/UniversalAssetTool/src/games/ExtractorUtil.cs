@@ -3,9 +3,13 @@ using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
 
+using Microsoft.Extensions.DependencyInjection;
+
+using ServiceScan.SourceGenerator;
+
 namespace uni.games;
 
-public static class ExtractorUtil {
+public static partial class ExtractorUtil {
   public const string CACHE = "cache";
   public const string PREREQS = "prereqs";
   public const string EXTRACTED = "extracted";
@@ -87,6 +91,24 @@ public static class ExtractorUtil {
                            DirectoryConstants.OUT_DIRECTORY.FullPath,
                            gameAndLocalPath))
         .AssertGetParent();
+  }
+
+  [GenerateServiceRegistrations(AssignableTo
+                                    = typeof(INamedFileBundleGatherer),
+                                Lifetime = ServiceLifetime.Transient)]
+  public static partial IServiceCollection AddGatherers(
+      this IServiceCollection services);
+
+  public static IEnumerable<INamedFileBundleGatherer>
+      GetAllNamedFileBundleGatherers() {
+    var gathererCollection = new ServiceCollection();
+    gathererCollection.AddGatherers();
+
+    using var gathererProvider = gathererCollection.BuildServiceProvider();
+    var gatherers = gathererProvider.GetServices<INamedFileBundleGatherer>()
+                                    .OrderBy(g => g.Name);
+
+    return gatherers;
   }
 }
 

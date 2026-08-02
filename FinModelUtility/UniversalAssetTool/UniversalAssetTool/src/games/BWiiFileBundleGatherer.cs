@@ -9,6 +9,7 @@ namespace uni.games;
 public abstract class BWiiFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.WII;
 
   public bool IsAvailable
     => WiiFileHierarchyExtractor.TryToFindRom(this.Name, out _);

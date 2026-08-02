@@ -39,8 +39,20 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
   }
 }
 
+public enum FileBundleGathererPlatform {
+  DESKTOP,
+  SNES,
+  N64,
+  GAMECUBE,
+  DS,
+  WII,
+  THREE_DS,
+}
+
 public interface INamedFileBundleGatherer : IFileBundleGatherer {
   string Name { get; }
+
+  FileBundleGathererPlatform Platform { get; }
 
   bool IsListed => true;
   bool IsAvailable { get; }

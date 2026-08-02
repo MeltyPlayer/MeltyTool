@@ -13,6 +13,9 @@ namespace uni.games.glover;
 public sealed class GloverFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "glover";
 
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   public bool IsAvailable
     => SteamUtils.TryGetGameDirectory("Glover", out _);
 

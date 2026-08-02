@@ -12,6 +12,9 @@ namespace uni.games.celeste_64;
 public sealed class Celeste64FileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "celeste_64";
 
+  public override FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

@@ -50,6 +50,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="settings\FileBundleGathererSelectorWindow.axaml.cs">
+      <DependentUpon>FileBundleGathererSelectorWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="toolbars\top\AnnouncementBar.axaml.cs">
       <DependentUpon>AnnouncementBar.axaml</DependentUpon>
     </Compile>

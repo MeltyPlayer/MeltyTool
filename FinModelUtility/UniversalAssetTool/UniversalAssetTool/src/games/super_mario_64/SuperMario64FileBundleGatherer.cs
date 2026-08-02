@@ -10,6 +10,8 @@ namespace uni.games.super_mario_64;
 public sealed class SuperMario64FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "super_mario_64";
 
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.N64;
+
   public bool IsAvailable => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
       $"{this.Name}.z64",
       out _);

@@ -12,6 +12,9 @@ namespace uni.games.vrwdw;
 public sealed class VrwdwFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "vrwdw";
 
+  public override FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

@@ -9,6 +9,7 @@ namespace uni.games;
 public abstract class BDesktopFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.DESKTOP;
 
   public abstract string SteamName { get; }
   public abstract string? EpicName { get; }

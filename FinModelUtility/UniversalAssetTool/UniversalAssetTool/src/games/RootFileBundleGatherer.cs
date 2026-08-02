@@ -1,4 +1,5 @@
 ﻿using fin.io.bundles;
+using fin.model;
 using fin.util.gc;
 using fin.util.progress;
 
@@ -10,26 +11,12 @@ using uni.config;
 
 namespace uni.games;
 
-public static partial class GatherersExtensions {
-  [GenerateServiceRegistrations(AssignableTo
-                                    = typeof(INamedFileBundleGatherer),
-                                Lifetime = ServiceLifetime.Transient)]
-  public static partial IServiceCollection AddGatherers(
-      this IServiceCollection services);
-}
-
 public sealed class RootFileBundleGatherer {
   public IFileBundleDirectory GatherAllFiles(
       IMutablePercentageProgress mutablePercentageProgress,
       out IReadOnlyList<(INamedFileBundleGatherer gatherer,
           IPercentageProgress progress)> gatherersAndProgresses) {
-    var gathererCollection = new ServiceCollection();
-    gathererCollection.AddGatherers();
-
-    using var gathererProvider = gathererCollection.BuildServiceProvider();
-    var gatherers = gathererProvider.GetServices<INamedFileBundleGatherer>()
-                    .OrderBy(g => g.Name)
-                    .ToArray();
+    var gatherers = ExtractorUtil.GetAllNamedFileBundleGatherers().ToArray();
 
     var mutableGatherersAndProgresses
         = new (INamedFileBundleGatherer, IPercentageProgress)[gatherers

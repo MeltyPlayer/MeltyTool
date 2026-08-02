@@ -8,6 +8,9 @@ namespace uni.games.dead_space_2;
 public sealed class DeadSpace2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "dead_space_2";
 
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   public bool IsListed => false;
   public bool IsAvailable
     => SteamUtils.TryGetGameDirectory("Dead Space 2", out _) ||

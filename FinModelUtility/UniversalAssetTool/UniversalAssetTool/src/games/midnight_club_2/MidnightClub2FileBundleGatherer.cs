@@ -12,6 +12,9 @@ namespace uni.games.midnight_club_2;
 public sealed class MidnightClub2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "midnight_club_2";
 
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   public bool IsAvailable
     => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
            Path.Join(this.Name, ExtractorUtil.EXTRACTED),

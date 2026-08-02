@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:settings="clr-namespace:uni.ui.avalonia.settings"
+        xmlns:bundles="clr-namespace:fin.io.bundles;assembly=Fin"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="uni.ui.avalonia.settings.FileBundleGathererSelectorWindow"
+        x:DataType="settings:FileBundleGathererSelectorWindowViewModel">
+  <Design.DataContext>
+    <settings:FileBundleGathererSelectorWindowViewModelForDesigner />
+  </Design.DataContext>
+
+  <Window.Styles>
+    <Style Selector="ListBoxItem">
+      <Setter Property="Height" Value="{StaticResource RegularHeight}" />
+    </Style>
+
+    <Style Selector="CheckBox Grid#RootGrid Border">
+      <Setter Property="MaxHeight" Value="16" />
+      <Setter Property="MaxWidth" Value="16" />
+    </Style>
+
+    <Style Selector="CheckBox Viewbox">
+      <Setter Property="Height" Value="15" />
+      <Setter Property="Width" Value="15" />
+    </Style>
+  </Window.Styles>
+
+  <StackPanel>
+    <StackPanel>
+      <CheckBox>
+        <TextBlock Classes="regular">Enable caching</TextBlock>
+      </CheckBox>
+      <CheckBox>
+        <TextBlock Classes="regular">Verify cache on startup</TextBlock>
+      </CheckBox>
+      <CheckBox>
+        <TextBlock Classes="regular">Enable parallelization</TextBlock>
+      </CheckBox>
+    </StackPanel>
+
+    <TextBlock Classes="h1">Extractors</TextBlock>
+
+    <Border BorderThickness="1"
+            BorderBrush="{StaticResource BorderBrush}">
+      <ListBox ItemsSource="{Binding FileBundleGatherers}">
+        <ListBox.ItemTemplate>
+          <DataTemplate x:DataType="bundles:INamedFileBundleGatherer">
+            <CheckBox IsEnabled="{Binding IsAvailable}"
+                      IsChecked="{Binding IsAvailable}">
+              <TextBlock
+                Classes="regular"
+                Text="{Binding Name}" />
+            </CheckBox>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+  </StackPanel>
+</Window>
