@@ -30,13 +30,20 @@
   <StackPanel>
     <StackPanel>
       <CheckBox>
-        <TextBlock Classes="regular">Enable caching</TextBlock>
+        <TextBlock Classes="regular"
+                   Text="{Binding CacheFileHierarchiesHeader}" />
       </CheckBox>
       <CheckBox>
-        <TextBlock Classes="regular">Verify cache on startup</TextBlock>
+        <TextBlock Classes="regular"
+                   Text="{Binding VerifyCachedFileHierarchySizeHeader}" />
       </CheckBox>
       <CheckBox>
-        <TextBlock Classes="regular">Enable parallelization</TextBlock>
+        <TextBlock Classes="regular"
+                   Text="{Binding CleanUpArchivesHeader}" />
+      </CheckBox>
+      <CheckBox>
+        <TextBlock Classes="regular"
+                   Text="{Binding ExtractRomsInParallelHeader}" />
       </CheckBox>
     </StackPanel>
 
