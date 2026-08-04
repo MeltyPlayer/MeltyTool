@@ -11,18 +11,28 @@ public sealed class RootFileBundleGatherer {
       IMutablePercentageProgress mutablePercentageProgress,
       out IReadOnlyList<(INamedFileBundleGatherer gatherer,
           IPercentageProgress progress)> gatherersAndProgresses) {
-    var gatherers = ExtractorUtil.GetAllExtractors().ToArray();
+    var configuredExtractors
+        = Config.Instance.Extractor.GamesToExtract?.Where(p => p.Value)
+                .Select(p => p.Key)
+                .ToHashSet() ?? [];
+
+    var enabledGatherers = new List<INamedFileBundleGatherer>();
+    foreach (var gatherer in ExtractorUtil.GetAllExtractors()) {
+      if (!gatherer.IsListed || configuredExtractors.Contains(gatherer.Name)) {
+        enabledGatherers.Add(gatherer);
+      }
+    }
 
     var mutableGatherersAndProgresses
-        = new (INamedFileBundleGatherer, IPercentageProgress)[gatherers
-            .Length];
+        = new (INamedFileBundleGatherer, IPercentageProgress)[enabledGatherers
+            .Count];
     gatherersAndProgresses = mutableGatherersAndProgresses;
 
     IFileBundleGatherer rootGatherer;
     if (Config.Instance.Extractor.ExtractRomsInParallel) {
       var accumulator = new ParallelFileBundleGathererAccumulator();
-      for (var i = 0; i < gatherers.Length; i++) {
-        var gatherer = gatherers[i];
+      for (var i = 0; i < enabledGatherers.Count; i++) {
+        var gatherer = enabledGatherers[i];
         accumulator.Add(gatherer, out var progress);
         mutableGatherersAndProgresses[i] = (gatherer, progress);
       }
@@ -30,8 +40,8 @@ public sealed class RootFileBundleGatherer {
       rootGatherer = accumulator;
     } else {
       var accumulator = new FileBundleGathererAccumulator();
-      for (var i = 0; i < gatherers.Length; i++) {
-        var gatherer = gatherers[i];
+      for (var i = 0; i < enabledGatherers.Count; i++) {
+        var gatherer = enabledGatherers[i];
         accumulator.Add(gatherer, out var progress);
         mutableGatherersAndProgresses[i] = (gatherer, progress);
       }
