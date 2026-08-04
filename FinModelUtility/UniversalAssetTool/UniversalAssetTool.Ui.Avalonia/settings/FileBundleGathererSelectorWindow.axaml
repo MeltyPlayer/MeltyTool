@@ -26,35 +26,53 @@
     </Style>
   </Window.Styles>
 
-  <StackPanel>
-    <StackPanel>
-      <CheckBox>
-        <TextBlock Classes="regular"
-                   Text="{Binding CacheFileHierarchiesHeader}" />
+  <DockPanel>
+    <Panel DockPanel.Dock="Bottom">
+      <Button Classes="regular"
+              HorizontalAlignment="Center"
+              Margin="0 8"
+              Click="SaveAndLaunch_">
+        Save and launch
+      </Button>
+    </Panel>
+
+    <StackPanel DockPanel.Dock="Top">
+      <CheckBox IsChecked="{Binding CacheFileHierarchies, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding CacheFileHierarchiesHeader}" />
+          <TextBlock Classes="caption" Text="{Binding CacheFileHierarchiesDescription}" />
+        </StackPanel>
       </CheckBox>
-      <CheckBox>
-        <TextBlock Classes="regular"
-                   Text="{Binding VerifyCachedFileHierarchySizeHeader}" />
+      <CheckBox IsChecked="{Binding VerifyCachedFileHierarchySize, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding VerifyCachedFileHierarchySizeHeader}" />
+          <TextBlock Classes="caption" Text="{Binding VerifyCachedFileHierarchySizeDescription}" />
+        </StackPanel>
       </CheckBox>
-      <CheckBox>
-        <TextBlock Classes="regular"
-                   Text="{Binding CleanUpArchivesHeader}" />
+      <CheckBox IsChecked="{Binding CleanUpArchives, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding CleanUpArchivesHeader}" />
+          <TextBlock Classes="caption" Text="{Binding CleanUpArchivesDescription}" />
+        </StackPanel>
       </CheckBox>
-      <CheckBox>
-        <TextBlock Classes="regular"
-                   Text="{Binding ExtractRomsInParallelHeader}" />
+      <CheckBox IsChecked="{Binding ExtractRomsInParallel, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding ExtractRomsInParallelHeader}" />
+          <TextBlock Classes="caption" Text="{Binding ExtractRomsInParallelDescription}" />
+        </StackPanel>
       </CheckBox>
     </StackPanel>
 
-    <TextBlock Classes="h1">Extractors</TextBlock>
-
+    <TextBlock Classes="h1" DockPanel.Dock="Top">
+      Extractors
+    </TextBlock>
     <Border BorderThickness="1"
             BorderBrush="{StaticResource BorderBrush}">
       <ListBox ItemsSource="{Binding FileBundleGathererEnablements}">
         <ListBox.ItemTemplate>
           <DataTemplate>
             <CheckBox IsEnabled="{Binding Gatherer.IsAvailable}"
-                      IsChecked="{Binding Gatherer.IsAvailable}">
+                      IsChecked="{Binding IsEnabled, Mode=TwoWay}">
               <TextBlock
                 Classes="regular"
                 FontWeight="{Binding FontWeight}"
@@ -64,5 +82,5 @@
         </ListBox.ItemTemplate>
       </ListBox>
     </Border>
-  </StackPanel>
+  </DockPanel>
 </Window>

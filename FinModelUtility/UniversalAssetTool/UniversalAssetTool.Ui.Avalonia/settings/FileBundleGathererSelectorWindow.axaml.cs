@@ -2,16 +2,21 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 
 using fin.io.bundles;
 using fin.ui;
+using fin.util.asserts;
 using fin.util.progress;
 
 using ReactiveUI;
 
 using uni.config;
 using uni.games;
+using uni.ui.avalonia.ViewModels;
+using uni.ui.avalonia.Views;
 
 namespace uni.ui.avalonia.settings;
 
@@ -124,6 +129,26 @@ public class FileBundleGathererSelectorWindowViewModel : BViewModel {
   public string VerifyCachedFileHierarchySizeDescription { get; }
     = SettingsViewModel.VERIFY_CACHED_FILE_HIERARCHY_SIZE_DESCRIPTION;
 
+  public bool CacheFileHierarchies {
+    get => Config_.Extractor.CacheFileHierarchies;
+    set => Config_.Extractor.CacheFileHierarchies = value;
+  }
+
+  public bool CleanUpArchives {
+    get => Config_.Extractor.CleanUpArchives;
+    set => Config_.Extractor.CleanUpArchives = value;
+  }
+
+  public bool ExtractRomsInParallel { 
+    get => Config_.Extractor.ExtractRomsInParallel;
+    set => Config_.Extractor.ExtractRomsInParallel = value;
+  }
+
+  public bool VerifyCachedFileHierarchySize {
+    get => Config_.Extractor.VerifyCachedFileHierarchySize;
+    set => Config_.Extractor.VerifyCachedFileHierarchySize = value;
+  }
+
   public IReadOnlyList<FileBundleGathererEnablement>
       FileBundleGathererEnablements {
     get;
@@ -134,5 +159,26 @@ public class FileBundleGathererSelectorWindowViewModel : BViewModel {
 public partial class FileBundleGathererSelectorWindow : Window {
   public FileBundleGathererSelectorWindow() {
     InitializeComponent();
+  }
+
+  public IClassicDesktopStyleApplicationLifetime Desktop { get; set; }
+
+  private void SaveAndLaunch_(object? sender, RoutedEventArgs e) {
+    var viewModel
+        = this.DataContext.AssertAsA<FileBundleGathererSelectorWindowViewModel>();
+
+    Config.Instance.Extractor.GamesToExtract
+        = viewModel.FileBundleGathererEnablements.ToDictionary(
+            e => e.Gatherer.Name,
+            e => e.IsEnabled);
+
+    Config.SaveSettings();
+
+    this.Desktop.MainWindow = new MainWindow {
+        DataContext = new MainViewModel(),
+    };
+    this.Desktop.MainWindow.Show();
+
+    this.Close();
   }
 }

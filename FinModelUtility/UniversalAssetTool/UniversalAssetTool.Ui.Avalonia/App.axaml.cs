@@ -6,9 +6,7 @@ using Avalonia.Markup.Xaml;
 
 using fin.ui.avalonia.styles;
 
-using uni.config;
 using uni.games;
-using uni.ui.avalonia.io;
 using uni.ui.avalonia.settings;
 using uni.ui.avalonia.ViewModels;
 using uni.ui.avalonia.Views;
@@ -29,6 +27,7 @@ public partial class App : Application {
           .Any(t => t.stillNeedsToBeConfigured)) {
         desktop.MainWindow = new FileBundleGathererSelectorWindow {
             DataContext = new FileBundleGathererSelectorWindowViewModel(),
+            Desktop = desktop,
         };
       } else {
         desktop.MainWindow = new MainWindow {
