@@ -9,6 +9,7 @@ using Avalonia.Media;
 using fin.io.bundles;
 using fin.ui;
 using fin.util.asserts;
+using fin.util.linq;
 using fin.util.progress;
 
 using ReactiveUI;
@@ -90,17 +91,17 @@ public class FileBundleGathererSelectorWindowViewModel : BViewModel {
                                    new Dictionary<string, bool>();
 
     this.FileBundleGathererEnablements
-        = extractorsWhichNeedConfiguration
-          .Select(t => new FileBundleGathererEnablement(
-                      t.gatherer,
-                      t.stillNeedsToBeConfigured,
-                      !configuredGamesToExtract.TryGetValue(
-                          t.gatherer.Name,
-                          out var configuredValue) || configuredValue))
-          .Where(t => t.Gatherer.IsListed)
-          .OrderBy(t => t.Gatherer.IsAvailable)
-          .ThenBy(t => t.Gatherer.Name)
-          .ToArray();
+            = extractorsWhichNeedConfiguration
+              .Select(t => new FileBundleGathererEnablement(
+                          t.gatherer,
+                          t.stillNeedsToBeConfigured,
+                          !configuredGamesToExtract.TryGetValue(
+                              t.gatherer.Name,
+                              out var configuredValue) ||
+                          configuredValue))
+              .Where(t => t.Gatherer.IsListed)
+              .OrderBy(t => t.Gatherer.Name)
+              .ToArray();
   }
 
   private static Config Config_ => Config.Instance;
@@ -152,6 +153,22 @@ public class FileBundleGathererSelectorWindowViewModel : BViewModel {
   public IReadOnlyList<FileBundleGathererEnablement>
       FileBundleGathererEnablements {
     get;
+    set {
+      this.RaiseAndSetIfChanged(ref field, value);
+      this.AvailableEnablements
+          = value.Where(e => e.Gatherer.IsAvailable).ToArray();
+      this.UnavailableEnablements
+          = value.Where(e => !e.Gatherer.IsAvailable).ToArray();
+    }
+  }
+
+  public IReadOnlyList<FileBundleGathererEnablement> AvailableEnablements {
+    get;
+    set { this.RaiseAndSetIfChanged(ref field, value); }
+  }
+
+  public IReadOnlyList<FileBundleGathererEnablement> UnavailableEnablements {
+    get;
     set { this.RaiseAndSetIfChanged(ref field, value); }
   }
 }
@@ -168,9 +185,10 @@ public partial class FileBundleGathererSelectorWindow : Window {
         = this.DataContext.AssertAsA<FileBundleGathererSelectorWindowViewModel>();
 
     Config.Instance.Extractor.GamesToExtract
-        = viewModel.FileBundleGathererEnablements.ToDictionary(
-            e => e.Gatherer.Name,
-            e => e.IsEnabled);
+        = viewModel.FileBundleGathererEnablements
+                   .ToDictionary(
+                       e => e.Gatherer.Name,
+                       e => e.IsEnabled);
 
     Config.SaveSettings();
 

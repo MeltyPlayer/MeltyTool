@@ -3,15 +3,33 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:settings="clr-namespace:uni.ui.avalonia.settings"
+        xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
+        xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="uni.ui.avalonia.settings.FileBundleGathererSelectorWindow"
-        x:CompileBindings="False">
+        x:DataType="settings:FileBundleGathererSelectorWindowViewModel">
   <Design.DataContext>
     <settings:FileBundleGathererSelectorWindowViewModelForDesigner />
   </Design.DataContext>
 
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type settings:FileBundleGathererEnablement}">
+      <CheckBox IsChecked="{Binding IsEnabled, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock
+            Classes="regular"
+            FontWeight="{Binding FontWeight}"
+            Text="{Binding Gatherer.Name}" />
+        </StackPanel>
+      </CheckBox>
+    </DataTemplate>
+  </Window.DataTemplates>
+
   <Window.Styles>
-    <Style Selector="ListBoxItem">
+    <Style Selector="StackPanel.gathererHeading">
+      <Setter Property="Height" Value="48" />
+    </Style>
+    <Style Selector="ItemsControl > ContentPresenter">
       <Setter Property="Height" Value="{StaticResource RegularHeight}" />
     </Style>
 
@@ -68,19 +86,36 @@
     </TextBlock>
     <Border BorderThickness="1"
             BorderBrush="{StaticResource BorderBrush}">
-      <ListBox ItemsSource="{Binding FileBundleGathererEnablements}">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <CheckBox IsEnabled="{Binding Gatherer.IsAvailable}"
-                      IsChecked="{Binding IsEnabled, Mode=TwoWay}">
-              <TextBlock
-                Classes="regular"
-                FontWeight="{Binding FontWeight}"
-                Text="{Binding Gatherer.Name}" />
-            </CheckBox>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
+      <ScrollViewer >
+        <StackPanel>
+          <controls:If Condition="{Binding AvailableEnablements, Converter={x:Static converters:ListConverters.HasAnyItems}}">
+            <StackPanel Classes="gathererHeading">
+              <TextBlock Classes="h2">
+                Available
+              </TextBlock>
+              <TextBlock Classes="caption">
+                The following games were found, so they are available for
+                extraction.
+              </TextBlock>
+            </StackPanel>
+          </controls:If>
+          <ItemsControl ItemsSource="{Binding AvailableEnablements}" />
+
+          <controls:If Condition="{Binding UnavailableEnablements, Converter={x:Static converters:ListConverters.HasAnyItems}}">
+            <StackPanel Classes="gathererHeading">
+              <TextBlock Classes="h2">
+                Unavailable
+              </TextBlock>
+              <TextBlock Classes="caption">
+                The following games were not found, so they are not available
+                for extraction. If enabled, these will be extracted if you
+                install them in the future.
+              </TextBlock>
+            </StackPanel>
+          </controls:If>
+          <ItemsControl ItemsSource="{Binding UnavailableEnablements}" />
+        </StackPanel>
+      </ScrollViewer>
     </Border>
   </DockPanel>
 </Window>
