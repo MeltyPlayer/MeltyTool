@@ -71,6 +71,8 @@ public static partial class ExtractorUtil {
     return FileHierarchy.From(romName.ToString(), directory, cacheFile);
   }
 
+  public static bool HasBeenExtracted(string gameName)
+    => !HasNotBeenExtractedYet(gameName, out _);
 
   public static bool HasNotBeenExtractedYet(
       IReadOnlyTreeFile romFile,

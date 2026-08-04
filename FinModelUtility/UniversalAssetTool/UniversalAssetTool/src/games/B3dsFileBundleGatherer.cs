@@ -13,7 +13,7 @@ public abstract class B3dsFileBundleGatherer
 
   public virtual bool IsListed => true;
   public bool IsAvailable
-    => ThreeDsFileHierarchyExtractor.TryToFindRom(this.Name, out _);
+    => ThreeDsFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

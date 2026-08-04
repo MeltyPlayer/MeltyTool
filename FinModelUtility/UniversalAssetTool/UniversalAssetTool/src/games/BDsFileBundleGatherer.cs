@@ -13,8 +13,9 @@ public abstract class BDsFileBundleGatherer
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.DS;
 
   public virtual bool IsListed => true;
+
   public bool IsAvailable
-    => DsFileHierarchyExtractor.TryToFindRom(this.Name, out _);
+    => DsFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

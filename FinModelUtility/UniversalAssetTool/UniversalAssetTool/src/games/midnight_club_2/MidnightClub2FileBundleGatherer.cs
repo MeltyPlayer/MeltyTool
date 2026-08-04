@@ -15,11 +15,7 @@ public sealed class MidnightClub2FileBundleGatherer : INamedFileBundleGatherer {
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;
 
-  public bool IsAvailable
-    => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
-           Path.Join(this.Name, ExtractorUtil.EXTRACTED),
-           out var extractedDir) &&
-       !extractedDir.IsEmpty;
+  public bool IsAvailable => ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

@@ -1,6 +1,7 @@
 ﻿using fin.common;
 using fin.io;
 
+using uni.games;
 using uni.platforms.wii.tools;
 
 namespace uni.platforms.wii;
@@ -19,6 +20,10 @@ public sealed class WiiFileHierarchyExtractor {
     fileHierarchy = this.ExtractFromRom(romFile);
     return true;
   }
+
+  public static bool HasRomOrExtractedDirectory(string gameName)
+    => TryToFindRom(gameName, out _) ||
+       ExtractorUtil.HasBeenExtracted(gameName);
 
   public static bool TryToFindRom(string gameName, out ISystemFile romFile)
     => DirectoryConstants.ROMS_DIRECTORY

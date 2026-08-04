@@ -12,7 +12,7 @@ public abstract class BWiiFileBundleGatherer
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.WII;
 
   public bool IsAvailable
-    => WiiFileHierarchyExtractor.TryToFindRom(this.Name, out _);
+    => WiiFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

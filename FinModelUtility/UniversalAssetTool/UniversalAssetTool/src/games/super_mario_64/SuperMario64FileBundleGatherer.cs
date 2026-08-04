@@ -12,9 +12,11 @@ public sealed class SuperMario64FileBundleGatherer : INamedFileBundleGatherer {
 
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.N64;
 
-  public bool IsAvailable => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-      $"{this.Name}.z64",
-      out _);
+  public bool IsAvailable
+    => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
+           $"{this.Name}.z64",
+           out _) ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

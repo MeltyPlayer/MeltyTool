@@ -17,7 +17,8 @@ public sealed class VictoryHeatRallyBundleGatherer : INamedFileBundleGatherer {
     => FileBundleGathererPlatform.DESKTOP;
 
   public bool IsAvailable
-    => SteamUtils.TryGetGameDirectory("Victory Heat Rally", out _);
+    => SteamUtils.TryGetGameDirectory("Victory Heat Rally", out _) ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

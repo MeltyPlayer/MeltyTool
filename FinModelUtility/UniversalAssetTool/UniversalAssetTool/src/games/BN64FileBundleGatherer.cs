@@ -13,7 +13,8 @@ public abstract class BN64FileBundleGatherer
   public bool IsAvailable
     => DirectoryConstants
        .ROMS_DIRECTORY
-       .TryToGetExistingFileWithFileType(this.Name, out _, ".z64");
+       .TryToGetExistingFileWithFileType(this.Name, out _, ".z64") ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   protected abstract void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,

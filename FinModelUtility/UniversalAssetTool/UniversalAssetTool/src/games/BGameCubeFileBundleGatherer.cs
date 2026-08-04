@@ -13,7 +13,7 @@ public abstract class BGameCubeFileBundleGatherer
 
   public virtual bool IsListed => true;
   public bool IsAvailable
-    => GcnFileHierarchyExtractor.TryToFindRom(this.Name, out _);
+    => GcnFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   public virtual GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Standard();

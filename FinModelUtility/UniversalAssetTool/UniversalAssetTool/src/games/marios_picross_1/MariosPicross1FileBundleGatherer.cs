@@ -17,8 +17,9 @@ public sealed class MariosPicross1FileBundleGatherer : INamedFileBundleGatherer 
 
   public bool IsAvailable
     => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-        $"{this.Name}.gb",
-        out _);
+           $"{this.Name}.gb",
+           out _) ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

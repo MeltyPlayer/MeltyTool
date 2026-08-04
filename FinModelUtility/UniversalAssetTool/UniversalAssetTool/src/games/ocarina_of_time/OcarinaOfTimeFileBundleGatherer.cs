@@ -20,8 +20,9 @@ public sealed class OcarinaOfTimeFileBundleGatherer : INamedFileBundleGatherer {
 
   public bool IsAvailable
     => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-        $"{this.Name}.z64",
-        out _);
+           $"{this.Name}.z64",
+           out _) ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
