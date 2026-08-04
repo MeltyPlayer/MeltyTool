@@ -1,9 +1,15 @@
-﻿using Avalonia;
+﻿using System.Linq;
+
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
 using fin.ui.avalonia.styles;
 
+using uni.config;
+using uni.games;
+using uni.ui.avalonia.io;
+using uni.ui.avalonia.settings;
 using uni.ui.avalonia.ViewModels;
 using uni.ui.avalonia.Views;
 
@@ -18,9 +24,17 @@ public partial class App : Application {
   public override void OnFrameworkInitializationCompleted() {
     if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime
         desktop) {
-      desktop.MainWindow = new MainWindow {
-          DataContext = new MainViewModel()
-      };
+      if (ExtractorUtil
+          .GetExtractorsWhichNeedConfiguration()
+          .Any(t => t.stillNeedsToBeConfigured)) {
+        desktop.MainWindow = new FileBundleGathererSelectorWindow {
+            DataContext = new FileBundleGathererSelectorWindowViewModel(),
+        };
+      } else {
+        desktop.MainWindow = new MainWindow {
+            DataContext = new MainViewModel()
+        };
+      }
     } else if (this.ApplicationLifetime is ISingleViewApplicationLifetime
                singleViewPlatform) {
       singleViewPlatform.MainView = new MainView {

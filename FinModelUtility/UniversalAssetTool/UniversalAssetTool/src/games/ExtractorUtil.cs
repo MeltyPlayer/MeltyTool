@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using ServiceScan.SourceGenerator;
 
+using uni.config;
+
 namespace uni.games;
 
 public static partial class ExtractorUtil {
@@ -99,8 +101,7 @@ public static partial class ExtractorUtil {
   public static partial IServiceCollection AddGatherers(
       this IServiceCollection services);
 
-  public static IEnumerable<INamedFileBundleGatherer>
-      GetAllNamedFileBundleGatherers() {
+  public static IEnumerable<INamedFileBundleGatherer> GetAllExtractors() {
     var gathererCollection = new ServiceCollection();
     gathererCollection.AddGatherers();
 
@@ -109,6 +110,25 @@ public static partial class ExtractorUtil {
                                     .OrderBy(g => g.Name);
 
     return gatherers;
+  }
+
+  public static IEnumerable<(INamedFileBundleGatherer gatherer, bool
+          stillNeedsToBeConfigured)>
+      GetExtractorsWhichNeedConfiguration() {
+    var configuredExtractableGames
+        = Config.Instance.Extractor.GamesToExtract?.Keys.ToHashSet() ?? [];
+
+    return GetAllExtractors()
+        .Select(g => {
+          var needsConfiguration = g is {
+              IsAvailable: true, IsListed: true
+          };
+
+          return (
+              g,
+              needsConfiguration &&
+              !configuredExtractableGames.Contains(g.Name));
+        });
   }
 }
 

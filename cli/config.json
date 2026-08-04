@@ -21,13 +21,16 @@
     "CacheFileHierarchies": true,
     "CleanUpArchives": true,
     "ExtractRomsInParallel": true,
-    "VerifyCachedFileHierarchySize": false
+    "VerifyCachedFileHierarchySize": false,
+	"GamesToExtract": {
+		"meltyplayer": true
+	},
   },
   "Viewer": {
     "AutomaticallyPlayGameAudioForModel": false,
     "PreferGlNativeInterop": true,
     "ShowGrid": true,
     "ShowSkeleton": false,
-    "ViewerModelScaleSource": "MIN_MAX_BOUNDS",
+    "ViewerModelScaleSource": "NONE",
   }
 }

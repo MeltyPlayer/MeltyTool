@@ -89,6 +89,8 @@ public partial class ExtractorSettings {
     get => FinConfig.VerifyCachedFileHierarchySize;
     set => FinConfig.VerifyCachedFileHierarchySize = value;
   }
+
+  public IDictionary<string, bool>? GamesToExtract { get; set; }
 }
 
 [JsonConverter(typeof(StringEnumConverter))]

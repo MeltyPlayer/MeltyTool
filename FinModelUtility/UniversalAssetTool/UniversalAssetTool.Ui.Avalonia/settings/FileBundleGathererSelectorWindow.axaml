@@ -3,10 +3,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:settings="clr-namespace:uni.ui.avalonia.settings"
-        xmlns:bundles="clr-namespace:fin.io.bundles;assembly=Fin"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="uni.ui.avalonia.settings.FileBundleGathererSelectorWindow"
-        x:DataType="settings:FileBundleGathererSelectorWindowViewModel">
+        x:CompileBindings="False">
   <Design.DataContext>
     <settings:FileBundleGathererSelectorWindowViewModelForDesigner />
   </Design.DataContext>
@@ -51,14 +50,15 @@
 
     <Border BorderThickness="1"
             BorderBrush="{StaticResource BorderBrush}">
-      <ListBox ItemsSource="{Binding FileBundleGatherers}">
+      <ListBox ItemsSource="{Binding FileBundleGathererEnablements}">
         <ListBox.ItemTemplate>
-          <DataTemplate x:DataType="bundles:INamedFileBundleGatherer">
-            <CheckBox IsEnabled="{Binding IsAvailable}"
-                      IsChecked="{Binding IsAvailable}">
+          <DataTemplate>
+            <CheckBox IsEnabled="{Binding Gatherer.IsAvailable}"
+                      IsChecked="{Binding Gatherer.IsAvailable}">
               <TextBlock
                 Classes="regular"
-                Text="{Binding Name}" />
+                FontWeight="{Binding FontWeight}"
+                Text="{Binding Gatherer.Name}" />
             </CheckBox>
           </DataTemplate>
         </ListBox.ItemTemplate>

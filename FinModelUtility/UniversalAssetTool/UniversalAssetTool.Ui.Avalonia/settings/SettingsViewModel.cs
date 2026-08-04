@@ -30,7 +30,6 @@ public sealed class SettingsViewModel
 
   public event Action? OnClose;
 
-
   public override void Reset() {
     base.Reset();
     Config.ReloadSettings();
@@ -165,6 +164,11 @@ public sealed class SettingsViewModel
   public bool VerifyCachedFileHierarchySize {
     get => Config_.Extractor.VerifyCachedFileHierarchySize;
     set => Config_.Extractor.VerifyCachedFileHierarchySize = value;
+  }
+
+  public IDictionary<string, bool>? GamesToExtract {
+    get => Config_.Extractor.GamesToExtract;
+    set => Config_.Extractor.GamesToExtract = value;
   }
 
   // Viewer Settings

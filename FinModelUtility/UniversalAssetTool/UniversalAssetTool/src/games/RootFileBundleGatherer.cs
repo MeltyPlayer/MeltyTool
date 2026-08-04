@@ -1,11 +1,6 @@
 ﻿using fin.io.bundles;
-using fin.model;
 using fin.util.gc;
 using fin.util.progress;
-
-using Microsoft.Extensions.DependencyInjection;
-
-using ServiceScan.SourceGenerator;
 
 using uni.config;
 
@@ -16,7 +11,7 @@ public sealed class RootFileBundleGatherer {
       IMutablePercentageProgress mutablePercentageProgress,
       out IReadOnlyList<(INamedFileBundleGatherer gatherer,
           IPercentageProgress progress)> gatherersAndProgresses) {
-    var gatherers = ExtractorUtil.GetAllNamedFileBundleGatherers().ToArray();
+    var gatherers = ExtractorUtil.GetAllExtractors().ToArray();
 
     var mutableGatherersAndProgresses
         = new (INamedFileBundleGatherer, IPercentageProgress)[gatherers
