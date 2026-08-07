@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LinkDotNet.StringBuilder" Version="3.4.1" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.1.0" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.1.0" />
+    <PackageReference Include="LinkDotNet.StringBuilder" Version="3.4.2" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.2.0" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.2.0" />
   </ItemGroup>
 </Project>

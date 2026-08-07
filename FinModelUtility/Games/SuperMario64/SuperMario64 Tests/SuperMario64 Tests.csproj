@@ -7,4 +7,9 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Update="NUnit.Analyzers" Version="4.14.0" />
+    <PackageReference Update="NUnit3TestAdapter" Version="6.2.0" />
+  </ItemGroup>
+
 </Project>
