@@ -3,8 +3,8 @@
 using Avalonia;
 
 using fin.services;
-using fin.ui;
 using fin.ui.avalonia;
+using fin.ui.avalonia.util;
 
 namespace marioartisttool.desktop;
 
@@ -14,7 +14,7 @@ class Program {
   // yet and stuff might break.
   [STAThread]
   public static void Main(string[] args) {
-    UiUtil.Initialize();
+    AvaloniaUiUtil.Initialize();
 
     try {
       BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);

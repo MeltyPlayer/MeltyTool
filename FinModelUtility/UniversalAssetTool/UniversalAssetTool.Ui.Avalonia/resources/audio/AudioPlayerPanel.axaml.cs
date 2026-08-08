@@ -90,13 +90,9 @@ public sealed class AudioPlayerPanelViewModel
       field = value;
 
       var ar = new GlobalAudioReader();
-      try {
-        this.LoadedAudioBuffers
-            = value?.SelectMany(a => ar.ImportAudio(this.audioManager_, a))
-                   .ToArray();
-      } catch (Exception e) {
-        ExceptionService.HandleException(e, null);
-      }
+      this.LoadedAudioBuffers
+          = value?.SelectMany(a => ar.ImportAudio(this.audioManager_, a))
+                 .ToArray();
     }
   }
 
