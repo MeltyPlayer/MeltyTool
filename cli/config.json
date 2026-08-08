@@ -69,6 +69,6 @@
     "PreferGlNativeInterop": true,
     "ShowGrid": true,
     "ShowSkeleton": false,
-    "ViewerModelScaleSource": "NONE"
+    "ViewerModelScaleSource": "MIN_MAX_BOUNDS"
   }
 }
