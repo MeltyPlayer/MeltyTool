@@ -12,6 +12,7 @@ using fin.data;
 using fin.io;
 using fin.services;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.playback.al;
 using fin.util.asserts;
 using fin.util.enumerables;
@@ -205,17 +206,15 @@ public sealed class AudioPlayerPanelViewModel
   }
 }
 
-public partial class AudioPlayerPanel : UserControl {
+public partial class AudioPlayerPanel
+    : BUserControl<AudioPlayerPanelViewModel> {
   public AudioPlayerPanel() {
     this.InitializeComponent();
   }
 
-  private AudioPlayerPanelViewModel ViewModel_
-    => this.DataContext.AssertAsA<AudioPlayerPanelViewModel>();
-
   private void ClosePanel_(object? sender, RoutedEventArgs e)
-    => this.ViewModel_.AudioFileBundles = null;
+    => this.ViewModel.AudioFileBundles = null;
 
   private void PlayNextRandom_(object? sender, RoutedEventArgs e)
-    => this.ViewModel_.PlayRandomFromShuffledList();
+    => this.ViewModel.PlayRandomFromShuffledList();
 }

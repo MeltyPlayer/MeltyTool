@@ -1,14 +1,13 @@
 using System;
 using System.Threading;
 
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
 using fin.io.web;
 using fin.services;
 using fin.ui;
-using fin.util.asserts;
+using fin.ui.avalonia.controls;
 
 using ReactiveUI;
 
@@ -99,24 +98,21 @@ public class AnnouncementBarViewModel : BViewModel {
   }
 }
 
-public partial class AnnouncementBar : UserControl {
+public partial class AnnouncementBar : BUserControl<AnnouncementBarViewModel> {
   public AnnouncementBar() {
     this.DataContext ??= new AnnouncementBarViewModel();
     InitializeComponent();
   }
 
-  private void CancelOperation_(object? sender, RoutedEventArgs e) {
-    var dataContext = this.DataContext.AssertAsA<AnnouncementBarViewModel>();
-    dataContext.CancellationTokenSource?.Cancel();
-  }
+  private void CancelOperation_(object? sender, RoutedEventArgs e)
+    => this.ViewModel.CancellationTokenSource?.Cancel();
 
   private void ShowException_(object? sender, RoutedEventArgs e) {
-    var dataContext = this.DataContext.AssertAsA<AnnouncementBarViewModel>();
-    if (dataContext.ExceptionAndContext == null) {
+    if (this.ViewModel.ExceptionAndContext == null) {
       return;
     }
 
-    var (exception, context) = dataContext.ExceptionAndContext.Value;
+    var (exception, context) = this.ViewModel.ExceptionAndContext.Value;
     ExceptionService.HandleException(exception, context);
   }
 }

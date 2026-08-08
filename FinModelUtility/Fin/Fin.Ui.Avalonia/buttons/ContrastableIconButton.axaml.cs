@@ -1,6 +1,4 @@
 using System;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -8,6 +6,8 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 
 using Material.Icons;
+
+using ReactiveUI.Primitives;
 
 namespace fin.ui.avalonia.buttons;
 

@@ -4,13 +4,16 @@ using System.Reactive.Subjects;
 
 using Avalonia.Controls;
 
+using fin.ui.avalonia.controls;
+
 using uni.config;
 using uni.model;
 using uni.services;
+using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.Views;
 
-public partial class MainView : UserControl {
+public partial class MainView : BUserControl<MainViewModel> {
   private BehaviorSubject<bool> inWindowSubject_ = new(true);
   private BehaviorSubject<PanelType> activePanelTypeSubject_
       = new(PanelType.NEITHER);

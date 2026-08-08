@@ -26,18 +26,18 @@ public partial class App : Application {
           .GetExtractorsWhichNeedConfiguration()
           .Any(t => t.stillNeedsToBeConfigured)) {
         desktop.MainWindow = new FileBundleGathererSelectorWindow {
-            DataContext = new FileBundleGathererSelectorWindowViewModel(),
+            ViewModel = new FileBundleGathererSelectorWindowViewModel(),
             Desktop = desktop,
         };
       } else {
         desktop.MainWindow = new MainWindow {
-            DataContext = new MainViewModel()
+            ViewModel = new MainViewModel()
         };
       }
     } else if (this.ApplicationLifetime is ISingleViewApplicationLifetime
                singleViewPlatform) {
       singleViewPlatform.MainView = new MainView {
-          DataContext = new MainViewModel()
+          ViewModel = new MainViewModel()
       };
     }
 

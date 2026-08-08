@@ -1,15 +1,17 @@
-﻿using Avalonia.Controls;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 
 using fin.config.avalonia.services;
 using fin.services;
+using fin.ui.avalonia.controls;
 using fin.ui.avalonia.dialogs;
 using fin.util.tasks;
 using fin.util.time;
 
+using uni.ui.avalonia.ViewModels;
+
 namespace uni.ui.avalonia.Views;
 
-public partial class MainWindow : Window {
+public partial class MainWindow : BWindow<MainViewModel> {
   private readonly TimedCallback fpsCallback_;
 
   public MainWindow() {

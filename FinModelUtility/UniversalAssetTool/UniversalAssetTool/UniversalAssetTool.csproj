@@ -122,6 +122,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="Yarhl" Version="4.2.0" />
   </ItemGroup>
 

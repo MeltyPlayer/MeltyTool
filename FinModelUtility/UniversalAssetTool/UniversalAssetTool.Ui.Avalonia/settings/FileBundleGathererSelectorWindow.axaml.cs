@@ -8,8 +8,8 @@ using Avalonia.Media;
 
 using fin.io.bundles;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.util.asserts;
-using fin.util.linq;
 using fin.util.progress;
 
 using ReactiveUI;
@@ -173,7 +173,8 @@ public class FileBundleGathererSelectorWindowViewModel : BViewModel {
   }
 }
 
-public partial class FileBundleGathererSelectorWindow : Window {
+public partial class FileBundleGathererSelectorWindow 
+    : BWindow<FileBundleGathererSelectorWindowViewModel> {
   public FileBundleGathererSelectorWindow() {
     InitializeComponent();
   }
@@ -181,11 +182,8 @@ public partial class FileBundleGathererSelectorWindow : Window {
   public IClassicDesktopStyleApplicationLifetime Desktop { get; set; }
 
   private void SaveAndLaunch_(object? sender, RoutedEventArgs e) {
-    var viewModel
-        = this.DataContext.AssertAsA<FileBundleGathererSelectorWindowViewModel>();
-
     Config.Instance.Extractor.GamesToExtract
-        = viewModel.FileBundleGathererEnablements
+        = this.ViewModel.FileBundleGathererEnablements
                    .ToDictionary(
                        e => e.Gatherer.Name,
                        e => e.IsEnabled);
@@ -193,7 +191,7 @@ public partial class FileBundleGathererSelectorWindow : Window {
     Config.SaveSettings();
 
     this.Desktop.MainWindow = new MainWindow {
-        DataContext = new MainViewModel(),
+        ViewModel = new MainViewModel(),
     };
     this.Desktop.MainWindow.Show();
 
