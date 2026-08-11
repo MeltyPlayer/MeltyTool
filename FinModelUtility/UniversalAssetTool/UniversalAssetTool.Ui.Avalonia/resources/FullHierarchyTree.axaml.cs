@@ -91,6 +91,9 @@ public class FullHierarchyTreeViewModel : BViewModel {
                   o.Width = GridLength.Star;
                 });
 
+    this.Source.ShowColumnHeaders = false;
+    this.Source.CanUserResizeColumns = false;
+
     this.Source.RowSelection!.SelectionChanged += (_, e) => {
       IReadOnlyBone? selectedBone = null;
       IReadOnlyMesh? selectedMesh = null;
