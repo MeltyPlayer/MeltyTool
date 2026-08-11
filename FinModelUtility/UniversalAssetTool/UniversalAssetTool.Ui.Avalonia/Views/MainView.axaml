@@ -105,12 +105,7 @@
             <SplitView.Pane>
               <Border x:Name="InfoPanel" BoxShadow="0 0 10 0 Black">
                 <Panel>
-                  <controls:If Condition="{Binding ModelPanel, Converter={x:Static ObjectConverters.IsNotNull}}">
-                    <model:ModelPanel DataContext="{Binding ModelPanel}" />
-                  </controls:If>
-                  <controls:If Condition="{Binding ScenePanel, Converter={x:Static ObjectConverters.IsNotNull}}">
-                    <scene1:ScenePanel DataContext="{Binding ScenePanel}" />
-                  </controls:If>
+                  <ContentControl Content="{Binding ResourcePanel}" />
                 </Panel>
               </Border>
             </SplitView.Pane>

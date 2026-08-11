@@ -2,9 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:styles="clr-namespace:fin.ui.avalonia.styles;assembly=Fin.Ui.Avalonia"
+             xmlns:avalonia1="clr-namespace:uni.ui.avalonia"
              x:Class="uni.ui.avalonia.App"
              RequestedThemeVariant="Light">
   <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+  <Application.DataTemplates>
+    <avalonia1:ViewLocator />
+  </Application.DataTemplates>
 
   <Application.Styles>
     <FluentTheme />
