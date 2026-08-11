@@ -16,10 +16,9 @@ using NonnullSelectorDelegate = Func<Selector, Selector>;
 
 public sealed class HeaderStyles : Styles {
   public HeaderStyles() {
-    var maxSizeIndex = 1;
-    var minSizeIndex = 4;
-
-    for (var i = maxSizeIndex; i <= minSizeIndex; i++) {
+    for (var i = HeaderResources.MAX_SIZE_INDEX;
+         i <= HeaderResources.MIN_SIZE_INDEX;
+         i++) {
       var targetSelectorTuples
           = new (SelectorDelegate topLevelSelector, NonnullSelectorDelegate
                   childSelector)
@@ -34,16 +33,12 @@ public sealed class HeaderStyles : Styles {
                              .ChildOfType<ContentPresenter>()
                              .Name("PART_ContentPresenter")),
                       (Selectors.OfType<GroupBox>,
-                       x => x.ChildOfType<Grid>()
-                             .ChildOfType<AccessText>()),
+                       x => x.DescendantOfType<AccessText>()),
                   }
               .Select(tuple => this.GetTargetSelectorDelegates_(
                           i,
                           tuple.topLevelSelector,
                           tuple.childSelector));
-
-      var fontSize = 13 + (minSizeIndex - maxSizeIndex - i) * 2;
-      var topPadding = fontSize * .5;
 
       foreach (var tuple in targetSelectorTuples) {
         var (topLevelSelector,
@@ -51,15 +46,15 @@ public sealed class HeaderStyles : Styles {
             targetWithoutSpaceFirstSelector) = tuple;
 
         this.AddStyle(targetSelector)
-            .AddSetter(TextBlock.FontSizeProperty, fontSize)
+            .AddSetter(TextBlock.FontSizeProperty, HeaderResources.Instance.FontSizes[i - 1])
             .AddSetter(TextBlock.FontWeightProperty, FontWeight.Medium)
             .AddSetter(TextBlock.PaddingProperty, new Thickness(0));
 
         this.AddStyle(targetWithoutSpaceFirstSelector)
             .AddSetter(TextBlock.PaddingProperty,
-                       new Thickness(0, topPadding, 0, 0));
+                       HeaderResources.Instance.Paddings[i - 1]);
 
-        this.AddStyle(topLevelSelector.Child().OfType<TabItem>())
+        this.AddStyle(topLevelSelector.ChildOfType<TabItem>())
             .AddSetter(Layoutable.MinHeightProperty, 0);
       }
     }
@@ -89,6 +84,10 @@ public record TargetSelectorDelegates(
 
 public static class SelectorExtensions {
   public static Selector ChildOfType<T>(this Selector s)
+      where T : StyledElement
+    => s.Child().OfType<T>();
+
+  public static SelectorDelegate ChildOfType<T>(this SelectorDelegate s)
       where T : StyledElement
     => s.Child().OfType<T>();
 

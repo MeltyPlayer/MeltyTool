@@ -4,8 +4,6 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-using fin.ui.avalonia.styles;
-
 using uni.games;
 using uni.ui.avalonia.settings;
 using uni.ui.avalonia.ViewModels;
@@ -16,7 +14,6 @@ namespace uni.ui.avalonia;
 public partial class App : Application {
   public override void Initialize() {
     AvaloniaXamlLoader.Load(this);
-    this.Styles.AddRange(new HeaderStyles());
   }
 
   public override void OnFrameworkInitializationCompleted() {
