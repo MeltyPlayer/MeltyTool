@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:buttons="clr-namespace:uni.ui.avalonia.common.buttons"
              xmlns:buttons1="clr-namespace:fin.ui.avalonia.buttons;assembly=Fin.Ui.Avalonia"
-             xmlns:top="clr-namespace:uni.ui.avalonia.toolbars.top"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="40"
              x:Class="uni.ui.avalonia.toolbars.top.TopToolbar">
   <StackPanel Orientation="Horizontal">

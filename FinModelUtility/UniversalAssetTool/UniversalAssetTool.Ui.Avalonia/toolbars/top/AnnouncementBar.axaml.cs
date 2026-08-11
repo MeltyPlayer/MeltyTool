@@ -55,7 +55,7 @@ public class AnnouncementBarViewModel : BViewModel {
       this.Foreground = value?.Type switch {
           AnnouncementType.ERROR => SolidColorBrush.Parse("Red"),
           AnnouncementType.INFO  => SolidColorBrush.Parse("White"),
-          _                      => SolidColorBrush.Parse("Gray"),
+          _                      => SolidColorBrush.Parse("#ccc"),
       };
       this.Text = value?.Message ?? "No announcements.";
 
