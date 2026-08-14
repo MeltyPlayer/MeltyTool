@@ -170,7 +170,7 @@ public sealed class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
     }
 
     if (lvl.Npcs.Count > 0) {
-      foreach (var (npcPosition, npcName, npcCharacterType) in lvl.Npcs) {
+      foreach (var (npcPosition, npcName, npcCharacterType, text) in lvl.Npcs) {
         var npcNode
             = finArea.AddRootNode()
                      .SetPosition(npcPosition.X, npcPosition.Z, npcPosition.Y)

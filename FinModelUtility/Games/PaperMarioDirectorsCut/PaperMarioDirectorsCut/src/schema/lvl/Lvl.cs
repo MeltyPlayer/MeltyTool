@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.schema;
 using fin.util.strings;
 
 using schema.text;
@@ -32,8 +33,10 @@ public sealed class Lvl : ITextDeserializable {
   public List<(Vector3 start, Vector3 end, string? textureName, FloorBlockType
       type, FloorBlockFlags flags)> FloorBlocks { get; set; } = [];
 
-  public List<(Vector3, string name, string characterType)> Npcs { get; set; } =
-    [];
+  public List<(Vector3, string name, string characterType, string text)> Npcs {
+    get;
+    set;
+  } = [];
 
   public List<Vector3> SaveBlocks { get; set; } = [];
   public List<Vector3> Trees { get; set; } = [];
@@ -45,79 +48,91 @@ public sealed class Lvl : ITextDeserializable {
     this.Trees.Clear();
 
     while (!tr.Eof) {
-      var line = tr.ReadLine().Trim();
+      tr.SkipCommentsAndWhitespace();
 
-      if (line.Length == 0 || line.StartsWith("//")) {
-        continue;
-      }
-
-      if (line.TryRemoveStart("global.roomIsModel:",
-                              out var roomIsModelValue)) {
+      if (tr.Matches("global.roomIsModel:")) {
+        var roomIsModelValue = tr.ReadLine();
         this.HasRoomModel = CoerceStringToBool_(roomIsModelValue);
-      } else if (line.TryRemoveStart("global.roomScale:",
-                                     out var roomScaleValue)) {
+      } else if (tr.Matches("global.roomScale:")) {
+        var roomScaleValue = tr.ReadLine();
         this.RoomScale = float.Parse(roomScaleValue);
-      } else if (
-          line.TryRemoveStart("parCamera.img:", out var backgroundName)) {
+      } else if (tr.Matches("parCamera.img:")) {
+        var backgroundName = tr.ReadLine();
         this.BackgroundName = backgroundName.Trim();
-      } else if (TryToParseObj(line, out var objType, out var objParams)) {
+      } else if (TryToParseObj(tr, out var objType, out var objParams)) {
         switch (objType) {
           case "objEnemy": {
-              var position = ParseVector3(objParams);
-              var characterType = objParams[8];
-              this.Enemies.Add((position, characterType));
-              break;
-            }
+            var position = ParseVector3(objParams);
+
+            using var lastParamTr
+                = new SchemaTextReader(objParams[7].Replace("\"", ""));
+            var lastParamArgs = lastParamTr.ReadArguments([','], []);
+
+            var characterType = lastParamArgs[1];
+
+            this.Enemies.Add((position, characterType));
+            break;
+          }
           case "objFloorBlock": {
-              var start = ParseVector3(objParams);
-              var end = ParseVector3(objParams.AsSpan(3));
-              var textureName = objParams[6] == "-1"
-                  ? null
-                  : objParams[6];
+            var start = ParseVector3(objParams);
+            var end = ParseVector3(objParams.AsSpan(3));
+            var textureName = objParams[6] == "-1"
+                ? null
+                : objParams[6];
 
-              var behavior = objParams[7].Replace(@"""", "");
-              var type = GetFloorBlockType(behavior);
-              var flags = GetFloorBlockFlags(behavior);
+            var behavior = objParams[7].Replace(@"""", "");
+            var type = GetFloorBlockType(behavior);
+            var flags = GetFloorBlockFlags(behavior);
 
-              this.FloorBlocks.Add((start, end, textureName, type, flags));
-              break;
-            }
+            this.FloorBlocks.Add((start, end, textureName, type, flags));
+            break;
+          }
           case "objNPC": {
-              var position = ParseVector3(objParams);
+            var position = ParseVector3(objParams);
 
-              var name = objParams[7].Replace(@"""", "");
-              var characterType = objParams[8];
-              characterType = characterType.SubstringUpTo('-');
+            using var lastParamTr
+                = new SchemaTextReader(objParams[7].Replace("\"", ""));
 
-              this.Npcs.Add((position, name, characterType));
-              break;
-            }
+            var name = lastParamTr.ReadUpToStartOfTerminator(',');
+            lastParamTr.ReadChar();
+            var characterType = lastParamTr.ReadUpToStartOfTerminator(',');
+            lastParamTr.ReadChar();
+            characterType = characterType.SubstringUpTo('-');
+            var text = lastParamTr.ReadRemainder();
+
+            this.Npcs.Add((position, name, characterType, text));
+            break;
+          }
           case "objSaveBlock": {
-              this.SaveBlocks.Add(ParseVector3(objParams));
-              break;
-            }
+            this.SaveBlocks.Add(ParseVector3(objParams));
+            break;
+          }
           case "objTree1": {
-              this.Trees.Add(ParseVector3(objParams));
-              break;
-            }
+            this.Trees.Add(ParseVector3(objParams));
+            break;
+          }
         }
+      } else {
+        tr.SkipToEndOfLine();
       }
     }
   }
 
-  public static bool TryToParseObj(string line,
+  public static bool TryToParseObj(ITextReader tr,
                                    out string type,
                                    out string[] prms) {
-    if (line.StartsWith("obj") && line.Contains('(')) {
-      (type, var paramsText) = line.SplitBeforeAndAfterFirst('(');
-      prms = paramsText.SubstringUpTo(')')
-                       .Split(',', StringSplitOptions.TrimEntries);
-      return true;
-    }
-
     type = null!;
     prms = null!;
-    return false;
+
+    if (!tr.Matches("obj")) {
+      return false;
+    }
+
+    type = $"obj{tr.ReadUpToStartOfTerminator('(')}";
+    tr.ReadChar();
+
+    prms = tr.ReadArguments([','], [')']);
+    return true;
   }
 
   public static FloorBlockType GetFloorBlockType(string behavior) {
