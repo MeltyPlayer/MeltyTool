@@ -7,8 +7,13 @@ using uni.platforms.threeDs;
 namespace uni.games;
 
 public abstract class B3dsFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.THREE_DS;
+
+  public virtual bool IsListed => true;
+  public bool IsAvailable
+    => ThreeDsFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

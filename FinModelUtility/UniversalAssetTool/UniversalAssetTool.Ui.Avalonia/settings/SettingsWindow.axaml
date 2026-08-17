@@ -6,5 +6,48 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="uni.ui.avalonia.settings.SettingsWindow"
         Title="Settings">
+  <Window.Styles>
+    <Style Selector="Grid#PART_FocusDelegate_1 Grid">
+      <!-- This is stupid, but it's the only way to get the right selector priority. -->
+      <Style Selector="^ > TextBlock[IsVisible=True]">
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundHighBrush}"/>
+        <Setter Property="FontSize" Value="{StaticResource Header2FontSize}"/>
+      </Style>
+
+      <Style Selector="^ > Border">
+        <Setter Property="IsVisible" Value="False"/>
+      </Style>
+    </Style>
+
+    <Style Selector="Grid#PART_FocusDelegate_2">
+      <!-- This is stupid, but it's the only way to get the right selector priority. -->
+      <Style Selector="^ ContentControl > Grid > TextBlock">
+        <Style.Animations>
+          <!-- This is stupid, but it's the only way to get the right setter priority. -->
+          <Animation Duration="0:0:1" IterationCount="Infinite">
+            <KeyFrame Cue="0%">
+              <Setter Property="FontSize" Value="{StaticResource Header1FontSize}"/>
+            </KeyFrame>
+            <KeyFrame Cue="100%">
+              <Setter Property="FontSize" Value="{StaticResource Header1FontSize}"/>
+            </KeyFrame>
+          </Animation>
+        </Style.Animations>
+      </Style>
+
+      <!-- This is stupid, but it's the only way to get the right selector priority. -->
+      <Style Selector="^ TextBlock#PART_Header[IsVisible=True]">
+        <Setter Property="FontSize" Value="{StaticResource Header3FontSize}" />
+      </Style>
+
+      <!-- This is stupid, but it's the only way to get the right selector priority. -->
+      <Style Selector="^ TextBlock#PART_Description[IsVisible=True]">
+        <Setter Property="FontSize" Value="{StaticResource RegularFontSize}" />
+        <Setter Property="FontWeight" Value="Light" />
+        <Setter Property="Foreground" Value="{DynamicResource ForegroundMediumBrush}" />
+      </Style>
+    </Style>
+  </Window.Styles>
+
   <avalonia:ConfigPage Name="ConfigPage" />
 </Window>

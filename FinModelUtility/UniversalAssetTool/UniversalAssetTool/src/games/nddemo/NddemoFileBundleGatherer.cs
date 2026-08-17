@@ -9,6 +9,8 @@ namespace uni.games.nddemo;
 public sealed class NddemoFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "nddemo";
 
+  public override bool IsListed => false;
+
   public override GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Standard();
 

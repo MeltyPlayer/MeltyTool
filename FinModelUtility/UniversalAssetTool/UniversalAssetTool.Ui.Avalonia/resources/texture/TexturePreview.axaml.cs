@@ -9,6 +9,7 @@ using Avalonia.Threading;
 using fin.image;
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.avalonia.images;
 using fin.util.asserts;
 
@@ -55,13 +56,13 @@ public class TexturePreviewViewModel : BViewModel {
   }
 }
 
-public partial class TexturePreview : UserControl {
+public partial class TexturePreview : BUserControl<TexturePreviewViewModel> {
   public TexturePreview() {
     this.InitializeComponent();
   }
 
   private TexturePreviewViewModel ViewModel_
-    => Asserts.AsA<TexturePreviewViewModel>(this.DataContext);
+    => Asserts.AsA<TexturePreviewViewModel>(this.ViewModel);
 
   private async void CopyToClipboard_(object? sender, RoutedEventArgs e) {
     var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;

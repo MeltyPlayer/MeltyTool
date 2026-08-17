@@ -352,6 +352,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GauntletDarkLegacy Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheLabyrinthPlusEdition Tests", "Games\TheLabyrinthPlusEdition\TheLabyrinthPlusEdition Tests\TheLabyrinthPlusEdition Tests.csproj", "{663B4403-01AC-4622-A252-6266203AA3EB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HarvestMoon64", "HarvestMoon64", "{DB24F3EB-2DF9-4B2D-A104-D9DCF6473F32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarvestMoon64", "Games\HarvestMoon64\HarvestMoon64\HarvestMoon64.csproj", "{7ABA685E-01D6-4A71-91C8-545BE239D7EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1208,6 +1212,14 @@ Global
 		{663B4403-01AC-4622-A252-6266203AA3EB}.Release|x64.Build.0 = Release|x64
 		{663B4403-01AC-4622-A252-6266203AA3EB}.Release|x86.ActiveCfg = Release|x86
 		{663B4403-01AC-4622-A252-6266203AA3EB}.Release|x86.Build.0 = Release|x86
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Debug|x64.ActiveCfg = Debug|x64
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Debug|x64.Build.0 = Debug|x64
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Debug|x86.ActiveCfg = Debug|x86
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Debug|x86.Build.0 = Debug|x86
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Release|x64.ActiveCfg = Release|x64
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Release|x64.Build.0 = Release|x64
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Release|x86.ActiveCfg = Release|x86
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1365,6 +1377,8 @@ Global
 		{5DDBD3A0-60B2-4D48-B0D4-715B7EF59AD6} = {60B564F4-BE76-4C2C-A8C7-DBD3F1F60085}
 		{B86CBB5F-54E8-45F8-A686-8218293D5508} = {9E7325A7-F207-48AC-B382-7DF1162D105A}
 		{663B4403-01AC-4622-A252-6266203AA3EB} = {6DAD3710-113C-4532-9801-F8F3E1518560}
+		{DB24F3EB-2DF9-4B2D-A104-D9DCF6473F32} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
+		{7ABA685E-01D6-4A71-91C8-545BE239D7EF} = {DB24F3EB-2DF9-4B2D-A104-D9DCF6473F32}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}

@@ -19,9 +19,14 @@
               TabStripPlacement="Left"
               Margin="-12 0">
     <TabControl.Styles>
+      <Style Selector="TabItem">
+        <Setter Property="Height" Value="24" />
+      </Style>
+      
       <Style Selector="TabItem .sideTab > avalonia|MaterialIcon">
         <Setter Property="Margin" Value="0 4 8 4" />
       </Style>
+
       <Style Selector="TabItem .sideTab > TextBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="0 0 -10 0" />

@@ -14,6 +14,8 @@ public sealed class AnimalCrossingFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "animal_crossing";
 
+  public override bool IsListed => false;
+
   public override GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor
        .Options

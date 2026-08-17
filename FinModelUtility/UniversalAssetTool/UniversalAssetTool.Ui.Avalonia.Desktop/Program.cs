@@ -5,6 +5,7 @@ using Avalonia;
 using fin.services;
 using fin.ui;
 using fin.ui.avalonia;
+using fin.ui.avalonia.util;
 
 using uni.cli;
 
@@ -16,7 +17,7 @@ class Program {
   // yet and stuff might break.
   [STAThread]
   public static void Main(string[] args) {
-    UiUtil.Initialize();
+    AvaloniaUiUtil.Initialize();
 
     Cli.Run(args,
             () => {

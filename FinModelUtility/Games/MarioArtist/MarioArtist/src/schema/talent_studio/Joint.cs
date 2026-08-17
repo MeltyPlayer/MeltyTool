@@ -18,7 +18,7 @@ public sealed partial class Joint : IBinaryDeserializable {
   public byte index;
 
   [IntegerFormat(SchemaIntegerType.BYTE)]
-  public bool isLeft;
+  public bool isFlipped;
 
   public ushort unk6;
   public ushort unk7;

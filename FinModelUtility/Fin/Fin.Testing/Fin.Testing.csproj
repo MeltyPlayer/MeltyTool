@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MSTest.TestFramework" Version="4.1.0" />
-    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.1.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.3.3" />
+    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="22.2.0" />
   </ItemGroup>
 
   <ItemGroup>

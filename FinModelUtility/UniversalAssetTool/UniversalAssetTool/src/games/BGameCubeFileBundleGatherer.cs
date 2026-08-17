@@ -7,8 +7,13 @@ using uni.platforms.gcn;
 namespace uni.games;
 
 public abstract class BGameCubeFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.GAMECUBE;
+
+  public virtual bool IsListed => true;
+  public bool IsAvailable
+    => GcnFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   public virtual GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Standard();

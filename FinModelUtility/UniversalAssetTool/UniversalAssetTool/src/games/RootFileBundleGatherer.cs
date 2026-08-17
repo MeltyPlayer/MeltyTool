@@ -2,54 +2,46 @@
 using fin.util.gc;
 using fin.util.progress;
 
-using Microsoft.Extensions.DependencyInjection;
-
-using ServiceScan.SourceGenerator;
-
 using uni.config;
 
 namespace uni.games;
 
-public static partial class GatherersExtensions {
-  [GenerateServiceRegistrations(AssignableTo
-                                    = typeof(INamedAnnotatedFileBundleGatherer),
-                                Lifetime = ServiceLifetime.Transient)]
-  public static partial IServiceCollection AddGatherers(
-      this IServiceCollection services);
-}
-
 public sealed class RootFileBundleGatherer {
   public IFileBundleDirectory GatherAllFiles(
       IMutablePercentageProgress mutablePercentageProgress,
-      out IReadOnlyList<(INamedAnnotatedFileBundleGatherer gatherer,
+      out IReadOnlyList<(INamedFileBundleGatherer gatherer,
           IPercentageProgress progress)> gatherersAndProgresses) {
-    var gathererCollection = new ServiceCollection();
-    gathererCollection.AddGatherers();
+    var configuredExtractors
+        = Config.Instance.Extractor.GamesToExtract?.Where(p => p.Value)
+                .Select(p => p.Key)
+                .ToHashSet() ?? [];
 
-    using var gathererProvider = gathererCollection.BuildServiceProvider();
-    var gatherers = gathererProvider.GetServices<INamedAnnotatedFileBundleGatherer>()
-                    .OrderBy(g => g.Name)
-                    .ToArray();
+    var enabledGatherers = new List<INamedFileBundleGatherer>();
+    foreach (var gatherer in ExtractorUtil.GetAllExtractors()) {
+      if (!gatherer.IsListed || configuredExtractors.Contains(gatherer.Name)) {
+        enabledGatherers.Add(gatherer);
+      }
+    }
 
     var mutableGatherersAndProgresses
-        = new (INamedAnnotatedFileBundleGatherer, IPercentageProgress)[gatherers
-            .Length];
+        = new (INamedFileBundleGatherer, IPercentageProgress)[enabledGatherers
+            .Count];
     gatherersAndProgresses = mutableGatherersAndProgresses;
 
-    IAnnotatedFileBundleGatherer rootGatherer;
+    IFileBundleGatherer rootGatherer;
     if (Config.Instance.Extractor.ExtractRomsInParallel) {
-      var accumulator = new ParallelAnnotatedFileBundleGathererAccumulator();
-      for (var i = 0; i < gatherers.Length; i++) {
-        var gatherer = gatherers[i];
+      var accumulator = new ParallelFileBundleGathererAccumulator();
+      for (var i = 0; i < enabledGatherers.Count; i++) {
+        var gatherer = enabledGatherers[i];
         accumulator.Add(gatherer, out var progress);
         mutableGatherersAndProgresses[i] = (gatherer, progress);
       }
 
       rootGatherer = accumulator;
     } else {
-      var accumulator = new AnnotatedFileBundleGathererAccumulator();
-      for (var i = 0; i < gatherers.Length; i++) {
-        var gatherer = gatherers[i];
+      var accumulator = new FileBundleGathererAccumulator();
+      for (var i = 0; i < enabledGatherers.Count; i++) {
+        var gatherer = enabledGatherers[i];
         accumulator.Add(gatherer, out var progress);
         mutableGatherersAndProgresses[i] = (gatherer, progress);
       }

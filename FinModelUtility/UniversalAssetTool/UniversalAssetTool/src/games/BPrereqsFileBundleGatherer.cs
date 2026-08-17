@@ -6,8 +6,15 @@ using fin.util.progress;
 namespace uni.games;
 
 public abstract class BPrereqsFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract FileBundleGathererPlatform Platform { get; }
+
+  public bool IsAvailable
+    => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
+           Path.Join(this.Name, ExtractorUtil.PREREQS),
+           out var prereqsDir) &&
+       !prereqsDir.IsEmpty;
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

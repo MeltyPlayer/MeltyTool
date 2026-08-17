@@ -39,24 +39,38 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
   }
 }
 
-public interface INamedAnnotatedFileBundleGatherer
-    : IAnnotatedFileBundleGatherer {
-  string Name { get; }
+public enum FileBundleGathererPlatform {
+  DESKTOP,
+  SNES,
+  N64,
+  GAMECUBE,
+  DS,
+  WII,
+  THREE_DS,
 }
 
-public interface IAnnotatedFileBundleGatherer {
+public interface INamedFileBundleGatherer : IFileBundleGatherer {
+  string Name { get; }
+
+  FileBundleGathererPlatform Platform { get; }
+
+  bool IsListed => true;
+  bool IsAvailable { get; }
+}
+
+public interface IFileBundleGatherer {
   void GatherFileBundles(IFileBundleOrganizer organizer,
                          IMutablePercentageProgress mutablePercentageProgress);
 }
 
-public interface IAnnotatedFileBundleGathererAccumulator<out TSelf>
-    : IAnnotatedFileBundleGatherer
-    where TSelf : IAnnotatedFileBundleGathererAccumulator<TSelf> {
-  TSelf Add(IAnnotatedFileBundleGatherer gatherer);
+public interface IFileBundleGathererAccumulator<out TSelf>
+    : IFileBundleGatherer
+    where TSelf : IFileBundleGathererAccumulator<TSelf> {
+  TSelf Add(IFileBundleGatherer gatherer);
   TSelf Add(Action<IFileBundleOrganizer, IMutablePercentageProgress> handler);
   TSelf Add(Action<IFileBundleOrganizer> handler);
 
-  TSelf Add(IAnnotatedFileBundleGatherer gatherer,
+  TSelf Add(IFileBundleGatherer gatherer,
             out IPercentageProgress progress);
 
   TSelf Add(Action<IFileBundleOrganizer, IMutablePercentageProgress> handler,
@@ -66,10 +80,10 @@ public interface IAnnotatedFileBundleGathererAccumulator<out TSelf>
             out IPercentageProgress progress);
 }
 
-public interface IAnnotatedFileBundleGathererAccumulatorWithInput<
+public interface IFileBundleGathererAccumulatorWithInput<
     out T, out TSelf>
-    : IAnnotatedFileBundleGathererAccumulator<TSelf>
-    where TSelf : IAnnotatedFileBundleGathererAccumulatorWithInput<T, TSelf> {
+    : IFileBundleGathererAccumulator<TSelf>
+    where TSelf : IFileBundleGathererAccumulatorWithInput<T, TSelf> {
   TSelf Add(Action<IFileBundleOrganizer, T> handler);
 
   TSelf Add(

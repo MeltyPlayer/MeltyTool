@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using fin.importers;
 using fin.io;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.util.linq;
 using fin.util.strings;
 
@@ -60,7 +61,7 @@ public class FilesPanelViewModel : BViewModel {
   }
 }
 
-public partial class FilesPanel : UserControl {
+public partial class FilesPanel : BUserControl<FilesPanelViewModel> {
   public FilesPanel() {
     this.InitializeComponent();
   }

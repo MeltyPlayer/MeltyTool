@@ -127,7 +127,7 @@ public sealed class OcarinaOfTime3dFileBundleGatherer : B3dsFileBundleGatherer {
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,
       IFileHierarchy fileHierarchy) {
-    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+    new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.GetAutomaticModels_)
         .Add(this.GetModelsViaSeparator_)

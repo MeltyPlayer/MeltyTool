@@ -7,11 +7,18 @@ using uni.platforms.desktop;
 namespace uni.games;
 
 public abstract class BDesktopFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.DESKTOP;
 
   public abstract string SteamName { get; }
   public abstract string? EpicName { get; }
+
+  public virtual bool IsListed => true;
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory(this.SteamName, out _) ||
+       (this.EpicName != null &&
+        EaUtils.TryGetGameDirectory(this.EpicName, out _));
 
   protected abstract void GatherFileBundlesImpl(
       IFileBundleOrganizer organizer,

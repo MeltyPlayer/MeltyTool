@@ -30,7 +30,6 @@ public sealed class SettingsViewModel
 
   public event Action? OnClose;
 
-
   public override void Reset() {
     base.Reset();
     Config.ReloadSettings();
@@ -100,53 +99,76 @@ public sealed class SettingsViewModel
         = value;
   }
 
+  public const string CACHE_FILE_HIERARCHIES_HEADER = "Cache file hierarchies";
+
+  public const string CACHE_FILE_HIERARCHIES_DESCRIPTION
+      = "Whether to cache extracted file hierarchies. Reading the file " +
+        "hierarchy from a cache file is significantly faster than " +
+        "querying the file system, so this will decrease latency when " +
+        "starting up the UI.";
+
   // Extractor Settings
   [property: Config(
       Category = GROUP_EXTRACTOR,
-      Header = "Cache file hierarchies",
-      Description
-          = "Whether to cache extracted file hierarchies. Reading the file " +
-            "hierarchy from a cache file is significantly faster than " +
-            "querying the file system, so this will decrease latency when " +
-            "starting up the UI.")]
+      Header = CACHE_FILE_HIERARCHIES_HEADER,
+      Description = CACHE_FILE_HIERARCHIES_DESCRIPTION)]
   public bool CacheFileHierarchies {
     get => Config_.Extractor.CacheFileHierarchies;
     set => Config_.Extractor.CacheFileHierarchies = value;
   }
 
+  public const string CLEAN_UP_ARCHIVES_HEADER = "Clean up archives";
+
+  public const string CLEAN_UP_ARCHIVES_DESCRIPTION
+      = "Whether to clean up archives after extracting them. This helps " +
+        "reduce memory usage and prevents redundant work the next time " +
+        "the UI starts up.";
+
   [property: Config(
       Category = GROUP_EXTRACTOR,
-      Header = "Clean up archives",
-      Description
-          = "Whether to clean up archives after extracting them. This helps " +
-            "reduce memory usage and prevents redundant work the next time " +
-            "the UI starts up.")]
+      Header = CLEAN_UP_ARCHIVES_HEADER,
+      Description = CLEAN_UP_ARCHIVES_DESCRIPTION)]
   public bool CleanUpArchives {
     get => Config_.Extractor.CleanUpArchives;
     set => Config_.Extractor.CleanUpArchives = value;
   }
 
+  public const string EXTRACT_ROMS_IN_PARALLEL_HEADER
+      = "Extract ROMs in parallel";
+
+  public const string EXTRACT_ROMS_IN_PARALLEL_DESCRIPTION
+      = "Whether to extract ROMs in parallel using multithreading.";
+
   [property: Config(
       Category = GROUP_EXTRACTOR,
-      Header = "Extract ROMs in parallel",
-      Description
-          = "Whether to extract ROMs in parallel using multithreading.")]
+      Header = EXTRACT_ROMS_IN_PARALLEL_HEADER,
+      Description = EXTRACT_ROMS_IN_PARALLEL_DESCRIPTION)]
   public bool ExtractRomsInParallel {
     get => Config_.Extractor.ExtractRomsInParallel;
     set => Config_.Extractor.ExtractRomsInParallel = value;
   }
 
+  public const string VERIFY_CACHED_FILE_HIERARCHY_SIZE_HEADER
+      = "Verify cached file hierarchy size";
+
+  public const string VERIFY_CACHED_FILE_HIERARCHY_SIZE_DESCRIPTION
+      = "Whether to verify the total directory size of cached file " +
+        "hierarchies. This will allow the UI to automatically " +
+        "regenerate out-of-date cached file hierarchies, but will " +
+        "increase latency when starting up the UI.";
+
   [property: Config(
       Category = GROUP_EXTRACTOR,
-      Header = "Verify cached file hierarchy size",
-      Description
-          = "Whether to verify the total directory size of cached file " +
-            "hierarchies. This will allow the UI to automatically " +
-            "regenerate out-of-date cached file hierarchies, but will " +
-            "increase latency when starting up the UI.")]
+      Header = VERIFY_CACHED_FILE_HIERARCHY_SIZE_HEADER,
+      Description = VERIFY_CACHED_FILE_HIERARCHY_SIZE_DESCRIPTION)]
   public bool VerifyCachedFileHierarchySize {
     get => Config_.Extractor.VerifyCachedFileHierarchySize;
     set => Config_.Extractor.VerifyCachedFileHierarchySize = value;
+  }
+
+  public IDictionary<string, bool>? GamesToExtract {
+    get => Config_.Extractor.GamesToExtract;
+    set => Config_.Extractor.GamesToExtract = value;
   }
 
   // Viewer Settings

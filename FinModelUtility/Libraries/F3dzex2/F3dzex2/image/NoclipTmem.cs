@@ -4,6 +4,8 @@ using System.Linq;
 using f3dzex2.combiner;
 using f3dzex2.displaylist.opcodes;
 
+using fin.image;
+using fin.model;
 using fin.util.asserts;
 
 namespace f3dzex2.image;
@@ -296,18 +298,22 @@ public sealed class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
         width,
         imageSegmentedAddress);
 
+  public IReadOnlyTexture? HardcodedTexture0 { get; set; }
+  public IReadOnlyTexture? HardcodedTexture1 { get; set; }
+
   public MaterialParams GetMaterialParams() {
     var primitiveTileIndex = this.spTextureState_.tileDescriptor;
     // TODO: Support LODs
     var texel0Index = (int) primitiveTileIndex;
     var texel1Index = texel0Index + 1;
 
-    var textureParams0 = this.GetOrCreateTextureParamsForTile_(texel0Index, 0);
-    var textureParams1 = this.GetOrCreateTextureParamsForTile_(texel1Index, 1);
-
     return new MaterialParams {
-        TextureParams0 = textureParams0,
-        TextureParams1 = textureParams1,
+        TextureParams0
+            = this.GetOrCreateTextureParamsForTile_(texel0Index, 0),
+        TextureParams1
+            = this.GetOrCreateTextureParamsForTile_(texel1Index, 1),
+        HardcodedTexture0 = this.HardcodedTexture0,
+        HardcodedTexture1 = this.HardcodedTexture1,
         CombinerCycleParams0 = n64Hardware.Rdp.CombinerCycleParams0,
         CombinerCycleParams1 = n64Hardware.Rdp.CycleType == CycleType.TWO_CYCLE
             ? n64Hardware.Rdp.CombinerCycleParams1

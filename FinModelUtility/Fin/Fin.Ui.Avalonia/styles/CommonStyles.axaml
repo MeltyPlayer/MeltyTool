@@ -51,9 +51,9 @@
 
   <Style Selector="TextBlock.caption,
                    SelectableTextBlock.caption">
-    <Setter Property="FontSize" Value="10" />
+    <Setter Property="FontSize" Value="{StaticResource CaptionFontSize}" />
     <Setter Property="FontWeight" Value="Light" />
-    <Setter Property="Foreground" Value="{StaticResource ForegroundMediumBrush}" />
+    <Setter Property="Foreground" Value="{DynamicResource ForegroundMediumBrush}" />
   </Style>
 
   <Style Selector="GroupBox">
@@ -103,9 +103,14 @@
     <ResourceDictionary>
       <SolidColorBrush x:Key="ForegroundHighBrush" Color="{DynamicResource SystemBaseHighColor}" />
       <SolidColorBrush x:Key="ForegroundMediumBrush" Color="{DynamicResource SystemBaseMediumColor}" />
+      <SolidColorBrush x:Key="ForegroundLowBrush" Color="{DynamicResource SystemBaseLowColor}" />
       <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource SystemChromeHighColor}" />
+
       <system:Double x:Key="RegularFontSize">11</system:Double>
       <system:Double x:Key="RegularHeight">20</system:Double>
+
+      <system:Double x:Key="CaptionFontSize">10</system:Double>
+      <FontWeight x:Key="CaptionFontWeight">Light</FontWeight>
     </ResourceDictionary>
   </Styles.Resources>
 </Styles>

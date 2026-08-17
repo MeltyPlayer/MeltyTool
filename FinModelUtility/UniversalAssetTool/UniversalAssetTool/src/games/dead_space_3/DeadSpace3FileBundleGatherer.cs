@@ -8,8 +8,16 @@ using visceral.api;
 
 namespace uni.games.dead_space_3;
 
-public sealed class DeadSpace3FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class DeadSpace3FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "dead_space_3";
+
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
+  public bool IsListed => false;
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory("Dead Space 3", out _) ||
+       EaUtils.TryGetGameDirectory("Dead Space 3", out _);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

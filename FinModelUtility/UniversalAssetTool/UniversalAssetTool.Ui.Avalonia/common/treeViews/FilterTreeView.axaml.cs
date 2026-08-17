@@ -1,11 +1,13 @@
 using Avalonia.Controls;
 
+using fin.ui.avalonia.controls;
+
 namespace uni.ui.avalonia.common.treeViews;
 
-public partial class FilterTreeView : UserControl {
+public partial class FilterTreeView : BUserControl<IFilterTreeViewViewModel> {
   public FilterTreeView() {
     this.InitializeComponent();
-    this.DataContext = new FileBundleTreeViewModelForDesigner();
+    this.ViewModel = new FileBundleTreeViewModelForDesigner();
 
     this.autocompleteTextbox_.TextChanged
         += this.AutocompleteTextbox_OnTextChanged;
@@ -13,12 +15,6 @@ public partial class FilterTreeView : UserControl {
 
   private void AutocompleteTextbox_OnTextChanged(
       object? sender,
-      TextChangedEventArgs e) {
-    if (this.DataContext is not IFilterTreeViewViewModel
-        filterTreeViewViewModel) {
-      return;
-    }
-
-    filterTreeViewViewModel.UpdateFilter(this.autocompleteTextbox_.Text);
-  }
+      TextChangedEventArgs e)
+    => this.ViewModel.UpdateFilter(this.autocompleteTextbox_.Text);
 }

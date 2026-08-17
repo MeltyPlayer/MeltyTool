@@ -28,7 +28,7 @@ public sealed class MarioKartDoubleDashFileBundleGatherer
       IFileHierarchy fileHierarchy) {
     // TODO: Extract "enemies"
     // TODO: Extract "objects"
-    new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+    new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(this.ExtractDrivers_)
         .Add(this.ExtractKarts_)

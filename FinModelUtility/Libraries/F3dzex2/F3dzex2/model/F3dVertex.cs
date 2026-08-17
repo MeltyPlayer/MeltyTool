@@ -18,8 +18,8 @@ public record struct F3dVertex : IBinaryDeserializable {
   public short U { get; set; }
   public short V { get; set; }
 
-  public Vector2 GetUv(float scaleX, float scaleY)
-    => new(this.U * scaleX, this.V * scaleY);
+  public Vector2 GetUv(Vector2 offset, Vector2 scale)
+    => scale * (offset + new Vector2(this.U, this.V));
 
   public byte NormalXOrR { get; set; }
   public byte NormalYOrG { get; set; }

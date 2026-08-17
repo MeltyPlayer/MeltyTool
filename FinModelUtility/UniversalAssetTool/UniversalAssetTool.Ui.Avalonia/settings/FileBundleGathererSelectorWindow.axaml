@@ -1,0 +1,121 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:settings="clr-namespace:uni.ui.avalonia.settings"
+        xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
+        xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="uni.ui.avalonia.settings.FileBundleGathererSelectorWindow"
+        x:DataType="settings:FileBundleGathererSelectorWindowViewModel">
+  <Design.DataContext>
+    <settings:FileBundleGathererSelectorWindowViewModelForDesigner />
+  </Design.DataContext>
+
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type settings:FileBundleGathererEnablement}">
+      <CheckBox IsChecked="{Binding IsEnabled, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock
+            Classes="regular"
+            FontWeight="{Binding FontWeight}"
+            Text="{Binding Gatherer.Name}" />
+        </StackPanel>
+      </CheckBox>
+    </DataTemplate>
+  </Window.DataTemplates>
+
+  <Window.Styles>
+    <Style Selector="StackPanel.gathererHeading">
+      <Setter Property="Height" Value="48" />
+    </Style>
+    <Style Selector="ItemsControl > ContentPresenter">
+      <Setter Property="Height" Value="{StaticResource RegularHeight}" />
+    </Style>
+
+    <Style Selector="CheckBox Grid#RootGrid Border">
+      <Setter Property="MaxHeight" Value="16" />
+      <Setter Property="MaxWidth" Value="16" />
+    </Style>
+
+    <Style Selector="CheckBox Viewbox">
+      <Setter Property="Height" Value="15" />
+      <Setter Property="Width" Value="15" />
+    </Style>
+  </Window.Styles>
+
+  <DockPanel>
+    <Panel DockPanel.Dock="Bottom">
+      <Button Classes="regular"
+              HorizontalAlignment="Center"
+              Margin="0 8"
+              Click="SaveAndLaunch_">
+        Save and launch
+      </Button>
+    </Panel>
+
+    <StackPanel DockPanel.Dock="Top">
+      <CheckBox IsChecked="{Binding CacheFileHierarchies, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding CacheFileHierarchiesHeader}" />
+          <TextBlock Classes="caption" Text="{Binding CacheFileHierarchiesDescription}" />
+        </StackPanel>
+      </CheckBox>
+      <CheckBox IsChecked="{Binding VerifyCachedFileHierarchySize, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding VerifyCachedFileHierarchySizeHeader}" />
+          <TextBlock Classes="caption" Text="{Binding VerifyCachedFileHierarchySizeDescription}" />
+        </StackPanel>
+      </CheckBox>
+      <CheckBox IsChecked="{Binding CleanUpArchives, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding CleanUpArchivesHeader}" />
+          <TextBlock Classes="caption" Text="{Binding CleanUpArchivesDescription}" />
+        </StackPanel>
+      </CheckBox>
+      <CheckBox IsChecked="{Binding ExtractRomsInParallel, Mode=TwoWay}">
+        <StackPanel>
+          <TextBlock Classes="regular" Text="{Binding ExtractRomsInParallelHeader}" />
+          <TextBlock Classes="caption" Text="{Binding ExtractRomsInParallelDescription}" />
+        </StackPanel>
+      </CheckBox>
+    </StackPanel>
+
+    <TextBlock Classes="h1" DockPanel.Dock="Top">
+      Extractors
+    </TextBlock>
+    <Border BorderThickness="1"
+            BorderBrush="{StaticResource BorderBrush}">
+      <ScrollViewer >
+        <StackPanel>
+          <controls:If Condition="{Binding AvailableEnablements, Converter={x:Static converters:ListConverters.HasAnyItems}}">
+            <StackPanel Classes="gathererHeading">
+              <TextBlock Classes="h2">
+                Available
+              </TextBlock>
+              <TextBlock Classes="caption">
+                The following games were found, so they are available for
+                extraction.
+              </TextBlock>
+            </StackPanel>
+          </controls:If>
+          <ItemsControl ItemsSource="{Binding AvailableEnablements}" />
+
+          <controls:If Condition="{Binding UnavailableEnablements, Converter={x:Static converters:ListConverters.HasAnyItems}}">
+            <StackPanel Classes="gathererHeading">
+              <TextBlock Classes="h2">
+                Unavailable
+              </TextBlock>
+              <TextBlock Classes="caption">
+                The following games were not found, so they are not available
+                for extraction. If enabled, these will be extracted if you
+                install them in the future.
+              </TextBlock>
+            </StackPanel>
+          </controls:If>
+          <ItemsControl ItemsSource="{Binding UnavailableEnablements}" />
+        </StackPanel>
+      </ScrollViewer>
+    </Border>
+  </DockPanel>
+</Window>

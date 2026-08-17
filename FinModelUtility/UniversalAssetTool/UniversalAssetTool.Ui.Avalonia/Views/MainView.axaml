@@ -5,14 +5,11 @@
              xmlns:vm="clr-namespace:uni.ui.avalonia.ViewModels"
              xmlns:treeViews="clr-namespace:uni.ui.avalonia.common.treeViews"
              xmlns:scene="clr-namespace:fin.ui.avalonia.scene;assembly=Fin.Ui.Avalonia"
-             xmlns:model="clr-namespace:uni.ui.avalonia.resources.model"
              xmlns:views="clr-namespace:uni.ui.avalonia.Views"
              xmlns:audio="clr-namespace:uni.ui.avalonia.resources.audio"
              xmlns:progress="clr-namespace:uni.ui.avalonia.common.progress"
              xmlns:toolbars="clr-namespace:uni.ui.avalonia.toolbars"
              xmlns:buttons="clr-namespace:fin.ui.avalonia.buttons;assembly=Fin.Ui.Avalonia"
-             xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
-             xmlns:scene1="clr-namespace:uni.ui.avalonia.resources.scene"
              xmlns:debug="clr-namespace:uni.ui.avalonia.debug"
              xmlns:top="clr-namespace:uni.ui.avalonia.toolbars.top"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="900"
@@ -105,12 +102,7 @@
             <SplitView.Pane>
               <Border x:Name="InfoPanel" BoxShadow="0 0 10 0 Black">
                 <Panel>
-                  <controls:If Condition="{Binding ModelPanel, Converter={x:Static ObjectConverters.IsNotNull}}">
-                    <model:ModelPanel DataContext="{Binding ModelPanel}" />
-                  </controls:If>
-                  <controls:If Condition="{Binding ScenePanel, Converter={x:Static ObjectConverters.IsNotNull}}">
-                    <scene1:ScenePanel DataContext="{Binding ScenePanel}" />
-                  </controls:If>
+                  <ContentControl Content="{Binding ResourcePanel}" />
                 </Panel>
               </Border>
             </SplitView.Pane>

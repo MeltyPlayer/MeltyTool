@@ -30,7 +30,7 @@ public sealed class GcnFileHierarchyExtractor {
       string gameName,
       Options options,
       out IFileHierarchy fileHierarchy) {
-    if (!TryToFindRom_(gameName, out var romFile)) {
+    if (!TryToFindRom(gameName, out var romFile)) {
       fileHierarchy = null;
       return false;
     }
@@ -39,7 +39,11 @@ public sealed class GcnFileHierarchyExtractor {
     return true;
   }
 
-  private static bool TryToFindRom_(string gameName, out ISystemFile romFile)
+  public static bool HasRomOrExtractedDirectory(string gameName)
+    => TryToFindRom(gameName, out _) ||
+       ExtractorUtil.HasBeenExtracted(gameName);
+
+  public static bool TryToFindRom(string gameName, out ISystemFile romFile)
     => DirectoryConstants.ROMS_DIRECTORY
                          .TryToGetExistingFileWithFileType(
                              gameName,

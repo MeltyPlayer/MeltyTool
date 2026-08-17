@@ -15,14 +15,14 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
     <PackageReference Include="AvaloniaControlsToolBar" Version="0.0.1" />
     <PackageReference Include="AvaloniaUIRibbon" Version="1.1.0-beta" />
     <PackageReference Include="ConfigFactory" Version="0.6.0" />
     <PackageReference Include="ConfigFactory.Avalonia" Version="0.6.0" />
     <PackageReference Include="Optris.LoadingIndicators.Avalonia" Version="12.0.4" />
     <PackageReference Include="MessageBox.Avalonia" Version="12.0.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
     <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0" />
     <PackageReference Include="ObservableCollections" Version="3.3.4" />
     <PackageReference Include="TextMateSharp" Version="2.0.4" />
@@ -50,6 +50,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="settings\FileBundleGathererSelectorWindow.axaml.cs">
+      <DependentUpon>FileBundleGathererSelectorWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="toolbars\top\AnnouncementBar.axaml.cs">
       <DependentUpon>AnnouncementBar.axaml</DependentUpon>
     </Compile>

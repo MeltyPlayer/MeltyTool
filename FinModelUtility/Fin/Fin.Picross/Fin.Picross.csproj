@@ -11,6 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Generator.Equals" Version="3.3.0" />
+    <PackageReference Include="Generator.Equals" Version="4.0.2" />
   </ItemGroup>
 </Project>

@@ -6,8 +6,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 
-using fin.ui.avalonia.styles;
-
 using marioartisttool.ViewModels;
 using marioartisttool.Views;
 
@@ -16,7 +14,6 @@ namespace marioartisttool;
 public partial class App : Application {
   public override void Initialize() {
     AvaloniaXamlLoader.Load(this);
-    this.Styles.AddRange(new HeaderStyles());
 
     Dispatcher.UIThread.Invoke(() => {
       Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;

@@ -10,64 +10,70 @@ using fin.util.progress;
 
 namespace uni.games.ever_oasis;
 
-public sealed class EverOasisFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class EverOasisFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "ever_oasis";
+
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.THREE_DS;
+
+  public bool IsListed => false;
+  public bool IsAvailable => false;
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
-      if (true ||
-          !new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
-              "ever_oasis",
-              out var fileHierarchy,
-              archiveFileNameProcessor: this.ArchiveFileNameProcessor_)) {
-        return;
-      }
-
-      new AnnotatedFileBundleGathererAccumulatorWithInput<IFileHierarchy>(
-              fileHierarchy)
-          .Add(this.GetAutomaticModels_)
-          .GatherFileBundles(organizer, mutablePercentageProgress);
+    if (true ||
+        !new ThreeDsFileHierarchyExtractor().TryToExtractFromGame(
+            "ever_oasis",
+            out var fileHierarchy,
+            archiveFileNameProcessor: this.ArchiveFileNameProcessor_)) {
+      return;
     }
+
+    new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
+            fileHierarchy)
+        .Add(this.GetAutomaticModels_)
+        .GatherFileBundles(organizer, mutablePercentageProgress);
+  }
 
   private void ArchiveFileNameProcessor_(string archiveName,
                                          ref string relativeName,
                                          out bool relativeToRoot) {
-      if (relativeName.StartsWith("C:")) {
-        relativeName = relativeName[2..];
-        relativeToRoot = true;
-        return;
-      }
-
-      relativeToRoot = false;
+    if (relativeName.StartsWith("C:")) {
+      relativeName = relativeName[2..];
+      relativeToRoot = true;
+      return;
     }
+
+    relativeToRoot = false;
+  }
 
   private void GetAutomaticModels_(
       IFileBundleOrganizer organizer,
       IFileHierarchy fileHierarchy) {
-      var queue = new FinQueue<IFileHierarchyDirectory>(fileHierarchy.Root);
-      while (queue.TryDequeue(out var dir)) {
-        if (dir.TryToGetExistingSubdir("model", out var modelDir)) {
-          dir.TryToGetExistingSubdir("anim", out var animDir);
-          dir.TryToGetExistingSubdir("texture_set", out var textureSetDir);
+    var queue = new FinQueue<IFileHierarchyDirectory>(fileHierarchy.Root);
+    while (queue.TryDequeue(out var dir)) {
+      if (dir.TryToGetExistingSubdir("model", out var modelDir)) {
+        dir.TryToGetExistingSubdir("anim", out var animDir);
+        dir.TryToGetExistingSubdir("texture_set", out var textureSetDir);
 
-          var cmbFiles = modelDir.GetFilesWithFileType(".cmb").ToArray();
-          var csabFiles = animDir?.GetFilesWithFileType(".csab").ToArray();
-          var ctxbFiles
-              = textureSetDir?.GetFilesWithFileType(".ctxb").ToArray();
+        var cmbFiles = modelDir.GetFilesWithFileType(".cmb").ToArray();
+        var csabFiles = animDir?.GetFilesWithFileType(".csab").ToArray();
+        var ctxbFiles
+            = textureSetDir?.GetFilesWithFileType(".ctxb").ToArray();
 
-          if (cmbFiles.Length == 1 || (csabFiles?.Length ?? 0) == 0) {
-            foreach (var cmbFile in cmbFiles) {
-              organizer.Add(new CmbModelFileBundle(
-                                cmbFile,
-                                csabFiles,
-                                ctxbFiles,
-                                null));
-            }
+        if (cmbFiles.Length == 1 || (csabFiles?.Length ?? 0) == 0) {
+          foreach (var cmbFile in cmbFiles) {
+            organizer.Add(new CmbModelFileBundle(
+                              cmbFile,
+                              csabFiles,
+                              ctxbFiles,
+                              null));
           }
-        } else {
-          queue.Enqueue(dir.GetExistingSubdirs());
         }
+      } else {
+        queue.Enqueue(dir.GetExistingSubdirs());
       }
     }
+  }
 }

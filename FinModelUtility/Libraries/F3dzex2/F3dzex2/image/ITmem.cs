@@ -1,5 +1,8 @@
 ﻿using f3dzex2.displaylist.opcodes;
 
+using fin.image;
+using fin.model;
+
 
 namespace f3dzex2.image;
 
@@ -64,6 +67,9 @@ public interface ITmem {
                            BitsPerTexel bitsPerTexel,
                            ushort width,
                            uint imageSegmentedAddress);
+
+  IReadOnlyTexture? HardcodedTexture0 { get; set; }
+  IReadOnlyTexture? HardcodedTexture1 { get; set; }
 
   MaterialParams GetMaterialParams();
 }

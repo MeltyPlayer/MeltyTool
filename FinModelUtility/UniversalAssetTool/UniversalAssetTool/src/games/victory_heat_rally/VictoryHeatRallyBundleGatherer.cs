@@ -10,8 +10,15 @@ using vhr.api;
 
 namespace uni.games.victory_heat_rally;
 
-public sealed class VictoryHeatRallyBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class VictoryHeatRallyBundleGatherer : INamedFileBundleGatherer {
   public string Name => "victory_heat_rally";
+
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory("Victory Heat Rally", out _) ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

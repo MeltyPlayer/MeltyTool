@@ -26,7 +26,6 @@ using fin.schema.color;
 using fin.schema.vector;
 using fin.util.linq;
 using fin.util.sets;
-using fin.util.time;
 
 using marioartist.schema;
 using marioartist.schema.talent_studio;
@@ -50,6 +49,7 @@ using ChosenPart1Tuple
 
 public record TstltModelFileBundle(
     IReadOnlyTreeFile MainFile,
+    IReadOnlyTreeDirectory? AnimationsDirectory = null,
     IReadOnlyTreeFile? RomFile = null)
     : IModelFileBundle;
 
@@ -191,19 +191,16 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
 
     foreach (var joint in joints) {
       var matrix = Matrix4x4.Transpose(joint.matrix);
-      matrix.AssertDecompose(out var translation,
-                             out var rotation,
-                             out var scale);
-
+      
+      // Have to do this to flip the scale correctly. Decomposing, replacing
+      // the rotation, and then recomposing does not preserve the rotation.
+      var scaleX = joint.isFlipped ? -1 : 1;
       originalFlipByJoint[joint] = new Vector3(
-          Math.Sign(scale.X),
-          Math.Sign(scale.Y),
-          Math.Sign(scale.Z));
+          scaleX,
+          1,
+          1);
 
-      joint.matrix = SystemMatrix4x4Util.FromTrs(
-          translation,
-          rotation,
-          new Vector3(Math.Abs(scale.X), Math.Abs(scale.Y), Math.Abs(scale.Z)));
+      joint.matrix = Matrix4x4.CreateScale(scaleX, 1, 1) * matrix;
     }
 
     var neckJoint = joints[(int) JointIndex.BODY_HEAD_ADAPTER];
@@ -332,10 +329,38 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);
+    MocapAnimationsUtil.TryToAddAnimations(
+        model,
+        finBonesAndJoints,
+        fileBundle.AnimationsDirectory);
+    //TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);
 
     // Adds face
     if (INCLUDE_FACE) {
+      var n64ImageReader = new N64ImageParser(n64Hardware);
+      var faceTextures
+          = br.SubreadAt(
+              0x4b0,
+              () => Enumerable.Range(0, 3)
+                              .Select(i => {
+                                var faceImage
+                                    = n64ImageReader.Parse(
+                                        N64ColorFormat.RGBA,
+                                        BitsPerTexel._16BPT,
+                                        br.ReadBytes(
+                                            2 * 64 * 94),
+                                        64,
+                                        94);
+
+                                var faceTexture
+                                    = model.MaterialManager
+                                           .CreateTexture(faceImage);
+                                faceTexture.Name = $"face{i}";
+
+                                return faceTexture;
+                              })
+                              .ToArray());
+
       var faceMeshes = new List<IMesh>();
       if (!USE_GRANULAR_MESHES) {
         faceMeshes.Add(dlModelBuilder.StartNewMesh("face"));
@@ -352,15 +377,24 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
           model.Skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
                                             headRootBone);
 
+      var tmem = rdp.Tmem;
+      tmem.HardcodedTexture0 = faceTextures[0];
+
       for (var i = 0; i < 3; ++i) {
-        var offset = 0x4b0 + (uint) (i * 2 * 64 * 32);
-        rdp.Tmem.SetImageSimple(offset,
-                                N64ColorFormat.RGBA,
-                                BitsPerTexel._16BPT,
-                                64,
-                                32,
-                                F3dWrapMode.CLAMP,
-                                F3dWrapMode.CLAMP);
+        var offset = (uint) 0x4b0;
+        var top = (ushort) (i * 31);
+        var bottom = (ushort) (top + 31);
+
+        rdp.Tmem.SetImage(offset,
+                          N64ColorFormat.RGBA,
+                          BitsPerTexel._16BPT,
+                          63,
+                          0,
+                          top,
+                          63,
+                          bottom,
+                          F3dWrapMode.CLAMP,
+                          F3dWrapMode.CLAMP);
 
         var faceDlSegmentedAddress = faceDlSegmentedAddresses[i];
         if (USE_GRANULAR_MESHES) {
@@ -434,6 +468,8 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                                n64Hardware.Memory,
                                new F3dzex2OpcodeParser(),
                                noseDlSegmentedAddress));
+
+      tmem.HardcodedTexture0 = null;
 
       foreach (var faceMesh in faceMeshes) {
         foreach (var p in faceMesh.Primitives) {
@@ -782,7 +818,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
         if (!useParentBone) {
           vertexMatrix = primitiveDlVertexMatrix;
           vertexDlBoneWeights = primitiveDlBoneWeights;
-        } else if (!joint.isLeft ||
+        } else if (!joint.isFlipped ||
                    jointIndex is not ((int) JointIndex.UPPER_ARM_1
                                       or (int) JointIndex.UPPER_LEG_1)) {
           vertexMatrix
@@ -820,7 +856,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
             n64Hardware,
             dlModelBuilder,
             $"joint({(JointIndex) jointIndex}): chosenPart0(id: {chosenPart0.Id}, meshSetId: {meshDefinition.MeshSetId}, unkSection5: {unkSection5I}, subUnkSection5: {subUnkSection5I}, patternIndex: {patternIndex})",
-            joint.isLeft,
+            joint.isFlipped,
             displayLists);
 
         dlModelBuilder.TransparentCutoff = .5f;
@@ -897,7 +933,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
         n64Hardware,
         dlModelBuilder,
         $"chosenPart1({chosenPart1.MeshSetId})",
-        joint.isLeft,
+        joint.isFlipped,
         chosenPart1.DisplayListSegmentedAddresses
                    .Skip(dlIndex)
                    .Take(dlCount)
@@ -1060,13 +1096,13 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                               MathF.PI / 2),
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitX,
-                              -MathF.PI / 2) * 
+                              -MathF.PI / 2) *
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitZ,
                               MathF.PI),
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitX,
-                              -MathF.PI / 2) * 
+                              -MathF.PI / 2) *
                           Quaternion.CreateFromAxisAngle(
                               Vector3.UnitZ,
                               MathF.PI),

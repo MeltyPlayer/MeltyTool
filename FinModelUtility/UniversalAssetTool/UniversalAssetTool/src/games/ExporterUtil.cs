@@ -130,7 +130,7 @@ public static class ExporterUtil {
   }
 
   public static List<IFileBundle> GatherFileBundles(
-      this IAnnotatedFileBundleGatherer gatherer) {
+      this IFileBundleGatherer gatherer) {
     var organizer = new FileBundleListOrganizer();
     var progress = new PercentageProgress();
     gatherer.GatherFileBundles(organizer, progress);
@@ -138,7 +138,7 @@ public static class ExporterUtil {
   }
 
   public static void ExportAllForCli<T>(
-      IAnnotatedFileBundleGatherer gatherer,
+      IFileBundleGatherer gatherer,
       IModelImporter<T> reader)
       where T : IModelFileBundle
     => ExportAllForCli_(
@@ -148,7 +148,7 @@ public static class ExporterUtil {
         false);
 
   public static void ExportAllOfTypeForCli<TSubType>(
-      IAnnotatedFileBundleGatherer gatherer,
+      IFileBundleGatherer gatherer,
       IModelImporter<TSubType> reader)
       where TSubType : IModelFileBundle
     => ExportAllForCli_(

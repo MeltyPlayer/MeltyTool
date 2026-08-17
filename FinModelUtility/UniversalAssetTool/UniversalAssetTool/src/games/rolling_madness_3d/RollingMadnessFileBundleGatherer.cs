@@ -9,6 +9,9 @@ namespace uni.games.rolling_madness_3d;
 public sealed class RollingMadness3dFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "rolling_madness_3d";
 
+  public override FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

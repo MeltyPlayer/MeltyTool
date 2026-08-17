@@ -2,5 +2,5 @@
 
 namespace fin.util.types;
 
-[AttributeUsage(AttributeTargets.Interface)]
+[AttributeUsage(AttributeTargets.Interface | AttributeTargets.Property)]
 public sealed class UnionCandidateAttribute : Attribute;

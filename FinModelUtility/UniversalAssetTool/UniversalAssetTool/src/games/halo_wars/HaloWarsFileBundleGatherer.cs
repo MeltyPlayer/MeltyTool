@@ -11,8 +11,14 @@ using uni.platforms.desktop;
 
 namespace uni.games.halo_wars;
 
-public sealed class HaloWarsFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class HaloWarsFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "halo_wars";
+
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory("HaloWarsDE", out _);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

@@ -14,7 +14,7 @@ internal class DsFileHierarchyExtractor {
   public bool TryToExtractFromGame(
       string gameName,
       out IFileHierarchy fileHierarchy) {
-    if (!this.TryToFindRom_(gameName, out var romFile)) {
+    if (!TryToFindRom(gameName, out var romFile)) {
       fileHierarchy = null;
       return false;
     }
@@ -23,7 +23,11 @@ internal class DsFileHierarchyExtractor {
     return true;
   }
 
-  private bool TryToFindRom_(string gameName, out ISystemFile romFile)
+  public static bool HasRomOrExtractedDirectory(string gameName)
+    => TryToFindRom(gameName, out _) ||
+       ExtractorUtil.HasBeenExtracted(gameName);
+
+  public static bool TryToFindRom(string gameName, out ISystemFile romFile)
     => DirectoryConstants.ROMS_DIRECTORY
                          .TryToGetExistingFileWithFileType(
                              gameName,

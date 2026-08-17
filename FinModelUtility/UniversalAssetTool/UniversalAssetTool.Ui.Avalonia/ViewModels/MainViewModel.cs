@@ -7,6 +7,7 @@ using fin.scene;
 using fin.ui;
 using fin.ui.avalonia.images;
 using fin.util.tasks;
+using fin.util.types;
 
 using ReactiveUI;
 
@@ -18,7 +19,6 @@ using uni.ui.avalonia.resources.audio;
 using uni.ui.avalonia.resources.model;
 using uni.ui.avalonia.resources.scene;
 using uni.ui.avalonia.toolbars;
-using uni.ui.avalonia.toolbars.top;
 
 namespace uni.ui.avalonia.ViewModels;
 
@@ -87,19 +87,19 @@ public sealed class MainViewModel : BViewModel {
             var animationPlaybackManager
                 = animatableModel.AnimationPlaybackManager;
 
-            this.ModelPanel = new ModelPanelViewModel { Model = model };
-            this.ScenePanel = null;
+            var modelPanelViewModel = new ModelPanelViewModel { Model = model };
 
-            var animationsPanel = this.ModelPanel.AnimationsPanel;
+            var animationsPanel = modelPanelViewModel.AnimationsPanel;
             animationsPanel.AnimationPlaybackManager
                 = animationPlaybackManager;
             animationsPanel.OnAnimationSelected
                 += (_, animation)
                     => animatableModel.Animation
                         = animation as IReadOnlyModelAnimation;
+
+            this.ResourcePanel = modelPanelViewModel;
           } else {
-            this.ModelPanel = null;
-            this.ScenePanel = new ScenePanelViewModel {
+            this.ResourcePanel = new ScenePanelViewModel {
                 Scene = sceneInstance.Definition
             };
           }
@@ -121,14 +121,8 @@ public sealed class MainViewModel : BViewModel {
     set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
-  public ModelPanelViewModel? ModelPanel {
-    get;
-    private set => this.RaiseAndSetIfChanged(
-        ref field,
-        value);
-  }
-
-  public ScenePanelViewModel? ScenePanel {
+  [UnionCandidate]
+  public IViewModelBase? ResourcePanel {
     get;
     private set => this.RaiseAndSetIfChanged(
         ref field,

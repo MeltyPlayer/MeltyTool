@@ -9,14 +9,23 @@ using MariosPicross;
 
 namespace uni.games.marios_picross_2;
 
-public sealed class MariosPicross2FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class MariosPicross2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "marios_picross_2";
+
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.SNES;
+
+  public bool IsAvailable
+    => DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
+           $"{this.Name}.gb",
+           out _) ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFile(
-            "marios_picross_2.gb",
+            $"{this.Name}.gb",
             out var romFile)) {
       return;
     }

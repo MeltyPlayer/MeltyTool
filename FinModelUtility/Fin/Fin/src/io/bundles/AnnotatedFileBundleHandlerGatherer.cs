@@ -4,9 +4,9 @@ using fin.util.progress;
 
 namespace fin.io.bundles;
 
-public sealed class AnnotatedFileBundleHandlerGatherer(
+public sealed class FileBundleHandlerGatherer(
     Action<IFileBundleOrganizer, IMutablePercentageProgress> impl)
-    : IAnnotatedFileBundleGatherer {
+    : IFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
@@ -15,9 +15,9 @@ public sealed class AnnotatedFileBundleHandlerGatherer(
   }
 }
 
-public sealed class AnnotatedFileBundleHandlerGathererWithoutProgress(
+public sealed class FileBundleHandlerGathererWithoutProgress(
     Action<IFileBundleOrganizer> impl)
-    : IAnnotatedFileBundleGatherer {
+    : IFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
@@ -26,10 +26,10 @@ public sealed class AnnotatedFileBundleHandlerGathererWithoutProgress(
   }
 }
 
-public sealed class AnnotatedFileBundleHandlerGathererWithInput<T>(
+public sealed class FileBundleHandlerGathererWithInput<T>(
     Action<IFileBundleOrganizer, IMutablePercentageProgress, T> impl,
     T input)
-    : IAnnotatedFileBundleGatherer {
+    : IFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
@@ -38,10 +38,10 @@ public sealed class AnnotatedFileBundleHandlerGathererWithInput<T>(
   }
 }
 
-public sealed class AnnotatedFileBundleHandlerGathererWithoutProgressWithInput<T>(
+public sealed class FileBundleHandlerGathererWithoutProgressWithInput<T>(
     Action<IFileBundleOrganizer, T> impl,
     T input)
-    : IAnnotatedFileBundleGatherer {
+    : IFileBundleGatherer {
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {

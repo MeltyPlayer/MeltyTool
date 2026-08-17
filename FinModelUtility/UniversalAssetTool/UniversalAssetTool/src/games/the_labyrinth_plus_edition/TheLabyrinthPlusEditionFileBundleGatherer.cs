@@ -11,6 +11,9 @@ public sealed class TheLabyrinthPlusEditionFileBundleGatherer
     : BPrereqsFileBundleGatherer {
   public override string Name => "the_labyrinth_plus_edition";
 
+  public override FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

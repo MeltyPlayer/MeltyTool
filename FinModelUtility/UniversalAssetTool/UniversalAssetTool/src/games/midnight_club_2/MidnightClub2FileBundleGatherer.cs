@@ -9,14 +9,19 @@ using xmod.api;
 
 namespace uni.games.midnight_club_2;
 
-public sealed class MidnightClub2FileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class MidnightClub2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "midnight_club_2";
+
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
+  public bool IsAvailable => ExtractorUtil.HasBeenExtracted(this.Name);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingSubdir(
-            Path.Join("midnight_club_2", ExtractorUtil.EXTRACTED),
+            Path.Join(this.Name, ExtractorUtil.EXTRACTED),
             out var extractedDir)) {
       return;
     }

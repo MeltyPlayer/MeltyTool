@@ -7,8 +7,15 @@ using uni.platforms.ds;
 namespace uni.games;
 
 public abstract class BDsFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
+
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.DS;
+
+  public virtual bool IsListed => true;
+
+  public bool IsAvailable
+    => DsFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

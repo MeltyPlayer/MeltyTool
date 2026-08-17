@@ -1,4 +1,5 @@
 ﻿using fin.audio.io.importers.ogg;
+using fin.common;
 using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
@@ -9,8 +10,14 @@ using uni.platforms.desktop;
 
 namespace uni.games.glover;
 
-public sealed class GloverFileBundleGatherer : INamedAnnotatedFileBundleGatherer {
+public sealed class GloverFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "glover";
+
+  public FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
+  public bool IsAvailable
+    => SteamUtils.TryGetGameDirectory("Glover", out _);
 
   public void GatherFileBundles(
       IFileBundleOrganizer organizer,

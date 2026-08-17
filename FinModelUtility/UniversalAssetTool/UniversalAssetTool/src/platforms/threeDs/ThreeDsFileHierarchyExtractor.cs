@@ -2,6 +2,7 @@
 using fin.io;
 using fin.io.archive;
 
+using uni.games;
 using uni.platforms.threeDs.tools;
 using uni.platforms.threeDs.tools.ctrtool;
 using uni.platforms.threeDs.tools.gar;
@@ -12,7 +13,7 @@ public sealed class ThreeDsFileHierarchyExtractor {
   public bool TryToExtractFromGame(string gameName,
                                    out IFileHierarchy fileHierarchy,
                                    IArchiveExtractor.ArchiveFileProcessor? archiveFileNameProcessor = null) {
-    if (!TryToFindRom_(gameName, out var romFile)) {
+    if (!TryToFindRom(gameName, out var romFile)) {
       fileHierarchy = null;
       return false;
     }
@@ -21,7 +22,11 @@ public sealed class ThreeDsFileHierarchyExtractor {
     return true;
   }
 
-  private static bool TryToFindRom_(string gameName, out IReadOnlySystemFile romFile)
+  public static bool HasRomOrExtractedDirectory(string gameName)
+    => TryToFindRom(gameName, out _) ||
+       ExtractorUtil.HasBeenExtracted(gameName);
+
+  public static bool TryToFindRom(string gameName, out IReadOnlySystemFile romFile)
     => DirectoryConstants.ROMS_DIRECTORY
                          .TryToGetExistingFileWithFileType(
                              gameName,

@@ -85,7 +85,7 @@ public partial class MainView : UserControl {
         config.MostRecentFileName = file.FullPath;
         config.Save();
 
-        if (false) {
+        if (true) {
           var obj = area.AddRootNode();
           obj.AddSceneModel(model);
 
@@ -127,25 +127,30 @@ public partial class MainView : UserControl {
           scene.CreateDefaultLighting(area.AddRootNode(), [model]);
 
           var modelRenderComponent = new SimpleModelRenderComponent(model);
-
           var characterObj = area.AddRootNode();
 
-          if (true) {
-            var modelObj = characterObj.AddChildNode();
-            modelObj.AddComponent(modelRenderComponent);
+          var modelObj = characterObj.AddChildNode();
+          modelObj.AddComponent(modelRenderComponent);
 
-            var shadowPlacementObj = characterObj.AddChildNode();
-            shadowPlacementObj.SetPosition(20, -20, -100);
-            shadowPlacementObj.SetScale(1, 1, 0);
+          var shadowPlacementObj = characterObj.AddChildNode();
+          shadowPlacementObj.SetPosition(20, -20, -100);
+          shadowPlacementObj.SetScale(1, 1, 0);
 
-            var shadowModelObj = shadowPlacementObj.AddChildNode();
-            shadowModelObj.AddComponent(
-                new ShadowRenderComponent(
-                    new
-                        LambdaSceneNodeRenderComponent(_
-                            => modelRenderComponent
-                                .Render(false))));
+          var shadowModelObj = shadowPlacementObj.AddChildNode();
+          shadowModelObj.AddComponent(
+              new ShadowRenderComponent(
+                  new LambdaSceneNodeRenderComponent(_
+                          => modelRenderComponent
+                              .Render(false))));
 
+          if (false) {
+            var ballObj = characterObj.AddChildNode();
+            ballObj.AddComponent(
+                new BallGameComponent(
+                    modelRenderComponent.SimpleBoneTransformView,
+                    model,
+                    3));
+          } else {
             characterObj.AddComponent(
                 new LookAtMouseTickComponent(
                     modelRenderComponent.SimpleBoneTransformView,
@@ -161,18 +166,6 @@ public partial class MainView : UserControl {
                                       false)));
             modelObj.AddComponent(new RotateTalentTickComponent());
             shadowModelObj.AddComponent(new RotateTalentTickComponent());
-          } else {
-            var modelObj = characterObj.AddChildNode();
-            modelObj.AddRenderComponent(_ => GlUtil.RenderWithColor(
-                                            () => modelRenderComponent.Render(),
-                                            Color.Black));
-
-            var ballObj = characterObj.AddChildNode();
-            ballObj.AddComponent(
-                new BallGameComponent(
-                    modelRenderComponent.SimpleBoneTransformView,
-                    model,
-                    3));
           }
 
           this.currentModelFileBundle_ = bundle;

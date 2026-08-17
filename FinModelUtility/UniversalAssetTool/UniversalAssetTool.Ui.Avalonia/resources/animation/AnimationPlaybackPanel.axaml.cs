@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using fin.animation;
 using fin.math;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.util.asserts;
 
 using ReactiveUI;
@@ -134,13 +135,11 @@ public class AnimationPlaybackPanelViewModel : BViewModel {
   }
 }
 
-public partial class AnimationPlaybackPanel : UserControl {
+public partial class AnimationPlaybackPanel
+    : BUserControl<AnimationPlaybackPanelViewModel> {
   public AnimationPlaybackPanel() {
     this.InitializeComponent();
   }
-
-  private AnimationPlaybackPanelViewModel ViewModel
-    => this.DataContext.AssertAsA<AnimationPlaybackPanelViewModel>();
 
   private void JumpToFirstFrame_(object? sender, RoutedEventArgs e)
     => this.SetFrame_(0);

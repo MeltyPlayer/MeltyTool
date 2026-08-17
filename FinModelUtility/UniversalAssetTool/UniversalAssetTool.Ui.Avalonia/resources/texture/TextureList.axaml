@@ -30,7 +30,7 @@
                   Width="32"
                   Height="32">
             <textures:TexturePreview
-              DataContext="{Binding TexturePreview}" />
+                DataContext="{Binding TexturePreview}" />
           </Border>
           <TextBlock DockPanel.Dock="Top"
                      Classes="regular"

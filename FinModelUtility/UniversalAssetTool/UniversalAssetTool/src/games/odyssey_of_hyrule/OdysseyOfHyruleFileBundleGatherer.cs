@@ -11,6 +11,9 @@ public sealed class OdysseyOfHyruleFileBundleGatherer
     : BPrereqsFileBundleGatherer {
   public override string Name => "odyssey_of_hyrule";
 
+  public override FileBundleGathererPlatform Platform
+    => FileBundleGathererPlatform.DESKTOP;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

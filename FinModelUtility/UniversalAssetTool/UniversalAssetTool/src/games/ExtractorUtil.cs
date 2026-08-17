@@ -3,9 +3,15 @@ using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
 
+using Microsoft.Extensions.DependencyInjection;
+
+using ServiceScan.SourceGenerator;
+
+using uni.config;
+
 namespace uni.games;
 
-public static class ExtractorUtil {
+public static partial class ExtractorUtil {
   public const string CACHE = "cache";
   public const string PREREQS = "prereqs";
   public const string EXTRACTED = "extracted";
@@ -65,6 +71,8 @@ public static class ExtractorUtil {
     return FileHierarchy.From(romName.ToString(), directory, cacheFile);
   }
 
+  public static bool HasBeenExtracted(string gameName)
+    => !HasNotBeenExtractedYet(gameName, out _);
 
   public static bool HasNotBeenExtractedYet(
       IReadOnlyTreeFile romFile,
@@ -87,6 +95,42 @@ public static class ExtractorUtil {
                            DirectoryConstants.OUT_DIRECTORY.FullPath,
                            gameAndLocalPath))
         .AssertGetParent();
+  }
+
+  [GenerateServiceRegistrations(AssignableTo
+                                    = typeof(INamedFileBundleGatherer),
+                                Lifetime = ServiceLifetime.Transient)]
+  public static partial IServiceCollection AddGatherers(
+      this IServiceCollection services);
+
+  public static IEnumerable<INamedFileBundleGatherer> GetAllExtractors() {
+    var gathererCollection = new ServiceCollection();
+    gathererCollection.AddGatherers();
+
+    using var gathererProvider = gathererCollection.BuildServiceProvider();
+    var gatherers = gathererProvider.GetServices<INamedFileBundleGatherer>()
+                                    .OrderBy(g => g.Name);
+
+    return gatherers;
+  }
+
+  public static IEnumerable<(INamedFileBundleGatherer gatherer, bool
+          stillNeedsToBeConfigured)>
+      GetExtractorsWhichNeedConfiguration() {
+    var configuredExtractableGames
+        = Config.Instance.Extractor.GamesToExtract?.Keys.ToHashSet() ?? [];
+
+    return GetAllExtractors()
+        .Select(g => {
+          var needsConfiguration = g is {
+              IsAvailable: true, IsListed: true
+          };
+
+          return (
+              g,
+              needsConfiguration &&
+              !configuredExtractableGames.Contains(g.Name));
+        });
   }
 }
 

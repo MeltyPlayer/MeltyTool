@@ -6,8 +6,15 @@ using fin.util.progress;
 namespace uni.games;
 
 public abstract class BN64FileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.N64;
+
+  public bool IsAvailable
+    => DirectoryConstants
+       .ROMS_DIRECTORY
+       .TryToGetExistingFileWithFileType(this.Name, out _, ".z64") ||
+       ExtractorUtil.HasBeenExtracted(this.Name);
 
   protected abstract void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,

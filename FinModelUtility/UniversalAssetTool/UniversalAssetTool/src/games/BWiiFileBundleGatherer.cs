@@ -7,8 +7,12 @@ using uni.platforms.wii;
 namespace uni.games;
 
 public abstract class BWiiFileBundleGatherer
-    : INamedAnnotatedFileBundleGatherer {
+    : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.WII;
+
+  public bool IsAvailable
+    => WiiFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

@@ -8,6 +8,8 @@ namespace uni.games.timesplitters_2;
 public sealed class Timesplitters2FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "timesplitters_2";
 
+  public override bool IsListed => false;
+
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,

@@ -87,19 +87,44 @@ public sealed class F3dVertices(
     var shiftS1 = textureParams1?.ShiftS ?? 0;
     var shiftT1 = textureParams1?.ShiftT ?? 0;
 
-    var bmpWidth0 = Math.Max(textureParams0?.Width ?? 0, (ushort) 0);
-    var bmpHeight0 = Math.Max(textureParams0?.Height ?? 0, (ushort) 0);
-    var bmpWidth1 = Math.Max(textureParams1?.Width ?? 0, (ushort) 0);
-    var bmpHeight1 = Math.Max(textureParams1?.Height ?? 0, (ushort) 0);
+    var tileWidth0 = Math.Max(textureParams0?.Width ?? 0, (ushort) 0);
+    var tileHeight0 = Math.Max(textureParams0?.Height ?? 0, (ushort) 0);
+    var tileWidth1 = Math.Max(textureParams1?.Width ?? 0, (ushort) 0);
+    var tileHeight1 = Math.Max(textureParams1?.Height ?? 0, (ushort) 0);
 
     var newVertex = model.Skin.AddVertex(position);
 
-    var uv0 = definition.GetUv(
-        ShiftToScale_(shiftS0) * n64Hardware.Rsp.TexScaleXFloat / (bmpWidth0 * 32f), 
-        ShiftToScale_(shiftT0) * n64Hardware.Rsp.TexScaleYFloat / (bmpHeight0 * 32f));
-    var uv1 = definition.GetUv(
-        ShiftToScale_(shiftS1) * n64Hardware.Rsp.TexScaleXFloat / (bmpWidth1 * 32f),
-        ShiftToScale_(shiftT1) * n64Hardware.Rsp.TexScaleYFloat / (bmpHeight1 * 32f));
+    Vector2 offset0 = Vector2.Zero, offset1 = Vector2.Zero;
+    Vector2 imageSize0, imageSize1;
+    
+    if (materialParams.HardcodedTexture0 != null) {
+      offset0 = 32 * new Vector2(textureParams0?.Uls ?? 0, textureParams0?.Ult ?? 0);
+
+      var image0 = materialParams.HardcodedTexture0.Image;
+      imageSize0 = 32 * new Vector2(image0.Width, image0.Height);
+    } else {
+      imageSize0 = 32 * new Vector2(tileWidth0, tileHeight0);
+    }
+
+    if (materialParams.HardcodedTexture1 != null) {
+      offset1 = 32 * new Vector2(textureParams1?.Uls ?? 0, textureParams1?.Ult ?? 0);
+
+      var image1 = materialParams.HardcodedTexture1.Image;
+      imageSize1 = 32 * new Vector2(image1.Width, image1.Height);
+    } else {
+      imageSize1 = 32 * new Vector2(tileWidth1, tileHeight1);
+    }
+
+    var shiftScale0
+        = new Vector2(ShiftToScale_(shiftS0), ShiftToScale_(shiftT0));
+    var shiftScale1
+        = new Vector2(ShiftToScale_(shiftS1), ShiftToScale_(shiftT1));
+    
+    var texScale = new Vector2(n64Hardware.Rsp.TexScaleXFloat,
+                               n64Hardware.Rsp.TexScaleYFloat);
+    
+    var uv0 = definition.GetUv(offset0, shiftScale0 * texScale / imageSize0);
+    var uv1 = definition.GetUv(offset1, shiftScale1 * texScale / imageSize1);
 
     newVertex.SetUv(0, uv0);
     newVertex.SetUv(1, uv1);
