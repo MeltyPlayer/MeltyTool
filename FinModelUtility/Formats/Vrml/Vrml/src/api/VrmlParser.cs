@@ -3,7 +3,6 @@ using System.IO.Compression;
 using System.Numerics;
 using System.Text;
 
-using fin.schema;
 using fin.util.asserts;
 
 using schema.binary;
@@ -601,8 +600,7 @@ public partial class VrmlParser {
 
     var arrayText = tr.ReadUpToAndPastTerminator(']');
 
-    using var ms = new MemoryStream(Encoding.ASCII.GetBytes(arrayText));
-    var subTr = new SchemaTextReader(ms);
+    var subTr = new SchemaTextReader(arrayText);
 
     while (!subTr.Eof) {
       subTr.SkipWhitespace();
