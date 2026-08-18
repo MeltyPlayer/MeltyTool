@@ -329,11 +329,11 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    MocapAnimationsUtil.TryToAddAnimations(
+    /*MocapAnimationsUtil.TryToAddAnimations(
         model,
         finBonesAndJoints,
         fileBundle.AnimationsDirectory);
-    //TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);
+    TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);*/
 
     // Adds face
     if (INCLUDE_FACE) {
