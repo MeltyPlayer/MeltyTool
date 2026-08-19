@@ -26,7 +26,6 @@
   <ItemGroup>
     <Folder Include="blender\" />
     <Folder Include="models\" />
-    <Folder Include="noesis\" />
   </ItemGroup>
 
 </Project>
