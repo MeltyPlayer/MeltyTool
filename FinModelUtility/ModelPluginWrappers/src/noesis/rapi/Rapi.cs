@@ -50,7 +50,7 @@ public sealed class Rapi {
     throw new NotImplementedException();
   }
 
-  private unsafe void CommitTrianglesWithoutIndices_(
+  private void CommitTrianglesWithoutIndices_(
       Noesis.NoePrimitiveType primitiveType,
       bool usePlotMap) {
     switch (primitiveType) {
@@ -73,11 +73,8 @@ public sealed class Rapi {
 
           switch (this.positionFormat_) {
             case Noesis.NoeFormat.RPGEODATA_FLOAT: {
-              var x = br.ReadSingle();
-              var y = br.ReadSingle();
-              var z = br.ReadSingle();
-
-              vertices.Add(skin.AddVertex(x, y, z));
+              var xyz = br.ReadVector3();
+              vertices.Add(skin.AddVertex(xyz));
               break;
             }
             default: throw new NotImplementedException();

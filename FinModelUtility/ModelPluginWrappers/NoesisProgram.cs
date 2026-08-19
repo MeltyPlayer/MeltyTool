@@ -7,20 +7,13 @@ using fin.model.io.exporters.assimp.indirect;
 using IronPython.Hosting;
 using IronPython.Runtime;
 
-using Microsoft.Scripting.Hosting;
-
 using ModelPluginWrappers.noesis;
 using ModelPluginWrappers.noesis.rapi;
-using ModelPluginWrappers.src.noesis;
 
 
 namespace ModelPluginWrappers;
 
 public static class NoesisProgram {
-  public static INoeBitStream NoeBitStream(byte[]? data = null) {
-    return new NoeBitStreamReader(data ?? []);
-  }
-
   public static void Main() {
     var engine = Python.CreateEngine();
 
@@ -50,15 +43,9 @@ public static class NoesisProgram {
     { }
 
     // Hooks up Noesis imports
-    {
-      engine.CreateModule("noesis").AddStaticMembers<Noesis>();
-      engine.CreateModule("rapi").AddInstanceMembers(new Rapi());
-
-      {
-        var incNoesisModule = engine.ImportModule("inc_noesis");
-        incNoesisModule.SetVariable("NoeBitStream", NoeBitStream);
-      }
-    }
+    engine.CreateModule("inc_noesis").AddStaticMembers<IncNoesis>();
+    engine.CreateModule("noesis").AddStaticMembers<Noesis>();
+    engine.CreateModule("rapi").AddInstanceMembers(new Rapi());
 
     var name = "midnight_club_2";
 

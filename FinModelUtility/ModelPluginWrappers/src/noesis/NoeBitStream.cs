@@ -3,7 +3,7 @@
 #pragma warning disable IDE1006 // Naming Styles
 
 
-namespace ModelPluginWrappers.src.noesis;
+namespace ModelPluginWrappers.noesis;
 
 public enum NoeEndianness {
   NOE_LITTLEENDIAN = 0,
@@ -25,10 +25,11 @@ public sealed class NoeBitStreamReader(
     byte[] data,
     NoeEndianness endianness = NoeEndianness.NOE_LITTLEENDIAN)
     : INoeBitStreamReader {
-  private readonly SchemaBinaryReader impl_ = new SchemaBinaryReader(data, endianness switch {
-      NoeEndianness.NOE_BIGENDIAN    => Endianness.BigEndian,
-      NoeEndianness.NOE_LITTLEENDIAN => Endianness.LittleEndian,
-  });
+  private readonly SchemaBinaryReader impl_ = new SchemaBinaryReader(data,
+    endianness switch {
+        NoeEndianness.NOE_BIGENDIAN    => Endianness.BigEndian,
+        NoeEndianness.NOE_LITTLEENDIAN => Endianness.LittleEndian,
+    });
 
   public int getSize() => (int) this.impl_.Length;
 
