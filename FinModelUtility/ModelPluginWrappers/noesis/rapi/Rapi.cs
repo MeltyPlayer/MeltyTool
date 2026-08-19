@@ -7,16 +7,17 @@ using IronPython.Runtime;
 using schema.binary;
 
 
+// ReSharper disable InconsistentNaming
+
 namespace ModelPluginWrappers.noesis.rapi;
 
-// ReSharper disable InconsistentNaming
 public sealed class Rapi {
   private readonly ModelImpl model_ = ModelImpl.CreateForViewer();
 
   private string name_;
 
   private Bytes positionBuffer_;
-  private NoeFormat positionFormat_;
+  private Noesis.NoeFormat positionFormat_;
   private int positionStride_;
   private int positionOffset_;
 
@@ -26,7 +27,7 @@ public sealed class Rapi {
 
   public void rpgBindPositionBufferOfs(
       Bytes data,
-      NoeFormat format,
+      Noesis.NoeFormat format,
       int stride,
       int offset) {
     this.positionBuffer_ = data;
@@ -37,9 +38,9 @@ public sealed class Rapi {
 
   public void rpgCommitTriangles(
       byte[]? indexBufferBytes,
-      NoeFormat indexDataType,
+      Noesis.NoeFormat indexDataType,
       int numIndices,
-      NoePrimitiveType primitiveType,
+      Noesis.NoePrimitiveType primitiveType,
       bool usePlotMap) {
     if (indexBufferBytes == null) {
       this.CommitTrianglesWithoutIndices_(primitiveType, usePlotMap);
@@ -50,10 +51,10 @@ public sealed class Rapi {
   }
 
   private unsafe void CommitTrianglesWithoutIndices_(
-      NoePrimitiveType primitiveType,
+      Noesis.NoePrimitiveType primitiveType,
       bool usePlotMap) {
     switch (primitiveType) {
-      case NoePrimitiveType.RPGEO_POINTS: {
+      case Noesis.NoePrimitiveType.RPGEO_POINTS: {
         var skin = this.model_.Skin;
 
         var mesh = skin.AddMesh();
@@ -71,7 +72,7 @@ public sealed class Rapi {
           }
 
           switch (this.positionFormat_) {
-            case NoeFormat.RPGEODATA_FLOAT: {
+            case Noesis.NoeFormat.RPGEODATA_FLOAT: {
               var x = br.ReadSingle();
               var y = br.ReadSingle();
               var z = br.ReadSingle();

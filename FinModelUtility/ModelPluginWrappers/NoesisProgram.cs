@@ -9,41 +9,14 @@ using IronPython.Runtime;
 
 using Microsoft.Scripting.Hosting;
 
+using ModelPluginWrappers.noesis;
 using ModelPluginWrappers.noesis.rapi;
 using ModelPluginWrappers.src.noesis;
 
 
 namespace ModelPluginWrappers;
 
-public enum NoeFormat {
-  RPGEODATA_FLOAT,
-  RPGEODATA_USHORT,
-}
-
-public enum NoePrimitiveType {
-  RPGEO_POINTS,
-}
-
 public static class NoesisProgram {
-  public record Handle(string FormatName, string Extension) {
-    public Func<byte[], bool> checkType;
-    public Func<byte[], PythonList, bool> loadModel;
-  }
-
-  enum PixelType {
-    NOESISTEX_RGBA32
-  }
-
-  enum InterpolationType {
-    NOEKF_INTERPOLATE_LINEAR,
-  }
-
-  enum KeyframeType {
-    NOEKF_ROTATION_QUATERNION_4,
-    NOEKF_TRANSLATION_VECTOR_3,
-    NOEKF_SCALE_SCALAR_1,
-  }
-
   public static INoeBitStream NoeBitStream(byte[]? data = null) {
     return new NoeBitStreamReader(data ?? []);
   }
@@ -76,37 +49,10 @@ public static class NoesisProgram {
     // Hooks up missing Python imports
     { }
 
-    var handlesByExtension = new Dictionary<string, Handle>();
-
     // Hooks up Noesis imports
     {
-      {
-        var noesisModule = engine.CreateModule("noesis");
-        noesisModule.SetVariable("logPopup", () => { });
-        noesisModule.SetVariable("register",
-                                 (string formatName, string extension)
-                                     => handlesByExtension[extension] =
-                                         new Handle(formatName, extension));
-        noesisModule.SetVariable("setHandlerTypeCheck",
-                                 (Handle handle, Func<byte[], bool> checkType)
-                                     => {
-                                   handle.checkType = checkType;
-                                 });
-        noesisModule.SetVariable("setHandlerLoadModel",
-                                 (Handle handle,
-                                  Func<byte[], PythonList, bool> loadModel) => {
-                                   handle.loadModel = loadModel;
-                                 });
-        noesisModule.SetVariable("vec3Validate", (dynamic _) => { });
-        noesisModule.SetVariable("vec4Validate", (dynamic _) => { });
-        noesisModule.PushEnumIntoScope<PixelType>();
-        noesisModule.PushEnumIntoScope<InterpolationType>();
-        noesisModule.PushEnumIntoScope<KeyframeType>();
-        noesisModule.PushEnumIntoScope<NoeFormat>();
-        noesisModule.PushEnumIntoScope<NoePrimitiveType>();
-      }
-
-      engine.CreateModule("rapi").AddClassMembers(new Rapi());
+      engine.CreateModule("noesis").AddStaticMembers<Noesis>();
+      engine.CreateModule("rapi").AddInstanceMembers(new Rapi());
 
       {
         var incNoesisModule = engine.ImportModule("inc_noesis");
@@ -123,7 +69,7 @@ import {name}
 ",
                    scope);
 
-    var midnightClub2Handle = handlesByExtension[".xmod"];
+    var midnightClub2Handle = Noesis.HandlesByExtension[".xmod"];
 
     var models = new PythonList();
 
