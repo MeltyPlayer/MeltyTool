@@ -19,13 +19,16 @@ public static class ScopeExtensions {
                                                T instance) {
     var type = typeof(T);
 
-    foreach (var instanceMethodInfo in
-             type.GetMethods(BindingFlags.Instance)) {
-      scope.SetVariable(type.Name,
+    var instanceMethodInfos
+        = type.GetMethods()
+              .Where(m => m.DeclaringType != typeof(object));
+    foreach (var instanceMethodInfo in instanceMethodInfos) {
+      scope.SetVariable(instanceMethodInfo.Name,
                         instanceMethodInfo.CreateDelegate_(instance));
     }
 
-    foreach (var staticMethodInfo in type.GetMethods(BindingFlags.Static)) {
+    var staticMethodInfos = type.GetMethods(BindingFlags.Static);
+    foreach (var staticMethodInfo in staticMethodInfos) {
       scope.SetVariable(staticMethodInfo.Name, staticMethodInfo);
     }
 
