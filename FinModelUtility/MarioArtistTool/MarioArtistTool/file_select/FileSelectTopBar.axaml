@@ -9,12 +9,22 @@
              x:DataType="fileSelect:FileSelectTopBarViewModel">
   <UserControl.Styles>
     <Style Selector="Button#MeltyButton:focused,
-		             Button#MeltyButton:pointerover">
+                     Button#MeltyButton:pointerover">
       <Setter Property="Opacity" Value=".8" />
     </Style>
 
     <Style Selector="Button#MeltyButton:pressed">
       <Setter Property="Opacity" Value=".6" />
+    </Style>
+
+    <Style Selector="ToggleButton#BallModeToggleButton[IsChecked=True]">
+      <Style Selector="^ ContentPresenter">
+        <Setter Property="Background" Value="#99000000" />
+      </Style>
+
+      <Style Selector="^ ContentPresenter:pointerover">
+        <Setter Property="Background" Value="#77000000" />
+      </Style>
     </Style>
   </UserControl.Styles>
 
@@ -47,15 +57,15 @@
 	</StackPanel>
 
 	<StackPanel ZIndex="5"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
+              VerticalAlignment="Center"
+              Orientation="Horizontal">
 	  <Button x:Name="ExportAllButton"
-              ToolTip.Tip="{Binding ExportAllTip}"
-              ToolTip.ShowOnDisabled="True"
-              Margin="71 0 0 0"
-              Width="20"
-              Height="19"
-              IsEnabled="{Binding IsExportAllEnabled}">
+            ToolTip.Tip="{Binding ExportAllTip}"
+            ToolTip.ShowOnDisabled="True"
+            Margin="71 0 0 0"
+            Width="20"
+            Height="19"
+            IsEnabled="{Binding IsExportAllEnabled}">
         <Image x:Name="ExportAllIcon"
                Width="20"
                Height="19"
@@ -77,8 +87,16 @@
     </StackPanel>
 
 	<Image Source="/Assets/file_select/top_bar/top_bar.png"
-           Height="28"
-           IsHitTestVisible="False"
-           HorizontalAlignment="Left" />
+         Height="28"
+         IsHitTestVisible="False"
+         HorizontalAlignment="Left" />
+
+  <ToggleButton x:Name="BallModeToggleButton"
+                Height="13"
+                Width="13"
+                CornerRadius="7"
+                Margin="226 -14 0 0" 
+                IsCheckedChanged="ToggleBallMode_" />
+
   </Grid>
 </UserControl>

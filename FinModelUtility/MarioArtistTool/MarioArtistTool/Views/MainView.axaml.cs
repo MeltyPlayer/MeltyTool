@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 using fin.io.web;
 using fin.model.io;
@@ -11,7 +11,6 @@ using fin.scene;
 using fin.scene.components;
 using fin.scene.instance;
 using fin.services;
-using fin.ui.rendering.gl;
 using fin.ui.rendering.gl.scene;
 using fin.ui.rendering.viewer;
 using fin.util.asserts;
@@ -19,12 +18,15 @@ using fin.util.tasks;
 
 using marioartist.api;
 
-using marioartisttool.services;
 using marioartisttool.backgrounds;
 using marioartisttool.config;
+using marioartisttool.file_select;
+using marioartisttool.services;
 using marioartisttool.view;
 using marioartisttool.view.games.ball;
 using marioartisttool.ViewModels;
+
+using static marioartisttool.file_select.FileSelectTopBar;
 
 namespace marioartisttool.Views;
 
@@ -33,6 +35,8 @@ public partial class MainView : UserControl {
       ma3d1CameraTransform_ = null;
 
   private IModelFileBundle? currentModelFileBundle_;
+  private MfsTreeFile? currentFile_;
+  private bool isInBallMode_;
 
   public MainView() {
     InitializeComponent();
@@ -52,11 +56,21 @@ public partial class MainView : UserControl {
     };
 
     MfsFileSystemService.OnFileSelected += file =>
-      FinTask.Run(() => this.LoadNextModel_(file));
+        FinTask.Run(() => this.LoadNextModel_(file));
+
+    EasterEggService.ΔIsInBallMode.Subscribe(isInBallMode => {
+      this.isInBallMode_ = isInBallMode;
+
+      if (this.currentFile_?.FileType.ToLower() is ".tstlt") {
+        this.LoadNextModel_(this.currentFile_);
+      }
+    });
   }
 
   private void LoadNextModel_(MfsTreeFile? file) {
     LoadingStatusService.IsLoading = true;
+
+    this.currentFile_ = file;
 
     var camera = this.ViewerGlPanel.Camera;
     if (this.currentModelFileBundle_ is Ma3d1ModelFileBundle or null) {
@@ -85,28 +99,11 @@ public partial class MainView : UserControl {
         config.MostRecentFileName = file.FullPath;
         config.Save();
 
-        if (true) {
-          var obj = area.AddRootNode();
-          obj.AddSceneModel(model);
+        var obj = area.AddRootNode();
+        obj.AddSceneModel(model);
 
-          var lightingObj = area.AddRootNode();
-          scene.CreateDefaultLighting(lightingObj);
-        } else {
-          /*var debuggerObj0 = area.AddRootNode();
-          debuggerObj0.SetPosition(-200, 0, 0);
-          debuggerObj0.AddComponent(new IkDebuggerComponent(new Vector3(100, 0, 0), Color.Red));
-
-          var debuggerObj1 = area.AddRootNode();
-          debuggerObj1.SetPosition(0, 0, 0);
-          debuggerObj1.AddComponent(new IkDebuggerComponent(new Vector3(0, 100, 0), Color.Blue));
-
-          var debuggerObj2 = area.AddRootNode();
-          debuggerObj2.SetPosition(200, 0, 0);
-          debuggerObj2.AddComponent(new IkDebuggerComponent(new Vector3(0, 0, 100), Color.Green));*/
-
-          var debuggerObj = area.AddRootNode();
-          debuggerObj.AddComponent(new IkDebuggerComponent(null, Color.White));
-        }
+        var lightingObj = area.AddRootNode();
+        scene.CreateDefaultLighting(lightingObj);
 
         this.currentModelFileBundle_ = bundle;
 
@@ -140,10 +137,10 @@ public partial class MainView : UserControl {
           shadowModelObj.AddComponent(
               new ShadowRenderComponent(
                   new LambdaSceneNodeRenderComponent(_
-                          => modelRenderComponent
-                              .Render(false))));
+                      => modelRenderComponent
+                          .Render(false))));
 
-          if (false) {
+          if (this.isInBallMode_) {
             var ballObj = characterObj.AddChildNode();
             ballObj.AddComponent(
                 new BallGameComponent(
