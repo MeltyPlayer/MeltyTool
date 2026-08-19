@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 using fin.ui.rendering;
 using fin.ui.rendering.gl;
@@ -8,6 +9,7 @@ using fin.ui.rendering.viewer;
 using marioartist.schema.talent_studio;
 
 using marioartisttool.backgrounds;
+using marioartisttool.services;
 using marioartisttool.util;
 
 namespace marioartisttool.view;
@@ -80,27 +82,40 @@ public sealed class TalentStudioBackdropRenderer : IOrthoRenderable {
       var hWidth = width / 2f;
       var hHeight = height / 2f;
 
+      var isInBallMode = EasterEggService.ΔIsInBallMode.Value;
+
       GlTransform.Ortho2d(0, (int) width, (int) height, 0);
 
       GlTransform.PushMatrix();
-      GlTransform.Translate(hWidth, hHeight, 0);
-      GlTransform.Scale(hWidth, hHeight, 1);
+      {
+        GlTransform.Translate(hWidth, hHeight, 0);
+        GlTransform.Scale(hWidth, hHeight, 1);
 
-      this.backgroundRenderer_.AspectRatio = hWidth / hHeight;
-      this.backgroundRenderer_.Render();
+        if (!isInBallMode) {
+          this.backgroundRenderer_.AspectRatio = hWidth / hHeight;
+          this.backgroundRenderer_.Render();
+        } else {
+          GlUtil.SetClearColor(Color.WhiteSmoke);
+          GlUtil.ClearColorAndDepth();
+        }
 
-      this.floorShadowRenderer_.ViewportWidth = width;
-      this.floorShadowRenderer_.ViewportHeight = height;
+        this.floorShadowRenderer_.ViewportWidth = width;
+        this.floorShadowRenderer_.ViewportHeight = height;
 
-      GlTransform.PushMatrix();
-      GlTransform.LoadIdentity();
-      this.floorShadowRenderer_.Render();
+        GlTransform.PushMatrix();
+        {
+          GlTransform.LoadIdentity();
+          this.floorShadowRenderer_.Render();
+        }
+        GlTransform.PopMatrix();
+      }
+
       GlTransform.PopMatrix();
 
-      GlTransform.PopMatrix();
-      GlTransform.Translate(hWidth - 320, hHeight - 240, 0);
-      
-      this.sceneryRenderer_?.Render();
+      if (!isInBallMode) {
+        GlTransform.Translate(hWidth - 320, hHeight - 240, 0);
+        this.sceneryRenderer_?.Render();
+      }
     }
 
     GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);

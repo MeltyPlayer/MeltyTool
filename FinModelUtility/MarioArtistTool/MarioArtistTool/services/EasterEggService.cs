@@ -3,5 +3,5 @@
 namespace marioartisttool.services;
 
 public static class EasterEggService {
-  public static Subject<bool> ΔIsInBallMode { get; } = new();
+  public static BehaviorSubject<bool> ΔIsInBallMode { get; } = new(false);
 }
