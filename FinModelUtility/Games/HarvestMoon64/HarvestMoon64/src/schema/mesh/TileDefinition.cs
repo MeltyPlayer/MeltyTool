@@ -30,8 +30,7 @@ public partial class TileDefinition : IBinaryDeserializable {
   public void ReadFaces_(IBinaryReader br) {
     var faces = new LinkedList<Face>();
 
-    var tileUvs = new (int, int)[32];
-    var currentSolidColor = FinColor.FromSystemColor(Color.White);
+    var currentSolidColor = Color.White;
 
     while (true) {
       var flags = (FaceFlags) br.ReadByte();
@@ -45,45 +44,31 @@ public partial class TileDefinition : IBinaryDeserializable {
       var isQuad = flags.CheckFlag(FaceFlags.IS_QUAD);
       var isLastCommand = flags.CheckFlag(FaceFlags.IS_LAST_COMMAND);
 
+      TileUv[]? tileUvs = null;
       if (isTextured) {
-        for (var i = 0; i < (isQuad ? 4 : 3); ++i) {
-          var v_idx = br.ReadByte();
-          var s_raw = br.ReadByte();
-          var t_raw = br.ReadByte();
-
-          // corresponds to: (tileRenderingInfo[i].data2[0] << 0x16) | (tileRenderingInfo[i].data3[0] << 6)
-          var u_px = s_raw * 2;
-          var v_px = t_raw * 2;
-
-          // gSPModifyVertex expects absolute texel coordinates (e.g., pixel 32, not float 0.5). Blender expects normalized coordinates (0.0 to 1.0).
-          // Normalize to Full Image
-          var u = u_px / 1; // t_width
-          var v = v_px / 1; // t_height
-
-          tileUvs[v_idx] = (u, v);
-        }
+        tileUvs = br.ReadNews<TileUv>(isQuad ? 4 : 3);
       } else {
         currentSolidColor
-            = FinColor.FromRgbBytes(br.ReadByte(),
-                                    br.ReadByte(),
-                                    br.ReadByte());
+            = Color.FromArgb(br.ReadByte(), br.ReadByte(), br.ReadByte());
       }
 
       br.PushMemberEndianness(Endianness.LittleEndian);
       faces.AddLast(new Face {
           Color = currentSolidColor,
-          IsTextured = isTextured,
           Vertices
-              = UnpackTriangleIndices_(br.ReadUInt16(), ((uint) flags & 0x0C) >> 2)
+              = UnpackTriangleIndices_(br.ReadUInt16(), ((uint) flags & 0x0C) >> 2),
+          IsTextured = isTextured,
+          TileUvs = tileUvs,
       });
 
       (uint, uint, uint)? triangle2Indices = null;
       if (isQuad) {
         faces.AddLast(new Face {
             Color = currentSolidColor,
-            IsTextured = isTextured,
             Vertices
-                = UnpackTriangleIndices_(br.ReadUInt16(), (uint) flags & 0x03)
+                = UnpackTriangleIndices_(br.ReadUInt16(), (uint) flags & 0x03),
+            IsTextured = isTextured,
+            TileUvs = null,
         });
       }
 
@@ -122,6 +107,14 @@ public enum FaceFlags : byte {
 
 public class Face {
   public required (uint, uint, uint) Vertices { get; init; }
-  public required IColor Color { get; init; }
-  public bool IsTextured { get; init; }
+  public required Color Color { get; init; }
+  public required bool IsTextured { get; init; }
+  public TileUv[]? TileUvs { get; init; }
+}
+
+[BinarySchema]
+public sealed partial class TileUv : IBinaryDeserializable {
+  public byte VertexIndex { get; set; }
+  public byte S { get; set; }
+  public byte T { get; set; }
 }

@@ -1,9 +1,11 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 
 using f3dzex2.image;
 using f3dzex2.io;
 
 using fin.color;
+using fin.data.lazy;
 using fin.io;
 using fin.model;
 using fin.model.impl;
@@ -40,16 +42,22 @@ public sealed class Hm64MapModelImporter
 
     var map = romBr.ReadNew<Map>();
 
+    IReadOnlyTexture[] textures;
     {
       romBr.Position = map.Offsets.TileTexturesStart;
       var textureCount = romBr.ReadUInt32() / 4;
       var textureOffsets = romBr.ReadUInt32s(textureCount)[..^1];
+      while (textureOffsets[^1] == 0) {
+        textureOffsets = textureOffsets[..^1];
+      }
 
       romBr.Position = map.Offsets.TilePalettesStart;
       var paletteCount = romBr.ReadUInt32() / 4;
       var paletteOffsets = romBr.ReadUInt32s(paletteCount)[..^1];
 
-      for (var i = 0; i < textureOffsets.Length - 1; ++i) {
+      textures = new IReadOnlyTexture[textureOffsets.Length - 1];
+
+      for (var i = 0; i < textures.Length; ++i) {
         var textureStart = map.Offsets.TileTexturesStart + textureOffsets[i];
         var textureEnd = map.Offsets.TileTexturesStart + textureOffsets[i + 1];
 
@@ -83,9 +91,12 @@ public sealed class Hm64MapModelImporter
         var image = new N64ImageParser(n64Hardware)
             .Parse(imageFormat, textureData, width, height);
 
-        model.MaterialManager.CreateTexture(image);
+        textures[i] = model.MaterialManager.CreateTexture(image);
       }
     }
+
+    var lazyMaterials = new LazyDictionary<int, IReadOnlyMaterial>(textureId
+          => model.MaterialManager.AddTextureMaterial(textures[textureId]));
 
     var grid = map.Grid;
     for (var tileY = 0; tileY < grid.MapHeight; ++tileY) {
@@ -97,6 +108,12 @@ public sealed class Hm64MapModelImporter
 
         var tile = map.Mesh.TileDefinitions[tileI - 1];
 
+        var textureId = (tile.RawTexIndex & 0x7F) - 1;
+        var isValid = textureId >= 0 && textureId < textures.Length;
+
+        var texture = isValid ? textures[textureId] : null;
+        var textureMaterial = isValid ? lazyMaterials[textureId] : null;
+
         var baseOffset = new Vector3(
             tileX * grid.TileSizeX,
             tile.YOffset,
@@ -104,19 +121,42 @@ public sealed class Hm64MapModelImporter
 
         var finMesh = finSkin.AddMesh();
 
+        var tileUvs = new Vector2[32];
+
         foreach (var face in tile.Faces) {
-          var tileVertex0 = tile.Vertices[face.Vertices.Item1];
-          var tileVertex1 = tile.Vertices[face.Vertices.Item2];
-          var tileVertex2 = tile.Vertices[face.Vertices.Item3];
+          var i0 = face.Vertices.Item1;
+          var i1 = face.Vertices.Item2;
+          var i2 = face.Vertices.Item3;
 
-          var finVertex0
-              = AddVertex_(finSkin, baseOffset, tileVertex0, face.Color);
-          var finVertex1
-              = AddVertex_(finSkin, baseOffset, tileVertex1, face.Color);
-          var finVertex2
-              = AddVertex_(finSkin, baseOffset, tileVertex2, face.Color);
+          if (isValid && face.TileUvs != null) {
+            foreach (var tileUv in face.TileUvs) {
+              tileUvs[tileUv.VertexIndex] = new Vector2(
+                  tileUv.S * 2f / texture.Image.Width,
+                  tileUv.T * 2f / texture.Image.Height);
+            }
+          }
 
-          finMesh.AddTriangles(finVertex0, finVertex1, finVertex2);
+          var tileVertex0 = tile.Vertices[i0];
+          var tileVertex1 = tile.Vertices[i1];
+          var tileVertex2 = tile.Vertices[i2];
+
+          var isTextured = face.IsTextured;
+
+          var finVertex0 = AddVertex_(finSkin,
+                                      baseOffset,
+                                      tileVertex0,
+                                      isTextured ? tileUvs[i0] : null);
+          var finVertex1 = AddVertex_(finSkin,
+                                      baseOffset,
+                                      tileVertex1,
+                                      isTextured ? tileUvs[i1] : null);
+          var finVertex2 = AddVertex_(finSkin,
+                                      baseOffset,
+                                      tileVertex2,
+                                      isTextured ? tileUvs[i2] : null);
+
+          var triangle = finMesh.AddTriangles(finVertex0, finVertex1, finVertex2);
+          triangle.SetMaterial(isValid && isTextured ? textureMaterial : null);
         }
       }
     }
@@ -128,12 +168,14 @@ public sealed class Hm64MapModelImporter
       ISkin<NormalTangentMultiColorMultiUvVertexImpl> skin,
       Vector3 baseOffset,
       Vertex tileVertex,
-      IColor color) {
+      Vector2? tileUv) {
     var finVertex = skin.AddVertex(
         baseOffset +
         new Vector3(tileVertex.X, tileVertex.Y, tileVertex.Z));
 
-    finVertex.SetColor(color);
+    if (tileUv != null) {
+      finVertex.SetUv(tileUv);
+    }
 
     return finVertex;
   }
