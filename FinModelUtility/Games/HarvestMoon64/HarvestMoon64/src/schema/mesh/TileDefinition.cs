@@ -46,6 +46,7 @@ public partial class TileDefinition : IBinaryDeserializable {
       TileUv[]? tileUvs = null;
       if (isTextured) {
         tileUvs = br.ReadNews<TileUv>(isQuad ? 4 : 3);
+        currentSolidColor = Color.White;
       } else {
         currentSolidColor
             = Color.FromArgb(br.ReadByte(), br.ReadByte(), br.ReadByte());
