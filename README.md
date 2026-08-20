@@ -132,6 +132,8 @@ If you'd like to vote on new games or features that should be supported, please 
   - Dead Space (Steam/Epic Games)
 - .glo (PC)
   - Glover (Steam)
+- Harvest Moon 64 maps
+  - Harvest Moon 64 (`harvest_moon_64.z64`)	
 - HSD, aka HAL sysdolphin (.dat) (GCN)
   - Chibi-Robo! (`chibi_robo.[ciso/gcm/iso/nkit.iso]`)
   - Super Smash Bros. Melee (`super_smash_bros_melee.[ciso/gcm/iso/nkit.iso]`)
