@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 
-using fin.color;
 using fin.util.enums;
 
 using schema.binary;
