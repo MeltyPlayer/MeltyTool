@@ -1,5 +1,8 @@
 ﻿using System.Numerics;
 
+using f3dzex2.image;
+using f3dzex2.io;
+
 using fin.color;
 using fin.io;
 using fin.model;
@@ -10,6 +13,8 @@ using fin.util.sets;
 
 using hm64.schema;
 using hm64.schema.mesh;
+
+using schema.binary;
 
 namespace hm64.api;
 
@@ -30,7 +35,57 @@ public sealed class Hm64MapModelImporter
 
     var finSkin = model.Skin;
 
-    var map = fileBundle.MainFile.ReadNew<Map>();
+    using var romBr
+        = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
+
+    var map = romBr.ReadNew<Map>();
+
+    {
+      romBr.Position = map.Offsets.TileTexturesStart;
+      var textureCount = romBr.ReadUInt32() / 4;
+      var textureOffsets = romBr.ReadUInt32s(textureCount)[..^1];
+
+      romBr.Position = map.Offsets.TilePalettesStart;
+      var paletteCount = romBr.ReadUInt32() / 4;
+      var paletteOffsets = romBr.ReadUInt32s(paletteCount)[..^1];
+
+      for (var i = 0; i < textureOffsets.Length - 1; ++i) {
+        var textureStart = map.Offsets.TileTexturesStart + textureOffsets[i];
+        var textureEnd = map.Offsets.TileTexturesStart + textureOffsets[i + 1];
+
+        var paletteStart
+            = map.Offsets.TilePalettesStart + paletteOffsets[i] + 4;
+        var paletteEnd = map.Offsets.TilePalettesStart + paletteOffsets[i + 1];
+
+        romBr.Position = textureStart + 3;
+        var textureFlags = romBr.ReadByte();
+        var imageFormat = textureFlags == 16
+            ? N64ImageFormat.CI4
+            : N64ImageFormat.CI8;
+        romBr.PushMemberEndianness(Endianness.LittleEndian);
+        var width = romBr.ReadUInt16();
+        var height = romBr.ReadUInt16();
+        romBr.PopEndianness();
+
+        var textureData = romBr.ReadBytes(textureEnd - romBr.Position);
+
+        romBr.Position = paletteStart;
+        var paletteData = romBr.ReadBytes(paletteEnd - paletteStart);
+
+        var n64Hardware = new N64Hardware<SeparateN64Memory>();
+        n64Hardware.Memory = new();
+        n64Hardware.Rdp = new Rdp {
+            PaletteSegmentedAddress = 0,
+        };
+
+        n64Hardware.Memory.AddSegment(0, 0, paletteData);
+
+        var image = new N64ImageParser(n64Hardware)
+            .Parse(imageFormat, textureData, width, height);
+
+        model.MaterialManager.CreateTexture(image);
+      }
+    }
 
     var grid = map.Grid;
     for (var tileY = 0; tileY < grid.MapHeight; ++tileY) {
