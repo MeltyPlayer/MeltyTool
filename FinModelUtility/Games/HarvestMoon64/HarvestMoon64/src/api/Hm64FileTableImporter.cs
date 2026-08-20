@@ -14,7 +14,12 @@ public sealed record Hm64RomFileBundle(IReadOnlyTreeFile MainFile)
   public static Hm64RomFileBundle FromFile(IReadOnlyTreeFile file) => new(file);
 }
 
-public sealed class Hm64FileTableImporter(IReadOnlyTreeFile mapAddressesFile)
+/// <summary>
+///   Shamelessly stolen from:
+///   https://github.com/harvestwhisperer/hm64-decomp/blob/58900b4b770b24e6982316c6e88d4d12b8eea84c/tools/modding/map/prep_blender.py
+/// </summary>
+public sealed partial class Hm64FileTableImporter(
+    IReadOnlyTreeFile mapAddressesFile)
     : BSimpleArchiveImporter<Hm64RomFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       Hm64RomFileBundle bundle,
@@ -24,16 +29,6 @@ public sealed class Hm64FileTableImporter(IReadOnlyTreeFile mapAddressesFile)
       out Stream readStream) {
     baseStream = readStream = bundle.MainFile.OpenRead();
 
-    ExtractMapAssets_(mapAddressesFile, builderRoot);
-  }
-
-  /// <summary>
-  ///   Shamelessly stolen from:
-  ///   https://github.com/harvestwhisperer/hm64-decomp/blob/58900b4b770b24e6982316c6e88d4d12b8eea84c/tools/modding/map/prep_blender.py
-  /// </summary>
-  private static void ExtractMapAssets_(
-      IReadOnlyTreeFile mapAddressesFile,
-      ISimpleArchiveDirectory rootArchiveDirectory) {
     using var mapAddressesCsv = new CsvReader(
         mapAddressesFile.OpenReadAsText(),
         new CsvConfiguration(CultureInfo.InvariantCulture) {
@@ -48,7 +43,7 @@ public sealed class Hm64FileTableImporter(IReadOnlyTreeFile mapAddressesFile)
                    })
                    .ToArray();
 
-    var mapsArchiveDir = rootArchiveDirectory.AddSubdir("maps");
+    var mapsArchiveDir = builderRoot.AddSubdir("maps");
 
     for (var i = 0; i < mapDatas.Length; ++i) {
       var (startAddr, mapName) = mapDatas[i];
@@ -64,7 +59,7 @@ public sealed class Hm64FileTableImporter(IReadOnlyTreeFile mapAddressesFile)
     }
   }
 
-  public class MapData {
+  public sealed class MapData {
     [Index(0)]
     public string OffsetHex { get; set; }
 

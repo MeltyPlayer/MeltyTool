@@ -10,6 +10,7 @@ namespace hm64.schema;
 ///   https://github.com/harvestwhisperer/hm64-decomp/blob/master/tools/modding/map/blender_import.py#L475
 /// </summary>
 [BinarySchema]
+[Endianness(Endianness.BigEndian)]
 public partial class Map : IBinaryDeserializable {
   public Offsets Offsets { get; } = new();
 
@@ -17,5 +18,5 @@ public partial class Map : IBinaryDeserializable {
   public Grid Grid { get; } = new();
 
   [RAtPosition(nameof(Offsets.MeshOffset))]
-  private Mesh Mesh { get; } = new();
+  public Mesh Mesh { get; } = new();
 }

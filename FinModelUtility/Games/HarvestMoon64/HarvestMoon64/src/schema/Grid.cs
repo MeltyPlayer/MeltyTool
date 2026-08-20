@@ -23,5 +23,11 @@ public partial class Grid : IBinaryDeserializable {
   private int TileCount_ => this.MapWidth * this.MapHeight;
 
   [RSequenceLengthSource(nameof(TileCount_))]
-  public ushort[] TileIndices { get; set; }
+  public TileIndex[] TileIndices { get; set; }
+}
+
+[BinarySchema]
+[Endianness(Endianness.LittleEndian)]
+public partial struct TileIndex : IBinaryDeserializable {
+  public ushort Value { get; set; }
 }

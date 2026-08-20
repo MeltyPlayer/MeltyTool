@@ -11,7 +11,7 @@ public class Mesh : IBinaryDeserializable, IChildOf<Map> {
   public void Read(IBinaryReader br) {
     br.PushLocalSpace();
 
-    var maxTileIndex = this.Parent.Grid.TileIndices.Max();
+    var maxTileIndex = this.Parent.Grid.TileIndices.Max(t => t.Value);
     this.TileDefinitions = new TileDefinition[maxTileIndex];
     for (var i = 0; i < this.TileDefinitions.Length; ++i) {
       this.TileDefinitions[i] = br.SubreadAt(br.ReadUInt32(), br.ReadNew<TileDefinition>);

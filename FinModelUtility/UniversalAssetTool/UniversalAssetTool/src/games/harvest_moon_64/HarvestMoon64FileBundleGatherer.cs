@@ -21,7 +21,11 @@ public sealed class HarvestMoon64FileBundleGatherer : BN64FileBundleGatherer {
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress
-          mutablePercentageProgress,
-      IFileHierarchy fileHierarchy) { }
+      IMutablePercentageProgress mutablePercentageProgress,
+      IFileHierarchy fileHierarchy) {
+    foreach (var mapFile in fileHierarchy.Root.AssertGetExistingSubdir("maps")
+                                         .GetExistingFiles()) {
+      organizer.Add(new Hm64MapModelFileBundle(mapFile.Impl));
+    }
+  }
 }

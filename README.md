@@ -48,6 +48,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@Gota7](https://github.com/Gota7), whose [SM64DSe-Ultimate](https://github.com/Gota7/SM64DSe-Ultimate) tool was heavily referenced to add support for extracting Super Mario 64 DS .bmd files.
 - [Hack64](https://hack64.net), which provided documentation for various N64 microcode/display list formats (e.g. [Fast3D Display List Commands](https://hack64.net/wiki/doku.php?id=super_mario_64:fast3d_display_list_commands))
 - [@haekb](https://github.com/haekb), whose [io_scene_gdl](https://github.com/haekb/io_scene_gdl) Blender plugin and [gdl-tools](https://github.com/haekb/gdl-tools) suite were heavily referenced to add support for Gauntlet Dark Legacy.
+- [@harvestwhisperer](https://github.com/harvestwhisperer), whose [hm64-decomp](https://github.com/harvestwhisperer/hm64-decomp)'s tools were ported to C# to add support for Harvest Moon 64 maps.
 - [@hci64](https://github.com/hcs64), whose [vgm_ripping](https://github.com/hcs64/vgm_ripping) tool was ported to add support for parsing .ast PCM16 data.
 - [@HimeWorks](https://github.com/HimeWorks), whose [Noesis plugins](https://himeworks.com/noesis-plugins/) were used to add support for various formats.
 - [@intns](https://github.com/intns), whose [MODConv](https://github.com/intns/MODConv) tool was used as the basis for the Pikmin 1 .mod importer.

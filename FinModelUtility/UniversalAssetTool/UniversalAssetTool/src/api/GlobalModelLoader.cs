@@ -20,6 +20,8 @@ using gm.api;
 
 using grezzo.api;
 
+using hm64.api;
+
 using hw.api;
 
 using jsystem.api;
@@ -96,6 +98,8 @@ public sealed class GlobalModelImporter : IModelImporter<IModelFileBundle> {
             => new GloModelImporter().Import(gloModelFileBundle),
         GltfModelFileBundle gltfModelFileBundle
             => new GltfModelImporter().Import(gltfModelFileBundle),
+        Hm64MapModelFileBundle hm64MapModelFileBundle
+            => new Hm64MapModelImporter().Import(hm64MapModelFileBundle),
         Ma3d1ModelFileBundle ma3d1ModelFileBundle
             => new Ma3d1ModelLoader().Import(ma3d1ModelFileBundle),
         Mk3dKartModelFileBundle mk3dKartModelFileBundle
