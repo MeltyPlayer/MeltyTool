@@ -1,4 +1,5 @@
 ﻿using hm64.schema.mesh;
+using hm64.schema.objects;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -19,4 +20,7 @@ public partial class Map : IBinaryDeserializable {
 
   [RAtPosition(nameof(Offsets.MeshOffset))]
   public Mesh Mesh { get; } = new();
+
+  [RAtPosition(nameof(Offsets.ObjectsOffset))]
+  public Objects Objects { get; } = new();
 }
