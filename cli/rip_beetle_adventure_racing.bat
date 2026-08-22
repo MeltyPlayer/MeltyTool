@@ -1,0 +1,3 @@
+tools\universal_asset_tool\universal_asset_tool.exe beetle_adventure_racing
+
+pause

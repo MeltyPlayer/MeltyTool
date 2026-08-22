@@ -4,9 +4,11 @@ using uni.games;
 using uni.games.animal_crossing;
 using uni.games.battalion_wars_1;
 using uni.games.battalion_wars_2;
+using uni.games.beetle_adventure_racing;
 using uni.games.chibi_robo;
 using uni.games.glover;
 using uni.games.halo_wars;
+using uni.games.harvest_moon_64;
 using uni.games.luigis_mansion;
 using uni.games.luigis_mansion_3d;
 using uni.games.majoras_mask_3d;
@@ -52,6 +54,11 @@ public sealed class BattalionWars1Options
 public sealed class BattalionWars2Options
     : IMassExporterOptions<BattalionWars2MassExporter>;
 
+[Verb("beetle_adventure_racing",
+      HelpText = "Export models en-masse from Beetle Adventure Racing!")]
+public sealed class BeetleAdventureRacingOptions
+    : IMassExporterOptions<BeetleAdventureRacingMassExporter>;
+
 [Verb("chibi_robo", HelpText = "Export models en-masse from Chibi-Robo!")]
 public sealed class ChibiRoboOptions : IMassExporterOptions<ChibiRoboMassExporter>;
 
@@ -62,6 +69,10 @@ public sealed class GloverOptions : IMassExporterOptions<GloverMassExporter>;
 [Verb("halo_wars",
       HelpText = "Export models en-masse from Halo Wars.")]
 public sealed class HaloWarsOptions : IMassExporterOptions<HaloWarsMassExporter>;
+
+[Verb("harvest_moon_64",
+      HelpText = "Export models en-masse from Harvest Moon 64.")]
+public sealed class HarvestMoon64Options : IMassExporterOptions<HarvestMoon64MassExporter>;
 
 [Verb("luigis_mansion",
       HelpText = "Export models en-masse from Luigi's Mansion.")]
