@@ -1,7 +1,7 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace PaperMario;
+namespace pm.schema;
 
 [BinarySchema]
 public sealed partial class Asset : IBinaryConvertible {

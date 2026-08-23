@@ -2,7 +2,7 @@
 using fin.compression;
 using fin.io;
 
-using PaperMario;
+using pm.schema;
 
 using schema.binary;
 

@@ -4,10 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>pm</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.19" />
+    <PackageReference Include="schema" Version="0.6.20" />
   </ItemGroup>
 
   <ItemGroup>
