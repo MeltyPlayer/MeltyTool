@@ -38,4 +38,6 @@ public sealed partial class Area : IBinaryConvertible {
   [StringEncoding(StringEncodingType.SHIFT_JIS)]
   [StringLengthSource(0x20)]
   public string AreaNameSjis { get; set; }
+
+  public override string ToString() => $"{this.AreaName} / {this.AreaNameSjis}";
 }

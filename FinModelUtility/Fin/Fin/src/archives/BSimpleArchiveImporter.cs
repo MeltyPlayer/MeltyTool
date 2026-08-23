@@ -17,12 +17,14 @@ public interface ISimpleArchiveFileBundle<out TThis> : IArchiveFileBundle2
 
 public interface ISimpleArchiveDirectory : IArchiveDirectory2 {
   ISimpleArchiveDirectory AddSubdir(string name);
-  void AddFile(string name, long position, long length);
+  void AddFile(string path, long position, long length);
 
-  void AddFile(string name,
+  void AddFile(string path,
                long position,
                long length,
                Func<Stream, Stream> processor);
+
+  void AddFile(string path, string text);
 }
 
 public abstract class BSimpleArchiveImporter<TBundle>
@@ -80,35 +82,47 @@ public abstract class BSimpleArchiveImporter<TBundle>
     public IEnumerable<IArchiveDirectory2> Subdirs => this.subdirsImpl_.Values;
     public IEnumerable<IArchiveFile2> Files => this.filesImpl_.Values;
 
-    public ISimpleArchiveDirectory AddSubdir(string name)
-      => this.GetOrAddSubdirsFromParts_(name.Split('/', '\\'));
+    public ISimpleArchiveDirectory AddSubdir(string path)
+      => this.GetOrAddSubdirsFromParts_(SplitPath_(path));
 
-    public void AddFile(string name, long position, long length) {
-      var parts = name.Split('/', '\\');
-      var partsSpan = parts.AsSpan();
-
-      var directoryParts = partsSpan[..^1];
-      var filePart = partsSpan[^1];
-
-      var parentDir = this.GetOrAddSubdirsFromParts_(directoryParts);
-      parentDir.filesImpl_[filePart]
-          = new SimpleArchiveFile(archive, filePart, position, length);
+    public void AddFile(string path, long position, long length) {
+      var (parentDir, fileName) = this.GetParentDirAndFileName_(path);
+      parentDir.filesImpl_[fileName]
+          = new SimpleArchiveFile(archive, fileName, position, length);
     }
 
-    public void AddFile(string name,
+    public void AddFile(string path,
                         long position,
                         long length,
                         Func<Stream, Stream> processor) {
-      var parts = name.Split('/', '\\');
-      var partsSpan = parts.AsSpan();
+      var (parentDir, fileName) = this.GetParentDirAndFileName_(path);
+      parentDir.filesImpl_[fileName] = new ProcessedArchiveFile(
+          archive,
+          fileName,
+          position,
+          length,
+          processor);
+    }
 
-      var directoryParts = partsSpan[..^1];
-      var filePart = partsSpan[^1];
+    public void AddFile(string path, string text) {
+      var (parentDir, fileName) = this.GetParentDirAndFileName_(path);
+      parentDir.filesImpl_[fileName] = new TextArchiveFile(fileName, text);
+    }
+
+
+    private (SimpleArchiveDirectory, string) GetParentDirAndFileName_(
+        string path) {
+      var parts = SplitPath_(path);
+
+      var directoryParts = parts[..^1];
+      var fileName = parts[^1];
 
       var parentDir = this.GetOrAddSubdirsFromParts_(directoryParts);
-      parentDir.filesImpl_[filePart]
-          = new ProcessedArchiveFile(archive, filePart, position, length, processor);
+      return (parentDir, fileName);
     }
+
+    private static ReadOnlySpan<string> SplitPath_(string name)
+      => name.Split('/', '\\');
 
     private SimpleArchiveDirectory GetOrAddSubdirsFromParts_(
         ReadOnlySpan<string> parts) {
@@ -154,5 +168,20 @@ public abstract class BSimpleArchiveImporter<TBundle>
 
     public Stream OpenRead()
       => processor(archive.ReadStream.Substream(position, length));
+  }
+
+  private sealed class TextArchiveFile(
+      string name,
+      string text) : IArchiveFile2 {
+    public string Name => name;
+
+    public Stream OpenRead() {
+      var stream = new MemoryStream();
+      var writer = new StreamWriter(stream);
+      writer.Write(text);
+      writer.Flush();
+      stream.Position = 0;
+      return stream;
+    }
   }
 }

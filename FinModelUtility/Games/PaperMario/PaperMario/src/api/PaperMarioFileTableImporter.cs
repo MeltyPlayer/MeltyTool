@@ -1,8 +1,11 @@
-﻿using fin.archives;
+﻿using System.Text.Json.Nodes;
+
+using fin.archives;
 using fin.compression;
 using fin.io;
 
 using pm.schema;
+using pm.schema.maps;
 
 using schema.binary;
 
@@ -31,8 +34,8 @@ public sealed partial class PaperMarioFileTableImporter
     var romBr = new SchemaBinaryReader(readStream, Endianness.BigEndian);
 
     {
-      var assetTableOffset = romBr.Position = 0x01E40020;
       var assetsArchiveDir = builderRoot.AddSubdir("assets");
+      var assetTableOffset = romBr.Position = 0x01E40020;
       var assets = romBr.ReadNews<Asset>(1033);
       foreach (var asset in assets) {
         if (asset.CompressedSize == asset.UncompressedSize) {
@@ -53,6 +56,24 @@ public sealed partial class PaperMarioFileTableImporter
 
                 return uncompressedStream;
               });
+        }
+      }
+
+      var areasArchiveDir = builderRoot.AddSubdir("areas");
+      romBr.Position = MapTableUtil.AREA_TABLE_OFFSET;
+      var areas = romBr.ReadNews<Area>(28);
+      foreach (var area in areas) {
+        var areaArchiveDir = areasArchiveDir.AddSubdir(area.AreaName);
+        areaArchiveDir.AddJsonFile("area.json", area);
+
+        foreach (var map in area.Maps) {
+          var mapArchiveDir = areaArchiveDir.AddSubdir(map.MapName);
+          mapArchiveDir.AddJsonFile("map.json", map);
+          mapArchiveDir.AddFile(
+              "romOverlay.bin",
+              map.RomOverlayStartOffset,
+              map.RomOverlayEndOffset -
+              map.RomOverlayStartOffset);
         }
       }
     }

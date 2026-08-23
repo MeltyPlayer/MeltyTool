@@ -24,13 +24,18 @@ public sealed partial class Map : IBinaryConvertible {
 
   [Skip]
   public uint BackgroundNameOffset
-    => MapTableUtil.ConvertRamAddressToRomOffset(this.BackgroundNameRamAddress);
+    => this.BackgroundNameRamAddress != 0
+        ? MapTableUtil.ConvertRamAddressToRomOffset(
+            this.BackgroundNameRamAddress)
+        : 0;
 
   [RAtPosition(nameof(MapNameOffset))]
   [StringLengthSource(0x20)]
   public string MapName { get; set; }
 
-  [RAtPosition(nameof(BackgroundNameOffset))]
+  [RAtPositionOrNull(nameof(BackgroundNameOffset))]
   [StringLengthSource(0x10)]
-  public string BackgroundName { get; set; }
+  public string? BackgroundName { get; set; }
+
+  public override string ToString() => $"{this.MapName}";
 }
