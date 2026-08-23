@@ -3,9 +3,7 @@
 using fin.io;
 using fin.testing;
 
-using gx.compression.yaz0;
-
-namespace gx;
+namespace fin.compression;
 
 public sealed class Yaz0GoldenTests {
   [Test]

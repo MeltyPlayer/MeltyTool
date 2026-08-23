@@ -4,30 +4,27 @@ using fin.util.streams;
 
 using schema.binary;
 
-namespace gx.compression.yaz0;
+namespace fin.compression;
 
-public sealed class Yaz0Dec {
-  public bool Run(IFileHierarchyFile srcFile, bool cleanup)
-    => this.Run(srcFile, srcFile.Impl.CloneWithFileType(".rarc"), cleanup);
-
+public sealed class Yay0Dec {
   public bool Run(IFileHierarchyFile srcFile,
                   ISystemFile dstFile,
                   bool cleanup) {
     Asserts.True(
         srcFile.Exists,
-        $"Cannot decrypt YAZ0 because it does not exist: {srcFile}");
+        $"Cannot decrypt YAY0 because it does not exist: {srcFile}");
 
     if (dstFile.Exists) {
       return false;
     }
 
-    if (!MagicTextUtil.Verify(srcFile, "Yaz0")) {
+    if (!MagicTextUtil.Verify(srcFile, "Yay0")) {
       return false;
     }
 
     using var src = srcFile.OpenRead();
     using var dst = dstFile.OpenWrite();
-    Decompress_(src, dst);
+    Decompress(src, dst);
 
     if (cleanup) {
       srcFile.Impl.Delete();
@@ -38,38 +35,56 @@ public sealed class Yaz0Dec {
 
   /// <summary>
   ///   Shamelessly stolen from:
-  ///   https://github.com/LagoLunatic/gclib/blob/3a8a9339cc63c1d57490e9c094b0a50daa7ba736/gclib/yaz0_yay0.py#L98
+  ///   https://github.com/LagoLunatic/gclib/blob/3a8a9339cc63c1d57490e9c094b0a50daa7ba736/gclib/yaz0_yay0.py#L252
   /// </summary>
-  private static void Decompress_(Stream src, Stream dst) {
+  public static void Decompress(Stream src, Stream dst) {
     using var srcBr = new SchemaBinaryReader(src, Endianness.BigEndian);
 
-    srcBr.AssertString("Yaz0");
+    srcBr.AssertString("Yay0");
 
     var uncompSize = srcBr.ReadUInt32();
-    srcBr.Position = 0x10;
+    var linkOffset = srcBr.ReadUInt32();
+    var chunkOffset = srcBr.ReadUInt32();
 
     var dstBuffer = new MemoryStream((int) uncompSize);
-    
+
     var maskBitsLeft = 0;
     uint mask = 0;
     while (dstBuffer.Length < uncompSize) {
       if (maskBitsLeft == 0) {
-        mask = srcBr.ReadByte();
-        maskBitsLeft = 8;
+        mask = srcBr.ReadUInt32();
+        maskBitsLeft = 32;
       }
 
-      if ((mask & 0x80) != 0) {
-        dstBuffer.WriteByte(srcBr.ReadByte());
-      } else {
-        var byte1 = srcBr.ReadByte();
-        var byte2 = srcBr.ReadByte();
+      if ((mask & 0x80000000) != 0) {
+        var tmp = srcBr.Position;
+        srcBr.Position = chunkOffset;
 
-        var dist = ((byte1 & 0xF) << 8) | byte2;
-        var copySrcOffset = (uint) (dstBuffer.Length - (dist + 1));
-        var numBytes = byte1 >> 4;
+        dstBuffer.WriteByte(srcBr.ReadByte());
+        ++chunkOffset;
+
+        srcBr.Position = tmp;
+      } else {
+        var tmp = srcBr.Position;
+        srcBr.Position = linkOffset;
+
+        var link = srcBr.ReadUInt16();
+        linkOffset += 2;
+
+        srcBr.Position = tmp;
+
+        var dist = link & 0x0FFF;
+        uint copySrcOffset = (uint) (dstBuffer.Length - (dist + 1));
+        var numBytes = link >> 12;
 
         if (numBytes == 0) {
+          var chunkTmp = srcBr.Position;
+          srcBr.Position = chunkOffset;
+
           numBytes = srcBr.ReadByte() + 0x12;
+          ++chunkOffset;
+
+          srcBr.Position = chunkTmp;
         } else {
           numBytes += 2;
         }

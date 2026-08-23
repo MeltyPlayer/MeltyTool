@@ -3,9 +3,7 @@
 using fin.io;
 using fin.testing;
 
-using gx.compression.yay0;
-
-namespace gx;
+namespace fin.compression;
 
 public sealed class Yay0GoldenTests {
   [Test]

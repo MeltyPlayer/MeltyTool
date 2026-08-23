@@ -1,13 +1,12 @@
 ﻿using fin.archives;
 using fin.common;
+using fin.compression;
 using fin.config;
 using fin.io;
 using fin.io.archive;
 using fin.util.asserts;
 
 using gx.archives.rarc;
-using gx.compression.yay0;
-using gx.compression.yaz0;
 
 using uni.games;
 using uni.platforms.gcn.tools;

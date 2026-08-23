@@ -1,4 +1,5 @@
-﻿using fin.io;
+﻿using fin.compression;
+using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
 using fin.util.lists;
@@ -6,7 +7,6 @@ using fin.util.progress;
 using fin.util.strings;
 
 using gx.archives.rarc;
-using gx.compression.yaz0;
 
 using jsystem.api;
 

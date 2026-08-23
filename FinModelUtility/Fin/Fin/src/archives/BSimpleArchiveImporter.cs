@@ -18,6 +18,11 @@ public interface ISimpleArchiveFileBundle<out TThis> : IArchiveFileBundle2
 public interface ISimpleArchiveDirectory : IArchiveDirectory2 {
   ISimpleArchiveDirectory AddSubdir(string name);
   void AddFile(string name, long position, long length);
+
+  void AddFile(string name,
+               long position,
+               long length,
+               Func<Stream, Stream> processor);
 }
 
 public abstract class BSimpleArchiveImporter<TBundle>
@@ -86,13 +91,24 @@ public abstract class BSimpleArchiveImporter<TBundle>
       var filePart = partsSpan[^1];
 
       var parentDir = this.GetOrAddSubdirsFromParts_(directoryParts);
-      parentDir.AddFileFromPart_(filePart, position, length);
+      parentDir.filesImpl_[filePart]
+          = new SimpleArchiveFile(archive, filePart, position, length);
     }
 
-    // TODO: Prevent duplicates?
-    private void AddFileFromPart_(string part, long position, long length)
-      => this.filesImpl_[part]
-          = new SimpleArchiveFile(archive, part, position, length);
+    public void AddFile(string name,
+                        long position,
+                        long length,
+                        Func<Stream, Stream> processor) {
+      var parts = name.Split('/', '\\');
+      var partsSpan = parts.AsSpan();
+
+      var directoryParts = partsSpan[..^1];
+      var filePart = partsSpan[^1];
+
+      var parentDir = this.GetOrAddSubdirsFromParts_(directoryParts);
+      parentDir.filesImpl_[filePart]
+          = new ProcessedArchiveFile(archive, filePart, position, length, processor);
+    }
 
     private SimpleArchiveDirectory GetOrAddSubdirsFromParts_(
         ReadOnlySpan<string> parts) {
@@ -126,5 +142,17 @@ public abstract class BSimpleArchiveImporter<TBundle>
     public string Name => name;
 
     public Stream OpenRead() => archive.ReadStream.Substream(position, length);
+  }
+
+  private sealed class ProcessedArchiveFile(
+      SimpleArchive archive,
+      string name,
+      long position,
+      long length,
+      Func<Stream, Stream> processor) : IArchiveFile2 {
+    public string Name => name;
+
+    public Stream OpenRead()
+      => processor(archive.ReadStream.Substream(position, length));
   }
 }

@@ -14,9 +14,8 @@ public sealed class BeetleAdventureRacingFileBundleGatherer
   protected override void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,
       ISystemDirectory extractedDir,
-      ISystemDirectory prereqsDir) {
-    new BarFileTableImporter().ExtractInto(romFile, extractedDir);
-  }
+      ISystemDirectory prereqsDir)
+    => new BarFileTableImporter().ExtractInto(romFile, extractedDir);
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

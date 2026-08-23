@@ -4,7 +4,6 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>mp</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Fin\Fin.Compression\Fin.Compression.csproj" />
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\F3dzex2\F3dzex2\F3dzex2.csproj" />
   </ItemGroup>
 
 </Project>
