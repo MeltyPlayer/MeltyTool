@@ -1,11 +1,9 @@
-﻿using System.Text.Json.Nodes;
-
-using fin.archives;
+﻿using fin.archives;
 using fin.compression;
 using fin.io;
 
-using pm.schema;
-using pm.schema.maps;
+using pm.schema.fileTable;
+using pm.schema.fileTable.maps;
 
 using schema.binary;
 

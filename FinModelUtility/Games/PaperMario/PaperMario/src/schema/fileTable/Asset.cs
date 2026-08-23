@@ -1,7 +1,7 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace pm.schema;
+namespace pm.schema.fileTable;
 
 [BinarySchema]
 public sealed partial class Asset : IBinaryConvertible {

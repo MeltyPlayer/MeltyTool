@@ -18,6 +18,8 @@ using mkdd.api;
 
 using modl.api;
 
+using pm.api;
+
 using pmdc.api;
 
 using sm64.api;
@@ -48,6 +50,8 @@ public sealed class GlobalSceneImporter : ISceneImporter<ISceneFileBundle> {
             => new Mk3dTrackSceneImporter().Import(mk3dTrackSceneFileBundle),
         LvlSceneFileBundle lvlSceneFileBundle
             => new LvlSceneImporter().Import(lvlSceneFileBundle),
+        PaperMarioMapSceneFileBundle paperMarioMapSceneFileBundle
+            => new PaperMarioMapSceneImporter().Import(paperMarioMapSceneFileBundle),
         Pikmin2SceneFileBundle pikmin2SceneFileBundle
             => new Pikmin2SceneImporter().Import(pikmin2SceneFileBundle),
         Sm64LevelSceneFileBundle sm64LevelSceneFileBundle

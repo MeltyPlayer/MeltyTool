@@ -18,9 +18,27 @@ public sealed class PaperMarioFileBundleGatherer : BN64FileBundleGatherer {
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress
-          mutablePercentageProgress,
+      IMutablePercentageProgress mutablePercentageProgress,
       IFileHierarchy fileHierarchy) {
-    var rootDirectoryImpl = fileHierarchy.Root.Impl;
+    var rootDir = fileHierarchy.Root;
+
+    var assetsDir = rootDir.AssertGetExistingSubdir("assets").Impl;
+
+    foreach (var areaDir in rootDir.AssertGetExistingSubdir("areas")
+                                   .GetExistingSubdirs()) {
+      var areaFile = areaDir.AssertGetExistingFile("area.json").Impl;
+
+      foreach (var mapDir in areaDir.GetExistingSubdirs()) {
+        var mapFile = mapDir.AssertGetExistingFile("map.json").Impl;
+        var romOverlayFile
+            = mapDir.AssertGetExistingFile("romOverlay.bin").Impl;
+
+        organizer.Add(new PaperMarioMapSceneFileBundle(
+                          areaFile,
+                          mapFile,
+                          romOverlayFile,
+                          assetsDir));
+      }
+    }
   }
 }

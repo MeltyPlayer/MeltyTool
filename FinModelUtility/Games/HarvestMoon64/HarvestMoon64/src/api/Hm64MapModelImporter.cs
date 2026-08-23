@@ -6,7 +6,6 @@ using f3dzex2.io;
 
 using fin.data.lazy;
 using fin.io;
-using fin.math;
 using fin.math.rotations;
 using fin.model;
 using fin.model.impl;
@@ -17,8 +16,6 @@ using fin.util.sets;
 
 using hm64.schema;
 using hm64.schema.mesh;
-
-using Microsoft.CodeAnalysis;
 
 using schema.binary;
 

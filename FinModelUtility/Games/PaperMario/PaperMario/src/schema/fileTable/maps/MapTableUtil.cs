@@ -1,4 +1,4 @@
-﻿namespace pm.schema.maps;
+﻿namespace pm.schema.fileTable.maps;
 
 public static class MapTableUtil {
   public const uint MAP_TABLE_OFFSET = 0x0006B450;
