@@ -31,6 +31,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@Arisotura](https://github.com/Arisotura), whose [SM64DSe](https://github.com/Arisotura/SM64DSe) tool was heavily referenced to add support for extracting Super Mario 64 DS .bmd files.
 - [@Asia81](https://github.com/Asia81), whose [HackingToolkit9DS](https://github.com/Asia81/HackingToolkit9DS-Deprecated-) was originally used to extract the contents of 3DS .cia files.
 - [@Chadderz121](https://github.com/Chadderz121), aka Chadderz, whose [CTools](https://www.chadsoft.co.uk/wiicoder/) suite was originally used to read J3dGraph .bmd texture formats.
+- [Clover](https://www.youtube.com/@clover9026), who reverse-engineered Paper Mario's map format.
 - [CloudModding](https://wiki.cloudmodding.com), which provides wikis documenting various Zelda games and their internal formats (e.g. [F3DZEX2](https://wiki.cloudmodding.com/oot/F3DZEX2))
 - cooliscool, whose [Utility of Time](http://wiki.maco64.com/Tools/Utility_of_Time) program was used as the basis for the UI and F3DZEX2/F3DEX2 importer.
 - [@Cuyler36](https://github.com/Cuyler36), aka CulyerAC, whose [RELDumper](https://github.com/Cuyler36/RELDumper) is used to extract the contents of .rel/.map files.
@@ -69,7 +70,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@LuigiBlood](https://github.com/LuigiBlood), whose [mfs_manager](https://github.com/LuigiBlood/mfs_manager) tool was heavily referenced to add support for extracting files from 64DD files.
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
 - [@M-1-RLG](https://github.com/M-1-RLG), aka M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
-- [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/magcius/noclip.website) was referenced to add support for importing Beetle Adventure Racing models, .csab files, and Paper Mario: The Thousand Year Door's animated group models.
+- [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/magcius/noclip.website) was referenced to add support for importing Beetle Adventure Racing models, .csab files, Paper Mario maps, and Paper Mario: The Thousand Year Door's animated group models.
 - [@markheath](https://github.com/markheath), whose [NAudio](https://github.com/naudio/naudio) library was used to load .wav files.
 - [Masusder](https://github.com/Masusder), whose [FModBankParser](https://github.com/Masusder/FModBankParser) library was used to load FMod .bank files.
 - Mega-Mario, whose [documentation](https://kuribo64.net/get.php?id=KBNyhM0kmNiuUBb3) was referenced to add support for parsing SM64DS models.
