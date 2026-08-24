@@ -39,7 +39,9 @@ public static class GltfMaterialUtil {
 
     usesLighting = true;
     return gltfMaterialBuilder.WithMetallicRoughnessShader()
-                              .WithMetallicRoughness(null, roughness);
+                              // Fixed-function materials are dielectric unless
+                              // they explicitly carry PBR metalness data.
+                              .WithMetallicRoughness(0, roughness);
   }
 
   public static MaterialBuilder WithBaseColor(

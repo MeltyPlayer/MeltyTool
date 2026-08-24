@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -41,6 +42,14 @@ public partial class ModelImpl<TVertex> {
     };
 
     public string Name { get; set; }
+
+    public IReadOnlyList<IMorphTarget?> MorphTargetFrames { get; private set; }
+        = Array.Empty<IMorphTarget?>();
+
+    public void SetMorphTargetFrames(
+        IReadOnlyList<IMorphTarget?> morphTargetFrames) {
+      this.MorphTargetFrames = morphTargetFrames;
+    }
 
     public int FrameCount {
       get => this.sharedInterpolationConfig_.AnimationLength;

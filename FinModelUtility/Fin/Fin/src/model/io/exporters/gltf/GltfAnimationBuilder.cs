@@ -17,6 +17,7 @@ public sealed class GltfAnimationBuilder {
       (GltfNode, IReadOnlyBone)[] skinNodesAndBones,
       IReadOnlyDictionary<IReadOnlyMesh, Node> gltfNodeByFinMesh,
       float modelScale,
+      IReadOnlyList<IMorphTarget> morphTargets,
       IReadOnlyList<IReadOnlyModelAnimation> animations) {
     foreach (var animation in animations) {
       this.BuildAnimation_(
@@ -24,6 +25,7 @@ public sealed class GltfAnimationBuilder {
           skinNodesAndBones,
           gltfNodeByFinMesh,
           modelScale,
+          morphTargets,
           animation);
     }
   }
@@ -33,16 +35,18 @@ public sealed class GltfAnimationBuilder {
       (GltfNode, IReadOnlyBone)[] skinNodesAndBones,
       IReadOnlyDictionary<IReadOnlyMesh, Node> gltfNodeByFinMesh,
       float modelScale,
+      IReadOnlyList<IMorphTarget> morphTargets,
       IReadOnlyModelAnimation animation) {
-    var isValid
+    var hasBoneAnimation
         = animation
           .BoneTracks
           .Any(finBoneTracks
                    => (finBoneTracks.Translations?.HasAnyData ?? false) ||
                       (finBoneTracks.Rotations?.HasAnyData ?? false) ||
                       (finBoneTracks.Scales?.HasAnyData ?? false));
+    var hasMorphAnimation = animation.MorphTargetFrames.Count > 0;
 
-    if (!isValid) {
+    if (!hasBoneAnimation && !hasMorphAnimation) {
       return;
     }
 
@@ -62,6 +66,39 @@ public sealed class GltfAnimationBuilder {
         = new Dictionary<float, (Vector3, Vector3, Vector3)>();
 
     var visibilityKeyframes = new Dictionary<float, bool>();
+
+    if (hasMorphAnimation) {
+      var allMorphTargets = gltfModel.LogicalMeshes.FirstOrDefault()
+                                     ?.Primitives.FirstOrDefault()
+                                     ?.MorphTargetsCount ?? 0;
+      if (allMorphTargets > 0) {
+        var morphTargetIndices = morphTargets
+                                 .Select((target, index) => (target, index))
+                                 .ToDictionary(pair => pair.target,
+                                               pair => pair.index);
+        var morphKeyframes = new Dictionary<float, float[]>();
+        for (var frame = 0;
+             frame < animation.MorphTargetFrames.Count;
+             ++frame) {
+          var weights = new float[allMorphTargets];
+          var morphTarget = animation.MorphTargetFrames[frame];
+          if (morphTarget != null &&
+              morphTargetIndices.TryGetValue(morphTarget,
+                                             out var morphTargetIndex)) {
+            weights[morphTargetIndex] = 1;
+          }
+
+          morphKeyframes[frame / fps] = weights;
+        }
+
+        foreach (var gltfNode in gltfNodeByFinMesh.Values) {
+          gltfAnimation.CreateMorphChannel(gltfNode,
+                                           morphKeyframes,
+                                           allMorphTargets,
+                                           true);
+        }
+      }
+    }
 
     Span<Vector3> translationsOrScales
         = stackalloc Vector3[animation.FrameCount];
@@ -204,4 +241,5 @@ public sealed class GltfAnimationBuilder {
       }
     }
   }
+
 }

@@ -61,6 +61,7 @@ public sealed class LowLevelGltfModelExporter : IGltfModelExporter {
         skinNodeAndBones,
         gltfMeshByFinMesh,
         scale,
+        model.AnimationManager.MorphTargets,
         model.AnimationManager.Animations);
 
     return modelRoot;

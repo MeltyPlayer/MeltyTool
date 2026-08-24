@@ -14,8 +14,14 @@ public sealed partial class AseMesh : IBinaryConvertible {
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public AseString[] LightmapNames { get; set; }
 
-  public uint Unk0 { get; set; }
-  public uint Unk1 { get; set; }
+  /// <summary>
+  /// Number of animated poses stored after the base pose. The vertex array is
+  /// laid out as (AdditionalFrameCount + 1) equally-sized frames.
+  /// </summary>
+  public uint AdditionalFrameCount { get; set; }
+
+  /// <summary>Duration of the complete vertex animation, in seconds.</summary>
+  public float AnimationDuration { get; set; }
 
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public Vertex[] Vertices { get; set; }
@@ -76,5 +82,6 @@ public sealed partial class Triangle : IBinaryConvertible {
   public int MainTextureIndex { get; set; }
   public int DecalTextureIndex { get; set; }
   public int LightmapIndex { get; set; }
-  public int Unk3 { get; set; }
+  /// <summary>Engine-specific per-face rendering flags.</summary>
+  public int RenderFlags { get; set; }
 }
