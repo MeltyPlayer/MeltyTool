@@ -5,8 +5,7 @@ using fin.util.progress;
 
 namespace uni.games;
 
-public abstract class BN64FileBundleGatherer
-    : INamedFileBundleGatherer {
+public abstract class BN64FileBundleGatherer : INamedFileBundleGatherer {
   public abstract string Name { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.N64;
 
