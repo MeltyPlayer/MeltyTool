@@ -1,7 +1,7 @@
 ﻿using schema.binary;
 using schema.binary.attributes;
 
-namespace pm.schema.fileTable.maps;
+namespace pm.schema.maps;
 
 /// <summary>
 ///   Shamelessly stolen from:

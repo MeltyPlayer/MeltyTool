@@ -5,6 +5,7 @@ using fin.io;
 using fin.scene;
 
 using pm.schema.fileTable.maps;
+using pm.schema.maps;
 
 using schema.binary;
 
@@ -70,6 +71,14 @@ public sealed class PaperMarioMapSceneImporter
           .Parse(N64ImageFormat.CI8, textureData, bg.Width, bg.Height);
 
       finArea.BackgroundImage = image;
+    }
+
+    var mapName = pmMap.MapName;
+    var mapPrefix = mapName == "dgb_00" ? "arn_20" : mapName;
+    if (assetsDirectory.TryToGetExistingFile(
+            $"{mapPrefix}_shape",
+            out var shapeFile)) {
+      var shape = shapeFile.ReadNew<Shape>();
     }
 
     return finScene;
