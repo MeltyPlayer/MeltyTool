@@ -142,6 +142,7 @@
     <ProjectReference Include="..\..\Libraries\Grezzo\Grezzo\Grezzo.csproj" />
     <ProjectReference Include="..\..\Libraries\JSystem\JSystem\JSystem.csproj" />
     <ProjectReference Include="..\..\Libraries\Level5\Level5\Level5.csproj" />
+    <ProjectReference Include="..\..\Libraries\Natsume\Natsume\Natsume.csproj" />
     <ProjectReference Include="..\..\Libraries\Nitro\Nitro\Nitro.csproj" />
     <ProjectReference Include="..\..\Libraries\Sysdolphin\Sysdolphin\Sysdolphin.csproj" />
     <ProjectReference Include="..\..\Libraries\VisceralGames\VisceralGames\VisceralGames.csproj" />

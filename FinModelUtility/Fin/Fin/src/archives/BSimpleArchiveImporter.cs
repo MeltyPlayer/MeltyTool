@@ -10,9 +10,10 @@ using SubstreamSharp;
 
 namespace fin.archives;
 
-public interface ISimpleArchiveFileBundle<out TThis> : IArchiveFileBundle2
-    where TThis : ISimpleArchiveFileBundle<TThis> {
-  static abstract TThis FromFile(IReadOnlyTreeFile file);
+public interface ISimpleArchiveFileBundle : IArchiveFileBundle2;
+
+public interface ISimpleCleanableArchiveFileBundle : ISimpleArchiveFileBundle {
+  void CleanUp();
 }
 
 public interface ISimpleArchiveDirectory : IArchiveDirectory2 {
@@ -118,6 +119,7 @@ public abstract class BSimpleArchiveImporter<TBundle>
       var fileName = parts[^1];
 
       var parentDir = this.GetOrAddSubdirsFromParts_(directoryParts);
+
       return (parentDir, fileName);
     }
 
@@ -128,7 +130,7 @@ public abstract class BSimpleArchiveImporter<TBundle>
         ReadOnlySpan<string> parts) {
       SimpleArchiveDirectory current = this;
       foreach (var part in parts) {
-        current = this.GetOrAddSubdirFromPart_(part);
+        current = current.GetOrAddSubdirFromPart_(part);
       }
 
       return current;

@@ -27,9 +27,7 @@ public sealed class BattalionWars2FileBundleGatherer
                    .Where(file => file.Name.EndsWith(".res.gz"));
       foreach (var resFile in resFiles) {
         didUpdateAny |= didUpdate
-            |= (ResArchiveImporter.Extract(
-                    resFile.Impl,
-                    FinConfig.CleanUpArchives) ==
+            |= (ResArchiveImporter.Extract(resFile.Impl) ==
                 ArchiveExtractionResult.NEWLY_EXTRACTED);
       }
 

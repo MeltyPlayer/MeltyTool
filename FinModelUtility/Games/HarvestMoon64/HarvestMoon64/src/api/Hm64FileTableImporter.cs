@@ -10,15 +10,13 @@ using fin.io;
 namespace hm64.api;
 
 public sealed record Hm64RomFileBundle(IReadOnlyTreeFile MainFile)
-    : ISimpleArchiveFileBundle<Hm64RomFileBundle> {
-  public static Hm64RomFileBundle FromFile(IReadOnlyTreeFile file) => new(file);
-}
+    : ISimpleArchiveFileBundle;
 
 /// <summary>
 ///   Shamelessly stolen from:
 ///   https://github.com/harvestwhisperer/hm64-decomp/blob/58900b4b770b24e6982316c6e88d4d12b8eea84c/tools/modding/map/prep_blender.py
 /// </summary>
-public sealed partial class Hm64FileTableImporter(
+public sealed class Hm64FileTableImporter(
     IReadOnlyTreeFile mapAddressesFile)
     : BSimpleArchiveImporter<Hm64RomFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(

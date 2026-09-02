@@ -24,8 +24,7 @@ public sealed class BattalionWars1FileBundleGatherer : BGameCubeFileBundleGather
       var resFiles = directory.FilesWithExtension(".res");
       foreach (var resFile in resFiles) {
         didUpdateAny |= didUpdate
-            |= (ResArchiveImporter.Extract(resFile.Impl,
-                                           FinConfig.CleanUpArchives) ==
+            |= (ResArchiveImporter.Extract(resFile.Impl) ==
                 ArchiveExtractionResult.NEWLY_EXTRACTED);
       }
 

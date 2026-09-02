@@ -16,7 +16,7 @@ public sealed class HarvestMoon64FileBundleGatherer : BN64FileBundleGatherer {
       ISystemDirectory prereqsDir)
     => new Hm64FileTableImporter(
         prereqsDir.AssertGetExistingFile("map_addresses.csv")).ExtractInto(
-        romFile,
+        new Hm64RomFileBundle(romFile),
         extractedDir);
 
   protected override void GatherFileBundlesFromHierarchy(

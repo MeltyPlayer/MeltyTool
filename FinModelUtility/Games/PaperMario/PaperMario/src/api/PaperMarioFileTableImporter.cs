@@ -10,10 +10,7 @@ using schema.binary;
 namespace pm.api;
 
 public sealed record PaperMarioRomFileBundle(IReadOnlyTreeFile MainFile)
-    : ISimpleArchiveFileBundle<PaperMarioRomFileBundle> {
-  public static PaperMarioRomFileBundle FromFile(IReadOnlyTreeFile file)
-    => new(file);
-}
+    : ISimpleArchiveFileBundle;
 
 /// <summary>
 ///   Shamelessly stolen from:

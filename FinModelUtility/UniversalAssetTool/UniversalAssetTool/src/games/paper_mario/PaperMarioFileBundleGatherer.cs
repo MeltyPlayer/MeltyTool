@@ -14,7 +14,9 @@ public sealed class PaperMarioFileBundleGatherer : BN64FileBundleGatherer {
       IReadOnlyTreeFile romFile,
       ISystemDirectory extractedDir,
       ISystemDirectory prereqsDir)
-    => new PaperMarioFileTableImporter().ExtractInto(romFile, extractedDir);
+    => new PaperMarioFileTableImporter().ExtractInto(
+        new PaperMarioRomFileBundle(romFile),
+        extractedDir);
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

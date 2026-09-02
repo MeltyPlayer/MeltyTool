@@ -8,29 +8,25 @@ using schema.binary.attributes;
 
 namespace uni.platforms.gcn.tools;
 
-public sealed record GcmArchiveFileBundle(IReadOnlyTreeFile RomFile)
-    : ISimpleArchiveFileBundle<GcmArchiveFileBundle> {
-  public static GcmArchiveFileBundle FromFile(IReadOnlyTreeFile file)
-    => new(file);
-
-  public IReadOnlyTreeFile MainFile => this.RomFile;
-}
+public sealed record GcmArchiveFileBundle(IReadOnlyTreeFile MainFile)
+    : ISimpleArchiveFileBundle;
 
 /// <summary>
 ///   Shamelessly ported from version 1.0 (20050213) of gcmdump by thakis.
 /// </summary>
-public partial class GcmArchiveImporter : BSimpleArchiveImporter<GcmArchiveFileBundle> {
+public partial class GcmArchiveImporter
+    : BSimpleArchiveImporter<GcmArchiveFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       GcmArchiveFileBundle bundle,
       ISet<IReadOnlyGenericFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {
-    var rawRomStream = bundle.RomFile.OpenRead();
+    var rawRomStream = bundle.MainFile.OpenRead();
 
     var isCiso = MagicTextUtil.Verify(rawRomStream, "CISO");
     rawRomStream.Position = 0;
-    
+
     baseStream = readStream =
         !isCiso ? rawRomStream : new CisoStream(rawRomStream);
 

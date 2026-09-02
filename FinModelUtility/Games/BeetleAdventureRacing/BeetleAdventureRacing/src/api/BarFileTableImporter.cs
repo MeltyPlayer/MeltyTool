@@ -10,9 +10,7 @@ using schema.binary;
 namespace bar.api;
 
 public sealed record BarRomFileBundle(IReadOnlyTreeFile MainFile)
-    : ISimpleArchiveFileBundle<BarRomFileBundle> {
-  public static BarRomFileBundle FromFile(IReadOnlyTreeFile file) => new(file);
-}
+    : ISimpleArchiveFileBundle;
 
 /// <summary>
 ///   Shamelessly stolen from:

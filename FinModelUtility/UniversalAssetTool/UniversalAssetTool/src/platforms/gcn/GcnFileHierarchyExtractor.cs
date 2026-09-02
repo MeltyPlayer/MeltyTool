@@ -42,7 +42,9 @@ public sealed class GcnFileHierarchyExtractor {
     => TryToFindRom(gameName, out _) ||
        ExtractorUtil.HasBeenExtracted(gameName);
 
-  public static bool TryToFindRom(string gameName, out ISystemFile romFile)
+  public static bool TryToFindRom(
+      string gameName,
+      out IReadOnlyTreeFile romFile)
     => DirectoryConstants.ROMS_DIRECTORY
                          .TryToGetExistingFileWithFileType(
                              gameName,
@@ -53,10 +55,12 @@ public sealed class GcnFileHierarchyExtractor {
                              ".gcm");
 
   public IFileHierarchy ExtractFromRom_(
-      ISystemFile romFile,
+      IReadOnlyTreeFile romFile,
       Options options) {
     var directory = ExtractorUtil.GetOrCreateExtractedDirectory(romFile);
-    if (new GcmArchiveImporter().ExtractInto(romFile, directory) ==
+    if (new GcmArchiveImporter().ExtractInto(
+            new GcmArchiveFileBundle(romFile),
+            directory) ==
         ArchiveExtractionResult.FAILED) {
       Asserts.Fail($"Failed to extract files from {romFile}!");
     }
