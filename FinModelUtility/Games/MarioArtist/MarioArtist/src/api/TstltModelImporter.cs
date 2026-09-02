@@ -40,12 +40,12 @@ namespace marioartist.api;
 
 using BoneTuple = (IReadOnlyBone bone, Joint joint, int jointIndex);
 using ChosenPart0Tuple =
-    (ISegment segment, MeshDefinition meshDefinition, SubUnkSection5 unkSection5
-    ,
+    (SliceSegmentChunk segment, MeshDefinition meshDefinition, SubUnkSection5
+    unkSection5,
     ChosenPart0 chosenPart, int unkSection5I, int subUnkSection5I);
 using ChosenPart1Tuple
-    = (ISegment segment, ChosenPart1 chosenPart, IReadOnlyBone bone, bool isHead
-    );
+    = (SliceSegmentChunk segment, ChosenPart1 chosenPart, IReadOnlyBone bone,
+    bool isHead);
 
 public record TstltModelFileBundle(
     IReadOnlyTreeFile MainFile,
@@ -135,11 +135,13 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
     var bodySectionOffset = headSectionOffset + headSectionLength;
     var bodySectionLength = br.Length - bodySectionOffset;
 
-    var headSegment = new SliceSegment {
-        Offset = (uint) headSectionOffset, Length = headSectionLength
+    var headSegment = new SliceSegmentChunk {
+        OffsetInRom = (uint) headSectionOffset,
+        Length = headSectionLength
     };
-    var bodySegment = new SliceSegment {
-        Offset = (uint) bodySectionOffset, Length = (uint) bodySectionLength
+    var bodySegment = new SliceSegmentChunk {
+        OffsetInRom = (uint) bodySectionOffset,
+        Length = (uint) bodySectionLength
     };
 
     br.Position = 0x166ab;
@@ -191,7 +193,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
 
     foreach (var joint in joints) {
       var matrix = Matrix4x4.Transpose(joint.matrix);
-      
+
       // Have to do this to flip the scale correctly. Decomposing, replacing
       // the rotation, and then recomposing does not preserve the rotation.
       var scaleX = joint.isFlipped ? -1 : 1;
@@ -743,7 +745,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                        out var possibilities) &&
         possibilities.TryGetFirst(out var sbr)) {
       var relativeMeshBaseOffset = sbr.Position;
-      var absoluteMeshOffset = segment.Offset + relativeMeshBaseOffset;
+      var absoluteMeshOffset = segment.OffsetInRom + relativeMeshBaseOffset;
 
       sbr.Position = relativeMeshBaseOffset + 4 * 3;
       var vertexSectionSize = sbr.ReadUInt32();

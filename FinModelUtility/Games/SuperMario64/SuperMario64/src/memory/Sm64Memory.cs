@@ -31,7 +31,7 @@ namespace sm64.memory {
       return true;
     }
 
-    public SchemaBinaryReader OpenSegment(ISegment segment, uint? offset = null) {
+    public SchemaBinaryReader OpenSegment(ISegmentChunk segmentChunk, uint? offset = null) {
       throw new NotImplementedException();
     }
 
@@ -65,14 +65,14 @@ namespace sm64.memory {
       throw new NotImplementedException();
     }
 
-    public ISegment GetSegment(uint segmentAddress)
-      => new SliceSegment { Offset = 0, Length = 0 };
+    public ISegmentChunk GetSegment(uint segmentAddress)
+      => new SliceSegmentChunk { OffsetInRom = 0, Length = 0 };
 
-    public void AddSegment(uint segmentIndex, ISegment segment) {
+    public void AddSegment(uint segmentIndex, ISegmentChunk segmentChunk) {
       throw new NotImplementedException();
     }
 
-    public void SetSegment(uint segmentIndex, ISegment segment) {
+    public void SetSegment(uint segmentIndex, ISegmentChunk segmentChunk) {
       throw new NotImplementedException();
     }
   }

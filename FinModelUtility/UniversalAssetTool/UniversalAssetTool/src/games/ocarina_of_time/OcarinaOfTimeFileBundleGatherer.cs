@@ -58,7 +58,7 @@ public sealed class OcarinaOfTimeFileBundleGatherer : INamedFileBundleGatherer {
         if (!zObjectFile.Exists) {
           didWriteAny = true;
           using var fw = zObjectFile.OpenWrite();
-          using var br = n64Memory.OpenSegment(zObject.Segment);
+          using var br = n64Memory.OpenSegment(zObject.SegmentChunk);
           br.CopyTo(fw);
         }
       }

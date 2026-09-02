@@ -50,24 +50,24 @@ namespace UoT.api {
       var gameplayKeep =
           zSegments.Others.Single(other => other.FileName is "gameplay_keep");
       n64Memory.AddSegment((uint) OotSegmentIndex.GAMEPLAY_KEEP,
-                           gameplayKeep.Segment);
+                           gameplayKeep.SegmentChunk);
 
       // TODO: Use "gameplay dangeon keep" when applicable
       var gameplayFieldKeep =
           zSegments.Others.Single(
               other => other.FileName is "gameplay_field_keep");
       n64Memory.AddSegment((uint) OotSegmentIndex.GAMEPLAY_FIELD_KEEP,
-                           gameplayFieldKeep.Segment);
+                           gameplayFieldKeep.SegmentChunk);
 
       n64Memory.AddSegment((uint) OotSegmentIndex.ZOBJECT,
-                           zFile.Segment);
+                           zFile.SegmentChunk);
 
       var linkAnimetion =
           zSegments.Others.SingleOrDefault(
               other => other.FileName is "link_animetion");
       if (isLink) {
         n64Memory.AddSegment((uint) OotSegmentIndex.LINK_ANIMETION,
-                             linkAnimetion.Segment);
+                             linkAnimetion.SegmentChunk);
       }
 
       Hacks.ApplyHacks(n64Hardware, modelFileBundle.ZFile.FileName);

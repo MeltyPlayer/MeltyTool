@@ -27,7 +27,7 @@ using schema.binary;
 namespace bar.api;
 
 using UvtxData
-    = (Uvtx uvtx0, Uvtx? uvtx1, IReadOnlyList<(byte, ISegment)> segments,
+    = (Uvtx uvtx0, Uvtx? uvtx1, IReadOnlyList<(byte, ISegmentChunk)> segments,
     IDisplayList displayList);
 
 public sealed record UvmdModelFileBundle(
@@ -151,21 +151,21 @@ public sealed class UvmdModelFileImporter
 
       displayList = StubDisplayList_(displayList, uvtxAddresses, uvtxes);
 
-      var segments = new List<(byte, ISegment)>();
-      segments.Add((0, new BytesSegment {
-          Offset = 0,
+      var segments = new List<(byte, ISegmentChunk)>();
+      segments.Add((0, new BytesSegmentChunk {
+          OffsetInSegment = 0,
           Bytes = uvtx0.TexelData,
       }));
       if (uvtx1 != null) {
-        segments.Add((1, new BytesSegment {
-            Offset = 0,
+        segments.Add((1, new BytesSegmentChunk {
+            OffsetInSegment = 0,
             Bytes = uvtx1.TexelData,
         }));
       }
 
       if (uvtx0.PalettesData != null) {
-        segments.Add((2, new BytesSegment {
-            Offset = 0,
+        segments.Add((2, new BytesSegmentChunk {
+            OffsetInSegment = 0,
             Bytes = uvtx0.PalettesData.SelectMany(p => p).ToArray()
         }));
       }

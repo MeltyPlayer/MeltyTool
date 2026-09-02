@@ -83,7 +83,7 @@ namespace sm64 {
 
       this.findAndSetSegment02();
 
-      if (this.Bytes[Globals.MemoryConstants.Segment15.Offset] == 0x17)
+      if (this.Bytes[Globals.MemoryConstants.Segment15.OffsetInRom] == 0x17)
         this.Type = ROM_Type.EXTENDED;
       else
         this.Type = ROM_Type.VANILLA;
@@ -95,8 +95,8 @@ namespace sm64 {
           var segment15Start = this.readWordUnsigned(0x2A622C);
           var segment15End = this.readWordUnsigned(0x2A6230);
           return MemoryConstants.NA_CONSTANTS with {
-              Segment15 = new SliceSegment {
-                  Offset = segment15Start,
+              Segment15 = new SliceSegmentChunk {
+                  OffsetInRom = segment15Start,
                   Length = segment15End - segment15Start,
               }
           };
@@ -348,8 +348,8 @@ namespace sm64 {
       for (int i = 0; i < func_calls.Count; i++) {
         if (func_calls[i].a0 == 0x2) {
           Globals.MemoryConstants = Globals.MemoryConstants with {
-              Segment2 = new SliceSegment {
-                  Offset = func_calls[i].a1,
+              Segment2 = new SliceSegmentChunk {
+                  OffsetInRom = func_calls[i].a1,
                   Length = func_calls[i].a2 - func_calls[i].a1,
               }
           };

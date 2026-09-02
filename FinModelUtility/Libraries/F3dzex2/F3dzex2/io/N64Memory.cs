@@ -18,7 +18,7 @@ namespace f3dzex2.io;
 
 public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
     : ISeparateN64Memory {
-  private readonly ListDictionary<uint, ISegment> segments_ = new();
+  private readonly ListDictionary<uint, ISegmentChunk> segments_ = new();
 
   public Endianness Endianness { get; } = endianness;
 
@@ -65,7 +65,7 @@ public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
   public SchemaBinaryReader OpenSegment(uint segmentIndex)
     => this.OpenPossibilitiesForSegment(segmentIndex).Single();
 
-  public abstract SchemaBinaryReader OpenSegment(ISegment segment,
+  public abstract SchemaBinaryReader OpenSegment(ISegmentChunk segmentChunk,
                                                  uint? offset = null);
 
   public IEnumerable<SchemaBinaryReader> OpenPossibilitiesForSegment(
@@ -75,7 +75,7 @@ public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
        .Select(segment => this.OpenSegment(segment));
 
 
-  public ISegment GetSegment(uint segmentIndex)
+  public ISegmentChunk GetSegment(uint segmentIndex)
     => this.segments_[segmentIndex].Single();
 
   public bool IsValidSegment(uint segmentIndex)
@@ -89,41 +89,40 @@ public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
       return false;
     }
 
-    var offsetInSegment = offset;
-    return segments!.Any(segment => offsetInSegment < segment.Length);
+    return segments.Any(segment => offset - segment.OffsetInSegment < segment.Length);
   }
 
   public bool IsSegmentCompressed(uint segmentIndex)
-    => this.segments_[segmentIndex].Single() is SliceSegment {
+    => this.segments_[segmentIndex].Single() is SliceSegmentChunk {
         Decompressor: not null
     };
 
   public void AddSegment(uint segmentIndex, uint offset, byte[] bytes)
     => this.AddSegment(segmentIndex,
-                       new BytesSegment {
-                           Offset = offset,
+                       new BytesSegmentChunk {
+                           OffsetInSegment = offset,
                            Bytes = bytes,
                        });
 
-  public void AddSegment(uint segmentIndex, ISegment segment)
-    => this.segments_.Add(segmentIndex, segment);
+  public void AddSegment(uint segmentIndex, ISegmentChunk segmentChunk)
+    => this.segments_.Add(segmentIndex, segmentChunk);
 
   public void SetSegment(uint segmentIndex, uint offset, byte[] bytes)
     => this.SetSegment(segmentIndex,
-                       new BytesSegment {
-                           Offset = offset,
+                       new BytesSegmentChunk {
+                           OffsetInSegment = offset,
                            Bytes = bytes,
                        });
 
-  public void SetSegment(uint segmentIndex, ISegment segment) {
+  public void SetSegment(uint segmentIndex, ISegmentChunk segmentChunk) {
     this.segments_.ClearList(segmentIndex);
-    this.segments_.Add(segmentIndex, segment);
+    this.segments_.Add(segmentIndex, segmentChunk);
   }
 
   private bool TryToGetSegmentsAtSegmentedAddress_(
       uint segmentedAddress,
       out uint offset,
-      out IEnumerable<ISegment> validSegments) {
+      out IEnumerable<ISegmentChunk> validSegments) {
     IoUtils.SplitSegmentedAddress(segmentedAddress,
                                   out var segmentIndex,
                                   out offset);
@@ -135,7 +134,8 @@ public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
     }
 
     validSegments =
-        segments!.Where(segment => offsetInSegment < segment.Length);
+        segments!.Where(segment => offsetInSegment - segment.OffsetInSegment <
+                                   segment.Length);
     return segments!.Any();
   }
 }
@@ -143,11 +143,14 @@ public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
 public sealed class SeparateN64Memory(
     Endianness endianness = Endianness.BigEndian)
     : BN64Memory(endianness) {
-  public override SchemaBinaryReader OpenSegment(ISegment segment,
+  public override SchemaBinaryReader OpenSegment(ISegmentChunk segmentChunk,
                                                  uint? offset = null) {
-    switch (segment) {
-      case BytesSegment bytesSegment: {
+    switch (segmentChunk) {
+      case BytesSegmentChunk bytesSegment: {
         var br = new SchemaBinaryReader(bytesSegment.Bytes, this.Endianness);
+        if (offset != null) {
+          br.Position = offset.Value - segmentChunk.OffsetInSegment;
+        }
         return br;
       }
       default: throw new NotImplementedException();
@@ -169,8 +172,8 @@ public sealed class SlicedN64Memory(
                          uint length,
                          IArrayToArrayDecompressor? decompressor = null)
     => this.AddSegment(segmentIndex,
-                       new SliceSegment {
-                           Offset = offset,
+                       new SliceSegmentChunk {
+                           OffsetInRom = offset,
                            Length = length,
                            Decompressor = decompressor,
                        });
@@ -180,27 +183,31 @@ public sealed class SlicedN64Memory(
                          uint length,
                          IArrayToArrayDecompressor? decompressor = null)
     => this.SetSegment(segmentIndex,
-                       new SliceSegment {
-                           Offset = offset,
+                       new SliceSegmentChunk {
+                           OffsetInRom = offset,
                            Length = length,
                            Decompressor = decompressor,
                        });
 
-  public override SchemaBinaryReader OpenSegment(ISegment segment,
+  public override SchemaBinaryReader OpenSegment(ISegmentChunk segmentChunk,
                                                  uint? offset = null) {
-    switch (segment) {
-      case BytesSegment bytesSegment: {
+    switch (segmentChunk) {
+      case BytesSegmentChunk bytesSegment: {
         var br = new SchemaBinaryReader(bytesSegment.Bytes, this.Endianness);
+        if (offset != null) {
+          br.Position = offset.Value - segmentChunk.OffsetInSegment;
+        }
+
         return br;
       }
-      case SliceSegment: {
+      case SliceSegmentChunk sliceSegment: {
         var br = new SchemaBinaryReader(
             new MemoryStream(data,
-                             (int) segment.Offset,
-                             (int) segment.Length),
+                             (int) sliceSegment.OffsetInRom,
+                             (int) segmentChunk.Length),
             this.Endianness);
         if (offset != null) {
-          br.Position = offset.Value;
+          br.Position = offset.Value - segmentChunk.OffsetInSegment;
         }
 
         return br;

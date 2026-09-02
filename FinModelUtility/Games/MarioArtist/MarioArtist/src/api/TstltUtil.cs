@@ -14,14 +14,14 @@ namespace marioartist.api;
 public static class TstltUtil {
   public static IMesh? AddDisplayLists(
       IModel model,
-      ISegment segment,
+      ISegmentChunk segmentChunk,
       IN64Hardware n64Hardware,
       DlModelBuilder dlModelBuilder,
       string meshName,
       bool isLeft,
       IEnumerable<(uint, Matrix4x4?, IBoneWeights)>
           displayListSegmentedOffsetAndBones) {
-    n64Hardware.Memory.SetSegment(0xF, segment);
+    n64Hardware.Memory.SetSegment(0xF, segmentChunk);
 
     var displayListReader = new DisplayListReader();
     var f3dzex2OpcodeParser = new F3dzex2OpcodeParser();

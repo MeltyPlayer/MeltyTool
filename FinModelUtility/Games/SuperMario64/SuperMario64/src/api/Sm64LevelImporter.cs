@@ -21,13 +21,13 @@ public static class Sm64LevelImporter {
     ModelComboFile.parseObjectCombos(Globals.getDefaultObjectComboPath());
     var memoryConstants = Globals.MemoryConstants;
     rom.setSegment(0x15,
-                   memoryConstants.Segment15.Offset,
-                   memoryConstants.Segment15.Offset + memoryConstants.Segment15.Length,
+                   memoryConstants.Segment15.OffsetInRom,
+                   memoryConstants.Segment15.OffsetInRom + memoryConstants.Segment15.Length,
                    false,
                    null);
     rom.setSegment(0x02,
-                   memoryConstants.Segment2.Offset,
-                   memoryConstants.Segment2.Offset + memoryConstants.Segment2.Length,
+                   memoryConstants.Segment2.OffsetInRom,
+                   memoryConstants.Segment2.OffsetInRom + memoryConstants.Segment2.Length,
                    rom.isSegmentMIO0(0x02, null),
                    rom.Seg02_isFakeMIO0,
                    rom.Seg02_uncompressedOffset,

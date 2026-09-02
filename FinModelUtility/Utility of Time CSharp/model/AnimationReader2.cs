@@ -32,8 +32,8 @@ namespace UoT.model {
 
       var (animationFiles, expectedOffsets) = animationFilesAndExpectedOffsets;
       foreach (var animationFile in animationFiles) {
-        n64Memory.SetSegment(6, animationFile.Segment);
-        using var entryEr = n64Memory.OpenSegment(animationFile.Segment);
+        n64Memory.SetSegment(6, animationFile.SegmentChunk);
+        using var entryEr = n64Memory.OpenSegment(animationFile.SegmentChunk);
 
         var offsets = expectedOffsets ??
                       Enumerable.Range(0, (int) (entryEr.Length - 16));
@@ -201,7 +201,7 @@ namespace UoT.model {
         int limbCount) {
       var animations = new List<IAnimation>();
 
-      using var headerEr = n64Memory.OpenSegment(headerFile.Segment);
+      using var headerEr = n64Memory.OpenSegment(headerFile.SegmentChunk);
 
       var trackCount = (uint) (limbCount * 3);
       var frameSize = 2 * (3 + trackCount) + 2;

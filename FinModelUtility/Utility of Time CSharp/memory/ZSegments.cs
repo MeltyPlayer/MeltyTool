@@ -86,7 +86,7 @@ namespace UoT.memory {
 
       foreach (var zSegment in zSegments) {
         var fileName = zSegment.FileName;
-        var segment = zSegment.Segment;
+        var segment = zSegment.SegmentChunk;
 
         BZFile file;
         if (fileName.StartsWith("object_")) {
@@ -170,9 +170,9 @@ namespace UoT.memory {
 
               segments.AddLast(new ZSegment {
                   FileName = fileName,
-                  Segment = new SliceSegment {
-                    Offset = startAddress,
-                    Length = endAddress - startAddress,
+                  SegmentChunk = new SliceSegmentChunk {
+                      OffsetInRom = startAddress,
+                      Length = endAddress - startAddress,
                   }
               });
             }
@@ -183,7 +183,7 @@ namespace UoT.memory {
 
     private class ZSegment {
       public required string FileName { get; init; }
-      public required ISegment Segment { get; init; }
+      public required ISegmentChunk SegmentChunk { get; init; }
     }
   }
 }
