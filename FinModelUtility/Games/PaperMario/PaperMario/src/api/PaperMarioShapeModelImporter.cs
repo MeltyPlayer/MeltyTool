@@ -1,11 +1,13 @@
 ﻿using System.Numerics;
 
 using f3dzex2.displaylist;
+using f3dzex2.displaylist.opcodes;
 using f3dzex2.displaylist.opcodes.f3dzex2;
 using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;
 
+using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
 using fin.io.bundles;
@@ -63,7 +65,6 @@ public sealed class PaperMarioShapeModelImporter
     var rdp = n64Hardware.Rdp = new Rdp {
         Tmem = new NoclipTmem(n64Hardware),
     };
-    rdp.SetSimpleCombinerCycleParams(false, false, false);
 
     var dlReader = new DisplayListReader();
     var dlModelBuilder = new DlModelBuilder(n64Hardware, fileBundle, files);
@@ -80,6 +81,15 @@ public sealed class PaperMarioShapeModelImporter
     var texEnvDictionary
         = textureArchive?.TextureEnvironments.ToDictionary(t => t.Name);
 
+    var lazyTextures = new LazyDictionary<Image, IReadOnlyTexture>(image => {
+      var finTexture = finModel.MaterialManager.CreateTexture(image.Mipmaps);
+
+      finTexture.WrapModeU = image.WrapModeS.AsFinWrapMode(1);
+      finTexture.WrapModeV = image.WrapModeT.AsFinWrapMode(1);
+
+      return finTexture;
+    });
+
     var modelTreeNodeQueue = new FinTuple2Queue<IBone, ModelTreeNode>(
         (finModel.Skeleton.Root, shape.ModelTreeRoot));
     while (modelTreeNodeQueue.TryDequeue(out var parentFinBone,
@@ -91,11 +101,23 @@ public sealed class PaperMarioShapeModelImporter
         var texEnvName = texEnvNameProperty?.Value.AssertAsA<StringProperty>()
                                            .Value;
 
-        /*if (texEnvName != null) {
+        if (texEnvName != null) {
           var texEnv = texEnvDictionary.AssertNonnull()[texEnvName];
 
-          rdp.Tmem.HardcodedTexture0 = texEnv.
-        }*/
+          var (image0, image1) = texEnv.Images;
+
+          rdp.Tmem.HardcodedTexture0 = lazyTextures[image0];
+          rdp.Tmem.HardcodedTexture1
+              = image1 != null ? lazyTextures[image1] : null;
+
+          // TODO: Where does this come from?
+          rdp.SetSimpleCombinerCycleParams(true, false, false);
+        } else {
+          rdp.Tmem.HardcodedTexture0 = null;
+          rdp.Tmem.HardcodedTexture1 = null;
+
+          rdp.SetSimpleCombinerCycleParams(false, false, false);
+        }
 
         var displayList = dlReader.ReadDisplayList(
             n64Hardware.Memory,

@@ -66,15 +66,16 @@ public sealed partial class TextureEnvironment : IBinaryDeserializable {
       case ImageStorageType.MIPMAPS: {
         var mipmapCount = 0;
 
-        var size = (BitsPerTexel) ((this.Attr2 >>> 24) & 0xF);
+        var size = (BitsPerTexel) ((this.Attr3 >>> 24) & 0xF);
         var widthCap = 32 >>> (int) size;
         var widthIter = (ushort) this.Attr0;
         while (true) {
+          ++mipmapCount;
           if (widthIter < widthCap) {
             break;
           }
 
-          widthIter >>= 1;
+          widthIter /= 2;
         }
 
         this.Images = (
@@ -115,13 +116,14 @@ public sealed partial class TextureEnvironment : IBinaryDeserializable {
             );
         break;
       }
-      default: throw new ArgumentOutOfRangeException();
+      default: 
+        throw new ArgumentOutOfRangeException();
     }
   }
 }
 
 public sealed class Image {
-  public required IImage[] Mipmaps { get; init; }
+  public required IReadOnlyImage[] Mipmaps { get; init; }
   public required F3dWrapMode WrapModeS { get; init; }
   public required F3dWrapMode WrapModeT { get; init; }
 
@@ -135,7 +137,7 @@ public sealed class Image {
     var (format, size, wrapModeS, wrapModeT) = SplitAttrs_(attr2, attr3);
 
     var mipmaps = new IImage[mipmapCount];
-    N64ImageParser.ParseMultiple(mipmaps, format, size, br, width, height);
+    N64ImageParser.ParseMultiple(mipmaps, format, size, br, width, height, true);
 
     return new Image {
         Mipmaps = mipmaps,
