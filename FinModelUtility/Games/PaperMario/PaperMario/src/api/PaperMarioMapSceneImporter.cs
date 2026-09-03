@@ -1,4 +1,6 @@
-﻿using f3dzex2.image;
+﻿using System.Drawing;
+
+using f3dzex2.image;
 using f3dzex2.io;
 
 using fin.io;
@@ -60,10 +62,11 @@ public sealed class PaperMarioMapSceneImporter
       bgBr.Position = bg.PaletteOffset;
       var paletteData = bgBr.ReadBytes(bgBr.Length - bgBr.Position);
 
-      var n64Hardware = new N64Hardware<SeparateN64Memory>();
-      n64Hardware.Memory = new();
-      n64Hardware.Rdp = new Rdp {
-          PaletteSegmentedAddress = 0,
+      var n64Hardware = new N64Hardware<SeparateN64Memory> {
+          Memory = new(),
+          Rdp = new Rdp {
+              PaletteSegmentedAddress = 0,
+          }
       };
 
       n64Hardware.Memory.AddSegment(0, 0, paletteData);
@@ -72,20 +75,12 @@ public sealed class PaperMarioMapSceneImporter
           .Parse(N64ImageFormat.CI8, textureData, bg.Width, bg.Height);
 
       finArea.BackgroundImage = image;
+    } else {
+      finArea.BackgroundColor = Color.Black;
     }
 
     var mapName = pmMap.MapName;
     var mapPrefix = mapName == "dgb_00" ? "arn_20" : mapName;
-
-    TextureArchive? textureArchive = null;
-    if (assetsDirectory.TryToGetExistingFile(
-            $"{mapPrefix.SubstringUpTo('_')}_tex",
-            out var textureFile)) {
-      textureArchive = textureFile.ReadNew<TextureArchive>(Endianness.BigEndian);
-    }
-
-    var texEnvDictionary
-        = textureArchive?.TextureEnvironments.ToDictionary(t => t.Name);
 
     if (assetsDirectory.TryToGetExistingFile(
             $"{mapPrefix}_shape",

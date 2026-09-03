@@ -12,8 +12,9 @@ public enum PropertyType : byte {
 }
 
 public enum PropertyId : uint {
+  RENDER_MODE = 0x5C,
   TEX_ENV_NAME = 0x5E,
-  UNK_5F = 0x5F,
+  TEXTURE_SETTINGS = 0x5F,
   BOUNDING_BOX = 0x61,
 }
 
@@ -28,7 +29,7 @@ public sealed partial class Property : IBinaryDeserializable {
 
   [Skip]
   public PropertyType PropertyType
-    => this.Id == PropertyId.UNK_5F
+    => this.Id == PropertyId.TEXTURE_SETTINGS
         ? PropertyType.INT
         : (PropertyType) (this.Value0 & 0xFF);
 

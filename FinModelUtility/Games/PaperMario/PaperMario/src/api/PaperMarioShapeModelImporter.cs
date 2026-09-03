@@ -52,8 +52,11 @@ public sealed class PaperMarioShapeModelImporter
     var shapeFileBytes = shapeFile.ReadAllBytes();
 
     var n64Hardware = new N64Hardware<SeparateN64Memory> {
-        Rsp = new Rsp(),
+        Rsp = new Rsp {
+            GeometryMode = 0,
+        }
     };
+
     var n64Memory = n64Hardware.Memory = new SeparateN64Memory();
     n64Memory.AddSegment(0, 0, shapeFileBytes);
 
@@ -119,18 +122,19 @@ public sealed class PaperMarioShapeModelImporter
           rdp.SetSimpleCombinerCycleParams(false, false, false);
         }
 
+        n64Hardware.Rsp.ActiveBoneWeights
+            = finModel.Skin.GetOrCreateBoneWeights(
+                VertexSpace.RELATIVE_TO_BONE,
+                parentFinBone);
+
         var displayList = dlReader.ReadDisplayList(
             n64Hardware.Memory,
             new F3dzex2OpcodeParser(),
             modelTreeNode.DisplayListOffset);
         dlModelBuilder.AddDl(displayList);
-
-        n64Hardware.Rsp.ActiveBoneWeights
-            = finModel.Skin.GetOrCreateBoneWeights(
-                VertexSpace.RELATIVE_TO_BONE,
-                parentFinBone);
       } else {
         var groupData = modelTreeNode.GroupData.AssertNonnull();
+
         var currentFinBone = parentFinBone.AddChild(
             groupData.ModelMatrix?.ToMatrix4x4() ??
             Matrix4x4.Identity);
