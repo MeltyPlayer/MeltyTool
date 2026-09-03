@@ -16,6 +16,9 @@ public enum InternalType : uint {
 /// </summary>
 [BinarySchema]
 public sealed partial class ModelTreeNode : IBinaryDeserializable {
+  [Skip]
+  public string Name { get; set; }
+
   public InternalType Type { get; set; }
   public uint DisplayDataRamAddress { get; set; }
   public uint NumProperties { get; set; }

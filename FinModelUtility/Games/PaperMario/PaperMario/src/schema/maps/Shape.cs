@@ -1,4 +1,6 @@
-﻿using schema.binary;
+﻿using fin.data.queues;
+
+using schema.binary;
 using schema.binary.attributes;
 
 namespace pm.schema.maps;
@@ -34,6 +36,27 @@ public sealed partial class Shape : IBinaryDeserializable {
   [Skip]
   public uint ModelNameTableOffset
     => ConvertRamAddressToOffset(this.ModelNameTableRamAddress);
+
+  [ReadLogic]
+  private void AddNames_(IBinaryReader br) {
+    br.SubreadAt(
+        this.ModelNameTableOffset,
+        () => {
+          var modelTreeNodeQueue = new FinQueue<ModelTreeNode>(this.ModelTreeRoot);
+          while (modelTreeNodeQueue.TryDequeue(out var modelTreeNode)) {
+            if (modelTreeNode.Type == InternalType.ROOT) {
+              modelTreeNode.Name = "root";
+            } else {
+              var nameRamAddress = br.ReadUInt32();
+              var nameOffset = Shape.ConvertRamAddressToOffset(nameRamAddress);
+
+              modelTreeNode.Name = br.SubreadAt(nameOffset, () => br.ReadString(Math.Min(br.Length - br.Position, 0x30)));
+            }
+
+            modelTreeNodeQueue.Enqueue(modelTreeNode.GroupData?.Children ?? []);
+          }
+        });
+  }
 
   [Skip]
   public uint ColliderNameTableOffset

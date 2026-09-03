@@ -91,19 +91,30 @@ public sealed class PaperMarioShapeModelImporter
     var texEnvDictionary
         = textureArchive?.TextureEnvironments.ToDictionary(t => t.Name);
 
-    var lazyTextures = new LazyDictionary<Image, IReadOnlyTexture>(image => {
-      var finTexture = finModel.MaterialManager.CreateTexture(image.Mipmaps);
+    var lazyTextures
+        = new LazyDictionary<(string name, Image), IReadOnlyTexture>(tuple => {
+          var (name, image) = tuple;
 
-      finTexture.WrapModeU = image.WrapModeS.AsFinWrapMode(1);
-      finTexture.WrapModeV = image.WrapModeT.AsFinWrapMode(1);
+          var finTexture
+              = finModel.MaterialManager.CreateTexture(image.Mipmaps);
+          finTexture.Name = name;
 
-      return finTexture;
-    });
+          finTexture.WrapModeU = image.WrapModeS.AsFinWrapMode(1);
+          finTexture.WrapModeV = image.WrapModeT.AsFinWrapMode(1);
 
-    var modelTreeNodeQueue = new FinTuple2Queue<IBone, ModelTreeNode>(
-        (finModel.Skeleton.Root, shape.ModelTreeRoot));
+          return finTexture;
+        });
+
+    var modelTreeNodeQueue = new FinTuple3Queue<IBone, IMesh?, ModelTreeNode>(
+        (finModel.Skeleton.Root, null, shape.ModelTreeRoot));
     while (modelTreeNodeQueue.TryDequeue(out var parentFinBone,
+                                         out var parentFinMesh,
                                          out var modelTreeNode)) {
+      var currentMesh = dlModelBuilder.CurrentMesh = parentFinMesh == null
+          ? finModel.Skin.AddMesh()
+          : parentFinMesh.AddSubMesh();
+      currentMesh.Name = modelTreeNode.Name;
+
       if (modelTreeNode.Type is InternalType.LEAF) {
         var propertiesById
             = modelTreeNode.Properties.ToListDictionary(p => p.Id);
@@ -129,9 +140,12 @@ public sealed class PaperMarioShapeModelImporter
 
           var (image0, image1) = texEnv.Images;
 
-          rdp.Tmem.HardcodedTexture0 = lazyTextures[image0];
+          var name0 = image1 != null ? $"{texEnv.Name}0" : texEnv.Name;
+          var name1 = image1 != null ? $"{texEnv.Name}1" : null;
+
+          rdp.Tmem.HardcodedTexture0 = lazyTextures[(name0, image0)];
           rdp.Tmem.HardcodedTexture1
-              = image1 != null ? lazyTextures[image1] : null;
+              = image1 != null ? lazyTextures[(name1!, image1)] : null;
 
           switch (texEnv.CombineMode) {
             // Modulate
@@ -215,10 +229,10 @@ public sealed class PaperMarioShapeModelImporter
         }
 
         rdp.ZMode = transparencyType switch {
-            TransparencyType.OPAQUE      => ZMode.ZMODE_OPA,
-            TransparencyType.MASK        => ZMode.ZMODE_DEC,
+            TransparencyType.OPAQUE => ZMode.ZMODE_OPA,
+            TransparencyType.MASK => ZMode.ZMODE_DEC,
             TransparencyType.TRANSPARENT => ZMode.ZMODE_XLU,
-            _                            => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException()
         };
         if (transparencyType == TransparencyType.TRANSPARENT) {
           rdp.P0 = rdp.P1 = BlenderPm.G_BL_CLR_IN;
@@ -248,10 +262,12 @@ public sealed class PaperMarioShapeModelImporter
         var currentFinBone = parentFinBone.AddChild(
             groupData.ModelMatrix?.ToMatrix4x4() ??
             Matrix4x4.Identity);
+        currentFinBone.Name = modelTreeNode.Name;
 
         modelTreeNodeQueue.Enqueue(
             groupData.Children.Select(childModelTreeNode
                                           => (currentFinBone,
+                                              currentMesh,
                                               childModelTreeNode)));
       }
     }

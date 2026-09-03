@@ -624,7 +624,10 @@ public sealed partial class DlModelBuilder {
     return this.currentMesh_;
   }
 
-  private IMesh CurrentMesh => this.currentMesh_ ??= this.Model.Skin.AddMesh();
+  public IMesh CurrentMesh {
+    get => this.currentMesh_ ??= this.Model.Skin.AddMesh();
+    set => this.currentMesh_ = value;
+  }
 
   public int GetNumberOfTriangles() =>
       this.Model.Skin.Meshes
