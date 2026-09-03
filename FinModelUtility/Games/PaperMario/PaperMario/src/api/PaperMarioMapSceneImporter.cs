@@ -1,16 +1,8 @@
-﻿using f3dzex2.displaylist;
-using f3dzex2.displaylist.opcodes.f3dzex2;
-using f3dzex2.image;
+﻿using f3dzex2.image;
 using f3dzex2.io;
-using f3dzex2.model;
 
-using fin.data.lazy;
-using fin.data.queues;
 using fin.io;
-using fin.model;
 using fin.scene;
-using fin.ui.rendering.gl.scene;
-using fin.util.asserts;
 using fin.util.strings;
 
 using pm.schema.fileTable.maps;
@@ -98,78 +90,12 @@ public sealed class PaperMarioMapSceneImporter
     if (assetsDirectory.TryToGetExistingFile(
             $"{mapPrefix}_shape",
             out var shapeFile)) {
-      using var shapeBr = shapeFile.OpenReadAsBinary(Endianness.BigEndian);
-
-      var shape = shapeBr.ReadNew<Shape>();
-
-      var dlReader = new DisplayListReader();
-
-      var shapeFileBytes = shapeFile.ReadAllBytes();
-
-      var n64Hardware = new N64Hardware<SeparateN64Memory> {
-          Rsp = new Rsp(),
-      };
-
-      var n64Memory = n64Hardware.Memory = new SeparateN64Memory();
-      n64Memory.AddSegment(0, 0, shapeFileBytes);
-
-      IoUtils.SplitSegmentedAddress(Shape.BASE_RAM_ADDRESS,
-                                    out var ramSegment,
-                                    out var ramOffset);
-      n64Memory.AddSegment(ramSegment, ramOffset, shapeFileBytes);
-
-      var rdp = n64Hardware.Rdp = new Rdp {
-          Tmem = new NoclipTmem(n64Hardware),
-      };
-      rdp.SetSimpleCombinerCycleParams(false, false, false);
-
-      var modelTreeNodeQueue = new FinTuple2Queue<ISceneNode?, ModelTreeNode>(
-          (null, shape.ModelTreeRoot));
-      while (modelTreeNodeQueue.TryDequeue(out var parentFinNode,
-                                           out var modelTreeNode)) {
-        if (modelTreeNode.Type is InternalType.LEAF) {
-          var texEnvNameProperty
-              = modelTreeNode.Properties.SingleOrDefault(p => p.Id is PropertyId
-                  .TEX_ENV_NAME);
-          var texEnvName = texEnvNameProperty?.Value.AssertAsA<StringProperty>()
-                                             .Value;
-
-          /*if (texEnvName != null) {
-            var texEnv = texEnvDictionary.AssertNonnull()[texEnvName];
-
-            rdp.Tmem.HardcodedTexture0 = texEnv.
-          }*/
-
-          var displayList = dlReader.ReadDisplayList(
-              n64Hardware.Memory,
-              new F3dzex2OpcodeParser(),
-              modelTreeNode.DisplayListOffset);
-
-          var dlModelBuilder
-              = new DlModelBuilder(n64Hardware, fileBundle, files);
-          dlModelBuilder.AddDl(displayList);
-
-          parentFinNode
-              .AssertNonnull()
-              .AddComponent(
-                  new SimpleModelRenderComponent(dlModelBuilder.Model));
-        } else {
-          var currentNode = parentFinNode != null
-              ? parentFinNode.AddChildNode()
-              : finArea.AddRootNode();
-
-          var groupData = modelTreeNode.GroupData.AssertNonnull();
-
-          if (groupData is { ModelMatrix: { } modelMatrix }) {
-            currentNode.SetMatrix(modelMatrix.ToMatrix4x4());
-          }
-
-          modelTreeNodeQueue.Enqueue(
-              groupData.Children.Select(childModelTreeNode
-                                            => (currentNode,
-                                                childModelTreeNode)));
-        }
-      }
+      finArea.AddRootNode()
+             .AddSceneModel(PaperMarioShapeModelImporter.Import(
+                                fileBundle,
+                                shapeFile,
+                                assetsDirectory,
+                                files));
     }
 
     return finScene;
