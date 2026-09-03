@@ -2,9 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using fin.util.linq;
+
 namespace fin.data.dictionaries;
 
 public static class ListDictionaryExtensions {
+  public static TValue? GetSingleOrDefault<TKey, TValue>(
+      this IListDictionary<TKey, TValue> impl,
+      TKey key) {
+    if (impl.TryGetList(key, out var list) && list.TryGetSingle(out var value)) {
+      return value;
+    }
+
+    return default;
+  }
+
   public static bool TryGetList<TKey, TValue>(
       this IListDictionary<TKey, TValue> impl,
       TKey key,

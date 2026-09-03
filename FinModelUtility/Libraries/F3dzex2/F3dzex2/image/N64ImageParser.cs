@@ -202,22 +202,22 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
     var imageWidth = width;
     var imageHeight = height;
 
-    IPixelIndexer pixelIndexer = deinterleaveImages
-        ? new DeinterleavedPixelIndexer(width,
-                                        bitsPerTexel switch {
-                                            BitsPerTexel._4BPT  => 4,
-                                            BitsPerTexel._8BPT  => 8,
-                                            BitsPerTexel._16BPT => 16,
-                                            BitsPerTexel._32BPT => 32,
-                                        })
-        : new BasicPixelIndexer(width);
-
     if (colorFormat != N64ColorFormat.CI) {
       for (var m = 0; m < images.Length; ++m) {
         if (mipmapping && m > 0) {
           imageWidth >>= 1;
           imageHeight >>= 1;
         }
+
+        IPixelIndexer pixelIndexer = deinterleaveImages
+            ? new DeinterleavedPixelIndexer(imageWidth,
+                                            bitsPerTexel switch {
+                                                BitsPerTexel._4BPT  => 4,
+                                                BitsPerTexel._8BPT  => 8,
+                                                BitsPerTexel._16BPT => 16,
+                                                BitsPerTexel._32BPT => 32,
+                                            })
+            : new BasicPixelIndexer(imageWidth);
 
         images[m] = colorFormat switch {
             N64ColorFormat.RGBA => bitsPerTexel switch {
@@ -289,6 +289,16 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
         imageWidth >>= 1;
         imageHeight >>= 1;
       }
+
+      IPixelIndexer pixelIndexer = deinterleaveImages
+          ? new DeinterleavedPixelIndexer(imageWidth,
+                                          bitsPerTexel switch {
+                                              BitsPerTexel._4BPT  => 4,
+                                              BitsPerTexel._8BPT  => 8,
+                                              BitsPerTexel._16BPT => 16,
+                                              BitsPerTexel._32BPT => 32,
+                                          })
+          : new BasicPixelIndexer(imageWidth);
 
       indexedImageMipmaps[m] = bitsPerTexel switch {
           BitsPerTexel._4BPT => PixelImageReader.New(imageWidth,

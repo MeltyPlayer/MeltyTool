@@ -77,6 +77,7 @@ public sealed class PaperMarioMapSceneImporter
       finArea.BackgroundImage = image;
     } else {
       finArea.BackgroundColor = Color.Black;
+      finArea.CreateCustomSkyboxNode();
     }
 
     var mapName = pmMap.MapName;

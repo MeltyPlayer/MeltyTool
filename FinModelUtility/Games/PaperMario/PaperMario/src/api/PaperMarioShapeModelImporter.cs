@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using f3dzex2.combiner;
 using f3dzex2.displaylist;
 using f3dzex2.displaylist.opcodes;
 using f3dzex2.displaylist.opcodes.f3dzex2;
@@ -7,8 +8,10 @@ using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;
 
+using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
+using fin.image.util;
 using fin.io;
 using fin.io.bundles;
 using fin.model;
@@ -76,8 +79,12 @@ public sealed class PaperMarioShapeModelImporter
     TextureArchive? textureArchive = null;
     if (assetsDirectory.TryToGetExistingFile(
             $"{shapeFile.Name.SubstringUpTo('_')}_tex",
-            out var textureFile)) {
-      textureArchive = textureFile.ReadNew<TextureArchive>(Endianness.BigEndian);
+            out var textureFile) ||
+        assetsDirectory.TryToGetExistingFile(
+            $"{shapeFile.Name.SubstringUpTo('_')}__tex",
+            out textureFile)) {
+      textureArchive
+          = textureFile.ReadNew<TextureArchive>(Endianness.BigEndian);
       files.Add(textureFile);
     }
 
@@ -98,12 +105,25 @@ public sealed class PaperMarioShapeModelImporter
     while (modelTreeNodeQueue.TryDequeue(out var parentFinBone,
                                          out var modelTreeNode)) {
       if (modelTreeNode.Type is InternalType.LEAF) {
+        var propertiesById
+            = modelTreeNode.Properties.ToListDictionary(p => p.Id);
+
+        var renderModeProperty
+            = propertiesById.GetSingleOrDefault(PropertyId.RENDER_MODE);
+        var renderMode
+            = renderModeProperty?.Value.AssertAsA<IntProperty>().Value ?? 0;
+
+        var transparencyType = renderMode switch {
+            1 or 4                => TransparencyType.OPAQUE,
+            5 or 7 or 0xD or 0x10 => TransparencyType.MASK,
+            _                     => TransparencyType.TRANSPARENT
+        };
+        var usesAlpha = transparencyType != TransparencyType.OPAQUE;
+
         var texEnvNameProperty
-            = modelTreeNode.Properties.SingleOrDefault(p => p.Id is PropertyId
-                  .TEX_ENV_NAME);
+            = propertiesById.GetSingleOrDefault(PropertyId.TEX_ENV_NAME);
         var texEnvName = texEnvNameProperty?.Value.AssertAsA<StringProperty>()
                                            .Value;
-
         if (texEnvName != null) {
           var texEnv = texEnvDictionary.AssertNonnull()[texEnvName];
 
@@ -113,13 +133,103 @@ public sealed class PaperMarioShapeModelImporter
           rdp.Tmem.HardcodedTexture1
               = image1 != null ? lazyTextures[image1] : null;
 
-          // TODO: Where does this come from?
-          rdp.SetSimpleCombinerCycleParams(true, false, false);
+          switch (texEnv.CombineMode) {
+            // Modulate
+            case 0 or 8: {
+              rdp.SetCombinerCycleParams(
+                  (new() {
+                       ColorMuxA = GenericColorMux.G_CCMUX_TEXEL0,
+                       ColorMuxB = GenericColorMux.G_CCMUX_0,
+                       ColorMuxC = GenericColorMux.G_CCMUX_TEXEL1,
+                       ColorMuxD = GenericColorMux.G_CCMUX_0,
+                       AlphaMuxA = usesAlpha
+                           ? GenericAlphaMux.G_ACMUX_TEXEL0
+                           : GenericAlphaMux.G_ACMUX_1,
+                       AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+                       AlphaMuxC = usesAlpha
+                           ? GenericAlphaMux.G_ACMUX_TEXEL1
+                           : GenericAlphaMux.G_ACMUX_1,
+                       AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+                   },
+                   new() {
+                       ColorMuxA = GenericColorMux.G_CCMUX_COMBINED,
+                       ColorMuxB = GenericColorMux.G_CCMUX_0,
+                       ColorMuxC = GenericColorMux.G_CCMUX_SHADE,
+                       ColorMuxD = GenericColorMux.G_CCMUX_0,
+                       AlphaMuxA = GenericAlphaMux.G_ACMUX_COMBINED,
+                       AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+                       AlphaMuxC = GenericAlphaMux.G_ACMUX_SHADE,
+                       AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+                   }));
+              break;
+            }
+            // Difference
+            case 0xD: {
+              rdp.SetCombinerCycleParams(
+                  (new() {
+                      ColorMuxA = GenericColorMux.G_CCMUX_0,
+                      ColorMuxB = GenericColorMux.G_CCMUX_0,
+                      ColorMuxC = GenericColorMux.G_CCMUX_0,
+                      ColorMuxD = GenericColorMux.G_CCMUX_SHADE,
+                      AlphaMuxA = GenericAlphaMux.G_ACMUX_TEXEL0,
+                      AlphaMuxB = GenericAlphaMux.G_ACMUX_TEXEL1,
+                      AlphaMuxC = GenericAlphaMux.G_ACMUX_SHADE,
+                      AlphaMuxD = GenericAlphaMux.G_ACMUX_0,
+                  }, null));
+              break;
+            }
+            // Interp
+            case 0x10: {
+              rdp.SetCombinerCycleParams(
+                  (new() {
+                      ColorMuxA = GenericColorMux.G_CCMUX_1,
+                      ColorMuxB = GenericColorMux.G_CCMUX_SHADE_ALPHA,
+                      ColorMuxC = GenericColorMux.G_CCMUX_TEXEL0,
+                      ColorMuxD = GenericColorMux.G_CCMUX_0,
+                      AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
+                      AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+                      AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
+                      AlphaMuxD = GenericAlphaMux.G_ACMUX_TEXEL0,
+                  }, new() {
+                      ColorMuxA = GenericColorMux.G_CCMUX_SHADE_ALPHA,
+                      ColorMuxB = GenericColorMux.G_CCMUX_0,
+                      ColorMuxC = GenericColorMux.G_CCMUX_TEXEL0,
+                      ColorMuxD = GenericColorMux.G_CCMUX_COMBINED,
+                      AlphaMuxA = GenericAlphaMux.G_ACMUX_0,
+                      AlphaMuxB = GenericAlphaMux.G_ACMUX_0,
+                      AlphaMuxC = GenericAlphaMux.G_ACMUX_0,
+                      AlphaMuxD = GenericAlphaMux.G_ACMUX_COMBINED,
+                  }));
+              break;
+            }
+            default: {
+              rdp.SetSimpleCombinerCycleParams(true, true, usesAlpha);
+              break;
+            }
+          }
         } else {
           rdp.Tmem.HardcodedTexture0 = null;
           rdp.Tmem.HardcodedTexture1 = null;
 
-          rdp.SetSimpleCombinerCycleParams(false, false, false);
+          rdp.SetSimpleCombinerCycleParams(false, true, usesAlpha);
+        }
+
+        rdp.ZMode = transparencyType switch {
+            TransparencyType.OPAQUE      => ZMode.ZMODE_OPA,
+            TransparencyType.MASK        => ZMode.ZMODE_DEC,
+            TransparencyType.TRANSPARENT => ZMode.ZMODE_XLU,
+            _                            => throw new ArgumentOutOfRangeException()
+        };
+        if (transparencyType == TransparencyType.TRANSPARENT) {
+          rdp.P0 = rdp.P1 = BlenderPm.G_BL_CLR_IN;
+          rdp.A0 = rdp.A1 = BlenderA.G_BL_A_IN;
+          rdp.M0 = rdp.M1 = BlenderPm.G_BL_CLR_MEM;
+          rdp.B0 = rdp.B1 = BlenderB.G_BL_1MA;
+        } else {
+          rdp.P0 = rdp.P1 = BlenderPm.G_BL_CLR_MEM;
+          rdp.A0 = rdp.A1 = BlenderA.G_BL_0;
+          rdp.M0 = rdp.M1 = BlenderPm.G_BL_CLR_IN;
+          rdp.B0 = rdp.B1 = BlenderB.G_BL_1;
         }
 
         n64Hardware.Rsp.ActiveBoneWeights
