@@ -4,11 +4,14 @@ using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;
 
+using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
+using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl.scene;
 using fin.util.asserts;
+using fin.util.strings;
 
 using pm.schema.fileTable.maps;
 using pm.schema.maps;
@@ -81,6 +84,17 @@ public sealed class PaperMarioMapSceneImporter
 
     var mapName = pmMap.MapName;
     var mapPrefix = mapName == "dgb_00" ? "arn_20" : mapName;
+
+    TextureArchive? textureArchive = null;
+    if (assetsDirectory.TryToGetExistingFile(
+            $"{mapPrefix.SubstringUpTo('_')}_tex",
+            out var textureFile)) {
+      textureArchive = textureFile.ReadNew<TextureArchive>();
+    }
+
+    var texEnvDictionary
+        = textureArchive?.TextureEnvironments.ToDictionary(t => t.Name);
+
     if (assetsDirectory.TryToGetExistingFile(
             $"{mapPrefix}_shape",
             out var shapeFile)) {
@@ -104,19 +118,27 @@ public sealed class PaperMarioMapSceneImporter
                                     out var ramOffset);
       n64Memory.AddSegment(ramSegment, ramOffset, shapeFileBytes);
 
-      n64Hardware.Rdp = new Rdp {
+      var rdp = n64Hardware.Rdp = new Rdp {
           Tmem = new NoclipTmem(n64Hardware),
       };
+      rdp.SetSimpleCombinerCycleParams(false, false, false);
 
       var modelTreeNodeQueue = new FinTuple2Queue<ISceneNode?, ModelTreeNode>(
           (null, shape.ModelTreeRoot));
       while (modelTreeNodeQueue.TryDequeue(out var parentFinNode,
                                            out var modelTreeNode)) {
         if (modelTreeNode.Type is InternalType.LEAF) {
-          var texEnvNameProperty = modelTreeNode.Properties.SingleOrDefault(p => p.Id is PropertyId.TEX_ENV_NAME);
-          var texEnvName = texEnvNameProperty?.Value.AssertAsA<StringProperty>().Value;
+          var texEnvNameProperty
+              = modelTreeNode.Properties.SingleOrDefault(p => p.Id is PropertyId
+                  .TEX_ENV_NAME);
+          var texEnvName = texEnvNameProperty?.Value.AssertAsA<StringProperty>()
+                                             .Value;
 
+          /*if (texEnvName != null) {
+            var texEnv = texEnvDictionary.AssertNonnull()[texEnvName];
 
+            rdp.Tmem.HardcodedTexture0 = texEnv.
+          }*/
 
           var displayList = dlReader.ReadDisplayList(
               n64Hardware.Memory,

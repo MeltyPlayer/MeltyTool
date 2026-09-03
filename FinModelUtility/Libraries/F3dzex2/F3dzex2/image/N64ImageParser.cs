@@ -104,19 +104,66 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
                       byte[] data,
                       int width,
                       int height) {
+    var br = new SchemaBinaryReader(data, Endianness.BigEndian);
+    return Parse(colorFormat, bitsPerTexel, br, n64Hardware, width, height);
+  }
+
+  public static IImage Parse(
+      N64ColorFormat colorFormat,
+      BitsPerTexel bitsPerTexel,
+      IBinaryReader br,
+      IN64Hardware n64Hardware,
+      int width,
+      int height) {
+    var paletteBr = colorFormat == N64ColorFormat.CI
+        ? n64Hardware.Memory.OpenAtSegmentedAddress(
+            n64Hardware.Rdp.PaletteSegmentedAddress)
+        : null;
+    
+    return Parse(colorFormat,
+                 bitsPerTexel,
+                 br,
+                 paletteBr!,
+                 width,
+                 height,
+                 n64Hardware.DeinterleaveImages);
+  }
+
+  public static IImage Parse(
+      N64ColorFormat colorFormat,
+      BitsPerTexel bitsPerTexel,
+      IBinaryReader br,
+      int width,
+      int height,
+      bool deinterleaveImages = false)
+    => Parse(colorFormat,
+             bitsPerTexel,
+             br,
+             br,
+             width,
+             height,
+             deinterleaveImages);
+
+  public static IImage Parse(
+      N64ColorFormat colorFormat,
+      BitsPerTexel bitsPerTexel,
+      IBinaryReader imageBr,
+      IBinaryReader paletteBr,
+      int width,
+      int height,
+      bool deinterleaveImages = false) {
     var imageWidth = width;
     var imageHeight = height;
 
-    IPixelIndexer pixelIndexer = n64Hardware.DeinterleaveImages
-        ? new DeinterleavedPixelIndexer(width, bitsPerTexel switch {
-            BitsPerTexel._4BPT => 4,
-            BitsPerTexel._8BPT => 8,
-            BitsPerTexel._16BPT => 16,
-            BitsPerTexel._32BPT => 32,
-        })
+    IPixelIndexer pixelIndexer = deinterleaveImages
+        ? new DeinterleavedPixelIndexer(width,
+                                        bitsPerTexel switch {
+                                            BitsPerTexel._4BPT  => 4,
+                                            BitsPerTexel._8BPT  => 8,
+                                            BitsPerTexel._16BPT => 16,
+                                            BitsPerTexel._32BPT => 32,
+                                        })
         : new BasicPixelIndexer(width);
-
-    var br = new SchemaBinaryReader(data, Endianness.BigEndian);
 
     switch (colorFormat) {
       case N64ColorFormat.RGBA: {
@@ -126,13 +173,13 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
                                         imageHeight,
                                         pixelIndexer,
                                         new Argb1555PixelReader())
-                                   .ReadImage(br);
+                                   .ReadImage(imageBr);
           case BitsPerTexel._32BPT:
             return PixelImageReader.New(imageWidth,
                                         imageHeight,
                                         pixelIndexer,
                                         new Argb32PixelReader())
-                                   .ReadImage(br);
+                                   .ReadImage(imageBr);
           default:
             throw new ArgumentOutOfRangeException(
                 nameof(bitsPerTexel),
@@ -147,13 +194,13 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
                                         imageHeight,
                                         pixelIndexer,
                                         new I4PixelReader())
-                                   .ReadImage(br);
+                                   .ReadImage(imageBr);
           case BitsPerTexel._8BPT:
             return PixelImageReader.New(imageWidth,
                                         imageHeight,
                                         pixelIndexer,
                                         new I8PixelReader())
-                                   .ReadImage(br);
+                                   .ReadImage(imageBr);
           default:
             throw new ArgumentOutOfRangeException(
                 nameof(bitsPerTexel),
@@ -168,19 +215,19 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
                                         imageHeight,
                                         pixelIndexer,
                                         new Al13PixelReader())
-                                   .ReadImage(br);
+                                   .ReadImage(imageBr);
           case BitsPerTexel._8BPT:
             return PixelImageReader.New(imageWidth,
                                         imageHeight,
                                         pixelIndexer,
                                         new Al8PixelReader())
-                                   .ReadImage(data, Endianness.BigEndian);
+                                   .ReadImage(imageBr);
           case BitsPerTexel._16BPT:
             return PixelImageReader.New(imageWidth,
                                         imageHeight,
                                         pixelIndexer,
                                         new Al16PixelReader())
-                                   .ReadImage(data, Endianness.BigEndian);
+                                   .ReadImage(imageBr);
           default:
             throw new ArgumentOutOfRangeException(
                 nameof(bitsPerTexel),
@@ -194,13 +241,13 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
                                                     imageHeight,
                                                     pixelIndexer,
                                                     new P4PixelReader())
-                                                  .ReadImage(br),
+                                                  .ReadImage(imageBr),
             BitsPerTexel._8BPT => PixelImageReader
                                   .New(imageWidth,
                                        imageHeight,
                                        pixelIndexer,
                                        new L8PixelReader())
-                                  .ReadImage(data, Endianness.BigEndian),
+                                  .ReadImage(imageBr),
             _ => throw new ArgumentOutOfRangeException(
                 nameof(bitsPerTexel),
                 bitsPerTexel,
@@ -216,10 +263,7 @@ public sealed class N64ImageParser(IN64Hardware n64Hardware) {
           }
         }
 
-        using var paletteEr =
-            n64Hardware.Memory.OpenAtSegmentedAddress(
-                n64Hardware.Rdp.PaletteSegmentedAddress);
-        var palette = paletteEr
+        var palette = paletteBr
                       .ReadUInt16s(maxIndex + 1)
                       .Select(value => {
                         ColorUtil.SplitArgb1555(
