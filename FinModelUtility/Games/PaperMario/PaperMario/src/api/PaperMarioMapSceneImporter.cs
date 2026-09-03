@@ -81,7 +81,7 @@ public sealed class PaperMarioMapSceneImporter
     if (assetsDirectory.TryToGetExistingFile(
             $"{mapPrefix.SubstringUpTo('_')}_tex",
             out var textureFile)) {
-      textureArchive = textureFile.ReadNew<TextureArchive>();
+      textureArchive = textureFile.ReadNew<TextureArchive>(Endianness.BigEndian);
     }
 
     var texEnvDictionary

@@ -46,58 +46,139 @@ public sealed partial class TextureEnvironment : IBinaryDeserializable {
   public byte TexFilter => (byte) (this.Attr3 & 0xF);
 
   [Skip]
-  public Image[] Images { get; set; }
+  public (Image, Image?) Images { get; set; }
 
   [ReadLogic]
   public void ReadImages_(IBinaryReader br) {
     switch (this.ImageStorageType) {
       case ImageStorageType.ONE: {
-        this.Images = [
-            new Image(br,
-                      (ushort) this.Attr0,
-                      (ushort) this.Attr1,
-                      (ushort) this.Attr2,
-                      (ushort) this.Attr3)
-        ];
+        this.Images = (
+            Image.CreateOneFromAttrs(
+                br,
+                (ushort) this.Attr0,
+                (ushort) this.Attr1,
+                this.Attr2,
+                this.Attr3),
+            null
+        );
         break;
       }
       case ImageStorageType.MIPMAPS: {
-        this.Images = [
-            new Image(br,
-                      (ushort) this.Attr0,
-                      (ushort) this.Attr1,
-                      (ushort) this.Attr2,
-                      (ushort) this.Attr3)
-        ];
+        var mipmapCount = 0;
+
+        var size = (BitsPerTexel) ((this.Attr2 >>> 24) & 0xF);
+        var widthCap = 32 >>> (int) size;
+        var widthIter = (ushort) this.Attr0;
+        while (true) {
+          if (widthIter < widthCap) {
+            break;
+          }
+
+          widthIter >>= 1;
+        }
+
+        this.Images = (
+            Image.CreateOneFromAttrs(
+                br,
+                (ushort) this.Attr0,
+                (ushort) this.Attr1,
+                this.Attr2,
+                this.Attr3,
+                mipmapCount),
+            null
+        );
         break;
       }
-      case ImageStorageType.TWO_SAME_SETTINGS: break;
-      case ImageStorageType.TWO_DIFFERENT_SETTINGS: break;
+      case ImageStorageType.TWO_SAME_SETTINGS: {
+        this.Images = Image.CreateTwoFromAttrs(
+            br,
+            (ushort) this.Attr0,
+            (ushort) this.Attr1,
+            this.Attr2,
+            this.Attr3);
+        break;
+      }
+      case ImageStorageType.TWO_DIFFERENT_SETTINGS: {
+        this.Images = (
+            Image.CreateOneFromAttrs(
+                br,
+                (ushort) this.Attr0,
+                (ushort) this.Attr1,
+                this.Attr2,
+                this.Attr3),
+            Image.CreateOneFromAttrs(
+                br,
+                (ushort) (this.Attr0 >>> 16),
+                (ushort) (this.Attr1 >>> 16),
+                this.Attr2 >>> 4,
+                this.Attr3 >>> 4)
+            );
+        break;
+      }
       default: throw new ArgumentOutOfRangeException();
     }
   }
 }
 
 public sealed class Image {
-  public IImage Impl { get; set; }
-  public F3dWrapMode WrapModeS { get; set; }
-  public F3dWrapMode WrapModeT { get; set; }
+  public required IImage[] Mipmaps { get; init; }
+  public required F3dWrapMode WrapModeS { get; init; }
+  public required F3dWrapMode WrapModeT { get; init; }
 
-  public Image(
+  public static Image CreateOneFromAttrs(
       IBinaryReader br,
       ushort width,
       ushort height,
-      ushort attr2,
-      ushort attr3,
-      int heightShift = 0) {
-    height >>>= heightShift;
+      uint attr2,
+      uint attr3,
+      int mipmapCount = 1) {
+    var (format, size, wrapModeS, wrapModeT) = SplitAttrs_(attr2, attr3);
 
-    var format = (N64ColorFormat) (attr2 & 0xF);
-    var size = (BitsPerTexel) ((attr2 >>> 24) & 0xF);
+    var mipmaps = new IImage[mipmapCount];
+    N64ImageParser.ParseMultiple(mipmaps, format, size, br, width, height);
 
-    this.WrapModeS = (F3dWrapMode) ((attr3 >>> 16) & 0xF);
-    this.WrapModeT = (F3dWrapMode) ((attr3 >>> 8) & 0xF);
-
-    this.Impl = N64ImageParser.Parse(format, size, br, width, height);
+    return new Image {
+        Mipmaps = mipmaps,
+        WrapModeS = wrapModeS,
+        WrapModeT = wrapModeT,
+    };
   }
+
+  public static (Image, Image) CreateTwoFromAttrs(
+      IBinaryReader br,
+      ushort width,
+      ushort height,
+      uint attr2,
+      uint attr3) {
+    height >>>= 1;
+
+    var (format, size, wrapModeS, wrapModeT) = SplitAttrs_(attr2, attr3);
+
+    var images = new IImage[2];
+    N64ImageParser.ParseMultiple(images, format, size, br, width, height);
+
+    return (new Image {
+        Mipmaps = [images[0]],
+        WrapModeS = wrapModeS,
+        WrapModeT = wrapModeT,
+    }, new Image {
+        Mipmaps = [images[1]],
+        WrapModeS = wrapModeS,
+        WrapModeT = wrapModeT,
+    });
+  }
+
+  private static (N64ColorFormat format, BitsPerTexel size, F3dWrapMode
+      wrapModeS, F3dWrapMode wrapModeT)
+      SplitAttrs_(uint attr2, uint attr3) {
+    var format = (N64ColorFormat) (attr2 & 0xF);
+    var size = (BitsPerTexel) ((attr3 >>> 24) & 0xF);
+
+    var wrapModeS = (F3dWrapMode) ((attr3 >>> 16) & 0xF);
+    var wrapModeT = (F3dWrapMode) ((attr3 >>> 8) & 0xF);
+
+    return (format, size, wrapModeS, wrapModeT);
+  }
+
+  private Image() { }
 }

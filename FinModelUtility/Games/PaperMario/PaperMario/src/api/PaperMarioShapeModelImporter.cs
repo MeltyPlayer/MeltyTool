@@ -73,7 +73,7 @@ public sealed class PaperMarioShapeModelImporter
     if (assetsDirectory.TryToGetExistingFile(
             $"{shapeFile.Name.SubstringUpTo('_')}_tex",
             out var textureFile)) {
-      textureArchive = textureFile.ReadNew<TextureArchive>();
+      textureArchive = textureFile.ReadNew<TextureArchive>(Endianness.BigEndian);
       files.Add(textureFile);
     }
 
