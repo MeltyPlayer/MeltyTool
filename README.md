@@ -147,6 +147,8 @@ If you'd like to vote on new games or features that should be supported, please 
   - Battalion Wars 2 (`battalion_wars_2.[ciso/iso]`)
 - .ngc/.ps2 (GCN)
   - Gauntlet Dark Legacy (`gauntlet_dark_legacy.[ciso/gcm/iso/nkit.iso]`)
+- Paper Mario maps
+  - Paper Mario (`paper_mario.z64`)	
 - (Picross puzzles)
   - Mario's Picross (`marios_picross_1.gb`)
   - Picross 2 (AKA Mario's Picross 2) (`marios_picross_2.gb`)
