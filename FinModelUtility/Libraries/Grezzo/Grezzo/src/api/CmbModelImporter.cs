@@ -33,7 +33,15 @@ public sealed class CmbModelImporter : IModelImporter<CmbModelFileBundle> {
                            new CsabReader(csabFiles, namesAndCsabs));
       }
 
-      var ctxbs = ctxbFiles?.Select(ctxbFile => ctxbFile.ReadNew<Ctxb>())
+      var ctxbs = ctxbFiles?.Select(ctxbFile => {
+                             var ctxb = new Ctxb
+                                 { Version = cmb.header.version };
+
+                             using var br = ctxbFile.OpenReadAsBinary();
+                             ctxb.Read(br);
+
+                             return ctxb;
+                           })
                            .ToList();
 
       var namesAndShpas =

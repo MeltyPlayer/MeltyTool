@@ -7,9 +7,6 @@ using schema.binary;
 namespace grezzo.schema.cmb;
 
 public sealed class CmbHeader : IBinaryDeserializable {
-  // TODO: Better way to do this?
-  public static Version Version { get; set; }
-
   public uint fileSize { get; private set; }
   public Version version { get; private set; }
   public string name { get; private set; }
@@ -31,8 +28,9 @@ public sealed class CmbHeader : IBinaryDeserializable {
       br.AssertString("cmb" + AsciiUtil.GetChar(0x20));
 
       this.fileSize = br.ReadUInt32();
+      Asserts.Equal(this.fileSize, br.Length);
 
-      this.version = Version = (Version) br.ReadUInt32();
+      this.version = (Version) br.ReadUInt32();
 
 
       Asserts.Equal(0, br.ReadInt32());

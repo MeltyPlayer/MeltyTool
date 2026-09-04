@@ -9,7 +9,9 @@ using schema.binary.attributes;
 namespace grezzo.schema.cmb.skl;
 
 [BinarySchema]
-public sealed partial class Bone : IBinaryConvertible {
+public sealed partial class Bone : IBinaryConvertible, IChildOf<Skl> {
+  public Skl Parent { get; set; }
+
   // Because only 12 bits are used, 4095 is the max bone count. (In
   // versions > OoT3D anyway)
   private ushort flags;
@@ -33,7 +35,7 @@ public sealed partial class Bone : IBinaryConvertible {
   public Vector3 translation { get; set; }
 
   [Skip]
-  private bool HasUnk => CmbHeader.Version > Version.OCARINA_OF_TIME_3D;
+  private bool HasUnk => this.Parent.Version > Version.OCARINA_OF_TIME_3D;
 
   [Unknown]
   [RIfBoolean(nameof(HasUnk))]

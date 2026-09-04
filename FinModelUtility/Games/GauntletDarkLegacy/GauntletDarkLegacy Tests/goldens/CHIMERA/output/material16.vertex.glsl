@@ -6,7 +6,7 @@ layout (std140, binding = 1) uniform GlobalMatrices {
 
 layout (std140, binding = 2) uniform CurrentMatrices {
   mat4 modelMatrix;
-  mat4 boneMatrices[86];  
+  mat4 boneMatrices[85];  
 };
 
 uniform vec3 cameraPosition;

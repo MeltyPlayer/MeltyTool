@@ -1,6 +1,9 @@
 ﻿using fin.image;
 using fin.image.formats;
 using fin.schema;
+using fin.util.strings;
+
+using NoAlloq;
 
 using schema.binary;
 
@@ -22,11 +25,9 @@ public sealed class Gtxd : BTexr, ITexr {
 
     var unknowns0 = br.ReadUInt32s(2);
 
-    var rawTextureType = br.ReadString(8)
-                           .Replace("\0", "")
-                           .ToCharArray();
-    Array.Reverse(rawTextureType);
-    var textureType = new string(rawTextureType);
+    var textureType = br.ReadChars(8)
+                           .ReverseInPlace()
+                           .SubstringUpTo('\0');
     var drawType = br.ReadString(8);
 
     var unknown = br.ReadChars(48);

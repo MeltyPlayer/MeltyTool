@@ -10,6 +10,9 @@ namespace grezzo.schema.ctxb;
 [BinarySchema]
 [Endianness(Endianness.LittleEndian)]
 public partial class Ctxb : IBinaryConvertible {
+  [Skip]
+  public required Version Version { get; init; }
+
   public CtxbHeader Header { get; } = new();
   public CtxbTexChunk Chunk { get; } = new();
 }
@@ -34,7 +37,10 @@ public sealed partial class CtxbHeader : IChildOf<Ctxb>, IBinaryConvertible {
 }
 
 [BinarySchema]
-public sealed partial class CtxbTexChunk : IBinaryConvertible {
+public sealed partial class CtxbTexChunk
+    : IBinaryConvertible, IChildOf<Ctxb> {
+  public Ctxb Parent { get; set; }
+
   private readonly string magic_ = "tex" + AsciiUtil.GetChar(0x20);
   private readonly int chunkSize_ = 0x30;
 
@@ -44,9 +50,13 @@ public sealed partial class CtxbTexChunk : IBinaryConvertible {
 }
 
 [BinarySchema]
-public sealed partial class CtxbTexEntry : IBinaryConvertible {
+public sealed partial class CtxbTexEntry
+    : IBinaryConvertible, IChildOf<CtxbTexChunk> {
+  public CtxbTexChunk Parent { get; set; }
+
   [WLengthOfSequence(nameof(Data))]
   private uint dataLength_;
+
   public ushort mimapCount { get; private set; }
 
   [IntegerFormat(SchemaIntegerType.BYTE)]
@@ -65,8 +75,8 @@ public sealed partial class CtxbTexEntry : IBinaryConvertible {
   private uint padding_;
 
   [Skip]
-  private bool includeExtraPadding_ 
-    => CmbHeader.Version >= Version.LUIGIS_MANSION_3D;
+  private bool includeExtraPadding_
+    => this.Parent.Parent.Version >= Version.LUIGIS_MANSION_3D;
 
   [RIfBoolean(nameof(includeExtraPadding_))]
   [SequenceLengthSource(56)]

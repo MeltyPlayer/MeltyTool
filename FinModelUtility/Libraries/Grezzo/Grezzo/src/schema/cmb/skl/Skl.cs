@@ -7,6 +7,9 @@ namespace grezzo.schema.cmb.skl;
 
 [BinarySchema]
 public sealed partial class Skl : IBinaryConvertible {
+  [Skip]
+  public required Version Version { get; init; }
+
   private uint boneCount_;
 
   // M-1: Only value found is "2", possibly "IsTranslateAnimationEnabled"

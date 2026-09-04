@@ -17,12 +17,6 @@ public sealed class ShpaGoldenTests {
   [TestCaseSource(nameof(GetGoldenFiles_))]
   public async Task TestExportsGoldenAsExpected(
       IReadOnlySystemFile goldenFile) {
-    var goldenGameDir = goldenFile.AssertGetParent();
-
-    CmbHeader.Version = goldenGameDir.Name switch {
-        "luigis_mansion_3d" => Version.LUIGIS_MANSION_3D,
-    };
-
     var er = new SchemaBinaryReader(goldenFile.OpenRead());
     await SchemaTesting.ReadsAndWritesIdentically<Shpa>(
         er,
