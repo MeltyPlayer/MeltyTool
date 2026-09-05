@@ -28,7 +28,6 @@ public sealed class CmbHeader : IBinaryDeserializable {
       br.AssertString("cmb" + AsciiUtil.GetChar(0x20));
 
       this.fileSize = br.ReadUInt32();
-      Asserts.Equal(this.fileSize, br.Length);
 
       this.version = (Version) br.ReadUInt32();
 
