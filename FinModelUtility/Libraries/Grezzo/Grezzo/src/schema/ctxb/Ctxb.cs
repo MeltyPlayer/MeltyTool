@@ -68,11 +68,10 @@ public sealed partial class CtxbTexEntry
   public ushort Width { get; private set; }
   public ushort Height { get; private set; }
   public GlTextureFormat ImageFormat { get; private set; }
+  public uint DataOffset { get; set; }
 
   [StringLengthSource(16)]
   public string Name { get; private set; }
-
-  private uint padding_;
 
   [Skip]
   private bool includeExtraPadding_
