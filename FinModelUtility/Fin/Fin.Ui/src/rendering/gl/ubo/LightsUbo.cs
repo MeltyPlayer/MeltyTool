@@ -33,11 +33,7 @@ public sealed class LightsUbo : IDisposable {
     var offset = 0;
     Span<byte> buffer = stackalloc byte[SIZE_OF_BUFFER];
 
-    if (lighting == null) {
-      offset += SIZE_OF_LIGHT * MaterialConstants.MAX_LIGHTS +
-                UboUtil.SIZE_OF_VECTOR4;
-      UboUtil.AppendFloat(buffer, ref offset, 0);
-    } else {
+    if (lighting != null) {
       var lights = lighting.Lights;
       for (var i = 0; i < MaterialConstants.MAX_LIGHTS; ++i) {
         AddLightToBuffer_(buffer,

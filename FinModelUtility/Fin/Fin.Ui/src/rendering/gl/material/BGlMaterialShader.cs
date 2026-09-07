@@ -23,6 +23,8 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
 
   private readonly IShaderUniform<Vector3> cameraPositionUniform_;
 
+  private readonly bool useLighting_;
+  private readonly IShaderUniform<bool> useLightingUniform_;
   private readonly IShaderUniform<bool> hasSpecularUniform_;
   private readonly IShaderUniform<float> shininessUniform_;
 
@@ -42,6 +44,10 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
     this.impl_ = GlShaderProgram.FromShaders(
         shaderSource.VertexShaderSource,
         shaderSource.FragmentShaderSource);
+
+    this.useLighting_ = modelRequirements.HasNormals;
+    this.useLightingUniform_ = this.impl_.GetUniformBool(
+        GlslConstants.UNIFORM_USE_LIGHTING_NAME);
 
     this.hasSpecularUniform_ = this.impl_.GetUniformBool(
         GlslConstants.UNIFORM_HAS_SPECULAR_NAME);
@@ -85,6 +91,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   public void Use() {
     this.cameraPositionUniform_.SetAndMaybeMarkDirty(Camera.Instance.Position);
 
+    this.useLightingUniform_.SetAndMaybeMarkDirty(this.useLighting_);
     var shininess = this.Material?.Shininess ?? 0;
     this.hasSpecularUniform_.SetAndMaybeMarkDirty(!shininess.IsRoughly0());
     this.shininessUniform_.SetAndMaybeMarkDirty(shininess);
