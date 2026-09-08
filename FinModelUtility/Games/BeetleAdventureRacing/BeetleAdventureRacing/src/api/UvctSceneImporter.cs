@@ -37,6 +37,8 @@ public sealed class UvctSceneFileImporter
 
     AddToScene(fileBundle, files, lazyUvmdModelDictionary, rootNode);
 
+    finScene.CreateDefaultLighting();
+
     return finScene;
   }
 

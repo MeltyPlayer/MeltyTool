@@ -93,6 +93,8 @@ public sealed class PaperMarioMapSceneImporter
                                 files));
     }
 
+    finScene.CreateDefaultLighting();
+
     return finScene;
   }
 }

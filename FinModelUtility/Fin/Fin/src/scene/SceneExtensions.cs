@@ -14,6 +14,7 @@ using fin.scene.components;
 using fin.schema.vector;
 using fin.ui;
 using fin.ui.rendering;
+using fin.util.asserts;
 
 
 namespace fin.scene;
@@ -32,7 +33,7 @@ public static class SceneExtensions {
     => sceneNode.SetScale(scale.X, scale.Y, scale.Z);
 
   public static ISceneNode SetRotationRadians(this ISceneNode sceneNode,
-                                    in Vector3 rotationRadians)
+                                              in Vector3 rotationRadians)
     => sceneNode.SetRotationRadians(rotationRadians.X,
                                     rotationRadians.Y,
                                     rotationRadians.Z);
@@ -86,7 +87,8 @@ public static class SceneExtensions {
       this IReadOnlyScene scene) {
     foreach (var node in scene.EnumerateAllNodes()) {
       foreach (var modelRenderComponent in node.Components
-                                               .OfType<IModelRenderComponent>()) {
+                                               .OfType<
+                                                   IModelRenderComponent>()) {
         yield return modelRenderComponent.Model;
       }
     }
@@ -96,14 +98,18 @@ public static class SceneExtensions {
       this IReadOnlyScene scene)
     => scene.EnumerateAllModels().Distinct();
 
-  public static ILighting? CreateDefaultLighting(this IScene scene,
-                                                 ISceneNode lightingOwner)
-    => scene.CreateDefaultLighting(lightingOwner,
-                                   scene.EnumerateAllModels().Distinct());
+  public static ILighting? CreateDefaultLighting(this IScene scene)
+    => scene.CreateDefaultLighting(() => scene.Areas.First().AssertNonnull().AddRootNode());
 
   public static ILighting? CreateDefaultLighting(
       this IScene scene,
-      ISceneNode lightingOwner,
+      Func<ISceneNode> getLightingOwner)
+    => scene.CreateDefaultLighting(getLightingOwner,
+                                   scene.EnumerateAllDistinctModels());
+
+  public static ILighting? CreateDefaultLighting(
+      this IScene scene,
+      Func<ISceneNode> getLightingOwner,
       IEnumerable<IReadOnlyModel> finModels) {
     var needsLights = false;
     var neededLightIndices = new HashSet<int>();
@@ -210,7 +216,7 @@ public static class SceneExtensions {
       var camera = Camera.Instance;
       var firstLight = lighting.Lights[0];
 
-      lightingOwner.AddTickComponent(_ => {
+      getLightingOwner().AddTickComponent(_ => {
         firstLight.SetPosition(camera.Position);
         firstLight.SetNormal(camera.Normal);
       });

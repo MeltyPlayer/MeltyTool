@@ -121,7 +121,7 @@ public partial class MainView : UserControl {
           config.MostRecentFileName = file.FullPath;
           config.Save();
 
-          scene.CreateDefaultLighting(area.AddRootNode(), [model]);
+          scene.CreateDefaultLighting(() => area.AddRootNode(), [model]);
 
           var modelRenderComponent = new SimpleModelRenderComponent(model);
           var characterObj = area.AddRootNode();

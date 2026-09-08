@@ -21,7 +21,7 @@ public static class SceneInstanceService {
           var area = scene.AddArea();
           var obj = area.AddRootNode();
 
-          scene.CreateDefaultLighting(obj, [model]);
+          scene.CreateDefaultLighting(() => obj, [model]);
           obj.AddComponent(new SimpleModelRenderComponent(model));
 
           OpenSceneInstance(fileTreeLeafNode, new SceneInstanceImpl(scene));

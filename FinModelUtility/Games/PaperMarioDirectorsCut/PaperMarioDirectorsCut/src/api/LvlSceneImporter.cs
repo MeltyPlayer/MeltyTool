@@ -262,7 +262,7 @@ public sealed class LvlSceneImporter : ISceneImporter<LvlSceneFileBundle> {
       finArea.CreateCustomSkyboxNode();
     }
 
-    finScene.CreateDefaultLighting(finArea.AddRootNode());
+    finScene.CreateDefaultLighting();
 
     return finScene;
   }

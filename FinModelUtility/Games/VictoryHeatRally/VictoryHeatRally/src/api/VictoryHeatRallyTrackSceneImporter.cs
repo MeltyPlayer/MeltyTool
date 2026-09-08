@@ -40,7 +40,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
     var finScene = new SceneImpl { FileBundle = fileBundle, Files = fileSet };
 
     var finArea = finScene.AddArea();
-    finScene.CreateDefaultLighting(finArea.AddRootNode());
 
     var dataDirectory = fileBundle.DataDirectory;
     var spriteDirectory =
