@@ -29,6 +29,7 @@ public class ScenePanelViewModel : BViewModel {
       this.RaiseAndSetIfChanged(ref field, value);
       this.AreasPanel = new AreasPanelViewModel { Scene = value, };
       this.FilesPanel = new FilesPanelViewModel(value);
+
       this.MaterialsPanel = new MaterialsPanelViewModel {
           ModelsAndMaterials
               = value.EnumerateAllDistinctModels()

@@ -57,7 +57,8 @@ public class MaterialsPanelViewModel : BViewModel {
     get;
     private set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.SelectedMaterial = this.Materials.FirstOrDefault();
+      this.SelectedMaterial
+          = this.Materials.Count > 0 ? this.Materials.First() : null;
     }
   }
 
