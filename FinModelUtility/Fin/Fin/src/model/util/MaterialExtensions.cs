@@ -13,7 +13,7 @@ public static class MaterialExtensions {
 
   public static (ITextureMaterial, ITexture) AddSimpleTextureMaterialFromImage(
       this IMaterialManager materialManager,
-      IImage image,
+      IReadOnlyImage image,
       string? name = null) {
     var texture = materialManager.CreateTexture(image);
     var material = materialManager.AddTextureMaterial(texture);

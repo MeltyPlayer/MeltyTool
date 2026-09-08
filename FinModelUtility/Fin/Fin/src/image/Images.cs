@@ -27,13 +27,20 @@ using Image = SixLabors.ImageSharp.Image;
 namespace fin.image;
 
 public static class FinImage {
+  public static void Initialize() {
+    Configuration.Default.PreferContiguousImageBuffers = true;
+    FinImage.Create1x1FromColor(Color.Magenta)
+            .ExportToStream(new MemoryStream(), LocalImageFormat.PNG);
+  }
+
   public static bool IsSupportedFileType(IReadOnlyTreeFile file) {
     var extension = file.FileType.ToLower()[1..];
-    return ImageSharpConfig.ImageFormats.Any(format
-                                                 => format.FileExtensions
-                                                     .Any(otherExtension =>
-                                                           extension ==
-                                                           otherExtension));
+    return Configuration
+           .Default
+           .ImageFormats
+           .Any(format => format.FileExtensions.Any(otherExtension
+                                                        => extension ==
+                                                        otherExtension));
   }
 
   public static IImage FromFile(IReadOnlyGenericFile file) {
@@ -43,11 +50,6 @@ public static class FinImage {
     } catch (Exception e) {
       throw new Exception($"Failed to load image \"{file}\"!", e);
     }
-  }
-
-  public static async Task<IImage> FromFileAsync(IReadOnlyGenericFile file) {
-    await using var stream = file.OpenRead();
-    return await FromStreamAsync(stream);
   }
 
   public static IImage[] FromGifFile(IReadOnlyGenericFile file) {
@@ -65,23 +67,8 @@ public static class FinImage {
     return await FromGifStreamAsync(stream);
   }
 
-  public static Configuration ImageSharpConfig { get; }
-
-  static FinImage() {
-    ImageSharpConfig = Configuration.Default.Clone();
-    ImageSharpConfig.PreferContiguousImageBuffers = true;
-  }
-
   public static IImage FromStream(Stream stream) {
-    var imageTask = FromStreamAsync(stream);
-    imageTask.Wait();
-    return imageTask.Result;
-  }
-
-  public static async Task<IImage> FromStreamAsync(Stream stream) {
-    var decoderOptions =
-        new DecoderOptions { Configuration = ImageSharpConfig };
-    var image = Image.Load(decoderOptions, stream);
+    var image = Image.Load(stream);
     return FromImageSharpImage_(image);
   }
 
@@ -92,9 +79,7 @@ public static class FinImage {
   }
 
   public static async Task<IImage[]> FromGifStreamAsync(Stream stream) {
-    var decoderOptions =
-        new DecoderOptions { Configuration = ImageSharpConfig };
-    var mergedFramesImage = Image.Load(decoderOptions, stream);
+    var mergedFramesImage = Image.Load(stream);
     var mergedFrames = mergedFramesImage.Frames;
 
     var separateImages = new IImage[mergedFrames.Count];

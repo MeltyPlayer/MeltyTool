@@ -13,7 +13,7 @@ namespace level5;
 public sealed class XiGoldenTests {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
-  public async Task TestExportsGoldenAsExpected(
+  public void TestExportsGoldenAsExpected(
       IReadOnlySystemDirectory goldenDirectory) {
     var inputFile = goldenDirectory.AssertGetExistingSubdir("input")
                                    .GetFilesWithFileType(".xi")
@@ -29,7 +29,7 @@ public sealed class XiGoldenTests {
     var outputFile
         = new FinFile(Path.Join(outputDirectory.FullPath, outputFileName));
     if (outputFile.Exists) {
-      var outputImage = await FinImage.FromFileAsync(outputFile);
+      var outputImage = FinImage.FromFile(outputFile);
       Assert.AreEqual(inputImage, outputImage);
     } else {
       using var s = outputFile.OpenWrite();

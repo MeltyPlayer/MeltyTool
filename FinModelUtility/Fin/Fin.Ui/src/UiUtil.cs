@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 
+using fin.image;
 using fin.ui.rendering.gl;
 using fin.util.time;
 
@@ -12,5 +13,6 @@ public static class UiUtil {
     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     FrameTime.Initialize();
     GpuUtil.Initialize();
+    FinImage.Initialize();
   }
 }

@@ -11,7 +11,7 @@ public sealed class Rgba32Image : BImage<Rgba32> {
 
   public Rgba32Image(PixelFormat format, int width, int height) : this(
       format,
-      new Image<Rgba32>(FinImage.ImageSharpConfig, width, height)) { }
+      new Image<Rgba32>(width, height)) { }
 
   internal Rgba32Image(PixelFormat format, Image<Rgba32> impl) : base(
       format) {

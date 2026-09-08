@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -43,20 +44,48 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
 
     var finArea = finScene.AddArea();
 
+    var rawJsonLines = trackJsonFile.ReadAllLines();
+    var validJson = $"[{string.Join(',', rawJsonLines)}]";
+
+    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson,
+      new JsonSerializerSettings {
+          Converters = [new SingleOrArrayConverter<string>()]
+      })!;
+
+    var visibleItems =
+        trackItems.Where(i => i.type is "Model" or "Object" or "Sprite")
+                  .ToArray();
+
+    var spriteNames
+        = trackItems
+          .SelectMany(i => GetSpriteNamesForModel_(i.my_struct)
+                           .ConcatIfNonnull(i.my_struct?.sprite_index)
+                           .ConcatIfNonnull(i.floortex?.Yield()))
+          .Where(s => s != null && s != "")
+          .Distinct()
+          .ToArray();
+
     var dataDirectory = fileBundle.DataDirectory;
     var spriteDirectory =
         fileBundle.ExtractedDirectory.AssertGetExistingSubdir("dataWin\\sprt");
 
-    var lazySpriteImages
-        = new LazyCaseInvariantStringDictionary<IImage>(spriteIndex => {
-          if (!spriteDirectory.TryToGetExistingFile(
-                  $"{spriteIndex}.png",
-                  out var spriteFile)) {
-            spriteFile =
-                spriteDirectory.AssertGetExistingFile($"{spriteIndex}_0.png");
+    var imageBySpriteName = new Dictionary<string, IReadOnlyImage>();
+    Parallel.ForEach(
+        spriteNames,
+        spriteName => {
+          if (spriteName == "<undefined>") {
+            imageBySpriteName[spriteName] = FinImage.Create1x1FromColor(Color.Magenta);
+            return;
           }
 
-          return FinImage.FromFile(spriteFile);
+          if (!spriteDirectory.TryToGetExistingFile(
+                  $"{spriteName}.png",
+                  out var spriteFile)) {
+            spriteFile =
+                spriteDirectory.AssertGetExistingFile($"{spriteName}_0.png");
+          }
+
+          imageBySpriteName[spriteName] = FinImage.FromFile(spriteFile);
         });
 
     var lazySpriteModels
@@ -66,11 +95,10 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
           var spriteModel = new ModelImpl
               { FileBundle = fileBundle, Files = fileSet };
 
-          var spriteImage = lazySpriteImages[spriteName];
+          var spriteImage = imageBySpriteName[spriteName];
 
           var (spriteMaterial, spriteTexture) = spriteModel.MaterialManager
-              .AddSimpleTextureMaterialFromImage(
-                  spriteImage);
+              .AddSimpleTextureMaterialFromImage(spriteImage);
           spriteMaterial.CullingMode = CullingMode.SHOW_FRONT_ONLY;
           spriteTexture.MinFilter = TextureMinFilter.NEAR;
           spriteTexture.MagFilter = TextureMagFilter.NEAR;
@@ -88,18 +116,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
 
           return spriteModel;
         });
-
-    var rawJsonLines = trackJsonFile.ReadAllLines();
-    var validJson = $"[{string.Join(',', rawJsonLines)}]";
-
-    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson,
-      new JsonSerializerSettings {
-          Converters = [new SingleOrArrayConverter<string>()]
-      })!;
-
-    var visibleItems =
-        trackItems.Where(i => i.type is "Model" or "Object" or "Sprite")
-                  .ToArray();
 
     var modelDirectory = dataDirectory.AssertGetExistingSubdir("MODEL");
     var trackItemIndexAndPaths
@@ -140,7 +156,7 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
           var finModel = importer.Import(fileBundle, ctx, assScene);
 
           var spriteName = spriteNames[0];
-          var spriteImage = lazySpriteImages[spriteName];
+          var spriteImage = imageBySpriteName[spriteName];
           var (finMaterial, finTexture)
               = finModel.MaterialManager.AddSimpleTextureMaterialFromImage(
                   spriteImage,
@@ -280,8 +296,7 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
       var floorModel = new ModelImpl
           { FileBundle = fileBundle, Files = fileSet };
 
-      var floorImage
-          = lazySpriteImages[otherTrackItem.floortex.AssertNonnull()];
+      var floorImage = imageBySpriteName[otherTrackItem.floortex.AssertNonnull()];
 
       var (floorMaterial, floorTexture) = floorModel.MaterialManager
                                                     .AddSimpleTextureMaterialFromImage(
