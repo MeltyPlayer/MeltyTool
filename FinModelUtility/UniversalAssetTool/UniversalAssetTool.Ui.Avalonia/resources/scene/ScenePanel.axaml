@@ -6,6 +6,7 @@
              xmlns:resource="clr-namespace:uni.ui.avalonia.resources"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:areas="clr-namespace:uni.ui.avalonia.resources.scene.areas"
+             xmlns:materials="clr-namespace:uni.ui.avalonia.resources.model.materials"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
              x:Class="uni.ui.avalonia.resources.scene.ScenePanel"
              x:DataType="scene:ScenePanelViewModel">
@@ -52,6 +53,17 @@
         </StackPanel>
       </TabItem.Header>
       <areas:AreasPanel DataContext="{Binding AreasPanel}" />
+    </TabItem>
+    <TabItem>
+      <TabItem.Header>
+        <StackPanel x:Name="MaterialsTabHeader"
+                    Classes="sideTab"
+                    Orientation="Horizontal">
+          <avalonia:MaterialIcon Kind="{StaticResource MaterialIcon}" />
+          <TextBlock Text="Materials" />
+        </StackPanel>
+      </TabItem.Header>
+      <materials:MaterialsPanel DataContext="{Binding MaterialsPanel}" />
     </TabItem>
   </TabControl>
 </UserControl>

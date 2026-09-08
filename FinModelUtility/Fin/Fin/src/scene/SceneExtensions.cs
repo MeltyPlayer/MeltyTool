@@ -92,6 +92,10 @@ public static class SceneExtensions {
     }
   }
 
+  public static IEnumerable<IReadOnlyModel> EnumerateAllDistinctModels(
+      this IReadOnlyScene scene)
+    => scene.EnumerateAllModels().Distinct();
+
   public static ILighting? CreateDefaultLighting(this IScene scene,
                                                  ISceneNode lightingOwner)
     => scene.CreateDefaultLighting(lightingOwner,

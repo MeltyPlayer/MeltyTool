@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 
 using fin.animation;
+using fin.data.dictionaries;
 using fin.model;
 using fin.ui;
 using fin.ui.rendering;
@@ -33,11 +34,12 @@ public class ModelPanelViewModel : BViewModel {
               LoopPlayback = true,
           }
       };
+      this.FilesPanel = new FilesPanelViewModel(value);
       this.MaterialsPanel = new MaterialsPanelViewModel {
-          ModelAndMaterials = (value, value.MaterialManager.All)
+          ModelsAndMaterials
+              = value.MaterialManager.All.ToListDictionary(_ => value)
       };
       this.MeshesPanel = new MeshesPanelViewModel { Model = value };
-      this.FilesPanel = new FilesPanelViewModel(value);
       this.RegistersPanel = new RegistersPanelViewModel() {
           Registers = value.MaterialManager.Registers,
       };

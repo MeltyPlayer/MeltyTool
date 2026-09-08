@@ -7,13 +7,16 @@ namespace fin.data.dictionaries;
 
 [GenerateReadOnly]
 public partial interface IListDictionary<TKey, TValue> {
+  int TotalCount { get; }
+
   [Const]
   new bool HasList(TKey key);
 
-  new IList<TValue> this[TKey key] { get; }
+  new List<TValue> this[TKey key] { get; }
 
   void ClearList(TKey key);
   void Add(TKey key, TValue value);
+  void AddRange(TKey key, IEnumerable<TValue> value);
 
   new IEnumerable<TKey> Keys { get; }
   new IEnumerable<TValue> Values { get; }
@@ -24,22 +27,25 @@ public partial interface IListDictionary<TKey, TValue> {
 ///   will be stored in that key's corresponding list.
 /// </summary>
 public sealed class ListDictionary<TKey, TValue>(
-    IFinDictionary<TKey, IList<TValue>> impl)
+    IFinDictionary<TKey, List<TValue>> impl)
     : IListDictionary<TKey, TValue> {
   public ListDictionary() : this(
-      new NullFriendlyDictionary<TKey, IList<TValue>>()) { }
+      new NullFriendlyDictionary<TKey, List<TValue>>()) { }
+
+  public int TotalCount => impl.Values.Select(list => list.Count).Sum();
 
   public void Clear() => impl.Clear();
   public void ClearList(TKey key) => impl.Remove(key);
-
-  public int Count => impl.Values.Select(list => list.Count).Sum();
 
   public bool HasList(TKey key) => impl.ContainsKey(key);
 
   public void Add(TKey key, TValue value)
     => impl.GetOrAdd(key, _ => []).Add(value);
 
-  public IList<TValue> this[TKey key] => impl[key];
+  public void AddRange(TKey key, IEnumerable<TValue> values)
+    => impl.GetOrAdd(key, _ => []).AddRange(values);
+
+  public List<TValue> this[TKey key] => impl[key];
 
   public IEnumerable<TKey> Keys => impl.Keys;
   public IEnumerable<TValue> Values => impl.Values.SelectMany(v => v);

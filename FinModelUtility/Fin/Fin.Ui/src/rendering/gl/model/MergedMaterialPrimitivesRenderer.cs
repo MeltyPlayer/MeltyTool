@@ -65,7 +65,7 @@ public partial class ModelRenderer {
       var primitivesByMaterial
           = new ListDictionary<VisibilityMeshMaterialTuple, IReadOnlyPrimitive>(
               new NullFriendlyDictionary<VisibilityMeshMaterialTuple,
-                  IList<IReadOnlyPrimitive>>());
+                  List<IReadOnlyPrimitive>>());
 
       foreach (var mesh in model.Skin.Meshes) {
         var isVisibilityAnimated

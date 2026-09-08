@@ -1,11 +1,17 @@
+using System.Collections.Generic;
+using System.Linq;
+
 using Avalonia.Controls;
 
+using fin.data.dictionaries;
+using fin.model;
 using fin.scene;
 using fin.ui;
 using fin.ui.rendering;
 
 using ReactiveUI;
 
+using uni.ui.avalonia.resources.model.materials;
 using uni.ui.avalonia.resources.scene.areas;
 
 namespace uni.ui.avalonia.resources.scene;
@@ -23,6 +29,14 @@ public class ScenePanelViewModel : BViewModel {
       this.RaiseAndSetIfChanged(ref field, value);
       this.AreasPanel = new AreasPanelViewModel { Scene = value, };
       this.FilesPanel = new FilesPanelViewModel(value);
+      this.MaterialsPanel = new MaterialsPanelViewModel {
+          ModelsAndMaterials
+              = value.EnumerateAllDistinctModels()
+                     .ToListDictionary(
+                         m => m,
+                         m => (IEnumerable<IReadOnlyMaterial?>) m
+                             .MaterialManager.All),
+      };
     }
   }
 
@@ -31,6 +45,10 @@ public class ScenePanelViewModel : BViewModel {
     private set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
+  public MaterialsPanelViewModel MaterialsPanel {
+    get;
+    private set => this.RaiseAndSetIfChanged(ref field, value);
+  }
 
   public FilesPanelViewModel FilesPanel {
     get;
