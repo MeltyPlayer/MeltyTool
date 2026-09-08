@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using fin.data.indexable;
 using fin.math.matrix.four;
 using fin.model.accessor;
+using fin.util.enumerables;
 
 namespace fin.model.skeleton;
 
@@ -66,20 +68,20 @@ public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
 
 public sealed class BoneTransformManager : IBoneTransformManager {
   // TODO: This is going to be slow, can we put this somewhere else for O(1) access?
-  private readonly IndexableDictionary<IReadOnlyBone, IFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBone, IFinMatrix4x4>
       bonesToWorldMatrices_ = new();
 
-  private readonly IndexableDictionary<IReadOnlyBone, IReadOnlyFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBone, IReadOnlyFinMatrix4x4>
       bonesToInverseWorldMatrices_ = new();
 
-  private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
       boneWeightsToWorldMatrices_ = new();
 
-  private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
       boneWeightsInverseMatrices_ = new();
 
   private IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>
-      verticesToWorldMatrices_ = new();
+      verticesToWorldMatrices_ = new([]);
 
   public (IReadOnlyBoneTransformManager, IReadOnlyBone)? Parent { get; }
   public IReadOnlyFinMatrix4x4 ManagerMatrix { get; }
@@ -100,19 +102,18 @@ public sealed class BoneTransformManager : IBoneTransformManager {
     this.bonesToInverseWorldMatrices_.Clear();
     this.boneWeightsToWorldMatrices_.Clear();
     this.boneWeightsInverseMatrices_.Clear();
-    this.verticesToWorldMatrices_.Clear();
+    this.verticesToWorldMatrices_
+        = new IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4>([]);
   }
 
   private void InitModelVertices_(IReadOnlyModel model,
                                   bool forcePreproject = false) {
     var vertices = model.Skin.Vertices;
-    this.verticesToWorldMatrices_ =
-        new IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>(
-            vertices.Count);
-    foreach (var vertex in vertices) {
-      this.verticesToWorldMatrices_[vertex] =
-          this.DetermineTransformMatrix_(vertex.BoneWeights, forcePreproject);
-    }
+    this.verticesToWorldMatrices_
+        = new IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4>(
+            vertices.Select(v => this.DetermineTransformMatrix_(
+                                    v.BoneWeights,
+                                    forcePreproject)));
   }
 
   public void CalculateStaticMatricesForManualProjection(

@@ -13,74 +13,25 @@ public partial interface IIndexableDictionary<in TIndexable, TValue>
     where TIndexable : IIndexable {
   new int Count { get; }
 
-  // Have to specify only contains key because "out" method parameters
-  // aren't allowed to be covariant:
-  // https://github.com/dotnet/csharplang/discussions/5623
-  [Const]
-  new bool ContainsKey(int index);
-
-  [Const]
-  new bool ContainsKey(TIndexable key);
-
-  void Clear();
   new TValue this[int index] { get; set; }
   new TValue this[TIndexable key] { get; set; }
-
-  bool Remove(TIndexable key);
 }
 
-public static class IndexableDictionaryExtensions {
-  public static bool TryGetValue<TKey, TValue>(
-      this IReadOnlyIndexableDictionary<TKey, TValue> impl,
-      TKey key,
-      out TValue value) where TKey : IIndexable
-    => impl.TryGetValue(key.Index, out value);
-
-  public static bool TryGetValue<TKey, TValue>(
-      this IReadOnlyIndexableDictionary<TKey, TValue> impl,
-      int index,
-      out TValue value) where TKey : IIndexable {
-    if (impl.ContainsKey(index)) {
-      value = impl[index];
-      return true;
-    }
-
-    value = default!;
-    return false;
-  }
-}
-
-public sealed class IndexableDictionary<TIndexable, TValue>(int capacity)
+public sealed class IndexableDictionary<TIndexable, TValue>
     : IIndexableDictionary<TIndexable, TValue>
     where TIndexable : IIndexable {
-  private readonly List<(bool hasValue, TValue value)> impl_ = new(capacity);
+  private readonly TValue[] impl_;
 
-  public IndexableDictionary() : this(0) { }
+  public IndexableDictionary(IEnumerable<TValue> values)
+    => this.impl_ = values.ToArray();
 
-  public int Count { get; private set; }
-
-  public void Clear() {
-    this.impl_.Clear();
-    this.impl_.EnsureCapacity(capacity);
-  }
+  public int Count => this.impl_.Length;
 
   public TValue this[int index] {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => this.impl_[index].Item2;
+    get => this.impl_[index];
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    set {
-      this.impl_.EnsureCapacity(index);
-
-      while (this.impl_.Count <= index) {
-        this.impl_.Add((false, default));
-      }
-
-      if (!this.impl_[index].hasValue) {
-        ++this.Count;
-      }
-
-      this.impl_[index] = (true, value);
-    }
+    set => this.impl_[index] = value;
   }
 
   public TValue this[TIndexable key] {
@@ -90,30 +41,9 @@ public sealed class IndexableDictionary<TIndexable, TValue>(int capacity)
     set => this[key.Index] = value;
   }
 
-  public bool ContainsKey(TIndexable key) => this.ContainsKey(key.Index);
-
-  public bool ContainsKey(int index) {
-    if (index >= this.impl_.Count) {
-      return false;
-    }
-
-    return this.impl_[index].hasValue;
-  }
-
-  public bool Remove(TIndexable key) {
-    if (!this.ContainsKey(key)) {
-      return false;
-    }
-
-    --this.Count;
-    this.impl_[key.Index] = (false, default!);
-    return true;
-  }
-
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
   public IEnumerator<TValue> GetEnumerator()
-    => this.impl_.Where(pair => pair.hasValue)
-           .Select(pair => pair.value)
-           .GetEnumerator();
+    => ((IEnumerable<TValue>) this.impl_).GetEnumerator();
 }
+

@@ -5,10 +5,10 @@ namespace fin.model.impl;
 
 public partial class ModelImpl<TVertex> {
   private partial class ModelAnimationImpl {
-    private readonly IndexableDictionary<IReadOnlyBone, IBoneTracks>
+    private readonly SparseIndexableDictionary<IReadOnlyBone, IBoneTracks>
         boneTracks_ = new(boneCount);
 
-    public IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks>
+    public IReadOnlySparseIndexableDictionary<IReadOnlyBone, IBoneTracks>
         BoneTracks => this.boneTracks_;
 
     public IBoneTracks GetOrCreateBoneTracks(IReadOnlyBone bone) {
