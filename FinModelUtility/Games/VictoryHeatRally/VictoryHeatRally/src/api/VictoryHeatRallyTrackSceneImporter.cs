@@ -46,15 +46,45 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
         fileBundle.ExtractedDirectory.AssertGetExistingSubdir("dataWin\\sprt");
 
     var lazySpriteImages
-        = new LazyCaseInvariantStringDictionary<IImage>(spriteName => {
+        = new LazyCaseInvariantStringDictionary<IImage>(spriteIndex => {
           if (!spriteDirectory.TryToGetExistingFile(
-                  $"{spriteName}.png",
+                  $"{spriteIndex}.png",
                   out var spriteFile)) {
             spriteFile =
-                spriteDirectory.AssertGetExistingFile($"{spriteName}_0.png");
+                spriteDirectory.AssertGetExistingFile($"{spriteIndex}_0.png");
           }
 
           return FinImage.FromFile(spriteFile);
+        });
+
+    var lazySpriteModels
+        = new LazyDictionary<(string spriteIndex, Vector2 scale, int flipX), IReadOnlyModel>(tuple => {
+          var (spriteName, scale, flipX) = tuple;
+
+          var spriteModel = new ModelImpl
+              { FileBundle = fileBundle, Files = fileSet };
+
+          var spriteImage = lazySpriteImages[spriteName];
+
+          var (spriteMaterial, spriteTexture) = spriteModel.MaterialManager
+              .AddSimpleTextureMaterialFromImage(
+                  spriteImage);
+          spriteMaterial.CullingMode = CullingMode.SHOW_FRONT_ONLY;
+          spriteTexture.MinFilter = TextureMinFilter.NEAR;
+          spriteTexture.MagFilter = TextureMagFilter.NEAR;
+
+          var spriteSkin = spriteModel.Skin;
+          var spriteMesh = spriteSkin.AddMesh();
+          spriteMesh.AddSimpleYawOnlyBillboard(
+              spriteModel.Skeleton.Root,
+              spriteSkin,
+              spriteImage.Width * scale.X,
+              spriteImage.Height * scale.Y,
+              spriteMaterial,
+              true,
+              flipX == -1);
+
+          return spriteModel;
         });
 
     var modelDirectory = dataDirectory.AssertGetExistingSubdir("MODEL");
@@ -204,32 +234,10 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
           break;
         }
         case "Sprite": {
-          var spriteModel = new ModelImpl
-              { FileBundle = fileBundle, Files = fileSet };
-
           var spriteIndex = trackItem.my_struct.sprite_index.AssertNonnull();
-          var spriteImage = lazySpriteImages[spriteIndex];
+          var spriteModel = lazySpriteModels[(spriteIndex, new Vector2(xScale, yScale), myStruct.flip_x ?? 1)];
 
           trackItemObj.Name = $"Sprite {spriteIndex}";
-
-          var (spriteMaterial, spriteTexture) = spriteModel.MaterialManager
-              .AddSimpleTextureMaterialFromImage(
-                  spriteImage);
-          spriteMaterial.CullingMode = CullingMode.SHOW_FRONT_ONLY;
-          spriteTexture.MinFilter = TextureMinFilter.NEAR;
-          spriteTexture.MagFilter = TextureMagFilter.NEAR;
-
-          var spriteSkin = spriteModel.Skin;
-          var spriteMesh = spriteSkin.AddMesh();
-          spriteMesh.AddSimpleYawOnlyBillboard(
-              spriteModel.Skeleton.Root,
-              spriteSkin,
-              spriteImage.Width * xScale,
-              spriteImage.Height * yScale,
-              spriteMaterial,
-              true,
-              (myStruct.flip_x ?? 1) == -1);
-
           trackItemObj.AddSceneModel(spriteModel);
 
           break;
