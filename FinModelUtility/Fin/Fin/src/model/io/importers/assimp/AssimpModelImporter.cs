@@ -14,6 +14,7 @@ using fin.data.queues;
 using fin.image;
 using fin.image.formats;
 using fin.io;
+using fin.io.bundles;
 using fin.math.matrix.four;
 using fin.math.transform;
 using fin.model.impl;
@@ -26,6 +27,24 @@ namespace fin.model.io.importers.assimp;
 
 public sealed class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
   public IModel Import(AssimpModelFileBundle modelFileBundle) {
+    var tuple = this.ImportScene(modelFileBundle);
+    using var ctx = tuple.Item1;
+    var assScene = tuple.assScene;
+
+    return this.Import(modelFileBundle, ctx, assScene);
+  }
+  
+  public (AssimpContext ctx, Scene assScene) ImportScene(
+      AssimpModelFileBundle modelFileBundle) {
+    var ctx = new AssimpContext();
+    var assScene = ctx.ImportFile(modelFileBundle.MainFile.FullPath);
+    return (ctx, assScene);
+  }
+
+  public IModel Import(
+      IFileBundle modelFileBundle,
+      AssimpContext ctx,
+      Scene assScene) {
     var mainFile = modelFileBundle.MainFile;
 
     var files = mainFile.AsFileSet();
@@ -33,9 +52,6 @@ public sealed class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> 
         FileBundle = modelFileBundle,
         Files = files
     };
-
-    using var ctx = new AssimpContext();
-    var assScene = ctx.ImportFile(mainFile.FullPath);
 
     // Adds materials
     var lazyFinSatelliteImages

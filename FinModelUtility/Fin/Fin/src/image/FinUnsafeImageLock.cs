@@ -18,6 +18,8 @@ public unsafe struct FinUnsafeImageLock<TPixel> : IDisposable
     this.memoryHandle_ = memory.Pin();
     this.byteScan0 = (byte*) this.memoryHandle_.Pointer;
     this.pixelScan0 = (TPixel*) this.byteScan0;
+
+    this.lengthInPixels = image.Width * image.Height;
   }
 
   public void Dispose() {
@@ -29,4 +31,6 @@ public unsafe struct FinUnsafeImageLock<TPixel> : IDisposable
 
   public readonly byte* byteScan0;
   public readonly TPixel* pixelScan0;
+
+  public readonly int lengthInPixels;
 }

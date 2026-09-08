@@ -20,7 +20,7 @@ public sealed class VbModelImporter : IModelImporter<VbModelFileBundle> {
     var vbFile = modelFileBundle.VbFile;
     var vb = vbFile.ReadNew<Vb>();
 
-    var finModel = new ModelImpl {
+    var finModel = new ModelImpl(vb.Vertices.Length) {
         FileBundle = modelFileBundle,
         Files = vbFile.AsFileSet(),
     };

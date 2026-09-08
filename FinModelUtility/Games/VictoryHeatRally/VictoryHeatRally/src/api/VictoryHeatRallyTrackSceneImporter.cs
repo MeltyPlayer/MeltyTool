@@ -2,6 +2,8 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Assimp;
+
 using fin.data.lazy;
 using fin.image;
 using fin.io;
@@ -87,20 +89,55 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
           return spriteModel;
         });
 
+    var rawJsonLines = trackJsonFile.ReadAllLines();
+    var validJson = $"[{string.Join(',', rawJsonLines)}]";
+
+    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson,
+      new JsonSerializerSettings {
+          Converters = [new SingleOrArrayConverter<string>()]
+      })!;
+
+    var visibleItems =
+        trackItems.Where(i => i.type is "Model" or "Object" or "Sprite")
+                  .ToArray();
+
     var modelDirectory = dataDirectory.AssertGetExistingSubdir("MODEL");
+    var trackItemIndexAndPaths
+        = visibleItems.Select(i => i.my_struct?.model_index)
+                      .Nonnull()
+                      .Distinct()
+                      .Select(i => (i.Value, GetPathForModelIndex_(i.Value)))
+                      .ToArray();
+
+    var trackItemCtxAndScenesByIndex = new (AssimpContext, Scene)?[
+        trackItemIndexAndPaths.MaxOrDefault(t => t.Value, -1) + 1];
+
+    var importer = new AssimpModelImporter();
+    Parallel.ForEach(
+        trackItemIndexAndPaths,
+        tuple => {
+          var (modelIndex, modelPath) = tuple;
+          if (modelPath == null) {
+            return;
+          }
+          
+          trackItemCtxAndScenesByIndex[modelIndex]
+              = importer.ImportScene(new AssimpModelFileBundle {
+                  MainFile = modelDirectory.AssertGetExistingFile(modelPath)
+              });
+        });
+
     var lazyTrackItemModels
         = new LazyDictionary<(int, string[]), IModel?>(tuple => {
           var (modelIndex, spriteNames) = tuple;
-          var modelPath = GetPathForModelIndex_(modelIndex);
-
-          if (modelPath == null) {
+          
+          var ctxSceneTuple = trackItemCtxAndScenesByIndex[modelIndex];
+          if (ctxSceneTuple == null) {
             return null;
           }
 
-          var finModel = new AssimpModelImporter().Import(
-              new AssimpModelFileBundle {
-                  MainFile = modelDirectory.AssertGetExistingFile(modelPath)
-              });
+          var (ctx, assScene) = ctxSceneTuple.Value;
+          var finModel = importer.Import(fileBundle, ctx, assScene);
 
           var spriteName = spriteNames[0];
           var spriteImage = lazySpriteImages[spriteName];
@@ -142,14 +179,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
       trackObject.AddSceneModel(trackModel);
     }
 
-    var rawJsonLines = trackJsonFile.ReadAllLines();
-    var validJson = $"[{string.Join(',', rawJsonLines)}]";
-
-    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson,
-      new JsonSerializerSettings {
-          Converters = [new SingleOrArrayConverter<string>()]
-      })!;
-
     // Gets nodes for track
     var trackNodes = trackItems
                      .Where(i => i is { type: "Node", my_array: not null })
@@ -175,8 +204,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
     }
 
     var trackPath = new TrackPath(trackNodes);
-    var visibleItems =
-        trackItems.Where(i => i.type is "Model" or "Object" or "Sprite");
     foreach (var trackItem in visibleItems) {
       var myStruct = trackItem.my_struct;
 
@@ -268,7 +295,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
 
       var floorSkin = floorModel.Skin;
       var floorMesh = floorSkin.AddMesh();
-
 
       // TODO: Either off by one tile or flipped
       var ul = (new Vector3(-floorSize / 2, 0, -floorSize / 2), new Vector2(0, 0));
