@@ -67,9 +67,10 @@ public sealed class ModlModelImporter : IModelImporter<ModlModelFileBundle> {
     var levelDir = modlFile.AssertGetParent();
     var baseLevelDir = levelDir.AssertGetParent();
 
-    var texrFilesByName
-        = baseLevelDir.GetFilesWithFileType(".texr", true)
-                      .ToDictionary(f => f.NameWithoutExtension.ToString());
+    var texrFilesByName = new Dictionary<string, IReadOnlyGenericFile>();
+    foreach (var texrFile in new[] { levelDir, baseLevelDir }.SelectMany(d => d.GetFilesWithFileType(".texr", true))) {
+      texrFilesByName.TryAdd(texrFile.NameWithoutExtension.ToString(), texrFile);
+    }
 
     var textureImagesByName
         = ParallelUtil.ToDictionaryParallelized(
@@ -80,28 +81,16 @@ public sealed class ModlModelImporter : IModelImporter<ModlModelFileBundle> {
                    .ToArray(),
             textureName => textureName,
             textureName => {
-              var textureFileName = $"{textureName}.texr";
-              IReadOnlyTreeFile? textureFile;
-              if (!levelDir.TryToGetExistingFile(
-                      textureName,
-                      out textureFile)) {
-                textureFile = baseLevelDir
-                              .GetFilesWithNameRecursive(textureFileName)
-                              .FirstOrDefault();
-              }
-
-              IImage image;
-              if (textureFile != null) {
+              if (texrFilesByName.TryGetValue(textureName,
+                                              out var textureFile)) {
                 files.Add(textureFile);
                 var texr = gameVersion == GameVersion.BW2
                     ? (ITexr) textureFile.ReadNew<Gtxd>()
                     : textureFile.ReadNew<Text>();
-                image = texr.Image;
-              } else {
-                image = FinImage.Create1x1FromColor(Color.Magenta);
+                return texr.Image;
               }
 
-              return image;
+              return FinImage.Create1x1FromColor(Color.Magenta);
             });
 
     {
