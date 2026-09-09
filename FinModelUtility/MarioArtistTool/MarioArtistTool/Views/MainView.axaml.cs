@@ -103,7 +103,7 @@ public partial class MainView : UserControl {
         obj.AddSceneModel(model);
 
         var lightingObj = area.AddRootNode();
-        scene.CreateDefaultLighting(lightingObj);
+        scene.CreateDefaultLighting(() => lightingObj);
 
         this.currentModelFileBundle_ = bundle;
 

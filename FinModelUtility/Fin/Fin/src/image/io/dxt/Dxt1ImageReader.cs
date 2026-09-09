@@ -15,7 +15,7 @@ public sealed class Dxt1ImageReader(
     int subTileCountInAxis = 2,
     int subTileSizeInAxis = 4,
     bool flipBlocksHorizontally = true)
-    : fin.image.io.IImageReader<IImage<Rgba32>> {
+    : IImageReader<IImage<Rgba32>> {
   private readonly Dxt1TileReader tileReader_
       = new(subTileCountInAxis, subTileSizeInAxis, flipBlocksHorizontally);
 

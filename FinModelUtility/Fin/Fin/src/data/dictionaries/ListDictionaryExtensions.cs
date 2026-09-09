@@ -21,7 +21,7 @@ public static class ListDictionaryExtensions {
   public static bool TryGetList<TKey, TValue>(
       this IListDictionary<TKey, TValue> impl,
       TKey key,
-      out IList<TValue> list) {
+      out List<TValue> list) {
     if (impl.HasList(key)) {
       list = impl[key];
       return true;
