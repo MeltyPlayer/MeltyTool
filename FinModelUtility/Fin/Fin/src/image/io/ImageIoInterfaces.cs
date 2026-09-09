@@ -35,6 +35,21 @@ public interface ITileReader<TPixel>
               int imageHeight);
 }
 
+public unsafe interface IUnsafeTileReader<TPixel>
+    where TPixel : unmanaged, IPixel<TPixel> {
+  IImage<TPixel> CreateImage(int width, int height);
+
+  int TileWidth { get; }
+  int TileHeight { get; }
+
+  void Decode(IBinaryReader br,
+              TPixel* scan0,
+              int tileX,
+              int tileY,
+              int imageWidth,
+              int imageHeight);
+}
+
 public interface IImageReader {
   IImage ReadImage(byte[] srcBytes,
                    Endianness endianness = Endianness.LittleEndian) {
