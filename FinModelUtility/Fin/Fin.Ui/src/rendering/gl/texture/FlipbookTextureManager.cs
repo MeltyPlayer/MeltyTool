@@ -27,10 +27,10 @@ public sealed class TextureFlipbookSwapManager : ITextureFlipbookSwapManager {
 
   private bool hasCreatedTextures_;
 
-  private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
+  private readonly IndexableDictionary<IReadOnlyTexture, IGlTexture>
       texturesToGlTextures_;
 
-  private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
+  private readonly IndexableDictionary<IReadOnlyTexture, IGlTexture>
       texturesToCurrentFlipbookSwaps_;
 
   public TextureFlipbookSwapManager(IReadOnlyList<IReadOnlyTexture> textures) {

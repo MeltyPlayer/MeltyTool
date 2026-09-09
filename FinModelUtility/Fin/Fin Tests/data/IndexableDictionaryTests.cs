@@ -10,14 +10,14 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace fin.data;
 
-public sealed class SparseIndexableDictionaryTests {
+public sealed class IndexableDictionaryTests {
   private class IndexableImpl(int index) : IIndexable {
     public int Index { get; } = index;
   }
 
   [Test]
   public void TestEnumeratorClear() {
-    var dict = new SparseIndexableDictionary<IndexableImpl, string>();
+    var dict = new IndexableDictionary<IndexableImpl, string>();
 
     var index1 = new IndexableImpl(1);
 
@@ -34,7 +34,7 @@ public sealed class SparseIndexableDictionaryTests {
 
   [Test]
   public void TestEnumeratorGet() {
-    var dict = new SparseIndexableDictionary<IndexableImpl, string>();
+    var dict = new IndexableDictionary<IndexableImpl, string>();
 
     var index1 = new IndexableImpl(1);
     var index3 = new IndexableImpl(3);
@@ -51,7 +51,7 @@ public sealed class SparseIndexableDictionaryTests {
 
   [Test]
   public void TestEnumeratorTryGet() {
-    var dict = new SparseIndexableDictionary<IndexableImpl, string>();
+    var dict = new IndexableDictionary<IndexableImpl, string>();
 
     var index1 = new IndexableImpl(1);
     var index3 = new IndexableImpl(3);
@@ -77,7 +77,7 @@ public sealed class SparseIndexableDictionaryTests {
 
   [Test]
   public void TestEnumeratorLinq() {
-    var dict = new SparseIndexableDictionary<IndexableImpl, string>();
+    var dict = new IndexableDictionary<IndexableImpl, string>();
 
     var index1 = new IndexableImpl(1);
     var index3 = new IndexableImpl(3);
@@ -95,7 +95,7 @@ public sealed class SparseIndexableDictionaryTests {
 
   [Test]
   public void TestEnumeratorManually() {
-    var dict = new SparseIndexableDictionary<IndexableImpl, string>();
+    var dict = new IndexableDictionary<IndexableImpl, string>();
 
     var index1 = new IndexableImpl(1);
     var index3 = new IndexableImpl(3);

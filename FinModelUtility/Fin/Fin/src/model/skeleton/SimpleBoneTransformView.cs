@@ -15,13 +15,13 @@ public sealed class SimpleBoneTransformView : IBoneTransformView {
 
   private readonly IBoneTransformView[] impls_;
 
-  private SparseIndexableDictionary<IReadOnlyBone, Vector3> worldTranslationOverrides_
+  private IndexableDictionary<IReadOnlyBone, Vector3> worldTranslationOverrides_
       = new();
 
-  private SparseIndexableDictionary<IReadOnlyBone, Quaternion> worldRotationOverrides_
+  private IndexableDictionary<IReadOnlyBone, Quaternion> worldRotationOverrides_
       = new();
 
-  private SparseIndexableDictionary<IReadOnlyBone, Vector3> worldScaleOverrides_
+  private IndexableDictionary<IReadOnlyBone, Vector3> worldScaleOverrides_
       = new();
 
   private IReadOnlyBone? bone_;

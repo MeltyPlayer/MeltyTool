@@ -41,7 +41,7 @@ public sealed class GltfSkinBuilder {
 
     var vertexAccessor = MaximalVertexAccessor.GetAccessorForModel(model);
     var vertexToBuilder
-        = new SparseIndexableDictionary<IReadOnlyVertex, IVertexBuilder>(
+        = new IndexableDictionary<IReadOnlyVertex, IVertexBuilder>(
             skin.Vertices.Count);
 
     var gltfVertexBuilder = new GltfVertexBuilder(model) {

@@ -22,8 +22,8 @@ public partial interface IAnimationManager {
 }
 
 public interface IMorphTarget : INamed {
-  IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs { get; }
-  IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs { get; }
+  IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs { get; }
+  IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs { get; }
 
   IMorphTarget SetNewLocalPosition(IReadOnlyVertex vertex, Vector3 position);
   IMorphTarget SetNewLocalNormal(IReadOnlyVertex vertex, Vector3 normal);
@@ -44,20 +44,20 @@ public partial interface IAnimation : INamed {
 
 [GenerateReadOnly]
 public partial interface IModelAnimation : IAnimation {
-  new IReadOnlySparseIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks {
+  new IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks {
     get;
   }
 
   IBoneTracks GetOrCreateBoneTracks(IReadOnlyBone bone);
 
   new bool HasAnyMeshTracks { get; }
-  new IReadOnlySparseIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks {
+  new IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks {
     get;
   }
 
   IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
 
-  new IReadOnlySparseIndexableDictionary<IReadOnlyTexture, ITextureTracks>
+  new IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks>
       TextureTracks { get; }
 
   ITextureTracks AddTextureTracks(IReadOnlyTexture texture);

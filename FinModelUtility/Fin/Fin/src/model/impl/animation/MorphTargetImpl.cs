@@ -19,18 +19,18 @@ public partial class ModelImpl<TVertex> {
   }
 
   private sealed class MorphTargetImpl : IMorphTarget {
-    private readonly SparseIndexableDictionary<IReadOnlyVertex, Vector3>
+    private readonly IndexableDictionary<IReadOnlyVertex, Vector3>
         positionMorphs_ = new();
 
-    private readonly SparseIndexableDictionary<IReadOnlyVertex, Vector3> normalMorphs_
+    private readonly IndexableDictionary<IReadOnlyVertex, Vector3> normalMorphs_
         = new();
 
     public string Name { get; set; }
 
-    public IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs
+    public IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs
       => this.positionMorphs_;
 
-    public IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs
+    public IReadOnlyIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs
       => this.normalMorphs_;
 
     public IMorphTarget SetNewLocalPosition(IReadOnlyVertex vertex, Vector3 position) {

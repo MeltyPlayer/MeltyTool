@@ -25,7 +25,7 @@ public interface ITextureTransformManager : IReadOnlyTextureTransformManager {
 }
 
 public sealed class TextureTransformManager : ITextureTransformManager {
-  private readonly SparseIndexableDictionary<IReadOnlyTexture, (bool is2d, Matrix3x2
+  private readonly IndexableDictionary<IReadOnlyTexture, (bool is2d, Matrix3x2
       twoDMatrix, Matrix4x4 threeDMatrix)> texturesToMatrices_ = new();
 
   private bool hasInit_;

@@ -4,13 +4,13 @@ using System.Runtime.CompilerServices;
 
 namespace fin.data.indexable;
 
-public sealed class SparseIndexableDictionaryV2<TIndexable, TValue>(int capacity)
-    : ISparseIndexableDictionary<TIndexable, TValue>
+public sealed class IndexableDictionaryV2<TIndexable, TValue>(int capacity)
+    : IIndexableDictionary<TIndexable, TValue>
     where TIndexable : IIndexable {
   private readonly List<bool> hasValueImpl_ = new(capacity);
   private readonly List<TValue> valueImpl_ = new(capacity);
 
-  public SparseIndexableDictionaryV2() : this(0) { }
+  public IndexableDictionaryV2() : this(0) { }
 
   public int Count { get; private set; }
 

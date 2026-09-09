@@ -5,10 +5,10 @@ namespace fin.model.impl;
 
 public partial class ModelImpl<TVertex> {
   private partial class ModelAnimationImpl {
-    private readonly SparseIndexableDictionary<IReadOnlyTexture, ITextureTracks>
+    private readonly IndexableDictionary<IReadOnlyTexture, ITextureTracks>
         textureTracks_ = new();
 
-    public IReadOnlySparseIndexableDictionary<IReadOnlyTexture, ITextureTracks>
+    public IReadOnlyIndexableDictionary<IReadOnlyTexture, ITextureTracks>
         TextureTracks => this.textureTracks_;
 
     public ITextureTracks AddTextureTracks(IReadOnlyTexture texture)

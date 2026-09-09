@@ -16,7 +16,7 @@ public sealed class GltfVertexBuilder {
 
   private static readonly (int, float)[] defaultSkinning_ = [(0, 1)];
 
-  private readonly SparseIndexableDictionary<IReadOnlyBoneWeights, (int, float)[]>
+  private readonly IndexableDictionary<IReadOnlyBoneWeights, (int, float)[]>
       skinningByBoneWeights_ = new();
 
   public GltfVertexBuilder(IReadOnlyModel model) {
